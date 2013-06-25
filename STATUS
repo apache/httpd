@@ -107,123 +107,123 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: http://people.apache.org/~minfrin/httpd-mod_auth_basic-fake4.patch
     +1: minfrin, jim
 
-    * core, mod_ssl: Lift the restriction that prevents mod_ssl taking
-      full advantage of the event MPM. Enable the ability for a module
-      to reverse the sense of a poll event from a read to a write or vice
-      versa.
-      trunk patches: http://svn.apache.org/r1470679
-                     http://svn.apache.org/r1477094
-      2.4.x patch: http://people.apache.org/~minfrin/httpd-event-ssl.patch
-      +1: minfrin, jim
-      -0.5: sf: I would prefer if this sat in trunk for a few months first
-                to receive more testing.
+  * core, mod_ssl: Lift the restriction that prevents mod_ssl taking
+    full advantage of the event MPM. Enable the ability for a module
+    to reverse the sense of a poll event from a read to a write or vice
+    versa.
+    trunk patches: http://svn.apache.org/r1470679
+                   http://svn.apache.org/r1477094
+    2.4.x patch: http://people.apache.org/~minfrin/httpd-event-ssl.patch
+    +1: minfrin, jim
+    -0.5: sf: I would prefer if this sat in trunk for a few months first
+              to receive more testing.
 
-    * mod_proxy: Fix pool usage by protecting w/ a mutex
-      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1480627
-                   http://svn.apache.org/viewvc?view=revision&revision=1482859
-                   http://svn.apache.org/viewvc?view=revision&revision=1483190
-                   http://svn.apache.org/viewvc?view=revision&revision=1484343
-      2.4.x patch: trunk works, modulo CHANGES
-      +1: jim, minfrin
+  * mod_proxy: Fix pool usage by protecting w/ a mutex
+    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1480627
+                 http://svn.apache.org/viewvc?view=revision&revision=1482859
+                 http://svn.apache.org/viewvc?view=revision&revision=1483190
+                 http://svn.apache.org/viewvc?view=revision&revision=1484343
+    2.4.x patch: trunk works, modulo CHANGES
+    +1: jim, minfrin
 
-    * mod_proxy_http: Make the proxy-interim-response environment variable
-      effective by formally overriding origin server behaviour.
-      trunk patch: http://svn.apache.org/r1483027
-      2.4.x patch: trunk works
-      +1: minfrin, jim
+  * mod_proxy_http: Make the proxy-interim-response environment variable
+    effective by formally overriding origin server behaviour.
+    trunk patch: http://svn.apache.org/r1483027
+    2.4.x patch: trunk works
+    +1: minfrin, jim
 
-    * mod_deflate: Remove assumptions as to when an EOS bucket might arrive.
-      Gracefully step aside if the body size is zero.
-      trunk patch: http://svn.apache.org/r1484832
-                   http://svn.apache.org/r1484914
-      2.4.x patch: trunk works, modulo CHANGES
-      +1: minfrin, jim
+  * mod_deflate: Remove assumptions as to when an EOS bucket might arrive.
+    Gracefully step aside if the body size is zero.
+    trunk patch: http://svn.apache.org/r1484832
+                 http://svn.apache.org/r1484914
+    2.4.x patch: trunk works, modulo CHANGES
+    +1: minfrin, jim
 
-    * core: Add pre_htaccess hook.
-      trunk patch: http://svn.apache.org/r1389339
-      2.4.x patch: trunk patch works modulo CHANGES and mmn bump
-      +1: minfrin, jim
-      trawick: I like sf's idea on the list for a different API to solve
-               the same problem.
+  * core: Add pre_htaccess hook.
+    trunk patch: http://svn.apache.org/r1389339
+    2.4.x patch: trunk patch works modulo CHANGES and mmn bump
+    +1: minfrin, jim
+    trawick: I like sf's idea on the list for a different API to solve
+             the same problem.
 
-    * mod_session_dbd: Make sure that dirty flag is respected when saving 
-      sessions, and ensure the session ID is changed each time the session 
-      changes.
-      trunk patch: http://svn.apache.org/r1488158
-      trunk patch: http://svn.apache.org/r1488164
-      2.4.x patch: trunk patch works modulo CHANGES
-      +1: minfrin, jim
+  * mod_session_dbd: Make sure that dirty flag is respected when saving 
+    sessions, and ensure the session ID is changed each time the session 
+    changes.
+    trunk patch: http://svn.apache.org/r1488158
+    trunk patch: http://svn.apache.org/r1488164
+    2.4.x patch: trunk patch works modulo CHANGES
+    +1: minfrin, jim
 
-    * mod_proxy: protect pool usage w/ mutex.
-      trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1480627
-                   https://svn.apache.org/viewvc?view=revision&revision=1482859
-      2.4.x patch: trunk patch works modulo CHANGES
-      +1: jim
+  * mod_proxy: protect pool usage w/ mutex.
+    trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1480627
+                 https://svn.apache.org/viewvc?view=revision&revision=1482859
+    2.4.x patch: trunk patch works modulo CHANGES
+    +1: jim
 
-    * mod_proxy: Connection header clearing issues
-      trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1481891
-                   https://svn.apache.org/viewvc?view=revision&revision=1482075
-                   https://svn.apache.org/viewvc?view=revision&revision=1482170
-                   https://svn.apache.org/viewvc?view=revision&revision=1482555
-      2.4.x patch: trunk patch works modulo CHANGES and ap_mmn
-      +1: jim
+  * mod_proxy: Connection header clearing issues
+    trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1481891
+                 https://svn.apache.org/viewvc?view=revision&revision=1482075
+                 https://svn.apache.org/viewvc?view=revision&revision=1482170
+                 https://svn.apache.org/viewvc?view=revision&revision=1482555
+    2.4.x patch: trunk patch works modulo CHANGES and ap_mmn
+    +1: jim
 
-    * core: Stop the HTTP_IN filter from attempting to write error buckets
-      to the output filters
-      trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1482522
-      2.4.x patch: trunk patch works modulo CHANGES and ap_mmn
-      +1:  jim
+  * core: Stop the HTTP_IN filter from attempting to write error buckets
+    to the output filters
+    trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1482522
+    2.4.x patch: trunk patch works modulo CHANGES and ap_mmn
+    +1:  jim
 
-    * mod_proxy: support Unix domain sockets
-      trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1451633
-                   https://svn.apache.org/viewvc?view=revision&revision=1451905
-                   https://svn.apache.org/viewvc?view=revision&revision=1451921
-                   https://svn.apache.org/viewvc?view=revision&revision=1452259
-                   https://svn.apache.org/viewvc?view=revision&revision=1453981
-      2.4.x patch: trunk patch works modulo CHANGES and ap_mmn
-      +1: jim
+  * mod_proxy: support Unix domain sockets
+    trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1451633
+                 https://svn.apache.org/viewvc?view=revision&revision=1451905
+                 https://svn.apache.org/viewvc?view=revision&revision=1451921
+                 https://svn.apache.org/viewvc?view=revision&revision=1452259
+                 https://svn.apache.org/viewvc?view=revision&revision=1453981
+    2.4.x patch: trunk patch works modulo CHANGES and ap_mmn
+    +1: jim
 
-    * mod_proxy: Ensure network errors detected by the proxy are returned as
-      504 Gateway Timout as opposed to 502 Bad Gateway
-      trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1480058
-      2.4.x patch: trunk patch works modulo CHANGES
-      +1:
-      -1: rpluem: This change is still disputed. See
-          http://mail-archives.apache.org/mod_mbox/httpd-dev/201305.mbox/%3C1B16B9E3-87BA-4EEF-939C-7C7313B54714%40gbiv.com%3E
+  * mod_proxy: Ensure network errors detected by the proxy are returned as
+    504 Gateway Timout as opposed to 502 Bad Gateway
+    trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1480058
+    2.4.x patch: trunk patch works modulo CHANGES
+    +1:
+    -1: rpluem: This change is still disputed. See
+        http://mail-archives.apache.org/mod_mbox/httpd-dev/201305.mbox/%3C1B16B9E3-87BA-4EEF-939C-7C7313B54714%40gbiv.com%3E
 
-    * mod_proxy: save DNS lookups
-      trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1462269
-                   https://svn.apache.org/viewvc?view=revision&revision=1463455
-      2.4.x patch: trunk patch works
-      +1: jim
+  * mod_proxy: save DNS lookups
+    trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1462269
+                 https://svn.apache.org/viewvc?view=revision&revision=1463455
+    2.4.x patch: trunk patch works
+    +1: jim
 
-    * mod_socache_shmcb.c: Remove arbitrary restriction on shared memory size
-      previously limited to 64MB.
-      trunk patch: http://svn.apache.org/r1493921
-                   http://svn.apache.org/r1493925
-      2.4.x patch: trunk patch works modulo CHANGES
-      +1: minfrin, jim
-      sf notes: I think a number of variables need to be changed from int to
-                apr_size_t, including subcache_size, subcache_data_offset,
-                subcache_data_size, total, cache_total. 
-                AIUI, especially cache_total starts to go wrong if the cache
-                gets larger than 4GB (UINT_MAX). Maybe set the limit at
-                MIN(APR_SIZE_MAX,UINT_MAX) until this is fixed?
-      minfrin: Surely we should just fix these unsigned ints? Not sure what value
-               there would be in trying to bake in an arbitrary limit in the mean
-               time when we can just fix the underlying problem instead.
+  * mod_socache_shmcb.c: Remove arbitrary restriction on shared memory size
+    previously limited to 64MB.
+    trunk patch: http://svn.apache.org/r1493921
+                 http://svn.apache.org/r1493925
+    2.4.x patch: trunk patch works modulo CHANGES
+    +1: minfrin, jim
+    sf notes: I think a number of variables need to be changed from int to
+              apr_size_t, including subcache_size, subcache_data_offset,
+              subcache_data_size, total, cache_total. 
+              AIUI, especially cache_total starts to go wrong if the cache
+              gets larger than 4GB (UINT_MAX). Maybe set the limit at
+              MIN(APR_SIZE_MAX,UINT_MAX) until this is fixed?
+    minfrin: Surely we should just fix these unsigned ints? Not sure what value
+             there would be in trying to bake in an arbitrary limit in the mean
+             time when we can just fix the underlying problem instead.
 
-    * core: Support the SINGLE_LISTEN_UNSERIALIZED_ACCEPT optimization
-      on Linux kernel versions 3.x and above.  (PR 55121)
-      trunk patch: http://svn.apache.org/r1496429
-      2.4.x patch: trunk patch works modulo CHANGES
-      +1: trawick
+  * core: Support the SINGLE_LISTEN_UNSERIALIZED_ACCEPT optimization
+    on Linux kernel versions 3.x and above.  (PR 55121)
+    trunk patch: http://svn.apache.org/r1496429
+    2.4.x patch: trunk patch works modulo CHANGES
+    +1: trawick
 
-    * mod_cache: Fix new const warnings
-      (cache_storage.c:581:13: warning: passing argument 1 of 'ap_strrchr' discards 'const' qualifier from pointer target type)
-      trunk patch: http://svn.apache.org/r1491564
-      2.4.x patch: trunk patch works
-      +1: trawick
+  * mod_cache: Fix new const warnings
+    (cache_storage.c:581:13: warning: passing argument 1 of 'ap_strrchr' discards 'const' qualifier from pointer target type)
+    trunk patch: http://svn.apache.org/r1491564
+    2.4.x patch: trunk patch works
+    +1: trawick
 
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
