@@ -143,6 +143,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       trunk patch: http://svn.apache.org/r1389339
       2.4.x patch: trunk patch works modulo CHANGES and mmn bump
       +1: minfrin, jim
+      trawick: I like sf's idea on the list for a different API to solve
+               the same problem.
 
     * mod_session_dbd: Make sure that dirty flag is respected when saving 
       sessions, and ensure the session ID is changed each time the session 
