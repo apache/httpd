@@ -216,7 +216,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       trunk patch: http://svn.apache.org/r1496429
       2.4.x patch: trunk patch works modulo CHANGES
       +1: trawick
-f
+
     * mod_cache: Fix new const warnings
       (cache_storage.c:581:13: warning: passing argument 1 of 'ap_strrchr' discards 'const' qualifier from pointer target type)
       trunk patch: http://svn.apache.org/r1491564
