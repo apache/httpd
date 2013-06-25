@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) core: Support the SINGLE_LISTEN_UNSERIALIZED_ACCEPT optimization
+     on Linux kernel versions 3.x and above.  PR 55121.  [Bradley Heilbrun
+     <apache heilbrun.org>]
+
   *) core: merge AllowEncodedSlashes from the base configuration into
      virtual hosts. [Eric Covener]
 
