@@ -211,6 +211,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                there would be in trying to bake in an arbitrary limit in the mean
                time when we can just fix the underlying problem instead.
 
+    * core: Support the SINGLE_LISTEN_UNSERIALIZED_ACCEPT optimization
+      on Linux kernel versions 3.x and above.  (PR 55121)
+      trunk patch: http://svn.apache.org/r1496429
+      2.4.x patch: trunk patch works modulo CHANGES
+      +1: trawick
 
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
