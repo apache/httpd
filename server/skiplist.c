@@ -87,8 +87,8 @@ AP_DECLARE(void *) ap_skiplist_alloc(ap_skiplist *sl, size_t size)
         memlist_t *memlist = (memlist_t *)sl->memlist->elts;
         for (int i = 0; i < sl->memlist->nelts; i++) {
             if (memlist->size == size) {
-                found_size = 1;
                 chunk_t *chunk = (chunk_t *)memlist->list->elts;
+                found_size = 1;
                 for (int j = 0; j < memlist->list->nelts; j++) {
                     if (!chunk->inuse) {
                         chunk->inuse = 1;
