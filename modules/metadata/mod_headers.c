@@ -96,7 +96,8 @@ typedef enum {
     hdr_unset = 'u',            /* unset header */
     hdr_echo = 'e',             /* echo headers from request to response */
     hdr_edit = 'r',             /* change value by regexp, match once */
-    hdr_edit_r = 'R'            /* change value by regexp, everymatch */
+    hdr_edit_r = 'R',            /* change value by regexp, everymatch */
+    hdr_setifempty = 'i'        /* set value if header not already present*/
 } hdr_actions;
 
 /*
@@ -431,6 +432,8 @@ static APR_INLINE const char *header_inout_cmd(cmd_parms *cmd,
 
     if (!strcasecmp(action, "set"))
         new->action = hdr_set;
+    else if (!strcasecmp(action, "setifempty"))
+        new->action = hdr_setifempty;
     else if (!strcasecmp(action, "add"))
         new->action = hdr_add;
     else if (!strcasecmp(action, "append"))
@@ -446,7 +449,7 @@ static APR_INLINE const char *header_inout_cmd(cmd_parms *cmd,
     else if (!strcasecmp(action, "edit*"))
         new->action = hdr_edit_r;
     else
-        return "first argument must be 'add', 'set', 'append', 'merge', "
+        return "first argument must be 'add', 'set', 'setifempty', 'append', 'merge', "
                "'unset', 'echo', 'edit', or 'edit*'.";
 
     if (new->action == hdr_edit || new->action == hdr_edit_r) {
@@ -754,6 +757,14 @@ static int do_headers_fixup(request_rec *r, apr_table_t *headers,
                  ap_set_content_type(r, process_tags(hdr, r));
             }
             apr_table_setn(headers, hdr->header, process_tags(hdr, r));
+            break;
+        case hdr_setifempty:
+            if (NULL == apr_table_get(headers, hdr->header)) {
+                if (!strcasecmp(hdr->header, "Content-Type")) {
+                    ap_set_content_type(r, process_tags(hdr, r));
+                }
+                apr_table_setn(headers, hdr->header, process_tags(hdr, r));
+            }
             break;
         case hdr_unset:
             apr_table_unset(headers, hdr->header);

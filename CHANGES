@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_headers: Add 'setifempty' command to Header and RequestHeader.
+     [Eric Covener]
+
   *) AIX: Install DSO's with "cp" instead of "install" in instdso.sh
      [Eric Covener]
 
