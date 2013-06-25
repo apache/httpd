@@ -617,6 +617,8 @@ typedef struct {
     /** Max number of Range reversals (eg: 200-300, 100-125) allowed **/
     int max_reversals;
 
+    unsigned int allow_encoded_slashes_set : 1;
+    unsigned int decode_encoded_slashes_set : 1;
 } core_dir_config;
 
 /* macro to implement off by default behaviour */
