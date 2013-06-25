@@ -674,7 +674,7 @@ r:flush()   -- flushes the output buffer.
 while we_have_stuff_to_send do
     r:puts("Bla bla bla\n") -- print something to client
     r:flush() -- flush the buffer (send to client)
-    r:sleep(0.5) -- fake processing time and repeat
+    r.usleep(500000) -- fake processing time for 0.5 sec. and repeat
 end
 </pre>
 
@@ -970,8 +970,7 @@ local matches = r:regex("FOO bar BAz", [[(foo) bar]], 1)
 
 
 <pre class="prettyprint lang-lua">
-r:sleep(number_of_seconds) -- Puts the script to sleep for a given number of seconds.
-                   -- This can be a floating point number like 1.25 for extra accuracy.
+r.usleep(number_of_microseconds) -- Puts the script to sleep for a given number of microseconds.
 </pre>
 
 
