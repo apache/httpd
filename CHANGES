@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) core: merge AllowEncodedSlashes from the base configuration into
+     (non-default) name-based virtual hosts. [Eric Covener]
+
   *) mod_headers: Add 'setifempty' command to Header and RequestHeader.
      [Eric Covener]
 

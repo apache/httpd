@@ -398,8 +398,12 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
         conf->enable_sendfile = new->enable_sendfile;
     }
 
-    conf->allow_encoded_slashes = new->allow_encoded_slashes;
-    conf->decode_encoded_slashes = new->decode_encoded_slashes;
+    if (new->allow_encoded_slashes_set) {
+        conf->allow_encoded_slashes = new->allow_encoded_slashes;
+    }
+    if (new->decode_encoded_slashes_set) {
+        conf->decode_encoded_slashes = new->decode_encoded_slashes;
+    }
 
     if (new->log) {
         if (!conf->log) {
@@ -2893,6 +2897,10 @@ static const char *set_allow2f(cmd_parms *cmd, void *d_, const char *arg)
                            cmd->cmd->name, " must be On, Off, or NoDecode",
                            NULL);
     }
+
+    d->allow_encoded_slashes_set = 1;
+    d->decode_encoded_slashes_set = 1;
+
     return NULL;
 }
 

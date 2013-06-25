@@ -432,6 +432,7 @@
  *                         ap_condition_if_range()
  * 20121222.13 (2.5.0-dev) Add ap_proxy_clear_connection()
  * 20121222.14 (2.5.0-dev) Add ap_map_http_request_error()
+ * 20121222.15 (2.5.0-dev) Add allow/decode_encoded_slashes_set to core_dir_config
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
@@ -439,7 +440,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20121222
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 14                  /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 15                  /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
