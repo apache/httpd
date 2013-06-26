@@ -124,27 +124,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     identify exactly what the proposed changes are!  Add all new
     proposals to the end of this list. ]
 
-   * mod_ssl: Update default config (Cipher suite, commented SSLHonorCipherOrder
-     example, better MSIE version match)
-     PR 51363 and 49484.
-     trunk patch: http://svn.apache.org/r966055
-                  http://svn.apache.org/r966160
-                  http://svn.apache.org/r1132793
-                  http://svn.apache.org/r1135234
-                  http://svn.apache.org/r1203752
-     2.2.x patch: http://svn.apache.org/r1227293
-     2.0.x patch: http://people.apache.org/~rjung/patches/2.0-ssl-conf.patch
-     +1: rjung
-     -1: wrowe [it doesn't seem appropriate to add the alternate, less secure
-                template to a branch which people shouldn't be deploying in
-                the first place.  See simplified and more complete proposal
-                below]
-
    * Alternate: -SSLv2, Simplify SSLCipherSuite, corresponding docs fix,
      MSIE downgrade changes
      r966160, r1135234, r1203752, r966055, r1132793
      http://people.apache.org/~wrowe/https-std-2.0.patch
-     +1: wrowe
+     +1: wrowe, rjung
 
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
