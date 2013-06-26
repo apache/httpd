@@ -114,9 +114,6 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
-  *) SECURITY:
-
-
   *) SECURITY: CVE-2011-4317 (cve.mitre.org)
      Resolve additional cases of URL rewriting with ProxyPassMatch or
      RewriteRule, where particular request-URIs could result in undesired
@@ -176,15 +173,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     identify exactly what the proposed changes are!  Add all new
     proposals to the end of this list. ]
 
-  * Backport 327179; PR 31226; allow ap_add_output_filters_by_type to handle
-    proxied requests.  Basic tests by jorton and [rpluem] show that this works,
-    nobody can actually remember why this limitation was introduced at all
-    (r94028) and the mailing list archives also gave no hint.
-      http://svn.apache.org/viewvc?view=rev&revision=327179
-    +0: covener, wrowe
-          do we need to make people opt-in for this behavior to
-          backport it to 2.0.x? What mechanism?
-
    * mod_ssl: Update default config (Cipher suite, commented SSLHonorCipherOrder
      example, better MSIE version match)
      PR 51363 and 49484.
@@ -196,7 +184,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x patch: http://svn.apache.org/r1227293
      2.0.x patch: http://people.apache.org/~rjung/patches/2.0-ssl-conf.patch
      +1: rjung
-     -1: 
+     -1: wrowe [it doesn't seem appropriate to add the alternate, less secure
+                template to a branch which people shouldn't be deploying in
+                the first place.  I'm +1 on the -SSLv2 change alone.] 
 
    * mod_rewrite: (CVE-2013-1862 (cve.mitre.org)) Ensure that client data
      written to the RewriteLog is escaped to prevent terminal escape sequences
@@ -206,6 +196,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: wrowe, covener
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
+
+  * Backport 327179; PR 31226; allow ap_add_output_filters_by_type to handle
+    proxied requests.  Basic tests by jorton and [rpluem] show that this works,
+    nobody can actually remember why this limitation was introduced at all
+    (r94028) and the mailing list archives also gave no hint.
+      http://svn.apache.org/viewvc?view=rev&revision=327179
+    +0: covener, wrowe
+          do we need to make people opt-in for this behavior to
+          backport it to 2.0.x? What mechanism?
 
     *) mod_headers: Support {...}s tag for SSL variable lookup.
        http://www.apache.org/~jorton/mod_headers-2.0-ssl.diff
