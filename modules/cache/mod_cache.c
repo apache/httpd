@@ -1026,7 +1026,7 @@ static int cache_remove_url_filter(ap_filter_t *f, apr_bucket_brigade *in)
 
 static void * create_cache_config(apr_pool_t *p, server_rec *s)
 {
-    const char *tmppath;
+    const char *tmppath = NULL;
     cache_server_conf *ps = apr_pcalloc(p, sizeof(cache_server_conf));
 
     /* array of URL prefixes for which caching is enabled */
