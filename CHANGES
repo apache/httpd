@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_file_cache: mod_file_cache should be able to serve files that
+     haven't had a Content-Type set via e.g. mod_mime. [Eric Covener]
+
   *) core: Support the SINGLE_LISTEN_UNSERIALIZED_ACCEPT optimization
      on Linux kernel versions 3.x and above.  PR 55121.  [Bradley Heilbrun
      <apache heilbrun.org>]
