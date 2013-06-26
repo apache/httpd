@@ -4,7 +4,7 @@ Changes with Apache 2.2.25
   *) SECURITY: CVE-2013-1862 (cve.mitre.org)
      mod_rewrite: Ensure that client data written to the RewriteLog is
      escaped to prevent terminal escape sequences from entering the
-     log file.  [Joe Orton]
+     log file.  [Eric Covener, Jeff Trawick, Joe Orton]
 
   *) mod_ssl: Quiet FIPS mode weak keys disabled and FIPS not selected emits
      in the error log to debug level.  [William Rowe]
