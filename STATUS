@@ -114,6 +114,12 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
   
+  * mod_dav: Ensure URI is correctly uriencoded on return. PR 54611
+    [Timothy Wood <tjw omnigroup com>]
+    trunk patch: http://svn.apache.org/r1476621
+    2.2.x patch: trunk patch works (minus CHANGES)
+    +1: minfrin, trawick, wrowe
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -150,21 +156,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     trunk patch: http://svn.apache.org/r1470940
                  http://svn.apache.org/r1477530
     2.2.x patch: trunk patch works (minus CHANGES)
-    +1: minfrin
+    +1: minfrin, wrowe
 
   * mod_dav: Sending a If or If-Match header with an invalid ETag doesn't
     result in a 412 Precondition Failed. PR54610
     [Timothy Wood <tjw omnigroup com>]
     trunk patch: http://svn.apache.org/r1476604
     2.2.x patch: trunk patch works (minus CHANGES)
-    +1: minfrin
+    +1: minfrin, wrowe
     wrowe notes r1476604 commit log message by minfrin is inaccurate
-
-  * mod_dav: Ensure URI is correctly uriencoded on return. PR 54611
-    [Timothy Wood <tjw omnigroup com>]
-    trunk patch: http://svn.apache.org/r1476621
-    2.2.x patch: trunk patch works (minus CHANGES)
-    +1: minfrin, trawick
 
   * mod_dav: When a PROPPATCH attempts to remove a non-existent dead
     property on a resource for which there is no dead property in the same
@@ -172,13 +172,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     [Diego Santa Cruz <diego.santaCruz spinetix.com>]
     trunk patch: http://svn.apache.org/r1476642
     2.2.x patch: trunk patch works (minus CHANGES)
-    +1: minfrin
+    +1: minfrin, wrowe
 
   * mod_dav: Do not fail PROPPATCH when prop namespace is not known. PR 52559
     [Diego Santa Cruz <diego.santaCruz spinetix.com>]
     trunk patch: http://svn.apache.org/r1476644
     2.2.x patch: trunk patch works (minus CHANGES)
-    +1: minfrin
+    +1: minfrin, wrowe
 
   * core: speed up (for common cases) and reduce memory usage of ap_escape_logitem
     This should save 70-100 bytes in the request pool for a default config.
