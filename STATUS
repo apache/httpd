@@ -114,17 +114,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
   
-  
-   * mod_authnz_ldap: Allow using exec: callouts like SSLPassphraseDialog
-     for AuthLDAPBindPassword.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1433478
-                  http://svn.apache.org/viewvc?view=revision&revision=1467523
-                  http://svn.apache.org/viewvc?view=revision&revision=1467792
-     2.2.x patch: http://people.apache.org/~druggeri/patches/AuthLDAPBindPasswordExec-2.2.patch
-                  (20130119 - updated to include minor mmn bump)
-                  (20130412 - updated to not use static var - thx, wrowe)
-     +1: druggeri, minfrin. wrowe
-
   * mod_ssl: Catch missing, mismatched or encrypted client cert/key pairs
     with SSLProxyMachineCertificateFile/Path directives. PR 52212, PR 54698.
     (check at startup, to prevent segfaults at proxy request time)
@@ -220,6 +209,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     trunk patch: http://svn.apache.org/r1496429
     2.2.x patch: trunk patch works modulo CHANGES
     +1: trawick, wrowe
+
+   * mod_authnz_ldap: Allow using exec: callouts like SSLPassphraseDialog
+     for AuthLDAPBindPassword.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1433478
+     2.4.x patch: http://people.apache.org/~druggeri/patches/AuthLDAPBindPasswordExec-2.4.patch
+     +1: druggeri
 
 PATCHES/ISSUES THAT ARE STALLED
 
