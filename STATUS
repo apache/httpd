@@ -92,6 +92,25 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
+  * core: Limit ap_pregsub() to 64MB, add ap_pregsub_ex() for longer strings.
+    The default limit can be adjusted at compile time using AP_PREGSUB_MAXLEN.
+    mod_setenvif: Log error on substitution overflow.
+
+    IMPORTANT: This could break existing configurations which rely on 
+               substitutions > 64MB.  Those sites need to rebuild with an
+               override of AP_PREGSUB_MAXLEN.
+               2.4.x has a much smaller limit on ap_pregsub() because that change
+               was introduced with the new release.
+
+    trunk patch:
+       util.c: too many to list, as it is tied up in other added features and follow-
+               up fixes; I started with 2.4.x HEAD and backed out some semantic changes
+               in the code of interest
+       mod_setenvif.c: http://svn.apache.org/viewvc?view=revision&revision=1198966
+    2.2.x patch: http://people.apache.org/~trawick/ap_pregsub_ex_22x-2.txt
+    +1: trawick, wrowe
+
+
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
   
@@ -117,40 +136,26 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     2.2.x patch: https://people.apache.org/~kbrand/PR52212_54698_2.2.x.patch
     +1: kbrand, minfrin, wrowe
 
+  * mod_cache: Fix uninitialized tmppath variable. PR 54949
+    trunk patch: Variable removed from trunk in http://svn.apache.org/r1407381
+    2.2.x patch: http://people.apache.org/~minfrin/httpd-mod_cache-tmppath.patch
+    +1: minfrin, trawick, wrowe
+
+  * mod_dav: Sending a MERGE request against a URI handled by mod_dav_svn with
+    the source href (sent as part of the request body as XML) pointing to a
+    URI that is not configured for DAV will trigger a segfault.
+    trunk patch: http://svn.apache.org/r1485668
+    2.2.x patch: trunk works, modulo CHANGES
+    +1: minfrin, trawick, wrowe
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
-  * mod_cache: Realign the cache_quick_handler() to behave identically
-    to the default_handler() when reacting to errors when writing to the
-    filter stack. Stops APR errors appearing in access_log as result codes.
-    Trunk patches: http://svn.apache.org/viewvc?view=revision&revision=1003913
-    2.2.x patch: http://people.apache.org/~minfrin/httpd-mod_cache-errorfix-22.patch
-    +1: minfrin
-    trawick: any reason it shouldn't be completely aligned with default_handler's
-             choice to return OK vs. 500?
-    rpluem: Agreed with trawick. They should behave the same.
-
-   * mod_ssl: Add support for Next Protocol Negotiation.
-     Trunk patch:
-       http://svn.apache.org/viewvc?view=revision&revision=1332643
-     2.2.x patch:
-       http://www.links.org/files/npn-patch-2.2.patch
-     +1: benl
-     sf notes: needs the buffer overflow fix from r1345599, too
-     wrowe notes: also needs correction to
-       ssl_engine_kernel.c: In function 'ssl_callback_AdvertiseNextProtos':
-       ssl_engine_kernel.c:2140:5: warning: implicit declaration of function
-                                   'modssl_run_npn_advertise_protos_hook'
-                  Including mod_ssl.h after ssl_private.h seems to suffice.
-                  The change introduces hard linkages from modules into
-                  mod_ssl.so (distinct from httpd), AP is the incorrect
-                  namespace, see mod_dav main hooks as an example.
-                  Prior to this patch all calls to mod_ssl were by way of
-                  registered functions through apr bindings.  Seems there
-                  aught to be a way to add an npn cooperating module when
-                  mod_ssl is not loaded, but right now it would fail.
-                  An mmn minor bump would also be required for API addition.
+   * mod_ssl/proxy: enable the SNI extension for backend TLS connections
+     [Kaspar Brand]
+     2.2.x patch: http://people.apache.org/~wrowe/r1175416-2.0.patch
+     +1: wrowe
 
    * mod_proxy_http: Use the same hostname for SNI as for the HTTP request when
      forwarding to SSL backends.
@@ -165,23 +170,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              https://issues.apache.org/bugzilla/show_bug.cgi?id=53134#c10
              by the patch author)
      rjung: agreed, we first need to backport r1175416.
-
-   * modules/ldap/util_ldap.c: Correct erroneous messages
-     PR: 53402
-     trunk and 2.4.x: Erroneous message about LDAPSharedCacheSize
-       http://svn.apache.org/viewvc?view=revision&sortby=date&revision=1096577
-     trunk and 2.4.x: Erroneous order for the parameters
-       http://svn.apache.org/viewvc?view=revision&sortby=date&revision=627637
-     2.2.x patch: attached in PR 53402 (https://issues.apache.org/bugzilla/attachment.cgi?id=29502)
-     +1: jailletc36
-     -1: rjung
-     rjung: the proposed 2.2 patch also changes LDAPTrustedClientCert to OR_AUTHCFG.
-            This change seems to come from PR46541 which needs a bigger backport (r915660)
-            Note: covener commented it in the PR as "I don't think LDAPTrustedClientCert can
-            really be made usable in 2.2.".
-     rjung: I don't understand what was voted on, the backport of both revisions
-            or only the PR attachment. The latter is only about r627637.
-     covener: withdrawing my vote, I reviewed the attachment but missed the OR_AUTHCFG change.
+     wrowe asks kbrand, rjung to see above
 
   * mod_proxy_balancer: Add failontimeout parameter. Timeout will put worker
     in error state if an IO timeout is detected.
@@ -220,49 +209,67 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.2.x patch: trunk patch works (minus CHANGES)
     +1: minfrin
 
-  * mod_dav: Sending a MERGE request against a URI handled by mod_dav_svn with
-    the source href (sent as part of the request body as XML) pointing to a
-    URI that is not configured for DAV will trigger a segfault.
-    trunk patch: http://svn.apache.org/r1485668
-    2.2.x patch: trunk works, modulo CHANGES
-    +1: minfrin, trawick
-
   * core: speed up (for common cases) and reduce memory usage of ap_escape_logitem
     This should save 70-100 bytes in the request pool for a default config.
     trunk patch: http://svn.apache.org/r1485409
     2.2.x patch: trunk works
     +1: minfrin
 
-  * mod_cache: Fix uninitialized tmppath variable. PR 54949
-    trunk patch: Variable removed from trunk in http://svn.apache.org/r1407381
-    2.2.x patch: http://people.apache.org/~minfrin/httpd-mod_cache-tmppath.patch
-    +1: minfrin, trawick
-
-  * core: Limit ap_pregsub() to 64MB, add ap_pregsub_ex() for longer strings.
-    The default limit can be adjusted at compile time using AP_PREGSUB_MAXLEN.
-    mod_setenvif: Log error on substitution overflow.
-
-    IMPORTANT: This could break existing configurations which rely on 
-               substitutions > 64MB.  Those sites need to rebuild with an
-               override of AP_PREGSUB_MAXLEN.
-               2.4.x has a much smaller limit on ap_pregsub() because that change
-               was introduced with the new release.
-
-    trunk patch:
-       util.c: too many to list, as it is tied up in other added features and follow-
-               up fixes; I started with 2.4.x HEAD and backed out some semantic changes
-               in the code of interest
-       mod_setenvif.c: http://svn.apache.org/viewvc?view=revision&revision=1198966
-    2.2.x patch: http://people.apache.org/~trawick/ap_pregsub_ex_22x-2.txt
-    +1: trawick, wrowe
-
   * core: Support the SINGLE_LISTEN_UNSERIALIZED_ACCEPT optimization
     on Linux kernel versions 3.x and above.  (PR 55121)
     trunk patch: http://svn.apache.org/r1496429
     2.2.x patch: trunk patch works modulo CHANGES
-    +1: trawick
+    +1: trawick, wrowe
 
 PATCHES/ISSUES THAT ARE STALLED
+
+  * mod_cache: Realign the cache_quick_handler() to behave identically
+    to the default_handler() when reacting to errors when writing to the
+    filter stack. Stops APR errors appearing in access_log as result codes.
+    Trunk patches: http://svn.apache.org/viewvc?view=revision&revision=1003913
+    2.2.x patch: http://people.apache.org/~minfrin/httpd-mod_cache-errorfix-22.patch
+    +1: minfrin
+    trawick: any reason it shouldn't be completely aligned with default_handler's
+             choice to return OK vs. 500?
+    rpluem: Agreed with trawick. They should behave the same.
+
+   * mod_ssl: Add support for Next Protocol Negotiation.
+     Trunk patch:
+       http://svn.apache.org/viewvc?view=revision&revision=1332643
+     2.2.x patch:
+       http://www.links.org/files/npn-patch-2.2.patch
+     +1: benl
+     sf notes: needs the buffer overflow fix from r1345599, too
+     wrowe notes: also needs correction to
+       ssl_engine_kernel.c: In function 'ssl_callback_AdvertiseNextProtos':
+       ssl_engine_kernel.c:2140:5: warning: implicit declaration of function
+                                   'modssl_run_npn_advertise_protos_hook'
+                  Including mod_ssl.h after ssl_private.h seems to suffice.
+                  The change introduces hard linkages from modules into
+                  mod_ssl.so (distinct from httpd), AP is the incorrect
+                  namespace, see mod_dav main hooks as an example.
+                  Prior to this patch all calls to mod_ssl were by way of
+                  registered functions through apr bindings.  Seems there
+                  aught to be a way to add an npn cooperating module when
+                  mod_ssl is not loaded, but right now it would fail.
+                  An mmn minor bump would also be required for API addition.
+
+   * modules/ldap/util_ldap.c: Correct erroneous messages
+     PR: 53402
+     trunk and 2.4.x: Erroneous message about LDAPSharedCacheSize
+       http://svn.apache.org/viewvc?view=revision&sortby=date&revision=1096577
+     trunk and 2.4.x: Erroneous order for the parameters
+       http://svn.apache.org/viewvc?view=revision&sortby=date&revision=627637
+     2.2.x patch: attached in PR 53402 (https://issues.apache.org/bugzilla/attachment.cgi?id=29502)
+     +1: jailletc36
+     -1: rjung
+     rjung: the proposed 2.2 patch also changes LDAPTrustedClientCert to OR_AUTHCFG.
+            This change seems to come from PR46541 which needs a bigger backport (r915660)
+            Note: covener commented it in the PR as "I don't think LDAPTrustedClientCert can
+            really be made usable in 2.2.".
+     rjung: I don't understand what was voted on, the backport of both revisions
+            or only the PR attachment. The latter is only about r627637.
+     covener: withdrawing my vote, I reviewed the attachment but missed the OR_AUTHCFG change.
 
   * core: Support wildcards in both the directory and file components of
     the path specified by the Include directive.
