@@ -186,7 +186,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: rjung
      -1: wrowe [it doesn't seem appropriate to add the alternate, less secure
                 template to a branch which people shouldn't be deploying in
-                the first place.  I'm +1 on the -SSLv2 change alone.] 
+                the first place.  I'm +1 on the -SSLv2 change alone, e.g.
+                http://people.apache.org/~wrowe/2.0-ssl-noV2.patch ]
+ 
 
    * mod_rewrite: (CVE-2013-1862 (cve.mitre.org)) Ensure that client data
      written to the RewriteLog is escaped to prevent terminal escape sequences
