@@ -114,13 +114,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
   
-  * mod_dav: Sending a MERGE request against a URI handled by mod_dav_svn with
-    the source href (sent as part of the request body as XML) pointing to a
-    URI that is not configured for DAV will trigger a segfault.
-    trunk patch: http://svn.apache.org/r1485668
-    2.2.x patch: trunk works, modulo CHANGES
-    +1: minfrin, trawick, wrowe
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
