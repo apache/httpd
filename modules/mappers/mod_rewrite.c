@@ -3599,10 +3599,11 @@ static void rewritelog(request_rec *r, int level, const char *text, ...)
         rhost = "UNKNOWN-HOST";
     }
 
-    str1 = apr_pstrcat(r->pool, rhost, " ",
-                      (conn->remote_logname != NULL ?
-                      conn->remote_logname : "-"), " ",
-                      ruser, NULL);
+    str1 = apr_pstrcat(r->pool, ap_escape_logitem(r->pool, rhost), " ",
+                       (conn->remote_logname != NULL
+                            ? ap_escape_logitem(r->pool, conn->remote_logname)
+                            : "-"),
+                       " ", ap_escape_logitem(r->pool, ruser), NULL);
     apr_vsnprintf(str2, sizeof(str2), text, ap);
 
     if (r->main == NULL) {
@@ -3624,9 +3625,10 @@ static void rewritelog(request_rec *r, int level, const char *text, ...)
 
     apr_snprintf(str3, sizeof(str3),
                 "%s %s [%s/sid#%lx][rid#%lx/%s%s] (%d) %s" APR_EOL_STR, str1,
-                current_logtime(r), ap_get_server_name(r),
+                current_logtime(r),
+                ap_escape_logitem(r->pool, ap_get_server_name(r)),
                 (unsigned long)(r->server), (unsigned long)r,
-                type, redir, level, str2);
+                type, redir, level, ap_escape_logitem(r->pool, str2));
 
     rv = apr_global_mutex_lock(rewrite_log_lock);
     if (rv != APR_SUCCESS) {

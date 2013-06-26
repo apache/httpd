@@ -118,12 +118,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_rewrite: (CVE-2013-1862 (cve.mitre.org)) Ensure that client data
-     written to the RewriteLog is escaped to prevent terminal escape sequences
-     from entering the log file. [Joe Orton]
-     http://svn.apache.org/viewvc?view=revision&revision=1482349
-     2.0.x: http://people.apache.org/~covener/patches/2.0.x-rewritelog.diff 
-     +1: wrowe, covener, trawick
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ please place SVN revisions from trunk here, so it is easy to
