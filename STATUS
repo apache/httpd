@@ -146,7 +146,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     +1: druggeri, wrowe
 
   * mod_dav: Make sure that when we prepare an If URL for Etag comparison,     
-    we compare unencoded paths. PR 53910
+    we compare unencoded paths. PR 53910 [Timothy Wood <tjw omnigroup com>]
     trunk patch: http://svn.apache.org/r1470940
                  http://svn.apache.org/r1477530
     2.2.x patch: trunk patch works (minus CHANGES)
@@ -154,11 +154,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
   * mod_dav: Sending a If or If-Match header with an invalid ETag doesn't
     result in a 412 Precondition Failed. PR54610
+    [Timothy Wood <tjw omnigroup com>]
     trunk patch: http://svn.apache.org/r1476604
     2.2.x patch: trunk patch works (minus CHANGES)
     +1: minfrin
+    wrowe notes r1476604 commit log message by minfrin is inaccurate
 
   * mod_dav: Ensure URI is correctly uriencoded on return. PR 54611
+    [Timothy Wood <tjw omnigroup com>]
     trunk patch: http://svn.apache.org/r1476621
     2.2.x patch: trunk patch works (minus CHANGES)
     +1: minfrin, trawick
@@ -166,11 +169,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   * mod_dav: When a PROPPATCH attempts to remove a non-existent dead
     property on a resource for which there is no dead property in the same
     namespace httpd segfaults. PR 52559
+    [Diego Santa Cruz <diego.santaCruz spinetix.com>]
     trunk patch: http://svn.apache.org/r1476642
     2.2.x patch: trunk patch works (minus CHANGES)
     +1: minfrin
 
   * mod_dav: Do not fail PROPPATCH when prop namespace is not known. PR 52559
+    [Diego Santa Cruz <diego.santaCruz spinetix.com>]
     trunk patch: http://svn.apache.org/r1476644
     2.2.x patch: trunk patch works (minus CHANGES)
     +1: minfrin
