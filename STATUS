@@ -128,7 +128,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      MSIE downgrade changes
      r966160, r1135234, r1203752, r966055, r1132793
      http://people.apache.org/~wrowe/https-std-2.0.patch
-     +1: wrowe, rjung
+     +1: wrowe, rjung, gsmith
 
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
