@@ -2,6 +2,10 @@
 
 Changes with Apache 2.4.5
 
+  *) core: Support the SINGLE_LISTEN_UNSERIALIZED_ACCEPT optimization
+     on Linux kernel versions 3.x and above.  PR 55121.  [Bradley Heilbrun
+     <apache heilbrun.org>]
+
   *) mod_cache_socache: Make sure the CacheSocacheMaxSize directive is merged
      correctly. [Jens Låås <jelaas gmail.com>]
 
