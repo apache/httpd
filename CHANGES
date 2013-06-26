@@ -16,6 +16,11 @@ Changes with Apache 2.2.25
      with SSLProxyMachineCertificateFile/Path directives. PR 52212, PR 54698.
      [Keith Burdis <keith burdis.org>, Joe Orton, Kaspar Brand]
 
+  *) mod_dav: Sending a MERGE request against a URI handled by mod_dav_svn with
+     the source href (sent as part of the request body as XML) pointing to a
+     URI that is not configured for DAV will trigger a segfault. [Ben Reser
+     <ben reser.org>]
+
 Changes with Apache 2.2.24
 
   *) SECURITY: CVE-2012-3499 (cve.mitre.org)
