@@ -91,6 +91,18 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  * core: Support the SINGLE_LISTEN_UNSERIALIZED_ACCEPT optimization
+    on Linux kernel versions 3.x and above.  (PR 55121)
+    trunk patch: http://svn.apache.org/r1496429
+    2.4.x patch: trunk patch works modulo CHANGES
+    +1: trawick, jorton, jim
+
+  * mod_cache: Fix new const warnings
+    (cache_storage.c:581:13: warning: passing argument 1 of 'ap_strrchr' discards 'const' qualifier from pointer target type)
+    trunk patch: http://svn.apache.org/r1491564
+    2.4.x patch: trunk patch works
+    +1: trawick, jorton, jim
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -213,18 +225,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              there would be in trying to bake in an arbitrary limit in the mean
              time when we can just fix the underlying problem instead.
          jj: Agree w/ minfrin
-
-  * core: Support the SINGLE_LISTEN_UNSERIALIZED_ACCEPT optimization
-    on Linux kernel versions 3.x and above.  (PR 55121)
-    trunk patch: http://svn.apache.org/r1496429
-    2.4.x patch: trunk patch works modulo CHANGES
-    +1: trawick, jorton, jim
-
-  * mod_cache: Fix new const warnings
-    (cache_storage.c:581:13: warning: passing argument 1 of 'ap_strrchr' discards 'const' qualifier from pointer target type)
-    trunk patch: http://svn.apache.org/r1491564
-    2.4.x patch: trunk patch works
-    +1: trawick, jorton, jim
 
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
