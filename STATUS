@@ -118,6 +118,12 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * mod_rewrite: (CVE-2013-1862 (cve.mitre.org)) Ensure that client data
+     written to the RewriteLog is escaped to prevent terminal escape sequences
+     from entering the log file. [Joe Orton]
+     http://svn.apache.org/viewvc?view=revision&revision=1482349
+     2.0.x: http://people.apache.org/~covener/patches/2.0.x-rewritelog.diff 
+     +1: wrowe, covener, trawick
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ please place SVN revisions from trunk here, so it is easy to
@@ -139,14 +145,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                 template to a branch which people shouldn't be deploying in
                 the first place.  I'm +1 on the -SSLv2 change alone, e.g.
                 http://people.apache.org/~wrowe/2.0-ssl-noV2.patch ]
- 
 
-   * mod_rewrite: (CVE-2013-1862 (cve.mitre.org)) Ensure that client data
-     written to the RewriteLog is escaped to prevent terminal escape sequences
-     from entering the log file. [Joe Orton]
-     http://svn.apache.org/viewvc?view=revision&revision=1482349
-     2.0.x: http://people.apache.org/~covener/patches/2.0.x-rewritelog.diff 
-     +1: wrowe, covener
+   * Alternate: -SSLv2 change alone
+     http://people.apache.org/~wrowe/2.0-ssl-noV2.patch     
+     +1: wrowe, trawick
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
