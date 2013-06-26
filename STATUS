@@ -217,13 +217,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     on Linux kernel versions 3.x and above.  (PR 55121)
     trunk patch: http://svn.apache.org/r1496429
     2.4.x patch: trunk patch works modulo CHANGES
-    +1: trawick
+    +1: trawick, jorton
 
   * mod_cache: Fix new const warnings
     (cache_storage.c:581:13: warning: passing argument 1 of 'ap_strrchr' discards 'const' qualifier from pointer target type)
     trunk patch: http://svn.apache.org/r1491564
     2.4.x patch: trunk patch works
-    +1: trawick
+    +1: trawick, jorton
 
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
