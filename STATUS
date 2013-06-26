@@ -259,7 +259,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   * core: Support the SINGLE_LISTEN_UNSERIALIZED_ACCEPT optimization
     on Linux kernel versions 3.x and above.  (PR 55121)
     trunk patch: http://svn.apache.org/r1496429
-    2.4.x patch: trunk patch works modulo CHANGES
+    2.2.x patch: trunk patch works modulo CHANGES
     +1: trawick
 
 PATCHES/ISSUES THAT ARE STALLED
