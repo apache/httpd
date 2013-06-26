@@ -312,10 +312,10 @@ static int file_cache_handler(request_rec *r)
     int errstatus;
     int rc = OK;
 
-    /* XXX: not sure if this is right yet
-     * see comment in http_core.c:default_handler
-     */
-    if (ap_strcmp_match(r->handler, "*/*")) {
+    /* Bail out if r->handler isn't the default value, and doesn't look like a Content-Type 
+     * XXX: Even though we made the user explicitly list each path to cache?
+    */
+    if (ap_strcmp_match(r->handler, "*/*") && !AP_IS_DEFAULT_HANDLER_NAME(r->handler)) {
         return DECLINED;
     }
 
