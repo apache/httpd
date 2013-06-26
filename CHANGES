@@ -28,6 +28,12 @@ Changes with Apache 2.0.65
      is enabled, could allow local users to gain privileges via a .htaccess
      file. [Stefan Fritsch, Greg Ames]
 
+       NOTE: it remains possible to exhaust all memory using a carefully
+       crafted .htaccess rule, which will not be addressed in 2.0; enabling 
+       processing of .htaccess files authored by untrusted users is the root
+       of such security risks.  Upgrade to httpd 2.2.25 or later to limit
+       this specific risk.
+
   *) core: Add MaxRanges directive to control the number of ranges permitted
      before returning the entire resource, with a default limit of 200.
      [Eric Covener, Rainer Jung]
