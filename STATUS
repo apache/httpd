@@ -114,12 +114,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
   
-  * mod_dav: Ensure URI is correctly uriencoded on return. PR 54611
-    [Timothy Wood <tjw omnigroup com>]
-    trunk patch: http://svn.apache.org/r1476621
-    2.2.x patch: trunk patch works (minus CHANGES)
-    +1: minfrin, trawick, wrowe
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
