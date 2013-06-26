@@ -1,7 +1,6 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.25
 
-<<<<<<< .working
   *) SECURITY: CVE-2013-1862 (cve.mitre.org)
      mod_rewrite: Ensure that client data written to the RewriteLog is
      escaped to prevent terminal escape sequences from entering the
