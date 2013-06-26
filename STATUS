@@ -97,12 +97,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     2.4.x patch: trunk patch works modulo CHANGES
     +1: trawick, jorton, jim
 
-  * mod_cache: Fix new const warnings
-    (cache_storage.c:581:13: warning: passing argument 1 of 'ap_strrchr' discards 'const' qualifier from pointer target type)
-    trunk patch: http://svn.apache.org/r1491564
-    2.4.x patch: trunk patch works
-    +1: trawick, jorton, jim
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
