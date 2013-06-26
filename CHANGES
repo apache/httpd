@@ -1,6 +1,7 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.25
 
+<<<<<<< .working
   *) SECURITY: CVE-2013-1862 (cve.mitre.org)
      mod_rewrite: Ensure that client data written to the RewriteLog is
      escaped to prevent terminal escape sequences from entering the
@@ -20,6 +21,9 @@ Changes with Apache 2.2.25
      the source href (sent as part of the request body as XML) pointing to a
      URI that is not configured for DAV will trigger a segfault. [Ben Reser
      <ben reser.org>]
+
+  *) mod_dav: Ensure URI is correctly uriencoded on return. PR 54611
+     [Timothy Wood <tjw omnigroup.com>]
 
 Changes with Apache 2.2.24
 
