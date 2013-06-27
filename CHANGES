@@ -35,6 +35,9 @@ Changes with Apache 2.2.25
      admin to configure an IO timeout as an error in the balancer.
      [Daniel Ruggeri]
 
+  *) mod_authnz_ldap: Allow using exec: calls to obtain LDAP bind
+     password.  [Daniel Ruggeri]
+
   *) htdigest: Fix buffer overflow when reading digest password file
      with very long lines. PR 54893. [Rainer Jung]
 
@@ -118,9 +121,6 @@ Changes with Apache 2.2.24
 
   *) mod_ssl: Add new directive SSLCompression to disable TLS-level
      compression. PR 53219. [Björn Jacke <bjoern j3e de>, Stefan Fritsch]
-
-  *) mod_authnz_ldap: Allow using exec: calls to obtain LDAP bind
-     password.  [Daniel Ruggeri]
 
 Changes with Apache 2.2.23
 
