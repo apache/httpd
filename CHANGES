@@ -24,6 +24,10 @@ Changes with Apache 2.2.25
   *) mod_dav: Ensure URI is correctly uriencoded on return. PR 54611
      [Timothy Wood <tjw omnigroup.com>]
 
+  *) Added balancer parameter failontimeout to allow server admin
+     to configure an IO timeout as an error in the balancer.
+     [Daniel Ruggeri]
+
 Changes with Apache 2.2.24
 
   *) SECURITY: CVE-2012-3499 (cve.mitre.org)

@@ -114,15 +114,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
   
-  * mod_proxy_balancer: Add failontimeout parameter. Timeout will put worker
-    in error state if an IO timeout is detected.
-    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1465839
-    2.4.x patch: http://svn.apache.org/viewvc?view=revision&revision=1476689
-    2.2.x patch: http://people.apache.org/~druggeri/patches/httpd-2.2.x-failontimeout.patch
-    +1: druggeri, wrowe, rjung
-    rjung: it would be nice to fix the indentation for the new
-           ap_log_rerror(...) in modules/proxy/mod_proxy_balancer.c.
-
   * mod_dav: Make sure that when we prepare an If URL for Etag comparison,     
     we compare unencoded paths. PR 53910 [Timothy Wood <tjw omnigroup com>]
     trunk patch: http://svn.apache.org/r1470940
