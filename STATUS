@@ -96,14 +96,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
   
-   * mod_proxy_http: Use the same hostname for SNI as for the HTTP request when
-     forwarding to SSL backends.
-     PR: 53134
-     Based on a patch from: Michael Weiser <michael weiser.dinsnail.net>
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1333969
-     2.4.x patch: http://svn.apache.org/viewvc?view=revision&revision=1356881
-     2.2.x patch: http://people.apache.org/~rjung/patches/mod_proxy_http-fix-hostname-ssl-2_2.patch
-     +1: covener, wrowe, rjung (w/r1175416 above applied first)
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
