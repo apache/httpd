@@ -389,6 +389,7 @@ struct proxy_balancer {
 
     apr_array_header_t *errstatuses; /* statuses to force members into error */
     int forcerecovery; /* Force recovery if all workers are in error state */
+    int failontimeout;          /* Whether to mark a member in Err if IO timeout occurs */
 };
 
 struct proxy_balancer_method {

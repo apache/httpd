@@ -387,6 +387,14 @@ static const char *set_balancer_param(proxy_server_conf *conf,
         }
 
     }
+    else if (!strcasecmp(key, "failontimeout")) {
+        if (!strcasecmp(val, "on"))
+            balancer->failontimeout = 1;
+        else if (!strcasecmp(val, "off"))
+            balancer->failontimeout = 0;
+        else
+            return "failontimeout must be On|Off";
+    }
     else if (!strcasecmp(key, "forcerecovery")) {
         if (!strcasecmp(val, "on"))
             balancer->forcerecovery = 1;
