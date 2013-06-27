@@ -46,6 +46,11 @@ Changes with Apache 2.2.25
      result in a 412 Precondition Failed. PR54610 [Timothy Wood
      <tjw omnigroup.com>]
 
+  *) mod_dav: When a PROPPATCH attempts to remove a non-existent dead
+     property on a resource for which there is no dead property in the same
+     namespace httpd segfaults. PR 52559 [Diego Santa Cruz
+     <diego.santaCruz spinetix.com>]
+
 Changes with Apache 2.2.24
 
   *) SECURITY: CVE-2012-3499 (cve.mitre.org)
