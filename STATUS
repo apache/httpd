@@ -112,11 +112,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     2.2.x patch: trunk patch works (minus CHANGES)
     +1: minfrin, wrowe, rjung
 
-  * mod_ssl/proxy: enable the SNI extension for backend TLS connections
-    [Kaspar Brand]
-    2.2.x patch: http://people.apache.org/~rjung/patches/r1175416-2.0-v2.patch
-    +1: wrowe, rjung, trawick
-
   * mod_dav: Do not segfault on PROPFIND with a zero length DBM. PR 52559
     [Diego Santa Cruz <diego.santaCruz spinetix.com>]
     This is the third patch in PR 52559. The other two are already
@@ -126,8 +121,10 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     2.2.x patch: trunk patch works (minus CHANGES)
     +1: rjung, wrowe, trawick
 
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
+  * mod_ssl/proxy: enable the SNI extension for backend TLS connections
+    [Kaspar Brand]
+    2.2.x patch: http://people.apache.org/~rjung/patches/r1175416-2.0-v2.patch
+    +1: wrowe, rjung, trawick
 
    * mod_proxy_http: Use the same hostname for SNI as for the HTTP request when
      forwarding to SSL backends.
@@ -136,13 +133,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1333969
      2.4.x patch: http://svn.apache.org/viewvc?view=revision&revision=1356881
      2.2.x patch: http://people.apache.org/~rjung/patches/mod_proxy_http-fix-hostname-ssl-2_2.patch
-     +1: covener, wrowe
-     +1: rjung (if my alternative r1175416 backport is used)
-     -1: 
-     kbrand: only has an effect if r1175416 is backported, too (see note at
-             https://issues.apache.org/bugzilla/show_bug.cgi?id=53134#c10
-             by the patch author)
-     wrowe asks kbrand to see above
+     +1: covener, wrowe, rjung (w/r1175416 above applied first)
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
 
   * core: speed up (for common cases) and reduce memory usage of ap_escape_logitem
     This should save 70-100 bytes in the request pool for a default config.

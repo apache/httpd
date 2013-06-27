@@ -10,6 +10,10 @@ Changes with Apache 2.2.25
      strings.  The default limit for ap_pregsub() can be adjusted at compile
       time by defining AP_PREGSUB_MAXLEN.  [Stefan Fritsch, Jeff Trawick]
 
+  *) core: Support the SINGLE_LISTEN_UNSERIALIZED_ACCEPT optimization
+     on Linux kernel versions 3.x and above.  PR 55121.  [Bradley Heilbrun
+     <apache heilbrun.org>]
+
   *) mod_setenvif: Log error on substitution overflow.
      [Stefan Fritsch]
 
@@ -23,6 +27,10 @@ Changes with Apache 2.2.25
      with SSLProxyMachineCertificateFile/Path directives. PR 52212, PR 54698.
      [Keith Burdis <keith burdis.org>, Joe Orton, Kaspar Brand]
 
+  *) mod_proxy_balancer: Added balancer parameter failontimeout to allow server
+     admin to configure an IO timeout as an error in the balancer.
+     [Daniel Ruggeri]
+
   *) mod_dav: Sending a MERGE request against a URI handled by mod_dav_svn with
      the source href (sent as part of the request body as XML) pointing to a
      URI that is not configured for DAV will trigger a segfault. [Ben Reser
@@ -31,20 +39,12 @@ Changes with Apache 2.2.25
   *) mod_dav: Ensure URI is correctly uriencoded on return. PR 54611
      [Timothy Wood <tjw omnigroup.com>]
 
-  *) Added balancer parameter failontimeout to allow server admin
-     to configure an IO timeout as an error in the balancer.
-     [Daniel Ruggeri]
-
   *) mod_dav: Make sure that when we prepare an If URL for Etag comparison,
      we compare unencoded paths. PR 53910 [Timothy Wood <tjw omnigroup.com>]
 
   *) mod_dav: Sending a If or If-Match header with an invalid ETag doesn't
      result in a 412 Precondition Failed. PR54610 [Timothy Wood
      <tjw omnigroup.com>]
-
-  *) core: Support the SINGLE_LISTEN_UNSERIALIZED_ACCEPT optimization
-     on Linux kernel versions 3.x and above.  PR 55121.  [Bradley Heilbrun
-     <apache heilbrun.org>]
 
 Changes with Apache 2.2.24
 
