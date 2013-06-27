@@ -8,10 +8,6 @@ Changes with Apache 2.5.0
   *) mod_file_cache: mod_file_cache should be able to serve files that
      haven't had a Content-Type set via e.g. mod_mime. [Eric Covener]
 
-  *) core: Support the SINGLE_LISTEN_UNSERIALIZED_ACCEPT optimization
-     on Linux kernel versions 3.x and above.  PR 55121.  [Bradley Heilbrun
-     <apache heilbrun.org>]
-
   *) core: merge AllowEncodedSlashes from the base configuration into
      virtual hosts. [Eric Covener]
 
@@ -35,20 +31,10 @@ Changes with Apache 2.5.0
   *) mod_socache_shmcb.c: Remove arbitrary restriction on shared memory size
      previously limited to 64MB. [Jens Låås <jelaas gmail.com>]
 
-  *) mod_cache_socache: Make sure the CacheSocacheMaxSize directive is merged
-     correctly. [Jens Låås <jelaas gmail.com>]
-
   *) mod_auth_digest: Use the secret when generating nonces in all cases and
      not only when AuthName is used in .htaccess files (this change may cause
      problems if used with round robin load balancers). Don't regenerate the
      secret on graceful restarts. PR 54637  [Stefan Fritsch]
-
-  *) mod_cache_socache: Use the name of the socache implementation when performing
-     a lookup rather than using the raw arguments. [Martin Ksellmann
-     <martin@ksellmann.de>]
-
-  *) rotatelogs: add -n number-of-files option to roate through a number
-     of fixed-name logfiles. [Eric Covener]
 
   *) mod_lua: If a LuaMapHandler doesn't return any value, log a warning
      and treat it as apache2.OK. [Eric Covener]
@@ -64,11 +50,6 @@ Changes with Apache 2.5.0
      sessions, and ensure the session ID is changed each time the session
      changes. [Takashi Sato <takashi tks.st>, Graham Leggett]
 
-  *) mod_dav: Sending a MERGE request against a URI handled by mod_dav_svn with
-     the source href (sent as part of the request body as XML) pointing to a
-     URI that is not configured for DAV will trigger a segfault. [Ben Reser
-     <ben reser.org>]
-
   *) mod_logio: new format-specifier %C (combined) which is the sum of received
      and sent byte counts.
      PR54015 [Christophe Jaillet]
@@ -79,10 +60,6 @@ Changes with Apache 2.5.0
 
   *) mod_deflate: Remove assumptions as to when an EOS bucket might arrive.
      Gracefully step aside if the body size is zero. [Graham Leggett]
-
-  *) 'AuthGroupFile' and 'AuthUserFile' do not accept anymore the optional
-     'standard' keyword . It was unused and not documented.
-     PR54463 [Tianyin Xu <tixu cs.ucsd.edu> and Christophe Jaillet]
 
   *) mod_proxy_http: Make the proxy-interim-response environment variable
      effective by formally overriding origin server behaviour. [Graham
@@ -97,109 +74,22 @@ Changes with Apache 2.5.0
      through, ensuring that all headers listed by Connection are removed.
      [Graham Leggett, Co-Advisor <coad measurement-factory.com>]
 
-  *) core: apachectl -S prints wildcard name-based virtual hosts twice. 
-     PR54948 [Eric Covener]
-
-  *) mod_proxy: Reject invalid values for Max-Forwards. [Graham Leggett,
-     Co-Advisor <coad measurement-factory.com>]
-
-  *) mod_cache: If a 304 response indicates an entity not currently cached, then
-     the cache MUST disregard the response and repeat the request without the
-     conditional. [Graham Leggett, Co-Advisor <coad measurement-factory.com>]
-
   *) mod_proxy: Fix seg-faults when using the global pool on threaded
      MPMs [Thomas Eckert <thomas.r.w.eckert gmail.com>, Jim Jagielski]
 
   *) mod_proxy: Ensure network errors detected by the proxy are returned as
      504 Gateway Timout as opposed to 502 Bad Gateway, in order to be
      compliant with RFC2616 14.9.4 Cache Revalidation and Reload Controls.
-     [Graham Leggett, Co-Advisor <coad measurement-factory.com>]
-
-  *) mod_cache: Ensure that we don't attempt to replace a cached response
-     with an older response as per RFC2616 13.12. [Graham Leggett, Co-Advisor
-     <coad measurement-factory.com>]
-
-  *) core, mod_cache: Ensure RFC2616 compliance in ap_meets_conditions()
-     with weak validation combined with If-Range and Range headers. Break
-     out explicit conditional header checks to be useable elsewhere in the
-     server. Ensure weak validation RFC compliance in the byteranges filter.
-     Ensure RFC validation compliance when serving cached entities. PR 16142
-     [Graham Leggett, Co-Advisor <coad measurement-factory.com>]
-
-  *) core: Add the ability to do explicit matching on weak and strong ETags
-     as per RFC2616 Section 13.3.3. [Graham Leggett, Co-Advisor
-     <coad measurement-factory.com>]
-
-  *) mod_cache: Ensure that updated responses to HEAD requests don't get
-     mistakenly paired with a previously cached body. Ensure that any existing
-     body is removed when a HEAD request is cached. [Graham Leggett,
-     Co-Advisor <coad measurement-factory.com>]
-
-  *) mod_cache: Honour Cache-Control: no-store in a request. [Graham Leggett]
-
-  *) mod_cache: RFC2616 14.9.3 The s-maxage directive also implies the
-     semantics of the proxy-revalidate directive. [Graham Leggett]
-
-  *) mod_cache: Make sure that contradictory entity headers present in a 304
-     Not Modified response are caught and cause the entity to be removed.
-     [Graham Leggett]
-
-  *) mod_cache: Make sure Vary processing handles multivalued Vary headers and
-     multivalued headers referred to via Vary. [Graham Leggett]
-
-  *) mod_cache: When serving from cache, only the last header of a multivalued
-     header was taken into account. Fixed. [Graham Leggett]
-
-  *) mod_cache: Ignore response headers specified by no-cache=header and
-     private=header as specified by RFC2616 14.9.1 What is Cacheable. Ensure
-     that these headers are still processed when multiple Cache-Control
-     headers are present in the response. PR 54706 [Graham Leggett,
-     Yann Ylavic <ylavic.dev gmail.com>]
-
-  *) mod_cache: Invalidate cached entities in response to RFC2616 Section
-     13.10 Invalidation After Updates or Deletions. PR 15868 [Graham
-     Leggett]
 
   *) mod_dav: mod_dav overrides dav_fs response on PUT failure. PR 35981
      [Basant Kumar Kukreja <basant.kukreja sun.com>, Alejandro Alvarez
      <alejandro.alvarez.ayllon cern.ch>]
-
-  *) mod_dav: Do not segfault on PROPFIND with a zero length DBM.
-     PR 52559 [Diego Santa Cruz <diego.santaCruz spinetix.com>]
-
-  *) mod_dav: Do not fail PROPPATCH when prop namespace is not known.
-     PR 52559 [Diego Santa Cruz <diego.santaCruz spinetix.com>]
-
-  *) mod_dav: When a PROPPATCH attempts to remove a non-existent dead
-     property on a resource for which there is no dead property in the same
-     namespace httpd segfaults. PR 52559 [Diego Santa Cruz
-     <diego.santaCruz spinetix.com>]
-
-  *) mod_dav: Ensure URI is correctly uriencoded on return. PR 54611
-     [Timothy Wood <tjw omnigroup.com>]
-
-  *) mod_dav: Sending a If or If-Match header with an invalid ETag doesn't
-     result in a 412 Precondition Failed. PR 54610 [Timothy Wood
-     <tjw omnigroup.com>]
-
-  *) mod_dav: Make sure that when we prepare an If URL for Etag comparison,
-     we compare unencoded paths. PR 53910 [Timothy Wood <tjw omnigroup.com>]
 
   *) core, mod_ssl: Lift the restriction that prevents mod_ssl taking
      full advantage of the event MPM. Enable the ability for a module
      to reverse the sense of a poll event from a read to a write or vice
      versa. [Graham Leggett]
 
-  *) htpasswd: Add -v option to verify a password. [Stefan Fritsch]
-
-  *) htpasswd, htdbm: Fix password generation. PR 54735. [Stefan Fritsch]
-
-  *) mod_dav: Improve error handling in dav_method_put(), add new
-     dav_join_error() function.  PR 54145.  [Ben Reser <ben reser.org>]
-
-  *) mod_auth_digest: Fix crashes if shm initialization failed. [Stefan
-     Fritsch]
- 
   *) mod_ldap: LDAP connections used for authentication were not respecting
      LDAPConnectionPoolTimeout.  PR 54587
 
@@ -233,9 +123,6 @@ Changes with Apache 2.5.0
   *) core: Correctly parse an IPv6 literal host specification in an absolute
      URL in the request line. [Stefan Fritsch]
 
-  *) mod_ssl: add support for subjectAltName-based host name checking
-     in proxy mode. PR 54030. [Kaspar Brand]
-
   *) mpm_event: Check that AsyncRequestWorkerFactor is not negative. PR 54254.
      [Jackie Zhang <jackie qq zhang gmail com>]
 
@@ -264,15 +151,8 @@ Changes with Apache 2.5.0
   *) mod_allowhandlers: New module to forbid specific handlers for specific
      directories. [Stefan Fritsch]
 
-  *) configure: Fix processing of --disable-FEATURE for various features.
-     [Jeff Trawick]
-
   *) mod_systemd: New module, for integration with systemd on Linux.
      [Jan Kaluza <jkaluza redhat.com>]
-
-  *) mod_cache_socache: New cache implementation backed by mod_socache
-     that replaces mod_mem_cache removed from httpd v2.2. [Graham
-     Leggett]
 
   *) core: Add dirwalk_stat and pre_htaccess hooks, allowing mpm-itk
      to be used without patches to httpd core.  [Jeff Trawick]
@@ -299,9 +179,6 @@ Changes with Apache 2.5.0
 
   *) mod_lua: Add a server scope for Lua states, which creates a pool of
      states with managable minimum and maximum size. [Daniel Gruno]
-
-  *) core: Add post_perdir_config hook.
-     [Steinar Gunderson <sgunderson bigfoot.com>]
 
   *) mod_lua: Add new directive, LuaMapHandler, for dynamically mapping 
      URIs to Lua scripts and functions using regular expressions.
