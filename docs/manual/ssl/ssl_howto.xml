@@ -65,10 +65,10 @@ without knowing its restrictions and coherences.</p>
 <section id="onlystrong">
 <title>How can I create an SSL server which accepts strong encryption
 only?</title>
-    <p>The following enables only the seven strongest ciphers:</p>
+    <p>The following enables only the strongest ciphers:</p>
     <example><title>httpd.conf</title>
-      SSLProtocol all<br />
-      SSLCipherSuite HIGH:MEDIUM<br />
+      SSLProtocol all -SSLv2<br />
+      SSLCipherSuite HIGH:!aNULL:!MD5<br />
     </example>
 </section>
 
@@ -116,7 +116,7 @@ URL?</title>
       &lt;Location /strong/area&gt;<br />
       # but https://hostname/strong/area/ and below<br />
       # requires strong ciphers<br />
-      SSLCipherSuite HIGH:MEDIUM<br />
+      SSLCipherSuite HIGH:!aNULL:!MD5<br />
       &lt;/Location&gt;
     </example>
 </section>

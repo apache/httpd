@@ -73,6 +73,15 @@ Changes with Apache 2.0.65
   *) Improve platform detection for bundled PCRE by updating config.guess
      and config.sub.  [Rainer Jung]
 
+  *) ssl-std.conf: Disable AECDH ciphers in example config. PR 51363.
+     [Rob Stradling <rob comodo com>]
+
+  *) ssl-std.conf: Change the SSLCipherSuite default to a shorter,
+     whitelist oriented definition.  [Rainer Jung, Kaspar Brand]
+
+  *) ssl-std.conf: Only select old MSIE browsers for the downgrade
+     in http/https behavior.  [Greg Stein, Stefan Fritsch]
+
 Changes with Apache 2.0.64
 
   *) SECURITY: CVE-2010-1452 (cve.mitre.org)

@@ -124,12 +124,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     identify exactly what the proposed changes are!  Add all new
     proposals to the end of this list. ]
 
-   * Alternate: -SSLv2, Simplify SSLCipherSuite, corresponding docs fix,
-     MSIE downgrade changes
-     r966160, r1135234, r1203752, r966055, r1132793
-     http://people.apache.org/~wrowe/https-std-2.0.patch
-     +1: wrowe, rjung, gsmith
-
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 

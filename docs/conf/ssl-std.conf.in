@@ -93,10 +93,15 @@ TransferLog @exp_logfiledir@/access_log
 #   Enable/Disable SSL for this virtual host.
 SSLEngine on
 
+#   SSL Protocol support:
+#   List the protocol versions which clients are allowed to
+#   connect with. Disable SSLv2 by default (cf. RFC 6176).
+SSLProtocol all -SSLv2
+
 #   SSL Cipher Suite:
 #   List the ciphers that the client is permitted to negotiate.
 #   See the mod_ssl documentation for a complete list.
-SSLCipherSuite ALL:!ADH:!EXPORT56:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP:+eNULL
+SSLCipherSuite HIGH:MEDIUM:!aNULL:!MD5
 
 #   Server Certificate:
 #   Point SSLCertificateFile at a PEM encoded certificate.  If
@@ -231,7 +236,7 @@ SSLCertificateKeyFile @exp_sysconfdir@/ssl.key/server.key
 #   Similarly, one has to force some clients to use HTTP/1.0 to workaround
 #   their broken HTTP/1.1 implementation. Use variables "downgrade-1.0" and
 #   "force-response-1.0" for this.
-SetEnvIf User-Agent ".*MSIE.*" \
+SetEnvIf User-Agent "MSIE [2-5]" \
          nokeepalive ssl-unclean-shutdown \
          downgrade-1.0 force-response-1.0
 
