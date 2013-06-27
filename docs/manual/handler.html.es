@@ -17,10 +17,10 @@
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentación</a> &gt; <a href="./">Versión 2.0</a></div><div style="width: 90%;" class="outofdate"><h4>Please note</h4>
-    This document refers to the 2.0 version of Apache httpd, which is no longer recommended.<br />
-    If you are using the current versions of httpd (2.2 or 2.4), please visit their documentations instead:<br /><ul><li><a href="http://httpd.apache.org/docs/2.2/">Apache HTTP Server 2.2 documentation</a></li><li><a href="http://httpd.apache.org/docs/2.4/">Apache HTTP Server 2.4 documentation</a></li></ul>
-    You may follow <a href="http://httpd.apache.org/docs/2.2/handler.html">this link</a> to 
-    go to the 2.2 version of this document.
+    This document refers to the 2.0 version of Apache httpd, which is no longer maintained.<br />
+    Upgrade, and refer to the current version of httpd instead, documented at:<br /><ul><li><a href="http://httpd.apache.org/docs/current/">Current release version of Apache HTTP Server documentation</a></li></ul>
+    You may follow <a href="http://httpd.apache.org/docs/current/handler.html">this link</a> to 
+    go to the current version of this document.
 </div><div id="page-content"><div id="preamble"><h1>Uso de los Handlers en Apache</h1>
 <div class="toplang">
 <p><span>Idiomas disponibles: </span><a href="./en/handler.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
@@ -168,6 +168,6 @@
 <a href="./ru/handler.html" hreflang="ru" rel="alternate" title="Russian">&nbsp;ru&nbsp;</a> |
 <a href="./tr/handler.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2011 The Apache Software Foundation.<br />Licencia bajo los términos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2013 The Apache Software Foundation.<br />Licencia bajo los términos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="./mod/">Módulos</a> | <a href="./mod/directives.html">Directivas</a> | <a href="./faq/">Preguntas Frecuentes</a> | <a href="./glossary.html">Glosario</a> | <a href="./sitemap.html">Mapa de este sitio web</a></p></div>
 </body></html>
