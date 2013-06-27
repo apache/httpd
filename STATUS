@@ -1,29 +1,10 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
 Last modified at [$Date$]
 
-The current version of this file can be found at:
-
-  * http://svn.apache.org/repos/asf/httpd/httpd/branches/2.0.x/STATUS
-
-Documentation status is maintained seperately and can be found at:
-
-  * docs/STATUS in this source tree, or
-  * http://svn.apache.org/repos/asf/httpd/httpd/branches/2.0.x/docs/STATUS
-
-Consult the following STATUS files for information on related projects:
-
-  * http://svn.apache.org/repos/asf/apr/apr/branches/0.9.x/STATUS
-  * http://svn.apache.org/repos/asf/apr/apr-util/branches/0.9.x/STATUS
-
-Consult the trunk/ for all new development and documentation efforts:
-
-  * http://svn.apache.org/repos/asf/httpd/httpd/trunk/STATUS
-  * http://svn.apache.org/repos/asf/httpd/httpd/trunk/docs/STATUS
-
 
 Release history:
 
-    2.0.65  : In maintainance.
+    2.0.65  : Tagged and Retired June 26, 2013.
     2.0.64  : Released October 19, 2010.
     2.0.63  : Released January 19, 2008.
     2.0.62  : Tagged January 4, 2008. Not released.
@@ -86,46 +67,17 @@ Release history:
     2.0a1   : released March 10, 2000
 
 
-Contributors looking for a mission:
-
-  * Just do an egrep on "TODO" or "XXX" in the source.
-
-  * Review the bug database at: http://issues.apache.org/bugzilla/
-
-  * Review the "PatchAvailable" bugs in the bug database:
-
-    http://issues.apache.org/bugzilla/buglist.cgi?bug_status=NEW&bug_status=ASSIGNED&bug_status=REOPENED&product=Apache+httpd-2.0&keywords=PatchAvailable
-
-    After testing, you can append a comment saying "Reviewed and tested".
-
-  * Open bugs in the bug database.
-
-
 CURRENT RELEASE NOTES:
 
-  * Forward binary compatibility is expected of Apache 2.0.x releases, such
-    that no MMN major number changes will occur.  Such changes can only be
-    made in the trunk.
-
-  * All commits to branches/2.0.x must be reflected in SVN trunk,
-    as well, if they apply.  Logical progression is commit to trunk,
-    get feedback and votes on list or in STATUS, then merge into
-    branches/2.2.x, and finally merge into branches/2.0.x, as applicable.
-
-RELEASE SHOWSTOPPERS:
+  ** THIS BRANCH IS CLOSED TO DEVELOPMENT AND MAINTENANCE **
+ 
+  * Refer to the development trunk and maintained/stable branches for current
+    activity;
+ 
+      http://svn.apache.org/repos/asf/httpd/httpd/trunk/STATUS
 
 
-PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
-  [ start all new proposals below, under PATCHES PROPOSED. ]
-
-
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ please place SVN revisions from trunk here, so it is easy to
-    identify exactly what the proposed changes are!  Add all new
-    proposals to the end of this list. ]
-
-
-PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
+UNADDRESSED ISSUES:
 
   * Backport 327179; PR 31226; allow ap_add_output_filters_by_type to handle
     proxied requests.  Basic tests by jorton and [rpluem] show that this works,
