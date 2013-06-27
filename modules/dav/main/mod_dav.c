@@ -722,7 +722,7 @@ static dav_error *dav_get_resource(request_rec *r, int label_allowed,
     conf = ap_get_module_config(r->per_dir_config, &dav_module);
     /* assert: conf->provider != NULL */
     if (conf->provider == NULL) {
-        return dav_new_error(r->pool, HTTP_METHOD_NOT_ALLOWED, 0, 0,
+        return dav_new_error(r->pool, HTTP_METHOD_NOT_ALLOWED, 0,
                              apr_psprintf(r->pool,
 				          "DAV not enabled for %s",
 					  ap_escape_html(r->pool, r->uri)));
