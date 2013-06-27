@@ -96,17 +96,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
   
-  * mod_dav: Make sure that when we prepare an If URL for Etag comparison,     
-    we compare unencoded paths. PR 53910 [Timothy Wood <tjw omnigroup com>]
-    trunk patch: http://svn.apache.org/r1470940
-                 http://svn.apache.org/r1477530
-    2.2.x patch: trunk patch works (minus CHANGES)
-    +1: minfrin, wrowe
-    +1: rjung (if the "rv" argument in dav_new_error() gets removed.
-               "rv" doesn't exist in the 2.2 file and the additional
-               argument also is not allowed in 2.2.x, in short:
-               trunk patch doesn't compile :( )
-
   * mod_dav: Sending a If or If-Match header with an invalid ETag doesn't
     result in a 412 Precondition Failed. PR54610
     [Timothy Wood <tjw omnigroup com>]
