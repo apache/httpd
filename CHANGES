@@ -17,11 +17,11 @@ Changes with Apache 2.2.25
   *) mod_setenvif: Log error on substitution overflow.
      [Stefan Fritsch]
 
+  *) mod_ssl/proxy: enable the SNI extension for backend TLS connections
+     [Kaspar Brand]
+
   *) mod_ssl: Quiet FIPS mode weak keys disabled and FIPS not selected emits
      in the error log to debug level.  [William Rowe]
-
-  *) htdigest: Fix buffer overflow when reading digest password file
-     with very long lines. PR 54893. [Rainer Jung]
 
   *) mod_ssl: Catch missing, mismatched or encrypted client cert/key pairs
      with SSLProxyMachineCertificateFile/Path directives. PR 52212, PR 54698.
@@ -30,6 +30,9 @@ Changes with Apache 2.2.25
   *) mod_proxy_balancer: Added balancer parameter failontimeout to allow server
      admin to configure an IO timeout as an error in the balancer.
      [Daniel Ruggeri]
+
+  *) htdigest: Fix buffer overflow when reading digest password file
+     with very long lines. PR 54893. [Rainer Jung]
 
   *) mod_dav: Sending a MERGE request against a URI handled by mod_dav_svn with
      the source href (sent as part of the request body as XML) pointing to a
