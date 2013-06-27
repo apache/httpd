@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_authnz_ldap: Support primitive LDAP servers do not accept
+     filters, such as "SDBM-backed LDAP" on z/OS, by allowing a special
+     filter "none" to be specified in AuthLDAPURL. [Eric Covener]
+
   *) mod_file_cache: mod_file_cache should be able to serve files that
      haven't had a Content-Type set via e.g. mod_mime. [Eric Covener]
 
