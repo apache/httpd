@@ -217,6 +217,7 @@ static void authn_ldap_build_filter(char *filtbuf,
     apr_size_t inbytes;
     apr_size_t outbytes;
     char *outbuf;
+    int nofilter = 0;
 
     if (sent_user != NULL) {
         user = apr_pstrdup (r->pool, sent_user);
@@ -249,7 +250,13 @@ static void authn_ldap_build_filter(char *filtbuf,
      * Create the first part of the filter, which consists of the
      * config-supplied portions.
      */
-    apr_snprintf(filtbuf, FILTER_LENGTH, "(&(%s)(%s=", filter, sec->attribute);
+
+    if ((nofilter = (filter && !strcasecmp(filter, "none")))) { 
+        apr_snprintf(filtbuf, FILTER_LENGTH, "(%s=", sec->attribute);
+    }
+    else { 
+        apr_snprintf(filtbuf, FILTER_LENGTH, "(&(%s)(%s=", filter, sec->attribute);
+    }
 
     /*
      * Now add the client-supplied username to the filter, ensuring that any
@@ -303,8 +310,16 @@ static void authn_ldap_build_filter(char *filtbuf,
      * Append the closing parens of the filter, unless doing so would
      * overrun the buffer.
      */
-    if (q + 2 <= filtbuf_end)
-        strcat(filtbuf, "))");
+
+    if (nofilter) { 
+        if (q + 1 <= filtbuf_end)
+            strcat(filtbuf, ")");
+    } 
+    else { 
+        if (q + 2 <= filtbuf_end)
+            strcat(filtbuf, "))");
+    }
+
 }
 
 static void *create_authnz_ldap_dir_config(apr_pool_t *p, char *d)
@@ -544,6 +559,11 @@ static authn_status authn_ldap_check_password(request_rec *r, const char *user,
                       "auth_ldap authenticate: "
                       "user %s authentication failed; URI %s [%s][%s]",
                       user, r->uri, ldc->reason, ldap_err2string(result));
+
+        /* talking to a primitive LDAP server (like RACF-over-LDAP) that doesn't return specific errors */
+        if (!strcasecmp(sec->filter, "none") && LDAP_OTHER == result) { 
+            return AUTH_USER_NOT_FOUND;
+        }
 
         return (LDAP_NO_SUCH_OBJECT == result) ? AUTH_USER_NOT_FOUND
 #ifdef LDAP_SECURITY_ERROR
