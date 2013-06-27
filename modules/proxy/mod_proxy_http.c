@@ -2023,8 +2023,22 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
          * so.
          */
         if (is_ssl) {
+            const char *ssl_hostname;
+
+            /*
+             * In the case of ProxyPreserveHost on use the hostname of
+             * the request if present otherwise use the one from the
+             * backend request URI.
+             */
+            if ((conf->preserve_host != 0) && (r->hostname != NULL)) {
+                ssl_hostname = r->hostname;
+            }
+            else {
+                ssl_hostname = uri->hostname;
+            }
+
             apr_table_set(backend->connection->notes, "proxy-request-hostname",
-                          uri->hostname);
+                          ssl_hostname);
         }
     }
 
