@@ -265,14 +265,13 @@
 <!-- Retirement notice -->
 <div class="outofdate" style="width: 90%;">
     <h4>Please note</h4>
-    This document refers to the 2.0 version of Apache httpd, which is no longer recommended.<br/>
-    If you are using the current versions of httpd (2.2 or 2.4), please visit their documentations instead:<br/>
+    This document refers to the 2.0 version of Apache httpd, which is no longer maintained.<br/>
+    Upgrade, and refer to the current version of httpd instead, documented at:<br/>
     <ul>
-        <li><a href="http://httpd.apache.org/docs/2.2/">Apache HTTP Server 2.2 documentation</a></li>
-        <li><a href="http://httpd.apache.org/docs/2.4/">Apache HTTP Server 2.4 documentation</a></li>
+        <li><a href="http://httpd.apache.org/docs/current/">Current release version of Apache HTTP Server documentation</a></li>
     </ul>
-    You may follow <a href="http://httpd.apache.org/docs/2.2{concat($metafile/path, $metafile/basename, '.html')}">this link</a> to 
-    go to the 2.2 version of this document.
+    You may follow <a href="http://httpd.apache.org/docs/current{concat($metafile/path, $metafile/basename, '.html')}">this link</a> to 
+    go to the current version of this document.
 </div>
 </xsl:template>
 <!-- /top -->
