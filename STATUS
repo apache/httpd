@@ -107,6 +107,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.2.x patch: trunk works
     +1: minfrin, rjung
     wrowe wonders why we copy and don't simply return the identity on no-change
+    rjung: From an API point of view the function - as well as the html escape functions
+           - takes a const char* and returns a plain char *. So a consumer would be free
+           to write to the returned string. There's no such place in httpd code I can
+           find but we can't rule it out for foreign modules. We could fix the signature
+           (returning const char *) in trunk but not for 2.2 ad 2.4. 
 
 
 PATCHES/ISSUES THAT ARE STALLED
