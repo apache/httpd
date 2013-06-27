@@ -83,13 +83,15 @@ AP_DECLARE(void *) ap_skiplist_alloc(ap_skiplist *sl, size_t size)
     if (sl->pool) {
         void *ptr;
         int found_size = 0;
+        int i;
         chunk_t *newchunk;
         memlist_t *memlist = (memlist_t *)sl->memlist->elts;
-        for (int i = 0; i < sl->memlist->nelts; i++) {
+        for (i = 0; i < sl->memlist->nelts; i++) {
             if (memlist->size == size) {
+                int j;
                 chunk_t *chunk = (chunk_t *)memlist->list->elts;
                 found_size = 1;
-                for (int j = 0; j < memlist->list->nelts; j++) {
+                for (j = 0; j < memlist->list->nelts; j++) {
                     if (!chunk->inuse) {
                         chunk->inuse = 1;
                         return chunk->ptr;
@@ -130,10 +132,12 @@ AP_DECLARE(void) ap_skiplist_free(ap_skiplist *sl, void *mem)
         free(mem);
     }
     else {
+        int i;
         memlist_t *memlist = (memlist_t *)sl->memlist->elts;
-        for (int i = 0; i < sl->memlist->nelts; i++) {
+        for (i = 0; i < sl->memlist->nelts; i++) {
+            int j;
             chunk_t *chunk = (chunk_t *)memlist->list->elts;
-            for (int j = 0; j < memlist->list->nelts; j++) {
+            for (j = 0; j < memlist->list->nelts; j++) {
                 if (chunk->ptr == mem) {
                     chunk->inuse = 0;
                     return;
