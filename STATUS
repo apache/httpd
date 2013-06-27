@@ -96,13 +96,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
   
-  * mod_dav: Do not fail PROPPATCH when prop namespace is not known. PR 52559
-    [Diego Santa Cruz <diego.santaCruz spinetix.com>]
-    trunk patch: http://svn.apache.org/r1476644
-    2.4.x patch: http://svn.apache.org/r1486459
-    2.2.x patch: trunk patch works (minus CHANGES)
-    +1: minfrin, wrowe, rjung
-
   * mod_dav: Do not segfault on PROPFIND with a zero length DBM. PR 52559
     [Diego Santa Cruz <diego.santaCruz spinetix.com>]
     This is the third patch in PR 52559. The other two are already
