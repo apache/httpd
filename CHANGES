@@ -42,6 +42,10 @@ Changes with Apache 2.2.25
      result in a 412 Precondition Failed. PR54610 [Timothy Wood
      <tjw omnigroup.com>]
 
+  *) core: Support the SINGLE_LISTEN_UNSERIALIZED_ACCEPT optimization
+     on Linux kernel versions 3.x and above.  PR 55121.  [Bradley Heilbrun
+     <apache heilbrun.org>]
+
 Changes with Apache 2.2.24
 
   *) SECURITY: CVE-2012-3499 (cve.mitre.org)

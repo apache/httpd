@@ -275,10 +275,11 @@ case $host in
       ;;
   *-linux-*)
       case `uname -r` in
-        2.[[2-9]]* ) 
-            APR_SETVAR(SINGLE_LISTEN_UNSERIALIZED_ACCEPT, [1])
+        # Unserialized accept() was not recommended until Linux 2.2.
+        [[01]].* | 2.[[01]]* )
             ;;
         * )
+            APR_SETVAR(SINGLE_LISTEN_UNSERIALIZED_ACCEPT, [1])
             ;;
       esac
       ;;
