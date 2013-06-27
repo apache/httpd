@@ -6,6 +6,13 @@ Changes with Apache 2.2.25
      escaped to prevent terminal escape sequences from entering the
      log file.  [Eric Covener, Jeff Trawick, Joe Orton]
 
+  *) core: Limit ap_pregsub() to 64MB and add ap_pregsub_ex() for longer
+     strings.  The default limit for ap_pregsub() can be adjusted at compile
+      time by defining AP_PREGSUB_MAXLEN.  [Stefan Fritsch, Jeff Trawick]
+
+  *) mod_setenvif: Log error on substitution overflow.
+     [Stefan Fritsch]
+
   *) mod_ssl: Quiet FIPS mode weak keys disabled and FIPS not selected emits
      in the error log to debug level.  [William Rowe]
 
