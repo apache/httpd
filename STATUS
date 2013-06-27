@@ -96,18 +96,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
   
-  * mod_dav: Sending a If or If-Match header with an invalid ETag doesn't
-    result in a 412 Precondition Failed. PR54610
-    [Timothy Wood <tjw omnigroup com>]
-    trunk patch: http://svn.apache.org/r1476604
-    2.4.x patch: http://svn.apache.org/r1486456
-    2.2.x patch: trunk patch works (minus CHANGES)
-    +1: minfrin, wrowe, rjung
-    rjung: I think we should also mention that this is for the COPY
-           method only (mention in CHANGES of 2.2 and 2.4 and the three
-           commit messages).
-    wrowe: feel free to enhance the commit message/CHANGES across all branches.
-
   * mod_dav: When a PROPPATCH attempts to remove a non-existent dead
     property on a resource for which there is no dead property in the same
     namespace httpd segfaults. PR 52559
