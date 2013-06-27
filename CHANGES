@@ -28,6 +28,9 @@ Changes with Apache 2.2.25
      to configure an IO timeout as an error in the balancer.
      [Daniel Ruggeri]
 
+  *) mod_dav: Make sure that when we prepare an If URL for Etag comparison,
+     we compare unencoded paths. PR 53910 [Timothy Wood <tjw omnigroup.com>]
+
 Changes with Apache 2.2.24
 
   *) SECURITY: CVE-2012-3499 (cve.mitre.org)
