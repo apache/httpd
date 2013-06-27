@@ -122,6 +122,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      [Kaspar Brand]
      2.2.x patch: http://people.apache.org/~wrowe/r1175416-2.0.patch
      +1: wrowe
+     rjung: the backport does not compile, two changes in logging
+            arguments/macro use needed. I'm +1 for the fixed patch at
+            http://people.apache.org/~rjung/patches/r1175416-2.0-v2.patch
 
    * mod_proxy_http: Use the same hostname for SNI as for the HTTP request when
      forwarding to SSL backends.
@@ -131,19 +134,21 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://svn.apache.org/viewvc?view=revision&revision=1356881
      2.2.x patch: http://people.apache.org/~rjung/patches/mod_proxy_http-fix-hostname-ssl-2_2.patch
      +1: covener, wrowe
-     -1: rjung (as long as r1175416 is not backported)
+     +1: rjung (if my alternative r1175416 backport is used)
+     -1: 
      kbrand: only has an effect if r1175416 is backported, too (see note at
              https://issues.apache.org/bugzilla/show_bug.cgi?id=53134#c10
              by the patch author)
-     rjung: agreed, we first need to backport r1175416.
-     wrowe asks kbrand, rjung to see above
+     wrowe asks kbrand to see above
 
   * mod_proxy_balancer: Add failontimeout parameter. Timeout will put worker
     in error state if an IO timeout is detected.
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1465839
-    2.4.x patch: http://people.apache.org/~druggeri/patches/httpd-2.4.x-failontimeout.patch
+    2.4.x patch: http://svn.apache.org/viewvc?view=revision&revision=1476689
     2.2.x patch: http://people.apache.org/~druggeri/patches/httpd-2.2.x-failontimeout.patch
-    +1: druggeri, wrowe
+    +1: druggeri, wrowe, rjung
+    rjung: it would be nice to fix the indentation for the new
+           ap_log_rerror(...) in modules/proxy/mod_proxy_balancer.c.
 
   * mod_dav: Make sure that when we prepare an If URL for Etag comparison,     
     we compare unencoded paths. PR 53910 [Timothy Wood <tjw omnigroup com>]
@@ -151,40 +156,61 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  http://svn.apache.org/r1477530
     2.2.x patch: trunk patch works (minus CHANGES)
     +1: minfrin, wrowe
+    +1: rjung (if the "rv" argument in dav_new_error() gets removed.
+               "rv" doesn't exist in the 2.2 file and the additional
+               argument also is not allowed in 2.2.x, in short:
+               trunk patch doesn't compile :( )
 
   * mod_dav: Sending a If or If-Match header with an invalid ETag doesn't
     result in a 412 Precondition Failed. PR54610
     [Timothy Wood <tjw omnigroup com>]
     trunk patch: http://svn.apache.org/r1476604
+    2.4.x patch: http://svn.apache.org/r1486456
     2.2.x patch: trunk patch works (minus CHANGES)
-    +1: minfrin, wrowe
+    +1: minfrin, wrowe, rjung
     wrowe notes r1476604 commit log message by minfrin is inaccurate
+    rjung: yes, please fix the trunk commit log message.
+           I think we should also mention that this is for the COPY
+           method only (mention in CHANGES of 2.2 and 2.4 and the three
+           commit messages).
 
   * mod_dav: When a PROPPATCH attempts to remove a non-existent dead
     property on a resource for which there is no dead property in the same
     namespace httpd segfaults. PR 52559
     [Diego Santa Cruz <diego.santaCruz spinetix.com>]
     trunk patch: http://svn.apache.org/r1476642
+    2.4.x patch: http://svn.apache.org/r1486458
     2.2.x patch: trunk patch works (minus CHANGES)
-    +1: minfrin, wrowe
+    +1: minfrin, wrowe, rjung
 
   * mod_dav: Do not fail PROPPATCH when prop namespace is not known. PR 52559
     [Diego Santa Cruz <diego.santaCruz spinetix.com>]
     trunk patch: http://svn.apache.org/r1476644
+    2.4.x patch: http://svn.apache.org/r1486459
     2.2.x patch: trunk patch works (minus CHANGES)
-    +1: minfrin, wrowe
+    +1: minfrin, wrowe, rjung
 
   * core: speed up (for common cases) and reduce memory usage of ap_escape_logitem
     This should save 70-100 bytes in the request pool for a default config.
     trunk patch: http://svn.apache.org/r1485409
+    2.4.x patch: http://svn.apache.org/r1485723
     2.2.x patch: trunk works
-    +1: minfrin
+    +1: minfrin, rjung
 
   * core: Support the SINGLE_LISTEN_UNSERIALIZED_ACCEPT optimization
     on Linux kernel versions 3.x and above.  (PR 55121)
     trunk patch: http://svn.apache.org/r1496429
     2.2.x patch: trunk patch works modulo CHANGES
-    +1: trawick, wrowe
+    +1: trawick, wrowe, rjung
+
+  * mod_dav: Do not segfault on PROPFIND with a zero length DBM. PR 52559
+    [Diego Santa Cruz <diego.santaCruz spinetix.com>]
+    This is the third patch in PR 52559. The other two are already
+    voted on above.
+    trunk patch: http://svn.apache.org/r1476645
+    2.4.x patch: http://svn.apache.org/r1481513
+    2.2.x patch: trunk patch works (minus CHANGES)
+    +1: rjung
 
 
 PATCHES/ISSUES THAT ARE STALLED
