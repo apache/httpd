@@ -149,7 +149,8 @@
  * 20051115.29 (2.2.21) add max_ranges to core_dir_config
  * 20051115.30 (2.2.21) add ap_set_accept_ranges()
  * 20051115.31 (2.2.23) Add forcerecovery to proxy_balancer_shared struct
- # 20051115.32 (2.2.24) Add ap_get_exec_line
+ * 20051115.32 (2.2.24) Add ap_get_exec_line
+ * 20051115.33 (2.2.24) Add ap_pregsub_ex()
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503232UL /* "AP22" */
@@ -157,7 +158,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20051115
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 32                    /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 33                    /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

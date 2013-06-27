@@ -141,26 +141,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     2.2.x patch: trunk patch works modulo CHANGES
     +1: trawick, wrowe, rjung
 
-  * core: Limit ap_pregsub() to 64MB, add ap_pregsub_ex() for longer strings.
-    The default limit can be adjusted at compile time using AP_PREGSUB_MAXLEN.
-    mod_setenvif: Log error on substitution overflow.
-
-    IMPORTANT: This could break existing configurations which rely on 
-               substitutions > 64MB.  Those sites need to rebuild with an
-               override of AP_PREGSUB_MAXLEN.
-               2.4.x has a much smaller limit on ap_pregsub() because that change
-               was introduced with the new release.
-
-    trunk patch:
-       util.c: too many to list, as it is tied up in other added features and follow-
-               up fixes; I started with 2.4.x HEAD and backed out some semantic changes
-               in the code of interest
-       mod_setenvif.c: http://svn.apache.org/viewvc?view=revision&revision=1198966
-    2.2.x patch: http://people.apache.org/~trawick/ap_pregsub_ex_22x-2.txt
-    +1: trawick, wrowe, covener
-
-
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
