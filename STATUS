@@ -114,33 +114,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
   
-
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
-
-   * mod_ssl/proxy: enable the SNI extension for backend TLS connections
-     [Kaspar Brand]
-     2.2.x patch: http://people.apache.org/~wrowe/r1175416-2.0.patch
-     +1: wrowe
-     rjung: the backport does not compile, two changes in logging
-            arguments/macro use needed. I'm +1 for the fixed patch at
-            http://people.apache.org/~rjung/patches/r1175416-2.0-v2.patch
-
-   * mod_proxy_http: Use the same hostname for SNI as for the HTTP request when
-     forwarding to SSL backends.
-     PR: 53134
-     Based on a patch from: Michael Weiser <michael weiser.dinsnail.net>
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1333969
-     2.4.x patch: http://svn.apache.org/viewvc?view=revision&revision=1356881
-     2.2.x patch: http://people.apache.org/~rjung/patches/mod_proxy_http-fix-hostname-ssl-2_2.patch
-     +1: covener, wrowe
-     +1: rjung (if my alternative r1175416 backport is used)
-     -1: 
-     kbrand: only has an effect if r1175416 is backported, too (see note at
-             https://issues.apache.org/bugzilla/show_bug.cgi?id=53134#c10
-             by the patch author)
-     wrowe asks kbrand to see above
-
   * mod_proxy_balancer: Add failontimeout parameter. Timeout will put worker
     in error state if an IO timeout is detected.
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1465839
@@ -168,11 +141,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: http://svn.apache.org/r1486456
     2.2.x patch: trunk patch works (minus CHANGES)
     +1: minfrin, wrowe, rjung
-    wrowe notes r1476604 commit log message by minfrin is inaccurate
-    rjung: yes, please fix the trunk commit log message.
-           I think we should also mention that this is for the COPY
+    rjung: I think we should also mention that this is for the COPY
            method only (mention in CHANGES of 2.2 and 2.4 and the three
            commit messages).
+    wrowe: feel free to enhance the commit message/CHANGES across all branches.
 
   * mod_dav: When a PROPPATCH attempts to remove a non-existent dead
     property on a resource for which there is no dead property in the same
@@ -190,18 +162,43 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.2.x patch: trunk patch works (minus CHANGES)
     +1: minfrin, wrowe, rjung
 
+  * core: Support the SINGLE_LISTEN_UNSERIALIZED_ACCEPT optimization
+    on Linux kernel versions 3.x and above.  (PR 55121)
+    trunk patch: http://svn.apache.org/r1496429
+    2.2.x patch: trunk patch works modulo CHANGES
+    +1: trawick, wrowe, rjung
+
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
+
+   * mod_ssl/proxy: enable the SNI extension for backend TLS connections
+     [Kaspar Brand]
+     2.2.x patch: http://people.apache.org/~rjung/patches/r1175416-2.0-v2.patch
+     +1: wrowe, rjung
+
+   * mod_proxy_http: Use the same hostname for SNI as for the HTTP request when
+     forwarding to SSL backends.
+     PR: 53134
+     Based on a patch from: Michael Weiser <michael weiser.dinsnail.net>
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1333969
+     2.4.x patch: http://svn.apache.org/viewvc?view=revision&revision=1356881
+     2.2.x patch: http://people.apache.org/~rjung/patches/mod_proxy_http-fix-hostname-ssl-2_2.patch
+     +1: covener, wrowe
+     +1: rjung (if my alternative r1175416 backport is used)
+     -1: 
+     kbrand: only has an effect if r1175416 is backported, too (see note at
+             https://issues.apache.org/bugzilla/show_bug.cgi?id=53134#c10
+             by the patch author)
+     wrowe asks kbrand to see above
+
   * core: speed up (for common cases) and reduce memory usage of ap_escape_logitem
     This should save 70-100 bytes in the request pool for a default config.
     trunk patch: http://svn.apache.org/r1485409
     2.4.x patch: http://svn.apache.org/r1485723
     2.2.x patch: trunk works
     +1: minfrin, rjung
-
-  * core: Support the SINGLE_LISTEN_UNSERIALIZED_ACCEPT optimization
-    on Linux kernel versions 3.x and above.  (PR 55121)
-    trunk patch: http://svn.apache.org/r1496429
-    2.2.x patch: trunk patch works modulo CHANGES
-    +1: trawick, wrowe, rjung
+    wrowe wonders why we copy and don't simply return the identity on no-change
 
   * mod_dav: Do not segfault on PROPFIND with a zero length DBM. PR 52559
     [Diego Santa Cruz <diego.santaCruz spinetix.com>]
@@ -210,7 +207,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     trunk patch: http://svn.apache.org/r1476645
     2.4.x patch: http://svn.apache.org/r1481513
     2.2.x patch: trunk patch works (minus CHANGES)
-    +1: rjung
+    +1: rjung, wrowe
 
 
 PATCHES/ISSUES THAT ARE STALLED
