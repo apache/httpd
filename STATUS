@@ -96,15 +96,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
   
-  * mod_dav: Do not segfault on PROPFIND with a zero length DBM. PR 52559
-    [Diego Santa Cruz <diego.santaCruz spinetix.com>]
-    This is the third patch in PR 52559. The other two are already
-    voted on above.
-    trunk patch: http://svn.apache.org/r1476645
-    2.4.x patch: http://svn.apache.org/r1481513
-    2.2.x patch: trunk patch works (minus CHANGES)
-    +1: rjung, wrowe, trawick
-
   * mod_ssl/proxy: enable the SNI extension for backend TLS connections
     [Kaspar Brand]
     2.2.x patch: http://people.apache.org/~rjung/patches/r1175416-2.0-v2.patch
