@@ -29,15 +29,6 @@ Changes with Apache 2.4.5
 
   *) mod_remoteip: close file in error path. [Christophe Jaillet]
 
-  *) mod_lua: Add some new functions: r:htpassword(), r:mkdir(), r:mkrdir(),
-     r:rmdir(), r:touch(), r:get_direntries(), r.date_parse_rfc().
-     [Guenter Knauf]
-
-  *) mod_lua: Sync 2.4 branch with trunk. This includes (but is not limited to)
-     Server pools, new apr functions for the request_rec table, input/output
-     filters, LuaCodeCache, LuaMapHandler and multipart form data handling.
-     [Daniel Gruno]
-
   *) core: make the "default" parameter of the "ErrorDocument" option case
      insensitive. PR 54419 [Tianyin Xu <tixu cs ucsd edu>]
 
@@ -210,6 +201,40 @@ Changes with Apache 2.4.5
 
   *) mod_include: Use new ap_expr for 'elif', like 'if', 
      if legacy parser is not specified.  PR 54548 [Tom Donovan]
+
+  *) mod_lua: Add some new functions: r:htpassword(), r:mkdir(), r:mkrdir(),
+     r:rmdir(), r:touch(), r:get_direntries(), r.date_parse_rfc().
+     [Guenter Knauf]
+
+  *) mod_lua: Add multipart form data handling. [Daniel Gruno]
+
+  *) mod_lua: If a LuaMapHandler doesn't return any value, log a warning
+     and treat it as apache2.OK. [Eric Covener]
+
+  *) mod_lua: Add bindings for apr_dbd/mod_dbd database access
+     [Daniel Gruno]
+
+  *) mod_lua: Add LuaInputFilter/LuaOutputFilter for creating content
+     filters in Lua [Daniel Gruno]
+
+  *) mod_lua: Allow scripts handled by the lua-script handler to return
+     a status code to the client (such as a 302 or a 500) [Daniel Gruno]
+
+  *) mod_lua: Decline handling 'lua-script' if the file doesn't exist,
+     rather than throwing an internal server error. [Daniel Gruno]
+
+  *) mod_lua: Add functions r:flush and r:sendfile as well as additional
+     request information to the request_rec structure. [Daniel Gruno]
+
+  *) mod_lua: Add a server scope for Lua states, which creates a pool of
+     states with managable minimum and maximum size. [Daniel Gruno]
+
+  *) mod_lua: Add new directive, LuaMapHandler, for dynamically mapping
+     URIs to Lua scripts and functions using regular expressions.
+     [Daniel Gruno]
+
+  *) mod_lua: Add new directive LuaCodeCache for controlling in-memory
+     caching of lua scripts. [Daniel Gruno]
 
 Changes with Apache 2.4.4
 
