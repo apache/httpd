@@ -31,7 +31,6 @@ void ap_lua_push_request(lua_State *L, request_rec *r);
 #define APL_REQ_FUNTYPE_TABLE       3
 #define APL_REQ_FUNTYPE_LUACFUN     4
 #define APL_REQ_FUNTYPE_BOOLEAN     5
-#define APL_REQ_FUNTYPE_INT64       6
 
 typedef struct
 {
