@@ -36,9 +36,6 @@ Changes with Apache 2.5.0
      problems if used with round robin load balancers). Don't regenerate the
      secret on graceful restarts. PR 54637  [Stefan Fritsch]
 
-  *) mod_lua: If a LuaMapHandler doesn't return any value, log a warning
-     and treat it as apache2.OK. [Eric Covener]
-
   *) ab: Add a new -l parameter in order not to check the length of the responses.
      This can be usefull with dynamic pages.
      PR9945, PR27888, PR42040 [<ccikrs1 cranbrook edu>]
@@ -106,9 +103,6 @@ Changes with Apache 2.5.0
   *) core: Add option to add valgrind support. Use it to reduce false positive
      warnings in mod_ssl. [Stefan Fritsch]
 
-  *) mod_lua: Add bindings for apr_dbd/mod_dbd database access
-     [Daniel Gruno]
-
   *) mod_authn_file, mod_authn_dbd, mod_authn_dbm, mod_authn_socache:
      Cache the result of the most recent password hash verification for every
      keep-alive connection. This saves some expensive calculations.
@@ -157,9 +151,6 @@ Changes with Apache 2.5.0
   *) core: Add dirwalk_stat and pre_htaccess hooks, allowing mpm-itk
      to be used without patches to httpd core.  [Jeff Trawick]
 
-  *) mod_lua: Add LuaInputFilter/LuaOutputFilter for creating content
-     filters in Lua [Daniel Gruno]
-
   *) WinNT MPM: Store pid and generation for each thread in scoreboard
      to allow tracking of threads from exiting children via mod_status
      or other such mechanisms.  [Jeff Trawick]
@@ -167,25 +158,6 @@ Changes with Apache 2.5.0
   *) mod_ssl: Catch missing or mismatched client cert/key pairs with
      SSLProxyMachineCertificateFile/Path directives.  PR 52212.  
      [Keith Burdis <keith burdis.org>, Joe Orton]
-
-  *) mod_lua: Allow scripts handled by the lua-script handler to return 
-     a status code to the client (such as a 302 or a 500) [Daniel Gruno]
-
-  *) mod_lua: Decline handling 'lua-script' if the file doesn't exist,
-     rather than throwing an internal server error. [Daniel Gruno]
-
-  *) mod_lua: Add functions r:flush and r:sendfile as well as additional
-     request information to the request_rec structure. [Daniel Gruno]
-
-  *) mod_lua: Add a server scope for Lua states, which creates a pool of
-     states with managable minimum and maximum size. [Daniel Gruno]
-
-  *) mod_lua: Add new directive, LuaMapHandler, for dynamically mapping 
-     URIs to Lua scripts and functions using regular expressions.
-     [Daniel Gruno]
-
-  *) mod_lua: Add new directive LuaCodeCache for controlling in-memory
-     caching of lua scripts. [Daniel Gruno]
 
   *) The following now respect DefaultRuntimeDir/DEFAULT_REL_RUNTIMEDIR:
      - APIs: ap_log_pid(), ap_remove_pid, ap_read_pid()
