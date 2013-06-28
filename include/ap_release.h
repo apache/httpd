@@ -40,7 +40,7 @@
 #define AP_SERVER_MAJORVERSION_NUMBER 2
 #define AP_SERVER_MINORVERSION_NUMBER 0
 #define AP_SERVER_PATCHLEVEL_NUMBER   65
-#define AP_SERVER_ADD_STRING          "-dev"
+#define AP_SERVER_ADD_STRING          ""
 
 /* Synchronize the above with docs/manual/style/version.ent */ 
 
