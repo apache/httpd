@@ -726,7 +726,7 @@ local url = r:construct_url(r.uri)
 </highlight>
 
 <highlight language="lua">
-r:mpm_query(number) -- Queries the server for MPM information using ap_mpm_query:
+r.mpm_query(number) -- Queries the server for MPM information using ap_mpm_query:
 
 local mpm = r.mpm_query(14)
 if mpm == 1 then
