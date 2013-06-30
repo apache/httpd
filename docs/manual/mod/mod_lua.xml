@@ -949,19 +949,14 @@ r:touch(file [,mtime]) -- Sets the file modification time to current time or to 
 <highlight language="lua">
 r:get_direntries(dir) -- Returns a table with all directory entries.
 
--- Return path splitted into components dir, file, ext
-function split_path(path)
-  return path:match("(.-)([^\\/]-%.?([^%.\\/]*))$")
-end
-
 function handle(r)
-  local cwd, _, _ = split_path(r.filename)
-  for _, f in ipairs(r:get_direntries(cwd)) do
-    local info = r:stat(cwd .. f)
+  local dir = r.context_document_root
+  for _, f in ipairs(r:get_direntries(dir)) do
+    local info = r:stat(dir .. "/" .. f)
     if info then
       local mtime = os.date(fmt, info.mtime / 1000000)
       local ftype = (info.filetype == 2) and "[dir] " or "[file]"
-      r:puts( ("%s  %s %10i  %s\n"):format(ftype, mtime, info.size, f) )
+      r:puts( ("%s %s %10i %s\n"):format(ftype, mtime, info.size, f) )
     end
   end
 end
