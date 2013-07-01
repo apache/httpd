@@ -229,12 +229,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  https://svn.apache.org/viewvc?view=revision&revision=1487530
                  https://svn.apache.org/viewvc?view=revision&revision=1493330
     2.4.x patch: trunk patch works
-    +1: jailletc36
+    +1: jailletc36, jj
 
   * mod_ssl: Fix possible OCSP response truncation.
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1488296
     2.4.x patch: trunk patch works modulo CHANGES
-    +1: jorton, 
+    +1: jorton, jj
 
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
