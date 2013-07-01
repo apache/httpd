@@ -33,7 +33,7 @@
      setuid bit set and must be owned by <code>root</code>. It should never be
      writable for any other person than <code>root</code>.</p>
 
-     <p>For further information about the concepts and and the security model
+     <p>For further information about the concepts and the security model
      of suexec please refer to the suexec documentation (<a href="http://httpd.apache.org/docs/trunk/suexec.html">http://httpd.apache.org/docs/trunk/suexec.html</a>).</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#synopsis">Synopsis</a></li>
