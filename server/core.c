@@ -5047,6 +5047,7 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_insert_network_bucket(core_insert_network_bucket, NULL, NULL,
                                   APR_HOOK_REALLY_LAST);
     ap_hook_dirwalk_stat(core_dirwalk_stat, NULL, NULL, APR_HOOK_REALLY_LAST);
+    ap_hook_open_htaccess(ap_open_htaccess, NULL, NULL, APR_HOOK_REALLY_LAST);
     
     /* register the core's insert_filter hook and register core-provided
      * filters

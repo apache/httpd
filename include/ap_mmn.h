@@ -434,14 +434,15 @@
  * 20121222.14 (2.5.0-dev) Add ap_map_http_request_error()
  * 20121222.15 (2.5.0-dev) Add allow/decode_encoded_slashes_set to core_dir_config
  * 20121222.16 (2.5.0-dev) AP_DEFAULT_HANDLER_NAME/AP_IS_DEAULT_HANDLER_NAME
+ * 20130702.0 (2.5.0-dev)  Remove pre_htaccess hook, add open_htaccess hook.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20121222
+#define MODULE_MAGIC_NUMBER_MAJOR 20130702
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 16                  /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 0                  /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

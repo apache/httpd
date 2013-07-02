@@ -80,7 +80,7 @@ APR_HOOK_STRUCT(
            APR_HOOK_LINK(quick_handler)
            APR_HOOK_LINK(optional_fn_retrieve)
            APR_HOOK_LINK(test_config)
-           APR_HOOK_LINK(pre_htaccess)
+           APR_HOOK_LINK(open_htaccess)
 )
 
 AP_IMPLEMENT_HOOK_RUN_ALL(int, header_parser,
@@ -172,8 +172,11 @@ AP_IMPLEMENT_HOOK_RUN_FIRST(int, handler, (request_rec *r),
 AP_IMPLEMENT_HOOK_RUN_FIRST(int, quick_handler, (request_rec *r, int lookup),
                             (r, lookup), DECLINED)
 
-AP_IMPLEMENT_HOOK_RUN_FIRST(int, pre_htaccess, (request_rec *r, const char *filename),
-                            (r, filename), DECLINED)
+AP_IMPLEMENT_HOOK_RUN_FIRST(apr_status_t, open_htaccess,
+                            (request_rec *r, const char *dir_name, const char *access_name,
+                             ap_configfile_t **conffile, const char **full_name),
+                            (r, dir_name, access_name, conffile, full_name),
+                            AP_DECLINED)
 
 /* hooks with no args are implemented last, after disabling APR hook probes */
 #if defined(APR_HOOK_PROBES_ENABLED)
@@ -2074,19 +2077,27 @@ AP_DECLARE(int) ap_process_config_tree(server_rec *s,
     return OK;
 }
 
+apr_status_t ap_open_htaccess(request_rec *r, const char *dir_name,
+                              const char *access_name,
+                              ap_configfile_t **conffile,
+                              const char **full_name)
+{
+    *full_name = ap_make_full_path(r->pool, dir_name, access_name);
+    return ap_pcfg_openfile(conffile, r->pool, *full_name);
+}
+
 AP_CORE_DECLARE(int) ap_parse_htaccess(ap_conf_vector_t **result,
                                        request_rec *r, int override,
                                        int override_opts, apr_table_t *override_list,
-                                       const char *d, const char *access_name)
+                                       const char *d, const char *access_names)
 {
     ap_configfile_t *f = NULL;
     cmd_parms parms;
-    char *filename = NULL;
+    const char *filename;
     const struct htaccess_result *cache;
     struct htaccess_result *new;
     ap_conf_vector_t *dc = NULL;
     apr_status_t status;
-    int rc;
 
     /* firstly, search cache */
     for (cache = r->htaccess; cache != NULL; cache = cache->next) {
@@ -2106,19 +2117,11 @@ AP_CORE_DECLARE(int) ap_parse_htaccess(ap_conf_vector_t **result,
     parms.path = apr_pstrdup(r->pool, d);
 
     /* loop through the access names and find the first one */
-    while (access_name[0]) {
-        /* AFAICT; there is no use of the actual 'filename' against
-         * any canonicalization, so we will simply take the given
-         * name, ignoring case sensitivity and aliases
-         */
-        filename = ap_make_full_path(r->pool, d,
-                                     ap_getword_conf(r->pool, &access_name));
-        rc = ap_run_pre_htaccess(r, filename);
-        if (rc != DECLINED && rc != OK) {
-            return rc;
-        }
-        status = ap_pcfg_openfile(&f, r->pool, filename);
+    while (access_names[0]) {
+        const char *access_name = ap_getword_conf(r->pool, &access_names);
 
+        filename = NULL;
+        status = ap_run_open_htaccess(r, d, access_name, &f, &filename);
         if (status == APR_SUCCESS) {
             const char *errmsg;
             ap_directive_t *temptree = NULL;
