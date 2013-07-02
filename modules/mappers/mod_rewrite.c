@@ -101,6 +101,10 @@
 #include "mod_rewrite.h"
 #include "ap_expr.h"
 
+#if APR_CHARSET_EBCDIC
+#include "util_charset.h"
+#endif
+
 static ap_dbd_t *(*dbd_acquire)(request_rec*) = NULL;
 static void (*dbd_prepare)(server_rec*, const char*, const char*) = NULL;
 static const char* really_last_key = "rewrite_really_last";
