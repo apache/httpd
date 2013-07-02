@@ -99,7 +99,7 @@ static const TRANS priorities[] = {
 };
 
 static char* chomp(char* str) {
-    apr_size_t p = strlen(str);
+    long p = (long)strlen(str);
     while (--p >= 0) {
         switch ((char)(str[p])) {
         case '\015':
