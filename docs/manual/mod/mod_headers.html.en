@@ -307,6 +307,10 @@ Header merge Cache-Control no-store env=NO_STORE
     <dd>The response header is set, replacing any previous header
     with this name. The <var>value</var> may be a format string.</dd>
 
+    <dt><code>setifempty</code></dt>
+    <dd>The request header is set, but only if there is no previous header
+    with this name</dd>
+
     <dt><code>unset</code></dt>
     <dd>The response header of this name is removed, if it exists.
     If there are multiple headers of the same name, all will be
@@ -457,6 +461,10 @@ Header merge Cache-Control no-store env=NO_STORE
 
     <dt><code>set</code></dt>
     <dd>The request header is set, replacing any previous header
+    with this name</dd>
+  
+    <dt><code>setifempty</code></dt>
+    <dd>The request header is set, but only if there is no previous header
     with this name</dd>
 
     <dt><code>unset</code></dt>
