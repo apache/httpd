@@ -114,6 +114,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
            find but we can't rule it out for foreign modules. We could fix the signature
            (returning const char *) in trunk but not for 2.2 ad 2.4. 
 
+  * mod_ssl: Fix "SNI for backend" when compiled against OpenSSL without
+    support for SSLv2. Followup to r1497466. PR 55194.
+    trunk patch: Does not apply to trunk
+    2.4.x patch: Does not apply to 2.4
+    2.2.x patch: http://people.apache.org/~rjung/patches/sni-backend-fix-r1497466-2_2.patch
+    +1: rjung
+
 
 PATCHES/ISSUES THAT ARE STALLED
 
