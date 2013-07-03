@@ -119,7 +119,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     trunk patch: Does not apply to trunk
     2.4.x patch: Does not apply to 2.4
     2.2.x patch: http://people.apache.org/~rjung/patches/sni-backend-fix-r1497466-2_2.patch
-    +1: rjung
+    +1: rjung, covener
 
 
 PATCHES/ISSUES THAT ARE STALLED
