@@ -66,7 +66,8 @@ typedef enum {
     AUTH_GRANTED,
     AUTH_USER_FOUND,
     AUTH_USER_NOT_FOUND,
-    AUTH_GENERAL_ERROR
+    AUTH_GENERAL_ERROR,
+    AUTH_HANDLED
 } authn_status;
 
 typedef enum {

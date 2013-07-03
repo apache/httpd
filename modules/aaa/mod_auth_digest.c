@@ -1728,6 +1728,9 @@ static int authenticate_digest_user(request_rec *r)
         note_digest_auth_failure(r, conf, resp, 0);
         return HTTP_UNAUTHORIZED;
     }
+    else if (return_code == AUTH_HANDLED) {
+        return r->status;
+    }
     else {
         /* AUTH_GENERAL_ERROR (or worse)
          * We'll assume that the module has already said what its error
