@@ -359,6 +359,9 @@ static int authenticate_basic_user(request_rec *r)
                       "user %s not found: %s", sent_user, r->uri);
             return_code = HTTP_UNAUTHORIZED;
             break;
+        case AUTH_HANDLED:
+            return_code = r->status;
+            break;
         case AUTH_GENERAL_ERROR:
         default:
             /* We'll assume that the module has already said what its error
