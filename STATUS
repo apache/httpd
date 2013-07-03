@@ -91,10 +91,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_ssl: Fix possible OCSP response truncation.
-    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1488296
-    2.4.x patch: trunk patch works modulo CHANGES
-    +1: jorton, jj, sf
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
