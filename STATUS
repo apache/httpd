@@ -238,6 +238,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: trunk patch works
     +1: jailletc36, jj
 
+  * ap_release.h: avoid including apr_general.h.
+    The MSVC Resource Compiler truncates macro names at char 31.
+    Since apr_general.h includes apr.h which in turn includes
+    system headers we get warnings or errors with the Resource
+    Compiler with newer system headers (VC10 and later) which
+    have macro names defined with more than 31 chars.
+    trunk patch: http://svn.apache.org/r1499742
+    2.4.x patch: trunk patch works
+    +1: fuankg
+
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
 If you want to propose one of those, please still add them here.
