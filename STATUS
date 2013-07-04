@@ -120,6 +120,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
            find but we can't rule it out for foreign modules. We could fix the signature
            (returning const char *) in trunk but not for 2.2 ad 2.4. 
 
+  * ap_release.h: avoid including apr_general.h.
+    The MSVC Resource Compiler truncates macro names at char 31.
+    Since apr_general.h includes apr.h which in turn includes
+    system headers we get warnings or errors with the Resource
+    Compiler with newer system headers (VC10 and later) which
+    have macro names defined with more than 31 chars.
+    trunk patch: http://svn.apache.org/r1499742
+    2.4.x patch: http://svn.apache.org/r1499855
+    2.2.x patch: trunk patch works (with fuzz)
+    +1: fuankg
+
 
 PATCHES/ISSUES THAT ARE STALLED
 
