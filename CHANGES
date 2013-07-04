@@ -135,7 +135,7 @@ Changes with Apache 2.4.5
      semantics of the proxy-revalidate directive. [Graham Leggett]
 
   *) mod_ssl: add support for subjectAltName-based host name checking
-     in proxy mode. PR 54030. [Kaspar Brand]
+     in proxy mode (SSLProxyCheckPeerName). PR 54030. [Kaspar Brand]
 
   *) core: Use the proper macro for HTTP/1.1. [Graham Leggett]
 
