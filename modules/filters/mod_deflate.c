@@ -1013,8 +1013,8 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
             if (APR_BUCKET_IS_EOS(bkt)) {
                 if (!ctx->done) {
                     inflateEnd(&ctx->stream);
-                    ap_log_rerror(
-                            APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02481) "Encountered premature end-of-stream while inflating");
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02481)
+                                  "Encountered premature end-of-stream while inflating");
                     return APR_EGENERAL;
                 }
 
@@ -1053,8 +1053,8 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
 
             /* sanity check - data after completed compressed body and before eos? */
             if (ctx->done) {
-                ap_log_rerror(
-                        APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02482) "Encountered extra data after compressed data");
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02482)
+                              "Encountered extra data after compressed data");
                 return APR_EGENERAL;
             }
 
