@@ -147,6 +147,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  http://svn.apache.org/viewvc?view=revision&revision=1484343
     2.4.x patch: trunk works, modulo CHANGES
     +1: jim, minfrin
+    sf says:
+    - ap_proxy_sync_balancer() seems to use conf->pool in several
+      places, but only one place is protected by conf->mutex.
+      I don't think this is correct.
+      Also, I can't find any place where conf->mutex is initialized.
+    - ap_proxy_initialize_worker() is called from proxy_handler() with
+      conf->pool. I guess this should also be mutex protected?
 
   * mod_proxy_http: Make the proxy-interim-response environment variable
     effective by formally overriding origin server behaviour.
