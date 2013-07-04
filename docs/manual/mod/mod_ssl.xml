@@ -1770,7 +1770,7 @@ compared against the hostname of the request URL. If both are not equal
 a 502 status code (Bad Gateway) is sent.
 </p>
 <p>
-SSLProxyCheckPeerCN has been superseded by
+In 2.4.5 and later, SSLProxyCheckPeerCN has been superseded by
 <directive module="mod_ssl">SSLProxyCheckPeerName</directive>, and its
 setting is only taken into account when
 <code>SSLProxyCheckPeerName off</code> is specified at the same time.
@@ -1791,6 +1791,7 @@ SSLProxyCheckPeerCN on
 <default>SSLProxyCheckPeerName on</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
+<compatibility>Apache HTTP Server 2.4.5 and later</compatibility>
 
 <usage>
 <p>
