@@ -102,6 +102,17 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
         But I think this can be fixed/removed later and vote +1 to get
         the other fixes into 2.4.5.
 
+  * mod_session_dbd: Make sure that dirty flag is respected when saving 
+    sessions, and ensure the session ID is changed each time the session 
+    changes.
+    trunk patch: http://svn.apache.org/r1488158
+    trunk patch: http://svn.apache.org/r1488164
+    2.4.x patch: trunk patch works modulo CHANGES
+    +1: minfrin, jim, sf
+    sf says: Something like this should be added to CHANGES:
+        This changes the format of the updatesession SQL statement. Existing
+        configurations must be changed.
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -156,14 +167,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  http://svn.apache.org/r1498880
     2.4.x patch: http://people.apache.org/~sf/open_htaccess_hook.patch
     +1: sf, jorton, 
-
-  * mod_session_dbd: Make sure that dirty flag is respected when saving 
-    sessions, and ensure the session ID is changed each time the session 
-    changes.
-    trunk patch: http://svn.apache.org/r1488158
-    trunk patch: http://svn.apache.org/r1488164
-    2.4.x patch: trunk patch works modulo CHANGES
-    +1: minfrin, jim
 
   * mod_proxy: Connection header clearing issues
     trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1481891
