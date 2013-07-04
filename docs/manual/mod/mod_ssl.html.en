@@ -1435,7 +1435,7 @@ compared against the hostname of the request URL. If both are not equal
 a 502 status code (Bad Gateway) is sent.
 </p>
 <p>
-SSLProxyCheckPeerCN has been superseded by
+In 2.4.5 and later, SSLProxyCheckPeerCN has been superseded by
 <code class="directive"><a href="#sslproxycheckpeername">SSLProxyCheckPeerName</a></code>, and its
 setting is only taken into account when
 <code>SSLProxyCheckPeerName off</code> is specified at the same time.
@@ -1478,6 +1478,7 @@ SSLProxyCheckPeerExpire on
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Apache HTTP Server 2.4.5 and later</td></tr>
 </table>
 <p>
 This directive configures host name checking for server certificates
