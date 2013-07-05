@@ -122,6 +122,19 @@
         virtual hosts.</p>
     </note>
 
+    <note><title>ServerName inheritance</title>
+       <p> It is best to always explicitly list a  <directive module="core"
+       >ServerName</directive> in every name-based virtual host.</p>
+       <p>If a <directive module="core">VirtualHost</directive> doesn't specify 
+       a <directive module="core">ServerName</directive>, a server name will be 
+       inherited from the base server configuration.  If no server name was 
+       specified globally, one is detected at startup through reverse DNS resolution
+       of the first listening address.  In either case, this inherited server name
+       will influenced name-based virtual host resolution, so it is best to always
+       explicitly list a  <directive module="core">ServerName</directive> in every
+       name-based virtual host.</p>
+    </note>
+
     <p>For example, suppose that you are serving the domain
     <code>www.example.com</code> and you wish to add the virtual host
     <code>other.example.com</code>, which points at the same IP address.
