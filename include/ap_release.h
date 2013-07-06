@@ -22,8 +22,6 @@
 #ifndef AP_RELEASE_H
 #define AP_RELEASE_H
 
-#include "apr_general.h" /* stringify */
-
 #define AP_SERVER_COPYRIGHT \
     "Copyright 2013 The Apache Software Foundation."
 
@@ -54,6 +52,14 @@
 #define AP_SERVER_ADD_STRING          "-dev"
 #else
 #define AP_SERVER_ADD_STRING          ""
+#endif
+
+/* APR_STRINGIFY is defined here, and also in apr_general.h, so wrap it */
+#ifndef APR_STRINGIFY
+/** Properly quote a value as a string in the C preprocessor */
+#define APR_STRINGIFY(n) APR_STRINGIFY_HELPER(n)
+/** Helper macro for APR_STRINGIFY */
+#define APR_STRINGIFY_HELPER(n) #n
 #endif
 
 /* keep old macros as well */
