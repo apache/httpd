@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1476655 -->
+<!-- English Revision : 1497423 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1127,6 +1127,15 @@ l'espace d'URLs du serveur local</description>
 	code d'&eacute;tat sp&eacute;cifi&eacute; dans la liste. Le r&eacute;tablissement du worker
 	est le m&ecirc;me qu'avec les autres erreurs de worker.
 	Disponible &agrave; partir de la version 2.2.17 du serveur HTTP Apache.
+    </td></tr>
+    <tr><td>failontimeout</td>
+        <td>Off</td>
+        <td>Si ce param&egrave;tre est d&eacute;fini &agrave; "On", un d&eacute;lai d'attente
+	d&eacute;pass&eacute; en entr&eacute;e/sortie apr&egrave;s envoi d'une requ&ecirc;te au serveur
+	d'arri&egrave;re-plan va mettre le processus en &eacute;tat d'erreur. La
+	sortie de cet &eacute;tat d'erreur se passe de la m&ecirc;me fa&ccedil;on que pour
+	les autres erreurs. Disponible &agrave; partir de la version 2.2.25 du
+	serveur HTTP Apache.
     </td></tr>
     <tr><td>forcerecovery</td>
         <td>On</td>
