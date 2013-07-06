@@ -118,7 +118,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     trunk patch: http://svn.apache.org/r1400700
     2.4.x patch: http://svn.apache.org/r1400962
     2.2.x patch: trunk patch works (except CHANGES and compatibility info in docs)
-    +1: sf
+    +1: sf, fuankg
 
 PATCHES/ISSUES THAT ARE STALLED
 
