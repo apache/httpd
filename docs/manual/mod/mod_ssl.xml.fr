@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1487455 -->
+<!-- English Revision : 1499880 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -2002,7 +2002,7 @@ requ&ecirc;te. S'ils ne correspondent pas, un
 code d'&eacute;tat 502 (Bad Gateway) est envoy&eacute;.
 </p>
 <p>
-SSLProxyCheckPeerCN a &eacute;t&eacute; remplac&eacute; par <directive
+A partir de la version 2.4.5, SSLProxyCheckPeerCN a &eacute;t&eacute; remplac&eacute; par <directive
 module="mod_ssl">SSLProxyCheckPeerName</directive>, et sa d&eacute;finition
 n'est prise en compte que si <code>SSLProxyCheckPeerName off</code> a
 &eacute;t&eacute; sp&eacute;cifi&eacute;.
@@ -2024,7 +2024,8 @@ certificats serveur distants
 <default>SSLProxyCheckPeerName on</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
-
+<compatibility>Disponible &agrave; partir de la version 2.4.5 du serveur HTTP
+Apache</compatibility>
 <usage>
 <p>
 Cette directive permet de configurer la v&eacute;rification du nom d'h&ocirc;te dans
