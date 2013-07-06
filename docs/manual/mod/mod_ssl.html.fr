@@ -1624,7 +1624,7 @@ requête. S'ils ne correspondent pas, un
 code d'état 502 (Bad Gateway) est envoyé.
 </p>
 <p>
-SSLProxyCheckPeerCN a été remplacé par <code class="directive"><a href="#sslproxycheckpeername">SSLProxyCheckPeerName</a></code>, et sa définition
+A partir de la version 2.4.5, SSLProxyCheckPeerCN a été remplacé par <code class="directive"><a href="#sslproxycheckpeername">SSLProxyCheckPeerName</a></code>, et sa définition
 n'est prise en compte que si <code>SSLProxyCheckPeerName off</code> a
 été spécifié.
 </p>
@@ -1668,6 +1668,8 @@ certificats serveur distants
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.5 du serveur HTTP
+Apache</td></tr>
 </table>
 <p>
 Cette directive permet de configurer la vérification du nom d'hôte dans

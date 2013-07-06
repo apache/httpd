@@ -722,7 +722,7 @@ r:flush()   -- vide le tampon de sortie
 while nous_avons_des_données_à_envoyer do
     r:puts("Bla bla bla\n") -- envoi des données à envoyer vers le tampon
     r:flush() -- vidage du tampon (envoi au client)
-    r:sleep(0.5) -- mise en attente et bouclage
+    r.usleep(500000) -- mise en attente pendant 0.5 secondes et bouclage
 end
 </pre>
 
@@ -839,7 +839,7 @@ local url = r:construct_url(r.uri)
 
 
 <pre class="prettyprint lang-lua">
-r:mpm_query(number) -- Interroge le serveur à propos de son
+r.mpm_query(number) -- Interroge le serveur à propos de son
 module MPM via la requête ap_mpm_query.
 
 local mpm = r.mpm_query(14)
@@ -1057,8 +1057,7 @@ local matches = r:regex("FOO bar BAz", [[(foo) bar]], 1)
 
 
 <pre class="prettyprint lang-lua">
-r:sleep(secondes) -- Interrompt l'exécution du script pendant le	nombre de secondes spécifié.
-                  -- La valeur peut être spécifiée sous la forme d'un nombre décimal comme 1.25 pour plus de précision.
+r.usleep(microsecondes) -- Interrompt l'exécution du script pendant le nombre de microsecondes spécifié.
 </pre>
 
 
@@ -1110,7 +1109,17 @@ r:mkdir(dir [,mode]) -- Crée un répertoire et définit son mode via le paramètre 
 
 
 <pre class="prettyprint lang-lua">
+r:mkrdir(dir [,mode]) -- Crée des répertoires de manière récursive et définit leur mode via le paramètre optionnel mode.
+</pre>
+
+
+<pre class="prettyprint lang-lua">
 r:rmdir(dir) -- Supprime un répertoire.
+</pre>
+
+
+<pre class="prettyprint lang-lua">
+r:touch([mtime]) -- Définit la date de modification d'un fichier à la date courante ou à la valeur optionnelle mtime en msec.
 </pre>
 
 
@@ -1118,18 +1127,14 @@ r:rmdir(dir) -- Supprime un répertoire.
 r:get_direntries(dir) -- Renvoie une table contenant toutes les entrées de répertoires.
 
 -- Renvoie un chemin sous forme éclatée en chemin, fichier, extension
-function split_path(path)
-  return path:match("(.-)([^\\/]-%.?([^%.\\/]*))$")
-end
-
 function handle(r)
-  local cwd, _, _ = split_path(r.filename)
-  for _, f in ipairs(r:get_direntries(cwd)) do
-    local info = r:stat(cwd .. f)
+  local dir = r.context_document_root
+  for _, f in ipairs(r:get_direntries(dir)) do
+    local info = r:stat(dir .. "/" .. f)
     if info then
       local mtime = os.date(fmt, info.mtime / 1000000)
       local ftype = (info.filetype == 2) and "[dir] " or "[file]"
-      r:puts( ("%s  %s %10i  %s\n"):format(ftype, mtime, info.size, f) )
+      r:puts( ("%s %s %10i %s\n"):format(ftype, mtime, info.size, f) )
     end
   end
 end

@@ -493,6 +493,10 @@
       <dt><code>unixd_config</code></dt>
       <dd>This has been renamed to ap_unixd_config.</dd>
 
+      <dt><code>unixd_setup_child()</code></dt>
+      <dd>This has been renamed to ap_unixd_setup_child(), but most callers
+          should call the added ap_run_drop_privileges() hook.</dd>
+
       <dt><code>conn_rec-&gt;remote_ip</code> and 
           <code>conn_rec-&gt;remote_addr</code></dt>
       <dd>These fields have been renamed in order to distinguish between 
