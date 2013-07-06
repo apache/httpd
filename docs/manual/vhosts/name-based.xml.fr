@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='ISO-8859-1' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1334675:1344675 (outdated) -->
+<!-- English Revision: 1500042 -->
 <!-- French translation by alain B, review by Vincent Deffontaines 
 	updated by Lucien GENTIS -->
 
@@ -146,6 +146,22 @@ virtuel basé sur le nom approprié</title>
 	et port, mais nécessitant des configurations distinctes,
 	pourront alors être ajoutés en tant que serveurs virtuels
 	spécifiques (et non par défaut).</p>
+    </note>
+
+    <note><title>Hérirage du nom de serveur</title>
+       <p>Il est toujours préférable de définir une directive <directive
+       module="core">ServerName</directive> au niveau de chaque serveur
+       virtuel à base de nom. Si un serveur virtuel ne définit pas
+       de directive  <directive module="core">ServerName</directive>, le
+       nom de ce serveur virtuel sera hérité du serveur principal. Si
+       aucun nom de serveur n'a été explicitement défini au niveau du
+       serveur principal, le serveur tentera de déterminer son nom via
+       une résolution de nom DNS inverse sur la première adresse
+       d'écoute. Dans tous les cas, ce nom de serveur hérité influencera
+       la sélection du serveur virtuel à base de nom, c'est pourquoi il
+       est toujours préférable de définir une directive <directive
+       module="core">ServerName</directive> pour chaque serveur virtuel
+       à base de nom.</p>
     </note>
 
     <p>Par exemple, supposez que vous hébergez le domaine 

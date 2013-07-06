@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1495666:1498179 (outdated) -->
+<!-- English Revision : 1498179 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -685,7 +685,7 @@ r:flush()   -- vide le tampon de sortie
 while nous_avons_des_donn&eacute;es_&agrave;_envoyer do
     r:puts("Bla bla bla\n") -- envoi des donn&eacute;es &agrave; envoyer vers le tampon
     r:flush() -- vidage du tampon (envoi au client)
-    r:sleep(0.5) -- mise en attente et bouclage
+    r.usleep(500000) -- mise en attente pendant 0.5 secondes et bouclage
 end
 </highlight>
 
@@ -787,7 +787,7 @@ local url = r:construct_url(r.uri)
 </highlight>
 
 <highlight language="lua">
-r:mpm_query(number) -- Interroge le serveur &agrave; propos de son
+r.mpm_query(number) -- Interroge le serveur &agrave; propos de son
 module MPM via la requ&ecirc;te ap_mpm_query.
 
 local mpm = r.mpm_query(14)
@@ -981,8 +981,7 @@ local matches = r:regex("FOO bar BAz", [[(foo) bar]], 1)
 </highlight>
 
 <highlight language="lua">
-r:sleep(secondes) -- Interrompt l'ex&eacute;cution du script pendant le	nombre de secondes sp&eacute;cifi&eacute;.
-                  -- La valeur peut &ecirc;tre sp&eacute;cifi&eacute;e sous la forme d'un nombre d&eacute;cimal comme 1.25 pour plus de pr&eacute;cision.
+r.usleep(microsecondes) -- Interrompt l'ex&eacute;cution du script pendant le nombre de microsecondes sp&eacute;cifi&eacute;.
 </highlight>
 
 <highlight language="lua">
@@ -1045,18 +1044,14 @@ r:touch(file [,mtime]) -- D&eacute;finit la date de modification d'un fichier &a
 r:get_direntries(dir) -- Renvoie une table contenant toutes les entr&eacute;es de r&eacute;pertoires.
 
 -- Renvoie un chemin sous forme &eacute;clat&eacute;e en chemin, fichier, extension
-function split_path(path)
-  return path:match("(.-)([^\\/]-%.?([^%.\\/]*))$")
-end
-
 function handle(r)
-  local cwd, _, _ = split_path(r.filename)
-  for _, f in ipairs(r:get_direntries(cwd)) do
-    local info = r:stat(cwd .. f)
+  local dir = r.context_document_root
+  for _, f in ipairs(r:get_direntries(dir)) do
+    local info = r:stat(dir .. "/" .. f)
     if info then
       local mtime = os.date(fmt, info.mtime / 1000000)
       local ftype = (info.filetype == 2) and "[dir] " or "[file]"
-      r:puts( ("%s  %s %10i  %s\n"):format(ftype, mtime, info.size, f) )
+      r:puts( ("%s %s %10i %s\n"):format(ftype, mtime, info.size, f) )
     end
   end
 end
