@@ -28,8 +28,6 @@
 <a href="../ko/vhosts/name-based.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/vhosts/name-based.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p>Ce document décrit quand et comment utiliser des serveurs 
     virtuels par nom.</p>
@@ -135,6 +133,20 @@ virtuel basé sur le nom approprié</a></h2>
 	et port, mais nécessitant des configurations distinctes,
 	pourront alors être ajoutés en tant que serveurs virtuels
 	spécifiques (et non par défaut).</p>
+    </div>
+
+    <div class="note"><h3>Hérirage du nom de serveur</h3>
+       <p>Il est toujours préférable de définir une directive <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> au niveau de chaque serveur
+       virtuel à base de nom. Si un serveur virtuel ne définit pas
+       de directive  <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code>, le
+       nom de ce serveur virtuel sera hérité du serveur principal. Si
+       aucun nom de serveur n'a été explicitement défini au niveau du
+       serveur principal, le serveur tentera de déterminer son nom via
+       une résolution de nom DNS inverse sur la première adresse
+       d'écoute. Dans tous les cas, ce nom de serveur hérité influencera
+       la sélection du serveur virtuel à base de nom, c'est pourquoi il
+       est toujours préférable de définir une directive <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> pour chaque serveur virtuel
+       à base de nom.</p>
     </div>
 
     <p>Par exemple, supposez que vous hébergez le domaine 
