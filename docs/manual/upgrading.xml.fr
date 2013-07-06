@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1465828:1495843 (outdated) -->
+<!-- English Revision : 1495843 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -411,25 +411,19 @@ Allow from example.org
       module not included in the server configuration</code> - chargez
       le module <module>mod_access_compat</module>, ou mettez &agrave; jour
       vers la version 2.4 les directives d'autorisation.</li>
-      <li><code>mixing * ports and non-* ports with a NameVirtualHost address is not supported</code>, <code>Either NameVirtualHost w.x.y.z:n has no VirtualHosts, or there is more than one identical NameVirtualHost line, or your VirtualHost declarations do not match the NameVirtualHost line</code> - ces messages ne sont pas nouveaux, mais ils bloquent d&eacute;sormais le d&eacute;marrage en g&eacute;n&eacute;rant une erreur</li>
-
-      <li><code>_default_ is not allowed in NameVirtualHost directive</code> - ceci a toujours &eacute;t&eacute; le cas, mais &agrave; pr&eacute;sent cette erreur bloque le d&eacute;marrage du serveur.</li>
 
       <li><code>Ignoring deprecated use of DefaultType in line NN of
       /path/to/httpd.conf</code> - supprimez la directive <directive
       module="core">DefaultType</directive> et remplacez-la par les
       directives de configuration appropri&eacute;es.</li>
-      <li><code>mixing * ports and non-* ports with a NameVirtualHost
-      address is not supported</code>, <code>Either NameVirtualHost
-      w.x.y.z:n has no VirtualHosts, or there is more than one identical
-      NameVirtualHost line, or your VirtualHost declarations do not
-      match the NameVirtualHost line</code> -
-      ce ne sont pas des nouveaux messages, mais ils emp&ecirc;chent
-      maintenant le serveur de d&eacute;marrer</li>
-      <li><code>_default_ is not allowed in NameVirtualHost
-      directive</code> - l'explication est dans le message ; cette
-      d&eacute;finition n'a jamais &eacute;t&eacute; valide, mais elle emp&ecirc;che maintenant le
-      serveur de d&eacute;marrer.</li>
+
+      <li><code>Invalid command 'AddOutputFilterByType', perhaps misspelled 
+      or defined by a module not included in the server configuration
+      </code> - la directive <directive
+      module="mod_filter">AddOutputFilterByType</directive> qui &eacute;tait
+      jusqu'alors impl&eacute;ment&eacute;e par le module core, l'est maintenant par
+      le module mod_filter, qui doit donc &ecirc;tre charg&eacute;.</li>
+
     </ul></li>
     <li>Erreurs de traitement des requ&ecirc;tes :
     <ul>
