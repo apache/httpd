@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1420598 -->
+<!-- English Revision : 1497095 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -30,7 +30,7 @@ HTTP de base.</description>
 <status>Extension</status>
 <sourcefile>mod_authnz_ldap.c</sourcefile>
 <identifier>authnz_ldap_module</identifier>
-<compatibility>Disponible depuis les versions 2.1 et sup&eacute;rieures
+<compatibility>Dosponible depuis les versions 2.1 et sup&eacute;rieures
 d'Apache</compatibility>
 
 <summary>
@@ -816,6 +816,22 @@ connexion</description>
     module="mod_authnz_ldap">AuthLDAPBindPassword</directive> que si
     vous en avez vraiment besoin pour effectuer une recherche dans
     l'annuaire.</p>
+
+    <p>Si la cha&icirc;ne sp&eacute;cifi&eacute;e comme mot de passe commence par exec: , la
+    commande correspondante est ex&eacute;cut&eacute;e, et c'est la premi&egrave;re ligne qui
+    sera renvoy&eacute;e par la commande sur la sortie standard qui sera
+    utilis&eacute;e comme mot de passe.</p>
+<example><pre>
+# Mot de passe sp&eacute;cifi&eacute; directement
+AuthLDAPBindPassword secret
+
+# Ex&eacute;cution de /path/to/program pour obtenir le mot de passe
+AuthLDAPBindPassword exec:/path/to/program
+
+# Ex&eacute;cution de /path/to/program avec un argument pour obtenir le mot de passe
+AuthLDAPBindPassword "exec:/path/to/otherProgram argument1"
+</pre></example>
+
 </usage>
 </directivesynopsis>
 
