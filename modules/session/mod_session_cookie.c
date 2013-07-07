@@ -157,7 +157,6 @@ static apr_status_t session_cookie_load(request_rec * r, session_rec ** z)
     zz->pool = m->pool;
     zz->entries = apr_table_make(m->pool, 10);
     zz->encoded = val;
-    zz->uuid = (apr_uuid_t *) apr_pcalloc(m->pool, sizeof(apr_uuid_t));
     *z = zz;
 
     /* put the session in the notes so we don't have to parse it again */
