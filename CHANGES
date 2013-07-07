@@ -43,13 +43,6 @@ Changes with Apache 2.5.0
      This can be usefull with dynamic pages.
      PR9945, PR27888, PR42040 [<ccikrs1 cranbrook edu>]
      
-  *) mod_ssl: Fix possible truncation of OCSP responses when reading from the
-     server.  [Joe Orton]
-
-  *) mod_session_dbd: Make sure that dirty flag is respected when saving
-     sessions, and ensure the session ID is changed each time the session
-     changes. [Takashi Sato <takashi tks.st>, Graham Leggett]
-
   *) mod_logio: new format-specifier %C (combined) which is the sum of received
      and sent byte counts.
      PR54015 [Christophe Jaillet]
@@ -57,9 +50,6 @@ Changes with Apache 2.5.0
   *) core: Remove apr_brigade_flatten(), buffering and duplicated code
      from the HTTP_IN filter, parse chunks in a single pass with zero copy.
      Reduce memory usage by 48 bytes per request. [Graham Leggett]
-
-  *) mod_deflate: Remove assumptions as to when an EOS bucket might arrive.
-     Gracefully step aside if the body size is zero. [Graham Leggett]
 
   *) mod_proxy_http: Make the proxy-interim-response environment variable
      effective by formally overriding origin server behaviour. [Graham
@@ -151,7 +141,7 @@ Changes with Apache 2.5.0
   *) mod_systemd: New module, for integration with systemd on Linux.
      [Jan Kaluza <jkaluza redhat.com>]
 
-  *) core: Add dirwalk_stat and pre_htaccess hooks, allowing mpm-itk
+  *) core: Add pre_htaccess hook, allowing mpm-itk
      to be used without patches to httpd core.  [Jeff Trawick]
 
   *) WinNT MPM: Store pid and generation for each thread in scoreboard
