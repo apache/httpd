@@ -7,7 +7,9 @@ Changes with Apache 2.4.5
 
   *) mod_session_dbd: Make sure that dirty flag is respected when saving
      sessions, and ensure the session ID is changed each time the session
-     changes. [Takashi Sato <takashi tks.st>, Graham Leggett]
+     changes. This changes the format of the updatesession SQL statement.
+     Existing configurations must be changed.
+     [Takashi Sato <takashi tks.st>, Graham Leggett]
 
   *) mod_ssl: Fix possible truncation of OCSP responses when reading from the
      server.  [Joe Orton]
