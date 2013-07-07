@@ -85,7 +85,7 @@ static apr_status_t socache_mc_init(ap_socache_instance_t *ctx,
 {
     apr_status_t rv;
     int thread_limit = 0;
-    int nservers = 0;
+    apr_uint16_t nservers = 0;
     char *cache_config;
     char *split;
     char *tok;
