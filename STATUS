@@ -239,6 +239,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  http://svn.apache.org/r1500362
                  http://svn.apache.org/r1500423
                  http://svn.apache.org/r1500483
+                 http://svn.apache.org/r1500519
     2.4.x patch: trunk patches work
     +1: fuankg
      
