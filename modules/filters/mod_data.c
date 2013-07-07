@@ -109,7 +109,8 @@ static apr_status_t data_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
             apr_brigade_length(ctx->bb, 1, &len);
             clen = apr_atoi64(content_length);
             if (clen >= 0 && clen < APR_INT32_MAX) {
-                ap_set_content_length(r, len + apr_base64_encode_len(clen) - 1);
+                ap_set_content_length(r, len +
+                                      apr_base64_encode_len((int)clen) - 1);
             }
             else {
                 apr_table_unset(r->headers_out, "Content-Length");
