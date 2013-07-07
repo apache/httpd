@@ -234,7 +234,8 @@ static apr_status_t get_data(proxy_conn_rec *conn,
     return rv;
 }
 
-static apr_status_t send_begin_request(proxy_conn_rec *conn, int request_id)
+static apr_status_t send_begin_request(proxy_conn_rec *conn,
+                                       apr_uint16_t request_id)
 {
     struct iovec vec[2];
     fcgi_header header;
@@ -266,7 +267,7 @@ static apr_status_t send_begin_request(proxy_conn_rec *conn, int request_id)
 }
 
 static apr_status_t send_environment(proxy_conn_rec *conn, request_rec *r,
-                                     int request_id)
+                                     apr_uint16_t request_id)
 {
     const apr_array_header_t *envarr;
     const apr_table_entry_t *elts;
@@ -390,7 +391,7 @@ static apr_status_t send_environment(proxy_conn_rec *conn, request_rec *r,
         itr += vallen;
     }
 
-    fill_in_header(&header, FCGI_PARAMS, request_id, bodylen, 0);
+    fill_in_header(&header, FCGI_PARAMS, request_id, (apr_uint16_t)bodylen, 0);
     fcgi_header_to_array(&header, farray);
 
     vec[0].iov_base = (void *)farray;
@@ -543,7 +544,7 @@ static void dump_header_to_log(request_rec *r, unsigned char fheader[],
 }
 
 static apr_status_t dispatch(proxy_conn_rec *conn, proxy_dir_conf *conf,
-                             request_rec *r, int request_id)
+                             request_rec *r, apr_uint16_t request_id)
 {
     apr_bucket_brigade *ib, *ob;
     int seen_end_of_headers = 0, done = 0;
@@ -884,7 +885,7 @@ static int fcgi_do_request(apr_pool_t *p, request_rec *r,
      * multiple requests to the same FastCGI connection, but
      * we don't support that, and always use a value of '1' to
      * keep things simple. */
-    int request_id = 1;
+    apr_uint16_t request_id = 1;
     apr_status_t rv;
 
     /* Step 1: Send FCGI_BEGIN_REQUEST */

@@ -220,7 +220,7 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
 
     apr_uri_t uri;
     const char *connectname;
-    int connectport = 0;
+    apr_port_t connectport = 0;
 
     /* is this for us? */
     if (r->method_number != M_CONNECT) {
