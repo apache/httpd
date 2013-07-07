@@ -2900,10 +2900,10 @@ PROXY_DECLARE(apr_status_t) ap_proxy_sync_balancer(proxy_balancer *b, server_rec
         }
         if (!found) {
             proxy_worker **runtime;
+            apr_global_mutex_lock(proxy_mutex);
             runtime = apr_array_push(b->workers);
-            apr_global_mutex_lock(conf->mutex);
             *runtime = apr_palloc(conf->pool, sizeof(proxy_worker));
-            apr_global_mutex_unlock(conf->mutex);
+            apr_global_mutex_unlock(proxy_mutex);
             (*runtime)->hash = shm->hash;
             (*runtime)->context = NULL;
             (*runtime)->cp = NULL;
