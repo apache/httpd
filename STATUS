@@ -91,27 +91,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_deflate: Remove assumptions as to when an EOS bucket might arrive.
-    Gracefully step aside if the body size is zero.
-    trunk patch: http://svn.apache.org/r1484832
-                 http://svn.apache.org/r1484914
-    2.4.x patch: trunk works, modulo CHANGES
-    +1: minfrin, jim, sf
-    sf: The check for data after the compressed stream does not work
-        (see commented out test in r1499704).
-        But I think this can be fixed/removed later and vote +1 to get
-        the other fixes into 2.4.5.
-
-  * mod_session_dbd: Make sure that dirty flag is respected when saving 
-    sessions, and ensure the session ID is changed each time the session 
-    changes.
-    trunk patch: http://svn.apache.org/r1488158
-    trunk patch: http://svn.apache.org/r1488164
-    2.4.x patch: trunk patch works modulo CHANGES
-    +1: minfrin, jim, sf
-    sf says: Something like this should be added to CHANGES:
-        This changes the format of the updatesession SQL statement. Existing
-        configurations must be changed.
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
