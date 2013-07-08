@@ -97,6 +97,12 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
   
+  * mod_ssl: Change default for SSLCompression to off.
+    trunk patch: http://svn.apache.org/r1400700
+    2.4.x patch: http://svn.apache.org/r1400962
+    2.2.x patch: trunk patch works (except CHANGES and compatibility info in docs)
+    +1: sf, fuankg, rjung
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -113,12 +119,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
            to write to the returned string. There's no such place in httpd code I can
            find but we can't rule it out for foreign modules. We could fix the signature
            (returning const char *) in trunk but not for 2.2 ad 2.4. 
-
-  * mod_ssl: Change default for SSLCompression to off.
-    trunk patch: http://svn.apache.org/r1400700
-    2.4.x patch: http://svn.apache.org/r1400962
-    2.2.x patch: trunk patch works (except CHANGES and compatibility info in docs)
-    +1: sf, fuankg
 
 PATCHES/ISSUES THAT ARE STALLED
 
