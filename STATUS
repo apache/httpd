@@ -145,7 +145,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  http://svn.apache.org/r1498880
     2.4.x patch: http://people.apache.org/~sf/open_htaccess_hook.patch
     +1: sf, jorton, 
-    -0.5: jj: I would prefer if this sat in trunk for a few months first
+    +0.5: jj: I would prefer if this sat in trunk for a few months first
               to receive more testing.
 
   * mod_proxy: Connection header clearing issues
