@@ -473,6 +473,8 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *new_bb)
         }
         else if (rv != APR_SUCCESS) {
             /* The client has aborted the connection */
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, rv, c,
+                          "core_output_filter: writing data to the network");
             c->aborted = 1;
         }
         setaside_remaining_output(f, ctx, bb, c);
@@ -543,6 +545,8 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *new_bb)
                                    &(ctx->bytes_written), c);
         if (rv != APR_SUCCESS) {
             /* The client has aborted the connection */
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, rv, c,
+                          "core_output_filter: writing data to the network");
             c->aborted = 1;
             return rv;
         }
@@ -554,6 +558,8 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *new_bb)
                                       &(ctx->bytes_written), c);
         if ((rv != APR_SUCCESS) && (!APR_STATUS_IS_EAGAIN(rv))) {
             /* The client has aborted the connection */
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, rv, c,
+                          "core_output_filter: writing data to the network");
             c->aborted = 1;
             return rv;
         }

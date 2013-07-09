@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) core: Log a message at TRACE1 when the client aborts a connection.
+     [Eric Covener]
+
   *) core: Replace pre_htaccess hook with more flexible open_htaccess hook.
      [Stefan Fritsch]
 
