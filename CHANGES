@@ -2,6 +2,10 @@
 
 Changes with Apache 2.4.5
 
+  *) mod_proxy: Fix seg-faults when using the global pool on threaded
+     MPMs [Thomas Eckert <thomas.r.w.eckert gmail.com>, Graham Leggett,
+     Jim Jagielski]
+
   *) mod_deflate: Remove assumptions as to when an EOS bucket might arrive.
      Gracefully step aside if the body size is zero. [Graham Leggett]
 

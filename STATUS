@@ -91,14 +91,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_proxy: Fix pool usage by protecting w/ a mutex
-    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1480627
-                 http://svn.apache.org/viewvc?view=revision&revision=1482859
-                 http://svn.apache.org/viewvc?view=revision&revision=1483190
-                 http://svn.apache.org/viewvc?view=revision&revision=1484343
-                 http://svn.apache.org/viewvc?view=revision&revision=1500437
-    2.4.x patch: trunk works, modulo CHANGES
-    +1: jim, minfrin, sf
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
