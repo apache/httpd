@@ -129,7 +129,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: trunk patch works modulo CHANGES and mmn bump
     +1: minfrin, jim
     trawick: I like sf's idea on the list for a different API to solve
-             the same problem.
+             the same problem.  We shouldn't proceed with this patch.
 
     Alternate proposal:
     core: Add open_htaccess hook.
@@ -139,6 +139,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     +1: sf, jorton, 
     +0.5: jj: I would prefer if this sat in trunk for a few months first
               to receive more testing.
+    +/-0: trawick: I would prefer if Steinar verifies that it is fine for
+                   him (however simple that verification would be).  There's
+                   no need to proceed until he is ready to use it anyway.
 
   * mod_proxy: Connection header clearing issues
     trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1481891
