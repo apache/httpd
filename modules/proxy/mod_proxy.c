@@ -36,6 +36,9 @@ APR_DECLARE_OPTIONAL_FN(char *, ssl_var_lookup,
 #define MAX(x,y) ((x) >= (y) ? (x) : (y))
 #endif
 
+static const char * const proxy_id = "proxy";
+apr_global_mutex_t *proxy_mutex = NULL;
+
 /*
  * A Web proxy module. Stages:
  *
@@ -1193,7 +1196,7 @@ static void * create_proxy_config(apr_pool_t *p, server_rec *s)
     ps->badopt_set = 0;
     ps->source_address = NULL;
     ps->source_address_set = 0;
-    ps->pool = p;
+    apr_pool_create_ex(&ps->pool, p, NULL, NULL);
 
     return ps;
 }
@@ -1255,7 +1258,7 @@ static void * merge_proxy_config(apr_pool_t *p, void *basev, void *overridesv)
     ps->proxy_status_set = overrides->proxy_status_set || base->proxy_status_set;
     ps->source_address = (overrides->source_address_set == 0) ? base->source_address : overrides->source_address;
     ps->source_address_set = overrides->source_address_set || base->source_address_set;
-    ps->pool = p;
+    ps->pool = base->pool;
     return ps;
 }
 static const char *set_source_address(cmd_parms *parms, void *dummy,
@@ -2402,6 +2405,13 @@ PROXY_DECLARE(const char *) ap_proxy_ssl_val(apr_pool_t *p, server_rec *s,
 static int proxy_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                              apr_pool_t *ptemp, server_rec *s)
 {
+    apr_status_t rv = ap_global_mutex_create(&proxy_mutex, NULL,
+            proxy_id, NULL, s, pconf, 0);
+    if (rv != APR_SUCCESS) {
+        ap_log_perror(APLOG_MARK, APLOG_CRIT, rv, plog, APLOGNO(02478)
+        "failed to create %s mutex", proxy_id);
+        return rv;
+    }
 
     proxy_ssl_enable = APR_RETRIEVE_OPTIONAL_FN(ssl_proxy_enable);
     proxy_ssl_disable = APR_RETRIEVE_OPTIONAL_FN(ssl_engine_disable);
@@ -2504,6 +2514,15 @@ static void child_init(apr_pool_t *p, server_rec *s)
 {
     proxy_worker *reverse = NULL;
 
+    apr_status_t rv = apr_global_mutex_child_init(&proxy_mutex,
+                                      apr_global_mutex_lockfile(proxy_mutex),
+                                      p);
+    if (rv != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s, APLOGNO(02479)
+                     "could not init proxy_mutex in child");
+        exit(1); /* Ugly, but what else? */
+    }
+
     /* TODO */
     while (s) {
         void *sconf = s->module_config;
@@ -2561,11 +2580,19 @@ static void child_init(apr_pool_t *p, server_rec *s)
 
 /*
  * This routine is called before the server processes the configuration
- * files.  There is no return value.
+ * files.
  */
 static int proxy_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
                             apr_pool_t *ptemp)
 {
+    apr_status_t rv = ap_mutex_register(pconf, proxy_id, NULL,
+            APR_LOCK_DEFAULT, 0);
+    if (rv != APR_SUCCESS) {
+        ap_log_perror(APLOG_MARK, APLOG_CRIT, rv, plog, APLOGNO(02480)
+                "failed to register %s mutex", proxy_id);
+        return 500; /* An HTTP status would be a misnomer! */
+    }
+
     APR_OPTIONAL_HOOK(ap, status_hook, proxy_status_hook, NULL, NULL,
                       APR_HOOK_MIDDLE);
     /* Reset workers count on gracefull restart */
