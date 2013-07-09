@@ -7,6 +7,12 @@ Changes with Apache 2.2.26
 
 Changes with Apache 2.2.25
 
+  *) SECURITY: CVE-2013-1896 (cve.mitre.org)
+     mod_dav: Sending a MERGE request against a URI handled by mod_dav_svn with
+     the source href (sent as part of the request body as XML) pointing to a
+     URI that is not configured for DAV will trigger a segfault. [Ben Reser
+     <ben reser.org>]
+
   *) SECURITY: CVE-2013-1862 (cve.mitre.org)
      mod_rewrite: Ensure that client data written to the RewriteLog is
      escaped to prevent terminal escape sequences from entering the
@@ -46,11 +52,6 @@ Changes with Apache 2.2.25
 
   *) htdigest: Fix buffer overflow when reading digest password file
      with very long lines. PR 54893. [Rainer Jung]
-
-  *) mod_dav: Sending a MERGE request against a URI handled by mod_dav_svn with
-     the source href (sent as part of the request body as XML) pointing to a
-     URI that is not configured for DAV will trigger a segfault. [Ben Reser
-     <ben reser.org>]
 
   *) mod_dav: Ensure URI is correctly uriencoded on return. PR 54611
      [Timothy Wood <tjw omnigroup.com>]
