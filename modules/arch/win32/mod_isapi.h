@@ -245,7 +245,7 @@ typedef apr_uint32_t (APR_THREAD_FUNC
 #define HSE_TERM_MUST_UNLOAD      1
 #define HSE_TERM_ADVISORY_UNLOAD  2
 
-/* The shutdown entry point óptionally exported by an ISAPI handler, passed
+/* The shutdown entry point optionally exported by an ISAPI handler, passed
  * HSE_TERM_MUST_UNLOAD or HSE_TERM_ADVISORY_UNLOAD.  The module may return
  * if passed HSE_TERM_ADVISORY_UNLOAD, and the module will remain loaded.
  * If the module returns 1 to HSE_TERM_ADVISORY_UNLOAD it is immediately
