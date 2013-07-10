@@ -1079,9 +1079,7 @@ static int ssl_io_filter_connect(ssl_filter_ctx_t *filter_ctx)
          * IPv4 and IPv6 addresses are not permitted".)
          */
         if (hostname_note &&
-#ifndef OPENSSL_NO_SSL2
             sc->proxy->protocol != SSL_PROTOCOL_SSLV2 &&
-#endif
             sc->proxy->protocol != SSL_PROTOCOL_SSLV3 &&
             apr_ipsubnet_create(&ip, hostname_note, NULL,
                                 c->pool) != APR_SUCCESS) {
