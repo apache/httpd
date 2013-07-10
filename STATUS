@@ -105,7 +105,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  http://svn.apache.org/r1462266
                  http://svn.apache.org/r1468581
     2.4.x patch: http://people.apache.org/~minfrin/httpd-mod_auth_basic-fake4.patch
-    +1: minfrin, jim
+    +1: minfrin, jim, druggeri
 
   * core, mod_ssl: Lift the restriction that prevents mod_ssl taking
     full advantage of the event MPM. Enable the ability for a module
@@ -122,7 +122,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     effective by formally overriding origin server behaviour.
     trunk patch: http://svn.apache.org/r1483027
     2.4.x patch: trunk works
-    +1: minfrin, jim
+    +1: minfrin, jim, druggeri
 
   * core: Add pre_htaccess hook.
     trunk patch: http://svn.apache.org/r1389339
@@ -149,7 +149,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  https://svn.apache.org/viewvc?view=revision&revision=1482170
                  https://svn.apache.org/viewvc?view=revision&revision=1482555
     2.4.x patch: trunk patch works modulo CHANGES and ap_mmn
-    +1: jim
+    +1: jim, druggeri
 
   * core: Stop the HTTP_IN filter from attempting to write error buckets
     to the output filters
@@ -163,8 +163,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  https://svn.apache.org/viewvc?view=revision&revision=1451921
                  https://svn.apache.org/viewvc?view=revision&revision=1452259
                  https://svn.apache.org/viewvc?view=revision&revision=1453981
-    2.4.x patch: trunk patch works modulo CHANGES and ap_mmn
-    +1: jim
+                 https://svn.apache.org/viewvc?view=revision&revision=1501913
+    2.4.x patch: trunk patch works modulo CHANGES, ap_mmn, and doc note to
+                 include version note
+    +1: jim, druggeri
+    druggeri note: Fails as a BalancerMember, FWIW
 
   * mod_proxy: Ensure network errors detected by the proxy are returned as
     504 Gateway Timout as opposed to 502 Bad Gateway
@@ -178,7 +181,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1462269
                  https://svn.apache.org/viewvc?view=revision&revision=1463455
     2.4.x patch: trunk patch works
-    +1: jim
+    +1: jim, druggeri
 
   * mod_socache_shmcb.c: Remove arbitrary restriction on shared memory size
     previously limited to 64MB.
@@ -211,7 +214,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  https://svn.apache.org/viewvc?view=revision&revision=1487530
                  https://svn.apache.org/viewvc?view=revision&revision=1493330
     2.4.x patch: trunk patch works
-    +1: jailletc36, jj
+    +1: jailletc36, jj, druggeri
 
     - modules: Fix some compiler warnings.
     trunk patch: http://svn.apache.org/r1500345
@@ -229,7 +232,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   * mod_proxy_balancer: We are no-longer using PREGRAB.
     trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1501399
     2.4.x patch: trunk patch works
-    +1: jim
+    +1: jim, druggeri
 
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
