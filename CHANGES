@@ -1,7 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.26
 
-
+  *) mod_ssl: Fix compilation error when OpenSSL does not contain
+     support for SSLv2. Problem was introduced in 2.2.25. PR 55194.
+     [Rainer Jung, Kaspar Brand]
 
 Changes with Apache 2.2.25
 
