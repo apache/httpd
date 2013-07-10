@@ -113,7 +113,7 @@ cleanup:
                               return #x;\
                               break;
 
-/**·
+/**
  * Convert numeric message type into string
  * @param type      AJP message type
  * @return          AJP message type as a string
