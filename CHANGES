@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_unique_id: Use output of the PRNG rather than IP address and
+     pid, avoiding sleep() call and possible DNS issues at startup,
+     plus improving randomness for IPv6-only hosts.
+     [Jan Kaluza <jkaluza redhat.com>]
+
   *) core: Log a message at TRACE1 when the client aborts a connection.
      [Eric Covener]
 
