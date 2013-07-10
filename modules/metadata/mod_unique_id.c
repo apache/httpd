@@ -31,14 +31,11 @@
 #include "http_log.h"
 #include "http_protocol.h"  /* for ap_hook_post_read_request */
 
-#if APR_HAVE_UNISTD_H
-#include <unistd.h>         /* for getpid() */
-#endif
+#define ROOT_SIZE 10
 
 typedef struct {
     unsigned int stamp;
-    unsigned int in_addr;
-    unsigned int pid;
+    char root[ROOT_SIZE];
     unsigned short counter;
     unsigned int thread_index;
 } unique_id_rec;
@@ -64,20 +61,15 @@ typedef struct {
  * gethostbyname (gethostname()) is unique across all the machines at the
  * "site".
  *
- * We also further assume that pids fit in 32-bits.  If something uses more
- * than 32-bits, the fix is trivial, but it requires the unrolled uuencoding
- * loop to be extended.  * A similar fix is needed to support multithreaded
- * servers, using a pid/tid combo.
- *
- * Together, the in_addr and pid are assumed to absolutely uniquely identify
- * this one child from all other currently running children on all servers
- * (including this physical server if it is running multiple httpds) from each
+ * The root is assumed to absolutely uniquely identify this one child
+ * from all other currently running children on all servers (including
+ * this physical server if it is running multiple httpds) from each
  * other.
  *
- * The stamp and counter are used to distinguish all hits for a particular
- * (in_addr,pid) pair.  The stamp is updated using r->request_time,
- * saving cpu cycles.  The counter is never reset, and is used to permit up to
- * 64k requests in a single second by a single child.
+ * The stamp and counter are used to distinguish all hits for a
+ * particular root.  The stamp is updated using r->request_time,
+ * saving cpu cycles.  The counter is never reset, and is used to
+ * permit up to 64k requests in a single second by a single child.
  *
  * The 144-bits of unique_id_rec are encoded using the alphabet
  * [A-Za-z0-9@-], resulting in 24 bytes of printable characters.  That is then
@@ -92,7 +84,7 @@ typedef struct {
  * module change.
  *
  * It is highly desirable that identifiers exist for "eternity".  But future
- * needs (such as much faster webservers, moving to 64-bit pids, or moving to a
+ * needs (such as much faster webservers, or moving to a
  * multithreaded server) may dictate a need to change the contents of
  * unique_id_rec.  Such a future implementation should ensure that the first
  * field is still a time_t stamp.  By doing that, it is possible for a site to
@@ -100,7 +92,15 @@ typedef struct {
  * wait one entire second, and then start all of their new-servers.  This
  * procedure will ensure that the new space of identifiers is completely unique
  * from the old space.  (Since the first four unencoded bytes always differ.)
+ *
+ * Note: previous implementations used 32-bits of IP address plus pid
+ * in place of the PRNG output in the "root" field.  This was
+ * insufficient for IPv6-only hosts, required working DNS to determine
+ * a unique IP address (fragile), and needed a [0, 1) second sleep
+ * call at startup to avoid pid reuse.  Use of the PRNG avoids all
+ * these issues.
  */
+
 /*
  * Sun Jun  7 05:43:49 CEST 1998 -- Alvaro
  * More comments:
@@ -116,8 +116,6 @@ typedef struct {
  * htonl/ntohl. Well, this shouldn't be a problem till year 2106.
  */
 
-static unsigned global_in_addr;
-
 /*
  * XXX: We should have a per-thread counter and not use cur_unique_id.counter
  * XXX: in all threads, because this is bad for performance on multi-processor
@@ -129,7 +127,7 @@ static unique_id_rec cur_unique_id;
 /*
  * Number of elements in the structure unique_id_rec.
  */
-#define UNIQUE_ID_REC_MAX 5
+#define UNIQUE_ID_REC_MAX 4
 
 static unsigned short unique_id_rec_offset[UNIQUE_ID_REC_MAX],
                       unique_id_rec_size[UNIQUE_ID_REC_MAX],
@@ -138,113 +136,32 @@ static unsigned short unique_id_rec_offset[UNIQUE_ID_REC_MAX],
 
 static int unique_id_global_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *main_server)
 {
-    char str[APRMAXHOSTLEN + 1];
-    apr_status_t rv;
-    char *ipaddrstr;
-    apr_sockaddr_t *sockaddr;
-
     /*
      * Calculate the sizes and offsets in cur_unique_id.
      */
     unique_id_rec_offset[0] = APR_OFFSETOF(unique_id_rec, stamp);
     unique_id_rec_size[0] = sizeof(cur_unique_id.stamp);
-    unique_id_rec_offset[1] = APR_OFFSETOF(unique_id_rec, in_addr);
-    unique_id_rec_size[1] = sizeof(cur_unique_id.in_addr);
-    unique_id_rec_offset[2] = APR_OFFSETOF(unique_id_rec, pid);
-    unique_id_rec_size[2] = sizeof(cur_unique_id.pid);
-    unique_id_rec_offset[3] = APR_OFFSETOF(unique_id_rec, counter);
-    unique_id_rec_size[3] = sizeof(cur_unique_id.counter);
-    unique_id_rec_offset[4] = APR_OFFSETOF(unique_id_rec, thread_index);
-    unique_id_rec_size[4] = sizeof(cur_unique_id.thread_index);
+    unique_id_rec_offset[1] = APR_OFFSETOF(unique_id_rec, root);
+    unique_id_rec_size[1] = sizeof(cur_unique_id.root);
+    unique_id_rec_offset[2] = APR_OFFSETOF(unique_id_rec, counter);
+    unique_id_rec_size[2] = sizeof(cur_unique_id.counter);
+    unique_id_rec_offset[3] = APR_OFFSETOF(unique_id_rec, thread_index);
+    unique_id_rec_size[3] = sizeof(cur_unique_id.thread_index);
     unique_id_rec_total_size = unique_id_rec_size[0] + unique_id_rec_size[1] +
-                               unique_id_rec_size[2] + unique_id_rec_size[3] +
-                               unique_id_rec_size[4];
+                               unique_id_rec_size[2] + unique_id_rec_size[3];
 
     /*
      * Calculate the size of the structure when encoded.
      */
     unique_id_rec_size_uu = (unique_id_rec_total_size*8+5)/6;
 
-    /*
-     * Now get the global in_addr.  Note that it is not sufficient to use one
-     * of the addresses from the main_server, since those aren't as likely to
-     * be unique as the physical address of the machine
-     */
-    if ((rv = apr_gethostname(str, sizeof(str) - 1, p)) != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ALERT, rv, main_server, APLOGNO(01563)
-          "unable to find hostname of the server");
-        return HTTP_INTERNAL_SERVER_ERROR;
-    }
-
-    if ((rv = apr_sockaddr_info_get(&sockaddr, str, AF_INET, 0, 0, p)) == APR_SUCCESS) {
-        global_in_addr = sockaddr->sa.sin.sin_addr.s_addr;
-    }
-    else {
-        ap_log_error(APLOG_MARK, APLOG_ALERT, rv, main_server, APLOGNO(01564)
-                    "unable to find IPv4 address of \"%s\"", str);
-#if APR_HAVE_IPV6
-        if ((rv = apr_sockaddr_info_get(&sockaddr, str, AF_INET6, 0, 0, p)) == APR_SUCCESS) {
-            memcpy(&global_in_addr,
-                   (char *)sockaddr->ipaddr_ptr + sockaddr->ipaddr_len - sizeof(global_in_addr),
-                   sizeof(global_in_addr));
-            ap_log_error(APLOG_MARK, APLOG_ALERT, rv, main_server, APLOGNO(01565)
-                         "using low-order bits of IPv6 address "
-                         "as if they were unique");
-        }
-        else
-#endif
-        return HTTP_INTERNAL_SERVER_ERROR;
-    }
-
-    apr_sockaddr_ip_get(&ipaddrstr, sockaddr);
-    ap_log_error(APLOG_MARK, APLOG_INFO, 0, main_server, APLOGNO(01566) "using ip addr %s",
-                 ipaddrstr);
-
-    /*
-     * If the server is pummelled with restart requests we could possibly end
-     * up in a situation where we're starting again during the same second
-     * that has been used in previous identifiers.  Avoid that situation.
-     *
-     * In truth, for this to actually happen not only would it have to restart
-     * in the same second, but it would have to somehow get the same pids as
-     * one of the other servers that was running in that second. Which would
-     * mean a 64k wraparound on pids ... not very likely at all.
-     *
-     * But protecting against it is relatively cheap.  We just sleep into the
-     * next second.
-     */
-    apr_sleep(apr_time_from_sec(1) - apr_time_usec(apr_time_now()));
     return OK;
 }
 
 static void unique_id_child_init(apr_pool_t *p, server_rec *s)
 {
-    pid_t pid;
-
-    /*
-     * Note that we use the pid because it's possible that on the same
-     * physical machine there are multiple servers (i.e. using Listen). But
-     * it's guaranteed that none of them will share the same pids between
-     * children.
-     *
-     * XXX: for multithread this needs to use a pid/tid combo and probably
-     * needs to be expanded to 32 bits
-     */
-    pid = getpid();
-    cur_unique_id.pid = pid;
-
-    /*
-     * Test our assumption that the pid is 32-bits.  It's possible that
-     * 64-bit machines will declare pid_t to be 64 bits but only use 32
-     * of them.  It would have been really nice to test this during
-     * global_init ... but oh well.
-     */
-    if ((pid_t)cur_unique_id.pid != pid) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, 0, s, APLOGNO(01567)
-                    "oh no! pids are greater than 32-bits!  I'm broken!");
-    }
-
-    cur_unique_id.in_addr = global_in_addr;
+    ap_random_insecure_bytes(&cur_unique_id.root,
+                             sizeof(cur_unique_id.root));
 
     /*
      * If we use 0 as the initial counter we have a little less protection
@@ -253,13 +170,6 @@ static void unique_id_child_init(apr_pool_t *p, server_rec *s)
      */
     ap_random_insecure_bytes(&cur_unique_id.counter,
                              sizeof(cur_unique_id.counter));
-
-    /*
-     * We must always use network ordering for these bytes, so that
-     * identifiers are comparable between machines of different byte
-     * orderings.  Note in_addr is already in network order.
-     */
-    cur_unique_id.pid = htonl(cur_unique_id.pid);
 }
 
 /* NOTE: This is *NOT* the same encoding used by base64encode ... the last two
@@ -291,10 +201,8 @@ static const char *gen_unique_id(const request_rec *r)
     unsigned short counter;
     int i,j,k;
 
-    new_unique_id.in_addr = cur_unique_id.in_addr;
-    new_unique_id.pid = cur_unique_id.pid;
+    memcpy(&new_unique_id.root, &cur_unique_id.root, ROOT_SIZE);
     new_unique_id.counter = cur_unique_id.counter;
-
     new_unique_id.stamp = htonl((unsigned int)apr_time_sec(r->request_time));
     new_unique_id.thread_index = htonl((unsigned int)r->connection->id);
 
