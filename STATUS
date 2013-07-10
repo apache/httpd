@@ -90,11 +90,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
-
-
   * mod_auth_basic: Add a generic mechanism to fake basic authentication
     using the ap_expr parser. This allows the administrator to construct
     their own username and password for basic authentication based on their
@@ -106,6 +101,45 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: http://people.apache.org/~minfrin/httpd-mod_auth_basic-fake4.patch
     +1: minfrin, jim, druggeri
 
+  * mod_proxy_http: Make the proxy-interim-response environment variable
+    effective by formally overriding origin server behaviour.
+    trunk patch: http://svn.apache.org/r1483027
+    2.4.x patch: trunk works
+    +1: minfrin, jim, druggeri
+
+  * mod_proxy: Connection header clearing issues
+    trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1481891
+                 https://svn.apache.org/viewvc?view=revision&revision=1482075
+                 https://svn.apache.org/viewvc?view=revision&revision=1482170
+                 https://svn.apache.org/viewvc?view=revision&revision=1482555
+    2.4.x patch: trunk patch works modulo CHANGES and ap_mmn
+    +1: jim, druggeri, wrowe
+
+  * Some easy votes to keep 2.4 in line with trunk
+    - mod_slotmem_shm: Replace duplicate log tags
+    - mpm/event: Check that AsyncRequestWorkerFactor is not negative (PR 54254)
+    - remove unneeded include statements
+    - mod_cache_disk: Name pool + concat string at compile time when possible
+    - mod_ratelimit (rate_limit_filter): Log the error code
+    - mod_authnz_ldap: fix typo
+    trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1406068
+                 https://svn.apache.org/viewvc?view=revision&revision=1425777
+                 https://svn.apache.org/viewvc?view=revision&revision=1427546
+                 https://svn.apache.org/viewvc?view=revision&revision=1462643
+                 https://svn.apache.org/viewvc?view=revision&revision=1487530
+                 https://svn.apache.org/viewvc?view=revision&revision=1493330
+    2.4.x patch: trunk patch works
+    +1: jailletc36, jj, druggeri
+
+  * mod_proxy_balancer: We are no-longer using PREGRAB.
+    trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1501399
+    2.4.x patch: trunk patch works
+    +1: jim, druggeri, wrowe
+
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
+
   * core, mod_ssl: Lift the restriction that prevents mod_ssl taking
     full advantage of the event MPM. Enable the ability for a module
     to reverse the sense of a poll event from a read to a write or vice
@@ -116,12 +150,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     +1: minfrin, jim
     -0.5: sf: I would prefer if this sat in trunk for a few months first
               to receive more testing.
-
-  * mod_proxy_http: Make the proxy-interim-response environment variable
-    effective by formally overriding origin server behaviour.
-    trunk patch: http://svn.apache.org/r1483027
-    2.4.x patch: trunk works
-    +1: minfrin, jim, druggeri
 
   * core: Add pre_htaccess hook.
     trunk patch: http://svn.apache.org/r1389339
@@ -141,14 +169,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     +/-0: trawick: I would prefer if Steinar verifies that it is fine for
                    him (however simple that verification would be).  There's
                    no need to proceed until he is ready to use it anyway.
-
-  * mod_proxy: Connection header clearing issues
-    trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1481891
-                 https://svn.apache.org/viewvc?view=revision&revision=1482075
-                 https://svn.apache.org/viewvc?view=revision&revision=1482170
-                 https://svn.apache.org/viewvc?view=revision&revision=1482555
-    2.4.x patch: trunk patch works modulo CHANGES and ap_mmn
-    +1: jim, druggeri
 
   * core: Stop the HTTP_IN filter from attempting to write error buckets
     to the output filters
@@ -199,23 +219,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              time when we can just fix the underlying problem instead.
          jj: Agree w/ minfrin
 
-  * Some easy votes to keep 2.4 in line with trunk
-    - mod_slotmem_shm: Replace duplicate log tags
-    - mpm/event: Check that AsyncRequestWorkerFactor is not negative (PR 54254)
-    - remove unneeded include statements
-    - mod_cache_disk: Name pool + concat string at compile time when possible
-    - mod_ratelimit (rate_limit_filter): Log the error code
-    - mod_authnz_ldap: fix typo
-    trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1406068
-                 https://svn.apache.org/viewvc?view=revision&revision=1425777
-                 https://svn.apache.org/viewvc?view=revision&revision=1427546
-                 https://svn.apache.org/viewvc?view=revision&revision=1462643
-                 https://svn.apache.org/viewvc?view=revision&revision=1487530
-                 https://svn.apache.org/viewvc?view=revision&revision=1493330
-    2.4.x patch: trunk patch works
-    +1: jailletc36, jj, druggeri
-
-    - modules: Fix some compiler warnings.
+  * modules: Fix some compiler warnings.
     trunk patch: http://svn.apache.org/r1500345
                  http://svn.apache.org/r1500362
                  http://svn.apache.org/r1500423
@@ -227,11 +231,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           jj: In general, casts are sometimes used to "hide" problems
               that exist, esp when using the incorrect data types...
               Are these casts safe?
-
-  * mod_proxy_balancer: We are no-longer using PREGRAB.
-    trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1501399
-    2.4.x patch: trunk patch works
-    +1: jim, druggeri
 
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
