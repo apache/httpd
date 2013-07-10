@@ -221,6 +221,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  http://svn.apache.org/r1500519
     2.4.x patch: trunk patches work
     +1: fuankg
+    comments:
+          jj: In general, casts are sometimes used to "hide" problems
+              that exist, esp when using the incorrect data types...
+              Are these casts safe?
 
   * mod_proxy_balancer: We are no-longer using PREGRAB.
     trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1501399
