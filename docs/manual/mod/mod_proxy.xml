@@ -796,6 +796,7 @@ expressions</description>
     proxy</dfn> or <dfn>gateway</dfn>. The <var>path</var> is the name of
     a local virtual path; <var>url</var> is a partial URL for the
     remote server and cannot include a query string.</p>
+
     
     <note><strong>Note: </strong>This directive cannot be used within a 
     <code>&lt;Directory&gt;</code> context.</note>
@@ -804,6 +805,11 @@ expressions</description>
     module="mod_proxy">ProxyRequests</directive> directive should
     usually be set <strong>off</strong> when using
     <directive>ProxyPass</directive>.</note>
+
+    <p>Support for using a Unix Domain Socket is available by using a target
+    of <code>socket=percent-encoded-path</code>. For example, to target the
+    UDS at /home/www/socket you would use
+    <code>http://socket=%2Fhome%2Fwww%2Fsocket</code></p>
 
     <p>Suppose the local server has address <code>http://example.com/</code>;
     then</p>
