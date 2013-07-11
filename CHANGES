@@ -8,6 +8,10 @@ Changes with Apache 2.4.5
      URI that is not configured for DAV will trigger a segfault. [Ben Reser
      <ben reser.org>]
 
+  *) mod_proxy: Ensure we don't attempt to amend a table we are iterating
+     through, ensuring that all headers listed by Connection are removed.
+     [Graham Leggett, Co-Advisor <coad measurement-factory.com>]
+
   *) mod_proxy_http: Make the proxy-interim-response environment variable
      effective by formally overriding origin server behaviour. [Graham
      Leggett, Co-Advisor <coad measurement-factory.com>]
