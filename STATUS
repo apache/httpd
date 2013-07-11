@@ -90,17 +90,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_auth_basic: Add a generic mechanism to fake basic authentication
-    using the ap_expr parser. This allows the administrator to construct
-    their own username and password for basic authentication based on their
-    needs. Alternative fix for PR52616.
-    trunk patch: http://svn.apache.org/r1457471
-                 http://svn.apache.org/r1457504
-                 http://svn.apache.org/r1462266
-                 http://svn.apache.org/r1468581
-    2.4.x patch: http://people.apache.org/~minfrin/httpd-mod_auth_basic-fake4.patch
-    +1: minfrin, jim, druggeri
-
   * mod_proxy: Connection header clearing issues
     trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1481891
                  https://svn.apache.org/viewvc?view=revision&revision=1482075
