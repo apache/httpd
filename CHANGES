@@ -8,6 +8,13 @@ Changes with Apache 2.4.5
      URI that is not configured for DAV will trigger a segfault. [Ben Reser
      <ben reser.org>]
 
+  *) SECURITY: CVE-2013-2249 (cve.mitre.org)
+     mod_session_dbd: Make sure that dirty flag is respected when saving
+     sessions, and ensure the session ID is changed each time the session
+     changes. This changes the format of the updatesession SQL statement.
+     Existing configurations must be changed.
+     [Takashi Sato <takashi tks.st>, Graham Leggett]
+
   *) mpm_event: Check that AsyncRequestWorkerFactor is not negative. PR 54254.
      [Jackie Zhang <jackie qq zhang gmail com>]
 
@@ -25,12 +32,6 @@ Changes with Apache 2.4.5
 
   *) mod_deflate: Remove assumptions as to when an EOS bucket might arrive.
      Gracefully step aside if the body size is zero. [Graham Leggett]
-
-  *) mod_session_dbd: Make sure that dirty flag is respected when saving
-     sessions, and ensure the session ID is changed each time the session
-     changes. This changes the format of the updatesession SQL statement.
-     Existing configurations must be changed.
-     [Takashi Sato <takashi tks.st>, Graham Leggett]
 
   *) mod_ssl: Fix possible truncation of OCSP responses when reading from the
      server.  [Joe Orton]
