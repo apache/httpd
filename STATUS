@@ -131,11 +131,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     2.4.x patch: trunk patch works
     +1: jailletc36, jj, druggeri
 
-  * mod_proxy_balancer: We are no-longer using PREGRAB.
-    trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1501399
-    2.4.x patch: trunk patch works
-    +1: jim, druggeri, wrowe
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
