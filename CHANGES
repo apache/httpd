@@ -59,21 +59,10 @@ Changes with Apache 2.5.0
      from the HTTP_IN filter, parse chunks in a single pass with zero copy.
      Reduce memory usage by 48 bytes per request. [Graham Leggett]
 
-  *) mod_proxy_http: Make the proxy-interim-response environment variable
-     effective by formally overriding origin server behaviour. [Graham
-     Leggett, Co-Advisor <coad measurement-factory.com>]
-
   *) core: Stop the HTTP_IN filter from attempting to write error buckets
      to the output filters, which is bogus in the proxy case. Create a
      clean mapping from APR codes to HTTP status codes, and use it where
      needed. [Graham Leggett]
-
-  *) mod_proxy: Ensure we don't attempt to amend a table we are iterating
-     through, ensuring that all headers listed by Connection are removed.
-     [Graham Leggett, Co-Advisor <coad measurement-factory.com>]
-
-  *) mod_proxy: Fix seg-faults when using the global pool on threaded
-     MPMs [Thomas Eckert <thomas.r.w.eckert gmail.com>, Jim Jagielski]
 
   *) mod_proxy: Ensure network errors detected by the proxy are returned as
      504 Gateway Timout as opposed to 502 Bad Gateway, in order to be
@@ -117,9 +106,6 @@ Changes with Apache 2.5.0
 
   *) core: Correctly parse an IPv6 literal host specification in an absolute
      URL in the request line. [Stefan Fritsch]
-
-  *) mpm_event: Check that AsyncRequestWorkerFactor is not negative. PR 54254.
-     [Jackie Zhang <jackie qq zhang gmail com>]
 
   *) mod_ssl: Add support for OpenSSL configuration commands [Stephen Henson]
 
