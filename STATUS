@@ -90,14 +90,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_proxy: Connection header clearing issues
-    trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1481891
-                 https://svn.apache.org/viewvc?view=revision&revision=1482075
-                 https://svn.apache.org/viewvc?view=revision&revision=1482170
-                 https://svn.apache.org/viewvc?view=revision&revision=1482555
-    2.4.x patch: trunk patch works modulo CHANGES and ap_mmn
-    +1: jim, druggeri, wrowe
-
   * Some easy votes to keep 2.4 in line with trunk
     - mod_slotmem_shm: Replace duplicate log tags
     - mpm/event: Check that AsyncRequestWorkerFactor is not negative (PR 54254)
