@@ -76,12 +76,12 @@ serveur HTTP Apache</title>
       <directive module="core" type="section">If</directive>, etc...
       </dd>
 
-      <dt>KeepAliveTimeout in milliseconds</dt>
-      <dd>It is now possible to specify <directive module="core"
-      >KeepAliveTimeout</directive> in milliseconds.
+      <dt>KeepAliveTimeout en millisecondes</dt>
+      <dd>Il est maintenant possible de sp&eacute;cifier <directive module="core"
+      >KeepAliveTimeout</directive> en millisecondes.
       </dd>
 
-      <dt>NameVirtualHost directive</dt>
+      <dt>Directive NameVirtualHost</dt>
       <dd>Cette directive obsol&egrave;te n'est plus utile.</dd>
 
       <dt>Directives autoris&eacute;es dans les fichiers <code>.htaccess</code></dt>
