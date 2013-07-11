@@ -8,6 +8,9 @@ Changes with Apache 2.4.5
      URI that is not configured for DAV will trigger a segfault. [Ben Reser
      <ben reser.org>]
 
+  *) mod_proxy_http: Make the proxy-interim-response environment variable
+     effective by formally overriding origin server behaviour. [Graham
+     Leggett, Co-Advisor <coad measurement-factory.com>]
 
   *) mod_proxy: Fix seg-faults when using the global pool on threaded
      MPMs [Thomas Eckert <thomas.r.w.eckert gmail.com>, Graham Leggett,
