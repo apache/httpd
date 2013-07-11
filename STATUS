@@ -90,21 +90,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * Some easy votes to keep 2.4 in line with trunk
-    - mod_slotmem_shm: Replace duplicate log tags
-    - mpm/event: Check that AsyncRequestWorkerFactor is not negative (PR 54254)
-    - remove unneeded include statements
-    - mod_cache_disk: Name pool + concat string at compile time when possible
-    - mod_ratelimit (rate_limit_filter): Log the error code
-    - mod_authnz_ldap: fix typo
-    trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1406068
-                 https://svn.apache.org/viewvc?view=revision&revision=1425777
-                 https://svn.apache.org/viewvc?view=revision&revision=1427546
-                 https://svn.apache.org/viewvc?view=revision&revision=1462643
-                 https://svn.apache.org/viewvc?view=revision&revision=1487530
-                 https://svn.apache.org/viewvc?view=revision&revision=1493330
-    2.4.x patch: trunk patch works
-    +1: jailletc36, jj, druggeri
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
