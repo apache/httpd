@@ -124,7 +124,7 @@
       versions, download the latest versions of both APR and APR-Util
       from <a href="http://apr.apache.org/">Apache APR</a>, unpack
       them into <code>./srclib/apr</code> and <code>./srclib/apr-util</code>
-      (be sure the domain names do not have version numbers; for example,
+      (be sure the directory names do not have version numbers; for example,
       the APR distribution must be under ./srclib/apr/) and use
       <code>./configure</code>'s <code>--with-included-apr</code>
       option.  On some platforms, you may have to install the 
