@@ -1171,8 +1171,10 @@ static apr_status_t cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
      */
     if (reason && r->status == HTTP_NOT_MODIFIED && cache->stale_handle) {
 
-        ap_log_rerror(
-                APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(02473) "cache: %s responded with an uncacheable 304, retrying the request. Reason: %s", r->unparsed_uri, reason);
+        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(02473) 
+                "cache: %s responded with an uncacheable 304, " 
+                "retrying the request. Reason: %s", 
+                r->unparsed_uri, reason);
 
         /* we've got a cache conditional miss! tell anyone who cares */
         cache_run_cache_status(cache->handle, r, r->headers_out, AP_CACHE_MISS,
