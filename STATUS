@@ -188,6 +188,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
               that exist, esp when using the incorrect data types...
               Are these casts safe?
 
+  * mod_cache: fill in APLOGNO value
+    trunk: http://svn.apache.org/r1481396
+           http://svn.apache.org/r1502665
+    2.4.x patch: trunk works
+    +1 covener
+
+
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
 If you want to propose one of those, please still add them here.
