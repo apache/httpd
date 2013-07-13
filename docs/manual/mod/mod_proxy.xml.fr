@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1479261 -->
+<!-- English Revision: 1501913 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -907,6 +907,12 @@ l'espace d'URLs du serveur local</description>
     module="mod_proxy">ProxyRequests</directive> doit &ecirc;tre d&eacute;finie &agrave;
     <strong>off</strong> lorsqu'on utilise la directive
     <directive>ProxyPass</directive>.</note>
+
+    <p>Le support des sockets de style Unix est fourni ; il suffit pour
+    cela d'utiliser une cible du style
+    <code>socket=chemin-cod&eacute;-%</code>. Par exemple, pour cibler l'UDS
+    /home/www/socket, vous devez utiliser
+    <code>http://socket=%2Fhome%2Fwww%2Fsocket</code>.</p>
 
     <p>Supposons que le serveur local a pour adresse
     <code>http://example.com/</code> ; alors la ligne</p>
