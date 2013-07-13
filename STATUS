@@ -187,12 +187,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           jj: In general, casts are sometimes used to "hide" problems
               that exist, esp when using the incorrect data types...
               Are these casts safe?
+      fuankg: replied to list with further details about patches.
 
   * mod_cache: fill in APLOGNO value
     trunk: http://svn.apache.org/r1481396
            http://svn.apache.org/r1502665
     2.4.x patch: trunk works
-    +1 covener
+    +1 covener, fuankg
 
   * mod_deflate: Improve error detection when decompressing request bodies
     with trailing garbage: handle case where trailing bytes are in
