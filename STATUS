@@ -194,6 +194,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: trunk works
     +1 covener
 
+  * mod_deflate: Improve error detection when decompressing request bodies
+    with trailing garbage: handle case where trailing bytes are in
+    the same bucket.
+    trunk: http://svn.apache.org/r1502772
+    2.4.x patch: trunk works (minus log-message-tags)
+    +1 rjung
+
 
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
