@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1499880:1502199 (outdated) -->
+<!-- English Revision : 1502199 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1482,6 +1482,13 @@ Les <em>option</em>s disponibles sont :</p>
     chiffrement bas&eacute; sur MD5 (par exemple sous FreeBSD ou BSD/OS,
     etc...) doivent utiliser le condens&eacute; MD5 suivant pour le m&ecirc;me mot :
     ``<code>$1$OXLyS...$Owx8s2/m9/gfkcRVXzgoE/</code>''.</p>
+
+    <p>Notez que la directive <directive
+    module="mod_auth_basic">AuthBasicFake</directive> impl&eacute;ment&eacute;e par le
+    module <module>mod_auth_basic</module> peut &ecirc;tre utilis&eacute;e d'une
+    mani&egrave;re plus g&eacute;n&eacute;rale comme simulation d'authentification basique,
+    ce qui permet de contr&ocirc;ler la structure nom utilisateur/mot de
+    passe.</p>
 </li>
 <li><code>StrictRequire</code>
     <p>
