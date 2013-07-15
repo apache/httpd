@@ -27,8 +27,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_session_dbd.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_session_dbd.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Support des session basé sur DBD/SQL</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>session_dbd_module</td></tr>
@@ -112,7 +110,7 @@
 DBDriver pgsql
 DBDParams "dbname=apachesession user=apache password=xxxxx host=localhost"
 DBDPrepareSQL "delete from session where key = %s" deletesession
-DBDPrepareSQL "update session set value = %s, expiry = %lld where key = %s" updatesession
+DBDPrepareSQL "update session set value = %s, expiry = %lld, key = %s where key = %s" updatesession
 DBDPrepareSQL "insert into session (value, expiry, key) values (%s, %lld, %s)" insertsession
 DBDPrepareSQL "select value from session where key = %s and (expiry = 0 or expiry &gt; %lld)" selectsession
 DBDPrepareSQL "delete from session where expiry != 0 and expiry &lt; %lld" cleansession

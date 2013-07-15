@@ -159,8 +159,8 @@ email fournie comme mot de passe est correct</td></tr>
 <tr class="odd"><td><a href="mod_auth_basic.html#authbasicauthoritative">AuthBasicAuthoritative On|Off</a></td><td> On </td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Définit si les processus d'autorisation et
 d'authentification peuvent être confiés à des modules de plus bas
 niveau</td></tr>
-<tr><td><a href="mod_auth_basic.html#authbasicfake">AuthBasicFake off|username [password]</a></td><td></td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Fake basic authentication using the given expressions for
-username and password</td></tr>
+<tr><td><a href="mod_auth_basic.html#authbasicfake">AuthBasicFake off|nom-utilisateur [mot-de-passe]</a></td><td></td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Authentification de base simulée à l'aide des nom
+d'utilisateur et mot de passe fournis</td></tr>
 <tr class="odd"><td><a href="mod_auth_basic.html#authbasicprovider">AuthBasicProvider <var>nom fournisseur</var>
 [<var>nom fournisseur</var>] ...</a></td><td> file </td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Définit le(les) fournisseur(s) d'authentification pour
 cette zone du site web</td></tr>

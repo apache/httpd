@@ -27,8 +27,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_ssl.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_ssl.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Chiffrement de haut niveau basé sur les protocoles Secure
 Sockets Layer (SSL) et Transport Layer Security (TLS)</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -1258,6 +1256,12 @@ Les <em>option</em>s disponibles sont :</p>
     chiffrement basé sur MD5 (par exemple sous FreeBSD ou BSD/OS,
     etc...) doivent utiliser le condensé MD5 suivant pour le même mot :
     ``<code>$1$OXLyS...$Owx8s2/m9/gfkcRVXzgoE/</code>''.</p>
+
+    <p>Notez que la directive <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicfake">AuthBasicFake</a></code> implémentée par le
+    module <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code> peut être utilisée d'une
+    manière plus générale comme simulation d'authentification basique,
+    ce qui permet de contrôler la structure nom utilisateur/mot de
+    passe.</p>
 </li>
 <li><code>StrictRequire</code>
     <p>
