@@ -81,11 +81,11 @@ serveur HTTP Apache</h1>
       <code class="directive"><a href="./mod/core.html#if">&lt;If&gt;</a></code>, etc...
       </dd>
 
-      <dt>KeepAliveTimeout in milliseconds</dt>
-      <dd>It is now possible to specify <code class="directive"><a href="./mod/core.html#keepalivetimeout">KeepAliveTimeout</a></code> in milliseconds.
+      <dt>KeepAliveTimeout en millisecondes</dt>
+      <dd>Il est maintenant possible de spécifier <code class="directive"><a href="./mod/core.html#keepalivetimeout">KeepAliveTimeout</a></code> en millisecondes.
       </dd>
 
-      <dt>NameVirtualHost directive</dt>
+      <dt>Directive NameVirtualHost</dt>
       <dd>Cette directive obsolète n'est plus utile.</dd>
 
       <dt>Directives autorisées dans les fichiers <code>.htaccess</code></dt>
