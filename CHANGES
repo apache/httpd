@@ -1,5 +1,8 @@
                                                          -*- coding: utf-8 -*-
 
+Changes with Apache 2.4.7
+
+
 Changes with Apache 2.4.6
 
   *) Revert a broken fix for PR54948 that was applied to 2.4.5 (which was
