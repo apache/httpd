@@ -337,7 +337,7 @@ int main(int argc, const char * const argv[])
     if (rv != APR_SUCCESS)
         exit(ERR_SYNTAX);
 
-    while ((rv = apr_getopt(state, "cnmspdBbDivxlC:T:", &opt, &opt_arg)) == APR_SUCCESS) {
+    while ((rv = apr_getopt(state, "cnmspdBbtivxlC:T:", &opt, &opt_arg)) == APR_SUCCESS) {
         switch (opt) {
         case 'c':
             h->create = 1;
