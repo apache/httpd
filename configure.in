@@ -617,6 +617,10 @@ AC_ARG_ENABLE(maintainer-mode,APACHE_HELP_STRING(--enable-maintainer-mode,Turn o
       LOAD_ALL_MODULES=yes
       AC_MSG_NOTICE([Maintainer mode setting "LOAD_ALL_MODULES" to $LOAD_ALL_MODULES])
     fi
+    if test "x$enable_bucketeer" = "x"; then
+      enable_bucketeer=yes
+      AC_MSG_NOTICE([Maintainer mode setting "enable_bucketeer" to yes])
+    fi
   fi
 ])dnl
 
