@@ -194,14 +194,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     trunk: http://svn.apache.org/r1481396
            http://svn.apache.org/r1502665
     2.4.x patch: trunk works
-    +1 covener, fuankg
+    +1: covener, fuankg, jailletc36
+    note jailletc36: the patch does not apply cleanly for event.c
 
   * mod_deflate: Improve error detection when decompressing request bodies
     with trailing garbage: handle case where trailing bytes are in
     the same bucket.
     trunk: http://svn.apache.org/r1502772
     2.4.x patch: trunk works (minus log-message-tags)
-    +1 rjung
+    +1: rjung
 
   * support/htdbm: fix processing of -t command line switch. Regression
     introduced in 2.4.4
