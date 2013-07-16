@@ -203,6 +203,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: trunk works (minus log-message-tags)
     +1 rjung
 
+  * support/htdbm: fix processing of -t command line switch. Regression
+    introduced in 2.4.4
+    PR55264 [Jo Rhett <jrhett netconsonance com>]
+    trunk: http://svn.apache.org/r1503866
+    2.4.x patch: trunk works
+    +1: jailletc36
+
 
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
