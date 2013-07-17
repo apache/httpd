@@ -23,6 +23,11 @@ Changes with Apache 2.4.5
      Existing configurations must be changed.
      [Takashi Sato <takashi tks.st>, Graham Leggett]
 
+  *) mod_auth_basic: Add a generic mechanism to fake basic authentication
+     using the ap_expr parser. AuthBasicFake allows the administrator to 
+     construct their own username and password for basic authentication based 
+     on their needs. [Graham Leggett]
+
   *) mpm_event: Check that AsyncRequestWorkerFactor is not negative. PR 54254.
      [Jackie Zhang <jackie qq zhang gmail com>]
 
