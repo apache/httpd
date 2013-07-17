@@ -52,7 +52,7 @@ void *util_ldap_url_node_copy(util_ald_cache_t *cache, void *c)
 
     if (node) {
         if (!(node->url = util_ald_strdup(cache, n->url))) {
-            util_ald_free(cache, node->url);
+            util_ald_free(cache, node);
             return NULL;
         }
         node->search_cache = n->search_cache;
