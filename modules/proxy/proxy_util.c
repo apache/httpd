@@ -393,7 +393,7 @@ PROXY_DECLARE(int) ap_proxyerror(request_rec *r, int statuscode, const char *mes
 static const char *
      proxy_get_host_of_request(request_rec *r)
 {
-    char *url, *user = NULL, *password = NULL, *err, *host;
+    char *url, *user = NULL, *password = NULL, *err, *host = NULL;
     apr_port_t port;
 
     if (r->hostname != NULL) {
