@@ -119,7 +119,7 @@ username and password</description>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
-
+<compatibility>Apache HTTP Server 2.4.5 and later</compatibility>
 <usage>
     <p>The username and password specified are combined into an
     Authorization header, which is passed to the server or service
