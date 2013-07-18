@@ -89,7 +89,7 @@ client</description>
 
       <highlight language="config">
         SetOutputFilter DEFLATE
-	  </highlight>
+      </highlight>
 
       <p>Certains navigateurs populaires ne g&egrave;rent pas la compression de
       tous les contenus, et pour r&eacute;soudre ce probl&egrave;me, vous pouvez
