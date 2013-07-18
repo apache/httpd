@@ -193,9 +193,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   * mod_cache: fill in APLOGNO value
     trunk: http://svn.apache.org/r1481396
            http://svn.apache.org/r1502665
-    2.4.x patch: trunk works
-    +1: covener, fuankg, jailletc36
-    note jailletc36: the patch does not apply cleanly for event.c
+    2.4.x patch: Applicable parts of above only: 
+                 http://people.apache.org/~covener/patches/2.4.x-cache_err.diff
+    +1: covener (I reset the votes due to the # of conflicts in the trunk revs)
+  
 
   * mod_deflate: Improve error detection when decompressing request bodies
     with trailing garbage: handle case where trailing bytes are in
