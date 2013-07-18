@@ -71,7 +71,7 @@ client</description>
     SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip dont-vary
     
     # On s'assure que les mandataires ne servent pas le mauvais
-     # contenu
+    # contenu
     Header append Vary User-Agent env=!dont-vary
 &lt;/Location&gt;
       </highlight>
@@ -89,7 +89,7 @@ client</description>
 
       <highlight language="config">
         SetOutputFilter DEFLATE
-	</highlight>
+	  </highlight>
 
       <p>Certains navigateurs populaires ne g&egrave;rent pas la compression de
       tous les contenus, et pour r&eacute;soudre ce probl&egrave;me, vous pouvez
