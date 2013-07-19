@@ -210,7 +210,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     PR55264 [Jo Rhett <jrhett netconsonance com>]
     trunk: http://svn.apache.org/r1503866
     2.4.x patch: trunk works
-    +1: jailletc36
+    +1: jailletc36, druggeri
 
 
 A list of further possible backports can be found at:                                                                                                                                   
