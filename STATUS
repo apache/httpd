@@ -195,7 +195,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
            http://svn.apache.org/r1502665
     2.4.x patch: Applicable parts of above only: 
                  http://people.apache.org/~covener/patches/2.4.x-cache_err.diff
-    +1: covener (I reset the votes due to the # of conflicts in the trunk revs)
+    +1: covener (I reset the votes due to the # of conflicts in the trunk revs), jailletc36
   
 
   * mod_deflate: Improve error detection when decompressing request bodies
