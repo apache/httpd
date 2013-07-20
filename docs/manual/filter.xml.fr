@@ -72,7 +72,8 @@
 et permet aux applications de traiter les donn&eacute;es en entr&eacute;e et en sortie
 d'une mani&egrave;re hautement flexible et configurable, quelle que soit la
 provenance de ces donn&eacute;es.  Il est possible de pr&eacute;-traiter les donn&eacute;es
-en entr&eacute;e, et post-traiter les donn&eacute;es en sortie, comme souhait&eacute;.
+en entr&eacute;e, et post-traiter les donn&eacute;es en sortie, selon
+vos souhaits.
 Ces traitements sont tout &agrave; fait ind&eacute;pendants des traditionnelles phases
 de traitement des requ&ecirc;tes.</p>
 <p class="figure">
@@ -145,10 +146,11 @@ le document texte n'est pas d&eacute;j&agrave; dans le jeu de caract&egrave;res 
 <section id="service">
 
 <title>Pr&eacute;sentation des filtres en tant que service HTTP</title>
-<p>Les filtres permettent de traiter les contenus en provenance du
-serveur. Le module <module>mod_reflector</module> permet aussi
-d'utiliser les filtres pour traiter les contenus en provenance du
-client.</p>
+<p>Les filtres permettent de traiter les requ&ecirc;tes des clients avant
+traitement par le serveur, ainsi que les contenus issus du serveur avant de les renvoyer
+au client. Le module <module>mod_reflector</module> permet aussi
+d'utiliser les filtres pour traiter les requ&ecirc;tes des clients avant de
+les renvoyer directement &agrave; ces derniers.</p>
 
 <p>Le module <module>mod_reflector</module> re&ccedil;oit les requ&ecirc;tes POST des
 clients, et en r&eacute;percute le corps dans la requ&ecirc;te POST constituant la
