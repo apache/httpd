@@ -233,7 +233,7 @@ Listen 80
 Listen 8000
     </highlight>
 
-    <p>Pour que la serveur accepte les connexions sur deux interfaces et
+    <p>Pour que le serveur accepte les connexions sur deux interfaces et
     ports particuliers, sp&eacute;cifiez :</p>
 
     <highlight language="config">
@@ -528,7 +528,7 @@ la coordination des processus enfants</description>
     </example>
 
     <p>Une m&eacute;moire partag&eacute;e sous forme de fichier est utile pour les
-    applications tierses qui n&eacute;cessitent un acc&egrave;s direct au tableau de
+    applications tierces qui n&eacute;cessitent un acc&egrave;s direct au tableau de
     bord des processus.</p>
 
     <p>Si vous utilisez un <directive>ScoreBoardFile</directive>, vous

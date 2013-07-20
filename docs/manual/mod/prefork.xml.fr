@@ -35,7 +35,7 @@ processus, sans thread</description>
     <p>Ce module multi-processus (MPM) impl&eacute;mente un serveur web avec
     d&eacute;marrage anticip&eacute; de processus. Chaque processus du serveur peut
     r&eacute;pondre aux requ&ecirc;tes entrantes, et un processus parent contr&ocirc;le la
-    taille du jeu de serveurs. Il est particuli&egrave;rement indiqu&eacute; pour les
+    taille du jeu de processus enfants. Il est particuli&egrave;rement indiqu&eacute; pour les
     sites qui ne doivent pas utiliser les threads afin de maintenir une
     compatibilit&eacute; avec certaines biblioth&egrave;ques non s&ucirc;res du point de vue
     des threads. C'est &eacute;galement le MPM le plus appropri&eacute; si l'on veut
@@ -60,7 +60,7 @@ qu'utilise le serveur HTTP Apache</a></seealso>
     maintenir plusieurs processus serveurs inactifs ou <dfn>en
     r&eacute;serve</dfn>, afin de pouvoir traiter les requ&ecirc;tes entrantes. De
     cette fa&ccedil;on, les clients n'ont pas besoin d'attendre le d&eacute;marrage
-    d'un nouveau processus enfant pour que ses requ&ecirc;tes puissent &ecirc;tre
+    d'un nouveau processus enfant pour que leurs requ&ecirc;tes puissent &ecirc;tre
     trait&eacute;es.</p>
 
     <p>Les directives <directive
@@ -154,7 +154,7 @@ inactifs</description>
     <directive>MaxSpareServers</directive> processus inactifs, le
     processus parent arr&ecirc;tera les processus exc&eacute;dentaires.</p>
 
-    <p>La modification de ce param&egrave;tre ne peut s'av&eacute;rer n&eacute;cessaire que
+    <p>La modification de ce param&egrave;tre n'est n&eacute;cessaire que
     dans le cas de sites tr&egrave;s sollicit&eacute;s. D&eacute;finir ce param&egrave;tre &agrave; une
     valeur tr&egrave;s grande est cependant dans la plupart des cas une
     mauvaise id&eacute;e. Si vous essayez d'affecter &agrave; ce param&egrave;tre une valeur
@@ -190,7 +190,7 @@ inactifs</description>
     enfants correspond &agrave; la d&eacute;finition de la directive
     <directive>MinSpareServers</directive>.</p>
 
-    <p>La modification de ce param&egrave;tre ne peut s'av&eacute;rer n&eacute;cessaire que
+    <p>La modification de ce param&egrave;tre n'est n&eacute;cessaire que
     dans le cas de sites tr&egrave;s sollicit&eacute;s. D&eacute;finir ce param&egrave;tre &agrave; une
     valeur tr&egrave;s grande est dans la plupart des cas une mauvaise
     id&eacute;e.</p>
