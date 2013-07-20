@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1437838:1502199 (outdated) -->
+<!-- English Revision : 1504152 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -134,6 +134,8 @@ d'utilisateur et mot de passe fournis</description>
 </contextlist>
 <override>AuthConfig</override>
 
+<compatibility>Disponible &agrave; partir de la version 2.4.5 du serveur HTTP
+Apache</compatibility>
 <usage>
     <p>Les nom d'utilisateur et mot de passe sp&eacute;cifi&eacute;s sont rassembl&eacute;s
     dans un en-t&ecirc;te d'autorisation qui est transmis au serveur ou au
