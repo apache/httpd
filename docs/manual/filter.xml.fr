@@ -60,7 +60,8 @@
 et permet aux applications de traiter les donn&#233;es en entr&#233;e et en sortie
 d'une mani&#232;re hautement flexible et configurable, quelle que soit la
 provenance de ces donn&#233;es.  Il est possible de pr&#233;-traiter les donn&#233;es
-en entr&#233;e, et post-traiter les donn&#233;es en sortie, comme souhait&#233;.
+en entr&#233;e, et post-traiter les donn&#233;es en sortie, selon vos
+souhaits.
 Ces traitements sont tout &#224; fait ind&#233;pendants des traditionnelles phases
 de traitement des requ&#234;tes.</p>
 <p class="figure">
