@@ -712,7 +712,11 @@ _copybin:
 !IF EXIST("srclib\serf")
 	copy srclib\serf\$(LONG)\libserf.$(src_dll) 		"$(inst_dll)" <.y
 !ENDIF
+!IF "$(SHORT)" == "D"
+	copy srclib\pcre\pcred.$(src_dll)			"$(inst_dll)" <.y
+!ELSE
 	copy srclib\pcre\pcre.$(src_dll)			"$(inst_dll)" <.y
+!ENDIF	
 	copy modules\aaa\$(LONG)\mod_access_compat.$(src_so) 	"$(inst_so)" <.y
 	copy modules\aaa\$(LONG)\mod_allowhandlers.$(src_so) 	"$(inst_so)" <.y
 	copy modules\aaa\$(LONG)\mod_allowmethods.$(src_so) 	"$(inst_so)" <.y
