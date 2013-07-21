@@ -56,7 +56,7 @@ Changes with Apache 2.4.5
   *) mod_cache_socache: Make sure the CacheSocacheMaxSize directive is merged
      correctly. [Jens Låås <jelaas gmail.com>]
 
-  *) rotatelogs: add -n number-of-files option to roate through a number
+  *) rotatelogs: add -n number-of-files option to rotate through a number
      of fixed-name logfiles. [Eric Covener]
 
   *) mod_proxy: Support web-socket tunnels via mod_proxy_wstunnel.
