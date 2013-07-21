@@ -330,7 +330,7 @@ static int check_speling(request_rec *r)
          * > it would locate "foobar.html". Not perfect, but I ran into
          * > that problem when I first wrote the module.
          */
-        else {
+        else if (cfg->case_only == 0) {
 #ifdef WANT_BASENAME_MATCH
             /*
              * Okay... we didn't find anything. Now we take out the hard-core
