@@ -76,8 +76,8 @@ cha&icirc;nes</title>
 
     <p>Dans le mod&egrave;le traditionnel, les filtres en sortie constituent
     une simple cha&icirc;ne s'&eacute;tendant depuis le g&eacute;n&eacute;rateur de contenu (ou
-    gestionnaire) jusqu'au client. Ce fonctionnement peut convenir si la
-    cha&icirc;ne de filtrage peut &ecirc;tre correctement configur&eacute;e, mais pose
+    gestionnaire) jusqu'au client. Ce fonctionnement peut convenir s'il
+    permet d'atteindre le but recherch&eacute;, mais pose
     probl&egrave;me lorsque cette cha&icirc;ne doit &ecirc;tre configur&eacute;e dynamiquement en
     fonction de la sortie du gestionnaire.</p>
 
@@ -294,7 +294,7 @@ FilterProvider repack png_pack "%{CONTENT_TYPE} = 'image/png'"
 <description>assigne un filtre en sortie pour un type de m&eacute;dia
 particulier</description>
 <syntax>AddOutputFilterByType <var>filtre</var>[;<var>filtre</var>...]
-<var>type de m&eacute;dia</var> [<var>type de m&eacute;dia</var>] ...</syntax>
+<var>type_de_m&eacute;dia</var> [<var>type_de_m&eacute;dia</var>] ...</syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
 <context>.htaccess</context></contextlist>
@@ -343,7 +343,7 @@ particulier</description>
 <directivesynopsis>
 <name>FilterDeclare</name>
 <description>D&eacute;clare un filtre intelligent</description>
-<syntax>FilterDeclare <var>nom filtre</var> <var>[type]</var></syntax>
+<syntax>FilterDeclare <var>nom_filtre</var> <var>[type]</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>Options</override>
@@ -368,7 +368,7 @@ particulier</description>
 <directivesynopsis>
 <name>FilterProvider</name>
 <description>Enregistre un filtre de contenu</description>
-<syntax>FilterProvider <var>nom filtre</var> <var>nom fournisseur</var>
+<syntax>FilterProvider <var>nom_filtre</var> <var>nom_fournisseur</var>
  <var>expression</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
@@ -398,7 +398,7 @@ Apache</a>, pour une r&eacute;f&eacute;rence compl&egrave;te et d'autres exemple
 <directivesynopsis>
 <name>FilterChain</name>
 <description>Configure la cha&icirc;ne de filtrage</description>
-<syntax>FilterChain [+=-@!]<var>nom filtre</var> <var>...</var></syntax>
+<syntax>FilterChain [+=-@!]<var>nom_filtre</var> <var>...</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>Options</override>
@@ -436,8 +436,8 @@ Apache</a>, pour une r&eacute;f&eacute;rence compl&egrave;te et d'autres exemple
 <directivesynopsis>
 <name>FilterProtocol</name>
 <description>V&eacute;rifie le respect du protocole HTTP</description>
-<syntax>FilterProtocol <var>nom filtre</var> [<var>nom fournisseur</var>]
-    <var>drapeaux protocole</var></syntax>
+<syntax>FilterProtocol <var>nom_filtre</var> [<var>nom_fournisseur</var>]
+    <var>drapeaux_protocole</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>Options</override>
@@ -488,7 +488,7 @@ Apache</a>, pour une r&eacute;f&eacute;rence compl&egrave;te et d'autres exemple
 <name>FilterTrace</name>
 <description>Obtention d'informations de d&eacute;bogage/diagnostique en
 provenance de <module>mod_filter</module></description>
-<syntax>FilterTrace <var>nom filtre</var> <var>niveau</var></syntax>
+<syntax>FilterTrace <var>nom_filtre</var> <var>niveau</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context></contextlist>
 
