@@ -401,7 +401,7 @@ gestionnaire sp&eacute;cifi&eacute;</description>
 
 <directivesynopsis>
 <name>AddInputFilter</name>
-<description>Associe les extensions de noms de fichiers donn&eacute;es aux
+<description>Associe les extensions de noms de fichiers aux
 filtres sp&eacute;cifi&eacute;s qui traiteront les requ&ecirc;tes clients</description>
 <syntax>AddInputFilter <var>filtre</var>[;<var>filtre</var>...]
 <var>extension</var> [<var>extension</var>] ...</syntax>
@@ -423,7 +423,7 @@ filtres sp&eacute;cifi&eacute;s qui traiteront les requ&ecirc;tes clients</descr
 
     <p>Si plusieurs <var>filtres</var> sont sp&eacute;cifi&eacute;s, ils doivent &ecirc;tre
     s&eacute;par&eacute;s par des points-virgules et inscrits dans l'ordre selon
-    lequel il devront traiter le contenu. L'argument <var>filtre</var>
+    lequel ils devront traiter le contenu. L'argument <var>filtre</var>
     est insensible &agrave; la casse.</p>
 
     <p>L'argument <var>extension</var> est insensible &agrave; la casse et peut
@@ -500,7 +500,7 @@ AddLanguage en-us .en
 
 <directivesynopsis>
 <name>AddOutputFilter</name>
-<description>Associe les extensions de noms de fichiers donn&eacute;s aux
+<description>Associe les extensions de noms de fichiers aux
 filtres sp&eacute;cifi&eacute;s qui traiteront les r&eacute;ponses en provenance du
 serveur</description>
 <syntax>AddOutputFilter <var>filtre</var>[;<var>filtre</var>...]
