@@ -344,7 +344,7 @@ CustomLog invalidated-requests.log common env=cache-invalidate
 manager</description>
 <syntax>CacheEnable <var>cache_type</var> [<var>url-string</var>]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
-<context>directory</context><context>.htaccess</context>
+<context>directory</context>
 </contextlist>
 
 <usage>
