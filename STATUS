@@ -121,8 +121,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  http://svn.apache.org/r1498880
     2.4.x patch: http://people.apache.org/~sf/open_htaccess_hook.patch
     +1: sf, jorton, 
-    +0.5: jj: I would prefer if this sat in trunk for a few months first
-              to receive more testing.
+    +1: jim: iff Steinar verifies
     +/-0: trawick: I would prefer if Steinar verifies that it is fine for
                    him (however simple that verification would be).  There's
                    no need to proceed until he is ready to use it anyway.
@@ -174,7 +173,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     minfrin: Surely we should just fix these unsigned ints? Not sure what value
              there would be in trying to bake in an arbitrary limit in the mean
              time when we can just fix the underlying problem instead.
-         jj: Agree w/ minfrin
+        jim: Agree w/ minfrin
 
   * modules: Fix some compiler warnings.
     trunk patch: http://svn.apache.org/r1500345
@@ -183,9 +182,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  http://svn.apache.org/r1500483
                  http://svn.apache.org/r1500519
     2.4.x patch: trunk patches work
-    +1: fuankg
+    +1: fuankg, jim
     comments:
-          jj: In general, casts are sometimes used to "hide" problems
+         jim: In general, casts are sometimes used to "hide" problems
               that exist, esp when using the incorrect data types...
               Are these casts safe?
       fuankg: replied to list with further details about patches.
@@ -210,7 +209,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     PR55264 [Jo Rhett <jrhett netconsonance com>]
     trunk: http://svn.apache.org/r1503866
     2.4.x patch: trunk works
-    +1: jailletc36, druggeri
+    +1: jailletc36, druggeri, jim
 
   * Makefile.win: Install proper pcre DLL file during debug build install
     PR55235 [Ben Reser <ben reser org>]
