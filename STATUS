@@ -92,6 +92,12 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  * support/htdbm: fix processing of -t command line switch. Regression
+    introduced in 2.4.4
+    PR55264 [Jo Rhett <jrhett netconsonance com>]
+    trunk: http://svn.apache.org/r1503866
+    2.4.x patch: trunk works
+    +1: jailletc36, druggeri, jim
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -203,13 +209,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     trunk: http://svn.apache.org/r1502772
     2.4.x patch: trunk works (minus log-message-tags)
     +1: rjung
-
-  * support/htdbm: fix processing of -t command line switch. Regression
-    introduced in 2.4.4
-    PR55264 [Jo Rhett <jrhett netconsonance com>]
-    trunk: http://svn.apache.org/r1503866
-    2.4.x patch: trunk works
-    +1: jailletc36, druggeri, jim
 
   * Makefile.win: Install proper pcre DLL file during debug build install
     PR55235 [Ben Reser <ben reser org>]
