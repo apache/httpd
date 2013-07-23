@@ -92,12 +92,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * support/htdbm: fix processing of -t command line switch. Regression
-    introduced in 2.4.4
-    PR55264 [Jo Rhett <jrhett netconsonance com>]
-    trunk: http://svn.apache.org/r1503866
-    2.4.x patch: trunk works
-    +1: jailletc36, druggeri, jim
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
