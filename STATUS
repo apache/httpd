@@ -197,6 +197,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: http://people.apache.org/~gsmith/httpd/diffs/pr55235-2.4bp.diff
     +1: gsmith
 
+  * Teeny patch to fix #55304
+    trunk: http://svn.apache.org/r1506714
+    +1: gstein
+
 
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
