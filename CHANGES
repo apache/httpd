@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.7
 
+  *) support/htdbm: fix processing of -t command line switch. Regression
+     introduced in 2.4.4
+     PR 55264 [Jo Rhett <jrhett netconsonance com>]
 
 Changes with Apache 2.4.6
 
