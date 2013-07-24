@@ -2763,7 +2763,7 @@ static int dav_method_copymove(request_rec *r, int is_move)
      * The multistatus responses will contain the information about any
      * resource that fails the validation.
      *
-     * We check the parent resource, too, since this is a MOVE. Moving the
+     * We check the parent resource, too, if this is a MOVE. Moving the
      * resource effectively removes it from the parent collection, so we
      * must ensure that we have met the appropriate conditions.
      *
@@ -2772,7 +2772,8 @@ static int dav_method_copymove(request_rec *r, int is_move)
      */
     if ((err = dav_validate_request(r, resource, depth, NULL,
                                     &multi_response,
-                                    DAV_VALIDATE_PARENT
+                                    (is_move ? DAV_VALIDATE_PARENT
+                                             : DAV_VALIDATE_RESOURCE)
                                     | DAV_VALIDATE_USE_424,
                                     NULL)) != NULL) {
         err = dav_push_error(r->pool, err->status, 0,
