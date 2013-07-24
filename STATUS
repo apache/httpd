@@ -92,7 +92,12 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-
+  * core: Add open_htaccess hook.
+    trunk patch: http://svn.apache.org/r1389339
+                 http://svn.apache.org/r1498880
+    2.4.x patch: http://people.apache.org/~sf/open_htaccess_hook.patch
+    +1: sf, jorton, trawick
+    +1: jim: iff Steinar verifies
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -107,24 +112,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     +1: minfrin, jim
     -0.5: sf: I would prefer if this sat in trunk for a few months first
               to receive more testing.
-
-  * core: Add pre_htaccess hook.
-    trunk patch: http://svn.apache.org/r1389339
-    2.4.x patch: trunk patch works modulo CHANGES and mmn bump
-    +1: minfrin, jim
-    trawick: I like sf's idea on the list for a different API to solve
-             the same problem.  We shouldn't proceed with this patch.
-
-    Alternate proposal:
-    core: Add open_htaccess hook.
-    trunk patch: http://svn.apache.org/r1389339
-                 http://svn.apache.org/r1498880
-    2.4.x patch: http://people.apache.org/~sf/open_htaccess_hook.patch
-    +1: sf, jorton, 
-    +1: jim: iff Steinar verifies
-    +/-0: trawick: I would prefer if Steinar verifies that it is fine for
-                   him (however simple that verification would be).  There's
-                   no need to proceed until he is ready to use it anyway.
 
   * core: Stop the HTTP_IN filter from attempting to write error buckets
     to the output filters
