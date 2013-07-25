@@ -124,6 +124,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     trunk: http://svn.apache.org/r1506714
     +1: gstein, wrowe
 
+  * mod_ssl: Compare SNI hostname against Host header case-insensitively.
+      PR: 49491
+      Trunk version of patch:
+         http://svn.apache.org/r1082189
+      Backport version for 2.2.x of patch:
+         Trunk version of patch works
+      +1: rpluem,
 
 PATCHES/ISSUES THAT ARE STALLED
 
