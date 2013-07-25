@@ -120,9 +120,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
            find but we can't rule it out for foreign modules. We could fix the signature
            (returning const char *) in trunk but not for 2.2 ad 2.4. 
 
-  * Teeny patch to fix #55304
+  * mod_dav; Teeny patch to fix #55304
     trunk: http://svn.apache.org/r1506714
-    +1: gstein
+    +1: gstein, wrowe
 
 
 PATCHES/ISSUES THAT ARE STALLED
