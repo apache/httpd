@@ -103,10 +103,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     2.2.x patch: trunk patch works (except CHANGES and compatibility info in docs)
     +1: sf, fuankg, rjung
 
-
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
-
   * core: speed up (for common cases) and reduce memory usage of ap_escape_logitem
     This should save 70-100 bytes in the request pool for a default config.
     trunk patch: http://svn.apache.org/r1485409
@@ -123,6 +119,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   * mod_dav; Teeny patch to fix #55304
     trunk: http://svn.apache.org/r1506714
     +1: gstein, wrowe, rpluem
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
 
   * mod_ssl: Compare SNI hostname against Host header case-insensitively.
       PR: 49491
