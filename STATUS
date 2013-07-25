@@ -112,7 +112,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     trunk patch: http://svn.apache.org/r1485409
     2.4.x patch: http://svn.apache.org/r1485723
     2.2.x patch: trunk works
-    +1: minfrin, rjung
+    +1: minfrin, rjung, rpluem
     wrowe wonders why we copy and don't simply return the identity on no-change
     rjung: From an API point of view the function - as well as the html escape functions
            - takes a const char* and returns a plain char *. So a consumer would be free
@@ -122,7 +122,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
   * mod_dav; Teeny patch to fix #55304
     trunk: http://svn.apache.org/r1506714
-    +1: gstein, wrowe
+    +1: gstein, wrowe, rpluem
 
   * mod_ssl: Compare SNI hostname against Host header case-insensitively.
       PR: 49491
