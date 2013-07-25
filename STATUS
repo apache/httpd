@@ -99,6 +99,17 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     +1: sf, jorton, trawick
     +1: jim: iff Steinar verifies
 
+  * mod_cache: fill in APLOGNO value
+    trunk: http://svn.apache.org/r1481396
+           http://svn.apache.org/r1502665
+    2.4.x patch: Applicable parts of above only: 
+                 http://people.apache.org/~covener/patches/2.4.x-cache_err.diff
+    +1: covener (I reset the votes due to the # of conflicts in the trunk revs), jailletc36, trawick
+
+  * mod_dav: Teeny patch to fix #55304
+    trunk: http://svn.apache.org/r1506714
+    +1: gstein, wrowe, trawick
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -176,14 +187,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
               Are these casts safe?
       fuankg: replied to list with further details about patches.
 
-  * mod_cache: fill in APLOGNO value
-    trunk: http://svn.apache.org/r1481396
-           http://svn.apache.org/r1502665
-    2.4.x patch: Applicable parts of above only: 
-                 http://people.apache.org/~covener/patches/2.4.x-cache_err.diff
-    +1: covener (I reset the votes due to the # of conflicts in the trunk revs), jailletc36
-  
-
   * mod_deflate: Improve error detection when decompressing request bodies
     with trailing garbage: handle case where trailing bytes are in
     the same bucket.
@@ -195,11 +198,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     PR55235 [Ben Reser <ben reser org>]
     trunk: http://svn.apache.org/r1505073
     2.4.x patch: http://people.apache.org/~gsmith/httpd/diffs/pr55235-2.4bp.diff
-    +1: gsmith
-
-  * mod_dav: Teeny patch to fix #55304
-    trunk: http://svn.apache.org/r1506714
-    +1: gstein, wrowe
+    +1: gsmith, trawick
 
 
 A list of further possible backports can be found at:                                                                                                                                   
