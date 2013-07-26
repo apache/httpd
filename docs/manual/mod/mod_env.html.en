@@ -83,7 +83,7 @@ SSI pages</td></tr>
 <div class="directive-section"><h2><a name="SetEnv" id="SetEnv">SetEnv</a> <a name="setenv" id="setenv">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets environment variables</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SetEnv <var>env-variable</var> <var>value</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SetEnv <var>env-variable</var> [<var>value</var>]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
@@ -96,6 +96,9 @@ SSI pages</td></tr>
       SetEnv SPECIAL_PATH /foo/bin
       </pre>
 </div>
+ 
+    <p> If you omit the <var>value</var> argument, the variable is set to
+    an empty string.</p>
 
     <div class="note"><p>The internal environment variables set by this directive are set
     <em>after</em> most early request processing directives are run, such as access
