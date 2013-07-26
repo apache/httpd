@@ -69,7 +69,8 @@
     <p>In addition to the configuration directives that control the
     behaviour of <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>, there are a number of
     <dfn>environment variables</dfn> that control the HTTP protocol
-    provider:</p>
+    provider. Environment variables below that don't specify specific values
+    are enabled when set to any value.</p>
     <dl>
         <dt>proxy-sendextracrlf</dt>
         <dd>Causes proxy to send an extra CR-LF newline on the end of a
