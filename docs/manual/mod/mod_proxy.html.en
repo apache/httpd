@@ -1161,6 +1161,13 @@ through</td></tr>
         in the list. Worker recovery behaves the same as other worker errors.
         Available with Apache HTTP Server 2.2.17 and later.
     </td></tr>
+    <tr><td>failontimeout</td>
+        <td>Off</td>
+        <td>If set, an IO read timeout after a request is sent to the backend will
+        force the worker into error state. Worker recovery behaves the same as other
+        worker errors.
+        Available with Apache HTTP Server 2.2.25 and later.
+    </td></tr>
     <tr><td>forcerecovery</td>
         <td>On</td>
         <td>Force the immediate recovery of all workers without considering the
