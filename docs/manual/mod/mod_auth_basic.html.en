@@ -95,6 +95,7 @@ username and password</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_basic</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Apache HTTP Server 2.4.5 and later</td></tr>
 </table>
     <p>The username and password specified are combined into an
     Authorization header, which is passed to the server or service

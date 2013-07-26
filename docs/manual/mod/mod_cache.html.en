@@ -465,7 +465,7 @@ CacheDetailHeader on
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable caching of specified URLs using a specified storage
 manager</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CacheEnable <var>cache_type</var> [<var>url-string</var>]</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
 </table>
