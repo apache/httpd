@@ -92,12 +92,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * core: Add open_htaccess hook.
-    trunk patch: http://svn.apache.org/r1389339
-                 http://svn.apache.org/r1498880
-    2.4.x patch: http://people.apache.org/~sf/open_htaccess_hook.patch
-    +1: sf, jorton, trawick
-    +1: jim: iff Steinar verifies
 
   * mod_cache: fill in APLOGNO value
     trunk: http://svn.apache.org/r1481396
