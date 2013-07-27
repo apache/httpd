@@ -1322,6 +1322,31 @@ AP_DECLARE_HOOK(int,quick_handler,(request_rec *r, int lookup_uri))
 AP_DECLARE_HOOK(void,optional_fn_retrieve,(void))
 
 /**
+ * Allow modules to open htaccess files or perform operations before doing so
+ * @param r The current request
+ * @param dir_name The directory for which the htaccess file should be opened
+ * @param access_name The filename  for which the htaccess file should be opened
+ * @param conffile Where the pointer to the opened ap_configfile_t must be
+ *        stored
+ * @param full_name Where the full file name of the htaccess file must be
+ *        stored.
+ * @return APR_SUCCESS on success,
+ *         APR_ENOENT or APR_ENOTDIR if no htaccess file exists,
+ *         AP_DECLINED to let later modules do the opening,
+ *         any other error code on error.
+ */
+AP_DECLARE_HOOK(apr_status_t,open_htaccess,
+                (request_rec *r, const char *dir_name, const char *access_name,
+                 ap_configfile_t **conffile, const char **full_name))
+
+/**
+ * Core internal function, use ap_run_open_htaccess() instead.
+ */
+apr_status_t ap_open_htaccess(request_rec *r, const char *dir_name,
+        const char *access_name, ap_configfile_t **conffile,
+        const char **full_name);
+
+/**
  * A generic pool cleanup that will reset a pointer to NULL. For use with
  * apr_pool_cleanup_register.
  * @param data The address of the pointer
