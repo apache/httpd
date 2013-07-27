@@ -2,6 +2,10 @@
 
 Changes with Apache 2.4.7
 
+  *) core: Add open_htaccess hooks, allowing mpm-itk, in conjunction with
+     dirwalk_stat (introduced in  2.4.5), to be used without patches to
+     httpd core. [Jeff Trawick, Stefan Fritsch]
+
   *) support/htdbm: fix processing of -t command line switch. Regression
      introduced in 2.4.4
      PR 55264 [Jo Rhett <jrhett netconsonance com>]
@@ -69,8 +73,7 @@ Changes with Apache 2.4.5
      a lookup rather than using the raw arguments. [Martin Ksellmann
      <martin@ksellmann.de>]
 
-  *) core: Add dirwalk_stat and open_htaccess hooks, allowing mpm-itk
-     to be used without patches to httpd core. [Jeff Trawick, Stefan Fritsch]
+  *) core: Add dirwalk_stat hook.  [Jeff Trawick]
 
   *) core: Add post_perdir_config hook.
      [Steinar Gunderson <sgunderson bigfoot.com>]
