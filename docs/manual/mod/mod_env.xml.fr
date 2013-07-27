@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1479255:1507320 (outdated) -->
+<!-- English Revision : 1507320 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -72,7 +72,7 @@ shell</description>
 <directivesynopsis>
 <name>SetEnv</name>
 <description>D&eacute;finit des variables d'environnement</description>
-<syntax>SetEnv <var>var-env</var> <var>valeur</var></syntax>
+<syntax>SetEnv <var>var-env</var> [<var>valeur</var>]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
@@ -87,6 +87,10 @@ shell</description>
       SetEnv SPECIAL_PATH /foo/bin
       </highlight>
     </example>
+
+    <p>Si l'argument <var>valeur</var> est absent, la variable est
+    d&eacute;finie &agrave; la valeur d'une cha&icirc;ne vide.</p>
+
     <note><p>Les variables d'environnement internes d&eacute;finies par cette
     directive le sont <em>apr&egrave;s</em> l'ex&eacute;cution de la plupart des
     directives du traitement initial des requ&ecirc;tes, comme les contr&ocirc;les

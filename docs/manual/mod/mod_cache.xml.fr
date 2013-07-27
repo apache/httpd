@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1439106:1505986 (outdated) -->
+<!-- English Revision : 1505986 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -181,7 +181,7 @@ LoadModule cache_module modules/mod_cache.so
     &lt;/IfModule&gt;
     
     # Lorsqu'on sert de mandataire, on ne met pas en cache la liste
-    # des mises &agrave; jour de s&eacute;curit&eacute;
+# des mises &agrave; jour de s&eacute;curit&eacute;
     CacheDisable http://security.update.server/update-list/
 &lt;/IfModule&gt;
       </highlight>
@@ -314,7 +314,7 @@ AddOutputFilterByType CACHE;DEFLATE text/plain
 
   <highlight language="config">
 # Mise en cache du contenu avant l'intervention de mod_include et
-# mod_deflate
+   # mod_deflate
 CacheQuickHandler off
 AddOutputFilterByType CACHE;INCLUDES;DEFLATE text/html
   </highlight>
@@ -326,7 +326,7 @@ AddOutputFilterByType CACHE;INCLUDES;DEFLATE text/html
 
   <highlight language="config">
 # Mise en cache du contenu entre les interventions de mod_include et
-# mod_deflate
+   # mod_deflate
 CacheQuickHandler off
 AddOutputFilterByType INCLUDES;CACHE;DEFLATE text/html
   </highlight>
@@ -391,7 +391,7 @@ gestionnaire de stockage pr&eacute;cis&eacute;</description>
 <syntax>CacheEnable <var>type de cache</var> [<var>cha&icirc;ne
 URL</var>]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
-<context>directory</context><context>.htaccess</context>
+<context>directory</context>
 </contextlist>
 
 <usage>
