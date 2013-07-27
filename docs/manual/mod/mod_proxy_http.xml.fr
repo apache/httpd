@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1154342:1507326 (outdated) -->
+<!-- English Revision : 1507326 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -59,11 +59,14 @@
     <p>Outre les directives de configuration qui contr&ocirc;lent le
     comportement de <module>mod_proxy</module>, plusieurs <dfn>variables
     d'environnement</dfn> permettent de contr&ocirc;ler le fournisseur du
-    protocole HTTP :</p>
+    protocole HTTP. Parmi les variables suivantes, celle qui ne
+    n&eacute;cessitent pas de valeur particuli&egrave;re sont d&eacute;finies quelle que soit
+    la valeur qu'on leur affecte.</p>
     <dl>
         <dt>proxy-sendextracrlf</dt>
         <dd>Provoque l'envoi par le mandataire d'une nouvelle ligne
-	CR-LF suppl&eacute;mentaire &agrave; la fin de la requ&ecirc;te. Cei constitue un
+	CR-LF suppl&eacute;mentaire &agrave; la fin de la requ&ecirc;te.
+	Ceci constitue un
 	moyen de contournement d'une bogue de certains
 	navigateurs.</dd>
         <dt>force-proxy-request-1.0</dt>
