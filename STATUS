@@ -100,9 +100,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
                  http://people.apache.org/~covener/patches/2.4.x-cache_err.diff
     +1: covener (I reset the votes due to the # of conflicts in the trunk revs), jailletc36, trawick
 
-  * mod_dav: Teeny patch to fix #55304
-    trunk: http://svn.apache.org/r1506714
-    +1: gstein, wrowe, trawick
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
