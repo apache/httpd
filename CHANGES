@@ -9,9 +9,6 @@ Changes with Apache 2.5.0
   *) core: Log a message at TRACE1 when the client aborts a connection.
      [Eric Covener]
 
-  *) core: Replace pre_htaccess hook with more flexible open_htaccess hook.
-     [Stefan Fritsch]
-
   *) mod_authnz_ldap: Support primitive LDAP servers that do not accept
      filters, such as "SDBM-backed LDAP" on z/OS, by allowing a special
      filter "none" to be specified in AuthLDAPURL. [Eric Covener]
