@@ -186,12 +186,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: http://people.apache.org/~gsmith/httpd/diffs/pr55235-2.4bp.diff
     +1: gsmith, trawick
 
-  * mod_log_io: new format-specifier %C (combined) which is the sum of received
+  * mod_logio: new format-specifier %C (combined) which is the sum of received
     and sent byte counts.
     PR54015 [Martijn T. <apache_bugzilla@mindcontrolled.nl>, Christophe JAILLET]
     trunk: http://svn.apache.org/r1484910
     2.4.x patch: trunk patch works
     +1: jailletc36
+    rjung: doesn't that conflict with mod_log_config cookie logging (also "C")?
+           Maybe we can use "S" for "sum"?
+           Please also update the part of mod_logio.c where it lists the format
+           characters in a comment (%...I and %...O but no %...C yet).
 
   * mod_ldap: Fix an unlikely potential memory leak.
     PR54936 [Zhenbo Xu <zhenbo1987 gmail com>]
