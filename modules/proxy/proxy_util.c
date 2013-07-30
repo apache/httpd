@@ -316,7 +316,7 @@ PROXY_DECLARE(char *)
         url = "";
     }
     else {
-        *(url++) = '\0';    /* skip seperating '/' */
+        *(url++) = '\0';    /* skip separating '/' */
     }
 
     /* find _last_ '@' since it might occur in user/password part */
