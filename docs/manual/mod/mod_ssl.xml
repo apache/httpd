@@ -2278,14 +2278,14 @@ for its own certificate in the TLS handshake. Configuring an
 prerequisite for enabling OCSP stapling.</p>
 
 <p>OCSP stapling relieves the client of querying the OCSP responder
-on its own, but it should be noted that in its current specification,
+on its own, but it should be noted that with the RFC 6066 specification,
 the server's <code>CertificateStatus</code> reply may only include an
 OCSP response for a single cert. For server certificates with intermediate
 CA certificates in their chain (the typical case nowadays),
-stapling in its current form therefore only partially achieves the
-stated goal of "saving roundtrips and resources" - see also the <a
-href="https://datatracker.ietf.org/doc/draft-pettersen-tls-ext-multiple-ocsp/">
-"Adding Multiple TLS Certificate Status Extension requests"</a> Internet draft.
+stapling in its current implementation therefore only partially achieves the
+stated goal of "saving roundtrips and resources" - see also
+<a href="http://www.ietf.org/rfc/rfc6961.txt">RFC 6961</a>
+(TLS Multiple Certificate Status Extension).
 </p>
 </usage>
 </directivesynopsis>
