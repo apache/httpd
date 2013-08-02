@@ -1089,6 +1089,12 @@ l'espace d'URLs du serveur local</td></tr>
     <strong>off</strong> lorsqu'on utilise la directive
     <code class="directive">ProxyPass</code>.</div>
 
+    <p>Le support des sockets de style Unix est fourni ; il suffit pour
+    cela d'utiliser une cible du style
+    <code>socket=chemin-codé-%</code>. Par exemple, pour cibler l'UDS
+    /home/www/socket, vous devez utiliser
+    <code>http://socket=%2Fhome%2Fwww%2Fsocket</code>.</p>
+
     <p>Supposons que le serveur local a pour adresse
     <code>http://example.com/</code> ; alors la ligne</p>
 
