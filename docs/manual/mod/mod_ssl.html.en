@@ -2426,7 +2426,8 @@ OCSP response for a single cert. For server certificates with intermediate
 CA certificates in their chain (the typical case nowadays),
 stapling in its current implementation therefore only partially achieves the
 stated goal of "saving roundtrips and resources" - see also
-<a href="http://www.ietf.org/rfc/rfc6961.txt">RFC 6961</a>.
+<a href="http://www.ietf.org/rfc/rfc6961.txt">RFC 6961</a>
+(TLS Multiple Certificate Status Extension).
 </p>
 
 </div>

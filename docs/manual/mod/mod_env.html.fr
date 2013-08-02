@@ -87,7 +87,7 @@ shell</td></tr>
 <div class="directive-section"><h2><a name="SetEnv" id="SetEnv">SetEnv</a> <a name="setenv" id="setenv">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit des variables d'environnement</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SetEnv <var>var-env</var> <var>valeur</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SetEnv <var>var-env</var> [<var>valeur</var>]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
@@ -101,6 +101,10 @@ shell</td></tr>
       SetEnv SPECIAL_PATH /foo/bin
       </pre>
 </div>
+
+    <p>Si l'argument <var>valeur</var> est absent, la variable est
+    définie à la valeur d'une chaîne vide.</p>
+
     <div class="note"><p>Les variables d'environnement internes définies par cette
     directive le sont <em>après</em> l'exécution de la plupart des
     directives du traitement initial des requêtes, comme les contrôles

@@ -70,11 +70,14 @@
     <p>Outre les directives de configuration qui contrôlent le
     comportement de <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>, plusieurs <dfn>variables
     d'environnement</dfn> permettent de contrôler le fournisseur du
-    protocole HTTP :</p>
+    protocole HTTP. Parmi les variables suivantes, celle qui ne
+    nécessitent pas de valeur particulière sont définies quelle que soit
+    la valeur qu'on leur affecte.</p>
     <dl>
         <dt>proxy-sendextracrlf</dt>
         <dd>Provoque l'envoi par le mandataire d'une nouvelle ligne
-	CR-LF supplémentaire à la fin de la requête. Cei constitue un
+	CR-LF supplémentaire à la fin de la requête.
+	Ceci constitue un
 	moyen de contournement d'une bogue de certains
 	navigateurs.</dd>
         <dt>force-proxy-request-1.0</dt>
