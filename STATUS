@@ -131,6 +131,19 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          Trunk version of patch works
       +1: rpluem, trawick
 
+  * mod_ssl: Support ECC keys
+    trunk patch: http://svn.apache.org/r834378 
+                 http://svn.apache.org/r1040304
+                 http://svn.apache.org/r1040373
+                 http://svn.apache.org/r1090645
+                 http://svn.apache.org/r1294306
+                 http://svn.apache.org/r1509872
+    2.4.x patch: first four from above, plus
+                 http://svn.apache.org/r1308862
+                 http://svn.apache.org/r1509875
+    2.2.x patch: http://people.apache.org/~sf/ECC-2.2.diff
+    +1: sf
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * mod_cache: Realign the cache_quick_handler() to behave identically
