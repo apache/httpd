@@ -97,12 +97,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
   
-  * mod_ssl: Change default for SSLCompression to off.
-    trunk patch: http://svn.apache.org/r1400700
-    2.4.x patch: http://svn.apache.org/r1400962
-    2.2.x patch: trunk patch works (except CHANGES and compatibility info in docs)
-    +1: sf, fuankg, rjung
-
   * core: speed up (for common cases) and reduce memory usage of ap_escape_logitem
     This should save 70-100 bytes in the request pool for a default config.
     trunk patch: http://svn.apache.org/r1485409
