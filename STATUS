@@ -97,19 +97,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
   
-  * core: speed up (for common cases) and reduce memory usage of ap_escape_logitem
-    This should save 70-100 bytes in the request pool for a default config.
-    trunk patch: http://svn.apache.org/r1485409
-    2.4.x patch: http://svn.apache.org/r1485723
-    2.2.x patch: trunk works
-    +1: minfrin, rjung, rpluem
-    wrowe wonders why we copy and don't simply return the identity on no-change
-    rjung: From an API point of view the function - as well as the html escape functions
-           - takes a const char* and returns a plain char *. So a consumer would be free
-           to write to the returned string. There's no such place in httpd code I can
-           find but we can't rule it out for foreign modules. We could fix the signature
-           (returning const char *) in trunk but not for 2.2 ad 2.4. 
-
   * mod_dav; Teeny patch to fix #55304
     trunk: http://svn.apache.org/r1506714
     +1: gstein, wrowe, rpluem
