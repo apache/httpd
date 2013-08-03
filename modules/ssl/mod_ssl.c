@@ -144,7 +144,7 @@ static const command_rec ssl_config_cmds[] = {
     SSL_CMD_SRV(HonorCipherOrder, FLAG,
                 "Use the server's cipher ordering preference")
     SSL_CMD_SRV(Compression, FLAG,
-                "Enable SSL level compression"
+                "Enable SSL level compression "
                 "(`on', `off')")
     SSL_CMD_SRV(InsecureRenegotiation, FLAG,
                 "Enable support for insecure renegotiation")
