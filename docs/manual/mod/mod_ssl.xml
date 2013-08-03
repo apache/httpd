@@ -1473,7 +1473,7 @@ SSLProxyMachineCertificateFile /usr/local/apache2/conf/ssl.crt/proxy.pem
 <syntax>SSLProxyMachineCertificateChainFile <em>filename</em></syntax>
 <contextlist><context>server config</context></contextlist>
 <override>Not applicable</override>
-<compatibility>Available in Apache 2.2.22 and later</compatibility>
+<compatibility>Available in Apache 2.2.23 and later</compatibility>
 
 <usage>
 <p>
