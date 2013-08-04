@@ -1234,11 +1234,7 @@ start_over:
 
 
     if (LDAP_SUCCESS != (result = uldap_connection_open(r, ldc))) {
-        failures++;
-        if (AP_LDAP_IS_SERVER_DOWN(result)) { 
-            goto start_over;
-        }
-        /* something other than 'server down' */
+        /* uldap_connection_open() retried already */
         return res;
     }
 
