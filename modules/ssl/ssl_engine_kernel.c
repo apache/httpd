@@ -1700,7 +1700,7 @@ static void ssl_session_log(server_rec *s,
 
     if (timeout) {
         apr_snprintf(timeout_str, sizeof(timeout_str),
-                     "timeout=%lds ", (timeout - time(NULL)));
+                     "timeout=%lds ", timeout);
     }
 
     ap_log_error(APLOG_MARK, APLOG_TRACE2, 0, s,
