@@ -1728,6 +1728,14 @@ start_over:
         goto start_over;
     }
 
+    if (result == LDAP_TIMEOUT) {
+        ldc->reason = "ldap_search_ext_s() for user failed with timeout";
+        uldap_connection_unbind(ldc);
+        failures++;
+        goto start_over;
+    }
+
+
     /* if there is an error (including LDAP_NO_SUCH_OBJECT) return now */
     if (result != LDAP_SUCCESS) {
         ldc->reason = "ldap_search_ext_s() for user failed";
