@@ -106,8 +106,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                    http://svn.apache.org/r1477094
     2.4.x patch: http://people.apache.org/~minfrin/httpd-event-ssl.patch
     +1: minfrin, jim
-    -0.5: sf: I would prefer if this sat in trunk for a few months first
-              to receive more testing.
+    sf: The current patch has very little effect. Connections will only
+        do async write completion if the encrypted data left to send for
+        a request is less than THRESHOLD_MAX_BUFFER (64k).
+        http://mail-archives.apache.org/mod_mbox/httpd-dev/201308.mbox/%3C1965246.dTmAyLRneo%40k%3E
 
   * core: Stop the HTTP_IN filter from attempting to write error buckets
     to the output filters
