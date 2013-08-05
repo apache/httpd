@@ -217,7 +217,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   * mod_ssl: Fix logging of SSL session cache timeout value
     trunk patch: https://svn.apache.org/r1510098
     2.4.x patch: trunk patch works
-    +1: kbrand,
+    +1: kbrand, trawick
 
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
