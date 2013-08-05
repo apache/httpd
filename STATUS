@@ -93,6 +93,11 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
 
+  * mod_ssl: Fix logging of SSL session cache timeout value
+    trunk patch: https://svn.apache.org/r1510098
+    2.4.x patch: trunk patch works
+    +1: kbrand, trawick, jim
+
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -213,11 +218,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
            http://svn.apache.org/r1503991
     2.4.x patch: trunk patches work
     +1: jailletc36
-
-  * mod_ssl: Fix logging of SSL session cache timeout value
-    trunk patch: https://svn.apache.org/r1510098
-    2.4.x patch: trunk patch works
-    +1: kbrand, trawick, jim
 
   * skiplist: Add skiplist capability to httpd
     trunk "patch": http://svn.apache.org/repos/asf/httpd/httpd/trunk/include/ap_skiplist.h
