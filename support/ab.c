@@ -282,22 +282,20 @@ char servername[1024];  /* name that server reports */
 char *hostname;         /* host name from URL */
 const char *host_field;       /* value of "Host:" header field */
 const char *path;             /* path name */
-char postfile[1024];    /* name of file containing post data */
 char *postdata;         /* *buffer containing data from postfile */
 apr_size_t postlen = 0; /* length of data to be POSTed */
-char content_type[1024];/* content type to put in POST header */
+char *content_type = NULL;     /* content type to put in POST header */
 const char *cookie,           /* optional cookie line */
            *auth,             /* optional (basic/uuencoded) auhentication */
            *hdrs;             /* optional arbitrary headers */
 apr_port_t port;        /* port number */
-char proxyhost[1024];   /* proxy host name */
+char *proxyhost = NULL; /* proxy host name */
 int proxyport = 0;      /* proxy port */
 const char *connecthost;
 const char *myhost;
 apr_port_t connectport;
 const char *gnuplot;          /* GNUplot file */
 const char *csvperc;          /* CSV Percentile file */
-char url[1024];
 const char *fullurl;
 const char *colonhost;
 int isproxy = 0;
@@ -1679,7 +1677,7 @@ static void test(void)
             keepalive ? "Connection: Keep-Alive\r\n" : "",
             cookie, auth,
             postlen,
-            (content_type[0]) ? content_type : "text/plain", hdrs);
+            (content_type != NULL) ? content_type : "text/plain", hdrs);
     }
     if (snprintf_res >= sizeof(_request)) {
         err("Request too long\n");
@@ -2073,7 +2071,7 @@ int main(int argc, const char * const argv[])
     tdstring = "bgcolor=white";
     cookie = "";
     auth = "";
-    proxyhost[0] = '\0';
+    proxyhost = "";
     hdrs = "";
 
     apr_app_initialize(&argc, &argv, NULL);
@@ -2178,7 +2176,7 @@ int main(int argc, const char * const argv[])
                                              * something */
                 break;
             case 'T':
-                strcpy(content_type, opt_arg);
+                content_type = apr_pstrdup(cntxt, opt_arg);
                 break;
             case 'C':
                 cookie = apr_pstrcat(cntxt, "Cookie: ", opt_arg, "\r\n", NULL);
@@ -2249,7 +2247,7 @@ int main(int argc, const char * const argv[])
                         p++;
                         proxyport = atoi(p);
                     }
-                    strcpy(proxyhost, opt_arg);
+                    proxyhost = apr_pstrdup(cntxt, opt_arg);
                     isproxy = 1;
                 }
                 break;
