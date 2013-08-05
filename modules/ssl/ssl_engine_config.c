@@ -609,7 +609,7 @@ const char *ssl_cmd_SSLEngine(cmd_parms *cmd, void *dcfg, const char *arg)
 
     if (!strcasecmp(arg, "On")) {
         sc->enabled = SSL_ENABLED_TRUE;
-    return NULL;
+        return NULL;
     }
     else if (!strcasecmp(arg, "Off")) {
         sc->enabled = SSL_ENABLED_FALSE;
