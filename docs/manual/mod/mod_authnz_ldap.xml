@@ -30,7 +30,7 @@ for HTTP Basic authentication.</description>
 <identifier>authnz_ldap_module</identifier>
 
 <summary>
-    <p>This module provides authentication front-ends such as
+    <p>This module allows authentication front-ends such as
     <module>mod_auth_basic</module> to authenticate users through
     an ldap directory.</p>
 
