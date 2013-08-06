@@ -322,6 +322,15 @@ case $host in
       APR_SETVAR(SINGLE_LISTEN_UNSERIALIZED_ACCEPT, [1])
       ;;
   *-linux-*)
+      AC_CHECK_LIB(systemd-daemon, sd_notify, SYSTEMD_LIBS="-lsystemd-daemon")
+      AC_CHECK_HEADERS(systemd/sd-daemon.h, [ap_HAVE_SD_DAEMON_H="yes"], [ap_HAVE_SD_DAEMON_H="no"])
+      if test $ap_HAVE_SD_DAEMON_H = "no" || test -z "${SYSTEMD_LIBS}"; then
+        AC_MSG_WARN([Your system does not support systemd.])
+      else
+        APR_ADDTO(LIBS, $SYSTEMD_LIBS)
+        APR_ADDTO(INTERNAL_CPPFLAGS, [-DAP_SYSTEMD_SUPPORT])
+      fi
+
       case `uname -r` in
         # Unserialized accept() was not recommended until Linux 2.2.
         [[01]].* | 2.[[01]]* )
