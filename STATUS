@@ -203,7 +203,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     PR54936 [Zhenbo Xu <zhenbo1987 gmail com>]
     trunk: http://svn.apache.org/r1504276
     2.4.x patch: trunk patch works
-    +1: jailletc36
+    +1: jailletc36, trawick (util_ald_free(NULL) seems nastier than a memory leak)
 
   * easy votes:
      	- Have static analyser tool happy
@@ -212,7 +212,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     trunk: http://svn.apache.org/r1503990
            http://svn.apache.org/r1503991
     2.4.x patch: trunk patches work
-    +1: jailletc36
+    +1: jailletc36, trawick
 
   * skiplist: Add skiplist capability to httpd
     trunk "patch": http://svn.apache.org/repos/asf/httpd/httpd/trunk/include/ap_skiplist.h
