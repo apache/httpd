@@ -217,6 +217,9 @@ Allow from example.org
         settings to replace it in 2.4.
         </li>
 
+        <li><directive module="core">AllowOverride</directive> now
+        defaults to <code>None</code>.</li>
+
         <li><directive module="core">EnableSendfile</directive> now
         defaults to Off.</li>
 
@@ -386,6 +389,9 @@ Allow from example.org
     <ul>
       <li><code>configuration error:  couldn't check user: /path</code> -
       load module <module>mod_authn_core</module>.</li>
+      <li><code>.htaccess</code> files aren't being processed - Check for an
+      appropriate <directive module="core">AllowOverride</directive> directive;
+      the default changed to <code>None</code> in 2.4.</li>
     </ul>
     </li>
 </ul>
