@@ -294,7 +294,7 @@ int ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
             sc->enabled = SSL_ENABLED_TRUE;
         }
 
-       /* If sc->enabled is UNSET, then SSL is optional on this vhost  */
+        /* If sc->enabled is UNSET, then SSL is optional on this vhost  */
         /* Fix up stuff that may not have been set */
         if (sc->enabled == SSL_ENABLED_UNSET) {
             sc->enabled = SSL_ENABLED_FALSE;
