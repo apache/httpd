@@ -139,9 +139,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   * mod_proxy: save DNS lookups
     trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1462269
                  https://svn.apache.org/viewvc?view=revision&revision=1463455
-    2.4.x patch: trunk patch works
+    2.4.x patch: http://people.apache.org/~jim/patches/proxy-dns-patch.txt
     +1: jim, druggeri
-    trawick: patches don't apply to current 2.4.x (r1506921 or so)
 
   * mod_socache_shmcb.c: Remove arbitrary restriction on shared memory size
     previously limited to 64MB.
