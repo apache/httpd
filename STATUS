@@ -92,11 +92,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_proxy: save DNS lookups
-    trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1462269
-                 https://svn.apache.org/viewvc?view=revision&revision=1463455
-    2.4.x patch: http://people.apache.org/~jim/patches/proxy-dns-patch.txt
-    +1: jim, druggeri, rpluem
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
