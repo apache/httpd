@@ -93,16 +93,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
 
-  * easy votes:
-     	- Have static analyser tool happy
-        - Potential use of uninitialized memory
-    PR54936 [Zhenbo Xu <zhenbo1987 gmail com>]
-    trunk: http://svn.apache.org/r1503990
-           http://svn.apache.org/r1503991
-    2.4.x patch: trunk patches work
-    +1: jailletc36, trawick, jim
-
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
