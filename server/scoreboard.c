@@ -389,7 +389,7 @@ AP_DECLARE(void) ap_increment_counts(ap_sb_handle_t *sb, request_rec *r)
 AP_DECLARE(int) ap_find_child_by_pid(apr_proc_t *pid)
 {
     int i;
-    int max_daemons_limit;
+    int max_daemons_limit = 0;
 
     ap_mpm_query(AP_MPMQ_MAX_DAEMONS, &max_daemons_limit);
 
