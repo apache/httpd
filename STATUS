@@ -92,6 +92,11 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  * mod_proxy: save DNS lookups
+    trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1462269
+                 https://svn.apache.org/viewvc?view=revision&revision=1463455
+    2.4.x patch: http://people.apache.org/~jim/patches/proxy-dns-patch.txt
+    +1: jim, druggeri, rpluem
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -135,12 +140,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     +1:
     -1: rpluem: This change is still disputed. See
         http://mail-archives.apache.org/mod_mbox/httpd-dev/201305.mbox/%3C1B16B9E3-87BA-4EEF-939C-7C7313B54714%40gbiv.com%3E
-
-  * mod_proxy: save DNS lookups
-    trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1462269
-                 https://svn.apache.org/viewvc?view=revision&revision=1463455
-    2.4.x patch: http://people.apache.org/~jim/patches/proxy-dns-patch.txt
-    +1: jim, druggeri
 
   * mod_socache_shmcb.c: Remove arbitrary restriction on shared memory size
     previously limited to 64MB.
