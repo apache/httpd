@@ -212,7 +212,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     trunk: http://svn.apache.org/r1503990
            http://svn.apache.org/r1503991
     2.4.x patch: trunk patches work
-    +1: jailletc36, trawick
+    +1: jailletc36, trawick, jim
 
   * skiplist: Add skiplist capability to httpd
     trunk "patch": http://svn.apache.org/repos/asf/httpd/httpd/trunk/include/ap_skiplist.h
@@ -224,7 +224,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     command-line options.  PR 55360.
     trunk: http://svn.apache.org/r1510707
     2.4.x patch: trunk patch works (with offset)
-    +1: trawick
+    +1: trawick, jim
 
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
