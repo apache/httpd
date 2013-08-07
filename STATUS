@@ -127,6 +127,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  include version note
     +1: jim, druggeri
     druggeri note: Fails as a BalancerMember, FWIW
+    jim: trying to recreate... (will likely fix on trunk)
 
   * mod_proxy: Ensure network errors detected by the proxy are returned as
     504 Gateway Timout as opposed to 502 Bad Gateway
