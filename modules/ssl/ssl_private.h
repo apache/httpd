@@ -276,7 +276,7 @@ typedef enum {
     SSL_PPTYPE_UNSET   = UNSET,
     SSL_PPTYPE_BUILTIN = 0,
     SSL_PPTYPE_FILTER  = 1,
-	SSL_PPTYPE_PIPE    = 2
+    SSL_PPTYPE_PIPE    = 2
 } ssl_pphrase_t;
 
 /**
@@ -316,7 +316,7 @@ typedef enum {
     SSL_ENABLED_UNSET    = UNSET,
     SSL_ENABLED_FALSE    = 0,
     SSL_ENABLED_TRUE     = 1,
-	SSL_ENABLED_OPTIONAL = 3
+    SSL_ENABLED_OPTIONAL = 3
 } ssl_enabled_t;
 
 /**
