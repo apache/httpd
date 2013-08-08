@@ -422,7 +422,7 @@ AP_DECLARE_HOOK(int,access_checker,(request_rec *r))
 /**
  * This hook is used to apply additional access control and/or bypass
  * authentication for this resource. It runs *before* a user is authenticated,
- * but after the auth_checker hook.
+ * but after the access_checker hook.
  * This hook should be registered with ap_hook_check_access_ex().
  *
  * @param r the current request
