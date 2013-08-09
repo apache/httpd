@@ -34,7 +34,7 @@ for HTTP Basic authentication.</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_authnz_ldap.c</td></tr></table>
 <h3>Summary</h3>
 
-    <p>This module provides authentication front-ends such as
+    <p>This module allows authentication front-ends such as
     <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code> to authenticate users through
     an ldap directory.</p>
 
