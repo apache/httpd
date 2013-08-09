@@ -193,7 +193,7 @@ LoadModule cache_module modules/mod_cache.so
     &lt;/IfModule&gt;
     
     # Lorsqu'on sert de mandataire, on ne met pas en cache la liste
-    # des mises à jour de sécurité
+# des mises à jour de sécurité
     CacheDisable http://security.update.server/update-list/
 &lt;/IfModule&gt;
       </pre>
@@ -325,7 +325,7 @@ AddOutputFilterByType CACHE;DEFLATE text/plain
 
   <pre class="prettyprint lang-config">
 # Mise en cache du contenu avant l'intervention de mod_include et
-# mod_deflate
+   # mod_deflate
 CacheQuickHandler off
 AddOutputFilterByType CACHE;INCLUDES;DEFLATE text/html
   </pre>
@@ -338,7 +338,7 @@ AddOutputFilterByType CACHE;INCLUDES;DEFLATE text/html
 
   <pre class="prettyprint lang-config">
 # Mise en cache du contenu entre les interventions de mod_include et
-# mod_deflate
+   # mod_deflate
 CacheQuickHandler off
 AddOutputFilterByType INCLUDES;CACHE;DEFLATE text/html
   </pre>
@@ -511,7 +511,7 @@ Apache</a></li>
 gestionnaire de stockage précisé</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheEnable <var>type de cache</var> [<var>chaîne
 URL</var>]</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
 </table>

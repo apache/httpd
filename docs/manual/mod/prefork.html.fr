@@ -40,7 +40,7 @@ processus, sans thread</td></tr>
     <p>Ce module multi-processus (MPM) implémente un serveur web avec
     démarrage anticipé de processus. Chaque processus du serveur peut
     répondre aux requêtes entrantes, et un processus parent contrôle la
-    taille du jeu de serveurs. Il est particulièrement indiqué pour les
+    taille du jeu de processus enfants. Il est particulièrement indiqué pour les
     sites qui ne doivent pas utiliser les threads afin de maintenir une
     compatibilité avec certaines bibliothèques non sûres du point de vue
     des threads. C'est également le MPM le plus approprié si l'on veut
@@ -91,7 +91,7 @@ qu'utilise le serveur HTTP Apache</a></li>
     maintenir plusieurs processus serveurs inactifs ou <dfn>en
     réserve</dfn>, afin de pouvoir traiter les requêtes entrantes. De
     cette façon, les clients n'ont pas besoin d'attendre le démarrage
-    d'un nouveau processus enfant pour que ses requêtes puissent être
+    d'un nouveau processus enfant pour que leurs requêtes puissent être
     traitées.</p>
 
     <p>Les directives <code class="directive"><a href="../mod/mpm_common.html#startservers">StartServers</a></code>, <code class="directive"><a href="#minspareservers">MinSpareServers</a></code>, <code class="directive"><a href="#maxspareservers">MaxSpareServers</a></code> et <code class="directive"><a href="../mod/mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></code> permettent de contrôler
@@ -146,7 +146,7 @@ inactifs</td></tr>
     <code class="directive">MaxSpareServers</code> processus inactifs, le
     processus parent arrêtera les processus excédentaires.</p>
 
-    <p>La modification de ce paramètre ne peut s'avérer nécessaire que
+    <p>La modification de ce paramètre n'est nécessaire que
     dans le cas de sites très sollicités. Définir ce paramètre à une
     valeur très grande est cependant dans la plupart des cas une
     mauvaise idée. Si vous essayez d'affecter à ce paramètre une valeur
@@ -185,7 +185,7 @@ inactifs</td></tr>
     enfants correspond à la définition de la directive
     <code class="directive">MinSpareServers</code>.</p>
 
-    <p>La modification de ce paramètre ne peut s'avérer nécessaire que
+    <p>La modification de ce paramètre n'est nécessaire que
     dans le cas de sites très sollicités. Définir ce paramètre à une
     valeur très grande est dans la plupart des cas une mauvaise
     idée.</p>

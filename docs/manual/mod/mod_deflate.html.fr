@@ -90,7 +90,7 @@ client</td></tr>
     SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip dont-vary
     
     # On s'assure que les mandataires ne servent pas le mauvais
-     # contenu
+    # contenu
     Header append Vary User-Agent env=!dont-vary
 &lt;/Location&gt;
       </pre>
@@ -107,7 +107,7 @@ client</td></tr>
 
       <pre class="prettyprint lang-config">
         SetOutputFilter DEFLATE
-	</pre>
+      </pre>
 
 
       <p>Certains navigateurs populaires ne gèrent pas la compression de

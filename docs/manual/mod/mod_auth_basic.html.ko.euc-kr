@@ -98,6 +98,7 @@ username and password</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override 옵션:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_auth_basic</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">지원:</a></th><td>Apache HTTP Server 2.4.5 and later</td></tr>
 </table><p>The documentation for this directive has
             not been translated yet. Please have a look at the English
             version.</p></div>

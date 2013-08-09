@@ -105,7 +105,7 @@ codage MIME</td></tr>
 [<var>type MIME</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Icône à afficher à côté d'un fichier en fonction de son
 type MIME</td></tr>
 <tr class="odd"><td><a href="mod_mime.html#addinputfilter">AddInputFilter <var>filtre</var>[;<var>filtre</var>...]
-<var>extension</var> [<var>extension</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Associe les extensions de noms de fichiers données aux
+<var>extension</var> [<var>extension</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Associe les extensions de noms de fichiers aux
 filtres spécifiés qui traiteront les requêtes clients</td></tr>
 <tr><td><a href="mod_mime.html#addlanguage">AddLanguage <var>symbole-langue</var> <var>extension</var>
 [<var>extension</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Associe l'extension de nom de fichier donnée à la langue
@@ -113,11 +113,11 @@ spécifié</td></tr>
 <tr class="odd"><td><a href="mod_info.html#addmoduleinfo">AddModuleInfo <var>nom-module</var> <var>chaîne</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Ajoute des données supplémentaires aux informations de
 module affichées par le gestionnaire server-info</td></tr>
 <tr><td><a href="mod_mime.html#addoutputfilter">AddOutputFilter <var>filtre</var>[;<var>filtre</var>...]
-<var>extension</var> [<var>extension</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Associe les extensions de noms de fichiers donnés aux
+<var>extension</var> [<var>extension</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Associe les extensions de noms de fichiers aux
 filtres spécifiés qui traiteront les réponses en provenance du
 serveur</td></tr>
 <tr class="odd"><td><a href="mod_filter.html#addoutputfilterbytype">AddOutputFilterByType <var>filtre</var>[;<var>filtre</var>...]
-<var>type de média</var> [<var>type de média</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">assigne un filtre en sortie pour un type de média
+<var>type_de_média</var> [<var>type_de_média</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">assigne un filtre en sortie pour un type de média
 particulier</td></tr>
 <tr><td><a href="mod_mime.html#addtype">AddType <var>type-médium</var> <var>extension</var>
 [<var>extension</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Associe les extensions de noms de fichiers au type de
@@ -340,7 +340,7 @@ cache.</td></tr>
 <tr><td><a href="mod_cache.html#cachedisable">CacheDisable <var>chaîne-url</var> | <var>on</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Désactive la mise en cache des URLs
 spécifiées</td></tr>
 <tr class="odd"><td><a href="mod_cache.html#cacheenable">CacheEnable <var>type de cache</var> [<var>chaîne
-URL</var>]</a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Active la mise en cache des URLs spécifiées en utilisant le
+URL</var>]</a></td><td></td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Active la mise en cache des URLs spécifiées en utilisant le
 gestionnaire de stockage précisé</td></tr>
 <tr><td><a href="mod_file_cache.html#cachefile">CacheFile <var>chemin fichier</var> [<var>chemin fichier</var>] ...</a></td><td></td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Met en cache une liste de gestionnaires de fichiers au
 démarrage</td></tr>
@@ -540,13 +540,13 @@ précisés</td></tr>
 <tr class="odd"><td><a href="core.html#filesmatch">&lt;FilesMatch <var>expression rationnelle</var>&gt; ...
 &lt;/FilesMatch&gt;</a></td><td></td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Contient des directives qui s'appliquent à des fichiers
 spécifiés sous la forme d'expressions rationnelles</td></tr>
-<tr><td><a href="mod_filter.html#filterchain">FilterChain [+=-@!]<var>nom filtre</var> <var>...</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Configure la chaîne de filtrage</td></tr>
-<tr class="odd"><td><a href="mod_filter.html#filterdeclare">FilterDeclare <var>nom filtre</var> <var>[type]</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Déclare un filtre intelligent</td></tr>
-<tr><td><a href="mod_filter.html#filterprotocol">FilterProtocol <var>nom filtre</var> [<var>nom fournisseur</var>]
-    <var>drapeaux protocole</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Vérifie le respect du protocole HTTP</td></tr>
-<tr class="odd"><td><a href="mod_filter.html#filterprovider">FilterProvider <var>nom filtre</var> <var>nom fournisseur</var>
+<tr><td><a href="mod_filter.html#filterchain">FilterChain [+=-@!]<var>nom_filtre</var> <var>...</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Configure la chaîne de filtrage</td></tr>
+<tr class="odd"><td><a href="mod_filter.html#filterdeclare">FilterDeclare <var>nom_filtre</var> <var>[type]</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Déclare un filtre intelligent</td></tr>
+<tr><td><a href="mod_filter.html#filterprotocol">FilterProtocol <var>nom_filtre</var> [<var>nom_fournisseur</var>]
+    <var>drapeaux_protocole</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Vérifie le respect du protocole HTTP</td></tr>
+<tr class="odd"><td><a href="mod_filter.html#filterprovider">FilterProvider <var>nom_filtre</var> <var>nom_fournisseur</var>
  <var>expression</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Enregistre un filtre de contenu</td></tr>
-<tr><td><a href="mod_filter.html#filtertrace">FilterTrace <var>nom filtre</var> <var>niveau</var></a></td><td></td><td>svd</td><td>B</td></tr><tr><td class="descr" colspan="4">Obtention d'informations de débogage/diagnostique en
+<tr><td><a href="mod_filter.html#filtertrace">FilterTrace <var>nom_filtre</var> <var>niveau</var></a></td><td></td><td>svd</td><td>B</td></tr><tr><td class="descr" colspan="4">Obtention d'informations de débogage/diagnostique en
 provenance de <code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code></td></tr>
 <tr class="odd"><td><a href="mod_negotiation.html#forcelanguagepriority">ForceLanguagePriority None|Prefer|Fallback [Prefer|Fallback]</a></td><td> Prefer </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Action à entreprendre si un document acceptable unique
 n'est pas trouvé</td></tr>
@@ -1110,7 +1110,7 @@ réponse HTTP spécifié</td></tr>
 valide</td></tr>
 <tr class="odd"><td><a href="mod_session.html#sessionmaxage">SessionMaxAge <var>durée de vie maximale</var></a></td><td> 0 </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Définit une durée de vie maximale pour la session en
 secondes</td></tr>
-<tr><td><a href="mod_env.html#setenv">SetEnv <var>var-env</var> <var>valeur</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Définit des variables d'environnement</td></tr>
+<tr><td><a href="mod_env.html#setenv">SetEnv <var>var-env</var> [<var>valeur</var>]</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Définit des variables d'environnement</td></tr>
 <tr class="odd"><td><a href="mod_setenvif.html#setenvif">SetEnvIf <em>attribut
     regex [!]env-variable</em>[=<em>valeur</em>]
     [[!]<em>env-variable</em>[=<em>valeur</em>]] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Définit des variables d'environnement en fonction des
