@@ -1298,6 +1298,15 @@ l'espace d'URLs du serveur local</td></tr>
 	est le même qu'avec les autres erreurs de worker.
 	Disponible à partir de la version 2.2.17 du serveur HTTP Apache.
     </td></tr>
+    <tr><td>failontimeout</td>
+        <td>Off</td>
+        <td>Si ce paramètre est défini à "On", un délai d'attente
+	dépassé en entrée/sortie après envoi d'une requête au serveur
+	d'arrière-plan va mettre le processus en état d'erreur. La
+	sortie de cet état d'erreur se passe de la même façon que pour
+	les autres erreurs. Disponible à partir de la version 2.2.25 du
+	serveur HTTP Apache.
+    </td></tr>
     <tr><td>forcerecovery</td>
         <td>On</td>
         <td>Force la récupération immédiate de tous les membres du

@@ -45,7 +45,8 @@
 et permet aux applications de traiter les données en entrée et en sortie
 d'une manière hautement flexible et configurable, quelle que soit la
 provenance de ces données.  Il est possible de pré-traiter les données
-en entrée, et post-traiter les données en sortie, comme souhaité.
+en entrée, et post-traiter les données en sortie, selon vos
+souhaits.
 Ces traitements sont tout à fait indépendants des traditionnelles phases
 de traitement des requêtes.</p>
 <p class="figure">
