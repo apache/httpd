@@ -42,6 +42,7 @@ anonymous_nouserid	mod/mod_authn_anon.html#anonymous_nouserid
 anonymous_verifyemail	mod/mod_authn_anon.html#anonymous_verifyemail
 asyncrequestworkerfactor	mod/event.html#asyncrequestworkerfactor
 authbasicauthoritative	mod/mod_auth_basic.html#authbasicauthoritative
+authbasicfake	mod/mod_auth_basic.html#authbasicfake
 authbasicprovider	mod/mod_auth_basic.html#authbasicprovider
 authdbduserpwquery	mod/mod_authn_dbd.html#authdbduserpwquery
 authdbduserrealmquery	mod/mod_authn_dbd.html#authdbduserrealmquery

@@ -208,7 +208,7 @@ Listen 8000
     </pre>
 
 
-    <p>Pour que la serveur accepte les connexions sur deux interfaces et
+    <p>Pour que le serveur accepte les connexions sur deux interfaces et
     ports particuliers, spécifiez :</p>
 
     <pre class="prettyprint lang-config">
@@ -550,7 +550,7 @@ la coordination des processus enfants</td></tr>
 </div>
 
     <p>Une mémoire partagée sous forme de fichier est utile pour les
-    applications tierses qui nécessitent un accès direct au tableau de
+    applications tierces qui nécessitent un accès direct au tableau de
     bord des processus.</p>
 
     <p>Si vous utilisez un <code class="directive">ScoreBoardFile</code>, vous

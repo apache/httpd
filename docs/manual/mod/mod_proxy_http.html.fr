@@ -27,6 +27,8 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_proxy_http.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_proxy_http.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
+            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Module fournissant le support HTTP à
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -70,7 +72,9 @@
     <p>Outre les directives de configuration qui contrôlent le
     comportement de <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>, plusieurs <dfn>variables
     d'environnement</dfn> permettent de contrôler le fournisseur du
-    protocole HTTP :</p>
+    protocole HTTP. Parmi les variables suivantes, celle qui ne
+    nécessitent pas de valeur particulière sont définies quelle que soit
+    la valeur qu'on leur affecte.</p>
     <dl>
         <dt>proxy-sendextracrlf</dt>
         <dd>Provoque l'envoi par le mandataire d'une nouvelle ligne
