@@ -98,7 +98,12 @@ Listen 192.0.2.5:8000
     <example>
     (48)Address already in use: make_sock: could not bind to address [::]:80
     </example>
-    </note>
+
+    <p>See <a 
+    href="http://wiki.apache.org/httpd/CouldNotBindToAddress">the
+    discussion in the wiki</a> for further troubleshooting tips.</p>
+
+</note>
 
   </section>
 
