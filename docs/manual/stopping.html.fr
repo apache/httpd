@@ -147,7 +147,8 @@
     <em>tableau</em> utilisé pour garder la trace de tous les processus
     enfants au cours des différentes générations.</p>
 
-    <p>Le module status utilise aussi un <code>G</code> afin d'indiquer
+    <p>Dans son état des processus,
+    le module status utilise aussi un <code>G</code> afin d'indiquer
     quels processus enfants ont encore des traitements de requêtes en cours
     débutés avant que l'ordre graceful restart ne soit donné.</p>
 
