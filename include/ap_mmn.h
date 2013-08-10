@@ -436,6 +436,7 @@
  * 20121222.16 (2.5.0-dev) AP_DEFAULT_HANDLER_NAME/AP_IS_DEAULT_HANDLER_NAME
  * 20130702.0 (2.5.0-dev)  Remove pre_htaccess hook, add open_htaccess hook.
  * 20130702.1 (2.5.0-dev)  Restore AUTH_HANDLED to mod_auth.h
+ * 20130702.2 (2.5.0-dev)  Add ap_log_data(), ap_log_rdata(), etc.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
@@ -443,7 +444,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20130702
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 1                  /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 2                  /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
