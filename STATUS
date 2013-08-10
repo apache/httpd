@@ -124,6 +124,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  http://svn.apache.org/r1509875
     2.2.x patch: http://people.apache.org/~sf/ECC-2.2.diff
     +1: sf
+    trawick: Is there any particular reason that the patch doesn't
+             define OPENSSL_NO_EC for older OpenSSL levels and use 
+             that as the feature check, as is done in the 2.4.x 
+             branch?  I guess I can help out with that if it is just
+             a matter of labor.
 
   * mod_ssl config: Fix range check bug with SSLRenegBufferSize
     trunk patch: http://svn.apache.org/r954641
