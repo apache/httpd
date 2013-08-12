@@ -114,21 +114,25 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
   * mod_ssl: Support ECC keys
     trunk patch: http://svn.apache.org/r834378 
+                 http://svn.apache.org/r835046
                  http://svn.apache.org/r1040304
                  http://svn.apache.org/r1040373
                  http://svn.apache.org/r1090645
                  http://svn.apache.org/r1294306
                  http://svn.apache.org/r1509872
-    2.4.x patch: first four from above, plus
+    2.4.x patch: first five from above, plus
                  http://svn.apache.org/r1308862
                  http://svn.apache.org/r1509875
-    2.2.x patch: http://people.apache.org/~sf/ECC-2.2.diff
+    2.2.x patch: http://people.apache.org/~sf/ECC-2.2-v2.diff
     +1: sf
     trawick: Is there any particular reason that the patch doesn't
              define OPENSSL_NO_EC for older OpenSSL levels and use 
              that as the feature check, as is done in the 2.4.x 
              branch?  I guess I can help out with that if it is just
              a matter of labor.
+    sf: It does (in ssl_toolkit_compat.h where these things are in 2.2).
+        But v1 of the patch lacked one commit to properly use OPENSSL_NO_EC
+        everywhere. Fixed in v2.
 
   * mod_ssl config: Fix range check bug with SSLRenegBufferSize
     trunk patch: http://svn.apache.org/r954641
