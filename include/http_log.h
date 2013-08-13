@@ -692,6 +692,7 @@ AP_DECLARE(void) ap_log_cdata_(const char *file, int line, int module_index,
  * @param module_index The module_index of the module logging this buffer
  * @param level The log level
  * @param c The connection which we are logging for
+ * @param s The server which we are logging for
  * @param label A label for the buffer, to be logged preceding the buffer
  * @param data The buffer to be logged
  * @param len The length of the buffer
