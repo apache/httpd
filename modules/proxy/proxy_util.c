@@ -2119,7 +2119,7 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
      *      spilling the cached addr from the worker.
      */
     if (!conn->hostname || !worker->s->is_address_reusable ||
-        worker->s->disablereuse) {
+        worker->s->disablereuse || strncmp(conn->hostname, "socket=", 7) == 0) {
         if (proxyname) {
             conn->hostname = apr_pstrdup(conn->pool, proxyname);
             conn->port = proxyport;
