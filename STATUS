@@ -203,18 +203,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     trunk "patch": http://svn.apache.org/repos/asf/httpd/httpd/trunk/include/ap_skiplist.h
                    http://svn.apache.org/repos/asf/httpd/httpd/trunk/server/skiplist.c
     2.4.x patch: trunk patch works
-    +1: jim
+    +1: jim, druggeri
 
   * ab: Fix potential buffer overflows when processing the T and X
     command-line options.  PR 55360.
     trunk: http://svn.apache.org/r1510707
     2.4.x patch: trunk patch works (with offset)
-    +1: trawick, jim
+    +1: trawick, jim, druggeri
 
   * configure: '--enable-maintainer-mode' should also auto-enable mod_bucketeer
     trunk: http://svn.apache.org/viewvc?view=revision&revision=1503680
     2.4.x patch: trunk patch works
-    +1: jim
+    +1: jim, druggeri
 
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
