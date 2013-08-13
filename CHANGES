@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) core: Add util_fcgi.h and associated definitions and support
+     routines for FastCGI, based largely on mod_proxy_fcgi.
+     [Jeff Trawick]
+
   *) core: Add ap_log_data(), ap_log_rdata(), etc. for logging buffers.
      [Jeff Trawick]
 
