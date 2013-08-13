@@ -287,7 +287,7 @@ typedef enum { AP_MPM_PODX_NORESTART, AP_MPM_PODX_RESTART, AP_MPM_PODX_GRACEFUL 
 /**
  * Open the extended pipe-of-death.
  * @param p The pool to use for allocating the pipe
- * @param pod the pipe-of-death that is created.
+ * @param pod The pipe-of-death that is created.
  */
 AP_DECLARE(apr_status_t) ap_mpm_podx_open(apr_pool_t *p, ap_pod_t **pod);
 
@@ -299,7 +299,7 @@ AP_DECLARE(int) ap_mpm_podx_check(ap_pod_t *pod);
 /**
  * Close the pipe-of-death
  *
- * @param extended pod the pipe-of-death to close.
+ * @param pod The pipe-of-death to close.
  */
 AP_DECLARE(apr_status_t) ap_mpm_podx_close(ap_pod_t *pod);
 

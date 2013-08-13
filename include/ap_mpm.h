@@ -178,7 +178,7 @@ AP_DECLARE(apr_status_t) ap_mpm_register_timed_callback(apr_time_t t,
  * APR_ENOTIMPL if no asynch support, or an apr_pollset_add error.
  * @remark When activity is found on any 1 socket in the list, all are removed 
  * from the pollset and only 1 callback is issued.
- * @fn apr_status_t (p_mpm_register_socket_callback(apr_socket_t **s, apr_pool_t *p, int for_read, ap_mpm_callback_fn_t *cbfn, void *baton)
+ * @fn apr_status_t ap_mpm_register_socket_callback(apr_socket_t **s, apr_pool_t *p, int for_read, ap_mpm_callback_fn_t *cbfn, void *baton)
  */
 
 AP_DECLARE(apr_status_t) ap_mpm_register_socket_callback(apr_socket_t **s,
