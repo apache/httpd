@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1495843:1511093 (outdated) -->
+<!-- English Revision : 1495843 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -233,6 +233,10 @@ Allow from example.org
         </li>
 
 	<li>La valeur par d&eacute;faut de la directive <directive
+	module="core">AllowOverride</directive> est maintenant
+	<code>None</code>.</li>
+
+	<li>La valeur par d&eacute;faut de la directive <directive
 	module="core">EnableSendfile</directive> est maintenant Off.</li>
 
 	<li>La valeur par d&eacute;faut de la directive <directive
@@ -429,6 +433,10 @@ Allow from example.org
     <ul>
       <li><code>configuration error:  couldn't check user: /path</code> -
       chargez le module <module>mod_authn_core</module>.</li>
+      <li>Les fichiers <code>.htaccess</code> ne sont pas trait&eacute;s -
+      V&eacute;rifiez la pr&eacute;sence d'une directive <directive
+      module="core">AllowOverride</directive> appropri&eacute;e ; sa valeur par
+      d&eacute;faut est maintenant <code>None</code>.</li>
     </ul>
     </li>
 </ul>
