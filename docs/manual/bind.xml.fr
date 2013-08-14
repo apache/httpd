@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1330883:1512426 (outdated) -->
+<!-- English Revision : 1512426 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -103,6 +103,12 @@ Listen 192.0.2.5:8000
     <example>
     (48)Address already in use: make_sock: could not bind to address [::]:80
     </example>
+
+    <p>Voir <a
+    href="http://wiki.apache.org/httpd/CouldNotBindToAddress">cette
+    discussion dans le wiki</a> pour plus de conseils pour r&eacute;soudre ce
+    probl&egrave;me.</p>
+
     </note>
 
   </section>

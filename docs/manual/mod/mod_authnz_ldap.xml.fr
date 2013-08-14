@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1433478:1510426 (outdated) -->
+<!-- English Revision : 1510426 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1467,7 +1467,9 @@ sp&eacute;cifi&eacute;s.</p>
 	taille des filtres est limit&eacute;e &agrave; environ 8000 caract&egrave;res (valeur
 	de la macro <code>MAX_STRING_LEN</code> dans le code source
 	d'Apache), ce qui s'av&egrave;re plus que suffisant pour la plupart des
-	applications.</dd>
+	applications. Le mot-cl&eacute; <code>none</code> permet de d&eacute;sactiver
+	l'utilisation des filtres, ce qui peut s'av&eacute;rer n&eacute;cessaire avec
+	certains serveurs LDAP primitifs.</dd>
 </dl>
 
     <p>Pour une recherche, les attribut, filtre et nom d'utilisateur
