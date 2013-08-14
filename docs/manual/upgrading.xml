@@ -307,6 +307,10 @@ Allow from example.org
         <li><module>mod_reqtimeout</module>: If the module is loaded, it
         will now set some default timeouts.</li>
 
+        <li><module>mod_dumpio</module>: <directive>DumpIOLogLevel</directive>
+        is no longer supported.  Data is always logged at <directive
+        module="core">LogLevel</directive> <code>trace7</code>.</li>
+
       </ul>
     </section>
   </section>
