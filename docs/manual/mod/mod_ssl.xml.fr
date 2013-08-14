@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1502199:1509875 (outdated) -->
+<!-- English Revision : 1509875 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -372,7 +372,7 @@ cette demande peut &ecirc;tre formul&eacute;e parmi les trois suivantes :</p>
     chaque fichier de cl&eacute; priv&eacute;e chiffr&eacute;. Il est appel&eacute; avec deux
     arguments (le premier est de la forme
     ``<code>nom-serveur:port</code>'', le second
-    est soit ``<code>RSA</code>'', soit ``<code>DSA</code>''), qui
+    est ``<code>RSA</code>'', ``<code>DSA</code>'' ou ``<code>ECC</code>''), qui
     indiquent pour quels serveur et algorithme il doit &eacute;crire le mot de
     passe correspondant sur <code>stdout</code>. Le but recherch&eacute; est
     l'ex&eacute;cution de v&eacute;rifications de s&eacute;curit&eacute; pr&eacute;alables permettant de
@@ -949,8 +949,8 @@ Cette directive permet de d&eacute;finir le fichier contenant le certificat
 X.509 du serveur cod&eacute; en PEM, et par la m&ecirc;me occasion sa cl&eacute; priv&eacute;e RSA
 ou DSA (contenue dans le m&ecirc;me fichier). Si la cl&eacute; priv&eacute;e est chiffr&eacute;e,
 le mot de passe sera demand&eacute; au d&eacute;marrage. Cette directive peut &ecirc;tre
-utilis&eacute;e deux fois (pour r&eacute;f&eacute;rencer des noms de fichiers diff&eacute;rents),
-lorsque des certificats de serveur RSA et DSA sont utilis&eacute;s en
+utilis&eacute;e trois fois (pour r&eacute;f&eacute;rencer des noms de fichiers diff&eacute;rents),
+lorsque des certificats de serveur RSA, DSA et ECC sont utilis&eacute;s en
 parall&egrave;le.</p>
 <example><title>Exemple</title>
 <highlight language="config">
@@ -981,8 +981,8 @@ certificat et la cl&eacute; priv&eacute;e. Nous d&eacute;conseillons cependant f
 cette pratique et nous recommandons plut&ocirc;t de s&eacute;parer le certificat de
 la cl&eacute; priv&eacute;e. Si la cl&eacute; priv&eacute;e est chiffr&eacute;e, le mot de passe sera
 demand&eacute; au d&eacute;marrage. Cette directive peut &ecirc;tre
-utilis&eacute;e deux fois (pour r&eacute;f&eacute;rencer des noms de fichiers diff&eacute;rents),
-lorsque des cl&eacute;s priv&eacute;es RSA et DSA sont utilis&eacute;es en
+utilis&eacute;e trois fois (pour r&eacute;f&eacute;rencer des noms de fichiers diff&eacute;rents),
+lorsque des cl&eacute;s priv&eacute;es RSA, DSA et ECC sont utilis&eacute;es en
 parall&egrave;le.</p>
 <example><title>Exemple</title>
 <highlight language="config">
@@ -2551,6 +2551,218 @@ SSLInsecureRenegotiation on
 utilis&eacute;e dans un script SSI ou CGI pour d&eacute;terminer si la ren&eacute;gociation
 s&eacute;curis&eacute;e est support&eacute;e pour une connexion SSL donn&eacute;e.</p>
 
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLUseStapling</name>
+<description>Active l'ajout des r&eacute;ponses OCSP &agrave; la n&eacute;gociation TLS</description>
+<syntax>SSLUseStapling on|off</syntax>
+<default>SSLUseStapling off</default>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+<compatibility>Disponible depuis la version 2.3.3 du serveur HTTP
+Apache, si on utilise OpenSSL version 0.9.8h ou sup&eacute;rieure</compatibility>
+
+<usage>
+<p>Cette directive permet d'activer l'"Agrafage OCSP" (OCSP stapling)
+selon la d&eacute;finition de l'extension TLS "Certificate Status Request"
+fournie dans la RFC 6066. Si elle est activ&eacute;e et si le client le
+demande, mod_ssl va inclure une r&eacute;ponse OCSP &agrave; propos de son propre
+certificat dans la n&eacute;gociation TLS. Pour pouvoir activer l'Agrafage
+OCSP, il est n&eacute;cessaire de configurer un <directive
+module="mod_ssl">SSLStaplingCache</directive>.</p>
+
+<p>L'agrafage OCSP dispense le client de requ&eacute;rir le serveur OCSP
+directement ; il faut cependant noter que selon les sp&eacute;cifications de la
+RFC 6066, la r&eacute;ponse <code>CertificateStatus</code> du serveur ne peut
+inclure une r&eacute;ponse OCSP que pour un seul certificat. Pour les
+certificats de serveur comportant des certificats de CA interm&eacute;diaires
+dans leur cha&icirc;ne (c'est un cas typique de nos jours), l'impl&eacute;mentation
+actuelle de l'agrafage OCSP n'atteint que partiellement l'objectif d'
+"&eacute;conomie en questions/r&eacute;ponse et en ressources". Pour plus de d&eacute;tails,
+voir la <a href="http://www.ietf.org/rfc/rfc6961.txt">RFC 6961</a> (TLS
+Multiple Certificate Status Extension).
+</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLStaplingCache</name>
+<description>Configuration du cache pour l'agrafage OCSP</description>
+<syntax>SSLStaplingCache <em>type</em></syntax>
+<contextlist><context>server config</context></contextlist>
+<compatibility>Disponible depuis la version 2.3.3 du serveur HTTP
+Apache, si on utilise OpenSSL version 0.9.8h ou sup&eacute;rieure</compatibility>
+
+<usage>
+<p>Si <directive module="mod_ssl">SSLUseStapling</directive> est &agrave; "on",
+cette directive permet de configurer le cache destin&eacute; &agrave; stocker les
+r&eacute;ponses OCSP incluses dans la n&eacute;gociation TLS. La configuration d'un
+cache est obligatoire pour pouvoir utiliser l'agrafage OCSP. A
+l'exception de <code>none</code> et <code>nonenotnull</code>, cette
+directive supporte les m&ecirc;mes types de stockage que la directive
+<directive module="mod_ssl">SSLSessionCache</directive>.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLStaplingResponseTimeSkew</name>
+<description>Dur&eacute;e de vie maximale autoris&eacute;e des r&eacute;ponses OCSP incluses dans la
+n&eacute;gociation TLS</description>
+<syntax>SSLStaplingResponseTimeSkew <em>secondes</em></syntax>
+<default>SSLStaplingResponseTimeSkew 300</default>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+<compatibility>Disponible depuis la version 2.3.3 du serveur HTTP
+Apache, si on utilise OpenSSL version 0.9.8h ou sup&eacute;rieure</compatibility>
+
+<usage>
+<p>Cette directive permet de sp&eacute;cifier l'intervalle de temps maximum que
+mod_ssl va calculer en faisant la diff&eacute;rence entre les contenus des
+champs <code>nextUpdate</code> et <code>thisUpdate</code> des r&eacute;ponses
+OCSP incluses dans la n&eacute;gociation TLS. Pour pouvoir utiliser cette
+directive, <directive module="mod_ssl">SSLUseStapling</directive> doit
+&ecirc;tre &agrave; "on".</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLStaplingResponderTimeout</name>
+<description>Temps d'attente maximum pour les requ&ecirc;tes vers les serveurs
+OCSP</description>
+<syntax>SSLStaplingResponderTimeout <em>secondes</em></syntax>
+<default>SSLStaplingResponderTimeout 10</default>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+<compatibility>Disponible depuis la version 2.3.3 du serveur HTTP
+Apache, si on utilise OpenSSL version 0.9.8h ou sup&eacute;rieure</compatibility>
+
+<usage>
+<p>Cette directive permet de d&eacute;finir le temps d'attente maximum lorsque
+mod_ssl envoie une requ&ecirc;te vers un serveur OCSP afin d'obtenir une
+r&eacute;ponse destin&eacute;e &agrave; &ecirc;tre incluse dans les n&eacute;gociations TLS avec les
+clients (<directive module="mod_ssl">SSLUseStapling</directive> doit
+avoir &eacute;t&eacute; activ&eacute;e au pr&eacute;alable).</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLStaplingResponseMaxAge</name>
+<description>Age maximum autoris&eacute; des r&eacute;ponses OCSP incluses dans la
+n&eacute;gociation TLS</description>
+<syntax>SSLStaplingResponseMaxAge <em>secondes</em></syntax>
+<default>SSLStaplingResponseMaxAge -1</default>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+<compatibility>Disponible depuis la version 2.3.3 du serveur HTTP
+Apache, si on utilise OpenSSL version 0.9.8h ou sup&eacute;rieure</compatibility>
+
+<usage>
+<p>Cette directive permet de d&eacute;finir l'&acirc;ge maximum autoris&eacute;
+("fra&icirc;cheur") des r&eacute;ponses OCSP incluses dans la n&eacute;gociation TLS
+(<directive module="mod_ssl">SSLUseStapling</directive> doit
+avoir &eacute;t&eacute; activ&eacute;e au pr&eacute;alable). La valeur par d&eacute;faut (<code>-1</code>)
+ne d&eacute;finit aucun &acirc;ge maximum, ce qui signifie que les r&eacute;ponses OCSP sont
+consid&eacute;r&eacute;es comme valides &agrave; partir du moment o&ugrave; le contenu de leur champ
+<code>nextUpdate</code> se trouve dans le futur.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLStaplingStandardCacheTimeout</name>
+<description>Dur&eacute;e de vie des r&eacute;ponses OCSP dans le cache</description>
+<syntax>SSLStaplingStandardCacheTimeout <em>secondes</em></syntax>
+<default>SSLStaplingStandardCacheTimeout 3600</default>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+<compatibility>Disponible depuis la version 2.3.3 du serveur HTTP
+Apache, si on utilise OpenSSL version 0.9.8h ou sup&eacute;rieure</compatibility>
+
+<usage>
+<p>Cette directive permet de d&eacute;finir la dur&eacute;e de vie des r&eacute;ponses OCSP
+dans le cache configur&eacute; via la directive <directive
+module="mod_ssl">SSLStaplingCache</directive>. Elle ne s'applique qu'aux
+r&eacute;ponse <em>valides</em>, alors que la directive <directive
+module="mod_ssl">SSLStaplingErrorCacheTimeout</directive> s'applique aux
+r&eacute;ponses invalides ou non disponibles.
+</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLStaplingReturnResponderErrors</name>
+<description>Transmet au client les erreurs survenues lors des requ&ecirc;tes
+OCSP</description>
+<syntax>SSLStaplingReturnResponderErrors on|off</syntax>
+<default>SSLStaplingReturnResponderErrors on</default>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+<compatibility>Disponible depuis la version 2.3.3 du serveur HTTP
+Apache, si on utilise OpenSSL version 0.9.8h ou sup&eacute;rieure</compatibility>
+
+<usage>
+<p>Lorsque cette directive est activ&eacute;e, mod_ssl va transmettre au client les
+r&eacute;ponses concernant les requ&ecirc;tes OCSP &eacute;chou&eacute;es (erreurs d'&eacute;tat, r&eacute;ponses
+p&eacute;rim&eacute;es, etc...). Lorsqu'elle est &agrave; <code>off</code>, aucune r&eacute;ponse
+concernant les requ&ecirc;tes OCSP &eacute;chou&eacute;es ne sera incluse dans les
+n&eacute;gociation TLS avec les clients.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLStaplingFakeTryLater</name>
+<description>G&eacute;n&egrave;re une r&eacute;ponse "tryLater" pour les requ&ecirc;tes OCSP &eacute;chou&eacute;es</description>
+<syntax>SSLStaplingFakeTryLater on|off</syntax>
+<default>SSLStaplingFakeTryLater on</default>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+<compatibility>Disponible depuis la version 2.3.3 du serveur HTTP
+Apache, si on utilise OpenSSL version 0.9.8h ou sup&eacute;rieure</compatibility>
+
+<usage>
+<p>Lorsque cette directive est activ&eacute;e, et si une requ&ecirc;te vers un
+serveur OCSP &agrave; des fins d'inclusion dans une n&eacute;gociation TLS &eacute;choue,
+mod_ssl va g&eacute;n&eacute;rer une r&eacute;ponse "tryLater" pour le client (<directive
+module="mod_ssl">SSLStaplingReturnResponderErrors</directive> doit &ecirc;tre
+activ&eacute;e).</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLStaplingErrorCacheTimeout</name>
+<description>Dur&eacute;e de vie des r&eacute;ponses invalides dans le cache pour
+agrafage OCSP</description>
+<syntax>SSLStaplingErrorCacheTimeout <em>secondes</em></syntax>
+<default>SSLStaplingErrorCacheTimeout 600</default>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+<compatibility>Disponible depuis la version 2.3.3 du serveur HTTP
+Apache, si on utilise OpenSSL version 0.9.8h ou sup&eacute;rieure</compatibility>
+
+<usage>
+<p>Cette directive permet de d&eacute;finir la dur&eacute;e de vie des r&eacute;ponses
+<em>invalides</em> dans le cache pour agrafage OCSP configur&eacute; via la
+directive <directive module="mod_ssl">SSLStaplingCache</directive>. Pour
+d&eacute;finir la dur&eacute;e de vie des r&eacute;ponses valides, voir la directive
+<directive module="mod_ssl">SSLStaplingStandardCacheTimeout</directive>.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLStaplingForceURL</name>
+<description>Remplace l'URI du serveur OCSP sp&eacute;cifi&eacute; dans l'extension
+AIA du certificat</description>
+<syntax>SSLStaplingForceURL <em>uri</em></syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+<compatibility>Disponible depuis la version 2.3.3 du serveur HTTP
+Apache, si on utilise OpenSSL version 0.9.8h ou sup&eacute;rieure</compatibility>
+
+<usage>
+<p>Cette directive permet de remplacer l'URI du serveur OCSP extraite de
+l'extension authorityInfoAccess (AIA) du certificat. Elle peut s'av&eacute;rer
+utile lorsqu'on passe par un mandataire</p>
 </usage>
 </directivesynopsis>
 
