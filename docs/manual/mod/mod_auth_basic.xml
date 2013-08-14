@@ -180,4 +180,79 @@ username and password</description>
 </usage>
 </directivesynopsis>
 
+<directivesynopsis>
+<name>AuthBasicUseDigestAlgorithm</name>
+<description>Check passwords against the authentication providers as if
+Digest Authentication was in force instead of Basic Authentication.
+</description>
+<syntax>AuthBasicUseDigestAlgorithm MD5|Off</syntax>
+<default>AuthBasicUseDigestAlgorithm Off</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>Normally, when using Basic Authentication, the providers listed in
+    <directive module="mod_auth_basic">AuthBasicProvider</directive>
+    attempt to verify a user by checking their data stores for
+    a matching username and associated password.  The stored passwords
+    are usually encrypted, but not necessarily so; each provider may
+    choose its own storage scheme for passwords.</p>
+
+    <p>When using <directive
+    module="mod_auth_digest">AuthDigestProvider</directive> and Digest
+    Authentication, providers perform a similar check to find a matching
+    username in their data stores.  However, unlike in the Basic
+    Authentication case, the value associated with each stored username
+    must be an encrypted string composed from the username, realm name,
+    and password.  (See
+    <a href="http://tools.ietf.org/html/rfc2617#section-3.2.2.2">
+    RFC 2617, Section 3.2.2.2</a> for more details on the format used
+    for this encrypted string.)</p>
+
+    <p>As a consequence of the difference in the stored values between
+    Basic and Digest Authentication, converting from Digest
+    Authentication to Basic Authentication generally requires that all
+    users be assigned new passwords, as their existing passwords cannot
+    be recovered from the password storage scheme imposed on those
+    providers which support Digest Authentication.</p>
+
+    <p>Setting the <directive
+    module="mod_auth_basic">AuthBasicUseDigestAlgorithm</directive> directive
+    to <code>MD5</code> will cause the user's Basic Authentication password
+    to be checked using the same encrypted format as for Digest
+    Authentication.  First a string composed from the username, realm name,
+    and password is hashed with MD5; then the username and this encrypted
+    string are passed to the providers listed in
+    <directive module="mod_auth_basic">AuthBasicProvider</directive>
+    as if
+    <directive module="mod_authn_core">AuthType</directive>
+    was set to <code>Digest</code> and Digest Authentication was in force.
+    </p>
+
+    <p>Through the use of <directive
+    module="mod_auth_basic">AuthBasicUseDigestAlgorithm</directive>
+    a site may switch from Digest to Basic Authentication without
+    requiring users to be assigned new passwords.</p>
+
+    <note>
+      The inverse process of switching from Basic to Digest
+      Authentication without assigning new passwords is generally
+      not possible.  Only if the Basic Authentication passwords
+      have been stored in plain text or with a reversable encryption
+      scheme will it be possible to recover them and generate a
+      new data store following the Digest Authentication password
+      storage scheme.
+    </note>
+
+    <note>
+      Only providers which support Digest Authentication will be able
+      to authenticate users when <directive
+      module="mod_auth_basic">AuthBasicUseDigestAlgorithm</directive>
+      is set to <code>MD5</code>.  Use of other providers will result
+      in an error response and the client will be denied access.
+    </note>
+</usage>
+</directivesynopsis>
+
 </modulesynopsis>

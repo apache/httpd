@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_auth_basic: Add AuthBasicUseDigestAlgorithm directive to
+     allow migration of passwords from digest to basic authentication.
+     [Chris Darroch]
+
   *) core: Add util_fcgi.h and associated definitions and support
      routines for FastCGI, based largely on mod_proxy_fcgi.
      [Jeff Trawick]
