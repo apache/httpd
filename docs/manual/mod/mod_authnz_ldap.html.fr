@@ -27,8 +27,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_authnz_ldap.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_authnz_ldap.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Permet d'utiliser un annuaire LDAP pour l'authentification
 HTTP de base.</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -1495,7 +1493,9 @@ spécifiés.</p>
 	taille des filtres est limitée à environ 8000 caractères (valeur
 	de la macro <code>MAX_STRING_LEN</code> dans le code source
 	d'Apache), ce qui s'avère plus que suffisant pour la plupart des
-	applications.</dd>
+	applications. Le mot-clé <code>none</code> permet de désactiver
+	l'utilisation des filtres, ce qui peut s'avérer nécessaire avec
+	certains serveurs LDAP primitifs.</dd>
 </dl>
 
     <p>Pour une recherche, les attribut, filtre et nom d'utilisateur

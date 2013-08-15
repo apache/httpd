@@ -214,6 +214,9 @@ Allow from example.org
 	directives de configuration la remplacent dans la version 2.4.
         </li>
 
+	<li>La valeur par défaut de la directive <code class="directive"><a href="./mod/core.html#allowoverride">AllowOverride</a></code> est maintenant
+	<code>None</code>.</li>
+
 	<li>La valeur par défaut de la directive <code class="directive"><a href="./mod/core.html#enablesendfile">EnableSendfile</a></code> est maintenant Off.</li>
 
 	<li>La valeur par défaut de la directive <code class="directive"><a href="./mod/core.html#fileetag">FileETag</a></code> est maintenant "MTime Size"
@@ -394,6 +397,9 @@ Allow from example.org
     <ul>
       <li><code>configuration error:  couldn't check user: /path</code> -
       chargez le module <code class="module"><a href="./mod/mod_authn_core.html">mod_authn_core</a></code>.</li>
+      <li>Les fichiers <code>.htaccess</code> ne sont pas traités -
+      Vérifiez la présence d'une directive <code class="directive"><a href="./mod/core.html#allowoverride">AllowOverride</a></code> appropriée ; sa valeur par
+      défaut est maintenant <code>None</code>.</li>
     </ul>
     </li>
 </ul>
