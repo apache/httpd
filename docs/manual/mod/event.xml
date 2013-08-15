@@ -66,6 +66,14 @@ of consuming threads only for connections with active processing</description>
     <module>worker</module> MPM and reserve one worker thread per connection.
     All modules shipped with the server are compatible with the event MPM.</p>
 
+    <p>A similar restriction is currently present for requests involving an
+    output filter that needs to read and/or modify the whole response body,
+    like for example mod_ssl, mod_deflate, or mod_include. If the
+    connection to the client blocks while the filter is processing the
+    data, and the amount of data produced by the filter is too big to be
+    buffered in memory, the thread used for the request is not freed while
+    httpd waits until the pending data is sent to the client.</p>
+
     <p>The MPM assumes that the underlying <code>apr_pollset</code>
     implementation is reasonably threadsafe. This enables the MPM to
     avoid excessive high level locking, or having to wake up the listener
