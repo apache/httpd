@@ -3304,7 +3304,7 @@ static void set_banner(apr_pool_t *pconf)
 }
 
 static const char *set_serv_tokens(cmd_parms *cmd, void *dummy,
-                                   const char *arg1, const char *arg2)
+                                   const char *arg)
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
 
@@ -3312,22 +3312,22 @@ static const char *set_serv_tokens(cmd_parms *cmd, void *dummy,
         return err;
     }
 
-    if (!strcasecmp(arg1, "OS")) {
+    if (!strcasecmp(arg, "OS")) {
         ap_server_tokens = SrvTk_OS;
     }
-    else if (!strcasecmp(arg1, "Min") || !strcasecmp(arg1, "Minimal")) {
+    else if (!strcasecmp(arg, "Min") || !strcasecmp(arg, "Minimal")) {
         ap_server_tokens = SrvTk_MINIMAL;
     }
-    else if (!strcasecmp(arg1, "Major")) {
+    else if (!strcasecmp(arg, "Major")) {
         ap_server_tokens = SrvTk_MAJOR;
     }
-    else if (!strcasecmp(arg1, "Minor") ) {
+    else if (!strcasecmp(arg, "Minor") ) {
         ap_server_tokens = SrvTk_MINOR;
     }
-    else if (!strcasecmp(arg1, "Prod") || !strcasecmp(arg1, "ProductOnly")) {
+    else if (!strcasecmp(arg, "Prod") || !strcasecmp(arg, "ProductOnly")) {
         ap_server_tokens = SrvTk_PRODUCT_ONLY;
     }
-    else if (!strcasecmp(arg1, "Full")) {
+    else if (!strcasecmp(arg, "Full")) {
         ap_server_tokens = SrvTk_FULL;
     }
     else {
@@ -4153,7 +4153,7 @@ AP_INIT_TAKE_ARGV("LogLevelOverride", set_loglevel_override, NULL, RSRC_CONF,
   "Override LogLevel for clients with certain IPs"),
 AP_INIT_TAKE1("NameVirtualHost", ap_set_name_virtual_host, NULL, RSRC_CONF,
   "A numeric IP address:port, or the name of a host"),
-AP_INIT_TAKE12("ServerTokens", set_serv_tokens, NULL, RSRC_CONF,
+AP_INIT_TAKE1("ServerTokens", set_serv_tokens, NULL, RSRC_CONF,
   "Determine tokens displayed in the Server: header - Min(imal), "
   "Major, Minor, Prod, OS or Full"),
 AP_INIT_TAKE1("LimitRequestLine", set_limit_req_line, NULL, RSRC_CONF,
