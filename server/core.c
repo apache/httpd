@@ -3213,7 +3213,7 @@ enum server_token_type {
     SrvTk_MINIMAL,       /* eg: Apache/2.0.41 */
     SrvTk_OS,            /* eg: Apache/2.0.41 (UNIX) */
     SrvTk_FULL,          /* eg: Apache/2.0.41 (UNIX) PHP/4.2.2 FooBar/1.2b */
-    SrvTk_PRODUCT_ONLY  /* eg: Apache */
+    SrvTk_PRODUCT_ONLY   /* eg: Apache */
 };
 static enum server_token_type ap_server_tokens = SrvTk_FULL;
 
@@ -3331,7 +3331,7 @@ static const char *set_serv_tokens(cmd_parms *cmd, void *dummy,
         ap_server_tokens = SrvTk_FULL;
     }
     else {
-        return "ServerTokens takes 1 argument, 'Prod', 'Major', 'Minor', 'Min', 'OS', or 'Full'";
+        return "ServerTokens takes 1 argument: 'Prod(uctOnly)', 'Major', 'Minor', 'Min(imal)', 'OS', or 'Full'";
     }
 
     return NULL;
@@ -4155,7 +4155,7 @@ AP_INIT_TAKE1("NameVirtualHost", ap_set_name_virtual_host, NULL, RSRC_CONF,
   "A numeric IP address:port, or the name of a host"),
 AP_INIT_TAKE1("ServerTokens", set_serv_tokens, NULL, RSRC_CONF,
   "Determine tokens displayed in the Server: header - Min(imal), "
-  "Major, Minor, Prod, OS or Full"),
+  "Major, Minor, Prod(uctOnly), OS, or Full"),
 AP_INIT_TAKE1("LimitRequestLine", set_limit_req_line, NULL, RSRC_CONF,
   "Limit on maximum size of an HTTP request line"),
 AP_INIT_TAKE1("LimitRequestFieldsize", set_limit_req_fieldsize, NULL,
