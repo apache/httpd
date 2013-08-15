@@ -109,6 +109,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         do async write completion if the encrypted data left to send for
         a request is less than THRESHOLD_MAX_BUFFER (64k).
         http://mail-archives.apache.org/mod_mbox/httpd-dev/201308.mbox/%3C1965246.dTmAyLRneo%40k%3E
+    minfrin: This patch fixes the hang that required the following workaround:
+             http://mail-archives.apache.org/mod_mbox/httpd-cvs/200706.mbox/%3C20070612003226.8B0491A981A@eris.apache.org%3E
+             If mod_ssl is less efficient than it should be that is a separate
+             issue, unrelated to this patch.
 
   * core: Stop the HTTP_IN filter from attempting to write error buckets
     to the output filters
