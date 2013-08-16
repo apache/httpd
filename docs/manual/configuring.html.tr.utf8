@@ -28,7 +28,6 @@
 <a href="./ko/configuring.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/configuring.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
 <p>Bu belgede Apache HTTP Sunucusunu yapılandırmakta kullanılan dosyalar
 açıklanmıştır.</p>
@@ -70,6 +69,9 @@ açıklanmıştır.</p>
     olacaksa satır katlanabilir; devamı bir alt satırda olan her satırın
     son karakteri “\” (tersbölü) olmalı, satırsonu karakteri ile bu tersbölü
     karakteri arasında başka karakter bulunmamalıdır.</p>
+
+    <p>Yönergelerdeki değiştirgeler boşluklarla ayrılır. Eğer bir değiştirge
+    kendi içinde boşluklar içeriyorsa tırnak içine alınır.</p>
 
     <p>Yapılandırma dosyalarındaki yönergelerin isimleri harf büyüklüğüne
     duyarlı olduğu halde argümanları genellikle harf büyüklüğüne duyarlı

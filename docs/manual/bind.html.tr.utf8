@@ -28,7 +28,6 @@
 <a href="./ko/bind.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/bind.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p>Apache HTTPD sunucusunun belli adresleri ve portları dinlemek üzere
     yapılandırılması.</p>
@@ -100,7 +99,11 @@ Listen [2001:db8::a00:20ff:fea7:ccea]:80
       <div class="example"><p><code>
       (48)Address already in use: make_sock: could not bind to address [::]:80
       </code></p></div>
-    </div>
+
+      <p>Sorun giderme ile ilgili ipuçları için
+      <a href="http://wiki.apache.org/httpd/CouldNotBindToAddress">wiki
+      belgesine</a> bakınız.</p>
+</div>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">

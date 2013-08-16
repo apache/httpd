@@ -28,7 +28,6 @@
 <a href="../ko/vhosts/name-based.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/vhosts/name-based.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p>Bu belgede isme dayalı sanal konakların ne zaman, nasıl kullanılacakları
       açıklanmıştır.</p>
@@ -118,6 +117,19 @@ Barındırma</a></li><li><a href="examples.html">Çok kullanılan sanal konak ya
         yapılandırmalara sahip diğer alan isimlerinin sanal konakları (yani
         öntanımlı olmayanlar) bu öntanımlı sanal konağın sonrasına
         yerleştirilmelidir.</p>
+    </div>
+
+    <div class="note"><h3>ServerName miras alma</h3>
+       <p>İsme dayalı her sanal konak için daima bir <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> belirtmek en iyisidir.</p>
+
+       <p>Eğer bir <code class="directive"><a href="../mod/core.html#virtualhost">VirtualHost</a></code> bölümü
+       içinde bir <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code>
+       belirtilmezse, sunucu ismi olarak ana sunucu yapılandırmasındaki isim
+       kullanılır. Orada da bir sunucu ismi belirtilmemişse, başlatma sırasında
+       dinlenen ilk IP adresinden ters DNS araması ile elde edilen isim
+       kullanılır. Her iki durumda da miras alınan isim gereksiz yere isme
+       dayalı sanal konak ismi haline gelecektir; bu bakımdan isme dayalı her
+       sanal konak için daima bir <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> belirtmek en iyisidir.</p>
     </div>
 
     <p>Örnek olarak, <code>site1.example.com</code> adresinden sitenizi
