@@ -26,7 +26,6 @@
 <a href="../ko/programs/apxs.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/programs/apxs.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p><code><strong>apxs</strong></code>, Apache Hiper Metin Aktarım
      Protokolü (HTTP) sunucusu için ek modül derleme ve kurulum aracıdır. Bu
@@ -112,6 +111,7 @@
     [ -<strong>l</strong> <var>kütüphane-adı</var> ]
     [ -<strong>Wc,</strong><var>derleyici-seçenekleri</var> ]
     [ -<strong>Wl,</strong><var>ilintileyici-seçenekleri</var> ]
+    [ -<strong>p</strong> ]
     <var>dosya</var> ...</code></p>
 
     <p><code><strong>apxs</strong> -<strong>i</strong>
@@ -231,6 +231,11 @@
       <dd>Bu seçenek <code>libtool --mode=link</code> komutuna doğrudan
        seçenek aktarmak için kullanılır. Bu seçeneği yerel ilintileyiciniz
        için gereken ek seçenekleri belirtmek için kullanın.</dd>
+
+     <dt><code><strong>-p</strong></code></dt>
+     <dd>Bu seçenek apxs'in apr/apr-util kütüphaneleriyle ilintilenmesini
+       sağlar. apr/apr-util kütüphanelerini kullanan yardımcı uygulamaları
+       derlerken yararlıdır.</dd>
       </dl>
     
 

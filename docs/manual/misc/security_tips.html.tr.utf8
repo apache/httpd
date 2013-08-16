@@ -26,7 +26,6 @@
 <a href="../ko/misc/security_tips.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/misc/security_tips.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p>Bir HTTP Sunucusunu ayarlarken dikkat edilmesi gerekenler ve bazı
     ipuçları.  Öneriler kısmen Apache’ye özel kısmen de genel olacaktır.</p>
@@ -366,8 +365,7 @@
 
     <pre class="prettyprint lang-config">
 &lt;Directory /&gt;
-    Order Deny,Allow
-    Deny from all
+    Require all denied
 &lt;/Directory&gt;
     </pre>
 
@@ -378,12 +376,10 @@
 
     <pre class="prettyprint lang-config">
 &lt;Directory /usr/users/*/public_html&gt;
-    Order Deny,Allow
-    Allow from all
+    Require all granted
 &lt;/Directory&gt;
 &lt;Directory /usr/local/httpd&gt;
-    Order Deny,Allow
-    Allow from all
+    Require all granted
 &lt;/Directory&gt;
     </pre>
 
@@ -441,8 +437,7 @@
 
     <pre class="prettyprint lang-config">
 &lt;Files ".ht*"&gt;
-    Order allow,deny
-    Deny from all
+    Require all denied
 &lt;/Files&gt;
     </pre>
 
