@@ -84,10 +84,10 @@ Changes with Apache 2.5.0
      [Basant Kumar Kukreja <basant.kukreja sun.com>, Alejandro Alvarez
      <alejandro.alvarez.ayllon cern.ch>]
 
-  *) core, mod_ssl: Lift the restriction that prevents mod_ssl taking
-     full advantage of the event MPM. Enable the ability for a module
-     to reverse the sense of a poll event from a read to a write or vice
-     versa. [Graham Leggett]
+  *) core, mod_ssl: Enable the ability for a module to reverse the sense of
+     a poll event from a read to a write or vice versa. This is a step on
+     the way to allow mod_ssl taking full advantage of the event MPM.
+     [Graham Leggett]
 
   *) mod_ldap: LDAP connections used for authentication were not respecting
      LDAPConnectionPoolTimeout.  PR 54587
