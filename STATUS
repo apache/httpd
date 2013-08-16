@@ -92,11 +92,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-
-
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
-
   * core, mod_ssl: Lift the restriction that prevents mod_ssl taking
     full advantage of the event MPM. Enable the ability for a module
     to reverse the sense of a poll event from a read to a write or vice
@@ -104,15 +99,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     trunk patches: http://svn.apache.org/r1470679
                    http://svn.apache.org/r1477094
     2.4.x patch: http://people.apache.org/~minfrin/httpd-event-ssl.patch
-    +1: minfrin, jim
-    sf: The current patch has very little effect. Connections will only
-        do async write completion if the encrypted data left to send for
-        a request is less than THRESHOLD_MAX_BUFFER (64k).
-        http://mail-archives.apache.org/mod_mbox/httpd-dev/201308.mbox/%3C1965246.dTmAyLRneo%40k%3E
-    minfrin: This patch fixes the hang that required the following workaround:
-             http://mail-archives.apache.org/mod_mbox/httpd-cvs/200706.mbox/%3C20070612003226.8B0491A981A@eris.apache.org%3E
-             If mod_ssl is less efficient than it should be that is a separate
-             issue, unrelated to this patch.
+    +1: minfrin, jim, sf
+    sf: These docs/CHANGES commits should be included, too:
+        http://svn.apache.org/r1514214
+        http://svn.apache.org/r1514617
+
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
 
   * core: Stop the HTTP_IN filter from attempting to write error buckets
     to the output filters
