@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1445133:1461825 (outdated) -->
+<!-- English Revision: 1461825 -->
 <!-- =====================================================
- Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
-   Reviewed by: Orhan Berent <berent belgeler.org>
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
+   Reviewed by: Orhan Berent <berent belgeler.gen.tr>
 ========================================================== -->
 
 <!--
@@ -219,7 +219,7 @@ değiştirgesi 2.2.24'ten itibaren desteklenmektedir.</compatibility>
             <indent>
                   FallbackResource /blog/index.php<br />
              </indent>
-             &lt;/Directory&gt;
+             &lt;/Directory&gt;<br />
              &lt;Directory /web/example.com/htdocs/blog/images&gt;<br />
             <indent>
                   FallbackResource disabled<br />
