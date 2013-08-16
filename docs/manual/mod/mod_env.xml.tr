@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1040519:1507323 (outdated) -->
+<!-- English Revision: 1507323 -->
 <!-- =====================================================
- Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
-   Reviewed by: Orhan Berent <berent belgeler.org>
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
+   Reviewed by: Orhan Berent <berent belgeler.gen.tr>
 ========================================================== -->
 
 <!--
@@ -65,7 +65,7 @@ müdahale etmek için kullanılır.</description>
 <directivesynopsis>
 <name>SetEnv</name>
 <description>Ortam değişkenlerini tanımlar.</description>
-<syntax>SetEnv <var>ortam-değişkeni</var> <var>değer</var></syntax>
+<syntax>SetEnv <var>ortam-değişkeni</var> [<var>değer</var>]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
@@ -78,6 +78,8 @@ müdahale etmek için kullanılır.</description>
     <example><title>Örnek</title>
       SetEnv SPECIAL_PATH /foo/bin
     </example>
+
+    <p>Bir <var>değer</var> belirtilmezse, değişkene boş dizgi atanır.</p>
 
     <note><p>Bu yönerge ile atanan dahili ortam değişkenleri, erişim denetimi ve
       URI'leri dosya isimleri ile eşleştirme gibi daha önceki istek işleme
