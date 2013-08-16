@@ -1,10 +1,10 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1174747:1494953 (outdated) -->
+<!-- English Revision: 1494953 -->
 <!-- =====================================================
- Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
-   Reviewed by: Orhan Berent <berent belgeler.org>
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
+   Reviewed by: Orhan Berent <berent belgeler.gen.tr>
 ========================================================== -->
 
 <!--
@@ -112,6 +112,7 @@
     [ -<strong>l</strong> <var>kütüphane-adı</var> ]
     [ -<strong>Wc,</strong><var>derleyici-seçenekleri</var> ]
     [ -<strong>Wl,</strong><var>ilintileyici-seçenekleri</var> ]
+    [ -<strong>p</strong> ]
     <var>dosya</var> ...</code></p>
 
     <p><code><strong>apxs</strong> -<strong>i</strong>
@@ -231,6 +232,11 @@
       <dd>Bu seçenek <code>libtool --mode=link</code> komutuna doğrudan
        seçenek aktarmak için kullanılır. Bu seçeneği yerel ilintileyiciniz
        için gereken ek seçenekleri belirtmek için kullanın.</dd>
+
+     <dt><code><strong>-p</strong></code></dt>
+     <dd>Bu seçenek apxs'in apr/apr-util kütüphaneleriyle ilintilenmesini
+       sağlar. apr/apr-util kütüphanelerini kullanan yardımcı uygulamaları
+       derlerken yararlıdır.</dd>
       </dl>
     </section>
 

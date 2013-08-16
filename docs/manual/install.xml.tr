@@ -1,10 +1,10 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 1387659:1502534 (outdated) -->
+<!-- English Revision: 1502534 -->
 <!-- =====================================================
- Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
-   Reviewed by: Orhan Berent <berent belgeler.org>
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
+   Reviewed by: Orhan Berent <berent belgeler.gen.tr>
 ========================================================== -->
 
 <!--
@@ -33,9 +33,11 @@
     <p>Bu belge Apache HTTP Sunucusunun sadece Unix ve Unix benzeri
       sistemlerde derlenmesini ve kurulmasını kapsar. Windows üzerinde
       derleme ve kurulum için <a href="platform/windows.html">Apache HTTP
-      Sunucusunun Microsoft Windows ile kullanımı</a> bölümüne bakınız. Diğer
-      platformlar için ise <a href="platform/">platform</a> belgelerine
-      bakınız.</p>
+      Sunucusunun Microsoft Windows ile kullanımı</a> ve <a
+      href="platform/win_compiling.html">Apache HTTP
+      Sunucusunun Microsoft Windows için Derlenmesi</a> bölümüne bakınız.
+      Diğer platformlar için ise <a href="platform/">platform</a>
+      belgelerine bakınız.</p>
 
     <p>Apache HTTP Sunucusunun, derleme ortamını oluşturmak için çoğu Açık
       Kaynak Kodlu projenin yaptığı gibi <code>libtool</code> ve

@@ -1,7 +1,11 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 1343937:1470515 (outdated) -->
+<!-- English Revision: 1470515 -->
+<!-- =====================================================
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
+   Reviewed by: Orhan Berent <berent belgeler.gen.tr>
+========================================================== -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -69,6 +73,9 @@ açıklanmıştır.</p>
     olacaksa satır katlanabilir; devamı bir alt satırda olan her satırın
     son karakteri “\” (tersbölü) olmalı, satırsonu karakteri ile bu tersbölü
     karakteri arasında başka karakter bulunmamalıdır.</p>
+
+    <p>Yönergelerdeki değiştirgeler boşluklarla ayrılır. Eğer bir değiştirge
+    kendi içinde boşluklar içeriyorsa tırnak içine alınır.</p>
 
     <p>Yapılandırma dosyalarındaki yönergelerin isimleri harf büyüklüğüne
     duyarlı olduğu halde argümanları genellikle harf büyüklüğüne duyarlı

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 1334033:1512462 (outdated) -->
+<!-- English Revision: 1512462 -->
 <!-- =====================================================
- Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
-   Reviewed by: Orhan Berent <berent belgeler.org>
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
+   Reviewed by: Orhan Berent <berent belgeler.gen.tr>
 ========================================================== -->
 
 <!--
@@ -104,7 +104,11 @@ Listen [2001:db8::a00:20ff:fea7:ccea]:80
       <example>
       (48)Address already in use: make_sock: could not bind to address [::]:80
       </example>
-    </note>
+
+      <p>Sorun giderme ile ilgili ipuçları için
+      <a href="http://wiki.apache.org/httpd/CouldNotBindToAddress">wiki
+      belgesine</a> bakınız.</p>
+</note>
 
 </section>
 
