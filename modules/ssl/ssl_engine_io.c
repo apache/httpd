@@ -1955,7 +1955,7 @@ void ssl_io_filter_init(conn_rec *c, request_rec *r, SSL *ssl)
     /* write is non blocking for the benefit of async mpm */
     if (c->cs) {
         BIO_set_nbio(filter_ctx->pbioWrite, 1);
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE6, 0, c,
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE7, 0, c,
                       "Enabling non-blocking writes");
     }
 
