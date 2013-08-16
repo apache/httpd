@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1344676:1500043 (outdated) -->
+<!-- English Revision: 1500043 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -133,6 +133,21 @@ Barındırma</a></seealso>
         yapılandırmalara sahip diğer alan isimlerinin sanal konakları (yani
         öntanımlı olmayanlar) bu öntanımlı sanal konağın sonrasına
         yerleştirilmelidir.</p>
+    </note>
+
+    <note><title>ServerName miras alma</title>
+       <p>İsme dayalı her sanal konak için daima bir <directive module="core"
+       >ServerName</directive> belirtmek en iyisidir.</p>
+
+       <p>Eğer bir <directive module="core">VirtualHost</directive> bölümü
+       içinde bir <directive module="core">ServerName</directive>
+       belirtilmezse, sunucu ismi olarak ana sunucu yapılandırmasındaki isim
+       kullanılır. Orada da bir sunucu ismi belirtilmemişse, başlatma sırasında
+       dinlenen ilk IP adresinden ters DNS araması ile elde edilen isim
+       kullanılır. Her iki durumda da miras alınan isim gereksiz yere isme
+       dayalı sanal konak ismi haline gelecektir; bu bakımdan isme dayalı her
+       sanal konak için daima bir <directive module="core"
+       >ServerName</directive> belirtmek en iyisidir.</p>
     </note>
 
     <p>Örnek olarak, <code>site1.example.com</code> adresinden sitenizi

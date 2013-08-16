@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 1451402:1481368 (outdated) -->
+<!-- English Revision: 1481368 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -40,6 +40,7 @@
 <modulelist>
 <module>mod_actions</module>
 <module>mod_alias</module>
+<module>mod_autoindex</module>
 <module>mod_dir</module>
 <module>mod_imagemap</module>
 <module>mod_negotiation</module>
@@ -53,6 +54,7 @@
 <directive module="mod_alias">Alias</directive>
 <directive module="mod_alias">AliasMatch</directive>
 <directive module="mod_speling">CheckSpelling</directive>
+<directive module="core">DirectoryIndex</directive>
 <directive module="core">DocumentRoot</directive>
 <directive module="core">ErrorDocument</directive>
 <directive module="core">Options</directive>
@@ -86,6 +88,23 @@
       <code>http://example.com/balıklar/zargana.html</code> şeklindeki bir
       istek için istemciye <code>/var/http/html/balıklar/zargana.html</code>
       dosyası sunulur.</p>
+
+    <p>Bir dizin istenirse (<code>/</code> ile biten bir yol belirtilmesi
+      durumu), sunulacak dosya <directive module="core"
+      >DirectoryIndex</directive> yönergesinde belirtilen dosya olacaktır.
+      Örneğin, <code>DocumentRoot</code> yukarıdaki gibi belirtimiş ve siz de
+      şunu belirtmişseniz:</p>
+
+    <example>DirectoryIndex index.html index.php</example>
+
+    <p><code>http://www.example.com/fish/</code> isteği, httpd'nin
+      <code>/var/www/html/fish/index.html</code> dosyasını sunmaya, bu dosya
+      bulunmuyorsa <code>/var/www/html/fish/index.php</code> dosyasını sunmaya
+      çalışmasına sebep olacaktır.</p>
+
+    <p>Bu dosyaların ikisi de bulunmuyorsa sonraki adım,
+      <module>mod_autoindex</module> yüklü ve uygun şekilde yapılandırılmışsa
+      bir dizin içeriği dosyası sağlamaya çalışmak olacaktır.</p>
 
     <p>httpd ayrıca, sunucunun birden fazla konak için istek kabul etmesini
       sağlayan <a href="vhosts/">sanal barındırmaya</a> da muktedirdir. Bu
