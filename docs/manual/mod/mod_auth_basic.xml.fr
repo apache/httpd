@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1468581:1514064 (outdated) -->
+<!-- English Revision : 1514064 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -196,6 +196,91 @@ d'utilisateur et mot de passe fournis</description>
     </highlight>
     </example>
 
+</usage>
+</directivesynopsis>
+<directivesynopsis>
+<name>AuthBasicUseDigestAlgorithm</name>
+<description>V&eacute;rifie les mots de passe aupr&egrave;s des fournisseurs
+d'authentification &agrave; la mani&egrave;re de l'authentification de type Digest.
+</description>
+<syntax>AuthBasicUseDigestAlgorithm MD5|Off</syntax>
+<default>AuthBasicUseDigestAlgorithm Off</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>Normalement, lorsqu'on utilise l'authentification basique, les
+    fournisseurs sp&eacute;cifi&eacute;s via la directive <directive
+    module="mod_auth_basic">AuthBasicProvider</directive> tentent de
+    contr&ocirc;ler l'identit&eacute; d'un utilisateur en recherchant dans leurs
+    bases de donn&eacute;es l'existence d'un couple utilisateur/mot de passe
+    correspondant. Les mots de passe enregistr&eacute;s sont en g&eacute;n&eacute;ral
+    chiffr&eacute;s, mais ce n'est pas syst&eacute;matique ; chaque fournisseur peut
+    choisir son propre mode de stockage des mots de passe.</p>
+
+    <p>Lorsqu'on utilise l'authentification de type Digest, les
+    fournisseurs sp&eacute;cifi&eacute;s par la directive <directive
+    module="mod_auth_digest">AuthDigestProvider</directive> effectuent
+    une recherche similaire dans leurs bases de
+    donn&eacute;es pour trouver un couple utilisateur/mot de passe
+    correspondant. Cependant, &agrave; la diff&eacute;rence de l'authentification
+    basique, les donn&eacute;es associ&eacute;es &agrave; chaque utilisateur et comportant le
+    nom d'utilisateur, le domaine de protection (realm) et le mot de
+    passe doivent &ecirc;tre contenues dans une cha&icirc;ne chiffr&eacute;e (Voir le
+    document <a
+    href="http://tools.ietf.org/html/rfc2617#section-3.2.2.2">RFC 2617,
+    Section 3.2.2.2</a> pour plus de d&eacute;tails &agrave; propos du type de
+    chiffrement utilis&eacute; pour cette cha&icirc;ne).</p>
+
+    <p>A cause de la diff&eacute;rence entre les m&eacute;thodes de stockage des
+    donn&eacute;es des authentifications de type basique et digest, le passage
+    d'une m&eacute;thode d'authentification de type digest &agrave; une m&eacute;thode
+    d'authentification de type basique requiert l'attribution de
+    nouveaux
+    mots de passe &agrave; chaque utilisateur, car leur mots de passe existant
+    ne peut pas &ecirc;tre extrait &agrave; partir du sch&eacute;ma de stockage utilis&eacute;
+    par les fournisseurs d'authentification de type digest.</p>
+
+    <p>Si la directive <directive
+    module="mod_auth_basic">AuthBasicUseDigestAlgorithm</directive> est
+    d&eacute;finie &agrave; la valeur <code>MD5</code>, le mot de passe d'un
+    utilisateur dans le cas de l'authentification basique sera v&eacute;rifi&eacute;
+    en utilisant le m&ecirc;me format de chiffrement que dans le cas de
+    l'authentification de type digest. Tout d'abord, une cha&icirc;ne
+    comportant le nom d'utilisateur, le domaine de protection (realm) et
+    le mot de passe est g&eacute;n&eacute;r&eacute;e sous forme de condens&eacute; (hash) en
+    utilisant l'algorithme MD5 ; puis le nom d'utilisateur et cette
+    cha&icirc;ne chiffr&eacute;e sont transmis aux fournisseurs sp&eacute;cifi&eacute;s via la
+    directive <directive
+    module="mod_auth_basic">AuthBasicProvider</directive> comme si la
+    directive <directive module="mod_authn_core">AuthType</directive>
+    &eacute;tait d&eacute;finie &agrave; <code>Digest</code> et si l'authentification de type
+    Digest &eacute;tait utilis&eacute;e.
+    </p>
+
+    <p>Gr&acirc;ce &agrave; cette directive, un site peut basculer d'une
+    authentification de type digest &agrave; basique sans devoir changer les
+    mots de passe des utilisateurs. </p>
+
+    <note>
+      Le processus inverse consistant &agrave; passer d'une authentification de
+      type basique &agrave; digest sans changer les mots de passe n'est en
+      g&eacute;n&eacute;ral pas possible. Les mots de passe enregistr&eacute;s dans le cas
+      d'une authentification de type basique ne pourront &ecirc;tre extraits
+      et chiffr&eacute;s &agrave; nouveau selon le sch&eacute;ma de l'authentification de
+      type digest, que s'ils ont &eacute;t&eacute; stock&eacute;s en clair ou selon un sch&eacute;ma de
+      chiffrement r&eacute;versible.
+    </note>
+
+    <note>
+      Seuls les fournisseurs qui supportent l'authentification de type
+      digest pourront authentifier les utilisateurs lorsque la directive
+      <directive
+      module="mod_auth_basic">AuthBasicUseDigestAlgorithm</directive>
+      est d&eacute;finie &agrave; <code>MD5</code>. L'utilisation d'un autre
+      fournisseur provoquera un message d'erreur et le client se verra
+      refuser l'acc&egrave;s.</note>
 </usage>
 </directivesynopsis>
 

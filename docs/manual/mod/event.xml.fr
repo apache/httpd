@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1477094:1514214 (outdated) -->
+<!-- English Revision : 1514214 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -74,6 +74,16 @@ mobiliser des threads que pour les connexions en cours de traitement</descriptio
     adopte le comportement du MPM <module>worker</module> et
     r&eacute;serve un thread par connexion. Tous les modules fournis
     avec le serveur sont compatibles avec le MPM event.</p>
+
+    <p>Une restriction similaire existe pour les requ&ecirc;tes qui utilisent
+    un filtre en sortie qui doit lire et/ou modifier l'ensemble du corps
+    de r&eacute;ponse, comme dans le cas de mod_ssl, mod_deflate, ou
+    mod_include. Si la connexion avec le client se bloque pendant que le
+    filtre traite les donn&eacute;es, et si la quantit&eacute; de donn&eacute;es g&eacute;n&eacute;r&eacute;e par
+    ce filtre est trop importante pour &ecirc;tre mise en tampon m&eacute;moire, le
+    thread utilis&eacute; pour la requ&ecirc;te n'est pas lib&eacute;r&eacute; pendant que httpd
+    attend que toutes les donn&eacute;es restantes aient &eacute;t&eacute; transmises au
+    client.</p>
 
     <p>Le MPM pr&eacute;suppose que l'impl&eacute;mentation <code>apr_pollset</code>
     sous-jacente est raisonnablement s&ucirc;re du point de vue des threads.
