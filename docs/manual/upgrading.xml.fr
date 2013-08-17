@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1495843:1514039 (outdated) -->
+<!-- English Revision : 1514039 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -332,6 +332,11 @@ Allow from example.org
 
         <li><module>mod_reqtimeout</module>: si ce module est charg&eacute;, il
 	d&eacute;finit maintenant certains temps d'attente par d&eacute;faut.</li>
+
+	<li><module>mod_dumpio</module>: la directive
+	<directive>DumpIOLogLevel</directive> n'est plus support&eacute;e. Les
+	donn&eacute;es sont toujours enregistr&eacute;es au niveau <code>trace7</code>
+	de <directive module="core">LogLevel</directive></li>
 
     </ul>
     </section>
