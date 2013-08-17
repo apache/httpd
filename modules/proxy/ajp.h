@@ -382,7 +382,7 @@ apr_status_t ajp_msg_dump(apr_pool_t *pool, ajp_msg_t *msg, char *err,
 /**
  * Log an AJP message
  *
- * @param request   The current request
+ * @param r         The current request
  * @param msg       AJP Message to dump
  * @param err       error string to display
  * @return          APR_SUCCESS or error
