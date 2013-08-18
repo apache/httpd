@@ -122,6 +122,18 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     2.4.x patch: http://people.apache.org/~gsmith/httpd/diffs/pr55235-2.4bp.diff
     +1: gsmith, trawick, covener
 
+  * configure: '--enable-maintainer-mode' should also auto-enable mod_bucketeer
+    trunk: http://svn.apache.org/viewvc?view=revision&revision=1503680
+    2.4.x patch: trunk patch works
+    +1: jim, druggeri, sf
+
+  * fcgistarter: Specify SO_REUSEADDR to allow starting a server with old
+    connections in TIME_WAIT.
+    trunk: http://svn.apache.org/r1515050
+    2.4.x patch: trunk patch works
+    +1: trawick, covener, sf
+
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -207,17 +219,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                    http://svn.apache.org/repos/asf/httpd/httpd/trunk/server/skiplist.c
     2.4.x patch: trunk patch works
     +1: jim, druggeri
-
-  * configure: '--enable-maintainer-mode' should also auto-enable mod_bucketeer
-    trunk: http://svn.apache.org/viewvc?view=revision&revision=1503680
-    2.4.x patch: trunk patch works
-    +1: jim, druggeri
-
-  * fcgistarter: Specify SO_REUSEADDR to allow starting a server with old
-    connections in TIME_WAIT.
-    trunk: http://svn.apache.org/r1515050
-    2.4.x patch: trunk patch works
-    +1: trawick, covener
 
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
