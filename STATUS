@@ -110,6 +110,18 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     2.4.x patch: trunk patch works (with offset)
     +1: trawick, jim, druggeri
 
+  * mod_ldap: Fix an unlikely potential memory leak.
+    PR54936 [Zhenbo Xu <zhenbo1987 gmail com>]
+    trunk: http://svn.apache.org/r1504276
+    2.4.x patch: trunk patch works
+    +1: jailletc36, trawick (util_ald_free(NULL) seems nastier than a memory leak), covener
+
+  * Makefile.win: Install proper pcre DLL file during debug build install
+    PR55235 [Ben Reser <ben reser org>]
+    trunk: http://svn.apache.org/r1505073
+    2.4.x patch: http://people.apache.org/~gsmith/httpd/diffs/pr55235-2.4bp.diff
+    +1: gsmith, trawick, covener
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -179,12 +191,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: trunk works (minus log-message-tags)
     +1: rjung
 
-  * Makefile.win: Install proper pcre DLL file during debug build install
-    PR55235 [Ben Reser <ben reser org>]
-    trunk: http://svn.apache.org/r1505073
-    2.4.x patch: http://people.apache.org/~gsmith/httpd/diffs/pr55235-2.4bp.diff
-    +1: gsmith, trawick
-
   * mod_logio: new format-specifier %C (combined) which is the sum of received
     and sent byte counts.
     PR54015 [Martijn T. <apache_bugzilla@mindcontrolled.nl>, Christophe JAILLET]
@@ -195,12 +201,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
            Maybe we can use "S" for "sum"?
            Please also update the part of mod_logio.c where it lists the format
            characters in a comment (%...I and %...O but no %...C yet).
-
-  * mod_ldap: Fix an unlikely potential memory leak.
-    PR54936 [Zhenbo Xu <zhenbo1987 gmail com>]
-    trunk: http://svn.apache.org/r1504276
-    2.4.x patch: trunk patch works
-    +1: jailletc36, trawick (util_ald_free(NULL) seems nastier than a memory leak)
 
   * skiplist: Add skiplist capability to httpd
     trunk "patch": http://svn.apache.org/repos/asf/httpd/httpd/trunk/include/ap_skiplist.h
@@ -217,7 +217,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     connections in TIME_WAIT.
     trunk: http://svn.apache.org/r1515050
     2.4.x patch: trunk patch works
-    +1: trawick
+    +1: trawick, covener
 
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
