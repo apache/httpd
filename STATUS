@@ -181,6 +181,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              there would be in trying to bake in an arbitrary limit in the mean
              time when we can just fix the underlying problem instead.
         jim: Agree w/ minfrin
+    sf:      This would require someone to do the work. Until someone has the 
+             necessary free cycles, I propose to include
+             http://svn.apache.org/r1515162
 
   * modules: Fix some compiler warnings.
     trunk patch: http://svn.apache.org/r1500345
