@@ -38,6 +38,12 @@
 #include <openssl/evp.h>
 #include <openssl/rand.h>
 #include <openssl/x509v3.h>
+
+/* ECC support came along in OpenSSL 1.0.0 */
+#if (OPENSSL_VERSION_NUMBER < 0x10000000)
+#define OPENSSL_NO_EC
+#endif
+
 /** Avoid tripping over an engine build installed globally and detected
  * when the user points at an explicit non-engine flavor of OpenSSL
  */
