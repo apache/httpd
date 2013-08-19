@@ -75,8 +75,8 @@
     <p>When a request arrives, the server will find the best (most specific) matching
     <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> argument based on
     the IP address and port used by the request.  If there is more than one virtual host
-    containing this best-match address and port combination,  Apache will further
-    compare the <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> and <code class="directive"><a href="../mod/core.html#serveralias">ServerAlias</a></code>  directives to the server name
+    containing this best-match address and port combination, Apache will further
+    compare the <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> and <code class="directive"><a href="../mod/core.html#serveralias">ServerAlias</a></code> directives to the server name
     present in the request.</p>
 
     <h3><a name="defaultvhost" id="defaultvhost">The default name-based vhost for an IP and port combination </a></h3>

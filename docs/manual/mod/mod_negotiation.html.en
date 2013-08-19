@@ -207,7 +207,7 @@ Negotiation</a></li>
     continue negotiating with the explicit type map.</p>
 
     <p>Other configuration directives, such as <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code> can be used to map <code>document.html</code> to
-    <code>document.html.var</code></p>.
+    <code>document.html.var</code>.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
