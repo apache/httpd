@@ -147,9 +147,6 @@ Changes with Apache 2.5.0
   *) mod_systemd: New module, for integration with systemd on Linux.
      [Jan Kaluza <jkaluza redhat.com>]
 
-  *) core: Add pre_htaccess hook, allowing mpm-itk
-     to be used without patches to httpd core.  [Jeff Trawick]
-
   *) WinNT MPM: Store pid and generation for each thread in scoreboard
      to allow tracking of threads from exiting children via mod_status
      or other such mechanisms.  [Jeff Trawick]
