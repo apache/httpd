@@ -104,12 +104,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/r1514214
         http://svn.apache.org/r1514617
 
-  * mod_ldap: Fix an unlikely potential memory leak.
-    PR54936 [Zhenbo Xu <zhenbo1987 gmail com>]
-    trunk: http://svn.apache.org/r1504276
-    2.4.x patch: trunk patch works
-    +1: jailletc36, trawick (util_ald_free(NULL) seems nastier than a memory leak), covener
-
   * Makefile.win: Install proper pcre DLL file during debug build install
     PR55235 [Ben Reser <ben reser org>]
     trunk: http://svn.apache.org/r1505073
