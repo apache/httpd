@@ -1,9 +1,6 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
-  *) fcgistarter: Specify SO_REUSEADDR to allow starting a server
-     with old connections in TIME_WAIT.  [Jeff Trawick]
-
   *) mod_auth_basic: Add AuthBasicUseDigestAlgorithm directive to
      allow migration of passwords from digest to basic authentication.
      [Chris Darroch]
