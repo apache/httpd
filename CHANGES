@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.26
 
+  *) mod_ssl: Check SNI hostname against Host header case-insensitively.
+     PR 49491.  [Mayank Agrawal <magrawal.08 gmail.com>]
+
   *) mod_ssl: Change default for SSLCompression to off, as compression
      causes security issues in most setups. (The so called "CRIME" attack).
      [Stefan Fritsch]
