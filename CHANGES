@@ -12,10 +12,6 @@ Changes with Apache 2.5.0
   *) core: Add ap_log_data(), ap_log_rdata(), etc. for logging buffers.
      [Jeff Trawick]
 
-  *) ab: Fix potential buffer overflows when processing the T and X
-     command-line options.  PR 55360.
-     [Mike Rumph <mike.rumph oracle.com>]
-
   *) mod_unique_id: Use output of the PRNG rather than IP address and
      pid, avoiding sleep() call and possible DNS issues at startup,
      plus improving randomness for IPv6-only hosts.
