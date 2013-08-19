@@ -181,11 +181,20 @@ Negotiation</a></seealso>
     AddHandler type-map .var
     </highlight>
 
-    <p>A request for <code>document.html</code> in this directory will
-    result in <code>document.html.var</code> being consulted, and the
-    variant chosen which most closely matches the language preference
+    <p>A request for <code>document.html.var</code> in this directory will
+    result in choosing the variant which most closely matches the language preference
     specified in the user's <code>Accept-Language</code> request
     header.</p>
+
+    <p>If <code>Multiviews</code> is enabled, and <directive module="mod_mime"
+    >MultiviewsMatch</directive> is set to "handlers" or "any",  a request to
+    <code>document.html</code> will discover <code>document.html.var</code> and
+    continue negotiating with the explicit type map.</p>
+
+    <p>Other configuration directives, such as <directive module="mod_alias"
+    >Alias</directive> can be used to map <code>document.html</code> to
+    <code>document.html.var</code></p>.
+
 </section>
 
 <section id="multiviews"><title>Multiviews</title>
