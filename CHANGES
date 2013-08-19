@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_authnz_fcgi: New module to enable FastCGI authorizer
+     applications to authenticate and/or authorize clients.
+     [Jeff Trawick]
+
   *) mod_auth_basic: Add AuthBasicUseDigestAlgorithm directive to
      allow migration of passwords from digest to basic authentication.
      [Chris Darroch]
