@@ -193,7 +193,7 @@ Negotiation</a></seealso>
 
     <p>Other configuration directives, such as <directive module="mod_alias"
     >Alias</directive> can be used to map <code>document.html</code> to
-    <code>document.html.var</code></p>.
+    <code>document.html.var</code>.</p>
 
 </section>
 
