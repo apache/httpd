@@ -441,9 +441,6 @@ int ssl_init_ssl_connection(conn_rec *c)
      */
     SSL_set_tmp_rsa_callback(ssl, ssl_callback_TmpRSA);
     SSL_set_tmp_dh_callback(ssl,  ssl_callback_TmpDH);
-#ifndef OPENSSL_NO_EC
-    SSL_set_tmp_ecdh_callback(ssl, ssl_callback_TmpECDH);
-#endif
 
     SSL_set_verify_result(ssl, X509_V_OK);
 

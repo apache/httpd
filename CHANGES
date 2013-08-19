@@ -5,10 +5,6 @@ Changes with Apache 2.2.26
      causes security issues in most setups. (The so called "CRIME" attack).
      [Stefan Fritsch]
 
-  *) mod_ssl: enable support for ECC keys and ECDH ciphers.  Tested against
-     OpenSSL 1.0.0b3.  [Vipul Gupta vipul.gupta sun.com, Sander Temme,
-     Stefan Fritsch]
-
   *) mod_ssl: Fix compilation error when OpenSSL does not contain
      support for SSLv2. Problem was introduced in 2.2.25. PR 55194.
      [Rainer Jung, Kaspar Brand]
