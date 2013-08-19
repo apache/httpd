@@ -101,16 +101,16 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     trunk: http://svn.apache.org/r1506714
     +1: gstein, wrowe, rpluem
 
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
-
   * mod_ssl: Compare SNI hostname against Host header case-insensitively.
       PR: 49491
       Trunk version of patch:
          http://svn.apache.org/r1082189
       Backport version for 2.2.x of patch:
          Trunk version of patch works
-      +1: rpluem, trawick
+      +1: rpluem, trawick, covener
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
 
   * mod_ssl: Support ECC keys
     trunk patch: http://svn.apache.org/r834378 
@@ -124,15 +124,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  http://svn.apache.org/r1308862
                  http://svn.apache.org/r1509875
     2.2.x patch: http://people.apache.org/~sf/ECC-2.2-v2.diff
-    +1: sf
-    trawick: Is there any particular reason that the patch doesn't
-             define OPENSSL_NO_EC for older OpenSSL levels and use 
-             that as the feature check, as is done in the 2.4.x 
-             branch?  I guess I can help out with that if it is just
-             a matter of labor.
-    sf: It does (in ssl_toolkit_compat.h where these things are in 2.2).
-        But v1 of the patch lacked one commit to properly use OPENSSL_NO_EC
-        everywhere. Fixed in v2.
+    +1: sf, trawick
 
   * mod_ssl config: Fix range check bug with SSLRenegBufferSize
     trunk patch: http://svn.apache.org/r954641
@@ -142,13 +134,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.2.x patch: trunk patch to ssl_engine_config.c (above) applies with offset
     +1: trawick
 
-  * mod_ssl: compare SNI hostname to Host header case insensitively
-
-    trunk patch: http://svn.apache.org/viewvc?rev=1082189&view=rev
-    2.4.x patch: n/a, fixed before 2.4 branched.
-    2.2.x patch: trunk works
-    +1 covener
-    
 
 PATCHES/ISSUES THAT ARE STALLED
 
