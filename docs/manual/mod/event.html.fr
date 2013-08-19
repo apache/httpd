@@ -27,8 +27,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/event.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/event.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Une variante du MPM <code class="module"><a href="../mod/worker.html">worker</a></code> conçue pour ne
 mobiliser des threads que pour les connexions en cours de traitement</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>MPM</td></tr>
@@ -109,6 +107,16 @@ mobiliser des threads que pour les connexions en cours de traitement</td></tr>
     adopte le comportement du MPM <code class="module"><a href="../mod/worker.html">worker</a></code> et
     réserve un thread par connexion. Tous les modules fournis
     avec le serveur sont compatibles avec le MPM event.</p>
+
+    <p>Une restriction similaire existe pour les requêtes qui utilisent
+    un filtre en sortie qui doit lire et/ou modifier l'ensemble du corps
+    de réponse, comme dans le cas de mod_ssl, mod_deflate, ou
+    mod_include. Si la connexion avec le client se bloque pendant que le
+    filtre traite les données, et si la quantité de données générée par
+    ce filtre est trop importante pour être mise en tampon mémoire, le
+    thread utilisé pour la requête n'est pas libéré pendant que httpd
+    attend que toutes les données restantes aient été transmises au
+    client.</p>
 
     <p>Le MPM présuppose que l'implémentation <code>apr_pollset</code>
     sous-jacente est raisonnablement sûre du point de vue des threads.

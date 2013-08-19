@@ -24,8 +24,6 @@
 <p><span>Langues Disponibles: </span><a href="./en/upgrading.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./fr/upgrading.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
   <p>Afin d'assister les utilisateurs lors de leurs opérations de mise à
   jour, nous maintenons un document
@@ -301,6 +299,11 @@ Allow from example.org
 
         <li><code class="module"><a href="./mod/mod_reqtimeout.html">mod_reqtimeout</a></code>: si ce module est chargé, il
 	définit maintenant certains temps d'attente par défaut.</li>
+
+	<li><code class="module"><a href="./mod/mod_dumpio.html">mod_dumpio</a></code>: la directive
+	<code class="directive">DumpIOLogLevel</code> n'est plus supportée. Les
+	données sont toujours enregistrées au niveau <code>trace7</code>
+	de <code class="directive"><a href="./mod/core.html#loglevel">LogLevel</a></code></li>
 
     </ul>
     
