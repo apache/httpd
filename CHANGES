@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.7
 
+  *) Makefile.win: Install proper pcre DLL file during debug build install.
+     PR 55235.  [Ben Reser <ben reser org>]
+
   *) mod_ldap: Fix a potential memory leak or corruption.  PR 54936.
      [Zhenbo Xu <zhenbo1987 gmail com>]
 
