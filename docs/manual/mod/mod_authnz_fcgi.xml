@@ -391,12 +391,11 @@ Require FooAuthnz
 
     <p><directive module="core">LogLevel</directive> can be used
     to configure a log level specific to mod_authnz_fcgi.  For
-    example:
+    example:</p>
 
 <highlight language="config">
 LogLevel info authnz_fcgi:trace8
 </highlight>
-    </p>
 
 </section>
 
@@ -406,7 +405,7 @@ LogLevel info authnz_fcgi:trace8
 authentication and/or authorization</description>
 <syntax>AuthnzFcgiDefineProvider <em>type</em> <em>provider-name</em>
 <em>backend-address</em></syntax>
-<default><em>none</em></default>
+<default>none</default>
 <contextlist><context>server config</context></contextlist>
 <usage>
     <p>This directive is used to define a FastCGI application as
@@ -441,7 +440,7 @@ authentication and/or authorization</description>
 authentication hook.</description>
 <syntax>AuthnzFcgiCheckAuthnProvider <em>provider-name</em>|<code>None</code>
 <em>option</em> ...</syntax>
-<default><em>none</em></default>
+<default>none</default>
 <contextlist><context>directory</context></contextlist>
 <usage>
     <p>This directive is used to enable a FastCGI authorizer to
