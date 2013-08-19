@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.7
 
+  *) mod_ldap: Fix a potential memory leak or corruption.  PR 54936.
+     [Zhenbo Xu <zhenbo1987 gmail com>]
+
   *) ab: Fix potential buffer overflows when processing the T and X
      command-line options.  PR 55360.
      [Mike Rumph <mike.rumph oracle.com>]
