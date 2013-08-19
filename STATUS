@@ -92,18 +92,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * core, mod_ssl: Lift the restriction that prevents mod_ssl taking
-    full advantage of the event MPM. Enable the ability for a module
-    to reverse the sense of a poll event from a read to a write or vice
-    versa.
-    trunk patches: http://svn.apache.org/r1470679
-                   http://svn.apache.org/r1477094
-    2.4.x patch: http://people.apache.org/~minfrin/httpd-event-ssl.patch
-    +1: minfrin, jim, sf
-    sf: These docs/CHANGES commits should be included, too:
-        http://svn.apache.org/r1514214
-        http://svn.apache.org/r1514617
-
   * configure: '--enable-maintainer-mode' should also auto-enable mod_bucketeer
     trunk: http://svn.apache.org/viewvc?view=revision&revision=1503680
     2.4.x patch: trunk patch works
