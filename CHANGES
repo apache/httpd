@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.7
 
+  *) fcgistarter: Specify SO_REUSEADDR to allow starting a server
+     with old connections in TIME_WAIT.  [Jeff Trawick]
+
   *) core: Add open_htaccess hook which, in conjunction with dirwalk_stat
      and post_perdir_config (introduced in 2.4.5), allows mpm-itk to be 
      used without patches to httpd core. [Stefan Fritsch]

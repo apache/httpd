@@ -133,6 +133,11 @@ int main(int argc, const char * const argv[])
         exit_error(rv, "apr_socket_create");
     }
 
+    rv = apr_socket_opt_set(skt, APR_SO_REUSEADDR, 1);
+    if (rv) {
+        exit_error(rv, "apr_socket_opt_set(APR_SO_REUSEADDR)");
+    }
+
     rv = apr_socket_bind(skt, skaddr);
     if (rv) {
         exit_error(rv, "apr_socket_bind");
