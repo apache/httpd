@@ -30,8 +30,6 @@
 <a href="../ko/mod/mod_log_config.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_log_config.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Journalisation des requêtes envoyées au
 serveur</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
@@ -44,7 +42,7 @@ serveur</td></tr>
     personnalisable, et peuvent être enregistrés directement dans un
     fichier, ou redirigés vers un programme externe. La journalisation
     conditionnelle est supportée, si bien que des requêtes individuelles
-    peuvent être incluses ou exclues des journaux en fonction de leurs
+    peuvent être incluses ou exclues des journaux en fonction de leur
     caractéristiques.</p>
 
     <p>Ce module fournit trois directives : <code class="directive"><a href="#transferlog">TransferLog</a></code> crée un fichier
@@ -81,7 +79,7 @@ d'Apache</a></li>
     requêtes dans le fichier journal. Elle peut contenir des caractères
     littéraux qui seront reproduits dans le fichier journal, et les
     caractères de contrôle de style C "\n" et "\t" représentant
-    respectivement un saut à la ligne et une tabulation. Les guillemets
+    respectivement une nouvelle ligne et une tabulation. Les guillemets
     et les anti-slashes littéraux doivent être échappés à l'aide
     d'anti-slashes.</p>
 
@@ -95,9 +93,10 @@ d'Apache</a></li>
 <tr><td><code>%%</code></td>
         <td>Le signe "pourcentage"</td></tr>
 <tr class="odd"><td><code>%a</code></td>
-        <td>Le port et l'adresse IP distants</td></tr>
+        <td>L'adresse IP distante (voir le module
+	<code class="module"><a href="../mod/mod_remoteip.html">mod_remoteip</a></code>).</td></tr>
 <tr><td><code>%{c}a</code></td>
-        <td>Port et adresse IP distants sous-jacents de la connexion (voir le module
+        <td>Adresse IP distante de la connexion(voir le module
 	<code class="module"><a href="../mod/mod_remoteip.html">mod_remoteip</a></code>)</td></tr>
 <tr class="odd"><td><code>%A</code></td>
         <td>L'adresse IP locale</td></tr>
@@ -106,8 +105,8 @@ d'Apache</a></li>
 	HTTP.</td></tr>
 <tr class="odd"><td><code>%b</code></td>
         <td>La taille de la réponse en octets, en excluant les en-têtes
-	HTTP. Au format <code>"Common Log Format" (CLF)</code> , c'est à dire
-        un '<code>-</code>' à la place d'un 0 lorsqu'aucun octet n'est renvoyé.</td></tr>
+	HTTP. Au format CLF , c'est à dire un '<code>-</code>' à la
+	place d'un 0 lorsqu'aucun octet n'est renvoyé.</td></tr>
 <tr><td><code>%{<var>NOMVAR</var>}C</code></td>
         <td>Le contenu du cookie <var>NOMVAR</var> dans la requête
 	envoyée au serveur. Seuls les cookies version 0 sont pleinement
@@ -121,10 +120,10 @@ d'Apache</a></li>
 <tr class="odd"><td><code>%f</code></td>
         <td>Nom de fichier</td></tr>
 <tr><td><code>%h</code></td>
-        <td>Nom de l'hôte distant. Contiendra son adresse IP si la directive
+        <td>Serveur distant. Contiendra l'adresse IP si la directive
 	<code class="directive"><a href="../mod/core.html#hostnamelookups">HostnameLookups</a></code> est définie
 	à <code>Off</code>, ce qui est sa valeur par défaut. Si cette
-	adresse IP n'est enregistrée que pour certains hôtes, vous
+	adresse IP n'est enregistrée que pour certains serveurs, vous
 	avez probablement défini des directives de contrôle d'accès qui
 	mentionnent ces derniers par leurs noms. Voir la <a href="mod_authz_host.html#reqhost">documentation de Require
 	host</a>.</td></tr>
@@ -133,10 +132,10 @@ d'Apache</a></li>
 <tr><td><code>%{<var>NOMVAR</var>}i</code></td>
         <td>Le contenu des lignes d'en-tête
 	<code><var>NOMVAR</var>:</code> dans la requête envoyée au
-	serveur. Ces en-têtes peuvent avoir été modifiés par d'autres
-        modules (par exemple <code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code>). Si vous
-        êtes intéressé par ce qu'était l'en-tête de la requête avant
-        d'être modifié par la plupart des modules, utilisez
+	serveur. Ces en-têtes sont ajoutés par d'autres modules (par
+	exemple <code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code>). Si vous êtes intéressé
+	par ce qu'était l'en-tête de la requête avant d'être modifié
+	par la plupart des modules, utilisez
 	<code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code> pour copier l'en-tête dans une
 	variable d'environnement interne et journaliser sa valeur via
 	le champ <code>%{<var>VARNAME</var>}e</code> décrit plus haut.
@@ -144,7 +143,7 @@ d'Apache</a></li>
         </td></tr>
 <tr class="odd"><td><code>%k</code></td>
         <td>Nombre de requêtes persistantes en cours pour cette
-	connexion. Intéressant si la directive <code class="directive"><a href="../mod/core.html#keepalive">KeepAlive</a></code> est utilisée ; par exemple,
+	connexion. Interessant si la directive <code class="directive"><a href="../mod/core.html#keepalive">KeepAlive</a></code> est utilisée ; par exemple,
 	'1' signifie la première requête après la requête initiale, '2'
 	la seconde, etc... ; autrement, il s'agit toujours de 0
 	(indiquant la requête initiale).</td></tr>
@@ -194,18 +193,18 @@ d'Apache</a></li>
 	du statut de la requête *originale* --- <code>%&gt;s</code> pour
 	la dernière.</td></tr>
 <tr class="odd"><td><code>%t</code></td>
-        <td>Date à laquelle la requête a été reçue (au format [18/Sep/2011:19:18:28 -0400])
-	Le dernier nombre indique le décalage horaire par rapport à l'heure GMT.</td></tr>
+        <td>Date à laquelle la requête a été reçue (au format anglais
+	standard)</td></tr>
 <tr><td><code>%{<var>format</var>}t</code></td>
         <td>La date, sous la forme spécifiée par format, qui devrait
-	être au format étendu <code>strftime(3)</code> (possiblement
+	être au format étendu <code>strftime(3)</code> (éventuellement
 	localisé). Si le format commence par <code>begin:</code> (valeur
 	par défaut), la date est extraite au début du traitement de la
 	requête ; s'il commence par <code>end:</code>, la date
 	correspond au moment où l'entrée du journal est inscrite, par
 	conséquent vers la fin du traitement de la requête. Hormis les
 	formats supportés par <code>strftime(3)</code>, les formats
-	suivants sont également disponibles :
+	suivants sont aussi disponibles :
         <table>
         <tr><td><code>sec</code></td><td>nombre de secondes depuis Epoch</td></tr>
         <tr><td><code>msec</code></td><td>nombre de millisecondes depuis  Epoch</td></tr>
@@ -215,26 +214,25 @@ d'Apache</a></li>
         </table>
         Ces symboles ne peuvent pas être combinés entre eux ou avec un
 	formatage <code>strftime(3)</code> dans la même chaîne de
-	format. Vous pouvez en revanche utiliser plusieurs symboles
+	format. Par contre, vous pouvez utiliser plusieurs symboles
 	<code>%{<var>format</var>}t</code>.</td></tr>
 <tr class="odd"><td><code>%T</code></td>
         <td>Le temps mis pour servir la requête, en secondes.</td></tr>
 <tr><td><code>%u</code></td>
-        <td>Le nom d'utilisateur distant, si la requête a fait l'objet d'une
-        authentification par le client (ce champ peut être considéré comme
-        erroné ou sans intérêt si le statut de retour (<code>%s</code>) est
-        401).</td></tr>
+        <td>L'utilisateur distant (en provenance d'auth ; peut être faux
+	si le statut de retour (<code>%s</code>) est 401).</td></tr>
 <tr class="odd"><td><code>%U</code></td>
         <td>Le chemin de la requête, à l'exclusion de toute chaîne
-	d'arguments ("<code>query string</code>").</td></tr>
+	d'arguments.</td></tr>
 <tr><td><code>%v</code></td>
         <td>Le nom canonique du serveur qui a servi la requête, défini
 	par la directive <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code>.</td></tr>
 <tr class="odd"><td><code>%V</code></td>
-        <td>Le nom du serveur en tenant compte de la définition de la
+        <td>La nom du serveur en tenant compte de la définition de la
 	directive <code class="directive"><a href="../mod/core.html#usecanonicalname">UseCanonicalName</a></code>.</td></tr>
 <tr><td><code>%X</code></td>
-        <td>Statut de la connexion lorsque la réponse a été renvoyée :
+        <td>Statut de la connexion lorsque la réponse a été renvoyée
+	:
 
         <table>
         
@@ -254,7 +252,7 @@ d'Apache</a></li>
 	en-têtes, ne peut être nul. Nécessite l'activation de
 	<code class="module"><a href="../mod/mod_logio.html">mod_logio</a></code>.</td></tr>
 <tr><td><code>%O</code></td>
-        <td>Le nombre d'octets envoyés, y compris les en-têtes, ne peut
+        <td>Nombre d'octets envoyés, y compris les en-têtes, ne peut
 	être nul. Nécessite l'activation de
 	<code class="module"><a href="../mod/mod_logio.html">mod_logio</a></code>.</td></tr>
 </table>
@@ -265,24 +263,14 @@ d'Apache</a></li>
       éléments
       en fonction du code de statut de la réponse, en insérant une liste
       de codes de statut séparés par des virgules immédiatement après le
-      caractère "%". La liste des codes de statut peut être précédée
-      d'un "<code>!</code>" pour formuler une négation.</p>
-
-      <table class="bordered"><tr class="header"><th>Chaîne de caractères de formatage</th>
-      <th>Interprétation</th></tr>
-<tr>
-      <td><code>%400,501{User-agent}i</code></td>
-
-      <td>Enregistrera l'en-tête <code>User-agent</code> uniquementdans le
-      cas d'une erreur 400 ou 501. Avec les autres codes de statut, c'est la
-      chaîne littérale <code>"-"</code> qui sera enregistrée.
-      </td></tr>
-<tr class="odd"><td><code>%!200,304,302{Referer}i</code></td>
-       <td>
-       Enregistrera l'en-tête <code>Referer</code> pour toutes les requêtes qui
-      <em>ne</em> renvoient <em>aucun</em> des trois codes spécifiés.
-      </td></tr>
-</table>
+      caractère "%". Par exemple, <code>"%400,501{User-agent}i"</code>
+      n'enregistrera l'en-tête <code>User-agent</code> que dans le cas
+      d'une erreur 400 ou 501. Avec les autres codes de statut, c'est la
+      chaîne littérale <code>"-"</code> qui sera enregistrée. La liste
+      de codes peut être précédée d'un "<code>!</code>" pour inverser la
+      condition : <code>"%!200,304,302{Referer}i"</code> enregistre
+      l'en-tête <code>Referer</code> pour toutes les requêtes qui
+      <em>ne</em> renvoient <em>pas</em> un des trois codes spécifiés.</p>
 
       <p>Les modificateurs "&lt;" et "&gt;" peuvent être utilisés pour
       les requêtes qui ont été redirigées en interne afin de choisir si
@@ -309,11 +297,11 @@ d'Apache</a></li>
       <code>\</code> doivent être échappés par un anti-slash, et tous
       les "blancs" doivent être écrits selon leur notation de style C
       (<code>\n</code>, <code>\t</code>, etc...). Avant la version
-      2.0.46, aucun échappement n'était réalisé sur ces chaînes, et il
+      2.0.46, aucun échappement n'était effectué sur ces chaînes, et il
       fallait être très prudent lors de l'exploitation des journaux
       bruts.</p>
 
-      <p>À la différence de la version 1.3, dans httpd 2.0, les chaînes
+      <p>A la différence de la version 1.3, dans httpd 2.0, les chaînes
       de format <code>%b</code> et <code>%B</code> ne représentent pas
       le nombre d'octets envoyés au client, mais simplement la taille en
       octets de la réponse HTTP (les deux étant différents, par exemple,
@@ -321,13 +309,11 @@ d'Apache</a></li>
       <code>%O</code> fourni par <code class="module"><a href="../mod/mod_logio.html">mod_logio</a></code>,
       enregistrera le nombre réel d'octets envoyés sur le réseau.</p>
 
-      <div class="note">
       <p>Note : <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> est implémenté en tant que
       gestionnaire basique et non en tant que gestionnaire standard.
       C'est pourquoi la chaîne de format <code>%R</code> ne renverra pas
       d'information à propos du gestionnaire lorsqu'une mise en cache de
       contenu entre en jeu.</p>
-      </div>
 
     
 
@@ -336,13 +322,13 @@ d'Apache</a></li>
       <p>Quelques chaînes de format couramment utilisées :</p>
 
       <dl>
-        <dt>Format de journal courant (Common Log Format - CLF)</dt>
+        <dt>Format de journal courant (CLF)</dt>
         <dd><code>"%h %l %u %t \"%r\" %&gt;s %b"</code></dd>
 
         <dt>Format de journal courant avec un serveur virtuel</dt>
         <dd><code>"%v %h %l %u %t \"%r\" %&gt;s %b"</code></dd>
 
-        <dt>Format de journal NCSA étendu/combiné</dt>
+        <dt>Format de journal NCSA étandu/combiné</dt>
         <dd><code>"%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\"
         \"%{User-agent}i\""</code></dd>
 
@@ -387,7 +373,7 @@ avant de les écrire sur disque</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_log_config</td></tr>
 </table>
     <p>Lorsque la directive <code class="directive">BufferedLogs</code> est à
-    "on", <code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code> conserve plusieurs entrées
+    "on", <code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code> stocke de nombreuses entrées
     du journal en mémoire, et les écrit d'un seul bloc sur disque,
     plutôt que de les écrire après chaque requête. Sur certains
     systèmes, ceci peut améliorer l'efficacité des accès disque, et par
@@ -396,7 +382,7 @@ avant de les écrire sur disque</td></tr>
     définie au niveau d'un serveur virtuel.</p>
 
     <div class="note">Cette directive doit être utilisée avec
-    précaution car un crash peut provoquer la perte de données de
+    précautions car un crash peut provoquer la perte de données de
     journalisation.</div>
 
 </div>
@@ -413,11 +399,11 @@ expr=<var>expression</var>]</code></td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_log_config</td></tr>
 </table>
-    <p>La directive <code class="directive">CustomLog</code> contrôle
+    <p>La directive <code class="directive">CustomLog</code> permet de contrôler
     la journalisation des requêtes destinées au serveur. Un format de
-    journalisation est spécifié, et la journalisation peut s'effectuer de
+    journal est spécifié, et la journalisation peut s'effectuer de
     manière conditionnelle en fonction des caractéristiques de la
-    requête au moyen de variables d'environnement.</p>
+    requête en utilisant des variables d'environnement.</p>
 
     <p>Le premier argument, qui spécifie l'emplacement où les journaux
     seront écrits, accepte deux types de valeurs :</p>
