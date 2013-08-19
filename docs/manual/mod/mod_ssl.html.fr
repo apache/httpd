@@ -27,8 +27,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_ssl.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_ssl.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Chiffrement de haut niveau basé sur les protocoles Secure
 Sockets Layer (SSL) et Transport Layer Security (TLS)</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -655,8 +653,8 @@ Cette directive permet de définir le fichier contenant le certificat
 X.509 du serveur codé en PEM, et par la même occasion sa clé privée RSA
 ou DSA (contenue dans le même fichier). Si la clé privée est chiffrée,
 le mot de passe sera demandé au démarrage. Cette directive peut être
-utilisée deux fois (pour référencer des noms de fichiers différents),
-lorsque des certificats de serveur RSA et DSA sont utilisés en
+utilisée trois fois (pour référencer des noms de fichiers différents),
+lorsque des certificats de serveur RSA, DSA et ECC sont utilisés en
 parallèle.</p>
 <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">
 SSLCertificateFile /usr/local/apache2/conf/ssl.crt/server.crt
@@ -686,8 +684,8 @@ certificat et la clé privée. Nous déconseillons cependant fortement
 cette pratique et nous recommandons plutôt de séparer le certificat de
 la clé privée. Si la clé privée est chiffrée, le mot de passe sera
 demandé au démarrage. Cette directive peut être
-utilisée deux fois (pour référencer des noms de fichiers différents),
-lorsque des clés privées RSA et DSA sont utilisées en
+utilisée trois fois (pour référencer des noms de fichiers différents),
+lorsque des clés privées RSA, DSA et ECC sont utilisées en
 parallèle.</p>
 <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">
 SSLCertificateKeyFile /usr/local/apache2/conf/ssl.key/server.key
@@ -1388,7 +1386,7 @@ cette demande peut être formulée parmi les trois suivantes :</p>
     chaque fichier de clé privée chiffré. Il est appelé avec deux
     arguments (le premier est de la forme
     ``<code>nom-serveur:port</code>'', le second
-    est soit ``<code>RSA</code>'', soit ``<code>DSA</code>''), qui
+    est ``<code>RSA</code>'', ``<code>DSA</code>'' ou ``<code>ECC</code>''), qui
     indiquent pour quels serveur et algorithme il doit écrire le mot de
     passe correspondant sur <code>stdout</code>. Le but recherché est
     l'exécution de vérifications de sécurité préalables permettant de
@@ -2453,118 +2451,180 @@ enregistrée dans la variable d'environnement
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SSLStaplingCache" id="SSLStaplingCache">SSLStaplingCache</a> <a name="sslstaplingcache" id="sslstaplingcache">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configures the OCSP stapling cache</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configuration du cache pour l'agrafage OCSP</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLStaplingCache <em>type</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Available in httpd 2.3.3 and later, if using OpenSSL 0.9.8h or later</td></tr>
-</table><p>La documentation de cette directive
-	n'a pas encore t traduite. Veuillez vous reporter  la version
-	en langue anglaise.</p></div>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.3 du serveur HTTP
+Apache, si on utilise OpenSSL version 0.9.8h ou supérieure</td></tr>
+</table>
+<p>Si <code class="directive"><a href="#sslusestapling">SSLUseStapling</a></code> est à "on",
+cette directive permet de configurer le cache destiné à stocker les
+réponses OCSP incluses dans la négociation TLS. La configuration d'un
+cache est obligatoire pour pouvoir utiliser l'agrafage OCSP. A
+l'exception de <code>none</code> et <code>nonenotnull</code>, cette
+directive supporte les mêmes types de stockage que la directive
+<code class="directive"><a href="#sslsessioncache">SSLSessionCache</a></code>.</p>
+
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SSLStaplingErrorCacheTimeout" id="SSLStaplingErrorCacheTimeout">SSLStaplingErrorCacheTimeout</a> <a name="sslstaplingerrorcachetimeout" id="sslstaplingerrorcachetimeout">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Number of seconds before expiring invalid responses in the OCSP stapling cache</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLStaplingErrorCacheTimeout <em>seconds</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Durée de vie des réponses invalides dans le cache pour
+agrafage OCSP</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLStaplingErrorCacheTimeout <em>secondes</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLStaplingErrorCacheTimeout 600</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Available in httpd 2.3.3 and later, if using OpenSSL 0.9.8h or later</td></tr>
-</table><p>La documentation de cette directive
-	n'a pas encore t traduite. Veuillez vous reporter  la version
-	en langue anglaise.</p></div>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.3 du serveur HTTP
+Apache, si on utilise OpenSSL version 0.9.8h ou supérieure</td></tr>
+</table>
+<p>Cette directive permet de définir la durée de vie des réponses
+<em>invalides</em> dans le cache pour agrafage OCSP configuré via la
+directive <code class="directive"><a href="#sslstaplingcache">SSLStaplingCache</a></code>. Pour
+définir la durée de vie des réponses valides, voir la directive
+<code class="directive"><a href="#sslstaplingstandardcachetimeout">SSLStaplingStandardCacheTimeout</a></code>.</p>
+
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SSLStaplingFakeTryLater" id="SSLStaplingFakeTryLater">SSLStaplingFakeTryLater</a> <a name="sslstaplingfaketrylater" id="sslstaplingfaketrylater">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Synthesize "tryLater" responses for failed OCSP stapling queries</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Génère une réponse "tryLater" pour les requêtes OCSP échouées</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLStaplingFakeTryLater on|off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLStaplingFakeTryLater on</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Available in httpd 2.3.3 and later, if using OpenSSL 0.9.8h or later</td></tr>
-</table><p>La documentation de cette directive
-	n'a pas encore t traduite. Veuillez vous reporter  la version
-	en langue anglaise.</p></div>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.3 du serveur HTTP
+Apache, si on utilise OpenSSL version 0.9.8h ou supérieure</td></tr>
+</table>
+<p>Lorsque cette directive est activée, et si une requête vers un
+serveur OCSP à des fins d'inclusion dans une négociation TLS échoue,
+mod_ssl va générer une réponse "tryLater" pour le client (<code class="directive"><a href="#sslstaplingreturnrespondererrors">SSLStaplingReturnResponderErrors</a></code> doit être
+activée).</p>
+
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SSLStaplingForceURL" id="SSLStaplingForceURL">SSLStaplingForceURL</a> <a name="sslstaplingforceurl" id="sslstaplingforceurl">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Override the OCSP responder URI specified in the certificate's AIA extension</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Remplace l'URI du serveur OCSP spécifié dans l'extension
+AIA du certificat</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLStaplingForceURL <em>uri</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Available in httpd 2.3.3 and later, if using OpenSSL 0.9.8h or later</td></tr>
-</table><p>La documentation de cette directive
-	n'a pas encore t traduite. Veuillez vous reporter  la version
-	en langue anglaise.</p></div>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.3 du serveur HTTP
+Apache, si on utilise OpenSSL version 0.9.8h ou supérieure</td></tr>
+</table>
+<p>Cette directive permet de remplacer l'URI du serveur OCSP extraite de
+l'extension authorityInfoAccess (AIA) du certificat. Elle peut s'avérer
+utile lorsqu'on passe par un mandataire</p>
+
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SSLStaplingResponderTimeout" id="SSLStaplingResponderTimeout">SSLStaplingResponderTimeout</a> <a name="sslstaplingrespondertimeout" id="sslstaplingrespondertimeout">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Timeout for OCSP stapling queries</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLStaplingResponderTimeout <em>seconds</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Temps d'attente maximum pour les requêtes vers les serveurs
+OCSP</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLStaplingResponderTimeout <em>secondes</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLStaplingResponderTimeout 10</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Available in httpd 2.3.3 and later, if using OpenSSL 0.9.8h or later</td></tr>
-</table><p>La documentation de cette directive
-	n'a pas encore t traduite. Veuillez vous reporter  la version
-	en langue anglaise.</p></div>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.3 du serveur HTTP
+Apache, si on utilise OpenSSL version 0.9.8h ou supérieure</td></tr>
+</table>
+<p>Cette directive permet de définir le temps d'attente maximum lorsque
+mod_ssl envoie une requête vers un serveur OCSP afin d'obtenir une
+réponse destinée à être incluse dans les négociations TLS avec les
+clients (<code class="directive"><a href="#sslusestapling">SSLUseStapling</a></code> doit
+avoir été activée au préalable).</p>
+
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SSLStaplingResponseMaxAge" id="SSLStaplingResponseMaxAge">SSLStaplingResponseMaxAge</a> <a name="sslstaplingresponsemaxage" id="sslstaplingresponsemaxage">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum allowable age for OCSP stapling responses</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLStaplingResponseMaxAge <em>seconds</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Age maximum autorisé des réponses OCSP incluses dans la
+négociation TLS</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLStaplingResponseMaxAge <em>secondes</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLStaplingResponseMaxAge -1</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Available in httpd 2.3.3 and later, if using OpenSSL 0.9.8h or later</td></tr>
-</table><p>La documentation de cette directive
-	n'a pas encore t traduite. Veuillez vous reporter  la version
-	en langue anglaise.</p></div>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.3 du serveur HTTP
+Apache, si on utilise OpenSSL version 0.9.8h ou supérieure</td></tr>
+</table>
+<p>Cette directive permet de définir l'âge maximum autorisé
+("fraîcheur") des réponses OCSP incluses dans la négociation TLS
+(<code class="directive"><a href="#sslusestapling">SSLUseStapling</a></code> doit
+avoir été activée au préalable). La valeur par défaut (<code>-1</code>)
+ne définit aucun âge maximum, ce qui signifie que les réponses OCSP sont
+considérées comme valides à partir du moment où le contenu de leur champ
+<code>nextUpdate</code> se trouve dans le futur.</p>
+
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SSLStaplingResponseTimeSkew" id="SSLStaplingResponseTimeSkew">SSLStaplingResponseTimeSkew</a> <a name="sslstaplingresponsetimeskew" id="sslstaplingresponsetimeskew">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum allowable time skew for OCSP stapling response validation</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLStaplingResponseTimeSkew <em>seconds</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Durée de vie maximale autorisée des réponses OCSP incluses dans la
+négociation TLS</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLStaplingResponseTimeSkew <em>secondes</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLStaplingResponseTimeSkew 300</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Available in httpd 2.3.3 and later, if using OpenSSL 0.9.8h or later</td></tr>
-</table><p>La documentation de cette directive
-	n'a pas encore t traduite. Veuillez vous reporter  la version
-	en langue anglaise.</p></div>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.3 du serveur HTTP
+Apache, si on utilise OpenSSL version 0.9.8h ou supérieure</td></tr>
+</table>
+<p>Cette directive permet de spécifier l'intervalle de temps maximum que
+mod_ssl va calculer en faisant la différence entre les contenus des
+champs <code>nextUpdate</code> et <code>thisUpdate</code> des réponses
+OCSP incluses dans la négociation TLS. Pour pouvoir utiliser cette
+directive, <code class="directive"><a href="#sslusestapling">SSLUseStapling</a></code> doit
+être à "on".</p>
+
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SSLStaplingReturnResponderErrors" id="SSLStaplingReturnResponderErrors">SSLStaplingReturnResponderErrors</a> <a name="sslstaplingreturnrespondererrors" id="sslstaplingreturnrespondererrors">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Pass stapling related OCSP errors on to client</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Transmet au client les erreurs survenues lors des requêtes
+OCSP</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLStaplingReturnResponderErrors on|off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLStaplingReturnResponderErrors on</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Available in httpd 2.3.3 and later, if using OpenSSL 0.9.8h or later</td></tr>
-</table><p>La documentation de cette directive
-	n'a pas encore t traduite. Veuillez vous reporter  la version
-	en langue anglaise.</p></div>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.3 du serveur HTTP
+Apache, si on utilise OpenSSL version 0.9.8h ou supérieure</td></tr>
+</table>
+<p>Lorsque cette directive est activée, mod_ssl va transmettre au client les
+réponses concernant les requêtes OCSP échouées (erreurs d'état, réponses
+périmées, etc...). Lorsqu'elle est à <code>off</code>, aucune réponse
+concernant les requêtes OCSP échouées ne sera incluse dans les
+négociation TLS avec les clients.</p>
+
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SSLStaplingStandardCacheTimeout" id="SSLStaplingStandardCacheTimeout">SSLStaplingStandardCacheTimeout</a> <a name="sslstaplingstandardcachetimeout" id="sslstaplingstandardcachetimeout">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Number of seconds before expiring responses in the OCSP stapling cache</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLStaplingStandardCacheTimeout <em>seconds</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Durée de vie des réponses OCSP dans le cache</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLStaplingStandardCacheTimeout <em>secondes</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLStaplingStandardCacheTimeout 3600</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Available in httpd 2.3.3 and later, if using OpenSSL 0.9.8h or later</td></tr>
-</table><p>La documentation de cette directive
-	n'a pas encore t traduite. Veuillez vous reporter  la version
-	en langue anglaise.</p></div>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.3 du serveur HTTP
+Apache, si on utilise OpenSSL version 0.9.8h ou supérieure</td></tr>
+</table>
+<p>Cette directive permet de définir la durée de vie des réponses OCSP
+dans le cache configuré via la directive <code class="directive"><a href="#sslstaplingcache">SSLStaplingCache</a></code>. Elle ne s'applique qu'aux
+réponse <em>valides</em>, alors que la directive <code class="directive"><a href="#sslstaplingerrorcachetimeout">SSLStaplingErrorCacheTimeout</a></code> s'applique aux
+réponses invalides ou non disponibles.
+</p>
+
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SSLStrictSNIVHostCheck" id="SSLStrictSNIVHostCheck">SSLStrictSNIVHostCheck</a> <a name="sslstrictsnivhostcheck" id="sslstrictsnivhostcheck">Directive</a></h2>
 <table class="directive">
@@ -2631,16 +2691,35 @@ SSLUserName SSL_CLIENT_S_DN_CN
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SSLUseStapling" id="SSLUseStapling">SSLUseStapling</a> <a name="sslusestapling" id="sslusestapling">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable stapling of OCSP responses in the TLS handshake</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active l'ajout des réponses OCSP à la négociation TLS</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLUseStapling on|off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLUseStapling off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Available in httpd 2.3.3 and later, if using OpenSSL 0.9.8h or later</td></tr>
-</table><p>La documentation de cette directive
-	n'a pas encore t traduite. Veuillez vous reporter  la version
-	en langue anglaise.</p></div>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.3 du serveur HTTP
+Apache, si on utilise OpenSSL version 0.9.8h ou supérieure</td></tr>
+</table>
+<p>Cette directive permet d'activer l'"Agrafage OCSP" (OCSP stapling)
+selon la définition de l'extension TLS "Certificate Status Request"
+fournie dans la RFC 6066. Si elle est activée et si le client le
+demande, mod_ssl va inclure une réponse OCSP à propos de son propre
+certificat dans la négociation TLS. Pour pouvoir activer l'Agrafage
+OCSP, il est nécessaire de configurer un <code class="directive"><a href="#sslstaplingcache">SSLStaplingCache</a></code>.</p>
+
+<p>L'agrafage OCSP dispense le client de requérir le serveur OCSP
+directement ; il faut cependant noter que selon les spécifications de la
+RFC 6066, la réponse <code>CertificateStatus</code> du serveur ne peut
+inclure une réponse OCSP que pour un seul certificat. Pour les
+certificats de serveur comportant des certificats de CA intermédiaires
+dans leur chaîne (c'est un cas typique de nos jours), l'implémentation
+actuelle de l'agrafage OCSP n'atteint que partiellement l'objectif d'
+"économie en questions/réponse et en ressources". Pour plus de détails,
+voir la <a href="http://www.ietf.org/rfc/rfc6961.txt">RFC 6961</a> (TLS
+Multiple Certificate Status Extension).
+</p>
+
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SSLVerifyClient" id="SSLVerifyClient">SSLVerifyClient</a> <a name="sslverifyclient" id="sslverifyclient">Directive</a></h2>
 <table class="directive">
