@@ -104,12 +104,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/r1514214
         http://svn.apache.org/r1514617
 
-  * Makefile.win: Install proper pcre DLL file during debug build install
-    PR55235 [Ben Reser <ben reser org>]
-    trunk: http://svn.apache.org/r1505073
-    2.4.x patch: http://people.apache.org/~gsmith/httpd/diffs/pr55235-2.4bp.diff
-    +1: gsmith, trawick, covener
-
   * configure: '--enable-maintainer-mode' should also auto-enable mod_bucketeer
     trunk: http://svn.apache.org/viewvc?view=revision&revision=1503680
     2.4.x patch: trunk patch works

@@ -668,7 +668,11 @@ _copybin:
 	for %d in ($(DBM_LIST) x) do if not %d == x ( \
 	  copy srclib\$(UTILDIR)\dbm\$(LONG)\apr_dbm_%d-1.$(src_dll) "$(inst_dll)" <.y \
 	)
+!IF "$(SHORT)" == "D"
+	copy srclib\pcre\pcred.$(src_dll)			"$(inst_dll)" <.y
+!ELSE
 	copy srclib\pcre\pcre.$(src_dll)			"$(inst_dll)" <.y
+!ENDIF	
 	copy modules\aaa\$(LONG)\mod_access_compat.$(src_so) 	"$(inst_so)" <.y
 	copy modules\aaa\$(LONG)\mod_allowmethods.$(src_so) 	"$(inst_so)" <.y
 	copy modules\aaa\$(LONG)\mod_auth_basic.$(src_so) 	"$(inst_so)" <.y
