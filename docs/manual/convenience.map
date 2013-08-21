@@ -45,6 +45,7 @@ asyncrequestworkerfactor	mod/event.html#asyncrequestworkerfactor
 authbasicauthoritative	mod/mod_auth_basic.html#authbasicauthoritative
 authbasicfake	mod/mod_auth_basic.html#authbasicfake
 authbasicprovider	mod/mod_auth_basic.html#authbasicprovider
+authbasicusedigestalgorithm	mod/mod_auth_basic.html#authbasicusedigestalgorithm
 authdbduserpwquery	mod/mod_authn_dbd.html#authdbduserpwquery
 authdbduserrealmquery	mod/mod_authn_dbd.html#authdbduserrealmquery
 authdbmgroupfile	mod/mod_authz_dbm.html#authdbmgroupfile
@@ -101,6 +102,8 @@ authncacheprovidefor	mod/mod_authn_socache.html#authncacheprovidefor
 authncachesocache	mod/mod_authn_socache.html#authncachesocache
 authncachetimeout	mod/mod_authn_socache.html#authncachetimeout
 authnprovideralias	mod/mod_authn_core.html#authnprovideralias
+authnzfcgicheckauthnprovider	mod/mod_authnz_fcgi.html#authnzfcgicheckauthnprovider
+authnzfcgidefineprovider	mod/mod_authnz_fcgi.html#authnzfcgidefineprovider
 authtype	mod/mod_authn_core.html#authtype
 authuserfile	mod/mod_authn_file.html#authuserfile
 authzdbdlogintoreferer	mod/mod_authz_dbd.html#authzdbdlogintoreferer
