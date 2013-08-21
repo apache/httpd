@@ -95,10 +95,19 @@ of consuming threads only for connections with active processing</td></tr>
     status page of <code class="module"><a href="../mod/mod_status.html">mod_status</a></code> shows how many connections are
     in the mentioned states.</p>
 
-    <p>The improved connection handling does not yet work for certain
-    connection filters, in particular SSL. For SSL connections, this MPM will
-    fall back to the behaviour of the <code class="module"><a href="../mod/worker.html">worker</a></code> MPM and
-    reserve one worker thread per connection.</p>
+    <p>The improved connection handling may not work for certain connection
+    filters that have declared themselves as incompatible with event. In these
+    cases, this MPM will fall back to the behaviour of the
+    <code class="module"><a href="../mod/worker.html">worker</a></code> MPM and reserve one worker thread per connection.
+    All modules shipped with the server are compatible with the event MPM.</p>
+
+    <p>A similar restriction is currently present for requests involving an
+    output filter that needs to read and/or modify the whole response body,
+    like for example mod_ssl, mod_deflate, or mod_include. If the
+    connection to the client blocks while the filter is processing the
+    data, and the amount of data produced by the filter is too big to be
+    buffered in memory, the thread used for the request is not freed while
+    httpd waits until the pending data is sent to the client.</p>
 
     <p>The MPM assumes that the underlying <code>apr_pollset</code>
     implementation is reasonably threadsafe. This enables the MPM to
@@ -150,10 +159,10 @@ of consuming threads only for connections with active processing</td></tr>
 </table>
     <p>The event MPM handles some connections in an asynchronous way, where
     request worker threads are only allocated for short periods of time as
-    needed, and other (mostly SSL) connections with one request worker thread
-    reserved per connection. This can lead to situations where all workers are
-    tied up and no worker thread is available to handle new work on established
-    async connections.</p>
+    needed, and other connections with one request worker thread reserved per
+    connection. This can lead to situations where all workers are tied up and
+    no worker thread is available to handle new work on established async
+    connections.</p>
 
     <p>To mitigate this problem, the event MPM does two things: Firstly, it
     limits the number of connections accepted per process, depending on the
