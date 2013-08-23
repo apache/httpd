@@ -246,14 +246,14 @@ LoadModule cache_module modules/mod_cache.so
   <p>While this mode offers the best performance, the administrator may find that
   under certain circumstances they may want to perform further processing on the
   request after the request is cached, such as to inject personalisation into the
-  cached page, or to apply authorisation restrictions to the content. Under these
+  cached page, or to apply authorization restrictions to the content. Under these
   circumstances, an administrator is often forced to place independent reverse
   proxy servers either behind or in front of the caching server to achieve this.</p>
 
   <p>To solve this problem the <directive module="mod_cache">CacheQuickHandler
   </directive> directive can be set to <strong>off</strong>, and the server will
   process all phases normally handled by a non-cached request, including the
-  <strong>authentication and authorisation</strong> phases.</p>
+  <strong>authentication and authorization</strong> phases.</p>
 
   <p>In addition, the administrator may optionally specify the <strong>precise point
   within the filter chain</strong> where caching is to take place by adding the
@@ -926,7 +926,7 @@ CacheLock on
     <p>When disabled, the cache operates as a normal handler, and is subject to
     the full set of phases when handling a server request. While this mode is
     slower than the default, it allows the cache to be used in cases where full
-    processing is required, such as when content is subject to authorisation.</p>
+    processing is required, such as when content is subject to authorization.</p>
 
     <highlight language="config">
 # Run cache as a normal handler
