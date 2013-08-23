@@ -972,6 +972,13 @@ PROXY_DECLARE(int) ap_proxy_pass_brigade(apr_bucket_alloc_t *bucket_alloc,
 APR_DECLARE_OPTIONAL_FN(int, ap_proxy_clear_connection,
         (request_rec *r, apr_table_t *headers));
 
+
+/**
+ * @param socket        socket to test
+ * @return              TRUE if socket is connected/active
+ */
+PROXY_DECLARE(int) ap_proxy_is_socket_connected(apr_socket_t *socket);
+
 #define PROXY_LBMETHOD "proxylbmethod"
 
 /* The number of dynamic workers that can be added when reconfiguring.
