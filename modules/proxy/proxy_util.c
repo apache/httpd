@@ -40,6 +40,7 @@
 
 APLOG_USE_MODULE(proxy);
 
+#define UDS_SOCKET_STRING "uds="
 /*
  * Opaque structure containing target server info when
  * using a forward proxy.
@@ -2119,7 +2120,7 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
      *      spilling the cached addr from the worker.
      */
     if (!conn->hostname || !worker->s->is_address_reusable ||
-        worker->s->disablereuse || strncmp(conn->hostname, "socket=", 7) == 0) {
+        worker->s->disablereuse || strncmp(conn->hostname, UDS_SOCKET_STRING, sizeof(UDS_SOCKET_STRING)-1) == 0) {
         if (proxyname) {
             conn->hostname = apr_pstrdup(conn->pool, proxyname);
             conn->port = proxyport;
@@ -2157,8 +2158,8 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
             conn->port = uri->port;
         }
         socket_cleanup(conn);
-        if (strncmp(conn->hostname, "socket=", 7) == 0) {
-            char *uds_path = apr_pstrdup(conn->pool, conn->hostname + 7);
+        if (strncmp(conn->hostname, UDS_SOCKET_STRING, sizeof(UDS_SOCKET_STRING)-1) == 0) {
+            char *uds_path = apr_pstrdup(conn->pool, conn->hostname + sizeof(UDS_SOCKET_STRING) - 1);
             decodeenc(uds_path);
             conn->uds_path = uds_path;
         }
