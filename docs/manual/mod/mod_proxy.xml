@@ -807,9 +807,9 @@ expressions</description>
     <directive>ProxyPass</directive>.</note>
 
     <p>Support for using a Unix Domain Socket is available by using a target
-    of <code>socket=percent-encoded-path</code>. For example, to target the
+    of <code>uds=percent-encoded-path</code>. For example, to target the
     UDS at /home/www/socket you would use
-    <code>http://socket=%2Fhome%2Fwww%2Fsocket</code></p>
+    <code>http://uds=%2Fhome%2Fwww%2Fsocket</code></p>
 
     <p>Suppose the local server has address <code>http://example.com/</code>;
     then</p>
