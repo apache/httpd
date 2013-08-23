@@ -569,8 +569,7 @@ header.</description>
     <directive>CacheIgnoreCacheControl</directive> directive allows this
     behavior to be overridden.  <directive>CacheIgnoreCacheControl On</directive>
     tells the server to attempt to serve the resource from the cache even
-    if the request contains no-cache header values.  Resources requiring
-    authorization will <em>never</em> be cached.</p>
+    if the request contains no-cache header values.  
 
     <highlight language="config">
       CacheIgnoreCacheControl On
@@ -791,8 +790,7 @@ LastModified date.</description>
        directive allows this behavior to be overridden.
        <directive>CacheStorePrivate</directive> On
        tells the server to attempt to cache the resource even if it contains
-       private header values.  Resources requiring authorization will
-       <em>never</em> be cached.</p>
+       private header values.  
 
     <highlight language="config">
       CacheStorePrivate On
@@ -825,8 +823,7 @@ LastModified date.</description>
        <directive>CacheStoreNoStore</directive> directive allows this
        behavior to be overridden.  <directive>CacheStoreNoStore</directive> On
        tells the server to attempt to cache the resource even if it contains
-       no-store header values.  Resources requiring authorization will
-       <em>never</em> be cached.</p>
+       no-store header values.  
 
     <highlight language="config">
       CacheStoreNoStore On
