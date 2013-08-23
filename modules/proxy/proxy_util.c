@@ -1081,7 +1081,6 @@ PROXY_DECLARE(proxy_balancer *) ap_proxy_get_balancer(apr_pool_t *p,
     int i;
     proxy_hashes hash;
 
-    ap_str_tolower(uri);
     c = strchr(uri, ':');
     if (c == NULL || c[1] != '/' || c[2] != '/' || c[3] == '\0') {
         return NULL;
@@ -1090,6 +1089,7 @@ PROXY_DECLARE(proxy_balancer *) ap_proxy_get_balancer(apr_pool_t *p,
     if ((c = strchr(c + 3, '/'))) {
         *c = '\0';
     }
+    ap_str_tolower(uri);
     hash.def = ap_proxy_hashfunc(uri, PROXY_HASHFUNC_DEFAULT);
     hash.fnv = ap_proxy_hashfunc(uri, PROXY_HASHFUNC_FNV);
     balancer = (proxy_balancer *)conf->balancers->elts;
