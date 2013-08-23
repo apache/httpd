@@ -1003,7 +1003,9 @@ ProxyPass /mirror/foo http://backend.example.com
     <tr><td>ping</td>
         <td>0</td>
         <td>Ping property tells the webserver to "test" the connection to
-        the backend before forwarding the request. For AJP, it causes
+        the backend before forwarding the request. For negative values
+        the test is a simple socket check, for positive values it's
+        a more functional check, dependent upon the protocol. For AJP, it causes
         <module>mod_proxy_ajp</module>to send a <code>CPING</code>
         request on the ajp13 connection (implemented on Tomcat 3.3.2+, 4.1.28+
         and 5.0.13+). For HTTP, it causes <module>mod_proxy_http</module>

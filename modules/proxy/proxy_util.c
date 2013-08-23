@@ -2245,7 +2245,7 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
 #endif
 
 #if USE_ALTERNATE_IS_CONNECTED && defined(APR_MSG_PEEK)
-static int is_socket_connected(apr_socket_t *socket)
+PROXY_DECLARE(int) ap_proxy_is_socket_connected(apr_socket_t *socket)
 {
     apr_pollfd_t pfds[1];
     apr_status_t status;
@@ -2283,7 +2283,7 @@ static int is_socket_connected(apr_socket_t *socket)
 
 }
 #else
-static int is_socket_connected(apr_socket_t *sock)
+PROXY_DECLARE(int) ap_proxy_is_socket_connected(apr_socket_t *socket)
 
 {
     apr_size_t buffer_len = 1;
@@ -2466,7 +2466,7 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
         (proxy_server_conf *) ap_get_module_config(sconf, &proxy_module);
 
     if (conn->sock) {
-        if (!(connected = is_socket_connected(conn->sock))) {
+        if (!(connected = ap_proxy_is_socket_connected(conn->sock))) {
             socket_cleanup(conn);
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00951)
                          "%s: backend socket is disconnected.",
