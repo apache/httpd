@@ -365,6 +365,10 @@ Require FooAuthnz
       authorizer handles separate <em>authn</em> and <em>authz</em>
       phases then two connections will be used.</dd>
 
+      <dt>URI Mapping</dt>
+      <dd>URIs from clients can't be mapped, such as with the <directive>
+      ProxyPass</directive> used with FastCGI responders.</dd>
+
     </dl>
 
 </section>
