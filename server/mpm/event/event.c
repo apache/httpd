@@ -1436,7 +1436,7 @@ static void process_lingering_close(event_conn_state_t *cs, const apr_pollfd_t *
         rv = apr_socket_recv(csd, dummybuf, &nbytes);
     } while (rv == APR_SUCCESS);
 
-    if (!APR_STATUS_IS_EOF(rv)) {
+    if (APR_STATUS_IS_EAGAIN(rv)) {
         return;
     }
 
