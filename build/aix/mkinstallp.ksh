@@ -146,7 +146,7 @@ cat - <<EOF >>$template
   Relocatable: N
 EOFileset
 EOF
-# man pages as seperate fileset
+# man pages as separate fileset
 cd ${TEMPDIR}
 if [[ -d usr/share/man ]]
 then
