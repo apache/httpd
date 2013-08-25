@@ -166,16 +166,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: trunk works (minus log-message-tags)
     +1: rjung
 
-  * mod_logio: new format-specifier %C (combined) which is the sum of received
+  * mod_logio: new format-specifier %S (sum) which is the sum of received
     and sent byte counts.
     PR54015 [Martijn T. <apache_bugzilla@mindcontrolled.nl>, Christophe JAILLET]
     trunk: http://svn.apache.org/r1484910
+           http://svn.apache.org/r1517386
     2.4.x patch: trunk patch works
     +1: jailletc36
-    rjung: doesn't that conflict with mod_log_config cookie logging (also "C")?
-           Maybe we can use "S" for "sum"?
-           Please also update the part of mod_logio.c where it lists the format
-           characters in a comment (%...I and %...O but no %...C yet).
 
   * skiplist: Add skiplist capability to httpd
     trunk "patch": http://svn.apache.org/repos/asf/httpd/httpd/trunk/include/ap_skiplist.h
