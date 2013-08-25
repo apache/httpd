@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_authz_groupfile, mod_authz_user: Reduce severity of AH01671 and AH01663
+     from ERROR to DEBUG, since these modules do not know what mod_authz_core
+     is doing with their AUTHZ_DENIED return value. [Eric Covener]
+
   *) mod_authnz_fcgi: New module to enable FastCGI authorizer
      applications to authenticate and/or authorize clients.
      [Jeff Trawick]
