@@ -197,7 +197,7 @@ typedef const char *(*cmd_func) ();
 #endif /* AP_HAVE_DESIGNATED_INITIALIZER */
 
 /**
- * The command record structure.  Each modules can define a table of these
+ * The command record structure.  Modules can define a table of these
  * to define the directives it will implement.
  */
 typedef struct command_struct command_rec;
@@ -492,7 +492,7 @@ AP_DECLARE(void *) ap_get_module_config(const ap_conf_vector_t *cv,
                                         const module *m);
 
 /**
- * Generic accessors for other modules to set at their own module-specific
+ * Generic accessors for other modules to set their own module-specific
  * data
  * @param cv The vector in which the modules configuration is stored.
  *        usually r->per_dir_config or s->module_config
