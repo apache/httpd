@@ -256,7 +256,7 @@
         <td>Bytes sent, including headers. Cannot be zero. You need to
         enable <module>mod_logio</module> to use this.</td></tr>
 
-    <tr><td><code>%C</code></td>
+    <tr><td><code>%S</code></td>
         <td>Bytes transferred (received and sent), including request and headers,
         cannot be zero. This is the combination of %I and %O. You need to
         enable <module>mod_logio</module> to use this.</td></tr>
