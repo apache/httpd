@@ -38,6 +38,11 @@ client</description>
 <seealso><a href="../filter.html">Filters</a></seealso>
 
 <section id="recommended"><title>Sample Configurations</title>
+    <note type="warning"><title>Compression and TLS</title>
+        <p>Some web applications are vulnerable to an information disclosure
+        attack when a TLS connection carries deflate compressed data. For more
+        information, review the details of the "BREACH" family of attacks.</p>
+    </note>
     <p>This is a simple configuration that compresses common text-based content types.</p>
 
     <example><title>Compress only a few types</title>
@@ -49,6 +54,11 @@ client</description>
 </section>
 
 <section id="enable"><title>Enabling Compression</title>
+    <note type="warning"><title>Compression and TLS</title>
+        <p>Some web applications are vulnerable to an information disclosure
+        attack when a TLS connection carries deflate compressed data. For more
+        information, review the details of the "BREACH" family of attacks.</p>
+    </note>
 
     <section id="output"><title>Output Compression</title>
       <p>Compression is implemented by the <code>DEFLATE</code>
