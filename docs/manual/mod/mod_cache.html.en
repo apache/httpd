@@ -265,14 +265,14 @@ LoadModule cache_module modules/mod_cache.so
   <p>While this mode offers the best performance, the administrator may find that
   under certain circumstances they may want to perform further processing on the
   request after the request is cached, such as to inject personalisation into the
-  cached page, or to apply authorisation restrictions to the content. Under these
+  cached page, or to apply authorization restrictions to the content. Under these
   circumstances, an administrator is often forced to place independent reverse
   proxy servers either behind or in front of the caching server to achieve this.</p>
 
   <p>To solve this problem the <code class="directive"><a href="#cachequickhandler&#10;  ">CacheQuickHandler
   </a></code> directive can be set to <strong>off</strong>, and the server will
   process all phases normally handled by a non-cached request, including the
-  <strong>authentication and authorisation</strong> phases.</p>
+  <strong>authentication and authorization</strong> phases.</p>
 
   <p>In addition, the administrator may optionally specify the <strong>precise point
   within the filter chain</strong> where caching is to take place by adding the
@@ -599,8 +599,7 @@ CacheHeader on
     <code class="directive">CacheIgnoreCacheControl</code> directive allows this
     behavior to be overridden.  <code class="directive">CacheIgnoreCacheControl On</code>
     tells the server to attempt to serve the resource from the cache even
-    if the request contains no-cache header values.  Resources requiring
-    authorization will <em>never</em> be cached.</p>
+    if the request contains no-cache header values.</p>  
 
     <pre class="prettyprint lang-config">
       CacheIgnoreCacheControl On
@@ -961,7 +960,7 @@ CacheLock on
     <p>When disabled, the cache operates as a normal handler, and is subject to
     the full set of phases when handling a server request. While this mode is
     slower than the default, it allows the cache to be used in cases where full
-    processing is required, such as when content is subject to authorisation.</p>
+    processing is required, such as when content is subject to authorization.</p>
 
     <pre class="prettyprint lang-config">
 # Run cache as a normal handler
@@ -1052,8 +1051,7 @@ CacheStaleOnError on
        <code class="directive">CacheStoreNoStore</code> directive allows this
        behavior to be overridden.  <code class="directive">CacheStoreNoStore</code> On
        tells the server to attempt to cache the resource even if it contains
-       no-store header values.  Resources requiring authorization will
-       <em>never</em> be cached.</p>
+       no-store header values.</p>
 
     <pre class="prettyprint lang-config">
       CacheStoreNoStore On
@@ -1088,8 +1086,7 @@ CacheStaleOnError on
        directive allows this behavior to be overridden.
        <code class="directive">CacheStorePrivate</code> On
        tells the server to attempt to cache the resource even if it contains
-       private header values.  Resources requiring authorization will
-       <em>never</em> be cached.</p>
+       private header values.</p>
 
     <pre class="prettyprint lang-config">
       CacheStorePrivate On

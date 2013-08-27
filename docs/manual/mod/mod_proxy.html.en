@@ -72,6 +72,7 @@
         <tr><td>HTTP/0.9, HTTP/1.0, and
           HTTP/1.1</td><td><code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code></td></tr>
         <tr><td>SCGI</td><td><code class="module"><a href="../mod/mod_proxy_scgi.html">mod_proxy_scgi</a></code></td></tr>
+        <tr><td>WS and WSS (Web-sockets)</td><td><code class="module"><a href="../mod/mod_proxy_wstunnel.html">mod_proxy_wstunnel</a></code></td></tr>
         </table>
       </li>
     </ul>
@@ -138,6 +139,7 @@
 <li><code class="module"><a href="../mod/mod_proxy_ftp.html">mod_proxy_ftp</a></code></li>
 <li><code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code></li>
 <li><code class="module"><a href="../mod/mod_proxy_scgi.html">mod_proxy_scgi</a></code></li>
+<li><code class="module"><a href="../mod/mod_proxy_wstunnel.html">mod_proxy_wstunnel</a></code></li>
 <li><code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code></li>
 <li><code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
@@ -715,6 +717,18 @@ NoProxy         .example.com 192.168.112.0/21
     </pre>
 
 
+    <div class="note"><h3>Differences from the Location configuration section</h3>
+      <p>A backend URL matches the configuration section if it begins with the 
+      the <var>wildcard-url</var> string, even if the last path segment in the
+      directive only matches a prefix of the backend URL.  For example, 
+      &lt;Proxy http://example.com/foo&gt; matches all of 
+      http://example.com/foo, http://example.com/foo/bar, and 
+      http://example.com/foobar.  The matching of the final URL differs
+      from the behavior of the <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> section, which for purposes of this note 
+      treats the final path component as if it ended in a slash.</p>
+      <p>For more control over the matching, see <code class="directive">&lt;ProxyMatch&gt;</code>.</p>
+    </div>
+
 
 <h3>See also</h3>
 <ul>
@@ -980,9 +994,9 @@ through</td></tr>
     <code class="directive">ProxyPass</code>.</div>
 
     <p>Support for using a Unix Domain Socket is available by using a target
-    of <code>socket=percent-encoded-path</code>. For example, to target the
+    of <code>uds=percent-encoded-path</code>. For example, to target the
     UDS at /home/www/socket you would use
-    <code>http://socket=%2Fhome%2Fwww%2Fsocket</code></p>
+    <code>http://uds=%2Fhome%2Fwww%2Fsocket</code></p>
 
     <p>Suppose the local server has address <code>http://example.com/</code>;
     then</p>
@@ -1179,7 +1193,9 @@ ProxyPass /mirror/foo http://backend.example.com
     <tr><td>ping</td>
         <td>0</td>
         <td>Ping property tells the webserver to "test" the connection to
-        the backend before forwarding the request. For AJP, it causes
+        the backend before forwarding the request. For negative values
+        the test is a simple socket check, for positive values it's
+        a more functional check, dependent upon the protocol. For AJP, it causes
         <code class="module"><a href="../mod/mod_proxy_ajp.html">mod_proxy_ajp</a></code>to send a <code>CPING</code>
         request on the ajp13 connection (implemented on Tomcat 3.3.2+, 4.1.28+
         and 5.0.13+). For HTTP, it causes <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code>
