@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) Add experimental cmake-based build system for Windows.  [Jeff Trawick,
+     Tom Donovan]
+
   *) mod_ldap: Change "LDAPReferrals off" to actually set the underlying LDAP 
      SDK option to OFF, and introduce "LDAPReferrals default" to take the SDK 
      default, sans rebind authentication callback.
