@@ -180,6 +180,20 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: trunk patch works
     +1: jim, druggeri
 
+  * Easy votes: sync 2.4 and trunk
+       - Avoid some memory allocation and work when TRACE1 is not activated
+       - fix typo in include guard
+       - indent
+       - No need to lower the string before removing the path, it is just a waste of time...
+       - Save a few cycles
+    trunk patch: http://svn.apache.org/r1451478
+                 http://svn.apache.org/r1514215
+                 http://svn.apache.org/r1452195
+                 http://svn.apache.org/r1517025
+                 http://svn.apache.org/r1517045
+    2.4.x patch: trunk patch works
+    +1: jailletc36
+
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
 If you want to propose one of those, please still add them here.
