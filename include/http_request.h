@@ -378,6 +378,7 @@ AP_DECLARE_HOOK(int,map_to_storage,(request_rec *r))
  * by the 'Require' directive). It runs after the access_checker hook, and
  * before the auth_checker hook. This hook should be registered with
  * ap_hook_check_authn().
+ * If "Satisfy any" is in effect, this hook may be skipped.
  *
  * @param r The current request
  * @return OK, DECLINED, or HTTP_...
@@ -424,6 +425,7 @@ AP_DECLARE_HOOK(int,access_checker,(request_rec *r))
  * authentication for this resource. It runs *before* a user is authenticated,
  * but after the access_checker hook.
  * This hook should be registered with ap_hook_check_access_ex().
+ * If "Satisfy any" is in effect, this hook may be skipped.
  *
  * @param r the current request
  * @return OK (allow acces), DECLINED (let later modules decide),
@@ -440,6 +442,7 @@ AP_DECLARE_HOOK(int,access_checker_ex,(request_rec *r))
  * it will *only* be called if Apache determines that access control has
  * been applied to this resource (through a 'Require' directive). This
  * hook should be registered with ap_hook_check_authz().
+ * If "Satisfy any" is in effect, this hook may be skipped.
  *
  * @param r the current request
  * @return OK, DECLINED, or HTTP_...
