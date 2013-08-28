@@ -42,9 +42,9 @@ PROJECT(HTTPD C)
 # . Handling of module prerequisites
 # . Find support libraries:
 #   + "Find" PCRE and APR (no bundled cmake FindXXX macros)
-#   + LUA, libxml2, zlib, distcache
+#   + LUA, libxml2, distcache
 # . Modules not yet supported:
-#   + mod_ldap, mod_authnz_ldap, mod_socache_dc, mod_deflate, mod_proxy_html, mod_xml2enc,
+#   + mod_ldap, mod_authnz_ldap, mod_socache_dc, mod_proxy_html, mod_xml2enc,
 #     mod_lua, mod_serf, apreq+mod_apreq, mod_session_crypto
 #   + mod_lbmethod_rr and mod_firehose, which don't compile on Windows
 # . Add a way to configure additional statically-linked modules (like --with-module on Unix)
