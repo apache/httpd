@@ -18,47 +18,58 @@ PROJECT(HTTPD C)
 #    Alternately, use cmake-gui and update settings in the GUI.
 #
 #    Other flags of interest:
+#        LIBXML2_ICONV_INCLUDE_DIR, LIBXML2_ICONV_LIBRARIES
+#          If using a module that requires libxml2 and the build of libxml2
+#          requires iconv, set these variables to allow iconv includes
+#          and libraries to be found.
 #        CMAKE_C_FLAGS_RELEASE, _DEBUG, _RELWITHDEBINFO, _MINSIZEREL
 #        CMAKE_BUILD_TYPE
 #          For NMake Makefiles the choices are at least DEBUG, RELEASE,
 #          RELWITHDEBINFO, and MINSIZEREL
 #          Other backends make have other selections.
+#
+#    PCRE_INCLUDE_DIR, PCRE_LIBRARIES, APR_INCLUDE_DIR, APR_LIBRARIES:
+#        cmake doesn't bundle FindXXX for these packages, so the crucial
+#        information has to be specified in this manner
+#
+#    ENABLE_MOD_foo:
+#        Each module has a default setting which can be overridden with one of the
+#        following values:
+#            A        build and Activate module
+#            a        build and Activate module IFF prereqs are available
+#            I        build module but leave it Inactive (commented-out LoadModule)
+#            i        build module but leave it Inactive IFF prereqs are available
+#            O        Omit module completely
+#        Examples: -DENABLE_MOD_ALLOWHANDLERS="O" (Omit the module)
+#                  -DENABLE_MOD_PROXY_HTML="i" (If the prereqs are found, build it but
+#                                               don't activate it in the default .conf.)
+#
 # 3. build using chosen backend (e.g., "nmake install")
 #
-# PCRE_INCLUDE_DIR, PCRE_LIBRARIES, APR_INCLUDE_DIR, APR_LIBRARIES:
-#     cmake doesn't bundle FindXXX for these packages, so the crucial
-#     information has to be specified in this manner
-#
-# ENABLE_MOD_foo:
-#     Each module has a default setting which can be overridden with one of the
-#     following values:
-#         A        build and Activate module
-#         I        build module but leave it Inactive (commented-out LoadModule)
-#         O        Omit module completely
-#     Example: -DENABLE_MOD_ALLOWHANDLERS="O" (Omit the module)
-#         
 # Todos for Windows build:
 # . Support APR 1.x in addition to APR trunk
 # . Handling of module prerequisites
 # . Find support libraries:
-#   + "Find" PCRE and APR (no bundled cmake FindXXX macros)
-#   + LUA, libxml2, distcache
+#   + LUA, distcache
 # . Modules not yet supported:
-#   + mod_ldap, mod_authnz_ldap, mod_socache_dc, mod_proxy_html, mod_xml2enc,
+#   + mod_ldap, mod_authnz_ldap, mod_socache_dc,
 #     mod_lua, mod_serf, apreq+mod_apreq, mod_session_crypto
 #   + mod_lbmethod_rr and mod_firehose, which don't compile on Windows
-# . Add a way to configure additional statically-linked modules (like --with-module on Unix)
+# . Add a way to configure additional statically-linked modules (like --with-module using
+#   the autoconf-based build)
 # . Build buildmark.c when httpd.exe is regenerated
 # . ab + HAVE_OPENSSL isn't working at all, even for plain
 # . ApacheMonitor has a build error
 # . install/customize .conf files
 # . install docroot and CGI examples
 # . install .h fils that are in odd places
+# . Sync module enablement defaults with autoconf-based build
 # . Generally: go through the existing Windows build and see what is missing, whether a
 #   feature or some build nuance
 
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
+FIND_PACKAGE(LibXml2)
 FIND_PACKAGE(OpenSSL)
 FIND_PACKAGE(ZLIB)
 
@@ -67,6 +78,8 @@ SET(APR_INCLUDE_DIR       "C:/APR/include"               CACHE STRING "Directory
 SET(APR_LIBRARIES         "C:/APR/lib/libapr-2.lib"      CACHE STRING "APR libraries to link with")
 SET(PCRE_INCLUDE_DIR      "C:/PCRE/include"              CACHE STRING "Directory with PCRE include files")
 SET(PCRE_LIBRARIES        "C:/PCRE/lib/pcred.lib"        CACHE STRING "PCRE libraries to link with")
+SET(LIBXML2_ICONV_INCLUDE_DIR     ""                     CACHE STRING "Directory with iconv include files for libxml2")
+SET(LIBXML2_ICONV_LIBRARIES       ""                     CACHE STRING "iconv libraries to link with for libxml2")
 # end support library configuration
 
 # Options for each available module
@@ -130,14 +143,14 @@ SET(MODULE_LIST
   "modules/filters/mod_ext_filter.c+I+external filter module"
   "modules/filters/mod_filter.c+A+Smart Filtering"
   "modules/filters/mod_include.c+A+Server Side Includes"
-  "modules/filters/mod_proxy_html.c+O+Fix HTML Links in a Reverse Proxy"
+  "modules/filters/mod_proxy_html.c+i+Fix HTML Links in a Reverse Proxy"
   "modules/filters/mod_ratelimit.c+I+Output Bandwidth Limiting"
   "modules/filters/mod_reflector.c+I+Reflect request through the output filter stack"
   "modules/filters/mod_reqtimeout.c+A+Limit time waiting for request from client"
   "modules/filters/mod_request.c+I+Request Body Filtering"
   "modules/filters/mod_sed.c+I+filter request and/or response bodies through sed"
   "modules/filters/mod_substitute.c+I+response content rewrite-like filtering"
-  "modules/filters/mod_xml2enc.c+O+i18n support for markup filters"
+  "modules/filters/mod_xml2enc.c+i+i18n support for markup filters"
   "modules/generators/mod_asis.c+A+as-is filetypes"
   "modules/generators/mod_autoindex.c+A+directory listing"
   "modules/generators/mod_cgi.c+A+CGI scripts"
@@ -225,8 +238,10 @@ SET(mod_dav_lock_extra_sources       modules/dav/lock/locks.c)
 SET(mod_dav_lock_extra_libs          mod_dav)
 SET(mod_dbd_extra_defines            DBD_DECLARE_EXPORT)
 SET(mod_deflate_requires             ZLIB_FOUND)
-SET(mod_deflate_extra_includes       ${ZLIB_INCLUDE_DIR})
-SET(mod_deflate_extra_libs           ${ZLIB_LIBRARIES})
+IF(ZLIB_FOUND)
+  SET(mod_deflate_extra_includes       ${ZLIB_INCLUDE_DIR})
+  SET(mod_deflate_extra_libs           ${ZLIB_LIBRARIES})
+ENDIF()
 SET(mod_heartbeat_extra_libs         mod_watchdog)
 SET(mod_optional_hook_export_extra_defines AP_DECLARE_EXPORT) # bogus reuse of core API prefix
 SET(mod_proxy_extra_defines          PROXY_DECLARE_EXPORT)
@@ -242,6 +257,11 @@ SET(mod_proxy_express_extra_libs     mod_proxy)
 SET(mod_proxy_fcgi_extra_libs        mod_proxy)
 SET(mod_proxy_ftp_extra_libs         mod_proxy)
 SET(mod_proxy_http_extra_libs        mod_proxy)
+SET(mod_proxy_html_requires          LIBXML2_FOUND)
+IF(LIBXML2_FOUND)
+  SET(mod_proxy_html_extra_includes    "${LIBXML2_INCLUDE_DIR};${LIBXML2_ICONV_INCLUDE_DIR}")
+  SET(mod_proxy_html_extra_libs        "${LIBXML2_LIBRARIES};${LIBXML2_ICONV_LIBRARIES}")
+ENDIF()
 SET(mod_proxy_scgi_extra_libs        mod_proxy)
 SET(mod_proxy_wstunnel_extra_libs    mod_proxy)
 SET(mod_ratelimit_extra_defines      AP_RL_DECLARE_EXPORT)
@@ -253,7 +273,10 @@ SET(mod_session_extra_defines        SESSION_DECLARE_EXPORT)
 SET(mod_session_cookie_extra_libs    mod_session)
 SET(mod_session_dbd_extra_libs       mod_session)
 SET(mod_ssl_requires                 OPENSSL_FOUND)
-SET(mod_ssl_extra_includes           ${OPENSSL_INCLUDE_DIR})
+IF(OPENSSL_FOUND)
+  SET(mod_ssl_extra_includes           ${OPENSSL_INCLUDE_DIR})
+  SET(mod_ssl_extra_libs               ${OPENSSL_LIBRARIES})
+ENDIF()
 SET(mod_ssl_extra_sources
   modules/ssl/ssl_engine_config.c    modules/ssl/ssl_engine_dh.c
   modules/ssl/ssl_engine_init.c      modules/ssl/ssl_engine_io.c
@@ -264,8 +287,12 @@ SET(mod_ssl_extra_sources
   modules/ssl/ssl_util.c             modules/ssl/ssl_util_ocsp.c
   modules/ssl/ssl_util_ssl.c         modules/ssl/ssl_util_stapling.c
 )
-SET(mod_ssl_extra_libs               ${OPENSSL_LIBRARIES})
 SET(mod_status_extra_defines         STATUS_DECLARE_EXPORT)
+SET(mod_xml2enc_requires             LIBXML2_FOUND)
+IF(LIBXML2_FOUND)
+  SET(mod_xml2enc_extra_includes     "${LIBXML2_INCLUDE_DIR};${LIBXML2_ICONV_INCLUDE_DIR}")
+  SET(mod_xml2enc_extra_libs         "${LIBXML2_LIBRARIES};${LIBXML2_ICONV_LIBRARIES}")
+ENDIF()
 SET(mod_watchdog_extra_defines       AP_WD_DECLARE_EXPORT)
 
 SET(MODULE_SRCS)
@@ -461,7 +488,7 @@ FOREACH (mod ${MODULE_SRCS})
 
     # Extra includes?
     SET(mod_extra_includes "${mod_name}_extra_includes")
-    IF(NOT ${${mod_extra_includes}} STREQUAL "")
+    IF(NOT "${${mod_extra_includes}}" STREQUAL "")
       SET(tmp_includes ${${mod_extra_includes}} ${HTTPD_INCLUDE_DIRECTORIES})
       SET_TARGET_PROPERTIES(${mod_name} PROPERTIES INCLUDE_DIRECTORIES "${tmp_includes}")
       GET_PROPERTY(tmp_includes TARGET ${mod_name} PROPERTY INCLUDE_DIRECTORIES)
