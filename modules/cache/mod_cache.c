@@ -1130,7 +1130,6 @@ static apr_status_t cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
                         "Content-Range")))
                 || ((reason = cache_header_cmp(r->pool, left, right,
                         "Content-Type")))
-                || ((reason = cache_header_cmp(r->pool, left, right, "Expires")))
                 || ((reason = cache_header_cmp(r->pool, left, right, "ETag")))
                 || ((reason = cache_header_cmp(r->pool, left, right,
                         "Last-Modified")))) {
