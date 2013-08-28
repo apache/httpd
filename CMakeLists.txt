@@ -60,6 +60,7 @@ PROJECT(HTTPD C)
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
 FIND_PACKAGE(OpenSSL)
+FIND_PACKAGE(ZLIB)
 
 # Options for support libraries not supported by cmake-bundled FindFOO
 SET(APR_INCLUDE_DIR       "C:/APR/include"               CACHE STRING "Directory with APR[-Util] include files")
@@ -72,7 +73,6 @@ SET(PCRE_LIBRARIES        "C:/PCRE/lib/pcred.lib"        CACHE STRING "PCRE libr
 #   "A" ("A"ctive) means installed and active in default .conf, fail if can't be built
 #   "I" ("I"nactive) means installed and inactive (LoadModule commented out) in default .conf, fail if can't be built
 #   "O" ("O"mit) means not installed, no LoadModule
-# Options to be added later:
 #   "a" - like "A", but ignore with a warning if any prereqs aren't available
 #   "i" - like "I", but ignore with a warning if any prereqs aren't available
 
@@ -126,7 +126,7 @@ SET(MODULE_LIST
   "modules/filters/mod_buffer.c+A+Filter Buffering"
   "modules/filters/mod_charset_lite.c+O+character set translation"
   "modules/filters/mod_data.c+I+RFC2397 data encoder"
-  "modules/filters/mod_deflate.c+O+Deflate transfer encoding support"
+  "modules/filters/mod_deflate.c+i+Deflate transfer encoding support"
   "modules/filters/mod_ext_filter.c+I+external filter module"
   "modules/filters/mod_filter.c+A+Smart Filtering"
   "modules/filters/mod_include.c+A+Server Side Includes"
@@ -191,7 +191,7 @@ SET(MODULE_LIST
   "modules/session/mod_session_dbd.c+I+session dbd module"
   "modules/slotmem/mod_slotmem_plain.c+A+slotmem provider that uses plain memory"
   "modules/slotmem/mod_slotmem_shm.c+A+slotmem provider that uses shared memory"
-  "modules/ssl/mod_ssl.c+A+SSL/TLS support"
+  "modules/ssl/mod_ssl.c+i+SSL/TLS support"
   "modules/test/mod_dialup.c+I+rate limits static files to dialup modem speeds"
   "modules/test/mod_optional_fn_export.c+I+example optional function exporter"
   "modules/test/mod_optional_fn_import.c+I+example optional function importer"
@@ -224,6 +224,9 @@ SET(mod_dav_fs_extra_libs            mod_dav)
 SET(mod_dav_lock_extra_sources       modules/dav/lock/locks.c)
 SET(mod_dav_lock_extra_libs          mod_dav)
 SET(mod_dbd_extra_defines            DBD_DECLARE_EXPORT)
+SET(mod_deflate_requires             ZLIB_FOUND)
+SET(mod_deflate_extra_includes       ${ZLIB_INCLUDE_DIR})
+SET(mod_deflate_extra_libs           ${ZLIB_LIBRARIES})
 SET(mod_heartbeat_extra_libs         mod_watchdog)
 SET(mod_optional_hook_export_extra_defines AP_DECLARE_EXPORT) # bogus reuse of core API prefix
 SET(mod_proxy_extra_defines          PROXY_DECLARE_EXPORT)
@@ -249,6 +252,7 @@ SET(mod_sed_extra_sources
 SET(mod_session_extra_defines        SESSION_DECLARE_EXPORT)
 SET(mod_session_cookie_extra_libs    mod_session)
 SET(mod_session_dbd_extra_libs       mod_session)
+SET(mod_ssl_requires                 OPENSSL_FOUND)
 SET(mod_ssl_extra_includes           ${OPENSSL_INCLUDE_DIR})
 SET(mod_ssl_extra_sources
   modules/ssl/ssl_engine_config.c    modules/ssl/ssl_engine_dh.c
@@ -281,7 +285,7 @@ FOREACH (modinfo ${MODULE_LIST})
     ELSEIF("${helptext}" STREQUAL "")
       SET(helptext ${i})
     ELSE()
-      MESSAGE(FATAL " Unexpected field or plus sign in >${modinfo}<")
+      MESSAGE(FATAL_ERROR "Unexpected field or plus sign in >${modinfo}<")
     ENDIF()
   ENDFOREACH()
 
@@ -410,21 +414,34 @@ FOREACH (mod ${MODULE_SRCS})
 
   # Is it enabled?
   STRING(TOUPPER "ENABLE_${mod_name}" enable_mod)
+  SET(enable_mod_val ${${enable_mod}})
 
-  IF("${${enable_mod}}" STREQUAL "")
-    MESSAGE(FATAL " ENABLE_MOD_foo VAR not set for module ${mod}")
+  IF(NOT ${enable_mod_val} STREQUAL "O") # build of module is desired
+    SET(mod_requires "${mod_name}_requires")
+    STRING(TOUPPER ${enable_mod_val} enable_mod_val_upper)
+    IF(NOT ${${mod_requires}} STREQUAL "") # module has some prerequisite
+      IF(NOT ${${mod_requires}}) # prerequisite doesn't exist
+        IF(NOT ${enable_mod_val} STREQUAL ${enable_mod_val_upper}) # lower case, so optional based on prereq
+          MESSAGE(STATUS "${mod_name} was requested but couldn't be built due to a missing prerequisite (${${mod_requires}})")
+        ELSE() # must be upper case "A" or "I" (or coding error above)
+          MESSAGE(FATAL_ERROR "${mod_name} was requested but couldn't be built due to a missing prerequisite (${${mod_requires}})")
+        ENDIF()
+      ENDIF()
+    ENDIF()
+    # map a->A, i->I for remaining logic since prereq checking is over
+    SET(enable_mod_val ${enable_mod_val_upper})
   ENDIF()
   
-  IF(${${enable_mod}} STREQUAL "O")
+  IF(${enable_mod_val} STREQUAL "O")
     # ignore
   ELSE()
     # Handle whether or not the LoadModule is commented out.
-    IF(${${enable_mod}} STREQUAL "A")
+    IF(${enable_mod_val} STREQUAL "A")
       SET(LoadModules ${LoadModules} "LoadModule ${mod_module_name} modules/${mod_name}.so\n")
-    ELSEIF(${${enable_mod}} STREQUAL "I")
+    ELSEIF(${enable_mod_val} STREQUAL "I")
       SET(LoadModules ${LoadModules} "# LoadModule ${mod_module_name} modules/${mod_name}.so\n")
     ELSE()
-      MESSAGE(FATAL " ${enable_mod} must be set to \"A\", \"I\", or \"O\" instead of \"${${enable_mod}}\"")
+      MESSAGE(FATAL_ERROR "${enable_mod} must be set to \"A\", \"I\", or \"O\" instead of \"${enable_mod_val}\"")
     ENDIF()
 
     # Handle building it.
