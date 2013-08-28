@@ -9,6 +9,8 @@ PROJECT(HTTPD C)
 #    source tree)
 # 2. Make sure perl is in your PATH.  Additionally, some backends may want
 #    your compile tools in PATH.  (Hint: "Visual Studio Command Prompt")
+#    In the unlikely event that you use -DWITH_MODULES, make sure awk is
+#    in PATH.
 # 3. cmake -G "some backend, like 'NMake Makefiles'" \
 #          -DCMAKE_INSTALL_PREFIX=d:/path/to/httpdinst \
 #          -DPCRE_INCLUDE_DIR=d:/path/to/pcreinst/include \
@@ -45,6 +47,13 @@ PROJECT(HTTPD C)
 #        Examples: -DENABLE_MOD_ALLOWHANDLERS="O" (Omit the module)
 #                  -DENABLE_MOD_PROXY_HTML="i" (If the prereqs are found, build it but
 #                                               don't activate it in the default .conf.)
+#
+#    WITH_MODULES:
+#        Comma-separated paths to single file modules to statically link into
+#        the server, like the --with-module=modpath:/path/to/mod_foo.c with
+#        the autoconf-based build.  Key differences: The modpath (e.g., 
+#        "generators") isn't provided or used, and the copy of the module
+#        source being built is automatically updated when it changes.
 #
 #    Port and SSLPort: port numbers for substitution into default .conf files
 #        Defaults are 80 and 443.
@@ -86,6 +95,9 @@ SET(PCRE_LIBRARIES        "C:/PCRE/lib/pcred.lib"        CACHE STRING "PCRE libr
 SET(LIBXML2_ICONV_INCLUDE_DIR     ""                     CACHE STRING "Directory with iconv include files for libxml2")
 SET(LIBXML2_ICONV_LIBRARIES       ""                     CACHE STRING "iconv libraries to link with for libxml2")
 # end support library configuration
+
+# Misc. options
+SET(WITH_MODULES          ""                             CACHE STRING "comma-separated paths to single-file modules to statically link into the server")
 
 # Options for each available module
 #   "A" ("A"ctive) means installed and active in default .conf, fail if can't be built
@@ -338,6 +350,26 @@ ENDFOREACH()
 
 SET(install_targets)
 SET(install_modules) # special handling vs. other installed targets
+SET(builtin_module_shortnames "win32 mpm_winnt http so") # core added automatically
+SET(extra_builtin_modules) # the ones specified with -DWITH_MODULES=
+
+IF(WITH_MODULES) # modules statically linked with the server
+  STRING(REPLACE "," ";" WITH_MODULE_LIST ${WITH_MODULES})
+  FOREACH(static_mod ${WITH_MODULE_LIST})
+    STRING(REGEX MATCH "[^/]+\\.c"           mod_basename    ${static_mod})
+    STRING(REGEX REPLACE "^mod_(.*)\\.c" "\\1" mod_module_name ${mod_basename})     
+    SET(builtin_module_shortnames "${builtin_module_shortnames} ${mod_module_name}")
+    CONFIGURE_FILE(${static_mod} ${PROJECT_BINARY_DIR}/ COPYONLY)
+    SET(extra_builtin_modules ${extra_builtin_modules} ${PROJECT_BINARY_DIR}/${mod_basename})
+  ENDFOREACH()
+  EXECUTE_PROCESS(COMMAND cmd /c "echo ${builtin_module_shortnames}| awk -f ${CMAKE_CURRENT_SOURCE_DIR}/build/build-modules-c.awk > ${PROJECT_BINARY_DIR}/modules.c" RESULT_VARIABLE rv)
+  IF(rv)
+    MESSAGE(FATAL_ERROR "build-modules-c.awk failed (${rv})")
+  ENDIF()
+ELSE()
+  # no extra built-in modules; use the default modules.c to avoid the awk prereq
+  CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/os/win32/modules.c ${PROJECT_BINARY_DIR}/ COPYONLY)
+ENDIF()
 
 ADD_EXECUTABLE(gen_test_char server/gen_test_char.c)
 GET_TARGET_PROPERTY(GEN_TEST_CHAR_EXE gen_test_char LOCATION)
@@ -357,6 +389,8 @@ SET(HTTPD_MAIN_SOURCES
 )
 
 SET(LIBHTTPD_SOURCES
+  ${extra_builtin_modules}
+  ${PROJECT_BINARY_DIR}/modules.c
   modules/arch/win32/mod_win32.c
   modules/core/mod_so.c
   modules/http/byterange_filter.c
@@ -367,7 +401,6 @@ SET(LIBHTTPD_SOURCES
   modules/http/http_protocol.c
   modules/http/http_request.c
   os/win32/ap_regkey.c
-  os/win32/modules.c
   os/win32/util_win32.c
   server/buildmark.c
   server/config.c
