@@ -510,19 +510,40 @@ valid</description>
 <directivesynopsis>
 <name>LDAPReferrals</name>
 <description>Enable referral chasing during queries to the LDAP server.</description>
-<syntax>LDAPReferrals <var>On|Off</var></syntax>
+<syntax>LDAPReferrals <var>On|Off|default</var></syntax>
 <default>LDAPReferrals On</default>
 <contextlist><context>directory</context><context>.htaccess</context></contextlist>
 <override>AuthConfig</override>
 
 <usage>
     <p>Some LDAP servers divide their directory among multiple domains and use referrals
-    to direct a client when a domain boundary is crossed. By setting <code>LDAPReferrals On</code>
-    referrals will be chased (setting it to off causes referrals to be ignored). The directive
-    <code>LDAPReferralHopLimit</code> works in conjunction with this directive to limit the
-    number of referral hops to follow before terminating the LDAP query. When referral processing
-    is enabled client credentials will be provided, via a rebind callback, for any LDAP server
-    requiring them. </p>
+    to direct a client when a domain boundary is crossed. This is similar to a HTTP redirect.
+    LDAP client libraries may or may not chase referrals by default. This directive 
+    explicitly configures the referral chasing in the underlying SDK.</p> 
+    
+  
+    <p><directive>LDAPReferrals</directive> takes the takes the following values:
+    <dl>
+     <dt>"on"</dt>
+     <dd> <p> When set to "on", the underlying SDK's referral chasing state
+              is enabled, <directive>LDAPReferralHopLimit</directive> is used to 
+              override the SDK's hop limit, and an LDAP rebind callback is 
+              registered.</p></dd>
+     <dt>"off"</dt>
+     <dd> <p> When set to "off", the underlying SDK's referral chasing state
+              is disabled completely.</p></dd>
+     <dt>"default"</dt>
+     <dd> <p> When set to "default", the underlying SDK's referral chasing state
+              is not changed, <directive>LDAPReferralHopLimit</directive> is not 
+              used to overide the SDK's hop limit, and no LDAP rebind callback is 
+              registered.</p></dd>
+    </dl>
+    </p>
+
+    <p> The directive <code>LDAPReferralHopLimit</code> works in conjunction with
+    this directive to limit the number of referral hops to follow before terminating the LDAP query.
+    When referral processing is enabled by a value of "On", client credentials will be provided, 
+    via a rebind callback, for any LDAP server requiring them. </p>
 </usage>
 </directivesynopsis>
 
