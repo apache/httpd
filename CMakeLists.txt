@@ -7,7 +7,9 @@ PROJECT(HTTPD C)
 #    purposes.
 # 1. cd to a clean directory for building (i.e., don't build in your
 #    source tree)
-# 2. cmake -G "some backend, like 'NMake Makefiles'" \
+# 2. Make sure perl is in your PATH.  Additionally, some backends may want
+#    your compile tools in PATH.  (Hint: "Visual Studio Command Prompt")
+# 3. cmake -G "some backend, like 'NMake Makefiles'" \
 #          -DCMAKE_INSTALL_PREFIX=d:/path/to/httpdinst \
 #          -DPCRE_INCLUDE_DIR=d:/path/to/pcreinst/include \
 #          -DPCRE_LIBRARIES=d:/path/to/pcreinst/lib/pcre[d].lib \
@@ -44,11 +46,15 @@ PROJECT(HTTPD C)
 #                  -DENABLE_MOD_PROXY_HTML="i" (If the prereqs are found, build it but
 #                                               don't activate it in the default .conf.)
 #
-# 3. build using chosen backend (e.g., "nmake install")
+#    Port and SSLPort: port numbers for substitution into default .conf files
+#        Defaults are 80 and 443.
+#
+# 4. build using chosen backend (e.g., "nmake install")
 #
 # Todos for Windows build:
 # . Support APR 1.x in addition to APR trunk
-# . Handling of module prerequisites
+# . Support for APR/APU optional features as module prerequisites
+#   (e.g., APU_HAVE_CRYPTO requirement of mod_session_crypto)
 # . Find support libraries:
 #   + LUA, distcache
 # . Modules not yet supported:
@@ -60,9 +66,8 @@ PROJECT(HTTPD C)
 # . Build buildmark.c when httpd.exe is regenerated
 # . ab + HAVE_OPENSSL isn't working at all, even for plain
 # . ApacheMonitor has a build error
-# . install/customize .conf files
-# . install docroot and CGI examples
-# . install .h fils that are in odd places
+# . install CGI examples
+# . install .h files that are in odd places
 # . Sync module enablement defaults with autoconf-based build
 # . Generally: go through the existing Windows build and see what is missing, whether a
 #   feature or some build nuance
@@ -464,9 +469,9 @@ FOREACH (mod ${MODULE_SRCS})
   ELSE()
     # Handle whether or not the LoadModule is commented out.
     IF(${enable_mod_val} STREQUAL "A")
-      SET(LoadModules ${LoadModules} "LoadModule ${mod_module_name} modules/${mod_name}.so\n")
+      SET(LoadModules "${LoadModules}LoadModule ${mod_module_name} modules/${mod_name}.so\n")
     ELSEIF(${enable_mod_val} STREQUAL "I")
-      SET(LoadModules ${LoadModules} "# LoadModule ${mod_module_name} modules/${mod_name}.so\n")
+      SET(LoadModules "${LoadModules}# LoadModule ${mod_module_name} modules/${mod_name}.so\n")
     ELSE()
       MESSAGE(FATAL_ERROR "${enable_mod} must be set to \"A\", \"I\", or \"O\" instead of \"${enable_mod_val}\"")
     ENDIF()
@@ -551,6 +556,34 @@ ADD_EXECUTABLE(rotatelogs support/rotatelogs.c)
 SET(install_targets ${install_targets} rotatelogs)
 TARGET_LINK_LIBRARIES(rotatelogs ${APR_LIBRARIES})
 
+###########  CONFIGURATION FILES ###########
+# Set up variables used in the .conf file templates
+SET(LoadModule          "${LoadModules}")
+SET(Port                "80" CACHE STRING "http port to listen on")
+SET(SSLPort             "443" CACHE STRING "https port to listen on")
+SET(ServerRoot          "${CMAKE_INSTALL_PREFIX}")
+SET(exp_cgidir          "${CMAKE_INSTALL_PREFIX}/cgi-bin")
+SET(exp_htdocsdir       "${CMAKE_INSTALL_PREFIX}/htdocs")
+SET(exp_iconsdir        "${CMAKE_INSTALL_PREFIX}/icons")
+SET(exp_errordir        "${CMAKE_INSTALL_PREFIX}/error")
+SET(exp_manualdir       "${CMAKE_INSTALL_PREFIX}/manual")
+SET(rel_logfiledir      "logs")
+SET(rel_runtimedir      "logs")
+SET(rel_sysconfdir      "conf")
+FILE(GLOB_RECURSE conffiles RELATIVE ${CMAKE_SOURCE_DIR}/docs/conf "docs/conf/*")
+FOREACH(template ${conffiles})
+  STRING(REPLACE ".conf.in" ".conf" conf ${template})
+  FILE(READ "docs/conf/${template}" template_text)
+    IF(template MATCHES ".conf.in$")
+      # substitute @var@/@@var@@ in .conf.in
+      STRING(REPLACE "@@" "@" template_text ${template_text})
+      STRING(CONFIGURE "${template_text}" template_text @ONLY)
+    ENDIF()
+  FILE(WRITE ${CMAKE_BINARY_DIR}/conf/original/${conf} "${template_text}")
+  FILE(WRITE ${CMAKE_BINARY_DIR}/conf/${conf} "${template_text}")
+ENDFOREACH()
+
+###########   INSTALLATION   ###########
 INSTALL(TARGETS ${install_targets}
         RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib
@@ -562,13 +595,28 @@ INSTALL(TARGETS ${install_modules}
 INSTALL(DIRECTORY include/ DESTINATION include
     FILES_MATCHING PATTERN "*.h"
 )
-INSTALL(DIRECTORY docs/icons/ DESTINATION icons)
-INSTALL(DIRECTORY docs/error/ DESTINATION error)
 INSTALL(DIRECTORY docs/manual/ DESTINATION manual
     FILES_MATCHING PATTERN "BUILDING" EXCLUDE
 )
 INSTALL(DIRECTORY DESTINATION logs)
 INSTALL(DIRECTORY DESTINATION cgi-bin)
+
+INSTALL(CODE "EXECUTE_PROCESS(COMMAND perl ${CMAKE_CURRENT_SOURCE_DIR}/build/cpR_noreplace.pl ${CMAKE_CURRENT_SOURCE_DIR}/error ${CMAKE_INSTALL_PREFIX}/error ifdestmissing)")
+
+INSTALL(CODE "EXECUTE_PROCESS(COMMAND perl ${CMAKE_CURRENT_SOURCE_DIR}/build/cpR_noreplace.pl ${CMAKE_CURRENT_SOURCE_DIR}/docs/docroot ${CMAKE_INSTALL_PREFIX}/htdocs ifdestmissing)")
+
+INSTALL(CODE "EXECUTE_PROCESS(COMMAND perl ${CMAKE_CURRENT_SOURCE_DIR}/build/cpR_noreplace.pl ${CMAKE_CURRENT_SOURCE_DIR}/icons ${CMAKE_INSTALL_PREFIX}/icons ifdestmissing)")
+
+# Copy generated .conf files from the build directory to the install,
+# without overwriting stuff already there.
+INSTALL(CODE "EXECUTE_PROCESS(COMMAND perl ${CMAKE_CURRENT_SOURCE_DIR}/build/cpR_noreplace.pl ${CMAKE_BINARY_DIR}/conf ${CMAKE_INSTALL_PREFIX}/conf)")
+# But conf/original is supposed to be overwritten.
+# Note: FILE(TO_NATIVE_PATH ...) leaves the backslashes unescaped, which
+#       generates warnings.  Just do it manually since this build only supports
+#       Windows anyway.
+STRING(REPLACE "/" "\\\\" native_src ${CMAKE_BINARY_DIR}/conf/original)
+STRING(REPLACE "/" "\\\\" native_dest ${CMAKE_INSTALL_PREFIX}/conf/original)
+INSTALL(CODE "EXECUTE_PROCESS(COMMAND xcopy ${native_src} ${native_dest} /Q /S /Y)")
 
 MESSAGE(STATUS "Module selections:")
 FOREACH(modsel ${moduleselections})
