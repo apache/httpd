@@ -16,10 +16,15 @@ PROJECT(HTTPD C)
 #          -DPCRE_INCLUDE_DIR=d:/path/to/pcreinst/include \
 #          -DPCRE_LIBRARIES=d:/path/to/pcreinst/lib/pcre[d].lib \
 #          -DAPR_INCLUDE_DIR=d:/path/to/aprinst/include \
-#          -DAPR_LIBRARIES=d:/path/to/aprinst/lib/libapr-2.lib \
+#          -DAPR_LIBRARIES="d:/path/to/aprinst/lib/libapr-1.lib;d:/path/to/aprinst/lib/libaprutil-1.lib" \
 #          -DENABLE_MOD_foo="A|I|O" \
 #          d:/path/to/httpdsource
 #    Alternately, use cmake-gui and update settings in the GUI.
+#
+#    When building with APR trunk (future APR 2.x, with integrated APR-Util),
+#    specify just libapr-2.lib:
+#
+#          -DAPR_LIBRARIES=d:/path/to/aprinst/lib/libapr-2.lib
 #
 #    Other flags of interest:
 #        LIBXML2_ICONV_INCLUDE_DIR, LIBXML2_ICONV_LIBRARIES
@@ -44,7 +49,7 @@ PROJECT(HTTPD C)
 #            I        build module but leave it Inactive (commented-out LoadModule)
 #            i        build module but leave it Inactive IFF prereqs are available
 #            O        Omit module completely
-#        Examples: -DENABLE_MOD_ALLOWHANDLERS="O" (Omit the module)
+#        Examples: -DENABLE_MOD_ACCESS_COMPAT="O" (Omit the module)
 #                  -DENABLE_MOD_PROXY_HTML="i" (If the prereqs are found, build it but
 #                                               don't activate it in the default .conf.)
 #
@@ -61,7 +66,6 @@ PROJECT(HTTPD C)
 # 4. build using chosen backend (e.g., "nmake install")
 #
 # Todos for Windows build:
-# . Support APR 1.x in addition to APR trunk
 # . Support for APR/APU optional features as module prerequisites
 #   (e.g., APU_HAVE_CRYPTO requirement of mod_session_crypto)
 # . Find support libraries:
@@ -70,8 +74,6 @@ PROJECT(HTTPD C)
 #   + mod_ldap, mod_authnz_ldap, mod_socache_dc,
 #     mod_lua, mod_serf, apreq+mod_apreq, mod_session_crypto
 #   + mod_lbmethod_rr and mod_firehose, which don't compile on Windows
-# . Add a way to configure additional statically-linked modules (like --with-module using
-#   the autoconf-based build)
 # . Build buildmark.c when httpd.exe is regenerated
 # . ab + HAVE_OPENSSL isn't working at all, even for plain
 # . ApacheMonitor has a build error
@@ -87,9 +89,15 @@ FIND_PACKAGE(LibXml2)
 FIND_PACKAGE(OpenSSL)
 FIND_PACKAGE(ZLIB)
 
+# See what version we're building.  Just look at AP_SERVER_MINORVERSION_NUMBER
+SET(minorversion_regex "^#define AP_SERVER_MINORVERSION_NUMBER ([0-9]+)$")
+FILE(STRINGS ${CMAKE_CURRENT_SOURCE_DIR}/include/ap_release.h minorversion REGEX ${minorversion_regex})
+STRING(REGEX REPLACE ${minorversion_regex} "\\1" minorversion ${minorversion})
+
 # Options for support libraries not supported by cmake-bundled FindFOO
 SET(APR_INCLUDE_DIR       "C:/APR/include"               CACHE STRING "Directory with APR[-Util] include files")
-SET(APR_LIBRARIES         "C:/APR/lib/libapr-2.lib"      CACHE STRING "APR libraries to link with")
+SET(APR_LIBRARIES         "C:/APR/lib/libapr-1.lib;C:/APR/lib/libaprutil-1.lib"
+    CACHE STRING "APR libraries to link with")
 SET(PCRE_INCLUDE_DIR      "C:/PCRE/include"              CACHE STRING "Directory with PCRE include files")
 SET(PCRE_LIBRARIES        "C:/PCRE/lib/pcred.lib"        CACHE STRING "PCRE libraries to link with")
 SET(LIBXML2_ICONV_INCLUDE_DIR     ""                     CACHE STRING "Directory with iconv include files for libxml2")
@@ -108,7 +116,6 @@ SET(WITH_MODULES          ""                             CACHE STRING "comma-sep
 
 SET(MODULE_LIST
   "modules/aaa/mod_access_compat.c+A+mod_access compatibility"
-  "modules/aaa/mod_allowhandlers.c+I+restrict allowed handlers"
   "modules/aaa/mod_allowmethods.c+I+restrict allowed HTTP methods"
   "modules/aaa/mod_auth_basic.c+A+basic authentication"
   "modules/aaa/mod_auth_digest.c+I+RFC2617 Digest authentication"
@@ -119,7 +126,6 @@ SET(MODULE_LIST
   "modules/aaa/mod_authn_dbm.c+I+DBM-based authentication control"
   "modules/aaa/mod_authn_file.c+A+file-based authentication control"
   "modules/aaa/mod_authn_socache.c+A+Cached authentication control"
-  "modules/aaa/mod_authnz_fcgi.c+I+FastCGI authorizer-based authentication and authorization"
   "modules/aaa/mod_authnz_ldap.c+O+LDAP based authentication"
   "modules/aaa/mod_authz_core.c+A+core authorization provider vector module"
   "modules/aaa/mod_authz_dbd.c+I+SQL based authorization and Login/Session support"
@@ -147,7 +153,6 @@ SET(MODULE_LIST
   "modules/dav/main/mod_dav.c+I+WebDAV protocol handling."
   "modules/debugging/mod_bucketeer.c+I+buckets manipulation filter.  Useful only for developers and testing purposes."
   "modules/debugging/mod_dumpio.c+I+I/O dump filter"
-  "modules/debugging/mod_firehose.c+O+Firehose dump filter"
   "modules/echo/mod_echo.c+I+ECHO server"
   "modules/examples/mod_case_filter.c+I+Example uppercase conversion filter"
   "modules/examples/mod_case_filter_in.c+I+Example uppercase conversion input filter"
@@ -214,7 +219,6 @@ SET(MODULE_LIST
   "modules/proxy/mod_proxy_http.c+A+Apache proxy HTTP module.  Requires and is enabled by --enable-proxy."
   "modules/proxy/mod_proxy_scgi.c+I+Apache proxy SCGI module.  Requires and is enabled by --enable-proxy."
   "modules/proxy/mod_proxy_wstunnel.c+I+Apache proxy Websocket Tunnel module.  Requires and is enabled by --enable-proxy."
-  "modules/proxy/mod_serf.c+O+Reverse proxy module using Serf"
   "modules/session/mod_session.c+I+session module"
   "modules/session/mod_session_cookie.c+I+session cookie module"
   "modules/session/mod_session_crypto.c+O+session crypto module"
@@ -227,8 +231,19 @@ SET(MODULE_LIST
   "modules/test/mod_optional_fn_import.c+I+example optional function importer"
   "modules/test/mod_optional_hook_export.c+I+example optional hook exporter"
   "modules/test/mod_optional_hook_import.c+I+example optional hook importer"
-  "modules/test/mod_policy.c+I+HTTP protocol compliance filters"
 )
+
+IF(NOT ${minorversion} STREQUAL "4")
+  # more modules in trunk
+  SET(MODULE_LIST
+      ${MODULE_LIST}
+      "modules/aaa/mod_allowhandlers.c+I+restrict allowed handlers"
+      "modules/aaa/mod_authnz_fcgi.c+I+FastCGI authorizer-based authentication and authorization"
+      "modules/debugging/mod_firehose.c+O+Firehose dump filter"
+      "modules/proxy/mod_serf.c+O+Reverse proxy module using Serf"
+      "modules/test/mod_policy.c+I+HTTP protocol compliance filters"
+  )
+ENDIF()
 
 # Define extra definitions, sources, headers, etc. required by some modules.
 # This could be included in the master list of modules above, though it 
@@ -427,7 +442,6 @@ SET(LIBHTTPD_SOURCES
   server/util_expr_eval.c
   server/util_expr_parse.c
   server/util_expr_scan.c
-  server/util_fcgi.c
   server/util_filter.c
   server/util_md5.c
   server/util_mutex.c
@@ -438,6 +452,14 @@ SET(LIBHTTPD_SOURCES
   server/util_xml.c
   server/vhost.c
 )
+
+IF(NOT ${minorversion} STREQUAL "4")
+  # more libhttpd sources in trunk
+  SET(LIBHTTPD_SOURCES
+      ${LIBHTTPD_SOURCES}
+      "server/util_fcgi.c"
+  )
+ENDIF()
 
 CONFIGURE_FILE(os/win32/win32_config_layout.h
                ${PROJECT_BINARY_DIR}/ap_config_layout.h)
