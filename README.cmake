@@ -132,6 +132,38 @@ How to build
 
 4. build using chosen backend (e.g., "nmake install")
 
+Running the server and support programs
+---------------------------------------
+
+This build system does not copy binaries such as dlls from other projects
+into the httpd install location.  Without taking some precautions, httpd
+and support programs can fail to start or modules can fail to load because
+a support library can't be found in PATH or in the directory of the httpd
+binary.
+
+This can be resolved in several different ways:
+
+* Install httpd and the various support libraries to a common install
+  prefix so that support libraries and httpd programs are installed in
+  the same bin directory and are found without setting PATH.
+
+* Update PATH to include the bin directories of all necessary support
+  libraries.
+
+  Depending on where PATH is set, it may not effect starting httpd as
+  a service.
+
+* Maintain a script which combines required binaries into a common 
+  location, such as the httpd installion bin directory, and use that
+  script after building or otherwise installing or updating support
+  libraries.
+
+* AVOID THE USE of any unrepeatable process of copying dll files around
+  from different install locations until something starts working.  The
+  result is that when you later update a support library to pick up a
+  security fix, httpd will likely continue to use the old, vulnerable
+  library file.
+
 Known Bugs and Limitations
 --------------------------
 
