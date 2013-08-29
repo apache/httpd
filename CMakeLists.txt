@@ -635,11 +635,11 @@ INSTALL(DIRECTORY docs/manual/ DESTINATION manual
 INSTALL(DIRECTORY DESTINATION logs)
 INSTALL(DIRECTORY DESTINATION cgi-bin)
 
-INSTALL(CODE "EXECUTE_PROCESS(COMMAND perl ${CMAKE_CURRENT_SOURCE_DIR}/build/cpR_noreplace.pl ${CMAKE_CURRENT_SOURCE_DIR}/error ${CMAKE_INSTALL_PREFIX}/error ifdestmissing)")
+INSTALL(CODE "EXECUTE_PROCESS(COMMAND perl ${CMAKE_CURRENT_SOURCE_DIR}/build/cpR_noreplace.pl ${CMAKE_CURRENT_SOURCE_DIR}/docs/error ${CMAKE_INSTALL_PREFIX}/error ifdestmissing)")
 
 INSTALL(CODE "EXECUTE_PROCESS(COMMAND perl ${CMAKE_CURRENT_SOURCE_DIR}/build/cpR_noreplace.pl ${CMAKE_CURRENT_SOURCE_DIR}/docs/docroot ${CMAKE_INSTALL_PREFIX}/htdocs ifdestmissing)")
 
-INSTALL(CODE "EXECUTE_PROCESS(COMMAND perl ${CMAKE_CURRENT_SOURCE_DIR}/build/cpR_noreplace.pl ${CMAKE_CURRENT_SOURCE_DIR}/icons ${CMAKE_INSTALL_PREFIX}/icons ifdestmissing)")
+INSTALL(CODE "EXECUTE_PROCESS(COMMAND perl ${CMAKE_CURRENT_SOURCE_DIR}/build/cpR_noreplace.pl ${CMAKE_CURRENT_SOURCE_DIR}/docs/icons ${CMAKE_INSTALL_PREFIX}/icons ifdestmissing)")
 
 # Copy generated .conf files from the build directory to the install,
 # without overwriting stuff already there.
