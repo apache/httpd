@@ -7,7 +7,7 @@ PROJECT(HTTPD C)
 #    purposes.
 # 1. cd to a clean directory for building (i.e., don't build in your
 #    source tree)
-# 2. Make sure perl is in your PATH.  Additionally, some backends may want
+# 2. Make sure Perl is in your PATH.  Additionally, some backends may want
 #    your compile tools in PATH.  (Hint: "Visual Studio Command Prompt")
 #    In the unlikely event that you use -DWITH_MODULES, make sure awk is
 #    in PATH.
@@ -16,7 +16,7 @@ PROJECT(HTTPD C)
 #          -DPCRE_INCLUDE_DIR=d:/path/to/pcreinst/include \
 #          -DPCRE_LIBRARIES=d:/path/to/pcreinst/lib/pcre[d].lib \
 #          -DAPR_INCLUDE_DIR=d:/path/to/aprinst/include \
-#          -DAPR_LIBRARIES=d:/path/to/aprinst/lib/libapr2.lib \
+#          -DAPR_LIBRARIES=d:/path/to/aprinst/lib/libapr-2.lib \
 #          -DENABLE_MOD_foo="A|I|O" \
 #          d:/path/to/httpdsource
 #    Alternately, use cmake-gui and update settings in the GUI.
@@ -488,12 +488,13 @@ FOREACH (mod ${MODULE_SRCS})
       IF(NOT ${${mod_requires}}) # prerequisite doesn't exist
         IF(NOT ${enable_mod_val} STREQUAL ${enable_mod_val_upper}) # lower case, so optional based on prereq
           MESSAGE(STATUS "${mod_name} was requested but couldn't be built due to a missing prerequisite (${${mod_requires}})")
+          SET(enable_mod_val_upper "O") # skip due to missing prerequisite
         ELSE() # must be upper case "A" or "I" (or coding error above)
           MESSAGE(FATAL_ERROR "${mod_name} was requested but couldn't be built due to a missing prerequisite (${${mod_requires}})")
         ENDIF()
       ENDIF()
     ENDIF()
-    # map a->A, i->I for remaining logic since prereq checking is over
+    # map a->A, i->I, O->O for remaining logic since prereq checking is over
     SET(enable_mod_val ${enable_mod_val_upper})
   ENDIF()
   
