@@ -1,87 +1,21 @@
-PROJECT(HTTPD C)
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# Read README.cmake before using this.
 
-# Experimental cmake-based build support for Apache httpd on Windows
-#
-# General usage:
-# 0. Read the todos down below and make sure this is good enough for your
-#    purposes.
-# 1. cd to a clean directory for building (i.e., don't build in your
-#    source tree)
-# 2. Make sure Perl is in your PATH.  Additionally, some backends may want
-#    your compile tools in PATH.  (Hint: "Visual Studio Command Prompt")
-#    In the unlikely event that you use -DWITH_MODULES, make sure awk is
-#    in PATH.
-# 3. cmake -G "some backend, like 'NMake Makefiles'" \
-#          -DCMAKE_INSTALL_PREFIX=d:/path/to/httpdinst \
-#          -DPCRE_INCLUDE_DIR=d:/path/to/pcreinst/include \
-#          -DPCRE_LIBRARIES=d:/path/to/pcreinst/lib/pcre[d].lib \
-#          -DAPR_INCLUDE_DIR=d:/path/to/aprinst/include \
-#          -DAPR_LIBRARIES="d:/path/to/aprinst/lib/libapr-1.lib;d:/path/to/aprinst/lib/libaprutil-1.lib" \
-#          -DENABLE_MOD_foo="A|I|O" \
-#          d:/path/to/httpdsource
-#    Alternately, use cmake-gui and update settings in the GUI.
-#
-#    When building with APR trunk (future APR 2.x, with integrated APR-Util),
-#    specify just libapr-2.lib:
-#
-#          -DAPR_LIBRARIES=d:/path/to/aprinst/lib/libapr-2.lib
-#
-#    Other flags of interest:
-#        LIBXML2_ICONV_INCLUDE_DIR, LIBXML2_ICONV_LIBRARIES
-#          If using a module that requires libxml2 and the build of libxml2
-#          requires iconv, set these variables to allow iconv includes
-#          and libraries to be found.
-#        CMAKE_C_FLAGS_RELEASE, _DEBUG, _RELWITHDEBINFO, _MINSIZEREL
-#        CMAKE_BUILD_TYPE
-#          For NMake Makefiles the choices are at least DEBUG, RELEASE,
-#          RELWITHDEBINFO, and MINSIZEREL
-#          Other backends make have other selections.
-#
-#    PCRE_INCLUDE_DIR, PCRE_LIBRARIES, APR_INCLUDE_DIR, APR_LIBRARIES:
-#        cmake doesn't bundle FindXXX for these packages, so the crucial
-#        information has to be specified in this manner
-#
-#    ENABLE_MOD_foo:
-#        Each module has a default setting which can be overridden with one of the
-#        following values:
-#            A        build and Activate module
-#            a        build and Activate module IFF prereqs are available
-#            I        build module but leave it Inactive (commented-out LoadModule)
-#            i        build module but leave it Inactive IFF prereqs are available
-#            O        Omit module completely
-#        Examples: -DENABLE_MOD_ACCESS_COMPAT="O" (Omit the module)
-#                  -DENABLE_MOD_PROXY_HTML="i" (If the prereqs are found, build it but
-#                                               don't activate it in the default .conf.)
-#
-#    WITH_MODULES:
-#        Comma-separated paths to single file modules to statically link into
-#        the server, like the --with-module=modpath:/path/to/mod_foo.c with
-#        the autoconf-based build.  Key differences: The modpath (e.g., 
-#        "generators") isn't provided or used, and the copy of the module
-#        source being built is automatically updated when it changes.
-#
-#    Port and SSLPort: port numbers for substitution into default .conf files
-#        Defaults are 80 and 443.
-#
-# 4. build using chosen backend (e.g., "nmake install")
-#
-# Todos for Windows build:
-# . Support for APR/APU optional features as module prerequisites
-#   (e.g., APU_HAVE_CRYPTO requirement of mod_session_crypto)
-# . Find support libraries:
-#   + LUA, distcache
-# . Modules not yet supported:
-#   + mod_ldap, mod_authnz_ldap, mod_socache_dc,
-#     mod_lua, mod_serf, apreq+mod_apreq, mod_session_crypto
-#   + mod_lbmethod_rr and mod_firehose, which don't compile on Windows
-# . Build buildmark.c when httpd.exe is regenerated
-# . ab + HAVE_OPENSSL isn't working at all, even for plain
-# . ApacheMonitor has a build error
-# . install CGI examples
-# . install .h files that are in odd places
-# . Sync module enablement defaults with autoconf-based build
-# . Generally: go through the existing Windows build and see what is missing, whether a
-#   feature or some build nuance
+PROJECT(HTTPD C)
 
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
