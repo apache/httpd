@@ -278,10 +278,8 @@ SET(mod_watchdog_extra_defines       AP_WD_DECLARE_EXPORT)
 
 SET(MODULE_SRCS)
 
-SET(moduleselections)
 FOREACH (modinfo ${MODULE_LIST})
   STRING(REGEX REPLACE "([^+]*)\\+([^+]*)\\+([^+]*)" "\\1;\\2;\\3" modinfolist ${modinfo})
-  LIST(LENGTH modinfolist modinfolen)
   SET(primarysourcefile)
   SET(defaultenable)
   SET(helptext)
@@ -301,14 +299,14 @@ FOREACH (modinfo ${MODULE_LIST})
   # MESSAGE("enablement by default: ${defaultenable}")
   # MESSAGE("            help text: ${helptext}")
 
-  STRING(REGEX MATCH   "[^/]+\\.c"              mod_basename    ${primarysourcefile})
-  STRING(REGEX MATCH   "[^.]+"                  mod_name        ${mod_basename})
+  STRING(REGEX MATCH   "[^/]+\\.c"        mod_basename   ${primarysourcefile})
+  STRING(REGEX MATCH   "[^.]+"            mod_name       ${mod_basename})
+  STRING(REGEX REPLACE "mod_(.*)"  "\\1"  mod_shortname  ${mod_name})
 
-  STRING(TOUPPER "ENABLE_${mod_name}" mod_option_name)
+  STRING(TOUPPER "ENABLE_${mod_shortname}" mod_option_name)
 
   SET(${mod_option_name} ${defaultenable} CACHE STRING ${helptext})
   SET(MODULE_SRCS "${MODULE_SRCS};${primarysourcefile}")
-  SET(moduleselections "${moduleselections};${mod_option_name}")
 
 ENDFOREACH()
 
@@ -462,15 +460,19 @@ SET(HTTPD_SYSTEM_LIBS
 
 ###########   HTTPD MODULES     ############
 SET(LoadModules)
+SET(mods_built_and_loaded)
+SET(mods_built_but_not_loaded)
+SET(mods_omitted)
 FOREACH (mod ${MODULE_SRCS})
   # Build different forms of the module name; e.g., 
   #   mod_short_name->mod_cgi.c, mod_name->mod_cgi, mod_module_name->cgi_module
   STRING(REGEX MATCH   "[^/]+\\.c"              mod_basename  ${mod})
   STRING(REGEX MATCH   "[^.]+"                  mod_name        ${mod_basename})
   STRING(REGEX REPLACE "^mod_(.*)" "\\1_module" mod_module_name ${mod_name})
+  STRING(REGEX REPLACE "mod_(.*)"  "\\1"        mod_shortname   ${mod_name})
 
   # Is it enabled?
-  STRING(TOUPPER "ENABLE_${mod_name}" enable_mod)
+  STRING(TOUPPER "ENABLE_${mod_shortname}" enable_mod)
   SET(enable_mod_val ${${enable_mod}})
 
   IF(NOT ${enable_mod_val} STREQUAL "O") # build of module is desired
@@ -492,12 +494,15 @@ FOREACH (mod ${MODULE_SRCS})
   
   IF(${enable_mod_val} STREQUAL "O")
     # ignore
+    SET(mods_omitted ${mods_omitted} ${mod_name})
   ELSE()
     # Handle whether or not the LoadModule is commented out.
     IF(${enable_mod_val} STREQUAL "A")
       SET(LoadModules "${LoadModules}LoadModule ${mod_module_name} modules/${mod_name}.so\n")
+      SET(mods_built_and_loaded ${mods_built_and_loaded} ${mod_name})
     ELSEIF(${enable_mod_val} STREQUAL "I")
       SET(LoadModules "${LoadModules}# LoadModule ${mod_module_name} modules/${mod_name}.so\n")
+      SET(mods_built_but_not_loaded ${mods_built_but_not_loaded} ${mod_name})
     ELSE()
       MESSAGE(FATAL_ERROR "${enable_mod} must be set to \"A\", \"I\", or \"O\" instead of \"${enable_mod_val}\"")
     ENDIF()
@@ -646,7 +651,17 @@ STRING(REPLACE "/" "\\\\" native_src ${CMAKE_BINARY_DIR}/conf/original)
 STRING(REPLACE "/" "\\\\" native_dest ${CMAKE_INSTALL_PREFIX}/conf/original)
 INSTALL(CODE "EXECUTE_PROCESS(COMMAND xcopy ${native_src} ${native_dest} /Q /S /Y)")
 
-MESSAGE(STATUS "Module selections:")
-FOREACH(modsel ${moduleselections})
-  MESSAGE(STATUS "  ${modsel} ${${modsel}}")
+MESSAGE(STATUS "Modules built and loaded:")
+FOREACH(mod ${mods_built_and_loaded})
+  MESSAGE(STATUS "  ${mod}")
+ENDFOREACH()
+
+MESSAGE(STATUS "Modules built but not loaded:")
+FOREACH(mod ${mods_built_but_not_loaded})
+  MESSAGE(STATUS "  ${mod}")
+ENDFOREACH()
+
+MESSAGE(STATUS "Modules not built:")
+FOREACH(mod ${mods_omitted})
+  MESSAGE(STATUS "  ${mod}")
 ENDFOREACH()
