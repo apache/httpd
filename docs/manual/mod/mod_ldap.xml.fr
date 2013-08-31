@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1452865 -->
+<!-- English Revision : 1518267 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -559,7 +559,7 @@ LDAP.</description>
 <name>LDAPReferrals</name>
 <description>Active la redirection vers des serveurs alternatifs au
 cours des requ&ecirc;tes vers le serveur LDAP.</description>
-<syntax>LDAPReferrals <var>On|Off</var></syntax>
+<syntax>LDAPReferrals On|Off|default</syntax>
 <default>LDAPReferrals On</default>
 <contextlist><context>directory</context><context>.htaccess</context></contextlist>
 <override>AuthConfig</override>
@@ -568,15 +568,36 @@ cours des requ&ecirc;tes vers le serveur LDAP.</description>
     <p>Certains serveurs LDAP partagent leur annuaire en plusieurs
     domaines et utilisent le syst&egrave;me des redirections (referrals) pour
     aiguiller un client lorsque les limites d'un domaine doivent &ecirc;tre
-    franchies. En d&eacute;finissant <code>LDAPReferrals On</code>, les
-    redirections seront prises en compte (et bien entendu, en
-    d&eacute;finissant <code>LDAPReferrals Off</code>, les redirections seront
-    ignor&eacute;es). La directive <code>LDAPReferralHopLimit</code> compl&egrave;te
-    cette directive en d&eacute;finissant le nombre maximum de redirections &agrave;
-    suivre avant l'abandon de la requ&ecirc;te LDAP. Lorsque le traitement des
-    redirections est activ&eacute;, les donn&eacute;es d'identification du client
-    seront fournies, via un appel (callback) de r&eacute;identification, &agrave; tout
-    serveur LDAP qui en fera la demande.</p>
+    franchies. Ce processus est similaire &agrave; une redirection HTTP. Les
+    biblioth&egrave;ques client LDAP ne respectent pas forc&eacute;ment ces
+    redirections par d&eacute;faut. Cette directive permet de configurer
+    explicitement les redirections LDAP dans le SDK sous-jacent.
+
+    <p>La directive <directive>LDAPReferrals</directive> accepte les
+    valeurs suivantes :
+    <dl>
+     <dt>"on"</dt>
+     <dd> <p>Avec la valeur "on", la prise en compte des redirections
+     LDAP par le SDK sous-jacent est activ&eacute;e, la directive
+     <directive>LDAPReferralHopLimit</directive> permet de surcharger la
+     "hop limit" du SDK, et un "LDAP rebind callback" est enregistr&eacute;.</p></dd>
+     <dt>"off"</dt>
+     <dd> <p>Avec la valeur "off", la prise en compte des redirections
+     LDAP par le SDK sous-jacent est compl&egrave;tement d&eacute;sactiv&eacute;e.</p></dd>
+     <dt>"default"</dt>
+     <dd> <p>Avec la valeur "default", la prise en compte des redirections
+     LDAP par le SDK sous-jacent n'est pas modifi&eacute;e, la directive
+     <directive>LDAPReferralHopLimit</directive> ne permet pas de surcharger la
+     "hop limit" du SDK, et aucun "LDAP rebind callback" n'est enregistr&eacute;.</p></dd>
+    </dl>
+    </p>
+
+    <p>La directive <code>LDAPReferralHopLimit</code> travaille en
+    conjonction avec cette directive pour limiter le nombre de
+    redirections &agrave; suivre pour achever le traitement de la requ&ecirc;te LDAP.
+    Lorsque le processus de redirection est activ&eacute; par la valeur "On",
+    les donn&eacute;es d'authentification du client sont transmises via un
+    "rebind callback" &agrave; tout serveur LDAP qui en fait la demande.</p>
 </usage>
 </directivesynopsis>
 

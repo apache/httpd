@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1505986:1517405 (outdated) -->
+<!-- English Revision : 1517405 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -640,9 +640,8 @@ le contenu au client depuis le cache</description>
     <directive>CacheIgnoreCacheControl</directive> permet de modifier ce
     comportement. Avec <directive>CacheIgnoreCacheControl
     On</directive>, le serveur tentera de servir la ressource depuis le
-    cache, m&ecirc;me si la requ&ecirc;te contient un des en-t&ecirc;tes cit&eacute;s plus haut.
-    Les ressources qui requi&egrave;rent une autorisation ne seront
-    <em>jamais</em> mises en cache.</p>
+    cache, m&ecirc;me si la requ&ecirc;te contient un en-t&ecirc;te
+    no-cache.</p>
 
     <highlight language="config">
       CacheIgnoreCacheControl On
@@ -876,9 +875,7 @@ marqu&eacute;es comme priv&eacute;es</description>
     modifier ce comportement. Si
     <directive>CacheStorePrivate</directive> est d&eacute;finie &agrave; On, le
     serveur tentera de mettre la ressource en cache, m&ecirc;me si elle
-    contient des en-t&ecirc;tes ayant pour valeur private. Les ressources
-    n&eacute;cessitant une autorisation ne sont <em>jamais</em> mises en
-    cache.</p>
+    contient un en-t&ecirc;te private.</p>
 
     
     <highlight language="config">
@@ -914,9 +911,7 @@ l'ent&ecirc;te Cache-Control: a pour valeur no-store.</description>
     de modifier ce comportement. Si
     <directive>CacheStoreNoStore</directive> est d&eacute;finie &agrave; On, le
     serveur tente de mettre la ressource en cache m&ecirc;me si elle contient
-    des en-t&ecirc;tes ayant pour valeur no-store. Les ressources
-    n&eacute;cessitant une autorisation ne sont <em>jamais</em> mises en
-    cache.</p>
+    un en-t&ecirc;te no-store.</p>
 
     
     <highlight language="config">

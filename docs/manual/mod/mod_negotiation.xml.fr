@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1421821:1515413 (outdated) -->
+<!-- English Revision : 1515413 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -190,11 +190,21 @@ contenu</a></seealso>
     </highlight>
 
     <p>A l'arriv&eacute;e d'une requ&ecirc;te pour la ressource
-    <code>document.html</code>, le fichier
-    <code>document.html.var</code> sera consult&eacute;, et la variante de
+    <code>document.html.var</code>, la variante de
     <code>document.html</code> qui correspond le mieux &agrave; la pr&eacute;ference
     de langage sp&eacute;cifi&eacute;e dans l'en-t&ecirc;te de la requ&ecirc;te de l'utilisateur
     <code>Accept-Language</code> sera choisie.</p>
+
+    <p>Si <code>Multiviews</code> est activ&eacute;e, et si <directive
+    module="mod_mime">MultiviewsMatch</directive> est d&eacute;finie &agrave;
+    "handlers" ou "any", une requ&ecirc;te pour <code>document.html</code> va
+    rechercher <code>document.html.var</code>, et continuer la
+    n&eacute;gociation avec le gestionnaire explicite type-map.</p>
+
+    <p>D'autres directives de configuration, comme <directive
+    module="mod_alias">Alias</directive>, peuvent &ecirc;tre utilis&eacute;es pour
+    associer <code>document.html</code> avec
+    <code>document.html.var</code>.</p>
 </section>
 
 <section id="multiviews"><title>Multivues</title>
