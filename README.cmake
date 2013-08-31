@@ -126,6 +126,12 @@ How to build
        the autoconf-based build.  Key differences: The modpath (e.g., 
        "generators") isn't provided or used, and the copy of the module
        source being built is automatically updated when it changes.
+       See also EXTRA_INCLUDE_DIRS.
+
+   EXTRA_INCLUDE_DIRS:
+       List of additional directories to search for .h files.  This may
+       be necessary when including third-party modules in the httpd build
+       via WITH_MODULES.
 
    Port and SSLPort: port numbers for substitution into default .conf files.
    (The defaults are 80 and 443.)
@@ -179,7 +185,6 @@ Known Bugs and Limitations
 * ab + HAVE_OPENSSL isn't working at all, even for non-SSL
 * ApacheMonitor has a build error and is disabled
 * CGI examples aren't installed
-* .h files which reside outside of include are not installed
 * module enablement defaults are not in sync with the autoconf-based build
 
 Generally:

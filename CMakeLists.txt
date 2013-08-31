@@ -40,6 +40,7 @@ SET(LIBXML2_ICONV_LIBRARIES       ""                     CACHE STRING "iconv lib
 
 # Misc. options
 SET(WITH_MODULES          ""                             CACHE STRING "comma-separated paths to single-file modules to statically link into the server")
+SET(EXTRA_INCLUDE_DIRS    ""                             CACHE STRING "extra include directories")
 
 # Options for each available module
 #   "A" ("A"ctive) means installed and active in default .conf, fail if can't be built
@@ -414,6 +415,7 @@ CONFIGURE_FILE(os/win32/win32_config_layout.h
 
 SET(HTTPD_INCLUDE_DIRECTORIES
   ${PROJECT_BINARY_DIR}
+  ${EXTRA_INCLUDE_DIRS}
   # see discussion in cmake bug 13188 regarding oddities with relative paths
   ${CMAKE_CURRENT_SOURCE_DIR}/include
   ${CMAKE_CURRENT_SOURCE_DIR}/os/win32
@@ -427,8 +429,28 @@ SET(HTTPD_INCLUDE_DIRECTORIES
   ${CMAKE_CURRENT_SOURCE_DIR}/modules/ssl
   ${CMAKE_CURRENT_SOURCE_DIR}/server
   ${APR_INCLUDE_DIR}
-  ${APR_PRIVATE_INCLUDE_DIRS}
   ${PCRE_INCLUDE_DIR}
+)
+
+# The .h files we install from outside the main include directory
+# largely parallel the include directories above.
+SET(other_installed_h
+  ${PROJECT_BINARY_DIR}/ap_config_layout.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/os/win32/os.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/modules/cache/mod_cache.h  
+  ${CMAKE_CURRENT_SOURCE_DIR}/modules/core/mod_so.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/modules/core/mod_watchdog.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/modules/database/mod_dbd.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/modules/dav/main/mod_dav.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/modules/filters/mod_include.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/modules/filters/mod_xml2enc.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/modules/generators/mod_cgi.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/modules/generators/mod_status.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/modules/loggers/mod_log_config.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/modules/mappers/mod_rewrite.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/modules/proxy/mod_proxy.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/modules/session/mod_session.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/modules/ssl/mod_ssl.h
 )
 
 INCLUDE_DIRECTORIES(${HTTPD_INCLUDE_DIRECTORIES})
@@ -599,6 +621,8 @@ INSTALL(TARGETS ${install_modules}
 INSTALL(DIRECTORY include/ DESTINATION include
     FILES_MATCHING PATTERN "*.h"
 )
+INSTALL(FILES ${other_installed_h} DESTINATION include)
+
 INSTALL(DIRECTORY docs/manual/ DESTINATION manual
     FILES_MATCHING PATTERN "BUILDING" EXCLUDE
 )
