@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1484766 -->
+<!-- English Revision: 1517953 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -75,6 +75,7 @@
         <tr><td>HTTP/0.9, HTTP/1.0, et
           HTTP/1.1</td><td><module>mod_proxy_http</module></td></tr>
         <tr><td>SCGI</td><td><module>mod_proxy_scgi</module></td></tr>
+	<tr><td>WS and WSS (Web-sockets)</td><td><module>mod_proxy_wstunnel</module></td></tr>
         </table>
       </li>
     </ul>
@@ -94,6 +95,7 @@
 <seealso><module>mod_proxy_ftp</module></seealso>
 <seealso><module>mod_proxy_http</module></seealso>
 <seealso><module>mod_proxy_scgi</module></seealso>
+<seealso><module>mod_proxy_wstunnel</module></seealso>
 <seealso><module>mod_proxy_balancer</module></seealso>
 <seealso><module>mod_ssl</module></seealso>
 
