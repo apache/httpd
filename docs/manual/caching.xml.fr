@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1331581:1516872 (outdated) -->
+<!-- English Revision : 1516872 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -201,6 +201,12 @@
 	      phases d'authentification et d'autorisation du traitement
 	      au niveau du serveur, et il doit donc &ecirc;tre utilis&eacute; avec
 	      prudence lorsque que ces phases sont importantes.</p>
+
+	      <p>Les requ&ecirc;tes contenant un en-t&ecirc;te "Authorization"
+	      header (par exemple dans le cas de l'authentification HTTP
+	      basique) ne peuvent ni &ecirc;tre mises en cache, ni servies
+	      depuis le cache lorsque <module>mod_cache</module>
+	      s'ex&eacute;cute dans cette phase.</p>
           </dd>
           <dt>Phase du gestionnaire normal</dt>
           <dd>
