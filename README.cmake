@@ -76,7 +76,7 @@ How to build
      -DPCRE_LIBRARIES=d:/path/to/pcreinst/lib/pcre[d].lib
      -DAPR_INCLUDE_DIR=d:/path/to/aprinst/include
      -DAPR_LIBRARIES="d:/path/to/aprinst/lib/libapr-1.lib;d:/path/to/aprinst/lib/libaprutil-1.lib"
-     -DENABLE_MOD_foo=A|I|O|a|i
+     -DENABLE_foo=A|I|O|a|i
      d:/path/to/httpdsource
 
    Alternately, you can use the cmake-gui and update settings in the GUI.
@@ -105,7 +105,7 @@ How to build
        RELWITHDEBINFO, and MINSIZEREL
        Other backends make have other selections.
 
-   ENABLE_MOD_foo:
+   ENABLE_foo:
        Each module has a default setting which can be overridden with one of
        the following values:
            A        build and Activate module
@@ -117,8 +117,8 @@ How to build
                     available; if prereqs are unavailable, don't build it
            O        Omit module completely
 
-       Examples: -DENABLE_MOD_ACCESS_COMPAT=O
-                 -DENABLE_MOD_PROXY_HTML=i
+       Examples: -DENABLE_ACCESS_COMPAT=O
+                 -DENABLE_PROXY_HTML=i
 
    WITH_MODULES:
        Comma-separated paths to single file modules to statically link into
