@@ -29,11 +29,28 @@ FILE(STRINGS ${CMAKE_CURRENT_SOURCE_DIR}/include/ap_release.h minorversion REGEX
 STRING(REGEX REPLACE ${minorversion_regex} "\\1" minorversion ${minorversion})
 
 # Options for support libraries not supported by cmake-bundled FindFOO
-SET(APR_INCLUDE_DIR       "C:/APR/include"               CACHE STRING "Directory with APR[-Util] include files")
-SET(APR_LIBRARIES         "C:/APR/lib/libapr-1.lib;C:/APR/lib/libaprutil-1.lib"
-    CACHE STRING "APR libraries to link with")
-SET(PCRE_INCLUDE_DIR      "C:/PCRE/include"              CACHE STRING "Directory with PCRE include files")
-SET(PCRE_LIBRARIES        "C:/PCRE/lib/pcred.lib"        CACHE STRING "PCRE libraries to link with")
+
+# Default to using APR trunk (libapr-2.lib) if it exists in PREFIX/lib;
+# otherwise, default to APR 1.x + APR-util 1.x
+IF(EXISTS "${CMAKE_INSTALL_PREFIX}/lib/libapr-2.lib")
+  SET(default_apr_libraries "${CMAKE_INSTALL_PREFIX}/lib/libapr-2.lib")
+ELSE()
+  SET(default_apr_libraries "${CMAKE_INSTALL_PREFIX}/lib/libapr-1.lib;${CMAKE_INSTALL_PREFIX}/lib/libaprutil-1.lib")
+ENDIF()
+
+# PCRE names its libraries differently for debug vs. release builds.
+# We can't query our own CMAKE_BUILD_TYPE at configure time.
+# If the debug version exists in PREFIX/lib, default to that one.
+IF(EXISTS "${CMAKE_INSTALL_PREFIX}/lib/pcred.lib")
+  SET(default_pcre_libraries ${CMAKE_INSTALL_PREFIX}/lib/pcred.lib)
+ELSE()
+  SET(default_pcre_libraries ${CMAKE_INSTALL_PREFIX}/lib/pcre.lib)
+ENDIF()
+
+SET(APR_INCLUDE_DIR       "${CMAKE_INSTALL_PREFIX}/include" CACHE STRING "Directory with APR[-Util] include files")
+SET(APR_LIBRARIES         ${default_apr_libraries}       CACHE STRING "APR libraries to link with")
+SET(PCRE_INCLUDE_DIR      "${CMAKE_INSTALL_PREFIX}/include" CACHE STRING "Directory with PCRE include files")
+SET(PCRE_LIBRARIES        ${default_pcre_libraries}      CACHE STRING "PCRE libraries to link with")
 SET(LIBXML2_ICONV_INCLUDE_DIR     ""                     CACHE STRING "Directory with iconv include files for libxml2")
 SET(LIBXML2_ICONV_LIBRARIES       ""                     CACHE STRING "iconv libraries to link with for libxml2")
 # end support library configuration
@@ -41,6 +58,15 @@ SET(LIBXML2_ICONV_LIBRARIES       ""                     CACHE STRING "iconv lib
 # Misc. options
 SET(WITH_MODULES          ""                             CACHE STRING "comma-separated paths to single-file modules to statically link into the server")
 SET(EXTRA_INCLUDE_DIRS    ""                             CACHE STRING "extra include directories")
+
+IF(NOT EXISTS "${APR_INCLUDE_DIR}/apr.h")
+  MESSAGE(FATAL_ERROR "APR include directory ${APR_INCLUDE_DIR} is not correct.")
+ENDIF()
+FOREACH(onelib ${APR_LIBRARIES})
+  IF(NOT EXISTS ${onelib})
+    MESSAGE(FATAL_ERROR "APR library ${onelib} was not found.")
+  ENDIF()
+ENDFOREACH()
 
 # Options for each available module
 #   "A" ("A"ctive) means installed and active in default .conf, fail if can't be built
@@ -651,17 +677,33 @@ STRING(REPLACE "/" "\\\\" native_src ${CMAKE_BINARY_DIR}/conf/original)
 STRING(REPLACE "/" "\\\\" native_dest ${CMAKE_INSTALL_PREFIX}/conf/original)
 INSTALL(CODE "EXECUTE_PROCESS(COMMAND xcopy ${native_src} ${native_dest} /Q /S /Y)")
 
-MESSAGE(STATUS "Modules built and loaded:")
+STRING(TOUPPER "${CMAKE_BUILD_TYPE}" buildtype)
+MESSAGE(STATUS "")
+MESSAGE(STATUS "")
+MESSAGE(STATUS "Apache httpd configuration summary:")
+MESSAGE(STATUS "")
+MESSAGE(STATUS "  Build type ...................... : ${CMAKE_BUILD_TYPE}")
+MESSAGE(STATUS "  Install prefix .................. : ${CMAKE_INSTALL_PREFIX}")
+MESSAGE(STATUS "  C compiler ...................... : ${CMAKE_C_COMPILER}")
+MESSAGE(STATUS "  APR include directory ........... : ${APR_INCLUDE_DIR}")
+MESSAGE(STATUS "  APR libraries ................... : ${APR_LIBRARIES}")
+MESSAGE(STATUS "  PCRE include directory .......... : ${PCRE_INCLUDE_DIR}")
+MESSAGE(STATUS "  PCRE libraries .................. : ${PCRE_LIBRARIES}")
+MESSAGE(STATUS "  libxml2 iconv prereq include dir. : ${LIBXML2_ICONV_INCLUDE_DIR}")
+MESSAGE(STATUS "  libxml2 iconv prereq libraries .. : ${LIBXML2_ICONV_LIBRARIES}")
+MESSAGE(STATUS "  Extra include directories ....... : ${EXTRA_INCLUDE_DIRS}")
+
+MESSAGE(STATUS "  Modules built and loaded:")
 FOREACH(mod ${mods_built_and_loaded})
-  MESSAGE(STATUS "  ${mod}")
+  MESSAGE(STATUS "    ${mod}")
 ENDFOREACH()
 
-MESSAGE(STATUS "Modules built but not loaded:")
+MESSAGE(STATUS "  Modules built but not loaded:")
 FOREACH(mod ${mods_built_but_not_loaded})
-  MESSAGE(STATUS "  ${mod}")
+  MESSAGE(STATUS "    ${mod}")
 ENDFOREACH()
 
-MESSAGE(STATUS "Modules not built:")
+MESSAGE(STATUS "  Modules not built:")
 FOREACH(mod ${mods_omitted})
-  MESSAGE(STATUS "  ${mod}")
+  MESSAGE(STATUS "    ${mod}")
 ENDFOREACH()
