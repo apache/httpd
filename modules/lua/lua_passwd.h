@@ -70,7 +70,6 @@ struct passwd_ctx {
     const char      *errstr;
     char            *out;
     apr_size_t      out_len;
-//    const char      *passwd;
     char            *passwd;
     int             alg;
     int             cost;
