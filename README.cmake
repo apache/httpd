@@ -72,23 +72,39 @@ How to build
 
 3. cmake -G "some backend, like 'NMake Makefiles'"
      -DCMAKE_INSTALL_PREFIX=d:/path/to/httpdinst
-     -DPCRE_INCLUDE_DIR=d:/path/to/pcreinst/include
-     -DPCRE_LIBRARIES=d:/path/to/pcreinst/lib/pcre[d].lib
-     -DAPR_INCLUDE_DIR=d:/path/to/aprinst/include
-     -DAPR_LIBRARIES="d:/path/to/aprinst/lib/libapr-1.lib;d:/path/to/aprinst/lib/libaprutil-1.lib"
      -DENABLE_foo=A|I|O|a|i
      d:/path/to/httpdsource
 
    Alternately, you can use the cmake-gui and update settings in the GUI.
 
    PCRE_INCLUDE_DIR, PCRE_LIBRARIES, APR_INCLUDE_DIR, APR_LIBRARIES:
+
        cmake doesn't bundle FindXXX for these packages, so the crucial
-       information has to be specified in this manner
+       information has to be specified in this manner if they aren't found
+       in their default location.
+
+     -DPCRE_INCLUDE_DIR=d:/path/to/pcreinst/include
+     -DPCRE_LIBRARIES=d:/path/to/pcreinst/lib/pcre[d].lib
+
+       These will have to be specified only if PCRE is installed to a different
+       directory than httpd, or if debug *and* release builds of PCRE were
+       installed there and you want to control which is used.  (Currently the
+       build will use pcred.lib (debug) if it is found in the default location
+       and not overridden with -DPCRE_LIBRARIES.)
+
+     -DAPR_INCLUDE_DIR=d:/path/to/aprinst/include
+     -DAPR_LIBRARIES="d:/path/to/aprinst/lib/libapr-1.lib;d:/path/to/aprinst/lib/libaprutil-1.lib"
+
+       These will have to be specified if APR[-Util] was installed to a
+       different directory than httpd.
 
        When building with APR trunk (future APR 2.x, with integrated APR-Util),
        specify just the path to libapr-2.lib:
 
            -DAPR_LIBRARIES=d:/path/to/aprinst/lib/libapr-2.lib
+
+       APR+APR-Util 1.x vs. APR trunk will be detected automatically if they
+       are installed to the same location as httpd.
 
    LIBXML2_ICONV_INCLUDE_DIR, LIBXML2_ICONV_LIBRARIES
 
@@ -186,6 +202,7 @@ Known Bugs and Limitations
 * ApacheMonitor has a build error and is disabled
 * CGI examples aren't installed
 * module enablement defaults are not in sync with the autoconf-based build
+* no support for static PCRE builds (need to detect then turn on PCRE_STATIC)
 
 Generally:
 
