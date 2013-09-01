@@ -67,6 +67,7 @@ trust, as it can be abused to change the internal workings of httpd.</p>
 <li><img alt="" src="../images/down.gif" /> <a href="#luahookcheckuserid">LuaHookCheckUserID</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#luahookfixups">LuaHookFixups</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#luahookinsertfilter">LuaHookInsertFilter</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#luahooklog">LuaHookLog</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#luahookmaptostorage">LuaHookMapToStorage</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#luahooktranslatename">LuaHookTranslateName</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#luahooktypechecker">LuaHookTypeChecker</a></li>
@@ -312,9 +313,10 @@ performing access control, or setting mime types:</p>
     </tr>
 <tr class="odd">
         <td>Logging</td>
-        <td>(none)</td>
+        <td><code class="directive"><a href="#luahooklog">LuaHookLog</a></code></td>
         <td>Once a request has been handled, it enters several logging phases, 
-            which logs the request in either the error or access log</td>
+            which logs the request in either the error or access log. Mod_lua
+            is able to hook into the start of this and control logging output.</td>
     </tr>
 </table>
 
@@ -1481,6 +1483,56 @@ processing</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 </table><p>Not Yet Implemented</p>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="LuaHookLog" id="LuaHookLog">LuaHookLog</a> <a name="luahooklog" id="luahooklog">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Provide a hook for the access log phase of a request
+processing</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaHookLog  /path/to/lua/script.lua log_function_name</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
+</table>
+<p>
+    This simple logging hook allows you to run a function when httpd enters the 
+    logging phase of a request. With it, you can append data to your own logs, 
+    manipulate data before the regular log is written, or prevent a log entry 
+    from being created. To prevent the usual logging from happening, simply return
+    <code>apache2.DONE</code> in your logging handler, otherwise return 
+    <code>apache2.OK</code> to tell httpd to log as normal.
+</p>
+<p>Example:</p>
+<pre class="prettyprint lang-config">
+LuaHookLog /path/to/script.lua logger
+</pre>
+
+<pre class="prettyprint lang-lua">
+-- /path/to/script.lua --
+function logger(r)
+    -- flip a coin:
+    -- If 1, then we write to our own Lua log and tell httpd not to log
+    -- in the main log.
+    -- If 2, then we just sanitize the output a bit and tell httpd to 
+    -- log the sanitized bits.
+
+    if math.random(1,2) == 1 then
+        -- Log stuff ourselves and don't log in the regular log
+        local f = io.open("/foo/secret.log", "a")
+        if f then
+            f:write("Something secret happened at " .. r.uri .. "\n")
+            f:close()
+        end
+        return apache2.DONE -- Tell httpd not to use the regular logging functions
+    else
+        r.uri = r.uri:gsub("somesecretstuff", "") -- sanitize the URI
+        return apache2.OK -- tell httpd to log it.
+    end
+end
+</pre>
+
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LuaHookMapToStorage" id="LuaHookMapToStorage">LuaHookMapToStorage</a> <a name="luahookmaptostorage" id="luahookmaptostorage">Directive</a></h2>
