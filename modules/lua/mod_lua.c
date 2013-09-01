@@ -1155,6 +1155,11 @@ static void lua_insert_filter_harness(request_rec *r)
     /* ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, "LuaHookInsertFilter not yet implemented"); */
 }
 
+static int lua_log_transaction_harness(request_rec *r)
+{
+    return lua_request_rec_hook_harness(r, "log_transaction", APR_HOOK_FIRST);
+}
+
 static int lua_quick_harness(request_rec *r, int lookup)
 {
     if (lookup) {
@@ -1219,12 +1224,22 @@ static const char *register_map_to_storage_hook(cmd_parms *cmd, void *_cfg,
     return register_named_file_function_hook("map_to_storage", cmd, _cfg,
                                              file, function, APR_HOOK_MIDDLE);
 }
+
+static const char *register_log_transaction_hook(cmd_parms *cmd, void *_cfg,
+                                                const char *file,
+                                                const char *function)
+{
+    return register_named_file_function_hook("log_transaction", cmd, _cfg,
+                                             file, function, APR_HOOK_FIRST);
+}
+
 static const char *register_map_to_storage_block(cmd_parms *cmd, void *_cfg,
                                                  const char *line)
 {
     return register_named_block_function_hook("map_to_storage", cmd, _cfg,
                                               line);
 }
+
 
 static const char *register_check_user_id_hook(cmd_parms *cmd, void *_cfg,
                                                const char *file,
@@ -1783,6 +1798,10 @@ command_rec lua_commands[] = {
     AP_INIT_TAKE2("LuaHookInsertFilter", register_insert_filter_hook, NULL,
                   OR_ALL,
                   "Provide a hook for the insert_filter phase of request processing"),
+    
+    AP_INIT_TAKE2("LuaHookLog", register_log_transaction_hook, NULL,
+                  OR_ALL,
+                  "Provide a hook for the logging phase of request processing"),
 
     AP_INIT_TAKE123("LuaScope", register_lua_scope, NULL, OR_ALL,
                     "One of once, request, conn, server -- default is once"),
@@ -1983,6 +2002,10 @@ static void lua_register_hooks(apr_pool_t *p)
     
     /* ivm mutex */
     apr_thread_mutex_create(&lua_ivm_mutex, APR_THREAD_MUTEX_DEFAULT, p);
+    
+    /* Logging catcher */
+    ap_hook_log_transaction(lua_log_transaction_harness,NULL,NULL,
+                            APR_HOOK_FIRST);
 }
 
 AP_DECLARE_MODULE(lua) = {
