@@ -269,9 +269,10 @@ performing access control, or setting mime types:</p>
     </tr>
     <tr>
         <td>Logging</td>
-        <td>(none)</td>
+        <td><directive module="mod_lua">LuaHookLog</directive></td>
         <td>Once a request has been handled, it enters several logging phases, 
-            which logs the request in either the error or access log</td>
+            which logs the request in either the error or access log. Mod_lua
+            is able to hook into the start of this and control logging output.</td>
     </tr>
 
 </table>
@@ -1452,6 +1453,55 @@ processing</description>
 </p>
 </usage>
 </directivesynopsis>
+
+<directivesynopsis>
+<name>LuaHookLog</name>
+<description>Provide a hook for the access log phase of a request
+processing</description>
+<syntax>LuaHookLog  /path/to/lua/script.lua log_function_name</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>All</override>
+<usage>
+<p>
+    This simple logging hook allows you to run a function when httpd enters the 
+    logging phase of a request. With it, you can append data to your own logs, 
+    manipulate data before the regular log is written, or prevent a log entry 
+    from being created. To prevent the usual logging from happening, simply return
+    <code>apache2.DONE</code> in your logging handler, otherwise return 
+    <code>apache2.OK</code> to tell httpd to log as normal.
+</p>
+<p>Example:</p>
+<highlight language="config">
+LuaHookLog /path/to/script.lua logger
+</highlight>
+<highlight language="lua">
+-- /path/to/script.lua --
+function logger(r)
+    -- flip a coin:
+    -- If 1, then we write to our own Lua log and tell httpd not to log
+    -- in the main log.
+    -- If 2, then we just sanitize the output a bit and tell httpd to 
+    -- log the sanitized bits.
+
+    if math.random(1,2) == 1 then
+        -- Log stuff ourselves and don't log in the regular log
+        local f = io.open("/foo/secret.log", "a")
+        if f then
+            f:write("Something secret happened at " .. r.uri .. "\n")
+            f:close()
+        end
+        return apache2.DONE -- Tell httpd not to use the regular logging functions
+    else
+        r.uri = r.uri:gsub("somesecretstuff", "") -- sanitize the URI
+        return apache2.OK -- tell httpd to log it.
+    end
+end
+</highlight>
+</usage>
+</directivesynopsis>
+
 
 <directivesynopsis>
 <name>LuaHookMapToStorage</name>
