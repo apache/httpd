@@ -368,6 +368,9 @@ static const char *filter_protocol(cmd_parms *cmd, void *CFG, const char *fname,
         if (!strcasecmp(arg, "change=yes")) {
             flags |= AP_FILTER_PROTO_CHANGE | AP_FILTER_PROTO_CHANGE_LENGTH;
         }
+        if (!strcasecmp(arg, "change=no")) {
+            flags &= ~(AP_FILTER_PROTO_CHANGE | AP_FILTER_PROTO_CHANGE_LENGTH);
+        }
         else if (!strcasecmp(arg, "change=1:1")) {
             flags |= AP_FILTER_PROTO_CHANGE;
         }

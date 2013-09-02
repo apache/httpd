@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_filter: Add "change=no" as a proto-flag to FilterProtocol
+     to remove a providers initial flags set at registration time.
+     [Eric Covener]
+
   *) mod_lua: Return a 500 error if a LuaHook* script doesn't return a 
      numeric return code. [Eric Covener]
 
