@@ -251,7 +251,7 @@
  /*
   * fixed name variable expansion %{XXX} and function call in %{func:arg} syntax
   */
-<var>[a-zA-Z][a-zA-Z0-9_]* {
+<var>[a-ij-rs-zA-IJ-RS-Z][a-ij-rs-zA-IJ-RS-Z0-9_]* {
     yylval->cpVal = apr_pstrdup(yyextra->pool, yytext);
     return T_ID;
 }
@@ -363,12 +363,12 @@
 "eq"  { return T_OP_EQ; }
 "in"  { return T_OP_IN; }
 
-"-"[a-zA-Z_] {
+"-"[a-ij-rs-zA-IJ-RS-Z_] {
     yylval->cpVal = apr_pstrdup(yyextra->pool, yytext + 1);
     return T_OP_UNARY;
 }
 
-"-"[a-zA-Z_][a-zA-Z_0-9]+ {
+"-"[a-ij-rs-zA-IJ-RS-Z_][a-ij-rs-zA-IJ-RS-Z_0-9]+ {
     yylval->cpVal = apr_pstrdup(yyextra->pool, yytext + 1);
     return T_OP_BINARY;
 }
@@ -390,7 +390,7 @@
  /*
   * Identifiers
   */
-[a-zA-Z][a-zA-Z0-9_]* {
+[a-ij-rs-zA-IJ-RS-Z][a-ij-rs-zA-IJ-RS-Z0-9_]* {
     yylval->cpVal = apr_pstrdup(yyextra->pool, yytext);
     return T_ID;
 }
