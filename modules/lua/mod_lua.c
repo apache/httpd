@@ -318,7 +318,10 @@ static apr_status_t lua_setup_filter_ctx(ap_filter_t* f, request_rec* r, lua_fil
     ctx = apr_pcalloc(r->pool, sizeof(lua_filter_ctx));
     ctx->broken = 0;
     *c = ctx;
-    /* Find the filter that was called */
+    /* Find the filter that was called.
+     * XXX: If we were wired with mod_filter, the filter (mod_filters name)
+     *      and the provider (our underlying filters name) need to have matched.
+     */
     for (n = 0; n < cfg->mapped_filters->nelts; n++) {
         ap_lua_filter_handler_spec *hook_spec =
             ((ap_lua_filter_handler_spec **) cfg->mapped_filters->elts)[n];
@@ -1083,7 +1086,8 @@ static const char *register_filter_function_hook(const char *filter,
     /* TODO: Make it work on other types than just AP_FTYPE_RESOURCE? */
     if (direction == AP_LUA_FILTER_OUTPUT) {
         spec->direction = AP_LUA_FILTER_OUTPUT;
-        ap_register_output_filter(filter, lua_output_filter_handle, NULL, AP_FTYPE_RESOURCE);
+        ap_register_output_filter_protocol(filter, lua_output_filter_handle, NULL, AP_FTYPE_RESOURCE,
+                                            AP_FILTER_PROTO_CHANGE|AP_FILTER_PROTO_CHANGE_LENGTH);
     }
     else {
         spec->direction = AP_LUA_FILTER_INPUT;
