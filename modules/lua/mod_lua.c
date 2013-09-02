@@ -416,8 +416,25 @@ static apr_status_t lua_output_filter_handle(ap_filter_t *f, apr_bucket_brigade 
             ap_remove_output_filter(f);
             return ap_pass_brigade(f->next,pbbIn);
         }
-        f->ctx = ctx;
-        ctx->tmpBucket = apr_brigade_create(r->pool, c->bucket_alloc);
+        else { 
+            /* We've got a willing lua filter, setup and check for a prefix */
+            size_t olen;
+            apr_bucket *pbktOut;
+            const char* output = lua_tolstring(ctx->L, 1, &olen);
+
+            f->ctx = ctx;
+            ctx->tmpBucket = apr_brigade_create(r->pool, c->bucket_alloc);
+
+            if (olen > 0) { 
+                pbktOut = apr_bucket_heap_create(output, olen, NULL, c->bucket_alloc);
+                APR_BRIGADE_INSERT_TAIL(ctx->tmpBucket, pbktOut);
+                rv = ap_pass_brigade(f->next, ctx->tmpBucket);
+                apr_brigade_cleanup(ctx->tmpBucket);
+                if (rv != APR_SUCCESS) {
+                    return rv;
+                }
+            }
+        }
     }
     ctx = (lua_filter_ctx*) f->ctx;
     L = ctx->L;
@@ -442,13 +459,15 @@ static apr_status_t lua_output_filter_handle(ap_filter_t *f, apr_bucket_brigade 
             if (lua_resume(L, 0) == LUA_YIELD) {
                 size_t olen;
                 const char* output = lua_tolstring(L, 1, &olen);
-                pbktOut = apr_bucket_heap_create(output, olen, NULL,
-                                        c->bucket_alloc);
-                APR_BRIGADE_INSERT_TAIL(ctx->tmpBucket, pbktOut);
-                rv = ap_pass_brigade(f->next, ctx->tmpBucket);
-                apr_brigade_cleanup(ctx->tmpBucket);
-                if (rv != APR_SUCCESS) {
-                    return rv;
+                if (olen > 0) { 
+                    pbktOut = apr_bucket_heap_create(output, olen, NULL,
+                                            c->bucket_alloc);
+                    APR_BRIGADE_INSERT_TAIL(ctx->tmpBucket, pbktOut);
+                    rv = ap_pass_brigade(f->next, ctx->tmpBucket);
+                    apr_brigade_cleanup(ctx->tmpBucket);
+                    if (rv != APR_SUCCESS) {
+                        return rv;
+                    }
                 }
             }
             else {
@@ -470,9 +489,11 @@ static apr_status_t lua_output_filter_handle(ap_filter_t *f, apr_bucket_brigade 
                 apr_bucket *pbktOut;
                 size_t olen;
                 const char* output = lua_tolstring(L, 1, &olen);
-                pbktOut = apr_bucket_heap_create(output, olen, NULL,
-                                        c->bucket_alloc);
-                APR_BRIGADE_INSERT_TAIL(ctx->tmpBucket, pbktOut);
+                if (olen > 0) { 
+                    pbktOut = apr_bucket_heap_create(output, olen, NULL,
+                            c->bucket_alloc);
+                    APR_BRIGADE_INSERT_TAIL(ctx->tmpBucket, pbktOut);
+                }
             }
             pbktEOS = apr_bucket_eos_create(c->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(ctx->tmpBucket, pbktEOS);
