@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_lua: Return a 500 error if a LuaHook* script doesn't return a 
+     numeric return code. [Eric Covener]
+
   *) Add experimental cmake-based build system for Windows.  [Jeff Trawick,
      Tom Donovan]
 
