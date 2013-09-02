@@ -377,6 +377,12 @@ static apr_status_t lua_setup_filter_ctx(ap_filter_t* f, request_rec* r, lua_fil
              */
             rc = lua_resume(L, 1);
             if (rc == LUA_YIELD) {
+                if (f->frec->providers == NULL) { 
+                    /* Not wired by mod_filter */
+                    apr_table_unset(r->headers_out, "Content-Length");
+                    apr_table_unset(r->headers_out, "Content-MD5");
+                    apr_table_unset(r->headers_out, "ETAG");
+                }
                 return OK;
             }
             else {
