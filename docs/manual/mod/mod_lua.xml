@@ -1861,10 +1861,17 @@ function output_filter(r)
     ... -- insert filter stuff here
 end
 </highlight>
+<note><title>Lua filters with <module>mod_filter</module></title>
+<p> When a Lua filter is used as the underlying provider via the 
+<directive module="mod_filter">FilterProvider</directive> directive, filtering 
+will only work when the <var>filter-name</var> is identical to the <var>provider-name</var>.
+</p> </note>
+
 <p>
 See "<a href="#modifying_buckets">Modifying contents with Lua filters</a>" for more 
 information.
 </p>
+
 </usage>
 </directivesynopsis>
 

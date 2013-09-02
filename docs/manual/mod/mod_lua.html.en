@@ -1843,10 +1843,17 @@ function output_filter(r)
 end
 </pre>
 
+<div class="note"><h3>Lua filters with <code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code></h3>
+<p> When a Lua filter is used as the underlying provider via the 
+<code class="directive"><a href="../mod/mod_filter.html#filterprovider">FilterProvider</a></code> directive, filtering 
+will only work when the <var>filter-name</var> is identical to the <var>provider-name</var>.
+</p> </div>
+
 <p>
 See "<a href="#modifying_buckets">Modifying contents with Lua filters</a>" for more 
 information.
 </p>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
