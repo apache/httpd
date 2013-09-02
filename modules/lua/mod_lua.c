@@ -661,6 +661,8 @@ static int lua_request_rec_hook_harness(request_rec *r, const char *name, int ap
             rc = DECLINED;
             if (lua_isnumber(L, -1)) {
                 rc = lua_tointeger(L, -1);
+                ap_log_rerror(APLOG_MARK, APLOG_TRACE4, 0, r, "Lua hook %s:%s for phase %s returned %d", 
+                              hook_spec->file_name, hook_spec->function_name, name, rc);
             }
             if (rc != DECLINED) {
                 ap_lua_release_state(L, spec, r);
