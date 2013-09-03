@@ -112,7 +112,7 @@ struct worker_score {
 #ifdef HAVE_TIMES
     struct tms times;
 #endif
-    char client[32];            /* Keep 'em small... */
+    char client[40];            /* Keep 'em small... but large enough to hold an IPv6 address */
     char request[64];           /* We just want an idea... */
     char vhost[32];             /* What virtual host is being accessed? */
 };
