@@ -438,14 +438,15 @@
  * 20130702.1 (2.5.0-dev)  Restore AUTH_HANDLED to mod_auth.h
  * 20130702.2 (2.5.0-dev)  Add ap_log_data(), ap_log_rdata(), etc.
  * 20130702.3 (2.5.0-dev)  Add util_fcgi.h, FastCGI protocol support
+ * 20130903.0 (2.5.0-dev)  Changes sizeof(worker_score) in scoreboard 
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20130702
+#define MODULE_MAGIC_NUMBER_MAJOR 20130903
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 3                  /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 0                  /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
