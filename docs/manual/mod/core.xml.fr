@@ -170,7 +170,7 @@ nom de chemin en fin de requ&ecirc;te.</description>
     href="../handler.html">gestionnaire</a> responsable de la requ&ecirc;te.
     Le gestionnaire de base pour les fichiers normaux rejette par d&eacute;faut
     les requ&ecirc;tes avec <code>PATH_INFO</code>. Les gestionnaires qui
-    servent des scripts, comme<a
+    servent des scripts, comme <a
     href="mod_cgi.html">cgi-script</a> et <a
     href="mod_isapi.html">isapi-handler</a>, acceptent en g&eacute;n&eacute;ral par
     d&eacute;faut les requ&ecirc;tes avec <code>PATH_INFO</code>.</dd>
