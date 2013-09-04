@@ -26,6 +26,7 @@
 #include "apr_date.h"
 #include "apr_pools.h"
 #include "apr_thread_mutex.h"
+#include "apr_tables.h"
 
 #include <lua.h>
 
@@ -839,6 +840,7 @@ static int lua_apr_sha1(lua_State *L)
     apr_sha1_init(&sha1);
     apr_sha1_update(&sha1, buffer, len);
     apr_sha1_final(digest, &sha1);
+    
     ap_bin2hex(digest, sizeof(digest), result);
     lua_pushstring(L, result);
     return 1;
@@ -1887,6 +1889,50 @@ static int lua_ivm_set(lua_State *L)
     return 0;
 }
 
+static int lua_get_cookie(lua_State *L) 
+{
+    const char *key, *cookies, *pattern;
+    char *cookie;
+    request_rec *r = ap_lua_check_request_rec(L, 1);
+    key = luaL_checkstring(L, 2);
+    cookie = apr_pcalloc(r->pool, 256);
+    cookies = apr_table_get(r->headers_in, "Cookie");
+    pattern = apr_psprintf(r->pool, "%s=%%255[^;]", key);
+    sscanf(cookies, pattern, cookie);
+    if (strlen(cookie) > 0) {
+        lua_pushstring(L, cookie);
+        return 1;
+    }
+    return 0;
+}
+
+static int lua_set_cookie(lua_State *L) 
+{
+    const char *key, *value, *out, *strexpires;
+    int secure, expires;
+    char cdate[APR_RFC822_DATE_LEN+1];
+    apr_status_t rv;
+    request_rec *r = ap_lua_check_request_rec(L, 1);
+    key = luaL_checkstring(L, 2);
+    value = luaL_checkstring(L, 3);
+    secure = 0;
+    if (lua_isboolean(L, 4)) {
+        secure = lua_toboolean(L, 4);
+    }
+    expires = luaL_optinteger(L, 5, 0);
+    strexpires = "";
+    if (expires > 0) {
+        rv = apr_rfc822_date(cdate, apr_time_from_sec(expires));
+        if (rv == APR_SUCCESS) {
+            strexpires = apr_psprintf(r->pool, "Expires=%s", cdate);
+        }
+    }
+    out = apr_psprintf(r->pool, "%s=%s; %s %s", key, value, secure ? "Secure;" : "", expires ? strexpires : "");
+    apr_table_set(r->headers_out, "Set-Cookie", out);
+    return 0;
+}
+
+
 #define APLUA_REQ_TRACE(lev) static int req_trace##lev(lua_State *L)  \
 {                                                               \
     return req_log_at(L, APLOG_TRACE##lev);                     \
@@ -1991,6 +2037,7 @@ static const char* lua_ap_get_server_name(request_rec* r)
     name = ap_get_server_name(r);
     return name ? name : "localhost";
 }
+
 
 
 
@@ -2236,6 +2283,10 @@ void ap_lua_load_request_lmodule(lua_State *L, apr_pool_t *p)
                  makefun(&lua_ivm_get, APL_REQ_FUNTYPE_LUACFUN, p));
     apr_hash_set(dispatch, "ivm_set", APR_HASH_KEY_STRING,
                  makefun(&lua_ivm_set, APL_REQ_FUNTYPE_LUACFUN, p));
+    apr_hash_set(dispatch, "getcookie", APR_HASH_KEY_STRING,
+                 makefun(&lua_get_cookie, APL_REQ_FUNTYPE_LUACFUN, p));
+    apr_hash_set(dispatch, "setcookie", APR_HASH_KEY_STRING,
+                 makefun(&lua_set_cookie, APL_REQ_FUNTYPE_LUACFUN, p));
     
     lua_pushlightuserdata(L, dispatch);
     lua_setfield(L, LUA_REGISTRYINDEX, "Apache2.Request.dispatch");

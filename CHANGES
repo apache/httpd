@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_lua: add setcookie and getcookie functions to the request_rec struct.
+     [Daniel Gruno]
+
   *) mod_status, mod_echo: Fix the display of client addresses.
      They were truncated to 31 characters which is not enough for IPv6 addresses.
      PR 54848 [Bernhard Schmidt <berni birkenwald de>]
