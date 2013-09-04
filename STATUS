@@ -211,7 +211,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     trunk patch: http://svn.apache.org/r1517388
                  docs: http://svn.apache.org/r1518265
     2.4.x patch: trunk works
-    +1 covneer
+    +1 covener
   
   * core: Restore "core_output_filter: writing data to the network", but at TRACE1.
     trunk patch: http://svn.apache.org/r1501294
