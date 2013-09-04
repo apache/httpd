@@ -569,6 +569,7 @@ ADD_DEPENDENCIES(libhttpd test_char_header)
 ###########   HTTPD EXECUTABLES   ##########
 ADD_EXECUTABLE(httpd server/main.c build/win32/httpd.rc)
 SET(install_targets ${install_targets} httpd)
+SET_TARGET_PROPERTIES(httpd PROPERTIES COMPILE_FLAGS "-DLONG_NAME=\"\\\"Apache HTTP Server\\\"\" -DBIN_NAME=httpd.exe")
 TARGET_LINK_LIBRARIES(httpd libhttpd)
 
 ADD_EXECUTABLE(ab support/ab.c)
