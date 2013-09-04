@@ -194,6 +194,41 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: trunk patch works
     +1: jailletc36
 
+  * authz_groupfile/authz_user: don't log at ERROR for AUTHZ_DENIED, since 
+    authz_core is collecting providers results. Subsequently reported in PR55523?
+    trunk patch: http://svn.apache.org/r1517366
+    2.4.x: trunk works
+    +1 covener
+   
+  * mod_filter: Allow mod_filter to undo equiv of change=yes that was 
+    baked into a filter provider.
+    trunk patch: http://svn.apache.org/r1519475
+    2.4.x patch: trunk works
+    +1 covener
+
+  * mod_ldap:  "LDAPReferrals off" does not disable LDAPReferrals feature. 
+    Make "off" really "off" and add "unset" to take SDK defaults 
+    trunk patch: http://svn.apache.org/r1517388
+                 docs: http://svn.apache.org/r1518265
+    2.4.x patch: trunk works
+    +1 covneer
+  
+  * core: Restore "core_output_filter: writing data to the network", but at TRACE1.
+    trunk patch: http://svn.apache.org/r1501294
+    2.4.x patch: trunk works
+    +1 covener
+  
+  * mod_ldap: add TRACE5 for LDAP retries
+    trunk patch: http://svn.apache.org/r1510084
+    2.4.x patch: trunk works
+    +1 covener
+
+   * mod_ldap: retry on an LDAP timeout during authn.
+    trunk patch: http://svn.apache.org/r1510085
+    2.4.x patch: trunk works
+    +1 covener
+   
+    
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
 If you want to propose one of those, please still add them here.
