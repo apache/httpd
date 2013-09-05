@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) WinNT MPM: Don't crash during child process initialization if the
+     Listen protocol is unrecognized.  [Jeff Trawick]
+
   *) mod_lua: add setcookie and getcookie functions to the request_rec struct.
      [Daniel Gruno]
 
