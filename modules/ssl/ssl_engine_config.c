@@ -1352,6 +1352,13 @@ static const char *ssl_cmd_protocol_parse(cmd_parms *parms,
             *options |= thisopt;
         }
         else {
+            if (*options != SSL_PROTOCOL_NONE)
+            {
+                ap_log_error(APLOG_MARK, APLOG_WARNING, 0, parms->server, APLOGNO(02532)
+                             "Protocol '%s' of directive '%s' overrides already set parameters. "
+                             "Check if a prefix is not missing.",
+                             w, parms->cmd->name);
+            }
             *options = thisopt;
         }
     }
