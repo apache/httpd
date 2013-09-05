@@ -1892,7 +1892,6 @@ static int lua_ivm_set(lua_State *L)
 
 static int lua_get_cookie(lua_State *L) 
 {
-    int n;
     const char *key, *cookie;
     request_rec *r = ap_lua_check_request_rec(L, 1);
     key = luaL_checkstring(L, 2);
