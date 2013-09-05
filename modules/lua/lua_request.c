@@ -27,6 +27,7 @@
 #include "apr_pools.h"
 #include "apr_thread_mutex.h"
 #include "apr_tables.h"
+#include "util_cookies.h"
 
 #include <lua.h>
 
@@ -1891,15 +1892,12 @@ static int lua_ivm_set(lua_State *L)
 
 static int lua_get_cookie(lua_State *L) 
 {
-    const char *key, *cookies, *pattern;
-    char *cookie;
+    int n;
+    const char *key, *cookie;
     request_rec *r = ap_lua_check_request_rec(L, 1);
     key = luaL_checkstring(L, 2);
-    cookie = apr_pcalloc(r->pool, 256);
-    cookies = apr_table_get(r->headers_in, "Cookie");
-    pattern = apr_psprintf(r->pool, "%s=%%255[^;]", key);
-    sscanf(cookies, pattern, cookie);
-    if (strlen(cookie) > 0) {
+    ap_cookie_read(r, key, &cookie, 0);
+    if (cookie != NULL) {
         lua_pushstring(L, cookie);
         return 1;
     }
