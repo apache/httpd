@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1498179:1519277 (outdated) -->
+<!-- English Revision : 1519977 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -289,10 +289,12 @@ ou la d&eacute;finition de types MIME : </p>
     </tr>
     <tr>
         <td>Journalisation</td>
-        <td>aucune</td>
+        <td><directive module="mod_lua">LuaHookLog</directive></td>
         <td>Lorsqu'une requ&ecirc;te a &eacute;t&eacute; trait&eacute;e, plusieurs phases de
 	journalisation interviennent, et enregistrent leurs r&eacute;sultats
-	dans les fichiers d'erreur ou d'acc&egrave;s.</td>
+	dans les fichiers d'erreur ou d'acc&egrave;s. Mod_lua peut
+	s'intercaler au d&eacute;part de ce processus et ainsi contr&ocirc;ler la
+	journalisation.</td>
     </tr>
 
 </table>
@@ -1061,6 +1063,15 @@ end
 r.date_parse_rfc(string) -- Interpr&egrave;te une cha&icirc;ne date/heure et renvoie l'&eacute;quivalent en secondes depuis epoche.
 </highlight>
 
+<highlight language="lua">
+r:getcookie(key) -- Obtient un cookie HTTP
+</highlight>
+
+<highlight language="lua">
+r:setcookie(key, value, secure, expires) -- D&eacute;finit un cookie HTTP, par exemple :
+r:setcookie("foo", "bar and stuff", false, os.time() + 86400)
+</highlight>
+
 </section>
 
 <section id="logging"><title>Fonctions de journalisation</title>
@@ -1590,6 +1601,61 @@ traitement de la requ&ecirc;te</description>
 </directivesynopsis>
 
 <directivesynopsis>
+<name>LuaHookLog</name>
+<description>Permet une insertion dans la phase de journalisation du
+traitement d'une requ&ecirc;te</description>
+<syntax>LuaHookLog  /path/to/lua/script.lua log_function_name</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>All</override>
+<usage>
+<p>
+    Ce dispositif d'insertion simple permet d'ex&eacute;cuter une fonction
+    lorsque httpd entre dans la phase de journalisation du traitement
+    d'une requ&ecirc;te. Vous pouvez ainsi ajouter des donn&eacute;es &agrave; vos propres
+    entr&eacute;es de journalisation, manipuler les entr&eacute;es du journal standard
+    avant leur enregistrement ou emp&ecirc;cher l'enregistrement d'une entr&eacute;e
+    dans le journal. Pour emp&ecirc;cher l'enregistrement normal des entr&eacute;es
+    du journal, renvoyez simplement <code>apache2.DONE</code> dans votre
+    gestionnaire de journalisation, ou au contraire, renvoyez
+    <code>apache2.OK</code> pour que httpd effectue une journalisation
+    normale.
+</p>
+<p>Exemple :</p>
+<highlight language="config">
+LuaHookLog /path/to/script.lua logger
+</highlight>
+<highlight language="lua">
+-- /path/to/script.lua --
+function logger(r)
+    -- on joue &agrave; pile ou face :
+    -- Si on obtient 1, on &eacute;crit dans notre propre journal Lua et on dit
+    -- &agrave; httpd de ne pas enregistrer d'entr&eacute;e dans le journal standard..
+    -- Si on obtient 2, on nettoie un peu les donn&eacute;es avant que httpd ne
+    -- les enregistre dans le journal standard.
+
+    if math.random(1,2) == 1 then
+        -- On effectue notre propre journalisation et le journal
+	-- standard n'est pas aliment&eacute;
+        local f = io.open("/foo/secret.log", "a")
+        if f then
+            f:write("Quelque chose de secret est arriv&eacute; &agrave; " .. r.uri .. "\n")
+            f:close()
+        end
+        return apache2.DONE -- On dit &agrave; httpd de ne rien enregistrer
+				--dans le journal standard
+    else
+        r.uri = r.uri:gsub("somesecretstuff", "") -- nettoie les donn&eacute;es
+        return apache2.OK -- et httpd doit alors les enregistrer.
+    end
+end
+</highlight>
+</usage>
+</directivesynopsis>
+
+
+<directivesynopsis>
 <name>LuaHookMapToStorage</name>
 <description>Fournit un point d'entr&eacute;e pour la phase map_to_storage du
 traitement de la requ&ecirc;te</description>
@@ -1845,6 +1911,134 @@ end
 </usage>
 </directivesynopsis>
 
+<directivesynopsis>
+<name>LuaInputFilter</name>
+<description>Fournit une fonction Lua pour le filtrage en entr&eacute;e</description>
+<syntax>LuaInputFilter filter_name /path/to/lua/script.lua function_name</syntax>
+<contextlist><context>server config</context> </contextlist>
+<compatibility>Disponible depuis la version 2.5.0 du serveur HTTP
+Apache</compatibility>
+
+<usage>
+<p>Cette directive permet d'ajouter un filtre en entr&eacute;e sous la forme
+d'une fonction Lua. A l'instar des filtres en sorties, les filtres en
+entr&eacute;e fonctionnent comme des sous-routines, intervenant dans un premier
+temps avant l'envoi du contenu des tampons, puis chaque fois qu'un
+paquet de donn&eacute;es doit &ecirc;tre transmis &agrave; la cha&icirc;ne, et &eacute;ventuellement
+produisant toute donn&eacute;e &agrave; ajouter aux donn&eacute;es en entr&eacute;e. La variable
+globale <code>bucket</code> contient les paquets de donn&eacute;es tels qu'ils
+sont transmis au script Lua :
+</p>
+
+<highlight language="config">
+LuaInputFilter myInputFilter /www/filter.lua input_filter
+&lt;FilesMatch "\.lua&gt;
+  SetInputFilter myInputFilter
+&lt;/FilesMatch&gt;
+</highlight>
+<highlight language="lua">
+--[[
+    Exemple de filtre en entr&eacute;e qui convertit toutes les donn&eacute;es POST en
+    majuscules.
+]]--
+function input_filter(r)
+    print("luaInputFilter called") -- debug print
+    coroutine.yield() -- Yield and wait for buckets
+    while bucket do -- For each bucket, do...
+        local output = string.upper(bucket) -- Convertit toutes les donn&eacute;es POST en majuscules
+        coroutine.yield(output) -- Envoie les donn&eacute;es trait&eacute;es &agrave; la cha&icirc;ne
+    end
+    -- plus aucune donn&eacute;e &agrave; traiter.
+    coroutine.yield("&amp;filterSignature=1234") -- Ajoute une signature &agrave; la fin
+end
+</highlight>
+<p>
+Le filtre en entr&eacute;e peut interdire ou sauter un filtre s'il est
+consid&eacute;r&eacute; comme ind&eacute;sirable :
+</p>
+<highlight language="lua">
+function input_filter(r)
+    if not good then
+        return -- Emp&ecirc;che tout simplement le filtrage et transmet le contenu original
+    end
+    coroutine.yield() -- attend des paquets de donn&eacute;es
+    ... -- insert les filtres ici
+end
+</highlight>
+<p>
+Voir "<a href="#modifying_buckets">Modification de contenu avec les
+filtres Lua</a>" pour plus de d&eacute;tails.
+</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>LuaOutputFilter</name>
+<description>Fournit une fonction Lua pour le filtrage de contenu en
+sortie</description>
+<syntax>LuaOutputFilter filter_name /path/to/lua/script.lua function_name</syntax>
+<contextlist><context>server config</context> </contextlist>
+<compatibility>Disponible &agrave; partir de la version 2.5.0 du serveur HTTP
+Apache</compatibility>
+
+<usage>
+<p>>Cette directive permet d'ajouter un filtre en sortie sous la forme
+d'une fonction Lua. A l'instar des filtres en sorties, les filtres en
+entr&eacute;e fonctionnent comme des sous-routines, intervenant dans un premier
+temps avant l'envoi du contenu des tampons, puis chaque fois qu'un
+paquet de donn&eacute;es doit &ecirc;tre transmis &agrave; la cha&icirc;ne, et &eacute;ventuellement
+produisant toute donn&eacute;e &agrave; ajouter aux donn&eacute;es en sortie. La variable
+globale <code>bucket</code> contient les paquets de donn&eacute;es tels qu'ils
+sont transmis au script Lua :
+</p>
+
+<highlight language="config">
+LuaOutputFilter myOutputFilter /www/filter.lua output_filter
+&lt;FilesMatch "\.lua&gt;
+  SetOutputFilter myOutputFilter
+&lt;/FilesMatch&gt;
+</highlight>
+<highlight language="lua">
+--[[
+    Exemple de filtre en sortie qui &eacute;chappe toutes les entit&eacute;s HTML en
+    sortie
+]]--
+function output_filter(r)
+    coroutine.yield("(Handled by myOutputFilter)&lt;br/&gt;\n") -- Ajoute des donn&eacute;es au d&eacute;but de la sortie, puis attend des paquets de donn&eacute;es &agrave; traiter
+    while bucket do -- Pour chaque paquet, faire ...
+        local output = r:escape_html(bucket) -- Echappe les donn&eacute;es en sortie
+        coroutine.yield(output) -- Envoie les donn&eacute;es trait&eacute;es &agrave; la cha&icirc;ne
+    end
+    -- plus aucune donn&eacute;e &agrave; traiter.
+end
+</highlight>
+<p>
+Comme les filres en entr&eacute;e, le filtre en sortie peut interdire ou sauter un filtre s'il est
+consid&eacute;r&eacute; comme ind&eacute;sirable :
+</p>
+<highlight language="lua">
+function output_filter(r)
+    if not r.content_type:match("text/html") then
+        return -- Emp&ecirc;che tout simplement le filtrage et transmet le contenu original
+    end
+    coroutine.yield() -- attend des paquets de donn&eacute;es
+    ... -- insert les filtres ici
+end
+</highlight>
+<note><title>Les filtres Lua avec <module>mod_filter</module></title>
+<p>Lorsqu'on utilise un filtre Lua comme fournisseur sous-jacent via la
+directive <directive module="mod_filter">FilterProvider</directive>, le
+filtrage ne fonctionnera que si <var>filter-name</var> est identique &agrave;
+<var>provider-name</var>.
+</p> </note>
+
+<p>
+Voir "<a href="#modifying_buckets">Modification de contenu avec les
+filtres Lua</a>" pour plus de d&eacute;tails.
+</p>
+
+</usage>
+</directivesynopsis>
 
 </modulesynopsis>
 
