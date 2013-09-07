@@ -846,12 +846,12 @@ static DWORD __stdcall worker_main(void *thread_num_val)
                                      context->sock, thread_num, sbh,
                                      context->ba);
 
-        if (!c)
-        {
+        if (!c) {
             /* ap_run_create_connection closes the socket on failure */
             context->accept_socket = INVALID_SOCKET;
-            if (e)
+            if (e) { 
                 apr_bucket_free(e);
+            }
             continue;
         }
 
@@ -869,17 +869,14 @@ static DWORD __stdcall worker_main(void *thread_num_val)
             c->aborted = 1;
         }
 
-        if (e && c->aborted)
-        {
+        if (e && c->aborted) {
             apr_bucket_free(e);
         }
-        else
-        {
+        else {
             ap_set_module_config(c->conn_config, &mpm_winnt_module, context);
         }
 
-        if (!c->aborted)
-        {
+        if (!c->aborted) {
             ap_run_process_connection(c);
 
             apr_socket_opt_get(context->sock, APR_SO_DISCONNECTED,
