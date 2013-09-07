@@ -189,20 +189,18 @@ This can be resolved in several different ways:
 Known Bugs and Limitations
 --------------------------
 
-* no support for APR/APU optional features as module prerequisites (e.g.,
-  the APU_HAVE_CRYPTO requirement of mod_session_crypto)
-* no logic to find support libraries needed by some modules (LUA, distcache)
-* no support for these modules:
+* no logic to find support libraries needed by some modules (distcache, serf)
+* no working support for building these modules:
   + mod_ldap, mod_authnz_ldap, mod_socache_dc, mod_lua, mod_serf,
-    apreq+mod_apreq, mod_session_crypto
+    apreq+mod_apreq
   + additionally, mod_lbmethod_rr and mod_firehose don't compile on Windows
     anyway
 * buildmark.c isn't necessarily rebuilt when httpd.exe is regenerated
-* ab + HAVE_OPENSSL isn't working at all, even for non-SSL
 * ApacheMonitor has a build error and is disabled
 * CGI examples aren't installed
 * module enablement defaults are not in sync with the autoconf-based build
 * no support for static PCRE builds (need to detect then turn on PCRE_STATIC)
+* module base addresses aren't set
 
 Generally:
 

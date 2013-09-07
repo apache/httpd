@@ -19,7 +19,11 @@ PROJECT(HTTPD C)
 
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
+INCLUDE(CheckSymbolExists)
+INCLUDE(CheckCSourceCompiles)
+
 FIND_PACKAGE(LibXml2)
+FIND_PACKAGE(Lua51)
 FIND_PACKAGE(OpenSSL)
 FIND_PACKAGE(ZLIB)
 
@@ -67,6 +71,69 @@ FOREACH(onelib ${APR_LIBRARIES})
     MESSAGE(FATAL_ERROR "APR library ${onelib} was not found.")
   ENDIF()
 ENDFOREACH()
+
+# Figure out what APR/APU features are available
+#
+# CHECK_APR_FEATURE checks for features defined to 1 or 0 in apr.h or apu.h
+# The symbol representing the feature will be set to TRUE or FALSE for 
+# compatibility with the feature tests set by FindFooPackage.
+#
+# (unclear why CHECK_SYMBOL_EXISTS is needed, but I was getting "found" for anything 
+# not defined to either 1 or 0)
+
+MACRO(CHECK_APR_FEATURE which_define)
+  CHECK_SYMBOL_EXISTS(${which_define} "${APR_INCLUDE_DIR}/apr.h;${APR_INCLUDE_DIR}/apu.h" tmp_${which_define})
+  IF(${tmp_${which_define}})
+    CHECK_C_SOURCE_COMPILES("#include \"${APR_INCLUDE_DIR}/apr.h\"
+      #include \"${APR_INCLUDE_DIR}/apu.h\"
+      int main() {
+      #ifndef ${which_define}
+      #error gobble
+      #endif
+      #if !${which_define}
+      #error gobble
+      #endif
+      return 1;}" ${which_define})
+  ELSE()
+    SET(${which_define})
+  ENDIF()
+  IF(${${which_define}})
+    SET(${which_define} TRUE)
+  ELSE()
+    SET(${which_define} FALSE)
+  ENDIF()
+ENDMACRO()
+
+CHECK_APR_FEATURE(APR_HAS_XLATE)
+CHECK_APR_FEATURE(APU_HAVE_CRYPTO)
+
+# APR_HAS_LDAP is defined in apr_ldap.h, which exists only in apr 1.x, so use
+# special code instead of CHECK_APR_FEATURE()
+# As with CHECK_APR_FEATURE(), convert to a TRUE/FALSE result.
+CHECK_C_SOURCE_COMPILES("#include \"${APR_INCLUDE_DIR}/apr.h\"
+#include \"${APR_INCLUDE_DIR}/apr_ldap.h\"
+int main() {
+#if !APR_HAS_LDAP
+#error gobble
+#endif
+return 1;}" APR_HAS_LDAP)
+IF(${APR_HAS_LDAP})
+  SET(APR_HAS_LDAP TRUE)
+ELSE()
+  SET(APR_HAS_LDAP FALSE)
+ENDIF()
+
+MESSAGE(STATUS "")
+MESSAGE(STATUS "Summary of feature detection:")
+MESSAGE(STATUS "")
+MESSAGE(STATUS "LIBXML2_FOUND ............ : ${LIBXML2_FOUND}")
+MESSAGE(STATUS "LUA51_FOUND .............. : ${LUA51_FOUND}")
+MESSAGE(STATUS "OPENSSL_FOUND ............ : ${OPENSSL_FOUND}")
+MESSAGE(STATUS "ZLIB_FOUND ............... : ${ZLIB_FOUND}")
+MESSAGE(STATUS "APR_HAS_LDAP ............. : ${APR_HAS_LDAP}")
+MESSAGE(STATUS "APR_HAS_XLATE ............ : ${APR_HAS_XLATE}")
+MESSAGE(STATUS "APU_HAVE_CRYPTO .......... : ${APU_HAVE_CRYPTO}")
+MESSAGE(STATUS "")
 
 # Options for each available module
 #   "A" ("A"ctive) means installed and active in default .conf, fail if can't be built
@@ -134,7 +201,7 @@ SET(MODULE_LIST
   "modules/examples/mod_example_hooks.c+O+Example hook callback handler module"
   "modules/examples/mod_example_ipc.c+O+Example of shared memory and mutex usage"
   "modules/filters/mod_buffer.c+I+Filter Buffering"
-  "modules/filters/mod_charset_lite.c+O+character set translation"
+  "modules/filters/mod_charset_lite.c+i+character set translation"
   "modules/filters/mod_data.c+O+RFC2397 data encoder"
   "modules/filters/mod_deflate.c+i+Deflate transfer encoding support"
   "modules/filters/mod_ext_filter.c+I+external filter module"
@@ -196,7 +263,7 @@ SET(MODULE_LIST
   "modules/proxy/mod_proxy_wstunnel.c+I+Apache proxy Websocket Tunnel module.  Requires and is enabled by --enable-proxy."
   "modules/session/mod_session.c+I+session module"
   "modules/session/mod_session_cookie.c+I+session cookie module"
-  "modules/session/mod_session_crypto.c+O+session crypto module"
+  "modules/session/mod_session_crypto.c+i+session crypto module"
   "modules/session/mod_session_dbd.c+I+session dbd module"
   "modules/slotmem/mod_slotmem_plain.c+I+slotmem provider that uses plain memory"
   "modules/slotmem/mod_slotmem_shm.c+I+slotmem provider that uses shared memory"
@@ -224,12 +291,14 @@ ENDIF()
 # This could be included in the master list of modules above, though it 
 # certainly would get a lot more unreadable.
 SET(mod_authz_dbd_extra_defines      AUTHZ_DBD_DECLARE_EXPORT)
+SET(mod_authnz_ldap_requires         APR_HAS_LDAP)
 SET(mod_cache_extra_defines          CACHE_DECLARE_EXPORT)
 SET(mod_cache_extra_sources
   modules/cache/cache_storage.c      modules/cache/cache_util.c
 )
 SET(mod_cache_disk_extra_libs        mod_cache)
 SET(mod_cache_socache_extra_libs     mod_cache)
+SET(mod_charset_lite_requires        APR_HAS_XLATE)
 SET(mod_dav_extra_defines            DAV_DECLARE_EXPORT)
 SET(mod_dav_extra_sources
   modules/dav/main/liveprop.c        modules/dav/main/props.c
@@ -250,6 +319,7 @@ IF(ZLIB_FOUND)
   SET(mod_deflate_extra_libs           ${ZLIB_LIBRARIES})
 ENDIF()
 SET(mod_heartbeat_extra_libs         mod_watchdog)
+SET(mod_authnz_ldap_requires         APR_HAS_LDAP)
 SET(mod_optional_hook_export_extra_defines AP_DECLARE_EXPORT) # bogus reuse of core API prefix
 SET(mod_proxy_extra_defines          PROXY_DECLARE_EXPORT)
 SET(mod_proxy_extra_sources          modules/proxy/proxy_util.c)
@@ -278,6 +348,8 @@ SET(mod_sed_extra_sources
 )
 SET(mod_session_extra_defines        SESSION_DECLARE_EXPORT)
 SET(mod_session_cookie_extra_libs    mod_session)
+SET(mod_session_crypto_requires      APU_HAVE_CRYPTO)
+SET(mod_session_crypto_extra_libs    mod_session)
 SET(mod_session_dbd_extra_libs       mod_session)
 SET(mod_ssl_requires                 OPENSSL_FOUND)
 IF(OPENSSL_FOUND)
