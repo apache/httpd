@@ -191,8 +191,7 @@ Known Bugs and Limitations
 
 * no logic to find support libraries needed by some modules (distcache, serf)
 * no working support for building these modules:
-  + mod_ldap, mod_authnz_ldap, mod_socache_dc, mod_lua, mod_serf,
-    apreq+mod_apreq
+  + mod_socache_dc, mod_lua, mod_serf, apreq+mod_apreq
   + additionally, mod_lbmethod_rr and mod_firehose don't compile on Windows
     anyway
 * buildmark.c isn't necessarily rebuilt when httpd.exe is regenerated

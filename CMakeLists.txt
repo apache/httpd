@@ -38,8 +38,14 @@ STRING(REGEX REPLACE ${minorversion_regex} "\\1" minorversion ${minorversion})
 # otherwise, default to APR 1.x + APR-util 1.x
 IF(EXISTS "${CMAKE_INSTALL_PREFIX}/lib/libapr-2.lib")
   SET(default_apr_libraries "${CMAKE_INSTALL_PREFIX}/lib/libapr-2.lib")
+ELSEIF(EXISTS "${CMAKE_INSTALL_PREFIX}/lib/libapr-1.lib")
+  SET(ldaplib "${CMAKE_INSTALL_PREFIX}/lib/apr_ldap-1.lib")
+  IF(NOT EXISTS ${ldaplib})
+    SET(ldaplib)
+  ENDIF()
+  SET(default_apr_libraries ${CMAKE_INSTALL_PREFIX}/lib/libapr-1.lib ${CMAKE_INSTALL_PREFIX}/lib/libaprutil-1.lib ${ldaplib})
 ELSE()
-  SET(default_apr_libraries "${CMAKE_INSTALL_PREFIX}/lib/libapr-1.lib;${CMAKE_INSTALL_PREFIX}/lib/libaprutil-1.lib")
+  SET(default_apr_libraries)
 ENDIF()
 
 # PCRE names its libraries differently for debug vs. release builds.
@@ -168,7 +174,7 @@ SET(MODULE_LIST
   "modules/aaa/mod_authn_dbm.c+I+DBM-based authentication control"
   "modules/aaa/mod_authn_file.c+A+file-based authentication control"
   "modules/aaa/mod_authn_socache.c+I+Cached authentication control"
-  "modules/aaa/mod_authnz_ldap.c+O+LDAP based authentication"
+  "modules/aaa/mod_authnz_ldap.c+i+LDAP based authentication"
   "modules/aaa/mod_authz_core.c+A+core authorization provider vector module"
   "modules/aaa/mod_authz_dbd.c+I+SQL based authorization and Login/Session support"
   "modules/aaa/mod_authz_dbm.c+I+DBM-based authorization control"
@@ -221,7 +227,7 @@ SET(MODULE_LIST
   "modules/generators/mod_info.c+I+server information"
   "modules/generators/mod_status.c+I+process/thread monitoring"
   "modules/http/mod_mime.c+A+mapping of file-extension to MIME.  Disabling this module is normally not recommended."
-  "modules/ldap/mod_ldap.c+O+LDAP caching and connection pooling services"
+  "modules/ldap/mod_ldap.c+i+LDAP caching and connection pooling services"
   "modules/loggers/mod_log_config.c+A+logging configuration.  You won't be able to log requests to the server without this module."
   "modules/loggers/mod_log_debug.c+I+configurable debug logging"
   "modules/loggers/mod_log_forensic.c+I+forensic logging"
@@ -292,6 +298,7 @@ ENDIF()
 # certainly would get a lot more unreadable.
 SET(mod_authz_dbd_extra_defines      AUTHZ_DBD_DECLARE_EXPORT)
 SET(mod_authnz_ldap_requires         APR_HAS_LDAP)
+SET(mod_authnz_ldap_extra_libs       mod_ldap)
 SET(mod_cache_extra_defines          CACHE_DECLARE_EXPORT)
 SET(mod_cache_extra_sources
   modules/cache/cache_storage.c      modules/cache/cache_util.c
@@ -319,7 +326,13 @@ IF(ZLIB_FOUND)
   SET(mod_deflate_extra_libs           ${ZLIB_LIBRARIES})
 ENDIF()
 SET(mod_heartbeat_extra_libs         mod_watchdog)
-SET(mod_authnz_ldap_requires         APR_HAS_LDAP)
+SET(mod_ldap_extra_defines           LDAP_DECLARE_EXPORT)
+SET(mod_ldap_extra_libs              wldap32)
+SET(mod_ldap_extra_sources
+  modules/ldap/util_ldap_cache.c     modules/ldap/util_ldap_cache_mgr.c
+)
+SET(mod_ldap_main_source             modules/ldap/util_ldap.c)
+SET(mod_ldap_requires                APR_HAS_LDAP)
 SET(mod_optional_hook_export_extra_defines AP_DECLARE_EXPORT) # bogus reuse of core API prefix
 SET(mod_proxy_extra_defines          PROXY_DECLARE_EXPORT)
 SET(mod_proxy_extra_sources          modules/proxy/proxy_util.c)
@@ -606,8 +619,15 @@ FOREACH (mod ${MODULE_SRCS})
     ENDIF()
 
     # Handle building it.
+    SET(mod_main_source "${mod_name}_main_source")
     SET(mod_extra_sources "${mod_name}_extra_sources")
-    SET(all_mod_sources ${mod} ${${mod_extra_sources}})
+
+    IF("${${mod_main_source}}" STREQUAL "")
+      SET(tmp_mod_main_source ${mod})
+    ELSE()
+      SET(tmp_mod_main_source ${${mod_main_source}})
+    ENDIF()
+    SET(all_mod_sources ${tmp_mod_main_source} ${${mod_extra_sources}})
     ADD_LIBRARY(${mod_name} SHARED ${all_mod_sources})
     SET(install_modules ${install_modules} ${mod_name})
     SET(mod_extra_libs "${mod_name}_extra_libs")
