@@ -571,7 +571,8 @@ SET(HTTPD_INCLUDE_DIRECTORIES
 SET(other_installed_h
   ${PROJECT_BINARY_DIR}/ap_config_layout.h
   ${CMAKE_CURRENT_SOURCE_DIR}/os/win32/os.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/modules/cache/mod_cache.h  
+  ${CMAKE_CURRENT_SOURCE_DIR}/modules/cache/mod_cache.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/modules/cache/cache_common.h
   ${CMAKE_CURRENT_SOURCE_DIR}/modules/core/mod_so.h
   ${CMAKE_CURRENT_SOURCE_DIR}/modules/core/mod_watchdog.h
   ${CMAKE_CURRENT_SOURCE_DIR}/modules/database/mod_dbd.h
@@ -586,6 +587,7 @@ SET(other_installed_h
   ${CMAKE_CURRENT_SOURCE_DIR}/modules/session/mod_session.h
   ${CMAKE_CURRENT_SOURCE_DIR}/modules/ssl/mod_ssl.h
 )
+# When mod_serf is buildable, don't forget to copy modules/proxy/mod_serf.h
 
 INCLUDE_DIRECTORIES(${HTTPD_INCLUDE_DIRECTORIES})
 
