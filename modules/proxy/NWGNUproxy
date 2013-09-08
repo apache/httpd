@@ -251,7 +251,7 @@ install :: nlms FORCE
 
 vpath %.c ../arch/netware
 
-$(OBJDIR)/mod_proxy.imp:
+$(OBJDIR)/mod_proxy.imp: NWGNUproxy
 	@echo $(DL)GEN  $@$(DL)
 	@echo $(DL)# Exports of mod_proxy$(DL)> $@
 	@echo $(DL) (AP$(VERSION_MAJMIN))$(DL)>> $@
@@ -297,6 +297,7 @@ $(OBJDIR)/mod_proxy.imp:
 	@echo $(DL) ap_proxy_is_domainname,$(DL)>> $@
 	@echo $(DL) ap_proxy_is_hostname,$(DL)>> $@
 	@echo $(DL) ap_proxy_is_ipaddr,$(DL)>> $@
+	@echo $(DL) ap_proxy_is_socket_connected,$(DL)>> $@
 	@echo $(DL) ap_proxy_is_word,$(DL)>> $@
 	@echo $(DL) ap_proxy_location_reverse_map,$(DL)>> $@
 	@echo $(DL) ap_proxy_parse_wstatus,$(DL)>> $@
