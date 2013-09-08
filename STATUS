@@ -231,7 +231,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   * WinNT MPM: crash-o-matic with "Listen <portnumber> <unrecognized>"
     trunk patch: http://svn.apache.org/r1520368
     2.4.x patch: trunk patch works
-    +1: trawick    
+    +1: trawick, covener
 
   * mod_headers: Add 'Header SetIfEmpty header-name val' to only set
     a header if it's not already there (can't do this with Edit)
