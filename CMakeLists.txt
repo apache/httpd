@@ -163,134 +163,134 @@ MESSAGE(STATUS "")
 #   Otherwise                              -> O
 #
 SET(MODULE_LIST
-  "modules/aaa/mod_access_compat.c+A+mod_access compatibility"
-  "modules/aaa/mod_allowmethods.c+I+restrict allowed HTTP methods"
-  "modules/aaa/mod_auth_basic.c+A+basic authentication"
-  "modules/aaa/mod_auth_digest.c+I+RFC2617 Digest authentication"
-  "modules/aaa/mod_auth_form.c+I+form authentication"
-  "modules/aaa/mod_authn_anon.c+I+anonymous user authentication control"
-  "modules/aaa/mod_authn_core.c+A+core authentication module"
-  "modules/aaa/mod_authn_dbd.c+I+SQL-based authentication control"
-  "modules/aaa/mod_authn_dbm.c+I+DBM-based authentication control"
-  "modules/aaa/mod_authn_file.c+A+file-based authentication control"
-  "modules/aaa/mod_authn_socache.c+I+Cached authentication control"
-  "modules/aaa/mod_authnz_ldap.c+i+LDAP based authentication"
-  "modules/aaa/mod_authz_core.c+A+core authorization provider vector module"
-  "modules/aaa/mod_authz_dbd.c+I+SQL based authorization and Login/Session support"
-  "modules/aaa/mod_authz_dbm.c+I+DBM-based authorization control"
-  "modules/aaa/mod_authz_groupfile.c+A+'require group' authorization control"
-  "modules/aaa/mod_authz_host.c+A+host-based authorization control"
-  "modules/aaa/mod_authz_owner.c+I+'require file-owner' authorization control"
-  "modules/aaa/mod_authz_user.c+A+'require user' authorization control"
-  "modules/arch/win32/mod_isapi.c+I+isapi extension support"
-  "modules/cache/mod_cache.c+I+dynamic file caching.  At least one storage management module (e.g. mod_cache_disk) is also necessary."
-  "modules/cache/mod_cache_disk.c+I+disk caching module"
-  "modules/cache/mod_cache_socache.c+I+shared object caching module"
-  "modules/cache/mod_file_cache.c+I+File cache"
-  "modules/cache/mod_socache_dbm.c+I+dbm small object cache provider"
-  "modules/cache/mod_socache_dc.c+O+distcache small object cache provider"
-  "modules/cache/mod_socache_memcache.c+I+memcache small object cache provider"
-  "modules/cache/mod_socache_shmcb.c+I+ shmcb small object cache provider"
-  "modules/cluster/mod_heartbeat.c+I+Generates Heartbeats"
-  "modules/cluster/mod_heartmonitor.c+I+Collects Heartbeats"
-  "modules/core/mod_macro.c+I+Define and use macros in configuration files"
-  "modules/core/mod_watchdog.c+I+Watchdog module"
-  "modules/database/mod_dbd.c+I+Apache DBD Framework"
-  "modules/dav/fs/mod_dav_fs.c+I+DAV provider for the filesystem."
-  "modules/dav/lock/mod_dav_lock.c+I+DAV provider for generic locking"
-  "modules/dav/main/mod_dav.c+I+WebDAV protocol handling."
-  "modules/debugging/mod_bucketeer.c+O+buckets manipulation filter.  Useful only for developers and testing purposes."
-  "modules/debugging/mod_dumpio.c+I+I/O dump filter"
-  "modules/echo/mod_echo.c+O+ECHO server"
-  "modules/examples/mod_case_filter.c+O+Example uppercase conversion filter"
-  "modules/examples/mod_case_filter_in.c+O+Example uppercase conversion input filter"
-  "modules/examples/mod_example_hooks.c+O+Example hook callback handler module"
-  "modules/examples/mod_example_ipc.c+O+Example of shared memory and mutex usage"
-  "modules/filters/mod_buffer.c+I+Filter Buffering"
-  "modules/filters/mod_charset_lite.c+i+character set translation"
-  "modules/filters/mod_data.c+O+RFC2397 data encoder"
-  "modules/filters/mod_deflate.c+i+Deflate transfer encoding support"
-  "modules/filters/mod_ext_filter.c+I+external filter module"
-  "modules/filters/mod_filter.c+A+Smart Filtering"
-  "modules/filters/mod_include.c+I+Server Side Includes"
-  "modules/filters/mod_proxy_html.c+i+Fix HTML Links in a Reverse Proxy"
-  "modules/filters/mod_ratelimit.c+I+Output Bandwidth Limiting"
-  "modules/filters/mod_reflector.c+O+Reflect request through the output filter stack"
-  "modules/filters/mod_reqtimeout.c+A+Limit time waiting for request from client"
-  "modules/filters/mod_request.c+I+Request Body Filtering"
-  "modules/filters/mod_sed.c+I+filter request and/or response bodies through sed"
-  "modules/filters/mod_substitute.c+I+response content rewrite-like filtering"
-  "modules/filters/mod_xml2enc.c+i+i18n support for markup filters"
-  "modules/generators/mod_asis.c+I+as-is filetypes"
-  "modules/generators/mod_autoindex.c+A+directory listing"
-  "modules/generators/mod_cgi.c+I+CGI scripts"
-  "modules/generators/mod_info.c+I+server information"
-  "modules/generators/mod_status.c+I+process/thread monitoring"
-  "modules/http/mod_mime.c+A+mapping of file-extension to MIME.  Disabling this module is normally not recommended."
-  "modules/ldap/mod_ldap.c+i+LDAP caching and connection pooling services"
-  "modules/loggers/mod_log_config.c+A+logging configuration.  You won't be able to log requests to the server without this module."
-  "modules/loggers/mod_log_debug.c+I+configurable debug logging"
-  "modules/loggers/mod_log_forensic.c+I+forensic logging"
-  "modules/loggers/mod_logio.c+I+input and output logging"
-  "modules/lua/mod_lua.c+i+Apache Lua Framework"
-  "modules/mappers/mod_actions.c+I+Action triggering on requests"
-  "modules/mappers/mod_alias.c+A+mapping of requests to different filesystem parts"
-  "modules/mappers/mod_dir.c+A+directory request handling"
-  "modules/mappers/mod_imagemap.c+I+server-side imagemaps"
-  "modules/mappers/mod_negotiation.c+I+content negotiation"
-  "modules/mappers/mod_rewrite.c+I+rule based URL manipulation"
-  "modules/mappers/mod_speling.c+I+correct common URL misspellings"
-  "modules/mappers/mod_userdir.c+I+mapping of requests to user-specific directories"
-  "modules/mappers/mod_vhost_alias.c+I+mass virtual hosting module"
-  "modules/metadata/mod_cern_meta.c+O+CERN-type meta files"
-  "modules/metadata/mod_env.c+A+clearing/setting of ENV vars"
-  "modules/metadata/mod_expires.c+I+Expires header control"
-  "modules/metadata/mod_headers.c+A+HTTP header control"
-  "modules/metadata/mod_ident.c+O+RFC 1413 identity check"
-  "modules/metadata/mod_mime_magic.c+O+automagically determining MIME type"
-  "modules/metadata/mod_remoteip.c+I+translate header contents to an apparent client remote_ip"
-  "modules/metadata/mod_setenvif.c+A+basing ENV vars on headers"
-  "modules/metadata/mod_unique_id.c+I+per-request unique ids"
-  "modules/metadata/mod_usertrack.c+I+user-session tracking"
-  "modules/metadata/mod_version.c+A+determining httpd version in config files"
-  "modules/proxy/balancers/mod_lbmethod_bybusyness.c+I+Apache proxy Load balancing by busyness"
-  "modules/proxy/balancers/mod_lbmethod_byrequests.c+I+Apache proxy Load balancing by request counting"
-  "modules/proxy/balancers/mod_lbmethod_bytraffic.c+I+Apache proxy Load balancing by traffic counting"
-  "modules/proxy/balancers/mod_lbmethod_heartbeat.c+I+Apache proxy Load balancing from Heartbeats"
-  "modules/proxy/mod_proxy_ajp.c+I+Apache proxy AJP module.  Requires and is enabled by --enable-proxy."
-  "modules/proxy/mod_proxy_balancer.c+I+Apache proxy BALANCER module.  Requires and is enabled by --enable-proxy."
-  "modules/proxy/mod_proxy.c+I+Apache proxy module"
-  "modules/proxy/mod_proxy_connect.c+I+Apache proxy CONNECT module.  Requires and is enabled by --enable-proxy."
-  "modules/proxy/mod_proxy_express.c+I+mass reverse-proxy module. Requires --enable-proxy."
-  "modules/proxy/mod_proxy_fcgi.c+I+Apache proxy FastCGI module.  Requires and is enabled by --enable-proxy."
-  "modules/proxy/mod_proxy_ftp.c+I+Apache proxy FTP module.  Requires and is enabled by --enable-proxy."
-  "modules/proxy/mod_proxy_http.c+I+Apache proxy HTTP module.  Requires and is enabled by --enable-proxy."
-  "modules/proxy/mod_proxy_scgi.c+I+Apache proxy SCGI module.  Requires and is enabled by --enable-proxy."
-  "modules/proxy/mod_proxy_wstunnel.c+I+Apache proxy Websocket Tunnel module.  Requires and is enabled by --enable-proxy."
-  "modules/session/mod_session.c+I+session module"
-  "modules/session/mod_session_cookie.c+I+session cookie module"
-  "modules/session/mod_session_crypto.c+i+session crypto module"
-  "modules/session/mod_session_dbd.c+I+session dbd module"
-  "modules/slotmem/mod_slotmem_plain.c+I+slotmem provider that uses plain memory"
-  "modules/slotmem/mod_slotmem_shm.c+I+slotmem provider that uses shared memory"
-  "modules/ssl/mod_ssl.c+i+SSL/TLS support"
-  "modules/test/mod_dialup.c+O+rate limits static files to dialup modem speeds"
-  "modules/test/mod_optional_fn_export.c+O+example optional function exporter"
-  "modules/test/mod_optional_fn_import.c+O+example optional function importer"
-  "modules/test/mod_optional_hook_export.c+O+example optional hook exporter"
-  "modules/test/mod_optional_hook_import.c+O+example optional hook importer"
+  "modules/aaa/mod_access_compat+A+mod_access compatibility"
+  "modules/aaa/mod_allowmethods+I+restrict allowed HTTP methods"
+  "modules/aaa/mod_auth_basic+A+basic authentication"
+  "modules/aaa/mod_auth_digest+I+RFC2617 Digest authentication"
+  "modules/aaa/mod_auth_form+I+form authentication"
+  "modules/aaa/mod_authn_anon+I+anonymous user authentication control"
+  "modules/aaa/mod_authn_core+A+core authentication module"
+  "modules/aaa/mod_authn_dbd+I+SQL-based authentication control"
+  "modules/aaa/mod_authn_dbm+I+DBM-based authentication control"
+  "modules/aaa/mod_authn_file+A+file-based authentication control"
+  "modules/aaa/mod_authn_socache+I+Cached authentication control"
+  "modules/aaa/mod_authnz_ldap+i+LDAP based authentication"
+  "modules/aaa/mod_authz_core+A+core authorization provider vector module"
+  "modules/aaa/mod_authz_dbd+I+SQL based authorization and Login/Session support"
+  "modules/aaa/mod_authz_dbm+I+DBM-based authorization control"
+  "modules/aaa/mod_authz_groupfile+A+'require group' authorization control"
+  "modules/aaa/mod_authz_host+A+host-based authorization control"
+  "modules/aaa/mod_authz_owner+I+'require file-owner' authorization control"
+  "modules/aaa/mod_authz_user+A+'require user' authorization control"
+  "modules/arch/win32/mod_isapi+I+isapi extension support"
+  "modules/cache/mod_cache+I+dynamic file caching.  At least one storage management module (e.g. mod_cache_disk) is also necessary."
+  "modules/cache/mod_cache_disk+I+disk caching module"
+  "modules/cache/mod_cache_socache+I+shared object caching module"
+  "modules/cache/mod_file_cache+I+File cache"
+  "modules/cache/mod_socache_dbm+I+dbm small object cache provider"
+  "modules/cache/mod_socache_dc+O+distcache small object cache provider"
+  "modules/cache/mod_socache_memcache+I+memcache small object cache provider"
+  "modules/cache/mod_socache_shmcb+I+ shmcb small object cache provider"
+  "modules/cluster/mod_heartbeat+I+Generates Heartbeats"
+  "modules/cluster/mod_heartmonitor+I+Collects Heartbeats"
+  "modules/core/mod_macro+I+Define and use macros in configuration files"
+  "modules/core/mod_watchdog+I+Watchdog module"
+  "modules/database/mod_dbd+I+Apache DBD Framework"
+  "modules/dav/fs/mod_dav_fs+I+DAV provider for the filesystem."
+  "modules/dav/lock/mod_dav_lock+I+DAV provider for generic locking"
+  "modules/dav/main/mod_dav+I+WebDAV protocol handling."
+  "modules/debugging/mod_bucketeer+O+buckets manipulation filter.  Useful only for developers and testing purposes."
+  "modules/debugging/mod_dumpio+I+I/O dump filter"
+  "modules/echo/mod_echo+O+ECHO server"
+  "modules/examples/mod_case_filter+O+Example uppercase conversion filter"
+  "modules/examples/mod_case_filter_in+O+Example uppercase conversion input filter"
+  "modules/examples/mod_example_hooks+O+Example hook callback handler module"
+  "modules/examples/mod_example_ipc+O+Example of shared memory and mutex usage"
+  "modules/filters/mod_buffer+I+Filter Buffering"
+  "modules/filters/mod_charset_lite+i+character set translation"
+  "modules/filters/mod_data+O+RFC2397 data encoder"
+  "modules/filters/mod_deflate+i+Deflate transfer encoding support"
+  "modules/filters/mod_ext_filter+I+external filter module"
+  "modules/filters/mod_filter+A+Smart Filtering"
+  "modules/filters/mod_include+I+Server Side Includes"
+  "modules/filters/mod_proxy_html+i+Fix HTML Links in a Reverse Proxy"
+  "modules/filters/mod_ratelimit+I+Output Bandwidth Limiting"
+  "modules/filters/mod_reflector+O+Reflect request through the output filter stack"
+  "modules/filters/mod_reqtimeout+A+Limit time waiting for request from client"
+  "modules/filters/mod_request+I+Request Body Filtering"
+  "modules/filters/mod_sed+I+filter request and/or response bodies through sed"
+  "modules/filters/mod_substitute+I+response content rewrite-like filtering"
+  "modules/filters/mod_xml2enc+i+i18n support for markup filters"
+  "modules/generators/mod_asis+I+as-is filetypes"
+  "modules/generators/mod_autoindex+A+directory listing"
+  "modules/generators/mod_cgi+I+CGI scripts"
+  "modules/generators/mod_info+I+server information"
+  "modules/generators/mod_status+I+process/thread monitoring"
+  "modules/http/mod_mime+A+mapping of file-extension to MIME.  Disabling this module is normally not recommended."
+  "modules/ldap/mod_ldap+i+LDAP caching and connection pooling services"
+  "modules/loggers/mod_log_config+A+logging configuration.  You won't be able to log requests to the server without this module."
+  "modules/loggers/mod_log_debug+I+configurable debug logging"
+  "modules/loggers/mod_log_forensic+I+forensic logging"
+  "modules/loggers/mod_logio+I+input and output logging"
+  "modules/lua/mod_lua+i+Apache Lua Framework"
+  "modules/mappers/mod_actions+I+Action triggering on requests"
+  "modules/mappers/mod_alias+A+mapping of requests to different filesystem parts"
+  "modules/mappers/mod_dir+A+directory request handling"
+  "modules/mappers/mod_imagemap+I+server-side imagemaps"
+  "modules/mappers/mod_negotiation+I+content negotiation"
+  "modules/mappers/mod_rewrite+I+rule based URL manipulation"
+  "modules/mappers/mod_speling+I+correct common URL misspellings"
+  "modules/mappers/mod_userdir+I+mapping of requests to user-specific directories"
+  "modules/mappers/mod_vhost_alias+I+mass virtual hosting module"
+  "modules/metadata/mod_cern_meta+O+CERN-type meta files"
+  "modules/metadata/mod_env+A+clearing/setting of ENV vars"
+  "modules/metadata/mod_expires+I+Expires header control"
+  "modules/metadata/mod_headers+A+HTTP header control"
+  "modules/metadata/mod_ident+O+RFC 1413 identity check"
+  "modules/metadata/mod_mime_magic+O+automagically determining MIME type"
+  "modules/metadata/mod_remoteip+I+translate header contents to an apparent client remote_ip"
+  "modules/metadata/mod_setenvif+A+basing ENV vars on headers"
+  "modules/metadata/mod_unique_id+I+per-request unique ids"
+  "modules/metadata/mod_usertrack+I+user-session tracking"
+  "modules/metadata/mod_version+A+determining httpd version in config files"
+  "modules/proxy/balancers/mod_lbmethod_bybusyness+I+Apache proxy Load balancing by busyness"
+  "modules/proxy/balancers/mod_lbmethod_byrequests+I+Apache proxy Load balancing by request counting"
+  "modules/proxy/balancers/mod_lbmethod_bytraffic+I+Apache proxy Load balancing by traffic counting"
+  "modules/proxy/balancers/mod_lbmethod_heartbeat+I+Apache proxy Load balancing from Heartbeats"
+  "modules/proxy/mod_proxy_ajp+I+Apache proxy AJP module.  Requires and is enabled by --enable-proxy."
+  "modules/proxy/mod_proxy_balancer+I+Apache proxy BALANCER module.  Requires and is enabled by --enable-proxy."
+  "modules/proxy/mod_proxy+I+Apache proxy module"
+  "modules/proxy/mod_proxy_connect+I+Apache proxy CONNECT module.  Requires and is enabled by --enable-proxy."
+  "modules/proxy/mod_proxy_express+I+mass reverse-proxy module. Requires --enable-proxy."
+  "modules/proxy/mod_proxy_fcgi+I+Apache proxy FastCGI module.  Requires and is enabled by --enable-proxy."
+  "modules/proxy/mod_proxy_ftp+I+Apache proxy FTP module.  Requires and is enabled by --enable-proxy."
+  "modules/proxy/mod_proxy_http+I+Apache proxy HTTP module.  Requires and is enabled by --enable-proxy."
+  "modules/proxy/mod_proxy_scgi+I+Apache proxy SCGI module.  Requires and is enabled by --enable-proxy."
+  "modules/proxy/mod_proxy_wstunnel+I+Apache proxy Websocket Tunnel module.  Requires and is enabled by --enable-proxy."
+  "modules/session/mod_session+I+session module"
+  "modules/session/mod_session_cookie+I+session cookie module"
+  "modules/session/mod_session_crypto+i+session crypto module"
+  "modules/session/mod_session_dbd+I+session dbd module"
+  "modules/slotmem/mod_slotmem_plain+I+slotmem provider that uses plain memory"
+  "modules/slotmem/mod_slotmem_shm+I+slotmem provider that uses shared memory"
+  "modules/ssl/mod_ssl+i+SSL/TLS support"
+  "modules/test/mod_dialup+O+rate limits static files to dialup modem speeds"
+  "modules/test/mod_optional_fn_export+O+example optional function exporter"
+  "modules/test/mod_optional_fn_import+O+example optional function importer"
+  "modules/test/mod_optional_hook_export+O+example optional hook exporter"
+  "modules/test/mod_optional_hook_import+O+example optional hook importer"
 )
 
 IF(NOT ${minorversion} STREQUAL "4")
   # more modules in trunk
   SET(MODULE_LIST
       ${MODULE_LIST}
-      "modules/aaa/mod_allowhandlers.c+I+restrict allowed handlers"
-      "modules/aaa/mod_authnz_fcgi.c+I+FastCGI authorizer-based authentication and authorization"
-      "modules/debugging/mod_firehose.c+O+Firehose dump filter"
-      "modules/proxy/mod_serf.c+O+Reverse proxy module using Serf"
-      "modules/test/mod_policy.c+I+HTTP protocol compliance filters"
-      "modules/apreq/mod_apreq.c+i+Apache Request Filter"
+      "modules/aaa/mod_allowhandlers+I+restrict allowed handlers"
+      "modules/aaa/mod_authnz_fcgi+I+FastCGI authorizer-based authentication and authorization"
+      "modules/apreq/mod_apreq+i+Apache Request Filter"
+      "modules/debugging/mod_firehose+O+Firehose dump filter"
+      "modules/proxy/mod_serf+O+Reverse proxy module using Serf"
+      "modules/test/mod_policy+I+HTTP protocol compliance filters"
   )
 ENDIF()
 
@@ -400,16 +400,15 @@ IF(LIBXML2_FOUND)
 ENDIF()
 SET(mod_watchdog_extra_defines       AP_WD_DECLARE_EXPORT)
 
-SET(MODULE_SRCS)
-
+SET(MODULE_PATHS)
 FOREACH (modinfo ${MODULE_LIST})
   STRING(REGEX REPLACE "([^+]*)\\+([^+]*)\\+([^+]*)" "\\1;\\2;\\3" modinfolist ${modinfo})
-  SET(primarysourcefile)
+  SET(path_to_module)
   SET(defaultenable)
   SET(helptext)
   FOREACH(i ${modinfolist})
-    IF("${primarysourcefile}" STREQUAL "")
-      SET(primarysourcefile ${i})
+    IF("${path_to_module}" STREQUAL "")
+      SET(path_to_module ${i})
     ELSEIF("${defaultenable}" STREQUAL "")
       SET(defaultenable ${i})
     ELSEIF("${helptext}" STREQUAL "")
@@ -419,18 +418,17 @@ FOREACH (modinfo ${MODULE_LIST})
     ENDIF()
   ENDFOREACH()
 
-  # MESSAGE("  primary source file: ${primarysourcefile}")
+  # MESSAGE("       path to module: ${path_to_module}")
   # MESSAGE("enablement by default: ${defaultenable}")
   # MESSAGE("            help text: ${helptext}")
 
-  STRING(REGEX MATCH   "[^/]+\\.c"        mod_basename   ${primarysourcefile})
-  STRING(REGEX MATCH   "[^.]+"            mod_name       ${mod_basename})
-  STRING(REGEX REPLACE "mod_(.*)"  "\\1"  mod_shortname  ${mod_name})
+  STRING(REGEX REPLACE ".*/(mod_[^\\+]+)" "\\1" mod_name       ${path_to_module})
+  STRING(REGEX REPLACE "mod_(.*)"         "\\1" mod_shortname  ${mod_name})
 
   STRING(TOUPPER "ENABLE_${mod_shortname}" mod_option_name)
 
   SET(${mod_option_name} ${defaultenable} CACHE STRING ${helptext})
-  SET(MODULE_SRCS "${MODULE_SRCS};${primarysourcefile}")
+  SET(MODULE_PATHS "${MODULE_PATHS};${path_to_module}")
 
 ENDFOREACH()
 
@@ -442,7 +440,7 @@ SET(extra_builtin_modules) # the ones specified with -DWITH_MODULES=
 IF(WITH_MODULES) # modules statically linked with the server
   STRING(REPLACE "," ";" WITH_MODULE_LIST ${WITH_MODULES})
   FOREACH(static_mod ${WITH_MODULE_LIST})
-    STRING(REGEX MATCH "[^/]+\\.c"           mod_basename    ${static_mod})
+    STRING(REGEX MATCH   "[^/]+\\.c"           mod_basename    ${static_mod})
     STRING(REGEX REPLACE "^mod_(.*)\\.c" "\\1" mod_module_name ${mod_basename})     
     SET(builtin_module_shortnames "${builtin_module_shortnames} ${mod_module_name}")
     CONFIGURE_FILE(${static_mod} ${PROJECT_BINARY_DIR}/ COPYONLY)
@@ -601,13 +599,12 @@ SET(LoadModules)
 SET(mods_built_and_loaded)
 SET(mods_built_but_not_loaded)
 SET(mods_omitted)
-FOREACH (mod ${MODULE_SRCS})
+FOREACH (mod ${MODULE_PATHS})
   # Build different forms of the module name; e.g., 
-  #   mod_short_name->mod_cgi.c, mod_name->mod_cgi, mod_module_name->cgi_module
-  STRING(REGEX MATCH   "[^/]+\\.c"              mod_basename  ${mod})
-  STRING(REGEX MATCH   "[^.]+"                  mod_name        ${mod_basename})
-  STRING(REGEX REPLACE "^mod_(.*)" "\\1_module" mod_module_name ${mod_name})
-  STRING(REGEX REPLACE "mod_(.*)"  "\\1"        mod_shortname   ${mod_name})
+  #   mod_name->mod_cgi, mod_module_name->cgi_module, mod_shortname->cgi
+  STRING(REGEX REPLACE ".*/(mod_[^\\+]+)" "\\1"        mod_name        ${mod})
+  STRING(REGEX REPLACE "mod_(.*)"         "\\1_module" mod_module_name ${mod_name})
+  STRING(REGEX REPLACE "mod_(.*)"         "\\1"        mod_shortname   ${mod_name})
 
   # Is it enabled?
   STRING(TOUPPER "ENABLE_${mod_shortname}" enable_mod)
@@ -650,7 +647,7 @@ FOREACH (mod ${MODULE_SRCS})
     SET(mod_extra_sources "${mod_name}_extra_sources")
 
     IF("${${mod_main_source}}" STREQUAL "")
-      SET(tmp_mod_main_source ${mod})
+      SET(tmp_mod_main_source "${mod}.c")
     ELSE()
       SET(tmp_mod_main_source ${${mod_main_source}})
     ENDIF()
