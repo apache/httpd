@@ -191,9 +191,8 @@ Known Bugs and Limitations
 
 * no standard script or makefile is provided to tie together the builds
   of httpd and support libraries in a manner suitable for typical users
-* no logic to find support libraries needed by some modules (distcache, serf)
-* no working support for building these modules:
-  + mod_socache_dc, mod_serf, apreq+mod_apreq
+* no logic to find support libraries or otherwise build these modules:
+  + mod_socache_dc (distcache), mod_serf (serf)
   + additionally, mod_lbmethod_rr and mod_firehose don't compile on Windows
     anyway
 * buildmark.c isn't necessarily rebuilt when httpd.exe is regenerated

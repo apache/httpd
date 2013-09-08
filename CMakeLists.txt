@@ -290,12 +290,16 @@ IF(NOT ${minorversion} STREQUAL "4")
       "modules/debugging/mod_firehose.c+O+Firehose dump filter"
       "modules/proxy/mod_serf.c+O+Reverse proxy module using Serf"
       "modules/test/mod_policy.c+I+HTTP protocol compliance filters"
+      "modules/apreq/mod_apreq.c+i+Apache Request Filter"
   )
 ENDIF()
 
 # Define extra definitions, sources, headers, etc. required by some modules.
 # This could be included in the master list of modules above, though it 
 # certainly would get a lot more unreadable.
+SET(mod_apreq_extra_defines          APREQ_DECLARE_EXPORT)
+SET(mod_apreq_extra_sources          modules/apreq/handle.c)
+SET(mod_apreq_main_source            modules/apreq/filter.c)
 SET(mod_authz_dbd_extra_defines      AUTHZ_DBD_DECLARE_EXPORT)
 SET(mod_authnz_ldap_requires         APR_HAS_LDAP)
 SET(mod_authnz_ldap_extra_libs       mod_ldap)
@@ -524,7 +528,19 @@ IF(NOT ${minorversion} STREQUAL "4")
   # more libhttpd sources in trunk
   SET(LIBHTTPD_SOURCES
       ${LIBHTTPD_SOURCES}
-      "server/util_fcgi.c"
+      server/apreq_cookie.c
+      server/apreq_error.c
+      server/apreq_module.c
+      server/apreq_module_cgi.c
+      server/apreq_module_custom.c
+      server/apreq_param.c
+      server/apreq_parser.c
+      server/apreq_parser_header.c
+      server/apreq_parser_multipart.c
+      server/apreq_parser_urlencoded.c
+      server/apreq_util.c
+      server/skiplist.c
+      server/util_fcgi.c
   )
 ENDIF()
 
@@ -664,7 +680,12 @@ ENDFOREACH()
 ADD_LIBRARY(libhttpd SHARED ${LIBHTTPD_SOURCES})
 SET(install_targets ${install_targets} libhttpd)
 TARGET_LINK_LIBRARIES(libhttpd ${APR_LIBRARIES} ${PCRE_LIBRARIES} ${HTTPD_SYSTEM_LIBS})
-SET_TARGET_PROPERTIES(libhttpd PROPERTIES COMPILE_FLAGS -DAP_DECLARE_EXPORT)
+IF(NOT ${minorversion} STREQUAL "4")
+  # trunk needs apreq symbols exported
+  SET_TARGET_PROPERTIES(libhttpd PROPERTIES COMPILE_FLAGS "-DAP_DECLARE_EXPORT -DAPREQ_DECLARE_EXPORT")
+ELSE()
+  SET_TARGET_PROPERTIES(libhttpd PROPERTIES COMPILE_FLAGS -DAP_DECLARE_EXPORT)
+ENDIF()
 ADD_DEPENDENCIES(libhttpd test_char_header)
 
 ###########   HTTPD EXECUTABLES   ##########
