@@ -172,7 +172,7 @@ This can be resolved in several different ways:
 * Update PATH to include the bin directories of all necessary support
   libraries.
 
-  Depending on where PATH is set, it may not effect starting httpd as
+  Depending on where PATH is set, it may not affect starting httpd as
   a service.
 
 * Maintain a script which combines required binaries into a common 
@@ -189,9 +189,11 @@ This can be resolved in several different ways:
 Known Bugs and Limitations
 --------------------------
 
+* no standard script or makefile is provided to tie together the builds
+  of httpd and support libraries in a manner suitable for typical users
 * no logic to find support libraries needed by some modules (distcache, serf)
 * no working support for building these modules:
-  + mod_socache_dc, mod_lua, mod_serf, apreq+mod_apreq
+  + mod_socache_dc, mod_serf, apreq+mod_apreq
   + additionally, mod_lbmethod_rr and mod_firehose don't compile on Windows
     anyway
 * buildmark.c isn't necessarily rebuilt when httpd.exe is regenerated

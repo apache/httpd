@@ -232,7 +232,7 @@ SET(MODULE_LIST
   "modules/loggers/mod_log_debug.c+I+configurable debug logging"
   "modules/loggers/mod_log_forensic.c+I+forensic logging"
   "modules/loggers/mod_logio.c+I+input and output logging"
-  "modules/lua/mod_lua.c+O+Apache Lua Framework"
+  "modules/lua/mod_lua.c+i+Apache Lua Framework"
   "modules/mappers/mod_actions.c+I+Action triggering on requests"
   "modules/mappers/mod_alias.c+A+mapping of requests to different filesystem parts"
   "modules/mappers/mod_dir.c+A+directory request handling"
@@ -333,6 +333,15 @@ SET(mod_ldap_extra_sources
 )
 SET(mod_ldap_main_source             modules/ldap/util_ldap.c)
 SET(mod_ldap_requires                APR_HAS_LDAP)
+SET(mod_lua_extra_defines            AP_LUA_DECLARE_EXPORT)
+SET(mod_lua_extra_includes           ${LUA_INCLUDE_DIR})
+SET(mod_lua_extra_libs               ${LUA_LIBRARIES})
+SET(mod_lua_extra_sources
+  modules/lua/lua_apr.c              modules/lua/lua_config.c
+  modules/lua/lua_passwd.c           modules/lua/lua_request.c
+  modules/lua/lua_vmprep.c           modules/lua/lua_dbd.c
+)
+SET(mod_lua_requires                 LUA51_FOUND)
 SET(mod_optional_hook_export_extra_defines AP_DECLARE_EXPORT) # bogus reuse of core API prefix
 SET(mod_proxy_extra_defines          PROXY_DECLARE_EXPORT)
 SET(mod_proxy_extra_sources          modules/proxy/proxy_util.c)
