@@ -198,6 +198,9 @@ Known Bugs and Limitations
 * buildmark.c isn't necessarily rebuilt when httpd.exe is regenerated
 * ApacheMonitor has a build error and is disabled
 * CGI examples aren't installed
+* dbmmanage.pl, httxt2dbm, wintty aren't built/installed
+* mod_dav.lib and anything else isn't installed, nor are any .exp files (though
+  I don't know what would use them)
 * module enablement defaults are not in sync with the autoconf-based build
 * no support for static PCRE builds (need to detect then turn on PCRE_STATIC)
 * module base addresses aren't set
