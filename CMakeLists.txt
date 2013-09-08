@@ -66,6 +66,7 @@ SET(LIBXML2_ICONV_LIBRARIES       ""                     CACHE STRING "iconv lib
 # end support library configuration
 
 # Misc. options
+SET(ENABLE_MODULES        "O"                            CACHE STRING "Minimum module enablement (e.g., \"i\" to build all but those without prerequisites)")
 SET(WITH_MODULES          ""                             CACHE STRING "comma-separated paths to single-file modules to statically link into the server")
 SET(EXTRA_INCLUDE_DIRS    ""                             CACHE STRING "extra include directories")
 
@@ -77,6 +78,24 @@ FOREACH(onelib ${APR_LIBRARIES})
     MESSAGE(FATAL_ERROR "APR library ${onelib} was not found.")
   ENDIF()
 ENDFOREACH()
+
+MACRO(GET_MOD_ENABLE_RANK macro_modname macro_mod_enable_val macro_output_rank)
+  IF(${macro_mod_enable_val} STREQUAL "O")
+    SET(${macro_output_rank} 0)
+  ELSEIF(${macro_mod_enable_val} STREQUAL "i")
+    SET(${macro_output_rank} 1)
+  ELSEIF(${macro_mod_enable_val} STREQUAL "I")
+    SET(${macro_output_rank} 2)
+  ELSEIF(${macro_mod_enable_val} STREQUAL "a")
+    SET(${macro_output_rank} 3)
+  ELSEIF(${macro_mod_enable_val} STREQUAL "A")
+    SET(${macro_output_rank} 4)
+  ELSE()
+    MESSAGE(FATAL_ERROR "Unexpected enablement value \"${macro_mod_enable_val}\" for ${macro_modname}")
+  ENDIF()
+ENDMACRO()
+
+GET_MOD_ENABLE_RANK("ENABLE_MODULES setting" ${ENABLE_MODULES} enable_modules_rank)
 
 # Figure out what APR/APU features are available
 #
@@ -329,6 +348,7 @@ IF(ZLIB_FOUND)
   SET(mod_deflate_extra_includes       ${ZLIB_INCLUDE_DIR})
   SET(mod_deflate_extra_libs           ${ZLIB_LIBRARIES})
 ENDIF()
+SET(mod_firehose_requires            SOMEONE_TO_MAKE_IT_COMPILE_ON_WINDOWS)
 SET(mod_heartbeat_extra_libs         mod_watchdog)
 SET(mod_ldap_extra_defines           LDAP_DECLARE_EXPORT)
 SET(mod_ldap_extra_libs              wldap32)
@@ -372,11 +392,13 @@ SET(mod_sed_extra_sources
   modules/filters/regexp.c           modules/filters/sed0.c
   modules/filters/sed1.c
 )
+SET(mod_serf_requires                AN_UNIMPLEMENTED_SUPPORT_LIBRARY_REQUIREMENT)
 SET(mod_session_extra_defines        SESSION_DECLARE_EXPORT)
 SET(mod_session_cookie_extra_libs    mod_session)
 SET(mod_session_crypto_requires      APU_HAVE_CRYPTO)
 SET(mod_session_crypto_extra_libs    mod_session)
 SET(mod_session_dbd_extra_libs       mod_session)
+SET(mod_socache_dc_requires          AN_UNIMPLEMENTED_SUPPORT_LIBRARY_REQUIREMENT)
 SET(mod_ssl_requires                 OPENSSL_FOUND)
 IF(OPENSSL_FOUND)
   SET(mod_ssl_extra_includes           ${OPENSSL_INCLUDE_DIR})
@@ -609,6 +631,13 @@ FOREACH (mod ${MODULE_PATHS})
   # Is it enabled?
   STRING(TOUPPER "ENABLE_${mod_shortname}" enable_mod)
   SET(enable_mod_val ${${enable_mod}})
+
+  # Is ENABLE_MODULES set to a higher value?
+  GET_MOD_ENABLE_RANK(${mod_name} ${enable_mod_val} this_mod_rank)
+  IF(this_mod_rank LESS enable_modules_rank)
+    # Use the value from ENABLE_MODULES
+    SET(enable_mod_val ${ENABLE_MODULES})
+  ENDIF()
 
   IF(NOT ${enable_mod_val} STREQUAL "O") # build of module is desired
     SET(mod_requires "${mod_name}_requires")

@@ -73,6 +73,7 @@ How to build
 3. cmake -G "some backend, like 'NMake Makefiles'"
      -DCMAKE_INSTALL_PREFIX=d:/path/to/httpdinst
      -DENABLE_foo=A|I|O|a|i
+     -DENABLE_MODULES=A|I|O|a|i
      d:/path/to/httpdsource
 
    Alternately, you can use the cmake-gui and update settings in the GUI.
@@ -135,6 +136,40 @@ How to build
 
        Examples: -DENABLE_ACCESS_COMPAT=O
                  -DENABLE_PROXY_HTML=i
+
+   ENABLE_MODULES:
+       This changes the *minimum* enablement of all modules to the specified
+       value (one of A, a, I, i, O, as described under ENABLE_foo above).
+
+       The ranking of enablement from lowest to highest is O, i, I, a, A.
+       If a specific module has a higher rank enablement setting, either from
+       a built-in default or from -DENABLE_foo, ENABLE_MODULES won't affect
+       that module.  However, if a specific module has a lower-rank enablement
+       setting, presumably from a built-in default, the value of ENABLE_MODULES
+       will be used for that module.
+
+       Explanations for possible values:
+
+       -DENABLE_MODULES=a      build and activate all possible modules,
+                               ignoring any with missing prereqs
+                               (doesn't affect modules with A for ENABLE_foo)
+
+       -DENABLE_MODULES=i      build but leave inactive all possible
+                               modules, ignoring any with missing
+                               prereqs
+                               (doesn't affect modules with A, a, or I for 
+                               ENABLE_foo)
+
+       -DENABLE_MODULES=O      no impact, since all modules are either
+                               already disabled or have a higher setting
+
+       -DENABLE_MODULES=A      build and activate all possible modules,
+                               failing the build if any module is missing
+                               a prereq
+
+       -DENABLE_MODULES=I      similar to -DENABLE_MODULES=I
+                               (doesn't affect modules with A or a for
+                               ENABLE_foo)
 
    WITH_MODULES:
        Comma-separated paths to single file modules to statically link into
