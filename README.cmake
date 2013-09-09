@@ -46,18 +46,24 @@ The following support libraries are mandatory:
 
 * APR, built with cmake
   + Either APR 2.0-dev (trunk) or APR 1.4.x and APR-Util 1.5.x.
-  + When building APR (but not APR-Util 1.5.x), specify the build option
+  + When building APR (but not APR-Util), specify the build option
     APR_INSTALL_PRIVATE_H so that non-standard files required for building
     Apache httpd are installed.
   + Additional APR settings affect httpd but are not mandatory, such as
     APR_HAVE_IPV6.
 * PCRE
 
-Additional support libraries allow optional features of httpd to be enabled:
+Certain optional features of APR 2.0-dev (trunk) or APR-Util 1.5.x
+allow some optional features of httpd to be enabled.  For example,
+APU_HAVE_CRYPTO is required for mod_session_crypto.
+
+Additional support libraries allow some optional features of httpd to be
+enabled:
 
 * libxml2 (e.g., mod_proxy_html)
-* openssl (e.g., mod_ssl)
-* zlib (e.g., mod_deflate)
+* lua 5.1 (mod_lua)
+* openssl (mod_ssl and https support for ab)
+* zlib (mod_deflate)
 
 How to build
 ------------
@@ -65,10 +71,10 @@ How to build
 1. cd to a clean directory for building (i.e., don't build in your
    source tree)
 
-2. Make sure Perl is in your PATH.  Additionally, some backends may want
-   your compile tools in PATH.  (Hint: "Visual Studio Command Prompt")
-   In the unlikely event that you use -DWITH_MODULES, make sure awk is
-   in PATH.
+2. Make sure cmake and Perl are in PATH.  Additionally, some backends 
+   require compile tools in PATH.  (Hint: "Visual Studio Command Prompt")
+   In the unlikely event that you use -DWITH_MODULES, described below, make
+   sure awk is in PATH.
 
 3. cmake -G "some backend, like 'NMake Makefiles'"
      -DCMAKE_INSTALL_PREFIX=d:/path/to/httpdinst
@@ -107,9 +113,15 @@ How to build
        APR+APR-Util 1.x vs. APR trunk will be detected automatically if they
        are installed to the same location as httpd.
 
+       APR-Util 1.x has an optional LDAP library.  If APR-Util has LDAP enabled
+       and httpd's mod_ldap and mod_authnz_ldap are being used, include the
+       path to the LDAP library in the APR_LIBRARIES setting.  (If APR and
+       APR-Util are found in the default location, the LDAP library will be
+       included if it is present.
+
    LIBXML2_ICONV_INCLUDE_DIR, LIBXML2_ICONV_LIBRARIES
 
-      If using a module that requires libxml2 and the build of libxml2 requires
+      If using a module that requires libxml2 *and* the build of libxml2 requires
       iconv, set these variables to allow iconv includes and libraries to be
       used.  For example:
 
@@ -118,11 +130,13 @@ How to build
 
    CMAKE_C_FLAGS_RELEASE, _DEBUG, _RELWITHDEBINFO, _MINSIZEREL
    CMAKE_BUILD_TYPE
+
        For NMake Makefiles the choices are at least DEBUG, RELEASE,
        RELWITHDEBINFO, and MINSIZEREL
        Other backends make have other selections.
 
    ENABLE_foo:
+
        Each module has a default setting which can be overridden with one of
        the following values:
            A        build and Activate module
@@ -138,6 +152,7 @@ How to build
                  -DENABLE_PROXY_HTML=i
 
    ENABLE_MODULES:
+
        This changes the *minimum* enablement of all modules to the specified
        value (one of A, a, I, i, O, as described under ENABLE_foo above).
 
@@ -167,12 +182,13 @@ How to build
                                failing the build if any module is missing
                                a prereq
 
-       -DENABLE_MODULES=I      similar to -DENABLE_MODULES=I
+       -DENABLE_MODULES=I      similar to -DENABLE_MODULES=A
                                (doesn't affect modules with A or a for
                                ENABLE_foo)
 
    WITH_MODULES:
-       Comma-separated paths to single file modules to statically link into
+
+       Comma-separated paths to single file modules to statically linked into
        the server, like the --with-module=modpath:/path/to/mod_foo.c with
        the autoconf-based build.  Key differences: The modpath (e.g., 
        "generators") isn't provided or used, and the copy of the module
@@ -180,14 +196,18 @@ How to build
        See also EXTRA_INCLUDE_DIRS.
 
    EXTRA_INCLUDE_DIRS:
+
        List of additional directories to search for .h files.  This may
        be necessary when including third-party modules in the httpd build
        via WITH_MODULES.
 
-   Port and SSLPort: port numbers for substitution into default .conf files.
-   (The defaults are 80 and 443.)
+   Port and SSLPort:
 
-4. build using chosen backend (e.g., "nmake install")
+       Port numbers for substitution into default .conf files.  (The defaults
+       are 80 and 443.)
+
+4. Build using the chosen generator (e.g., "nmake install" for cmake's "NMake
+   Makefiles" generator).
 
 Running the server and support programs
 ---------------------------------------
@@ -227,15 +247,15 @@ Known Bugs and Limitations
 * no standard script or makefile is provided to tie together the builds
   of httpd and support libraries in a manner suitable for typical users
 * no logic to find support libraries or otherwise build these modules:
-  + mod_socache_dc (distcache), mod_serf (serf)
+  + mod_socache_dc (requires distcache), mod_serf (requires serf)
   + additionally, mod_lbmethod_rr and mod_firehose don't compile on Windows
     anyway
 * buildmark.c isn't necessarily rebuilt when httpd.exe is regenerated
 * ApacheMonitor has a build error and is disabled
 * CGI examples aren't installed
 * dbmmanage.pl, httxt2dbm, wintty aren't built/installed
-* mod_dav.lib and anything else isn't installed, nor are any .exp files (though
-  I don't know what would use them)
+* mod_dav.lib and any similar libraries aren't installed, nor are any .exp
+  files (though I'm not sure that is a problem)
 * module enablement defaults are not in sync with the autoconf-based build
 * no support for static PCRE builds (need to detect then turn on PCRE_STATIC)
 * module base addresses aren't set
