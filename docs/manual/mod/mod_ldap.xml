@@ -522,7 +522,8 @@ valid</description>
     explicitly configures the referral chasing in the underlying SDK.</p> 
     
   
-    <p><directive>LDAPReferrals</directive> takes the takes the following values:
+    <p><directive>LDAPReferrals</directive> takes the takes the following values:</p>
+
     <dl>
      <dt>"on"</dt>
      <dd> <p> When set to "on", the underlying SDK's referral chasing state
@@ -538,7 +539,6 @@ valid</description>
               used to overide the SDK's hop limit, and no LDAP rebind callback is 
               registered.</p></dd>
     </dl>
-    </p>
 
     <p> The directive <code>LDAPReferralHopLimit</code> works in conjunction with
     this directive to limit the number of referral hops to follow before terminating the LDAP query.
