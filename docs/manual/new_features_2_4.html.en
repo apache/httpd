@@ -138,10 +138,10 @@
       to edit the response body with the full power of sed.</dd>
 
       <dt><code class="module"><a href="./mod/mod_auth_form.html">mod_auth_form</a></code></dt>
-      <dd>Allows to do form-based authentication.</dd>
+      <dd>Enables form-based authentication.</dd>
 
       <dt><code class="module"><a href="./mod/mod_session.html">mod_session</a></code></dt>
-      <dd>Allows to keep session state for clients, using cookie or
+      <dd>Enables the use of session state for clients, using cookie or
       database storage.</dd>
 
       <dt><code class="module"><a href="./mod/mod_allowmethods.html">mod_allowmethods</a></code></dt>
@@ -153,7 +153,7 @@
       for configuration and small business logic functions. (Experimental)</dd>
 
       <dt><code class="module"><a href="./mod/mod_log_debug.html">mod_log_debug</a></code></dt>
-      <dd>Allows to add customizable debug logging at different phases of the
+      <dd>Allows the addition of customizable debug logging at different phases of the
       request processing.</dd>
 
       <dt><code class="module"><a href="./mod/mod_buffer.html">mod_buffer</a></code></dt>
@@ -272,7 +272,7 @@
           <code class="directive"><a href="./mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> to
           simplify common rewriting scenarios.</dd>
       <dd>Adds the possibility to use complex boolean expressions in <code class="directive"><a href="./mod/mod_rewrite.html#rewritecond">RewriteCond</a></code>.</dd>
-      <dd>Allows to use SQL queries as <code class="directive"><a href="./mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> functions.</dd>
+      <dd>Allows the use of SQL queries as <code class="directive"><a href="./mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> functions.</dd>
 
       <dt><code class="module"><a href="./mod/mod_ldap.html">mod_ldap</a></code>, <code class="module"><a href="./mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code></dt>
       <dd><code class="module"><a href="./mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code> adds support for nested groups.</dd>

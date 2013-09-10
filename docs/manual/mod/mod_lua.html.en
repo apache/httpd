@@ -1054,6 +1054,17 @@ r.date_parse_rfc(string) -- Parses a date/time string and returns seconds since 
 </pre>
 
 
+<pre class="prettyprint lang-lua">
+r:getcookie(key) -- Gets a HTTP cookie
+</pre>
+
+
+<pre class="prettyprint lang-lua">
+r:setcookie(key, value, secure, expires) -- Sets a HTTP cookie, for instance:
+r:setcookie("foo", "bar and stuff", false, os.time() + 86400)
+</pre>
+
+
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="logging" id="logging">Logging Functions</a></h2>
