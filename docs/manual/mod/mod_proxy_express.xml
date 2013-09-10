@@ -125,6 +125,7 @@
         </example>
 
       <example><title>Configuration</title>
+        ProxyExpressEnable on<br />
         ProxyExpressDBMFile emap<br />
         </example>
     </note>
