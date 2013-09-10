@@ -257,7 +257,7 @@ nom de chemin en fin de requête.</td></tr>
     déterminé par le <a href="../handler.html">gestionnaire</a> responsable de la requête.
     Le gestionnaire de base pour les fichiers normaux rejette par défaut
     les requêtes avec <code>PATH_INFO</code>. Les gestionnaires qui
-    servent des scripts, comme<a href="mod_cgi.html">cgi-script</a> et <a href="mod_isapi.html">isapi-handler</a>, acceptent en général par
+    servent des scripts, comme <a href="mod_cgi.html">cgi-script</a> et <a href="mod_isapi.html">isapi-handler</a>, acceptent en général par
     défaut les requêtes avec <code>PATH_INFO</code>.</dd>
     </dl>
 
