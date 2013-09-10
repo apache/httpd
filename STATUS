@@ -244,7 +244,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     trunk patch: http://svn.apache.org/r1520908
     2.4.x patch: trunk works, if 1496338 above is merged first.
     +1: covener
-    
+
+  * mpm_unix: Add ap_mpm_podx_* implementation to avoid code duplication
+    and align w/ trunk.
+    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1409214
+    2.4.x patch: http://people.apache.org/~jim/patches/httpd-2.4-podx.patch
+    +1: jim
+
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
 If you want to propose one of those, please still add them here.
