@@ -251,6 +251,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: http://people.apache.org/~jim/patches/httpd-2.4-podx.patch
     +1: jim
 
+  * event: Use skiplist and fold in performance tweeks from trunk
+    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1451706
+                 http://svn.apache.org/viewvc?view=revision&revision=1517365
+    2.4.x patch: http://people.apache.org/~jim/patches/httpd-2.4-event.patch
+    +1: jim
+
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
 If you want to propose one of those, please still add them here.
