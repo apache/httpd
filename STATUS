@@ -164,7 +164,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     the same bucket.
     trunk: http://svn.apache.org/r1502772
     2.4.x patch: trunk works (minus log-message-tags)
-    +1: rjung
+    +1: rjung, jim
 
   * mod_logio: new format-specifier %S (sum) which is the sum of received
     and sent byte counts.
@@ -221,12 +221,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   * mod_ldap: add TRACE5 for LDAP retries
     trunk patch: http://svn.apache.org/r1510084
     2.4.x patch: trunk works
-    +1: covener
+    +1: covener, jim
 
   * mod_ldap: retry on an LDAP timeout during authn.
     trunk patch: http://svn.apache.org/r1510085
     2.4.x patch: trunk works
-    +1: covener
+    +1: covener, jim
 
   * WinNT MPM: crash-o-matic with "Listen <portnumber> <unrecognized>"
     trunk patch: http://svn.apache.org/r1520368
