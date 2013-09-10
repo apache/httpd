@@ -122,6 +122,7 @@
         </code></p></div>
 
       <div class="example"><h3>Configuration</h3><p><code>
+        ProxyExpressEnable on<br />
         ProxyExpressDBMFile emap<br />
         </code></p></div>
     </div>

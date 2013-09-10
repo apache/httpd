@@ -45,8 +45,10 @@
     <p>Unlike <a href="http://httpd.apache.org/mod_fcgid/">mod_fcgid</a>
     and <a href="http://www.fastcgi.com/">mod_fastcgi</a>,
     <code class="module"><a href="../mod/mod_proxy_fcgi.html">mod_proxy_fcgi</a></code> has no provision for starting the
-    application process; <code class="program"><a href="../programs/fcgistarter.html">fcgistarter</a></code> is provided for
-    that purpose.</p>
+    application process; <code class="program"><a href="../programs/fcgistarter.html">fcgistarter</a></code> is provided
+    (on some platforms) for that purpose. Alternatively, external launching
+    or process management may be available in the FastCGI application
+    framework in use.</p>
 
     <div class="warning"><h3>Warning</h3>
       <p>Do not enable proxying until you have <a href="mod_proxy.html#access">secured your server</a>. Open proxy
