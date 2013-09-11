@@ -198,7 +198,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     authz_core is collecting providers results. Subsequently reported in PR55523?
     trunk patch: http://svn.apache.org/r1517366
     2.4.x: trunk works
-    +1: covener
+    +1: covener, jim
    
   * mod_filter: Allow mod_filter to undo equiv of change=yes that was 
     baked into a filter provider.
@@ -237,13 +237,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     a header if it's not already there (can't do this with Edit)
     trunk patch: http://svn.apache.org/1496338
     2.4.x patch: trunk works
-    +1: covener
+    +1: covener, jim
 
   * mod_headers: Add 'Header note header-name note-name' to copy a headers 
     value into a note (so a CGI/Proxy header can be deleted and logged)
     trunk patch: http://svn.apache.org/r1520908
     2.4.x patch: trunk works, if 1496338 above is merged first.
-    +1: covener
+    +1: covener, jim
 
   * mpm_unix: Add ap_mpm_podx_* implementation to avoid code duplication
     and align w/ trunk.
@@ -255,6 +255,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1451706
                  http://svn.apache.org/viewvc?view=revision&revision=1517365
     2.4.x patch: http://people.apache.org/~jim/patches/httpd-2.4-event.patch
+                       - or-
+                 http://people.apache.org/~jim/patches/httpd-2.4-event-test.patch
+                   (for combined skiplist, podx and event patch)
     +1: jim
 
 A list of further possible backports can be found at:                                                                                                                                   
