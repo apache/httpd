@@ -976,6 +976,39 @@ r:setcookie(key, value, secure, expires) -- Sets a HTTP cookie, for instance:
 r:setcookie("foo", "bar and stuff", false, os.time() + 86400)
 </highlight>
 
+<highlight language="lua">
+r:wsupgrade() -- Upgrades a connection to WebSockets if possible (and requested):
+if r:wsupgrade() then -- if we can upgrade:
+    r:wswrite("Welcome to websockets!") -- write something to the client
+    r:wsclose()  -- goodbye!
+end
+</highlight>
+
+<highlight language="lua">
+r:wsread() -- Reads a WebSocket frame from a WebSocket upgraded connection (see above):
+           -- Currently, only the WS protocol is supported (no WSS support for reading)
+local line, isFinal = r:wsread() -- isFinal denotes whether this is the final frame.
+                                 -- If it isn't, then more frames can be read
+r:wswrite("You wrote: " .. line)
+</highlight>
+
+<highlight language="lua">
+r:wswrite(line) -- Writes a frame to a WebSocket client:
+r:wswrite("Hello, world!")
+</highlight>
+
+<highlight language="lua">
+r:wsclose() -- Closes a WebSocket request and terminates it for httpd:
+
+if r:wsupgrade() then
+    r:wswrite("Write something: ")
+    local line = r:wsread() or "nothing"
+    r:wswrite("You wrote: " .. line);
+    r:wswrite("Goodbye!")
+    r:wsclose()
+end
+</highlight>
+
 </section>
 
 <section id="logging"><title>Logging Functions</title>
