@@ -25,8 +25,6 @@
 <a href="./fr/caching.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="./tr/caching.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p>Ce document complète la documentation de référence des modules
     <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code>, <code class="module"><a href="./mod/mod_cache_disk.html">mod_cache_disk</a></code>,
@@ -194,6 +192,12 @@
 	      phases d'authentification et d'autorisation du traitement
 	      au niveau du serveur, et il doit donc être utilisé avec
 	      prudence lorsque que ces phases sont importantes.</p>
+
+	      <p>Les requêtes contenant un en-tête "Authorization"
+	      header (par exemple dans le cas de l'authentification HTTP
+	      basique) ne peuvent ni être mises en cache, ni servies
+	      depuis le cache lorsque <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code>
+	      s'exécute dans cette phase.</p>
           </dd>
           <dt>Phase du gestionnaire normal</dt>
           <dd>

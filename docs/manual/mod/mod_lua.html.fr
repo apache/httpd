@@ -72,6 +72,7 @@ fonctionnement interne de httpd.</p>
 <li><img alt="" src="../images/down.gif" /> <a href="#luahookcheckuserid">LuaHookCheckUserID</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#luahookfixups">LuaHookFixups</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#luahookinsertfilter">LuaHookInsertFilter</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#luahooklog">LuaHookLog</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#luahookmaptostorage">LuaHookMapToStorage</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#luahooktranslatename">LuaHookTranslateName</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#luahooktypechecker">LuaHookTypeChecker</a></li>
@@ -330,10 +331,12 @@ ou la définition de types MIME : </p>
     </tr>
 <tr class="odd">
         <td>Journalisation</td>
-        <td>aucune</td>
+        <td><code class="directive"><a href="#luahooklog">LuaHookLog</a></code></td>
         <td>Lorsqu'une requête a été traitée, plusieurs phases de
 	journalisation interviennent, et enregistrent leurs résultats
-	dans les fichiers d'erreur ou d'accès.</td>
+	dans les fichiers d'erreur ou d'accès. Mod_lua peut
+	s'intercaler au départ de ce processus et ainsi contrôler la
+	journalisation.</td>
     </tr>
 </table>
 
@@ -1146,6 +1149,17 @@ r.date_parse_rfc(string) -- Interprète une chaîne date/heure et renvoie l'équiva
 </pre>
 
 
+<pre class="prettyprint lang-lua">
+r:getcookie(key) -- Obtient un cookie HTTP
+</pre>
+
+
+<pre class="prettyprint lang-lua">
+r:setcookie(key, value, secure, expires) -- Définit un cookie HTTP, par exemple :
+r:setcookie("foo", "bar and stuff", false, os.time() + 86400)
+</pre>
+
+
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="logging" id="logging">Fonctions de journalisation</a></h2>
@@ -1618,6 +1632,62 @@ traitement de la requête</td></tr>
 </table><p>Non encore implémenté</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="LuaHookLog" id="LuaHookLog">LuaHookLog</a> <a name="luahooklog" id="luahooklog">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Permet une insertion dans la phase de journalisation du
+traitement d'une requête</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaHookLog  /path/to/lua/script.lua log_function_name</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
+</table>
+<p>
+    Ce dispositif d'insertion simple permet d'exécuter une fonction
+    lorsque httpd entre dans la phase de journalisation du traitement
+    d'une requête. Vous pouvez ainsi ajouter des données à vos propres
+    entrées de journalisation, manipuler les entrées du journal standard
+    avant leur enregistrement ou empêcher l'enregistrement d'une entrée
+    dans le journal. Pour empêcher l'enregistrement normal des entrées
+    du journal, renvoyez simplement <code>apache2.DONE</code> dans votre
+    gestionnaire de journalisation, ou au contraire, renvoyez
+    <code>apache2.OK</code> pour que httpd effectue une journalisation
+    normale.
+</p>
+<p>Exemple :</p>
+<pre class="prettyprint lang-config">
+LuaHookLog /path/to/script.lua logger
+</pre>
+
+<pre class="prettyprint lang-lua">
+-- /path/to/script.lua --
+function logger(r)
+    -- on joue à pile ou face :
+    -- Si on obtient 1, on écrit dans notre propre journal Lua et on dit
+    -- à httpd de ne pas enregistrer d'entrée dans le journal standard..
+    -- Si on obtient 2, on nettoie un peu les données avant que httpd ne
+    -- les enregistre dans le journal standard.
+
+    if math.random(1,2) == 1 then
+        -- On effectue notre propre journalisation et le journal
+	-- standard n'est pas alimenté
+        local f = io.open("/foo/secret.log", "a")
+        if f then
+            f:write("Quelque chose de secret est arrivé à " .. r.uri .. "\n")
+            f:close()
+        end
+        return apache2.DONE -- On dit à httpd de ne rien enregistrer
+				--dans le journal standard
+    else
+        r.uri = r.uri:gsub("somesecretstuff", "") -- nettoie les données
+        return apache2.OK -- et httpd doit alors les enregistrer.
+    end
+end
+</pre>
+
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LuaHookMapToStorage" id="LuaHookMapToStorage">LuaHookMapToStorage</a> <a name="luahookmaptostorage" id="luahookmaptostorage">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fournit un point d'entrée pour la phase map_to_storage du
@@ -1768,15 +1838,68 @@ parentes sont fusionnées dans les enfants</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LuaInputFilter" id="LuaInputFilter">LuaInputFilter</a> <a name="luainputfilter" id="luainputfilter">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Provide a Lua function for content input filtering</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fournit une fonction Lua pour le filtrage en entrée</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaInputFilter filter_name /path/to/lua/script.lua function_name</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>2.5.0 and later</td></tr>
-</table><p>La documentation de cette directive
-	n'a pas encore t traduite. Veuillez vous reporter  la version
-	en langue anglaise.</p></div>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.5.0 du serveur HTTP
+Apache</td></tr>
+</table>
+<p>Cette directive permet d'ajouter un filtre en entrée sous la forme
+d'une fonction Lua. A l'instar des filtres en sorties, les filtres en
+entrée fonctionnent comme des sous-routines, intervenant dans un premier
+temps avant l'envoi du contenu des tampons, puis chaque fois qu'un
+paquet de données doit être transmis à la chaîne, et éventuellement
+produisant toute donnée à ajouter aux données en entrée. La variable
+globale <code>bucket</code> contient les paquets de données tels qu'ils
+sont transmis au script Lua :
+</p>
+
+<pre class="prettyprint lang-config">
+LuaInputFilter myInputFilter /www/filter.lua input_filter
+&lt;FilesMatch "\.lua&gt;
+  SetInputFilter myInputFilter
+&lt;/FilesMatch&gt;
+</pre>
+
+<pre class="prettyprint lang-lua">
+--[[
+    Exemple de filtre en entrée qui convertit toutes les données POST en
+    majuscules.
+]]--
+function input_filter(r)
+    print("luaInputFilter called") -- debug print
+    coroutine.yield() -- Yield and wait for buckets
+    while bucket do -- For each bucket, do...
+        local output = string.upper(bucket) -- Convertit toutes les données POST en majuscules
+        coroutine.yield(output) -- Envoie les données traitées à la chaîne
+    end
+    -- plus aucune donnée à traiter.
+    coroutine.yield("&amp;filterSignature=1234") -- Ajoute une signature à la fin
+end
+</pre>
+
+<p>
+Le filtre en entrée peut interdire ou sauter un filtre s'il est
+considéré comme indésirable :
+</p>
+<pre class="prettyprint lang-lua">
+function input_filter(r)
+    if not good then
+        return -- Empêche tout simplement le filtrage et transmet le contenu original
+    end
+    coroutine.yield() -- attend des paquets de données
+    ... -- insert les filtres ici
+end
+</pre>
+
+<p>
+Voir "<a href="#modifying_buckets">Modification de contenu avec les
+filtres Lua</a>" pour plus de détails.
+</p>
+
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LuaMapHandler" id="LuaMapHandler">LuaMapHandler</a> <a name="luamaphandler" id="luamaphandler">Directive</a></h2>
 <table class="directive">
@@ -1816,15 +1939,75 @@ parentes sont fusionnées dans les enfants</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LuaOutputFilter" id="LuaOutputFilter">LuaOutputFilter</a> <a name="luaoutputfilter" id="luaoutputfilter">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Provide a Lua function for content output filtering</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fournit une fonction Lua pour le filtrage de contenu en
+sortie</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaOutputFilter filter_name /path/to/lua/script.lua function_name</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>2.5.0 and later</td></tr>
-</table><p>La documentation de cette directive
-	n'a pas encore t traduite. Veuillez vous reporter  la version
-	en langue anglaise.</p></div>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.5.0 du serveur HTTP
+Apache</td></tr>
+</table>
+<p>&gt;Cette directive permet d'ajouter un filtre en sortie sous la forme
+d'une fonction Lua. A l'instar des filtres en sorties, les filtres en
+entrée fonctionnent comme des sous-routines, intervenant dans un premier
+temps avant l'envoi du contenu des tampons, puis chaque fois qu'un
+paquet de données doit être transmis à la chaîne, et éventuellement
+produisant toute donnée à ajouter aux données en sortie. La variable
+globale <code>bucket</code> contient les paquets de données tels qu'ils
+sont transmis au script Lua :
+</p>
+
+<pre class="prettyprint lang-config">
+LuaOutputFilter myOutputFilter /www/filter.lua output_filter
+&lt;FilesMatch "\.lua&gt;
+  SetOutputFilter myOutputFilter
+&lt;/FilesMatch&gt;
+</pre>
+
+<pre class="prettyprint lang-lua">
+--[[
+    Exemple de filtre en sortie qui échappe toutes les entités HTML en
+    sortie
+]]--
+function output_filter(r)
+    coroutine.yield("(Handled by myOutputFilter)&lt;br/&gt;\n") -- Ajoute des données au début de la sortie, puis attend des paquets de données à traiter
+    while bucket do -- Pour chaque paquet, faire ...
+        local output = r:escape_html(bucket) -- Echappe les données en sortie
+        coroutine.yield(output) -- Envoie les données traitées à la chaîne
+    end
+    -- plus aucune donnée à traiter.
+end
+</pre>
+
+<p>
+Comme les filres en entrée, le filtre en sortie peut interdire ou sauter un filtre s'il est
+considéré comme indésirable :
+</p>
+<pre class="prettyprint lang-lua">
+function output_filter(r)
+    if not r.content_type:match("text/html") then
+        return -- Empêche tout simplement le filtrage et transmet le contenu original
+    end
+    coroutine.yield() -- attend des paquets de données
+    ... -- insert les filtres ici
+end
+</pre>
+
+<div class="note"><h3>Les filtres Lua avec <code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code></h3>
+<p>Lorsqu'on utilise un filtre Lua comme fournisseur sous-jacent via la
+directive <code class="directive"><a href="../mod/mod_filter.html#filterprovider">FilterProvider</a></code>, le
+filtrage ne fonctionnera que si <var>filter-name</var> est identique à
+<var>provider-name</var>.
+</p> </div>
+
+<p>
+Voir "<a href="#modifying_buckets">Modification de contenu avec les
+filtres Lua</a>" pour plus de détails.
+</p>
+
+
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LuaPackageCPath" id="LuaPackageCPath">LuaPackageCPath</a> <a name="luapackagecpath" id="luapackagecpath">Directive</a></h2>
 <table class="directive">
