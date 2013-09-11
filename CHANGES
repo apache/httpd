@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_lua: Add getcookie/setcookie for reading/writing HTTP cookies
+     [Daniel Gruno]
+
   *) mod_headers: Add 'Header note header-name note-name' for copying a response
      headers value into a note. [Eric Covener]
 
