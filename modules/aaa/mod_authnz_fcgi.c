@@ -44,7 +44,11 @@ typedef struct {
 
 typedef struct {
     const char *name; /* provider name */
-    ap_expr_info_t *user_expr; /* expr to evaluate t set r->user */
+    const char *default_user; /* this is user if authorizer returns
+                               * success and a user expression yields
+                               * empty string
+                               */
+    ap_expr_info_t *user_expr; /* expr to evaluate to set r->user */
     char authoritative; /* fail request if user is rejected? */
     char require_basic_auth; /* fail if client didn't send credentials? */
 } fcgi_dir_conf;
@@ -859,6 +863,9 @@ static int fcgi_check_authn(request_rec *r)
                               APLOGNO(02519) "%s: Setting user to '%s'",
                               fn, r->user);
             }
+            else if (user && dconf->default_user) {
+                r->user = apr_pstrdup(r->pool, dconf->default_user);
+            }
             else if (user) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                               APLOGNO(02520) "%s: Failure extracting user "
@@ -868,6 +875,7 @@ static int fcgi_check_authn(request_rec *r)
                 r->status = HTTP_INTERNAL_SERVER_ERROR;
             }
             else {
+                /* unexpected error, not even an empty string was returned */
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                               APLOGNO(02521) "%s: Failure extracting user "
                               "after calling authorizer: %s",
@@ -1107,6 +1115,9 @@ static const char *fcgi_check_authn_provider(cmd_parms *cmd,
             else {
                 badarg = 1;
             }
+        }
+        else if (!strcasecmp(var, "DefaultUser")) {
+            dc->default_user = val;
         }
         else if (!strcasecmp(var, "RequireBasicAuth")) {
             if (!strcasecmp(val, "On")) {
