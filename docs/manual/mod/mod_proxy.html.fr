@@ -28,8 +28,6 @@
 <a href="../fr/mod/mod_proxy.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_proxy.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Serveur mandataire/passerelle multi-protocole</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>proxy_module</td></tr>
@@ -80,6 +78,7 @@
         <tr><td>HTTP/0.9, HTTP/1.0, et
           HTTP/1.1</td><td><code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code></td></tr>
         <tr><td>SCGI</td><td><code class="module"><a href="../mod/mod_proxy_scgi.html">mod_proxy_scgi</a></code></td></tr>
+	<tr><td>WS and WSS (Web-sockets)</td><td><code class="module"><a href="../mod/mod_proxy_wstunnel.html">mod_proxy_wstunnel</a></code></td></tr>
         </table>
       </li>
     </ul>
@@ -150,6 +149,7 @@
 <li><code class="module"><a href="../mod/mod_proxy_ftp.html">mod_proxy_ftp</a></code></li>
 <li><code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code></li>
 <li><code class="module"><a href="../mod/mod_proxy_scgi.html">mod_proxy_scgi</a></code></li>
+<li><code class="module"><a href="../mod/mod_proxy_wstunnel.html">mod_proxy_wstunnel</a></code></li>
 <li><code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code></li>
 <li><code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
@@ -803,6 +803,21 @@ mandatées</td></tr>
     </pre>
 
 
+    <div class="note"><h3>Différences avec la section de configuration Location</h3>
+      <p>Une URL d'arrière-plan sera concernée par le conteneur Proxy si
+      elle commence par la <var>url-avec-jokers</var>, même si le
+      dernier segment de chemin de la directive ne correspond qu'à un
+      préfixe de segment dee chemin de l'URL d'arrière-plan. Par exemple, &lt;Proxy
+      http://example.com/foo&gt; correspondra entre autres aux URLs
+      http://example.com/foo, http://example.com/foo/bar, et
+      http://example.com/foobar. La correspondance de l'URL finale
+      diffère du comportement de la section <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> qui, pour le cas de cette note,
+      traitera le segment de chemin final comme s'il se terminait par un
+      slash.</p>
+      <p>Pour un contrôle plus fin de la correspondance des URL, voir la
+      directive <code class="directive">&lt;ProxyMatch&gt;</code>.</p>
+    </div>
+
 
 <h3>Voir aussi</h3>
 <ul>
@@ -1093,9 +1108,9 @@ l'espace d'URLs du serveur local</td></tr>
 
     <p>Le support des sockets de style Unix est fourni ; il suffit pour
     cela d'utiliser une cible du style
-    <code>socket=chemin-codé-%</code>. Par exemple, pour cibler l'UDS
+    <code>uds=chemin-codé-%</code>. Par exemple, pour cibler l'UDS
     /home/www/socket, vous devez utiliser
-    <code>http://socket=%2Fhome%2Fwww%2Fsocket</code>.</p>
+    <code>http://uds=%2Fhome%2Fwww%2Fsocket</code>.</p>
 
     <p>Supposons que le serveur local a pour adresse
     <code>http://example.com/</code> ; alors la ligne</p>
@@ -1314,6 +1329,9 @@ ProxyPass /mirror/foo http://backend.example.com
         <td>0</td>
         <td>Avec la clé Ping, le serveur web va "tester" la connexion
 	vers le serveur d'arrière-plan avant de transmettre la requête.
+	Pour les valeurs négatives, le test est une simple vérification
+	de socket, alors que pour les valeurs positives, il s'agit d'une
+	vérification plus approfondie dépendant du protocole.
 	Avec AJP, <code class="module"><a href="../mod/mod_proxy_ajp.html">mod_proxy_ajp</a></code> envoie une requête
 	<code>CPING</code> sur la connexion ajp13 (implémenté sur Tomcat
 	3.3.2+, 4.1.28+ et 5.0.13+). Avec HTTP,
