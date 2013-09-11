@@ -206,6 +206,24 @@ How to build
        Port numbers for substitution into default .conf files.  (The defaults
        are 80 and 443.)
 
+   INSTALL_PDB:
+
+       If .pdb files are generated for debugging, install them.
+       Default: ON
+
+       The .pdb files are generally needed for debugging low-level code
+       problems.  If they aren't installed, they are still available in the
+       build directory for use by alternate packaging implementations or when
+       debugging on the build machine.
+
+   INSTALL_MANUAL:
+
+       Install the Apache HTTP Server manual.
+       Default: ON
+
+       This could be turned off when developing changes in order to speed up
+       installation time.
+
 4. Build using the chosen generator (e.g., "nmake install" for cmake's "NMake
    Makefiles" generator).
 
@@ -253,12 +271,16 @@ Known Bugs and Limitations
 * buildmark.c isn't necessarily rebuilt when httpd.exe is regenerated
 * ApacheMonitor has a build error and is disabled
 * CGI examples aren't installed
-* dbmmanage.pl, httxt2dbm, wintty aren't built/installed
+* dbmmanage.pl and wintty aren't built/installed
 * mod_dav.lib and any similar libraries aren't installed, nor are any .exp
   files (though I'm not sure that is a problem)
 * module enablement defaults are not in sync with the autoconf-based build
-* no support for static PCRE builds (need to detect then turn on PCRE_STATIC)
+* no support for static support library builds; unclear if that is a
+  requirement; if so: taking PCRE as an example, we'd need to detect that it
+  is static and then turn on PCRE_STATIC for the libhttpd build
 * module base addresses aren't set
+* program attributes like descriptive name and version aren't set for most
+  binaries
 
 Generally:
 
