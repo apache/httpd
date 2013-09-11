@@ -1219,7 +1219,6 @@ static util_compare_subgroup_t* uldap_get_subgroups(request_rec *r,
 
     sgc_ents = (struct mod_auth_ldap_groupattr_entry_t *) subgroupclasses->elts;
 
-    /* XXX: attrs should not be required, they're just a secondary filtering */
     if (!subgroupAttrs) {
         return res;
     }
@@ -1243,7 +1242,6 @@ start_over:
     }
 
     /* try to do the search */
-    /* XXX: this filter should include the subgroup object classes! */
     result = ldap_search_ext_s(ldc->ldap, (char *)dn, LDAP_SCOPE_BASE,
                                (char *)"cn=*", subgroupAttrs, 0,
                                NULL, NULL, NULL, APR_LDAP_SIZELIMIT, &sga_res);
@@ -1297,17 +1295,12 @@ start_over:
                  */
                 while (values[val_index]) {
                     /* Check if this entry really is a group. */
-
-                    /* XXX: This has to be wrong, we're iterating over subgroup attributes,
-                     * but checking the objectClass of the subgroup.  This could have been a filter.
-                     */ 
-
                     tmp_sgcIndex = 0;
                     result = LDAP_COMPARE_FALSE;
                     while ((tmp_sgcIndex < subgroupclasses->nelts)
                            && (result != LDAP_COMPARE_TRUE)) {
                         result = uldap_cache_compare(r, ldc, url,
-                                                     values[val_index], /* candidate subgroup DN */
+                                                     values[val_index],
                                                      "objectClass",
                                                      sgc_ents[tmp_sgcIndex].name
                                                      );
@@ -1317,11 +1310,6 @@ start_over:
                         }
                     }
                     /* It's a group, so add it to the array.  */
-
-                    /* XXX: Hold on -- we never actually checked that the subgroup DN had any "subgroupattrs" in it.
-                     * Maybe it's never actually been useful, IOW that objectClass is enough.
-                     */
-
                     if (result == LDAP_COMPARE_TRUE) {
                         char **newgrp = (char **) apr_array_push(subgroups);
                         *newgrp = apr_pstrdup(r->pool, values[val_index]);
