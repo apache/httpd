@@ -487,6 +487,14 @@ authentication hook.</description>
          to run when this module has a FastCGI authorizer configured
          and it fails the request.</dd>
 
+         <dt>DefaultUser <em>userid</em></dt>
+         <dd>When the authorizer returns success and <code>UserExpr</code>
+         is configured and evaluates to an empty string (e.g., authorizer
+         didn't return a variable), this value will be used as the user
+         id.  This is typically used when the authorizer has a concept of
+         guest, or unauthenticated, users and guest users are mapped to
+         some specific user id for logging and other purposes.</dd>
+
          <dt>RequireBasicAuth On|Off (default Off)</dt>
          <dd>This controls whether or not Basic auth is required
          before passing the request to the authorizer.  If required,
