@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1518267 -->
+<!-- English Revision: 1518267:1521346 (outdated) -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -571,10 +571,10 @@ cours des requ&ecirc;tes vers le serveur LDAP.</description>
     franchies. Ce processus est similaire &agrave; une redirection HTTP. Les
     biblioth&egrave;ques client LDAP ne respectent pas forc&eacute;ment ces
     redirections par d&eacute;faut. Cette directive permet de configurer
-    explicitement les redirections LDAP dans le SDK sous-jacent.
+    explicitement les redirections LDAP dans le SDK sous-jacent.</p>
 
     <p>La directive <directive>LDAPReferrals</directive> accepte les
-    valeurs suivantes :
+    valeurs suivantes :</p>
     <dl>
      <dt>"on"</dt>
      <dd> <p>Avec la valeur "on", la prise en compte des redirections
@@ -590,7 +590,6 @@ cours des requ&ecirc;tes vers le serveur LDAP.</description>
      <directive>LDAPReferralHopLimit</directive> ne permet pas de surcharger la
      "hop limit" du SDK, et aucun "LDAP rebind callback" n'est enregistr&eacute;.</p></dd>
     </dl>
-    </p>
 
     <p>La directive <code>LDAPReferralHopLimit</code> travaille en
     conjonction avec cette directive pour limiter le nombre de
