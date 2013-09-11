@@ -66,6 +66,9 @@ SET(LIBXML2_ICONV_LIBRARIES       ""                     CACHE STRING "iconv lib
 # end support library configuration
 
 # Misc. options
+OPTION(INSTALL_PDB        "Install .pdb files (if generated)"  ON)
+OPTION(INSTALL_MANUAL     "Install manual"                     ON)
+
 SET(ENABLE_MODULES        "O"                            CACHE STRING "Minimum module enablement (e.g., \"i\" to build all but those without prerequisites)")
 SET(WITH_MODULES          ""                             CACHE STRING "comma-separated paths to single-file modules to statically link into the server")
 SET(EXTRA_INCLUDE_DIRS    ""                             CACHE STRING "extra include directories")
@@ -455,7 +458,9 @@ FOREACH (modinfo ${MODULE_LIST})
 ENDFOREACH()
 
 SET(install_targets)
+SET(install_bin_pdb)
 SET(install_modules) # special handling vs. other installed targets
+SET(install_modules_pdb)
 SET(builtin_module_shortnames "win32 mpm_winnt http so") # core added automatically
 SET(extra_builtin_modules) # the ones specified with -DWITH_MODULES=
 
@@ -683,6 +688,7 @@ FOREACH (mod ${MODULE_PATHS})
     SET(all_mod_sources ${tmp_mod_main_source} ${${mod_extra_sources}})
     ADD_LIBRARY(${mod_name} SHARED ${all_mod_sources})
     SET(install_modules ${install_modules} ${mod_name})
+    SET(install_modules_pdb ${install_modules_pdb} "${PROJECT_BINARY_DIR}/${mod_name}.pdb")
     SET(mod_extra_libs "${mod_name}_extra_libs")
     SET_TARGET_PROPERTIES(${mod_name} PROPERTIES SUFFIX .so)
     TARGET_LINK_LIBRARIES(${mod_name} ${${mod_extra_libs}} libhttpd ${APR_LIBRARIES} ${HTTPD_SYSTEM_LIBS})
@@ -707,6 +713,7 @@ ENDFOREACH()
 ###########   HTTPD LIBRARIES   ############
 ADD_LIBRARY(libhttpd SHARED ${LIBHTTPD_SOURCES})
 SET(install_targets ${install_targets} libhttpd)
+SET(install_bin_pdb ${install_bin_pdb} ${PROJECT_BINARY_DIR}/libhttpd.pdb)
 TARGET_LINK_LIBRARIES(libhttpd ${APR_LIBRARIES} ${PCRE_LIBRARIES} ${HTTPD_SYSTEM_LIBS})
 IF(NOT ${minorversion} STREQUAL "4")
   # trunk needs apreq symbols exported
@@ -719,50 +726,49 @@ ADD_DEPENDENCIES(libhttpd test_char_header)
 ###########   HTTPD EXECUTABLES   ##########
 ADD_EXECUTABLE(httpd server/main.c build/win32/httpd.rc)
 SET(install_targets ${install_targets} httpd)
+SET(install_bin_pdb ${install_bin_pdb} ${PROJECT_BINARY_DIR}/httpd.pdb)
 SET_TARGET_PROPERTIES(httpd PROPERTIES COMPILE_FLAGS "-DLONG_NAME=\"\\\"Apache HTTP Server\\\"\" -DBIN_NAME=httpd.exe")
 TARGET_LINK_LIBRARIES(httpd libhttpd)
 
-ADD_EXECUTABLE(ab support/ab.c)
-SET(install_targets ${install_targets} ab)
+SET(standard_support
+  ab
+  htcacheclean
+  htdbm
+  htdigest
+  htpasswd
+  httxt2dbm
+  logresolve
+  rotatelogs
+)
+
+SET(htdbm_extra_sources support/passwd_common.c)
+SET(htpasswd_extra_sources support/passwd_common.c)
+
+FOREACH(pgm ${standard_support})
+  SET(extra_sources ${pgm}_extra_sources)
+  ADD_EXECUTABLE(${pgm} support/${pgm}.c ${${extra_sources}})
+  SET(install_targets ${install_targets} ${pgm})
+  SET(install_bin_pdb ${install_bin_pdb} ${PROJECT_BINARY_DIR}/${pgm}.pdb)
+  TARGET_LINK_LIBRARIES(${pgm} ${APR_LIBRARIES})
+ENDFOREACH()
+
 IF(OPENSSL_FOUND)
-  SET_TARGET_PROPERTIES(ab PROPERTIES COMPILE_DEFINITIONS HAVE_OPENSSL)
+  ADD_EXECUTABLE(abs support/ab.c)
+  SET(install_targets ${install_targets} abs)
+  SET(install_bin_pdb ${install_bin_pdb} ${PROJECT_BINARY_DIR}/abs.pdb)
+  SET_TARGET_PROPERTIES(abs PROPERTIES COMPILE_DEFINITIONS HAVE_OPENSSL)
   SET(tmp_includes ${HTTPD_INCLUDE_DIRECTORIES} ${OPENSSL_INCLUDE_DIR})
-  SET_TARGET_PROPERTIES(ab PROPERTIES INCLUDE_DIRECTORIES "${tmp_includes}")
-  TARGET_LINK_LIBRARIES(ab ${APR_LIBRARIES} ${OPENSSL_LIBRARIES})
-ELSE()
-  TARGET_LINK_LIBRARIES(ab ${APR_LIBRARIES})
+  SET_TARGET_PROPERTIES(abs PROPERTIES INCLUDE_DIRECTORIES "${tmp_includes}")
+  TARGET_LINK_LIBRARIES(abs ${APR_LIBRARIES} ${OPENSSL_LIBRARIES})
 ENDIF()
 GET_PROPERTY(tmp_includes TARGET ab PROPERTY INCLUDE_DIRECTORIES)
 
 # getting duplicate manifest error with ApacheMonitor
 # ADD_EXECUTABLE(ApacheMonitor support/win32/ApacheMonitor.c support/win32/ApacheMonitor.rc)
 # SET(install_targets ${install_targets} ApacheMonitor)
+# SET(install_bin_pdb ${install_bin_pdb} ${PROJECT_BINARY_DIR}/ApacheMonitor.pdb)
 # SET_TARGET_PROPERTIES(ApacheMonitor PROPERTIES WIN32_EXECUTABLE TRUE)
 # TARGET_LINK_LIBRARIES(ApacheMonitor ${HTTPD_SYSTEM_LIBS} comctl32 wtsapi32)
-
-ADD_EXECUTABLE(htcacheclean support/htcacheclean.c)
-SET(install_targets ${install_targets} htcacheclean)
-TARGET_LINK_LIBRARIES(htcacheclean ${APR_LIBRARIES})
-
-ADD_EXECUTABLE(htdbm support/htdbm.c support/passwd_common.c)
-SET(install_targets ${install_targets} htdbm)
-TARGET_LINK_LIBRARIES(htdbm ${APR_LIBRARIES})
-
-ADD_EXECUTABLE(htdigest support/htdigest.c)
-SET(install_targets ${install_targets} htdigest)
-TARGET_LINK_LIBRARIES(htdigest ${APR_LIBRARIES})
-
-ADD_EXECUTABLE(htpasswd support/htpasswd.c support/passwd_common.c)
-SET(install_targets ${install_targets} htpasswd)
-TARGET_LINK_LIBRARIES(htpasswd ${APR_LIBRARIES})
-
-ADD_EXECUTABLE(logresolve support/logresolve.c)
-SET(install_targets ${install_targets} logresolve)
-TARGET_LINK_LIBRARIES(logresolve ${APR_LIBRARIES})
-
-ADD_EXECUTABLE(rotatelogs support/rotatelogs.c)
-SET(install_targets ${install_targets} rotatelogs)
-TARGET_LINK_LIBRARIES(rotatelogs ${APR_LIBRARIES})
 
 ###########  CONFIGURATION FILES ###########
 # Set up variables used in the .conf file templates
@@ -800,12 +806,26 @@ INSTALL(TARGETS ${install_targets}
 INSTALL(TARGETS ${install_modules}
         RUNTIME DESTINATION modules
        )
+
+IF(INSTALL_PDB)
+  INSTALL(FILES ${install_bin_pdb}
+          DESTINATION bin
+          CONFIGURATIONS RelWithDebInfo Debug)
+
+  INSTALL(FILES ${install_modules_pdb}
+          DESTINATION modules
+          CONFIGURATIONS RelWithDebInfo Debug)
+ENDIF()
+
 INSTALL(DIRECTORY include/ DESTINATION include
     FILES_MATCHING PATTERN "*.h"
 )
 INSTALL(FILES ${other_installed_h} DESTINATION include)
 
-INSTALL(DIRECTORY docs/manual/ DESTINATION manual)
+IF(INSTALL_MANUAL) # Silly?  This takes a while, and a dev doesn't need it.
+  INSTALL(DIRECTORY docs/manual/ DESTINATION manual)
+ENDIF()
+
 INSTALL(DIRECTORY DESTINATION logs)
 INSTALL(DIRECTORY DESTINATION cgi-bin)
 
@@ -832,6 +852,8 @@ MESSAGE(STATUS "")
 MESSAGE(STATUS "Apache httpd configuration summary:")
 MESSAGE(STATUS "")
 MESSAGE(STATUS "  Build type ...................... : ${CMAKE_BUILD_TYPE}")
+MESSAGE(STATUS "  Install .pdb (if available)...... : ${INSTALL_PDB}")
+MESSAGE(STATUS "  Install manual .................. : ${INSTALL_MANUAL}")
 MESSAGE(STATUS "  Install prefix .................. : ${CMAKE_INSTALL_PREFIX}")
 MESSAGE(STATUS "  C compiler ...................... : ${CMAKE_C_COMPILER}")
 MESSAGE(STATUS "  APR include directory ........... : ${APR_INCLUDE_DIR}")
