@@ -482,6 +482,9 @@ ELSE()
   CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/os/win32/modules.c ${PROJECT_BINARY_DIR}/ COPYONLY)
 ENDIF()
 
+# for easy reference from .dll/.so builds
+CONFIGURE_FILE(os/win32/BaseAddr.ref ${PROJECT_BINARY_DIR}/ COPYONLY)
+
 ADD_EXECUTABLE(gen_test_char server/gen_test_char.c)
 GET_TARGET_PROPERTY(GEN_TEST_CHAR_EXE gen_test_char LOCATION)
 ADD_CUSTOM_COMMAND(
@@ -690,7 +693,10 @@ FOREACH (mod ${MODULE_PATHS})
     SET(install_modules ${install_modules} ${mod_name})
     SET(install_modules_pdb ${install_modules_pdb} "${PROJECT_BINARY_DIR}/${mod_name}.pdb")
     SET(mod_extra_libs "${mod_name}_extra_libs")
-    SET_TARGET_PROPERTIES(${mod_name} PROPERTIES SUFFIX .so)
+    SET_TARGET_PROPERTIES(${mod_name} PROPERTIES
+      SUFFIX .so
+      LINK_FLAGS /base:@${PROJECT_BINARY_DIR}/BaseAddr.ref,${mod_name}.so
+    )
     TARGET_LINK_LIBRARIES(${mod_name} ${${mod_extra_libs}} libhttpd ${APR_LIBRARIES} ${HTTPD_SYSTEM_LIBS})
 
     # Extra defines?
@@ -712,6 +718,9 @@ ENDFOREACH()
 
 ###########   HTTPD LIBRARIES   ############
 ADD_LIBRARY(libhttpd SHARED ${LIBHTTPD_SOURCES})
+SET_TARGET_PROPERTIES(libhttpd PROPERTIES
+  LINK_FLAGS /base:@${PROJECT_BINARY_DIR}/BaseAddr.ref,libhttpd.dll
+)
 SET(install_targets ${install_targets} libhttpd)
 SET(install_bin_pdb ${install_bin_pdb} ${PROJECT_BINARY_DIR}/libhttpd.pdb)
 TARGET_LINK_LIBRARIES(libhttpd ${APR_LIBRARIES} ${PCRE_LIBRARIES} ${HTTPD_SYSTEM_LIBS})
