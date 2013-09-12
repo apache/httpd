@@ -278,8 +278,6 @@ Known Bugs and Limitations
 * no support for static support library builds; unclear if that is a
   requirement; if so: taking PCRE as an example, we'd need to detect that it
   is static and then turn on PCRE_STATIC for the libhttpd build
-* program attributes like descriptive name and version aren't set for most
-  binaries
 * build/cpR_noreplace.pl doesn't declare what version of Perl is required
   and doesn't work with File::Path that is missing make_path
 
