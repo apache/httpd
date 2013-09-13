@@ -85,6 +85,10 @@ CURRENT RELEASE NOTES:
     as well, if they apply.  Logical progression is commit to trunk
     then merge into branches/2.4.x, as applicable.
 
+  * Current exceptions for RTC for this branch:
+    . mod_lua
+    . documentation
+    . NetWare build
 
 RELEASE SHOWSTOPPERS:
 
