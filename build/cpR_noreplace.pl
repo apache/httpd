@@ -19,7 +19,9 @@ use strict;
 use File::Basename;
 use File::Copy;
 use File::Find;
-use File::Path qw(make_path);
+use File::Path qw(mkpath);
+
+require 5.010;
 
 my $srcdir;
 my $destdir;
@@ -42,7 +44,7 @@ sub process_file {
             # Create it.
             my $dir = dirname($destfile);
             if (! -e $dir) {
-                make_path($dir) or die "Failed to create directory $dir: $!";
+                mkpath($dir) or die "Failed to create directory $dir: $!";
             }
             copy($File::Find::name, $destfile) or die "Copy $File::Find::name->$destfile failed: $!";
         }
