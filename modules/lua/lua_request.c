@@ -2145,10 +2145,10 @@ static int lua_websocket_write(lua_State *L)
             ap_rputc(len, r);
         } 
         else if (len < 65535) {
-            unsigned short c = len;
+            apr_uint16_t slen = len;
             ap_rputc(126, r); 
-            c = htons(c);
-            ap_rwrite((char*) &c, 2, r);
+            slen = htons(slen);
+            ap_rwrite((char*) &slen, 2, r);
         }
         else {
             apr_uint64_t llen = len;
