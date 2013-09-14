@@ -97,6 +97,66 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
 
+  * mod_headers: Add 'Header SetIfEmpty header-name val' to only set
+    a header if it's not already there (can't do this with Edit)
+    trunk patch: http://svn.apache.org/1496338
+    2.4.x patch: trunk works
+    +1: covener, jim, humbedooh
+
+  * mod_headers: Add 'Header note header-name note-name' to copy a headers 
+    value into a note (so a CGI/Proxy header can be deleted and logged)
+    trunk patch: http://svn.apache.org/r1520908
+    2.4.x patch: trunk works, if 1496338 above is merged first.
+    +1: covener, jim, humbedooh
+
+  * mod_logio: new format-specifier %S (sum) which is the sum of received
+    and sent byte counts.
+    PR54015 [Martijn T. <apache_bugzilla@mindcontrolled.nl>, Christophe JAILLET]
+    trunk: http://svn.apache.org/r1484910
+           http://svn.apache.org/r1517386
+    2.4.x patch: trunk patch works
+    +1: jailletc36, jim, humbedooh
+
+  * mod_deflate: Improve error detection when decompressing request bodies
+    with trailing garbage: handle case where trailing bytes are in
+    the same bucket.
+    trunk: http://svn.apache.org/r1502772
+    2.4.x patch: trunk works (minus log-message-tags)
+    +1: rjung, jim, humbedooh
+
+
+  * authz_groupfile/authz_user: don't log at ERROR for AUTHZ_DENIED, since 
+    authz_core is collecting providers results. Subsequently reported in PR55523?
+    trunk patch: http://svn.apache.org/r1517366
+    2.4.x: trunk works
+    +1: covener, jim, humbedooh
+
+  
+  * mod_ldap: retry on an LDAP timeout during authn.
+    trunk patch: http://svn.apache.org/r1510084
+    2.4.x patch: trunk works
+    +1: covener, jim, humbedooh
+
+
+  * mod_ldap: add TRACE5 for LDAP retries
+    trunk patch: http://svn.apache.org/r1510085
+    2.4.x patch: trunk works
+    +1: covener, jim, humbedooh
+
+
+  * mod_ldap:  "LDAPReferrals off" does not disable LDAPReferrals feature. 
+    Make "off" really "off" and add "unset" to take SDK defaults 
+    trunk patch: http://svn.apache.org/r1517388
+                 docs: http://svn.apache.org/r1518265
+    2.4.x patch: trunk works
+    +1: covener, jim, humbedooh
+
+  
+  * core: Restore "core_output_filter: writing data to the network", but at TRACE1.
+    trunk patch: http://svn.apache.org/r1501294
+    2.4.x patch: trunk works
+    +1: covener, jim, humbedooh
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -162,21 +222,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
               that exist, esp when using the incorrect data types...
               Are these casts safe?
       fuankg: replied to list with further details about patches.
+      humbedooh: in r1500362, the lua changes can just be backported now :)
 
-  * mod_deflate: Improve error detection when decompressing request bodies
-    with trailing garbage: handle case where trailing bytes are in
-    the same bucket.
-    trunk: http://svn.apache.org/r1502772
-    2.4.x patch: trunk works (minus log-message-tags)
-    +1: rjung, jim
-
-  * mod_logio: new format-specifier %S (sum) which is the sum of received
-    and sent byte counts.
-    PR54015 [Martijn T. <apache_bugzilla@mindcontrolled.nl>, Christophe JAILLET]
-    trunk: http://svn.apache.org/r1484910
-           http://svn.apache.org/r1517386
-    2.4.x patch: trunk patch works
-    +1: jailletc36, jim
 
   * skiplist: Add skiplist capability to httpd
     trunk "patch": http://svn.apache.org/repos/asf/httpd/httpd/trunk/include/ap_skiplist.h
@@ -197,12 +244,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  http://svn.apache.org/r1517045
     2.4.x patch: trunk patch works
     +1: jailletc36, jim
-
-  * authz_groupfile/authz_user: don't log at ERROR for AUTHZ_DENIED, since 
-    authz_core is collecting providers results. Subsequently reported in PR55523?
-    trunk patch: http://svn.apache.org/r1517366
-    2.4.x: trunk works
-    +1: covener, jim
    
   * mod_filter: Allow mod_filter to undo equiv of change=yes that was 
     baked into a filter provider.
@@ -210,44 +251,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: trunk works
     +1: covener, jim
 
-  * mod_ldap:  "LDAPReferrals off" does not disable LDAPReferrals feature. 
-    Make "off" really "off" and add "unset" to take SDK defaults 
-    trunk patch: http://svn.apache.org/r1517388
-                 docs: http://svn.apache.org/r1518265
-    2.4.x patch: trunk works
-    +1: covener, jim
-  
-  * core: Restore "core_output_filter: writing data to the network", but at TRACE1.
-    trunk patch: http://svn.apache.org/r1501294
-    2.4.x patch: trunk works
-    +1: covener, jim
-  
-  * mod_ldap: retry on an LDAP timeout during authn.
-    trunk patch: http://svn.apache.org/r1510084
-    2.4.x patch: trunk works
-    +1: covener, jim
-
-  * mod_ldap: add TRACE5 for LDAP retries
-    trunk patch: http://svn.apache.org/r1510085
-    2.4.x patch: trunk works
-    +1: covener, jim
 
   * WinNT MPM: crash-o-matic with "Listen <portnumber> <unrecognized>"
     trunk patch: http://svn.apache.org/r1520368
     2.4.x patch: trunk patch works
     +1: trawick, covener
-
-  * mod_headers: Add 'Header SetIfEmpty header-name val' to only set
-    a header if it's not already there (can't do this with Edit)
-    trunk patch: http://svn.apache.org/1496338
-    2.4.x patch: trunk works
-    +1: covener, jim
-
-  * mod_headers: Add 'Header note header-name note-name' to copy a headers 
-    value into a note (so a CGI/Proxy header can be deleted and logged)
-    trunk patch: http://svn.apache.org/r1520908
-    2.4.x patch: trunk works, if 1496338 above is merged first.
-    +1: covener, jim
 
   * mpm_unix: Add ap_mpm_podx_* implementation to avoid code duplication
     and align w/ trunk.
