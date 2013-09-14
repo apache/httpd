@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1361949:1521336 (outdated) -->
+<!-- English Revision : 1521336 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -25,53 +25,53 @@
 <modulesynopsis metafile="mod_proxy_express.xml.meta">
 
 <name>mod_proxy_express</name>
-<description>Extension &agrave; <module>mod_proxy</module> pour le fonctionnement en mandataire
+<description>Extension à <module>mod_proxy</module> pour le mandatement
 dynamique inverse de masse</description>
 <status>Extension</status>
 <sourcefile>mod_proxy_express.c</sourcefile>
 <identifier>proxy_express_module</identifier>
 
 <summary>
-    <p>Ce module cr&eacute;e dynamiquement en masse des mandataires inverses en
-    faisant correspondre l'en-t&ecirc;te Host: de la requ&ecirc;te HTTP &agrave; un nom de
-    serveur et une URL d'arri&egrave;re-plan stock&eacute;s dans un fichier DBM. Il
-    est ainsi plus ais&eacute; d'utiliser un grand nombre de
-    mandataires inverses sans avoir &agrave; modifier la configuration. Il est
-    loin de poss&eacute;der autant de fonctionnalit&eacute;s que
+    <p>Ce module crée dynamiquement en masse des mandataires inverses en
+    faisant correspondre l'en-tête Host: de la requête HTTP à un nom de
+    serveur et une URL d'arrière-plan stockés dans un fichier DBM. Il
+    est ainsi plus aisé d'utiliser un grand nombre de
+    mandataires inverses sans avoir à modifier la configuration. Il est
+    loin de posséder autant de fonctionnalités que
     <module>mod_proxy_balancer</module>, qui propose aussi la croissance
-    dynamique, mais il est con&ccedil;u pour g&eacute;rer un nombre beaucoup plus important
-    de serveurs d'arri&egrave;re-plan. Il convient parfaitement pour cr&eacute;er un
+    dynamique, mais il est conçu pour gérer un nombre beaucoup plus important
+    de serveurs d'arrière-plan. Il convient parfaitement pour créer un
     commutateur HTTP frontal.</p>
 
-    <p>Pour pouvoir &ecirc;tre utilis&eacute;, ce module n&eacute;cessite le chargement de
+    <p>Pour pouvoir être utilisé, ce module nécessite le chargement de
     <module>mod_proxy</module>.</p>
 
     <note type="warning"><title>Avertissement</title>
       <p>N'activez le mandatement que si vous avez <a
-      href="mod_proxy.html#access">s&eacute;curis&eacute; votre serveur</a>. Les
-      serveurs mandataires ouverts sont dangereux pour votre r&eacute;seau, et
+      href="mod_proxy.html#access">sécurisé votre serveur</a>. Les
+      serveurs mandataires ouverts sont dangereux pour votre réseau, et
       dans une plus large mesure pour Internet.</p>
     </note>
 
 <note><title>Limitations</title>
   <ul>
-    <li>Ce module n'est pas con&ccedil;u pour remplacer les fonctionnalit&eacute;s
+    <li>Ce module n'est pas conçu pour remplacer les fonctionnalités
     dynamiques de <module>mod_proxy_balancer</module>. Par contre, il
-    peut constituer une alternative l&eacute;g&egrave;re et rapide &agrave;
+    peut constituer une alternative légère et rapide à
     <module>mod_rewrite</module> lorsque ce dernier utilise la directive
     <directive>RewriteMap</directive> et le drapeau <code>[P]</code>
-    pour le mandatement inverse &agrave; partir d'une table de correspondances.
+    pour le mandatement inverse à partir d'une table de correspondances.
     </li>
-    <li>Il ne supporte pas les mises en correspondance bas&eacute;es sur les
-    expressions rationnelles ou les mod&egrave;les.
+    <li>Il ne supporte pas les mises en correspondance basées sur les
+    expressions rationnelles ou les modèles.
     </li>
-    <li>Il &eacute;mule :
+    <li>Il émule :
       <example>
         ProxyPass / backend.server:port<br />
         ProxyPassReverse / backend.server:port<br />
       </example>
-      En d'autres termes, l'URL dans son ensemble est ajout&eacute;e &agrave; l'URL
-      d'arri&egrave;re-plan correspondante, tout ceci dans le but de
+      En d'autres termes, l'URL dans son ensemble est ajoutée à l'URL
+      d'arrière-plan correspondante, tout ceci dans le but de
       proposer un commutateur mandataire inverse simple mais rapide.
     </li>
   </ul>
@@ -82,16 +82,16 @@ dynamique inverse de masse</description>
 
 <directivesynopsis>
 <name>ProxyExpressEnable</name>
-<description>Active la fonctionnalit&eacute; du module.</description>
+<description>Active la fonctionnalité du module.</description>
 <syntax>ProxyExpressEnable [on|off]</syntax>
 <default>off</default>
 <contextlist><context>server config</context><context>virtual host</context>
   </contextlist>
-<compatibility>Disponible &agrave; partir de la version 2.3.13 d'Apache</compatibility>
+<compatibility>Disponible à partir de la version 2.3.13 d'Apache</compatibility>
 
 <usage>
   <p>La directive <directive>ProxyExpressEnable</directive> permet
-  d'activer/d&eacute;sactiver le module.</p>
+  d'activer/désactiver le module.</p>
 </usage>
 </directivesynopsis>
 
@@ -102,16 +102,16 @@ dynamique inverse de masse</description>
 <default>None</default>
 <contextlist><context>server config</context><context>virtual host</context>
   </contextlist>
-<compatibility>Disponible &agrave; partir de la version 2.3.13 d'Apache</compatibility>
+<compatibility>Disponible à partir de la version 2.3.13 d'Apache</compatibility>
 
 <usage>
   <p>La directive <directive>ProxyExpressDBMFile</directive> permet de
-  d&eacute;finir le chemin du fichier DBM de correspondance Express. Ce fichier
-  permet de faire correspondre le nom de serveur extrait de l'en-t&ecirc;te
-  Host: de la requ&ecirc;te entrante avec une URL d'arri&egrave;re-plan.</p>
+  définir le chemin du fichier DBM de correspondance Express. Ce fichier
+  permet de faire correspondre le nom de serveur extrait de l'en-tête
+  Host: de la requête entrante avec une URL d'arrière-plan.</p>
 
     <note><title>Note</title>
-      <p>Ce fichier est &eacute;labor&eacute; &agrave; partir d'un fichier texte &agrave; l'aide de
+      <p>Ce fichier est élaboré à partir d'un fichier texte à l'aide de
       l'utilitaire <code><a
       href="../programs/httxt2dbm.html">httxt2dbm</a></code>.</p>
 
@@ -125,12 +125,13 @@ dynamique inverse de masse</description>
         www3.example.com   http://192.168.212.10<br />
       </example>
 
-      <example><title>Cr&eacute;ation du fichier DBM</title>
+      <example><title>Création du fichier DBM</title>
         httxt2dbm -i express-map.txt -o emap<br />
         </example>
 
       <example><title>Configuration</title>
-        ProxyExpressDBMFile emap<br />
+        ProxyExpressEnable on<br />
+	ProxyExpressDBMFile emap<br />
         </example>
     </note>
 </usage>
@@ -143,16 +144,16 @@ dynamique inverse de masse</description>
 <default>"default"</default>
 <contextlist><context>server config</context><context>virtual host</context>
   </contextlist>
-<compatibility>Disponible &agrave; partir de la version 2.3.13 d'Apache</compatibility>
+<compatibility>Disponible à partir de la version 2.3.13 d'Apache</compatibility>
 
 <usage>
   <p>La directive <directive>ProxyExpressDBMType</directive> permet de
-  d&eacute;finir le type de fichier DBM requis par le module. La valeur par
-  d&eacute;faut correspond au type DBM par d&eacute;faut du fichier cr&eacute;&eacute; par
+  définir le type de fichier DBM requis par le module. La valeur par
+  défaut correspond au type DBM par défaut du fichier créé par
   l'utilitaire <code><a
   href="../programs/httxt2dbm.html">httxt2dbm</a></code>.</p>
-  <p>Les valeurs possibles sont (mais toutes ne seront pas disponibles &agrave;
-  l'ex&eacute;cution) :</p>
+  <p>Les valeurs possibles sont (mais toutes ne seront pas disponibles à
+  l'exécution) :</p>
 <table border="1" style="zebra">
     <columnspec><column width=".3"/><column width=".7"/></columnspec>
 
@@ -161,7 +162,7 @@ dynamique inverse de masse</description>
     <tr><td><code>gdbm</code></td><td>Fichiers GDBM</td></tr>
     <tr><td><code>ndbm</code></td><td>Fichiers NDBM</td></tr>
     <tr><td><code>sdbm</code></td><td>Fichiers SDBM (toujours disponible)</td></tr>
-    <tr><td><code>default</code></td><td>type DBM par d&eacute;faut</td></tr>
+    <tr><td><code>default</code></td><td>type DBM par défaut</td></tr>
     </table>
 
 </usage>

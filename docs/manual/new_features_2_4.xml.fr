@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1426600:1521343 (outdated) -->
+<!-- English Revision : 1521343 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -76,12 +76,12 @@ serveur HTTP Apache</title>
       <directive module="core" type="section">If</directive>, etc...
       </dd>
 
-      <dt>KeepAliveTimeout en millisecondes</dt>
-      <dd>Il est maintenant possible de sp&eacute;cifier <directive module="core"
-      >KeepAliveTimeout</directive> en millisecondes.
+      <dt>KeepAliveTimeout in milliseconds</dt>
+      <dd>It is now possible to specify <directive module="core"
+      >KeepAliveTimeout</directive> in milliseconds.
       </dd>
 
-      <dt>Directive NameVirtualHost</dt>
+      <dt>NameVirtualHost directive</dt>
       <dd>Cette directive obsol&egrave;te n'est plus utile.</dd>
 
       <dt>Directives autoris&eacute;es dans les fichiers <code>.htaccess</code></dt>
