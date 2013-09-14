@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.7
 
+  *) mod_headers: Add 'setifempty' command to Header and RequestHeader.
+     [Eric Covener]
+
   *) mod_logio: new format-specifier %C (combined) which is the sum of received
      and sent byte counts.
      PR54015 [Christophe Jaillet]
