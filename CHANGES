@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.7
 
+  *) core: Log a message at TRACE1 when the client aborts a connection.
+     [Eric Covener]
+
   *) WinNT MPM: Don't crash during child process initialization if the
      Listen protocol is unrecognized.  [Jeff Trawick]
 
