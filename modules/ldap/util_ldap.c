@@ -944,6 +944,7 @@ start_over:
                       "failed with server down";
         uldap_connection_unbind(ldc);
         failures++;
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE5, 0, r, "%s (attempt %d)", ldc->reason, failures);
         goto start_over;
     }
     if (result == LDAP_TIMEOUT && failures == 0) {
@@ -955,6 +956,7 @@ start_over:
                       "failed with timeout";
         uldap_connection_unbind(ldc);
         failures++;
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE5, 0, r, "%s (attempt %d)", ldc->reason, failures);
         goto start_over;
     }
     if (result != LDAP_SUCCESS) {
@@ -1099,6 +1101,7 @@ start_over:
         ldc->reason = "ldap_compare_s() failed with server down";
         uldap_connection_unbind(ldc);
         failures++;
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE5, 0, r, "%s (attempt %d)", ldc->reason, failures);
         goto start_over;
     }
     if (result == LDAP_TIMEOUT && failures == 0) {
@@ -1109,6 +1112,7 @@ start_over:
         ldc->reason = "ldap_compare_s() failed with timeout";
         uldap_connection_unbind(ldc);
         failures++;
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE5, 0, r, "%s (attempt %d)", ldc->reason, failures);
         goto start_over;
     }
 
@@ -1216,6 +1220,7 @@ start_over:
                       " down";
         uldap_connection_unbind(ldc);
         failures++;
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE5, 0, r, "%s (attempt %d)", ldc->reason, failures);
         goto start_over;
     }
     if (result == LDAP_TIMEOUT && failures == 0) {
@@ -1226,6 +1231,7 @@ start_over:
         ldc->reason = "ldap_search_ext_s() for subgroups failed with timeout";
         uldap_connection_unbind(ldc);
         failures++;
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE5, 0, r, "%s (attempt %d)", ldc->reason, failures);
         goto start_over;
     }
 
@@ -1694,6 +1700,7 @@ start_over:
         ldc->reason = "ldap_search_ext_s() for user failed with server down";
         uldap_connection_unbind(ldc);
         failures++;
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE5, 0, r, "%s (attempt %d)", ldc->reason, failures);
         goto start_over;
     }
 
@@ -1701,6 +1708,7 @@ start_over:
         ldc->reason = "ldap_search_ext_s() for user failed with timeout";
         uldap_connection_unbind(ldc);
         failures++;
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE5, 0, r, "%s (attempt %d)", ldc->reason, failures);
         goto start_over;
     }
 
@@ -1765,6 +1773,7 @@ start_over:
         ldap_msgfree(res);
         uldap_connection_unbind(ldc);
         failures++;
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE5, 0, r, "%s (attempt %d)", ldc->reason, failures);
         goto start_over;
     }
 
@@ -1960,6 +1969,7 @@ start_over:
         ldc->reason = "ldap_search_ext_s() for user failed with server down";
         uldap_connection_unbind(ldc);
         failures++;
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE5, 0, r, "%s (attempt %d)", ldc->reason, failures);
         goto start_over;
     }
 
