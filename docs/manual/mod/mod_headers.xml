@@ -300,7 +300,7 @@ Header merge Cache-Control no-store env=NO_STORE
 <directivesynopsis>
 <name>Header</name>
 <description>Configure HTTP response headers</description>
-<syntax>Header [<var>condition</var>] add|append|echo|edit|edit*|merge|set|unset
+<syntax>Header [<var>condition</var>] add|append|echo|edit|edit*|merge|set|unset|note
 <var>header</var> [<var>value</var>] [<var>replacement</var>]
 [early|env=[!]<var>variable</var>]|expr=<var>expression</var>]
 </syntax>
@@ -400,6 +400,13 @@ Header merge Cache-Control no-store env=NO_STORE
     <dd>The response header of this name is removed, if it exists.
     If there are multiple headers of the same name, all will be
     removed. <var>value</var> must be omitted.</dd>
+
+    <dt><code>note</code></dt>
+    <dd>The value of the named response <var>header</var> is copied into an
+    internal note whose name is given by <var>value</var>.  This is useful
+    if a header sent by a CGI or proxied resource is configured to be unset
+    but should also be logged.</dd>
+
     </dl>
 
     <p>This argument is followed by a <var>header</var> name, which

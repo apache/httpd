@@ -97,12 +97,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_headers: Add 'Header note header-name note-name' to copy a headers 
-    value into a note (so a CGI/Proxy header can be deleted and logged)
-    trunk patch: http://svn.apache.org/r1520908
-    2.4.x patch: trunk works, if 1496338 above is merged first.
-    +1: covener, jim, humbedooh
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]

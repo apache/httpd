@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.7
 
+  *) mod_headers: Add 'Header note header-name note-name' for copying a response
+     headers value into a note. [Eric Covener]
+
   *) mod_headers: Add 'setifempty' command to Header and RequestHeader.
      [Eric Covener]
 
