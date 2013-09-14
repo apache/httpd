@@ -73,9 +73,10 @@ static char *http2env(request_rec *r, const char *w)
             *cp++ = '_';
         }
         else {
-            ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r,
-                          "Not exporting header with invalid name as envvar: %s",
-                          ap_escape_logitem(r->pool, w));
+            if (APLOGrtrace1(r))
+                ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r,
+                            "Not exporting header with invalid name as envvar: %s",
+                            ap_escape_logitem(r->pool, w));
             return NULL;
         }
     }
@@ -594,9 +595,10 @@ AP_DECLARE(int) ap_scan_script_header_err_core_ex(request_rec *r, char *buffer,
                               "Invalid status line from script '%s': %.30s",
                               apr_filepath_name_get(r->filename), l);
             else
-                ap_log_rerror(SCRIPT_LOG_MARK, APLOG_TRACE1, 0, r,
-                              "Status line from script '%s': %.30s",
-                              apr_filepath_name_get(r->filename), l);
+                if (APLOGrtrace1(r))
+                   ap_log_rerror(SCRIPT_LOG_MARK, APLOG_TRACE1, 0, r,
+                                 "Status line from script '%s': %.30s",
+                                 apr_filepath_name_get(r->filename), l);
             r->status_line = apr_pstrdup(r->pool, l);
         }
         else if (!strcasecmp(w, "Location")) {

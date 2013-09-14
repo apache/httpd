@@ -2,6 +2,14 @@
 
 Changes with Apache 2.4.7
 
+  * Sync 2.4 and trunk
+       - Avoid some memory allocation and work when TRACE1 is not activated
+       - fix typo in include guard
+       - indent
+       - No need to lower the string before removing the path, it is just a waste of time...
+       - Save a few cycles
+     [Christophe Jaillet <christophe.jaillet wanadoo.fr>]
+
   *) mod_filter: Add "change=no" as a proto-flag to FilterProtocol
      to remove a providers initial flags set at registration time.
      [Eric Covener]

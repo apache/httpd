@@ -1873,7 +1873,7 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
        return DECLINED;
     if ((u - url) > 14)
         return HTTP_BAD_REQUEST;
-    scheme = apr_pstrndup(p, url, u - url);
+    scheme = apr_pstrmemdup(p, url, u - url);
     /* scheme is lowercase */
     ap_str_tolower(scheme);
     /* is it for us? */
