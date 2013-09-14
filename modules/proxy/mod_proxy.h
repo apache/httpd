@@ -723,11 +723,11 @@ PROXY_DECLARE(proxy_worker_shared *) ap_proxy_find_workershm(ap_slotmem_provider
 
 /**
  * Find the shm of the balancer as needed
- * @param storage slotmem provider
- * @param slot    slotmem instance
- * @param worker  worker to find
- * @param index   pointer to index within slotmem of balancer
- * @return        pointer to shm of balancer, or NULL
+ * @param storage  slotmem provider
+ * @param slot     slotmem instance
+ * @param balancer balancer of shm to find
+ * @param index    pointer to index within slotmem of balancer
+ * @return         pointer to shm of balancer, or NULL
  */
 PROXY_DECLARE(proxy_balancer_shared *) ap_proxy_find_balancershm(ap_slotmem_provider_t *storage,
                                                                  ap_slotmem_instance_t *slot,
@@ -922,7 +922,7 @@ PROXY_DECLARE(int) ap_proxy_trans_match(request_rec *r,
 
 /**
  * Create a HTTP request header brigade,  old_cl_val and old_te_val as required.
- * @parama p              pool
+ * @param p               pool
  * @param header_brigade  header brigade to use/fill
  * @param r               request
  * @param p_conn          proxy connection rec
