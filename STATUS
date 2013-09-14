@@ -164,6 +164,12 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     2.4.x patch: trunk patch works
     +1: trawick, covener, humbedooh
 
+  * skiplist: Add skiplist capability to httpd
+    trunk "patch": http://svn.apache.org/repos/asf/httpd/httpd/trunk/include/ap_skiplist.h
+                   http://svn.apache.org/repos/asf/httpd/httpd/trunk/server/skiplist.c
+    2.4.x patch: http://people.apache.org/~jim/patches/httpd-2.4-skiplist.patch
+    +1: jim, druggeri, minfrin
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -230,13 +236,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
               Are these casts safe?
       fuankg: replied to list with further details about patches.
       humbedooh: in r1500362, the lua changes can just be backported now :)
-
-
-  * skiplist: Add skiplist capability to httpd
-    trunk "patch": http://svn.apache.org/repos/asf/httpd/httpd/trunk/include/ap_skiplist.h
-                   http://svn.apache.org/repos/asf/httpd/httpd/trunk/server/skiplist.c
-    2.4.x patch: http://people.apache.org/~jim/patches/httpd-2.4-skiplist.patch
-    +1: jim, druggeri
 
   * mpm_unix: Add ap_mpm_podx_* implementation to avoid code duplication
     and align w/ trunk.
