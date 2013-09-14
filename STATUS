@@ -273,6 +273,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                    (for combined skiplist, podx and event patch)
     +1: jim
 
+  * mod_cache: Avoid a crash with strcmp() when the hostname is not provided.
+    trunk: http://svn.apache.org/viewvc?view=revision&revision=1523235
+    2.4.x patch: trunk patch works
+    +1: minfrin
+
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
 If you want to propose one of those, please still add them here.
