@@ -164,12 +164,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     2.4.x patch: trunk patch works
     +1: trawick, covener, humbedooh
 
-  * skiplist: Add skiplist capability to httpd
-    trunk "patch": http://svn.apache.org/repos/asf/httpd/httpd/trunk/include/ap_skiplist.h
-                   http://svn.apache.org/repos/asf/httpd/httpd/trunk/server/skiplist.c
-    2.4.x patch: http://people.apache.org/~jim/patches/httpd-2.4-skiplist.patch
-    +1: jim, druggeri, minfrin
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
