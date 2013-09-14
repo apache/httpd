@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_auth_digest: Be more specific when the realm mismatches because the
+     realm has not been specified. [Graham Leggett]
+
   *) mod_cache: Avoid a crash with strcmp() when the hostname is not provided.
      [Graham Leggett]
 
