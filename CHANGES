@@ -2,6 +2,11 @@
 
 Changes with Apache 2.4.7
 
+  *) mod_ldap: Change "LDAPReferrals off" to actually set the underlying LDAP 
+     SDK option to OFF, and introduce "LDAPReferrals default" to take the SDK 
+     default, sans rebind authentication callback.
+     [Jan Kaluza <kaluze AT redhat.com>]
+
   *) core: Log a message at TRACE1 when the client aborts a connection.
      [Eric Covener]
 
