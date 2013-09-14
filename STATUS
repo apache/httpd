@@ -97,13 +97,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-
-  * mod_headers: Add 'Header SetIfEmpty header-name val' to only set
-    a header if it's not already there (can't do this with Edit)
-    trunk patch: http://svn.apache.org/1496338
-    2.4.x patch: trunk works
-    +1: covener, jim, humbedooh
-
   * mod_headers: Add 'Header note header-name note-name' to copy a headers 
     value into a note (so a CGI/Proxy header can be deleted and logged)
     trunk patch: http://svn.apache.org/r1520908
