@@ -1096,6 +1096,7 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
             }
             if (zRC == Z_STREAM_END) {
                 apr_bucket *tmp_heap;
+                apr_size_t avail;
 
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01393)
                               "Zlib: Inflated %ld to %ld : URL %s",
@@ -1110,8 +1111,10 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
                 APR_BRIGADE_INSERT_TAIL(ctx->proc_bb, tmp_heap);
                 ctx->stream.avail_out = c->bufferSize;
 
+                avail = ctx->stream.avail_in;
+
                 /* Is the remaining 8 bytes already in the avail stream? */
-                if (ctx->stream.avail_in >= 8) {
+                if (avail >= 8) {
                     unsigned long compCRC, compLen;
                     compCRC = getLong(ctx->stream.next_in);
                     if (ctx->crc != compCRC) {
@@ -1143,6 +1146,13 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
                 inflateEnd(&ctx->stream);
 
                 ctx->done = 1;
+
+                /* Did we have trailing data behind the closing 8 bytes? */
+                if (avail > 8) {
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02485)
+                                  "Encountered extra data after compressed data");
+                    return APR_EGENERAL;
+                }
             }
 
         }

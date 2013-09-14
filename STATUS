@@ -118,13 +118,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     2.4.x patch: trunk patch works
     +1: jailletc36, jim, humbedooh
 
-  * mod_deflate: Improve error detection when decompressing request bodies
-    with trailing garbage: handle case where trailing bytes are in
-    the same bucket.
-    trunk: http://svn.apache.org/r1502772
-    2.4.x patch: trunk works (minus log-message-tags)
-    +1: rjung, jim, humbedooh
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
