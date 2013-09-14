@@ -2,6 +2,8 @@
 
 Changes with Apache 2.4.7
 
+  * skiplist: Add skiplist capability to httpd [Jim Jagielski]
+
   * Sync 2.4 and trunk
        - Avoid some memory allocation and work when TRACE1 is not activated
        - fix typo in include guard
