@@ -164,21 +164,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     2.4.x patch: trunk patch works
     +1: trawick, covener, humbedooh
 
-  * modules: Fix some compiler warnings.
-    trunk patch: http://svn.apache.org/r1500345
-                 http://svn.apache.org/r1500362
-                 http://svn.apache.org/r1500423
-                 http://svn.apache.org/r1500483
-                 http://svn.apache.org/r1500519
-    2.4.x patch: trunk patches work
-    +1: fuankg, jim, minfrin
-    comments:
-         jim: In general, casts are sometimes used to "hide" problems
-              that exist, esp when using the incorrect data types...
-              Are these casts safe?
-      fuankg: replied to list with further details about patches.
-      humbedooh: in r1500362, the lua changes can just be backported now :)
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]

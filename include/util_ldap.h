@@ -83,6 +83,10 @@
 #define LDAP_DECLARE_DATA             __declspec(dllimport)
 #endif
 
+#ifdef WIN32
+#define timeval l_timeval
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
