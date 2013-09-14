@@ -2,6 +2,8 @@
 
 Changes with Apache 2.4.7
 
+  *) mod_ldap: retry on an LDAP timeout during authn. [Eric Covener]
+
   *) mod_ldap: Change "LDAPReferrals off" to actually set the underlying LDAP 
      SDK option to OFF, and introduce "LDAPReferrals default" to take the SDK 
      default, sans rebind authentication callback.
