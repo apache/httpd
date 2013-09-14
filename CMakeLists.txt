@@ -535,6 +535,7 @@ SET(LIBHTTPD_SOURCES
   server/provider.c
   server/request.c
   server/scoreboard.c
+  server/skiplist.c
   server/util.c
   server/util_cfgtree.c
   server/util_cookies.c
@@ -567,7 +568,6 @@ IF(NOT ${minorversion} STREQUAL "4")
       server/apreq_parser_multipart.c
       server/apreq_parser_urlencoded.c
       server/apreq_util.c
-      server/skiplist.c
       server/util_fcgi.c
   )
 ENDIF()
