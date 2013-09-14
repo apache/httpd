@@ -2153,7 +2153,7 @@ static int lua_websocket_write(lua_State *L)
         else {
             apr_uint64_t llen = len;
             ap_rputc(127, r);
-            llen = ap_ntoh64(&len); /* ntoh doubles as hton */
+            llen = ap_ntoh64(&llen); /* ntoh doubles as hton */
             ap_rwrite((char*) &llen, 8, r);
         }
     }
