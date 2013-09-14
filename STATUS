@@ -222,12 +222,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: trunk works
     +1: covener, jim
   
-  * mod_ldap: add TRACE5 for LDAP retries
+  * mod_ldap: retry on an LDAP timeout during authn.
     trunk patch: http://svn.apache.org/r1510084
     2.4.x patch: trunk works
     +1: covener, jim
 
-  * mod_ldap: retry on an LDAP timeout during authn.
+  * mod_ldap: add TRACE5 for LDAP retries
     trunk patch: http://svn.apache.org/r1510085
     2.4.x patch: trunk works
     +1: covener, jim
