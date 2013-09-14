@@ -159,12 +159,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     +1: covener, jim, humbedooh
 
 
-  * WinNT MPM: crash-o-matic with "Listen <portnumber> <unrecognized>"
-    trunk patch: http://svn.apache.org/r1520368
-    2.4.x patch: trunk patch works
-    +1: trawick, covener, humbedooh
-
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
