@@ -474,7 +474,7 @@ static void log_xlate_error(ap_filter_t *f, apr_status_t rv)
     charset_filter_ctx_t *ctx = f->ctx;
     const char *msg;
     char msgbuf[100];
-    int len;
+    apr_size_t len;
 
     switch(ctx->ees) {
     case EES_LIMIT:
