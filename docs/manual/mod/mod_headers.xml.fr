@@ -434,7 +434,15 @@ Header merge Cache-Control no-store env=NO_STORE
     <dd>L'en-t&ecirc;te est supprim&eacute; s'il existe. Si plusieurs en-t&ecirc;tes
     poss&egrave;dent le m&ecirc;me nom, ils seront tous supprim&eacute;s. L'argument
     <var>value</var> ne doit pas appara&icirc;tre.</dd>
-    </dl>
+
+    <dt><code>note</code></dt>
+    <dd>La valeur de l'<var>en-t&ecirc;te</var> consid&eacute;r&eacute; est copi&eacute;e dans une
+    note interne dont le nom est sp&eacute;cifi&eacute; via l'argument
+    <var>valeur</var>. Ceci permet d'enregistrer la valeur d'un en-t&ecirc;te
+    envoy&eacute; par un programme CGI ou une ressource mandat&eacute;e, m&ecirc;me s'il
+    est pr&eacute;vu de l'effacer.</dd>
+
+    </dl>    
 
     <p>Cet argument est suivi d'un nom d'<var>en-t&ecirc;te</var> qui peut se
     terminer par un caract&egrave;re ':', mais ce n'est pas obligatoire. La
