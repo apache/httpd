@@ -15,15 +15,7 @@
  */
 
 /*
- * Written by Bojan Smojver <bojan rexursive.com>:
- *
- * The argument to LogFormat and CustomLog is a string, which can include
- * literal characters copied into the log files, and '%' directives as
- * follows:
- *
- * %...I:  bytes received, including request and headers, cannot be zero
- * %...O:  bytes sent, including headers, cannot be zero
- *
+ * Written by Bojan Smojver <bojan rexursive.com>.
  */
 
 #include "apr_strings.h"
@@ -108,6 +100,14 @@ static const char *log_bytes_out(request_rec *r, char *a)
     return apr_off_t_toa(r->pool, cf->bytes_out);
 }
 
+static const char *log_bytes_combined(request_rec *r, char *a)
+{
+    logio_config_t *cf = ap_get_module_config(r->connection->conn_config,
+                                              &logio_module);
+
+    return apr_off_t_toa(r->pool, cf->bytes_out + cf->bytes_in);
+}
+
 /*
  * Reset counters after logging...
  */
@@ -170,6 +170,7 @@ static int logio_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
     if (log_pfn_register) {
         log_pfn_register(p, "I", log_bytes_in, 0);
         log_pfn_register(p, "O", log_bytes_out, 0);
+        log_pfn_register(p, "S", log_bytes_combined, 0);
     }
 
     return OK;

@@ -2,6 +2,10 @@
 
 Changes with Apache 2.4.7
 
+  *) mod_logio: new format-specifier %C (combined) which is the sum of received
+     and sent byte counts.
+     PR54015 [Christophe Jaillet]
+
   *) mod_deflate: Improve error detection when decompressing request bodies
      with trailing garbage: handle case where trailing bytes are in
      the same bucket. [Rainer Jung]
