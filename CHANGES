@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_cache: Avoid a crash with strcmp() when the hostname is not provided.
+     [Graham Leggett]
+
   *) mod_lua: Add rudimentary support for WebSocket interaction. This is 
      currently request-bound and only supports the WS protocol. [Daniel Gruno]
 
