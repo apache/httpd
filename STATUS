@@ -163,6 +163,12 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     2.4.x patch: trunk patch works
     +1: trawick, covener, humbedooh
 
+  * mod_filter: Allow mod_filter to undo equiv of change=yes that was
+    baked into a filter provider.
+    trunk patch: http://svn.apache.org/r1519475
+    2.4.x patch: trunk works
+    +1: covener, jim, minfrin
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -251,13 +257,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: trunk patch works
     +1: jailletc36, jim
    
-  * mod_filter: Allow mod_filter to undo equiv of change=yes that was 
-    baked into a filter provider.
-    trunk patch: http://svn.apache.org/r1519475
-    2.4.x patch: trunk works
-    +1: covener, jim
-
-
   * mpm_unix: Add ap_mpm_podx_* implementation to avoid code duplication
     and align w/ trunk.
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1409214
