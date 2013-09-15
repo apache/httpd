@@ -1990,6 +1990,29 @@ static int lua_websocket_greet(lua_State *L)
     return 0;
 }
 
+static apr_status_t lua_websocket_readbytes(conn_rec* c, char* buffer, 
+        apr_off_t len) 
+{
+    apr_bucket_brigade *brigade = apr_brigade_create(c->pool, c->bucket_alloc);
+    apr_status_t rv;
+    rv = ap_get_brigade(c->input_filters, brigade, AP_MODE_READBYTES, 
+            APR_BLOCK_READ, len);
+    if (rv == APR_SUCCESS) {
+        if (!APR_BRIGADE_EMPTY(brigade)) {
+            apr_bucket* bucket = APR_BRIGADE_FIRST(brigade);
+            const char* data = NULL;
+            apr_size_t data_length = 0;
+            rv = apr_bucket_read(bucket, &data, &data_length, APR_BLOCK_READ);
+            if (rv == APR_SUCCESS) {
+                memcpy(buffer, data, len);
+            }
+            apr_bucket_delete(bucket);
+        }
+    }
+    apr_brigade_cleanup(brigade);
+    return rv;
+}
+
 static int lua_websocket_read(lua_State *L) 
 {
     apr_socket_t *sock;
@@ -2006,25 +2029,30 @@ static int lua_websocket_read(lua_State *L)
     
     request_rec *r = ap_lua_check_request_rec(L, 1);
     plaintext = ap_lua_ssl_is_https(r->connection) ? 0 : 1;
-    
-    if (!plaintext) {
-        ap_log_rerror(APLOG_MARK, APLOG_NOTICE, 0, r, 
-                    "Websocket: WSS protocol reading not yet supported!");
-        return 0;
-    }
+
     
     mask_bytes = apr_pcalloc(r->pool, 4);
     sock = ap_get_conn_socket(r->connection);
 
     /* Get opcode and FIN bit */
-    rv = apr_socket_recv(sock, &byte, &len);
+    if (plaintext) {
+        rv = apr_socket_recv(sock, &byte, &len);
+    }
+    else {
+        rv = lua_websocket_readbytes(r->connection, &byte, 1);
+    }
     if (rv == APR_SUCCESS) {
         unsigned char fin, opcode, mask, payload;
         fin = byte >> 7;
         opcode = (byte << 4) >> 4;
         
         /* Get the payload length and mask bit */
-        rv = apr_socket_recv(sock, &byte, &len);
+        if (plaintext) {
+            rv = apr_socket_recv(sock, &byte, &len);
+        }
+        else {
+            rv = lua_websocket_readbytes(r->connection, &byte, 1);
+        }
         if (rv == APR_SUCCESS) {
             mask = byte >> 7;
             payload = byte - 128;
@@ -2033,7 +2061,13 @@ static int lua_websocket_read(lua_State *L)
             /* Extended payload? */
             if (payload == 126) {
                 len = 2;
-                rv = apr_socket_recv(sock, (char*) &payload_short, &len);
+                if (plaintext) {
+                    rv = apr_socket_recv(sock, (char*) &payload_short, &len);
+                }
+                else {
+                    rv = lua_websocket_readbytes(r->connection, 
+                        (char*) &payload_short, 2);
+                }
                 payload_short = ntohs(payload_short);
                 
                 if (rv == APR_SUCCESS) {
@@ -2046,7 +2080,13 @@ static int lua_websocket_read(lua_State *L)
             /* Super duper extended payload? */
             if (payload == 127) {
                 len = 8;
-                rv = apr_socket_recv(sock, (char*) &payload_long, &len);
+                if (plaintext) {
+                    rv = apr_socket_recv(sock, (char*) &payload_long, &len);
+                }
+                else {
+                    rv = lua_websocket_readbytes(r->connection, 
+                            (char*) &payload_long, 8);
+                }
                 if (rv == APR_SUCCESS) {
                     plen = ap_ntoh64(&payload_long);
                 }
@@ -2062,7 +2102,13 @@ static int lua_websocket_read(lua_State *L)
                     fin ? "This is a final frame" : "more to follow");
             if (mask) {
                 len = 4;
-                rv = apr_socket_recv(sock, (char*) mask_bytes, &len);
+                if (plaintext) {
+                    rv = apr_socket_recv(sock, (char*) mask_bytes, &len);
+                }
+                else {
+                    rv = lua_websocket_readbytes(r->connection, 
+                            (char*) mask_bytes, 4);
+                }
                 if (rv != APR_SUCCESS) {
                     return 0;
                 }
@@ -2088,11 +2134,12 @@ static int lua_websocket_read(lua_State *L)
                         at);
                 }
                 else {
-                    at = ap_get_client_block(r, buffer, plen);
+                    rv = lua_websocket_readbytes(r->connection, buffer, 
+                            remaining);
                     ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, 
                     "Websocket: SSL Frame contained %lu bytes, "\
                             "pushed to Lua stack", 
-                        at);
+                        remaining);
                 }
                 if (mask) {
                     for (n = 0; n < plen; n++) {
@@ -2100,7 +2147,7 @@ static int lua_websocket_read(lua_State *L)
                     }
                 }
                 
-                lua_pushlstring(L, buffer, (size_t) plen); /* push string to stack */
+                lua_pushlstring(L, buffer, (size_t) plen); /* push to stack */
                 lua_pushboolean(L, fin); /* push FIN bit to stack as boolean */
                 return 2;
             }
@@ -2176,16 +2223,15 @@ static int lua_websocket_write(lua_State *L)
 static int lua_websocket_close(lua_State *L) 
 {
     apr_socket_t *sock;
-    apr_size_t plen;
     char prelude[2];
     request_rec *r = ap_lua_check_request_rec(L, 1);
+    
     sock = ap_get_conn_socket(r->connection);
     
     /* Send a header that says: socket is closing. */
     prelude[0] = 0x88; /* closing socket opcode */
     prelude[1] = 0; /* zero length frame */
-    plen = 2;
-    apr_socket_send(sock, prelude, &plen);
+    ap_rwrite(prelude, 2, r);
     
     /* Close up tell the MPM and filters to back off */
     apr_socket_close(sock);
