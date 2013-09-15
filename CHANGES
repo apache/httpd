@@ -5,9 +5,6 @@ Changes with Apache 2.5.0
      save the socket for reuse by the next worker as if it were an 
      APR_SO_DISCONNECTED socket. Restores 2.2 behavior. [Eric Covener]
 
-  *) mod_auth_digest: Be more specific when the realm mismatches because the
-     realm has not been specified. [Graham Leggett]
-
   *) mod_cache: Avoid a crash with strcmp() when the hostname is not provided.
      [Graham Leggett]
 
@@ -16,9 +13,6 @@ Changes with Apache 2.5.0
 
   *) mod_lua: Add getcookie/setcookie for reading/writing HTTP cookies
      [Daniel Gruno]
-
-  *) mod_headers: Add 'Header note header-name note-name' for copying a response
-     headers value into a note. [Eric Covener]
 
   *) WinNT MPM: Don't crash during child process initialization if the
      Listen protocol is unrecognized.  [Jeff Trawick]
@@ -40,24 +34,11 @@ Changes with Apache 2.5.0
      growing or shrinking a response that started with Content-Length set
      would require mod_filter and FilterProtocol change=yes. [Eric Covnener]
 
-  *) mod_filter: Add "change=no" as a proto-flag to FilterProtocol
-     to remove a providers initial flags set at registration time.
-     [Eric Covener]
-
   *) mod_lua: Return a 500 error if a LuaHook* script doesn't return a 
      numeric return code. [Eric Covener]
 
   *) Add experimental cmake-based build system for Windows.  [Jeff Trawick,
      Tom Donovan]
-
-  *) mod_ldap: Change "LDAPReferrals off" to actually set the underlying LDAP 
-     SDK option to OFF, and introduce "LDAPReferrals default" to take the SDK 
-     default, sans rebind authentication callback.
-     [Jan Kaluza <jkaluza AT redhat.com>]
-
-  *) mod_authz_groupfile, mod_authz_user: Reduce severity of AH01671 and AH01663
-     from ERROR to DEBUG, since these modules do not know what mod_authz_core
-     is doing with their AUTHZ_DENIED return value. [Eric Covener]
 
   *) mod_authnz_fcgi: New module to enable FastCGI authorizer
      applications to authenticate and/or authorize clients.
@@ -79,9 +60,6 @@ Changes with Apache 2.5.0
      plus improving randomness for IPv6-only hosts.
      [Jan Kaluza <jkaluza redhat.com>]
 
-  *) core: Log a message at TRACE1 when the client aborts a connection.
-     [Eric Covener]
-
   *) mod_authnz_ldap: Support primitive LDAP servers that do not accept
      filters, such as "SDBM-backed LDAP" on z/OS, by allowing a special
      filter "none" to be specified in AuthLDAPURL. [Eric Covener]
@@ -91,9 +69,6 @@ Changes with Apache 2.5.0
 
   *) core: merge AllowEncodedSlashes from the base configuration into
      virtual hosts. [Eric Covener]
-
-  *) mod_headers: Add 'setifempty' command to Header and RequestHeader.
-     [Eric Covener]
 
   *) AIX: Install DSO's with "cp" instead of "install" in instdso.sh
      [Eric Covener]
