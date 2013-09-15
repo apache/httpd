@@ -986,7 +986,7 @@ end
 
 <highlight language="lua">
 r:wsread() -- Reads a WebSocket frame from a WebSocket upgraded connection (see above):
-           -- Currently, only the WS protocol is supported (no WSS support for reading)
+
 local line, isFinal = r:wsread() -- isFinal denotes whether this is the final frame.
                                  -- If it isn't, then more frames can be read
 r:wswrite("You wrote: " .. line)
