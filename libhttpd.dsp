@@ -165,6 +165,10 @@ SOURCE=.\include\ap_release.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\include\ap_skiplist.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\include\http_config.h
 # End Source File
 # Begin Source File
@@ -474,6 +478,10 @@ SOURCE=.\server\protocol.c
 # Begin Source File
 
 SOURCE=.\server\request.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\server\skiplist.c
 # End Source File
 # Begin Source File
 
