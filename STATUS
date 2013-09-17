@@ -97,6 +97,12 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  * mod_auth_digest: Be more specific when the realm mismatches because the
+    realm has not been specified.
+    trunk: http://svn.apache.org/viewvc?view=revision&revision=1523239
+    2.4.x patch: trunk patch works, modulo CHANGES and next-number
+    +1: minfrin, druggeri, chrisd
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -172,12 +178,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: trunk patch works
     +1: minfrin, druggeri
 
-  * mod_auth_digest: Be more specific when the realm mismatches because the
-    realm has not been specified.
-    trunk: http://svn.apache.org/viewvc?view=revision&revision=1523239
-    2.4.x patch: trunk patch works, modulo CHANGES and next-number
-    +1: minfrin, druggeri
-
   * mod_cache: Correct LOGNO which has not been updated when r1481396 was backported 
     trunk: http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/cache/mod_cache.c?r1=1481396&r2=1481395&pathrev=1481396
     2.4.x: http://people.apache.org/~jailletc36/1481396.patch
@@ -193,7 +193,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     survive a restart (BalancerPersist)
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1524101
     2.4.x patch: http://people.apache.org/~druggeri/patches/BalancerPersist.balancerManagerNote.2.4.patch
-    +1: druggeri
+    +1: druggeri, chrisd
 
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
