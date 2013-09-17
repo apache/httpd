@@ -176,12 +176,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   * mod_cache: Avoid a crash with strcmp() when the hostname is not provided.
     trunk: http://svn.apache.org/viewvc?view=revision&revision=1523235
     2.4.x patch: trunk patch works
-    +1: minfrin, druggeri
+    +1: minfrin, druggeri, jim
 
   * mod_cache: Correct LOGNO which has not been updated when r1481396 was backported 
     trunk: http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/cache/mod_cache.c?r1=1481396&r2=1481395&pathrev=1481396
     2.4.x: http://people.apache.org/~jailletc36/1481396.patch
-    +1: jailletc36, druggeri
+    +1: jailletc36, druggeri, jim
 
   * mod_session_crypto: Add support for exec: calls to obtain key similar to
     mod_ssl and mod_authnz_ldap. Essentially copypasta from mod_authnz_ldap...
@@ -193,7 +193,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     survive a restart (BalancerPersist)
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1524101
     2.4.x patch: http://people.apache.org/~druggeri/patches/BalancerPersist.balancerManagerNote.2.4.patch
-    +1: druggeri, chrisd
+    +1: druggeri, chrisd, jim
 
   * mod_proxy: Add a note in the balancer manager whether inherits will/will not
     be done.
