@@ -34,7 +34,7 @@
 <h3>Summary</h3>
 
 
-    <p>This modules provides macros within apache httpd runtime configuration files.
+    <p>This module provides macros within apache httpd runtime configuration files.
     These macros may have parameters. They are expanded when used (parameters are
     substituted by their values given as an argument), and the result is
     processed normally.</p>

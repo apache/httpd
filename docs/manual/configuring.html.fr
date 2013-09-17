@@ -111,7 +111,7 @@ le Serveur HTTP Apache.</p>
 
     <p>La longueur maximale d'une ligne dans un fichier de configuration
     normal, après substitution des variables et fusion des lignes
-    interrompues, est approximativement de 16 Mo. Dans les <a href="configuring.xml#htaccess">fichiers .htaccess</a>, la longueur
+    interrompues, est approximativement de 16 Mo. Dans les <a href="configuring.html#htaccess">fichiers .htaccess</a>, la longueur
     maximale est de 8190 caractères.</p>
 
     <p>Vous pouvez vérifier l'absence d'erreurs de syntaxe dans vos fichiers

@@ -27,8 +27,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_ldap.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_ldap.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Conservation des connexions LDAP et services de mise en
 cache du résultat à destination des autres modules LDAP</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -681,6 +679,7 @@ cours des requêtes vers le serveur LDAP.</td></tr>
 
     <p>La directive <code class="directive">LDAPReferrals</code> accepte les
     valeurs suivantes :</p>
+
     <dl>
      <dt>"on"</dt>
      <dd> <p>Avec la valeur "on", la prise en compte des redirections
@@ -696,7 +695,7 @@ cours des requêtes vers le serveur LDAP.</td></tr>
      <code class="directive">LDAPReferralHopLimit</code> ne permet pas de surcharger la
      "hop limit" du SDK, et aucun "LDAP rebind callback" n'est enregistré.</p></dd>
     </dl>
-
+    
     <p>La directive <code>LDAPReferralHopLimit</code> travaille en
     conjonction avec cette directive pour limiter le nombre de
     redirections à suivre pour achever le traitement de la requête LDAP.
