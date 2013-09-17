@@ -195,6 +195,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: http://people.apache.org/~druggeri/patches/BalancerPersist.balancerManagerNote.2.4.patch
     +1: druggeri, chrisd
 
+  * mod_proxy: Add a note in the balancer manager whether inherits will/will not
+    be done.
+    trunk patch: http://svn.apache.org/r1524158
+    2.4.x patch: trunk patch works
+    +1: jim
+
   * mod_auth_basic: Add AuthBasicUseDigestAlgorithm directive to allow
     migration of passwords from digest to basic authentication.
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1514064
