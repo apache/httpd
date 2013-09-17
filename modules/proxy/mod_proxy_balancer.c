@@ -1463,7 +1463,10 @@ static int balancer_handler(request_rec *r)
         ap_rvputs(r, "<dl><dt>Server Version: ",
                   ap_get_server_description(), "</dt>\n", NULL);
         ap_rvputs(r, "<dt>Server Built: ",
-                  ap_get_server_built(), "\n</dt></dl>\n", NULL);
+                  ap_get_server_built(), "</dt>\n", NULL);
+        ap_rvputs(r, "<dt>Balancer changes will ", conf->bal_persist ? "" : "NOT ",
+                  "be persisted on restart.</dt>", NULL);
+        ap_rputs("</dl>\n", r);
         balancer = (proxy_balancer *)conf->balancers->elts;
         for (i = 0; i < conf->balancers->nelts; i++) {
 
