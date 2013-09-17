@@ -402,12 +402,19 @@ being moved to <code class="module"><a href="../mod/mod_filter.html">mod_filter<
     With two arguments it applies to a <var>filter-name</var> whenever the
     filter runs <em>any</em> provider.</p>
 
+    <p>Flags specified with this directive are merged with the flags 
+    that underlying providers may have registerd with 
+    <code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code>. For example, a filter may internally specify
+    the equivalent of <code>change=yes</code>, but a particular 
+    configuration of the module can override with <code>change=no</code>.
+    </p>
+
     <p><var>proto-flags</var> is one or more of</p>
 
     <dl>
-    <dt><code>change=yes</code></dt>
-    <dd>The filter changes the content, including possibly the content
-    length</dd>
+    <dt><code>change=yes|no</code></dt>
+    <dd>Specifies whether the filter changes the content, including possibly 
+    the content length.  The "no" argument is supported in 2.4.7 and later.</dd>
 
     <dt><code>change=1:1</code></dt>
     <dd>The filter changes the content, but will not change the content

@@ -211,7 +211,7 @@ utilisateurs.</dd>
 la répartition de charge</dd>
 <dt><a href="mod_proxy_connect.html">mod_proxy_connect</a></dt><dd>Extension de <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> pour le traitement
 des requêtes <code>CONNECT</code></dd>
-<dt><a href="mod_proxy_express.html">mod_proxy_express</a></dt><dd>Extension à <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> pour le fonctionnement en mandataire
+<dt><a href="mod_proxy_express.html">mod_proxy_express</a></dt><dd>Extension à <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> pour le mandatement
 dynamique inverse de masse</dd>
 <dt><a href="mod_proxy_fcgi.html">mod_proxy_fcgi</a></dt><dd>Module fournissant le support de FastCGI à
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>

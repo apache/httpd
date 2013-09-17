@@ -27,8 +27,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_proxy_fcgi.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_proxy_fcgi.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Module fournissant le support de FastCGI à
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -44,10 +42,12 @@
     <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> et <code class="module"><a href="../mod/mod_proxy_fcgi.html">mod_proxy_fcgi</a></code>
     doivent être chargés dans le serveur.</p>
 
-    <p>À la différence de <a href="http://httpd.apache.org/mod_fcgid/">mod_fcgid</a> et <a href="http://www.fastcgi.com/">mod_fastcgi</a>,
+    <p>A la différence de <a href="http://httpd.apache.org/mod_fcgid/">mod_fcgid</a> et <a href="http://www.fastcgi.com/">mod_fastcgi</a>,
     <code class="module"><a href="../mod/mod_proxy_fcgi.html">mod_proxy_fcgi</a></code> n'est pas en mesure de démarrer le
     processus de l'application ; <code class="program"><a href="../programs/fcgistarter.html">fcgistarter</a></code> est
-    fourni à cet effet.</p>
+    fourni à cet effet sur certaines plateformes. Le framework
+    applicatif FastCGI utilisé peut aussi fournir la gestion des
+    processus ou des lancements de programmes externes.</p>
 
     <div class="warning"><h3>Avertissement</h3>
       <p>N'activez pas la fonctionnalité de mandataire avant d'avoir <a href="mod_proxy.html#access">sécurisé votre serveur</a>. Les
@@ -86,7 +86,7 @@
     avant que le même processus httpd ne redirige une autre requête vers
     l'application. Si l'application FastCGI n'est pas en mesure de gérer
     un nombre suffisant de connexions simultanées avec httpd, les
-    requêtes peuvent rester bloquées jusqu'à ce que l'application ferme
+    requêtes peuvent être bloquées jusqu'à ce que l'application ferme
     une connexion existante. Pour remédier à ce problème, on peut
     désactiver la réutilisation des connexions à l'aide de la directive
     <code class="directive">ProxyPass</code>, comme indiqué dans l'exemple
@@ -128,11 +128,11 @@ ProxyPass /myapp/ balancer://myappcluster/
 	ce qui permet au serveur FCGI d'arrière-plan de déterminer
 	correctement <var>SCRIPT_NAME</var> et <var>Script-URI</var>, et
 	de se conformer à la section 3.3 de la RFC 3875. Si au contraire
-	vous souhaitez que <code class="module"><a href="../mod/mod_proxy_fcgi.html">mod_proxy_fcgi</a></code> génère une
+	vous avez souhaitez que <code class="module"><a href="../mod/mod_proxy_fcgi.html">mod_proxy_fcgi</a></code> génère une
 	"estimation la plus exacte possible" de <var>PATH_INFO</var>,
 	définissez la variable d'environnement
 	<var>proxy-fcgi-pathinfo</var>. Ceci peut servir de
-	contournement pour un bogue présent dans certaines
+	contournement pour une bogue présente dans certaines
 	implémentations de FCGI.</dd>
     </dl>
 </div>

@@ -48,8 +48,7 @@ Documentation</h1>
 <ul><li><a href="install.html">Compiling and Installing</a></li>
 <li><a href="invoking.html">Starting</a></li>
 <li><a href="stopping.html">Stopping or Restarting</a></li>
-<li><a href="mod/directives.html">Run-time Configuration Directives</a></li>
-<li><a href="mod/quickreference.html">Directive Quick-Reference</a></li>
+<li><a href="mod/quickreference.html">Run-time Configuration Directives</a></li>
 <li><a href="mod/">Modules</a></li>
 <li><a href="mpm.html">Multi-Processing Modules (MPMs)</a></li>
 <li><a href="filter.html">Filters</a></li>

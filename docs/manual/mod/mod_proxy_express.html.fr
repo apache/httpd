@@ -27,9 +27,7 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_proxy_express.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_proxy_express.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Extension à <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> pour le fonctionnement en mandataire
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Extension à <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> pour le mandatement
 dynamique inverse de masse</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>proxy_express_module</td></tr>
@@ -127,7 +125,8 @@ dynamique inverse de masse</td></tr>
         </code></p></div>
 
       <div class="example"><h3>Configuration</h3><p><code>
-        ProxyExpressDBMFile emap<br />
+        ProxyExpressEnable on<br />
+	ProxyExpressDBMFile emap<br />
         </code></p></div>
     </div>
 
