@@ -318,7 +318,10 @@ static apr_status_t lua_setup_filter_ctx(ap_filter_t* f, request_rec* r, lua_fil
     ctx = apr_pcalloc(r->pool, sizeof(lua_filter_ctx));
     ctx->broken = 0;
     *c = ctx;
-    /* Find the filter that was called */
+    /* Find the filter that was called.
+     * XXX: If we were wired with mod_filter, the filter (mod_filters name)
+     *      and the provider (our underlying filters name) need to have matched.
+     */
     for (n = 0; n < cfg->mapped_filters->nelts; n++) {
         ap_lua_filter_handler_spec *hook_spec =
             ((ap_lua_filter_handler_spec **) cfg->mapped_filters->elts)[n];
@@ -374,6 +377,12 @@ static apr_status_t lua_setup_filter_ctx(ap_filter_t* f, request_rec* r, lua_fil
              */
             rc = lua_resume(L, 1);
             if (rc == LUA_YIELD) {
+                if (f->frec->providers == NULL) { 
+                    /* Not wired by mod_filter */
+                    apr_table_unset(r->headers_out, "Content-Length");
+                    apr_table_unset(r->headers_out, "Content-MD5");
+                    apr_table_unset(r->headers_out, "ETAG");
+                }
                 return OK;
             }
             else {
@@ -407,8 +416,25 @@ static apr_status_t lua_output_filter_handle(ap_filter_t *f, apr_bucket_brigade 
             ap_remove_output_filter(f);
             return ap_pass_brigade(f->next,pbbIn);
         }
-        f->ctx = ctx;
-        ctx->tmpBucket = apr_brigade_create(r->pool, c->bucket_alloc);
+        else { 
+            /* We've got a willing lua filter, setup and check for a prefix */
+            size_t olen;
+            apr_bucket *pbktOut;
+            const char* output = lua_tolstring(ctx->L, 1, &olen);
+
+            f->ctx = ctx;
+            ctx->tmpBucket = apr_brigade_create(r->pool, c->bucket_alloc);
+
+            if (olen > 0) { 
+                pbktOut = apr_bucket_heap_create(output, olen, NULL, c->bucket_alloc);
+                APR_BRIGADE_INSERT_TAIL(ctx->tmpBucket, pbktOut);
+                rv = ap_pass_brigade(f->next, ctx->tmpBucket);
+                apr_brigade_cleanup(ctx->tmpBucket);
+                if (rv != APR_SUCCESS) {
+                    return rv;
+                }
+            }
+        }
     }
     ctx = (lua_filter_ctx*) f->ctx;
     L = ctx->L;
@@ -433,13 +459,15 @@ static apr_status_t lua_output_filter_handle(ap_filter_t *f, apr_bucket_brigade 
             if (lua_resume(L, 0) == LUA_YIELD) {
                 size_t olen;
                 const char* output = lua_tolstring(L, 1, &olen);
-                pbktOut = apr_bucket_heap_create(output, olen, NULL,
-                                        c->bucket_alloc);
-                APR_BRIGADE_INSERT_TAIL(ctx->tmpBucket, pbktOut);
-                rv = ap_pass_brigade(f->next, ctx->tmpBucket);
-                apr_brigade_cleanup(ctx->tmpBucket);
-                if (rv != APR_SUCCESS) {
-                    return rv;
+                if (olen > 0) { 
+                    pbktOut = apr_bucket_heap_create(output, olen, NULL,
+                                            c->bucket_alloc);
+                    APR_BRIGADE_INSERT_TAIL(ctx->tmpBucket, pbktOut);
+                    rv = ap_pass_brigade(f->next, ctx->tmpBucket);
+                    apr_brigade_cleanup(ctx->tmpBucket);
+                    if (rv != APR_SUCCESS) {
+                        return rv;
+                    }
                 }
             }
             else {
@@ -461,9 +489,11 @@ static apr_status_t lua_output_filter_handle(ap_filter_t *f, apr_bucket_brigade 
                 apr_bucket *pbktOut;
                 size_t olen;
                 const char* output = lua_tolstring(L, 1, &olen);
-                pbktOut = apr_bucket_heap_create(output, olen, NULL,
-                                        c->bucket_alloc);
-                APR_BRIGADE_INSERT_TAIL(ctx->tmpBucket, pbktOut);
+                if (olen > 0) { 
+                    pbktOut = apr_bucket_heap_create(output, olen, NULL,
+                            c->bucket_alloc);
+                    APR_BRIGADE_INSERT_TAIL(ctx->tmpBucket, pbktOut);
+                }
             }
             pbktEOS = apr_bucket_eos_create(c->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(ctx->tmpBucket, pbktEOS);
@@ -661,6 +691,13 @@ static int lua_request_rec_hook_harness(request_rec *r, const char *name, int ap
             rc = DECLINED;
             if (lua_isnumber(L, -1)) {
                 rc = lua_tointeger(L, -1);
+                ap_log_rerror(APLOG_MARK, APLOG_TRACE4, 0, r, "Lua hook %s:%s for phase %s returned %d", 
+                              hook_spec->file_name, hook_spec->function_name, name, rc);
+            }
+            else { 
+                ap_log_rerror(APLOG_MARK, APLOG_CRIT, 0, r, "Lua hook %s:%s for phase %s did not return a numeric value", 
+                              hook_spec->file_name, hook_spec->function_name, name);
+                return HTTP_INTERNAL_SERVER_ERROR;
             }
             if (rc != DECLINED) {
                 ap_lua_release_state(L, spec, r);
@@ -1076,7 +1113,8 @@ static const char *register_filter_function_hook(const char *filter,
     /* TODO: Make it work on other types than just AP_FTYPE_RESOURCE? */
     if (direction == AP_LUA_FILTER_OUTPUT) {
         spec->direction = AP_LUA_FILTER_OUTPUT;
-        ap_register_output_filter(filter, lua_output_filter_handle, NULL, AP_FTYPE_RESOURCE);
+        ap_register_output_filter_protocol(filter, lua_output_filter_handle, NULL, AP_FTYPE_RESOURCE,
+                                            AP_FILTER_PROTO_CHANGE|AP_FILTER_PROTO_CHANGE_LENGTH);
     }
     else {
         spec->direction = AP_LUA_FILTER_INPUT;
@@ -1155,6 +1193,11 @@ static void lua_insert_filter_harness(request_rec *r)
     /* ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, "LuaHookInsertFilter not yet implemented"); */
 }
 
+static int lua_log_transaction_harness(request_rec *r)
+{
+    return lua_request_rec_hook_harness(r, "log_transaction", APR_HOOK_FIRST);
+}
+
 static int lua_quick_harness(request_rec *r, int lookup)
 {
     if (lookup) {
@@ -1219,12 +1262,22 @@ static const char *register_map_to_storage_hook(cmd_parms *cmd, void *_cfg,
     return register_named_file_function_hook("map_to_storage", cmd, _cfg,
                                              file, function, APR_HOOK_MIDDLE);
 }
+
+static const char *register_log_transaction_hook(cmd_parms *cmd, void *_cfg,
+                                                const char *file,
+                                                const char *function)
+{
+    return register_named_file_function_hook("log_transaction", cmd, _cfg,
+                                             file, function, APR_HOOK_FIRST);
+}
+
 static const char *register_map_to_storage_block(cmd_parms *cmd, void *_cfg,
                                                  const char *line)
 {
     return register_named_block_function_hook("map_to_storage", cmd, _cfg,
                                               line);
 }
+
 
 static const char *register_check_user_id_hook(cmd_parms *cmd, void *_cfg,
                                                const char *file,
@@ -1783,6 +1836,10 @@ command_rec lua_commands[] = {
     AP_INIT_TAKE2("LuaHookInsertFilter", register_insert_filter_hook, NULL,
                   OR_ALL,
                   "Provide a hook for the insert_filter phase of request processing"),
+    
+    AP_INIT_TAKE2("LuaHookLog", register_log_transaction_hook, NULL,
+                  OR_ALL,
+                  "Provide a hook for the logging phase of request processing"),
 
     AP_INIT_TAKE123("LuaScope", register_lua_scope, NULL, OR_ALL,
                     "One of once, request, conn, server -- default is once"),
@@ -1983,6 +2040,10 @@ static void lua_register_hooks(apr_pool_t *p)
     
     /* ivm mutex */
     apr_thread_mutex_create(&lua_ivm_mutex, APR_THREAD_MUTEX_DEFAULT, p);
+    
+    /* Logging catcher */
+    ap_hook_log_transaction(lua_log_transaction_harness,NULL,NULL,
+                            APR_HOOK_FIRST);
 }
 
 AP_DECLARE_MODULE(lua) = {
