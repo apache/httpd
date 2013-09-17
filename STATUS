@@ -97,10 +97,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_cache: Correct LOGNO which has not been updated when r1481396 was backported 
-    trunk: http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/cache/mod_cache.c?r1=1481396&r2=1481395&pathrev=1481396
-    2.4.x: http://people.apache.org/~jailletc36/1481396.patch
-    +1: jailletc36, druggeri, jim
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
