@@ -762,7 +762,7 @@ static int proxy_ajp_handler(request_rec *r, proxy_worker *worker,
             if (worker->s->ping_timeout < 0) {
                 if (!ap_proxy_is_socket_connected(backend->sock)) {
                     backend->close = 1;
-                    ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO()
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(02534)
                                   "socket check failed to %pI (%s)",
                                   worker->cp->addr, worker->s->hostname);
                     status = HTTP_SERVICE_UNAVAILABLE;
