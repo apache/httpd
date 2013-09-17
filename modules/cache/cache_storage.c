@@ -713,7 +713,9 @@ int cache_invalidate(cache_request_rec *cache, request_rec *r)
                 || APR_SUCCESS
                         != cache_canonicalise_key(r, r->pool, location,
                                 &location_uri, &location_key)
-                || strcmp(r->parsed_uri.hostname, location_uri.hostname)) {
+                || !(r->parsed_uri.hostname && location_uri.hostname
+                        && !strcmp(r->parsed_uri.hostname,
+                                location_uri.hostname))) {
             location_key = NULL;
         }
     }
@@ -726,8 +728,9 @@ int cache_invalidate(cache_request_rec *cache, request_rec *r)
                 || APR_SUCCESS
                         != cache_canonicalise_key(r, r->pool, content_location,
                                 &content_location_uri, &content_location_key)
-                || strcmp(r->parsed_uri.hostname,
-                        content_location_uri.hostname)) {
+                || !(r->parsed_uri.hostname && content_location_uri.hostname
+                        && !strcmp(r->parsed_uri.hostname,
+                                content_location_uri.hostname))) {
             content_location_key = NULL;
         }
     }
