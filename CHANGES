@@ -1,9 +1,6 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
-  * core: Fix RFC2616 compliance issue with 'identity' transfer-encoding.
-     [Yann Ylavic <ylavic.dev gmail com>, Jim Jagielski]
-
   *) WinNT MPM: If ap_run_pre_connection() fails or sets c->aborted, don't
      save the socket for reuse by the next worker as if it were an 
      APR_SO_DISCONNECTED socket. Restores 2.2 behavior. [Eric Covener]
