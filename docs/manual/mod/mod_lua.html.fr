@@ -27,6 +27,8 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_lua.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_lua.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
+            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Fournit des points d'entrée Lua dans différentes parties du
 traitement des requêtes httpd</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
@@ -1157,6 +1159,43 @@ r:getcookie(key) -- Obtient un cookie HTTP
 <pre class="prettyprint lang-lua">
 r:setcookie(key, value, secure, expires) -- Définit un cookie HTTP, par exemple :
 r:setcookie("foo", "bar and stuff", false, os.time() + 86400)
+</pre>
+
+
+<pre class="prettyprint lang-lua">
+r:wsupgrade() -- Met à jour une connexion vers les WebSockets si possible (et si demandé) :
+if r:wsupgrade() then -- si la mise à jour est possible :
+    r:wswrite("Bienvenue dans les websockets!") -- écrit quelque chose à l'intention du client
+    r:wsclose()  -- Au revoir !
+end
+</pre>
+
+
+<pre class="prettyprint lang-lua">
+r:wsread() -- Lit un cadre de websocket depuis une connexion vers websocket mise à jour (voir ci-dessus) :
+           -- Actuellement, seul le protocole WS est supporté (pas de support WSS en lecture)
+local line, isFinal = r:wsread() -- isFinal indique s'il s'agit du cadre final.
+                                 -- dans le cas contraire, on peut lire les cadres suivants
+r:wswrite("Vous avez écrit : " .. line)
+</pre>
+
+
+<pre class="prettyprint lang-lua">
+r:wswrite(line) -- écrit un cadre vers un client WebSocket :
+r:wswrite("Bonjour le Monde !")
+</pre>
+
+
+<pre class="prettyprint lang-lua">
+r:wsclose() -- ferme une requête WebSocket et l'achève pour httpd :
+
+if r:wsupgrade() then
+    r:wswrite("Ecrire quelque chose : ")
+    local line = r:wsread() or "nothing"
+    r:wswrite("Vous avez écrit : " .. line);
+    r:wswrite("Au revoir !")
+    r:wsclose()
+end
 </pre>
 
 

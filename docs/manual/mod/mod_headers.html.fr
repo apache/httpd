@@ -344,7 +344,15 @@ Header merge Cache-Control no-store env=NO_STORE
     <dd>L'en-tête est supprimé s'il existe. Si plusieurs en-têtes
     possèdent le même nom, ils seront tous supprimés. L'argument
     <var>value</var> ne doit pas apparaître.</dd>
-    </dl>
+
+    <dt><code>note</code></dt>
+    <dd>La valeur de l'<var>en-tête</var> considéré est copiée dans une
+    note interne dont le nom est spécifié via l'argument
+    <var>valeur</var>. Ceci permet d'enregistrer la valeur d'un en-tête
+    envoyé par un programme CGI ou une ressource mandatée, même s'il
+    est prévu de l'effacer.</dd>
+
+    </dl>    
 
     <p>Cet argument est suivi d'un nom d'<var>en-tête</var> qui peut se
     terminer par un caractère ':', mais ce n'est pas obligatoire. La

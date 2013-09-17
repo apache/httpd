@@ -27,8 +27,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_rewrite.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_rewrite.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Ce module fournit un moteur de réécriture à base de
 règles permettant de réécrire les URLs des requêtes
 à la volée</td></tr>
@@ -737,29 +735,20 @@ RewriteRule ...règles concernant tous ces hôtes...
        pouvez utiliser ce qui suit : </p>
 
 <pre class="prettyprint lang-config">
-RewriteCond  %{HTTP_USER_AGENT}  ^Mozilla
-RewriteRule  ^/$                 /homepage.max.html  [L]
-
-RewriteCond  %{HTTP_USER_AGENT}  ^Lynx
-RewriteRule  ^/$                 /homepage.min.html  [L]
+RewriteCond  %{HTTP_USER_AGENT}  (iPhone|Blackberry|Android)
+RewriteRule  ^/$                 /homepage.mobile.html  [L]
 
 RewriteRule  ^/$                 /homepage.std.html  [L]
 </pre>
 
 
         <p>Explications : si vous utilisez un navigateur
-	(Netscape Navigator, Mozilla etc) qui s'identifie comme
-	'Mozilla', vous accèderez à la page d'accueil max (qui
-	peut contenir des frames, ou d'autres ressources
-	particulières).
-	Si vous utilisez le navigateur Lynx (qui est un navigateur
-	en mode texte), vous accèderez à une page d'accueil min
-	(qui peut être une version conçue pour une navigation simple
-	basée sur le texte).
-	Si aucune de ces conditions n'est satisfaite (vous utilisez tout
-	autre navigateur, ou votre navigateur s'identifie de manière non
-	standard), vous accèderez à la page d'accueil std
-	(standard).</p>
+	qui s'identifie comme un
+	navigateur de plateforme mobile (notez que l'exemple est
+	incomplet car il existe de nombreuses autres plateformes
+	mobiles), c'est la version pour mobile de la page d'accueil qui
+	sera renvoyée. Dans le cas contraire, ce sera la page d'accueil
+	standard.</p>
 
 
 </div>
