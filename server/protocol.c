@@ -1104,10 +1104,12 @@ request_rec *ap_read_request(conn_rec *conn)
 
         if (apr_table_get(r->headers_in, "Transfer-Encoding")
             && apr_table_get(r->headers_in, "Content-Length")) {
-            /* 2616 section 4.4, point 3: "if both Transfer-Encoding
-             * and Content-Length are received, the latter MUST be
-             * ignored"; so unset it here to prevent any confusion
-             * later. */
+            /* http://tools.ietf.org/html/draft-ietf-httpbis-p1-messaging-23#page-31
+             * "If a message is received with both a Transfer-Encoding and a
+             * Content-Length header field, the Transfer-Encoding overrides the
+             * Content-Length. ... A sender MUST remove the received Content-
+             * Length field"
+             */
             apr_table_unset(r->headers_in, "Content-Length");
         }
     }
