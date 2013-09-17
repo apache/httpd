@@ -1104,7 +1104,7 @@ static apr_status_t cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
         reason = "updated entity is older than cached entity";
 
         /* while this response is not cacheable, the previous response still is */
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00770)
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02474)
                 "cache: Removing CACHE_REMOVE_URL filter.");
         ap_remove_output_filter(cache->remove_url_filter);
     }
