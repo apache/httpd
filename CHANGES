@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.7
 
+  *) mod_auth_digest: Be more specific when the realm mismatches because the
+     realm has not been specified. [Graham Leggett]
+
   *) mod_proxy: Add a note in the balancer manager stating whether changes
      will or will not be persisted. [Daniel Ruggeri]
 
