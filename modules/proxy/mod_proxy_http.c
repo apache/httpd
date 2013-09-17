@@ -1979,7 +1979,7 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
         if (worker->s->ping_timeout_set && worker->s->ping_timeout < 0 &&
             !ap_proxy_is_socket_connected(backend->sock)) {
             backend->close = 1;
-            ap_log_rerror(APLOG_MARK, APLOG_INFO, status, r, APLOGNO()
+            ap_log_rerror(APLOG_MARK, APLOG_INFO, status, r, APLOGNO(02535)
                           "socket check failed to %pI (%s)",
                           worker->cp->addr, worker->s->hostname);
             retry++;
