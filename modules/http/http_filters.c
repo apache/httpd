@@ -227,19 +227,24 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
             if (!strcasecmp(tenc, "chunked")) {
                 ctx->state = BODY_CHUNK;
             }
-            /* test lenp, because it gives another case we can handle */
-            else if (!lenp) {
+            /* RFC 2616 Section 4.4 states that if the message does
+             * include a non-identity transfer-coding, the Content-Length
+             * MUST be ignored.
+             */
+            else if (lenp) {
+                ap_log_rerror(
+                        APLOG_MARK, APLOG_INFO, 0, f->r,
+                        APLOGNO(01586) "Identity or Unknown Transfer-Encoding (%s); using Content-Length", tenc);
+                tenc = NULL;
+            }
+            else {
                 /* Something that isn't in HTTP, unless some future
                  * edition defines new transfer encodings, is unsupported.
                  */
-                ap_log_rerror(
-                        APLOG_MARK, APLOG_INFO, 0, f->r, APLOGNO(01585) "Unknown Transfer-Encoding: %s", tenc);
-                return APR_ENOTIMPL;
-            }
-            else {
-                ap_log_rerror(
-                        APLOG_MARK, APLOG_WARNING, 0, f->r, APLOGNO(01586) "Unknown Transfer-Encoding: %s; using Content-Length", tenc);
-                tenc = NULL;
+                    ap_log_rerror(
+                            APLOG_MARK, APLOG_INFO, 0, f->r,
+                            APLOGNO(01585) "Unknown Transfer-Encoding: %s", tenc);
+                    return APR_ENOTIMPL;
             }
         }
         if (lenp && !tenc) {
