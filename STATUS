@@ -183,6 +183,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x: http://people.apache.org/~jailletc36/1481396.patch
     +1: jailletc36
 
+  * mod_session_crypto: Add support for exec: calls to obtain key similar to
+    mod_ssl and mod_authnz_ldap. Essentially copypasta from mod_authnz_ldap...
+    trunk patch: http://people.apache.org/~druggeri/patches/SessionCryptoPassphrase-exec.trunk.patch
+    2.4.x patch: http://people.apache.org/~druggeri/patches/SessionCryptoPassphrase-exec.2.4.x.patch
+    +1: druggeri
+
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
 If you want to propose one of those, please still add them here.
