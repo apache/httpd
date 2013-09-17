@@ -103,6 +103,22 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     2.4.x patch: trunk patch works, modulo CHANGES and next-number
     +1: minfrin, druggeri, chrisd
 
+  * mod_cache: Avoid a crash with strcmp() when the hostname is not provided.
+    trunk: http://svn.apache.org/viewvc?view=revision&revision=1523235
+    2.4.x patch: trunk patch works
+    +1: minfrin, druggeri, jim
+
+  * mod_cache: Correct LOGNO which has not been updated when r1481396 was backported 
+    trunk: http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/cache/mod_cache.c?r1=1481396&r2=1481395&pathrev=1481396
+    2.4.x: http://people.apache.org/~jailletc36/1481396.patch
+    +1: jailletc36, druggeri, jim
+
+  * mod_proxy: Add a note in the balancer manager whether changes will/will not
+    survive a restart (BalancerPersist)
+    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1524101
+    2.4.x patch: http://people.apache.org/~druggeri/patches/BalancerPersist.balancerManagerNote.2.4.patch
+    +1: druggeri, chrisd, jim
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -173,27 +189,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                    (for combined skiplist, podx and event patch)
     +1: jim
 
-  * mod_cache: Avoid a crash with strcmp() when the hostname is not provided.
-    trunk: http://svn.apache.org/viewvc?view=revision&revision=1523235
-    2.4.x patch: trunk patch works
-    +1: minfrin, druggeri, jim
-
-  * mod_cache: Correct LOGNO which has not been updated when r1481396 was backported 
-    trunk: http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/cache/mod_cache.c?r1=1481396&r2=1481395&pathrev=1481396
-    2.4.x: http://people.apache.org/~jailletc36/1481396.patch
-    +1: jailletc36, druggeri, jim
-
   * mod_session_crypto: Add support for exec: calls to obtain key similar to
     mod_ssl and mod_authnz_ldap. Essentially copypasta from mod_authnz_ldap...
     trunk patch: http://people.apache.org/~druggeri/patches/SessionCryptoPassphrase-exec.trunk.patch
     2.4.x patch: http://people.apache.org/~druggeri/patches/SessionCryptoPassphrase-exec.2.4.x.patch
     +1: druggeri
-
-  * mod_proxy: Add a note in the balancer manager whether changes will/will not
-    survive a restart (BalancerPersist)
-    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1524101
-    2.4.x patch: http://people.apache.org/~druggeri/patches/BalancerPersist.balancerManagerNote.2.4.patch
-    +1: druggeri, chrisd, jim
 
   * mod_proxy: Add a note in the balancer manager whether inherits will/will not
     be done.
