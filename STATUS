@@ -178,7 +178,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     be done.
     trunk patch: http://svn.apache.org/r1524158
     2.4.x patch: trunk patch works
-    +1: jim
+    +1: jim, druggeri
 
   * mod_auth_basic: Add AuthBasicUseDigestAlgorithm directive to allow
     migration of passwords from digest to basic authentication.
