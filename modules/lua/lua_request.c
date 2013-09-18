@@ -1933,6 +1933,9 @@ static apr_uint64_t ap_ntoh64(const apr_uint64_t *input)
 {
     apr_uint64_t rval;
     unsigned char *data = (unsigned char *)&rval;
+    if (APR_IS_BIGENDIAN) {
+        return *input;
+    }
 
     data[0] = *input >> 56;
     data[1] = *input >> 48;
