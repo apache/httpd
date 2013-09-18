@@ -108,7 +108,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: trunk patch works modulo CHANGES and ap_mmn
     +1:  jim
 
-  * mod_proxy: support Unix domain sockets
+  * mod_proxy: support Unix domain sockets /* ON HOLD */
     trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1451633
                  https://svn.apache.org/viewvc?view=revision&revision=1451905
                  https://svn.apache.org/viewvc?view=revision&revision=1451921
@@ -118,9 +118,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  https://svn.apache.org/viewvc?view=revision&revision=1513508
     2.4.x patch: trunk patch works modulo CHANGES, ap_mmn, and doc note to
                  include version note
-    +1: druggeri
-    druggeri note: Fails as a BalancerMember, FWIW
-    jim: trying to recreate... (will likely fix on trunk)
+    +1: 
 
   * mod_proxy: Ensure network errors detected by the proxy are returned as
     504 Gateway Timout as opposed to 502 Bad Gateway
@@ -157,7 +155,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: http://people.apache.org/~jim/patches/httpd-2.4-podx-v2.patch
     +1: jim
     rjung: needs also r1410004 to fix worker compilation
-       jj: Fixed in httpd-2.4-podx-v2.patch
+      jim: Fixed in httpd-2.4-podx-v2.patch
 
   * event: Use skiplist and fold in performance tweeks from trunk
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1451706
@@ -185,7 +183,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1514064
     2.4.x patch: trunk patch works, modulo CHANGES, next-number, and
                  doc compatibility version note
-    +1: chrisd
+    +1: chrisd, jim
 
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
