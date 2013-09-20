@@ -71,7 +71,9 @@ OPTION(INSTALL_MANUAL     "Install manual"                     ON)
 
 SET(ENABLE_MODULES        "O"                            CACHE STRING "Minimum module enablement (e.g., \"i\" to build all but those without prerequisites)")
 SET(WITH_MODULES          ""                             CACHE STRING "comma-separated paths to single-file modules to statically link into the server")
-SET(EXTRA_INCLUDE_DIRS    ""                             CACHE STRING "extra include directories")
+SET(EXTRA_INCLUDES        ""                             CACHE STRING "Extra include directories")
+SET(EXTRA_LIBS            ""                             CACHE STRING "Extra libraries")
+SET(EXTRA_COMPILE_FLAGS   ""                             CACHE STRING "Extra compile flags")
 
 IF(NOT EXISTS "${APR_INCLUDE_DIR}/apr.h")
   MESSAGE(FATAL_ERROR "APR include directory ${APR_INCLUDE_DIR} is not correct.")
@@ -577,7 +579,7 @@ CONFIGURE_FILE(os/win32/win32_config_layout.h
 
 SET(HTTPD_INCLUDE_DIRECTORIES
   ${PROJECT_BINARY_DIR}
-  ${EXTRA_INCLUDE_DIRS}
+  ${EXTRA_INCLUDES}
   # see discussion in cmake bug 13188 regarding oddities with relative paths
   ${CMAKE_CURRENT_SOURCE_DIR}/include
   ${CMAKE_CURRENT_SOURCE_DIR}/os/win32
@@ -697,8 +699,8 @@ FOREACH (mod ${MODULE_PATHS})
       SUFFIX .so
       LINK_FLAGS /base:@${PROJECT_BINARY_DIR}/BaseAddr.ref,${mod_name}.so
     )
-    TARGET_LINK_LIBRARIES(${mod_name} ${${mod_extra_libs}} libhttpd ${APR_LIBRARIES} ${HTTPD_SYSTEM_LIBS})
-    SET_TARGET_PROPERTIES(${mod_name} PROPERTIES COMPILE_FLAGS "-DLONG_NAME=\"\\\"${mod_name} for Apache HTTP Server\\\"\" -DBIN_NAME=${mod_name}.so")
+    TARGET_LINK_LIBRARIES(${mod_name} ${${mod_extra_libs}} libhttpd ${EXTRA_LIBS} ${APR_LIBRARIES} ${HTTPD_SYSTEM_LIBS})
+    SET_TARGET_PROPERTIES(${mod_name} PROPERTIES COMPILE_FLAGS "-DLONG_NAME=\"\\\"${mod_name} for Apache HTTP Server\\\"\" -DBIN_NAME=${mod_name}.so ${EXTRA_COMPILE_FLAGS}")
 
     # Extra defines?
     SET(mod_extra_defines "${mod_name}_extra_defines")
@@ -724,21 +726,21 @@ SET_TARGET_PROPERTIES(libhttpd PROPERTIES
 )
 SET(install_targets ${install_targets} libhttpd)
 SET(install_bin_pdb ${install_bin_pdb} ${PROJECT_BINARY_DIR}/libhttpd.pdb)
-TARGET_LINK_LIBRARIES(libhttpd ${APR_LIBRARIES} ${PCRE_LIBRARIES} ${HTTPD_SYSTEM_LIBS})
+TARGET_LINK_LIBRARIES(libhttpd ${EXTRA_LIBS} ${APR_LIBRARIES} ${PCRE_LIBRARIES} ${HTTPD_SYSTEM_LIBS})
 SET(apreqdefs)
 IF(NOT ${minorversion} STREQUAL "4")
   # trunk needs apreq symbols exported
   SET(apreqdefs -DAPREQ_DECLARE_EXPORT)
 ENDIF()
-SET_TARGET_PROPERTIES(libhttpd PROPERTIES COMPILE_FLAGS "-DAP_DECLARE_EXPORT ${apreqdefs} -DLONG_NAME=\"\\\"Apache HTTP Server Core\\\"\" -DBIN_NAME=libhttpd.dll")
+SET_TARGET_PROPERTIES(libhttpd PROPERTIES COMPILE_FLAGS "-DAP_DECLARE_EXPORT ${apreqdefs} -DLONG_NAME=\"\\\"Apache HTTP Server Core\\\"\" -DBIN_NAME=libhttpd.dll ${EXTRA_COMPILE_FLAGS}")
 ADD_DEPENDENCIES(libhttpd test_char_header)
 
 ###########   HTTPD EXECUTABLES   ##########
 ADD_EXECUTABLE(httpd server/main.c build/win32/httpd.rc)
 SET(install_targets ${install_targets} httpd)
 SET(install_bin_pdb ${install_bin_pdb} ${PROJECT_BINARY_DIR}/httpd.pdb)
-SET_TARGET_PROPERTIES(httpd PROPERTIES COMPILE_FLAGS "-DAPP_FILE -DLONG_NAME=\"\\\"Apache HTTP Server\\\"\" -DBIN_NAME=httpd.exe -DICON_FILE=${CMAKE_SOURCE_DIR}/build/win32/apache.ico")
-TARGET_LINK_LIBRARIES(httpd libhttpd)
+SET_TARGET_PROPERTIES(httpd PROPERTIES COMPILE_FLAGS "-DAPP_FILE -DLONG_NAME=\"\\\"Apache HTTP Server\\\"\" -DBIN_NAME=httpd.exe -DICON_FILE=${CMAKE_SOURCE_DIR}/build/win32/apache.ico ${EXTRA_COMPILE_FLAGS}")
+TARGET_LINK_LIBRARIES(httpd libhttpd ${EXTRA_LIBS})
 
 SET(standard_support
   ab
@@ -759,8 +761,8 @@ FOREACH(pgm ${standard_support})
   ADD_EXECUTABLE(${pgm} support/${pgm}.c ${${extra_sources}} build/win32/httpd.rc)
   SET(install_targets ${install_targets} ${pgm})
   SET(install_bin_pdb ${install_bin_pdb} ${PROJECT_BINARY_DIR}/${pgm}.pdb)
-  SET_TARGET_PROPERTIES(${pgm} PROPERTIES COMPILE_FLAGS "-DAPP_FILE -DLONG_NAME=\"\\\"Apache HTTP Server ${pgm} program\\\"\" -DBIN_NAME=${pgm}.exe")
-  TARGET_LINK_LIBRARIES(${pgm} ${APR_LIBRARIES})
+  SET_TARGET_PROPERTIES(${pgm} PROPERTIES COMPILE_FLAGS "-DAPP_FILE -DLONG_NAME=\"\\\"Apache HTTP Server ${pgm} program\\\"\" -DBIN_NAME=${pgm}.exe ${EXTRA_COMPILE_FLAGS}")
+  TARGET_LINK_LIBRARIES(${pgm} ${EXTRA_LIBS} ${APR_LIBRARIES})
 ENDFOREACH()
 
 IF(OPENSSL_FOUND)
@@ -770,8 +772,8 @@ IF(OPENSSL_FOUND)
   SET_TARGET_PROPERTIES(abs PROPERTIES COMPILE_DEFINITIONS HAVE_OPENSSL)
   SET(tmp_includes ${HTTPD_INCLUDE_DIRECTORIES} ${OPENSSL_INCLUDE_DIR})
   SET_TARGET_PROPERTIES(abs PROPERTIES INCLUDE_DIRECTORIES "${tmp_includes}")
-  SET_TARGET_PROPERTIES(${pgm} PROPERTIES COMPILE_FLAGS "-DAPP_FILE -DLONG_NAME=\"\\\"Apache HTTP Server ab/SSL program\\\"\" -DBIN_NAME=abs.exe")
-  TARGET_LINK_LIBRARIES(abs ${APR_LIBRARIES} ${OPENSSL_LIBRARIES})
+  SET_TARGET_PROPERTIES(${pgm} PROPERTIES COMPILE_FLAGS "-DAPP_FILE -DLONG_NAME=\"\\\"Apache HTTP Server ab/SSL program\\\"\" -DBIN_NAME=abs.exe ${EXTRA_COMPILE_FLAGS}")
+  TARGET_LINK_LIBRARIES(abs ${EXTRA_LIBS} ${APR_LIBRARIES} ${OPENSSL_LIBRARIES})
 ENDIF()
 GET_PROPERTY(tmp_includes TARGET ab PROPERTY INCLUDE_DIRECTORIES)
 
@@ -780,8 +782,8 @@ GET_PROPERTY(tmp_includes TARGET ab PROPERTY INCLUDE_DIRECTORIES)
 # SET(install_targets ${install_targets} ApacheMonitor)
 # SET(install_bin_pdb ${install_bin_pdb} ${PROJECT_BINARY_DIR}/ApacheMonitor.pdb)
 # SET_TARGET_PROPERTIES(ApacheMonitor PROPERTIES WIN32_EXECUTABLE TRUE)
-# SET_TARGET_PROPERTIES(ApacheMonitor PROPERTIES COMPILE_FLAGS "-DAPP_FILE -DLONG_NAME=\"\\\"ApacheMonitor\\\"\" -DBIN_NAME=ApacheMonitor.exe")
-# TARGET_LINK_LIBRARIES(ApacheMonitor ${HTTPD_SYSTEM_LIBS} comctl32 wtsapi32)
+# SET_TARGET_PROPERTIES(ApacheMonitor PROPERTIES COMPILE_FLAGS "-DAPP_FILE -DLONG_NAME=\"\\\"ApacheMonitor\\\"\" -DBIN_NAME=ApacheMonitor.exe ${EXTRA_COMPILE_FLAGS}")
+# TARGET_LINK_LIBRARIES(ApacheMonitor ${EXTRA_LIBS} ${HTTPD_SYSTEM_LIBS} comctl32 wtsapi32)
 
 ###########  CONFIGURATION FILES ###########
 # Set up variables used in the .conf file templates
@@ -875,7 +877,9 @@ MESSAGE(STATUS "  PCRE include directory .......... : ${PCRE_INCLUDE_DIR}")
 MESSAGE(STATUS "  PCRE libraries .................. : ${PCRE_LIBRARIES}")
 MESSAGE(STATUS "  libxml2 iconv prereq include dir. : ${LIBXML2_ICONV_INCLUDE_DIR}")
 MESSAGE(STATUS "  libxml2 iconv prereq libraries .. : ${LIBXML2_ICONV_LIBRARIES}")
-MESSAGE(STATUS "  Extra include directories ....... : ${EXTRA_INCLUDE_DIRS}")
+MESSAGE(STATUS "  Extra include directories ....... : ${EXTRA_INCLUDES}")
+MESSAGE(STATUS "  Extra compile flags ............. : ${EXTRA_COMPILE_FLAGS}")
+MESSAGE(STATUS "  Extra libraries ................. : ${EXTRA_LIBS}")
 
 MESSAGE(STATUS "  Modules built and loaded:")
 FOREACH(mod ${mods_built_and_loaded})
