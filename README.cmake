@@ -193,13 +193,22 @@ How to build
        the autoconf-based build.  Key differences: The modpath (e.g., 
        "generators") isn't provided or used, and the copy of the module
        source being built is automatically updated when it changes.
-       See also EXTRA_INCLUDE_DIRS.
+       See also EXTRA_COMPILE_FLAGS, EXTRA_INCLUDES, and EXTRA_LIBS.
 
-   EXTRA_INCLUDE_DIRS:
+   EXTRA_COMPILE_FLAGS:
+
+       Space-delimited compile flags to define with the build.
+
+   EXTRA_INCLUDES:
 
        List of additional directories to search for .h files.  This may
        be necessary when including third-party modules in the httpd build
        via WITH_MODULES.
+
+   EXTRA_LIBS:
+
+       List of additional libraries to link with.  This may be necessary when
+       including third-party modules in the httpd build via WITH_MODULES.
 
    Port and SSLPort:
 
