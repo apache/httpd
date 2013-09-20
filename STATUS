@@ -185,6 +185,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  doc compatibility version note
     +1: chrisd, jim
 
+  * core: name-based vhosts printed twice in apachectl -S since
+    dropping NameVirtualHost directive.
+    trunk patch: http://svn.apache.org/r1485675 , http://svn.apache.org/r1525000
+    2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-nvh-duplicated.diff
+    +1 covener
+
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
 If you want to propose one of those, please still add them here.
