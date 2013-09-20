@@ -587,7 +587,8 @@ AP_DECLARE(void) ap_fini_vhost_config(apr_pool_t *p, server_rec *main_s)
                 ic = find_default_server(sar->host_port);
 
                 if (ic && sar->host_port == ic->sar->host_port) { /* we're a match for an existing "default server"  */
-                    if (!sar_prev || memcmp(sar_prev->host_addr->ipaddr_ptr, inaddr_any, sar_prev->host_addr->ipaddr_len)) { 
+                    if (!sar_prev || memcmp(sar_prev->host_addr->ipaddr_ptr, inaddr_any, sar_prev->host_addr->ipaddr_len)
+                                  || sar_prev->host_port != sar->host_port) { 
                         add_name_vhost_config(p, main_s, s, sar, ic);
                     }
                 }
