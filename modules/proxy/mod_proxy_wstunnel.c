@@ -380,7 +380,7 @@ static int ap_proxy_wstunnel_request(apr_pool_t *p, request_rec *r,
         }
         else { 
             ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
-                          "error creating websosckets tunnel");
+                          "error creating websockets tunnel");
             return HTTP_INTERNAL_SERVER_ERROR;
         }
     }
