@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1389569:1520908 (outdated) -->
+<!-- English Revision: 1520908 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -271,6 +271,10 @@ Header merge Cache-Control no-store env=NO_STORE
     <dd>L'en-t&ecirc;te est d&eacute;fini, rempla&ccedil;ant tout en-t&ecirc;te pr&eacute;existant avec
     le m&ecirc;me nom.</dd>
 
+    <dt><code>setifempty</code></dt>
+    <dd>L'en-t&ecirc;te est d&eacute;fini, mais seulement s'il n'existe
+    aucun en-t&ecirc;te avec le m&ecirc;me nom.</dd>
+
     <dt><code>unset</code></dt>
     <dd>L'en-t&ecirc;te est supprim&eacute; s'il existe. Si plusieurs en-t&ecirc;tes
     poss&egrave;dent le m&ecirc;me nom, ils seront tous supprim&eacute;s. L'argument
@@ -325,7 +329,7 @@ Header merge Cache-Control no-store env=NO_STORE
 <directivesynopsis>
 <name>Header</name>
 <description>Configure les en-t&ecirc;tes d'une r&eacute;ponse HTTP</description>
-<syntax>Header [<var>condition</var>] add|append|echo|edit|edit*|merge|set|unset
+<syntax>Header [<var>condition</var>] add|append|echo|edit|edit*|merge|set|unset|note
 <var>en-t&ecirc;te</var> [<var>valeur</var>] [<var>remplacement</var>]
 [early|env=[!]<var>variable</var>]|expr=<var>expression</var>]
 </syntax>
@@ -429,6 +433,10 @@ Header merge Cache-Control no-store env=NO_STORE
     <dd>L'en-t&ecirc;te est d&eacute;fini, rempla&ccedil;ant tout en-t&ecirc;te pr&eacute;existant avec
     le m&ecirc;me nom. L'argument <var>valeur</var> peut &ecirc;tre une cha&icirc;ne de
     formatage.</dd>
+
+    <dt><code>setifempty</code></dt>
+    <dd>L'en-t&ecirc;te est d&eacute;fini, mais seulement s'il n'existe
+    aucun en-t&ecirc;te avec le m&ecirc;me nom.</dd>
 
     <dt><code>unset</code></dt>
     <dd>L'en-t&ecirc;te est supprim&eacute; s'il existe. Si plusieurs en-t&ecirc;tes
