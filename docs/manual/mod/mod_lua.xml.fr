@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1522030:1523433 (outdated) -->
+<!-- English Revision : 1523433 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1082,7 +1082,7 @@ end
 
 <highlight language="lua">
 r:wsread() -- Lit un cadre de websocket depuis une connexion vers websocket mise &agrave; jour (voir ci-dessus) :
-           -- Actuellement, seul le protocole WS est support&eacute; (pas de support WSS en lecture)
+           
 local line, isFinal = r:wsread() -- isFinal indique s'il s'agit du cadre final.
                                  -- dans le cas contraire, on peut lire les cadres suivants
 r:wswrite("Vous avez &eacute;crit : " .. line)
