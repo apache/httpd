@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1421892:1523325 (outdated) -->
+<!-- English Revision : 1523325 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -454,12 +454,20 @@ Apache</a>, pour une r&eacute;f&eacute;rence compl&egrave;te et d'autres exemple
     deux arguments, elle s'applique &agrave; un <var>nom filtre</var> pour
     <em>tout</em> fournisseur qu'il actionne.</p>
 
+    <p>Les drapeaux sp&eacute;cifi&eacute;s sont fusionn&eacute;s avec les drapeaux que les
+    fournisseurs sous-jacents ont &eacute;ventuellement enregistr&eacute;s avec
+    <module>mod_filter</module>. Par exemple, un filtre peut avoir
+    sp&eacute;cifi&eacute; en interne un drapeau &eacute;quivalent &agrave; <code>change=yes</code>,
+    mais une configuration particuli&egrave;re du module peut le surcharger
+    en sp&eacute;cifiant <code>change=no</code>.
+    </p>
+
     <p><var>drapeaux protocole</var> peut contenir un ou plusieurs
     drapeaux parmi les suivants :</p>
 
     <dl>
-    <dt><code>change=yes</code></dt>
-    <dd>Le filtre modifie le contenu, y compris &eacute;ventuellement sa
+    <dt><code>change=yes|no</code></dt>
+    <dd>Indique si le filtre doit modifier le contenu, y compris &eacute;ventuellement sa
     taille</dd>
 
     <dt><code>change=1:1</code></dt>

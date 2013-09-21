@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 630289:1523269 (outdated) -->
+<!-- English Revision : 1523269 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -69,13 +69,18 @@ d'Apache</a></seealso>
     <tr><th>Cha&icirc;ne&nbsp;de&nbsp;Format</th>
         <th>Description</th></tr>
 
-    <tr><td><code>%...I</code></td>
+    <tr><td><code>%I</code></td>
         <td>Octets re&ccedil;us, en-t&ecirc;tes et corps de requ&ecirc;te inclus ; ne peut
 	pas &ecirc;tre nul.</td></tr>
 
-    <tr><td><code>%...O</code></td>
+    <tr><td><code>%O</code></td>
         <td>Octets envoy&eacute;s, en-t&ecirc;tes inclus ; ne peut
 	pas &ecirc;tre nul.</td></tr>
+
+    <tr><td><code>%S</code></td>
+	<td>Nombre d'octets transmis (en &eacute;mission et r&eacute;ception), y
+	compris corps et en-t&ecirc;tes de requ&ecirc;te. Ce nombre ne peut pas &ecirc;tre
+	nul, et il correspond &agrave; la combinaison des formats %I et %O.</td></tr>
     </table>
 
     <p>En g&eacute;n&eacute;ral, cette fonctionnalit&eacute; s'utilise comme suit :</p>

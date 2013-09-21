@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1418937:1523271 (outdated) -->
+<!-- English Revision : 1523271 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -271,6 +271,10 @@ Header merge Cache-Control no-store env=NO_STORE
     <dd>L'en-t&ecirc;te est d&eacute;fini, rempla&ccedil;ant tout en-t&ecirc;te pr&eacute;existant avec
     le m&ecirc;me nom.</dd>
 
+    <dt><code>setifempty</code></dt>
+    <dd>L'en-t&ecirc;te est d&eacute;fini, mais seulement s'il n'existe
+    aucun en-t&ecirc;te avec le m&ecirc;me nom.</dd>
+
     <dt><code>unset</code></dt>
     <dd>L'en-t&ecirc;te est supprim&eacute; s'il existe. Si plusieurs en-t&ecirc;tes
     poss&egrave;dent le m&ecirc;me nom, ils seront tous supprim&eacute;s. L'argument
@@ -325,7 +329,7 @@ Header merge Cache-Control no-store env=NO_STORE
 <directivesynopsis>
 <name>Header</name>
 <description>Configure les en-t&ecirc;tes d'une r&eacute;ponse HTTP</description>
-<syntax>Header [<var>condition</var>] add|append|echo|edit|edit*|merge|set|unset
+<syntax>Header [<var>condition</var>] add|append|echo|edit|edit*|merge|set|unset|note
 <var>en-t&ecirc;te</var> [<var>valeur</var>] [<var>remplacement</var>]
 [early|env=[!]<var>variable</var>]|expr=<var>expression</var>]
 </syntax>
@@ -430,10 +434,22 @@ Header merge Cache-Control no-store env=NO_STORE
     le m&ecirc;me nom. L'argument <var>valeur</var> peut &ecirc;tre une cha&icirc;ne de
     formatage.</dd>
 
+    <dt><code>setifempty</code></dt>
+    <dd>L'en-t&ecirc;te est d&eacute;fini, mais seulement s'il n'existe
+    aucun en-t&ecirc;te avec le m&ecirc;me nom.</dd>
+
     <dt><code>unset</code></dt>
     <dd>L'en-t&ecirc;te est supprim&eacute; s'il existe. Si plusieurs en-t&ecirc;tes
     poss&egrave;dent le m&ecirc;me nom, ils seront tous supprim&eacute;s. L'argument
     <var>value</var> ne doit pas appara&icirc;tre.</dd>
+
+    <dt><code>note</code></dt>
+    <dd>La valeur de l'<var>en-t&ecirc;te</var> consid&eacute;r&eacute; est copi&eacute;e dans une
+    note interne dont le nom est sp&eacute;cifi&eacute; via l'argument
+    <var>valeur</var>. Ceci permet d'enregistrer la valeur d'un en-t&ecirc;te
+    envoy&eacute; par un programme CGI ou une ressource mandat&eacute;e, m&ecirc;me s'il
+    est pr&eacute;vu de l'effacer.</dd>
+
     </dl>
 
     <p>Cet argument est suivi d'un nom d'<var>en-t&ecirc;te</var> qui peut se
@@ -472,23 +488,23 @@ Header merge Cache-Control no-store env=NO_STORE
 
     <tr><td><code>%l</code></td>
         <td>La charge courante du serveur. Ce sont les valeurs fournies
-	par <code>getloadavg()</code> qui représentent la charge
+	par <code>getloadavg()</code> qui repr&eacute;sentent la charge
 	courante, ainsi que la charge moyenne pendant les cinq et les
-	quinze dernières minutes. Chaque valeur est précédée de
-	<code>l=</code> et séparée des autres par un slash
+	quinze derni&egrave;res minutes. Chaque valeur est pr&eacute;c&eacute;d&eacute;e de
+	<code>l=</code> et s&eacute;par&eacute;e des autres par un slash
 	<code>/</code>.
         </td></tr>
 
     <tr><td><code>%i</code></td>
-        <td>Le pourcentage de disponibilité de httpd (0 à 100) basé sur
+        <td>Le pourcentage de disponibilit&eacute; de httpd (0 &agrave; 100) bas&eacute; sur
 	le nombre de threads et de processus disponibles. La valeur est
-	précédée de <code>i=</code>.
+	pr&eacute;c&eacute;d&eacute;e de <code>i=</code>.
         </td></tr>
 
     <tr><td><code>%b</code></td>
-        <td>Le pourcentage d'utilisation de httpd (0 à 100) basé sur
+        <td>Le pourcentage d'utilisation de httpd (0 &agrave; 100) bas&eacute; sur
 	le nombre de threads et de processus disponibles. La valeur est
-	précédée de <code>b=</code>.
+	pr&eacute;c&eacute;d&eacute;e de <code>b=</code>.
         </td></tr>
 
     <tr><td><code>%{NOM_VARIABLE}e</code></td>
