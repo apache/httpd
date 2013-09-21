@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_proxy_fcgi: Remove 64K limit on encoded length of all envvars.
+     An individual envvar with an encoded length of more than 16K will be
+     omitted.  [Jeff Trawick]
+
   *) core: draft-ietf-httpbis-p1-messaging-23 corrections regarding
      TE/CL conflicts. [Yann Ylavic <ylavic.dev gmail com>, Jim Jagielski]
      
