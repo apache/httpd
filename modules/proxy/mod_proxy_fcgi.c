@@ -160,6 +160,26 @@ static apr_status_t get_data(proxy_conn_rec *conn,
     return rv;
 }
 
+static apr_status_t get_data_full(proxy_conn_rec *conn,
+                                  char *buffer,
+                                  apr_size_t buflen)
+{
+    apr_size_t readlen;
+    apr_size_t cumulative_len = 0;
+    apr_status_t rv;
+
+    do {
+        readlen = buflen - cumulative_len;
+        rv = get_data(conn, buffer + cumulative_len, &readlen);
+        if (rv != APR_SUCCESS) {
+            return rv;
+        }
+        cumulative_len += readlen;
+    } while (cumulative_len < buflen);
+
+    return APR_SUCCESS;
+}
+
 static apr_status_t send_begin_request(proxy_conn_rec *conn,
                                        apr_uint16_t request_id)
 {
@@ -534,23 +554,14 @@ static apr_status_t dispatch(proxy_conn_rec *conn, proxy_dir_conf *conf,
             memset(farray, 0, sizeof(farray));
 
             /* First, we grab the header... */
-            readbuflen = AP_FCGI_HEADER_LEN;
-
-            rv = get_data(conn, (char *) farray, &readbuflen);
+            rv = get_data_full(conn, (char *) farray, AP_FCGI_HEADER_LEN);
             if (rv != APR_SUCCESS) {
-                break;
-            }
-
-            dump_header_to_log(r, farray, readbuflen);
-
-            if (readbuflen != AP_FCGI_HEADER_LEN) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01067)
-                              "Failed to read entire header "
-                              "got %" APR_SIZE_T_FMT " wanted %d",
-                              readbuflen, AP_FCGI_HEADER_LEN);
-                rv = APR_EINVAL;
+                              "Failed to read FastCGI header");
                 break;
             }
+
+            dump_header_to_log(r, farray, AP_FCGI_HEADER_LEN);
 
             ap_fcgi_header_fields_from_array(&version, &type, &rid,
                                              &clen, &plen, farray);
@@ -713,10 +724,10 @@ recv_again:
             }
 
             if (plen) {
-                readbuflen = plen;
-
-                rv = get_data(conn, readbuf, &readbuflen);
+                rv = get_data_full(conn, readbuf, plen);
                 if (rv != APR_SUCCESS) {
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+                                  APLOGNO(02537) "Error occurred reading padding");
                     break;
                 }
             }
