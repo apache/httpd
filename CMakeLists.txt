@@ -318,6 +318,9 @@ IF(NOT ${minorversion} STREQUAL "4")
   )
 ENDIF()
 
+# Track which modules actually built have APIs to link against.
+SET(installed_mod_libs_exps)
+
 # Define extra definitions, sources, headers, etc. required by some modules.
 # This could be included in the master list of modules above, though it 
 # certainly would get a lot more unreadable.
@@ -331,6 +334,7 @@ SET(mod_cache_extra_defines          CACHE_DECLARE_EXPORT)
 SET(mod_cache_extra_sources
   modules/cache/cache_storage.c      modules/cache/cache_util.c
 )
+SET(mod_cache_install_lib 1)
 SET(mod_cache_disk_extra_libs        mod_cache)
 SET(mod_cache_socache_extra_libs     mod_cache)
 SET(mod_charset_lite_requires        APR_HAS_XLATE)
@@ -340,6 +344,7 @@ SET(mod_dav_extra_sources
   modules/dav/main/std_liveprop.c    modules/dav/main/providers.c
   modules/dav/main/util.c            modules/dav/main/util_lock.c
 )
+SET(mod_dav_install_lib 1)
 SET(mod_dav_fs_extra_sources
   modules/dav/fs/dbm.c               modules/dav/fs/lock.c
   modules/dav/fs/repos.c
@@ -374,6 +379,7 @@ SET(mod_lua_requires                 LUA51_FOUND)
 SET(mod_optional_hook_export_extra_defines AP_DECLARE_EXPORT) # bogus reuse of core API prefix
 SET(mod_proxy_extra_defines          PROXY_DECLARE_EXPORT)
 SET(mod_proxy_extra_sources          modules/proxy/proxy_util.c)
+SET(mod_proxy_install_lib 1)
 SET(mod_proxy_ajp_extra_sources
   modules/proxy/ajp_header.c         modules/proxy/ajp_link.c
   modules/proxy/ajp_msg.c            modules/proxy/ajp_utils.c
@@ -399,6 +405,7 @@ SET(mod_sed_extra_sources
 )
 SET(mod_serf_requires                AN_UNIMPLEMENTED_SUPPORT_LIBRARY_REQUIREMENT)
 SET(mod_session_extra_defines        SESSION_DECLARE_EXPORT)
+SET(mod_session_install_lib 1)
 SET(mod_session_cookie_extra_libs    mod_session)
 SET(mod_session_crypto_requires      APU_HAVE_CRYPTO)
 SET(mod_session_crypto_extra_libs    mod_session)
@@ -420,6 +427,7 @@ SET(mod_ssl_extra_sources
   modules/ssl/ssl_util_ssl.c         modules/ssl/ssl_util_stapling.c
 )
 SET(mod_status_extra_defines         STATUS_DECLARE_EXPORT)
+SET(mod_watchdog_install_lib 1)
 SET(mod_xml2enc_requires             LIBXML2_FOUND)
 IF(LIBXML2_FOUND)
   SET(mod_xml2enc_extra_includes     "${LIBXML2_INCLUDE_DIR};${LIBXML2_ICONV_INCLUDE_DIR}")
@@ -694,6 +702,13 @@ FOREACH (mod ${MODULE_PATHS})
     ADD_LIBRARY(${mod_name} SHARED ${all_mod_sources} build/win32/httpd.rc)
     SET(install_modules ${install_modules} ${mod_name})
     SET(install_modules_pdb ${install_modules_pdb} "${PROJECT_BINARY_DIR}/${mod_name}.pdb")
+    IF("${${mod_name}_install_lib}")
+      SET(installed_mod_libs_exps
+          ${installed_mod_libs_exps}
+          "${PROJECT_BINARY_DIR}/${mod_name}.lib"
+          "${PROJECT_BINARY_DIR}/${mod_name}.exp"
+      )
+    ENDIF()
     SET(mod_extra_libs "${mod_name}_extra_libs")
     SET_TARGET_PROPERTIES(${mod_name} PROPERTIES
       SUFFIX .so
@@ -836,6 +851,8 @@ INSTALL(DIRECTORY include/ DESTINATION include
     FILES_MATCHING PATTERN "*.h"
 )
 INSTALL(FILES ${other_installed_h} DESTINATION include)
+INSTALL(FILES ${installed_mod_libs_exps} DESTINATION lib)
+INSTALL(FILES "${CMAKE_BINARY_DIR}/libhttpd.exp" DESTINATION LIB)
 
 IF(INSTALL_MANUAL) # Silly?  This takes a while, and a dev doesn't need it.
   INSTALL(DIRECTORY docs/manual/ DESTINATION manual)
