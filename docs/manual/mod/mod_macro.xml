@@ -164,7 +164,7 @@ Use VHost www.example.fr 1234 /vhosts/example.fr/htdocs
 
 <p>It's recommended that you undefine a macro once you've used it. This
 avoids confusion in a complex configuration file where there may be
-conflicts in variable names.<p>
+conflicts in variable names.</p>
 
 <highlight language="config">
 &lt;Macro DirGroup $dir $group&gt;
