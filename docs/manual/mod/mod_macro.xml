@@ -162,9 +162,9 @@ Use VHost www.example.fr 1234 /vhosts/example.fr/htdocs
 <section>
 <title>Removal of a macro definition</title>
 
-   <ul>
-   <li> the macro must be already defined.</li>
-   </ul>
+<p>It's recommended that you undefine a macro once you've used it. This
+avoids confusion in a complex configuration file where there may be
+conflicts in variable names.<p>
 
 <highlight language="config">
 &lt;Macro DirGroup $dir $group&gt;
