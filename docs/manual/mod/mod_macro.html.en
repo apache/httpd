@@ -139,15 +139,11 @@ UndefMacro DirGroup
 
     <pre class="prettyprint lang-config">
 &lt;Macro LocalAccessPolicy&gt;
-  order deny,allow
-  deny from all
-  allow from 10.2.16.0/24
+    Require ip 10.2.16.0/24
 &lt;/Macro&gt;
 
 &lt;Macro RestrictedAccessPolicy $ipnumbers&gt;
-   order deny,allow
-   deny from all
-   allow from $ipnumbers
+    Require ip $ipnumbers
 &lt;/Macro&gt;
     </pre>
 
@@ -198,13 +194,9 @@ Use RestrictedAccessPolicy "192.54.172.0/24 192.54.148.0/24"
     <p>is equivalent, with the macros defined above, to:</p>
 
     <pre class="prettyprint lang-config">
-order deny,allow
-deny from all
-allow from 10.2.16.0/24
+Require ip 10.2.16.0/24
 ...
-order deny,allow
-deny from all
-allow from 192.54.172.0/24 192.54.148.0/24
+Require ip 192.54.172.0/24 192.54.148.0/24
     </pre>
 
 
