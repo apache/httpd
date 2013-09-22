@@ -89,7 +89,7 @@ Examples section.</p>
 
 </section>
 
-<section id="details"><title>Technical details</title>
+<section id="tips"><title>Tips</title>
 
 <p>Parameter names should begin with a sigil such as <code>$</code>,
 <code>%</code>, or <code>@</code>, so that they are clearly
