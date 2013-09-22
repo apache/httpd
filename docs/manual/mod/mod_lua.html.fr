@@ -27,8 +27,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_lua.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_lua.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Fournit des points d'entrée Lua dans différentes parties du
 traitement des requêtes httpd</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
@@ -1173,7 +1171,7 @@ end
 
 <pre class="prettyprint lang-lua">
 r:wsread() -- Lit un cadre de websocket depuis une connexion vers websocket mise à jour (voir ci-dessus) :
-           -- Actuellement, seul le protocole WS est supporté (pas de support WSS en lecture)
+           
 local line, isFinal = r:wsread() -- isFinal indique s'il s'agit du cadre final.
                                  -- dans le cas contraire, on peut lire les cadres suivants
 r:wswrite("Vous avez écrit : " .. line)
