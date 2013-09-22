@@ -281,8 +281,6 @@ Known Bugs and Limitations
 * ApacheMonitor has a build error and is disabled
 * CGI examples aren't installed
 * dbmmanage.pl and wintty aren't built/installed
-* mod_dav.lib and any similar libraries aren't installed, nor are any .exp
-  files (though I'm not sure that is a problem)
 * module enablement defaults are not in sync with the autoconf-based build
 * no support for static support library builds; unclear if that is a
   requirement; if so: taking PCRE as an example, we'd need to detect that it
