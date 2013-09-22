@@ -559,7 +559,7 @@ gmon.out.</td></tr>
 s'arrêter dans le cas d'un arrêt "en douceur"</td></tr>
 <tr><td><a href="mod_unixd.html#group">Group <var>groupe unix</var></a></td><td> #-1 </td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">Groupe sous lequel le serveur va traiter les
 requêtes</td></tr>
-<tr class="odd"><td><a href="mod_headers.html#header" id="H" name="H">Header [<var>condition</var>] add|append|echo|edit|edit*|merge|set|unset
+<tr class="odd"><td><a href="mod_headers.html#header" id="H" name="H">Header [<var>condition</var>] add|append|echo|edit|edit*|merge|set|unset|note
 <var>en-tête</var> [<var>valeur</var>] [<var>remplacement</var>]
 [early|env=[!]<var>variable</var>]|expr=<var>expression</var>]
 </a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Configure les en-têtes d'une réponse HTTP</td></tr>
@@ -658,7 +658,7 @@ restent valides</td></tr>
 <tr><td><a href="mod_ldap.html#ldapreferralhoplimit">LDAPReferralHopLimit <var>nombre</var></a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Le nombre maximum de redirections vers des serveurs
 alternatifs (referrals) avant l'abandon de la requête
 LDAP.</td></tr>
-<tr class="odd"><td><a href="mod_ldap.html#ldapreferrals">LDAPReferrals <var>On|Off</var></a></td><td> On </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Active la redirection vers des serveurs alternatifs au
+<tr class="odd"><td><a href="mod_ldap.html#ldapreferrals">LDAPReferrals <var>On|Off|default</var></a></td><td> On </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Active la redirection vers des serveurs alternatifs au
 cours des requêtes vers le serveur LDAP.</td></tr>
 <tr><td><a href="mod_ldap.html#ldapretries">LDAPRetries <var>nombre d'essais</var></a></td><td> 3 </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Définit le nombre maximum de tentatives de connexions au
 serveur LDAP.</td></tr>
@@ -738,8 +738,8 @@ traitement de la requête</td></tr>
 traitement de la requête</td></tr>
 <tr><td><a href="mod_lua.html#luahookinsertfilter">LuaHookInsertFilter  /chemin/vers/lua/script.lua hook_function_name</a></td><td></td><td>svdh</td><td>X</td></tr><tr><td class="descr" colspan="4">Fournit un point d'entrée pour la phase insert_filter du
 traitement de la requête</td></tr>
-<tr class="odd"><td><a href="mod_lua.html#luahooklog">LuaHookLog  /path/to/lua/script.lua log_function_name</a></td><td></td><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Provide a hook for the access log phase of a request
-processing</td></tr>
+<tr class="odd"><td><a href="mod_lua.html#luahooklog">LuaHookLog  /path/to/lua/script.lua log_function_name</a></td><td></td><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Permet une insertion dans la phase de journalisation du
+traitement d'une requête</td></tr>
 <tr><td><a href="mod_lua.html#luahookmaptostorage">LuaHookMapToStorage  /chemin/vers/lua/script.lua hook_function_name</a></td><td></td><td>svdh</td><td>X</td></tr><tr><td class="descr" colspan="4">Fournit un point d'entrée pour la phase map_to_storage du
 traitement de la requête</td></tr>
 <tr class="odd"><td><a href="mod_lua.html#luahooktranslatename">LuaHookTranslateName  /chemin/vers/lua/script.lua  nom_fonction_hook [early|late]</a></td><td></td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Fournit un point d'entrée à la phase du nom de
@@ -748,10 +748,11 @@ traduction du traitement de la requête</td></tr>
 traitement de la requête</td></tr>
 <tr class="odd"><td><a href="mod_lua.html#luainherit">LuaInherit none|parent-first|parent-last</a></td><td> parent-first </td><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Contrôle la manière dont les sections de configuration
 parentes sont fusionnées dans les enfants</td></tr>
-<tr><td><a href="mod_lua.html#luainputfilter">LuaInputFilter filter_name /path/to/lua/script.lua function_name</a></td><td></td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Provide a Lua function for content input filtering</td></tr>
+<tr><td><a href="mod_lua.html#luainputfilter">LuaInputFilter filter_name /path/to/lua/script.lua function_name</a></td><td></td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Fournit une fonction Lua pour le filtrage en entrée</td></tr>
 <tr class="odd"><td><a href="mod_lua.html#luamaphandler">LuaMapHandler modele-uri /chemin/vers/lua/script.lua
 [nom-fonction]</a></td><td></td><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Met en correspondance un chemin avec un gestionnaire lua</td></tr>
-<tr><td><a href="mod_lua.html#luaoutputfilter">LuaOutputFilter filter_name /path/to/lua/script.lua function_name</a></td><td></td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Provide a Lua function for content output filtering</td></tr>
+<tr><td><a href="mod_lua.html#luaoutputfilter">LuaOutputFilter filter_name /path/to/lua/script.lua function_name</a></td><td></td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Fournit une fonction Lua pour le filtrage de contenu en
+sortie</td></tr>
 <tr class="odd"><td><a href="mod_lua.html#luapackagecpath">LuaPackageCPath /chemin/vers/include/?.soa</a></td><td></td><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Ajoute un répertoire au package.cpath de lua</td></tr>
 <tr><td><a href="mod_lua.html#luapackagepath">LuaPackagePath /chemin/vers/include/?.lua</a></td><td></td><td>svdh</td><td>X</td></tr><tr><td class="descr" colspan="4">Ajoute un répertoire au package.path de lua</td></tr>
 <tr class="odd"><td><a href="mod_lua.html#luaquickhandler">LuaQuickHandler /path/to/script.lua hook_function_name</a></td><td></td><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Fournit un point d'entrée pour la gestion rapide du
