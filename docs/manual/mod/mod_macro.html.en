@@ -34,10 +34,12 @@
 <h3>Summary</h3>
 
 
-    <p>This module provides macros within apache httpd runtime configuration files.
-    These macros may have parameters. They are expanded when used (parameters are
-    substituted by their values given as an argument), and the result is
-    processed normally.</p>
+    <p>Provides macros within Apache httpd runtime configuration files,
+    to ease the process of creating numerous similar configuration
+    blocks. When the server starts up, the macros are expanded using the
+    provided parameters, and the result is processed as along with the
+    rest of the configuration file.</p>
+
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
@@ -47,83 +49,99 @@
 </ul>
 <h3>Topics</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#features">Features</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#usage">Usage</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#details">Technical details</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#examples">Examples</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="features" id="features">Features</a></h2>
+<h2><a name="usage" id="usage">Usage</a></h2>
 
-<p>Definition of a macro:</p>
+<p>Macros are defined using <code class="directive">&lt;Macro&gt;</code> blocks, which contain the portion of
+your configuration that needs to be repeated, complete with variables
+for those parts that will need to be substituted.</p>
 
-    <ul>
-    <li> macro definition within a <code class="directive">&lt;Macro&gt;</code> section, following
-         the httpd configuration style.</li>
-    <li> user defined names for the macro and its parameters.</li>
-    <li> macro names are case-insensitive, like httpd directives.</li>
-    <li> macro parameter names are case sensitive.</li>
-    <li> macro parameters must have distinct names.</li>
-    <li> error on empty parameter names.</li>
-    <li> redefining a macro generates a warning.</li>
-    <li> macro definitions can be nested... (but what for?)</li>
-    <li> warn about unused macro parameters.</li>
-    <li> warn about macro parameter names which prefix one another.</li>
-    <li> warn if a parameter is not prefixed by any of '<code>$%@</code>'
-         (good practice).</li>
-    <li> the available prefixes help deal with interactions with other
-         directives such as <code class="directive"><a href="../mod/core.html#define">Define</a></code>.</li>
-    <li> tip: it may be useful to define a macro parameter with surrounding
-         braces, say <code>${foo}</code> so that the name can appear with
-	 surrounding characters such as <code>bla${foo}bla</code>.</li>
-    <li> warn about empty macro contents.</li>
-    <li> warns if sections are not properly nested within a macro.
-         (if it is detected so).</li>
-    <li> the lexical scope of macro parameters is restricted to the macro text,
-         it is not forwarded to includes for instance.</li>
-    <li> arbitrary contents in macros.
-         <p>It means you can put perl sections or whatever you like in a macro.
-	 No assumption is made about the lexical structure (quotes, spaces or
-         whatever) within the macro contents but to expect a set of
-         backslash-continued independent lines.</p></li>
-    </ul>
-
-<p>Use of a macro:</p>
-
-    <ul>
-    <li> number of arguments must match the definition.</li>
-    <li> all occurences of macro parameters are substituted by their values.</li>
-    <li> in case of conflicts, the longest parameter name is chosen.</li>
-    <li> macro expansion recursion is detected and stopped (error).</li>
-    <li> warn about empty arguments when used.</li>
-    <li> on errors, try to describe precisely where the error occured.</li>
-    <li> <code>$</code> and <code>%</code>-prefixed parameters are not
-          escaped.</li>
-    <li> <code>@</code>-prefixed parameters are escaped in quotes.</li>
-    </ul>
-
-<p>Removal of a macro definition:</p>
-
-   <ul>
-   <li> the macro must be already defined.</li>
-   </ul>
+<p>For example,  you might use a macro to define a <code class="directive">&lt;VirtualHost&gt;</code> block, in order to define
+multiple similar virtual hosts:</p>
 
 <pre class="prettyprint lang-config">
-&lt;Macro DirGroup $dir $group&gt;
-  &lt;Directory $dir&gt;
-    require group $group
-  &lt;/Directory&gt;
+&lt;Macro VHost $name $domain&gt;
+&lt;VirtualHost *:80&gt;
+    ServerName $domain
+    ServerAlias www.$domain
+
+    DocumentRoot /var/www/vhosts/$name
+    ErrorLog /var/log/httpd/$name.error_log
+    CustomLog /var/log/httpd/name.access_log combined
+&gt;/VirtualHost&gt;
 &lt;/Macro&gt;
+</pre>
 
-Use DirGroup /www/apache/private private
-Use DirGroup /www/apache/server  admin
 
-UndefMacro DirGroup
+<p>Macro names are case-insensitive, like httpd configuration
+directives. However, variable names are case sensitive.</p>
+
+<p>You would then invoke this macro several times to create virtual
+hosts:</p>
+
+<pre class="prettyprint lang-config">
+Use VHost example example.com
+Use VHost myhost hostname.org
+Use VHost apache apache.org
+
+UndefMacro VHost
+</pre>
+
+
+<p>At server startup time, each of these <code class="directive">Use</code>
+invocations would be expanded into a full virtualhost, as
+described by the <code class="directive">Macro</code> definition.</p>
+
+<p>The <code class="directive">UndefMacro</code> directive is used so that later
+macros using the same variable names don't result in conflicting
+definitions.</p>
+
+<p>A more elaborate version of this example may be seen below in the
+Examples section.</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="details" id="details">Technical details</a></h2>
+
+<p>Parameter names should begin with a sigil such as <code>$</code>,
+<code>%</code>, or <code>@</code>, so that they are clearly
+identifiable, and also in order to help deail with interactions with
+other directives, such as the core <code class="directive"><a href="../mod/core.html#define">Define</a></code> directive. Failure to do so will 
+result in a warning. Nevertheless, you are encouraged to have a good
+knowledge of your entire server configuration in order to avoid reusing
+the same variables in different scopes, which can cause confusion.</p>
+
+<p>Parameters prefixed with either <code>$</code> or <code>%</code> are
+not escaped. Parameters prefixes with <code>@</code> are escaped in
+quotes.</p>
+
+<p>Avoid using a parameter which contains another parameter as a prefix,
+(For example, <code>$win</code> and <code>$winter</code>) as this may
+cause confusion at expression evaluation time. In the event of such
+confusion, the longest possible parameter name is used.</p>
+
+<p>If you want to use a value within another string, it is useful to
+surround the parameter in braces, to avoid confusion:</p>
+
+<pre class="prettyprint lang-config">
+&lt;Macro DocRoot ${docroot}&gt;
+    DocumentRoot /var/www/${docroot}/htdocs
+&lt;/Macro&gt;
 </pre>
 
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="examples" id="examples">Examples</a></h2>
+
+
+<h3>Virtual Host Definition</h3>
+
 
 <p>A common usage of <code class="module"><a href="../mod/mod_macro.html">mod_macro</a></code> is for the creation of
 dynamically-generated virtual hosts.</p>
@@ -138,8 +156,9 @@ dynamically-generated virtual hosts.</p>
     ServerName $host
     DocumentRoot $dir
 
+    # Public document root
     &lt;Directory $dir&gt;
-      # do something here...
+        Require all granted
     &lt;/Directory&gt;
 
     # limit access to intranet subdir.
@@ -156,6 +175,30 @@ Use VHost example.org 8080 /vhosts/example/htdocs
 Use VHost www.example.fr 1234 /vhosts/example.fr/htdocs
 </pre>
 
+ 
+
+<h3>Removal of a macro definition</h3>
+
+
+   <ul>
+   <li> the macro must be already defined.</li>
+   </ul>
+
+<pre class="prettyprint lang-config">
+&lt;Macro DirGroup $dir $group&gt;
+  &lt;Directory $dir&gt;
+    Require group $group
+  &lt;/Directory&gt;
+&lt;/Macro&gt;
+
+Use DirGroup /www/apache/private private
+Use DirGroup /www/apache/server  admin
+
+UndefMacro DirGroup
+</pre>
+
+
+ 
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
