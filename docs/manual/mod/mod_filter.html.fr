@@ -27,8 +27,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_filter.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_filter.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Module de configuration de filtre intelligent sensible au
 contexte</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
@@ -441,12 +439,20 @@ particulier</td></tr>
     deux arguments, elle s'applique à un <var>nom filtre</var> pour
     <em>tout</em> fournisseur qu'il actionne.</p>
 
+    <p>Les drapeaux spécifiés sont fusionnés avec les drapeaux que les
+    fournisseurs sous-jacents ont éventuellement enregistrés avec
+    <code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code>. Par exemple, un filtre peut avoir
+    spécifié en interne un drapeau équivalent à <code>change=yes</code>,
+    mais une configuration particulière du module peut le surcharger
+    en spécifiant <code>change=no</code>.
+    </p>
+
     <p><var>drapeaux protocole</var> peut contenir un ou plusieurs
     drapeaux parmi les suivants :</p>
 
     <dl>
-    <dt><code>change=yes</code></dt>
-    <dd>Le filtre modifie le contenu, y compris éventuellement sa
+    <dt><code>change=yes|no</code></dt>
+    <dd>Indique si le filtre doit modifier le contenu, y compris éventuellement sa
     taille</dd>
 
     <dt><code>change=1:1</code></dt>
