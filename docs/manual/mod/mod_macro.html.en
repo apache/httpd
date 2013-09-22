@@ -50,7 +50,7 @@
 <h3>Topics</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#usage">Usage</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#details">Technical details</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#tips">Tips</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#examples">Examples</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -106,7 +106,7 @@ Examples section.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="details" id="details">Technical details</a></h2>
+<h2><a name="tips" id="tips">Tips</a></h2>
 
 <p>Parameter names should begin with a sigil such as <code>$</code>,
 <code>%</code>, or <code>@</code>, so that they are clearly
