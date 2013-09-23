@@ -1133,6 +1133,15 @@ evaluated before the user search is discontinued.</td></tr>
    <p>See the <a href="#reqgroup"><code>Require ldap-group</code></a>
    section for a more detailed example.</p>
 
+   <div class="note"><h3>Nested groups performance</h3>
+   <p> When <code class="directive">AuthLDAPSubGroupAttribute</code> overlaps with
+   <code class="directive">AuthLDAPGroupAttribute</code> (as it does by default and
+   as required by common LDAP schemas), uncached searching for subgroups in 
+   large groups can be very slow. If you use large, non-nested groups, set 
+   <code class="directive">AuthLDAPMaxSubGroupDepth</code> to zero.</p>
+   </div>
+
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AuthLDAPRemoteUserAttribute" id="AuthLDAPRemoteUserAttribute">AuthLDAPRemoteUserAttribute</a> <a name="authldapremoteuserattribute" id="authldapremoteuserattribute">Directive</a></h2>
