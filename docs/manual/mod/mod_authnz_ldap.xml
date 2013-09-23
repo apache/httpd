@@ -1089,6 +1089,15 @@ evaluated before the user search is discontinued.</description>
    level <code>X</code> specified by this directive.</p>
    <p>See the <a href="#reqgroup"><code>Require ldap-group</code></a>
    section for a more detailed example.</p>
+
+   <note><title>Nested groups performance</title>
+   <p> When <directive>AuthLDAPSubGroupAttribute</directive> overlaps with
+   <directive>AuthLDAPGroupAttribute</directive> (as it does by default and
+   as required by common LDAP schemas), uncached searching for subgroups in 
+   large groups can be very slow. If you use large, non-nested groups, set 
+   <directive>AuthLDAPMaxSubGroupDepth</directive> to zero.</p>
+   </note>
+
 </usage>
 </directivesynopsis>
 
