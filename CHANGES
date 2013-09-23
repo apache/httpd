@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) core: Add ap_errorlog_provider to make ErrorLog logging modular. Move
+     syslog support from core to new mod_syslog. [Jan Kaluza]
+
   *) mod_proxy_fcgi: Handle reading protocol data that is split between
      packets.  [Jeff Trawick]
 

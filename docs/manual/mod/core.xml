@@ -1298,15 +1298,18 @@ ErrorDocument 404 /cgi-bin/bad_urls.pl
     more information.</p>
 
     <p>Using <code>syslog</code> instead of a filename enables logging
-    via syslogd(8) if the system supports it. The default is to use
-    syslog facility <code>local7</code>, but you can override this by
-    using the <code>syslog:<var>facility</var></code> syntax where
-    <var>facility</var> can be one of the names usually documented in
+    via syslogd(8) if the system supports it and if <module>mod_syslog</module>
+    is loaded. The default is to use syslog facility <code>local7</code>,
+    but you can override this by using the <code>syslog:<var>facility</var></code>
+    syntax where <var>facility</var> can be one of the names usually documented in
     syslog(1).  The facility is effectively global, and if it is changed
     in individual virtual hosts, the final facility specified affects the
     entire server.</p>
 
     <highlight language="config">ErrorLog syslog:user</highlight>
+
+    <p>Additional modules can provide their own ErrorLog providers. The syntax
+    is similar to <code>syslog</code> example above.</p>
 
     <p>SECURITY: See the <a
     href="../misc/security_tips.html#serverroot">security tips</a>

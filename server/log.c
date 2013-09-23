@@ -53,6 +53,7 @@
 #include "http_main.h"
 #include "util_time.h"
 #include "ap_mpm.h"
+#include "ap_provider.h"
 
 #if HAVE_GETTID
 #include <sys/syscall.h>
@@ -74,71 +75,6 @@ APR_HOOK_STRUCT(
 )
 
 int AP_DECLARE_DATA ap_default_loglevel = DEFAULT_LOGLEVEL;
-
-#ifdef HAVE_SYSLOG
-
-static const TRANS facilities[] = {
-    {"auth",    LOG_AUTH},
-#ifdef LOG_AUTHPRIV
-    {"authpriv",LOG_AUTHPRIV},
-#endif
-#ifdef LOG_CRON
-    {"cron",    LOG_CRON},
-#endif
-#ifdef LOG_DAEMON
-    {"daemon",  LOG_DAEMON},
-#endif
-#ifdef LOG_FTP
-    {"ftp", LOG_FTP},
-#endif
-#ifdef LOG_KERN
-    {"kern",    LOG_KERN},
-#endif
-#ifdef LOG_LPR
-    {"lpr", LOG_LPR},
-#endif
-#ifdef LOG_MAIL
-    {"mail",    LOG_MAIL},
-#endif
-#ifdef LOG_NEWS
-    {"news",    LOG_NEWS},
-#endif
-#ifdef LOG_SYSLOG
-    {"syslog",  LOG_SYSLOG},
-#endif
-#ifdef LOG_USER
-    {"user",    LOG_USER},
-#endif
-#ifdef LOG_UUCP
-    {"uucp",    LOG_UUCP},
-#endif
-#ifdef LOG_LOCAL0
-    {"local0",  LOG_LOCAL0},
-#endif
-#ifdef LOG_LOCAL1
-    {"local1",  LOG_LOCAL1},
-#endif
-#ifdef LOG_LOCAL2
-    {"local2",  LOG_LOCAL2},
-#endif
-#ifdef LOG_LOCAL3
-    {"local3",  LOG_LOCAL3},
-#endif
-#ifdef LOG_LOCAL4
-    {"local4",  LOG_LOCAL4},
-#endif
-#ifdef LOG_LOCAL5
-    {"local5",  LOG_LOCAL5},
-#endif
-#ifdef LOG_LOCAL6
-    {"local6",  LOG_LOCAL6},
-#endif
-#ifdef LOG_LOCAL7
-    {"local7",  LOG_LOCAL7},
-#endif
-    {NULL,      -1},
-};
-#endif
 
 static const TRANS priorities[] = {
     {"emerg",   APLOG_EMERG},
@@ -395,29 +331,10 @@ static int open_error_log(server_rec *s, int is_main, apr_pool_t *p)
 
         s->error_log = dummy;
     }
-
-#ifdef HAVE_SYSLOG
-    else if (!strncasecmp(s->error_fname, "syslog", 6)) {
-        if ((fname = strchr(s->error_fname, ':'))) {
-            const TRANS *fac;
-
-            fname++;
-            for (fac = facilities; fac->t_name; fac++) {
-                if (!strcasecmp(fname, fac->t_name)) {
-                    openlog(ap_server_argv0, LOG_NDELAY|LOG_CONS|LOG_PID,
-                            fac->t_val);
-                    s->error_log = NULL;
-                    return OK;
-                }
-            }
-        }
-        else {
-            openlog(ap_server_argv0, LOG_NDELAY|LOG_CONS|LOG_PID, LOG_LOCAL7);
-        }
-
+    else if (s->errorlog_provider) {
+        s->errorlog_provider_handle = s->errorlog_provider->init(p, s);
         s->error_log = NULL;
     }
-#endif
     else {
         fname = ap_server_root_relative(p, s->error_fname);
         if (!fname) {
@@ -904,7 +821,7 @@ AP_DECLARE(void) ap_register_log_hooks(apr_pool_t *p)
 
 /*
  * This is used if no error log format is defined and during startup.
- * It automatically omits the timestamp if logging to syslog.
+ * It automatically omits the timestamp if logging using provider.
  */
 static int do_errorlog_default(const ap_errorlog_info *info, char *buf,
                                int buflen, int *errstr_start, int *errstr_end,
@@ -917,7 +834,7 @@ static int do_errorlog_default(const ap_errorlog_info *info, char *buf,
     char scratch[MAX_STRING_LEN];
 #endif
 
-    if (!info->using_syslog && !info->startup) {
+    if (!info->using_provider && !info->startup) {
         buf[len++] = '[';
         len += log_ctime(info, "u", buf + len, buflen - len);
         buf[len++] = ']';
@@ -1076,22 +993,14 @@ static int do_errorlog_format(apr_array_header_t *fmt, ap_errorlog_info *info,
 static void write_logline(char *errstr, apr_size_t len, apr_file_t *logf,
                           int level)
 {
-    /* NULL if we are logging to syslog */
-    if (logf) {
-        /* Truncate for the terminator (as apr_snprintf does) */
-        if (len > MAX_STRING_LEN - sizeof(APR_EOL_STR)) {
-            len = MAX_STRING_LEN - sizeof(APR_EOL_STR);
-        }
-        strcpy(errstr + len, APR_EOL_STR);
-        apr_file_puts(errstr, logf);
-        apr_file_flush(logf);
+
+    /* Truncate for the terminator (as apr_snprintf does) */
+    if (len > MAX_STRING_LEN - sizeof(APR_EOL_STR)) {
+        len = MAX_STRING_LEN - sizeof(APR_EOL_STR);
     }
-#ifdef HAVE_SYSLOG
-    else {
-        syslog(level < LOG_PRIMASK ? level : APLOG_DEBUG, "%.*s",
-               (int)len, errstr);
-    }
-#endif
+    strcpy(errstr + len, APR_EOL_STR);
+    apr_file_puts(errstr, logf);
+    apr_file_flush(logf);
 }
 
 static void log_error_core(const char *file, int line, int module_index,
@@ -1152,7 +1061,7 @@ static void log_error_core(const char *file, int line, int module_index,
         }
         else {
             /*
-             * If we are doing syslog logging, don't log messages that are
+             * If we are doing logging using provider, don't log messages that are
              * above the module's log level (including a startup/shutdown notice)
              */
             if (level_and_mask > configured_level) {
@@ -1194,7 +1103,7 @@ static void log_error_core(const char *file, int line, int module_index,
     info.file          = NULL;
     info.line          = 0;
     info.status        = 0;
-    info.using_syslog  = (logf == NULL);
+    info.using_provider= (logf == NULL);
     info.startup       = ((level & APLOG_STARTUP) == APLOG_STARTUP);
     info.format        = fmt;
 
@@ -1272,7 +1181,14 @@ static void log_error_core(const char *file, int line, int module_index,
              */
             continue;
         }
-        write_logline(errstr, len, logf, level_and_mask);
+
+        if (logf) {
+            write_logline(errstr, len, logf, level_and_mask);
+        }
+        else {
+            s->errorlog_provider->writer(&info, s->errorlog_provider_handle,
+                                         errstr, len);
+        }
 
         if (done) {
             /*
