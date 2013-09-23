@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_syslog: New module implementing syslog ap_error_log provider.
+     Previously, this code was part of core, now it's in separate module.
+     [Jan Kaluza]
+
   *) core: Add ap_errorlog_provider to make ErrorLog logging modular. Move
      syslog support from core to new mod_syslog. [Jan Kaluza]
 
