@@ -129,7 +129,10 @@ static apr_status_t syslog_error_log(const ap_errorlog_info *info,
                                      void *handle, const char *errstr, int len)
 {
     int level = info->level;
-    syslog(level < LOG_PRIMASK ? level : APLOG_DEBUG, "%.*s", (int)len, errstr);
+
+    if (level != APLOG_NOTICE) {
+        syslog(level < LOG_PRIMASK ? level : APLOG_DEBUG, "%.*s", (int)len, errstr);
+    }
     return APR_SUCCESS;
 }
 
