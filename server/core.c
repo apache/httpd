@@ -48,6 +48,7 @@
 #include "mod_core.h"
 #include "mod_proxy.h"
 #include "ap_listen.h"
+#include "ap_provider.h"
 
 #include "mod_so.h" /* for ap_find_loaded_module_symbol */
 
@@ -3955,6 +3956,49 @@ static apr_array_header_t *parse_errorlog_string(apr_pool_t *p,
     return a;
 }
 
+static const char *set_errorlog(cmd_parms *cmd, void *dummy, const char *arg1,
+                                const char *arg2)
+{
+    ap_errorlog_provider *provider;
+    cmd->server->errorlog_provider = NULL;
+
+    if (!arg2) {
+        /* Stay backward compatible and check for "syslog" */
+        if (strncmp("syslog", arg1, 6) == 0) {
+            arg2 = arg1 + 7; /* skip the ':' if any */
+            arg1 = "syslog";
+        }
+        else {
+            /* Admin can define only "ErrorLog provider" and we should 
+             * still handle that using the defined provider, but with empty
+             * error_fname. */
+            provider = ap_lookup_provider(AP_ERRORLOG_PROVIDER_GROUP, arg1,
+                                          AP_ERRORLOG_PROVIDER_VERSION);
+            if (provider) {
+                arg2 = "";
+            }
+            else {
+                return set_server_string_slot(cmd, dummy, arg1);
+            }
+        }
+    }
+
+    if (strcmp("file", arg1) == 0) {
+        return set_server_string_slot(cmd, dummy, arg2);
+    }
+
+    provider = ap_lookup_provider(AP_ERRORLOG_PROVIDER_GROUP, arg1,
+                                    AP_ERRORLOG_PROVIDER_VERSION);
+    if (!provider) {
+        return apr_psprintf(cmd->pool,
+                            "Unknown ErrorLog provider: %s",
+                            arg1);
+    }
+
+    cmd->server->errorlog_provider = provider;
+    return set_server_string_slot(cmd, dummy, arg2);
+}
+
 static const char *set_errorlog_format(cmd_parms *cmd, void *dummy,
                                        const char *arg1, const char *arg2)
 {
@@ -4118,7 +4162,7 @@ AP_INIT_TAKE1("ServerRoot", set_server_root, NULL, RSRC_CONF | EXEC_ON_READ,
   "Common directory of server-related files (logs, confs, etc.)"),
 AP_INIT_TAKE1("DefaultRuntimeDir", set_runtime_dir, NULL, RSRC_CONF | EXEC_ON_READ,
   "Common directory for run-time files (shared memory, locks, etc.)"),
-AP_INIT_TAKE1("ErrorLog", set_server_string_slot,
+AP_INIT_TAKE12("ErrorLog", set_errorlog,
   (void *)APR_OFFSETOF(server_rec, error_fname), RSRC_CONF,
   "The filename of the error log"),
 AP_INIT_TAKE12("ErrorLogFormat", set_errorlog_format, NULL, RSRC_CONF,
@@ -4560,7 +4604,7 @@ AP_DECLARE(int) ap_sys_privileges_handlers(int inc)
 static int check_errorlog_dir(apr_pool_t *p, server_rec *s)
 {
     if (!s->error_fname || s->error_fname[0] == '|'
-        || strcmp(s->error_fname, "syslog") == 0) {
+        || s->errorlog_provider != NULL) {
         return APR_SUCCESS;
     }
     else {
@@ -4986,7 +5030,7 @@ static void core_dump_config(apr_pool_t *p, server_rec *s)
     apr_file_printf(out, "ServerRoot: \"%s\"\n", ap_server_root);
     tmp = ap_server_root_relative(p, sconf->ap_document_root);
     apr_file_printf(out, "Main DocumentRoot: \"%s\"\n", tmp);
-    if (s->error_fname[0] != '|' && strcmp(s->error_fname, "syslog") != 0)
+    if (s->error_fname[0] != '|' && s->errorlog_provider == NULL)
         tmp = ap_server_root_relative(p, s->error_fname);
     else
         tmp = s->error_fname;

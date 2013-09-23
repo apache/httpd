@@ -1245,6 +1245,10 @@ struct server_rec {
     apr_file_t *error_log;
     /** The log level configuration */
     struct ap_logconf log;
+    /** External error log writer provider */
+    struct ap_errorlog_provider *errorlog_provider;
+    /** Handle to be passed to external log provider's logging method */
+    void *errorlog_provider_handle;
 
     /* Module-specific configuration for server, and defaults... */
 

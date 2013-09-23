@@ -833,14 +833,38 @@ typedef struct ap_errorlog_info {
     /** apr error status related to the log message, 0 if no error */
     apr_status_t status;
 
-    /** 1 if logging to syslog, 0 otherwise */
-    int using_syslog;
+    /** 1 if logging using provider, 0 otherwise */
+    int using_provider;
     /** 1 if APLOG_STARTUP was set for the log message, 0 otherwise */
     int startup;
 
     /** message format */
     const char *format;
 } ap_errorlog_info;
+
+#define AP_ERRORLOG_PROVIDER_GROUP "error_log_writer"
+#define AP_ERRORLOG_PROVIDER_VERSION "0"
+#define AP_ERRORLOG_DEFAULT_PROVIDER "file"
+
+typedef struct ap_errorlog_provider ap_errorlog_provider;
+
+struct ap_errorlog_provider {
+    /** Initializes the error log writer.
+     * @param p The pool to create any storage from
+     * @param s Server for which the logger is initialized
+     * @return Pointer to handle passed later to writer() function
+     */
+    void * (*init)(apr_pool_t *p, server_rec *s);
+
+    /** Logs the error message to external error log.
+     * @param info Context of the error message
+     * @param handle Handle created by init() function
+     * @param errstr Error message
+     * @param len Length of the error message
+     */
+    apr_status_t (*writer)(const ap_errorlog_info *info, void *handle,
+                           const char *errstr, int len);
+};
 
 /**
  * callback function prototype for a external errorlog handler
