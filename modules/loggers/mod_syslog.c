@@ -126,7 +126,8 @@ static void *syslog_error_log_init(apr_pool_t *p, server_rec *s)
 }
 
 static apr_status_t syslog_error_log(const ap_errorlog_info *info,
-                                     void *handle, const char *errstr, int len)
+                                     void *handle, const char *errstr,
+                                     apr_size_t len)
 {
     int level = info->level;
 
@@ -141,7 +142,8 @@ static void syslog_register_hooks(apr_pool_t *p)
 {
     static const ap_errorlog_provider syslog_provider = {
         &syslog_error_log_init,
-        &syslog_error_log
+        &syslog_error_log,
+        0
     };
 
     ap_register_provider(p, AP_ERRORLOG_PROVIDER_GROUP, "syslog",

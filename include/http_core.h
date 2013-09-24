@@ -846,6 +846,9 @@ typedef struct ap_errorlog_info {
 #define AP_ERRORLOG_PROVIDER_VERSION "0"
 #define AP_ERRORLOG_DEFAULT_PROVIDER "file"
 
+/** add APR_EOL_STR to the end of log message */
+#define AP_ERRORLOG_PROVIDER_ADD_EOL_STR       1
+
 typedef struct ap_errorlog_provider ap_errorlog_provider;
 
 struct ap_errorlog_provider {
@@ -863,7 +866,10 @@ struct ap_errorlog_provider {
      * @param len Length of the error message
      */
     apr_status_t (*writer)(const ap_errorlog_info *info, void *handle,
-                           const char *errstr, int len);
+                           const char *errstr, apr_size_t len);
+
+    /** a combination of the AP_ERRORLOG_PROVIDER_* flags */
+    unsigned int flags;
 };
 
 /**
