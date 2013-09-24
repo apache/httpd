@@ -994,11 +994,6 @@ static void write_logline(char *errstr, apr_size_t len, apr_file_t *logf,
                           int level)
 {
 
-    /* Truncate for the terminator (as apr_snprintf does) */
-    if (len > MAX_STRING_LEN - sizeof(APR_EOL_STR)) {
-        len = MAX_STRING_LEN - sizeof(APR_EOL_STR);
-    }
-    strcpy(errstr + len, APR_EOL_STR);
     apr_file_puts(errstr, logf);
     apr_file_flush(logf);
 }
@@ -1171,6 +1166,15 @@ static void log_error_core(const char *file, int line, int module_index,
              * info if an item with AP_ERRORLOG_FLAG_REQUIRED is NULL.
              */
             continue;
+        }
+
+        if (logf || (s->errorlog_provider->flags &
+            AP_ERRORLOG_PROVIDER_ADD_EOL_STR)) {
+            /* Truncate for the terminator (as apr_snprintf does) */
+            if (len > MAX_STRING_LEN - sizeof(APR_EOL_STR)) {
+                len = MAX_STRING_LEN - sizeof(APR_EOL_STR);
+            }
+            strcpy(errstr + len, APR_EOL_STR);
         }
 
         if (logf) {
