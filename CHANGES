@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) Suppress formatting of startup messages written to the console when
+     ErrorLogFormat is used.  [Jeff Trawick]
+
   *) mod_authnz_ldap: Change default value of AuthLDAPMaxSubGroupDepth to 0
      to avoid performance problems when subgroups aren't in use. [Eric Covener]
 
