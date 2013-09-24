@@ -1150,7 +1150,7 @@ static void log_error_core(const char *file, int line, int module_index,
          * prepare and log one line
          */
 
-        if (log_format) {
+        if (log_format && !info.startup) {
             len += do_errorlog_format(log_format, &info, errstr + len,
                                       MAX_STRING_LEN - len,
                                       &errstr_start, &errstr_end, fmt, args);
