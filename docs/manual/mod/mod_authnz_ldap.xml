@@ -1074,11 +1074,11 @@ group membership</description>
 <description>Specifies the maximum sub-group nesting depth that will be
 evaluated before the user search is discontinued.</description>
 <syntax>AuthLDAPMaxSubGroupDepth <var>Number</var></syntax>
-<default>AuthLDAPMaxSubGroupDepth 10</default>
+<default>AuthLDAPMaxSubGroupDepth 0</default>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
-<compatibility>Available in version 2.3.0 and later</compatibility>
+<compatibility>Available in version 2.3.0 and later, defaulted to 10 in 2.4.x and early 2.5</compatibility>
 
 <usage>
    <p>When this directive is set to a non-zero value <code>X</code>
@@ -1094,8 +1094,8 @@ evaluated before the user search is discontinued.</description>
    <p> When <directive>AuthLDAPSubGroupAttribute</directive> overlaps with
    <directive>AuthLDAPGroupAttribute</directive> (as it does by default and
    as required by common LDAP schemas), uncached searching for subgroups in 
-   large groups can be very slow. If you use large, non-nested groups, set 
-   <directive>AuthLDAPMaxSubGroupDepth</directive> to zero.</p>
+   large groups can be very slow. If you use large, non-nested groups, keep 
+   <directive>AuthLDAPMaxSubGroupDepth</directive> set to zero.</p>
    </note>
 
 </usage>
