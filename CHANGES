@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_authnz_ldap: Change default value of AuthLDAPMaxSubGroupDepth to 0
+     to avoid performance problems when subgroups aren't in use. [Eric Covener]
+
   *) mod_syslog: New module implementing syslog ap_error_log provider.
      Previously, this code was part of core, now it's in separate module.
      [Jan Kaluza]
