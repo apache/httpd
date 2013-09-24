@@ -191,6 +191,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-nvh-duplicated.diff
     +1 covener
 
+  * util_fcgi API to 2.4.x (allows mod_proxy_fcgi to be kept in sync, along
+      with other less important reasons)
+    trunk: http://svn.apache.org/r1513454 and http://svn.apache.org/r1513492
+    2.4.x: copy server/util_fcgi.c and include/util_fcgi.h, then apply
+           http://people.apache.org/~trawick/patch-after-copying-util_fcgi-splat.txt
+    +1: trawick
+
+  * APLOG_STARTUP messages shouldn't have custom ErrorLogFormat applied.
+    trunk: http://svn.apache.org/r1525931
+    2.4.x: trunk patch works
+    +1: trawick
+
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
 If you want to propose one of those, please still add them here.
