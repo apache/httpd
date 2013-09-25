@@ -210,10 +210,6 @@ Changes with Apache 2.5.0
      to allow tracking of threads from exiting children via mod_status
      or other such mechanisms.  [Jeff Trawick]
 
-  *) mod_ssl: Catch missing or mismatched client cert/key pairs with
-     SSLProxyMachineCertificateFile/Path directives.  PR 52212.  
-     [Keith Burdis <keith burdis.org>, Joe Orton]
-
   *) The following now respect DefaultRuntimeDir/DEFAULT_REL_RUNTIMEDIR:
      - APIs: ap_log_pid(), ap_remove_pid, ap_read_pid()
      - core: the scoreboard (ScoreBoardFile), pid file (PidFile), and
