@@ -549,7 +549,6 @@ typedef struct {
     apr_global_mutex_t   *pMutex;
     apr_array_header_t   *aRandSeed;
     apr_hash_t     *tVHostKeys;
-    void           *pTmpKeys[SSL_TMP_KEY_MAX];
 
     /* Two hash tables of pointers to ssl_asn1_t structures.  The
      * structures are used to store certificates and private keys
@@ -849,11 +848,7 @@ extern const authz_provider ssl_authz_provider_require_ssl;
 extern const authz_provider ssl_authz_provider_verify_client;
 
 /**  OpenSSL callbacks */
-RSA         *ssl_callback_TmpRSA(SSL *, int, int);
 DH          *ssl_callback_TmpDH(SSL *, int, int);
-#ifndef OPENSSL_NO_EC
-EC_KEY      *ssl_callback_TmpECDH(SSL *, int, int);
-#endif
 int          ssl_callback_SSLVerify(int, X509_STORE_CTX *);
 int          ssl_callback_SSLVerify_CRL(int, X509_STORE_CTX *, conn_rec *);
 int          ssl_callback_proxy_cert(SSL *ssl, X509 **x509, EVP_PKEY **pkey);

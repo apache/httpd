@@ -728,6 +728,15 @@ prefixes are:</p>
 <li><code>-</code>: remove cipher from list (can be added later again)</li>
 <li><code>!</code>: kill cipher from list completely (can <strong>not</strong> be added later again)</li>
 </ul>
+
+<note>
+<title><code>aNULL</code>, <code>eNULL</code> and <code>EXP</code>
+ciphers are always disabled</title>
+<p>Beginning with version 2.5.0-dev as of 2013-09-25, null and export-grade
+ciphers are always disabled, as mod_ssl unconditionally prepends any supplied
+cipher suite string with <code>!aNULL:!eNULL:!EXP:</code> at initialization.</p>
+</note>
+
 <p>A simpler way to look at all of this is to use the ``<code>openssl ciphers
 -v</code>'' command which provides a nice way to successively create the
 correct <em>cipher-spec</em> string. The default <em>cipher-spec</em> string

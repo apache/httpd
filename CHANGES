@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_ssl: drop support for export-grade ciphers with ephemeral RSA
+     keys, and unconditionally disable aNULL, eNULL and EXP ciphers
+     (not overridable via SSLCipherSuite). [Kaspar Brand]
+
   *) Suppress formatting of startup messages written to the console when
      ErrorLogFormat is used.  [Jeff Trawick]
 

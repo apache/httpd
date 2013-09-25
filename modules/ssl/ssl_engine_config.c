@@ -75,8 +75,6 @@ SSLModConfigRec *ssl_config_global_create(server_rec *s)
     mc->stapling_mutex         = NULL;
 #endif
 
-    memset(mc->pTmpKeys, 0, sizeof(mc->pTmpKeys));
-
     apr_pool_userdata_set(mc, SSL_MOD_CONFIG_KEY,
                           apr_pool_cleanup_null,
                           pool);
