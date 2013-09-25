@@ -1334,6 +1334,13 @@ static void init_conn_pool(apr_pool_t *p, proxy_worker *worker)
     worker->cp = cp;
 }
 
+PROXY_DECLARE(int) ap_proxy_connection_reusable(proxy_conn_rec *conn)
+{
+    proxy_worker *worker = conn->worker;
+
+    return ! (conn->close || !worker->s->is_address_reusable || worker->s->disablereuse);
+}
+
 static apr_status_t connection_cleanup(void *theconn)
 {
     proxy_conn_rec *conn = (proxy_conn_rec *)theconn;
@@ -1362,7 +1369,7 @@ static apr_status_t connection_cleanup(void *theconn)
     }
 
     /* determine if the connection need to be closed */
-    if (conn->close || !worker->s->is_address_reusable || worker->s->disablereuse) {
+    if (!ap_proxy_connection_reusable(conn)) {
         apr_pool_t *p = conn->pool;
         apr_pool_clear(p);
         conn = apr_pcalloc(p, sizeof(proxy_conn_rec));

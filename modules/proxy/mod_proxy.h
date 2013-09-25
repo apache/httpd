@@ -857,6 +857,17 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
 PROXY_DECLARE(int) ap_proxy_connection_create(const char *proxy_function,
                                               proxy_conn_rec *conn,
                                               conn_rec *c, server_rec *s);
+
+/**
+ * Determine if proxy connection can potentially be reused at the
+ * end of this request.
+ * @param conn proxy connection
+ * @return non-zero if reusable, 0 otherwise
+ * @note Even if this function returns non-zero, the connection may
+ * be subsequently marked for closure.
+ */
+PROXY_DECLARE(int) ap_proxy_connection_reusable(proxy_conn_rec *conn);
+
 /**
  * Signal the upstream chain that the connection to the backend broke in the
  * middle of the response. This is done by sending an error bucket with

@@ -193,7 +193,9 @@ static apr_status_t send_begin_request(proxy_conn_rec *conn,
     ap_fcgi_fill_in_header(&header, AP_FCGI_BEGIN_REQUEST, request_id,
                            sizeof(abrb), 0);
 
-    ap_fcgi_fill_in_request_body(&brb, AP_FCGI_RESPONDER, AP_FCGI_KEEP_CONN);
+    ap_fcgi_fill_in_request_body(&brb, AP_FCGI_RESPONDER,
+                                 ap_proxy_connection_reusable(conn)
+                                     ? AP_FCGI_KEEP_CONN : 0);
 
     ap_fcgi_header_to_array(&header, farray);
     ap_fcgi_begin_request_body_to_array(&brb, abrb);
