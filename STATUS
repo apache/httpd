@@ -189,19 +189,19 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     dropping NameVirtualHost directive.
     trunk patch: http://svn.apache.org/r1485675 , http://svn.apache.org/r1525000
     2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-nvh-duplicated.diff
-    +1 covener
+    +1 covener, jim
 
   * util_fcgi API to 2.4.x (allows mod_proxy_fcgi to be kept in sync, along
       with other less important reasons)
     trunk: http://svn.apache.org/r1513454 and http://svn.apache.org/r1513492
     2.4.x: copy server/util_fcgi.c and include/util_fcgi.h, then apply
            http://people.apache.org/~trawick/patch-after-copying-util_fcgi-splat.txt
-    +1: trawick
+    +1: trawick, jim
 
   * APLOG_STARTUP messages shouldn't have custom ErrorLogFormat applied.
     trunk: http://svn.apache.org/r1525931
     2.4.x: trunk patch works
-    +1: trawick
+    +1: trawick, jim
 
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
