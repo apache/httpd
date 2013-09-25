@@ -207,6 +207,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     exiting gracefully.
     trunk: http://svn.apache.org/r1526220
     2.4.x: http://people.apache.org/~trawick/r1526220-2.4.x.txt
+    +1: trawick
 
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
