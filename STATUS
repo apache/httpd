@@ -203,6 +203,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x: trunk patch works
     +1: trawick, jim
 
+  * worker MPM: Don't forcibly kill worker threads if the child process is
+    exiting gracefully.
+    trunk: http://svn.apache.org/r1526220
+    2.4.x: http://people.apache.org/~trawick/r1526220-2.4.x.txt
+
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
 If you want to propose one of those, please still add them here.
