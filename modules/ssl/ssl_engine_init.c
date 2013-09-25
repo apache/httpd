@@ -56,180 +56,6 @@ static void ssl_add_version_components(apr_pool_t *p,
                  modver, AP_SERVER_BASEVERSION, incver);
 }
 
-
-/*
- * Handle the Temporary RSA Keys and DH Params
- */
-
-#define MODSSL_TMP_KEY_FREE(mc, type, idx) \
-    if (mc->pTmpKeys[idx]) { \
-        type##_free((type *)mc->pTmpKeys[idx]); \
-        mc->pTmpKeys[idx] = NULL; \
-    }
-
-#define MODSSL_TMP_KEYS_FREE(mc, type) \
-    MODSSL_TMP_KEY_FREE(mc, type, SSL_TMP_KEY_##type##_512); \
-    MODSSL_TMP_KEY_FREE(mc, type, SSL_TMP_KEY_##type##_1024)
-
-static void ssl_tmp_keys_free(server_rec *s)
-{
-    SSLModConfigRec *mc = myModConfig(s);
-
-    MODSSL_TMP_KEYS_FREE(mc, RSA);
-    MODSSL_TMP_KEYS_FREE(mc, DH);
-#ifndef OPENSSL_NO_EC
-    MODSSL_TMP_KEY_FREE(mc, EC_KEY, SSL_TMP_KEY_EC_256);
-#endif
-}
-
-static int ssl_tmp_key_init_rsa(server_rec *s,
-                                int bits, int idx)
-{
-    SSLModConfigRec *mc = myModConfig(s);
-
-#ifdef HAVE_FIPS
-
-    if (FIPS_mode() && bits < 1024) {
-        mc->pTmpKeys[idx] = NULL;
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01877)
-                     "Init: Skipping generating temporary "
-                     "%d bit RSA private key in FIPS mode", bits);
-        return OK;
-    }
-
-#endif
-#ifdef HAVE_GENERATE_EX
-    {
-        RSA *tkey;
-        BIGNUM *bn_f4;
-        if (!(tkey = RSA_new())
-          || !(bn_f4 = BN_new())
-          || !BN_set_word(bn_f4, RSA_F4)
-          || !RSA_generate_key_ex(tkey, bits, bn_f4, NULL))
-        {
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(01878)
-                         "Init: Failed to generate temporary "
-                         "%d bit RSA private key", bits);
-            ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, s);
-            return !OK;
-        }
-        BN_free(bn_f4);
-        mc->pTmpKeys[idx] = tkey;
-    }
-#else
-    if (!(mc->pTmpKeys[idx] =
-          RSA_generate_key(bits, RSA_F4, NULL, NULL)))
-    {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(01879)
-                     "Init: Failed to generate temporary "
-                     "%d bit RSA private key", bits);
-        ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, s);
-        return !OK;
-    }
-#endif
-
-    return OK;
-}
-
-static int ssl_tmp_key_init_dh(server_rec *s,
-                               int bits, int idx)
-{
-    SSLModConfigRec *mc = myModConfig(s);
-
-#ifdef HAVE_FIPS
-
-    if (FIPS_mode() && bits < 1024) {
-        mc->pTmpKeys[idx] = NULL;
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01880)
-                     "Init: Skipping generating temporary "
-                     "%d bit DH parameters in FIPS mode", bits);
-        return OK;
-    }
-
-#endif
-
-    if (!(mc->pTmpKeys[idx] =
-          ssl_dh_GetTmpParam(bits)))
-    {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(01881)
-                     "Init: Failed to generate temporary "
-                     "%d bit DH parameters", bits);
-        return !OK;
-    }
-
-    return OK;
-}
-
-#ifndef OPENSSL_NO_EC
-static int ssl_tmp_key_init_ec(server_rec *s,
-                               int bits, int idx)
-{
-    SSLModConfigRec *mc = myModConfig(s);
-    EC_KEY *ecdh = NULL;
-
-    /* XXX: Are there any FIPS constraints we should enforce? */
-
-    if (bits != 256) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(02298)
-                     "Init: Failed to generate temporary "
-                     "%d bit EC parameters, only 256 bits supported", bits);
-        return !OK;
-    }
-
-    if ((ecdh = EC_KEY_new()) == NULL ||
-        EC_KEY_set_group(ecdh, EC_GROUP_new_by_curve_name(NID_X9_62_prime256v1)) != 1)
-    {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(02299)
-                     "Init: Failed to generate temporary "
-                     "%d bit EC parameters", bits);
-        return !OK;
-    }
-
-    mc->pTmpKeys[idx] = ecdh;
-    return OK;
-}
-
-#define MODSSL_TMP_KEY_INIT_EC(s, bits) \
-    ssl_tmp_key_init_ec(s, bits, SSL_TMP_KEY_EC_##bits)
-
-#endif
-
-#define MODSSL_TMP_KEY_INIT_RSA(s, bits) \
-    ssl_tmp_key_init_rsa(s, bits, SSL_TMP_KEY_RSA_##bits)
-
-#define MODSSL_TMP_KEY_INIT_DH(s, bits) \
-    ssl_tmp_key_init_dh(s, bits, SSL_TMP_KEY_DH_##bits)
-
-static int ssl_tmp_keys_init(server_rec *s)
-{
-    ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, s,
-                 "Init: Generating temporary RSA private keys (512/1024 bits)");
-
-    if (MODSSL_TMP_KEY_INIT_RSA(s, 512) ||
-        MODSSL_TMP_KEY_INIT_RSA(s, 1024)) {
-        return !OK;
-    }
-
-    ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, s,
-                 "Init: Generating temporary DH parameters (512/1024 bits)");
-
-    if (MODSSL_TMP_KEY_INIT_DH(s, 512) ||
-        MODSSL_TMP_KEY_INIT_DH(s, 1024)) {
-        return !OK;
-    }
-
-#ifndef OPENSSL_NO_EC
-    ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, s,
-                 "Init: Generating temporary EC parameters (256 bits)");
-
-    if (MODSSL_TMP_KEY_INIT_EC(s, 256)) {
-        return !OK;
-    }
-#endif
-
-    return OK;
-}
-
 /*
  *  Per-module initialization
  */
@@ -366,10 +192,6 @@ int ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
      * restarts, in which case they'll live inside s->process->pool.
      */
     ssl_pphrase_Handle(base_server, ptemp);
-
-    if (ssl_tmp_keys_init(base_server)) {
-        return !OK;
-    }
 
     /*
      * initialize the mutex handling
@@ -678,6 +500,9 @@ static void ssl_init_ctx_protocol(server_rec *s,
      * Configure additional context ingredients
      */
     SSL_CTX_set_options(ctx, SSL_OP_SINGLE_DH_USE);
+#ifndef OPENSSL_NO_EC
+    SSL_CTX_set_options(ctx, SSL_OP_SINGLE_ECDH_USE);
+#endif
 
 #ifdef SSL_OP_NO_SESSION_RESUMPTION_ON_RENEGOTIATION
     /*
@@ -738,11 +563,7 @@ static void ssl_init_ctx_callbacks(server_rec *s,
 {
     SSL_CTX *ctx = mctx->ssl_ctx;
 
-    SSL_CTX_set_tmp_rsa_callback(ctx, ssl_callback_TmpRSA);
     SSL_CTX_set_tmp_dh_callback(ctx,  ssl_callback_TmpDH);
-#ifndef OPENSSL_NO_EC
-    SSL_CTX_set_tmp_ecdh_callback(ctx,ssl_callback_TmpECDH);
-#endif
 
     SSL_CTX_set_info_callback(ctx, ssl_callback_Info);
 
@@ -843,14 +664,15 @@ static void ssl_init_ctx_cipher_suite(server_rec *s,
                                       modssl_ctx_t *mctx)
 {
     SSL_CTX *ctx = mctx->ssl_ctx;
-    const char *suite = mctx->auth.cipher_suite;
+    const char *suite;
 
     /*
-     *  Configure SSL Cipher Suite
+     *  Configure SSL Cipher Suite. Always disable NULL and export ciphers,
+     *  no matter what SSLCipherSuite directive is appearing in the config.
      */
-    if (!suite) {
-        return;
-    }
+    suite = apr_pstrcat(ptemp, "!aNULL:!eNULL:!EXP:", mctx->auth.cipher_suite ?
+                        mctx->auth.cipher_suite : SSL_DEFAULT_CIPHER_LIST,
+                        NULL);
 
     ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, s,
                  "Configuring permitted SSL ciphers [%s]",
@@ -1234,6 +1056,12 @@ static void ssl_init_server_certs(server_rec *s,
                 "Oops, no " KEYTYPES " server private key found?!");
         ssl_die(s);
     }
+
+#ifndef OPENSSL_NO_EC
+    /* Enable ECDHE by configuring a default curve */
+    SSL_CTX_set_tmp_ecdh(mctx->ssl_ctx,
+                         EC_KEY_new_by_curve_name(NID_X9_62_prime256v1));
+#endif
 }
 
 #ifdef HAVE_TLS_SESSION_TICKETS
@@ -1768,11 +1596,6 @@ apr_status_t ssl_init_ModuleKill(void *data)
      * Drop the session cache and mutex
      */
     ssl_scache_kill(base_server);
-
-    /*
-     * Destroy the temporary keys and params
-     */
-    ssl_tmp_keys_free(base_server);
 
     /*
      * Free the non-pool allocated structures
