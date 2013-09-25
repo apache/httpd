@@ -1129,7 +1129,8 @@ static void * APR_THREAD_FUNC start_threads(apr_thread_t *thd, void *dummy)
     return NULL;
 }
 
-static void join_workers(apr_thread_t *listener, apr_thread_t **threads)
+static void join_workers(apr_thread_t *listener, apr_thread_t **threads,
+                         int mode)
 {
     int i;
     apr_status_t rv, thread_rv;
@@ -1173,12 +1174,14 @@ static void join_workers(apr_thread_t *listener, apr_thread_t **threads)
 
     for (i = 0; i < threads_per_child; i++) {
         if (threads[i]) { /* if we ever created this thread */
+            if (mode != ST_GRACEFUL) {
 #ifdef HAVE_PTHREAD_KILL
-            apr_os_thread_t *worker_os_thread;
+                apr_os_thread_t *worker_os_thread;
 
-            apr_os_thread_get(&worker_os_thread, threads[i]);
-            pthread_kill(*worker_os_thread, WORKER_SIGNAL);
+                apr_os_thread_get(&worker_os_thread, threads[i]);
+                pthread_kill(*worker_os_thread, WORKER_SIGNAL);
 #endif
+            }
 
             rv = apr_thread_join(&thread_rv, threads[i]);
             if (rv != APR_SUCCESS) {
@@ -1324,7 +1327,7 @@ static void child_main(int child_num_arg)
          *   If the worker hasn't exited, then this blocks until
          *   they have (then cleans up).
          */
-        join_workers(ts->listener, threads);
+        join_workers(ts->listener, threads, ST_UNGRACEFUL);
     }
     else { /* !one_process */
         /* remove SIGTERM from the set of blocked signals...  if one of
@@ -1364,7 +1367,8 @@ static void child_main(int child_num_arg)
          *   If the worker hasn't exited, then this blocks until
          *   they have (then cleans up).
          */
-        join_workers(ts->listener, threads);
+        join_workers(ts->listener, threads,
+                     rv == AP_MPM_PODX_GRACEFUL ? ST_GRACEFUL : ST_UNGRACEFUL);
     }
 
     free(threads);
