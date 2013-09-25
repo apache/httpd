@@ -440,6 +440,7 @@
  * 20130702.3 (2.5.0-dev)  Add util_fcgi.h, FastCGI protocol support
  * 20130903.0 (2.5.0-dev)  Changes sizeof(worker_score) in scoreboard 
  * 20130924.0 (2.5.0-dev)  Add ap_errorlog_provider
+ * 20130924.1 (2.5.0-dev)  Add ap_proxy_connection_reusable()
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
@@ -447,7 +448,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20130924
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 0                  /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 1                  /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
