@@ -2536,6 +2536,7 @@ static const char *util_ldap_set_trusted_mode(cmd_parms *cmd, void *dummy,
 
     st->secure_set = 1;
     return(NULL);
+#endif
 }
 
 static const char *util_ldap_set_verify_srv_cert(cmd_parms *cmd,
@@ -2558,7 +2559,6 @@ static const char *util_ldap_set_verify_srv_cert(cmd_parms *cmd,
     st->verify_svr_cert = mode;
 
     return(NULL);
-#endif
 }
 
 
