@@ -14,9 +14,6 @@ Changes with Apache 2.5.0
      keys, and unconditionally disable aNULL, eNULL and EXP ciphers
      (not overridable via SSLCipherSuite). [Kaspar Brand]
 
-  *) Suppress formatting of startup messages written to the console when
-     ErrorLogFormat is used.  [Jeff Trawick]
-
   *) mod_authnz_ldap: Change default value of AuthLDAPMaxSubGroupDepth to 0
      to avoid performance problems when subgroups aren't in use. [Eric Covener]
 
