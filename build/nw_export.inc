@@ -50,6 +50,7 @@
 #include "util_charset.h"
 #include "util_cookies.h"
 #include "util_ebcdic.h"
+#include "util_fcgi.h"
 #include "util_filter.h"
 /*#include "util_ldap.h"*/
 #include "util_md5.h"

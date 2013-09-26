@@ -97,12 +97,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * util_fcgi API to 2.4.x (allows mod_proxy_fcgi to be kept in sync, along
-      with other less important reasons)
-    trunk: http://svn.apache.org/r1513454 and http://svn.apache.org/r1513492
-    2.4.x: copy server/util_fcgi.c and include/util_fcgi.h, then apply
-           http://people.apache.org/~trawick/patch-after-copying-util_fcgi-splat.txt
-    +1: trawick, jim, chrisd
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:

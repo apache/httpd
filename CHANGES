@@ -14,6 +14,10 @@ Changes with Apache 2.4.7
   *) mod_cache: Avoid a crash with strcmp() when the hostname is not provided.
      [Graham Leggett]
 
+  *) core: Add util_fcgi.h and associated definitions and support
+     routines for FastCGI, based largely on mod_proxy_fcgi.
+     [Jeff Trawick]
+
   *) mod_headers: Add 'Header note header-name note-name' for copying a response
      headers value into a note. [Eric Covener]
 

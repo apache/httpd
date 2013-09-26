@@ -577,6 +577,14 @@ SOURCE=.\server\util_expr_parse.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\server\util_fcgi.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\util_fcgi.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\server\util_filter.c
 # End Source File
 # Begin Source File
