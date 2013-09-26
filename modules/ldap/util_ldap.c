@@ -2430,6 +2430,9 @@ static const char *util_ldap_set_trusted_client_cert(cmd_parms *cmd,
                                                      const char *file,
                                                      const char *password)
 {
+#if APR_HAS_MICROSOFT_LDAPSDK
+    return "certificates cannot be set using this method.";
+#else
     util_ldap_config_t *dc =  config;
     apr_finfo_t finfo;
     apr_status_t rv;
@@ -2494,6 +2497,7 @@ static const char *util_ldap_set_trusted_client_cert(cmd_parms *cmd,
     }
 
     return(NULL);
+#endif
 }
 
 
@@ -2508,9 +2512,6 @@ static const char *util_ldap_set_trusted_client_cert(cmd_parms *cmd,
 static const char *util_ldap_set_trusted_mode(cmd_parms *cmd, void *dummy,
                                               const char *mode)
 {
-#if APR_HAS_MICROSOFT_LDAPSDK
-    return "certificates cannot be set using this method.";
-#else
     util_ldap_state_t *st =
     (util_ldap_state_t *)ap_get_module_config(cmd->server->module_config,
                                               &ldap_module);
@@ -2536,7 +2537,6 @@ static const char *util_ldap_set_trusted_mode(cmd_parms *cmd, void *dummy,
 
     st->secure_set = 1;
     return(NULL);
-#endif
 }
 
 static const char *util_ldap_set_verify_srv_cert(cmd_parms *cmd,
