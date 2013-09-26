@@ -1,6 +1,7 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
-  *) ldap: Allow to support ldaps on the microsoft ldap sdk
+
+  *) ldap: Support ldaps when using the Microsoft LDAP SDK.
      PR 54626. [Jean-Frederic Clere]
 
   *) worker MPM: Don't forcibly kill worker threads if the child process is
