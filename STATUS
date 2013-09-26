@@ -97,11 +97,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * APLOG_STARTUP messages shouldn't have custom ErrorLogFormat applied.
-    trunk: http://svn.apache.org/r1525931
-    2.4.x: trunk patch works
-    +1: trawick, jim, covener
-
   * mod_proxy: Add a note in the balancer manager whether inherits will/will not
     be done.
     trunk patch: http://svn.apache.org/r1524158
