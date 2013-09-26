@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.7
 
+  *) Suppress formatting of startup messages written to the console when
+     ErrorLogFormat is used.  [Jeff Trawick]
+
   *) mod_auth_digest: Be more specific when the realm mismatches because the
      realm has not been specified. [Graham Leggett]
 
