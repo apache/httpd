@@ -551,6 +551,7 @@ SET(LIBHTTPD_SOURCES
   server/util_cookies.c
   server/util_expr_eval.c
   server/util_expr_parse.c
+  server/util_fcgi.c
   server/util_expr_scan.c
   server/util_filter.c
   server/util_md5.c
@@ -578,7 +579,6 @@ IF(NOT ${minorversion} STREQUAL "4")
       server/apreq_parser_multipart.c
       server/apreq_parser_urlencoded.c
       server/apreq_util.c
-      server/util_fcgi.c
   )
 ENDIF()
 
