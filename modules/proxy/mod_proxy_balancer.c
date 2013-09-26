@@ -1466,6 +1466,10 @@ static int balancer_handler(request_rec *r)
                   ap_get_server_built(), "</dt>\n", NULL);
         ap_rvputs(r, "<dt>Balancer changes will ", conf->bal_persist ? "" : "NOT ",
                   "be persisted on restart.</dt>", NULL);
+        ap_rvputs(r, "<dt>Balancers are ", conf->inherit ? "" : "NOT ",
+                  "inherited from main server.</dt>", NULL);
+        ap_rvputs(r, "<dt>ProxyPass settings are ", conf->ppinherit ? "" : "NOT ",
+                  "inherited from main server.</dt>", NULL);
         ap_rputs("</dl>\n", r);
         balancer = (proxy_balancer *)conf->balancers->elts;
         for (i = 0; i < conf->balancers->nelts; i++) {
