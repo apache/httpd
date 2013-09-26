@@ -420,6 +420,7 @@
  * 20120211.23 (2.4.5-dev) Add ap_proxy_clear_connection()
  * 20120211.24 (2.4.7-dev) add open_htaccess hook.
  * 20120211.25 (2.4.7-dev) Add conn_sense_e
+ * 20120211.26 (2.4.7-dev) Add util_fcgi.h, FastCGI protocol support
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
@@ -427,7 +428,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20120211
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 25                   /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 26                   /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

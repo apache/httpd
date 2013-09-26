@@ -273,6 +273,7 @@ FILES_nlm_objs = \
 	$(OBJDIR)/util_expr_eval.o \
 	$(OBJDIR)/util_expr_parse.o \
 	$(OBJDIR)/util_expr_scan.o \
+	$(OBJDIR)/util_fcgi.o \
 	$(OBJDIR)/util_filter.o \
 	$(OBJDIR)/util_md5.o \
 	$(OBJDIR)/util_mutex.o \
