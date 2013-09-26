@@ -29,6 +29,7 @@
 #include "ap_provider.h"
 #include "mod_auth.h"
 #include "util_fcgi.h"
+#include "ap_mmn.h"
 
 module AP_MODULE_DECLARE_DATA authnz_fcgi_module;
 
@@ -181,9 +182,11 @@ static apr_status_t recv_data(const fcgi_provider_conf *conf,
                       conf->backend);
         return rv;
     }
- 
+
+#if AP_MODULE_MAGIC_AT_LEAST(20130702,2) 
     ap_log_rdata(APLOG_MARK, APLOG_TRACE5, r, "FastCGI data received",
                  buf, *buflen, AP_LOG_DATA_SHOW_OFFSET);
+#endif
     return APR_SUCCESS;
 }
 
@@ -222,8 +225,10 @@ static apr_status_t sendv_data(const fcgi_provider_conf *conf,
 
     for (i = 0; i < nvec; i++) {
         to_write += vec[i].iov_len;
+#if AP_MODULE_MAGIC_AT_LEAST(20130702,2) 
         ap_log_rdata(APLOG_MARK, APLOG_TRACE5, r, "FastCGI data sent",
                      vec[i].iov_base, vec[i].iov_len, AP_LOG_DATA_SHOW_OFFSET);
+#endif
     }
 
     offset = 0;
