@@ -951,12 +951,12 @@ static void create_listener_thread(void)
 }
 
 
-void child_main(apr_pool_t *pconf)
+void child_main(apr_pool_t *pconf, DWORD parent_pid)
 {
     apr_status_t status;
     apr_hash_t *ht;
     ap_listen_rec *lr;
-    HANDLE child_events[2];
+    HANDLE child_events[3];
     HANDLE *child_handles;
     int listener_started = 0;
     int threads_created = 0;
@@ -966,6 +966,7 @@ void child_main(apr_pool_t *pconf)
     DWORD tid;
     int rv;
     int i;
+    int num_events;
 
     apr_pool_create(&pchild, pconf);
     apr_pool_tag(pchild, "pchild");
@@ -982,6 +983,15 @@ void child_main(apr_pool_t *pconf)
     }
     child_events[0] = exit_event;
     child_events[1] = max_requests_per_child_event;
+
+    if (parent_pid != my_pid) {
+        child_events[2] = OpenProcess(PROCESS_ALL_ACCESS, FALSE, parent_pid);
+        num_events = 3;
+    }
+    else {
+        /* presumably -DONE_PROCESS */
+        num_events = 2;
+    }
 
     /*
      * Wait until we have permission to start accepting connections.
@@ -1112,10 +1122,10 @@ void child_main(apr_pool_t *pconf)
      */
     while (1) {
 #if !APR_HAS_OTHER_CHILD
-        rv = WaitForMultipleObjects(2, (HANDLE *)child_events, FALSE, INFINITE);
+        rv = WaitForMultipleObjects(num_events, (HANDLE *)child_events, FALSE, INFINITE);
         cld = rv - WAIT_OBJECT_0;
 #else
-        rv = WaitForMultipleObjects(2, (HANDLE *)child_events, FALSE, 1000);
+        rv = WaitForMultipleObjects(num_events, (HANDLE *)child_events, FALSE, 1000);
         cld = rv - WAIT_OBJECT_0;
         if (rv == WAIT_TIMEOUT) {
             apr_proc_other_child_refresh_all(APR_OC_REASON_RUNNING);
@@ -1134,6 +1144,13 @@ void child_main(apr_pool_t *pconf)
             ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, ap_server_conf, APLOGNO(00357)
                          "Child: Exit event signaled. Child process is "
                          "ending.");
+            break;
+        }
+        else if (cld == 2) {
+            /* The parent is dead.  Shutdown the child process. */
+            ap_log_error(APLOG_MARK, APLOG_CRIT, 0, ap_server_conf, APLOGNO(02538)
+                         "Child: Parent process exited abruptly. Child process "
+                         "is ending");
             break;
         }
         else {

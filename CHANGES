@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) WinNT MPM: Exit the child if the parent process crashes or is terminated.
+     [Oracle Corporation]
+
   *) ldap: Support ldaps when using the Microsoft LDAP SDK.
      PR 54626. [Jean-Frederic Clere]
 
