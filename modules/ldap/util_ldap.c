@@ -2352,6 +2352,9 @@ static const char *util_ldap_set_trusted_global_cert(cmd_parms *cmd,
                                                      const char *file,
                                                      const char *password)
 {
+#if APR_HAS_MICROSOFT_LDAPSDK
+    return "certificates cannot be set using this method.";
+#else
     util_ldap_state_t *st =
         (util_ldap_state_t *)ap_get_module_config(cmd->server->module_config,
                                                   &ldap_module);
@@ -2409,6 +2412,7 @@ static const char *util_ldap_set_trusted_global_cert(cmd_parms *cmd,
     }
 
     return(NULL);
+#endif
 }
 
 
@@ -2504,6 +2508,9 @@ static const char *util_ldap_set_trusted_client_cert(cmd_parms *cmd,
 static const char *util_ldap_set_trusted_mode(cmd_parms *cmd, void *dummy,
                                               const char *mode)
 {
+#if APR_HAS_MICROSOFT_LDAPSDK
+    return "certificates cannot be set using this method.";
+#else
     util_ldap_state_t *st =
     (util_ldap_state_t *)ap_get_module_config(cmd->server->module_config,
                                               &ldap_module);
@@ -2551,6 +2558,7 @@ static const char *util_ldap_set_verify_srv_cert(cmd_parms *cmd,
     st->verify_svr_cert = mode;
 
     return(NULL);
+#endif
 }
 
 
@@ -2994,10 +3002,14 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
                       NULL,
                       0,
                       &(result_err));
+#if APR_HAS_MICROSOFT_LDAPSDK
+   /* MICROSOFT_LDAPSDK uses Microsoft Management Console (MMC)  for that */
+#else
     if (APR_SUCCESS == rc) {
         rc = apr_ldap_set_option(ptemp, NULL, APR_LDAP_OPT_TLS_CERT,
                                  (void *)st->global_certs, &(result_err));
     }
+#endif
 
     if (APR_SUCCESS == rc) {
         st->ssl_supported = 1;
