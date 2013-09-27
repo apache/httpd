@@ -430,9 +430,16 @@ int ap_open_logs(apr_pool_t *pconf, apr_pool_t *p /* plog */,
      * XXX: This is BS - /dev/null is non-portable
      *      errno-as-apr_status_t is also non-portable
      */
-    if (replace_stderr && freopen("/dev/null", "w", stderr) == NULL) {
+
+#ifdef WIN32
+#define NULL_DEVICE "nul"
+#else
+#define NULL_DEVICE "/dev/null"
+#endif
+
+    if (replace_stderr && freopen(NULL_DEVICE, "w", stderr) == NULL) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, errno, s_main, APLOGNO(00093)
-                     "unable to replace stderr with /dev/null");
+                     "unable to replace stderr with %s", NULL_DEVICE);
     }
 
     for (virt = s_main->next; virt; virt = virt->next) {
