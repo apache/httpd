@@ -1951,10 +1951,11 @@ static int lua_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                              apr_pool_t *ptemp, server_rec *s)
 {
     apr_pool_t **pool;
-    lua_ssl_val = APR_RETRIEVE_OPTIONAL_FN(ssl_var_lookup);
-    lua_ssl_is_https = APR_RETRIEVE_OPTIONAL_FN(ssl_is_https);
     const char *tempdir;
     apr_status_t rs;
+
+    lua_ssl_val = APR_RETRIEVE_OPTIONAL_FN(ssl_var_lookup);
+    lua_ssl_is_https = APR_RETRIEVE_OPTIONAL_FN(ssl_is_https);
     
     if (ap_state_query(AP_SQ_MAIN_STATE) == AP_SQ_MS_CREATE_PRE_CONFIG)
         return OK;
