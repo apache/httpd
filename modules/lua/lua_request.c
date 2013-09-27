@@ -30,7 +30,8 @@
 #include "util_cookies.h"
 #include "apr_want.h"
 
-extern apr_thread_mutex_t* lua_ivm_mutex;
+extern apr_global_mutex_t* lua_ivm_mutex;
+extern apr_shm_t *lua_ivm_shm;
 
 APLOG_USE_MODULE(lua);
 #define POST_MAX_VARS 500
@@ -1831,21 +1832,23 @@ static int req_debug(lua_State *L)
 static int lua_ivm_get(lua_State *L) 
 {
     const char *key, *raw_key;
+    apr_pool_t *pool;
     lua_ivm_object *object = NULL;
     request_rec *r = ap_lua_check_request_rec(L, 1);
     key = luaL_checkstring(L, 2);
     raw_key = apr_pstrcat(r->pool, "lua_ivm_", key, NULL);
-    apr_thread_mutex_lock(lua_ivm_mutex);
-    apr_pool_userdata_get((void **)&object, raw_key, r->server->process->pool);
+    apr_global_mutex_lock(lua_ivm_mutex);
+    pool = *((apr_pool_t**) apr_shm_baseaddr_get(lua_ivm_shm));
+    apr_pool_userdata_get((void **)&object, raw_key, pool);
     if (object) {
         if (object->type == LUA_TBOOLEAN) lua_pushboolean(L, (int) object->number);
         else if (object->type == LUA_TNUMBER) lua_pushnumber(L, object->number);
         else if (object->type == LUA_TSTRING) lua_pushlstring(L, object->vb.buf, object->size);
-        apr_thread_mutex_unlock(lua_ivm_mutex);
+        apr_global_mutex_unlock(lua_ivm_mutex);
         return 1;
     }
     else {
-        apr_thread_mutex_unlock(lua_ivm_mutex);
+        apr_global_mutex_unlock(lua_ivm_mutex);
         return 0;
     }
 }
@@ -1855,6 +1858,7 @@ static int lua_ivm_set(lua_State *L)
 {
     const char *key, *raw_key;
     const char *value = NULL;
+    apr_pool_t *pool;
     size_t str_len;
     lua_ivm_object *object = NULL;
     request_rec *r = ap_lua_check_request_rec(L, 1);
@@ -1862,11 +1866,12 @@ static int lua_ivm_set(lua_State *L)
     luaL_checkany(L, 3);
     raw_key = apr_pstrcat(r->pool, "lua_ivm_", key, NULL);
     
-    apr_thread_mutex_lock(lua_ivm_mutex);
-    apr_pool_userdata_get((void **)&object, raw_key, r->server->process->pool);
+    apr_global_mutex_lock(lua_ivm_mutex);
+    pool = *((apr_pool_t**) apr_shm_baseaddr_get(lua_ivm_shm));
+    apr_pool_userdata_get((void **)&object, raw_key, pool);
     if (!object) {
-        object = apr_pcalloc(r->server->process->pool, sizeof(lua_ivm_object));
-        ap_varbuf_init(r->server->process->pool, &object->vb, 2);
+        object = apr_pcalloc(pool, sizeof(lua_ivm_object));
+        ap_varbuf_init(pool, &object->vb, 2);
         object->size = 1;
         object->vb_size = 1;
     }
@@ -1884,8 +1889,8 @@ static int lua_ivm_set(lua_State *L)
         memset(object->vb.buf, 0, str_len);
         memcpy(object->vb.buf, value, str_len-1);
     }
-    apr_pool_userdata_set(object, raw_key, NULL, r->server->process->pool);
-    apr_thread_mutex_unlock(lua_ivm_mutex);
+    apr_pool_userdata_set(object, raw_key, NULL, pool);
+    apr_global_mutex_unlock(lua_ivm_mutex);
     return 0;
 }
 

@@ -20,15 +20,30 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <apr_thread_mutex.h>
-
+#include <apr_pools.h>
 #include "lua_apr.h"
 #include "lua_config.h"
 #include "apr_optional.h"
 #include "mod_ssl.h"
 #include "mod_auth.h"
+#include "util_mutex.h"
+
 
 #ifdef APR_HAS_THREADS
 #include "apr_thread_proc.h"
+#endif
+
+/* getpid for *NIX */
+#if APR_HAVE_SYS_TYPES_H
+#include <sys/types.h>
+#endif
+#if APR_HAVE_UNISTD_H
+#include <unistd.h>
+#endif
+
+/* getpid for Windows */
+#if APR_HAVE_PROCESS_H
+#include <process.h>
 #endif
 
 APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(ap_lua, AP_LUA, int, lua_open,
@@ -64,7 +79,16 @@ typedef struct
     int broken;
 } lua_filter_ctx;
 
-apr_thread_mutex_t* lua_ivm_mutex = NULL;
+apr_global_mutex_t *lua_ivm_mutex;
+apr_shm_t *lua_ivm_shm;
+char *lua_ivm_shmfile;
+
+static apr_status_t shm_cleanup_wrapper(void *unused) {
+    if (lua_ivm_shm) {
+        return apr_shm_destroy(lua_ivm_shm);
+    }
+    return OK;
+}
 
 /**
  * error reporting if lua has an error.
@@ -1916,11 +1940,53 @@ static int lua_request_hook(lua_State *L, request_rec *r)
     return OK;
 }
 
+static int lua_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
+                            apr_pool_t *ptemp)
+{
+    ap_mutex_register(pconf, "lua-ivm-shm", NULL, APR_LOCK_DEFAULT, 0);
+    return OK;
+}
+
 static int lua_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                              apr_pool_t *ptemp, server_rec *s)
 {
+    apr_pool_t **pool;
     lua_ssl_val = APR_RETRIEVE_OPTIONAL_FN(ssl_var_lookup);
     lua_ssl_is_https = APR_RETRIEVE_OPTIONAL_FN(ssl_is_https);
+    const char *tempdir;
+    apr_status_t rs;
+    
+    if (ap_state_query(AP_SQ_MAIN_STATE) == AP_SQ_MS_CREATE_PRE_CONFIG)
+        return OK;
+
+    /* Create ivm mutex */
+    rs = ap_global_mutex_create(&lua_ivm_mutex, NULL, "lua-ivm-shm", NULL,
+                            s, pconf, 0);
+    if (APR_SUCCESS != rs) {
+        return HTTP_INTERNAL_SERVER_ERROR;
+    }
+
+    /* Create shared memory space */
+    rs = apr_temp_dir_get(&tempdir, pconf);
+    if (rs != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, rs, s,
+                 "mod_lua IVM: Failed to find temporary directory");
+        return HTTP_INTERNAL_SERVER_ERROR;
+    }
+    lua_ivm_shmfile = apr_psprintf(pconf, "%s/httpd_lua_shm.%ld", tempdir,
+                           (long int)getpid());
+    rs = apr_shm_create(&lua_ivm_shm, sizeof(apr_pool_t**),
+                    (const char *) lua_ivm_shmfile, pconf);
+    if (rs != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, rs, s,
+            "mod_lua: Failed to create shared memory segment on file %s",
+                     lua_ivm_shmfile);
+        return HTTP_INTERNAL_SERVER_ERROR;
+    }
+    pool = (apr_pool_t **)apr_shm_baseaddr_get(lua_ivm_shm);
+    apr_pool_create(pool, pconf);
+    apr_pool_cleanup_register(pconf, NULL, shm_cleanup_wrapper,
+                          apr_pool_cleanup_null);
     return OK;
 }
 static void *overlay_hook_specs(apr_pool_t *p,
@@ -2025,6 +2091,7 @@ static void lua_register_hooks(apr_pool_t *p)
     ap_hook_quick_handler(lua_quick_harness, NULL, NULL, APR_HOOK_FIRST);
 
     ap_hook_post_config(lua_post_config, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_pre_config(lua_pre_config, NULL, NULL, APR_HOOK_MIDDLE);
 
     APR_OPTIONAL_HOOK(ap_lua, lua_open, lua_open_hook, NULL, NULL,
                       APR_HOOK_REALLY_FIRST);
@@ -2037,9 +2104,6 @@ static void lua_register_hooks(apr_pool_t *p)
 #endif
     /* providers */
     lua_authz_providers = apr_hash_make(p);
-    
-    /* ivm mutex */
-    apr_thread_mutex_create(&lua_ivm_mutex, APR_THREAD_MUTEX_DEFAULT, p);
     
     /* Logging catcher */
     ap_hook_log_transaction(lua_log_transaction_harness,NULL,NULL,
