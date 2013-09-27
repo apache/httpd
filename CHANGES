@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_lua: Let the Inter-VM get/set functions work with a global 
+     shared memory pool instead of a per-process pool. [Daniel Gruno]
+
   *) WinNT MPM: Exit the child if the parent process crashes or is terminated.
      [Oracle Corporation]
 
