@@ -856,6 +856,10 @@ struct ap_errorlog_provider {
      * @param p The pool to create any storage from
      * @param s Server for which the logger is initialized
      * @return Pointer to handle passed later to writer() function
+     * @note On success, the provider must return non-NULL, even if
+     * the handle is not necessary when the writer() function is
+     * called.  On failure, the provider should log a startup error
+     * message and return NULL to abort httpd startup.
      */
     void * (*init)(apr_pool_t *p, server_rec *s);
 
