@@ -1179,6 +1179,7 @@ static void log_error_core(const char *file, int line, int module_index,
                 len = MAX_STRING_LEN - sizeof(APR_EOL_STR);
             }
             strcpy(errstr + len, APR_EOL_STR);
+            len += strlen(APR_EOL_STR);
         }
 
         if (logf) {
