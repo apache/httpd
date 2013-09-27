@@ -107,6 +107,8 @@ static const TRANS facilities[] = {
 static void *syslog_error_log_init(apr_pool_t *p, server_rec *s)
 {
     char *fname = s->error_fname;
+    void *success = (void *)p; /* anything non-NULL is success */
+
     if (*fname == '\0') {
         openlog(ap_server_argv0, LOG_NDELAY|LOG_CONS|LOG_PID, LOG_LOCAL7);
     }
@@ -117,12 +119,12 @@ static void *syslog_error_log_init(apr_pool_t *p, server_rec *s)
             if (!strcasecmp(fname, fac->t_name)) {
                 openlog(ap_server_argv0, LOG_NDELAY|LOG_CONS|LOG_PID,
                         fac->t_val);
-                return NULL;
+                return success;
             }
         }
     }
 
-    return NULL;
+    return success;
 }
 
 static apr_status_t syslog_error_log(const ap_errorlog_info *info,

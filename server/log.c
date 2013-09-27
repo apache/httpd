@@ -334,6 +334,10 @@ static int open_error_log(server_rec *s, int is_main, apr_pool_t *p)
     else if (s->errorlog_provider) {
         s->errorlog_provider_handle = s->errorlog_provider->init(p, s);
         s->error_log = NULL;
+        if (!s->errorlog_provider_handle) {
+            /* provider must log something to the console */
+            return DONE;
+        }
     }
     else {
         fname = ap_server_root_relative(p, s->error_fname);
