@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English revision : 1328589 -->
+<!-- English revision : 1525489 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -414,42 +414,38 @@ l'&eacute;tablissement de la session protocolaire.</p>
     <tr><th>Version</th>
         <th>Source</th>
         <th>Description</th>
-        <th>Navigateurs support&eacute;s</th></tr>
+    </tr>
     <tr><td>SSL v2.0</td>
         <td>Standard du fournisseur (de Netscape Corp.)</td>
         <td>Premier protocole SSL pour lequel il existe des impl&eacute;mentations</td>
-        <td>- NS Navigator 1.x/2.x<br />
-        - MS IE 3.x<br />
-        - Lynx/2.8+OpenSSL</td></tr>
+    </tr>
     <tr><td>SSL v3.0</td>
         <td>Projet Internet arriv&eacute; &agrave; expiration (de Netscape Corp.) [<a href="#SSL3"
         >SSL3</a>]</td>
         <td>Comporte des r&eacute;visions permettant de pr&eacute;venir certaines attaques de
 	s&eacute;curit&eacute; sp&eacute;cifiques, ajout de chiffrements non RSA, et support des
 	cha&icirc;nes de certification</td>
-        <td>- NS Navigator 2.x/3.x/4.x<br />
-        - MS IE 3.x/4.x<br />
-        - Lynx/2.8+OpenSSL</td></tr>
+    </tr>
     <tr><td>TLS v1.0</td>
         <td>Standard propos&eacute; pour l'Internet (de l'IETF) [<a href="#TLS1"
         >TLS1</a>]</td>
         <td>R&eacute;vision de SSL 3.0 pour mettre &agrave; jour la couche MAC vers HMAC,
 	ajout du bourrage de bloc pour le chiffrement de bloc, standardisation
 	de l'ordonnancement des messages et plus de messages d'alerte.</td>
-        <td>- Lynx/2.8+OpenSSL</td></tr>
-	<tr><td>TLS v1.1</td>
+    </tr>
+    <tr><td>TLS v1.1</td>
         <td>Standard propos&eacute; pour l'Internet (de l'IETF) [<a href="#TLS11"
         >TLS11</a>]</td>
         <td>Mise &agrave; jour de TLS 1.0 pour la protection contre les
 	attaques de type Cipher block chaining (CBC).</td>
-        <td>-</td></tr>
+    </tr>
     <tr><td>TLS v1.2</td>
         <td>Standard propos&eacute; pour l'Internet (de l'IETF) [<a href="#TLS12"
         >TLS12</a>]</td>
         <td>Mise &agrave; jour de TLS 1.2 rendant les condens&eacute;s MD5 obsol&egrave;tes,
 	et introduisant une incompatibilit&eacute; avec SSL ce qui interdit toute
 	n&eacute;gociation en vue d'une utilisation de SSLv2.</td>
-        <td>-</td></tr>
+    </tr>
     </table>
 </section>
 

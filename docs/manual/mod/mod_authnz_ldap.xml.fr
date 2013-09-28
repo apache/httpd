@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1510426 -->
+<!-- English Revision : 1525866 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1206,12 +1206,13 @@ appartenance &agrave; un groupe</description>
 maximale prise en compte avant l'abandon de la recherche de
 l'utilisateur.</description>
 <syntax>AuthLDAPMaxSubGroupDepth <var>Nombre</var></syntax>
-<default>AuthLDAPMaxSubGroupDepth 10</default>
+<default>AuthLDAPMaxSubGroupDepth 0</default>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
 <compatibility>Disponible &agrave; partir de la version 2.3.0 du serveur HTTP
-Apache</compatibility>
+Apache ; la valeur par d&eacute;faut &eacute;tait 10 dans les versions 2.4.x et les
+premi&egrave;res versions 2.5</compatibility>
 
 <usage>
    <p>Lorsque cette directive est d&eacute;finie &agrave; une valeur <code>X</code>
@@ -1223,6 +1224,17 @@ Apache</compatibility>
    d'imbrication maximale <code>X</code> sp&eacute;cifi&eacute;e par la directive.</p>
    <p>Se r&eacute;f&eacute;rer &agrave; la section <a href="#reqgroup"><code>Require
    ldap-group</code></a> pour un exemple plus d&eacute;taill&eacute;.</p>
+
+   <note><title>Performances dans le cas des groupes imbriqu&eacute;s</title>
+   <p>Lorsque les directives
+   <directive>AuthLDAPSubGroupAttribute</directive> et
+   <directive>AuthLDAPGroupAttribute</directive> se recouvrent (comme
+   c'est le cas par d&eacute;faut et requis par les sch&eacute;mas LDAP courants), la
+   recherche de sous-groupes au sein de grands groupes peut &ecirc;tre tr&egrave;s
+   longue. Si vos groupes sont tr&egrave;s grands et non imbriqu&eacute;s, d&eacute;finissez
+   la directive <directive>AuthLDAPMaxSubGroupDepth</directive> &agrave; 0.</p>
+   </note>
+
 </usage>
 </directivesynopsis>
 
