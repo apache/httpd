@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1438838 -->
+<!-- English Revision : 1525597 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -170,7 +170,7 @@ nom de chemin en fin de requ&ecirc;te.</description>
     href="../handler.html">gestionnaire</a> responsable de la requ&ecirc;te.
     Le gestionnaire de base pour les fichiers normaux rejette par d&eacute;faut
     les requ&ecirc;tes avec <code>PATH_INFO</code>. Les gestionnaires qui
-    servent des scripts, comme <a
+    servent des scripts, comme<a
     href="mod_cgi.html">cgi-script</a> et <a
     href="mod_isapi.html">isapi-handler</a>, acceptent en g&eacute;n&eacute;ral par
     d&eacute;faut les requ&ecirc;tes avec <code>PATH_INFO</code>.</dd>
@@ -1422,7 +1422,8 @@ host</context>
 
     <p>L'utilisation de <code>syslog</code> &agrave; la place d'un nom de
     fichier active la journalisation via syslogd(8) si le syst&egrave;me le
-    supporte. Le dispositif syslog par d&eacute;faut est <code>local7</code>,
+    supporte et si <module>mod_syslog</module> a &eacute;t&eacute; charg&eacute;. Le
+    dispositif syslog par d&eacute;faut est <code>local7</code>,
     mais vous pouvez le modifier &agrave; l'aide de la syntaxe
     <code>syslog:<var>facility</var></code>, o&ugrave; <var>facility</var> peut
     &ecirc;tre remplac&eacute; par un des noms habituellement document&eacute;s dans la page
@@ -1431,6 +1432,10 @@ host</context>
     final sp&eacute;cifi&eacute; affecte l'ensemble du serveur</p>
 
     <highlight language="config">ErrorLog syslog:user</highlight>
+
+    <p>Des modules additionnels peuvent impl&eacute;menter leur propre
+    fournisseur ErrorLog. La syntaxe est similaire &agrave; l'exemple
+    <code>syslog</code> ci-dessus.</p>
 
     <p>SECURITE : Voir le document <a
     href="../misc/security_tips.html#serverroot">conseils &agrave; propos de
