@@ -312,22 +312,6 @@ typedef int ssl_algo_t;
 #define SSL_AIDX_MAX     (2)
 #endif
 
-
-/**
- * Define IDs for the temporary RSA keys and DH params
- */
-
-#define SSL_TMP_KEY_RSA_512  (0)
-#define SSL_TMP_KEY_RSA_1024 (1)
-#define SSL_TMP_KEY_DH_512   (2)
-#define SSL_TMP_KEY_DH_1024  (3)
-#ifndef OPENSSL_NO_EC
-#define SSL_TMP_KEY_EC_256   (4)
-#define SSL_TMP_KEY_MAX      (5)
-#else
-#define SSL_TMP_KEY_MAX      (4)
-#endif
-
 /**
  * Define the SSL options
  */

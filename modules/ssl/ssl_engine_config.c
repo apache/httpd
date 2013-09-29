@@ -651,6 +651,9 @@ const char *ssl_cmd_SSLCipherSuite(cmd_parms *cmd,
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
     SSLDirConfigRec *dc = (SSLDirConfigRec *)dcfg;
 
+    /* always disable null and export ciphers */
+    arg = apr_pstrcat(cmd->pool, "!aNULL:!eNULL:!EXP:", arg, NULL);
+
     if (cmd->path) {
         dc->szCipherSuite = arg;
     }
@@ -1396,6 +1399,9 @@ const char *ssl_cmd_SSLProxyCipherSuite(cmd_parms *cmd,
                                         const char *arg)
 {
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
+
+    /* always disable null and export ciphers */
+    arg = apr_pstrcat(cmd->pool, "!aNULL:!eNULL:!EXP:", arg, NULL);
 
     sc->proxy->auth.cipher_suite = arg;
 
