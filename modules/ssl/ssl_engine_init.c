@@ -1007,10 +1007,14 @@ static void ssl_init_server_certs(server_rec *s,
     const char *rsa_id, *dsa_id;
 #ifdef HAVE_ECC
     const char *ecc_id;
+    EC_GROUP *ecparams;
+    int nid;
+    EC_KEY *eckey;
 #endif
     const char *vhost_id = mctx->sc->vhost_id;
     int i;
     int have_rsa, have_dsa;
+    DH *dhparams;
 #ifdef HAVE_ECC
     int have_ecc;
 #endif
@@ -1058,10 +1062,38 @@ static void ssl_init_server_certs(server_rec *s,
         ssl_die(s);
     }
 
+    /*
+     * Try to read DH parameters from the (first) SSLCertificateFile
+     */
+    if ((mctx->pks->cert_files[0] != NULL) &&
+        (dhparams = ssl_dh_GetParamFromFile(mctx->pks->cert_files[0]))) {
+        SSL_CTX_set_tmp_dh(mctx->ssl_ctx, dhparams);
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO()
+                     "Custom DH parameters (%d bits) for %s loaded from %s",
+                     BN_num_bits(dhparams->p), vhost_id,
+                     mctx->pks->cert_files[0]);
+    }
+
 #ifdef HAVE_ECC
-    /* Enable ECDHE by configuring a default curve */
-    SSL_CTX_set_tmp_ecdh(mctx->ssl_ctx,
-                         EC_KEY_new_by_curve_name(NID_X9_62_prime256v1));
+    /*
+     * Similarly, try to read the ECDH curve name from SSLCertificateFile...
+     */
+    if ((mctx->pks->cert_files[0] != NULL) &&
+        (ecparams = ssl_ec_GetParamFromFile(mctx->pks->cert_files[0])) &&
+        (nid = EC_GROUP_get_curve_name(ecparams)) &&
+        (eckey = EC_KEY_new_by_curve_name(nid))) {
+        SSL_CTX_set_tmp_ecdh(mctx->ssl_ctx, eckey);
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO()
+                     "ECDH curve %s for %s specified in %s",
+                     OBJ_nid2sn(nid), vhost_id, mctx->pks->cert_files[0]);
+    }
+    /*
+     * ...otherwise, configure NIST P-256 (required to enable ECDHE)
+     */
+    else {
+        SSL_CTX_set_tmp_ecdh(mctx->ssl_ctx,
+                             EC_KEY_new_by_curve_name(NID_X9_62_prime256v1));
+    }
 #endif
 }
 

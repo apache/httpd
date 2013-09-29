@@ -1,6 +1,12 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_ssl: Improve handling of ephemeral DH and ECDH keys by
+     allowing custom parameters to be configured via SSLCertificateFile,
+     and by adding standardized DH parameters for 1024/2048/3072/4096 bits.
+     Unless custom parameters are configured, the standardized parameters
+     are applied based on the certificate's RSA/DSA key size.
+
   *) mod_ssl, configure: Require OpenSSL 0.9.8a or later. [Kaspar Brand]
 
   *) mod_lua: Let the Inter-VM get/set functions work with a global 

@@ -108,7 +108,6 @@ modules/ ................ Manditory and Add-In Apache stock modules
     mod_ssl.c ............... main source file containing API structures
     mod_ssl.h ............... common header file of mod_ssl
     ssl_engine_config.c ..... module configuration handling
-    ssl_engine_dh.c ......... DSA/DH support
     ssl_engine_init.c ....... module initialization
     ssl_engine_io.c ......... I/O support
     ssl_engine_kernel.c ..... SSL engine kernel
