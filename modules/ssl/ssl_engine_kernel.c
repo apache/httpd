@@ -33,7 +33,7 @@
 #include "util_md5.h"
 
 static void ssl_configure_env(request_rec *r, SSLConnRec *sslconn);
-#ifndef OPENSSL_NO_TLSEXT
+#ifdef HAVE_TLSEXT
 static int ssl_find_vhost(void *servername, conn_rec *c, server_rec *s);
 #endif
 
@@ -120,7 +120,7 @@ int ssl_hook_ReadReq(request_rec *r)
     SSLSrvConfigRec *sc = mySrvConfig(r->server);
     SSLConnRec *sslconn;
     const char *upgrade;
-#ifndef OPENSSL_NO_TLSEXT
+#ifdef HAVE_TLSEXT
     const char *servername;
 #endif
     SSL *ssl;
@@ -163,7 +163,7 @@ int ssl_hook_ReadReq(request_rec *r)
     if (!ssl) {
         return DECLINED;
     }
-#ifndef OPENSSL_NO_TLSEXT
+#ifdef HAVE_TLSEXT
     if ((servername = SSL_get_servername(ssl, TLSEXT_NAMETYPE_host_name))) {
         char *host, *scope_id;
         apr_port_t port;
@@ -330,7 +330,7 @@ int ssl_hook_Access(request_rec *r)
         return DECLINED;
     }
 
-#ifndef OPENSSL_NO_SRP
+#ifdef HAVE_SRP
     /*
      * Support for per-directory reconfigured SSL connection parameters
      *
@@ -1114,7 +1114,7 @@ static const char *ssl_hook_Fixup_vars[] = {
     "SSL_SERVER_A_SIG",
     "SSL_SESSION_ID",
     "SSL_SESSION_RESUMED",
-#ifndef OPENSSL_NO_SRP
+#ifdef HAVE_SRP
     "SSL_SRP_USER",
     "SSL_SRP_USERINFO",
 #endif
@@ -1128,7 +1128,7 @@ int ssl_hook_Fixup(request_rec *r)
     SSLDirConfigRec *dc = myDirConfig(r);
     apr_table_t *env = r->subprocess_env;
     char *var, *val = "";
-#ifndef OPENSSL_NO_TLSEXT
+#ifdef HAVE_TLSEXT
     const char *servername;
 #endif
     STACK_OF(X509) *peer_certs;
@@ -1157,7 +1157,7 @@ int ssl_hook_Fixup(request_rec *r)
     /* the always present HTTPS (=HTTP over SSL) flag! */
     apr_table_setn(env, "HTTPS", "on");
 
-#ifndef OPENSSL_NO_TLSEXT
+#ifdef HAVE_TLSEXT
     /* add content of SNI TLS extension (if supplied with ClientHello) */
     if ((servername = SSL_get_servername(ssl, TLSEXT_NAMETYPE_host_name))) {
         apr_table_set(env, "SSL_TLS_SNI", servername);
@@ -1851,7 +1851,7 @@ void ssl_callback_Info(const SSL *ssl, int where, int rc)
     }
 }
 
-#ifndef OPENSSL_NO_TLSEXT
+#ifdef HAVE_TLSEXT
 /*
  * This callback function is executed when OpenSSL encounters an extended
  * client hello with a server name indication extension ("SNI", cf. RFC 4366).
@@ -2002,7 +2002,7 @@ static int ssl_find_vhost(void *servername, conn_rec *c, server_rec *s)
 
     return 0;
 }
-#endif /* OPENSSL_NO_TLSEXT */
+#endif /* HAVE_TLSEXT */
 
 #ifdef HAVE_TLS_SESSION_TICKETS
 /*
@@ -2165,7 +2165,7 @@ int ssl_callback_AdvertiseNextProtos(SSL *ssl, const unsigned char **data_out,
 
 #endif /* HAVE_TLS_NPN */
 
-#ifndef OPENSSL_NO_SRP
+#ifdef HAVE_SRP
 
 int ssl_callback_SRPServerParams(SSL *ssl, int *ad, void *arg)
 {
@@ -2189,4 +2189,4 @@ int ssl_callback_SRPServerParams(SSL *ssl, int *ad, void *arg)
     return SSL_ERROR_NONE;
 }
 
-#endif /* OPENSSL_NO_SRP */
+#endif /* HAVE_SRP */

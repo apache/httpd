@@ -105,74 +105,59 @@
 #include <openssl/engine.h>
 #endif
 
-#if (OPENSSL_VERSION_NUMBER < 0x0090700f)
-#error mod_ssl requires OpenSSL 0.9.7 or later
+#if (OPENSSL_VERSION_NUMBER < 0x0090801f)
+#error mod_ssl requires OpenSSL 0.9.8a or later
 #endif
 
-/* ...shifting sands of OpenSSL... */
-#if (OPENSSL_VERSION_NUMBER >= 0x0090707f)
-#define MODSSL_D2I_SSL_SESSION_CONST const
-#else
-#define MODSSL_D2I_SSL_SESSION_CONST
-#endif
-
-#if (OPENSSL_VERSION_NUMBER >= 0x00908000)
-#define HAVE_GENERATE_EX
-#define MODSSL_D2I_ASN1_type_bytes_CONST const
-#define MODSSL_D2I_PrivateKey_CONST const
-#define MODSSL_D2I_X509_CONST const
-#else
-#define MODSSL_D2I_ASN1_type_bytes_CONST
-#define MODSSL_D2I_PrivateKey_CONST
-#define MODSSL_D2I_X509_CONST
-#endif
-
-#if OPENSSL_VERSION_NUMBER >= 0x00908080 && !defined(OPENSSL_NO_OCSP) \
-    && !defined(OPENSSL_NO_TLSEXT)
-#define HAVE_OCSP_STAPLING
-#if (OPENSSL_VERSION_NUMBER < 0x10000000)
-#define sk_OPENSSL_STRING_pop sk_pop
-#endif
-#endif
-
-#if (OPENSSL_VERSION_NUMBER >= 0x009080a0) && defined(OPENSSL_FIPS)
-#define HAVE_FIPS
-#endif
-
-#if OPENSSL_VERSION_NUMBER >= 0x10001000L && !defined(OPENSSL_NO_NEXTPROTONEG) \
-    && !defined(OPENSSL_NO_TLSEXT)
-#define HAVE_TLS_NPN
-#endif
-
-#ifdef SSL_CONF_FLAG_FILE
-#define HAVE_SSL_CONF_CMD
-#endif
-
+/**
+ * ...shifting sands of OpenSSL...
+ * Note: when adding support for new OpenSSL features, avoid explicit
+ * version number checks whenever possible, and use "feature-based"
+ * detection instead (check for definitions of constants or functions)
+ */
 #if (OPENSSL_VERSION_NUMBER >= 0x10000000)
 #define MODSSL_SSL_CIPHER_CONST const
 #define MODSSL_SSL_METHOD_CONST const
 #else
 #define MODSSL_SSL_CIPHER_CONST
 #define MODSSL_SSL_METHOD_CONST
-/* ECC support came along in OpenSSL 1.0.0 */
-#define OPENSSL_NO_EC
 #endif
 
-#ifndef PEM_F_DEF_CALLBACK
-#ifdef PEM_F_PEM_DEF_CALLBACK
-/** In OpenSSL 0.9.8 PEM_F_DEF_CALLBACK was renamed */
-#define PEM_F_DEF_CALLBACK PEM_F_PEM_DEF_CALLBACK
+#if defined(OPENSSL_FIPS)
+#define HAVE_FIPS
+#endif
+
+#if defined(SSL_OP_NO_TLSv1_2)
+#define HAVE_TLSV1_X
+#endif
+
+#if defined(SSL_CONF_FLAG_FILE)
+#define HAVE_SSL_CONF_CMD
+#endif
+
+/**
+  * The following features all depend on TLS extension support.
+  * Within this block, check again for features (not version numbers).
+  */
+#if !defined(OPENSSL_NO_TLSEXT) && defined(SSL_set_tlsext_host_name)
+
+#define HAVE_TLSEXT
+
+/* ECC: make sure we have at least 1.0.0 */
+#if !defined(OPENSSL_NO_EC) && defined(TLSEXT_ECPOINTFORMAT_uncompressed)
+#define HAVE_ECC
+#endif
+
+/* OCSP stapling */
+#if !defined(OPENSSL_NO_OCSP) && defined(SSL_CTX_set_tlsext_status_cb)
+#define HAVE_OCSP_STAPLING
+#ifndef sk_OPENSSL_STRING_pop
+#define sk_OPENSSL_STRING_pop sk_pop
 #endif
 #endif
 
-#ifndef OPENSSL_NO_TLSEXT
-#ifndef SSL_CTRL_SET_TLSEXT_HOSTNAME
-#define OPENSSL_NO_TLSEXT
-#endif
-#endif
-
-#ifndef OPENSSL_NO_TLSEXT
-#ifdef SSL_CTRL_SET_TLSEXT_TICKET_KEY_CB
+/* TLS session tickets */
+#if defined(SSL_CTX_set_tlsext_ticket_key_cb)
 #define HAVE_TLS_SESSION_TICKETS
 #define TLSEXT_TICKET_KEY_LEN 48
 #ifndef tlsext_tick_md
@@ -183,25 +168,19 @@
 #endif
 #endif
 #endif
+
+/* Next Protocol Negotiation */
+#if !defined(OPENSSL_NO_NEXTPROTONEG) && defined(OPENSSL_NPN_NEGOTIATED)
+#define HAVE_TLS_NPN
 #endif
 
-#ifdef SSL_OP_NO_TLSv1_2
-#define HAVE_TLSV1_X
-#endif
-
-#if !defined(OPENSSL_NO_COMP) && !defined(SSL_OP_NO_COMPRESSION) \
-    && OPENSSL_VERSION_NUMBER < 0x00908000L
-#define OPENSSL_NO_COMP
-#endif
-
-/* SRP support came in OpenSSL 1.0.1 */
-#ifndef OPENSSL_NO_SRP
-#ifdef SSL_CTRL_SET_TLS_EXT_SRP_USERNAME_CB
+/* Secure Remote Password */
+#if !defined(OPENSSL_NO_SRP) && defined(SSL_CTRL_SET_TLS_EXT_SRP_USERNAME_CB)
+#define HAVE_SRP
 #include <openssl/srp.h>
-#else
-#define OPENSSL_NO_SRP
 #endif
-#endif
+
+#endif /* !defined(OPENSSL_NO_TLSEXT) && defined(SSL_set_tlsext_host_name) */
 
 /* mod_ssl headers */
 #include "ssl_util_ssl.h"
@@ -296,7 +275,7 @@ typedef int ssl_algo_t;
 #define SSL_ALGO_UNKNOWN (0)
 #define SSL_ALGO_RSA     (1<<0)
 #define SSL_ALGO_DSA     (1<<1)
-#ifndef OPENSSL_NO_EC
+#ifdef HAVE_ECC
 #define SSL_ALGO_ECC     (1<<2)
 #define SSL_ALGO_ALL     (SSL_ALGO_RSA|SSL_ALGO_DSA|SSL_ALGO_ECC)
 #else
@@ -305,7 +284,7 @@ typedef int ssl_algo_t;
 
 #define SSL_AIDX_RSA     (0)
 #define SSL_AIDX_DSA     (1)
-#ifndef OPENSSL_NO_EC
+#ifdef HAVE_ECC
 #define SSL_AIDX_ECC     (2)
 #define SSL_AIDX_MAX     (3)
 #else
@@ -661,7 +640,7 @@ typedef struct {
     const char *stapling_force_url;
 #endif
 
-#ifndef OPENSSL_NO_SRP
+#ifdef HAVE_SRP
     char *srp_vfile;
     char *srp_unknown_user_seed;
     SRP_VBASE  *srp_vbase;
@@ -695,7 +674,7 @@ struct SSLSrvConfigRec {
     ssl_enabled_t    proxy_ssl_check_peer_expire;
     ssl_enabled_t    proxy_ssl_check_peer_cn;
     ssl_enabled_t    proxy_ssl_check_peer_name;
-#ifndef OPENSSL_NO_TLSEXT
+#ifdef HAVE_TLSEXT
     ssl_enabled_t    strict_sni_vhost_check;
 #endif
 #ifdef HAVE_FIPS
@@ -801,7 +780,7 @@ const char *ssl_cmd_SSLOCSPEnable(cmd_parms *cmd, void *dcfg, int flag);
 
 const char *ssl_cmd_SSLOpenSSLConfCmd(cmd_parms *cmd, void *dcfg, const char *arg1, const char *arg2);
 
-#ifndef OPENSSL_NO_SRP
+#ifdef HAVE_SRP
 const char *ssl_cmd_SSLSRPVerifierFile(cmd_parms *cmd, void *dcfg, const char *arg);
 const char *ssl_cmd_SSLSRPUnknownUserSeed(cmd_parms *cmd, void *dcfg, const char *arg);
 #endif
@@ -840,7 +819,7 @@ int          ssl_callback_NewSessionCacheEntry(SSL *, SSL_SESSION *);
 SSL_SESSION *ssl_callback_GetSessionCacheEntry(SSL *, unsigned char *, int, int *);
 void         ssl_callback_DelSessionCacheEntry(SSL_CTX *, SSL_SESSION *);
 void         ssl_callback_Info(const SSL *, int, int);
-#ifndef OPENSSL_NO_TLSEXT
+#ifdef HAVE_TLSEXT
 int          ssl_callback_ServerNameIndication(SSL *, int *, modssl_ctx_t *);
 #endif
 #ifdef HAVE_TLS_SESSION_TICKETS
@@ -875,7 +854,7 @@ void         modssl_init_stapling(server_rec *, apr_pool_t *, apr_pool_t *, mods
 void         ssl_stapling_ex_init(void);
 int          ssl_stapling_init_cert(server_rec *s, modssl_ctx_t *mctx, X509 *x);
 #endif
-#ifndef OPENSSL_NO_SRP
+#ifdef HAVE_SRP
 int          ssl_callback_SRPServerParams(SSL *, int *, void *);
 #endif
 

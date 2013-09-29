@@ -1113,7 +1113,7 @@ static apr_status_t ssl_io_filter_handshake(ssl_filter_ctx_t *filter_ctx)
 
     server = sslconn->server;
     if (sslconn->is_proxy) {
-#ifndef OPENSSL_NO_TLSEXT
+#ifdef HAVE_TLSEXT
         apr_ipsubnet_t *ip;
 #endif
         const char *hostname_note = apr_table_get(c->notes,
@@ -1121,7 +1121,7 @@ static apr_status_t ssl_io_filter_handshake(ssl_filter_ctx_t *filter_ctx)
         BOOL proxy_ssl_check_peer_ok = TRUE;
         sc = mySrvConfig(server);
 
-#ifndef OPENSSL_NO_TLSEXT
+#ifdef HAVE_TLSEXT
         /*
          * Enable SNI for backend requests. Make sure we don't do it for
          * pure SSLv3 connections, and also prevent IP addresses

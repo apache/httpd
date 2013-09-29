@@ -35,7 +35,7 @@
 **  _________________________________________________________________
 */
 
-#ifndef OPENSSL_NO_EC
+#ifdef HAVE_ECC
 #define KEYTYPES "RSA, DSA or ECC"
 #else 
 #define KEYTYPES "RSA or DSA"
@@ -303,7 +303,7 @@ static void ssl_init_server_check(server_rec *s,
      */
     if (mctx->pks->certs[SSL_AIDX_RSA] ||
         mctx->pks->certs[SSL_AIDX_DSA]
-#ifndef OPENSSL_NO_EC
+#ifdef HAVE_ECC
       || mctx->pks->certs[SSL_AIDX_ECC]
 #endif
         )
@@ -315,7 +315,7 @@ static void ssl_init_server_check(server_rec *s,
     }
 }
 
-#ifndef OPENSSL_NO_TLSEXT
+#ifdef HAVE_TLSEXT
 static void ssl_init_ctx_tls_extensions(server_rec *s,
                                         apr_pool_t *p,
                                         apr_pool_t *ptemp,
@@ -349,7 +349,7 @@ static void ssl_init_ctx_tls_extensions(server_rec *s,
     }
 #endif
 
-#ifndef OPENSSL_NO_SRP
+#ifdef HAVE_SRP
     /*
      * TLS-SRP support
      */
@@ -482,7 +482,7 @@ static void ssl_init_ctx_protocol(server_rec *s,
 #ifdef SSL_OP_NO_COMPRESSION
         /* OpenSSL >= 1.0 only */
         SSL_CTX_set_options(ctx, SSL_OP_NO_COMPRESSION);
-#elif OPENSSL_VERSION_NUMBER >= 0x00908000L
+#else
         sk_SSL_COMP_zero(SSL_COMP_get_compression_methods());
 #endif
     }
@@ -500,7 +500,7 @@ static void ssl_init_ctx_protocol(server_rec *s,
      * Configure additional context ingredients
      */
     SSL_CTX_set_options(ctx, SSL_OP_SINGLE_DH_USE);
-#ifndef OPENSSL_NO_EC
+#ifdef HAVE_ECC
     SSL_CTX_set_options(ctx, SSL_OP_SINGLE_ECDH_USE);
 #endif
 
@@ -836,7 +836,7 @@ static void ssl_init_ctx(server_rec *s,
     if (mctx->pks) {
         /* XXX: proxy support? */
         ssl_init_ctx_cert_chain(s, p, ptemp, mctx);
-#ifndef OPENSSL_NO_TLSEXT
+#ifdef HAVE_TLSEXT
         ssl_init_ctx_tls_extensions(s, p, ptemp, mctx);
 #endif
     }
@@ -849,7 +849,7 @@ static int ssl_server_import_cert(server_rec *s,
 {
     SSLModConfigRec *mc = myModConfig(s);
     ssl_asn1_t *asn1;
-    MODSSL_D2I_X509_CONST unsigned char *ptr;
+    const unsigned char *ptr;
     const char *type = ssl_asn1_keystr(idx);
     X509 *cert;
 
@@ -896,12 +896,12 @@ static int ssl_server_import_key(server_rec *s,
 {
     SSLModConfigRec *mc = myModConfig(s);
     ssl_asn1_t *asn1;
-    MODSSL_D2I_PrivateKey_CONST unsigned char *ptr;
+    const unsigned char *ptr;
     const char *type = ssl_asn1_keystr(idx);
     int pkey_type;
     EVP_PKEY *pkey;
 
-#ifndef OPENSSL_NO_EC
+#ifdef HAVE_ECC
     if (idx == SSL_AIDX_ECC)
       pkey_type = EVP_PKEY_EC;
     else
@@ -1005,30 +1005,30 @@ static void ssl_init_server_certs(server_rec *s,
                                   modssl_ctx_t *mctx)
 {
     const char *rsa_id, *dsa_id;
-#ifndef OPENSSL_NO_EC
+#ifdef HAVE_ECC
     const char *ecc_id;
 #endif
     const char *vhost_id = mctx->sc->vhost_id;
     int i;
     int have_rsa, have_dsa;
-#ifndef OPENSSL_NO_EC
+#ifdef HAVE_ECC
     int have_ecc;
 #endif
 
     rsa_id = ssl_asn1_table_keyfmt(ptemp, vhost_id, SSL_AIDX_RSA);
     dsa_id = ssl_asn1_table_keyfmt(ptemp, vhost_id, SSL_AIDX_DSA);
-#ifndef OPENSSL_NO_EC
+#ifdef HAVE_ECC
     ecc_id = ssl_asn1_table_keyfmt(ptemp, vhost_id, SSL_AIDX_ECC);
 #endif
 
     have_rsa = ssl_server_import_cert(s, mctx, rsa_id, SSL_AIDX_RSA);
     have_dsa = ssl_server_import_cert(s, mctx, dsa_id, SSL_AIDX_DSA);
-#ifndef OPENSSL_NO_EC
+#ifdef HAVE_ECC
     have_ecc = ssl_server_import_cert(s, mctx, ecc_id, SSL_AIDX_ECC);
 #endif
 
     if (!(have_rsa || have_dsa
-#ifndef OPENSSL_NO_EC
+#ifdef HAVE_ECC
         || have_ecc
 #endif
 )) {
@@ -1044,12 +1044,12 @@ static void ssl_init_server_certs(server_rec *s,
 
     have_rsa = ssl_server_import_key(s, mctx, rsa_id, SSL_AIDX_RSA);
     have_dsa = ssl_server_import_key(s, mctx, dsa_id, SSL_AIDX_DSA);
-#ifndef OPENSSL_NO_EC
+#ifdef HAVE_ECC
     have_ecc = ssl_server_import_key(s, mctx, ecc_id, SSL_AIDX_ECC);
 #endif
 
     if (!(have_rsa || have_dsa
-#ifndef OPENSSL_NO_EC
+#ifdef HAVE_ECC
         || have_ecc
 #endif
           )) {
@@ -1058,7 +1058,7 @@ static void ssl_init_server_certs(server_rec *s,
         ssl_die(s);
     }
 
-#ifndef OPENSSL_NO_EC
+#ifdef HAVE_ECC
     /* Enable ECDHE by configuring a default curve */
     SSL_CTX_set_tmp_ecdh(mctx->ssl_ctx,
                          EC_KEY_new_by_curve_name(NID_X9_62_prime256v1));
@@ -1370,7 +1370,7 @@ void ssl_init_CheckServers(server_rec *base_server, apr_pool_t *p)
         klen = strlen(key);
 
         if ((ps = (server_rec *)apr_hash_get(table, key, klen))) {
-#ifdef OPENSSL_NO_TLSEXT
+#ifndef HAVE_TLSEXT
             int level = APLOG_WARNING;
             const char *problem = "conflict";
 #else
@@ -1394,7 +1394,7 @@ void ssl_init_CheckServers(server_rec *base_server, apr_pool_t *p)
     }
 
     if (conflict) {
-#ifdef OPENSSL_NO_TLSEXT
+#ifndef HAVE_TLSEXT
         ap_log_error(APLOG_MARK, APLOG_WARNING, 0, base_server, APLOGNO(01917)
                      "Init: You should not use name-based "
                      "virtual hosts in conjunction with SSL!!");
@@ -1543,7 +1543,7 @@ static void ssl_init_ctx_cleanup(modssl_ctx_t *mctx)
 {
     MODSSL_CFG_ITEM_FREE(SSL_CTX_free, mctx->ssl_ctx);
 
-#ifndef OPENSSL_NO_SRP
+#ifdef HAVE_SRP
     if (mctx->srp_vbase != NULL) {
         SRP_VBASE_free(mctx->srp_vbase);
         mctx->srp_vbase = NULL;

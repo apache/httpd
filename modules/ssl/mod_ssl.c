@@ -153,7 +153,7 @@ static const command_rec ssl_config_cmds[] = {
     SSL_CMD_SRV(StrictSNIVHostCheck, FLAG,
                 "Strict SNI virtual host checking")
 
-#ifndef OPENSSL_NO_SRP
+#ifdef HAVE_SRP
     SSL_CMD_SRV(SRPVerifierFile, TAKE1,
                 "SRP verifier file "
                 "('/path/to/file' - created by srptool)")

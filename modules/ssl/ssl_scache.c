@@ -148,7 +148,7 @@ SSL_SESSION *ssl_scache_retrieve(server_rec *s, UCHAR *id, int idlen,
     SSLModConfigRec *mc = myModConfig(s);
     unsigned char dest[SSL_SESSION_MAX_DER];
     unsigned int destlen = SSL_SESSION_MAX_DER;
-    MODSSL_D2I_SSL_SESSION_CONST unsigned char *ptr;
+    const unsigned char *ptr;
     apr_status_t rv;
 
     if (mc->sesscache->flags & AP_SOCACHE_FLAG_NOTMPSAFE) {
