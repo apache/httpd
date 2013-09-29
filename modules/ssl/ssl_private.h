@@ -887,8 +887,10 @@ int          ssl_init_ssl_connection(conn_rec *c, request_rec *r);
 void         ssl_pphrase_Handle(server_rec *, apr_pool_t *);
 
 /**  Diffie-Hellman Parameter Support  */
-DH           *ssl_dh_GetTmpParam(int);
-DH           *ssl_dh_GetParamFromFile(char *);
+DH           *ssl_dh_GetParamFromFile(const char *);
+#ifdef HAVE_ECC
+EC_GROUP     *ssl_ec_GetParamFromFile(const char *);
+#endif
 
 unsigned char *ssl_asn1_table_set(apr_hash_t *table,
                                   const char *key,

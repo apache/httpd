@@ -20,7 +20,6 @@ dnl #  list of module object files
 ssl_objs="dnl
 mod_ssl.lo dnl
 ssl_engine_config.lo dnl
-ssl_engine_dh.lo dnl
 ssl_engine_init.lo dnl
 ssl_engine_io.lo dnl
 ssl_engine_kernel.lo dnl

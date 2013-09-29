@@ -417,7 +417,7 @@ IF(OPENSSL_FOUND)
   SET(mod_ssl_extra_libs               ${OPENSSL_LIBRARIES})
 ENDIF()
 SET(mod_ssl_extra_sources
-  modules/ssl/ssl_engine_config.c    modules/ssl/ssl_engine_dh.c
+  modules/ssl/ssl_engine_config.c
   modules/ssl/ssl_engine_init.c      modules/ssl/ssl_engine_io.c
   modules/ssl/ssl_engine_kernel.c    modules/ssl/ssl_engine_log.c
   modules/ssl/ssl_engine_mutex.c     modules/ssl/ssl_engine_ocsp.c
