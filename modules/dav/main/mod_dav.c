@@ -315,6 +315,7 @@ static const char *dav_cmd_davmintimeout(cmd_parms *cmd, void *config,
 static int dav_error_response(request_rec *r, int status, const char *body)
 {
     r->status = status;
+    r->status_line = ap_get_status_line(status);
 
     ap_set_content_type(r, "text/html; charset=ISO-8859-1");
 
