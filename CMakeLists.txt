@@ -426,6 +426,11 @@ SET(mod_ssl_extra_sources
   modules/ssl/ssl_util.c             modules/ssl/ssl_util_ocsp.c
   modules/ssl/ssl_util_ssl.c         modules/ssl/ssl_util_stapling.c
 )
+IF(${minorversion} STREQUAL "4")
+  SET(mod_ssl_extra_sources
+    ${mod_ssl_extra_sources} modules/ssl/ssl_engine_dh.c
+  )
+ENDIF()
 SET(mod_status_extra_defines         STATUS_DECLARE_EXPORT)
 SET(mod_watchdog_install_lib 1)
 SET(mod_xml2enc_requires             LIBXML2_FOUND)
