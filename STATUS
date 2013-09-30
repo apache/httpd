@@ -97,7 +97,17 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  * ab: Fix units in HTML output
+    trunk: http://svn.apache.org/viewvc?view=revision&revision=1451849
+    2.4.x: trunk patch works (minus CHANGES)
+    +1: jailletc36, jim, trawick
 
+  * ab: Add a new -l parameter in order not to check the length of the responses.
+    This can be usefull with dynamic pages.
+    PR9945, PR27888, PR42040
+    trunk: http://svn.apache.org/viewvc?view=revision&revision=1488644
+    2.4.x: trunk patch works
+    +1: jailletc36, jim, trawick
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -183,18 +193,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     dropping NameVirtualHost directive.
     trunk patch: http://svn.apache.org/r1485675 , http://svn.apache.org/r1525000
     2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-nvh-duplicated.diff
-    +1 covener, jim
+    +1: covener, jim
 
   * worker MPM: Don't forcibly kill worker threads if the child process is
     exiting gracefully.
     trunk: http://svn.apache.org/r1526220
     2.4.x: http://people.apache.org/~trawick/r1526220-2.4.x.txt
     +1: trawick, jim
-
-  * ab: Fix units in HTML output
-    trunk: http://svn.apache.org/viewvc?view=revision&revision=1451849
-    2.4.x: trunk patch works (minus CHANGES)
-    +1: jailletc36, jim
 
   * ab: Add wait time, fix processing time, make write errors output conditional
     trunk: http://svn.apache.org/viewvc?view=revision&revision=1488471
@@ -206,13 +211,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     trunk: http://svn.apache.org/viewvc?view=revision&revision=1488492
     2.4.x: trunk patch works
     +1: jailletc36, jim
-
-  * ab: Add a new -l parameter in order not to check the length of the responses.
-    This can be usefull with dynamic pages.
-    PR9945, PR27888, PR42040
-    trunk: http://svn.apache.org/viewvc?view=revision&revision=1488644
-    2.4.x: trunk patch works
-    +1: jailletc36, jim
+    trawick: what happens if malloc() fails?  same msg error over and over?
+             (doubtful it gets better for more than a very short while, until
+             the leak or fragmentation overtakes temporary freeing of memory)
+             is the state of that connection messed up from leaving
+             ssl_proceed_handshake() early?
 
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
