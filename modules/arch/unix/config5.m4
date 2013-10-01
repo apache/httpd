@@ -21,7 +21,7 @@ APACHE_MODULE(privileges, Per-virtualhost Unix UserIDs and enhanced security for
 ])
 
 APACHE_MODULE(systemd, Systemd support, , , all, [
-  if test $ap_HAVE_SD_DAEMON_H = "no" || test -z "${SYSTEMD_LIBS}"; then
+  if test "${ac_cv_header_systemd_sd_daemon_h}" = "no" || test -z "${SYSTEMD_LIBS}"; then
     AC_MSG_WARN([Your system does not support systemd.])
     enable_systemd="no"
   else
