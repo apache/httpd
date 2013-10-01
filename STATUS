@@ -217,6 +217,33 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              is the state of that connection messed up from leaving
              ssl_proceed_handshake() early?
 
+  * easy patches to synch 2.4 and trunk
+    - rotatelog: Factor out from doRotate, main; make error handling consistant
+                 and print the actual error to stderr
+                 PR 45084
+    - rotatelog: Cleanups, no functional change.  Drop revision history,
+                 "svn log" works; use APR_PATH_MAX; constify more
+    - rotatelog: error[120] is already defined in this function. Just use
+                 it instead of shadowing.
+    - rotatelog: Use apr_snprintf(... "%pm"...) instead of explicit call
+                 to apr_strerror
+    - mod_deflate: style fix (no code change)
+    - mod_socache_shmcb: Correct the use of the printf formatter.
+    - mod_cache_socache: Fixed signed<->unsigned compiler warning.
+    - mod_ssl: add missing space between directive description and syntax
+    - mpm/winnt: style consistency in winnt's worker_main
+    trunk: http://svn.apache.org/viewvc?view=revision&revision=1374247
+           http://svn.apache.org/viewvc?view=revision&revision=1409800
+           http://svn.apache.org/viewvc?view=revision&revision=1416121
+           http://svn.apache.org/viewvc?view=revision&revision=1463736
+           http://svn.apache.org/viewvc?view=revision&revision=1499679
+           http://svn.apache.org/viewvc?view=revision&revision=1493925
+           http://svn.apache.org/viewvc?view=revision&revision=1490550
+           http://svn.apache.org/viewvc?view=revision&revision=1509983
+           http://svn.apache.org/viewvc?view=revision&revision=1520760
+    2.4.x: trunk patches work
+    +1: jailletc36
+
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
 If you want to propose one of those, please still add them here.
