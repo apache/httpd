@@ -1114,7 +1114,7 @@ request_rec *ap_read_request(conn_rec *conn)
              */
             if (!(strcasecmp(tenc, "chunked") == 0 /* fast path */
                     || ap_find_last_token(r->pool, tenc, "chunked"))) {
-                ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO()
+                ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(02539)
                               "client sent unknown Transfer-Encoding "
                               "(%s): %s", tenc, r->uri);
                 r->status = HTTP_BAD_REQUEST;
