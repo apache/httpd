@@ -8,7 +8,7 @@ Changes with Apache 2.5.0
      allowing custom parameters to be configured via SSLCertificateFile,
      and by adding standardized DH parameters for 1024/2048/3072/4096 bits.
      Unless custom parameters are configured, the standardized parameters
-     are applied based on the certificate's RSA/DSA key size.
+     are applied based on the certificate's RSA/DSA key size. [Kaspar Brand]
 
   *) mod_ssl, configure: Require OpenSSL 0.9.8a or later. [Kaspar Brand]
 
