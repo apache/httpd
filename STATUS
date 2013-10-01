@@ -238,6 +238,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x: trunk works module CHANGES
     +1: covener
 
+  * mod_ssl: improve ephemeral key handling - in particular, support DH params
+    with more than 1024 bits, and allow custom configuration. For a detailed
+    list of the changes, see the text at the beginning of the 2.4.x patch.
+    trunk patches: https://svn.apache.org/r1526168
+                   https://svn.apache.org/r1527291
+                   https://svn.apache.org/r1527294
+                   https://svn.apache.org/r1527295
+                   https://svn.apache.org/r1527926
+    2.4.x patch: https://people.apache.org/~kbrand/mod_ssl-2.4.x-ekh.diff
+    +1: kbrand,
+
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
 If you want to propose one of those, please still add them here.
