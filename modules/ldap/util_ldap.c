@@ -1243,7 +1243,7 @@ start_over:
 
     /* try to do the search */
     result = ldap_search_ext_s(ldc->ldap, (char *)dn, LDAP_SCOPE_BASE,
-                               (char *)"cn=*", subgroupAttrs, 0,
+                               NULL, subgroupAttrs, 0,
                                NULL, NULL, NULL, APR_LDAP_SIZELIMIT, &sga_res);
     if (AP_LDAP_IS_SERVER_DOWN(result)) {
         ldc->reason = "ldap_search_ext_s() for subgroups failed with server"
