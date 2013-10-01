@@ -1068,7 +1068,7 @@ static void ssl_init_server_certs(server_rec *s,
     if ((mctx->pks->cert_files[0] != NULL) &&
         (dhparams = ssl_dh_GetParamFromFile(mctx->pks->cert_files[0]))) {
         SSL_CTX_set_tmp_dh(mctx->ssl_ctx, dhparams);
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO()
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(02540)
                      "Custom DH parameters (%d bits) for %s loaded from %s",
                      BN_num_bits(dhparams->p), vhost_id,
                      mctx->pks->cert_files[0]);
@@ -1083,7 +1083,7 @@ static void ssl_init_server_certs(server_rec *s,
         (nid = EC_GROUP_get_curve_name(ecparams)) &&
         (eckey = EC_KEY_new_by_curve_name(nid))) {
         SSL_CTX_set_tmp_ecdh(mctx->ssl_ctx, eckey);
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO()
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(02541)
                      "ECDH curve %s for %s specified in %s",
                      OBJ_nid2sn(nid), vhost_id, mctx->pks->cert_files[0]);
     }
