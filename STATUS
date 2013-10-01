@@ -97,12 +97,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * ab: Add a new -l parameter in order not to check the length of the responses.
-    This can be usefull with dynamic pages.
-    PR9945, PR27888, PR42040
-    trunk: http://svn.apache.org/viewvc?view=revision&revision=1488644
-    2.4.x: trunk patch works
-    +1: jailletc36, jim, trawick
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
