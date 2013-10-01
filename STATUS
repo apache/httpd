@@ -233,6 +233,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x: trunk patches work
     +1: jailletc36, jim
 
+  * mod_ldap: Don't filter subgroups on cn=*
+    trunk: http://svn.apache.org/r1528143
+    2.4.x: trunk works module CHANGES
+    +1: covener
+
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
 If you want to propose one of those, please still add them here.
