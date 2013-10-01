@@ -138,10 +138,6 @@ Changes with Apache 2.5.0
      problems if used with round robin load balancers). Don't regenerate the
      secret on graceful restarts. PR 54637  [Stefan Fritsch]
 
-  *) ab: Add a new -l parameter in order not to check the length of the responses.
-     This can be usefull with dynamic pages.
-     PR9945, PR27888, PR42040 [<ccikrs1 cranbrook edu>]
-     
   *) mod_logio: new format-specifier %C (combined) which is the sum of received
      and sent byte counts.
      PR54015 [Christophe Jaillet]
