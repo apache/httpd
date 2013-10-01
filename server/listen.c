@@ -60,7 +60,7 @@ static int ap_listenbacklog;
 static int ap_listencbratio;
 static int send_buffer_size;
 static int receive_buffer_size;
-#ifdef AP_SYSTEMD_SUPPORT
+#ifdef HAVE_SYSTEMD
 static int use_systemd;
 #endif
 
@@ -405,7 +405,7 @@ static int open_systemd_listeners(process_rec *process)
     return 0;
 }
 
-#endif /* AP_SYSTEMD_SUPPORT */
+#endif /* HAVE_SYSTEMD */
 
 /* Returns non-zero if socket address SA matches hostname, port and
  * scope_id.  p is used for temporary allocations. */
@@ -771,7 +771,7 @@ AP_DECLARE(int) ap_setup_listeners(server_rec *s)
     }
 
 
-#ifdef AP_SYSTEMD_SUPPORT
+#ifdef HAVE_SYSTEMD
     if (use_systemd) {
         if (open_systemd_listeners(s->process) != 0) {
             return 0;
@@ -1001,7 +1001,7 @@ AP_DECLARE_NONSTD(const char *) ap_set_listener(cmd_parms *cmd, void *dummy,
     }
 
     if (strcmp("systemd", argv[0]) == 0) {
-#ifdef AP_SYSTEMD_SUPPORT
+#ifdef HAVE_SYSTEMD
       use_systemd = 1;
       if (ap_listeners != NULL) {
         return "systemd socket activation support must be used exclusive of normal listeners.";
@@ -1012,7 +1012,7 @@ AP_DECLARE_NONSTD(const char *) ap_set_listener(cmd_parms *cmd, void *dummy,
 #endif
     }
 
-#ifdef AP_SYSTEMD_SUPPORT
+#ifdef HAVE_SYSTEMD
     if (use_systemd) {
       return "systemd socket activation support must be used exclusive of normal listeners.";
     }
