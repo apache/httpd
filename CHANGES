@@ -13,7 +13,8 @@ Changes with Apache 2.4.7
      realm has not been specified. [Graham Leggett]
 
   *) mod_proxy: Add a note in the balancer manager stating whether changes
-     will or will not be persisted. [Daniel Ruggeri]
+     will or will not be persisted and whether settings are inherited.
+     [Daniel Ruggeri, Jim Jagielski]
 
   *) mod_cache: Avoid a crash with strcmp() when the hostname is not provided.
      [Graham Leggett]
