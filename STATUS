@@ -97,11 +97,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * ab: Fix units in HTML output
-    trunk: http://svn.apache.org/viewvc?view=revision&revision=1451849
-    2.4.x: trunk patch works (minus CHANGES)
-    +1: jailletc36, jim, trawick
-
   * ab: Add a new -l parameter in order not to check the length of the responses.
     This can be usefull with dynamic pages.
     PR9945, PR27888, PR42040
