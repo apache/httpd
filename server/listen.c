@@ -28,7 +28,7 @@
 #include "http_log.h"
 #include "mpm_common.h"
 
-#ifdef AP_SYSTEMD_SUPPORT
+#ifdef HAVE_SYSTEMD
 #include <systemd/sd-daemon.h>
 #endif
 
@@ -42,7 +42,7 @@ static ap_listen_rec *old_listeners;
 static int ap_listenbacklog;
 static int send_buffer_size;
 static int receive_buffer_size;
-#ifdef AP_SYSTEMD_SUPPORT
+#ifdef HAVE_SYSTEMD
 static int use_systemd;
 #endif
 
@@ -249,7 +249,7 @@ static apr_status_t close_listeners_on_exec(void *v)
 }
 
 
-#ifdef AP_SYSTEMD_SUPPORT
+#ifdef HAVE_SYSTEMD
 
 static apr_status_t alloc_systemd_listener(process_rec * process,
                                            int fd,
@@ -371,7 +371,7 @@ static int open_systemd_listeners(process_rec *process)
     return 0;
 }
 
-#endif /* AP_SYSTEMD_SUPPORT */
+#endif /* HAVE_SYSTEMD */
 
 static const char *alloc_listener(process_rec *process, char *addr,
                                   apr_port_t port, const char* proto,
@@ -692,7 +692,7 @@ AP_DECLARE(int) ap_setup_listeners(server_rec *s)
     }
 
 
-#ifdef AP_SYSTEMD_SUPPORT
+#ifdef HAVE_SYSTEMD
     if (use_systemd) {
         if (open_systemd_listeners(s->process) != 0) {
             return 0;
@@ -778,7 +778,7 @@ AP_DECLARE_NONSTD(const char *) ap_set_listener(cmd_parms *cmd, void *dummy,
     }
 
     if (strcmp("systemd", argv[0]) == 0) {
-#ifdef AP_SYSTEMD_SUPPORT
+#ifdef HAVE_SYSTEMD
       use_systemd = 1;
       if (ap_listeners != NULL) {
         return "systemd socket activation support must be used exclusive of normal listeners.";
@@ -789,7 +789,7 @@ AP_DECLARE_NONSTD(const char *) ap_set_listener(cmd_parms *cmd, void *dummy,
 #endif
     }
 
-#ifdef AP_SYSTEMD_SUPPORT
+#ifdef HAVE_SYSTEMD
     if (use_systemd) {
       return "systemd socket activation support must be used exclusive of normal listeners.";
     }
