@@ -159,10 +159,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   * event: Use skiplist and fold in performance tweeks from trunk
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1451706
                  http://svn.apache.org/viewvc?view=revision&revision=1517365
-    2.4.x patch: http://people.apache.org/~jim/patches/httpd-2.4-event.patch
-                       - or-
-                 http://people.apache.org/~jim/patches/httpd-2.4-event-test.patch
-                   (for combined skiplist, podx and event patch)
+    2.4.x patch: http://people.apache.org/~jim/patches/httpd-2.4-event-v2.patch
     +1: jim
 
   * mod_session_crypto: Add support for exec: calls to obtain key similar to
