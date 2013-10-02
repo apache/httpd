@@ -97,7 +97,7 @@
 
 
 #include "equeue.h"
-#include "ap_skiplist.h"
+#include "apr_skiplist.h"
 
 #if HAVE_SERF
 #include "mod_serf.h"
@@ -1353,7 +1353,7 @@ static void get_worker(int *have_idle_worker_p, int blocking, int *all_busy)
 /* Structures to reuse */
 static APR_RING_HEAD(timer_free_ring_t, timer_event_t) timer_free_ring;
 
-static ap_skiplist *timer_skiplist;
+static apr_skiplist *timer_skiplist;
 
 static int indexing_comp(void *a, void *b)
 {
@@ -1387,7 +1387,7 @@ static apr_status_t event_register_timed_callback(apr_time_t t,
         APR_RING_REMOVE(te, link);
     }
     else {
-        te = ap_skiplist_alloc(timer_skiplist, sizeof(timer_event_t));
+        te = apr_skiplist_alloc(timer_skiplist, sizeof(timer_event_t));
         APR_RING_ELEM_INIT(te, link);
     }
 
@@ -1397,7 +1397,7 @@ static apr_status_t event_register_timed_callback(apr_time_t t,
     te->when = t + apr_time_now();
 
     /* Okay, insert sorted by when.. */
-    ap_skiplist_insert(timer_skiplist, (void *)te);
+    apr_skiplist_insert(timer_skiplist, (void *)te);
 
     apr_thread_mutex_unlock(g_timer_skiplist_mtx);
 
@@ -1561,7 +1561,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
         }
 
         apr_thread_mutex_lock(g_timer_skiplist_mtx);
-        te = ap_skiplist_peek(timer_skiplist);
+        te = apr_skiplist_peek(timer_skiplist);
         if (te) {
             if (te->when > now) {
                 timeout_interval = te->when - now;
@@ -1600,16 +1600,16 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
 
         now = apr_time_now() + EVENT_FUDGE_FACTOR;
         apr_thread_mutex_lock(g_timer_skiplist_mtx);
-        ep = ap_skiplist_peek(timer_skiplist);
+        ep = apr_skiplist_peek(timer_skiplist);
         while (ep) {
             if (ep->when < now) {
-                ap_skiplist_pop(timer_skiplist, NULL);
+                apr_skiplist_pop(timer_skiplist, NULL);
                 push_timer2worker(ep);
             }
             else {
                 break;
             }
-            ep = ap_skiplist_peek(timer_skiplist);
+            ep = apr_skiplist_peek(timer_skiplist);
         }
         apr_thread_mutex_unlock(g_timer_skiplist_mtx);
 
@@ -2267,8 +2267,8 @@ static void child_main(int child_num_arg)
     apr_thread_mutex_create(&g_timer_skiplist_mtx, APR_THREAD_MUTEX_DEFAULT, pchild);
     APR_RING_INIT(&timer_free_ring, timer_event_t, link);
     apr_pool_create(&pskip, pchild);
-    ap_skiplist_init(&timer_skiplist, pskip);
-    ap_skiplist_set_compare(timer_skiplist, indexing_comp, indexing_compk);
+    apr_skiplist_init(&timer_skiplist, pskip);
+    apr_skiplist_set_compare(timer_skiplist, indexing_comp, indexing_compk);
     ap_run_child_init(pchild, ap_server_conf);
 
     /* done with init critical section */
