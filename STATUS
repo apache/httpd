@@ -193,13 +193,19 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   * mod_rewrite: Close 55598. Make mod_rewrite websocket aware to allow
     it to proxy requests.
     trunk patches: https://svn.apache.org/r1528556
-    2.4.x: trunk works module CHANGES
+    2.4.x: trunk works modulo CHANGES
     +1: jim, rjung
 
   * mod_dav: Fix 55306.  Don't require lock tokens for COPY source.
     trunk patches: https://svn.apache.org/r1528718
     2.4.x: trunk works, CHANGES needs to be written when merging
     +1: breser
+
+  * core: Add missing Reason-Phrase in HTTP response headers.
+    PR 54946.
+    trunk patches: https://svn.apache.org/r1529014
+    2.4.x: trunk works modulo CHANGES
+    +1: rjung
 
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
