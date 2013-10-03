@@ -2774,7 +2774,8 @@ static int dav_method_copymove(request_rec *r, int is_move)
     if ((err = dav_validate_request(r, resource, depth, NULL,
                                     &multi_response,
                                     (is_move ? DAV_VALIDATE_PARENT
-                                             : DAV_VALIDATE_RESOURCE)
+                                             : DAV_VALIDATE_RESOURCE
+                                               | DAV_VALIDATE_NO_MODIFY)
                                     | DAV_VALIDATE_USE_424,
                                     NULL)) != NULL) {
         err = dav_push_error(r->pool, err->status, 0,

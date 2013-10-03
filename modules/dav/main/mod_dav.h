@@ -1297,6 +1297,9 @@ DAV_DECLARE(dav_error *) dav_validate_request(request_rec *r,
                                            the 424 DAV:response */
 #define DAV_VALIDATE_USE_424    0x0080  /* return 424 status, not 207 */
 #define DAV_VALIDATE_IS_PARENT  0x0100  /* for internal use */
+#define DAV_VALIDATE_NO_MODIFY  0x0200  /* resource is not being modified
+                                           so allow even if lock token
+                                           is not provided */
 
 /* Lock-null related public lock functions */
 DAV_DECLARE(int) dav_get_resource_state(request_rec *r,
