@@ -97,12 +97,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * worker MPM: Don't forcibly kill worker threads if the child process is
-    exiting gracefully.
-    trunk: http://svn.apache.org/r1526220
-    2.4.x: http://people.apache.org/~trawick/r1526220-2.4.x.txt
-    +1: trawick, jim, rjung
-
   * ab: Add wait time, fix processing time, make write errors output conditional
     trunk: http://svn.apache.org/viewvc?view=revision&revision=1488471
     2.4.x: trunk patch works (minus CHANGES)
