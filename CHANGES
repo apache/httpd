@@ -2,6 +2,10 @@
 
 Changes with Apache 2.4.7
 
+  *) mod_auth_basic: Add AuthBasicUseDigestAlgorithm directive to
+     allow migration of passwords from digest to basic authentication.
+     [Chris Darroch]
+
   *) ab: Add a new -l parameter in order not to check the length of the responses.
      This can be usefull with dynamic pages.
      PR9945, PR27888, PR42040 [<ccikrs1 cranbrook edu>]

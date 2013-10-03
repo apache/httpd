@@ -27,6 +27,7 @@
 #include "http_log.h"
 #include "http_protocol.h"
 #include "http_request.h"
+#include "util_md5.h"
 #include "ap_provider.h"
 #include "ap_expr.h"
 
@@ -38,7 +39,9 @@ typedef struct {
     int authoritative;
     ap_expr_info_t *fakeuser;
     ap_expr_info_t *fakepass;
+    const char *use_digest_algorithm;
     int fake_set:1;
+    int use_digest_algorithm_set:1;
     int authoritative_set:1;
 } auth_basic_config_rec;
 
@@ -69,6 +72,12 @@ static void *merge_auth_basic_dir_config(apr_pool_t *p, void *basev, void *overr
     newconf->fakepass =
             overrides->fake_set ? overrides->fakepass : base->fakepass;
     newconf->fake_set = overrides->fake_set || base->fake_set;
+
+    newconf->use_digest_algorithm =
+        overrides->use_digest_algorithm_set ? overrides->use_digest_algorithm
+                                            : base->use_digest_algorithm;
+    newconf->use_digest_algorithm_set =
+        overrides->use_digest_algorithm_set || base->use_digest_algorithm_set;
 
     newconf->providers = overrides->providers ? overrides->providers : base->providers;
 
@@ -175,6 +184,23 @@ static const char *add_basic_fake(cmd_parms * cmd, void *config,
     return NULL;
 }
 
+static const char *set_use_digest_algorithm(cmd_parms *cmd, void *config,
+                                            const char *alg)
+{
+    auth_basic_config_rec *conf = (auth_basic_config_rec *)config;
+
+    if (strcasecmp(alg, "Off") && strcasecmp(alg, "MD5")) {
+        return apr_pstrcat(cmd->pool,
+                           "Invalid algorithm in "
+                           "AuthBasicUseDigestAlgorithm: ", alg, NULL);
+    }
+
+    conf->use_digest_algorithm = apr_pstrdup(cmd->pool, alg);
+    conf->use_digest_algorithm_set = 1;
+
+    return NULL;
+}
+
 static const command_rec auth_basic_cmds[] =
 {
     AP_INIT_ITERATE("AuthBasicProvider", add_authn_provider, NULL, OR_AUTHCFG,
@@ -186,6 +212,10 @@ static const command_rec auth_basic_cmds[] =
                   "Fake basic authentication using the given expressions for "
                   "username and password, 'off' to disable. Password defaults "
                   "to 'password' if missing."),
+    AP_INIT_TAKE1("AuthBasicUseDigestAlgorithm", set_use_digest_algorithm,
+                  NULL, OR_AUTHCFG,
+                  "Set to 'MD5' to use the auth provider's authentication "
+                  "check for digest auth, using a hash of 'user:realm:pass'"),
     {NULL}
 };
 
@@ -271,6 +301,8 @@ static int authenticate_basic_user(request_rec *r)
     auth_basic_config_rec *conf = ap_get_module_config(r->per_dir_config,
                                                        &auth_basic_module);
     const char *sent_user, *sent_pw, *current_auth;
+    const char *realm = NULL;
+    const char *digest = NULL;
     int res;
     authn_status auth_result;
     authn_provider_list *current_provider;
@@ -293,6 +325,15 @@ static int authenticate_basic_user(request_rec *r)
     res = get_basic_auth(r, &sent_user, &sent_pw);
     if (res) {
         return res;
+    }
+
+    if (conf->use_digest_algorithm
+        && !strcasecmp(conf->use_digest_algorithm, "MD5")) {
+        realm = ap_auth_name(r);
+        digest = ap_md5(r->pool,
+                        (unsigned char *)apr_pstrcat(r->pool, sent_user, ":",
+                                                     realm, ":",
+                                                     sent_pw, NULL));
     }
 
     current_provider = conf->providers;
@@ -320,8 +361,27 @@ static int authenticate_basic_user(request_rec *r)
             apr_table_setn(r->notes, AUTHN_PROVIDER_NAME_NOTE, current_provider->provider_name);
         }
 
+        if (digest) {
+            char *password;
 
-        auth_result = provider->check_password(r, sent_user, sent_pw);
+            if (!provider->get_realm_hash) {
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02493)
+                              "Authn provider does not support "
+                              "AuthBasicUseDigestAlgorithm");
+                auth_result = AUTH_GENERAL_ERROR;
+                break;
+            }
+            /* We expect the password to be hash of user:realm:password */
+            auth_result = provider->get_realm_hash(r, sent_user, realm,
+                                                   &password);
+            if (auth_result == AUTH_USER_FOUND) {
+                auth_result = strcmp(digest, password) ? AUTH_DENIED
+                                                       : AUTH_GRANTED;
+            }
+        }
+        else {
+            auth_result = provider->check_password(r, sent_user, sent_pw);
+        }
 
         apr_table_unset(r->notes, AUTHN_PROVIDER_NAME_NOTE);
 
