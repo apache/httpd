@@ -97,12 +97,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * core: name-based vhosts printed twice in apachectl -S since
-    dropping NameVirtualHost directive.
-    trunk patch: http://svn.apache.org/r1485675 , http://svn.apache.org/r1525000
-    2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-nvh-duplicated.diff
-    +1: covener, jim, rjung
-
   * worker MPM: Don't forcibly kill worker threads if the child process is
     exiting gracefully.
     trunk: http://svn.apache.org/r1526220
