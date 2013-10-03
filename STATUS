@@ -97,6 +97,62 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  * mod_auth_basic: Add AuthBasicUseDigestAlgorithm directive to allow
+    migration of passwords from digest to basic authentication.
+    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1514064
+    2.4.x patch: trunk patch works, modulo CHANGES, next-number, and
+                 doc compatibility version note
+    +1: chrisd, jim, rjung
+
+  * core: name-based vhosts printed twice in apachectl -S since
+    dropping NameVirtualHost directive.
+    trunk patch: http://svn.apache.org/r1485675 , http://svn.apache.org/r1525000
+    2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-nvh-duplicated.diff
+    +1: covener, jim, rjung
+
+  * worker MPM: Don't forcibly kill worker threads if the child process is
+    exiting gracefully.
+    trunk: http://svn.apache.org/r1526220
+    2.4.x: http://people.apache.org/~trawick/r1526220-2.4.x.txt
+    +1: trawick, jim, rjung
+
+  * ab: Add wait time, fix processing time, make write errors output conditional
+    trunk: http://svn.apache.org/viewvc?view=revision&revision=1488471
+    2.4.x: trunk patch works (minus CHANGES)
+    +1: jailletc36, jim, rjung
+
+  * easy patches to synch 2.4 and trunk
+    - rotatelog: Factor out from doRotate, main; make error handling consistant
+                 and print the actual error to stderr
+                 PR 45084
+    - rotatelog: Cleanups, no functional change.  Drop revision history,
+                 "svn log" works; use APR_PATH_MAX; constify more
+    - rotatelog: error[120] is already defined in this function. Just use
+                 it instead of shadowing.
+    - rotatelog: Use apr_snprintf(... "%pm"...) instead of explicit call
+                 to apr_strerror
+    - mod_deflate: style fix (no code change)
+    - mod_socache_shmcb: Correct the use of the printf formatter.
+    - mod_cache_socache: Fixed signed<->unsigned compiler warning.
+    - mod_ssl: add missing space between directive description and syntax
+    - mpm/winnt: style consistency in winnt's worker_main
+    trunk: http://svn.apache.org/viewvc?view=revision&revision=1374247
+           http://svn.apache.org/viewvc?view=revision&revision=1409800
+           http://svn.apache.org/viewvc?view=revision&revision=1416121
+           http://svn.apache.org/viewvc?view=revision&revision=1463736
+           http://svn.apache.org/viewvc?view=revision&revision=1499679
+           http://svn.apache.org/viewvc?view=revision&revision=1493925
+           http://svn.apache.org/viewvc?view=revision&revision=1490550
+           http://svn.apache.org/viewvc?view=revision&revision=1509983
+           http://svn.apache.org/viewvc?view=revision&revision=1520760
+    2.4.x: trunk patches work
+    +1: jailletc36, jim, rjung
+
+  * mod_ldap: Don't filter subgroups on cn=*
+    trunk: http://svn.apache.org/r1528143
+    2.4.x: trunk works module CHANGES
+    +1: covener, jim, rjung
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -168,30 +224,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: http://people.apache.org/~druggeri/patches/SessionCryptoPassphrase-exec.2.4.x.patch
     +1: druggeri, rjung
 
-  * mod_auth_basic: Add AuthBasicUseDigestAlgorithm directive to allow
-    migration of passwords from digest to basic authentication.
-    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1514064
-    2.4.x patch: trunk patch works, modulo CHANGES, next-number, and
-                 doc compatibility version note
-    +1: chrisd, jim, rjung
-
-  * core: name-based vhosts printed twice in apachectl -S since
-    dropping NameVirtualHost directive.
-    trunk patch: http://svn.apache.org/r1485675 , http://svn.apache.org/r1525000
-    2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-nvh-duplicated.diff
-    +1: covener, jim, rjung
-
-  * worker MPM: Don't forcibly kill worker threads if the child process is
-    exiting gracefully.
-    trunk: http://svn.apache.org/r1526220
-    2.4.x: http://people.apache.org/~trawick/r1526220-2.4.x.txt
-    +1: trawick, jim, rjung
-
-  * ab: Add wait time, fix processing time, make write errors output conditional
-    trunk: http://svn.apache.org/viewvc?view=revision&revision=1488471
-    2.4.x: trunk patch works (minus CHANGES)
-    +1: jailletc36, jim, rjung
-
   * ab: Check if malloc succeeded
     PR54344
     trunk: http://svn.apache.org/viewvc?view=revision&revision=1488492
@@ -202,38 +234,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              the leak or fragmentation overtakes temporary freeing of memory)
              is the state of that connection messed up from leaving
              ssl_proceed_handshake() early?
-
-  * easy patches to synch 2.4 and trunk
-    - rotatelog: Factor out from doRotate, main; make error handling consistant
-                 and print the actual error to stderr
-                 PR 45084
-    - rotatelog: Cleanups, no functional change.  Drop revision history,
-                 "svn log" works; use APR_PATH_MAX; constify more
-    - rotatelog: error[120] is already defined in this function. Just use
-                 it instead of shadowing.
-    - rotatelog: Use apr_snprintf(... "%pm"...) instead of explicit call
-                 to apr_strerror
-    - mod_deflate: style fix (no code change)
-    - mod_socache_shmcb: Correct the use of the printf formatter.
-    - mod_cache_socache: Fixed signed<->unsigned compiler warning.
-    - mod_ssl: add missing space between directive description and syntax
-    - mpm/winnt: style consistency in winnt's worker_main
-    trunk: http://svn.apache.org/viewvc?view=revision&revision=1374247
-           http://svn.apache.org/viewvc?view=revision&revision=1409800
-           http://svn.apache.org/viewvc?view=revision&revision=1416121
-           http://svn.apache.org/viewvc?view=revision&revision=1463736
-           http://svn.apache.org/viewvc?view=revision&revision=1499679
-           http://svn.apache.org/viewvc?view=revision&revision=1493925
-           http://svn.apache.org/viewvc?view=revision&revision=1490550
-           http://svn.apache.org/viewvc?view=revision&revision=1509983
-           http://svn.apache.org/viewvc?view=revision&revision=1520760
-    2.4.x: trunk patches work
-    +1: jailletc36, jim, rjung
-
-  * mod_ldap: Don't filter subgroups on cn=*
-    trunk: http://svn.apache.org/r1528143
-    2.4.x: trunk works module CHANGES
-    +1: covener, jim, rjung
 
   * mod_ssl: improve ephemeral key handling - in particular, support DH params
     with more than 1024 bits, and allow custom configuration. For a detailed
