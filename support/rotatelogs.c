@@ -14,31 +14,6 @@
  * limitations under the License.
  */
 
-/*
- * Simple program to rotate Apache logs without having to kill the server.
- *
- * Contributed by Ben Laurie <ben algroup.co.uk>
- *
- * 12 Mar 1996
- *
- * Ported to APR by Mladen Turk <mturk mappingsoft.com>
- *
- * 23 Sep 2001
- *
- * -l option added 2004-06-11
- *
- * -l causes the use of local time rather than GMT as the base for the
- * interval.  NB: Using -l in an environment which changes the GMT offset
- * (such as for BST or DST) can lead to unpredictable results!
- *
- * -f option added Feb, 2008. This causes rotatelog to open/create
- *    the logfile as soon as it's started, not as soon as it sees
- *    data.
- *
- * -v option added Feb, 2008. Verbose output of command line parsing.
- */
-
-
 #include "apr.h"
 #include "apr_lib.h"
 #include "apr_strings.h"
@@ -62,17 +37,13 @@
 #define BUFSIZE         65536
 #define ERRMSGSZ        256
 
-#ifndef MAX_PATH
-#define MAX_PATH        1024
-#endif
-
 #define ROTATE_NONE     0
 #define ROTATE_NEW      1
 #define ROTATE_TIME     2
 #define ROTATE_SIZE     3
 #define ROTATE_FORCE    4
 
-static const char *ROTATE_REASONS[] = {
+static const char *const ROTATE_REASONS[] = {
     "None",
     "Open a new file",
     "Time interval expired",
@@ -109,7 +80,7 @@ typedef struct rotate_status rotate_status_t;
 struct logfile {
     apr_pool_t *pool;
     apr_file_t *fd;
-    char name[MAX_PATH];
+    char name[APR_PATH_MAX];
 };
 
 struct rotate_status {
@@ -299,7 +270,6 @@ static void post_rotate(apr_pool_t *pool, struct logfile *newlog,
         }
         rv = apr_file_link(newlog->name, config->linkfile);
         if (rv != APR_SUCCESS) {
-            char error[120];
             apr_strerror(rv, error, sizeof error);
             fprintf(stderr, "Error linking file %s to %s (%s)\n",
                     newlog->name, config->linkfile, error);
@@ -355,6 +325,24 @@ static void post_rotate(apr_pool_t *pool, struct logfile *newlog,
                 config->postrotate_prog,
                 apr_strerror(rv, error, sizeof(error)));
         return;
+    }
+}
+
+/* After a error, truncate the current file and write out an error
+ * message, which must be contained in status->errbuf.  The process is
+ * terminated on failure.  */
+static void truncate_and_write_error(rotate_status_t *status)
+{
+    apr_size_t buflen = strlen(status->errbuf);
+
+    if (apr_file_trunc(status->current.fd, 0) != APR_SUCCESS) {
+        fprintf(stderr, "Error truncating the file %s\n", status->current.name);
+        exit(2);
+    }
+    if (apr_file_write_full(status->current.fd, status->errbuf, buflen, NULL) != APR_SUCCESS) {
+        fprintf(stderr, "Error writing error (%s) to the file %s\n", 
+                status->errbuf, status->current.name);
+        exit(2);
     }
 }
 
@@ -447,7 +435,6 @@ static void doRotate(rotate_config_t *config, rotate_status_t *status)
     }
     else {
         char error[120];
-        apr_size_t nWrite;
 
         apr_strerror(rv, error, sizeof error);
 
@@ -468,16 +455,8 @@ static void doRotate(rotate_config_t *config, rotate_status_t *status)
                      "Resetting log file due to error opening "
                      "new log file, %10d messages lost: %-25.25s\n",
                      status->nMessCount, error);
-        nWrite = strlen(status->errbuf);
 
-        if (apr_file_trunc(status->current.fd, 0) != APR_SUCCESS) {
-            fprintf(stderr, "Error truncating the file %s\n", status->current.name);
-            exit(2);
-        }
-        if (apr_file_write_full(status->current.fd, status->errbuf, nWrite, NULL) != APR_SUCCESS) {
-            fprintf(stderr, "Error writing to the file %s\n", status->current.name);
-            exit(2);
-        }
+        truncate_and_write_error(status);
     }
 
     status->nMessCount = 0;
@@ -718,25 +697,19 @@ int main (int argc, const char * const argv[])
         nWrite = nRead;
         rv = apr_file_write_full(status.current.fd, buf, nWrite, &nWrite);
         if (nWrite != nRead) {
-            char strerrbuf[120];
             apr_off_t cur_offset;
 
             cur_offset = 0;
             if (apr_file_seek(status.current.fd, APR_CUR, &cur_offset) != APR_SUCCESS) {
                 cur_offset = -1;
             }
-            apr_strerror(rv, strerrbuf, sizeof strerrbuf);
             status.nMessCount++;
             apr_snprintf(status.errbuf, sizeof status.errbuf,
                          "Error %d writing to log file at offset %" APR_OFF_T_FMT ". "
-                         "%10d messages lost (%s)\n",
-                         rv, cur_offset, status.nMessCount, strerrbuf);
-            nWrite = strlen(status.errbuf);
-            apr_file_trunc(status.current.fd, 0);
-            if (apr_file_write_full(status.current.fd, status.errbuf, nWrite, NULL) != APR_SUCCESS) {
-                fprintf(stderr, "Error writing to the file %s\n", status.current.name);
-                exit(2);
-            }
+                         "%10d messages lost (%pm)\n",
+                         rv, cur_offset, status.nMessCount, &rv);
+
+            truncate_and_write_error(&status);
         }
         else {
             status.nMessCount++;
