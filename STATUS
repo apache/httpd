@@ -233,7 +233,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   * mod_ldap: Don't filter subgroups on cn=*
     trunk: http://svn.apache.org/r1528143
     2.4.x: trunk works module CHANGES
-    +1: covener
+    +1: covener, jim
 
   * mod_ssl: improve ephemeral key handling - in particular, support DH params
     with more than 1024 bits, and allow custom configuration. For a detailed
