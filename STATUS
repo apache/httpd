@@ -106,6 +106,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1482522
     2.4.x patch: trunk patch works modulo CHANGES and ap_mmn
     +1:  jim
+    rjung: it seems to me from dev list discussion, that r1482918 and r1484832
+           are also needed.
 
   * mod_proxy: support Unix domain sockets /* ON HOLD */
     trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1451633
@@ -152,45 +154,43 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1409214
                  http://svn.apache.org/viewvc?view=revision&revision=1410004
     2.4.x patch: http://people.apache.org/~jim/patches/httpd-2.4-podx-v2.patch
-    +1: jim
-    rjung: needs also r1410004 to fix worker compilation
-      jim: Fixed in httpd-2.4-podx-v2.patch
+    +1: jim, rjung
 
   * event: Use skiplist and fold in performance tweeks from trunk
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1451706
                  http://svn.apache.org/viewvc?view=revision&revision=1517365
     2.4.x patch: http://people.apache.org/~jim/patches/httpd-2.4-event-v2.patch
-    +1: jim
+    +1: jim, rjung
 
   * mod_session_crypto: Add support for exec: calls to obtain key similar to
     mod_ssl and mod_authnz_ldap. Essentially copypasta from mod_authnz_ldap...
     trunk patch: http://people.apache.org/~druggeri/patches/SessionCryptoPassphrase-exec.trunk.patch
     2.4.x patch: http://people.apache.org/~druggeri/patches/SessionCryptoPassphrase-exec.2.4.x.patch
-    +1: druggeri
+    +1: druggeri, rjung
 
   * mod_auth_basic: Add AuthBasicUseDigestAlgorithm directive to allow
     migration of passwords from digest to basic authentication.
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1514064
     2.4.x patch: trunk patch works, modulo CHANGES, next-number, and
                  doc compatibility version note
-    +1: chrisd, jim
+    +1: chrisd, jim, rjung
 
   * core: name-based vhosts printed twice in apachectl -S since
     dropping NameVirtualHost directive.
     trunk patch: http://svn.apache.org/r1485675 , http://svn.apache.org/r1525000
     2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-nvh-duplicated.diff
-    +1: covener, jim
+    +1: covener, jim, rjung
 
   * worker MPM: Don't forcibly kill worker threads if the child process is
     exiting gracefully.
     trunk: http://svn.apache.org/r1526220
     2.4.x: http://people.apache.org/~trawick/r1526220-2.4.x.txt
-    +1: trawick, jim
+    +1: trawick, jim, rjung
 
   * ab: Add wait time, fix processing time, make write errors output conditional
     trunk: http://svn.apache.org/viewvc?view=revision&revision=1488471
     2.4.x: trunk patch works (minus CHANGES)
-    +1: jailletc36, jim
+    +1: jailletc36, jim, rjung
 
   * ab: Check if malloc succeeded
     PR54344
@@ -228,12 +228,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
            http://svn.apache.org/viewvc?view=revision&revision=1509983
            http://svn.apache.org/viewvc?view=revision&revision=1520760
     2.4.x: trunk patches work
-    +1: jailletc36, jim
+    +1: jailletc36, jim, rjung
 
   * mod_ldap: Don't filter subgroups on cn=*
     trunk: http://svn.apache.org/r1528143
     2.4.x: trunk works module CHANGES
-    +1: covener, jim
+    +1: covener, jim, rjung
 
   * mod_ssl: improve ephemeral key handling - in particular, support DH params
     with more than 1024 bits, and allow custom configuration. For a detailed
@@ -250,7 +250,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     it to proxy requests.
     trunk patches: https://svn.apache.org/r1528556
     2.4.x: trunk works module CHANGES
-    +1: jim
+    +1: jim, rjung
 
   * mod_dav: Fix 55306.  Don't require lock tokens for COPY source.
     trunk patches: https://svn.apache.org/r1528718
