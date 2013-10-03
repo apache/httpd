@@ -123,6 +123,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.2.x patch: trunk patch to ssl_engine_config.c (above) applies with offset
     +1: trawick, jorton
 
+  * mod_dav: Fix 55306.  Don't require lock tokens for COPY source.
+    trunk patches: https://svn.apache.org/r1528718
+    2.2.x: trunk works, CHANGES needs to be written when merging
+    +1: breser
 
 PATCHES/ISSUES THAT ARE STALLED
 
