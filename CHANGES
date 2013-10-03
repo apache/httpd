@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) core: Add missing Reason-Phrase in HTTP response headers.
+     PR 54946. [Rainer Jung]
+
   *) mod_rewrite: Make rewrite websocket aware to allow proxying.
      PR 55598. [Chris Harris <chris.harris kitware com>]
 
