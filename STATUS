@@ -97,11 +97,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * ab: Add wait time, fix processing time, make write errors output conditional
-    trunk: http://svn.apache.org/viewvc?view=revision&revision=1488471
-    2.4.x: trunk patch works (minus CHANGES)
-    +1: jailletc36, jim, rjung
-
   * easy patches to synch 2.4 and trunk
     - rotatelog: Factor out from doRotate, main; make error handling consistant
                  and print the actual error to stderr
