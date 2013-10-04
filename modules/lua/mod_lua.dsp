@@ -52,8 +52,8 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /out:".\Release\mod_lua.so" /base:@..\..\os\win32\BaseAddr.ref,mod_lua.so
-# ADD LINK32 kernel32.lib lua51.lib /nologo /subsystem:windows /dll /incremental:no /debug /out:".\Release\mod_lua.so" /base:@..\..\os\win32\BaseAddr.ref,mod_lua.so /opt:ref /libpath:"../../srclib/lua/src"
+# ADD BASE LINK32 kernel32.lib ws2_32.lib /nologo /subsystem:windows /dll /out:".\Release\mod_lua.so" /base:@..\..\os\win32\BaseAddr.ref,mod_lua.so
+# ADD LINK32 kernel32.lib ws2_32.lib lua51.lib /nologo /subsystem:windows /dll /incremental:no /debug /out:".\Release\mod_lua.so" /base:@..\..\os\win32\BaseAddr.ref,mod_lua.so /opt:ref /libpath:"../../srclib/lua/src"
 # Begin Special Build Tool
 TargetPath=.\Release\mod_lua.so
 SOURCE="$(InputPath)"
@@ -84,8 +84,8 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /debug /out:".\Debug\mod_lua.so" /base:@..\..\os\win32\BaseAddr.ref,mod_lua.so
-# ADD LINK32 kernel32.lib lua51.lib /nologo /subsystem:windows /dll /incremental:no /debug /out:".\Debug\mod_lua.so" /base:@..\..\os\win32\BaseAddr.ref,mod_lua.so /libpath:"../../srclib/lua/src"
+# ADD BASE LINK32 kernel32.lib ws2_32.lib /nologo /subsystem:windows /dll /incremental:no /debug /out:".\Debug\mod_lua.so" /base:@..\..\os\win32\BaseAddr.ref,mod_lua.so
+# ADD LINK32 kernel32.lib ws2_32.lib lua51.lib /nologo /subsystem:windows /dll /incremental:no /debug /out:".\Debug\mod_lua.so" /base:@..\..\os\win32\BaseAddr.ref,mod_lua.so /libpath:"../../srclib/lua/src"
 # Begin Special Build Tool
 TargetPath=.\Debug\mod_lua.so
 SOURCE="$(InputPath)"
