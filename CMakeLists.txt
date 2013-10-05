@@ -730,7 +730,7 @@ FOREACH (mod ${MODULE_PATHS})
     # Extra includes?
     SET(mod_extra_includes "${mod_name}_extra_includes")
     IF(NOT "${${mod_extra_includes}}" STREQUAL "")
-      SET(tmp_includes ${${mod_extra_includes}} ${HTTPD_INCLUDE_DIRECTORIES})
+      SET(tmp_includes ${HTTPD_INCLUDE_DIRECTORIES} ${${mod_extra_includes}})
       SET_TARGET_PROPERTIES(${mod_name} PROPERTIES INCLUDE_DIRECTORIES "${tmp_includes}")
       GET_PROPERTY(tmp_includes TARGET ${mod_name} PROPERTY INCLUDE_DIRECTORIES)
     ENDIF()
