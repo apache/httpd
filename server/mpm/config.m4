@@ -38,6 +38,17 @@ AC_CACHE_CHECK([whether APR supports thread-safe pollsets], [ac_cv_have_threadsa
     fi
 ])
 
+dnl See if APR has skiplist
+dnl The base httpd prereq is APR 1.4.x, so we don't have to consider
+dnl earlier versions.
+case $APR_VERSION in
+    1.4*)
+        apr_has_skiplist=no
+        ;;
+    *)
+        apr_has_skiplist=yes
+esac
+
 dnl See if this is a forking platform w.r.t. MPMs
 case $host in
     *mingw32* | *os2-emx*)
