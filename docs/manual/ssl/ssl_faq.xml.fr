@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English revision : 1364335 -->
+<!-- English revision : 1527295 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -559,6 +559,10 @@ et mot de passe sont envoy&eacute;s en clair ?</a></li>
 <li><a href="#msie">Pourquoi des erreurs d'entr&eacute;e/sortie apparaissent-elles
 lorsqu'on se connecte &agrave; un serveur Apache+mod_ssl avec
 Microsoft Internet Explorer (MSIE) ?</a></li>
+<li><a href="#srp">Comment activer TLS-SRP ?</a></li>
+<li><a href="#javadh">Pourquoi des erreurs de n&eacute;gociation apparaissent
+avec les clients bas&eacute;s sur Java lorsqu'on utilise un certificat de plus
+de 1024 bits ?</a></li>
 </ul>
 
 <section id="random"><title>Pourquoi de nombreuses et al&eacute;atoires erreurs de
@@ -785,27 +789,68 @@ SetEnvIf User-Agent "MSIE [2-5]" \
 </section>
 
 <section id="srp"><title>Comment activer TLS-SRP ?</title>
-    <p>TLS-SRP (Echange de clés avec mot de passe distant sécurisé,
-    défini dans la RFC 5054) peut compléter ou même remplacer les
+    <p>TLS-SRP (Echange de cl&eacute;s avec mot de passe distant s&eacute;curis&eacute;,
+    d&eacute;fini dans la RFC 5054) peut compl&eacute;ter ou m&ecirc;me remplacer les
     certificats au cours de l'authentification d'une connexion SSL. Pour
-    utiliser TLS-SRP, affectez à la directive <directive
+    utiliser TLS-SRP, affectez &agrave; la directive <directive
     module="mod_ssl">SSLSRPVerifierFile</directive> un fichier de
-    vérification OpenSSL SRP. Pour créer ce fichier de vérification,
+    v&eacute;rification OpenSSL SRP. Pour cr&eacute;er ce fichier de v&eacute;rification,
     utilisez l'outil <code>openssl</code> :</p>
     <example>
     openssl srp -srpvfile passwd.srpv -add username
     </example>
-    <p>Une fois ce fichier créé, spécifiez-le dans la configuration SSL
+    <p>Une fois ce fichier cr&eacute;&eacute;, sp&eacute;cifiez-le dans la configuration SSL
     du serveur :</p>
     <example>
     SSLSRPVerifierFile /path/to/passwd.srpv
     </example>
-    <p>Pour forcer les clients à utiliser des algorithmes de chiffrement
-    non basés sur les certificats, utilisez la directive suivante :</p>
+    <p>Pour forcer les clients &agrave; utiliser des algorithmes de chiffrement
+    non bas&eacute;s sur les certificats, utilisez la directive suivante :</p>
     <example>
     SSLCipherSuite "!DSS:!aRSA:SRP"
     </example>
 </section>
+
+<section id="javadh"><title>Pourquoi des erreurs de n&eacute;gociation apparaissent
+avec les clients bas&eacute;s sur Java lorsqu'on utilise un certificat de plus
+de 1024 bits ?</title>
+    <p>Depuis la version 2.5.0-dev et &agrave;/c du 29/09/2013,
+    <module>mod_ssl</module> utilise des param&egrave;tres DH qui comportent
+    des nombres premiers de plus de 1024 bits. Cependant, java 7 et ses versions
+    ant&eacute;rieures ne supportent que les nombres premiers DH d'une longueur
+    maximale de 1024 bits.</p>
+
+    <p>Si votre client bas&eacute; sur Java s'arr&ecirc;te avec une exception telle
+    que <code>java.lang.RuntimeException: Could not generate DH
+    keypair</code> et
+    <code>java.security.InvalidAlgorithmParameterException: Prime size
+    must be multiple of 64, and can only range from 512 to 1024
+    (inclusive)</code>, et si httpd enregistre le message <code>tlsv1
+    alert internal error (SSL alert number 80)</code> dans son journal
+    des erreurs (avec un <directive module="core">LogLevel</directive>
+    <code>info</code> ou sup&eacute;rieur), vous pouvez soit r&eacute;arranger la
+    liste d'algorithmes de mod_ssl via la directive <directive
+    module="mod_ssl">SSLCipherSuite</directive> (&eacute;ventuellement en
+    conjonction avec la directive <directive
+    module="mod_ssl">SSLHonorCipherOrder</directive>), soit utiliser la
+    directive <directive module="mod_ssl">SSLCertificateFile</directive>
+    pour configurer des param&egrave;tres DH personnalis&eacute;s avec un nombre
+    premier de 1024 bits, param&egrave;tres qui seront toujours prioritaires
+    par rapport &agrave; tout autre param&egrave;tre DH par d&eacute;faut.</p>
+
+    <p>Pour g&eacute;n&eacute;rer des param&egrave;tres DH personnalis&eacute;s, utilisez la
+    commande <code>openssl dhparam</code>. Vous pouvez aussi ajouter les
+    param&egrave;tres DH standards issus de la <a
+    href="http://www.ietf.org/rfc/rfc2409.txt">RFC 2409</a>, section 6.2
+    au fichier <directive module="ssl">SSLCertificateFile</directive>
+    consid&eacute;r&eacute; :</p>
+    <example><pre>-----BEGIN DH PARAMETERS-----
+MIGHAoGBAP//////////yQ/aoiFowjTExmKLgNwc0SkCTgiKZ8x0Agu+pjsTmyJR
+Sgh5jjQE3e+VGbPNOkMbMCsKbfJfFDdP4TVtbVHCReSFtXZiXn7G9ExC6aY37WsL
+/1y29Aa37e44a/taiZ+lrp8kEXxLH+ZJKGZR7OZTgf//////////AgEC
+-----END DH PARAMETERS-----</pre></example>
+</section>
+
 
 </section>
 <!-- /aboutssl -->
