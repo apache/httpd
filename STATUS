@@ -161,6 +161,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  http://svn.apache.org/viewvc?view=revision&revision=1517365
     2.4.x patch: http://people.apache.org/~jim/patches/httpd-2.4-event-v2.patch
     +1: jim, rjung
+    trawick: needs something like r1529442 to disable event if APR 1.4.x is being used;
+             (since eventopt skiplist changes aren't proposed, r1529442 would need to
+             be tweaked)
 
   * mod_session_crypto: Add support for exec: calls to obtain key similar to
     mod_ssl and mod_authnz_ldap. Essentially copypasta from mod_authnz_ldap...
