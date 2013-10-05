@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1430300 -->
+<!-- English Revision : 1528053 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -53,6 +53,7 @@ Apache</title>
     [ -<strong>H</strong> <var>en-t&ecirc;te-personnalis&eacute;</var> ]
     [ -<strong>i</strong> ]
     [ -<strong>k</strong> ]
+    [ -<strong>l</strong> ]
     [ -<strong>n</strong> <var>requ&ecirc;tes</var> ]
     [ -<strong>p</strong> <var>fichier-POST</var> ]
     [ -<strong>P</strong>
@@ -140,6 +141,11 @@ Apache</title>
     seule session HTTP. Cette fonctionnalit&eacute; est d&eacute;sactiv&eacute;e par
     d&eacute;faut.</dd>
 
+    <dt><code>-l</code></dt>
+    <dd>N'indique pas d'erreur si la longueur des r&eacute;ponses n'est pas
+    constante, ce qui peut s'av&eacute;rer utile pour les pages dynamiques.
+    </dd>
+
     <dt><code>-n <var>requ&ecirc;tes</var></code></dt>
     <dd>Nombre de requ&ecirc;tes &agrave; effectuer au cours du test de performances.
     Par d&eacute;faut, une seule requ&ecirc;te est effectu&eacute;e, ce qui ne permet pas
@@ -167,7 +173,7 @@ Apache</title>
     <dd>Ne s'arr&ecirc;te pas en cas d'erreur de r&eacute;ception sur la connexion.</dd>
 
     <dt><code>-s <var>timeout</var></code></dt>
-    <dd>Temps d'attente maximal du socket. La valeur par défaut est de
+    <dd>Temps d'attente maximal du socket. La valeur par d&eacute;faut est de
     30 secondes.</dd>
 
     <dt><code>-S</code></dt>
