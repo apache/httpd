@@ -210,6 +210,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x: trunk works modulo CHANGES
     +1: rjung
 
+  * core: Axe MSVC warning for http_protocol.c (issued about 128 times
+          with a 2.4.x build)
+    trunk patch: https://svn.apache.org/r1529449
+    2.4.x: trunk patch works
+    +1: trawick
+
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
 If you want to propose one of those, please still add them here.
