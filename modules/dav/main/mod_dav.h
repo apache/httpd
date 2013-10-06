@@ -386,7 +386,7 @@ typedef struct dav_resource {
                          * REGULAR and WORKSPACE resources,
                          * and is always 1 for WORKING */
 
-    const char *uri;    /* the URI for this resource */
+    const char *uri;    /* the escaped URI for this resource */
 
     dav_resource_private *info;         /* the provider's private info */
 
