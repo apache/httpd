@@ -717,13 +717,13 @@ static dav_error * dav_fs_get_resource(
     resource->pool = r->pool;
 
     /* make sure the URI does not have a trailing "/" */
-    len = strlen(r->uri);
-    if (len > 1 && r->uri[len - 1] == '/') {
-        s = apr_pstrmemdup(r->pool, r->uri, len-1);
+    len = strlen(r->unparsed_uri);
+    if (len > 1 && r->unparsed_uri[len - 1] == '/') {
+        s = apr_pstrmemdup(r->pool, r->unparsed_uri, len-1);
         resource->uri = s;
     }
     else {
-        resource->uri = r->uri;
+        resource->uri = r->unparsed_uri;
     }
 
     if (r->finfo.filetype != APR_NOFILE) {
