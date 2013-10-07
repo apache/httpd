@@ -97,12 +97,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * core: Axe MSVC warning for http_protocol.c (issued about 128 times
-          with a 2.4.x build)
-    trunk patch: https://svn.apache.org/r1529449
-    2.4.x: trunk patch works
-    +1: trawick, covener, gsmith
-
   * WinNT MPM: Follow MS docs on AcceptEx/GetAcceptExSockaddrs
     trunk patch: https://svn.apache.org/r1363312
     2.4.x: trunk patch works
