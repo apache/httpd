@@ -585,6 +585,18 @@ static unsigned is_absolute_uri(char *uri, int *supportsqs)
             return 7;
         }
         break;
+
+    case 'w':
+    case 'W':
+        if (!strncasecmp(uri, "s://", 4)) {        /* ws://     */
+            *sqs = 1;
+            return 5;
+        }
+        else if (!strncasecmp(uri, "ss://", 5)) {  /* wss://    */
+            *sqs = 1;
+            return 6;
+        }
+        break;
     }
 
     return 0;

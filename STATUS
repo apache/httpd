@@ -97,11 +97,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_rewrite: Close 55598. Make mod_rewrite websocket aware to allow
-    it to proxy requests.
-    trunk patches: https://svn.apache.org/r1528556
-    2.4.x: trunk works modulo CHANGES
-    +1: jim, rjung, covener
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
