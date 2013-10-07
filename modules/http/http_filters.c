@@ -1297,7 +1297,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
  * Map specific APR codes returned by the filter stack to HTTP error
  * codes, or the default status code provided. Use it as follows:
  *
- * return ap_map_http_response(rv, HTTP_BAD_REQUEST);
+ * return ap_map_http_request_error(rv, HTTP_BAD_REQUEST);
  *
  * If the filter has already handled the error, AP_FILTER_ERROR will
  * be returned, which is cleanly passed through.
