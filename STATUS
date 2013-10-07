@@ -97,11 +97,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * WinNT MPM: Follow MS docs on AcceptEx/GetAcceptExSockaddrs
-    trunk patch: https://svn.apache.org/r1363312
-    2.4.x: trunk patch works
-    +1: trawick, covener, gsmith
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
