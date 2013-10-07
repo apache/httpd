@@ -221,6 +221,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x: trunk patch works
     +1: trawick
 
+  * Error log on Windows: Fix the name of the null device to fix failure
+    to discard stderr.
+    trunk patch: https://svn.apache.org/r1527008
+    2.4.x: trunk patch works
+    +1: trawick
+
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
 If you want to propose one of those, please still add them here.
