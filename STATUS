@@ -97,6 +97,24 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  * mod_session_crypto: Add support for exec: calls to obtain key similar to
+    mod_ssl and mod_authnz_ldap. Essentially copypasta from mod_authnz_ldap...
+    trunk patch: http://people.apache.org/~druggeri/patches/SessionCryptoPassphrase-exec.trunk.patch
+    2.4.x patch: http://people.apache.org/~druggeri/patches/SessionCryptoPassphrase-exec.2.4.x.patch
+    +1: druggeri, rjung, jim
+
+  * core: Add missing Reason-Phrase in HTTP response headers.
+    PR 54946.
+    trunk patches: https://svn.apache.org/r1529014
+    2.4.x: trunk works modulo CHANGES
+    +1: rjung, covener, jim
+
+  * Error log on Windows: Fix the name of the null device to fix failure
+    to discard stderr.
+    trunk patch: https://svn.apache.org/r1527008
+    2.4.x: trunk patch works
+    +1: trawick, covener, jim
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -165,12 +183,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              (since eventopt skiplist changes aren't proposed, r1529442 would need to
              be tweaked)
 
-  * mod_session_crypto: Add support for exec: calls to obtain key similar to
-    mod_ssl and mod_authnz_ldap. Essentially copypasta from mod_authnz_ldap...
-    trunk patch: http://people.apache.org/~druggeri/patches/SessionCryptoPassphrase-exec.trunk.patch
-    2.4.x patch: http://people.apache.org/~druggeri/patches/SessionCryptoPassphrase-exec.2.4.x.patch
-    +1: druggeri, rjung, jim
-
   * ab: Check if malloc succeeded
     PR54344
     trunk: http://svn.apache.org/viewvc?view=revision&revision=1488492
@@ -197,18 +209,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     trunk patches: https://svn.apache.org/r1528718
     2.4.x: trunk works, CHANGES needs to be written when merging
     +1: breser
-
-  * core: Add missing Reason-Phrase in HTTP response headers.
-    PR 54946.
-    trunk patches: https://svn.apache.org/r1529014
-    2.4.x: trunk works modulo CHANGES
-    +1: rjung, covener, jim
-
-  * Error log on Windows: Fix the name of the null device to fix failure
-    to discard stderr.
-    trunk patch: https://svn.apache.org/r1527008
-    2.4.x: trunk patch works
-    +1: trawick, covener, jim
 
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
