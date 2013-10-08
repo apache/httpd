@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.7
 
+  *) Windows: Correct failure to discard stderr in some error log
+     configurations.  (Error message AH00093)  [Jeff Trawick]
+
   *) mod_session_crypto: Allow using exec: calls to obtain session
      encryption key.  [Daniel Ruggeri]
 
