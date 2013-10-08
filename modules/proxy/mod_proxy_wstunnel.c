@@ -55,7 +55,7 @@ static int proxy_wstunnel_pump(ws_baton_t *baton, apr_time_t timeout) {
                 continue;
             }
             else if (APR_STATUS_IS_TIMEUP(rv)) { 
-                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, "Attempting to go asynch");
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02542) "Attempting to go asynch");
                 return SUSPENDED;
             }
             else { 
@@ -375,12 +375,12 @@ static int ap_proxy_wstunnel_request(apr_pool_t *p, request_rec *r,
             return SUSPENDED;
         }
         else if (status == APR_ENOTIMPL) { 
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, "No asynch support");
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02544) "No asynch support");
             status = proxy_wstunnel_pump(baton, -1);
         }
         else { 
             ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
-                          "error creating websockets tunnel");
+                          APLOGNO(02543) "error creating websockets tunnel");
             return HTTP_INTERNAL_SERVER_ERROR;
         }
     }
