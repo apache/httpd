@@ -169,7 +169,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     mod_ssl and mod_authnz_ldap. Essentially copypasta from mod_authnz_ldap...
     trunk patch: http://people.apache.org/~druggeri/patches/SessionCryptoPassphrase-exec.trunk.patch
     2.4.x patch: http://people.apache.org/~druggeri/patches/SessionCryptoPassphrase-exec.2.4.x.patch
-    +1: druggeri, rjung
+    +1: druggeri, rjung, jim
 
   * ab: Check if malloc succeeded
     PR54344
@@ -202,13 +202,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     PR 54946.
     trunk patches: https://svn.apache.org/r1529014
     2.4.x: trunk works modulo CHANGES
-    +1: rjung, covener
+    +1: rjung, covener, jim
 
   * Error log on Windows: Fix the name of the null device to fix failure
     to discard stderr.
     trunk patch: https://svn.apache.org/r1527008
     2.4.x: trunk patch works
-    +1: trawick, covener
+    +1: trawick, covener, jim
 
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
