@@ -103,11 +103,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     2.4.x patch: http://people.apache.org/~druggeri/patches/SessionCryptoPassphrase-exec.2.4.x.patch
     +1: druggeri, rjung, jim
 
-  * core: Add missing Reason-Phrase in HTTP response headers.
-    PR 54946.
-    trunk patches: https://svn.apache.org/r1529014
-    2.4.x: trunk works modulo CHANGES
-    +1: rjung, covener, jim
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
