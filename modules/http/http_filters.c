@@ -825,7 +825,7 @@ static apr_status_t send_all_header_fields(header_struct *h,
  * handler.
  * Zap r->status_line if bad.
  */
-static void validate_status_line(request_rec *r)
+static apr_status_t validate_status_line(request_rec *r)
 {
     char *end;
 
@@ -836,15 +836,19 @@ static void validate_status_line(request_rec *r)
             || (end - 3) != r->status_line
             || (len >= 4 && ! apr_isspace(r->status_line[3]))) {
             r->status_line = NULL;
+            return APR_EGENERAL;
         }
         /* Since we passed the above check, we know that length three
          * is equivalent to only a 3 digit numeric http status.
          * RFC2616 mandates a trailing space, let's add it.
          */
-        else if (len == 3) {
+        if (len == 3) {
             r->status_line = apr_pstrcat(r->pool, r->status_line, " ", NULL);
+            return APR_EGENERAL;
         }
+        return APR_SUCCESS;
     }
+    return APR_EGENERAL;
 }
 
 /*
@@ -856,15 +860,25 @@ static void validate_status_line(request_rec *r)
 static void basic_http_header_check(request_rec *r,
                                     const char **protocol)
 {
+    apr_status_t rv;
+
     if (r->assbackwards) {
         /* no such thing as a response protocol */
         return;
     }
 
-    validate_status_line(r);
+    rv = validate_status_line(r);
 
     if (!r->status_line) {
         r->status_line = ap_get_status_line(r->status);
+    } else if (rv != APR_SUCCESS) {
+        /* Status line is OK but our own reason phrase
+         * would be preferred if defined
+         */
+        const char *tmp = ap_get_status_line(r->status);
+        if (!strncmp(tmp, r->status_line, 3)) {
+            r->status_line = tmp;
+        }
     }
 
     /* Note that we must downgrade before checking for force responses. */
