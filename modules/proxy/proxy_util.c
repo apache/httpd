@@ -3076,7 +3076,7 @@ PROXY_DECLARE(int) ap_proxy_create_hdrbrgd(apr_pool_t *p,
     do_100_continue = (worker->s->ping_timeout_set
                        && (worker->s->ping_timeout >= 0)
                        && (PROXYREQ_REVERSE == r->proxyreq)
-                       && !(apr_table_get(r->subprocess_env, "force-proxy-request-1.0")),
+                       && !(apr_table_get(r->subprocess_env, "force-proxy-request-1.0"))
                        && ap_request_has_body(r));
 
     if (apr_table_get(r->subprocess_env, "force-proxy-request-1.0")) {
