@@ -3066,6 +3066,7 @@ PROXY_DECLARE(int) ap_proxy_create_hdrbrgd(apr_pool_t *p,
     apr_bucket *e;
     int do_100_continue;
     conn_rec *origin = p_conn->connection;
+    const char *fpr1;
     proxy_dir_conf *dconf = ap_get_module_config(r->per_dir_config, &proxy_module);
 
     /*
@@ -3073,13 +3074,14 @@ PROXY_DECLARE(int) ap_proxy_create_hdrbrgd(apr_pool_t *p,
      * To be compliant, we only use 100-Continue for requests with bodies.
      * We also make sure we won't be talking HTTP/1.0 as well.
      */
+    fpr1 = apr_table_get(r->subprocess_env, "force-proxy-request-1.0");
     do_100_continue = (worker->s->ping_timeout_set
                        && (worker->s->ping_timeout >= 0)
                        && (PROXYREQ_REVERSE == r->proxyreq)
-                       && !(apr_table_get(r->subprocess_env, "force-proxy-request-1.0"))
+                       && !(fpr1)
                        && ap_request_has_body(r));
 
-    if (apr_table_get(r->subprocess_env, "force-proxy-request-1.0")) {
+    if (fpr1) {
         /*
          * According to RFC 2616 8.2.3 we are not allowed to forward an
          * Expect: 100-continue to an HTTP/1.0 server. Instead we MUST return
