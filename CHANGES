@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) core: Don't truncate output when sending is interrupted by a signal,
+     such as from an exiting CGI process. PR 55643. [Jeff Trawick]
+
   *) core: Add missing Reason-Phrase in HTTP response headers.
      PR 54946. [Rainer Jung]
 
