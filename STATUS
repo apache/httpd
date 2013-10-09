@@ -195,6 +195,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x: trunk works, CHANGES needs to be written when merging
     +1: breser
 
+  * core: Don't truncate output when sending is interrupted by a signal,
+          such as from an exiting CGI process. PR 55643.
+    trunk: https://svn.apache.org/r1530793
+    2.4.x: trunk works
+    +1: trawick
+
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
 If you want to propose one of those, please still add them here.
