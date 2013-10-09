@@ -1241,9 +1241,10 @@ int ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
     dconf = ap_get_module_config(r->per_dir_config, &proxy_module);
 
     do_100_continue = (worker->s->ping_timeout_set
-                       && ap_request_has_body(r)
+                       && (worker->s->ping_timeout >= 0)
                        && (PROXYREQ_REVERSE == r->proxyreq)
-                       && !(apr_table_get(r->subprocess_env, "force-proxy-request-1.0")));
+                       && !(apr_table_get(r->subprocess_env, "force-proxy-request-1.0"))
+                       && ap_request_has_body(r));
 
     bb = apr_brigade_create(p, c->bucket_alloc);
     pass_bb = apr_brigade_create(p, c->bucket_alloc);
@@ -1973,17 +1974,21 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
                 apr_table_set(backend->connection->notes, "proxy-request-hostname",
                               ssl_hostname);
             }
-        }
 
-        /* Step Three-and-a-Half: See if the socket is still connected (if desired) */
-        if (worker->s->ping_timeout_set && worker->s->ping_timeout < 0 &&
-            !ap_proxy_is_socket_connected(backend->sock)) {
-            backend->close = 1;
-            ap_log_rerror(APLOG_MARK, APLOG_INFO, status, r, APLOGNO(02535)
-                          "socket check failed to %pI (%s)",
-                          worker->cp->addr, worker->s->hostname);
-            retry++;
-            continue;
+            /* Step Three-and-a-Half: See if the socket is still connected (if
+             * desired). Note: Since ap_proxy_connect_backend just above does
+             * the same check (unconditionally), this step is not required when
+             * backend's socket/connection is reused (ie. no Step Three).
+             */
+            if (worker->s->ping_timeout_set && worker->s->ping_timeout < 0 &&
+                    !ap_proxy_is_socket_connected(backend->sock)) {
+                backend->close = 1;
+                ap_log_rerror(APLOG_MARK, APLOG_INFO, status, r, APLOGNO(02535)
+                              "socket check failed to %pI (%s)",
+                              worker->cp->addr, worker->s->hostname);
+                retry++;
+                continue;
+            }
         }
 
         /* Step Four: Send the Request
@@ -1992,8 +1997,9 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
          */
         if ((status = ap_proxy_http_request(p, r, backend, worker,
                                         conf, uri, locurl, server_portstr)) != OK) {
-            if ((status == HTTP_SERVICE_UNAVAILABLE) && worker->s->ping_timeout_set &&
-                 worker->s->ping_timeout > 0) {
+            if ((status == HTTP_SERVICE_UNAVAILABLE) &&
+                 worker->s->ping_timeout_set &&
+                 worker->s->ping_timeout >= 0) {
                 backend->close = 1;
                 ap_log_rerror(APLOG_MARK, APLOG_INFO, status, r, APLOGNO(01115)
                               "HTTP: 100-Continue failed to %pI (%s)",
