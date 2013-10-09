@@ -779,7 +779,9 @@ static apr_status_t send_brigade_blocking(apr_socket_t *s,
                 pollset.reqevents = APR_POLLOUT;
                 pollset.desc.s = s;
                 apr_socket_timeout_get(s, &timeout);
-                rv = apr_poll(&pollset, 1, &nsds, timeout);
+                do {
+                    rv = apr_poll(&pollset, 1, &nsds, timeout);
+                } while (APR_STATUS_IS_EINTR(rv));
                 if (rv != APR_SUCCESS) {
                     break;
                 }
