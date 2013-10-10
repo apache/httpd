@@ -201,6 +201,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x: trunk works
     +1: trawick
 
+  * WinNT MPM: Exit the child if the parent process crashes or is terminated.
+    trunk: https://svn.apache.org/r1526666 and r1527220
+    2.4.x: trunk patches work if CHANGES are massaged and log-message-tag change
+           is ignored; alternately:
+           http://people.apache.org/~trawick/winnt-child-exits-if-no-parent.txt
+    +1: trawick
+
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
 If you want to propose one of those, please still add them here.
