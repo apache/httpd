@@ -98,12 +98,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
 
-  * core: Don't truncate output when sending is interrupted by a signal,
-          such as from an exiting CGI process. PR 55643.
-    trunk: https://svn.apache.org/r1530793
-    2.4.x: trunk works
-    +1: trawick, covener, jim
-
   * WinNT MPM: Exit the child if the parent process crashes or is terminated.
     trunk: https://svn.apache.org/r1526666 and r1527220
     2.4.x: trunk patches work if CHANGES are massaged and log-message-tag change
