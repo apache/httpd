@@ -199,14 +199,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           such as from an exiting CGI process. PR 55643.
     trunk: https://svn.apache.org/r1530793
     2.4.x: trunk works
-    +1: trawick
+    +1: trawick, covener
 
   * WinNT MPM: Exit the child if the parent process crashes or is terminated.
     trunk: https://svn.apache.org/r1526666 and r1527220
     2.4.x: trunk patches work if CHANGES are massaged and log-message-tag change
            is ignored; alternately:
            http://people.apache.org/~trawick/winnt-child-exits-if-no-parent.txt
-    +1: trawick
+    +1: trawick, covener
 
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
