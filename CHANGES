@@ -5,6 +5,9 @@ Changes with Apache 2.4.7
   *) core: Don't truncate output when sending is interrupted by a signal,
      such as from an exiting CGI process. PR 55643. [Jeff Trawick]
 
+  *) WinNT MPM: Exit the child if the parent process crashes or is terminated.
+     [Oracle Corporation]
+
   *) Windows: Correct failure to discard stderr in some error log
      configurations.  (Error message AH00093)  [Jeff Trawick]
 
