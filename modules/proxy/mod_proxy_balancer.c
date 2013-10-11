@@ -1531,7 +1531,7 @@ static int balancer_handler(request_rec *r)
                           ap_escape_uri(r->pool, worker->s->name),
                           "&nonce=", balancer->s->nonce,
                           "\">", NULL);
-                ap_rvputs(r, worker->s->name, "</a></td>", NULL);
+                ap_rvputs(r, worker->s->name, (worker->s->uds ? "|" : ""), "</a></td>", NULL);
                 ap_rvputs(r, "<td>", ap_escape_html(r->pool, worker->s->route),
                           NULL);
                 ap_rvputs(r, "</td><td>",

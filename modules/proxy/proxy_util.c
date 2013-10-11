@@ -40,7 +40,6 @@
 
 APLOG_USE_MODULE(proxy);
 
-#define UDS_SOCKET_STRING "uds="
 /*
  * Opaque structure containing target server info when
  * using a forward proxy.
@@ -1566,6 +1565,7 @@ PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p,
     return max_worker;
 }
 
+
 /*
  * To create a worker from scratch first we define the
  * specifics of the worker; this is all local data.
@@ -1581,10 +1581,25 @@ PROXY_DECLARE(char *) ap_proxy_define_worker(apr_pool_t *p,
                                              int do_malloc)
 {
     int rv;
-    apr_uri_t uri;
+    apr_uri_t uri, urisock;
     proxy_worker_shared *wshared;
-    char *ptr;
+    char *ptr, *sockpath = NULL;
 
+    /* Look to see if we are using UDS:
+       require format: http://localhost/whatever|sock:/path
+       This results in talking http to the socket at /whatever/path
+    */
+    ptr = ap_strchr((char *)url, '|');
+    if (ptr) {
+        *ptr = '\0';
+        rv = apr_uri_parse(p, ptr+1, &urisock);
+        if (rv == APR_SUCCESS && !strcasecmp(urisock.scheme, "sock")) {
+            sockpath = urisock.path;
+        }
+        else {
+            *ptr = '|';
+        }
+    }
     rv = apr_uri_parse(p, url, &uri);
 
     if (rv != APR_SUCCESS) {
@@ -1596,6 +1611,11 @@ PROXY_DECLARE(char *) ap_proxy_define_worker(apr_pool_t *p,
 
     ap_str_tolower(uri.hostname);
     ap_str_tolower(uri.scheme);
+    if (sockpath) {
+        uri.hostname = "localhost";
+        uri.path = apr_pstrcat(p, uri.path, (*sockpath == '/' ? "" : "/"),
+                               sockpath, NULL);
+    }
     /*
      * Workers can be associated w/ balancers or on their
      * own; ie: the generic reverse-proxy or a worker
@@ -1650,6 +1670,7 @@ PROXY_DECLARE(char *) ap_proxy_define_worker(apr_pool_t *p,
     wshared->hash.def = ap_proxy_hashfunc(wshared->name, PROXY_HASHFUNC_DEFAULT);
     wshared->hash.fnv = ap_proxy_hashfunc(wshared->name, PROXY_HASHFUNC_FNV);
     wshared->was_malloced = (do_malloc != 0);
+    wshared->uds = (sockpath != NULL);
 
     (*worker)->hash = wshared->hash;
     (*worker)->context = NULL;
@@ -2030,7 +2051,30 @@ PROXY_DECLARE(int) ap_proxy_acquire_connection(const char *proxy_function,
     (*conn)->worker = worker;
     (*conn)->close  = 0;
     (*conn)->inreslist = 0;
-    (*conn)->uds_path = NULL;
+
+    if (worker->s->uds) {
+        if ((*conn)->uds_path == NULL) {
+            apr_uri_t puri;
+            if (apr_uri_parse(worker->cp->pool, worker->s->name, &puri) == APR_SUCCESS) {
+                (*conn)->uds_path = apr_pstrdup(worker->cp->pool, puri.path);
+            }
+        }
+        if ((*conn)->uds_path) {
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO()
+                         "%s: has determined UDS as %s",
+                         proxy_function, (*conn)->uds_path);
+        }
+        else {
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO()
+                         "%s: cannot parse for UDS (%s)",
+                         proxy_function, worker->s->name);
+
+        }
+    }
+    else {
+        (*conn)->uds_path = NULL;
+    }
+
 
     return OK;
 }
@@ -2045,30 +2089,6 @@ PROXY_DECLARE(int) ap_proxy_release_connection(const char *proxy_function,
     connection_cleanup(conn);
 
     return OK;
-}
-
-/*
- * Decodes a '%' escaped string, and returns the number of characters
- */
-static int decodeenc(char *x)
-{
-    int i, j, ch;
-
-    if (x[0] == '\0') {
-        /* special case for no characters */
-        return 0;
-    }
-    for (i = 0, j = 0; x[i] != '\0'; i++, j++) {
-        /* decode it if not already done */
-        ch = x[i];
-        if (ch == '%' && apr_isxdigit(x[i + 1]) && apr_isxdigit(x[i + 2])) {
-            ch = ap_proxy_hex2c(&x[i + 1]);
-            i += 2;
-        }
-        x[j] = ch;
-    }
-    x[j] = '\0';
-    return j;
 }
 
 PROXY_DECLARE(int)
@@ -2127,7 +2147,7 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
      *      spilling the cached addr from the worker.
      */
     if (!conn->hostname || !worker->s->is_address_reusable ||
-        worker->s->disablereuse || strncmp(conn->hostname, UDS_SOCKET_STRING, sizeof(UDS_SOCKET_STRING)-1) == 0) {
+        worker->s->disablereuse || worker->s->uds) {
         if (proxyname) {
             conn->hostname = apr_pstrdup(conn->pool, proxyname);
             conn->port = proxyport;
@@ -2165,12 +2185,7 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
             conn->port = uri->port;
         }
         socket_cleanup(conn);
-        if (strncmp(conn->hostname, UDS_SOCKET_STRING, sizeof(UDS_SOCKET_STRING)-1) == 0) {
-            char *uds_path = apr_pstrdup(conn->pool, conn->hostname + sizeof(UDS_SOCKET_STRING) - 1);
-            decodeenc(uds_path);
-            conn->uds_path = uds_path;
-        }
-        else if (!worker->s->is_address_reusable || worker->s->disablereuse) {
+        if (!worker->s->uds && worker->s->is_address_reusable && !worker->s->disablereuse) {
             /*
              * Only do a lookup if we should not reuse the backend address.
              * Otherwise we will look it up once for the worker.
@@ -2181,7 +2196,7 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
                                         conn->pool);
         }
     }
-    if (worker->s->is_address_reusable && !worker->s->disablereuse) {
+    if (!worker->s->uds && worker->s->is_address_reusable && !worker->s->disablereuse) {
         /*
          * Looking up the backend address for the worker only makes sense if
          * we can reuse the address.
