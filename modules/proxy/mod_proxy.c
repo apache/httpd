@@ -2017,8 +2017,8 @@ static const char *add_member(cmd_parms *cmd, void *dummy, const char *arg)
         if ((err = ap_proxy_define_worker(cmd->pool, &worker, balancer, conf, name, 0)) != NULL)
             return apr_pstrcat(cmd->temp_pool, "BalancerMember ", err, NULL);
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server, APLOGNO(01148)
-                     "Defined worker '%s' for balancer '%s'",
-                     worker->s->name, balancer->s->name);
+                     "Defined worker '%s%s' for balancer '%s'",
+                     worker->s->name, (worker->s->uds ? "|" : ""), balancer->s->name);
         PROXY_COPY_CONF_PARAMS(worker, conf);
     } else {
         reuse = 1;
