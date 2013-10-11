@@ -1544,15 +1544,15 @@ static const char *
         } else {
             reuse = 1;
             ap_log_error(APLOG_MARK, APLOG_INFO, 0, cmd->server, APLOGNO(01145)
-                         "Sharing worker '%s' instead of creating new worker '%s'",
-                         worker->s->name, new->real);
+                         "Sharing worker '%s%s' instead of creating new worker '%s'",
+                         worker->s->name, (worker->s->uds?"|":""), new->real);
         }
 
         for (i = 0; i < arr->nelts; i++) {
             if (reuse) {
                 ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server, APLOGNO(01146)
-                             "Ignoring parameter '%s=%s' for worker '%s' because of worker sharing",
-                             elts[i].key, elts[i].val, worker->s->name);
+                             "Ignoring parameter '%s=%s' for worker '%s%s' because of worker sharing",
+                             elts[i].key, elts[i].val, worker->s->name, (worker->s->uds?"|":""));
             } else {
                 const char *err = set_worker_param(cmd->pool, worker, elts[i].key,
                                                    elts[i].val);
@@ -2023,8 +2023,8 @@ static const char *add_member(cmd_parms *cmd, void *dummy, const char *arg)
     } else {
         reuse = 1;
         ap_log_error(APLOG_MARK, APLOG_INFO, 0, cmd->server, APLOGNO(01149)
-                     "Sharing worker '%s' instead of creating new worker '%s'",
-                     worker->s->name, name);
+                     "Sharing worker '%s%s' instead of creating new worker '%s'",
+                     worker->s->name, (worker->s->uds?"|":""), name);
     }
 
     arr = apr_table_elts(params);
@@ -2032,8 +2032,8 @@ static const char *add_member(cmd_parms *cmd, void *dummy, const char *arg)
     for (i = 0; i < arr->nelts; i++) {
         if (reuse) {
             ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server, APLOGNO(01150)
-                         "Ignoring parameter '%s=%s' for worker '%s' because of worker sharing",
-                         elts[i].key, elts[i].val, worker->s->name);
+                         "Ignoring parameter '%s=%s' for worker '%s%s' because of worker sharing",
+                         elts[i].key, elts[i].val, worker->s->name, (worker->s->uds?"|":""));
         } else {
             err = set_worker_param(cmd->pool, worker, elts[i].key,
                                                elts[i].val);
