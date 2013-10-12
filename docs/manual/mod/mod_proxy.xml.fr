@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1518023 -->
+<!-- English Revision: 1531340 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -928,9 +928,9 @@ l'espace d'URLs du serveur local</description>
 
     <p>Le support des sockets de style Unix est fourni ; il suffit pour
     cela d'utiliser une cible du style
-    <code>uds=chemin-cod&eacute;-%</code>. Par exemple, pour cibler l'UDS
+    <code>|sock:/path/lis.sock</code>. Par exemple, pour cibler l'UDS
     /home/www/socket, vous devez utiliser
-    <code>http://uds=%2Fhome%2Fwww%2Fsocket</code>.</p>
+    <code>http://localhost/|sock:/home/www.socket</code>.</p>
 
     <p>Supposons que le serveur local a pour adresse
     <code>http://example.com/</code> ; alors la ligne</p>
