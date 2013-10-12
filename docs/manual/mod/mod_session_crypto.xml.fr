@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1334024 -->
+<!-- English Revision : 1530281 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -195,6 +195,20 @@ d'Apache</compatibility>
     des cl&eacute;s sur plusieurs serveurs, ajoutez une nouvelle cl&eacute; en fin de
     liste, puis, une fois la rotation compl&egrave;te effectu&eacute;e, supprimez la
     premi&egrave;re cl&eacute; de la liste.</p>
+
+    <p>Si la valeur de l'argument commence par exec: , la commande
+    sp&eacute;cifi&eacute;e sera ex&eacute;cut&eacute;e, et la premi&egrave;re ligne que cette derni&egrave;re
+    renverra sur la sortie standard sera utilis&eacute;e comme cl&eacute;.</p>
+<example><pre>
+# cl&eacute; sp&eacute;cifi&eacute;e et utilis&eacute;e en tant que tel
+SessionCryptoPassphrase secret
+
+# ex&eacute;cution de /path/to/program pour g&eacute;n&eacute;rer la cl&eacute;
+SessionCryptoPassphrase exec:/path/to/program
+
+# ex&eacute;cution de /path/to/program avec un argument pour g&eacute;n&eacute;rer la cl&eacute;
+SessionCryptoPassphrase "exec:/path/to/otherProgram argument1"
+</pre></example>
 
 </usage>
 </directivesynopsis>
