@@ -173,25 +173,6 @@ static const char *add_authn_provider(cmd_parms * cmd, void *config,
                             "Form Authentication", newp->provider_name);
     }
 
-    if (!ap_session_load_fn || !ap_session_get_fn || !ap_session_set_fn) {
-        ap_session_load_fn = APR_RETRIEVE_OPTIONAL_FN(ap_session_load);
-        ap_session_get_fn = APR_RETRIEVE_OPTIONAL_FN(ap_session_get);
-        ap_session_set_fn = APR_RETRIEVE_OPTIONAL_FN(ap_session_set);
-        if (!ap_session_load_fn || !ap_session_get_fn || !ap_session_set_fn) {
-            return "You must load mod_session to enable the mod_auth_form "
-                   "functions";
-        }
-    }
-
-    if (!ap_request_insert_filter_fn || !ap_request_remove_filter_fn) {
-        ap_request_insert_filter_fn = APR_RETRIEVE_OPTIONAL_FN(ap_request_insert_filter);
-        ap_request_remove_filter_fn = APR_RETRIEVE_OPTIONAL_FN(ap_request_remove_filter);
-        if (!ap_request_insert_filter_fn || !ap_request_remove_filter_fn) {
-            return "You must load mod_request to enable the mod_auth_form "
-                   "functions";
-        }
-    }
-
     /* Add it to the list now. */
     if (!conf->providers) {
         conf->providers = newp;
@@ -567,6 +548,7 @@ static apr_status_t get_session_auth(request_rec * r,
 {
     const char *authname = ap_auth_name(r);
     session_rec *z = NULL;
+
     ap_session_load_fn(r, &z);
 
     if (user) {
@@ -1271,8 +1253,40 @@ static int authenticate_form_redirect_handler(request_rec * r)
 
 }
 
+static int authenticate_form_post_config(apr_pool_t *pconf, apr_pool_t *plog,
+        apr_pool_t *ptemp, server_rec *s)
+{
+
+    if (!ap_session_load_fn || !ap_session_get_fn || !ap_session_set_fn) {
+        ap_session_load_fn = APR_RETRIEVE_OPTIONAL_FN(ap_session_load);
+        ap_session_get_fn = APR_RETRIEVE_OPTIONAL_FN(ap_session_get);
+        ap_session_set_fn = APR_RETRIEVE_OPTIONAL_FN(ap_session_set);
+        if (!ap_session_load_fn || !ap_session_get_fn || !ap_session_set_fn) {
+            ap_log_error(APLOG_MARK, APLOG_CRIT, 0, NULL, APLOGNO()
+                    "You must load mod_session to enable the mod_auth_form "
+                                       "functions");
+            return !OK;
+        }
+    }
+
+    if (!ap_request_insert_filter_fn || !ap_request_remove_filter_fn) {
+        ap_request_insert_filter_fn = APR_RETRIEVE_OPTIONAL_FN(ap_request_insert_filter);
+        ap_request_remove_filter_fn = APR_RETRIEVE_OPTIONAL_FN(ap_request_remove_filter);
+        if (!ap_request_insert_filter_fn || !ap_request_remove_filter_fn) {
+            ap_log_error(APLOG_MARK, APLOG_CRIT, 0, NULL, APLOGNO()
+                    "You must load mod_request to enable the mod_auth_form "
+                                       "functions");
+            return !OK;
+        }
+    }
+
+    return OK;
+}
+
 static void register_hooks(apr_pool_t * p)
 {
+    ap_hook_post_config(authenticate_form_post_config,NULL,NULL,APR_HOOK_MIDDLE);
+
 #if AP_MODULE_MAGIC_AT_LEAST(20080403,1)
     ap_hook_check_authn(authenticate_form_authn, NULL, NULL, APR_HOOK_MIDDLE,
                         AP_AUTH_INTERNAL_PER_CONF);
