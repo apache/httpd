@@ -202,6 +202,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x: trunk works, CHANGES needs to be written when merging
     +1: breser, minfrin
 
+  * mod_auth_form: Make sure the optional functions are loaded even when
+    the AuthFormProvider isn't specified.
+    trunk patch: https://svn.apache.org/r1531673
+    2.4.x patch: trunk patch works, modulo CHANGES
+    +1: minfrin
+
+
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
 If you want to propose one of those, please still add them here.
