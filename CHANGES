@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_session: After parsing the value of the header specified by the
+     SessionHeader directive, remove the value from the response. PR 55279.
+     [Graham Leggett]
+
   *) mod_auth_form: Make sure the optional functions are loaded even when
      the AuthFormProvider isn't specified. [Graham Leggett]
 
