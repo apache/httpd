@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_auth_form: Make sure the optional functions are loaded even when
+     the AuthFormProvider isn't specified. [Graham Leggett]
+
   *) core: Don't truncate output when sending is interrupted by a signal,
      such as from an exiting CGI process. PR 55643. [Jeff Trawick]
 
