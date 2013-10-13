@@ -208,6 +208,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: trunk patch works, modulo CHANGES
     +1: minfrin
 
+  * mod_session: After parsing the value of the header specified by the
+    SessionHeader directive, remove the value from the response. PR 55279.
+    trunk patch: http://svn.apache.org/r1531679
+    2.4.x patch: trunk patch works, modulo CHANGES
+    +1: minfrin
+
 
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
