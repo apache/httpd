@@ -128,6 +128,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.2.x: trunk works, CHANGES needs to be written when merging
     +1: breser
 
+  * mod_dav: Fix 55397.  dav_resource->uri treated as unencoded. This was an
+    unnecessary ABI changed introduced in 2.2.25
+    trunk patches: https://svn.apache.org/r1529559
+                   https://svn.apache.org/r1531505
+    2.4.x: trunk works, CHANGES needs to be written when merging
+    2.2.x: https://people.apache.org/~breser/httpd/2.2.x/patches/pr55397.patch 
+    +1: breser
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * mod_cache: Realign the cache_quick_handler() to behave identically
