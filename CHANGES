@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_session: Reset the max-age on session save. PR 47476. [Alexey
+     Varlamov <alexey.v.varlamov gmail com>]
+
   *) mod_session: After parsing the value of the header specified by the
      SessionHeader directive, remove the value from the response. PR 55279.
      [Graham Leggett]
