@@ -994,9 +994,14 @@ through</td></tr>
     <code class="directive">ProxyPass</code>.</div>
 
     <p>Support for using a Unix Domain Socket is available by using a target
-    of <code>uds=percent-encoded-path</code>. For example, to target the
-    UDS at /home/www/socket you would use
-    <code>http://uds=%2Fhome%2Fwww%2Fsocket</code></p>
+    which appends <code>|sock:/path/lis.sock</code>. For example, to proxy
+    HTTP and target the UDS at /home/www/socket you would use
+    <code>http://localhost/|sock:/home/www.socket</code>.</p>
+
+    <div class="note"><strong>Note: </strong>When using Unix Domain Sockets, the hostname and path
+    associated with the 1st URL (<code>http://localhost/</code> in the above
+    example) is ignored; the path associated with the <code>sock:</code>
+    URL is <code class="directive">DefaultRuntimeDir</code> aware.</div>
 
     <p>Suppose the local server has address <code>http://example.com/</code>;
     then</p>

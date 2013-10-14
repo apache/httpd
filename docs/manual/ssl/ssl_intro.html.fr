@@ -409,38 +409,34 @@ l'établissement de la session protocolaire.</p>
     <tr><th>Version</th>
         <th>Source</th>
         <th>Description</th>
-        <th>Navigateurs supportés</th></tr>
+    </tr>
     <tr><td>SSL v2.0</td>
         <td>Standard du fournisseur (de Netscape Corp.)</td>
         <td>Premier protocole SSL pour lequel il existe des implémentations</td>
-        <td>- NS Navigator 1.x/2.x<br />
-        - MS IE 3.x<br />
-        - Lynx/2.8+OpenSSL</td></tr>
+    </tr>
     <tr><td>SSL v3.0</td>
         <td>Projet Internet arrivé à expiration (de Netscape Corp.) [<a href="#SSL3">SSL3</a>]</td>
         <td>Comporte des révisions permettant de prévenir certaines attaques de
 	sécurité spécifiques, ajout de chiffrements non RSA, et support des
 	chaînes de certification</td>
-        <td>- NS Navigator 2.x/3.x/4.x<br />
-        - MS IE 3.x/4.x<br />
-        - Lynx/2.8+OpenSSL</td></tr>
+    </tr>
     <tr><td>TLS v1.0</td>
         <td>Standard proposé pour l'Internet (de l'IETF) [<a href="#TLS1">TLS1</a>]</td>
         <td>Révision de SSL 3.0 pour mettre à jour la couche MAC vers HMAC,
 	ajout du bourrage de bloc pour le chiffrement de bloc, standardisation
 	de l'ordonnancement des messages et plus de messages d'alerte.</td>
-        <td>- Lynx/2.8+OpenSSL</td></tr>
-	<tr><td>TLS v1.1</td>
+    </tr>
+    <tr><td>TLS v1.1</td>
         <td>Standard proposé pour l'Internet (de l'IETF) [<a href="#TLS11">TLS11</a>]</td>
         <td>Mise à jour de TLS 1.0 pour la protection contre les
 	attaques de type Cipher block chaining (CBC).</td>
-        <td>-</td></tr>
+    </tr>
     <tr><td>TLS v1.2</td>
         <td>Standard proposé pour l'Internet (de l'IETF) [<a href="#TLS12">TLS12</a>]</td>
         <td>Mise à jour de TLS 1.2 rendant les condensés MD5 obsolètes,
 	et introduisant une incompatibilité avec SSL ce qui interdit toute
 	négociation en vue d'une utilisation de SSLv2.</td>
-        <td>-</td></tr>
+    </tr>
     </table>
 
 
