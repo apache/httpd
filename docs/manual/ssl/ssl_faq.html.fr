@@ -561,6 +561,10 @@ et mot de passe sont envoyés en clair ?</a></li>
 <li><a href="#msie">Pourquoi des erreurs d'entrée/sortie apparaissent-elles
 lorsqu'on se connecte à un serveur Apache+mod_ssl avec
 Microsoft Internet Explorer (MSIE) ?</a></li>
+<li><a href="#srp">Comment activer TLS-SRP ?</a></li>
+<li><a href="#javadh">Pourquoi des erreurs de négociation apparaissent
+avec les clients basés sur Java lorsqu'on utilise un certificat de plus
+de 1024 bits ?</a></li>
 </ul>
 
 <h3><a name="random" id="random">Pourquoi de nombreuses et aléatoires erreurs de
@@ -789,25 +793,63 @@ SetEnvIf User-Agent "MSIE [2-5]" \
 
 
 <h3><a name="srp" id="srp">Comment activer TLS-SRP ?</a></h3>
-    <p>TLS-SRP (Echange de clÃ©s avec mot de passe distant sÃ©curisÃ©,
-    dÃ©fini dans la RFC 5054) peut complÃ©ter ou mÃªme remplacer les
+    <p>TLS-SRP (Echange de clés avec mot de passe distant sécurisé,
+    défini dans la RFC 5054) peut compléter ou même remplacer les
     certificats au cours de l'authentification d'une connexion SSL. Pour
-    utiliser TLS-SRP, affectez Ã&nbsp; la directive <code class="directive"><a href="../mod/mod_ssl.html#sslsrpverifierfile">SSLSRPVerifierFile</a></code> un fichier de
-    vÃ©rification OpenSSL SRP. Pour crÃ©er ce fichier de vÃ©rification,
+    utiliser TLS-SRP, affectez à la directive <code class="directive"><a href="../mod/mod_ssl.html#sslsrpverifierfile">SSLSRPVerifierFile</a></code> un fichier de
+    vérification OpenSSL SRP. Pour créer ce fichier de vérification,
     utilisez l'outil <code>openssl</code> :</p>
     <div class="example"><p><code>
     openssl srp -srpvfile passwd.srpv -add username
     </code></p></div>
-    <p>Une fois ce fichier crÃ©Ã©, spÃ©cifiez-le dans la configuration SSL
+    <p>Une fois ce fichier créé, spécifiez-le dans la configuration SSL
     du serveur :</p>
     <div class="example"><p><code>
     SSLSRPVerifierFile /path/to/passwd.srpv
     </code></p></div>
-    <p>Pour forcer les clients Ã&nbsp; utiliser des algorithmes de chiffrement
-    non basÃ©s sur les certificats, utilisez la directive suivante :</p>
+    <p>Pour forcer les clients à utiliser des algorithmes de chiffrement
+    non basés sur les certificats, utilisez la directive suivante :</p>
     <div class="example"><p><code>
     SSLCipherSuite "!DSS:!aRSA:SRP"
     </code></p></div>
+
+
+<h3><a name="javadh" id="javadh">Pourquoi des erreurs de négociation apparaissent
+avec les clients basés sur Java lorsqu'on utilise un certificat de plus
+de 1024 bits ?</a></h3>
+    <p>Depuis la version 2.5.0-dev et à/c du 29/09/2013,
+    <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> utilise des paramètres DH qui comportent
+    des nombres premiers de plus de 1024 bits. Cependant, java 7 et ses versions
+    antérieures ne supportent que les nombres premiers DH d'une longueur
+    maximale de 1024 bits.</p>
+
+    <p>Si votre client basé sur Java s'arrête avec une exception telle
+    que <code>java.lang.RuntimeException: Could not generate DH
+    keypair</code> et
+    <code>java.security.InvalidAlgorithmParameterException: Prime size
+    must be multiple of 64, and can only range from 512 to 1024
+    (inclusive)</code>, et si httpd enregistre le message <code>tlsv1
+    alert internal error (SSL alert number 80)</code> dans son journal
+    des erreurs (avec un <code class="directive"><a href="../mod/core.html#loglevel">LogLevel</a></code>
+    <code>info</code> ou supérieur), vous pouvez soit réarranger la
+    liste d'algorithmes de mod_ssl via la directive <code class="directive"><a href="../mod/mod_ssl.html#sslciphersuite">SSLCipherSuite</a></code> (éventuellement en
+    conjonction avec la directive <code class="directive"><a href="../mod/mod_ssl.html#sslhonorcipherorder">SSLHonorCipherOrder</a></code>), soit utiliser la
+    directive <code class="directive"><a href="../mod/mod_ssl.html#sslcertificatefile">SSLCertificateFile</a></code>
+    pour configurer des paramètres DH personnalisés avec un nombre
+    premier de 1024 bits, paramètres qui seront toujours prioritaires
+    par rapport à tout autre paramètre DH par défaut.</p>
+
+    <p>Pour générer des paramètres DH personnalisés, utilisez la
+    commande <code>openssl dhparam</code>. Vous pouvez aussi ajouter les
+    paramètres DH standards issus de la <a href="http://www.ietf.org/rfc/rfc2409.txt">RFC 2409</a>, section 6.2
+    au fichier <code class="directive"><a href="../mod/ssl.html#sslcertificatefile">SSLCertificateFile</a></code>
+    considéré :</p>
+    <div class="example"><pre>-----BEGIN DH PARAMETERS-----
+MIGHAoGBAP//////////yQ/aoiFowjTExmKLgNwc0SkCTgiKZ8x0Agu+pjsTmyJR
+Sgh5jjQE3e+VGbPNOkMbMCsKbfJfFDdP4TVtbVHCReSFtXZiXn7G9ExC6aY37WsL
+/1y29Aa37e44a/taiZ+lrp8kEXxLH+ZJKGZR7OZTgf//////////AgEC
+-----END DH PARAMETERS-----</pre></div>
+
 
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

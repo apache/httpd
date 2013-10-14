@@ -322,6 +322,7 @@ luahookauthchecker	mod/mod_lua.html#luahookauthchecker
 luahookcheckuserid	mod/mod_lua.html#luahookcheckuserid
 luahookfixups	mod/mod_lua.html#luahookfixups
 luahookinsertfilter	mod/mod_lua.html#luahookinsertfilter
+luahooklog	mod/mod_lua.html#luahooklog
 luahookmaptostorage	mod/mod_lua.html#luahookmaptostorage
 luahooktranslatename	mod/mod_lua.html#luahooktranslatename
 luahooktypechecker	mod/mod_lua.html#luahooktypechecker

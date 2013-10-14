@@ -259,7 +259,7 @@ nom de chemin en fin de requête.</td></tr>
     déterminé par le <a href="../handler.html">gestionnaire</a> responsable de la requête.
     Le gestionnaire de base pour les fichiers normaux rejette par défaut
     les requêtes avec <code>PATH_INFO</code>. Les gestionnaires qui
-    servent des scripts, comme <a href="mod_cgi.html">cgi-script</a> et <a href="mod_isapi.html">isapi-handler</a>, acceptent en général par
+    servent des scripts, comme<a href="mod_cgi.html">cgi-script</a> et <a href="mod_isapi.html">isapi-handler</a>, acceptent en général par
     défaut les requêtes avec <code>PATH_INFO</code>.</dd>
     </dl>
 
@@ -1467,7 +1467,8 @@ personnalisation des réponses</a></li>
 
     <p>L'utilisation de <code>syslog</code> à la place d'un nom de
     fichier active la journalisation via syslogd(8) si le système le
-    supporte. Le dispositif syslog par défaut est <code>local7</code>,
+    supporte et si <code class="module"><a href="../mod/mod_syslog.html">mod_syslog</a></code> a été chargé. Le
+    dispositif syslog par défaut est <code>local7</code>,
     mais vous pouvez le modifier à l'aide de la syntaxe
     <code>syslog:<var>facility</var></code>, où <var>facility</var> peut
     être remplacé par un des noms habituellement documentés dans la page
@@ -1477,6 +1478,10 @@ personnalisation des réponses</a></li>
 
     <pre class="prettyprint lang-config">ErrorLog syslog:user</pre>
 
+
+    <p>Des modules additionnels peuvent implémenter leur propre
+    fournisseur ErrorLog. La syntaxe est similaire à l'exemple
+    <code>syslog</code> ci-dessus.</p>
 
     <p>SECURITE : Voir le document <a href="../misc/security_tips.html#serverroot">conseils à propos de
     sécurité</a> pour des détails sur les raisons pour lesquelles votre

@@ -213,7 +213,7 @@ group membership</td></tr>
 own username, instead of anonymously or with hard-coded credentials for the server</td></tr>
 <tr><td><a href="mod_authnz_ldap.html#authldapinitialbindpattern">AuthLDAPInitialBindPattern<em><var>regex</var> <var>substitution</var></em></a></td><td> (.*) $1 (remote use +</td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Specifies the transformation of the basic authentication username to be used when binding to the LDAP server
 to perform a DN lookup</td></tr>
-<tr class="odd"><td><a href="mod_authnz_ldap.html#authldapmaxsubgroupdepth">AuthLDAPMaxSubGroupDepth <var>Number</var></a></td><td> 10 </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Specifies the maximum sub-group nesting depth that will be
+<tr class="odd"><td><a href="mod_authnz_ldap.html#authldapmaxsubgroupdepth">AuthLDAPMaxSubGroupDepth <var>Number</var></a></td><td> 0 </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Specifies the maximum sub-group nesting depth that will be
 evaluated before the user search is discontinued.</td></tr>
 <tr><td><a href="mod_authnz_ldap.html#authldapremoteuserattribute">AuthLDAPRemoteUserAttribute uid</a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Use the value of the attribute returned during the user
 query to set the REMOTE_USER environment variable</td></tr>

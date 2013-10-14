@@ -1230,13 +1230,14 @@ distant utilisé tel quel)</code></td></tr>
 maximale prise en compte avant l'abandon de la recherche de
 l'utilisateur.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthLDAPMaxSubGroupDepth <var>Nombre</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AuthLDAPMaxSubGroupDepth 10</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AuthLDAPMaxSubGroupDepth 0</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authnz_ldap</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.3.0 du serveur HTTP
-Apache</td></tr>
+Apache ; la valeur par défaut était 10 dans les versions 2.4.x et les
+premières versions 2.5</td></tr>
 </table>
    <p>Lorsque cette directive est définie à une valeur <code>X</code>
    non nulle, en combinaison avec l'utilisation de la directive
@@ -1247,6 +1248,17 @@ Apache</td></tr>
    d'imbrication maximale <code>X</code> spécifiée par la directive.</p>
    <p>Se référer à la section <a href="#reqgroup"><code>Require
    ldap-group</code></a> pour un exemple plus détaillé.</p>
+
+   <div class="note"><h3>Performances dans le cas des groupes imbriqués</h3>
+   <p>Lorsque les directives
+   <code class="directive">AuthLDAPSubGroupAttribute</code> et
+   <code class="directive">AuthLDAPGroupAttribute</code> se recouvrent (comme
+   c'est le cas par défaut et requis par les schémas LDAP courants), la
+   recherche de sous-groupes au sein de grands groupes peut être très
+   longue. Si vos groupes sont très grands et non imbriqués, définissez
+   la directive <code class="directive">AuthLDAPMaxSubGroupDepth</code> à 0.</p>
+   </div>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

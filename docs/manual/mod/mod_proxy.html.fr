@@ -28,6 +28,8 @@
 <a href="../fr/mod/mod_proxy.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_proxy.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
+            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Serveur mandataire/passerelle multi-protocole</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>proxy_module</td></tr>
@@ -1108,9 +1110,9 @@ l'espace d'URLs du serveur local</td></tr>
 
     <p>Le support des sockets de style Unix est fourni ; il suffit pour
     cela d'utiliser une cible du style
-    <code>uds=chemin-codé-%</code>. Par exemple, pour cibler l'UDS
+    <code>|sock:/path/lis.sock</code>. Par exemple, pour cibler l'UDS
     /home/www/socket, vous devez utiliser
-    <code>http://uds=%2Fhome%2Fwww%2Fsocket</code>.</p>
+    <code>http://localhost/|sock:/home/www.socket</code>.</p>
 
     <p>Supposons que le serveur local a pour adresse
     <code>http://example.com/</code> ; alors la ligne</p>
