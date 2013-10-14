@@ -17,7 +17,7 @@ Changes with Apache 2.4.7
   *) core: Add missing Reason-Phrase in HTTP response headers.
      PR 54946. [Rainer Jung]
 
-  *) mod_rewrite: Make rewrite websocket aware to allow proxying.
+  *) mod_rewrite: Make rewrite websocket-aware to allow proxying.
      PR 55598. [Chris Harris <chris.harris kitware com>]
 
   *) mod_ldap: When looking up sub-groups, use an implicit objectClass=*
