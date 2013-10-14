@@ -118,8 +118,8 @@ static void init_balancer_members(apr_pool_t *p, server_rec *s,
         int worker_is_initialized;
         proxy_worker *worker = *workers;
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01158)
-                     "Looking at %s -> %s%s initialized?", balancer->s->name, worker->s->name,
-                     (worker->s->uds?"|":""));
+                     "Looking at %s -> %s initialized?", balancer->s->name,
+                     ap_proxy_worker_name(p, worker));
         worker_is_initialized = PROXY_WORKER_IS_INITIALIZED(worker);
         if (!worker_is_initialized) {
             ap_proxy_initialize_worker(worker, s, p);
@@ -639,11 +639,11 @@ static int proxy_balancer_post_request(proxy_worker *worker,
             int val = ((int *)balancer->errstatuses->elts)[i];
             if (r->status == val) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01174)
-                              "%s: Forcing worker (%s%s) into error state "
+                              "%s: Forcing worker (%s) into error state "
                               "due to status code %d matching 'failonstatus' "
                               "balancer parameter",
-                              balancer->s->name, worker->s->name,
-                              (worker->s->uds?"|":""), val);
+                              balancer->s->name, ap_proxy_worker_name(r->pool, worker),
+                              val);
                 worker->s->status |= PROXY_WORKER_IN_ERROR;
                 worker->s->error_time = apr_time_now();
                 break;
@@ -654,9 +654,9 @@ static int proxy_balancer_post_request(proxy_worker *worker,
     if (balancer->failontimeout
         && (apr_table_get(r->notes, "proxy_timedout")) != NULL) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02460)
-                      "%s: Forcing worker (%s%s) into error state "
+                      "%s: Forcing worker (%s) into error state "
                       "due to timeout and 'failonstatus' parameter being set",
-                       balancer->s->name, worker->s->name, (worker->s->uds?"|":""));
+                       balancer->s->name, ap_proxy_worker_name(r->pool, worker));
         worker->s->status |= PROXY_WORKER_IN_ERROR;
         worker->s->error_time = apr_time_now();
 
@@ -1284,7 +1284,7 @@ static int balancer_handler(request_rec *r)
                 worker = *workers;
                 /* Start proxy_worker */
                 ap_rputs("        <httpd:worker>\n", r);
-                ap_rvputs(r, "          <httpd:name>", worker->s->name, (worker->s->uds?"|":""),
+                ap_rvputs(r, "          <httpd:name>", ap_proxy_worker_name(r->pool, worker),
                           "</httpd:name>\n", NULL);
                 ap_rvputs(r, "          <httpd:scheme>", worker->s->scheme,
                           "</httpd:scheme>\n", NULL);
@@ -1533,8 +1533,8 @@ static int balancer_handler(request_rec *r)
                           ap_escape_uri(r->pool, worker->s->name),
                           "&nonce=", balancer->s->nonce,
                           "\">", NULL);
-                ap_rvputs(r, (worker->s->uds ? "<i>" : ""), worker->s->name,
-                          (worker->s->uds ? "|</i>" : ""), "</a></td>", NULL);
+                ap_rvputs(r, (worker->s->uds ? "<i>" : ""), ap_proxy_worker_name(r->pool, worker),
+                          (worker->s->uds ? "</i>" : ""), "</a></td>", NULL);
                 ap_rvputs(r, "<td>", ap_escape_html(r->pool, worker->s->route),
                           NULL);
                 ap_rvputs(r, "</td><td>",
@@ -1559,7 +1559,7 @@ static int balancer_handler(request_rec *r)
         ap_rputs("<hr />\n", r);
         if (wsel && bsel) {
             ap_rputs("<h3>Edit worker settings for ", r);
-            ap_rvputs(r, (wsel->s->uds?"<i>":""), wsel->s->name, (wsel->s->uds?"|</i>":""), "</h3>\n", NULL);
+            ap_rvputs(r, (wsel->s->uds?"<i>":""), ap_proxy_worker_name(r->pool, wsel), (wsel->s->uds?"</i>":""), "</h3>\n", NULL);
             ap_rputs("<form method=\"POST\" enctype=\"application/x-www-form-urlencoded\" action=\"", r);
             ap_rvputs(r, ap_escape_uri(r->pool, action), "\">\n", NULL);
             ap_rputs("<dl>\n<table><tr><td>Load factor:</td><td><input name='w_lf' id='w_lf' type=text ", r);
