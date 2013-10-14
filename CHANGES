@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_authn_socache: Support optional initialization arguments for
+     socache providers.  [Chris Darroch]
+
   *) mod_session: Reset the max-age on session save. PR 47476. [Alexey
      Varlamov <alexey.v.varlamov gmail com>]
 

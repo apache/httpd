@@ -115,16 +115,17 @@ AuthnCacheSOCache dbm
 <directivesynopsis>
 <name>AuthnCacheSOCache</name>
 <description>Select socache backend provider to use</description>
-<syntax>AuthnCacheSOCache <var>provider-name</var></syntax>
+<syntax>AuthnCacheSOCache <var>provider-name[:provider-args]</var></syntax>
 <contextlist><context>server config</context></contextlist>
 <override>None</override>
 
 <usage>
     <p>This is a server-wide setting to select a provider for the
-    <a href="../socache.html">shared object cache</a>.
-    Values are "dbm", "dc", "memcache", or "shmcb", each subject to the
-    appropriate module being loaded.  If not set, your platform's
-       default will be used.</p>
+    <a href="../socache.html">shared object cache</a>, followed by
+    optional arguments for that provider.
+    Some possible values for <var>provider-name</var> are "dbm", "dc",
+    "memcache", or "shmcb", each subject to the appropriate module
+    being loaded.  If not set, your platform's default will be used.</p>
 </usage>
 </directivesynopsis>
 
