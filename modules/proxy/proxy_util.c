@@ -1361,9 +1361,9 @@ static apr_status_t connection_cleanup(void *theconn)
     /* Sanity check: Did we already return the pooled connection? */
     if (conn->inreslist) {
         ap_log_perror(APLOG_MARK, APLOG_ERR, 0, conn->pool, APLOGNO(00923)
-                      "Pooled connection 0x%pp for worker %s%s has been"
+                      "Pooled connection 0x%pp for worker %s has been"
                       " already returned to the connection pool.", conn,
-                      worker->s->name, (worker->s->uds?"|":""));
+                      ap_proxy_worker_name(conn->pool, worker));
         return APR_SUCCESS;
     }
 
@@ -1486,6 +1486,26 @@ static apr_status_t connection_destructor(void *resource, void *params,
 /*
  * WORKER related...
  */
+
+PROXY_DECLARE(char *) ap_proxy_worker_name(apr_pool_t *p,
+                                           proxy_worker *worker)
+{
+    int rv;
+    apr_uri_t uri;
+    apr_pool_t *pool = p;
+    if (!worker->s->uds) {
+        return worker->s->name;
+    }
+    if (!pool) {
+        /* ugly */
+        apr_pool_create(&pool, ap_server_conf->process->pool);
+    }
+    rv = apr_uri_parse(pool, worker->s->name, &uri);
+    if (rv != APR_SUCCESS) {
+        return apr_pstrcat(pool, worker->s->name, "|", NULL);
+    }
+    return apr_pstrcat(pool, uri.scheme, "://localhost/|sock:", uri.path, NULL);
+}
 
 PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p,
                                                   proxy_balancer *balancer,
@@ -1707,8 +1727,8 @@ PROXY_DECLARE(apr_status_t) ap_proxy_share_worker(proxy_worker *worker, proxy_wo
         action = "re-using";
     }
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(02338)
-                 "%s shm[%d] (0x%pp) for worker: %s%s", action, i, (void *)shm,
-                 worker->s->name, (worker->s->uds?"|":""));
+                 "%s shm[%d] (0x%pp) for worker: %s", action, i, (void *)shm,
+                 ap_proxy_worker_name(NULL, worker));
 
     worker->s = shm;
     worker->s->index = i;
@@ -1723,13 +1743,13 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
     if (worker->s->status & PROXY_WORKER_INITIALIZED) {
         /* The worker is already initialized */
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00924)
-                     "worker %s%s shared already initialized", worker->s->name,
-                     (worker->s->uds?"|":""));
+                     "worker %s shared already initialized",
+                     ap_proxy_worker_name(p, worker));
     }
     else {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00925)
-                     "initializing worker %s%s shared", worker->s->name,
-                     (worker->s->uds?"|":""));
+                     "initializing worker %s shared",
+                     ap_proxy_worker_name(p, worker));
         /* Set default parameters */
         if (!worker->s->retry_set) {
             worker->s->retry = apr_time_from_sec(PROXY_WORKER_DEFAULT_RETRY);
@@ -1765,13 +1785,13 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
     /* What if local is init'ed and shm isn't?? Even possible? */
     if (worker->local_status & PROXY_WORKER_INITIALIZED) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00926)
-                     "worker %s%s local already initialized", worker->s->name,
-                     (worker->s->uds?"|":""));
+                     "worker %s local already initialized",
+                     ap_proxy_worker_name(p, worker));
     }
     else {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00927)
-                     "initializing worker %s%s local", worker->s->name,
-                     (worker->s->uds?"|":""));
+                     "initializing worker %s local",
+                     ap_proxy_worker_name(p, worker));
         apr_global_mutex_lock(proxy_mutex);
         /* Now init local worker data */
         if (worker->tmutex == NULL) {
@@ -2927,8 +2947,8 @@ PROXY_DECLARE(apr_status_t) ap_proxy_sync_balancer(proxy_balancer *b, server_rec
             if (worker->hash.def == shm->hash.def && worker->hash.fnv == shm->hash.fnv) {
                 found = 1;
                 ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(02402)
-                             "re-grabbing shm[%d] (0x%pp) for worker: %s%s", i, (void *)shm,
-                             worker->s->name, (worker->s->uds?"|":""));
+                             "re-grabbing shm[%d] (0x%pp) for worker: %s", i, (void *)shm,
+                             ap_proxy_worker_name(conf->pool, worker));
                 break;
             }
         }

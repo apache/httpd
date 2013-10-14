@@ -588,6 +588,16 @@ typedef __declspec(dllimport) const char *
 
 /* Connection pool API */
 /**
+ * Return the user-land, UDS aware worker name
+ * @param p        memory pool used for displaying worker name
+ * @param worker   the worker
+ * @return         name
+ */
+
+PROXY_DECLARE(char *) ap_proxy_worker_name(apr_pool_t *p,
+                                           proxy_worker *worker);
+
+/**
  * Get the worker from proxy configuration
  * @param p        memory pool used for finding worker
  * @param balancer the balancer that the worker belongs to
