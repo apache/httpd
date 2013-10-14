@@ -1586,8 +1586,8 @@ PROXY_DECLARE(char *) ap_proxy_define_worker(apr_pool_t *p,
     char *ptr, *sockpath = NULL;
 
     /* Look to see if we are using UDS:
-       require format: http://localhost/whatever|sock:/path
-       This results in talking http to the socket at /whatever/path
+       require format: http://ignored/ignored|sock:/path/foo/bar.sock
+       This results in talking http to the socket at /path/foo/bar.sock
     */
     ptr = ap_strchr((char *)url, '|');
     if (ptr) {
@@ -1605,17 +1605,24 @@ PROXY_DECLARE(char *) ap_proxy_define_worker(apr_pool_t *p,
     if (rv != APR_SUCCESS) {
         return "Unable to parse URL";
     }
-    if (!uri.hostname || !uri.scheme) {
+    if (!uri.scheme) {
+        return "URL must be absolute!";
+    }
+    /* allow for http:|sock:/path */
+    if (!uri.hostname && !sockpath) {
         return "URL must be absolute!";
     }
 
-    ap_str_tolower(uri.hostname);
-    ap_str_tolower(uri.scheme);
     if (sockpath) {
         uri.hostname = "localhost";
-        uri.path = apr_pstrcat(p, uri.path, (*sockpath == '/' ? "" : "/"),
-                               sockpath, NULL);
+        uri.path = ap_runtime_dir_relative(p, sockpath);
+        uri.query = NULL;
+        uri.fragment = NULL;
     }
+    else {
+        ap_str_tolower(uri.hostname);
+    }
+    ap_str_tolower(uri.scheme);
     /*
      * Workers can be associated w/ balancers or on their
      * own; ie: the generic reverse-proxy or a worker
