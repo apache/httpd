@@ -1498,7 +1498,11 @@ PROXY_DECLARE(char *) ap_proxy_worker_name(apr_pool_t *p,
     }
     if (!pool) {
         /* ugly */
-        apr_pool_create(&pool, NULL);
+        apr_pool_create(&pool, ap_server_conf->process->pool);
+        if (!pool) {
+            /* something is better than nothing :) */
+            return worker->s->name;
+        }
     }
     rv = apr_uri_parse(pool, worker->s->name, &uri);
     if (rv != APR_SUCCESS) {
