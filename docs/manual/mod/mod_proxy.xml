@@ -828,8 +828,8 @@ expressions</description>
     <code>http://localhost/|sock:/home/www.socket</code>.</p>
 
     <note><strong>Note: </strong>When using Unix Domain Sockets, the hostname and path
-    associated with the 1st URL (<code>http://localhost/<code> in the above
-    example) is ignored; the path associated with the <code>sock:<code>
+    associated with the 1st URL (<code>http://localhost/</code> in the above
+    example) is ignored; the path associated with the <code>sock:</code>
     URL is <directive>DefaultRuntimeDir</directive> aware.</note>
 
     <p>Suppose the local server has address <code>http://example.com/</code>;
