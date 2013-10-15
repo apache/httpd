@@ -156,6 +156,7 @@ static void usage(const char *argv0, const char *reason)
 static int get_now(rotate_config_t *config, apr_int32_t *offset)
 {
     apr_time_t tNow = apr_time_now();
+    int utc_offset;
 
     if (config->use_localtime) {
         /* Check for our UTC offset before using it, since it might
@@ -164,13 +165,16 @@ static int get_now(rotate_config_t *config, apr_int32_t *offset)
          */
         apr_time_exp_t lt;
         apr_time_exp_lt(&lt, tNow);
-        *offset = lt.tm_gmtoff;
+        utc_offset = lt.tm_gmtoff;
     }
     else {
-        *offset = config->utc_offset;
+        utc_offset = config->utc_offset;
     }
 
-    return (int)apr_time_sec(tNow) + *offset;
+    if (offset)
+        *offset = utc_offset;
+
+    return (int)apr_time_sec(tNow) + utc_offset;
 }
 
 /*
