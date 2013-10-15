@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_proxy: Added support for unix domain sockets as the
+     backend server endpoint [Jim Jagielski, Blaise Tarr
+     <blaise tarr gmail com>]
+
   *) mod_authn_socache: Support optional initialization arguments for
      socache providers.  [Chris Darroch]
 
