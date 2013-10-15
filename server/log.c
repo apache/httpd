@@ -458,6 +458,18 @@ int ap_open_logs(apr_pool_t *pconf, apr_pool_t *p /* plog */,
                 virt->error_log = q->error_log;
             }
         }
+        else if (virt->errorlog_provider) {
+            /* separately-configured vhost-specific provider */
+            if (open_error_log(virt, 0, p) != OK) {
+                return DONE;
+            }
+        }
+        else if (s_main->errorlog_provider) {
+            /* inherit provider from s_main */
+            virt->errorlog_provider = s_main->errorlog_provider;
+            virt->errorlog_provider_handle = s_main->errorlog_provider_handle;
+            virt->error_log = NULL;
+        }
         else {
             virt->error_log = s_main->error_log;
         }
