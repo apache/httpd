@@ -2096,12 +2096,12 @@ PROXY_DECLARE(int) ap_proxy_acquire_connection(const char *proxy_function,
             }
         }
         if ((*conn)->uds_path) {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(02545)
                          "%s: has determined UDS as %s",
                          proxy_function, (*conn)->uds_path);
         }
         else {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(02546)
                          "%s: cannot parse for UDS (%s)",
                          proxy_function, worker->s->name);
 
