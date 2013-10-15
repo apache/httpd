@@ -18,15 +18,6 @@ Changes with Apache 2.5.0
   *) mod_auth_form: Make sure the optional functions are loaded even when
      the AuthFormProvider isn't specified. [Graham Leggett]
 
-  *) core: Don't truncate output when sending is interrupted by a signal,
-     such as from an exiting CGI process. PR 55643. [Jeff Trawick]
-
-  *) core: Add missing Reason-Phrase in HTTP response headers.
-     PR 54946. [Rainer Jung]
-
-  *) mod_rewrite: Make rewrite websocket aware to allow proxying.
-     PR 55598. [Chris Harris <chris.harris kitware com>]
-
   *) mod_ssl: Improve handling of ephemeral DH and ECDH keys by
      allowing custom parameters to be configured via SSLCertificateFile,
      and by adding standardized DH parameters for 1024/2048/3072/4096 bits.
@@ -37,9 +28,6 @@ Changes with Apache 2.5.0
 
   *) mod_lua: Let the Inter-VM get/set functions work with a global 
      shared memory pool instead of a per-process pool. [Daniel Gruno]
-
-  *) WinNT MPM: Exit the child if the parent process crashes or is terminated.
-     [Oracle Corporation]
 
   *) ldap: Support ldaps when using the Microsoft LDAP SDK.
      PR 54626. [Jean-Frederic Clere]
@@ -86,9 +74,6 @@ Changes with Apache 2.5.0
 
   *) mod_lua: Add getcookie/setcookie for reading/writing HTTP cookies
      [Daniel Gruno]
-
-  *) WinNT MPM: Don't crash during child process initialization if the
-     Listen protocol is unrecognized.  [Jeff Trawick]
 
   *) mod_lua: Add a logging hook for modifying/skipping logs. [Daniel Gruno]
 
