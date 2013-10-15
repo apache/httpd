@@ -1508,7 +1508,7 @@ PROXY_DECLARE(char *) ap_proxy_worker_name(apr_pool_t *p,
     if (rv != APR_SUCCESS) {
         return apr_pstrcat(pool, worker->s->name, "|", NULL);
     }
-    return apr_pstrcat(pool, uri.scheme, "://localhost/|sock:", uri.path, NULL);
+    return apr_pstrcat(pool, "unix:", uri.path, "|", uri.scheme, ":", NULL);
 }
 
 PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p,
@@ -1610,15 +1610,16 @@ PROXY_DECLARE(char *) ap_proxy_define_worker(apr_pool_t *p,
     char *ptr, *sockpath = NULL;
 
     /* Look to see if we are using UDS:
-       require format: http://ignored/ignored|sock:/path/foo/bar.sock
+       require format: unix:/path/foo/bar.sock|http:
        This results in talking http to the socket at /path/foo/bar.sock
     */
     ptr = ap_strchr((char *)url, '|');
     if (ptr) {
         *ptr = '\0';
-        rv = apr_uri_parse(p, ptr+1, &urisock);
-        if (rv == APR_SUCCESS && !strcasecmp(urisock.scheme, "sock")) {
+        rv = apr_uri_parse(p, url, &urisock);
+        if (rv == APR_SUCCESS && !strcasecmp(urisock.scheme, "unix")) {
             sockpath = urisock.path;
+            url = ptr+1;    /* so we get the scheme for the uds */
         }
         else {
             *ptr = '|';
@@ -1627,14 +1628,14 @@ PROXY_DECLARE(char *) ap_proxy_define_worker(apr_pool_t *p,
     rv = apr_uri_parse(p, url, &uri);
 
     if (rv != APR_SUCCESS) {
-        return "Unable to parse URL";
+        return apr_pstrcat(p, "Unable to parse URL: ", url, NULL);
     }
     if (!uri.scheme) {
-        return "URL must be absolute!";
+        return apr_pstrcat(p, "URL must be absolute!: ", url, NULL);
     }
     /* allow for http:|sock:/path */
     if (!uri.hostname && !sockpath) {
-        return "URL must be absolute!";
+        return apr_pstrcat(p, "URL must be absolute!: ", url, NULL);;
     }
 
     if (sockpath) {
