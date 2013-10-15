@@ -1218,11 +1218,11 @@ PROXY_DECLARE(apr_status_t) ap_proxy_share_balancer(proxy_balancer *balancer,
     } else {
         action = "re-using";
     }
+    balancer->s = shm;
+    balancer->s->index = i;
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(02337)
                  "%s shm[%d] (0x%pp) for %s", action, i, (void *)shm,
                  balancer->s->name);
-    balancer->s = shm;
-    balancer->s->index = i;
     /* the below should always succeed */
     lbmethod = ap_lookup_provider(PROXY_LBMETHOD, balancer->s->lbpname, "0");
     if (lbmethod) {
@@ -1731,12 +1731,11 @@ PROXY_DECLARE(apr_status_t) ap_proxy_share_worker(proxy_worker *worker, proxy_wo
     } else {
         action = "re-using";
     }
+    worker->s = shm;
+    worker->s->index = i;
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(02338)
                  "%s shm[%d] (0x%pp) for worker: %s", action, i, (void *)shm,
                  ap_proxy_worker_name(NULL, worker));
-
-    worker->s = shm;
-    worker->s->index = i;
     return APR_SUCCESS;
 }
 
