@@ -150,14 +150,13 @@ static void usage(const char *argv0, const char *reason)
     exit(1);
 }
 
-/*
- * Get the unix time with timezone corrections
- * given in the config struct.
- */
-static int get_now(rotate_config_t *config)
+/* This function returns the current Unix time (time_t) plus any
+ * configured or derived local time offset.  The offset applied is
+ * returned via *offset. */
+static int get_now(rotate_config_t *config, apr_int32_t *offset)
 {
     apr_time_t tNow = apr_time_now();
-    int utc_offset = config->utc_offset;
+
     if (config->use_localtime) {
         /* Check for our UTC offset before using it, since it might
          * change if there's a switch between standard and daylight
@@ -165,9 +164,13 @@ static int get_now(rotate_config_t *config)
          */
         apr_time_exp_t lt;
         apr_time_exp_lt(&lt, tNow);
-        utc_offset = lt.tm_gmtoff;
+        *offset = lt.tm_gmtoff;
     }
-    return (int)apr_time_sec(tNow) + utc_offset;
+    else {
+        *offset = config->utc_offset;
+    }
+
+    return (int)apr_time_sec(tNow) + *offset;
 }
 
 /*
@@ -230,13 +233,13 @@ static void checkRotate(rotate_config_t *config, rotate_status_t *status)
             status->rotateReason = ROTATE_SIZE;
         }
         else if (config->tRotation) {
-            if (get_now(config) >= status->tLogEnd) {
+            if (get_now(config, NULL) >= status->tLogEnd) {
                 status->rotateReason = ROTATE_TIME;
             }
         }
     }
     else if (config->tRotation) {
-        if (get_now(config) >= status->tLogEnd) {
+        if (get_now(config, NULL) >= status->tLogEnd) {
             status->rotateReason = ROTATE_TIME;
         }
     }
@@ -359,12 +362,15 @@ static void truncate_and_write_error(rotate_status_t *status)
  */
 static void doRotate(rotate_config_t *config, rotate_status_t *status)
 {
-
-    int now = get_now(config);
+    apr_int32_t offset;
+    int now;
     int tLogStart;
     apr_status_t rv;
     struct logfile newlog;
     int thisLogNum = -1;
+
+    /* Retrieve local-time-adjusted-Unix-time. */
+    now = get_now(config, &offset);
 
     status->rotateReason = ROTATE_NONE;
 
@@ -391,7 +397,13 @@ static void doRotate(rotate_config_t *config, rotate_status_t *status)
         apr_time_exp_t e;
         apr_size_t rs;
 
-        apr_time_exp_gmt(&e, tNow);
+        /* Explode the local-time-adjusted-Unix-time into a struct tm,
+         * first *reversing* local-time-adjustment applied by
+         * get_now() if we are using localtime. */
+        if (config->use_localtime)
+            apr_time_exp_lt(&e, tNow - apr_time_from_sec(offset));
+        else
+            apr_time_exp_gmt(&e, tNow);
         apr_strftime(newlog.name, &rs, sizeof(newlog.name), config->szLogRoot, &e);
     }
     else {
@@ -655,7 +667,7 @@ int main (int argc, const char * const argv[])
         nRead = sizeof(buf);
 #if APR_FILES_AS_SOCKETS
         if (config.create_empty && config.tRotation) {
-            polltimeout = status.tLogEnd ? status.tLogEnd - get_now(&config) : config.tRotation;
+            polltimeout = status.tLogEnd ? status.tLogEnd - get_now(&config, NULL) : config.tRotation;
             if (polltimeout <= 0) {
                 pollret = APR_TIMEUP;
             }
