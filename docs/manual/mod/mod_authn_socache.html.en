@@ -184,17 +184,18 @@ AuthnCacheProvideFor dbd myprovider
 <div class="directive-section"><h2><a name="AuthnCacheSOCache" id="AuthnCacheSOCache">AuthnCacheSOCache</a> <a name="authncachesocache" id="authncachesocache">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Select socache backend provider to use</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthnCacheSOCache <var>provider-name</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthnCacheSOCache <var>provider-name[:provider-args]</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>None</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authn_socache</td></tr>
 </table>
     <p>This is a server-wide setting to select a provider for the
-    <a href="../socache.html">shared object cache</a>.
-    Values are "dbm", "dc", "memcache", or "shmcb", each subject to the
-    appropriate module being loaded.  If not set, your platform's
-       default will be used.</p>
+    <a href="../socache.html">shared object cache</a>, followed by
+    optional arguments for that provider.
+    Some possible values for <var>provider-name</var> are "dbm", "dc",
+    "memcache", or "shmcb", each subject to the appropriate module
+    being loaded.  If not set, your platform's default will be used.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
