@@ -1238,15 +1238,6 @@ ProxyPass / balancer://hotcluster/
     removes the normal limited protection against URL-based attacks
     provided by the proxy.</p>
 
-    <p>The optional <var>interpolate</var> keyword (available in
-    httpd 2.2.9 and later), in combination with
-    <directive>ProxyPassInterpolateEnv</directive> causes the ProxyPass
-    to interpolate environment variables, using the syntax
-    <var>${VARNAME}</var>.  Note that many of the standard CGI-derived
-    environment variables will not exist when this interpolation happens,
-    so you may still have to resort to <module>mod_rewrite</module>
-    for complex rules.</p>
-
     <p>Normally, mod_proxy will include the query string when
     generating the <var>SCRIPT_FILENAME</var> environment variable.
     The optional <var>noquery</var> keyword (available in
@@ -1268,6 +1259,30 @@ ProxyPass / balancer://hotcluster/
     <directive module="mod_rewrite">RewriteRule</directive> directive with the
     <code>[P]</code> flag.</p>
 
+    <p>The optional <var>interpolate</var> keyword (available in
+    httpd 2.2.9 and later), in combination with
+    <directive>ProxyPassInterpolateEnv</directive> causes the ProxyPass
+    to interpolate environment variables, using the syntax
+    <var>${VARNAME}</var>.  Note that many of the standard CGI-derived
+    environment variables will not exist when this interpolation happens,
+    so you may still have to resort to <module>mod_rewrite</module>
+    for complex rules.  Also note that interpolation is not supported
+    within the scheme portion of a URL.  Dynamic determination of the
+    scheme can be accomplished with <module>mod_rewrite</module> as in the
+    following example.</p>
+
+    <highlight language="config">
+RewriteEngine On
+
+RewriteCond %{HTTPS} =off
+RewriteRule . - [E=protocol:http]
+RewriteCond %{HTTPS} =on
+RewriteRule . - [E=protocol:https]
+
+RewriteRule ^/mirror/foo/(.*) %{ENV:protocol}://backend.example.com/$1 [P]
+ProxyPassReverse  /mirror/foo/ http://backend.example.com/
+ProxyPassReverse  /mirror/foo/ https://backend.example.com/
+    </highlight>
 </usage>
 </directivesynopsis>
 
@@ -1399,7 +1414,8 @@ ProxyPassReverseCookiePath  /  /mirror/foo/
     httpd 2.2.9 and later), used together with
     <directive>ProxyPassInterpolateEnv</directive>, enables interpolation
     of environment variables specified using the format <var>${VARNAME}</var>.
-    </p>
+    Note that interpolation is not supported within the scheme portion of a
+    URL.</p>
 
     <p>When used inside a <directive type="section" module="core"
     >Location</directive> section, the first argument is omitted and the local
