@@ -224,6 +224,20 @@ d'Apache</td></tr>
     liste, puis, une fois la rotation complète effectuée, supprimez la
     première clé de la liste.</p>
 
+    <p>Si la valeur de l'argument commence par exec: , la commande
+    spécifiée sera exécutée, et la première ligne que cette dernière
+    renverra sur la sortie standard sera utilisée comme clé.</p>
+<div class="example"><pre>
+# clé spécifiée et utilisée en tant que tel
+SessionCryptoPassphrase secret
+
+# exécution de /path/to/program pour générer la clé
+SessionCryptoPassphrase exec:/path/to/program
+
+# exécution de /path/to/program avec un argument pour générer la clé
+SessionCryptoPassphrase "exec:/path/to/otherProgram argument1"
+</pre></div>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

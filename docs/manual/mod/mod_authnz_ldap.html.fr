@@ -27,14 +27,12 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_authnz_ldap.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_authnz_ldap.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Permet d'utiliser un annuaire LDAP pour l'authentification
 HTTP de base.</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>authnz_ldap_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_authnz_ldap.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis les versions 2.1 et supérieures
+<tr><th><a href="module-dict.html#Compatibility">Compatibilité:</a></th><td>Dosponible depuis les versions 2.1 et supérieures
 d'Apache</td></tr></table>
 <h3>Sommaire</h3>
 
@@ -1251,6 +1249,17 @@ Apache</td></tr>
    d'imbrication maximale <code>X</code> spécifiée par la directive.</p>
    <p>Se référer à la section <a href="#reqgroup"><code>Require
    ldap-group</code></a> pour un exemple plus détaillé.</p>
+
+   <div class="note"><h3>Performances dans le cas des groupes imbriqués</h3>
+   <p>Lorsque les directives
+   <code class="directive">AuthLDAPSubGroupAttribute</code> et
+   <code class="directive">AuthLDAPGroupAttribute</code> se recouvrent (comme
+   c'est le cas par défaut et requis par les schémas LDAP courants), la
+   recherche de sous-groupes au sein de grands groupes peut être très
+   longue. Si vos groupes sont très grands et non imbriqués, définissez
+   la directive <code class="directive">AuthLDAPMaxSubGroupDepth</code> à 0.</p>
+   </div>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

@@ -50,7 +50,7 @@ interne, et un serveur web public <code>www.example.com</code>, il peut
 être souhaitable de fournir une passerelle vers le serveur d'application
 à l'adresse <code>http://www.example.com/appserver/</code>. Lorsque le
 serveur d'applications présente un lien vers lui-même, ce lien doit être
-réécrit pour fonctionner à travers la passerelle. À cet effet,
+réécrit pour fonctionner à travers la passerelle. A cet effet,
 mod_proxy_html permet de réécrire <code>&lt;a
 href="http://appserver.example.com/foo/bar.html"&gt;foobar&lt;/a&gt;</code>
 en <code>&lt;a
@@ -92,10 +92,11 @@ tampon des scripts en ligne et des feuilles de style.</td></tr>
 Disponible en tant que module tiers dans les versions 2.x antérieures.</td></tr>
 </table>
 <p>Pour pouvoir interpréter du contenu non HTML (feuilles de style et
-scripts inclus dans des documents HTML), mod_proxy_html doit le lire et le mémoriser en entier dans un
+scripts) embarqué dans des documents HTML, mod_proxy_html doit le lire
+et le mémoriser en entier dans un
 tampon. Ce tampon devra être étendu autant que nécessaire afin de
 pouvoir accueillir le plus grand script ou la plus grande feuille de
-style de la page, selon un incrément de [nb-octets] que cette
+style de la page, selon un incrément de <var>nb-octets</var> que cette
 directive permet de définir.</p>
 <p>La valeur par défaut est 8192 et sera suffisante pour la plupart des
 pages. Cependant, si vous savez que vous allez mandater des
@@ -155,13 +156,13 @@ des outils de création/publication déficients.</p>
 propre FPI (Formal Public Identifier). Le second argument optionnel
 détermine si la syntaxe utilisée sera SGML/HTML ou XML/XHTML.</p>
 <p>Par défaut, aucun FPI n'est inséré, étant donné qu'il vaut mieux pas
-de FPI du tout qu'un FPI bogué. Si en revanche votre serveur d'arrière-plan
+de FPI du tout qu'un FPI bogué. Si par contre votre serveur d'arrière-plan
 génère du contenu HTML ou XHTML correct, vous pouvez définir cette
 directive en conséquence.</p>
-<p>Avec la première syntaxe, mod_proxy_html va également mettre le code HTML
+<p>Avec la première syntaxe, mod_proxy_html va aussi mettre le code HTML
 en conformité avec le standard spécifié. Il ne pourra pas corriger
 toutes les erreurs, mais il va supprimer les éléments et attributs non
-conformes. Il peut également journaliser les autres erreurs si la directive
+conformes. Il peut aussi journaliser les autres erreurs si la directive
 <code class="directive"><a href="../mod/core.html#loglevel">LogLevel</a></code> est définie à
 Debug.</p>
 
@@ -180,9 +181,9 @@ Disponible en tant que module tiers dans les versions 2.x antérieures.</td></tr>
 </table>
     <p>Cette directive est un simple commutateur permettant
     d'activer/désactiver le filtre proxy_html. Si
-    <code class="module"><a href="../mod/mod_xml2enc.html">mod_xml2enc</a></code> est chargé, elle va également activer
+    <code class="module"><a href="../mod/mod_xml2enc.html">mod_xml2enc</a></code> est chargé, elle va aussi activer
     automatiquement le support de l'internationalisation.</p>
-    <p>Notez que le filtre proxy_html n'agira que si les données sont de
+    <p>Notez que le filtre proxy_html s'agira que si les données sont de
     type HTML (Content-Type text/html ou application/xhtml+xml), et si
     elles passent par un mandataire. Vous pouvez passer outre ces
     contraintes (à vos risques et périls) en définissant la variable
@@ -204,14 +205,16 @@ Disponible en tant que module tiers dans les versions 2.x antérieures.</td></tr>
 <p>Cette directive permet de spécifier un ou plusieurs attributs à
 traiter comme
 des évènements de type scripting et de leur appliquer les règles
-<code class="directive">ProxyHTMLURLMap</code> où l'on souhaite les activer. Vous
+<code class="directive">ProxyHTMLURLMap</code> lorsqu'elles ont été définies. Vous
 pouvez spécifier un nombre quelconque d'attributs dans une ou plusieurs
 directives <code>ProxyHTMLEvents</code>.</p>
-<p>Le fonctionnement normal est de positionner ce paramètre de manière globale.
-Si vous positionnez ProxyHTMLEvents dans un contexte qui en écrase un autre, il
-vous faudra préciser un jeu de paramètres complet dans chaque contexte.</p>
-<p>Une configuration par défaut est fournie dans <var>proxy-html.conf</var>,
-qui définit les évènements selon les standards HTML 4 et XHTML 1.</p>
+<p>Normalement, cette directive est définie globalement. Si vous
+définissez ProxyHTMLEvents à plusieurs niveaux, certains niveaux
+l'emportant sur d'autres, vous devrez spécifier un jeu complet
+d'évènements pour chaque niveau.</p>
+<p>Le fichier <var>proxy-html.conf</var> fournit une configuration par
+défaut et définit les évènements selon les standards
+HTML 4 et XHTML 1.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -232,18 +235,18 @@ sont réécrits en fonction des directives
 <code class="directive">ProxyHTMLURLMap</code>, mais les liens qui apparaissent
 dans le code Javascript et les feuilles de style restent inchangés.</p>
 <p>Si elle est définie à <code>On</code>, tous les évènements de type
-scripting (tels que définis par la directive <code class="directive">ProxyHTMLEvents</code>)
-et les scripts inclus ou les feuilles de style sont également
+scripting (définis par la directive
+<code class="directive">ProxyHTMLEvents</code>) et les scripts inclus ou les
+feuilles de style sont aussi
 traités par les règles <code class="directive">ProxyHTMLURLMap</code>, en
 fonction des drapeaux définis pour chacune d'entre elles. Ne définissez
 cette directive à <code>On</code> qu'en cas de nécessité absolue, car la
 charge supplémentaire induite impacte les performances.</p>
-<p>
-Il convient également de considérer avec attention les motifs de correspondance,
-car le moteur qui les interprète ne reconnaît pas forcément les URL dans des scripts
-ou feuilles de styles. En particulier, la correction sur des correspondances de
-<code>/</code> établit un risque important de faux positifs.
-</p>
+<p>Vous devez aussi prêter attention aux modèles de comparaison, car
+l'interpréteur n'a aucune notion de la forme que pourrait prendre une URL dans un
+script embarqué ou une feuille de style. En particulier, la comparaison
+étendus du caractère <code>/</code> a de fortes chances d'induire des
+correspondances erronées.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -268,7 +271,7 @@ dans la configuration</li>
 <p>Cette directive doit être utilisée avec prudence. Elle peut corriger
 certaines erreurs de création, mais risque aussi de modifier par erreur
 des liens corrects. Ne l'utilisez que si vous êtes sûr que le serveur
-d'arrière-plan est déficient.</p>
+d'arrière-plan est déficient.</p> 
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -311,11 +314,13 @@ d'URL doivent être réécrits en utilisant les règles standards
 <code class="directive">ProxyHTMLURLMap</code>. Vous devez définir une directive
 ProxyHTMLLinks pour chaque élément, mais chacune d'entre elles peut
 spécifier un nombre quelconque d'attributs</p>
-<p>Le fonctionnement normal est de positionner ce paramètre de manière globale.
-Si vous positionnez ProxyHTMLLinks dans un contexte qui en écrase un autre, il
-vous faudra préciser un jeu de paramètres complet dans chaque contexte.</p>
-<p>Une configuration par défaut est fournie dans <var>proxy-html.conf</var>,
-qui définit les évènements selon les standards HTML 4 et XHTML 1.</p>
+<p>Normalement, cette directive est définie globalement. Si vous
+définissez ProxyHTMLLinks à plusieurs niveaux, certains niveaux
+l'emportant sur d'autres, vous devrez spécifier un jeu complet
+de liens pour chaque niveau.</p>
+<p>Le fichier <var>proxy-html.conf</var> fournit une configuration par
+défaut et définit les liens HTML selon les standards
+HTML 4 et XHTML 1.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -357,7 +362,7 @@ précédentes.</td></tr>
     <p>Le deuxième effet est l'interprétation de toutes les déclarations
     <code>&lt;meta http-equiv=...&gt;</code> et leur conversion en
     en-têtes HTTP, afin de conserver le but original de cette forme
-    de méta-élément HTML.</p>
+    de métaélément HTML.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -373,7 +378,7 @@ précédentes.</td></tr>
 Disponible en tant que module tiers dans les versions 2.x antérieures.</td></tr>
 </table>
 <p>Si cette directive est définie à <code>On</code>, mod_proxy_html
-supprimera les commentaires HTML. Notez que cela supprimera également tout
+supprimera les commentaires HTML. Notez que cela supprimera aussi tout
 script ou style inclus dans les commentaires (une monstruosité
 introduite en 1995/1996 avec Netscape 2 pour les navigateurs plus
 anciens, et encore utilisée de nos jours). Cette directive peut aussi
@@ -397,8 +402,8 @@ Disponible en tant que module tiers dans les versions 2.x antérieures.</td></tr>
 liens HTML. Lors de l'interprétation d'un document, chaque fois qu'un
 lien correspond à <var>modèle-source</var>, la partie du lien concernée
 sera réécrite en <var>modèle-cible</var>, en tenant compte des
-modifications induites par les drapeaux éventuellement spécifiés ainsi
-que par la directive <code class="directive">ProxyHTMLExtended</code>.</p>
+modifications induites par les drapeaux éventuellement spécifiés et par
+la directive <code class="directive">ProxyHTMLExtended</code>.</p>
 
 <p>Le troisième argument optionnel permet de féfinir un des drapeaux
 suivants (les drapeaux sont sensibles à la casse) :</p>
@@ -485,8 +490,8 @@ directive <code class="directive">ProxyHTMLInterp</code> ait été définie à
 <var>On</var>. Si la condition est évaluée à FALSE, la règle ne sera pas
 appliquée à la requête. Si elle est évaluée à TRUE, ou si aucune
 condition n'est définie, la règle s'applique.</p>
-<p>La <strong>condition</strong> est évaluée par l'<a href="../expr.html">interpréteur d'expressions</a>. La syntaxe simple des
-conditions dans mod_proxy_html 3.x pour HTTPD 2.0 et 2.2 est également
+<p>La <strong>condition</strong> est évaluée par l'<a href="../expr.html">interpréteur d'expression</a>. La syntaxe simple des
+conditions dans mod_proxy_html 3.x pour HTTPD 2.0 et 2.2 est aussi
 supportée.</p>
 
 </div>
