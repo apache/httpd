@@ -177,15 +177,17 @@ static const char *set_worker_param(apr_pool_t *p,
     else if (!strcasecmp(key, "route")) {
         /* Worker route.
          */
-        if (strlen(val) >= PROXY_WORKER_MAX_ROUTE_SIZE)
-            return "Route length must be < 64 characters";
+        if (strlen(val) >= sizeof(worker->s->route))
+            return apr_psprintf(p, "Route length must be < %d characters",
+                    (int)sizeof(worker->s->route));
         PROXY_STRNCPY(worker->s->route, val);
     }
     else if (!strcasecmp(key, "redirect")) {
         /* Worker redirection route.
          */
-        if (strlen(val) >= PROXY_WORKER_MAX_ROUTE_SIZE)
-            return "Redirect length must be < 64 characters";
+        if (strlen(val) >= sizeof(worker->s->redirect))
+            return apr_psprintf(p, "Redirect length must be < %d characters",
+                    (int)sizeof(worker->s->redirect));
         PROXY_STRNCPY(worker->s->redirect, val);
     }
     else if (!strcasecmp(key, "status")) {
@@ -256,8 +258,9 @@ static const char *set_worker_param(apr_pool_t *p,
         worker->s->conn_timeout_set = 1;
     }
     else if (!strcasecmp(key, "flusher")) {
-        if (strlen(val) >= PROXY_WORKER_MAX_SCHEME_SIZE)
-            return "flusher name length must be < 16 characters";
+        if (strlen(val) >= sizeof(worker->s->flusher))
+            apr_psprintf(p, "flusher name length must be < %d characters",
+                    (int)sizeof(worker->s->flusher));
         PROXY_STRNCPY(worker->s->flusher, val);
     }
     else {
@@ -280,8 +283,9 @@ static const char *set_balancer_param(proxy_server_conf *conf,
          * Set to something like JSESSIONID or
          * PHPSESSIONID, etc..,
          */
-        if (strlen(val) > (PROXY_BALANCER_MAX_STICKY_SIZE-1))
-            return "stickysession length must be < 64 characters";
+        if (strlen(val) >= sizeof(balancer->s->sticky_path))
+            apr_psprintf(p, "stickysession length must be < %d characters",
+                    (int)sizeof(balancer->s->sticky_path));
         PROXY_STRNCPY(balancer->s->sticky_path, val);
         PROXY_STRNCPY(balancer->s->sticky, val);
 
