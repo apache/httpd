@@ -58,6 +58,7 @@ Apache</h1>
     [ -<strong>H</strong> <var>en-tête-personnalisé</var> ]
     [ -<strong>i</strong> ]
     [ -<strong>k</strong> ]
+    [ -<strong>l</strong> ]
     [ -<strong>n</strong> <var>requêtes</var> ]
     [ -<strong>p</strong> <var>fichier-POST</var> ]
     [ -<strong>P</strong>
@@ -145,6 +146,11 @@ Apache</h1>
     seule session HTTP. Cette fonctionnalité est désactivée par
     défaut.</dd>
 
+    <dt><code>-l</code></dt>
+    <dd>N'indique pas d'erreur si la longueur des réponses n'est pas
+    constante, ce qui peut s'avérer utile pour les pages dynamiques.
+    </dd>
+
     <dt><code>-n <var>requêtes</var></code></dt>
     <dd>Nombre de requêtes à effectuer au cours du test de performances.
     Par défaut, une seule requête est effectuée, ce qui ne permet pas
@@ -172,7 +178,7 @@ Apache</h1>
     <dd>Ne s'arrête pas en cas d'erreur de réception sur la connexion.</dd>
 
     <dt><code>-s <var>timeout</var></code></dt>
-    <dd>Temps d'attente maximal du socket. La valeur par dÃ©faut est de
+    <dd>Temps d'attente maximal du socket. La valeur par défaut est de
     30 secondes.</dd>
 
     <dt><code>-S</code></dt>
