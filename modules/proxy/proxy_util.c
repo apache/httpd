@@ -102,7 +102,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_strncpy(char *dst, const char *src,
     thelen = thenil - dst;
     /* Assume the typical case is smaller copying into bigger
        so we have a fast return */
-    if ((thelen < dlen-1) || (src[thelen] == '\0') {
+    if ((thelen < dlen-1) || (src[thelen] == '\0')) {
         return APR_SUCCESS;
     }
     /* XXX: APR_ENOSPACE would be better */
