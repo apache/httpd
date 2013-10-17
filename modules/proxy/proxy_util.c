@@ -1636,12 +1636,13 @@ PROXY_DECLARE(char *) ap_proxy_define_worker(apr_pool_t *p,
         return apr_pstrcat(p, "URL must be absolute!: ", url, NULL);
     }
     /* allow for unix:/path|http: */
-    if (!uri.hostname && !sockpath) {
-        return apr_pstrcat(p, "URL must be absolute!: ", url, NULL);;
-    }
-
-    if (sockpath) {
-        uri.hostname = "localhost";
+    if (!uri.hostname) {
+        if (sockpath) {
+            uri.hostname = "localhost";
+        }
+        else {
+            return apr_pstrcat(p, "URL must be absolute!: ", url, NULL);
+        }
     }
     else {
         ap_str_tolower(uri.hostname);
