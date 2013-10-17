@@ -1493,7 +1493,7 @@ PROXY_DECLARE(char *) ap_proxy_worker_name(apr_pool_t *p,
     int rv;
     apr_uri_t uri;
     apr_pool_t *pool = p;
-    if (!worker->s->uds) {
+    if (!(*worker->s->uds_path)) {
         return worker->s->name;
     }
     if (!pool) {
@@ -1504,11 +1504,7 @@ PROXY_DECLARE(char *) ap_proxy_worker_name(apr_pool_t *p,
             return worker->s->name;
         }
     }
-    rv = apr_uri_parse(pool, worker->s->name, &uri);
-    if (rv != APR_SUCCESS) {
-        return apr_pstrcat(pool, worker->s->name, "|", NULL);
-    }
-    return apr_pstrcat(pool, "unix:", uri.path, "|", uri.scheme, ":", NULL);
+    return apr_pstrcat(pool, "unix:", worker->s->uds_path, "|", worker->s->name, NULL);
 }
 
 PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p,
@@ -1609,16 +1605,17 @@ PROXY_DECLARE(char *) ap_proxy_define_worker(apr_pool_t *p,
     proxy_worker_shared *wshared;
     char *ptr, *sockpath = NULL;
 
-    /* Look to see if we are using UDS:
-       require format: unix:/path/foo/bar.sock|http:
-       This results in talking http to the socket at /path/foo/bar.sock
-    */
+    /*
+     * Look to see if we are using UDS:
+     * require format: unix:/path/foo/bar.sock|http://ignored/path2/
+     * This results in talking http to the socket at /path/foo/bar.sock
+     */
     ptr = ap_strchr((char *)url, '|');
     if (ptr) {
         *ptr = '\0';
         rv = apr_uri_parse(p, url, &urisock);
         if (rv == APR_SUCCESS && !strcasecmp(urisock.scheme, "unix")) {
-            sockpath = urisock.path;
+            sockpath = ap_runtime_dir_relative(p, urisock.path);;
             url = ptr+1;    /* so we get the scheme for the uds */
         }
         else {
@@ -1633,16 +1630,13 @@ PROXY_DECLARE(char *) ap_proxy_define_worker(apr_pool_t *p,
     if (!uri.scheme) {
         return apr_pstrcat(p, "URL must be absolute!: ", url, NULL);
     }
-    /* allow for http:|sock:/path */
+    /* allow for unix:/path|http: */
     if (!uri.hostname && !sockpath) {
         return apr_pstrcat(p, "URL must be absolute!: ", url, NULL);;
     }
 
     if (sockpath) {
         uri.hostname = "localhost";
-        uri.path = ap_runtime_dir_relative(p, sockpath);
-        uri.query = NULL;
-        uri.fragment = NULL;
     }
     else {
         ap_str_tolower(uri.hostname);
@@ -1702,7 +1696,15 @@ PROXY_DECLARE(char *) ap_proxy_define_worker(apr_pool_t *p,
     wshared->hash.def = ap_proxy_hashfunc(wshared->name, PROXY_HASHFUNC_DEFAULT);
     wshared->hash.fnv = ap_proxy_hashfunc(wshared->name, PROXY_HASHFUNC_FNV);
     wshared->was_malloced = (do_malloc != 0);
-    wshared->uds = (sockpath != NULL);
+    if (sockpath) {
+        if (PROXY_STRNCPY(wshared->uds_path, sockpath) != APR_SUCCESS) {
+            return apr_psprintf(p, "worker uds path (%s) too long", sockpath);
+        }
+
+    }
+    else {
+        *wshared->uds_path = '\0';
+    }
 
     (*worker)->hash = wshared->hash;
     (*worker)->context = NULL;
@@ -2087,12 +2089,9 @@ PROXY_DECLARE(int) ap_proxy_acquire_connection(const char *proxy_function,
     (*conn)->close  = 0;
     (*conn)->inreslist = 0;
 
-    if (worker->s->uds) {
+    if (*worker->s->uds_path) {
         if ((*conn)->uds_path == NULL) {
-            apr_uri_t puri;
-            if (apr_uri_parse(worker->cp->pool, worker->s->name, &puri) == APR_SUCCESS) {
-                (*conn)->uds_path = apr_pstrdup(worker->cp->pool, puri.path);
-            }
+            (*conn)->uds_path = apr_pstrdup(worker->cp->pool, worker->s->uds_path);
         }
         if ((*conn)->uds_path) {
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(02545)
@@ -2100,9 +2099,10 @@ PROXY_DECLARE(int) ap_proxy_acquire_connection(const char *proxy_function,
                          proxy_function, (*conn)->uds_path);
         }
         else {
+            /* should never happen */
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(02546)
-                         "%s: cannot parse for UDS (%s)",
-                         proxy_function, worker->s->name);
+                         "%s: cannot determine UDS (%s)",
+                         proxy_function, worker->s->uds_path);
 
         }
     }
@@ -2182,7 +2182,7 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
      *      spilling the cached addr from the worker.
      */
     if (!conn->hostname || !worker->s->is_address_reusable ||
-        worker->s->disablereuse || worker->s->uds) {
+        worker->s->disablereuse || *worker->s->uds_path) {
         if (proxyname) {
             conn->hostname = apr_pstrdup(conn->pool, proxyname);
             conn->port = proxyport;
@@ -2220,7 +2220,7 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
             conn->port = uri->port;
         }
         socket_cleanup(conn);
-        if (!worker->s->uds && worker->s->is_address_reusable && !worker->s->disablereuse) {
+        if (!(*worker->s->uds_path) && worker->s->is_address_reusable && !worker->s->disablereuse) {
             /*
              * Only do a lookup if we should not reuse the backend address.
              * Otherwise we will look it up once for the worker.
@@ -2231,7 +2231,7 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
                                         conn->pool);
         }
     }
-    if (!worker->s->uds && worker->s->is_address_reusable && !worker->s->disablereuse) {
+    if (!(*worker->s->uds_path) && worker->s->is_address_reusable && !worker->s->disablereuse) {
         /*
          * Looking up the backend address for the worker only makes sense if
          * we can reuse the address.

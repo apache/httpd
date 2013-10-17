@@ -1533,8 +1533,8 @@ static int balancer_handler(request_rec *r)
                           ap_escape_uri(r->pool, worker->s->name),
                           "&nonce=", balancer->s->nonce,
                           "\">", NULL);
-                ap_rvputs(r, (worker->s->uds ? "<i>" : ""), ap_proxy_worker_name(r->pool, worker),
-                          (worker->s->uds ? "</i>" : ""), "</a></td>", NULL);
+                ap_rvputs(r, (*worker->s->uds_path ? "<i>" : ""), ap_proxy_worker_name(r->pool, worker),
+                          (*worker->s->uds_path ? "</i>" : ""), "</a></td>", NULL);
                 ap_rvputs(r, "<td>", ap_escape_html(r->pool, worker->s->route),
                           NULL);
                 ap_rvputs(r, "</td><td>",
@@ -1559,7 +1559,7 @@ static int balancer_handler(request_rec *r)
         ap_rputs("<hr />\n", r);
         if (wsel && bsel) {
             ap_rputs("<h3>Edit worker settings for ", r);
-            ap_rvputs(r, (wsel->s->uds?"<i>":""), ap_proxy_worker_name(r->pool, wsel), (wsel->s->uds?"</i>":""), "</h3>\n", NULL);
+            ap_rvputs(r, (*wsel->s->uds_path?"<i>":""), ap_proxy_worker_name(r->pool, wsel), (*wsel->s->uds_path?"</i>":""), "</h3>\n", NULL);
             ap_rputs("<form method=\"POST\" enctype=\"application/x-www-form-urlencoded\" action=\"", r);
             ap_rvputs(r, ap_escape_uri(r->pool, action), "\">\n", NULL);
             ap_rputs("<dl>\n<table><tr><td>Load factor:</td><td><input name='w_lf' id='w_lf' type=text ", r);
