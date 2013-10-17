@@ -90,7 +90,7 @@
         </pre>
 
         Together with microsecond time stamps in the error log,
-        <code>hook=all</code> also allows to determine the times spent
+        <code>hook=all</code> also lets you determine the times spent
         in the different parts of the request processing.
       </li>
 
