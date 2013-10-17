@@ -36,9 +36,21 @@ from Clients' networks in a proxy context.</td></tr>
 for earlier 2.x versions</td></tr></table>
 <h3>Summary</h3>
 
-    <p>This module provides an output filter to rewrite HTML links in a proxy situation, to ensure that links work for users outside the proxy. It serves the same purpose as Apache's ProxyPassReverse directive does for HTTP headers, and is an essential component of a reverse proxy.</p>
+<p>This module provides an output filter to rewrite HTML links in a
+proxy situation, to ensure that links work for users outside the proxy.
+It serves the same purpose as Apache's ProxyPassReverse directive does
+for HTTP headers, and is an essential component of a reverse proxy.</p>
 
-<p>For example, if a company has an application server at appserver.example.com that is only visible from within the company's internal network, and a public webserver <code>www.example.com</code>, they may wish to provide a gateway to the application server at <code>http://www.example.com/appserver/</code>. When the application server links to itself, those links need to be rewritten to work through the gateway. mod_proxy_html serves to rewrite <code>&lt;a href="http://appserver.example.com/foo/bar.html"&gt;foobar&lt;/a&gt;</code> to <code>&lt;a href="http://www.example.com/appserver/foo/bar.html"&gt;foobar&lt;/a&gt;</code> making it accessible from outside.</p>
+<p>For example, if a company has an application server at
+<code>appserver.example.com</code> that is only visible from within
+the company's internal network, and a public webserver
+<code>www.example.com</code>, they may wish to provide a gateway to the
+application server at <code>http://www.example.com/appserver/</code>.
+When the application server links to itself, those links need to be
+rewritten to work through the gateway. mod_proxy_html serves to rewrite
+<code>&lt;a href="http://appserver.example.com/foo/bar.html"&gt;foobar&lt;/a&gt;</code> to
+<code>&lt;a href="http://www.example.com/appserver/foo/bar.html"&gt;foobar&lt;/a&gt;</code>
+making it accessible from outside.</p>
 
 <p>mod_proxy_html was originally developed at Webﬁing, whose
 extensive <a href="http://apache.webthing.com/mod_proxy_html/">documentation</a> may be useful to users.</p>
