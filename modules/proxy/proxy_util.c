@@ -1495,21 +1495,11 @@ static apr_status_t connection_destructor(void *resource, void *params,
 PROXY_DECLARE(char *) ap_proxy_worker_name(apr_pool_t *p,
                                            proxy_worker *worker)
 {
-    int rv;
-    apr_uri_t uri;
-    apr_pool_t *pool = p;
-    if (!(*worker->s->uds_path)) {
+    if (!(*worker->s->uds_path) || !p) {
+        /* just in case */
         return worker->s->name;
     }
-    if (!pool) {
-        /* ugly */
-        apr_pool_create(&pool, ap_server_conf->process->pool);
-        if (!pool) {
-            /* something is better than nothing :) */
-            return worker->s->name;
-        }
-    }
-    return apr_pstrcat(pool, "unix:", worker->s->uds_path, "|", worker->s->name, NULL);
+    return apr_pstrcat(p, "unix:", worker->s->uds_path, "|", worker->s->name, NULL);
 }
 
 PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p,
@@ -1741,9 +1731,16 @@ PROXY_DECLARE(apr_status_t) ap_proxy_share_worker(proxy_worker *worker, proxy_wo
     }
     worker->s = shm;
     worker->s->index = i;
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(02338)
-                 "%s shm[%d] (0x%pp) for worker: %s", action, i, (void *)shm,
-                 ap_proxy_worker_name(NULL, worker));
+    {
+        apr_pool_t *pool;
+        apr_pool_create(&pool, ap_server_conf->process->pool);
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(02338)
+                     "%s shm[%d] (0x%pp) for worker: %s", action, i, (void *)shm,
+                     ap_proxy_worker_name(pool, worker));
+        if (pool) {
+            apr_pool_destroy(pool);
+        }
+    }
     return APR_SUCCESS;
 }
 
