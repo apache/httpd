@@ -2094,7 +2094,8 @@ PROXY_DECLARE(int) ap_proxy_acquire_connection(const char *proxy_function,
 
     if (*worker->s->uds_path) {
         if ((*conn)->uds_path == NULL) {
-            (*conn)->uds_path = apr_pstrdup(worker->cp->pool, worker->s->uds_path);
+            /* use (*conn)->pool instead of worker->cp->pool to match lifetime */
+            (*conn)->uds_path = apr_pstrdup((*conn)->pool, worker->s->uds_path);
         }
         if ((*conn)->uds_path) {
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(02545)
