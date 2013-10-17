@@ -51,7 +51,7 @@ and URL matching.</p>
     (<code>.htaccess</code> files) have been read, but before the
     content handler is called.</p>
 
-    <p>So, after a request comes in and a corresponding server or
+    <p>After a request comes in and a corresponding server or
     virtual host has been determined, the rewriting engine starts
     processing any <code>mod_rewrite</code> directives appearing in the
     per-server configuration. (i.e., in the main server configuration file

@@ -1159,7 +1159,7 @@ The available <em>option</em>s are:</p>
     SSL parameters causes a <em>full</em> SSL renegotiation handshake. When this
     option is used mod_ssl tries to avoid unnecessary handshakes by doing more
     granular (but still safe) parameter checks. Nevertheless these granular
-    checks sometimes maybe not what the user expects, so enable this on a
+    checks sometimes may not be what the user expects, so enable this on a
     per-directory basis only, please.</p>
 </li>
 <li><code>LegacyDNStringFormat</code>
