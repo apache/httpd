@@ -204,7 +204,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
   * mod_auth_form: Make sure the optional functions are loaded even when
     the AuthFormProvider isn't specified.
-    trunk patch: https://svn.apache.org/r1531673
+    trunk patch: https://svn.apache.org/r1531672
     2.4.x patch: trunk patch works, modulo CHANGES
     +1: minfrin
 
