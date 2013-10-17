@@ -58,7 +58,7 @@ multiple similar virtual hosts:</p>
     DocumentRoot /var/www/vhosts/$name
     ErrorLog /var/log/httpd/$name.error_log
     CustomLog /var/log/httpd/$name.access_log combined
-&gt;/VirtualHost&gt;
+&lt;/VirtualHost&gt;
 &lt;/Macro&gt;
 </highlight>
 
