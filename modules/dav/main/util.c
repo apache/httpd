@@ -954,13 +954,16 @@ static dav_error * dav_validate_resource_state(apr_pool_t *p,
         /*
         ** For methods other than LOCK:
         **
-        ** If we have no locks, then <seen_locktoken> can be set to true --
+        ** If we have no locks or if the resource is not being modified
+        ** (per RFC 4918 the lock token is not required on resources
+        ** we are not changing), then <seen_locktoken> can be set to true --
         ** pretending that we've already met the requirement of seeing one
         ** of the resource's locks in the If: header.
         **
         ** Otherwise, it must be cleared and we'll look for one.
         */
-        seen_locktoken = (lock_list == NULL);
+        seen_locktoken = (lock_list == NULL
+                          || flags & DAV_VALIDATE_NO_MODIFY);
     }
 
     /*
