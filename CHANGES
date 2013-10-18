@@ -2,6 +2,8 @@
 
 Changes with Apache 2.4.7
 
+  *) mod_dav: Don't require lock tokens for COPY source. PR 55306.
+
   *) core: Don't truncate output when sending is interrupted by a signal,
      such as from an exiting CGI process. PR 55643. [Jeff Trawick]
 

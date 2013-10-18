@@ -97,10 +97,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_dav: Fix 55306.  Don't require lock tokens for COPY source.
-    trunk patches: https://svn.apache.org/r1528718
-    2.4.x: trunk works, CHANGES needs to be written when merging
-    +1: breser, minfrin, jim
   
   * mod_dav: Fix 55397.  dav_resource->uri treated as unencoded. This was an
     unnecessary ABI changed introduced in 2.4.6.
