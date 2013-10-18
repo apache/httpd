@@ -32,7 +32,7 @@ Release history:
     [NOTE that x.{odd}.z versions are strictly Alpha/Beta releases,
           while x.{even}.z versions are Stable/GA releases.]
 
-    2.4.7   : In development.
+    2.4.7   : In development. Jim will release post APR-1.5 release.
     2.4.6   : Tagged on July 15, 2013. Released July, 22, 2013
     2.4.5   : Tagged on July 11, 2013, not released.
     2.4.4   : Tagged on February 18, 2013. Released Feb 25, 2013
@@ -193,31 +193,31 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   * mod_dav: Fix 55306.  Don't require lock tokens for COPY source.
     trunk patches: https://svn.apache.org/r1528718
     2.4.x: trunk works, CHANGES needs to be written when merging
-    +1: breser, minfrin
+    +1: breser, minfrin, jim
   
   * mod_dav: Fix 55397.  dav_resource->uri treated as unencoded. This was an
     unnecessary ABI changed introduced in 2.4.6.
     trunk patches: https://svn.apache.org/r1529559
                    https://svn.apache.org/r1531505
     2.4.x: trunk works, CHANGES needs to be written when merging
-    +1: breser, minfrin
+    +1: breser, minfrin, jim
 
   * mod_auth_form: Make sure the optional functions are loaded even when
     the AuthFormProvider isn't specified.
     trunk patch: https://svn.apache.org/r1531672
     2.4.x patch: trunk patch works, modulo CHANGES
-    +1: minfrin
+    +1: minfrin, jim
 
   * mod_session: After parsing the value of the header specified by the
     SessionHeader directive, remove the value from the response. PR 55279.
     trunk patch: http://svn.apache.org/r1531679
     2.4.x patch: trunk patch works, modulo CHANGES
-    +1: minfrin
+    +1: minfrin, jim
 
     *) mod_session: Reset the max-age on session save. PR 47476.
     trunk patch: http://svn.apache.org/r1531683
     2.4.x patch: trunk patch works, modulo CHANGES
-    +1: minfrin
+    +1: minfrin, jim
 
 
 A list of further possible backports can be found at:                                                                                                                                   
