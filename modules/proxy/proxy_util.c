@@ -2225,7 +2225,8 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
             conn->port = uri->port;
         }
         socket_cleanup(conn);
-        if (!(*worker->s->uds_path) && worker->s->is_address_reusable && !worker->s->disablereuse) {
+        if (!(*worker->s->uds_path) &&
+            (!worker->s->is_address_reusable || worker->s->disablereuse)) {
             /*
              * Only do a lookup if we should not reuse the backend address.
              * Otherwise we will look it up once for the worker.
