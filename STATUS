@@ -98,13 +98,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
   
-  * mod_dav: Fix 55397.  dav_resource->uri treated as unencoded. This was an
-    unnecessary ABI changed introduced in 2.4.6.
-    trunk patches: https://svn.apache.org/r1529559
-                   https://svn.apache.org/r1531505
-    2.4.x: trunk works, CHANGES needs to be written when merging
-    +1: breser, minfrin, jim
-
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:

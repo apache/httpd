@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.7
 
+  *) mod_dav: dav_resource->uri is treated as unencoded. This was an
+     unnecessary ABI changed introduced in 2.4.6. PR 55397.
+
   *) mod_dav: Don't require lock tokens for COPY source. PR 55306.
 
   *) core: Don't truncate output when sending is interrupted by a signal,
