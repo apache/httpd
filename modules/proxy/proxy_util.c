@@ -93,19 +93,20 @@ PROXY_DECLARE(apr_status_t) ap_proxy_strncpy(char *dst, const char *src,
     char *thenil;
     apr_size_t thelen;
 
-    /* special case: really  apr_cpystrn should handle src==NULL*/
-    if (!src && dlen) {
+    /* special case handling */
+    if (!dlen) {
+        /* XXX: APR_ENOSPACE would be better */
+        return APR_EGENERAL;
+    }
+    if (!src) {
         *dst = '\0';
         return APR_SUCCESS;
     }
     thenil = apr_cpystrn(dst, src, dlen);
     thelen = thenil - dst;
-    /* Assume the typical case is smaller copying into bigger
-       so we have a fast return */
-    if ((thelen < dlen-1) || (src[thelen] == '\0')) {
+    if (src[thelen] == '\0') {
         return APR_SUCCESS;
     }
-    /* XXX: APR_ENOSPACE would be better */
     return APR_EGENERAL;
 }
 
