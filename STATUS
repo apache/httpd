@@ -208,6 +208,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: trunk patch works, modulo CHANGES
     +1: minfrin, jim
 
+  * mod_authn_socache: Support optional arguments for socache provider.
+    trunk patch: http://svn.apache.org/r1531961
+    2.4.x patch: trunk patch works, modulo CHANGES and doc compatibility note
+    +1: chrisd
 
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
