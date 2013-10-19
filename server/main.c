@@ -43,6 +43,11 @@
 
 #if APR_HAVE_UNISTD_H
 #include <unistd.h>
+#else
+/* Not sure what absence of unistd would signify for tty.  Treating it as a
+ * big NO is safe, as we then won't try to write to stderr that's not a tty.
+ */
+#define isatty(n) (0)
 #endif
 
 /* WARNING: Win32 binds http_main.c dynamically to the server. Please place
@@ -263,6 +268,10 @@ static void destroy_and_exit_process(process_rec *process,
     ap_main_state = AP_SQ_MS_EXITING;
     apr_pool_destroy(process->pool); /* and destroy all descendent pools */
     apr_terminate();
+    if ((process_exit_value != 0) && isatty(fileno(stderr))) {
+        const char *name = process->short_name ? process->short_name : "httpd";
+        fprintf(stderr, "%s: abnormal exit %d\n", name, process_exit_value);
+    }
     exit(process_exit_value);
 }
 
