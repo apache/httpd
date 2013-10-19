@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1525479:1533274 (outdated) -->
+<!-- English Revision: 1533274 -->
 <!-- French translation: Fabien Coelho -->
 <!-- Updated by Lucien Gentis -->
 
@@ -61,7 +61,7 @@ d&eacute;finir de nombreux serveurs virtuels similaires :</p>
     DocumentRoot /var/www/vhosts/$name
     ErrorLog /var/log/httpd/$name.error_log
     CustomLog /var/log/httpd/$name.access_log combined
-&gt;/VirtualHost&gt;
+&lt;/VirtualHost&gt;
 &lt;/Macro&gt;
 </highlight>
 
