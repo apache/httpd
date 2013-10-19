@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1325527:1533275 (outdated) -->
+<!-- English Revision : 1533275 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -63,7 +63,7 @@ correspondance</a></seealso>
     <code>.htaccess</code>), mais avant l'appel du gestionnaire de
     contenu.</p>
 
-    <p>Ainsi, lorsqu'une requ&ecirc;te arrive et une fois le serveur
+    <p>Lorsqu'une requ&ecirc;te arrive et une fois le serveur
     correspondant ou le serveur virtuel d&eacute;termin&eacute;, le moteur de
     r&eacute;&eacute;criture commence &agrave; traiter toute directive apparaissant dans la
     configuration de niveau serveur (autrement dit dans le
