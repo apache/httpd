@@ -106,7 +106,7 @@ SSI pages</td></tr>
     setting is meant as input into this early phase of processing such as the
     <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> directive, you should
     instead set the environment variable with
-    <code class="directive"><a href="../mod/mod_setenvif.html# setenvif"> SetEnvIf</a></code>.</p>
+    <code class="directive"><a href="../mod/mod_setenvif.html#setenvif">SetEnvIf</a></code>.</p>
     </div>
 
 
