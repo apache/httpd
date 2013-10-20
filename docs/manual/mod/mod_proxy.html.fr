@@ -28,8 +28,6 @@
 <a href="../fr/mod/mod_proxy.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_proxy.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Serveur mandataire/passerelle multi-protocole</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>proxy_module</td></tr>
@@ -1109,11 +1107,15 @@ l'espace d'URLs du serveur local</td></tr>
     <code class="directive">ProxyPass</code>.</div>
 
     <p>Le support des sockets de style Unix est fourni ; il suffit pour
-    cela d'utiliser une cible du style
-    <code>|sock:/path/lis.sock</code>. Par exemple, pour cibler l'UDS
-    /home/www/socket, vous devez utiliser
-    <code>http://localhost/|sock:/home/www.socket</code>.</p>
+    cela d'utiliser une cible préfixée par
+    <code>unix:/path/lis.sock|</code>. Par exemple, pour mandater HTTP
+    et cibler l'UDS /home/www/socket, vous devez utiliser
+    <code>unix:/home/www.socket|http://localhost/whatever/</code>.</p>
 
+    <div class="note"><strong>Note :</strong>Le chemin associé à l'URL
+    <code>unix:</code> tient compte de la directive
+    <code class="directive">DefaultRuntimeDir</code>.</div>
+    
     <p>Supposons que le serveur local a pour adresse
     <code>http://example.com/</code> ; alors la ligne</p>
 
@@ -1588,16 +1590,6 @@ ProxyPass / balancer://hotcluster/
     car la protection limitée contre les attaques à base d'URL que
     fournit le mandataire est alors supprimée.</p>
 
-    <p>Le mot-clé optionnel <var>interpolate</var> (disponible depuis
-    httpd 2.2.9), en combinaison avec la directive
-    <code class="directive">ProxyPassInterpolateEnv</code>, permet à ProxyPass
-    d'interpoler les variables d'environnement à l'aide de la syntaxe
-    <var>${VARNAME}</var>. Notez que de nombreuses variables
-    d'environnement standard dérivées de CGI n'existeront pas lorsque
-    l'interpolation se produit ; vous devrez alors encore avoir avoir
-    recours à <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> pour des règles
-    complexes.</p>
-
     <p>Par défaut, mod_proxy inclut la chaîne de paramètres lors de la
     génération de la variable d'environnement
     <var>SCRIPT_FILENAME</var>. Le mot-clé optionnel <var>noquery</var>
@@ -1619,6 +1611,33 @@ ProxyPass / balancer://hotcluster/
     <p>Si vous avez besoin d'un configuration de mandataire inverse plus
     souple, reportez-vous à la documentaion de la directive <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> et son drapeau
     <code>[P]</code>.</p>
+
+    <p>Le mot-clé optionnel <var>interpolate</var> (disponible depuis
+    httpd 2.2.9), en combinaison avec la directive
+    <code class="directive">ProxyPassInterpolateEnv</code>, permet à ProxyPass
+    d'interpoler les variables d'environnement à l'aide de la syntaxe
+    <var>${VARNAME}</var>. Notez que de nombreuses variables
+    d'environnement standard dérivées de CGI n'existeront pas lorsque
+    l'interpolation se produit ; vous devrez alors encore avoir avoir
+    recours à <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> pour des règles
+    complexes. Notez aussi que l'interpolation n'est pas supportée dans
+    la partie protocole d'une URL. La détermination dynamique du
+    protocole peut être effectuée à l'aide de
+    <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> comme dans l'exemple suivant :</p>
+
+    <pre class="prettyprint lang-config">
+RewriteEngine On
+
+RewriteCond %{HTTPS} =off
+RewriteRule . - [E=protocol:http]
+RewriteCond %{HTTPS} =on
+RewriteRule . - [E=protocol:https]
+
+RewriteRule ^/mirror/foo/(.*) %{ENV:protocol}://backend.example.com/$1 [P]
+ProxyPassReverse  /mirror/foo/ http://backend.example.com/
+ProxyPassReverse  /mirror/foo/ https://backend.example.com/
+    </pre>
+
 
 
 </div>
@@ -1822,7 +1841,8 @@ ProxyPassReverseCookiePath  /  /mirror/foo/
     httpd 2.2.9), utilisé en combinaison avec la directive
     <code class="directive">ProxyPassInterpolateEnv</code>, permet
     l'interpolation des variables d'environnement spécifiées en
-    utilisant le format <var>${VARNAME}</var>.
+    utilisant le format <var>${VARNAME}</var>. Notez que l'interpolation
+    n'est pas supportée dans la partie protocole d'une URL.
     </p>
 
     <p>Lorsque cette directive est utilisée dans une section <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>, le premier
