@@ -24,8 +24,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/rewrite/tech.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/rewrite/tech.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 <p>Ce document passe en revue certains détails techniques à propos du
 module mod_rewrite et de la mise en correspondance des URLs</p>
@@ -57,7 +55,7 @@ correspondance</a></li><li><a href="access.html">Contrôle d'accès</a></li><li><a
     <code>.htaccess</code>), mais avant l'appel du gestionnaire de
     contenu.</p>
 
-    <p>Ainsi, lorsqu'une requête arrive et une fois le serveur
+    <p>Lorsqu'une requête arrive et une fois le serveur
     correspondant ou le serveur virtuel déterminé, le moteur de
     réécriture commence à traiter toute directive apparaissant dans la
     configuration de niveau serveur (autrement dit dans le
