@@ -1360,16 +1360,6 @@ l'espace d'URLs du serveur local</td></tr>
     car la protection limitée contre les attaques à base d'URL que
     fournit le mandataire est alors supprimée.</p>
 
-    <p>Le mot-clé optionnel <var>interpolate</var> (disponible depuis
-    httpd 2.2.9), en combinaison avec la directive
-    <code class="directive">ProxyPassInterpolateEnv</code>, permet à ProxyPass
-    d'interpoler les variables d'environnement à l'aide de la syntaxe
-    <var>${VARNAME}</var>. Notez que de nombreuses variables
-    d'environnement standard dérivées de CGI n'existeront pas lorsque
-    l'interpolation se produit ; vous devrez alors encore avoir avoir
-    recours à <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> pour des règles
-    complexes.</p>
-
     <p>Lorsque la directive ProxyPass est utilisée à l'intérieur d'une
     section <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>, le premier argument est omis et le répertoire
     local est obtenu à partir de la section <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>. Il en est de
@@ -1387,6 +1377,33 @@ l'espace d'URLs du serveur local</td></tr>
     <p>Si vous avez besoin d'un configuration de mandataire inverse plus
     souple, reportez-vous à la documentaion de la directive <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> et son drapeau
     <code>[P]</code>.</p>
+
+    <p>Le mot-clé optionnel <var>interpolate</var> (disponible depuis
+    httpd 2.2.9), en combinaison avec la directive
+    <code class="directive">ProxyPassInterpolateEnv</code>, permet à ProxyPass
+    d'interpoler les variables d'environnement à l'aide de la syntaxe
+    <var>${VARNAME}</var>. Notez que de nombreuses variables
+    d'environnement standard dérivées de CGI n'existeront pas lorsque
+    l'interpolation se produit ; vous devrez alors encore avoir avoir
+    recours à <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> pour des règles
+    complexes. Notez aussi que l'interpolation n'est pas supportée dans
+    la partie protocole d'une URL. La détermination dynamique du
+    protocole peut être effectuée à l'aide de
+    <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> comme dans l'exemple suivant :</p>
+
+    <pre class="prettyprint lang-config">
+RewriteEngine On
+
+RewriteCond %{HTTPS} =off
+RewriteRule . - [E=protocol:http]
+RewriteCond %{HTTPS} =on
+RewriteRule . - [E=protocol:https]
+
+RewriteRule ^/mirror/foo/(.*) %{ENV:protocol}://backend.example.com/$1 [P]
+ProxyPassReverse  /mirror/foo/ http://backend.example.com/
+ProxyPassReverse  /mirror/foo/ https://backend.example.com/
+    </pre>
+
 
 
 </div>
@@ -1561,7 +1578,8 @@ par un serveur mandaté en inverse</td></tr>
     httpd 2.2.9), utilisé en combinaison avec la directive
     <code class="directive">ProxyPassInterpolateEnv</code>, permet
     l'interpolation des variables d'environnement spécifiées en
-    utilisant le format <var>${VARNAME}</var>.
+    utilisant le format <var>${VARNAME}</var> Notez que l'interpolation
+    n'est pas supportée dans la partie protocole d'une URL.
     </p>
 
     <p>Lorsque cette directive est utilisée dans une section <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>, le premier
