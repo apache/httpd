@@ -710,7 +710,7 @@ int ap_proxy_http_request(apr_pool_t *p, request_rec *r,
         force10 = 0;
     }
 
-    header_brigade = apr_brigade_create(p, origin->bucket_alloc);
+    header_brigade = apr_brigade_create(p, bucket_alloc);
     rv = ap_proxy_create_hdrbrgd(p, header_brigade, r, p_conn,
                                  worker, conf, uri, url, server_portstr,
                                  &old_cl_val, &old_te_val);
