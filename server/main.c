@@ -264,12 +264,17 @@ static void destroy_and_exit_process(process_rec *process,
      * by us before they can do so. In this case maybe valueable log messages
      * might get lost.
      */
+
+    /* If we are to print an error, we need the name before we destroy pool.
+     * short_name is a pointer into argv, so remains valid.
+     */
+    const char *name = process->short_name ? process->short_name : "httpd";
+
     apr_sleep(TASK_SWITCH_SLEEP);
     ap_main_state = AP_SQ_MS_EXITING;
     apr_pool_destroy(process->pool); /* and destroy all descendent pools */
     apr_terminate();
     if ((process_exit_value != 0) && isatty(fileno(stderr))) {
-        const char *name = process->short_name ? process->short_name : "httpd";
         fprintf(stderr, "%s: abnormal exit %d\n", name, process_exit_value);
     }
     exit(process_exit_value);
