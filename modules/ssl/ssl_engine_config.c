@@ -154,6 +154,10 @@ static void modssl_ctx_init(modssl_ctx_t *mctx, apr_pool_t *p)
     mctx->srp_vbase =             NULL;
 #endif
 #ifdef HAVE_SSL_CONF_CMD
+    mctx->ssl_ctx_config = SSL_CONF_CTX_new();
+    SSL_CONF_CTX_set_flags(mctx->ssl_ctx_config, SSL_CONF_FLAG_FILE);
+    SSL_CONF_CTX_set_flags(mctx->ssl_ctx_config, SSL_CONF_FLAG_SERVER);
+    SSL_CONF_CTX_set_flags(mctx->ssl_ctx_config, SSL_CONF_FLAG_CERTIFICATE);
     mctx->ssl_ctx_param = apr_array_make(p, 10, sizeof(ssl_ctx_param_t));
 #endif
 }
@@ -1826,9 +1830,24 @@ const char *ssl_cmd_SSLStaplingForceURL(cmd_parms *cmd, void *dcfg,
 const char *ssl_cmd_SSLOpenSSLConfCmd(cmd_parms *cmd, void *dcfg,
 					const char *arg1, const char *arg2)
 {
-    ssl_ctx_param_t *param;
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
-    param = apr_array_push(sc->server->ssl_ctx_param);
+    ssl_ctx_param_t *param = apr_array_push(sc->server->ssl_ctx_param);
+    SSL_CONF_CTX *cctx = sc->server->ssl_ctx_config;
+    const char *err;
+    int value_type = SSL_CONF_cmd_value_type(cctx, arg1);
+    if (value_type == SSL_CONF_TYPE_UNKNOWN) {
+        return apr_psprintf(cmd->pool,
+                            "'%s': invalid OpenSSL configuration command",
+                            arg1);
+    }
+    if (value_type == SSL_CONF_TYPE_FILE) {
+        if ((err = ssl_cmd_check_file(cmd, &arg2)))
+            return err;
+    }
+    else if (value_type == SSL_CONF_TYPE_DIR) {
+        if ((err = ssl_cmd_check_dir(cmd, &arg2)))
+            return err;
+    }
     param->name = arg1;
     param->value = arg2;
     return NULL;
