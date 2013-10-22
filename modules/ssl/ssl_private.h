@@ -656,6 +656,7 @@ typedef struct {
     long ocsp_resp_maxage;
     apr_interval_time_t ocsp_responder_timeout;
 #ifdef HAVE_SSL_CONF_CMD
+    SSL_CONF_CTX *ssl_ctx_config; /* Configuration context */
     apr_array_header_t *ssl_ctx_param; /* parameters to pass to SSL_CTX */
 #endif
 } modssl_ctx_t;

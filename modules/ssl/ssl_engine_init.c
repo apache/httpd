@@ -515,20 +515,24 @@ static void ssl_init_ctx_protocol(server_rec *s,
 #ifdef HAVE_SSL_CONF_CMD
 {
     ssl_ctx_param_t *param = (ssl_ctx_param_t *)mctx->ssl_ctx_param->elts;
-    SSL_CONF_CTX *cctx;
+    SSL_CONF_CTX *cctx = mctx->ssl_ctx_config;
     int i;
-    cctx = SSL_CONF_CTX_new();
-    SSL_CONF_CTX_set_flags(cctx, SSL_CONF_FLAG_FILE|SSL_CONF_FLAG_SERVER);
     SSL_CONF_CTX_set_ssl_ctx(cctx, ctx);
     for (i = 0; i < mctx->ssl_ctx_param->nelts; i++, param++) {
         if (SSL_CONF_cmd(cctx, param->name, param->value) <= 0) {
             ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(02407)
-                    "Error SSL_CONF_cmd(%s,%s)", param->name, param->value);
+                         "Error SSL_CONF_cmd(\"%s\",\"%s\")",
+                         param->name, param->value);
             ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
             ssl_die(s);
-        }    
+        }
     }
-    SSL_CONF_CTX_free(cctx);
+    if (SSL_CONF_CTX_finish(cctx) == 0) {
+            ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(02547)
+                         "Error SSL_CONF_CTX_finish()");
+            ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
+            ssl_die(s);
+    }
 }
 #endif
 
@@ -1574,6 +1578,9 @@ void ssl_init_Child(apr_pool_t *p, server_rec *s)
 static void ssl_init_ctx_cleanup(modssl_ctx_t *mctx)
 {
     MODSSL_CFG_ITEM_FREE(SSL_CTX_free, mctx->ssl_ctx);
+#ifdef HAVE_SSL_CONF_CMD
+    MODSSL_CFG_ITEM_FREE(SSL_CONF_CTX_free, mctx->ssl_ctx_config);
+#endif
 
 #ifdef HAVE_SRP
     if (mctx->srp_vbase != NULL) {
