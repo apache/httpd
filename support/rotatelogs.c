@@ -35,7 +35,6 @@
 #include "apr_want.h"
 
 #define BUFSIZE         65536
-#define ERRMSGSZ        256
 
 #define ROTATE_NONE     0
 #define ROTATE_NEW      1
@@ -87,7 +86,6 @@ struct logfile {
 struct rotate_status {
     struct logfile current; /* current logfile. */
     apr_pool_t *pool; /* top-level pool */
-    char errbuf[ERRMSGSZ];
     int rotateReason;
     int tLogEnd;
     int nMessCount;
@@ -337,19 +335,19 @@ static void post_rotate(apr_pool_t *pool, struct logfile *newlog,
 }
 
 /* After a error, truncate the current file and write out an error
- * message, which must be contained in status->errbuf.  The process is
+ * message, which must be contained in message.  The process is
  * terminated on failure.  */
-static void truncate_and_write_error(rotate_status_t *status)
+static void truncate_and_write_error(rotate_status_t *status, const char *message)
 {
-    apr_size_t buflen = strlen(status->errbuf);
+    apr_size_t buflen = strlen(message);
 
     if (apr_file_trunc(status->current.fd, 0) != APR_SUCCESS) {
         fprintf(stderr, "Error truncating the file %s\n", status->current.name);
         exit(2);
     }
-    if (apr_file_write_full(status->current.fd, status->errbuf, buflen, NULL) != APR_SUCCESS) {
+    if (apr_file_write_full(status->current.fd, message, buflen, NULL) != APR_SUCCESS) {
         fprintf(stderr, "Error writing error (%s) to the file %s\n", 
-                status->errbuf, status->current.name);
+                message, status->current.name);
         exit(2);
     }
 }
@@ -469,6 +467,7 @@ static void doRotate(rotate_config_t *config, rotate_status_t *status)
     }
     else {
         char *error = apr_psprintf(newlog.pool, "%pm", &rv);
+        char *message;
 
         /* Uh-oh. Failed to open the new log file. Try to clear
          * the previous log file, note the lost log entries,
@@ -480,15 +479,15 @@ static void doRotate(rotate_config_t *config, rotate_status_t *status)
 
         /* Try to keep this error message constant length
          * in case it occurs several times. */
-        apr_snprintf(status->errbuf, sizeof status->errbuf,
-                     "Resetting log file due to error opening "
-                     "new log file, %10d messages lost: %-25.25s\n",
-                     status->nMessCount, error);
+        message = apr_psprintf(newlog.pool,
+                               "Resetting log file due to error opening "
+                               "new log file, %10d messages lost: %-25.25s\n",
+                               status->nMessCount, error);
+
+        truncate_and_write_error(status, message);
 
         /* Throw away new state; it isn't going to be used. */
         apr_pool_destroy(newlog.pool);
-
-        truncate_and_write_error(status);
     }
 
     status->nMessCount = 0;
@@ -737,18 +736,21 @@ int main (int argc, const char * const argv[])
         rv = apr_file_write_full(status.current.fd, buf, nWrite, &nWrite);
         if (nWrite != nRead) {
             apr_off_t cur_offset;
+            apr_pool_t *pool;
+            char *error;
 
             cur_offset = 0;
             if (apr_file_seek(status.current.fd, APR_CUR, &cur_offset) != APR_SUCCESS) {
                 cur_offset = -1;
             }
             status.nMessCount++;
-            apr_snprintf(status.errbuf, sizeof status.errbuf,
-                         "Error %d writing to log file at offset %" APR_OFF_T_FMT ". "
-                         "%10d messages lost (%pm)\n",
-                         rv, cur_offset, status.nMessCount, &rv);
+            apr_pool_create(&pool, status.pool);
+            error = apr_psprintf(pool, "Error %d writing to log file at offset %"
+                                 APR_OFF_T_FMT ". %10d messages lost (%pm)\n",
+                                 rv, cur_offset, status.nMessCount, &rv);
 
-            truncate_and_write_error(&status);
+            truncate_and_write_error(&status, error);
+            apr_pool_destroy(pool);
         }
         else {
             status.nMessCount++;
