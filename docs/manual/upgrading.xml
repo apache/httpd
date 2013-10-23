@@ -360,6 +360,12 @@ Allow from example.org
       has been moved into <module>mod_authn_core</module>.  
       </li>
 
+      <li><module>mod_cgid</module> uses the servers <directive module="core"
+      >Timeout</directive> to limit the length of time to wait for CGI output.
+      This timeout can be overridden with <directive module="mod_cgid">
+      CGIDScriptTImeout</directive>.
+      </li>
+
     </ul>
 
   </section>

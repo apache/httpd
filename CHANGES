@@ -1,6 +1,13 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_cgid: Use the servers Timeout for each read from a CGI script,
+     allow override with new CGIDRequestTimeout directive. PR43494
+     [Eric Covener, Toshikuni Fukaya <toshikuni-fukaya cybozu co jp>]
+
+  *) core: Add missing Reason-Phrase in HTTP response headers.
+     PR 54946. [Rainer Jung]
+
   *) core: ensure any abnormal exit is reported to stderr if it's a tty.
      PR 55670 [Nick Kew]
 
