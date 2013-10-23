@@ -1392,7 +1392,6 @@ static apr_status_t event_unregister_socket_callback(apr_socket_t **s, apr_pool_
 {
     int i = 0, nsock;
     apr_status_t final_rc = APR_SUCCESS;
-    apr_pollfd_t *pfd = apr_palloc(p, sizeof(*pfd));
     apr_pollfd_t **pfds = NULL;
 
     while(s[i] != NULL) { 
