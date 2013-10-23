@@ -468,9 +468,7 @@ static void doRotate(rotate_config_t *config, rotate_status_t *status)
         status->current = newlog;
     }
     else {
-        char error[120];
-
-        apr_strerror(rv, error, sizeof error);
+        char *error = apr_psprintf(newlog.pool, "%pm", &rv);
 
         /* Uh-oh. Failed to open the new log file. Try to clear
          * the previous log file, note the lost log entries,
@@ -480,15 +478,15 @@ static void doRotate(rotate_config_t *config, rotate_status_t *status)
             exit(2);
         }
 
-        /* Throw away new state; it isn't going to be used. */
-        apr_pool_destroy(newlog.pool);
-
         /* Try to keep this error message constant length
          * in case it occurs several times. */
         apr_snprintf(status->errbuf, sizeof status->errbuf,
                      "Resetting log file due to error opening "
                      "new log file, %10d messages lost: %-25.25s\n",
                      status->nMessCount, error);
+
+        /* Throw away new state; it isn't going to be used. */
+        apr_pool_destroy(newlog.pool);
 
         truncate_and_write_error(status);
     }
