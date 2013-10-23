@@ -267,7 +267,6 @@ static void post_rotate(apr_pool_t *pool, struct logfile *newlog,
                         rotate_config_t *config, rotate_status_t *status)
 {
     apr_status_t rv;
-    char error[120];
     apr_procattr_t *pattr;
     const char *argv[4];
     apr_proc_t proc;
@@ -280,9 +279,9 @@ static void post_rotate(apr_pool_t *pool, struct logfile *newlog,
         }
         rv = apr_file_link(newlog->name, config->linkfile);
         if (rv != APR_SUCCESS) {
-            apr_strerror(rv, error, sizeof error);
-            fprintf(stderr, "Error linking file %s to %s (%s)\n",
-                    newlog->name, config->linkfile, error);
+            char *error = apr_psprintf(pool, "Error linking file %s to %s (%pm)\n",
+                                       newlog->name, config->linkfile, &rv);
+            fputs(error, stderr);
             exit(2);
         }
     }
@@ -297,10 +296,9 @@ static void post_rotate(apr_pool_t *pool, struct logfile *newlog,
         /* noop */;
 
     if ((rv = apr_procattr_create(&pattr, pool)) != APR_SUCCESS) {
-        fprintf(stderr,
-                "post_rotate: apr_procattr_create failed for '%s': %s\n",
-                config->postrotate_prog,
-                apr_strerror(rv, error, sizeof(error)));
+        char *error = apr_psprintf(pool, "post_rotate: apr_procattr_create failed " \
+                                         "for '%s': %pm\n", config->postrotate_prog, &rv);
+        fputs(error, stderr);
         return;
     }
 
@@ -309,10 +307,10 @@ static void post_rotate(apr_pool_t *pool, struct logfile *newlog,
         rv = apr_procattr_cmdtype_set(pattr, APR_PROGRAM_ENV);
 
     if (rv != APR_SUCCESS) {
-        fprintf(stderr,
-                "post_rotate: could not set up process attributes for '%s': %s\n",
-                config->postrotate_prog,
-                apr_strerror(rv, error, sizeof(error)));
+        char *error = apr_psprintf(pool, "post_rotate: could not set up process " \
+                                   "attributes for '%s': %pm\n", config->postrotate_prog,
+                                   &rv);
+        fputs(error, stderr);
         return;
     }
 
@@ -331,9 +329,9 @@ static void post_rotate(apr_pool_t *pool, struct logfile *newlog,
 
     rv = apr_proc_create(&proc, argv[0], argv, NULL, pattr, pool);
     if (rv != APR_SUCCESS) {
-        fprintf(stderr, "Could not spawn post-rotate process '%s': %s\n",
-                config->postrotate_prog,
-                apr_strerror(rv, error, sizeof(error)));
+        char *error = apr_psprintf(pool, "Could not spawn post-rotate process " \
+                                   "'%s': %pm\n", config->postrotate_prog, &rv);
+        fputs(error, stderr);
         return;
     }
 }
@@ -442,10 +440,10 @@ static void doRotate(rotate_config_t *config, rotate_status_t *status)
             }
             rv = apr_dir_make_recursive(path, APR_FPROT_OS_DEFAULT, newlog.pool);
             if (rv != APR_SUCCESS) {
-                char error[120];
-
-                apr_strerror(rv, error, sizeof error);
-                fprintf(stderr, "Could not create directory '%s' (%s)\n", path, error);
+                char *error = apr_psprintf(newlog.pool,
+                                           "Could not create directory '%s' (%pm)\n",
+                                           path, &rv);
+                fputs(error, stderr);
                 exit(2);
             }
         }
