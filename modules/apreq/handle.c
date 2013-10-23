@@ -208,7 +208,6 @@ static apreq_param_t *apache2_body_get(apreq_handle_t *handle, const char *name)
         h->next = ctx->parser->hook;
         h->ctx = hook_ctx;
         ctx->parser->hook = h;
-        h->ctx = hook_ctx;
         hook_ctx->name = name;
         hook_ctx->param = NULL;
         hook_ctx->prev = ctx->parser->hook;
