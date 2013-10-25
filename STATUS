@@ -212,6 +212,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: trunk patch works, modulo CHANGES and doc compatibility note
     +1: chrisd
 
+  * mod_headers: Allow for format specifiers to be used in the base
+    substitution string when using Header edit
+    trunk patch: http://people.apache.org/~druggeri/patches/HeaderEditENV.trunk.patch
+    2.4.x patch: http://people.apache.org/~druggeri/patches/HeaderEditENV.2.4.patch
+    +1: druggeri
+
 A list of further possible backports can be found at:                                                                                                                                   
     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
 If you want to propose one of those, please still add them here.
