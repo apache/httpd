@@ -143,7 +143,7 @@ typedef struct {
 
 /* edit_do is used for Header edit to iterate through the request headers */
 typedef struct {
-    apr_pool_t *p;
+    request_rec *r;
     header_entry *hdr;
     apr_table_t *t;
 } edit_do;
@@ -392,11 +392,12 @@ static char *parse_format_string(apr_pool_t *p, header_entry *hdr, const char *s
     char *res;
 
     /* No string to parse with unset and echo commands */
-    if (hdr->action == hdr_unset ||
-        hdr->action == hdr_edit ||
-        hdr->action == hdr_edit_r ||
-        hdr->action == hdr_echo) {
+    if (hdr->action == hdr_unset || hdr->action == hdr_echo) {
         return NULL;
+    }
+    /* Tags are in the replacement value for edit */
+    else if (hdr->action == hdr_edit || hdr->action == hdr_edit_r ) {
+        s = hdr->subs;
     }
 
     hdr->ta = apr_array_make(p, 10, sizeof(format_tag));
@@ -602,7 +603,7 @@ static char* process_tags(header_entry *hdr, request_rec *r)
     return str ? str : "";
 }
 static const char *process_regexp(header_entry *hdr, const char *value,
-                                  apr_pool_t *pool)
+                                  request_rec *r)
 {
     ap_regmatch_t pmatch[AP_MAX_REG_MATCH];
     const char *subs;
@@ -613,7 +614,10 @@ static const char *process_regexp(header_entry *hdr, const char *value,
         /* no match, nothing to do */
         return value;
     }
-    subs = ap_pregsub(pool, hdr->subs, value, AP_MAX_REG_MATCH, pmatch);
+    /* Process tags in the input string rather than the resulting
+       * substitution to avoid surprises
+       */
+    subs = ap_pregsub(r->pool, process_tags(hdr, r), value, AP_MAX_REG_MATCH, pmatch);
     if (subs == NULL)
         return NULL;
     diffsz = strlen(subs) - (pmatch[0].rm_eo - pmatch[0].rm_so);
@@ -621,12 +625,12 @@ static const char *process_regexp(header_entry *hdr, const char *value,
         remainder = value + pmatch[0].rm_eo;
     }
     else { /* recurse to edit multiple matches if applicable */
-        remainder = process_regexp(hdr, value + pmatch[0].rm_eo, pool);
+        remainder = process_regexp(hdr, value + pmatch[0].rm_eo, r);
         if (remainder == NULL)
             return NULL;
         diffsz += strlen(remainder) - strlen(value + pmatch[0].rm_eo);
     }
-    ret = apr_palloc(pool, strlen(value) + 1 + diffsz);
+    ret = apr_palloc(r->pool, strlen(value) + 1 + diffsz);
     memcpy(ret, value, pmatch[0].rm_so);
     strcpy(ret + pmatch[0].rm_so, subs);
     strcat(ret, remainder);
@@ -648,7 +652,7 @@ static int echo_header(echo_do *v, const char *key, const char *val)
 static int edit_header(void *v, const char *key, const char *val)
 {
     edit_do *ed = (edit_do *)v;
-    const char *repl = process_regexp(ed->hdr, val, ed->p);
+    const char *repl = process_regexp(ed->hdr, val, ed->r);
     if (repl == NULL)
         return 0;
 
@@ -781,7 +785,7 @@ static int do_headers_fixup(request_rec *r, apr_table_t *headers,
         case hdr_edit:
         case hdr_edit_r:
             if (!strcasecmp(hdr->header, "Content-Type") && r->content_type) {
-                const char *repl = process_regexp(hdr, r->content_type, r->pool);
+                const char *repl = process_regexp(hdr, r->content_type, r);
                 if (repl == NULL)
                     return 0;
                 ap_set_content_type(r, repl);
@@ -789,7 +793,7 @@ static int do_headers_fixup(request_rec *r, apr_table_t *headers,
             if (apr_table_get(headers, hdr->header)) {
                 edit_do ed;
 
-                ed.p = r->pool;
+                ed.r = r;
                 ed.hdr = hdr;
                 ed.t = apr_table_make(r->pool, 5);
                 if (!apr_table_do(edit_header, (void *) &ed, headers,

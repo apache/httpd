@@ -229,7 +229,7 @@ Header merge Cache-Control no-store env=NO_STORE
     to a <glossary ref="regex">regular expression</glossary>
     search-and-replace.  The <var>value</var> argument is a <glossary
     ref="regex">regular expression</glossary>, and the <var>replacement</var>
-    is a replacement string, which may contain backreferences.
+    is a replacement string, which may contain backreferences or format specifiers.
     The <code>edit</code> form will match and replace exactly once
     in a header value, whereas the <code>edit*</code> form will replace
     <em>every</em> instance of the search pattern if it appears more
@@ -372,7 +372,7 @@ Header merge Cache-Control no-store env=NO_STORE
     to a <glossary ref="regex">regular expression</glossary>
     search-and-replace.  The <var>value</var> argument is a <glossary
     ref="regex">regular expression</glossary>, and the <var>replacement</var>
-    is a replacement string, which may contain backreferences.
+    is a replacement string, which may contain backreferences or format specifiers.
     The <code>edit</code> form will match and replace exactly once
     in a header value, whereas the <code>edit*</code> form will replace
     <em>every</em> instance of the search pattern if it appears more
@@ -481,7 +481,8 @@ Header merge Cache-Control no-store env=NO_STORE
 
     <p>For <code>edit</code> there is both a <var>value</var> argument
     which is a <glossary ref="regex">regular expression</glossary>,
-    and an additional <var>replacement</var> string.</p>
+    and an additional <var>replacement</var> string.</p> The replacement string
+    may also contain format specifiers.
 
     <p>The <directive>Header</directive> directive may be followed by
     an additional argument, which may be any of:</p>
