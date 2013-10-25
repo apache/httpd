@@ -676,7 +676,6 @@ top_builddir=%PREFIX%
 include %INSTALLBUILDDIR%/special.mk
 
 #   the used tools
-APXS=apxs
 APACHECTL=apachectl
 
 #   additional defines, includes and libraries
