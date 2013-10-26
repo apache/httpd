@@ -226,11 +226,6 @@ Allow from example.org
         <li><directive module="core">FileETag</directive> now
         defaults to "MTime Size" (without INode).</li>
 
-        <li><module>mod_log_config</module>: <a
-        href="modules/mod_log_config.html#formats">${cookie}C</a>
-        matches whole cookie names.  Previously any substring would
-        match.</li>
-
         <li><module>mod_dav_fs</module>: The format of the <directive
         module="mod_dav_fs">DavLockDB</directive> file has changed for
         systems with inodes.  The old <directive
