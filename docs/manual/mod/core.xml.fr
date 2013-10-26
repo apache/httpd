@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1525597 -->
+<!-- English Revision : 1535125 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -4564,7 +4564,7 @@ host</context></contextlist>
       maximum jusqu'&agrave; l'arriv&eacute;e de l'accus&eacute;-r&eacute;ception d'un paquet si le
       tampon d'envoi est plein.</li>
 
-      <li>Avec <module>mod_cgi</module>, le temps d'attente maximum des
+      <li>Avec <module>mod_cgi</module> et <module>mod_cgid</module>, le temps d'attente maximum des
       sorties d'un script CGI.</li>
 
       <li>Avec <module>mod_ext_filter</module>, le temps d'attente

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1507320:1533750 (outdated) -->
+<!-- English Revision : 1533750 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -99,7 +99,7 @@ shell</description>
     cours de cette phase initiale du traitement, par exemple pour la
     directive <directive module="mod_rewrite">RewriteRule</directive>,
     vous devez plut&ocirc;t utiliser la directive <directive
-    module="mod_setenvif"> SetEnvIf</directive> pour d&eacute;finir cette
+    module="mod_setenvif">SetEnvIf</directive> pour d&eacute;finir cette
     variable.</p>
     </note>
 
