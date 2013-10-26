@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision : 1514039 -->
+<!-- English Revision : 1535125 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -390,6 +390,15 @@ Allow from example.org
       <directive module="mod_authn_core">AuthnProviderAlias</directive>)
       est maintenant fournie par <module>mod_authn_core</module>.  
       </li>
+
+      <li><module>mod_cgid</module> utilise la valeur de la directive
+      <directive module="core">Timeout</directive> du serveur pour
+      limiter le temps d'attente entre les sorties d'un programme CGI.
+      La valeur de ce temps d'attente peut maintenant être modifiée via
+      la directive <directive
+      module="mod_cgid">CGIDScriptTImeout</directive>.
+      </li>
+
     </ul>
 
     </section>

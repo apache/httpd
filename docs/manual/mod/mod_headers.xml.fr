@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1520908 -->
+<!-- English Revision: 1535788 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -243,13 +243,15 @@ Header merge Cache-Control no-store env=NO_STORE
     m&eacute;thode HTTP standard permettant d'affecter plusieurs valeurs &agrave; un
     en-t&ecirc;te.</dd>
 
+    <dt><code>edit</code></dt>
     <dt><code>edit*</code></dt>
     <dd>Si l'en-t&ecirc;te existe, sa valeur est modifi&eacute;e en fonction d'une
     <glossary ref="regex">expression rationnelle</glossary> de type
     recherche/remplacement. L'argument <var>valeur</var> est une
     <glossary ref="regex">expression rationnelle</glossary>, et
     l'argument <var>remplacement</var> une cha&icirc;ne de caract&egrave;res de
-    remplacement qui peut contenir des r&eacute;f&eacute;rences arri&egrave;res. Avec
+    remplacement qui peut contenir des r&eacute;f&eacute;rences
+    arri&egrave;res ou des sp&eacute;cificateurs de format. Avec
     <code>edit</code>, la cha&icirc;ne de l'en-t&ecirc;te correspondant au mod&egrave;le ne
     sera recherch&eacute;e et remplac&eacute;e qu'une seule fois, alors qu'avec
     <code>edit*</code>, elle le sera pour chacune de ses instances si
@@ -412,7 +414,7 @@ Header merge Cache-Control no-store env=NO_STORE
     <glossary ref="regex">expression rationnelle</glossary>, et
     l'argument <var>remplacement</var> une cha&icirc;ne de caract&egrave;res de
     remplacement qui peut contenir des r&eacute;f&eacute;rences
-    arri&egrave;res. La forme <code>edit</code> n'effectuera une
+    arri&egrave;res ou des sp&eacute;cificateurs de format. La forme <code>edit</code> n'effectuera une
     recherche/remplacement qu'une seule fois dans la valeur de
     l'en-t&ecirc;te, alors que la forme <code>edit*</code> en effectuera autant
     que le nombre d'apparition de la cha&icirc;ne &agrave; remplacer.</dd>
@@ -530,7 +532,8 @@ Header merge Cache-Control no-store env=NO_STORE
     <p><code>edit</code>n&eacute;cessite les deux arguments
     <var>valeur</var>, qui est une <glossary ref="regex">expression
     rationnelle</glossary>, et une cha&icirc;ne additionnelle
-    <var>remplacement</var>.</p>
+    <var>remplacement</var>. La cha&icirc;ne de remplacement peut aussi
+    contenir des sp&eacute;cificateurs de format.</p>
 
     <p>La directive <directive>Header</directive> peut &ecirc;tre suivie d'un
     argument additionnel qui peut prendre les valeurs suivantes :</p>
