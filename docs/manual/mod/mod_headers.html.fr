@@ -29,6 +29,8 @@
 <a href="../ja/mod/mod_headers.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_headers.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
+            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Personnalisation des en-têtes de requêtes et de réponses
 HTTP</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -316,7 +318,7 @@ Header merge Cache-Control no-store env=NO_STORE
     <a class="glossarylink" href="../glossary.html#regex" title="voir glossaire">expression rationnelle</a>, et
     l'argument <var>remplacement</var> une chaîne de caractères de
     remplacement qui peut contenir des références
-    arrières. La forme <code>edit</code> n'effectuera une
+    arrières ou des spécificateurs de format. La forme <code>edit</code> n'effectuera une
     recherche/remplacement qu'une seule fois dans la valeur de
     l'en-tête, alors que la forme <code>edit*</code> en effectuera autant
     que le nombre d'apparition de la chaîne à remplacer.</dd>
@@ -423,7 +425,8 @@ Header merge Cache-Control no-store env=NO_STORE
     <p><code>edit</code>nécessite les deux arguments
     <var>valeur</var>, qui est une <a class="glossarylink" href="../glossary.html#regex" title="voir glossaire">expression
     rationnelle</a>, et une chaîne additionnelle
-    <var>remplacement</var>.</p>
+    <var>remplacement</var>. La chaîne de remplacement peut aussi
+    contenir des spécificateurs de format.</p>
 
     <p>La directive <code class="directive">Header</code> peut être suivie d'un
     argument additionnel qui peut prendre les valeurs suivantes :</p>
@@ -486,13 +489,15 @@ Header merge Cache-Control no-store env=NO_STORE
     méthode HTTP standard permettant d'affecter plusieurs valeurs à un
     en-tête.</dd>
 
+    <dt><code>edit</code></dt>
     <dt><code>edit*</code></dt>
     <dd>Si l'en-tête existe, sa valeur est modifiée en fonction d'une
     <a class="glossarylink" href="../glossary.html#regex" title="voir glossaire">expression rationnelle</a> de type
     recherche/remplacement. L'argument <var>valeur</var> est une
     <a class="glossarylink" href="../glossary.html#regex" title="voir glossaire">expression rationnelle</a>, et
     l'argument <var>remplacement</var> une chaîne de caractères de
-    remplacement qui peut contenir des références arrières. Avec
+    remplacement qui peut contenir des références
+    arrières ou des spécificateurs de format. Avec
     <code>edit</code>, la chaîne de l'en-tête correspondant au modèle ne
     sera recherchée et remplacée qu'une seule fois, alors qu'avec
     <code>edit*</code>, elle le sera pour chacune de ses instances si

@@ -213,10 +213,6 @@ Allow from example.org
         <li><code class="directive"><a href="./mod/core.html#fileetag">FileETag</a></code> now
         defaults to "MTime Size" (without INode).</li>
 
-        <li><code class="module"><a href="./mod/mod_log_config.html">mod_log_config</a></code>: <a href="modules/mod_log_config.html#formats">${cookie}C</a>
-        matches whole cookie names.  Previously any substring would
-        match.</li>
-
         <li><code class="module"><a href="./mod/mod_dav_fs.html">mod_dav_fs</a></code>: The format of the <code class="directive"><a href="./mod/mod_dav_fs.html#davlockdb">DavLockDB</a></code> file has changed for
         systems with inodes.  The old <code class="directive"><a href="./mod/mod_dav_fs.html#davlockdb">DavLockDB</a></code> file must be deleted on
         upgrade.
@@ -285,6 +281,14 @@ Allow from example.org
         <li><code class="module"><a href="./mod/mod_dumpio.html">mod_dumpio</a></code>: <code class="directive">DumpIOLogLevel</code>
         is no longer supported.  Data is always logged at <code class="directive"><a href="./mod/core.html#loglevel">LogLevel</a></code> <code>trace7</code>.</li>
 
+        <li>On Unix platforms, piped logging commands configured using
+        either <code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code> or
+        <code class="directive"><a href="./mod/mod_log_config.html#customlog">CustomLog</a></code> were invoked using
+        <code>/bin/sh -c</code> in 2.2 and earlier.  In 2.4 and later,
+        piped logging commands are executed directly.  To restore the
+        old behaviour, see the <a href="logs.html#piped">piped logging
+        documentation</a>.</li>
+
       </ul>
     
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -330,6 +334,11 @@ Allow from example.org
       <li>The functionality provided by <code>mod_authn_alias</code>
       in previous versions (i.e., the <code class="directive"><a href="./mod/mod_authn_core.html#authnprovideralias">AuthnProviderAlias</a></code> directive)
       has been moved into <code class="module"><a href="./mod/mod_authn_core.html">mod_authn_core</a></code>.  
+      </li>
+
+      <li><code class="module"><a href="./mod/mod_cgid.html">mod_cgid</a></code> uses the servers <code class="directive"><a href="./mod/core.html#timeout">Timeout</a></code> to limit the length of time to wait for CGI output.
+      This timeout can be overridden with <code class="directive"><a href="./mod/mod_cgid.html#&#10;      cgidscripttimeout">
+      CGIDScriptTImeout</a></code>.
       </li>
 
     </ul>
