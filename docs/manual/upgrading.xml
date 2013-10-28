@@ -306,6 +306,14 @@ Allow from example.org
         is no longer supported.  Data is always logged at <directive
         module="core">LogLevel</directive> <code>trace7</code>.</li>
 
+        <li>On Unix platforms, piped logging commands configured using
+        either <directive module="core">ErrorLog</directive> or
+        <directive module="mod_log_config">CustomLog</directive> were invoked using
+        <code>/bin/sh -c</code> in 2.2 and earlier.  In 2.4 and later,
+        piped logging commands are executed directly.  To restore the
+        old behaviour, see the <a href="logs.html#piped">piped logging
+        documentation</a>.</li>
+
       </ul>
     </section>
   </section>
