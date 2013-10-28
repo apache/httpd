@@ -443,6 +443,8 @@ static apr_status_t session_output_filter(ap_filter_t * f,
                 override = apr_table_get(r->headers_out, conf->header);
             }
             if (override) {
+                apr_table_unset(r->err_headers_out, conf->header);
+                apr_table_unset(r->headers_out, conf->header);
                 z->encoded = override;
                 z->dirty = 1;
                 session_identity_decode(r, z);

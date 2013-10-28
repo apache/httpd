@@ -97,12 +97,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_session: After parsing the value of the header specified by the
-    SessionHeader directive, remove the value from the response. PR 55279.
-    trunk patch: http://svn.apache.org/r1531679
-    2.4.x patch: trunk patch works, modulo CHANGES
-    +1: minfrin, jim, druggeri
-
     *) mod_session: Reset the max-age on session save. PR 47476.
     trunk patch: http://svn.apache.org/r1531683
     2.4.x patch: trunk patch works, modulo CHANGES
