@@ -287,7 +287,7 @@ Header merge Cache-Control no-store env=NO_STORE
     <dd>If this response header exists, its value is transformed according
     to a <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular expression</a>
     search-and-replace.  The <var>value</var> argument is a <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular expression</a>, and the <var>replacement</var>
-    is a replacement string, which may contain backreferences.
+    is a replacement string, which may contain backreferences or format specifiers.
     The <code>edit</code> form will match and replace exactly once
     in a header value, whereas the <code>edit*</code> form will replace
     <em>every</em> instance of the search pattern if it appears more
@@ -386,7 +386,8 @@ Header merge Cache-Control no-store env=NO_STORE
 
     <p>For <code>edit</code> there is both a <var>value</var> argument
     which is a <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular expression</a>,
-    and an additional <var>replacement</var> string.</p>
+    and an additional <var>replacement</var> string. The replacement string
+    may also contain format specifiers.</p>
 
     <p>The <code class="directive">Header</code> directive may be followed by
     an additional argument, which may be any of:</p>
@@ -450,7 +451,7 @@ Header merge Cache-Control no-store env=NO_STORE
     <dd>If this request header exists, its value is transformed according
     to a <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular expression</a>
     search-and-replace.  The <var>value</var> argument is a <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular expression</a>, and the <var>replacement</var>
-    is a replacement string, which may contain backreferences.
+    is a replacement string, which may contain backreferences or format specifiers.
     The <code>edit</code> form will match and replace exactly once
     in a header value, whereas the <code>edit*</code> form will replace
     <em>every</em> instance of the search pattern if it appears more
