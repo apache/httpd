@@ -97,10 +97,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
   
-
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
-
   * mod_ssl: Support ECC keys
     trunk patch: http://svn.apache.org/r834378 
                  http://svn.apache.org/r835046
@@ -113,7 +109,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  http://svn.apache.org/r1308862
                  http://svn.apache.org/r1509875
     2.2.x patch: http://people.apache.org/~sf/ECC-2.2-v2.diff
-    +1: sf, trawick
+    +1: sf, trawick, wrowe
 
   * mod_ssl config: Fix range check bug with SSLRenegBufferSize
     trunk patch: http://svn.apache.org/r954641
@@ -121,12 +117,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/ssl/ssl_engine_config.c?r1=954641&r2=954640&pathrev=954641&view=patch)
     2.4.x patch: it was fixed before 2.4.x was branched
     2.2.x patch: trunk patch to ssl_engine_config.c (above) applies with offset
-    +1: trawick, jorton
+    +1: trawick, jorton, wrowe
 
   * mod_dav: Fix 55306.  Don't require lock tokens for COPY source.
     trunk patches: https://svn.apache.org/r1528718
     2.2.x: trunk works, CHANGES needs to be written when merging
-    +1: breser, minfrin
+    +1: breser, minfrin, wrowe
 
   * mod_dav: Fix 55397.  dav_resource->uri treated as unencoded. This was an
     unnecessary ABI changed introduced in 2.2.25
@@ -134,7 +130,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                    https://svn.apache.org/r1531505
     2.4.x: trunk works, CHANGES needs to be written when merging
     2.2.x: https://people.apache.org/~breser/httpd/2.2.x/patches/pr55397.patch 
-    +1: breser, minfrin
+    +1: breser, minfrin, wrowe
+
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
 
 
 PATCHES/ISSUES THAT ARE STALLED
