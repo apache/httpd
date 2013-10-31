@@ -75,6 +75,12 @@ struct rotate_config {
 
 typedef struct rotate_status rotate_status_t;
 
+/* "adjusted_time_t" is used to store Unix time (seconds since epoch)
+ * which has been adjusted for some timezone fudge factor.  It should
+ * be used for storing the return values from get_now().  A typedef is
+ * used since this type is similar to time_t, but different. */
+typedef long adjusted_time_t;
+
 /* Structure to contain relevant logfile state: fd, pool and
  * filename. */
 struct logfile {
@@ -87,7 +93,7 @@ struct rotate_status {
     struct logfile current; /* current logfile. */
     apr_pool_t *pool; /* top-level pool */
     int rotateReason;
-    int tLogEnd;
+    adjusted_time_t tLogEnd;
     int nMessCount;
     int fileNum;
 };
@@ -150,13 +156,13 @@ static void usage(const char *argv0, const char *reason)
     exit(1);
 }
 
-/* This function returns the current Unix time (time_t) plus any
- * configured or derived local time offset.  The offset applied is
+/* This function returns the current Unix time (time_t) adjusted for
+ * any configured or derived local time offset.  The offset applied is
  * returned via *offset. */
-static int get_now(rotate_config_t *config, apr_int32_t *offset)
+static adjusted_time_t get_now(rotate_config_t *config, apr_int32_t *offset)
 {
     apr_time_t tNow = apr_time_now();
-    int utc_offset;
+    apr_int32_t utc_offset;
 
     if (config->use_localtime) {
         /* Check for our UTC offset before using it, since it might
@@ -174,7 +180,7 @@ static int get_now(rotate_config_t *config, apr_int32_t *offset)
     if (offset)
         *offset = utc_offset;
 
-    return (int)apr_time_sec(tNow) + utc_offset;
+    return apr_time_sec(tNow) + utc_offset;
 }
 
 /*
@@ -366,8 +372,7 @@ static void truncate_and_write_error(rotate_status_t *status, const char *messag
 static void doRotate(rotate_config_t *config, rotate_status_t *status)
 {
     apr_int32_t offset;
-    int now;
-    int tLogStart;
+    adjusted_time_t now, tLogStart;
     apr_status_t rv;
     struct logfile newlog;
     int thisLogNum = -1;
@@ -378,7 +383,8 @@ static void doRotate(rotate_config_t *config, rotate_status_t *status)
     status->rotateReason = ROTATE_NONE;
 
     if (config->tRotation) {
-        int tLogEnd;
+        adjusted_time_t tLogEnd;
+
         tLogStart = (now / config->tRotation) * config->tRotation;
         tLogEnd = tLogStart + config->tRotation;
         /*
@@ -424,7 +430,7 @@ static void doRotate(rotate_config_t *config, rotate_status_t *status)
             }
         }
         else {
-            apr_snprintf(newlog.name, sizeof(newlog.name), "%s.%010d", config->szLogRoot,
+            apr_snprintf(newlog.name, sizeof(newlog.name), "%s.%010ld", config->szLogRoot,
                          tLogStart);
         }
     }
@@ -562,7 +568,7 @@ int main (int argc, const char * const argv[])
 #if APR_FILES_AS_SOCKETS
     apr_pollfd_t pollfd = { 0 };
     apr_status_t pollret = APR_SUCCESS;
-    int polltimeout;
+    long polltimeout;
 #endif
 
     apr_app_initialize(&argc, &argv, NULL);
