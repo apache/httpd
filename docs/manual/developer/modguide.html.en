@@ -1649,31 +1649,38 @@ keyValuePair* readPost(request_rec* r) {
     if (res != OK || !pairs) return NULL; /* Return NULL if we failed or if there are is no POST data */
     kvp = apr_pcalloc(r-&gt;pool, sizeof(keyValuePair) * (pairs-&gt;nelts + 1));
     while (pairs &amp;&amp; !apr_is_empty_array(pairs)) {
-        i++;
         ap_form_pair_t *pair = (ap_form_pair_t *) apr_array_pop(pairs);
         apr_brigade_length(pair-&gt;value, 1, &amp;len);
         size = (apr_size_t) len;
         buffer = apr_palloc(r-&gt;pool, size + 1);
         apr_brigade_flatten(pair-&gt;value, buffer, &amp;size);
         buffer[len] = 0;
-        kvp[i]-&gt;key = apr_pstrdup(r-&gt;pool, pair-&gt;name);
-        kvp[i]-&gt;value = buffer;
+        kvp[i].key = apr_pstrdup(r-&gt;pool, pair-&gt;name);
+        kvp[i].value = buffer;
+        i++;
     }
-    return kvp;    
+    return kvp;
 }
 
-static int example_handler(request_rec *r) 
+static int example_handler(request_rec *r)
 {
     /*~~~~~~~~~~~~~~~~~~~~~~*/
-    
     keyValuePair* formData;
     /*~~~~~~~~~~~~~~~~~~~~~~*/
 
     formData = readPost(r);
     if (formData) {
         int i;
-        for (i = 0; formData[i]; i++) {
-            ap_rprintf(r, "%s = %s\n", formData[i]-&gt;key, formData[i]-&gt;value);
+        for (i = 0; &amp;formData[i]; i++) {
+            if (formData[i].key &amp;&amp; formData[i].value) {
+                ap_rprintf(r, "%s = %s\n", formData[i].key, formData[i].value);
+            } else if (formData[i].key) {
+                ap_rprintf(r, "%s\n", formData[i].key);
+            } else if (formData[i].value) {
+                ap_rprintf(r, "= %s\n", formData[i].value);
+            } else {
+                break;
+            }
         }
     }
     return OK;
@@ -1684,13 +1691,13 @@ static int example_handler(request_rec *r)
 
 
     
-    
+
     <h3><a name="headers_out" id="headers_out">Printing out every HTTP header received</a></h3>
-    
+
 
 
 <pre class="prettyprint lang-c">
-static int example_handler(request_rec *r) 
+static int example_handler(request_rec *r)
 {
     /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
     const apr_array_header_t    *fields;
@@ -1701,7 +1708,7 @@ static int example_handler(request_rec *r)
     fields = apr_table_elts(r-&gt;headers_in);
     e = (apr_table_entry_t *) fields-&gt;elts;
     for(i = 0; i &lt; fields-&gt;nelts; i++) {
-        ap_rprintf(r, "&lt;b&gt;%s&lt;/b&gt;: %s&lt;br/&gt;", e[i].key, e[i].val);
+        ap_rprintf(r, "%s: %s\n", e[i].key, e[i].val);
     }
     return OK;
 }
@@ -1711,9 +1718,9 @@ static int example_handler(request_rec *r)
 
 
     
-    
+
     <h3><a name="request_body" id="request_body">Reading the request body into memory</a></h3>
-    
+
 
 
 <pre class="prettyprint lang-c">
@@ -1759,8 +1766,8 @@ static int example_handler(request_rec* r)
     const char  *buffer;
     /*~~~~~~~~~~~~~~~~*/
 
-    if(util_read(r, &amp;data, &amp;size) == OK) {
-        ap_rprintf(r, "We read a request body that was %u bytes long", size);
+    if(util_read(r, &amp;buffer, &amp;size) == OK) {
+        ap_rprintf(r, "We read a request body that was %" APR_OFF_T_FMT " bytes long", size);
     }
     return OK;
 }
