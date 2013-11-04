@@ -1124,7 +1124,7 @@ read_request:
          */
         cs->expiration_time = ap_server_conf->keep_alive_timeout +
                               apr_time_now();
-
+        c->sbh = NULL;
         /* Add work to pollset. */
         v = ap_equeue_writer_value(eq);
         v->timeout_type = TIMEOUT_KEEPALIVE;
@@ -1133,6 +1133,7 @@ read_request:
         v->tag = "process_socket(keepalive)";
         ap_equeue_writer_onward(eq);
         apr_pollset_wakeup(event_pollset);
+        return;
     }
     else if (cs->pub.state == CONN_STATE_SUSPENDED) {
         apr_atomic_inc32(&suspended_count);
