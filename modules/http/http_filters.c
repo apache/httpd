@@ -359,6 +359,10 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                 return APR_EAGAIN;
             }
 
+            if (rv == APR_EOF) {
+                return APR_INCOMPLETE;
+            }
+
             if (rv != APR_SUCCESS) {
                 return rv;
             }
@@ -384,8 +388,8 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
 
                 apr_bucket_delete(e);
                 e = APR_BRIGADE_FIRST(b);
-                again = 1; /* come around again */
             }
+            again = 1; /* come around again */
 
             if (ctx->state == BODY_CHUNK_TRAILER) {
                 ap_get_mime_headers(f->r);
@@ -416,6 +420,11 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                     return APR_EAGAIN;
                 }
 
+                if (rv == APR_EOF && ctx->state != BODY_NONE
+                        && ctx->remaining > 0) {
+                    return APR_INCOMPLETE;
+                }
+
                 if (rv != APR_SUCCESS) {
                     return rv;
                 }
@@ -432,7 +441,8 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                     if (ctx->remaining > 0) {
                         e = APR_BRIGADE_LAST(b);
                         if (APR_BUCKET_IS_EOS(e)) {
-                            return APR_EOF;
+                            apr_bucket_delete(e);
+                            return APR_INCOMPLETE;
                         }
                     }
                     else if (ctx->state == BODY_CHUNK_DATA) {
@@ -1631,7 +1641,8 @@ apr_status_t ap_http_outerror_filter(ap_filter_t *f,
              * Start of error handling state tree. Just one condition
              * right now :)
              */
-            if (((ap_bucket_error *)(e->data))->status == HTTP_BAD_GATEWAY) {
+            if (((ap_bucket_error *)(e->data))->status == HTTP_BAD_GATEWAY ||
+                ((ap_bucket_error *)(e->data))->status == HTTP_GATEWAY_TIME_OUT) {
                 /* stream aborted and we have not ended it yet */
                 r->connection->keepalive = AP_CONN_CLOSE;
             }
