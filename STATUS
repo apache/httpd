@@ -202,12 +202,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-event-sbh.diff
     +1: covener 
 
-A list of further possible backports can be found at:                                                                                                                                   
-    http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
-If you want to propose one of those, please still add them here.
-
 
 OTHER PROPOSALS
+
+   * A list of further possible backports can be found at: 
+     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
+     If you want to propose one of those, please add them above.
 
    * opinion on more complete DefaultRuntimeDir use in 2.4.x?
      o If a module has a config directive for the run-time file that
