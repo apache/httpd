@@ -178,6 +178,8 @@ static void store_slotmem(ap_slotmem_instance_t *slotmem)
     apr_status_t rv;
     apr_size_t nbytes;
     const char *storename;
+    char digest[APR_MD5_DIGESTSIZE];
+    apr_size_t written = 0;
 
     storename = slotmem_filename(slotmem->gpool, slotmem->name, 1);
 
@@ -200,20 +202,28 @@ static void store_slotmem(ap_slotmem_instance_t *slotmem)
         }
         nbytes = (slotmem->desc.size * slotmem->desc.num) +
                  (slotmem->desc.num * sizeof(char)) + AP_UNSIGNEDINT_OFFSET;
-        /* XXX: Error handling */
-        apr_file_write_full(fp, slotmem->persist, nbytes, NULL);
+        apr_md5((unsigned char*)digest, slotmem->persist, nbytes);
+        rv = apr_file_write_full(fp, slotmem->persist, nbytes, &written);
+        if (rv == APR_SUCCESS && written == nbytes) {
+            rv = apr_file_write_full(fp, digest, APR_MD5_DIGESTSIZE, &written);
+        }
         apr_file_close(fp);
+        if (rv != APR_SUCCESS || written != APR_MD5_DIGESTSIZE) {
+            apr_file_remove(storename, slotmem->gpool);
+        }
     }
 }
 
-/* should be apr_status_t really */
-static void restore_slotmem(void *ptr, const char *name, apr_size_t size,
-                            apr_pool_t *pool)
+static apr_status_t restore_slotmem(void *ptr, const char *name, apr_size_t size,
+                                    apr_pool_t *pool)
 {
     const char *storename;
     apr_file_t *fp;
     apr_size_t nbytes = size;
-    apr_status_t rv;
+    apr_status_t rv = APR_SUCCESS;
+    char digest[APR_MD5_DIGESTSIZE];
+    char digest2[APR_MD5_DIGESTSIZE];
+
 
     storename = slotmem_filename(pool, name, 1);
 
@@ -224,20 +234,20 @@ static void restore_slotmem(void *ptr, const char *name, apr_size_t size,
         rv = apr_file_open(&fp, storename, APR_READ | APR_WRITE, APR_OS_DEFAULT,
                            pool);
         if (rv == APR_SUCCESS) {
-            apr_finfo_t fi;
-            if (apr_file_info_get(&fi, APR_FINFO_SIZE, fp) == APR_SUCCESS) {
-                if (fi.size == nbytes) {
-                    apr_file_read(fp, ptr, &nbytes);
-                }
-                else {
-                    apr_file_close(fp);
-                    apr_file_remove(storename, pool);
-                    return;
+            rv = apr_file_read(fp, ptr, &nbytes);
+            if (rv == APR_SUCCESS) {
+                rv = apr_file_gets(digest, APR_MD5_DIGESTSIZE, fp);
+                if (rv == APR_SUCCESS) {
+                    apr_md5((unsigned char*)digest2, ptr, nbytes);
+                    if (!strcasecmp(digest, digest2)) {
+                        rv = APR_EGENERAL;
+                    }
                 }
             }
             apr_file_close(fp);
         }
     }
+    return rv;
 }
 
 static apr_status_t cleanup_slotmem(void *param)
@@ -395,8 +405,14 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new,
          * sense if the restore fails? Any?
          */
         if (type & AP_SLOTMEM_TYPE_PERSIST) {
-            restore_slotmem(ptr, fname, dsize, pool);
-            restored = 1;
+            rv = restore_slotmem(ptr, fname, dsize, pool);
+            if (rv == APR_SUCCESS) {
+                restored = 1;
+            }
+            else {
+                /* just in case, re-zero */
+                memset(ptr, 0, dsize);
+            }
         }
     }
 
