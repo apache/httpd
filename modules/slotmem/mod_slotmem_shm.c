@@ -234,14 +234,24 @@ static apr_status_t restore_slotmem(void *ptr, const char *name, apr_size_t size
                            pool);
         if (rv == APR_SUCCESS) {
             rv = apr_file_read(fp, ptr, &nbytes);
-            if (rv == APR_SUCCESS) {
-                rv = apr_file_gets(digest, APR_MD5_DIGESTSIZE, fp);
-                if (rv == APR_SUCCESS) {
-                    apr_md5((unsigned char*)digest2, ptr, nbytes);
-                    if (!strcasecmp(digest, digest2)) {
-                        rv = APR_EGENERAL;
+            if ((rv == APR_SUCCESS || rv == APR_EOF) && nbytes == size) {
+                /*
+                 * if at EOF, don't bother checking md5
+                 *  - backwards compatibility
+                 *  */
+                if (apr_file_eof(fp) != APR_EOF) {
+                    rv = apr_file_gets(digest, APR_MD5_DIGESTSIZE, fp);
+                    if (rv == APR_SUCCESS) {
+                        apr_md5((unsigned char*)digest2, ptr, nbytes);
+                        if (!strcasecmp(digest, digest2)) {
+                            rv = APR_EGENERAL;
+                        }
                     }
                 }
+            }
+            else if (nbytes != size) {
+                /* didn't get it all */
+                rv = APR_EGENERAL;
             }
             apr_file_close(fp);
         }
