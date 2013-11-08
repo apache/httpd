@@ -39,6 +39,7 @@
 #include "apr_shm.h"
 #include "apr_global_mutex.h"
 #include "apr_file_io.h"
+#include "apr_md5.h"
 
 #if APR_HAVE_UNISTD_H
 #include <unistd.h>         /* for getpid() */
