@@ -437,9 +437,12 @@ int ap_open_logs(apr_pool_t *pconf, apr_pool_t *p /* plog */,
 #define NULL_DEVICE "/dev/null"
 #endif
 
-    if (replace_stderr && freopen(NULL_DEVICE, "w", stderr) == NULL) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, errno, s_main, APLOGNO(00093)
-                     "unable to replace stderr with %s", NULL_DEVICE);
+    if (replace_stderr) {
+        if (freopen(NULL_DEVICE, "w", stderr) == NULL) {
+            ap_log_error(APLOG_MARK, APLOG_CRIT, errno, s_main, APLOGNO(00093)
+                        "unable to replace stderr with %s", NULL_DEVICE);
+        }
+        stderr_log = NULL;
     }
 
     for (virt = s_main->next; virt; virt = virt->next) {
@@ -1034,6 +1037,8 @@ static void log_error_core(const char *file, int line, int module_index,
     const request_rec *rmain = NULL;
     core_server_config *sconf = NULL;
     ap_errorlog_info info;
+    ap_errorlog_provider *errorlog_provider = NULL;
+    void *errorlog_provider_handle = NULL;
 
     /* do we need to log once-per-req or once-per-conn info? */
     int log_conn_info = 0, log_req_info = 0;
@@ -1060,6 +1065,10 @@ static void log_error_core(const char *file, int line, int module_index,
 #endif
 
         logf = stderr_log;
+        if (!logf && ap_server_conf && ap_server_conf->errorlog_provider) {
+            errorlog_provider = ap_server_conf->errorlog_provider;
+            errorlog_provider_handle = ap_server_conf->errorlog_provider_handle;
+        }
     }
     else {
         int configured_level = r ? ap_get_request_module_loglevel(r, module_index)        :
@@ -1077,6 +1086,9 @@ static void log_error_core(const char *file, int line, int module_index,
         if (s->error_log) {
             logf = s->error_log;
         }
+
+        errorlog_provider = s->errorlog_provider;
+        errorlog_provider_handle = s->errorlog_provider_handle;
 
         /* the faked server_rec from mod_cgid does not have s->module_config */
         if (s->module_config) {
@@ -1104,6 +1116,14 @@ static void log_error_core(const char *file, int line, int module_index,
                 }
             }
         }
+    }
+
+    if (!logf && !errorlog_provider) {
+        /* There is no file to send the log message to (or it is
+         * redirected to /dev/null and therefore any formating done below
+         * would be lost anyway) and there is no log provider available, so
+         * we just return here. */
+        return;
     }
 
     info.s             = s;
@@ -1191,7 +1211,7 @@ static void log_error_core(const char *file, int line, int module_index,
             continue;
         }
 
-        if (logf || (s->errorlog_provider->flags &
+        if (logf || (errorlog_provider->flags &
             AP_ERRORLOG_PROVIDER_ADD_EOL_STR)) {
             /* Truncate for the terminator (as apr_snprintf does) */
             if (len > MAX_STRING_LEN - sizeof(APR_EOL_STR)) {
@@ -1205,8 +1225,8 @@ static void log_error_core(const char *file, int line, int module_index,
             write_logline(errstr, len, logf, level_and_mask);
         }
         else {
-            s->errorlog_provider->writer(&info, s->errorlog_provider_handle,
-                                         errstr, len);
+            errorlog_provider->writer(&info, errorlog_provider_handle,
+                                      errstr, len);
         }
 
         if (done) {
