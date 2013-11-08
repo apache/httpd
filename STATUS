@@ -185,6 +185,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     +1: minfrin, jim
     -0 covener: does that mean just loading mod_auth_form w/o mod_request 
                 and mod_filter now causes a post-config failure?
+    minfrin: It does, however it would only affect configs where mod_auth_form
+             has been loaded but not used, as any attempt to use mod_auth_form
+             without mod_request and mod_session present would cause the very
+             same failure. Would a warning in the release notes be good enough?
 
   * mod_authn_socache: Support optional arguments for socache provider.
     trunk patch: http://svn.apache.org/r1531961
