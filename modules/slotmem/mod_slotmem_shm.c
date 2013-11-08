@@ -178,7 +178,7 @@ static void store_slotmem(ap_slotmem_instance_t *slotmem)
     apr_status_t rv;
     apr_size_t nbytes;
     const char *storename;
-    char digest[APR_MD5_DIGESTSIZE];
+    unsigned char digest[APR_MD5_DIGESTSIZE];
     apr_size_t written = 0;
 
     storename = slotmem_filename(slotmem->gpool, slotmem->name, 1);
@@ -202,7 +202,7 @@ static void store_slotmem(ap_slotmem_instance_t *slotmem)
         }
         nbytes = (slotmem->desc.size * slotmem->desc.num) +
                  (slotmem->desc.num * sizeof(char)) + AP_UNSIGNEDINT_OFFSET;
-        apr_md5((unsigned char*)digest, slotmem->persist, nbytes);
+        apr_md5(digest, slotmem->persist, nbytes);
         rv = apr_file_write_full(fp, slotmem->persist, nbytes, &written);
         if (rv == APR_SUCCESS && written == nbytes) {
             rv = apr_file_write_full(fp, digest, APR_MD5_DIGESTSIZE, &written);
@@ -221,8 +221,8 @@ static apr_status_t restore_slotmem(void *ptr, const char *name, apr_size_t size
     apr_file_t *fp;
     apr_size_t nbytes = size;
     apr_status_t rv = APR_SUCCESS;
-    char digest[APR_MD5_DIGESTSIZE];
-    char digest2[APR_MD5_DIGESTSIZE];
+    unsigned char digest[APR_MD5_DIGESTSIZE];
+    unsigned char digest2[APR_MD5_DIGESTSIZE];
 
     storename = slotmem_filename(pool, name, 1);
 
@@ -241,17 +241,28 @@ static apr_status_t restore_slotmem(void *ptr, const char *name, apr_size_t size
                  *  - backwards compatibility
                  *  */
                 if (apr_file_eof(fp) != APR_EOF) {
-                    rv = apr_file_gets(digest, APR_MD5_DIGESTSIZE, fp);
-                    if (rv == APR_SUCCESS) {
-                        apr_md5((unsigned char*)digest2, ptr, nbytes);
-                        if (!strcasecmp(digest, digest2)) {
+                    apr_size_t ds = APR_MD5_DIGESTSIZE;
+                    rv = apr_file_read(fp, digest, &ds);
+                    if ((rv == APR_SUCCESS || rv == APR_EOF) &&
+                        ds == APR_MD5_DIGESTSIZE) {
+                        rv = APR_SUCCESS;
+                        apr_md5(digest2, ptr, nbytes);
+                        if (memcmp(digest, digest2, APR_MD5_DIGESTSIZE)) {
+                            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf,
+                                         APLOGNO(02551) "bad md5 match");
                             rv = APR_EGENERAL;
                         }
                     }
                 }
+                else {
+                    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf,
+                                 APLOGNO(02552) "at EOF... bypassing md5 match check (old persist file?)");
+                }
             }
             else if (nbytes != size) {
-                /* didn't get it all */
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf,
+                             APLOGNO(02553) "Expected %" APR_SIZE_T_FMT ": Read %" APR_SIZE_T_FMT,
+                             size, nbytes);
                 rv = APR_EGENERAL;
             }
             apr_file_close(fp);
@@ -421,6 +432,8 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new,
             }
             else {
                 /* just in case, re-zero */
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf,
+                             APLOGNO(02554) "could not restore %s", fname);
                 memset(ptr, 0, dsize);
             }
         }
