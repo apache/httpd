@@ -224,7 +224,6 @@ static apr_status_t restore_slotmem(void *ptr, const char *name, apr_size_t size
     char digest[APR_MD5_DIGESTSIZE];
     char digest2[APR_MD5_DIGESTSIZE];
 
-
     storename = slotmem_filename(pool, name, 1);
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(02335)
