@@ -235,6 +235,7 @@ static apr_status_t restore_slotmem(void *ptr, const char *name, apr_size_t size
         if (rv == APR_SUCCESS) {
             rv = apr_file_read(fp, ptr, &nbytes);
             if ((rv == APR_SUCCESS || rv == APR_EOF) && nbytes == size) {
+                rv = APR_SUCCESS;   /* for successful return @ EOF */
                 /*
                  * if at EOF, don't bother checking md5
                  *  - backwards compatibility
