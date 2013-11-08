@@ -1335,7 +1335,6 @@ static void *merge_proxy_dir_config(apr_pool_t *p, void *basev, void *addv)
     return new;
 }
 
-
 static const char *
     add_proxy(cmd_parms *cmd, void *dummy, const char *f1, const char *r1, int regex)
 {
@@ -1408,6 +1407,36 @@ static const char *
     add_proxy_regex(cmd_parms *cmd, void *dummy, const char *f1, const char *r1)
 {
     return add_proxy(cmd, dummy, f1, r1, 1);
+}
+
+static char *de_socketfy(apr_pool_t *p, char *url)
+{
+    char *ptr;
+    /*
+     * We could be passed a URL during the config stage that contains
+     * the UDS path... ignore it
+     */
+    if (!strncasecmp(url, "unix:", 5) &&
+        ((ptr = ap_strchr(url, '|')) != NULL)) {
+        /* move past the 'unix:...|' UDS path info */
+        char *ret, *c;
+
+        ret = ptr + 1;
+        /* special case: "unix:....|scheme:" is OK, expand
+         * to "unix:....|scheme://localhost"
+         * */
+        c = ap_strchr(ret, ':');
+        if (c == NULL) {
+            return NULL;
+        }
+        if (c[1] == '\0') {
+            return apr_pstrcat(p, ret, "//localhost", NULL);
+        }
+        else {
+            return ret;
+        }
+    }
+    return url;
 }
 
 static const char *
@@ -1501,7 +1530,7 @@ static const char *
     }
 
     new->fake = apr_pstrdup(cmd->pool, f);
-    new->real = apr_pstrdup(cmd->pool, r);
+    new->real = apr_pstrdup(cmd->pool, de_socketfy(cmd->pool, r));
     new->flags = flags;
     if (use_regex) {
         new->regex = ap_pregcomp(cmd->pool, f, AP_REG_EXTENDED);
@@ -1537,7 +1566,7 @@ static const char *
         new->balancer = balancer;
     }
     else {
-        proxy_worker *worker = ap_proxy_get_worker(cmd->temp_pool, NULL, conf, r);
+        proxy_worker *worker = ap_proxy_get_worker(cmd->temp_pool, NULL, conf, de_socketfy(cmd->pool, r));
         int reuse = 0;
         if (!worker) {
             const char *err = ap_proxy_define_worker(cmd->pool, &worker, NULL, conf, r, 0);
@@ -2013,7 +2042,7 @@ static const char *add_member(cmd_parms *cmd, void *dummy, const char *arg)
     }
 
     /* Try to find existing worker */
-    worker = ap_proxy_get_worker(cmd->temp_pool, balancer, conf, name);
+    worker = ap_proxy_get_worker(cmd->temp_pool, balancer, conf, de_socketfy(cmd->temp_pool, name));
     if (!worker) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server, APLOGNO(01147)
                      "Defining worker '%s' for balancer '%s'",
@@ -2099,7 +2128,7 @@ static const char *
         }
     }
     else {
-        worker = ap_proxy_get_worker(cmd->temp_pool, NULL, conf, name);
+        worker = ap_proxy_get_worker(cmd->temp_pool, NULL, conf, de_socketfy(cmd->temp_pool, name));
         if (!worker) {
             if (in_proxy_section) {
                 err = ap_proxy_define_worker(cmd->pool, &worker, NULL,
@@ -2245,7 +2274,7 @@ static const char *proxysection(cmd_parms *cmd, void *mconfig, const char *arg)
         }
         else {
             worker = ap_proxy_get_worker(cmd->temp_pool, NULL, sconf,
-                                         conf->p);
+                                         de_socketfy(cmd->temp_pool, (char*)conf->p));
             if (!worker) {
                 err = ap_proxy_define_worker(cmd->pool, &worker, NULL,
                                           sconf, conf->p, 0);

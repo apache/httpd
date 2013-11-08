@@ -1518,6 +1518,10 @@ PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p,
     char *url_copy;
     int i;
 
+    if (!url) {
+        return NULL;
+    }
+
     c = ap_strchr_c(url, ':');
     if (c == NULL || c[1] != '/' || c[2] != '/' || c[3] == '\0') {
         return NULL;
