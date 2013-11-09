@@ -40,7 +40,7 @@ typedef struct authn_cache_dircfg {
     const char *context;
 } authn_cache_dircfg;
 
-/* FIXME: figure out usage of socache create vs init
+/* FIXME:
  * I think the cache and mutex should be global
  */
 static apr_global_mutex_t *authn_cache_mutex = NULL;
@@ -86,7 +86,6 @@ static int authn_cache_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                                    apr_pool_t *ptmp, server_rec *s)
 {
     apr_status_t rv;
-    const char *errmsg;
     static struct ap_socache_hints authn_cache_hints = {64, 32, 60000000};
 
     if (!configured) {
@@ -108,12 +107,6 @@ static int authn_cache_post_config(apr_pool_t *pconf, apr_pool_t *plog,
         return 500; /* An HTTP status would be a misnomer! */
     }
     apr_pool_cleanup_register(pconf, NULL, remove_lock, apr_pool_cleanup_null);
-
-    errmsg = socache_provider->create(&socache_instance, NULL, ptmp, pconf);
-    if (errmsg) {
-        ap_log_perror(APLOG_MARK, APLOG_CRIT, rv, plog, APLOGNO(01676) "%s", errmsg);
-        return 500; /* An HTTP status would be a misnomer! */
-    }
 
     rv = socache_provider->init(socache_instance, authn_cache_id,
                                 &authn_cache_hints, s, pconf);
@@ -144,15 +137,36 @@ static const char *authn_cache_socache(cmd_parms *cmd, void *CFG,
                                        const char *arg)
 {
     const char *errmsg = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    const char *sep, *name;
+
     if (errmsg)
         return errmsg;
-    socache_provider = ap_lookup_provider(AP_SOCACHE_PROVIDER_GROUP, arg,
+
+    /* Argument is of form 'name:args' or just 'name'. */
+    sep = ap_strchr_c(arg, ':');
+    if (sep) {
+        name = apr_pstrmemdup(cmd->pool, arg, sep - arg);
+        sep++;
+    }
+    else {
+        name = arg;
+    }
+
+    socache_provider = ap_lookup_provider(AP_SOCACHE_PROVIDER_GROUP, name,
                                           AP_SOCACHE_PROVIDER_VERSION);
     if (socache_provider == NULL) {
         errmsg = apr_psprintf(cmd->pool,
                               "Unknown socache provider '%s'. Maybe you need "
                               "to load the appropriate socache module "
                               "(mod_socache_%s?)", arg, arg);
+    }
+    else {
+        errmsg = socache_provider->create(&socache_instance, sep,
+                                          cmd->temp_pool, cmd->pool);
+    }
+
+    if (errmsg) {
+        errmsg = apr_psprintf(cmd->pool, "AuthnCacheSOCache: %s", errmsg);
     }
     return errmsg;
 }
