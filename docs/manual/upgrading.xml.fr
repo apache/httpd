@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1514044:1536367 (outdated) -->
+<!-- English Revision : 1536367 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -243,11 +243,6 @@ Allow from example.org
 	module="core">FileETag</directive> est maintenant "MTime Size"
 	(sans INode).</li>
 
-        <li><module>mod_log_config</module>: <a
-        href="modules/mod_log_config.html#formats">${cookie}C</a>
-        correspond au nom du cookie dans son ensemble, alors qu'avant,
-	toute sous-cha&icirc;ne pouvait correspondre.</li>
-
         <li><module>mod_dav_fs</module>: le format du fichier <directive
 	module="mod_dav_fs">DavLockDB</directive> a chang&eacute; pour les syst&egrave;mes
 	avec inodes. L'ancien fichier <directive
@@ -338,6 +333,16 @@ Allow from example.org
 	donn&eacute;es sont toujours enregistr&eacute;es au niveau <code>trace7</code>
 	de <directive module="core">LogLevel</directive></li>
 
+        <li>Jusqu'&agrave; la version 2.2, sur les plateformes de style Unix, 
+	les commandes de redirection des logs d&eacute;finies via <directive
+	module="core">ErrorLog</directive> ou <directive
+	module="mod_log_config">CustomLog</directive> &eacute;taient invoqu&eacute;es
+	en utilisant <code>/bin/sh -c</code>. A
+	partir de la version 2.4, les commandes de redirection des logs
+	sont ex&eacute;cut&eacute;es directement. Pour retrouver l'ancien
+	comportement, voir la <a href="logs.html#piped">documentation
+	sur la redirection des logs</a></li>
+
     </ul>
     </section>
   </section>
@@ -392,14 +397,14 @@ Allow from example.org
       </li>
 
       <li>Les directives RewriteLog et RewriteLogLevel ont &eacute;t&eacute;
-      supprim&eacute;es. Pour utiliser les fonctionnalit&eacute;s qu'elles
-      fournissaient, il faut maintenant d&eacute;finir un niveau de
-      journalisation ad&eacute;quat pour le module
-      <module>mod_rewrite</module> via la directive <directive
-      module="core">LogLevel</directive>. Voir aussi la section <a
+      supprim&eacute;es. Leur fonctions sont maintenant assur&eacute;es par la
+      directive <directive
+      module="core">LogLevel</directive> qui permet de d&eacute;finir
+      un niveau de journalisation appropri&eacute; pour le module
+      <module>mod_rewrite</module>. Voir aussi la section <a
       href="mod/mod_rewrite.html#logging">journalisation de
-      mod_rewrite</a>.
-      </li>
+      mod_rewrite</a>.</li>
+
     </ul>
 
     </section>
@@ -430,16 +435,19 @@ Allow from example.org
       module not included in the server configuration</code> - chargez
       le module <module>mod_access_compat</module>, ou mettez &agrave; jour
       vers la version 2.4 les directives d'autorisation.</li>
+
       <li><code>Ignoring deprecated use of DefaultType in line NN of
       /path/to/httpd.conf</code> - supprimez la directive <directive
       module="core">DefaultType</directive> et remplacez-la par les
       directives de configuration appropri&eacute;es.</li>
+
       <li><code>Invalid command 'AddOutputFilterByType', perhaps misspelled 
       or defined by a module not included in the server configuration
       </code> - la directive <directive
       module="mod_filter">AddOutputFilterByType</directive> qui &eacute;tait
       jusqu'alors impl&eacute;ment&eacute;e par le module core, l'est maintenant par
       le module mod_filter, qui doit donc &ecirc;tre charg&eacute;.</li>
+
     </ul></li>
     <li>Erreurs de traitement des requ&ecirc;tes :
     <ul>

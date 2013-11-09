@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1334008:1540312 (outdated) -->
+<!-- English Revision : 1540312 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -129,14 +129,15 @@ endroit</description>
 <name>AuthnCacheSOCache</name>
 <description>S&eacute;lectionne le fournisseur socache d'arri&egrave;re-plan &agrave;
 utiliser</description>
-<syntax>AuthnCacheSOCache <var>nom-fournisseur</var></syntax>
+<syntax>AuthnCacheSOCache <var>nom-fournisseur[:arguments-fournisseur]</var></syntax>
 <contextlist><context>server config</context></contextlist>
 <override>None</override>
 
 <usage>
     <p>Cette d&eacute;finition s'applique &agrave; l'ensemble du serveur et permet de
     s&eacute;lectionner un fournisseur pour le <a href="../socache.html">cache
-    d'objets partag&eacute;s</a>. Les fournisseurs disponibles sont "dbm",
+    d'objets partag&eacute;s</a>, ainsi que des arguments &eacute;ventuels pour ce
+    fournisseur. Les fournisseurs disponibles sont, entre autres, "dbm",
     "dc", "memcache", ou "shmcb", chacun d'entre eux n&eacute;cessitant le chargement
     du module appropri&eacute;. Si elle est
     absente, c'est la valeur par d&eacute;faut pour votre plate-forme qui sera
