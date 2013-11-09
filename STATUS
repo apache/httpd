@@ -198,7 +198,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   * slotmem_shm: Ensure that the file-based shm file is removed during cleanup
     trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1540051
     2.4.x patch: trunk patch works
-    +1: jim
+    +1: jim, druggeri
 
   * slotmem_shm: Error detection
     trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1540161
@@ -212,7 +212,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   * mod_proxy: No more magic numbers
     trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1532746
     2.4.x patch: trunk patch works
-    +1: jim
+    +1: jim, druggeri
      
 OTHER PROPOSALS
 
