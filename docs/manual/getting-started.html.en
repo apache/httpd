@@ -21,7 +21,8 @@
 <div id="path">
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.4</a></div><div id="page-content"><div id="preamble"><h1>Getting Started</h1>
 <div class="toplang">
-<p><span>Available Languages: </span><a href="./en/getting-started.html" title="English">&nbsp;en&nbsp;</a></p>
+<p><span>Available Languages: </span><a href="./en/getting-started.html" title="English">&nbsp;en&nbsp;</a> |
+<a href="./fr/getting-started.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
 
 <p>If you're completely new to the Apache HTTP Server, or even to running
@@ -46,10 +47,10 @@ Addresses on the Web are expressed with URLs - Uniform Resource Locators
 <code>www.apache.org</code>), a URL-path (e.g.
 <code>/docs/current/getting-started.html</code>), and possibly a query
 string (e.g. <code>?arg=value</code>) used to pass additional
-arguments to the server. 
+arguments to the server.
 </p>
 
-<p>A client (e.g., a web browser) connects to a server (e.g., your Apache HTTP Server), 
+<p>A client (e.g., a web browser) connects to a server (e.g., your Apache HTTP Server),
 with the specified protocol, and makes a <strong>request</strong> for a resource using the
 URL-path.</p>
 
@@ -80,14 +81,14 @@ the servername to an IP address - the location on the Internet where the
 server resides. Thus, in order for your web server to be reachable, it
 is necessary that the servername be in DNS.</p>
 
+<p>If you don't know how to do this, you'll need to contact your network
+administrator, or Internet service provider, to perform this step for
+you.</p>
+
 <p>More than one hostname may point to the same IP address, and more
 than one IP address can be attached to the same physical server. Thus, you
 can run more than one web site on the same physical server, using a
 feature called <a href="vhosts/">virtual hosts</a>.</p>
-
-<p>If you don't know how to do this, you'll need to contact your network
-administrator, or Internet service provider, to perform this step for
-you.</p>
 
 <p>If you are testing a server that is not Internet-accessible, you
 can put host names in your hosts file in order to do local resolution.
@@ -215,7 +216,8 @@ Here's a partial list of what you might be looking for:</p>
 
 </div></div>
 <div class="bottomlang">
-<p><span>Available Languages: </span><a href="./en/getting-started.html" title="English">&nbsp;en&nbsp;</a></p>
+<p><span>Available Languages: </span><a href="./en/getting-started.html" title="English">&nbsp;en&nbsp;</a> |
+<a href="./fr/getting-started.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="./images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
