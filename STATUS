@@ -193,19 +193,31 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   * mod_authn_socache: Support optional arguments for socache provider.
     trunk patch: http://svn.apache.org/r1531961
     2.4.x patch: trunk patch works, modulo CHANGES and doc compatibility note
-    +1: chrisd, covener
+    +1: chrisd, covener, jim
 
   * mod_headers: Allow for format specifiers to be used in the base
     substitution string when using Header edit
     trunk patch: http://people.apache.org/~druggeri/patches/HeaderEditENV.trunk.patch
     2.4.x patch: http://people.apache.org/~druggeri/patches/HeaderEditENV.2.4.patch
-    +1: druggeri, covener
+    +1: druggeri, covener, jim
 
   * event MPM: null out c->sbh more carefully as we enter keepalive
     trunk patch: http://svn.apache.org/r1538490
     2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-event-sbh.diff
-    +1: covener 
+    +1: covener, jim
 
+  * slotmem_shm: Ensure that the file-based shm file is removed during cleanup
+    trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1540051
+    2.4.x patch: trunk patch works
+    +1: jim
+
+  * slotmem_shm: Error detection
+    trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1540161
+                 https://svn.apache.org/viewvc?view=revision&revision=1540163
+                 https://svn.apache.org/viewvc?view=revision&revision=1540178
+                 https://svn.apache.org/viewvc?view=revision&revision=1540179
+                 https://svn.apache.org/viewvc?view=revision&revision=1540220
+    +1: jim
 
 OTHER PROPOSALS
 
