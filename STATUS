@@ -97,12 +97,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_headers: Allow for format specifiers to be used in the base
-    substitution string when using Header edit
-    trunk patch: http://people.apache.org/~druggeri/patches/HeaderEditENV.trunk.patch
-    2.4.x patch: http://people.apache.org/~druggeri/patches/HeaderEditENV.2.4.patch
-    +1: druggeri, covener, jim
-
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
