@@ -97,6 +97,17 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  * mod_authn_socache: Support optional arguments for socache provider.
+    trunk patch: http://svn.apache.org/r1531961
+    2.4.x patch: trunk patch works, modulo CHANGES and doc compatibility note
+    +1: chrisd, covener, jim
+
+  * mod_headers: Allow for format specifiers to be used in the base
+    substitution string when using Header edit
+    trunk patch: http://people.apache.org/~druggeri/patches/HeaderEditENV.trunk.patch
+    2.4.x patch: http://people.apache.org/~druggeri/patches/HeaderEditENV.2.4.patch
+    +1: druggeri, covener, jim
+
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -189,17 +200,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              has been loaded but not used, as any attempt to use mod_auth_form
              without mod_request and mod_session present would cause the very
              same failure. Would a warning in the release notes be good enough?
-
-  * mod_authn_socache: Support optional arguments for socache provider.
-    trunk patch: http://svn.apache.org/r1531961
-    2.4.x patch: trunk patch works, modulo CHANGES and doc compatibility note
-    +1: chrisd, covener, jim
-
-  * mod_headers: Allow for format specifiers to be used in the base
-    substitution string when using Header edit
-    trunk patch: http://people.apache.org/~druggeri/patches/HeaderEditENV.trunk.patch
-    2.4.x patch: http://people.apache.org/~druggeri/patches/HeaderEditENV.2.4.patch
-    +1: druggeri, covener, jim
 
   * event MPM: null out c->sbh more carefully as we enter keepalive
     trunk patch: http://svn.apache.org/r1538490
