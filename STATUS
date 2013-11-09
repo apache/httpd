@@ -212,7 +212,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   * mod_proxy: No more magic numbers
     trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1532746
     2.4.x patch: trunk patch works
-    +1: jim, druggeri
+    +1: jim, druggeri, jailletc36
      
 OTHER PROPOSALS
 
