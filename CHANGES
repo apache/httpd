@@ -12,6 +12,9 @@ Changes with Apache 2.4.7
      SessionHeader directive, remove the value from the response. PR 55279.
      [Graham Leggett]
 
+  *) mod_headers: Allow for format specifiers in the substitution string
+     when using Header edit. [Daniel Ruggeri]
+
   *) mod_dav: dav_resource->uri is treated as unencoded. This was an
      unnecessary ABI changed introduced in 2.4.6. PR 55397.
 
