@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1535125:1536310 (outdated) -->
+<!-- English Revision : 1536310 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -243,11 +243,6 @@ Allow from example.org
 	module="core">FileETag</directive> est maintenant "MTime Size"
 	(sans INode).</li>
 
-        <li><module>mod_log_config</module>: <a
-        href="modules/mod_log_config.html#formats">${cookie}C</a>
-        correspond au nom du cookie dans son ensemble, alors qu'avant,
-	toute sous-cha&icirc;ne pouvait correspondre.</li>
-
         <li><module>mod_dav_fs</module>: le format du fichier <directive
 	module="mod_dav_fs">DavLockDB</directive> a chang&eacute; pour les syst&egrave;mes
 	avec inodes. L'ancien fichier <directive
@@ -338,6 +333,16 @@ Allow from example.org
 	donn&eacute;es sont toujours enregistr&eacute;es au niveau <code>trace7</code>
 	de <directive module="core">LogLevel</directive></li>
 
+        <li>Jusqu'&agrave; la version 2.2, sur les plateformes de style Unix, 
+	les commandes de redirection des logs d&eacute;finies via <directive
+	module="core">ErrorLog</directive> ou <directive
+	module="mod_log_config">CustomLog</directive> &eacute;taient invoqu&eacute;es
+	en utilisant <code>/bin/sh -c</code>. A
+	partir de la version 2.4, les commandes de redirection des logs
+	sont ex&eacute;cut&eacute;es directement. Pour retrouver l'ancien
+	comportement, voir la <a href="logs.html#piped">documentation
+	sur la redirection des logs</a></li>
+
     </ul>
     </section>
   </section>
@@ -394,7 +399,7 @@ Allow from example.org
       <li><module>mod_cgid</module> utilise la valeur de la directive
       <directive module="core">Timeout</directive> du serveur pour
       limiter le temps d'attente entre les sorties d'un programme CGI.
-      La valeur de ce temps d'attente peut maintenant être modifiée via
+      La valeur de ce temps d'attente peut maintenant &ecirc;tre modifi&eacute;e via
       la directive <directive
       module="mod_cgid">CGIDScriptTImeout</directive>.
       </li>
