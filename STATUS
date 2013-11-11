@@ -97,11 +97,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_proxy: No more magic numbers
-    trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1532746
-    2.4.x patch: trunk patch works
-    +1: jim, druggeri, jailletc36
-     
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
