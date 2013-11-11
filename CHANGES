@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.26
 
+  *) mod_dav: dav_resource->uri treated as unencoded. This was an
+     unnecessary ABI changed introduced in 2.2.25  PR 55397.  [Ben Reser]
+
   *) mod_dav: Do not validate locks against parent collection of COPY
      source URI.  PR 55304.  [Ben Reser]
 
@@ -18,6 +21,9 @@ Changes with Apache 2.2.26
   *) mod_ssl: Fix compilation error when OpenSSL does not contain
      support for SSLv2. Problem was introduced in 2.2.25. PR 55194.
      [Rainer Jung, Kaspar Brand]
+
+  *) mod_dav: Fix double encoding of URIs in XML and Location header (caused
+     by unintential ABI change in 2.2.25).  PR 55397.  [Ben Reser] 
 
 Changes with Apache 2.2.25
 
