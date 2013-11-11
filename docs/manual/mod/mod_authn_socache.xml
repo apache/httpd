@@ -116,6 +116,8 @@ the load on backends</description>
 <syntax>AuthnCacheSOCache <var>provider-name[:provider-args]</var></syntax>
 <contextlist><context>server config</context></contextlist>
 <override>None</override>
+<compatibility>Optional provider arguments are available in
+Apache HTTP Server 2.4.7 and later</compatibility>
 
 <usage>
     <p>This is a server-wide setting to select a provider for the
