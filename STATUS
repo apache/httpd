@@ -97,13 +97,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
   
-  * mod_ssl config: Fix range check bug with SSLRenegBufferSize
-    trunk patch: http://svn.apache.org/r954641
-                 (only this part, which has the only non-style fix applicable to 2.2.x:
-                 http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/ssl/ssl_engine_config.c?r1=954641&r2=954640&pathrev=954641&view=patch)
-    2.4.x patch: it was fixed before 2.4.x was branched
-    2.2.x patch: trunk patch to ssl_engine_config.c (above) applies with offset
-    +1: trawick, jorton, wrowe
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
