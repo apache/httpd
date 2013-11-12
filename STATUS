@@ -208,7 +208,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  https://svn.apache.org/viewvc?view=revision&revision=1525280
                  https://svn.apache.org/viewvc?view=revision&revision=1525281
     2.4.x patch: http://people.apache.org/~jim/patches/proxy-fcgi.patch
-    +1: trawick
+    +1: trawick, jim
 
   * protocol: draft-ietf-httpbis-p1-messaging-23 fixes regarding interactions
               between TE and content-length in the same req/resp.
