@@ -235,16 +235,17 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                  * the final encoding, the message body length is determined by
                  * reading the connection until it is closed by the server."
                  */
-                ap_log_rerror(
-                        APLOG_MARK, APLOG_INFO, 0, f->r, APLOGNO(01586) "Unknown Transfer-Encoding: %s; using read-until-close", tenc);
+                ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, f->r, APLOGNO(01586)
+                              "Unknown Transfer-Encoding: %s;"
+                              " using read-until-close", tenc);
                 tenc = NULL;
             }
             else {
                 /* Something that isn't a HTTP request, unless some future
                  * edition defines new transfer encodings, is unsupported.
                  */
-                ap_log_rerror(
-                        APLOG_MARK, APLOG_INFO, 0, f->r, APLOGNO(01585) "Unknown Transfer-Encoding: %s", tenc);
+                ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, f->r, APLOGNO(01585)
+                              "Unknown Transfer-Encoding: %s", tenc);
                 return APR_EGENERAL;
             }
             lenp = NULL;
