@@ -251,7 +251,12 @@ static apr_status_t cleanup_slotmem(void *param)
                 store_slotmem(next);
             }
             if (next->fbased) {
+                const char *name;
                 apr_shm_remove(next->name, next->gpool);
+                name = slotmem_filename(next->gpool, next->name, 0);
+                if (name) {
+                    apr_file_remove(name, next->gpool);
+                }
             }
             apr_shm_destroy((apr_shm_t *)next->shm);
             next = next->next;
