@@ -699,15 +699,12 @@ static void req_rsp(request_rec *r, const fcgi_provider_conf *conf,
                     char *rspbuf, apr_size_t *rspbuflen)
 {
     const char *fn = "req_rsp";
-    ap_fcgi_header header;
     apr_pool_t *temp_pool;
-    apr_size_t len, orspbuflen;
+    apr_size_t orspbuflen;
     apr_socket_t *s;
     apr_status_t rv;
     apr_table_t *saved_subprocess_env = 
       apr_table_copy(r->pool, r->subprocess_env);
-    struct iovec vec[2];
-    unsigned char farray[AP_FCGI_HEADER_LEN];
 
     if (rspbuflen) {
         orspbuflen = *rspbuflen;
@@ -739,23 +736,14 @@ static void req_rsp(request_rec *r, const fcgi_provider_conf *conf,
             }
         }
 
-        if (rv == APR_SUCCESS) {
-            /* The responder owns the request body, not the authorizer.
-             */
-
-            /* send empty FCGI_STDIN */
-            ap_fcgi_fill_in_header(&header, AP_FCGI_STDIN, request_id, 0, 0);
-            ap_fcgi_header_to_array(&header, farray);
-            vec[0].iov_base = (void *)farray;
-            vec[0].iov_len = sizeof(farray);
-            rv = sendv_data(conf, r, s, vec, 1, &len);
-            if (rv != APR_SUCCESS) {
-                r->status = HTTP_INTERNAL_SERVER_ERROR;
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
-                              APLOGNO(02513) "%s: Failed writing empty stdin "
-                              "to %s", fn, conf->backend);
-            }
-        }
+        /* The responder owns the request body, not the authorizer.
+         * Don't even send an empty AP_FCGI_STDIN block.  libfcgi doesn't care,
+         * but it wasn't sent to authorizers by mod_fastcgi or mod_fcgi and
+         * may be unhandled by the app.  Additionally, the FastCGI spec does
+         * not mention FCGI_STDIN in the Authorizer description, though it
+         * does describe FCGI_STDIN elsewhere in more general terms than
+         * simply a wrapper for the client's request body.
+         */
 
         if (rv == APR_SUCCESS) {
             if (rspbuflen) {
