@@ -208,6 +208,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  https://svn.apache.org/viewvc?view=revision&revision=1540220
     2.4.x patch: http://people.apache.org/~jim/patches/slotmem-error.patch
     +1: jim
+    
+  * mod_proxy_fcgi: Sync with trunk
+    trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1523281
+                 https://svn.apache.org/viewvc?view=revision&revision=1524368
+                 https://svn.apache.org/viewvc?view=revision&revision=1525276
+                 https://svn.apache.org/viewvc?view=revision&revision=1525280
+                 https://svn.apache.org/viewvc?view=revision&revision=1525281
+    2.4.x patch: http://people.apache.org/~jim/patches/proxy-fcgi.patch
+    +1: 
 
 OTHER PROPOSALS
 
