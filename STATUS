@@ -97,11 +97,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * event MPM: null out c->sbh more carefully as we enter keepalive
-    trunk patch: http://svn.apache.org/r1538490
-    2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-event-sbh.diff
-    +1: covener, jim, trawick (needs CHANGES entry)
-
   * slotmem_shm: Ensure that the file-based shm file is removed during cleanup
     trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1540051
     2.4.x patch: trunk patch works
