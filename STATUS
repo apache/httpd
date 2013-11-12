@@ -206,7 +206,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  https://svn.apache.org/viewvc?view=revision&revision=1540178
                  https://svn.apache.org/viewvc?view=revision&revision=1540179
                  https://svn.apache.org/viewvc?view=revision&revision=1540220
-    2.4.x patch: trunk patch works
+    2.4.x patch: http://people.apache.org/~jim/patches/slotmem-error.patch
     +1: jim
 
 OTHER PROPOSALS
