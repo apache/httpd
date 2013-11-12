@@ -97,7 +97,15 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  * event MPM: null out c->sbh more carefully as we enter keepalive
+    trunk patch: http://svn.apache.org/r1538490
+    2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-event-sbh.diff
+    +1: covener, jim, trawick (needs CHANGES entry)
 
+  * slotmem_shm: Ensure that the file-based shm file is removed during cleanup
+    trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1540051
+    2.4.x patch: trunk patch works
+    +1: jim, druggeri, trawick
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -190,16 +198,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              without mod_request and mod_session present would cause the very
              same failure. Would a warning in the release notes be good enough?
 
-  * event MPM: null out c->sbh more carefully as we enter keepalive
-    trunk patch: http://svn.apache.org/r1538490
-    2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-event-sbh.diff
-    +1: covener, jim
-
-  * slotmem_shm: Ensure that the file-based shm file is removed during cleanup
-    trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1540051
-    2.4.x patch: trunk patch works
-    +1: jim, druggeri
-
   * slotmem_shm: Error detection
     trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1540161
                  https://svn.apache.org/viewvc?view=revision&revision=1540163
@@ -216,7 +214,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  https://svn.apache.org/viewvc?view=revision&revision=1525280
                  https://svn.apache.org/viewvc?view=revision&revision=1525281
     2.4.x patch: http://people.apache.org/~jim/patches/proxy-fcgi.patch
-    +1: 
+    +1: trawick
 
 OTHER PROPOSALS
 
