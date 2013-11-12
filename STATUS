@@ -97,10 +97,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * slotmem_shm: Ensure that the file-based shm file is removed during cleanup
-    trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1540051
-    2.4.x patch: trunk patch works
-    +1: jim, druggeri, trawick
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
