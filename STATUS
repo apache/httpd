@@ -175,7 +175,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                    https://svn.apache.org/r1527295
                    https://svn.apache.org/r1527926
     2.4.x patch: https://people.apache.org/~kbrand/mod_ssl-2.4.x-ekh.diff
-    +1: kbrand,
+    +1: kbrand
+    [wrowe comments] is it possible to split the patch into 'accepted for 2.2'
+    which is straightforward to review (and commit seperately) from those
+    features 'new to 2.4'?  I think that would attract the necessary eyeballs.
 
   * mod_auth_form: Make sure the optional functions are loaded even when
     the AuthFormProvider isn't specified.
