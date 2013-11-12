@@ -441,12 +441,13 @@
  * 20130903.0 (2.5.0-dev)  Changes sizeof(worker_score) in scoreboard 
  * 20130924.0 (2.5.0-dev)  Add ap_errorlog_provider
  * 20130924.1 (2.5.0-dev)  Add ap_proxy_connection_reusable()
+ * 20131112.0 (2.5.0-dev)  Add parse_errorlog_arg to ap_errorlog_provider
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20130924
+#define MODULE_MAGIC_NUMBER_MAJOR 20131112
 #endif
 #define MODULE_MAGIC_NUMBER_MINOR 1                  /* 0...n */
 

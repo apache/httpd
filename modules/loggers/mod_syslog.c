@@ -139,12 +139,25 @@ static apr_status_t syslog_error_log(const ap_errorlog_info *info,
     return APR_SUCCESS;
 }
 
+static const char *syslog_error_log_parse(cmd_parms *cmd, const char *arg)
+{
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+
+    if (err != NULL) {
+        return apr_pstrcat(cmd->pool,
+                           "When using syslog error log provider, ", err,
+                           NULL);
+    }
+
+    return NULL;
+}
 
 static void syslog_register_hooks(apr_pool_t *p)
 {
     static const ap_errorlog_provider syslog_provider = {
         &syslog_error_log_init,
         &syslog_error_log,
+        &syslog_error_log_parse,
         0
     };
 
