@@ -1038,6 +1038,7 @@ read_request:
          */
         cs->expiration_time = ap_server_conf->keep_alive_timeout +
                               apr_time_now();
+        c->sbh = NULL;
         apr_thread_mutex_lock(timeout_mutex);
         TO_QUEUE_APPEND(keepalive_q, cs);
 
@@ -1051,6 +1052,7 @@ read_request:
                          "process_socket: apr_pollset_add failure");
             AP_DEBUG_ASSERT(rc == APR_SUCCESS);
         }
+        return;
     }
     else if (cs->pub.state == CONN_STATE_SUSPENDED) {
         apr_atomic_inc32(&suspended_count);
