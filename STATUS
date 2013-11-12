@@ -216,6 +216,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: http://people.apache.org/~jim/patches/proxy-fcgi.patch
     +1: trawick
 
+  * protocol: draft-ietf-httpbis-p1-messaging-23 fixes regarding interactions
+              between TE and content-length in the same req/resp.
+    trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1524192
+                 https://svn.apache.org/viewvc?view=revision&revision=1524770
+                 https://svn.apache.org/viewvc?view=revision&revision=1527925
+    2.4.x patch: trunk patch works modulo CHANGES
+    +1: 
+
+
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
