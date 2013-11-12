@@ -3960,6 +3960,7 @@ static const char *set_errorlog(cmd_parms *cmd, void *dummy, const char *arg1,
                                 const char *arg2)
 {
     ap_errorlog_provider *provider;
+    const char *err;
     cmd->server->errorlog_provider = NULL;
 
     if (!arg2) {
@@ -3993,6 +3994,11 @@ static const char *set_errorlog(cmd_parms *cmd, void *dummy, const char *arg1,
         return apr_psprintf(cmd->pool,
                             "Unknown ErrorLog provider: %s",
                             arg1);
+    }
+
+    err = provider->parse_errorlog_arg(cmd, arg2);
+    if (err) {
+        return err;
     }
 
     cmd->server->errorlog_provider = provider;

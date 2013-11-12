@@ -872,6 +872,13 @@ struct ap_errorlog_provider {
     apr_status_t (*writer)(const ap_errorlog_info *info, void *handle,
                            const char *errstr, apr_size_t len);
 
+    /** Checks syntax of ErrorLog directive argument.
+     * @param cmd The config directive
+     * @param arg ErrorLog directive argument
+     * @return Error message or NULL on success
+     */
+    const char * (*parse_errorlog_arg)(cmd_parms *cmd, const char *arg);
+
     /** a combination of the AP_ERRORLOG_PROVIDER_* flags */
     unsigned int flags;
 };
