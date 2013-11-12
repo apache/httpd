@@ -216,7 +216,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  https://svn.apache.org/viewvc?view=revision&revision=1524770
                  https://svn.apache.org/viewvc?view=revision&revision=1527925
     2.4.x patch: trunk patch works modulo CHANGES
-    +1: 
+    -1: wrowe [r1524770 http_filters.c delta does -not- apply]
 
 
 OTHER PROPOSALS
