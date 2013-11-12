@@ -109,7 +109,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     N/A:         https://svn.apache.org/viewvc?view=revision&revision=1527925
     2.2.x patch (plus CHANGES entry above):
         http://people.apache.org/~wrowe/httpd-2.2-r1524192-r1524770-TE-CL.patch
-    +1: wrowe
+    +1:
+    [wrowe asks] Where is verification of (!keepalive)?  Do we know the
+                 connection will be closed anytime in the near future?
 
 PATCHES/ISSUES THAT ARE STALLED
 
