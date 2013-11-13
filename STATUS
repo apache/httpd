@@ -218,7 +218,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  https://svn.apache.org/viewvc?view=revision&revision=1541270
                  https://svn.apache.org/viewvc?view=revision&revision=1541368
     2.4.x patch (plus CHANGES entry above):
-        http://people.apache.org/~wrowe/httpd-2.4-r1524192-r1524770-TE-CL.patch
+      http://people.apache.org/~wrowe/httpd-2.4-r1524192-r1524770-TE-CL-v2.patch
     +1:
     [wrowe asks] Where is verification of (!keepalive)?  Do we know the
                  connection will be closed anytime in the near future?
