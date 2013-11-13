@@ -101,13 +101,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
-  * core: Stop the HTTP_IN filter from attempting to write error buckets
-    to the output filters
-    trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1482522
-                 https://svn.apache.org/viewvc?view=revision&revision=1482918
-    2.4.x patch: /* working on it */
-    +1:  jim
-
   * mod_socache_shmcb.c: Remove arbitrary restriction on shared memory size
     previously limited to 64MB.
     trunk patch: http://svn.apache.org/r1493921
@@ -209,15 +202,8 @@ OTHER PROPOSALS
      http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
      If you want to propose one of those, please add them above.
 
-PATCHES/ISSUES THAT ARE STALLED
 
-  * mod_proxy: Ensure network errors detected by the proxy are returned as
-    504 Gateway Timout as opposed to 502 Bad Gateway
-    trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1480058
-    2.4.x patch: trunk patch works modulo CHANGES
-    +1:
-    -1: rpluem: This change is still disputed. See
-        http://mail-archives.apache.org/mod_mbox/httpd-dev/201305.mbox/%3C1B16B9E3-87BA-4EEF-939C-7C7313B54714%40gbiv.com%3E
+PATCHES/ISSUES THAT ARE BEING WORKED
 
   * protocol: draft-ietf-httpbis-p1-messaging-23 fixes regarding interactions
               between TE and content-length in the same req/resp.
@@ -242,6 +228,23 @@ PATCHES/ISSUES THAT ARE STALLED
                  https://svn.apache.org/viewvc?view=revision&revision=1513508
     2.4.x patch: /* in development */
     +1: 
+
+PATCHES/ISSUES THAT ARE STALLED
+
+  * core: Stop the HTTP_IN filter from attempting to write error buckets
+    to the output filters
+    trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1482522
+                 https://svn.apache.org/viewvc?view=revision&revision=1482918
+    2.4.x patch: /* working on it */
+    +1:  jim
+
+  * mod_proxy: Ensure network errors detected by the proxy are returned as
+    504 Gateway Timout as opposed to 502 Bad Gateway
+    trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1480058
+    2.4.x patch: trunk patch works modulo CHANGES
+    +1:
+    -1: rpluem: This change is still disputed. See
+        http://mail-archives.apache.org/mod_mbox/httpd-dev/201305.mbox/%3C1B16B9E3-87BA-4EEF-939C-7C7313B54714%40gbiv.com%3E
 
   * cross-compile: allow to provide CC_FOR_BUILD so that gen_test_char will be
     compiled by the build compiler instead of the host compiler.
