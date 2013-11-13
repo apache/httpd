@@ -1,4 +1,7 @@
                                                          -*- coding: utf-8 -*-
+Changes with Apache 2.2.27
+
+
 Changes with Apache 2.2.26
 
   *) mod_dav: dav_resource->uri treated as unencoded. This was an
