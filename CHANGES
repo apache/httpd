@@ -295,6 +295,9 @@ Changes with Apache 2.4.5
   *) mod_dav: Make sure that when we prepare an If URL for Etag comparison,
      we compare unencoded paths. PR 53910 [Timothy Wood <tjw omnigroup.com>]
 
+  *) mod_deflate: Remove assumptions as to when an EOS bucket might arrive.
+     Gracefully step aside if the body size is zero. [Graham Leggett]
+
   *) 'AuthGroupFile' and 'AuthUserFile' do not accept anymore the optional
      'standard' keyword . It was unused and not documented.
      PR54463 [Tianyin Xu <tixu cs.ucsd.edu> and Christophe Jaillet]
