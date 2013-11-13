@@ -105,7 +105,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     to the output filters
     trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1482522
                  https://svn.apache.org/viewvc?view=revision&revision=1482918
-                 https://svn.apache.org/viewvc?view=revision&revision=1484832
     2.4.x patch: /* working on it */
     +1:  jim
 
