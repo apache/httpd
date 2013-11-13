@@ -2,7 +2,7 @@
 
 Changes with Apache 2.4.7
 
-  *) event MPM: Possible crashes (third party modules accessing c->sbh) 
+  *) event MPM: Fix possible crashes (third party modules accessing c->sbh) 
      or occasional missed mod_status updates for some keepalive requests 
      under load. [Eric Covener]
 
