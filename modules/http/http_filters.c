@@ -235,7 +235,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                  * the final encoding, the message body length is determined by
                  * reading the connection until it is closed by the server."
                  */
-                ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, f->r, APLOGNO(01586)
+                ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, f->r, APLOGNO(02555)
                               "Unknown Transfer-Encoding: %s;"
                               " using read-until-close", tenc);
                 tenc = NULL;
