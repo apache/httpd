@@ -27,11 +27,6 @@ FIND_PACKAGE(Lua51)
 FIND_PACKAGE(OpenSSL)
 FIND_PACKAGE(ZLIB)
 
-# See what version we're building.  Just look at AP_SERVER_MINORVERSION_NUMBER
-SET(minorversion_regex "^#define AP_SERVER_MINORVERSION_NUMBER ([0-9]+)$")
-FILE(STRINGS ${CMAKE_CURRENT_SOURCE_DIR}/include/ap_release.h minorversion REGEX ${minorversion_regex})
-STRING(REGEX REPLACE ${minorversion_regex} "\\1" minorversion ${minorversion})
-
 # Options for support libraries not supported by cmake-bundled FindFOO
 
 # Default to using APR trunk (libapr-2.lib) if it exists in PREFIX/lib;
@@ -188,6 +183,7 @@ MESSAGE(STATUS "")
 #
 SET(MODULE_LIST
   "modules/aaa/mod_access_compat+A+mod_access compatibility"
+  "modules/aaa/mod_allowhandlers+I+restrict allowed handlers"
   "modules/aaa/mod_allowmethods+I+restrict allowed HTTP methods"
   "modules/aaa/mod_auth_basic+A+basic authentication"
   "modules/aaa/mod_auth_digest+I+RFC2617 Digest authentication"
@@ -198,6 +194,7 @@ SET(MODULE_LIST
   "modules/aaa/mod_authn_dbm+I+DBM-based authentication control"
   "modules/aaa/mod_authn_file+A+file-based authentication control"
   "modules/aaa/mod_authn_socache+I+Cached authentication control"
+  "modules/aaa/mod_authnz_fcgi+I+FastCGI authorizer-based authentication and authorization"
   "modules/aaa/mod_authnz_ldap+i+LDAP based authentication"
   "modules/aaa/mod_authz_core+A+core authorization provider vector module"
   "modules/aaa/mod_authz_dbd+I+SQL based authorization and Login/Session support"
@@ -206,6 +203,7 @@ SET(MODULE_LIST
   "modules/aaa/mod_authz_host+A+host-based authorization control"
   "modules/aaa/mod_authz_owner+I+'require file-owner' authorization control"
   "modules/aaa/mod_authz_user+A+'require user' authorization control"
+  "modules/apreq/mod_apreq+i+Apache Request Filter"
   "modules/arch/win32/mod_isapi+I+isapi extension support"
   "modules/cache/mod_cache+I+dynamic file caching.  At least one storage management module (e.g. mod_cache_disk) is also necessary."
   "modules/cache/mod_cache_disk+I+disk caching module"
@@ -225,6 +223,7 @@ SET(MODULE_LIST
   "modules/dav/main/mod_dav+I+WebDAV protocol handling."
   "modules/debugging/mod_bucketeer+O+buckets manipulation filter.  Useful only for developers and testing purposes."
   "modules/debugging/mod_dumpio+I+I/O dump filter"
+  "modules/debugging/mod_firehose+O+Firehose dump filter"
   "modules/echo/mod_echo+O+ECHO server"
   "modules/examples/mod_case_filter+O+Example uppercase conversion filter"
   "modules/examples/mod_case_filter_in+O+Example uppercase conversion input filter"
@@ -291,6 +290,7 @@ SET(MODULE_LIST
   "modules/proxy/mod_proxy_http+I+Apache proxy HTTP module.  Requires and is enabled by --enable-proxy."
   "modules/proxy/mod_proxy_scgi+I+Apache proxy SCGI module.  Requires and is enabled by --enable-proxy."
   "modules/proxy/mod_proxy_wstunnel+I+Apache proxy Websocket Tunnel module.  Requires and is enabled by --enable-proxy."
+  "modules/proxy/mod_serf+O+Reverse proxy module using Serf"
   "modules/session/mod_session+I+session module"
   "modules/session/mod_session_cookie+I+session cookie module"
   "modules/session/mod_session_crypto+i+session crypto module"
@@ -303,20 +303,8 @@ SET(MODULE_LIST
   "modules/test/mod_optional_fn_import+O+example optional function importer"
   "modules/test/mod_optional_hook_export+O+example optional hook exporter"
   "modules/test/mod_optional_hook_import+O+example optional hook importer"
+  "modules/test/mod_policy+I+HTTP protocol compliance filters"
 )
-
-IF(NOT ${minorversion} STREQUAL "4")
-  # more modules in trunk
-  SET(MODULE_LIST
-      ${MODULE_LIST}
-      "modules/aaa/mod_allowhandlers+I+restrict allowed handlers"
-      "modules/aaa/mod_authnz_fcgi+I+FastCGI authorizer-based authentication and authorization"
-      "modules/apreq/mod_apreq+i+Apache Request Filter"
-      "modules/debugging/mod_firehose+O+Firehose dump filter"
-      "modules/proxy/mod_serf+O+Reverse proxy module using Serf"
-      "modules/test/mod_policy+I+HTTP protocol compliance filters"
-  )
-ENDIF()
 
 # Track which modules actually built have APIs to link against.
 SET(installed_mod_libs_exps)
@@ -426,11 +414,6 @@ SET(mod_ssl_extra_sources
   modules/ssl/ssl_util.c             modules/ssl/ssl_util_ocsp.c
   modules/ssl/ssl_util_ssl.c         modules/ssl/ssl_util_stapling.c
 )
-IF(${minorversion} STREQUAL "4")
-  SET(mod_ssl_extra_sources
-    ${mod_ssl_extra_sources} modules/ssl/ssl_engine_dh.c
-  )
-ENDIF()
 SET(mod_status_extra_defines         STATUS_DECLARE_EXPORT)
 SET(mod_watchdog_install_lib 1)
 SET(mod_xml2enc_requires             LIBXML2_FOUND)
@@ -520,6 +503,17 @@ SET(HTTPD_MAIN_SOURCES
 SET(LIBHTTPD_SOURCES
   ${extra_builtin_modules}
   ${PROJECT_BINARY_DIR}/modules.c
+  server/apreq_cookie.c
+  server/apreq_error.c
+  server/apreq_module.c
+  server/apreq_module_cgi.c
+  server/apreq_module_custom.c
+  server/apreq_param.c
+  server/apreq_parser.c
+  server/apreq_parser_header.c
+  server/apreq_parser_multipart.c
+  server/apreq_parser_urlencoded.c
+  server/apreq_util.c
   modules/arch/win32/mod_win32.c
   modules/core/mod_so.c
   modules/http/byterange_filter.c
@@ -567,24 +561,6 @@ SET(LIBHTTPD_SOURCES
   server/util_xml.c
   server/vhost.c
 )
-
-IF(NOT ${minorversion} STREQUAL "4")
-  # more libhttpd sources in trunk
-  SET(LIBHTTPD_SOURCES
-      ${LIBHTTPD_SOURCES}
-      server/apreq_cookie.c
-      server/apreq_error.c
-      server/apreq_module.c
-      server/apreq_module_cgi.c
-      server/apreq_module_custom.c
-      server/apreq_param.c
-      server/apreq_parser.c
-      server/apreq_parser_header.c
-      server/apreq_parser_multipart.c
-      server/apreq_parser_urlencoded.c
-      server/apreq_util.c
-  )
-ENDIF()
 
 CONFIGURE_FILE(os/win32/win32_config_layout.h
                ${PROJECT_BINARY_DIR}/ap_config_layout.h)
@@ -746,12 +722,7 @@ SET_TARGET_PROPERTIES(libhttpd PROPERTIES
 SET(install_targets ${install_targets} libhttpd)
 SET(install_bin_pdb ${install_bin_pdb} ${PROJECT_BINARY_DIR}/libhttpd.pdb)
 TARGET_LINK_LIBRARIES(libhttpd ${EXTRA_LIBS} ${APR_LIBRARIES} ${PCRE_LIBRARIES} ${HTTPD_SYSTEM_LIBS})
-SET(apreqdefs)
-IF(NOT ${minorversion} STREQUAL "4")
-  # trunk needs apreq symbols exported
-  SET(apreqdefs -DAPREQ_DECLARE_EXPORT)
-ENDIF()
-SET_TARGET_PROPERTIES(libhttpd PROPERTIES COMPILE_FLAGS "-DAP_DECLARE_EXPORT ${apreqdefs} -DLONG_NAME=\"\\\"Apache HTTP Server Core\\\"\" -DBIN_NAME=libhttpd.dll ${EXTRA_COMPILE_FLAGS}")
+SET_TARGET_PROPERTIES(libhttpd PROPERTIES COMPILE_FLAGS "-DAP_DECLARE_EXPORT -DAPREQ_DECLARE_EXPORT -DLONG_NAME=\"\\\"Apache HTTP Server Core\\\"\" -DBIN_NAME=libhttpd.dll ${EXTRA_COMPILE_FLAGS}")
 ADD_DEPENDENCIES(libhttpd test_char_header)
 
 ###########   HTTPD EXECUTABLES   ##########

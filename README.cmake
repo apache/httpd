@@ -15,12 +15,6 @@ This build support is experimental.  Specifically,
   release to release as feedback is received from users and bugs and
   limitations are resolved.
 
-This can be used with Apache httpd 2.4.x by copying the following files from
-httpd trunk (in Subversion) into the 2.4.x source tree:
-
-* CMakeLists.txt
-* build/cpR_noreplace.pl
-
 Important: Refer to the "Known Bugs and Limitations" section for further
            information.
 
@@ -45,7 +39,7 @@ The following tools must be in PATH:
 The following support libraries are mandatory:
 
 * APR, built with cmake
-  + Either APR 2.0-dev (trunk) or APR 1.4.x and APR-Util 1.5.x.
+  + Either APR 2.0-dev (trunk) or APR 1.5.x and APR-Util 1.5.x.
   + When building APR (but not APR-Util), specify the build option
     APR_INSTALL_PRIVATE_H so that non-standard files required for building
     Apache httpd are installed.
@@ -133,7 +127,7 @@ How to build
 
        For NMake Makefiles the choices are at least DEBUG, RELEASE,
        RELWITHDEBINFO, and MINSIZEREL
-       Other backends make have other selections.
+       Other backends may have other selections.
 
    ENABLE_foo:
 
