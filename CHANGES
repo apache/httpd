@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.7
 
+  *) Add experimental cmake-based build system for Windows.  [Jeff Trawick,
+     Tom Donovan]
+
   *) event MPM: Fix possible crashes (third party modules accessing c->sbh) 
      or occasional missed mod_status updates for some keepalive requests 
      under load. [Eric Covener]
