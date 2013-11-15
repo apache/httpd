@@ -188,6 +188,8 @@ AuthnCacheProvideFor dbd myprovider
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>None</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authn_socache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Optional provider arguments are available in
+Apache HTTP Server 2.4.7 and later</td></tr>
 </table>
     <p>This is a server-wide setting to select a provider for the
     <a href="../socache.html">shared object cache</a>, followed by

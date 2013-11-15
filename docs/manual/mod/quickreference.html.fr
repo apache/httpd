@@ -286,7 +286,7 @@ cache</td></tr>
 endroit</td></tr>
 <tr class="odd"><td><a href="mod_authn_socache.html#authncacheprovidefor">AuthnCacheProvideFor <var>fournisseur-authn</var> [...]</a></td><td></td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Spécifie le fournisseur pour lequel on veut effectuer une
 mise en cache</td></tr>
-<tr><td><a href="mod_authn_socache.html#authncachesocache">AuthnCacheSOCache <var>nom-fournisseur</var></a></td><td></td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">Sélectionne le fournisseur socache d'arrière-plan à
+<tr><td><a href="mod_authn_socache.html#authncachesocache">AuthnCacheSOCache <var>nom-fournisseur[:arguments-fournisseur]</var></a></td><td></td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">Sélectionne le fournisseur socache d'arrière-plan à
 utiliser</td></tr>
 <tr class="odd"><td><a href="mod_authn_socache.html#authncachetimeout">AuthnCacheTimeout <var>durée-de-vie</var> (secondes)</a></td><td></td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Définit une durée de vie pour les entrées du cache</td></tr>
 <tr><td><a href="mod_authn_core.html#authnprovideralias">&lt;AuthnProviderAlias <var>alias-fournisseur</var>&gt;
@@ -384,18 +384,16 @@ mettre en cache avant de les envoyer au client</td></tr>
 avant d'envoyer les données au client</td></tr>
 <tr class="odd"><td><a href="mod_cache_disk.html#cacheroot">CacheRoot <var>répertoire</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">La racine du répertoire dans lequel les fichiers du cache
 seront stockés</td></tr>
-<tr><td><a href="mod_cache_socache.html#cachesocache">CacheSocache <var>type[:args]</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">The directory root under which cache files are
-stored</td></tr>
-<tr class="odd"><td><a href="mod_cache_socache.html#cachesocachemaxsize">CacheSocacheMaxSize <var>bytes</var></a></td><td> 102400 </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The maximum size (in bytes) of an entry to be placed in the
+<tr><td><a href="mod_cache_socache.html#cachesocache">CacheSocache <var>type[:args]</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">La racine des répertoires sous lesquels les fichiers de
+cache sont stockés</td></tr>
+<tr class="odd"><td><a href="mod_cache_socache.html#cachesocachemaxsize">CacheSocacheMaxSize <var>octets</var></a></td><td> 102400 </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">La taille maximale d'une entrée pouvant être placée dans le
 cache</td></tr>
-<tr><td><a href="mod_cache_socache.html#cachesocachemaxtime">CacheSocacheMaxTime <var>seconds</var></a></td><td> 86400 </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">The maximum time (in seconds) for a document to be placed in the
-cache</td></tr>
-<tr class="odd"><td><a href="mod_cache_socache.html#cachesocachemintime">CacheSocacheMinTime <var>seconds</var></a></td><td> 600 </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The maximum time (in seconds) for a document to be placed in the
-cache</td></tr>
-<tr><td><a href="mod_cache_socache.html#cachesocachereadsize">CacheSocacheReadSize <var>bytes</var></a></td><td> 0 </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">The minimum size (in bytes) of the document to read and be cached
-  before sending the data downstream</td></tr>
-<tr class="odd"><td><a href="mod_cache_socache.html#cachesocachereadtime">CacheSocacheReadTime <var>milliseconds</var></a></td><td> 0 </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The minimum time (in milliseconds) that should elapse while reading
-  before data is sent downstream</td></tr>
+<tr><td><a href="mod_cache_socache.html#cachesocachemaxtime">CacheSocacheMaxTime <var>secondes</var></a></td><td> 86400 </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">La durée maximale de stockage d'un document dans le cache
+avant péremption</td></tr>
+<tr class="odd"><td><a href="mod_cache_socache.html#cachesocachemintime">CacheSocacheMinTime <var>seconds</var></a></td><td> 600 </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">La durée minimale de stockage d'un document dans le cache</td></tr>
+<tr><td><a href="mod_cache_socache.html#cachesocachereadsize">CacheSocacheReadSize <var>octets</var></a></td><td> 0 </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">La quantité minimale de données du document à lire et
+mettre en cache avant envoi au client</td></tr>
+<tr class="odd"><td><a href="mod_cache_socache.html#cachesocachereadtime">CacheSocacheReadTime <var>millisecondes</var></a></td><td> 0 </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">La durée minimale de lecture avant l'envoi des données</td></tr>
 <tr><td><a href="mod_cache.html#cachestaleonerror">CacheStaleOnError <var>on|off</var></a></td><td> on </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Sert du contenu non à jour à la place de réponses 5xx.</td></tr>
 <tr class="odd"><td><a href="mod_cache.html#cachestoreexpired">CacheStoreExpired On|Off</a></td><td> Off </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Tente de mettre en cache les réponses que le serveur
 considère comme arrivées à expiration</td></tr>

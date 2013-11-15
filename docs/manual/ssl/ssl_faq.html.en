@@ -524,6 +524,8 @@ Does this mean the username/password is being sent unencrypted?</a></li>
 <li><a href="#msie">Why do I get I/O errors when connecting via
 HTTPS to an Apache+mod_ssl server with Microsoft Internet Explorer
 (MSIE)?</a></li>
+<li><a href="#srp">How do I enable TLS-SRP?</a></li>
+<li><a href="#javadh">Why do I get handshake failures with Java-based clients when using a certificate with more than 1024 bits?</a></li>
 </ul>
 
 <h3><a name="random" id="random">Why do I get lots of random SSL protocol
@@ -744,6 +746,37 @@ SetEnvIf User-Agent "MSIE [2-5]" \
     <div class="example"><p><code>
     SSLCipherSuite "!DSS:!aRSA:SRP"
     </code></p></div>
+
+
+<h3><a name="javadh" id="javadh">Why do I get handshake failures with Java-based clients when using a certificate with more than 1024 bits?</a></h3>
+    <p>Beginning with version 2.4.7,
+    <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> will use DH parameters which include primes
+    with lengths of more than 1024 bits. Java 7 and earlier limit their
+    support for DH prime sizes to a maximum of 1024 bits, however.</p>
+
+    <p>If your Java-based client aborts with exceptions such as
+    <code>java.lang.RuntimeException: Could not generate DH keypair</code> and
+    <code>java.security.InvalidAlgorithmParameterException: Prime size must be
+    multiple of 64, and can only range from 512 to 1024 (inclusive)</code>,
+    and httpd logs <code>tlsv1 alert internal error (SSL alert number 80)</code>
+    (at <code class="directive"><a href="../mod/core.html#loglevel">LogLevel</a></code> <code>info</code>
+    or higher), you can either rearrange mod_ssl's cipher list with
+    <code class="directive"><a href="../mod/mod_ssl.html#sslciphersuite">SSLCipherSuite</a></code>
+    (possibly in conjunction with <code class="directive"><a href="../mod/mod_ssl.html#sslhonorcipherorder">SSLHonorCipherOrder</a></code>),
+    or you can use the <code class="directive"><a href="../mod/mod_ssl.html#sslcertificatefile">SSLCertificateFile</a></code>
+    directive to configure custom DH parameters with a 1024-bit prime, which
+    will always have precedence over any of the built-in DH parameters.</p>
+
+    <p>To generate custom DH parameters, use the <code>openssl dhparam</code>
+    command. Alternatively, you can append the following standard 1024-bit DH
+    parameters from <a href="http://www.ietf.org/rfc/rfc2409.txt">RFC 2409</a>,
+    section 6.2 to the respective
+    <code class="directive"><a href="../mod/ssl.html#sslcertificatefile">SSLCertificateFile</a></code> file:</p>
+    <div class="example"><pre>-----BEGIN DH PARAMETERS-----
+MIGHAoGBAP//////////yQ/aoiFowjTExmKLgNwc0SkCTgiKZ8x0Agu+pjsTmyJR
+Sgh5jjQE3e+VGbPNOkMbMCsKbfJfFDdP4TVtbVHCReSFtXZiXn7G9ExC6aY37WsL
+/1y29Aa37e44a/taiZ+lrp8kEXxLH+ZJKGZR7OZTgf//////////AgEC
+-----END DH PARAMETERS-----</pre></div>
 
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

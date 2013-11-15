@@ -208,7 +208,7 @@ AuthnCacheProvideFor dbd mon-fournisseur
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sélectionne le fournisseur socache d'arrière-plan à
 utiliser</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthnCacheSOCache <var>nom-fournisseur</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthnCacheSOCache <var>nom-fournisseur[:arguments-fournisseur]</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>None</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
@@ -216,7 +216,8 @@ utiliser</td></tr>
 </table>
     <p>Cette définition s'applique à l'ensemble du serveur et permet de
     sélectionner un fournisseur pour le <a href="../socache.html">cache
-    d'objets partagés</a>. Les fournisseurs disponibles sont "dbm",
+    d'objets partagés</a>, ainsi que des arguments éventuels pour ce
+    fournisseur. Les fournisseurs disponibles sont, entre autres, "dbm",
     "dc", "memcache", ou "shmcb", chacun d'entre eux nécessitant le chargement
     du module approprié. Si elle est
     absente, c'est la valeur par défaut pour votre plate-forme qui sera
