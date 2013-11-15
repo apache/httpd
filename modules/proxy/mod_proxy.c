@@ -2439,7 +2439,7 @@ static int proxy_status_hook(request_rec *r, int flags)
     proxy_balancer *balancer = NULL;
     proxy_worker **worker = NULL;
 
-    if (flags & AP_STATUS_SHORT || conf->balancers->nelts == 0 ||
+    if ((flags & AP_STATUS_SHORT) || conf->balancers->nelts == 0 ||
         conf->proxy_status == status_off)
         return OK;
 

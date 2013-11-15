@@ -97,19 +97,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * easy proposals to synch 2.4.x and trunk
-       - mod_proxy.c: Eclipse code analysis warning
-       - mod_mime_magic.c: Reduce stack usage by 3k
-       - mod_log_config.c: style fixes, add comment, no code change
-       - mod_authnz_ldap.c: attribute and error reason reversed
-    trunk patches:
-       - http://svn.apache.org/r1533065
-       - http://svn.apache.org/r1491724
-       - http://svn.apache.org/r1425360
-       - http://svn.apache.org/r1496194
-    2.4.x patch: trunk patches work
-    +1: jailletc36, jim, jorton
-
   * mod_proxy_fcgi: Sync with trunk
     trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1523281
                  https://svn.apache.org/viewvc?view=revision&revision=1524368
