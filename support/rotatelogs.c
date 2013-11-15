@@ -762,7 +762,7 @@ int main (int argc, const char * const argv[])
             status.nMessCount++;
         }
         if (config.echo) {
-            if (apr_file_write_full(f_stdout, buf, nRead, &nWrite)) {
+            if (apr_file_write_full(f_stdout, buf, nRead, NULL)) {
                 fprintf(stderr, "Unable to write to stdout\n");
                 exit(4);
             }

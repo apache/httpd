@@ -127,7 +127,6 @@ static apr_status_t pumpit_cleanup(void *dummy)
     apr_status_t rv;
     apr_size_t hdr_len;
     char header[HEADER_LEN + 1];
-    apr_size_t bytes;
 
     if (!ctx->count) {
         return APR_SUCCESS;
@@ -138,7 +137,7 @@ static apr_status_t pumpit_cleanup(void *dummy)
             ctx->uuid, ctx->count);
     ap_xlate_proto_to_ascii(header, hdr_len);
 
-    rv = apr_file_write_full(ctx->conn->file, header, hdr_len, &bytes);
+    rv = apr_file_write_full(ctx->conn->file, header, hdr_len, NULL);
     if (APR_SUCCESS != rv) {
         if (ctx->conn->suppress) {
             /* ignore the error */
