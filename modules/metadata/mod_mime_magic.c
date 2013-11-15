@@ -1973,7 +1973,7 @@ static int ascmagic(request_rec *r, unsigned char *buf, apr_size_t nbytes)
 {
     int has_escapes = 0;
     unsigned char *s;
-    char nbuf[HOWMANY + 1];  /* one extra for terminating '\0' */
+    char nbuf[SMALL_HOWMANY + 1];  /* one extra for terminating '\0' */
     char *token;
     const struct names *p;
     int small_nbytes;

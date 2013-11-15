@@ -194,8 +194,8 @@ static void *ap_default_log_writer_init(apr_pool_t *p, server_rec *s,
 static void *ap_buffered_log_writer_init(apr_pool_t *p, server_rec *s,
                                         const char* name);
 
-static ap_log_writer_init* ap_log_set_writer_init(ap_log_writer_init *handle);
-static ap_log_writer* ap_log_set_writer(ap_log_writer *handle);
+static ap_log_writer_init *ap_log_set_writer_init(ap_log_writer_init *handle);
+static ap_log_writer *ap_log_set_writer(ap_log_writer *handle);
 static ap_log_writer *log_writer = ap_default_log_writer;
 static ap_log_writer_init *log_writer_init = ap_default_log_writer_init;
 static int buffered_logs = 0; /* default unbuffered */
@@ -1507,7 +1507,7 @@ static void ap_register_log_handler(apr_pool_t *p, char *tag,
 
     apr_hash_set(log_hash, tag, 1, (const void *)log_struct);
 }
-static ap_log_writer_init* ap_log_set_writer_init(ap_log_writer_init *handle)
+static ap_log_writer_init *ap_log_set_writer_init(ap_log_writer_init *handle)
 {
     ap_log_writer_init *old = log_writer_init;
     log_writer_init = handle;
@@ -1536,6 +1536,10 @@ static apr_status_t ap_default_log_writer( request_rec *r,
     int i;
     apr_status_t rv;
 
+    /*
+     * We do this memcpy dance because write() is atomic for len < PIPE_BUF,
+     * while writev() need not be.
+     */
     str = apr_palloc(r->pool, len + 1);
 
     for (i = 0, s = str; i < nelts; ++i) {
@@ -1616,6 +1620,10 @@ static apr_status_t ap_buffered_log_writer(request_rec *r,
     if (len >= LOG_BUFSIZE) {
         apr_size_t w;
 
+        /*
+         * We do this memcpy dance because write() is atomic for
+         * len < PIPE_BUF, while writev() need not be.
+         */
         str = apr_palloc(r->pool, len + 1);
         for (i = 0, s = str; i < nelts; ++i) {
             memcpy(s, strs[i], strl[i]);
