@@ -75,8 +75,6 @@ SSLModConfigRec *ssl_config_global_create(server_rec *s)
     mc->stapling_mutex         = NULL;
 #endif
 
-    memset(mc->pTmpKeys, 0, sizeof(mc->pTmpKeys));
-
     apr_pool_userdata_set(mc, SSL_MOD_CONFIG_KEY,
                           apr_pool_cleanup_null,
                           pool);
@@ -150,7 +148,7 @@ static void modssl_ctx_init(modssl_ctx_t *mctx)
     mctx->stapling_force_url         = NULL;
 #endif
 
-#ifndef OPENSSL_NO_SRP
+#ifdef HAVE_SRP
     mctx->srp_vfile =             NULL;
     mctx->srp_unknown_user_seed = NULL;
     mctx->srp_vbase =             NULL;
@@ -208,7 +206,7 @@ static SSLSrvConfigRec *ssl_config_server_new(apr_pool_t *p)
     sc->proxy_ssl_check_peer_expire = SSL_ENABLED_UNSET;
     sc->proxy_ssl_check_peer_cn     = SSL_ENABLED_UNSET;
     sc->proxy_ssl_check_peer_name   = SSL_ENABLED_UNSET;
-#ifndef OPENSSL_NO_TLSEXT
+#ifdef HAVE_TLSEXT
     sc->strict_sni_vhost_check = SSL_ENABLED_UNSET;
 #endif
 #ifdef HAVE_FIPS
@@ -282,7 +280,7 @@ static void modssl_ctx_cfg_merge(modssl_ctx_t *base,
     cfgMerge(stapling_force_url, NULL);
 #endif
 
-#ifndef OPENSSL_NO_SRP
+#ifdef HAVE_SRP
     cfgMergeString(srp_vfile);
     cfgMergeString(srp_unknown_user_seed);
 #endif
@@ -338,7 +336,7 @@ void *ssl_config_server_merge(apr_pool_t *p, void *basev, void *addv)
     cfgMerge(proxy_ssl_check_peer_expire, SSL_ENABLED_UNSET);
     cfgMerge(proxy_ssl_check_peer_cn, SSL_ENABLED_UNSET);
     cfgMerge(proxy_ssl_check_peer_name, SSL_ENABLED_UNSET);
-#ifndef OPENSSL_NO_TLSEXT
+#ifdef HAVE_TLSEXT
     cfgMerge(strict_sni_vhost_check, SSL_ENABLED_UNSET);
 #endif
 #ifdef HAVE_FIPS
@@ -644,6 +642,9 @@ const char *ssl_cmd_SSLCipherSuite(cmd_parms *cmd,
 {
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
     SSLDirConfigRec *dc = (SSLDirConfigRec *)dcfg;
+
+    /* always disable null and export ciphers */
+    arg = apr_pstrcat(cmd->pool, "!aNULL:!eNULL:!EXP:", arg, NULL);
 
     if (cmd->path) {
         dc->szCipherSuite = arg;
@@ -1384,6 +1385,9 @@ const char *ssl_cmd_SSLProxyCipherSuite(cmd_parms *cmd,
 {
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
 
+    /* always disable null and export ciphers */
+    arg = apr_pstrcat(cmd->pool, "!aNULL:!eNULL:!EXP:", arg, NULL);
+
     sc->proxy->auth.cipher_suite = arg;
 
     return NULL;
@@ -1645,7 +1649,7 @@ const char *ssl_cmd_SSLProxyCheckPeerName(cmd_parms *cmd, void *dcfg, int flag)
 
 const char  *ssl_cmd_SSLStrictSNIVHostCheck(cmd_parms *cmd, void *dcfg, int flag)
 {
-#ifndef OPENSSL_NO_TLSEXT
+#ifdef HAVE_TLSEXT
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
 
     sc->strict_sni_vhost_check = flag ? SSL_ENABLED_TRUE : SSL_ENABLED_FALSE;
@@ -1804,7 +1808,7 @@ const char *ssl_cmd_SSLStaplingForceURL(cmd_parms *cmd, void *dcfg,
 
 #endif /* HAVE_OCSP_STAPLING */
 
-#ifndef OPENSSL_NO_SRP
+#ifdef HAVE_SRP
 
 const char *ssl_cmd_SSLSRPVerifierFile(cmd_parms *cmd, void *dcfg,
                                        const char *arg)
@@ -1828,7 +1832,7 @@ const char *ssl_cmd_SSLSRPUnknownUserSeed(cmd_parms *cmd, void *dcfg,
     return NULL;
 }
 
-#endif /* OPENSSL_NO_SRP */
+#endif /* HAVE_SRP */
 
 void ssl_hook_ConfigTest(apr_pool_t *pconf, server_rec *s)
 {
