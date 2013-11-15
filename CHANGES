@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) Fix potential rejection of valid MaxMemFree and ThreadStackSize
+     directives.  [Mike Rumph <mike.rumph oracle.com>]
+
   *) core: Add parse_errorlog_arg callback to ap_errorlog_provider
      to allow providers to check the ErrorLog argument. [Jan Kaluza]
 
