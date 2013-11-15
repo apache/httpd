@@ -190,6 +190,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: http://people.apache.org/~jim/patches/uds-2.4.patch
     +1: jim
 
+  * potential rejection of valid MaxMemFree and ThreadStackSize directives
+    trunk patch: https://svn.apache.org/r1542338
+    2.4.x patch: trunk patch works
+    +1: trawick
+
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
