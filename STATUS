@@ -97,28 +97,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_ssl: improve ephemeral key handling - in particular, support DH params
-    with more than 1024 bits, and allow custom configuration. For a detailed
-    list of the changes, see the text at the beginning of the 2.4.x patch.
-    trunk patches: https://svn.apache.org/r1526168
-                   https://svn.apache.org/r1527291
-                   https://svn.apache.org/r1527294
-                   https://svn.apache.org/r1527295
-                   https://svn.apache.org/r1527926
-    2.4.x patch: https://people.apache.org/~kbrand/mod_ssl-2.4.x-ekh.diff
-    +1: kbrand, jim, jorton
-    [wrowe comments] is it possible to split the patch into 'accepted for 2.2'
-    which is straightforward to review (and commit seperately) from those
-    features 'new to 2.4'?  I think that would attract the necessary eyeballs.
-    kbrand: not sure what exactly "accepted for 2.2" would mean here, basically
-            all these changes are enhancements, not bug fixes (and only the
-            latter I would consider for backporting to a "legacy branch").
-            Identifying those bullets at the beginning of the 2.4.x patch
-            which you consider "accepted 2.2" might help / give further clues,
-            though it should be noted that mod_ssl in 2.4 has drifted
-            away from 2.2 quite somewhat meanwhile (think of the removal of
-            ssl_toolkit_compat.h e.g.).
-
   * easy proposals to synch 2.4.x and trunk
        - mod_proxy.c: Eclipse code analysis warning
        - mod_mime_magic.c: Reduce stack usage by 3k

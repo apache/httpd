@@ -382,7 +382,7 @@ static char *ssl_var_lookup_ssl(apr_pool_t *p, conn_rec *c, request_rec *r,
     else if (ssl != NULL && strcEQ(var, "COMPRESS_METHOD")) {
         result = ssl_var_lookup_ssl_compress_meth(ssl);
     }
-#ifndef OPENSSL_NO_TLSEXT
+#ifdef HAVE_TLSEXT
     else if (ssl != NULL && strcEQ(var, "TLS_SNI")) {
         result = apr_pstrdup(p, SSL_get_servername(ssl,
                                                    TLSEXT_NAMETYPE_host_name));
@@ -395,7 +395,7 @@ static char *ssl_var_lookup_ssl(apr_pool_t *p, conn_rec *c, request_rec *r,
 #endif
         result = apr_pstrdup(p, flag ? "true" : "false");
     }
-#ifndef OPENSSL_NO_SRP
+#ifdef HAVE_SRP
     else if (ssl != NULL && strcEQ(var, "SRP_USER")) {
         if ((result = SSL_get_srp_username(ssl)) != NULL) {
             result = apr_pstrdup(p, result);
@@ -879,7 +879,7 @@ void modssl_var_extract_dns(apr_table_t *t, SSL *ssl, apr_pool_t *p)
  * success and writes the string to the given bio. */
 static int dump_extn_value(BIO *bio, ASN1_OCTET_STRING *str)
 {
-    MODSSL_D2I_ASN1_type_bytes_CONST unsigned char *pp = str->data;
+    const unsigned char *pp = str->data;
     ASN1_STRING *ret = ASN1_STRING_new();
     int rv = 0;
 
@@ -975,7 +975,7 @@ apr_array_header_t *ssl_ext_list(apr_pool_t *p, conn_rec *c, int peer,
 static char *ssl_var_lookup_ssl_compress_meth(SSL *ssl)
 {
     char *result = "NULL";
-#if (OPENSSL_VERSION_NUMBER >= 0x00908000) && !defined(OPENSSL_NO_COMP)
+#ifndef OPENSSL_NO_COMP
     SSL_SESSION *pSession = SSL_get_session(ssl);
 
     if (pSession) {

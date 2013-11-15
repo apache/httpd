@@ -708,7 +708,7 @@ int ssl_pphrase_Handle_CB(char *buf, int bufsize, int verify, void *srv)
                     ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(01966)
                                  "Init: Failed to create pass phrase pipe '%s'",
                                  sc->server->pphrase_dialog_path);
-                    PEMerr(PEM_F_DEF_CALLBACK,PEM_R_PROBLEMS_GETTING_PASSWORD);
+                    PEMerr(PEM_F_PEM_DEF_CALLBACK,PEM_R_PROBLEMS_GETTING_PASSWORD);
                     memset(buf, 0, (unsigned int)bufsize);
                     return (-1);
                 }
@@ -718,7 +718,7 @@ int ssl_pphrase_Handle_CB(char *buf, int bufsize, int verify, void *srv)
         }
         else { /* sc->server->pphrase_dialog_type == SSL_PPTYPE_BUILTIN */
 #ifdef WIN32
-            PEMerr(PEM_F_DEF_CALLBACK,PEM_R_PROBLEMS_GETTING_PASSWORD);
+            PEMerr(PEM_F_PEM_DEF_CALLBACK,PEM_R_PROBLEMS_GETTING_PASSWORD);
             memset(buf, 0, (unsigned int)bufsize);
             return (-1);
 #else
@@ -769,7 +769,7 @@ int ssl_pphrase_Handle_CB(char *buf, int bufsize, int verify, void *srv)
                 i = EVP_read_pw_string(buf, bufsize, "", FALSE);
             }
             if (i != 0) {
-                PEMerr(PEM_F_DEF_CALLBACK,PEM_R_PROBLEMS_GETTING_PASSWORD);
+                PEMerr(PEM_F_PEM_DEF_CALLBACK,PEM_R_PROBLEMS_GETTING_PASSWORD);
                 memset(buf, 0, (unsigned int)bufsize);
                 return (-1);
             }
