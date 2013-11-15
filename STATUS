@@ -216,7 +216,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  https://svn.apache.org/viewvc?view=revision&revision=1533065
                  https://svn.apache.org/viewvc?view=revision&revision=1540052
     2.4.x patch: http://people.apache.org/~jim/patches/uds-2.4.patch
-    +1: 
+    +1: jim
 
   * easy proposals to synch 2.4.x and trunk
        - mod_proxy.c: Eclipse code analysis warning
@@ -229,7 +229,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        - http://svn.apache.org/r1425360
        - http://svn.apache.org/r1496194
     2.4.x patch: trunk patches work
-    +1: jailletc36, 
+    +1: jailletc36,  jim
 
 OTHER PROPOSALS
 
