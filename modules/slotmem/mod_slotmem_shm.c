@@ -179,7 +179,6 @@ static void store_slotmem(ap_slotmem_instance_t *slotmem)
     apr_size_t nbytes;
     const char *storename;
     unsigned char digest[APR_MD5_DIGESTSIZE];
-    apr_size_t written = 0;
 
     storename = slotmem_filename(slotmem->gpool, slotmem->name, 1);
 
@@ -203,12 +202,12 @@ static void store_slotmem(ap_slotmem_instance_t *slotmem)
         nbytes = (slotmem->desc.size * slotmem->desc.num) +
                  (slotmem->desc.num * sizeof(char)) + AP_UNSIGNEDINT_OFFSET;
         apr_md5(digest, slotmem->persist, nbytes);
-        rv = apr_file_write_full(fp, slotmem->persist, nbytes, &written);
-        if (rv == APR_SUCCESS && written == nbytes) {
-            rv = apr_file_write_full(fp, digest, APR_MD5_DIGESTSIZE, &written);
+        rv = apr_file_write_full(fp, slotmem->persist, nbytes, NULL);
+        if (rv == APR_SUCCESS) {
+            rv = apr_file_write_full(fp, digest, APR_MD5_DIGESTSIZE, NULL);
         }
         apr_file_close(fp);
-        if (rv != APR_SUCCESS || written != APR_MD5_DIGESTSIZE) {
+        if (rv != APR_SUCCESS) {
             apr_file_remove(storename, slotmem->gpool);
         }
     }
