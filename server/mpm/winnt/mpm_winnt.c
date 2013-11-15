@@ -358,7 +358,6 @@ static int send_handles_to_child(apr_pool_t *p,
     HANDLE hDup;
     HANDLE os_start;
     HANDLE hScore;
-    apr_size_t BytesWritten;
 
     if (!DuplicateHandle(hCurrentProcess, child_ready_event, hProcess, &hDup,
         EVENT_MODIFY_STATE | SYNCHRONIZE, FALSE, 0)) {
@@ -366,7 +365,7 @@ static int send_handles_to_child(apr_pool_t *p,
                      "Parent: Unable to duplicate the ready event handle for the child");
         return -1;
     }
-    if ((rv = apr_file_write_full(child_in, &hDup, sizeof(hDup), &BytesWritten))
+    if ((rv = apr_file_write_full(child_in, &hDup, sizeof(hDup), NULL))
             != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf, APLOGNO(00393)
                      "Parent: Unable to send the exit event handle to the child");
@@ -378,7 +377,7 @@ static int send_handles_to_child(apr_pool_t *p,
                      "Parent: Unable to duplicate the exit event handle for the child");
         return -1;
     }
-    if ((rv = apr_file_write_full(child_in, &hDup, sizeof(hDup), &BytesWritten))
+    if ((rv = apr_file_write_full(child_in, &hDup, sizeof(hDup), NULL))
             != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf, APLOGNO(00395)
                      "Parent: Unable to send the exit event handle to the child");
@@ -395,7 +394,7 @@ static int send_handles_to_child(apr_pool_t *p,
                      "Parent: Unable to duplicate the start mutex to the child");
         return -1;
     }
-    if ((rv = apr_file_write_full(child_in, &hDup, sizeof(hDup), &BytesWritten))
+    if ((rv = apr_file_write_full(child_in, &hDup, sizeof(hDup), NULL))
             != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf, APLOGNO(00398)
                      "Parent: Unable to send the start mutex to the child");
@@ -412,7 +411,7 @@ static int send_handles_to_child(apr_pool_t *p,
                      "Parent: Unable to duplicate the scoreboard handle to the child");
         return -1;
     }
-    if ((rv = apr_file_write_full(child_in, &hDup, sizeof(hDup), &BytesWritten))
+    if ((rv = apr_file_write_full(child_in, &hDup, sizeof(hDup), NULL))
             != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf, APLOGNO(00401)
                      "Parent: Unable to send the scoreboard handle to the child");

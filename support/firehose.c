@@ -342,7 +342,7 @@ static apr_status_t process_body(file_rec *file, header_rec *header,
         if (APR_SUCCESS == (status = apr_file_open(&handle, native, APR_WRITE
                 | APR_CREATE | APR_APPEND, APR_OS_DEFAULT, pool))) {
             if (APR_SUCCESS != (status = apr_file_write_full(handle, str, len,
-                    &len))) {
+                    NULL))) {
                 apr_file_printf(file->file_err,
                         "Could not write fragment body to file '%s': %pm\n",
                         native, &status);
