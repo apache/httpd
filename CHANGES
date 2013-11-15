@@ -4,6 +4,9 @@ Changes with Apache 2.5.0
   *) Fix potential rejection of valid MaxMemFree and ThreadStackSize
      directives.  [Mike Rumph <mike.rumph oracle.com>]
 
+  *) prefork: Fix long delays when doing a graceful restart.
+     PR 54852 [Jim Jagielski, Arkadiusz Miskiewicz <arekm maven pl>]
+
   *) core: Add parse_errorlog_arg callback to ap_errorlog_provider
      to allow providers to check the ErrorLog argument. [Jan Kaluza]
 

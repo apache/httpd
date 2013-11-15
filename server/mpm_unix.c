@@ -742,7 +742,12 @@ void ap_mpm_pod_killpg(ap_pod_t *pod, int num)
      * readers stranded (a number of them could be tied up for
      * a while serving time-consuming requests)
      */
+    /* Recall: we only worry about IDLE child processes here */
     for (i = 0; i < num && rv == APR_SUCCESS; i++) {
+        if (ap_scoreboard_image->servers[i][0].status != SERVER_READY ||
+            ap_scoreboard_image->servers[i][0].pid == 0) {
+            continue;
+        }
         rv = dummy_connection(pod);
     }
 }
