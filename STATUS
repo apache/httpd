@@ -97,14 +97,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_proxy_fcgi: Sync with trunk
-    trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1523281
-                 https://svn.apache.org/viewvc?view=revision&revision=1524368
-                 https://svn.apache.org/viewvc?view=revision&revision=1525276
-                 https://svn.apache.org/viewvc?view=revision&revision=1525280
-                 https://svn.apache.org/viewvc?view=revision&revision=1525281
-    2.4.x patch: http://people.apache.org/~jim/patches/proxy-fcgi.patch
-    +1: trawick, jim, jorton
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]

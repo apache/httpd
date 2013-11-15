@@ -2,6 +2,13 @@
 
 Changes with Apache 2.4.7
 
+  *) mod_proxy_fcgi: Remove 64K limit on encoded length of all envvars.
+     An individual envvar with an encoded length of more than 16K will be
+     omitted.  [Jeff Trawick]
+  
+  *) mod_proxy_fcgi: Handle reading protocol data that is split between
+     packets.  [Jeff Trawick]
+
   *) mod_ssl: Improve handling of ephemeral DH and ECDH keys by
      allowing custom parameters to be configured via SSLCertificateFile,
      and by adding standardized DH parameters for 1024/2048/3072/4096 bits.
