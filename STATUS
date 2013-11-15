@@ -138,6 +138,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              (since eventopt skiplist changes aren't proposed, r1529442 would need to
              be tweaked)
          jj: Done in v3 of patch
+         jj: Reminder: this patch has been running for a LONG time
+             on ASF infra...
 
   * ab: Check if malloc succeeded
     PR54344
@@ -202,7 +204,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: http://people.apache.org/~jim/patches/proxy-fcgi.patch
     +1: trawick, jim
 
-  * mod_proxy: support Unix domain sockets /* ON HOLD */
+  * mod_proxy: support Unix domain sockets
     trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1451633
                  https://svn.apache.org/viewvc?view=revision&revision=1451905
                  https://svn.apache.org/viewvc?view=revision&revision=1451921
