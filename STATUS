@@ -193,7 +193,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   * potential rejection of valid MaxMemFree and ThreadStackSize directives
     trunk patch: https://svn.apache.org/r1542338
     2.4.x patch: trunk patch works
-    +1: trawick
+    +1: trawick, covener
 
 OTHER PROPOSALS
 
