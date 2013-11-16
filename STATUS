@@ -97,6 +97,11 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  * potential rejection of valid MaxMemFree and ThreadStackSize directives
+    trunk patch: https://svn.apache.org/r1542338
+    2.4.x patch: trunk patch works
+    +1: trawick, covener, sf
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -151,6 +156,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              the leak or fragmentation overtakes temporary freeing of memory)
              is the state of that connection messed up from leaving
              ssl_proceed_handshake() early?
+    sf: I also think that aborting on oom with a clean error message would
+        be better.
 
   * mod_auth_form: Make sure the optional functions are loaded even when
     the AuthFormProvider isn't specified.
@@ -189,11 +196,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  https://svn.apache.org/viewvc?view=revision&revision=1540052
     2.4.x patch: http://people.apache.org/~jim/patches/uds-2.4.patch
     +1: jim
-
-  * potential rejection of valid MaxMemFree and ThreadStackSize directives
-    trunk patch: https://svn.apache.org/r1542338
-    2.4.x patch: trunk patch works
-    +1: trawick, covener
 
 OTHER PROPOSALS
 
