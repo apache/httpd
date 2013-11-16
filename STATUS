@@ -97,19 +97,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * event: Use skiplist and fold in performance tweeks from trunk
-    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1451706
-                 http://svn.apache.org/viewvc?view=revision&revision=1517365
-                 http://svn.apache.org/viewvc?view=revision&revision=1529442
-    2.4.x patch: http://people.apache.org/~jim/patches/httpd-2.4-event-v3.patch
-    +1: jim, rjung, minfrin
-    trawick: needs something like r1529442 to disable event if APR 1.4.x is being used;
-             (since eventopt skiplist changes aren't proposed, r1529442 would need to
-             be tweaked)
-         jj: Done in v3 of patch
-         jj: Reminder: this patch has been running for a LONG time
-             on ASF infra...
-
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
