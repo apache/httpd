@@ -97,6 +97,13 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  * mpm_unix: Add ap_mpm_podx_* implementation to avoid code duplication
+    and align w/ trunk.
+    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1409214
+                 http://svn.apache.org/viewvc?view=revision&revision=1410004
+    2.4.x patch: http://people.apache.org/~jim/patches/httpd-2.4-podx-v2.patch
+    +1: jim, rjung, minfrin
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -120,13 +127,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     sf:      This would require someone to do the work. Until someone has the 
              necessary free cycles, I propose to include
              http://svn.apache.org/r1515162
-
-  * mpm_unix: Add ap_mpm_podx_* implementation to avoid code duplication
-    and align w/ trunk.
-    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1409214
-                 http://svn.apache.org/viewvc?view=revision&revision=1410004
-    2.4.x patch: http://people.apache.org/~jim/patches/httpd-2.4-podx-v2.patch
-    +1: jim, rjung
 
   * event: Use skiplist and fold in performance tweeks from trunk
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1451706
