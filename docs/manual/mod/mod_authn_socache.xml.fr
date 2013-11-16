@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1540312:1540798 (outdated) -->
+<!-- English Revision : 1540798 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -132,6 +132,8 @@ utiliser</description>
 <syntax>AuthnCacheSOCache <var>nom-fournisseur[:arguments-fournisseur]</var></syntax>
 <contextlist><context>server config</context></contextlist>
 <override>None</override>
+<compatibility>Les param&egrave;tres optionnels du fournisseur sont disponibles
+depuis la version 2.4.7 du serveur HTTP Apache</compatibility>
 
 <usage>
     <p>Cette d&eacute;finition s'applique &agrave; l'ensemble du serveur et permet de

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1533763:1542327 (outdated) -->
+<!-- English Revision : 1542327 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -868,6 +868,17 @@ plus tard)</li>
 <li><code>!</code>: supprime d&eacute;finitivement l'algorithme de la liste (ne
 peut <strong>plus</strong> y &ecirc;tre rajout&eacute; plus tard)</li>
 </ul>
+
+<note>
+<title>Les algorithmes <code>aNULL</code>, <code>eNULL</code> et
+<code>EXP</code> sont toujours d&eacute;sactiv&eacute;s</title>
+<p>Depuis la version 2.4.7, les
+algorithmes de type null ou destin&eacute;s &agrave; l'exportation sont toujours
+d&eacute;sactiv&eacute;s car mod_ssl fait
+obligatoirement pr&eacute;c&eacute;der toute cha&icirc;ne de suite d'algorithmes par
+<code>!aNULL:!eNULL:!EXP:</code> &agrave; l'initialisation.</p>
+</note>
+
 <p>Pour vous simplifier la vie, vous pouvez utiliser la commande
 ``<code>openssl ciphers -v</code>'' qui vous fournit un moyen simple de
 cr&eacute;er la cha&icirc;ne <em>algorithmes</em> avec succ&egrave;s. La cha&icirc;ne
@@ -946,12 +957,35 @@ PEM</description>
 <usage>
 <p>
 Cette directive permet de d&eacute;finir le fichier contenant le certificat
-X.509 du serveur cod&eacute; en PEM, et par la m&ecirc;me occasion sa cl&eacute; priv&eacute;e RSA
-ou DSA (contenue dans le m&ecirc;me fichier). Si la cl&eacute; priv&eacute;e est chiffr&eacute;e,
-le mot de passe sera demand&eacute; au d&eacute;marrage. Cette directive peut &ecirc;tre
-utilis&eacute;e trois fois (pour r&eacute;f&eacute;rencer des noms de fichiers diff&eacute;rents),
-lorsque des certificats de serveur RSA, DSA et ECC sont utilis&eacute;s en
-parall&egrave;le.</p>
+X.509 du serveur cod&eacute; au format PEM, &eacute;ventuellement sa
+cl&eacute; priv&eacute;e, et enfin (depuis la version 2.4.7) les
+param&egrave;tres DH et/ou un nom EC curve pour les cl&eacute;s
+&eacute;ph&eacute;m&egrave;res (g&eacute;n&eacute;r&eacute;s respectivement par <code>openssl dhparam</code> et
+<code>openssl ecparam</code>). Si la cl&eacute; priv&eacute;e est chiffr&eacute;e,
+l'ouverture d'une bo&icirc;te de dialogue pour entrer le mot de passe est
+forc&eacute;e au d&eacute;marrage du serveur.</p>
+<p>Cette directive peut &ecirc;tre utilis&eacute;e jusqu'&agrave; trois fois (pour
+r&eacute;f&eacute;rencer diff&eacute;rents fichiers) lorsque des certificats de serveur bas&eacute;s
+sur RSA, DSA et ECC sont utilis&eacute;s en parall&egrave;le. Notez que les param&egrave;tres
+DH et ECDH ne sont lus que par la premi&egrave;re directive
+<directive>SSLCertificateFile</directive>.</p>
+
+<note>
+<title>Interop&eacute;rabilit&eacute; des param&egrave;tres DH avec les nombres premiers de
+plus de 1024 bits</title>
+<p>
+Depuis la version 2.4.7, mod_ssl utilise des
+param&egrave;tres DH standardis&eacute;s avec des nombres premiers de 2048, 3072 et
+4096 bits (voir <a href="http://www.ietf.org/rfc/rfc3526.txt">RFC
+3526</a>), et les fournit aux clients en fonction de la longueur de la
+cl&eacute; du certificat RSA/DSA. En particulier avec les clients bas&eacute;s sur
+Java (versions 7 et ant&eacute;rieures), ceci peut provoquer des erreurs au
+cours de la n&eacute;gociation - voir cette <a
+href="../ssl/ssl_faq.html#javadh">r&eacute;ponse de la FAQ SSL</a> pour
+contourner les probl&egrave;mes de ce genre.
+</p>
+</note>
+
 <example><title>Exemple</title>
 <highlight language="config">
 SSLCertificateFile /usr/local/apache2/conf/ssl.crt/server.crt
