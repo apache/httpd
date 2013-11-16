@@ -97,12 +97,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mpm_unix: Add ap_mpm_podx_* implementation to avoid code duplication
-    and align w/ trunk.
-    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1409214
-                 http://svn.apache.org/viewvc?view=revision&revision=1410004
-    2.4.x patch: http://people.apache.org/~jim/patches/httpd-2.4-podx-v2.patch
-    +1: jim, rjung, minfrin
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
