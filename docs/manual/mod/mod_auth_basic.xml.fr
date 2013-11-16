@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1415956 -->
+<!-- English Revision : 1540730 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -55,7 +55,7 @@ cette zone du site web</description>
 <syntax>AuthBasicProvider <var>nom fournisseur</var>
 [<var>nom fournisseur</var>] ...</syntax>
 <default>AuthBasicProvider file</default>
-<contextlist><context>directory</context><context>.htaccess</context>
+<contextlist><context>r&eacute;pertoire</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
 
@@ -102,7 +102,7 @@ d'authentification peuvent &ecirc;tre confi&eacute;s &agrave; des modules de plu
 niveau</description>
 <syntax>AuthBasicAuthoritative On|Off</syntax>
 <default>AuthBasicAuthoritative On</default>
-<contextlist><context>directory</context><context>.htaccess</context>
+<contextlist><context>r&eacute;pertoire</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
 
