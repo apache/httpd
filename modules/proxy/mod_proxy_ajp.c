@@ -32,7 +32,7 @@ static int proxy_ajp_canon(request_rec *r, char *url)
     char *host, *path, sport[7];
     char *search = NULL;
     const char *err;
-    apr_port_t port = AJP13_DEF_PORT;
+    apr_port_t port, def_port;
 
     /* ap_port_of_scheme() */
     if (strncasecmp(url, "ajp:", 4) == 0) {
@@ -48,6 +48,8 @@ static int proxy_ajp_canon(request_rec *r, char *url)
      * do syntactic check.
      * We break the URL into host, port, path, search
      */
+    port = def_port = ap_proxy_port_of_scheme("ajp");
+
     err = ap_proxy_canon_netloc(r->pool, &url, NULL, NULL, &host, &port);
     if (err) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00867) "error parsing URL %s: %s",
@@ -71,7 +73,10 @@ static int proxy_ajp_canon(request_rec *r, char *url)
     if (path == NULL)
         return HTTP_BAD_REQUEST;
 
-    apr_snprintf(sport, sizeof(sport), ":%d", port);
+    if (port != def_port)
+         apr_snprintf(sport, sizeof(sport), ":%d", port);
+    else
+         sport[0] = '\0';
 
     if (ap_strchr_c(host, ':')) {
         /* if literal IPv6 address */

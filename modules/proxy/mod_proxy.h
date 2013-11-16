@@ -1014,6 +1014,13 @@ PROXY_DECLARE(int) ap_proxy_is_socket_connected(apr_socket_t *socket);
  */
 int ap_proxy_lb_workers(void);
 
+/**
+ * Return the port number of a known scheme (eg: http -> 80).
+ * @param scheme        scheme to test
+ * @return              port number or 0 if unknown
+ */
+PROXY_DECLARE(apr_port_t) ap_proxy_port_of_scheme(const char *scheme);
+
 extern module PROXY_DECLARE_DATA proxy_module;
 
 #endif /*MOD_PROXY_H*/
