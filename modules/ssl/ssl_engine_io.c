@@ -1681,31 +1681,30 @@ static apr_status_t ssl_io_filter_output(ap_filter_t *f,
         /* If it is a flush or EOS, we need to pass this down.
          * These types do not require translation by OpenSSL.
          */
-        if (APR_BUCKET_IS_EOS(bucket) || APR_BUCKET_IS_FLUSH(bucket)) {
+        if (APR_BUCKET_IS_EOS(bucket)) {
+            /*
+             * By definition, nothing can come after EOS.
+             * which also means we can pass the rest of this brigade
+             * without creating a new one since it only contains the
+             * EOS bucket.
+             */
+
+            if ((status = ap_pass_brigade(f->next, bb)) != APR_SUCCESS) {
+                return status;
+            }
+            break;
+        }
+        else if (APR_BUCKET_IS_FLUSH(bucket)) {
+
             if (bio_filter_out_flush(filter_ctx->pbioWrite) < 0) {
                 status = outctx->rc;
                 break;
             }
 
-            if (APR_BUCKET_IS_EOS(bucket)) {
-                /*
-                 * By definition, nothing can come after EOS.
-                 * which also means we can pass the rest of this brigade
-                 * without creating a new one since it only contains the
-                 * EOS bucket.
-                 */
-
-                if ((status = ap_pass_brigade(f->next, bb)) != APR_SUCCESS) {
-                    return status;
-                }
-                break;
-            }
-            else {
-                /* bio_filter_out_flush() already passed down a flush bucket
-                 * if there was any data to be flushed.
-                 */
-                apr_bucket_delete(bucket);
-            }
+            /* bio_filter_out_flush() already passed down a flush bucket
+             * if there was any data to be flushed.
+             */
+            apr_bucket_delete(bucket);
         }
         else if (AP_BUCKET_IS_EOC(bucket)) {
             /* The EOC bucket indicates connection closure, so SSL
