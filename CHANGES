@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_ssl: Don't flush when an EOS is received. Prepares mod_ssl
+     to support write completion. [Graham Leggett]
+
   *) Fix potential rejection of valid MaxMemFree and ThreadStackSize
      directives.  [Mike Rumph <mike.rumph oracle.com>]
 
