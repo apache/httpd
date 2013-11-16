@@ -156,7 +156,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  https://svn.apache.org/viewvc?view=revision&revision=1540220
     2.4.x patch: http://people.apache.org/~jim/patches/slotmem-error.patch
     +1: jim, jorton
-    
+    minfrin: 2.4.x patch fails to apply for me.
 
   * mod_proxy: support Unix domain sockets
     trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1451633
