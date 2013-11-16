@@ -229,7 +229,6 @@ static apr_status_t lua_write_body(request_rec *r, apr_file_t *file, apr_off_t *
                   len_read,
                   rpos = 0;
         apr_off_t length = r->remaining;
-        apr_size_t written;
 
         *size = length;
         while ((len_read =
@@ -241,9 +240,9 @@ static apr_status_t lua_write_body(request_rec *r, apr_file_t *file, apr_off_t *
                 rsize = len_read;
 
             rc = apr_file_write_full(file, argsbuffer, (apr_size_t) rsize,
-                                     &written);
-            if (written != rsize || rc != OK)
-                return APR_ENOSPC;
+                                     NULL);
+            if (rc != APR_SUCCESS)
+                return rc;
             rpos += rsize;
         }
     }
