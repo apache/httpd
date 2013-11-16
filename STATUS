@@ -158,6 +158,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              ssl_proceed_handshake() early?
     sf: I also think that aborting on oom with a clean error message would
         be better.
+        I would add http://svn.apache.org/viewvc?view=revision&revision=1542533
 
   * mod_auth_form: Make sure the optional functions are loaded even when
     the AuthFormProvider isn't specified.
