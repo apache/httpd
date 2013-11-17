@@ -257,7 +257,7 @@
 
     
 
-    <p>The policy of the HTTPd Server project is to only release Unix sources.
+    <p>The policy of the Apache HTTP Server project is to only release Unix sources.
     Windows source packages made available for download have been supplied by 
     volunteers and may not be available for every release. You can still build 
     the server on Windows from the Unix source tarball with just a few additional

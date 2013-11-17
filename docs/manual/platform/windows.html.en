@@ -64,7 +64,9 @@
     
 
     <p>The Apache HTTP Server Project itself does not provide binary releases of
-    software, only source code. If you cannot compile the Apache HTTP Server
+    software, only source code. Individual committers <em>may</em> provide 
+    binary packages as a convenience, but it is not a release deliverable.</p>
+    <p>If you cannot compile the Apache HTTP Server
     yourself, you can obtain a binary package from numerous binary distributions
     available on the Internet.</p>
 
