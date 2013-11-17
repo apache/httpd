@@ -1368,7 +1368,7 @@ static void child_main(int child_num_arg)
          *   they have (then cleans up).
          */
         join_workers(ts->listener, threads,
-                     rv == AP_GRACEFUL ? ST_GRACEFUL : ST_UNGRACEFUL);
+                     rv == AP_MPM_PODX_GRACEFUL ? ST_GRACEFUL : ST_UNGRACEFUL);
     }
 
     free(threads);
