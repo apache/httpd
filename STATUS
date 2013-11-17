@@ -97,15 +97,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * slotmem_shm: Error detection
-    trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1540161
-                 https://svn.apache.org/viewvc?view=revision&revision=1540163
-                 https://svn.apache.org/viewvc?view=revision&revision=1540178
-                 https://svn.apache.org/viewvc?view=revision&revision=1540179
-                 https://svn.apache.org/viewvc?view=revision&revision=1540220
-                 http://svn.apache.org/viewvc?view=revision&revision=r1542413
-    2.4.x patch: http://people.apache.org/~jim/patches/slotmem-error2.patch
-    +1: jim, jorton, minfrin
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
