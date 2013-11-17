@@ -176,6 +176,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: http://people.apache.org/~jim/patches/uds-2.4.patch
     +1: jim
 
+  * mod_proxy: Use consistent canon formats for http, ajp and fcgi (if provided
+    port is the default port, don't add to canon URI).
+    trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1542562
+    2.4.x patch: http://people.apache.org/~jim/patches/proxy-port-scheme.patch
+    +1: jim
+
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
