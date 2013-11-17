@@ -154,9 +154,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  https://svn.apache.org/viewvc?view=revision&revision=1540178
                  https://svn.apache.org/viewvc?view=revision&revision=1540179
                  https://svn.apache.org/viewvc?view=revision&revision=1540220
-    2.4.x patch: http://people.apache.org/~jim/patches/slotmem-error.patch
+                 http://svn.apache.org/viewvc?view=revision&revision=r1542413
+    2.4.x patch: http://people.apache.org/~jim/patches/slotmem-error2.patch
     +1: jim, jorton
     minfrin: 2.4.x patch fails to apply for me.
+    jim: slotmem-error2.patch fixes the .rej issue and add's the _full patch
 
   * mod_proxy: support Unix domain sockets
     trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1451633
