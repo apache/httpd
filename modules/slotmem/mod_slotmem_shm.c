@@ -28,6 +28,8 @@
 #ifdef AP_NEED_SET_MUTEX_PERMS
 #include "unixd.h"
 #endif
+#include "apr_version.h"
+#include "apr_hash.h"
 
 #if APR_HAVE_UNISTD_H
 #include <unistd.h>         /* for getpid() */
@@ -95,7 +97,13 @@ static apr_status_t unixd_set_shm_perms(const char *fname)
     key_t shmkey;
     int shmid;
 
+#if APR_VERSION_AT_LEAST(1,5,1)
+    apr_ssize_t slen = strlen(fname);
+    shmkey = ftok(fname,
+                  (int)apr_hashfunc_default(fname, &slen));
+#else
     shmkey = ftok(fname, 1);
+#endif
     if (shmkey == (key_t)-1) {
         return errno;
     }
