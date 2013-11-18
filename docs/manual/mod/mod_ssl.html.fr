@@ -27,8 +27,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_ssl.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_ssl.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Chiffrement de haut niveau basé sur les protocoles Secure
 Sockets Layer (SSL) et Transport Layer Security (TLS)</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -652,12 +650,34 @@ PEM</td></tr>
 </table>
 <p>
 Cette directive permet de définir le fichier contenant le certificat
-X.509 du serveur codé en PEM, et par la même occasion sa clé privée RSA
-ou DSA (contenue dans le même fichier). Si la clé privée est chiffrée,
-le mot de passe sera demandé au démarrage. Cette directive peut être
-utilisée trois fois (pour référencer des noms de fichiers différents),
-lorsque des certificats de serveur RSA, DSA et ECC sont utilisés en
-parallèle.</p>
+X.509 du serveur codé au format PEM, éventuellement sa
+clé privée, et enfin (depuis la version 2.4.7) les
+paramètres DH et/ou un nom EC curve pour les clés
+éphémères (générés respectivement par <code>openssl dhparam</code> et
+<code>openssl ecparam</code>). Si la clé privée est chiffrée,
+l'ouverture d'une boîte de dialogue pour entrer le mot de passe est
+forcée au démarrage du serveur.</p>
+<p>Cette directive peut être utilisée jusqu'à trois fois (pour
+référencer différents fichiers) lorsque des certificats de serveur basés
+sur RSA, DSA et ECC sont utilisés en parallèle. Notez que les paramètres
+DH et ECDH ne sont lus que par la première directive
+<code class="directive">SSLCertificateFile</code>.</p>
+
+<div class="note">
+<h3>Interopérabilité des paramètres DH avec les nombres premiers de
+plus de 1024 bits</h3>
+<p>
+Depuis la version 2.4.7, mod_ssl utilise des
+paramètres DH standardisés avec des nombres premiers de 2048, 3072 et
+4096 bits (voir <a href="http://www.ietf.org/rfc/rfc3526.txt">RFC
+3526</a>), et les fournit aux clients en fonction de la longueur de la
+clé du certificat RSA/DSA. En particulier avec les clients basés sur
+Java (versions 7 et antérieures), ceci peut provoquer des erreurs au
+cours de la négociation - voir cette <a href="../ssl/ssl_faq.html#javadh">réponse de la FAQ SSL</a> pour
+contourner les problèmes de ce genre.
+</p>
+</div>
+
 <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">
 SSLCertificateFile /usr/local/apache2/conf/ssl.crt/server.crt
 </pre>
@@ -834,6 +854,17 @@ plus tard)</li>
 <li><code>!</code>: supprime définitivement l'algorithme de la liste (ne
 peut <strong>plus</strong> y être rajouté plus tard)</li>
 </ul>
+
+<div class="note">
+<h3>Les algorithmes <code>aNULL</code>, <code>eNULL</code> et
+<code>EXP</code> sont toujours désactivés</h3>
+<p>Depuis la version 2.4.7, les
+algorithmes de type null ou destinés à l'exportation sont toujours
+désactivés car mod_ssl fait
+obligatoirement précéder toute chaîne de suite d'algorithmes par
+<code>!aNULL:!eNULL:!EXP:</code> à l'initialisation.</p>
+</div>
+
 <p>Pour vous simplifier la vie, vous pouvez utiliser la commande
 ``<code>openssl ciphers -v</code>'' qui vous fournit un moyen simple de
 créer la chaîne <em>algorithmes</em> avec succès. La chaîne
