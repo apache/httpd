@@ -79,6 +79,16 @@ FOREACH(onelib ${APR_LIBRARIES})
   ENDIF()
 ENDFOREACH()
 
+MACRO(DEFINE_WITH_BLANKS output_definition input_symbol input_value)
+  IF(MSVC_IDE)
+    SET(${output_definition} "-D${input_symbol}=\"${input_value}\"")
+  ELSE()
+    # assume command-line tool, where extra quotes must be added and escaped to
+    # survive
+    SET(${output_definition} "-D${input_symbol}=\"\\\"${input_value}\\\"\"")
+  ENDIF()
+ENDMACRO()
+
 MACRO(GET_MOD_ENABLE_RANK macro_modname macro_mod_enable_val macro_output_rank)
   IF(${macro_mod_enable_val} STREQUAL "O")
     SET(${macro_output_rank} 0)
@@ -695,7 +705,8 @@ FOREACH (mod ${MODULE_PATHS})
       LINK_FLAGS /base:@${PROJECT_BINARY_DIR}/BaseAddr.ref,${mod_name}.so
     )
     TARGET_LINK_LIBRARIES(${mod_name} ${${mod_extra_libs}} libhttpd ${EXTRA_LIBS} ${APR_LIBRARIES} ${HTTPD_SYSTEM_LIBS})
-    SET_TARGET_PROPERTIES(${mod_name} PROPERTIES COMPILE_FLAGS "-DLONG_NAME=\"\\\"${mod_name} for Apache HTTP Server\\\"\" -DBIN_NAME=${mod_name}.so ${EXTRA_COMPILE_FLAGS}")
+    DEFINE_WITH_BLANKS(define_long_name "LONG_NAME" "${mod_name} for Apache HTTP Server")
+    SET_TARGET_PROPERTIES(${mod_name} PROPERTIES COMPILE_FLAGS "${define_long_name} -DBIN_NAME=${mod_name}.so ${EXTRA_COMPILE_FLAGS}")
 
     # Extra defines?
     SET(mod_extra_defines "${mod_name}_extra_defines")
@@ -722,14 +733,16 @@ SET_TARGET_PROPERTIES(libhttpd PROPERTIES
 SET(install_targets ${install_targets} libhttpd)
 SET(install_bin_pdb ${install_bin_pdb} ${PROJECT_BINARY_DIR}/libhttpd.pdb)
 TARGET_LINK_LIBRARIES(libhttpd ${EXTRA_LIBS} ${APR_LIBRARIES} ${PCRE_LIBRARIES} ${HTTPD_SYSTEM_LIBS})
-SET_TARGET_PROPERTIES(libhttpd PROPERTIES COMPILE_FLAGS "-DAP_DECLARE_EXPORT -DAPREQ_DECLARE_EXPORT -DLONG_NAME=\"\\\"Apache HTTP Server Core\\\"\" -DBIN_NAME=libhttpd.dll ${EXTRA_COMPILE_FLAGS}")
+DEFINE_WITH_BLANKS(define_long_name "LONG_NAME" "Apache HTTP Server Core")
+SET_TARGET_PROPERTIES(libhttpd PROPERTIES COMPILE_FLAGS "-DAP_DECLARE_EXPORT -DAPREQ_DECLARE_EXPORT ${define_long_name} -DBIN_NAME=libhttpd.dll ${EXTRA_COMPILE_FLAGS}")
 ADD_DEPENDENCIES(libhttpd test_char_header)
 
 ###########   HTTPD EXECUTABLES   ##########
 ADD_EXECUTABLE(httpd server/main.c build/win32/httpd.rc)
 SET(install_targets ${install_targets} httpd)
 SET(install_bin_pdb ${install_bin_pdb} ${PROJECT_BINARY_DIR}/httpd.pdb)
-SET_TARGET_PROPERTIES(httpd PROPERTIES COMPILE_FLAGS "-DAPP_FILE -DLONG_NAME=\"\\\"Apache HTTP Server\\\"\" -DBIN_NAME=httpd.exe -DICON_FILE=${CMAKE_SOURCE_DIR}/build/win32/apache.ico ${EXTRA_COMPILE_FLAGS}")
+DEFINE_WITH_BLANKS(define_long_name "LONG_NAME" "Apache HTTP Server")
+SET_TARGET_PROPERTIES(httpd PROPERTIES COMPILE_FLAGS "-DAPP_FILE ${define_long_name} -DBIN_NAME=httpd.exe -DICON_FILE=${CMAKE_SOURCE_DIR}/build/win32/apache.ico ${EXTRA_COMPILE_FLAGS}")
 TARGET_LINK_LIBRARIES(httpd libhttpd ${EXTRA_LIBS})
 
 SET(standard_support
@@ -751,7 +764,8 @@ FOREACH(pgm ${standard_support})
   ADD_EXECUTABLE(${pgm} support/${pgm}.c ${${extra_sources}} build/win32/httpd.rc)
   SET(install_targets ${install_targets} ${pgm})
   SET(install_bin_pdb ${install_bin_pdb} ${PROJECT_BINARY_DIR}/${pgm}.pdb)
-  SET_TARGET_PROPERTIES(${pgm} PROPERTIES COMPILE_FLAGS "-DAPP_FILE -DLONG_NAME=\"\\\"Apache HTTP Server ${pgm} program\\\"\" -DBIN_NAME=${pgm}.exe ${EXTRA_COMPILE_FLAGS}")
+  DEFINE_WITH_BLANKS(define_long_name "LONG_NAME" "Apache HTTP Server ${pgm} program")
+  SET_TARGET_PROPERTIES(${pgm} PROPERTIES COMPILE_FLAGS "-DAPP_FILE ${define_long_name} -DBIN_NAME=${pgm}.exe ${EXTRA_COMPILE_FLAGS}")
   TARGET_LINK_LIBRARIES(${pgm} ${EXTRA_LIBS} ${APR_LIBRARIES})
 ENDFOREACH()
 
@@ -762,7 +776,8 @@ IF(OPENSSL_FOUND)
   SET_TARGET_PROPERTIES(abs PROPERTIES COMPILE_DEFINITIONS HAVE_OPENSSL)
   SET(tmp_includes ${HTTPD_INCLUDE_DIRECTORIES} ${OPENSSL_INCLUDE_DIR})
   SET_TARGET_PROPERTIES(abs PROPERTIES INCLUDE_DIRECTORIES "${tmp_includes}")
-  SET_TARGET_PROPERTIES(abs PROPERTIES COMPILE_FLAGS "-DAPP_FILE -DLONG_NAME=\"\\\"Apache HTTP Server ab/SSL program\\\"\" -DBIN_NAME=abs.exe ${EXTRA_COMPILE_FLAGS}")
+  DEFINE_WITH_BLANKS(define_long_name "LONG_NAME" "Apache HTTP Server ab/SSL program")
+  SET_TARGET_PROPERTIES(abs PROPERTIES COMPILE_FLAGS "-DAPP_FILE ${define_long_name} -DBIN_NAME=abs.exe ${EXTRA_COMPILE_FLAGS}")
   TARGET_LINK_LIBRARIES(abs ${EXTRA_LIBS} ${APR_LIBRARIES} ${OPENSSL_LIBRARIES})
 ENDIF()
 GET_PROPERTY(tmp_includes TARGET ab PROPERTY INCLUDE_DIRECTORIES)
@@ -772,7 +787,7 @@ GET_PROPERTY(tmp_includes TARGET ab PROPERTY INCLUDE_DIRECTORIES)
 # SET(install_targets ${install_targets} ApacheMonitor)
 # SET(install_bin_pdb ${install_bin_pdb} ${PROJECT_BINARY_DIR}/ApacheMonitor.pdb)
 # SET_TARGET_PROPERTIES(ApacheMonitor PROPERTIES WIN32_EXECUTABLE TRUE)
-# SET_TARGET_PROPERTIES(ApacheMonitor PROPERTIES COMPILE_FLAGS "-DAPP_FILE -DLONG_NAME=\"\\\"ApacheMonitor\\\"\" -DBIN_NAME=ApacheMonitor.exe ${EXTRA_COMPILE_FLAGS}")
+# SET_TARGET_PROPERTIES(ApacheMonitor PROPERTIES COMPILE_FLAGS "-DAPP_FILE -DLONG_NAME=ApacheMonitor -DBIN_NAME=ApacheMonitor.exe ${EXTRA_COMPILE_FLAGS}")
 # TARGET_LINK_LIBRARIES(ApacheMonitor ${EXTRA_LIBS} ${HTTPD_SYSTEM_LIBS} comctl32 wtsapi32)
 
 ###########  CONFIGURATION FILES ###########
