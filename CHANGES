@@ -1,5 +1,8 @@
                                                          -*- coding: utf-8 -*-
 
+Changes with Apache 2.4.8
+
+
 Changes with Apache 2.4.7
 
   *) APR 1.5.0 or later is now required for the event MPM.
