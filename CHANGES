@@ -4,9 +4,6 @@ Changes with Apache 2.5.0
   *) mod_ssl: Don't flush when an EOS is received. Prepares mod_ssl
      to support write completion. [Graham Leggett]
 
-  *) Fix potential rejection of valid MaxMemFree and ThreadStackSize
-     directives.  [Mike Rumph <mike.rumph oracle.com>]
-
   *) prefork: Fix long delays when doing a graceful restart.
      PR 54852 [Jim Jagielski, Arkadiusz Miskiewicz <arekm maven pl>]
 
@@ -30,26 +27,8 @@ Changes with Apache 2.5.0
      backend server endpoint [Jim Jagielski, Blaise Tarr
      <blaise tarr gmail com>]
 
-  *) mod_authn_socache: Support optional initialization arguments for
-     socache providers.  [Chris Darroch]
-
-  *) mod_session: Reset the max-age on session save. PR 47476. [Alexey
-     Varlamov <alexey.v.varlamov gmail com>]
-
-  *) mod_session: After parsing the value of the header specified by the
-     SessionHeader directive, remove the value from the response. PR 55279.
-     [Graham Leggett]
-
   *) mod_auth_form: Make sure the optional functions are loaded even when
      the AuthFormProvider isn't specified. [Graham Leggett]
-
-  *) mod_ssl: Improve handling of ephemeral DH and ECDH keys by
-     allowing custom parameters to be configured via SSLCertificateFile,
-     and by adding standardized DH parameters for 1024/2048/3072/4096 bits.
-     Unless custom parameters are configured, the standardized parameters
-     are applied based on the certificate's RSA/DSA key size. [Kaspar Brand]
-
-  *) mod_ssl, configure: Require OpenSSL 0.9.8a or later. [Kaspar Brand]
 
   *) mod_lua: Let the Inter-VM get/set functions work with a global 
      shared memory pool instead of a per-process pool. [Daniel Gruno]
@@ -59,10 +38,6 @@ Changes with Apache 2.5.0
 
   *) mod_proxy: Add ap_connection_reusable() for checking if a connection
      is reusable as of this point in processing.  [Jeff Trawick]
-
-  *) mod_ssl: drop support for export-grade ciphers with ephemeral RSA
-     keys, and unconditionally disable aNULL, eNULL and EXP ciphers
-     (not overridable via SSLCipherSuite). [Kaspar Brand]
 
   *) mod_authnz_ldap: Change default value of AuthLDAPMaxSubGroupDepth to 0
      to avoid performance problems when subgroups aren't in use. [Eric Covener]
@@ -74,13 +49,6 @@ Changes with Apache 2.5.0
   *) core: Add ap_errorlog_provider to make ErrorLog logging modular. Move
      syslog support from core to new mod_syslog. [Jan Kaluza]
 
-  *) mod_proxy_fcgi: Handle reading protocol data that is split between
-     packets.  [Jeff Trawick]
-
-  *) mod_proxy_fcgi: Remove 64K limit on encoded length of all envvars.
-     An individual envvar with an encoded length of more than 16K will be
-     omitted.  [Jeff Trawick]
-
   *) core: draft-ietf-httpbis-p1-messaging-23 corrections regarding
      TE/CL conflicts. [Yann Ylavic <ylavic.dev gmail com>, Jim Jagielski]
      
@@ -90,9 +58,6 @@ Changes with Apache 2.5.0
   *) WinNT MPM: If ap_run_pre_connection() fails or sets c->aborted, don't
      save the socket for reuse by the next worker as if it were an 
      APR_SO_DISCONNECTED socket. Restores 2.2 behavior. [Eric Covener]
-
-  *) mod_cache: Avoid a crash with strcmp() when the hostname is not provided.
-     [Graham Leggett]
 
   *) mod_lua: Add rudimentary support for WebSocket interaction. This is 
      currently request-bound and only supports the WS protocol. [Daniel Gruno]
@@ -122,10 +87,6 @@ Changes with Apache 2.5.0
 
   *) mod_authnz_fcgi: New module to enable FastCGI authorizer
      applications to authenticate and/or authorize clients.
-     [Jeff Trawick]
-
-  *) core: Add util_fcgi.h and associated definitions and support
-     routines for FastCGI, based largely on mod_proxy_fcgi.
      [Jeff Trawick]
 
   *) core: Add ap_log_data(), ap_log_rdata(), etc. for logging buffers.
