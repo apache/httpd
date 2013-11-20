@@ -345,6 +345,8 @@ manager</description>
 <syntax>CacheEnable <var>cache_type</var> [<var>url-string</var>]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context>
+<compatibility>A url-string of '/' applied to forward proxy content in 2.2 and
+ earlier.</compatibility>
 </contextlist>
 
 <usage>
@@ -372,9 +374,8 @@ manager</description>
     <directive type="section">LocationMatch</directive> sections are processed
     before globally defined <directive>CacheEnable</directive> directives.</p>
 
-    <p>When acting as a forward proxy server, <var>url-string</var> can
-    also be used to specify remote sites and proxy protocols which
-    caching should be enabled for.</p>
+    <p>When acting as a forward proxy server, <var>url-string</var> must 
+    minimally begin with a protocol for which caching should be enabled.</p>
 
     <highlight language="config">
 # Cache content (normal handler only)
@@ -389,13 +390,13 @@ CacheQuickHandler off
     CacheEnable disk
 &lt;/LocationMatch&gt;
 
-# Cache proxied url's (normal or quick handler)
+# Cache all but forward proxy url's (normal or quick handler)
 CacheEnable  disk  /
 
 # Cache FTP-proxied url's (normal or quick handler)
 CacheEnable  disk  ftp://
 
-# Cache content from www.example.org (normal or quick handler)
+# Cache forward proxy content from www.example.org (normal or quick handler)
 CacheEnable  disk  http://www.example.org/
     </highlight>
 
