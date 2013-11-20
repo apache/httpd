@@ -1118,11 +1118,12 @@ static void log_error_core(const char *file, int line, int module_index,
         }
     }
 
-    if (!logf && !errorlog_provider) {
+    if (!logf && !(errorlog_provider && errorlog_provider_handle)) {
         /* There is no file to send the log message to (or it is
          * redirected to /dev/null and therefore any formating done below
-         * would be lost anyway) and there is no log provider available, so
-         * we just return here. */
+         * would be lost anyway) and there is no initialized log provider
+         * available, so we just return here.
+         */
         return;
     }
 
