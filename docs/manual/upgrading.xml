@@ -256,6 +256,12 @@ Allow from example.org
         <code>jsessionid</code>.
         </li>
 
+        <li><module>mod_cache</module>: The second parameter to 
+        <directive module="mod_cache">CacheEnable</directive> only
+        matches forward proxy content if it begins with the correct
+        protocol. In 2.2 and earlier, a parameter of '/' matched all
+        content.</li>
+
         <li><module>mod_ldap</module>: <directive
         module="mod_ldap">LDAPTrustedClientCert</directive> is now
         consistently a per-directory setting only.  If you use this
