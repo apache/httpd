@@ -874,8 +874,11 @@ struct ap_errorlog_provider {
 
     /** Checks syntax of ErrorLog directive argument.
      * @param cmd The config directive
-     * @param arg ErrorLog directive argument
+     * @param arg ErrorLog directive argument (or the empty string if
+     * no argument was provided)
      * @return Error message or NULL on success
+     * @remark The argument will be stored in the error_fname field
+     * of server_rec for access later.
      */
     const char * (*parse_errorlog_arg)(cmd_parms *cmd, const char *arg);
 
