@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1507323:1533748 (outdated) -->
+<!-- English Revision: 1533748 -->
 <!-- =====================================================
- Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
-   Reviewed by: Orhan Berent <berent belgeler.gen.tr>
+Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
+  Reviewed by: Orhan Berent <berent belgeler.gen.tr>
 ========================================================== -->
 
 <!--
@@ -89,6 +89,11 @@ müdahale etmek için kullanılır.</description>
       istiyorsanız bu ortam değişkenlerini <directive
       module="mod_setenvif">SetEnvIf</directive> yönergesi ile atamalısınız.</p>
     </note>
+
+    <note><p>2.2 sürümünde, PATH ortam değişkeni Setenv kullanılarak
+    atanamaz.</p>
+    </note>
+
 </usage>
 <seealso><a href="../env.html">Ortam Değişkenleri</a></seealso>
 </directivesynopsis>
