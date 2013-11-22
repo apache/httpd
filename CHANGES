@@ -11,6 +11,9 @@ Changes with Apache 2.4.7
 
   *) event: Use skiplist data structure. [Jim Jagielski]
 
+  *) event: Fail at startup with message AP02405 if the APR atomic
+     implementation is not compatible with the MPM.  [Jim Jagielski]
+
   *) mpm_unix: Add ap_mpm_podx_* implementation to avoid code duplication
      and align w/ trunk. [Jim Jagielski]
 
