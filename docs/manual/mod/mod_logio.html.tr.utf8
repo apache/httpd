@@ -30,7 +30,6 @@
 <a href="../ko/mod/mod_logio.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_logio.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Her isteğin girdi ve çıktı uzunluklarının günlüklenmesi.
 </td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Eklenti</td></tr>
@@ -75,11 +74,14 @@
 
     <table class="bordered"><tr class="header"><th>Biçem&nbsp;Belirteci</th>
         <th>Açıklama</th></tr>
-<tr><td><code>%...I</code></td>
+<tr><td><code>%I</code></td>
         <td>İstek gövdesi ve başlıklar dahil alınan bayt sayısı; sıfır
           olamaz.</td></tr>
-<tr class="odd"><td><code>%...O</code></td>
+<tr class="odd"><td><code>%O</code></td>
         <td>Başlıklar dahil gönderilen bayt sayısı; sıfır olamaz.</td></tr>
+<tr><td><code>%S</code></td>
+        <td>Aktarılan bayt sayısı (alınan ve gönderilen), istekler ve başlıklar
+          dahil; sıfır olamaz. %I ve %O'nun birleşimidir.</td></tr>
 </table>
 
     <p>Genel olarak, işlevsellik şöyle kullanılır:</p>

@@ -25,7 +25,6 @@
 <a href="./fr/new_features_2_4.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="./tr/new_features_2_4.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
   <p>Bu belgede Apache HTTP Sunucusunun 2.2 ve 2.4 sürümleri arasındaki
     başlıca farklara değinilmiştir. 2.0 sürümüne göre yeni özellikler için <a href="new_features_2_2.html">Apache 2.2’de Yeni olan Özellikler</a>
@@ -135,11 +134,11 @@
         sağlar.</dd>
 
       <dt><code class="module"><a href="./mod/mod_auth_form.html">mod_auth_form</a></code></dt>
-      <dd>Formlara dayalı kimlik kanıtlamaya izin verir.</dd>
+      <dd>Formlara dayalı kimlik kanıtlamayı etkinleştirir.</dd>
 
       <dt><code class="module"><a href="./mod/mod_session.html">mod_session</a></code></dt>
       <dd>Çerezleri ve veritabanı deposunu kullanarak istemciler için oturum
-        durumunun saklanmasını sağlar.</dd>
+        durumunun saklanmasını etkinleştirir.</dd>
 
       <dt><code class="module"><a href="./mod/mod_allowmethods.html">mod_allowmethods</a></code></dt>
       <dd>Kimlik Doğrulama ve Yetkilendirme ile etkileşmeyen belli HTTP
@@ -278,8 +277,8 @@
         <code>[END]</code> seçeneklerini sağlamaktadır.</dd>
       <dd><code class="directive"><a href="./mod/mod_rewrite.html#rewritecond">RewriteCond</a></code> içinde
         karmaşık mantıksal ifadeler kullanımını mümkün kılmaktadır.</dd>
-      <dd>llows to use SQL queries as SQL sorgularının <code class="directive"><a href="./mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> işlevleri olarak
-          kullanılması sağlanmıştır.</dd>
+      <dd>SQL sorgularının <code class="directive"><a href="./mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> işlevleri olarak
+        kullanılması sağlanmıştır.</dd>
 
       <dt><code class="module"><a href="./mod/mod_ldap.html">mod_ldap</a></code>, <code class="module"><a href="./mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code></dt>
       <dd><code class="module"><a href="./mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code> kümelenmiş gruplara destek sağlar.

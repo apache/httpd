@@ -30,7 +30,6 @@
 <a href="../ko/mod/mod_log_config.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_log_config.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Sunucuya yapılan isteklerin günlük kayıtlarının tutulması
 </td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
@@ -228,6 +227,10 @@
 <tr class="odd"><td><code>%O</code></td>
         <td>Başlıklar dahil gönderilen bayt sayısı. Sıfır olamaz. Bunu
           kullanmak için <code class="module"><a href="../mod/mod_logio.html">mod_logio</a></code> etkin olmalıdır.</td></tr>
+<tr><td><code>%S</code></td>
+        <td>Aktarılan bayt sayısı (alınan ve gönderilen), istekler ve başlıklar
+          dahil; sıfır olamaz. %I ve %O'nun birleşimidir. Bunu kullanmak için
+          <code class="module"><a href="../mod/mod_logio.html">mod_logio</a></code> etkinleştirilmelidir.</td></tr>
 </table>
 
     <h3><a name="modifiers" id="modifiers">Değiştiriciler</a></h3>
