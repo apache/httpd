@@ -114,10 +114,6 @@ SOURCE=.\mod_proxy_fcgi.c
 
 SOURCE=.\mod_proxy.h
 # End Source File
-# Begin Source File
-
-SOURCE=.\fcgi_protocol.h
-# End Source File
 # End Group
 # Begin Source File
 
