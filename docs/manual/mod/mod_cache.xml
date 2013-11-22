@@ -162,7 +162,7 @@ LoadModule cache_module modules/mod_cache.so
         CacheDirLevels 5
         CacheDirLength 3
     &lt;/IfModule&gt;
-    
+
     # When acting as a proxy, don't cache the list of security updates
     CacheDisable http://security.update.server/update-list/
 &lt;/IfModule&gt;
@@ -344,10 +344,10 @@ CustomLog invalidated-requests.log common env=cache-invalidate
 manager</description>
 <syntax>CacheEnable <var>cache_type</var> [<var>url-string</var>]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
-<context>directory</context>
+<context>directory</context></contextlist>
 <compatibility>A url-string of '/' applied to forward proxy content in 2.2 and
  earlier.</compatibility>
-</contextlist>
+
 
 <usage>
     <p>The <directive>CacheEnable</directive> directive instructs
@@ -374,7 +374,7 @@ manager</description>
     <directive type="section">LocationMatch</directive> sections are processed
     before globally defined <directive>CacheEnable</directive> directives.</p>
 
-    <p>When acting as a forward proxy server, <var>url-string</var> must 
+    <p>When acting as a forward proxy server, <var>url-string</var> must
     minimally begin with a protocol for which caching should be enabled.</p>
 
     <highlight language="config">
