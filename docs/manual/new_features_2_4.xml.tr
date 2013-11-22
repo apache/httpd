@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.en.xsl"?>
-<!-- English Revision: 1426600:1521343 (outdated) -->
+<!-- English Revision: 1521343 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -132,11 +132,11 @@
         sağlar.</dd>
 
       <dt><module>mod_auth_form</module></dt>
-      <dd>Formlara dayalı kimlik kanıtlamaya izin verir.</dd>
+      <dd>Formlara dayalı kimlik kanıtlamayı etkinleştirir.</dd>
 
       <dt><module>mod_session</module></dt>
       <dd>Çerezleri ve veritabanı deposunu kullanarak istemciler için oturum
-        durumunun saklanmasını sağlar.</dd>
+        durumunun saklanmasını etkinleştirir.</dd>
 
       <dt><module>mod_allowmethods</module></dt>
       <dd>Kimlik Doğrulama ve Yetkilendirme ile etkileşmeyen belli HTTP
@@ -280,9 +280,9 @@
         <code>[END]</code> seçeneklerini sağlamaktadır.</dd>
       <dd><directive module="mod_rewrite">RewriteCond</directive> içinde
         karmaşık mantıksal ifadeler kullanımını mümkün kılmaktadır.</dd>
-      <dd>llows to use SQL queries as SQL sorgularının <directive
-          module="mod_rewrite">RewriteMap</directive> işlevleri olarak
-          kullanılması sağlanmıştır.</dd>
+      <dd>SQL sorgularının <directive
+        module="mod_rewrite">RewriteMap</directive> işlevleri olarak
+        kullanılması sağlanmıştır.</dd>
 
       <dt><module>mod_ldap</module>, <module>mod_authnz_ldap</module></dt>
       <dd><module>mod_authnz_ldap</module> kümelenmiş gruplara destek sağlar.

@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE indexpage SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 1333447:1524238 (outdated) -->
+<!-- English Revision: 1524238 -->
+<!-- =====================================================
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
+   Reviewed by: Orhan Berent <berent belgeler.gen.tr>
+========================================================== -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -38,8 +42,7 @@ Belgeleri</title>
     <page href="install.html">Derleme ve Kurulum</page>
     <page href="invoking.html">Başlatma</page>
     <page href="stopping.html">Durdurma ve Yeniden Başlatma</page>
-    <page href="mod/directives.html">Çalışma anı Yapılandırma Yönergeleri</page>
-    <page href="mod/quickreference.html">Hızlı Yönerge Kılavuzu</page>
+    <page href="mod/quickreference.html">Çalışma anı Yapılandırma Yönergeleri</page>
     <page href="mod/">Modüller</page>
     <page href="mpm.html">Çok Süreçlilik Modülleri (MPM’ler)</page>
     <page href="filter.html">Süzgeçler</page>
@@ -50,6 +53,7 @@ Belgeleri</title>
 </category>
 
 <category id="usersguide"><title>Kullanıcı Kılavuzu</title>
+    <page href="getting-started.html">Başlarken</page>
     <page href="bind.html">Adres ve Portları Dinleme</page>
     <page href="configuring.html">Yapılandırma Dosyaları</page>
     <page href="sections.html">Yapılandırma Bölümleri</page>
