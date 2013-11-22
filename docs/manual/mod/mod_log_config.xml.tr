@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1510844:1523269 (outdated) -->
+<!-- English Revision: 1523269 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -254,6 +254,10 @@
     <tr><td><code>%O</code></td>
         <td>Başlıklar dahil gönderilen bayt sayısı. Sıfır olamaz. Bunu
           kullanmak için <module>mod_logio</module> etkin olmalıdır.</td></tr>
+    <tr><td><code>%S</code></td>
+        <td>Aktarılan bayt sayısı (alınan ve gönderilen), istekler ve başlıklar
+          dahil; sıfır olamaz. %I ve %O'nun birleşimidir. Bunu kullanmak için
+          <module>mod_logio</module> etkinleştirilmelidir.</td></tr>
     </table>
 
     <section id="modifiers"><title>Değiştiriciler</title>

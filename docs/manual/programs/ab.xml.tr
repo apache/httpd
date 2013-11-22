@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1430300:1528053 (outdated) -->
+<!-- English Revision: 1528053 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -54,6 +54,7 @@
     [ -<strong>H</strong> <var>özel-başlık</var> ]
     [ -<strong>i</strong> ]
     [ -<strong>k</strong> ]
+    [ -<strong>l</strong> ]
     [ -<strong>n</strong> <var>istek-sayısı</var> ]
     [ -<strong>p</strong> <var>POST-dosyası</var> ]
     [ -<strong>P</strong> <var>vekil-yetkilisi:parola</var> ]
@@ -137,6 +138,11 @@
     <dd>HTTP KeepAlive (kalıcı bağlantı) özelliğini etkinleştirir, yani tek
       bir oturum içinde çok sayıda isteğe hizmet sunulabilir. Özellik
       öntanımlı olarak kapalıdır.</dd>
+
+    <dt><code><strong>-l</strong></code></dt>
+    <dd>Yanıtarın uzunluğu sabir değilse hataları raporlamaz. Özdevinimli
+      sayfalarda kullanışlı olabilir.
+    </dd>
 
     <dt><code><strong>-n</strong> <var>istek-sayısı</var></code></dt>
     <dd>Kıyaslama oturumu sırasında sunucuya uygulanacak istek sayısı.
