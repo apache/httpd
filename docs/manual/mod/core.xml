@@ -1889,6 +1889,9 @@ satisfied by a request at runtime</description>
     documentation is available in <a href="../expr.html">Expressions in
     Apache HTTP Server</a>.</p>
 
+    <p>Only directives that support the <a href="mod/directive-dict.html#Context"
+    >directory context</a> can be used within this configuration section.</p>
+
 </usage>
 
 <seealso><a href="../expr.html">Expressions in Apache HTTP Server</a>,
