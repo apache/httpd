@@ -386,8 +386,8 @@ Header merge Cache-Control no-store env=NO_STORE
 
     <p>For <code>edit</code> there is both a <var>value</var> argument
     which is a <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular expression</a>,
-    and an additional <var>replacement</var> string.</p> As of version 2.4.7
-    the replacement string may also contain format specifiers.
+    and an additional <var>replacement</var> string. As of version 2.4.7
+    the replacement string may also contain format specifiers.</p>
 
     <p>The <code class="directive">Header</code> directive may be followed by
     an additional argument, which may be any of:</p>
@@ -470,7 +470,7 @@ Header merge Cache-Control no-store env=NO_STORE
     <dt><code>set</code></dt>
     <dd>The request header is set, replacing any previous header
     with this name</dd>
-  
+
     <dt><code>setifempty</code></dt>
     <dd>The request header is set, but only if there is no previous header
     with this name</dd>

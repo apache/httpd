@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "AB" 1 "2013-04-17" "Apache HTTP Sunucusu" "ab"
+.TH "AB" 1 "2013-11-22" "Apache HTTP Sunucusu" "ab"
 .nh
 .SH İSİM
 ab \- Apache HTTP sunucusu başarım ölçme aracı
@@ -27,7 +27,7 @@ ab \- Apache HTTP sunucusu başarım ölçme aracı
 .SH "KULLANIM"
  
 .PP
-\fBab\fR [ -\fBA\fR \fIyetkili-kullanıcı:parola\fR ] [ -\fBb\fR \fItampon-boyu\fR ] [ -\fBB\fR \fIyerel-adres\fR ] [ -\fBc\fR \fIbağlantı-sayısı\fR ] [ -\fBC\fR \fIçerez-ismi=değer\fR ] [ -\fBd\fR ] [ -\fBe\fR \fIcsv-dosyası\fR ] [ -\fBf\fR \fIprotokol\fR ] [ -\fBg\fR \fIgnuplot-dosyası\fR ] [ -\fBh\fR ] [ -\fBH\fR \fIözel-başlık\fR ] [ -\fBi\fR ] [ -\fBk\fR ] [ -\fBn\fR \fIistek-sayısı\fR ] [ -\fBp\fR \fIPOST-dosyası\fR ] [ -\fBP\fR \fIvekil-yetkilisi:parola\fR ] [ -\fBq\fR ] [ -\fBr\fR ] [ -\fBs\fR \fIzamanasimi\fR ] [ -\fBS\fR ] [ -\fBt\fR \fIsaniye\fR ] [ -\fBT\fR \fIiçerik-türü\fR ] [ -\fBu\fR \fIPUT-dosyası\fR ] [ -\fBv\fR \fIayrıntı-düzeyi\fR] [ -\fBV\fR ] [ -\fBw\fR ] [ -\fBx\fR \fI<table>-öznitelikleri\fR ] [ -\fBX\fR \fIvekil\fR[:\fIport\fR] ] [ -\fBy\fR \fI<tr>-öznitelikleri\fR ] [ -\fBz\fR \fI<td>-öznitelikleri\fR ] [ -\fBZ\fR \fIşifre-kümesi\fR ] [http[s]://]\fIkonakadı\fR[:\fIport\fR]/\fIdizin\fR
+\fBab\fR [ -\fBA\fR \fIyetkili-kullanıcı:parola\fR ] [ -\fBb\fR \fItampon-boyu\fR ] [ -\fBB\fR \fIyerel-adres\fR ] [ -\fBc\fR \fIbağlantı-sayısı\fR ] [ -\fBC\fR \fIçerez-ismi=değer\fR ] [ -\fBd\fR ] [ -\fBe\fR \fIcsv-dosyası\fR ] [ -\fBf\fR \fIprotokol\fR ] [ -\fBg\fR \fIgnuplot-dosyası\fR ] [ -\fBh\fR ] [ -\fBH\fR \fIözel-başlık\fR ] [ -\fBi\fR ] [ -\fBk\fR ] [ -\fBl\fR ] [ -\fBn\fR \fIistek-sayısı\fR ] [ -\fBp\fR \fIPOST-dosyası\fR ] [ -\fBP\fR \fIvekil-yetkilisi:parola\fR ] [ -\fBq\fR ] [ -\fBr\fR ] [ -\fBs\fR \fIzamanasimi\fR ] [ -\fBS\fR ] [ -\fBt\fR \fIsaniye\fR ] [ -\fBT\fR \fIiçerik-türü\fR ] [ -\fBu\fR \fIPUT-dosyası\fR ] [ -\fBv\fR \fIayrıntı-düzeyi\fR] [ -\fBV\fR ] [ -\fBw\fR ] [ -\fBx\fR \fI<table>-öznitelikleri\fR ] [ -\fBX\fR \fIvekil\fR[:\fIport\fR] ] [ -\fBy\fR \fI<tr>-öznitelikleri\fR ] [ -\fBz\fR \fI<td>-öznitelikleri\fR ] [ -\fBZ\fR \fIşifre-kümesi\fR ] [http[s]://]\fIkonakadı\fR[:\fIport\fR]/\fIdizin\fR
  
 
 .SH "ÖZET"
@@ -78,6 +78,9 @@ GET istekleri yerine HEAD istekleri yapılır\&.
 .TP
 \fB-k\fR
 HTTP KeepAlive (kalıcı bağlantı) özelliğini etkinleştirir, yani tek bir oturum içinde çok sayıda isteğe hizmet sunulabilir\&. Özellik öntanımlı olarak kapalıdır\&.  
+.TP
+\fB-l\fR
+Yanıtarın uzunluğu sabir değilse hataları raporlamaz\&. Özdevinimli sayfalarda kullanışlı olabilir\&.  
 .TP
 \fB-n\fR \fIistek-sayısı\fR
 Kıyaslama oturumu sırasında sunucuya uygulanacak istek sayısı\&. Öntanımlı olarak hiçbir başarım ölçütü sağlamayan tek bir istek yapılır\&.  

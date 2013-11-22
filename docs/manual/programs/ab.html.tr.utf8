@@ -26,7 +26,6 @@
 <a href="../ko/programs/ab.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/programs/ab.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p><code><strong>ab</strong></code> Apache Hiper Metin Aktarım Protokolü
       (HTTP) sunucunuzun başarımını ölçmek amacıyla kullanabileceğiniz bir
@@ -57,6 +56,7 @@
     [ -<strong>H</strong> <var>özel-başlık</var> ]
     [ -<strong>i</strong> ]
     [ -<strong>k</strong> ]
+    [ -<strong>l</strong> ]
     [ -<strong>n</strong> <var>istek-sayısı</var> ]
     [ -<strong>p</strong> <var>POST-dosyası</var> ]
     [ -<strong>P</strong> <var>vekil-yetkilisi:parola</var> ]
@@ -140,6 +140,11 @@
     <dd>HTTP KeepAlive (kalıcı bağlantı) özelliğini etkinleştirir, yani tek
       bir oturum içinde çok sayıda isteğe hizmet sunulabilir. Özellik
       öntanımlı olarak kapalıdır.</dd>
+
+    <dt><code><strong>-l</strong></code></dt>
+    <dd>Yanıtarın uzunluğu sabir değilse hataları raporlamaz. Özdevinimli
+      sayfalarda kullanışlı olabilir.
+    </dd>
 
     <dt><code><strong>-n</strong> <var>istek-sayısı</var></code></dt>
     <dd>Kıyaslama oturumu sırasında sunucuya uygulanacak istek sayısı.
