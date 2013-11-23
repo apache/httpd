@@ -135,7 +135,7 @@ static void pphrase_array_clear(apr_array_header_t *arr)
  * here should be split out into a separate function for improved
  * readability.  The myCtxVarGet abomination can be thrown away with
  * SSLC support, vastly simplifying the code. */
-void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
+apr_status_t ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
 {
     SSLModConfigRec *mc = myModConfig(s);
     SSLSrvConfigRec *sc;
@@ -196,7 +196,7 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
                          "Server should be SSL-aware but has no certificate "
                          "configured [Hint: SSLCertificateFile] (%s:%d)",
                          pServ->defn_name, pServ->defn_line_number);
-            ssl_die(pServ);
+            return ssl_die(pServ);
         }
 
         /* Bitmasks for all key algorithms configured for this server;
@@ -215,6 +215,8 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
             if (sc->server->pkcs7) {
                 STACK_OF(X509) *certs = ssl_read_pkcs7(pServ,
                                                        sc->server->pkcs7);
+                if (!certs)
+                    return APR_EGENERAL;
                 pX509Cert = sk_X509_value(certs, 0);
                 i = SSL_AIDX_MAX;
             } else {
@@ -225,14 +227,14 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
                     ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, APLOGNO(02201)
                                  "Init: Can't open server certificate file %s",
                                  szPath);
-                    ssl_die(s);
+                    return ssl_die(s);
                 }
                 if ((pX509Cert = SSL_read_X509(szPath, NULL, NULL)) == NULL) {
                     ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(02241)
                                  "Init: Unable to read server certificate from"
                                  " file %s", szPath);
                     ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
-                    ssl_die(s);
+                    return ssl_die(s);
                 }
                 ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(02202)
                              "Init: Read server certificate from '%s'",
@@ -249,7 +251,7 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
                              "Init: Multiple %s server certificates not "
                              "allowed", an);
                 ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
-                ssl_die(s);
+                return ssl_die(s);
             }
             algoCert |= at;
 
@@ -328,7 +330,7 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
                      ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, APLOGNO(02243)
                                   "Init: Can't open server private key file "
                                   "%s",szPath);
-                     ssl_die(s);
+                     return ssl_die(s);
                 }
 
                 /*
@@ -425,7 +427,7 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
                                  "Init: SSLPassPhraseDialog builtin is not "
                                  "supported on Win32 (key file "
                                  "%s)", szPath);
-                    ssl_die(s);
+                    return ssl_die(s);
                 }
 #endif /* WIN32 */
 
@@ -464,7 +466,7 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
                         apr_file_printf(writetty, "**Stopped\n");
                     }
                 }
-                ssl_die(pServ);
+                return ssl_die(pServ);
             }
 
             /* If a cached private key was found, nothing more to do
@@ -479,7 +481,7 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
                             "file %s [Hint: Perhaps it is in a separate file? "
                             "  See SSLCertificateKeyFile]", szPath);
                 ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
-                ssl_die(s);
+                return ssl_die(s);
             }
 
             /*
@@ -493,7 +495,7 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
                              "Init: Multiple %s server private keys not "
                              "allowed", an);
                 ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
-                ssl_die(s);
+                return ssl_die(s);
             }
             algoKey |= at;
 
@@ -579,7 +581,8 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
         apr_file_close(writetty);
         readtty = writetty = NULL;
     }
-    return;
+
+    return APR_SUCCESS;
 }
 
 static apr_status_t ssl_pipe_child_create(apr_pool_t *p, const char *progname)
