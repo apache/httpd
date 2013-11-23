@@ -336,8 +336,6 @@ TODO ISSUES REMAINING IN MOD_SSL:
 
   * CRL callback should be pluggable
 
-  * init functions should return status code rather than ssl_die()
-
   * ssl_engine_pphrase.c needs to be reworked so it is generic enough
     to also decrypt proxy keys
 

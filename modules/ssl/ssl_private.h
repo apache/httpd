@@ -789,10 +789,10 @@ const char *ssl_cmd_SSLSRPUnknownUserSeed(cmd_parms *cmd, void *dcfg, const char
 const char *ssl_cmd_SSLFIPS(cmd_parms *cmd, void *dcfg, int flag);
 
 /**  module initialization  */
-int          ssl_init_Module(apr_pool_t *, apr_pool_t *, apr_pool_t *, server_rec *);
-void         ssl_init_Engine(server_rec *, apr_pool_t *);
-void         ssl_init_ConfigureServer(server_rec *, apr_pool_t *, apr_pool_t *, SSLSrvConfigRec *);
-void         ssl_init_CheckServers(server_rec *, apr_pool_t *);
+apr_status_t ssl_init_Module(apr_pool_t *, apr_pool_t *, apr_pool_t *, server_rec *);
+apr_status_t ssl_init_Engine(server_rec *, apr_pool_t *);
+apr_status_t ssl_init_ConfigureServer(server_rec *, apr_pool_t *, apr_pool_t *, SSLSrvConfigRec *);
+apr_status_t ssl_init_CheckServers(server_rec *, apr_pool_t *);
 STACK_OF(X509_NAME)
             *ssl_init_FindCAList(server_rec *, apr_pool_t *, const char *, const char *);
 void         ssl_init_Child(apr_pool_t *, server_rec *);
@@ -830,7 +830,7 @@ int         ssl_callback_SessionTicket(SSL *, unsigned char *, unsigned char *,
 int ssl_callback_AdvertiseNextProtos(SSL *ssl, const unsigned char **data, unsigned int *len, void *arg);
 
 /**  Session Cache Support  */
-void         ssl_scache_init(server_rec *, apr_pool_t *);
+apr_status_t ssl_scache_init(server_rec *, apr_pool_t *);
 void         ssl_scache_status_register(apr_pool_t *p);
 void         ssl_scache_kill(server_rec *);
 BOOL         ssl_scache_store(server_rec *, UCHAR *, int,
@@ -851,7 +851,7 @@ const char *ssl_cmd_SSLStaplingReturnResponderErrors(cmd_parms *, void *, int);
 const char *ssl_cmd_SSLStaplingFakeTryLater(cmd_parms *, void *, int);
 const char *ssl_cmd_SSLStaplingResponderTimeout(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLStaplingForceURL(cmd_parms *, void *, const char *);
-void         modssl_init_stapling(server_rec *, apr_pool_t *, apr_pool_t *, modssl_ctx_t *);
+apr_status_t modssl_init_stapling(server_rec *, apr_pool_t *, apr_pool_t *, modssl_ctx_t *);
 void         ssl_stapling_ex_init(void);
 int          ssl_stapling_init_cert(server_rec *s, modssl_ctx_t *mctx, X509 *x);
 #endif
@@ -885,7 +885,7 @@ void         ssl_util_thread_setup(apr_pool_t *);
 int          ssl_init_ssl_connection(conn_rec *c, request_rec *r);
 
 /**  Pass Phrase Support  */
-void         ssl_pphrase_Handle(server_rec *, apr_pool_t *);
+apr_status_t ssl_pphrase_Handle(server_rec *, apr_pool_t *);
 
 /**  Diffie-Hellman Parameter Support  */
 DH           *ssl_dh_GetParamFromFile(const char *);
@@ -923,8 +923,9 @@ int          ssl_stapling_mutex_reinit(server_rec *, apr_pool_t *);
 #define SSL_CACHE_MUTEX_TYPE    "ssl-cache"
 #define SSL_STAPLING_MUTEX_TYPE "ssl-stapling"
 
+apr_status_t ssl_die(server_rec *);
+
 /**  Logfile Support  */
-void         ssl_die(server_rec *);
 void         ssl_log_ssl_error(const char *, int, int, server_rec *);
 
 /* ssl_log_xerror, ssl_log_cxerror and ssl_log_rxerror are wrappers for the
