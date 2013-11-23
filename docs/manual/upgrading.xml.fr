@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision : 1536310 -->
+<!-- English Revision : 1543907 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -274,6 +274,12 @@ Allow from example.org
 	vous devez maintenant utiliser la cha&icirc;ne de correspondance
 	compl&egrave;te <code>jsessionid</code>.
         </li>
+
+	<li><module>mod_cache</module>: le second param&egrave;tre de la
+	directive <directive module="mod_cache">CacheEnable</directive>
+	ne concerne les contenus en mandat direct que s'ils d&eacute;butent par
+	le protocole appropri&eacute;. Dans les versions 2.2 et ant&eacute;rieures, un
+	param&egrave;tre tel que '/' concernait tous les contenus.</li>
 
         <li><module>mod_ldap</module>: la directive <directive
 	module="mod_ldap">LDAPTrustedClientCert</directive> s'utilise

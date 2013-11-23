@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1535125 -->
+<!-- English Revision : 1544629 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -2081,6 +2081,10 @@ host</context>
     d'environnement (<code>env</code>), et un grand nombre d'autres
     propri&eacute;t&eacute;s. La documentation compl&egrave;te est disponible dans <a
     href="../expr.html">Les expressions dans le serveur HTTP Apache</a>.</p>
+
+    <p>Cette section de configuration ne peut contenir que des
+    directives qui supportent le <a
+    href="mod/directive-dict.html#Context">contexte de r&eacute;pertoire</a>.</p>
 
 </usage>
 
