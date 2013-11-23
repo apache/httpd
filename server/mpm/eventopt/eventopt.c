@@ -3033,8 +3033,8 @@ static int event_pre_config(apr_pool_t * pconf, apr_pool_t * plog,
         i = apr_atomic_dec32(&foo);
         if (i >= 0) {
             ap_log_error(APLOG_MARK, APLOG_CRIT, 0, NULL, APLOGNO(02406)
-                         "atomics not working as expected");
-            return HTTP_INTERNAL_SERVER_ERROR;
+                         "atomics not working as expected - EventOpt MPM may not work");
+            /* return HTTP_INTERNAL_SERVER_ERROR; */
         }
         rv = apr_pollset_create(&event_pollset, 1, plog,
                                 APR_POLLSET_WAKEABLE|APR_POLLSET_NOCOPY);
