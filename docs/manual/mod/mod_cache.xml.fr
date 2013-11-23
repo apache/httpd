@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1505987:1544385 (outdated) -->
+<!-- English Revision : 1544385 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -393,6 +393,8 @@ URL</var>]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context>
 </contextlist>
+<compatibility>Une cha&icirc;ne URL telle que '/' s'appliquait &agrave; tout contenu
+en mandat direct dans les versions 2.2 et ant&eacute;rieures.</compatibility>
 
 <usage>
     <p>La directive <directive>CacheEnable</directive> enjoint
@@ -427,9 +429,8 @@ URL</var>]</syntax>
     global.</p>
 
     <p>En fonctionnement du type serveur mandataire direct, <var>cha&icirc;ne
-    URL</var> peut aussi &ecirc;tre utilis&eacute; pour sp&eacute;cifier des sites distants
-    et des protocoles de mandat pour lesquels la mise en cache devra
-    &ecirc;tre activ&eacute;e.</p>
+    URL</var> doit au moins d&eacute;buter par un protocole pour lequel la mise
+    en cache doit &ecirc;tre activ&eacute;e.</p>
 
     <highlight language="config">
 # Mise en cache de contenu (gestionnaire normal seulement)
@@ -444,13 +445,14 @@ CacheQuickHandler off
     CacheEnable disk
 &lt;/LocationMatch&gt;
 
-# Mise en cache des URLs mandat&eacute;es (gestionnaire normal ou rapide)
+# Mise en cache de tous les contenus, &agrave; l'exception des URLs
+# mandat&eacute;es en direct (gestionnaire normal ou rapide)
 CacheEnable  disk  /
 
 # Mise en cache des URLs FTP mandat&eacute;es (gestionnaire normal ou rapide)
 CacheEnable  disk  ftp://
 
-# Mise en cache des contenus situ&eacute;s dans www.example.org (gestionnaire normal ou rapide)
+# Mise en cache des contenus mandat&eacute;s en direct depuis www.example.org (gestionnaire normal ou rapide)
 CacheEnable  disk  http://www.example.org/
     </highlight>
 
