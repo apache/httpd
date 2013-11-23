@@ -886,7 +886,7 @@ static apr_status_t ssl_server_import_cert(server_rec *s,
     X509 *cert;
 
     if (!(asn1 = ssl_asn1_table_get(mc->tPublicCert, id))) {
-        return APR_EGENERAL;
+        return APR_NOTFOUND;
     }
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(02232)
@@ -941,7 +941,7 @@ static apr_status_t ssl_server_import_key(server_rec *s,
     pkey_type = (idx == SSL_AIDX_RSA) ? EVP_PKEY_RSA : EVP_PKEY_DSA;
 
     if (!(asn1 = ssl_asn1_table_get(mc->tPrivateKey, id))) {
-        return APR_EGENERAL;
+        return APR_NOTFOUND;
     }
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(02236)
@@ -1058,9 +1058,18 @@ static apr_status_t ssl_init_server_certs(server_rec *s,
 #endif
 
     have_rsa = ssl_server_import_cert(s, mctx, rsa_id, SSL_AIDX_RSA);
+    if (have_rsa != APR_SUCCESS && have_rsa != APR_NOTFOUND) {
+        return have_rsa;
+    }
     have_dsa = ssl_server_import_cert(s, mctx, dsa_id, SSL_AIDX_DSA);
+    if (have_dsa != APR_SUCCESS && have_dsa != APR_NOTFOUND) {
+        return have_dsa;
+    }
 #ifdef HAVE_ECC
     have_ecc = ssl_server_import_cert(s, mctx, ecc_id, SSL_AIDX_ECC);
+    if (have_ecc != APR_SUCCESS && have_ecc != APR_NOTFOUND) {
+        return have_ecc;
+    }
 #endif
 
     if ((have_rsa != APR_SUCCESS) && (have_dsa != APR_SUCCESS)
@@ -1079,9 +1088,18 @@ static apr_status_t ssl_init_server_certs(server_rec *s,
     }
 
     have_rsa = ssl_server_import_key(s, mctx, rsa_id, SSL_AIDX_RSA);
+    if (have_rsa != APR_SUCCESS && have_rsa != APR_NOTFOUND) {
+        return have_rsa;
+    }
     have_dsa = ssl_server_import_key(s, mctx, dsa_id, SSL_AIDX_DSA);
+    if (have_dsa != APR_SUCCESS && have_dsa != APR_NOTFOUND) {
+        return have_dsa;
+    }
 #ifdef HAVE_ECC
     have_ecc = ssl_server_import_key(s, mctx, ecc_id, SSL_AIDX_ECC);
+    if (have_ecc != APR_SUCCESS && have_ecc != APR_NOTFOUND) {
+        return have_ecc;
+    }
 #endif
 
     if ((have_rsa != APR_SUCCESS) && (have_dsa != APR_SUCCESS)
