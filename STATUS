@@ -106,7 +106,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   * mod_socache_shmcb.c: Remove arbitrary restriction on shared memory size
     previously limited to 64MB.
     trunk patch: http://svn.apache.org/r1493921
-                 http://svn.apache.org/r1493925
     2.4.x patch: trunk patch works modulo CHANGES
     +1: minfrin, jim
     sf notes: I think a number of variables need to be changed from int to
@@ -122,6 +121,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     sf:      This would require someone to do the work. Until someone has the 
              necessary free cycles, I propose to include
              http://svn.apache.org/r1515162
+    rjung:   See also interim proposal below which becomes obsolete once the
+             one here is accepted but fixes a compiler warning in the meantime.
 
   * ab: Check if malloc succeeded
     PR54344
@@ -172,6 +173,19 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1542562
     2.4.x patch: http://people.apache.org/~jim/patches/proxy-port-scheme.patch
     +1: jim
+
+  * mod_lua: Fix compiler warning by using correct APR_SIZE_T_FMT and APR_OFF_T_FMT
+    format macro in debug logging.
+    trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1544820
+    2.4.x patch: trunk patch works, add CHANGES
+    +1: rjung
+
+  * mod_socache_shmcb: Fix compiler warning by using correct apr_size_t for the constant
+    later printed with the APR_SIZE_T_FMT format macro.
+    Not needed in trunk.
+    2.4.x patch: http://people.apache.org/~rjung/patches/mod_socache_shmcb-size_t-2_4.patch
+    +1: rjung
+
 
 OTHER PROPOSALS
 
