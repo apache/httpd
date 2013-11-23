@@ -2102,7 +2102,7 @@ static int lua_websocket_read(lua_State *L)
                 }
             }
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, 
-                    "Websocket: Reading %lu (%s) bytes, masking is %s. %s", 
+                    "Websocket: Reading %" APR_SIZE_T_FMT " (%s) bytes, masking is %s. %s", 
                     plen,
                     (payload >= 126) ? "extra payload" : "no extra payload", 
                     mask ? "on" : "off", 
@@ -2137,14 +2137,14 @@ static int lua_websocket_read(lua_State *L)
                         }
                     }
                     ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, 
-                    "Websocket: Frame contained %lu bytes, pushed to Lua stack", 
+                    "Websocket: Frame contained %" APR_OFF_T_FMT " bytes, pushed to Lua stack", 
                         at);
                 }
                 else {
                     rv = lua_websocket_readbytes(r->connection, buffer, 
                             remaining);
                     ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, 
-                    "Websocket: SSL Frame contained %lu bytes, "\
+                    "Websocket: SSL Frame contained %" APR_SIZE_T_FMT " bytes, "\
                             "pushed to Lua stack", 
                         remaining);
                 }
@@ -2282,7 +2282,7 @@ static int lua_websocket_ping(lua_State *L)
         }
         if (plen > 0) {
             ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, 
-                        "Websocket: Reading %lu bytes of PONG", plen);
+                        "Websocket: Reading %" APR_SIZE_T_FMT " bytes of PONG", plen);
             return 1;
         }
         if (mask) {
