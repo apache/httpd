@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1450091 -->
+<!-- English Revision : 1544630 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -171,7 +171,7 @@ nom de chemin en fin de requ&ecirc;te.</description>
     href="../handler.html">gestionnaire</a> responsable de la requ&ecirc;te.
     Le gestionnaire de base pour les fichiers normaux rejette par d&eacute;faut
     les requ&ecirc;tes avec <code>PATH_INFO</code>. Les gestionnaires qui
-    servent des scripts, comme <a
+    servent des scripts, comme<a
     href="mod_cgi.html">cgi-script</a> et <a
     href="mod_isapi.html">isapi-handler</a>, acceptent en g&eacute;n&eacute;ral par
     d&eacute;faut les requ&ecirc;tes avec <code>PATH_INFO</code>.</dd>
@@ -2072,6 +2072,10 @@ host</context>
     d'environnement (<code>env</code>), et un grand nombre d'autres
     propri&eacute;t&eacute;s. La documentation compl&egrave;te est disponible dans <a
     href="../expr.html">Les expressions dans le serveur HTTP Apache</a>.</p>
+
+    <p>Cette section de configuration ne peut contenir que des
+    directives qui supportent le <a
+    href="mod/directive-dict.html#Context">contexte de r&eacute;pertoire</a>.</p>
 
 </usage>
 
