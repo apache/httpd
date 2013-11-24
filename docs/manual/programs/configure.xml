@@ -428,16 +428,6 @@
           <directive module="mod_so">LoadModule</directive> directives for all
           built modules can be activated via the configure option
           <code>--enable-load-all-modules</code>.</p>
-          <p><strong>Caveat:</strong>
-          <code>--enable-mods-shared=all</code> does not actually build all
-          modules. To build all modules then, one might use:</p>
-          <example>
-            ./configure \<br />
-            <indent>
-                --with-ldap \<br />
-                --enable-mods-shared="all ssl ldap cache proxy authn_alias file_cache authnz_ldap charset_lite dav_lock cache_disk"
-            </indent>
-          </example>
         </dd>
 
         <dt><code>--enable-mods-static=<var>MODULE-LIST</var></code></dt>
