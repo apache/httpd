@@ -17,7 +17,7 @@
 #include "fdqueue.h"
 #include "apr_atomic.h"
 
-static apr_int32_t zero_pt = APR_INT32_MAX/2;
+static apr_uint32_t zero_pt = APR_UINT32_MAX/2;
 
 struct recycled_pool
 {
@@ -27,10 +27,10 @@ struct recycled_pool
 
 struct fd_queue_info_t
 {
-    apr_int32_t idlers;      /**
-                              * 0 or positive: number of idle worker threads
-                              * negative: number of threads blocked waiting
-                              *           for an idle worker
+    apr_uint32_t idlers;     /**
+                              * >= zero_pt: number of idle worker threads
+                              * < zero_pt:  number of threads blocked waiting
+                              *             for an idle worker
                               */
     apr_thread_mutex_t *idlers_mutex;
     apr_thread_cond_t *wait_for_idler;
@@ -97,12 +97,12 @@ apr_status_t ap_queue_info_set_idle(fd_queue_info_t * queue_info,
                                     apr_pool_t * pool_to_recycle)
 {
     apr_status_t rv;
-    int prev_idlers;
+    apr_int32_t prev_idlers;
 
     ap_push_pool(queue_info, pool_to_recycle);
 
     /* Atomically increment the count of idle workers */
-    prev_idlers = apr_atomic_inc32((apr_uint32_t *)&(queue_info->idlers)) - zero_pt;
+    prev_idlers = apr_atomic_inc32(&(queue_info->idlers)) - zero_pt;
 
     /* If other threads are waiting on a worker, wake one up */
     if (prev_idlers < 0) {
@@ -127,10 +127,10 @@ apr_status_t ap_queue_info_set_idle(fd_queue_info_t * queue_info,
 
 apr_status_t ap_queue_info_try_get_idler(fd_queue_info_t * queue_info)
 {
-    int new_idlers;
-    new_idlers = apr_atomic_add32((apr_uint32_t *)&(queue_info->idlers), -1) - zero_pt;
+    apr_int32_t new_idlers;
+    new_idlers = apr_atomic_add32(&(queue_info->idlers), -1) - zero_pt;
     if (--new_idlers <= 0) {
-        apr_atomic_inc32((apr_uint32_t *)&(queue_info->idlers));    /* back out dec */
+        apr_atomic_inc32(&(queue_info->idlers));    /* back out dec */
         return APR_EAGAIN;
     }
     return APR_SUCCESS;
@@ -140,11 +140,11 @@ apr_status_t ap_queue_info_wait_for_idler(fd_queue_info_t * queue_info,
                                           int *had_to_block)
 {
     apr_status_t rv;
-    int prev_idlers;
+    apr_int32_t prev_idlers;
 
     /* Atomically decrement the idle worker count, saving the old value */
     /* See TODO in ap_queue_info_set_idle() */
-    prev_idlers = apr_atomic_add32((apr_uint32_t *)&(queue_info->idlers), -1) - zero_pt;
+    prev_idlers = apr_atomic_add32(&(queue_info->idlers), -1) - zero_pt;
 
     /* Block if there weren't any idle workers */
     if (prev_idlers <= 0) {
@@ -152,7 +152,7 @@ apr_status_t ap_queue_info_wait_for_idler(fd_queue_info_t * queue_info,
         if (rv != APR_SUCCESS) {
             AP_DEBUG_ASSERT(0);
             /* See TODO in ap_queue_info_set_idle() */
-            apr_atomic_inc32((apr_uint32_t *)&(queue_info->idlers));    /* back out dec */
+            apr_atomic_inc32(&(queue_info->idlers));    /* back out dec */
             return rv;
         }
         /* Re-check the idle worker count to guard against a
@@ -206,7 +206,7 @@ apr_status_t ap_queue_info_wait_for_idler(fd_queue_info_t * queue_info,
 apr_uint32_t ap_queue_info_get_idlers(fd_queue_info_t * queue_info)
 {
     apr_int32_t val;
-    val = (apr_int32_t)apr_atomic_read32((apr_uint32_t *)&queue_info->idlers) - zero_pt;
+    val = (apr_int32_t)apr_atomic_read32(&queue_info->idlers) - zero_pt;
     if (val < 0)
         return 0;
     return val;
