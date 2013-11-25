@@ -127,9 +127,9 @@ apr_status_t ap_queue_info_set_idle(fd_queue_info_t * queue_info,
 
 apr_status_t ap_queue_info_try_get_idler(fd_queue_info_t * queue_info)
 {
-    int prev_idlers;
-    prev_idlers = apr_atomic_add32((apr_uint32_t *)&(queue_info->idlers), -1) - zero_pt;
-    if (prev_idlers <= 0) {
+    int new_idlers;
+    new_idlers = apr_atomic_add32((apr_uint32_t *)&(queue_info->idlers), -1) - zero_pt;
+    if (--new_idlers <= 0) {
         apr_atomic_inc32((apr_uint32_t *)&(queue_info->idlers));    /* back out dec */
         return APR_EAGAIN;
     }
