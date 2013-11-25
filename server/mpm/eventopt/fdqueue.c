@@ -17,6 +17,8 @@
 #include "fdqueue.h"
 #include "apr_atomic.h"
 
+static apr_int32_t zero_pt = (APR_INT32_MAX-1)>>2;
+
 typedef struct recycled_pool
 {
     apr_pool_t *pool;
