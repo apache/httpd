@@ -1028,6 +1028,7 @@ read_request:
              * event thread poll for writeability.
              */
             cs->expiration_time = ap_server_conf->timeout + apr_time_now();
+            c->sbh = NULL;
             apr_thread_mutex_lock(timeout_mutex);
             TO_QUEUE_APPEND(write_completion_q, cs);
             cs->pfd.reqevents = (
@@ -1052,8 +1053,10 @@ read_request:
     }
 
     if (cs->pub.state == CONN_STATE_LINGER) {
-        if (!start_lingering_close_blocking(cs))
+        if (!start_lingering_close_blocking(cs)) {
+            c->sbh = NULL;
             return;
+        }
     }
     else if (cs->pub.state == CONN_STATE_CHECK_REQUEST_LINE_READABLE) {
         /* It greatly simplifies the logic to use a single timeout value here
