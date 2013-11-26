@@ -1080,6 +1080,7 @@ read_request:
             pollset_op_t *v = ap_equeue_writer_value(eq);
 
             cs->expiration_time = ap_server_conf->timeout + apr_time_now();
+            c->sbh = NULL;
             cs->pfd.reqevents = (
                     cs->pub.sense == CONN_SENSE_WANT_READ ? APR_POLLIN :
                             APR_POLLOUT) | APR_POLLHUP | APR_POLLERR;
@@ -1108,6 +1109,7 @@ read_request:
 
     if (cs->pub.state == CONN_STATE_LINGER) {
         if (!start_lingering_close_blocking(cs, eq)) {
+            c->sbh = NULL;
             return;
         }
     }
