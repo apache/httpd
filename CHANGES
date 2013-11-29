@@ -192,6 +192,12 @@ Changes with Apache 2.4.7
      introduced in 2.4.4
      PR 55264 [Jo Rhett <jrhett netconsonance com>]
 
+  *) mod_lua: add websocket support via r:wsupgrade, r:wswrite, r:wsread 
+     and r:wsping. [Daniel Gruno]
+
+  *) mod_lua: add support for writing/reading cookies via r:getcookie and 
+     r:setcookie. [Daniel Gruno]
+
 Changes with Apache 2.4.6
 
   *) Revert a broken fix for PR54948 that was applied to 2.4.5 (which was
