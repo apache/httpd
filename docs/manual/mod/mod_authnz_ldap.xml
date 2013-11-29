@@ -722,6 +722,7 @@ authenticating the user if this one fails</description>
 <syntax>AuthLDAPBindPassword <em>password</em></syntax>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
+<compatibility><em>exec:</em> was added in 2.2.25.</compatibility>
 <override>AuthConfig</override>
 
 <usage>
