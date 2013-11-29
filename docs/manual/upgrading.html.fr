@@ -24,8 +24,6 @@
 <p><span>Langues Disponibles: </span><a href="./en/upgrading.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./fr/upgrading.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
   <p>Afin d'assister les utilisateurs lors de leurs opérations de mise à
   jour, nous maintenons un document
@@ -222,10 +220,6 @@ Allow from example.org
 	<li>La valeur par défaut de la directive <code class="directive"><a href="./mod/core.html#fileetag">FileETag</a></code> est maintenant "MTime Size"
 	(sans INode).</li>
 
-        <li><code class="module"><a href="./mod/mod_log_config.html">mod_log_config</a></code>: <a href="modules/mod_log_config.html#formats">${cookie}C</a>
-        correspond au nom du cookie dans son ensemble, alors qu'avant,
-	toute sous-chaîne pouvait correspondre.</li>
-
         <li><code class="module"><a href="./mod/mod_dav_fs.html">mod_dav_fs</a></code>: le format du fichier <code class="directive"><a href="./mod/mod_dav_fs.html#davlockdb">DavLockDB</a></code> a changé pour les systèmes
 	avec inodes. L'ancien fichier <code class="directive"><a href="./mod/mod_dav_fs.html#davlockdb">DavLockDB</a></code> doit être supprimé dans le
 	cadre de la mise à jour.
@@ -253,6 +247,12 @@ Allow from example.org
 	vous devez maintenant utiliser la chaîne de correspondance
 	complète <code>jsessionid</code>.
         </li>
+
+	<li><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code>: le second paramètre de la
+	directive <code class="directive"><a href="./mod/mod_cache.html#cacheenable">CacheEnable</a></code>
+	ne concerne les contenus en mandat direct que s'ils débutent par
+	le protocole approprié. Dans les versions 2.2 et antérieures, un
+	paramètre tel que '/' concernait tous les contenus.</li>
 
         <li><code class="module"><a href="./mod/mod_ldap.html">mod_ldap</a></code>: la directive <code class="directive"><a href="./mod/mod_ldap.html#ldaptrustedclientcert">LDAPTrustedClientCert</a></code> s'utilise
 	maintenant exclusivement au sein d'une configuration de niveau
@@ -307,6 +307,14 @@ Allow from example.org
 	données sont toujours enregistrées au niveau <code>trace7</code>
 	de <code class="directive"><a href="./mod/core.html#loglevel">LogLevel</a></code></li>
 
+        <li>Jusqu'à la version 2.2, sur les plateformes de style Unix, 
+	les commandes de redirection des logs définies via <code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code> ou <code class="directive"><a href="./mod/mod_log_config.html#customlog">CustomLog</a></code> étaient invoquées
+	en utilisant <code>/bin/sh -c</code>. A
+	partir de la version 2.4, les commandes de redirection des logs
+	sont exécutées directement. Pour retrouver l'ancien
+	comportement, voir la <a href="logs.html#piped">documentation
+	sur la redirection des logs</a></li>
+
     </ul>
     
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -360,7 +368,7 @@ Allow from example.org
       <li><code class="module"><a href="./mod/mod_cgid.html">mod_cgid</a></code> utilise la valeur de la directive
       <code class="directive"><a href="./mod/core.html#timeout">Timeout</a></code> du serveur pour
       limiter le temps d'attente entre les sorties d'un programme CGI.
-      La valeur de ce temps d'attente peut maintenant Ãªtre modifiÃ©e via
+      La valeur de ce temps d'attente peut maintenant être modifiée via
       la directive <code class="directive"><a href="./mod/mod_cgid.html#cgidscripttimeout">CGIDScriptTImeout</a></code>.
       </li>
 
