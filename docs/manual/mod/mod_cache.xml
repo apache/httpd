@@ -345,9 +345,9 @@ manager</description>
 <syntax>CacheEnable <var>cache_type</var> [<var>url-string</var>]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context>
+</contextlist>
 <compatibility>A url-string of '/' applied to forward proxy content in 2.2 and
  earlier.</compatibility>
-</contextlist>
 
 <usage>
     <p>The <directive>CacheEnable</directive> directive instructs
