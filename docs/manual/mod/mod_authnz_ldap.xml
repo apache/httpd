@@ -901,8 +901,8 @@ to perform a DN lookup</description>
 <syntax>AuthLDAPBindPassword <em>password</em></syntax>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
-<compatibility><em>exec:</em> was added in 2.4.6.</compatibility>
 <override>AuthConfig</override>
+<compatibility><em>exec:</em> was added in 2.4.6.</compatibility>
 
 <usage>
     <p>A bind password to use in conjunction with the bind DN. Note
