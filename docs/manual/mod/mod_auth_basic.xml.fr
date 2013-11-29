@@ -55,7 +55,7 @@ cette zone du site web</description>
 <syntax>AuthBasicProvider <var>nom fournisseur</var>
 [<var>nom fournisseur</var>] ...</syntax>
 <default>AuthBasicProvider file</default>
-<contextlist><context>r&eacute;pertoire</context><context>.htaccess</context>
+<contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
 
@@ -102,7 +102,7 @@ d'authentification peuvent &ecirc;tre confi&eacute;s &agrave; des modules de plu
 niveau</description>
 <syntax>AuthBasicAuthoritative On|Off</syntax>
 <default>AuthBasicAuthoritative On</default>
-<contextlist><context>r&eacute;pertoire</context><context>.htaccess</context>
+<contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
 
