@@ -11,7 +11,7 @@
   <modulefile>mod_asis.xml.fr</modulefile>
   <modulefile>mod_auth_basic.xml.fr</modulefile>
   <modulefile>mod_auth_digest.xml.fr</modulefile>
-  <modulefile>mod_auth_form.xml</modulefile>
+  <modulefile>mod_auth_form.xml.fr</modulefile>
   <modulefile>mod_authn_anon.xml</modulefile>
   <modulefile>mod_authn_core.xml.fr</modulefile>
   <modulefile>mod_authn_dbd.xml</modulefile>

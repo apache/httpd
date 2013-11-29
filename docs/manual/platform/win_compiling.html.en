@@ -265,7 +265,7 @@
     <ol>
     	<li>Download and unpack the Unix source tarball for the latest version.</li>
     	<li>Download and unpack the Unix source tarball for latest version of
-        APR-Iconv, place this source in the httpd-2.x.x\srclib\apr-iconv</li>
+        APR, AR-Util and APR-Iconv, place these sources in directories  httpd-2.x.x\srclib\apr, httpd-2.x.x\srclib\apr-util and httpd-2.x.x\srclib\apr-iconv</li>
     	<li>Open a Command Prompt and CD to the httpd-2.x.x folder</li>
     	<li>Run the line endings conversion utility at the prompt;</li>
     </ol>

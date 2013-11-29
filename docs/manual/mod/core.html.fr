@@ -2088,6 +2088,9 @@ requête</td></tr>
     d'environnement (<code>env</code>), et un grand nombre d'autres
     propriétés. La documentation complète est disponible dans <a href="../expr.html">Les expressions dans le serveur HTTP Apache</a>.</p>
 
+    <p>Cette section de configuration ne peut contenir que des
+    directives qui supportent le <a href="mod/directive-dict.html#Context">contexte de répertoire</a>.</p>
+
 
 <h3>Voir aussi</h3>
 <ul>

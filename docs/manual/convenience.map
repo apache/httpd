@@ -157,6 +157,7 @@ cachestaleonerror	mod/mod_cache.html#cachestaleonerror
 cachestoreexpired	mod/mod_cache.html#cachestoreexpired
 cachestorenostore	mod/mod_cache.html#cachestorenostore
 cachestoreprivate	mod/mod_cache.html#cachestoreprivate
+cgidscripttimeout	mod/mod_cgid.html#cgidscripttimeout
 cgimapextension	mod/core.html#cgimapextension
 charsetdefault	mod/mod_charset_lite.html#charsetdefault
 charsetoptions	mod/mod_charset_lite.html#charsetoptions
