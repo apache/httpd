@@ -323,21 +323,9 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
 TODO ISSUES REMAINING IN MOD_SSL:
 
-  * Do we need SSL_set_read_ahead()?
-
   * SSLRequire directive (parsing of) leaks memory
 
-  * Diffie-Hellman-Parameters for temporary keys are hardcoded in
-    ssl_engine_dh.c, while the comment in ssl_engine_kernel.c says:
-    "it is suggested that keys be changed daily or every 500
-    transactions, and more often if possible."
-
   * ssl_var_lookup could be rewritten to be MUCH faster
-
-  * CRL callback should be pluggable
-
-  * ssl_engine_pphrase.c needs to be reworked so it is generic enough
-    to also decrypt proxy keys
 
 WISH LIST
   * mod_proxy: Ability to run SSL over proxy gateway connections,
