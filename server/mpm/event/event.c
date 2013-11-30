@@ -1710,7 +1710,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                         disable_listensocks(process_slot);
                     listeners_disabled = 1;
                     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf,
-                                 "All workers busy, not accepting new conns"
+                                 "All workers busy, not accepting new conns "
                                  "in this process");
                 }
                 else if (  (int)apr_atomic_read32(&connection_count)
