@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1296925 -->
+<!-- English Revision : 1545016 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -479,17 +479,7 @@
 	  module="mod_so">LoadModule</directive> peuvent &ecirc;tre activ&eacute;es
 	  pour tous les modules compil&eacute;s via l'option
 	  <code>--enable-load-all-modules</code> du script configure.</p>
-          <p><strong>Avertissement :</strong>
-          <code>--enable-mods-shared=all</code> ne compile pas vraiment
-	  tous les modules. En fait, pour compiler tous les modules, il
-	  faut utiliser :</p>
-          <example>
-            ./configure \<br />
-            <indent>
-                --with-ldap \<br />
-                --enable-mods-shared="all ssl ldap cache proxy authn_alias file_cache authnz_ldap charset_lite dav_lock disk_cache"
-            </indent>
-          </example>
+          
         </dd>
 
         <dt><code>--enable-mods-static=<var>MODULE-LIST</var></code></dt>
