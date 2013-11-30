@@ -535,30 +535,6 @@ static apr_status_t ssl_init_ctx_protocol(server_rec *s,
     SSL_CTX_set_options(ctx, SSL_OP_NO_SESSION_RESUMPTION_ON_RENEGOTIATION);
 #endif
 
-#ifdef HAVE_SSL_CONF_CMD
-{
-    ssl_ctx_param_t *param = (ssl_ctx_param_t *)mctx->ssl_ctx_param->elts;
-    SSL_CONF_CTX *cctx = mctx->ssl_ctx_config;
-    int i;
-    SSL_CONF_CTX_set_ssl_ctx(cctx, ctx);
-    for (i = 0; i < mctx->ssl_ctx_param->nelts; i++, param++) {
-        if (SSL_CONF_cmd(cctx, param->name, param->value) <= 0) {
-            ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(02407)
-                         "Error SSL_CONF_cmd(\"%s\",\"%s\")",
-                         param->name, param->value);
-            ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
-            return ssl_die(s);
-        }
-    }
-    if (SSL_CONF_CTX_finish(cctx) == 0) {
-            ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(02547)
-                         "Error SSL_CONF_CTX_finish()");
-            ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
-            return ssl_die(s);
-    }
-}
-#endif
-
 #ifdef SSL_MODE_RELEASE_BUFFERS
     /* If httpd is configured to reduce mem usage, ask openssl to do so, too */
     if (ap_max_mem_free != APR_ALLOCATOR_MAX_FREE_UNLIMITED)
@@ -1359,6 +1335,11 @@ static apr_status_t ssl_init_server_ctx(server_rec *s,
                                         SSLSrvConfigRec *sc)
 {
     apr_status_t rv;
+#ifdef HAVE_SSL_CONF_CMD
+    ssl_ctx_param_t *param = (ssl_ctx_param_t *)sc->server->ssl_ctx_param->elts;
+    SSL_CONF_CTX *cctx = sc->server->ssl_ctx_config;
+    int i;
+#endif
 
     if ((rv = ssl_init_server_check(s, p, ptemp, sc->server)) != APR_SUCCESS) {
         return rv;
@@ -1371,6 +1352,31 @@ static apr_status_t ssl_init_server_ctx(server_rec *s,
     if ((rv = ssl_init_server_certs(s, p, ptemp, sc->server)) != APR_SUCCESS) {
         return rv;
     }
+
+#ifdef HAVE_SSL_CONF_CMD
+    SSL_CONF_CTX_set_ssl_ctx(cctx, sc->server->ssl_ctx);
+    for (i = 0; i < sc->server->ssl_ctx_param->nelts; i++, param++) {
+        if (SSL_CONF_cmd(cctx, param->name, param->value) <= 0) {
+            ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(02407)
+                         "\"SSLOpenSSLConfCmd %s %s\" failed for %s",
+                         param->name, param->value, sc->vhost_id);
+            ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
+            return ssl_die(s);
+        } else {
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(02556)
+                         "\"SSLOpenSSLConfCmd %s %s\" applied to %s",
+                         param->name, param->value, sc->vhost_id);
+        }
+    }
+    if (SSL_CONF_CTX_finish(cctx) == 0) {
+            ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(02547)
+                         "SSL_CONF_CTX_finish() failed");
+            SSL_CONF_CTX_free(cctx);
+            ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
+            return ssl_die(s);
+    }
+    SSL_CONF_CTX_free(cctx);
+#endif
 
 #ifdef HAVE_TLS_SESSION_TICKETS
     if ((rv = ssl_init_ticket_key(s, p, ptemp, sc->server)) != APR_SUCCESS) {
@@ -1643,9 +1649,6 @@ void ssl_init_Child(apr_pool_t *p, server_rec *s)
 static void ssl_init_ctx_cleanup(modssl_ctx_t *mctx)
 {
     MODSSL_CFG_ITEM_FREE(SSL_CTX_free, mctx->ssl_ctx);
-#ifdef HAVE_SSL_CONF_CMD
-    MODSSL_CFG_ITEM_FREE(SSL_CONF_CTX_free, mctx->ssl_ctx_config);
-#endif
 
 #ifdef HAVE_SRP
     if (mctx->srp_vbase != NULL) {
