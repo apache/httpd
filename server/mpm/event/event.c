@@ -917,11 +917,6 @@ static int stop_lingering_close(event_conn_state_t *cs)
 
 static void notify_suspend(event_conn_state_t *cs)
 {
-    static int how_many = 0;
-
-    if (++how_many == 7) {
-        *(int *)0xcafebabe = 0;
-    }
     ap_run_suspend_connection(cs->c, cs->r);
     cs->suspended = 1;
 }
