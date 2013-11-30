@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) Add suspend_connection and resume_connection hooks to notify modules
+     when the thread/connection relationship changes.  (Currently implemented
+     only for the Event MPM; should be implemented for all async MPMs.)
+     [Jeff Trawick]
+
   *) mod_ssl: Don't flush when an EOS is received. Prepares mod_ssl
      to support write completion. [Graham Leggett]
 

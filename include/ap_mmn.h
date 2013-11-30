@@ -442,6 +442,7 @@
  * 20130924.0 (2.5.0-dev)  Add ap_errorlog_provider
  * 20130924.1 (2.5.0-dev)  Add ap_proxy_connection_reusable()
  * 20131112.0 (2.5.0-dev)  Add parse_errorlog_arg to ap_errorlog_provider
+ * 20131112.1 (2.5.0-dev)  Add suspend_connection and resume_connection hooks
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
@@ -449,7 +450,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20131112
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 0                  /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 1                  /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
