@@ -75,6 +75,8 @@ APR_HOOK_STRUCT(
     APR_HOOK_LINK(mpm_get_name)
     APR_HOOK_LINK(end_generation)
     APR_HOOK_LINK(child_status)
+    APR_HOOK_LINK(suspend_connection)
+    APR_HOOK_LINK(resume_connection)
 )
 AP_IMPLEMENT_HOOK_RUN_ALL(int, fatal_exception,
                           (ap_exception_info_t *ei), (ei), OK, DECLINED)
@@ -119,6 +121,12 @@ AP_IMPLEMENT_HOOK_VOID(end_generation,
 AP_IMPLEMENT_HOOK_VOID(child_status,
                        (server_rec *s, pid_t pid, ap_generation_t gen, int slot, mpm_child_status status),
                        (s,pid,gen,slot,status))
+AP_IMPLEMENT_HOOK_VOID(suspend_connection,
+                       (conn_rec *c, request_rec *r),
+                       (c, r))
+AP_IMPLEMENT_HOOK_VOID(resume_connection,
+                       (conn_rec *c, request_rec *r),
+                       (c, r))
 
 /* hooks with no args are implemented last, after disabling APR hook probes */
 #if defined(APR_HOOK_PROBES_ENABLED)
