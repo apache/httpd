@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1525866:1546567 (outdated) -->
+<!-- English Revision : 1546567 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1014,6 +1014,8 @@ connexion</description>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
+<compatibility><em>exec:</em> est disponible depuis la version 2.4.6 du
+serveur HTTP Apache.</compatibility>
 
 <usage>
     <p>Cette directive permet de sp&eacute;cifier un mot de passe &agrave; utiliser en
