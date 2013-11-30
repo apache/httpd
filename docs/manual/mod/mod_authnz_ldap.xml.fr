@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1497095 -->
+<!-- English Revision : 1546575 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -30,7 +30,7 @@ HTTP de base.</description>
 <status>Extension</status>
 <sourcefile>mod_authnz_ldap.c</sourcefile>
 <identifier>authnz_ldap_module</identifier>
-<compatibility>Disponible depuis les versions 2.1 et sup&eacute;rieures
+<compatibility>Dosponible depuis les versions 2.1 et sup&eacute;rieures
 d'Apache</compatibility>
 
 <summary>
@@ -805,6 +805,8 @@ connexion</description>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
+<compatibility><em>exec:</em> est disponible depuis la version 2.2.25 du
+serveur HTTP Apache.</compatibility>
 
 <usage>
     <p>Cette directive permet de sp&eacute;cifier un mot de passe &agrave; utiliser en
