@@ -1687,7 +1687,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                 if (workers_were_busy) {
                     skip_accept = 1;
                     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf,
-                                 "All workers busy, not accepting new conns"
+                                 "All workers busy, not accepting new conns "
                                  "in this process");
                 }
                 else if (listeners_disabled) {
