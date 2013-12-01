@@ -241,9 +241,6 @@ ap_set_module_config(c->conn_config, &ssl_module, val)
 #define mySrvConfigFromConn(c) mySrvConfig(mySrvFromConn(c))
 #define myModConfigFromConn(c) myModConfig(mySrvFromConn(c))
 
-#define myCtxVarSet(mc,num,val)  mc->rCtx.pV##num = val
-#define myCtxVarGet(mc,num,type) (type)(mc->rCtx.pV##num)
-
 /**
  * Defaults for the configuration
  */
@@ -531,10 +528,6 @@ typedef struct {
     ap_socache_instance_t *stapling_cache_context;
     apr_global_mutex_t   *stapling_mutex;
 #endif
-
-    struct {
-        void *pV1, *pV2, *pV3, *pV4, *pV5, *pV6, *pV7, *pV8, *pV9, *pV10;
-    } rCtx;
 } SSLModConfigRec;
 
 /** Structure representing configured filenames for certs and keys for
