@@ -1035,7 +1035,7 @@ static int read_type_map(apr_file_t **map, negotiation_state *neg,
                     *eol = '\0';
                 if ((mime_info.body = get_body(buffer, &len, tag, *map)) < 0) {
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00685)
-                                  "Syntax error in type map, no end tag '%s'"
+                                  "Syntax error in type map, no end tag '%s' "
                                   "found in %s for Body: content.",
                                   tag, r->filename);
                      break;
