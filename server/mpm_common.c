@@ -92,6 +92,8 @@ APR_HOOK_STRUCT(
     APR_HOOK_LINK(mpm_get_name)
     APR_HOOK_LINK(end_generation)
     APR_HOOK_LINK(child_status)
+    APR_HOOK_LINK(suspend_connection)
+    APR_HOOK_LINK(resume_connection)
 )
 #endif
 AP_IMPLEMENT_HOOK_RUN_ALL(int, monitor,
