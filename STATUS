@@ -108,6 +108,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     trunk patch: http://svn.apache.org/r1493921
     2.4.x patch: trunk patch works modulo CHANGES
     +1: minfrin, jim
+    +1: jailletc36 with r1515162
     sf notes: I think a number of variables need to be changed from int to
               apr_size_t, including subcache_size, subcache_data_offset,
               subcache_data_size, total, cache_total. 
@@ -178,13 +179,30 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     format macro in debug logging.
     trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1544820
     2.4.x patch: trunk patch works, add CHANGES
-    +1: rjung
+    +1: rjung, jailletc36
 
   * mod_socache_shmcb: Fix compiler warning by using correct apr_size_t for the constant
     later printed with the APR_SIZE_T_FMT format macro.
     Not needed in trunk.
     2.4.x patch: http://people.apache.org/~rjung/patches/mod_socache_shmcb-size_t-2_4.patch
     +1: rjung
+    -0: jailletc36: I prefer above solution
+
+  * easy proposals to synch 2.4.x and trunk
+      - Use apr_file_printf(... "%pm"...) instead of explicit call to apr_strerror
+      - remove unused variables
+      - axe some useless assignments (clang scan-build)
+      - Remove useless apr_pstrdup as done for other mod_auth modules in r1026660
+      - Remove unused APXS setting from template for generated Makefile
+    trunk patches:
+      - https://svn.apache.org/viewvc?view=revision&revision=1464674
+      - https://svn.apache.org/viewvc?view=revision&revision=1465084
+      - https://svn.apache.org/viewvc?view=revision&revision=1534997
+      - https://svn.apache.org/viewvc?view=revision&revision=1538149
+      - https://svn.apache.org/viewvc?view=revision&revision=1535699
+    2.4.x patches: trunk patches work
+      - the 3 first ones partially apply because of files which are not part of 2.4.x
+    +1: jailletc36
 
 
 OTHER PROPOSALS
