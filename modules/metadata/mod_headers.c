@@ -133,6 +133,7 @@ typedef struct {
     const char *condition_var;
     const char *subs;
     ap_expr_info_t *expr;
+    ap_expr_info_t *expr_out;
 } header_entry;
 
 /* echo_do is used for Header echo to iterate through the request headers*/
@@ -387,8 +388,9 @@ static char *parse_format_tag(apr_pool_t *p, format_tag *tag, const char **sa)
  * contains a pointer to the function used to format the tag. Then save each
  * tag in the tag array anchored in the header_entry.
  */
-static char *parse_format_string(apr_pool_t *p, header_entry *hdr, const char *s)
+static char *parse_format_string(cmd_parms *cmd, header_entry *hdr, const char *s)
 {
+    apr_pool_t *p = cmd->pool;
     char *res;
 
     /* No string to parse with unset and echo commands */
@@ -398,6 +400,18 @@ static char *parse_format_string(apr_pool_t *p, header_entry *hdr, const char *s
     /* Tags are in the replacement value for edit */
     else if (hdr->action == hdr_edit || hdr->action == hdr_edit_r ) {
         s = hdr->subs;
+    }
+
+    if (!strncmp(s, "expr=", 5)) { 
+        const char *err;
+        hdr->expr_out = ap_expr_parse_cmd(cmd, s+5, 
+                                          AP_EXPR_FLAG_STRING_RESULT,
+                                          &err, NULL);
+        if (err) {
+            return apr_pstrcat(cmd->pool,
+                    "Can't parse value expression : ", err, NULL);
+        }
+        return NULL;
     }
 
     hdr->ta = apr_array_make(p, 10, sizeof(format_tag));
@@ -542,7 +556,7 @@ static APR_INLINE const char *header_inout_cmd(cmd_parms *cmd,
     new->condition_var = condition_var;
     new->expr = expr;
 
-    return parse_format_string(cmd->pool, new, value);
+    return parse_format_string(cmd, new, value);
 }
 
 /* Handle all (xxx)Header directives */
@@ -584,14 +598,29 @@ static const char *header_cmd(cmd_parms *cmd, void *indirconf,
  * (formatter) specific to the tag. Handlers return text strings.
  * Concatenate the return from each handler into one string that is
  * returned from this call.
+ * If the original value was prefixed with "expr=", processing is
+ * handled instead by ap_expr.
  */
 static char* process_tags(header_entry *hdr, request_rec *r)
 {
     int i;
     const char *s;
     char *str = NULL;
+    format_tag *tag = NULL;
 
-    format_tag *tag = (format_tag*) hdr->ta->elts;
+    if (hdr->expr_out) { 
+        const char *err;
+        const char *val;
+        val = ap_expr_str_exec(r, hdr->expr_out, &err);
+        if (err) { 
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02557)
+                          "Can't evaluate value expression: %s", err);
+            return "";
+        }
+        return apr_pstrdup(r->pool, val);
+    }
+
+    tag = (format_tag*) hdr->ta->elts;
 
     for (i = 0; i < hdr->ta->nelts; i++) {
         s = tag[i].func(r, tag[i].arg);
