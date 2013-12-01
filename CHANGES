@@ -64,12 +64,6 @@ Changes with Apache 2.5.0
      save the socket for reuse by the next worker as if it were an 
      APR_SO_DISCONNECTED socket. Restores 2.2 behavior. [Eric Covener]
 
-  *) mod_lua: Add rudimentary support for WebSocket interaction. This is 
-     currently request-bound and only supports the WS protocol. [Daniel Gruno]
-
-  *) mod_lua: Add getcookie/setcookie for reading/writing HTTP cookies
-     [Daniel Gruno]
-
   *) mod_lua: Add a logging hook for modifying/skipping logs. [Daniel Gruno]
 
   *) mod_status, mod_echo: Fix the display of client addresses.
