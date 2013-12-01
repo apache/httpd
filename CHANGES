@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_headers: Allow the "value" parameter of Header and RequestHeader to 
+     contain an ap_expr expression if prefixed with "expr=". [Eric Covener]
+
   *) Add suspend_connection and resume_connection hooks to notify modules
      when the thread/connection relationship changes.  (Currently implemented
      only for the Event MPM; should be implemented for all async MPMs.)
