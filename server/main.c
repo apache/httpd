@@ -50,6 +50,10 @@
 #define isatty(n) (0)
 #endif
 
+/* we know core's module_index is 0 */
+#undef APLOG_MODULE_INDEX
+#define APLOG_MODULE_INDEX AP_CORE_MODULE_INDEX
+
 /* WARNING: Win32 binds http_main.c dynamically to the server. Please place
  *          extern functions and global data in another appropriate module.
  *
