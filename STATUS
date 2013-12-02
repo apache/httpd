@@ -98,11 +98,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_lua: Fix compiler warning by using correct APR_SIZE_T_FMT and APR_OFF_T_FMT
-    format macro in debug logging.
-    trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1544820
-    2.4.x patch: trunk patch works, add CHANGES
-    +1: rjung, jailletc36, trawick
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
