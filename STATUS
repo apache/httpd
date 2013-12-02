@@ -98,7 +98,11 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-
+  * mod_lua: Fix compiler warning by using correct APR_SIZE_T_FMT and APR_OFF_T_FMT
+    format macro in debug logging.
+    trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1544820
+    2.4.x patch: trunk patch works, add CHANGES
+    +1: rjung, jailletc36, trawick
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -138,6 +142,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     sf: I also think that aborting on oom with a clean error message would
         be better.
         I would add http://svn.apache.org/viewvc?view=revision&revision=1542533
+    trawick: +1 to 1542533
 
   * mod_auth_form: Make sure the optional functions are loaded even when
     the AuthFormProvider isn't specified.
@@ -174,12 +179,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1542562
     2.4.x patch: http://people.apache.org/~jim/patches/proxy-port-scheme.patch
     +1: jim
-
-  * mod_lua: Fix compiler warning by using correct APR_SIZE_T_FMT and APR_OFF_T_FMT
-    format macro in debug logging.
-    trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1544820
-    2.4.x patch: trunk patch works, add CHANGES
-    +1: rjung, jailletc36
 
   * mod_socache_shmcb: Fix compiler warning by using correct apr_size_t for the constant
     later printed with the APR_SIZE_T_FMT format macro.
