@@ -529,13 +529,13 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *key)
         return DECLINED;
     }
 
-    apr_file_close(dobj->hdrs.fd);
 
     /* Is this a cached HEAD request? */
     if (dobj->disk_info.header_only && !r->header_only) {
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r, APLOGNO(00707)
                 "HEAD request cached, non-HEAD requested, ignoring: %s",
                 dobj->hdrs.file);
+        apr_file_close(dobj->hdrs.fd);
         return DECLINED;
     }
 
@@ -593,6 +593,7 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *key)
             "Cached URL info header '%s' didn't match body, ignoring this entry",
             dobj->name);
 
+    apr_file_close(dobj->hdrs.fd);
     return DECLINED;
 }
 
