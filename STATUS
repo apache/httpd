@@ -165,9 +165,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  https://svn.apache.org/viewvc?view=revision&revision=1533065
                  https://svn.apache.org/viewvc?view=revision&revision=1540052
     2.4.x patch: http://people.apache.org/~jim/patches/uds-2.4.patch
-    +1: jim
-    +/-0: druggeri: I think we should hold until we can work out the performance difference
-                    between old and new versions of the patches.
+    +1: jim, druggeri
 
   * mod_proxy: Use consistent canon formats for http, ajp and fcgi (if provided
     port is the default port, don't add to canon URI).
