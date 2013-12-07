@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1535788:1535995 (outdated) -->
+<!-- English Revision: 1546801 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -332,14 +332,12 @@ Header merge Cache-Control no-store env=NO_STORE
 <name>Header</name>
 <description>Configure les en-t&ecirc;tes d'une r&eacute;ponse HTTP</description>
 <syntax>Header [<var>condition</var>] add|append|echo|edit|edit*|merge|set|unset|note
-<var>en-t&ecirc;te</var> [<var>valeur</var>] [<var>remplacement</var>]
+<var>en-t&ecirc;te</var> [<var>[expr=]valeur</var>] [<var>remplacement</var>]
 [early|env=[!]<var>variable</var>]|expr=<var>expression</var>]
 </syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
-<compatibility>La condition par d&eacute;faut est temporairement pass&eacute;e
-&agrave; "always" dans les version 2.3.9 et 2.3.10</compatibility>
 
 <usage>
     <p>Cette directive permet de remplacer, fusionner, ou
@@ -467,8 +465,11 @@ Header merge Cache-Control no-store env=NO_STORE
     argument suivant. Si <var>valeur</var> contient des espaces, elle
     doit &ecirc;tre entour&eacute;e de guillemets. <var>valeur</var> peut &ecirc;tre une
     cha&icirc;ne de caract&egrave;res, une cha&icirc;ne contenant des sp&eacute;cificateurs de
-    format, ou une combinaison des deux. <var>valeur</var> supporte les
-    sp&eacute;cificateurs de format suivants :</p>
+    format propres &agrave; <module>mod_headers</module> (et des caract&egrave;res
+    litt&eacute;raux), ou une expression  <a href="../expr.html">ap_expr</a>
+    pr&eacute;fix&eacute;e par <em>expr=</em>.</p>
+    
+    <p><var>valeur</var> supporte les sp&eacute;cificateurs de format suivants :</p>
 
     <table border="1" style="zebra">
     <columnspec><column width=".25"/><column width=".75"/></columnspec>
