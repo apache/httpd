@@ -505,7 +505,7 @@ static void get_notes_auth(request_rec *r,
         r->user = (char *) *user;
     }
 
-    ap_log_rerror(APLOG_MARK, APLOG_TRACE6, 0, r,
+    ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r,
                   "from notes: user: %s, pw: %s, method: %s, mimetype: %s",
                   user ? *user : "<null>", pw ? *pw : "<null>",
                   method ? *method : "<null>", mimetype ? *mimetype : "<null>");
@@ -566,7 +566,7 @@ static apr_status_t get_session_auth(request_rec * r,
         r->user = (char *) *user;
     }
 
-    ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
+    ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r,
                   "from session: " MOD_SESSION_USER ": %s, " MOD_SESSION_PW
                   ": %s, " MOD_AUTH_FORM_HASH ": %s",
                   user ? *user : "<null>", pw ? *pw : "<null>",
@@ -667,6 +667,13 @@ static int get_form_auth(request_rec * r,
             *sent_body = pair->value;
         }
     }
+
+    ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r,
+                  "from form: user: %s, pw: %s, method: %s, mimetype: %s, location: %s",
+                  sent_user ? *sent_user : "<null>", sent_pw ? *sent_pw : "<null>",
+                  sent_method ? *sent_method : "<null>",
+                  sent_mimetype ? *sent_mimetype : "<null>",
+                  sent_loc ? *sent_loc : "<null>");
 
     /* set the user, even though the user is unauthenticated at this point */
     if (sent_user && *sent_user) {
