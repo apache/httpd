@@ -1811,6 +1811,10 @@ int ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
         }
     } while (interim_response && (interim_response < AP_MAX_INTERIM_RESPONSES));
 
+    /* We have to cleanup bb brigade, because buckets inserted to it could be
+     * created from scpool and this pool can be freed before this brigade. */
+    apr_brigade_cleanup(bb);
+
     /* See define of AP_MAX_INTERIM_RESPONSES for why */
     if (interim_response >= AP_MAX_INTERIM_RESPONSES) {
         return ap_proxyerror(r, HTTP_BAD_GATEWAY,
