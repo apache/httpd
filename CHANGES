@@ -1,5 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
+  *) mod_ssl: Add -t -DDUMP_CA_CERTS option which dumps the filenames of all
+     configured SSL CA certificates to stdout the same way as DUMP_CERTS does.
+     [Jan Kaluza]
 
   *) mod_cache_disk: Fix potential hangs on Windows when using mod_cache_disk. 
      PR55833. [Eric Covener]
