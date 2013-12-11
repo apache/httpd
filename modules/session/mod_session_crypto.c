@@ -407,13 +407,6 @@ static int session_crypto_init(apr_pool_t *p, apr_pool_t *plog,
     session_crypto_conf *conf = ap_get_module_config(s->module_config,
             &session_crypto_module);
 
-    /* session_crypto_init() will be called twice. Don't bother
-     * going through all of the initialization on the first call
-     * because it will just be thrown away.*/
-    if (ap_state_query(AP_SQ_MAIN_STATE) == AP_SQ_MS_CREATE_PRE_CONFIG) {
-        return OK;
-    }
-
     if (conf->library) {
 
         const apu_err_t *err = NULL;
