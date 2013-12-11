@@ -1,5 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
+
+  *) mod_auth_form: Add a debug message when the fields on a form are not
+     recognised. [Graham Leggett]
+
   *) mod_ssl: Add -t -DDUMP_CA_CERTS option which dumps the filenames of all
      configured SSL CA certificates to stdout the same way as DUMP_CERTS does.
      [Jan Kaluza]
