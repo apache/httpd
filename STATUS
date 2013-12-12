@@ -196,6 +196,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       - the 3 first ones partially apply because of files which are not part of 2.4.x
     +1: jailletc36
 
+  * mod_proxy_http: Core dumped under high load. Bugz 50335
+    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1534321
+                 http://svn.apache.org/viewvc?view=revision&revision=1550061
+    2.4.x patches: trunk patches work
+    +1: jim
 
 OTHER PROPOSALS
 
