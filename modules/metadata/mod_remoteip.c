@@ -290,7 +290,7 @@ static int remoteip_modify_request(request_rec *r)
             break;
         }
 
-        /* We map as IPv4 rather than IPv6 for equivalant host names
+        /* We map as IPv4 rather than IPv6 for equivalent host names
          * or IPV4OVERIPV6
          */
         rv = apr_sockaddr_info_get(&temp_sa,  parse_remote,
