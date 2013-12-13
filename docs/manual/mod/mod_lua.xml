@@ -1103,7 +1103,7 @@ end
     <highlight language="lua">
 function handle(r)
     -- Acquire a database handle
-    local database, err = r:dbacquire("mysql", "server=localhost,user=root,dbname=mydb")
+    local database, err = r:dbacquire("mysql", "server=localhost,user=someuser,password=somepass,dbname=mydb")
     if not err then
         -- Select some information from it
         local results, err = database:select(r, "SELECT `name`, `age` FROM `people` WHERE 1")
