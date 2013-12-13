@@ -37,11 +37,11 @@ typedef struct {
 } remoteip_proxymatch_t;
 
 typedef struct {
-    /** The header to retrieve a proxy-via ip list */
+    /** The header to retrieve a proxy-via IP list */
     const char *header_name;
     /** A header to record the proxied IP's
      * (removed as the physical connection and
-     * from the proxy-via ip header value list)
+     * from the proxy-via IP header value list)
      */
     const char *proxies_header_name;
     /** A list of trusted proxies, ideally configured
@@ -53,9 +53,9 @@ typedef struct {
 typedef struct {
     apr_sockaddr_t *useragent_addr;
     char *useragent_ip;
-    /** The list of proxy ip's ignored as remote ip's */
+    /** The list of proxy IP's ignored as remote IP's */
     const char *proxy_ips;
-    /** The remaining list of untrusted proxied remote ip's */
+    /** The remaining list of untrusted proxied remote IP's */
     const char *proxied_remote;
 } remoteip_req_t;
 
@@ -290,7 +290,7 @@ static int remoteip_modify_request(request_rec *r)
             break;
         }
 
-        /* We map as IPv4 rather than IPv6 for equivilant host names
+        /* We map as IPv4 rather than IPv6 for equivalant host names
          * or IPV4OVERIPV6
          */
         rv = apr_sockaddr_info_get(&temp_sa,  parse_remote,
@@ -309,7 +309,6 @@ static int remoteip_modify_request(request_rec *r)
                 remote = parse_remote;
             }
             break;
-
         }
 
         addrbyte = (unsigned char *) &temp_sa->sa.sin.sin_addr;
