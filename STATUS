@@ -114,6 +114,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     [wrowe asks] Where is verification of (!keepalive)?  Do we know the
                  connection will be closed anytime in the near future?
 
+ * mod_proxy_http: Core dumped under high load due to allocator / pool lifetime
+   issues. PR 50335
+   Trunk version of patch:
+      http://svn.apache.org/viewvc?view=revision&revision=1534321
+      http://svn.apache.org/viewvc?view=revision&revision=1550061
+   Backport version for 2.2.x of patch:
+      http://people.apache.org/~rpluem/patches/mod_proxy_http_50335.2.2.x.diff
+   +1: rpluem,
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * mod_cache: Realign the cache_quick_handler() to behave identically
