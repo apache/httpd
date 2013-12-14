@@ -463,7 +463,7 @@ mandat&eacute;es</description>
     type="section">Proxy</directive> ne s'appliquent qu'au contenu
     mandat&eacute; concern&eacute;. Les jokers de style shell sont autoris&eacute;s.</p>
 
-    <p>Par eexemple, les lignes suivantes n'autoriseront &agrave; acc&eacute;der &agrave; un
+    <p>Par exemple, les lignes suivantes n'autoriseront &agrave; acc&eacute;der &agrave; un
     contenu via votre serveur mandataire que les h&ocirc;tes appartenant &agrave;
     <code>votre-reseau.example.com</code> :</p>
 
