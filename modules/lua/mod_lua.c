@@ -978,11 +978,11 @@ static const char *register_named_block_function_hook(const char *name,
     if (line[0]) { 
         const char *word;
         word = ap_getword_conf(cmd->temp_pool, &line);
-        if (word && *word) {
+        if (*word) {
             function = apr_pstrdup(cmd->pool, word);
         }
         word = ap_getword_conf(cmd->temp_pool, &line);
-        if (word && *word) {
+        if (*word) {
             if (!strcasecmp("early", word)) { 
                 when = AP_LUA_HOOK_FIRST;
             }
