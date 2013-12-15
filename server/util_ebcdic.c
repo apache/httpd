@@ -102,7 +102,7 @@ int ap_rvputs_proto_in_ascii(request_rec *r, ...)
         if (s == NULL)
             break;
         len = strlen(s);
-        ascii_s = apr_pstrndup(r->pool, s, len);
+        ascii_s = apr_pstrmemdup(r->pool, s, len);
         ap_xlate_proto_to_ascii(ascii_s, len);
         if (ap_rputs(ascii_s, r) < 0)
             return -1;
