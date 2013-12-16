@@ -168,7 +168,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     +1: jim, druggeri
 
   * mod_proxy: Use consistent canon formats for http, ajp and fcgi (if provided
-    port is the default port, don't add to canon URI).
+    port is the default port, don't add to canon URI). Ensures that ajp and
+    fcgi uses the defined workers and not the default generic reverse proxy
+    worker.
     trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1542562
     2.4.x patch: http://people.apache.org/~jim/patches/proxy-port-scheme.patch
     +1: jim
