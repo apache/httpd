@@ -196,6 +196,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       - https://svn.apache.org/viewvc?view=revision&revision=1535699
     2.4.x patches: trunk patches work
       - the 3 first ones partially apply because of files which are not part of 2.4.x
+        http://people.apache.org/~jim/patches/ez-2.4-v1.patch
     +1: jailletc36
 
   * mod_proxy_http: Core dumped under high load. Bugz 50335
@@ -227,6 +228,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       - https://svn.apache.org/viewvc?view=revision&revision=1551012
       - https://svn.apache.org/viewvc?view=revision&revision=1551013
     2.4.x patches: trunk patches work
+                   http://people.apache.org/~jim/patches/ez-2.4-v2.patch
+
     +1: jailletc36
 
 
