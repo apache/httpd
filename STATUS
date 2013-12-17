@@ -203,7 +203,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1534321
                  http://svn.apache.org/viewvc?view=revision&revision=1550061
     2.4.x patches: trunk patches work
-    +1: jim
+    +1: jim, jorton
 
   * easy proposals to synch 2.4.x and trunk
       - log.c: avoid needless apr_pstrdup()
