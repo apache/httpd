@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) FreeBSD: Disable IPv4-mapped listening sockets by default for versions
+     5+ instead of just for FreeBSD 5. PR 53824. [Jeff Trawick]
+
   *) mod_auth_form: Add a debug message when the fields on a form are not
      recognised. [Graham Leggett]
 
