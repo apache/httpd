@@ -153,13 +153,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: http://people.apache.org/~jim/patches/proxy-port-scheme.patch
     +1: jim
 
-  * mod_socache_shmcb: Fix compiler warning by using correct apr_size_t for the constant
-    later printed with the APR_SIZE_T_FMT format macro.
-    Not needed in trunk.
-    2.4.x patch: http://people.apache.org/~rjung/patches/mod_socache_shmcb-size_t-2_4.patch
-    +1: rjung
-    -0: jailletc36: I prefer above solution
-
   * easy proposals to synch 2.4.x and trunk
       - Use apr_file_printf(... "%pm"...) instead of explicit call to apr_strerror
       - remove unused variables
