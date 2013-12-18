@@ -870,7 +870,7 @@ static apr_status_t ap_headers_output_filter(ap_filter_t *f,
     headers_conf *dirconf = ap_get_module_config(f->r->per_dir_config,
                                                  &headers_module);
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, f->r->server, APLOGNO(01502)
+    ap_log_error(APLOG_MARK, APLOG_TRACE2, 0, f->r->server, APLOGNO(01502)
                  "headers: ap_headers_output_filter()");
 
     /* do the fixup */
