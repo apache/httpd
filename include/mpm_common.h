@@ -321,7 +321,6 @@ AP_DECLARE(apr_status_t) ap_mpm_podx_signal(ap_pod_t *pod,
 AP_DECLARE(void) ap_mpm_podx_killpg(ap_pod_t *pod, int num,
                                     ap_podx_restart_t graceful);
 
-
 #endif /* !WIN32 || DOXYGEN */
 
 /**
