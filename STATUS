@@ -121,7 +121,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewvc?view=revision&revision=1550061
    Backport version for 2.2.x of patch:
       http://people.apache.org/~rpluem/patches/mod_proxy_http_50335.2.2.x.diff
-   +1: rpluem,
+   +1: rpluem, jorton, 
 
 PATCHES/ISSUES THAT ARE STALLED
 
