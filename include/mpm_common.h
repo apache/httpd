@@ -278,12 +278,11 @@ AP_DECLARE(apr_status_t) ap_mpm_pod_signal(ap_pod_t *pod);
  */
 AP_DECLARE(void) ap_mpm_pod_killpg(ap_pod_t *pod, int num);
 
-    
 #define AP_MPM_PODX_RESTART_CHAR '$'
 #define AP_MPM_PODX_GRACEFUL_CHAR '!'
-    
+
 typedef enum { AP_MPM_PODX_NORESTART, AP_MPM_PODX_RESTART, AP_MPM_PODX_GRACEFUL } ap_podx_restart_t;
-    
+
 /**
  * Open the extended pipe-of-death.
  * @param p The pool to use for allocating the pipe
