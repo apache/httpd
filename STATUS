@@ -98,27 +98,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_socache_shmcb.c: Remove arbitrary restriction on shared memory size
-    previously limited to 64MB.
-    trunk patch: http://svn.apache.org/r1493921
-    2.4.x patch: trunk patch works modulo CHANGES
-    +1: minfrin, jim
-    +1: jailletc36 with r1515162
-    sf notes: I think a number of variables need to be changed from int to
-              apr_size_t, including subcache_size, subcache_data_offset,
-              subcache_data_size, total, cache_total. 
-              AIUI, especially cache_total starts to go wrong if the cache
-              gets larger than 4GB (UINT_MAX). Maybe set the limit at
-              MIN(APR_SIZE_MAX,UINT_MAX) until this is fixed?
-    minfrin: Surely we should just fix these unsigned ints? Not sure what value
-             there would be in trying to bake in an arbitrary limit in the mean
-             time when we can just fix the underlying problem instead.
-        jim: Agree w/ minfrin
-    sf:      This would require someone to do the work. Until someone has the 
-             necessary free cycles, I propose to include
-             http://svn.apache.org/r1515162
-    rjung:   See also interim proposal below which becomes obsolete once the
-             one here is accepted but fixes a compiler warning in the meantime.
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
