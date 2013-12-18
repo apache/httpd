@@ -28,6 +28,8 @@
 #include "apr_thread_mutex.h"
 #include "apr_tables.h"
 #include "util_cookies.h"
+
+#define APR_WANT_BYTEFUNC
 #include "apr_want.h"
 
 extern apr_thread_mutex_t* lua_ivm_mutex;
