@@ -98,10 +98,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
-
   * mod_socache_shmcb.c: Remove arbitrary restriction on shared memory size
     previously limited to 64MB.
     trunk patch: http://svn.apache.org/r1493921
@@ -123,6 +119,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              http://svn.apache.org/r1515162
     rjung:   See also interim proposal below which becomes obsolete once the
              one here is accepted but fixes a compiler warning in the meantime.
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
 
   * ab: Check if malloc succeeded
     PR54344
