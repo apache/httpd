@@ -2225,17 +2225,6 @@ static const char *proxysection(cmd_parms *cmd, void *mconfig, const char *arg)
             return "Regex could not be compiled";
         }
     }
-    else if (!strcmp(cmd->path, "~")) {
-        cmd->path = ap_getword_conf(cmd->pool, &arg);
-        if (!cmd->path)
-            return "<Proxy ~ > block must specify a path";
-        if (strncasecmp(cmd->path, "proxy:", 6))
-            cmd->path += 6;
-        r = ap_pregcomp(cmd->pool, cmd->path, AP_REG_EXTENDED);
-        if (!r) {
-            return "Regex could not be compiled";
-        }
-    }
 
     /* initialize our config and fetch it */
     conf = ap_set_config_vectors(cmd->server, new_dir_conf, cmd->path,
