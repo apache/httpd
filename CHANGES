@@ -1,6 +1,13 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_proxy: Remove <Proxy ~ wildcard-url> syntax which:
+      - is equivalent to <ProxyMatch wildcard-url>
+      - has never been documented
+      - incorrectly checks parameters
+      - is buggy
+     [Christophe Jaillet]
+
   *) FreeBSD: Disable IPv4-mapped listening sockets by default for versions
      5+ instead of just for FreeBSD 5. PR 53824. [Jeff Trawick]
 
