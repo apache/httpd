@@ -18,13 +18,13 @@
 
 all: all-recursive
 
-include $(builddir)/modules.mk
+.include "$(builddir)/modules.mk"
 
 TARGETS = $(static)
 SHARED_TARGETS = $(shared)
 INSTALL_TARGETS = install-modules-$(INSTALL_DSO)
 
-include $(top_builddir)/build/rules.mk
+.include "$(top_builddir)/build/rules.mk"
 
 install-modules-yes: $(SHARED_TARGETS)
 	@if test -n "$(shared)"; then \

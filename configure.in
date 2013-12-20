@@ -909,24 +909,35 @@ if test "x$perlbin" = "x"; then
 fi
 AC_SUBST(perlbin)
 
-dnl If we are running on BSD/OS, we need to use the BSD .include syntax.
+dnl If we are running on a BSD variant, see if we need to use the BSD .include syntax.
 
 BSD_MAKEFILE=no
 ap_make_include=include
+ap_make_ifdef=ifdef
+ap_make_else=else
+ap_make_endif=endif
 ap_make_delimiter=' '
 case $host in
-*bsdi*)
+*bsd*)
     # Check whether they've installed GNU make
     if make --version > /dev/null 2>&1; then
         true
     else
         BSD_MAKEFILE=yes
         ap_make_include=.include
+        ap_make_ifdef=.ifdef
+        ap_make_else=.else
+        ap_make_endif=.endif
         ap_make_delimiter='"'
     fi
     ;;
 esac
+AC_MSG_NOTICE([using BSD Makefile syntax... $BSD_MAKEFILE])
+
 AC_SUBST(ap_make_include)
+AC_SUBST(ap_make_ifdef)
+AC_SUBST(ap_make_else)
+AC_SUBST(ap_make_endif)
 AC_SUBST(ap_make_delimiter)
 
 dnl Ensure that docs/conf is created.

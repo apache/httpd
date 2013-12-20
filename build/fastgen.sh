@@ -52,7 +52,11 @@ if test "$bsd_makefile" = "yes"; then
         real_srcdir=$top_srcdir/$dir
         real_builddir=$top_builddir/$dir
     fi
-    cat - $top_srcdir/$makefile.in <<EOF |sed 's/^include \(.*\)/.include "\1"/' >$makefile 
+    cat - $top_srcdir/$makefile.in <<EOF      | \
+       sed 's/^include \(.*\)/.include "\1"/' | \
+       sed 's/^ifdef \(.*\)/.ifdef \1/'       | \
+       sed 's/^else\(.*\)/.else\1/'           | \
+       sed 's/^endif\(.*\)/.endif\1/' >$makefile 
 top_srcdir   = $top_srcdir
 top_builddir = $top_builddir
 srcdir       = $real_srcdir
