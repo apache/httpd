@@ -18,6 +18,6 @@
 
 TARGETS = $(LTLIBRARY_NAME)
 
-include $(top_builddir)/build/rules.mk
-include $(top_srcdir)/build/library.mk
+.include "$(top_builddir)/build/rules.mk"
+.include "$(top_srcdir)/build/library.mk"
 
