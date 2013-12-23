@@ -202,6 +202,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                    http://people.apache.org/~jim/patches/ez-2.4-v2.patch
     +1: jailletc36, jim
 
+  * mod_cache_disk hangs on windows reading from closed files
+    trunk patch: http://svn.apache.org/r1547845
+    2.4.x patch: trunk works
+    +1 covener
+  
+  * mod_cache invalidates cached responses when reval returns 304+Expires
+    trunk patch: http://svn.apache.org/r1518269
+    2.4.x patch: trunk works
+    +1 covener
 
 OTHER PROPOSALS
 
