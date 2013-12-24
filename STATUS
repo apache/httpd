@@ -203,6 +203,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     trunk patch: http://svn.apache.org/r1518269
     2.4.x patch: trunk works
     +1 covener
+  
+  * mod_ldap: restrict a recent WIN32 change to only apply when the MS SDK is used
+    trunk patch: http://svn.apache.org/r1551802
+    2.4.x patch: trunk works
+    +1 covener
 
 OTHER PROPOSALS
 
