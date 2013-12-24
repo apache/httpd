@@ -1032,7 +1032,7 @@ static apr_status_t ssl_io_filter_Upgrade(ap_filter_t *f,
     token_string = apr_pstrdup(r->pool,upgrade);
     token = apr_strtok(token_string,", ",&token_state);
     while (token && strcmp(token,"TLS/1.0")) {
-        apr_strtok(NULL,", ",&token_state);
+        token = apr_strtok(NULL,", ",&token_state);
     }
     /* "Upgrade: TLS/1.0" header not found, don't do Upgrade */
     if (!token) {
@@ -1043,7 +1043,7 @@ static apr_status_t ssl_io_filter_Upgrade(ap_filter_t *f,
     token_string = apr_pstrdup(r->pool,connection);
     token = apr_strtok(token_string,",",&token_state);
     while (token && strcmp(token,"Upgrade")) {
-        apr_strtok(NULL,",",&token_state);
+        token = apr_strtok(NULL,",",&token_state);
     }
     /* "Connection: Upgrade" header not found, don't do Upgrade */
     if (!token) {
