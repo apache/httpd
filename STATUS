@@ -105,17 +105,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   * ab: Check if malloc succeeded
     PR54344
     trunk: http://svn.apache.org/viewvc?view=revision&revision=1488492
+           http://svn.apache.org/viewvc?view=revision&revision=1542533
     2.4.x: trunk patch works
-    +1: jailletc36, jim
-    trawick: what happens if malloc() fails?  same msg error over and over?
-             (doubtful it gets better for more than a very short while, until
-             the leak or fragmentation overtakes temporary freeing of memory)
-             is the state of that connection messed up from leaving
-             ssl_proceed_handshake() early?
-    sf: I also think that aborting on oom with a clean error message would
-        be better.
-        I would add http://svn.apache.org/viewvc?view=revision&revision=1542533
-    trawick: +1 to 1542533
+    +1: trawick, covener
 
   * mod_auth_form: Make sure the optional functions are loaded even when
     the AuthFormProvider isn't specified.
