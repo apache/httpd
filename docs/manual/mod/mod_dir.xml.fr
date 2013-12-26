@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1421821 -->
+<!-- English Revision: 1553502 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -159,7 +159,19 @@ r&eacute;pertoires.
     <directive>DirectoryIndex</directive> qui est s&eacute;lectionn&eacute;e et
     renvoy&eacute;e de mani&egrave;re transparente au client. La directive
     <directive>DirectoryIndexRedirect</directive> permet de rediriger le
-    client vers une ressource externe.</p>
+    client via une redirection de type 3xx.</p>
+
+    Les arguments accept&eacute;s sont :
+    <ul>
+     <li><code>on</code> : envoie une redirection 302 vers l'index choisi.</li>
+     <li><code>off</code> : n'envoie aucune redirection. Il s'agit du comportement historique de mod_dir.</li>
+     <li><code>permanent</code> : envoie une redirection 301 (permanent) vers l'index choisi.</li>
+     <li><code>temp</code> : ceci est &eacute;quivalent &agrave; <code>on</code></li>
+     <li><code>seeother</code> : envoie une redirection 303 (&eacute;galement appel&eacute;e "See Other") vers l'index choisi.</li>
+     <li><var>3xx-code</var> : envoie une redirection accompagn&eacute;e du code 3xx choisi.</li>
+    </ul>
+
+
 
     <example><title>Exemple</title>
     <highlight language="config">
