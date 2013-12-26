@@ -68,7 +68,7 @@ For usage details, see the configuration example below.</p>
 </section>
 
 <section id="client">
-<title>Client Login</title>
+<title>Client Login integration</title>
 <p>Some administrators may wish to implement client-side session
 management that works in concert with the server-side login/logout
 capabilities offered by this module, for example, by setting or unsetting
