@@ -98,12 +98,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_proxy_http: Core dumped under high load. Bugz 50335
-    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1534321
-                 http://svn.apache.org/viewvc?view=revision&revision=1550061
-    2.4.x patches: trunk patches work
-    +1: jim, jorton, minfrin
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]

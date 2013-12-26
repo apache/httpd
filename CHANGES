@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.8
 
+  * mod_proxy_http: Core dumped under high load. PR 50335
+    [Jan Kaluza <jkaluza redhat.com>]
+
   *) mod_socache_shmcb.c: Remove arbitrary restriction on shared memory size
      previously limited to 64MB. [Jens Låås <jelaas gmail.com>]
 
