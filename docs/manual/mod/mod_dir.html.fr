@@ -172,7 +172,19 @@ répertoires.
     <code class="directive">DirectoryIndex</code> qui est sélectionnée et
     renvoyée de manière transparente au client. La directive
     <code class="directive">DirectoryIndexRedirect</code> permet de rediriger le
-    client vers une ressource externe.</p>
+    client via une redirection de type 3xx.</p>
+
+    Les arguments acceptés sont :
+    <ul>
+     <li><code>on</code> : envoie une redirection 302 vers l'index choisi.</li>
+     <li><code>off</code> : n'envoie aucune redirection. Il s'agit du comportement historique de mod_dir.</li>
+     <li><code>permanent</code> : envoie une redirection 301 (permanent) vers l'index choisi.</li>
+     <li><code>temp</code> : ceci est équivalent à <code>on</code></li>
+     <li><code>seeother</code> : envoie une redirection 303 (également appelée "See Other") vers l'index choisi.</li>
+     <li><var>3xx-code</var> : envoie une redirection accompagnée du code 3xx choisi.</li>
+    </ul>
+
+
 
     <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">
       DirectoryIndexRedirect on
