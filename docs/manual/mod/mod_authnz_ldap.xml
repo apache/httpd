@@ -1118,10 +1118,13 @@ query to set the REMOTE_USER environment variable</description>
     value of the attribute specified. Make sure that this attribute is
     included in the list of attributes in the AuthLDAPUrl definition,
     otherwise this directive will have no effect. This directive, if
-    present, takes precedence over AuthLDAPRemoteUserIsDN. This
+    present, takes precedence over <directive module="mod_authnz_ldap"
+    >AuthLDAPRemoteUserIsDN</directive>. This
     directive is useful should you want people to log into a website
     using an email address, but a backend application expects the
     username as a userid.</p>
+    <p> This directive only has effect when this module is used for 
+    authentication.</p>
 </usage>
 </directivesynopsis>
 
@@ -1141,6 +1144,8 @@ environment variable</description>
     distinguished name of the authenticated user, rather than just
     the username that was passed by the client. It is turned off by
     default.</p>
+    <p> This directive only has effect when this module is used for
+    authentication.</p>
 </usage>
 </directivesynopsis>
 
