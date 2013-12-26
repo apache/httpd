@@ -98,31 +98,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * easy proposals to synch 2.4.x and trunk
-      - log.c: avoid needless apr_pstrdup()
-      - Use apr_pstrmemdup instead of apr_pstrndup when this is safe.
-      - Use apr_pstrmemdup instead of apr_pstrndup when this is safe.
-      - Remove redundant check
-      - 'ap_getword_conf' does not return NULL but an empty string
-      - Ease logic around 'ap_getword_conf' and drop useless line of code.
-      - 'ap_getword_conf' can not return NULL
-      - 'ap_getword_conf' can not return NULL
-      - Remove redundant check (already performed the line before)
-      - Use 'apr_pstrmemdup' instead of 'apr_pstrndup' when applicable
-    trunk patches:
-      - https://svn.apache.org/viewvc?view=revision&revision=1532122
-      - https://svn.apache.org/viewvc?view=revision&revision=1549676
-      - https://svn.apache.org/viewvc?view=revision&revision=1549680
-      - https://svn.apache.org/viewvc?view=revision&revision=1550651
-      - https://svn.apache.org/viewvc?view=revision&revision=1551005
-      - https://svn.apache.org/viewvc?view=revision&revision=1551009
-      - https://svn.apache.org/viewvc?view=revision&revision=1551010
-      - https://svn.apache.org/viewvc?view=revision&revision=1551011
-      - https://svn.apache.org/viewvc?view=revision&revision=1551012
-      - https://svn.apache.org/viewvc?view=revision&revision=1551013
-    2.4.x patches: trunk patches work
-                   http://people.apache.org/~jim/patches/ez-2.4-v2.patch
-    +1: jailletc36, jim, minfrin
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:

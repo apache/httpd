@@ -292,7 +292,7 @@ static apr_status_t hm_file_update_stat(hm_ctx_t *ctx, hm_server_t *s, apr_pool_
             buf[bsize - 1] = 0;
             t = strchr(buf, ' ');
             if (t) {
-                ip = apr_pstrndup(pool, buf, t - buf);
+                ip = apr_pstrmemdup(pool, buf, t - buf);
             } else {
                 ip = NULL;
             }

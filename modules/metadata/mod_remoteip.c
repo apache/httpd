@@ -198,7 +198,7 @@ static const char *proxylist_read(cmd_parms *cmd, void *cfg,
     while (!(ap_cfg_getline(lbuf, MAX_STRING_LEN, cfp))) {
         args = lbuf;
         while (*(arg = ap_getword_conf(cmd->temp_pool, &args)) != '\0') {
-            if (*arg == '#' || *arg == '\0') {
+            if (*arg == '#') {
                 break;
             }
             errmsg = proxies_set(cmd, cfg, arg);

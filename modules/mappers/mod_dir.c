@@ -66,7 +66,7 @@ static const char *add_index(cmd_parms *cmd, void *dummy, const char *arg)
             /* peek to see if "disabled" is first in a series of arguments */
             const char *tt = t;
             const char *ww = ap_getword_conf(cmd->temp_pool, &tt);
-            if (ww == NULL || !ww[0]) {
+            if (ww[0] == '\0') {
                /* "disabled" is first, and alone */
                apr_array_clear(d->index_names); 
                break;
