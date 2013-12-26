@@ -26,8 +26,6 @@
 <a href="../fr/platform/windows.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ko/platform/windows.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 
     <p>Ce document décrit l'installation, la configuration et
@@ -72,7 +70,12 @@
     
 
     <p>Le projet du serveur HTTP Apache proprement dit ne fournit pas de
-    distribution binaire mais seulement le code source. Si vous n'êtes
+    distribution binaire mais seulement le code source. Certains membres
+    du projet <em>peuvent</em> mettre à disposition des paquets binaires
+    à titre individuel, mais ceux-ci n'ont pas vocation à être
+    distribués publiquement.</p>
+    
+    <p>Si vous n'êtes
     pas en mesure de compiler le serveur HTTP Apache vous-même, vous
     pouvez vous procurer un paquet binaire auprès des nombreuses
     distributions disponibles sur Internet.</p>

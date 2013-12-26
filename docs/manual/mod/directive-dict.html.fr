@@ -175,7 +175,7 @@
       <dt>répertoire</dt>
 
       <dd>Une directive spécifiée comme valide dans ce contexte peut
-      être utilisée à l'intérieur de conteneurs <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>, <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>, <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code>, et <code class="directive"><a href="../mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code> dans les
+      être utilisée à l'intérieur de conteneurs <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>, <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>, <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code>, <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code>, et <code class="directive"><a href="../mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code> dans les
       fichiers de configuration du serveur, en tenant compte des
       restrictions précisées dans la documentation sur les <a href="../sections.html">Sections de configuration</a>.</dd>
 
