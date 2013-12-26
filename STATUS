@@ -98,23 +98,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * easy proposals to synch 2.4.x and trunk
-      - Use apr_file_printf(... "%pm"...) instead of explicit call to apr_strerror
-      - remove unused variables
-      - axe some useless assignments (clang scan-build)
-      - Remove useless apr_pstrdup as done for other mod_auth modules in r1026660
-      - Remove unused APXS setting from template for generated Makefile
-    trunk patches:
-      - https://svn.apache.org/viewvc?view=revision&revision=1464674
-      - https://svn.apache.org/viewvc?view=revision&revision=1465084
-      - https://svn.apache.org/viewvc?view=revision&revision=1534997
-      - https://svn.apache.org/viewvc?view=revision&revision=1538149
-      - https://svn.apache.org/viewvc?view=revision&revision=1535699
-    2.4.x patches: trunk patches work
-      - the 3 first ones partially apply because of files which are not part of 2.4.x
-        http://people.apache.org/~jim/patches/ez-2.4-v1.patch
-    +1: jailletc36, jim, minfrin
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]

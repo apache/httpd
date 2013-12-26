@@ -210,7 +210,6 @@ static authz_status dbmfilegroup_check_authorization(request_rec *r,
     char *user = r->user;
     const char *realm = ap_auth_name(r);
     const char *filegroup = NULL;
-    const char *orig_groups = NULL;
     apr_status_t status;
     const char *groups;
     char *v;
@@ -245,12 +244,9 @@ static authz_status dbmfilegroup_check_authorization(request_rec *r,
         return AUTHZ_DENIED;
     }
 
-    orig_groups = groups;
-
     filegroup = authz_owner_get_file_group(r);
 
     if (filegroup) {
-        groups = orig_groups;
         while (groups[0]) {
             v = ap_getword(r->pool, &groups, ',');
             if (!strcmp(v, filegroup)) {
