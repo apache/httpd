@@ -1,0 +1,145 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 1465602 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_authz_dbm.xml.meta">
+
+<name>mod_authz_dbm</name>
+<description>Autorisation par groupes sur base de fichiers DBM</description>
+<status>Extension</status>
+<sourcefile>mod_authz_dbm.c</sourcefile>
+<identifier>authz_dbm_module</identifier>
+
+<summary>
+    <p>Ce module propose d'autoriser ou d'interdire l'acc&egrave;s &agrave; certaines
+    zones du site web aux utilisateurs authentifi&eacute;s en fonction de leur
+    appartenance &agrave; un groupe sp&eacute;cifi&eacute;. Le module
+    <module>mod_authz_groupfile</module> fournit une fonctionnalit&eacute;
+    similaire.</p>
+</summary>
+
+<seealso><directive module="mod_authz_core">Require</directive></seealso>
+
+<section id="examples">
+<title>Exemple d'utilisation</title>
+<p><em>Notez que si vous utilisez mod_authz_dbm, le mot-cl&eacute; pour les
+groupes d'authentification qui &eacute;tait auparavant <code>group</code> est
+maintenant <code>dbm-group</code> :</em>
+</p>
+<highlight language="config">
+&lt;Directory "/foo/bar"&gt;
+  AuthType Basic
+  AuthName "Secure Area"
+  AuthBasicProvider dbm
+  AuthDBMUserFile site/data/users
+  AuthDBMGroupFile site/data/users
+  Require dbm-group admin
+&lt;/Directory&gt;
+</highlight>
+</section>
+
+<directivesynopsis>
+<name>AuthDBMGroupFile</name>
+<description>D&eacute;finit le nom du fichier de base de donn&eacute;es qui liste
+les groupes d'utilisateurs.</description>
+<syntax>AuthDBMGroupFile <var>chemin-fichier</var></syntax>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>La directive <directive>AuthDBMGroupFile</directive> d&eacute;finit
+    le nom d'un fichier DBM contenant la liste des groupes
+    d'utilisateurs, destin&eacute;s &agrave; la gestion des autorisations.
+    <var>chemin-fichier</var> est le chemin absolu du
+    fichier de groupes.</p>
+
+    <p>La cl&eacute; du fichier de groupes est le nom d'utilisateur. La valeur
+    de chaque cl&eacute; est la liste des groupes, s&eacute;par&eacute;s par des virgules,
+    auxquels l'utilisateur appartient. Cette liste ne doit comporter
+    ni espace, ni caract&egrave;re ':'.</p>
+
+    <note type="warning"><title>S&eacute;curit&eacute;</title>
+      <p>Le fichier sp&eacute;cifi&eacute; par la directive
+<directive>AuthDBMGroupFile</directive> doit &ecirc;tre situ&eacute; en dehors de
+l'arborescence des documents du serveur web. Ne le placez
+<strong>surtout pas</strong> dans le r&eacute;pertoire qu'il prot&egrave;ge, faute
+de quoi, les clients pourraient le t&eacute;l&eacute;charger, en l'abscence de
+protection suppl&eacute;mentaire.</p>
+    </note>
+
+    <p>Utilisation combin&eacute;e de fichiers DBM de groupes et de mots de
+    passe : dans certains cas, il est plus simple de g&eacute;rer une seule
+    base de donn&eacute;es contenant les groupes et mots de passe de chaque
+    utilisateur. L'&eacute;criture de programmes de support en est ainsi
+    simplifi&eacute;e car ils n'ont plus qu'un seul fichier DBM &agrave; g&eacute;rer et
+    &agrave; verrouiller. Pour ce faire, on attribue le m&ecirc;me nom de fichier
+    DBM aux fichiers de groupes et de mots de passe :</p>
+
+    <highlight language="config">
+AuthDBMGroupFile /www/userbase
+AuthDBMUserFile /www/userbase
+    </highlight>
+
+    <p>La cl&eacute; du fichier DBM unique est le nom d'utilisateur. La
+    valeur associ&eacute;e &agrave; la cl&eacute; contient :</p>
+
+    <example>
+      Mot de passe chiffr&eacute; : Liste de groupes [ : (ignor&eacute;) ]
+    </example>
+
+    <p>La partie mot de passe contient comme d'habitude le mot de
+    passe chiffr&eacute;. Viennent ensuite le caract&egrave;re ':' et la liste des
+    groupes s&eacute;par&eacute;s par des virgules. Il est possible d'ajouter
+    d'autres donn&eacute;es en fin de ligne apr&egrave;s un autre caract&egrave;re ':',
+    mais elles seront ignor&eacute;es par le module d'autorisation. C'est
+    le format utilis&eacute; par www.telescope.org pour sa base de donn&eacute;es
+    combin&eacute;e groupes et mots de passe.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AuthzDBMType</name>
+<description>D&eacute;finit le type de fichier de base de donn&eacute;es contenant
+la liste des groupes d'utilisateurs</description>
+<syntax>AuthzDBMType default|SDBM|GDBM|NDBM|DB</syntax>
+<default>AuthzDBMType default</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>D&eacute;finit le type de fichier de base de donn&eacute;es contenant la
+    liste des groupes d'utilisateurs. Le type de base de donn&eacute;es par
+    d&eacute;faut est d&eacute;termin&eacute; &agrave; la compilation. Les autres types de bases
+    de donn&eacute;es disponibles d&eacute;pendent aussi de la
+    <a href="../install.html#dbm">configuration de la
+    compilation</a>.</p>
+
+    <p>Quel que soit le programme que vous utilisez pour cr&eacute;er votre
+    fichier de groupes, il est imp&eacute;ratif que celui-ci soit configur&eacute;
+    pour utiliser le m&ecirc;me type de base de donn&eacute;es.</p>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>
