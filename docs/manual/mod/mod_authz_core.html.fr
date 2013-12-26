@@ -57,65 +57,12 @@ d'Apache HTTPD</td></tr></table>
 </ul>
 <h3>Sujets</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#authzalias">Création des alias du fournisseur
-d'autorisation</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#logic">Conteneurs d'autorisation</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#requiredirectives">Les directives Require</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#authzalias">Création des alias du fournisseur
+d'autorisation</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="authzalias" id="authzalias">Création des alias du fournisseur
-d'autorisation</a></h2>
-
-    <p>Il est possible de créer des fournisseurs d'autorisation étendus
-    dans le fichier de configuration et de leur assigner un nom d'alias.
-    On peut ensuite utiliser ces fournisseurs aliasés dans une
-    directive <code class="directive"><a href="#require">Require</a></code> de
-    la même manière qu'on le ferait pour des fournisseurs d'autorisation
-    de base. En plus de la possibilité de créer et d'aliaser un
-    fournisseur étendu, le même fournisseur d'autorisation étendu peut
-    être référencé par diverses localisations.
-    </p>
-
-    <h3><a name="example" id="example">Exemple</a></h3>
-        <p>Dans l'exemple suivant, on crée deux alias de fournisseur
-	d'autorisation ldap différents basés sur le fournisseur
-	d'autorisation ldap-group. Il est ainsi possible pour un seul
-	répertoire de vérifier l'appartenance à un groupe dans plusieurs
-	serveurs ldap :
-        </p>
-
-        <pre class="prettyprint lang-config">
-&lt;AuthzProviderAlias ldap-group ldap-group-alias1 cn=my-group,o=ctx&gt;
-    AuthLDAPBindDN cn=youruser,o=ctx
-    AuthLDAPBindPassword yourpassword
-    AuthLDAPURL ldap://ldap.host/o=ctx
-&lt;/AuthzProviderAlias&gt;
-
-&lt;AuthzProviderAlias ldap-group ldap-group-alias2 cn=my-other-group,o=dev&gt;
-    AuthLDAPBindDN cn=yourotheruser,o=dev
-    AuthLDAPBindPassword yourotherpassword
-    AuthLDAPURL ldap://other.ldap.host/o=dev?cn
-&lt;/AuthzProviderAlias&gt;
-
-Alias /secure /webpages/secure
-&lt;Directory /webpages/secure&gt;
-    Require all granted
-
-    AuthBasicProvider file
-
-    AuthType Basic
-    AuthName LDAP_Protected_Place
-
-    #Opération logique implicite : OU inclusif
-    Require ldap-group-alias1
-    Require ldap-group-alias2
-&lt;/Directory&gt;
-        </pre>
-
-    
-
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="logic" id="logic">Conteneurs d'autorisation</a></h2>
 
@@ -260,6 +207,59 @@ SetEnvIf User-Agent ^KnockKnock/2\.0 let_me_in
     engagé et l'expression réévaluée.</p>
 
   
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="authzalias" id="authzalias">Création des alias du fournisseur
+d'autorisation</a></h2>
+
+    <p>Il est possible de créer des fournisseurs d'autorisation étendus
+    dans le fichier de configuration et de leur assigner un nom d'alias.
+    On peut ensuite utiliser ces fournisseurs aliasés dans une
+    directive <code class="directive"><a href="#require">Require</a></code> de
+    la même manière qu'on le ferait pour des fournisseurs d'autorisation
+    de base. En plus de la possibilité de créer et d'aliaser un
+    fournisseur étendu, le même fournisseur d'autorisation étendu peut
+    être référencé par diverses localisations.
+    </p>
+
+    <h3><a name="example" id="example">Exemple</a></h3>
+        <p>Dans l'exemple suivant, on crée deux alias de fournisseur
+	d'autorisation ldap différents basés sur le fournisseur
+	d'autorisation ldap-group. Il est ainsi possible pour un seul
+	répertoire de vérifier l'appartenance à un groupe dans plusieurs
+	serveurs ldap :
+        </p>
+
+        <pre class="prettyprint lang-config">
+&lt;AuthzProviderAlias ldap-group ldap-group-alias1 cn=my-group,o=ctx&gt;
+    AuthLDAPBindDN cn=youruser,o=ctx
+    AuthLDAPBindPassword yourpassword
+    AuthLDAPURL ldap://ldap.host/o=ctx
+&lt;/AuthzProviderAlias&gt;
+
+&lt;AuthzProviderAlias ldap-group ldap-group-alias2 cn=my-other-group,o=dev&gt;
+    AuthLDAPBindDN cn=yourotheruser,o=dev
+    AuthLDAPBindPassword yourotherpassword
+    AuthLDAPURL ldap://other.ldap.host/o=dev?cn
+&lt;/AuthzProviderAlias&gt;
+
+Alias /secure /webpages/secure
+&lt;Directory /webpages/secure&gt;
+    Require all granted
+
+    AuthBasicProvider file
+
+    AuthType Basic
+    AuthName LDAP_Protected_Place
+
+    #Opération logique implicite : OU inclusif
+    Require ldap-group-alias1
+    Require ldap-group-alias2
+&lt;/Directory&gt;
+        </pre>
+
+    
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

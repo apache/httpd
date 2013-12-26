@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1481359 -->
+<!-- English Revision : 1553469 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -43,58 +43,6 @@ d'Apache HTTPD</compatibility>
     permet aussi l'application d'une logique &eacute;labor&eacute;e au d&eacute;roulement du
     processus d'autorisation.</p>
 </summary>
-
-<section id="authzalias"><title>Cr&eacute;ation des alias du fournisseur
-d'autorisation</title>
-
-    <p>Il est possible de cr&eacute;er des fournisseurs d'autorisation &eacute;tendus
-    dans le fichier de configuration et de leur assigner un nom d'alias.
-    On peut ensuite utiliser ces fournisseurs alias&eacute;s dans une
-    directive <directive module="mod_authz_core">Require</directive> de
-    la m&ecirc;me mani&egrave;re qu'on le ferait pour des fournisseurs d'autorisation
-    de base. En plus de la possibilit&eacute; de cr&eacute;er et d'aliaser un
-    fournisseur &eacute;tendu, le m&ecirc;me fournisseur d'autorisation &eacute;tendu peut
-    &ecirc;tre r&eacute;f&eacute;renc&eacute; par diverses localisations.
-    </p>
-
-    <section id="example"><title>Exemple</title>
-        <p>Dans l'exemple suivant, on cr&eacute;e deux alias de fournisseur
-	d'autorisation ldap diff&eacute;rents bas&eacute;s sur le fournisseur
-	d'autorisation ldap-group. Il est ainsi possible pour un seul
-	r&eacute;pertoire de v&eacute;rifier l'appartenance &agrave; un groupe dans plusieurs
-	serveurs ldap :
-        </p>
-
-        <highlight language="config">
-&lt;AuthzProviderAlias ldap-group ldap-group-alias1 cn=my-group,o=ctx&gt;
-    AuthLDAPBindDN cn=youruser,o=ctx
-    AuthLDAPBindPassword yourpassword
-    AuthLDAPURL ldap://ldap.host/o=ctx
-&lt;/AuthzProviderAlias&gt;
-
-&lt;AuthzProviderAlias ldap-group ldap-group-alias2 cn=my-other-group,o=dev&gt;
-    AuthLDAPBindDN cn=yourotheruser,o=dev
-    AuthLDAPBindPassword yourotherpassword
-    AuthLDAPURL ldap://other.ldap.host/o=dev?cn
-&lt;/AuthzProviderAlias&gt;
-
-Alias /secure /webpages/secure
-&lt;Directory /webpages/secure&gt;
-    Require all granted
-
-    AuthBasicProvider file
-
-    AuthType Basic
-    AuthName LDAP_Protected_Place
-
-    #Op&eacute;ration logique implicite : OU inclusif
-    Require ldap-group-alias1
-    Require ldap-group-alias2
-&lt;/Directory&gt;
-        </highlight>
-    </section>
-
-</section>
 
 <section id="logic"><title>Conteneurs d'autorisation</title>
 
@@ -240,6 +188,59 @@ SetEnvIf User-Agent ^KnockKnock/2\.0 let_me_in
   </section>
 
 </section>
+
+<section id="authzalias"><title>Cr&eacute;ation des alias du fournisseur
+d'autorisation</title>
+
+    <p>Il est possible de cr&eacute;er des fournisseurs d'autorisation &eacute;tendus
+    dans le fichier de configuration et de leur assigner un nom d'alias.
+    On peut ensuite utiliser ces fournisseurs alias&eacute;s dans une
+    directive <directive module="mod_authz_core">Require</directive> de
+    la m&ecirc;me mani&egrave;re qu'on le ferait pour des fournisseurs d'autorisation
+    de base. En plus de la possibilit&eacute; de cr&eacute;er et d'aliaser un
+    fournisseur &eacute;tendu, le m&ecirc;me fournisseur d'autorisation &eacute;tendu peut
+    &ecirc;tre r&eacute;f&eacute;renc&eacute; par diverses localisations.
+    </p>
+
+    <section id="example"><title>Exemple</title>
+        <p>Dans l'exemple suivant, on cr&eacute;e deux alias de fournisseur
+	d'autorisation ldap diff&eacute;rents bas&eacute;s sur le fournisseur
+	d'autorisation ldap-group. Il est ainsi possible pour un seul
+	r&eacute;pertoire de v&eacute;rifier l'appartenance &agrave; un groupe dans plusieurs
+	serveurs ldap :
+        </p>
+
+        <highlight language="config">
+&lt;AuthzProviderAlias ldap-group ldap-group-alias1 cn=my-group,o=ctx&gt;
+    AuthLDAPBindDN cn=youruser,o=ctx
+    AuthLDAPBindPassword yourpassword
+    AuthLDAPURL ldap://ldap.host/o=ctx
+&lt;/AuthzProviderAlias&gt;
+
+&lt;AuthzProviderAlias ldap-group ldap-group-alias2 cn=my-other-group,o=dev&gt;
+    AuthLDAPBindDN cn=yourotheruser,o=dev
+    AuthLDAPBindPassword yourotherpassword
+    AuthLDAPURL ldap://other.ldap.host/o=dev?cn
+&lt;/AuthzProviderAlias&gt;
+
+Alias /secure /webpages/secure
+&lt;Directory /webpages/secure&gt;
+    Require all granted
+
+    AuthBasicProvider file
+
+    AuthType Basic
+    AuthName LDAP_Protected_Place
+
+    #Op&eacute;ration logique implicite : OU inclusif
+    Require ldap-group-alias1
+    Require ldap-group-alias2
+&lt;/Directory&gt;
+        </highlight>
+    </section>
+
+</section>
+
 
 <directivesynopsis>
 <name>Require</name>
