@@ -98,6 +98,11 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  * mod_proxy_http: Core dumped under high load. Bugz 50335
+    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1534321
+                 http://svn.apache.org/viewvc?view=revision&revision=1550061
+    2.4.x patches: trunk patches work
+    +1: jim, jorton, minfrin
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -146,12 +151,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1542562
     2.4.x patch: http://people.apache.org/~jim/patches/proxy-port-scheme.patch
     +1: jim
-
-  * mod_proxy_http: Core dumped under high load. Bugz 50335
-    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1534321
-                 http://svn.apache.org/viewvc?view=revision&revision=1550061
-    2.4.x patches: trunk patches work
-    +1: jim, jorton
 
   * mod_cache_disk hangs on windows reading from closed files
     trunk patch: http://svn.apache.org/r1547845
