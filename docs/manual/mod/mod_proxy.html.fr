@@ -687,7 +687,7 @@ mandatées</td></tr>
     <p>Les directives situées dans une section <code class="directive">&lt;Proxy&gt;</code> ne s'appliquent qu'au contenu
     mandaté concerné. Les jokers de style shell sont autorisés.</p>
 
-    <p>Par eexemple, les lignes suivantes n'autoriseront à accéder à un
+    <p>Par exemple, les lignes suivantes n'autoriseront à accéder à un
     contenu via votre serveur mandataire que les hôtes appartenant à
     <code>votre-reseau.example.com</code> :</p>
 
