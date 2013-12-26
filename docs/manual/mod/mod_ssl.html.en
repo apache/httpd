@@ -388,14 +388,15 @@ SSLCertificateChainFile /usr/local/apache2/conf/ssl.crt/ca.crt
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>ECC support is available in Apache 2.2.26 and later</td></tr>
 </table>
 <p>
 This directive points to the PEM-encoded Certificate file for the server and
 optionally also to the corresponding RSA or DSA Private Key file for it
 (contained in the same file). If the contained Private Key is encrypted the
 Pass Phrase dialog is forced at startup time. This directive can be used up to
-two times (referencing different filenames) when both a RSA and a DSA based
-server certificate is used in parallel.</p>
+three times (referencing different filenames) when both a RSA, a DSA, and an
+ECC based server certificate is used in parallel.</p>
 <div class="example"><h3>Example</h3><p><code>
 SSLCertificateFile /usr/local/apache2/conf/ssl.crt/server.crt
 </code></p></div>
@@ -409,6 +410,7 @@ SSLCertificateFile /usr/local/apache2/conf/ssl.crt/server.crt
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>ECC support is available in Apache 2.2.26 and later</td></tr>
 </table>
 <p>
 This directive points to the PEM-encoded Private Key file for the
@@ -420,8 +422,8 @@ contains both the Certificate and the Private Key this directive need
 not be used. But we strongly discourage this practice.  Instead we
 recommend you to separate the Certificate and the Private Key. If the
 contained Private Key is encrypted, the Pass Phrase dialog is forced
-at startup time. This directive can be used up to two times
-(referencing different filenames) when both a RSA and a DSA based
+at startup time. This directive can be used up to three times
+(referencing different filenames) when both a RSA, a DSA, and an ECC based
 private key is used in parallel.</p>
 <div class="example"><h3>Example</h3><p><code>
 SSLCertificateKeyFile /usr/local/apache2/conf/ssl.key/server.key
@@ -979,12 +981,12 @@ query can be done in two ways which can be configured by
     Here an external program is configured which is called at startup for each
     encrypted Private Key file. It is called with two arguments (the first is
     of the form ``<code>servername:portnumber</code>'', the second is either
-    ``<code>RSA</code>'' or ``<code>DSA</code>''), which indicate for which
-    server and algorithm it has to print the corresponding Pass Phrase to
-    <code>stdout</code>. The intent is that this external program first runs
-    security checks to make sure that the system is not compromised by an
-    attacker, and only when these checks were passed successfully it provides
-    the Pass Phrase.</p>
+    ``<code>RSA</code>'', ``<code>DSA</code>'', or ``<code>ECC</code>''), which
+    indicate for which server and algorithm it has to print the corresponding
+    Pass Phrase to <code>stdout</code>.  The intent is that this external
+    program first runs security checks to make sure that the system is not
+    compromised by an attacker, and only when these checks were passed
+    successfully it provides the Pass Phrase.</p>
     <p>
     Both these security checks, and the way the Pass Phrase is determined, can
     be as complex as you like. Mod_ssl just defines the interface: an
