@@ -217,14 +217,13 @@ Header merge Cache-Control no-store env=NO_STORE
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure HTTP response headers</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Header [<var>condition</var>] add|append|echo|edit|edit*|merge|set|unset|note
-<var>header</var> [<var>value</var>] [<var>replacement</var>]
+<var>header</var> [<var>[expr=]value]</var>] [<var>replacement</var>]
 [early|env=[!]<var>variable</var>]|expr=<var>expression</var>]
 </code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_headers</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Default condition was temporarily changed to "always" in 2.3.9 and 2.3.10</td></tr>
 </table>
     <p>This directive can replace, merge or remove HTTP response
     headers. The header is modified just after the content handler
@@ -336,9 +335,12 @@ Header merge Cache-Control no-store env=NO_STORE
     <code>add</code> a <var>value</var> is specified as the next argument.
     If <var>value</var>
     contains spaces, it should be surrounded by double quotes.
-    <var>value</var> may be a character string, a string containing format
-    specifiers or a combination of both. The following format specifiers
-    are supported in <var>value</var>:</p>
+    <var>value</var> may be a character string, a string containing 
+    <code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code> specific format specifiers (and character 
+    literals), or an <a href="../expr.html">ap_expr</a> expression prefixed
+    with <em>expr=</em></p>
+    
+    <p> The following format specifiers are supported in <var>value</var>:</p>
 
     <table class="bordered"><tr class="header"><th>Format</th><th>Description</th></tr>
 <tr><td><code>%%</code></td>

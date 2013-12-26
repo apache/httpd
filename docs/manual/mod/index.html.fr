@@ -73,30 +73,33 @@ type de média ou de la méthode de requête.</dd>
 fichiers depuis l'arborescence des documents du site web, ainsi que la
 redirection d'URL</dd>
 <dt><a href="mod_allowhandlers.html">mod_allowhandlers</a></dt><dd>Easily restrict what HTTP handlers can be used on the server</dd>
-<dt><a href="mod_allowmethods.html">mod_allowmethods</a></dt><dd>Easily restrict what HTTP methods can be used on the server</dd>
+<dt><a href="mod_allowmethods.html">mod_allowmethods</a></dt><dd>Limitation simple des méthodes HTTP acceptées par e serveur</dd>
 <dt><a href="mod_asis.html">mod_asis</a></dt><dd>Envoie des fichiers contenant leurs propres en-têtes
 HTTP</dd>
 <dt><a href="mod_auth_basic.html">mod_auth_basic</a></dt><dd>Authentification HTTP de base</dd>
 <dt><a href="mod_auth_digest.html">mod_auth_digest</a></dt><dd>Authentification utilisateur utilisant les condensés
 MD5</dd>
 <dt><a href="mod_auth_form.html">mod_auth_form</a></dt><dd>Authentification à l'aide d'un formulaire</dd>
-<dt><a href="mod_authn_anon.html">mod_authn_anon</a></dt><dd>Allows "anonymous" user access to authenticated
-    areas</dd>
+<dt><a href="mod_authn_anon.html">mod_authn_anon</a></dt><dd>Permet un accès "anonyme" à des zones
+authentifiées</dd>
 <dt><a href="mod_authn_core.html">mod_authn_core</a></dt><dd>Le noyau de l'authentification</dd>
-<dt><a href="mod_authn_dbd.html">mod_authn_dbd</a></dt><dd>User authentication using an SQL database</dd>
-<dt><a href="mod_authn_dbm.html">mod_authn_dbm</a></dt><dd>User authentication using DBM files</dd>
+<dt><a href="mod_authn_dbd.html">mod_authn_dbd</a></dt><dd>Authentification utilisateur à l'aide d'une base de données
+SQL</dd>
+<dt><a href="mod_authn_dbm.html">mod_authn_dbm</a></dt><dd>Authentification utilisateur utilisant des fichiers
+DBM</dd>
 <dt><a href="mod_authn_file.html">mod_authn_file</a></dt><dd>Authentification utilisateur à l'aide de fichiers
 texte</dd>
-<dt><a href="mod_authn_socache.html">mod_authn_socache</a></dt><dd>Manages a cache of authentication credentials to relieve
-the load on backends</dd>
+<dt><a href="mod_authn_socache.html">mod_authn_socache</a></dt><dd>Gère un cache des données d'authentification pour diminuer
+la charge des serveurs d'arrière-plan</dd>
 <dt><a href="mod_authnz_fcgi.html">mod_authnz_fcgi</a></dt><dd>Allows a FastCGI authorizer application to handle Apache
 httpd authentication and authorization</dd>
 <dt><a href="mod_authnz_ldap.html">mod_authnz_ldap</a></dt><dd>Permet d'utiliser un annuaire LDAP pour l'authentification
 HTTP de base.</dd>
-<dt><a href="mod_authz_core.html">mod_authz_core</a></dt><dd>Core Authorization</dd>
-<dt><a href="mod_authz_dbd.html">mod_authz_dbd</a></dt><dd>Group Authorization and Login using SQL</dd>
-<dt><a href="mod_authz_dbm.html">mod_authz_dbm</a></dt><dd>Group authorization using DBM files</dd>
-<dt><a href="mod_authz_groupfile.html">mod_authz_groupfile</a></dt><dd>Group authorization using plaintext files</dd>
+<dt><a href="mod_authz_core.html">mod_authz_core</a></dt><dd>Socle d'autorisation</dd>
+<dt><a href="mod_authz_dbd.html">mod_authz_dbd</a></dt><dd>Autorisation par groupe ou par identifiant via SQL</dd>
+<dt><a href="mod_authz_dbm.html">mod_authz_dbm</a></dt><dd>Autorisation par groupes sur base de fichiers DBM</dd>
+<dt><a href="mod_authz_groupfile.html">mod_authz_groupfile</a></dt><dd>Autorisation de groupes à base de fichiers
+textes</dd>
 <dt><a href="mod_authz_host.html">mod_authz_host</a></dt><dd>Autorisations de groupe basées sur l'hôte (nom ou adresse
 IP)</dd>
 <dt><a href="mod_authz_owner.html">mod_authz_owner</a></dt><dd>Autorisation basée sur l'appartenance des

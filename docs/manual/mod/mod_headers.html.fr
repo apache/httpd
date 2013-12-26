@@ -29,8 +29,6 @@
 <a href="../ja/mod/mod_headers.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_headers.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Personnalisation des en-têtes de requêtes et de réponses
 HTTP</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -236,15 +234,13 @@ Header merge Cache-Control no-store env=NO_STORE
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure les en-têtes d'une réponse HTTP</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Header [<var>condition</var>] add|append|echo|edit|edit*|merge|set|unset|note
-<var>en-tête</var> [<var>valeur</var>] [<var>remplacement</var>]
+<var>en-tête</var> [<var>[expr=]valeur</var>] [<var>remplacement</var>]
 [early|env=[!]<var>variable</var>]|expr=<var>expression</var>]
 </code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_headers</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>La condition par défaut est temporairement passée
-à "always" dans les version 2.3.9 et 2.3.10</td></tr>
 </table>
     <p>Cette directive permet de remplacer, fusionner, ou
     supprimer des en-têtes de réponse HTTP. L'en-tête est modifié juste
@@ -370,8 +366,11 @@ Header merge Cache-Control no-store env=NO_STORE
     argument suivant. Si <var>valeur</var> contient des espaces, elle
     doit être entourée de guillemets. <var>valeur</var> peut être une
     chaîne de caractères, une chaîne contenant des spécificateurs de
-    format, ou une combinaison des deux. <var>valeur</var> supporte les
-    spécificateurs de format suivants :</p>
+    format propres à <code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code> (et des caractères
+    littéraux), ou une expression  <a href="../expr.html">ap_expr</a>
+    préfixée par <em>expr=</em>.</p>
+    
+    <p><var>valeur</var> supporte les spécificateurs de format suivants :</p>
 
     <table class="bordered"><tr class="header"><th>Format</th><th>Description</th></tr>
 <tr><td><code>%%</code></td>
