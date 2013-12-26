@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1429560 -->
+<!-- English Revision : 1553482 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -74,13 +74,13 @@ leur utilisation, voir l'exemple de configuration ci-dessous.</p>
 </section>
 
 <section id="client">
-<title>Connexion c&ocirc;t&eacute; client</title>
+<title>Int&eacute;gration des ouvertures de sessions c&ocirc;t&eacute; client</title>
 <p>Pour les administrateurs qui d&eacute;sirent impl&eacute;menter une gestion de
 session c&ocirc;t&eacute; client fonctionnant de concert avec les fonctionnalit&eacute;s de
 connexion/d&eacute;connexion c&ocirc;t&eacute; serveur offertes par ce module, il est possible
 de d&eacute;finir ou en d'annuler par exemple un cookie HTTP ou un jeton
-de connextion lorsqu'un utilisateur se connecte ou se d&eacute;connecte. Pour
-supporter une telle int&eacute;gration, <module>mod_authz_dbd</module> exporte
+de connextion lorsqu'un utilisateur se connecte ou se d&eacute;connecte.</p>
+<p> Pour supporter une telle int&eacute;gration, <module>mod_authz_dbd</module> exporte
 un d&eacute;clenchement optionnel (hook) qui sera lanc&eacute; chaque fois
 que le statut d'un utilisateur sera mis &agrave; jour dans la base de donn&eacute;es.
 D'autres modules de gestion de session pourront alors utiliser ce
