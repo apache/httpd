@@ -108,6 +108,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
            http://svn.apache.org/viewvc?view=revision&revision=1542533
     2.4.x: trunk patch works
     +1: trawick, covener
+    minfrin: If r1543020 is added, +1.
 
   * mod_auth_form: Make sure the optional functions are loaded even when
     the AuthFormProvider isn't specified.
