@@ -162,7 +162,7 @@ static apr_status_t readfile_heartbeats(const char *path, apr_hash_t *servers,
                 continue;
             }
 
-            ip = apr_pstrndup(pool, buf, t - buf);
+            ip = apr_pstrmemdup(pool, buf, t - buf);
             t++;
 
             server = apr_hash_get(servers, ip, APR_HASH_KEY_STRING);

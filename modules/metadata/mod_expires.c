@@ -267,10 +267,7 @@ static char *check_code(apr_pool_t *p, const char *code, char **real_code)
         /* <type>
          */
         word = ap_getword_conf(p, &code);
-        if (word[0]) {
-            /* do nothing */
-        }
-        else {
+        if (word[0] == '\0') {
             return apr_pstrcat(p, "bad expires code, missing <type>", NULL);
         }
 
