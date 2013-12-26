@@ -1300,7 +1300,7 @@ données et extraire des informations d'une table :</p>
     <pre class="prettyprint lang-lua">
 function handle(r)
     -- connexion à la base de données
-    local database, err = r:dbacquire("mysql", "server=localhost,user=root,dbname=mydb")
+    local database, err = r:dbacquire("mysql", "server=localhost,user=someuser,pass=somepass,dbname=mydb")
     if not err then
         -- Sélection de certaines informations
         local results, err = database:select(r, "SELECT `name`, `age` FROM `people` WHERE 1")

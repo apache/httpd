@@ -7,23 +7,23 @@
   <modulefile>mod_actions.xml.fr</modulefile>
   <modulefile>mod_alias.xml.fr</modulefile>
   <modulefile>mod_allowhandlers.xml</modulefile>
-  <modulefile>mod_allowmethods.xml</modulefile>
+  <modulefile>mod_allowmethods.xml.fr</modulefile>
   <modulefile>mod_asis.xml.fr</modulefile>
   <modulefile>mod_auth_basic.xml.fr</modulefile>
   <modulefile>mod_auth_digest.xml.fr</modulefile>
   <modulefile>mod_auth_form.xml.fr</modulefile>
-  <modulefile>mod_authn_anon.xml</modulefile>
+  <modulefile>mod_authn_anon.xml.fr</modulefile>
   <modulefile>mod_authn_core.xml.fr</modulefile>
-  <modulefile>mod_authn_dbd.xml</modulefile>
-  <modulefile>mod_authn_dbm.xml</modulefile>
+  <modulefile>mod_authn_dbd.xml.fr</modulefile>
+  <modulefile>mod_authn_dbm.xml.fr</modulefile>
   <modulefile>mod_authn_file.xml.fr</modulefile>
-  <modulefile>mod_authn_socache.xml</modulefile>
+  <modulefile>mod_authn_socache.xml.fr</modulefile>
   <modulefile>mod_authnz_fcgi.xml</modulefile>
   <modulefile>mod_authnz_ldap.xml.fr</modulefile>
-  <modulefile>mod_authz_core.xml</modulefile>
-  <modulefile>mod_authz_dbd.xml</modulefile>
-  <modulefile>mod_authz_dbm.xml</modulefile>
-  <modulefile>mod_authz_groupfile.xml</modulefile>
+  <modulefile>mod_authz_core.xml.fr</modulefile>
+  <modulefile>mod_authz_dbd.xml.fr</modulefile>
+  <modulefile>mod_authz_dbm.xml.fr</modulefile>
+  <modulefile>mod_authz_groupfile.xml.fr</modulefile>
   <modulefile>mod_authz_host.xml.fr</modulefile>
   <modulefile>mod_authz_owner.xml.fr</modulefile>
   <modulefile>mod_authz_user.xml.fr</modulefile>
