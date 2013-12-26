@@ -59,7 +59,7 @@ d'Apache</td></tr></table>
 <h3>Sujets</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#login">Connexion s'appuyant sur une base de données</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#client">Connexion côté client</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#client">Intégration des ouvertures de sessions côté client</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#example">Exemple de configuration</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#security">Prévention contre les injections SQL</a></li>
 </ul><h3>Voir aussi</h3>
@@ -89,14 +89,14 @@ dbd-login</code> et <code>Require dbd-logout</code>. Pour les détails de
 leur utilisation, voir l'exemple de configuration ci-dessous.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="client" id="client">Connexion côté client</a></h2>
+<h2><a name="client" id="client">Intégration des ouvertures de sessions côté client</a></h2>
 
 <p>Pour les administrateurs qui désirent implémenter une gestion de
 session côté client fonctionnant de concert avec les fonctionnalités de
 connexion/déconnexion côté serveur offertes par ce module, il est possible
 de définir ou en d'annuler par exemple un cookie HTTP ou un jeton
-de connextion lorsqu'un utilisateur se connecte ou se déconnecte. Pour
-supporter une telle intégration, <code class="module"><a href="../mod/mod_authz_dbd.html">mod_authz_dbd</a></code> exporte
+de connextion lorsqu'un utilisateur se connecte ou se déconnecte.</p>
+<p> Pour supporter une telle intégration, <code class="module"><a href="../mod/mod_authz_dbd.html">mod_authz_dbd</a></code> exporte
 un déclenchement optionnel (hook) qui sera lancé chaque fois
 que le statut d'un utilisateur sera mis à jour dans la base de données.
 D'autres modules de gestion de session pourront alors utiliser ce
