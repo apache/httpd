@@ -29,8 +29,6 @@
 <a href="../ja/mod/mod_cache.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_cache.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Filtre de mise en cache HTTP conforme à la RFC 2616</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>cache_module</td></tr>
@@ -516,6 +514,8 @@ URL</var>]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Une chaîne URL telle que '/' s'appliquait à tout contenu
+en mandat direct dans les versions 2.2 et antérieures.</td></tr>
 </table>
     <p>La directive <code class="directive">CacheEnable</code> enjoint
     <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> de mettre en cache l'URL précisée par
@@ -546,9 +546,8 @@ URL</var>]</code></td></tr>
     global.</p>
 
     <p>En fonctionnement du type serveur mandataire direct, <var>chaîne
-    URL</var> peut aussi être utilisé pour spécifier des sites distants
-    et des protocoles de mandat pour lesquels la mise en cache devra
-    être activée.</p>
+    URL</var> doit au moins débuter par un protocole pour lequel la mise
+    en cache doit être activée.</p>
 
     <pre class="prettyprint lang-config">
 # Mise en cache de contenu (gestionnaire normal seulement)
@@ -563,13 +562,14 @@ CacheQuickHandler off
     CacheEnable disk
 &lt;/LocationMatch&gt;
 
-# Mise en cache des URLs mandatées (gestionnaire normal ou rapide)
+# Mise en cache de tous les contenus, à l'exception des URLs
+# mandatées en direct (gestionnaire normal ou rapide)
 CacheEnable  disk  /
 
 # Mise en cache des URLs FTP mandatées (gestionnaire normal ou rapide)
 CacheEnable  disk  ftp://
 
-# Mise en cache des contenus situés dans www.example.org (gestionnaire normal ou rapide)
+# Mise en cache des contenus mandatés en direct depuis www.example.org (gestionnaire normal ou rapide)
 CacheEnable  disk  http://www.example.org/
     </pre>
 

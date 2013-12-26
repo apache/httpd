@@ -472,17 +472,7 @@
 	  <code>httpd.conf</code>. En outre, les directives <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code> peuvent être activées
 	  pour tous les modules compilés via l'option
 	  <code>--enable-load-all-modules</code> du script configure.</p>
-          <p><strong>Avertissement :</strong>
-          <code>--enable-mods-shared=all</code> ne compile pas vraiment
-	  tous les modules. En fait, pour compiler tous les modules, il
-	  faut utiliser :</p>
-          <div class="example"><p><code>
-            ./configure \<br />
-            <span class="indent">
-                --with-ldap \<br />
-                --enable-mods-shared="all ssl ldap cache proxy authn_alias file_cache authnz_ldap charset_lite dav_lock disk_cache"
-            </span>
-          </code></p></div>
+          
         </dd>
 
         <dt><code>--enable-mods-static=<var>MODULE-LIST</var></code></dt>

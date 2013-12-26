@@ -24,8 +24,6 @@
 <p><span>Langues Disponibles: </span><a href="./en/upgrading.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./fr/upgrading.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
   <p>Afin d'assister les utilisateurs lors de leurs opérations de mise à
   jour, nous maintenons un document
@@ -249,6 +247,12 @@ Allow from example.org
 	vous devez maintenant utiliser la chaîne de correspondance
 	complète <code>jsessionid</code>.
         </li>
+
+	<li><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code>: le second paramètre de la
+	directive <code class="directive"><a href="./mod/mod_cache.html#cacheenable">CacheEnable</a></code>
+	ne concerne les contenus en mandat direct que s'ils débutent par
+	le protocole approprié. Dans les versions 2.2 et antérieures, un
+	paramètre tel que '/' concernait tous les contenus.</li>
 
         <li><code class="module"><a href="./mod/mod_ldap.html">mod_ldap</a></code>: la directive <code class="directive"><a href="./mod/mod_ldap.html#ldaptrustedclientcert">LDAPTrustedClientCert</a></code> s'utilise
 	maintenant exclusivement au sein d'une configuration de niveau

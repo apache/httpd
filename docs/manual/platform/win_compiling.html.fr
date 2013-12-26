@@ -26,8 +26,6 @@
 <a href="../fr/platform/win_compiling.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ko/platform/win_compiling.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 
     <p>Il y a de nombreux points importants à connaître avant de
@@ -37,6 +35,7 @@
 
   </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#requirements">Prérequis</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#unixsrcbuild">Compilation à partir des sources Unix</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#commandbuild">Compilation à partir de la ligne de commandes</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#workspacebuild">Compilation depuis l'espace de travail IDE de Developer
     Studio</a></li>
@@ -88,7 +87,7 @@ l'arborescence de développement</a></li>
         <p>Apache peut être compilé en utilisant l'outil ligne de
 	commande, ou depuis l'espace de travail IDE Visual Studio. Pour
 	la compilation depuis la ligne de commandes, l'environnement
-	doit comporter les variables <code>PATH</code>,
+	doit comporter les variables the <code>PATH</code>,
 	<code>INCLUDE</code>, <code>LIB</code>, ainsi que d'autres
 	variables qui peuvent être définies via le script
 	<code>vcvars32.bat</code> :</p>
@@ -154,7 +153,7 @@ l'arborescence de développement</a></li>
 
         <div class="note">Si awk.exe n'est pas trouvé, la cible install du fichier
 	Makefile.win n'effectuera aucune substitution dans les fichiers
-	.conf installés. Vous devrez alors modifier manuellement les fichiers
+	.conf installés. Vous devez modifier manuellement les fichiers
 	.conf installés afin de permettre au serveur de démarrer.
 	Recherchez et remplacez toutes les balises "@token@" par une
 	valeur appropriée.</div>
@@ -166,7 +165,7 @@ l'arborescence de développement</a></li>
 	qu'awk.exe est bien dans votre chemin système.</div>
 
         <div class="note">Notez aussi, si vous utilisez les outils Cygwin (<a href="http://www.cygwin.com/">http://www.cygwin.com/</a>), que
-	l'utilitaire awk se nomme <code>gawk.exe</code> et que le
+	l'utilitaire awk de nomme <code>gawk.exe</code> et que le
 	fichier <code>awk.exe</code> est en fait un lien symbolique vers
 	le fichier <code>gawk.exe</code>. Le shell de commandes Windows
 	ne reconnaît pas les liens symboliques, et par conséquent la
@@ -215,9 +214,10 @@ l'arborescence de développement</a></li>
         <p>La configuration et la compilation d'OpenSSL nécessite
 	l'installation de perl.</p>
 
-        <p>Pour compiler <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> ou le projet
-	<code>abs.exe</code>, qui n'est autre que ab.c avec le support SSL
-	activé, vous devez télécharger OpenSSL à l'adresse <a href="http://www.openssl.org/source/">http://www.openssl.org/source/</a>,
+        <p>Pour pouvoir compiler <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> ou le projet
+	<code>abs.exe</code>, qui devient ab.c avec le support SSL
+	activé, vous devez
+	télécharger OpenSSL à l'adresse <a href="http://www.openssl.org/source/">http://www.openssl.org/source/</a>,
 	et l'installer dans un sous-répertoire du répertoire
 	<code>srclib</code> que vous nommerez <code>openssl</code>. Afin
 	de préparer OpenSSL à la liaison avec le module Apache mod_ssl
@@ -235,10 +235,10 @@ l'arborescence de développement</a></li>
         <div class="note">Il est déconseillé d'utiliser zlib-dynamic, car la charge
 	de la décompression des flux SSL est alors transférée à la
 	première requête qui doit charger la dll zlib. Notez que le
-	correctif proposé active le drapeau -L afin de
+	correctif proposé active le drapeau -L afin de pouvoir
 	fonctionner avec les compilations Windows, corrige le nom de
 	zdll.lib et s'assure que les fichiers .pdb sont générés afin de
-	résoudre les problèmes. Si l'assembleur n'est pas
+	pouvoir résoudre les problèmes. Si l'assembleur n'est pas
 	installé, vous devez ajouter no-asm ci-dessus et utiliser le
 	script ms\do_ms.bat à la place de ms\do_masm.bat.</div>
       </li>
@@ -289,6 +289,41 @@ l'arborescence de développement</a></li>
       </li>
 
     </ul>
+
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="unixsrcbuild" id="unixsrcbuild">Compilation à partir des sources Unix</a></h2>
+
+    
+
+    <p>Le projet du serveur HTTP Apache à pour politique de ne fournir
+    que des sources de type Unix. Les paquets source de type Windows
+    disponibles en téléchargement ont été élaborés par des
+    contributeurs, et ne seront pas forcément reconduits pour toutes les
+    versions. Vous pouvez cependant compiler le serveur sous Windows à
+    partir des sources Unix en ajoutant quelques étapes supplémentaires.</p>
+
+    <ol>
+    	<li>Téléchargez et ouvrez le tarball source Unix de la dernière
+	version du serveur HTTP Apache.</li>
+    	<li>Téléchargez et ouvrez le tarball source Unix de la dernière
+	version de APR, APR-Util et APR-Iconv, et copier l'arborescence
+	obtenue dans httpd-2.x.x\srclib\apr, httpd-2.x.x\srclib\apr-util
+	et httpd-2.x.x\srclib\apr-iconv</li>
+    	<li>Ouvrez la console et placez-vous au niveau du répertoire httpd-2.x.x</li>
+    	<li>Exécutez l'utilitaire de conversion de fins de ligne</li>
+    </ol>
+
+    <div class="example"><p><code>
+      perl srclib\apr\build\lineends.pl
+    </code></p></div>
+
+    <p>Vous pouvez maintenant compiler le serveur via l'environnement de
+    développement Visual Studio en utilisant l'IDE. Les compilations
+    du serveur en ligne de commande ne sont possibles avec des sources
+    de type Unix que si vous exportez les fichiers .mak comme indiqué
+    ci-dessous.
+    </p>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -358,10 +393,11 @@ l'arborescence de développement</a></li>
     simple, il suffit de réouvrir <code>Apache.dsw</code> dans l'IDE
     VC++ 7.0 et de le reconvertir.</p>
 
-    <div class="note">Il y a un problème au niveau de la conversion .vcproj des fichiers
+    
+    <div class="note">Il y a une erreur dans la conversion .vcproj des fichiers
     .dsp. devenv.exe interprète mal le drapeau
-    /D pour les drapeaux RC contenant de longues /D'efines,
-    si ces dernières contiennent elles-mêmes des espaces. Ainsi, la
+    /D pour les drapeaux RC contenant de grandes /D'éfinitions entourées
+    de guillemets, et contenant elles-mêmes des espaces. Ainsi, la
     commande :
     <div class="example"><p><code>
       perl srclib\apr\build\cvtdsp.pl -2005
@@ -369,11 +405,12 @@ l'arborescence de développement</a></li>
     va convertir les drapeaux /D pour les drapeaux RC afin d'utiliser
     une syntaxe alternative, interprétable ; malheureusement, cette
     syntaxe n'est pas supportée par Visual Studio 97 ou ses fichiers
-    .mak exportés. Ces drapeaux /D transmettent la longue
+    .mak exportés. Ces drapeaux /D permettent de transmettre la longue
     description des fichiers de mod_apachemodule.so à leurs compilations
     d'identificateur de version de ressource .rc partagée.</div>
 
 
+    
     <p>Les utilisateurs de Visual Studio 2002 (.NET) et versions
     supérieures doivent aussi utiliser
     la boîte de dialogue Configuration Manager du menu Build pour
@@ -395,7 +432,7 @@ l'arborescence de développement</a></li>
     
 
 
-    <p>Les fichiers <code>.mak</code> exportés posent beaucoup de problèmes,
+    <p>Les fichiers <code>.mak</code> exportés posent plus de problèmes,
     mais les utilisateurs de Visual C++ 5.0 en ont besoin pour compiler
     <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>, abs (<code class="program"><a href="../programs/ab.html">ab</a></code> avec support
     SSL) et/ou <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code>. Les fichiers .mak
@@ -474,19 +511,17 @@ l'arborescence de développement</a></h2>
 
 
 
-
-
-  
 	<div class="note">Notez que seuls les fichiers <code>.dsp</code> sont
 	maintenus d'une distribution <code>release</code> à l'autre. Les
 	fichiers <code>.mak</code> ne sont PAS régénérés, suite à
-	l'énorme perte de temps des relecteurs. Vous ne
+	l'énorme perte de temps des relecteurs . Vous ne
 	pouvez donc pas utiliser les commandes <code>NMAKE</code>
 	ci-dessus pour compiler des fichiers de projet <code>.dsp</code>
-	révisés si vous n'exportez pas ensuite vous-même tous les
+	révisés si vous n'exporter pas ensuite vous-même tous les
 	fichiers <code>.mak</code> du projet. Ceci n'est pas nécessaire
 	si vous effectuez la compilation depuis l'environnement
 	Microsoft Developer Studio.</div>
+
 </div></div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/platform/win_compiling.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
