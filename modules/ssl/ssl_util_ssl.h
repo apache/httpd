@@ -60,8 +60,7 @@
 void        SSL_init_app_data2_idx(void);
 void       *SSL_get_app_data2(SSL *);
 void        SSL_set_app_data2(SSL *, void *);
-X509       *SSL_read_X509(char *, X509 **, pem_password_cb *);
-EVP_PKEY   *SSL_read_PrivateKey(char *, EVP_PKEY **, pem_password_cb *, void *);
+EVP_PKEY   *SSL_read_PrivateKey(const char *, EVP_PKEY **, pem_password_cb *, void *);
 int         SSL_smart_shutdown(SSL *ssl);
 BOOL        SSL_X509_getBC(X509 *, int *, int *);
 char       *SSL_X509_NAME_ENTRY_to_string(apr_pool_t *p, X509_NAME_ENTRY *xsne);
