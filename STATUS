@@ -96,11 +96,6 @@ RELEASE SHOWSTOPPERS:
 
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
-  [ start all new proposals below, under PATCHES PROPOSED. ]
-
-
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
 
   * ab: Check if malloc succeeded
     PR54344
@@ -108,7 +103,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
            http://svn.apache.org/viewvc?view=revision&revision=1542533
            http://svn.apache.org/viewvc?view=revision&revision=1543020
     2.4.x: trunk patch works
-    +1: trawick(?), covener(?), minfrin, jim
+    +1: covener, minfrin, jim
+
+
+  [ start all new proposals below, under PATCHES PROPOSED. ]
+
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
 
   * mod_auth_form: Make sure the optional functions are loaded even when
     the AuthFormProvider isn't specified.
