@@ -186,6 +186,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: trunk works (modulo CHANGES and log-message-tags)
     +1: minfrin
 
+  * mod_authz_host: Support the expression parser within the require directives.
+    trunk patch: http://svn.apache.org/r1554188
+    2.4.x patch: trunk works (modulo CHANGES and log-message-tags)
+    +1: minfrin
+
 
 OTHER PROPOSALS
 
