@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_authnz_groupfile: Support the expression parser within the require
+     directives. [Graham Leggett]
+
   *) mod_authnz_dbm: Support the expression parser within the require
      directives. [Graham Leggett]
 
