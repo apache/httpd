@@ -163,6 +163,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: trunk works
     +1 covener
 
+  * mod_authnz_ldap: Support the expression parser within the require directives.
+    trunk patch: http://svn.apache.org/r1554161
+    2.4.x patch: trunk works (modulo CHANGES and log-message-tags)
+    +1: minfrin
+
+
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
