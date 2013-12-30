@@ -38,4 +38,39 @@
 </summary>
 <seealso><directive module="mod_authz_core">Require</directive></seealso>
 
+<section id="requiredirectives"><title>The Require Directives</title>
+
+    <p>Apache's <directive module="mod_authz_core">Require</directive>
+    directives are used during the authorization phase to ensure that
+    a user is allowed to access a resource.  mod_authz_user extends the
+    authorization types with <code>user</code> and <code>valid-user</code>.
+    </p>
+
+    <p>Since v2.5.0, <a href="../expr.html">expressions</a> are supported
+    within the user require directives.</p>
+
+<section id="requser"><title>Require user</title>
+
+    <p>This directive specifies a list of users that are allowed to gain
+    access.</p>
+
+    <highlight language="config">
+      Require user john paul george ringo
+    </highlight>
+
+</section>
+
+<section id="reqvaliduser"><title>Require valid-user</title>
+
+    <p>When this directive is specified, any successfully authenticated
+    user will be allowed to gain access.</p>
+
+    <highlight language="config">
+      Require valid-user
+    </highlight>
+
+</section>
+
+</section>
+
 </modulesynopsis>
