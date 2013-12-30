@@ -38,8 +38,11 @@
     <p>This module implements HTTP Digest Authentication
     (<a href="http://www.faqs.org/rfcs/rfc2617.html">RFC2617</a>), and
     provides an alternative to <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code> where the
-    password is not transmitted as cleartext. However, the security
-    improvement over basic authentication is very small. Encrypting the
+    password is not transmitted as cleartext. However, this does
+    <strong>not</strong> lead to a significant security advantage over
+    basic authentication. On the other hand, the password storage on the
+    server is much less secure with digest authentication than with
+    basic authentication. Therefore, using basic auth and encrypting the
     whole connection using <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> is a much better
     alternative.</p>
 </div>
@@ -99,9 +102,11 @@
     man-in-the-middle attacker can trivially force the browser to downgrade
     to basic authentication. And even a passive eavesdropper can brute-force
     the password using today's graphics hardware, because the hashing
-    algorithm used by digest authentication is too fast. Therefore
-    using <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> to encrypt the whole connection is
-    recommended.</p>
+    algorithm used by digest authentication is too fast. Another problem is
+    that the storage of the passwords on the server is insecure. The contents
+    of a stolen htdigest file can be used directly for digest authentication.
+    Therefore using <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> to encrypt the whole connection is
+    strongly recommended.</p>
     <p><code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code> only works properly on platforms
       where APR supports shared memory.</p>
     </div>
