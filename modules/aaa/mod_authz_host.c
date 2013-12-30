@@ -179,10 +179,22 @@ static authz_status host_check_authorization(request_rec *r,
                       "remote host name", require_line, r->uri);
     }
     else {
+        const char *err = NULL;
+        const ap_expr_info_t *expr = parsed_require_line;
+        const char *require;
+
+        require = ap_expr_str_exec(r, expr, &err);
+        if (err) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02593)
+                          "authz_host authorize: require host: Can't "
+                          "evaluate require expression: %s", err);
+            return AUTHZ_DENIED;
+        }
+
         /* The 'host' provider will allow the configuration to specify a list of
             host names to check rather than a single name.  This is different
             from the previous host based syntax. */
-        t = require_line;
+        t = require;
         while ((w = ap_getword_conf(r->pool, &t)) && w[0]) {
             if (in_domain(w, remotehost)) {
                 return AUTHZ_GRANTED;
@@ -212,6 +224,25 @@ static authz_status local_check_authorization(request_rec *r,
      return AUTHZ_DENIED;
 }
 
+static const char *host_parse_config(cmd_parms *cmd, const char *require_line,
+                                     const void **parsed_require_line)
+{
+    const char *expr_err = NULL;
+    ap_expr_info_t *expr = apr_pcalloc(cmd->pool, sizeof(*expr));
+
+    expr = ap_expr_parse_cmd(cmd, require_line, AP_EXPR_FLAG_STRING_RESULT,
+            &expr_err, NULL);
+
+    if (expr_err)
+        return apr_pstrcat(cmd->temp_pool,
+                           "Cannot parse expression in require line: ",
+                           expr_err, NULL);
+
+    *parsed_require_line = expr;
+
+    return NULL;
+}
+
 static const authz_provider authz_ip_provider =
 {
     &ip_check_authorization,
@@ -221,7 +252,7 @@ static const authz_provider authz_ip_provider =
 static const authz_provider authz_host_provider =
 {
     &host_check_authorization,
-    NULL,
+    &host_parse_config,
 };
 
 static const authz_provider authz_local_provider =
