@@ -349,6 +349,9 @@ for HTTP Basic authentication.</td></tr>
     <code>ldap-filter</code>.  Other authorization types may also be
     used but may require that additional authorization modules be loaded.</p>
 
+    <p>Since v2.5.0, <a href="../expr.html">expressions</a> are supported
+    within the LDAP require directives.</p>
+
 <h3><a name="requser" id="requser">Require ldap-user</a></h3>
 
     <p>The <code>Require ldap-user</code> directive specifies what
@@ -570,6 +573,17 @@ Require valid-user
 <pre class="prettyprint lang-config">
 AuthLDAPURL ldap://ldap.example.com/o=Example?uid
 Require ldap-group cn=Administrators, o=Example
+</pre>
+
+      </li>
+
+      <li>
+        Grant access to anybody in the group whose name matches the
+        hostname of the virtual host. In this example an
+        <a href="../expr.html">expression</a> is used to build the filter.
+<pre class="prettyprint lang-config">
+AuthLDAPURL ldap://ldap.example.com/o=Example?uid
+Require ldap-group cn=%{SERVER_NAME}, o=Example
 </pre>
 
       </li>
