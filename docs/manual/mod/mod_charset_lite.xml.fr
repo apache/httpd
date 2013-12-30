@@ -100,8 +100,6 @@ traductions ou les r&eacute;encodages</description>
 </contextlist>
 <override>FileInfo</override>
 
-Charset to translate intoide>
-
 <usage>
     <p>La directive <directive>CharsetSourceEnc</directive>
     sp&eacute;cifie un jeu de caract&egrave;res source pour les fichiers situ&eacute;s dans
