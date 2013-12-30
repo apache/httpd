@@ -176,6 +176,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
   * mod_authnz_dbm: Support the expression parser within the require directives.
     trunk patch: http://svn.apache.org/r1554170
+                 http://svn.apache.org/r1554181
     2.4.x patch: trunk works (modulo CHANGES and log-message-tags)
     +1: minfrin
 
