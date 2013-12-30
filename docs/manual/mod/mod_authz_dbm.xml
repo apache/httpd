@@ -37,6 +37,40 @@
 
 <seealso><directive module="mod_authz_core">Require</directive></seealso>
 
+<section id="requiredirectives"><title>The Require Directives</title>
+
+    <p>Apache's <directive module="mod_authz_core">Require</directive>
+    directives are used during the authorization phase to ensure that
+    a user is allowed to access a resource.  mod_authz_dbm extends the
+    authorization types with <code>dbm-group</code>.</p>
+
+    <p>Since v2.5.0, <a href="../expr.html">expressions</a> are supported
+    within the DBM require directives.</p>
+
+<section id="reqgroup"><title>Require dbm-group</title>
+
+    <p>This directive specifies group membership that is required for the
+    user to gain access.</p>
+
+    <highlight language="config">
+      Require dbm-group admin
+    </highlight>
+
+</section>
+
+<section id="reqfilegroup"><title>Require dbm-file-group</title>
+
+    <p>When this directive is specified, the user must be a member of the group
+    assigned to the file being accessed.</p>
+
+    <highlight language="config">
+      Require dbm-file-group
+    </highlight>
+
+</section>
+
+</section>
+
 <section id="examples">
 <title>Example usage</title>
 <p><em>Note that using mod_authz_dbm requires you to require <code>dbm-group</code> 
