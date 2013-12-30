@@ -112,18 +112,22 @@ shell Win32 <code>dir</code></dd>
 <dt><a href="mod_cache.html" id="C" name="C">mod_cache</a></dt><dd>Filtre de mise en cache HTTP conforme à la RFC 2616</dd>
 <dt><a href="mod_cache_disk.html">mod_cache_disk</a></dt><dd>Module de stockage sur disque pour le filtre de mise en
 cache HTTP.</dd>
-<dt><a href="mod_cache_socache.html">mod_cache_socache</a></dt><dd>Shared object cache (socache) based storage module for the
-HTTP caching filter.</dd>
-<dt><a href="mod_cern_meta.html">mod_cern_meta</a></dt><dd>CERN httpd metafile semantics</dd>
-<dt><a href="mod_cgi.html">mod_cgi</a></dt><dd>Execution of CGI scripts</dd>
-<dt><a href="mod_cgid.html">mod_cgid</a></dt><dd>Execution of CGI scripts using an
-    external CGI daemon</dd>
-<dt><a href="mod_charset_lite.html">mod_charset_lite</a></dt><dd>Specify character set translation or recoding</dd>
-<dt><a href="mod_data.html" id="D" name="D">mod_data</a></dt><dd>Convert response body into an RFC2397 data URL</dd>
-<dt><a href="mod_dav.html">mod_dav</a></dt><dd>Distributed Authoring and Versioning
-(<a href="http://www.webdav.org/">WebDAV</a>) functionality</dd>
-<dt><a href="mod_dav_fs.html">mod_dav_fs</a></dt><dd>Filesystem provider for <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code></dd>
-<dt><a href="mod_dav_lock.html">mod_dav_lock</a></dt><dd>Generic locking module for <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code></dd>
+<dt><a href="mod_cache_socache.html">mod_cache_socache</a></dt><dd>Module de stockage à base de cache d'objets partagés
+(socache) pour le filtre de mise en cache HTTP.</dd>
+<dt><a href="mod_cern_meta.html">mod_cern_meta</a></dt><dd>La sémantique des métafichiers du serveur httpd du
+CERN</dd>
+<dt><a href="mod_cgi.html">mod_cgi</a></dt><dd>Exécution des scripts CGI</dd>
+<dt><a href="mod_cgid.html">mod_cgid</a></dt><dd>Exécution des scripts CGI par l'intermédiaire d'un démon
+CGI externe</dd>
+<dt><a href="mod_charset_lite.html">mod_charset_lite</a></dt><dd>Spécifie dans quel jeu de caractère doivent s'effectuer les
+traductions ou les réencodages</dd>
+<dt><a href="mod_data.html" id="D" name="D">mod_data</a></dt><dd>Convertit un corps de réponse en URL de type données RFC2397</dd>
+<dt><a href="mod_dav.html">mod_dav</a></dt><dd>Fonctionnalité de création et gestion de versions de
+documents via le web (<a href="http://www.webdav.org/">WebDAV</a>)</dd>
+<dt><a href="mod_dav_fs.html">mod_dav_fs</a></dt><dd>Implémente le fournisseur filesystem pour
+<code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code></dd>
+<dt><a href="mod_dav_lock.html">mod_dav_lock</a></dt><dd>Module de verrouillage générique pour
+<code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code></dd>
 <dt><a href="mod_dbd.html">mod_dbd</a></dt><dd>Manages SQL database connections</dd>
 <dt><a href="mod_deflate.html">mod_deflate</a></dt><dd>Comprime le contenu avant de le servir au
 client</dd>

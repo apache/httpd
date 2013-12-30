@@ -319,8 +319,7 @@ cached by proxy servers</td></tr>
   before data is sent downstream</td></tr>
 <tr><td><a href="mod_cache_disk.html#cacheroot">CacheRoot <var>directory</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">The directory root under which cache files are
 stored</td></tr>
-<tr class="odd"><td><a href="mod_cache_socache.html#cachesocache">CacheSocache <var>type[:args]</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The directory root under which cache files are
-stored</td></tr>
+<tr class="odd"><td><a href="mod_cache_socache.html#cachesocache">CacheSocache <var>type[:args]</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The shared object cache implementation to use</td></tr>
 <tr><td><a href="mod_cache_socache.html#cachesocachemaxsize">CacheSocacheMaxSize <var>bytes</var></a></td><td> 102400 </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">The maximum size (in bytes) of an entry to be placed in the
 cache</td></tr>
 <tr class="odd"><td><a href="mod_cache_socache.html#cachesocachemaxtime">CacheSocacheMaxTime <var>seconds</var></a></td><td> 86400 </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The maximum time (in seconds) for a document to be placed in the
@@ -959,8 +958,8 @@ Client Auth</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslcarevocationpath">SSLCARevocationPath <em>directory-path</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Directory of PEM-encoded CA CRLs for
 Client Auth</td></tr>
 <tr><td><a href="mod_ssl.html#sslcertificatechainfile">SSLCertificateChainFile <em>file-path</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">File of PEM-encoded Server CA Certificates</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslcertificatefile">SSLCertificateFile <em>file-path</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Server PEM-encoded X.509 Certificate file</td></tr>
-<tr><td><a href="mod_ssl.html#sslcertificatekeyfile">SSLCertificateKeyFile <em>file-path</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Server PEM-encoded Private Key file</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslcertificatefile">SSLCertificateFile <em>file-path</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Server PEM-encoded X.509 certificate data file</td></tr>
+<tr><td><a href="mod_ssl.html#sslcertificatekeyfile">SSLCertificateKeyFile <em>file-path</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Server PEM-encoded private key file</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslciphersuite">SSLCipherSuite <em>cipher-spec</em></a></td><td> DEFAULT (depends on +</td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Cipher Suite available for negotiation in SSL
 handshake</td></tr>
 <tr><td><a href="mod_ssl.html#sslcompression">SSLCompression on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Enable compression on the SSL level</td></tr>
