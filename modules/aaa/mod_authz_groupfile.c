@@ -291,7 +291,7 @@ static const char *groupfile_parse_config(cmd_parms *cmd, const char *require_li
 static const authz_provider authz_group_provider =
 {
     &group_check_authorization,
-    groupfile_parse_config,
+    &groupfile_parse_config,
 };
 
 static const authz_provider authz_filegroup_provider =
