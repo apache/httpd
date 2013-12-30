@@ -297,7 +297,7 @@ static const char *dbm_parse_config(cmd_parms *cmd, const char *require_line,
 static const authz_provider authz_dbmgroup_provider =
 {
     &dbmgroup_check_authorization,
-    dbm_parse_config,
+    &dbm_parse_config,
 };
 
 static const authz_provider authz_dbmfilegroup_provider =
