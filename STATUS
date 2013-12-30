@@ -188,6 +188,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: trunk works (modulo CHANGES and log-message-tags)
     +1: minfrin
 
+  * core: Support named groups and backreferences within the LocationMatch,
+    DirectoryMatch, FilesMatch and ProxyMatch directives.
+    trunk patch: http://svn.apache.org/r1554300
+                 http://svn.apache.org/r1554301
+    2.4.x patch: http://people.apache.org/~minfrin/httpd-match-backref4.patch
+    +1: minfrin
+
 
 OTHER PROPOSALS
 
