@@ -286,6 +286,19 @@ at once:</p>
 </pre>
 
 
+<p>Regular expressions containing <strong>named groups and
+backreferences</strong> are added to the environment with the
+corresponding name in uppercase. This allows elements of filename paths
+and URLs to be referenced from within <a href="expr.html">expressions</a>
+and modules like <code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code>.</p>
+
+<pre class="prettyprint lang-config">
+&lt;DirectoryMatch ^/var/www/combined/(?&lt;SITENAME&gt;[^/]+)&gt;
+    require ldap-group cn=%{env:SITENAME},ou=combined,o=Example
+&lt;/DirectoryMatch&gt;
+</pre>
+
+
 
 
 <h3><a name="expressions" id="expressions">Boolean expressions</a></h3>
