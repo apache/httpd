@@ -630,6 +630,10 @@ static authz_status ldapuser_check_authorization(request_rec *r,
 
     util_ldap_connection_t *ldc = NULL;
 
+    const char *err = NULL;
+    const ap_expr_info_t *expr = parsed_require_args;
+    const char *require;
+
     const char *t;
     char *w;
 
@@ -703,11 +707,19 @@ static authz_status ldapuser_check_authorization(request_rec *r,
         return AUTHZ_DENIED;
     }
 
+    require = ap_expr_str_exec(r, expr, &err);
+    if (err) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02585)
+                      "auth_ldap authorize: require user: Can't evaluate expression: %s",
+                      err);
+        return AUTHZ_DENIED;
+    }
+
     /*
      * First do a whole-line compare, in case it's something like
      *   require user Babs Jensen
      */
-    result = util_ldap_cache_compare(r, ldc, sec->url, req->dn, sec->attribute, require_args);
+    result = util_ldap_cache_compare(r, ldc, sec->url, req->dn, sec->attribute, require);
     switch(result) {
         case LDAP_COMPARE_TRUE: {
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01703)
@@ -727,7 +739,7 @@ static authz_status ldapuser_check_authorization(request_rec *r,
     /*
      * Now break apart the line and compare each word on it
      */
-    t = require_args;
+    t = require;
     while ((w = ap_getword_conf(r->pool, &t)) && w[0]) {
         result = util_ldap_cache_compare(r, ldc, sec->url, req->dn, sec->attribute, w);
         switch(result) {
@@ -766,6 +778,10 @@ static authz_status ldapgroup_check_authorization(request_rec *r,
         (authn_ldap_config_t *)ap_get_module_config(r->per_dir_config, &authnz_ldap_module);
 
     util_ldap_connection_t *ldc = NULL;
+
+    const char *err = NULL;
+    const ap_expr_info_t *expr = parsed_require_args;
+    const char *require;
 
     const char *t;
 
@@ -886,7 +902,15 @@ static authz_status ldapgroup_check_authorization(request_rec *r,
         }
     }
 
-    t = require_args;
+    require = ap_expr_str_exec(r, expr, &err);
+    if (err) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02586)
+                      "auth_ldap authorize: require group: Can't evaluate expression: %s",
+                      err);
+        return AUTHZ_DENIED;
+    }
+
+    t = require;
 
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01713)
                   "auth_ldap authorize: require group: testing for group "
@@ -982,6 +1006,10 @@ static authz_status ldapdn_check_authorization(request_rec *r,
 
     util_ldap_connection_t *ldc = NULL;
 
+    const char *err = NULL;
+    const ap_expr_info_t *expr = parsed_require_args;
+    const char *require;
+
     const char *t;
 
     char filtbuf[FILTER_LENGTH];
@@ -1044,7 +1072,15 @@ static authz_status ldapdn_check_authorization(request_rec *r,
         req->user = r->user;
     }
 
-    t = require_args;
+    require = ap_expr_str_exec(r, expr, &err);
+    if (err) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02587)
+                      "auth_ldap authorize: require dn: Can't evaluate expression: %s",
+                      err);
+        return AUTHZ_DENIED;
+    }
+
+    t = require;
 
     if (req->dn == NULL || strlen(req->dn) == 0) {
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01725)
@@ -1090,6 +1126,10 @@ static authz_status ldapattribute_check_authorization(request_rec *r,
         (authn_ldap_config_t *)ap_get_module_config(r->per_dir_config, &authnz_ldap_module);
 
     util_ldap_connection_t *ldc = NULL;
+
+    const char *err = NULL;
+    const ap_expr_info_t *expr = parsed_require_args;
+    const char *require;
 
     const char *t;
     char *w, *value;
@@ -1161,7 +1201,16 @@ static authz_status ldapattribute_check_authorization(request_rec *r,
         return AUTHZ_DENIED;
     }
 
-    t = require_args;
+    require = ap_expr_str_exec(r, expr, &err);
+    if (err) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02588)
+                      "auth_ldap authorize: require ldap-attribute: Can't "
+                      "evaluate expression: %s", err);
+        return AUTHZ_DENIED;
+    }
+
+    t = require;
+
     while (t[0]) {
         w = ap_getword(r->pool, &t, '=');
         value = ap_getword_conf(r->pool, &t);
@@ -1206,6 +1255,11 @@ static authz_status ldapfilter_check_authorization(request_rec *r,
         (authn_ldap_config_t *)ap_get_module_config(r->per_dir_config, &authnz_ldap_module);
 
     util_ldap_connection_t *ldc = NULL;
+
+    const char *err = NULL;
+    const ap_expr_info_t *expr = parsed_require_args;
+    const char *require;
+
     const char *t;
 
     char filtbuf[FILTER_LENGTH];
@@ -1275,7 +1329,15 @@ static authz_status ldapfilter_check_authorization(request_rec *r,
         return AUTHZ_DENIED;
     }
 
-    t = require_args;
+    require = ap_expr_str_exec(r, expr, &err);
+    if (err) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02589)
+                      "auth_ldap authorize: require ldap-filter: Can't "
+                      "evaluate require expression: %s", err);
+        return AUTHZ_DENIED;
+    }
+
+    t = require;
 
     if (t[0]) {
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01743)
@@ -1332,6 +1394,25 @@ static authz_status ldapfilter_check_authorization(request_rec *r,
                   r->user, r->uri);
 
     return AUTHZ_DENIED;
+}
+
+static const char *ldap_parse_config(cmd_parms *cmd, const char *require_line,
+                                     const void **parsed_require_line)
+{
+    const char *expr_err = NULL;
+    ap_expr_info_t *expr = apr_pcalloc(cmd->pool, sizeof(*expr));
+
+    expr = ap_expr_parse_cmd(cmd, require_line, AP_EXPR_FLAG_STRING_RESULT,
+            &expr_err, NULL);
+
+    if (expr_err)
+        return apr_pstrcat(cmd->temp_pool,
+                           "Cannot parse expression in require line: ",
+                           expr_err, NULL);
+
+    *parsed_require_line = expr;
+
+    return NULL;
 }
 
 
@@ -1792,30 +1873,30 @@ static const authn_provider authn_ldap_provider =
 static const authz_provider authz_ldapuser_provider =
 {
     &ldapuser_check_authorization,
-    NULL,
+    &ldap_parse_config,
 };
 static const authz_provider authz_ldapgroup_provider =
 {
     &ldapgroup_check_authorization,
-    NULL,
+    &ldap_parse_config,
 };
 
 static const authz_provider authz_ldapdn_provider =
 {
     &ldapdn_check_authorization,
-    NULL,
+    &ldap_parse_config,
 };
 
 static const authz_provider authz_ldapattribute_provider =
 {
     &ldapattribute_check_authorization,
-    NULL,
+    &ldap_parse_config,
 };
 
 static const authz_provider authz_ldapfilter_provider =
 {
     &ldapfilter_check_authorization,
-    NULL,
+    &ldap_parse_config,
 };
 
 static void ImportULDAPOptFn(void)

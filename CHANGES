@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_authnz_ldap: Support the expression parser within the require
+     directives. [Graham Leggett]
+
   *) mod_ssl: Remove the hardcoded algorithm-type dependency for the
      SSLCertificateFile and SSLCertificateKeyFile directives, to enable
      future algorithm agility, and deprecate the SSLCertificateChainFile
