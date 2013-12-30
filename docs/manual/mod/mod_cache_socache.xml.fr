@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1330964 -->
+<!-- English Revision: 1554199 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -75,9 +75,7 @@ CacheSocacheMaxSize 102400
 
 <directivesynopsis>
 <name>CacheSocache</name>
-<description>La racine des r&eacute;pertoires sous lesquels les fichiers de
-cache sont stock&eacute;s</description>
-<!-- La description ne correspond pas &agrave; la directive -->
+<description>Impl&eacute;mentation du cache d'objets partag&eacute;s &agrave; utiliser</description>
 <syntax>CacheSocache <var>type[:args]</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
