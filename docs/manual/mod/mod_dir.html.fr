@@ -30,6 +30,8 @@
 <a href="../ko/mod/mod_dir.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_dir.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
+            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Permet la redirection des adresses se terminant par un
 répertoire sans slash de fin et la mise à disposition des fichiers index
 de répertoire</td></tr>
@@ -177,7 +179,7 @@ répertoires.
     <code class="directive">DirectoryIndexRedirect</code> permet de rediriger le
     client via une redirection de type 3xx.</p>
 
-    Les arguments acceptés sont :
+    <p>Les arguments acceptés sont :</p>
     <ul>
      <li><code>on</code> : envoie une redirection 302 vers l'index choisi.</li>
      <li><code>off</code> : n'envoie aucune redirection. Il s'agit du comportement historique de mod_dir.</li>

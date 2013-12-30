@@ -35,11 +35,11 @@
   <modulefile>mod_cern_meta.xml.fr</modulefile>
   <modulefile>mod_cgi.xml.fr</modulefile>
   <modulefile>mod_cgid.xml.fr</modulefile>
-  <modulefile>mod_charset_lite.xml</modulefile>
-  <modulefile>mod_data.xml</modulefile>
-  <modulefile>mod_dav.xml</modulefile>
-  <modulefile>mod_dav_fs.xml</modulefile>
-  <modulefile>mod_dav_lock.xml</modulefile>
+  <modulefile>mod_charset_lite.xml.fr</modulefile>
+  <modulefile>mod_data.xml.fr</modulefile>
+  <modulefile>mod_dav.xml.fr</modulefile>
+  <modulefile>mod_dav_fs.xml.fr</modulefile>
+  <modulefile>mod_dav_lock.xml.fr</modulefile>
   <modulefile>mod_dbd.xml</modulefile>
   <modulefile>mod_deflate.xml.fr</modulefile>
   <modulefile>mod_dialup.xml</modulefile>
