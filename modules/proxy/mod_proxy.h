@@ -219,6 +219,10 @@ typedef struct {
     unsigned int error_override_set:1;
     unsigned int alias_set:1;
     unsigned int add_forwarded_headers:1;
+
+    /** Named back references */
+    apr_array_header_t *refs;
+
 } proxy_dir_conf;
 
 /* if we interpolate env vars per-request, we'll need a per-request
