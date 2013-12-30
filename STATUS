@@ -168,15 +168,21 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: trunk works (modulo CHANGES and log-message-tags)
     +1: minfrin
 
-  * mod_authnz_dbd: Support the expression parser within the require directives.
+  * mod_authz_dbd: Support the expression parser within the require directives.
     trunk patch: http://svn.apache.org/r1554168
                  http://svn.apache.org/r1554176
     2.4.x patch: trunk works (modulo CHANGES and log-message-tags)
     +1: minfrin
 
-  * mod_authnz_dbm: Support the expression parser within the require directives.
+  * mod_authz_dbm: Support the expression parser within the require directives.
     trunk patch: http://svn.apache.org/r1554170
                  http://svn.apache.org/r1554181
+    2.4.x patch: trunk works (modulo CHANGES and log-message-tags)
+    +1: minfrin
+
+  * mod_authz_groupfile: Support the expression parser within the require directives.
+    trunk patch: http://svn.apache.org/r1554175
+                 http://svn.apache.org/r1554184
     2.4.x patch: trunk works (modulo CHANGES and log-message-tags)
     +1: minfrin
 
