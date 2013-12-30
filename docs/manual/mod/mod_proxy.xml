@@ -528,6 +528,19 @@ proxied resources</description>
     identical to the <directive module="mod_proxy"
     type="section">Proxy</directive> directive, except it matches URLs
     using <glossary ref="regex">regular expressions</glossary>.</p>
+
+    <p>From 2.5.0 onwards, named groups and backreferences are captured and
+    written to the environment with the corresponding name in upper case.
+    This allows elements of URLs to be referenced from within
+    <a href="expr.html">expressions</a> and modules like
+    <module>mod_rewrite</module>. In order to prevent confusion, numbered
+    (unnamed) backreferences are ignored. Use named groups instead.</p>
+
+<highlight language="config">
+&lt;ProxyMatch ^http://(?&lt;SITENAME&gt;[^/]+)&gt;
+    require ldap-group cn=%{env:SITENAME},ou=combined,o=Example
+&lt;/ProxyMatch&gt;
+</highlight>
 </usage>
 <seealso><directive type="section" module="mod_proxy">Proxy</directive></seealso>
 </directivesynopsis>
