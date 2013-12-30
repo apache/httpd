@@ -253,6 +253,11 @@ static authz_status dbdgroup_check_authorization(request_rec *r,
     int i, rv;
     const char *w;
     apr_array_header_t *groups = NULL;
+
+    const char *err = NULL;
+    const ap_expr_info_t *expr = parsed_require_args;
+    const char *require;
+
     const char *t;
     authz_dbd_cfg *cfg = ap_get_module_config(r->per_dir_config,
                                               &authz_dbd_module);
@@ -269,7 +274,15 @@ static authz_status dbdgroup_check_authorization(request_rec *r,
         }
     }
 
-    t = require_args;
+    require = ap_expr_str_exec(r, expr, &err);
+    if (err) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02590)
+                      "authz_dbd authorize: require dbd-group: Can't "
+                      "evaluate require expression: %s", err);
+        return AUTHZ_DENIED;
+    }
+
+    t = require;
     while (t[0]) {
         w = ap_getword_white(r->pool, &t);
         for (i=0; i < groups->nelts; ++i) {
@@ -310,10 +323,29 @@ static authz_status dbdlogout_check_authorization(request_rec *r,
     return (authz_dbd_login(r, cfg, "logout") == OK ? AUTHZ_GRANTED : AUTHZ_DENIED);
 }
 
+static const char *dbd_parse_config(cmd_parms *cmd, const char *require_line,
+                                     const void **parsed_require_line)
+{
+    const char *expr_err = NULL;
+    ap_expr_info_t *expr = apr_pcalloc(cmd->pool, sizeof(*expr));
+
+    expr = ap_expr_parse_cmd(cmd, require_line, AP_EXPR_FLAG_STRING_RESULT,
+            &expr_err, NULL);
+
+    if (expr_err)
+        return apr_pstrcat(cmd->temp_pool,
+                           "Cannot parse expression in require line: ",
+                           expr_err, NULL);
+
+    *parsed_require_line = expr;
+
+    return NULL;
+}
+
 static const authz_provider authz_dbdgroup_provider =
 {
     &dbdgroup_check_authorization,
-    NULL,
+    dbd_parse_config,
 };
 
 static const authz_provider authz_dbdlogin_provider =
