@@ -32,7 +32,11 @@
 <summary>
     <p>This module implements HTTP Digest Authentication
     (<a href="http://www.faqs.org/rfcs/rfc2617.html">RFC2617</a>), and
-    provides a more secure alternative to <module>mod_auth_basic</module>.</p>
+    provides an alternative to <module>mod_auth_basic</module> where the
+    password is not transmitted as cleartext. However, the security
+    improvement over basic authentication is very small. Encrypting the
+    whole connection using <module>mod_ssl</module> is a much better
+    alternative.</p>
 </summary>
 
 <seealso><directive module="mod_authn_core">AuthName</directive></seealso>
@@ -70,9 +74,14 @@
     </example>
 
     <note><title>Note</title>
-    <p>Digest authentication is more secure than Basic authentication,
-    but only works with supporting browsers. As of this writing (December
-    2012) all major browsers support digest authentication.</p>
+    <p>Digest authentication was intended to be more secure than basic
+    authentication, but no longer fulfills that design goal. A
+    man-in-the-middle attacker can trivially force the browser to downgrade
+    to basic authentication. And even a passive eavesdropper can brute-force
+    the password using today's graphics hardware, because the hashing
+    algorithm used by digest authentication is too fast. Therefore
+    using <module>mod_ssl</module> to encrypt the whole connection is
+    recommended.</p>
     <p><module>mod_auth_digest</module> only works properly on platforms
       where APR supports shared memory.</p>
     </note>
