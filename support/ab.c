@@ -392,6 +392,48 @@ static void apr_err(const char *s, apr_status_t rv)
     exit(rv);
 }
 
+static void *xmalloc(size_t size)
+{
+    void *ret = malloc(size);
+    if (ret == NULL) {
+        fprintf(stderr, "Could not allocate memory (%"
+                APR_SIZE_T_FMT" bytes)\n", size);
+        exit(1);
+    }
+    return ret;
+}
+
+static void *xcalloc(size_t num, size_t size)
+{
+    void *ret = calloc(num, size);
+    if (ret == NULL) {
+        fprintf(stderr, "Could not allocate memory (%"
+                APR_SIZE_T_FMT" bytes)\n", size*num);
+        exit(1);
+    }
+    return ret;
+}
+
+static char *xstrdup(const char *s)
+{
+    char *ret = strdup(s);
+    if (ret == NULL) {
+        fprintf(stderr, "Could not allocate memory (%"
+                APR_SIZE_T_FMT " bytes)\n", strlen(s));
+        exit(1);
+    }
+    return ret;
+}
+
+/* pool abort function */
+static int abort_on_oom(int retcode)
+{
+    fprintf(stderr, "Could not allocate memory\n");
+    exit(1);
+    /* not reached */
+    return retcode;
+}
+
 static void set_polled_events(struct connection *c, apr_int16_t new_reqevents)
 {
     apr_status_t rv;
@@ -625,7 +667,7 @@ static void ssl_proceed_handshake(struct connection *c)
                 else
                     pk_bits = 0;  /* Anon DH */
 
-                ssl_info = malloc(128);
+                ssl_info = xmalloc(128);
                 apr_snprintf(ssl_info, 128, "%s,%s,%d,%d",
                              SSL_get_version(c->ssl),
                              SSL_CIPHER_get_name(ci),
@@ -1608,16 +1650,13 @@ static void test(void)
     fflush(stdout);
     }
 
-    con = calloc(concurrency, sizeof(struct connection));
+    con = xcalloc(concurrency, sizeof(struct connection));
 
     /*
      * XXX: a way to calculate the stats without requiring O(requests) memory
      * XXX: would be nice.
      */
-    stats = calloc(requests, sizeof(struct data));
-    if (stats == NULL || con == NULL) {
-        err("Cannot allocate memory for result statistics");
-    }
+    stats = xcalloc(requests, sizeof(struct data));
 
     if ((status = apr_pollset_create(&readbits, concurrency, cntxt,
                                      APR_POLLSET_NOCOPY)) != APR_SUCCESS) {
@@ -1689,11 +1728,7 @@ static void test(void)
      * Combine headers and (optional) post file into one continuous buffer
      */
     if (send_body) {
-        char *buff = malloc(postlen + reqlen + 1);
-        if (!buff) {
-            fprintf(stderr, "error creating request buffer: out of memory\n");
-            return;
-        }
+        char *buff = xmalloc(postlen + reqlen + 1);
         strcpy(buff, request);
         memcpy(buff + reqlen, postdata, postlen);
         request = buff;
@@ -2031,11 +2066,7 @@ static apr_status_t open_postfile(const char *pfile)
         return rv;
     }
     postlen = (apr_size_t)finfo.size;
-    postdata = malloc(postlen);
-    if (!postdata) {
-        fprintf(stderr, "ab: Could not allocate POST data buffer\n");
-        return APR_ENOMEM;
-    }
+    postdata = xmalloc(postlen);
     rv = apr_file_read_full(postfd, postdata, postlen, NULL);
     if (rv != APR_SUCCESS) {
         fprintf(stderr, "ab: Could not read POST data file: %s\n",
@@ -2073,6 +2104,7 @@ int main(int argc, const char * const argv[])
     apr_app_initialize(&argc, &argv, NULL);
     atexit(apr_terminate);
     apr_pool_create(&cntxt, NULL);
+    apr_pool_abort_set(abort_on_oom, cntxt);
 
 #ifdef NOT_ASCII
     status = apr_xlate_open(&to_ascii, "ISO-8859-1", APR_DEFAULT_CHARSET, cntxt);
@@ -2125,13 +2157,13 @@ int main(int argc, const char * const argv[])
                 method = HEAD;
                 break;
             case 'g':
-                gnuplot = strdup(opt_arg);
+                gnuplot = xstrdup(opt_arg);
                 break;
             case 'd':
                 percentile = 0;
                 break;
             case 'e':
-                csvperc = strdup(opt_arg);
+                csvperc = xstrdup(opt_arg);
                 break;
             case 'S':
                 confidence = 0;

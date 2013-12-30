@@ -96,17 +96,9 @@ RELEASE SHOWSTOPPERS:
 
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
-
-  * ab: Check if malloc succeeded
-    PR54344
-    trunk: http://svn.apache.org/viewvc?view=revision&revision=1488492
-           http://svn.apache.org/viewvc?view=revision&revision=1542533
-           http://svn.apache.org/viewvc?view=revision&revision=1543020
-    2.4.x: trunk patch works
-    +1: covener, minfrin, jim
-
-
   [ start all new proposals below, under PATCHES PROPOSED. ]
+
+
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
