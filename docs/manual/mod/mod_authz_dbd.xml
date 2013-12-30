@@ -52,6 +52,55 @@
 <seealso><directive module="mod_dbd">DBDriver</directive></seealso>
 <seealso><directive module="mod_dbd">DBDParams</directive></seealso>
 
+<section id="requiredirectives"><title>The Require Directives</title>
+
+    <p>Apache's <directive module="mod_authz_core">Require</directive>
+    directives are used during the authorization phase to ensure that
+    a user is allowed to access a resource.  mod_authz_dbd extends the
+    authorization types with <code>dbd-group</code>, <code>dbd-login</code> and
+    <code>dbd-logout</code>.</p>
+
+    <p>Since v2.5.0, <a href="../expr.html">expressions</a> are supported
+    within the DBD require directives.</p>
+
+<section id="reqgroup"><title>Require dbd-group</title>
+
+    <p>This directive specifies group membership that is required for the
+    user to gain access.</p>
+
+    <highlight language="config">
+      Require dbd-group team
+      AuthzDBDQuery "SELECT group FROM authz WHERE user = %s"
+    </highlight>
+
+</section>
+
+<section id="reqlogin"><title>Require dbd-login</title>
+
+    <p>This directive specifies a query to be run indicating the user
+    has logged in.</p>
+
+    <highlight language="config">
+      Require dbd-login
+      AuthzDBDQuery "UPDATE authn SET login = 'true' WHERE user = %s"
+    </highlight>
+
+</section>
+
+<section id="reqlogout"><title>Require dbd-logout</title>
+
+    <p>This directive specifies a query to be run indicating the user
+    has logged out.</p>
+
+    <highlight language="config">
+      Require dbd-logout
+      AuthzDBDQuery "UPDATE authn SET login = 'false' WHERE user = %s"
+    </highlight>
+
+</section>
+
+</section>
+
 <section id="login">
 <title>Database Login</title>
 <p>
