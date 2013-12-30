@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) core: Support named groups and backreferences within the LocationMatch,
+     DirectoryMatch, FilesMatch and ProxyMatch directives. [Graham Leggett]
+
   *) mod_authz_user: Support the expression parser within the require
      directives. [Graham Leggett]
 

@@ -45,6 +45,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 #include "httpd.h"
 #include "apr_strings.h"
+#include "apr_tables.h"
 #include "pcre.h"
 
 #define APR_WANT_STRFUNC
@@ -124,7 +125,7 @@ AP_DECLARE(int) ap_regcomp(ap_regex_t * preg, const char *pattern, int cflags)
     const char *errorptr;
     int erroffset;
     int errcode = 0;
-    int options = 0;
+    int options = PCRE_DUPNAMES;
 
     if ((cflags & AP_REG_ICASE) != 0)
         options |= PCRE_CASELESS;
@@ -254,6 +255,40 @@ AP_DECLARE(int) ap_regexec_len(const ap_regex_t *preg, const char *buff,
             return AP_REG_ASSERT;
         }
     }
+}
+
+AP_DECLARE(int) ap_regname(const ap_regex_t *preg,
+                           apr_array_header_t *names, int upper)
+{
+    int namecount;
+    int nameentrysize;
+    int i;
+    char *nametable;
+
+    pcre_fullinfo((const pcre *)preg->re_pcre, NULL,
+                       PCRE_INFO_NAMECOUNT, &namecount);
+    pcre_fullinfo((const pcre *)preg->re_pcre, NULL,
+                       PCRE_INFO_NAMEENTRYSIZE, &nameentrysize);
+    pcre_fullinfo((const pcre *)preg->re_pcre, NULL,
+                       PCRE_INFO_NAMETABLE, &nametable);
+
+    for (i = 0; i < namecount; i++) {
+        const char *offset = nametable + i * nameentrysize;
+        int capture = ((offset[0] << 8) + offset[1]);
+        while (names->nelts <= capture) {
+            apr_array_push(names);
+        }
+        if (upper) {
+            char *name = ((char **)names->elts)[capture] = 
+                apr_pstrdup(names->pool, offset + 2);
+            ap_str_toupper(name);
+        }
+        else {
+            ((const char **)names->elts)[capture] = offset + 2;
+        }
+    }
+
+    return namecount;
 }
 
 /* End of pcreposix.c */

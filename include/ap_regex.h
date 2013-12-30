@@ -149,6 +149,15 @@ AP_DECLARE(int) ap_regexec_len(const ap_regex_t *preg, const char *buff,
 AP_DECLARE(apr_size_t) ap_regerror(int errcode, const ap_regex_t *preg,
                                    char *errbuf, apr_size_t errbuf_size);
 
+/**
+ * Return an array of named regex backreferences
+ * @param preg The precompiled regex
+ * @param names The array to which the names will be added
+ * @param upper If non zero, uppercase the names
+ */
+AP_DECLARE(int) ap_regname(const ap_regex_t *preg,
+                           apr_array_header_t *names, int upper);
+
 /** Destroy a pre-compiled regex.
  * @param preg The pre-compiled regex to free.
  */

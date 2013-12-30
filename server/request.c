@@ -741,6 +741,7 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
         apr_size_t buflen;
         char *buf;
         unsigned int seg, startseg;
+        apr_pool_t *rxpool = NULL;
 
         /* Invariant: from the first time filename_len is set until
          * it goes out of scope, filename_len==strlen(r->filename)
@@ -1196,6 +1197,10 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
          */
         for (; sec_idx < num_sec; ++sec_idx) {
 
+            int nmatch = 0;
+            int i;
+            ap_regmatch_t *pmatch = NULL;
+
             core_dir_config *entry_core;
             entry_core = ap_get_core_module_config(sec_ent[sec_idx]);
 
@@ -1203,8 +1208,27 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
                 continue;
             }
 
-            if (ap_regexec(entry_core->r, r->filename, 0, NULL, 0)) {
+            if (entry_core->refs && entry_core->refs->nelts) {
+                if (!rxpool) {
+                    apr_pool_create(&rxpool, r->pool);
+                }
+                nmatch = entry_core->refs->nelts;
+                pmatch = apr_palloc(rxpool, nmatch*sizeof(ap_regmatch_t));
+            }
+
+            if (ap_regexec(entry_core->r, r->filename, nmatch, pmatch, 0)) {
                 continue;
+            }
+
+            for (i = 0; i < nmatch; i++) {
+                if (pmatch[i].rm_so >= 0 && pmatch[i].rm_eo >= 0 &&
+                    ((const char **)entry_core->refs->elts)[i]) {
+                    apr_table_setn(r->subprocess_env, 
+                                   ((const char **)entry_core->refs->elts)[i],
+                                   apr_pstrndup(r->pool,
+                                   r->filename + pmatch[i].rm_so,
+                                   pmatch[i].rm_eo - pmatch[i].rm_so));
+                }
             }
 
             /* If we haven't already continue'd above, we have a match.
@@ -1243,6 +1267,10 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
             last_walk = (walk_walked_t*)apr_array_push(cache->walked);
             last_walk->matched = sec_ent[sec_idx];
             last_walk->merged = now_merged;
+        }
+
+        if (rxpool) {
+            apr_pool_destroy(rxpool);
         }
 
         /* Whoops - everything matched in sequence, but either the original
@@ -1382,6 +1410,7 @@ AP_DECLARE(int) ap_location_walk(request_rec *r)
         int matches = cache->walked->nelts;
         int cached_matches = matches;
         walk_walked_t *last_walk = (walk_walked_t*)cache->walked->elts;
+        apr_pool_t *rxpool = NULL;
 
         cached &= auth_internal_per_conf;
         cache->cached = entry_uri;
@@ -1403,16 +1432,48 @@ AP_DECLARE(int) ap_location_walk(request_rec *r)
              * not slash terminated, then this uri must be slash
              * terminated (or at the end of the string) to match.
              */
-            if (entry_core->r
-                ? ap_regexec(entry_core->r, r->uri, 0, NULL, 0)
-                : (entry_core->d_is_fnmatch
+            if (entry_core->r) {
+
+                int nmatch = 0;
+                int i;
+                ap_regmatch_t *pmatch = NULL;
+
+                if (entry_core->refs && entry_core->refs->nelts) {
+                    if (!rxpool) {
+                        apr_pool_create(&rxpool, r->pool);
+                    }
+                    nmatch = entry_core->refs->nelts;
+                    pmatch = apr_palloc(rxpool, nmatch*sizeof(ap_regmatch_t));
+                }
+
+                if (ap_regexec(entry_core->r, r->uri, nmatch, pmatch, 0)) {
+                    continue;
+                }
+
+                for (i = 0; i < nmatch; i++) {
+                    if (pmatch[i].rm_so >= 0 && pmatch[i].rm_eo >= 0 && 
+                        ((const char **)entry_core->refs->elts)[i]) {
+                        apr_table_setn(r->subprocess_env,
+                                       ((const char **)entry_core->refs->elts)[i],
+                                       apr_pstrndup(r->pool,
+                                       r->uri + pmatch[i].rm_so,
+                                       pmatch[i].rm_eo - pmatch[i].rm_so));
+                    }
+                }
+
+            }
+            else {
+
+                if ((entry_core->d_is_fnmatch
                    ? apr_fnmatch(entry_core->d, cache->cached, APR_FNM_PATHNAME)
                    : (strncmp(entry_core->d, cache->cached, len)
                       || (len > 0
                           && entry_core->d[len - 1] != '/'
                           && cache->cached[len] != '/'
                           && cache->cached[len] != '\0')))) {
-                continue;
+                    continue;
+                }
+
             }
 
             /* If we merged this same section last time, reuse it
@@ -1445,6 +1506,10 @@ AP_DECLARE(int) ap_location_walk(request_rec *r)
             last_walk = (walk_walked_t*)apr_array_push(cache->walked);
             last_walk->matched = sec_ent[sec_idx];
             last_walk->merged = now_merged;
+        }
+
+        if (rxpool) {
+            apr_pool_destroy(rxpool);
         }
 
         /* Whoops - everything matched in sequence, but either the original
@@ -1556,6 +1621,7 @@ AP_DECLARE(int) ap_file_walk(request_rec *r)
         int matches = cache->walked->nelts;
         int cached_matches = matches;
         walk_walked_t *last_walk = (walk_walked_t*)cache->walked->elts;
+        apr_pool_t *rxpool = NULL;
 
         cached &= auth_internal_per_conf;
         cache->cached = test_file;
@@ -1568,12 +1634,42 @@ AP_DECLARE(int) ap_file_walk(request_rec *r)
             core_dir_config *entry_core;
             entry_core = ap_get_core_module_config(sec_ent[sec_idx]);
 
-            if (entry_core->r
-                ? ap_regexec(entry_core->r, cache->cached , 0, NULL, 0)
-                : (entry_core->d_is_fnmatch
-                   ? apr_fnmatch(entry_core->d, cache->cached, APR_FNM_PATHNAME)
-                   : strcmp(entry_core->d, cache->cached))) {
-                continue;
+            if (entry_core->r) {
+
+                int nmatch = 0;
+                int i;
+                ap_regmatch_t *pmatch = NULL;
+
+                if (entry_core->refs && entry_core->refs->nelts) {
+                    if (!rxpool) {
+                        apr_pool_create(&rxpool, r->pool);
+                    }
+                    nmatch = entry_core->refs->nelts;
+                    pmatch = apr_palloc(rxpool, nmatch*sizeof(ap_regmatch_t));
+                }
+
+                if (ap_regexec(entry_core->r, cache->cached, nmatch, pmatch, 0)) {
+                    continue;
+                }
+
+                for (i = 0; i < nmatch; i++) {
+                    if (pmatch[i].rm_so >= 0 && pmatch[i].rm_eo >= 0 && 
+                        ((const char **)entry_core->refs->elts)[i]) {
+                        apr_table_setn(r->subprocess_env,
+                                       ((const char **)entry_core->refs->elts)[i],
+                                       apr_pstrndup(r->pool,
+                                       cache->cached + pmatch[i].rm_so,
+                                       pmatch[i].rm_eo - pmatch[i].rm_so));
+                    }
+                }
+
+            }
+            else {
+                if ((entry_core->d_is_fnmatch
+                       ? apr_fnmatch(entry_core->d, cache->cached, APR_FNM_PATHNAME)
+                       : strcmp(entry_core->d, cache->cached))) {
+                    continue;
+                }
             }
 
             /* If we merged this same section last time, reuse it
@@ -1606,6 +1702,10 @@ AP_DECLARE(int) ap_file_walk(request_rec *r)
             last_walk = (walk_walked_t*)apr_array_push(cache->walked);
             last_walk->matched = sec_ent[sec_idx];
             last_walk->merged = now_merged;
+        }
+
+        if (rxpool) {
+            apr_pool_destroy(rxpool);
         }
 
         /* Whoops - everything matched in sequence, but either the original

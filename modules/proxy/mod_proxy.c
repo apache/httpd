@@ -744,22 +744,52 @@ static int proxy_walk(request_rec *r)
      */
     const char *proxyname = r->filename + 6;
     int j;
+    apr_pool_t *rxpool = NULL;
 
     for (j = 0; j < num_sec; ++j)
     {
         entry_config = sec_proxy[j];
         entry_proxy = ap_get_module_config(entry_config, &proxy_module);
 
-        /* XXX: What about case insensitive matching ???
-         * Compare regex, fnmatch or string as appropriate
-         * If the entry doesn't relate, then continue
-         */
-        if (entry_proxy->r
-              ? ap_regexec(entry_proxy->r, proxyname, 0, NULL, 0)
-              : (entry_proxy->p_is_fnmatch
-                   ? apr_fnmatch(entry_proxy->p, proxyname, 0)
-                   : strncmp(proxyname, entry_proxy->p,
-                                        strlen(entry_proxy->p)))) {
+        int nmatch = 0;
+        int i;
+        ap_regmatch_t *pmatch = NULL;
+
+        if (entry_proxy->r) {
+
+            if (entry_proxy->refs && entry_proxy->refs->nelts) {
+                if (!rxpool) {
+                    apr_pool_create(&rxpool, r->pool);
+                }
+                nmatch = entry_proxy->refs->nelts;
+                pmatch = apr_palloc(rxpool, nmatch*sizeof(ap_regmatch_t));
+            }
+
+            if (ap_regexec(entry_proxy->r, proxyname, nmatch, pmatch, 0)) {
+                continue;
+            }
+
+            for (i = 0; i < nmatch; i++) {
+                if (pmatch[i].rm_so >= 0 && pmatch[i].rm_eo >= 0 &&
+                        ((const char **)entry_proxy->refs->elts)[i]) {
+                    apr_table_setn(r->subprocess_env,
+                            ((const char **)entry_proxy->refs->elts)[i],
+                            apr_pstrndup(r->pool,
+                                    proxyname + pmatch[i].rm_so,
+                                    pmatch[i].rm_eo - pmatch[i].rm_so));
+                }
+            }
+        }
+
+        else if (
+            /* XXX: What about case insensitive matching ???
+             * Compare regex, fnmatch or string as appropriate
+             * If the entry doesn't relate, then continue
+             */
+            entry_proxy->p_is_fnmatch ? apr_fnmatch(entry_proxy->p,
+                    proxyname, 0) :
+                    strncmp(proxyname, entry_proxy->p,
+                            strlen(entry_proxy->p))) {
             continue;
         }
         per_dir_defaults = ap_merge_per_dir_configs(r->pool, per_dir_defaults,
@@ -767,6 +797,10 @@ static int proxy_walk(request_rec *r)
     }
 
     r->per_dir_config = per_dir_defaults;
+
+    if (rxpool) {
+        apr_pool_destroy(rxpool);
+    }
 
     return OK;
 }
@@ -1314,6 +1348,7 @@ static void *merge_proxy_dir_config(apr_pool_t *p, void *basev, void *addv)
     new->p = add->p;
     new->p_is_fnmatch = add->p_is_fnmatch;
     new->r = add->r;
+    new->refs = add->refs;
 
     /* Put these in the dir config so they work inside <Location> */
     new->raliases = apr_array_append(p, base->raliases, add->raliases);
@@ -2237,6 +2272,11 @@ static const char *proxysection(cmd_parms *cmd, void *mconfig, const char *arg)
     conf->r = r;
     conf->p = cmd->path;
     conf->p_is_fnmatch = apr_fnmatch_test(conf->p);
+
+    if (r) {
+        conf->refs = apr_array_make(cmd->pool, 8, sizeof(char *));
+        ap_regname(r, conf->refs, 1);
+    }
 
     ap_add_per_proxy_conf(cmd->server, new_dir_conf);
 
