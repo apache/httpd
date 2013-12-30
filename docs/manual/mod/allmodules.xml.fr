@@ -33,7 +33,7 @@
   <modulefile>mod_cache_disk.xml.fr</modulefile>
   <modulefile>mod_cache_socache.xml.fr</modulefile>
   <modulefile>mod_cern_meta.xml.fr</modulefile>
-  <modulefile>mod_cgi.xml</modulefile>
+  <modulefile>mod_cgi.xml.fr</modulefile>
   <modulefile>mod_cgid.xml.fr</modulefile>
   <modulefile>mod_charset_lite.xml</modulefile>
   <modulefile>mod_data.xml</modulefile>
