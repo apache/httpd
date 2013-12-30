@@ -1245,10 +1245,16 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
      * zero C-L to the client.  We can't just remove the C-L filter,
      * because well behaved 2.0 handlers will send their data down the stack,
      * and we will compute a real C-L for the head request. RBB
+     *
+     * Allow modification of this behavior through the
+     * HttpContentLengthHeadZero directive.
+     *
+     * The default (unset) behavior is to squelch the C-L in this case.
      */
     if (r->header_only
         && (clheader = apr_table_get(r->headers_out, "Content-Length"))
-        && !strcmp(clheader, "0")) {
+        && !strcmp(clheader, "0")
+        && conf->http_cl_head_zero != AP_HTTP_CL_HEAD_ZERO_ENABLE) {
         apr_table_unset(r->headers_out, "Content-Length");
     }
 
