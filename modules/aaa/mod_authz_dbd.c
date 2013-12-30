@@ -345,7 +345,7 @@ static const char *dbd_parse_config(cmd_parms *cmd, const char *require_line,
 static const authz_provider authz_dbdgroup_provider =
 {
     &dbdgroup_check_authorization,
-    dbd_parse_config,
+    &dbd_parse_config,
 };
 
 static const authz_provider authz_dbdlogin_provider =
