@@ -71,8 +71,7 @@ CacheSocacheMaxSize 102400
 
 <directivesynopsis>
 <name>CacheSocache</name>
-<description>The directory root under which cache files are
-stored</description>
+<description>The shared object cache implementation to use</description>
 <syntax>CacheSocache <var>type[:args]</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
