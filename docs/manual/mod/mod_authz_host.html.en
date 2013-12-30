@@ -71,13 +71,16 @@ address)</td></tr>
     <p>Apache's <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code>
     directive is used during the authorization phase to ensure that a user is allowed or
     denied access to a resource.  mod_authz_host extends the
-    authorization types with <code>ip</code> and <code>host</code>.
+    authorization types with <code>ip</code>, <code>host</code> and <code>local</code>.
     Other authorization types may also be
     used but may require that additional authorization modules be loaded.</p>
 
     <p>These authorization providers affect which hosts can
     access an area of the server. Access can be controlled by
     hostname, IP Address, or IP Address range.</p>
+
+    <p>Since v2.5.0, <a href="../expr.html">expressions</a> are supported
+    within the host require directives.</p>
 
 <h3><a name="reqip" id="reqip">Require ip</a></h3>
 
@@ -136,6 +139,8 @@ Require ip 2001:db8::a00:20ff:fea7:ccea/10
     </pre>
 
 
+    <p>Note: As the IP addresses are parsed on startup, expressions are
+    not evaluated at request time.</p>
 
 
 
