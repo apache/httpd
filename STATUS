@@ -151,7 +151,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   * mod_cache_disk hangs on windows reading from closed files
     trunk patch: http://svn.apache.org/r1547845
     2.4.x patch: trunk works
-    +1 covener
+    +1 covener, jim
   
   * mod_cache invalidates cached responses when reval returns 304+Expires
     trunk patch: http://svn.apache.org/r1518269
@@ -161,7 +161,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   * mod_ldap: restrict a recent WIN32 change to only apply when the MS SDK is used
     trunk patch: http://svn.apache.org/r1551802
     2.4.x patch: trunk works
-    +1 covener
+    +1 covener, jim
 
   * mod_authnz_ldap: Support the expression parser within the require directives.
     trunk patch: http://svn.apache.org/r1554161
