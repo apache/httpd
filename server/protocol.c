@@ -1221,14 +1221,23 @@ request_rec *ap_read_request(conn_rec *conn)
             r->expecting_100 = 1;
         }
         else {
-            r->status = HTTP_EXPECTATION_FAILED;
-            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(00570)
-                          "client sent an unrecognized expectation value of "
-                          "Expect: %s", expect);
-            ap_send_error_response(r, 0);
-            ap_update_child_status(conn->sbh, SERVER_BUSY_LOG, r);
-            ap_run_log_transaction(r);
-            goto traceout;
+            core_server_config *conf;
+
+            conf = ap_get_core_module_config(r->server->module_config);
+            if (conf->http_expect_strict != AP_HTTP_EXPECT_STRICT_DISABLE) {
+                r->status = HTTP_EXPECTATION_FAILED;
+                ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(00570)
+                              "client sent an unrecognized expectation value "
+                              "of Expect: %s", expect);
+                ap_send_error_response(r, 0);
+                ap_update_child_status(conn->sbh, SERVER_BUSY_LOG, r);
+                ap_run_log_transaction(r);
+                goto traceout;
+            } else {
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00570)
+                              "client sent an unrecognized expectation value "
+                              "of Expect (not fatal): %s", expect);
+            }
         }
     }
 

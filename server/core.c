@@ -519,6 +519,12 @@ static void *merge_core_server_configs(apr_pool_t *p, void *basev, void *virtv)
     if (virt->http_conformance != AP_HTTP_CONFORMANCE_UNSET)
         conf->http_conformance = virt->http_conformance;
 
+    if (virt->http_cl_head_zero != AP_HTTP_CL_HEAD_ZERO_UNSET)
+        conf->http_cl_head_zero = virt->http_cl_head_zero;
+
+    if (virt->http_expect_strict != AP_HTTP_EXPECT_STRICT_UNSET)
+        conf->http_expect_strict = virt->http_expect_strict;
+
     /* no action for virt->accf_map, not allowed per-vhost */
 
     if (virt->protocol)
@@ -3774,6 +3780,32 @@ static const char *set_http_method(cmd_parms *cmd, void *conf, const char *arg)
     return NULL;
 }
 
+static const char *set_cl_head_zero(cmd_parms *cmd, void *dummy, int arg)
+{
+    core_server_config *conf =
+        ap_get_core_module_config(cmd->server->module_config);
+
+    if (arg) {
+        conf->http_cl_head_zero = AP_HTTP_CL_HEAD_ZERO_ENABLE;
+    } else {
+        conf->http_cl_head_zero = AP_HTTP_CL_HEAD_ZERO_DISABLE;
+    }
+    return NULL;
+}
+
+static const char *set_expect_strict(cmd_parms *cmd, void *dummy, int arg)
+{
+    core_server_config *conf =
+        ap_get_core_module_config(cmd->server->module_config);
+
+    if (arg) {
+        conf->http_expect_strict = AP_HTTP_EXPECT_STRICT_ENABLE;
+    } else {
+        conf->http_expect_strict = AP_HTTP_EXPECT_STRICT_DISABLE;
+    }
+    return NULL;
+}
+
 static apr_hash_t *errorlog_hash;
 
 static int log_constant_item(const ap_errorlog_info *info, const char *arg,
@@ -4331,6 +4363,10 @@ AP_INIT_ITERATE("HttpProtocol", set_http_protocol, NULL, RSRC_CONF,
               "'liberal', 'strict', 'strict,log-only'"),
 AP_INIT_ITERATE("RegisterHttpMethod", set_http_method, NULL, RSRC_CONF,
                 "Registers non-standard HTTP methods"),
+AP_INIT_FLAG("HttpContentLengthHeadZero", set_cl_head_zero, NULL, OR_OPTIONS,
+  "whether to permit Content-Length of 0 responses to HEAD requests"),
+AP_INIT_FLAG("HttpExpectStrict", set_expect_strict, NULL, OR_OPTIONS,
+  "whether to return a 417 if a client doesn't send 100-Continue"),
 { NULL }
 };
 
