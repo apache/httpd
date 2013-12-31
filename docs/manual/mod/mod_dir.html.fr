@@ -174,7 +174,7 @@ répertoires.
     <code class="directive">DirectoryIndexRedirect</code> permet de rediriger le
     client via une redirection de type 3xx.</p>
 
-    Les arguments acceptés sont :
+    <p>Les arguments acceptés sont :</p>
     <ul>
      <li><code>on</code> : envoie une redirection 302 vers l'index choisi.</li>
      <li><code>off</code> : n'envoie aucune redirection. Il s'agit du comportement historique de mod_dir.</li>
