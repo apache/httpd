@@ -165,14 +165,14 @@ a directory</td></tr>
     and returned transparently to the client.  <code class="directive">DirectoryIndexRedirect</code> causes an external redirect
     to instead be issued.</p>
 
-    The argument can be :
+    <p>The argument can be:</p>
     <ul>
-     <li><code>on</code> : issues a 302 redirection to the index resource.</li>
-     <li><code>off</code> : does not issue a redirection. This is the legacy behaviour of mod_dir.</li>
-     <li><code>permanent</code> : issues a 301 (permanent) redirection to the index resource.</li>
-     <li><code>temp</code> : this has the same effect as <code>on</code></li>
-     <li><code>seeother</code> : issues a 303 redirection (also known as "See Other") to the index resource.</li>
-     <li><var>3xx-code</var> : issues a redirection marked by the chosen 3xx code.</li>
+     <li><code>on</code>: issues a 302 redirection to the index resource.</li>
+     <li><code>off</code>: does not issue a redirection. This is the legacy behaviour of mod_dir.</li>
+     <li><code>permanent</code>: issues a 301 (permanent) redirection to the index resource.</li>
+     <li><code>temp</code>: this has the same effect as <code>on</code></li>
+     <li><code>seeother</code>: issues a 303 redirection (also known as "See Other") to the index resource.</li>
+     <li><var>3xx-code</var>: issues a redirection marked by the chosen 3xx code.</li>
     </ul>
 
 
