@@ -128,10 +128,11 @@ documents via le web (<a href="http://www.webdav.org/">WebDAV</a>)</dd>
 <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code></dd>
 <dt><a href="mod_dav_lock.html">mod_dav_lock</a></dt><dd>Module de verrouillage générique pour
 <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code></dd>
-<dt><a href="mod_dbd.html">mod_dbd</a></dt><dd>Manages SQL database connections</dd>
+<dt><a href="mod_dbd.html">mod_dbd</a></dt><dd>Gestion des connexions à une base de données SQL</dd>
 <dt><a href="mod_deflate.html">mod_deflate</a></dt><dd>Comprime le contenu avant de le servir au
 client</dd>
-<dt><a href="mod_dialup.html">mod_dialup</a></dt><dd>Send static content at a bandwidth rate limit, defined by the various old modem standards</dd>
+<dt><a href="mod_dialup.html">mod_dialup</a></dt><dd>Envoie le contenu statique avec une bande passante limitée
+définie par les différents standards des anciens modems.</dd>
 <dt><a href="mod_dir.html">mod_dir</a></dt><dd>Permet la redirection des adresses se terminant par un
 répertoire sans slash de fin et la mise à disposition des fichiers index
 de répertoire</dd>

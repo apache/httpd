@@ -40,9 +40,9 @@
   <modulefile>mod_dav.xml.fr</modulefile>
   <modulefile>mod_dav_fs.xml.fr</modulefile>
   <modulefile>mod_dav_lock.xml.fr</modulefile>
-  <modulefile>mod_dbd.xml</modulefile>
+  <modulefile>mod_dbd.xml.fr</modulefile>
   <modulefile>mod_deflate.xml.fr</modulefile>
-  <modulefile>mod_dialup.xml</modulefile>
+  <modulefile>mod_dialup.xml.fr</modulefile>
   <modulefile>mod_dir.xml.fr</modulefile>
   <modulefile>mod_dumpio.xml</modulefile>
   <modulefile>mod_echo.xml.fr</modulefile>
