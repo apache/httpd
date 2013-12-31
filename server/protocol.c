@@ -1234,7 +1234,7 @@ request_rec *ap_read_request(conn_rec *conn)
                 ap_run_log_transaction(r);
                 goto traceout;
             } else {
-                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00570)
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02595)
                               "client sent an unrecognized expectation value "
                               "of Expect (not fatal): %s", expect);
             }
