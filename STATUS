@@ -193,7 +193,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     trunk patch: http://svn.apache.org/r1554300
                  http://svn.apache.org/r1554301
     2.4.x patch: http://people.apache.org/~minfrin/httpd-match-backref4.patch
-    +1: minfrin
+    +1: minfrin, jim
 
 
 OTHER PROPOSALS
