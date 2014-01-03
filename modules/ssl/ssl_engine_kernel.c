@@ -175,10 +175,13 @@ int ssl_hook_ReadReq(request_rec *r)
              * with either no hostname or a different hostname as this could
              * cause us to end up in a different virtual host as the one that
              * was used for the handshake causing different SSL parameters to
-             * be applied.
-             * XXX: TODO check if this is really true and that there are
-             * SSL parameters that are not fixed by a renegotiation in
-             * ssl_hook_Access.
+             * be applied as SSLProtocol, SSLCACertificateFile/Path and
+             * SSLCADNRequestFile/Path cannot be renegotioated (SSLCA* due
+             * to current limitiations in Openssl, see
+             * http://mail-archives.apache.org/mod_mbox/httpd-dev/200806.mbox/%3C48592955.2090303@velox.ch%3E
+             * and
+             * http://mail-archives.apache.org/mod_mbox/httpd-dev/201312.mbox/%3CCAKQ1sVNpOrdiBm-UPw1hEdSN7YQXRRjeaT-MCWbW_7mN%3DuFiOw%40mail.gmail.com%3E
+             * )
              */
             if (!r->hostname) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server, APLOGNO(02031)
