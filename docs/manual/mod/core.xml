@@ -887,15 +887,15 @@ the contents of file-system directories matching a regular expression.</descript
     </note>
 
     <p>From 2.5.0 onwards, named groups and backreferences are captured and
-    written to the environment with the corresponding name in upper case.
-    This allows elements of paths to be referenced from within
-    <a href="expr.html">expressions</a> and modules like
+    written to the environment with the corresponding name prefixed with
+    "MATCH_" and in upper case. This allows elements of paths to be referenced
+    from within <a href="expr.html">expressions</a> and modules like
     <module>mod_rewrite</module>. In order to prevent confusion, numbered
     (unnamed) backreferences are ignored. Use named groups instead.</p>
 
 <highlight language="config">
-&lt;DirectoryMatch ^/var/www/combined/(?&lt;SITENAME&gt;[^/]+)&gt;
-    require ldap-group cn=%{env:SITENAME},ou=combined,o=Example
+&lt;DirectoryMatch ^/var/www/combined/(?&lt;sitename&gt;[^/]+)&gt;
+    require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
 &lt;/DirectoryMatch&gt;
 </highlight>
 </usage>
@@ -1750,15 +1750,15 @@ filenames</description>
     <p>would match most common Internet graphics formats.</p>
 
     <p>From 2.5.0 onwards, named groups and backreferences are captured and
-    written to the environment with the corresponding name in upper case.
-    This allows elements of files to be referenced from within
-    <a href="expr.html">expressions</a> and modules like
+    written to the environment with the corresponding name prefixed with
+    "MATCH_" and in upper case. This allows elements of files to be referenced
+    from within <a href="expr.html">expressions</a> and modules like
     <module>mod_rewrite</module>. In order to prevent confusion, numbered
     (unnamed) backreferences are ignored. Use named groups instead.</p>
 
 <highlight language="config">
-&lt;FileMatch ^(?&lt;SITENAME&gt;[^/]+)&gt;
-    require ldap-group cn=%{env:SITENAME},ou=combined,o=Example
+&lt;FileMatch ^(?&lt;sitename&gt;[^/]+)&gt;
+    require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
 &lt;/FileMatch&gt;
 </highlight>
 </usage>
@@ -2716,15 +2716,15 @@ matching URLs</description>
     or <code>/special/data</code>.</p>
 
     <p>From 2.5.0 onwards, named groups and backreferences are captured and
-    written to the environment with the corresponding name in upper case.
-    This allows elements of URLs to be referenced from within
-    <a href="expr.html">expressions</a> and modules like
+    written to the environment with the corresponding name prefixed with
+    "MATCH_" and in upper case. This allows elements of URLs to be referenced
+    from within <a href="expr.html">expressions</a> and modules like
     <module>mod_rewrite</module>. In order to prevent confusion, numbered
     (unnamed) backreferences are ignored. Use named groups instead.</p>
 
 <highlight language="config">
-&lt;LocationMatch ^/combined/(?&lt;SITENAME&gt;[^/]+)&gt;
-    require ldap-group cn=%{env:SITENAME},ou=combined,o=Example
+&lt;LocationMatch ^/combined/(?&lt;sitename&gt;[^/]+)&gt;
+    require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
 &lt;/LocationMatch&gt;
 </highlight>
 </usage>
