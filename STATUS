@@ -200,7 +200,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     stanzas under virtual hosts. PR55622.
     trunk patch: http://svn.apache.org/r1554995
     2.4.x patch: trunk works, + CHANGES
-    +1 covener 
+    +1: covener 
+
+  * mod_proxy: Remove <Proxy ~ wildcard-url> syntax 
+    trunk patch: http://svn.apache.org/r1552227
+    2.4.x patch: trunk works, except for CHANGES
+    +1: jailletc36
+
+  * mod_proxy_ftp: Avoid potentially sending back uninitialized memory
+    and save 8k of stack
+    trunk patch: http://svn.apache.org/r1551714
+    2.4.x patch: trunk works
+    +1: jailletc36
 
 OTHER PROPOSALS
 
