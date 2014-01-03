@@ -194,6 +194,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  http://svn.apache.org/r1554301
     2.4.x patch: http://people.apache.org/~minfrin/httpd-match-backref4.patch
     +1: minfrin, jim
+    covener: needs http://svn.apache.org/r1554994 c89 fix
 
   * mod_authn_core: allow <AuthnProviderAlias>'es to be seen from auth 
     stanzas under virtual hosts. PR55622.
