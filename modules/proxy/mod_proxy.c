@@ -748,12 +748,12 @@ static int proxy_walk(request_rec *r)
 
     for (j = 0; j < num_sec; ++j)
     {
-        entry_config = sec_proxy[j];
-        entry_proxy = ap_get_module_config(entry_config, &proxy_module);
-
         int nmatch = 0;
         int i;
         ap_regmatch_t *pmatch = NULL;
+
+        entry_config = sec_proxy[j];
+        entry_proxy = ap_get_module_config(entry_config, &proxy_module);
 
         if (entry_proxy->r) {
 
