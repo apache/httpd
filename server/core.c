@@ -2223,7 +2223,7 @@ static const char *dirsection(cmd_parms *cmd, void *mconfig, const char *arg)
 
     if (r) {
         conf->refs = apr_array_make(cmd->pool, 8, sizeof(char *));
-        ap_regname(r, conf->refs, 1);
+        ap_regname(r, conf->refs, AP_REG_MATCH, 1);
     }
 
     /* Make this explicit - the "/" root has 0 elements, that is, we
@@ -2304,7 +2304,7 @@ static const char *urlsection(cmd_parms *cmd, void *mconfig, const char *arg)
 
     if (r) {
         conf->refs = apr_array_make(cmd->pool, 8, sizeof(char *));
-        ap_regname(r, conf->refs, 1);
+        ap_regname(r, conf->refs, AP_REG_MATCH, 1);
     }
 
     ap_add_per_url_conf(cmd->server, new_url_conf);
@@ -2391,7 +2391,7 @@ static const char *filesection(cmd_parms *cmd, void *mconfig, const char *arg)
 
     if (r) {
         conf->refs = apr_array_make(cmd->pool, 8, sizeof(char *));
-        ap_regname(r, conf->refs, 1);
+        ap_regname(r, conf->refs, AP_REG_MATCH, 1);
     }
 
     ap_add_file_conf(cmd->pool, (core_dir_config *)mconfig, new_file_conf);

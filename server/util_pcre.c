@@ -258,7 +258,8 @@ AP_DECLARE(int) ap_regexec_len(const ap_regex_t *preg, const char *buff,
 }
 
 AP_DECLARE(int) ap_regname(const ap_regex_t *preg,
-                           apr_array_header_t *names, int upper)
+                           apr_array_header_t *names, const char *prefix,
+                           int upper)
 {
     int namecount;
     int nameentrysize;
@@ -278,10 +279,14 @@ AP_DECLARE(int) ap_regname(const ap_regex_t *preg,
         while (names->nelts <= capture) {
             apr_array_push(names);
         }
-        if (upper) {
-            char *name = ((char **)names->elts)[capture] = 
-                apr_pstrdup(names->pool, offset + 2);
-            ap_str_toupper(name);
+        if (upper || prefix) {
+            char *name = ((char **) names->elts)[capture] =
+                    prefix ? apr_pstrcat(names->pool, prefix, offset + 2,
+                            NULL) :
+                            apr_pstrdup(names->pool, offset + 2);
+            if (upper) {
+                ap_str_toupper(name);
+            }
         }
         else {
             ((const char **)names->elts)[capture] = offset + 2;

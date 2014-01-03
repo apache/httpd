@@ -2275,7 +2275,7 @@ static const char *proxysection(cmd_parms *cmd, void *mconfig, const char *arg)
 
     if (r) {
         conf->refs = apr_array_make(cmd->pool, 8, sizeof(char *));
-        ap_regname(r, conf->refs, 1);
+        ap_regname(r, conf->refs, AP_REG_MATCH, 1);
     }
 
     ap_add_per_proxy_conf(cmd->server, new_dir_conf);
