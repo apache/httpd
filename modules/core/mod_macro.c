@@ -468,7 +468,7 @@ static const char *process_content(apr_pool_t * pool,
     int i;
 
     if (result) {
-        *result = apr_array_make(pool, 1, sizeof(char *));
+        *result = apr_array_make(pool, contents->nelts, sizeof(char *));
     }
 
     /* for each line of the macro body */
