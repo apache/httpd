@@ -2121,7 +2121,8 @@ SSLUserName SSL_CLIENT_S_DN_CN
 <directivesynopsis>
 <name>SSLHonorCipherOrder</name>
 <description>Option to prefer the server's cipher preference order</description>
-<syntax>SSLHonorCipherOrder <em>flag</em></syntax>
+<syntax>SSLHonorCipherOrder on|off</syntax>
+<default>SSLHonorCipherOrder off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 <compatibility>Available if using OpenSSL 0.9.7 or later</compatibility>
@@ -2168,7 +2169,8 @@ SSLCryptoDevice ubsec
 <directivesynopsis>
 <name>SSLOCSPEnable</name>
 <description>Enable OCSP validation of the client certificate chain</description>
-<syntax>SSLOCSPEnable <em>flag</em></syntax>
+<syntax>SSLOCSPEnable on|off</syntax>
+<default>SSLOCSPEnable off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 <compatibility>Available in httpd 2.3 and later, if using OpenSSL 0.9.7 or later</compatibility>
@@ -2215,7 +2217,8 @@ the certificate being verified.</p>
 <directivesynopsis>
 <name>SSLOCSPOverrideResponder</name>
 <description>Force use of the default responder URI for OCSP validation</description>
-<syntax>SSLOCSPOverrideResponder <em>flag</em></syntax>
+<syntax>SSLOCSPOverrideResponder on|off</syntax>
+<default>SSLOCSPOverrideResponder off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 <compatibility>Available in httpd 2.3 and later, if using OpenSSL 0.9.7 or later</compatibility>
@@ -2277,7 +2280,7 @@ which means that OCSP responses are considered valid as long as their
 <directivesynopsis>
 <name>SSLInsecureRenegotiation</name>
 <description>Option to enable support for insecure renegotiation</description>
-<syntax>SSLInsecureRenegotiation <em>flag</em></syntax>
+<syntax>SSLInsecureRenegotiation on|off</syntax>
 <default>SSLInsecureRenegotiation off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
