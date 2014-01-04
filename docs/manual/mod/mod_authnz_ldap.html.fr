@@ -27,8 +27,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_authnz_ldap.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_authnz_ldap.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Permet d'utiliser un annuaire LDAP pour l'authentification
 HTTP de base.</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -382,6 +380,9 @@ Directory</a></li>
     disponibles, sous réserve du chargement de modules d'autorisation
     supplémentaires.</p>
 
+    <p>A partir de la version 2.5.0, les directives require LDAP
+    supportent les <a href="../expr.html">expressions</a>.</p>
+
 <h3><a name="requser" id="requser">Require ldap-user</a></h3>
 
     <p>La directive <code>Require ldap-user</code> permet de spécifier
@@ -623,6 +624,18 @@ Require valid-user
 <pre class="prettyprint lang-config">
 AuthLDAPURL ldap://ldap.example.com/o=Example?uid
 Require ldap-group cn=Administrators, o=Example
+</pre>
+
+      </li>
+
+      <li>
+      Accorde l'accès à tout utilisateur appartenant au groupe dont le
+      nom correspond au nom d'hôte du serveur virtuel. Dans cet exemple,
+      on utilise une <a href="../expr.html">expression</a> pour
+      construire le filtre.
+<pre class="prettyprint lang-config">
+AuthLDAPURL ldap://ldap.example.com/o=Example?uid
+Require ldap-group cn=%{SERVER_NAME}, o=Example
 </pre>
 
       </li>
@@ -1283,11 +1296,13 @@ d'environnement REMOTE_USER</td></tr>
     spécifié. Assurez-vous que cet attribut soit bien inclus dans la
     liste d'attributs spécifiés dans la définition de AuthLDAPUrl ; dans
     le cas contraire, cette directive n'aurait aucun effet. Si elle est
-    présente, cette directive l'emporte sur AuthLDAPRemoteUserIsDN. Elle
+    présente, cette directive l'emporte sur <code class="directive"><a href="#authldapremoteuserisdn">AuthLDAPRemoteUserIsDN</a></code>. Elle
     peut s'avérer utile par exemple, si vous souhaitez que les
     utilisateurs se connectent à un site web en utilisant leur adresse
     email, alors qu'une application sous-jacente nécessite un nom
     d'utilisateur comme identifiant.</p>
+    <p>Cette directive n'a d'effet que si l'on utilise ce module pour
+    l'authentification.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1307,6 +1322,8 @@ d'environnement REMOTE_USER</td></tr>
     de l'utilisateur authentifié, et non plus avec simplement le nom
     d'utilisateur fourni par le client. Elle est définie à off par
     défaut.</p>
+    <p>Cette directive n'a d'effet que si l'on utilise ce module pour
+    l'authentification.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
