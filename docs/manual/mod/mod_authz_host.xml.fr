@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1346405:1554188 (outdated) -->
+<!-- English Revision : 1554188 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -64,7 +64,7 @@ contr&ocirc;le d'acc&egrave;s</a></seealso>
     module="mod_authz_core">Require</directive> est utilis&eacute;e au cours de
     la phase d'autorisation pour v&eacute;rifier si un utilisateur se voit
     accorder ou refuser l'acc&egrave;s &agrave; une ressource. mod_authz_host fournit
-    les types d'autorisation <code>ip</code>, <code>host</code>. D'autres
+    les types d'autorisation <code>ip</code>, <code>host</code> et <code>local</code>. D'autres
     types d'autorisation
     sont aussi disponibles, mais n&eacute;cessitent le chargement des modules
     d'autorisation appropri&eacute;s.</p>
@@ -73,6 +73,9 @@ contr&ocirc;le d'acc&egrave;s</a></seealso>
     h&ocirc;tes peuvent acc&eacute;der &agrave; une zone du serveur. On peut contr&ocirc;ler
     l'acc&egrave;s en fonction du nom d'h&ocirc;te, de l'adresse IP, ou d'un intervalle
     d'adresses IP.</p>
+
+    <p>A partir de la version 2.5.0, les directives require host
+    supportent les <a href="../expr.html">expressions</a>.</p>
 
 <section id="reqip"><title>Require ip</title>
 
@@ -127,6 +130,8 @@ Require ip 2001:db8::a00:20ff:fea7:ccea
 Require ip 2001:db8::a00:20ff:fea7:ccea/10
     </highlight>
 
+    <p>Note: comme les adresses IP sont lues au d&eacute;marrage, les
+    expressions ne sont pas &eacute;valu&eacute;es au moment de la requ&ecirc;te.</p>
 
 </section>
 

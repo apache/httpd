@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1553482:1554168 (outdated) -->
+<!-- English Revision : 1554168 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -55,6 +55,56 @@ d'Apache</compatibility>
 </seealso>
 <seealso><directive module="mod_dbd">DBDriver</directive></seealso>
 <seealso><directive module="mod_dbd">DBDParams</directive></seealso>
+
+<section id="requiredirectives"><title>Les directives Require</title>
+
+    <p>Les directives <directive
+    module="mod_authz_core">Require</directive> d'Apache permettent,
+    au cours de la phase d'autorisation, de s'assurer qu'un utilisateur
+    est bien autoris&eacute; &agrave; acc&eacute;der &agrave; une ressource. mod_authz_dbd ajoute
+    les types d'autorisation <code>dbd-group</code>,
+    <code>dbd-login</code> et <code>dbd-logout</code>.</p>
+
+    <p>A partir de la version 2.5.0, les directives require DBD
+    supportent les <a href="../expr.html">expressions</a>.</p>
+
+<section id="reqgroup"><title>Require dbd-group</title>
+
+    <p>Cette directive permet de sp&eacute;cifier &agrave; quel groupe un utilisateur
+    doit appartenir pour obtenir l'autorisation d'acc&egrave;s.</p>
+
+    <highlight language="config">
+      Require dbd-group team
+      AuthzDBDQuery "SELECT group FROM authz WHERE user = %s"
+    </highlight>
+
+</section>
+
+<section id="reqlogin"><title>Require dbd-login</title>
+
+    <p>Cette directive permet de sp&eacute;cifier une requ&ecirc;te &agrave; ex&eacute;cuter pour
+    indiquer que l'utilisateur s'est authentifi&eacute;.</p>
+
+    <highlight language="config">
+      Require dbd-login
+      AuthzDBDQuery "UPDATE authn SET login = 'true' WHERE user = %s"
+    </highlight>
+
+</section>
+
+<section id="reqlogout"><title>Require dbd-logout</title>
+
+    <p>Cette directive permet de sp&eacute;cifier une requ&ecirc;te &agrave; ex&eacute;cuter pour
+    indiquer que l'utilisateur s'est d&eacute;connect&eacute;.</p>
+
+    <highlight language="config">
+      Require dbd-logout
+      AuthzDBDQuery "UPDATE authn SET login = 'false' WHERE user = %s"
+    </highlight>
+
+</section>
+
+</section>
 
 <section id="login">
 <title>Connexion s'appuyant sur une base de donn&eacute;es</title>

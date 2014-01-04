@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1533154:1554301 (outdated) -->
+<!-- English Revision: 1555266 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -595,6 +595,21 @@ mandat&eacute;es correspondant &agrave; une expression rationnelle</description>
     type="section">Proxy</directive>, &agrave; l'exception qu'elle d&eacute;finit
     les URLs auxquelles elle s'applique en utilisant une <glossary
     ref="regex">expression rationnelle</glossary>.</p>
+
+    <p>A partir de la version 2.5.0, les groupes nomm&eacute;s et les
+    r&eacute;f&eacute;rences arri&egrave;res sont extraits et enregistr&eacute;s dans
+    l'environnement avec leur nom en majuscules et pr&eacute;fix&eacute; par "MATCH_". Ceci permet
+    de r&eacute;f&eacute;rencer des URLs dans des <a href="expr.html">expressions</a>
+    ou au sein de modules comme <module>mod_rewrite</module>. Pour
+    &eacute;viter toute confusion, les r&eacute;f&eacute;rences arri&egrave;res num&eacute;rot&eacute;es (non
+    nomm&eacute;es) sont ignor&eacute;es. Vous devez utiliser &agrave; la place des groupes
+    nomm&eacute;s.</p>
+
+<highlight language="config">
+&lt;ProxyMatch ^http://(?&lt;sitename&gt;[^/]+)&gt;
+    require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
+&lt;/ProxyMatch&gt;
+</highlight>
 </usage>
 <seealso><directive type="section" module="mod_proxy">Proxy</directive></seealso>
 </directivesynopsis>
