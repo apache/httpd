@@ -158,35 +158,35 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   * mod_authnz_ldap: Support the expression parser within the require directives.
     trunk patch: http://svn.apache.org/r1554161
     2.4.x patch: trunk works (modulo CHANGES and log-message-tags)
-    +1: minfrin, jim
+    +1: minfrin, jim, covener
 
   * mod_authz_dbd: Support the expression parser within the require directives.
     trunk patch: http://svn.apache.org/r1554168
                  http://svn.apache.org/r1554176
     2.4.x patch: trunk works (modulo CHANGES and log-message-tags)
-    +1: minfrin, jim
+    +1: minfrin, jim, covener
 
   * mod_authz_dbm: Support the expression parser within the require directives.
     trunk patch: http://svn.apache.org/r1554170
                  http://svn.apache.org/r1554181
     2.4.x patch: trunk works (modulo CHANGES and log-message-tags)
-    +1: minfrin, jim
+    +1: minfrin, jim, covener
 
   * mod_authz_groupfile: Support the expression parser within the require directives.
     trunk patch: http://svn.apache.org/r1554175
                  http://svn.apache.org/r1554184
     2.4.x patch: trunk works (modulo CHANGES and log-message-tags)
-    +1: minfrin, jim
+    +1: minfrin, jim, covener
 
   * mod_authz_host: Support the expression parser within the require directives.
     trunk patch: http://svn.apache.org/r1554188
     2.4.x patch: trunk works (modulo CHANGES and log-message-tags)
-    +1: minfrin, jim
+    +1: minfrin, jim, covener
 
   * mod_authz_user: Support the expression parser within the require directives.
     trunk patch: http://svn.apache.org/r1554195
     2.4.x patch: trunk works (modulo CHANGES and log-message-tags)
-    +1: minfrin, jim
+    +1: minfrin, jim, covener
 
   * core: Support named groups and backreferences within the LocationMatch,
     DirectoryMatch, FilesMatch and ProxyMatch directives.
@@ -195,7 +195,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  http://svn.apache.org/r1554994
                  http://svn.apache.org/r1555266
     2.4.x patch: http://people.apache.org/~minfrin/httpd-match-backref7.patch
-    +1: minfrin
+    +1: minfrin, covener
 
   * mod_authn_core: allow <AuthnProviderAlias>'es to be seen from auth 
     stanzas under virtual hosts. PR55622.
@@ -206,13 +206,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   * mod_proxy: Remove <Proxy ~ wildcard-url> syntax 
     trunk patch: http://svn.apache.org/r1552227
     2.4.x patch: trunk works, except for CHANGES
-    +1: jailletc36
+    +1: jailletc36, covener
 
   * mod_proxy_ftp: Avoid potentially sending back uninitialized memory
     and save 8k of stack
     trunk patch: http://svn.apache.org/r1551714
     2.4.x patch: trunk works
-    +1: jailletc36
+    +1: jailletc36, covener
 
 OTHER PROPOSALS
 
