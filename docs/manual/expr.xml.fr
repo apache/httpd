@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision: 1481359:1554188 (outdated) -->
+<!-- English Revision : 1554188 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -57,6 +57,15 @@
 <seealso><directive module="mod_headers">RequestHeader</directive></seealso>
 <seealso><directive module="mod_filter">FilterProvider</directive></seealso>
 <seealso><a href="mod/mod_authz_core.html#reqexpr">Require expr</a></seealso>
+<seealso><a href="mod/mod_authnz_ldap.html#requser">Require ldap-user</a></seealso>
+<seealso><a href="mod/mod_authnz_ldap.html#reqgroup">Require ldap-group</a></seealso>
+<seealso><a href="mod/mod_authnz_ldap.html#reqdn">Require ldap-dn</a></seealso>
+<seealso><a href="mod/mod_authnz_ldap.html#reqattribute">Require ldap-attribute</a></seealso>
+<seealso><a href="mod/mod_authnz_ldap.html#reqfilter">Require ldap-filter</a></seealso>
+<seealso><a href="mod/mod_authz_dbd.html#reqgroup">Require dbd-group</a></seealso>
+<seealso><a href="mod/mod_authz_dbm.html#reqgroup">Require dbm-group</a></seealso>
+<seealso><a href="mod/mod_authz_groupfile.html#reqgroup">Require group</a></seealso>
+<seealso><a href="mod/mod_authz_host.html#reqhost">Require host</a></seealso>
 <seealso><directive module="mod_ssl">SSLRequire</directive></seealso>
 <seealso><directive module="mod_log_debug">LogMessage</directive></seealso>
 <seealso><module>mod_include</module></seealso>

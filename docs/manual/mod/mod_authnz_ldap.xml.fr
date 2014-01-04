@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1546567:1554161 (outdated) -->
+<!-- English Revision : 1554161 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -359,6 +359,9 @@ HTTP de base.</description>
     disponibles, sous r&eacute;serve du chargement de modules d'autorisation
     suppl&eacute;mentaires.</p>
 
+    <p>A partir de la version 2.5.0, les directives require LDAP
+    supportent les <a href="../expr.html">expressions</a>.</p>
+
 <section id="requser"><title>Require ldap-user</title>
 
     <p>La directive <code>Require ldap-user</code> permet de sp&eacute;cifier
@@ -597,6 +600,17 @@ Require valid-user
 <highlight language="config">
 AuthLDAPURL ldap://ldap.example.com/o=Example?uid
 Require ldap-group cn=Administrators, o=Example
+</highlight>
+      </li>
+
+      <li>
+      Accorde l'acc&egrave;s &agrave; tout utilisateur appartenant au groupe dont le
+      nom correspond au nom d'h&ocirc;te du serveur virtuel. Dans cet exemple,
+      on utilise une <a href="../expr.html">expression</a> pour
+      construire le filtre.
+<highlight language="config">
+AuthLDAPURL ldap://ldap.example.com/o=Example?uid
+Require ldap-group cn=%{SERVER_NAME}, o=Example
 </highlight>
       </li>
 
@@ -1257,11 +1271,14 @@ d'environnement REMOTE_USER</description>
     sp&eacute;cifi&eacute;. Assurez-vous que cet attribut soit bien inclus dans la
     liste d'attributs sp&eacute;cifi&eacute;s dans la d&eacute;finition de AuthLDAPUrl ; dans
     le cas contraire, cette directive n'aurait aucun effet. Si elle est
-    pr&eacute;sente, cette directive l'emporte sur AuthLDAPRemoteUserIsDN. Elle
+    pr&eacute;sente, cette directive l'emporte sur <directive
+    module="mod_authnz_ldap">AuthLDAPRemoteUserIsDN</directive>. Elle
     peut s'av&eacute;rer utile par exemple, si vous souhaitez que les
     utilisateurs se connectent &agrave; un site web en utilisant leur adresse
     email, alors qu'une application sous-jacente n&eacute;cessite un nom
     d'utilisateur comme identifiant.</p>
+    <p>Cette directive n'a d'effet que si l'on utilise ce module pour
+    l'authentification.</p>
 </usage>
 </directivesynopsis>
 
@@ -1281,6 +1298,8 @@ d'environnement REMOTE_USER</description>
     de l'utilisateur authentifi&eacute;, et non plus avec simplement le nom
     d'utilisateur fourni par le client. Elle est d&eacute;finie &agrave; off par
     d&eacute;faut.</p>
+    <p>Cette directive n'a d'effet que si l'on utilise ce module pour
+    l'authentification.</p>
 </usage>
 </directivesynopsis>
 

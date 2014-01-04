@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1384856:1554301 (outdated) -->
+<!-- English Revision : 1554301 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -323,6 +323,19 @@ simultan&eacute;ment :</p>
 +&lt;FilesMatch \.(?i:gif|jpe?g|png)$&gt;
     Require all denied
 &lt;/FilesMatch&gt;
+</highlight>
+
+<p>Les expressions rationnelles contenant des <strong>groupes nomm&eacute;s et
+des r&eacute;f&eacute;rences arri&egrave;res</strong> sont ajout&eacute;es &agrave; l'environnement avec
+leur nom en majuscules. Ceci permet de r&eacute;f&eacute;rencer des &eacute;l&eacute;ments de
+chemins de fichiers et d'URLs depuis une <a
+href="expr.html">expression</a> et au sein de modules comme
+<module>mod_rewrite</module>.</p>
+
+<highlight language="config">
+&lt;DirectoryMatch ^/var/www/combined/(?&lt;SITENAME&gt;[^/]+)&gt;
+    require ldap-group cn=%{env:SITENAME},ou=combined,o=Example
+&lt;/DirectoryMatch&gt;
 </highlight>
 
 </section>

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1521498 -->
+<!-- English Revision : 1555116 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -891,14 +891,20 @@ la r&eacute;&eacute;criture soit effectu&eacute;e
 	    v&eacute;rifie son existence et si elle est un fichier r&eacute;gulier
 	    d'une taille sup&eacute;rieure &agrave; z&eacute;ro.</li>
 
-            <li>'<strong>-U</strong>' (test de l'existence d'une
-	    <strong>U</strong>RL via une sous-requ&ecirc;te)<br />
+            <li><p>'<strong>-U</strong>' (test de l'existence d'une
+	    URL via une sous-requ&ecirc;te)<br />
 	    V&eacute;rifie si <em>cha&icirc;ne de test</em> est une URL valide,
 	    accessible &agrave; travers tous les contr&ocirc;les d'acc&egrave;s du serveur
 	    actuellement configur&eacute;s pour ce chemin. C'est une
 	    sous-requ&ecirc;te interne qui effectue cette v&eacute;rification - &agrave;
 	    utiliser avec pr&eacute;cautions car les performances du serveur
-	    peuvent s'en trouver affect&eacute;es !</li>
+	    peuvent s'en trouver affect&eacute;es !</p>
+	    <p>Ce drapeau ne renvoie <em>que</em> des informations
+	    concernant le contr&ocirc;le d'acc&egrave;s, l'authentification et
+	    l'autorisation. Il ne renvoie <em>pas</em> d'informations
+	    concernant le code d'&eacute;tat que le gestionnaire configur&eacute;
+	    (static file, CGI, proxy, etc...) aurait, quant &agrave; lui,
+	    retourn&eacute;.</p></li>
 
 	  <li>'<strong>-x</strong>' (a l'attribut d'ex&eacute;cution positionn&eacute;)<br />
             Consid&egrave;re la <em>cha&icirc;ne de test</em> comme un chemin et

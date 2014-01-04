@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1465602:1554170 (outdated) -->
+<!-- English Revision : 1554170 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -39,6 +39,41 @@
 </summary>
 
 <seealso><directive module="mod_authz_core">Require</directive></seealso>
+
+<section id="requiredirectives"><title>The Require Directives</title>
+
+    <p>Les directives <directive
+    module="mod_authz_core">Require</directive> d'Apache permettent,
+    au cours de la phase d'autorisation, de s'assurer qu'un utilisateur
+    est bien autoris&eacute; &agrave; acc&eacute;der &agrave; une ressource.  mod_authz_dbm ajoute
+    les types d'autorisation <code>dbm-group</code> et <code>dbm-file-group</code>.</p>
+
+    <p>A partir de la version 2.5.0, les directives require DBM
+    supportent les <a href="../expr.html">expressions</a>.</p>
+
+<section id="reqgroup"><title>Require dbm-group</title>
+
+    <p>Cette directive permet de sp&eacute;cifier &agrave; quel groupe un utilisateur
+    doit appartenir pour obtenir l'autorisation d'acc&egrave;s.</p>
+
+    <highlight language="config">
+      Require dbm-group admin
+    </highlight>
+
+</section>
+
+<section id="reqfilegroup"><title>Require dbm-file-group</title>
+
+    <p>Lorsque cette directive est d&eacute;finie, l'utilisateur doit
+    appartenir au groupe du fichier pour pouvoir y acc&eacute;der.</p>
+
+    <highlight language="config">
+      Require dbm-file-group
+    </highlight>
+
+</section>
+
+</section>
 
 <section id="examples">
 <title>Exemple d'utilisation</title>
