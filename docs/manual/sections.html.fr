@@ -27,8 +27,6 @@
 <a href="./ko/sections.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/sections.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
  <p>Les directives des <a href="configuring.html">fichiers de configuration</a> peuvent s'appliquer
 au serveur dans son ensemble, ou seulement à des répertoires, fichiers, hôtes,
 ou URLs particuliers.  Ce document décrit comment utiliser les conteneurs de
@@ -313,6 +311,19 @@ simultanément :</p>
 +&lt;FilesMatch \.(?i:gif|jpe?g|png)$&gt;
     Require all denied
 &lt;/FilesMatch&gt;
+</pre>
+
+
+<p>Les expressions rationnelles contenant des <strong>groupes nommés et
+des références arrières</strong> sont ajoutées à l'environnement avec
+leur nom en majuscules. Ceci permet de référencer des éléments de
+chemins de fichiers et d'URLs depuis une <a href="expr.html">expression</a> et au sein de modules comme
+<code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code>.</p>
+
+<pre class="prettyprint lang-config">
+&lt;DirectoryMatch ^/var/www/combined/(?&lt;SITENAME&gt;[^/]+)&gt;
+    require ldap-group cn=%{env:SITENAME},ou=combined,o=Example
+&lt;/DirectoryMatch&gt;
 </pre>
 
 
