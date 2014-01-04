@@ -415,7 +415,7 @@ SSLRandomSeed startup builtin
 SSLRandomSeed connect builtin
 </IfModule>
 #
-# uncomment out the below to deal with user agents that deliberately
+# Uncomment the below to deal with user agents that deliberately
 # violate open standards by misusing DNT (DNT *must* be a specific
 # end-user choice)
 #
