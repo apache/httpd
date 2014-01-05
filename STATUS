@@ -98,16 +98,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_proxy: Remove <Proxy ~ wildcard-url> syntax 
-    trunk patch: http://svn.apache.org/r1552227
-    2.4.x patch: trunk works, except for CHANGES
-    +1: jailletc36, covener, jim
-
-  * mod_proxy_ftp: Avoid potentially sending back uninitialized memory
-    and save 8k of stack
-    trunk patch: http://svn.apache.org/r1551714
-    2.4.x patch: trunk works
-    +1: jailletc36, covener, jim
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
