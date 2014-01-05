@@ -127,8 +127,8 @@ static void modssl_ctx_init(modssl_ctx_t *mctx, apr_pool_t *p)
     mctx->auth.verify_depth   = UNSET;
     mctx->auth.verify_mode    = SSL_CVERIFY_UNSET;
 
-    mctx->ocsp_enabled        = FALSE;
-    mctx->ocsp_force_default  = FALSE;
+    mctx->ocsp_enabled        = UNSET;
+    mctx->ocsp_force_default  = UNSET;
     mctx->ocsp_responder      = NULL;
     mctx->ocsp_resptime_skew  = UNSET;
     mctx->ocsp_resp_maxage    = UNSET;

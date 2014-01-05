@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_ssl: Fix config merging of SSLOCSPEnable and SSLOCSPOverrideResponder.
+     [Jeff Trawick]
+
   *) Add HttpContentLengthHeadZero and HttpExpectStrict directives.
      [Yehuda Sadeh <yehuda inktank com>, Justin Erenkrantz]
 
