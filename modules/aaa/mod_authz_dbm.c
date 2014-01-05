@@ -137,6 +137,11 @@ static authz_status dbmgroup_check_authorization(request_rec *r,
     authz_dbm_config_rec *conf = ap_get_module_config(r->per_dir_config,
                                                       &authz_dbm_module);
     char *user = r->user;
+
+    const char *err = NULL;
+    const ap_expr_info_t *expr = parsed_require_args;
+    const char *require;
+
     const char *t;
     char *w;
     const char *orig_groups = NULL;
@@ -180,7 +185,15 @@ static authz_status dbmgroup_check_authorization(request_rec *r,
         orig_groups = groups;
     }
 
-    t = require_args;
+    require = ap_expr_str_exec(r, expr, &err);
+    if (err) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02591)
+                      "authz_dbm authorize: require dbm-group: Can't "
+                      "evaluate require expression: %s", err);
+        return AUTHZ_DENIED;
+    }
+
+    t = require;
     while ((w = ap_getword_white(r->pool, &t)) && w[0]) {
         groups = orig_groups;
         while (groups[0]) {
@@ -263,10 +276,29 @@ static authz_status dbmfilegroup_check_authorization(request_rec *r,
     return AUTHZ_DENIED;
 }
 
+static const char *dbm_parse_config(cmd_parms *cmd, const char *require_line,
+                                     const void **parsed_require_line)
+{
+    const char *expr_err = NULL;
+    ap_expr_info_t *expr = apr_pcalloc(cmd->pool, sizeof(*expr));
+
+    expr = ap_expr_parse_cmd(cmd, require_line, AP_EXPR_FLAG_STRING_RESULT,
+            &expr_err, NULL);
+
+    if (expr_err)
+        return apr_pstrcat(cmd->temp_pool,
+                           "Cannot parse expression in require line: ",
+                           expr_err, NULL);
+
+    *parsed_require_line = expr;
+
+    return NULL;
+}
+
 static const authz_provider authz_dbmgroup_provider =
 {
     &dbmgroup_check_authorization,
-    NULL,
+    &dbm_parse_config,
 };
 
 static const authz_provider authz_dbmfilegroup_provider =
