@@ -98,11 +98,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_authnz_ldap: Support the expression parser within the require directives.
-    trunk patch: http://svn.apache.org/r1554161
-    2.4.x patch: trunk works (modulo CHANGES and log-message-tags)
-    +1: minfrin, jim, covener
-
   * mod_authz_dbd: Support the expression parser within the require directives.
     trunk patch: http://svn.apache.org/r1554168
                  http://svn.apache.org/r1554176
