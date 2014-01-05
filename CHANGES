@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.8
 
+  *) mod_authnz_groupfile: Support the expression parser within the require
+     directives. [Graham Leggett]
+
   *) mod_authnz_dbm: Support the expression parser within the require
      directives. [Graham Leggett]
 
