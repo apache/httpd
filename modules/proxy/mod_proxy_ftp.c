@@ -975,7 +975,6 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
     apr_bucket_brigade *bb = apr_brigade_create(p, c->bucket_alloc);
     char *buf, *connectname;
     apr_port_t connectport;
-    char buffer[MAX_STRING_LEN];
     char *ftpmessage = NULL;
     char *path, *strp, *type_suffix, *cwd = NULL;
     apr_uri_t uri;
@@ -1626,7 +1625,7 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
                                       "Error reading from remote server");
             }
             if (rc != 200) {
-                return ftp_proxyerror(r, backend, HTTP_BAD_GATEWAY, buffer);
+                return ftp_proxyerror(r, backend, HTTP_BAD_GATEWAY, ftpmessage);
             }
 
             /* signal that we must use the EPRT/PORT loop */
