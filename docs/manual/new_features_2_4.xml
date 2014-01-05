@@ -34,7 +34,7 @@
   <section id="core">
     <title>Core Enhancements</title>
     <dl>
-      <dt>Loadable MPMs</dt>
+      <dt>Run-time Loadable MPMs</dt>
       <dd>Multiple MPMs can now be <a href="mpm.html#dynamic">built 
       as loadable modules</a> at compile time.
       The MPM of choice can be configured at run time.</dd>
