@@ -569,14 +569,20 @@ la réécriture soit effectuée
 	    utiliser avec précautions car les performances du serveur
 	    peuvent s'en trouver affectées !</li>
 
-            <li>'<strong>-U</strong>' (yesy de l'existence d'une URL
+            <li><p>'<strong>-U</strong>' (test de l'existence d'une URL
 	    via une sous-requête)<br />
 	    Vérifie si <em>chaîne de test</em> est une URL valide,
 	    accessible à travers tous les contrôles d'accès du serveur
 	    actuellement configurés pour ce chemin. C'est une
 	    sous-requête interne qui effectue cette vérification - à
 	    utiliser avec précautions car les performances du serveur
-	    peuvent s'en trouver affectées !</li>
+	    peuvent s'en trouver affectées !</p>
+	    <p>Ce drapeau ne renvoie <em>que</em> des informations
+	    concernant le contrôle d'accès, l'authentification et
+	    l'autorisation. Il ne renvoie <em>pas</em> d'informations
+	    concernant le code d'état que le gestionnaire configuré
+	    (static file, CGI, proxy, etc...) aurait, quant à lui,
+	    retourné.</p></li>
           </ul>
 
 <div class="note"><h3>Note :</h3>
