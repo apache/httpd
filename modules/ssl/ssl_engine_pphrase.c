@@ -143,24 +143,10 @@ apr_status_t ssl_load_encrypted_pkey(server_rec *s, apr_pool_t *p, int idx,
     int nPassPhraseRetry = 0;
     apr_time_t pkey_mtime = 0;
     apr_status_t rv;
-    pphrase_cb_arg_t ppcb_arg = {
-        NULL,
-        NULL,
-        NULL,
-        0,
-        NULL,
-        0,
-        0,
-        TRUE,
-        NULL,
-        NULL
-    };
+    pphrase_cb_arg_t ppcb_arg;
 
-    ppcb_arg.s = s;
-    ppcb_arg.p = p;
-    ppcb_arg.aPassPhrase = *pphrases;
-    ppcb_arg.key_id = key_id;
-    ppcb_arg.pkey_file = APR_ARRAY_IDX(sc->server->pks->key_files, idx, const char *);
+    ppcb_arg.pkey_file = APR_ARRAY_IDX(sc->server->pks->key_files, idx,
+                                       const char *);
 
     if (!ppcb_arg.pkey_file) {
          ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(02573)
@@ -174,6 +160,16 @@ apr_status_t ssl_load_encrypted_pkey(server_rec *s, apr_pool_t *p, int idx,
                       ppcb_arg.pkey_file);
          return ssl_die(s);
     }
+
+    ppcb_arg.s                     = s;
+    ppcb_arg.p                     = p;
+    ppcb_arg.aPassPhrase           = *pphrases;
+    ppcb_arg.nPassPhraseCur        = 0;
+    ppcb_arg.cpPassPhraseCur       = NULL;
+    ppcb_arg.nPassPhraseDialog     = 0;
+    ppcb_arg.nPassPhraseDialogCur  = 0;
+    ppcb_arg.bPassPhraseDialogOnce = TRUE;
+    ppcb_arg.key_id                = key_id;
 
     /*
      * if the private key is encrypted and SSLPassPhraseDialog
