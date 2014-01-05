@@ -881,7 +881,7 @@ the contents of file-system directories matching a regular expression.</descript
       end of line ($) must be written with care.
     </note>
 
-    <p>From 2.5.0 onwards, named groups and backreferences are captured and
+    <p>From 2.4.8 onwards, named groups and backreferences are captured and
     written to the environment with the corresponding name prefixed with
     "MATCH_" and in upper case. This allows elements of paths to be referenced
     from within <a href="expr.html">expressions</a> and modules like
@@ -1741,7 +1741,7 @@ filenames</description>
 
     <p>would match most common Internet graphics formats.</p>
 
-    <p>From 2.5.0 onwards, named groups and backreferences are captured and
+    <p>From 2.4.8 onwards, named groups and backreferences are captured and
     written to the environment with the corresponding name prefixed with
     "MATCH_" and in upper case. This allows elements of files to be referenced
     from within <a href="expr.html">expressions</a> and modules like
@@ -2709,7 +2709,7 @@ matching URLs</description>
     <p>would match URLs that contained the substring <code>/extra/data</code>
     or <code>/special/data</code>.</p>
 
-    <p>From 2.5.0 onwards, named groups and backreferences are captured and
+    <p>From 2.4.8 onwards, named groups and backreferences are captured and
     written to the environment with the corresponding name prefixed with
     "MATCH_" and in upper case. This allows elements of URLs to be referenced
     from within <a href="expr.html">expressions</a> and modules like
