@@ -218,8 +218,9 @@ Require user rbowen
     highly sensitive data, unless accompanied by <module>mod_ssl</module>.
     Apache supports one other authentication method:
     <code>AuthType Digest</code>. This method is implemented by <module
-    >mod_auth_digest</module> and is much more secure. Most recent
-    browsers support Digest authentication.</p>
+    >mod_auth_digest</module> and was intended to be more secure. This is no
+    longer the case and the connection should be encrypted with <module
+    >mod_ssl</module> instead.</p>
 
     <p>The <directive module="mod_authn_core">AuthName</directive> directive sets
     the <dfn>Realm</dfn> to be used in the authentication. The realm serves
