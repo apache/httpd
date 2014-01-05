@@ -233,8 +233,8 @@ Require user rbowen
     the server unencrypted. This method should therefore not be used for
     highly sensitive data, unless accompanied by <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>.
     Apache supports one other authentication method:
-    <code>AuthType Digest</code>. This method is implemented by <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code> and is much more secure. Most recent
-    browsers support Digest authentication.</p>
+    <code>AuthType Digest</code>. This method is implemented by <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code> and was intended to be more secure. This is no
+    longer the case and the connection should be encrypted with <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> instead.</p>
 
     <p>The <code class="directive"><a href="../mod/mod_authn_core.html#authname">AuthName</a></code> directive sets
     the <dfn>Realm</dfn> to be used in the authentication. The realm serves

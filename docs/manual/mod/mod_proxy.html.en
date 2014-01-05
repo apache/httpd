@@ -901,6 +901,20 @@ proxied resources</td></tr>
     identical to the <code class="directive"><a href="#proxy">&lt;Proxy&gt;</a></code> directive, except it matches URLs
     using <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular expressions</a>.</p>
 
+    <p>From 2.5.0 onwards, named groups and backreferences are captured and
+    written to the environment with the corresponding name prefixed with
+    "MATCH_" and in upper case. This allows elements of URLs to be referenced
+    from within <a href="expr.html">expressions</a> and modules like
+    <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>. In order to prevent confusion, numbered
+    (unnamed) backreferences are ignored. Use named groups instead.</p>
+
+<pre class="prettyprint lang-config">
+&lt;ProxyMatch ^http://(?&lt;sitename&gt;[^/]+)&gt;
+    require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
+&lt;/ProxyMatch&gt;
+</pre>
+
+
 <h3>See also</h3>
 <ul>
 <li><code class="directive"><a href="#proxy">&lt;Proxy&gt;</a></code></li>
