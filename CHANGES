@@ -5,15 +5,9 @@ Changes with Apache 2.4.8
   *) mod_proxy: Remove (never documented) <Proxy ~ wildcard-url> syntax which
      is equivalent to <ProxyMatch wildcard-url> [Christophe Jaillet]
 
-  *) mod_authz_*: Support the expression parser within the require
-     directives for the following modules:
-      - mod_authz_user
-      - mod_authz_host
-      - mod_authz_groupfile
-      - mod_authz_dbm
-      - mod_authz_dbd
-      - mod_authz_ldap
-     [Graham Leggett]
+  *) mod_authz_user, mod_authz_host, mod_authz_groupfile, mod_authz_dbm,
+     mod_authz_dbd, mod_authnz_ldap: Support the expression parser within the
+     require directives. [Graham Leggett]
 
   * mod_proxy_http: Core dumped under high load. PR 50335
     [Jan Kaluza <jkaluza redhat.com>]
