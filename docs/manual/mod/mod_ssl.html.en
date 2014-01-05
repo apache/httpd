@@ -67,6 +67,7 @@ to provide the cryptography engine.</p>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslocsprespondertimeout">SSLOCSPResponderTimeout</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslocspresponsemaxage">SSLOCSPResponseMaxAge</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslocspresponsetimeskew">SSLOCSPResponseTimeSkew</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#sslopensslconfcmd">SSLOpenSSLConfCmd</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ssloptions">SSLOptions</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslpassphrasedialog">SSLPassPhraseDialog</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslprotocol">SSLProtocol</a></li>
@@ -1101,6 +1102,44 @@ which means that OCSP responses are considered valid as long as their
 </table>
 <p>This option sets the maximum allowable time skew for OCSP responses
 (when checking their <code>thisUpdate</code> and <code>nextUpdate</code> fields).</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SSLOpenSSLConfCmd" id="SSLOpenSSLConfCmd">SSLOpenSSLConfCmd</a> <a name="sslopensslconfcmd" id="sslopensslconfcmd">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure OpenSSL parameters through its <em>SSL_CONF</em> API</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLOpenSSLConfCmd <em>command-name</em> <em>command-value</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.5.0-dev and later, if using OpenSSL 1.0.2 or later</td></tr>
+</table>
+<p>This directive exposes OpenSSL's <em>SSL_CONF</em> API to mod_ssl,
+allowing a flexible configuration of OpenSSL parameters without the need
+of implementing additional <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> directives when new
+features are added to OpenSSL.</p>
+
+<p>The set of available <code class="directive">SSLOpenSSLConfCmd</code> commands
+depends on the OpenSSL version being used for <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>
+(at least version 1.0.2 is required). For a list of supported command
+names, see the section <em>Supported configuration file commands</em> in the
+<a href="http://www.openssl.org/docs/ssl/SSL_CONF_cmd.html#SUPPORTED_CONFIGURATION_FILE_COM">SSL_CONF_cmd(3)</a> manual page for OpenSSL.</p>
+
+<p>Some of the <code class="directive">SSLOpenSSLConfCmd</code> commands can be used
+as an alternative to existing directives (such as
+<code class="directive"><a href="#sslciphersuite">SSLCipherSuite</a></code> or
+<code class="directive"><a href="#sslprotocol">SSLProtocol</a></code>),
+though it should be noted that the syntax / allowable values for the parameters
+may sometimes differ.</p>
+
+<div class="example"><h3>Examples</h3><pre class="prettyprint lang-config">
+SSLOpenSSLConfCmd Options -SessionTicket,ServerPreference
+SSLOpenSSLConfCmd ECDHParameters brainpoolP256r1
+SSLOpenSSLConfCmd ServerInfoFile /usr/local/apache2/conf/server-info.pem
+SSLOpenSSLConfCmd Protocol "-ALL, TLSv1.2"
+SSLOpenSSLConfCmd SignatureAlgorithms RSA+SHA384:ECDSA+SHA256
+</pre>
+</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
