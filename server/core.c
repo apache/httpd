@@ -209,6 +209,7 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
     conf->d_is_fnmatch = new->d_is_fnmatch;
     conf->d_components = new->d_components;
     conf->r = new->r;
+    conf->refs = new->refs;
     conf->condition = new->condition;
 
     if (new->opts & OPT_UNSET) {
@@ -2159,6 +2160,11 @@ static const char *dirsection(cmd_parms *cmd, void *mconfig, const char *arg)
     conf->d = cmd->path;
     conf->d_is_fnmatch = (apr_fnmatch_test(conf->d) != 0);
 
+    if (r) {
+        conf->refs = apr_array_make(cmd->pool, 8, sizeof(char *));
+        ap_regname(r, conf->refs, AP_REG_MATCH, 1);
+    }
+
     /* Make this explicit - the "/" root has 0 elements, that is, we
      * will always merge it, and it will always sort and merge first.
      * All others are sorted and tested by the number of slashes.
@@ -2234,6 +2240,11 @@ static const char *urlsection(cmd_parms *cmd, void *mconfig, const char *arg)
     conf->d = apr_pstrdup(cmd->pool, cmd->path);     /* No mangling, please */
     conf->d_is_fnmatch = apr_fnmatch_test(conf->d) != 0;
     conf->r = r;
+
+    if (r) {
+        conf->refs = apr_array_make(cmd->pool, 8, sizeof(char *));
+        ap_regname(r, conf->refs, AP_REG_MATCH, 1);
+    }
 
     ap_add_per_url_conf(cmd->server, new_url_conf);
 
@@ -2316,6 +2327,11 @@ static const char *filesection(cmd_parms *cmd, void *mconfig, const char *arg)
     conf->d = cmd->path;
     conf->d_is_fnmatch = apr_fnmatch_test(conf->d) != 0;
     conf->r = r;
+
+    if (r) {
+        conf->refs = apr_array_make(cmd->pool, 8, sizeof(char *));
+        ap_regname(r, conf->refs, AP_REG_MATCH, 1);
+    }
 
     ap_add_file_conf(cmd->pool, (core_dir_config *)mconfig, new_file_conf);
 
