@@ -7,21 +7,10 @@ Changes with Apache 2.5.0
   *) core: Support named groups and backreferences within the LocationMatch,
      DirectoryMatch, FilesMatch and ProxyMatch directives. [Graham Leggett]
 
-  *) mod_authz_user, mod_authz_host, mod_authz_groupfile, mod_authz_dbm,
-     mod_authz_dbd, mod_authnz_ldap: Support the expression parser within the
-     require directives. [Graham Leggett]
-
   *) mod_ssl: Remove the hardcoded algorithm-type dependency for the
      SSLCertificateFile and SSLCertificateKeyFile directives, to enable
      future algorithm agility, and deprecate the SSLCertificateChainFile
      directive (obsoleted by SSLCertificateFile). [Kaspar Brand]
-
-  *) mod_proxy: Remove <Proxy ~ wildcard-url> syntax which:
-      - is equivalent to <ProxyMatch wildcard-url>
-      - has never been documented
-      - incorrectly checks parameters
-      - is buggy
-     [Christophe Jaillet]
 
   *) FreeBSD: Disable IPv4-mapped listening sockets by default for versions
      5+ instead of just for FreeBSD 5. PR 53824. [Jeff Trawick]
