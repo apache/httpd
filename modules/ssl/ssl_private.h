@@ -733,7 +733,9 @@ const char *ssl_cmd_SSLOCSPResponseMaxAge(cmd_parms *cmd, void *dcfg, const char
 const char *ssl_cmd_SSLOCSPResponderTimeout(cmd_parms *cmd, void *dcfg, const char *arg);
 const char *ssl_cmd_SSLOCSPEnable(cmd_parms *cmd, void *dcfg, int flag);
 
+#ifdef HAVE_SSL_CONF_CMD
 const char *ssl_cmd_SSLOpenSSLConfCmd(cmd_parms *cmd, void *dcfg, const char *arg1, const char *arg2);
+#endif
 
 #ifdef HAVE_SRP
 const char *ssl_cmd_SSLSRPVerifierFile(cmd_parms *cmd, void *dcfg, const char *arg);

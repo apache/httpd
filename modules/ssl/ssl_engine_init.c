@@ -1286,6 +1286,7 @@ static apr_status_t ssl_init_server_ctx(server_rec *s,
 #ifdef HAVE_SSL_CONF_CMD
     SSL_CONF_CTX_set_ssl_ctx(cctx, sc->server->ssl_ctx);
     for (i = 0; i < sc->server->ssl_ctx_param->nelts; i++, param++) {
+        ERR_clear_error();
         if (SSL_CONF_cmd(cctx, param->name, param->value) <= 0) {
             ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(02407)
                          "\"SSLOpenSSLConfCmd %s %s\" failed for %s",
@@ -1297,6 +1298,23 @@ static apr_status_t ssl_init_server_ctx(server_rec *s,
                          "\"SSLOpenSSLConfCmd %s %s\" applied to %s",
                          param->name, param->value, sc->vhost_id);
         }
+#ifdef HAVE_OCSP_STAPLING
+        /*
+         * Special case: if OCSP stapling is enabled, and a certificate
+         * has been loaded via "SSLOpenSSLConfCmd Certificate ...", then
+         * we also need to call ssl_stapling_init_cert here.
+         */
+        if ((sc->server->stapling_enabled == TRUE) &&
+            !strcasecmp(param->name, "Certificate")) {
+            X509 *cert = SSL_CTX_get0_certificate(sc->server->ssl_ctx);
+            if (!cert || !ssl_stapling_init_cert(s, sc->server, cert)) {
+                ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(02571)
+                             "Unable to configure certificate loaded "
+                             "from %s for %s for stapling",
+                             param->value, sc->vhost_id);
+            }
+        }
+#endif
     }
     if (SSL_CONF_CTX_finish(cctx) == 0) {
             ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(02547)
