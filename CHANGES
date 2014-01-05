@@ -109,7 +109,7 @@ Changes with Apache 2.5.0
   *) mod_lua: Register LuaOutputFilter scripts as changing the content and
      content-length by default, when run my mod_filter.  Previously,
      growing or shrinking a response that started with Content-Length set
-     would require mod_filter and FilterProtocol change=yes. [Eric Covnener]
+     would require mod_filter and FilterProtocol change=yes. [Eric Covener]
 
   *) mod_lua: Return a 500 error if a LuaHook* script doesn't return a 
      numeric return code. [Eric Covener]
