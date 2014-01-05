@@ -617,6 +617,10 @@ typedef struct {
     /** Max number of Range reversals (eg: 200-300, 100-125) allowed **/
     int max_reversals;
 
+
+    /** Named back references */
+    apr_array_header_t *refs;
+
 } core_dir_config;
 
 /* macro to implement off by default behaviour */

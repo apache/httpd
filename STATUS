@@ -98,15 +98,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * core: Support named groups and backreferences within the LocationMatch,
-    DirectoryMatch, FilesMatch and ProxyMatch directives.
-    trunk patch: http://svn.apache.org/r1554300
-                 http://svn.apache.org/r1554301
-                 http://svn.apache.org/r1554994
-                 http://svn.apache.org/r1555266
-    2.4.x patch: http://people.apache.org/~minfrin/httpd-match-backref7.patch
-    +1: minfrin, covener, jim
-
   * mod_proxy: Remove <Proxy ~ wildcard-url> syntax 
     trunk patch: http://svn.apache.org/r1552227
     2.4.x patch: trunk works, except for CHANGES
