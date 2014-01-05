@@ -552,12 +552,12 @@ AC_DEFUN(APACHE_CHECK_OPENSSL,[
       fi
     fi
 
-    AC_MSG_CHECKING([for OpenSSL version >= 0.9.7])
+    AC_MSG_CHECKING([for OpenSSL version >= 0.9.8a])
     AC_TRY_COMPILE([#include <openssl/opensslv.h>],[
 #if !defined(OPENSSL_VERSION_NUMBER)
 #error "Missing OpenSSL version"
 #endif
-#if OPENSSL_VERSION_NUMBER < 0x0090700f
+#if OPENSSL_VERSION_NUMBER < 0x0090801f
 #error "Unsupported OpenSSL version " OPENSSL_VERSION_TEXT
 #endif],
       [AC_MSG_RESULT(OK)
