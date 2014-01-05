@@ -165,7 +165,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                    https://svn.apache.org/r1546693
                    https://svn.apache.org/r1555464
     2.4.x patch: https://people.apache.org/~kbrand/mod_ssl-2.4.x-confcmd.diff
-    +1: kbrand
+    +1: kbrand, drh
 
   * mod_ssl: drop unnecessary EVP_PKEY_copy_parameters cruft
     trunk patch: https://svn.apache.org/r1546692
