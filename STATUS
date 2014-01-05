@@ -214,6 +214,30 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: trunk works
     +1: jailletc36, covener
 
+  * mod_ssl: Add support for OpenSSL configuration commands (SSLOpenSSLConfCmd)
+    trunk patches: https://svn.apache.org/r1421323
+                   https://svn.apache.org/r1534754
+                   https://svn.apache.org/r1546693
+                   https://svn.apache.org/r1555464
+    2.4.x patch: https://people.apache.org/~kbrand/mod_ssl-2.4.x-confcmd.diff
+    +1: kbrand
+
+  * mod_ssl: drop unnecessary EVP_PKEY_copy_parameters cruft
+    trunk patch: https://svn.apache.org/r1546692
+    2.4.x patch: trunk patch works
+    +1: kbrand
+
+  * mod_ssl: drop obsolete SGC log message (strong crypto for the 1990ies)
+    trunk patch: https://svn.apache.org/r1546805
+    2.4.x patch: trunk patch works
+    +1: kbrand
+
+  * mod_ssl: drop the (undocumented) SSLPKCS7CertificateFile directive,
+    for the reasons listed in the trunk commit message
+    trunk patch: https://svn.apache.org/r1544784
+    2.4.x patch: https://people.apache.org/~kbrand/mod_ssl-2.4.x-drop-pkcs7.diff
+    +1: kbrand
+
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
