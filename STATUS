@@ -98,8 +98,58 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  * mod_authnz_ldap: Support the expression parser within the require directives.
+    trunk patch: http://svn.apache.org/r1554161
+    2.4.x patch: trunk works (modulo CHANGES and log-message-tags)
+    +1: minfrin, jim, covener
 
+  * mod_authz_dbd: Support the expression parser within the require directives.
+    trunk patch: http://svn.apache.org/r1554168
+                 http://svn.apache.org/r1554176
+    2.4.x patch: trunk works (modulo CHANGES and log-message-tags)
+    +1: minfrin, jim, covener
 
+  * mod_authz_dbm: Support the expression parser within the require directives.
+    trunk patch: http://svn.apache.org/r1554170
+                 http://svn.apache.org/r1554181
+    2.4.x patch: trunk works (modulo CHANGES and log-message-tags)
+    +1: minfrin, jim, covener
+
+  * mod_authz_groupfile: Support the expression parser within the require directives.
+    trunk patch: http://svn.apache.org/r1554175
+                 http://svn.apache.org/r1554184
+    2.4.x patch: trunk works (modulo CHANGES and log-message-tags)
+    +1: minfrin, jim, covener
+
+  * mod_authz_host: Support the expression parser within the require directives.
+    trunk patch: http://svn.apache.org/r1554188
+    2.4.x patch: trunk works (modulo CHANGES and log-message-tags)
+    +1: minfrin, jim, covener
+
+  * mod_authz_user: Support the expression parser within the require directives.
+    trunk patch: http://svn.apache.org/r1554195
+    2.4.x patch: trunk works (modulo CHANGES and log-message-tags)
+    +1: minfrin, jim, covener
+
+  * core: Support named groups and backreferences within the LocationMatch,
+    DirectoryMatch, FilesMatch and ProxyMatch directives.
+    trunk patch: http://svn.apache.org/r1554300
+                 http://svn.apache.org/r1554301
+                 http://svn.apache.org/r1554994
+                 http://svn.apache.org/r1555266
+    2.4.x patch: http://people.apache.org/~minfrin/httpd-match-backref7.patch
+    +1: minfrin, covener, jim
+
+  * mod_proxy: Remove <Proxy ~ wildcard-url> syntax 
+    trunk patch: http://svn.apache.org/r1552227
+    2.4.x patch: trunk works, except for CHANGES
+    +1: jailletc36, covener, jim
+
+  * mod_proxy_ftp: Avoid potentially sending back uninitialized memory
+    and save 8k of stack
+    trunk patch: http://svn.apache.org/r1551714
+    2.4.x patch: trunk works
+    +1: jailletc36, covener, jim
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -155,64 +205,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: trunk works
     +1 covener, jim
 
-  * mod_authnz_ldap: Support the expression parser within the require directives.
-    trunk patch: http://svn.apache.org/r1554161
-    2.4.x patch: trunk works (modulo CHANGES and log-message-tags)
-    +1: minfrin, jim, covener
-
-  * mod_authz_dbd: Support the expression parser within the require directives.
-    trunk patch: http://svn.apache.org/r1554168
-                 http://svn.apache.org/r1554176
-    2.4.x patch: trunk works (modulo CHANGES and log-message-tags)
-    +1: minfrin, jim, covener
-
-  * mod_authz_dbm: Support the expression parser within the require directives.
-    trunk patch: http://svn.apache.org/r1554170
-                 http://svn.apache.org/r1554181
-    2.4.x patch: trunk works (modulo CHANGES and log-message-tags)
-    +1: minfrin, jim, covener
-
-  * mod_authz_groupfile: Support the expression parser within the require directives.
-    trunk patch: http://svn.apache.org/r1554175
-                 http://svn.apache.org/r1554184
-    2.4.x patch: trunk works (modulo CHANGES and log-message-tags)
-    +1: minfrin, jim, covener
-
-  * mod_authz_host: Support the expression parser within the require directives.
-    trunk patch: http://svn.apache.org/r1554188
-    2.4.x patch: trunk works (modulo CHANGES and log-message-tags)
-    +1: minfrin, jim, covener
-
-  * mod_authz_user: Support the expression parser within the require directives.
-    trunk patch: http://svn.apache.org/r1554195
-    2.4.x patch: trunk works (modulo CHANGES and log-message-tags)
-    +1: minfrin, jim, covener
-
-  * core: Support named groups and backreferences within the LocationMatch,
-    DirectoryMatch, FilesMatch and ProxyMatch directives.
-    trunk patch: http://svn.apache.org/r1554300
-                 http://svn.apache.org/r1554301
-                 http://svn.apache.org/r1554994
-                 http://svn.apache.org/r1555266
-    2.4.x patch: http://people.apache.org/~minfrin/httpd-match-backref7.patch
-    +1: minfrin, covener, jim
-
   * mod_authn_core: allow <AuthnProviderAlias>'es to be seen from auth 
     stanzas under virtual hosts. PR55622.
     trunk patch: http://svn.apache.org/r1554995
     2.4.x patch: trunk works, + CHANGES
     +1: covener 
-
-  * mod_proxy: Remove <Proxy ~ wildcard-url> syntax 
-    trunk patch: http://svn.apache.org/r1552227
-    2.4.x patch: trunk works, except for CHANGES
-    +1: jailletc36, covener, jim
-
-  * mod_proxy_ftp: Avoid potentially sending back uninitialized memory
-    and save 8k of stack
-    trunk patch: http://svn.apache.org/r1551714
-    2.4.x patch: trunk works
-    +1: jailletc36, covener, jim
 
   * mod_ssl: Add support for OpenSSL configuration commands (SSLOpenSSLConfCmd)
     trunk patches: https://svn.apache.org/r1421323
