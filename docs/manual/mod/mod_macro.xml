@@ -93,7 +93,7 @@ Examples section.</p>
 
 <p>Parameter names should begin with a sigil such as <code>$</code>,
 <code>%</code>, or <code>@</code>, so that they are clearly
-identifiable, and also in order to help deail with interactions with
+identifiable, and also in order to help deal with interactions with
 other directives, such as the core <directive
 module="core">Define</directive> directive. Failure to do so will 
 result in a warning. Nevertheless, you are encouraged to have a good
@@ -232,7 +232,7 @@ UndefMacro DirGroup
 <usage>
     <p>The <directive>Use</directive> directive controls the use of a macro.
     The specified macro is expanded. It must be given the same number of
-    arguments than in the  macro definition. The provided values are
+    arguments as in the  macro definition. The provided values are
     associated to their corresponding initial parameters and are substituted
     before processing.</p>
 
