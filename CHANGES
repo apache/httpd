@@ -2,6 +2,13 @@
 
 Changes with Apache 2.4.8
 
+  *) mod_proxy: Remove <Proxy ~ wildcard-url> syntax which:
+      - is equivalent to <ProxyMatch wildcard-url>
+      - has never been documented
+      - incorrectly checks parameters
+      - is buggy
+     [Christophe Jaillet]
+
   *) mod_authz_user: Support the expression parser within the require
      directives. [Graham Leggett]
 
