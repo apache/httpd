@@ -195,7 +195,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  http://svn.apache.org/r1554994
                  http://svn.apache.org/r1555266
     2.4.x patch: http://people.apache.org/~minfrin/httpd-match-backref7.patch
-    +1: minfrin, covener
+    +1: minfrin, covener, jim
 
   * mod_authn_core: allow <AuthnProviderAlias>'es to be seen from auth 
     stanzas under virtual hosts. PR55622.
@@ -206,13 +206,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   * mod_proxy: Remove <Proxy ~ wildcard-url> syntax 
     trunk patch: http://svn.apache.org/r1552227
     2.4.x patch: trunk works, except for CHANGES
-    +1: jailletc36, covener
+    +1: jailletc36, covener, jim
 
   * mod_proxy_ftp: Avoid potentially sending back uninitialized memory
     and save 8k of stack
     trunk patch: http://svn.apache.org/r1551714
     2.4.x patch: trunk works
-    +1: jailletc36, covener
+    +1: jailletc36, covener, jim
 
   * mod_ssl: Add support for OpenSSL configuration commands (SSLOpenSSLConfCmd)
     trunk patches: https://svn.apache.org/r1421323
