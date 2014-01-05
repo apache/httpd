@@ -61,7 +61,7 @@ static apr_uri_t *determine_responder_uri(SSLSrvConfigRec *sc, X509 *cert,
     /* Use default responder URL if forced by configuration, else use
      * certificate-specified responder, falling back to default if
      * necessary and possible. */
-    if (sc->server->ocsp_force_default) {
+    if (sc->server->ocsp_force_default == TRUE) {
         s = sc->server->ocsp_responder;
     }
     else {
