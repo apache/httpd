@@ -911,34 +911,6 @@ static apr_status_t ssl_init_server_certs(server_rec *s,
                 ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
                 return APR_EGENERAL;
             }
-
-#if defined(SSL_CTX_set1_chain)
-            /*
-             * OpenSSL 1.0.2 and later supports certificate-specific
-             * chains with intermediate CA certificates.
-             * SSL_CTX_use_certificate_chain_file currently (Dec 2013)
-             * loads them to ctx->extra_certs, however, which possibly
-             * overwrites a previously configured chain.
-             * If more than one SSLCertificateFile is configured for
-             * this server_rec, we manually "convert" the chain
-             * to a per-certificate setting.
-             */
-            if (mctx->pks->cert_files->nelts > 1) {
-                STACK_OF(X509) *extra_certs;
-                if ((SSL_CTX_get_extra_chain_certs(mctx->ssl_ctx,
-                                                   &extra_certs) > 0) &&
-                    (sk_X509_num(extra_certs) > 0) &&
-                    (SSL_CTX_set1_chain(mctx->ssl_ctx, extra_certs) > 0)) {
-                        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                                     APLOGNO(02563)
-                                     "Per-certificate chain for %s configured "
-                                     "(%d certificate[s])",
-                                     key_id, sk_X509_num(extra_certs));
-                        /* clear the "global" chain for this SSL_CTX */
-                        SSL_CTX_clear_extra_chain_certs(mctx->ssl_ctx);
-                }
-            }
-#endif
         }
 
         /* and second, the private key */
@@ -1324,54 +1296,6 @@ static apr_status_t ssl_init_server_ctx(server_rec *s,
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(02556)
                          "\"SSLOpenSSLConfCmd %s %s\" applied to %s",
                          param->name, param->value, sc->vhost_id);
-        }
-        if (!strcasecmp(param->name, "Certificate")) {
-            /*
-             * Special case: a certificate has been loaded via
-             * SSLOpenSSLConfCmd. Two potential tweaks are needed
-             * (similar to what is done in ssl_init_server_certs,
-             * see the comments there for the rationale):
-             * a) "fixing up" the per-certificate chain
-             * b) configure OCSP stapling for the cert
-             */
-#if defined(SSL_CTX_set1_chain)
-            STACK_OF(X509) *extra_certs;
-            if ((SSL_CTX_get_extra_chain_certs(sc->server->ssl_ctx,
-                                               &extra_certs) > 0) &&
-                (sk_X509_num(extra_certs) > 0) &&
-                (SSL_CTX_set1_chain(sc->server->ssl_ctx, extra_certs) > 0)) {
-                    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(02570)
-                                 "Per-certificate chain for certificate "
-                                 "loaded from %s for %s configured "
-                                 "(%d certificate[s])",
-                                 param->value, sc->vhost_id,
-                                 sk_X509_num(extra_certs));
-                    /* clear the "global" chain for this SSL_CTX */
-                    SSL_CTX_clear_extra_chain_certs(sc->server->ssl_ctx);
-            }
-#endif
-#ifdef HAVE_OCSP_STAPLING
-            if (sc->server->stapling_enabled == TRUE) {
-                X509 *cert;
-#ifndef HAVE_SSL_CONF_CMD
-                SSL *ssl;
-                if (!(ssl = SSL_new(sc->server->ssl_ctx)) ||
-                    !(cert = SSL_get_certificate(ssl)) ||
-#else
-                if (!(cert = SSL_CTX_get0_certificate(sc->server->ssl_ctx)) ||
-#endif
-                    !ssl_stapling_init_cert(s, sc->server, cert)) {
-                    ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(02571)
-                                 "Unable to configure certificate loaded "
-                                 "from %s for %s for stapling",
-                                 param->value, sc->vhost_id);
-                }
-#ifndef HAVE_SSL_CONF_CMD
-                if (ssl)
-                    SSL_free(ssl);
-#endif
-            }
-#endif
         }
     }
     if (SSL_CONF_CTX_finish(cctx) == 0) {
