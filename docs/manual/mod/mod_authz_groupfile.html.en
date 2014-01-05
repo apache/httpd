@@ -45,11 +45,51 @@
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#authgroupfile">AuthGroupFile</a></li>
 </ul>
-<h3>See also</h3>
+<h3>Topics</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#requiredirectives">The Require Directives</a></li>
+</ul><h3>See also</h3>
 <ul class="seealso">
 <li><code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="requiredirectives" id="requiredirectives">The Require Directives</a></h2>
 
+    <p>Apache's <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code>
+    directives are used during the authorization phase to ensure that
+    a user is allowed to access a resource.  mod_authz_groupfile extends the
+    authorization types with <code>group</code> and <code>group-file</code>.
+    </p>
+
+    <p>Since v2.5.0, <a href="../expr.html">expressions</a> are supported
+    within the groupfile require directives.</p>
+
+<h3><a name="reqgroup" id="reqgroup">Require group</a></h3>
+
+    <p>This directive specifies group membership that is required for the
+    user to gain access.</p>
+
+    <pre class="prettyprint lang-config">
+      Require group admin
+    </pre>
+
+
+
+
+<h3><a name="reqfilegroup" id="reqfilegroup">Require file-group</a></h3>
+
+    <p>When this directive is specified, the user must be a member of the group
+    assigned to the file being accessed.</p>
+
+    <pre class="prettyprint lang-config">
+      Require file-group
+    </pre>
+
+
+
+
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AuthGroupFile" id="AuthGroupFile">AuthGroupFile</a> <a name="authgroupfile" id="authgroupfile">Directive</a></h2>
 <table class="directive">

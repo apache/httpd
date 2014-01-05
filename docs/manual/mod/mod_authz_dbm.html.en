@@ -47,12 +47,49 @@
 </ul>
 <h3>Topics</h3>
 <ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#requiredirectives">The Require Directives</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#examples">Example usage</a></li>
 </ul><h3>See also</h3>
 <ul class="seealso">
 <li><code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="requiredirectives" id="requiredirectives">The Require Directives</a></h2>
+
+    <p>Apache's <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code>
+    directives are used during the authorization phase to ensure that
+    a user is allowed to access a resource.  mod_authz_dbm extends the
+    authorization types with <code>dbm-group</code>.</p>
+
+    <p>Since v2.5.0, <a href="../expr.html">expressions</a> are supported
+    within the DBM require directives.</p>
+
+<h3><a name="reqgroup" id="reqgroup">Require dbm-group</a></h3>
+
+    <p>This directive specifies group membership that is required for the
+    user to gain access.</p>
+
+    <pre class="prettyprint lang-config">
+      Require dbm-group admin
+    </pre>
+
+
+
+
+<h3><a name="reqfilegroup" id="reqfilegroup">Require dbm-file-group</a></h3>
+
+    <p>When this directive is specified, the user must be a member of the group
+    assigned to the file being accessed.</p>
+
+    <pre class="prettyprint lang-config">
+      Require dbm-file-group
+    </pre>
+
+
+
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="examples" id="examples">Example usage</a></h2>
 
