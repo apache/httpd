@@ -2535,5 +2535,43 @@ CRIME attack).</p>
 </usage>
 </directivesynopsis>
 
+<directivesynopsis>
+<name>SSLOpenSSLConfCmd</name>
+<description>Configure OpenSSL parameters through its <em>SSL_CONF</em> API</description>
+<syntax>SSLOpenSSLConfCmd <em>command-name</em> <em>command-value</em></syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+<compatibility>Available in httpd 2.4.8 and later, if using OpenSSL 1.0.2 or later</compatibility>
+
+<usage>
+<p>This directive exposes OpenSSL's <em>SSL_CONF</em> API to mod_ssl,
+allowing a flexible configuration of OpenSSL parameters without the need
+of implementing additional <module>mod_ssl</module> directives when new
+features are added to OpenSSL.</p>
+
+<p>The set of available <directive>SSLOpenSSLConfCmd</directive> commands
+depends on the OpenSSL version being used for <module>mod_ssl</module>
+(at least version 1.0.2 is required). For a list of supported command
+names, see the section <em>Supported configuration file commands</em> in the
+<a href="http://www.openssl.org/docs/ssl/SSL_CONF_cmd.html#SUPPORTED_CONFIGURATION_FILE_COM">SSL_CONF_cmd(3)</a> manual page for OpenSSL.</p>
+
+<p>Some of the <directive>SSLOpenSSLConfCmd</directive> commands can be used
+as an alternative to existing directives (such as
+<directive module="mod_ssl">SSLCipherSuite</directive> or
+<directive module="mod_ssl">SSLProtocol</directive>),
+though it should be noted that the syntax / allowable values for the parameters
+may sometimes differ.</p>
+
+<example><title>Examples</title>
+<highlight language="config">
+SSLOpenSSLConfCmd Options -SessionTicket,ServerPreference
+SSLOpenSSLConfCmd ECDHParameters brainpoolP256r1
+SSLOpenSSLConfCmd ServerInfoFile /usr/local/apache2/conf/server-info.pem
+SSLOpenSSLConfCmd Protocol "-ALL, TLSv1.2"
+SSLOpenSSLConfCmd SignatureAlgorithms RSA+SHA384:ECDSA+SHA256
+</highlight>
+</example>
+</usage>
+</directivesynopsis>
 
 </modulesynopsis>

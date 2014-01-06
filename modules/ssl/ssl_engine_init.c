@@ -1287,11 +1287,61 @@ static void ssl_init_server_ctx(server_rec *s,
                                 apr_pool_t *ptemp,
                                 SSLSrvConfigRec *sc)
 {
+#ifdef HAVE_SSL_CONF_CMD
+    ssl_ctx_param_t *param = (ssl_ctx_param_t *)sc->server->ssl_ctx_param->elts;
+    SSL_CONF_CTX *cctx = sc->server->ssl_ctx_config;
+    int i;
+#endif
+
     ssl_init_server_check(s, p, ptemp, sc->server);
 
     ssl_init_ctx(s, p, ptemp, sc->server);
 
     ssl_init_server_certs(s, p, ptemp, sc->server);
+
+#ifdef HAVE_SSL_CONF_CMD
+    SSL_CONF_CTX_set_ssl_ctx(cctx, sc->server->ssl_ctx);
+    for (i = 0; i < sc->server->ssl_ctx_param->nelts; i++, param++) {
+        ERR_clear_error();
+        if (SSL_CONF_cmd(cctx, param->name, param->value) <= 0) {
+            ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(02407)
+                         "\"SSLOpenSSLConfCmd %s %s\" failed for %s",
+                         param->name, param->value, sc->vhost_id);
+            ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
+            ssl_die(s);
+        } else {
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(02556)
+                         "\"SSLOpenSSLConfCmd %s %s\" applied to %s",
+                         param->name, param->value, sc->vhost_id);
+        }
+#ifdef HAVE_OCSP_STAPLING
+        /*
+         * Special case: if OCSP stapling is enabled, and a certificate
+         * has been loaded via "SSLOpenSSLConfCmd Certificate ...", then
+         * we also need to call ssl_stapling_init_cert here.
+         */
+        if ((sc->server->stapling_enabled == TRUE) &&
+            !strcasecmp(param->name, "Certificate")) {
+            X509 *cert = SSL_CTX_get0_certificate(sc->server->ssl_ctx);
+            if (!cert || !ssl_stapling_init_cert(s, sc->server, cert)) {
+                ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(02571)
+                             "Unable to configure certificate loaded "
+                             "from %s for %s for stapling",
+                             param->value, sc->vhost_id);
+            }
+        }
+#endif
+    }
+
+    if (SSL_CONF_CTX_finish(cctx) == 0) {
+            ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(02547)
+                         "SSL_CONF_CTX_finish() failed");
+            SSL_CONF_CTX_free(cctx);
+            ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
+            ssl_die(s);
+    }
+    SSL_CONF_CTX_free(cctx);
+#endif
 
 #ifdef HAVE_TLS_SESSION_TICKETS
     ssl_init_ticket_key(s, p, ptemp, sc->server);

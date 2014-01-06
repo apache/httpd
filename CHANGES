@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.8
 
+  *) mod_ssl: Add support for OpenSSL configuration commands by introducing
+     the SSLOpenSSLConfCmd directive. [Stephen Henson, Kaspar Brand]
+
   *) mod_proxy: Remove (never documented) <Proxy ~ wildcard-url> syntax which
      is equivalent to <ProxyMatch wildcard-url>. [Christophe Jaillet]
 
