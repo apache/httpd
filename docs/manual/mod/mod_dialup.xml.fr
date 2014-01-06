@@ -35,10 +35,10 @@ d&eacute;finie par les diff&eacute;rents standards des anciens modems.</descript
 <identifier>dialup_module</identifier>
 
 <summary>
-<p>Ils'agit d'un module qui envoie le contenu statique avec une bande
+<p>Il s'agit d'un module qui envoie le contenu statique avec une bande
 passante limit&eacute;e d&eacute;finie par les diff&eacute;rents standards des anciens
 modems. Ainsi, il est possible de naviguer sur votre site avec un modem
-56k V.92 en ajoutant quelquechose du style :</p>
+56k V.92 en positionnant une configuration de ce type :</p>
 
 <highlight language="config">
 &lt;Location /mysite&gt;
@@ -63,7 +63,8 @@ client.</p>
 <contextlist><context>directory</context></contextlist>
 
 <usage>
-<p>Cette directive sp&eacute;cifie le standard de modem &agrave; simuler.</p>
+<p>Cette directive permet de sp&eacute;cifier le standard de modem que vous
+souhaitez simuler.</p>
 
 <highlight language="config">
 &lt;Location /mysite&gt;

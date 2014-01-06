@@ -39,7 +39,7 @@ SQL</description>
     une fonctionnalit&eacute; similaire.</p>
     <p>Ce module s'appuie sur <module>mod_dbd</module> pour sp&eacute;cifier le
     pilote de la base de donn&eacute;es sous-jacente et les param&egrave;tres de
-    connexion, mais aussi  pour g&eacute;rer les connexions &agrave; la base de
+    connexion, mais aussi pour g&eacute;rer les connexions &agrave; la base de
     donn&eacute;es.</p>
 
     <p>Si l'on utilise <module>mod_auth_basic</module> ou
