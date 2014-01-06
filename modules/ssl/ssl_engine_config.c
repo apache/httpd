@@ -721,7 +721,7 @@ const char *ssl_cmd_SSLHonorCipherOrder(cmd_parms *cmd, void *dcfg, int flag)
     sc->cipher_server_pref = flag?TRUE:FALSE;
     return NULL;
 #else
-    return "SSLHonorCiperOrder unsupported; not implemented by the SSL library";
+    return "SSLHonorCipherOrder unsupported; not implemented by the SSL library";
 #endif
 }
 
