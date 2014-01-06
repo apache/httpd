@@ -80,7 +80,7 @@ l'authentification</a></seealso>
       <module>mod_session_cookie</module>, et l'authentification utilise
       un fichier en s'appuyant sur le module
       <module>mod_authn_file</module>. Si l'authentification &eacute;choue,
-      l'utilisateur dera redirig&eacute; vers la page du formulaire de
+      l'utilisateur sera redirig&eacute; vers la page du formulaire de
       connexion.</p>
 
       <example><title>Exemple simple</title>
