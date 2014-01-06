@@ -98,11 +98,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_ssl: drop obsolete SGC log message (strong crypto for the 1990ies)
-    trunk patch: https://svn.apache.org/r1546805
-    2.4.x patch: trunk patch works
-    +1: kbrand, trawick, covener
-
   * configure: Look for config*.m4 files only in the correct directories.
     trunk patch: https://svn.apache.org/r1542615
     2.4.x patch: trunk patch works
