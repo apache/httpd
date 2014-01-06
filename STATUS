@@ -135,7 +135,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     worker.
     trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1542562
     2.4.x patch: http://people.apache.org/~jim/patches/proxy-port-scheme.patch
-    +1: jim
+    +1: jim, druggeri
 
   * mod_cache invalidates cached responses when reval returns 304+Expires
     trunk patch: http://svn.apache.org/r1518269
@@ -146,7 +146,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     stanzas under virtual hosts. PR55622.
     trunk patch: http://svn.apache.org/r1554995
     2.4.x patch: trunk works, + CHANGES
-    +1: covener 
+    +1: covener, druggeri 
 
   * mod_ssl: drop unnecessary EVP_PKEY_copy_parameters cruft
     trunk patch: https://svn.apache.org/r1546692
@@ -157,7 +157,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     for the reasons listed in the trunk commit message
     trunk patch: https://svn.apache.org/r1544784
     2.4.x patch: https://people.apache.org/~kbrand/mod_ssl-2.4.x-drop-pkcs7.diff
-    +1: kbrand, covener
+    +1: kbrand, covener, druggeri
 
   * prefork: PR: 54852. Only use a dummy_connection for idle processes
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1542379
@@ -168,7 +168,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1524368
                  http://svn.apache.org/viewvc?view=revision&revision=1524388
     2.4.x patch: trunk patch works mod CHANGES
-    +1: jim, covener
+    +1: jim, covener, druggeri
 
   * event fdqueue: Use a normalized offset point for idlers via atomics
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1545286
