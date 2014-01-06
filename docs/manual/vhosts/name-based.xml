@@ -71,9 +71,9 @@
     <p>When a request arrives, the server will find the best (most specific) matching
     <directive type="section" module="core">VirtualHost</directive> argument based on
     the IP address and port used by the request.  If there is more than one virtual host
-    containing this best-match address and port combination,  Apache will further
+    containing this best-match address and port combination, Apache will further
     compare the <directive module="core" >ServerName</directive> and <directive
-    module="core">ServerAlias</directive>  directives to the server name
+    module="core">ServerAlias</directive> directives to the server name
     present in the request.</p>
 
     <section id="defaultvhost"><title>The default name-based vhost for an IP and port combination </title>

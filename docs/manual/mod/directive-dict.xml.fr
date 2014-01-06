@@ -51,7 +51,7 @@
     Les textes litt&eacute;raux sont pr&eacute;sent&eacute;s dans la fonte par d&eacute;faut, alors
     que les types d'argument pour lesquels une substitution est
     n&eacute;cessaire sont en <em>gras</em>. La syntaxe des directives
-    acceptant un nombre variable d'arguments se terminent par "...", ce
+    acceptant un nombre variable d'arguments se termine par "...", ce
     qui indique que le dernier argument peut &ecirc;tre r&eacute;p&eacute;t&eacute;.</p>
 
     <p>Les directives utilisent un grand nombre de types d'arguments
@@ -107,7 +107,7 @@
       extensions de noms de fichiers ; ainsi, si un <em>nom de
       fichier</em>
       contient plusieurs points, chacune des parties du nom de fichier
-      s&eacute;par&eacute;es par des points et situ&eacute;e apr&egrave;s le premier point est une
+      s&eacute;par&eacute;es par des points et situ&eacute;es apr&egrave;s le premier point est une
       <em>extension</em>. Par exemple, le <em>nom de fichier</em>
       <code>fichier.html.en</code> comporte deux extensions :
       <code>.html</code> et <code>.en</code>. Pour les directives
@@ -243,7 +243,7 @@
 
       <dt>MPM</dt>
 
-      <dd>Une directive dont le statut est "MPM est fournie par un <a
+      <dd>Une directive dont le statut est "MPM" est fournie par un <a
       href="../mpm.html">module Multi-Processus</a>. Ce type de
       directive sera disponible si et seulement si vous utilisez un des
       MPMs sp&eacute;cifi&eacute;s dans la ligne <a href="#Module">Module</a> de la
