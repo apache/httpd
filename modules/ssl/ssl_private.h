@@ -131,6 +131,10 @@
 #define HAVE_TLSV1_X
 #endif
 
+#if defined(SSL_CONF_FLAG_FILE)
+#define HAVE_SSL_CONF_CMD
+#endif
+
 /**
   * The following features all depend on TLS extension support.
   * Within this block, check again for features (not version numbers).
@@ -577,6 +581,13 @@ typedef struct {
 } modssl_ticket_key_t;
 #endif
 
+#ifdef HAVE_SSL_CONF_CMD
+typedef struct {
+    const char *name;
+    const char *value;
+} ssl_ctx_param_t;
+#endif
+
 typedef struct SSLSrvConfigRec SSLSrvConfigRec;
 
 typedef struct {
@@ -633,7 +644,10 @@ typedef struct {
     long ocsp_resptime_skew;
     long ocsp_resp_maxage;
     apr_interval_time_t ocsp_responder_timeout;
-
+#ifdef HAVE_SSL_CONF_CMD
+    SSL_CONF_CTX *ssl_ctx_config; /* Configuration context */
+    apr_array_header_t *ssl_ctx_param; /* parameters to pass to SSL_CTX */
+#endif
 } modssl_ctx_t;
 
 struct SSLSrvConfigRec {
@@ -753,6 +767,10 @@ const char *ssl_cmd_SSLOCSPResponseTimeSkew(cmd_parms *cmd, void *dcfg, const ch
 const char *ssl_cmd_SSLOCSPResponseMaxAge(cmd_parms *cmd, void *dcfg, const char *arg);
 const char *ssl_cmd_SSLOCSPResponderTimeout(cmd_parms *cmd, void *dcfg, const char *arg);
 const char *ssl_cmd_SSLOCSPEnable(cmd_parms *cmd, void *dcfg, int flag);
+
+#ifdef HAVE_SSL_CONF_CMD
+const char *ssl_cmd_SSLOpenSSLConfCmd(cmd_parms *cmd, void *dcfg, const char *arg1, const char *arg2);
+#endif
 
 #ifdef HAVE_SRP
 const char *ssl_cmd_SSLSRPVerifierFile(cmd_parms *cmd, void *dcfg, const char *arg);

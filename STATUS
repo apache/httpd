@@ -98,14 +98,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_ssl: Add support for OpenSSL configuration commands (SSLOpenSSLConfCmd)
-    trunk patches: https://svn.apache.org/r1421323
-                   https://svn.apache.org/r1534754
-                   https://svn.apache.org/r1546693
-                   https://svn.apache.org/r1555464
-    2.4.x patch: https://people.apache.org/~kbrand/mod_ssl-2.4.x-confcmd.diff
-    +1: kbrand, drh, trawick
-
   * mod_cache_disk hangs on windows reading from closed files
     trunk patch: http://svn.apache.org/r1547845
     2.4.x patch: trunk works

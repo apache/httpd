@@ -98,7 +98,7 @@ BOOL ssl_config_global_isfixed(SSLModConfigRec *mc)
 **  _________________________________________________________________
 */
 
-static void modssl_ctx_init(modssl_ctx_t *mctx)
+static void modssl_ctx_init(modssl_ctx_t *mctx, apr_pool_t *p)
 {
     mctx->sc                  = NULL; /* set during module init */
 
@@ -153,6 +153,13 @@ static void modssl_ctx_init(modssl_ctx_t *mctx)
     mctx->srp_unknown_user_seed = NULL;
     mctx->srp_vbase =             NULL;
 #endif
+#ifdef HAVE_SSL_CONF_CMD
+    mctx->ssl_ctx_config = SSL_CONF_CTX_new();
+    SSL_CONF_CTX_set_flags(mctx->ssl_ctx_config, SSL_CONF_FLAG_FILE);
+    SSL_CONF_CTX_set_flags(mctx->ssl_ctx_config, SSL_CONF_FLAG_SERVER);
+    SSL_CONF_CTX_set_flags(mctx->ssl_ctx_config, SSL_CONF_FLAG_CERTIFICATE);
+    mctx->ssl_ctx_param = apr_array_make(p, 5, sizeof(ssl_ctx_param_t));
+#endif
 }
 
 static void modssl_ctx_init_proxy(SSLSrvConfigRec *sc,
@@ -162,7 +169,7 @@ static void modssl_ctx_init_proxy(SSLSrvConfigRec *sc,
 
     mctx = sc->proxy = apr_palloc(p, sizeof(*sc->proxy));
 
-    modssl_ctx_init(mctx);
+    modssl_ctx_init(mctx, p);
 
     mctx->pkp = apr_palloc(p, sizeof(*mctx->pkp));
 
@@ -180,7 +187,7 @@ static void modssl_ctx_init_server(SSLSrvConfigRec *sc,
 
     mctx = sc->server = apr_palloc(p, sizeof(*sc->server));
 
-    modssl_ctx_init(mctx);
+    modssl_ctx_init(mctx, p);
 
     mctx->pks = apr_pcalloc(p, sizeof(*mctx->pks));
 
@@ -241,7 +248,8 @@ void *ssl_config_server_create(apr_pool_t *p, server_rec *s)
 #define cfgMergeBool(el)    cfgMerge(el, UNSET)
 #define cfgMergeInt(el)     cfgMerge(el, UNSET)
 
-static void modssl_ctx_cfg_merge(modssl_ctx_t *base,
+static void modssl_ctx_cfg_merge(apr_pool_t *p,
+                                 modssl_ctx_t *base,
                                  modssl_ctx_t *add,
                                  modssl_ctx_t *mrg)
 {
@@ -284,26 +292,32 @@ static void modssl_ctx_cfg_merge(modssl_ctx_t *base,
     cfgMergeString(srp_vfile);
     cfgMergeString(srp_unknown_user_seed);
 #endif
+
+#ifdef HAVE_SSL_CONF_CMD
+    cfgMergeArray(ssl_ctx_param);
+#endif
 }
 
-static void modssl_ctx_cfg_merge_proxy(modssl_ctx_t *base,
+static void modssl_ctx_cfg_merge_proxy(apr_pool_t *p,
+                                       modssl_ctx_t *base,
                                        modssl_ctx_t *add,
                                        modssl_ctx_t *mrg)
 {
-    modssl_ctx_cfg_merge(base, add, mrg);
+    modssl_ctx_cfg_merge(p, base, add, mrg);
 
     cfgMergeString(pkp->cert_file);
     cfgMergeString(pkp->cert_path);
     cfgMergeString(pkp->ca_cert_file);
 }
 
-static void modssl_ctx_cfg_merge_server(modssl_ctx_t *base,
+static void modssl_ctx_cfg_merge_server(apr_pool_t *p,
+                                        modssl_ctx_t *base,
                                         modssl_ctx_t *add,
                                         modssl_ctx_t *mrg)
 {
     int i;
 
-    modssl_ctx_cfg_merge(base, add, mrg);
+    modssl_ctx_cfg_merge(p, base, add, mrg);
 
     for (i = 0; i < SSL_AIDX_MAX; i++) {
         cfgMergeString(pks->cert_files[i]);
@@ -346,9 +360,9 @@ void *ssl_config_server_merge(apr_pool_t *p, void *basev, void *addv)
     cfgMergeBool(compression);
 #endif
 
-    modssl_ctx_cfg_merge_proxy(base->proxy, add->proxy, mrg->proxy);
+    modssl_ctx_cfg_merge_proxy(p, base->proxy, add->proxy, mrg->proxy);
 
-    modssl_ctx_cfg_merge_server(base->server, add->server, mrg->server);
+    modssl_ctx_cfg_merge_server(p, base->server, add->server, mrg->server);
 
     return mrg;
 }
@@ -1807,6 +1821,38 @@ const char *ssl_cmd_SSLStaplingForceURL(cmd_parms *cmd, void *dcfg,
 }
 
 #endif /* HAVE_OCSP_STAPLING */
+
+#ifdef HAVE_SSL_CONF_CMD
+const char *ssl_cmd_SSLOpenSSLConfCmd(cmd_parms *cmd, void *dcfg,
+                                      const char *arg1, const char *arg2)
+{
+    SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
+    SSL_CONF_CTX *cctx = sc->server->ssl_ctx_config;
+    int value_type = SSL_CONF_cmd_value_type(cctx, arg1);
+    const char *err;
+    ssl_ctx_param_t *param;
+
+    if (value_type == SSL_CONF_TYPE_UNKNOWN) {
+        return apr_psprintf(cmd->pool,
+                            "'%s': invalid OpenSSL configuration command",
+                            arg1);
+    }
+
+    if (value_type == SSL_CONF_TYPE_FILE) {
+        if ((err = ssl_cmd_check_file(cmd, &arg2)))
+            return err;
+    }
+    else if (value_type == SSL_CONF_TYPE_DIR) {
+        if ((err = ssl_cmd_check_dir(cmd, &arg2)))
+            return err;
+    }
+
+    param = apr_array_push(sc->server->ssl_ctx_param);
+    param->name = arg1;
+    param->value = arg2;
+    return NULL;
+}
+#endif
 
 #ifdef HAVE_SRP
 
