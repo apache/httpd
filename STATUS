@@ -170,6 +170,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: trunk patch works mod CHANGES
     +1: jim, covener
 
+  * event fdqueue: Use a normalized offset point for idlers via atomics
+    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1545286
+                 http://svn.apache.org/viewvc?view=revision&revision=1545292
+                 http://svn.apache.org/viewvc?view=revision&revision=1545325
+                 http://svn.apache.org/viewvc?view=revision&revision=1545364
+                 http://svn.apache.org/viewvc?view=revision&revision=1545408
+                 http://svn.apache.org/viewvc?view=revision&revision=1545411
+    2.4.x patch: http://people.apache.org/~jim/patches/fdq-atomics.patch
+    +1: jim
+
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
