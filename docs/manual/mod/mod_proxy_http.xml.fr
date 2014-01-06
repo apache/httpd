@@ -66,7 +66,7 @@
         <dt>proxy-sendextracrlf</dt>
         <dd>Provoque l'envoi par le mandataire d'une nouvelle ligne
 	CR-LF suppl&eacute;mentaire &agrave; la fin de la requ&ecirc;te.
-    Ceci constitue un
+	Ceci constitue un
 	moyen de contournement d'une bogue de certains
 	navigateurs.</dd>
         <dt>force-proxy-request-1.0</dt>
