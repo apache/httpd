@@ -206,8 +206,6 @@ Changes with Apache 2.5.0
   *) core: Correctly parse an IPv6 literal host specification in an absolute
      URL in the request line. [Stefan Fritsch]
 
-  *) mod_ssl: Add support for OpenSSL configuration commands [Stephen Henson]
-
   *) EventOpt MPM
 
   *) core: Add LogLevelOverride directive that allows to override the
