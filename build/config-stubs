@@ -15,7 +15,7 @@
 # config files without a number are sorted before those with a number.
 #
 
-configfiles=`find . -name "config*.m4" | \
+configfiles=`find os server modules support -name "config*.m4" | \
 	sed 's#\(.*/config\)\(.*\).m4#\20 \1\2.m4#' | \
 	sort | \
 	sed 's#.* ##'`

@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.8
 
+  *) build: only search for modules (config*.m4) in known subdirectories, see
+     build/config-stubs. [Stefan Fritsch]
+
   *) mod_cache_disk: Fix potential hangs on Windows when using mod_cache_disk. 
      PR55833. [Eric Covener]
 
