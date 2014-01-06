@@ -83,7 +83,7 @@
 #define LDAP_DECLARE_DATA             __declspec(dllimport)
 #endif
 
-#ifdef WIN32
+#if APR_HAS_MICROSOFT_LDAPSDK
 #define timeval l_timeval
 #endif
 
