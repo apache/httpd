@@ -25,9 +25,6 @@ Changes with Apache 2.5.0
      configured SSL CA certificates to stdout the same way as DUMP_CERTS does.
      [Jan Kaluza]
 
-  *) mod_cache_disk: Fix potential hangs on Windows when using mod_cache_disk. 
-     PR55833. [Eric Covener]
-
   *) mod_headers: Allow the "value" parameter of Header and RequestHeader to 
      contain an ap_expr expression if prefixed with "expr=". [Eric Covener]
 
