@@ -190,8 +190,7 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
          * Read in server certificate(s): This is the easy part
          * because this file isn't encrypted in any way.
          */
-        if (sc->server->pks->cert_files[0] == NULL
-            && sc->server->pkcs7 == NULL) {
+        if (sc->server->pks->cert_files[0] == NULL) {
             ap_log_error(APLOG_MARK, APLOG_EMERG, 0, pServ, APLOGNO(02240)
                          "Server should be SSL-aware but has no certificate "
                          "configured [Hint: SSLCertificateFile] (%s:%d)",
@@ -207,37 +206,29 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
         /* Iterate through configured certificate files for this
          * server. */
         for (i = 0, j = 0; i < SSL_AIDX_MAX
-                 && (sc->server->pks->cert_files[i] != NULL
-                     || sc->server->pkcs7); i++) {
+                 && (sc->server->pks->cert_files[i] != NULL); i++) {
             const char *key_id;
             int using_cache = 0;
 
-            if (sc->server->pkcs7) {
-                STACK_OF(X509) *certs = ssl_read_pkcs7(pServ,
-                                                       sc->server->pkcs7);
-                pX509Cert = sk_X509_value(certs, 0);
-                i = SSL_AIDX_MAX;
-            } else {
-                apr_cpystrn(szPath, sc->server->pks->cert_files[i],
-                            sizeof(szPath));
-                if ((rv = exists_and_readable(szPath, p, NULL))
-                    != APR_SUCCESS) {
-                    ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, APLOGNO(02201)
-                                 "Init: Can't open server certificate file %s",
-                                 szPath);
-                    ssl_die(s);
-                }
-                if ((pX509Cert = SSL_read_X509(szPath, NULL, NULL)) == NULL) {
-                    ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(02241)
-                                 "Init: Unable to read server certificate from"
-                                 " file %s", szPath);
-                    ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
-                    ssl_die(s);
-                }
-                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(02202)
-                             "Init: Read server certificate from '%s'",
+            apr_cpystrn(szPath, sc->server->pks->cert_files[i],
+                        sizeof(szPath));
+            if ((rv = exists_and_readable(szPath, p, NULL))
+                != APR_SUCCESS) {
+                ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, APLOGNO(02201)
+                             "Init: Can't open server certificate file %s",
                              szPath);
+                ssl_die(s);
             }
+            if ((pX509Cert = SSL_read_X509(szPath, NULL, NULL)) == NULL) {
+                ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(02241)
+                             "Init: Unable to read server certificate from"
+                             " file %s", szPath);
+                ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
+                ssl_die(s);
+            }
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(02202)
+                         "Init: Read server certificate from '%s'",
+                         szPath);
             /*
              * check algorithm type of certificate and make
              * sure only one certificate per type is used.
