@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_rewrite: Protect against looping with the [N] flag by enforcing a 
+     default limit of 10000 iterations, and allowing each rule to change its
+     limit. [Eric Covener]
+
   *) mod_ssl: Fix config merging of SSLOCSPEnable and SSLOCSPOverrideResponder.
      [Jeff Trawick]
 

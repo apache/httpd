@@ -235,6 +235,9 @@ static const char* really_last_key = "rewrite_really_last";
 #define subreq_ok(r) (!r->main || \
     (r->main->uri && r->uri && strcmp(r->main->uri, r->uri)))
 
+#ifndef REWRITE_MAX_ROUNDS
+#define REWRITE_MAX_ROUNDS 10000
+#endif
 
 /*
  * +-------------------------------------------------------+
@@ -312,6 +315,7 @@ typedef struct {
     data_item *env;                  /* added environment variables           */
     data_item *cookie;               /* added cookies                         */
     int        skip;                 /* number of next rules to skip          */
+    int        maxrounds;            /* limit on number of loops with N flag  */
 } rewriterule_entry;
 
 typedef struct {
@@ -3502,6 +3506,10 @@ static const char *cmd_rewriterule_setflag(apr_pool_t *p, void *_cfg,
         }
         else if (!*key || !strcasecmp(key, "ext")) {       /* next */
             cfg->flags |= RULEFLAG_NEWROUND;
+            if (val && *val) { 
+                cfg->maxrounds = atoi(val);
+            }
+
         }
         else if (((*key == 'S' || *key == 's') && !key[1])
             || !strcasecmp(key, "osubreq")) {              /* nosubreq */
@@ -3653,6 +3661,7 @@ static const char *cmd_rewriterule(cmd_parms *cmd, void *in_dconf,
     newrule->env = NULL;
     newrule->cookie = NULL;
     newrule->skip   = 0;
+    newrule->maxrounds = REWRITE_MAX_ROUNDS;
     if (a3 != NULL) {
         if ((err = cmd_parseflagfield(cmd->pool, newrule, a3,
                                       cmd_rewriterule_setflag)) != NULL) {
@@ -4196,6 +4205,7 @@ static int apply_rewrite_list(request_rec *r, apr_array_header_t *rewriterules,
     int rc;
     int s;
     rewrite_ctx *ctx;
+    int round = 1;
 
     ctx = apr_palloc(r->pool, sizeof(*ctx));
     ctx->perdir = perdir;
@@ -4284,6 +4294,15 @@ static int apply_rewrite_list(request_rec *r, apr_array_header_t *rewriterules,
              *  the rewriting ruleset again.
              */
             if (p->flags & RULEFLAG_NEWROUND) {
+                if (++round >= p->maxrounds) { 
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02596)
+                                  "RewriteRule '%s' and URI '%s' exceeded "
+                                  "maximum number of rounds (%d) via the [N] flag", 
+                                  p->pattern, r->uri, p->maxrounds);
+
+                    r->status = HTTP_INTERNAL_SERVER_ERROR;
+                    return ACTION_STATUS; 
+                }
                 goto loop;
             }
 

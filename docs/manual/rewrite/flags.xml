@@ -392,13 +392,21 @@ certain string or letter repeatedly in a request. The example shown here
 will replace A with B everywhere in a request, and will continue doing
 so until there are no more As to be replaced.
 </p>
-
 <highlight language="config">RewriteRule (.*)A(.*) $1B$2 [N]</highlight>
-
 <p>You can think of this as a <code>while</code> loop: While this
 pattern still matches (i.e., while the URI still contains an
 <code>A</code>), perform this substitution (i.e., replace the
 <code>A</code> with a <code>B</code>).</p>
+
+<p>In 2.5.0 and later, this module returns an error after 10,000 iterations to
+protect against unintended looping.  An alternative maximum number of 
+iterations can be specified by adding to the N flag.  </p>
+<highlight language="config">
+# Be willing to replace 1 character in each pass of the loop
+RewriteRule (.+)[&gt;&lt;;]$ $1 [N=32000]
+# ... or, give up if after 10 loops
+RewriteRule (.+)[&gt;&lt;;]$ $1 [N=10]
+</highlight>
 
 </section>
 
