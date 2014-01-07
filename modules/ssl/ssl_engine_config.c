@@ -116,7 +116,6 @@ static void modssl_ctx_init(modssl_ctx_t *mctx, apr_pool_t *p)
     mctx->pphrase_dialog_type = SSL_PPTYPE_UNSET;
     mctx->pphrase_dialog_path = NULL;
 
-    mctx->pkcs7               = NULL;
     mctx->cert_chain          = NULL;
 
     mctx->crl_path            = NULL;
@@ -837,22 +836,6 @@ const char *ssl_cmd_SSLCertificateChainFile(cmd_parms *cmd,
     }
 
     sc->server->cert_chain = arg;
-
-    return NULL;
-}
-
-const char *ssl_cmd_SSLPKCS7CertificateFile(cmd_parms *cmd,
-                                            void *dcfg,
-                                            const char *arg)
-{
-    SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
-    const char *err;
-
-    if ((err = ssl_cmd_check_file(cmd, &arg))) {
-        return err;
-    }
-
-    sc->server->pkcs7 = arg;
 
     return NULL;
 }

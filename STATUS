@@ -153,12 +153,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: trunk patch works
     +1: kbrand
 
-  * mod_ssl: drop the (undocumented) SSLPKCS7CertificateFile directive,
-    for the reasons listed in the trunk commit message
-    trunk patch: https://svn.apache.org/r1544784
-    2.4.x patch: https://people.apache.org/~kbrand/mod_ssl-2.4.x-drop-pkcs7.diff
-    +1: kbrand, covener, druggeri
-
   * prefork: PR: 54852. Only use a dummy_connection for idle processes
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1542379
     2.4.x patch: trunk patch works mod CHANGES
