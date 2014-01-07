@@ -117,6 +117,26 @@ SetEnvIf User-Agent ^KnockKnock/2\.0 let_me_in
     with <code>KnockKnock/2.0</code> will be allowed access, and all
     others will be denied.</p>
 
+    <p>When the server looks up a path via an internal 
+    <glossary ref="subrequest">subrequest</glossary> such as looking 
+    for a <directive module="mod_dir" >DirectoryIndex</directive> 
+    or generating a directory listing with <module>mod_autoindex</module>,
+    per-request environment variables are <em>not</em> inherited in the 
+    subrequest. Additionally, 
+    <directive module="mod_setenvif">SetEnvIf</directive> directives
+    are not separately evaluated in the subrequest due to the API phases
+    <module>mod_setenvif</module>.</p>
+
+
+    <p>When the server looks up a path via an internal subrequest,
+    such as looking for a <directive module="mod_dir"
+    >DirectoryIndex</directive> or generating a directory listing with
+    <module>mod_autoindex</module>, per-request environment variables are
+    <em>not</em> inherited in the subrequest. Additionally, environment
+    <directive module="mod_setenvif">SetEnvIf</directive> directives
+    are not separately evaluated in the subrequest due to the API phases
+    <module>mod_setenvif</module> takes action in.</p>
+
   </section>
 
   <section id="reqall"><title>Require all</title>
