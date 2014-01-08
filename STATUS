@@ -123,6 +123,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://people.apache.org/~rpluem/patches/mod_proxy_http_50335.2.2.x.diff
    +1: rpluem, jorton, 
 
+  * mod_dav: Fix string length calculation in dav_xml_get_cdata()
+    trunk patch: https://svn.apache.org/r1556428
+    2.2.x: trunk patch applies aka `svn merge -c 1556428 ^/httpd/httpd/trunk`
+    +1: breser
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * mod_cache: Realign the cache_quick_handler() to behave identically
@@ -348,3 +353,4 @@ PATCHES/ISSUES THAT ARE STALLED
     ben: not correct that it depends on OpenSSL 1.0.2, it builds with
          any version. Also, if you read my note to dev@ you will see
          why it is not premature.
+
