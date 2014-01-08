@@ -110,6 +110,11 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     2.4.x patch: trunk works, + CHANGES
     +1: covener, druggeri, trawick
 
+  * mod_dav: Fix string length calculation in dav_xml_get_cdata()
+    trunk patch: https://svn.apache.org/r1556428
+    2.4.x: trunk patch applies aka `svn merge -c 1556428 ^/httpd/httpd/trunk`
+    +1: breser, trawick, covener
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -175,11 +180,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     +1: jim
     trawick: it's fine AFAICT but the Right Thing to do is to separate or even
              discard the unexpected struct recycled_pool change
-
-  * mod_dav: Fix string length calculation in dav_xml_get_cdata()
-    trunk patch: https://svn.apache.org/r1556428
-    2.4.x: trunk patch applies aka `svn merge -c 1556428 ^/httpd/httpd/trunk`
-    +1: breser, trawick
 
 OTHER PROPOSALS
 
