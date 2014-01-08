@@ -702,7 +702,7 @@ expressions</description>
 <name>ProxyPass</name>
 <description>Maps remote servers into the local server URL-space</description>
 <syntax>ProxyPass [<var>path</var>] !|<var>url</var> [<var>key=value</var>
-<var>key=value</var> ...]] [nocanon] [interpolate]</syntax>
+<var>[key=value</var> ...]] [nocanon] [interpolate]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context>
 </contextlist>
