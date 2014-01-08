@@ -699,9 +699,20 @@ const char *ssl_cmd_SSLCompression(cmd_parms *cmd, void *dcfg, int flag)
 #ifndef SSL_OP_NO_COMPRESSION
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err)
-        return "This version of openssl does not support configuring "
-               "compression within <VirtualHost> sections.";
+        return "This version of OpenSSL does not support enabling "
+               "SSLCompression within <VirtualHost> sections.";
 #endif
+    if (flag) {
+        /* Some (packaged) versions of OpenSSL do not support
+         * compression by default.  Enabling this directive would not
+         * have the desired effect, so fail with an error. */
+        STACK_OF(SSL_COMP) *meths = SSL_COMP_get_compression_methods();
+
+        if (sk_SSL_COMP_num(meths) == 0) {
+            return "This version of OpenSSL does not have any compression methods "
+                "available, cannot enable SSLCompression.";
+        }
+    }
     sc->compression = flag ? TRUE : FALSE;
     return NULL;
 #else
