@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.8
 
+  *) mod_proxy_fcgi: Use apr_socket_timeout_get instead of hard-coded
+     30 seconds timeout. [Jan Kaluza]
+
   *) build: only search for modules (config*.m4) in known subdirectories, see
      build/config-stubs. [Stefan Fritsch]
 
