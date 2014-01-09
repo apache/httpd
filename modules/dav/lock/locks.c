@@ -1093,6 +1093,7 @@ static int dav_generic_do_refresh(dav_lock_discovery *dp,
         {
             dp->f.timeout = new_time;
             dirty = 1;
+            break;
         }
     }
 
