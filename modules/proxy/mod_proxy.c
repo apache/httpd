@@ -1726,6 +1726,7 @@ static const char *
     for (i = 0; i < conf->noproxies->nelts; i++) {
         if (strcasecmp(arg, list[i].name) == 0) { /* ignore case for host names */
             found = 1;
+            break;
         }
     }
 
@@ -1761,6 +1762,7 @@ static const char *
     for (i = 0; i < conf->dirconn->nelts; i++) {
         if (strcasecmp(arg, list[i].name) == 0)
             found = 1;
+            break;
     }
 
     if (!found) {
