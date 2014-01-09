@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.8
 
+  *) mod_authn_core: Allow <AuthnProviderAlias>'es to be seen from auth
+     stanzas under virtual hosts. PR 55622. [Eric Covener]
+
   *) mod_proxy_fcgi: Use apr_socket_timeout_get instead of hard-coded
      30 seconds timeout. [Jan Kaluza]
 
@@ -9,7 +12,7 @@ Changes with Apache 2.4.8
      build/config-stubs. [Stefan Fritsch]
 
   *) mod_cache_disk: Fix potential hangs on Windows when using mod_cache_disk. 
-     PR55833. [Eric Covener]
+     PR 55833. [Eric Covener]
 
   *) mod_ssl: Add support for OpenSSL configuration commands by introducing
      the SSLOpenSSLConfCmd directive. [Stephen Henson, Kaspar Brand]

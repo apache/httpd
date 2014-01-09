@@ -98,11 +98,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_authn_core: allow <AuthnProviderAlias>'es to be seen from auth 
-    stanzas under virtual hosts. PR55622.
-    trunk patch: http://svn.apache.org/r1554995
-    2.4.x patch: trunk works, + CHANGES
-    +1: covener, druggeri, trawick
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:

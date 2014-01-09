@@ -179,6 +179,12 @@ static void *create_authn_alias_svr_config(apr_pool_t *p, server_rec *s)
     return (void *) authcfg;
 }
 
+/* Only per-server directive we have is GLOBAL_ONLY */
+static void *merge_authn_alias_svr_config(apr_pool_t *p, void *basev, void *overridesv)
+{
+    return basev;
+}
+
 static const authn_provider authn_alias_provider =
 {
     &authn_alias_check_password,
@@ -373,7 +379,7 @@ AP_DECLARE_MODULE(authn_core) =
     create_authn_core_dir_config,   /* dir config creater */
     merge_authn_core_dir_config,    /* dir merger --- default is to override */
     create_authn_alias_svr_config,  /* server config */
-    NULL,                           /* merge server config */
+    merge_authn_alias_svr_config,   /* merge server config */
     authn_cmds,
     register_hooks                  /* register hooks */
 };
