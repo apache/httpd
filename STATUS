@@ -177,6 +177,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              cleared for those processes, since parent code that can't run 
              while we're stuck in this function takes care of that, so we'll
              still block.
+        jim: The orig bug report was concerning the long period of time
+             taken by graceful, due to trying to connect to already
+             notified child processes; the patch is designed to shorten
+             that time.
 
   * event fdqueue: Use a normalized offset point for idlers via atomics
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1545286
