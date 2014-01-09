@@ -1760,9 +1760,10 @@ static const char *
 
     /* Don't duplicate entries */
     for (i = 0; i < conf->dirconn->nelts; i++) {
-        if (strcasecmp(arg, list[i].name) == 0)
+        if (strcasecmp(arg, list[i].name) == 0) {
             found = 1;
             break;
+        }
     }
 
     if (!found) {
