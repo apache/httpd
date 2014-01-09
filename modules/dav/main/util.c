@@ -396,8 +396,10 @@ DAV_DECLARE(const char *) dav_xml_get_cdata(const apr_xml_elem *elem, apr_pool_t
 
     if (strip_white) {
         /* trim leading whitespace */
-        while (apr_isspace(*cdata))     /* assume: return false for '\0' */
+        while (apr_isspace(*cdata)) {     /* assume: return false for '\0' */
             ++cdata;
+            --len;
+        }
 
         /* trim trailing whitespace */
         while (len-- > 0 && apr_isspace(cdata[len]))
