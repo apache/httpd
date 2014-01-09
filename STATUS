@@ -98,12 +98,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_proxy_fcgi: Use apr_socket_timeout_get instead of hard-coded value
-    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1524368
-                 http://svn.apache.org/viewvc?view=revision&revision=1524388
-    2.4.x patch: trunk patch works mod CHANGES
-    +1: jim, covener, druggeri
-
   * mod_authn_core: allow <AuthnProviderAlias>'es to be seen from auth 
     stanzas under virtual hosts. PR55622.
     trunk patch: http://svn.apache.org/r1554995
