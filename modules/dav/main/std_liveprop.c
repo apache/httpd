@@ -86,18 +86,18 @@ static dav_prop_insert dav_core_insert_prop(const dav_resource *resource,
                     continue;
 
                 if (!res_hooks->get_resource_type(resource, &name, &uri) &&
-            name) {
+                    name) {
 
                     if (!uri || !strcasecmp(uri, "DAV:"))
                         value = apr_pstrcat(p, value ? value : "",
-                        "<D:", name, "/>", NULL);
-            else
+                                            "<D:", name, "/>", NULL);
+                    else
                         value = apr_pstrcat(p, value ? value : "",
-                        "<x:", name,
-                        " xmlns:x=\"", uri,
-                        "\"/>", NULL);
+                                            "<x:", name,
+                                            " xmlns:x=\"", uri,
+                                            "\"/>", NULL);
                 }
-        }
+            }
         }
         switch (resource->type) {
         case DAV_RESOURCE_TYPE_VERSION:
@@ -114,8 +114,8 @@ static dav_prop_insert dav_core_insert_prop(const dav_resource *resource,
             else {
                 /* ### should we denote lock-null resources? */
                 if (value == NULL) {
-                value = "";        /* becomes: <D:resourcetype/> */
-            }
+                    value = "";        /* becomes: <D:resourcetype/> */
+                }
             }
             break;
         case DAV_RESOURCE_TYPE_HISTORY:
