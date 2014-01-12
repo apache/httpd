@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1174747:1555548 (outdated) -->
+<!-- English Revision: 1555548 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -42,5 +42,42 @@ d'Apache</compatibility>
     utilisateurs qui ont &eacute;t&eacute; authentifi&eacute;s avec succ&egrave;s.</p>
 </summary>
 <seealso><directive module="mod_authz_core">Require</directive></seealso>
+
+<section id="requiredirectives"><title>The Require Directives</title>
+
+    <p>Les directives <directive
+    module="mod_authz_core">Require</directive> d'Apache permettent,
+    au cours de la phase d'autorisation, de s'assurer qu'un utilisateur
+    est bien autoris&eacute; &agrave; acc&eacute;der &agrave; une
+    ressource.  mod_authz_user ajoute
+    les types d'autorisation <code>user</code> et <code>valid-user</code>.
+    </p>
+
+    <p>A partir de la version 2.5.0, les directives require DBM
+    supportent les <a href="../expr.html">expressions</a>.</p>
+
+<section id="requser"><title>Require user</title>
+
+    <p>Cette directive permet de sp&eacute;cifier une liste d'utilisateurs
+    autoris&eacute;s &agrave; acc&eacute;der &agrave; la ressource.</p>
+
+    <highlight language="config">
+      Require user john paul george ringo
+    </highlight>
+
+</section>
+
+<section id="reqvaliduser"><title>Require valid-user</title>
+
+    <p>Lorsque cette directive est d&eacute;finie, tout utilisateur qui s'est
+    authentifi&eacute; avec succ&egrave;s aura l'autorisation d'acc&egrave;s &agrave; la ressource.</p>
+
+    <highlight language="config">
+      Require valid-user
+    </highlight>
+
+</section>
+
+</section>
 
 </modulesynopsis>

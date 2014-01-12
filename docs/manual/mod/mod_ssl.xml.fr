@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1542327:1555876 (outdated) -->
+<!-- English Revision : 1555876 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -2368,7 +2368,8 @@ SSLUserName SSL_CLIENT_S_DN_CN
 <name>SSLHonorCipherOrder</name>
 <description>Option permettant de classer les algorithmes de chiffrement
 du serveur par ordre de pr&eacute;f&eacute;rence</description>
-<syntax>SSLHonorCipherOrder <em>flag</em></syntax>
+<syntax>SSLHonorCipherOrder on|off</syntax>
+<default>SSLHonorCipherOrder off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 <compatibility>Disponible depuis la version 2.1 d'Apache, &agrave; condition
@@ -2421,7 +2422,8 @@ SSLCryptoDevice ubsec
 <name>SSLOCSPEnable</name>
 <description>Active la validation OCSP de la cha&icirc;ne de certificats du
 client</description>
-<syntax>SSLOCSPEnable <em>drapeau</em></syntax>
+<syntax>SSLOCSPEnable on|off</syntax>
+<default>SSLOCSPEnable off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 <compatibility>Disponible depuis la version 2.3 de httpd, &agrave; condition
@@ -2473,7 +2475,8 @@ sp&eacute;cifi&eacute; dans le certificat en cours de v&eacute;rification.</p>
 <name>SSLOCSPOverrideResponder</name>
 <description>Force l'utilisation de l'URI du r&eacute;pondeur par d&eacute;faut pour
 la validation OCSP</description>
-<syntax>SSLOCSPOverrideResponder <em>drapeau</em></syntax>
+<syntax>SSLOCSPOverrideResponder on|off</syntax>
+<default>SSLOCSPOverrideResponder off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 <compatibility>Disponible depuis la version 2.3 de httpd, &agrave; condition
@@ -2545,7 +2548,7 @@ module="mod_ssl">SSLOCSPEnable</directive> est &agrave; on.</p>
 <name>SSLInsecureRenegotiation</name>
 <description>Option permettant d'activer le support de la ren&eacute;gociation
 non s&eacute;curis&eacute;e</description>
-<syntax>SSLInsecureRenegotiation <em>drapeau</em></syntax>
+<syntax>SSLInsecureRenegotiation on|off</syntax>
 <default>SSLInsecureRenegotiation off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
@@ -2860,6 +2863,48 @@ d&eacute;faut &eacute;tait <code>on</code> dans la version 2.4.3.</compatibility
 <p>L'activation de la compression est &agrave; l'origine de probl&egrave;mes de
 s&eacute;curit&eacute; dans la plupart des configurations (l'attaque nomm&eacute;e CRIME).</p>
 </note>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLOpenSSLConfCmd</name>
+<description>Configuration des param&egrave;tres d'OpenSSL via son API <em>SSL_CONF</em></description>
+<syntax>SSLOpenSSLConfCmd <em>commande</em> <em>valeur</em></syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+<compatibility>Disponible depuis la version 2.4.8 du serveur HTTP
+Apache avec OpenSSL 1.0.2 ou sup&eacute;rieur</compatibility>
+
+<usage>
+<p>Cette directive permet &agrave; mod_ssl d'acc&eacute;der &agrave; l'API <em>SSL_CONF</em>
+d'OpenSSL. Il n'est ainsi plus n&eacute;cessaire d'impl&eacute;menter des
+directives suppl&eacute;mentaires pour <module>mod_ssl</module> lorsque de nouvelles
+fonctionnalit&eacute;s sont ajout&eacute;es &agrave; OpenSSL, ce qui rend la configuration de
+ce dernier beaucoup plus souple.</p>
+
+<p>Le jeu de commandes disponibles pour la directive
+<directive>SSLOpenSSLConfCmd</directive> d&eacute;pend de la version d'OpenSSL
+utilis&eacute;e pour <module>mod_ssl</module> (la version minimale 1.0.2 est un
+pr&eacute;requis). Pour obtenir la liste des commandes support&eacute;es, voir la
+section <em>Supported configuration file commands</em> de la page de
+manuel <a
+href="http://www.openssl.org/docs/ssl/SSL_CONF_cmd.html#SUPPORTED_CONFIGURATION_FILE_COM">SSL_CONF_cmd(3)</a>
+d'OpenSSL.</p>
+
+<p>Certaines commandes peuvent remplacer des directives existantes
+(comme <directive module="mod_ssl">SSLCipherSuite</directive> ou
+<directive module="mod_ssl">SSLProtocol</directive>) ; notez cependant
+que la syntaxe et/ou les valeurs possibles peuvent diff&eacute;rer.</p>
+
+<example><title>Examples</title>
+<highlight language="config">
+SSLOpenSSLConfCmd Options -SessionTicket,ServerPreference
+SSLOpenSSLConfCmd ECDHParameters brainpoolP256r1
+SSLOpenSSLConfCmd ServerInfoFile /usr/local/apache2/conf/server-info.pem
+SSLOpenSSLConfCmd Protocol "-ALL, TLSv1.2"
+SSLOpenSSLConfCmd SignatureAlgorithms RSA+SHA384:ECDSA+SHA256
+</highlight>
+</example>
 </usage>
 </directivesynopsis>
 

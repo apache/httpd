@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1427185:1555605 (outdated) -->
+<!-- English revision : 1555605 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -137,11 +137,13 @@ SessionCryptoPassphrase secret
       demandant &agrave; l'utilisateur de fournir un nom et un mot de passe.</p>
 
       <example><title>Exemple de formulaire de connexion</title>
-        &lt;form method="POST" action="/dologin.html"&gt;<br />
-        Utilisateur : &lt;input type="text" name="httpd_username" value="" /&gt;<br />
-        Mot de passe: &lt;input type="password" name="httpd_password" value="" /&gt;<br />
-        &lt;input type="submit" name="login" value="Connexion" /&gt;<br />
-        &lt;/form&gt;<br />
+        <highlight language="html">
+&lt;form method="POST" action="/dologin.html"&gt;
+  Username: &lt;input type="text" name="httpd_username" value="" /&gt;
+  Password: &lt;input type="password" name="httpd_password" value="" /&gt;
+  &lt;input type="submit" name="login" value="Login" /&gt;
+&lt;/form&gt;
+        </highlight>
       </example>
 
       <p>La partie o&ugrave; s'effectue la connexion proprement dite est
@@ -184,14 +186,14 @@ SessionCryptoPassphrase secret
       zones du site web.</p>
 
       <example><title>Exemple de formulaire de login avec page cible</title>
-        &lt;form method="POST" action="/dologin.html"&gt;<br />
-        <indent>
-          Utilisateur  : &lt;input type="text" name="httpd_username" value="" /&gt;<br />
-          Mot de passe : &lt;input type="password" name="httpd_password" value="" /&gt;<br />
-          &lt;input type="submit" name="login" value="Connexion" /&gt;<br />
-          &lt;input type="hidden" name="httpd_location" value="http://example.com/success.html" /&gt;<br />
-        </indent>
-        &lt;/form&gt;<br />
+        <highlight language="html">
+&lt;form method="POST" action="/dologin.html"&gt;
+  Username: &lt;input type="text" name="httpd_username" value="" /&gt;
+  Password: &lt;input type="password" name="httpd_password" value="" /&gt;
+  &lt;input type="submit" name="login" value="Login" /&gt;
+  &lt;input type="hidden" name="httpd_location" value="http://example.com/success.html" /&gt;
+&lt;/form&gt;
+        </highlight>
       </example>
 
     </section>
@@ -252,13 +254,13 @@ SessionCryptoPassphrase secret
       connue de la page en cours.</p>
 
       <example><title>Exemple de formulaire de connexion &agrave; la vol&eacute;e</title>
-        &lt;form method="POST" <strong>action=""</strong>&gt;<br />
-        <indent>
-          Utilisateur  : &lt;input type="text" name="httpd_username" value="" /&gt;<br />
-          Mot de passe : &lt;input type="password" name="httpd_password" value="" /&gt;<br />
-          &lt;input type="submit" name="login" value="Connexion" /&gt;<br />
-        </indent>
-        &lt;/form&gt;<br />
+        <highlight language="html">
+&lt;form method="POST" <strong>action=""</strong>&gt;
+  Username: &lt;input type="text" name="httpd_username" value="" /&gt;
+  Password: &lt;input type="password" name="httpd_password" value="" /&gt;
+  &lt;input type="submit" name="login" value="Login" /&gt;
+&lt;/form&gt;
+</highlight>
       </example>
 
       <p>Lorsque l'utilisateur final a entr&eacute; ses informations de
@@ -294,16 +296,16 @@ SessionCryptoPassphrase secret
 
       <example><title>Exemple de formulaire avec conservation du
       contenu</title>
-        &lt;form method="POST" action=""&gt;<br />
-        <indent>
-          Utilisateur  : &lt;input type="text" name="httpd_username" value="" /&gt;<br />
-          Mot de passe : &lt;input type="password" name="httpd_password" value="" /&gt;<br />
-          &lt;input type="submit" name="login" value="Connexion" /&gt;<br />
-          <strong>&lt;input type="hidden" name="httpd_method" value="POST" /&gt;<br />
-          &lt;input type="hidden" name="httpd_mimetype" value="application/x-www-form-urlencoded" /&gt;<br />
-          &lt;input type="hidden" name="httpd_body" value="name1=value1&amp;name2=value2" /&gt;</strong><br />
-        </indent>
-        &lt;/form&gt;
+        <highlight language="html">
+&lt;form method="POST" action=""&gt;
+  Username: &lt;input type="text" name="httpd_username" value="" /&gt;
+  Password: &lt;input type="password" name="httpd_password" value="" /&gt;
+  &lt;input type="submit" name="login" value="Login" /&gt;
+  <br/>  <strong>&lt;input type="hidden" name="httpd_method" value="POST" /&gt;
+  &lt;input type="hidden" name="httpd_mimetype" value="application/x-www-form-urlencoded" /&gt;
+  &lt;input type="hidden" name="httpd_body" value="name1=value1&amp;name2=value2" /&gt;</strong><br/>
+&lt;/form&gt;
+        </highlight>
       </example>
 
       <p>La mani&egrave;re dont la m&eacute;thode, le type MIME et le contenu de la
