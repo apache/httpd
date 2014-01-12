@@ -86,6 +86,7 @@ server</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>Limit</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authz_host</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Support for negating env=<var>env-variable</var> was added in 2.2.10</td></tr>
 </table>
     <p>The <code class="directive">Allow</code> directive affects which hosts can
     access an area of the server. Access can be controlled by

@@ -74,6 +74,7 @@ server</description>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>Limit</override>
+<compatibility>Support for negating env=<var>env-variable</var> was added in 2.2.10</compatibility>
 
 <usage>
     <p>The <directive>Allow</directive> directive affects which hosts can
