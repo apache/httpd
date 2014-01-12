@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1554501:1555539 (outdated) -->
+<!-- English Revision : 1555539 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -361,6 +361,9 @@ d'Apache</compatibility>
     disponibles, sous r&eacute;serve du chargement de modules d'autorisation
     suppl&eacute;mentaires.</p>
 
+    <p>Depuis la version 2.5.0, les directives require LDAP supportent
+    les <a href="../expr.html">expressions</a>.</p>
+
 <section id="requser"><title>Require ldap-user</title>
 
     <p>La directive <code>Require ldap-user</code> permet de sp&eacute;cifier
@@ -599,6 +602,17 @@ Require valid-user
 <highlight language="config">
 AuthLDAPURL ldap://ldap.example.com/o=Example?uid
 Require ldap-group cn=Administrators, o=Example
+</highlight>
+      </li>
+
+      <li>
+      Accorde l'acc&egrave;s &agrave; tout utilisateur appartenant au groupe dont le
+      nom correspond au nom d'h&ocirc;te du serveur virtuel. Dans cet exemple,
+      on utilise une <a href="../expr.html">expression</a> pour
+      construire le filtre.
+<highlight language="config">
+AuthLDAPURL ldap://ldap.example.com/o=Example?uid
+Require ldap-group cn=%{SERVER_NAME}, o=Example
 </highlight>
       </li>
 

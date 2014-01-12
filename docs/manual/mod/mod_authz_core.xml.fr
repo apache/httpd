@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision : 1481368 -->
+<!-- English Revision : 1556104 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -172,6 +172,18 @@ SetEnvIf User-Agent ^KnockKnock/2\.0 let_me_in
     <p>Avec cet exemple, les navigateurs dont la cha&icirc;ne user-agent
     commence par <code>KnockKnock/2.0</code> se verront autoriser
     l'acc&egrave;s, alors que tous les autres seront rejet&eacute;s.</p>
+
+    <p>Lorsque le serveur cherche un chemin via une <glossary
+   ref="subrequest">sous-requ&ecirc;te</glossary> interne (par exemple la
+   recherche d'un <directive
+   module="mod_dir">DirectoryIndex</directive>), ou lorsqu'il g&eacute;n&egrave;re un
+   listing du contenu d'un r&eacute;pertoire via le module
+   <module>mod_autoindex</module>, la sous-requ&ecirc;te n'h&eacute;rite pas des
+   variables d'environnement sp&eacute;cifiques &agrave; la requ&ecirc;te. En outre, &agrave; cause
+   des phases de l'API auxquelles <module>mod_setenvif</module> prend
+   part, les directives <directive
+   module="mod_setenvif">SetEnvIf</directive> ne sont pas &eacute;valu&eacute;es
+   s&eacute;par&eacute;ment dans la sous-requ&ecirc;te.</p>
 
   </section>
 
