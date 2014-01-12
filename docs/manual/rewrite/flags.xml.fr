@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1460930 -->
+<!-- English Revision: 1556206 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -58,7 +58,7 @@ la forme courte soit la plus couramment utilis&eacute;e, nous vous recommandons
 de vous familiariser avec les drapeaux sous leur forme longue, afin de
 bien m&eacute;moriser ce que chaque drapeau est suppos&eacute; faire.
 Certains drapeaux acceptent un ou plusieurs arguments. Les drapeaux ne
-sont pas sensibles à la casse.</p>
+sont pas sensibles &agrave; la casse.</p>
 
 <p>Les drapeaux qui modifient les m&eacute;tadonn&eacute;es associ&eacute;es &agrave; la requ&ecirc;te
 (T=, H=, E=) n'ont aucun effet dans un contexte de r&eacute;pertoire ou de
@@ -433,6 +433,16 @@ ceci jusqu'il n'y ait plus de A &agrave; remplacer.
 dire, tant que l'URI contient un <code>A</code>),
 effectuer la substitution (c'est &agrave; dire, remplacer le <code>A</code> par
 un <code>B</code>).</p>
+
+<p>A partir de la version 2.5.0, ce module renvoie une erreur apr&egrave;s
+10000 it&eacute;rations afin d'&eacute;viter les boucles infinies. Ce nombre maximum
+d'it&eacute;ration peut &ecirc;tre modifi&eacute; via le drapeau N.</p>
+<highlight language="config">
+# On veut remplacer 1 caract&egrave;re &agrave; chaque it&eacute;ration de la boucle
+RewriteRule (.+)[&gt;&lt;;]$ $1 [N=32000]
+# ... ou s'arr&ecirc;ter apr&egrave;s 10 it&eacute;rations
+RewriteRule (.+)[&gt;&lt;;]$ $1 [N=10]
+</highlight>
 
 </section>
 

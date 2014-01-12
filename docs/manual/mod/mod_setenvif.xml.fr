@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1479264 -->
+<!-- English Revision : 1556102 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -51,6 +51,19 @@ de caract&eacute;ristiques de la requ&ecirc;te</description>
 BrowserMatch ^Mozilla netscape
 BrowserMatch MSIE !netscape
 </highlight>
+
+   <p>Lorsque le serveur cherche un chemin via une <glossary
+   ref="subrequest">sous-requ&ecirc;te</glossary> interne (par exemple la
+   recherche d'un <directive
+   module="mod_dir">DirectoryIndex</directive>), ou lorsqu'il g&eacute;n&egrave;re un
+   listing du contenu d'un r&eacute;pertoire via le module
+   <module>mod_autoindex</module>, la sous-requ&ecirc;te n'h&eacute;rite pas des
+   variables d'environnement sp&eacute;cifiques &agrave; la requ&ecirc;te. En outre, &agrave; cause
+   des phases de l'API auxquelles <module>mod_setenvif</module> prend
+   part, les directives <directive
+   module="mod_setenvif">SetEnvIf</directive> ne sont pas &eacute;valu&eacute;es
+   s&eacute;par&eacute;ment dans la sous-requ&ecirc;te.</p>
+
 </summary>
 
 <seealso><a href="../env.html">Les variables d'environnement et le
