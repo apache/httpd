@@ -997,6 +997,8 @@ Changes with Apache 2.2.10
      mod_proxy_ftp: Prevent XSS attacks when using wildcards in the path of
      the FTP URL. Discovered by Marc Bevand of Rapid7. [Ruediger Pluem]
 
+  *) mod_authz_host: Add support for env=!envvar [Jim Jagielski]
+
   *) Allow for smax to be 0 for balancer members so that all idle
      connections are able to be dropped should they exceed ttl.
      PR 43371 [Phil Endecott <spam_from_apache_bugzilla chezphil.org>,
