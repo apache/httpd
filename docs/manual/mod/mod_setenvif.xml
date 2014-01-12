@@ -266,7 +266,7 @@ for additional examples.
 
 <usage>
     <p>The <directive>SetEnvIfExpr</directive> directive defines
-    environment variables based on an <directive type="section">If</directive>
+    environment variables based on an <directive module="core" type="section">If</directive>
     <code>ap_expr</code>. These expressions will be evaluated at runtime,
     and applied <em>env-variable</em> in the same fashion as <directive
     >SetEnvIf</directive>.</p>
@@ -288,7 +288,7 @@ for additional examples.
 
 <seealso><a href="../expr.html">Expressions in Apache HTTP Server</a>,
 for a complete reference and more examples.</seealso>
-<seealso><directive type="section">If</directive> can be used to achieve similar
+<seealso><directive module="core" type="section">If</directive> can be used to achieve similar
 results.</seealso>
 <seealso><module>mod_filter</module></seealso>
 </directivesynopsis>
