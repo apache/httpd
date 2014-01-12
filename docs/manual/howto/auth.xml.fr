@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1426995:1555566 (outdated) -->
+<!-- English Revision : 1555566 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -222,8 +222,9 @@ module de chaque groupe.</p>
     elle n'est pas associ&eacute;e au module <module>mod_ssl</module>. Apache
     supporte une autre m&eacute;thode d'authentification : <code>AuthType
     Digest</code>. Cette m&eacute;thode est impl&eacute;ment&eacute;e par le module <module
-    >mod_auth_digest</module> et est beaucoup plus s&eacute;curis&eacute;e. La plupart
-    des navigateurs r&eacute;cents supportent l'authentification Digest.</p>
+    >mod_auth_digest</module> et a &eacute;t&eacute; con&ccedil;ue pour
+    am&eacute;liorer la s&eacute;curit&eacute;. Ce but n'a cependant pas &eacute;t&eacute; atteint et il est pr&eacute;f&eacute;rable
+    de chiffrer la connexion avec <module>mod_ssl</module>.</p>
 
     <p>La directive <directive module="core">AuthName</directive> d&eacute;finit
     l'<dfn>Identificateur</dfn> (Realm) &agrave; utiliser avec
