@@ -126,8 +126,31 @@ module</description>
 <override>Options</override>
 
 <usage>
-    <p>When set, this directive limits the action of the spelling correction to lower/upper case changes.
+    <p>When set, this directive limits the action of the spelling correction
+    to lower/upper case changes.
     Other potential corrections are not performed.</p>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CheckBasenameMatch</name>
+<description>Extend the action of the speling module to also check filename
+without paying attention to the extention. (e.g. foo.gif and foo.jpg).
+This can be particulary useful in conjunction with
+<a href="../content-negotiation.html">MultiViews</a></description>
+<syntax>CheckBasenameMatch on|off</syntax>
+<default>CheckBasenameMatch Off</default>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<override>Options</override>
+
+<usage>
+    <p>This option has no effect if <directive>CheckCaseOnly</directive> is set.</p>
 
 </usage>
 </directivesynopsis>
