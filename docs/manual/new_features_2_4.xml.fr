@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision : 1521342 -->
+<!-- English Revision : 1555604 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -38,7 +38,7 @@ serveur HTTP Apache</title>
   <section id="core">
     <title>Am&eacute;liorations du noyau</title>
     <dl>
-      <dt>Modules multiprocessus (MPMs) chargeables</dt>
+      <dt>Modules multiprocessus (MPMs) chargeables à l'ex&eacute;cution</dt>
       <dd>On peut maintenant <a href="mpm.html#dynamic">built as
       loadable modules</a> plusieurs MPMs en tant que modules
       chargeables. Le choix du MPM &agrave; utiliser s'effectue &agrave;

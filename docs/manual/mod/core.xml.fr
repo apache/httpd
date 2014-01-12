@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1555266 -->
+<!-- English Revision : 1555569 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -968,7 +968,7 @@ du syst&egrave;me de fichiers correspondant &agrave; une expression rationnelle<
       particuli&egrave;re.
     </note>
 
-    <p>A partir de la version 2.5.0, les groupes nomm&eacute;s et les
+    <p>A partir de la version 2.4.8, les groupes nomm&eacute;s et les
     r&eacute;f&eacute;rences arri&egrave;res sont extraits et enregistr&eacute;s dans
     l'environnement avec leur nom en majuscules et pr&eacute;fix&eacute;
     par "MATCH_". Ceci permet
@@ -1927,7 +1927,7 @@ host</context>
     <p>correspondrait &agrave; la plupart des formats graphiques de
     l'Internet.</p>
 
-    <p>A partir de la version 2.5.0, les groupes nomm&eacute;s et les
+    <p>A partir de la version 2.4.8, les groupes nomm&eacute;s et les
     r&eacute;f&eacute;rences arri&egrave;res sont extraits et enregistr&eacute;s dans
     l'environnement avec leur nom en majuscules et pr&eacute;fix&eacute;
     par "MATCH_". Ceci permet
@@ -2991,7 +2991,7 @@ host</context>
     <p>correspondrait &agrave; toute URL contenant les sous-cha&icirc;nes
     <code>/extra/data</code> ou <code>/special/data</code>.</p>
 
-    <p>A partir de la version 2.5.0, les groupes nomm&eacute;s et les
+    <p>A partir de la version 2.4.8, les groupes nomm&eacute;s et les
     r&eacute;f&eacute;rences arri&egrave;res sont extraits et enregistr&eacute;s dans
     l'environnement avec leur nom en majuscules et pr&eacute;fix&eacute;
     par "MATCH_". Ceci permet
