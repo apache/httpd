@@ -44,6 +44,7 @@ typedef enum {
 typedef struct dir_config_struct {
     apr_array_header_t *index_names;
     moddir_cfg do_slash;
+    moddir_cfg checkhandler;
     int redirect_index;
     const char *dflt;
 } dir_config_rec;
@@ -86,6 +87,13 @@ static const char *configure_slash(cmd_parms *cmd, void *d_, int arg)
     d->do_slash = arg ? MODDIR_ON : MODDIR_OFF;
     return NULL;
 }
+static const char *configure_checkhandler(cmd_parms *cmd, void *d_, int arg)
+{
+    dir_config_rec *d = d_;
+
+    d->checkhandler = arg ? MODDIR_ON : MODDIR_OFF;
+    return NULL;
+}
 static const char *configure_redirect(cmd_parms *cmd, void *d_, const char *arg1)
 {
     dir_config_rec *d = d_;
@@ -123,6 +131,8 @@ static const command_rec dir_cmds[] =
                     "a list of file names"),
     AP_INIT_FLAG("DirectorySlash", configure_slash, NULL, DIR_CMD_PERMS,
                  "On or Off"),
+    AP_INIT_FLAG("DirectoryCheckHandler", configure_checkhandler, NULL, DIR_CMD_PERMS,
+                 "On or Off"),
     AP_INIT_TAKE1("DirectoryIndexRedirect", configure_redirect,
                    NULL, DIR_CMD_PERMS, "On, Off, or a 3xx status code."),
 
@@ -135,6 +145,7 @@ static void *create_dir_config(apr_pool_t *p, char *dummy)
 
     new->index_names = NULL;
     new->do_slash = MODDIR_UNSET;
+    new->checkhandler = MODDIR_UNSET;
     new->redirect_index = REDIRECT_UNSET;
     return (void *) new;
 }
@@ -148,6 +159,8 @@ static void *merge_dir_configs(apr_pool_t *p, void *basev, void *addv)
     new->index_names = add->index_names ? add->index_names : base->index_names;
     new->do_slash =
         (add->do_slash == MODDIR_UNSET) ? base->do_slash : add->do_slash;
+    new->checkhandler =
+        (add->checkhandler == MODDIR_UNSET) ? base->checkhandler : add->checkhandler;
     new->redirect_index=
         (add->redirect_index == REDIRECT_UNSET) ? base->redirect_index : add->redirect_index;
     new->dflt = add->dflt ? add->dflt : base->dflt;
@@ -258,6 +271,10 @@ static int fixup_dir(request_rec *r)
         apr_table_setn(r->headers_out, "Location",
                        ap_construct_url(r->pool, ifile, r));
         return HTTP_MOVED_PERMANENTLY;
+    }
+
+    if (d->checkhandler == MODDIR_ON && strcmp(r->handler, DIR_MAGIC_TYPE)) {
+        return DECLINED;
     }
 
     if (d->index_names) {

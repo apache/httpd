@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+
+  *) mod_dir: Add DirectoryCheckHandler to allow a 2.2-like behavior, skipping 
+     execution when a handler is already set. PR53929. [Eric Covener]
+
   *) mod_rewrite: Protect against looping with the [N] flag by enforcing a 
      default limit of 10000 iterations, and allowing each rule to change its
      limit. [Eric Covener]
