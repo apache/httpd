@@ -2,6 +2,9 @@
 Changes with Apache 2.5.0
 
 
+  *) mod_dir: Don't search for a DirectoryIndex or DirectorySlash on a URL
+     that was just rewritten by mod_rewrite. PR53929. [Eric Covener]
+
   *) mod_dir: Add DirectoryCheckHandler to allow a 2.2-like behavior, skipping 
      execution when a handler is already set. PR53929. [Eric Covener]
 

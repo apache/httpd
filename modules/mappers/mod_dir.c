@@ -29,6 +29,7 @@
 #include "http_log.h"
 #include "http_main.h"
 #include "util_script.h"
+#include "mod_rewrite.h"
 
 module AP_MODULE_DECLARE_DATA dir_module;
 
@@ -274,6 +275,11 @@ static int fixup_dir(request_rec *r)
     }
 
     if (d->checkhandler == MODDIR_ON && strcmp(r->handler, DIR_MAGIC_TYPE)) {
+        return DECLINED;
+    }
+
+    /* we're running between mod_rewrites fixup and its internal redirect handler, step aside */
+    if (!strcmp(r->handler, REDIRECT_HANDLER_NAME)) { 
         return DECLINED;
     }
 
