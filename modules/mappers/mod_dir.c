@@ -33,17 +33,17 @@
 module AP_MODULE_DECLARE_DATA dir_module;
 
 typedef enum {
-    SLASH_OFF = 0,
-    SLASH_ON,
-    SLASH_UNSET
-} slash_cfg;
+    MODDIR_OFF = 0,
+    MODDIR_ON,
+    MODDIR_UNSET
+} moddir_cfg;
 
 #define REDIRECT_OFF   0
 #define REDIRECT_UNSET 1
 
 typedef struct dir_config_struct {
     apr_array_header_t *index_names;
-    slash_cfg do_slash;
+    moddir_cfg do_slash;
     int redirect_index;
     const char *dflt;
 } dir_config_rec;
@@ -83,7 +83,7 @@ static const char *configure_slash(cmd_parms *cmd, void *d_, int arg)
 {
     dir_config_rec *d = d_;
 
-    d->do_slash = arg ? SLASH_ON : SLASH_OFF;
+    d->do_slash = arg ? MODDIR_ON : MODDIR_OFF;
     return NULL;
 }
 static const char *configure_redirect(cmd_parms *cmd, void *d_, const char *arg1)
@@ -134,7 +134,7 @@ static void *create_dir_config(apr_pool_t *p, char *dummy)
     dir_config_rec *new = apr_pcalloc(p, sizeof(dir_config_rec));
 
     new->index_names = NULL;
-    new->do_slash = SLASH_UNSET;
+    new->do_slash = MODDIR_UNSET;
     new->redirect_index = REDIRECT_UNSET;
     return (void *) new;
 }
@@ -147,7 +147,7 @@ static void *merge_dir_configs(apr_pool_t *p, void *basev, void *addv)
 
     new->index_names = add->index_names ? add->index_names : base->index_names;
     new->do_slash =
-        (add->do_slash == SLASH_UNSET) ? base->do_slash : add->do_slash;
+        (add->do_slash == MODDIR_UNSET) ? base->do_slash : add->do_slash;
     new->redirect_index=
         (add->redirect_index == REDIRECT_UNSET) ? base->redirect_index : add->redirect_index;
     new->dflt = add->dflt ? add->dflt : base->dflt;
