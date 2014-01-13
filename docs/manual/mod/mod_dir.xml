@@ -289,15 +289,14 @@ act as if "DirectorySlash Off" was specified.</compatibility>
     whether <module>mod_dir</module> should check for directory indexes or
     add trailing slashes when some other handler has been configured for
     the current URL.  Handlers can be set by directives such as 
-    <directive module="core">SetHandler</directive> or by other modules,
-    such as <module>mod_rewrite</module> during per-directory substitutions.
-    </p>
+    <directive module="core">SetHandler</directive> or by other modules at 
+    runtime. </p>
 
     <p> In releases prior to 2.4, this module did not take any action if any
     other handler was configured for a URL. This allows directory indexes to 
     be served even when a <directive>SetHandler</directive> directive is 
     specified for an entire directory, but it can also result in some conflicts
-    with modules such as <directive>mod_rewrite</directive>.</p>
+    with other modules.</p> 
 </usage>
 </directivesynopsis>
 
