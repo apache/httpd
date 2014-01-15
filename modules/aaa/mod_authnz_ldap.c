@@ -1400,7 +1400,7 @@ static const char *ldap_parse_config(cmd_parms *cmd, const char *require_line,
                                      const void **parsed_require_line)
 {
     const char *expr_err = NULL;
-    ap_expr_info_t *expr = apr_pcalloc(cmd->pool, sizeof(*expr));
+    ap_expr_info_t *expr;
 
     expr = ap_expr_parse_cmd(cmd, require_line, AP_EXPR_FLAG_STRING_RESULT,
             &expr_err, NULL);
