@@ -194,6 +194,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: trunk patch works
     +1: jailletc36
 
+  * mod_ssl: address the "init functions should return status code rather
+    than ssl_die()" todo from 2002 (avoid orphan IPC objects after startup
+    or reload failures, see also the "ssl_die() and pool cleanup" thread
+    on httpd-dev in Nov '13)
+    trunk patches: https://svn.apache.org/r1544774
+                   https://svn.apache.org/r1544812
+    2.4.x patch: https://people.apache.org/~kbrand/mod_ssl-2.4.x-ssldie.diff
+    +1: kbrand
+
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
