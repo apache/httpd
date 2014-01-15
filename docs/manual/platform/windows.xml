@@ -57,19 +57,23 @@
   <section id="down">
     <title>Downloading Apache for Windows</title>
 
-    <p>Information on the latest versions of Apache can be found on the
-    web site of the Apache web server at
-    <a href="http://httpd.apache.org/download.cgi">http://httpd.apache.org/download.cgi</a>.
-    There you will find the current release, as well as more recent alpha
-    or beta test versions, and a list of HTTP and FTP mirrors from which
-    you can download the Apache web server. Please use a mirror near to
-    you for a fast and reliable download.</p>
+    <p>The Apache HTTP Server Project itself does not provide binary releases of
+    software, only source code. Individual committers <em>may</em> provide 
+    binary packages as a convenience, but it is not a release deliverable.</p>
+    <p>If you cannot compile the Apache HTTP Server
+    yourself, you can obtain a binary package from numerous binary distributions
+    available on the Internet.</p>
 
-    <p>For Windows installations you should download the version of
-    Apache for Windows with the <code>.msi</code> extension. This is a
-    single Microsoft Installer file, which contains a ready-to-run
-    build of Apache.  There is a separate <code>.zip</code> file,
-    which contains only the source code, see the summary above.</p>
+    <p>Popular options for deploying Apache httpd, and, optionally, PHP
+    and MySQL, on Microsoft Windows, include:</p>
+    <ul>
+    <li><a href="http://www.apachehaus.com/cgi-bin/download.plx">ApacheHaus</a></li>
+    <li><a href="http://www.apachelounge.com/download/">Apache Lounge</a></li>
+    <li><a href="http://bitnami.com/stack/wamp">BitNami WAMP Stack</a></li>
+    <li><a href="http://www.wampserver.com/">WampServer</a></li>
+    <li><a href="http://www.apachefriends.org/en/xampp.html">XAMPP</a></li>
+    </ul>
+
   </section>
 
   <section id="inst">
