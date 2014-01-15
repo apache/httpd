@@ -98,6 +98,10 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
   
+  * mod_dav: Fix string length calculation in dav_xml_get_cdata()
+    trunk patch: https://svn.apache.org/r1556428
+    2.2.x: trunk patch applies aka `svn merge -c 1556428 ^/httpd/httpd/trunk`
+    +1: breser, rpluem, gstein
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -122,11 +126,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    Backport version for 2.2.x of patch:
       http://people.apache.org/~rpluem/patches/mod_proxy_http_50335.2.2.x.diff
    +1: rpluem, jorton, 
-
-  * mod_dav: Fix string length calculation in dav_xml_get_cdata()
-    trunk patch: https://svn.apache.org/r1556428
-    2.2.x: trunk patch applies aka `svn merge -c 1556428 ^/httpd/httpd/trunk`
-    +1: breser, rpluem
 
 PATCHES/ISSUES THAT ARE STALLED
 
