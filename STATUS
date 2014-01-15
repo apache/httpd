@@ -153,19 +153,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1542379
     2.4.x patch: trunk patch works mod CHANGES
     +1: jim, covener
-    trawick: [I guess I'm just confused but] I thought that the scenario as
-             described by the reporter was that this code was running while
-             a bunch (nearly all) of httpd children were zombies, leading to
-             a connect() timeout since no processes were available to empty
-             the TCP queue.  IIUC, the scoreboard state will not yet have 
-             been changed to SERVER_DEAD and the pid will not have been 
-             cleared for those processes, since parent code that can't run 
-             while we're stuck in this function takes care of that, so we'll
-             still block.
-        jim: The orig bug report was concerning the long period of time
-             taken by graceful, due to trying to connect to already
-             notified child processes; the patch is designed to shorten
-             that time.
 
   * event fdqueue: Use a normalized offset point for idlers via atomics
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1545286
@@ -206,11 +193,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   * mod_auth*z scan-build warnings in new code for 2.4.8
     trunk patch: https://svn.apache.org/r1558483
     2.4.x patch: trunk patch works
+    +1: trawick
 
   * ssl_util_ocsp scan-build warning in old code
     (the code is clearly wrong but completely harmless AFAICT)
     trunk patch: https://svn.apache.org/r1534890
     2.4.x patch: trunk patch works
+    +1: trawick
 
 OTHER PROPOSALS
 
