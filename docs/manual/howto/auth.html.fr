@@ -27,8 +27,6 @@
 <a href="../ko/howto/auth.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/howto/auth.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p>L'authentification est un processus qui vous permet de vérifier
     qu'une personne est bien celle qu'elle prétend être. L'autorisation
@@ -227,8 +225,9 @@ module de chaque groupe.</p>
     être utilisée pour la transmission de données hautement sensibles si
     elle n'est pas associée au module <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>. Apache
     supporte une autre méthode d'authentification : <code>AuthType
-    Digest</code>. Cette méthode est implémentée par le module <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code> et est beaucoup plus sécurisée. La plupart
-    des navigateurs récents supportent l'authentification Digest.</p>
+    Digest</code>. Cette méthode est implémentée par le module <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code> et a été conçue pour
+    améliorer la sécurité. Ce but n'a cependant pas été atteint et il est préférable
+    de chiffrer la connexion avec <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>.</p>
 
     <p>La directive <code class="directive"><a href="../mod/core.html#authname">AuthName</a></code> définit
     l'<dfn>Identificateur</dfn> (Realm) à utiliser avec
