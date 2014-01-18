@@ -445,7 +445,8 @@
  * 20131112.1 (2.5.0-dev)  Add suspend_connection and resume_connection hooks
  * 20131112.2 (2.5.0-dev)  Add ap_regname
  * 20131230.0 (2.5.0-dev)  cl_head_zero & expect_strict added to server_config
- * 20131230.1 (2.5.0-dev)  REDIRECT_HANDLER_NAME in mod_rewrite.h
+ * 20131230.1 (2.5.0-dev)  REWRITE_REDIRECT_HANDLER_NAME in mod_rewrite.h
+ * 20131230.2 (2.5.0-dev)  Prefix REWRITE_REDIRECT_HANDLER_NAME in mod_rewrite.h
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
@@ -453,7 +454,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20131230
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 1                  /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 2                  /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
