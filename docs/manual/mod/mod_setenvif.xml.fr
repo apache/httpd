@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1556104 -->
+<!-- English Revision : 1557618 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -280,7 +280,7 @@ serveur HTTP Apache</a> pour des exemples suppl&eacute;mentaires.
 <usage>
     <p>La directive <directive>SetEnvIfExpr</directive> permet de
     d&eacute;finir des variables d'environnement en fonction d'une expression
-    <directive type="section">If</directive> <code>ap_expr</code>. Cette
+    <directive module="core" type="section">If</directive> <code>ap_expr</code>. Cette
     expression est &eacute;valu&eacute;e &agrave; l'ex&eacute;cution, et utilise les variables
     d'environnement <em>env-variable</em> de la m&ecirc;me mani&egrave;re que la
     directive <directive>SetEnvIf</directive>.</p>
@@ -304,8 +304,9 @@ serveur HTTP Apache</a> pour des exemples suppl&eacute;mentaires.
 
 <seealso><a href="../expr.html">Les expressions dans le serveur HTTP
 Apache</a>, pour une r&eacute;f&eacute;rence compl&egrave;te et davantage d'exemples.</seealso>
-<seealso>La directive <directive type="section">If</directive> peut &ecirc;tre
-utilis&eacute;e pour obtenir des r&eacute;sultats similaires.</seealso>
+<seealso>La directive <directive module="core"
+type="section">If</directive> permet d'obtenir des r&eacute;sultats
+similaires.</seealso>
 <seealso><module>mod_filter</module></seealso>
 </directivesynopsis>
 
