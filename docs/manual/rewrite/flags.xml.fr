@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1446007:1557858 (outdated) -->
+<!-- English Revision : 1557858 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -312,7 +312,7 @@ disponible auparavant ne l'est plus actuellement.</p>
 RewriteRule ancienne-ressource - [G,NC]
 </example>
 
-<p>Lorsqu'on utilise [F], [L] est implicite - c'est &agrave; dire que la
+<p>Lorsqu'on utilise [G], [L] est implicite - c'est &agrave; dire que la
 r&eacute;ponse est renvoy&eacute;e imm&eacute;diatement, et aucune autre r&egrave;gle n'est &eacute;valu&eacute;e.</p>
 
 </section>
