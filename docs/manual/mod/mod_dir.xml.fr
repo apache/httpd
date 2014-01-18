@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1554275 -->
+<!-- English Revision: 1557642 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -307,5 +307,34 @@ aucun fichier</description>
 </usage>
 </directivesynopsis>
 
+<directivesynopsis>
+<name>DirectoryCheckHandler</name>
+<description>D&eacute;finit la r&eacute;ponse de ce module lorsqu'un autre
+gestionnaire est utilis&eacute;</description>
+<syntax>DirectoryCheckHandler On|Off</syntax>
+<default>DirectorySlash Off</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<override>Indexes</override>
+<compatibility>Disponible depuis la version 2.4.8 du serveur HTTP
+Apache. Les versions ant&eacute;rieures &agrave; 2.4 se comportaient implicitement
+comme si "DirectorySlash Off" avait &eacute;t&eacute; sp&eacute;cifi&eacute;.</compatibility>
+<usage>
+    <p>La directive <directive>DirectoryCheckHandler</directive> permet
+    de faire en sorte que <module>mod_dir</module> recherche un index
+    de r&eacute;pertoire ou ajoute des slashes de fin lorsqu'un autre
+    gestionnaire &agrave; &eacute;t&eacute; d&eacute;fini pour l'URL consid&eacute;r&eacute;e. Les gestionnaires
+    peuvent &ecirc;tre d&eacute;finis &agrave; l'ex&eacute;cution via des directives telles que
+    <directive module="core">SetHandler</directive> ou par d'autres
+    modules.</p>
+
+    <p>Dans les versions ant&eacute;rieures &agrave; 2.4, ce module ne modifiait pas
+    son comportement si un autre gestionnaire avait &eacute;t&eacute; d&eacute;fini pour
+    l'URL consid&eacute;r&eacute;e. Ceci permettait de servir des index de r&eacute;pertoires
+    m&ecirc;me si une directive <directive>SetHandler</directive> avait &eacute;t&eacute;
+    d&eacute;finie pour un r&eacute;pertoire entier, mais pouvait aussi &ecirc;tre &agrave;
+    l'origine de conflits avec d'autres modules.</p> 
+</usage>
+</directivesynopsis>
 
 </modulesynopsis>
