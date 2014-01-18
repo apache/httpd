@@ -279,7 +279,7 @@ static int fixup_dir(request_rec *r)
     }
 
     /* we're running between mod_rewrites fixup and its internal redirect handler, step aside */
-    if (!strcmp(r->handler, REDIRECT_HANDLER_NAME)) { 
+    if (!strcmp(r->handler, REWRITE_REDIRECT_HANDLER_NAME)) { 
         return DECLINED;
     }
 
