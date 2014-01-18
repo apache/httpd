@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 675570:1557612 (outdated) -->
+<!-- English Revision : 1557612 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -83,6 +83,8 @@ du serveur</description>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>Limit</override>
+<compatibility>Le support de la n&eacute;gation de env=<var>env-variable</var>
+est assur&eacute; depuis la version 2.2.10 du serveur HTTP Apache</compatibility>
 
 <usage>
     <p>La directive <directive>Allow</directive> permet de contr&ocirc;ler
