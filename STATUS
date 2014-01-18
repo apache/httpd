@@ -139,7 +139,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: http://people.apache.org/~jim/patches/proxy-port-scheme.patch
     +1: jim, druggeri
 
-  * mod_cache invalidates cached responses when reval returns 304+Expires
+  * mod_cache: Stop invalidating cached responses when reval returns 304+Expires,
     trunk patch: http://svn.apache.org/r1518269
     2.4.x patch: trunk works
     +1 covener, jim
