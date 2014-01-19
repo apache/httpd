@@ -781,6 +781,7 @@ BEGIN {
 		modules\generators\mod_status.h \
 		modules\loggers\mod_log_config.h \
 		modules\http\mod_core.h \
+		modules\mappers\mod_rewrite.h \
 		modules\proxy\mod_proxy.h \
 		modules\ssl\mod_ssl.h ) do \
 	    @copy %f "$(INSTDIR)\include" < .y > nul
