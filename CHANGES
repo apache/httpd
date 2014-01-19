@@ -1,11 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.27
 
-
-Changes with Apache 2.2.26
-
   *) mod_rewrite: Add mod_rewrite.h to the headers installed on Windows. 
      PR46679 [Bob Ionescu]
+
+Changes with Apache 2.2.26
 
   *) mod_dav: dav_resource->uri treated as unencoded. This was an
      unnecessary ABI changed introduced in 2.2.25  PR 55397.  [Ben Reser]
