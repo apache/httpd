@@ -114,7 +114,7 @@ l'authentification</a></li>
       <code class="module"><a href="../mod/mod_session_cookie.html">mod_session_cookie</a></code>, et l'authentification utilise
       un fichier en s'appuyant sur le module
       <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code>. Si l'authentification échoue,
-      l'utilisateur dera redirigé vers la page du formulaire de
+      l'utilisateur sera redirigé vers la page du formulaire de
       connexion.</p>
 
       <div class="example"><h3>Exemple simple</h3><pre class="prettyprint lang-config">

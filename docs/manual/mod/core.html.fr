@@ -1014,7 +1014,7 @@ du système de fichiers correspondant à une expression rationnelle</td></tr>
       particulière.
     </div>
 
-    <p>A partir de la version 2.5.0, les groupes nommés et les
+    <p>A partir de la version 2.4.8, les groupes nommés et les
     références arrières sont extraits et enregistrés dans
     l'environnement avec leur nom en majuscules et préfixé
     par "MATCH_". Ceci permet
@@ -1935,7 +1935,7 @@ spécifiés sous la forme d'expressions rationnelles</td></tr>
     <p>correspondrait à la plupart des formats graphiques de
     l'Internet.</p>
 
-    <p>A partir de la version 2.5.0, les groupes nommés et les
+    <p>A partir de la version 2.4.8, les groupes nommés et les
     références arrières sont extraits et enregistrés dans
     l'environnement avec leur nom en majuscules et préfixé
     par "MATCH_". Ceci permet
@@ -2981,7 +2981,7 @@ correspondant à une expression rationnelle</td></tr>
     <p>correspondrait à toute URL contenant les sous-chaînes
     <code>/extra/data</code> ou <code>/special/data</code>.</p>
 
-    <p>A partir de la version 2.5.0, les groupes nommés et les
+    <p>A partir de la version 2.4.8, les groupes nommés et les
     références arrières sont extraits et enregistrés dans
     l'environnement avec leur nom en majuscules et préfixé
     par "MATCH_". Ceci permet

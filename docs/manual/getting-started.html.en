@@ -47,10 +47,10 @@ Addresses on the Web are expressed with URLs - Uniform Resource Locators
 <code>www.apache.org</code>), a URL-path (e.g.
 <code>/docs/current/getting-started.html</code>), and possibly a query
 string (e.g. <code>?arg=value</code>) used to pass additional
-arguments to the server. 
+arguments to the server.
 </p>
 
-<p>A client (e.g., a web browser) connects to a server (e.g., your Apache HTTP Server), 
+<p>A client (e.g., a web browser) connects to a server (e.g., your Apache HTTP Server),
 with the specified protocol, and makes a <strong>request</strong> for a resource using the
 URL-path.</p>
 

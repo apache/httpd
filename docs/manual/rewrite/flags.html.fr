@@ -69,7 +69,7 @@ la forme courte soit la plus couramment utilisée, nous vous recommandons
 de vous familiariser avec les drapeaux sous leur forme longue, afin de
 bien mémoriser ce que chaque drapeau est supposé faire.
 Certains drapeaux acceptent un ou plusieurs arguments. Les drapeaux ne
-sont pas sensibles Ã&nbsp; la casse.</p>
+sont pas sensibles à la casse.</p>
 
 <p>Les drapeaux qui modifient les métadonnées associées à la requête
 (T=, H=, E=) n'ont aucun effet dans un contexte de répertoire ou de
@@ -444,6 +444,17 @@ ceci jusqu'il n'y ait plus de A à remplacer.
 dire, tant que l'URI contient un <code>A</code>),
 effectuer la substitution (c'est à dire, remplacer le <code>A</code> par
 un <code>B</code>).</p>
+
+<p>A partir de la version 2.5.0, ce module renvoie une erreur après
+10000 itérations afin d'éviter les boucles infinies. Ce nombre maximum
+d'itération peut être modifié via le drapeau N.</p>
+<pre class="prettyprint lang-config">
+# On veut remplacer 1 caractère à chaque itération de la boucle
+RewriteRule (.+)[&gt;&lt;;]$ $1 [N=32000]
+# ... ou s'arrêter après 10 itérations
+RewriteRule (.+)[&gt;&lt;;]$ $1 [N=10]
+</pre>
+
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">

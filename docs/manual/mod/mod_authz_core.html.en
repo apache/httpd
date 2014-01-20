@@ -139,6 +139,25 @@ SetEnvIf User-Agent ^KnockKnock/2\.0 let_me_in
     with <code>KnockKnock/2.0</code> will be allowed access, and all
     others will be denied.</p>
 
+    <p>When the server looks up a path via an internal 
+    <a class="glossarylink" href="../glossary.html#subrequest" title="see glossary">subrequest</a> such as looking 
+    for a <code class="directive"><a href="../mod/mod_dir.html#directoryindex">DirectoryIndex</a></code> 
+    or generating a directory listing with <code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code>,
+    per-request environment variables are <em>not</em> inherited in the 
+    subrequest. Additionally, 
+    <code class="directive"><a href="../mod/mod_setenvif.html#setenvif">SetEnvIf</a></code> directives
+    are not separately evaluated in the subrequest due to the API phases
+    <code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code>.</p>
+
+
+    <p>When the server looks up a path via an internal subrequest,
+    such as looking for a <code class="directive"><a href="../mod/mod_dir.html#directoryindex">DirectoryIndex</a></code> or generating a directory listing with
+    <code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code>, per-request environment variables are
+    <em>not</em> inherited in the subrequest. Additionally, environment
+    <code class="directive"><a href="../mod/mod_setenvif.html#setenvif">SetEnvIf</a></code> directives
+    are not separately evaluated in the subrequest due to the API phases
+    <code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code> takes action in.</p>
+
   
 
   <h3><a name="reqall" id="reqall">Require all</a></h3>
