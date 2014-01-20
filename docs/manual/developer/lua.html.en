@@ -542,9 +542,9 @@ LuaHookTranslateName /path/to/script.lua proxy_handler
 ]]--
 
 local backends = {
-  &#8220;http://backend1.foo.com/&#8220;,
-  &#8220;http://backend2.foo.com/&#8220;,
-  &#8220;http://backend3.foo.com/&#8220;
+  "http://backend1.foo.com/",
+  "http://backend2.foo.com/",
+  "http://backend3.foo.com/"
 }
 
 function pick_backend(r)
