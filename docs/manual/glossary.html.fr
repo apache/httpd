@@ -53,7 +53,7 @@
       Voir : <a href="ssl/">chiffrement SSL/TLS</a>
     </dd>
 
-    <dt>APR</dt>
+    <dt><a name="apr" id="apr">APR</a></dt>
     <dd>Voir "Bibliothèques pour la portabilité d'Apache"
     </dd>
 
@@ -164,6 +164,15 @@
   le Protocole de Transfert Hypertexte (HTTP) au dessus de SSL.<br />
     Voir : <a href="ssl/">chiffrement SSL/TLS</a>
   </dd>
+
+  <dt><a name="subrequest" id="subrequest">Sous-requête</a></dt>
+    <dd>Apache possède une API des sous-requêtes pour les modules qui
+    permettent l'évaluation complète ou partielle par le serveur de
+    chemins d'autres systèmes de fichiers ou d'URL. Par exemple, la
+    directive <code class="directive"><a href="./mod/mod_dir.html#directoryindex">DirectoryIndex</a></code>,
+    les modules <code class="module"><a href="./mod/mod_autoindex.html">mod_autoindex</a></code> et
+    <code class="module"><a href="./mod/mod_include.html">mod_include</a></code> utilisent cette API.
+    </dd>
 
   <dt><a name="symmetriccryptophraphy" id="symmetriccryptophraphy">
   Cryptographie Symétrique (Symmetric Cryptography)</a></dt>

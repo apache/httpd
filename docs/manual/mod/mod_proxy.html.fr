@@ -1008,6 +1008,22 @@ mandatées correspondant à une expression rationnelle</td></tr>
     identique à la directive <code class="directive"><a href="#proxy">&lt;Proxy&gt;</a></code>, à l'exception qu'elle définit
     les URLs auxquelles elle s'applique en utilisant une <a class="glossarylink" href="../glossary.html#regex" title="voir glossaire">expression rationnelle</a>.</p>
 
+    <p>A partir de la version 2.5.0, les groupes nommés et les
+    références arrières sont extraits et enregistrés dans
+    l'environnement avec leur nom en majuscules et préfixé par "MATCH_". Ceci permet
+    de référencer des URLs dans des <a href="expr.html">expressions</a>
+    ou au sein de modules comme <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>. Pour
+    éviter toute confusion, les références arrières numérotées (non
+    nommées) sont ignorées. Vous devez utiliser à la place des groupes
+    nommés.</p>
+
+<pre class="prettyprint lang-config">
+&lt;ProxyMatch ^http://(?&lt;sitename&gt;[^/]+)&gt;
+    require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
+&lt;/ProxyMatch&gt;
+</pre>
+
+
 <h3>Voir aussi</h3>
 <ul>
 <li><code class="directive"><a href="#proxy">&lt;Proxy&gt;</a></code></li>

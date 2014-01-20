@@ -316,6 +316,19 @@ simultanément :</p>
 </pre>
 
 
+<p>Les expressions rationnelles contenant des <strong>groupes nommés et
+des références arrières</strong> sont ajoutées à l'environnement avec
+leur nom en majuscules. Ceci permet de référencer des éléments de
+chemins de fichiers et d'URLs depuis une <a href="expr.html">expression</a> et au sein de modules comme
+<code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code>.</p>
+
+<pre class="prettyprint lang-config">
+&lt;DirectoryMatch ^/var/www/combined/(?&lt;SITENAME&gt;[^/]+)&gt;
+    require ldap-group cn=%{env:SITENAME},ou=combined,o=Example
+&lt;/DirectoryMatch&gt;
+</pre>
+
+
 
 
 <h3><a name="expressions" id="expressions">Expressions booléennes</a></h3>

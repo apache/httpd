@@ -191,6 +191,15 @@ SetEnvIf User-Agent ^KnockKnock/2\.0 let_me_in
     commence par <code>KnockKnock/2.0</code> se verront autoriser
     l'accès, alors que tous les autres seront rejetés.</p>
 
+    <p>Lorsque le serveur cherche un chemin via une <a class="glossarylink" href="../glossary.html#subrequest" title="voir glossaire">sous-requête</a> interne (par exemple la
+   recherche d'un <code class="directive"><a href="../mod/mod_dir.html#directoryindex">DirectoryIndex</a></code>), ou lorsqu'il génère un
+   listing du contenu d'un répertoire via le module
+   <code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code>, la sous-requête n'hérite pas des
+   variables d'environnement spécifiques à la requête. En outre, à cause
+   des phases de l'API auxquelles <code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code> prend
+   part, les directives <code class="directive"><a href="../mod/mod_setenvif.html#setenvif">SetEnvIf</a></code> ne sont pas évaluées
+   séparément dans la sous-requête.</p>
+
   
 
   <h3><a name="reqall" id="reqall">Require all</a></h3>

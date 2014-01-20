@@ -1171,21 +1171,21 @@ au cours de l'initialisation de la connexion SSL</td></tr>
 chiffrement</td></tr>
 <tr><td><a href="mod_ssl.html#sslengine">SSLEngine on|off|optional</a></td><td> off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Interrupteur marche/arrêt du moteur SSL</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslfips">SSLFIPS on|off</a></td><td> off </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Coimmutateur du mode SSL FIPS</td></tr>
-<tr><td><a href="mod_ssl.html#sslhonorcipherorder">SSLHonorCipherOrder <em>flag</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Option permettant de classer les algorithmes de chiffrement
+<tr><td><a href="mod_ssl.html#sslhonorcipherorder">SSLHonorCipherOrder on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Option permettant de classer les algorithmes de chiffrement
 du serveur par ordre de préférence</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslinsecurerenegotiation">SSLInsecureRenegotiation <em>drapeau</em></a></td><td> off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Option permettant d'activer le support de la renégociation
+<tr class="odd"><td><a href="mod_ssl.html#sslinsecurerenegotiation">SSLInsecureRenegotiation on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Option permettant d'activer le support de la renégociation
 non sécurisée</td></tr>
 <tr><td><a href="mod_ssl.html#sslocspdefaultresponder">SSLOCSDefaultResponder <em>uri</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Définit l'URI du répondeur par défaut pour la validation
 OCSP</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslocspenable">SSLOCSPEnable <em>drapeau</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Active la validation OCSP de la chaîne de certificats du
+<tr class="odd"><td><a href="mod_ssl.html#sslocspenable">SSLOCSPEnable on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Active la validation OCSP de la chaîne de certificats du
 client</td></tr>
-<tr><td><a href="mod_ssl.html#sslocspoverrideresponder">SSLOCSPOverrideResponder <em>drapeau</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Force l'utilisation de l'URI du répondeur par défaut pour
+<tr><td><a href="mod_ssl.html#sslocspoverrideresponder">SSLOCSPOverrideResponder on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Force l'utilisation de l'URI du répondeur par défaut pour
 la validation OCSP</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslocsprespondertimeout">SSLOCSPResponderTimeout <em>secondes</em></a></td><td> 10 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Délai d'attente pour les requêtes OCSP</td></tr>
 <tr><td><a href="mod_ssl.html#sslocspresponsemaxage">SSLOCSPResponseMaxAge <em>secondes</em></a></td><td> -1 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Age maximum autorisé pour les réponses OCSP</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslocspresponsetimeskew">SSLOCSPResponseTimeSkew <em>secondes</em></a></td><td> 300 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Dérive temporelle maximale autorisée pour la validation des
 réponses OCSP</td></tr>
-<tr><td><a href="mod_ssl.html#sslopensslconfcmd">SSLOpenSSLConfCmd <em>command-name</em> <em>command-value</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Configure OpenSSL parameters through its <em>SSL_CONF</em> API</td></tr>
+<tr><td><a href="mod_ssl.html#sslopensslconfcmd">SSLOpenSSLConfCmd <em>commande</em> <em>valeur</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Configuration des paramètres d'OpenSSL via son API <em>SSL_CONF</em></td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#ssloptions">SSLOptions [+|-]<em>option</em> ...</a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Configure différentes options d'exécution du moteur SSL</td></tr>
 <tr><td><a href="mod_ssl.html#sslpassphrasedialog">SSLPassPhraseDialog <em>type</em></a></td><td> builtin </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Méthode utilisée pour entrer le mot de passe pour les clés
 privées chiffrées</td></tr>
