@@ -41,7 +41,7 @@ SQL</td></tr>
     une fonctionnalité similaire.</p>
     <p>Ce module s'appuie sur <code class="module"><a href="../mod/mod_dbd.html">mod_dbd</a></code> pour spécifier le
     pilote de la base de données sous-jacente et les paramètres de
-    connexion, mais aussi  pour gérer les connexions à la base de
+    connexion, mais aussi pour gérer les connexions à la base de
     données.</p>
 
     <p>Si l'on utilise <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code> ou

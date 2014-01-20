@@ -162,6 +162,7 @@ cgimapextension	mod/core.html#cgimapextension
 charsetdefault	mod/mod_charset_lite.html#charsetdefault
 charsetoptions	mod/mod_charset_lite.html#charsetoptions
 charsetsourceenc	mod/mod_charset_lite.html#charsetsourceenc
+checkbasenamematch	mod/mod_speling.html#checkbasenamematch
 checkcaseonly	mod/mod_speling.html#checkcaseonly
 checkspelling	mod/mod_speling.html#checkspelling
 chrootdir	mod/mod_unixd.html#chrootdir
@@ -199,6 +200,7 @@ deflatememlevel	mod/mod_deflate.html#deflatememlevel
 deflatewindowsize	mod/mod_deflate.html#deflatewindowsize
 deny	mod/mod_access_compat.html#deny
 directory	mod/core.html#directory
+directorycheckhandler	mod/mod_dir.html#directorycheckhandler
 directoryindex	mod/mod_dir.html#directoryindex
 directoryindexredirect	mod/mod_dir.html#directoryindexredirect
 directorymatch	mod/core.html#directorymatch
@@ -552,6 +554,7 @@ sslocspoverrideresponder	mod/mod_ssl.html#sslocspoverrideresponder
 sslocsprespondertimeout	mod/mod_ssl.html#sslocsprespondertimeout
 sslocspresponsemaxage	mod/mod_ssl.html#sslocspresponsemaxage
 sslocspresponsetimeskew	mod/mod_ssl.html#sslocspresponsetimeskew
+sslopensslconfcmd	mod/mod_ssl.html#sslopensslconfcmd
 ssloptions	mod/mod_ssl.html#ssloptions
 sslpassphrasedialog	mod/mod_ssl.html#sslpassphrasedialog
 sslprotocol	mod/mod_ssl.html#sslprotocol

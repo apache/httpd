@@ -46,7 +46,7 @@ serveur HTTP Apache</h1>
 <h2><a name="core" id="core">Améliorations du noyau</a></h2>
     
     <dl>
-      <dt>Modules multiprocessus (MPMs) chargeables</dt>
+      <dt>Modules multiprocessus (MPMs) chargeables Ã&nbsp; l'exécution</dt>
       <dd>On peut maintenant <a href="mpm.html#dynamic">built as
       loadable modules</a> plusieurs MPMs en tant que modules
       chargeables. Le choix du MPM à utiliser s'effectue à

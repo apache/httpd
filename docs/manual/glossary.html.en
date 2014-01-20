@@ -419,6 +419,14 @@
       Young
     </dd>
 
+    <dt><a name="subrequest" id="subrequest">Subrequest</a></dt>
+    <dd>Apache provides a subrequest API to modules that allows other
+        filesystem or URL paths to be partially or fully evaluated by
+        the server. Example consumers of this API are 
+        <code class="directive"><a href="./mod/mod_dir.html#directoryindex">DirectoryIndex</a></code>, 
+        <code class="module"><a href="./mod/mod_autoindex.html">mod_autoindex</a></code>, and <code class="module"><a href="./mod/mod_include.html">mod_include</a></code>.
+    </dd>
+
     <dt><a name="symmetriccryptophraphy" id="symmetriccryptophraphy">Symmetric
         Cryptography</a></dt>
     <dd>The study and application of <em>Ciphers</em> that use a single secret key

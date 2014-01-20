@@ -57,6 +57,16 @@ BrowserMatch ^Mozilla netscape
 BrowserMatch MSIE !netscape
 </pre>
 
+
+   <p>Lorsque le serveur cherche un chemin via une <a class="glossarylink" href="../glossary.html#subrequest" title="voir glossaire">sous-requête</a> interne (par exemple la
+   recherche d'un <code class="directive"><a href="../mod/mod_dir.html#directoryindex">DirectoryIndex</a></code>), ou lorsqu'il génère un
+   listing du contenu d'un répertoire via le module
+   <code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code>, la sous-requête n'hérite pas des
+   variables d'environnement spécifiques à la requête. En outre, à cause
+   des phases de l'API auxquelles <code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code> prend
+   part, les directives <code class="directive"><a href="#setenvif">SetEnvIf</a></code> ne sont pas évaluées
+   séparément dans la sous-requête.</p>
+
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
@@ -281,7 +291,7 @@ serveur HTTP Apache</a> pour des exemples supplémentaires.
 </table>
     <p>La directive <code class="directive">SetEnvIfExpr</code> permet de
     définir des variables d'environnement en fonction d'une expression
-    <code class="directive">&lt;If&gt;</code> <code>ap_expr</code>. Cette
+    <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code> <code>ap_expr</code>. Cette
     expression est évaluée à l'exécution, et utilise les variables
     d'environnement <em>env-variable</em> de la même manière que la
     directive <code class="directive">SetEnvIf</code>.</p>
@@ -308,8 +318,8 @@ serveur HTTP Apache</a> pour des exemples supplémentaires.
 <ul>
 <li><a href="../expr.html">Les expressions dans le serveur HTTP
 Apache</a>, pour une référence complète et davantage d'exemples.</li>
-<li>La directive <code class="directive">&lt;If&gt;</code> peut être
-utilisée pour obtenir des résultats similaires.</li>
+<li>La directive <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code> permet d'obtenir des résultats
+similaires.</li>
 <li><code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code></li>
 </ul>
 </div>

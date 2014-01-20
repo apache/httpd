@@ -61,6 +61,7 @@
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#directorycheckhandler">DirectoryCheckHandler</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#directoryindex">DirectoryIndex</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#directoryindexredirect">DirectoryIndexRedirect</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#directoryslash">DirectorySlash</a></li>
@@ -68,6 +69,33 @@
 </ul>
 <ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="DirectoryCheckHandler" id="DirectoryCheckHandler">DirectoryCheckHandler</a> <a name="directorycheckhandler" id="directorycheckhandler">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Toggle how this module responds when another handler is configured</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DirectoryCheckHandler On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>DirectorySlash Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dir</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in 2.4.8 and later.  Releases prior to 2.4 implicitly
+act as if "DirectorySlash Off" was specified.</td></tr>
+</table>
+    <p>The <code class="directive">DirectoryCheckHandler</code> directive determines 
+    whether <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code> should check for directory indexes or
+    add trailing slashes when some other handler has been configured for
+    the current URL.  Handlers can be set by directives such as 
+    <code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code> or by other modules at 
+    runtime. </p>
+
+    <p> In releases prior to 2.4, this module did not take any action if any
+    other handler was configured for a URL. This allows directory indexes to 
+    be served even when a <code class="directive">SetHandler</code> directive is 
+    specified for an entire directory, but it can also result in some conflicts
+    with other modules.</p> 
+
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="DirectoryIndex" id="DirectoryIndex">DirectoryIndex</a> <a name="directoryindex" id="directoryindex">Directive</a></h2>
 <table class="directive">

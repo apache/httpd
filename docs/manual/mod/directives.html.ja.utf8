@@ -200,6 +200,7 @@
 <li><a href="mod_charset_lite.html#charsetdefault">CharsetDefault</a></li>
 <li><a href="mod_charset_lite.html#charsetoptions">CharsetOptions</a></li>
 <li><a href="mod_charset_lite.html#charsetsourceenc">CharsetSourceEnc</a></li>
+<li><a href="mod_speling.html#checkbasenamematch">CheckBasenameMatch</a></li>
 <li><a href="mod_speling.html#checkcaseonly">CheckCaseOnly</a></li>
 <li><a href="mod_speling.html#checkspelling">CheckSpelling</a></li>
 <li><a href="mod_unixd.html#chrootdir">ChrootDir</a></li>
@@ -237,6 +238,7 @@
 <li><a href="mod_deflate.html#deflatewindowsize">DeflateWindowSize</a></li>
 <li><a href="mod_access_compat.html#deny">Deny</a></li>
 <li><a href="core.html#directory">&lt;Directory&gt;</a></li>
+<li><a href="mod_dir.html#directorycheckhandler">DirectoryCheckHandler</a></li>
 <li><a href="mod_dir.html#directoryindex">DirectoryIndex</a></li>
 <li><a href="mod_dir.html#directoryindexredirect">DirectoryIndexRedirect</a></li>
 <li><a href="core.html#directorymatch">&lt;DirectoryMatch&gt;</a></li>
