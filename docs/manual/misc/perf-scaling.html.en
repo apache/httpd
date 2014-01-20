@@ -30,12 +30,12 @@
         <p>The Performance Tuning page in the Apache 1.3 documentation says: 
         </p>
         <blockquote><p>
-            &#8220;Apache is a general webserver, which is designed to be
+            "Apache is a general webserver, which is designed to be
                 correct first, and fast
                 second. Even so, its performance is quite satisfactory. Most
                 sites have less than 10Mbits of outgoing bandwidth, which
                 Apache can fill using only a low end Pentium-based
-                webserver.&#8221;</p>
+                webserver."</p>
         </blockquote>
         <p>However, this sentence was written a few years ago, and in the
             meantime several things have happened. On one hand, web server
@@ -153,7 +153,7 @@ Swap:  4194296k total,   860584k used,  3333712k free,  1157552k cached
    69 root      15  -5     0    0    0 S    0  0.0   0:00.04 kblockd/1
    70 root      15  -5     0    0    0 S    0  0.0   0:00.04 kblockd/2</pre></div>
                 
-                <p>Top is a wonderful tool even though it&#8217;s slightly resource
+                <p>Top is a wonderful tool even though it's slightly resource
                     intensive (when running, its own process is usually in the
                     top ten CPU gluttons). It is indispensable in determining
                     the size of a running process, which comes in handy when
@@ -337,7 +337,7 @@ Swap:       3903784      12540  3891244
                 <p>
                     The Error Log is configured through the <code class="directive"><a href="../mod/core.html#errorlog">ErrorLog</a></code>
                     and <code class="directive"><a href="../mod/core.html#loglevel">LogLevel</a></code>
-                    configuration directives. The error log of httpd&#8217;s main
+                    configuration directives. The error log of httpd's main
                     server configuration receives the log messages that pertain
                     to the entire server: startup, shutdown, crashes, excessive
                     process spawns, etc. The <code class="directive"><a href="../mod/core.html#errorlog">ErrorLog</a></code>
@@ -604,7 +604,7 @@ Swap:       3903784      12540  3891244
                     APACHE=/usr/local/apache2<br />
                     HTTPD=$APACHE/bin/httpd<br />
                     mv $APACHE/logs/access_log
-                    $APACHE/logarchive/access_log-&#8216;date +%F&#8216;<br />
+                    $APACHE/logarchive/access_log-`date +%F`<br />
                     $HTTPD -k graceful
                 </code></p></div>
                 
@@ -676,8 +676,8 @@ Swap:       3903784      12540  3891244
                     server has many virtual hosts, all the open logfiles put a
                     resource burden on your system, and it may be preferable to
                     log to a single file. Use the <code>%v</code>
-					format character at the start of your <code class="directive"><a href="../mod/mod_log_config.html#logformat">LogFormat</a></code>
-					and starting 2.3.8 of your <code class="directive"><a href="../mod/core.html#errorlog">ErrorLog</a></code>
+                    format character at the start of your <code class="directive"><a href="../mod/mod_log_config.html#logformat">LogFormat</a></code>
+                    and starting 2.3.8 of your <code class="directive"><a href="../mod/core.html#errorlog">ErrorLog</a></code>
                     to make httpd print the hostname of the virtual host that
                     received the request or the error at the beginning of each
                     log line. A simple Perl script can split out the log file
@@ -700,7 +700,7 @@ Swap:       3903784      12540  3891244
             
             <p>It is useful to generate a test load to monitor system
                 performance under realistic operating circumstances. Besides
-				commercial packages such as <a href="http://learnloadrunner.com/">LoadRunner</a>
+                commercial packages such as <a href="http://learnloadrunner.com/">LoadRunner</a>
                 ,there are a number of freely available tools to generate a
                 test load against your web server. 
             </p>
@@ -727,13 +727,13 @@ Swap:       3903784      12540  3891244
                 </li>
                 <li>
                     <p>ASF external projects, that have proven to be quite
-						good: grinder, httperf, tsung, <a href="http://funkload.nuxeo.org/">FunkLoad</a>
+                        good: grinder, httperf, tsung, <a href="http://funkload.nuxeo.org/">FunkLoad</a>
                     </p>
                 </li>
             </ul>
             <p>When you load-test your web server, please keep in mind that if
                 that server is in production, the test load may negatively
-                affect the server&#8217;s response. Also, any data traffic you
+                affect the server's response. Also, any data traffic you
                 generate may be charged against your monthly traffic allowance.
             </p>
             
@@ -762,8 +762,8 @@ Swap:       3903784      12540  3891244
                 MPM runs a smaller number of child processes, and spawns
                 multiple request handling threads within each child process. In
                 2.4 MPMs are no longer hard-wired. They too can be exchanged
-				via <code class="directive"><a href="../mod/core.html#loadmodule">LoadModule</a></code>.
-				The default MPM in 2.4 is the event MPM. 
+                via <code class="directive"><a href="../mod/core.html#loadmodule">LoadModule</a></code>.
+                The default MPM in 2.4 is the event MPM. 
             </p>
             <p>The maximum number of workers, be they pre-forked child
                 processes or threads within a process, is an indication of how
@@ -775,7 +775,7 @@ Swap:       3903784      12540  3891244
                 denied access. However, once requests start backing up, system
                 performance is likely to degrade. 
             </p>
-			<p>Finally, if the httpd server in question is not executing any third-party
+            <p>Finally, if the httpd server in question is not executing any third-party
                code, via <code>mod_php</code>, <code>mod_perl</code> or similar,
                we recommend the use of <code class="module"><a href="../mod/mpm_event.html">mpm_event</a></code>. This MPM is ideal
                for situations where httpd serves as a thin layer between clients and
@@ -818,7 +818,7 @@ Swap:       3903784      12540  3891244
                     </code>
                     is evenly divisible by <code>ThreadsPerChild
                     </code>
-                    .If you set either directive to a number that doesn&#8217;t
+                    .If you set either directive to a number that doesn't
                     meet this requirement, Apache will send a message of
                     complaint to the error log and adjust the <code>
                         ThreadsPerChild
@@ -843,7 +843,7 @@ Swap:       3903784      12540  3891244
                 </p>
                 
                 <div class="example"><p><code>
-                    total RAM &#8722; RAM for OS &#8722; RAM for external programs<br />
+                    total RAM - RAM for OS - RAM for external programs<br />
                     MaxClients =
                     -------------------------------------------------------<br />
                     RAM per httpd process
@@ -881,8 +881,8 @@ Swap:       3903784      12540  3891244
                     value. The Linux kernel will put extra memory to good use
                     for caching disk access. On Solaris you need enough
                     available real RAM memory to create any process. If no real
-                    memory is available, httpd will start writing &#8216;No space
-                    left on device&#8217; messages to the error log and be unable
+                    memory is available, httpd will start writing 'No space
+                    left on device' messages to the error log and be unable
                     to fork additional child processes, so a higher <code>
                         MaxClients
                     </code>
@@ -1214,7 +1214,7 @@ Swap:       3903784      12540  3891244
                     their functionality and configuration directives, you can
                     turn them off by commenting out the corresponding
                       <code class="directive">LoadModule</code>
-                    lines. Read the documentation on each module&#8217;s
+                    lines. Read the documentation on each module's
                     functionality before deciding whether to keep it enabled.
                     While the performance overhead of an unused module is
                     small, it's also unnecessary. 
@@ -1287,7 +1287,7 @@ Swap:       3903784      12540  3891244
                 
                 <p>This can be run periodically from Cron, after you upload
                     content, etc. To make Apache substitute the statically
-                    rendered pages for the dynamic content, we&#8217;ll use
+                    rendered pages for the dynamic content, we'll use
                     mod_rewrite. This module is included with the Apache source
                     code, but is not compiled by default. It can be built with
                     the server by passing the option <code>--enable-rewrite[=shared]</code>
@@ -1388,7 +1388,7 @@ Listen *:8001
                     
                 <p>
                     The Apache Software Foundation Wiki is served by MoinMoin.
-					MoinMoin is written in Python and runs as a CGI. To date, any
+                    MoinMoin is written in Python and runs as a CGI. To date, any
                     attempts to run it under mod_python has been unsuccessful.
                     The CGI proved to place an untenably high load on the
                     server machine, especially when the Wiki was being indexed
