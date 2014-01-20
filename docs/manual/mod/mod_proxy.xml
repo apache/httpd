@@ -443,6 +443,20 @@
       &lt;/Proxy&gt;
     </example>
 
+    <note><title>Differences from the Location configuration section</title>
+      <p>A backend URL matches the configuration section if it begins with the 
+      the <var>wildcard-url</var> string, even if the last path segment in the
+      directive only matches a prefix of the backend URL.  For example, 
+      &lt;Proxy http://example.com/foo&gt; matches all of 
+      http://example.com/foo, http://example.com/foo/bar, and 
+      http://example.com/foobar.  The matching of the final URL differs
+      from the behavior of the <directive type="section" module="core"
+      >Location</directive> section, which for purposes of this note 
+      treats the final path component as if it ended in a slash.</p>
+      <p>For more control over the matching, see <directive type="section"
+      >ProxyMatch</directive>.</p>
+    </note>
+
 </usage>
 <seealso><directive type="section" module="mod_proxy">ProxyMatch</directive></seealso>
 </directivesynopsis>
