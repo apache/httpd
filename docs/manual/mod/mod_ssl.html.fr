@@ -27,8 +27,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_ssl.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_ssl.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Chiffrement de haut niveau basé sur les protocoles Secure
 Sockets Layer (SSL) et Transport Layer Security (TLS)</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -1047,7 +1045,8 @@ applicable.
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Option permettant de classer les algorithmes de chiffrement
 du serveur par ordre de préférence</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLHonorCipherOrder <em>flag</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLHonorCipherOrder on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLHonorCipherOrder off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
@@ -1069,7 +1068,7 @@ SSLHonorCipherOrder on
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Option permettant d'activer le support de la renégociation
 non sécurisée</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLInsecureRenegotiation <em>drapeau</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLInsecureRenegotiation on|off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLInsecureRenegotiation off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -1131,7 +1130,8 @@ spécifié dans le certificat en cours de vérification.</p>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active la validation OCSP de la chaîne de certificats du
 client</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLOCSPEnable <em>drapeau</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLOCSPEnable on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLOCSPEnable off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
@@ -1161,7 +1161,8 @@ SSLOCSPOverrideResponder on
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Force l'utilisation de l'URI du répondeur par défaut pour
 la validation OCSP</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLOCSPOverrideResponder <em>drapeau</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLOCSPOverrideResponder on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLOCSPOverrideResponder off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
@@ -1230,15 +1231,43 @@ autorisée pour les réponses OCSP (lors de la vérification des champs
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SSLOpenSSLConfCmd" id="SSLOpenSSLConfCmd">SSLOpenSSLConfCmd</a> <a name="sslopensslconfcmd" id="sslopensslconfcmd">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure OpenSSL parameters through its <em>SSL_CONF</em> API</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLOpenSSLConfCmd <em>command-name</em> <em>command-value</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configuration des paramètres d'OpenSSL via son API <em>SSL_CONF</em></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLOpenSSLConfCmd <em>commande</em> <em>valeur</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Available in httpd 2.4.8 and later, if using OpenSSL 1.0.2 or later</td></tr>
-</table><p>La documentation de cette directive
-	n'a pas encore t traduite. Veuillez vous reporter  la version
-	en langue anglaise.</p></div>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.4.8 du serveur HTTP
+Apache avec OpenSSL 1.0.2 ou supérieur</td></tr>
+</table>
+<p>Cette directive permet à mod_ssl d'accéder à l'API <em>SSL_CONF</em>
+d'OpenSSL. Il n'est ainsi plus nécessaire d'implémenter des
+directives supplémentaires pour <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> lorsque de nouvelles
+fonctionnalités sont ajoutées à OpenSSL, ce qui rend la configuration de
+ce dernier beaucoup plus souple.</p>
+
+<p>Le jeu de commandes disponibles pour la directive
+<code class="directive">SSLOpenSSLConfCmd</code> dépend de la version d'OpenSSL
+utilisée pour <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> (la version minimale 1.0.2 est un
+prérequis). Pour obtenir la liste des commandes supportées, voir la
+section <em>Supported configuration file commands</em> de la page de
+manuel <a href="http://www.openssl.org/docs/ssl/SSL_CONF_cmd.html#SUPPORTED_CONFIGURATION_FILE_COM">SSL_CONF_cmd(3)</a>
+d'OpenSSL.</p>
+
+<p>Certaines commandes peuvent remplacer des directives existantes
+(comme <code class="directive"><a href="#sslciphersuite">SSLCipherSuite</a></code> ou
+<code class="directive"><a href="#sslprotocol">SSLProtocol</a></code>) ; notez cependant
+que la syntaxe et/ou les valeurs possibles peuvent différer.</p>
+
+<div class="example"><h3>Examples</h3><pre class="prettyprint lang-config">
+SSLOpenSSLConfCmd Options -SessionTicket,ServerPreference
+SSLOpenSSLConfCmd ECDHParameters brainpoolP256r1
+SSLOpenSSLConfCmd ServerInfoFile /usr/local/apache2/conf/server-info.pem
+SSLOpenSSLConfCmd Protocol "-ALL, TLSv1.2"
+SSLOpenSSLConfCmd SignatureAlgorithms RSA+SHA384:ECDSA+SHA256
+</pre>
+</div>
+
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SSLOptions" id="SSLOptions">SSLOptions</a> <a name="ssloptions" id="ssloptions">Directive</a></h2>
 <table class="directive">

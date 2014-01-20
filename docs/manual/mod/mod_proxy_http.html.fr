@@ -78,7 +78,8 @@
     <dl>
         <dt>proxy-sendextracrlf</dt>
         <dd>Provoque l'envoi par le mandataire d'une nouvelle ligne
-	CR-LF supplémentaire à la fin de la requête. Cei constitue un
+	CR-LF supplémentaire à la fin de la requête.
+	Ceci constitue un
 	moyen de contournement d'une bogue de certains
 	navigateurs.</dd>
         <dt>force-proxy-request-1.0</dt>

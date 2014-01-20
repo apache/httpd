@@ -164,13 +164,14 @@ SessionCryptoPassphrase secret
       En général, la page de connexion contiendra un formulaire HTML
       demandant à l'utilisateur de fournir un nom et un mot de passe.</p>
 
-      <div class="example"><h3>Exemple de formulaire de connexion</h3><p><code>
-        &lt;form method="POST" action="/dologin.html"&gt;<br />
-        Utilisateur : &lt;input type="text" name="httpd_username" value="" /&gt;<br />
-        Mot de passe: &lt;input type="password" name="httpd_password" value="" /&gt;<br />
-        &lt;input type="submit" name="login" value="Connexion" /&gt;<br />
-        &lt;/form&gt;<br />
-      </code></p></div>
+      <div class="example"><h3>Exemple de formulaire de connexion</h3><pre class="prettyprint lang-html">
+&lt;form method="POST" action="/dologin.html"&gt;
+  Username: &lt;input type="text" name="httpd_username" value="" /&gt;
+  Password: &lt;input type="password" name="httpd_password" value="" /&gt;
+  &lt;input type="submit" name="login" value="Login" /&gt;
+&lt;/form&gt;
+        </pre>
+</div>
 
       <p>La partie où s'effectue la connexion proprement dite est
       traitée par le gestionnaire <var>form-login-handler</var>.
@@ -208,16 +209,15 @@ SessionCryptoPassphrase secret
       <var>form-login-handler</var> pourra être utilisé pour différentes
       zones du site web.</p>
 
-      <div class="example"><h3>Exemple de formulaire de login avec page cible</h3><p><code>
-        &lt;form method="POST" action="/dologin.html"&gt;<br />
-        <span class="indent">
-          Utilisateur  : &lt;input type="text" name="httpd_username" value="" /&gt;<br />
-          Mot de passe : &lt;input type="password" name="httpd_password" value="" /&gt;<br />
-          &lt;input type="submit" name="login" value="Connexion" /&gt;<br />
-          &lt;input type="hidden" name="httpd_location" value="http://example.com/success.html" /&gt;<br />
-        </span>
-        &lt;/form&gt;<br />
-      </code></p></div>
+      <div class="example"><h3>Exemple de formulaire de login avec page cible</h3><pre class="prettyprint lang-html">
+&lt;form method="POST" action="/dologin.html"&gt;
+  Username: &lt;input type="text" name="httpd_username" value="" /&gt;
+  Password: &lt;input type="password" name="httpd_password" value="" /&gt;
+  &lt;input type="submit" name="login" value="Login" /&gt;
+  &lt;input type="hidden" name="httpd_location" value="http://example.com/success.html" /&gt;
+&lt;/form&gt;
+        </pre>
+</div>
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -274,15 +274,14 @@ SessionCryptoPassphrase secret
       protégée originale, cette dernière n'ayant pas besoin d'être
       connue de la page en cours.</p>
 
-      <div class="example"><h3>Exemple de formulaire de connexion à la volée</h3><p><code>
-        &lt;form method="POST" <strong>action=""</strong>&gt;<br />
-        <span class="indent">
-          Utilisateur  : &lt;input type="text" name="httpd_username" value="" /&gt;<br />
-          Mot de passe : &lt;input type="password" name="httpd_password" value="" /&gt;<br />
-          &lt;input type="submit" name="login" value="Connexion" /&gt;<br />
-        </span>
-        &lt;/form&gt;<br />
-      </code></p></div>
+      <div class="example"><h3>Exemple de formulaire de connexion à la volée</h3><pre class="prettyprint lang-html">
+&lt;form method="POST" <strong>action=""</strong>&gt;
+  Username: &lt;input type="text" name="httpd_username" value="" /&gt;
+  Password: &lt;input type="password" name="httpd_password" value="" /&gt;
+  &lt;input type="submit" name="login" value="Login" /&gt;
+&lt;/form&gt;
+</pre>
+</div>
 
       <p>Lorsque l'utilisateur final a entré ses informations de
       connexion, le formulaire effectue une requête HTTP POST pour l'URL
@@ -316,18 +315,17 @@ SessionCryptoPassphrase secret
       comme dans l'exemple suivant :</p>
 
       <div class="example"><h3>Exemple de formulaire avec conservation du
-      contenu</h3><p><code>
-        &lt;form method="POST" action=""&gt;<br />
-        <span class="indent">
-          Utilisateur  : &lt;input type="text" name="httpd_username" value="" /&gt;<br />
-          Mot de passe : &lt;input type="password" name="httpd_password" value="" /&gt;<br />
-          &lt;input type="submit" name="login" value="Connexion" /&gt;<br />
-          <strong>&lt;input type="hidden" name="httpd_method" value="POST" /&gt;<br />
-          &lt;input type="hidden" name="httpd_mimetype" value="application/x-www-form-urlencoded" /&gt;<br />
-          &lt;input type="hidden" name="httpd_body" value="name1=value1&amp;name2=value2" /&gt;</strong><br />
-        </span>
-        &lt;/form&gt;
-      </code></p></div>
+      contenu</h3><pre class="prettyprint lang-html">
+&lt;form method="POST" action=""&gt;
+  Username: &lt;input type="text" name="httpd_username" value="" /&gt;
+  Password: &lt;input type="password" name="httpd_password" value="" /&gt;
+  &lt;input type="submit" name="login" value="Login" /&gt;
+  <br />  <strong>&lt;input type="hidden" name="httpd_method" value="POST" /&gt;
+  &lt;input type="hidden" name="httpd_mimetype" value="application/x-www-form-urlencoded" /&gt;
+  &lt;input type="hidden" name="httpd_body" value="name1=value1&amp;name2=value2" /&gt;</strong><br />
+&lt;/form&gt;
+        </pre>
+</div>
 
       <p>La manière dont la méthode, le type MIME et le contenu de la
       requête originale seront intégrés dans le formulaire de connexion
