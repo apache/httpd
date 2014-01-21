@@ -63,7 +63,7 @@ static const char *ssl_log_annotation(const char *error)
     return ssl_log_annotate[i].cpAnnotation;
 }
 
-void ssl_die(server_rec *s)
+apr_status_t ssl_die(server_rec *s)
 {
     if (s != NULL && s->is_virtual && s->error_fname != NULL)
         ap_log_error(APLOG_MARK, APLOG_EMERG, 0, NULL, APLOGNO(02311)
@@ -75,13 +75,7 @@ void ssl_die(server_rec *s)
         ap_log_error(APLOG_MARK, APLOG_EMERG, 0, NULL, APLOGNO(02312)
                      "Fatal error initialising mod_ssl, exiting.");
 
-    /*
-     * This is used for fatal errors and here
-     * it is common module practice to really
-     * exit from the complete program.
-     * XXX: The config hooks should return errors instead of calling exit().
-     */
-    exit(1);
+    return APR_EGENERAL;
 }
 
 /*

@@ -37,7 +37,7 @@
 **  _________________________________________________________________
 */
 
-void ssl_scache_init(server_rec *s, apr_pool_t *p)
+apr_status_t ssl_scache_init(server_rec *s, apr_pool_t *p)
 {
     SSLModConfigRec *mc = myModConfig(s);
     apr_status_t rv;
@@ -49,7 +49,7 @@ void ssl_scache_init(server_rec *s, apr_pool_t *p)
      * will be immediately cleared anyway.  For every subsequent
      * invocation, initialize the configured cache. */
     if (ap_state_query(AP_SQ_MAIN_STATE) == AP_SQ_MS_CREATE_PRE_CONFIG)
-        return;
+        return APR_SUCCESS;
 
 #ifdef HAVE_OCSP_STAPLING
     if (mc->stapling_cache) {
@@ -63,7 +63,7 @@ void ssl_scache_init(server_rec *s, apr_pool_t *p)
         if (rv) {
             ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(01872)
                          "Could not initialize stapling cache. Exiting.");
-            ssl_die(s);
+            return ssl_die(s);
         }
     }
 #endif
@@ -76,7 +76,7 @@ void ssl_scache_init(server_rec *s, apr_pool_t *p)
         ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(01873)
                      "Init: Session Cache is not configured "
                      "[hint: SSLSessionCache]");
-        return;
+        return APR_SUCCESS;
     }
 
     memset(&hints, 0, sizeof hints);
@@ -88,8 +88,10 @@ void ssl_scache_init(server_rec *s, apr_pool_t *p)
     if (rv) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(01874)
                      "Could not initialize session cache. Exiting.");
-        ssl_die(s);
+        return ssl_die(s);
     }
+
+    return APR_SUCCESS;
 }
 
 void ssl_scache_kill(server_rec *s)
