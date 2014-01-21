@@ -96,7 +96,6 @@ static apr_socket_t *send_request(BIO *request, const apr_uri_t *uri,
         ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, c, APLOGNO(01974)
                       "could not connect to OCSP responder '%s'",
                       uri->hostinfo);
-        apr_socket_close(sd);
         return NULL;
     }
 
