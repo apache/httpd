@@ -174,7 +174,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   * mod_session: Fix problems interpreting the SessionInclude and
     SessionExclude configuration.
     trunk patch: http://svn.apache.org/r1559828
-    2.4.x patch: trunk patch works after resolving CHANGES conflicts)
+    2.4.x patch: trunk patch works after resolving CHANGES conflicts
+    +1: trawick
+
+  * FreeBSD: Disable IPv4-mapped listening sockets by default for versions
+    5+ instead of just for FreeBSD 5. PR 53824.
+    trunk patch: http://svn.apache.org/r1551685
+    2.4.x patch: trunk patch works after resolving CHANGES conflicts
     +1: trawick
 
 OTHER PROPOSALS
