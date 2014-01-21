@@ -988,6 +988,14 @@ through</td></tr>
     usually be set <strong>off</strong> when using
     <code class="directive">ProxyPass</code>.</div>
 
+    <p>Support for using a Unix Domain Socket is available by using a target
+    which prepends <code>unix:/path/lis.sock|</code>. For example, to proxy
+    HTTP and target the UDS at /home/www/socket you would use
+    <code>unix:/home/www.socket|http://localhost/whatever/</code>.</p>
+
+    <div class="note"><strong>Note:</strong> The path associated with the <code>unix:</code>
+    URL is <code class="directive">DefaultRuntimeDir</code> aware.</div>
+
     <p>Suppose the local server has address <code>http://example.com/</code>;
     then</p>
 
