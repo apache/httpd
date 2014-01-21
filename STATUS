@@ -150,6 +150,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     +1: jim
     trawick: it's fine AFAICT but the Right Thing to do is to separate or even
              discard the unexpected struct recycled_pool change
+    jim:     oops! Thx for the catch.
 
   * mod_speling: According to doc, 'CheckCaseOnly' directive should only check
     for lower/upper case changes. Current code also cheks the basename. (i.e.
