@@ -190,18 +190,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     trunk patches: https://svn.apache.org/r1544774
                    https://svn.apache.org/r1544812
     2.4.x patch: https://people.apache.org/~kbrand/mod_ssl-2.4.x-ssldie.diff
-    +1: kbrand, trawick
+    +1: kbrand, trawick, jim
 
   * mod_auth*z scan-build warnings in new code for 2.4.8
     trunk patch: https://svn.apache.org/r1558483
     2.4.x patch: trunk patch works
-    +1: trawick, covener
+    +1: trawick, covener, jim
 
   * ssl_util_ocsp scan-build warning in old code
     (the code is clearly wrong but completely harmless AFAICT)
     trunk patch: https://svn.apache.org/r1534890
     2.4.x patch: trunk patch works
-    +1: trawick, covener
+    +1: trawick, covener, jim
   
   * mod_dir: stop trying to index or redirect requests that are halfway
     through being rewritten by per-dir mod_rewrite. Old releases would skip any
