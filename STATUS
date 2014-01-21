@@ -98,11 +98,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_auth*z scan-build warnings in new code for 2.4.8
-    trunk patch: https://svn.apache.org/r1558483
-    2.4.x patch: trunk patch works
-    +1: trawick, covener, jim
-
   * ssl_util_ocsp scan-build warning in old code
     (the code is clearly wrong but completely harmless AFAICT)
     trunk patch: https://svn.apache.org/r1534890
