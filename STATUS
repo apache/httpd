@@ -142,7 +142,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  http://svn.apache.org/viewvc?view=revision&revision=1545408
                  http://svn.apache.org/viewvc?view=revision&revision=1545411
     2.4.x patch: http://people.apache.org/~jim/patches/fdq-atomicsv2.patch
-    +1: jim
+    +1: jim, trawick
 
   * mod_speling: According to doc, 'CheckCaseOnly' directive should only check
     for lower/upper case changes. Current code also cheks the basename. (i.e.
