@@ -98,22 +98,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_proxy: support Unix domain sockets
-    trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1451633
-                 https://svn.apache.org/viewvc?view=revision&revision=1451905
-                 https://svn.apache.org/viewvc?view=revision&revision=1451921
-                 https://svn.apache.org/viewvc?view=revision&revision=1452259
-                 https://svn.apache.org/viewvc?view=revision&revision=1453981
-                 https://svn.apache.org/viewvc?view=revision&revision=1501913
-                 https://svn.apache.org/viewvc?view=revision&revision=1513508
-                 https://svn.apache.org/viewvc?view=revision&revision=1531340
-                 https://svn.apache.org/viewvc?view=revision&revision=1531370
-                 https://svn.apache.org/viewvc?view=revision&revision=1531962
-                 https://svn.apache.org/viewvc?view=revision&revision=1533065
-                 https://svn.apache.org/viewvc?view=revision&revision=1540052
-    2.4.x patch: http://people.apache.org/~jim/patches/uds-2.4.patch
-    +1: jim, druggeri, humbedooh
-
   * mod_ssl: address the "init functions should return status code rather
     than ssl_die()" todo from 2002 (avoid orphan IPC objects after startup
     or reload failures, see also the "ssl_die() and pool cleanup" thread
