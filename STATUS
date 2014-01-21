@@ -114,6 +114,26 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     2.4.x patch: http://people.apache.org/~jim/patches/uds-2.4.patch
     +1: jim, druggeri, humbedooh
 
+  * mod_ssl: address the "init functions should return status code rather
+    than ssl_die()" todo from 2002 (avoid orphan IPC objects after startup
+    or reload failures, see also the "ssl_die() and pool cleanup" thread
+    on httpd-dev in Nov '13)
+    trunk patches: https://svn.apache.org/r1544774
+                   https://svn.apache.org/r1544812
+    2.4.x patch: https://people.apache.org/~kbrand/mod_ssl-2.4.x-ssldie.diff
+    +1: kbrand, trawick, jim
+
+  * mod_auth*z scan-build warnings in new code for 2.4.8
+    trunk patch: https://svn.apache.org/r1558483
+    2.4.x patch: trunk patch works
+    +1: trawick, covener, jim
+
+  * ssl_util_ocsp scan-build warning in old code
+    (the code is clearly wrong but completely harmless AFAICT)
+    trunk patch: https://svn.apache.org/r1534890
+    2.4.x patch: trunk patch works
+    +1: trawick, covener, jim
+  
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -183,26 +203,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     -1: covener, seems like unnecessary default change for 2.4. No issue w/o
         default change.  
 
-  * mod_ssl: address the "init functions should return status code rather
-    than ssl_die()" todo from 2002 (avoid orphan IPC objects after startup
-    or reload failures, see also the "ssl_die() and pool cleanup" thread
-    on httpd-dev in Nov '13)
-    trunk patches: https://svn.apache.org/r1544774
-                   https://svn.apache.org/r1544812
-    2.4.x patch: https://people.apache.org/~kbrand/mod_ssl-2.4.x-ssldie.diff
-    +1: kbrand, trawick, jim
-
-  * mod_auth*z scan-build warnings in new code for 2.4.8
-    trunk patch: https://svn.apache.org/r1558483
-    2.4.x patch: trunk patch works
-    +1: trawick, covener, jim
-
-  * ssl_util_ocsp scan-build warning in old code
-    (the code is clearly wrong but completely harmless AFAICT)
-    trunk patch: https://svn.apache.org/r1534890
-    2.4.x patch: trunk patch works
-    +1: trawick, covener, jim
-  
   * mod_dir: stop trying to index or redirect requests that are halfway
     through being rewritten by per-dir mod_rewrite. Old releases would skip any
     unknown r->handler. PR53929
