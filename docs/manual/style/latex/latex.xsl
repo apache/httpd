@@ -152,6 +152,7 @@ Server Documentation Project.  More information is available at
 </xsl:template>
 
 <xsl:template match="page">
+<xsl:if test="not(starts-with(@href,'http:') or starts-with(@href, 'https:'))">
 <xsl:text>\include{</xsl:text>
 <xsl:choose>
 <xsl:when test="contains(@href,'.')">
@@ -163,6 +164,7 @@ Server Documentation Project.  More information is available at
 </xsl:choose>
 <xsl:text>}
 </xsl:text>
+</xsl:if>
 </xsl:template>
 
 <xsl:template match="category/title" mode="printcat">
