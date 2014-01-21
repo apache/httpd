@@ -66,6 +66,10 @@ Changes with Apache 2.4.7
      keys, and unconditionally disable aNULL, eNULL and EXP ciphers
      (not overridable via SSLCipherSuite). [Kaspar Brand]
 
+  *) mod_proxy: Added support for unix domain sockets as the
+     backend server endpoint [Jim Jagielski, Blaise Tarr
+     <blaise tarr gmail com>]
+
   *) Add experimental cmake-based build system for Windows.  [Jeff Trawick,
      Tom Donovan]
 

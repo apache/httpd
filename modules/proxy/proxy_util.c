@@ -31,6 +31,13 @@
 #define apr_socket_create apr_socket_create_ex
 #endif
 
+#if APR_HAVE_SYS_UN_H
+#include <sys/un.h>
+#endif
+#if (APR_MAJOR_VERSION < 2)
+#include "apr_support.h"        /* for apr_wait_for_io_or_timeout() */
+#endif
+
 APLOG_USE_MODULE(proxy);
 
 /*
@@ -86,14 +93,20 @@ PROXY_DECLARE(apr_status_t) ap_proxy_strncpy(char *dst, const char *src,
     char *thenil;
     apr_size_t thelen;
 
-    thenil = apr_cpystrn(dst, src, dlen);
-    thelen = thenil - dst;
-    /* Assume the typical case is smaller copying into bigger
-       so we have a fast return */
-    if ((thelen < dlen-1) || ((strlen(src)) == thelen)) {
+    /* special case handling */
+    if (!dlen) {
+        /* XXX: APR_ENOSPACE would be better */
+        return APR_EGENERAL;
+    }
+    if (!src) {
+        *dst = '\0';
         return APR_SUCCESS;
     }
-    /* XXX: APR_ENOSPACE would be better */
+    thenil = apr_cpystrn(dst, src, dlen);
+    thelen = thenil - dst;
+    if (src[thelen] == '\0') {
+        return APR_SUCCESS;
+    }
     return APR_EGENERAL;
 }
 
@@ -1218,11 +1231,11 @@ PROXY_DECLARE(apr_status_t) ap_proxy_share_balancer(proxy_balancer *balancer,
     } else {
         action = "re-using";
     }
+    balancer->s = shm;
+    balancer->s->index = i;
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(02337)
                  "%s shm[%d] (0x%pp) for %s", action, i, (void *)shm,
                  balancer->s->name);
-    balancer->s = shm;
-    balancer->s->index = i;
     /* the below should always succeed */
     lbmethod = ap_lookup_provider(PROXY_LBMETHOD, balancer->s->lbpname, "0");
     if (lbmethod) {
@@ -1356,7 +1369,7 @@ static apr_status_t connection_cleanup(void *theconn)
         ap_log_perror(APLOG_MARK, APLOG_ERR, 0, conn->pool, APLOGNO(00923)
                       "Pooled connection 0x%pp for worker %s has been"
                       " already returned to the connection pool.", conn,
-                      worker->s->name);
+                      ap_proxy_worker_name(conn->pool, worker));
         return APR_SUCCESS;
     }
 
@@ -1480,6 +1493,16 @@ static apr_status_t connection_destructor(void *resource, void *params,
  * WORKER related...
  */
 
+PROXY_DECLARE(char *) ap_proxy_worker_name(apr_pool_t *p,
+                                           proxy_worker *worker)
+{
+    if (!(*worker->s->uds_path) || !p) {
+        /* just in case */
+        return worker->s->name;
+    }
+    return apr_pstrcat(p, "unix:", worker->s->uds_path, "|", worker->s->name, NULL);
+}
+
 PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p,
                                                   proxy_balancer *balancer,
                                                   proxy_server_conf *conf,
@@ -1494,6 +1517,10 @@ PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p,
     const char *c;
     char *url_copy;
     int i;
+
+    if (!url) {
+        return NULL;
+    }
 
     c = ap_strchr_c(url, ':');
     if (c == NULL || c[1] != '/' || c[2] != '/' || c[3] == '\0') {
@@ -1573,20 +1600,47 @@ PROXY_DECLARE(char *) ap_proxy_define_worker(apr_pool_t *p,
                                              int do_malloc)
 {
     int rv;
-    apr_uri_t uri;
+    apr_uri_t uri, urisock;
     proxy_worker_shared *wshared;
-    char *ptr;
+    char *ptr, *sockpath = NULL;
 
+    /*
+     * Look to see if we are using UDS:
+     * require format: unix:/path/foo/bar.sock|http://ignored/path2/
+     * This results in talking http to the socket at /path/foo/bar.sock
+     */
+    ptr = ap_strchr((char *)url, '|');
+    if (ptr) {
+        *ptr = '\0';
+        rv = apr_uri_parse(p, url, &urisock);
+        if (rv == APR_SUCCESS && !strcasecmp(urisock.scheme, "unix")) {
+            sockpath = ap_runtime_dir_relative(p, urisock.path);;
+            url = ptr+1;    /* so we get the scheme for the uds */
+        }
+        else {
+            *ptr = '|';
+        }
+    }
     rv = apr_uri_parse(p, url, &uri);
 
     if (rv != APR_SUCCESS) {
-        return "Unable to parse URL";
+        return apr_pstrcat(p, "Unable to parse URL: ", url, NULL);
     }
-    if (!uri.hostname || !uri.scheme) {
-        return "URL must be absolute!";
+    if (!uri.scheme) {
+        return apr_pstrcat(p, "URL must be absolute!: ", url, NULL);
     }
-
-    ap_str_tolower(uri.hostname);
+    /* allow for unix:/path|http: */
+    if (!uri.hostname) {
+        if (sockpath) {
+            uri.hostname = "localhost";
+        }
+        else {
+            return apr_pstrcat(p, "URL must be absolute!: ", url, NULL);
+        }
+    }
+    else {
+        ap_str_tolower(uri.hostname);
+    }
     ap_str_tolower(uri.scheme);
     /*
      * Workers can be associated w/ balancers or on their
@@ -1642,6 +1696,15 @@ PROXY_DECLARE(char *) ap_proxy_define_worker(apr_pool_t *p,
     wshared->hash.def = ap_proxy_hashfunc(wshared->name, PROXY_HASHFUNC_DEFAULT);
     wshared->hash.fnv = ap_proxy_hashfunc(wshared->name, PROXY_HASHFUNC_FNV);
     wshared->was_malloced = (do_malloc != 0);
+    if (sockpath) {
+        if (PROXY_STRNCPY(wshared->uds_path, sockpath) != APR_SUCCESS) {
+            return apr_psprintf(p, "worker uds path (%s) too long", sockpath);
+        }
+
+    }
+    else {
+        *wshared->uds_path = '\0';
+    }
 
     (*worker)->hash = wshared->hash;
     (*worker)->context = NULL;
@@ -1670,12 +1733,18 @@ PROXY_DECLARE(apr_status_t) ap_proxy_share_worker(proxy_worker *worker, proxy_wo
     } else {
         action = "re-using";
     }
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(02338)
-                 "%s shm[%d] (0x%pp) for worker: %s", action, i, (void *)shm,
-                 worker->s->name);
-
     worker->s = shm;
     worker->s->index = i;
+    {
+        apr_pool_t *pool;
+        apr_pool_create(&pool, ap_server_conf->process->pool);
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(02338)
+                     "%s shm[%d] (0x%pp) for worker: %s", action, i, (void *)shm,
+                     ap_proxy_worker_name(pool, worker));
+        if (pool) {
+            apr_pool_destroy(pool);
+        }
+    }
     return APR_SUCCESS;
 }
 
@@ -1687,11 +1756,13 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
     if (worker->s->status & PROXY_WORKER_INITIALIZED) {
         /* The worker is already initialized */
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00924)
-                     "worker %s shared already initialized", worker->s->name);
+                     "worker %s shared already initialized",
+                     ap_proxy_worker_name(p, worker));
     }
     else {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00925)
-                     "initializing worker %s shared", worker->s->name);
+                     "initializing worker %s shared",
+                     ap_proxy_worker_name(p, worker));
         /* Set default parameters */
         if (!worker->s->retry_set) {
             worker->s->retry = apr_time_from_sec(PROXY_WORKER_DEFAULT_RETRY);
@@ -1727,11 +1798,13 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
     /* What if local is init'ed and shm isn't?? Even possible? */
     if (worker->local_status & PROXY_WORKER_INITIALIZED) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00926)
-                     "worker %s local already initialized", worker->s->name);
+                     "worker %s local already initialized",
+                     ap_proxy_worker_name(p, worker));
     }
     else {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00927)
-                     "initializing worker %s local", worker->s->name);
+                     "initializing worker %s local",
+                     ap_proxy_worker_name(p, worker));
         apr_global_mutex_lock(proxy_mutex);
         /* Now init local worker data */
         if (worker->tmutex == NULL) {
@@ -2023,6 +2096,29 @@ PROXY_DECLARE(int) ap_proxy_acquire_connection(const char *proxy_function,
     (*conn)->close  = 0;
     (*conn)->inreslist = 0;
 
+    if (*worker->s->uds_path) {
+        if ((*conn)->uds_path == NULL) {
+            /* use (*conn)->pool instead of worker->cp->pool to match lifetime */
+            (*conn)->uds_path = apr_pstrdup((*conn)->pool, worker->s->uds_path);
+        }
+        if ((*conn)->uds_path) {
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(02545)
+                         "%s: has determined UDS as %s",
+                         proxy_function, (*conn)->uds_path);
+        }
+        else {
+            /* should never happen */
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(02546)
+                         "%s: cannot determine UDS (%s)",
+                         proxy_function, worker->s->uds_path);
+
+        }
+    }
+    else {
+        (*conn)->uds_path = NULL;
+    }
+
+
     return OK;
 }
 
@@ -2094,7 +2190,7 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
      *      spilling the cached addr from the worker.
      */
     if (!conn->hostname || !worker->s->is_address_reusable ||
-        worker->s->disablereuse) {
+        worker->s->disablereuse || *worker->s->uds_path) {
         if (proxyname) {
             conn->hostname = apr_pstrdup(conn->pool, proxyname);
             conn->port = proxyport;
@@ -2132,7 +2228,8 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
             conn->port = uri->port;
         }
         socket_cleanup(conn);
-        if (!worker->s->is_address_reusable || worker->s->disablereuse) {
+        if (!(*worker->s->uds_path) &&
+            (!worker->s->is_address_reusable || worker->s->disablereuse)) {
             /*
              * Only do a lookup if we should not reuse the backend address.
              * Otherwise we will look it up once for the worker.
@@ -2143,7 +2240,7 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
                                         conn->pool);
         }
     }
-    if (worker->s->is_address_reusable && !worker->s->disablereuse) {
+    if (!(*worker->s->uds_path) && worker->s->is_address_reusable && !worker->s->disablereuse) {
         /*
          * Looking up the backend address for the worker only makes sense if
          * we can reuse the address.
@@ -2372,6 +2469,52 @@ static apr_status_t send_http_connect(proxy_conn_rec *backend,
 }
 
 
+#if APR_HAVE_SYS_UN_H
+/* lifted from mod_proxy_fdpass.c; tweaked addrlen in connect() call */
+static apr_status_t socket_connect_un(apr_socket_t *sock,
+                                      struct sockaddr_un *sa)
+{
+    apr_status_t rv;
+    apr_os_sock_t rawsock;
+    apr_interval_time_t t;
+
+    rv = apr_os_sock_get(&rawsock, sock);
+    if (rv != APR_SUCCESS) {
+        return rv;
+    }
+
+    rv = apr_socket_timeout_get(sock, &t);
+    if (rv != APR_SUCCESS) {
+        return rv;
+    }
+
+    do {
+        const socklen_t addrlen = APR_OFFSETOF(struct sockaddr_un, sun_path)
+                                  + strlen(sa->sun_path) + 1;
+        rv = connect(rawsock, (struct sockaddr*)sa, addrlen);
+    } while (rv == -1 && errno == EINTR);
+
+    if ((rv == -1) && (errno == EINPROGRESS || errno == EALREADY)
+        && (t > 0)) {
+#if APR_MAJOR_VERSION < 2
+        rv = apr_wait_for_io_or_timeout(NULL, sock, 0);
+#else
+        rv = apr_socket_wait(sock, APR_WAIT_WRITE);
+#endif
+
+        if (rv != APR_SUCCESS) {
+            return rv;
+        }
+    }
+
+    if (rv == -1 && errno != EISCONN) {
+        return errno;
+    }
+
+    return APR_SUCCESS;
+}
+#endif
+
 PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
                                             proxy_conn_rec *conn,
                                             proxy_worker *worker,
@@ -2396,93 +2539,131 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
                          proxy_function);
         }
     }
-    while (backend_addr && !connected) {
-        if ((rv = apr_socket_create(&newsock, backend_addr->family,
-                                SOCK_STREAM, APR_PROTO_TCP,
-                                conn->scpool)) != APR_SUCCESS) {
-            loglevel = backend_addr->next ? APLOG_DEBUG : APLOG_ERR;
-            ap_log_error(APLOG_MARK, loglevel, rv, s, APLOGNO(00952)
-                         "%s: error creating fam %d socket for target %s",
-                         proxy_function,
-                         backend_addr->family,
-                         worker->s->hostname);
-            /*
-             * this could be an IPv6 address from the DNS but the
-             * local machine won't give us an IPv6 socket; hopefully the
-             * DNS returned an additional address to try
-             */
-            backend_addr = backend_addr->next;
-            continue;
-        }
-        conn->connection = NULL;
+    while ((backend_addr || conn->uds_path) && !connected) {
+#if APR_HAVE_SYS_UN_H
+        if (conn->uds_path)
+        {
+            struct sockaddr_un sa;
 
-        if (worker->s->recv_buffer_size > 0 &&
-            (rv = apr_socket_opt_set(newsock, APR_SO_RCVBUF,
-                                     worker->s->recv_buffer_size))) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(00953)
-                         "apr_socket_opt_set(SO_RCVBUF): Failed to set "
-                         "ProxyReceiveBufferSize, using default");
-        }
-
-        rv = apr_socket_opt_set(newsock, APR_TCP_NODELAY, 1);
-        if (rv != APR_SUCCESS && rv != APR_ENOTIMPL) {
-             ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(00954)
-                          "apr_socket_opt_set(APR_TCP_NODELAY): "
-                          "Failed to set");
-        }
-
-        /* Set a timeout for connecting to the backend on the socket */
-        if (worker->s->conn_timeout_set) {
-            apr_socket_timeout_set(newsock, worker->s->conn_timeout);
-        }
-        else if (worker->s->timeout_set) {
-            apr_socket_timeout_set(newsock, worker->s->timeout);
-        }
-        else if (conf->timeout_set) {
-            apr_socket_timeout_set(newsock, conf->timeout);
-        }
-        else {
-             apr_socket_timeout_set(newsock, s->timeout);
-        }
-        /* Set a keepalive option */
-        if (worker->s->keepalive) {
-            if ((rv = apr_socket_opt_set(newsock,
-                            APR_SO_KEEPALIVE, 1)) != APR_SUCCESS) {
-                ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(00955)
-                             "apr_socket_opt_set(SO_KEEPALIVE): Failed to set"
-                             " Keepalive");
-            }
-        }
-        ap_log_error(APLOG_MARK, APLOG_TRACE2, 0, s,
-                     "%s: fam %d socket created to connect to %s",
-                     proxy_function, backend_addr->family, worker->s->hostname);
-
-        if (conf->source_address_set) {
-            local_addr = apr_pmemdup(conn->pool, conf->source_address,
-                                     sizeof(apr_sockaddr_t));
-            local_addr->pool = conn->pool;
-            rv = apr_socket_bind(newsock, local_addr);
+            rv = apr_socket_create(&newsock, AF_UNIX, SOCK_STREAM, 0,
+                                   conn->scpool);
             if (rv != APR_SUCCESS) {
-                ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(00956)
-                    "%s: failed to bind socket to local address",
-                    proxy_function);
+                loglevel = APLOG_ERR;
+                ap_log_error(APLOG_MARK, loglevel, rv, s, APLOGNO(02453)
+                             "%s: error creating Unix domain socket for "
+                             "target %s",
+                             proxy_function,
+                             worker->s->hostname);
+                break;
+            }
+            conn->connection = NULL;
+
+            sa.sun_family = AF_UNIX;
+            apr_cpystrn(sa.sun_path, conn->uds_path, sizeof(sa.sun_path));
+
+            rv = socket_connect_un(newsock, &sa);
+            if (rv != APR_SUCCESS) {
+                apr_socket_close(newsock);
+                ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(02454)
+                             "%s: attempt to connect to Unix domain socket "
+                             "%s (%s) failed",
+                             proxy_function,
+                             conn->uds_path,
+                             worker->s->hostname);
+                break;
             }
         }
+        else
+#endif
+        {
+            if ((rv = apr_socket_create(&newsock, backend_addr->family,
+                                        SOCK_STREAM, APR_PROTO_TCP,
+                                        conn->scpool)) != APR_SUCCESS) {
+                loglevel = backend_addr->next ? APLOG_DEBUG : APLOG_ERR;
+                ap_log_error(APLOG_MARK, loglevel, rv, s, APLOGNO(00952)
+                             "%s: error creating fam %d socket for "
+                             "target %s",
+                             proxy_function,
+                             backend_addr->family,
+                             worker->s->hostname);
+                /*
+                 * this could be an IPv6 address from the DNS but the
+                 * local machine won't give us an IPv6 socket; hopefully the
+                 * DNS returned an additional address to try
+                 */
+                backend_addr = backend_addr->next;
+                continue;
+            }
+            conn->connection = NULL;
 
-        /* make the connection out of the socket */
-        rv = apr_socket_connect(newsock, backend_addr);
+            if (worker->s->recv_buffer_size > 0 &&
+                (rv = apr_socket_opt_set(newsock, APR_SO_RCVBUF,
+                                         worker->s->recv_buffer_size))) {
+                ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(00953)
+                             "apr_socket_opt_set(SO_RCVBUF): Failed to set "
+                             "ProxyReceiveBufferSize, using default");
+            }
 
-        /* if an error occurred, loop round and try again */
-        if (rv != APR_SUCCESS) {
-            apr_socket_close(newsock);
-            loglevel = backend_addr->next ? APLOG_DEBUG : APLOG_ERR;
-            ap_log_error(APLOG_MARK, loglevel, rv, s, APLOGNO(00957)
-                         "%s: attempt to connect to %pI (%s) failed",
-                         proxy_function,
-                         backend_addr,
-                         worker->s->hostname);
-            backend_addr = backend_addr->next;
-            continue;
+            rv = apr_socket_opt_set(newsock, APR_TCP_NODELAY, 1);
+            if (rv != APR_SUCCESS && rv != APR_ENOTIMPL) {
+                ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(00954)
+                             "apr_socket_opt_set(APR_TCP_NODELAY): "
+                             "Failed to set");
+            }
+
+            /* Set a timeout for connecting to the backend on the socket */
+            if (worker->s->conn_timeout_set) {
+                apr_socket_timeout_set(newsock, worker->s->conn_timeout);
+            }
+            else if (worker->s->timeout_set) {
+                apr_socket_timeout_set(newsock, worker->s->timeout);
+            }
+            else if (conf->timeout_set) {
+                apr_socket_timeout_set(newsock, conf->timeout);
+            }
+            else {
+                apr_socket_timeout_set(newsock, s->timeout);
+            }
+            /* Set a keepalive option */
+            if (worker->s->keepalive) {
+                if ((rv = apr_socket_opt_set(newsock,
+                                             APR_SO_KEEPALIVE, 1)) != APR_SUCCESS) {
+                    ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(00955)
+                                 "apr_socket_opt_set(SO_KEEPALIVE): Failed to set"
+                                 " Keepalive");
+                }
+            }
+            ap_log_error(APLOG_MARK, APLOG_TRACE2, 0, s,
+                         "%s: fam %d socket created to connect to %s",
+                         proxy_function, backend_addr->family, worker->s->hostname);
+
+            if (conf->source_address_set) {
+                local_addr = apr_pmemdup(conn->pool, conf->source_address,
+                                         sizeof(apr_sockaddr_t));
+                local_addr->pool = conn->pool;
+                rv = apr_socket_bind(newsock, local_addr);
+                if (rv != APR_SUCCESS) {
+                    ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(00956)
+                                 "%s: failed to bind socket to local address",
+                                 proxy_function);
+                }
+            }
+
+            /* make the connection out of the socket */
+            rv = apr_socket_connect(newsock, backend_addr);
+
+            /* if an error occurred, loop round and try again */
+            if (rv != APR_SUCCESS) {
+                apr_socket_close(newsock);
+                loglevel = backend_addr->next ? APLOG_DEBUG : APLOG_ERR;
+                ap_log_error(APLOG_MARK, loglevel, rv, s, APLOGNO(00957)
+                             "%s: attempt to connect to %pI (%s) failed",
+                             proxy_function,
+                             backend_addr,
+                             worker->s->hostname);
+                backend_addr = backend_addr->next;
+                continue;
+            }
         }
 
         /* Set a timeout on the socket */
@@ -2498,7 +2679,7 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
 
         conn->sock = newsock;
 
-        if (conn->forward) {
+        if (!conn->uds_path && conn->forward) {
             forward_info *forward = (forward_info *)conn->forward;
             /*
              * For HTTP CONNECT we need to prepend CONNECT request before
@@ -2779,7 +2960,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_sync_balancer(proxy_balancer *b, server_rec
                 found = 1;
                 ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(02402)
                              "re-grabbing shm[%d] (0x%pp) for worker: %s", i, (void *)shm,
-                             worker->s->name);
+                             ap_proxy_worker_name(conf->pool, worker));
                 break;
             }
         }

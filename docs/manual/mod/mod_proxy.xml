@@ -837,6 +837,14 @@ expressions</description>
     usually be set <strong>off</strong> when using
     <directive>ProxyPass</directive>.</note>
 
+    <p>Support for using a Unix Domain Socket is available by using a target
+    which prepends <code>unix:/path/lis.sock|</code>. For example, to proxy
+    HTTP and target the UDS at /home/www/socket you would use
+    <code>unix:/home/www.socket|http://localhost/whatever/</code>.</p>
+
+    <note><strong>Note:</strong> The path associated with the <code>unix:</code>
+    URL is <directive>DefaultRuntimeDir</directive> aware.</note>
+
     <p>Suppose the local server has address <code>http://example.com/</code>;
     then</p>
 
