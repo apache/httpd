@@ -98,6 +98,12 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+
+  * mod_cache: Stop invalidating cached responses when reval returns 304+Expires,
+    trunk patch: http://svn.apache.org/r1518269
+    2.4.x patch: trunk works
+    +1 covener, jim, humbedooh
+
   
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -123,11 +129,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1542562
     2.4.x patch: http://people.apache.org/~jim/patches/proxy-port-scheme.patch
     +1: jim, druggeri
-
-  * mod_cache: Stop invalidating cached responses when reval returns 304+Expires,
-    trunk patch: http://svn.apache.org/r1518269
-    2.4.x patch: trunk works
-    +1 covener, jim
   
   * mod_ssl: drop unnecessary EVP_PKEY_copy_parameters cruft
     trunk patch: https://svn.apache.org/r1546692
