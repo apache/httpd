@@ -835,13 +835,19 @@ expressions</description>
     usually be set <strong>off</strong> when using
     <directive>ProxyPass</directive>.</note>
 
-    <p>Support for using a Unix Domain Socket is available by using a target
+    <p>Support for using a Unix Domain Socket is available by using a url target
     which prepends <code>unix:/path/lis.sock|</code>. For example, to proxy
     HTTP and target the UDS at /home/www/socket you would use
-    <code>unix:/home/www.socket|http://localhost/whatever/</code>.</p>
+    <code>unix:/home/www.socket|http://localhost/whatever/</code>. Since
+    the socket is local, the hostname used (in this case <code>localhost</code>)
+    is moot.</p>
 
     <note><strong>Note:</strong> The path associated with the <code>unix:</code>
     URL is <directive>DefaultRuntimeDir</directive> aware.</note>
+
+    <note><strong>Note:</strong> <directive>RewriteRule</directive> requires
+    the <code>[P,NE]</code> option to prevent the <code>'|'</code> character
+    from being escaped.</note>
 
     <p>Suppose the local server has address <code>http://example.com/</code>;
     then</p>
