@@ -219,9 +219,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                       conn->worker->s->hostname);
         if (status == AJP_EOVERFLOW)
             return HTTP_BAD_REQUEST;
-        else if  (status == AJP_EBAD_METHOD) {
-            return HTTP_NOT_IMPLEMENTED;
-        } else {
+        else {
             /*
              * This is only non fatal when the method is idempotent. In this
              * case we can dare to retry it with a different worker if we are
