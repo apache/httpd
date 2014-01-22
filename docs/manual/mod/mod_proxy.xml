@@ -840,7 +840,7 @@ expressions</description>
     HTTP and target the UDS at /home/www/socket you would use
     <code>unix:/home/www.socket|http://localhost/whatever/</code>. Since
     the socket is local, the hostname used (in this case <code>localhost</code>)
-    is moot.</p>
+    is moot, but it is passed as the Host: header value of the request.</p>
 
     <note><strong>Note:</strong> The path associated with the <code>unix:</code>
     URL is <directive>DefaultRuntimeDir</directive> aware.</note>
