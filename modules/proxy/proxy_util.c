@@ -1927,11 +1927,14 @@ PROXY_DECLARE(int) ap_proxy_pre_request(proxy_worker **worker,
             }
         }
         else if (r->proxyreq == PROXYREQ_REVERSE) {
+            char *ptr;
+            const char *ptr2;
             if (conf->reverse) {
                 ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
                               "*: found reverse proxy worker for %s", *url);
                 *balancer = NULL;
                 *worker = conf->reverse;
+                *(*worker)->s->uds_path = '\0';
                 access_status = OK;
                 /*
                  * The reverse worker does not keep connections alive, so
@@ -1939,6 +1942,30 @@ PROXY_DECLARE(int) ap_proxy_pre_request(proxy_worker **worker,
                  * regarding the Connection header in the request.
                  */
                 apr_table_setn(r->subprocess_env, "proxy-nokeepalive", "1");
+                /*
+                 * In the case of the generic reverse proxy, we need to see if we
+                 * were passed a UDS url (eg: from mod_proxy) and adjust uds_path
+                 * as required.
+                 */
+                if (apr_table_get(r->notes, "rewrite-proxy") &&
+                    (ptr2 = ap_strstr_c(r->filename, "unix:")) &&
+                    (ptr = ap_strchr(r->filename, '|'))) {
+                    apr_uri_t urisock;
+                    apr_status_t rv;
+                    *ptr = '\0';
+                    rv = apr_uri_parse(r->pool, ptr2, &urisock);
+                    if (rv == APR_SUCCESS) {
+                        char *sockpath = ap_runtime_dir_relative(r->pool, urisock.path);;
+                        if (PROXY_STRNCPY((*worker)->s->uds_path, sockpath) != APR_SUCCESS) {
+                            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02597)
+                            "worker uds path (%s) too long", sockpath);
+                        }
+                        r->filename = ptr+1;    /* so we get the scheme for the uds */
+                    }
+                    else {
+                        *ptr = '|';
+                    }
+                }
             }
         }
     }
@@ -2119,7 +2146,6 @@ PROXY_DECLARE(int) ap_proxy_acquire_connection(const char *proxy_function,
     else {
         (*conn)->uds_path = NULL;
     }
-
 
     return OK;
 }
