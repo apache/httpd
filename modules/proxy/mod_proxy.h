@@ -274,6 +274,7 @@ struct proxy_conn_pool {
 #define PROXY_WORKER_INITIALIZED    0x0001
 #define PROXY_WORKER_IGNORE_ERRORS  0x0002
 #define PROXY_WORKER_DRAIN          0x0004
+#define PROXY_WORKER_GENERIC        0x0008
 #define PROXY_WORKER_IN_SHUTDOWN    0x0010
 #define PROXY_WORKER_DISABLED       0x0020
 #define PROXY_WORKER_STOPPED        0x0040
@@ -285,6 +286,7 @@ struct proxy_conn_pool {
 #define PROXY_WORKER_INITIALIZED_FLAG    'O'
 #define PROXY_WORKER_IGNORE_ERRORS_FLAG  'I'
 #define PROXY_WORKER_DRAIN_FLAG          'N'
+#define PROXY_WORKER_GENERIC_FLAG        'G'
 #define PROXY_WORKER_IN_SHUTDOWN_FLAG    'U'
 #define PROXY_WORKER_DISABLED_FLAG       'D'
 #define PROXY_WORKER_STOPPED_FLAG        'S'
@@ -304,6 +306,8 @@ PROXY_WORKER_DISABLED | PROXY_WORKER_STOPPED | PROXY_WORKER_IN_ERROR )
   PROXY_WORKER_IS_INITIALIZED(f) )
 
 #define PROXY_WORKER_IS_DRAINING(f)   ( (f)->s->status &  PROXY_WORKER_DRAIN )
+
+#define PROXY_WORKER_IS_GENERIC(f)   ( (f)->s->status &  PROXY_WORKER_GENERIC )
 
 /* default worker retry timeout in seconds */
 #define PROXY_WORKER_DEFAULT_RETRY    60
