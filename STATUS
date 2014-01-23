@@ -169,7 +169,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  http://svn.apache.org/r1559398
     2.4.x patch: http://people.apache.org/~covener/patches/2.4.x-moddir_skip_rewritten.diff
                  (skips change of handler name)
-    +1: covener
+    +1: covener, minfrin
 
   * mod_session: Fix problems interpreting the SessionInclude and
     SessionExclude configuration.
