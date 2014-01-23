@@ -1958,11 +1958,8 @@ PROXY_DECLARE(int) ap_proxy_pre_request(proxy_worker **worker,
                     *ptr = '\0';
                     rv = apr_uri_parse(r->pool, ptr2, &urisock);
                     if (rv == APR_SUCCESS) {
-                        char *sockpath = ap_runtime_dir_relative(r->pool, urisock.path);;
-                        if (PROXY_STRNCPY((*worker)->s->uds_path, sockpath) != APR_SUCCESS) {
-                            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02597)
-                            "worker uds path (%s) too long", sockpath);
-                        }
+                        char *sockpath = ap_runtime_dir_relative(r->pool, urisock.path);
+                        apr_table_setn(r->notes, "uds_path", sockpath);
                         r->filename = ptr+1;    /* so we get the scheme for the uds */
                         *url = apr_pstrdup(r->pool, r->filename);
                         ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
@@ -2130,28 +2127,7 @@ PROXY_DECLARE(int) ap_proxy_acquire_connection(const char *proxy_function,
     (*conn)->worker = worker;
     (*conn)->close  = 0;
     (*conn)->inreslist = 0;
-
-    if (*worker->s->uds_path) {
-        if ((*conn)->uds_path == NULL) {
-            /* use (*conn)->pool instead of worker->cp->pool to match lifetime */
-            (*conn)->uds_path = apr_pstrdup((*conn)->pool, worker->s->uds_path);
-        }
-        if ((*conn)->uds_path) {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(02545)
-                         "%s: has determined UDS as %s",
-                         proxy_function, (*conn)->uds_path);
-        }
-        else {
-            /* should never happen */
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(02546)
-                         "%s: cannot determine UDS (%s)",
-                         proxy_function, worker->s->uds_path);
-
-        }
-    }
-    else {
-        (*conn)->uds_path = NULL;
-    }
+    (*conn)->uds_path = NULL;
 
     return OK;
 }
@@ -2183,6 +2159,7 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
     int server_port;
     apr_status_t err = APR_SUCCESS;
     apr_status_t uerr = APR_SUCCESS;
+    const char *uds_path;
 
     /*
      * Break up the URL to determine the host to connect to
@@ -2223,7 +2200,26 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
      *      to check host and port on the conn and be careful about
      *      spilling the cached addr from the worker.
      */
-    if (!(*worker->s->uds_path) &&
+    uds_path = (*worker->s->uds_path ? worker->s->uds_path : apr_table_get(r->notes, "uds_path"));
+    if (uds_path) {
+        if (conn->uds_path == NULL) {
+            /* use (*conn)->pool instead of worker->cp->pool to match lifetime */
+            conn->uds_path = apr_pstrdup(conn->pool, uds_path);
+        }
+        if (conn->uds_path) {
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02545)
+                         "%s: has determined UDS as %s",
+                         uri->scheme, conn->uds_path);
+        }
+        else {
+            /* should never happen */
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02546)
+                         "%s: cannot determine UDS (%s)",
+                         uri->scheme, uds_path);
+
+        }
+    }
+    if (!(uds_path) &&
         (!conn->hostname || !worker->s->is_address_reusable ||
         worker->s->disablereuse)) {
         if (proxyname) {
@@ -2275,7 +2271,17 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
                                         conn->pool);
         }
     }
-    if (!(*worker->s->uds_path) && worker->s->is_address_reusable && !worker->s->disablereuse) {
+    else {
+        /*
+         * In UDS cases, some structs are NULL. Protect from de-refs
+         * and provide info for logging at the same time.
+         */
+        apr_sockaddr_t *sa;
+        apr_sockaddr_info_get(&sa, NULL, APR_UNSPEC, 0, 0, conn->pool);
+        conn->hostname = "httpd-UDS";
+        conn->addr = sa;
+    }
+    if (!(uds_path) && worker->s->is_address_reusable && !worker->s->disablereuse) {
         /*
          * Looking up the backend address for the worker only makes sense if
          * we can reuse the address.
