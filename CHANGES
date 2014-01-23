@@ -2,6 +2,10 @@
 
 Changes with Apache 2.4.8
 
+  *) mod_session: Fix problems interpreting the SessionInclude and
+     SessionExclude configuration. PR 56038. [Erik Pearson
+     <erik adaptations.com>]
+
   *) mod_authn_core: Allow <AuthnProviderAlias>'es to be seen from auth
      stanzas under virtual hosts. PR 55622. [Eric Covener]
 
