@@ -5,7 +5,7 @@
   ------------------
 
   For complete installation documentation, see [ht]docs/manual/install.html or
-  http://httpd.apache.org/docs/2.5/install.html
+  http://httpd.apache.org/docs/trunk/install.html
 
      $ ./configure --prefix=PREFIX
      $ make
@@ -82,7 +82,7 @@
 
     svn co http://svn.apache.org/repos/asf/apr/apr/trunk srclib/apr
 
-    buildconf will find it automaticaly.  Use the --with-included-apr
+    buildconf will find it automatically.  Use the --with-included-apr
     argument to httpd configure.
 
   To use APR 1.x and APR-util 1.x in srclib:
@@ -90,10 +90,10 @@
     Check out the current branches as srclib/apr and srclib/apr-util with
     the following commands:
 
-    svn co http://svn.apache.org/repos/asf/apr/apr/branches/1.4.x srclib/apr
+    svn co http://svn.apache.org/repos/asf/apr/apr/branches/1.5.x srclib/apr
     svn co http://svn.apache.org/repos/asf/apr/apr-util/branches/1.5.x srclib/apr-util
 
-    buildconf will find them automaticaly.  Use the --with-included-apr
+    buildconf will find them automatically.  Use the --with-included-apr
     argument to httpd configure.
 
   To use existing checkouts of APR (and APR-util if using APR 1.x):
@@ -117,7 +117,7 @@
   ---------------------
 
   For complete documentation, see manual/platform/windows.html.en or
-  http://httpd.apache.org/docs/2.5/platform/windows.html.
+  http://httpd.apache.org/docs/trunk/platform/windows.html.
 
   The Apache/Win32 binaries are distributed as Windows Installer packages 
   (.msi) named httpd-2.5.xx-win32-x86-no_ssl.msi for a version without mod_ssl
@@ -140,12 +140,8 @@
   Postscript
   ----------
 
-  The Apache HTTP Server group cannot field user's installation questions.
-  There are many valuable forums to help you get started.  Please refer your
-  questions to the appropriate forum, such as the Users Mailing List at
-  http://httpd.apache.org/userslist.html or the usenet newsgroups
-  comp.infosystems.www.servers.unix or
-  comp.infosystems.www.servers.ms-windows.
+  To obtain help with installation problems, please see the resources at
+  <http://httpd.apache.org/support.html>
 
   Thanks for using the Apache HTTP Server, version 2.5.
 
