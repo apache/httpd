@@ -127,7 +127,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   * mod_ssl: drop unnecessary EVP_PKEY_copy_parameters cruft
     trunk patch: https://svn.apache.org/r1546692
     2.4.x patch: trunk patch works
-    +1: kbrand, trawick
+    +1: kbrand, trawick, jim
 
   * prefork: PR: 54852. Only use a dummy_connection for idle processes
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1542379
@@ -169,19 +169,19 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  http://svn.apache.org/r1559398
     2.4.x patch: http://people.apache.org/~covener/patches/2.4.x-moddir_skip_rewritten.diff
                  (skips change of handler name)
-    +1: covener, minfrin
+    +1: covener, minfrin, jim
 
   * mod_session: Fix problems interpreting the SessionInclude and
     SessionExclude configuration.
     trunk patch: http://svn.apache.org/r1559828
     2.4.x patch: trunk patch works after resolving CHANGES conflicts
-    +1: trawick, minfrin
+    +1: trawick, minfrin, jim
 
   * FreeBSD: Disable IPv4-mapped listening sockets by default for versions
     5+ instead of just for FreeBSD 5. PR 53824.
     trunk patch: http://svn.apache.org/r1551685
     2.4.x patch: trunk patch works after resolving CHANGES conflicts
-    +1: trawick
+    +1: trawick, jim
 
 OTHER PROPOSALS
 
