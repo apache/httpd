@@ -175,7 +175,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     SessionExclude configuration.
     trunk patch: http://svn.apache.org/r1559828
     2.4.x patch: trunk patch works after resolving CHANGES conflicts
-    +1: trawick
+    +1: trawick, minfrin
 
   * FreeBSD: Disable IPv4-mapped listening sockets by default for versions
     5+ instead of just for FreeBSD 5. PR 53824.
