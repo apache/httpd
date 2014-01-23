@@ -1007,13 +1007,19 @@ through</td></tr>
     usually be set <strong>off</strong> when using
     <code class="directive">ProxyPass</code>.</div>
 
-    <p>Support for using a Unix Domain Socket is available by using a target
+    <p>Support for using a Unix Domain Socket is available by using a url target
     which prepends <code>unix:/path/lis.sock|</code>. For example, to proxy
     HTTP and target the UDS at /home/www/socket you would use
-    <code>unix:/home/www.socket|http://localhost/whatever/</code>.</p>
+    <code>unix:/home/www.socket|http://localhost/whatever/</code>. Since
+    the socket is local, the hostname used (in this case <code>localhost</code>)
+    is moot, but it is passed as the Host: header value of the request.</p>
 
     <div class="note"><strong>Note:</strong> The path associated with the <code>unix:</code>
     URL is <code class="directive">DefaultRuntimeDir</code> aware.</div>
+
+    <div class="note"><strong>Note:</strong> <code class="directive">RewriteRule</code> requires
+    the <code>[P,NE]</code> option to prevent the <code>'|'</code> character
+    from being escaped.</div>
 
     <p>Suppose the local server has address <code>http://example.com/</code>;
     then</p>
