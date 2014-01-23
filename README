@@ -98,22 +98,11 @@
        subscribe to the apache-announce mailing list as described under
        <http://httpd.apache.org/lists.html#http-announce>
 
-     o If you want freely available support for running Apache please join the
-       Apache user community by subscribing to Users Mailing List at
-       <http://httpd.apache.org/userslist.html> or one of the following
-       USENET newsgroups:
-         comp.infosystems.www.servers.unix
-         comp.infosystems.www.servers.ms-windows
-       Also available at: 
-         <http://groups.google.com/groups?group=comp.infosystems.www.servers>
+     o If you want freely available support for running Apache please see the
+       resources at <http://httpd.apache.org/support.html>
 
-     o If you want commercial support for running Apache please contact
-       one of the companies and contractors which are listed at
-       <http://www.apache.org/info/support.cgi>
-
-     o If you have a concrete bug report for Apache please go to the
-       Apache Group Bug Database and submit your report:
-       <http://httpd.apache.org/bug_report.html>
+     o If you have a concrete bug report for Apache please see the instructions
+       for bug reporting at <http://httpd.apache.org/bug_report.html>
 
      o If you want to participate in actively developing Apache please
        subscribe to the `dev@httpd.apache.org' mailing list as described at
