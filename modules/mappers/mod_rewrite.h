@@ -29,6 +29,8 @@
 #include "apr_optional.h"
 #include "httpd.h"
 
+#define REWRITE_REDIRECT_HANDLER_NAME "redirect-handler"
+
 /* rewrite map function prototype */
 typedef char *(rewrite_mapfunc_t)(request_rec *r, char *key);
 

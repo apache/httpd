@@ -98,15 +98,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_dir: stop trying to index or redirect requests that are halfway
-    through being rewritten by per-dir mod_rewrite. Old releases would skip any
-    unknown r->handler. PR53929
-    trunk patch: http://svn.apache.org/r1557641 
-                 http://svn.apache.org/r1559394
-                 http://svn.apache.org/r1559398
-    2.4.x patch: http://people.apache.org/~covener/patches/2.4.x-moddir_skip_rewritten.diff
-                 (skips change of handler name)
-    +1: covener, minfrin, jim
 
   * mod_session: Fix problems interpreting the SessionInclude and
     SessionExclude configuration.
