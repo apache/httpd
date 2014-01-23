@@ -29,6 +29,7 @@
 #include "http_log.h"
 #include "http_main.h"
 #include "util_script.h"
+#include "mod_rewrite.h"
 
 module AP_MODULE_DECLARE_DATA dir_module;
 
@@ -258,6 +259,11 @@ static int fixup_dir(request_rec *r)
         apr_table_setn(r->headers_out, "Location",
                        ap_construct_url(r->pool, ifile, r));
         return HTTP_MOVED_PERMANENTLY;
+    }
+
+    /* we're running between mod_rewrites fixup and its internal redirect handler, step aside */
+    if (!strcmp(r->handler, REWRITE_REDIRECT_HANDLER_NAME)) { 
+        return DECLINED;
     }
 
     if (d->index_names) {

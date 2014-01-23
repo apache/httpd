@@ -5004,7 +5004,7 @@ static int hook_fixup(request_rec *r)
             rewritelog((r, 1, dconf->directory, "internal redirect with %s "
                         "[INTERNAL REDIRECT]", r->filename));
             r->filename = apr_pstrcat(r->pool, "redirect:", r->filename, NULL);
-            r->handler = "redirect-handler";
+            r->handler = REWRITE_REDIRECT_HANDLER_NAME;
             return OK;
         }
     }
@@ -5050,7 +5050,7 @@ static int hook_mimetype(request_rec *r)
  */
 static int handler_redirect(request_rec *r)
 {
-    if (strcmp(r->handler, "redirect-handler")) {
+    if (strcmp(r->handler, REWRITE_REDIRECT_HANDLER_NAME)) {
         return DECLINED;
     }
 
