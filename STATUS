@@ -98,6 +98,27 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  * mod_ssl: drop unnecessary EVP_PKEY_copy_parameters cruft
+    trunk patch: https://svn.apache.org/r1546692
+    2.4.x patch: trunk patch works
+    +1: kbrand, trawick, jim
+
+  * mod_dir: stop trying to index or redirect requests that are halfway
+    through being rewritten by per-dir mod_rewrite. Old releases would skip any
+    unknown r->handler. PR53929
+    trunk patch: http://svn.apache.org/r1557641 
+                 http://svn.apache.org/r1559394
+                 http://svn.apache.org/r1559398
+    2.4.x patch: http://people.apache.org/~covener/patches/2.4.x-moddir_skip_rewritten.diff
+                 (skips change of handler name)
+    +1: covener, minfrin, jim
+
+  * mod_session: Fix problems interpreting the SessionInclude and
+    SessionExclude configuration.
+    trunk patch: http://svn.apache.org/r1559828
+    2.4.x patch: trunk patch works after resolving CHANGES conflicts
+    +1: trawick, minfrin, jim
+
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -124,11 +145,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: http://people.apache.org/~jim/patches/proxy-port-scheme.patch
     +1: jim, druggeri
   
-  * mod_ssl: drop unnecessary EVP_PKEY_copy_parameters cruft
-    trunk patch: https://svn.apache.org/r1546692
-    2.4.x patch: trunk patch works
-    +1: kbrand, trawick, jim
-
   * prefork: PR: 54852. Only use a dummy_connection for idle processes
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1542379
     2.4.x patch: trunk patch works mod CHANGES
@@ -160,22 +176,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     +1: jailletc36
     -1: covener, seems like unnecessary default change for 2.4. No issue w/o
         default change.  
-
-  * mod_dir: stop trying to index or redirect requests that are halfway
-    through being rewritten by per-dir mod_rewrite. Old releases would skip any
-    unknown r->handler. PR53929
-    trunk patch: http://svn.apache.org/r1557641 
-                 http://svn.apache.org/r1559394
-                 http://svn.apache.org/r1559398
-    2.4.x patch: http://people.apache.org/~covener/patches/2.4.x-moddir_skip_rewritten.diff
-                 (skips change of handler name)
-    +1: covener, minfrin, jim
-
-  * mod_session: Fix problems interpreting the SessionInclude and
-    SessionExclude configuration.
-    trunk patch: http://svn.apache.org/r1559828
-    2.4.x patch: trunk patch works after resolving CHANGES conflicts
-    +1: trawick, minfrin, jim
 
   * FreeBSD: Disable IPv4-mapped listening sockets by default for versions
     5+ instead of just for FreeBSD 5. PR 53824.
