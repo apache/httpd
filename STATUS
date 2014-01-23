@@ -98,11 +98,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_ssl: drop unnecessary EVP_PKEY_copy_parameters cruft
-    trunk patch: https://svn.apache.org/r1546692
-    2.4.x patch: trunk patch works
-    +1: kbrand, trawick, jim
-
   * mod_dir: stop trying to index or redirect requests that are halfway
     through being rewritten by per-dir mod_rewrite. Old releases would skip any
     unknown r->handler. PR53929

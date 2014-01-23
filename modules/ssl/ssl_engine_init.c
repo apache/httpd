@@ -931,22 +931,6 @@ static apr_status_t ssl_server_import_key(server_rec *s,
         return ssl_die(s);
     }
 
-    /*
-     * XXX: wonder if this is still needed, this is old todo doc.
-     * (see http://www.psy.uq.edu.au/~ftp/Crypto/ssleay/TODO.html)
-     */
-    if ((pkey_type == EVP_PKEY_DSA) && mctx->pks->certs[idx]) {
-        EVP_PKEY *pubkey = X509_get_pubkey(mctx->pks->certs[idx]);
-
-        if (pubkey && EVP_PKEY_missing_parameters(pubkey)) {
-            EVP_PKEY_copy_parameters(pubkey, pkey);
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(02239)
-                    "Copying DSA parameters from private key to certificate");
-            ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, s);
-            EVP_PKEY_free(pubkey);
-        }
-    }
-
     mctx->pks->keys[idx] = pkey;
 
     return APR_SUCCESS;
