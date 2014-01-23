@@ -261,14 +261,26 @@ interpreted in pre -->
 </xsl:variable>
 <xsl:choose>
 
-<xsl:when test="starts-with(@href, 'http:') or starts-with(@href, 'news:') or starts-with(@href, 'mailto:')">
+<xsl:when test="starts-with(@href, 'http:') or starts-with(@href, 'https:') or starts-with(@href, 'news:') or starts-with(@href, 'mailto:')">
   <xsl:if test="not(.=@href)">
     <xsl:text>\footnote{</xsl:text>
       <xsl:text>\href{</xsl:text>
       <xsl:call-template name="replace-string">
-        <xsl:with-param name="text" select="@href"/>
-        <xsl:with-param name="replace" select="'#'"/>
-        <xsl:with-param name="with" select="'\#'"/>
+        <xsl:with-param name="replace" select="'%'"/>
+        <xsl:with-param name="with" select="'\%'"/>
+        <xsl:with-param name="text">
+          <xsl:call-template name="replace-string">
+            <xsl:with-param name="replace" select="'_'"/>
+            <xsl:with-param name="with" select="'\_'"/>
+            <xsl:with-param name="text">
+              <xsl:call-template name="replace-string">
+                <xsl:with-param name="replace" select="'#'"/>
+                <xsl:with-param name="with" select="'\#'"/>
+                <xsl:with-param name="text" select="@href"/>
+              </xsl:call-template>
+            </xsl:with-param>
+          </xsl:call-template>
+        </xsl:with-param>
       </xsl:call-template>
       <xsl:text>}{</xsl:text>
     <xsl:call-template name="ltescape">
