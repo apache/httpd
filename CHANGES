@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_session: When we have a session we were unable to decode,
+     behave as if there was no session at all. [Thomas Eckert
+     <thomas.r.w.eckert gmail com>]
+
   *) mod_session: Fix problems interpreting the SessionInclude and
      SessionExclude configuration. PR 56038. [Erik Pearson
      <erik adaptations.com>]
