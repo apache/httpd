@@ -1934,7 +1934,6 @@ PROXY_DECLARE(int) ap_proxy_pre_request(proxy_worker **worker,
                               "*: found reverse proxy worker for %s", *url);
                 *balancer = NULL;
                 *worker = conf->reverse;
-                *(*worker)->s->uds_path = '\0';
                 access_status = OK;
                 /*
                  * The reverse worker does not keep connections alive, so
@@ -2127,7 +2126,6 @@ PROXY_DECLARE(int) ap_proxy_acquire_connection(const char *proxy_function,
     (*conn)->worker = worker;
     (*conn)->close  = 0;
     (*conn)->inreslist = 0;
-    (*conn)->uds_path = NULL;
 
     return OK;
 }
