@@ -97,18 +97,21 @@ static apr_status_t unixd_set_shm_perms(const char *fname)
     key_t shmkey;
     int shmid;
 
-#if APR_VERSION_AT_LEAST(1,5,1)
     apr_ssize_t slen = strlen(fname);
     shmkey = ftok(fname,
                   (int)apr_hashfunc_default(fname, &slen));
-#else
-    shmkey = ftok(fname, 1);
-#endif
     if (shmkey == (key_t)-1) {
         return errno;
     }
     if ((shmid = shmget(shmkey, 0, SHM_R | SHM_W)) == -1) {
-        return errno;
+        /* see if we are using a key of 1 */
+        shmkey = ftok(fname, 1);
+        if (shmkey == (key_t)-1) {
+            return errno;
+        }
+        if ((shmid = shmget(shmkey, 0, SHM_R | SHM_W)) == -1)
+            return errno;
+        }
     }
 #if MODULE_MAGIC_NUMBER_MAJOR <= 20081212
 #define ap_unixd_config unixd_config
