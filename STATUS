@@ -98,12 +98,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_session: When we have a session we were unable to decode, behave as if
-    there was no session at all.
-    trunk patch: http://svn.apache.org/r1560977
-    2.4.x patch: trunk works (modulo changes)
-    +1: minfrin, trawick, jim
-
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
