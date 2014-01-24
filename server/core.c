@@ -49,7 +49,6 @@
 #include "mod_proxy.h"
 #include "ap_listen.h"
 #include "ap_provider.h"
-#include "apr_version.h"
 
 #include "mod_so.h" /* for ap_find_loaded_module_symbol */
 
@@ -4907,7 +4906,7 @@ static int core_pre_connection(conn_rec *c, void *csd)
     rv = apr_socket_opt_set(csd, APR_TCP_NODELAY, 1);
     if (rv != APR_SUCCESS
         && rv != APR_ENOTIMPL
-#if APR_VERSION_AT_LEAST(1,5,1)
+#ifdef APR_EOPNOTSUPP
         && rv != APR_EOPNOTSUPP
 #endif
         ) {
