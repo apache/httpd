@@ -125,7 +125,9 @@ Alias /foo /gaq
     <var>URL-path</var> then the server will require a trailing / in
     order to expand the alias. That is, if you use</p>
 
-    <dl><dd><code>Alias /icons/ /usr/local/apache/icons/</code></dd></dl>
+    <highlight language="config">
+      Alias /icons/ /usr/local/apache/icons/
+    </highlight>
 
     <p>then the url <code>/icons</code> will not be aliased, as it lacks
     that trailing /. Likewise, if you omit the slash on the
