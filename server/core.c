@@ -49,6 +49,7 @@
 #include "mod_proxy.h"
 #include "ap_listen.h"
 #include "ap_provider.h"
+#include "apr_version.h"
 
 #include "mod_so.h" /* for ap_find_loaded_module_symbol */
 
@@ -4904,7 +4905,12 @@ static int core_pre_connection(conn_rec *c, void *csd)
      * problem with simple HTTP.)
      */
     rv = apr_socket_opt_set(csd, APR_TCP_NODELAY, 1);
-    if (rv != APR_SUCCESS && rv != APR_ENOTIMPL) {
+    if (rv != APR_SUCCESS
+        && rv != APR_ENOTIMPL
+#if APR_VERSION_AT_LEAST(1,5,1)
+        && rv != APR_EOPNOTSUPP
+#endif
+        ) {
         /* expected cause is that the client disconnected already,
          * hence the debug level
          */
