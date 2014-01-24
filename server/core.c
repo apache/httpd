@@ -4904,12 +4904,7 @@ static int core_pre_connection(conn_rec *c, void *csd)
      * problem with simple HTTP.)
      */
     rv = apr_socket_opt_set(csd, APR_TCP_NODELAY, 1);
-    if (rv != APR_SUCCESS
-        && rv != APR_ENOTIMPL
-#ifdef APR_EOPNOTSUPP
-        && rv != APR_EOPNOTSUPP
-#endif
-        ) {
+    if (rv != APR_SUCCESS && rv != APR_ENOTIMPL) {
         /* expected cause is that the client disconnected already,
          * hence the debug level
          */
