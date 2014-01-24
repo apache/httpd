@@ -463,7 +463,7 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     Modules may register additional functions.</p>
 
     <table border="1" style="zebra">
-    <columnspec><column width=".2"/><column width=".8"/></columnspec>
+    <columnspec><column width=".2"/><column width=".4"/><column width=".4"/></columnspec>
 
     <tr><th>Name</th><th>Description</th><th>Restricted</th></tr>
     <tr><td><code>req</code>, <code>http</code></td>
