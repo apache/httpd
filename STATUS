@@ -161,6 +161,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     trunk patch: http://svn.apache.org/r1551685
     2.4.x patch: trunk patch works after resolving CHANGES conflicts
     +1: trawick, jim
+  
+  * mod_dir: provide a directive to skip mod_dir processing if any other
+    handler has been configured, as in 2.2. 
+    trunk patch http://svn.apache.org/r1557639 
+                http://svn.apache.org/r1557640
+    2.4.x patch: http://people.apache.org/~covener/patches/2.4.x-moddir-skiphandler.diff
+    +1 covener 
+    (I could be convincd to flip the default here, but I think it's too late)
 
 
 OTHER PROPOSALS
