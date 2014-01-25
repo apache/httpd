@@ -381,6 +381,9 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new,
         rv = APR_EINVAL;
     }
     if (rv == APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(02598)
+                     "looks like apr_shm_attach() worked...");
+
         /* check size */
         if (apr_shm_size_get(shm) != size) {
             apr_shm_detach(shm);
@@ -393,8 +396,12 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new,
             return APR_EINVAL;
         }
         ptr += AP_SLOTMEM_OFFSET;
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(02599)
+                     "apr_shm_attach() for sure worked...");
     }
     else {
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(02600)
+                     "doing a real apr_shm_create()...");
         apr_size_t dsize = size - AP_SLOTMEM_OFFSET;
         if (fbased) {
             apr_shm_remove(fname, gpool);
