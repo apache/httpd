@@ -51,7 +51,7 @@
 <xsl:sort select="name" />
 
    <xsl:text>\texttt{</xsl:text>
-   <xsl:apply-templates select="syntax" />
+   <xsl:apply-templates select="syntax" mode="tabular" />
    <xsl:text>}</xsl:text>
    <xsl:text>&amp;</xsl:text>
 

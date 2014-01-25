@@ -153,6 +153,21 @@ select="$metafile/basename"/>
    <xsl:if test="@type='section'"><xsl:text>\textgreater{}</xsl:text></xsl:if>
 <xsl:text>}</xsl:text>
 </xsl:template>
+
+<xsl:template match="directive" mode="tabular">
+<xsl:text>\textsc{</xsl:text>
+   <xsl:if test="@type='section'"><xsl:text>\textless{}</xsl:text></xsl:if>
+   <xsl:text>\hyperlink{/mod/</xsl:text>
+   <xsl:value-of select="@module"/>
+   <xsl:text>:</xsl:text>
+   <xsl:value-of select="translate(.,$uppercase,$lowercase)"/>
+   <xsl:text>}{</xsl:text>
+        <xsl:apply-templates mode="tabular"/>
+   <xsl:text>}</xsl:text>
+   <xsl:if test="@type='section'"><xsl:text>\textgreater{}</xsl:text></xsl:if>
+<xsl:text>}</xsl:text>
+</xsl:template>
+
 <!-- /directive -->
 
 <!-- ==================================================================== -->
@@ -164,6 +179,15 @@ select="$metafile/basename"/>
   <xsl:value-of select="."/>
   <xsl:text>}{</xsl:text>
     <xsl:apply-templates/>
+  <xsl:text>}</xsl:text>
+<xsl:text>}</xsl:text>
+</xsl:template>
+
+<xsl:template match="module" mode="tabular">
+<xsl:text>\textsc{\hyperlink{/mod/</xsl:text>
+  <xsl:value-of select="."/>
+  <xsl:text>}{</xsl:text>
+    <xsl:apply-templates mode="tabular"/>
   <xsl:text>}</xsl:text>
 <xsl:text>}</xsl:text>
 </xsl:template>
