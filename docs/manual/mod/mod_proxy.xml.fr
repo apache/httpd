@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1555551:1560081 (outdated) -->
+<!-- English Revision: 1560081 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -526,6 +526,22 @@ mandat&eacute;es</description>
 &lt;/Proxy&gt;
     </highlight>
 
+    <note><title>Diff&eacute;rences avec la section de configuration Location</title>
+      <p>Une URL d'arri&egrave;re-plan sera concern&eacute;e par le conteneur Proxy si
+      elle commence par la <var>url-avec-jokers</var>, m&ecirc;me si le
+      dernier segment de chemin de la directive ne correspond qu'&agrave; un
+      pr&eacute;fixe de segment dee chemin de l'URL d'arri&egrave;re-plan. Par exemple, &lt;Proxy
+      http://example.com/foo&gt; correspondra entre autres aux URLs
+      http://example.com/foo, http://example.com/foo/bar, et
+      http://example.com/foobar. La correspondance de l'URL finale
+      diff&egrave;re du comportement de la section <directive type="section"
+      module="core">Location</directive> qui, pour le cas de cette note,
+      traitera le segment de chemin final comme s'il se terminait par un
+      slash.</p>
+      <p>Pour un contr&ocirc;le plus fin de la correspondance des URL, voir la
+      directive <directive type="section">ProxyMatch</directive>.</p>
+    </note>
+
 </usage>
 <seealso><directive type="section" module="mod_proxy">ProxyMatch</directive></seealso>
 </directivesynopsis>
@@ -926,6 +942,16 @@ l'espace d'URLs du serveur local</description>
     module="mod_proxy">ProxyRequests</directive> doit &ecirc;tre d&eacute;finie &agrave;
     <strong>off</strong> lorsqu'on utilise la directive
     <directive>ProxyPass</directive>.</note>
+
+    <p>Le support des sockets de style Unix est fourni ; il suffit pour
+    cela d'utiliser une URL cible pr&eacute;fix&eacute;e par
+    <code>unix:/path/lis.sock|</code>. Par exemple, pour mandater HTTP
+    et cibler l'UDS /home/www/socket, vous devez utiliser
+    <code>unix:/home/www.socket|http://localhost/whatever/</code>.</p>
+
+    <note><strong>Note :</strong>Le chemin associ&eacute; &agrave; l'URL
+    <code>unix:</code> tient compte de la directive
+    <directive>DefaultRuntimeDir</directive>.</note>
 
     <p>Supposons que le serveur local a pour adresse
     <code>http://example.com/</code> ; alors la ligne</p>
