@@ -213,6 +213,12 @@ Server Documentation Project.  More information is available at
 <!-- Take care of all the LaTeX special characters.                       -->
 <!-- Silly multi-variable technique used to avoid deep recursion.         -->
 <!-- ==================================================================== -->
+<xsl:template match="text()|@*" mode="tabular">
+<xsl:call-template name="ltescape">
+  <xsl:with-param name="string" select="."/>
+</xsl:call-template>
+</xsl:template>
+
 <xsl:template match="text()">
 <xsl:call-template name="ltescape">
   <xsl:with-param name="string" select="."/>

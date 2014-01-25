@@ -66,10 +66,24 @@
 <xsl:apply-templates/>
 </xsl:template>
 
+<xsl:template match="br">
+<xsl:call-template name="br">
+<xsl:with-param name="result" select="'\\'" />
+</xsl:call-template>
+</xsl:template>
+
+<xsl:template match="br" mode="tabular">
+<xsl:call-template name="br">
+<xsl:with-param name="result" select="'\newline'" />
+</xsl:call-template>
+</xsl:template>
+
 <!-- Latex doesn't like successive line breaks, so replace any
      sequence of two or more br separated only by white-space with
      one line break followed by smallskips. -->
-<xsl:template match="br">
+<xsl:template name="br">
+<xsl:param name="result" />
+
 <xsl:choose>
 <xsl:when test="name(preceding-sibling::node()[1])='br' or name(preceding-sibling::node()[1])='indent'">
 <xsl:text>\smallskip </xsl:text>
@@ -82,7 +96,8 @@
   <xsl:otherwise>
     <!-- Don't put a line break if we are the last thing -->
     <xsl:if test="not(position()=last()) and not(position()=last()-1 and normalize-space(following-sibling::node()[1])='')">
-      <xsl:text>\\ </xsl:text>
+      <xsl:value-of select="$result" />
+      <xsl:text> </xsl:text>
     </xsl:if>
   </xsl:otherwise>
   </xsl:choose>
@@ -90,7 +105,8 @@
 <xsl:otherwise>
     <!-- Don't put a line break if we are the last thing -->
     <xsl:if test="not(position()=last()) and not(position()=last()-1 and normalize-space(following-sibling::node()[1])='')">
-      <xsl:text>\\ </xsl:text>
+      <xsl:value-of select="$result" />
+      <xsl:text> </xsl:text>
     </xsl:if>
 </xsl:otherwise>
 </xsl:choose>
@@ -102,9 +118,15 @@
 </xsl:text>
 </xsl:template>
 
-<xsl:template match="code">
+<xsl:template match="code|program">
 <xsl:text>\texttt{</xsl:text>
 <xsl:apply-templates/>
+<xsl:text>}</xsl:text>
+</xsl:template>
+
+<xsl:template match="code|program" mode="tabular">
+<xsl:text>\texttt{</xsl:text>
+<xsl:apply-templates mode="tabular"/>
 <xsl:text>}</xsl:text>
 </xsl:template>
 
@@ -114,9 +136,15 @@
 <xsl:text>}</xsl:text>
 </xsl:template>
 
-<xsl:template match="em">
+<xsl:template match="strong" mode="tabular">
+<xsl:text>\textbf{</xsl:text>
+<xsl:apply-templates mode="tabular"/>
+<xsl:text>}</xsl:text>
+</xsl:template>
+
+<xsl:template match="em|var|cite|q|dfn">
 <xsl:text>\textit{</xsl:text>
-<xsl:apply-templates/>
+<xsl:apply-templates mode="tabular"/>
 <xsl:text>}</xsl:text>
 </xsl:template>
 
@@ -244,8 +272,17 @@ interpreted in pre -->
    3. It is also necessary to deal with the fact that index pages
       get references as "/".
 -->
+<xsl:template match="a" mode="tabular">
+<xsl:apply-templates mode="tabular"/>
+<xsl:call-template name="a"/>
+</xsl:template>
+
 <xsl:template match="a">
 <xsl:apply-templates/>
+<xsl:call-template name="a"/>
+</xsl:template>
+
+<xsl:template name="a">
 <xsl:if test="@href">
 <xsl:variable name="relpath" select="document(/*/@metafile)/metafile/relpath" />
 <xsl:variable name="path" select="document(/*/@metafile)/metafile/path" />
@@ -322,6 +359,14 @@ interpreted in pre -->
 </xsl:template>
 
 <xsl:template match="img">
+<xsl:call-template name="img"/>
+</xsl:template>
+
+<xsl:template match="img" mode="tabular">
+<xsl:call-template name="img"/>
+</xsl:template>
+
+<xsl:template name="img">
 <xsl:variable name="path" select="document(/*/@metafile)/metafile/path" />
 <xsl:text>\includegraphics{</xsl:text>
       <xsl:call-template name="replace-string">
