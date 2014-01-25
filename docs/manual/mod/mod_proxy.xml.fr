@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1555266:1560518 (outdated) -->
+<!-- English Revision: 1560518 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -942,14 +942,22 @@ l'espace d'URLs du serveur local</description>
     <directive>ProxyPass</directive>.</note>
 
     <p>Le support des sockets de style Unix est fourni ; il suffit pour
-    cela d'utiliser une cible pr&eacute;fix&eacute;e par
+    cela d'utiliser une URL cible pr&eacute;fix&eacute;e par
     <code>unix:/path/lis.sock|</code>. Par exemple, pour mandater HTTP
     et cibler l'UDS /home/www/socket, vous devez utiliser
-    <code>unix:/home/www.socket|http://localhost/whatever/</code>.</p>
+    <code>unix:/home/www.socket|http://localhost/whatever/</code>. Comme
+    le socket est local, le nom d'h&ocirc;te utilis&eacute; (ici
+    <code>localhost</code>) peut &ecirc;tre sujet &agrave; discussion, mais il est
+    transmis dans l'en-t&ecirc;te Host: de la requ&ecirc;te.</p>
 
     <note><strong>Note :</strong>Le chemin associ&eacute; &agrave; l'URL
     <code>unix:</code> tient compte de la directive
     <directive>DefaultRuntimeDir</directive>.</note>
+
+    <note><strong>Note :</strong>Afin d'&eacute;viter l'&eacute;chappement du
+    caract&egrave;re <code>'|'</code>, la directive
+    <directive>RewriteRule</directive> doit poss&eacute;der l'option
+    <code>[P,NE]</code>.</note>
     
     <p>Supposons que le serveur local a pour adresse
     <code>http://example.com/</code> ; alors la ligne</p>

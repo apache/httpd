@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1422375:1560909 (outdated) -->
+<!-- English Revision : 1560909 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -138,7 +138,9 @@ de fichiers</description>
     URL</var>, vous devrez aussi ajouter un slash de fin au chemin de la
     requ&ecirc;te. Autrement dit, si vous d&eacute;finissez</p>
 
-    <dl><dd><code>Alias /icons/ /usr/local/apache/icons/</code></dd></dl>
+    <highlight language="config">
+      Alias /icons/ /usr/local/apache/icons/
+    </highlight>
 
     <p>l'alias pr&eacute;c&eacute;dent ne s'appliquera pas &agrave; l'url
     <code>/icons</code> &agrave; cause de l'absence du slash final. Ainsi, si

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1333771 -->
+<!-- English Revision: 1561283 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -210,11 +210,11 @@ RemoteIPInternalProxyList conf/trusted-proxies.lst
     </example>
 
     <example><title>contenu de conf/mandataires-de-confiance.lst</title>
-    <example><pre>
+    <pre>
          # Nos mandataires internes de confiance
          10.0.2.0/24         # Tout le monde dans le groupe de test
          passerelle.domaine-local # Le frontal r&eacute;partiteur de charge
-	 </pre></example>
+    </pre>
     </example>
 </usage>
 </directivesynopsis>
