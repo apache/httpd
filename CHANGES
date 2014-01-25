@@ -240,6 +240,24 @@ Changes with Apache 2.4.7
   *) mod_lua: add support for writing/reading cookies via r:getcookie and 
      r:setcookie. [Daniel Gruno]
 
+  *) mod_lua: If the first yield() of a LuaOutputFilter returns a string, it should
+     be prefixed to the response as documented. [Eric Covener] 
+     Note: Not present in 2.4.7 CHANGES
+
+  *) mod_lua: Remove ETAG, Content-Length, and Content-MD5 when a LuaOutputFilter
+     is configured without mod_filter. [Eric Covener]
+     Note: Not present in 2.4.7 CHANGES
+
+  *) mod_lua: Register LuaOutputFilter scripts as changing the content and
+     content-length by default, when run my mod_filter.  Previously,
+     growing or shrinking a response that started with Content-Length set
+     would require mod_filter and FilterProtocol change=yes. [Eric Covener]
+     Note: Not present in 2.4.7 CHANGES
+
+  *) mod_lua: Return a 500 error if a LuaHook* script doesn't return a
+     numeric return code. [Eric Covener]
+     Note: Not present in 2.4.7 CHANGES
+
 Changes with Apache 2.4.6
 
   *) Revert a broken fix for PR54948 that was applied to 2.4.5 (which was
