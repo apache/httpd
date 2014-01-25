@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1556622 -->
+<!-- English Revision : 1559613 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -489,6 +489,22 @@ mandat&eacute;es</description>
       </indent>
       &lt;/Proxy&gt;
     </example>
+
+    <note><title>Diff&eacute;rences avec la section de configuration Location</title>
+      <p>Une URL d'arri&egrave;re-plan sera concern&eacute;e par le conteneur Proxy si
+      elle commence par la <var>url-avec-jokers</var>, m&ecirc;me si le
+      dernier segment de chemin de la directive ne correspond qu'&agrave; un
+      pr&eacute;fixe de segment dee chemin de l'URL d'arri&egrave;re-plan. Par exemple, &lt;Proxy
+      http://example.com/foo&gt; correspondra entre autres aux URLs
+      http://example.com/foo, http://example.com/foo/bar, et
+      http://example.com/foobar. La correspondance de l'URL finale
+      diff&egrave;re du comportement de la section <directive type="section"
+      module="core">Location</directive> qui, pour le cas de cette note,
+      traitera le segment de chemin final comme s'il se terminait par un
+      slash.</p>
+      <p>Pour un contr&ocirc;le plus fin de la correspondance des URL, voir la
+      directive <directive type="section">ProxyMatch</directive>.</p>
+    </note>
 
 </usage>
 <seealso><directive type="section" module="mod_proxy">ProxyMatch</directive></seealso>
