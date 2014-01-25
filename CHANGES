@@ -116,20 +116,6 @@ Changes with Apache 2.5.0
      They were truncated to 31 characters which is not enough for IPv6 addresses.
      PR 54848 [Bernhard Schmidt <berni birkenwald de>]
 
-  *) mod_lua: If the first yield() of a LuaOutputFilter returns a string, it should
-     be prefixed to the response as documented. [Eric Covener]
-
-  *) mod_lua: Remove ETAG, Content-Length, and Content-MD5 when a LuaOutputFilter
-     is configured without mod_filter. [Eric Covener]
-
-  *) mod_lua: Register LuaOutputFilter scripts as changing the content and
-     content-length by default, when run my mod_filter.  Previously,
-     growing or shrinking a response that started with Content-Length set
-     would require mod_filter and FilterProtocol change=yes. [Eric Covener]
-
-  *) mod_lua: Return a 500 error if a LuaHook* script doesn't return a 
-     numeric return code. [Eric Covener]
-
   *) mod_authnz_fcgi: New module to enable FastCGI authorizer
      applications to authenticate and/or authorize clients.
      [Jeff Trawick]
