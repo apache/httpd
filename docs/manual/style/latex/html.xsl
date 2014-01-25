@@ -298,7 +298,7 @@ interpreted in pre -->
 </xsl:variable>
 <xsl:choose>
 
-<xsl:when test="starts-with(@href, 'http:') or starts-with(@href, 'https:') or starts-with(@href, 'news:') or starts-with(@href, 'mailto:')">
+<xsl:when test="starts-with(@href, 'http:') or starts-with(@href, 'https:') or starts-with(@href, 'ftp:') or starts-with(@href, 'news:') or starts-with(@href, 'mailto:')">
   <xsl:if test="not(.=@href)">
     <xsl:text>\footnote{</xsl:text>
       <xsl:text>\href{</xsl:text>
