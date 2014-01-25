@@ -1,14 +1,6 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
-  *) mod_session: When we have a session we were unable to decode,
-     behave as if there was no session at all. [Thomas Eckert
-     <thomas.r.w.eckert gmail com>]
-
-  *) mod_session: Fix problems interpreting the SessionInclude and
-     SessionExclude configuration. PR 56038. [Erik Pearson
-     <erik adaptations.com>]
-
   *) mod_rewrite: Rename the handler that does per-directory internal 
      redirects to "rewrite-redirect-handler" from "redirect-handler" so
      it is less ambiguous and less likely to be reused. [Eric Covener]
@@ -103,9 +95,6 @@ Changes with Apache 2.5.0
   *) core: draft-ietf-httpbis-p1-messaging-23 corrections regarding
      TE/CL conflicts. [Yann Ylavic <ylavic.dev gmail com>, Jim Jagielski]
      
-  *) mod_proxy_fcgi: Use apr_socket_timeout_get instead of hard-coded
-     30 seconds timeout. [Jan Kaluza]
-
   *) WinNT MPM: If ap_run_pre_connection() fails or sets c->aborted, don't
      save the socket for reuse by the next worker as if it were an 
      APR_SO_DISCONNECTED socket. Restores 2.2 behavior. [Eric Covener]
