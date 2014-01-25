@@ -97,7 +97,6 @@ static apr_status_t unixd_set_shm_perms(const char *fname)
     key_t shmkey;
     int shmid;
 
-    apr_ssize_t slen = strlen(fname);
     shmkey = ftok(fname, 1);
     if (shmkey == (key_t)-1) {
         return errno;
