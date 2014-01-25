@@ -178,11 +178,11 @@ RemoteIPInternalProxyList conf/trusted-proxies.lst
     </example>
 
     <example><title>conf/trusted-proxies.lst contents</title>
-    <example><pre>
+    <pre>
 # Our internally trusted proxies;
 10.0.2.0/24         #Everyone in the testing group
 gateway.localdomain #The front end balancer
-         </pre></example>
+</pre>
     </example>
 </usage>
 </directivesynopsis>
