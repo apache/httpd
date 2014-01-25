@@ -164,12 +164,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   
   * mod_dir: provide a directive to skip mod_dir processing if any other
     handler has been configured, as in 2.2. 
-    trunk patch http://svn.apache.org/r1557639 
+    trunk patch: http://svn.apache.org/r1557639 
                 http://svn.apache.org/r1557640
     2.4.x patch: http://people.apache.org/~covener/patches/2.4.x-moddir-skiphandler.diff
-    +1 covener 
+    +1: covener 
     (I could be convincd to flip the default here, but I think it's too late)
 
+   * mod_rewrite: Don't loop forever if the [N] flag isn't making progress.
+     trunk patch http://svn.apache.org/r1556206
+     2.4.x patch: trunk works
+     +1: covener
 
 OTHER PROPOSALS
 
