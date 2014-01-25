@@ -28,8 +28,6 @@
 <a href="../fr/mod/mod_proxy.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_proxy.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Serveur mandataire/passerelle multi-protocole</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>proxy_module</td></tr>
@@ -1125,14 +1123,22 @@ l'espace d'URLs du serveur local</td></tr>
     <code class="directive">ProxyPass</code>.</div>
 
     <p>Le support des sockets de style Unix est fourni ; il suffit pour
-    cela d'utiliser une cible préfixée par
+    cela d'utiliser une URL cible préfixée par
     <code>unix:/path/lis.sock|</code>. Par exemple, pour mandater HTTP
     et cibler l'UDS /home/www/socket, vous devez utiliser
-    <code>unix:/home/www.socket|http://localhost/whatever/</code>.</p>
+    <code>unix:/home/www.socket|http://localhost/whatever/</code>. Comme
+    le socket est local, le nom d'hôte utilisé (ici
+    <code>localhost</code>) peut être sujet à discussion, mais il est
+    transmis dans l'en-tête Host: de la requête.</p>
 
     <div class="note"><strong>Note :</strong>Le chemin associé à l'URL
     <code>unix:</code> tient compte de la directive
     <code class="directive">DefaultRuntimeDir</code>.</div>
+
+    <div class="note"><strong>Note :</strong>Afin d'éviter l'échappement du
+    caractère <code>'|'</code>, la directive
+    <code class="directive">RewriteRule</code> doit posséder l'option
+    <code>[P,NE]</code>.</div>
     
     <p>Supposons que le serveur local a pour adresse
     <code>http://example.com/</code> ; alors la ligne</p>

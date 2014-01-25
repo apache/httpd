@@ -221,11 +221,11 @@ RemoteIPInternalProxyList conf/trusted-proxies.lst
         </pre>
 </div>
 
-    <div class="example"><h3>contenu de conf/mandataires-de-confiance.lst</h3><div class="example"><pre>
+    <div class="example"><h3>contenu de conf/mandataires-de-confiance.lst</h3><pre>
          # Nos mandataires internes de confiance
          10.0.2.0/24         # Tout le monde dans le groupe de test
          passerelle.domaine-local # Le frontal répartiteur de charge
-	 </pre></div></div>
+    </pre></div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

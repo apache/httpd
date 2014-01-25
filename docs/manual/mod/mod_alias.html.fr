@@ -30,8 +30,6 @@
 <a href="../ko/mod/mod_alias.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_alias.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Permet d'atteindre différentes parties du système de
 fichiers depuis l'arborescence des documents du site web, ainsi que la
 redirection d'URL</td></tr>
@@ -157,7 +155,10 @@ de fichiers</td></tr>
     URL</var>, vous devrez aussi ajouter un slash de fin au chemin de la
     requête. Autrement dit, si vous définissez</p>
 
-    <dl><dd><code>Alias /icons/ /usr/local/apache/icons/</code></dd></dl>
+    <pre class="prettyprint lang-config">
+      Alias /icons/ /usr/local/apache/icons/
+    </pre>
+
 
     <p>l'alias précédent ne s'appliquera pas à l'url
     <code>/icons</code> à cause de l'absence du slash final. Ainsi, si
