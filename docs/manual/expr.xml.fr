@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision: 1554188:1560918 (outdated) -->
+<!-- English Revision : 1560918 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -483,7 +483,7 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     suppl&eacute;mentaires.</p>
 
     <table border="1" style="zebra">
-    <columnspec><column width=".2"/><column width=".8"/></columnspec>
+    <columnspec><column width=".2"/><column width=".4"/><column width=".4"/></columnspec>
 
     <tr><th>Nom</th><th>Description</th><th>Restreint</th></tr>
     <tr><td><code>req</code>, <code>http</code></td>
