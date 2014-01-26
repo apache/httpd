@@ -27,6 +27,8 @@
 <a href="../ko/howto/auth.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/howto/auth.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
+            anglaise pour les changements récents.</div>
 
     <p>L'authentification est un processus qui vous permet de vérifier
     qu'une personne est bien celle qu'elle prétend être. L'autorisation
@@ -536,10 +538,10 @@ autorisation</a></h2>
 	basé sur leur identité ; il peut dépendre, par exemple de leur
 	provenance.</p>
 
-        <p>Les fournisseurs d'autorisation <code class="directive"><a href="../mod/mod_authz_host.html#&#10;        all">
-        all</a></code>, <code class="directive"><a href="../mod/mod_authz_host.html#&#10;        env">
-        env</a></code>, <code class="directive"><a href="../mod/mod_authz_host.html#&#10;        host">
-        host</a></code> et <code class="directive"><a href="../mod/mod_authz_host.html#&#10;        ip">
+        <p>Les fournisseurs d'autorisation <code class="directive"><a href="../mod/mod_authz_host.html#all">
+        all</a></code>, <code class="directive"><a href="../mod/mod_authz_host.html#env">
+        env</a></code>, <code class="directive"><a href="../mod/mod_authz_host.html#host">
+        host</a></code> et <code class="directive"><a href="../mod/mod_authz_host.html#ip">
         ip</a></code> vous permettent d'accorder ou refuser l'accès en
 	fonction de critères tels que le nom d'hôte ou l'adresse
 	IP de la machine qui effectue la requête.</p>

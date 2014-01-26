@@ -132,7 +132,7 @@
           certain authentication configurations.
       </dd>
 
-      <dt><code class="module"><a href="./mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code></dt>
+      <dt><code class="module">mod_authnz_ldap</code></dt>
       <dd>This module is a port of the 2.0
           <code>mod_auth_ldap</code> module to the 2.2 <code>Authn/Authz</code>
           framework.  New features include using LDAP attribute values and

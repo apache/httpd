@@ -47,7 +47,7 @@ via the request headers.
 
     <p>Once replaced as instructed, this overridden useragent IP address is
     then used for the <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code>
-    <code class="directive"><a href="../mod/mod_authz_host.html#require ip">&lt;Require ip&gt;</a></code>
+    <code class="directive"><a href="../mod/mod_authz_core.html#require">Require ip</a></code>
     feature, is reported by <code class="module"><a href="../mod/mod_status.html">mod_status</a></code>, and is recorded by
     <code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code> <code>%a</code> and <code class="module"><a href="../mod/core.html">core</a></code>
     <code>%a</code> format strings. The underlying client IP of the connection

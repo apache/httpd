@@ -91,7 +91,7 @@ and Access Control</a></li>
       <code>FCGI_ROLE</code> is set to <code>AUTHORIZER</code> and
       <code>FCGI_APACHE_ROLE</code> is set to <code>AUTHENTICATOR</code>.
       The application must be defined as provider type <em>authn</em>
-      using <code class="directive"><a href="#&#10;      authnzfcgidefineprovider">
+      using <code class="directive"><a href="#authnzfcgidefineprovider">
       AuthnzFcgiDefineProvider</a></code> and enabled with
       <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code>.
       When invoked, the application is
@@ -141,7 +141,7 @@ AuthnzFcgiDefineProvider authn FooAuthn fcgi://localhost:10102/
       <dd>In this mode, <code>FCGI_ROLE</code> is set to <code>
       AUTHORIZER</code> and <code>FCGI_APACHE_ROLE</code> is set to
       <code>AUTHORIZER</code>.  The application must be defined as
-      provider type <em>authz</em> using <code class="directive"><a href="#&#10;      authnzfcgidefineprovider">
+      provider type <em>authz</em> using <code class="directive"><a href="#authnzfcgidefineprovider">
       AuthnzFcgiDefineProvider</a></code>.  When invoked, the application 
       is expected to authorize the client using the provided user id and other
       request data.  Example application:
@@ -188,7 +188,7 @@ AuthnzFcgiDefineProvider authz FooAuthz fcgi://localhost:10103/
       <code>AUTHORIZER</code> protocol, <code>FCGI_ROLE</code> is set to
       <code>AUTHORIZER</code> and <code>FCGI_APACHE_ROLE</code> is not set.
       The application must be defined as provider type <em>authnz</em>
-      using <code class="directive"><a href="#&#10;      authnzfcgidefineprovider">
+      using <code class="directive"><a href="#authnzfcgidefineprovider">
       AuthnzFcgiDefineProvider</a></code>.  The application is expected to
       handle both authentication and authorization in the same invocation
       using the user id, password, and other request data.  The invocation 
@@ -242,7 +242,7 @@ AuthnzFcgiDefineProvider authnz FooAuthnz fcgi://localhost:10103/
       <dd>In this mode, <code>FCGI_ROLE</code> is set to <code>
       AUTHORIZER</code> and <code>FCGI_APACHE_ROLE</code> is set to
       <code>AUTHENTICATOR</code>.  The application must be defined as
-      provider type <em>authn</em> using <code class="directive"><a href="#&#10;      authnzfcgidefineprovider">
+      provider type <em>authn</em> using <code class="directive"><a href="#authnzfcgidefineprovider">
       AuthnzFcgiDefineProvider</a></code>.  <code class="directive"><a href="#authnzfcgicheckauthnprovider">AuthnzFcgiCheckAuthnProvider</a></code>
       specifies when it is called.  Example application:
 <pre class="prettyprint lang-perl">

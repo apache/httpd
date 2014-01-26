@@ -275,7 +275,7 @@
 
       <dd>まず <code class="directive"><a href="#allow">Allow</a></code> 
       ディレクティブが適用されます。どれにもマッチしなかった場合、この時点で
-      リクエストは拒否されます。次に、全ての <code class="directive"><a href="#&#10;      deny">
+      リクエストは拒否されます。次に、全ての <code class="directive"><a href="#deny">
       Deny</a></code> ディレクティブが適用されます。どれか一つでもマッチした場合は、
       リクエストは拒否されます。
       最後に、 <code class="directive"><a href="#allow">Allow</a></code> にも <code class="directive"><a href="#deny">Deny</a></code> にもマッチしなかったリクエストは

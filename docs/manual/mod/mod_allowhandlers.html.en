@@ -54,7 +54,7 @@ returns 403 FORBIDDEN to the client. This can be used with directives like
 <h3>See also</h3>
 <ul class="seealso">
 <li><code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code></li>
-<li><code class="directive"><a href="../mod/mime.html#addhandler">AddHandler</a></code></li>
+<li><code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
