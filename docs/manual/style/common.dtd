@@ -78,10 +78,11 @@ highlight | blockquote">
                  outdated (true) #IMPLIED>
 
 <!ELEMENT directive (#PCDATA)>
+<!-- name attribute is preferred over contents when generating links -->
 <!ATTLIST directive  module CDATA  #IMPLIED
                      type   CDATA  #IMPLIED
                      status CDATA  #IMPLIED
-                     name   CDATA  #IMPLIED -- preferred over contents -- >
+                     name   CDATA  #IMPLIED >
 
 <!ELEMENT program (#PCDATA)>
 
