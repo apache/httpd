@@ -712,8 +712,18 @@ if (typeof(prettyPrint) !== 'undefined') {
 <code class="directive">
     <xsl:choose>
     <xsl:when test="@module">
-        <xsl:variable name="lowerdirective"
-            select="translate(., $uppercase, $lowercase)" />
+        <xsl:variable name="lowerdirective">
+            <xsl:choose>
+            <xsl:when test="@name">
+                <xsl:value-of select="normalize-space(translate(@name,
+                                        $uppercase, $lowercase))" />
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:value-of select="normalize-space(translate(.,
+                                        $uppercase, $lowercase))" />
+            </xsl:otherwise>
+            </xsl:choose>
+        </xsl:variable>
 
         <xsl:choose>
         <xsl:when test="$in-modulesynopsis and @module = /modulesynopsis/name">
@@ -750,9 +760,16 @@ if (typeof(prettyPrint) !== 'undefined') {
 <!-- ==================================================================== -->
 <xsl:template match="module" name="module">
 <code class="module">
-    <a href="{$path}/mod/{.}.html">
+    <xsl:choose>
+    <xsl:when test="@outdated = 'true'">
         <xsl:value-of select="."/>
-    </a>
+    </xsl:when>
+    <xsl:otherwise>
+        <a href="{$path}/mod/{.}.html">
+            <xsl:value-of select="."/>
+        </a>
+    </xsl:otherwise>
+    </xsl:choose>
 </code>
 </xsl:template>
 <!-- /module -->
