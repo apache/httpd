@@ -142,29 +142,51 @@ select="$metafile/basename"/>
 <!-- ==================================================================== -->
 <xsl:template match="directive" name="directive">
 <xsl:text>\textsc{</xsl:text>
-   <xsl:if test="@type='section'"><xsl:text>\textless{}</xsl:text></xsl:if>
-   <xsl:text>\hyperlink{/mod/</xsl:text>
-   <xsl:value-of select="@module"/>
-   <xsl:text>:</xsl:text>
-   <xsl:value-of select="translate(.,$uppercase,$lowercase)"/>
-   <xsl:text>}{</xsl:text>
-        <xsl:apply-templates/>
-   <xsl:text>}</xsl:text>
-   <xsl:if test="@type='section'"><xsl:text>\textgreater{}</xsl:text></xsl:if>
+<xsl:if test="@type='section'"><xsl:text>\textless{}</xsl:text></xsl:if>
+<xsl:if test="@module">
+  <xsl:text>\hyperlink{/mod/</xsl:text>
+  <xsl:value-of select="normalize-space(@module)"/>
+  <xsl:text>:</xsl:text>
+  <xsl:choose>
+  <xsl:when test="@name">
+    <xsl:value-of
+        select="normalize-space(translate(@name,$uppercase,$lowercase))"/>
+  </xsl:when>
+  <xsl:otherwise>
+    <xsl:value-of
+        select="normalize-space(translate(.,$uppercase,$lowercase))"/>
+  </xsl:otherwise>
+  </xsl:choose>
+  <xsl:text>}{</xsl:text>
+  <xsl:apply-templates/>
+  <xsl:text>}</xsl:text>
+</xsl:if>
+<xsl:if test="@type='section'"><xsl:text>\textgreater{}</xsl:text></xsl:if>
 <xsl:text>}</xsl:text>
 </xsl:template>
 
 <xsl:template match="directive" mode="tabular">
 <xsl:text>\textsc{</xsl:text>
-   <xsl:if test="@type='section'"><xsl:text>\textless{}</xsl:text></xsl:if>
-   <xsl:text>\hyperlink{/mod/</xsl:text>
-   <xsl:value-of select="@module"/>
-   <xsl:text>:</xsl:text>
-   <xsl:value-of select="translate(.,$uppercase,$lowercase)"/>
-   <xsl:text>}{</xsl:text>
-        <xsl:apply-templates mode="tabular"/>
-   <xsl:text>}</xsl:text>
-   <xsl:if test="@type='section'"><xsl:text>\textgreater{}</xsl:text></xsl:if>
+<xsl:if test="@type='section'"><xsl:text>\textless{}</xsl:text></xsl:if>
+<xsl:if test="@module">
+  <xsl:text>\hyperlink{/mod/</xsl:text>
+  <xsl:value-of select="normalize-space(@module)"/>
+  <xsl:text>:</xsl:text>
+  <xsl:choose>
+  <xsl:when test="@name">
+    <xsl:value-of
+        select="normalize-space(translate(@name,$uppercase,$lowercase))"/>
+  </xsl:when>
+  <xsl:otherwise>
+    <xsl:value-of
+        select="normalize-space(translate(.,$uppercase,$lowercase))"/>
+  </xsl:otherwise>
+  </xsl:choose>
+  <xsl:text>}{</xsl:text>
+  <xsl:apply-templates mode="tabular"/>
+  <xsl:text>}</xsl:text>
+</xsl:if>
+<xsl:if test="@type='section'"><xsl:text>\textgreater{}</xsl:text></xsl:if>
 <xsl:text>}</xsl:text>
 </xsl:template>
 
@@ -175,21 +197,39 @@ select="$metafile/basename"/>
 <!-- Inserts a link to refereed module                                    -->
 <!-- ==================================================================== -->
 <xsl:template match="module" name="module">
-<xsl:text>\textsc{\hyperlink{/mod/</xsl:text>
-  <xsl:value-of select="."/>
-  <xsl:text>}{</xsl:text>
+<xsl:choose>
+<xsl:when test="@outdated = 'true'">
+  <xsl:text>\textsc{</xsl:text>
     <xsl:apply-templates/>
   <xsl:text>}</xsl:text>
-<xsl:text>}</xsl:text>
+</xsl:when>
+<xsl:otherwise>
+  <xsl:text>\textsc{\hyperlink{/mod/</xsl:text>
+    <xsl:value-of select="normalize-space(.)"/>
+    <xsl:text>}{</xsl:text>
+      <xsl:apply-templates/>
+    <xsl:text>}</xsl:text>
+  <xsl:text>}</xsl:text>
+</xsl:otherwise>
+</xsl:choose>
 </xsl:template>
 
 <xsl:template match="module" mode="tabular">
-<xsl:text>\textsc{\hyperlink{/mod/</xsl:text>
-  <xsl:value-of select="."/>
-  <xsl:text>}{</xsl:text>
+<xsl:choose>
+<xsl:when test="@outdated = 'true'">
+  <xsl:text>\textsc{</xsl:text>
     <xsl:apply-templates mode="tabular"/>
   <xsl:text>}</xsl:text>
-<xsl:text>}</xsl:text>
+</xsl:when>
+<xsl:otherwise>
+  <xsl:text>\textsc{\hyperlink{/mod/</xsl:text>
+    <xsl:value-of select="normalize-space(.)"/>
+    <xsl:text>}{</xsl:text>
+      <xsl:apply-templates/>
+    <xsl:text>}</xsl:text>
+  <xsl:text>}</xsl:text>
+</xsl:otherwise>
+</xsl:choose>
 </xsl:template>
 <!-- /module -->
 
