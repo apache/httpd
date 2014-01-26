@@ -103,7 +103,7 @@ etmek için kullanılır.</td></tr>
       işleme yönergelerinden sonra işleme sokulur. Eğer atadığınız ortam değişkeni,
       bir <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> yönergesindeki
       gibi erken işlem aşamalarına girdi sağlıyorsa, bu durumda ortam değişkenini
-     <code class="directive"><a href="../mod/mod_setenvif.html# setenvif"> SetEnvIf</a></code> ile atamalısınız.</p>
+     <code class="directive"><a href="../mod/mod_setenvif.html#setenvif"> SetEnvIf</a></code> ile atamalısınız.</p>
     </div>
 
 

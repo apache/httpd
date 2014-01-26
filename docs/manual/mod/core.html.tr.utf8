@@ -627,7 +627,7 @@ httpd 2.1.5 ve sonrasında mevcuttur.</td></tr>
       AllowOverrideList CookieTracking CookieName
     </code></p></div>
 
-    <p>Yukarıdaki örnekte <code class="directive"><a href="#allowoverride&#10;      ">AllowOverride
+    <p>Yukarıdaki örnekte <code class="directive"><a href="#allowoverride">AllowOverride
       </a></code> yönergesi <code>AuthConfig</code> yönerge grubuna izin
       verirken <code class="directive">AllowOverrideList</code> yönergesi
       <code>FileInfo</code> yönerge grubundan yalnız iki yönergeye izin

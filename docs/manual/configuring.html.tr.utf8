@@ -125,7 +125,7 @@ açıklanmıştır.</p>
     sırasında sunucunun <a href="mod/module-dict.html#Status">temel</a> bir
     modül kümesi içermesi sağlanır. Eğer sunucu  <a href="dso.html">devingen
     yüklenen</a> modülleri kullanmak üzere yapılandırılarak derlenirse modüller
-    ayrı olarak derlenip gerektiği zaman <code class="directive"><a href="./mod/mod_so.html#&#10;    loadmodule">
+    ayrı olarak derlenip gerektiği zaman <code class="directive"><a href="./mod/mod_so.html#loadmodule">
     LoadModule</a></code> yönergesi kullanılarak yüklenebilir. Aksi takdirde,
     ek modülleri yükleyebilmek veya kaldırabilmek için httpd’nin yeniden
     derlenmesi gerekir. Yapılandırma yönergeleri belli bir modülün varlığına

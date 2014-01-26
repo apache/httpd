@@ -627,7 +627,7 @@ Swap:       3903784      12540  3891244
                   A second approach is to use piped logs. From the
                   <code class="directive"><a href="../mod/mod_log_config.html#customlog">CustomLog</a></code>,
                     <code class="directive"><a href="../mod/mod_log_config.html#transferlog">TransferLog</a></code>
-                    or <code class="directive"><a href="../mod/core.html#errorlog&#10;                    ">ErrorLog
+                    or <code class="directive"><a href="../mod/core.html#errorlog">ErrorLog
                     </a></code>
                     directives you can send the log data into any program using
                     a pipe character (<code>|</code>). For instance: 
