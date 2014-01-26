@@ -82,8 +82,8 @@ passwords for authentication</description>
     </note>
 
     <p>The encrypted password format depends on which authentication
-    frontend (e.g. <module>mod_authn_basic</module> or
-    <module>mod_authn_digest</module>) is being used.  See <a
+    frontend (e.g. <module>mod_auth_basic</module> or
+    <module>mod_auth_digest</module>) is being used.  See <a
     href="../misc/password_encryptions.html">Password Formats</a> for
     more information.</p>
 

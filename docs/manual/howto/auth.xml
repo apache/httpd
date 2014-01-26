@@ -491,13 +491,11 @@ Require group GroupName
         other than who they are. Something such as where they are
         coming from.</p>
 
-        <p>The authorization providers <directive module="mod_authz_host">
-        all</directive>, <directive module="mod_authz_host">
-        env</directive>, <directive module="mod_authz_host">
-        host</directive> and <directive module="mod_authz_host">
-        ip</directive> let you allow or deny access based other host based
-        criteria such as host name or ip address of the machine requesting
-        a document.</p>
+        <p>The authorization providers <code>all</code>,
+        <code>env</code>, <code>host</code> and <code>ip</code> let you
+        allow or deny access based other host based criteria such as
+        host name or ip address of the machine requesting a
+        document.</p>
 
         <p>The usage of these providers is specified through the
         <directive module="mod_authz_core">Require</directive> directive.
@@ -583,10 +581,11 @@ Require group GroupName
 
 <section id="moreinformation"><title>More information</title>
     <p>You should also read the documentation for
-    <module>mod_auth_basic</module> and <module>mod_authz_host</module> which
-    contain some more information about how this all works.
-    The directive <directive module="mod_authn_core">&lt;AuthnProviderAlias&gt;</directive>
-    can also help in simplifying certain authentication configurations.</p>
+    <module>mod_auth_basic</module> and <module>mod_authz_host</module>
+    which contain some more information about how this all works.  The
+    directive <directive type="section"
+    module="mod_authn_core">AuthnProviderAlias</directive> can also help
+    in simplifying certain authentication configurations.</p>
 
     <p>The various ciphers supported by Apache for authentication data are
     explained in <a href="../misc/password_encryptions.html">Password

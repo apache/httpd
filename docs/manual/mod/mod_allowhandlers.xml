@@ -45,7 +45,7 @@ returns 403 FORBIDDEN to the client. This can be used with directives like
 </summary>
 
 <seealso><directive module="core">SetHandler</directive></seealso>
-<seealso><directive module="mime">AddHandler</directive></seealso>
+<seealso><directive module="mod_mime">AddHandler</directive></seealso>
 
 <directivesynopsis>
 <name>AllowHandlers</name>
