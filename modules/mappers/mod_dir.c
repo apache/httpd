@@ -274,6 +274,10 @@ static int fixup_dir(request_rec *r)
         return HTTP_MOVED_PERMANENTLY;
     }
 
+    if (r->method_number != M_GET && r->method_number != M_POST) {
+        return DECLINED;
+    }
+
     if (d->checkhandler == MODDIR_ON && strcmp(r->handler, DIR_MAGIC_TYPE)) {
         return DECLINED;
     }
