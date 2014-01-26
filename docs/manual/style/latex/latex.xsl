@@ -152,18 +152,18 @@ Server Documentation Project.  More information is available at
 </xsl:template>
 
 <xsl:template match="page">
-<xsl:if test="not(starts-with(@href,'http:') or starts-with(@href, 'https:'))">
-<xsl:text>\include{</xsl:text>
-<xsl:choose>
-<xsl:when test="contains(@href,'.')">
-  <xsl:value-of select="substring-before(@href,'.')"/>
-</xsl:when>
-<xsl:otherwise>
-  <xsl:value-of select="concat(@href,'index')"/>
-</xsl:otherwise>
-</xsl:choose>
-<xsl:text>}
-</xsl:text>
+<xsl:if test="not(starts-with(@href,'http:') or starts-with(@href, 'https:') or starts-with(@href, 'mod/'))">
+  <xsl:text>\include{</xsl:text>
+  <xsl:choose>
+  <xsl:when test="contains(@href,'.')">
+    <xsl:value-of select="substring-before(@href,'.')"/>
+  </xsl:when>
+  <xsl:otherwise>
+    <xsl:value-of select="concat(@href,'index')"/>
+  </xsl:otherwise>
+  </xsl:choose>
+  <xsl:text>}
+  </xsl:text>
 </xsl:if>
 </xsl:template>
 
