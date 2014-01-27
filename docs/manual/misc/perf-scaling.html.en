@@ -1292,7 +1292,7 @@ Swap:       3903784      12540  3891244
                     code, but is not compiled by default. It can be built with
                     the server by passing the option <code>--enable-rewrite[=shared]</code>
                     to the configure command. Many binary distributions of
-                    Apache come with <code class="module"><a href="../mod/mod_rewrite .html">mod_rewrite </a></code> included. The following is an
+                    Apache come with <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite </a></code> included. The following is an
                     example of an Apache virtual host that takes advantage of
                     pre-rendered blog pages: 
                 </p>
