@@ -726,7 +726,7 @@ if (typeof(prettyPrint) !== 'undefined') {
         </xsl:variable>
 
         <xsl:choose>
-        <xsl:when test="$in-modulesynopsis and @module = /modulesynopsis/name">
+        <xsl:when test="$in-modulesynopsis and normalize-space(@module) = /modulesynopsis/name">
             <a href="#{$lowerdirective}">
                 <xsl:if test="@type='section'">&lt;</xsl:if>
                 <xsl:value-of select="."/>
@@ -734,7 +734,7 @@ if (typeof(prettyPrint) !== 'undefined') {
             </a>
         </xsl:when>
         <xsl:otherwise>
-            <a href="{$path}/mod/{@module}.html#{$lowerdirective}">
+            <a href="{$path}/mod/{normalize-space(@module)}.html#{$lowerdirective}">
                 <xsl:if test="@type='section'">&lt;</xsl:if>
                 <xsl:value-of select="."/>
                 <xsl:if test="@type='section'">&gt;</xsl:if>
@@ -765,7 +765,7 @@ if (typeof(prettyPrint) !== 'undefined') {
         <xsl:value-of select="."/>
     </xsl:when>
     <xsl:otherwise>
-        <a href="{$path}/mod/{.}.html">
+        <a href="{$path}/mod/{normalize-space(.)}.html">
             <xsl:value-of select="."/>
         </a>
     </xsl:otherwise>
