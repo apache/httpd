@@ -1957,12 +1957,15 @@ PROXY_DECLARE(int) ap_proxy_pre_request(proxy_worker **worker,
                     *ptr = '\0';
                     rv = apr_uri_parse(r->pool, ptr2, &urisock);
                     if (rv == APR_SUCCESS) {
+                        char *rurl = ptr+1;
                         char *sockpath = ap_runtime_dir_relative(r->pool, urisock.path);
                         apr_table_setn(r->notes, "uds_path", sockpath);
-                        r->filename = ptr+1;    /* so we get the scheme for the uds */
-                        *url = apr_pstrdup(r->pool, r->filename);
+                        *url = apr_pstrdup(r->pool, rurl); /* so we get the scheme for the uds */
+                        /* r->filename starts w/ "proxy:", so add after that */
+                        memmove(r->filename+6, rurl, strlen(rurl)+1);
                         ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
-                                      "*: rewrite of url due to UDS: %s", *url);
+                                      "*: rewrite of url due to UDS(%s): %s (%s)",
+                                      sockpath, *url, r->filename);
                     }
                     else {
                         *ptr = '|';
