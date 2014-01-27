@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE xsl:stylesheet [
+    <!ENTITY lf SYSTEM "../xsl/util/lf.xml">
     <!ENTITY % HTTPD-VERSION SYSTEM "../version.ent">
     %HTTPD-VERSION;
 ]>
@@ -144,7 +145,11 @@ Server Documentation Project.  More information is available at
 </xsl:text>
     <xsl:apply-templates/>
     <xsl:if test="@id = 'modules'">
+        <xsl:text>\include{mod/index}</xsl:text>&lf;
         <xsl:apply-templates select="document($allmodules)/modulefilelist" />
+        <xsl:text>\include{mod/module-dict}</xsl:text>&lf;
+        <xsl:text>\include{mod/directive-dict}</xsl:text>&lf;
+        <xsl:text>\include{mod/quickreference}</xsl:text>&lf;
     </xsl:if>
 </xsl:for-each>
 
@@ -162,8 +167,7 @@ Server Documentation Project.  More information is available at
     <xsl:value-of select="concat(@href,'index')"/>
   </xsl:otherwise>
   </xsl:choose>
-  <xsl:text>}
-  </xsl:text>
+  <xsl:text>}</xsl:text>&lf;
 </xsl:if>
 </xsl:template>
 
@@ -180,8 +184,7 @@ Server Documentation Project.  More information is available at
 <xsl:template match="modulefile">
 <xsl:text>\include{mod/</xsl:text>
 <xsl:value-of select="substring-before(.,'.')"/>
-<xsl:text>}
-</xsl:text>
+<xsl:text>}</xsl:text>&lf;
 </xsl:template>
 
 <xsl:template match="summary">
