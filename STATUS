@@ -181,6 +181,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      +1: jim
 
+   * proxy_util.c: Allow mod_rewrite to also use UDS for proxied links.
+     trunk patch: http://svn.apache.org/r1543174
+                  http://svn.apache.org/r1560367
+                  http://svn.apache.org/r1560546
+                  http://svn.apache.org/r1560689
+                  http://svn.apache.org/r1560979
+                  http://svn.apache.org/r1561137
+                  http://svn.apache.org/r1561660
+     2.4.x patch: trunk works
+                  http://people.apache.org/~jim/patches/uds-rewrite.patch
+     +1: 
+
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
