@@ -286,13 +286,23 @@ interpreted in pre -->
 <xsl:if test="@href">
 <xsl:variable name="relpath" select="document(/*/@metafile)/metafile/relpath" />
 <xsl:variable name="path" select="document(/*/@metafile)/metafile/path" />
-<xsl:variable name="fileref">
+<xsl:variable name="href">
   <xsl:choose>
-  <xsl:when test="contains(@href, '.html')">
-    <xsl:value-of select="substring-before(@href, '.html')"/>
+  <xsl:when test="starts-with(@href, './')">
+    <xsl:value-of select="substring(@href, 3)" />
   </xsl:when>
   <xsl:otherwise>
-    <xsl:value-of select="concat(@href, 'index')"/>
+    <xsl:value-of select="@href" />
+  </xsl:otherwise>
+  </xsl:choose>
+</xsl:variable>
+<xsl:variable name="fileref">
+  <xsl:choose>
+  <xsl:when test="contains($href, '.html')">
+    <xsl:value-of select="substring-before($href, '.html')"/>
+  </xsl:when>
+  <xsl:otherwise>
+    <xsl:value-of select="concat($href, 'index')"/>
   </xsl:otherwise>
   </xsl:choose>
 </xsl:variable>
