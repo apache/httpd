@@ -143,7 +143,8 @@ select="$metafile/basename"/>
 <xsl:template match="directive" name="directive">
 <xsl:text>\textsc{</xsl:text>
 <xsl:if test="@type='section'"><xsl:text>\textless{}</xsl:text></xsl:if>
-<xsl:if test="@module">
+<xsl:choose>
+<xsl:when test="@module">
   <xsl:text>\hyperlink{/mod/</xsl:text>
   <xsl:value-of select="normalize-space(@module)"/>
   <xsl:text>:</xsl:text>
@@ -160,7 +161,11 @@ select="$metafile/basename"/>
   <xsl:text>}{</xsl:text>
   <xsl:apply-templates/>
   <xsl:text>}</xsl:text>
-</xsl:if>
+</xsl:when>
+<xsl:otherwise>
+  <xsl:apply-templates/>
+</xsl:otherwise>
+</xsl:choose>
 <xsl:if test="@type='section'"><xsl:text>\textgreater{}</xsl:text></xsl:if>
 <xsl:text>}</xsl:text>
 </xsl:template>
@@ -168,7 +173,8 @@ select="$metafile/basename"/>
 <xsl:template match="directive" mode="tabular">
 <xsl:text>\textsc{</xsl:text>
 <xsl:if test="@type='section'"><xsl:text>\textless{}</xsl:text></xsl:if>
-<xsl:if test="@module">
+<xsl:choose>
+<xsl:when test="@module">
   <xsl:text>\hyperlink{/mod/</xsl:text>
   <xsl:value-of select="normalize-space(@module)"/>
   <xsl:text>:</xsl:text>
@@ -185,7 +191,11 @@ select="$metafile/basename"/>
   <xsl:text>}{</xsl:text>
   <xsl:apply-templates mode="tabular"/>
   <xsl:text>}</xsl:text>
-</xsl:if>
+</xsl:when>
+<xsl:otherwise>
+  <xsl:apply-templates mode="tabular"/>
+</xsl:otherwise>
+</xsl:choose>
 <xsl:if test="@type='section'"><xsl:text>\textgreater{}</xsl:text></xsl:if>
 <xsl:text>}</xsl:text>
 </xsl:template>
