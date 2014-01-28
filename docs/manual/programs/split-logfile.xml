@@ -20,7 +20,7 @@
  limitations under the License.
 -->
 
-<manualpage metafile="other.xml.meta">
+<manualpage metafile="split-logfile.xml.meta">
 <parentdocument href="./">Programs</parentdocument>
 
 <title>split-logfile - Split up multi-vhost logfiles</title>

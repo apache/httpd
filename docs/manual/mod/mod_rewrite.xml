@@ -193,7 +193,7 @@ URLs on the fly</description>
       is used in <code>VirtualHost</code> or server context with
       version 2.2.22 or later of httpd, <module>mod_rewrite</module>
       will only process the rewrite rules if the request URI is a <a
-      href="./directive-dict.html#Syntax">URL-path</a>.  This avoids
+      href="directive-dict.html#Syntax">URL-path</a>.  This avoids
       some security issues where particular rules could allow
       "surprising" pattern expansions (see <a
       href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2011-3368">CVE-2011-3368</a>
@@ -947,8 +947,8 @@ RewriteRule  ^/$                 /homepage.std.html  [L]
       <p><a id="patterns" name="patterns"><em>Pattern</em></a> is
       a perl compatible <a id="regexp" name="regexp">regular
       expression</a>. On the first RewriteRule, it is matched against
-      the (%-decoded) <a href="./directive-dict.html#Syntax">URL-path</a> (or 
-      <a href="./directive-dict.html#Syntax">file-path</a>, depending 
+      the (%-decoded) <a href="directive-dict.html#Syntax">URL-path</a> (or 
+      <a href="directive-dict.html#Syntax">file-path</a>, depending 
       on the context) of the request. Subsequent patterns are matched against the 
       output of the last matching RewriteRule.</p>
 

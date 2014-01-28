@@ -532,7 +532,7 @@ proxied resources</description>
     <p>From 2.5.0 onwards, named groups and backreferences are captured and
     written to the environment with the corresponding name prefixed with
     "MATCH_" and in upper case. This allows elements of URLs to be referenced
-    from within <a href="expr.html">expressions</a> and modules like
+    from within <a href="../expr.html">expressions</a> and modules like
     <module>mod_rewrite</module>. In order to prevent confusion, numbered
     (unnamed) backreferences are ignored. Use named groups instead.</p>
 
