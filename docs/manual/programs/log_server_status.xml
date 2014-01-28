@@ -20,7 +20,7 @@
  limitations under the License.
 -->
 
-<manualpage metafile="other.xml.meta">
+<manualpage metafile="log_server_status.xml.meta">
 <parentdocument href="./">Programs</parentdocument>
 
 <title>log_server_status - Log periodic status summaries</title>

@@ -20,9 +20,9 @@
  limitations under the License.
 -->
 <manualpage metafile="perf-scaling.xml.meta"> 
-    
-    <title>Performance Scaling
-    </title>
+    <parentdocument href="./">Miscellaneous Documentation</parentdocument>
+ 
+    <title>Performance Scaling</title>
     
     <summary>
         
@@ -747,7 +747,7 @@ Swap:       3903784      12540  3891244
                 MPM runs a smaller number of child processes, and spawns
                 multiple request handling threads within each child process. In
                 2.4 MPMs are no longer hard-wired. They too can be exchanged
-                via <directive module="core">LoadModule</directive>.
+                via <directive module="mod_so">LoadModule</directive>.
                 The default MPM in 2.4 is the event MPM. 
             </p>
             <p>The maximum number of workers, be they pre-forked child
@@ -762,7 +762,7 @@ Swap:       3903784      12540  3891244
             </p>
             <p>Finally, if the httpd server in question is not executing any third-party
                code, via <code>mod_php</code>, <code>mod_perl</code> or similar,
-               we recommend the use of <module>mpm_event</module>. This MPM is ideal
+               we recommend the use of <module outdated="true">mpm_event</module>. This MPM is ideal
                for situations where httpd serves as a thin layer between clients and
                backend servers doing the real job, such as a proxy or cache.
             </p>
@@ -772,8 +772,7 @@ Swap:       3903784      12540  3891244
                 <title>MaxClients
                 </title>
                 <p>
-                    The <code>MaxClients
-                    </code>
+                    The <code>MaxClients</code>
                     directive in your Apache httpd configuration file specifies
                     the maximum number of workers your server can create. It
                     has two related directives, <code>MinSpareServers
@@ -799,8 +798,7 @@ Swap:       3903784      12540  3891244
                     complicated. Threaded MPMs support the <code>
                         ThreadsPerChild
                     </code>
-                    directive1 . Apache requires that <code>MaxClients
-                    </code>
+                    directive1 . Apache requires that <code>MaxClients</code>
                     is evenly divisible by <code>ThreadsPerChild
                     </code>
                     .If you set either directive to a number that doesn't
@@ -808,10 +806,8 @@ Swap:       3903784      12540  3891244
                     complaint to the error log and adjust the <code>
                         ThreadsPerChild
                     </code>
-                    value downwards until it is an even factor of <code>
-                        MaxClients
-                    </code>
-                    .
+                    value downwards until it is an even factor of
+                    <code>MaxClients</code>.
                 </p>
                 
                 
@@ -823,7 +819,7 @@ Swap:       3903784      12540  3891244
                     that all the memory on your system is used, but no more. If
                     your system gets so overloaded that it needs to heavily
                     swap core memory out to disk, performance will degrade
-                    quickly. The formula for determining <directive module="mpm_common">MaxClients</directive>
+                    quickly. The formula for determining <directive module="mpm_common" name="MaxRequestWorkers">MaxClients</directive>
                     is fairly simple: 
                 </p>
                 
@@ -1372,21 +1368,22 @@ Listen *:8001
                     <!-- Is this still the case? Maybe we should give
                         a better example here too.-->
                 <p>
-                    The Apache Software Foundation Wiki is served by MoinMoin.
-                    MoinMoin is written in Python and runs as a CGI. To date, any
-                    attempts to run it under mod_python has been unsuccessful.
-                    The CGI proved to place an untenably high load on the
-                    server machine, especially when the Wiki was being indexed
-                    by search engines like Google. To lighten the load on the
-                    server machine, the Apache Infrastructure team turned to
-                    mod_cache. It turned out <a href="/httpd/MoinMoin">MoinMoin
-                    </a>
-                    needed a small patch to ensure proper behavior behind the
-                    caching server: certain requests can never be cached and
-                    the corresponding Python modules were patched to send the
-                    proper HTTP response headers. After this modification, the
-                    cache in front of the Wiki was enabled with the following
-                    configuration snippet in <code>httpd.conf</code>:
+                    The Apache Software Foundation Wiki is served by
+                    MoinMoin.  MoinMoin is written in Python and runs as
+                    a CGI. To date, any attempts to run it under
+                    mod_python has been unsuccessful.  The CGI proved to
+                    place an untenably high load on the server machine,
+                    especially when the Wiki was being indexed by search
+                    engines like Google. To lighten the load on the
+                    server machine, the Apache Infrastructure team
+                    turned to mod_cache. It turned out MoinMoin needed a
+                    small patch to ensure proper behavior behind the
+                    caching server: certain requests can never be cached
+                    and the corresponding Python modules were patched to
+                    send the proper HTTP response headers. After this
+                    modification, the cache in front of the Wiki was
+                    enabled with the following configuration snippet in
+                    <code>httpd.conf</code>:
                 </p>
                 
 <highlight language="config">
@@ -1400,7 +1397,7 @@ CacheMaxExpire 21600
                 
                 <p>This configuration will try to cache any and all content
                     within its virtual host. It will never cache content for
-                    more than six hours (the <directive module="mod_cace">CacheMaxExpire</directive>
+                    more than six hours (the <directive module="mod_cache">CacheMaxExpire</directive>
                     directive). If no <code>Expires:</code>
                     header is present in the response, <module>mod_cache</module> will compute
                     an expiration period from the <code>Last-Modified:</code>
