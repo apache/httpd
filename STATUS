@@ -154,10 +154,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
    * mod_rewrite: Don't loop forever if the [N] flag isn't making progress.
      trunk patch http://svn.apache.org/r1556206
-     2.4.x patch: trunk works
+     2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-rewrite-maxrounds.diff
+                  (incl bump to 32k)
      +1: covener, jim
      trawick: can you clarify here the plan for "If backported, probably increase
               the hard-coded limit to 32k from 10k."?
+     covener: updated proposal to include bump to 32k
 
    * mod_slotmem_shm: Remove wonky and dangerous code that knows about APR
      internals. We work fine w/o it anyway at this stage.
