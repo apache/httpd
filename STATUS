@@ -139,23 +139,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: http://people.apache.org/~jim/patches/fdq-atomicsv2.patch
     +1: jim, trawick
 
-  * mod_speling: According to doc, 'CheckCaseOnly' directive should only check
-    for lower/upper case changes. Current code also cheks the basename. (i.e.
-    test.jpg and test.gif matches)
-    trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1505279
-    2.4.x patch: trunk patch works
-    +1: jailletc36
-
-  * mod_speling: Add a new directive, 'CheckBasenameMatch' that allows to
-    compare basename. I propose to have it off by default which sounds more
-    logical to me. Doing so changes the default behaviour of the code as it
-    replaces #define WANT_BASENAME_MATCH.
-    trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1557580
-    2.4.x patch: trunk patch works
-    +1: jailletc36
-    -1: covener, seems like unnecessary default change for 2.4. No issue w/o
-        default change.  
-
   * FreeBSD: Disable IPv4-mapped listening sockets by default for versions
     5+ instead of just for FreeBSD 5. PR 53824.
     trunk patch: http://svn.apache.org/r1551685
