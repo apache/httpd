@@ -193,6 +193,26 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://people.apache.org/~jim/patches/uds-rewrite.patch
      +1: jim
 
+  * Easy proposals, synch 2.4 and trunk:
+      mod_dav: Style, indentation. No functional change.
+      mod_dav: Add missing break in 'dav_generic_do_refresh' to avoid useless computation
+      mod_dav: Add missing break in 'dav_fs_do_refresh' to avoid useless computation
+      mod_macro: Allocate correct size for the array to avoid useless memory allocation and copy
+      mod_proxy: Add missing break.
+      mod_proxy: oops (fix r1556912)
+      server/regex: No need to test for NULL, apr_pstrndup already handles it.
+      various: Remove some useless declarations that were shadowing other local variables of the same name.
+    trunk patches: http://svn.apache.org/r1557317
+                   http://svn.apache.org/r1556911
+                   http://svn.apache.org/r1556914
+                   http://svn.apache.org/r1555259
+                   http://svn.apache.org/r1556912
+                   http://svn.apache.org/r1556937
+                   http://svn.apache.org/r1559351
+                   http://svn.apache.org/r1463046
+     2.4.x patch: http://people.apache.org/~jailletc36/backport6.patch
+     +1: jailletc36
+
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
