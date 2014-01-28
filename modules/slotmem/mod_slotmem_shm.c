@@ -366,9 +366,9 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new,
                      "apr_shm_attach() for sure worked...");
     }
     else {
+        apr_size_t dsize = size - AP_SLOTMEM_OFFSET;
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(02600)
                      "doing a real apr_shm_create()...");
-        apr_size_t dsize = size - AP_SLOTMEM_OFFSET;
         if (fbased) {
             apr_shm_remove(fname, gpool);
             rv = apr_shm_create(&shm, size, fname, gpool);
