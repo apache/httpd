@@ -194,7 +194,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                    http://svn.apache.org/r1559351
                    http://svn.apache.org/r1463046
      2.4.x patch: http://people.apache.org/~jailletc36/backport6.patch
-     +1: jailletc36
+     +1: jailletc36, jim
 
 OTHER PROPOSALS
 
