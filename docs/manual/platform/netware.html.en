@@ -32,14 +32,15 @@
     <a href="http://httpd.apache.org/bug_report.html">bug reporting
     page.</a></p>
 
-    <p>The bug reporting page and dev-httpd mailing list are <em>not</em>
-    provided to answer questions about configuration or running Apache.
-    Before you submit a bug report or request, first consult this document, the
-    <a href="../faq/">Frequently Asked Questions</a> page and the other
-    relevant documentation topics. If you still have a question or problem,
-    post it to the <a href="news://developer-forums.novell.com/novell.devsup.webserver">
-    novell.devsup.webserver</a> newsgroup, where many Apache users are more than
-    willing to answer new and obscure questions about using Apache on NetWare.</p>
+    <p>The bug reporting page and dev-httpd mailing list are
+    <em>not</em> provided to answer questions about configuration or
+    running Apache.  Before you submit a bug report or request, first
+    consult this document, the <a href="http://wiki.apache.org/httpd/FAQ">Frequently Asked
+    Questions</a> page and the other relevant documentation topics. If
+    you still have a question or problem, post it to the <a href="news://developer-forums.novell.com/novell.devsup.webserver">
+    novell.devsup.webserver</a> newsgroup, where many Apache users are
+    more than willing to answer new and obscure questions about using
+    Apache on NetWare.</p>
 
     <p>Most of this document assumes that you are installing Apache
     from a binary distribution. If you want to compile Apache
@@ -327,7 +328,7 @@
     <p>Apache is configured by reading configuration files usually stored
     in the <code>conf</code> directory. These are the same as files used
     to configure the Unix version, but there are a few different directives for
-    Apache on NetWare. See the <a href="../">Apache
+    Apache on NetWare. See the <a href="../mod/">Apache module
     documentation</a> for all the available directives.</p>
 
     <p>The main differences in Apache for NetWare are:</p>
