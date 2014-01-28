@@ -17,11 +17,11 @@
 #include "fdqueue.h"
 #include "apr_atomic.h"
 
-typedef struct recycled_pool
+struct recycled_pool
 {
     apr_pool_t *pool;
     struct recycled_pool *next;
-} recycled_pool;
+};
 
 struct fd_queue_info_t
 {
@@ -36,7 +36,7 @@ struct fd_queue_info_t
     int max_idlers;
     int max_recycled_pools;
     apr_uint32_t recycled_pools_count;
-    recycled_pool *recycled_pools;
+    struct recycled_pool *recycled_pools;
 };
 
 static apr_status_t queue_info_cleanup(void *data_)
