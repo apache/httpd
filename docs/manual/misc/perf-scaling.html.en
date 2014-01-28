@@ -5,8 +5,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Performance Scaling
-     - Apache HTTP Server</title>
+<title>Performance Scaling - Apache HTTP Server</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -20,8 +19,7 @@
 <img alt="" src="../images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1>Performance Scaling
-    </h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Miscellaneous Documentation</a></div><div id="page-content"><div id="preamble"><h1>Performance Scaling</h1>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/misc/perf-scaling.html" title="English">&nbsp;en&nbsp;</a></p>
 </div>
@@ -762,7 +760,7 @@ Swap:       3903784      12540  3891244
                 MPM runs a smaller number of child processes, and spawns
                 multiple request handling threads within each child process. In
                 2.4 MPMs are no longer hard-wired. They too can be exchanged
-                via <code class="directive"><a href="../mod/core.html#loadmodule">LoadModule</a></code>.
+                via <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code>.
                 The default MPM in 2.4 is the event MPM. 
             </p>
             <p>The maximum number of workers, be they pre-forked child
@@ -777,7 +775,7 @@ Swap:       3903784      12540  3891244
             </p>
             <p>Finally, if the httpd server in question is not executing any third-party
                code, via <code>mod_php</code>, <code>mod_perl</code> or similar,
-               we recommend the use of <code class="module"><a href="../mod/mpm_event.html">mpm_event</a></code>. This MPM is ideal
+               we recommend the use of <code class="module">mpm_event</code>. This MPM is ideal
                for situations where httpd serves as a thin layer between clients and
                backend servers doing the real job, such as a proxy or cache.
             </p>
@@ -787,8 +785,7 @@ Swap:       3903784      12540  3891244
                 </a></h4>
                 
                 <p>
-                    The <code>MaxClients
-                    </code>
+                    The <code>MaxClients</code>
                     directive in your Apache httpd configuration file specifies
                     the maximum number of workers your server can create. It
                     has two related directives, <code>MinSpareServers
@@ -814,8 +811,7 @@ Swap:       3903784      12540  3891244
                     complicated. Threaded MPMs support the <code>
                         ThreadsPerChild
                     </code>
-                    directive1 . Apache requires that <code>MaxClients
-                    </code>
+                    directive1 . Apache requires that <code>MaxClients</code>
                     is evenly divisible by <code>ThreadsPerChild
                     </code>
                     .If you set either directive to a number that doesn't
@@ -823,10 +819,8 @@ Swap:       3903784      12540  3891244
                     complaint to the error log and adjust the <code>
                         ThreadsPerChild
                     </code>
-                    value downwards until it is an even factor of <code>
-                        MaxClients
-                    </code>
-                    .
+                    value downwards until it is an even factor of
+                    <code>MaxClients</code>.
                 </p>
                 
                 
@@ -838,7 +832,7 @@ Swap:       3903784      12540  3891244
                     that all the memory on your system is used, but no more. If
                     your system gets so overloaded that it needs to heavily
                     swap core memory out to disk, performance will degrade
-                    quickly. The formula for determining <code class="directive"><a href="../mod/mpm_common.html#maxclients">MaxClients</a></code>
+                    quickly. The formula for determining <code class="directive"><a href="../mod/mpm_common.html#maxrequestworkers">MaxClients</a></code>
                     is fairly simple: 
                 </p>
                 
@@ -1387,21 +1381,22 @@ Listen *:8001
                 
                     
                 <p>
-                    The Apache Software Foundation Wiki is served by MoinMoin.
-                    MoinMoin is written in Python and runs as a CGI. To date, any
-                    attempts to run it under mod_python has been unsuccessful.
-                    The CGI proved to place an untenably high load on the
-                    server machine, especially when the Wiki was being indexed
-                    by search engines like Google. To lighten the load on the
-                    server machine, the Apache Infrastructure team turned to
-                    mod_cache. It turned out <a href="/httpd/MoinMoin">MoinMoin
-                    </a>
-                    needed a small patch to ensure proper behavior behind the
-                    caching server: certain requests can never be cached and
-                    the corresponding Python modules were patched to send the
-                    proper HTTP response headers. After this modification, the
-                    cache in front of the Wiki was enabled with the following
-                    configuration snippet in <code>httpd.conf</code>:
+                    The Apache Software Foundation Wiki is served by
+                    MoinMoin.  MoinMoin is written in Python and runs as
+                    a CGI. To date, any attempts to run it under
+                    mod_python has been unsuccessful.  The CGI proved to
+                    place an untenably high load on the server machine,
+                    especially when the Wiki was being indexed by search
+                    engines like Google. To lighten the load on the
+                    server machine, the Apache Infrastructure team
+                    turned to mod_cache. It turned out MoinMoin needed a
+                    small patch to ensure proper behavior behind the
+                    caching server: certain requests can never be cached
+                    and the corresponding Python modules were patched to
+                    send the proper HTTP response headers. After this
+                    modification, the cache in front of the Wiki was
+                    enabled with the following configuration snippet in
+                    <code>httpd.conf</code>:
                 </p>
                 
 <pre class="prettyprint lang-config">
@@ -1416,7 +1411,7 @@ CacheMaxExpire 21600
                 
                 <p>This configuration will try to cache any and all content
                     within its virtual host. It will never cache content for
-                    more than six hours (the <code class="directive"><a href="../mod/mod_cace.html#cachemaxexpire">CacheMaxExpire</a></code>
+                    more than six hours (the <code class="directive"><a href="../mod/mod_cache.html#cachemaxexpire">CacheMaxExpire</a></code>
                     directive). If no <code>Expires:</code>
                     header is present in the response, <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> will compute
                     an expiration period from the <code>Last-Modified:</code>
