@@ -314,7 +314,7 @@ static const char *authz_require_alias_section(cmd_parms *cmd, void *mconfig,
                                 provider_name);
         }
         if (prvdraliasrec->provider->parse_require_line) {
-            const char *err = prvdraliasrec->provider->parse_require_line(cmd,
+            err = prvdraliasrec->provider->parse_require_line(cmd,
                          provider_args, &prvdraliasrec->provider_parsed_args);
             if (err)
                 return apr_psprintf(cmd->pool,

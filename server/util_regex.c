@@ -162,7 +162,6 @@ AP_DECLARE(int) ap_rxplus_exec(apr_pool_t *pool, ap_rxplus_t *rx,
         remainder = pattern + startl + oldl;
         if (rx->flags & AP_REG_MULTI) {
             /* recurse to do any further matches */
-            char *subs;
             ret += ap_rxplus_exec(pool, rx, remainder, &subs);
             if (ret > 1) {
                 /* a further substitution happened */
@@ -206,5 +205,5 @@ AP_DECLARE(char*) ap_rxplus_pmatch(apr_pool_t *pool, ap_rxplus_t *rx, int n)
     int len;
     const char *match;
     ap_rxplus_match(rx, n, &len, &match);
-    return (match != NULL) ? apr_pstrndup(pool, match, len) : NULL;
+    return apr_pstrndup(pool, match, len);
 }
