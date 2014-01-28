@@ -278,12 +278,12 @@ a directory</description>
 <name>DirectoryCheckHandler</name>
 <description>Toggle how this module responds when another handler is configured</description>
 <syntax>DirectoryCheckHandler On|Off</syntax>
-<default>DirectorySlash Off</default>
+<default>DirectoryCheckHandler Off</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>Indexes</override>
 <compatibility>Available in 2.4.8 and later.  Releases prior to 2.4 implicitly
-act as if "DirectorySlash Off" was specified.</compatibility>
+act as if "DirectoryCheckHandler ON" was specified.</compatibility>
 <usage>
     <p>The <directive>DirectoryCheckHandler</directive> directive determines 
     whether <module>mod_dir</module> should check for directory indexes or
