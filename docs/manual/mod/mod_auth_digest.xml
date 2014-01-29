@@ -227,9 +227,7 @@ authentication</description>
     contain at least the (set of) root URI(s) for this space.
     Omitting to do so will cause the client to send the
     Authorization header for <em>every request</em> sent to this
-    server. Apart from increasing the size of the request, it may
-    also have a detrimental effect on performance if <directive
-    module="mod_auth_digest">AuthDigestNcCheck</directive> is on.</p>
+    server.</p>
 
     <p>The URIs specified can also point to different servers, in
     which case clients (which understand this) will then share

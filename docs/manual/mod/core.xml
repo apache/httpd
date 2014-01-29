@@ -884,7 +884,7 @@ the contents of file-system directories matching a regular expression.</descript
     <p>From 2.4.8 onwards, named groups and backreferences are captured and
     written to the environment with the corresponding name prefixed with
     "MATCH_" and in upper case. This allows elements of paths to be referenced
-    from within <a href="expr.html">expressions</a> and modules like
+    from within <a href="../expr.html">expressions</a> and modules like
     <module>mod_rewrite</module>. In order to prevent confusion, numbered
     (unnamed) backreferences are ignored. Use named groups instead.</p>
 
@@ -1744,7 +1744,7 @@ filenames</description>
     <p>From 2.4.8 onwards, named groups and backreferences are captured and
     written to the environment with the corresponding name prefixed with
     "MATCH_" and in upper case. This allows elements of files to be referenced
-    from within <a href="expr.html">expressions</a> and modules like
+    from within <a href="../expr.html">expressions</a> and modules like
     <module>mod_rewrite</module>. In order to prevent confusion, numbered
     (unnamed) backreferences are ignored. Use named groups instead.</p>
 
@@ -1907,7 +1907,7 @@ satisfied by a request at runtime</description>
     documentation is available in <a href="../expr.html">Expressions in
     Apache HTTP Server</a>.</p>
 
-    <p>Only directives that support the <a href="mod/directive-dict.html#Context"
+    <p>Only directives that support the <a href="directive-dict.html#Context"
     >directory context</a> can be used within this configuration section.</p>
 
 </usage>
@@ -2712,7 +2712,7 @@ matching URLs</description>
     <p>From 2.4.8 onwards, named groups and backreferences are captured and
     written to the environment with the corresponding name prefixed with
     "MATCH_" and in upper case. This allows elements of URLs to be referenced
-    from within <a href="expr.html">expressions</a> and modules like
+    from within <a href="../expr.html">expressions</a> and modules like
     <module>mod_rewrite</module>. In order to prevent confusion, numbered
     (unnamed) backreferences are ignored. Use named groups instead.</p>
 

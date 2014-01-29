@@ -765,7 +765,7 @@ SetEnvIf User-Agent "MSIE [2-5]" \
     command. Alternatively, you can append the following standard 1024-bit DH
     parameters from <a href="http://www.ietf.org/rfc/rfc2409.txt">RFC 2409</a>,
     section 6.2 to the respective
-    <directive module="ssl">SSLCertificateFile</directive> file:</p>
+    <directive module="mod_ssl">SSLCertificateFile</directive> file:</p>
     <example><pre>-----BEGIN DH PARAMETERS-----
 MIGHAoGBAP//////////yQ/aoiFowjTExmKLgNwc0SkCTgiKZ8x0Agu+pjsTmyJR
 Sgh5jjQE3e+VGbPNOkMbMCsKbfJfFDdP4TVtbVHCReSFtXZiXn7G9ExC6aY37WsL
