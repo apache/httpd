@@ -646,6 +646,18 @@ directly</td></tr>
       &lt;/Proxy&gt;
     </code></p></div>
 
+    <div class="note"><h3>Differences from the Location configuration section</h3>
+      <p>A backend URL matches the configuration section if it begins with the 
+      the <var>wildcard-url</var> string, even if the last path segment in the
+      directive only matches a prefix of the backend URL.  For example, 
+      &lt;Proxy http://example.com/foo&gt; matches all of 
+      http://example.com/foo, http://example.com/foo/bar, and 
+      http://example.com/foobar.  The matching of the final URL differs
+      from the behavior of the <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> section, which for purposes of this note 
+      treats the final path component as if it ended in a slash.</p>
+      <p>For more control over the matching, see <code class="directive">&lt;ProxyMatch&gt;</code>.</p>
+    </div>
+
 
 <h3>See also</h3>
 <ul>

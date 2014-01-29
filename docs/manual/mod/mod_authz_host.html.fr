@@ -29,8 +29,6 @@
 <a href="../ja/mod/mod_authz_host.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_authz_host.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Autorisations de groupe basées sur l'hôte (nom ou adresse
 IP)</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
@@ -93,6 +91,8 @@ du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>Limit</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authz_host</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Le support de la négation de env=<var>env-variable</var>
+est assuré depuis la version 2.2.10 du serveur HTTP Apache</td></tr>
 </table>
     <p>La directive <code class="directive">Allow</code> permet de contrôler
     quels hôtes peuvent
