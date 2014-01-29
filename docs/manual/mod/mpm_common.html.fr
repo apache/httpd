@@ -637,7 +637,7 @@ processus</td></tr>
     16 processus serveurs (valeur par défaut). N'affectez pas à la
     directive <code class="directive"><a href="#serverlimit">ServerLimit</a></code> une
     valeur supérieure au nombre de processus requis pour la définition
-    des directives <code class="directive"><a href="#maxrequestworkers&#10;    ">MaxRequestWorkers
+    des directives <code class="directive"><a href="#maxrequestworkers">MaxRequestWorkers
     </a></code> et <code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code>.</p>
 
     <div class="note"><h3>Note</h3>

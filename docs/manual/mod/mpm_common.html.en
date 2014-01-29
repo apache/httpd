@@ -578,7 +578,7 @@ Apache HTTP Server</a></li>
     <code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code>
     settings require more than 16 server processes (default). Do not set
     the value of this directive any higher than the number of server
-    processes required by what you may want for <code class="directive"><a href="#maxrequestworkers ">MaxRequestWorkers </a></code> and <code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code>.</p>
+    processes required by what you may want for <code class="directive"><a href="#maxrequestworkers">MaxRequestWorkers </a></code> and <code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code>.</p>
 
     <div class="note"><h3>Note</h3>
       <p>There is a hard limit of <code>ServerLimit 20000</code> compiled

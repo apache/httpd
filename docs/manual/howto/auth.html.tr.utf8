@@ -483,7 +483,7 @@ Require group Grupismi
       <a href="../mod/mod_authz_core.html#logic">Yetkilendirme
       Taşıyıcıları</a> bölümüne bakınız.</p>
 
-      <p>Öntanımlı olarak tüm <code class="directive"><a href="../mod/mod_authz_core.html#&#10;      require">
+      <p>Öntanımlı olarak tüm <code class="directive"><a href="../mod/mod_authz_core.html#require">
       Require</a></code> yönergeleri, <code class="directive"><a href="../mod/mod_authz_core.html#requireany">&lt;RequireAny&gt;</a></code>
       taşıyıcı yönergesinin içine konur. Başka bir deyişle eğer
       belirtilen kimlik doğrulama yöntemlerinden herhangi biri başarılı

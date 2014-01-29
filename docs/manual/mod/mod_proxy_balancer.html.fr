@@ -333,7 +333,7 @@ ProxyPass /test balancer://mycluster stickysession=JSESSIONID|jsessionid scolonp
     <p>Pour contrôler votre configuration, regardez tout d'abord si
     l'abonnement est à base de cookie ou de codage d'URL. L'étape
     suivante consiste à enregistrer certaines données dans le journal
-    des accès en utilisant un <code class="directive"><a href="../mod/mod_log_config.html#format&#10;    de journalisation">format
+    des accès en utilisant un <code class="directive"><a href="../mod/mod_log_config.html#format de journalisation">format
     de journalisation</a></code> personnalisé. Les champs intéressants
     sont les suivants :</p>
     <dl>

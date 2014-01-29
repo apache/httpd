@@ -127,10 +127,10 @@
     <p>活動中の子プロセスの数と子プロセス中のサーバスレッドの数の越えられない
     上限を設定するディレクティブが二つあります。これらはサーバを
     完全に停止して、再起動することでしか変更することはできません。
-    <code class="directive"><a href="../mod/mpm_common.html#serverlimit&#10;    ">ServerLimit
+    <code class="directive"><a href="../mod/mpm_common.html#serverlimit">ServerLimit
     </a></code> は活動中の子プロセスの越えられない上限を設定し、
     <code class="directive"><a href="../mod/mpm_common.html#maxclients">MaxClients</a></code> ディレクティブ
-    の値を <code class="directive"><a href="../mod/mpm_common.html#&#10;    threadsperchild">
+    の値を <code class="directive"><a href="../mod/mpm_common.html#threadsperchild">
     ThreadsPerChild</a></code> の値で割った値以上である
     必要があります。<code class="directive"><a href="../mod/mpm_common.html#threadlimit">ThreadLimit</a></code> は
     サーバスレッドの越えられない上限で、<code class="directive"><a href="../mod/mpm_common.html#threadsperchild">ThreadsPerChild</a></code> ディレクティブの
@@ -144,10 +144,10 @@
     これは以下の様にして実現できます。</p>
      
     <ul>
-      <li><code class="directive"><a href="../mod/mpm_common.html#&#10;      maxrequestsperchild">
+      <li><code class="directive"><a href="../mod/mpm_common.html#maxrequestsperchild">
       MaxRequestsPerChild</a></code> の値を 0 に設定する</li>
 
-      <li><code class="directive"><a href="../mod/mpm_common.html#&#10;      maxsparethreads">
+      <li><code class="directive"><a href="../mod/mpm_common.html#maxsparethreads">
       MaxSpareThreads</a></code> の値を
       <code class="directive"><a href="../mod/mpm_common.html#maxclients">MaxClients</a></code>
       と同じ値にする</li>
