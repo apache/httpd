@@ -194,7 +194,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                     https://svn.apache.org/r1555463
                     https://svn.apache.org/r1555467
      2.4.x patch: https://people.apache.org/~kbrand/mod_ssl-2.4.x-certkeyfile.diff
-     +1: kbrand
+     +1: kbrand, jorton
 
 OTHER PROPOSALS
 
