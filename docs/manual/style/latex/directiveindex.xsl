@@ -23,39 +23,10 @@
 
 <!-- ==================================================================== -->
 <!-- <directiveindex>                                                     -->
-<!-- Builds the directive index page                                      -->
+<!-- (Ignored)                                                            -->
 <!-- ==================================================================== -->
-<xsl:template match="directiveindex">
+<xsl:template match="directiveindex" />
 
-    <xsl:variable name="directives"
-        select="document(document($allmodules)/modulefilelist/modulefile)
-                /modulesynopsis[status!='Obsolete']
-                /directivesynopsis[not(@location)]" />
-
-
-  <xsl:call-template name="section-title"/>
-
-  <xsl:apply-templates select="summary" />
-
-  <xsl:call-template name="seealso"/>
-
-  <xsl:text>\begin{itemize}
-</xsl:text>
-  <xsl:for-each select="$directives">
-  <xsl:sort select="name" />
-
-  <xsl:text>
-\item </xsl:text>
-  <xsl:apply-templates select="name" mode="simple"/>
-  <xsl:text> (p.\ \pageref{/mod/</xsl:text>
-  <xsl:value-of select="../name"/><xsl:text>:</xsl:text>
-  <xsl:value-of select="translate(name, $uppercase, $lowercase)"/>
-  <xsl:text>})</xsl:text>
-</xsl:for-each>
-
-  <xsl:text>\end{itemize}</xsl:text>
-
-</xsl:template>
 <!-- /directiveindex -->
 
 </xsl:stylesheet>

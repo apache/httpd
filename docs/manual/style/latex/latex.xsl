@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE xsl:stylesheet [
+    <!ENTITY lf SYSTEM "../xsl/util/lf.xml">
     <!ENTITY % HTTPD-VERSION SYSTEM "../version.ent">
     %HTTPD-VERSION;
 ]>
@@ -144,7 +145,11 @@ Server Documentation Project.  More information is available at
 </xsl:text>
     <xsl:apply-templates/>
     <xsl:if test="@id = 'modules'">
+        <xsl:text>\include{mod/index}</xsl:text>&lf;
         <xsl:apply-templates select="document($allmodules)/modulefilelist" />
+        <xsl:text>\include{mod/module-dict}</xsl:text>&lf;
+        <xsl:text>\include{mod/directive-dict}</xsl:text>&lf;
+        <xsl:text>\include{mod/quickreference}</xsl:text>&lf;
     </xsl:if>
 </xsl:for-each>
 
@@ -152,17 +157,18 @@ Server Documentation Project.  More information is available at
 </xsl:template>
 
 <xsl:template match="page">
-<xsl:text>\include{</xsl:text>
-<xsl:choose>
-<xsl:when test="contains(@href,'.')">
-  <xsl:value-of select="substring-before(@href,'.')"/>
-</xsl:when>
-<xsl:otherwise>
-  <xsl:value-of select="concat(@href,'index')"/>
-</xsl:otherwise>
-</xsl:choose>
-<xsl:text>}
-</xsl:text>
+<xsl:if test="not(starts-with(@href,'http:') or starts-with(@href, 'https:') or starts-with(@href, 'mod/'))">
+  <xsl:text>\include{</xsl:text>
+  <xsl:choose>
+  <xsl:when test="contains(@href,'.')">
+    <xsl:value-of select="substring-before(@href,'.')"/>
+  </xsl:when>
+  <xsl:otherwise>
+    <xsl:value-of select="concat(@href,'index')"/>
+  </xsl:otherwise>
+  </xsl:choose>
+  <xsl:text>}</xsl:text>&lf;
+</xsl:if>
 </xsl:template>
 
 <xsl:template match="category/title" mode="printcat">
@@ -178,8 +184,7 @@ Server Documentation Project.  More information is available at
 <xsl:template match="modulefile">
 <xsl:text>\include{mod/</xsl:text>
 <xsl:value-of select="substring-before(.,'.')"/>
-<xsl:text>}
-</xsl:text>
+<xsl:text>}</xsl:text>&lf;
 </xsl:template>
 
 <xsl:template match="summary">
@@ -211,6 +216,12 @@ Server Documentation Project.  More information is available at
 <!-- Take care of all the LaTeX special characters.                       -->
 <!-- Silly multi-variable technique used to avoid deep recursion.         -->
 <!-- ==================================================================== -->
+<xsl:template match="text()|@*" mode="tabular">
+<xsl:call-template name="ltescape">
+  <xsl:with-param name="string" select="."/>
+</xsl:call-template>
+</xsl:template>
+
 <xsl:template match="text()">
 <xsl:call-template name="ltescape">
   <xsl:with-param name="string" select="."/>
