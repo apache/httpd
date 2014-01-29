@@ -1647,7 +1647,7 @@ be examined and a chain of trust will be constructed.
 </p>
 <div class="warning"><h3>Security warning</h3>
 <p>If this directive is enabled, all of the certificates in the file will be
-trusted as if they were also in <code class="directive"><a href="#&#10;sslproxycacertificatefile">
+trusted as if they were also in <code class="directive"><a href="#sslproxycacertificatefile">
 SSLProxyCACertificateFile</a></code>.</p>
 </div>
 <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">

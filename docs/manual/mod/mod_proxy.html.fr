@@ -28,8 +28,6 @@
 <a href="../fr/mod/mod_proxy.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_proxy.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Serveur mandataire/passerelle multi-protocole</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>proxy_module</td></tr>
@@ -805,6 +803,21 @@ mandatées</td></tr>
     </pre>
 
 
+    <div class="note"><h3>Différences avec la section de configuration Location</h3>
+      <p>Une URL d'arrière-plan sera concernée par le conteneur Proxy si
+      elle commence par la <var>url-avec-jokers</var>, même si le
+      dernier segment de chemin de la directive ne correspond qu'à un
+      préfixe de segment dee chemin de l'URL d'arrière-plan. Par exemple, &lt;Proxy
+      http://example.com/foo&gt; correspondra entre autres aux URLs
+      http://example.com/foo, http://example.com/foo/bar, et
+      http://example.com/foobar. La correspondance de l'URL finale
+      diffère du comportement de la section <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> qui, pour le cas de cette note,
+      traitera le segment de chemin final comme s'il se terminait par un
+      slash.</p>
+      <p>Pour un contrôle plus fin de la correspondance des URL, voir la
+      directive <code class="directive">&lt;ProxyMatch&gt;</code>.</p>
+    </div>
+
 
 <h3>Voir aussi</h3>
 <ul>
@@ -1091,6 +1104,16 @@ l'espace d'URLs du serveur local</td></tr>
     <div class="warning">En général, la directive <code class="directive"><a href="#proxyrequests">ProxyRequests</a></code> doit être définie à
     <strong>off</strong> lorsqu'on utilise la directive
     <code class="directive">ProxyPass</code>.</div>
+
+    <p>Le support des sockets de style Unix est fourni ; il suffit pour
+    cela d'utiliser une URL cible préfixée par
+    <code>unix:/path/lis.sock|</code>. Par exemple, pour mandater HTTP
+    et cibler l'UDS /home/www/socket, vous devez utiliser
+    <code>unix:/home/www.socket|http://localhost/whatever/</code>.</p>
+
+    <div class="note"><strong>Note :</strong>Le chemin associé à l'URL
+    <code>unix:</code> tient compte de la directive
+    <code class="directive">DefaultRuntimeDir</code>.</div>
 
     <p>Supposons que le serveur local a pour adresse
     <code>http://example.com/</code> ; alors la ligne</p>

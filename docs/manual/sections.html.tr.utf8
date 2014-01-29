@@ -241,7 +241,7 @@
     </pre>
 
 
-    <p>Diğer yandan <code class="directive"><a href="./mod/mod_alias.html#takma&#10;      adlar">&lt;Takma
+    <p>Diğer yandan <code class="directive"><a href="./mod/mod_alias.html#takma adlar">&lt;Takma
       adlar&gt;</a></code> tam tersi eşlenir:</p>
 
     <pre class="prettyprint lang-config">

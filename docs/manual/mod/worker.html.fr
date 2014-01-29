@@ -108,7 +108,7 @@ qu'utilise le serveur HTTP Apache</a></li>
     <code class="directive"><a href="../mod/mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></code>. Le nombre
     maximum de processus enfants actifs est défini par la valeur de la
     directive <code class="directive"><a href="../mod/mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></code>
-    divisée par la valeur de la directive <code class="directive"><a href="../mod/mpm_common.html#&#10;    threadsperchild">
+    divisée par la valeur de la directive <code class="directive"><a href="../mod/mpm_common.html#threadsperchild">
     ThreadsPerChild</a></code>.</p>
 
     <p>Deux directives permettent de fixer des limites absolues pour le
@@ -118,7 +118,7 @@ qu'utilise le serveur HTTP Apache</a></li>
     La valeur de la directive <code class="directive"><a href="../mod/mpm_common.html#serverlimit">ServerLimit</a></code> constitue une limite
     absolue pour le nombre de processus enfants actifs, et doit être
     supérieure ou égale à la valeur de la directive <code class="directive"><a href="../mod/mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></code> divisée par la valeur de
-    la directive <code class="directive"><a href="../mod/mpm_common.html#&#10;    threadsperchild">
+    la directive <code class="directive"><a href="../mod/mpm_common.html#threadsperchild">
     ThreadsPerChild</a></code>. La valeur de la directive <code class="directive"><a href="../mod/mpm_common.html#threadlimit">ThreadLimit</a></code> constitue une limite
     absolue pour le nombre de threads par processus enfant, et doit être
     supérieure ou égale à la valeur de la directive <code class="directive"><a href="../mod/mpm_common.html#threadsperchild">ThreadsPerChild</a></code>.</p>
@@ -132,10 +132,10 @@ qu'utilise le serveur HTTP Apache</a></li>
     processus enfants individuels de la manière suivante :</p>
 
     <ul>
-      <li>définir la valeur de <code class="directive"><a href="../mod/mpm_common.html#&#10;      maxconnectionsperchild">
+      <li>définir la valeur de <code class="directive"><a href="../mod/mpm_common.html#maxconnectionsperchild">
       MaxConnectionsPerChild</a></code> à zéro</li>
 
-      <li>Définir la valeur de <code class="directive"><a href="../mod/mpm_common.html#&#10;      maxsparethreads">
+      <li>Définir la valeur de <code class="directive"><a href="../mod/mpm_common.html#maxsparethreads">
       MaxSpareThreads</a></code> à la même valeur que <code class="directive"><a href="../mod/mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></code></li>
     </ul>
 

@@ -406,14 +406,23 @@ certain string or letter repeatedly in a request. The example shown here
 will replace A with B everywhere in a request, and will continue doing
 so until there are no more As to be replaced.
 </p>
-
 <pre class="prettyprint lang-config">RewriteRule (.*)A(.*) $1B$2 [N]</pre>
-
 
 <p>You can think of this as a <code>while</code> loop: While this
 pattern still matches (i.e., while the URI still contains an
 <code>A</code>), perform this substitution (i.e., replace the
 <code>A</code> with a <code>B</code>).</p>
+
+<p>In 2.4.8 and later, this module returns an error after 32,000 iterations to
+protect against unintended looping.  An alternative maximum number of 
+iterations can be specified by adding to the N flag.  </p>
+<pre class="prettyprint lang-config">
+# Be willing to replace 1 character in each pass of the loop
+RewriteRule (.+)[&gt;&lt;;]$ $1 [N=64000]
+# ... or, give up if after 10 loops
+RewriteRule (.+)[&gt;&lt;;]$ $1 [N=10]
+</pre>
+
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -638,7 +647,7 @@ URI in request' warnings.
 <h2><a name="flag_s" id="flag_s">S|skip</a></h2>
 <p>The [S] flag is used to skip rules that you don't want to run. The
 syntax of the skip flag is [S=<em>N</em>], where <em>N</em> signifies
-the number of rules to skip (provided the <code class="directive"><a href="../mod/mod_rewrite.html#&#10;rewriterule">
+the number of rules to skip (provided the <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">
 RewriteRule</a></code> matches). This can be thought of as a <code>goto</code>
 statement in your rewrite ruleset. In the following example, we only want
 to run the <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> if the

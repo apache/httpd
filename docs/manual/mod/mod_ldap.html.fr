@@ -242,9 +242,9 @@ LDAPOpCacheTTL 600
 <h2><a name="usingssltls" id="usingssltls">Utiliser SSL/TLS</a></h2>
 
     <p>La possibilité de créer des connexions SSL et TLS avec un serveur
-    LDAP est définie par les directives <code class="directive"><a href="#&#10;    ldaptrustedglobalcert">
-    LDAPTrustedGlobalCert</a></code>, <code class="directive"><a href="#&#10;    ldaptrustedclientcert">
-    LDAPTrustedClientCert</a></code> et <code class="directive"><a href="#&#10;    ldaptrustedmode">
+    LDAP est définie par les directives <code class="directive"><a href="#ldaptrustedglobalcert">
+    LDAPTrustedGlobalCert</a></code>, <code class="directive"><a href="#ldaptrustedclientcert">
+    LDAPTrustedClientCert</a></code> et <code class="directive"><a href="#ldaptrustedmode">
     LDAPTrustedMode</a></code>. Ces directives permettent de spécifier
     l'autorité de certification (CA), les certificats clients éventuels,
     ainsi que le type de chiffrement à utiliser pour la connexion (none,

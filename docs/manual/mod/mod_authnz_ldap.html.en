@@ -943,7 +943,7 @@ AuthLDAPBindPassword "exec:/path/to/otherProgram argument1"
     authorization checks use comparisons.</p>
 
     <p>This directive only has effect on the comparisons performed during
-    nested group processing when <code class="directive"><a href="#&#10;    authldapsearchasuser">
+    nested group processing when <code class="directive"><a href="#authldapsearchasuser">
     AuthLDAPSearchAsUser</a></code> is also enabled.</p>
 
     <p> This directive should only be used when your LDAP server doesn't
@@ -1059,7 +1059,7 @@ own username, instead of anonymously or with hard-coded credentials for the serv
      search.</p>
 
      <p> If the verbatim username can't directly bind, but needs some
-     cosmetic transformation, see <code class="directive"><a href="#&#10;     authldapinitialbindpattern">
+     cosmetic transformation, see <code class="directive"><a href="#authldapinitialbindpattern">
      AuthLDAPInitialBindPattern</a></code>.</p>
 
      <p> This directive should only be used when your LDAP server doesn't
@@ -1221,7 +1221,7 @@ environment variable</td></tr>
     checks use searches.</p>
 
     <p>This directive only has effect on the comparisons performed during
-    nested group processing when <code class="directive"><a href="#&#10;    authldapcompareasuser">
+    nested group processing when <code class="directive"><a href="#authldapcompareasuser">
     AuthLDAPCompareAsUser</a></code> is also enabled.</p>
 
     <p> This directive should only be used when your LDAP server doesn't

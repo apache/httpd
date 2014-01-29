@@ -499,10 +499,10 @@ Require group GroupName
         other than who they are. Something such as where they are
         coming from.</p>
 
-        <p>The authorization providers <code class="directive"><a href="../mod/mod_authz_host.html#&#10;        all">
-        all</a></code>, <code class="directive"><a href="../mod/mod_authz_host.html#&#10;        env">
-        env</a></code>, <code class="directive"><a href="../mod/mod_authz_host.html#&#10;        host">
-        host</a></code> and <code class="directive"><a href="../mod/mod_authz_host.html#&#10;        ip">
+        <p>The authorization providers <code class="directive"><a href="../mod/mod_authz_host.html#all">
+        all</a></code>, <code class="directive"><a href="../mod/mod_authz_host.html#env">
+        env</a></code>, <code class="directive"><a href="../mod/mod_authz_host.html#host">
+        host</a></code> and <code class="directive"><a href="../mod/mod_authz_host.html#ip">
         ip</a></code> let you allow or deny access based other host based
         criteria such as host name or ip address of the machine requesting
         a document.</p>

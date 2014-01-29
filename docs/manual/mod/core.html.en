@@ -603,7 +603,7 @@ AllowOverrideList CookieTracking CookieName
     </pre>
 
 
-    <p>In the example above <code class="directive"><a href="#allowoverride&#10;    ">AllowOverride
+    <p>In the example above <code class="directive"><a href="#allowoverride">AllowOverride
     </a></code> grants permission to the <code>AuthConfig</code>
     directive grouping and <code class="directive">AllowOverrideList</code> grants
     permission to only two directives from the <code>FileInfo</code> directive
