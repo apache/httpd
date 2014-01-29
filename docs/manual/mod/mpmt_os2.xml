@@ -47,9 +47,9 @@
 <seealso><a href="../bind.html">Setting which addresses and ports Apache
 uses</a></seealso>
 
-<directivesynopsis location="mpm_common"><name>User</name>
+<directivesynopsis location="mod_unixd"><name>User</name>
 </directivesynopsis>
-<directivesynopsis location="mpm_common"><name>Group</name>
+<directivesynopsis location="mod_unixd"><name>Group</name>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>Listen</name>
 </directivesynopsis>

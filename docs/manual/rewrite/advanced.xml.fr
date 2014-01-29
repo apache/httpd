@@ -22,7 +22,7 @@
  limitations under the License.
 -->
 
-<manualpage metafile="avoid.xml.meta">
+<manualpage metafile="advanced.xml.meta">
   <parentdocument href="./">Rewrite</parentdocument>
 
 <title>Advanced Techniques with mod_rewrite</title>

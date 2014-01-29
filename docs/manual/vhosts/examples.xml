@@ -330,9 +330,10 @@ Listen 80
     virtual host through to a server running on another machine. In the
     example, a virtual host of the same name is configured on a machine
     at <code>192.168.111.2</code>. The <directive
-    module="mod_proxy">ProxyPreserveHost On</directive> directive is
-    used so that the desired hostname is passed through, in case we are
-    proxying multiple hostnames to a single machine.</p>
+    module="mod_proxy" name="ProxyPreserveHost">ProxyPreserveHost
+    On</directive> directive is used so that the desired hostname is
+    passed through, in case we are proxying multiple hostnames to a
+    single machine.</p>
 
     <highlight language="config">
 &lt;VirtualHost *:*&gt;

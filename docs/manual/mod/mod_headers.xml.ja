@@ -38,7 +38,7 @@
 
 <section id="order"><title>処理の順番</title>
 
-    <p><module>mod_header</module> のディレクティブはサーバ設定のほぼどこにでも
+    <p><module>mod_headers</module> のディレクティブはサーバ設定のほぼどこにでも
     書くことができ、影響する範囲を<a
     href="../sections.html">設定用セクション</a>で囲むことで限定する
     ことができます。</p>

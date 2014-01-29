@@ -50,7 +50,7 @@
 <directive module="mod_alias">Alias</directive>
 <directive module="mod_alias">AliasMatch</directive>
 <directive module="mod_speling">CheckSpelling</directive>
-<directive module="core">DirectoryIndex</directive>
+<directive module="mod_dir">DirectoryIndex</directive>
 <directive module="core">DocumentRoot</directive>
 <directive module="core">ErrorDocument</directive>
 <directive module="core">Options</directive>
@@ -88,7 +88,7 @@
 
     <p>If a directory is requested (i.e. a path ending with
     <code>/</code>), the file served from that directory is defined by
-    the <directive module="core">DirectoryIndex</directive> directive.
+    the <directive module="mod_dir">DirectoryIndex</directive> directive.
     For example, if <code>DocumentRoot</code> were set as above, and 
     you were to set:</p>
 
