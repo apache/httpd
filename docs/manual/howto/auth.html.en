@@ -499,13 +499,11 @@ Require group GroupName
         other than who they are. Something such as where they are
         coming from.</p>
 
-        <p>The authorization providers <code class="directive"><a href="../mod/mod_authz_host.html#all">
-        all</a></code>, <code class="directive"><a href="../mod/mod_authz_host.html#env">
-        env</a></code>, <code class="directive"><a href="../mod/mod_authz_host.html#host">
-        host</a></code> and <code class="directive"><a href="../mod/mod_authz_host.html#ip">
-        ip</a></code> let you allow or deny access based other host based
-        criteria such as host name or ip address of the machine requesting
-        a document.</p>
+        <p>The authorization providers <code>all</code>,
+        <code>env</code>, <code>host</code> and <code>ip</code> let you
+        allow or deny access based other host based criteria such as
+        host name or ip address of the machine requesting a
+        document.</p>
 
         <p>The usage of these providers is specified through the
         <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> directive.
@@ -595,10 +593,10 @@ Require group GroupName
 <div class="section">
 <h2><a name="moreinformation" id="moreinformation">More information</a></h2>
     <p>You should also read the documentation for
-    <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code> and <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code> which
-    contain some more information about how this all works.
-    The directive <code class="directive"><a href="../mod/mod_authn_core.html#&lt;authnprovideralias&gt;">&lt;AuthnProviderAlias&gt;</a></code>
-    can also help in simplifying certain authentication configurations.</p>
+    <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code> and <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code>
+    which contain some more information about how this all works.  The
+    directive <code class="directive"><a href="../mod/mod_authn_core.html#authnprovideralias">&lt;AuthnProviderAlias&gt;</a></code> can also help
+    in simplifying certain authentication configurations.</p>
 
     <p>The various ciphers supported by Apache for authentication data are
     explained in <a href="../misc/password_encryptions.html">Password

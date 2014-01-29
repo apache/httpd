@@ -304,8 +304,8 @@
         <p>To find out which modules are compiled by default, run
         <code>./configure -h</code> or <code>./configure --help</code>
         and look under <code>Optional Features</code>.  Suppose you
-        are interested in <code class="module"><a href="../mod/mod_example1.html">mod_example1</a></code> and
-        <code class="module"><a href="../mod/mod_example2.html">mod_example2</a></code>, and you
+        are interested in <code>mod_example1</code> and
+        <code>mod_example2</code>, and you
         see this:</p>
 
         <div class="example"><pre>Optional Features:

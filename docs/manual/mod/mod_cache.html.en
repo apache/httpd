@@ -403,8 +403,8 @@ CustomLog invalidated-requests.log common env=cache-invalidate
   used by the service and client.</p>
 
   <p>If the normal handler is used, this directive may appear within a
-  <code class="directive"><a href="../mod/core.html#&lt;directory&gt;">&lt;Directory&gt;</a></code> or
-  <code class="directive"><a href="../mod/core.html#&lt;location&gt;">&lt;Location&gt;</a></code> directive. If the quick handler
+  <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> or
+  <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> directive. If the quick handler
   is used, this directive must appear within a server or virtual host context, otherwise
   the setting will be ignored.</p>
 
@@ -558,8 +558,8 @@ CacheEnable  disk  http://.example.org/
   <p>When the <code class="directive"><a href="#cacheheader">CacheHeader</a></code> directive
   is switched on, an <strong>X-Cache</strong> header will be added to the response
   with the cache status of this response. If the normal handler is used, this
-  directive may appear within a <code class="directive"><a href="../mod/core.html#&lt;directory&gt;">&lt;Directory&gt;</a></code>
-  or <code class="directive"><a href="../mod/core.html#&lt;location&gt;">&lt;Location&gt;</a></code> directive. If the quick
+  directive may appear within a <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>
+  or <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> directive. If the quick
   handler is used, this directive must appear within a server or virtual host
   context, otherwise the setting will be ignored.</p>
 
