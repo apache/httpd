@@ -316,12 +316,17 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new,
     }
     fname = slotmem_filename(pool, name, 0);
     if (fname) {
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(02602)
+                     "create looking for %s", fname);
+
         /* first try to attach to existing slotmem */
         if (next) {
             for (;;) {
                 if (strcmp(next->name, fname) == 0) {
                     /* we already have it */
                     *new = next;
+                    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(02603)
+                                 "create found %s", fname);
                     return APR_SUCCESS;
                 }
                 if (!next->next) {
