@@ -1,4 +1,7 @@
 <?xml version="1.0"?>
+<!DOCTYPE xsl:stylesheet [
+    <!ENTITY lf SYSTEM "../xsl/util/lf.xml">
+]>
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -28,6 +31,7 @@
 <xsl:template match="quickreference">
 
   <xsl:call-template name="section-title"/>
+  <xsl:text>\label{/mod/directives}</xsl:text>&lf;
 
   <xsl:apply-templates select="summary"/>
 
@@ -39,11 +43,10 @@
        select="document(document($allmodules)/modulefilelist/modulefile)
          /modulesynopsis/directivesynopsis[not(@location)]" />
 
-  <xsl:text>\footnotesize
-</xsl:text>
+  <xsl:text>\footnotesize</xsl:text>&lf;
 
-  <xsl:text>\begin{longtable}{p{.60\textwidth}p{.25\textwidth}ll}\hline
-</xsl:text>
+  <xsl:text>\begin{longtable}{p{.60\textwidth}p{.25\textwidth}ll}\hline/</xsl:text>
+  &lf;
 
 <xsl:for-each
    select="$directives[translate(substring(normalize-space(name), 1,1),
@@ -51,7 +54,7 @@
 <xsl:sort select="name" />
 
    <xsl:text>\texttt{</xsl:text>
-   <xsl:apply-templates select="syntax" />
+   <xsl:apply-templates select="syntax" mode="tabular" />
    <xsl:text>}</xsl:text>
    <xsl:text>&amp;</xsl:text>
 
@@ -106,8 +109,7 @@
         <xsl:variable name="status" select="translate(
             ../status, $uppercase, $lowercase)"/>
         <xsl:value-of select="$message[@id=$status]/@letter"/>
-     <xsl:text>\\*
-</xsl:text>
+     <xsl:text>\\*</xsl:text>&lf;
 
       <xsl:text>\multicolumn{4}{l}{\begin{minipage}[t]{.95\textwidth}</xsl:text>
          <xsl:choose>
@@ -125,13 +127,12 @@
       <xsl:text>}</xsl:text>
 
 
-    <xsl:text>\end{minipage}} \\ \hline
-</xsl:text>
+    <xsl:text>\end{minipage}} \\ \hline</xsl:text>&lf;
 
   </xsl:for-each> <!-- /directives -->
 
-  <xsl:text>\end{longtable}
-\normalsize</xsl:text>
+  <xsl:text>\end{longtable}</xsl:text>&lf;
+  <xsl:text>\normalsize</xsl:text>
 
 </xsl:template>
 
