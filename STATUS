@@ -184,6 +184,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      +1: trawick, covener
 
+   * mod_ssl: Remove the hardcoded algorithm-type dependency for the
+     SSLCertificateFile and SSLCertificateKeyFile directives, and deprecate
+     SSLCertificateChainFile. A detailed list of the changes is included
+     at the beginning of the 2.4.x patch (from the original trunk commit logs)
+     trunk patches: https://svn.apache.org/r1546804
+                    https://svn.apache.org/r1553824
+                    https://svn.apache.org/r1554192
+                    https://svn.apache.org/r1555463
+                    https://svn.apache.org/r1555467
+     2.4.x patch: https://people.apache.org/~kbrand/mod_ssl-2.4.x-certkeyfile.diff
+     +1: kbrand
+
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
