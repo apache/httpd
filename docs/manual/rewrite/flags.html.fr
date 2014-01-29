@@ -24,8 +24,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/rewrite/flags.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/rewrite/flags.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 <p>Ce document décrit les drapeaux disponibles dans la directive
 <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>, en fournissant
@@ -322,7 +320,7 @@ disponible auparavant ne l'est plus actuellement.</p>
 RewriteRule ancienne-ressource - [G,NC]
 </code></p></div>
 
-<p>Lorsqu'on utilise [F], [L] est implicite - c'est à dire que la
+<p>Lorsqu'on utilise [G], [L] est implicite - c'est à dire que la
 réponse est renvoyée immédiatement, et aucune autre règle n'est évaluée.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
