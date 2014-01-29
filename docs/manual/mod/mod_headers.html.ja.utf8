@@ -60,7 +60,7 @@
 <div class="section">
 <h2><a name="order" id="order">処理の順番</a></h2>
 
-    <p><code class="module"><a href="../mod/mod_header.html">mod_header</a></code> のディレクティブはサーバ設定のほぼどこにでも
+    <p><code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code> のディレクティブはサーバ設定のほぼどこにでも
     書くことができ、影響する範囲を<a href="../sections.html">設定用セクション</a>で囲むことで限定する
     ことができます。</p>
 

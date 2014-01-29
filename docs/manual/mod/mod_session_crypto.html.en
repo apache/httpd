@@ -154,11 +154,12 @@ SessionCryptoPassphrase secret
       </pre>
 </div>
 
-    <p>The <var>NSS</var> crypto driver might have already been configured by another
-    part of the server, for example from <code class="module"><a href="../mod/mod_nss.html">mod_nss</a></code> or
-    <code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code>. If found to have already been configured,
-    a warning will be logged, and the existing configuration will have taken affect.
-    To avoid this warning, use the noinit parameter as follows.</p>
+    <p>The <var>NSS</var> crypto driver might have already been
+    configured by another part of the server, for example from
+    <code>mod_nss</code> or <code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code>. If found to
+    have already been configured, a warning will be logged, and the
+    existing configuration will have taken affect.  To avoid this
+    warning, use the noinit parameter as follows.</p>
 
     <div class="example"><h3>NSS with certificate database</h3><pre class="prettyprint lang-config">
       SessionCryptoDriver nss noinit

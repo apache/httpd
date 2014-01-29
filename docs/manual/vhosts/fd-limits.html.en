@@ -103,7 +103,7 @@ CustomLog logs/multiple_vhost_log vhost
 <p>This will create a log file in the common log format, but with the
 canonical virtual host (whatever appears in the
 <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> directive) prepended to
-each line. (See <code class="directive"><a href="../mod/mod_log_config.html#custom log formats">Custom Log Formats</a></code> for
+each line. (See <code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code> for
 more about customizing your log files.)</p>
 
 <p>When you wish to split your log file into its component parts (one

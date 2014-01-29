@@ -115,7 +115,7 @@ ExtFilterDefine gzip mode=output cmd=/bin/gzip
     # run on output
     SetOutputFilter gzip
     
-    # mod_header directive to add
+    # mod_headers directive to add
     # "Content-Encoding: gzip" header field
     Header set Content-Encoding gzip
 &lt;/Location&gt;
