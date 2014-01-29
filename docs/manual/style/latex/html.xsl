@@ -1,4 +1,7 @@
 <?xml version="1.0"?>
+<!DOCTYPE xsl:stylesheet [
+    <!ENTITY lf SYSTEM "../xsl/util/lf.xml">
+]>
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -27,34 +30,27 @@
 <!-- ==================================================================== -->
 
 <xsl:template match="ul">
-<xsl:text>\begin{itemize}
-</xsl:text>
+<xsl:text>\begin{itemize}</xsl:text>&lf;
 <xsl:apply-templates/>
-<xsl:text>\end{itemize}
-</xsl:text>
+<xsl:text>\end{itemize}</xsl:text>&lf;
 </xsl:template>
 
 <xsl:template match="ol">
-<xsl:text>\begin{enumerate}
-</xsl:text>
+<xsl:text>\begin{enumerate}</xsl:text>&lf;
 <xsl:apply-templates/>
-<xsl:text>\end{enumerate}
-</xsl:text>
+<xsl:text>\end{enumerate}</xsl:text>&lf;
 </xsl:template>
 
 <xsl:template match="li">
 <xsl:text>\item </xsl:text>
 <xsl:apply-templates/>
-<xsl:text>
-</xsl:text>
+&lf;
 </xsl:template>
 
 <xsl:template match="dl">
-<xsl:text>\begin{description}
-</xsl:text>
+<xsl:text>\begin{description}</xsl:text>&lf;
 <xsl:apply-templates/>
-<xsl:text>\end{description}
-</xsl:text>
+<xsl:text>\end{description}</xsl:text>&lf;
 </xsl:template>
 
 <xsl:template match="dt">
@@ -114,8 +110,7 @@
 
 <xsl:template match="p">
 <xsl:apply-templates/>
-<xsl:text>\par
-</xsl:text>
+<xsl:text>\par</xsl:text>&lf;
 </xsl:template>
 
 <xsl:template match="code|program">
@@ -148,23 +143,55 @@
 <xsl:text>}</xsl:text>
 </xsl:template>
 
+<!-- O(log(n)) (stack usage!) string reverter -->
+<xsl:template name="string-reverse">
+<xsl:param name="string"/>
+<xsl:variable name="length" select="string-length($string)"/>
+
+<xsl:choose>
+<xsl:when test="$length &lt; 2">
+  <xsl:value-of select="$string"/>
+</xsl:when>
+<xsl:when test="$length = 2">
+  <xsl:value-of select="concat(substring($string, 2, 1), substring($string, 1, 1))"/>
+</xsl:when>
+<xsl:otherwise>
+  <xsl:variable name="middle" select="floor($length div 2)"/>
+
+  <xsl:call-template name="string-reverse">
+    <xsl:with-param name="string" select="substring($string, $middle + 1, $middle + 1)"/>
+  </xsl:call-template>
+  <xsl:call-template name="string-reverse">
+    <xsl:with-param name="string" select="substring($string, 1, $middle)"/>
+  </xsl:call-template>
+</xsl:otherwise>
+</xsl:choose>
+</xsl:template>
+
 <!-- Value-of used here explicitly because we don't wan't latex-escaping
 performed.  Of course, this will conflict with html where some tags are
 interpreted in pre -->
-<xsl:template match="pre">
-<xsl:text>\begin{verbatim}
-</xsl:text>
-<xsl:value-of select="."/>
-<xsl:text>\end{verbatim}
-</xsl:text>
+<xsl:template match="pre|highlight">
+<xsl:text>\begin{verbatim}</xsl:text>
+
+<!-- string trimming: ltrim is easy, rtrim is not. so, we're sneaky and use
+ltrim only. The output is then: string-reverse(ltrim(string-reverse(ltrim(.)))) -->
+<xsl:variable name="reversed">
+<xsl:call-template name="string-reverse">
+<xsl:with-param name="string" select="substring(., string-length(substring-before(., substring(normalize-space(.), 1, 1))) + 1, string-length(.))"/>
+</xsl:call-template>
+</xsl:variable>
+<xsl:call-template name="string-reverse">
+<xsl:with-param name="string" select="substring($reversed, string-length(substring-before($reversed, substring(normalize-space($reversed), 1, 1))) + 1, string-length($reversed))"/>
+</xsl:call-template>
+
+<xsl:text>\end{verbatim}</xsl:text>&lf;
 </xsl:template>
 
 <xsl:template match="blockquote">
-<xsl:text>\begin{quotation}
-</xsl:text>
+<xsl:text>\begin{quotation}</xsl:text>&lf;
 <xsl:apply-templates/>
-<xsl:text>\end{quotation}
-</xsl:text>
+<xsl:text>\end{quotation}</xsl:text>&lf;
 </xsl:template>
 
 <!-- XXX: We need to deal with table headers -->
@@ -197,13 +224,11 @@ interpreted in pre -->
   </xsl:for-each>
 </xsl:otherwise>
 </xsl:choose>
-<xsl:text>|}\hline
-</xsl:text>
+<xsl:text>|}\hline</xsl:text>&lf;
 <xsl:apply-templates select="tr"/>
 <xsl:text>\hline\end{</xsl:text>
 <xsl:value-of select="$table-type"/>
-<xsl:text>}
-</xsl:text>
+<xsl:text>}</xsl:text>&lf;
 </xsl:template>
 
 <xsl:template match="tr">
@@ -212,8 +237,7 @@ interpreted in pre -->
   <xsl:if test="../@border and not(position()=last())">
     <xsl:text>\hline</xsl:text>
   </xsl:if>
-  <xsl:text>
-</xsl:text>
+  &lf;
 </xsl:template>
 
 <xsl:template match="td">
