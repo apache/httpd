@@ -191,11 +191,12 @@
     suggest that the maximum payload could be as large as 2^16, in fact, the
     code sets the maximum to be 8K.</p>
     <table>
+       <columnspec><column width=".2"/><column width=".1"/><column width=".1"/><column width=".2"/><column width=".2"/><column width=".2"/></columnspec>
       <tr>
-        <td colspan="6"><em>Packet Format (Server->Container)</em></td>
+        <th colspan="6"><em>Packet Format (Server->Container)</em></th>
       </tr>
       <tr>
-        <td>Byte</td>
+        <th>Byte</th>
         <td>0</td>
         <td>1</td>
         <td>2</td>
@@ -203,7 +204,7 @@
         <td>4...(n+3)</td>
       </tr>
       <tr>
-        <td>Contents</td>
+        <th>Contents</th>
         <td>0x12</td>
         <td>0x34</td>
         <td colspan="2">Data Length (n)</td>
@@ -211,11 +212,12 @@
       </tr>
     </table>
     <table>
+       <columnspec><column width=".2"/><column width=".1"/><column width=".1"/><column width=".2"/><column width=".2"/><column width=".2"/></columnspec>
       <tr>
-        <td colspan="6"><em>Packet Format (Container->Server)</em></td>
+        <th colspan="6"><em>Packet Format (Container->Server)</em></th>
       </tr>
       <tr>
-        <td>Byte</td>
+        <th>Byte</th>
         <td>0</td>
         <td>1</td>
         <td>2</td>
@@ -223,7 +225,7 @@
         <td>4...(n+3)</td>
       </tr>
       <tr>
-        <td>Contents</td>
+        <th>Contents</th>
         <td>A</td>
         <td>B</td>
         <td colspan="2">Data Length (n)</td>
@@ -238,6 +240,7 @@
      <p>The web server can send the following messages to the servlet
      container:</p>
     <table>
+       <columnspec><column width=".2"/><column width=".3"/><column width=".5"/></columnspec>
       <tr>
         <td>Code</td>
         <td>Type of Packet</td>
@@ -279,6 +282,7 @@
     <p>The servlet container can send the following types of messages to the
     webserver:</p>
     <table>
+       <columnspec><column width=".2"/><column width=".3"/><column width=".5"/></columnspec>
       <tr>
         <td>Code</td>
         <td>Type of Packet</td>
