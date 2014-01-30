@@ -141,8 +141,8 @@ the specified alias</td></tr>
     <p><code class="directive">&lt;AuthnProviderAlias&gt;</code> and
     <code>&lt;/AuthnProviderAlias&gt;</code> are used to enclose a group of
     authentication directives that can be referenced by the alias name 
-    using one of the directives <code class="directive"><a href="../mod/mod_auth_basic.html#&#10;    authbasicprovider">
-    AuthBasicProvider</a></code> or <code class="directive"><a href="../mod/mod_auth_digest.html#&#10;    authdigestprovider">
+    using one of the directives <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">
+    AuthBasicProvider</a></code> or <code class="directive"><a href="../mod/mod_auth_digest.html#authdigestprovider">
     AuthDigestProvider</a></code>.</p>
 
 

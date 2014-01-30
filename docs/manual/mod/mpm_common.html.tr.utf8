@@ -754,7 +754,7 @@
       <code class="directive"><a href="#maxclients">MaxClients</a></code> ve
       <code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code> ayarları 16
       sunucu sürecinden (16 öntanımlıdır) fazlasını gerektiriyorsa
-      ayarlayınız. Bu yönergeye <code class="directive"><a href="#maxclients&#10;      ">MaxClients
+      ayarlayınız. Bu yönergeye <code class="directive"><a href="#maxclients">MaxClients
       </a></code> ve <code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code> için gerekli gördüğünüz
       sunucu süreci sayısından fazlasını atamayınız.</p>
 

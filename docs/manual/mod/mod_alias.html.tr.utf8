@@ -210,7 +210,7 @@ eşler.</td></tr>
       belirgin tek fark <code class="directive"><a href="#alias">Alias</a></code>
       yönergesinin URI'nin bir ek bölümünü, sağda, dosya yolunun sonundaki
       eşleşen parçayı özdevinimli olarak kopyalayacak olmasıdır. Halbuki
-      <code class="directive"><a href="#aliasmatch ">AliasMatch </a></code> bunu yapmaz. Yani,
+      <code class="directive"><a href="#aliasmatch">AliasMatch </a></code> bunu yapmaz. Yani,
       hemen her durumda, istek URI'sinin baştan sona tümünün düzenli ifade ile
       eşleşmesini ve sağ taraftaki ikamenin kullanılmasını istersiniz.</p>
 

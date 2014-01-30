@@ -144,8 +144,8 @@ l'alias spécifié</td></tr>
     <code>&lt;/AuthnProviderAlias&gt;</code> permettent de regrouper des
     directives qui représentent une extension d'un fournisseur
     d'authentification de base pouvant être référencée par l'alias
-    spécifié dans les directives <code class="directive"><a href="../mod/mod_auth_basic.html#&#10;    authbasicprovider">
-    AuthBasicProvider</a></code> ou <code class="directive"><a href="../mod/mod_auth_digest.html#&#10;    authdigestprovider">
+    spécifié dans les directives <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">
+    AuthBasicProvider</a></code> ou <code class="directive"><a href="../mod/mod_auth_digest.html#authdigestprovider">
     AuthDigestProvider</a></code>.</p>
 
 
