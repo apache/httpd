@@ -382,7 +382,6 @@ int method_number;   /* M_GET, M_POST, <em>etc.</em> */
         <br />
 </code></p><pre>void *per_dir_config;   /* Options set in config files, <em>etc.</em> */
 void *request_config;   /* Notes on *this* request */</pre><p><code>
-        <br />
         };
       </code></p></div>
     
