@@ -125,7 +125,9 @@ href="../URLmapping.html">Mapping URLs to the filesystem</a></seealso>
     <var>URL-path</var> then the server will require a trailing / in
     order to expand the alias. That is, if you use</p>
 
-    <dl><dd><code>Alias /icons/ /usr/local/apache/icons/</code></dd></dl>
+    <example>
+        Alias /icons/ /usr/local/apache/icons/
+    </example>
 
     <p>then the URL <code>/icons</code> will not be aliased, as it lacks
     that trailing /. Likewise, if you omit the slash on the
