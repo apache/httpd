@@ -208,7 +208,7 @@
 
 <xsl:value-of select="$message[@id='syntax']" />
 <xsl:text>: &amp; {\ttfamily </xsl:text>
-<xsl:apply-templates select="syntax" />
+<xsl:apply-templates select="syntax" mode="tabular" />
 <xsl:text>}\\
 </xsl:text>
 
