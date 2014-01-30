@@ -1103,7 +1103,7 @@ ldap2.example.com/dc=..."</code></p></div>
     processus d'autorisation, que des prérequis LDAP spécifiques soient
     présents ou non. Pour ignorer les échecs de mise en correspondance
     d'un nom d'utilisateur avec un DN au cours du processus
-    d'autorisation, définissez <code class="directive"><a href="#&#10;    authzldapauthoritative">
+    d'autorisation, définissez <code class="directive"><a href="#authzldapauthoritative">
     AuthzLDAPAuthoritative</a></code> à "off".</p>
 
 

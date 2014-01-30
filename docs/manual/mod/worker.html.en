@@ -108,17 +108,17 @@ uses</a></li>
     <code class="directive"><a href="../mod/mpm_common.html#maxclients">MaxClients</a></code> directive.
     The maximum number of active child processes is determined by
     the <code class="directive"><a href="../mod/mpm_common.html#maxclients">MaxClients</a></code>
-    directive divided by the <code class="directive"><a href="../mod/mpm_common.html#&#10;    threadsperchild">
+    directive divided by the <code class="directive"><a href="../mod/mpm_common.html#threadsperchild">
     ThreadsPerChild</a></code> directive.</p>
 
     <p>Two directives set hard limits on the number of active child
     processes and the number of server threads in a child process,
     and can only be changed by fully stopping the server and then 
-    starting it again.  <code class="directive"><a href="../mod/mpm_common.html#serverlimit&#10;    ">ServerLimit
+    starting it again.  <code class="directive"><a href="../mod/mpm_common.html#serverlimit">ServerLimit
     </a></code> is a hard limit on the number of active child 
     processes, and must be greater than or equal to the 
     <code class="directive"><a href="../mod/mpm_common.html#maxclients">MaxClients</a></code>
-    directive divided by the <code class="directive"><a href="../mod/mpm_common.html#&#10;    threadsperchild">
+    directive divided by the <code class="directive"><a href="../mod/mpm_common.html#threadsperchild">
     ThreadsPerChild</a></code> directive.  
     <code class="directive"><a href="../mod/mpm_common.html#threadlimit">ThreadLimit</a></code> is a hard
     limit of the number of server threads, and must be greater than

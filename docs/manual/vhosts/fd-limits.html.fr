@@ -99,7 +99,7 @@ de la manière suivante&nbsp;:</p>
 
 <p>Tout d'abord, vous devez ajouter le nom du serveur virtuel à chaque 
 entrée du journal. Ceci se paramètre au moyen de la directive 
-<code class="directive"><a href="../mod/mod_log_config.html# logformat"> LogFormat</a></code> et de la 
+<code class="directive"><a href="../mod/mod_log_config.html#logformat"> LogFormat</a></code> et de la 
 variable <code>%v</code>. Ajoutez cette variable au début de la chaîne 
 de définition du format de journalisations&nbsp;:</p>
 
@@ -112,7 +112,7 @@ CustomLog logs/multiple_vhost_log vhost
 journalisation au format standard (CLF&nbsp;: 'Common Log Format'), mais dont 
 chaque ligne débutera par le nom canonique du serveur virtuel (spécifié 
 par la directive <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code>). 
-(Voir <code class="directive"><a href="../mod/mod_log_config.html#formats de journalisation &#10;personnalisés">Formats de journalisation 
+(Voir <code class="directive"><a href="../mod/mod_log_config.html#formats de journalisation personnalisés">Formats de journalisation 
 personnalisés</a></code> pour d'autres informations sur la 
 personnalisation des fichiers journaux.)</p>
 

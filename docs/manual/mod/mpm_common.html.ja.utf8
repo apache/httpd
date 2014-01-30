@@ -762,7 +762,7 @@ accept しようとしているときに、Apache がそれらの子プロセス
     <code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code>
     の設定で 16 サーバプロセス (デフォルト) 
     以上必要になる場合にのみ使用してください。希望の
-    <code class="directive"><a href="#maxclients ">MaxClients </a></code> と
+    <code class="directive"><a href="#maxclients">MaxClients </a></code> と
     <code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code>
     とくらべて、必要となるサーバプロセス数以上に大きな値を
     設定することは避けてください。</p>
