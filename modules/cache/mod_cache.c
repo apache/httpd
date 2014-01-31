@@ -697,7 +697,7 @@ static int cache_save_store(ap_filter_t *f, apr_bucket_brigade *in,
         rv = cache->provider->store_body(cache->handle, f->r, in, cache->out);
         if (rv != APR_SUCCESS) {
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, f->r, APLOGNO(00765)
-                    "cache: Cache provider's store_body failed!");
+                    "cache: Cache provider's store_body failed for URI %s", f->r->uri);
             ap_remove_output_filter(f);
 
             /* give someone else the chance to cache the file */
