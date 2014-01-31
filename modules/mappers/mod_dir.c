@@ -388,14 +388,11 @@ static int dir_fixups(request_rec *r)
 {
     if (r->finfo.filetype == APR_DIR) {
         /* serve up a directory */
-        int res = fixup_dir(r);
-
-        if (res != OK) {
-           /* use fallback */
-           return fixup_dflt(r);
+        if (fixup_dir(r) != OK) {
+            return fixup_dflt(r);
+        } else {
+            return OK;
         }
-
-        return res;
     }
     else if ((r->finfo.filetype == APR_NOFILE) && (r->handler == NULL)) {
         /* No handler and nothing in the filesystem - use fallback */
