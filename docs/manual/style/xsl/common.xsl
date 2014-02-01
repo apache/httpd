@@ -386,7 +386,7 @@
 </xsl:call-template>
 <div id="footer">&lf;
     <p class="apache">
-        <xsl:text>Copyright 2014 The Apache Software Foundation.</xsl:text><br />
+        <xsl:text>Copyright 2013 The Apache Software Foundation.</xsl:text><br />
         <xsl:if test="normalize-space($message[@id='before-license'])">
             <xsl:value-of select="$message[@id='before-license']"/>
             <xsl:text> </xsl:text>

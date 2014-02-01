@@ -124,7 +124,7 @@ ayarlanması</a></li>
       iptal edilerek bu gibi durumlara karşı önlem alınabilir:</p>
 
     <ul>
-      <li><code class="directive"><a href="../mod/mpm_common.html# maxrequestsperchild"> MaxRequestsPerChild</a></code>
+      <li><code class="directive"><a href="../mod/mpm_common.html#maxrequestsperchild"> MaxRequestsPerChild</a></code>
         yönergesinin değeri sıfır yapılır.</li>
 
       <li><code class="directive"><a href="../mod/mpm_common.html#maxsparethreads">MaxSpareThreads</a></code> ve

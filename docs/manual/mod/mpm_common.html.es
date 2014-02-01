@@ -772,7 +772,7 @@ Apache</a></li>
     <code class="directive"><a href="#maxclients">MaxClients</a></code> y <code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code> precisan más de 16
     procesos del servidor (valor por defecto). No especifique en esta
     directiva un valor mayor que el número de procesos del servidor
-    requeridos por lo especificado en las directivas <code class="directive"><a href="#maxclients ">MaxClients </a></code> y <code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code>.</p>
+    requeridos por lo especificado en las directivas <code class="directive"><a href="#maxclients">MaxClients </a></code> y <code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code>.</p>
 
     <p>Con el MPM <code class="module"><a href="../mod/perchild.html">perchild</a></code>, use esta directiva solo
     si tiene que especificar en la directiva <code class="directive"><a href="../mod/perchild.html#numservers">NumServers</a></code> un valor mayor de 8 (el

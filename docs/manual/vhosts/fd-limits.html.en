@@ -92,7 +92,7 @@ statistical analysis of the various virtual hosts. This can be
 accomplished in the following manner.</p>
 
 <p>First, you will need to add the virtual host information to the log
-entries. This can be done using the <code class="directive"><a href="../mod/mod_log_config.html#&#10;logformat">
+entries. This can be done using the <code class="directive"><a href="../mod/mod_log_config.html#logformat">
 LogFormat</a></code>
 directive, and the <code>%v</code> variable. Add this to the beginning
 of your log format string:</p>

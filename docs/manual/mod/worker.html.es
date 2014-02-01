@@ -116,17 +116,17 @@ puertos que usa Apache</a></li>
     determinado por la directiva <code class="directive"><a href="../mod/mpm_common.html#maxclients">MaxClients</a></code>.  El número
     máximo de procesos hijo activos está determinado por el
     valor especificado en la directiva <code class="directive"><a href="../mod/mpm_common.html#maxclients">MaxClients</a></code> dividido por el valor
-    especificado en la directiva <code class="directive"><a href="../mod/mpm_common.html#&#10;    threadsperchild">
+    especificado en la directiva <code class="directive"><a href="../mod/mpm_common.html#threadsperchild">
     ThreadsPerChild</a></code>.</p>
 
     <p>Hay dos directivas que establecen límites estrictos al
     número de procesos hijo activos y al número de hebras
     del servidor en un proceso hijo, y puede cambiarse solo parando
     completamente el servidor y volviendo a iniciarlo. La directiva
-    <code class="directive"><a href="../mod/mpm_common.html#serverlimit ">ServerLimit </a></code> marca el
+    <code class="directive"><a href="../mod/mpm_common.html#serverlimit">ServerLimit </a></code> marca el
     límite estricto de procesos hijo activos posibles, y debe ser
     mayor o igual al valor de la directiva <code class="directive"><a href="../mod/mpm_common.html#maxclients">MaxClients</a></code> dividido por el valor
-    de la directiva <code class="directive"><a href="../mod/mpm_common.html#&#10;    threadsperchild">
+    de la directiva <code class="directive"><a href="../mod/mpm_common.html#threadsperchild">
     ThreadsPerChild</a></code>.  El valor de la directiva <code class="directive"><a href="../mod/mpm_common.html#threadlimit">ThreadLimit</a></code> es el límite
     estricto del número de hebras del servidor, y debe ser mayor
     o igual al valor de la directiva <code class="directive"><a href="../mod/mpm_common.html#threadsperchild">ThreadsPerChild</a></code>.  Si los valores
@@ -144,10 +144,10 @@ puertos que usa Apache</a></li>
     siguiente manera:</p>
 
     <ul>
-      <li>fijar el valor de la directiva <code class="directive"><a href="../mod/mpm_common.html#&#10;      maxrequestsperchild">
+      <li>fijar el valor de la directiva <code class="directive"><a href="../mod/mpm_common.html#maxrequestsperchild">
       MaxRequestsPerChild</a></code> a cero</li>
 
-      <li>fijar el valor de la directiva <code class="directive"><a href="../mod/mpm_common.html# maxsparethreads"> MaxSpareThreads</a></code> al mismo valor
+      <li>fijar el valor de la directiva <code class="directive"><a href="../mod/mpm_common.html#maxsparethreads"> MaxSpareThreads</a></code> al mismo valor
       que la directiva <code class="directive"><a href="../mod/mpm_common.html#maxclients">MaxClients</a></code></li>
     </ul>
 

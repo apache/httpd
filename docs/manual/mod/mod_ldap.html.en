@@ -205,8 +205,8 @@ by other LDAP modules</td></tr>
 <h2><a name="usingssltls" id="usingssltls">Using SSL</a></h2>
 
     <p>The ability to create an SSL connections to an LDAP server 
-    is defined by the directives <code class="directive"><a href="#&#10;    ldaptrustedca">
-    LDAPTrustedCA</a></code> and <code class="directive"><a href="#&#10;    ldaptrustedcatype">
+    is defined by the directives <code class="directive"><a href="#ldaptrustedca">
+    LDAPTrustedCA</a></code> and <code class="directive"><a href="#ldaptrustedcatype">
     LDAPTrustedCAType</a></code>. These directives specify the certificate
     file or database and the certificate type. Whenever the LDAP url
     includes <em>ldaps://</em>, <code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code> will establish

@@ -698,7 +698,7 @@ Apache</a></li>
     <code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code>
     settings require more than 16 server processes (default). Do not set
     the value of this directive any higher than the number of server
-    processes required by what you may want for <code class="directive"><a href="#maxclients ">MaxClients </a></code> and <code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code>.</p>
+    processes required by what you may want for <code class="directive"><a href="#maxclients">MaxClients </a></code> and <code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code>.</p>
 
     <p>With the <code class="module"><a href="../mod/perchild.html">perchild</a></code> MPM, use this directive only
     if you need to set <code class="directive"><a href="../mod/perchild.html#numservers">NumServers</a></code> higher than 8 (default).</p>
