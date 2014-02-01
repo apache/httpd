@@ -36,6 +36,8 @@
         <xsl:call-template name="top"/>  
 
         <div id="page-content">
+            <xsl:call-template name="retired" />
+
             <div id="preamble">
                 <h1>
                     <xsl:value-of select="title" />
