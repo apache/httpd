@@ -9,7 +9,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
-<link href="../images/favicon.ico" rel="shortcut icon" /><link href="http://httpd.apache.org/docs/2.2/mod/mod_userdir.html" rel="canonical" /></head>
+<link href="../images/favicon.ico" rel="shortcut icon" /><link href="http://httpd.apache.org/docs/current/mod/mod_userdir.html" rel="canonical" /></head>
 <body>
 <div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
@@ -17,14 +17,11 @@
 <img alt="" src="../images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Modules</a></div><div style="width: 90%;" class="outofdate"><h4>Please note</h4>
-    This document refers to the 2.0 version of Apache httpd, which is no longer maintained.<br />
-    Upgrade, and refer to the current version of httpd instead, documented at:<br /><ul><li><a href="http://httpd.apache.org/docs/current/">Current release version of Apache HTTP Server documentation</a></li></ul>
-    You may follow <a href="http://httpd.apache.org/docs/current/mod/mod_userdir.html">this link</a> to 
-    go to the current version of this document.
-</div>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
-<div id="preamble"><h1>Apache Module mod_userdir</h1>
+<div class="retired"><h4>Please note</h4>
+            <p>This document refers to the <strong>2.0</strong> version of Apache httpd, which <strong>is no longer maintained</strong>. Upgrade, and refer to the current version of httpd instead, documented at:</p>
+        <ul><li><a href="http://httpd.apache.org/docs/current/">Current release version of Apache HTTP Server documentation</a></li></ul><p>You may follow <a href="http://httpd.apache.org/docs/current/mod/mod_userdir.html">this link</a> to go to the current version of this document.</p></div><div id="preamble"><h1>Apache Module mod_userdir</h1>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_userdir.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/mod/mod_userdir.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |

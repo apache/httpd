@@ -9,19 +9,16 @@
 <link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
-<link href="./images/favicon.ico" rel="shortcut icon" /><link href="http://httpd.apache.org/docs/2.2/configuring.html" rel="canonical" /></head>
+<link href="./images/favicon.ico" rel="shortcut icon" /><link href="http://httpd.apache.org/docs/current/configuring.html" rel="canonical" /></head>
 <body id="manual-page"><div id="page-header">
 <p class="menu"><a href="./mod/">Module</a> | <a href="./mod/directives.html">Direktiven</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossar</a> | <a href="./sitemap.html">Seitenindex</a></p>
 <p class="apache">Apache HTTP Server Version 2.0</p>
 <img alt="" src="./images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP-Server</a> &gt; <a href="http://httpd.apache.org/docs/">Dokumentation</a> &gt; <a href="./">Version 2.0</a></div><div style="width: 90%;" class="outofdate"><h4>Please note</h4>
-    This document refers to the 2.0 version of Apache httpd, which is no longer maintained.<br />
-    Upgrade, and refer to the current version of httpd instead, documented at:<br /><ul><li><a href="http://httpd.apache.org/docs/current/">Current release version of Apache HTTP Server documentation</a></li></ul>
-    You may follow <a href="http://httpd.apache.org/docs/current/configuring.html">this link</a> to 
-    go to the current version of this document.
-</div><div id="page-content"><div id="preamble"><h1>Konfigurationsdateien</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP-Server</a> &gt; <a href="http://httpd.apache.org/docs/">Dokumentation</a> &gt; <a href="./">Version 2.0</a></div><div id="page-content"><div class="retired"><h4>Bitte beachten!</h4>
+            <p>Dieses Dokument bezieht sich auf Version <strong>2.0</strong> des Apache httpd, die <strong>nicht mehr gepflegt wird</strong>. Bitte aktualisieren Sie die Software und verwenden Sie stattdessen eine aktuelle Version des httpd, die an folgender Stelle dokumentiert ist:</p>
+        <ul><li><a href="http://httpd.apache.org/docs/current/">Dokumentation des Apache HTTP Server für die zuletzt erschienene Version</a></li></ul><p>Sie können <a href="http://httpd.apache.org/docs/current/configuring.html">diesem Link</a> folgen, um zur aktuellen Version dieses Dokuments zu gelangen.</p></div><div id="preamble"><h1>Konfigurationsdateien</h1>
 <div class="toplang">
 <p><span>Verfügbare Sprachen: </span><a href="./de/configuring.html" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/configuring.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
