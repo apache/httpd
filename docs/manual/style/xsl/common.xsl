@@ -31,6 +31,7 @@
 <!--                                                                      -->
 
 <!-- Injected variables:                                                  -->
+<!--   $is-retired      - (boolean) Is this httpd version retired?        -->
 <!--   $is-chm          - (boolean) target is for CHM generation or not   -->
 <!--   $is-zip          - (boolean) target is for ZIP generation or not   -->
 <!--   $message         - (node-set) localized common text snippets       -->
@@ -68,7 +69,7 @@
 <!-- make sure, we set relative anchors only, if we're actually -->
 <!-- transforming a modulefile (see <directive> template)       -->
 <xsl:variable name="in-modulesynopsis" select="boolean(/modulesynopsis)" />
-<xsl:variable name="upgrade" select="boolean(/modulesynopsis/@upgrade)" />
+<xsl:variable name="upgrade" select="boolean(/*/@upgrade)" />
 
 <!-- when referencing to a directory, we may need to complete the path -->
 <!-- with the index file (for offline applications like *.chm files)   -->
@@ -172,16 +173,18 @@
     <!-- chm files do not need a favicon or a canonical link-->
     <xsl:if test="not($is-chm or $is-zip)">&lf;
         <link rel="shortcut icon" href="{$path}/images/favicon.ico" />
-        <xsl:choose>
-        <xsl:when test="$upgrade">
-            <xsl:if test="not(/*/@upgrade = '')">
-                <link rel="canonical" href="http://httpd.apache.org/docs/2.2{concat($metafile/path, /*/@upgrade, '.html')}"/>
-            </xsl:if>
-        </xsl:when>
-        <xsl:otherwise>
-            <link rel="canonical" href="http://httpd.apache.org/docs/2.2{concat($metafile/path, $metafile/basename, '.html')}"/>
-        </xsl:otherwise>
-        </xsl:choose>
+        <xsl:if test="$is-retired">
+            <xsl:choose>
+            <xsl:when test="$upgrade">
+                <xsl:if test="not(/*/@upgrade = '')">
+                    <link rel="canonical" href="http://httpd.apache.org/docs/current{concat($metafile/path, /*/@upgrade, '.html')}"/>
+                </xsl:if>
+            </xsl:when>
+            <xsl:otherwise>
+                <link rel="canonical" href="http://httpd.apache.org/docs/current{concat($metafile/path, $metafile/basename, '.html')}"/>
+            </xsl:otherwise>
+            </xsl:choose>
+        </xsl:if>
     </xsl:if>
 </head>
 </xsl:template>
@@ -272,36 +275,94 @@
     </a>
     </xsl:if>
 </div> <!-- /path -->
-<!-- Retirement notice -->
-<div class="outofdate" style="width: 90%;">
-    <xsl:variable name="future">
+</xsl:template>
+<!-- /top -->
+
+
+<!-- ==================================================================== -->
+<!-- retired                                                              -->
+<!-- ==================================================================== -->
+<xsl:template name="retired">
+<xsl:if test="$is-retired">
+    <xsl:variable name="base">
         <xsl:choose>
         <xsl:when test="$upgrade">
             <xsl:if test="not(/*/@upgrade = '')">
-                <xsl:value-of
-                    select="concat($metafile/path, /*/@upgrade, '.html')" />
+                <xsl:value-of select="/*/@upgrade" />
             </xsl:if>
         </xsl:when>
         <xsl:otherwise>
             <xsl:value-of
-                select="concat($metafile/path, $metafile/basename, '.html')" />
+                select="$metafile/basename" />
+        </xsl:otherwise>
+        </xsl:choose>
+    </xsl:variable>
+    <xsl:variable name="future">
+        <xsl:choose>
+        <xsl:when test="$base = 'index'">
+            <xsl:value-of select="$metafile/path" />
+        </xsl:when>
+        <xsl:when test="$base = ''">
+            <!-- nothing -->
+        </xsl:when>
+        <xsl:otherwise>
+            <xsl:value-of select="concat($metafile/path, $base, '.html')" />
         </xsl:otherwise>
         </xsl:choose>
     </xsl:variable>
 
-    <h4>Please note</h4>
-    This document refers to the 2.0 version of Apache httpd, which is no longer maintained.<br/>
-    Upgrade, and refer to the current version of httpd instead, documented at:<br/>
-    <ul>
-        <li><a href="http://httpd.apache.org/docs/current/">Current release version of Apache HTTP Server documentation</a></li>
-    </ul>
-    <xsl:if test="not($future = '')">
-    You may follow <a href="http://httpd.apache.org/docs/current{$future}">this link</a> to 
-    go to the current version of this document.
-</xsl:if></div>
+    <div class="retired">
+        <h4><xsl:value-of select="$message[@id='retired.headline']" /></h4>
+        <xsl:apply-templates select="$message[@id='retired.description']" />
+        <ul>
+            <li><a href="http://httpd.apache.org/docs/current/">
+                <xsl:value-of select="$message[@id='retired.current']" /></a>
+            </li>
+        </ul>
+        <xsl:if test="not($future = '')">
+            <p><xsl:apply-templates select="$message[@id='retired.document']" mode="retired" /></p>
+        </xsl:if>
+    </div>
+</xsl:if>
 </xsl:template>
-<!-- /top -->
+<!-- /retired -->
 
+<xsl:template match="message">
+    <xsl:apply-templates />
+</xsl:template>
+
+<xsl:template match="link" mode="retired">
+<xsl:variable name="base">
+    <xsl:choose>
+    <xsl:when test="$upgrade">
+        <xsl:if test="not(/*/@upgrade = '')">
+            <xsl:value-of select="/*/@upgrade" />
+        </xsl:if>
+    </xsl:when>
+    <xsl:otherwise>
+        <xsl:value-of
+            select="$metafile/basename" />
+    </xsl:otherwise>
+    </xsl:choose>
+</xsl:variable>
+<xsl:variable name="future">
+    <xsl:choose>
+    <xsl:when test="$base = 'index'">
+        <xsl:value-of select="$metafile/path" />
+    </xsl:when>
+    <xsl:when test="$base = ''">
+        <!-- nothing -->
+    </xsl:when>
+    <xsl:otherwise>
+        <xsl:value-of select="concat($metafile/path, $base, '.html')" />
+    </xsl:otherwise>
+    </xsl:choose>
+</xsl:variable>
+
+<a href="http://httpd.apache.org/docs/current{$future}">
+    <xsl:apply-templates />
+</a>
+</xsl:template>
 
 <!-- ==================================================================== -->
 <!-- out of date                                                          -->
