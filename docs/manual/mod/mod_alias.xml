@@ -55,7 +55,7 @@
 </summary>
 
 <seealso><module>mod_rewrite</module></seealso> <seealso><a
-href="../URLmapping.html">Mapping URLs to the filesystem</a></seealso>
+href="../urlmapping.html">Mapping URLs to the filesystem</a></seealso>
 
 <section id="order"><title>Order of Processing</title>
 

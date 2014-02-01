@@ -309,17 +309,13 @@
 
         <dt><code>--disable-auth-basic</code></dt>
         <dd>Disable user-based access control provided  by
-          <module>mod_auth</module>. This module provides for HTTP Basic
+          <module>mod_auth_basic</module>. This module provides for HTTP Basic
           Authentication, where the usernames and passwords are stored in
           plain text files.</dd>
 
         <dt><code>--disable-autoindex</code></dt>
         <dd>Disable the directory listing functionality provided by
           <module>mod_autoindex</module>.</dd>
-
-        <dt><code>--disable-access</code></dt>
-        <dd>Disable host-based access control provided by
-          <module>mod_access</module>.</dd>
 
         <dt><code>--disable-cgi</code></dt>
         <dd><module>mod_cgi</module>, which provides support for CGI scripts,
@@ -403,7 +399,7 @@
       <dl>
         <dt><code>--enable-authn-anon</code></dt>
         <dd>Enable anonymous user access provided by
-          <module>mod_auth_anon</module>.</dd>
+          <module>mod_authn_anon</module>.</dd>
 
         <dt><code>--enable-authn-dbm</code></dt>
         <dd><module>mod_authn_dbm</module> provides for HTTP Basic
