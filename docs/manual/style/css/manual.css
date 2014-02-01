@@ -936,11 +936,16 @@ table div.warning {
     margin-right: 1em;
 }
 
-div.outofdate {
-    background-color: #ffffe0;
+div.outofdate,
+div.retired{
+    background-color: #ffffc0;
     color: #036;
     padding: 0.5em;
     margin: 1em 2em 1em 1em;
+}
+div.retired{
+    border: solid 1px #ff0000;
+    margin-left: 3em;
 }
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
