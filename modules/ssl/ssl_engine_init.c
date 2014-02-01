@@ -928,8 +928,10 @@ static apr_status_t ssl_init_server_certs(server_rec *s,
             EVP_PKEY *pkey;
             const unsigned char *ptr;
 
+            ERR_clear_error();
+
             /* perhaps it's an encrypted private key, so try again */
-            ssl_load_encrypted_pkey(s, ptemp, i, &pphrases);
+            ssl_load_encrypted_pkey(s, ptemp, i, keyfile, &pphrases);
 
             if (!(asn1 = ssl_asn1_table_get(mc->tPrivateKey, key_id)) ||
                 !(ptr = asn1->cpData) ||

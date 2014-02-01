@@ -129,6 +129,7 @@ static char *pphrase_array_get(apr_array_header_t *arr, int idx)
 }
 
 apr_status_t ssl_load_encrypted_pkey(server_rec *s, apr_pool_t *p, int idx,
+                                     const char *pkey_file,
                                      apr_array_header_t **pphrases)
 {
     SSLModConfigRec *mc = myModConfig(s);
@@ -145,19 +146,15 @@ apr_status_t ssl_load_encrypted_pkey(server_rec *s, apr_pool_t *p, int idx,
     apr_status_t rv;
     pphrase_cb_arg_t ppcb_arg;
 
-    ppcb_arg.pkey_file = APR_ARRAY_IDX(sc->server->pks->key_files, idx,
-                                       const char *);
-
-    if (!ppcb_arg.pkey_file) {
+    if (!pkey_file) {
          ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(02573)
                       "Init: No private key specified for %s", key_id);
          return ssl_die(s);
     }
-    else if ((rv = exists_and_readable(ppcb_arg.pkey_file, p,
-                                       &pkey_mtime)) != APR_SUCCESS ) {
+    else if ((rv = exists_and_readable(pkey_file, p, &pkey_mtime))
+             != APR_SUCCESS ) {
          ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, APLOGNO(02574)
-                      "Init: Can't open server private key file %s",
-                      ppcb_arg.pkey_file);
+                      "Init: Can't open server private key file %s", pkey_file);
          return ssl_die(s);
     }
 
@@ -170,6 +167,7 @@ apr_status_t ssl_load_encrypted_pkey(server_rec *s, apr_pool_t *p, int idx,
     ppcb_arg.nPassPhraseDialogCur  = 0;
     ppcb_arg.bPassPhraseDialogOnce = TRUE;
     ppcb_arg.key_id                = key_id;
+    ppcb_arg.pkey_file             = pkey_file;
 
     /*
      * if the private key is encrypted and SSLPassPhraseDialog

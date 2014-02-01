@@ -841,7 +841,7 @@ int          ssl_init_ssl_connection(conn_rec *c, request_rec *r);
 
 /**  Pass Phrase Support  */
 apr_status_t ssl_load_encrypted_pkey(server_rec *, apr_pool_t *, int,
-                                     apr_array_header_t **);
+                                     const char *, apr_array_header_t **);
 
 /**  Diffie-Hellman Parameter Support  */
 DH           *ssl_dh_GetParamFromFile(const char *);
