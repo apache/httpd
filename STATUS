@@ -196,6 +196,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://people.apache.org/~kbrand/mod_ssl-2.4.x-certkeyfile.diff
      +1: kbrand, jorton
 
+   * mod_rewrite: Add %{CONN_REMOTE_ADDR} to mod_rewrite PR56094
+     trunk patch: https://svn.apache.org/r1563418
+     2.4.x patch: trunk works
+     +1 covener
+
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
