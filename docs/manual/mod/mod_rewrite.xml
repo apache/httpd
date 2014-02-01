@@ -443,6 +443,7 @@ Alias /myapp /opt/myapp-1.2.3
 
               <td>
                  REMOTE_ADDR<br />
+                 CONN_REMOTE_ADDR<br />
                  REMOTE_HOST<br />
                  REMOTE_PORT<br />
                  REMOTE_USER<br />
@@ -570,6 +571,14 @@ Alias /myapp /opt/myapp-1.2.3
                   <dd>Will contain the scheme of the request (usually
                   "http" or "https"). This value can be influenced with
                   <directive module="core">ServerName</directive>.</dd>
+
+                  <dt><code>REMOTE_ADDR</code></dt>
+                  <dd>The IP address of the remote host (see the
+                  <module>mod_remoteip</module> module).</dd>
+
+                  <dt><code>CONN_REMOTE_ADDR</code></dt>
+                  <dd>Since 2.4.8: The peer IP address of the connection (see the
+                  <module>mod_remoteip</module> module).</dd>
 
                 </dl>
 </note>

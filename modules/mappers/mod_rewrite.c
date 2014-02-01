@@ -2143,7 +2143,10 @@ static char *lookup_variable(char *var, rewrite_ctx *ctx)
             break;
 
         case 16:
-            if (!strcmp(var, "REQUEST_FILENAME")) {
+            if (*var == 'C' && !strcmp(var, "CONN_REMOTE_ADDR")) {
+                result = r->connection->client_ip;
+            }
+            else if (!strcmp(var, "REQUEST_FILENAME")) {
                 result = r->filename; /* same as script_filename (15) */
             }
             break;
