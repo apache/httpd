@@ -9,7 +9,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
-<link href="../images/favicon.ico" rel="shortcut icon" /><link href="http://httpd.apache.org/docs/current/mod/mod_access_compat.html" rel="canonical" /></head>
+<link href="../images/favicon.ico" rel="shortcut icon" /><link href="http://httpd.apache.org/docs/2.2/mod/mod_access_compat.html" rel="canonical" /></head>
 <body>
 <div id="page-header">
 <p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p>
@@ -20,6 +20,8 @@
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.0</a> &gt; <a href="./">モジュール</a></div><div style="width: 90%;" class="outofdate"><h4>Please note</h4>
     This document refers to the 2.0 version of Apache httpd, which is no longer maintained.<br />
     Upgrade, and refer to the current version of httpd instead, documented at:<br /><ul><li><a href="http://httpd.apache.org/docs/current/">Current release version of Apache HTTP Server documentation</a></li></ul>
+    You may follow <a href="http://httpd.apache.org/docs/current/mod/mod_access_compat.html">this link</a> to 
+    go to the current version of this document.
 </div>
 <div id="page-content">
 <div id="preamble"><h1>Apache モジュール mod_access</h1>

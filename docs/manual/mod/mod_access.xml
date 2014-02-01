@@ -20,7 +20,7 @@
  limitations under the License.
 -->
 
-<modulesynopsis metafile="mod_access.xml.meta">
+<modulesynopsis metafile="mod_access.xml.meta" upgrade="mod_access_compat">
 
 <name>mod_access</name> 
 <description>Provides access control based on client hostname, IP

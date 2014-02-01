@@ -24,7 +24,8 @@
 identifier? , compatibility? , summary? , seealso* , section*,
 directivesynopsis*)>
 
-<!ATTLIST modulesynopsis metafile CDATA  #REQUIRED>
+<!ATTLIST modulesynopsis metafile CDATA  #REQUIRED
+                         upgrade  CDATA  #IMPLIED>
 
 <!ELEMENT directivesynopsis (name , description? , syntax? , default?
 , contextlist? , override? , modulelist?, status?, compatibility? ,

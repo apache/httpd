@@ -68,6 +68,7 @@
 <!-- make sure, we set relative anchors only, if we're actually -->
 <!-- transforming a modulefile (see <directive> template)       -->
 <xsl:variable name="in-modulesynopsis" select="boolean(/modulesynopsis)" />
+<xsl:variable name="upgrade" select="boolean(/modulesynopsis/@upgrade)" />
 
 <!-- when referencing to a directory, we may need to complete the path -->
 <!-- with the index file (for offline applications like *.chm files)   -->
@@ -171,7 +172,16 @@
     <!-- chm files do not need a favicon or a canonical link-->
     <xsl:if test="not($is-chm or $is-zip)">&lf;
         <link rel="shortcut icon" href="{$path}/images/favicon.ico" />
-        <link rel="canonical" href="http://httpd.apache.org/docs/2.2{concat($metafile/path, $metafile/basename, '.html')}"/>
+        <xsl:choose>
+        <xsl:when test="$upgrade">
+            <xsl:if test="not(/*/@upgrade = '')">
+                <link rel="canonical" href="http://httpd.apache.org/docs/2.2{concat($metafile/path, /*/@upgrade, '.html')}"/>
+            </xsl:if>
+        </xsl:when>
+        <xsl:otherwise>
+            <link rel="canonical" href="http://httpd.apache.org/docs/2.2{concat($metafile/path, $metafile/basename, '.html')}"/>
+        </xsl:otherwise>
+        </xsl:choose>
     </xsl:if>
 </head>
 </xsl:template>
@@ -264,15 +274,31 @@
 </div> <!-- /path -->
 <!-- Retirement notice -->
 <div class="outofdate" style="width: 90%;">
+    <xsl:variable name="future">
+        <xsl:choose>
+        <xsl:when test="$upgrade">
+            <xsl:if test="not(/*/@upgrade = '')">
+                <xsl:value-of
+                    select="concat($metafile/path, /*/@upgrade, '.html')" />
+            </xsl:if>
+        </xsl:when>
+        <xsl:otherwise>
+            <xsl:value-of
+                select="concat($metafile/path, $metafile/basename, '.html')" />
+        </xsl:otherwise>
+        </xsl:choose>
+    </xsl:variable>
+
     <h4>Please note</h4>
     This document refers to the 2.0 version of Apache httpd, which is no longer maintained.<br/>
     Upgrade, and refer to the current version of httpd instead, documented at:<br/>
     <ul>
         <li><a href="http://httpd.apache.org/docs/current/">Current release version of Apache HTTP Server documentation</a></li>
     </ul>
-    You may follow <a href="http://httpd.apache.org/docs/current{concat($metafile/path, $metafile/basename, '.html')}">this link</a> to 
+    <xsl:if test="not($future = '')">
+    You may follow <a href="http://httpd.apache.org/docs/current{$future}">this link</a> to 
     go to the current version of this document.
-</div>
+</xsl:if></div>
 </xsl:template>
 <!-- /top -->
 
