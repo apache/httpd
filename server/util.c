@@ -116,7 +116,7 @@ AP_DECLARE(char *) ap_field_noparam(apr_pool_t *p, const char *intype)
         while ((semi > intype) && apr_isspace(semi[-1])) {
             semi--;
         }
-        return apr_pstrndup(p, intype, semi - intype);
+        return apr_pstrmemdup(p, intype, semi - intype);
     }
 }
 
@@ -737,7 +737,7 @@ AP_DECLARE(char *) ap_getword_nulls(apr_pool_t *atrans, const char **line,
         return res;
     }
 
-    res = apr_pstrndup(atrans, *line, pos - *line);
+    res = apr_pstrmemdup(atrans, *line, pos - *line);
 
     ++pos;
 
@@ -1464,7 +1464,6 @@ AP_DECLARE(char *) ap_get_token(apr_pool_t *p, const char **accept_line,
     const char *ptr = *accept_line;
     const char *tok_start;
     char *token;
-    int tok_len;
 
     /* Find first non-white byte */
 
@@ -1485,8 +1484,7 @@ AP_DECLARE(char *) ap_get_token(apr_pool_t *p, const char **accept_line,
                     break;
     }
 
-    tok_len = ptr - tok_start;
-    token = apr_pstrndup(p, tok_start, tok_len);
+    token = apr_pstrmemdup(p, tok_start, ptr - tok_start);
 
     /* Advance accept_line pointer to the next non-white byte */
 
