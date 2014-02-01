@@ -582,7 +582,7 @@ static apr_status_t cache_canonicalise_key(request_rec *r, apr_pool_t* p,
                     && !strncmp(param + 1, *identifier, len)
                     && (*(param + len + 1) == '=')
                     && !ap_strchr_c(param + len + 2, '/')) {
-                path = apr_pstrndup(p, path, param - path);
+                path = apr_pstrmemdup(p, path, param - path);
                 continue;
             }
             /*
