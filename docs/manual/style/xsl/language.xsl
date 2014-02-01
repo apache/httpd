@@ -34,6 +34,7 @@
 
 <xsl:param name="type" />
 <xsl:param name="langs" />
+<xsl:param name="retired" />
 
 <!-- ==================================================================== -->
 <!-- /                                                                    -->
@@ -548,6 +549,21 @@ Some targets have additional requirements:
             <xsl:attribute name="select">
                 <xsl:choose>
                 <xsl:when test="$type = 'zip'">
+                    <xsl:text>true()</xsl:text>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:text>false()</xsl:text>
+                </xsl:otherwise>
+                </xsl:choose>
+            </xsl:attribute>
+        </xsl:element>
+        &lf;
+
+        <xsl:element name="xsl:variable">
+            <xsl:attribute name="name">is-retired</xsl:attribute>
+            <xsl:attribute name="select">
+                <xsl:choose>
+                <xsl:when test="$retired = 'yes'">
                     <xsl:text>true()</xsl:text>
                 </xsl:when>
                 <xsl:otherwise>

@@ -33,6 +33,7 @@
 <!--                                                                      -->
 
 <!-- Injected variables:                                                  -->
+<!--   $is-retired      - (boolean) Is this httpd version retired?        -->
 <!--   $is-chm          - (boolean) target is for CHM generation or not   -->
 <!--   $is-zip          - (boolean) target is for ZIP generation or not   -->
 <!--   $message         - (node-set) localized common text snippets       -->
@@ -70,6 +71,7 @@
 <!-- make sure, we set relative anchors only, if we're actually -->
 <!-- transforming a modulefile (see <directive> template)       -->
 <xsl:variable name="in-modulesynopsis" select="boolean(/modulesynopsis)" />
+<xsl:variable name="upgrade" select="boolean(/*/@upgrade)" />
 
 <!-- when referencing to a directory, we may need to complete the path -->
 <!-- with the index file (for offline applications like *.chm files)   -->
@@ -175,6 +177,18 @@
     <!-- chm files do not need a favicon -->
     <xsl:if test="not($is-chm or $is-zip)">&lf;
         <link rel="shortcut icon" href="{$path}/images/favicon.ico" />
+        <xsl:if test="$is-retired">
+            <xsl:choose>
+            <xsl:when test="$upgrade">
+                <xsl:if test="not(/*/@upgrade = '')">
+                    <link rel="canonical" href="http://httpd.apache.org/docs/current{concat($metafile/path, /*/@upgrade, '.html')}"/>
+                </xsl:if>
+            </xsl:when>
+            <xsl:otherwise>
+                <link rel="canonical" href="http://httpd.apache.org/docs/current{concat($metafile/path, $metafile/basename, '.html')}"/>
+            </xsl:otherwise>
+            </xsl:choose>
+        </xsl:if>
     </xsl:if>
 </head>
 </xsl:template>
@@ -267,6 +281,92 @@
 </div> <!-- /path -->
 </xsl:template>
 <!-- /top -->
+
+
+<!-- ==================================================================== -->
+<!-- retired                                                              -->
+<!-- ==================================================================== -->
+<xsl:template name="retired">
+<xsl:if test="$is-retired">
+    <xsl:variable name="base">
+        <xsl:choose>
+        <xsl:when test="$upgrade">
+            <xsl:if test="not(/*/@upgrade = '')">
+                <xsl:value-of select="/*/@upgrade" />
+            </xsl:if>
+        </xsl:when>
+        <xsl:otherwise>
+            <xsl:value-of
+                select="$metafile/basename" />
+        </xsl:otherwise>
+        </xsl:choose>
+    </xsl:variable>
+    <xsl:variable name="future">
+        <xsl:choose>
+        <xsl:when test="$base = 'index'">
+            <xsl:value-of select="$metafile/path" />
+        </xsl:when>
+        <xsl:when test="$base = ''">
+            <!-- nothing -->
+        </xsl:when>
+        <xsl:otherwise>
+            <xsl:value-of select="concat($metafile/path, $base, '.html')" />
+        </xsl:otherwise>
+        </xsl:choose>
+    </xsl:variable>
+
+    <div class="retired">
+        <h4><xsl:value-of select="$message[@id='retired.headline']" /></h4>
+        <xsl:apply-templates select="$message[@id='retired.description']" />
+        <ul>
+            <li><a href="http://httpd.apache.org/docs/current/">
+                <xsl:value-of select="$message[@id='retired.current']" /></a>
+            </li>
+        </ul>
+        <xsl:if test="not($future = '')">
+            <p><xsl:apply-templates select="$message[@id='retired.document']" mode="retired" /></p>
+        </xsl:if>
+    </div>
+</xsl:if>
+</xsl:template>
+<!-- /retired -->
+
+<xsl:template match="message">
+    <xsl:apply-templates />
+</xsl:template>
+
+<xsl:template match="link" mode="retired">
+<xsl:variable name="base">
+    <xsl:choose>
+    <xsl:when test="$upgrade">
+        <xsl:if test="not(/*/@upgrade = '')">
+            <xsl:value-of select="/*/@upgrade" />
+        </xsl:if>
+    </xsl:when>
+    <xsl:otherwise>
+        <xsl:value-of
+            select="$metafile/basename" />
+    </xsl:otherwise>
+    </xsl:choose>
+</xsl:variable>
+<xsl:variable name="future">
+    <xsl:choose>
+    <xsl:when test="$base = 'index'">
+        <xsl:value-of select="$metafile/path" />
+    </xsl:when>
+    <xsl:when test="$base = ''">
+        <!-- nothing -->
+    </xsl:when>
+    <xsl:otherwise>
+        <xsl:value-of select="concat($metafile/path, $base, '.html')" />
+    </xsl:otherwise>
+    </xsl:choose>
+</xsl:variable>
+
+<a href="http://httpd.apache.org/docs/current{$future}">
+    <xsl:apply-templates />
+</a>
+</xsl:template>
 
 
 <!-- ==================================================================== -->
