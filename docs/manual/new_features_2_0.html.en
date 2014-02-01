@@ -157,7 +157,7 @@
       browsers to request that content be compressed before delivery,
       saving network bandwidth.</dd>
 
-      <dt><code class="module"><a href="./mod/mod_auth_ldap.html">mod_auth_ldap</a></code></dt>
+      <dt><code class="module">mod_auth_ldap</code></dt>
 
       <dd>New module in Apache 2.0.41.  This module allows an LDAP
       database to be used to store credentials for HTTP Basic
@@ -225,11 +225,10 @@
       using <code class="module"><a href="./mod/mod_include.html">mod_include</a></code>'s variables <code>$0</code>
       .. <code>$9</code>.</dd>
 
-      <dt><code class="module"><a href="./mod/mod_auth_dbm.html">mod_auth_dbm</a></code></dt>
+      <dt><code class="module">mod_auth_dbm</code></dt>
 
       <dd>Now supports multiple types of DBM-like databases using the
-      <a href="../2.0/mod/mod_auth_dbm.html#AuthDBMType"><code>AuthDBMType</code></a>
-      directive.</dd>
+      <code>AuthDBMType</code> directive.</dd>
 
     </dl>
   </div></div>

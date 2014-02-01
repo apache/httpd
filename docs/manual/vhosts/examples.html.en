@@ -433,12 +433,12 @@
 <h2><a name="proxy" id="proxy">Using <code>Virtual_host</code> and
     mod_proxy together</a></h2>
 
-    <p>The following example allows a front-end machine to proxy a
-    virtual host through to a server running on another machine. In the
-    example, a virtual host of the same name is configured on a machine
-    at <code>192.168.111.2</code>. The <code class="directive"><a href="../mod/mod_proxy.html#proxypreservehost on">ProxyPreserveHost On</a></code> directive is
-    used so that the desired hostname is passed through, in case we are
-    proxying multiple hostnames to a single machine.</p>
+    <p>The following example allows a front-end machine to proxy a virtual host
+    through to a server running on another machine. In the example, a virtual
+    host of the same name is configured on a machine at
+    <code>192.168.111.2</code>. The <code class="directive"><a href="../mod/mod_proxy.html#proxypreservehost">ProxyPreserveHost On</a></code> directive is used
+    so that the desired hostname is passed through, in case we are proxying
+    multiple hostnames to a single machine.</p>
 
     <div class="example"><p><code>
     &lt;VirtualHost *:*&gt;<br />

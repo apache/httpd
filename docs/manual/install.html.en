@@ -347,7 +347,8 @@
 
 <div class="example"><p><code>$ vi <em>PREFIX</em>/conf/httpd.conf</code></p></div>
 
-    <p>Have a look at the Apache HTTP Server manual under <a href="./">docs/manual/</a> or consult <a href="http://httpd.apache.org/docs/2.2/">http://httpd.apache.org/docs/2.2/</a> for the most recent
+    <p>Have a look at the Apache manual under
+    <code><em>PREFIX</em>/docs/manual/</code> or consult <a href="http://httpd.apache.org/docs/2.2/">http://httpd.apache.org/docs/2.2/</a> for the most recent
     version of this manual and a complete reference of available <a href="mod/directives.html">configuration directives</a>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
