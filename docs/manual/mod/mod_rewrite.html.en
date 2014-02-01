@@ -224,6 +224,7 @@ Alias /myapp /opt/myapp-1.2.3
 
               <td>
                  REMOTE_ADDR<br />
+                 CONN_REMOTE_ADDR<br />
                  REMOTE_HOST<br />
                  REMOTE_PORT<br />
                  REMOTE_USER<br />
@@ -351,6 +352,14 @@ Alias /myapp /opt/myapp-1.2.3
                   <dd>Will contain the scheme of the request (usually
                   "http" or "https"). This value can be influenced with
                   <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code>.</dd>
+
+                  <dt><code>REMOTE_ADDR</code></dt>
+                  <dd>The IP address of the remote host (see the
+                  <code class="module"><a href="../mod/mod_remoteip.html">mod_remoteip</a></code> module).</dd>
+
+                  <dt><code>CONN_REMOTE_ADDR</code></dt>
+                  <dd>Since 2.4.8: The peer IP address of the connection (see the
+                  <code class="module"><a href="../mod/mod_remoteip.html">mod_remoteip</a></code> module).</dd>
 
                 </dl>
 </div>
