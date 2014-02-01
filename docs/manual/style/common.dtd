@@ -74,12 +74,15 @@ program | img | cite | q | dfn | var | transnote | glossary | phonetic">
 <!ELEMENT directivelist (directive)+>
 
 <!ELEMENT module (#PCDATA)>
-<!ATTLIST module status CDATA  #IMPLIED>
+<!ATTLIST module status   CDATA  #IMPLIED
+                 outdated (true) #IMPLIED>
 
 <!ELEMENT directive (#PCDATA)>
+<!-- name attribute is preferred over contents when generating links -->
 <!ATTLIST directive  module CDATA  #IMPLIED
                      type   CDATA  #IMPLIED
-                     status CDATA  #IMPLIED >
+                     status CDATA  #IMPLIED
+                     name   CDATA  #IMPLIED >
 
 <!ELEMENT program (#PCDATA)>
 
