@@ -957,13 +957,15 @@ AP_DECLARE(apr_status_t) ap_cfg_getc(char *ch, ap_configfile_t *cfp)
 AP_DECLARE(const char *) ap_pcfg_strerror(apr_pool_t *p, ap_configfile_t *cfp,
                                           apr_status_t rc)
 {
-    char buf[MAX_STRING_LEN];
     if (rc == APR_SUCCESS)
         return NULL;
-    return apr_psprintf(p, "Error reading %s at line %d: %s",
-                        cfp->name, cfp->line_number,
-                        rc == APR_ENOSPC ? "Line too long"
-                                         : apr_strerror(rc, buf, sizeof(buf)));
+
+    if (rc == APR_ENOSPC)
+        return apr_psprintf(p, "Error reading %s at line %d: Line too long",
+                            cfp->name, cfp->line_number);
+
+    return apr_psprintf(p, "Error reading %s at line %d: %pm",
+                        cfp->name, cfp->line_number, &rc);
 }
 
 /* Read one line from open ap_configfile_t, strip LF, increase line number */
