@@ -23,12 +23,16 @@
 <!-- <sitemap> is the root element -->
 <!ELEMENT sitemap (title, summary?, seealso*, category*)>
 
-<!ATTLIST sitemap metafile CDATA  #REQUIRED>
+<!ATTLIST sitemap metafile CDATA  #REQUIRED
+                  upgrade  CDATA  #IMPLIED
+>
 
 <!-- <indexpage> is another root element -->
 <!ELEMENT indexpage (parentdocument, title, category*)>
 
-<!ATTLIST indexpage metafile CDATA  #REQUIRED>
+<!ATTLIST indexpage metafile CDATA  #REQUIRED
+                    upgrade  CDATA  #IMPLIED
+>
 
 <!ELEMENT category (title, page*)>
 <!ATTLIST category id ID #IMPLIED>

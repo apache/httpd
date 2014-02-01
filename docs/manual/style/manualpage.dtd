@@ -24,4 +24,6 @@
 <!ELEMENT manualpage (parentdocument?, title, summary?,
 seealso*, section*)>
 
-<!ATTLIST manualpage metafile CDATA  #REQUIRED>
+<!ATTLIST manualpage metafile CDATA  #REQUIRED
+                     upgrade  CDATA  #IMPLIED
+>

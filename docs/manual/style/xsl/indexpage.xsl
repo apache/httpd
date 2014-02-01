@@ -55,6 +55,8 @@
         <xsl:call-template name="top"/>&lf;
 
         <div id="page-content">
+            <xsl:call-template name="retired" />
+
             <h1>
                 <xsl:value-of select="title"/>
             </h1>&lf;
