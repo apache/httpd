@@ -30,6 +30,7 @@
 <xsl:variable name="output-encoding">ISO-8859-1</xsl:variable>
 <xsl:variable name="is-chm" select="false()"/>
 <xsl:variable name="is-zip" select="false()"/>
+<xsl:variable name="is-retired" select="true()"/>
 
 <!-- Now get the real guts of the stylesheet -->
 <xsl:include href="xsl/common.xsl"/>
