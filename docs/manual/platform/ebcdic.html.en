@@ -333,7 +333,7 @@
       </tr>
 
       <tr>
-        <td><code class="module"><a href="../mod/mod_access.html">mod_access</a></code></td>
+        <td><code class="module">mod_access</code></td>
         <td class="centered">+</td>
         <td />
       </tr>
@@ -357,19 +357,19 @@
       </tr>
 
       <tr>
-        <td><code class="module"><a href="../mod/mod_auth.html">mod_auth</a></code></td>
+        <td><code class="module">mod_auth</code></td>
         <td class="centered">+</td>
         <td />
       </tr>
 
       <tr>
-        <td><code class="module"><a href="../mod/mod_auth_anon.html">mod_auth_anon</a></code></td>
+        <td><code class="module">mod_auth_anon</code></td>
         <td class="centered">+</td>
         <td />
       </tr>
 
       <tr>
-        <td><code class="module"><a href="../mod/mod_auth_dbm.html">mod_auth_dbm</a></code></td>
+        <td><code class="module">mod_auth_dbm</code></td>
         <td class="centered">?</td>
         <td>with own <code>libdb.a</code></td>
       </tr>
@@ -465,7 +465,7 @@
       </tr>
 
       <tr>
-        <td><code class="module"><a href="../mod/mod_log_referer.html">mod_log_referer</a></code></td>
+        <td><code class="module">mod_log_referer</code></td>
         <td class="centered">+</td>
         <td />
       </tr>

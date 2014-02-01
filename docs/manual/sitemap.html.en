@@ -69,7 +69,6 @@ Documentation</a>.</p>
 <li><a href="server-wide.html">Server-Wide Configuration</a></li>
 <li><a href="logs.html">Log Files</a></li>
 <li><a href="urlmapping.html">Mapping URLs to Filesystem Locations</a></li>
-<li><a href="misc/security_tips.html">Security Tips</a></li>
 <li><a href="dso.html">Dynamic Shared Object (DSO) support</a></li>
 <li><a href="content-negotiation.html">Content Negotiation</a></li>
 <li><a href="custom-error.html">Custom error responses</a></li>
@@ -79,7 +78,7 @@ Documentation</a>.</p>
 <li><a href="handler.html">Apache's Handler Use</a></li>
 <li><a href="filter.html">Filters</a></li>
 <li><a href="suexec.html">suEXEC Support</a></li>
-<li><a href="misc/perf-tuning.html">Performance Hints</a></li>
+<li><a href="dns-caveats.html">Issues Regarding DNS and Apache</a></li>
 <li><a href="http://wiki.apache.org/httpd/FAQ">Frequently Asked Questions</a></li>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -91,23 +90,24 @@ Documentation</a>.</p>
 <li><a href="vhosts/examples.html">VirtualHost Examples</a></li>
 <li><a href="vhosts/details.html">An In-Depth Discussion of Virtual Host Matching</a></li>
 <li><a href="vhosts/fd-limits.html">File descriptor limitations</a></li>
-<li><a href="dns-caveats.html">Issues Regarding DNS and Apache</a></li>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section"><h2><a name="rewrite" id="rewrite">URL Rewriting Guide</a></h2>
 <ul><li class="separate"><a href="rewrite/">Overview</a></li>
 <li><a href="mod/mod_rewrite.html">mod_rewrite reference
 documentation</a></li>
-<li><a href="rewrite/intro.html">Introduction</a></li>
-<li><a href="rewrite/flags.html">Flags</a></li>
-<li><a href="rewrite/tech.html">Technical details</a></li>
-<li><a href="rewrite/remapping.html">Using mod_rewrite for redirection and remapping of URLs</a></li>
+<li><a href="rewrite/intro.html">Introduction to regular expressions and
+mod_rewrite</a></li>
+<li><a href="rewrite/remapping.html">Using mod_rewrite for redirection and
+remapping of URLs</a></li>
 <li><a href="rewrite/access.html">Using mod_rewrite to control access</a></li>
 <li><a href="rewrite/vhosts.html">Dynamic virtual hosts with mod_rewrite</a></li>
 <li><a href="rewrite/proxy.html">Dynamic proxying with mod_rewrite</a></li>
 <li><a href="rewrite/rewritemap.html">Using RewriteMap</a></li>
-<li><a href="rewrite/advanced.html">Advanced techniques and tricks</a></li>
+<li><a href="rewrite/advanced.html">Advanced techniques</a></li>
 <li><a href="rewrite/avoid.html">When NOT to use mod_rewrite</a></li>
+<li><a href="rewrite/flags.html">RewriteRule Flags</a></li>
+<li><a href="rewrite/tech.html">Technical details</a></li>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section"><h2><a name="ssl" id="ssl">Apache SSL/TLS Encryption</a></h2>
@@ -120,7 +120,8 @@ documentation</a></li>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section"><h2><a name="howto" id="howto">Guides, Tutorials, and HowTos</a></h2>
 <ul><li class="separate"><a href="howto/">Overview</a></li>
-<li><a href="howto/auth.html">Authentication</a></li>
+<li><a href="howto/auth.html">Authentication and Authorization</a></li>
+<li><a href="howto/access.html">Access Control</a></li>
 <li><a href="howto/cgi.html">Dynamic Content with CGI</a></li>
 <li><a href="howto/ssi.html">Introduction to Server Side Includes</a></li>
 <li><a href="howto/htaccess.html">.htaccess files</a></li>
@@ -151,6 +152,7 @@ Server on HPUX</a></li>
 <li><a href="programs/htdbm.html">Manual Page: htdbm</a></li>
 <li><a href="programs/htdigest.html">Manual Page: htdigest</a></li>
 <li><a href="programs/htpasswd.html">Manual Page: htpasswd</a></li>
+<li><a href="programs/httxt2dbm.html">Manual Page: httxt2dbm</a></li>
 <li><a href="programs/logresolve.html">Manual Page: logresolve</a></li>
 <li><a href="programs/rotatelogs.html">Manual Page: rotatelogs</a></li>
 <li><a href="programs/suexec.html">Manual Page: suexec</a></li>
@@ -159,7 +161,10 @@ Server on HPUX</a></li>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section"><h2><a name="misc" id="misc">Apache Miscellaneous Documentation</a></h2>
 <ul><li class="separate"><a href="misc/">Overview</a></li>
+<li><a href="misc/perf-tuning.html">Performance Notes - Apache Tuning</a></li>
+<li><a href="misc/security_tips.html">Security Tips</a></li>
 <li><a href="misc/relevant_standards.html">Relevant Standards</a></li>
+<li><a href="misc/password_encryptions.html">Password Encryption Formats</a></li>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section"><h2><a name="modules" id="modules">Apache modules</a></h2>
@@ -260,6 +265,7 @@ Server on HPUX</a></li>
 <li><a href="developer/modules.html">Converting Modules from Apache 1.3 to Apache 2.0</a></li>
 <li><a href="developer/request.html">Request Processing in Apache 2.0</a></li>
 <li><a href="developer/filters.html">How Filters Work in Apache 2.0</a></li>
+<li><a href="developer/thread_safety.html">Thread Safety Issues in 2.0</a></li>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section"><h2><a name="index" id="index">Glossary and Index</a></h2>
