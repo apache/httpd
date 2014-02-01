@@ -328,28 +328,3 @@ PATCHES/ISSUES THAT ARE STALLED
     2.4 patch: http://people.apache.org/~fuankg/diffs/httpd-2.4.x-cross_compile.diff
     2.2 patch: http://people.apache.org/~fuankg/diffs/httpd-2.2.x-cross_compile.diff
     fuankg: on hold until we agree for a better and more simple solution ...
-
-  * mod_ssl: Add RFC 5878 support. This allows support of mechanisms
-             such as Certificate Transparency. Note that new
-             mechanisms are supported without software updates.
-    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1352596
-    2.2.x patch: http://people.apache.org/~ben/httpd-2.2-rfc5878.patch
-    +1: ben, druggeri
-    -1: kbrand
-    druggeri note: Needs docs for new directive
-    kbrand: depends on an unreleased OpenSSL version (1.0.2), and
-            RFC 5878 is of "Category: Experimental".
-            The API in the OpenSSL implementation from May 2012
-            (http://cvs.openssl.org/chngview?cn=22601) only covers the
-            privately-defined TLSEXT_AUTHZDATAFORMAT_audit_proof, there's
-            no support for x509_attr_cert (section 3.3.1 in RFC 5878) or
-            saml_assertion (3.3.2). SSL_CTX_use_authz_file doesn't have
-            any docs in OpenSSL, either, and there's no "openssl foo ..."
-            command or similar to create/manage such files.
-            Note: as of 2013-04-15, r1352596 has been reverted in trunk,
-            (with r1468131), for the reasons explained in the message with id
-            <515FED7C.5010009@velox.ch> sent to the dev list on 2013-04-06.
-    ben: not correct that it depends on OpenSSL 1.0.2, it builds with
-         any version. Also, if you read my note to dev@ you will see
-         why it is not premature.
-
