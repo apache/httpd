@@ -52,6 +52,8 @@
             </xsl:call-template>
         </xsl:variable>
 
+        <xsl:call-template name="retired" />
+
         <div id="preamble">
             <h1>
                 <xsl:value-of select="title" />
