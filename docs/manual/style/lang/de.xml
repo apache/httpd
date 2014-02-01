@@ -144,5 +144,14 @@
         <message id="nottranslated">Die Dokumentation zu dieser Direktive wurde
             noch nicht &#252;bersetzt. Bitte schauen Sie in die englische
             Version.</message>
+
+        <!-- retirement -->
+        <message id="retired.headline">Bitte beachten!</message>
+        <message id="retired.description">
+            <p>Dieses Dokument bezieht sich auf Version <strong>2.0</strong> des Apache httpd, die <strong>nicht mehr gepflegt wird</strong>. Bitte aktualisieren Sie die Software und verwenden Sie stattdessen eine aktuelle Version des httpd, die an folgender Stelle dokumentiert ist:</p>
+        </message>
+        <message id="retired.current">Dokumentation des Apache HTTP Server f&#252;r die zuletzt erschienene Version</message>
+        <message id="retired.document">Sie können <link>diesem Link</link> folgen, um zur aktuellen Version dieses Dokuments zu gelangen.</message>
+
     </messages>
 </language>

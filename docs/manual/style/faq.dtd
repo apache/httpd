@@ -26,6 +26,7 @@ seealso*, (section | categories))>
 
 <!ATTLIST faq metafile   CDATA        #REQUIRED
               all-in-one (yes | no ) "no"
+              upgrade    CDATA        #IMPLIED
 >
 
 <!ELEMENT categories (categoryfile*)>
