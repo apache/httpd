@@ -347,8 +347,8 @@
 
 <example>$ vi <em>PREFIX</em>/conf/httpd.conf</example>
 
-    <p>Have a look at the Apache HTTP Server manual under <a
-    href="./">docs/manual/</a> or consult <a
+    <p>Have a look at the Apache manual under
+    <code><em>PREFIX</em>/docs/manual/</code> or consult <a
     href="http://httpd.apache.org/docs/&httpd.docs;/"
     >http://httpd.apache.org/docs/&httpd.docs;/</a> for the most recent
     version of this manual and a complete reference of available <a
