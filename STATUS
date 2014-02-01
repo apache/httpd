@@ -193,13 +193,19 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                     https://svn.apache.org/r1554192
                     https://svn.apache.org/r1555463
                     https://svn.apache.org/r1555467
-     2.4.x patch: https://people.apache.org/~kbrand/mod_ssl-2.4.x-certkeyfile.diff
-     +1: kbrand, jorton
+                    https://svn.apache.org/r1563417
+     2.4.x patch: https://people.apache.org/~kbrand/mod_ssl-2.4.x-certkeyfile-v2.diff
+     +1: kbrand
 
    * mod_rewrite: Add %{CONN_REMOTE_ADDR} to mod_rewrite PR56094
      trunk patch: https://svn.apache.org/r1563418
      2.4.x patch: trunk works
      +1 covener
+
+   * mod_ssl: enable auto curve selection for ECDHE / OpenSSL 1.0.2
+     trunk patch: https://svn.apache.org/r1563420
+     2.4.x patch: trunk patch works
+     +1: kbrand
 
 OTHER PROPOSALS
 
