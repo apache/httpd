@@ -169,8 +169,7 @@
     <link type="text/css" media="print"
            rel="stylesheet"
            href="{$path}/style/css/manual-print.css"/>
-
-    <!-- chm files do not need a favicon or a canonical link-->
+    <!-- chm files do not need a favicon -->
     <xsl:if test="not($is-chm or $is-zip)">&lf;
         <link rel="shortcut icon" href="{$path}/images/favicon.ico" />
         <xsl:if test="$is-retired">
@@ -364,6 +363,7 @@
 </a>
 </xsl:template>
 
+
 <!-- ==================================================================== -->
 <!-- out of date                                                          -->
 <!-- ==================================================================== -->
@@ -384,10 +384,9 @@
 <xsl:call-template name="langavail">
     <xsl:with-param name="position" select="'bottom'" />
 </xsl:call-template>
-
 <div id="footer">&lf;
     <p class="apache">
-        <xsl:text>Copyright 2013 The Apache Software Foundation.</xsl:text><br />
+        <xsl:text>Copyright 2014 The Apache Software Foundation.</xsl:text><br />
         <xsl:if test="normalize-space($message[@id='before-license'])">
             <xsl:value-of select="$message[@id='before-license']"/>
             <xsl:text> </xsl:text>
@@ -406,7 +405,6 @@
 
         <xsl:text>.</xsl:text>
     </p>&lf;
-
     <xsl:call-template name="super-menu"/>
 
 </div> <!-- /footer -->
@@ -763,11 +761,21 @@
 <code class="directive">
     <xsl:choose>
     <xsl:when test="@module">
-        <xsl:variable name="lowerdirective"
-            select="translate(., $uppercase, $lowercase)" />
+        <xsl:variable name="lowerdirective">
+            <xsl:choose>
+            <xsl:when test="@name">
+                <xsl:value-of select="normalize-space(translate(@name,
+                                        $uppercase, $lowercase))" />
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:value-of select="normalize-space(translate(.,
+                                        $uppercase, $lowercase))" />
+            </xsl:otherwise>
+            </xsl:choose>
+        </xsl:variable>
 
         <xsl:choose>
-        <xsl:when test="$in-modulesynopsis and @module = /modulesynopsis/name">
+        <xsl:when test="$in-modulesynopsis and normalize-space(@module) = /modulesynopsis/name">
             <a href="#{$lowerdirective}">
                 <xsl:if test="@type='section'">&lt;</xsl:if>
                 <xsl:value-of select="."/>
@@ -775,7 +783,7 @@
             </a>
         </xsl:when>
         <xsl:otherwise>
-            <a href="{$path}/mod/{@module}.html#{$lowerdirective}">
+            <a href="{$path}/mod/{normalize-space(@module)}.html#{$lowerdirective}">
                 <xsl:if test="@type='section'">&lt;</xsl:if>
                 <xsl:value-of select="."/>
                 <xsl:if test="@type='section'">&gt;</xsl:if>
@@ -801,9 +809,16 @@
 <!-- ==================================================================== -->
 <xsl:template match="module" name="module">
 <code class="module">
-    <a href="{$path}/mod/{.}.html">
+    <xsl:choose>
+    <xsl:when test="@outdated = 'true'">
         <xsl:value-of select="."/>
-    </a>
+    </xsl:when>
+    <xsl:otherwise>
+        <a href="{$path}/mod/{normalize-space(.)}.html">
+            <xsl:value-of select="."/>
+        </a>
+    </xsl:otherwise>
+    </xsl:choose>
 </code>
 </xsl:template>
 <!-- /module -->
