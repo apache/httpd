@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_rewrite: Add %{CONN_REMOTE_ADDR} as the non-useragent counterpart to
+     %{REMOTE_ADDR}. PR 56094. [Edward Lu <Chaosed0 gmail com>]
+
   *) mod_dir: Default to 2.2-like behavior and skip execution when method is
      neither GET nor POST, such as for DAV requests. PR 54914. [Chris Darroch]
 
