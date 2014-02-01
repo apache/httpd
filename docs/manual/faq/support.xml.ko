@@ -20,7 +20,7 @@
  limitations under the License.
 -->
 
-<faq metafile="support.xml.meta">
+<faq metafile="support.xml.meta" upgrade="">
 <parentdocument href="./">FAQ</parentdocument>
 
 <title>지원 - 자주 물어보는 질문 (FAQ)</title>

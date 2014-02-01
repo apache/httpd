@@ -20,7 +20,7 @@
  limitations under the License.
 -->
 
-<faq metafile="error.xml.meta">
+<faq metafile="error.xml.meta" upgrade="">
 <parentdocument href="./">FAQ</parentdocument>
 
 <title>Error Messages - Frequently Asked Questions</title>

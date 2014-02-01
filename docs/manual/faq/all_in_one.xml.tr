@@ -22,7 +22,7 @@
  limitations under the License.
 -->
 
-<faq metafile="all_in_one.xml.meta" all-in-one="yes">
+<faq metafile="all_in_one.xml.meta" all-in-one="yes" upgrade="">
 <parentdocument href="./">SSS</parentdocument>
 
 <title>Sıkça Sorulan Sorular</title>

@@ -22,7 +22,7 @@
  limitations under the License.
 -->
 
-<faq metafile="all_in_one.xml.meta" all-in-one="yes">
+<faq metafile="all_in_one.xml.meta" all-in-one="yes" upgrade="">
 <parentdocument href="./">FAQ</parentdocument>
 
 <title>자주 물어보는 질문 (FAQ)</title>
