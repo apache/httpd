@@ -26,10 +26,10 @@
     <target-ext>.html.da</target-ext>
 
     <chm>
-        <lang>0x409 Dansk (Danmark)</lang>
+        <lang>0x406 Danish</lang>
         <toc-font>,8,0</toc-font>
         <charset>windows-1252</charset>
-        <settings>Dansk (DK)</settings>
+        <settings>Danish</settings>
     </chm>
 
     <man>
