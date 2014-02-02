@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1557642:1562170 (outdated) -->
+<!-- English Revision: 1562170 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -312,13 +312,13 @@ aucun fichier</description>
 <description>D&eacute;finit la r&eacute;ponse de ce module lorsqu'un autre
 gestionnaire est utilis&eacute;</description>
 <syntax>DirectoryCheckHandler On|Off</syntax>
-<default>DirectorySlash Off</default>
+<default>DirectoryCheckHandler Off</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>Indexes</override>
 <compatibility>Disponible depuis la version 2.4.8 du serveur HTTP
 Apache. Les versions ant&eacute;rieures &agrave; 2.4 se comportaient implicitement
-comme si "DirectorySlash Off" avait &eacute;t&eacute; sp&eacute;cifi&eacute;.</compatibility>
+comme si "DirectoryCheckHandler ON" avait &eacute;t&eacute; sp&eacute;cifi&eacute;.</compatibility>
 <usage>
     <p>La directive <directive>DirectoryCheckHandler</directive> permet
     de faire en sorte que <module>mod_dir</module> recherche un index
