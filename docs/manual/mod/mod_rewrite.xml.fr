@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1555116:1563418 (outdated) -->
+<!-- English Revision : 1563418 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -218,7 +218,7 @@ pour le moteur de r&eacute;&eacute;criture</description>
       contexte de <code>serveur virtuel</code> ou de serveur principal,
       <module>mod_rewrite</module> ne traitera les r&egrave;gles de r&eacute;&eacute;criture
       que si l'URI de la requ&ecirc;te respecte la syntaxe d'un <a
-      href="./directive-dict.html#Syntax">chemin URL</a>. Ceci permet
+      href="directive-dict.html#Syntax">chemin URL</a>. Ceci permet
       d'&eacute;viter certains probl&egrave;mes de s&eacute;curit&eacute; o&ugrave; des r&egrave;gles
       particuli&egrave;res pourraient permettre  des d&eacute;veloppements de mod&egrave;les
       inattendus (voir <a
@@ -492,6 +492,7 @@ la r&eacute;&eacute;criture soit effectu&eacute;e
 
               <td>
                  REMOTE_ADDR<br />
+		 CONN_REMOTE_ADDR<br />
                  REMOTE_HOST<br />
                  REMOTE_PORT<br />
                  REMOTE_USER<br />
@@ -624,6 +625,15 @@ la r&eacute;&eacute;criture soit effectu&eacute;e
 		  "http" ou "https"). La valeur peut &ecirc;tre modifi&eacute;e par
 		  la directive <directive
 		  module="core">ServerName</directive>.</dd>
+
+		  <dt><code>REMOTE_ADDR</code></dt>
+                  <dd>L'adresse IP de l'h&ocirc;te distant (se r&eacute;f&eacute;rer au
+		  module <module>mod_remoteip</module>).</dd>
+
+                  <dt><code>CONN_REMOTE_ADDR</code></dt>
+                  <dd>A partir de la version 2.4.8 : l'adresse IP
+		  distante de la connexion (se r&eacute;f&eacute;rer au
+		  module <module>mod_remoteip</module>).</dd>
 
                 </dl>
 </note>
@@ -1036,8 +1046,8 @@ RewriteRule  ^/$                 /homepage.std.html  [L]
       <a id="regexp" name="regexp">expression rationnelle</a>
       compatible perl. Dans la premi&egrave;re r&egrave;gle de r&eacute;&eacute;criture,
       l'expression est compar&eacute;e au (%-decoded)
-      <a href="./directive-dict.html#Syntax">chemin de l'URL</a> (ou au
-      <a href="./directive-dict.html#Syntax">chemin fichier</a>, en
+      <a href="directive-dict.html#Syntax">chemin de l'URL</a> (ou au
+      <a href="directive-dict.html#Syntax">chemin fichier</a>, en
       fonction du contexte) de la
       requ&ecirc;te. Les expressions suivantes sont compar&eacute;es &agrave; la sortie de
       la derni&egrave;re r&egrave;gle de r&eacute;&eacute;criture qui

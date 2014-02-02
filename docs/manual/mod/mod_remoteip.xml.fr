@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1561283:1561569 (outdated) -->
+<!-- English Revision: 1561569 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -47,9 +47,8 @@ r&eacute;partiteur de charge via les en-t&ecirc;tes de la requ&ecirc;te.
     <directive>RemoteIPHeader</directive>.</p>
 
     <p>Une fois remplac&eacute;e comme indiqu&eacute;, cette adresse IP apparente est
-    utilis&eacute;e pour les fonctionnalit&eacute;s <directive module="mod_authz_host"
-    type="section">Require host</directive> et <directive
-    module="mod_authz_host" type="section">Require ip</directive> de
+    utilis&eacute;e pour la fonctionnalit&eacute; <directive
+    module="mod_authz_core" name="Require">Require ip</directive> de
     <module>mod_authz_host</module> ; elle est aussi affich&eacute;e par
     <module>mod_status</module>, et enregistr&eacute;e via les directives
     <code>%a</code> et <code>%h</code> du module
