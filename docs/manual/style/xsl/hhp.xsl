@@ -159,6 +159,7 @@
 <!-- files referenced in sitemap                                          -->
 <!-- ==================================================================== -->
 <xsl:template match="category/page">
+<xsl:if test="not(starts-with(@href,'http:') or starts-with(@href, 'https:'))">
 <xsl:variable name="filename">
     <xsl:choose>
     <xsl:when test="contains(@href, '#') and substring(@href,
@@ -177,6 +178,7 @@
 </xsl:variable>
 
 <xsl:value-of select="translate($filename, '/', '\')" />&lf;
+</xsl:if>
 </xsl:template>
 <!-- /page[@href] -->
 
