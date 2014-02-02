@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1420732:1562488 (outdated) -->
+<!-- English Revision : 11562488 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -93,8 +93,8 @@ des utilisateurs et de leurs mots de passe</description>
 
     <p>Le format de mot de passe chiffr&eacute; d&eacute;pend du frontal
     d'authentification utilis&eacute; (par exemple
-    <module>mod_authn_basic</module> ou
-    <module>mod_authn_digest</module>). Voir la documentation sur les <a
+    <module>mod_auth_basic</module> ou
+    <module>mod_auth_digest</module>). Voir la documentation sur les <a
     href="../misc/password_encryptions.html">Formats de mots de
     passe</a> pour plus de d&eacute;tails.</p>
 

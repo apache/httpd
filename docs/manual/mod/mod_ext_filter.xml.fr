@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1334016:1562488 (outdated) -->
+<!-- English Revision : 1562488 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -104,7 +104,7 @@ ExtFilterDefine gzip mode=output cmd=/bin/gzip
     # filtre gzip
     SetOutputFilter gzip
 
-    # la directive de mod_header permettant d'ajouter le champ
+    # la directive de mod_headers permettant d'ajouter le champ
     # d'en-t&ecirc;te "Content-Encoding: gzip"
     Header set Content-Encoding gzip
 &lt;/Location&gt;

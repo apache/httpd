@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1544385:1562488 (outdated) -->
+<!-- English Revision : 1562488 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1073,10 +1073,10 @@ AddOutputFilterByType CACHE;INCLUDES;DEFLATE text/html
   module="mod_cache">CacheHeader</directive> est d&eacute;finie &agrave; on, un
   en-t&ecirc;te <strong>X-Cache</strong> est ajout&eacute; &agrave; la r&eacute;ponse et contient
   l'&eacute;tat du cache pour cette derni&egrave;re. Si le gestionnaire normal est
-  utilis&eacute;, cette directive peut se situer dans une section <directive
-  module="core">&lt;Directory&gt;</directive> ou <directive
-  module="core">&lt;Location&gt;</directive>. Si c'est le
-  gestionnaire rapide qui est utilis&eacute;, elle doit se situer dans un
+  utilis&eacute;, cette directive peut se situer dans une section
+  <directive module="core" type="section">Directory</directive> ou
+  <directive module="core" type="section">Location</directive>. Si c'est
+  le gestionnaire rapide qui est utilis&eacute;, elle doit se situer dans un
   contexte de serveur principal ou de serveur virtuel, sinon elle sera
   ignor&eacute;e.</p>
 
@@ -1129,9 +1129,9 @@ CacheHeader on
   utilis&eacute;s par le service et le client.</p>
 
   <p>Si le gestionnaire normal est utilis&eacute;, cette directive peut se
-  situer dans une section <directive
-  module="core">&lt;Directory&gt;</directive> ou <directive
-  module="core">&lt;Location&gt;</directive>. Si c'est le gestionnaire
+  situer dans une section <directive module="core"
+  type="section">Directory</directive> ou <directive module="core"
+  type="section">Location</directive>. Si c'est le gestionnaire
   rapide qui est utilis&eacute;, elle doit se situer dans un contexte de
   serveur principal ou de serveur virtuel, sinon elle sera ignor&eacute;e.</p>
 
