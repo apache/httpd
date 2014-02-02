@@ -278,28 +278,36 @@
                 <xsl:apply-templates select="$directive/syntax" />
             </a>
         </td>
-        <td>
-            <!-- if the default value contains (at least) one <br />, -->
-            <!-- this probably means that a short explanation follows -->
-            <!-- the actual default value. We cut off the string      -->
-            <!-- after the <br /> so it will not be shown here.       -->
-            <!-- (add the + character instead)                        -->
-            <xsl:variable name="default">
-                <xsl:choose>
-                <xsl:when test="count($directive/default[count(br) &gt; 0])
-                                &gt; 0">
-                    <xsl:value-of
-                        select="$directive/default/child::node()
-                                [count(preceding-sibling::*) = 0]" />
-                </xsl:when>
-                <xsl:otherwise>
-                    <xsl:value-of select="$directive/default"/>
-                </xsl:otherwise>
-                </xsl:choose>
-            </xsl:variable>
 
+        <!-- if the default value contains (at least) one <br />, -->
+        <!-- this probably means that a short explanation follows -->
+        <!-- the actual default value. We cut off the string      -->
+        <!-- after the <br /> so it will not be shown here.       -->
+        <!-- (add the + character instead)                        -->
+        <xsl:variable name="default">
+            <xsl:choose>
+            <xsl:when test="count($directive/default[count(br) &gt; 0])
+                            &gt; 0">
+                <xsl:value-of
+                    select="$directive/default/child::node()
+                            [count(preceding-sibling::*) = 0]" />
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:value-of select="$directive/default"/>
+            </xsl:otherwise>
+            </xsl:choose>
+        </xsl:variable>
+
+        <!-- Now. If the default output is empty, the xslt processor emits -->
+        <!-- <td />. In order to avoid this, we simply emit <td></td>      -->
+        <!-- by ourselves. Crap.                                           -->
+        <xsl:choose>
+        <xsl:when test="not(substring(substring-after(
+                            concat($default, ' '), name),1,20) = '')">
+        <td>
             <xsl:value-of select="substring(substring-after(concat($default,
                                   ' '), name),1,20)" />
+
             <xsl:if test="string-length(substring-after(concat($default, ' '),
                               name)) &gt; 20
                           or count($directive/default[count(br) &gt; 0])
@@ -307,6 +315,12 @@
                 <xsl:text> +</xsl:text>
             </xsl:if>
         </td>
+        </xsl:when>
+        <xsl:otherwise>
+            <xsl:text disable-output-escaping="yes">&lt;td>&lt;/td></xsl:text>
+        </xsl:otherwise>
+        </xsl:choose>
+
         <td>
             <xsl:if test="$directive/contextlist/context
                           [normalize-space(.)='server config']">
