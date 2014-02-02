@@ -34,7 +34,7 @@ Some targets have additional requirements:
   - the HTML Help compiler in PATH (or modify this build file). The
     compiler (hhc.exe) is part of the HTML Help Workshop which is freely
     available and can be downloaded from
-    http://msdn.microsoft.com/library/en-us/htmlhelp/html/hwMicrosoftHTMLHelpDownloads.asp
+    http://msdn.microsoft.com/en-us/library/windows/desktop/ms669985%28v=vs.85%29.aspx
   - The appropriate locale (e.g. Japanese) before invoking hhc.exe. Otherwise
     the compiler is not able to build the fulltext search index correctly and
     the TOC may be garbled, too. In particular:
