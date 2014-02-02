@@ -27,8 +27,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_remoteip.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_remoteip.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Remplace l'adresse IP et le nom d'hôte apparents du client
 pour la requête par l'adresse IP présentée par un mandataire ou un
 répartiteur de charge via les en-têtes de la requête.
@@ -50,7 +48,7 @@ répartiteur de charge via les en-têtes de la requête.
     <code class="directive">RemoteIPHeader</code>.</p>
 
     <p>Une fois remplacée comme indiqué, cette adresse IP apparente est
-    utilisée pour les fonctionnalités <code class="directive"><a href="../mod/mod_authz_host.html#require host">&lt;Require host&gt;</a></code> et <code class="directive"><a href="../mod/mod_authz_host.html#require ip">&lt;Require ip&gt;</a></code> de
+    utilisée pour la fonctionnalité <code class="directive"><a href="../mod/mod_authz_core.html#require">Require ip</a></code> de
     <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code> ; elle est aussi affichée par
     <code class="module"><a href="../mod/mod_status.html">mod_status</a></code>, et enregistrée via les directives
     <code>%a</code> et <code>%h</code> du module

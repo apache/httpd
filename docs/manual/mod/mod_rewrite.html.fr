@@ -27,8 +27,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_rewrite.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_rewrite.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Ce module fournit un moteur de réécriture à base de
 règles permettant de réécrire les URLs des requêtes
 à la volée</td></tr>
@@ -243,6 +241,7 @@ la réécriture soit effectuée
 
               <td>
                  REMOTE_ADDR<br />
+		 CONN_REMOTE_ADDR<br />
                  REMOTE_HOST<br />
                  REMOTE_PORT<br />
                  REMOTE_USER<br />
@@ -371,6 +370,15 @@ la réécriture soit effectuée
                   <dd>Contient le protocole de la requête (en général
 		  "http" ou "https"). La valeur peut être modifiée par
 		  la directive <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code>.</dd>
+
+		  <dt><code>REMOTE_ADDR</code></dt>
+                  <dd>L'adresse IP de l'hôte distant (se référer au
+		  module <code class="module"><a href="../mod/mod_remoteip.html">mod_remoteip</a></code>).</dd>
+
+                  <dt><code>CONN_REMOTE_ADDR</code></dt>
+                  <dd>A partir de la version 2.4.8 : l'adresse IP
+		  distante de la connexion (se référer au
+		  module <code class="module"><a href="../mod/mod_remoteip.html">mod_remoteip</a></code>).</dd>
 
                 </dl>
 </div>
@@ -970,7 +978,7 @@ pour le moteur de réécriture</td></tr>
       <p>A partir de la version 2.2.22 de httpd, lorsqu'une directive <code class="directive"><a href="#rewriterule">RewriteRule</a></code> se situe dans un
       contexte de <code>serveur virtuel</code> ou de serveur principal,
       <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> ne traitera les règles de réécriture
-      que si l'URI de la requête respecte la syntaxe d'un <a href="./directive-dict.html#Syntax">chemin URL</a>. Ceci permet
+      que si l'URI de la requête respecte la syntaxe d'un <a href="directive-dict.html#Syntax">chemin URL</a>. Ceci permet
       d'éviter certains problèmes de sécurité où des règles
       particulières pourraient permettre  des développements de modèles
       inattendus (voir <a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2011-3368">CVE-2011-3368</a>
@@ -1029,8 +1037,8 @@ pour le moteur de réécriture</td></tr>
       <a id="regexp" name="regexp">expression rationnelle</a>
       compatible perl. Dans la première règle de réécriture,
       l'expression est comparée au (%-decoded)
-      <a href="./directive-dict.html#Syntax">chemin de l'URL</a> (ou au
-      <a href="./directive-dict.html#Syntax">chemin fichier</a>, en
+      <a href="directive-dict.html#Syntax">chemin de l'URL</a> (ou au
+      <a href="directive-dict.html#Syntax">chemin fichier</a>, en
       fonction du contexte) de la
       requête. Les expressions suivantes sont comparées à la sortie de
       la dernière règle de réécriture qui
