@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1328329:1562488 (outdated) -->
+<!-- English Revision : 1562488 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -52,9 +52,9 @@ OS/2</description>
 <seealso><a href="../bind.html">D&eacute;finition des adresses et ports
 qu'utilise Apache</a></seealso>
 
-<directivesynopsis location="mpm_common"><name>User</name>
+<directivesynopsis location="mod_unixd"><name>User</name>
 </directivesynopsis>
-<directivesynopsis location="mpm_common"><name>Group</name>
+<directivesynopsis location="mod_unixd"><name>Group</name>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>Listen</name>
 </directivesynopsis>

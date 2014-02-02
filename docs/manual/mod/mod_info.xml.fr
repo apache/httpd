@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1397683:1562488 (outdated) -->
+<!-- English Revision : 1562488 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -153,20 +153,21 @@ serveur</description>
       module="mod_so">LoadFile</directive>.</li>
       <li>Les directives qui contr&ocirc;lent le fichier de configuration
       lui-m&ecirc;me, comme <directive module="core">Include</directive>,
-      <directive module="core">&lt;IfModule&gt;</directive> et
-      <directive module="core">&lt;IfDefine&gt;</directive> ne sont pas
-      prises en compte, mais les directives de configuration incluses le
-      sont.</li>
+      <directive module="core" type="section">IfModule</directive> et
+      <directive module="core" type="section">IfDefine</directive> ne
+      sont pas prises en compte, mais les directives de configuration
+      incluses le sont.</li>
       <li>Les commentaires ne sont pas pris en compte (Ce qui peut &ecirc;tre
       consid&eacute;r&eacute; comme une fonctionnalit&eacute;).</li>
       <li>Les directives de configuration des fichiers
       <code>.htaccess</code> ne sont pas prises en compte (car elles ne
       font pas partie de la configuration permanente du serveur).</li>
-      <li>Les directives de conteneur comme <directive
-      module="core">&lt;Directory&gt;</directive> sont affich&eacute;es
+      <li>Les directives de conteneur comme <directive module="core"
+      type="section">Directory</directive> sont affich&eacute;es
       normalement, mais <module>mod_info</module> est incapable de
-      d&eacute;terminer le num&eacute;ro de ligne de la balise fermante <directive
-      module="core">&lt;/Directory&gt;</directive>.</li>
+      d&eacute;terminer le num&eacute;ro de ligne de la balise fermante
+      <directive module="core" type="section"
+      name="Directory">/Directory</directive>.</li>
       <li>Les directives g&eacute;n&eacute;r&eacute;es par des modules tiers comme
       <a href="http://perl.apache.org">mod_perl</a> peuvent ne pas &ecirc;tre
       prises en compte.</li>
