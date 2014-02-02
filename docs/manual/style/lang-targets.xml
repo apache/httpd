@@ -45,9 +45,6 @@
 <target description="- builds the Dansk Konqueror Web Archive" depends="-off-da" name="war-da">
     <war.generic lang="da"/>
 </target>
-<target description="- builds the Dansk CHM file" name="chm-da">
-    <chm.generic lang="da"/>
-</target>
 <target description="- builds the Dansk nroff files" unless="skip-man" depends="check-man" name="man-da">
     <nroff.generic lang="da"/>
 </target>

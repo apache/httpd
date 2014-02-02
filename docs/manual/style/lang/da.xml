@@ -25,12 +25,14 @@
     <source-ext>.xml.da</source-ext>
     <target-ext>.html.da</target-ext>
 
+    <!-- sitemap needed
     <chm>
         <lang>0x406 Danish</lang>
         <toc-font>,8,0</toc-font>
         <charset>windows-1252</charset>
         <settings>Danish</settings>
     </chm>
+    -->
 
     <man>
         <charset>ISO-8859-1</charset>
