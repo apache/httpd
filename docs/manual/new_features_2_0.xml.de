@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.de.xsl"?>
-<!-- English Revision: 421100:1563423 (outdated) -->
+<!-- English Revision: 1563423 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -165,7 +165,7 @@
       dies unterst&#252;tzen, eine Komprimierung des Inhaltes vor der
       Auslieferung anzufordern, um so Netzwerk-Bandbreite zu sparen.</dd>
 
-      <dt><module>mod_auth_ldap</module></dt>
+      <dt><module outdated="true">mod_auth_ldap</module></dt>
 
       <dd>Neues Modul in Apache 2.0.41. Diese Modul erm&#246;glicht
       die Verwendung einer LDAP-Datenbank zur Speicherung von
@@ -246,11 +246,10 @@
       &#252;ber die <module>mod_include</module> Variablen <code>$0</code>
       bis <code>$9</code> zugegriffen werden.</dd>
 
-      <dt><module>mod_auth_dbm</module></dt>
+      <dt><module outdated="true">mod_auth_dbm</module></dt>
 
       <dd>DBM-&#228;hnliche Datenbanken werden jetzt durch die
-      Konfigurationsaweisung <directive
-      module="mod_auth_dbm">AuthDBMType</directive> unterst&#252;tzt.</dd>
+      Konfigurationsaweisung <code>AuthDBMType</code> unterst&#252;tzt.</dd>
     </dl>
   </section>
 </manualpage>
