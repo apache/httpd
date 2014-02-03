@@ -134,6 +134,7 @@
 <!-- category/page                                                        -->
 <!-- ==================================================================== -->
 <xsl:template match="category/page">
+<xsl:if test="not(starts-with(@href,'http:') or starts-with(@href, 'https:'))">
 &li.start;
 
 <!-- document entry, if not href attribute, assume it means "sitemap" -->
@@ -168,6 +169,7 @@
 <xsl:apply-templates select="self::page" mode="index" />
 
 &li.end; &lf;&tab;
+</xsl:if>
 </xsl:template>
 <!-- /category/page -->
 
