@@ -73,7 +73,6 @@ Location et Files</a></li>
 <li><a href="logs.html">Fichiers de traces</a></li>
 <li><a href="urlmapping.html">Mise en correspondance des URLs avec le système de fichiers</a></li>
 <li><a href="dso.html">Objets Dynamiques Partagés (DSO)</a></li>
-<li><a href="compliance.html">Compatibilité avec le protocole HTTP</a></li>
 <li><a href="content-negotiation.html">Négociation sur le contenu</a></li>
 <li><a href="custom-error.html">Messages d'erreur personnalisés</a></li>
 <li><a href="bind.html">Définition des adresses et ports qu'utilise
@@ -167,7 +166,6 @@ hautes performances sous HPUX</a></li>
 <li><a href="programs/configure.html">Page de manuel : configure</a></li>
 <li><a href="programs/dbmmanage.html">Page de manuel : dbmmanage</a></li>
 <li><a href="programs/fcgistarter.html">Page de manuel : fcgistarter</a></li>
-<li><a href="programs/firehose.html">Page de manuel : firehose</a></li>
 <li><a href="programs/htcacheclean.html">Page de manuel : htcacheclean</a></li>
 <li><a href="programs/htdbm.html">Page de manuel : htdbm</a></li>
 <li><a href="programs/htdigest.html">Page de manuel : htdigest</a></li>
@@ -185,7 +183,6 @@ hautes performances sous HPUX</a></li>
 <ul><li class="separate"><a href="misc/">Aperçu</a></li>
 <li><a href="misc/perf-tuning.html">Considérations à propos des
 performances - Configuration fine d'Apache</a></li>
-<li><a href="misc/perf-scaling.html">Amélioration des performances</a></li>
 <li><a href="misc/security_tips.html">Conseils en matière de sécurité</a></li>
 <li><a href="misc/relevant_standards.html">Standards concernés</a></li>
 <li><a href="misc/password_encryptions.html">Formats de chiffrement des
