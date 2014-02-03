@@ -40,6 +40,7 @@ Some targets have additional requirements:
     + chm-de: German (Germany), sorting order: dictionary
     + chm-en: English (USA)
     + chm-es: Spanish (Spain), sorting order: international
+    + chm-fr: French (France)
     + chm-ja: Japanese
     + chm-ko: Korean
     + chm-tr: Turkish

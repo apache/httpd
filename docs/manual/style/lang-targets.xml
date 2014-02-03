@@ -144,6 +144,9 @@
 <target description="- builds the French Konqueror Web Archive" depends="-off-fr" name="war-fr">
     <war.generic lang="fr"/>
 </target>
+<target description="- builds the French CHM file" name="chm-fr">
+    <chm.generic lang="fr"/>
+</target>
 
 <!-- Japanese                                                             -->
 <!-- ==================================================================== -->
