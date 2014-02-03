@@ -25,14 +25,12 @@
     <source-ext>.xml.fr</source-ext>
     <target-ext>.html.fr</target-ext>
 
-<!-- No sitemap -> no CHM
     <chm>
         <lang>0x40c French (France)</lang>
         <toc-font>,8,0</toc-font>
         <charset>windows-1252</charset>
         <settings>French (France)</settings>
     </chm>
--->
 
 <!-- currently no deployment of non-english man pages
     <man>
