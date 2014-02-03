@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE indexpage SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.de.xsl"?>
-<!-- English Revision: 1050960:1524238 (outdated) -->
+<!-- English Revision: 1524238 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -38,8 +38,7 @@
     <page href="install.html">Kompilieren und Installieren</page>
     <page href="invoking.html">Starten</page>
     <page href="stopping.html">Stoppen und Neustarten</page>
-    <page href="mod/directives.html">Konfigurationsanweisungen</page>
-    <page href="mod/quickreference.html">Kurzreferenz der Direktiven</page>
+    <page href="mod/quickreference.html">Konfigurationsanweisungen</page>
     <page href="mod/">Module</page>
     <page href="mpm.html">Multi-Processing-Module (MPMs)</page>
     <page href="filter.html">Filter</page>
@@ -47,10 +46,11 @@
     <page href="expr.html">Der Ausdrucksparser</page>
     <page href="programs/">Server und Hilfsprogramme</page>
     <page href="glossary.html">Glossar</page>
-</category>    
+</category>
 
 <category id="usersguide"><title>Benutzerhandbuch</title>
-    <page href="bind.html">Bindung</page>
+    <page href="getting-started.html">Erste Schritte</page>
+    <page href="bind.html">An Adressen und Ports binden</page>
     <page href="configuring.html">Konfigurationsdateien</page>
     <page href="sections.html">Konfigurationsabschnitte</page>
     <page href="caching.html">Caching von Inhalten</page>
@@ -70,8 +70,8 @@
 </category>
 
 <category id="howto"><title>Praxis / Anleitungen</title>
-    <page href="howto/auth.html">Authentisierung, Autorisierung und
-    Zugriffskontrolle</page>
+    <page href="howto/auth.html">Authentisierung und Autorisierung</page>
+    <page href="howto/access.html">Zugriffskontrolle</page>
     <page href="howto/cgi.html">CGI: Dynamische Inhalte</page>
     <page href="howto/htaccess.html">.htaccess-Dateien</page>
     <page href="howto/ssi.html">Server Side Includes (SSI)</page>
@@ -81,6 +81,7 @@
 
 <category id="platform"><title>Plattform-spezifische Anmerkungen</title>
     <page href="platform/windows.html">Microsoft Windows</page>
+    <page href="platform/rpm.html">RPM-basierte Systeme (Redhat / CentOS / Fedora)</page>
     <page href="platform/netware.html">Novell NetWare</page>
     <page href="platform/ebcdic.html">EBCDIC-Portierung</page>
 </category>
@@ -90,6 +91,7 @@
     Fragen (FAQ)</page>
     <page href="sitemap.html">Seitenindex</page>
     <page href="developer/">Dokumentation f&uuml;r Entwickler</page>
+    <page href="http://httpd.apache.org/docs-project/">Mithilfe bei der Dokumentation</page>
     <page href="misc/">Sonstiges</page>
     <page href="http://wiki.apache.org/httpd/">Wiki</page>
 </category>
