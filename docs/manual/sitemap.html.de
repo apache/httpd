@@ -72,7 +72,6 @@
 <li><a href="logs.html">Log-Dateien</a></li>
 <li><a href="urlmapping.html">URLs auf das Dateisystem abbilden</a></li>
 <li><a href="dso.html">Dynamic Shared Object (DSO)</a></li>
-<li><a href="compliance.html">HTTP-Protokoll-Konformität</a></li>
 <li><a href="content-negotiation.html">Content Negotiation</a></li>
 <li><a href="custom-error.html">Individuelle Fehlermeldungen</a></li>
 <li><a href="bind.html">Bestimmen der vom Apache verwendeten Adressen und Ports</a></li>
@@ -156,7 +155,6 @@ HPUX betreiben</a></li>
 <li><a href="programs/configure.html">configure</a></li>
 <li><a href="programs/dbmmanage.html">dbmmanage</a></li>
 <li><a href="programs/fcgistarter.html">fcgistarter</a></li>
-<li><a href="programs/firehose.html">firehose</a></li>
 <li><a href="programs/htcacheclean.html">htcacheclean</a></li>
 <li><a href="programs/htdbm.html">htdbm</a></li>
 <li><a href="programs/htdigest.html">htdigest</a></li>
@@ -173,7 +171,6 @@ HPUX betreiben</a></li>
 <div class="section"><h2><a name="misc" id="misc">Weitere Apache-Dokumentationen</a></h2>
 <ul><li class="separate"><a href="misc/">Übersicht</a></li>
 <li><a href="misc/perf-tuning.html">Performance-Hinweise</a></li>
-<li><a href="misc/perf-scaling.html">Performance-Skalierung</a></li>
 <li><a href="misc/security_tips.html">Tipps zur Sicherheit</a></li>
 <li><a href="misc/relevant_standards.html">Wichtige Standards</a></li>
 <li><a href="misc/password_encryptions.html">Verschlüsselungsformate für Passworte</a></li>

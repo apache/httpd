@@ -72,7 +72,6 @@ Documentation</a>.</p>
 <li><a href="logs.html">Log Files</a></li>
 <li><a href="urlmapping.html">Mapping URLs to Filesystem Locations</a></li>
 <li><a href="dso.html">Dynamic Shared Object (DSO) support</a></li>
-<li><a href="compliance.html">HTTP Protocol Compliance</a></li>
 <li><a href="content-negotiation.html">Content Negotiation</a></li>
 <li><a href="custom-error.html">Custom error responses</a></li>
 <li><a href="bind.html">Setting which addresses and ports Apache uses</a></li>
@@ -155,7 +154,6 @@ Server on HPUX</a></li>
 <li><a href="programs/configure.html">Manual Page: configure</a></li>
 <li><a href="programs/dbmmanage.html">Manual Page: dbmmanage</a></li>
 <li><a href="programs/fcgistarter.html">Manual Page: fcgistarter</a></li>
-<li><a href="programs/firehose.html">Manual Page: firehose</a></li>
 <li><a href="programs/htcacheclean.html">Manual Page: htcacheclean</a></li>
 <li><a href="programs/htdbm.html">Manual Page: htdbm</a></li>
 <li><a href="programs/htdigest.html">Manual Page: htdigest</a></li>
@@ -173,7 +171,6 @@ log_server_status</a></li>
 <div class="section"><h2><a name="misc" id="misc">Apache Miscellaneous Documentation</a></h2>
 <ul><li class="separate"><a href="misc/">Overview</a></li>
 <li><a href="misc/perf-tuning.html">Performance Notes - Apache Tuning</a></li>
-<li><a href="misc/perf-scaling.html">Performance Scaling</a></li>
 <li><a href="misc/security_tips.html">Security Tips</a></li>
 <li><a href="misc/relevant_standards.html">Relevant Standards</a></li>
 <li><a href="misc/password_encryptions.html">Password Encryption Formats</a></li>
