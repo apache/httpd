@@ -176,8 +176,8 @@ int ssl_hook_ReadReq(request_rec *r)
              * cause us to end up in a different virtual host as the one that
              * was used for the handshake causing different SSL parameters to
              * be applied as SSLProtocol, SSLCACertificateFile/Path and
-             * SSLCADNRequestFile/Path cannot be renegotioated (SSLCA* due
-             * to current limitiations in Openssl, see
+             * SSLCADNRequestFile/Path cannot be renegotiated (SSLCA* due
+             * to current limitiations in OpenSSL, see
              * http://mail-archives.apache.org/mod_mbox/httpd-dev/200806.mbox/%3C48592955.2090303@velox.ch%3E
              * and
              * http://mail-archives.apache.org/mod_mbox/httpd-dev/201312.mbox/%3CCAKQ1sVNpOrdiBm-UPw1hEdSN7YQXRRjeaT-MCWbW_7mN%3DuFiOw%40mail.gmail.com%3E
@@ -207,7 +207,7 @@ int ssl_hook_ReadReq(request_rec *r)
             /*
              * We are using a name based configuration here, but no hostname was
              * provided via SNI. Don't allow that if are requested to do strict
-             * checking. Check wether this strict checking was setup either in the
+             * checking. Check whether this strict checking was setup either in the
              * server config we used for handshaking or in our current server.
              * This should avoid insecure configuration by accident.
              */
@@ -1904,7 +1904,7 @@ void ssl_callback_Info(const SSL *ssl, int where, int rc)
         }
     }
     /* If the first handshake is complete, change state to reject any
-     * subsequent client-initated renegotiation. */
+     * subsequent client-initiated renegotiation. */
     else if ((where & SSL_CB_HANDSHAKE_DONE) && scr->reneg_state == RENEG_INIT) {
         scr->reneg_state = RENEG_REJECT;
     }
@@ -2033,7 +2033,7 @@ static int ssl_find_vhost(void *servername, conn_rec *c, server_rec *s)
          * vhost we have just switched to. Again, we have to make sure
          * that we're not overwriting a session id context which was
          * possibly set in ssl_hook_Access(), before triggering
-         * a renegotation.
+         * a renegotiation.
          */
         if (SSL_num_renegotiations(ssl) == 0) {
             unsigned char *sid_ctx =

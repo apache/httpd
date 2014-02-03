@@ -425,7 +425,7 @@ typedef struct {
         RENEG_INIT = 0, /* Before initial handshake */
         RENEG_REJECT, /* After initial handshake; any client-initiated
                        * renegotiation should be rejected */
-        RENEG_ALLOW, /* A server-initated renegotiation is taking
+        RENEG_ALLOW, /* A server-initiated renegotiation is taking
                       * place (as dictated by configuration) */
         RENEG_ABORT /* Renegotiation initiated by client, abort the
                      * connection */
