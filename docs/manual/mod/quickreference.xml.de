@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE quickreference SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
-<!-- English Revision: 636495:1070904 (outdated) -->
+<!-- English Revision: 1070904 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -32,8 +32,8 @@
     <p>Die erste Spalte enth&auml;lt den Namen und die Verwendung.
     Die zweite Spalte zeigt die Voreinstellung der Direktive, sofern
     eine Voreinstellung existiert. Wenn die Voreinstellung zu breit
-    f&uuml;r die Anzeige ist, werden die ersten Buchstaben angegeben,
-    gefolgt von einem "+".</p>
+    f&uuml;r die Anzeige ist, wird sie abgeschnitten und mit einem
+    nachfolgenden "+" versehen.</p>
 
     <p>Die dritte und vierte Spalte geben den Kontext an, in dem die
     Direktive erlaubt ist, sowie den Status der Direktive entsprechend
