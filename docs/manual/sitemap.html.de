@@ -31,9 +31,6 @@
 <a href="./tr/sitemap.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="./zh-cn/sitemap.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
-<div class="outofdate">Diese Übersetzung ist möglicherweise
-            nicht mehr aktuell. Bitte prüfen Sie die englische Version auf
-            die neuesten Änderungen.</div>
 
 <p>Diese Seite verzeichnet die zur Zeit verfügbaren Dokumente der
 <a href="./">Dokumentation zum Apache HTTP Server Version
@@ -72,7 +69,6 @@
 <li><a href="server-wide.html">Serverweite Konfiguration</a></li>
 <li><a href="logs.html">Log-Dateien</a></li>
 <li><a href="urlmapping.html">URLs auf das Dateisystem abbilden</a></li>
-<li><a href="misc/security_tips.html">Tipps zur Sicherheit</a></li>
 <li><a href="dso.html">Dynamic Shared Object (DSO)</a></li>
 <li><a href="content-negotiation.html">Content Negotiation</a></li>
 <li><a href="custom-error.html">Individuelle Fehlermeldungen</a></li>
@@ -82,7 +78,7 @@
 <li><a href="handler.html">Handler</a></li>
 <li><a href="filter.html">Filter</a></li>
 <li><a href="suexec.html">suEXEC Unterstützung</a></li>
-<li><a href="misc/perf-tuning.html">Performance-Hinweise</a></li>
+<li><a href="dns-caveats.html">Probleme bezüglich DNS und Apache</a></li>
 <li><a href="http://wiki.apache.org/httpd/FAQ">Häufig gestellte Fragen
     (FAQ)</a></li>
 </ul>
@@ -97,18 +93,22 @@
 <li><a href="vhosts/details.html">Tiefergehende Erörterung der Zuweisung
   virtueller Hosts</a></li>
 <li><a href="vhosts/fd-limits.html">Datei-Deskriptor-Begrenzungen</a></li>
-<li><a href="dns-caveats.html">Probleme bezüglich DNS und Apache</a></li>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section"><h2><a name="rewrite" id="rewrite">Einführung in die URL-Manipulation</a></h2>
 <ul><li class="separate"><a href="rewrite/">Übersicht</a></li>
 <li><a href="mod/mod_rewrite.html">Referenz-Dokumentation von
 mod_rewrite</a></li>
-<li><a href="rewrite/rewrite_intro.html">Einführung</a></li>
-<li><a href="rewrite/rewrite_flags.html">Schalter / Flags</a></li>
-<li><a href="rewrite/rewrite_tech.html">Technische Details</a></li>
-<li><a href="rewrite/rewrite_guide.html">Nützliche Beispiele fü URL-Manipulationen</a></li>
-<li><a href="rewrite/rewrite_guide_advanced.html">URL-Manipulation für Fortgeschrittene - mehr nützliche Beispiele</a></li>
+<li><a href="rewrite/intro.html">Einführung in reguläre Ausdrücke und mod_rewrite</a></li>
+<li><a href="rewrite/remapping.html">Verwendung von mod_rewrite, um URLs umzuleiten oder umzuschreiben</a></li>
+<li><a href="rewrite/access.html">Zugriffskontrolle mit mod_rewrite</a></li>
+<li><a href="rewrite/vhosts.html">Dynamische virtuelle Hosts mit mod_rewrite</a></li>
+<li><a href="rewrite/proxy.html">Dynamische Proxy-Konfigurationen mit mod_rewrite</a></li>
+<li><a href="rewrite/rewritemap.html">RewriteMap einsetzen</a></li>
+<li><a href="rewrite/advanced.html">Fortgeschrittene Techniken</a></li>
+<li><a href="rewrite/avoid.html">Wann man auf mod_rewrite verzichten sollte</a></li>
+<li><a href="rewrite/flags.html">Schalter / Flags</a></li>
+<li><a href="rewrite/tech.html">Technische Details</a></li>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section"><h2><a name="ssl" id="ssl">SSL/TLS-Verschlüsselung des Apache</a></h2>
@@ -121,7 +121,8 @@ mod_rewrite</a></li>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section"><h2><a name="howto" id="howto">Praxis / Anleitungen</a></h2>
 <ul><li class="separate"><a href="howto/">Übersicht</a></li>
-<li><a href="howto/auth.html">Authentisierung, Autorisierung und Zugriffskontrolle</a></li>
+<li><a href="howto/auth.html">Authentisierung und Autorisierung</a></li>
+<li><a href="howto/access.html">Zugriffskontrolle</a></li>
 <li><a href="howto/cgi.html">Dynamische Inhalte mit CGI</a></li>
 <li><a href="howto/ssi.html">Einführung in Server Side Includes</a></li>
 <li><a href="howto/htaccess.html">.htaccess-Dateien</a></li>
@@ -152,6 +153,7 @@ HPUX betreiben</a></li>
 <li><a href="programs/htdbm.html">htdbm</a></li>
 <li><a href="programs/htdigest.html">htdigest</a></li>
 <li><a href="programs/htpasswd.html">htpasswd</a></li>
+<li><a href="programs/httxt2dbm.html">httxt2dbm</a></li>
 <li><a href="programs/logresolve.html">logresolve</a></li>
 <li><a href="programs/rotatelogs.html">rotatelogs</a></li>
 <li><a href="programs/suexec.html">suexec</a></li>
@@ -160,7 +162,10 @@ HPUX betreiben</a></li>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section"><h2><a name="misc" id="misc">Weitere Apache-Dokumentationen</a></h2>
 <ul><li class="separate"><a href="misc/">Übersicht</a></li>
+<li><a href="misc/perf-tuning.html">Performance-Hinweise</a></li>
+<li><a href="misc/security_tips.html">Tipps zur Sicherheit</a></li>
 <li><a href="misc/relevant_standards.html">Wichtige Standards</a></li>
+<li><a href="misc/password_encryptions.html">Verschlüsselungsformate für Passworte</a></li>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section"><h2><a name="modules" id="modules">Apache-Module</a></h2>
@@ -261,6 +266,7 @@ HPUX betreiben</a></li>
 <li><a href="developer/modules.html">Module von Apache 1.3 nach Apache 2.0 konvertieren</a></li>
 <li><a href="developer/request.html">Verarbeitung der Anfragen im Apache 2.0</a></li>
 <li><a href="developer/filters.html">Wie Filter im Apache 2.0 arbeiten</a></li>
+<li><a href="developer/thread_safety.html">Thread-Sicherheit in Version 2.0</a></li>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section"><h2><a name="index" id="index">Glossar und Index</a></h2>
