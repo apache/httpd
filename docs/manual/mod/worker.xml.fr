@@ -132,8 +132,8 @@ ThreadsPerChild     25
     les processus enfants et les threads sont lanc&eacute;s par le serveur sous un
     utilisateur avec privil&egrave;ges restreints. On peut utiliser les
     directives <directive
-    module="mpm_unixd">User</directive> et <directive
-    module="mpm_unixd">Group</directive> pour d&eacute;finir les privil&egrave;ges
+    module="mod_unixd">User</directive> et <directive
+    module="mod_unixd">Group</directive> pour d&eacute;finir les privil&egrave;ges
     des processus enfants. Les processus enfants doivent pouvoir &ecirc;tre en
     mesure de lire tous les contenus destin&eacute;s &agrave; &ecirc;tre servis, mais
     doivent avoir des privil&egrave;ges aussi bas que possible. De plus, ces
@@ -162,7 +162,7 @@ ThreadsPerChild     25
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>EnableExceptionHook</name>
 </directivesynopsis>
-<directivesynopsis location="mpm_unixd"><name>Group</name>
+<directivesynopsis location="mod_unixd"><name>Group</name>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>PidFile</name>
 </directivesynopsis>
@@ -196,7 +196,7 @@ ThreadsPerChild     25
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>ThreadStackSize</name>
 </directivesynopsis>
-<directivesynopsis location="mpm_unixd"><name>User</name>
+<directivesynopsis location="mod_unixd"><name>User</name>
 </directivesynopsis>
 
 </modulesynopsis>

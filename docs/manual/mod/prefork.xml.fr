@@ -86,8 +86,8 @@ qu'utilise le serveur HTTP Apache</a></seealso>
     processus enfants sont lanc&eacute;s par Apache httpd sous un utilisateur avec
     privil&egrave;ges restreints. On peut contr&ocirc;ler les privil&egrave;ges accord&eacute;s aux
     processus enfants d'Apache httpd &agrave; l'aide des directives <directive
-    module="mpm_unixd">User</directive> et <directive
-    module="mpm_unixd">Group</directive>. Les processus enfants doivent
+    module="mod_unixd">User</directive> et <directive
+    module="mod_unixd">Group</directive>. Les processus enfants doivent
     &ecirc;tre en mesure de lire tous les contenus destin&eacute;s &agrave; &ecirc;tre servis,
     mais leurs privil&egrave;ges doivent &ecirc;tre aussi bas que possible.</p>
 
@@ -133,9 +133,9 @@ qu'utilise le serveur HTTP Apache</a></seealso>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>StartServers</name>
 </directivesynopsis>
-<directivesynopsis location="mpm_unixd"><name>User</name>
+<directivesynopsis location="mod_unixd"><name>User</name>
 </directivesynopsis>
-<directivesynopsis location="mpm_unixd"><name>Group</name>
+<directivesynopsis location="mod_unixd"><name>Group</name>
 </directivesynopsis>
 
 <directivesynopsis>
