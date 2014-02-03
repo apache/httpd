@@ -29,8 +29,6 @@
 <a href="../ja/mod/mod_info.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_info.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Affiche une présentation complète de la configuration du
 serveur</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -166,18 +164,19 @@ serveur</td></tr>
       prises en compte. Celles-ci comprennent <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>, <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code> et <code class="directive"><a href="../mod/mod_so.html#loadfile">LoadFile</a></code>.</li>
       <li>Les directives qui contrôlent le fichier de configuration
       lui-même, comme <code class="directive"><a href="../mod/core.html#include">Include</a></code>,
-      <code class="directive"><a href="../mod/core.html#&lt;ifmodule&gt;">&lt;IfModule&gt;</a></code> et
-      <code class="directive"><a href="../mod/core.html#&lt;ifdefine&gt;">&lt;IfDefine&gt;</a></code> ne sont pas
-      prises en compte, mais les directives de configuration incluses le
-      sont.</li>
+      <code class="directive"><a href="../mod/core.html#ifmodule">&lt;IfModule&gt;</a></code> et
+      <code class="directive"><a href="../mod/core.html#ifdefine">&lt;IfDefine&gt;</a></code> ne
+      sont pas prises en compte, mais les directives de configuration
+      incluses le sont.</li>
       <li>Les commentaires ne sont pas pris en compte (Ce qui peut être
       considéré comme une fonctionnalité).</li>
       <li>Les directives de configuration des fichiers
       <code>.htaccess</code> ne sont pas prises en compte (car elles ne
       font pas partie de la configuration permanente du serveur).</li>
-      <li>Les directives de conteneur comme <code class="directive"><a href="../mod/core.html#&lt;directory&gt;">&lt;Directory&gt;</a></code> sont affichées
+      <li>Les directives de conteneur comme <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> sont affichées
       normalement, mais <code class="module"><a href="../mod/mod_info.html">mod_info</a></code> est incapable de
-      déterminer le numéro de ligne de la balise fermante <code class="directive"><a href="../mod/core.html#&lt;/directory&gt;">&lt;/Directory&gt;</a></code>.</li>
+      déterminer le numéro de ligne de la balise fermante
+      <code class="directive"><a href="../mod/core.html#directory">&lt;/Directory&gt;</a></code>.</li>
       <li>Les directives générées par des modules tiers comme
       <a href="http://perl.apache.org">mod_perl</a> peuvent ne pas être
       prises en compte.</li>

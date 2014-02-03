@@ -32,8 +32,6 @@
 <a href="./tr/sitemap.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="./zh-cn/sitemap.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 <p>Cette page contient la liste des éléments actuellement disponibles de
 la <a href="./">Documentation du serveur HTTP Apache Version
@@ -74,8 +72,8 @@ Location et Files</a></li>
 <li><a href="server-wide.html">Configuration niveau serveur</a></li>
 <li><a href="logs.html">Fichiers de traces</a></li>
 <li><a href="urlmapping.html">Mise en correspondance des URLs avec le système de fichiers</a></li>
-<li><a href="misc/security_tips.html">Conseils sur la sécurité</a></li>
 <li><a href="dso.html">Objets Dynamiques Partagés (DSO)</a></li>
+<li><a href="compliance.html">Compatibilité avec le protocole HTTP</a></li>
 <li><a href="content-negotiation.html">Négociation sur le contenu</a></li>
 <li><a href="custom-error.html">Messages d'erreur personnalisés</a></li>
 <li><a href="bind.html">Définition des adresses et ports qu'utilise
@@ -87,7 +85,7 @@ Apache</a></li>
 <li><a href="filter.html">Filtres</a></li>
 <li><a href="socache.html">Support du cache des objets partagés</a></li>
 <li><a href="suexec.html">Support de suEXEC</a></li>
-<li><a href="misc/perf-tuning.html">Optimisation des performances</a></li>
+<li><a href="dns-caveats.html">Considérations à propos de DNS et Apache</a></li>
 <li><a href="http://wiki.apache.org/httpd/FAQ">Foire aux Questions</a></li>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -103,19 +101,24 @@ virtuel de masse</a></li>
 sélection d'un serveur virtuel</a></li>
 <li><a href="vhosts/fd-limits.html">Limitations inhérentes aux
 descripteurs de fichiers</a></li>
-<li><a href="dns-caveats.html">Problèmes avec DNS et Apache</a></li>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section"><h2><a name="rewrite" id="rewrite">Guide de réécriture d'URLs</a></h2>
-<ul><li class="separate"><a href="rewrite/">Aperçu</a></li>
+<ul><li class="separate"><a href="rewrite/">Survol</a></li>
 <li><a href="mod/mod_rewrite.html">Documentation de référence de mod_rewrite</a></li>
-<li><a href="rewrite/intro.html">Introduction</a></li>
-<li><a href="rewrite/flags.html">Drapeaux</a></li>
+<li><a href="rewrite/intro.html">Introduction à l'utilisation des expressions
+rationnelles avec mod_rewrite</a></li>
+<li><a href="rewrite/remapping.html">Utilisation de mod_rewrite pour les
+redirections et la traduction des URLs</a></li>
+<li><a href="rewrite/access.html">Utilisation de mod_rewrite pour le contrôle d'accès</a></li>
+<li><a href="rewrite/vhosts.html">Les serveurs virtuels dynamique avec mod_rewrite</a></li>
+<li><a href="rewrite/proxy.html">Le mandat dynamique avec mod_rewrite</a></li>
+<li><a href="rewrite/rewritemap.html">Utilisation d'une table de
+réécriture</a></li>
+<li><a href="rewrite/advanced.html">Techniques avancées</a></li>
+<li><a href="rewrite/avoid.html">Quand ne pas utiliser mod_rewrite</a></li>
+<li><a href="rewrite/flags.html">Drapeaux de réécriture</a></li>
 <li><a href="rewrite/tech.html">Détails techniques</a></li>
-<li><a href="rewrite/remapping.html">Remise en correspondance des URLs</a></li>
-<li><a href="rewrite/access.html">Contrôle d'accès</a></li>
-<li><a href="rewrite/advanced.html">Guide de réécriture avancée -
-autres exemples utiles</a></li>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section"><h2><a name="ssl" id="ssl">Chiffrement SSL/TLS avec Apache</a></h2>
@@ -130,7 +133,8 @@ Compatibilité</a></li>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section"><h2><a name="howto" id="howto">Guides, Tutoriels, and Recettes</a></h2>
 <ul><li class="separate"><a href="howto/">Aperçu</a></li>
-<li><a href="howto/auth.html">Authentification</a></li>
+<li><a href="howto/auth.html">Authentification et autorisation</a></li>
+<li><a href="howto/access.html">Contrôle d'accès</a></li>
 <li><a href="howto/cgi.html">Contenu dynamique avec CGI</a></li>
 <li><a href="howto/ssi.html">Introduction aux Inclusions côté serveur
 (Server Side Includes - SSI)</a></li>
@@ -145,11 +149,13 @@ utilisateurs</a></li>
 Windows</a></li>
 <li><a href="platform/win_compiling.html">Compiler Apache pour
 Microsoft Windows</a></li>
+<li><a href="platform/rpm.html">Utilisation d'Apache avec les systèmes à
+base de paquets RPM</a></li>
 <li><a href="platform/netware.html">Utiliser Apache avec Novell
 NetWare</a></li>
 <li><a href="platform/perf-hp.html">Mise en oeuvre d'un serveur web
 hautes performances sous HPUX</a></li>
-<li><a href="platform/ebcdic.html">Le portage EBCDIC d'Apache</a></li>
+<li><a href="platform/ebcdic.html">Le portage d'Apache sous EBCDIC</a></li>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section"><h2><a name="programs" id="programs">Le serveur HTTP Apache et ses programmes associés</a></h2>
@@ -160,19 +166,30 @@ hautes performances sous HPUX</a></li>
 <li><a href="programs/apxs.html">Page de manuel : apxs</a></li>
 <li><a href="programs/configure.html">Page de manuel : configure</a></li>
 <li><a href="programs/dbmmanage.html">Page de manuel : dbmmanage</a></li>
+<li><a href="programs/fcgistarter.html">Page de manuel : fcgistarter</a></li>
+<li><a href="programs/firehose.html">Page de manuel : firehose</a></li>
 <li><a href="programs/htcacheclean.html">Page de manuel : htcacheclean</a></li>
 <li><a href="programs/htdbm.html">Page de manuel : htdbm</a></li>
 <li><a href="programs/htdigest.html">Page de manuel : htdigest</a></li>
 <li><a href="programs/htpasswd.html">Page de manuel : htpasswd</a></li>
+<li><a href="programs/httxt2dbm.html">Page de manuel : httxt2dbm</a></li>
 <li><a href="programs/logresolve.html">Page de manuel : logresolve</a></li>
+<li><a href="programs/log_server_status.html">Page de manuel : log_server_status</a></li>
 <li><a href="programs/rotatelogs.html">Page de manuel : rotatelogs</a></li>
+<li><a href="programs/split-logfile.html">Page de manuel : split-logfile</a></li>
 <li><a href="programs/suexec.html">Page de manuel : suexec</a></li>
 <li><a href="programs/other.html">Autres programmes</a></li>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section"><h2><a name="misc" id="misc">Documentations diverses sur Apache</a></h2>
 <ul><li class="separate"><a href="misc/">Aperçu</a></li>
+<li><a href="misc/perf-tuning.html">Considérations à propos des
+performances - Configuration fine d'Apache</a></li>
+<li><a href="misc/perf-scaling.html">Amélioration des performances</a></li>
+<li><a href="misc/security_tips.html">Conseils en matière de sécurité</a></li>
 <li><a href="misc/relevant_standards.html">Standards concernés</a></li>
+<li><a href="misc/password_encryptions.html">Formats de chiffrement des
+mots de passe</a></li>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section"><h2><a name="modules" id="modules">Modules Apache</a></h2>
@@ -309,17 +326,20 @@ pour décrire les directives Apache</a></li>
 <ul><li class="separate"><a href="developer/">Aperçu</a></li>
 <li><a href="developer/API.html">Notes sur l'API Apache</a></li>
 <li><a href="developer/new_api_2_4.html">Mises à jour de l'API dans Apache HTTPD 2.4</a></li>
-<li><a href="developer/debugging.html">Débogage de l'allocation mémoire
-dans APR</a></li>
-<li><a href="developer/documenting.html">Documenter Apache 2.x</a></li>
+<li><a href="developer/modguide.html">Développement de modules pour Apache HTTPD 2.4</a></li>
+<li><a href="developer/documenting.html">Documentation d'Apache HTTPD</a></li>
 <li><a href="developer/hooks.html">Fonctions d'accroche (Hook Functions)
 d'Apache 2.x</a></li>
-<li><a href="developer/modules.html">Convertir un module depuis Apache
-1.3 vers Apache 2.x</a></li>
-<li><a href="developer/request.html">Traitement des requêtes avec Apache
-2.x</a></li>
-<li><a href="developer/filters.html">Fonctionnement des filtres dans
-Apache 2.x</a></li>
+<li><a href="developer/modules.html">Convertir un module depuis la
+version 1.3 vers la version 2.x</a></li>
+<li><a href="developer/request.html">Traitement des requêtes avec
+la version 2.x</a></li>
+<li><a href="developer/filters.html">Fonctionnement des filtres dans la
+version 2.x</a></li>
+<li><a href="developer/output-filters.html">Guide des filtres en sortie
+dans la version 2.x</a></li>
+<li><a href="developer/thread_safety.html">Sécurité des
+threads dans la version 2.x</a></li>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section"><h2><a name="index" id="index">Glossaire et Index</a></h2>
