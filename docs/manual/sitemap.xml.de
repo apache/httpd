@@ -51,7 +51,6 @@
 <page href="logs.html">Log-Dateien</page>
 <page href="urlmapping.html">URLs auf das Dateisystem abbilden</page>
 <page href="dso.html">Dynamic Shared Object (DSO)</page>
-<page href="compliance.html">HTTP-Protokoll-Konformit&#228;t</page>
 <page href="content-negotiation.html">Content Negotiation</page>
 <page href="custom-error.html">Individuelle Fehlermeldungen</page>
 <page href="bind.html">Bestimmen der vom Apache verwendeten Adressen und Ports</page>
@@ -141,7 +140,6 @@ HPUX betreiben</page>
 <page href="programs/configure.html">configure</page>
 <page href="programs/dbmmanage.html">dbmmanage</page>
 <page href="programs/fcgistarter.html">fcgistarter</page>
-<page href="programs/firehose.html">firehose</page>
 <page href="programs/htcacheclean.html">htcacheclean</page>
 <page href="programs/htdbm.html">htdbm</page>
 <page href="programs/htdigest.html">htdigest</page>
@@ -159,7 +157,6 @@ HPUX betreiben</page>
 <title>Weitere Apache-Dokumentationen</title>
 <page separate="yes" href="misc/">&#220;bersicht</page>
 <page href="misc/perf-tuning.html">Performance-Hinweise</page>
-<page href="misc/perf-scaling.html">Performance-Skalierung</page>
 <page href="misc/security_tips.html">Tipps zur Sicherheit</page>
 <page href="misc/relevant_standards.html">Wichtige Standards</page>
 <page href="misc/password_encryptions.html">Verschl&#252;sselungsformate f&#252;r Passworte</page>
