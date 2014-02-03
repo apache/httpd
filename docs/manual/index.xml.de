@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE indexpage SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.de.xsl"?>
-<!-- English Revision: 1044382:1449511 (outdated) -->
+<!-- English Revision: 1449511 -->
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
  contributor license agreements.  See the NOTICE file distributed with
@@ -67,8 +67,8 @@
 </category>
 
 <category id="howto"><title>Praxis / Anleitungen</title>
-    <page href="howto/auth.html">Authentisierung, Autorisierung und
-    Zugriffskontrolle</page>
+    <page href="howto/auth.html">Authentisierung und Autorisierung</page>
+    <page href="howto/access.html">Zugriffskontrolle</page>
     <page href="howto/cgi.html">CGI: Dynamische Inhalte</page>
     <page href="howto/htaccess.html">.htaccess-Dateien</page>
     <page href="howto/ssi.html">Server Side Includes (SSI)</page>
