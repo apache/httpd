@@ -75,6 +75,11 @@
 \setlength{\parindent}{0ex}
 \addtolength{\parskip}{1.2ex}
 
+% Make space in TOC between section numbers and section title (large numbers!)
+\makeatletter
+\renewcommand*\l@section{\@dottedtocline{1}{1.5em}{3.6em}}
+\makeatother
+
 % Shrink the inter-item spaces
 \AfterBegin{itemize}{\setlength{\itemsep}{0em}}
 
