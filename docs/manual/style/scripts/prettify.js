@@ -1300,7 +1300,7 @@ var REGEXP_PRECEDER_PATTERN = '(?:^^\\.?|[+-]|[!=]=?=?|\\#|%=?|&&?=?|\\(|\\*=?|[
           'keywords': CPP_KEYWORDS,
           'hashComments': true,
           'cStyleComments': true,
-          'types': C_TYPES,
+          'types': C_TYPES
         }), ['c', 'cc', 'cpp', 'cxx', 'cyc', 'm']);
   registerLangHandler(sourceDecorator({
           'keywords': PHP_KEYWORDS,
