@@ -36,9 +36,6 @@
 <a href="./tr/" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="./zh-cn/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
-<div class="outofdate">Diese Übersetzung ist möglicherweise
-            nicht mehr aktuell. Bitte prüfen Sie die englische Version auf
-            die neuesten Änderungen.</div>
 <form method="get" action="http://www.google.com/search"><p><input name="as_q" value="" type="text" /> <input value="Google-Suche" type="submit" /><input value="10" name="num" type="hidden" /><input value="de" name="hl" type="hidden" /><input value="ISO-8859-1" name="ie" type="hidden" /><input value="Google Search" name="btnG" type="hidden" /><input name="as_epq" value="Version 2.4" type="hidden" /><input name="as_oq" value="" type="hidden" /><input name="as_eq" value="&quot;List-Post&quot;" type="hidden" /><input value="" name="lr" type="hidden" /><input value="i" name="as_ft" type="hidden" /><input value="" name="as_filetype" type="hidden" /><input value="all" name="as_qdr" type="hidden" /><input value="any" name="as_occt" type="hidden" /><input value="i" name="as_dt" type="hidden" /><input value="httpd.apache.org" name="as_sitesearch" type="hidden" /><input value="off" name="safe" type="hidden" /></p></form>
 <table id="indextable"><tr><td class="col1"><div class="category"><h2><a name="release" id="release">Hinweise zur Version</a></h2>
 <ul><li><a href="new_features_2_4.html">Neue Funktionen in Version 2.3/2.4</a></li>
@@ -51,8 +48,7 @@
 <ul><li><a href="install.html">Kompilieren und Installieren</a></li>
 <li><a href="invoking.html">Starten</a></li>
 <li><a href="stopping.html">Stoppen und Neustarten</a></li>
-<li><a href="mod/directives.html">Konfigurationsanweisungen</a></li>
-<li><a href="mod/quickreference.html">Kurzreferenz der Direktiven</a></li>
+<li><a href="mod/quickreference.html">Konfigurationsanweisungen</a></li>
 <li><a href="mod/">Module</a></li>
 <li><a href="mpm.html">Multi-Processing-Module (MPMs)</a></li>
 <li><a href="filter.html">Filter</a></li>
@@ -62,7 +58,8 @@
 <li><a href="glossary.html">Glossar</a></li>
 </ul>
 </div></td><td><div class="category"><h2><a name="usersguide" id="usersguide">Benutzerhandbuch</a></h2>
-<ul><li><a href="bind.html">Bindung</a></li>
+<ul><li><a href="getting-started.html">Erste Schritte</a></li>
+<li><a href="bind.html">An Adressen und Ports binden</a></li>
 <li><a href="configuring.html">Konfigurationsdateien</a></li>
 <li><a href="sections.html">Konfigurationsabschnitte</a></li>
 <li><a href="caching.html">Caching von Inhalten</a></li>
@@ -81,8 +78,8 @@
 <li><a href="vhosts/">Virtual-Hosts</a></li>
 </ul>
 </div></td><td class="col3"><div class="category"><h2><a name="howto" id="howto">Praxis / Anleitungen</a></h2>
-<ul><li><a href="howto/auth.html">Authentisierung, Autorisierung und
-    Zugriffskontrolle</a></li>
+<ul><li><a href="howto/auth.html">Authentisierung und Autorisierung</a></li>
+<li><a href="howto/access.html">Zugriffskontrolle</a></li>
 <li><a href="howto/cgi.html">CGI: Dynamische Inhalte</a></li>
 <li><a href="howto/htaccess.html">.htaccess-Dateien</a></li>
 <li><a href="howto/ssi.html">Server Side Includes (SSI)</a></li>
@@ -91,6 +88,7 @@
 </ul>
 </div><div class="category"><h2><a name="platform" id="platform">Plattform-spezifische Anmerkungen</a></h2>
 <ul><li><a href="platform/windows.html">Microsoft Windows</a></li>
+<li><a href="platform/rpm.html">RPM-basierte Systeme (Redhat / CentOS / Fedora)</a></li>
 <li><a href="platform/netware.html">Novell NetWare</a></li>
 <li><a href="platform/ebcdic.html">EBCDIC-Portierung</a></li>
 </ul>
@@ -99,6 +97,7 @@
     Fragen (FAQ)</a></li>
 <li><a href="sitemap.html">Seitenindex</a></li>
 <li><a href="developer/">Dokumentation für Entwickler</a></li>
+<li><a href="http://httpd.apache.org/docs-project/">Mithilfe bei der Dokumentation</a></li>
 <li><a href="misc/">Sonstiges</a></li>
 <li><a href="http://wiki.apache.org/httpd/">Wiki</a></li>
 </ul>

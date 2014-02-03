@@ -32,9 +32,6 @@
 <a href="../tr/mod/quickreference.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/mod/quickreference.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
-<div class="outofdate">Diese Übersetzung ist möglicherweise
-            nicht mehr aktuell. Bitte prüfen Sie die englische Version auf
-            die neuesten Änderungen.</div>
 
     <p>Die Kurzreferenz der Direktiven zeigt die Verwendung,
     Voreinstellung, den Status und den Kontext aller
@@ -44,8 +41,8 @@
     <p>Die erste Spalte enthält den Namen und die Verwendung.
     Die zweite Spalte zeigt die Voreinstellung der Direktive, sofern
     eine Voreinstellung existiert. Wenn die Voreinstellung zu breit
-    für die Anzeige ist, werden die ersten Buchstaben angegeben,
-    gefolgt von einem "+".</p>
+    für die Anzeige ist, wird sie abgeschnitten und mit einem
+    nachfolgenden "+" versehen.</p>
 
     <p>Die dritte und vierte Spalte geben den Kontext an, in dem die
     Direktive erlaubt ist, sowie den Status der Direktive entsprechend
