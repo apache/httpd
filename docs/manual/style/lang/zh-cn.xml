@@ -25,10 +25,10 @@
     <target-ext>.html.zh-cn</target-ext>
 
     <chm>
-        <lang>936 Simplified Chinese</lang>
-        <toc-font>SimSun,12,0</toc-font>
-        <charset>GBK</charset>
-        <settings>Simplified Chinese</settings>
+        <lang>0x804 Chinese (China)</lang>
+        <toc-font>SimSun,12,134</toc-font>
+        <charset>GB2312</charset>
+        <settings>Chinese (China), sorting order: phonetic</settings>
     </chm>
 
     <man>

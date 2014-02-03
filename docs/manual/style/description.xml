@@ -43,6 +43,6 @@ Some targets have additional requirements:
     + chm-ja: Japanese
     + chm-ko: Korean
     + chm-tr: Turkish
-    + chm-zh-cn: Simplified Chinese
+    + chm-zh-cn: Chinese (China), sorting order: phonetic
 
 </description>
