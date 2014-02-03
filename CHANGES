@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_remoteip: Correct the trusted proxy match test. PR 54651.
+     [Yoshinori Ehara <yoshinori ehara gmail com>, Eugene L <eugenel amazon com>]
+
   *) mod_rewrite: Add %{CONN_REMOTE_ADDR} as the non-useragent counterpart to
      %{REMOTE_ADDR}. PR 56094. [Edward Lu <Chaosed0 gmail com>]
 
