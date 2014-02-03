@@ -111,7 +111,7 @@ qu'utilise le serveur HTTP Apache</a></li>
     <code>root</code> sous Unix afin de pouvoir se mettre à l'écoute sur le port 80, les
     processus enfants sont lancés par Apache httpd sous un utilisateur avec
     privilèges restreints. On peut contrôler les privilèges accordés aux
-    processus enfants d'Apache httpd à l'aide des directives <code class="directive"><a href="../mod/mpm_unixd.html#user">User</a></code> et <code class="directive"><a href="../mod/mpm_unixd.html#group">Group</a></code>. Les processus enfants doivent
+    processus enfants d'Apache httpd à l'aide des directives <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code> et <code class="directive"><a href="../mod/mod_unixd.html#group">Group</a></code>. Les processus enfants doivent
     être en mesure de lire tous les contenus destinés à être servis,
     mais leurs privilèges doivent être aussi bas que possible.</p>
 

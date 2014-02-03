@@ -51,7 +51,6 @@ Documentation</a>.</p>
 <page href="logs.html">Log Files</page>
 <page href="urlmapping.html">Mapping URLs to Filesystem Locations</page>
 <page href="dso.html">Dynamic Shared Object (DSO) support</page>
-<page href="compliance.html">HTTP Protocol Compliance</page>
 <page href="content-negotiation.html">Content Negotiation</page>
 <page href="custom-error.html">Custom error responses</page>
 <page href="bind.html">Setting which addresses and ports Apache uses</page>
@@ -140,7 +139,6 @@ Server on HPUX</page>
 <page href="programs/configure.html">Manual Page: configure</page>
 <page href="programs/dbmmanage.html">Manual Page: dbmmanage</page>
 <page href="programs/fcgistarter.html">Manual Page: fcgistarter</page>
-<page href="programs/firehose.html">Manual Page: firehose</page>
 <page href="programs/htcacheclean.html">Manual Page: htcacheclean</page>
 <page href="programs/htdbm.html">Manual Page: htdbm</page>
 <page href="programs/htdigest.html">Manual Page: htdigest</page>
@@ -159,7 +157,6 @@ log_server_status</page>
 <title>Apache Miscellaneous Documentation</title>
 <page separate="yes" href="misc/">Overview</page>
 <page href="misc/perf-tuning.html">Performance Notes - Apache Tuning</page>
-<page href="misc/perf-scaling.html">Performance Scaling</page>
 <page href="misc/security_tips.html">Security Tips</page>
 <page href="misc/relevant_standards.html">Relevant Standards</page>
 <page href="misc/password_encryptions.html">Password Encryption Formats</page>

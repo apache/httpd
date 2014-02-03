@@ -156,7 +156,7 @@ ThreadsPerChild     25
     <code>root</code> sous Unix afin de se mettre en écoute du port 80,
     les processus enfants et les threads sont lancés par le serveur sous un
     utilisateur avec privilèges restreints. On peut utiliser les
-    directives <code class="directive"><a href="../mod/mpm_unixd.html#user">User</a></code> et <code class="directive"><a href="../mod/mpm_unixd.html#group">Group</a></code> pour définir les privilèges
+    directives <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code> et <code class="directive"><a href="../mod/mod_unixd.html#group">Group</a></code> pour définir les privilèges
     des processus enfants. Les processus enfants doivent pouvoir être en
     mesure de lire tous les contenus destinés à être servis, mais
     doivent avoir des privilèges aussi bas que possible. De plus, ces
