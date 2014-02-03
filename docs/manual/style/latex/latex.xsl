@@ -143,12 +143,14 @@ Server Documentation Project.  More information is available at
   <xsl:apply-templates select="title" mode="printcat"/>
   <xsl:text>}
 </xsl:text>
-    <xsl:apply-templates/>
+    <xsl:apply-templates />
     <xsl:if test="@id = 'modules'">
-        <xsl:text>\include{mod/index}</xsl:text>&lf;
-        <xsl:apply-templates select="document($allmodules)/modulefilelist" />
         <xsl:text>\include{mod/module-dict}</xsl:text>&lf;
         <xsl:text>\include{mod/directive-dict}</xsl:text>&lf;
+        <xsl:apply-templates select="document($allmodules)/modulefilelist" />
+    </xsl:if>
+    <xsl:if test="@id = 'index'">
+        <xsl:text>\include{mod/index}</xsl:text>&lf;
         <xsl:text>\include{mod/quickreference}</xsl:text>&lf;
     </xsl:if>
 </xsl:for-each>
