@@ -182,7 +182,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      APR_SO_DISCONNECTED socket. Restores 2.2 behavior.
      trunk patch: http://svn.apache.org/r1523387
      2.4.x patch: trunk works
-     +1: trawick, covener
+     +1: trawick, covener, jim
 
    * mod_ssl: Remove the hardcoded algorithm-type dependency for the
      SSLCertificateFile and SSLCertificateKeyFile directives, and deprecate
@@ -200,7 +200,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * mod_rewrite: Add %{CONN_REMOTE_ADDR} to mod_rewrite PR56094
      trunk patch: https://svn.apache.org/r1563418
      2.4.x patch: trunk works
-     +1 covener
+     +1 covener, jim
 
    * mod_ssl: enable auto curve selection for ECDHE / OpenSSL 1.0.2
      trunk patch: https://svn.apache.org/r1563420
