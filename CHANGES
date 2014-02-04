@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_remoteip: Use the correct IP addresses to populate the proxy_ips field.
+     PR 55972. [Mike Rumph]
+
   *) mod_proxy: Do not try to parse the regular expressions passed by
      ProxyPassMatch as URL as they do not follow their syntax.
      PR 56074. [Ruediger Pluem]
