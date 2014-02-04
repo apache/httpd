@@ -352,16 +352,17 @@ static int remoteip_modify_request(request_rec *r)
         /* save away our results */
         if (!req) {
             req = (remoteip_req_t *) apr_palloc(r->pool, sizeof(remoteip_req_t));
+            req->useragent_ip = r->useragent_ip;
         }
 
         /* Set useragent_ip string */
         if (!internal) {
             if (proxy_ips) {
                 proxy_ips = apr_pstrcat(r->pool, proxy_ips, ", ",
-                                        c->client_ip, NULL);
+                                        req->useragent_ip, NULL);
             }
             else {
-                proxy_ips = c->client_ip;
+                proxy_ips = req->useragent_ip;
             }
         }
 
