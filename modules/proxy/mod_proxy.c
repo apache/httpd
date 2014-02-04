@@ -1584,13 +1584,26 @@ static const char *
     /* Distinguish the balancer from worker */
     if (ap_proxy_valid_balancer_name(r, 9)) {
         proxy_balancer *balancer = ap_proxy_get_balancer(cmd->pool, conf, r, 0);
+        char *fake_copy;
+
+        /*
+         * In the regex case supplying a fake URL doesn't make sense as it
+         * cannot be parsed anyway with apr_uri_parse later on in
+         * ap_proxy_define_balancer / ap_proxy_update_balancer
+         */
+        if (use_regex) {
+            fake_copy = NULL;
+        }
+        else {
+            fake_copy = f;
+        }
         if (!balancer) {
-            const char *err = ap_proxy_define_balancer(cmd->pool, &balancer, conf, r, f, 0);
+            const char *err = ap_proxy_define_balancer(cmd->pool, &balancer, conf, r, fake_copy, 0);
             if (err)
                 return apr_pstrcat(cmd->temp_pool, "ProxyPass ", err, NULL);
         }
         else {
-            ap_proxy_update_balancer(cmd->pool, balancer, f);
+            ap_proxy_update_balancer(cmd->pool, balancer, fake_copy);
         }
         for (i = 0; i < arr->nelts; i++) {
             const char *err = set_balancer_param(conf, cmd->pool, balancer, elts[i].key,

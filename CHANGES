@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_proxy: Do not try to parse the regular expressions passed by
+     ProxyPassMatch as URL as they do not follow their syntax.
+     PR 56074. [Ruediger Pluem]
+
   *) mod_remoteip: Correct the trusted proxy match test. PR 54651.
      [Yoshinori Ehara <yoshinori ehara gmail com>, Eugene L <eugenel amazon com>]
 
