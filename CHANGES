@@ -2,6 +2,10 @@
 
 Changes with Apache 2.4.8
 
+  *) WinNT MPM: If ap_run_pre_connection() fails or sets c->aborted, don't
+     save the socket for reuse by the next worker as if it were an 
+     APR_SO_DISCONNECTED socket. Restores 2.2 behavior. [Eric Covener]
+
   *) mod_dir: Don't search for a DirectoryIndex or DirectorySlash on a URL
      that was just rewritten by mod_rewrite. PR53929. [Eric Covener]
 
