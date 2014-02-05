@@ -76,7 +76,6 @@
       that evaluate to a string value. For those, the starting point in
       the BNF is <code>string</code>.
       </p>
-<blockquote>
 <pre>
 expr        ::= "<strong>true</strong>" | "<strong>false</strong>"
               | "<strong>!</strong>" expr
@@ -139,7 +138,6 @@ function     ::= funcname "<strong>(</strong>" word "<strong>)</strong>"
 
 listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
 </pre>
-</blockquote>
 
 </section>
 
