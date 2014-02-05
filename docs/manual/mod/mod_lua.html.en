@@ -100,7 +100,7 @@ trust, as it can be abused to change the internal workings of httpd.</p>
 
 <p>The basic module loading directive is</p>
 
-<pre class="prettyprint lang-config">    LoadModule lua_module modules/mod_lua.so</pre>
+<pre class="prettyprint lang-config">LoadModule lua_module modules/mod_lua.so</pre>
 
 
 <p>
@@ -1096,7 +1096,7 @@ end</pre>
     To utilize <code class="module"><a href="../mod/mod_dbd.html">mod_dbd</a></code>, specify <code>mod_dbd</code>
     as the database type, or leave the field blank:
     </p>
-    <pre class="prettyprint lang-lua">    local database = r:dbacquire("mod_dbd")</pre>
+    <pre class="prettyprint lang-lua">local database = r:dbacquire("mod_dbd")</pre>
 
     <h3><a name="database_object" id="database_object">Database object and contained functions</a></h3>
         
@@ -1443,7 +1443,7 @@ end</pre>
     <p>Like <code class="directive">LuaHookTranslateName</code> but executed at the 
     map-to-storage phase of a request. Modules like mod_cache run at this phase,
     which makes for an interesting example on what to do here:</p>
-    <pre class="prettyprint lang-config">    LuaHookMapToStorage /path/to/lua/script.lua check_cache</pre>
+    <pre class="prettyprint lang-config">LuaHookMapToStorage /path/to/lua/script.lua check_cache</pre>
 
     <pre class="prettyprint lang-lua">require"apache2"
 cached_files = {}
@@ -1542,7 +1542,7 @@ end</pre>
     This phase is where requests are assigned a content type and a handler, and thus can 
     be used to modify the type and handler based on input:
     </p>
-    <pre class="prettyprint lang-config">    LuaHookTypeChecker /path/to/lua/script.lua type_checker</pre>
+    <pre class="prettyprint lang-config">LuaHookTypeChecker /path/to/lua/script.lua type_checker</pre>
 
     <pre class="prettyprint lang-lua">    function type_checker(r)
         if r.uri:match("%.to_gif$") then -- match foo.png.to_gif
@@ -1648,14 +1648,14 @@ filters</a>" for more information.
     match groups into both the file path and the function name. 
     Be careful writing your regular expressions to avoid security
     issues.</p>
-   <div class="example"><h3>Examples:</h3><pre class="prettyprint lang-config">    LuaMapHandler /(\w+)/(\w+) /scripts/$1.lua handle_$2</pre>
+   <div class="example"><h3>Examples:</h3><pre class="prettyprint lang-config">LuaMapHandler /(\w+)/(\w+) /scripts/$1.lua handle_$2</pre>
 </div>
         <p>This would match uri's such as /photos/show?id=9
         to the file /scripts/photos.lua and invoke the
         handler function handle_show on the lua vm after
         loading that file.</p>
 
-<pre class="prettyprint lang-config">    LuaMapHandler /bingo /scripts/wombat.lua</pre>
+<pre class="prettyprint lang-config">LuaMapHandler /bingo /scripts/wombat.lua</pre>
 
         <p>This would invoke the "handle" function, which
         is the default if no specific function name is

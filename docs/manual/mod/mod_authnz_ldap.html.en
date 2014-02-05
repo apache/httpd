@@ -1077,9 +1077,9 @@ to perform a DN lookup</td></tr>
         <code class="directive"><a href="#authldapbinddn">AuthLDAPBindDN</a></code>.
     </p>
 
-    <pre class="prettyprint lang-config"> AuthLDAPInitialBindPattern (.+) $1@example.com</pre>
+    <pre class="prettyprint lang-config">AuthLDAPInitialBindPattern (.+) $1@example.com</pre>
 
-    <pre class="prettyprint lang-config"> AuthLDAPInitialBindPattern (.+) cn=$1,dc=example,dc=com</pre>
+    <pre class="prettyprint lang-config">AuthLDAPInitialBindPattern (.+) cn=$1,dc=example,dc=com</pre>
 
 
     <div class="note"><h3>Not available with authorization-only</h3>

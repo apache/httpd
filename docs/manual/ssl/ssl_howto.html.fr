@@ -77,7 +77,7 @@ que le chiffrement fort ?</a></h3>
 
     <p>Les directives suivantes ne permettent que les
     chiffrements de plus haut niveau :</p>
-    <pre class="prettyprint lang-config">      SSLCipherSuite HIGH:!aNULL:!MD5</pre>
+    <pre class="prettyprint lang-config">SSLCipherSuite HIGH:!aNULL:!MD5</pre>
 
 
 

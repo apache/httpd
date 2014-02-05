@@ -493,7 +493,7 @@ CustomLog referer.log referer env=!localreferer</pre>
     to define another nickname. Note that the nickname should not contain
     percent signs (<code>%</code>).</p>
 
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">      LogFormat "%v %h %l %u %t \"%r\" %&gt;s %b" vhost_common</pre>
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">LogFormat "%v %h %l %u %t \"%r\" %&gt;s %b" vhost_common</pre>
 </div>
     
 

@@ -68,7 +68,7 @@
 
       <li>
         Log message if an IPv6 client causes a request timeout:
-        <pre class="prettyprint lang-config">            LogMessage "IPv6 timeout from %{REMOTE_ADDR}" "expr=-T %{IPV6} &amp;&amp; %{REQUEST_STATUS} = 408"</pre>
+        <pre class="prettyprint lang-config">LogMessage "IPv6 timeout from %{REMOTE_ADDR}" "expr=-T %{IPV6} &amp;&amp; %{REQUEST_STATUS} = 408"</pre>
 
         Note the placing of the double quotes for the <code>expr=</code> argument.
       </li>

@@ -153,7 +153,7 @@
     the listed names are other names which people can use to see that same
     web site:</p>
 
-    <pre class="prettyprint lang-config">        ServerAlias example.com *.example.com</pre>
+    <pre class="prettyprint lang-config">ServerAlias example.com *.example.com</pre>
 
 
     <p>then requests for all hosts in the <code>example.com</code> domain will

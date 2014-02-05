@@ -192,7 +192,7 @@ Negotiation</a></li>
     and the <code>.var</code> file should be associated with the
     <code>type-map</code> handler with an <code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code> directive:</p>
 
-    <pre class="prettyprint lang-config">    AddHandler type-map .var</pre>
+    <pre class="prettyprint lang-config">AddHandler type-map .var</pre>
 
 
     <p>A request for <code>document.html.var</code> in this directory will
@@ -320,7 +320,7 @@ the client does not express a preference</td></tr>
     express a preference, when handling a Multiviews request. The list
     of <var>MIME-lang</var> are in order of decreasing preference.</p>
 
-    <pre class="prettyprint lang-config">      LanguagePriority en fr de</pre>
+    <pre class="prettyprint lang-config">LanguagePriority en fr de</pre>
 
 
     <p>For a request for <code>foo.html</code>, where

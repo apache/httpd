@@ -71,7 +71,7 @@
     (e.g. Apache Tomcat) using the AJP13 protocol. The usage is similar to
     an HTTP reverse proxy, but uses the <code>ajp://</code> prefix:</p>
 
-    <div class="example"><h3>Simple Reverse Proxy</h3><pre class="prettyprint lang-config">    ProxyPass /app ajp://backend.example.com:8009/app</pre>
+    <div class="example"><h3>Simple Reverse Proxy</h3><pre class="prettyprint lang-config">ProxyPass /app ajp://backend.example.com:8009/app</pre>
 </div>
 
     <p>Balancers may also be used:</p>

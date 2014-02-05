@@ -66,7 +66,7 @@
     <p>Remember, in order to make the following examples work, you have to
     enable <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> and <code class="module"><a href="../mod/mod_proxy_scgi.html">mod_proxy_scgi</a></code>.</p>
 
-    <div class="example"><h3>Simple gateway</h3><pre class="prettyprint lang-config">      ProxyPass /scgi-bin/ scgi://localhost:4000/</pre>
+    <div class="example"><h3>Simple gateway</h3><pre class="prettyprint lang-config">ProxyPass /scgi-bin/ scgi://localhost:4000/</pre>
 </div>
 
     <p>The balanced gateway needs <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code> and
@@ -121,7 +121,7 @@ backend</td></tr>
     <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code> in this regard, except that you can turn off the
     feature.</p>
 
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">    ProxySCGIInternalRedirect Off</pre>
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">ProxySCGIInternalRedirect Off</pre>
 </div>
 
 </div>

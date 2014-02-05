@@ -616,7 +616,7 @@ CacheDirLength 1</pre>
         instructs httpd to open the file when it is started and to re-use
         this file-handle for all subsequent access to this file.</p>
 
-        <pre class="prettyprint lang-config">        CacheFile /usr/local/apache2/htdocs/index.html</pre>
+        <pre class="prettyprint lang-config">CacheFile /usr/local/apache2/htdocs/index.html</pre>
 
 
         <p>If you intend to cache a large number of files in this manner, you
@@ -705,7 +705,7 @@ sys     0m0.000s</pre></div>
         start time (using the mmap system call). httpd will use the in-memory
         contents for all subsequent accesses to this file.</p>
 
-        <pre class="prettyprint lang-config">        MMapFile /usr/local/apache2/htdocs/index.html</pre>
+        <pre class="prettyprint lang-config">MMapFile /usr/local/apache2/htdocs/index.html</pre>
 
 
         <p>As with the

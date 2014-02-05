@@ -181,7 +181,7 @@ of active modules</td></tr>
     <code>module</code> in the file, and is listed as the <a href="module-dict.html#ModuleIdentifier">Module Identifier</a>
     in the module documentation. Example:</p>
 
-    <pre class="prettyprint lang-config">      LoadModule status_module modules/mod_status.so</pre>
+    <pre class="prettyprint lang-config">LoadModule status_module modules/mod_status.so</pre>
 
 
     <p>loads the named module from the modules subdirectory of the

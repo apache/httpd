@@ -67,7 +67,7 @@ requires a strong cipher for access to a particular URL?</a></li>
 only?</a></h3>
 
     <p>The following enables only the strongest ciphers:</p>
-    <pre class="prettyprint lang-config">      SSLCipherSuite HIGH:!aNULL:!MD5</pre>
+    <pre class="prettyprint lang-config">SSLCipherSuite HIGH:!aNULL:!MD5</pre>
 
 
     <p>While with the following configuration you specify a preference

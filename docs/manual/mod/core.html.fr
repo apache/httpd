@@ -145,7 +145,7 @@ d'acceptation</var></code></td></tr>
     filtre d'acceptation pour ce protocole. Ceci s'avère utile pour les
     protocoles qui nécessitent l'envoi de données par le serveur en
     premier, comme <code>ftp:</code> ou <code>nntp</code>:</p>
-    <pre class="prettyprint lang-config">    AcceptFilter nntp none</pre>
+    <pre class="prettyprint lang-config">AcceptFilter nntp none</pre>
 
 
     <p>Les noms de protocoles par défaut sont <code>https</code> pour le

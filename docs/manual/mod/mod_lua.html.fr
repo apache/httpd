@@ -106,7 +106,7 @@ fonctionnement interne de httpd.</p>
 
 <p>La directive de base pour le chargement du module est</p>
 
-<pre class="prettyprint lang-config">    LoadModule lua_module modules/mod_lua.so</pre>
+<pre class="prettyprint lang-config">LoadModule lua_module modules/mod_lua.so</pre>
 
 
 <p>
@@ -1197,7 +1197,7 @@ end</pre>
 <code>mod_dbd</code> comme type de base de données, ou laissez le champ
 vide :
     </p>
-    <pre class="prettyprint lang-lua">    local database = r:dbacquire("mod_dbd")</pre>
+    <pre class="prettyprint lang-lua">local database = r:dbacquire("mod_dbd")</pre>
 
     <h3><a name="database_object" id="database_object">L'objet database et ses méthodes</a></h3>
         
@@ -1586,7 +1586,7 @@ traitement de la requête</td></tr>
     phase map-to-storage du traitement de la requête. Les modules comme
     mod_cache agissent pendant cette phase, ce qui permet de présenter
     un exemple intéressant de ce que l'on peut faire ici :</p>
-    <pre class="prettyprint lang-config">    LuaHookMapToStorage /path/to/lua/script.lua check_cache</pre>
+    <pre class="prettyprint lang-config">LuaHookMapToStorage /path/to/lua/script.lua check_cache</pre>
 
     <pre class="prettyprint lang-lua">require"apache2"
 cached_files = {}
@@ -1787,14 +1787,14 @@ filtres Lua</a>" pour plus de détails.
     d'interpolation dans le chemin du fichier et le nom de la fonction.
     Prenez garde aux problèmes de sécurité en écrivant vos expressions
     rationnelles.</p>
-   <div class="example"><h3>Exemples :</h3><pre class="prettyprint lang-config">    LuaMapHandler /(\w+)/(\w+) /scripts/$1.lua handle_$2</pre>
+   <div class="example"><h3>Exemples :</h3><pre class="prettyprint lang-config">LuaMapHandler /(\w+)/(\w+) /scripts/$1.lua handle_$2</pre>
 </div>
         <p>Cette directive va faire correspondre des uri comme
 	/photos/show?id=9 au fichier /scripts/photos.lua, et invoquera la
 	fonction de gestionnaire handle_show au niveau de la vm lua
 	après chargement de ce fichier.</p>
 
-<pre class="prettyprint lang-config">    LuaMapHandler /bingo /scripts/wombat.lua</pre>
+<pre class="prettyprint lang-config">LuaMapHandler /bingo /scripts/wombat.lua</pre>
 
         <p>Cette directive invoquera la fonction "handle" qui est la
 	valeur par défaut si aucun nom de fonction spécifique n'est

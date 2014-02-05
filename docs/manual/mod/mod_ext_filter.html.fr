@@ -335,7 +335,7 @@ close(SAVE);</pre>
       sans lui.</dd>
     </dl>
 
-    <pre class="prettyprint lang-config">      ExtFilterOptions LogStderr</pre>
+    <pre class="prettyprint lang-config">ExtFilterOptions LogStderr</pre>
 
 
     <p>Les messages envoyés vers la sortie d'erreurs standard du filtre

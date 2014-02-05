@@ -273,7 +273,7 @@ for additional examples.
     <code>ap_expr</code>. These expressions will be evaluated at runtime,
     and applied <em>env-variable</em> in the same fashion as <code class="directive">SetEnvIf</code>.</p>
 
-<pre class="prettyprint lang-config">    SetEnvIfExpr "tolower(req('X-Sendfile')) == 'd:\images\very_big.iso')" iso_delivered</pre>
+<pre class="prettyprint lang-config">SetEnvIfExpr "tolower(req('X-Sendfile')) == 'd:\images\very_big.iso')" iso_delivered</pre>
 
 
     <p>This would set the environment variable <code>iso_delivered</code>
@@ -282,7 +282,7 @@ for additional examples.
     <p>A more useful example would be to set the variable rfc1918 if the
     remote IP address is a private address according to RFC 1918:</p>
 
-<pre class="prettyprint lang-config">    SetEnvIfExpr "-R '10.0.0.0/8' || -R '172.16.0.0/12' || -R '192.168.0.0/16'" rfc1918</pre>
+<pre class="prettyprint lang-config">SetEnvIfExpr "-R '10.0.0.0/8' || -R '172.16.0.0/12' || -R '192.168.0.0/16'" rfc1918</pre>
 
 
 <h3>See also</h3>
@@ -312,7 +312,7 @@ without respect to case</td></tr>
     the <code class="directive"><a href="#setenvif">SetEnvIf</a></code> directive,
     and differs only in that the regular expression matching is
     performed in a case-insensitive manner. For example:</p>
-<pre class="prettyprint lang-config">   SetEnvIfNoCase Host Example\.Org site=example</pre>
+<pre class="prettyprint lang-config">SetEnvIfNoCase Host Example\.Org site=example</pre>
 
 
     <p>This will cause the <code>site</code> environment variable

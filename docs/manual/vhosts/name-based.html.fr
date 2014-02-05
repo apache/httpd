@@ -187,7 +187,7 @@ virtuel basé sur le nom approprié</a></h2>
     indique aux utilisateurs les autres noms permis pour accéder au 
     même site Web&nbsp;:</p>
 
-    <pre class="prettyprint lang-config">        ServerAlias example.com *.example.com</pre>
+    <pre class="prettyprint lang-config">ServerAlias example.com *.example.com</pre>
 
 
     <p>ainsi, toutes les requêtes portant sur un domaine 

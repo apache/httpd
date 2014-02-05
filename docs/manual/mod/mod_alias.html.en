@@ -126,7 +126,7 @@ Alias /foo /gaq</pre>
     <var>URL-path</var> is case-sensitive, even on case-insensitive
     file systems.</p>
 
-    <pre class="prettyprint lang-config">      Alias /image /ftp/pub/image</pre>
+    <pre class="prettyprint lang-config">Alias /image /ftp/pub/image</pre>
 
 
     <p>A request for <code>http://example.com/image/foo.gif</code> would cause
@@ -139,7 +139,7 @@ Alias /foo /gaq</pre>
     <var>URL-path</var> then the server will require a trailing / in
     order to expand the alias. That is, if you use</p>
 
-    <pre class="prettyprint lang-config">      Alias /icons/ /usr/local/apache/icons/</pre>
+    <pre class="prettyprint lang-config">Alias /icons/ /usr/local/apache/icons/</pre>
 
 
     <p>then the url <code>/icons</code> will not be aliased, as it lacks
@@ -190,7 +190,7 @@ expressions</td></tr>
     example, to activate the <code>/icons</code> directory, one might
     use:</p>
 
-    <pre class="prettyprint lang-config">      AliasMatch ^/icons(.*) /usr/local/apache/icons$1</pre>
+    <pre class="prettyprint lang-config">AliasMatch ^/icons(.*) /usr/local/apache/icons$1</pre>
 
 
     <p>The full range of <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular expression</a>
@@ -198,7 +198,7 @@ expressions</td></tr>
     it is possible to construct an alias with case-insensitive
     matching of the URL-path:</p>
 
-    <pre class="prettyprint lang-config">      AliasMatch (?i)^/image(.*) /ftp/pub/image$1</pre>
+    <pre class="prettyprint lang-config">AliasMatch (?i)^/image(.*) /ftp/pub/image$1</pre>
 
 
     <p>One subtle difference
@@ -222,18 +222,18 @@ expressions</td></tr>
 
     <p>For example, suppose you want to replace this with AliasMatch:</p>
 
-    <pre class="prettyprint lang-config">      Alias /image/ /ftp/pub/image/</pre>
+    <pre class="prettyprint lang-config">Alias /image/ /ftp/pub/image/</pre>
 
 
     <p>This is NOT equivalent - don't do this!  This will send all
     requests that have /image/ anywhere in them to /ftp/pub/image/:</p>
 
-    <pre class="prettyprint lang-config">      AliasMatch /image/ /ftp/pub/image/</pre>
+    <pre class="prettyprint lang-config">AliasMatch /image/ /ftp/pub/image/</pre>
 
 
     <p>This is what you need to get the same effect:</p>
 
-    <pre class="prettyprint lang-config">      AliasMatch ^/image/(.*)$ /ftp/pub/image/$1</pre>
+    <pre class="prettyprint lang-config">AliasMatch ^/image/(.*)$ /ftp/pub/image/$1</pre>
 
 
     <p>Of course, there's no point in
@@ -243,7 +243,7 @@ expressions</td></tr>
     you do more complicated things.  For example, you could
     serve different kinds of files from different directories:</p>
 
-    <pre class="prettyprint lang-config">      AliasMatch ^/image/(.*)\.jpg$ /files/jpg.images/$1.jpg<br />
+    <pre class="prettyprint lang-config">AliasMatch ^/image/(.*)\.jpg$ /files/jpg.images/$1.jpg<br />
       AliasMatch ^/image/(.*)\.gif$ /files/gif.images/$1.gif</pre>
 
 
@@ -371,7 +371,7 @@ of the current URL</td></tr>
     example, to redirect all GIF files to like-named JPEG files on
     another server, one might use:</p>
 
-    <pre class="prettyprint lang-config">      RedirectMatch (.*)\.gif$ http://other.example.com$1.jpg</pre>
+    <pre class="prettyprint lang-config">RedirectMatch (.*)\.gif$ http://other.example.com$1.jpg</pre>
 
 
     <p>The considerations related to the difference between
@@ -437,7 +437,7 @@ target as a CGI script</td></tr>
     to scripts beginning with the second argument, which is a full
     pathname in the local filesystem.</p>
 
-    <pre class="prettyprint lang-config">      ScriptAlias /cgi-bin/ /web/cgi-bin/</pre>
+    <pre class="prettyprint lang-config">ScriptAlias /cgi-bin/ /web/cgi-bin/</pre>
 
 
     <p>A request for <code>http://example.com/cgi-bin/foo</code> would cause the
@@ -453,7 +453,7 @@ target as a CGI script</td></tr>
 	<p><code class="directive">ScriptAlias</code> can also be used in conjunction with
 	a script or handler you have. For example:</p>
 
-	<pre class="prettyprint lang-config">	  ScriptAlias /cgi-bin/ /web/cgi-handler.pl</pre>
+	<pre class="prettyprint lang-config">ScriptAlias /cgi-bin/ /web/cgi-handler.pl</pre>
 
 
     <p>In this scenario all files requested in <code>/cgi-bin/</code> will be
@@ -507,7 +507,7 @@ and designates the target as a CGI script</td></tr>
     example, to activate the standard <code>/cgi-bin</code>, one
     might use:</p>
 
-    <pre class="prettyprint lang-config">      ScriptAliasMatch ^/cgi-bin(.*) /usr/local/apache/cgi-bin$1</pre>
+    <pre class="prettyprint lang-config">ScriptAliasMatch ^/cgi-bin(.*) /usr/local/apache/cgi-bin$1</pre>
 
 
     <p>As for AliasMatch, the full range of <a class="glossarylink" href="../glossary.html#rexex" title="see glossary">regular
@@ -515,7 +515,7 @@ and designates the target as a CGI script</td></tr>
     For example, it is possible to construct an alias with case-insensitive
     matching of the URL-path:</p>
 
-    <pre class="prettyprint lang-config">      ScriptAliasMatch (?i)^/cgi-bin(.*) /usr/local/apache/cgi-bin$1</pre>
+    <pre class="prettyprint lang-config">ScriptAliasMatch (?i)^/cgi-bin(.*) /usr/local/apache/cgi-bin$1</pre>
 
 
     <p>The considerations related to the difference between

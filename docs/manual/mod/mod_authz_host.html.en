@@ -107,14 +107,14 @@ Require ip 10 172.20 192.168.2</pre>
 
     <p>A network/netmask pair:</p>
 
-    <pre class="prettyprint lang-config">      Require ip 10.1.0.0/255.255.0.0</pre>
+    <pre class="prettyprint lang-config">Require ip 10.1.0.0/255.255.0.0</pre>
 
     <p>A network a.b.c.d, and a netmask w.x.y.z. For more
     fine-grained subnet restriction.</p>
 
     <p>A network/nnn CIDR specification:</p>
 
-    <pre class="prettyprint lang-config">      Require ip 10.1.0.0/16</pre>
+    <pre class="prettyprint lang-config">Require ip 10.1.0.0/16</pre>
 
     <p>Similar to the previous case, except the netmask consists of
     nnn high-order 1 bits.</p>
@@ -175,7 +175,7 @@ Require host .net example.edu</pre>
     <p>This allows a convenient way to match connections that originate from
     the local host:</p>
 
-    <pre class="prettyprint lang-config">    Require local</pre>
+    <pre class="prettyprint lang-config">Require local</pre>
 
 
 

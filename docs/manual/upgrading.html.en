@@ -143,14 +143,14 @@
       <div class="example"><h3>2.2 configuration:</h3><pre class="prettyprint lang-config">Order deny,allow
 Deny from all</pre>
 </div>
-      <div class="example"><h3>2.4 configuration:</h3><pre class="prettyprint lang-config">        Require all denied</pre>
+      <div class="example"><h3>2.4 configuration:</h3><pre class="prettyprint lang-config">Require all denied</pre>
 </div>
 
       <p>In this example, all requests are allowed.</p>
       <div class="example"><h3>2.2 configuration:</h3><pre class="prettyprint lang-config">Order allow,deny
 Allow from all</pre>
 </div>
-      <div class="example"><h3>2.4 configuration:</h3><pre class="prettyprint lang-config">        Require all granted</pre>
+      <div class="example"><h3>2.4 configuration:</h3><pre class="prettyprint lang-config">Require all granted</pre>
 </div>
 
       <p>In the following example, all hosts in the example.org domain
@@ -160,7 +160,7 @@ Allow from all</pre>
 Deny from all
 Allow from example.org</pre>
 </div>
-      <div class="example"><h3>2.4 configuration:</h3><pre class="prettyprint lang-config">        Require host example.org</pre>
+      <div class="example"><h3>2.4 configuration:</h3><pre class="prettyprint lang-config">Require host example.org</pre>
 </div>
     
 

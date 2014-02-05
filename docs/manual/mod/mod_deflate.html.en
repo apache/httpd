@@ -68,7 +68,7 @@ client</td></tr>
     </div>
     <p>This is a simple configuration that compresses common text-based content types.</p>
 
-    <div class="example"><h3>Compress only a few types</h3><pre class="prettyprint lang-config">      AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript</pre>
+    <div class="example"><h3>Compress only a few types</h3><pre class="prettyprint lang-config">AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript</pre>
 </div>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -172,7 +172,7 @@ SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip</pre>
     in a typical configuration where the addition of the <code>DEFLATE</code>
     filter depends on the <code>User-Agent</code>, you should add:</p>
 
-    <pre class="prettyprint lang-config">      Header append Vary User-Agent</pre>
+    <pre class="prettyprint lang-config">Header append Vary User-Agent</pre>
 
 
     <p>If your decision about compression depends on other information
@@ -180,7 +180,7 @@ SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip</pre>
     <code>Vary</code> header to the value <code>*</code>. This prevents
     compliant proxies from caching entirely.</p>
 
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">      Header set Vary *</pre>
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">Header set Vary *</pre>
 </div>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

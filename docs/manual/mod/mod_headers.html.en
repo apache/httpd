@@ -99,7 +99,7 @@ RequestHeader unset MirrorID</pre>
         Copy all request headers that begin with "TS" to the
         response headers:
 
-        <pre class="prettyprint lang-config">          Header echo ^TS</pre>
+        <pre class="prettyprint lang-config">Header echo ^TS</pre>
 
       </li>
 
@@ -110,7 +110,7 @@ RequestHeader unset MirrorID</pre>
         the client to intuit load on the server or in isolating
         bottlenecks between the client and the server.
 
-        <pre class="prettyprint lang-config">          Header set MyHeader "%D %t"</pre>
+        <pre class="prettyprint lang-config">Header set MyHeader "%D %t"</pre>
 
 
         <p>results in this header being added to the response:</p>
@@ -159,7 +159,7 @@ Header set MyHeader "%D %t mytext" env=HAVE_MyRequestHeader</pre>
         description</a>) by replacing <var>https:</var> with
         <var>http:</var> in the <var>Destination</var> header:
 
-        <pre class="prettyprint lang-config">          RequestHeader edit Destination ^https: http: early</pre>
+        <pre class="prettyprint lang-config">RequestHeader edit Destination ^https: http: early</pre>
 
       </li>
 
@@ -191,7 +191,7 @@ Header merge Cache-Control no-store env=NO_STORE</pre>
       </li>
       <li>
         Set a test cookie if and only if the client didn't send us a cookie
-        <pre class="prettyprint lang-config">          Header set Set-Cookie testcookie "expr=-z %{req:Cookie}"</pre>
+        <pre class="prettyprint lang-config">Header set Set-Cookie testcookie "expr=-z %{req:Cookie}"</pre>
 
       </li>
     </ol>

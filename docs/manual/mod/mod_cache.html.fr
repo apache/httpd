@@ -352,7 +352,7 @@ AddOutputFilterByType INCLUDES;CACHE;DEFLATE text/html</pre>
   interne à la requête sous la clé <strong>cache-status</strong>.
   Cette information peut être journalisée via la directive <code class="directive"><a href="../mod/mod_log_config.html#logformat">LogFormat</a></code> comme suit :</p>
 
-  <pre class="prettyprint lang-config">    LogFormat "%{cache-status}e ..."</pre>
+  <pre class="prettyprint lang-config">LogFormat "%{cache-status}e ..."</pre>
 
 
   <p>En fonction de la décision prise, l'information est aussi écrite
@@ -404,7 +404,7 @@ lorsqu'aucune date d'expiration n'a été spécifiée.</td></tr>
     <code class="directive">CacheMaxExpire</code> si cette dernière est
     utilisée.</p>
 
-    <pre class="prettyprint lang-config">      CacheDefaultExpire 86400</pre>
+    <pre class="prettyprint lang-config">CacheDefaultExpire 86400</pre>
 
 
 </div>
@@ -461,7 +461,7 @@ spécifiées</td></tr>
     spécifiée par <var>chaîne URL</var>, ainsi que les URLs de niveaux
     inférieurs.</p>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">      CacheDisable /fichiers_locaux</pre>
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">CacheDisable /fichiers_locaux</pre>
 </div>
 
     <p>Si la directive se trouve à l'intérieur d'une section <code class="directive">&lt;Location&gt;</code>, le chemin doit être spécifié en
@@ -610,7 +610,7 @@ Apache</a></li>
 CacheHeader on</pre>
 
 
-  <pre class="prettyprint lang-config">    X-Cache: HIT from localhost</pre>
+  <pre class="prettyprint lang-config">X-Cache: HIT from localhost</pre>
 
   
 
@@ -636,7 +636,7 @@ le contenu au client depuis le cache</td></tr>
     cache, même si la requête contient un en-tête
     no-cache.</p>
 
-    <pre class="prettyprint lang-config">      CacheIgnoreCacheControl On</pre>
+    <pre class="prettyprint lang-config">CacheIgnoreCacheControl On</pre>
 
 
     <div class="warning"><h3>Avertissement :</h3>
@@ -692,10 +692,10 @@ le contenu au client depuis le cache</td></tr>
     <code class="directive">CacheIgnoreHeaders</code> peut être définie à
     <code>None</code>.</p>
 
-    <div class="example"><h3>Exemple 1</h3><pre class="prettyprint lang-config">      CacheIgnoreHeaders Set-Cookie</pre>
+    <div class="example"><h3>Exemple 1</h3><pre class="prettyprint lang-config">CacheIgnoreHeaders Set-Cookie</pre>
 </div>
 
-    <div class="example"><h3>Exemple 2</h3><pre class="prettyprint lang-config">      CacheIgnoreHeaders None</pre>
+    <div class="example"><h3>Exemple 2</h3><pre class="prettyprint lang-config">CacheIgnoreHeaders None</pre>
 </div>
 
     <div class="warning"><h3>Avertissement :</h3>
@@ -731,7 +731,7 @@ Modified.</td></tr>
     d'expiration.
     </p>
 
-    <pre class="prettyprint lang-config">      CacheIgnoreNoLastMod On</pre>
+    <pre class="prettyprint lang-config">CacheIgnoreNoLastMod On</pre>
 
 
 </div>
@@ -758,7 +758,7 @@ cache</td></tr>
     traitée comme si elle ne possèdait pas de chaîne de paramètres
     lorsque cette directive est activée.</p>
 
-    <pre class="prettyprint lang-config">      CacheIgnoreQueryString On</pre>
+    <pre class="prettyprint lang-config">CacheIgnoreQueryString On</pre>
 
 
 
@@ -795,10 +795,10 @@ l'URL lors de la mise en cache
     des identifiants ignorés. Autrement, chaque identifiant spécifié est
     ajouté à la liste.</p>
 
-    <div class="example"><h3>Exemple 1</h3><pre class="prettyprint lang-config">      CacheIgnoreURLSessionIdentifiers jsessionid</pre>
+    <div class="example"><h3>Exemple 1</h3><pre class="prettyprint lang-config">CacheIgnoreURLSessionIdentifiers jsessionid</pre>
 </div>
 
-    <div class="example"><h3>Exemple 2</h3><pre class="prettyprint lang-config">      CacheIgnoreURLSessionIdentifiers None</pre>
+    <div class="example"><h3>Exemple 2</h3><pre class="prettyprint lang-config">CacheIgnoreURLSessionIdentifiers None</pre>
 </div>
 
 
@@ -866,7 +866,7 @@ fonction de la date de dernière modification.</td></tr>
     directive <code class="directive">CacheMaxExpire</code>, c'est ce dernier
     qui l'emporte.</p>
 
-    <pre class="prettyprint lang-config">      CacheLastModifiedFactor 0.5</pre>
+    <pre class="prettyprint lang-config">CacheLastModifiedFactor 0.5</pre>
 
 
 </div>
@@ -955,7 +955,7 @@ document</td></tr>
     sera pas à jour. L'utilisation de cette valeur maximale est forcée,
     même si le document possède une date d'expiration.</p>
 
-    <pre class="prettyprint lang-config">      CacheMaxExpire 604800</pre>
+    <pre class="prettyprint lang-config">CacheMaxExpire 604800</pre>
 
     
 
@@ -978,7 +978,7 @@ document</td></tr>
     que dans le cas où le document ne possède aucune date d'expiration
     valide.</p>
 
-    <pre class="prettyprint lang-config">      CacheMinExpire 3600</pre>
+    <pre class="prettyprint lang-config">CacheMinExpire 3600</pre>
 
 
 </div>
@@ -1077,7 +1077,7 @@ considère comme arrivées à expiration</td></tr>
     de la part du serveur d'origine, et la réponse sera renvoyée à
     partir du cache si la ressource d'arrière-plan n'a pas été modifiée.</p>
 
-    <pre class="prettyprint lang-config">      CacheStoreExpired On</pre>
+    <pre class="prettyprint lang-config">CacheStoreExpired On</pre>
 
     
 
@@ -1102,7 +1102,7 @@ l'entête Cache-Control: a pour valeur no-store.</td></tr>
     un en-tête no-store.</p>
 
     
-    <pre class="prettyprint lang-config">      CacheStoreNoStore On</pre>
+    <pre class="prettyprint lang-config">CacheStoreNoStore On</pre>
 
     
 
@@ -1142,7 +1142,7 @@ marquées comme privées</td></tr>
     contient un en-tête private.</p>
 
     
-    <pre class="prettyprint lang-config">      CacheStorePrivate On</pre>
+    <pre class="prettyprint lang-config">CacheStorePrivate On</pre>
 
     
 

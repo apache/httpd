@@ -78,7 +78,7 @@
     file using the <code class="directive"><a href="../mod/mod_dav_fs.html#davlockdb">DavLockDB</a></code>
     directive:</p>
 
-    <pre class="prettyprint lang-config">      DavLockDB /usr/local/apache2/var/DavLock</pre>
+    <pre class="prettyprint lang-config">DavLockDB /usr/local/apache2/var/DavLock</pre>
 
 
     <p>The directory containing the lock database file must be

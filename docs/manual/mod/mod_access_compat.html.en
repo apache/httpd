@@ -158,7 +158,7 @@ Allow from 10 172.20 192.168.2</pre>
       <dt>A network/netmask pair</dt>
 
       <dd>
-      <pre class="prettyprint lang-config">        Allow from 10.1.0.0/255.255.0.0</pre>
+      <pre class="prettyprint lang-config">Allow from 10.1.0.0/255.255.0.0</pre>
 
       <p>A network a.b.c.d, and a netmask w.x.y.z. For more
       fine-grained subnet restriction.</p></dd>
@@ -166,7 +166,7 @@ Allow from 10 172.20 192.168.2</pre>
       <dt>A network/nnn CIDR specification</dt>
 
       <dd>
-      <pre class="prettyprint lang-config">        Allow from 10.1.0.0/16</pre>
+      <pre class="prettyprint lang-config">Allow from 10.1.0.0/16</pre>
 
       <p>Similar to the previous case, except the netmask consists of
       nnn high-order 1 bits.</p></dd>

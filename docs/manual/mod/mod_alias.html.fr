@@ -135,7 +135,7 @@ de fichiers</td></tr>
     est sensible à la casse, même sur les systèmes de fichiers
     insensibles à la casse.</p>
 
-    <pre class="prettyprint lang-config">      Alias /image /ftp/pub/image</pre>
+    <pre class="prettyprint lang-config">Alias /image /ftp/pub/image</pre>
 
 
     <p>Une requête pour <code>http://example.com/image/foo.gif</code> fera
@@ -151,7 +151,7 @@ de fichiers</td></tr>
     URL</var>, vous devrez aussi ajouter un slash de fin au chemin de la
     requête. Autrement dit, si vous définissez</p>
 
-    <pre class="prettyprint lang-config">      Alias /icons/ /usr/local/apache/icons/</pre>
+    <pre class="prettyprint lang-config">Alias /icons/ /usr/local/apache/icons/</pre>
 
 
     <p>l'alias précédent ne s'appliquera pas à l'url
@@ -204,7 +204,7 @@ en faisant intervenir les expressions rationnelles</td></tr>
     Par exemple, pour activer le répertoire <code>/icons</code>, on peut
     utiliser :</p>
 
-    <pre class="prettyprint lang-config">      AliasMatch ^/icons(.*) /usr/local/apache/icons$1</pre>
+    <pre class="prettyprint lang-config">AliasMatch ^/icons(.*) /usr/local/apache/icons$1</pre>
 
 
     <p>Toute la puissance des <a class="glossarylink" href="../glossary.html#regex" title="voir glossaire">expressions
@@ -212,7 +212,7 @@ en faisant intervenir les expressions rationnelles</td></tr>
     il est possible de construire un alias avec un modèle de chemin URL
     insensible à la casse :</p>
 
-    <pre class="prettyprint lang-config">      AliasMatch (?i)^/image(.*) /ftp/pub/image$1</pre>
+    <pre class="prettyprint lang-config">AliasMatch (?i)^/image(.*) /ftp/pub/image$1</pre>
 
 
     <p>Il existe une différence subtile entre <code class="directive"><a href="#alias">Alias</a></code> et <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> : <code class="directive"><a href="#alias">Alias</a></code> copie automatiquement toute
@@ -232,20 +232,20 @@ en faisant intervenir les expressions rationnelles</td></tr>
     <p>Par exemple, supposons que nous voulions reformuler cet alias
     avec AliasMatch :</p>
 
-    <pre class="prettyprint lang-config">      Alias /image/ /ftp/pub/image/</pre>
+    <pre class="prettyprint lang-config">Alias /image/ /ftp/pub/image/</pre>
 
 
     <p>Le simple remplacement d'Alias par AliasMatch ne produira pas le
     même résultat. Ainsi, ce qui suit va rediriger toutes les requêtes
     qui contiennent /image/ vers /ftp/pub/image/ :</p>
 
-    <pre class="prettyprint lang-config">      AliasMatch /image/ /ftp/pub/image/</pre>
+    <pre class="prettyprint lang-config">AliasMatch /image/ /ftp/pub/image/</pre>
 
 
     <p>Voici la directive AliasMatch qui produira le même résultat que
     la directive Alias ci-dessus :</p>
 
-    <pre class="prettyprint lang-config">      AliasMatch ^/image/(.*)$ /ftp/pub/image/$1</pre>
+    <pre class="prettyprint lang-config">AliasMatch ^/image/(.*)$ /ftp/pub/image/$1</pre>
 
 
     <p>Bien entendu, il n'y a aucune raison d'utiliser <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> dans le cas où <code class="directive"><a href="#alias">Alias</a></code> suffit. <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> vous permet d'effectuer
@@ -253,7 +253,7 @@ en faisant intervenir les expressions rationnelles</td></tr>
     servir différentes sortes de fichiers à partir de répertoires
     différents :</p>
 
-    <pre class="prettyprint lang-config">      AliasMatch ^/image/(.*)\.jpg$ /fichiers/jpg.images/$1.jpg<br />
+    <pre class="prettyprint lang-config">AliasMatch ^/image/(.*)\.jpg$ /fichiers/jpg.images/$1.jpg<br />
       AliasMatch ^/image/(.*)\.gif$ /fichiers/gif.images/$1.gif</pre>
 
 
@@ -392,7 +392,7 @@ courante</td></tr>
     les fichiers GIF vers les fichiers JPEG de même nom sur un autre
     serveur, on peut utiliser :</p>
 
-    <pre class="prettyprint lang-config">      RedirectMatch (.*)\.gif$ http://autre.example.com$1.jpg</pre>
+    <pre class="prettyprint lang-config">RedirectMatch (.*)\.gif$ http://autre.example.com$1.jpg</pre>
 
 
     <p>Les remarques à propos de la différence entre <code class="directive"><a href="#alias">Alias</a></code> et <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> s'appliquent aussi à la
@@ -457,7 +457,7 @@ et désigne la cible comme script CGI</td></tr>
     second argument, qui est un chemin complet dans le système de
     fichiers local.</p>
 
-    <pre class="prettyprint lang-config">      ScriptAlias /cgi-bin/ /web/cgi-bin/</pre>
+    <pre class="prettyprint lang-config">ScriptAlias /cgi-bin/ /web/cgi-bin/</pre>
 
 
     <p>Une requête pour <code>http://example.com/cgi-bin/foo</code>
@@ -474,7 +474,7 @@ et désigne la cible comme script CGI</td></tr>
 	<p>Vous pouvez aussi utiliser <code class="directive">ScriptAlias</code>
 	avec un script ou gestionnaire de votre cru. Par exemple :</p>
 
-	<pre class="prettyprint lang-config">	  ScriptAlias /cgi-bin/ /web/cgi-handler.pl</pre>
+	<pre class="prettyprint lang-config">ScriptAlias /cgi-bin/ /web/cgi-handler.pl</pre>
 
 
     <p>Dans ce scénario, tous les fichiers faisant l'objet d'une requête
@@ -530,14 +530,14 @@ comme un script CGI</td></tr>
     comme nom de fichier. Par exemple, pour activer le répertoire
     standard <code>/cgi-bin</code>, on peut utiliser :</p>
 
-    <pre class="prettyprint lang-config">      ScriptAliasMatch ^/cgi-bin(.*) /usr/local/apache/cgi-bin$1</pre>
+    <pre class="prettyprint lang-config">ScriptAliasMatch ^/cgi-bin(.*) /usr/local/apache/cgi-bin$1</pre>
 
 
     <p>Comme dans le cas d'AliasMatch, toute la puissance des <a class="glossarylink" href="../glossary.html#rexex" title="voir glossaire">expressions rationnelles</a> peut être mise à
     contribution. Par exemple, il est possible de construire un alias
     avec une comparaison du modèle du chemin URL insensible à la casse :</p>
 
-    <pre class="prettyprint lang-config">      ScriptAliasMatch (?i)^/cgi-bin(.*) /usr/local/apache/cgi-bin$1</pre>
+    <pre class="prettyprint lang-config">ScriptAliasMatch (?i)^/cgi-bin(.*) /usr/local/apache/cgi-bin$1</pre>
 
 
     <p>Les remarques à propos de la différence entre <code class="directive"><a href="#alias">Alias</a></code> et <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> s'appliquent aussi à la

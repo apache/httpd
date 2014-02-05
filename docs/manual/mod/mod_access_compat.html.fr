@@ -167,7 +167,7 @@ Allow from 10 172.20 192.168.2</pre>
       <dt>Une paire réseau/masque de sous-réseau</dt>
 
       <dd>
-      <pre class="prettyprint lang-config">        Allow from 10.1.0.0/255.255.0.0</pre>
+      <pre class="prettyprint lang-config">Allow from 10.1.0.0/255.255.0.0</pre>
 
       <p>Un réseau a.b.c.d, et un masque de sous-réseau w.x.y.z, pour
       une définition plus précise de la restriction d'accès imposée à un
@@ -176,7 +176,7 @@ Allow from 10 172.20 192.168.2</pre>
       <dt>Une spécification CIDR réseau/nnn</dt>
 
       <dd>
-      <pre class="prettyprint lang-config">        Allow from 10.1.0.0/16</pre>
+      <pre class="prettyprint lang-config">Allow from 10.1.0.0/16</pre>
 
       <p>Identique au cas précédent, mis à part que le masque est
       constitué des nnn bits de poids fort.</p></dd>

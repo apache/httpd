@@ -169,7 +169,7 @@ VirtualDocumentRoot /usr/local/apache/vhosts/%3+/%2.1/%2.2/%2.3/%2</pre>
     <p>A more even spread of files can be achieved by hashing from the
     end of the name, for example: </p>
 
-<pre class="prettyprint lang-config">    VirtualDocumentRoot /usr/local/apache/vhosts/%3+/%2.-1/%2.-2/%2.-3/%2</pre>
+<pre class="prettyprint lang-config">VirtualDocumentRoot /usr/local/apache/vhosts/%3+/%2.-1/%2.-2/%2.-3/%2</pre>
 
 
     <p>The example request would come from
@@ -177,7 +177,7 @@ VirtualDocumentRoot /usr/local/apache/vhosts/%3+/%2.1/%2.2/%2.3/%2</pre>
 
     <p>Alternatively you might use: </p>
 
-<pre class="prettyprint lang-config">    VirtualDocumentRoot /usr/local/apache/vhosts/%3+/%2.1/%2.2/%2.3/%2.4+</pre>
+<pre class="prettyprint lang-config">VirtualDocumentRoot /usr/local/apache/vhosts/%3+/%2.1/%2.2/%2.3/%2.4+</pre>
 
 
     <p>The example request would come from
@@ -194,7 +194,7 @@ tld, for example <code>example.com</code> regardless of the number of subdomains
 to the hostname. As such, one can make a configuration that will direct all first, second 
 or third level subdomains to the same directory:
 </p>
-<pre class="prettyprint lang-config">    VirtualDocumentRoot "/usr/local/apache/vhosts/%-2.0.%-1.0"</pre>
+<pre class="prettyprint lang-config">VirtualDocumentRoot "/usr/local/apache/vhosts/%-2.0.%-1.0"</pre>
 
 <p>
 In the example above, both <code>www.example.com</code> as well as <code>www.sub.example.com</code>
@@ -224,7 +224,7 @@ VirtualScriptAliasIP  /usr/local/apache/vhosts/%1/%2/%3/%4/cgi-bin</pre>
     a <code>%</code> directive, you can work around the problem in
     the following way:</p>
 
-<pre class="prettyprint lang-config">    VirtualDocumentRoot /usr/local/apache/vhosts/%2.0.%3.0</pre>
+<pre class="prettyprint lang-config">VirtualDocumentRoot /usr/local/apache/vhosts/%2.0.%3.0</pre>
 
 
     <p>A request for

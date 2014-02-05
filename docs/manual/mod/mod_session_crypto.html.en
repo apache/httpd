@@ -131,16 +131,16 @@ SessionCryptoPassphrase secret</pre>
     <p>The <var>NSS</var> crypto driver requires some parameters for configuration,
     which are specified as parameters with optional values after the driver name.</p>
 
-    <div class="example"><h3>NSS without a certificate database</h3><pre class="prettyprint lang-config">      SessionCryptoDriver nss</pre>
+    <div class="example"><h3>NSS without a certificate database</h3><pre class="prettyprint lang-config">SessionCryptoDriver nss</pre>
 </div>
 
-    <div class="example"><h3>NSS with certificate database</h3><pre class="prettyprint lang-config">      SessionCryptoDriver nss dir=certs</pre>
+    <div class="example"><h3>NSS with certificate database</h3><pre class="prettyprint lang-config">SessionCryptoDriver nss dir=certs</pre>
 </div>
 
-    <div class="example"><h3>NSS with certificate database and parameters</h3><pre class="prettyprint lang-config">      SessionCryptoDriver nss dir=certs key3=key3.db cert7=cert7.db secmod=secmod</pre>
+    <div class="example"><h3>NSS with certificate database and parameters</h3><pre class="prettyprint lang-config">SessionCryptoDriver nss dir=certs key3=key3.db cert7=cert7.db secmod=secmod</pre>
 </div>
 
-    <div class="example"><h3>NSS with paths containing spaces</h3><pre class="prettyprint lang-config">      SessionCryptoDriver nss "dir=My Certs" key3=key3.db cert7=cert7.db secmod=secmod</pre>
+    <div class="example"><h3>NSS with paths containing spaces</h3><pre class="prettyprint lang-config">SessionCryptoDriver nss "dir=My Certs" key3=key3.db cert7=cert7.db secmod=secmod</pre>
 </div>
 
     <p>The <var>NSS</var> crypto driver might have already been
@@ -150,7 +150,7 @@ SessionCryptoPassphrase secret</pre>
     existing configuration will have taken affect.  To avoid this
     warning, use the noinit parameter as follows.</p>
 
-    <div class="example"><h3>NSS with certificate database</h3><pre class="prettyprint lang-config">      SessionCryptoDriver nss noinit</pre>
+    <div class="example"><h3>NSS with certificate database</h3><pre class="prettyprint lang-config">SessionCryptoDriver nss noinit</pre>
 </div>
 
     <p>To prevent confusion, ensure that all modules requiring NSS are configured with
@@ -159,7 +159,7 @@ SessionCryptoPassphrase secret</pre>
     <p>The <var>openssl</var> crypto driver supports an optional parameter to specify
     the engine to be used for encryption.</p>
 
-    <div class="example"><h3>OpenSSL with engine support</h3><pre class="prettyprint lang-config">      SessionCryptoDriver openssl engine=name</pre>
+    <div class="example"><h3>OpenSSL with engine support</h3><pre class="prettyprint lang-config">SessionCryptoDriver openssl engine=name</pre>
 </div>
 
 

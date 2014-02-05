@@ -109,7 +109,7 @@ tardif</a></h2>
         Copie tous les en-têtes de requête qui commencent par "TS" vers
 	les en-têtes de la réponse :
 
-        <pre class="prettyprint lang-config">          Header echo ^TS</pre>
+        <pre class="prettyprint lang-config">Header echo ^TS</pre>
 
       </li>
 
@@ -122,7 +122,7 @@ tardif</a></h2>
 	isoler les goulets d'étranglement entre le client et le
 	serveur.
 
-        <pre class="prettyprint lang-config">          Header set mon-en-tête "%D %t"</pre>
+        <pre class="prettyprint lang-config">Header set mon-en-tête "%D %t"</pre>
 
 
         <p>le résultat est l'ajout à la réponse d'un en-tête du type :</p>
@@ -173,7 +173,7 @@ Header set MyHeader "%D %t mytext" env=HAVE_MyRequestHeader</pre>
 	du problème</a>) en remplaçant <var>https:</var> par
 	<var>http:</var> dans l'en-tête <var>Destination</var> :
 
-        <pre class="prettyprint lang-config">          RequestHeader edit Destination ^https: http: early</pre>
+        <pre class="prettyprint lang-config">RequestHeader edit Destination ^https: http: early</pre>
 
       </li>
 
@@ -208,7 +208,7 @@ Header merge Cache-Control no-store env=NO_STORE</pre>
       <li>
         Définit un cookie de test si et seulement si le client n'envoie
 	pas de cookie
-        <pre class="prettyprint lang-config">          Header set Set-Cookie testcookie "expr=-z %{req:Cookie}"</pre>
+        <pre class="prettyprint lang-config">Header set Set-Cookie testcookie "expr=-z %{req:Cookie}"</pre>
 
       </li>
     </ol>

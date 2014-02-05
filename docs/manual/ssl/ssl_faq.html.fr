@@ -707,7 +707,7 @@ pour différencier plusieurs hôtes virtuels ?</a></h3>
     (sur le port 443). Mais dans ce cas, vous devez définir le numéro de port
     non-SSL à l'aide de la directive NameVirtualHost dans ce style :</p>
 
-    <pre class="prettyprint lang-config">      NameVirtualHost 192.168.1.1:80</pre>
+    <pre class="prettyprint lang-config">NameVirtualHost 192.168.1.1:80</pre>
 
 
     <p>il existe d'autres solutions alternatives comme :</p>

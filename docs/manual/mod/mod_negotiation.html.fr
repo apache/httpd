@@ -197,7 +197,7 @@ contenu</a></li>
     et le fichier <code>.var</code> doit être associé au gestionnaire
     <code>type-map</code> via une directive <code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code> :</p>
 
-    <pre class="prettyprint lang-config">    AddHandler type-map .var</pre>
+    <pre class="prettyprint lang-config">AddHandler type-map .var</pre>
 
 
     <p>A l'arrivée d'une requête pour la ressource
@@ -335,7 +335,7 @@ cas où le client n'a pas formulé de préférences</td></tr>
     <var>langages-MIME</var> dans un ordre de préférences
     décroissantes.</p>
 
-    <pre class="prettyprint lang-config">      LanguagePriority en fr de</pre>
+    <pre class="prettyprint lang-config">LanguagePriority en fr de</pre>
 
 
     <p>Dans le cas d'une requête pour <code>foo.html</code>, si

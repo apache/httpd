@@ -137,7 +137,7 @@ AddHandler add-footer .html</pre>
     Plus précisément, un nouvel enregistrement a été ajouté à la structure
     <code>request_rec</code> :</p>
 
-    <pre class="prettyprint lang-c">      char *handler</pre>
+    <pre class="prettyprint lang-c">char *handler</pre>
 
 
     <p>Si vous voulez que votre module déclenche l'utilisation d'un
