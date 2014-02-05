@@ -236,7 +236,7 @@
 <!-- Simplified Chinese                                                   -->
 <!-- ==================================================================== -->
 <property value=".xml.zh-cn" name="inputext.zh-cn"/>
-<property value=".html.zh-cn" name="outputext.zh-cn"/>
+<property value=".html.zh-cn.utf8" name="outputext.zh-cn"/>
 
 <target description="- builds Simplified Chinese HTML files" name="zh-cn">
     <html.generic lang="zh-cn"/>
