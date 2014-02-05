@@ -20,7 +20,7 @@ AliasMatch ^/manual(?:/(?:de|en|es|fr|ja|ko|pt-br|ru|tr))?(/.*)?$ "@exp_manualdi
     </Files>
     # .tr is text/troff in mime.types!
     <Files *.html.tr.utf8>
-        ForceType text/html
+        ForceType "text/html; charset=utf-8"
     </Files>
 
     SetEnvIf Request_URI ^/manual/(de|en|es|fr|ja|ko|pt-br|ru|tr)/ prefer-language=$1
