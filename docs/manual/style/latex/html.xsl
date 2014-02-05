@@ -153,11 +153,17 @@ interpreted in pre -->
 <xsl:template match="pre|highlight">
 <xsl:text>\begin{verbatim}</xsl:text>
 
-<xsl:call-template name="pre-rtrim">
+<!-- If it's a one-liner, trim the initial indentation as well -->
+<!-- it's most likely an accident                              -->
+<xsl:call-template name="pre-ltrim-one">
   <xsl:with-param name="string">
-    <xsl:call-template name="pre-ltrim">
+    <xsl:call-template name="pre-rtrim">
       <xsl:with-param name="string">
-        <xsl:value-of select="." />
+        <xsl:call-template name="pre-ltrim">
+          <xsl:with-param name="string">
+            <xsl:value-of select="." />
+          </xsl:with-param>
+        </xsl:call-template>
       </xsl:with-param>
     </xsl:call-template>
   </xsl:with-param>
