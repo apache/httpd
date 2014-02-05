@@ -25,6 +25,9 @@
                   xmlns="http://www.w3.org/1999/xhtml">
 
 
+<!-- load utility snippets -->
+<xsl:include href="../xsl/util/string-reverse.xsl" />
+
 <!-- ==================================================================== -->
 <!-- Ordinary HTML that must be converted to latex                        -->
 <!-- ==================================================================== -->
@@ -143,30 +146,6 @@
 <xsl:text>}</xsl:text>
 </xsl:template>
 
-<!-- O(log(n)) (stack usage!) string reverter -->
-<xsl:template name="string-reverse">
-<xsl:param name="string"/>
-<xsl:variable name="length" select="string-length($string)"/>
-
-<xsl:choose>
-<xsl:when test="$length &lt; 2">
-  <xsl:value-of select="$string"/>
-</xsl:when>
-<xsl:when test="$length = 2">
-  <xsl:value-of select="concat(substring($string, 2, 1), substring($string, 1, 1))"/>
-</xsl:when>
-<xsl:otherwise>
-  <xsl:variable name="middle" select="floor($length div 2)"/>
-
-  <xsl:call-template name="string-reverse">
-    <xsl:with-param name="string" select="substring($string, $middle + 1, $middle + 1)"/>
-  </xsl:call-template>
-  <xsl:call-template name="string-reverse">
-    <xsl:with-param name="string" select="substring($string, 1, $middle)"/>
-  </xsl:call-template>
-</xsl:otherwise>
-</xsl:choose>
-</xsl:template>
 
 <!-- Value-of used here explicitly because we don't wan't latex-escaping
 performed.  Of course, this will conflict with html where some tags are

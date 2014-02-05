@@ -67,6 +67,7 @@
 
 <!-- load utility snippets -->
 <xsl:include href="util/modtrans.xsl" />
+<xsl:include href="util/string-reverse.xsl" />
 
 <!-- make sure, we set relative anchors only, if we're actually -->
 <!-- transforming a modulefile (see <directive> template)       -->
@@ -603,31 +604,6 @@ if (typeof(prettyPrint) !== 'undefined') {
 </xsl:template>
 <!-- /section/section/section/section -->
 
-
-<!-- O(log(n)) (stack usage!) string reverter -->
-<xsl:template name="string-reverse">
-<xsl:param name="string"/>
-<xsl:variable name="length" select="string-length($string)"/>
-
-<xsl:choose>
-<xsl:when test="$length &lt; 2">
-  <xsl:value-of select="$string"/>
-</xsl:when>
-<xsl:when test="$length = 2">
-  <xsl:value-of select="concat(substring($string, 2, 1), substring($string, 1, 1))"/>
-</xsl:when>
-<xsl:otherwise>
-  <xsl:variable name="middle" select="floor($length div 2)"/>
-
-  <xsl:call-template name="string-reverse">
-    <xsl:with-param name="string" select="substring($string, $middle + 1, $middle + 1)"/>
-  </xsl:call-template>
-  <xsl:call-template name="string-reverse">
-    <xsl:with-param name="string" select="substring($string, 1, $middle)"/>
-  </xsl:call-template>
-</xsl:otherwise>
-</xsl:choose>
-</xsl:template>
 
 <!-- strip empty lines at the beginning -->
 <xsl:template name="pre-ltrim">
