@@ -194,7 +194,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * mod_rewrite: Add %{CONN_REMOTE_ADDR} to mod_rewrite PR56094
      trunk patch: https://svn.apache.org/r1563418
      2.4.x patch: trunk works
-     +1: covener, jim
+     +1: covener, jim, mrumph
+     mrumph: Verified the change against comment 1 in PR 55886.
+             Also, verified the source change against log_remote_address()
+             in modules/loggers/mod_log_config.c in both trunk and 2.4.x.
 
    * mod_ssl: enable auto curve selection for ECDHE / OpenSSL 1.0.2
      trunk patch: https://svn.apache.org/r1563420
