@@ -49,7 +49,7 @@
       arguments. For example, if the hook returns an <code>int</code> and
       takes a <code>request_rec *</code> and an <code>int</code> and is
       called <code>do_something</code>, then declare it like this:</p>
-      <pre class="prettyprint lang-c">        AP_DECLARE_HOOK(int, do_something, (request_rec *r, int n))</pre>
+      <pre class="prettyprint lang-c">AP_DECLARE_HOOK(int, do_something, (request_rec *r, int n))</pre>
 
 
       <p>This should go in a header which modules will include if
@@ -78,7 +78,7 @@
         <p>If the return value of a hook is <code>void</code>, then all the
         hooks are called, and the caller is implemented like this:</p>
 
-        <pre class="prettyprint lang-c">          AP_IMPLEMENT_HOOK_VOID(do_something, (request_rec *r, int n), (r, n))</pre>
+        <pre class="prettyprint lang-c">AP_IMPLEMENT_HOOK_VOID(do_something, (request_rec *r, int n), (r, n))</pre>
 
 
         <p>The second and third arguments are the dummy argument
@@ -98,7 +98,7 @@
         <p>If the hook returns a value, then it can either be run until
         the first hook that does something interesting, like so:</p>
 
-        <pre class="prettyprint lang-c">          AP_IMPLEMENT_HOOK_RUN_FIRST(int, do_something, (request_rec *r, int n), (r, n), DECLINED)</pre>
+        <pre class="prettyprint lang-c">AP_IMPLEMENT_HOOK_RUN_FIRST(int, do_something, (request_rec *r, int n), (r, n), DECLINED)</pre>
 
 
         <p>The first hook that does <em>not</em> return <code>DECLINED</code>
@@ -114,7 +114,7 @@
         value other than one of those two stops the loop, and its
         return is the return value. Declare these like so:</p>
 
-        <pre class="prettyprint lang-c">          AP_IMPLEMENT_HOOK_RUN_ALL(int, do_something, (request_rec *r, int n), (r, n), OK, DECLINED)</pre>
+        <pre class="prettyprint lang-c">AP_IMPLEMENT_HOOK_RUN_ALL(int, do_something, (request_rec *r, int n), (r, n), OK, DECLINED)</pre>
 
 
         <p>Again, <code>OK</code> and <code>DECLINED</code> are the traditional

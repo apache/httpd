@@ -509,7 +509,7 @@ RewriteRule ^foo\.html$         foo.<strong>32</strong>.html          [<strong>L
      This should really be accomplished with Redirect or RedirectMatch
      directives:
 
-     <pre class="prettyprint lang-config"> RedirectMatch ^/(puppies|canines)/(.*) /dogs/$2</pre>
+     <pre class="prettyprint lang-config">RedirectMatch ^/(puppies|canines)/(.*) /dogs/$2</pre>
 
      </dd>
       </dl>

@@ -59,7 +59,7 @@ protocole</td></tr>
     <p>La directive <code class="directive">ProtocolEcho</code> permet d'activer
     ou de désactiver le serveur d'écho.</p>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">      ProtocolEcho On</pre>
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">ProtocolEcho On</pre>
 </div>
 
 </div>

@@ -136,10 +136,10 @@ via the request headers.
     other directives are used, <code class="module"><a href="../mod/mod_remoteip.html">mod_remoteip</a></code> will trust all
     hosts presenting a <code class="directive">RemoteIPHeader</code> IP value.</p>
 
-    <div class="example"><h3>Internal (Load Balancer) Example</h3><pre class="prettyprint lang-config">        RemoteIPHeader X-Client-IP</pre>
+    <div class="example"><h3>Internal (Load Balancer) Example</h3><pre class="prettyprint lang-config">RemoteIPHeader X-Client-IP</pre>
 </div>
 
-    <div class="example"><h3>Proxy Example</h3><pre class="prettyprint lang-config">        RemoteIPHeader X-Forwarded-For</pre>
+    <div class="example"><h3>Proxy Example</h3><pre class="prettyprint lang-config">RemoteIPHeader X-Forwarded-For</pre>
 </div>
 
 </div>

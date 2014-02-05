@@ -124,7 +124,7 @@ style du CERN</td></tr>
     son contenu pour générer les informations quant aux en-têtes MIME
     additionnels.</p>
 
-    <div class="example"><h3>Exemple :</h3><pre class="prettyprint lang-config">      MetaSuffix .meta</pre>
+    <div class="example"><h3>Exemple :</h3><pre class="prettyprint lang-config">MetaSuffix .meta</pre>
 </div>
 
 </div>

@@ -315,7 +315,7 @@ close(SAVE);</pre>
       filter is removed and the request continues without it.</dd>
     </dl>
 
-    <pre class="prettyprint lang-config">      ExtFilterOptions LogStderr</pre>
+    <pre class="prettyprint lang-config">ExtFilterOptions LogStderr</pre>
 
 
     <p>Messages written to the filter's standard error will be stored

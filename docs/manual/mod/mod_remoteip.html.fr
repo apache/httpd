@@ -151,10 +151,10 @@ du client</td></tr>
     <code class="directive">RemoteIPHeader</code> comme hôte de confiance.</p>
 
     <div class="example"><h3>Exemple à usage interne (répartiteur de
-    charge)</h3><pre class="prettyprint lang-config">        RemoteIPHeader X-Client-IP</pre>
+    charge)</h3><pre class="prettyprint lang-config">RemoteIPHeader X-Client-IP</pre>
 </div>
 
-    <div class="example"><h3>Exemple dans le cas d'un mandataire</h3><pre class="prettyprint lang-config">        RemoteIPHeader X-Forwarded-For</pre>
+    <div class="example"><h3>Exemple dans le cas d'un mandataire</h3><pre class="prettyprint lang-config">RemoteIPHeader X-Forwarded-For</pre>
 </div>
 
 </div>

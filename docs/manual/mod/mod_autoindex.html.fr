@@ -259,7 +259,7 @@ fichier en fonction de son codage MIME</td></tr>
     peut pas afficher d'images, si le chargement d'images est désactivé
     ou si l'icône ne peut pas être trouvé.</p>
 
-    <pre class="prettyprint lang-config">      AddAltByEncoding gzip x-gzip</pre>
+    <pre class="prettyprint lang-config">AddAltByEncoding gzip x-gzip</pre>
 
 
 </div>
@@ -285,7 +285,7 @@ fichier en fonction de son type MIME</td></tr>
     peut pas afficher d'images, si le chargement d'images est désactivé
     ou si l'icône ne peut pas être trouvé.</p>
 
-    <pre class="prettyprint lang-config">      AddAltByType 'Fichier texte' text/plain</pre>
+    <pre class="prettyprint lang-config">AddAltByType 'Fichier texte' text/plain</pre>
 
 
 </div>
@@ -417,7 +417,7 @@ codage MIME</td></tr>
     <p><var>codage MIME</var> doit être un codage valide, comme
     <code>x-compress</code>.</p>
 
-    <pre class="prettyprint lang-config">      AddIconByEncoding /icons/compress.png x-compress</pre>
+    <pre class="prettyprint lang-config">AddIconByEncoding /icons/compress.png x-compress</pre>
 
 
 </div>
@@ -446,7 +446,7 @@ type MIME</td></tr>
     <p><var>type MIME</var> est une expression avec caractères
     génériques représentant le type MIME.</p>
 
-    <pre class="prettyprint lang-config">      AddIconByType (IMG,/icons/image.png) image/*</pre>
+    <pre class="prettyprint lang-config">AddIconByType (IMG,/icons/image.png) image/*</pre>
 
 
 </div>
@@ -467,7 +467,7 @@ n'est précisé</td></tr>
     <var>chemin URL</var> est une URL relative (échappée par des
     caractères '%') vers l'icône ou une URL pleinement qualifiée.</p>
 
-    <pre class="prettyprint lang-config">      DefaultIcon /icon/unknown.png</pre>
+    <pre class="prettyprint lang-config">DefaultIcon /icon/unknown.png</pre>
 
 
 </div>
@@ -486,7 +486,7 @@ contenant l'index</td></tr>
     le nom du fichier qui sera inséré au début de la page contenant
     l'index. <var>nom fichier</var> est le nom du fichier à inclure.</p>
 
-    <pre class="prettyprint lang-config">      HeaderName HEADER.html</pre>
+    <pre class="prettyprint lang-config">HeaderName HEADER.html</pre>
 
 
     <div class="note">
@@ -497,7 +497,7 @@ contenant l'index</td></tr>
       considéré comme relatif au répertoire défini par la directive
       <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code>.</p>
 
-      <pre class="prettyprint lang-config">        HeaderName /include/HEADER.html</pre>
+      <pre class="prettyprint lang-config">HeaderName /include/HEADER.html</pre>
 
 
       <p><var>nom fichier</var> doit correspondre à un document dont le
@@ -508,7 +508,7 @@ contenant l'index</td></tr>
       sortie) est marqué comme <code>text/html</code> par exemple à
       l'aide d'une directive comme :</p>
 
-      <pre class="prettyprint lang-config">        AddType text/html .cgi</pre>
+      <pre class="prettyprint lang-config">AddType text/html .cgi</pre>
 
 
       <p>Une <a href="../content-negotiation.html">négociation de
@@ -549,7 +549,7 @@ d'index.</td></tr>
     spécifier une chaîne de caractères à insérer dans la section
     <var>&lt;head&gt;</var> du code HTML généré pour la page
     d'index.</p>
-    <pre class="prettyprint lang-config">      IndexHeadInsert "&lt;link rel=\"sitemap\" href=\"/sitemap.html\"&gt;"</pre>
+    <pre class="prettyprint lang-config">IndexHeadInsert "&lt;link rel=\"sitemap\" href=\"/sitemap.html\"&gt;"</pre>
 
 
 </div>
@@ -574,7 +574,7 @@ de l'index d'un répertoire</td></tr>
     ignorer. Par défaut, la liste contient <code>.</code> (le répertoire
     courant).</p>
 
-    <pre class="prettyprint lang-config">      IndexIgnore .??* *~ *# HEADER* README* RCS CVS *,v *,t</pre>
+    <pre class="prettyprint lang-config">IndexIgnore .??* *~ *# HEADER* README* RCS CVS *,v *,t</pre>
 
 
     <div class="note"><h3>Expressions rationnelles</h3>
@@ -659,7 +659,7 @@ répertoire</td></tr>
       système de fichiers sous-jacent utilise les noms de fichiers en
       Unicode ou non).
 
-      <pre class="prettyprint lang-config">        IndexOptions Charset=UTF-8</pre>
+      <pre class="prettyprint lang-config">IndexOptions Charset=UTF-8</pre>
 
       </dd>
 
@@ -890,7 +890,7 @@ répertoire</td></tr>
       MIME de la page générée. La valeur par défaut est
       <var>text/html</var>.
 
-      <pre class="prettyprint lang-config">        IndexOptions Type=text/plain</pre>
+      <pre class="prettyprint lang-config">IndexOptions Type=text/plain</pre>
 
       </dd>
 
@@ -951,7 +951,7 @@ répertoire</td></tr>
 
      <p>est équivalent à</p>
 
-     <pre class="prettyprint lang-config">       IndexOptions HTMLTable SuppressColumnsorting</pre>
+     <pre class="prettyprint lang-config">IndexOptions HTMLTable SuppressColumnsorting</pre>
 
      </li>
 
@@ -1038,7 +1038,7 @@ répertoire</td></tr>
     définir le nom du fichier qui servira de feuille de style CSS pour
     l'index.
     </p>
-    <pre class="prettyprint lang-config">      IndexStyleSheet "/css/style.css"</pre>
+    <pre class="prettyprint lang-config">IndexStyleSheet "/css/style.css"</pre>
 
 
     <p>L'utilisation de cette directive en conjonction avec <code>IndexOptions

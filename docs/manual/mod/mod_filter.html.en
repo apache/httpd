@@ -279,7 +279,7 @@ being moved to <code class="module"><a href="../mod/mod_filter.html">mod_filter<
     <code>text/html</code> or <code>text/plain</code> before it is sent
     to the client.</p>
 
-    <pre class="prettyprint lang-config">      AddOutputFilterByType DEFLATE text/html text/plain</pre>
+    <pre class="prettyprint lang-config">AddOutputFilterByType DEFLATE text/html text/plain</pre>
 
 
     <p>If you want the content to be processed by more than one filter, their

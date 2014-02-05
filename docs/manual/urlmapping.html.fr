@@ -141,7 +141,7 @@ l'arborescence DocumentRoot</a></h2>
     sur les <a class="glossarylink" href="./glossary.html#regex" title="voir glossaire">expressions rationnelles</a>.
     Par exemple,</p>
 
-<pre class="prettyprint lang-config">    ScriptAliasMatch ^/~([a-zA-Z0-9]+)/cgi-bin/(.+)   /home/$1/cgi-bin/$2</pre>
+<pre class="prettyprint lang-config">ScriptAliasMatch ^/~([a-zA-Z0-9]+)/cgi-bin/(.+)   /home/$1/cgi-bin/$2</pre>
 
 
     <p>fera correspondre une requête du style
@@ -190,7 +190,7 @@ l'arborescence DocumentRoot</a></h2>
     <code>/home/user/public_html/file.html</code>, utilisez la directive
     <code>AliasMatch</code> suivante :</p>
 
-<pre class="prettyprint lang-config">    AliasMatch ^/upages/([a-zA-Z0-9]+)(/(.*))?$   /home/$1/public_html/$3</pre>
+<pre class="prettyprint lang-config">AliasMatch ^/upages/([a-zA-Z0-9]+)(/(.*))?$   /home/$1/public_html/$3</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -210,7 +210,7 @@ l'arborescence DocumentRoot</a></h2>
     nouveau répertoire <code>/bar/</code>, vous pouvez demander aux clients
     de le requérir à sa nouvelle localisation comme suit :</p>
 
-<pre class="prettyprint lang-config">    Redirect permanent /foo/   http://www.example.com/bar/</pre>
+<pre class="prettyprint lang-config">Redirect permanent /foo/   http://www.example.com/bar/</pre>
 
 
     <p>Ceci aura pour effet de rediriger tout chemin d'URL commençant par
@@ -225,13 +225,13 @@ l'arborescence DocumentRoot</a></h2>
     laisser toutes les autres requêtes inchangées, utilisez la
     configuration suivante :</p>
 
-<pre class="prettyprint lang-config">   RedirectMatch permanent ^/$    http://www.example.com/startpage.html</pre>
+<pre class="prettyprint lang-config">RedirectMatch permanent ^/$    http://www.example.com/startpage.html</pre>
 
 
     <p>De même, pour rediriger temporairement toutes les pages d'un site
     vers une page particulière d'un autre site, utilisez ce qui suit :</p>
 
-<pre class="prettyprint lang-config">    RedirectMatch temp .*  http://othersite.example.com/startpage.html</pre>
+<pre class="prettyprint lang-config">RedirectMatch temp .*  http://othersite.example.com/startpage.html</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">

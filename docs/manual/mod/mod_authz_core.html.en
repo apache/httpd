@@ -164,10 +164,10 @@
     'granted' or 'denied'.  The following examples will grant or deny
     access to all requests.</p>
 
-    <pre class="prettyprint lang-config">    Require all granted</pre>
+    <pre class="prettyprint lang-config">Require all granted</pre>
 
 
-    <pre class="prettyprint lang-config">    Require all denied</pre>
+    <pre class="prettyprint lang-config">Require all denied</pre>
 
 
   
@@ -182,7 +182,7 @@
     <p>The following example will only allow GET, HEAD, POST, and OPTIONS
     requests:</p>
 
-    <pre class="prettyprint lang-config">        Require method GET POST OPTIONS</pre>
+    <pre class="prettyprint lang-config">Require method GET POST OPTIONS</pre>
 
 
     <p>The following example will allow GET, HEAD, POST, and OPTIONS
@@ -202,7 +202,7 @@
   <p>The <code>expr</code> provider allows to base authorization
   decisions on arbitrary expressions.</p>
 
-    <pre class="prettyprint lang-config">        Require expr "%{TIME_HOUR} -ge 9 &amp;&amp; %{TIME_HOUR} -le 17"</pre>
+    <pre class="prettyprint lang-config">Require expr "%{TIME_HOUR} -ge 9 &amp;&amp; %{TIME_HOUR} -le 17"</pre>
 
 
   <p>The syntax is described in the <a href="../expr.html">ap_expr</a>

@@ -132,7 +132,7 @@
     accéder au fichier "test.example" à partir du répertoire
     correspondant :</p>
 
-<pre class="prettyprint lang-config">   AddHandler example-handler .example</pre>
+<pre class="prettyprint lang-config">AddHandler example-handler .example</pre>
 
 
 

@@ -79,7 +79,7 @@ documents via le web (<a href="http://www.webdav.org/">WebDAV</a>)</td></tr>
     verrous DAV via une directive <code class="directive"><a href="../mod/mod_dav_fs.html#davlockdb">DavLockDB</a></code> dans la section globale de
     votre fichier <code>httpd.conf</code> :</p>
 
-    <pre class="prettyprint lang-config">      DavLockDB /usr/local/apache2/var/DavLock</pre>
+    <pre class="prettyprint lang-config">DavLockDB /usr/local/apache2/var/DavLock</pre>
 
 
     <p>Le répertoire contenant le fichier de la base de données des

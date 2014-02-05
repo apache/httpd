@@ -120,7 +120,7 @@ a directory</td></tr>
     set, the server will generate its own listing of the
     directory.</p>
 
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">      DirectoryIndex index.html</pre>
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">DirectoryIndex index.html</pre>
 </div>
 
     <p>then a request for <code>http://example.com/docs/</code> would
@@ -130,7 +130,7 @@ a directory</td></tr>
     <p>Note that the documents do not need to be relative to the
     directory;</p>
 
-    <pre class="prettyprint lang-config">      DirectoryIndex index.html index.txt  /cgi-bin/index.pl</pre>
+    <pre class="prettyprint lang-config">DirectoryIndex index.html index.txt  /cgi-bin/index.pl</pre>
 
 
     <p>would cause the CGI script <code>/cgi-bin/index.pl</code> to be
@@ -198,7 +198,7 @@ a directory</td></tr>
     </ul>
 
 
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">      DirectoryIndexRedirect on</pre>
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">DirectoryIndexRedirect on</pre>
 </div>
 
     <p>A request for <code>http://example.com/docs/</code> would
@@ -274,7 +274,7 @@ a directory</td></tr>
     <p>Use this to set a handler for any URL that doesn't map to anything
     in your filesystem, and would otherwise return HTTP 404 (Not Found).
     For example</p>
-    <pre class="prettyprint lang-config">        FallbackResource /not-404.php</pre>
+    <pre class="prettyprint lang-config">FallbackResource /not-404.php</pre>
 
     <p>will cause requests for non-existent files to be handled by
     <code>not-404.php</code>, while requests for files that exist
@@ -287,7 +287,7 @@ a directory</td></tr>
     <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>, and the use of the <code>-f</code> and
     <code>-d</code> tests for file and directory existence. This now
     requires only one line of configuration.</p>
-    <pre class="prettyprint lang-config">        FallbackResource /index.php</pre>
+    <pre class="prettyprint lang-config">FallbackResource /index.php</pre>
 
     <p>Existing files, such as images, css files, and so on, will be
     served normally.</p>

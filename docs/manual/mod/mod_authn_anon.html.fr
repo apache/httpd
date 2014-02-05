@@ -137,7 +137,7 @@ accéder sans vérification du mot de passe</td></tr>
     Il est fortement conseillé d'intégrer l'utilisateur spécial
     '<code>anonymous</code>' dans la liste des identifiants.</p>
 
-    <div class="example"><h3>Exemple:</h3><pre class="prettyprint lang-config">      Anonymous anonymous "Not Registered" "I don't know"</pre>
+    <div class="example"><h3>Exemple:</h3><pre class="prettyprint lang-config">Anonymous anonymous "Not Registered" "I don't know"</pre>
 </div>
 
     <p>Dans cet exemple, l'utilisateur peut accéder au site sans

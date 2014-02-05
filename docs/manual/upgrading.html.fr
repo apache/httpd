@@ -152,14 +152,14 @@ nécessiter une mise à jour des fichiers de configuration de la version
       <div class="example"><h3>version 2.2 :</h3><pre class="prettyprint lang-config">Order deny,allow
 Deny from all</pre>
 </div>
-      <div class="example"><h3>version 2.4 :</h3><pre class="prettyprint lang-config">        Require all denied</pre>
+      <div class="example"><h3>version 2.4 :</h3><pre class="prettyprint lang-config">Require all denied</pre>
 </div>
 
       <p>Dans cet exemple, toutes les requêtes sont acceptées :</p>
       <div class="example"><h3>version 2.2 :</h3><pre class="prettyprint lang-config">Order allow,deny
 Allow from all</pre>
 </div>
-      <div class="example"><h3>version 2.4 :</h3><pre class="prettyprint lang-config">        Require all granted</pre>
+      <div class="example"><h3>version 2.4 :</h3><pre class="prettyprint lang-config">Require all granted</pre>
 </div>
 
       <p>Dans l'exemple suivant, tous les hôtes du domaine example.org
@@ -169,7 +169,7 @@ Allow from all</pre>
 Deny from all
 Allow from example.org</pre>
 </div>
-      <div class="example"><h3>version 2.4 :</h3><pre class="prettyprint lang-config">        Require host example.org</pre>
+      <div class="example"><h3>version 2.4 :</h3><pre class="prettyprint lang-config">Require host example.org</pre>
 </div>
     
 

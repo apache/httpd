@@ -250,7 +250,7 @@ selected by MIME-encoding</td></tr>
     This alternate text is displayed if the client is image-incapable,
     has image loading disabled, or fails to retrieve the icon.</p>
 
-    <pre class="prettyprint lang-config">      AddAltByEncoding gzip x-gzip</pre>
+    <pre class="prettyprint lang-config">AddAltByEncoding gzip x-gzip</pre>
 
 
 </div>
@@ -274,7 +274,7 @@ icon selected by MIME content-type</td></tr>
     This alternate text is displayed if the client is image-incapable,
     has image loading disabled, or fails to retrieve the icon.</p>
 
-    <pre class="prettyprint lang-config">      AddAltByType 'plain text' text/plain</pre>
+    <pre class="prettyprint lang-config">AddAltByType 'plain text' text/plain</pre>
 
 
 </div>
@@ -393,7 +393,7 @@ content-encoding</td></tr>
     <p><var>MIME-encoding</var> is a valid content-encoding, such as
     <code>x-compress</code>.</p>
 
-    <pre class="prettyprint lang-config">      AddIconByEncoding /icons/compress.png x-compress</pre>
+    <pre class="prettyprint lang-config">AddIconByEncoding /icons/compress.png x-compress</pre>
 
 
 </div>
@@ -420,7 +420,7 @@ content-type</td></tr>
     <p><var>MIME-type</var> is a wildcard expression matching
     required the mime types.</p>
 
-    <pre class="prettyprint lang-config">      AddIconByType (IMG,/icons/image.png) image/*</pre>
+    <pre class="prettyprint lang-config">AddIconByType (IMG,/icons/image.png) image/*</pre>
 
 
 </div>
@@ -440,7 +440,7 @@ configured</td></tr>
     <var>Url-path</var> is a (%-escaped) relative URL to the icon,
     or a fully qualified remote URL.</p>
 
-    <pre class="prettyprint lang-config">      DefaultIcon /icon/unknown.png</pre>
+    <pre class="prettyprint lang-config">DefaultIcon /icon/unknown.png</pre>
 
 
 </div>
@@ -459,7 +459,7 @@ of the index listing</td></tr>
     of the file that will be inserted at the top of the index
     listing. <var>Filename</var> is the name of the file to include.</p>
 
-    <pre class="prettyprint lang-config">      HeaderName HEADER.html</pre>
+    <pre class="prettyprint lang-config">HeaderName HEADER.html</pre>
 
 
     <div class="note">
@@ -468,7 +468,7 @@ of the index listing</td></tr>
       access the directory being indexed. If <var>Filename</var> begins
       with a slash, it will be taken to be relative to the <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code>.</p>
 
-      <pre class="prettyprint lang-config">        HeaderName /include/HEADER.html</pre>
+      <pre class="prettyprint lang-config">HeaderName /include/HEADER.html</pre>
 
 
       <p><var>Filename</var> must resolve to a document with a major
@@ -478,7 +478,7 @@ of the index listing</td></tr>
       actual file type (as opposed to its output) is marked as
       <code>text/html</code> such as with a directive like:</p>
 
-      <pre class="prettyprint lang-config">        AddType text/html .cgi</pre>
+      <pre class="prettyprint lang-config">AddType text/html .cgi</pre>
 
 
       <p><a href="../content-negotiation.html">Content negotiation</a>
@@ -515,7 +515,7 @@ of the index listing</td></tr>
     <p>The <code class="directive">IndexHeadInsert</code> directive specifies a
     string to insert in the <var>&lt;head&gt;</var> section of the HTML
     generated for the index page.</p>
-    <pre class="prettyprint lang-config">      IndexHeadInsert "&lt;link rel=\"sitemap\" href=\"/sitemap.html\"&gt;"</pre>
+    <pre class="prettyprint lang-config">IndexHeadInsert "&lt;link rel=\"sitemap\" href=\"/sitemap.html\"&gt;"</pre>
 
 
 </div>
@@ -539,7 +539,7 @@ a directory</td></tr>
     files. By default, the list contains <code>.</code> (the current
     directory).</p>
 
-    <pre class="prettyprint lang-config">      IndexIgnore .??* *~ *# HEADER* README* RCS CVS *,v *,t</pre>
+    <pre class="prettyprint lang-config">IndexIgnore .??* *~ *# HEADER* README* RCS CVS *,v *,t</pre>
 
 
     <div class="note"><h3>Regular Expressions</h3>
@@ -620,7 +620,7 @@ indexing</td></tr>
       (It depends on whether the underlying file system
       uses Unicode filenames or not.)
 
-      <pre class="prettyprint lang-config">        IndexOptions Charset=UTF-8</pre>
+      <pre class="prettyprint lang-config">IndexOptions Charset=UTF-8</pre>
 
       </dd>
 
@@ -824,7 +824,7 @@ indexing</td></tr>
       specify the MIME content-type of the generated page. The default
       is <var>text/html</var>.
 
-      <pre class="prettyprint lang-config">        IndexOptions Type=text/plain</pre>
+      <pre class="prettyprint lang-config">IndexOptions Type=text/plain</pre>
 
       </dd>
 
@@ -882,7 +882,7 @@ indexing</td></tr>
 
      <p>will be the equivalent of</p>
 
-     <pre class="prettyprint lang-config">       IndexOptions HTMLTable SuppressColumnsorting</pre>
+     <pre class="prettyprint lang-config">IndexOptions HTMLTable SuppressColumnsorting</pre>
 
      </li>
 
@@ -960,7 +960,7 @@ Name|Date|Size|Description</code></td></tr>
     <p>The <code class="directive">IndexStyleSheet</code> directive sets the name of
     the file that will be used as the CSS for the index listing.
     </p>
-    <pre class="prettyprint lang-config">      IndexStyleSheet "/css/style.css"</pre>
+    <pre class="prettyprint lang-config">IndexStyleSheet "/css/style.css"</pre>
 
 
     <p>Using this directive in conjunction with <code>IndexOptions

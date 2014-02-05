@@ -650,7 +650,7 @@ Virtual Hosting to identify different SSL virtual hosts?</a></h3>
     you must make sure to put the non-SSL port number on the NameVirtualHost
     directive, e.g.</p>
 
-    <pre class="prettyprint lang-config">      NameVirtualHost 192.168.1.1:80</pre>
+    <pre class="prettyprint lang-config">NameVirtualHost 192.168.1.1:80</pre>
 
 
     <p>Other workaround solutions include: </p>

@@ -76,7 +76,7 @@ Includes - SSI)</a></li>
       <code>.config</code>, vous pouvez mettre ceci dans le fichier de
       configuration de votre serveur :</p>
 
-      <pre class="prettyprint lang-config">        AccessFileName .config</pre>
+      <pre class="prettyprint lang-config">AccessFileName .config</pre>
 
     </div>
 

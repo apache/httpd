@@ -109,14 +109,14 @@ Require ip 10 172.20 192.168.2</pre>
 
     <p>Une paire réseau/masque de sous-réseau :</p>
 
-    <pre class="prettyprint lang-config">      Require ip 10.1.0.0/255.255.0.0</pre>
+    <pre class="prettyprint lang-config">Require ip 10.1.0.0/255.255.0.0</pre>
 
     <p>Un réseau a.b.c.d, et un masque de sous-réseau w.x.y.z. pour une
     restriction de sous-réseau plus fine.</p>
 
     <p>Une spécification CIDR réseau/nnn :</p>
 
-    <pre class="prettyprint lang-config">      Require ip 10.1.0.0/16</pre>
+    <pre class="prettyprint lang-config">Require ip 10.1.0.0/16</pre>
 
     <p>Identique au cas précédent, excepté que le masque de sous-réseau
     représente les nnn premiers bits de poids fort.</p>
@@ -178,7 +178,7 @@ Require host .net example.edu</pre>
     <p>L'exemple suivant montre une méthode simple pour sélectionner les
     connexions en provenance de l'hôte local :</p>
 
-    <pre class="prettyprint lang-config">    Require local</pre>
+    <pre class="prettyprint lang-config">Require local</pre>
 
 
 

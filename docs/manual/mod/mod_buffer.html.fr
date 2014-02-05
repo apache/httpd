@@ -60,7 +60,7 @@ d'Apache</td></tr></table>
     directives <code class="directive"><a href="../mod/core.html#setinputfilter">SetInputFilter</a></code>,
     <code class="directive"><a href="../mod/core.html#setoutputfilter">SetOutputFilter</a></code>, <code class="directive"><a href="../mod/mod_mime.html#addoutputfilter">AddOutputFilter</a></code> ou <code class="directive"><a href="../mod/mod_filter.html#addoutputfilterbytype">AddOutputFilterByType</a></code>.</p>
 
-      <div class="example"><h3>Utilisation d'un tampon avec mod_include</h3><pre class="prettyprint lang-config">        AddOutputFilterByType INCLUDES;BUFFER text/html</pre>
+      <div class="example"><h3>Utilisation d'un tampon avec mod_include</h3><pre class="prettyprint lang-config">AddOutputFilterByType INCLUDES;BUFFER text/html</pre>
 </div>
 
     <div class="warning">Les filtres de mise en tampon lisent la

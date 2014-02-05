@@ -143,7 +143,7 @@ available</td></tr>
     <p>Using <code>none</code> for an argument will disable any accept filters
        for that protocol.  This is useful for protocols that require a server
        send data first, such as <code>ftp:</code> or <code>nntp</code>:</p>
-    <pre class="prettyprint lang-config">    AcceptFilter nntp none</pre>
+    <pre class="prettyprint lang-config">AcceptFilter nntp none</pre>
 
 
     <p>The default protocol names are <code>https</code> for port 443

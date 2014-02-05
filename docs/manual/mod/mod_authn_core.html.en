@@ -144,7 +144,7 @@ authentication</td></tr>
 
    <p>For example:</p>
 
-   <pre class="prettyprint lang-config">     AuthName "Top Secret"</pre>
+   <pre class="prettyprint lang-config">AuthName "Top Secret"</pre>
 
 
     <p>The string provided for the <code>AuthName</code> is what will

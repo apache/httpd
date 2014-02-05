@@ -119,7 +119,7 @@ meta information</td></tr>
     will use its contents to generate additional MIME header
     information.</p>
 
-    <div class="example"><h3>Example:</h3><pre class="prettyprint lang-config">      MetaSuffix .meta</pre>
+    <div class="example"><h3>Example:</h3><pre class="prettyprint lang-config">MetaSuffix .meta</pre>
 </div>
 
 </div>

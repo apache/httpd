@@ -433,7 +433,7 @@ Swap:       3903784      12540  3891244</pre></div>
                     can be specified on a per module basis: 
                 </p>
                 
-                <pre class="prettyprint lang-config">                    LogLevel debug mod_ssl:warn</pre>
+                <pre class="prettyprint lang-config">LogLevel debug mod_ssl:warn</pre>
 
                 
                 <p>

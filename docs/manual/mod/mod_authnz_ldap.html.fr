@@ -1190,9 +1190,9 @@ distant utilisé tel quel)</code></td></tr>
      utiliser de nom d'utilisateur dédié via la directive <code class="directive"><a href="#authldapbinddn">AuthLDAPBindDN</a></code>.
      </p>
 
-    <pre class="prettyprint lang-config"> AuthLDAPInitialBindPattern (.+) $1@example.com</pre>
+    <pre class="prettyprint lang-config">AuthLDAPInitialBindPattern (.+) $1@example.com</pre>
 
-    <pre class="prettyprint lang-config"> AuthLDAPInitialBindPattern (.+) cn=$1,dc=example,dc=com</pre>
+    <pre class="prettyprint lang-config">AuthLDAPInitialBindPattern (.+) cn=$1,dc=example,dc=com</pre>
 
 
     <div class="note"><h3>Non disponible dans la cas d'une autorisation seule</h3>

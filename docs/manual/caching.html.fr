@@ -674,7 +674,7 @@ CacheDirLength 1</pre>
 	réutiliser le descripteur de fichier mis en cache pour tous les
 	accès futurs à ce fichier.</p>
 
-        <pre class="prettyprint lang-config">        CacheFile /usr/local/apache2/htdocs/index.html</pre>
+        <pre class="prettyprint lang-config">CacheFile /usr/local/apache2/htdocs/index.html</pre>
 
 
         <p>Si vous désirez mettre en cache un grand nombre de fichiers
@@ -778,7 +778,7 @@ sys     0m0.000s</pre></div>
       utilisera le contenu chargé en mémoire pour satisfaire ultérieurement
       toutes les demandes d'accès à ce fichier.</p>
 
-        <pre class="prettyprint lang-config">        MMapFile /usr/local/apache2/htdocs/index.html</pre>
+        <pre class="prettyprint lang-config">MMapFile /usr/local/apache2/htdocs/index.html</pre>
 
 
       <p>Comme dans le cas de la directive

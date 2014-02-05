@@ -151,7 +151,7 @@ l'authentification HTTP</td></tr>
 
    <p>Par exemple :</p>
 
-   <pre class="prettyprint lang-config">     AuthName "Top Secret"</pre>
+   <pre class="prettyprint lang-config">AuthName "Top Secret"</pre>
 
 
     <p>La chaîne fournie comme argument à <code>AuthName</code>

@@ -284,7 +284,7 @@ serveur HTTP Apache</a> pour des exemples supplémentaires.
     d'environnement <em>env-variable</em> de la même manière que la
     directive <code class="directive">SetEnvIf</code>.</p>
 
-<pre class="prettyprint lang-config">    SetEnvIfExpr "tolower(req('X-Sendfile')) == 'd:\images\very_big.iso')" iso_delivered</pre>
+<pre class="prettyprint lang-config">SetEnvIfExpr "tolower(req('X-Sendfile')) == 'd:\images\very_big.iso')" iso_delivered</pre>
 
 
     <p>Dans cet exemple, la variable d'environnement
@@ -295,7 +295,7 @@ serveur HTTP Apache</a> pour des exemples supplémentaires.
     l'adresse IP distante est une adresse privée au sens de la RFC 1918
     :</p>
 
-<pre class="prettyprint lang-config">    SetEnvIfExpr "-R '10.0.0.0/8' || -R '172.16.0.0/12' || -R '192.168.0.0/16'" rfc1918</pre>
+<pre class="prettyprint lang-config">SetEnvIfExpr "-R '10.0.0.0/8' || -R '172.16.0.0/12' || -R '192.168.0.0/16'" rfc1918</pre>
 
 
 <h3>Voir aussi</h3>
@@ -325,7 +325,7 @@ attributs de la requête sans tenir compte de la casse</td></tr>
     d'un point de vue sémantique à la directive <code class="directive"><a href="#setenvif">SetEnvIf</a></code>, et ne s'en distingue que
     par le fait que la comparaison des expressions rationnelles est
     effectuée sans tenir compte de la casse. Par exemple :</p>
-<pre class="prettyprint lang-config">   SetEnvIfNoCase Host Example\.Org site=apache</pre>
+<pre class="prettyprint lang-config">SetEnvIfNoCase Host Example\.Org site=apache</pre>
 
 
     <p>Cette ligne va définir la variable d'environnement

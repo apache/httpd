@@ -164,7 +164,7 @@
     <p>Do this by specifying the name of the module in your
     <code class="directive">LogLevel</code> directive:</p>
 
-    <pre class="prettyprint lang-config">    LogLevel info rewrite:trace5</pre>
+    <pre class="prettyprint lang-config">LogLevel info rewrite:trace5</pre>
 
 
     <p>This sets the main <code class="directive">LogLevel</code> to info, but
@@ -547,7 +547,7 @@ LogFormat "%!200,304,302{Referer}i" refererlog</pre>
     for this purpose. For example, to rotate the logs every 24 hours, you
     can use:</p>
 
-    <pre class="prettyprint lang-config">      CustomLog "|/usr/local/apache/bin/rotatelogs /var/log/access_log 86400" common</pre>
+    <pre class="prettyprint lang-config">CustomLog "|/usr/local/apache/bin/rotatelogs /var/log/access_log 86400" common</pre>
 
 
     <p>Notice that quotes are used to enclose the entire command

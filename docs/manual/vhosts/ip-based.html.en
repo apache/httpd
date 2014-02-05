@@ -113,7 +113,7 @@ Virtual Hosts</a> to help you decide.  </p>
     configuration file to select which IP address (or virtual host)
     that daemon services. e.g.</p>
 
-    <pre class="prettyprint lang-config">    Listen 192.0.2.100:80</pre>
+    <pre class="prettyprint lang-config">Listen 192.0.2.100:80</pre>
 
 
     <p>It is recommended that you use an IP address instead of a

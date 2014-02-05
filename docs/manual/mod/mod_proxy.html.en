@@ -233,7 +233,7 @@ ProxyVia On
       <code class="directive"><a href="#proxypassmatch">ProxyPassMatch</a></code> when used
       for a reverse proxy:</p>
 
-      <pre class="prettyprint lang-config">          ProxyPass /example http://backend.example.com connectiontimeout=5 timeout=30</pre>
+      <pre class="prettyprint lang-config">ProxyPass /example http://backend.example.com connectiontimeout=5 timeout=30</pre>
 
 
       <p>This will create a worker associated with the origin server URL
@@ -241,7 +241,7 @@ ProxyVia On
       values. When used in a forward proxy, workers are usually defined
       via the <code class="directive"><a href="#proxyset">ProxySet</a></code> directive:</p>
 
-      <pre class="prettyprint lang-config">          ProxySet http://backend.example.com connectiontimeout=5 timeout=30</pre>
+      <pre class="prettyprint lang-config">ProxySet http://backend.example.com connectiontimeout=5 timeout=30</pre>
 
 
       <p>or alternatively using <code class="directive"><a href="#proxy">Proxy</a></code>
@@ -799,7 +799,7 @@ response</td></tr>
     <p>Note that the DNS lookups may slow down the startup time of the
     server.</p>
 
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">      ProxyBlock news.example.com auctions.example.com friends.example.com</pre>
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">ProxyBlock news.example.com auctions.example.com friends.example.com</pre>
 </div>
 
     <p>Note that <code>example</code> would also be sufficient to match any
@@ -809,7 +809,7 @@ response</td></tr>
 
     <p>Note also that</p>
 
-    <pre class="prettyprint lang-config">      ProxyBlock *</pre>
+    <pre class="prettyprint lang-config">ProxyBlock *</pre>
 
 
     <p>blocks connections to all sites.</p>
@@ -935,7 +935,7 @@ through</td></tr>
     <code>Max-Forwards</code> header supplied with the request. This may
     be set to prevent infinite proxy loops, or a DoS attack.</p>
 
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">      ProxyMaxForwards 15</pre>
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">ProxyMaxForwards 15</pre>
 </div>
 
     <p>Note that setting <code class="directive">ProxyMaxForwards</code> is a
@@ -1004,7 +1004,7 @@ through</td></tr>
     the below syntax is that it allows for dynamic control via the
     <a href="mod_proxy_balancer.html#balancer_manager">Balancer Manager</a> interface:</p>
 
-    <pre class="prettyprint lang-config">        ProxyPass /mirror/foo/ http://backend.example.com/</pre>
+    <pre class="prettyprint lang-config">ProxyPass /mirror/foo/ http://backend.example.com/</pre>
 
 
     <div class="warning">
@@ -1074,7 +1074,7 @@ ProxyPass /mirror/foo http://backend.example.com</pre>
     among all child processes, except when only one child process is allowed
     by configuration or MPM design.</p>
 
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">        ProxyPass /example http://backend.example.com max=20 ttl=120 retry=300</pre>
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">ProxyPass /example http://backend.example.com max=20 ttl=120 retry=300</pre>
 </div>
 
     <table class="bordered"><tr><th>BalancerMember parameters</th></tr></table>
@@ -1495,7 +1495,7 @@ ProxyPassReverse  /mirror/foo/ https://backend.example.com/</pre>
     <p>Suppose the local server has address <code>http://example.com/</code>;
     then</p>
 
-    <pre class="prettyprint lang-config">      ProxyPassMatch ^(/.*\.gif)$ http://backend.example.com$1</pre>
+    <pre class="prettyprint lang-config">ProxyPassMatch ^(/.*\.gif)$ http://backend.example.com$1</pre>
 
 
     <p>will cause a local request for
@@ -1505,12 +1505,12 @@ ProxyPassReverse  /mirror/foo/ https://backend.example.com/</pre>
       <p>The URL argument must be parsable as a URL <em>before</em> regexp
       substitutions (as well as after).  This limits the matches you can use.
       For instance, if we had used</p>
-      <pre class="prettyprint lang-config">        ProxyPassMatch ^(/.*\.gif)$ http://backend.example.com:8000$1</pre>
+      <pre class="prettyprint lang-config">ProxyPassMatch ^(/.*\.gif)$ http://backend.example.com:8000$1</pre>
 
       <p>in our previous example, it would fail with a syntax error
       at server startup.  This is a bug (PR 46665 in the ASF bugzilla),
       and the workaround is to reformulate the match:</p>
-      <pre class="prettyprint lang-config">        ProxyPassMatch ^/(.*\.gif)$ http://backend.example.com:8000/$1</pre>
+      <pre class="prettyprint lang-config">ProxyPassMatch ^/(.*\.gif)$ http://backend.example.com:8000/$1</pre>
 
     </div>
     <p>The <code>!</code> directive is useful in situations where you don't want
@@ -1644,7 +1644,7 @@ reverse proxy. This directive rewrites the <code>path</code> string in
 In the example given with 
 <code class="directive"><a href="#proxypassreverse">ProxyPassReverse</a></code>, the directive:
 </p>
-    <pre class="prettyprint lang-config">      ProxyPassReverseCookiePath  /  /mirror/foo/</pre>
+    <pre class="prettyprint lang-config">ProxyPassReverseCookiePath  /  /mirror/foo/</pre>
 
 <p>
 will rewrite a cookie with backend path <code>/</code> (or
@@ -1692,7 +1692,7 @@ connections</td></tr>
     to <code>0</code> to indicate that the system's default buffer size should
     be used.</p>
 
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">      ProxyReceiveBufferSize 2048</pre>
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">ProxyReceiveBufferSize 2048</pre>
 </div>
 
 </div>
@@ -1817,10 +1817,10 @@ expressions</td></tr>
 &lt;/Proxy&gt;</pre>
 
 
-    <pre class="prettyprint lang-config">        ProxySet balancer://foo lbmethod=bytraffic timeout=15</pre>
+    <pre class="prettyprint lang-config">ProxySet balancer://foo lbmethod=bytraffic timeout=15</pre>
 
 
-    <pre class="prettyprint lang-config">        ProxySet ajp://backend:7001 timeout=15</pre>
+    <pre class="prettyprint lang-config">ProxySet ajp://backend:7001 timeout=15</pre>
 
 
    <div class="warning"><h3>Warning</h3>

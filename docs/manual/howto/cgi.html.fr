@@ -65,7 +65,7 @@
     commentée dans votre <code>httpd.conf</code>. Une directive correcte
     doit ressembler à ceci :
 
-    <pre class="prettyprint lang-config">      LoadModule cgi_module modules/mod_cgi.so</pre>
+    <pre class="prettyprint lang-config">LoadModule cgi_module modules/mod_cgi.so</pre>
 </div>
 
     <h3><a name="scriptalias" id="scriptalias">ScriptAlias</a></h3>
@@ -80,7 +80,7 @@
       <p>La directive <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code> se présente comme suit
       :</p>
 
-      <pre class="prettyprint lang-config">        ScriptAlias /cgi-bin/ /usr/local/apache2/cgi-bin/</pre>
+      <pre class="prettyprint lang-config">ScriptAlias /cgi-bin/ /usr/local/apache2/cgi-bin/</pre>
 
 
       <p>Cet exemple est tiré de votre fichier de configuration
@@ -157,7 +157,7 @@
       extension <code>cgi</code> ou <code>pl</code> en tant que
       programmes CGI :</p>
 
-      <pre class="prettyprint lang-config">        AddHandler cgi-script .cgi .pl</pre>
+      <pre class="prettyprint lang-config">AddHandler cgi-script .cgi .pl</pre>
 
     
 
@@ -348,7 +348,7 @@ print "Hello, World.";</pre>
       trouve à la première ligne de votre programme CGI et qui va
       ressembler à ceci :</p>
 
-      <pre class="prettyprint lang-perl">        #!/usr/bin/perl</pre>
+      <pre class="prettyprint lang-perl">#!/usr/bin/perl</pre>
 
 
       <p>Assurez-vous qu'il s'agit bien du chemin correct vers

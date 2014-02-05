@@ -361,7 +361,7 @@ handler</td></tr>
     activate CGI scripts with the file extension <code>.cgi</code>, you
     might use:</p>
 
-    <pre class="prettyprint lang-config">      AddHandler cgi-script .cgi</pre>
+    <pre class="prettyprint lang-config">AddHandler cgi-script .cgi</pre>
 
 
     <p>Once that has been put into your httpd.conf file, any file containing
@@ -492,7 +492,7 @@ responses from the server</td></tr>
     <code>.shtml</code> files for server-side includes and will then
     compress the output using <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code>.</p>
 
-    <pre class="prettyprint lang-config">      AddOutputFilter INCLUDES;DEFLATE shtml</pre>
+    <pre class="prettyprint lang-config">AddOutputFilter INCLUDES;DEFLATE shtml</pre>
 
 
     <p>If more than one filter is specified, they must be separated
@@ -562,12 +562,12 @@ type</td></tr>
       <code class="directive"><a href="#typesconfig">TypesConfig</a></code> file.
     </div>
 
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">      AddType image/gif .gif</pre>
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">AddType image/gif .gif</pre>
 </div>
 
     <p>Or, to specify multiple file extensions in one directive:</p>
 
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">      AddType image/jpeg jpeg jpg jpe</pre>
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">AddType image/jpeg jpeg jpg jpe</pre>
 </div>
 
     <p>The <var>extension</var> argument is case-insensitive and can
@@ -580,7 +580,7 @@ type</td></tr>
     can be achieved by qualifying a <var>media-type</var> with
     <code>qs</code>:</p>
 
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">      AddType application/rss+xml;qs=0.8 .xml</pre>
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">AddType application/rss+xml;qs=0.8 .xml</pre>
 </div>
 
     <p>This is useful in situations, <em>e.g.</em> when a client
@@ -627,7 +627,7 @@ assigned a language-tag by some other means.</td></tr>
     by <code class="directive"><a href="#addlanguage">AddLanguage</a></code>, then no
     Content-Language header field will be generated.</p>
 
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">      DefaultLanguage en</pre>
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">DefaultLanguage en</pre>
 </div>
 
 <h3>See also</h3>
@@ -654,7 +654,7 @@ components as part of the filename</td></tr>
 
     <p>This directive is recommended when you have a virtual filesystem.</p>
 
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">      ModMimeUsePathInfo On</pre>
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">ModMimeUsePathInfo On</pre>
 </div>
 
     <p>If you have a request for <code>/index.php/foo.shtml</code>
@@ -718,7 +718,7 @@ a matching file with MultiViews</td></tr>
     and filters to participate in Multviews, but will exclude unknown
     files:</p>
 
-    <pre class="prettyprint lang-config">      MultiviewsMatch Handlers Filters</pre>
+    <pre class="prettyprint lang-config">MultiviewsMatch Handlers Filters</pre>
 
 
     <p><code class="directive">MultiviewsMatch</code> is not allowed in a
@@ -752,7 +752,7 @@ extensions</td></tr>
     <p>The <var>extension</var> argument is case-insensitive and can
     be specified with or without a leading dot.</p>
 
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">      RemoveCharset .html .shtml</pre>
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">RemoveCharset .html .shtml</pre>
 </div>
 
 </div>
@@ -814,10 +814,10 @@ extensions</td></tr>
     associations inherited from parent directories or the server
     config files. An example of its use might be:</p>
 
-    <div class="example"><h3>/foo/.htaccess:</h3><pre class="prettyprint lang-config">      AddHandler server-parsed .html</pre>
+    <div class="example"><h3>/foo/.htaccess:</h3><pre class="prettyprint lang-config">AddHandler server-parsed .html</pre>
 </div>
 
-    <div class="example"><h3>/foo/bar/.htaccess:</h3><pre class="prettyprint lang-config">      RemoveHandler .html</pre>
+    <div class="example"><h3>/foo/bar/.htaccess:</h3><pre class="prettyprint lang-config">RemoveHandler .html</pre>
 </div>
 
     <p>This has the effect of returning <code>.html</code> files in
@@ -900,7 +900,7 @@ extensions</td></tr>
     <p>The <var>extension</var> argument is case-insensitive and can
     be specified with or without a leading dot.</p>
 
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">      RemoveOutputFilter shtml</pre>
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">RemoveOutputFilter shtml</pre>
 </div>
 
 <h3>See also</h3>
@@ -927,7 +927,7 @@ extensions</td></tr>
     directories or the server config files. An example of its use
     might be:</p>
 
-    <div class="example"><h3>/foo/.htaccess:</h3><pre class="prettyprint lang-config">      RemoveType .cgi</pre>
+    <div class="example"><h3>/foo/.htaccess:</h3><pre class="prettyprint lang-config">RemoveType .cgi</pre>
 </div>
 
     <p>This will remove any special handling of <code>.cgi</code>

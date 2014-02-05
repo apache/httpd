@@ -69,7 +69,7 @@ client</td></tr>
     <p>Voici un exemple simple de configuration qui permet de comprimer
     les types de contenu à base de texte.</p>
 
-    <div class="example"><h3>Ne comprime que certains types de documents</h3><pre class="prettyprint lang-config">      AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript</pre>
+    <div class="example"><h3>Ne comprime que certains types de documents</h3><pre class="prettyprint lang-config">AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript</pre>
 </div>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -186,7 +186,7 @@ SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip</pre>
     <code>DEFLATE</code> dépend du contenu de l'en-tête
     <code>User-Agent</code>, vous devez spécifier :</p>
 
-    <pre class="prettyprint lang-config">      Header append Vary User-Agent</pre>
+    <pre class="prettyprint lang-config">Header append Vary User-Agent</pre>
 
 
     <p>Si votre décision de comprimer le contenu dépend d'autres
@@ -195,7 +195,7 @@ SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip</pre>
     <code>Vary</code> la valeur <code>*</code>, ce qui permet d'empêcher
     les mandataires compatibles de tout mettre en cache.</p>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">      Header set Vary *</pre>
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">Header set Vary *</pre>
 </div>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

@@ -252,7 +252,7 @@ ProxyVia On
       Ils sont en général définis via les directives <code class="directive"><a href="#proxypass">ProxyPass</a></code> ou <code class="directive"><a href="#proxypassmatch">ProxyPassMatch</a></code> lorsqu'on les
       utilise dans le cadre d'un mandataire inverse :</p>
 
-      <div class="example"><pre class="prettyprint lang-config">          ProxyPass /example http://backend.example.com connectiontimeout=5 timeout=30</pre>
+      <div class="example"><pre class="prettyprint lang-config">ProxyPass /example http://backend.example.com connectiontimeout=5 timeout=30</pre>
 </div>
       
 
@@ -262,7 +262,7 @@ ProxyVia On
       d'un mandataire direct, les workers sont en général définis via la
       directive <code class="directive"><a href="#proxyset">ProxySet</a></code>,</p>
 
-      <div class="example"><pre class="prettyprint lang-config">          ProxySet http://backend.example.com connectiontimeout=5 timeout=30</pre>
+      <div class="example"><pre class="prettyprint lang-config">ProxySet http://backend.example.com connectiontimeout=5 timeout=30</pre>
 </div>
       
 
@@ -897,7 +897,7 @@ incorrectes d'une réponse</td></tr>
     <p>Notez que les recherches DNS peuvent ralentir le processus de
     démarrage du serveur.</p>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">      ProxyBlock news.example.com auctions.example.com friends.example.com</pre>
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">ProxyBlock news.example.com auctions.example.com friends.example.com</pre>
 </div>
 
     <p>Notez qu'<code>example</code> suffirait aussi pour atteindre
@@ -907,7 +907,7 @@ incorrectes d'une réponse</td></tr>
 
     <p>Notez aussi que</p>
 
-    <pre class="prettyprint lang-config">      ProxyBlock *</pre>
+    <pre class="prettyprint lang-config">ProxyBlock *</pre>
 
 
     <p>bloque les connexions vers tous les sites.</p>
@@ -1047,7 +1047,7 @@ requête peut être redirigée</td></tr>
     contre les boucles infinies de mandataires ou contre les attaques de
     type déni de service.</p>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">      ProxyMaxForwards 15</pre>
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">ProxyMaxForwards 15</pre>
 </div>
 
     <p>Notez que la définition de la directive
@@ -1123,7 +1123,7 @@ l'espace d'URLs du serveur local</td></tr>
     présente en très grand nombre. Elle possède l'avantage de
     permettre un contrôle dynamique via l'interface <a href="mod_proxy_balancer.html#balancer_manager">Balancer Manager</a> :</p>
 
-    <pre class="prettyprint lang-config">        ProxyPass /miroir/foo/ http://backend.example.com/</pre>
+    <pre class="prettyprint lang-config">ProxyPass /miroir/foo/ http://backend.example.com/</pre>
 
 
     <div class="warning">
@@ -1200,7 +1200,7 @@ ProxyPass /mirror/foo http://backend.example.com</pre>
     enfants, sauf si un seul processus enfant est autorisé par la
     configuration ou la conception du module multi-processus (MPM).</p>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">        ProxyPass /example http://backend.example.com max=20 ttl=120 retry=300</pre>
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">ProxyPass /example http://backend.example.com max=20 ttl=120 retry=300</pre>
 </div>
 
     <table class="bordered"><tr><th>Paramètres de BalancerMember</th></tr></table>
@@ -1696,7 +1696,7 @@ du serveur local en utilisant des expressions rationnelles</td></tr>
     <p>Supposons que le serveur local a pour adresse
     <code>http://example.com/</code> ; alors</p>
 
-    <pre class="prettyprint lang-config">      ProxyPassMatch ^(/.*\.gif)$ http://backend.example.com$1</pre>
+    <pre class="prettyprint lang-config">ProxyPassMatch ^(/.*\.gif)$ http://backend.example.com$1</pre>
 
 
     <p>va provoquer la conversion interne de la requête locale
@@ -1708,13 +1708,13 @@ du serveur local en utilisant des expressions rationnelles</td></tr>
       <em>avant</em> les substitutions d'expressions rationnelles (et
       doit aussi l'être après). Ceci limite les correspondances que vous
       pouvez utiliser. Par exemple, si l'on avait utilisé</p>
-      <pre class="prettyprint lang-config">        ProxyPassMatch ^(/.*\.gif)$ http://backend.example.com:8000$1</pre>
+      <pre class="prettyprint lang-config">ProxyPassMatch ^(/.*\.gif)$ http://backend.example.com:8000$1</pre>
 
       <p>dans l'exemple précédent, nous aurions provoqué une erreur de
       syntaxe au démarrage du serveur. C'est une bogue (PR 46665 dans
       ASF bugzilla), et il est possible de la contourner en reformulant
       la correspondance :</p>
-      <pre class="prettyprint lang-config">        ProxyPassMatch ^/(.*\.gif)$ http://backend.example.com:8000/$1</pre>
+      <pre class="prettyprint lang-config">ProxyPassMatch ^/(.*\.gif)$ http://backend.example.com:8000/$1</pre>
 
     </div>
 
@@ -1866,7 +1866,7 @@ réécrire la chaîne <code>path</code> dans les en-têtes
 </p><p>
 Dans l'exemple fourni avec la directive <code class="directive"><a href="#proxypassreverse">ProxyPassReverse</a></code>, la directive :
 </p>
-    <pre class="prettyprint lang-config">      ProxyPassReverseCookiePath  /  /mirror/foo/</pre>
+    <pre class="prettyprint lang-config">ProxyPassReverseCookiePath  /  /mirror/foo/</pre>
 
 <p>
 va réécrire un cookie possédant un chemin d'arrière-plan <code>/</code>
@@ -1917,7 +1917,7 @@ et FTP</td></tr>
     <code>0</code> pour indiquer que la taille de tampon par défaut du
     système doit être utilisée.</p>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">      ProxyReceiveBufferSize 2048</pre>
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">ProxyReceiveBufferSize 2048</pre>
 </div>
 
 </div>
@@ -2056,10 +2056,10 @@ charge</td></tr>
 &lt;/Proxy&gt;</pre>
 
 
-    <pre class="prettyprint lang-config">        ProxySet balancer://foo lbmethod=bytraffic timeout=15</pre>
+    <pre class="prettyprint lang-config">ProxySet balancer://foo lbmethod=bytraffic timeout=15</pre>
 
 
-    <pre class="prettyprint lang-config">        ProxySet ajp://backend:7001 timeout=15</pre>
+    <pre class="prettyprint lang-config">ProxySet ajp://backend:7001 timeout=15</pre>
 
 
    <div class="warning"><h3>Avertissement</h3>

@@ -177,7 +177,7 @@
     <p>Pour ce faire, vous devez spécifier le nom du module dans votre
     directive <code class="directive">LogLevel</code> :</p>
 
-    <pre class="prettyprint lang-config">    LogLevel info rewrite:trace5</pre>
+    <pre class="prettyprint lang-config">LogLevel info rewrite:trace5</pre>
 
 
     <p>Dans cet exemple, le niveau de journalisation général est défini
@@ -593,7 +593,7 @@ LogFormat "%!200,304,302{Referer}i" refererlog</pre>
     appelé <code class="program"><a href="./programs/rotatelogs.html">rotatelogs</a></code>. Par exemple, pour une rotation des
     journaux toutes les 24 heures, ajoutez ces lignes :</p>
 
-    <pre class="prettyprint lang-config">      CustomLog "|/usr/local/apache/bin/rotatelogs /var/log/access_log 86400" common</pre>
+    <pre class="prettyprint lang-config">CustomLog "|/usr/local/apache/bin/rotatelogs /var/log/access_log 86400" common</pre>
 
 
     <p>Notez que l'ensemble de la commande qui sera appelée par le tube de
