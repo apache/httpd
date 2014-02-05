@@ -613,11 +613,15 @@ if (typeof(prettyPrint) !== 'undefined') {
 <xsl:choose>
 <!-- Simple case: only one text node -->
 <xsl:when test="node()[position() = 1 and self::text()] and count(node()) = 1">
-    <xsl:call-template name="pre-rtrim">
+    <xsl:call-template name="pre-ltrim-one">
         <xsl:with-param name="string">
-            <xsl:call-template name="pre-ltrim">
-                <xsl:with-param name="string"
-                    select="node()[position() = 1 and self::text()]" />
+            <xsl:call-template name="pre-rtrim">
+                <xsl:with-param name="string">
+                    <xsl:call-template name="pre-ltrim">
+                        <xsl:with-param name="string"
+                            select="node()[position() = 1 and self::text()]" />
+                    </xsl:call-template>
+                </xsl:with-param>
             </xsl:call-template>
         </xsl:with-param>
     </xsl:call-template>
@@ -646,11 +650,23 @@ if (typeof(prettyPrint) !== 'undefined') {
         </xsl:choose>
     </xsl:variable>
 
+    <xsl:variable name="out">
+        <xsl:apply-templates select="node()[position() &gt;= $from and position() &lt;= $to]" />
+    </xsl:variable>
+
     <xsl:if test="$from = 2">
-        <xsl:call-template name="pre-ltrim">
-            <xsl:with-param name="string"
-                select="node()[position() = 1 and self::text()]" />
-        </xsl:call-template>
+        <xsl:choose>
+        <xsl:when test="contains($out, '&#x0a;')">
+            <xsl:call-template name="pre-ltrim">
+                <xsl:with-param name="string"
+                    select="node()[position() = 1 and self::text()]" />
+            </xsl:call-template>
+        </xsl:when>
+        <xsl:otherwise>
+            <xsl:variable name="tmp" select="node()[position() = 1 and self::text()]" />
+            <xsl:value-of select="substring($tmp, string-length(substring-before($tmp, substring(normalize-space($tmp), 1, 1))) + 1, string-length($tmp))" />
+        </xsl:otherwise>
+        </xsl:choose>
     </xsl:if>
 
     <xsl:apply-templates select="node()[position() &gt;= $from and position() &lt;= $to]" />

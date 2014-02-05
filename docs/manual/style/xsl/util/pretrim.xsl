@@ -24,6 +24,21 @@
 <xsl:include href="string-reverse.xsl" />
 
 
+<!-- strip whitespace at the beginning if one-liner -->
+<xsl:template name="pre-ltrim-one">
+<xsl:param name="string" />
+
+<xsl:choose>
+<xsl:when test="contains($string, '&#x0a;')">
+  <xsl:value-of select="$string" />
+</xsl:when>
+<xsl:otherwise>
+    <xsl:value-of select="substring($string, string-length(substring-before($string, substring(normalize-space($string), 1, 1))) + 1, string-length($string))" />
+</xsl:otherwise>
+</xsl:choose>
+</xsl:template>
+
+
 <!-- strip empty lines at the beginning -->
 <xsl:template name="pre-ltrim">
 <xsl:param name="string" />
