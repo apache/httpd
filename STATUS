@@ -194,7 +194,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * mod_rewrite: Add %{CONN_REMOTE_ADDR} to mod_rewrite PR56094
      trunk patch: https://svn.apache.org/r1563418
      2.4.x patch: trunk works
-     +1 covener, jim
+     +1: covener, jim
 
    * mod_ssl: enable auto curve selection for ECDHE / OpenSSL 1.0.2
      trunk patch: https://svn.apache.org/r1563420
@@ -204,13 +204,19 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * mod_remoteip: Correct the trusted proxy match test. PR54651
      trunk patch: https://svn.apache.org/r1564052
      2.4.x patch: trunk works
-     +1 mrumph
+     +1: mrumph
 
    * mod_remoteip: Use the correct IP addresses to populate the proxy_ips field.
                    PR54651
      trunk patch: https://svn.apache.org/r1564475
      2.4.x patch: trunk works
-     +1 mrumph
+     +1: mrumph
+
+   * mod_proxy_fcgi: Fix error message when an unexpected protocol version
+     number is received from the application.  PR 56110.
+     trunk patch: http://svn.apache.org/r1564756
+     2.4.x patch: trunk patch works with manipulation of CHANGES
+     +1: trawick
 
 OTHER PROPOSALS
 
