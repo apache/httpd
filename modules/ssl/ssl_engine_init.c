@@ -979,7 +979,14 @@ static apr_status_t ssl_init_server_certs(server_rec *s,
         /* warn about potential cert issues */
         ssl_check_public_cert(s, ptemp, cert, key_id);
 
-#ifdef HAVE_OCSP_STAPLING
+#if defined(HAVE_OCSP_STAPLING) && !defined(SSL_CTRL_SET_CURRENT_CERT)
+        /* 
+         * OpenSSL up to 1.0.1: configure stapling as we go. In 1.0.2
+         * and later, there's SSL_CTX_set_current_cert, which allows
+         * iterating over all certs in an SSL_CTX (including those possibly
+         * loaded via SSLOpenSSLConfCmd Certificate), so for 1.0.2 and
+         * later, we defer to the code in ssl_init_server_ctx.
+         */
         if ((mctx->stapling_enabled == TRUE) &&
             !ssl_stapling_init_cert(s, mctx, cert)) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(02567)
@@ -1305,23 +1312,6 @@ static apr_status_t ssl_init_server_ctx(server_rec *s,
                          "\"SSLOpenSSLConfCmd %s %s\" applied to %s",
                          param->name, param->value, sc->vhost_id);
         }
-#ifdef HAVE_OCSP_STAPLING
-        /*
-         * Special case: if OCSP stapling is enabled, and a certificate
-         * has been loaded via "SSLOpenSSLConfCmd Certificate ...", then
-         * we also need to call ssl_stapling_init_cert here.
-         */
-        if ((sc->server->stapling_enabled == TRUE) &&
-            !strcasecmp(param->name, "Certificate")) {
-            X509 *cert = SSL_CTX_get0_certificate(sc->server->ssl_ctx);
-            if (!cert || !ssl_stapling_init_cert(s, sc->server, cert)) {
-                ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(02571)
-                             "Unable to configure certificate loaded "
-                             "from %s for %s for stapling",
-                             param->value, sc->vhost_id);
-            }
-        }
-#endif
     }
     if (SSL_CONF_CTX_finish(cctx) == 0) {
             ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(02547)
@@ -1340,6 +1330,32 @@ static apr_status_t ssl_init_server_ctx(server_rec *s,
         ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
         return ssl_die(s);
     }
+
+#if defined(HAVE_OCSP_STAPLING) && defined(SSL_CTRL_SET_CURRENT_CERT)
+    /*
+     * OpenSSL 1.0.2 and later allows iterating over all SSL_CTX certs
+     * by means of SSL_CTX_set_current_cert. Enabling stapling at this
+     * (late) point makes sure that we catch both certificates loaded
+     * via SSLCertificateFile and SSLOpenSSLConfCmd Certificate.
+     */
+    if (sc->server->stapling_enabled == TRUE) {
+        X509 *cert;
+        int i = 0;
+        int ret = SSL_CTX_set_current_cert(sc->server->ssl_ctx,
+                                           SSL_CERT_SET_FIRST);
+        while (ret) {
+            cert = SSL_CTX_get0_certificate(sc->server->ssl_ctx);
+            if (!cert || !ssl_stapling_init_cert(s, sc->server, cert)) {
+                ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO()
+                             "Unable to configure certificate %s:%d "
+                             "for stapling", sc->vhost_id, i);
+            }
+            ret = SSL_CTX_set_current_cert(sc->server->ssl_ctx,
+                                           SSL_CERT_SET_NEXT);
+            i++;
+        }
+    }
+#endif
 
 #ifdef HAVE_TLS_SESSION_TICKETS
     if ((rv = ssl_init_ticket_key(s, p, ptemp, sc->server)) != APR_SUCCESS) {
