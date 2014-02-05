@@ -20,7 +20,7 @@ AliasMatch ^/manual(?:/(?:da|de|en|es|fr|ja|ko|pt-br|ru|tr|zh-cn))?(/.*)?$ "@exp
     </Files>
     # .tr is text/troff in mime.types!
     <Files *.html.tr.utf8>
-        ForceType text/html
+        ForceType "text/html; charset=utf-8"
     </Files>
 
     AddLanguage da .da
