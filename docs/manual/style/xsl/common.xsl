@@ -604,13 +604,144 @@ if (typeof(prettyPrint) !== 'undefined') {
 <!-- /section/section/section/section -->
 
 
+<!-- O(log(n)) (stack usage!) string reverter -->
+<xsl:template name="string-reverse">
+<xsl:param name="string"/>
+<xsl:variable name="length" select="string-length($string)"/>
+
+<xsl:choose>
+<xsl:when test="$length &lt; 2">
+  <xsl:value-of select="$string"/>
+</xsl:when>
+<xsl:when test="$length = 2">
+  <xsl:value-of select="concat(substring($string, 2, 1), substring($string, 1, 1))"/>
+</xsl:when>
+<xsl:otherwise>
+  <xsl:variable name="middle" select="floor($length div 2)"/>
+
+  <xsl:call-template name="string-reverse">
+    <xsl:with-param name="string" select="substring($string, $middle + 1, $middle + 1)"/>
+  </xsl:call-template>
+  <xsl:call-template name="string-reverse">
+    <xsl:with-param name="string" select="substring($string, 1, $middle)"/>
+  </xsl:call-template>
+</xsl:otherwise>
+</xsl:choose>
+</xsl:template>
+
+<!-- strip empty lines at the beginning -->
+<xsl:template name="pre-ltrim">
+<xsl:param name="string" />
+
+<xsl:variable name="lspace">
+    <xsl:call-template name="string-reverse">
+        <xsl:with-param name="string" select="substring-before($string, substring(normalize-space($string), 1, 1))" />
+    </xsl:call-template>
+</xsl:variable>
+
+<xsl:choose>
+<xsl:when test="contains($lspace, '&#x0a;')">
+    <xsl:value-of select="substring(
+        $string,
+        1 + string-length($lspace)
+            - string-length(substring-before($lspace, '&#x0a;')),
+        string-length($string)
+    )" />
+</xsl:when>
+<xsl:otherwise>
+    <xsl:value-of select="$string" />
+</xsl:otherwise>
+</xsl:choose>
+</xsl:template>
+
+<!-- strip whitespace at the end -->
+<xsl:template name="pre-rtrim">
+<xsl:param name="string" />
+
+<xsl:variable name="rev">
+    <xsl:call-template name="string-reverse">
+        <xsl:with-param name="string" select="$string" />
+    </xsl:call-template>
+</xsl:variable>
+
+<xsl:call-template name="string-reverse">
+    <xsl:with-param name="string" select="substring(
+        $rev,
+        1 + string-length(substring-before(
+            $rev, substring(normalize-space($rev), 1, 1)
+        )),
+        string-length($rev)
+    )" />
+</xsl:call-template>
+</xsl:template>
+
+
+<!-- ==================================================================== -->
+<!-- Render trimmed pre/highlight-text                                    -->
+<!-- ==================================================================== -->
+<xsl:template name="pre">
+<xsl:choose>
+<!-- Simple case: only one text node -->
+<xsl:when test="node()[position() = 1 and self::text()] and count(node()) = 1">
+    <xsl:call-template name="pre-rtrim">
+        <xsl:with-param name="string">
+            <xsl:call-template name="pre-ltrim">
+                <xsl:with-param name="string"
+                    select="node()[position() = 1 and self::text()]" />
+            </xsl:call-template>
+        </xsl:with-param>
+    </xsl:call-template>
+</xsl:when>
+
+<!-- multiple nodes -->
+<xsl:otherwise>
+    <xsl:variable name="from">
+        <xsl:choose>
+        <xsl:when test="node()[position() = 1 and self::text()]">
+            <xsl:value-of select="2" />
+        </xsl:when>
+        <xsl:otherwise>
+            <xsl:value-of select="1" />
+        </xsl:otherwise>
+        </xsl:choose>
+    </xsl:variable>
+    <xsl:variable name="to">
+        <xsl:choose>
+        <xsl:when test="node()[position() = last() and self::text()]">
+            <xsl:value-of select="count(node()) - 1" />
+        </xsl:when>
+        <xsl:otherwise>
+            <xsl:value-of select="count(node())" />
+        </xsl:otherwise>
+        </xsl:choose>
+    </xsl:variable>
+
+    <xsl:if test="$from = 2">
+        <xsl:call-template name="pre-ltrim">
+            <xsl:with-param name="string"
+                select="node()[position() = 1 and self::text()]" />
+        </xsl:call-template>
+    </xsl:if>
+
+    <xsl:apply-templates select="node()[position() &gt;= $from and position() &lt;= $to]" />
+
+    <xsl:if test="$to &lt; count(node())">
+        <xsl:call-template name="pre-rtrim">
+            <xsl:with-param name="string"
+                select="node()[position() = last() and self::text()]" />
+        </xsl:call-template>
+    </xsl:if>
+</xsl:otherwise>
+</xsl:choose>
+</xsl:template>
+
+
 <!-- ==================================================================== -->
 <!-- Process source code highlighting                                     -->
 <!-- ==================================================================== -->
 <xsl:template match="highlight">
 <pre class="prettyprint lang-{@language}">
-    <!-- highlight body -->
-    <xsl:apply-templates />
+    <xsl:call-template name="pre" />
 </pre>&lf; <!-- /.highlight -->
 </xsl:template>
 <!-- /higlight -->
@@ -1203,7 +1334,7 @@ if (typeof(prettyPrint) !== 'undefined') {
 <xsl:template match="dd"><dd><xsl:apply-templates select="*|@*|text()" /></dd></xsl:template>
 <xsl:template match="em"><em><xsl:apply-templates select="*|@*|text()" /></em></xsl:template>
 <xsl:template match="strong"><strong><xsl:apply-templates select="*|@*|text()" /></strong></xsl:template>
-<xsl:template match="pre"><pre><xsl:apply-templates select="*|@*|text()" /></pre></xsl:template>
+<xsl:template match="pre"><pre><xsl:call-template name="pre" /></pre></xsl:template>
 <xsl:template match="code"><code><xsl:apply-templates select="*|@*|text()" /></code></xsl:template>
 <xsl:template match="var"><var><xsl:apply-templates select="*|@*|text()" /></var></xsl:template>
 <xsl:template match="dfn"><dfn><xsl:apply-templates select="*|@*|text()" /></dfn></xsl:template>
