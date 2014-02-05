@@ -207,7 +207,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: mrumph
 
    * mod_remoteip: Use the correct IP addresses to populate the proxy_ips field.
-                   PR54651
+                   PR55972
      trunk patch: https://svn.apache.org/r1564475
      2.4.x patch: trunk works
      +1: mrumph
