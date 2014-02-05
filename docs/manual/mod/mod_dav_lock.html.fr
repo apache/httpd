@@ -85,9 +85,7 @@
     <code class="module"><a href="../mod/mod_dav_lock.html">mod_dav_lock</a></code> utilise une base de données SDBM pour
     surveiller les verrous utilisateurs.</p>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">
-      DavGenericLockDB var/DavLock
-      </pre>
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">      DavGenericLockDB var/DavLock</pre>
 </div>
 
     <p>Les utilisateur et groupe sous lesquels Apache s'exécute et qui

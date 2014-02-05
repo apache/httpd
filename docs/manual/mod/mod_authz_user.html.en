@@ -70,9 +70,7 @@
     <p>This directive specifies a list of users that are allowed to gain
     access.</p>
 
-    <pre class="prettyprint lang-config">
-      Require user john paul george ringo
-    </pre>
+    <pre class="prettyprint lang-config">      Require user john paul george ringo</pre>
 
 
 
@@ -82,9 +80,7 @@
     <p>When this directive is specified, any successfully authenticated
     user will be allowed to gain access.</p>
 
-    <pre class="prettyprint lang-config">
-      Require valid-user
-    </pre>
+    <pre class="prettyprint lang-config">      Require valid-user</pre>
 
 
 

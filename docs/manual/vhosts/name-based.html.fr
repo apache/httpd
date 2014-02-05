@@ -155,8 +155,7 @@ virtuel basé sur le nom approprié</a></h2>
     la même adresse IP. Il vous suffit d'ajouter la configuration 
     suivante à <code>httpd.conf</code>&nbsp;:</p>
 
-    <pre class="prettyprint lang-config">
-&lt;VirtualHost *:80&gt;
+    <pre class="prettyprint lang-config">&lt;VirtualHost *:80&gt;
     # Le premier serveur virtuel de la liste est aussi le
     # serveur par défaut pour *:80
     ServerName www.example.com
@@ -167,8 +166,7 @@ virtuel basé sur le nom approprié</a></h2>
 &lt;VirtualHost *:80&gt;
     ServerName other.example.com
     DocumentRoot /www/otherdomain
-&lt;/VirtualHost&gt;
-    </pre>
+&lt;/VirtualHost&gt;</pre>
 
 
     <p>Autrement, vous pouvez spécifiez une adresse IP explicite 
@@ -189,9 +187,7 @@ virtuel basé sur le nom approprié</a></h2>
     indique aux utilisateurs les autres noms permis pour accéder au 
     même site Web&nbsp;:</p>
 
-    <pre class="prettyprint lang-config">
-        ServerAlias example.com *.example.com
-    </pre>
+    <pre class="prettyprint lang-config">        ServerAlias example.com *.example.com</pre>
 
 
     <p>ainsi, toutes les requêtes portant sur un domaine 

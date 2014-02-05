@@ -531,10 +531,8 @@ de suEXEC</a></li>
     <p>Si, par exemple, votre serveur web est configuré pour
     s'exécuter en tant que :</p>
 
-<pre class="prettyprint lang-config">
-User www
-Group webgroup
-      </pre>
+<pre class="prettyprint lang-config">User www
+Group webgroup</pre>
 
 
     <p>et <code class="program"><a href="./programs/suexec.html">suexec</a></code> se trouve à

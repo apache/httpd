@@ -48,14 +48,12 @@
 <h2><a name="example" id="example">Un exemple simple</a></h2>
     
 
-    <pre class="prettyprint lang-config">
-# Ceci est un exemple de mauvaise configuration ; ne l'utilisez pas comme base
+    <pre class="prettyprint lang-config"># Ceci est un exemple de mauvaise configuration ; ne l'utilisez pas comme base
 # de configuration
 &lt;VirtualHost www.example.dom&gt;
   ServerAdmin webgirl@example.dom
   DocumentRoot /www/example
-&lt;/VirtualHost&gt;
-    </pre>
+&lt;/VirtualHost&gt;</pre>
 
 
     <p>Pour fonctionner correctement, le serveur a absolument besoin de deux
@@ -73,14 +71,12 @@
     <p>Supposons que l'adresse de <code>www.example.dom</code> soit
     192.0.2.1, et examinons cet extrait de configuration :</p>
 
-    <pre class="prettyprint lang-config">
-# Ceci est un exemple de mauvaise configuration ; ne l'utilisez pas comme base
+    <pre class="prettyprint lang-config"># Ceci est un exemple de mauvaise configuration ; ne l'utilisez pas comme base
 # de configuration
 &lt;VirtualHost 192.0.2.1&gt;
   ServerAdmin webgirl@example.dom
   DocumentRoot /www/example
-&lt;/VirtualHost&gt;
-    </pre>
+&lt;/VirtualHost&gt;</pre>
 
 
     <p>Cette fois, httpd doit effectuer une recherche DNS inverse pour
@@ -96,13 +92,11 @@
     <p>Voici un extrait de configuration qui permet d'éviter ces deux
     types de problèmes :</p>
 
-    <pre class="prettyprint lang-config">
-&lt;VirtualHost 192.0.2.1&gt;
+    <pre class="prettyprint lang-config">&lt;VirtualHost 192.0.2.1&gt;
   ServerName www.example.dom
   ServerAdmin webgirl@example.dom
   DocumentRoot /www/example
-&lt;/VirtualHost&gt;
-    </pre>
+&lt;/VirtualHost&gt;</pre>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -111,16 +105,14 @@
 
     <p>Considérons cet extrait de configuration :</p>
 
-    <pre class="prettyprint lang-config">
-&lt;VirtualHost www.example1.dom&gt;
+    <pre class="prettyprint lang-config">&lt;VirtualHost www.example1.dom&gt;
   ServerAdmin webgirl@example1.dom
   DocumentRoot /www/example1
 &lt;/VirtualHost&gt;
 &lt;VirtualHost www.example2.dom&gt;
   ServerAdmin webguy@example2.dom
   DocumentRoot /www/example2
-&lt;/VirtualHost&gt;
-    </pre>
+&lt;/VirtualHost&gt;</pre>
 
 
     <p>Supposons que vous ayez assigné 192.0.2.1 à

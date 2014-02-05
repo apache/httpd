@@ -35,11 +35,9 @@
 <p>This module makes it easy to restrict which handlers may be used for a
 request. A possible configuration would be:</p>
 
-<pre class="prettyprint lang-config">
-&lt;Location /&gt;
+<pre class="prettyprint lang-config">&lt;Location /&gt;
   AllowHandlers not server-info server-status balancer-manager ldap-status
-&lt;/Location&gt;
-</pre>
+&lt;/Location&gt;</pre>
 
 
 <p>It also registers a handler named <code>forbidden</code> that simply
@@ -75,12 +73,10 @@ set. The special vallue <code>all</code> can be used to allow all
 handlers again in a later config section, even if some headers were denied
 earlier in the configuration merge order:</p>
 
-<pre class="prettyprint lang-config">
-&lt;Location /server-status&gt;
+<pre class="prettyprint lang-config">&lt;Location /server-status&gt;
   AllowHandlers all
   SetHandler server-status
-&lt;/Location&gt;
-</pre>
+&lt;/Location&gt;</pre>
 
 
 

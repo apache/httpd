@@ -90,10 +90,8 @@ d'Apache</td></tr></table>
     <p>Cette directive permet de spécifier à quel groupe un utilisateur
     doit appartenir pour obtenir l'autorisation d'accès.</p>
 
-    <pre class="prettyprint lang-config">
-      Require dbd-group team
-      AuthzDBDQuery "SELECT group FROM authz WHERE user = %s"
-    </pre>
+    <pre class="prettyprint lang-config">      Require dbd-group team
+      AuthzDBDQuery "SELECT group FROM authz WHERE user = %s"</pre>
 
 
 
@@ -103,10 +101,8 @@ d'Apache</td></tr></table>
     <p>Cette directive permet de spécifier une requête à exécuter pour
     indiquer que l'utilisateur s'est authentifié.</p>
 
-    <pre class="prettyprint lang-config">
-      Require dbd-login
-      AuthzDBDQuery "UPDATE authn SET login = 'true' WHERE user = %s"
-    </pre>
+    <pre class="prettyprint lang-config">      Require dbd-login
+      AuthzDBDQuery "UPDATE authn SET login = 'true' WHERE user = %s"</pre>
 
 
 
@@ -116,10 +112,8 @@ d'Apache</td></tr></table>
     <p>Cette directive permet de spécifier une requête à exécuter pour
     indiquer que l'utilisateur s'est déconnecté.</p>
 
-    <pre class="prettyprint lang-config">
-      Require dbd-logout
-      AuthzDBDQuery "UPDATE authn SET login = 'false' WHERE user = %s"
-    </pre>
+    <pre class="prettyprint lang-config">      Require dbd-logout
+      AuthzDBDQuery "UPDATE authn SET login = 'false' WHERE user = %s"</pre>
 
 
 
@@ -159,8 +153,7 @@ fermeture de sessions côté client.</p>
 <div class="section">
 <h2><a name="example" id="example">Exemple de configuration</a></h2>
 
-<pre class="prettyprint lang-config">
-# configuration de mod_dbd
+<pre class="prettyprint lang-config"># configuration de mod_dbd
 DBDriver pgsql
 DBDParams "dbname=apacheauth user=apache pass=xxxxxx"
 
@@ -212,8 +205,7 @@ DBDExptime 300
     Require dbd-logout
     AuthzDBDQuery "UPDATE authn SET login = 'false' WHERE user = %s"
   &lt;/Files&gt;
-&lt;/Directory&gt;
-</pre>
+&lt;/Directory&gt;</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -276,10 +268,8 @@ requise</td></tr>
     doit contenir une chaîne de caractères correspondant à un nom de
     groupe. La requête peut renvoyer zéro, un ou plusieurs
     enregistrements.
-    <pre class="prettyprint lang-config">
-Require dbd-group
-AuthzDBDQuery "SELECT group FROM groups WHERE user = %s"
-</pre>
+    <pre class="prettyprint lang-config">Require dbd-group
+AuthzDBDQuery "SELECT group FROM groups WHERE user = %s"</pre>
 
     </li>
     <li>Avec la directive <code>Require dbd-login</code> ou
@@ -287,10 +277,8 @@ AuthzDBDQuery "SELECT group FROM groups WHERE user = %s"
     mais au contraire exécutera une requête SQL permettant d'enregistrer
     la connexion ou la déconnexion de l'utilisateur. Ce dernier doit
     être déjà authentifié avec <code class="module"><a href="../mod/mod_authn_dbd.html">mod_authn_dbd</a></code>.
-    <pre class="prettyprint lang-config">
-Require dbd-login
-AuthzDBDQuery "UPDATE authn SET login = 'true' WHERE user = %s"
-</pre>
+    <pre class="prettyprint lang-config">Require dbd-login
+AuthzDBDQuery "UPDATE authn SET login = 'true' WHERE user = %s"</pre>
 
     </li>
     </ul>
@@ -317,9 +305,7 @@ rediriger l'utilisateur après une connexion réussie</td></tr>
     forme d'une simple chaîne lorsque la requête SQL sera exécutée. Il y
     sera fait référence dans la requête en utilisant le spécificateur de
     format <code>%s</code>.</p>
-    <pre class="prettyprint lang-config">
-AuthzDBDRedirectQuery "SELECT userpage FROM userpages WHERE user = %s"
-</pre>
+    <pre class="prettyprint lang-config">AuthzDBDRedirectQuery "SELECT userpage FROM userpages WHERE user = %s"</pre>
 
     <p>La première colonne du premier enregistrement renvoyé par la
     requête doit contenir une chaîne de caractères correspondant à une

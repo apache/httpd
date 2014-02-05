@@ -133,19 +133,15 @@
     same set of filters as the main request.  A graphical representation
     might help:</p>
 
-<div class="example"><pre>
-Default_handler --&gt; includes_filter --&gt; byterange --&gt; ...
-</pre></div>
+<div class="example"><pre>Default_handler --&gt; includes_filter --&gt; byterange --&gt; ...</pre></div>
 
     <p>If the includes filter creates a sub request, then we don't want the
     data from that sub-request to go through the includes filter, because it
     might not be SSI data.  So, the subrequest adds the following:</p>
 
-<div class="example"><pre>
-Default_handler --&gt; includes_filter -/-&gt; byterange --&gt; ...
+<div class="example"><pre>Default_handler --&gt; includes_filter -/-&gt; byterange --&gt; ...
                                     /
-Default_handler --&gt; sub_request_core
-</pre></div>
+Default_handler --&gt; sub_request_core</pre></div>
 
     <p>What happens if the subrequest is SSI data?  Well, that's easy, the
     <code>includes_filter</code> is a resource filter, so it will be added to

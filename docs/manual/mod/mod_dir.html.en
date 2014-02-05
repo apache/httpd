@@ -120,9 +120,7 @@ a directory</td></tr>
     set, the server will generate its own listing of the
     directory.</p>
 
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
-      DirectoryIndex index.html
-      </pre>
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">      DirectoryIndex index.html</pre>
 </div>
 
     <p>then a request for <code>http://example.com/docs/</code> would
@@ -132,9 +130,7 @@ a directory</td></tr>
     <p>Note that the documents do not need to be relative to the
     directory;</p>
 
-    <pre class="prettyprint lang-config">
-      DirectoryIndex index.html index.txt  /cgi-bin/index.pl
-    </pre>
+    <pre class="prettyprint lang-config">      DirectoryIndex index.html index.txt  /cgi-bin/index.pl</pre>
 
 
     <p>would cause the CGI script <code>/cgi-bin/index.pl</code> to be
@@ -150,8 +146,7 @@ a directory</td></tr>
     directives within the <a href="../sections.html"><em>same context</em></a> will add
     to the list of resources to look for rather than replace:
     </p>
-    <pre class="prettyprint lang-config">
-# Example A: Set index.html as an index page, then add index.php to that list as well.
+    <pre class="prettyprint lang-config"># Example A: Set index.html as an index page, then add index.php to that list as well.
 &lt;Directory /foo&gt;
     DirectoryIndex index.html
     DirectoryIndex index.php
@@ -168,8 +163,7 @@ a directory</td></tr>
     DirectoryIndex index.html
     DirectoryIndex disabled
     DirectoryIndex index.php
-&lt;/Directory&gt;
-    </pre>
+&lt;/Directory&gt;</pre>
 
 
 
@@ -204,9 +198,7 @@ a directory</td></tr>
     </ul>
 
 
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
-      DirectoryIndexRedirect on
-      </pre>
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">      DirectoryIndexRedirect on</pre>
 </div>
 
     <p>A request for <code>http://example.com/docs/</code> would
@@ -248,13 +240,11 @@ a directory</td></tr>
     be aware that there are possible security implications to doing
     this.</p>
 
-    <pre class="prettyprint lang-config">
-# see security warning below!
+    <pre class="prettyprint lang-config"># see security warning below!
 &lt;Location /some/path&gt;
     DirectorySlash Off
     SetHandler some-handler
-&lt;/Location&gt;
-    </pre>
+&lt;/Location&gt;</pre>
 
 
     <div class="warning"><h3>Security Warning</h3>
@@ -284,9 +274,7 @@ a directory</td></tr>
     <p>Use this to set a handler for any URL that doesn't map to anything
     in your filesystem, and would otherwise return HTTP 404 (Not Found).
     For example</p>
-    <pre class="prettyprint lang-config">
-        FallbackResource /not-404.php
-    </pre>
+    <pre class="prettyprint lang-config">        FallbackResource /not-404.php</pre>
 
     <p>will cause requests for non-existent files to be handled by
     <code>not-404.php</code>, while requests for files that exist
@@ -299,9 +287,7 @@ a directory</td></tr>
     <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>, and the use of the <code>-f</code> and
     <code>-d</code> tests for file and directory existence. This now
     requires only one line of configuration.</p>
-    <pre class="prettyprint lang-config">
-        FallbackResource /index.php
-    </pre>
+    <pre class="prettyprint lang-config">        FallbackResource /index.php</pre>
 
     <p>Existing files, such as images, css files, and so on, will be
     served normally.</p>
@@ -309,14 +295,12 @@ a directory</td></tr>
     if inheritance from a parent directory is not desired.</p>
     <p>In a sub-URI, such as <em>http://example.com/blog/</em> this
     <em>sub-URI</em> has to be supplied as <var>local-url</var>:</p>
-    <pre class="prettyprint lang-config">
-&lt;Directory /web/example.com/htdocs/blog&gt;
+    <pre class="prettyprint lang-config">&lt;Directory /web/example.com/htdocs/blog&gt;
     FallbackResource /blog/index.php
 &lt;/Directory&gt;
 &lt;Directory /web/example.com/htdocs/blog/images&gt;
     FallbackResource disabled
-&lt;/Directory&gt;
-    </pre>
+&lt;/Directory&gt;</pre>
 
 
 </div>

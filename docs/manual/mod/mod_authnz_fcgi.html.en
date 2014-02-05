@@ -98,8 +98,7 @@ and Access Control</a></li>
       expected to authenticate the client using the provided user id and
       password.  Example application:
 
-<pre class="prettyprint lang-perl">
-#!/usr/bin/perl
+<pre class="prettyprint lang-perl">#!/usr/bin/perl
 use FCGI;
 while (FCGI::accept &gt;= 0) {
     die if $ENV{'FCGI_APACHE_ROLE'} ne "AUTHENTICATOR";
@@ -119,20 +118,17 @@ while (FCGI::accept &gt;= 0) {
     else {
         print "Status: 401\n\n";
     }
-}
-</pre>
+}</pre>
 
 
       Example configuration:
-<pre class="prettyprint lang-config">
-AuthnzFcgiDefineProvider authn FooAuthn fcgi://localhost:10102/
+<pre class="prettyprint lang-config">AuthnzFcgiDefineProvider authn FooAuthn fcgi://localhost:10102/
 &lt;Location /protected/&gt;
   AuthType Basic
   AuthName "Restricted"
   AuthBasicProvider FooAuthn
   Require ...
-&lt;/Location&gt;
-</pre>
+&lt;/Location&gt;</pre>
 
       </dd>
 
@@ -145,8 +141,7 @@ AuthnzFcgiDefineProvider authn FooAuthn fcgi://localhost:10102/
       AuthnzFcgiDefineProvider</a></code>.  When invoked, the application 
       is expected to authorize the client using the provided user id and other
       request data.  Example application:
-<pre class="prettyprint lang-perl">
-#!/usr/bin/perl
+<pre class="prettyprint lang-perl">#!/usr/bin/perl
 use FCGI;
 while (FCGI::accept &gt;= 0) {
     die if $ENV{'FCGI_APACHE_ROLE'} ne "AUTHORIZER";
@@ -164,20 +159,17 @@ while (FCGI::accept &gt;= 0) {
     else {
         print "Status: 403\n\n";
     }
-}
-</pre>
+}</pre>
 
 
       Example configuration:
-<pre class="prettyprint lang-config">
-AuthnzFcgiDefineProvider authz FooAuthz fcgi://localhost:10103/
+<pre class="prettyprint lang-config">AuthnzFcgiDefineProvider authz FooAuthz fcgi://localhost:10103/
 &lt;Location /protected/&gt;
   AuthType ...
   AuthName ...
   AuthBasicProvider ...
   Require FooAuthz
-&lt;/Location&gt;
-</pre>
+&lt;/Location&gt;</pre>
 
       </dd>
 
@@ -197,8 +189,7 @@ AuthnzFcgiDefineProvider authz FooAuthz fcgi://localhost:10103/
       authorization phase (via <code class="directive">Require</code>), mod_authnz_fcgi
       will return success for the authorization phase without invoking the
       application.  Example application:
-<pre class="prettyprint lang-perl">
-#!/usr/bin/perl
+<pre class="prettyprint lang-perl">#!/usr/bin/perl
 use FCGI;
 while (FCGI::accept &gt;= 0) {
     die if $ENV{'FCGI_APACHE_ROLE'};
@@ -219,20 +210,17 @@ while (FCGI::accept &gt;= 0) {
     else {
         print "Status: 401\n\n";
     }
-}
-</pre>
+}</pre>
 
 
       Example configuration:
-<pre class="prettyprint lang-config">
-AuthnzFcgiDefineProvider authnz FooAuthnz fcgi://localhost:10103/
+<pre class="prettyprint lang-config">AuthnzFcgiDefineProvider authnz FooAuthnz fcgi://localhost:10103/
 &lt;Location /protected/&gt;
   AuthType Basic
   AuthName "Restricted"
   AuthBasicProvider FooAuthnz
   Require FooAuthnz
-&lt;/Location&gt;
-</pre>
+&lt;/Location&gt;</pre>
 
       </dd>
 
@@ -245,8 +233,7 @@ AuthnzFcgiDefineProvider authnz FooAuthnz fcgi://localhost:10103/
       provider type <em>authn</em> using <code class="directive"><a href="#authnzfcgidefineprovider">
       AuthnzFcgiDefineProvider</a></code>.  <code class="directive"><a href="#authnzfcgicheckauthnprovider">AuthnzFcgiCheckAuthnProvider</a></code>
       specifies when it is called.  Example application:
-<pre class="prettyprint lang-perl">
-#!/usr/bin/perl
+<pre class="prettyprint lang-perl">#!/usr/bin/perl
 use FCGI;
 while (FCGI::accept &gt;= 0) {
     die if $ENV{'FCGI_APACHE_ROLE'} ne "AUTHENTICATOR";
@@ -271,13 +258,11 @@ while (FCGI::accept &gt;= 0) {
         # If a response body is written here, it will be returned to
         # the client.
     }
-}
-</pre>
+}</pre>
 
 
       Example configuration:
-<pre class="prettyprint lang-config">
-AuthnzFcgiDefineProvider authn FooAuthn fcgi://localhost:10103/
+<pre class="prettyprint lang-config">AuthnzFcgiDefineProvider authn FooAuthn fcgi://localhost:10103/
 &lt;Location /protected/&gt;
   AuthType ...
   AuthName ...
@@ -286,8 +271,7 @@ AuthnzFcgiDefineProvider authn FooAuthn fcgi://localhost:10103/
                                RequireBasicAuth Off \
                                UserExpr "%{reqenv:REMOTE_USER}"
   Require ...
-&lt;/Location&gt;
-</pre>
+&lt;/Location&gt;</pre>
 
       </dd>
 
@@ -303,10 +287,8 @@ AuthnzFcgiDefineProvider authn FooAuthn fcgi://localhost:10103/
     separate providers as follows, even if they map to the same
     application:
 
-<pre class="prettyprint lang-config">
-AuthnzFcgiDefineProvider authn  FooAuthn  fcgi://localhost:10102/
-AuthnzFcgiDefineProvider authz  FooAuthz  fcgi://localhost:10102/
-</pre>
+<pre class="prettyprint lang-config">AuthnzFcgiDefineProvider authn  FooAuthn  fcgi://localhost:10102/
+AuthnzFcgiDefineProvider authz  FooAuthz  fcgi://localhost:10102/</pre>
 
 
     Specify the authn provider on 
@@ -314,12 +296,10 @@ AuthnzFcgiDefineProvider authz  FooAuthz  fcgi://localhost:10102/
     and the authz provider on
     <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code>:
 
-<pre class="prettyprint lang-config">
-AuthType Basic
+<pre class="prettyprint lang-config">AuthType Basic
 AuthName "Restricted"
 AuthBasicProvider FooAuthn
-Require FooAuthz
-</pre>
+Require FooAuthz</pre>
 
     </li>
 
@@ -327,20 +307,16 @@ Require FooAuthz
     (authentication and authorizer in one invocation), define a
     single provider as follows:
 
-<pre class="prettyprint lang-config">
-AuthnzFcgiDefineProvider authnz FooAuthnz fcgi://localhost:10103/
-</pre>
+<pre class="prettyprint lang-config">AuthnzFcgiDefineProvider authnz FooAuthnz fcgi://localhost:10103/</pre>
 
 
     Specify the authnz provider on both <code class="directive">AuthBasicProvider</code>
     and <code class="directive">Require</code>:
 
-<pre class="prettyprint lang-config">
-AuthType Basic
+<pre class="prettyprint lang-config">AuthType Basic
 AuthName "Restricted"
 AuthBasicProvider FooAuthnz
-Require FooAuthnz
-</pre>
+Require FooAuthnz</pre>
 
     </li>
 </ol>
@@ -425,9 +401,7 @@ Require FooAuthnz
     to configure a log level specific to mod_authnz_fcgi.  For
     example:</p>
 
-<pre class="prettyprint lang-config">
-LogLevel info authnz_fcgi:trace8
-</pre>
+<pre class="prettyprint lang-config">LogLevel info authnz_fcgi:trace8</pre>
 
 
 </div>

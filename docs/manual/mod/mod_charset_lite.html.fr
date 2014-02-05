@@ -122,12 +122,10 @@ s'effectuer</td></tr>
     jeux de caractères dans <a class="glossarylink" href="../glossary.html#apr" title="voir glossaire">APR</a>. En général, cela
     implique qu'elle doit être reconnue par iconv.</p>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">
-&lt;Directory /export/home/trawick/apacheinst/htdocs/convert&gt;
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">&lt;Directory /export/home/trawick/apacheinst/htdocs/convert&gt;
     CharsetSourceEnc  UTF-16BE
     CharsetDefault    ISO-8859-1
-&lt;/Directory&gt;
-      </pre>
+&lt;/Directory&gt;</pre>
 </div>
 
     <div class="note">
@@ -199,12 +197,10 @@ caractères</td></tr>
     jeux de caractères dans <a class="glossarylink" href="../glossary.html#apr" title="voir glossaire">APR</a>. En général, cela
     implique qu'elle doit être reconnue par iconv.</p>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">
-&lt;Directory /export/home/trawick/apacheinst/htdocs/convert&gt;
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">&lt;Directory /export/home/trawick/apacheinst/htdocs/convert&gt;
     CharsetSourceEnc  UTF-16BE
     CharsetDefault    ISO-8859-1
-&lt;/Directory&gt;
-      </pre>
+&lt;/Directory&gt;</pre>
 </div>
 
     <p>Les noms de jeux de caractères de cet exemple sont reconnus par

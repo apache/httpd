@@ -41,9 +41,7 @@
     will be invoked by using the <code class="directive"><a href="../mod/mod_dav.html#dav">Dav</a></code>
     directive:</p>
 
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
-      Dav filesystem
-      </pre>
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">      Dav filesystem</pre>
 </div>
 
     <p>Since <code>filesystem</code> is the default provider for
@@ -76,9 +74,7 @@
 
     
 
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
-      DavLockDB var/DavLock
-      </pre>
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">      DavLockDB var/DavLock</pre>
 </div>
 
     <p>The directory containing the lock database file must be

@@ -47,8 +47,7 @@
     stockées simultanément ; cependant, la mise en cache de contenus
     partiels n'est pas encore supportée par ce module.</p>
 
-    <pre class="prettyprint lang-config">
-# Activation de la mise en cache
+    <pre class="prettyprint lang-config"># Activation de la mise en cache
 CacheSocache shmcb
 CacheSocacheMaxSize 102400
 &lt;Location /foo&gt;
@@ -61,8 +60,7 @@ CacheSocacheMaxSize 102400
 &lt;Location /foo&gt;
     CacheEnable socache
     CacheEnable disk
-&lt;/Location&gt;
-    </pre>
+&lt;/Location&gt;</pre>
 
 
     <div class="note"><h3>Note :</h3>
@@ -104,9 +102,7 @@ Apache</td></tr>
     possible de choisir entre plusieurs <a href="../socache.html">implémentations</a> de caches d'objets
     partagés.</p>
 
-    <pre class="prettyprint lang-config">
-      CacheSocache shmcb
-    </pre>
+    <pre class="prettyprint lang-config">      CacheSocache shmcb</pre>
 
 
 </div>
@@ -137,9 +133,7 @@ Apache</td></tr>
     la taille est trop importante pour pouvoir être mises en cache par
     <code class="module"><a href="../mod/mod_cache_socache.html">mod_cache_socache</a></code>.</p>
 
-    <pre class="prettyprint lang-config">
-      CacheSocacheMaxSize 102400
-    </pre>
+    <pre class="prettyprint lang-config">      CacheSocacheMaxSize 102400</pre>
 
 
 </div>
@@ -161,9 +155,7 @@ Apache</td></tr>
     le cache avant péremption. Cette définition l'emporte sur la durée
     de fraîcheur définie pour le document par le protocole HTTP.</p>
 
-    <pre class="prettyprint lang-config">
-      CacheSocacheMaxTime 86400
-    </pre>
+    <pre class="prettyprint lang-config">      CacheSocacheMaxTime 86400</pre>
 
 
 </div>
@@ -186,9 +178,7 @@ Apache</td></tr>
     pour une durée égale à sa durée de fraîcheur, elle n'a pas besoin
     d'être rafraîchie.</p>
 
-    <pre class="prettyprint lang-config">
-      CacheSocacheMinTime 600
-    </pre>
+    <pre class="prettyprint lang-config">      CacheSocacheMinTime 600</pre>
 
 
 </div>
@@ -219,9 +209,7 @@ Apache</td></tr>
     stockées dans le cache, et non lorsqu'elles sont servies depuis le
     cache.</p>
 
-    <pre class="prettyprint lang-config">
-      CacheReadSize 102400
-    </pre>
+    <pre class="prettyprint lang-config">      CacheReadSize 102400</pre>
 
 
 </div>
@@ -254,9 +242,7 @@ Apache</td></tr>
     manière excessive dans le cas où les données arriveraient plus vite
     que prévu.</p>
 
-    <pre class="prettyprint lang-config">
-      CacheSocacheReadTime 1000
-    </pre>
+    <pre class="prettyprint lang-config">      CacheSocacheReadTime 1000</pre>
 
 
 </div>

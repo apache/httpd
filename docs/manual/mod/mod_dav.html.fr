@@ -79,9 +79,7 @@ documents via le web (<a href="http://www.webdav.org/">WebDAV</a>)</td></tr>
     verrous DAV via une directive <code class="directive"><a href="../mod/mod_dav_fs.html#davlockdb">DavLockDB</a></code> dans la section globale de
     votre fichier <code>httpd.conf</code> :</p>
 
-    <pre class="prettyprint lang-config">
-      DavLockDB /usr/local/apache2/var/DavLock
-    </pre>
+    <pre class="prettyprint lang-config">      DavLockDB /usr/local/apache2/var/DavLock</pre>
 
 
     <p>Le répertoire contenant le fichier de la base de données des
@@ -98,8 +96,7 @@ documents via le web (<a href="http://www.webdav.org/">WebDAV</a>)</td></tr>
     directive <code class="directive"><a href="../mod/core.html#limitrequestbody">LimitRequestBody</a></code>
     "habituelle" n'a aucune incidence sur les requêtes DAV.</p>
 
-    <div class="example"><h3>Exemple complet</h3><pre class="prettyprint lang-config">
-DavLockDB /usr/local/apache2/var/DavLock
+    <div class="example"><h3>Exemple complet</h3><pre class="prettyprint lang-config">DavLockDB /usr/local/apache2/var/DavLock
 
 &lt;Directory /usr/local/apache2/htdocs/foo&gt;
     Require all granted
@@ -112,8 +109,7 @@ DavLockDB /usr/local/apache2/var/DavLock
     &lt;LimitExcept GET POST OPTIONS&gt;
         Require user admin
     &lt;/LimitExcept&gt;
-&lt;/Directory&gt;
-      </pre>
+&lt;/Directory&gt;</pre>
 </div>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -175,14 +171,12 @@ DavLockDB /usr/local/apache2/var/DavLock
     script, alors que l'autre peut être utilisée pour le télécharger et
     le manipuler avec DAV.</p>
 
-<pre class="prettyprint lang-config">
-Alias /phparea /home/gstein/php_files
+<pre class="prettyprint lang-config">Alias /phparea /home/gstein/php_files
 Alias /php-source /home/gstein/php_files
 &lt;Location /php-source&gt;
 DAV On
 ForceType text/plain
-&lt;/Location&gt;
-</pre>
+&lt;/Location&gt;</pre>
 
 
     <p>Avec cette configuration, on peut utiliser
@@ -204,11 +198,9 @@ ForceType text/plain
     <p>La directive <code class="directive">Dav</code> active les
     méthodes HTTP WebDAV pour le conteneur condidéré :</p>
 
-    <pre class="prettyprint lang-config">
-&lt;Location /foo&gt;
+    <pre class="prettyprint lang-config">&lt;Location /foo&gt;
     Dav On
-&lt;/Location&gt;
-    </pre>
+&lt;/Location&gt;</pre>
 
 
     <p>La valeur <code>On</code> est en fait un alias vers le
@@ -269,11 +261,9 @@ verrou sur une ressource DAV</td></tr>
     de perte du verrou par le client suite à une surcharge du
     réseau.</p>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">
-&lt;Location /MSWord&gt;
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">&lt;Location /MSWord&gt;
     DavMinTimeout 600
-&lt;/Location&gt;
-    </pre>
+&lt;/Location&gt;</pre>
 </div>
 
 </div>

@@ -541,10 +541,8 @@ langage</a></h3>
     de sélectionner une variante correspondante. S'il n'existe pas de telle
     variante, le processus normal de négociation sera lancé.</p>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">
-SetEnvIf Cookie "language=(.+)" prefer-language=$1
-Header append Vary cookie
-    </pre>
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">SetEnvIf Cookie "language=(.+)" prefer-language=$1
+Header append Vary cookie</pre>
 </div>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>

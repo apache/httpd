@@ -39,23 +39,19 @@ serveur</td></tr>
     <p>Pour activer <code class="module"><a href="../mod/mod_info.html">mod_info</a></code>, ajoutez les lignes
     suivantes à votre fichier <code>httpd.conf</code>.</p>
 
-    <pre class="prettyprint lang-config">
-&lt;Location /server-info&gt;
+    <pre class="prettyprint lang-config">&lt;Location /server-info&gt;
     SetHandler server-info
-&lt;/Location&gt;
-    </pre>
+&lt;/Location&gt;</pre>
 
 
     <p>Il est recommandé d'utiliser <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code> à
     l'intérieur de la section <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> afin de restreindre l'accès aux
     informations de configuration de votre serveur :</p>
 
-    <pre class="prettyprint lang-config">
-&lt;Location /server-info&gt;
+    <pre class="prettyprint lang-config">&lt;Location /server-info&gt;
     SetHandler server-info
     Require host example.com
-&lt;/Location&gt;
-    </pre>
+&lt;/Location&gt;</pre>
 
 
     <p>Une fois cette configuration effectuée, les informations du
@@ -94,8 +90,7 @@ serveur</td></tr>
     restreindre l'accès aux informations de configuration de votre
     serveur.</p>
 
-    <div class="example"><h3>Contrôle d'accès</h3><pre class="prettyprint lang-config">
-&lt;Location /server-info&gt;
+    <div class="example"><h3>Contrôle d'accès</h3><pre class="prettyprint lang-config">&lt;Location /server-info&gt;
     SetHandler server-info
     Order allow,deny
     # Autorisation d'accès depuis le serveur lui-même
@@ -103,8 +98,7 @@ serveur</td></tr>
     # Autorisation d'accès depuis une station de travail du réseau
 # local
     Allow from 192.168.1.17
-&lt;/Location&gt;
-      </pre>
+&lt;/Location&gt;</pre>
 </div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -196,11 +190,9 @@ module affichées par le gestionnaire server-info</td></tr>
     en tant qu'<strong>Information supplémentaire</strong> interprétée
     en HTML pour le module <var>nom-module</var>. Exemple :</p>
 
-    <pre class="prettyprint lang-config">
-AddModuleInfo mod_deflate.c 'See &lt;a \
+    <pre class="prettyprint lang-config">AddModuleInfo mod_deflate.c 'See &lt;a \
     href="http://httpd.apache.org/docs/trunk/mod/mod_deflate.html"&gt;\
-    http://httpd.apache.org/docs/trunk/mod/mod_deflate.html&lt;/a&gt;'
-    </pre>
+    http://httpd.apache.org/docs/trunk/mod/mod_deflate.html&lt;/a&gt;'</pre>
 
 
 </div>

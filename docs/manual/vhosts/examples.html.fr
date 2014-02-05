@@ -82,8 +82,7 @@
     que sur la machine possédant ces entrées.</p>
     </div>
 
-    <pre class="prettyprint lang-config">
-# Apache doit écouter sur le port 80
+    <pre class="prettyprint lang-config"># Apache doit écouter sur le port 80
 Listen 80
 &lt;VirtualHost *:80&gt;
     DocumentRoot /www/example1
@@ -97,8 +96,7 @@ Listen 80
     ServerName www.example.org
 
     # Autres directives ici
-&lt;/VirtualHost&gt;
-    </pre>
+&lt;/VirtualHost&gt;</pre>
 
    
 
@@ -152,8 +150,7 @@ Listen 80
     (<code>172.20.30.50</code>), deux serveurs virtuels (ou plus) 
     répondront.</p>
 
-    <pre class="prettyprint lang-config">
-Listen 80
+    <pre class="prettyprint lang-config">Listen 80
 
 # Serveur "principal" sur 172.20.30.40
 ServerName server.example.com
@@ -171,8 +168,7 @@ DocumentRoot /www/mainserver
     ServerName www.example.org
     
     # D'autres directives ici ...
-&lt;/VirtualHost&gt;
-    </pre>
+&lt;/VirtualHost&gt;</pre>
 
 
     <p>Toute requête arrivant sur une autre adresse que 
@@ -199,13 +195,11 @@ DocumentRoot /www/mainserver
     aux requêtes internes et externes, au moyen d'une seule section 
     <code>VirtualHost</code>.</p>
 
-    <pre class="prettyprint lang-config">
-&lt;VirtualHost 192.168.1.1 172.20.30.40&gt;
+    <pre class="prettyprint lang-config">&lt;VirtualHost 192.168.1.1 172.20.30.40&gt;
     DocumentRoot /www/server1
     ServerName server.example.com
     ServerAlias server
-&lt;/VirtualHost&gt;
-    </pre>
+&lt;/VirtualHost&gt;</pre>
 
 
     <p>Ainsi, les requêtes en provenance de chacun des deux réseaux 
@@ -233,8 +227,7 @@ DocumentRoot /www/mainserver
     la sélection de la meilleure correspondance du point de vue adresse
     IP/port.</p>
 
-    <pre class="prettyprint lang-config">
-Listen 80
+    <pre class="prettyprint lang-config">Listen 80
 Listen 8080
 
 &lt;VirtualHost 172.20.30.40:80&gt;
@@ -255,8 +248,7 @@ Listen 8080
 &lt;VirtualHost 172.20.30.40:8080&gt;
     ServerName www.example.org
     DocumentRoot /www/otherdomain-8080
-&lt;/VirtualHost&gt;
-    </pre>
+&lt;/VirtualHost&gt;</pre>
 
 
 	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -267,8 +259,7 @@ Listen 8080
     et <code>172.20.30.50</code>) correspondant respectivement aux noms 
     <code>www.example.com</code> et <code>www.example.org</code>.</p>
 
-    <pre class="prettyprint lang-config">
-Listen 80
+    <pre class="prettyprint lang-config">Listen 80
 
 &lt;VirtualHost 172.20.30.40&gt;
     DocumentRoot /www/example1
@@ -278,8 +269,7 @@ Listen 80
 &lt;VirtualHost 172.20.30.50&gt;
     DocumentRoot /www/example2
     ServerName www.example.org
-&lt;/VirtualHost&gt;
-    </pre>
+&lt;/VirtualHost&gt;</pre>
 
 
     <p>Les requêtes provenant d'adresses non spécifiées dans l'une des 
@@ -298,8 +288,7 @@ Listen 80
     Pour chacun d'eux, nous voulons un hébergement sur les ports 80 
     et 8080.</p>
 
-    <pre class="prettyprint lang-config">
-Listen 172.20.30.40:80
+    <pre class="prettyprint lang-config">Listen 172.20.30.40:80
 Listen 172.20.30.40:8080
 Listen 172.20.30.50:80
 Listen 172.20.30.50:8080
@@ -322,8 +311,7 @@ Listen 172.20.30.50:8080
 &lt;VirtualHost 172.20.30.50:8080&gt;
     DocumentRoot /www/example2-8080
     ServerName www.example.org
-&lt;/VirtualHost&gt;
-    </pre>
+&lt;/VirtualHost&gt;</pre>
 
 
 	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -336,8 +324,7 @@ Listen 172.20.30.50:8080
     section un serveur virtuel sélectionnable uniquement en fonction de
     son adresse IP.</p>
 
-    <pre class="prettyprint lang-config">
-Listen 80
+    <pre class="prettyprint lang-config">Listen 80
 &lt;VirtualHost 172.20.30.40&gt;
     DocumentRoot /www/example1
     ServerName www.example.com
@@ -362,8 +349,7 @@ Listen 80
 &lt;VirtualHost 172.20.30.60&gt;
     DocumentRoot /www/example5
     ServerName www.example.gov
-&lt;/VirtualHost&gt;
-    </pre>
+&lt;/VirtualHost&gt;</pre>
 
 
 	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -380,14 +366,12 @@ Listen 80
     transfert, au cas où plusieurs noms de domaines cohabitent sur 
     une même machine.</p>
 
-    <pre class="prettyprint lang-config">
-&lt;VirtualHost *:*&gt;
+    <pre class="prettyprint lang-config">&lt;VirtualHost *:*&gt;
     ProxyPreserveHost On
     ProxyPass / http://192.168.111.2/
     ProxyPassReverse / http://192.168.111.2/
     ServerName hostname.example.com
-&lt;/VirtualHost&gt;
-    </pre>
+&lt;/VirtualHost&gt;</pre>
 
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -402,11 +386,9 @@ Listen 80
     d'adresses IP ou de ports non connus, <em>c'est-à-dire</em>, d'un 
     couple adresse/port non traité par aucun autre serveur virtuel.</p>
 
-    <pre class="prettyprint lang-config">
-&lt;VirtualHost _default_:*&gt;
+    <pre class="prettyprint lang-config">&lt;VirtualHost _default_:*&gt;
     DocumentRoot /www/default
-&lt;/VirtualHost&gt;
-    </pre>
+&lt;/VirtualHost&gt;</pre>
 
 
     <p>L'utilisation d'un tel serveur virtuel avec un joker pour le 
@@ -435,8 +417,7 @@ Listen 80
     le serveur écoute sur plusieurs ports et un second serveur virtuel 
     <code>_default_</code> pour le port 80 est ajouté.</p>
 
-    <pre class="prettyprint lang-config">
-&lt;VirtualHost _default_:80&gt;
+    <pre class="prettyprint lang-config">&lt;VirtualHost _default_:80&gt;
     DocumentRoot /www/default80
     # ...
 &lt;/VirtualHost&gt;
@@ -444,8 +425,7 @@ Listen 80
 &lt;VirtualHost _default_:*&gt;
     DocumentRoot /www/default
     # ...
-&lt;/VirtualHost&gt;
-    </pre>
+&lt;/VirtualHost&gt;</pre>
 
 
     <p>Le serveur virtuel par défaut défini pour le port 80 (il doit 
@@ -461,12 +441,10 @@ Listen 80
     <p>Nous voulons créer un serveur virtuel par défaut seulement 
     pour le port 80.</p>
 
-    <pre class="prettyprint lang-config">
-&lt;VirtualHost _default_:80&gt;
+    <pre class="prettyprint lang-config">&lt;VirtualHost _default_:80&gt;
 DocumentRoot /www/default
 ...
-&lt;/VirtualHost&gt;
-    </pre>
+&lt;/VirtualHost&gt;</pre>
 
 
     <p>Une requête vers une adresse non spécifiée sur le port 80 
@@ -494,8 +472,7 @@ DocumentRoot /www/default
     adresse IP (<code>172.20.30.50</code>) dans la directive 
     <code>VirtualHost</code>.</p>
 
-    <pre class="prettyprint lang-config">
-Listen 80
+    <pre class="prettyprint lang-config">Listen 80
 ServerName www.example.com
 DocumentRoot /www/example1
 
@@ -510,8 +487,7 @@ DocumentRoot /www/example1
     ServerName www.example.net
     ServerAlias *.example.net
     # ...
-&lt;/VirtualHost&gt;
-    </pre>
+&lt;/VirtualHost&gt;</pre>
 
 
     <p>Le serveur virtuel peut maintenant être joint par la nouvelle 
@@ -534,8 +510,7 @@ DocumentRoot /www/example1
     des liens dont les URLs auront un préfixe identifiant les serveurs 
     virtuels par nom.</p>
 
-    <pre class="prettyprint lang-config">
-&lt;VirtualHost 172.20.30.40&gt;
+    <pre class="prettyprint lang-config">&lt;VirtualHost 172.20.30.40&gt;
     # serveur virtuel primaire
     DocumentRoot /www/subdomain
     RewriteEngine On
@@ -559,8 +534,7 @@ DocumentRoot /www/subdomain/sub1
     RewriteEngine On
     RewriteRule ^(/sub2/.*) /www/subdomain$1
     # ...
-&lt;/VirtualHost&gt;
-    </pre>
+&lt;/VirtualHost&gt;</pre>
 
 
     <p>À cause de la directive 

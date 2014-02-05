@@ -65,14 +65,12 @@ mod_rewrite</a> document.</div>
 
     <dd>
 
-<pre class="prettyprint lang-config">
-RewriteEngine on
+<pre class="prettyprint lang-config">RewriteEngine on
 
 RewriteMap    lowercase int:tolower
 
 RewriteCond   ${lowercase:%{<strong>HTTP_HOST</strong>}}   ^www\.<strong>([^.]+)</strong>\.example\.com$
-RewriteRule   ^(.*) /home/<strong>%1</strong>/www$1
-</pre>
+RewriteRule   ^(.*) /home/<strong>%1</strong>/www$1</pre>
 </dd>
 
 <dt>Discussion</dt>
@@ -123,8 +121,7 @@ dynamic content, and Alias resolution.
     any <code>ScriptAlias</code> directives, we must have
     <code>mod_rewrite</code> explicitly enact those mappings.</p>
 
-<pre class="prettyprint lang-config">
-# get the server name from the Host: header
+<pre class="prettyprint lang-config"># get the server name from the Host: header
 UseCanonicalName Off
 
 # splittable logs
@@ -152,8 +149,7 @@ RewriteRule  ^/(.*)$  /www/hosts/${lowercase:%{SERVER_NAME}}/docs/$1
 
 ## and now deal with CGIs - we have to force a handler
 RewriteCond  %{REQUEST_URI}  ^/cgi-bin/
-RewriteRule  ^/(.*)$  /www/hosts/${lowercase:%{SERVER_NAME}}/cgi-bin/$1  [H=cgi-script]
-</pre>
+RewriteRule  ^/(.*)$  /www/hosts/${lowercase:%{SERVER_NAME}}/cgi-bin/$1  [H=cgi-script]</pre>
 
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -177,8 +173,7 @@ customer-N.example.com  /www/customers/N<br />
 
     <p>The <code>httpd.conf</code> should contain the following:</p>
 
-<pre class="prettyprint lang-config">
-RewriteEngine on
+<pre class="prettyprint lang-config">RewriteEngine on
 
 RewriteMap   lowercase  int:tolower
 
@@ -196,8 +191,7 @@ RewriteRule  ^/(.*)$                      %1/docs/$1
 RewriteCond  %{REQUEST_URI}               ^/cgi-bin/
 RewriteCond  ${lowercase:%{SERVER_NAME}}  ^(.+)$
 RewriteCond  ${vhost:%1}                  ^(/.*)$
-RewriteRule  ^/(.*)$                      %1/cgi-bin/$1 [H=cgi-script]
-</pre>
+RewriteRule  ^/(.*)$                      %1/cgi-bin/$1 [H=cgi-script]</pre>
 
 
 </div></div>

@@ -63,10 +63,8 @@ headers</td></tr>
     order in the configuration file and by placement in <a href="../sections.html#mergin">configuration sections</a>. These
     two directives have a different effect if reversed:</p>
 
-    <pre class="prettyprint lang-config">
-RequestHeader append MirrorID "mirror 12"
-RequestHeader unset MirrorID
-    </pre>
+    <pre class="prettyprint lang-config">RequestHeader append MirrorID "mirror 12"
+RequestHeader unset MirrorID</pre>
 
 
     <p>This way round, the <code>MirrorID</code> header is not set. If
@@ -101,9 +99,7 @@ RequestHeader unset MirrorID
         Copy all request headers that begin with "TS" to the
         response headers:
 
-        <pre class="prettyprint lang-config">
-          Header echo ^TS
-        </pre>
+        <pre class="prettyprint lang-config">          Header echo ^TS</pre>
 
       </li>
 
@@ -114,9 +110,7 @@ RequestHeader unset MirrorID
         the client to intuit load on the server or in isolating
         bottlenecks between the client and the server.
 
-        <pre class="prettyprint lang-config">
-          Header set MyHeader "%D %t"
-        </pre>
+        <pre class="prettyprint lang-config">          Header set MyHeader "%D %t"</pre>
 
 
         <p>results in this header being added to the response:</p>
@@ -129,9 +123,7 @@ RequestHeader unset MirrorID
       <li>
         Say hello to Joe
 
-        <pre class="prettyprint lang-config">
-Header set MyHeader "Hello Joe. It took %D microseconds for Apache to serve this request."
-        </pre>
+        <pre class="prettyprint lang-config">Header set MyHeader "Hello Joe. It took %D microseconds for Apache to serve this request."</pre>
 
 
         <p>results in this header being added to the response:</p>
@@ -149,10 +141,8 @@ Header set MyHeader "Hello Joe. It took %D microseconds for Apache to serve this
         stimulus. Note that this example requires the services of the
         <code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code> module.
 
-        <pre class="prettyprint lang-config">
-SetEnvIf MyRequestHeader myvalue HAVE_MyRequestHeader
-Header set MyHeader "%D %t mytext" env=HAVE_MyRequestHeader
-        </pre>
+        <pre class="prettyprint lang-config">SetEnvIf MyRequestHeader myvalue HAVE_MyRequestHeader
+Header set MyHeader "%D %t mytext" env=HAVE_MyRequestHeader</pre>
 
 
         <p>If the header <code>MyRequestHeader: myvalue</code> is present on
@@ -169,9 +159,7 @@ Header set MyHeader "%D %t mytext" env=HAVE_MyRequestHeader
         description</a>) by replacing <var>https:</var> with
         <var>http:</var> in the <var>Destination</var> header:
 
-        <pre class="prettyprint lang-config">
-          RequestHeader edit Destination ^https: http: early
-        </pre>
+        <pre class="prettyprint lang-config">          RequestHeader edit Destination ^https: http: early</pre>
 
       </li>
 
@@ -183,11 +171,9 @@ Header set MyHeader "%D %t mytext" env=HAVE_MyRequestHeader
         <code>NO_STORE</code> environment variables all existed for the
         request):
 
-        <pre class="prettyprint lang-config">
-Header merge Cache-Control no-cache env=CGI
+        <pre class="prettyprint lang-config">Header merge Cache-Control no-cache env=CGI
 Header merge Cache-Control no-cache env=NO_CACHE
-Header merge Cache-Control no-store env=NO_STORE
-        </pre>
+Header merge Cache-Control no-store env=NO_STORE</pre>
 
 
         <p>then the response would contain the following header:</p>
@@ -205,9 +191,7 @@ Header merge Cache-Control no-store env=NO_STORE
       </li>
       <li>
         Set a test cookie if and only if the client didn't send us a cookie
-        <pre class="prettyprint lang-config">
-          Header set Set-Cookie testcookie "expr=-z %{req:Cookie}"
-        </pre>
+        <pre class="prettyprint lang-config">          Header set Set-Cookie testcookie "expr=-z %{req:Cookie}"</pre>
 
       </li>
     </ol>

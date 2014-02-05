@@ -52,10 +52,8 @@ de caractéristiques de la requête</td></tr>
     exemple qui définit netscape si le navigateur est Mozilla et non
     MSIE.</p>
 
-<pre class="prettyprint lang-config">
-BrowserMatch ^Mozilla netscape
-BrowserMatch MSIE !netscape
-</pre>
+<pre class="prettyprint lang-config">BrowserMatch ^Mozilla netscape
+BrowserMatch MSIE !netscape</pre>
 
 
    <p>Lorsque le serveur cherche un chemin via une <a class="glossarylink" href="../glossary.html#subrequest" title="voir glossaire">sous-requête</a> interne (par exemple la
@@ -99,18 +97,14 @@ contenu de l'en-tête HTTP User-Agent</td></tr>
   d'environnement en fonction du contenu de l'en-tête de requête HTTP
   <code>User-Agent</code>. Les deux lignes suivantes produisent le même
   effet :</p>
-<pre class="prettyprint lang-config">
-BrowserMatchNoCase Robot is_a_robot
-SetEnvIfNoCase User-Agent Robot is_a_robot
-</pre>
+<pre class="prettyprint lang-config">BrowserMatchNoCase Robot is_a_robot
+SetEnvIfNoCase User-Agent Robot is_a_robot</pre>
 
 
     <p>Quelques exemples supplémentaires :</p>
-<pre class="prettyprint lang-config">
-BrowserMatch ^Mozilla forms jpeg=yes browser=netscape
+<pre class="prettyprint lang-config">BrowserMatch ^Mozilla forms jpeg=yes browser=netscape
 BrowserMatch "^Mozilla/[2-3]" tables agif frames javascript
-BrowserMatch MSIE !javascript
-</pre>
+BrowserMatch MSIE !javascript</pre>
 
 
 </div>
@@ -131,10 +125,8 @@ casse</td></tr>
     <p>La directive <code class="directive">BrowserMatchNoCase</code> est
     identique sur le plan sémantique à la directive <code class="directive"><a href="#browsermatch">BrowserMatch</a></code>. Elle permet
     cependant une comparaison insensible à la casse. Par exemple :</p>
-<pre class="prettyprint lang-config">
-BrowserMatchNoCase mac platform=macintosh
-BrowserMatchNoCase win platform=windows
-</pre>
+<pre class="prettyprint lang-config">BrowserMatchNoCase mac platform=macintosh
+BrowserMatchNoCase win platform=windows</pre>
 
 
     <p>Les directives <code class="directive">BrowserMatch</code> et
@@ -142,10 +134,8 @@ BrowserMatchNoCase win platform=windows
     des directives <code class="directive"><a href="#setenvif">SetEnvIf</a></code>
     et <code class="directive"><a href="#setenvifnocase">SetEnvIfNoCase</a></code>.
     Ainsi, les deux lignes suivantes produisent le même effet :</p>
-<pre class="prettyprint lang-config">
-BrowserMatchNoCase Robot is_a_robot
-SetEnvIfNoCase User-Agent Robot is_a_robot
-</pre>
+<pre class="prettyprint lang-config">BrowserMatchNoCase Robot is_a_robot
+SetEnvIfNoCase User-Agent Robot is_a_robot</pre>
 
 
 </div>
@@ -245,8 +235,7 @@ peuvent se présenter sous les formes suivantes :</p>
     sous-expressions entre parenthèses correspondantes de
     <var>regex</var>.</p>
 
-<pre class="prettyprint lang-config">
-SetEnvIf Request_URI "\.gif$" object_is_image=gif
+<pre class="prettyprint lang-config">SetEnvIf Request_URI "\.gif$" object_is_image=gif
 SetEnvIf Request_URI "\.jpg$" object_is_image=jpg
 SetEnvIf Request_URI "\.xbm$" object_is_image=xbm
     
@@ -254,8 +243,7 @@ SetEnvIf Referer www\.mydomain\.example\.com intra_site_referral
     
 SetEnvIf object_is_image xbm XBIT_PROCESSING=1
     
-SetEnvIf ^TS  ^[a-z]  HAVE_TS
-</pre>
+SetEnvIf ^TS  ^[a-z]  HAVE_TS</pre>
 
 
     <p>Les trois premières lignes définissent la variable
@@ -296,9 +284,7 @@ serveur HTTP Apache</a> pour des exemples supplémentaires.
     d'environnement <em>env-variable</em> de la même manière que la
     directive <code class="directive">SetEnvIf</code>.</p>
 
-<pre class="prettyprint lang-config">
-    SetEnvIfExpr "tolower(req('X-Sendfile')) == 'd:\images\very_big.iso')" iso_delivered
-</pre>
+<pre class="prettyprint lang-config">    SetEnvIfExpr "tolower(req('X-Sendfile')) == 'd:\images\very_big.iso')" iso_delivered</pre>
 
 
     <p>Dans cet exemple, la variable d'environnement
@@ -309,9 +295,7 @@ serveur HTTP Apache</a> pour des exemples supplémentaires.
     l'adresse IP distante est une adresse privée au sens de la RFC 1918
     :</p>
 
-<pre class="prettyprint lang-config">
-    SetEnvIfExpr "-R '10.0.0.0/8' || -R '172.16.0.0/12' || -R '192.168.0.0/16'" rfc1918
-</pre>
+<pre class="prettyprint lang-config">    SetEnvIfExpr "-R '10.0.0.0/8' || -R '172.16.0.0/12' || -R '192.168.0.0/16'" rfc1918</pre>
 
 
 <h3>Voir aussi</h3>
@@ -341,9 +325,7 @@ attributs de la requête sans tenir compte de la casse</td></tr>
     d'un point de vue sémantique à la directive <code class="directive"><a href="#setenvif">SetEnvIf</a></code>, et ne s'en distingue que
     par le fait que la comparaison des expressions rationnelles est
     effectuée sans tenir compte de la casse. Par exemple :</p>
-<pre class="prettyprint lang-config">
-   SetEnvIfNoCase Host Example\.Org site=apache
-</pre>
+<pre class="prettyprint lang-config">   SetEnvIfNoCase Host Example\.Org site=apache</pre>
 
 
     <p>Cette ligne va définir la variable d'environnement

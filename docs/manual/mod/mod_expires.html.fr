@@ -80,10 +80,8 @@ l'intervalle</a></h2>
     <p>Pour une syntaxe plus lisible, on peut aussi utiliser les
     directives <code class="directive"><a href="#expiresdefault">ExpiresDefault</a></code> et <code class="directive"><a href="#expiresbytype">ExpiresByType</a></code> comme suit :</p>
 
-    <pre class="prettyprint lang-config">
-ExpiresDefault "<var>base</var>  [plus <var>num</var> <var>type</var>] [<var>num</var> <var>type</var>] ..."
-ExpiresByType type/encoding "<var>base</var>  [plus <var>num</var> <var>type</var>] [<var>num</var> <var>type</var>] ..."
-    </pre>
+    <pre class="prettyprint lang-config">ExpiresDefault "<var>base</var>  [plus <var>num</var> <var>type</var>] [<var>num</var> <var>type</var>] ..."
+ExpiresByType type/encoding "<var>base</var>  [plus <var>num</var> <var>type</var>] [<var>num</var> <var>type</var>] ..."</pre>
 
 
     <p>où <var>base</var> peut être :</p>
@@ -113,21 +111,17 @@ ExpiresByType type/encoding "<var>base</var>  [plus <var>num</var> <var>type</va
 
     <p>Par exemple, pour faire expirer par défaut les documents 1 mois
     après leur accès, on peut utiliser une des directives suivantes :</p>
-    <pre class="prettyprint lang-config">
-ExpiresDefault "access plus 1 month"
+    <pre class="prettyprint lang-config">ExpiresDefault "access plus 1 month"
 ExpiresDefault "access plus 4 weeks"
-ExpiresDefault "access plus 30 days"
-    </pre>
+ExpiresDefault "access plus 30 days"</pre>
 
 
 
     <p>La date d'expiration peut être définie plus précisément en
     ajoutant plusieurs clauses '<var>num</var> <var>type</var>' :</p>
 
-    <pre class="prettyprint lang-config">
-ExpiresByType text/html "access plus 1 month 15 days 2 hours"
-ExpiresByType image/gif "modification plus 5 hours 3 minutes"
-    </pre>
+    <pre class="prettyprint lang-config">ExpiresByType text/html "access plus 1 month 15 days 2 hours"
+ExpiresByType image/gif "modification plus 5 hours 3 minutes"</pre>
 
 
     <p>Notez que si vous utilisez une configuration basée sur la date de
@@ -210,16 +204,14 @@ en fonction du type MIME</td></tr>
     images sont alors accédées de manière répétitive dans un intervalle
     de temps assez court).</p>
 
-    <div class="example"><h3>Exemple :</h3><pre class="prettyprint lang-config">
-# active la génération des en-têtes Expires
+    <div class="example"><h3>Exemple :</h3><pre class="prettyprint lang-config"># active la génération des en-têtes Expires
 ExpiresActive On
 # les images GIF expirent au bout d'un mois dans le cache du
 # client
 ExpiresByType image/gif A2592000
 # les documents HTML restent valables une semaine après leur date
 # de dernière modification
-ExpiresByType text/html M604800
-      </pre>
+ExpiresByType text/html M604800</pre>
 </div>
 
     <p>Notez que cette directive ne produit d'effet que si

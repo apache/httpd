@@ -168,9 +168,7 @@ cache.</td></tr>
     définir la taille maximale d'un document, en octets, pour que
     celui-ci puisse faire l'objet d'un stockage dans le cache.</p>
 
-    <pre class="prettyprint lang-config">
-      CacheMaxFileSize 64000
-    </pre>
+    <pre class="prettyprint lang-config">      CacheMaxFileSize 64000</pre>
 
 
 </div>
@@ -189,9 +187,7 @@ cache.</td></tr>
     définir la taille minimale d'un document, en octets, pour que
     celui-ci puisse faire l'objet d'un stockage dans le cache.</p>
 
-    <pre class="prettyprint lang-config">
-      CacheMinFileSize 64
-    </pre>
+    <pre class="prettyprint lang-config">      CacheMinFileSize 64</pre>
 
 
 </div>
@@ -220,9 +216,7 @@ mettre en cache avant de les envoyer au client</td></tr>
     enregistrées dans le cache, et non lorsque les données sont servies à
     partir du cache.</p>
   
-    <pre class="prettyprint lang-config">
-      CacheReadSize 102400
-    </pre>
+    <pre class="prettyprint lang-config">      CacheReadSize 102400</pre>
 
 
 </div>
@@ -253,9 +247,7 @@ avant d'envoyer les données au client</td></tr>
     que le serveur n'effectue pas une mise en tampon excessive au cas
     où les données arriveraient plus vite que prévu.</p>
 
-    <pre class="prettyprint lang-config">
-      CacheReadTime 1000
-    </pre>
+    <pre class="prettyprint lang-config">      CacheReadTime 1000</pre>
 
 
 </div>
@@ -279,9 +271,7 @@ seront stockés</td></tr>
     définir la structure des sous-répertoires du répertoire racine
     spécifié.</p>
 
-    <pre class="prettyprint lang-config">
-      CacheRoot c:/cacheroot
-    </pre>
+    <pre class="prettyprint lang-config">      CacheRoot c:/cacheroot</pre>
 
 
 </div>

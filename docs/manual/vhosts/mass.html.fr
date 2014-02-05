@@ -58,8 +58,7 @@ mod_rewrite</a></li>
     <code>&lt;VirtualHost&gt;</code> très semblables,
     dans le style :</p>
 
-<pre class="prettyprint lang-config">
-&lt;VirtualHost 111.22.33.44&gt;
+<pre class="prettyprint lang-config">&lt;VirtualHost 111.22.33.44&gt;
     ServerName                 customer-1.example.com
     DocumentRoot        /www/hosts/customer-1.example.com/docs
     ScriptAlias  /cgi-bin/  /www/hosts/customer-1.example.com/cgi-bin
@@ -75,8 +74,7 @@ mod_rewrite</a></li>
     ServerName                 customer-N.example.com
     DocumentRoot        /www/hosts/customer-N.example.com/docs
     ScriptAlias  /cgi-bin/  /www/hosts/customer-N.example.com/cgi-bin
-&lt;/VirtualHost&gt;
-</pre>
+&lt;/VirtualHost&gt;</pre>
 
 
     <p>Nous voulons remplacer toutes les configurations
@@ -166,8 +164,7 @@ dynamique avec mod_vhost_alias</a></h2>
     l'hébergement virtuel décrit dans la section <a href="#motivation">À qui ce document est-il destiné ?</a> ci-dessus
     en utilisant <code class="module"><a href="../mod/mod_vhost_alias.html">mod_vhost_alias</a></code>.</p>
 
-<pre class="prettyprint lang-config">
-# extrait le nom du serveur de l'en-tête Host:
+<pre class="prettyprint lang-config"># extrait le nom du serveur de l'en-tête Host:
 UseCanonicalName Off
 
 # ce format de journal peut être éclaté en journaux par serveur virtuel
@@ -178,8 +175,7 @@ CustomLog logs/access_log vcommon
 # inclut le nom du serveur dans les noms de fichiers ressources
 # nécessaires aux traitements des requêtes
 VirtualDocumentRoot /www/hosts/%0/docs
-VirtualScriptAlias  /www/hosts/%0/cgi-bin
-</pre>
+VirtualScriptAlias  /www/hosts/%0/cgi-bin</pre>
 
 
     <p>Pour changer cette configuration en solution de serveur virtuel
@@ -207,8 +203,7 @@ simplifié</a></h2>
     <code>cgi-bin</code> suffit pour l'ensemble des
     serveurs virtuels.</p>
 
-<pre class="prettyprint lang-config">
-UseCanonicalName Off
+<pre class="prettyprint lang-config">UseCanonicalName Off
 
 LogFormat "%V %h %l %u %t \"%r\" %s %b" vcommon
 CustomLog logs/access_log vcommon
@@ -217,8 +212,7 @@ CustomLog logs/access_log vcommon
 VirtualDocumentRoot /home/%2/www
 
 # répertoire cgi-bin unique
-ScriptAlias  /cgi-bin/  /www/std-cgi/
-</pre>
+ScriptAlias  /cgi-bin/  /www/std-cgi/</pre>
 
 
     <p>Vous trouverez des exemples plus élaborés d'utilisation de la
@@ -240,8 +234,7 @@ d'hébergement virtuel sur le même serveur</a></h2>
     <code>&lt;VirtualHost&gt;</code> conventionnelles, comme indiqué
     plus loin.</p>
 
-<pre class="prettyprint lang-config">
-UseCanonicalName Off
+<pre class="prettyprint lang-config">UseCanonicalName Off
 
 LogFormat "%V %h %l %u %t \"%r\" %s %b" vcommon
 
@@ -271,8 +264,7 @@ LogFormat "%V %h %l %u %t \"%r\" %s %b" vcommon
     
     VirtualDocumentRoot /www/homepages/%0/docs
     ScriptAlias         /cgi-bin/ /www/std-cgi/
-&lt;/VirtualHost&gt;
-</pre>
+&lt;/VirtualHost&gt;</pre>
 
 
 <div class="note">
@@ -299,8 +291,7 @@ efficace</a></h2>
     la-même la nécessité d'une recherche DNS. La journalisation doit
     aussi être adaptée pour fonctionner sur un tel système.</p>
 
-<pre class="prettyprint lang-config">
-# obtention du nom du serveur par recherche DNS inverse
+<pre class="prettyprint lang-config"># obtention du nom du serveur par recherche DNS inverse
 # sur l'adresse IP
 UseCanonicalName DNS
 
@@ -311,8 +302,7 @@ CustomLog logs/access_log vcommon
 
 # insertion de l'adresse IP dans les noms de fichiers
 VirtualDocumentRootIP /www/hosts/%0/docs
-VirtualScriptAliasIP  /www/hosts/%0/cgi-bin
-</pre>
+VirtualScriptAliasIP  /www/hosts/%0/cgi-bin</pre>
 
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

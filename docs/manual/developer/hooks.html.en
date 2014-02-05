@@ -49,9 +49,7 @@
       arguments. For example, if the hook returns an <code>int</code> and
       takes a <code>request_rec *</code> and an <code>int</code> and is
       called <code>do_something</code>, then declare it like this:</p>
-      <pre class="prettyprint lang-c">
-        AP_DECLARE_HOOK(int, do_something, (request_rec *r, int n))
-      </pre>
+      <pre class="prettyprint lang-c">        AP_DECLARE_HOOK(int, do_something, (request_rec *r, int n))</pre>
 
 
       <p>This should go in a header which modules will include if
@@ -63,12 +61,10 @@
       which is used to record the module functions that use the hook.
       This is declared as follows:</p>
 
-      <pre class="prettyprint lang-c">
-APR_HOOK_STRUCT(
+      <pre class="prettyprint lang-c">APR_HOOK_STRUCT(
   APR_HOOK_LINK(do_something)
   ...
-)
-      </pre>
+)</pre>
 
     
 
@@ -82,9 +78,7 @@ APR_HOOK_STRUCT(
         <p>If the return value of a hook is <code>void</code>, then all the
         hooks are called, and the caller is implemented like this:</p>
 
-        <pre class="prettyprint lang-c">
-          AP_IMPLEMENT_HOOK_VOID(do_something, (request_rec *r, int n), (r, n))
-        </pre>
+        <pre class="prettyprint lang-c">          AP_IMPLEMENT_HOOK_VOID(do_something, (request_rec *r, int n), (r, n))</pre>
 
 
         <p>The second and third arguments are the dummy argument
@@ -92,13 +86,11 @@ APR_HOOK_STRUCT(
         calling the hook. In other words, this macro expands to
         something like this:</p>
 
-        <pre class="prettyprint lang-c">
-void ap_run_do_something(request_rec *r, int n)
+        <pre class="prettyprint lang-c">void ap_run_do_something(request_rec *r, int n)
 {
     ...
     do_something(r, n);
-}
-        </pre>
+}</pre>
 
       
 
@@ -106,9 +98,7 @@ void ap_run_do_something(request_rec *r, int n)
         <p>If the hook returns a value, then it can either be run until
         the first hook that does something interesting, like so:</p>
 
-        <pre class="prettyprint lang-c">
-          AP_IMPLEMENT_HOOK_RUN_FIRST(int, do_something, (request_rec *r, int n), (r, n), DECLINED)
-        </pre>
+        <pre class="prettyprint lang-c">          AP_IMPLEMENT_HOOK_RUN_FIRST(int, do_something, (request_rec *r, int n), (r, n), DECLINED)</pre>
 
 
         <p>The first hook that does <em>not</em> return <code>DECLINED</code>
@@ -124,9 +114,7 @@ void ap_run_do_something(request_rec *r, int n)
         value other than one of those two stops the loop, and its
         return is the return value. Declare these like so:</p>
 
-        <pre class="prettyprint lang-c">
-          AP_IMPLEMENT_HOOK_RUN_ALL(int, do_something, (request_rec *r, int n), (r, n), OK, DECLINED)
-        </pre>
+        <pre class="prettyprint lang-c">          AP_IMPLEMENT_HOOK_RUN_ALL(int, do_something, (request_rec *r, int n), (r, n), OK, DECLINED)</pre>
 
 
         <p>Again, <code>OK</code> and <code>DECLINED</code> are the traditional
@@ -138,12 +126,10 @@ void ap_run_do_something(request_rec *r, int n)
       <p>At appropriate moments in the code, call the hook caller,
       like so:</p>
 
-      <pre class="prettyprint lang-c">
-int n, ret;
+      <pre class="prettyprint lang-c">int n, ret;
 request_rec *r;
 
-ret=ap_run_do_something(r, n);
-      </pre>
+ret=ap_run_do_something(r, n);</pre>
 
     
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -156,13 +142,11 @@ ret=ap_run_do_something(r, n);
       <p>Include the appropriate header, and define a static function
       of the correct type:</p>
 
-      <pre class="prettyprint lang-c">
-static int my_something_doer(request_rec *r, int n)<br />
+      <pre class="prettyprint lang-c">static int my_something_doer(request_rec *r, int n)<br />
 {
     ...
     return OK;
-}
-      </pre>
+}</pre>
 
     
 
@@ -171,8 +155,7 @@ static int my_something_doer(request_rec *r, int n)<br />
       registering function, which is included in the module
       structure:</p>
 
-      <pre class="prettyprint lang-c">
-static void my_register_hooks()
+      <pre class="prettyprint lang-c">static void my_register_hooks()
 {
     ap_hook_do_something(my_something_doer, NULL, NULL, APR_HOOK_MIDDLE);
 }
@@ -181,8 +164,7 @@ mode MODULE_VAR_EXPORT my_module =
 {
     ...
     my_register_hooks       /* register hooks */
-};
-      </pre>
+};</pre>
 
     
 
@@ -215,14 +197,12 @@ mode MODULE_VAR_EXPORT my_module =
       example, suppose we want "mod_xyz.c" and "mod_abc.c" to run
       before we do, then we'd hook as follows:</p>
 
-      <pre class="prettyprint lang-c">
-static void register_hooks()
+      <pre class="prettyprint lang-c">static void register_hooks()
 {
     static const char * const aszPre[] = { "mod_xyz.c", "mod_abc.c", NULL };
 
     ap_hook_do_something(my_something_doer, aszPre, NULL, APR_HOOK_MIDDLE);
-}
-      </pre>
+}</pre>
 
 
       <p>Note that the sort used to achieve this is stable, so

@@ -176,11 +176,9 @@ relative hyperlinks?</a></li>
     fully-qualified hyperlinks (because you have to change the URL
     scheme).  Using <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> however, you can
     manipulate relative hyperlinks, to achieve the same effect.</p>
-    <pre class="prettyprint lang-config">
-RewriteEngine on
+    <pre class="prettyprint lang-config">RewriteEngine on
 RewriteRule   ^/(.*)_SSL$   https://%{SERVER_NAME}/$1 [R,L]
-RewriteRule   ^/(.*)_NOSSL$ http://%{SERVER_NAME}/$1  [R,L]
-    </pre>
+RewriteRule   ^/(.*)_NOSSL$ http://%{SERVER_NAME}/$1  [R,L]</pre>
 
 
     <p>This rewrite ruleset lets you use hyperlinks of the form
@@ -257,10 +255,8 @@ Certificate for testing purposes?</a></h3>
                         -keyout server.key</strong></code><br />
         These can be used as follows in your <code>httpd.conf</code>
         file:
-        <pre class="prettyprint lang-config">
-SSLCertificateFile    /path/to/this/server.crt
-SSLCertificateKeyFile /path/to/this/server.key
-        </pre>
+        <pre class="prettyprint lang-config">SSLCertificateFile    /path/to/this/server.crt
+SSLCertificateKeyFile /path/to/this/server.key</pre>
 
     </li>
     <li>It is important that you are aware that this
@@ -338,10 +334,8 @@ SSLCertificateKeyFile /path/to/this/server.key
     <li>You should now have two files: <code>server.key</code> and
     <code>server.crt</code>. These can be used as follows in your
     <code>httpd.conf</code> file:
-       <pre class="prettyprint lang-config">
-SSLCertificateFile    /path/to/this/server.crt
-SSLCertificateKeyFile /path/to/this/server.key
-       </pre>
+       <pre class="prettyprint lang-config">SSLCertificateFile    /path/to/this/server.crt
+SSLCertificateKeyFile /path/to/this/server.key</pre>
 
        The <code>server.csr</code> file is no longer needed.
     </li>
@@ -656,9 +650,7 @@ Virtual Hosting to identify different SSL virtual hosts?</a></h3>
     you must make sure to put the non-SSL port number on the NameVirtualHost
     directive, e.g.</p>
 
-    <pre class="prettyprint lang-config">
-      NameVirtualHost 192.168.1.1:80
-    </pre>
+    <pre class="prettyprint lang-config">      NameVirtualHost 192.168.1.1:80</pre>
 
 
     <p>Other workaround solutions include: </p>
@@ -709,11 +701,9 @@ Explorer (MSIE)?</a></h3>
     keep-alive connections or send the SSL close notify messages to MSIE clients.
     This can be done by using the following directive in your SSL-aware
     virtual host section:</p>
-    <pre class="prettyprint lang-config">
-SetEnvIf User-Agent "MSIE [2-5]" \
+    <pre class="prettyprint lang-config">SetEnvIf User-Agent "MSIE [2-5]" \
          nokeepalive ssl-unclean-shutdown \
-         downgrade-1.0 force-response-1.0
-    </pre>
+         downgrade-1.0 force-response-1.0</pre>
 
     <p>Further, some MSIE versions have problems with particular ciphers.
     Unfortunately, it is not possible to implement a MSIE-specific

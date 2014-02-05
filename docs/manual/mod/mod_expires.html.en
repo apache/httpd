@@ -77,10 +77,8 @@ criteria</td></tr>
     <code class="directive"><a href="#expiresbytype">ExpiresByType</a></code> directives
     can also be defined in a more readable syntax of the form:</p>
 
-    <pre class="prettyprint lang-config">
-ExpiresDefault "<var>base</var>  [plus <var>num</var> <var>type</var>] [<var>num</var> <var>type</var>] ..."
-ExpiresByType type/encoding "<var>base</var>  [plus <var>num</var> <var>type</var>] [<var>num</var> <var>type</var>] ..."
-    </pre>
+    <pre class="prettyprint lang-config">ExpiresDefault "<var>base</var>  [plus <var>num</var> <var>type</var>] [<var>num</var> <var>type</var>] ..."
+ExpiresByType type/encoding "<var>base</var>  [plus <var>num</var> <var>type</var>] [<var>num</var> <var>type</var>] ..."</pre>
 
 
     <p>where <var>base</var> is one of:</p>
@@ -112,20 +110,16 @@ ExpiresByType type/encoding "<var>base</var>  [plus <var>num</var> <var>type</va
     make documents expire 1 month after being accessed, by
     default:</p>
 
-    <pre class="prettyprint lang-config">
-ExpiresDefault "access plus 1 month"
+    <pre class="prettyprint lang-config">ExpiresDefault "access plus 1 month"
 ExpiresDefault "access plus 4 weeks"
-ExpiresDefault "access plus 30 days"
-    </pre>
+ExpiresDefault "access plus 30 days"</pre>
 
 
     <p>The expiry time can be fine-tuned by adding several
     '<var>num</var> <var>type</var>' clauses:</p>
 
-    <pre class="prettyprint lang-config">
-ExpiresByType text/html "access plus 1 month 15 days 2 hours"
-ExpiresByType image/gif "modification plus 5 hours 3 minutes"
-    </pre>
+    <pre class="prettyprint lang-config">ExpiresByType text/html "access plus 1 month 15 days 2 hours"
+ExpiresByType image/gif "modification plus 5 hours 3 minutes"</pre>
 
 
     <p>Note that if you use a modification date based setting, the
@@ -205,15 +199,13 @@ by MIME type</td></tr>
     the same images (<em>i.e.</em>, the images will be accessed
     repeatedly within a relatively short timespan).</p>
 
-    <div class="example"><h3>Example:</h3><pre class="prettyprint lang-config">
-# enable expirations
+    <div class="example"><h3>Example:</h3><pre class="prettyprint lang-config"># enable expirations
 ExpiresActive On
 # expire GIF images after a month in the client's cache
 ExpiresByType image/gif A2592000
 # HTML documents are good for a week from the
 # time they were changed
-ExpiresByType text/html M604800
-      </pre>
+ExpiresByType text/html M604800</pre>
 </div>
 
     <p>Note that this directive only has effect if

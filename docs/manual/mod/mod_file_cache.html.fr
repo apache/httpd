@@ -197,9 +197,7 @@ démarrage</td></tr>
     fichiers réécrits par <code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code> ou
     <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>.</p>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">
-      CacheFile /usr/local/apache/htdocs/index.html
-      </pre>
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">      CacheFile /usr/local/apache/htdocs/index.html</pre>
 </div>
 
 </div>
@@ -232,9 +230,7 @@ mémoire</td></tr>
     fichiers réécrits par <code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code> ou
     <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>.</p>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">
-      MMapFile /usr/local/apache/htdocs/index.html
-      </pre>
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">      MMapFile /usr/local/apache/htdocs/index.html</pre>
 </div>
 
 </div>

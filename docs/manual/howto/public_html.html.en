@@ -137,10 +137,8 @@
     You can, likewise, disable the feature for all but a few users by
     using a configuration like the following:</p>
 
-    <pre class="prettyprint lang-config">
-      UserDir disabled<br />
-      UserDir enabled rbowen krietz
-    </pre>
+    <pre class="prettyprint lang-config">      UserDir disabled<br />
+      UserDir enabled rbowen krietz</pre>
 
 
     <p>See <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code>
@@ -156,12 +154,10 @@
     directive to make a particular subdirectory of a user's home directory
     cgi-enabled.</p>
 
-    <pre class="prettyprint lang-config">
-&lt;Directory /home/*/public_html/cgi-bin/&gt;
+    <pre class="prettyprint lang-config">&lt;Directory /home/*/public_html/cgi-bin/&gt;
     Options ExecCGI
     SetHandler cgi-script
-&lt;/Directory&gt;
-    </pre>
+&lt;/Directory&gt;</pre>
 
 
     <p>Then, presuming that <code>UserDir</code> is set to

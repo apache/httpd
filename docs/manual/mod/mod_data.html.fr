@@ -59,11 +59,9 @@
     pile des filtres via la directive <code class="directive"><a href="../mod/core.html#setoutputfilter">SetOutputFilter</a></code>, ou toute autre directive
     supportée par le module <code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code>.</p>
 
-    <div class="example"><h3>Configuration du filtre</h3><pre class="prettyprint lang-config">
-&lt;Location /data/images&gt;
+    <div class="example"><h3>Configuration du filtre</h3><pre class="prettyprint lang-config">&lt;Location /data/images&gt;
     SetOutputFilter DATA
-&lt;/Location&gt;
-        </pre>
+&lt;/Location&gt;</pre>
 </div>
 
 </div>

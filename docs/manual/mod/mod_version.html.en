@@ -40,15 +40,13 @@
     allows a flexible version checking including numeric comparisons and
     regular expressions.</p>
 
-    <div class="example"><h3>Examples</h3><pre class="prettyprint lang-config">
-&lt;IfVersion 2.4.2&gt;
+    <div class="example"><h3>Examples</h3><pre class="prettyprint lang-config">&lt;IfVersion 2.4.2&gt;
     # current httpd version is exactly 2.4.2
 &lt;/IfVersion&gt;
 
 &lt;IfVersion &gt;= 2.5&gt;
     # use really new features :-)
-&lt;/IfVersion&gt;
-      </pre>
+&lt;/IfVersion&gt;</pre>
 </div>
 
     <p>See below for further possibilities.</p>
@@ -94,12 +92,10 @@
         <td>httpd version is less or equal</td></tr>
 </table>
 
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
-&lt;IfVersion &gt;= 2.3&gt;
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">&lt;IfVersion &gt;= 2.3&gt;
     # this happens only in versions greater or
     # equal 2.3.0.
-&lt;/IfVersion&gt;
-      </pre>
+&lt;/IfVersion&gt;</pre>
 </div>
 
     <p>Besides the numerical comparison it is possible to match a
@@ -115,21 +111,17 @@
             <code><var>regex</var></code></td></tr>
 </table>
 
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
-&lt;IfVersion = /^2.4.[01234]$/&gt;
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">&lt;IfVersion = /^2.4.[01234]$/&gt;
     # e.g. workaround for buggy versions
-&lt;/IfVersion&gt;
-      </pre>
+&lt;/IfVersion&gt;</pre>
 </div>
 
     <p>In order to reverse the meaning, all operators can be preceded by an
     exclamation mark (<code>!</code>):</p>
 
-    <pre class="prettyprint lang-config">
-&lt;IfVersion !~ ^2.4.[01234]$&gt;
+    <pre class="prettyprint lang-config">&lt;IfVersion !~ ^2.4.[01234]$&gt;
     # not for those versions
-&lt;/IfVersion&gt;
-    </pre>
+&lt;/IfVersion&gt;</pre>
 
 
     <p>If the <var>operator</var> is omitted, it is assumed to be

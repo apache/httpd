@@ -78,8 +78,7 @@ delivery to the client</td></tr>
 <h2><a name="examples" id="examples">Examples</a></h2>
 
     <h3>Generating HTML from some other type of response</h3>
-      <pre class="prettyprint lang-config">
-# mod_ext_filter directive to define a filter
+      <pre class="prettyprint lang-config"># mod_ext_filter directive to define a filter
 # to HTML-ize text/c files using the external
 # program /usr/bin/enscript, with the type of
 # the result set to text/html
@@ -95,8 +94,7 @@ ExtFilterDefine c-to-html mode=output \
     # mod_mime directive to set the type of .c
     # files to text/c
     AddType text/c .c
-&lt;/Directory&gt;
-      </pre>
+&lt;/Directory&gt;</pre>
 
     
 
@@ -105,8 +103,7 @@ ExtFilterDefine c-to-html mode=output \
       Please refer to <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> for a practical
       implementation.</p>
 
-      <pre class="prettyprint lang-config">
-# mod_ext_filter directive to define the external filter
+      <pre class="prettyprint lang-config"># mod_ext_filter directive to define the external filter
 ExtFilterDefine gzip mode=output cmd=/bin/gzip
 
 &lt;Location /gzipped&gt;
@@ -118,14 +115,12 @@ ExtFilterDefine gzip mode=output cmd=/bin/gzip
     # mod_headers directive to add
     # "Content-Encoding: gzip" header field
     Header set Content-Encoding gzip
-&lt;/Location&gt;
-      </pre>
+&lt;/Location&gt;</pre>
 
     
 
     <h3>Slowing down the server</h3>
-      <pre class="prettyprint lang-config">
-# mod_ext_filter directive to define a filter
+      <pre class="prettyprint lang-config"># mod_ext_filter directive to define a filter
 # which runs everything through cat; cat doesn't
 # modify anything; it just introduces extra pathlength
 # and consumes more resources
@@ -137,14 +132,12 @@ ExtFilterDefine slowdown mode=output cmd=/bin/cat \
     # be run several times on output
     #
     SetOutputFilter slowdown;slowdown;slowdown
-&lt;/Location&gt;
-      </pre>
+&lt;/Location&gt;</pre>
 
     
 
     <h3>Using sed to replace text in the response</h3>
-      <pre class="prettyprint lang-config">
-# mod_ext_filter directive to define a filter which
+      <pre class="prettyprint lang-config"># mod_ext_filter directive to define a filter which
 # replaces text in the response
 #
 ExtFilterDefine fixtext mode=output intype=text/html \
@@ -154,14 +147,12 @@ ExtFilterDefine fixtext mode=output intype=text/html \
     # core directive to cause the fixtext filter to
     # be run on output
     SetOutputFilter fixtext
-&lt;/Location&gt;
-      </pre>
+&lt;/Location&gt;</pre>
 
     
 
     <h3>Tracing another filter</h3>
-      <pre class="prettyprint lang-config">
-# Trace the data read and written by mod_deflate
+      <pre class="prettyprint lang-config"># Trace the data read and written by mod_deflate
 # for a particular client (IP 192.168.1.31)
 # experiencing compression problems.
 # This filter will trace what goes into mod_deflate.
@@ -183,12 +174,10 @@ ExtFilterDefine traceafter \
 &lt;Directory /usr/local/docs&gt;
     SetEnvIf Remote_Addr 192.168.1.31 trace_this_client
     SetOutputFilter tracebefore;deflate;traceafter
-&lt;/Directory&gt;
-      </pre>
+&lt;/Directory&gt;</pre>
 
 
-      <div class="example"><h3>Here is the filter which traces the data:</h3><pre class="prettyprint lang-perl">
-#!/usr/local/bin/perl -w
+      <div class="example"><h3>Here is the filter which traces the data:</h3><pre class="prettyprint lang-perl">#!/usr/local/bin/perl -w
 use strict;
 
 open(SAVE, "&gt;$ARGV[0]")
@@ -199,8 +188,7 @@ while (&lt;STDIN&gt;) {
     print $_;
 }
 
-close(SAVE);
-        </pre>
+close(SAVE);</pre>
 </div>
     
 </div>
@@ -327,9 +315,7 @@ close(SAVE);
       filter is removed and the request continues without it.</dd>
     </dl>
 
-    <pre class="prettyprint lang-config">
-      ExtFilterOptions LogStderr
-    </pre>
+    <pre class="prettyprint lang-config">      ExtFilterOptions LogStderr</pre>
 
 
     <p>Messages written to the filter's standard error will be stored

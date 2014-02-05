@@ -150,10 +150,8 @@ avec le système de fichiers</a></li></ul><ul class="seealso"><li><a href="#comme
     utilisateurs sauf certains d'entre eux en utilisant une
     configuration du style :</p>
 
-    <pre class="prettyprint lang-config">
-      UserDir disabled<br />
-      UserDir enabled rbowen krietz
-    </pre>
+    <pre class="prettyprint lang-config">      UserDir disabled<br />
+      UserDir enabled rbowen krietz</pre>
 
 
     <p>Vous trouverez d'autres exemples dans la documentation de
@@ -168,12 +166,10 @@ avec le système de fichiers</a></li></ul><ul class="seealso"><li><a href="#comme
    vous pouvez utiliser une section <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> pour activer CGI dans un
    sous-répertoire particulier d'un répertoire home utilisateur.</p>
 
-    <pre class="prettyprint lang-config">
-&lt;Directory /home/*/public_html/cgi-bin/&gt;
+    <pre class="prettyprint lang-config">&lt;Directory /home/*/public_html/cgi-bin/&gt;
     Options ExecCGI
     SetHandler cgi-script
-&lt;/Directory&gt;
-    </pre>
+&lt;/Directory&gt;</pre>
 
 
     <p>Avec la configuration ci-dessus, et en supposant que

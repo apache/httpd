@@ -46,13 +46,11 @@
 <h2><a name="example" id="example">A Simple Example</a></h2>
     
 
-    <pre class="prettyprint lang-config">
-# This is a misconfiguration example, do not use on your server
+    <pre class="prettyprint lang-config"># This is a misconfiguration example, do not use on your server
 &lt;VirtualHost www.example.dom&gt;
   ServerAdmin webgirl@example.dom
   DocumentRoot /www/example
-&lt;/VirtualHost&gt;
-    </pre>
+&lt;/VirtualHost&gt;</pre>
 
 
     <p>In order for the server to function properly, it absolutely needs
@@ -69,13 +67,11 @@
     <p>Suppose that <code>www.example.dom</code> has address 192.0.2.1.
     Then consider this configuration snippet:</p>
 
-    <pre class="prettyprint lang-config">
-# This is a misconfiguration example, do not use on your server
+    <pre class="prettyprint lang-config"># This is a misconfiguration example, do not use on your server
 &lt;VirtualHost 192.0.2.1&gt;
   ServerAdmin webgirl@example.dom
   DocumentRoot /www/example
-&lt;/VirtualHost&gt;
-    </pre>
+&lt;/VirtualHost&gt;</pre>
 
 
     <p>This time httpd needs to use reverse DNS to find the
@@ -89,13 +85,11 @@
 
     <p>Here is a snippet that avoids both of these problems:</p>
 
-    <pre class="prettyprint lang-config">
-&lt;VirtualHost 192.0.2.1&gt;
+    <pre class="prettyprint lang-config">&lt;VirtualHost 192.0.2.1&gt;
   ServerName www.example.dom
   ServerAdmin webgirl@example.dom
   DocumentRoot /www/example
-&lt;/VirtualHost&gt;
-    </pre>
+&lt;/VirtualHost&gt;</pre>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -104,16 +98,14 @@
 
     <p>Consider this configuration snippet:</p>
 
-    <pre class="prettyprint lang-config">
-&lt;VirtualHost www.example1.dom&gt;
+    <pre class="prettyprint lang-config">&lt;VirtualHost www.example1.dom&gt;
   ServerAdmin webgirl@example1.dom
   DocumentRoot /www/example1
 &lt;/VirtualHost&gt;
 &lt;VirtualHost www.example2.dom&gt;
   ServerAdmin webguy@example2.dom
   DocumentRoot /www/example2
-&lt;/VirtualHost&gt;
-    </pre>
+&lt;/VirtualHost&gt;</pre>
 
 
     <p>Suppose that you've assigned 192.0.2.1 to

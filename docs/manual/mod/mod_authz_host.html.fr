@@ -93,38 +93,30 @@ contrôle d'accès</a></li>
 
     <p>Une adresse IP complète :</p>
 
-    <pre class="prettyprint lang-config">
-Require ip 10.1.2.3
-Require ip 192.168.1.104 192.168.1.205
-    </pre>
+    <pre class="prettyprint lang-config">Require ip 10.1.2.3
+Require ip 192.168.1.104 192.168.1.205</pre>
 
 
     <p>L'adresse IP d'un hôte pour qui l'accès est accordé</p>
 
     <p>Une adresse IP partielle :</p>
 
-    <pre class="prettyprint lang-config">
-Require ip 10.1
-Require ip 10 172.20 192.168.2
-    </pre>
+    <pre class="prettyprint lang-config">Require ip 10.1
+Require ip 10 172.20 192.168.2</pre>
 
     <p>Les 1 à 3 premiers octets d'une adresse IP, pour une restriction
     à un sous-réseau.</p>
 
     <p>Une paire réseau/masque de sous-réseau :</p>
 
-    <pre class="prettyprint lang-config">
-      Require ip 10.1.0.0/255.255.0.0
-    </pre>
+    <pre class="prettyprint lang-config">      Require ip 10.1.0.0/255.255.0.0</pre>
 
     <p>Un réseau a.b.c.d, et un masque de sous-réseau w.x.y.z. pour une
     restriction de sous-réseau plus fine.</p>
 
     <p>Une spécification CIDR réseau/nnn :</p>
 
-    <pre class="prettyprint lang-config">
-      Require ip 10.1.0.0/16
-    </pre>
+    <pre class="prettyprint lang-config">      Require ip 10.1.0.0/16</pre>
 
     <p>Identique au cas précédent, excepté que le masque de sous-réseau
     représente les nnn premiers bits de poids fort.</p>
@@ -135,10 +127,8 @@ Require ip 10 172.20 192.168.2
     <p>On peut spécifier des adresses et des sous-réseaux IPv6 comme
     suit :</p>
 
-    <pre class="prettyprint lang-config">
-Require ip 2001:db8::a00:20ff:fea7:ccea
-Require ip 2001:db8::a00:20ff:fea7:ccea/10
-    </pre>
+    <pre class="prettyprint lang-config">Require ip 2001:db8::a00:20ff:fea7:ccea
+Require ip 2001:db8::a00:20ff:fea7:ccea/10</pre>
 
 
     <p>Note: comme les adresses IP sont lues au démarrage, les
@@ -155,10 +145,8 @@ Require ip 2001:db8::a00:20ff:fea7:ccea/10
 
     <p>Un nom de domaine (éventuellement partiel)</p>
 
-    <pre class="prettyprint lang-config">
-Require host example.org
-Require host .net example.edu
-    </pre>
+    <pre class="prettyprint lang-config">Require host example.org
+Require host .net example.edu</pre>
 
 
     <p>Les hôtes dont les noms correspondent ou se terminent par la
@@ -190,9 +178,7 @@ Require host .net example.edu
     <p>L'exemple suivant montre une méthode simple pour sélectionner les
     connexions en provenance de l'hôte local :</p>
 
-    <pre class="prettyprint lang-config">
-    Require local
-    </pre>
+    <pre class="prettyprint lang-config">    Require local</pre>
 
 
 
