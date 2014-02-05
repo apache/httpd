@@ -67,7 +67,7 @@
 
 <!-- load utility snippets -->
 <xsl:include href="util/modtrans.xsl" />
-<xsl:include href="util/string-reverse.xsl" />
+<xsl:include href="util/pretrim.xsl" />
 
 <!-- make sure, we set relative anchors only, if we're actually -->
 <!-- transforming a modulefile (see <directive> template)       -->
@@ -604,52 +604,6 @@ if (typeof(prettyPrint) !== 'undefined') {
 </xsl:template>
 <!-- /section/section/section/section -->
 
-
-<!-- strip empty lines at the beginning -->
-<xsl:template name="pre-ltrim">
-<xsl:param name="string" />
-
-<xsl:variable name="lspace">
-    <xsl:call-template name="string-reverse">
-        <xsl:with-param name="string" select="substring-before($string, substring(normalize-space($string), 1, 1))" />
-    </xsl:call-template>
-</xsl:variable>
-
-<xsl:choose>
-<xsl:when test="contains($lspace, '&#x0a;')">
-    <xsl:value-of select="substring(
-        $string,
-        1 + string-length($lspace)
-            - string-length(substring-before($lspace, '&#x0a;')),
-        string-length($string)
-    )" />
-</xsl:when>
-<xsl:otherwise>
-    <xsl:value-of select="$string" />
-</xsl:otherwise>
-</xsl:choose>
-</xsl:template>
-
-<!-- strip whitespace at the end -->
-<xsl:template name="pre-rtrim">
-<xsl:param name="string" />
-
-<xsl:variable name="rev">
-    <xsl:call-template name="string-reverse">
-        <xsl:with-param name="string" select="$string" />
-    </xsl:call-template>
-</xsl:variable>
-
-<xsl:call-template name="string-reverse">
-    <xsl:with-param name="string" select="substring(
-        $rev,
-        1 + string-length(substring-before(
-            $rev, substring(normalize-space($rev), 1, 1)
-        )),
-        string-length($rev)
-    )" />
-</xsl:call-template>
-</xsl:template>
 
 
 <!-- ==================================================================== -->

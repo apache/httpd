@@ -26,7 +26,7 @@
 
 
 <!-- load utility snippets -->
-<xsl:include href="../xsl/util/string-reverse.xsl" />
+<xsl:include href="../xsl/util/pretrim.xsl" />
 
 <!-- ==================================================================== -->
 <!-- Ordinary HTML that must be converted to latex                        -->
@@ -153,15 +153,14 @@ interpreted in pre -->
 <xsl:template match="pre|highlight">
 <xsl:text>\begin{verbatim}</xsl:text>
 
-<!-- string trimming: ltrim is easy, rtrim is not. so, we're sneaky and use
-ltrim only. The output is then: string-reverse(ltrim(string-reverse(ltrim(.)))) -->
-<xsl:variable name="reversed">
-<xsl:call-template name="string-reverse">
-<xsl:with-param name="string" select="substring(., string-length(substring-before(., substring(normalize-space(.), 1, 1))) + 1, string-length(.))"/>
-</xsl:call-template>
-</xsl:variable>
-<xsl:call-template name="string-reverse">
-<xsl:with-param name="string" select="substring($reversed, string-length(substring-before($reversed, substring(normalize-space($reversed), 1, 1))) + 1, string-length($reversed))"/>
+<xsl:call-template name="pre-rtrim">
+  <xsl:with-param name="string">
+    <xsl:call-template name="pre-ltrim">
+      <xsl:with-param name="string">
+        <xsl:value-of select="." />
+      </xsl:with-param>
+    </xsl:call-template>
+  </xsl:with-param>
 </xsl:call-template>
 
 <xsl:text>\end{verbatim}</xsl:text>&lf;
