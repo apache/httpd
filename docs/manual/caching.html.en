@@ -425,12 +425,10 @@ Vary: negotiate,accept-language,accept-charset
 
       <p>Typically the module will be configured as so;</p>
 
-      <pre class="prettyprint lang-config">
-CacheRoot   "/var/cache/apache/"
+      <pre class="prettyprint lang-config">CacheRoot   "/var/cache/apache/"
 CacheEnable disk /
 CacheDirLevels 2
-CacheDirLength 1
-      </pre>
+CacheDirLength 1</pre>
 
 
       <p>Importantly, as the cached files are locally stored, operating system
@@ -618,9 +616,7 @@ CacheDirLength 1
         instructs httpd to open the file when it is started and to re-use
         this file-handle for all subsequent access to this file.</p>
 
-        <pre class="prettyprint lang-config">
-        CacheFile /usr/local/apache2/htdocs/index.html
-        </pre>
+        <pre class="prettyprint lang-config">        CacheFile /usr/local/apache2/htdocs/index.html</pre>
 
 
         <p>If you intend to cache a large number of files in this manner, you
@@ -672,8 +668,7 @@ CacheDirLength 1
         the difference in the time it takes to read a file for the first time
         and the second time;</p>
 
-        <div class="example"><pre>
-colm@coroebus:~$ time cat testfile &gt; /dev/null
+        <div class="example"><pre>colm@coroebus:~$ time cat testfile &gt; /dev/null
 real    0m0.065s
 user    0m0.000s
 sys     0m0.001s
@@ -710,9 +705,7 @@ sys     0m0.000s</pre></div>
         start time (using the mmap system call). httpd will use the in-memory
         contents for all subsequent accesses to this file.</p>
 
-        <pre class="prettyprint lang-config">
-        MMapFile /usr/local/apache2/htdocs/index.html
-        </pre>
+        <pre class="prettyprint lang-config">        MMapFile /usr/local/apache2/htdocs/index.html</pre>
 
 
         <p>As with the

@@ -88,11 +88,9 @@ a hook function will then acquire a state from the pool and release it back when
 done using it, allowing you to still gain a significant performance increase, while 
 keeping your memory footprint low. Some examples of possible settings are:
 </p>
-<pre class="prettyprint lang-config">
-LuaScope once
+<pre class="prettyprint lang-config">LuaScope once
 LuaScope thread
-LuaScope server 5 40
-</pre>
+LuaScope server 5 40</pre>
 
 <p>
 As a general rule of thumb: If your server has none to low usage, use <code>once</code> 
@@ -127,8 +125,7 @@ may be negligible, as files httpd will stat the files regardless.
 For maximum performance, it is generally recommended that any initialization of libraries, 
 constants and master tables be kept outside the handle's scope:
 </p>
-<pre class="prettyprint lang-lua">
---[[ This is good practice ]]--
+<pre class="prettyprint lang-lua">--[[ This is good practice ]]--
 require "string"
 require "someLibrary"
 local masterTable = {}
@@ -136,11 +133,9 @@ local constant = "Foo bar baz"
 
 function handle(r)
     do_stuff()
-end
-</pre>
+end</pre>
 
-<pre class="prettyprint lang-lua">
---[[ This is bad practice ]]--
+<pre class="prettyprint lang-lua">--[[ This is bad practice ]]--
 require "string"
 
 function handle(r)
@@ -148,8 +143,7 @@ function handle(r)
     local masterTable = {}
     local constant = "Foo bar baz"
     do_stuff()
-end
-</pre>
+end</pre>
 
 
 
@@ -164,15 +158,12 @@ end
     decisions than would otherwise be allowed with said directives.
 </p>
 
-<pre class="prettyprint lang-config">
-LuaHookTranslateName /path/too/foo.lua remap
-</pre>
+<pre class="prettyprint lang-config">LuaHookTranslateName /path/too/foo.lua remap</pre>
 
 
 
 
-<pre class="prettyprint lang-lua">
---[[
+<pre class="prettyprint lang-lua">--[[
     Simple remap example.
     This example will rewrite /foo/test.bar to the physical file
     /internal/test, somewhat like how mod_alias works.
@@ -185,15 +176,13 @@ function remap(r)
         r.filename = "/internal/" .. barFile
     end
     return apache2.OK
-end
-</pre>
+end</pre>
 
 
 
 
 
-<pre class="prettyprint lang-lua">
---[[
+<pre class="prettyprint lang-lua">--[[
     Advanced remap example.
     This example will evaluate some conditions, and based on that, 
     remap a file to one of two destinations, using a rewrite map.
@@ -239,8 +228,7 @@ function remap(r)
         end
     end
     return apache2.DECLINED
-end
-</pre>
+end</pre>
 
 
 
@@ -259,15 +247,12 @@ bla bla
     document roots of each hostname.
 </p>
 
-<pre class="prettyprint lang-config">
-LuaHookTranslateName /path/too/foo.lua mass_vhost
-</pre>
+<pre class="prettyprint lang-config">LuaHookTranslateName /path/too/foo.lua mass_vhost</pre>
 
 
 
 
-<pre class="prettyprint lang-lua">
---[[
+<pre class="prettyprint lang-lua">--[[
     Simple mass vhost script
     This example will check a map for a virtual host and rewrite filename and 
     document root accordingly.
@@ -292,15 +277,13 @@ function mass_vhost(r)
         end
     end
     return apache2.DECLINED
-end
-</pre>
+end</pre>
 
 
 
 
 
-<pre class="prettyprint lang-lua">
---[[
+<pre class="prettyprint lang-lua">--[[
     Advanced mass virtual hosting
     This example will query a database for vhost entries and save them for
     60 seconds before checking for updates. For best performance, such scripts
@@ -342,8 +325,7 @@ function mass_vhost(r)
         return apache2.OK
     end
     return apache2.DECLINED
-end
-</pre>
+end</pre>
 
 
 
@@ -358,14 +340,11 @@ end
     processing, allowing you to either add new requirements that were not previously 
     supported by httpd, or tweaking existing ones to accommodate your needs. 
 </p>
-<pre class="prettyprint lang-config">
-LuaHookAuthChecker /path/too/foo.lua check_auth
-</pre>
+<pre class="prettyprint lang-config">LuaHookAuthChecker /path/too/foo.lua check_auth</pre>
 
 
 
-<pre class="prettyprint lang-lua">
---[[ 
+<pre class="prettyprint lang-lua">--[[ 
      A simple authentication hook that checks a table containing usernames and
      passwords of two accounts.
 ]]--
@@ -400,15 +379,13 @@ function check_auth(r)
     else
         return apache2.OK
     end
-end
-</pre>
+end</pre>
 
 
 
 
 
-<pre class="prettyprint lang-lua">
---[[ 
+<pre class="prettyprint lang-lua">--[[ 
      An advanced authentication checker with a database backend,
      caching account entries for 1 minute
 ]]--
@@ -464,8 +441,7 @@ function check_auth(r)
     else
         return apache2.OK
     end
-end
-</pre>
+end</pre>
 
 
 
@@ -479,19 +455,16 @@ end
     example below shows you how you can split a single htpasswd file into 
     groups with different permissions:
 </p>
-<pre class="prettyprint lang-config">
-LuaAuthzProvider rights /path/to/lua/script.lua rights_handler
+<pre class="prettyprint lang-config">LuaAuthzProvider rights /path/to/lua/script.lua rights_handler
 &lt;Directory /www/private&gt;
     Require rights member
 &lt;/Directory&gt;
 &lt;Directory /www/admin&gt;
     Require rights admin
-&lt;/Directory&gt;
-</pre>
+&lt;/Directory&gt;</pre>
 
 
-<pre class="prettyprint lang-lua">
---[[ 
+<pre class="prettyprint lang-lua">--[[ 
      This script has two user groups; members and admins, and whichever 
      is refered to by the "Require rights" directive is checked to see
      if the authenticated user belongs to this group.
@@ -518,8 +491,7 @@ function rights_handler(r, what)
         end
     end
     return apache2.AUTHZ_DENIED
-end
-</pre>
+end</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -530,13 +502,10 @@ end
     by each backend using IVM variables, and preferring the backend with least 
     requests served in total:
 </p>
-<pre class="prettyprint lang-config">
-LuaHookTranslateName /path/to/script.lua proxy_handler
-</pre>
+<pre class="prettyprint lang-config">LuaHookTranslateName /path/to/script.lua proxy_handler</pre>
 
 
-<pre class="prettyprint lang-lua">
---[[ 
+<pre class="prettyprint lang-lua">--[[ 
      This script uses a basic IVM table to determine where to 
      send the request.
 ]]--
@@ -573,8 +542,7 @@ function proxy_handler(r)
     r.proxyreq = apache2.PROXYREQ_REVERSE
     r.filename = "proxy:" .. backends[backend] .. r.uri
     return apache2.DECLINED -- let the proxy handler do this instead
-end
-</pre>
+end</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -582,9 +550,7 @@ end
 <p>
 Coming soon!
 </p>
-<pre class="prettyprint lang-config">
-LuaMapHandler ^/portal/([a-z]+)/   /path/to/lua/script.lua handle_$1
-</pre>
+<pre class="prettyprint lang-config">LuaMapHandler ^/portal/([a-z]+)/   /path/to/lua/script.lua handle_$1</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">

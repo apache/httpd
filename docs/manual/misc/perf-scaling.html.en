@@ -116,8 +116,7 @@
                     Linux (Xen) system: 
                 </p>
                 
-                <div class="example"><pre>
-top - 23:10:58 up 71 days,  6:14,  4 users,  load average: 0.25, 0.53, 0.47
+                <div class="example"><pre>top - 23:10:58 up 71 days,  6:14,  4 users,  load average: 0.25, 0.53, 0.47
 Tasks: 163 total,   1 running, 162 sleeping,   0 stopped,   0 zombie
 Cpu(s): 11.6%us,  0.7%sy,  0.0%ni, 87.3%id,  0.4%wa,  0.0%hi,  0.0%si,  0.0%st
 Mem:   2621656k total,  2178684k used,   442972k free,   100500k buffers
@@ -173,13 +172,11 @@ Swap:  4194296k total,   860584k used,  3333712k free,  1157552k cached
                     The output of free looks like this: 
                 </p>
                 
-                <div class="example"><pre>
-sctemme@brutus:~$ free
+                <div class="example"><pre>sctemme@brutus:~$ free
               total       used     free   shared    buffers    cached
 Mem:        4026028    3901892   124136         0    253144    841044
 -/+ buffers/cache:     2807704  1218324
-Swap:       3903784      12540  3891244
-                </pre></div>
+Swap:       3903784      12540  3891244</pre></div>
             
             
             <h4><a name="vmstat" id="vmstat">vmstat
@@ -203,27 +200,23 @@ Swap:       3903784      12540  3891244
                 </p>
                 
                 
-                <div class="example"><pre>
-[sctemme@GayDeceiver sctemme]$ vmstat 5 3
+                <div class="example"><pre>[sctemme@GayDeceiver sctemme]$ vmstat 5 3
    procs                      memory     swap         io    system        cpu
  r b w     swpd   free   buff cache si so       bi    bo in     cs us  sy id
  0 0 0        0 186252   6688 37516    0    0   12     5 47    311  0   1 99
  0 0 0        0 186244   6696 37516    0    0    0    16 41    314  0   0 100
- 0 0 0        0 186236   6704 37516    0    0    0     9 44    314  0   0 100
-                  </pre></div>
+ 0 0 0        0 186236   6704 37516    0    0    0     9 44    314  0   0 100</pre></div>
                 
                 <p>And this is output of a server that is under a load of one
                     hundred simultaneous connections fetching static content: 
                 </p>
                 
-                <div class="example"><pre>
-[sctemme@GayDeceiver sctemme]$ vmstat 5 3
+                <div class="example"><pre>[sctemme@GayDeceiver sctemme]$ vmstat 5 3
    procs                      memory     swap    io      system       cpu
  r b w     swpd   free   buff cache si so     bi bo   in     cs us sy  id
  1 0 1        0 162580   6848 40056    0    0 11  5 150     324  1  1  98
  6 0 1        0 163280   6856 40248    0    0  0 66 6384 1117   42 25  32
-11 0 0        0 162780   6864 40436    0    0  0 61 6309 1165   33 28  40
-                  </pre></div>
+11 0 0        0 162780   6864 40436    0    0  0 61 6309 1165   33 28  40</pre></div>
                 
                 <p>The first line gives averages since the last reboot. The
                     subsequent lines give information for five second
@@ -440,9 +433,7 @@ Swap:       3903784      12540  3891244
                     can be specified on a per module basis: 
                 </p>
                 
-                <pre class="prettyprint lang-config">
-                    LogLevel debug mod_ssl:warn
-                </pre>
+                <pre class="prettyprint lang-config">                    LogLevel debug mod_ssl:warn</pre>
 
                 
                 <p>
@@ -475,15 +466,13 @@ Swap:       3903784      12540  3891244
                 </p>
                 
                 
-                <div class="example"><pre>
-195.54.228.42 - - [24/Mar/2007:23:05:11 -0400] "GET /sander/feed/ HTTP/1.1" 200 9747
+                <div class="example"><pre>195.54.228.42 - - [24/Mar/2007:23:05:11 -0400] "GET /sander/feed/ HTTP/1.1" 200 9747
 64.34.165.214 - - [24/Mar/2007:23:10:11 -0400] "GET /sander/feed/atom HTTP/1.1" 200 9068
 60.28.164.72 - - [24/Mar/2007:23:11:41 -0400] "GET / HTTP/1.0" 200 618
 85.140.155.56 - - [24/Mar/2007:23:14:12 -0400] "GET /sander/2006/09/27/44/ HTTP/1.1" 200 14172
 85.140.155.56 - - [24/Mar/2007:23:14:15 -0400] "GET /sander/2006/09/21/gore-tax-pollution/ HTTP/1.1" 200 15147
 74.6.72.187 - - [24/Mar/2007:23:18:11 -0400] "GET /sander/2006/09/27/44/ HTTP/1.0" 200 14172
-74.6.72.229 - - [24/Mar/2007:23:24:22 -0400] "GET /sander/2006/11/21/os-java/ HTTP/1.0" 200 13457
-                </pre></div>
+74.6.72.229 - - [24/Mar/2007:23:24:22 -0400] "GET /sander/2006/11/21/os-java/ HTTP/1.0" 200 13457</pre></div>
                 
                 <table>
                     <tr>
@@ -1291,8 +1280,7 @@ Swap:       3903784      12540  3891244
                     pre-rendered blog pages: 
                 </p>
                 
-<pre class="prettyprint lang-config">
-Listen *:8001
+<pre class="prettyprint lang-config">Listen *:8001
   &lt;VirtualHost *:8001&gt;
       ServerName blog.sandla.org:8001
       ServerAdmin sander@temme.net
@@ -1316,8 +1304,7 @@ Listen *:8001
           Options +ExecCGI
           Require all granted
       &lt;/Directory&gt;
-  &lt;/VirtualHost&gt;
-</pre>
+  &lt;/VirtualHost&gt;</pre>
 
                 
                 <p>
@@ -1399,14 +1386,12 @@ Listen *:8001
                     <code>httpd.conf</code>:
                 </p>
                 
-<pre class="prettyprint lang-config">
-CacheRoot /raid1/cacheroot
+<pre class="prettyprint lang-config">CacheRoot /raid1/cacheroot
 CacheEnable disk /
 # A page modified 100 minutes ago will expire in 10 minutes
 CacheLastModifiedFactor .1
 # Always check again after 6 hours
-CacheMaxExpire 21600
-</pre>
+CacheMaxExpire 21600</pre>
 
                 
                 <p>This configuration will try to cache any and all content
@@ -1433,11 +1418,9 @@ CacheMaxExpire 21600
                     Unfortunately there does currently not exist a way to cache
                     these headers. 
                 </p>
-<pre class="prettyprint lang-config">
-&lt;FilesMatch \.(jpe?g|png|gif|js|css|x?html|xml)&gt;
+<pre class="prettyprint lang-config">&lt;FilesMatch \.(jpe?g|png|gif|js|css|x?html|xml)&gt;
     FileETag None
-&lt;/FilesMatch&gt;
-</pre>
+&lt;/FilesMatch&gt;</pre>
 
                 
                 <p>

@@ -93,8 +93,7 @@
       (<code class="directive"><a href="#anonymous_logemail">Anonymous_LogEmail</a></code>)</li>
     </ul>
 
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
-&lt;Directory /var/www/html/private&gt;
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">&lt;Directory /var/www/html/private&gt;
     AuthName "Use 'anonymous' &amp; Email address for guest entry"
     AuthType Basic
     AuthBasicProvider file anon
@@ -107,8 +106,7 @@
     Anonymous anonymous guest www test welcome
     
     Require valid-user
-&lt;/Directory&gt;
-      </pre>
+&lt;/Directory&gt;</pre>
 </div>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -133,9 +131,7 @@ password verification</td></tr>
     '<code>anonymous</code>' is always one of the allowed
     userIDs.</p>
 
-    <div class="example"><h3>Example:</h3><pre class="prettyprint lang-config">
-      Anonymous anonymous "Not Registered" "I don't know"
-    </pre>
+    <div class="example"><h3>Example:</h3><pre class="prettyprint lang-config">      Anonymous anonymous "Not Registered" "I don't know"</pre>
 </div>
 
     <p>This would allow the user to enter without password

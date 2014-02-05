@@ -91,8 +91,7 @@ cache du résultat à destination des autres modules LDAP</td></tr>
     l'authentification HTTP de base fournie par
     <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code>.</p>
 
-    <pre class="prettyprint lang-config">
-# Active la conservation des connexions LDAP et le cache partagé en
+    <pre class="prettyprint lang-config"># Active la conservation des connexions LDAP et le cache partagé en
 # mémoire. Active le gestionnaire de statut du cache LDAP.
 # Nécessite le chargement de mod_ldap et de mod_authnz_ldap.
 # Remplacez "votre-domaine.example.com" par le nom de votre
@@ -115,8 +114,7 @@ LDAPOpCacheTTL 600
     AuthBasicProvider ldap
     AuthLDAPURL ldap://127.0.0.1/dc=example,dc=com?uid?one
     Require valid-user
-&lt;/Location&gt;
-    </pre>
+&lt;/Location&gt;</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -220,11 +218,9 @@ LDAPOpCacheTTL 600
       suivantes pour accéder aux informations du cache de
       <code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code> :</p>
 
-      <pre class="prettyprint lang-config">
-&lt;Location /server/cache-info&gt;
+      <pre class="prettyprint lang-config">&lt;Location /server/cache-info&gt;
     SetHandler ldap-status
-&lt;/Location&gt;
-      </pre>
+&lt;/Location&gt;</pre>
 
 
       <p>En se connectant à l'URL
@@ -250,8 +246,7 @@ LDAPOpCacheTTL 600
     ainsi que le type de chiffrement à utiliser pour la connexion (none,
     SSL ou TLS/STARTTLS).</p>
 
-    <pre class="prettyprint lang-config">
-# Etablissement d'une connexion SSL LDAP sur le port 636.
+    <pre class="prettyprint lang-config"># Etablissement d'une connexion SSL LDAP sur le port 636.
 # Nécessite le chargement de mod_ldap et mod_authnz_ldap.
 # Remplacez "votre-domaine.example.com" par le nom de votre
 # domaine.
@@ -269,12 +264,10 @@ LDAPTrustedGlobalCert CA_DER /certs/certfile.der
     AuthBasicProvider ldap
     AuthLDAPURL ldaps://127.0.0.1/dc=example,dc=com?uid?one
     Require valid-user
-&lt;/Location&gt;
-    </pre>
+&lt;/Location&gt;</pre>
 
 
-    <pre class="prettyprint lang-config">
-# Etablissement d'une connexion TLS LDAP sur le port 389.
+    <pre class="prettyprint lang-config"># Etablissement d'une connexion TLS LDAP sur le port 389.
 # Nécessite le chargement de mod_ldap et mod_authnz_ldap.
 # Remplacez "votre-domaine.example.com" par le nom de votre
 # domaine.
@@ -292,8 +285,7 @@ LDAPTrustedGlobalCert CA_DER /certs/certfile.der
     AuthBasicProvider ldap
     AuthLDAPURL ldap://127.0.0.1/dc=example,dc=com?uid?one TLS
     Require valid-user
-&lt;/Location&gt;
-    </pre>
+&lt;/Location&gt;</pre>
 
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -330,8 +322,7 @@ LDAPTrustedGlobalCert CA_DER /certs/certfile.der
 	de STARTTLS engendrera une erreur lors des tentatives de
 	contacter le serveur LDAP pendant l'exécution.</p>
 
-        <pre class="prettyprint lang-config">
-# Spécifie un fichier de certificats de CA Netscape
+        <pre class="prettyprint lang-config"># Spécifie un fichier de certificats de CA Netscape
 LDAPTrustedGlobalCert CA_CERT7_DB /certs/cert7.db
 # Spécifie un fichier key3db optionnel pour le support des
 # certificats clients
@@ -350,8 +341,7 @@ LDAPTrustedGlobalCert CA_SECMOD /certs/secmod
     LDAPTrustedClientCert CERT_NICKNAME &lt;nickname&gt; [password]
     AuthLDAPURL ldaps://127.0.0.1/dc=example,dc=com?uid?one
     Require valid-user
-&lt;/Location&gt;
-        </pre>
+&lt;/Location&gt;</pre>
 
 
     
@@ -375,8 +365,7 @@ LDAPTrustedGlobalCert CA_SECMOD /certs/secmod
 	ldaps:// est spécifiée, le mode SSL est forcé, et l'emporte sur
 	cette directive.</p>
 
-        <pre class="prettyprint lang-config">
-# Spécifie deux fichiers contenant des certificats de CA
+        <pre class="prettyprint lang-config"># Spécifie deux fichiers contenant des certificats de CA
 LDAPTrustedGlobalCert CA_DER /certs/cacert1.der
 LDAPTrustedGlobalCert CA_BASE64 /certs/cacert2.pem
 # Spécifie un fichier contenant des certificats clients
@@ -385,8 +374,7 @@ LDAPTrustedGlobalCert CERT_BASE64 /certs/cert1.pem
 LDAPTrustedGlobalCert KEY_BASE64 /certs/key1.pem [password]
 # N'utilisez pas cette directive, sous peine de provoquer
 # une erreur
-#LDAPTrustedClientCert CERT_BASE64 /certs/cert1.pem
-        </pre>
+#LDAPTrustedClientCert CERT_BASE64 /certs/cert1.pem</pre>
 
 
     
@@ -410,8 +398,7 @@ LDAPTrustedGlobalCert KEY_BASE64 /certs/key1.pem [password]
 	OpenLDAP indique que le support SSL (ldaps://) tend à être
 	remplacé par TLS, bien que le mode SSL fonctionne toujours.</p>
 
-        <pre class="prettyprint lang-config">
-# Spécifie deux fichiers contenant des certificats de CA
+        <pre class="prettyprint lang-config"># Spécifie deux fichiers contenant des certificats de CA
 LDAPTrustedGlobalCert CA_DER /certs/cacert1.der
 LDAPTrustedGlobalCert CA_BASE64 /certs/cacert2.pem
 &lt;Location /ldap-status&gt;
@@ -430,8 +417,7 @@ LDAPTrustedGlobalCert CA_BASE64 /certs/cacert2.pem
     AuthBasicProvider ldap
     AuthLDAPURL ldaps://127.0.0.1/dc=example,dc=com?uid?one
     Require valid-user
-&lt;/Location&gt;
-        </pre>
+&lt;/Location&gt;</pre>
 
 
     

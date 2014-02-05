@@ -77,9 +77,7 @@ shell</td></tr>
     valeurs sont issues de l'environnement natif de l'OS associé au
     shell qui a invoqué le processus <code class="program"><a href="../programs/httpd.html">httpd</a></code>.</p>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">
-      PassEnv LD_LIBRARY_PATH
-      </pre>
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">      PassEnv LD_LIBRARY_PATH</pre>
 </div>
 
 </div>
@@ -97,9 +95,7 @@ shell</td></tr>
     ensuite disponible pour les modules du serveur HTTP Apache et
     transmise aux scripts CGI et aux pages SSI.</p>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">
-      SetEnv SPECIAL_PATH /foo/bin
-      </pre>
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">      SetEnv SPECIAL_PATH /foo/bin</pre>
 </div>
 
     <p>Si l'argument <var>valeur</var> est absent, la variable est
@@ -136,9 +132,7 @@ shell</td></tr>
     <p>Supprime une ou plusieurs variables d'environnement internes parmi celles
     qui sont transmises aux scripts CGI et aux pages SSI.</p>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">
-      UnsetEnv LD_LIBRARY_PATH
-      </pre>
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">      UnsetEnv LD_LIBRARY_PATH</pre>
 </div>
 
 </div>

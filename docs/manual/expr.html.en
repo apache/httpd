@@ -58,9 +58,7 @@
       that evaluate to a string value. For those, the starting point in
       the BNF is <code>string</code>.
       </p>
-<blockquote>
-<pre>
-expr        ::= "<strong>true</strong>" | "<strong>false</strong>"
+<pre>expr        ::= "<strong>true</strong>" | "<strong>false</strong>"
               | "<strong>!</strong>" expr
               | expr "<strong>&amp;&amp;</strong>" expr
               | expr "<strong>||</strong>" expr
@@ -119,9 +117,7 @@ rebackref   ::= "<strong>$</strong>" [0-9]
 
 function     ::= funcname "<strong>(</strong>" word "<strong>)</strong>"
 
-listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
-</pre>
-</blockquote>
+listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -500,8 +496,7 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     evaluate requests:</p>
 
 	
-	<pre class="prettyprint lang-config">
-# Compare the host name to example.com and redirect to www.example.com if it matches
+	<pre class="prettyprint lang-config"># Compare the host name to example.com and redirect to www.example.com if it matches
 &lt;If "%{HTTP_HOST} == 'example.com'"&gt;
     Redirect permanent / http://www.example.com/
 &lt;/If&gt;
@@ -514,8 +509,7 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
 # Only allow access to this content during business hours
 &lt;Directory "/foo/bar/business"&gt;
     Require expr "%{TIME_HOUR} -gt 9 &amp;&amp; %{TIME_HOUR} -lt 17"
-&lt;/Directory&gt;	
-	</pre>
+&lt;/Directory&gt;</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">

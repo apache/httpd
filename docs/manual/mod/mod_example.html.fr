@@ -123,20 +123,16 @@
 
     <p>Pour activer le module example, ajoutez à votre fichier
     <code>httpd.conf</code> un bloc du style :</p>
-<pre class="prettyprint lang-config">
-&lt;Location /example-info&gt;
+<pre class="prettyprint lang-config">&lt;Location /example-info&gt;
    SetHandler example-handler
-&lt;/Location&gt;
-</pre>
+&lt;/Location&gt;</pre>
 
 
     <p>Vous pouvez aussi ajouter ce qui suit dans un fichier <a href="core.html#accessfilename"><code>.htaccess</code></a>, puis
     accéder au fichier "test.example" à partir du répertoire
     correspondant :</p>
 
-<pre class="prettyprint lang-config">
-   AddHandler example-handler .example
-   </pre>
+<pre class="prettyprint lang-config">   AddHandler example-handler .example</pre>
 
 
 

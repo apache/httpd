@@ -69,9 +69,7 @@
     <p>This directive specifies group membership that is required for the
     user to gain access.</p>
 
-    <pre class="prettyprint lang-config">
-      Require group admin
-    </pre>
+    <pre class="prettyprint lang-config">      Require group admin</pre>
 
 
 
@@ -81,9 +79,7 @@
     <p>When this directive is specified, the user must be a member of the group
     assigned to the file being accessed.</p>
 
-    <pre class="prettyprint lang-config">
-      Require file-group
-    </pre>
+    <pre class="prettyprint lang-config">      Require file-group</pre>
 
 
 

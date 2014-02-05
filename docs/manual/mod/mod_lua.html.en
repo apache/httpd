@@ -100,18 +100,14 @@ trust, as it can be abused to change the internal workings of httpd.</p>
 
 <p>The basic module loading directive is</p>
 
-<pre class="prettyprint lang-config">
-    LoadModule lua_module modules/mod_lua.so
-</pre>
+<pre class="prettyprint lang-config">    LoadModule lua_module modules/mod_lua.so</pre>
 
 
 <p>
 <code>mod_lua</code> provides a handler named <code>lua-script</code>,
 which can be used with an <code>AddHandler</code> directive:</p>
 
-<pre class="prettyprint lang-config">
-AddHandler lua-script .lua
-</pre>
+<pre class="prettyprint lang-config">AddHandler lua-script .lua</pre>
 
 
 <p>
@@ -170,8 +166,7 @@ function handle(r)
         return 501
     end
     return apache2.OK
-end
-</pre>
+end</pre>
 
 
 <p>
@@ -226,18 +221,15 @@ function authz_check_foo(r, ip, user)
     else
         return apache2.AUTHZ_DENIED
     end
-end
-</pre>
+end</pre>
 
 
 <p>The following configuration registers this function as provider
 <code>foo</code> and configures it for URL <code>/</code>:</p>
-<pre class="prettyprint lang-config">
-LuaAuthzProvider foo authz_provider.lua authz_check_foo
+<pre class="prettyprint lang-config">LuaAuthzProvider foo authz_provider.lua authz_check_foo
 &lt;Location /&gt;
   Require foo 10.1.2.3 john_doe
-&lt;/Location&gt;
-</pre>
+&lt;/Location&gt;</pre>
 
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -342,8 +334,7 @@ function translate_name(r)
     end
     -- we don't care about this URL, give another module a chance
     return apache2.DECLINED
-end
-</pre>
+end</pre>
 
 
 
@@ -366,8 +357,7 @@ function translate_name(r)
         return apache2.DECLINED
     end
     return apache2.DECLINED
-end
-</pre>
+end</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -669,293 +659,216 @@ end
 
 <p>The request_rec object has (at least) the following methods:</p>
 
-<pre class="prettyprint lang-lua">
-r:flush()   -- flushes the output buffer.
+<pre class="prettyprint lang-lua">r:flush()   -- flushes the output buffer.
             -- Returns true if the flush was successful, false otherwise.
 
 while we_have_stuff_to_send do
     r:puts("Bla bla bla\n") -- print something to client
     r:flush() -- flush the buffer (send to client)
     r.usleep(500000) -- fake processing time for 0.5 sec. and repeat
-end
-</pre>
+end</pre>
 
 
-<pre class="prettyprint lang-lua">
-r:addoutputfilter(name|function) -- add an output filter:
+<pre class="prettyprint lang-lua">r:addoutputfilter(name|function) -- add an output filter:
 
-r:addoutputfilter("fooFilter") -- add the fooFilter to the output stream
-</pre>
+r:addoutputfilter("fooFilter") -- add the fooFilter to the output stream</pre>
 
 
-<pre class="prettyprint lang-lua">
-r:sendfile(filename) -- sends an entire file to the client, using sendfile if supported by the current platform:
+<pre class="prettyprint lang-lua">r:sendfile(filename) -- sends an entire file to the client, using sendfile if supported by the current platform:
 
 if use_sendfile_thing then
     r:sendfile("/var/www/large_file.img")
-end
-</pre>
+end</pre>
 
 
-<pre class="prettyprint lang-lua">
-r:parseargs() -- returns two tables; one standard key/value table for regular GET data, 
+<pre class="prettyprint lang-lua">r:parseargs() -- returns two tables; one standard key/value table for regular GET data, 
               -- and one for multi-value data (fx. foo=1&amp;foo=2&amp;foo=3):
 
 local GET, GETMULTI = r:parseargs()
-r:puts("Your name is: " .. GET['name'] or "Unknown")
-</pre>
+r:puts("Your name is: " .. GET['name'] or "Unknown")</pre>
 
 
-<pre class="prettyprint lang-lua">
-r:parsebody([sizeLimit]) -- parse the request body as a POST and return two lua tables,
+<pre class="prettyprint lang-lua">r:parsebody([sizeLimit]) -- parse the request body as a POST and return two lua tables,
                          -- just like r:parseargs().
                          -- An optional number may be passed to specify the maximum number 
                          -- of bytes to parse. Default is 8192 bytes:
                  
 local POST, POSTMULTI = r:parsebody(1024*1024)
-r:puts("Your name is: " .. POST['name'] or "Unknown")
-</pre>
+r:puts("Your name is: " .. POST['name'] or "Unknown")</pre>
 
 
-<pre class="prettyprint lang-lua">
-r:puts("hello", " world", "!") -- print to response body, self explanatory
-</pre>
+<pre class="prettyprint lang-lua">r:puts("hello", " world", "!") -- print to response body, self explanatory</pre>
 
 
-<pre class="prettyprint lang-lua">
-r:write("a single string") -- print to response body, self explanatory
-</pre>
+<pre class="prettyprint lang-lua">r:write("a single string") -- print to response body, self explanatory</pre>
 
 
-<pre class="prettyprint lang-lua">
-r:escape_html("&lt;html&gt;test&lt;/html&gt;") -- Escapes HTML code and returns the escaped result
-</pre>
+<pre class="prettyprint lang-lua">r:escape_html("&lt;html&gt;test&lt;/html&gt;") -- Escapes HTML code and returns the escaped result</pre>
 
 
-<pre class="prettyprint lang-lua">
-r:base64_encode(string) -- Encodes a string using the Base64 encoding standard:
+<pre class="prettyprint lang-lua">r:base64_encode(string) -- Encodes a string using the Base64 encoding standard:
 
-local encoded = r:base64_encode("This is a test") -- returns VGhpcyBpcyBhIHRlc3Q=
-</pre>
+local encoded = r:base64_encode("This is a test") -- returns VGhpcyBpcyBhIHRlc3Q=</pre>
 
 
-<pre class="prettyprint lang-lua">
-r:base64_decode(string) -- Decodes a Base64-encoded string:
+<pre class="prettyprint lang-lua">r:base64_decode(string) -- Decodes a Base64-encoded string:
 
-local decoded = r:base64_decode("VGhpcyBpcyBhIHRlc3Q=") -- returns 'This is a test'
-</pre>
+local decoded = r:base64_decode("VGhpcyBpcyBhIHRlc3Q=") -- returns 'This is a test'</pre>
 
 
-<pre class="prettyprint lang-lua">
-r:md5(string) -- Calculates and returns the MD5 digest of a string (binary safe):
+<pre class="prettyprint lang-lua">r:md5(string) -- Calculates and returns the MD5 digest of a string (binary safe):
 
-local hash = r:md5("This is a test") -- returns ce114e4501d2f4e2dcea3e17b546f339
-</pre>
+local hash = r:md5("This is a test") -- returns ce114e4501d2f4e2dcea3e17b546f339</pre>
 
 
-<pre class="prettyprint lang-lua">
-r:sha1(string) -- Calculates and returns the SHA1 digest of a string (binary safe):
+<pre class="prettyprint lang-lua">r:sha1(string) -- Calculates and returns the SHA1 digest of a string (binary safe):
 
-local hash = r:sha1("This is a test") -- returns a54d88e06612d820bc3be72877c74f257b561b19
-</pre>
+local hash = r:sha1("This is a test") -- returns a54d88e06612d820bc3be72877c74f257b561b19</pre>
 
 
-<pre class="prettyprint lang-lua">
-r:escape(string) -- URL-Escapes a string:
+<pre class="prettyprint lang-lua">r:escape(string) -- URL-Escapes a string:
 
 local url = "http://foo.bar/1 2 3 &amp; 4 + 5"
-local escaped = r:escape(url) -- returns 'http%3a%2f%2ffoo.bar%2f1+2+3+%26+4+%2b+5'
-</pre>
+local escaped = r:escape(url) -- returns 'http%3a%2f%2ffoo.bar%2f1+2+3+%26+4+%2b+5'</pre>
 
 
-<pre class="prettyprint lang-lua">
-r:unescape(string) -- Unescapes an URL-escaped string:
+<pre class="prettyprint lang-lua">r:unescape(string) -- Unescapes an URL-escaped string:
 
 local url = "http%3a%2f%2ffoo.bar%2f1+2+3+%26+4+%2b+5"
-local unescaped = r:unescape(url) -- returns 'http://foo.bar/1 2 3 &amp; 4 + 5'
-</pre>
+local unescaped = r:unescape(url) -- returns 'http://foo.bar/1 2 3 &amp; 4 + 5'</pre>
 
 
-<pre class="prettyprint lang-lua">
-r:construct_url(string) -- Constructs an URL from an URI
+<pre class="prettyprint lang-lua">r:construct_url(string) -- Constructs an URL from an URI
 
-local url = r:construct_url(r.uri) 
-</pre>
+local url = r:construct_url(r.uri)</pre>
 
 
-<pre class="prettyprint lang-lua">
-r.mpm_query(number) -- Queries the server for MPM information using ap_mpm_query:
+<pre class="prettyprint lang-lua">r.mpm_query(number) -- Queries the server for MPM information using ap_mpm_query:
 
 local mpm = r.mpm_query(14)
 if mpm == 1 then
     r:puts("This server uses the Event MPM")
-end
-</pre>
+end</pre>
 
 
-<pre class="prettyprint lang-lua">
-r:expr(string) -- Evaluates an <a href="../expr.html">expr</a> string.
+<pre class="prettyprint lang-lua">r:expr(string) -- Evaluates an <a href="../expr.html">expr</a> string.
 
 if r:expr("%{HTTP_HOST} =~ /^www/") then
     r:puts("This host name starts with www")
-end
-</pre>
+end</pre>
 
 
-<pre class="prettyprint lang-lua">
-r:scoreboard_process(a) -- Queries the server for information about the process at position <code>a</code>:
+<pre class="prettyprint lang-lua">r:scoreboard_process(a) -- Queries the server for information about the process at position <code>a</code>:
 
 local process = r:scoreboard_process(1)
-r:puts("Server 1 has PID " .. process.pid)
-</pre>
+r:puts("Server 1 has PID " .. process.pid)</pre>
 
 
-<pre class="prettyprint lang-lua">
-r:scoreboard_worker(a, b) -- Queries for information about the worker thread, <code>b</code>, in process <code>a</code>:
+<pre class="prettyprint lang-lua">r:scoreboard_worker(a, b) -- Queries for information about the worker thread, <code>b</code>, in process <code>a</code>:
 
 local thread = r:scoreboard_worker(1, 1)
-r:puts("Server 1's thread 1 has thread ID " .. thread.tid .. " and is in " .. thread.status .. " status")
-</pre>
+r:puts("Server 1's thread 1 has thread ID " .. thread.tid .. " and is in " .. thread.status .. " status")</pre>
 
 
 
-<pre class="prettyprint lang-lua">
-r:clock() -- Returns the current time with microsecond precision
-</pre>
+<pre class="prettyprint lang-lua">r:clock() -- Returns the current time with microsecond precision</pre>
 
 
-<pre class="prettyprint lang-lua">
-r:requestbody(filename) -- Reads and returns the request body of a request.
+<pre class="prettyprint lang-lua">r:requestbody(filename) -- Reads and returns the request body of a request.
                 -- If 'filename' is specified, it instead saves the
                 -- contents to that file:
                 
 local input = r:requestbody()
 r:puts("You sent the following request body to me:\n")
-r:puts(input)
-</pre>
+r:puts(input)</pre>
 
 
-<pre class="prettyprint lang-lua">
-r:add_input_filter(filter_name) -- Adds 'filter_name' as an input filter
-</pre>
+<pre class="prettyprint lang-lua">r:add_input_filter(filter_name) -- Adds 'filter_name' as an input filter</pre>
 
 
-<pre class="prettyprint lang-lua">
-r.module_info(module_name) -- Queries the server for information about a module
+<pre class="prettyprint lang-lua">r.module_info(module_name) -- Queries the server for information about a module
 
 local mod = r.module_info("mod_lua.c")
 if mod then
     for k, v in pairs(mod.commands) do
        r:puts( ("%s: %s\n"):format(k,v)) -- print out all directives accepted by this module
     end
-end
-</pre>
+end</pre>
 
 
-<pre class="prettyprint lang-lua">
-r:loaded_modules() -- Returns a list of modules loaded by httpd:
+<pre class="prettyprint lang-lua">r:loaded_modules() -- Returns a list of modules loaded by httpd:
 
 for k, module in pairs(r:loaded_modules()) do
     r:puts("I have loaded module " .. module .. "\n")
-end
-</pre>
+end</pre>
 
 
-<pre class="prettyprint lang-lua">
-r:runtime_dir_relative(filename) -- Compute the name of a run-time file (e.g., shared memory "file") 
-                         -- relative to the appropriate run-time directory. 
-</pre>
+<pre class="prettyprint lang-lua">r:runtime_dir_relative(filename) -- Compute the name of a run-time file (e.g., shared memory "file") 
+                         -- relative to the appropriate run-time directory.</pre>
 
 
-<pre class="prettyprint lang-lua">
-r:server_info() -- Returns a table containing server information, such as 
-                -- the name of the httpd executable file, mpm used etc.
-</pre>
+<pre class="prettyprint lang-lua">r:server_info() -- Returns a table containing server information, such as 
+                -- the name of the httpd executable file, mpm used etc.</pre>
 
 
-<pre class="prettyprint lang-lua">
-r:set_document_root(file_path) -- Sets the document root for the request to file_path
-</pre>
+<pre class="prettyprint lang-lua">r:set_document_root(file_path) -- Sets the document root for the request to file_path</pre>
 
 
 
 
-<pre class="prettyprint lang-lua">
-r:set_context_info(prefix, docroot) -- Sets the context prefix and context document root for a request
-</pre>
+<pre class="prettyprint lang-lua">r:set_context_info(prefix, docroot) -- Sets the context prefix and context document root for a request</pre>
 
 
-<pre class="prettyprint lang-lua">
-r:os_escape_path(file_path) -- Converts an OS path to a URL in an OS dependent way
-</pre>
+<pre class="prettyprint lang-lua">r:os_escape_path(file_path) -- Converts an OS path to a URL in an OS dependent way</pre>
 
 
-<pre class="prettyprint lang-lua">
-r:escape_logitem(string) -- Escapes a string for logging
-</pre>
+<pre class="prettyprint lang-lua">r:escape_logitem(string) -- Escapes a string for logging</pre>
 
 
-<pre class="prettyprint lang-lua">
-r.strcmp_match(string, pattern) -- Checks if 'string' matches 'pattern' using strcmp_match (globs).
+<pre class="prettyprint lang-lua">r.strcmp_match(string, pattern) -- Checks if 'string' matches 'pattern' using strcmp_match (globs).
                         -- fx. whether 'www.example.com' matches '*.example.com':
                         
 local match = r.strcmp_match("foobar.com", "foo*.com")
 if match then 
     r:puts("foobar.com matches foo*.com")
-end
-</pre>
+end</pre>
 
 
-<pre class="prettyprint lang-lua">
-r:set_keepalive() -- Sets the keepalive status for a request. Returns true if possible, false otherwise.
-</pre>
+<pre class="prettyprint lang-lua">r:set_keepalive() -- Sets the keepalive status for a request. Returns true if possible, false otherwise.</pre>
 
 
-<pre class="prettyprint lang-lua">
-r:make_etag() -- Constructs and returns the etag for the current request.
-</pre>
+<pre class="prettyprint lang-lua">r:make_etag() -- Constructs and returns the etag for the current request.</pre>
 
 
-<pre class="prettyprint lang-lua">
-r:send_interim_response(clear) -- Sends an interim (1xx) response to the client.
-                       -- if 'clear' is true, available headers will be sent and cleared.
-</pre>
+<pre class="prettyprint lang-lua">r:send_interim_response(clear) -- Sends an interim (1xx) response to the client.
+                       -- if 'clear' is true, available headers will be sent and cleared.</pre>
 
 
-<pre class="prettyprint lang-lua">
-r:custom_response(status_code, string) -- Construct and set a custom response for a given status code.
+<pre class="prettyprint lang-lua">r:custom_response(status_code, string) -- Construct and set a custom response for a given status code.
                                -- This works much like the ErrorDocument directive:
                                
-r:custom_response(404, "Baleted!")
-</pre>
+r:custom_response(404, "Baleted!")</pre>
 
 
-<pre class="prettyprint lang-lua">
-r.exists_config_define(string) -- Checks whether a configuration definition exists or not:
+<pre class="prettyprint lang-lua">r.exists_config_define(string) -- Checks whether a configuration definition exists or not:
 
 if r.exists_config_define("FOO") then
     r:puts("httpd was probably run with -DFOO, or it was defined in the configuration")
-end
-</pre>
+end</pre>
 
 
-<pre class="prettyprint lang-lua">
-r:state_query(string) -- Queries the server for state information
-</pre>
+<pre class="prettyprint lang-lua">r:state_query(string) -- Queries the server for state information</pre>
 
 
-<pre class="prettyprint lang-lua">
-r:stat(filename [,wanted]) -- Runs stat() on a file, and returns a table with file information:
+<pre class="prettyprint lang-lua">r:stat(filename [,wanted]) -- Runs stat() on a file, and returns a table with file information:
 
 local info = r:stat("/var/www/foo.txt")
 if info then
     r:puts("This file exists and was last modified at: " .. info.modified)
-end
-</pre>
+end</pre>
 
 
-<pre class="prettyprint lang-lua">
-r:regex(string, pattern [,flags]) -- Runs a regular expression match on a string, returning captures if matched:
+<pre class="prettyprint lang-lua">r:regex(string, pattern [,flags]) -- Runs a regular expression match on a string, returning captures if matched:
 
 local matches = r:regex("foo bar baz", [[foo (\w+) (\S*)]])
 if matches then
@@ -967,23 +880,17 @@ local matches = r:regex("FOO bar BAz", [[(foo) bar]], 1)
 
 -- Flags can be a bitwise combination of:
 -- 0x01: Ignore case
--- 0x02: Multiline search
-</pre>
+-- 0x02: Multiline search</pre>
 
 
-<pre class="prettyprint lang-lua">
-r.usleep(number_of_microseconds) -- Puts the script to sleep for a given number of microseconds.
-</pre>
+<pre class="prettyprint lang-lua">r.usleep(number_of_microseconds) -- Puts the script to sleep for a given number of microseconds.</pre>
 
 
-<pre class="prettyprint lang-lua">
-r:dbacquire(dbType[, dbParams]) -- Acquires a connection to a database and returns a database class.
-                        -- See '<a href="#databases">Database connectivity</a>' for details.
-</pre>
+<pre class="prettyprint lang-lua">r:dbacquire(dbType[, dbParams]) -- Acquires a connection to a database and returns a database class.
+                        -- See '<a href="#databases">Database connectivity</a>' for details.</pre>
 
 
-<pre class="prettyprint lang-lua">
-r:ivm_set("key", value) -- Set an Inter-VM variable to hold a specific value.
+<pre class="prettyprint lang-lua">r:ivm_set("key", value) -- Set an Inter-VM variable to hold a specific value.
                         -- These values persist even though the VM is gone or not being used,
                         -- and so should only be used if MaxConnectionsPerChild is &gt; 0
                         -- Values can be numbers, strings and booleans, and are stored on a 
@@ -1001,39 +908,27 @@ function handle(r)
         r:ivm_set("cached_data", foo) -- set it globally
     end
     r:puts("Cached data is: ", foo)
-end
-</pre>
+end</pre>
 
 
-<pre class="prettyprint lang-lua">
-r:htpassword(string [,algorithm [,cost]]) -- Creates a password hash from a string.
+<pre class="prettyprint lang-lua">r:htpassword(string [,algorithm [,cost]]) -- Creates a password hash from a string.
                                           -- algorithm: 0 = APMD5 (default), 1 = SHA, 2 = BCRYPT, 3 = CRYPT.
-                                          -- cost: only valid with BCRYPT algorithm (default = 5).
-</pre>
+                                          -- cost: only valid with BCRYPT algorithm (default = 5).</pre>
 
 
-<pre class="prettyprint lang-lua">
-r:mkdir(dir [,mode]) -- Creates a directory and sets mode to optional mode paramter.
-</pre>
+<pre class="prettyprint lang-lua">r:mkdir(dir [,mode]) -- Creates a directory and sets mode to optional mode paramter.</pre>
 
 
-<pre class="prettyprint lang-lua">
-r:mkrdir(dir [,mode]) -- Creates directories recursive and sets mode to optional mode paramter.
-</pre>
+<pre class="prettyprint lang-lua">r:mkrdir(dir [,mode]) -- Creates directories recursive and sets mode to optional mode paramter.</pre>
 
 
-<pre class="prettyprint lang-lua">
-r:rmdir(dir) -- Removes a directory.
-</pre>
+<pre class="prettyprint lang-lua">r:rmdir(dir) -- Removes a directory.</pre>
 
 
-<pre class="prettyprint lang-lua">
-r:touch(file [,mtime]) -- Sets the file modification time to current time or to optional mtime msec value.
-</pre>
+<pre class="prettyprint lang-lua">r:touch(file [,mtime]) -- Sets the file modification time to current time or to optional mtime msec value.</pre>
 
 
-<pre class="prettyprint lang-lua">
-r:get_direntries(dir) -- Returns a table with all directory entries.
+<pre class="prettyprint lang-lua">r:get_direntries(dir) -- Returns a table with all directory entries.
 
 function handle(r)
   local dir = r.context_document_root
@@ -1045,52 +940,38 @@ function handle(r)
       r:puts( ("%s %s %10i %s\n"):format(ftype, mtime, info.size, f) )
     end
   end
-end
-</pre>
+end</pre>
 
 
-<pre class="prettyprint lang-lua">
-r.date_parse_rfc(string) -- Parses a date/time string and returns seconds since epoche.
-</pre>
+<pre class="prettyprint lang-lua">r.date_parse_rfc(string) -- Parses a date/time string and returns seconds since epoche.</pre>
 
 
-<pre class="prettyprint lang-lua">
-r:getcookie(key) -- Gets a HTTP cookie
-</pre>
+<pre class="prettyprint lang-lua">r:getcookie(key) -- Gets a HTTP cookie</pre>
 
 
-<pre class="prettyprint lang-lua">
-r:setcookie(key, value, secure, expires) -- Sets a HTTP cookie, for instance:
-r:setcookie("foo", "bar and stuff", false, os.time() + 86400)
-</pre>
+<pre class="prettyprint lang-lua">r:setcookie(key, value, secure, expires) -- Sets a HTTP cookie, for instance:
+r:setcookie("foo", "bar and stuff", false, os.time() + 86400)</pre>
 
 
-<pre class="prettyprint lang-lua">
-r:wsupgrade() -- Upgrades a connection to WebSockets if possible (and requested):
+<pre class="prettyprint lang-lua">r:wsupgrade() -- Upgrades a connection to WebSockets if possible (and requested):
 if r:wsupgrade() then -- if we can upgrade:
     r:wswrite("Welcome to websockets!") -- write something to the client
     r:wsclose()  -- goodbye!
-end
-</pre>
+end</pre>
 
 
-<pre class="prettyprint lang-lua">
-r:wsread() -- Reads a WebSocket frame from a WebSocket upgraded connection (see above):
+<pre class="prettyprint lang-lua">r:wsread() -- Reads a WebSocket frame from a WebSocket upgraded connection (see above):
 
 local line, isFinal = r:wsread() -- isFinal denotes whether this is the final frame.
                                  -- If it isn't, then more frames can be read
-r:wswrite("You wrote: " .. line)
-</pre>
+r:wswrite("You wrote: " .. line)</pre>
 
 
-<pre class="prettyprint lang-lua">
-r:wswrite(line) -- Writes a frame to a WebSocket client:
-r:wswrite("Hello, world!")
-</pre>
+<pre class="prettyprint lang-lua">r:wswrite(line) -- Writes a frame to a WebSocket client:
+r:wswrite("Hello, world!")</pre>
 
 
-<pre class="prettyprint lang-lua">
-r:wsclose() -- Closes a WebSocket request and terminates it for httpd:
+<pre class="prettyprint lang-lua">r:wsclose() -- Closes a WebSocket request and terminates it for httpd:
 
 if r:wsupgrade() then
     r:wswrite("Write something: ")
@@ -1098,16 +979,14 @@ if r:wsupgrade() then
     r:wswrite("You wrote: " .. line);
     r:wswrite("Goodbye!")
     r:wsclose()
-end
-</pre>
+end</pre>
 
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="logging" id="logging">Logging Functions</a></h2>
 
-<pre class="prettyprint lang-lua">
-        -- examples of logging messages<br />
+<pre class="prettyprint lang-lua">        -- examples of logging messages<br />
         r:trace1("This is a trace log message") -- trace1 through trace8 can be used <br />
         r:debug("This is a debug log message")<br />
         r:info("This is an info log message")<br />
@@ -1155,8 +1034,7 @@ end
     function as buckets are sent down the filter chain. The core structure of 
     such a function is:
     </p>
-    <pre class="prettyprint lang-lua">
-function filter(r)
+    <pre class="prettyprint lang-lua">function filter(r)
     -- Our first yield is to signal that we are ready to receive buckets.
     -- Before this yield, we can set up our environment, check for conditions,
     -- and, if we deem it necessary, decline filtering a request alltogether:
@@ -1182,8 +1060,7 @@ function filter(r)
     -- can be done by doing a final yield here. Both input and output filters 
     -- can append data to the content in this phase.
     coroutine.yield([optional footer to be appended to the content])
-end
-    </pre>
+end</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -1195,8 +1072,7 @@ end
     as well as mod_dbd.
     </p>
     <p>The example below shows how to acquire a database handle and return information from a table:</p>
-    <pre class="prettyprint lang-lua">
-function handle(r)
+    <pre class="prettyprint lang-lua">function handle(r)
     -- Acquire a database handle
     local database, err = r:dbacquire("mysql", "server=localhost,user=someuser,pass=somepass,dbname=mydb")
     if not err then
@@ -1214,32 +1090,26 @@ function handle(r)
     else
         r:puts("Could not connect to the database: " .. err)
     end
-end
-    </pre>
+end</pre>
 
     <p>
     To utilize <code class="module"><a href="../mod/mod_dbd.html">mod_dbd</a></code>, specify <code>mod_dbd</code>
     as the database type, or leave the field blank:
     </p>
-    <pre class="prettyprint lang-lua">
-    local database = r:dbacquire("mod_dbd")
-    </pre>
+    <pre class="prettyprint lang-lua">    local database = r:dbacquire("mod_dbd")</pre>
 
     <h3><a name="database_object" id="database_object">Database object and contained functions</a></h3>
         
         <p>The database object returned by <code>dbacquire</code> has the following methods:</p>
         <p><strong>Normal select and query from a database:</strong></p>
-    <pre class="prettyprint lang-lua">
--- Run a statement and return the number of rows affected:
+    <pre class="prettyprint lang-lua">-- Run a statement and return the number of rows affected:
 local affected, errmsg = database:query(r, "DELETE FROM `tbl` WHERE 1")
 
 -- Run a statement and return a result set that can be used synchronously or async:
-local result, errmsg = database:select(r, "SELECT * FROM `people` WHERE 1")
-    </pre>
+local result, errmsg = database:select(r, "SELECT * FROM `people` WHERE 1")</pre>
 
         <p><strong>Using prepared statements (recommended):</strong></p>
-    <pre class="prettyprint lang-lua">
--- Create and run a prepared statement:
+    <pre class="prettyprint lang-lua">-- Create and run a prepared statement:
 local statement, errmsg = database:prepare(r, "DELETE FROM `tbl` WHERE `age` &gt; %u")
 if not errmsg then
     local result, errmsg = statement:query(20) -- run the statement with age &gt; 20
@@ -1249,21 +1119,17 @@ end
 local statement, errmsg = database:prepared(r, "someTag")
 if not errmsg then
     local result, errmsg = statement:select("John Doe", 123) -- inject the values "John Doe" and 123 into the statement
-end
-
-</pre>
+end</pre>
 
         <p><strong>Escaping values, closing databases etc:</strong></p>
-    <pre class="prettyprint lang-lua">
--- Escape a value for use in a statement:
+    <pre class="prettyprint lang-lua">-- Escape a value for use in a statement:
 local escaped = database:escape(r, [["'|blabla]])
 
 -- Close a database connection and free up handles:
 database:close()
 
 -- Check whether a database connection is up and running:
-local connected = database:active()
-    </pre>
+local connected = database:active()</pre>
 
     
     <h3><a name="result_sets" id="result_sets">Working with result sets</a></h3>
@@ -1275,20 +1141,17 @@ local connected = database:active()
     <code>result(-1)</code> fetches the next available row in the set, asynchronously.<br />
     <code>result(N)</code> fetches row number <code>N</code>, asynchronously:
     </p>
-    <pre class="prettyprint lang-lua">
--- fetch a result set using a regular query:
+    <pre class="prettyprint lang-lua">-- fetch a result set using a regular query:
 local result, err = db:select(r, "SELECT * FROM `tbl` WHERE 1")
 
 local rows = result(0) -- Fetch ALL rows synchronously
 local row = result(-1) -- Fetch the next available row, asynchronously
-local row = result(1234) -- Fetch row number 1234, asynchronously
-    </pre>
+local row = result(1234) -- Fetch row number 1234, asynchronously</pre>
 
     <p>One can construct a function that returns an iterative function to iterate over all rows 
     in a synchronous or asynchronous way, depending on the async argument:
     </p>
-    <pre class="prettyprint lang-lua">
-function rows(resultset, async)
+    <pre class="prettyprint lang-lua">function rows(resultset, async)
     local a = 0
     local function getnext()
         a = a + 1
@@ -1319,8 +1182,7 @@ if not err then
             ....
         end
     end
-end
-    </pre>
+end</pre>
 
     
     <h3><a name="closing_databases" id="closing_databases">Closing a database connection</a></h3>
@@ -1332,16 +1194,14 @@ end
     if you leave the closing up to mod_lua. Essentially, the following two measures are
     the same:
     </p>
-    <pre class="prettyprint lang-lua">
--- Method 1: Manually close a handle
+    <pre class="prettyprint lang-lua">-- Method 1: Manually close a handle
 local database = r:dbacquire("mod_dbd")
 database:close() -- All done
 
 -- Method 2: Letting the garbage collector close it
 local database = r:dbacquire("mod_dbd")
 database = nil -- throw away the reference
-collectgarbage() -- close the handle via GC
-</pre>
+collectgarbage() -- close the handle via GC</pre>
 
     
     <h3><a name="database_caveat" id="database_caveat">Precautions when working with databases</a></h3>
@@ -1370,21 +1230,17 @@ collectgarbage() -- close the handle via GC
 <p>After a lua function has been registered as authorization provider, it can be used
 with the <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> directive:</p>
 
-<pre class="prettyprint lang-config">
-LuaRoot /usr/local/apache2/lua
+<pre class="prettyprint lang-config">LuaRoot /usr/local/apache2/lua
 LuaAuthzProvider foo authz.lua authz_check_foo
 &lt;Location /&gt;
   Require foo johndoe
-&lt;/Location&gt;
-</pre>
+&lt;/Location&gt;</pre>
 
-<pre class="prettyprint lang-lua">
-require "apache2"
+<pre class="prettyprint lang-lua">require "apache2"
 function authz_check_foo(r, who)
     if r.user ~= who then return apache2.AUTHZ_DENIED
     return apache2.AUTHZ_GRANTED
-end
-</pre>
+end</pre>
 
 
 
@@ -1412,11 +1268,9 @@ end
     <p>In general stat or forever is good for production, and stat or never
     for development.</p>
 
-    <div class="example"><h3>Examples:</h3><pre class="prettyprint lang-config">
-LuaCodeCache stat
+    <div class="example"><h3>Examples:</h3><pre class="prettyprint lang-config">LuaCodeCache stat
 LuaCodeCache forever
-LuaCodeCache never
-    </pre>
+LuaCodeCache never</pre>
 </div>
 
 
@@ -1453,8 +1307,7 @@ hook function usually returns OK, DECLINED, or HTTP_FORBIDDEN.</p>
 a request.  This can be used to implement arbitrary authentication
 and authorization checking.  A very simple example:
 </p>
-<pre class="prettyprint lang-lua">
-require 'apache2'
+<pre class="prettyprint lang-lua">require 'apache2'
 
 -- fake authcheck hook
 -- If request has no auth info, set the response header and
@@ -1483,8 +1336,7 @@ function authcheck_hook(r)
       return 401
    end
    return apache2.OK
-end
-</pre>
+end</pre>
 
    <div class="note"><h3>Ordering</h3><p>The optional arguments "early" or "late" 
    control when this script runs relative to other modules.</p></div>
@@ -1552,12 +1404,9 @@ processing</td></tr>
     <code>apache2.OK</code> to tell httpd to log as normal.
 </p>
 <p>Example:</p>
-<pre class="prettyprint lang-config">
-LuaHookLog /path/to/script.lua logger
-</pre>
+<pre class="prettyprint lang-config">LuaHookLog /path/to/script.lua logger</pre>
 
-<pre class="prettyprint lang-lua">
--- /path/to/script.lua --
+<pre class="prettyprint lang-lua">-- /path/to/script.lua --
 function logger(r)
     -- flip a coin:
     -- If 1, then we write to our own Lua log and tell httpd not to log
@@ -1577,8 +1426,7 @@ function logger(r)
         r.uri = r.uri:gsub("somesecretstuff", "") -- sanitize the URI
         return apache2.OK -- tell httpd to log it.
     end
-end
-</pre>
+end</pre>
 
 
 </div>
@@ -1595,12 +1443,9 @@ end
     <p>Like <code class="directive">LuaHookTranslateName</code> but executed at the 
     map-to-storage phase of a request. Modules like mod_cache run at this phase,
     which makes for an interesting example on what to do here:</p>
-    <pre class="prettyprint lang-config">
-    LuaHookMapToStorage /path/to/lua/script.lua check_cache
-    </pre>
+    <pre class="prettyprint lang-config">    LuaHookMapToStorage /path/to/lua/script.lua check_cache</pre>
 
-    <pre class="prettyprint lang-lua">
-require"apache2"
+    <pre class="prettyprint lang-lua">require"apache2"
 cached_files = {}
 
 function read_file(filename) 
@@ -1628,8 +1473,7 @@ function check_cache(r)
         end
     end
     return apache2.DECLINED -- If we had nothing to do, let others serve this.
-end
-    </pre>
+end</pre>
 
 
     
@@ -1660,14 +1504,11 @@ end
 
     <p>Example:</p>
 
-<pre class="prettyprint lang-config">
-# httpd.conf
-LuaHookTranslateName /scripts/conf/hooks.lua silly_mapper
-</pre>
+<pre class="prettyprint lang-config"># httpd.conf
+LuaHookTranslateName /scripts/conf/hooks.lua silly_mapper</pre>
 
 
-<pre class="prettyprint lang-lua">
--- /scripts/conf/hooks.lua --
+<pre class="prettyprint lang-lua">-- /scripts/conf/hooks.lua --
 require "apache2"
 function silly_mapper(r)
     if r.uri == "/" then
@@ -1676,8 +1517,7 @@ function silly_mapper(r)
     else
         return apache2.DECLINED
     end
-end
-</pre>
+end</pre>
 
 
    <div class="note"><h3>Context</h3><p>This directive is not valid in <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>, <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code>, or htaccess
@@ -1702,12 +1542,9 @@ end
     This phase is where requests are assigned a content type and a handler, and thus can 
     be used to modify the type and handler based on input:
     </p>
-    <pre class="prettyprint lang-config">
-    LuaHookTypeChecker /path/to/lua/script.lua type_checker
-    </pre>
+    <pre class="prettyprint lang-config">    LuaHookTypeChecker /path/to/lua/script.lua type_checker</pre>
 
-    <pre class="prettyprint lang-lua">
-    function type_checker(r)
+    <pre class="prettyprint lang-lua">    function type_checker(r)
         if r.uri:match("%.to_gif$") then -- match foo.png.to_gif
             r.content_type = "image/gif" -- assign it the image/gif type
             r.handler = "gifWizard"      -- tell the gifWizard module to handle this
@@ -1716,8 +1553,7 @@ end
         end
 
         return apache2.DECLINED
-    end
-    </pre>
+    end</pre>
 
 
 </div>
@@ -1760,15 +1596,12 @@ global variable <code>bucket</code> holds the buckets as they are passed
 onto the Lua script:
 </p>
 
-<pre class="prettyprint lang-config">
-LuaInputFilter myInputFilter /www/filter.lua input_filter
+<pre class="prettyprint lang-config">LuaInputFilter myInputFilter /www/filter.lua input_filter
 &lt;FilesMatch "\.lua&gt;
   SetInputFilter myInputFilter
-&lt;/FilesMatch&gt;
-</pre>
+&lt;/FilesMatch&gt;</pre>
 
-<pre class="prettyprint lang-lua">
---[[
+<pre class="prettyprint lang-lua">--[[
     Example input filter that converts all POST data to uppercase.
 ]]--
 function input_filter(r)
@@ -1780,21 +1613,18 @@ function input_filter(r)
     end
     -- No more buckets available.
     coroutine.yield("&amp;filterSignature=1234") -- Append signature at the end
-end
-</pre>
+end</pre>
 
 <p>
 The input filter supports denying/skipping a filter if it is deemed unwanted:
 </p>
-<pre class="prettyprint lang-lua">
-function input_filter(r)
+<pre class="prettyprint lang-lua">function input_filter(r)
     if not good then
         return -- Simply deny filtering, passing on the original content instead
     end
     coroutine.yield() -- wait for buckets
     ... -- insert filter stuff here
-end
-</pre>
+end</pre>
 
 <p>
 See "<a href="#modifying_buckets">Modifying contents with Lua 
@@ -1818,18 +1648,14 @@ filters</a>" for more information.
     match groups into both the file path and the function name. 
     Be careful writing your regular expressions to avoid security
     issues.</p>
-   <div class="example"><h3>Examples:</h3><pre class="prettyprint lang-config">
-    LuaMapHandler /(\w+)/(\w+) /scripts/$1.lua handle_$2
-    </pre>
+   <div class="example"><h3>Examples:</h3><pre class="prettyprint lang-config">    LuaMapHandler /(\w+)/(\w+) /scripts/$1.lua handle_$2</pre>
 </div>
         <p>This would match uri's such as /photos/show?id=9
         to the file /scripts/photos.lua and invoke the
         handler function handle_show on the lua vm after
         loading that file.</p>
 
-<pre class="prettyprint lang-config">
-    LuaMapHandler /bingo /scripts/wombat.lua
-</pre>
+<pre class="prettyprint lang-config">    LuaMapHandler /bingo /scripts/wombat.lua</pre>
 
         <p>This would invoke the "handle" function, which
         is the default if no specific function name is
@@ -1855,15 +1681,12 @@ global variable <code>bucket</code> holds the buckets as they are passed
 onto the Lua script:
 </p>
 
-<pre class="prettyprint lang-config">
-LuaOutputFilter myOutputFilter /www/filter.lua output_filter
+<pre class="prettyprint lang-config">LuaOutputFilter myOutputFilter /www/filter.lua output_filter
 &lt;FilesMatch "\.lua&gt;
   SetOutputFilter myOutputFilter
-&lt;/FilesMatch&gt;
-</pre>
+&lt;/FilesMatch&gt;</pre>
 
-<pre class="prettyprint lang-lua">
---[[
+<pre class="prettyprint lang-lua">--[[
     Example output filter that escapes all HTML entities in the output
 ]]--
 function output_filter(r)
@@ -1874,22 +1697,19 @@ function output_filter(r)
         coroutine.yield(output) -- Send converted data down the chain
     end
     -- No more buckets available.
-end
-</pre>
+end</pre>
 
 <p>
 As with the input filter, the output filter supports denying/skipping a filter 
 if it is deemed unwanted:
 </p>
-<pre class="prettyprint lang-lua">
-function output_filter(r)
+<pre class="prettyprint lang-lua">function output_filter(r)
     if not r.content_type:match("text/html") then
         return -- Simply deny filtering, passing on the original content instead
     end
     coroutine.yield() -- wait for buckets
     ... -- insert filter stuff here
-end
-</pre>
+end</pre>
 
 <div class="note"><h3>Lua filters with <code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code></h3>
 <p> When a Lua filter is used as the underlying provider via the 
@@ -1933,10 +1753,8 @@ information.
     conventions as lua. This just munges the package.path in the
     lua vms.</p>
 
-    <div class="example"><h3>Examples:</h3><pre class="prettyprint lang-config">
-LuaPackagePath /scripts/lib/?.lua
-LuaPackagePath /scripts/lib/?/init.lua
-    </pre>
+    <div class="example"><h3>Examples:</h3><pre class="prettyprint lang-config">LuaPackagePath /scripts/lib/?.lua
+LuaPackagePath /scripts/lib/?/init.lua</pre>
 </div>
 
 </div>

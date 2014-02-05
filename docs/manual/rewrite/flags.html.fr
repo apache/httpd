@@ -187,10 +187,8 @@ fonctionnalité.</dd>
 
 <p>Voici un exemple :</p>
 
-<pre class="prettyprint lang-config">
-RewriteEngine On
-RewriteRule ^/index\.html - [CO=frontdoor:yes:.example.org:1440:/]
-</pre>
+<pre class="prettyprint lang-config">RewriteEngine On
+RewriteRule ^/index\.html - [CO=frontdoor:yes:.example.org:1440:/]</pre>
 
 
 <p>Dans l'exemple ci-dessus, la règle ne réécrit
@@ -358,9 +356,7 @@ faire en sorte que les fichiers <code>.php</code> soient
 <em>affichés</em> par <code>mod_php</code> dans le cas où ils font
 l'objet d'une requête avec l'extension <code>.phps</code> :</p>
 
-<pre class="prettyprint lang-config">
-RewriteRule ^(/source/.+\.php)s$ $1 [H=application/x-httpd-php-source]
-</pre>
+<pre class="prettyprint lang-config">RewriteRule ^(/source/.+\.php)s$ $1 [H=application/x-httpd-php-source]</pre>
 
 
 
@@ -414,11 +410,9 @@ de requête en argument à <code>index.php</code> ; cependant, la
 directive <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code> permet de s'assurer que si
 la requête concerne déjà <code>index.php</code>, la directive <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> sera sautée.</p>
 
-<pre class="prettyprint lang-config">
-RewriteBase /
+<pre class="prettyprint lang-config">RewriteBase /
 RewriteCond %{REQUEST_URI} !=/index.php
-RewriteRule ^(.*) /index.php?req=$1 [L,PT]
-</pre>
+RewriteRule ^(.*) /index.php?req=$1 [L,PT]</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -448,12 +442,10 @@ un <code>B</code>).</p>
 <p>A partir de la version 2.5.0, ce module renvoie une erreur après
 10000 itérations afin d'éviter les boucles infinies. Ce nombre maximum
 d'itération peut être modifié via le drapeau N.</p>
-<pre class="prettyprint lang-config">
-# On veut remplacer 1 caractère à chaque itération de la boucle
+<pre class="prettyprint lang-config"># On veut remplacer 1 caractère à chaque itération de la boucle
 RewriteRule (.+)[&gt;&lt;;]$ $1 [N=32000]
 # ... ou s'arrêter après 10 itérations
-RewriteRule (.+)[&gt;&lt;;]$ $1 [N=10]
-</pre>
+RewriteRule (.+)[&gt;&lt;;]$ $1 [N=10]</pre>
 
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -585,10 +577,8 @@ Si par exemple, vous avez un <code class="directive"><a href="../mod/mod_alias.h
 vous devez utiliser le drapeau [PT] pour être sûr que l'<code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code> sera bien évalué.
 </p>
 
-<pre class="prettyprint lang-config">
-Alias /icons /usr/local/apache/icons
-RewriteRule /pics/(.+)\.jpg$ /icons/$1.gif [PT]
-</pre>
+<pre class="prettyprint lang-config">Alias /icons /usr/local/apache/icons
+RewriteRule /pics/(.+)\.jpg$ /icons/$1.gif [PT]</pre>
 
 
 <p>
@@ -701,16 +691,14 @@ Ceci peut s'interpréter comme une instruction
 <code>goto</code>  dans votre jeu de règles de réécriture. Dans
 l'exemple suivant, nous ne voulons exécuter la règle <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> que si l'URI demandé ne
 correspond pas à un fichier existant.</p>
-<pre class="prettyprint lang-config">
-# La requête concerne-t-elle un fichier qui n'existe pas ?
+<pre class="prettyprint lang-config"># La requête concerne-t-elle un fichier qui n'existe pas ?
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 # Si c'est la cas, on saute les deux règles de réécriture suivantes
 RewriteRule .? - [S=2]
 
 RewriteRule (.*\.gif) images.php?$1
-RewriteRule (.*\.html) docs.php?$1
-</pre>
+RewriteRule (.*\.html) docs.php?$1</pre>
 
 
 
@@ -724,8 +712,7 @@ conditions et ajouter une <code>RewriteRule</code> avec le drapeau [Skip]. Cette
 d'élaborer des pseudo-constructions if-then-else : la dernière règle du
 bloc then contiendra <code>skip=N</code>, où N est le nombre de règles
 contenues dans le bloc else :</p>
-<pre class="prettyprint lang-config">
-# Est-ce que le fichier existe ?
+<pre class="prettyprint lang-config"># Est-ce que le fichier existe ?
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 # Create an if-then-else construct by skipping 3 lines if we meant to go to the "else" stanza.
@@ -738,8 +725,7 @@ RewriteRule (.*\.gif) images.php?$1
     RewriteRule .? - [S=1]
 # ELSE...
 RewriteRule (.*) 404.php?file=$1
-# END
-</pre>
+# END</pre>
 
 
 <p>Il est probablement plus aisé de définir ce genre de configuration
@@ -755,20 +741,16 @@ identique à celui de la directive <code class="directive"><a href="../mod/mod_mi
 du code source Perl en tant que plein texte, s'il est requis d'une
 certaine manière :</p>
 
-<pre class="prettyprint lang-config">
-# Sert les fichier .pl en tant que plein texte
-RewriteRule \.pl$ - [T=text/plain]
-</pre>
+<pre class="prettyprint lang-config"># Sert les fichier .pl en tant que plein texte
+RewriteRule \.pl$ - [T=text/plain]</pre>
 
 
 <p>Ou encore, si vous possédez une caméra qui produit des fichiers
 images jpeg sans extension, vous pouvez forcer le renvoi de ces images
 avec le type MIME correct en se basant sur le nom du fichier :</p>
 
-<pre class="prettyprint lang-config">
-# Les fichiers dont le nom contient 'IMG' sont des images jpg.
-RewriteRule IMG - [T=image/jpg]
-</pre>
+<pre class="prettyprint lang-config"># Les fichiers dont le nom contient 'IMG' sont des images jpg.
+RewriteRule IMG - [T=image/jpg]</pre>
 
 
 <p>Notez cependant qu'il s'agit d'un exemple trivial, et que le problème

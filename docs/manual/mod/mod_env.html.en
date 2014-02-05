@@ -73,9 +73,7 @@ SSI pages</td></tr>
     native OS environment of the shell which invoked the
     <code class="program"><a href="../programs/httpd.html">httpd</a></code> process.</p>
 
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
-      PassEnv LD_LIBRARY_PATH
-      </pre>
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">      PassEnv LD_LIBRARY_PATH</pre>
 </div>
 
 </div>
@@ -92,9 +90,7 @@ SSI pages</td></tr>
     <p>Sets an internal environment variable, which is then available to Apache
     HTTP Server modules, and passed on to CGI scripts and SSI pages.</p>
 
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
-      SetEnv SPECIAL_PATH /foo/bin
-      </pre>
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">      SetEnv SPECIAL_PATH /foo/bin</pre>
 </div>
  
     <p> If you omit the <var>value</var> argument, the variable is set to
@@ -129,9 +125,7 @@ SSI pages</td></tr>
     <p>Removes one or more internal environment variables from those passed
     on to CGI scripts and SSI pages.</p>
 
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
-      UnsetEnv LD_LIBRARY_PATH
-      </pre>
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">      UnsetEnv LD_LIBRARY_PATH</pre>
 </div>
 
 </div>

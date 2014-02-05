@@ -151,14 +151,10 @@ du client</td></tr>
     <code class="directive">RemoteIPHeader</code> comme hôte de confiance.</p>
 
     <div class="example"><h3>Exemple à usage interne (répartiteur de
-    charge)</h3><pre class="prettyprint lang-config">
-        RemoteIPHeader X-Client-IP
-	</pre>
+    charge)</h3><pre class="prettyprint lang-config">        RemoteIPHeader X-Client-IP</pre>
 </div>
 
-    <div class="example"><h3>Exemple dans le cas d'un mandataire</h3><pre class="prettyprint lang-config">
-        RemoteIPHeader X-Forwarded-For
-	</pre>
+    <div class="example"><h3>Exemple dans le cas d'un mandataire</h3><pre class="prettyprint lang-config">        RemoteIPHeader X-Forwarded-For</pre>
 </div>
 
 </div>
@@ -183,11 +179,9 @@ confiance pour présenter la valeur RemoteIPHeader</td></tr>
     sont indiquées par ces mandataires.</p>
 
     <div class="example"><h3>Exemple à usage interne (répartiteur de
-    charge)</h3><pre class="prettyprint lang-config">
-RemoteIPHeader X-Client-IP
+    charge)</h3><pre class="prettyprint lang-config">RemoteIPHeader X-Client-IP
 RemoteIPInternalProxy 10.0.2.0/24
-RemoteIPInternalProxy gateway.localdomain
-        </pre>
+RemoteIPInternalProxy gateway.localdomain</pre>
 </div>
 
 </div>
@@ -215,17 +209,13 @@ confiance pour présenter la valeur RemoteIPHeader</td></tr>
     <code class="directive">RemoteIPInternalProxy</code>.</p>
 
     <div class="example"><h3>Exemple à usage interne (répartiteur de
-    charge)</h3><pre class="prettyprint lang-config">
-RemoteIPHeader X-Client-IP
-RemoteIPInternalProxyList conf/trusted-proxies.lst
-        </pre>
+    charge)</h3><pre class="prettyprint lang-config">RemoteIPHeader X-Client-IP
+RemoteIPInternalProxyList conf/trusted-proxies.lst</pre>
 </div>
 
-    <div class="example"><h3>contenu de conf/mandataires-de-confiance.lst</h3><pre>
-         # Nos mandataires internes de confiance
+    <div class="example"><h3>contenu de conf/mandataires-de-confiance.lst</h3><pre>         # Nos mandataires internes de confiance
          10.0.2.0/24         # Tout le monde dans le groupe de test
-         passerelle.domaine-local # Le frontal répartiteur de charge
-    </pre></div>
+         passerelle.domaine-local # Le frontal répartiteur de charge</pre></div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -247,10 +237,8 @@ adresses IP intermédiaires</td></tr>
     cet en-tête, alors que toute adresse intermédiaire
     <code class="directive">RemoteIPInternalProxy</code> est omise.</p>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">
-RemoteIPHeader X-Forwarded-For
-RemoteIPProxiesHeader X-Forwarded-By
-    </pre>
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">RemoteIPHeader X-Forwarded-For
+RemoteIPProxiesHeader X-Forwarded-By</pre>
 </div>
 
 </div>
@@ -278,11 +266,9 @@ confiance pour présenter la valeur RemoteIPHeader</td></tr>
     <code class="directive">RemoteIPHeader</code>.</p>
 
     <div class="example"><h3>Exemple d'adresse de confiance (répartiteur de
-    charge</h3><pre class="prettyprint lang-config">
-RemoteIPHeader X-Forwarded-For
+    charge</h3><pre class="prettyprint lang-config">RemoteIPHeader X-Forwarded-For
 RemoteIPTrustedProxy 10.0.2.16/28
-RemoteIPTrustedProxy proxy.example.com
-        </pre>
+RemoteIPTrustedProxy proxy.example.com</pre>
 </div>
 
 </div>
@@ -309,10 +295,8 @@ confiance pour présenter la valeur RemoteIPHeader</td></tr>
     <code class="directive">RemoteIPTrustedProxy</code>.</p>
 
     <div class="example"><h3>Exemple d'adresse de confiance (répartiteur de
-    charge</h3><pre class="prettyprint lang-config">
-RemoteIPHeader X-Forwarded-For
-RemoteIPTrustedProxyList conf/trusted-proxies.lst
-        </pre>
+    charge</h3><pre class="prettyprint lang-config">RemoteIPHeader X-Forwarded-For
+RemoteIPTrustedProxyList conf/trusted-proxies.lst</pre>
 </div>
 
     <div class="example"><h3>conf/mandataires-de-confiance.lst contents</h3><p><code>

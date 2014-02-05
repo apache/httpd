@@ -82,9 +82,7 @@ using <a href="../programs/apxs.html">APXS</a>. Assuming your source file
 is called mod_example.c, compiling, installing and activating the module is 
 as simple as: 
 </p>
-<div class="example"><pre>
-apxs -i -a -c mod_example.c
-</pre></div>
+<div class="example"><pre>apxs -i -a -c mod_example.c</pre></div>
 
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -97,8 +95,7 @@ that defines a module as <em>a separate entity within Apache</em>:</p>
 
 
 
-<pre class="prettyprint lang-c">
-module AP_MODULE_DECLARE_DATA   example_module =
+<pre class="prettyprint lang-c">module AP_MODULE_DECLARE_DATA   example_module =
 { 
     STANDARD20_MODULE_STUFF,
     create_dir_conf, /* Per-directory configuration handler */
@@ -107,8 +104,7 @@ module AP_MODULE_DECLARE_DATA   example_module =
     merge_svr_conf,  /* Merge handler for per-server configurations */
     directives,      /* Any directives we may have for httpd */
     register_hooks   /* Our hook registering function */
-};
-</pre>
+};</pre>
 
 
 
@@ -125,9 +121,7 @@ of the module is used primarily for two things:<br />
 For now, we're only concerned with the first purpose of the module name, 
 which comes into play when we need to load the module:
 </p>
-<pre class="prettyprint lang-config">
-LoadModule example_module modules/mod_example.so
-</pre>
+<pre class="prettyprint lang-config">LoadModule example_module modules/mod_example.so</pre>
 
 <p>
 In essence, this tells the server to open up <code>mod_example.so</code> and look for a module 
@@ -171,9 +165,7 @@ our example case, we want every request ending with .sum to be served by
 <code>mod_example</code>, so we'll add a configuration directive that tells 
 the server to do just that:
 </p>
-<pre class="prettyprint lang-config">
-AddHandler example-handler .sum
-</pre>
+<pre class="prettyprint lang-config">AddHandler example-handler .sum</pre>
 
 <p>
 What this tells the server is the following: <em>Whenever we receive a request 
@@ -195,8 +187,7 @@ definition will look like this:</p>
 
 
 
-<pre class="prettyprint lang-c">
-module AP_MODULE_DECLARE_DATA   example_module =
+<pre class="prettyprint lang-c">module AP_MODULE_DECLARE_DATA   example_module =
 {
     STANDARD20_MODULE_STUFF,
     NULL,
@@ -205,8 +196,7 @@ module AP_MODULE_DECLARE_DATA   example_module =
     NULL,
     NULL,
     register_hooks   /* Our hook registering function */
-};
-</pre>
+};</pre>
 
 
 
@@ -223,13 +213,11 @@ to hook into its process as one of the last modules:
 </p>
 
 
-<pre class="prettyprint lang-c">
-static void register_hooks(apr_pool_t *pool)
+<pre class="prettyprint lang-c">static void register_hooks(apr_pool_t *pool)
 {
     /* Create a hook in the request handler, so we get called when a request arrives */
     ap_hook_handler(example_handler, NULL, NULL, APR_HOOK_LAST);
-}
-</pre>
+}</pre>
 
 
 
@@ -279,8 +267,7 @@ In C code, our example handler will now look like this:
 </p>
 
 
-<pre class="prettyprint lang-c">
-static int example_handler(request_rec *r)
+<pre class="prettyprint lang-c">static int example_handler(request_rec *r)
 {
     /* First off, we need to check if this is a call for the "example-handler" handler.
      * If it is, we accept it and do our things, if not, we simply return DECLINED,
@@ -298,8 +285,7 @@ static int example_handler(request_rec *r)
      * We do so by simply returning the value OK to the server.
      */
     return OK;
-}
-</pre>
+}</pre>
 
 
 
@@ -344,8 +330,7 @@ Let's try out some of these variables in another example handler:<br />
 </p>
 
 
-<pre class="prettyprint lang-c">
-static int example_handler(request_rec *r)
+<pre class="prettyprint lang-c">static int example_handler(request_rec *r)
 {
     /* Set the appropriate content type */
     ap_set_content_type(r, "text/html");
@@ -366,8 +351,7 @@ static int example_handler(request_rec *r)
         ap_rprintf(r, "Your query string was: %s", r-&gt;args);
     }
     return OK;
-}
-</pre>
+}</pre>
 
 
 
@@ -384,13 +368,11 @@ status code, for example:
 </p>
 
 
-<pre class="prettyprint lang-c">
-static int example_handler(request_rec *r)
+<pre class="prettyprint lang-c">static int example_handler(request_rec *r)
 {
     /* Return 404: Not found */
     return HTTP_NOT_FOUND;
-}
-</pre>
+}</pre>
 
 
 
@@ -500,8 +482,7 @@ apr_pool_t *p, const char *fmt, ...)</code>: Similar to <code>sprintf</code>, ex
 
 
 
-<pre class="prettyprint lang-c">
-static int example_handler(request_rec *r)
+<pre class="prettyprint lang-c">static int example_handler(request_rec *r)
 {
     const char* original = "You can't edit this!";
     char* copy;
@@ -513,8 +494,7 @@ static int example_handler(request_rec *r)
     /* Create a copy of the 'original' variable that we can edit. */
     copy = apr_pstrdup(r-&gt;pool, original);
     return OK;
-}
-</pre>
+}</pre>
 
 
 
@@ -527,15 +507,13 @@ function to sort it out:
 </p>
 
 
-<pre class="prettyprint lang-c">
-static void register_hooks(apr_pool_t *pool)
+<pre class="prettyprint lang-c">static void register_hooks(apr_pool_t *pool)
 {
     /* Call a function that initializes some stuff */
     example_init_function(pool);
     /* Create a hook in the request handler, so we get called when a request arrives */
     ap_hook_handler(example_handler, NULL, NULL, APR_HOOK_LAST);
-}
-</pre>
+}</pre>
 
 
 
@@ -575,8 +553,7 @@ POST data is four simple lines:
 <a href="http://ci.apache.org/projects/httpd/trunk/doxygen/group__APACHE__CORE__SCRIPT.html#gaed25877b529623a4d8f99f819ba1b7bd">
 ap_args_to_table</a>(r, &amp;GET); <em>
 </em><a href="http://ci.apache.org/projects/httpd/trunk/doxygen/group__APACHE__CORE__DAEMON.html#ga9d426b6382b49754d4f87c55f65af202">
-ap_parse_form_data</a>(r, NULL, &amp;POST, -1, 8192); 
-</pre>
+ap_parse_form_data</a>(r, NULL, &amp;POST, -1, 8192);</pre>
 
 
 
@@ -588,13 +565,11 @@ GET</code>. To extract this value, we need only perform a simple operation:
 
 
 
-<pre class="prettyprint lang-c">
-/* Get the "digest" key from the query string, if any. */
+<pre class="prettyprint lang-c">/* Get the "digest" key from the query string, if any. */
 const char *digestType = apr_table_get(GET, "digest");
 
 /* If no key was returned, we will set a default value instead. */
-if (!digestType) digestType = "sha1";
-</pre>
+if (!digestType) digestType = "sha1";</pre>
 
 
 
@@ -614,8 +589,7 @@ out the MD5 or SHA1 digest of files:
 
 
 
-<pre class="prettyprint lang-c">
-static int example_handler(request_rec *r)
+<pre class="prettyprint lang-c">static int example_handler(request_rec *r)
 {
     int rc, exists;
     apr_finfo_t finfo;
@@ -722,8 +696,7 @@ static int example_handler(request_rec *r)
     }    
     /* Let the server know that we responded to this request. */
     return OK;
-}
-</pre>
+}</pre>
 
 
 
@@ -752,11 +725,9 @@ what a configuration directive is. Simply put, a directive is a way of
 telling an individual module (or a set of modules) how to behave, such as 
 these directives control how <code>mod_rewrite</code> works:
 </p>
-<pre class="prettyprint lang-config">
-RewriteEngine On
+<pre class="prettyprint lang-config">RewriteEngine On
 RewriteCond %{REQUEST_URI} ^/foo/bar
-RewriteRule ^/foo/bar/(.*)$ /foobar?page=$1
-</pre>
+RewriteRule ^/foo/bar/(.*)$ /foobar?page=$1</pre>
 
 <p>
 Each of these configuration directives are handled by a separate function, 
@@ -768,13 +739,11 @@ that parses the parameters given and sets up a configuration accordingly.
 
 
 
-<pre class="prettyprint lang-c">
-typedef struct {
+<pre class="prettyprint lang-c">typedef struct {
     int         enabled;      /* Enable or disable our module */
     const char *path;         /* Some path to...something */
     int         typeOfAction; /* 1 means action A, 2 means action B and so on */
-} example_config;
-</pre>
+} example_config;</pre>
 
 
 
@@ -786,8 +755,7 @@ values to their defaults:
 </p>
 
 
-<pre class="prettyprint lang-c">
-typedef struct {
+<pre class="prettyprint lang-c">typedef struct {
     int         enabled;      /* Enable or disable our module */
     const char *path;         /* Some path to...something */
     int         typeOfAction; /* 1 means action A, 2 means action B and so on */
@@ -824,8 +792,7 @@ module AP_MODULE_DECLARE_DATA   example_module =
     NULL,            /* Merge handler for per-server configurations */
     NULL,            /* Any directives we may have for httpd */
     register_hooks   /* Our hook registering function */
-};
-</pre>
+};</pre>
 
 
 
@@ -833,11 +800,9 @@ module AP_MODULE_DECLARE_DATA   example_module =
 So far so good. To access our new handler, we could add the following to 
 our configuration:
 </p>
-<pre class="prettyprint lang-config">
-&lt;Location /example&gt;
+<pre class="prettyprint lang-config">&lt;Location /example&gt;
     SetHandler example-handler
-&lt;/Location&gt;
-</pre>
+&lt;/Location&gt;</pre>
 
 <p>
 When we visit, we'll see our current configuration being spit out by our 
@@ -855,8 +820,7 @@ reference to the configuration directives we want to register with the server:
 </p>
 
 
-<pre class="prettyprint lang-c">
-module AP_MODULE_DECLARE_DATA   example_module =
+<pre class="prettyprint lang-c">module AP_MODULE_DECLARE_DATA   example_module =
 {
     STANDARD20_MODULE_STUFF,
     NULL,               /* Per-directory configuration handler */
@@ -865,8 +829,7 @@ module AP_MODULE_DECLARE_DATA   example_module =
     NULL,               /* Merge handler for per-server configurations */
     example_directives, /* Any directives we may have for httpd */
     register_hooks      /* Our hook registering function */
-};
-</pre>
+};</pre>
 
 
 
@@ -879,15 +842,13 @@ will add a structure with three directives and a NULL at the end:
 </p>
 
 
-<pre class="prettyprint lang-c">
-static const command_rec        example_directives[] =
+<pre class="prettyprint lang-c">static const command_rec        example_directives[] =
 {
     AP_INIT_TAKE1("exampleEnabled", example_set_enabled, NULL, RSRC_CONF, "Enable or disable mod_example"),
     AP_INIT_TAKE1("examplePath", example_set_path, NULL, RSRC_CONF, "The path to whatever"),
     AP_INIT_TAKE2("exampleAction", example_set_action, NULL, RSRC_CONF, "Special action value!"),
     { NULL }
-};
-</pre>
+};</pre>
 
 
 
@@ -926,8 +887,7 @@ exampleAction</code> directive to accept two arguments, its C function also
 has an additional parameter defined:</p> 
 
 
-<pre class="prettyprint lang-c">
-/* Handler for the "exampleEnabled" directive */
+<pre class="prettyprint lang-c">/* Handler for the "exampleEnabled" directive */
 const char *example_set_enabled(cmd_parms *cmd, void *cfg, const char *arg)
 {
     if(!strcasecmp(arg, "on")) config.enabled = 1;
@@ -953,8 +913,7 @@ const char *example_set_action(cmd_parms *cmd, void *cfg, const char *arg1, cons
     if(!strcasecmp(arg2, "deny")) config.typeOfAction += 0x10;
     else config.typeOfAction += 0x20;
     return NULL;
-}
-</pre>
+}</pre>
 
 
 
@@ -967,8 +926,7 @@ we can assemble our module into one big file:
 </p>
 
 
-<pre class="prettyprint lang-c">
-/* mod_example_config_simple.c: */
+<pre class="prettyprint lang-c">/* mod_example_config_simple.c: */
 #include &lt;stdio.h&gt;
 #include "apr_hash.h"
 #include "ap_config.h"
@@ -1079,8 +1037,7 @@ module AP_MODULE_DECLARE_DATA   example_module =
     NULL,               /* Merge handler for per-server configurations */
     example_directives, /* Any directives we may have for httpd */
     register_hooks      /* Our hook registering function */
-};
-</pre>
+};</pre>
 
 
 
@@ -1089,11 +1046,9 @@ module AP_MODULE_DECLARE_DATA   example_module =
 In our httpd.conf file, we can now change the hard-coded configuration by 
 adding a few lines:
 </p>
-<pre class="prettyprint lang-config">
-ExampleEnabled On
+<pre class="prettyprint lang-config">ExampleEnabled On
 ExamplePath "/usr/bin/foo"
-ExampleAction file allow
-</pre>
+ExampleAction file allow</pre>
 
 <p>
 And thus we apply the configuration, visit <code>/example</code> on our 
@@ -1113,15 +1068,13 @@ different meanings to the user of the server, and thus different contexts
 within which modules must operate. For example, let's assume you have this 
 configuration set up for mod_rewrite:
 </p>
-<pre class="prettyprint lang-config">
-&lt;Directory "/var/www"&gt;
+<pre class="prettyprint lang-config">&lt;Directory "/var/www"&gt;
     RewriteCond %{HTTP_HOST} ^example.com$
     RewriteRule (.*) http://www.example.com/$1
 &lt;/Directory&gt;
 &lt;Directory "/var/www/sub"&gt;
     RewriteRule ^foobar$ index.php?foobar=true
-&lt;/Directory&gt;
-</pre>
+&lt;/Directory&gt;</pre>
 
 <p>
 In this example, you will have set up two different contexts for 
@@ -1144,9 +1097,7 @@ directory or location in question? It does so by making one simple call:
 </p>
 
 
-<pre class="prettyprint lang-c">
-example_config *config = (example_config*) <a href="http://ci.apache.org/projects/httpd/trunk/doxygen/group__APACHE__CORE__CONFIG.html#ga1093a5908a384eacc929b028c79f2a02">ap_get_module_config</a>(r-&gt;per_dir_config, &amp;example_module);
-</pre>
+<pre class="prettyprint lang-c">example_config *config = (example_config*) <a href="http://ci.apache.org/projects/httpd/trunk/doxygen/group__APACHE__CORE__CONFIG.html#ga1093a5908a384eacc929b028c79f2a02">ap_get_module_config</a>(r-&gt;per_dir_config, &amp;example_module);</pre>
 
 
 
@@ -1165,14 +1116,12 @@ variable that we can use to track which context configuration is being
 used by the server in various places:
 </p>
 
-<pre class="prettyprint lang-c">
-typedef struct {
+<pre class="prettyprint lang-c">typedef struct {
     char        context[256];
     char        path[256];
     int         typeOfAction;
     int         enabled;
-} example_config;
-</pre>
+} example_config;</pre>
 
 
 
@@ -1180,8 +1129,7 @@ typedef struct {
 
 
 
-<pre class="prettyprint lang-c">
-static int example_handler(request_rec *r)
+<pre class="prettyprint lang-c">static int example_handler(request_rec *r)
 {
     if(!r-&gt;handler || strcmp(r-&gt;handler, "example-handler")) return(DECLINED);
     example_config *config = (example_config*) ap_get_module_config(r-&gt;per_dir_config, &amp;example_module);
@@ -1191,8 +1139,7 @@ static int example_handler(request_rec *r)
     ap_rprintf("TypeOfAction: %x\n", config-&gt;typeOfAction);
     ap_rprintf("Context: %s\n", config-&gt;context);
     return OK;
-}
-</pre>
+}</pre>
 
 
 
@@ -1206,9 +1153,7 @@ a directive required five elements be set:</p>
 
 
 
-<pre class="prettyprint lang-c">
-AP_INIT_TAKE1("exampleEnabled", example_set_enabled, NULL, RSRC_CONF, "Enable or disable mod_example"),
-</pre>
+<pre class="prettyprint lang-c">AP_INIT_TAKE1("exampleEnabled", example_set_enabled, NULL, RSRC_CONF, "Enable or disable mod_example"),</pre>
 
 
 
@@ -1241,8 +1186,7 @@ and managing our configurations. Since we have chosen the per-directory
 per-directory creator and merger function reference in our tag:</p>
 
 
-<pre class="prettyprint lang-c">
-module AP_MODULE_DECLARE_DATA   example_module =
+<pre class="prettyprint lang-c">module AP_MODULE_DECLARE_DATA   example_module =
 {
     STANDARD20_MODULE_STUFF,
     create_dir_conf, /* Per-directory configuration handler */
@@ -1251,8 +1195,7 @@ module AP_MODULE_DECLARE_DATA   example_module =
     NULL,            /* Merge handler for per-server configurations */
     directives,      /* Any directives we may have for httpd */
     register_hooks   /* Our hook registering function */
-};
-</pre>
+};</pre>
 
 
 
@@ -1267,8 +1210,7 @@ our first step is to make a function for creating new, blank
 configurations. We do so by creating the function we just referenced in 
 our name tag as the Per-directory configuration handler:</p>
 
-<pre class="prettyprint lang-c">
-void* example_create_dir_conf(apr_pool_t* pool, char* context) {
+<pre class="prettyprint lang-c">void* example_create_dir_conf(apr_pool_t* pool, char* context) {
     context = context ? context : "(undefined context)";
     example_config *cfg = apr_pcalloc(pool, sizeof(example_config));
     if(cfg) {
@@ -1279,8 +1221,7 @@ void* example_create_dir_conf(apr_pool_t* pool, char* context) {
         cfg-&gt;typeOfAction = 0x11;
     }
     return cfg;
-}
-</pre>
+}</pre>
 
 
 
@@ -1293,16 +1234,14 @@ Our next step in creating a context aware configuration is merging
 configurations. This part of the process particularly applies to scenarios 
 where you have a parent configuration and a child, such as the following: 
 </p>
-<pre class="prettyprint lang-config">
-&lt;Directory "/var/www"&gt;
+<pre class="prettyprint lang-config">&lt;Directory "/var/www"&gt;
     ExampleEnabled On
     ExamplePath /foo/bar
     ExampleAction file allow
 &lt;/Directory&gt;
 &lt;Directory "/var/www/subdir"&gt;
     ExampleAction file deny
-&lt;/Directory&gt;
-</pre>
+&lt;/Directory&gt;</pre>
 
 <p>
 In this example, it is natural to assume that the directory <code>
@@ -1325,8 +1264,7 @@ two configurations and decide how they are to be merged:</p>
 
 
 
-<pre class="prettyprint lang-c">
-void* merge_dir_conf(apr_pool_t* pool, void* BASE, void* ADD) {
+<pre class="prettyprint lang-c">void* merge_dir_conf(apr_pool_t* pool, void* BASE, void* ADD) {
     example_config* base = (example_config *) BASE ; /* This is what was set in the parent context */
     example_config* add = (example_config *) ADD ;   /* This is what is set in the new context */
     example_config* conf = (example_config *) create_dir_conf(pool, "Merged configuration"); /* This will be the merged configuration */
@@ -1337,8 +1275,7 @@ void* merge_dir_conf(apr_pool_t* pool, void* BASE, void* ADD) {
     strcpy(conf-&gt;path, strlen(add-&gt;path) ? add-&gt;path : base-&gt;path);
     
     return conf ;
-}
-</pre>
+}</pre>
 
 
 
@@ -1351,8 +1288,7 @@ Now, let's try putting it all together to create a new module that is
 context aware. First off, we'll create a configuration that lets us test 
 how the module works:
 </p>
-<pre class="prettyprint lang-config">
-&lt;Location "/a"&gt;
+<pre class="prettyprint lang-config">&lt;Location "/a"&gt;
     SetHandler example-handler
     ExampleEnabled on
     ExamplePath "/foo/bar"
@@ -1368,8 +1304,7 @@ how the module works:
     ExampleAction db deny
     ExamplePath "/foo/bar/baz"
     ExampleEnabled on
-&lt;/Location&gt;
-</pre>
+&lt;/Location&gt;</pre>
 
 <p>
 Then we'll assemble our module code. Note, that since we are now using our 
@@ -1378,8 +1313,7 @@ added some prototypes to keep the compiler happy:
 </p>
 
 
-<pre class="prettyprint lang-c">
-/*$6
+<pre class="prettyprint lang-c">/*$6
  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
  * mod_example_config.c
  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -1602,8 +1536,7 @@ void *merge_dir_conf(apr_pool_t *pool, void *BASE, void *ADD)
     conf-&gt;typeOfAction = add-&gt;typeOfAction ? add-&gt;typeOfAction : base-&gt;typeOfAction;
     strcpy(conf-&gt;path, strlen(add-&gt;path) ? add-&gt;path : base-&gt;path);
     return conf;
-}
-</pre>
+}</pre>
 
 
 
@@ -1630,8 +1563,7 @@ or check out the rest of our documentation for further tips.
 
 
 
-<pre class="prettyprint lang-c">
-typedef struct {
+<pre class="prettyprint lang-c">typedef struct {
     const char* key;
     const char* value;
 } keyValuePair;
@@ -1684,8 +1616,7 @@ static int example_handler(request_rec *r)
         }
     }
     return OK;
-}
-</pre>
+}</pre>
 
 
 
@@ -1696,8 +1627,7 @@ static int example_handler(request_rec *r)
 
 
 
-<pre class="prettyprint lang-c">
-static int example_handler(request_rec *r)
+<pre class="prettyprint lang-c">static int example_handler(request_rec *r)
 {
     /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
     const apr_array_header_t    *fields;
@@ -1711,8 +1641,7 @@ static int example_handler(request_rec *r)
         ap_rprintf(r, "%s: %s\n", e[i].key, e[i].val);
     }
     return OK;
-}
-</pre>
+}</pre>
 
 
 
@@ -1723,8 +1652,7 @@ static int example_handler(request_rec *r)
 
 
 
-<pre class="prettyprint lang-c">
-static int util_read(request_rec *r, const char **rbuf, apr_off_t *size)
+<pre class="prettyprint lang-c">static int util_read(request_rec *r, const char **rbuf, apr_off_t *size)
 {
     /*~~~~~~~~*/
     int rc = OK;
@@ -1770,8 +1698,7 @@ static int example_handler(request_rec* r)
         ap_rprintf(r, "We read a request body that was %" APR_OFF_T_FMT " bytes long", size);
     }
     return OK;
-}
-    </pre>
+}</pre>
 
 
 

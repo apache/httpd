@@ -39,11 +39,9 @@ passante limitée définie par les différents standards des anciens
 modems. Ainsi, il est possible de naviguer sur votre site avec un modem
 56k V.92 en positionnant une configuration de ce type :</p>
 
-<pre class="prettyprint lang-config">
-&lt;Location /mysite&gt;
+<pre class="prettyprint lang-config">&lt;Location /mysite&gt;
     ModemStandard V.92
-&lt;/Location&gt;
-</pre>
+&lt;/Location&gt;</pre>
 
 
 <p>Auparavant, pour faire des modules de limitation de bande passante,
@@ -73,11 +71,9 @@ client.</p>
 <p>Cette directive permet de spécifier le standard de modem que vous
 souhaitez simuler.</p>
 
-<pre class="prettyprint lang-config">
-&lt;Location /mysite&gt;
+<pre class="prettyprint lang-config">&lt;Location /mysite&gt;
     ModemStandard V.26bis
-&lt;/Location&gt;
-</pre>
+&lt;/Location&gt;</pre>
 
 
 

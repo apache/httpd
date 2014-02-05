@@ -97,10 +97,8 @@
       the <code>html</code> extension to trigger the launch of the
       <code>footer.pl</code> CGI script.</p>
 
-      <pre class="prettyprint lang-config">
-Action add-footer /cgi-bin/footer.pl
-AddHandler add-footer .html
-      </pre>
+      <pre class="prettyprint lang-config">Action add-footer /cgi-bin/footer.pl
+AddHandler add-footer .html</pre>
 
 
       <p>Then the CGI script is responsible for sending the
@@ -119,11 +117,9 @@ AddHandler add-footer .html
       the <code>send-as-is</code> handler, regardless of their
       filename extensions.</p>
 
-      <pre class="prettyprint lang-config">
-&lt;Directory /web/htdocs/asis&gt;
+      <pre class="prettyprint lang-config">&lt;Directory /web/htdocs/asis&gt;
     SetHandler send-as-is
-&lt;/Directory&gt;
-      </pre>
+&lt;/Directory&gt;</pre>
 
 
     
@@ -137,9 +133,7 @@ AddHandler add-footer .html
     you may wish to make use of. Specifically, a new record has
     been added to the <code>request_rec</code> structure:</p>
 
-    <pre class="prettyprint lang-c">
-      char *handler
-    </pre>
+    <pre class="prettyprint lang-c">      char *handler</pre>
 
 
     <p>If you wish to have your module engage a handler, you need

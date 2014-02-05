@@ -368,11 +368,9 @@ for HTTP Basic authentication.</td></tr>
     <code>ldap://ldap/o=Example?cn</code> (i.e., <code>cn</code> is
     used for searches), the following Require directives could be used
     to restrict access:</p>
-<pre class="prettyprint lang-config">
-Require ldap-user "Barbara Jenson"
+<pre class="prettyprint lang-config">Require ldap-user "Barbara Jenson"
 Require ldap-user "Fred User"
-Require ldap-user "Joe Manager"
-</pre>
+Require ldap-user "Joe Manager"</pre>
 
 
     <p>Because of the way that <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code> handles this
@@ -396,12 +394,10 @@ Require ldap-user "Joe Manager"
     group. Note: Do not surround the group name with quotes.
     For example, assume that the following entry existed in
     the LDAP directory:</p>
-<div class="example"><pre>
-dn: cn=Administrators, o=Example
+<div class="example"><pre>dn: cn=Administrators, o=Example
 objectClass: groupOfUniqueNames
 uniqueMember: cn=Barbara Jenson, o=Example
-uniqueMember: cn=Fred User, o=Example
-</pre></div>
+uniqueMember: cn=Fred User, o=Example</pre></div>
 
     <p>The following directive would grant access to both Fred and
     Barbara:</p>
@@ -412,8 +408,7 @@ uniqueMember: cn=Fred User, o=Example
     if <code class="directive"><a href="#authldapmaxsubgroupdepth">AuthLDAPMaxSubGroupDepth</a></code>
     is set to a value greater than 0. For example, assume the following entries
     exist in the LDAP directory:</p>
-<div class="example"><pre>
-dn: cn=Employees, o=Example
+<div class="example"><pre>dn: cn=Employees, o=Example
 objectClass: groupOfUniqueNames
 uniqueMember: cn=Managers, o=Example
 uniqueMember: cn=Administrators, o=Example
@@ -438,17 +433,14 @@ uniqueMember: cn=Temporary Employees, o=Example
 dn: cn=Temporary Employees, o=Example
 objectClass: groupOfUniqueNames
 uniqueMember: cn=Jim Swenson, o=Example
-uniqueMember: cn=Elliot Rhodes, o=Example
-</pre></div>
+uniqueMember: cn=Elliot Rhodes, o=Example</pre></div>
 
     <p>The following directives would allow access for Bob Ellis, Tom Jackson,
     Barbara Jensen, Fred User, Allan Jefferson, and Paul Tilley but would not
     allow access for Jim Swenson, or Elliot Rhodes (since they are at a
     sub-group depth of 2):</p>
-<pre class="prettyprint lang-config">
-Require ldap-group cn=Employees, o-Example
-AuthLDAPMaxSubGroupDepth 1
-</pre>
+<pre class="prettyprint lang-config">Require ldap-group cn=Employees, o-Example
+AuthLDAPMaxSubGroupDepth 1</pre>
 
 
     <p>Behavior of this directive is modified by the <code class="directive"><a href="#authldapgroupattribute">AuthLDAPGroupAttribute</a></code>, <code class="directive"><a href="#authldapgroupattributeisdn">AuthLDAPGroupAttributeIsDN</a></code>, <code class="directive"><a href="#authldapmaxsubgroupdepth">AuthLDAPMaxSubGroupDepth</a></code>, <code class="directive"><a href="#authldapsubgroupattribute">AuthLDAPSubGroupAttribute</a></code>, and <code class="directive"><a href="#authldapsubgroupclass">AuthLDAPSubGroupClass</a></code>
@@ -534,10 +526,8 @@ AuthLDAPMaxSubGroupDepth 1
       <li>
         Grant access to anyone who exists in the LDAP directory,
         using their UID for searches.
-<pre class="prettyprint lang-config">
-AuthLDAPURL "ldap://ldap1.example.com:389/ou=People, o=Example?uid?sub?(objectClass=*)"
-Require valid-user
-</pre>
+<pre class="prettyprint lang-config">AuthLDAPURL "ldap://ldap1.example.com:389/ou=People, o=Example?uid?sub?(objectClass=*)"
+Require valid-user</pre>
 
       </li>
 
@@ -546,8 +536,7 @@ Require valid-user
         that have useful defaults omitted. Also, note the use of a
         redundant LDAP server.
 <pre class="prettyprint lang-config">AuthLDAPURL "ldap://ldap1.example.com ldap2.example.com/ou=People, o=Example"
-Require valid-user
-</pre>
+Require valid-user</pre>
 
       </li>
 
@@ -560,20 +549,16 @@ Require valid-user
         this approach is not recommended: it's a better idea to
         choose an attribute that is guaranteed unique in your
         directory, such as <code>uid</code>.
-<pre class="prettyprint lang-config">
-AuthLDAPURL "ldap://ldap.example.com/ou=People, o=Example?cn"
-Require valid-user
-</pre>
+<pre class="prettyprint lang-config">AuthLDAPURL "ldap://ldap.example.com/ou=People, o=Example?cn"
+Require valid-user</pre>
 
       </li>
 
       <li>
         Grant access to anybody in the Administrators group. The
         users must authenticate using their UID.
-<pre class="prettyprint lang-config">
-AuthLDAPURL ldap://ldap.example.com/o=Example?uid
-Require ldap-group cn=Administrators, o=Example
-</pre>
+<pre class="prettyprint lang-config">AuthLDAPURL ldap://ldap.example.com/o=Example?uid
+Require ldap-group cn=Administrators, o=Example</pre>
 
       </li>
 
@@ -581,10 +566,8 @@ Require ldap-group cn=Administrators, o=Example
         Grant access to anybody in the group whose name matches the
         hostname of the virtual host. In this example an
         <a href="../expr.html">expression</a> is used to build the filter.
-<pre class="prettyprint lang-config">
-AuthLDAPURL ldap://ldap.example.com/o=Example?uid
-Require ldap-group cn=%{SERVER_NAME}, o=Example
-</pre>
+<pre class="prettyprint lang-config">AuthLDAPURL ldap://ldap.example.com/o=Example?uid
+Require ldap-group cn=%{SERVER_NAME}, o=Example</pre>
 
       </li>
 
@@ -594,10 +577,8 @@ Require ldap-group cn=%{SERVER_NAME}, o=Example
         of <code>qpagePagerID</code>. The example will grant access
         only to people (authenticated via their UID) who have
         alphanumeric pagers:
-<pre class="prettyprint lang-config">
-AuthLDAPURL ldap://ldap.example.com/o=Example?uid??(qpagePagerID=*)
-Require valid-user
-</pre>
+<pre class="prettyprint lang-config">AuthLDAPURL ldap://ldap.example.com/o=Example?uid??(qpagePagerID=*)
+Require valid-user</pre>
 
       </li>
 
@@ -611,10 +592,8 @@ Require valid-user
         a pager, plus grant access to Joe Manager, who doesn't
         have a pager, but does need to access the same
         resource:</p>
-<pre class="prettyprint lang-config">
-AuthLDAPURL ldap://ldap.example.com/o=Example?uid??(|(qpagePagerID=*)(uid=jmanager))
-Require valid-user
-</pre>
+<pre class="prettyprint lang-config">AuthLDAPURL ldap://ldap.example.com/o=Example?uid??(|(qpagePagerID=*)(uid=jmanager))
+Require valid-user</pre>
 
 
         <p>This last may look confusing at first, so it helps to
@@ -704,11 +683,9 @@ Require valid-user
     subtree search for the attribute <em>userPrincipalName</em>, with
     an empty search root, like so:</p>
 
-<pre class="prettyprint lang-config">
-AuthLDAPBindDN apache@example.com
+<pre class="prettyprint lang-config">AuthLDAPBindDN apache@example.com
 AuthLDAPBindPassword password
-AuthLDAPURL ldap://10.0.0.1:3268/?userPrincipalName?sub
-</pre>
+AuthLDAPURL ldap://10.0.0.1:3268/?userPrincipalName?sub</pre>
 
 
     <p>Users will need to enter their User Principal Name as a login, in
@@ -732,11 +709,9 @@ AuthLDAPURL ldap://10.0.0.1:3268/?userPrincipalName?sub
     authentication to it is a matter of adding the following
     directives to <em>every</em> <code>.htaccess</code> file
     that gets created in the web</p>
-<pre class="prettyprint lang-config">
-AuthLDAPURL       "the url"
+<pre class="prettyprint lang-config">AuthLDAPURL       "the url"
 AuthGroupFile     mygroupfile
-Require group     mygroupfile
-</pre>
+Require group     mygroupfile</pre>
 
 
 <h3><a name="howitworks" id="howitworks">How It Works</a></h3>
@@ -882,16 +857,14 @@ authorization</td></tr>
     <p>If the value begins with exec: the resulting command will be
     executed and the first line returned to standard output by the
     program will be used as the password.</p>
-<div class="example"><pre>
-#Password used as-is
+<div class="example"><pre>#Password used as-is
 AuthLDAPBindPassword secret
 
 #Run /path/to/program to get my password
 AuthLDAPBindPassword exec:/path/to/program
 
 #Run /path/to/otherProgram and provide arguments
-AuthLDAPBindPassword "exec:/path/to/otherProgram argument1"
-</pre></div>
+AuthLDAPBindPassword "exec:/path/to/otherProgram argument1"</pre></div>
 
 
 </div>
@@ -1104,7 +1077,7 @@ to perform a DN lookup</td></tr>
         <code class="directive"><a href="#authldapbinddn">AuthLDAPBindDN</a></code>.
     </p>
 
-    <pre class="prettyprint lang-config"> AuthLDAPInitialBindPattern (.+) $1@example.com </pre>
+    <pre class="prettyprint lang-config"> AuthLDAPInitialBindPattern (.+) $1@example.com</pre>
 
     <pre class="prettyprint lang-config"> AuthLDAPInitialBindPattern (.+) cn=$1,dc=example,dc=com</pre>
 

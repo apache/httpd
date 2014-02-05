@@ -92,8 +92,7 @@ soulager ainsi la base de données de la plus grande partie de la charge.</p>
 
 <p>Voici un exemple simple d'utilisation de ce module dans un contexte
 d'authentification et de bases de données.</p>
-<pre class="prettyprint lang-config">
-# configuration de mod_dbd modifiée pour inclure la mise en cache de
+<pre class="prettyprint lang-config"># configuration de mod_dbd modifiée pour inclure la mise en cache de
 # l'authentification
 DBDriver pgsql
 DBDParams "dbname=apacheauth user=apache password=xxxxxx"
@@ -123,8 +122,7 @@ DBDExptime 300
 
   # la requête SQL de mod_authn_dbd pour authentifier un utilisateur
   AuthDBDUserPWQuery "SELECT password FROM authn WHERE user = %s"
-&lt;/Directory&gt;
-</pre>
+&lt;/Directory&gt;</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -176,9 +174,7 @@ utilisateur</td></tr>
     paramètre sous forme d'une seule chaîne de caractères lorsque la
     requête sera exécutée. Cet identifiant est référencé dans la requête
     en utilisant le spécificateur de format <code>%s</code>.</p>
-    <pre class="prettyprint lang-config">
-AuthDBDUserPWQuery "SELECT password FROM authn WHERE user = %s"
-</pre>
+    <pre class="prettyprint lang-config">AuthDBDUserPWQuery "SELECT password FROM authn WHERE user = %s"</pre>
 
     <p>La première colonne du premier enregistrement renvoyé par la
     requête se présentera sous la forme d'une chaîne de caractères
@@ -217,9 +213,7 @@ passe pour un utilisateur et un identifiant d'authentification.
     sont passés dans cet ordre comme paramètres à l'exécution de la
     requête. Ils sont référencés dans la chaîne de la requête en
     utilisant des spécificateurs de format <code>%s</code>.</p>
-    <pre class="prettyprint lang-config">
-AuthDBDUserRealmQuery "SELECT password FROM authn WHERE user = %s AND realm = %s"
-</pre>
+    <pre class="prettyprint lang-config">AuthDBDUserRealmQuery "SELECT password FROM authn WHERE user = %s AND realm = %s"</pre>
 
     <p>La première colonne du premier enregistrement renvoyé par la
     requête se présentera sous la forme d'une chaîne de caractères

@@ -46,8 +46,7 @@ HTTP caching filter.</td></tr>
     however the caching of partial content is not yet supported by this
     module.</p>
 
-    <pre class="prettyprint lang-config">
-# Turn on caching
+    <pre class="prettyprint lang-config"># Turn on caching
 CacheSocache shmcb
 CacheSocacheMaxSize 102400
 &lt;Location /foo&gt;
@@ -60,8 +59,7 @@ CacheSocacheMaxSize 102400
 &lt;Location /foo&gt;
     CacheEnable socache
     CacheEnable disk
-&lt;/Location&gt;
-    </pre>
+&lt;/Location&gt;</pre>
 
 
     <div class="note"><h3>Note:</h3>
@@ -102,9 +100,7 @@ CacheSocacheMaxSize 102400
     implementations</a> of shared object caches are available to choose
     from.</p>
 
-    <pre class="prettyprint lang-config">
-      CacheSocache shmcb
-    </pre>
+    <pre class="prettyprint lang-config">      CacheSocache shmcb</pre>
 
 
 </div>
@@ -132,9 +128,7 @@ cache</td></tr>
     responses larger than those cacheable within
     <code class="module"><a href="../mod/mod_cache_socache.html">mod_cache_socache</a></code>.</p>
 
-    <pre class="prettyprint lang-config">
-      CacheSocacheMaxSize 102400
-    </pre>
+    <pre class="prettyprint lang-config">      CacheSocacheMaxSize 102400</pre>
 
 
 </div>
@@ -155,9 +149,7 @@ cache</td></tr>
     the cache. This value overrides the freshness lifetime defined for the
     document by the HTTP protocol.</p>
 
-    <pre class="prettyprint lang-config">
-      CacheSocacheMaxTime 86400
-    </pre>
+    <pre class="prettyprint lang-config">      CacheSocacheMaxTime 86400</pre>
 
 
 </div>
@@ -179,9 +171,7 @@ cache</td></tr>
     only stored for its freshness lifetime, there will be no opportunity to
     revalidate the response to make it fresh again.</p>
 
-    <pre class="prettyprint lang-config">
-      CacheSocacheMinTime 600
-    </pre>
+    <pre class="prettyprint lang-config">      CacheSocacheMinTime 600</pre>
 
 
 </div>
@@ -208,9 +198,7 @@ cache</td></tr>
     <p>This directive only takes effect when the data is being saved to the
     cache, as opposed to data being served from the cache.</p>
 
-    <pre class="prettyprint lang-config">
-      CacheReadSize 102400
-    </pre>
+    <pre class="prettyprint lang-config">      CacheReadSize 102400</pre>
 
 
 </div>
@@ -241,9 +229,7 @@ cache</td></tr>
     to ensure that the server does not buffer excessively should data arrive faster
     than expected.</p>
 
-    <pre class="prettyprint lang-config">
-      CacheSocacheReadTime 1000
-    </pre>
+    <pre class="prettyprint lang-config">      CacheSocacheReadTime 1000</pre>
 
 
 </div>

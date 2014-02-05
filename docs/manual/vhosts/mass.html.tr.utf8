@@ -54,8 +54,7 @@
       <code>&lt;VirtualHost&gt;</code> bölümü içereceği zaman yapılacaklar ile
       ilgilidir.</p>
 
-<pre>
-&lt;VirtualHost 111.22.33.44&gt;
+<pre>&lt;VirtualHost 111.22.33.44&gt;
     ServerName                 musteri-1.example.com
     DocumentRoot        /siteler/musteri-1/belgeler
     ScriptAlias  /cgi-bin/  /siteler/musteri-1/cgi-bin
@@ -71,8 +70,7 @@
     ServerName                 musteri-N.example.com
     DocumentRoot        /siteler/musteri-N/belgeler
     ScriptAlias  /cgi-bin/  /siteler/musteri-N/cgi-bin
-&lt;/VirtualHost&gt;
-</pre>
+&lt;/VirtualHost&gt;</pre>
 
     <p>İsteğimiz çok sayıda <code>&lt;VirtualHost&gt;</code> bölümünü devingen
       olarak çalışan tek bir <code>&lt;VirtualHost&gt;</code> bölümüyle

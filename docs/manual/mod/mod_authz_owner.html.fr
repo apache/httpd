@@ -107,15 +107,13 @@ fichiers</td></tr>
       propriétaire ne soit <code>jones</code> au lieu de
       <code>smith</code>.</p>
 
-      <pre class="prettyprint lang-config">
-&lt;Directory /home/*/public_html/private&gt;
+      <pre class="prettyprint lang-config">&lt;Directory /home/*/public_html/private&gt;
     AuthType Basic
     AuthName MyPrivateFiles
     AuthBasicProvider dbm
     AuthDBMUserFile /usr/local/apache2/etc/.htdbm-all
     Require file-owner
-&lt;/Directory&gt;
-      </pre>
+&lt;/Directory&gt;</pre>
 
     
 
@@ -132,8 +130,7 @@ fichiers</td></tr>
       <code>foo</code>, ils seront autorisés à accéder aux
       répertoires <code>project-foo</code> de chacun d'entre eux.</p>
 
-      <pre class="prettyprint lang-config">
-&lt;Directory /home/*/public_html/project-foo&gt;
+      <pre class="prettyprint lang-config">&lt;Directory /home/*/public_html/project-foo&gt;
     AuthType Basic
     AuthName "Project Foo Files"
     AuthBasicProvider dbm
@@ -144,8 +141,7 @@ fichiers</td></tr>
     
     Satisfy All
     Require file-group
-&lt;/Directory&gt;
-      </pre>
+&lt;/Directory&gt;</pre>
 
     
 </div>

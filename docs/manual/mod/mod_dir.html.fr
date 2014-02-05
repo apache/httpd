@@ -127,9 +127,7 @@ client envoie une requête pour un répertoire</td></tr>
     <code>Indexes</code> est définie, le serveur générera son propre
     listing du répertoire.</p>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">
-      DirectoryIndex index.html
-      </pre>
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">      DirectoryIndex index.html</pre>
 </div>
 
     <p>Avec cette configuration, une requête pour l'URL
@@ -141,9 +139,7 @@ client envoie une requête pour un répertoire</td></tr>
     <p>Notez qu'il n'est pas nécessaire que les documents soient
     relatifs au répertoire ;</p>
 
-    <pre class="prettyprint lang-config">
-      DirectoryIndex index.html index.txt  /cgi-bin/index.pl
-    </pre>
+    <pre class="prettyprint lang-config">      DirectoryIndex index.html index.txt  /cgi-bin/index.pl</pre>
 
 
     <p>provoquerait l'exécution du script CGI
@@ -162,8 +158,7 @@ client envoie une requête pour un répertoire</td></tr>
     contexte</em></a> permet d'ajouter des ressources à rechercher plutôt
     que de remplacer celle déjà définies :
     </p>
-    <pre class="prettyprint lang-config">
-# Exemple A: définit index.html comme page d'index, ainsi qu'index.php.
+    <pre class="prettyprint lang-config"># Exemple A: définit index.html comme page d'index, ainsi qu'index.php.
 &lt;Directory /foo&gt;
     DirectoryIndex index.html
     DirectoryIndex index.php
@@ -181,8 +176,7 @@ client envoie une requête pour un répertoire</td></tr>
     DirectoryIndex index.html
     DirectoryIndex disabled
     DirectoryIndex index.php
-&lt;/Directory&gt;
-    </pre>
+&lt;/Directory&gt;</pre>
 
 
 
@@ -221,9 +215,7 @@ répertoires.
 
 
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">
-      DirectoryIndexRedirect on
-      </pre>
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">      DirectoryIndexRedirect on</pre>
 </div>
 
     <p>Une requête pour <code>http://example.com/docs/</code> se
@@ -273,13 +265,11 @@ fin"</td></tr>
     Gardez cependant à l'esprit que ceci peut avoir des répercutions en
     matière de sécurité.</p>
 
-    <pre class="prettyprint lang-config">
-# voir l'avertissement de sécurité ci-dessous !
+    <pre class="prettyprint lang-config"># voir l'avertissement de sécurité ci-dessous !
 &lt;Location /some/path&gt;
     DirectorySlash Off
     SetHandler some-handler
-&lt;/Location&gt;
-    </pre>
+&lt;/Location&gt;</pre>
 
 
     <div class="warning"><h3>Avertissement de sécurité</h3>
@@ -316,9 +306,7 @@ aucun fichier</td></tr>
     et qui provoquerait sans cela l'envoi d'un code d'erreur HTTP 404
     (Not Found).
     Par exemple</p>
-    <pre class="prettyprint lang-config">
-        FallbackResource /not-404.php
-    </pre>
+    <pre class="prettyprint lang-config">        FallbackResource /not-404.php</pre>
 
     <p>fait en sorte que les requêtes ne correspondant à aucun fichier
     soient traitées par <code>non-404.php</code>, sans affecter les
@@ -333,9 +321,7 @@ aucun fichier</td></tr>
     conditionnels <code>-f</code> et <code>-d</code> pour vérifier
     l'existence des fichiers et répertoires. Maintenant, une seule ligne
     de configuration est nécessaire.</p>
-    <pre class="prettyprint lang-config">
-        FallbackResource /index.php
-    </pre>
+    <pre class="prettyprint lang-config">        FallbackResource /index.php</pre>
 
     <p>Les fichiers existants comme des images, des fichiers css, etc...
     seront traités normalement.</p>
@@ -345,14 +331,12 @@ aucun fichier</td></tr>
     <p>Pour un URI intermédiaire tel que
     <em>http://example.com/blog/</em>, cet URI intermédiaire doit être
     spécifié en tant que <var>url-locale</var> :</p>
-    <pre class="prettyprint lang-config">
-&lt;Directory /web/example.com/htdocs/blog&gt;
+    <pre class="prettyprint lang-config">&lt;Directory /web/example.com/htdocs/blog&gt;
     FallbackResource /blog/index.php
 &lt;/Directory&gt;
 &lt;Directory /web/example.com/htdocs/blog/images&gt;
     FallbackResource disabled
-&lt;/Directory&gt;
-    </pre>
+&lt;/Directory&gt;</pre>
 
 
 </div>

@@ -74,10 +74,8 @@ configuration.</div>
       <p>We rewrite the old URL to the new one internally via the
       following rule:</p>
 
-<pre class="prettyprint lang-config">
-RewriteEngine  on
-RewriteRule    ^<strong>/foo</strong>\.html$  <strong>/bar</strong>.html [PT]
-</pre>
+<pre class="prettyprint lang-config">RewriteEngine  on
+RewriteRule    ^<strong>/foo</strong>\.html$  <strong>/bar</strong>.html [PT]</pre>
 
     </dd>
   </dl>
@@ -106,10 +104,8 @@ RewriteRule    ^<strong>/foo</strong>\.html$  <strong>/bar</strong>.html [PT]
       <p>We force a HTTP redirect to the new URL which leads to a
       change of the browsers and thus the users view:</p>
 
-<pre class="prettyprint lang-config">
-RewriteEngine  on
-RewriteRule    ^<strong>/foo</strong>\.html$  <strong>bar</strong>.html  [<strong>R</strong>]
-</pre>
+<pre class="prettyprint lang-config">RewriteEngine  on
+RewriteRule    ^<strong>/foo</strong>\.html$  <strong>bar</strong>.html  [<strong>R</strong>]</pre>
 
 </dd>
 
@@ -150,18 +146,15 @@ RewriteRule    ^<strong>/foo</strong>\.html$  <strong>bar</strong>.html  [<stron
 
 <pre class="prettyprint lang-config">#With mod_rewrite
 RewriteEngine on
-RewriteRule   ^/docs/(.+)  http://new.example.com/docs/$1  [R,L]
-</pre>
+RewriteRule   ^/docs/(.+)  http://new.example.com/docs/$1  [R,L]</pre>
 
 
 <pre class="prettyprint lang-config">#With RedirectMatch
-RedirectMatch ^/docs/(.*) http://new.example.com/docs/$1
-</pre>
+RedirectMatch ^/docs/(.*) http://new.example.com/docs/$1</pre>
 
 
 <pre class="prettyprint lang-config">#With Redirect
-Redirect /docs/ http://new.example.com/docs/
-</pre>
+Redirect /docs/ http://new.example.com/docs/</pre>
 
     </dd>
   </dl>
@@ -192,11 +185,9 @@ Redirect /docs/ http://new.example.com/docs/
       internally leads to the invocation of
       <code>/~quux/foo.cgi</code>.</p>
 
-<pre class="prettyprint lang-config">
-RewriteEngine  on
+<pre class="prettyprint lang-config">RewriteEngine  on
 RewriteBase    /~quux/
-RewriteRule    ^foo\.html$  foo.cgi &nbsp; [H=<strong>cgi-script</strong>]
-</pre>
+RewriteRule    ^foo\.html$  foo.cgi   [H=<strong>cgi-script</strong>]</pre>
 
     </dd>
   </dl>
@@ -224,8 +215,7 @@ RewriteRule    ^foo\.html$  foo.cgi &nbsp; [H=<strong>cgi-script</strong>]
       existence of the new extension. If it exists, we take
       that name, else we rewrite the URL to its original state.</p>
 
-<pre class="prettyprint lang-config">
-#   backward compatibility ruleset for
+<pre class="prettyprint lang-config">#   backward compatibility ruleset for
 #   rewriting document.html to document.php
 #   when and only when document.php exists
 &lt;Directory /var/www/htdocs&gt;
@@ -235,8 +225,7 @@ RewriteRule    ^foo\.html$  foo.cgi &nbsp; [H=<strong>cgi-script</strong>]
     RewriteCond $1.php -f
     RewriteCond $1.html !-f
     RewriteRule ^(.*).html$ $1.php
-&lt;/Directory&gt;
-</pre>
+&lt;/Directory&gt;</pre>
 
     </dd>
 
@@ -284,8 +273,7 @@ but rather uses the <code class="directive"><a href="../mod/mod_alias.html#redir
 directive placed in a virtual host for the non-canonical
 hostname(s).</p>
 
-<pre class="prettyprint lang-config">
-&lt;VirtualHost *:80&gt;
+<pre class="prettyprint lang-config">&lt;VirtualHost *:80&gt;
   ServerName undesired.example.com
   ServerAlias example.com notthis.example.com
 
@@ -294,29 +282,24 @@ hostname(s).</p>
 
 &lt;VirtualHost *:80&gt;
   ServerName www.example.com
-&lt;/VirtualHost&gt;
-</pre>
+&lt;/VirtualHost&gt;</pre>
 
 
 <p>You can alternatively accomplish this using the
 <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code>
 directive:</p>
 
-<pre class="prettyprint lang-config">
-&lt;If "%{HTTP_HOST} != 'www.example.com'"&gt;
+<pre class="prettyprint lang-config">&lt;If "%{HTTP_HOST} != 'www.example.com'"&gt;
 	Redirect / http://www.example.com/
-&lt;/If&gt;
-</pre>
+&lt;/If&gt;</pre>
 
 
 <p>Or, for example, to redirect a portion of your site to HTTPS, you
 might do the following:</p>
 
-<pre class="prettyprint lang-config">
-&lt;If "%{SERVER_PROTOCOL} != 'HTTPS'"&gt;
+<pre class="prettyprint lang-config">&lt;If "%{SERVER_PROTOCOL} != 'HTTPS'"&gt;
 	Redirect /admin/ https://www.example.com/admin/
-&lt;/If&gt;
-</pre>
+&lt;/If&gt;</pre>
 
 
 <p>If, for whatever reason, you still want to use <code>mod_rewrite</code>
@@ -324,20 +307,16 @@ might do the following:</p>
 you might use one of the recipes below.</p>
 
 <p>For sites running on a port other than 80:</p>
-<pre class="prettyprint lang-config">
-RewriteCond %{HTTP_HOST}   !^www\.example\.com [NC]
+<pre class="prettyprint lang-config">RewriteCond %{HTTP_HOST}   !^www\.example\.com [NC]
 RewriteCond %{HTTP_HOST}   !^$
 RewriteCond %{SERVER_PORT} !^80$
-RewriteRule ^/?(.*)         http://www.example.com:%{SERVER_PORT}/$1 [L,R,NE]
-</pre>
+RewriteRule ^/?(.*)         http://www.example.com:%{SERVER_PORT}/$1 [L,R,NE]</pre>
 
 
 <p>And for a site running on port 80</p>
-<pre class="prettyprint lang-config">
-RewriteCond %{HTTP_HOST}   !^www\.example\.com [NC]
+<pre class="prettyprint lang-config">RewriteCond %{HTTP_HOST}   !^www\.example\.com [NC]
 RewriteCond %{HTTP_HOST}   !^$
-RewriteRule ^/?(.*)         http://www.example.com/$1 [L,R,NE]
-</pre>
+RewriteRule ^/?(.*)         http://www.example.com/$1 [L,R,NE]</pre>
 
 
         <p>
@@ -347,11 +326,9 @@ RewriteRule ^/?(.*)         http://www.example.com/$1 [L,R,NE]
         <strong>example.com</strong>, you could use the following
         recipe:</p>
 
-<pre class="prettyprint lang-config">
-RewriteCond %{HTTP_HOST} !^www\. [NC]
+<pre class="prettyprint lang-config">RewriteCond %{HTTP_HOST} !^www\. [NC]
 RewriteCond %{HTTP_HOST} !^$
-RewriteRule ^/?(.*) http://www.%{HTTP_HOST}/$1 [L,R,NE]
-</pre>
+RewriteRule ^/?(.*) http://www.%{HTTP_HOST}/$1 [L,R,NE]</pre>
 
 
     <p>These rulesets will work either in your main server configuration
@@ -382,8 +359,7 @@ RewriteRule ^/?(.*) http://www.%{HTTP_HOST}/$1 [L,R,NE]
       resource, and, if not finding it in either place, will attempt to
       just serve it out of the location requested.</p>
 
-<pre class="prettyprint lang-config">
-RewriteEngine on
+<pre class="prettyprint lang-config">RewriteEngine on
 
 #   first try to find it in dir1/...
 #   ...and if found stop and be happy:
@@ -397,8 +373,7 @@ RewriteRule  ^(.+)  %{DOCUMENT_ROOT}/<strong>dir2</strong>/$1  [L]
 
 #   else go on for other Alias or ScriptAlias directives,
 #   etc.
-RewriteRule   ^  -  [PT]
-</pre>
+RewriteRule   ^  -  [PT]</pre>
 
     </dd>
   </dl>
@@ -427,13 +402,11 @@ RewriteRule   ^  -  [PT]
     <p>We'll use a <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>
     directive to build a list of servers that we wish to use.</p>
 
-<pre class="prettyprint lang-config">
-HostnameLookups on
+<pre class="prettyprint lang-config">HostnameLookups on
 RewriteEngine on
 RewriteMap    multiplex         txt:/path/to/map.mirrors
 RewriteCond  %{REMOTE_HOST}     ([a-z]+)$ [NC]
-RewriteRule   ^/(.*)$  ${multiplex:<strong>%1</strong>|http://www.example.com/}$1  [R,L]
-</pre>
+RewriteRule   ^/(.*)$  ${multiplex:<strong>%1</strong>|http://www.example.com/}$1  [R,L]</pre>
 
 
 <div class="example"><p><code>
@@ -488,16 +461,14 @@ com       http://www.example.com/<br />
       All other browsers receive page <code>foo.32.html</code>.
       This is done with the following ruleset:</p>
 
-<pre class="prettyprint lang-config">
-RewriteCond %{HTTP_USER_AGENT}  ^<strong>Mozilla/3</strong>.*
+<pre class="prettyprint lang-config">RewriteCond %{HTTP_USER_AGENT}  ^<strong>Mozilla/3</strong>.*
 RewriteRule ^foo\.html$         foo.<strong>NS</strong>.html          [<strong>L</strong>]
 
 RewriteCond %{HTTP_USER_AGENT}  ^Lynx/ [OR]
 RewriteCond %{HTTP_USER_AGENT}  ^Mozilla/[12]
 RewriteRule ^foo\.html$         foo.<strong>20</strong>.html          [<strong>L</strong>]
 
-RewriteRule ^foo\.html$         foo.<strong>32</strong>.html          [<strong>L</strong>]
-</pre>
+RewriteRule ^foo\.html$         foo.<strong>32</strong>.html          [<strong>L</strong>]</pre>
 
     </dd>
   </dl>
@@ -538,7 +509,7 @@ RewriteRule ^foo\.html$         foo.<strong>32</strong>.html          [<strong>L
      This should really be accomplished with Redirect or RedirectMatch
      directives:
 
-     <pre class="prettyprint lang-config"> RedirectMatch ^/(puppies|canines)/(.*) /dogs/$2 </pre>
+     <pre class="prettyprint lang-config"> RedirectMatch ^/(puppies|canines)/(.*) /dogs/$2</pre>
 
      </dd>
       </dl>
@@ -568,10 +539,8 @@ using the following ruleset:</p>
       <code>/about/</code>:
       </p>
 
-<pre class="prettyprint lang-config">
-RewriteEngine on
-RewriteRule   ^/$  /about/  [<strong>R</strong>]
-</pre>
+<pre class="prettyprint lang-config">RewriteEngine on
+RewriteRule   ^/$  /about/  [<strong>R</strong>]</pre>
 
 
 <p>Note that this can also be handled using the <code class="directive"><a href="../mod/mod_alias.html#redirectmatch">RedirectMatch</a></code> directive:</p>
@@ -605,26 +574,22 @@ that should go to an existing resource such as an image, or a css file.</dd>
 <dd>
 <p>As of version 2.2.16, you should use the <code class="directive"><a href="../mod/mod_dir.html#fallbackresource">FallbackResource</a></code> directive for this:</p>
 
-<pre class="prettyprint lang-config">
-&lt;Directory /var/www/my_blog&gt;
+<pre class="prettyprint lang-config">&lt;Directory /var/www/my_blog&gt;
   FallbackResource index.php
-&lt;/Directory&gt;
-</pre>
+&lt;/Directory&gt;</pre>
 
 
 <p>However, in earlier versions of Apache, or if your needs are more
 complicated than this, you can use a variation of the following rewrite
 set to accomplish the same thing:</p>
 
-<pre class="prettyprint lang-config">
-&lt;Directory /var/www/my_blog&gt;
+<pre class="prettyprint lang-config">&lt;Directory /var/www/my_blog&gt;
   RewriteBase /my_blog
 
   RewriteCond /var/www/my_blog/%{REQUEST_FILENAME} !-f
   RewriteCond /var/www/my_blog/%{REQUEST_FILENAME} !-d
   RewriteRule ^ index.php [PT]
-&lt;/Directory&gt;
-</pre>
+&lt;/Directory&gt;</pre>
 
 
 <p>If, on the other hand, you wish to pass the requested URI as a query

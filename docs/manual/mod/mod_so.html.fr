@@ -196,9 +196,7 @@ actifs</td></tr>
     <code>module</code> dans le fichier, et est référencé comme <a href="module-dict.html#ModuleIdentifier">Identificateur de
     module</a> dans la documentation des modules. Exemple :</p>
 
-    <pre class="prettyprint lang-config">
-      LoadModule status_module modules/mod_status.so
-    </pre>
+    <pre class="prettyprint lang-config">      LoadModule status_module modules/mod_status.so</pre>
 
 
     <p>charge le module spécifié depuis le sous-répertoire des modules

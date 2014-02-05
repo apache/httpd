@@ -76,9 +76,7 @@ Includes - SSI)</a></li>
       <code>.config</code>, vous pouvez mettre ceci dans le fichier de
       configuration de votre serveur :</p>
 
-      <pre class="prettyprint lang-config">
-        AccessFileName .config
-      </pre>
+      <pre class="prettyprint lang-config">        AccessFileName .config</pre>
 
     </div>
 
@@ -224,11 +222,9 @@ Includes - SSI)</a></li>
 </div>
 
     <div class="example"><h3>Section de votre fichier
-    <code>httpd.conf</code></h3><pre class="prettyprint lang-config">
-&lt;Directory /www/htdocs/example&gt;
+    <code>httpd.conf</code></h3><pre class="prettyprint lang-config">&lt;Directory /www/htdocs/example&gt;
     AddType text/example .exm
-&lt;/Directory&gt;
-    </pre>
+&lt;/Directory&gt;</pre>
 </div>
 
     <p>Cependant, la perte de performances sera moindre si vous
@@ -302,15 +298,13 @@ Includes - SSI)</a></li>
     définition de toute autre option dans les fichiers
     <code>.htaccess</code>, vous pouvez utiliser :</p>
 
-    <pre class="prettyprint lang-config">
-&lt;Directory /www/htdocs&gt;
+    <pre class="prettyprint lang-config">&lt;Directory /www/htdocs&gt;
     AllowOverride All
 &lt;/Directory&gt;
 
 &lt;Location /&gt;
     Options +IncludesNoExec -ExecCGI<br />
-&lt;/Location&gt;
-    </pre>
+&lt;/Location&gt;</pre>
 
 
     <div class="note">Dans cet exemple, on considère que le chemin défini par la
@@ -340,13 +334,11 @@ Includes - SSI)</a></li>
 
     <p>Contenu du fichier <code>.htaccess</code> :</p>
 
-    <pre class="prettyprint lang-config">
-AuthType Basic
+    <pre class="prettyprint lang-config">AuthType Basic
 AuthName "Password Required"
 AuthUserFile /www/passwords/password.file
 AuthGroupFile /www/passwords/group.file
-Require Group admins
-    </pre>
+Require Group admins</pre>
 
 
     <p>Notez que <code>AllowOverride AuthConfig</code> doit être présent
@@ -366,11 +358,9 @@ Includes - SSI)</a></h2>
     placées dans un fichier <code>.htaccess</code> enregistré dans le
     répertoire considéré :</p>
 
-    <pre class="prettyprint lang-config">
-Options +Includes
+    <pre class="prettyprint lang-config">Options +Includes
 AddType text/html shtml
-AddHandler server-parsed shtml
-    </pre>
+AddHandler server-parsed shtml</pre>
 
 
     <p>Notez que <code>AllowOverride Options</code> et <code>AllowOverride
@@ -388,20 +378,16 @@ AddHandler server-parsed shtml
     dans un répertoire particulier. Pour y parvenir, vous pouvez
     utiliser la configuration suivante :</p>
 
-    <pre class="prettyprint lang-config">
-Options +ExecCGI
-AddHandler cgi-script cgi pl
-    </pre>
+    <pre class="prettyprint lang-config">Options +ExecCGI
+AddHandler cgi-script cgi pl</pre>
 
 
     <p>Alternativement, si vous souhaitez que tous les fichiers d'un
     répertoire donné soient considérés comme des programmes CGI, vous
     pouvez utiliser la configuration suivante :</p>
 
-    <pre class="prettyprint lang-config">
-Options +ExecCGI
-SetHandler cgi-script
-    </pre>
+    <pre class="prettyprint lang-config">Options +ExecCGI
+SetHandler cgi-script</pre>
 
 
     <p>Notez que <code>AllowOverride Options</code> et <code>AllowOverride

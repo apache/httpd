@@ -68,11 +68,9 @@ avec la configuration suivante, toutes les requêtes seront redirigées vers
 un autre site si le serveur est démarré en utilisant la ligne de commande :
 <code>httpd -DClosedForNow</code>:</p>
 
-<pre class="prettyprint lang-config">
-&lt;IfDefine ClosedForNow&gt;
+<pre class="prettyprint lang-config">&lt;IfDefine ClosedForNow&gt;
     Redirect / http://otherserver.example.com/
-&lt;/IfDefine&gt;
-</pre>
+&lt;/IfDefine&gt;</pre>
 
 
 <p>Le conteneur <code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;</a></code>
@@ -90,11 +88,9 @@ systématiquement, car vous pouvez perdre ainsi de précieux messages d'erreur
 <p>Dans l'exemple suivant, la directive <code class="directive"><a href="./mod/mod_mime_magic.html#mimemagicfile">MimeMagicFile</a></code> ne s'appliquera que si le
 module <code class="module"><a href="./mod/mod_mime_magic.html">mod_mime_magic</a></code> est disponible.</p>
 
-<pre class="prettyprint lang-config">
-&lt;IfModule mod_mime_magic.c&gt;
+<pre class="prettyprint lang-config">&lt;IfModule mod_mime_magic.c&gt;
     MimeMagicFile conf/magic
-&lt;/IfModule&gt;
-</pre>
+&lt;/IfModule&gt;</pre>
 
 
 <p>Le conteneur
@@ -105,12 +101,10 @@ conteneur a été conçu pour une utilisation dans les suites de tests
 et les grands réseaux qui doivent prendre en compte différentes versions
 et configurations de httpd.</p>
 
-<pre class="prettyprint lang-config">
-&lt;IfVersion &gt;= 2.4&gt;
+<pre class="prettyprint lang-config">&lt;IfVersion &gt;= 2.4&gt;
     # les directives situées ici ne s'appliquent que si la version <br />
     # est supérieure ou égale à 2.4.0.
-&lt;/IfVersion&gt;
-</pre>
+&lt;/IfVersion&gt;</pre>
 
 
 <p><code class="directive"><a href="./mod/core.html#ifdefine">&lt;IfDefine&gt;</a></code>,
@@ -160,11 +154,9 @@ Le même effet peut être obtenu en utilisant les <a href="howto/htaccess.html">fi
 configuration suivante, l'indexation sera activée pour le répertoire
 <code>/var/web/dir1</code> et tous ses sous-répertoires.</p>
 
-<pre class="prettyprint lang-config">
-&lt;Directory /var/web/dir1&gt;
+<pre class="prettyprint lang-config">&lt;Directory /var/web/dir1&gt;
     Options +Indexes
-&lt;/Directory&gt;
-</pre>
+&lt;/Directory&gt;</pre>
 
 
 <p>Les directives contenues dans une section <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code> s'appliquent à tout fichier
@@ -174,11 +166,9 @@ placées dans la section principale du fichier de configuration, vont interdire
 l'accès à tout fichier nommé <code>private.html</code> quel que soit
 l'endroit où il se trouve.</p>
 
-<pre class="prettyprint lang-config">
-&lt;Files private.html&gt;
+<pre class="prettyprint lang-config">&lt;Files private.html&gt;
     Require all denied
-&lt;/Files&gt;
-</pre>
+&lt;/Files&gt;</pre>
 
 
 <p>Pour faire référence à des fichiers qui se trouvent en des points
@@ -192,13 +182,11 @@ l'accès à <code>/var/web/dir1/private.html</code>,
 <code>private.html</code> qui se trouve dans l'arborescence
 <code>/var/web/dir1/</code>.</p>
 
-<pre class="prettyprint lang-config">
-&lt;Directory /var/web/dir1&gt;
+<pre class="prettyprint lang-config">&lt;Directory /var/web/dir1&gt;
     &lt;Files private.html&gt;
         Require all denied
     &lt;/Files&gt;
-&lt;/Directory&gt;
-</pre>
+&lt;/Directory&gt;</pre>
 
 
 
@@ -216,11 +204,9 @@ En particulier, l'interdiction s'appliquera aux requêtes pour :
 <code>http://yoursite.example.com/private/dir/file.html</code> ainsi qu'à
 toute requête commençant par la chaîne de caractères <code>/private</code>.</p>
 
-<pre class="prettyprint lang-config">
-&lt;LocationMatch ^/private&gt;
+<pre class="prettyprint lang-config">&lt;LocationMatch ^/private&gt;
     Require all denied
-&lt;/LocationMatch&gt;
-</pre>
+&lt;/LocationMatch&gt;</pre>
 
 
 <p>Le conteneur <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code>
@@ -231,11 +217,9 @@ particulière vers un gestionnaire interne du serveur HTTP Apache fourni par le m
 Il n'est pas nécessaire de trouver un fichier nommé <code>server-status</code>
 dans le système de fichiers.</p>
 
-<pre class="prettyprint lang-config">
-&lt;Location /server-status&gt;
+<pre class="prettyprint lang-config">&lt;Location /server-status&gt;
     SetHandler server-status
-&lt;/Location&gt;
-</pre>
+&lt;/Location&gt;</pre>
 
 
 
@@ -244,24 +228,18 @@ dans le système de fichiers.</p>
 dans lequel certaines sections ou directives sont évaluées. Pour
 <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code>, on doit
 avoir :</p>
-<pre class="prettyprint lang-config">
-&lt;Location /foo&gt;
+<pre class="prettyprint lang-config">&lt;Location /foo&gt;
 &lt;/Location&gt;
 &lt;Location /foo/bar&gt;
-&lt;/Location&gt;
-</pre>
+&lt;/Location&gt;</pre>
 
 <p>Les directives <code class="directive"><a href="./mod/mod_alias.html#alias">&lt;Alias&gt;</a></code>, quant à elles, sont évaluées vice-versa :</p>
-<pre class="prettyprint lang-config">
-Alias /foo/bar /srv/www/uncommon/bar
-Alias /foo /srv/www/common/foo
-</pre>
+<pre class="prettyprint lang-config">Alias /foo/bar /srv/www/uncommon/bar
+Alias /foo /srv/www/common/foo</pre>
 
 <p>Ceci est aussi vrai pour les directives <code class="directive"><a href="./mod/mod_proxy.html#proxypass">ProxyPass</a></code> :</p>
-<pre class="prettyprint lang-config">
-ProxyPass /special-area http://special.example.com smax=5 max=10
-ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover=On
-</pre>
+<pre class="prettyprint lang-config">ProxyPass /special-area http://special.example.com smax=5 max=10
+ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover=On</pre>
 
 
 
@@ -297,21 +275,17 @@ répertoires utilisateurs à l'aide de caractères de remplacement
 mais sans utiliser
 les expressions rationnelles pourrait ressembler à ceci :</p>
 
-<pre class="prettyprint lang-config">
-&lt;Directory /home/*/public_html&gt;
+<pre class="prettyprint lang-config">&lt;Directory /home/*/public_html&gt;
     Options Indexes
-&lt;/Directory&gt;
-</pre>
+&lt;/Directory&gt;</pre>
 
 
 <p>Avec les conteneurs utilisant les expressions rationnelles,
 on peut interdire l'accès à de nombreux types de fichiers d'images
 simultanément :</p>
-<pre class="prettyprint lang-config">
-+&lt;FilesMatch \.(?i:gif|jpe?g|png)$&gt;
+<pre class="prettyprint lang-config">+&lt;FilesMatch \.(?i:gif|jpe?g|png)$&gt;
     Require all denied
-&lt;/FilesMatch&gt;
-</pre>
+&lt;/FilesMatch&gt;</pre>
 
 
 <p>Les expressions rationnelles contenant des <strong>groupes nommés et
@@ -320,11 +294,9 @@ leur nom en majuscules. Ceci permet de référencer des éléments de
 chemins de fichiers et d'URLs depuis une <a href="expr.html">expression</a> et au sein de modules comme
 <code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code>.</p>
 
-<pre class="prettyprint lang-config">
-&lt;DirectoryMatch ^/var/www/combined/(?&lt;SITENAME&gt;[^/]+)&gt;
+<pre class="prettyprint lang-config">&lt;DirectoryMatch ^/var/www/combined/(?&lt;SITENAME&gt;[^/]+)&gt;
     require ldap-group cn=%{env:SITENAME},ou=combined,o=Example
-&lt;/DirectoryMatch&gt;
-</pre>
+&lt;/DirectoryMatch&gt;</pre>
 
 
 
@@ -335,11 +307,9 @@ permet de modifier la configuration en fonction d'une condition qui peut
 être définie sous la forme d'une expression booléenne. Dans l'exemple
 suivant, l'accès est interdit si l'en-tête HTTP Referer ne commence pas
 par "http://www.example.com/".</p>
-<pre class="prettyprint lang-config">
-&lt;If "!(%{HTTP_REFERER} -strmatch 'http://www.example.com/*')"&gt;
+<pre class="prettyprint lang-config">&lt;If "!(%{HTTP_REFERER} -strmatch 'http://www.example.com/*')"&gt;
     Require all denied
-&lt;/If&gt;
-</pre>
+&lt;/If&gt;</pre>
 
 
 
@@ -359,11 +329,9 @@ l'arborescence du site web (URLs) peuvent correspondre à la même localisation
 du système de fichier, ce qui peut permettre de contourner vos restrictions.
 Par exemple, imaginez la configuration suivante :</p>
 
-<pre class="prettyprint lang-config">
-&lt;Location /dir/&gt;
+<pre class="prettyprint lang-config">&lt;Location /dir/&gt;
     Require all denied
-&lt;/Location&gt;
-</pre>
+&lt;/Location&gt;</pre>
 
 
 <p>Elle fonctionne correctement si la requête appelle
@@ -434,11 +402,9 @@ Par exemple, la configuration suivante
 va interdire l'utilisation du serveur proxy pour accéder au site
 <code>www.example.com</code>.</p>
 
-<pre class="prettyprint lang-config">
-&lt;Proxy http://www.example.com/*&gt;
+<pre class="prettyprint lang-config">&lt;Proxy http://www.example.com/*&gt;
     Require all granted
-&lt;/Proxy&gt;
-</pre>
+&lt;/Proxy&gt;</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -558,8 +524,7 @@ En supposant qu'elles s'appliquent toutes à la requête, les directives de
 cet exemple seront appliquées dans l'ordre suivant : A &gt; B &gt; C &gt; D &gt;
 E.</p>
 
-<pre class="prettyprint lang-config">
-&lt;Location /&gt;
+<pre class="prettyprint lang-config">&lt;Location /&gt;
     E
 &lt;/Location&gt;
 
@@ -579,9 +544,7 @@ E.</p>
 
 &lt;Directory /a/b&gt;
     A
-&lt;/Directory&gt;
-
-</pre>
+&lt;/Directory&gt;</pre>
 
 
 <p>Pour un exemple plus concret, considérez ce qui suit.  Sans tenir compte
@@ -590,8 +553,7 @@ de toute restriction d'accès placée dans les sections <code class="directive"><a
 En d'autres termes, l'ordre de la combinaison des sections est important,
 soyez donc prudent !</p>
 
-<pre class="prettyprint lang-config">
-&lt;Location /&gt;
+<pre class="prettyprint lang-config">&lt;Location /&gt;
     Require all granted
 &lt;/Location&gt;
 
@@ -601,8 +563,7 @@ soyez donc prudent !</p>
         Require all granted
         Require not host badguy.example.com
     &lt;/RequireAll&gt;
-&lt;/Directory&gt;
-</pre>
+&lt;/Directory&gt;</pre>
 
 
 

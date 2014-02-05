@@ -117,11 +117,9 @@ d'utilisateur et mot de passe fournis</td></tr>
     prédéfinis sont transmis à un serveur d'arrière-plan :</p>
 
     <div class="example"><h3>Exemple de transmission d'un nom d'utilisateur et
-    d'un mot de passe prédéfinis</h3><pre class="prettyprint lang-config">
-&lt;Location /demo&gt;
+    d'un mot de passe prédéfinis</h3><pre class="prettyprint lang-config">&lt;Location /demo&gt;
     AuthBasicFake demo demopass
-&lt;/Location&gt;
-    </pre>
+&lt;/Location&gt;</pre>
 </div>
 
     <p>Dans l'exemple suivant, l'adresse email extraite d'un certificat
@@ -130,11 +128,9 @@ d'utilisateur et mot de passe fournis</td></tr>
     FakeBasicAuth, le mot de passe se voit attribué le contenu fixe de
     la chaîne "password".</p>
 
-    <div class="example"><h3>Exemple d'utilisation avec un certificat</h3><pre class="prettyprint lang-config">
-&lt;Location /secure&gt;
+    <div class="example"><h3>Exemple d'utilisation avec un certificat</h3><pre class="prettyprint lang-config">&lt;Location /secure&gt;
     AuthBasicFake %{SSL_CLIENT_S_DN_Email}
-&lt;/Location&gt;
-    </pre>
+&lt;/Location&gt;</pre>
 </div>
 
     <p>Pour compléter l'exemple précédent, il est possible de générer la
@@ -145,18 +141,14 @@ d'utilisateur et mot de passe fournis</td></tr>
     certificats clients.</p>
 
     <div class="example"><h3>Exemple de génération de mot de passe par hashage de
-    l'adresse email</h3><pre class="prettyprint lang-config">
-&lt;Location /secure&gt;
+    l'adresse email</h3><pre class="prettyprint lang-config">&lt;Location /secure&gt;
     AuthBasicFake %{SSL_CLIENT_S_DN_Email} %{sha1:passphrase-%{SSL_CLIENT_S_DN_Email}}
-&lt;/Location&gt;
-    </pre>
+&lt;/Location&gt;</pre>
 </div>
 
-    <div class="example"><h3>Désactivation de l'authentification simulée</h3><pre class="prettyprint lang-config">
-&lt;Location /public&gt;
+    <div class="example"><h3>Désactivation de l'authentification simulée</h3><pre class="prettyprint lang-config">&lt;Location /public&gt;
     AuthBasicFake off
-&lt;/Location&gt;
-    </pre>
+&lt;/Location&gt;</pre>
 </div>
 
 
@@ -182,16 +174,14 @@ cette zone du site web</td></tr>
     implémentant le fournisseur choisi soit bien présent dans le
     serveur.</p>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">
-&lt;Location /secure&gt;
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">&lt;Location /secure&gt;
     AuthType basic
     AuthName "private area"
     AuthBasicProvider  dbm
     AuthDBMType        SDBM
     AuthDBMUserFile    /www/etc/dbmpasswd
     Require            valid-user
-&lt;/Location&gt;
-    </pre>
+&lt;/Location&gt;</pre>
 </div>
     <p>Les fournisseurs sont sollicités dans l'ordre jusqu'à ce que l'un
     d'entre eux trouve une correspondance pour le nom d'utilisateur de

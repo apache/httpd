@@ -68,9 +68,7 @@ client</td></tr>
     </div>
     <p>This is a simple configuration that compresses common text-based content types.</p>
 
-    <div class="example"><h3>Compress only a few types</h3><pre class="prettyprint lang-config">
-      AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript
-      </pre>
+    <div class="example"><h3>Compress only a few types</h3><pre class="prettyprint lang-config">      AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript</pre>
 </div>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -88,10 +86,8 @@ client</td></tr>
       will enable compression for documents in the container where it
       is placed:</p>
 
-      <pre class="prettyprint lang-config">
-SetOutputFilter DEFLATE
-SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip 
-      </pre>
+      <pre class="prettyprint lang-config">SetOutputFilter DEFLATE
+SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip</pre>
 
 
       <p>If you want to restrict the compression to particular MIME types
@@ -99,11 +95,9 @@ SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip
       enabling compression only for the html files of the Apache
       documentation:</p>
 
-      <pre class="prettyprint lang-config">
-&lt;Directory "/your-server-root/manual"&gt;
+      <pre class="prettyprint lang-config">&lt;Directory "/your-server-root/manual"&gt;
     AddOutputFilterByType DEFLATE text/html
-&lt;/Directory&gt;
-      </pre>
+&lt;/Directory&gt;</pre>
 
 
       <div class="note"><h3>Note</h3>
@@ -124,12 +118,10 @@ SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip
       this feature you have to insert the <code>INFLATE</code> filter into
       the outputfilter chain using <code class="directive"><a href="../mod/core.html#setoutputfilter">SetOutputFilter</a></code> or <code class="directive"><a href="../mod/mod_mime.html#addoutputfilter">AddOutputFilter</a></code>, for example:</p>
 
-      <pre class="prettyprint lang-config">
-&lt;Location /dav-area&gt;
+      <pre class="prettyprint lang-config">&lt;Location /dav-area&gt;
     ProxyPass http://example.com/
     SetOutputFilter INFLATE
-&lt;/Location&gt;
-      </pre>
+&lt;/Location&gt;</pre>
 
 
       <p>This Example will uncompress gzip'ed output from example.com, so other
@@ -143,11 +135,9 @@ SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip
       this feature you have to insert the <code>DEFLATE</code> filter into
       the input filter chain using <code class="directive"><a href="../mod/core.html#setinputfilter">SetInputFilter</a></code> or <code class="directive"><a href="../mod/mod_mime.html#addinputfilter">AddInputFilter</a></code>, for example:</p>
 
-      <pre class="prettyprint lang-config">
-&lt;Location /dav-area&gt;
+      <pre class="prettyprint lang-config">&lt;Location /dav-area&gt;
     SetInputFilter DEFLATE
-&lt;/Location&gt;
-      </pre>
+&lt;/Location&gt;</pre>
 
 
       <p>Now if a request contains a <code>Content-Encoding:
@@ -182,9 +172,7 @@ SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip
     in a typical configuration where the addition of the <code>DEFLATE</code>
     filter depends on the <code>User-Agent</code>, you should add:</p>
 
-    <pre class="prettyprint lang-config">
-      Header append Vary User-Agent
-    </pre>
+    <pre class="prettyprint lang-config">      Header append Vary User-Agent</pre>
 
 
     <p>If your decision about compression depends on other information
@@ -192,9 +180,7 @@ SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip
     <code>Vary</code> header to the value <code>*</code>. This prevents
     compliant proxies from caching entirely.</p>
 
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
-      Header set Vary *
-      </pre>
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">      Header set Vary *</pre>
 </div>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -244,12 +230,10 @@ SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip
     the directive. You can use that note for statistical purposes by
     adding the value to your <a href="../logs.html#accesslog">access log</a>.</p>
 
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
-      DeflateFilterNote ratio
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">      DeflateFilterNote ratio
     
       LogFormat '"%r" %b (%{ratio}n) "%{User-agent}i"' deflate
-      CustomLog logs/deflate_log deflate
-      </pre>
+      CustomLog logs/deflate_log deflate</pre>
 </div>
 
     <p>If you want to extract more accurate values from your logs, you
@@ -271,14 +255,12 @@ SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip
 
     <p>Thus you may log it this way:</p>
 
-    <div class="example"><h3>Accurate Logging</h3><pre class="prettyprint lang-config">
-DeflateFilterNote Input instream
+    <div class="example"><h3>Accurate Logging</h3><pre class="prettyprint lang-config">DeflateFilterNote Input instream
 DeflateFilterNote Output outstream
 DeflateFilterNote Ratio ratio
 
 LogFormat '"%r" %{outstream}n/%{instream}n (%{ratio}n%%)' deflate
-CustomLog logs/deflate_log deflate
-</pre>
+CustomLog logs/deflate_log deflate</pre>
 </div>
 
 <h3>See also</h3>

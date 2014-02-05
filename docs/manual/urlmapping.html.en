@@ -129,9 +129,7 @@
     expression</a> based matching and substitution. For
     example,</p>
 
-    <pre class="prettyprint lang-config">
-    ScriptAliasMatch ^/~([a-zA-Z0-9]+)/cgi-bin/(.+)   /home/$1/cgi-bin/$2
-    </pre>
+    <pre class="prettyprint lang-config">    ScriptAliasMatch ^/~([a-zA-Z0-9]+)/cgi-bin/(.+)   /home/$1/cgi-bin/$2</pre>
 
 
     <p>will map a request to
@@ -178,9 +176,7 @@
     <code>/home/user/public_html/file.html</code>, use the following
     <code>AliasMatch</code> directive:</p>
 
-    <pre class="prettyprint lang-config">
-    AliasMatch ^/upages/([a-zA-Z0-9]+)(/(.*))?$   /home/$1/public_html/$3
-    </pre>
+    <pre class="prettyprint lang-config">    AliasMatch ^/upages/([a-zA-Z0-9]+)(/(.*))?$   /home/$1/public_html/$3</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -198,9 +194,7 @@
     to the new directory <code>/bar/</code>, you can instruct clients
     to request the content at the new location as follows:</p>
 
-    <pre class="prettyprint lang-config">
-    Redirect permanent /foo/   http://www.example.com/bar/
-    </pre>
+    <pre class="prettyprint lang-config">    Redirect permanent /foo/   http://www.example.com/bar/</pre>
 
 
     <p>This will redirect any URL-Path starting in
@@ -214,17 +208,13 @@
     for the site home page to a different site, but leave all other
     requests alone, use the following configuration:</p>
 
-    <pre class="prettyprint lang-config">
-    RedirectMatch permanent ^/$    http://www.example.com/startpage.html
-    </pre>
+    <pre class="prettyprint lang-config">    RedirectMatch permanent ^/$    http://www.example.com/startpage.html</pre>
 
 
     <p>Alternatively, to temporarily redirect all pages on one site
     to a particular page on another site, use the following:</p>
 
-    <pre class="prettyprint lang-config">
-    RedirectMatch temp .*  http://othersite.example.com/startpage.html
-    </pre>
+    <pre class="prettyprint lang-config">    RedirectMatch temp .*  http://othersite.example.com/startpage.html</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -243,12 +233,10 @@ the <code>/bar/</code> directory on <code>internal.example.com</code>
 and returns them to the client as if they were from the local
 server.</p>
 
-<pre class="prettyprint lang-config">
-ProxyPass /foo/ http://internal.example.com/bar/<br />
+<pre class="prettyprint lang-config">ProxyPass /foo/ http://internal.example.com/bar/<br />
 ProxyPassReverse /foo/ http://internal.example.com/bar/<br />
 ProxyPassReverseCookieDomain internal.example.com public.example.com<br />
-ProxyPassReverseCookiePath /foo/ /bar/
-</pre>
+ProxyPassReverseCookiePath /foo/ /bar/</pre>
 
 
 <p>The <code class="directive"><a href="./mod/mod_proxy.html#proxypass">ProxyPass</a></code> configures
@@ -268,9 +256,7 @@ breaking out of the proxy server and requesting directly from
 content) in a page as it is being served to the client using
 <code class="module"><a href="./mod/mod_substitute.html">mod_substitute</a></code>.</p>
 
-<pre class="prettyprint lang-config">
-Substitute s/internal\.example\.com/www.example.com/i
-</pre>
+<pre class="prettyprint lang-config">Substitute s/internal\.example\.com/www.example.com/i</pre>
 
 
 <p>For more sophisticated rewriting of links in HTML and XHTML, the 

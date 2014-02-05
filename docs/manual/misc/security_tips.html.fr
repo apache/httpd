@@ -343,11 +343,9 @@
 
     <p>Ajoutez dans le fichier de configuration du serveur</p>
 
-    <pre class="prettyprint lang-config">
-&lt;Directory /&gt;
+    <pre class="prettyprint lang-config">&lt;Directory /&gt;
     AllowOverride None
-&lt;/Directory&gt;
-    </pre>
+&lt;/Directory&gt;</pre>
 
 
     <p>Ceci interdit l'utilisation des fichiers <code>.htaccess</code> dans
@@ -377,11 +375,9 @@
     fichiers. Pour l'éviter, ajoutez le bloc suivant à la configuration
     de votre serveur :</p>
 
-    <pre class="prettyprint lang-config">
-&lt;Directory /&gt;
+    <pre class="prettyprint lang-config">&lt;Directory /&gt;
     Require all denied
-&lt;/Directory&gt;
-    </pre>
+&lt;/Directory&gt;</pre>
 
 
     <p>ceci va interdire l'accès par défaut à tous les fichiers du système de
@@ -389,14 +385,12 @@
     <code class="directive"><a href="../mod/core.html#directory">Directory</a></code> appropriés correspondant
     aux répertoires auxquels vous voulez autorisez l'accès. Par exemple,</p>
 
-    <pre class="prettyprint lang-config">
-&lt;Directory /usr/users/*/public_html&gt;
+    <pre class="prettyprint lang-config">&lt;Directory /usr/users/*/public_html&gt;
     Require all granted
 &lt;/Directory&gt;
 &lt;Directory /usr/local/httpd&gt;
     Require all granted
-&lt;/Directory&gt;
-    </pre>
+&lt;/Directory&gt;</pre>
 
 
     <p>Portez une attention particulière aux interactions entre les directives
@@ -459,11 +453,9 @@
     qui signifie que vous avez probablement mis en commentaire ce qui suit dans
     le fichier de configuration de votre serveur :</p>
 
-    <pre class="prettyprint lang-config">
-&lt;Files ".ht*"&gt;
+    <pre class="prettyprint lang-config">&lt;Files ".ht*"&gt;
     Require all denied
-&lt;/Files&gt;
-    </pre>
+&lt;/Files&gt;</pre>
 
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

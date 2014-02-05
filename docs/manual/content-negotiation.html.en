@@ -518,10 +518,8 @@ Negotiation</a></li>
     try to select a matching variant. If there's no such variant,
     the normal negotiation process applies.</p>
 
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
-SetEnvIf Cookie "language=(.+)" prefer-language=$1
-Header append Vary cookie
-    </pre>
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SetEnvIf Cookie "language=(.+)" prefer-language=$1
+Header append Vary cookie</pre>
 </div>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>

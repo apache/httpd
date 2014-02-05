@@ -238,11 +238,9 @@
       というファイルに保存し、それを <code>cgi-bin</code>
       ディレクトリに置いてください。</p>
 
-      <pre class="prettyprint lang-perl">
-#!/usr/bin/perl<br />
+      <pre class="prettyprint lang-perl">#!/usr/bin/perl<br />
 print "Content-type: text/html\n\n";<br />
-print "Hello, World.";
-      </pre>
+print "Hello, World.";</pre>
 
 
       <p>Perl に精通していなくても、
@@ -460,13 +458,11 @@ print "Hello, World.";
       <a href="../env.html">あなた自身の環境変数を加える</a>ための、
       多くの異なる方法を用意してします。</p>
 
-      <pre class="prettyprint lang-perl">
-#!/usr/bin/perl
+      <pre class="prettyprint lang-perl">#!/usr/bin/perl
 print "Content-type: text/html\n\n";
 foreach $key (keys %ENV) {
   print "$key --&gt; $ENV{$key}&lt;br&gt;";
-}
-      </pre>
+}</pre>
 
     
 

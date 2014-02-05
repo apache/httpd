@@ -85,8 +85,7 @@ condensés</a></h2>
     <p>On peut créer les fichiers utilisateur appropriés (au format
     texte) à l'aide de l'outil <code class="program"><a href="../programs/htdigest.html">htdigest</a></code>.</p>
 
-    <div class="example"><h3>Exemple :</h3><pre class="prettyprint lang-config">
-&lt;Location /private/&gt;
+    <div class="example"><h3>Exemple :</h3><pre class="prettyprint lang-config">&lt;Location /private/&gt;
     AuthType Digest
     AuthName "private area"
     AuthDigestDomain /private/ http://mirror.my.dom/private2/
@@ -94,8 +93,7 @@ condensés</a></h2>
     AuthDigestProvider file
     AuthUserFile /web/auth/.digest_pw
     Require valid-user
-&lt;/Location&gt;
-      </pre>
+&lt;/Location&gt;</pre>
 </div>
 
     <div class="note"><h3>Note</h3>
@@ -315,11 +313,9 @@ les informations à propos des clients</td></tr>
     MégaOctets. Par exemple, les directives qui suivent sont toutes
     équivalentes :</p>
 
-    <pre class="prettyprint lang-config">
-AuthDigestShmemSize 1048576
+    <pre class="prettyprint lang-config">AuthDigestShmemSize 1048576
 AuthDigestShmemSize 1024K
-AuthDigestShmemSize 1M
-    </pre>
+AuthDigestShmemSize 1M</pre>
 
 
 </div>

@@ -178,27 +178,21 @@ listens to</td></tr>
     <p>For example, to make the server accept connections on both
     port 80 and port 8000, use:</p>
 
-    <pre class="prettyprint lang-config">
-Listen 80
-Listen 8000
-    </pre>
+    <pre class="prettyprint lang-config">Listen 80
+Listen 8000</pre>
 
 
     <p>To make the server accept connections on two specified
     interfaces and port numbers, use </p>
 
-    <pre class="prettyprint lang-config">
-Listen 192.170.2.1:80
-Listen 192.170.2.5:8000
-    </pre>
+    <pre class="prettyprint lang-config">Listen 192.170.2.1:80
+Listen 192.170.2.5:8000</pre>
 
 
     <p>IPv6 addresses must be surrounded in square brackets, as in the
     following example:</p>
 
-    <pre class="prettyprint lang-config">
-      Listen [2001:db8::a00:20ff:fea7:ccea]:80
-    </pre>
+    <pre class="prettyprint lang-config">      Listen [2001:db8::a00:20ff:fea7:ccea]:80</pre>
 
 
     <p>The optional <var>protocol</var> argument is not required for most
@@ -211,9 +205,7 @@ Listen 192.170.2.5:8000
     <p>You only need to set the protocol if you are running on non-standard
        ports.  For example, running an <code>https</code> site on port 8443:</p>
 
-    <pre class="prettyprint lang-config">
-      Listen 192.170.2.1:8443 https
-    </pre>
+    <pre class="prettyprint lang-config">      Listen 192.170.2.1:8443 https</pre>
 
 
     <div class="note"><h3>Error condition</h3>
@@ -436,9 +428,7 @@ of the daemon</td></tr>
     filename is not absolute then it is assumed to be relative to the
     <code class="directive"><a href="../mod/core.html#defaultruntimedir">DefaultRuntimeDir</a></code>.</p>
 
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
-      PidFile /var/run/apache.pid
-      </pre>
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">      PidFile /var/run/apache.pid</pre>
 </div>
 
     <p>It is often useful to be able to send the server a signal,
@@ -496,9 +486,7 @@ the child processes</td></tr>
     will be relative to the value of 
     <code class="directive"><a href="../mod/core.html#defaultruntimedir">DefaultRuntimeDir</a></code>.</p>
 
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
-      ScoreBoardFile /var/run/apache_runtime_status
-      </pre>
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">      ScoreBoardFile /var/run/apache_runtime_status</pre>
 </div>
 
     <p>File-based shared memory is useful for third-party applications
