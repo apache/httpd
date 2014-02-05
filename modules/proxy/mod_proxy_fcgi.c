@@ -516,7 +516,7 @@ static apr_status_t dispatch(proxy_conn_rec *conn, proxy_dir_conf *conf,
 
             if (version != AP_FCGI_VERSION_1) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01068)
-                              "Got bogus version %d", (int) header.version);
+                              "Got bogus version %d", (int)version);
                 rv = APR_EINVAL;
                 break;
             }
