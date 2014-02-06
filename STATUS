@@ -188,7 +188,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                     https://svn.apache.org/r1555463
                     https://svn.apache.org/r1555467
                     https://svn.apache.org/r1563417
-     2.4.x patch: https://people.apache.org/~kbrand/mod_ssl-2.4.x-certkeyfile-v2.diff
+                    https://svn.apache.org/r1564760
+                    https://svn.apache.org/r1565081
+     2.4.x patch: https://people.apache.org/~kbrand/mod_ssl-2.4.x-certkeyfile-v3.diff
      +1: kbrand
 
    * mod_rewrite: Add %{CONN_REMOTE_ADDR} to mod_rewrite PR56094
