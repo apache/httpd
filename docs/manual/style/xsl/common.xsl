@@ -650,13 +650,9 @@ if (typeof(prettyPrint) !== 'undefined') {
         </xsl:choose>
     </xsl:variable>
 
-    <xsl:variable name="out">
-        <xsl:apply-templates select="node()[position() &gt;= $from and position() &lt;= $to]" />
-    </xsl:variable>
-
     <xsl:if test="$from = 2">
         <xsl:choose>
-        <xsl:when test="contains($out, '&#x0a;')">
+        <xsl:when test="text()[contains(., '&#x0a;')]">
             <xsl:call-template name="pre-ltrim">
                 <xsl:with-param name="string"
                     select="node()[position() = 1 and self::text()]" />
