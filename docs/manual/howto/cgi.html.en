@@ -64,9 +64,7 @@
     directive has not been commented out.  A correctly configured directive
     may look like this:
 
-    <pre class="prettyprint lang-config">
-      LoadModule cgi_module modules/mod_cgi.so
-    </pre>
+    <pre class="prettyprint lang-config">LoadModule cgi_module modules/mod_cgi.so</pre>
 </div>
 
     <h3><a name="scriptalias" id="scriptalias">ScriptAlias</a></h3>

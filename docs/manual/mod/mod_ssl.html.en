@@ -537,16 +537,14 @@ authenticate, i.e. for SSL only the Anonymous Diffie-Hellman ciphers. Next,
 use ciphers using RC4 and RSA. Next include the high, medium and then the low
 security ciphers. Finally <em>pull</em> all SSLv2 and export ciphers to the
 end of the list.</p>
-<div class="example"><pre>
-$ openssl ciphers -v 'ALL:!ADH:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP'
+<div class="example"><pre>$ openssl ciphers -v 'ALL:!ADH:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP'
 NULL-SHA                SSLv3 Kx=RSA      Au=RSA  Enc=None      Mac=SHA1
 NULL-MD5                SSLv3 Kx=RSA      Au=RSA  Enc=None      Mac=MD5
 EDH-RSA-DES-CBC3-SHA    SSLv3 Kx=DH       Au=RSA  Enc=3DES(168) Mac=SHA1
 ...                     ...               ...     ...           ...
 EXP-RC4-MD5             SSLv3 Kx=RSA(512) Au=RSA  Enc=RC4(40)   Mac=MD5  export
 EXP-RC2-CBC-MD5         SSLv2 Kx=RSA(512) Au=RSA  Enc=RC2(40)   Mac=MD5  export
-EXP-RC4-MD5             SSLv2 Kx=RSA(512) Au=RSA  Enc=RC4(40)   Mac=MD5  export
-</pre></div>
+EXP-RC4-MD5             SSLv2 Kx=RSA(512) Au=RSA  Enc=RC4(40)   Mac=MD5  export</pre></div>
 <p>The complete list of particular RSA &amp; DH ciphers for SSL is given in <a href="#table2">Table 2</a>.</p>
 <div class="example"><h3>Example</h3><p><code>
 SSLCipherSuite RSA:!EXP:!NULL:+HIGH:+MEDIUM:-LOW
@@ -1585,8 +1583,7 @@ containing any number of access checks.</p>
 The <em>expression</em> must match the following syntax (given as a BNF
 grammar notation):</p>
 <blockquote>
-<pre>
-expr     ::= "<strong>true</strong>" | "<strong>false</strong>"
+<pre>expr     ::= "<strong>true</strong>" | "<strong>false</strong>"
            | "<strong>!</strong>" expr
            | expr "<strong>&amp;&amp;</strong>" expr
            | expr "<strong>||</strong>" expr
@@ -1615,8 +1612,7 @@ word     ::= digit
 digit    ::= [0-9]+
 cstring  ::= "..."
 variable ::= "<strong>%{</strong>" varname "<strong>}</strong>"
-function ::= funcname "<strong>(</strong>" funcargs "<strong>)</strong>"
-</pre>
+function ::= funcname "<strong>(</strong>" funcargs "<strong>)</strong>"</pre>
 </blockquote>
 <p>while for <code>varname</code> any variable from <a href="#table3">Table 3</a> can be used. Finally for
 <code>funcname</code> the following functions are available:</p>
@@ -1649,8 +1645,7 @@ checked, until a match is found.
 </p>
 
 <p><em>Standard CGI/1.0 and Apache variables:</em></p>
-<pre>
-HTTP_USER_AGENT        PATH_INFO             AUTH_TYPE
+<pre>HTTP_USER_AGENT        PATH_INFO             AUTH_TYPE
 HTTP_REFERER           QUERY_STRING          SERVER_SOFTWARE
 HTTP_COOKIE            REMOTE_HOST           API_VERSION
 HTTP_FORWARDED         REMOTE_IDENT          TIME_YEAR
@@ -1662,11 +1657,9 @@ THE_REQUEST            SERVER_PORT           TIME_SEC
 REQUEST_METHOD         SERVER_PROTOCOL       TIME_WDAY
 REQUEST_SCHEME         REMOTE_ADDR           TIME
 REQUEST_URI            REMOTE_USER           ENV:<strong>variablename</strong>
-REQUEST_FILENAME
-</pre>
+REQUEST_FILENAME</pre>
 <p><em>SSL-related variables:</em></p>
-<pre>
-HTTPS                  SSL_CLIENT_M_VERSION   SSL_SERVER_M_VERSION
+<pre>HTTPS                  SSL_CLIENT_M_VERSION   SSL_SERVER_M_VERSION
                        SSL_CLIENT_M_SERIAL    SSL_SERVER_M_SERIAL
 SSL_PROTOCOL           SSL_CLIENT_V_START     SSL_SERVER_V_START
 SSL_SESSION_ID         SSL_CLIENT_V_END       SSL_SERVER_V_END
@@ -1702,8 +1695,7 @@ SSL_VERSION_INTERFACE  SSL_CLIENT_S_DN_OU     SSL_SERVER_S_DN_OU
                        SSL_CLIENT_A_KEY       SSL_SERVER_A_KEY
                        SSL_CLIENT_CERT        SSL_SERVER_CERT
                        SSL_CLIENT_CERT_CHAIN_<strong>n</strong>
-                       SSL_CLIENT_VERIFY      SSL_TLS_SNI
-</pre>
+                       SSL_CLIENT_VERIFY      SSL_TLS_SNI</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

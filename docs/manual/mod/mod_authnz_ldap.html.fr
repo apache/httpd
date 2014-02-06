@@ -648,8 +648,7 @@ connexion</a></h2>
     l'authentification LDAP consiste à ajouter les directives suivantes
     à <em>chaque</em> fichier <code>.htaccess</code> qui sera créé dans
     le site web :</p>
-<div class="example"><pre>
-AuthLDAPURL            "l'url"
+<div class="example"><pre>AuthLDAPURL            "l'url"
 AuthGroupFile <em>mon-fichier-de-groupes</em>
 Require group <em>mon-fichier-de-groupes</em>
 </pre></div>
@@ -793,16 +792,14 @@ serveur HTTP Apache.</td></tr>
     commande correspondante est exécutée, et c'est la première ligne qui
     sera renvoyée par la commande sur la sortie standard qui sera
     utilisée comme mot de passe.</p>
-<div class="example"><pre>
-# Mot de passe spécifié directement
+<div class="example"><pre># Mot de passe spécifié directement
 AuthLDAPBindPassword secret
 
 # Exécution de /path/to/program pour obtenir le mot de passe
 AuthLDAPBindPassword exec:/path/to/program
 
 # Exécution de /path/to/program avec un argument pour obtenir le mot de passe
-AuthLDAPBindPassword "exec:/path/to/otherProgram argument1"
-</pre></div>
+AuthLDAPBindPassword "exec:/path/to/otherProgram argument1"</pre></div>
 
 
 </div>

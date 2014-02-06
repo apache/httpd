@@ -133,8 +133,7 @@
       in which it matters: If you are using <a href="howto/ssi.html">Server 
       Side Includes</a>;</p>
 
-      <div class="example"><pre>
-&lt;!-- The following include can be cached --&gt;
+      <div class="example"><pre>&lt;!-- The following include can be cached --&gt;
 &lt;!--#include virtual="/footer.html" --&gt; 
 
 &lt;!-- The following include can not be cached --&gt;
@@ -466,8 +465,7 @@ Vary: negotiate,accept-language,accept-charset
       the difference in the time it takes to read a file for the first time
       and the second time;</p>
 
-      <div class="example"><pre>
-colm@coroebus:~$ time cat testfile &gt; /dev/null
+      <div class="example"><pre>colm@coroebus:~$ time cat testfile &gt; /dev/null
 real    0m0.065s
 user    0m0.000s
 sys     0m0.001s
@@ -534,8 +532,7 @@ sys     0m0.000s</pre></div>
 
       <p>Caching of this type is enabled via;</p>
 
-      <div class="example"><pre>
-# Enable memory caching
+      <div class="example"><pre># Enable memory caching
 CacheEnable mem /
 
 # Limit the size of the cache to 1 Megabyte
@@ -555,8 +552,7 @@ MCacheSize 1024</pre></div>
 
     <p>Typically the module will be configured as so;</p>
 
-    <div class="example"><pre>
-CacheRoot   /var/cache/apache/
+    <div class="example"><pre>CacheRoot   /var/cache/apache/
 CacheEnable disk /
 CacheDirLevels 2
 CacheDirLength 1</pre></div>

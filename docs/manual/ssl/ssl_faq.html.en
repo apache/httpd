@@ -327,10 +327,8 @@ Certificate for testing purposes?</a></h3>
 			-keyout server.key</strong></code><br />
 	These can be used as follows in your <code>httpd.conf</code> 
 	file:
-        <pre>
-             SSLCertificateFile    /path/to/this/server.crt
-             SSLCertificateKeyFile /path/to/this/server.key
-	</pre>
+        <pre>             SSLCertificateFile    /path/to/this/server.crt
+             SSLCertificateKeyFile /path/to/this/server.key</pre>
     </li>
     <li>It is important that you are aware that this 
 	<code>server.key</code> does <em>not</em> have any passphrase.
@@ -439,10 +437,8 @@ Certificate for testing purposes?</a></h3>
     <li>You should now have two files: <code>server.key</code> and
     <code>server.crt</code>. These can be used as follows in your
     <code>httpd.conf</code> file:
-       <pre>
-       SSLCertificateFile    /path/to/this/server.crt
-       SSLCertificateKeyFile /path/to/this/server.key
-       </pre>
+       <pre>       SSLCertificateFile    /path/to/this/server.crt
+       SSLCertificateKeyFile /path/to/this/server.key</pre>
        The <code>server.csr</code> file is no longer needed.
     </li>
 
