@@ -1346,7 +1346,7 @@ static apr_status_t ssl_init_server_ctx(server_rec *s,
         while (ret) {
             cert = SSL_CTX_get0_certificate(sc->server->ssl_ctx);
             if (!cert || !ssl_stapling_init_cert(s, sc->server, cert)) {
-                ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO()
+                ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(02604)
                              "Unable to configure certificate %s:%d "
                              "for stapling", sc->vhost_id, i);
             }
