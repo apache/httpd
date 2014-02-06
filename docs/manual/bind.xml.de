@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.en.xsl"?>
-<!-- English Revision: 421100:654723 (outdated) -->
+<!-- English Revision: 654723 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -49,7 +49,7 @@
     <p>Beim Start bindet sich der Apache an bestimmte Adressen und Ports
       der lokalen Maschine und wartet auf eingehende Anfragen.
       Standardm&auml;&szlig;ig lauscht er an allen Adressen des Systems.
-      Es muss ihm jedoch mitgeteilt werden, an bestimmten Ports zu lauschen
+      Es kann ihm jedoch mitgeteilt werden, an bestimmten Ports zu lauschen
       oder nur an ausgew&auml;hlten Adressen, bzw. einer Kombination aus
       beidem. Dies wird oft mit der Funktionalit&auml;t virtueller Hosts
       kombiniert, die bestimmt, wie der Apache auf verschiedene IP-Adressen,
@@ -68,16 +68,17 @@
       soll. Der Server wird dann auf Anfragen an jeder der abgeh&ouml;rten
       Adressen und Ports antworten.</p>
 
-    <p>Um beispielsweise den Server zu veranlassen, sowohl an Port 80, als
-      auch an Port 8000 Verbindungen zu akzeptieren, geben Sie an:</p>
+    <p>Um beispielsweise den Server zu veranlassen, auf allen
+    Netzwerkinterfaces sowohl an Port 80, als auch an Port 8000
+    Verbindungen zu akzeptieren, geben Sie an:</p>
 
     <example>
       Listen 80<br />
       Listen 8000
     </example>
 
-    <p>Um den Server Verbindungen an zwei bestimmten
-      Netzwerkinterfaces und Ports zu akzeptieren zu lassen, geben Sie an:</p>
+    <p>Um den Server Verbindungen auf Port 80 eines Interfaces und auf
+    Port 8000 eines anderen akzeptieren zu lassen, geben Sie an:</p>
       
     <example>
       Listen 192.0.2.1:80<br />
