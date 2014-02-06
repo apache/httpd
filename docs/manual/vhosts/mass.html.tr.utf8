@@ -53,8 +53,7 @@
       <code>&lt;VirtualHost&gt;</code> bölümü içereceği zaman yapılacaklar ile
       ilgilidir.</p>
 
-<pre class="prettyprint lang-config">
-&lt;VirtualHost 111.22.33.44&gt;
+<pre class="prettyprint lang-config">&lt;VirtualHost 111.22.33.44&gt;
     ServerName                 musteri-1.example.com
     DocumentRoot        /siteler/musteri-1/belgeler
     ScriptAlias  /cgi-bin/  /siteler/musteri-1/cgi-bin
@@ -70,8 +69,7 @@
     ServerName                 musteri-N.example.com
     DocumentRoot        /siteler/musteri-N/belgeler
     ScriptAlias  /cgi-bin/  /siteler/musteri-N/cgi-bin
-&lt;/VirtualHost&gt;
-</pre>
+&lt;/VirtualHost&gt;</pre>
 
 
     <p>İsteğimiz çok sayıda <code>&lt;VirtualHost&gt;</code> bölümünü devingen
@@ -150,8 +148,7 @@
       düzenlemesinin <code>mod_vhost_alias</code> kullanarak gerçekleştirilmiş
       halini içeren <code>httpd.conf</code> bölümü aşağıdadır.</p>
 
-<pre class="prettyprint lang-config">
-# sunucu ismini Host: başlığından elde edelim
+<pre class="prettyprint lang-config"># sunucu ismini Host: başlığından elde edelim
 UseCanonicalName Off
 
 # Bu günlükleme biçiminde split-logfile aracı kullanılarak
@@ -162,8 +159,7 @@ CustomLog logs/access_log vcommon
 # istekleri yerine getirmek için kullanılacak
 # dosya isimlerine sunucu ismini ekleyelim
 VirtualDocumentRoot /siteler/%0/belgeler
-VirtualScriptAlias  /siteler/%0/cgi-bin
-</pre>
+VirtualScriptAlias  /siteler/%0/cgi-bin</pre>
 
 
     <p>Bu yapılandırmayı IP’ye dayalı sanal konaklar için kullanmak isterseniz
@@ -188,8 +184,7 @@ VirtualScriptAlias  /siteler/%0/cgi-bin
       sanal konak için bir tane değil hepsi için bir tane <code>cgi-bin</code>
       olacaktır.</p>
 
-    <pre class="prettyprint lang-config">
-UseCanonicalName Off
+    <pre class="prettyprint lang-config">UseCanonicalName Off
 
 LogFormat "%V %h %l %u %t \"%r\" %s %b" vcommon
 CustomLog logs/access_log vcommon
@@ -198,8 +193,7 @@ CustomLog logs/access_log vcommon
 VirtualDocumentRoot /home/%2/www
 
 # ortak cgi-bin dizini
-ScriptAlias  /cgi-bin/  /siteler/std-cgi/
-    </pre>
+ScriptAlias  /cgi-bin/  /siteler/std-cgi/</pre>
 
 
     <p><code class="module"><a href="../mod/mod_vhost_alias.html">mod_vhost_alias</a></code> belgesinde daha karmaşık
@@ -216,8 +210,7 @@ ScriptAlias  /cgi-bin/  /siteler/std-cgi/
       başka bir IP adresiniz olsun. Her biri için ayrı ayrı sanal konaklar
       ayarlamak yerine aşağıdaki gibi bir yapılandırma kullanabilirsiniz:</p>
 
-<pre class="prettyprint lang-config">
-UseCanonicalName Off
+<pre class="prettyprint lang-config">UseCanonicalName Off
 
 LogFormat "%V %h %l %u %t \"%r\" %s %b" vcommon
 
@@ -247,8 +240,7 @@ LogFormat "%V %h %l %u %t \"%r\" %s %b" vcommon
 
     VirtualDocumentRoot /siteler/bireysel/%0/belgeler
     ScriptAlias         /cgi-bin/ /siteler/std-cgi/
-&lt;/VirtualHost&gt;
-</pre>
+&lt;/VirtualHost&gt;</pre>
 
 
     <div class="note"><h3>Bilginize</h3>
@@ -272,8 +264,7 @@ LogFormat "%V %h %l %u %t \"%r\" %s %b" vcommon
       adreslerine göre düzenlenebilir. Günlük kayıtları da IP adreslerine göre
       ayrıştırılacak şekilde ayarlanabilir.</p>
 
-<pre class="prettyprint lang-config">
-# Sunucu ismini IP adresinden ters DNS sorgusu ile elde edelim
+<pre class="prettyprint lang-config"># Sunucu ismini IP adresinden ters DNS sorgusu ile elde edelim
 UseCanonicalName DNS
 
 # Günlük kayıtları IP adreslerine göre ayrıştırılabilsin
@@ -282,8 +273,7 @@ CustomLog logs/access_log vcommon
 
 # dosya isimleri IP adreslerini içersin
 VirtualDocumentRootIP /siteler/%0/belgeler
-VirtualScriptAliasIP  /siteler/%0/cgi-bin
-</pre>
+VirtualScriptAliasIP  /siteler/%0/cgi-bin</pre>
 
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

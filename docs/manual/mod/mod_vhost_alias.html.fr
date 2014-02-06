@@ -51,10 +51,8 @@ masse</td></tr>
       /cgi-bin/script.pl</code> à <code>
       /usr/local/apache2/cgi-bin/script.pl</code> dans tous les cas :</p>
 
-      <pre class="prettyprint lang-config">
-ScriptAlias /cgi-bin/ /usr/local/apache2/cgi-bin/
-VirtualScriptAlias /never/found/%0/cgi-bin/
-      </pre>
+      <pre class="prettyprint lang-config">ScriptAlias /cgi-bin/ /usr/local/apache2/cgi-bin/
+VirtualScriptAlias /never/found/%0/cgi-bin/</pre>
 
     </div>
 </div>
@@ -152,10 +150,8 @@ l'hébergement virtuel de masse</a></li>
     directives suivantes dans le fichier de configuration de votre
     serveur :</p>
 
-    <pre class="prettyprint lang-config">
-UseCanonicalName    Off
-VirtualDocumentRoot /usr/local/apache/vhosts/%0
-    </pre>
+    <pre class="prettyprint lang-config">UseCanonicalName    Off
+VirtualDocumentRoot /usr/local/apache/vhosts/%0</pre>
 
 
     <p>Une requête pour
@@ -169,10 +165,8 @@ VirtualDocumentRoot /usr/local/apache/vhosts/%0
     <code>vhosts</code>. Pour ce faire, insérez les lignes suivantes
     dans votre fichier de configuration :</p>
 
-    <pre class="prettyprint lang-config">
-UseCanonicalName    Off
-VirtualDocumentRoot /usr/local/apache/vhosts/%3+/%2.1/%2.2/%2.3/%2
-    </pre>
+    <pre class="prettyprint lang-config">UseCanonicalName    Off
+VirtualDocumentRoot /usr/local/apache/vhosts/%3+/%2.1/%2.2/%2.3/%2</pre>
 
 
     <p>Une requête pour
@@ -184,9 +178,7 @@ VirtualDocumentRoot /usr/local/apache/vhosts/%3+/%2.1/%2.2/%2.3/%2
     partant de la fin d'un composant du nom, comme dans l'exemple
     suivant :</p>
 
-<pre class="prettyprint lang-config">
-    VirtualDocumentRoot /usr/local/apache/vhosts/%3+/%2.-1/%2.-2/%2.-3/%2
-</pre>
+<pre class="prettyprint lang-config">VirtualDocumentRoot /usr/local/apache/vhosts/%3+/%2.-1/%2.-2/%2.-3/%2</pre>
 
 
     <p>La requête précédente concernerait alors
@@ -194,9 +186,7 @@ VirtualDocumentRoot /usr/local/apache/vhosts/%3+/%2.1/%2.2/%2.3/%2
 
     <p>Vous pouvez également utiliser : </p>
 
-<pre class="prettyprint lang-config">
-    VirtualDocumentRoot /usr/local/apache/vhosts/%3+/%2.1/%2.2/%2.3/%2.4+
-</pre>
+<pre class="prettyprint lang-config">VirtualDocumentRoot /usr/local/apache/vhosts/%3+/%2.1/%2.2/%2.3/%2.4+</pre>
 
 
     <p>La requête précédente concernerait alors
@@ -219,9 +209,7 @@ VirtualDocumentRoot /usr/local/apache/vhosts/%3+/%2.1/%2.2/%2.3/%2
     sous-domaines de premier, second et troisième niveau au même
     répertoire :
 </p>
-<pre class="prettyprint lang-config">
-    VirtualDocumentRoot "/usr/local/apache/vhosts/%-2.0.%-1.0"
-</pre>
+<pre class="prettyprint lang-config">VirtualDocumentRoot "/usr/local/apache/vhosts/%-2.0.%-1.0"</pre>
 
 <p>
 Dans l'exemple ci-dessus, <code>www.example.com</code>,
@@ -236,11 +224,9 @@ correspondront tous au répertoire
     insérer les lignes suivantes dans votre fichier de configuration
     :</p>
 
-    <pre class="prettyprint lang-config">
-UseCanonicalName DNS
+    <pre class="prettyprint lang-config">UseCanonicalName DNS
 VirtualDocumentRootIP /usr/local/apache/vhosts/%1/%2/%3/%4/docs
-VirtualScriptAliasIP  /usr/local/apache/vhosts/%1/%2/%3/%4/cgi-bin
-    </pre>
+VirtualScriptAliasIP  /usr/local/apache/vhosts/%1/%2/%3/%4/cgi-bin</pre>
 
 
     <p>Si l'adresse IP de <code>www.domaine.example.com</code> est
@@ -258,9 +244,7 @@ VirtualScriptAliasIP  /usr/local/apache/vhosts/%1/%2/%3/%4/cgi-bin
     conflit avec un spécificateur <code>%</code>, vous pouvez contourner
     le problème de la manière suivante :</p>
 
-<pre class="prettyprint lang-config">
-    VirtualDocumentRoot /usr/local/apache/vhosts/%2.0.%3.0
-</pre>
+<pre class="prettyprint lang-config">VirtualDocumentRoot /usr/local/apache/vhosts/%2.0.%3.0</pre>
 
 
     <p>Une requête pour

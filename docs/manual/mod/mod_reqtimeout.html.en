@@ -51,9 +51,7 @@
         Allow 10 seconds to receive the request including the headers and
         30 seconds for receiving the request body:
 
-        <pre class="prettyprint lang-config">
-          RequestReadTimeout header=10 body=30
-        </pre>
+        <pre class="prettyprint lang-config">RequestReadTimeout header=10 body=30</pre>
 
       </li>
 
@@ -64,9 +62,7 @@
         the limit given indirectly by
         <code class="directive"><a href="../mod/core.html#limitrequestbody">LimitRequestBody</a></code>):
 
-        <pre class="prettyprint lang-config">
-          RequestReadTimeout body=10,MinRate=1000
-        </pre>
+        <pre class="prettyprint lang-config">RequestReadTimeout body=10,MinRate=1000</pre>
 
       </li>
 
@@ -76,9 +72,7 @@
         500 bytes received. But do not allow more than 30 seconds for the
         request including the headers:
 
-        <pre class="prettyprint lang-config">
-          RequestReadTimeout header=10-30,MinRate=500
-        </pre>
+        <pre class="prettyprint lang-config">RequestReadTimeout header=10-30,MinRate=500</pre>
 
       </li>
 
@@ -87,9 +81,7 @@
         If a common configuration is used for http and https virtual hosts, the
         timeouts should not be set too low:
 
-        <pre class="prettyprint lang-config">
-          RequestReadTimeout header=20-40,MinRate=500 body=20,MinRate=500
-        </pre>
+        <pre class="prettyprint lang-config">RequestReadTimeout header=20-40,MinRate=500 body=20,MinRate=500</pre>
 
       </li>
 

@@ -81,9 +81,7 @@ configuration supplémentaire n'est requise pour utiliser
     d'origine.
     </p>
 
-    <pre class="prettyprint lang-config">
-    HeartbeatListen 239.0.0.1:27999
-    </pre>
+    <pre class="prettyprint lang-config">HeartbeatListen 239.0.0.1:27999</pre>
 
 
     <p>Tant que cette directive n'est pas utilisée, le module est

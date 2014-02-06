@@ -96,10 +96,8 @@
         için yapılan istekler <code>footer.pl</code> CGI betiğininin
         çalıştırılmasına sebep olacaktır.</p>
 
-      <pre class="prettyprint lang-config">
-Action add-footer /cgi-bin/footer.pl
-AddHandler add-footer .html
-      </pre>
+      <pre class="prettyprint lang-config">Action add-footer /cgi-bin/footer.pl
+AddHandler add-footer .html</pre>
 
 
       <p>Bu yapılandırmayla, istenen belgenin özgün haliyle mi (yeri
@@ -117,11 +115,9 @@ AddHandler add-footer .html
         dosyalar dosya ismi uzantılarına bakılmaksızın <code>send-as-is</code>
         eylemcisi tarafından işleme sokulacaktır.</p>
 
-      <pre class="prettyprint lang-config">
-&lt;Directory /web/htdocs/asis&gt;
+      <pre class="prettyprint lang-config">&lt;Directory /web/htdocs/asis&gt;
     SetHandler send-as-is
-&lt;/Directory&gt;
-      </pre>
+&lt;/Directory&gt;</pre>
 
 
     

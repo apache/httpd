@@ -115,9 +115,7 @@
       (veya sanal konak) için <code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code>
       yönergesi kullanılır. Örnek:</p>
 
-    <pre class="prettyprint lang-config">
-Listen 192.0.2.100:80
-    </pre>
+    <pre class="prettyprint lang-config">Listen 192.0.2.100:80</pre>
 
 
     <p>Burada konak ismi yerine IP adresi kullanmanız önerilir (ayrıntılar için
@@ -135,8 +133,7 @@ Listen 192.0.2.100:80
       içeren ayrı birer <code class="directive"><a href="../mod/core.html#virtualhost">VirtualHost</a></code> bölümü
       oluşturulur. Örnek:</p>
 
-    <pre class="prettyprint lang-config">
-&lt;VirtualHost 192.168.1.10:80&gt;
+    <pre class="prettyprint lang-config">&lt;VirtualHost 192.168.1.10:80&gt;
     ServerAdmin bilgi@example.com
     DocumentRoot /siteler/belgeler/ecom
     ServerName example.com
@@ -150,8 +147,7 @@ Listen 192.0.2.100:80
     ServerName example.org
     ErrorLog /siteler/gunlukler/eorg/hatalar.log
     CustomLog /siteler/gunlukler/eorg/erisim.log combined
-&lt;/VirtualHost&gt;
-    </pre>
+&lt;/VirtualHost&gt;</pre>
 
 
     <p>&lt;VirtualHost&gt; yönergesinde konak ismi yerine

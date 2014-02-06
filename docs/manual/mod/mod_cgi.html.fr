@@ -190,9 +190,7 @@ CGI</td></tr>
     répertoire défini par la directive <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>.
     </p>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">
-      ScriptLog logs/cgi_log
-      </pre>
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">ScriptLog logs/cgi_log</pre>
 </div>
 
     <p>Ce journal sera ouvert par l'utilisateur sous lequel les

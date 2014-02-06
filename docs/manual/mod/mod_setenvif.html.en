@@ -50,10 +50,8 @@ on characteristics of the request</td></tr>
     such as this example, which sets <code>netscape</code> if the
     browser is mozilla but not MSIE.</p>
 
-<pre class="prettyprint lang-config">
-BrowserMatch ^Mozilla netscape
-BrowserMatch MSIE !netscape
-</pre>
+<pre class="prettyprint lang-config">BrowserMatch ^Mozilla netscape
+BrowserMatch MSIE !netscape</pre>
 
 
    <p>When the server looks up a path via an internal 
@@ -97,18 +95,14 @@ BrowserMatch MSIE !netscape
   sets environment variables conditional on the
   <code>User-Agent</code> HTTP request header.  The following two
   lines have the same effect:</p>
-<pre class="prettyprint lang-config">
-BrowserMatchNoCase Robot is_a_robot
-SetEnvIfNoCase User-Agent Robot is_a_robot
-</pre>
+<pre class="prettyprint lang-config">BrowserMatchNoCase Robot is_a_robot
+SetEnvIfNoCase User-Agent Robot is_a_robot</pre>
 
 
     <p>Some additional examples:</p>
-<pre class="prettyprint lang-config">
-BrowserMatch ^Mozilla forms jpeg=yes browser=netscape
+<pre class="prettyprint lang-config">BrowserMatch ^Mozilla forms jpeg=yes browser=netscape
 BrowserMatch "^Mozilla/[2-3]" tables agif frames javascript
-BrowserMatch MSIE !javascript
-</pre>
+BrowserMatch MSIE !javascript</pre>
 
 
 </div>
@@ -129,20 +123,16 @@ respect to case</td></tr>
     semantically identical to the <code class="directive"><a href="#browsermatch">BrowserMatch</a></code> directive.
     However, it provides for case-insensitive matching. For
     example:</p>
-<pre class="prettyprint lang-config">
-BrowserMatchNoCase mac platform=macintosh
-BrowserMatchNoCase win platform=windows
-</pre>
+<pre class="prettyprint lang-config">BrowserMatchNoCase mac platform=macintosh
+BrowserMatchNoCase win platform=windows</pre>
 
 
     <p>The <code class="directive">BrowserMatch</code> and
     <code class="directive">BrowserMatchNoCase</code> directives are special cases of
     the <code class="directive"><a href="#setenvif">SetEnvIf</a></code> and <code class="directive"><a href="#setenvifnocase">SetEnvIfNoCase</a></code>
     directives. The following two lines have the same effect:</p>
-<pre class="prettyprint lang-config">
-BrowserMatchNoCase Robot is_a_robot
-SetEnvIfNoCase User-Agent Robot is_a_robot
-</pre>
+<pre class="prettyprint lang-config">BrowserMatchNoCase Robot is_a_robot
+SetEnvIfNoCase User-Agent Robot is_a_robot</pre>
 
 
 </div>
@@ -237,8 +227,7 @@ of</p>
     <var>value</var> and replace them by parenthesized subexpressions
     of <var>regex</var>.</p>
 
-<pre class="prettyprint lang-config">
-SetEnvIf Request_URI "\.gif$" object_is_image=gif
+<pre class="prettyprint lang-config">SetEnvIf Request_URI "\.gif$" object_is_image=gif
 SetEnvIf Request_URI "\.jpg$" object_is_image=jpg
 SetEnvIf Request_URI "\.xbm$" object_is_image=xbm
     
@@ -246,8 +235,7 @@ SetEnvIf Referer www\.mydomain\.example\.com intra_site_referral
     
 SetEnvIf object_is_image xbm XBIT_PROCESSING=1
     
-SetEnvIf ^TS  ^[a-z]  HAVE_TS
-</pre>
+SetEnvIf ^TS  ^[a-z]  HAVE_TS</pre>
 
 
     <p>The first three will set the environment variable
@@ -285,9 +273,7 @@ for additional examples.
     <code>ap_expr</code>. These expressions will be evaluated at runtime,
     and applied <em>env-variable</em> in the same fashion as <code class="directive">SetEnvIf</code>.</p>
 
-<pre class="prettyprint lang-config">
-    SetEnvIfExpr "tolower(req('X-Sendfile')) == 'd:\images\very_big.iso')" iso_delivered
-</pre>
+<pre class="prettyprint lang-config">SetEnvIfExpr "tolower(req('X-Sendfile')) == 'd:\images\very_big.iso')" iso_delivered</pre>
 
 
     <p>This would set the environment variable <code>iso_delivered</code>
@@ -296,9 +282,7 @@ for additional examples.
     <p>A more useful example would be to set the variable rfc1918 if the
     remote IP address is a private address according to RFC 1918:</p>
 
-<pre class="prettyprint lang-config">
-    SetEnvIfExpr "-R '10.0.0.0/8' || -R '172.16.0.0/12' || -R '192.168.0.0/16'" rfc1918
-</pre>
+<pre class="prettyprint lang-config">SetEnvIfExpr "-R '10.0.0.0/8' || -R '172.16.0.0/12' || -R '192.168.0.0/16'" rfc1918</pre>
 
 
 <h3>See also</h3>
@@ -328,9 +312,7 @@ without respect to case</td></tr>
     the <code class="directive"><a href="#setenvif">SetEnvIf</a></code> directive,
     and differs only in that the regular expression matching is
     performed in a case-insensitive manner. For example:</p>
-<pre class="prettyprint lang-config">
-   SetEnvIfNoCase Host Example\.Org site=example
-</pre>
+<pre class="prettyprint lang-config">SetEnvIfNoCase Host Example\.Org site=example</pre>
 
 
     <p>This will cause the <code>site</code> environment variable

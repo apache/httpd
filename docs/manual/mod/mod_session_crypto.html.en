@@ -77,11 +77,9 @@
       <p>To create a simple encrypted session and store it in a cookie called
       <var>session</var>, configure the session as follows:</p>
 
-      <div class="example"><h3>Browser based encrypted session</h3><pre class="prettyprint lang-config">
-Session On
+      <div class="example"><h3>Browser based encrypted session</h3><pre class="prettyprint lang-config">Session On
 SessionCookieName session path=/
-SessionCryptoPassphrase secret
-    </pre>
+SessionCryptoPassphrase secret</pre>
 </div>
 
       <p>The session will be encrypted with the given key. Different servers can
@@ -134,24 +132,16 @@ SessionCryptoPassphrase secret
     <p>The <var>NSS</var> crypto driver requires some parameters for configuration,
     which are specified as parameters with optional values after the driver name.</p>
 
-    <div class="example"><h3>NSS without a certificate database</h3><pre class="prettyprint lang-config">
-      SessionCryptoDriver nss
-      </pre>
+    <div class="example"><h3>NSS without a certificate database</h3><pre class="prettyprint lang-config">SessionCryptoDriver nss</pre>
 </div>
 
-    <div class="example"><h3>NSS with certificate database</h3><pre class="prettyprint lang-config">
-      SessionCryptoDriver nss dir=certs
-      </pre>
+    <div class="example"><h3>NSS with certificate database</h3><pre class="prettyprint lang-config">SessionCryptoDriver nss dir=certs</pre>
 </div>
 
-    <div class="example"><h3>NSS with certificate database and parameters</h3><pre class="prettyprint lang-config">
-      SessionCryptoDriver nss dir=certs key3=key3.db cert7=cert7.db secmod=secmod
-      </pre>
+    <div class="example"><h3>NSS with certificate database and parameters</h3><pre class="prettyprint lang-config">SessionCryptoDriver nss dir=certs key3=key3.db cert7=cert7.db secmod=secmod</pre>
 </div>
 
-    <div class="example"><h3>NSS with paths containing spaces</h3><pre class="prettyprint lang-config">
-      SessionCryptoDriver nss "dir=My Certs" key3=key3.db cert7=cert7.db secmod=secmod
-      </pre>
+    <div class="example"><h3>NSS with paths containing spaces</h3><pre class="prettyprint lang-config">SessionCryptoDriver nss "dir=My Certs" key3=key3.db cert7=cert7.db secmod=secmod</pre>
 </div>
 
     <p>The <var>NSS</var> crypto driver might have already been
@@ -161,9 +151,7 @@ SessionCryptoPassphrase secret
     existing configuration will have taken affect.  To avoid this
     warning, use the noinit parameter as follows.</p>
 
-    <div class="example"><h3>NSS with certificate database</h3><pre class="prettyprint lang-config">
-      SessionCryptoDriver nss noinit
-      </pre>
+    <div class="example"><h3>NSS with certificate database</h3><pre class="prettyprint lang-config">SessionCryptoDriver nss noinit</pre>
 </div>
 
     <p>To prevent confusion, ensure that all modules requiring NSS are configured with
@@ -172,9 +160,7 @@ SessionCryptoPassphrase secret
     <p>The <var>openssl</var> crypto driver supports an optional parameter to specify
     the engine to be used for encryption.</p>
 
-    <div class="example"><h3>OpenSSL with engine support</h3><pre class="prettyprint lang-config">
-      SessionCryptoDriver openssl engine=name
-      </pre>
+    <div class="example"><h3>OpenSSL with engine support</h3><pre class="prettyprint lang-config">SessionCryptoDriver openssl engine=name</pre>
 </div>
 
 
@@ -206,16 +192,14 @@ SessionCryptoPassphrase secret
 
     <p>If the value begins with exec: the resulting command will be executed and the
     first line returned to standard output by the program will be used as the key.</p>
-<div class="example"><pre>
-#key used as-is
+<div class="example"><pre>#key used as-is
 SessionCryptoPassphrase secret
 
 #Run /path/to/program to get key
 SessionCryptoPassphrase exec:/path/to/program
 
 #Run /path/to/otherProgram and provide arguments
-SessionCryptoPassphrase "exec:/path/to/otherProgram argument1"
-</pre></div>
+SessionCryptoPassphrase "exec:/path/to/otherProgram argument1"</pre></div>
 
 
 </div>

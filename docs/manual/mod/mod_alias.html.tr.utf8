@@ -99,10 +99,8 @@ eşlenmesini sağlar ve URL yönlendirmesi yapar.</td></tr>
       olabilmesi için en uzun yolu sıralamada en öne almalısınız. Örneğin
       aşağıdaki yapılandırma beklendiği gibi çalışacaktır:</p>
 
-    <pre class="prettyprint lang-config">
-Alias /foo/bar /baz
-Alias /foo /gaq
-    </pre>
+    <pre class="prettyprint lang-config">Alias /foo/bar /baz
+Alias /foo /gaq</pre>
 
 
     <p>Ama yukarıdaki iki satır ters sırada yerleştirilmiş olsaydı,
@@ -128,9 +126,7 @@ Alias /foo /gaq
       harf büyüklüğüne duyarsız sistemlerde bile harf büyüklüğüne
       duyarlıdır.</p>
 
-    <pre class="prettyprint lang-config">
-Alias /image /ftp/pub/image
-    </pre>
+    <pre class="prettyprint lang-config">Alias /image /ftp/pub/image</pre>
 
 
     <p><code>http://example.com/image/foo.gif</code> şeklinde bir istek,
@@ -163,12 +159,10 @@ Alias /image /ftp/pub/image
       bir dizine bir <code class="directive">Alias</code> oluşturuyorsanız hedef
       dizine doğrudan erişim izni vermeniz gerekebilir.</p>
 
-    <pre class="prettyprint lang-config">
-Alias /image /ftp/pub/image
+    <pre class="prettyprint lang-config">Alias /image /ftp/pub/image
 &lt;Directory /ftp/pub/image&gt;
     Require all granted
-&lt;/Directory&gt;
-    </pre>
+&lt;/Directory&gt;</pre>
 
 
     <p><var>URL-yolu</var> değiştirgesindeki bölü çizgilerinin sayısı istek
@@ -194,9 +188,7 @@ eşler.</td></tr>
       elde eder. Örneğin, <code>/icons</code> dizinini etkinleştirmek için şu
       yazılabilir:</p>
 
-    <pre class="prettyprint lang-config">
-AliasMatch ^/icons(.*) /usr/local/apache/icons$1
-    </pre>
+    <pre class="prettyprint lang-config">AliasMatch ^/icons(.*) /usr/local/apache/icons$1</pre>
 
 
     <p><a class="glossarylink" href="../glossary.html#regex" title="sözlüğe bakınız">Düzenli ifadeler</a>in tamamı
@@ -204,9 +196,7 @@ AliasMatch ^/icons(.*) /usr/local/apache/icons$1
       büyüklüğüne duyarsız eşleşmeler sağlayacak takma adlar
       kullanılabilir:</p>
 
-    <pre class="prettyprint lang-config">
-AliasMatch (?i)^/image(.*) /ftp/pub/image$1
-    </pre>
+    <pre class="prettyprint lang-config">AliasMatch (?i)^/image(.*) /ftp/pub/image$1</pre>
 
 
     <p><code class="directive"><a href="#alias">Alias</a></code>
@@ -226,24 +216,18 @@ AliasMatch (?i)^/image(.*) /ftp/pub/image$1
 
     <p>Örneğin aşağıdakini AliasMatch ile değiştirmek isteyelim:</p>
 
-    <pre class="prettyprint lang-config">
-Alias /image/ /ftp/pub/image/
-    </pre>
+    <pre class="prettyprint lang-config">Alias /image/ /ftp/pub/image/</pre>
 
 
     <p>Bu eşdeğer DEĞİLdir - bunu yapmayın!  Bu herhangi bir yerinde /image/
       dizgesi bulunan tüm istekleri /ftp/pub/image/ altına gönderecektir:</p>
 
-    <pre class="prettyprint lang-config">
-AliasMatch /image/ /ftp/pub/image/
-    </pre>
+    <pre class="prettyprint lang-config">AliasMatch /image/ /ftp/pub/image/</pre>
 
 
     <p>Aynı etkiyi elde etmek için bu gerekiyor:</p>
 
-    <pre class="prettyprint lang-config">
-AliasMatch ^/image/(.*)$ /ftp/pub/image/$1
-    </pre>
+    <pre class="prettyprint lang-config">AliasMatch ^/image/(.*)$ /ftp/pub/image/$1</pre>
 
 
     <p>Şüphesiz, <code class="directive"><a href="#alias">Alias</a></code> yönergesini
@@ -251,10 +235,8 @@ AliasMatch ^/image/(.*)$ /ftp/pub/image/$1
       kullanmanın hiç gereği yoktur. <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> daha karmaşık şeyler yapmamızı sağlar. Örneğin
       farklı dosya çeşitlerini farklı dizinlerden sunmak isteyelim:</p>
 
-    <pre class="prettyprint lang-config">
-AliasMatch ^/image/(.*)\.jpg$ /files/jpg.images/$1.jpg<br />
-AliasMatch ^/image/(.*)\.gif$ /files/gif.images/$1.gif
-    </pre>
+    <pre class="prettyprint lang-config">AliasMatch ^/image/(.*)\.jpg$ /files/jpg.images/$1.jpg<br />
+AliasMatch ^/image/(.*)\.gif$ /files/gif.images/$1.gif</pre>
 
 
     <p>İstek URL'sinin başındaki bölü çizgileri, bu modüldeki yönergeler istek
@@ -293,13 +275,11 @@ yönlendirir.</td></tr>
       dönecektir. <code><em>URL-yolu</em></code>’nun devamı niteliğindeki ek
       yol hedef URL’ye eklenir.</p>
 
-    <pre class="prettyprint lang-config">
-# Farklı bir konaktaki bir URL'ye yönlendirme
+    <pre class="prettyprint lang-config"># Farklı bir konaktaki bir URL'ye yönlendirme
 Redirect /hizmet http://iki.example.com/hizmet
 
 # Aynı konak üzerinde yönlendirme
-Redirect /bir /iki
-    </pre>
+Redirect /bir /iki</pre>
 
 
     <p>İstemcinin yaptığı <code>http://example.com/hizmet/fesmekan.txt</code>
@@ -354,10 +334,8 @@ Redirect /bir /iki
       bilmelidir (<code>http_protocol.c</code> dosyasında bulunan
       <code>send_error_response</code> işlevine bakınız).</p>
 
-    <pre class="prettyprint lang-config">
-Redirect permanent /bir http://example.com/iki
-Redirect 303 /yedi http://example.com/baskabisey
-    </pre>
+    <pre class="prettyprint lang-config">Redirect permanent /bir http://example.com/iki
+Redirect 303 /yedi http://example.com/baskabisey</pre>
 
   
 </div>
@@ -382,9 +360,7 @@ yönlendirme gönderir.</td></tr>
       sunucudaki aynı isimli JPEG dosyalarına yönlendirmek için şu
       yazılabilir:</p>
 
-    <pre class="prettyprint lang-config">
-RedirectMatch (.*)\.gif$ http://baska.example.com$1.jpg
-    </pre>
+    <pre class="prettyprint lang-config">RedirectMatch (.*)\.gif$ http://baska.example.com$1.jpg</pre>
 
 
     <p><code class="directive"><a href="#alias">Alias</a></code> ve
@@ -443,30 +419,24 @@ URL’ye yönlendirir.</td></tr>
       sonra), dosya sistemindeki bir tam yol olarak belirtilmiş
       <code><em>dizin-yolu</em></code> ile başlayan betiklerle eşlenir.</p>
 
-    <pre class="prettyprint lang-config">
-ScriptAlias /cgi-bin/ /siteler/cgi-bin/
-    </pre>
+    <pre class="prettyprint lang-config">ScriptAlias /cgi-bin/ /siteler/cgi-bin/</pre>
 
 
     <p><code>http://example.com/cgi-bin/foo</code> şeklindeki bir istek
       sunucunun <code>/siteler/cgi-bin/foo</code> betiğini çalıştırmasına sebep
       olur. Bu yapılandırma aslında şuna eşdeğerdir:</p>
 
-    <pre class="prettyprint lang-config">
-Alias /cgi-bin/ /siteler/cgi-bin/
+    <pre class="prettyprint lang-config">Alias /cgi-bin/ /siteler/cgi-bin/
 &lt;Location /cgi-bin &gt;
     SetHandler cgi-script
     Options +ExecCGI
-&lt;/Location&gt;
-    </pre>
+&lt;/Location&gt;</pre>
 
 
     <p><code class="directive">ScriptAlias</code> yönergesini bir betik veya eylemci
       ile birlikte de kullanabilirsiniz. Örnek:</p>
 
-       <pre class="prettyprint lang-config">
-ScriptAlias /cgi-bin/ /siteler/cgi-handler.pl
-    </pre>
+       <pre class="prettyprint lang-config">ScriptAlias /cgi-bin/ /siteler/cgi-handler.pl</pre>
 
 
     <p>Bu senaryoda <code>/cgi-bin/</code>’den istenen tüm dosyalar sizin
@@ -484,12 +454,10 @@ ScriptAlias /cgi-bin/ /siteler/cgi-handler.pl
       <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>,
       <code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code> ve <code class="directive"><a href="../mod/core.html#options">Options</a></code> yönergelerini örnekteki gibi kullanın:
 
-    <pre class="prettyprint lang-config">
-&lt;Directory /usr/local/apache2/htdocs/cgi-bin &gt;
+    <pre class="prettyprint lang-config">&lt;Directory /usr/local/apache2/htdocs/cgi-bin &gt;
     SetHandler cgi-script
     Options ExecCGI
-&lt;/Directory&gt;
-    </pre>
+&lt;/Directory&gt;</pre>
 
 
      Aynı dosya sistemi konumu ile çok sayıda <code><em>URL-yolu</em></code>
@@ -524,9 +492,7 @@ eşler ve hedefi bir CGI betiği olarak çalıştırır.</td></tr>
       dosya yolunu elde eder. Örneğin, standart <code>/cgi-bin</code> dizinini
       etkin kılmak için şu yazılabilir:</p>
 
-    <pre class="prettyprint lang-config">
-ScriptAliasMatch ^/cgi-bin(.*) /usr/local/apache/cgi-bin$1
-    </pre>
+    <pre class="prettyprint lang-config">ScriptAliasMatch ^/cgi-bin(.*) /usr/local/apache/cgi-bin$1</pre>
 
 
     <p>AliasMatch yönergesindeki gibi, <a class="glossarylink" href="../glossary.html#rexex" title="sözlüğe bakınız">düzenli
@@ -534,9 +500,7 @@ ScriptAliasMatch ^/cgi-bin(.*) /usr/local/apache/cgi-bin$1
       Örneğin, <code><em>URL-yolu</em></code> için harf büyüklüğüne duyarsız
       eşleşmeli bir takma ad oluşturmak mümkünür:</p>
 
-    <pre class="prettyprint lang-config">
-ScriptAliasMatch (?i)^/cgi-bin(.*) /usr/local/apache/cgi-bin$1
-    </pre>
+    <pre class="prettyprint lang-config">ScriptAliasMatch (?i)^/cgi-bin(.*) /usr/local/apache/cgi-bin$1</pre>
 
 
     <p><code class="directive"><a href="#alias">Alias</a></code> ve

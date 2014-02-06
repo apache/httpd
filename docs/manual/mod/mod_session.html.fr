@@ -183,10 +183,8 @@
       l'exemple suivant, la session sera stockée au niveau du
       navigateur, dans un cookie nommé <code>session</code>.</p>
 
-      <div class="example"><h3>Session stockée au niveau du navigateur</h3><pre class="prettyprint lang-config">
-Session On
-SessionCookieName session path=/
-        </pre>
+      <div class="example"><h3>Session stockée au niveau du navigateur</h3><pre class="prettyprint lang-config">Session On
+SessionCookieName session path=/</pre>
 </div>
 
       <p>Une session est inutile s'il n'est pas possible d'y lire
@@ -195,11 +193,9 @@ SessionCookieName session path=/
       réponse HTTP prédéterminé nommé
       <code>X-Replace-Session</code>.</p>
 
-      <div class="example"><h3>Ecriture dans une session</h3><pre class="prettyprint lang-config">
-Session On
+      <div class="example"><h3>Ecriture dans une session</h3><pre class="prettyprint lang-config">Session On
 SessionCookieName session path=/
-SessionHeader X-Replace-Session
-        </pre>
+SessionHeader X-Replace-Session</pre>
 </div>
 
       <p>L'en-tête doit contenir des paires clé/valeur sous le même
@@ -207,13 +203,11 @@ SessionHeader X-Replace-Session
       l'exemple suivant. Donner pour valeur à une clé la chaîne vide a
       pour effet de supprimer la clé de la session.</p>
 
-      <div class="example"><h3>Script CGI pour écrire dans une session</h3><pre class="prettyprint lang-sh">
-#!/bin/bash
+      <div class="example"><h3>Script CGI pour écrire dans une session</h3><pre class="prettyprint lang-sh">#!/bin/bash
 echo "Content-Type: text/plain"
 echo "X-Replace-Session: key1=foo&amp;key2=&amp;key3=bar"
 echo
-env
-        </pre>
+env</pre>
 </div>
 
       <p>Selon la configuration, les informations de la session peuvent
@@ -221,12 +215,10 @@ env
       défaut la session est privée, et cette fonctionnalité doit donc
       être explicitement activée via la directive <code class="directive"><a href="#sessionenv">SessionEnv</a></code>.</p>
 
-      <div class="example"><h3>Lecture depuis une session</h3><pre class="prettyprint lang-config">
-Session On
+      <div class="example"><h3>Lecture depuis une session</h3><pre class="prettyprint lang-config">Session On
 SessionEnv On
 SessionCookieName session path=/
-SessionHeader X-Replace-Session
-        </pre>
+SessionHeader X-Replace-Session</pre>
 </div>
 
       <p>Une fois la lecture effectuée, la variable CGI
@@ -250,11 +242,9 @@ SessionHeader X-Replace-Session
       au niveau du navigateur.</p>
 
       <div class="example"><h3>Session chiffrée avant stockage au niveau du
-      navigateur</h3><pre class="prettyprint lang-config">
-Session On
+      navigateur</h3><pre class="prettyprint lang-config">Session On
 SessionCryptoPassphrase secret
-SessionCookieName session path=/
-        </pre>
+SessionCookieName session path=/</pre>
 </div>
 
       <p>La session sera automatiquement déchiffrée à la lecture, et
@@ -295,11 +285,9 @@ SessionCookieName session path=/
       <p>Les paramètres standards du cookie peuvent être spécifiés après
       le nom du cookie comme dans l'exemple suivant :</p>
 
-      <div class="example"><h3>Définition des paramètres du cookie</h3><pre class="prettyprint lang-config">
-Session On
+      <div class="example"><h3>Définition des paramètres du cookie</h3><pre class="prettyprint lang-config">Session On
 SessionCryptoPassphrase secret
-SessionCookieName session path=/private;domain=example.com;httponly;secure;
-        </pre>
+SessionCookieName session path=/private;domain=example.com;httponly;secure;</pre>
 </div>
 
       <p>Dans les cas où le serveur Apache sert de frontal pour des
@@ -322,16 +310,14 @@ SessionCookieName session path=/private;domain=example.com;httponly;secure;
       exemple, sauvegarde les nom de connexion et mot de passe de
       l'utilisateur dans une session.</p>
 
-      <div class="example"><h3>Authentification à base de formulaire</h3><pre class="prettyprint lang-config">
-Session On
+      <div class="example"><h3>Authentification à base de formulaire</h3><pre class="prettyprint lang-config">Session On
 SessionCryptoPassphrase secret
 SessionCookieName session path=/
 AuthFormProvider file
 AuthUserFile conf/passwd
 AuthType form
 AuthName realm
-#...
-        </pre>
+#...</pre>
 </div>
 
       <p>Pour la documentation et des exemples complets, voir le module

@@ -39,12 +39,10 @@ bande passante des clients. La variable d'environnement
 <code>rate-limit</code> permet de spécifier, en kb/s, le débit de la
 connexion à simuler.</p>
 
-<div class="example"><h3>Exemple de configuration</h3><pre class="prettyprint lang-config">
-&lt;Location /downloads&gt;
+<div class="example"><h3>Exemple de configuration</h3><pre class="prettyprint lang-config">&lt;Location /downloads&gt;
     SetOutputFilter RATE_LIMIT
     SetEnv rate-limit 400
-&lt;/Location&gt;
-</pre>
+&lt;/Location&gt;</pre>
 </div>
 
 </div>

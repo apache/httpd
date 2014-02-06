@@ -70,9 +70,7 @@
     <p>This directive specifies group membership that is required for the
     user to gain access.</p>
 
-    <pre class="prettyprint lang-config">
-      Require dbm-group admin
-    </pre>
+    <pre class="prettyprint lang-config">Require dbm-group admin</pre>
 
 
 
@@ -82,9 +80,7 @@
     <p>When this directive is specified, the user must be a member of the group
     assigned to the file being accessed.</p>
 
-    <pre class="prettyprint lang-config">
-      Require dbm-file-group
-    </pre>
+    <pre class="prettyprint lang-config">Require dbm-file-group</pre>
 
 
 
@@ -96,16 +92,14 @@
 <p><em>Note that using mod_authz_dbm requires you to require <code>dbm-group</code> 
 instead of <code>group</code>:</em>
 </p>
-<pre class="prettyprint lang-config">
-&lt;Directory "/foo/bar"&gt;
+<pre class="prettyprint lang-config">&lt;Directory "/foo/bar"&gt;
   AuthType Basic 
   AuthName "Secure Area"
   AuthBasicProvider dbm 
   AuthDBMUserFile site/data/users 
   AuthDBMGroupFile site/data/users 
   Require dbm-group admin 
-&lt;/Directory&gt;
-</pre>
+&lt;/Directory&gt;</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -146,10 +140,8 @@ of user groups for authorization</td></tr>
     accomplished by first setting the group and password files to
     point to the same DBM:</p>
 
-    <pre class="prettyprint lang-config">
-AuthDBMGroupFile /www/userbase
-AuthDBMUserFile /www/userbase
-    </pre>
+    <pre class="prettyprint lang-config">AuthDBMGroupFile /www/userbase
+AuthDBMUserFile /www/userbase</pre>
 
 
     <p>The key for the single DBM is the username. The value consists

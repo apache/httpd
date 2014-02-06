@@ -97,9 +97,7 @@ the cgi daemon</td></tr>
     will be relative to the value of 
     <code class="directive"><a href="../mod/core.html#defaultruntimedir">DefaultRuntimeDir</a></code>.</p>
 
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
-      ScriptSock /var/run/cgid.sock
-    </pre>
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">ScriptSock /var/run/cgid.sock</pre>
 </div>
 
 

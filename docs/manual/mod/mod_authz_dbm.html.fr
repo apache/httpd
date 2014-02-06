@@ -73,9 +73,7 @@ d'Apache</td></tr></table>
     <p>Cette directive permet de spécifier à quel groupe un utilisateur
     doit appartenir pour obtenir l'autorisation d'accès.</p>
 
-    <pre class="prettyprint lang-config">
-      Require dbm-group admin
-    </pre>
+    <pre class="prettyprint lang-config">Require dbm-group admin</pre>
 
 
 
@@ -85,9 +83,7 @@ d'Apache</td></tr></table>
     <p>Lorsque cette directive est définie, l'utilisateur doit
     appartenir au groupe du fichier pour pouvoir y accéder.</p>
 
-    <pre class="prettyprint lang-config">
-      Require dbm-file-group
-    </pre>
+    <pre class="prettyprint lang-config">Require dbm-file-group</pre>
 
 
 
@@ -100,16 +96,14 @@ d'Apache</td></tr></table>
 groupes d'authentification qui était auparavant <code>group</code> est
 maintenant <code>dbm-group</code> :</em>
 </p>
-<pre class="prettyprint lang-config">
-&lt;Directory "/foo/bar"&gt;
+<pre class="prettyprint lang-config">&lt;Directory "/foo/bar"&gt;
   AuthType Basic 
   AuthName "Secure Area"
   AuthBasicProvider dbm 
   AuthDBMUserFile site/data/users 
   AuthDBMGroupFile site/data/users 
   Require dbm-group admin 
-&lt;/Directory&gt;
-</pre>
+&lt;/Directory&gt;</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -153,10 +147,8 @@ protection supplémentaire.</p>
     à verrouiller. Pour ce faire, on attribue le même nom de fichier
     DBM aux fichiers de groupes et de mots de passe :</p>
 
-    <pre class="prettyprint lang-config">
-AuthDBMGroupFile /www/userbase
-AuthDBMUserFile /www/userbase
-    </pre>
+    <pre class="prettyprint lang-config">AuthDBMGroupFile /www/userbase
+AuthDBMUserFile /www/userbase</pre>
 
 
     <p>La clé du fichier DBM unique est le nom d'utilisateur. La

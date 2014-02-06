@@ -158,10 +158,8 @@ exemples pour chacun d'entre eux.</p>
     utilisant la recette suivante :</p>
 
     <p><strong>Product to ID configuration</strong></p>
-    <pre class="prettyprint lang-config">
-RewriteMap product2id txt:/etc/apache2/productmap.txt
-RewriteRule ^/product/(.*) /prods.php?id=${product2id:$1|NOTFOUND} [PT]
-    </pre>
+    <pre class="prettyprint lang-config">RewriteMap product2id txt:/etc/apache2/productmap.txt
+RewriteRule ^/product/(.*) /prods.php?id=${product2id:$1|NOTFOUND} [PT]</pre>
 
 
     <p>Nous supposons ici que le script <code>prods.php</code> sait quoi
@@ -237,12 +235,10 @@ statique   www1|www2|www3|www4<br />
 dynamique  www5|www6
     </code></p></div>
 <p><strong>Directives de configuration</strong></p>
-    <pre class="prettyprint lang-config">
-RewriteMap servers rnd:/path/to/file/map.txt
+    <pre class="prettyprint lang-config">RewriteMap servers rnd:/path/to/file/map.txt
 
 RewriteRule ^/(.*\.(png|gif|jpg)) http://${servers:static}/$1 [NC,P,L]
-RewriteRule ^/(.*) http://${servers:dynamic}/$1 [P,L]
-    </pre>
+RewriteRule ^/(.*) http://${servers:dynamic}/$1 [P,L]</pre>
 
 
 
@@ -277,9 +273,7 @@ statique   www1|www1|www2|www3|www4
 
     <p>Vous pouvez éventuellement spécifier un type dbm particulier :</p>
 
- <pre class="prettyprint lang-config">
-RewriteMap examplemap dbm=sdbm:/etc/apache/mapfile.dbm
- </pre>
+ <pre class="prettyprint lang-config">RewriteMap examplemap dbm=sdbm:/etc/apache/mapfile.dbm</pre>
 
 
     <p>Ce type peut être choisi parmi sdbm, gdbm, ndbm ou db. Il est
@@ -297,9 +291,7 @@ $ httxt2dbm -i fichier-map.txt -o fichier-map.map
 
 <p>Vous pouvez alors faire référence au fichier obtenu dans votre
 directive <code>RewriteMap</code> :</p>
-<pre class="prettyprint lang-config">
-RewriteMap mapname dbm:/etc/apache/mapfile.map
-</pre>
+<pre class="prettyprint lang-config">RewriteMap mapname dbm:/etc/apache/mapfile.map</pre>
 
 
 <div class="note">
@@ -353,11 +345,8 @@ directive <code>RewriteMap</code>.</p>
     </p>
 
     <p> <strong>Redirige un URI vers son équivalent en minuscules</strong></p>
-    <pre class="prettyprint lang-config">
-
-RewriteMap lc int:tolower
-RewriteRule (.*?[A-Z]+.*) ${lc:$1} [R]
-    </pre>
+    <pre class="prettyprint lang-config">RewriteMap lc int:tolower
+RewriteRule (.*?[A-Z]+.*) ${lc:$1} [R]</pre>
 
 
     <div class="note">
@@ -401,22 +390,17 @@ RewriteRule (.*?[A-Z]+.*) ${lc:$1} [R]
     caractères de soulignement dans l'URI de la requête.</p>
 
     <p><strong>Configuration de la réécriture</strong></p>
-    <pre class="prettyprint lang-config">
-
-RewriteMap d2u prg:/www/bin/dash2under.pl<br />
-RewriteRule - ${d2u:%{REQUEST_URI}}
-    </pre>
+    <pre class="prettyprint lang-config">RewriteMap d2u prg:/www/bin/dash2under.pl<br />
+RewriteRule - ${d2u:%{REQUEST_URI}}</pre>
 
 
     <p><strong>dash2under.pl</strong></p>
-    <pre class="prettyprint lang-perl">
-    #!/usr/bin/perl
+    <pre class="prettyprint lang-perl">    #!/usr/bin/perl
     $| = 1; # Turn off I/O buffering
     while (&lt;STDIN&gt;) {
         s/-/_/g; # Remplace tous les tirets par des caractères de soulignement
         print $_;
-    }
-    </pre>
+    }</pre>
 
 
 <div class="note"><h3>Mises en garde !</h3>
@@ -463,9 +447,7 @@ script lui-même est très lent.</li>
     <p>Si une requête renvoie plusieurs enregistrements, un de ceux-ci
     sera sélectionné aléatoirement.</p>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">
-RewriteMap ma-requete "fastdbd:SELECT destination FROM rewrite WHERE source = %s"
-    </pre>
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">RewriteMap ma-requete "fastdbd:SELECT destination FROM rewrite WHERE source = %s"</pre>
 </div>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

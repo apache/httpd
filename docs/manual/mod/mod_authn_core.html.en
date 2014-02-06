@@ -68,8 +68,7 @@
         <p>This example checks for passwords in two different text
         files.</p>
 
-        <div class="example"><h3>Checking multiple text password files</h3><pre class="prettyprint lang-config">
-# Check here first
+        <div class="example"><h3>Checking multiple text password files</h3><pre class="prettyprint lang-config"># Check here first
 &lt;AuthnProviderAlias file file1&gt;
     AuthUserFile /www/conf/passwords1
 &lt;/AuthnProviderAlias&gt;
@@ -85,8 +84,7 @@
     AuthType Basic
     AuthName "Protected Area"
     Require valid-user
-&lt;/Directory&gt;
-        </pre>
+&lt;/Directory&gt;</pre>
 </div>
 
         <p>The example below creates two different ldap authentication
@@ -94,8 +92,7 @@
         a single authenticated location to be serviced by multiple ldap
         hosts:</p>
 
-        <div class="example"><h3>Checking multiple LDAP servers</h3><pre class="prettyprint lang-config">
-&lt;AuthnProviderAlias ldap ldap-alias1&gt;
+        <div class="example"><h3>Checking multiple LDAP servers</h3><pre class="prettyprint lang-config">&lt;AuthnProviderAlias ldap ldap-alias1&gt;
     AuthLDAPBindDN cn=youruser,o=ctx
     AuthLDAPBindPassword yourpassword
     AuthLDAPURL ldap://ldap.host/o=ctx
@@ -119,8 +116,7 @@ Alias /secure /webpages/secure
     # Note that Require ldap-* would not work here, since the 
     # AuthnProviderAlias does not provide the config to authorization providers
     # that are implemented in the same module as the authentication provider.
-&lt;/Directory&gt;
-          </pre>
+&lt;/Directory&gt;</pre>
 </div>
     
 
@@ -148,9 +144,7 @@ authentication</td></tr>
 
    <p>For example:</p>
 
-   <pre class="prettyprint lang-config">
-     AuthName "Top Secret"
-   </pre>
+   <pre class="prettyprint lang-config">AuthName "Top Secret"</pre>
 
 
     <p>The string provided for the <code>AuthName</code> is what will
@@ -215,8 +209,7 @@ the specified alias</td></tr>
     in the following example, clients may access the
     <code>/www/docs/public</code> directory without authenticating:</p>
 
-    <pre class="prettyprint lang-config">
-&lt;Directory /www/docs&gt;
+    <pre class="prettyprint lang-config">&lt;Directory /www/docs&gt;
     AuthType Basic
     AuthName Documents
     AuthBasicProvider file
@@ -227,8 +220,7 @@ the specified alias</td></tr>
 &lt;Directory /www/docs/public&gt;
     AuthType None
     Require all granted
-&lt;/Directory&gt;
-    </pre>
+&lt;/Directory&gt;</pre>
 
 
     <div class="note">When disabling authentication, note that clients which have

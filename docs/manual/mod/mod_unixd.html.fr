@@ -96,9 +96,7 @@ requêtes</td></tr>
       <dd>Référence le groupe spécifié par son numéro.</dd>
     </dl>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">
-      Group www-group
-      </pre>
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">Group www-group</pre>
 </div>
 
     <p>Il est conseillé de créer un groupe dédié à l'exécution du

@@ -81,11 +81,9 @@
       nommé <var>session</var>, configurez la comme suit :</p>
 
       <div class="example"><h3>Session chiffrée stockée au niveau du
-      serveur</h3><pre class="prettyprint lang-config">
-Session On
+      serveur</h3><pre class="prettyprint lang-config">Session On
 SessionCookieName session path=/
-SessionCryptoPassphrase secret
-    </pre>
+SessionCryptoPassphrase secret</pre>
 </div>
 
       <p>La session sera chiffrée avec la clé spécifiée. Il est possible
@@ -147,25 +145,17 @@ d'Apache</td></tr>
     la directive avec des valeurs optionnelles après le nom du
     pilote.</p>
 
-    <div class="example"><h3>NSS sans base de données de certificats</h3><pre class="prettyprint lang-config">
-      SessionCryptoDriver nss
-      </pre>
+    <div class="example"><h3>NSS sans base de données de certificats</h3><pre class="prettyprint lang-config">SessionCryptoDriver nss</pre>
 </div>
 
-    <div class="example"><h3>NSS avec base de données de certificats</h3><pre class="prettyprint lang-config">
-      SessionCryptoDriver nss dir=certs
-      </pre>
+    <div class="example"><h3>NSS avec base de données de certificats</h3><pre class="prettyprint lang-config">SessionCryptoDriver nss dir=certs</pre>
 </div>
 
     <div class="example"><h3>NSS avec base de données de certificats et
-    paramètres</h3><pre class="prettyprint lang-config">
-      SessionCryptoDriver nss dir=certs clé3=clé3.db cert7=cert7.db secmod=secmod
-      </pre>
+    paramètres</h3><pre class="prettyprint lang-config">SessionCryptoDriver nss dir=certs clé3=clé3.db cert7=cert7.db secmod=secmod</pre>
 </div>
 
-    <div class="example"><h3>NSS avec chemins contenant des espaces</h3><pre class="prettyprint lang-config">
-      SessionCryptoDriver nss "dir=My Certs" key3=key3.db cert7=cert7.db secmod=secmod
-      </pre>
+    <div class="example"><h3>NSS avec chemins contenant des espaces</h3><pre class="prettyprint lang-config">SessionCryptoDriver nss "dir=My Certs" key3=key3.db cert7=cert7.db secmod=secmod</pre>
 </div>
 
     <p>Le pilote de chiffrement <var>NSS</var> peut avoir été configuré
@@ -175,9 +165,7 @@ d'Apache</td></tr>
     configuration existante s'en trouvera affectée. Pour éviter cet
     avertissement, utilisez le paramètre <code>noinit</code> comme suit :</p>
 
-    <div class="example"><h3>NSS avec base de données de certificats</h3><pre class="prettyprint lang-config">
-      SessionCryptoDriver nss noinit
-      </pre>
+    <div class="example"><h3>NSS avec base de données de certificats</h3><pre class="prettyprint lang-config">SessionCryptoDriver nss noinit</pre>
 </div>
 
     <p>Pour éviter la confusion, assurez-vous que tous les modules
@@ -187,9 +175,7 @@ d'Apache</td></tr>
     optionnel permettant de spécifier le moteur de chiffrement à
     utiliser.</p>
 
-    <div class="example"><h3>OpenSSL avec spécification du moteur de chiffrement</h3><pre class="prettyprint lang-config">
-      SessionCryptoDriver openssl engine=nom-moteur
-      </pre>
+    <div class="example"><h3>OpenSSL avec spécification du moteur de chiffrement</h3><pre class="prettyprint lang-config">SessionCryptoDriver openssl engine=nom-moteur</pre>
 </div>
 
 
@@ -227,16 +213,14 @@ d'Apache</td></tr>
     <p>Si la valeur de l'argument commence par exec: , la commande
     spécifiée sera exécutée, et la première ligne que cette dernière
     renverra sur la sortie standard sera utilisée comme clé.</p>
-<div class="example"><pre>
-# clé spécifiée et utilisée en tant que tel
+<div class="example"><pre># clé spécifiée et utilisée en tant que tel
 SessionCryptoPassphrase secret
 
 # exécution de /path/to/program pour générer la clé
 SessionCryptoPassphrase exec:/path/to/program
 
 # exécution de /path/to/program avec un argument pour générer la clé
-SessionCryptoPassphrase "exec:/path/to/otherProgram argument1"
-</pre></div>
+SessionCryptoPassphrase "exec:/path/to/otherProgram argument1"</pre></div>
 
 
 </div>

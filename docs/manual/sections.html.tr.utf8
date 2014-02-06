@@ -68,11 +68,9 @@
       sunucu <code>httpd -DClosedForNow</code> komut satırı ile başlatıldığı
       takdirde mümkün olur:</p>
 
-    <pre class="prettyprint lang-config">
-&lt;IfDefine ClosedForNow&gt;
+    <pre class="prettyprint lang-config">&lt;IfDefine ClosedForNow&gt;
   Redirect / http://otherserver.example.com/
-&lt;/IfDefine&gt;
-    </pre>
+&lt;/IfDefine&gt;</pre>
 
 
     <p><code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;</a></code> yönergesi
@@ -89,11 +87,9 @@
     <p>Aşağıdaki örnekte, <code class="directive"><a href="./mod/mod_mime_magic.html#mimemagicfile">MimeMagicFile</a></code> yönergesi sadece
       <code class="module"><a href="./mod/mod_mime_magic.html">mod_mime_magic</a></code> modülü mevcutsa uygulanacaktır.</p>
 
-    <pre class="prettyprint lang-config">
-&lt;IfModule mod_mime_magic.c&gt;
+    <pre class="prettyprint lang-config">&lt;IfModule mod_mime_magic.c&gt;
   MimeMagicFile conf/magic
-&lt;/IfModule&gt;
-    </pre>
+&lt;/IfModule&gt;</pre>
 
 
     <p><code class="directive"><a href="./mod/mod_version.html#ifversion">&lt;IfVersion&gt;</a></code>
@@ -103,12 +99,10 @@
       yapılandırmalarla büyük ağlarda çalışmayı mümkün kılmak veya sürüm
       denemeleri yapabilmek amacıyla tasarlanmıştır.</p>
 
-    <pre class="prettyprint lang-config">
-&lt;IfVersion &gt;= 2.4&gt;
+    <pre class="prettyprint lang-config">&lt;IfVersion &gt;= 2.4&gt;
   # burası sadece 2.4.0 veya daha üstü sürümlerde
   # iş görür.
-&lt;/IfVersion&gt;
-    </pre>
+&lt;/IfVersion&gt;</pre>
 
 
     <p><code class="directive"><a href="./mod/core.html#ifdefine">&lt;IfDefine&gt;</a></code>,
@@ -153,11 +147,9 @@
       yapılandırmada, <code>/var/web/dir1</code> dizini ve alt dizinlerinde
       dizin içeriğinin listelenmesi etkin kılınmaktadır.</p>
 
-    <pre class="prettyprint lang-config">
-&lt;Directory /var/web/dir1&gt;
+    <pre class="prettyprint lang-config">&lt;Directory /var/web/dir1&gt;
   Options +Indexes
-&lt;/Directory&gt;
-    </pre>
+&lt;/Directory&gt;</pre>
 
 
     <p>Bir <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code> bölümü
@@ -167,11 +159,9 @@
       <code>gizli.html</code> isimli dosyalara nerede bulunursa bulunsun
       erişime izin vermeyecektir.</p>
 
-    <pre class="prettyprint lang-config">
-&lt;Files gizli.html&gt;
+    <pre class="prettyprint lang-config">&lt;Files gizli.html&gt;
   Require all denied
-&lt;/Files&gt;
-    </pre>
+&lt;/Files&gt;</pre>
 
 
     <p>Dosya sisteminin belli bir yerindeki belli dosyalarla ilgili yaptırımlar
@@ -184,13 +174,11 @@
       <code>/var/web/dir1/</code> altında bulunabilecek diğer tüm
       <code>gizli.html</code> dosyalarına erişimi yasaklar.</p>
 
-    <pre class="prettyprint lang-config">
-&lt;Directory /var/web/dir1&gt;<br />
+    <pre class="prettyprint lang-config">&lt;Directory /var/web/dir1&gt;<br />
   &lt;Files gizli.html&gt;<br />
     Require all denied
   &lt;/Files&gt;<br />
-&lt;/Directory&gt;
-    </pre>
+&lt;/Directory&gt;</pre>
 
   
 
@@ -206,11 +194,9 @@
       istekleri yanında <code>/gizli</code> ile başlayan diğer isteklere de
       uygulanır.</p>
 
-    <pre class="prettyprint lang-config">
-&lt;LocationMatch ^/gizli&gt;
+    <pre class="prettyprint lang-config">&lt;LocationMatch ^/gizli&gt;
     Require all denied
-&lt;/LocationMatch&gt;
-    </pre>
+&lt;/LocationMatch&gt;</pre>
 
 
     <p>Dosya sistemi ile etkileşime girmeyen herşey için
@@ -221,11 +207,9 @@
       için dosya sisteminde <code>server-status</code> adında bir dosya
       veya dizin bulunması gerekli değildir.</p>
 
-    <pre class="prettyprint lang-config">
-&lt;Location /server-status&gt;
+    <pre class="prettyprint lang-config">&lt;Location /server-status&gt;
     SetHandler server-status
-&lt;/Location&gt;
-    </pre>
+&lt;/Location&gt;</pre>
 
   
 
@@ -233,30 +217,24 @@
     <p>Belli bölümler ve yönergeler değerlendirilirken çakışan iki URL bir URL
     olarak dikkate alınır. <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code> yönergesi için bu şöyle olurdu:</p>
 
-    <pre class="prettyprint lang-config">
-&lt;Location /foo&gt;
+    <pre class="prettyprint lang-config">&lt;Location /foo&gt;
 &lt;/Location&gt;
 &lt;Location /foo/bar&gt;
-&lt;/Location&gt;
-    </pre>
+&lt;/Location&gt;</pre>
 
 
     <p>Diğer yandan <code class="directive"><a href="./mod/mod_alias.html#takma adlar">&lt;Takma
       adlar&gt;</a></code> tam tersi eşlenir:</p>
 
-    <pre class="prettyprint lang-config">
-Alias /foo/bar /srv/www/uncommon/bar
-Alias /foo /srv/www/common/foo
-    </pre>
+    <pre class="prettyprint lang-config">Alias /foo/bar /srv/www/uncommon/bar
+Alias /foo /srv/www/common/foo</pre>
 
 
     <p>Aynısı <code class="directive"><a href="./mod/mod_proxy.html#proxypass">ProxyPass</a></code>
       yönergeleri için de geçerlidir:</p>
 
-    <pre class="prettyprint lang-config">
-ProxyPass /special-area http://special.example.com smax=5 max=10
-ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover=On
-    </pre>
+    <pre class="prettyprint lang-config">ProxyPass /special-area http://special.example.com smax=5 max=10
+ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover=On</pre>
 
   
 
@@ -284,21 +262,17 @@ ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover
     <p>Tüm kullanıcı dizinlerine ilişkin yapılandırmayı değiştirmek için dosya
       ismi kalıpları şöyle kullanılabilirdi:</p>
 
-    <pre class="prettyprint lang-config">
-&lt;Directory /home/*/public_html&gt;
+    <pre class="prettyprint lang-config">&lt;Directory /home/*/public_html&gt;
     Options Indexes
-&lt;/Directory&gt;
-    </pre>
+&lt;/Directory&gt;</pre>
 
 
     <p>Düzenli ifade bölümleri kullanarak çeşitli türlerdeki resim dosyalarına
       erişimi bir defada yasaklayabiliriz:</p>
 
-    <pre class="prettyprint lang-config">
-&lt;FilesMatch \.(?i:gif|jpe?g|png)$&gt;
+    <pre class="prettyprint lang-config">&lt;FilesMatch \.(?i:gif|jpe?g|png)$&gt;
     Require all denied
-&lt;/FilesMatch&gt;
-    </pre>
+&lt;/FilesMatch&gt;</pre>
 
   
 
@@ -309,11 +283,9 @@ ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover
       <code>HTTP Referer</code> başlığı "http://www.example.com/" ile
       başlamıyorsa erişimi yasaklar.</p>
 
-    <pre class="prettyprint lang-config">
-&lt;If "!(%{HTTP_REFERER} -strmatch 'http://www.example.com/*')"&gt;
+    <pre class="prettyprint lang-config">&lt;If "!(%{HTTP_REFERER} -strmatch 'http://www.example.com/*')"&gt;
     Require all denied
-&lt;/If&gt;
-    </pre>
+&lt;/If&gt;</pre>
 
   
 
@@ -331,11 +303,9 @@ ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover
       kısıtlamalarınızın etrafından dolaşılabilmesine izin vermesidir.
       Örneğin, aşağıdaki yapılandırmayı ele alalım:</p>
 
-    <pre class="prettyprint lang-config">
-&lt;Location /dir/&gt;
+    <pre class="prettyprint lang-config">&lt;Location /dir/&gt;
     Require all denied
-&lt;/Location&gt;
-    </pre>
+&lt;/Location&gt;</pre>
 
 
     <p><code>http://siteniz.mesela.dom/dir/</code> için bir istek yapılmışsa
@@ -393,11 +363,9 @@ ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover
       <code>example.com</code> sitesine erişim için vekil sunucunun
       kullanılmasını engelleyecektir.</p>
 
-    <pre class="prettyprint lang-config">
-&lt;Proxy http://www.example.com/*&gt;
+    <pre class="prettyprint lang-config">&lt;Proxy http://www.example.com/*&gt;
     Require all granted
-&lt;/Proxy&gt;
-    </pre>
+&lt;/Proxy&gt;</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -502,8 +470,7 @@ ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover
       isteğe uygulandığı varsayımıyla, bu örnekteki yönergeler A &gt; B &gt; C
       &gt; D &gt; E sırasıyla uygulanacaktır.</p>
 
-    <pre class="prettyprint lang-config">
-&lt;Location /&gt;
+    <pre class="prettyprint lang-config">&lt;Location /&gt;
     E
 &lt;/Location&gt;
 
@@ -523,8 +490,7 @@ ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover
 
 &lt;Directory /a/b&gt;
     A
-&lt;/Directory&gt;
-    </pre>
+&lt;/Directory&gt;</pre>
 
 
     <p>Daha somut bir örnek olarak aşağıdakini ele alalım.
@@ -534,8 +500,7 @@ ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover
       Başka bir deyişle, katıştırma sırası önemlidir, bu nedenle dikkatli
       olmalısınız!</p>
 
-    <pre class="prettyprint lang-config">
-&lt;Location /&gt;
+    <pre class="prettyprint lang-config">&lt;Location /&gt;
     Require all granted
 &lt;/Location&gt;
 
@@ -545,8 +510,7 @@ ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover
         Require all granted
         Require not host kkadam.example.com
     &lt;/RequireAll&gt;
-&lt;/Directory&gt;
-    </pre>
+&lt;/Directory&gt;</pre>
 
 
   

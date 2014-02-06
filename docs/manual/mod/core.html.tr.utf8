@@ -144,9 +144,7 @@ httpd 2.1.5 ve sonrasında mevcuttur.</td></tr>
       gibi sunucunun baştan bir veri göndermesinin gerekli olduğu
       protokoller için kullanışlıdır. Örnek:</p>
 
-    <pre class="prettyprint lang-config">
-    AcceptFilter nntp none
-    </pre>
+    <pre class="prettyprint lang-config">AcceptFilter nntp none</pre>
 
 
     <p>Öntanımlı protokol isimleri port 443 için <code>https</code> ve tüm
@@ -155,10 +153,8 @@ httpd 2.1.5 ve sonrasında mevcuttur.</td></tr>
       argümanını ekleyin.</p>
 
     <p>FreeBSD için öntanımlı değerler:</p>
-    <pre class="prettyprint lang-config">
-AcceptFilter http httpready
-AcceptFilter https dataready
-    </pre>
+    <pre class="prettyprint lang-config">AcceptFilter http httpready
+AcceptFilter https dataready</pre>
 
 
     <p><code>httpready</code> kabul süzgeci HTTP isteklerinin tamamını
@@ -167,10 +163,8 @@ AcceptFilter https dataready
       şifrelenmiş olduğundan sadece <a href="http://www.freebsd.org/cgi/man.cgi?query=accf_data&amp;sektion=9">accf_data(9)</a> süzgeci kullanılır.</p>
 
     <p>Linux’taki öntanımlı değerler:</p>
-    <pre class="prettyprint lang-config">
-AcceptFilter http data
-AcceptFilter https data
-    </pre>
+    <pre class="prettyprint lang-config">AcceptFilter http data
+AcceptFilter https data</pre>
 
 
     <p>Linux’un <code>TCP_DEFER_ACCEPT</code> soket seçeneği HTTP isteklerinin
@@ -181,10 +175,8 @@ AcceptFilter https data
 
     <p>Windows’taki öntanımlı değerler::</p>
 
-    <pre class="prettyprint lang-config">
-AcceptFilter http data
-AcceptFilter https data
-    </pre>
+    <pre class="prettyprint lang-config">AcceptFilter http data
+AcceptFilter https data</pre>
 
 
     <p>Windows'un <code>mpm_winnt</code> modülü <code>AcceptEx()</code>
@@ -264,13 +256,11 @@ AcceptFilter https data
       normal olarak isteği reddederdi, böyle bir durumda bir betiği etkin
       kılmak için aşağıdaki gibi bir yapılandırma kullanabilirsiniz:</p>
 
-    <pre class="prettyprint lang-config">
-&lt;Files "mypaths.shtml"&gt;
+    <pre class="prettyprint lang-config">&lt;Files "mypaths.shtml"&gt;
   Options +Includes
   SetOutputFilter INCLUDES
   AcceptPathInfo On
-&lt;/Files&gt;
-    </pre>
+&lt;/Files&gt;</pre>
 
 
 
@@ -295,11 +285,9 @@ AcceptFilter https data
     <p>Sunucu, <code>/usr/local/web/index.html</code> belgesini döndürmeden
       önce,</p>
 
-    <pre class="prettyprint lang-config">
-&lt;Directory /&gt;
+    <pre class="prettyprint lang-config">&lt;Directory /&gt;
     AllowOverride None
-&lt;/Directory&gt;
-    </pre>
+&lt;/Directory&gt;</pre>
 
 
     <p>şeklinde bir yapılandırma ile iptal edilmiş olmadıkça yönergeler için
@@ -617,10 +605,8 @@ AcceptFilter https data
 
     <p>Örnek:</p>
 
-    <pre class="prettyprint lang-config">
-AllowOverride None
-AllowOverrideList Redirect RedirectMatch
-    </pre>
+    <pre class="prettyprint lang-config">AllowOverride None
+AllowOverrideList Redirect RedirectMatch</pre>
 
 
     <p>Yukarıdaki örnekte sadece <code>Redirect</code> ve
@@ -629,10 +615,8 @@ AllowOverrideList Redirect RedirectMatch
 
     <p>Örnek:</p>
 
-    <pre class="prettyprint lang-config">
-AllowOverride AuthConfig
-AllowOverrideList CookieTracking CookieName
-    </pre>
+    <pre class="prettyprint lang-config">AllowOverride AuthConfig
+AllowOverrideList CookieTracking CookieName</pre>
 
 
     <p>Yukarıdaki örnekte <code class="directive"><a href="#allowoverride">AllowOverride
@@ -726,9 +710,7 @@ AllowOverrideList CookieTracking CookieName
       göreli olacaktır.</p>
 
     <p><strong>Örnek</strong></p>
-   <pre class="prettyprint lang-config">
-DefaultRuntimeDir scratch/
-    </pre>
+   <pre class="prettyprint lang-config">DefaultRuntimeDir scratch/</pre>
 
 
     <p><code class="directive">DefaultRuntimeDir</code> için öntanımlı yer derleme
@@ -800,16 +782,14 @@ için iptal edilmiştir.</td></tr>
       ile kullanılabilir. Değişken daima küresel olarak tanımlı olup
       yapılandırma bölümünü sarmalayan etki alanı ile sınırlanmaz.</p>
 
-    <pre class="prettyprint lang-config">
-&lt;IfDefine TEST&gt;
+    <pre class="prettyprint lang-config">&lt;IfDefine TEST&gt;
   Define servername test.example.com
 &lt;/IfDefine&gt;
 &lt;IfDefine !TEST&gt;
   Define servername www.example.com
   Define SSL
 &lt;/IfDefine&gt;
-DocumentRoot /var/www/${servername}/htdocs
-    </pre>
+DocumentRoot /var/www/${servername}/htdocs</pre>
 
 
     <p><code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> sözdizimi ile
@@ -844,11 +824,9 @@ DocumentRoot /var/www/${servername}/htdocs
       değil, ama <code>&lt;Directory /home/*/public_html&gt;</code>
       eşleşecektir. Örnek:</p>
 
-    <pre class="prettyprint lang-config">
-&lt;Directory "/usr/local/httpd/htdocs"&gt;
+    <pre class="prettyprint lang-config">&lt;Directory "/usr/local/httpd/htdocs"&gt;
   Options Indexes FollowSymLinks
-&lt;/Directory&gt;
-    </pre>
+&lt;/Directory&gt;</pre>
 
 
     <div class="note">
@@ -863,11 +841,9 @@ DocumentRoot /var/www/${servername}/htdocs
     <p><code>~</code> karakterine ek olarak <a class="glossarylink" href="../glossary.html#regex" title="sözlüğe bakınız">düzenli
       ifadeler</a> de kullanılabilir. Örnek:</p>
 
-    <pre class="prettyprint lang-config">
-&lt;Directory ~ "^/www/[0-9]{3}"&gt;
+    <pre class="prettyprint lang-config">&lt;Directory ~ "^/www/[0-9]{3}"&gt;
 
-&lt;/Directory&gt;
-</pre>
+&lt;/Directory&gt;</pre>
 
 
     <p>yönergesi <code>/www/</code> içindeki üç rakamdan oluşan dizinlerle
@@ -878,15 +854,13 @@ DocumentRoot /var/www/${servername}/htdocs
       eşleşmedeki yönergelerden başlayarak <a href="#accessfilename">.htaccess</a> dosyalarındaki yönergelere kadar
       genişletilir. Örneğin,</p>
 
-    <pre class="prettyprint lang-config">
-&lt;Directory /&gt;
+    <pre class="prettyprint lang-config">&lt;Directory /&gt;
   AllowOverride None
 &lt;/Directory&gt;
 
 &lt;Directory "/home"&gt;
   AllowOverride FileInfo
-&lt;/Directory&gt;
-    </pre>
+&lt;/Directory&gt;</pre>
 
 
     <p>bölümleri ile <code>/home/web/dir/doc.html</code> belgesine erişirken
@@ -909,11 +883,9 @@ DocumentRoot /var/www/${servername}/htdocs
       değerlendirilmez. Düzenli ifadelerin tamamı yapılandırma dosyasında
       görüldükleri sıraya göre sınanırlar. Örneğin,</p>
 
-    <pre class="prettyprint lang-config">
-&lt;Directory ~ "abc$"&gt;
+    <pre class="prettyprint lang-config">&lt;Directory ~ "abc$"&gt;
   # ... yönergeler burada ...
-&lt;/Directory&gt;
-    </pre>
+&lt;/Directory&gt;</pre>
 
 
     <p>düzenli ifadeli bölümü, tüm normal <code class="directive">&lt;Directory&gt;</code> bölümleri ve
@@ -927,11 +899,9 @@ DocumentRoot /var/www/${servername}/htdocs
      erişime izin vermek oluşuna dikkat ediniz. Bunu şöyle bir blokla
      değiştirmeniz,</strong></p>
 
-    <pre class="prettyprint lang-config">
-&lt;Directory /&gt;
+    <pre class="prettyprint lang-config">&lt;Directory /&gt;
   Require all denied
-&lt;/Directory&gt;
-    </pre>
+&lt;/Directory&gt;</pre>
 
 
     <p><strong>ve erişilebilir olmasını istediğiniz dizinleri ayrıca
@@ -966,11 +936,9 @@ DocumentRoot /var/www/${servername}/htdocs
       bir yönerge grubunu sarmalamakta kullanılır. Tek farkla argüman olarak
       bir <a class="glossarylink" href="../glossary.html#regex" title="sözlüğe bakınız">düzenli ifade</a> alır. Örnek:</p>
 
-    <pre class="prettyprint lang-config">
-&lt;DirectoryMatch "^/www/(.+/)?[0-9]{3}"&gt;
+    <pre class="prettyprint lang-config">&lt;DirectoryMatch "^/www/(.+/)?[0-9]{3}"&gt;
     # ...
-&lt;/DirectoryMatch&gt;
-</pre>
+&lt;/DirectoryMatch&gt;</pre>
 
 
     <p>yönergesi <code>/www/</code> içindeki üç rakamdan oluşan dizinlerle
@@ -1047,14 +1015,12 @@ DocumentRoot /var/www/${servername}/htdocs
       <code class="directive">&lt;ElseIf&gt;</code> bölümü uygulanmamışsa
       kapsadığı yönergeleri uygular. Örneğin:</p>
 
-    <pre class="prettyprint lang-config">
-&lt;If "-z req('Host')"&gt;
+    <pre class="prettyprint lang-config">&lt;If "-z req('Host')"&gt;
   # ...
 &lt;/If&gt;
 &lt;Else&gt;
   # ...
-&lt;/Else&gt;
-    </pre>
+&lt;/Else&gt;</pre>
 
 
     <p>Burada, <code class="directive">&lt;If&gt;</code> yönergesi
@@ -1092,8 +1058,7 @@ DocumentRoot /var/www/${servername}/htdocs
       <code class="directive">&lt;ElseIf&gt;</code> yönergesinin uygulanmadığı
       takdirde uygular. Örnek:</p>
 
-    <pre class="prettyprint lang-config">
-&lt;If "-R '10.1.0.0/16'"&gt;
+    <pre class="prettyprint lang-config">&lt;If "-R '10.1.0.0/16'"&gt;
   #...
 &lt;/If&gt;
 &lt;ElseIf "-R '10.0.0.0/8'"&gt;
@@ -1101,8 +1066,7 @@ DocumentRoot /var/www/${servername}/htdocs
 &lt;/ElseIf&gt;
 &lt;Else&gt;
   #...
-&lt;/Else&gt;
-    </pre>
+&lt;/Else&gt;</pre>
 
 
     <p><code class="directive">&lt;ElseIf&gt;</code> bir isteğin uzak adresi
@@ -1168,11 +1132,9 @@ DocumentRoot /var/www/${servername}/htdocs
     <p>Bu özellik, sadece NFS dosya sistemi üzerinde sunulan dosyaları
       kapsamak üzere şu şekilde kolayca kapatılabilir:</p>
 
-    <pre class="prettyprint lang-config">
-&lt;Directory "/nfs-dosyaları-yolu"&gt;
+    <pre class="prettyprint lang-config">&lt;Directory "/nfs-dosyaları-yolu"&gt;
   EnableMMAP Off
-&lt;/Directory&gt;
-    </pre>
+&lt;/Directory&gt;</pre>
 
 
 </div>
@@ -1227,11 +1189,9 @@ DocumentRoot /var/www/${servername}/htdocs
     <p>Bu özellik, sadece bir ağ dosya sistemi üzerinde sunulan
       dosyaları kapsamak üzere şu şekilde kolayca kapatılabilir:</p>
 
-    <pre class="prettyprint lang-config">
-&lt;Directory "/nfs-dosyaları-yolu"&gt;
+    <pre class="prettyprint lang-config">&lt;Directory "/nfs-dosyaları-yolu"&gt;
   EnableSendfile Off
-&lt;/Directory&gt;
-    </pre>
+&lt;/Directory&gt;</pre>
 
 
 <p><code class="directive">EnableSendfile</code> yönergesinin .htaccess ve
@@ -1256,8 +1216,7 @@ DocumentRoot /var/www/${servername}/htdocs
       üretilmesi için kullanılabilir. Genelde kullanıldığı durum, gerekli
       modüllerin yapılandırmada bulunmadığının raporlanmasıdır.</p>
 
-    <pre class="prettyprint lang-config">
-# Örnek
+    <pre class="prettyprint lang-config"># Örnek
 # mod_include yüklü değilse bilelim
 &lt;IfModule !include_module&gt;
   Error "Hata: mod_include mod_foo için gerekiyor. LoadModule ile yükleyin."
@@ -1273,8 +1232,7 @@ DocumentRoot /var/www/${servername}/htdocs
 &lt;IfDefine !NOSSL&gt;
   Error "Ya SSL ya da NOSSL tanımlı olmalı."
 &lt;/IfDefine&gt;
-&lt;/IfDefine&gt;
-    </pre>
+&lt;/IfDefine&gt;</pre>
 
 
 
@@ -1315,12 +1273,10 @@ DocumentRoot /var/www/${servername}/htdocs
       şeklinde de belirtilebilir. Bunlar yerine, tarayıcıda gösterilmek üzere
       bir ileti de belirtilebilir. Örnekler:</p>
 
-    <pre class="prettyprint lang-config">
-ErrorDocument 500 http://foo.example.com/cgi-bin/tester
+    <pre class="prettyprint lang-config">ErrorDocument 500 http://foo.example.com/cgi-bin/tester
 ErrorDocument 404 /cgi-bin/bad_urls.pl
 ErrorDocument 401 /subscription_info.html
-ErrorDocument 403 "Kusura bakmayın, bugün hizmet veremiyoruz."
-    </pre>
+ErrorDocument 403 "Kusura bakmayın, bugün hizmet veremiyoruz."</pre>
 
 
     <p>Bunlardan başka, Apache httpd’nin kendi hata iletilerinin kullanılacağı
@@ -1331,13 +1287,11 @@ ErrorDocument 403 "Kusura bakmayın, bugün hizmet veremiyoruz."
       <code>default</code> değeri açıkça belirtilerek örnekteki gibi
       zorlanabilir:</p>
 
-    <pre class="prettyprint lang-config">
-ErrorDocument 404 /cgi-bin/bad_urls.pl
+    <pre class="prettyprint lang-config">ErrorDocument 404 /cgi-bin/bad_urls.pl
 
 &lt;Directory /web/docs&gt;
   ErrorDocument 404 default
-&lt;/Directory&gt;
-    </pre>
+&lt;/Directory&gt;</pre>
 
 
     <p><code class="directive">ErrorDocument</code> yönergesinde bir uzak URL (önünde
@@ -1457,10 +1411,8 @@ ErrorDocument 404 /cgi-bin/bad_urls.pl
       hata iletisine ek olarak günlüklenecek ek bilgiyi belirtmek için
       kullanılabilir.</p>
 
-    <pre class="prettyprint lang-config">
-#Basit örnek
-ErrorLogFormat "[%t] [%l] [pid %P] %F: %E: [client %a] %M"
-    </pre>
+    <pre class="prettyprint lang-config">#Basit örnek
+ErrorLogFormat "[%t] [%l] [pid %P] %F: %E: [client %a] %M"</pre>
 
 
     <p>İlk değiştirge olarak <code>connection</code> veya <code>request</code>
@@ -1590,10 +1542,8 @@ ErrorLogFormat "[%t] [%l] [pid %P] %F: %E: [client %a] %M"
       <code class="module"><a href="../mod/mod_unique_id.html">mod_unique_id</a></code> modülü yüklüyse onun eşsiz kimliği
       istekler için günlük kimliği olarak kullanılacaktır.</p>
 
-    <pre class="prettyprint lang-config">
-#Örnek (Evreli MPM'ler için öntanımlı biçim)
-ErrorLogFormat "[%{u}t] [%-m:%l] [pid %P:tid %T] %7F: %E: [client\ %a] %M%&nbsp;,\&nbsp;referer\&nbsp;%{Referer}i"
-    </pre>
+    <pre class="prettyprint lang-config">#Örnek (Evreli MPM'ler için öntanımlı biçim)
+ErrorLogFormat "[%{u}t] [%-m:%l] [pid %P:tid %T] %7F: %E: [client\ %a] %M% ,\ referer\ %{Referer}i"</pre>
 
 
     <p>Bunun hata iletilerindeki sonuçları şöyle olabilir:</p>
@@ -1605,20 +1555,16 @@ ErrorLogFormat "[%{u}t] [%-m:%l] [pid %P:tid %T] %7F: %E: [client\ %a] %M%&nbsp;
     <p>Dikkat edin, yukarıda açıklandığı gibi, bazı alanlar
       tanımlanmadıklarından tamamen yoksayılır.</p>
 
-    <pre class="prettyprint lang-config">
-#Örnek (2.2.x biçimine benzer)
-ErrorLogFormat "[%t] [%l] %7F: %E: [client\ %a] %M%&nbsp;,\&nbsp;referer\&nbsp;%{Referer}i"
-    </pre>
+    <pre class="prettyprint lang-config">#Örnek (2.2.x biçimine benzer)
+ErrorLogFormat "[%t] [%l] %7F: %E: [client\ %a] %M% ,\ referer\ %{Referer}i"</pre>
 
 
-    <pre class="prettyprint lang-config">
-#İstek/bağlantı günlük kimlikli gelişkin bir örnek
+    <pre class="prettyprint lang-config">#İstek/bağlantı günlük kimlikli gelişkin bir örnek
 ErrorLogFormat "[%{uc}t] [%-m:%-l] [R:%L] [C:%{C}L] %7F: %E: %M"
 ErrorLogFormat request "[%{uc}t] [R:%L] Request %k on C:%{c}L pid:%P tid:%T"
 ErrorLogFormat request "[%{uc}t] [R:%L] UA:'%+{User-Agent}i'"
 ErrorLogFormat request "[%{uc}t] [R:%L] Referer:'%+{Referer}i'"
-ErrorLogFormat connection "[%{uc}t] [C:%{c}L] local\ %a remote\ %A"
-    </pre>
+ErrorLogFormat connection "[%{uc}t] [C:%{c}L] local\ %a remote\ %A"</pre>
 
 
 
@@ -1759,24 +1705,20 @@ ErrorLogFormat connection "[%{uc}t] [C:%{c}L] local\ %a remote\ %A"
       imi bir karakterle eşleştirilirken <code>*</code> imi karakter dizileri
       ile eşleştirilir.</p>
 
-    <pre class="prettyprint lang-config">
-&lt;Files "zat.html"&gt;
+    <pre class="prettyprint lang-config">&lt;Files "zat.html"&gt;
     # zat.html dosyasına uygulanacakları buraya koy
 &lt;/Files&gt;
 
 &lt;Files "?at.*"&gt;
     # Buradakiler hat.html, kat.html, tat.html ve benzerlerine uygulanır.
-&lt;/Files&gt;
-</pre>
+&lt;/Files&gt;</pre>
 
 
     <p><code>~</code> imine ek olarak <a class="glossarylink" href="../glossary.html#regex" title="sözlüğe bakınız">düzenli ifadeler</a> de kullanılabilir. Örneğin</p>
 
-    <pre class="prettyprint lang-config">
-&lt;Files ~ "\.(gif|jpe?g|png)$"&gt;
+    <pre class="prettyprint lang-config">&lt;Files ~ "\.(gif|jpe?g|png)$"&gt;
     #...
-&lt;/Files&gt;
-</pre>
+&lt;/Files&gt;</pre>
 
 
     <p>satırı en bilinen resim dosyası biçimleriyle eşleşecektir. Bunun
@@ -1814,11 +1756,9 @@ ErrorLogFormat connection "[%{uc}t] [C:%{c}L] local\ %a remote\ %A"
       yönergelerin etki alanını <code class="directive"><a href="#files">&lt;Files&gt;</a></code> yönergesinin yaptığı gibi dosya
       isimlerine göre sınırlandırır. Ancak, argüman olarak bir <a class="glossarylink" href="../glossary.html#regex" title="sözlüğe bakınız">düzenli ifade</a> kabul eder. Örneğin</p>
 
-<pre class="prettyprint lang-config">
-&lt;FilesMatch "\.(gif|jpe?g|png)$"&gt;
+<pre class="prettyprint lang-config">&lt;FilesMatch "\.(gif|jpe?g|png)$"&gt;
     # ...
-&lt;/FilesMatch&gt;
-</pre>
+&lt;/FilesMatch&gt;</pre>
 
 
     <p>satırı en bilinen resim dosyası biçimleriyle eşleşecektir.</p>
@@ -1863,8 +1803,7 @@ ErrorLogFormat connection "[%{uc}t] [C:%{c}L] local\ %a remote\ %A"
     <p>Ayrıca, daha genel <code class="directive">ForceType</code> ayarlarını da
       <code>None</code> değeriyle geçersiz kılabilirsiniz:</p>
 
-    <pre class="prettyprint lang-config">
-# tüm dosyaların image/gif olarak sunulması için:
+    <pre class="prettyprint lang-config"># tüm dosyaların image/gif olarak sunulması için:
 &lt;Location /images&gt;
   ForceType image/gif
 &lt;/Location&gt;
@@ -1872,8 +1811,7 @@ ErrorLogFormat connection "[%{uc}t] [C:%{c}L] local\ %a remote\ %A"
 # normal MIME-türüne geri dönmek için:
 &lt;Location /images/mixed&gt;
   ForceType None
-&lt;/Location&gt;
-    </pre>
+&lt;/Location&gt;</pre>
 
 
     <p>Bu yönerge, öncelikle dosya sisteminden sunulan duruk dosyalar için
@@ -2041,8 +1979,7 @@ sokulacak yönergeleri sarmalar.</td></tr>
       Örnek:</p>
 
     <div class="example"><p><code>httpd -DReverseProxy -DUseCache -DMemCache ...</code></p></div>
-    <pre class="prettyprint lang-config">
-&lt;IfDefine ReverseProxy&gt;
+    <pre class="prettyprint lang-config">&lt;IfDefine ReverseProxy&gt;
   LoadModule proxy_module   modules/mod_proxy.so
   LoadModule proxy_http_module   modules/mod_proxy_http.so
   &lt;IfDefine UseCache&gt;
@@ -2054,8 +1991,7 @@ sokulacak yönergeleri sarmalar.</td></tr>
       LoadModule cache_disk_module   modules/mod_cache_disk.so
     &lt;/IfDefine&gt;
   &lt;/IfDefine&gt;
-&lt;/IfDefine&gt;
-    </pre>
+&lt;/IfDefine&gt;</pre>
 
 
 </div>
@@ -2146,19 +2082,15 @@ yönergeleri sarmalar.</td></tr>
 
     <p>Örnekler:</p>
 
-    <pre class="prettyprint lang-config">
-Include /usr/local/apache2/conf/ssl.conf
-Include /usr/local/apache2/conf/vhosts/*.conf
-    </pre>
+    <pre class="prettyprint lang-config">Include /usr/local/apache2/conf/ssl.conf
+Include /usr/local/apache2/conf/vhosts/*.conf</pre>
 
 
     <p>Veya dizinler <code class="directive"><a href="#serverroot">ServerRoot</a></code> dizinine
       göre belirtilebilir:</p>
 
-    <pre class="prettyprint lang-config">
-Include conf/ssl.conf
-Include conf/vhosts/*.conf
-    </pre>
+    <pre class="prettyprint lang-config">Include conf/ssl.conf
+Include conf/vhosts/*.conf</pre>
 
 
      <p>Dosya kalıbı karakterleri yolun dizin ve dosya parçalarına
@@ -2294,11 +2226,9 @@ sarmalar.</td></tr>
       <code>POST</code>, <code>PUT</code> ve <code>DELETE</code> yöntemleri
       için uygulanmakta, diğer tüm yöntemler korumasız bırakılmaktadır:</p>
 
-    <pre class="prettyprint lang-config">
-&lt;Limit POST PUT DELETE&gt;
+    <pre class="prettyprint lang-config">&lt;Limit POST PUT DELETE&gt;
   Require valid-user
-&lt;/Limit&gt;
-    </pre>
+&lt;/Limit&gt;</pre>
 
 
     <p>Birden fazla bölümde kullanılabilecek yöntem isimleri: <code>GET</code>,
@@ -2331,14 +2261,12 @@ sarmalar.</td></tr>
     <code>POST</code> istekleri için yetkilendirilecek ve tüm durumlarda
     <code>Require group editors</code> yönergesi yoksayılacaktır:</p>
 
-    <pre class="prettyprint lang-config">
-&lt;LimitExcept GET&gt;
+    <pre class="prettyprint lang-config">&lt;LimitExcept GET&gt;
   Require valid-user
 &lt;/LimitExcept&gt;
 &lt;Limit POST&gt;
   Require group editors
-&lt;/Limit&gt;
-    </pre>
+&lt;/Limit&gt;</pre>
 
 
 
@@ -2364,11 +2292,9 @@ kullanılacak erişim sınırlayıcıları sarmalar.</td></tr>
 
     <p>Örnek:</p>
 
-    <pre class="prettyprint lang-config">
-&lt;LimitExcept POST GET&gt;
+    <pre class="prettyprint lang-config">&lt;LimitExcept POST GET&gt;
   Require valid-user
-&lt;/LimitExcept&gt;
-    </pre>
+&lt;/LimitExcept&gt;</pre>
 
 
 
@@ -2656,11 +2582,9 @@ sınırlar.</td></tr>
       uygulanacaktır, fakat <code>/private1other</code> isteğine
       uygulanmayacaktır.</p>
 
-    <pre class="prettyprint lang-config">
-&lt;Location /private1&gt;
+    <pre class="prettyprint lang-config">&lt;Location /private1&gt;
     #  ...
-&lt;/Location&gt;
-    </pre>
+&lt;/Location&gt;</pre>
 
 
     <p>Aşağıdaki örnekte yer belirtimi bir bölü çizgisi ile bitirilmiştir.
@@ -2668,11 +2592,9 @@ sınırlar.</td></tr>
       için sarmalanan yönergeler uygulanacaktır, fakat <code>/private2</code>
       ve <code>/private2other</code> isteklerine uygulanmayacaktır.</p>
 
-    <pre class="prettyprint lang-config">
-&lt;Location /private2<em>/</em>&gt;
+    <pre class="prettyprint lang-config">&lt;Location /private2<em>/</em>&gt;
     # ...
-&lt;/Location&gt;
-    </pre>
+&lt;/Location&gt;</pre>
 
 
     <div class="note"><h3><code class="directive">&lt;Location&gt;</code> ne zaman
@@ -2701,11 +2623,9 @@ sınırlar.</td></tr>
       <a class="glossarylink" href="../glossary.html#regex" title="sözlüğe bakınız">düzenli ifadeler</a> de kullanılabilir.
       Örneğin,</p>
 
-    <pre class="prettyprint lang-config">
-&lt;Location ~ "/(ek|hususi)/veri"&gt;
+    <pre class="prettyprint lang-config">&lt;Location ~ "/(ek|hususi)/veri"&gt;
     #...
-&lt;/Location&gt;
-</pre>
+&lt;/Location&gt;</pre>
 
 
     <p>yönergesi <code>/ek/veri</code> ve <code>/hususi/veri</code> alt
@@ -2719,12 +2639,10 @@ sınırlar.</td></tr>
       <code>example.com</code>’dan gelen isteklere izin vermek için şöyle bir
       uygulama yapabilirsiniz:</p>
 
-    <pre class="prettyprint lang-config">
-&lt;Location /status&gt;
+    <pre class="prettyprint lang-config">&lt;Location /status&gt;
   SetHandler server-status
   Require host example.com
-&lt;/Location&gt;
-    </pre>
+&lt;/Location&gt;</pre>
 
 
     <div class="note"><h3>/ (bölü çizgisi) hakkında</h3>
@@ -2770,11 +2688,9 @@ uygulanır.</td></tr>
       yönergelerin etki alanını <code class="directive"><a href="#location">&lt;Location&gt;</a></code> yönergesinin yaptığı gibi belirtilen URL’lerle
       sınırlar. Ancak argüman olarak basit bir dizge değil bir <a class="glossarylink" href="../glossary.html#regex" title="sözlüğe bakınız">düzenli ifade</a> alır. Örneğin,</p>
 
-    <pre class="prettyprint lang-config">
-&lt;LocationMatch "/(ek|hususi)/veri"&gt;
+    <pre class="prettyprint lang-config">&lt;LocationMatch "/(ek|hususi)/veri"&gt;
     # ...
-&lt;/LocationMatch&gt;
-</pre>
+&lt;/LocationMatch&gt;</pre>
 
 
     <p>yönergesi <code>/ek/veri</code> ve <code>/hususi/veri</code> alt
@@ -2950,21 +2866,17 @@ uygulanır.</td></tr>
       <code>_module</code> sonekli modül ismi belirtmek mümkündür.
       Yani, aşağıdaki üç belirtim eşdeğerdedir:</p>
 
-    <pre class="prettyprint lang-config">
-LogLevel info ssl:warn
+    <pre class="prettyprint lang-config">LogLevel info ssl:warn
 LogLevel info mod_ssl.c:warn
-LogLevel info ssl_module:warn
-    </pre>
+LogLevel info ssl_module:warn</pre>
 
 
     <p>Ayrıca seviyeyi dizin bağlamında değiştirmek de mümkündür:</p>
 
-    <pre class="prettyprint lang-config">
-LogLevel info
+    <pre class="prettyprint lang-config">LogLevel info
 &lt;Directory "/usr/local/apache/htdocs/app"&gt;
   LogLevel debug
-&lt;/Directory&gt;
-    </pre>
+&lt;/Directory&gt;</pre>
 
 
     <div class="note">Dizin bağlamında günük seviyesi yapılandırması sadece istek
@@ -3322,10 +3234,8 @@ LogLevel info
       öntanımlı mekanizması ise <code>sysvsem</code> ile
       değiştirilmektedir.</p>
 
-    <pre class="prettyprint lang-config">
-Mutex sysvsem default
-Mutex fcntl:/var/httpd/locks mpm-accept
-    </pre>
+    <pre class="prettyprint lang-config">Mutex sysvsem default
+Mutex fcntl:/var/httpd/locks mpm-accept</pre>
 
 
 </div>
@@ -3442,15 +3352,13 @@ Mutex fcntl:/var/httpd/locks mpm-accept
 
     <p>Örneğin, <code>+</code> ve <code>-</code> imleri olmaksızın,</p>
 
-    <pre class="prettyprint lang-config">
-&lt;Directory "/web/docs"&gt;
+    <pre class="prettyprint lang-config">&lt;Directory "/web/docs"&gt;
   Options Indexes FollowSymLinks
 &lt;/Directory&gt;
 
 &lt;Directory "/web/docs/spec"&gt;
   Options Includes
-&lt;/Directory&gt;
-    </pre>
+&lt;/Directory&gt;</pre>
 
 
     <p>yapılandırmasıyla <code>/web/docs/spec</code> dizininde sadece
@@ -3458,15 +3366,13 @@ Mutex fcntl:/var/httpd/locks mpm-accept
       <code class="directive">Options</code> yönergesinde <code>+</code> ve
       <code>-</code> imleri kullanılırsa,</p>
 
-    <pre class="prettyprint lang-config">
-&lt;Directory "/web/docs"&gt;
+    <pre class="prettyprint lang-config">&lt;Directory "/web/docs"&gt;
   Options Indexes FollowSymLinks
 &lt;/Directory&gt;
 
 &lt;Directory "/web/docs/spec"&gt;
   Options +Includes -Indexes
-&lt;/Directory&gt;
-    </pre>
+&lt;/Directory&gt;</pre>
 
 
     <p>yapılandırmasıyla <code>/web/docs/spec</code> dizininde
@@ -3777,15 +3683,13 @@ kullanılacak konak adları için başka isimler belirtebilmeyi sağlar.
       belirtebilmeyi sağlar. <code class="directive">ServerAlias</code> dosya adı kalıp
       karakterleri içerebilir.</p>
 
-    <pre class="prettyprint lang-config">
-&lt;VirtualHost *:80&gt;
+    <pre class="prettyprint lang-config">&lt;VirtualHost *:80&gt;
   ServerName server.example.com
   ServerAlias server server2.example.com server2
   ServerAlias *.example.com
   UseCanonicalName Off
   # ...
-&lt;/VirtualHost&gt;
-    </pre>
+&lt;/VirtualHost&gt;</pre>
 
 
     <p>İsme dayalı sanal konaklardan en iyi eşleşme kümesinde olanlar
@@ -4058,21 +3962,17 @@ sebep olur.</td></tr>
       yapıldığında sunucunun bir durum bilgisi göstermesi için
       <code>httpd.conf</code> dosyasına şöyle bir satır koyabilirsiniz:</p>
 
-    <pre class="prettyprint lang-config">
-&lt;Location "/status"&gt;
+    <pre class="prettyprint lang-config">&lt;Location "/status"&gt;
   SetHandler server-status
-&lt;/Location&gt;
-    </pre>
+&lt;/Location&gt;</pre>
 
 
     <p>Bu yönergeyi ayrıca, belli bir dosya uzantısına sahip dosyalara uygun
       bir eylemci atamak için de kullanabilirsiniz. örnek:</p>
 
-    <pre class="prettyprint lang-config">
-&lt;FilesMatch \.php$&gt;
+    <pre class="prettyprint lang-config">&lt;FilesMatch \.php$&gt;
     SetHandler application/x-httpd-php
-&lt;/FilesMatch&gt;
-    </pre>
+&lt;/FilesMatch&gt;</pre>
 
 
      <p>Evvelce tanımlanmış bir <code class="directive">SetHandler</code> yönergesini
@@ -4133,11 +4033,9 @@ belirler.</td></tr>
     <p>Örneğin, aşağıdaki yapılandırma ile <code>/www/data/</code> dizinindeki
      bütün dosyalar sunucu taraflı içerik kapsamında ele alınacaktır.</p>
 
-    <pre class="prettyprint lang-config">
-&lt;Directory "/www/data/"&gt;
+    <pre class="prettyprint lang-config">&lt;Directory "/www/data/"&gt;
   SetOutputFilter INCLUDES
-&lt;/Directory&gt;
-    </pre>
+&lt;/Directory&gt;</pre>
 
 
     <p>Birden fazla süzgeç belirtilmek istenirse birbirlerinden noktalı
@@ -4388,15 +4286,13 @@ gerçekleşmesi için sunucunun geçmesini bekleyeceği süre.</td></tr>
         dizgesi.</li>
     </ul>
 
-    <pre class="prettyprint lang-config">
-&lt;VirtualHost 10.1.2.3:80&gt;
+    <pre class="prettyprint lang-config">&lt;VirtualHost 10.1.2.3:80&gt;
   ServerAdmin webmaster@host.example.com
   DocumentRoot /www/docs/host.example.com
   ServerName host.example.com
   ErrorLog logs/host.example.com-error_log
   TransferLog logs/host.example.com-access_log
-&lt;/VirtualHost&gt;
-    </pre>
+&lt;/VirtualHost&gt;</pre>
 
 
 
@@ -4404,15 +4300,13 @@ gerçekleşmesi için sunucunun geçmesini bekleyeceği süre.</td></tr>
       adresleri köşeli ayraç içine alınır. IPv6 adresi kullanılan bir
       örnek:</p>
 
-    <pre class="prettyprint lang-config">
-&lt;VirtualHost [2001:db8::a00:20ff:fea7:ccea]:80&gt;
+    <pre class="prettyprint lang-config">&lt;VirtualHost [2001:db8::a00:20ff:fea7:ccea]:80&gt;
   ServerAdmin webmaster@host.example.com
   DocumentRoot /www/docs/host.example.com
   ServerName host.example.com
   ErrorLog logs/host.example.com-error_log
   TransferLog logs/host.example.com-access_log
-&lt;/VirtualHost&gt;
-    </pre>
+&lt;/VirtualHost&gt;</pre>
 
 
     <p>Her sanal konağın ya farklı bir IP adresi ve port ile ya da farklı bir

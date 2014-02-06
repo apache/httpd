@@ -97,15 +97,13 @@
       to update an existing session, to insert a new session, and to delete an expired or empty
       session. These queries are configured as per the example below.</p>
 
-      <div class="example"><h3>Sample DBD configuration</h3><pre class="prettyprint lang-config">
-DBDriver pgsql
+      <div class="example"><h3>Sample DBD configuration</h3><pre class="prettyprint lang-config">DBDriver pgsql
 DBDParams "dbname=apachesession user=apache password=xxxxx host=localhost"
 DBDPrepareSQL "delete from session where key = %s" deletesession
 DBDPrepareSQL "update session set value = %s, expiry = %lld, key = %s where key = %s" updatesession
 DBDPrepareSQL "insert into session (value, expiry, key) values (%s, %lld, %s)" insertsession
 DBDPrepareSQL "select value from session where key = %s and (expiry = 0 or expiry &gt; %lld)" selectsession
-DBDPrepareSQL "delete from session where expiry != 0 and expiry &lt; %lld" cleansession
-    </pre>
+DBDPrepareSQL "delete from session where expiry != 0 and expiry &lt; %lld" cleansession</pre>
 </div>
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -120,10 +118,8 @@ DBDPrepareSQL "delete from session where expiry != 0 and expiry &lt; %lld" clean
       table called <var>apachesession</var>, and save the session ID in a cookie
       called <var>session</var>, configure the session as follows:</p>
 
-      <div class="example"><h3>SQL based anonymous session</h3><pre class="prettyprint lang-config">
-Session On
-SessionDBDCookieName session path=/
-        </pre>
+      <div class="example"><h3>SQL based anonymous session</h3><pre class="prettyprint lang-config">Session On
+SessionDBDCookieName session path=/</pre>
 </div>
 
       <p>For more examples on how the session can be configured to be read
@@ -152,10 +148,8 @@ SessionDBDCookieName session path=/
       table called <var>apachesession</var>, and with the session keyed to the
       userid, configure the session as follows:</p>
 
-      <div class="example"><h3>SQL based per user session</h3><pre class="prettyprint lang-config">
-Session On
-SessionDBDPerUser On
-        </pre>
+      <div class="example"><h3>SQL based per user session</h3><pre class="prettyprint lang-config">Session On
+SessionDBDPerUser On</pre>
 </div>
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -191,10 +185,8 @@ SessionDBDPerUser On
     Apache. Ensure that your attributes are defined correctly as per the cookie specification.
     </p>
 
-    <div class="example"><h3>Cookie with attributes</h3><pre class="prettyprint lang-config">
-Session On
-SessionDBDCookieName session path=/private;domain=example.com;httponly;secure;version=1;
-      </pre>
+    <div class="example"><h3>Cookie with attributes</h3><pre class="prettyprint lang-config">Session On
+SessionDBDCookieName session path=/private;domain=example.com;httponly;secure;version=1;</pre>
 </div>
 
 
@@ -219,10 +211,8 @@ SessionDBDCookieName session path=/private;domain=example.com;httponly;secure;ve
     Apache. Ensure that your attributes are defined correctly as per the cookie specification.
     </p>
 
-    <div class="example"><h3>Cookie2 with attributes</h3><pre class="prettyprint lang-config">
-Session On
-SessionDBDCookieName2 session path=/private;domain=example.com;httponly;secure;version=1;
-      </pre>
+    <div class="example"><h3>Cookie2 with attributes</h3><pre class="prettyprint lang-config">Session On
+SessionDBDCookieName2 session path=/private;domain=example.com;httponly;secure;version=1;</pre>
 </div>
 
 

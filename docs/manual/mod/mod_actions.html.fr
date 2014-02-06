@@ -84,21 +84,17 @@ gestionnaire ont été introduits dans Apache 2.1</td></tr>
     requête particulière est transmis à l'aide de la variable
     <code>REDIRECT_HANDLER</code>.</p>
 
-    <div class="example"><h3>Exemple : type MIME</h3><pre class="prettyprint lang-config">
-# Requests for files of a particular MIME content type:
-Action image/gif /cgi-bin/images.cgi
-    </pre>
+    <div class="example"><h3>Exemple : type MIME</h3><pre class="prettyprint lang-config"># Requests for files of a particular MIME content type:
+Action image/gif /cgi-bin/images.cgi</pre>
 </div>
 
     <p>Dans cet exemple, les requêtes pour des fichiers possédant
     le type de contenu MIME <code>image/gif</code> seront traitées par
     le script CGI <code>/cgi-bin/images.cgi</code>.</p>
 
-    <div class="example"><h3>Example: File extension</h3><pre class="prettyprint lang-config">
-# Files of a particular file extension
+    <div class="example"><h3>Example: File extension</h3><pre class="prettyprint lang-config"># Files of a particular file extension
 AddHandler my-file-type .xyz
-Action my-file-type /cgi-bin/program.cgi
-    </pre>
+Action my-file-type /cgi-bin/program.cgi</pre>
 </div>
     <p>Dans cet exemple, les requêtes pour des fichiers possédant
     l'extension <code>.xyz</code> seront traitées par
@@ -110,12 +106,10 @@ Action my-file-type /cgi-bin/program.cgi
     directive <code class="directive">Action</code> pour des localisations
     virtuelles.</p>
 
-    <pre class="prettyprint lang-config">
-&lt;Location /news&gt;
+    <pre class="prettyprint lang-config">&lt;Location /news&gt;
     SetHandler news-handler
     Action news-handler /cgi-bin/news.cgi virtual
-&lt;/Location&gt;
-    </pre>
+&lt;/Location&gt;</pre>
 
 
 <h3>Voir aussi</h3>
@@ -158,13 +152,11 @@ particulière.</td></tr>
     foo.html?hi). Dans le cas contraire, la requête sera traitée
     normalement.</p>
 
-    <pre class="prettyprint lang-config">
-# All GET requests go here
+    <pre class="prettyprint lang-config"># All GET requests go here
 Script GET /cgi-bin/search
 
 # A CGI PUT handler
-Script PUT /~bob/put.cgi
-    </pre>
+Script PUT /~bob/put.cgi</pre>
 
 
 </div>

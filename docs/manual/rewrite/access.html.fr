@@ -80,31 +80,25 @@ correspondance</a></li><li><a href="vhosts.html">Serveurs virtuels</a></li><li><
 
 
 
-<pre class="prettyprint lang-config">
-RewriteCond %{HTTP_REFERER} !^$
+<pre class="prettyprint lang-config">RewriteCond %{HTTP_REFERER} !^$
 RewriteCond %{HTTP_REFERER} !www.example.com [NC]
-RewriteRule \.(gif|jpg|png)$    -   [F,NC]
-</pre>
+RewriteRule \.(gif|jpg|png)$    -   [F,NC]</pre>
 
 
 	<p>Dans le second exemple, plutôt que de rejeter la requête,
 	nous affichons une autre image à la place.</p>
 
-<pre class="prettyprint lang-config">
-RewriteCond %{HTTP_REFERER} !^$
+<pre class="prettyprint lang-config">RewriteCond %{HTTP_REFERER} !^$
 RewriteCond %{HTTP_REFERER} !www.example.com [NC]
-RewriteRule \.(gif|jpg|png)$    /images/go-away.png   [R,NC]
-</pre>
+RewriteRule \.(gif|jpg|png)$    /images/go-away.png   [R,NC]</pre>
 
 
 	<p>Dans le troisième exemple, nous redirigeons la requête vers
 	une image appartenant à un autre site.</p>
 
-<pre class="prettyprint lang-config">
-RewriteCond %{HTTP_REFERER} !^$
+<pre class="prettyprint lang-config">RewriteCond %{HTTP_REFERER} !^$
 RewriteCond %{HTTP_REFERER} !www.example.com [NC]
-RewriteRule \.(gif|jpg|png)$ http://other.example.com/image.gif   [R,NC]
-</pre>
+RewriteRule \.(gif|jpg|png)$ http://other.example.com/image.gif   [R,NC]</pre>
 
 
 	<p>De tous ces exemples, les deux derniers semblent les plus
@@ -121,12 +115,10 @@ RewriteRule \.(gif|jpg|png)$ http://other.example.com/image.gif   [R,NC]
 	simplement interdire l'accès à la ressource, vous pouvez y
 	parvenir sans utiliser mod_rewrite :</p>
 
-        <pre class="prettyprint lang-config">
-SetEnvIf Referer example\.com localreferer
+        <pre class="prettyprint lang-config">SetEnvIf Referer example\.com localreferer
 &lt;FilesMatch \.(jpg|png|gif)$&gt;
     Require env localreferer
-&lt;/FilesMatch&gt;
-        </pre>
+&lt;/FilesMatch&gt;</pre>
 
         </dd>
       </dl>
@@ -172,11 +164,9 @@ SetEnvIf Referer example\.com localreferer
 	seulement depuis une source particulière, vous pouvez aussi
 	spécifier un intervalle d'adresses IP.</p>
 
-<pre class="prettyprint lang-config">
-RewriteCond %{HTTP_USER_AGENT}   ^NameOfBadRobot
+<pre class="prettyprint lang-config">RewriteCond %{HTTP_USER_AGENT}   ^NameOfBadRobot
 RewriteCond %{REMOTE_ADDR}       =123\.45\.67\.[8-9]
-RewriteRule ^/secret/files/   -   [F]
-</pre>
+RewriteRule ^/secret/files/   -   [F]</pre>
 
         </dd>
 
@@ -187,15 +177,13 @@ RewriteRule ^/secret/files/   -   [F]
         Vous pouvez cependant parvenir au même résultat sans utiliser
 	mod_rewrite via la méthode alternative suivante :
       </p>
-      <pre class="prettyprint lang-config">
-SetEnvIfNoCase User-Agent ^NameOfBadRobot goaway
+      <pre class="prettyprint lang-config">SetEnvIfNoCase User-Agent ^NameOfBadRobot goaway
 &lt;Location /secret/files&gt;
     &lt;RequireAll&gt;
         Require all granted
         Require not env goaway
     &lt;/RequireAll&gt;
-&lt;/Location&gt;
-      </pre>
+&lt;/Location&gt;</pre>
 
       <p>
       Comme indiqué plus haut, il est aisé de contourner cette
@@ -227,13 +215,11 @@ SetEnvIfNoCase User-Agent ^NameOfBadRobot goaway
     <dt>Solution :</dt>
 
     <dd>
-<pre class="prettyprint lang-config">
-RewriteEngine on
+<pre class="prettyprint lang-config">RewriteEngine on
 RewriteMap    hosts-deny  txt:/path/to/hosts.deny
 RewriteCond   ${hosts-deny:%{REMOTE_ADDR}|NOT-FOUND} !=NOT-FOUND [OR]
 RewriteCond   ${hosts-deny:%{REMOTE_HOST}|NOT-FOUND} !=NOT-FOUND
-RewriteRule   ^  -  [F]
-</pre>
+RewriteRule   ^  -  [F]</pre>
 
 
 <div class="example"><p><code>
@@ -284,8 +270,7 @@ bsdti1.sdm.de  -<br />
   <p>Le jeu de règles suivant utilise un fichier de correspondances pour
   associer chaque Referer à une cible de redirection.</p>
 
-<pre class="prettyprint lang-config">
-RewriteMap  deflector txt:/path/to/deflector.map
+<pre class="prettyprint lang-config">RewriteMap  deflector txt:/path/to/deflector.map
 
 RewriteCond %{HTTP_REFERER} !=""
 RewriteCond ${deflector:%{HTTP_REFERER}} =-
@@ -293,8 +278,7 @@ RewriteRule ^ %{HTTP_REFERER} [R,L]
 
 RewriteCond %{HTTP_REFERER} !=""
 RewriteCond ${deflector:%{HTTP_REFERER}|NOT-FOUND} !=NOT-FOUND
-RewriteRule ^ ${deflector:%{HTTP_REFERER}} [R,L]
-</pre>
+RewriteRule ^ ${deflector:%{HTTP_REFERER}} [R,L]</pre>
 
 
       <p>Le fichier de correspondances contient les cibles de
@@ -302,15 +286,13 @@ RewriteRule ^ ${deflector:%{HTTP_REFERER}} [R,L]
       simplement rediriger les requêtes vers leur Referer, un "-" est
       inscrit dans le fichier de correspondances :</p>
 
-<pre class="prettyprint lang-config">
-##<br />
+<pre class="prettyprint lang-config">##<br />
 ##  deflector.map<br />
 ##<br />
 <br />
 http://www.mauvais-gars.example.com/mauvais/index.html    -<br />
 http://www.mauvais-gars.example.com/mauvais/index2.html   -<br />
-http://www.mauvais-gars.example.com/mauvais/index3.html   http://quelque-part.example.com/
-</pre>
+http://www.mauvais-gars.example.com/mauvais/index3.html   http://quelque-part.example.com/</pre>
 
 
     </dd>

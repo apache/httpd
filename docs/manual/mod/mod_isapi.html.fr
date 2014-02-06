@@ -75,9 +75,7 @@
     fichier. Pour faire en sorte que tout fichier .dll soit traité en
     tant qu'extension ISAPI, éditez le fichier httpd.conf et ajoutez les
     lignes suivantes :</p>
-    <pre class="prettyprint lang-config">
-        AddHandler isapi-handler .dll
-    </pre>
+    <pre class="prettyprint lang-config">AddHandler isapi-handler .dll</pre>
 
 
     <div class="note">Dans les versions plus anciennes du serveur Apache, le nom du
@@ -91,9 +89,7 @@
     un module chargé. Vous pouvez cependant précharger et garder un
     module spécifique en mémoire en utilisant la syntaxe suivante dans
     votre httpd.conf :</p>
-    <pre class="prettyprint lang-config">
-        ISAPICacheFile c:/WebWork/Scripts/ISAPI/mytest.dll
-    </pre>
+    <pre class="prettyprint lang-config">ISAPICacheFile c:/WebWork/Scripts/ISAPI/mytest.dll</pre>
 
 
     <p>Que vous ayez ou non préchargé une extension ISAPI, ces dernières

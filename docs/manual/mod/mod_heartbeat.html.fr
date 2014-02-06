@@ -103,9 +103,7 @@ heartbeat</td></tr>
     envoyer ses informations. En général, cette adresse correspond à la
     valeur définie par la directive  <code class="directive"><a href="../mod/mod_heartmonitor.html#heartbeatlisten">HeartbeatListen</a></code> sur le serveur
     mandataire frontal.</p>
-    <pre class="prettyprint lang-config">
-	HeartbeatAddress 239.0.0.1:27999
-    </pre>
+    <pre class="prettyprint lang-config">HeartbeatAddress 239.0.0.1:27999</pre>
 
 
 </div>

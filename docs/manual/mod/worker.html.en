@@ -143,14 +143,12 @@
     <p>A typical configuration of the process-thread controls in
     the <code class="module"><a href="../mod/worker.html">worker</a></code> MPM could look as follows:</p>
 
-    <pre class="prettyprint lang-config">
-ServerLimit         16
+    <pre class="prettyprint lang-config">ServerLimit         16
 StartServers         2
 MaxRequestWorkers  150
 MinSpareThreads     25
 MaxSpareThreads     75
-ThreadsPerChild     25
-    </pre>
+ThreadsPerChild     25</pre>
 
 
     <p>While the parent process is usually started as <code>root</code>

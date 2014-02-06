@@ -330,11 +330,9 @@
 
     <p>Sunucu yapılandırma dosyanıza şunu yerleştirin:</p>
 
-    <pre class="prettyprint lang-config">
-&lt;Directory /&gt;
+    <pre class="prettyprint lang-config">&lt;Directory /&gt;
     AllowOverride None
-&lt;/Directory&gt;
-    </pre>
+&lt;/Directory&gt;</pre>
 
 
     <p>Böylece, belli dizinlerde özellikle etkinleştirilmedikçe bütün
@@ -363,25 +361,21 @@
       olursunuz. Bu işlemin sonuçlarının önünü almak için sunucu yapılandırma
       dosyanıza şunları yazın:</p>
 
-    <pre class="prettyprint lang-config">
-&lt;Directory /&gt;
+    <pre class="prettyprint lang-config">&lt;Directory /&gt;
     Require all denied
-&lt;/Directory&gt;
-    </pre>
+&lt;/Directory&gt;</pre>
 
 
     <p>Bu suretle, dosya sisteminize öntanımlı erişimi yasaklamış olursunuz.
       Erişime izin vermek istediğiniz dizinler için uygun <code class="directive"><a href="../mod/core.html#directory">Directory</a></code> bölümleri eklemeniz yeterli
       olacaktır. Örnek:</p>
 
-    <pre class="prettyprint lang-config">
-&lt;Directory /usr/users/*/public_html&gt;
+    <pre class="prettyprint lang-config">&lt;Directory /usr/users/*/public_html&gt;
     Require all granted
 &lt;/Directory&gt;
 &lt;Directory /usr/local/httpd&gt;
     Require all granted
-&lt;/Directory&gt;
-    </pre>
+&lt;/Directory&gt;</pre>
 
 
     <p><code class="directive"><a href="../mod/core.html#location">Location</a></code> ve <code class="directive"><a href="../mod/core.html#directory">Directory</a></code> yönergelerinin etkileşimine de
@@ -435,11 +429,9 @@
     <p>Bu, sunucu yapılandırma dosyanızda aşağıdaki yapılandırmayı iptal
       ettiğiniz anlamına gelir:</p>
 
-    <pre class="prettyprint lang-config">
-&lt;Files ".ht*"&gt;
+    <pre class="prettyprint lang-config">&lt;Files ".ht*"&gt;
     Require all denied
-&lt;/Files&gt;
-    </pre>
+&lt;/Files&gt;</pre>
 
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

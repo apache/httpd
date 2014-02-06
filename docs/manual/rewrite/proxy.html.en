@@ -57,12 +57,10 @@ A number of recipes are provided that describe common scenarios.</p>
       <p>To simply map a URL to another server, we use the [P] flag, as
       follows:</p>
 
-<pre class="prettyprint lang-config">
-RewriteEngine  on
+<pre class="prettyprint lang-config">RewriteEngine  on
 RewriteBase    /products/
 RewriteRule    ^widget/(.*)$  http://product.example.com/widget/$1  [P]
-ProxyPassReverse /products/widget/ http://product.example.com/widget/
-</pre>
+ProxyPassReverse /products/widget/ http://product.example.com/widget/</pre>
 
 
    <p>In the second example, we proxy the request only if we can't find
@@ -70,12 +68,10 @@ ProxyPassReverse /products/widget/ http://product.example.com/widget/
    from one server to another, and you're not sure if all the content
    has been migrated yet.</p>
 
-<pre class="prettyprint lang-config">
-RewriteCond %{REQUEST_FILENAME}       !-f
+<pre class="prettyprint lang-config">RewriteCond %{REQUEST_FILENAME}       !-f
 RewriteCond %{REQUEST_FILENAME}       !-d
 RewriteRule ^/(.*) http://old.example.com/$1 [P]
-ProxyPassReverse / http://old.example.com/
-</pre>
+ProxyPassReverse / http://old.example.com/</pre>
 
     </dd>
 

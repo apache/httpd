@@ -93,9 +93,7 @@ etmek için kullanılır.</td></tr>
       modüllerinde kullanılmak üzere bir dahili ortam değişkeni tanımlanmasını
       sağlar.</p>
 
-    <pre class="prettyprint lang-config">
-SetEnv SPECIAL_PATH /foo/bin
-    </pre>
+    <pre class="prettyprint lang-config">SetEnv SPECIAL_PATH /foo/bin</pre>
 
 
     <p>Bir <var>değer</var> belirtilmezse değişkene boş dizgi atanır.</p>
@@ -128,9 +126,7 @@ SetEnv SPECIAL_PATH /foo/bin
     <p>CGI betiklerine ve SSI sayfalarına bir daha aktarılmamak üzere bir
       dahili ortam değişkenini siler.</p>
 
-    <pre class="prettyprint lang-config">
-UnsetEnv LD_LIBRARY_PATH
-    </pre>
+    <pre class="prettyprint lang-config">UnsetEnv LD_LIBRARY_PATH</pre>
 
 
 </div>

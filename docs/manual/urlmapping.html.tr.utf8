@@ -122,9 +122,7 @@
       üzere <code class="directive"><a href="./mod/mod_alias.html#aliasmatch">AliasMatch</a></code> ve <code class="directive"><a href="./mod/mod_alias.html#scriptaliasmatch">ScriptAliasMatch</a></code> yönergelerinin gücünden
       yararlanılabilir. Örneğin,</p>
 
-    <pre class="prettyprint lang-config">
-ScriptAliasMatch ^/~([a-zA-Z0-9]+)/cgi-bin/(.+) /home/$1/cgi-bin/$2
-    </pre>
+    <pre class="prettyprint lang-config">ScriptAliasMatch ^/~([a-zA-Z0-9]+)/cgi-bin/(.+) /home/$1/cgi-bin/$2</pre>
 
 
     <p>satırı sayesinde <code>http://example.com/~user/cgi-bin/betik.cgi</code>
@@ -166,9 +164,7 @@ ScriptAliasMatch ^/~([a-zA-Z0-9]+)/cgi-bin/(.+) /home/$1/cgi-bin/$2
       eşlemek için <code>AliasMatch</code> yönergesi şöyle
       kullanılabilirdi:</p>
 
-    <pre class="prettyprint lang-config">
-AliasMatch ^/sayfalar/([a-zA-Z0-9]+)(/(.*))?$ /home/$1/public_html/$3
-    </pre>
+    <pre class="prettyprint lang-config">AliasMatch ^/sayfalar/([a-zA-Z0-9]+)(/(.*))?$ /home/$1/public_html/$3</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -185,9 +181,7 @@ AliasMatch ^/sayfalar/([a-zA-Z0-9]+)(/(.*))?$ /home/$1/public_html/$3
       adında yeni bir dizine taşınması halinde istemciye yeni konumun
       bildirilmesi şöyle sağlanabilirdi:</p>
 
-    <pre class="prettyprint lang-config">
-Redirect permanent /foo/ http://example.com/bar/
-    </pre>
+    <pre class="prettyprint lang-config">Redirect permanent /foo/ http://example.com/bar/</pre>
 
 
     <p>Bu atama sayesinde <code>/foo/</code> ile başlayan URL yolları
@@ -202,17 +196,13 @@ Redirect permanent /foo/ http://example.com/bar/
       ayrı olarak farklı bir siteye yönlendirmek için yönergeyi şöyle
       kullanabilirsiniz:</p>
 
-    <pre class="prettyprint lang-config">
-RedirectMatch permanent ^/$ http://example.com/ilksayfa.html
-    </pre>
+    <pre class="prettyprint lang-config">RedirectMatch permanent ^/$ http://example.com/ilksayfa.html</pre>
 
 
     <p>Bundan başka, bir sitedeki tüm sayfalara yapılan istekleri başka bir
       siteye geçici olarak yönlendirmek için şöyle bir şey yapabilirsiniz:</p>
 
-    <pre class="prettyprint lang-config">
-RedirectMatch temp .* http://mesela.example.com/ilksayfa.html
-    </pre>
+    <pre class="prettyprint lang-config">RedirectMatch temp .* http://mesela.example.com/ilksayfa.html</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -231,12 +221,10 @@ RedirectMatch temp .* http://mesela.example.com/ilksayfa.html
       üzerindeki <code>/bar/</code> dizininden alıp istemciye yerel sunucudan
       geliyormuş gibi sunmaktadır:</p>
 
-    <pre class="prettyprint lang-config">
-ProxyPass /foo/ http://dahili.example.com/bar/
+    <pre class="prettyprint lang-config">ProxyPass /foo/ http://dahili.example.com/bar/
 ProxyPassReverse /foo/ http://dahili.example.com/bar/
 ProxyPassReverseCookieDomain dahili.example.com harici.example.com
-ProxyPassReverseCookiePath /foo/ /bar/
-    </pre>
+ProxyPassReverseCookiePath /foo/ /bar/</pre>
 
 
     <p><code class="directive"><a href="./mod/mod_proxy.html#proxypass">ProxyPass</a></code> sunucuyu uygun
@@ -254,9 +242,7 @@ ProxyPassReverseCookiePath /foo/ /bar/
       bağları (ve diğer içeriği) <code class="module"><a href="./mod/mod_substitute.html">mod_substitute</a></code> modülü
       kullanılarak istemciye sunuluyormuşçasına değiştirebilirsiniz.</p>
 
-    <pre class="prettyprint lang-config">
-Substitute s/dahili\.example\.com/harici.example.com/i
-    </pre>
+    <pre class="prettyprint lang-config">Substitute s/dahili\.example\.com/harici.example.com/i</pre>
 
 
      <p>HTML ve XHTML’de hiperbağları daha bilgece yeniden yazabilen

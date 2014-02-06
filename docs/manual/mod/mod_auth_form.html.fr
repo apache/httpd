@@ -117,16 +117,14 @@ l'authentification</a></li>
       l'utilisateur sera redirigé vers la page du formulaire de
       connexion.</p>
 
-      <div class="example"><h3>Exemple simple</h3><pre class="prettyprint lang-config">
-AuthFormProvider file
+      <div class="example"><h3>Exemple simple</h3><pre class="prettyprint lang-config">AuthFormProvider file
 AuthUserFile conf/passwd
 AuthType form
 AuthName realm
 AuthFormLoginRequiredLocation http://example.com/login.html
 Session On
 SessionCookieName session path=/
-SessionCryptoPassphrase secret
-        </pre>
+SessionCryptoPassphrase secret</pre>
 </div>
 
       <p>L'authentification <code class="module"><a href="../mod/mod_auth_form.html">mod_auth_form</a></code> est activée
@@ -164,13 +162,11 @@ SessionCryptoPassphrase secret
       En général, la page de connexion contiendra un formulaire HTML
       demandant à l'utilisateur de fournir un nom et un mot de passe.</p>
 
-      <div class="example"><h3>Exemple de formulaire de connexion</h3><pre class="prettyprint lang-html">
-&lt;form method="POST" action="/dologin.html"&gt;
+      <div class="example"><h3>Exemple de formulaire de connexion</h3><pre class="prettyprint lang-html">&lt;form method="POST" action="/dologin.html"&gt;
   Username: &lt;input type="text" name="httpd_username" value="" /&gt;
   Password: &lt;input type="password" name="httpd_password" value="" /&gt;
   &lt;input type="submit" name="login" value="Login" /&gt;
-&lt;/form&gt;
-        </pre>
+&lt;/form&gt;</pre>
 </div>
 
       <p>La partie où s'effectue la connexion proprement dite est
@@ -179,8 +175,7 @@ SessionCryptoPassphrase secret
       que l'on configure dans Apache httpd comme suit :</p>
 
       <div class="example"><h3>Exemple de configuration du gestionnaire de
-      formulaire de connexion</h3><pre class="prettyprint lang-config">
-&lt;Location /dologin.html&gt;
+      formulaire de connexion</h3><pre class="prettyprint lang-config">&lt;Location /dologin.html&gt;
     SetHandler form-login-handler
     AuthFormLoginRequiredLocation http://example.com/login.html
     AuthFormLoginSuccessLocation http://example.com/success.html
@@ -191,8 +186,7 @@ SessionCryptoPassphrase secret
     Session On
     SessionCookieName session path=/
     SessionCryptoPassphrase secret
-&lt;/Location&gt;
-        </pre>
+&lt;/Location&gt;</pre>
 </div>
 
       <p>L'URL spécifiée par la directive <code class="directive"><a href="#authformloginrequiredlocation">AuthFormLoginRequiredLocation</a></code>
@@ -209,14 +203,12 @@ SessionCryptoPassphrase secret
       <var>form-login-handler</var> pourra être utilisé pour différentes
       zones du site web.</p>
 
-      <div class="example"><h3>Exemple de formulaire de login avec page cible</h3><pre class="prettyprint lang-html">
-&lt;form method="POST" action="/dologin.html"&gt;
+      <div class="example"><h3>Exemple de formulaire de login avec page cible</h3><pre class="prettyprint lang-html">&lt;form method="POST" action="/dologin.html"&gt;
   Username: &lt;input type="text" name="httpd_username" value="" /&gt;
   Password: &lt;input type="password" name="httpd_password" value="" /&gt;
   &lt;input type="submit" name="login" value="Login" /&gt;
   &lt;input type="hidden" name="httpd_location" value="http://example.com/success.html" /&gt;
-&lt;/form&gt;
-        </pre>
+&lt;/form&gt;</pre>
 </div>
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -255,8 +247,7 @@ SessionCryptoPassphrase secret
       <var>HTTP_UNAUTHORIZED</var> par un message d'erreur personnalisé
       contenant le formulaire de connexion comme suit :</p>
 
-      <div class="example"><h3>Exemple simple d'authentification à la volée</h3><pre class="prettyprint lang-config">
-AuthFormProvider file
+      <div class="example"><h3>Exemple simple d'authentification à la volée</h3><pre class="prettyprint lang-config">AuthFormProvider file
 ErrorDocument 401 /login.shtml
 AuthUserFile conf/passwd
 AuthType form
@@ -264,8 +255,7 @@ AuthName realm
 AuthFormLoginRequiredLocation http://example.com/login.html
 Session On
 SessionCookieName session path=/
-SessionCryptoPassphrase secret
-        </pre>
+SessionCryptoPassphrase secret</pre>
 </div>
 
       <p>La page du message d'erreur doit contenir un formulaire de
@@ -274,13 +264,11 @@ SessionCryptoPassphrase secret
       protégée originale, cette dernière n'ayant pas besoin d'être
       connue de la page en cours.</p>
 
-      <div class="example"><h3>Exemple de formulaire de connexion à la volée</h3><pre class="prettyprint lang-html">
-&lt;form method="POST" <strong>action=""</strong>&gt;
+      <div class="example"><h3>Exemple de formulaire de connexion à la volée</h3><pre class="prettyprint lang-html">&lt;form method="POST" <strong>action=""</strong>&gt;
   Username: &lt;input type="text" name="httpd_username" value="" /&gt;
   Password: &lt;input type="password" name="httpd_password" value="" /&gt;
   &lt;input type="submit" name="login" value="Login" /&gt;
-&lt;/form&gt;
-</pre>
+&lt;/form&gt;</pre>
 </div>
 
       <p>Lorsque l'utilisateur final a entré ses informations de
@@ -315,16 +303,14 @@ SessionCryptoPassphrase secret
       comme dans l'exemple suivant :</p>
 
       <div class="example"><h3>Exemple de formulaire avec conservation du
-      contenu</h3><pre class="prettyprint lang-html">
-&lt;form method="POST" action=""&gt;
+      contenu</h3><pre class="prettyprint lang-html">&lt;form method="POST" action=""&gt;
   Username: &lt;input type="text" name="httpd_username" value="" /&gt;
   Password: &lt;input type="password" name="httpd_password" value="" /&gt;
   &lt;input type="submit" name="login" value="Login" /&gt;
   <br />  <strong>&lt;input type="hidden" name="httpd_method" value="POST" /&gt;
   &lt;input type="hidden" name="httpd_mimetype" value="application/x-www-form-urlencoded" /&gt;
   &lt;input type="hidden" name="httpd_body" value="name1=value1&amp;name2=value2" /&gt;</strong><br />
-&lt;/form&gt;
-        </pre>
+&lt;/form&gt;</pre>
 </div>
 
       <p>La manière dont la méthode, le type MIME et le contenu de la
@@ -343,11 +329,9 @@ SessionCryptoPassphrase secret
       connexion en utilisant un script CGI ou une autre technologie
       dynamique.</p>
 
-      <div class="example"><h3>Exemple avec script CGI</h3><pre class="prettyprint lang-config">
-        AuthFormProvider file
+      <div class="example"><h3>Exemple avec script CGI</h3><pre class="prettyprint lang-config">        AuthFormProvider file
         ErrorDocument 401 /cgi-bin/login.cgi
-        ...
-        </pre>
+        ...</pre>
 </div>
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -368,14 +352,12 @@ SessionCryptoPassphrase secret
       donner la possibilité de se connecter à nouveau.</p>
 
       <div class="example"><h3>Exemple simple de configuration de la
-      déconnexion</h3><pre class="prettyprint lang-config">
-SetHandler form-logout-handler
+      déconnexion</h3><pre class="prettyprint lang-config">SetHandler form-logout-handler
 AuthName realm
 AuthFormLogoutLocation http://example.com/loggedout.html
 Session On
 SessionCookieName session path=/
-SessionCryptoPassphrase secret
-        </pre>
+SessionCryptoPassphrase secret</pre>
 </div>
 
       <p>Notez que la déconnexion d'un utilisateur ne supprime pas la
@@ -389,14 +371,12 @@ SessionCryptoPassphrase secret
       </p>
 
       <div class="example"><h3>Exemple simple avec durée de validité de session
-      limitée</h3><pre class="prettyprint lang-config">
-SetHandler form-logout-handler
+      limitée</h3><pre class="prettyprint lang-config">SetHandler form-logout-handler
 AuthFormLogoutLocation http://example.com/loggedout.html
 Session On
 SessionMaxAge 1
 SessionCookieName session path=/
-SessionCryptoPassphrase secret
-        </pre>
+SessionCryptoPassphrase secret</pre>
 </div>
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -607,14 +587,12 @@ Apache. L'interpréteur d'expressions a été ajouté à partir de la version
     <code>form-logout-handler</code>, la page spécifiée par cette
     directive sera présentée à l'utilisateur final. Par exemple :</p>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">
-&lt;Location /logout&gt;
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">&lt;Location /logout&gt;
     SetHandler form-logout-handler
     AuthFormLogoutLocation http://example.com/loggedout.html
     Session on
     #...
-&lt;/Location&gt;
-      </pre>
+&lt;/Location&gt;</pre>
 </div>
 
     <p>Si un utilisateur tente d'accéder à l'URI <var>/logout/</var>, il
@@ -707,8 +685,7 @@ zone concernée</td></tr>
     <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code>. Assurez-vous que le fournisseur
     choisi soit bien présent dans le serveur.</p>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">
-&lt;Location /secure&gt;
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">&lt;Location /secure&gt;
     AuthType form
     AuthName "private area"
     AuthFormProvider  dbm
@@ -716,8 +693,7 @@ zone concernée</td></tr>
     AuthDBMUserFile    /www/etc/dbmpasswd
     Require            valid-user
     #...
-&lt;/Location&gt;
-      </pre>
+&lt;/Location&gt;</pre>
 </div>
 
     <p>Les différents fournisseurs sont implémentés par les modules

@@ -139,8 +139,7 @@ Barındırma</a></li><li><a href="examples.html">Çok kullanılan sanal konak ya
       varsayalım. Bunun için <code>httpd.conf</code> dosyanıza basitçe şu
       satırları ekleyebilirsiniz:</p>
 
-    <pre class="prettyprint lang-config">
-&lt;VirtualHost *:80&gt;
+    <pre class="prettyprint lang-config">&lt;VirtualHost *:80&gt;
     #İlk sanal konak aynı zamanda *:80 için de öntanımlıdır.
     ServerName site1.example.com
     ServerAlias example.com
@@ -150,8 +149,7 @@ Barındırma</a></li><li><a href="examples.html">Çok kullanılan sanal konak ya
 &lt;VirtualHost *:80&gt;
     ServerName site2.example.com
     DocumentRoot /siteler/site2
-&lt;/VirtualHost&gt;
-    </pre>
+&lt;/VirtualHost&gt;</pre>
 
 
     <p>İsterseniz, <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> yönergesinde argüman olarak <code>*</code>
@@ -167,9 +165,7 @@ Barındırma</a></li><li><a href="examples.html">Çok kullanılan sanal konak ya
       kullanıcıların aynı siteye farklı isimlerle erişmelerini mümkün kılmak
       için bölüm içine şu satırı ekleyebilirsiniz:</p>
 
-    <pre class="prettyprint lang-config">
-ServerAlias example.com *.example.com
-    </pre>
+    <pre class="prettyprint lang-config">ServerAlias example.com *.example.com</pre>
 
 
     <p>Böylece <code>example.com</code> alanındaki tüm konaklar için gelen

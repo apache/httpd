@@ -59,12 +59,10 @@ correspondance</a></li><li><a href="access.html">Contrôle d'accès</a></li><li><a
       <p>Pour passer une URL à un autre serveur, on utilise le drapeau
       [P] comme suit :</p>
 
-<pre class="prettyprint lang-config">
-RewriteEngine  on
+<pre class="prettyprint lang-config">RewriteEngine  on
 RewriteBase    /produits/
 RewriteRule    ^widget/(.*)$  http://produits.example.com/widget/$1  [P]
-ProxyPassReverse /produits/objet/ http://produits.example.com/objet/
-</pre>
+ProxyPassReverse /produits/objet/ http://produits.example.com/objet/</pre>
 
 
    <p>Dans le deuxième exemple, nous ne mandatons la requête que si nous
@@ -73,12 +71,10 @@ ProxyPassReverse /produits/objet/ http://produits.example.com/objet/
    autre, et que vous n'êtes pas certain que tout le contenu a déjà été
    migré.</p>
 
-<pre class="prettyprint lang-config">
-RewriteCond %{REQUEST_FILENAME}       !-f
+<pre class="prettyprint lang-config">RewriteCond %{REQUEST_FILENAME}       !-f
 RewriteCond %{REQUEST_FILENAME}       !-d
 RewriteRule ^/(.*) http://ancien.exemple.com/$1 [P]
-ProxyPassReverse / http://ancien.exemple.com/
-</pre>
+ProxyPassReverse / http://ancien.exemple.com/</pre>
 
     </dd>
 

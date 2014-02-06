@@ -134,14 +134,12 @@ süreçlilik modülü.</td></tr>
     <p><code class="module"><a href="../mod/worker.html">worker</a></code> modülünün öntanımlı süreç-evre yapılandırması
       genelde şöyledir:</p>
 
-    <pre class="prettyprint lang-config">
-ServerLimit         16
+    <pre class="prettyprint lang-config">ServerLimit         16
 StartServers         2
 MaxRequestWorkers  150
 MinSpareThreads     25
 MaxSpareThreads     75
-ThreadsPerChild     25
-    </pre>
+ThreadsPerChild     25</pre>
 
 
     <p>Unix altında 80. portu dinleyebilmek için ana sürecin root tarafından

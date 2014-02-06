@@ -90,10 +90,8 @@
       <code>%v</code> biçem değişkeni ile yapılabilir. Günlük girdisi biçem
       dizgesinin başına bunu ekleyiniz:</p>
 
-    <pre class="prettyprint lang-config">
-LogFormat "%v %h %l %u %t \"%r\" %&gt;s %b" vhost
-CustomLog logs/multiple_vhost_log vhost
-    </pre>
+    <pre class="prettyprint lang-config">LogFormat "%v %h %l %u %t \"%r\" %&gt;s %b" vhost
+CustomLog logs/multiple_vhost_log vhost</pre>
 
 
     <p>Bu yapılandırma ile her günlük kaydının başında sanal konağın

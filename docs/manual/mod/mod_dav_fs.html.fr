@@ -43,9 +43,7 @@
     de <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code> sont invoqués via la directive
     <code class="directive"><a href="../mod/mod_dav.html#dav">Dav</a></code> :</p>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">
-      Dav filesystem
-      </pre>
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">Dav filesystem</pre>
 </div>
 
     <p>Comme <code>filesystem</code> est le fournisseur par défaut de
@@ -79,9 +77,7 @@
 
     
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">
-      DavLockDB var/DavLock
-      </pre>
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">DavLockDB var/DavLock</pre>
 </div>
 
     <p>Les utilisateur et groupe sous lesquels Apache s'exécute et qui

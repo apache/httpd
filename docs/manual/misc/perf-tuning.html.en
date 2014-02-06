@@ -137,12 +137,10 @@
       matching the criteria. Here's an example which disables lookups
       except for <code>.html</code> and <code>.cgi</code> files:</p>
 
-      <pre class="prettyprint lang-config">
-HostnameLookups off
+      <pre class="prettyprint lang-config">HostnameLookups off
 &lt;Files ~ "\.(html|cgi)$"&gt;
   HostnameLookups on
-&lt;/Files&gt;
-      </pre>
+&lt;/Files&gt;</pre>
 
 
       <p>But even still, if you just need DNS names in some CGIs you
@@ -161,12 +159,10 @@ HostnameLookups off
       system calls to check up on symlinks. One extra call per
       filename component. For example, if you had:</p>
 
-      <pre class="prettyprint lang-config">
-DocumentRoot /www/htdocs
+      <pre class="prettyprint lang-config">DocumentRoot /www/htdocs
 &lt;Directory /&gt;
   Options SymLinksIfOwnerMatch
-&lt;/Directory&gt;
-      </pre>
+&lt;/Directory&gt;</pre>
 
 
       <p>and a request is made for the URI <code>/index.html</code>.
@@ -177,16 +173,14 @@ DocumentRoot /www/htdocs
       every single request. If you really desire the symlinks
       security checking you can do something like this:</p>
 
-      <pre class="prettyprint lang-config">
-DocumentRoot /www/htdocs
+      <pre class="prettyprint lang-config">DocumentRoot /www/htdocs
 &lt;Directory /&gt;
   Options FollowSymLinks
 &lt;/Directory&gt;
 
 &lt;Directory /www/htdocs&gt;
   Options -FollowSymLinks +SymLinksIfOwnerMatch
-&lt;/Directory&gt;
-      </pre>
+&lt;/Directory&gt;</pre>
 
 
       <p>This at least avoids the extra checks for the
@@ -209,12 +203,10 @@ DocumentRoot /www/htdocs
       <code>.htaccess</code> for each filename component. For
       example,</p>
 
-      <pre class="prettyprint lang-config">
-DocumentRoot /www/htdocs
+      <pre class="prettyprint lang-config">DocumentRoot /www/htdocs
 &lt;Directory /&gt;
   AllowOverride all
-&lt;/Directory&gt;
-      </pre>
+&lt;/Directory&gt;</pre>
 
 
       <p>and a request is made for the URI <code>/index.html</code>.
@@ -557,8 +549,7 @@ DocumentRoot /www/htdocs
       do not match the code, they're contrived for pedagogical
       purposes):</p>
 
-      <pre class="prettyprint lang-c">
-        for (;;) {
+      <pre class="prettyprint lang-c">        for (;;) {
           for (;;) {
             fd_set accept_fds;
 
@@ -578,8 +569,7 @@ DocumentRoot /www/htdocs
             if (new_connection != -1) break;
           }
           process_the(new_connection);
-        }
-      </pre>
+        }</pre>
 
 
       <p>But this naive implementation has a serious starvation problem.
@@ -618,8 +608,7 @@ DocumentRoot /www/htdocs
       entry into the inner loop. The loop looks like this
       (differences highlighted):</p>
 
-      <pre class="prettyprint lang-c">
-        for (;;) {
+      <pre class="prettyprint lang-c">        for (;;) {
           <strong>accept_mutex_on ();</strong>
           for (;;) {
             fd_set accept_fds;
@@ -641,8 +630,7 @@ DocumentRoot /www/htdocs
           }
           <strong>accept_mutex_off ();</strong>
           process the new_connection;
-        }
-      </pre>
+        }</pre>
 
 
       <p><a id="serialize" name="serialize">The functions</a>
@@ -751,8 +739,7 @@ DocumentRoot /www/htdocs
       <code>http_main.c</code>). The function looks roughly like
       this:</p>
 
-      <pre class="prettyprint lang-c">
-        void lingering_close (int s)
+      <pre class="prettyprint lang-c">        void lingering_close (int s)
         {
           char junk_buffer[2048];
           
@@ -774,8 +761,7 @@ DocumentRoot /www/htdocs
           }
           
           close (s);
-        }
-      </pre>
+        }</pre>
 
 
       <p>This naturally adds some expense at the end of a connection,

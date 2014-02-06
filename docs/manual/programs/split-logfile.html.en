@@ -36,10 +36,8 @@
 
     <p>Create a log file with virtual host information in it:</p>
 
-    <pre class="prettyprint lang-config">
-LogFormat "%v %h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\"" combined_plus_vhost
-CustomLog logs/access_log combined_plus_vhost
-    </pre>
+    <pre class="prettyprint lang-config">LogFormat "%v %h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\"" combined_plus_vhost
+CustomLog logs/access_log combined_plus_vhost</pre>
 
 
     <p>Log files will be created, in the directory where you run the

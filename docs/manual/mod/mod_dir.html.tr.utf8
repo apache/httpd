@@ -89,9 +89,7 @@
       dönecektir. Eğer özkaynakların hiçbiri yoksa ve <code>Indexes</code>
       seçeneği atanmışsa sunucu dizin içeriğinden bir liste üretecektir.</p>
 
-    <pre class="prettyprint lang-config">
-DirectoryIndex index.html
-    </pre>
+    <pre class="prettyprint lang-config">DirectoryIndex index.html</pre>
 
 
     <p>Bu yapılandırmadan sonra yapılan bir
@@ -101,9 +99,7 @@ DirectoryIndex index.html
 
     <p>Belgelerin dizine göreli olmasının gerekmediğine dikkat ediniz.</p>
 
-    <pre class="prettyprint lang-config">
-DirectoryIndex index.html index.txt  /cgi-bin/index.pl
-    </pre>
+    <pre class="prettyprint lang-config">DirectoryIndex index.html index.txt  /cgi-bin/index.pl</pre>
 
 
     <p>Bu örnekte ise dizin içinde ne <code>index.html</code> ne de
@@ -119,8 +115,7 @@ DirectoryIndex index.html index.txt  /cgi-bin/index.pl
       bağlamdaki</em></a> çok sayıda <code class="directive">DirectoryIndex</code>
       yönergesi bir öncekini değiştirmek yerine onun bulunduğu listeye
       eklenir:</p>
-    <pre class="prettyprint lang-config">
-# 1. örnek: İçerik dosyası olarak index.html atayıp sonraki satırda buna
+    <pre class="prettyprint lang-config"># 1. örnek: İçerik dosyası olarak index.html atayıp sonraki satırda buna
 # index.php'yi ekleyebilirsiniz.
 &lt;Directory /foo&gt;
     DirectoryIndex index.html
@@ -138,8 +133,7 @@ DirectoryIndex index.html index.txt  /cgi-bin/index.pl
     DirectoryIndex index.html
     DirectoryIndex disabled
     DirectoryIndex index.php
-&lt;/Directory&gt;
-    </pre>
+&lt;/Directory&gt;</pre>
 
 
 
@@ -165,9 +159,7 @@ DirectoryIndex index.html index.txt  /cgi-bin/index.pl
       <code class="directive">DirectoryIndexRedirect</code> ise harici bir
       yönlendirmeye sebep olur.</p>
 
-    <pre class="prettyprint lang-config">
-DirectoryIndexRedirect on
-    </pre>
+    <pre class="prettyprint lang-config">DirectoryIndexRedirect on</pre>
 
 
     <p><code>http://example.com/docs/</code> için yapılan bir istek, <code>http://example.com/docs/index.html</code> (mevcutsa) adresine geçici bir
@@ -210,13 +202,11 @@ DirectoryIndexRedirect on
       yaparken dikkatli olun, bununla ilgili bazı güvenlik sorunları olasılığı
       vardır.</p>
 
-    <pre class="prettyprint lang-config">
-# Aşağıdaki güvenlik uyarısına bakınız!<br />
+    <pre class="prettyprint lang-config"># Aşağıdaki güvenlik uyarısına bakınız!<br />
 &lt;Location /bir/yol&gt;<br />
   DirectorySlash Off<br />
   SetHandler bir-eylemci<br />
-&lt;/Location&gt;
-    </pre>
+&lt;/Location&gt;</pre>
 
 
     <div class="warning"><h3>Güvenlik Uyarı</h3>
@@ -251,9 +241,7 @@ DirectoryIndexRedirect on
       404 (Yok) hatasını döndürmemesi için sunulacak dosyanın yolunu tanımlar.
       Örnek:</p>
 
-    <pre class="prettyprint lang-config">
-FallbackResource /not-404.php
-    </pre>
+    <pre class="prettyprint lang-config">FallbackResource /not-404.php</pre>
 
 
     <p>Bu satırla, (mevcut dosyaları etkilemeden) mevcut olmayan dosyaların
@@ -268,9 +256,7 @@ FallbackResource /not-404.php
       <code>-d</code> kullanımı gerekirdi. Bunun için şimdi tek satırlık bir
       yapılandırma yeterli olmaktadır.</p>
 
-    <pre class="prettyprint lang-config">
-FallbackResource /index.php
-    </pre>
+    <pre class="prettyprint lang-config">FallbackResource /index.php</pre>
 
 
     <p>Resim, CSS dosyaları gibi mevcut dosyalar normal olarak sunulur.</p>
@@ -281,11 +267,9 @@ FallbackResource /index.php
     <p><em>http://example.com/blog/</em> gibi bir alt URI <var>yerel-url</var>
       olarak sağlanır:</p>
 
-    <pre class="prettyprint lang-config">
-&lt;Directory /web/example.com/htdocs/blog&gt;
+    <pre class="prettyprint lang-config">&lt;Directory /web/example.com/htdocs/blog&gt;
   FallbackResource /blog/index.php
-&lt;/Directory&gt;
-    </pre>
+&lt;/Directory&gt;</pre>
 
 
 

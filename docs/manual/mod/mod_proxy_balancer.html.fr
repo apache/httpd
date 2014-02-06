@@ -126,14 +126,12 @@ la répartition de charge</td></tr>
     d'arrière-plan :
     </p>
 
-    <pre class="prettyprint lang-config">
-&lt;Proxy balancer://mycluster&gt;
+    <pre class="prettyprint lang-config">&lt;Proxy balancer://mycluster&gt;
     BalancerMember http://192.168.1.50:80
     BalancerMember http://192.168.1.51:80
 &lt;/Proxy&gt;
 ProxyPass /test balancer://mycluster
-ProxyPassReverse /test balancer://mycluster
-    </pre>
+ProxyPassReverse /test balancer://mycluster</pre>
 
 
 
@@ -143,16 +141,14 @@ ProxyPassReverse /test balancer://mycluster
     cookie de session approprié :
     </p>
 
-    <pre class="prettyprint lang-config">
-Header add Set-Cookie "ROUTEID=.%{BALANCER_WORKER_ROUTE}e; path=/" env=BALANCER_ROUTE_CHANGED
+    <pre class="prettyprint lang-config">Header add Set-Cookie "ROUTEID=.%{BALANCER_WORKER_ROUTE}e; path=/" env=BALANCER_ROUTE_CHANGED
 &lt;Proxy balancer://mycluster&gt;
     BalancerMember http://192.168.1.50:80 route=1
     BalancerMember http://192.168.1.51:80 route=2
     ProxySet stickysession=ROUTEID
 &lt;/Proxy&gt;
 ProxyPass /test balancer://mycluster
-ProxyPassReverse /test balancer://mycluster
-    </pre>
+ProxyPassReverse /test balancer://mycluster</pre>
 
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -234,12 +230,10 @@ ProxyPassReverse /test balancer://mycluster
     <p>Pour permettre la gestion du répartiteur de charge aux
     navigateurs appartenant au domaine example.com, ajoutez ces lignes à
     votre fichier de configuration <code>httpd.conf</code> :</p>
-<pre class="prettyprint lang-config">
-&lt;Location /balancer-manager&gt;
+<pre class="prettyprint lang-config">&lt;Location /balancer-manager&gt;
     SetHandler balancer-manager
     Require host example.com
-&lt;/Location&gt;
-</pre>
+&lt;/Location&gt;</pre>
 
 
     <p>Vous pourrez alors accéder au gestionnaire du répartiteur de
@@ -305,13 +299,11 @@ ProxyPassReverse /test balancer://mycluster
     d'URL en définissant le nom du cookie et le nom du paramètre d'URL
     séparés par une barre verticale (<code>|</code>) comme dans
     l'exemple suivant :</p>
-    <pre class="prettyprint lang-config">
-ProxyPass /test balancer://mycluster stickysession=JSESSIONID|jsessionid scolonpathdelim=On
+    <pre class="prettyprint lang-config">ProxyPass /test balancer://mycluster stickysession=JSESSIONID|jsessionid scolonpathdelim=On
 &lt;Proxy balancer://mycluster&gt;
     BalancerMember http://192.168.1.50:80 route=node1
     BalancerMember http://192.168.1.51:80 route=node2
-&lt;/Proxy&gt;
-    </pre>
+&lt;/Proxy&gt;</pre>
 
     <p>Si le cookie et le paramètre de requête fournissent tous deux une
     information de route correcte pour la même requête, c'est

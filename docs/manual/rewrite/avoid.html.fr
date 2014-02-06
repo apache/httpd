@@ -97,8 +97,7 @@ rediriger toutes les URLs de niveaux inférieurs comme
 <p>Pour rediriger les URLs <code>http</code> vers <code>https</code>,
 utilisez cette définition :</p>
 
-<pre class="prettyprint lang-config">
-&lt;VirtualHost *:80&gt;
+<pre class="prettyprint lang-config">&lt;VirtualHost *:80&gt;
 ServerName www.example.com
 Redirect / https://www.example.com/
 &lt;/VirtualHost &gt;
@@ -106,8 +105,7 @@ Redirect / https://www.example.com/
 &lt;VirtualHost *:443&gt;
 ServerName www.example.com
 #  ... insérer ici la configuration SSL
-&lt;/VirtualHost &gt;
-</pre>
+&lt;/VirtualHost &gt;</pre>
 
 
 <p>L'utilisation de la directive <code>RewriteRule</code> pour accomplir
@@ -180,9 +178,7 @@ cela semble être tout de même la meilleure approche.</p>
 <p>La directive <code>RewriteRule</code> fournit le drapeau <a href="flags.html#flag_p">[P]</a> qui permet de faire passer les URIs
 réécrits par <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>.</p>
 
-<pre class="prettyprint lang-config">
-RewriteRule ^/?images(.*) http://serveur-images.local/images$1 [P]
-</pre>
+<pre class="prettyprint lang-config">RewriteRule ^/?images(.*) http://serveur-images.local/images$1 [P]</pre>
 
 
 <p>Cependant, dans les nombreux cas où aucune correspondance au modèle
@@ -190,18 +186,14 @@ n'est vraiment nécessaire, comme dans l'exemple ci-dessus, il est
 préférable d'utiliser la directive <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code>. L'exemple précédent pourrait
 être remplacé par :</p>
 
-<pre class="prettyprint lang-config">
-ProxyPass /images/ http://serveur-images.local/images/
-</pre>
+<pre class="prettyprint lang-config">ProxyPass /images/ http://serveur-images.local/images/</pre>
 
 
 <p>Que vous utilisiez <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> ou <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code>, vous devrez dans tous les cas
 utiliser aussi la directive <code class="directive"><a href="../mod/mod_proxy.html#proxypassreverse">ProxyPassReverse</a></code> pour intercepter les
 redirections en provenance du serveur d'arrière-plan :</p>
 
-<pre class="prettyprint lang-config">
-ProxyPassReverse /images/ http://serveur-images.local/images/
-</pre>
+<pre class="prettyprint lang-config">ProxyPassReverse /images/ http://serveur-images.local/images/</pre>
 
 
 <p>Vous devrez cependant tout de même utiliser <code>RewriteRule</code>
@@ -225,11 +217,9 @@ d'hôte canonique, tel que <code>www.example.com</code> au lieu de
 directive <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code> comme
 suit :</p>
 
-<pre class="prettyprint lang-config">
-&lt;If "req('Host') != 'www.example.com'"&gt;
+<pre class="prettyprint lang-config">&lt;If "req('Host') != 'www.example.com'"&gt;
     Redirect / http://www.example.com
-&lt;/If&gt;
-</pre>
+&lt;/If&gt;</pre>
 
 
 <p>On peut utiliser cette technique dans de nombreux scénarios courant

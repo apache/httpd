@@ -29,13 +29,11 @@
             최근에 변경된 내용은 영어 문서를 참고하세요.</div>
 
 
-<pre>
-Date: Wed, 05 Nov 1997 16:59:34 -0800
+<pre>Date: Wed, 05 Nov 1997 16:59:34 -0800
 From: Rick Jones &lt;<a href="mailto:raj@cup.hp.com">raj@cup.hp.com</a>&gt;
 Reply-To: <a href="mailto:raj@cup.hp.com">raj@cup.hp.com</a>
 Organization: Network Performance
-Subject: HP-UX tuning tips
-</pre>
+Subject: HP-UX tuning tips</pre>
 
     <p>이 글은 성능향상 페이지에 추가할 HP-UX 성능향상 팁이다.</p>
 

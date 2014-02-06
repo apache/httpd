@@ -81,8 +81,7 @@
     <p>Appropriate user (text) files can be created using the
     <code class="program"><a href="../programs/htdigest.html">htdigest</a></code> tool.</p>
 
-    <div class="example"><h3>Example:</h3><pre class="prettyprint lang-config">
-&lt;Location /private/&gt;
+    <div class="example"><h3>Example:</h3><pre class="prettyprint lang-config">&lt;Location /private/&gt;
     AuthType Digest
     AuthName "private area"
     AuthDigestDomain /private/ http://mirror.my.dom/private2/
@@ -90,8 +89,7 @@
     AuthDigestProvider file
     AuthUserFile /web/auth/.digest_pw
     Require valid-user
-&lt;/Location&gt;
-      </pre>
+&lt;/Location&gt;</pre>
 </div>
 
     <div class="note"><h3>Note</h3>
@@ -261,11 +259,9 @@ of clients</td></tr>
     express your value as KBytes or MBytes. For example, the following
     directives are all equivalent:</p>
 
-<pre class="prettyprint lang-config">
-AuthDigestShmemSize 1048576
+<pre class="prettyprint lang-config">AuthDigestShmemSize 1048576
 AuthDigestShmemSize 1024K
-AuthDigestShmemSize 1M
-    </pre>
+AuthDigestShmemSize 1M</pre>
 
 
 </div>

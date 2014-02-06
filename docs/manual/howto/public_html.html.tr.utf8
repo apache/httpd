@@ -145,10 +145,8 @@
       işlevselliğin belli kullanıcılar dışında kullanılmamasını da
       sağlayabilirsiniz:</p>
 
-    <pre class="prettyprint lang-config">
-      UserDir disabled<br />
-      UserDir enabled orhan yasar
-    </pre>
+    <pre class="prettyprint lang-config">      UserDir disabled<br />
+      UserDir enabled orhan yasar</pre>
 
 
     <p>Daha fazla örnek için <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code> yönergesinin açıklamasına bakabilirsiniz.</p>
@@ -163,12 +161,10 @@
     ile kullanıcının ev dizinindeki belli bir dizini CGI-etkin duruma
     getirebilirsiniz.</p>
 
-    <pre class="prettyprint lang-config">
-&lt;Directory /home/*/public_html/cgi-bin/&gt;
+    <pre class="prettyprint lang-config">&lt;Directory /home/*/public_html/cgi-bin/&gt;
     Options ExecCGI
     SetHandler cgi-script
-&lt;/Directory&gt;
-    </pre>
+&lt;/Directory&gt;</pre>
 
 
     <p> <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code> yönergesinde

@@ -80,9 +80,7 @@
     <code class="module"><a href="../mod/mod_dav_lock.html">mod_dav_lock</a></code> uses a SDBM database to track user
     locks.</p>
 
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
-      DavGenericLockDB var/DavLock
-      </pre>
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">DavGenericLockDB var/DavLock</pre>
 </div>
 
     <p>The directory containing the lock database file must be

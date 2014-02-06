@@ -49,8 +49,7 @@ accéder à une URL particulière ?</a></li>
 <p>Votre configuration SSL doit comporter au moins les directives
 suivantes :</p>
 
-<pre class="prettyprint lang-config">
-LoadModule ssl_module modules/mod_ssl.so
+<pre class="prettyprint lang-config">LoadModule ssl_module modules/mod_ssl.so
 
 Listen 443
 &lt;VirtualHost *:443&gt;
@@ -58,8 +57,7 @@ Listen 443
     SSLEngine on
     SSLCertificateFile /path/to/www.example.com.cert
     SSLCertificateKeyFile /path/to/www.example.com.key
-&lt;/VirtualHost&gt;
-</pre>
+&lt;/VirtualHost&gt;</pre>
 
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -81,9 +79,7 @@ que le chiffrement fort ?</a></h3>
 
     <p>Les directives suivantes ne permettent que les
     chiffrements de plus haut niveau :</p>
-    <pre class="prettyprint lang-config">
-      SSLCipherSuite HIGH:!aNULL:!MD5
-    </pre>
+    <pre class="prettyprint lang-config">SSLCipherSuite HIGH:!aNULL:!MD5</pre>
 
 
 
@@ -93,10 +89,8 @@ que le chiffrement fort ?</a></h3>
  rapidité (le choix final sera opéré par mod_ssl, dans la mesure ou le
  client les supporte) :</p>
 
-    <pre class="prettyprint lang-config">
-SSLCipherSuite RC4-SHA:AES128-SHA:HIGH:!aNULL:!MD5
-SSLHonorCipherOrder on
-    </pre>
+    <pre class="prettyprint lang-config">SSLCipherSuite RC4-SHA:AES128-SHA:HIGH:!aNULL:!MD5
+SSLHonorCipherOrder on</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -112,16 +106,14 @@ accéder à une URL particulière ?</a></h2>
     <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> peut alors forcer automatiquement une
     renégociation des paramètres SSL pour parvenir au but recherché.
     Cette configuration peut se présenter comme suit :</p>
-    <pre class="prettyprint lang-config">
-# soyons très tolérant a priori
+    <pre class="prettyprint lang-config"># soyons très tolérant a priori
 SSLCipherSuite ALL:!aNULL:RC4+RSA:+HIGH:+MEDIUM:+LOW:+EXP:+eNULL
 
 &lt;Location /strong/area&gt;
 # sauf pour https://hostname/strong/area/ et ses sous-répertoires
 # qui exigent des chiffrements forts
 SSLCipherSuite HIGH:!aNULL:!MD5
-&lt;/Location&gt;
-    </pre>
+&lt;/Location&gt;</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -155,13 +147,11 @@ provenance de l'Internet ?</a></li>
     le certificat de votre propre autorité de certification
     (<code>ca.crt</code>), et d'authentifier les clients à l'aide de ces
     certificats.</p>
-    <pre class="prettyprint lang-config">
-# exige un certificat client signé par le certificat de votre CA
+    <pre class="prettyprint lang-config"># exige un certificat client signé par le certificat de votre CA
 # contenu dans ca.crt
 SSLVerifyClient require
 SSLVerifyDepth 1
-SSLCACertificateFile conf/ssl.crt/ca.crt
-    </pre>
+SSLCACertificateFile conf/ssl.crt/ca.crt</pre>
 
 
 
@@ -175,15 +165,13 @@ mais autoriser quand-même tout client anonyme
 URL particulière, vous pouvez utiliser les fonctionnalités de reconfiguration
 de <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> en fonction du répertoire :</p>
 
-    <pre class="prettyprint lang-config">
-SSLVerifyClient none
+    <pre class="prettyprint lang-config">SSLVerifyClient none
 SSLCACertificateFile conf/ssl.crt/ca.crt
 
 &lt;Location /secure/area&gt;
 SSLVerifyClient require
 SSLVerifyDepth 1
-&lt;/Location&gt;
-    </pre>
+&lt;/Location&gt;</pre>
 
 
 
@@ -206,8 +194,7 @@ l'accès au reste du serveur à tous les clients ?</a></h3>
     de données de mots de passe contenant <em>tous</em> les clients
     autorisés, comme suit :</p>
 
-    <pre class="prettyprint lang-config">
-SSLVerifyClient      none
+    <pre class="prettyprint lang-config">SSLVerifyClient      none
 SSLCACertificateFile conf/ssl.crt/ca.crt
 SSLCACertificatePath conf/ssl.crt
 
@@ -221,8 +208,7 @@ SSLVerifyClient      require
     AuthBasicProvider    file
     AuthUserFile         /usr/local/apache2/conf/httpd.passwd
     Require              valid-user
-&lt;/Directory&gt;
-    </pre>
+&lt;/Directory&gt;</pre>
 
     
 
@@ -231,8 +217,7 @@ SSLVerifyClient      require
     directive <code class="directive"><a href="../mod/mod_ssl.html#ssloptions">SSLOptions</a></code> pour
     plus de détails.</p>
 
-    <div class="example"><h3>httpd.passwd</h3><pre>
-/C=DE/L=Munich/O=Snake Oil, Ltd./OU=Staff/CN=Foo:xxj31ZMTZzkVA
+    <div class="example"><h3>httpd.passwd</h3><pre>/C=DE/L=Munich/O=Snake Oil, Ltd./OU=Staff/CN=Foo:xxj31ZMTZzkVA
 /C=US/L=S.F./O=Snake Oil, Ltd./OU=CA/CN=Bar:xxj31ZMTZzkVA
 /C=US/L=L.A./O=Snake Oil, Ltd./OU=Dev/CN=Quux:xxj31ZMTZzkVA</pre></div>
 
@@ -241,8 +226,7 @@ SSLVerifyClient      require
     utilisant la directive <code class="directive"><a href="../mod/mod_ssl.html#sslrequire">SSLRequire</a></code>, comme suit :</p>
 
 
-    <pre class="prettyprint lang-config">
-SSLVerifyClient      none
+    <pre class="prettyprint lang-config">SSLVerifyClient      none
 SSLCACertificateFile conf/ssl.crt/ca.crt
 SSLCACertificatePath conf/ssl.crt
 
@@ -253,8 +237,7 @@ SSLCACertificatePath conf/ssl.crt
   SSLRequireSSL
   SSLRequire       %{SSL_CLIENT_S_DN_O}  eq "Snake Oil, Ltd." \
                and %{SSL_CLIENT_S_DN_OU} in {"Staff", "CA", "Dev"}
-&lt;/Directory&gt;
-    </pre>
+&lt;/Directory&gt;</pre>
 
 
 
@@ -272,8 +255,7 @@ aux clients de l'intranet.</a></h3>
    doivent se trouver en dehors de votre hôte virtuel HTTPS, afin qu'elles
    s'appliquent à la fois à HTTP et HTTPS.</p>
 
-    <pre class="prettyprint lang-config">
-SSLCACertificateFile conf/ssl.crt/company-ca.crt
+    <pre class="prettyprint lang-config">SSLCACertificateFile conf/ssl.crt/company-ca.crt
 
 &lt;Directory /usr/local/apache2/htdocs&gt;
 #   En dehors de subarea, seul l'accès depuis l'intranet est
@@ -312,8 +294,7 @@ SSLCACertificateFile conf/ssl.crt/company-ca.crt
     AuthBasicProvider    file
     AuthUserFile         conf/protected.passwd
     Require              valid-user
-&lt;/Directory&gt;
-    </pre>
+&lt;/Directory&gt;</pre>
 
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

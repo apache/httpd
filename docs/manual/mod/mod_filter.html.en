@@ -175,40 +175,33 @@
     <dl>
     <dt>Server side Includes (SSI)</dt>
     <dd>A simple case of replacing <code class="directive">AddOutputFilterByType</code>
-    <pre class="prettyprint lang-config">
-FilterDeclare SSI
+    <pre class="prettyprint lang-config">FilterDeclare SSI
 FilterProvider SSI INCLUDES "%{CONTENT_TYPE} =~ m|^text/html|"
-FilterChain SSI
-    </pre>
+FilterChain SSI</pre>
 
     </dd>
 
     <dt>Server side Includes (SSI)</dt>
     <dd>The same as the above but dispatching on handler (classic
     SSI behaviour; .shtml files get processed).
-    <pre class="prettyprint lang-config">
-FilterProvider SSI INCLUDES "%{HANDLER} = 'server-parsed'"
-FilterChain SSI
-    </pre>
+    <pre class="prettyprint lang-config">FilterProvider SSI INCLUDES "%{HANDLER} = 'server-parsed'"
+FilterChain SSI</pre>
 
     </dd>
 
     <dt>Emulating mod_gzip with mod_deflate</dt>
     <dd>Insert INFLATE filter only if "gzip" is NOT in the
     Accept-Encoding header.  This filter runs with ftype CONTENT_SET.
-    <pre class="prettyprint lang-config">
-FilterDeclare gzip CONTENT_SET
+    <pre class="prettyprint lang-config">FilterDeclare gzip CONTENT_SET
 FilterProvider gzip inflate "%{req:Accept-Encoding} !~ /gzip/"
-FilterChain gzip
-    </pre>
+FilterChain gzip</pre>
 
     </dd>
 
     <dt>Image Downsampling</dt>
     <dd>Suppose we want to downsample all web images, and have filters
     for GIF, JPEG and PNG.
-    <pre class="prettyprint lang-config">
-FilterProvider unpack jpeg_unpack "%{CONTENT_TYPE} = 'image/jpeg'"
+    <pre class="prettyprint lang-config">FilterProvider unpack jpeg_unpack "%{CONTENT_TYPE} = 'image/jpeg'"
 FilterProvider unpack gif_unpack "%{CONTENT_TYPE} = 'image/gif'"
 FilterProvider unpack png_unpack "%{CONTENT_TYPE} = 'image/png'"
 
@@ -220,8 +213,7 @@ FilterProvider repack gif_pack "%{CONTENT_TYPE} = 'image/gif'"
 FilterProvider repack png_pack "%{CONTENT_TYPE} = 'image/png'"
 &lt;Location /image-filter&gt;
     FilterChain unpack downsample repack
-&lt;/Location&gt;
-    </pre>
+&lt;/Location&gt;</pre>
 
     </dd>
     </dl>
@@ -289,9 +281,7 @@ being moved to <code class="module"><a href="../mod/mod_filter.html">mod_filter<
     <code>text/html</code> or <code>text/plain</code> before it is sent
     to the client.</p>
 
-    <pre class="prettyprint lang-config">
-      AddOutputFilterByType DEFLATE text/html text/plain
-    </pre>
+    <pre class="prettyprint lang-config">AddOutputFilterByType DEFLATE text/html text/plain</pre>
 
 
     <p>If you want the content to be processed by more than one filter, their
@@ -304,12 +294,10 @@ being moved to <code class="module"><a href="../mod/mod_filter.html">mod_filter<
     <code>INCLUDES</code> filter and then by the <code>DEFLATE</code>
     filter.</p>
 
-    <pre class="prettyprint lang-config">
-&lt;Location /cgi-bin/&gt;
+    <pre class="prettyprint lang-config">&lt;Location /cgi-bin/&gt;
     Options Includes
     AddOutputFilterByType INCLUDES;DEFLATE text/html
-&lt;/Location&gt;
-    </pre>
+&lt;/Location&gt;</pre>
 
 
 

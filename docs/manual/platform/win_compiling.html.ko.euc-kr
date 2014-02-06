@@ -180,11 +180,9 @@
     있다. Windows NT에서 <code>release</code>와 <code>debug</code>
     컴파일하는 명령어는 각각 다음과 같다:</p>
 
-    <div class="example"><pre>
-nmake /f Makefile.win _apacher
+    <div class="example"><pre>nmake /f Makefile.win _apacher
 
-nmake /f Makefile.win _apached
-    </pre></div>
+nmake /f Makefile.win _apached</pre></div>
 
     <p>두 명령어 모두 아파치를 컴파일한다. 후자는 결과파일에
     디버깅 정보를 포함하여 버그를 찾고 문제를 추적하기 쉽게
@@ -324,8 +322,7 @@ nmake /f Makefile.win _apached
     <p>컴파일하고 모든 파일을 원하는 폴더 <em>dir</em>에 자동으로
     설치하려면 다음 <code>nmake</code> 명령어중 하나를 사용한다:</p>
 
-    <div class="example"><pre>
-nmake /f Makefile.win installr INSTDIR=<em>dir</em>
+    <div class="example"><pre>nmake /f Makefile.win installr INSTDIR=<em>dir</em>
 
 nmake /f Makefile.win installd INSTDIR=<em>dir</em>
     </pre></div>

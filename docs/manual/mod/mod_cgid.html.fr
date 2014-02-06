@@ -101,9 +101,7 @@ communiquer avec le démon CGI</td></tr>
     <p>Si <var>chemin fichier</var> n'est pas un chemin absolu, il est
     relatif au chemin défini par la directive <code class="directive"><a href="../mod/core.html#defaultruntimedir">DefaultRuntimeDir</a></code>.</p>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">
-      ScriptSock /var/run/cgid.sock
-      </pre>
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">ScriptSock /var/run/cgid.sock</pre>
 </div>
 
 

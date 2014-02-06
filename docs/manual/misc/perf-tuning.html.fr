@@ -151,12 +151,10 @@
       Voici un exemple qui désactive les recherches DNS sauf pour les fichiers
       <code>.html</code> et <code>.cgi</code> :</p>
 
-      <pre class="prettyprint lang-config">
-HostnameLookups off
+      <pre class="prettyprint lang-config">HostnameLookups off
 &lt;Files ~ "\.(html|cgi)$"&gt;
   HostnameLookups on
-&lt;/Files&gt;
-      </pre>
+&lt;/Files&gt;</pre>
 
 
       <p>Mais même dans ce cas, si vous n'avez besoin de noms DNS que dans
@@ -176,12 +174,10 @@ HostnameLookups off
       symboliques. Un appel supplémentaire par élément du chemin du fichier.
       Par exemple, si vous avez :</p>
 
-      <pre class="prettyprint lang-config">
-DocumentRoot /www/htdocs
+      <pre class="prettyprint lang-config">DocumentRoot /www/htdocs
 &lt;Directory /&gt;
   Options SymLinksIfOwnerMatch
-&lt;/Directory&gt;
-      </pre>
+&lt;/Directory&gt;</pre>
 
 
       <p>et si une requête demande l'URI <code>/index.html</code>, Apache
@@ -193,16 +189,14 @@ DocumentRoot /www/htdocs
       vérifier la sécurité des liens symboliques, vous pouvez utiliser une
       configuration du style :</p>
 
-      <pre class="prettyprint lang-config">
-DocumentRoot /www/htdocs
+      <pre class="prettyprint lang-config">DocumentRoot /www/htdocs
 &lt;Directory /&gt;
   Options FollowSymLinks
 &lt;/Directory&gt;
 
 &lt;Directory /www/htdocs&gt;
   Options -FollowSymLinks +SymLinksIfOwnerMatch
-&lt;/Directory&gt;
-      </pre>
+&lt;/Directory&gt;</pre>
 
 
       <p>Ceci évite au moins les vérifications supplémentaires pour le chemin
@@ -228,12 +222,10 @@ DocumentRoot /www/htdocs
       pour chaque élément du chemin du fichier demandé. Par exemple, si vous
       avez : </p>
 
-      <pre class="prettyprint lang-config">
-DocumentRoot /www/htdocs
+      <pre class="prettyprint lang-config">DocumentRoot /www/htdocs
 &lt;Directory /&gt;
   AllowOverride all
-&lt;/Directory&gt;
-      </pre>
+&lt;/Directory&gt;</pre>
 
 
       <p>et qu'une requête demande l'URI <code>/index.html</code>, Apache
@@ -613,8 +605,7 @@ DocumentRoot /www/htdocs
       (ces exemples ne sont pas extraits du code d'Apache, ils ne sont
       proposés qu'à des fins pédagogiques) :</p>
 
-      <pre class="prettyprint lang-c">
-        for (;;) {
+      <pre class="prettyprint lang-c">        for (;;) {
           for (;;) {
             fd_set accept_fds;
 
@@ -634,8 +625,7 @@ DocumentRoot /www/htdocs
             if (new_connection != -1) break;
           }
           process_the(new_connection);
-        }
-      </pre>
+        }</pre>
 
 
       <p>Mais cette implémentation rudimentaire présente une sérieuse lacune.
@@ -675,8 +665,7 @@ DocumentRoot /www/htdocs
       entrées dans la boucle interne. La boucle ressemble à ceci (les
       différences sont mises en surbrillance) :</p>
 
-      <pre class="prettyprint lang-c">
-        for (;;) {
+      <pre class="prettyprint lang-c">        for (;;) {
           <strong>accept_mutex_on ();</strong>
           for (;;) {
             fd_set accept_fds;
@@ -698,8 +687,7 @@ DocumentRoot /www/htdocs
           }
           <strong>accept_mutex_off ();</strong>
           process the new_connection;
-        }
-      </pre>
+        }</pre>
 
 
       <p><a id="serialize" name="serialize">Les fonctions</a>
@@ -812,8 +800,7 @@ DocumentRoot /www/htdocs
       <code>http_main.c</code>). La fonction ressemble approximativement à
       ceci :</p>
 
-      <pre class="prettyprint lang-c">
-        void lingering_close (int s)
+      <pre class="prettyprint lang-c">        void lingering_close (int s)
         {
           char junk_buffer[2048];
           
@@ -835,8 +822,7 @@ DocumentRoot /www/htdocs
           }
           
           close (s);
-        }
-      </pre>
+        }</pre>
 
 
       <p>Ceci ajoute naturellement un peu de charge à la fin d'une connexion,

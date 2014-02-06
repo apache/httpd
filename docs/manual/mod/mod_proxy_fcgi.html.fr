@@ -73,9 +73,7 @@
     d'activer <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> et
     <code class="module"><a href="../mod/mod_proxy_fcgi.html">mod_proxy_fcgi</a></code>.</p>
 
-    <div class="example"><h3>Instance d'application unique</h3><pre class="prettyprint lang-config">
-      ProxyPass /mon_appli/ fcgi://localhost:4000/
-      </pre>
+    <div class="example"><h3>Instance d'application unique</h3><pre class="prettyprint lang-config">ProxyPass /mon_appli/ fcgi://localhost:4000/</pre>
 </div>
 
     <p>Cette application doit être en mesure de gérer plusieurs
@@ -93,9 +91,7 @@
     suivant :</p>
 
     <div class="example"><h3>Instance d'application unique, pas de réutilisation
-    des connexions</h3><pre class="prettyprint lang-config">
-      ProxyPass /mon_appli/ fcgi://localhost:4000/ disablereuse=on
-      </pre>
+    des connexions</h3><pre class="prettyprint lang-config">ProxyPass /mon_appli/ fcgi://localhost:4000/ disablereuse=on</pre>
 </div>
 
     <p>La passerelle à répartition de charge nécessite le chargement du
@@ -106,13 +102,11 @@
     par défaut et sera utilisé dans cet exemple de configuration.</p>
 
     <div class="example"><h3>Passerelle à répartition de charge vers plusieurs
-    instances de l'application</h3><pre class="prettyprint lang-config">
-ProxyPass /myapp/ balancer://myappcluster/
+    instances de l'application</h3><pre class="prettyprint lang-config">ProxyPass /myapp/ balancer://myappcluster/
 &lt;Proxy balancer://myappcluster/&gt;
     BalancerMember fcgi://localhost:4000
     BalancerMember fcgi://localhost:4001
-&lt;/Proxy&gt;
-    </pre>
+&lt;/Proxy&gt;</pre>
 </div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">

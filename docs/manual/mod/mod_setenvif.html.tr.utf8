@@ -50,10 +50,8 @@
       tarayıcı Mozilla ise <code>netscape</code> ortam değişkeni atanmakta,
       MSIE ise atanmamaktadır.</p>
 
-    <pre class="prettyprint lang-config">
-BrowserMatch ^Mozilla netscape
-BrowserMatch MSIE !netscape
-    </pre>
+    <pre class="prettyprint lang-config">BrowserMatch ^Mozilla netscape
+BrowserMatch MSIE !netscape</pre>
 
 </div>
 <div id="quickview"><h3 class="directives">Yönergeler</h3>
@@ -85,19 +83,15 @@ BrowserMatch MSIE !netscape
     ve ortam değişkenlerine <code>User-Agent</code> HTTP istek başlığının
     değerine göre atama yapar. Aşağıdaki iki satır aynı etkiye sahiptir:</p>
 
-  <pre class="prettyprint lang-config">
-BrowserMatchNoCase Robot is_a_robot
-SetEnvIfNoCase User-Agent Robot is_a_robot
-  </pre>
+  <pre class="prettyprint lang-config">BrowserMatchNoCase Robot is_a_robot
+SetEnvIfNoCase User-Agent Robot is_a_robot</pre>
 
 
   <p>Başka örnekler:</p>
 
-  <pre class="prettyprint lang-config">
-BrowserMatch ^Mozilla forms jpeg=yes browser=netscape
+  <pre class="prettyprint lang-config">BrowserMatch ^Mozilla forms jpeg=yes browser=netscape
 BrowserMatch "^Mozilla/[2-3]" tables agif frames javascript
-BrowserMatch MSIE !javascript
-  </pre>
+BrowserMatch MSIE !javascript</pre>
 
 
 </div>
@@ -118,20 +112,16 @@ duyarsız eşleşmelerine bağlı olarak belirler.</td></tr>
       anlamsal olarak <code class="directive"><a href="#browsermatch">BrowserMatch</a></code> yönergesinin eşdeğeridir.
       Ancak, eşleşmelerde harf büyüklüğüne duyarsızdır. Örnek:</p>
 
-    <pre class="prettyprint lang-config">
-BrowserMatchNoCase mac platform=macintosh
-BrowserMatchNoCase win platform=windows
-    </pre>
+    <pre class="prettyprint lang-config">BrowserMatchNoCase mac platform=macintosh
+BrowserMatchNoCase win platform=windows</pre>
 
 
     <p><code class="directive">BrowserMatch</code> ve
       <code class="directive">BrowserMatchNoCase</code> yönergeleri <code class="directive"><a href="#setenvif">SetEnvIf</a></code> ve <code class="directive"><a href="#setenvifnocase">SetEnvIfNoCase</a></code> yönergelerinin özel
       halleridir. Bu bakımda aşağıdaki iki satır aynı etkiye sahiptir:</p>
 
-    <pre class="prettyprint lang-config">
-BrowserMatchNoCase Robot is_a_robot
-SetEnvIfNoCase User-Agent Robot is_a_robot
-    </pre>
+    <pre class="prettyprint lang-config">BrowserMatchNoCase Robot is_a_robot
+SetEnvIfNoCase User-Agent Robot is_a_robot</pre>
 
 
 </div>
@@ -218,8 +208,7 @@ SetEnvIfNoCase User-Agent Robot is_a_robot
       üzere <code><em>value</em></code> içinde <code>$1</code>..<code>$9</code>
       gösterimleri tanınmaktadır.</p>
 
-    <pre class="prettyprint lang-config">
-SetEnvIf Request_URI "\.gif$" nesne_bir_resim=gif
+    <pre class="prettyprint lang-config">SetEnvIf Request_URI "\.gif$" nesne_bir_resim=gif
 SetEnvIf Request_URI "\.jpg$" nesne_bir_resim=jpg
 SetEnvIf Request_URI "\.xbm$" nesne_bir_resim=xbm
 
@@ -227,8 +216,7 @@ SetEnvIf Referer belgeler\.alanismi\.example\.com dahili_site_istendi
 
 SetEnvIf object_is_image xbm XBIT_PROCESSING=1
 
-SetEnvIf ^TS  ^[a-z]  TS_VAR
-    </pre>
+SetEnvIf ^TS  ^[a-z]  TS_VAR</pre>
 
 
     <p>İlk üçünde istek bir resim dosyası için yapılmışsa
@@ -265,9 +253,7 @@ belgesinde daha fazla örnek bulunabilir.</li>
       değerlendirilirerek <code class="directive">SetEnvIf</code> yönergesindeki gibi
       <em>ort-değişkeni</em>ne uygulanır.</p>
 
-    <pre class="prettyprint lang-config">
-SetEnvIfExpr "tolower(req('X-Sendfile')) == 'd:\images\very_big.iso')" iso_delivered
-    </pre>
+    <pre class="prettyprint lang-config">SetEnvIfExpr "tolower(req('X-Sendfile')) == 'd:\images\very_big.iso')" iso_delivered</pre>
 
 
     <p>Burada uygulamamızın her <code>X-Sendfile</code> göndermeye çalışmasında
@@ -276,9 +262,7 @@ SetEnvIfExpr "tolower(req('X-Sendfile')) == 'd:\images\very_big.iso')" iso_deliv
     <p>Uzak IP adresi RFC 1918'e göre özel bir adres ise rfc1918 değişkenine 1
       atanması daha kullanışlı bir örnek olurdu:</p>
 
-    <pre class="prettyprint lang-config">
-SetEnvIfExpr "-R '10.0.0.0/8' || -R '172.16.0.0/12' || -R '192.168.0.0/16'" rfc1918
-    </pre>
+    <pre class="prettyprint lang-config">SetEnvIfExpr "-R '10.0.0.0/8' || -R '172.16.0.0/12' || -R '192.168.0.0/16'" rfc1918</pre>
 
 
 <h3>Ayrıca bakınız:</h3>
@@ -308,9 +292,7 @@ bağlı olmaksızın yapılmış tanımlara göre atar.</td></tr>
       yönergesinin eşdeğeridir. Ancak, eşleşmelerde harf büyüklüğüne
       duyarsızdır. Örnek:</p>
 
-    <pre class="prettyprint lang-config">
-SetEnvIfNoCase Host Example\.Org site=example
-    </pre>
+    <pre class="prettyprint lang-config">SetEnvIfNoCase Host Example\.Org site=example</pre>
 
 
     <p>Burada, <code>Host:</code> HTTP istek başlığında

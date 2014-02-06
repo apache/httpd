@@ -73,9 +73,7 @@ d'Apache</td></tr></table>
     <p>Cette directive permet de spécifier une liste d'utilisateurs
     autorisés à accéder à la ressource.</p>
 
-    <pre class="prettyprint lang-config">
-      Require user john paul george ringo
-    </pre>
+    <pre class="prettyprint lang-config">Require user john paul george ringo</pre>
 
 
 
@@ -85,9 +83,7 @@ d'Apache</td></tr></table>
     <p>Lorsque cette directive est définie, tout utilisateur qui s'est
     authentifié avec succès aura l'autorisation d'accès à la ressource.</p>
 
-    <pre class="prettyprint lang-config">
-      Require valid-user
-    </pre>
+    <pre class="prettyprint lang-config">Require valid-user</pre>
 
 
 

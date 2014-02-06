@@ -105,10 +105,8 @@ entrée du journal. Ceci se paramètre au moyen de la directive
 variable <code>%v</code>. Ajoutez cette variable au début de la chaîne
 de définition du format de journalisations&nbsp;:</p>
 
-<pre class="prettyprint lang-config">
-LogFormat "%v %h %l %u %t \"%r\" %&gt;s %b" vhost
-CustomLog logs/multiple_vhost_log vhost
-</pre>
+<pre class="prettyprint lang-config">LogFormat "%v %h %l %u %t \"%r\" %&gt;s %b" vhost
+CustomLog logs/multiple_vhost_log vhost</pre>
 
 
 <p>Cette configuration va provoquer la création d'un fichier de

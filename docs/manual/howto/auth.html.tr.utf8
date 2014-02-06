@@ -213,14 +213,12 @@
     veya <code>httpd.conf</code> içindeki &lt;Directory
     /usr/local/apache/htdocs/secret&gt; bölümüne koyabilirsiniz.</p>
 
-    <pre class="prettyprint lang-config">
-AuthType Basic
+    <pre class="prettyprint lang-config">AuthType Basic
 AuthName "Gizli Dosyalar"
 # (Aşağıdaki satırın kullanımı isteğe bağlıdır)
 AuthBasicProvider file
 AuthUserFile /usr/local/apache/passwd/passwords
-Require user umut
-    </pre>
+Require user umut</pre>
 
 
     <p>Bu yönergeleri tek tek inceleyelim.
@@ -320,15 +318,13 @@ Require user umut
     <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> bölümünüzü
     aşağıda görüldüğü şekilde değiştirebilirsiniz:</p>
 
-    <pre class="prettyprint lang-config">
-AuthType Basic
+    <pre class="prettyprint lang-config">AuthType Basic
 AuthName "Davete Binaen"
 # Satır isteğe bağlıdır:
 AuthBasicProvider file
 AuthUserFile /usr/local/apache/passwd/passwords
 AuthGroupFile /usr/local/apache/passwd/groups
-Require group Grupismi
-    </pre>
+Require group Grupismi</pre>
 
 
     <p>Artık, <code>Grupismi</code> gurubunda listelenmiş ve
@@ -381,15 +377,13 @@ Require group Grupismi
 
     <p>Bir metin dosyası yerine bir dbm dosyası kullanım örneği:</p>
 
-    <pre class="prettyprint lang-config">
-&lt;Directory /www/docs/private&gt;
+    <pre class="prettyprint lang-config">&lt;Directory /www/docs/private&gt;
     AuthName "Private"
     AuthType Basic
     AuthBasicProvider dbm
     AuthDBMUserFile /www/passwords/passwd.dbm
     Require valid-user
-&lt;/Directory&gt;
-    </pre>
+&lt;/Directory&gt;</pre>
 
 
     <p>Başka seçenekler de mümkündür. Ayrınılar için
@@ -406,16 +400,14 @@ Require group Grupismi
     örnekte dosya ve LDAP tabanlı kimlik doğrulama tedarikçileri bir
     arada kullanılmıştır.</p>
 
-    <pre class="prettyprint lang-config">
-&lt;Directory /www/docs/private&gt;
+    <pre class="prettyprint lang-config">&lt;Directory /www/docs/private&gt;
     AuthName "Private"
     AuthType Basic
     AuthBasicProvider file ldap
     AuthUserFile /usr/local/apache/passwd/passwords
     AuthLDAPURL ldap://ldaphost/o=yourorg
     Require valid-user
-&lt;/Directory&gt;
-    </pre>
+&lt;/Directory&gt;</pre>
 
 
     <p>Bu örnekte dosya tedarikçisi, ilk olarak kullanıcının kimliğini
@@ -431,8 +423,7 @@ Require group Grupismi
     dosya için hem dosyalı hem de LDAP grup kimlik doğrulaması
     kullanılmıştır.</p>
 
-    <pre class="prettyprint lang-config">
-&lt;Directory /www/docs/private&gt;
+    <pre class="prettyprint lang-config">&lt;Directory /www/docs/private&gt;
     AuthName "Private"
     AuthType Basic
     AuthBasicProvider file
@@ -441,8 +432,7 @@ Require group Grupismi
     AuthGroupFile /usr/local/apache/passwd/groups
     Require group GroupName
     Require ldap-group cn=mygroup,o=yourorg
-&lt;/Directory&gt;
-    </pre>
+&lt;/Directory&gt;</pre>
 
 
     <p>Kimlik doğrulama konusunu biraz daha genişletirsek, <code class="directive"><a href="../mod/mod_authz_core.html#requireall">&lt;RequireAll&gt;</a></code> ve
@@ -526,38 +516,32 @@ Require group Grupismi
       tutmak istediğinizi varsayalım. Bu kişiyi uzak tutmak için şunları
       yapabilirsiniz:</p>
 
-        <pre class="prettyprint lang-config">
-&lt;RequireAll&gt;
+        <pre class="prettyprint lang-config">&lt;RequireAll&gt;
     Require all granted
     Require not ip 10.252.46.165
-&lt;/RequireAll&gt;
-        </pre>
+&lt;/RequireAll&gt;</pre>
 
 
       <p>Bu adresden gelen ziyaretçiler bu yönergedeki içeriği
       göremeyeceklerdir. Bunun yerine, elinizde IP adresi değil de
       makine adı varsa şunu kullanabilirsiniz:</p>
 
-        <pre class="prettyprint lang-config">
-&lt;RequireAll&gt;
+        <pre class="prettyprint lang-config">&lt;RequireAll&gt;
     Require all granted
     Require not host host.example.com
-&lt;/RequireAll&gt;
-        </pre>
+&lt;/RequireAll&gt;</pre>
 
 
       <p>Eğer alan adının tamanıdan gelecek olan bütün erişimleri
       engellemek isterseniz adresin ya da alan adının bir parçasını
       belirtin:</p>
 
-        <pre class="prettyprint lang-config">
-&lt;RequireAll&gt;
+        <pre class="prettyprint lang-config">&lt;RequireAll&gt;
     Require all granted
     Require not ip 192.168.205
     Require not host phishers.example.com moreidiots.example
     Require not host ke
-&lt;/RequireAll&gt;
-        </pre>
+&lt;/RequireAll&gt;</pre>
 
 
         <p><code class="directive"><a href="../mod/mod_authz_core.html#requireall">&lt;RequireAll&gt;</a></code> yönergesini çok sayıda
