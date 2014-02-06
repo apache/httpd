@@ -115,7 +115,7 @@ HTML préexistants.</p>
     directives SSI. Vous devez indiquer à Apache quels fichiers seront
     concernés. Vous pouvez y parvenir en indiquant une extension, comme
     <code>.shtml</code>, à l'aide des directives suivantes :</p>
-<pre class="prettyprint lang-config">AddType text/html .shtml<br />
+<pre class="prettyprint lang-config">        AddType text/html .shtml<br />
         AddOutputFilter INCLUDES .shtml</pre>
 
 
@@ -452,7 +452,7 @@ HTML préexistants.</p>
 
     <p>Vous pouvez ajouter les lignes suivantes dans votre fichier de
     configuration :</p>
-<pre class="prettyprint lang-config">BrowserMatchNoCase macintosh Mac<br />
+<pre class="prettyprint lang-config">        BrowserMatchNoCase macintosh Mac<br />
         BrowserMatchNoCase MSIE InternetExplorer</pre>
 
 

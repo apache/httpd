@@ -129,7 +129,7 @@
     brigade should have no side effects (such as changing any state
     private to the filter).</p>
 
-    <div class="example"><h3>How to handle an empty brigade</h3><pre class="prettyprint lang-c">apr_status_t dummy_filter(ap_filter_t *f, apr_bucket_brigade *bb)<br />
+    <div class="example"><h3>How to handle an empty brigade</h3><pre class="prettyprint lang-c">    apr_status_t dummy_filter(ap_filter_t *f, apr_bucket_brigade *bb)<br />
     {
         if (APR_BRIGADE_EMPTY(bb)) {
             return APR_SUCCESS;

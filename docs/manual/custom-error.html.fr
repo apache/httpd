@@ -192,7 +192,7 @@ printf "Status: %s Condition Intercepted\n", $ENV{"REDIRECT_STATUS"}; <br />
     <p>Dans le fichier de configuration de votre serveur, vous trouverez
     un groupe de lignes du style :</p>
 
-    <pre class="prettyprint lang-config"># Multi-language error messages<br />
+    <pre class="prettyprint lang-config">    # Multi-language error messages<br />
     #Include conf/extra/httpd-multilang-errordoc.conf</pre>
 
 

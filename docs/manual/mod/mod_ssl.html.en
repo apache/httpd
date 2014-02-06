@@ -305,7 +305,7 @@ string in <code class="module"><a href="../mod/mod_log_config.html">mod_log_conf
     <p>The following example grants access if the user is authenticated
        either with a client certificate or by username and password.</p>
 
-    <pre class="prettyprint lang-config">Require ssl-verify-client<br />
+    <pre class="prettyprint lang-config">      Require ssl-verify-client<br />
       Require valid-user</pre>
 
 

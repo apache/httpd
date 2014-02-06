@@ -638,7 +638,7 @@ Alias /myapp /opt/myapp-1.2.3
             to block unwanted hotlinking.
            </p>
 
-           <pre class="prettyprint lang-config">RewriteCond expr "! %{HTTP_REFERER} -strmatch '*://%{HTTP_HOST}/*'"<br />
+           <pre class="prettyprint lang-config">           RewriteCond expr "! %{HTTP_REFERER} -strmatch '*://%{HTTP_HOST}/*'"<br />
            RewriteRule ^/images - [F]</pre>
 
         </li>

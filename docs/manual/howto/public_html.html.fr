@@ -150,7 +150,7 @@ avec le système de fichiers</a></li></ul><ul class="seealso"><li><a href="#comme
     utilisateurs sauf certains d'entre eux en utilisant une
     configuration du style :</p>
 
-    <pre class="prettyprint lang-config">UserDir disabled<br />
+    <pre class="prettyprint lang-config">      UserDir disabled<br />
       UserDir enabled rbowen krietz</pre>
 
 
