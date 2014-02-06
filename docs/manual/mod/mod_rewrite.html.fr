@@ -116,12 +116,10 @@ d'Apache</td></tr></table>
       le savoir car le processus de réécriture est principalement
       utilisé pour réécrire des URLs logiques en chemins physiques.</p>
 
-<div class="example"><h3>Exemple</h3><pre>
-SCRIPT_NAME=/sw/lib/w3s/tree/global/u/rse/.www/index.html
+<div class="example"><h3>Exemple</h3><pre>SCRIPT_NAME=/sw/lib/w3s/tree/global/u/rse/.www/index.html
 SCRIPT_FILENAME=/u/rse/.www/index.html
 SCRIPT_URL=/u/rse/
-SCRIPT_URI=http://en1.engelschall.com/u/rse/
-</pre></div>
+SCRIPT_URI=http://en1.engelschall.com/u/rse/</pre></div>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -185,15 +183,13 @@ ressource n'était pas relative à la racine des documents. Cette erreur
 de configuration aurait conduit le serveur à rechercher un répertoire
 "opt" à la racine des documents.</p>
 
-<div class="example"><pre>
-DocumentRoot /var/www/example.com
+<div class="example"><pre>DocumentRoot /var/www/example.com
 Alias /myapp /opt/myapp-1.2.3
 &lt;Directory /opt/myapp-1.2.3&gt;
 RewriteEngine On
 RewriteBase /myapp/
 RewriteRule ^index\.html$  welcome.html 
-&lt;/Directory&gt;
-</pre></div>
+&lt;/Directory&gt;</pre></div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -616,12 +612,10 @@ la réécriture soit effectuée
 	  Permet de chaîner les conditions de règles avec un OU au
 	  lieu du AND implicite. Exemple typique :
 
-<div class="example"><pre>
-RewriteCond %{REMOTE_HOST}  ^hote1  [OR]
+<div class="example"><pre>RewriteCond %{REMOTE_HOST}  ^hote1  [OR]
 RewriteCond %{REMOTE_HOST}  ^hote2  [OR]
 RewriteCond %{REMOTE_HOST}  ^hote3
-RewriteRule ...règles concernant tous ces hôtes...
-</pre></div>
+RewriteRule ...règles concernant tous ces hôtes...</pre></div>
 
           Sans ce drapeau, les paires
 	  condition/règle devraient être écrites trois fois.
@@ -647,15 +641,13 @@ RewriteRule ...règles concernant tous ces hôtes...
        l'en-tête ``<code>User-Agent:</code>'' de la requête, vous
        pouvez utiliser ce qui suit : </p>
 
-<div class="example"><pre>
-RewriteCond  %{HTTP_USER_AGENT}  ^Mozilla
+<div class="example"><pre>RewriteCond  %{HTTP_USER_AGENT}  ^Mozilla
 RewriteRule  ^/$                 /homepage.max.html  [L]
 
 RewriteCond  %{HTTP_USER_AGENT}  ^Lynx
 RewriteRule  ^/$                 /homepage.min.html  [L]
 
-RewriteRule  ^/$                 /homepage.std.html  [L]
-</pre></div>
+RewriteRule  ^/$                 /homepage.std.html  [L]</pre></div>
 
         <p>Explications : si vous utilisez un navigateur
 	(Netscape Navigator, Mozilla etc) qui s'identifie comme
@@ -917,15 +909,13 @@ bases de données depuis la version 2.0.41 d'Apache</td></tr>
             <em>valeur de remplacement</em></strong>
           </p>
 
-<div class="example"><h3>Exemple</h3><pre>
-##
+<div class="example"><h3>Exemple</h3><pre>##
 ##  map.txt -- table de correspondance pour la réécriture
 ##
 
 Ralf.S.Engelschall    rse   # Bastard Operator From Hell
 (traduction à votre convenance)
-Mr.Joe.Average        joe   # Mr. Average
-</pre></div>
+Mr.Joe.Average        joe   # Mr. Average</pre></div>
 
 <div class="example"><p><code>
 RewriteMap real-to-user txt:/chemin/vers/fichier/map.txt
@@ -955,14 +945,12 @@ RewriteMap real-to-user txt:/chemin/vers/fichier/map.txt
 	  "dynamique".</p>
           <p>Exemple:</p>
 
-<div class="example"><h3>Fichier de correspondances pour la réécriture</h3><pre>
-##
+<div class="example"><h3>Fichier de correspondances pour la réécriture</h3><pre>##
 ##  map.txt -- correspondances pour la réécriture
 ##
 
 static   www1|www2|www3|www4
-dynamic  www5|www6
-</pre></div>
+dynamic  www5|www6</pre></div>
 
 <div class="example"><h3>Directives de configuration</h3><p><code>
 RewriteMap serveurs rnd:/chemin/vers/fichier/map.txt<br />
@@ -1063,14 +1051,12 @@ $ httxt2dbm -i fichier-source.txt -o fichier-dbm.map
 	 <code class="directive">RewriteEngine</code> n'a pas été définie à
 	 <code>on</code>.</p>
 
-<div class="example"><pre>
-#!/usr/bin/perl
+<div class="example"><pre>#!/usr/bin/perl
 $| = 1;
 while (&lt;STDIN&gt;) {
     # ...insérer ici le code de transformation ou de recherche...
     print $_;
-}
-</pre></div>
+}</pre></div>
 
           <p>Mais soyez très prudent :</p>
 
@@ -1614,8 +1600,7 @@ utilisé dans la directive <code class="directive"><a href="#rewriterule">Rewrite
 						redondant)
 
 ^/chemin(.*) http://autre hôte/autre-chemin$1 [P] http://autre hôte/autre-chemin/infochemin
-                                                via un mandataire interne
-</pre></div>
+                                                via un mandataire interne</pre></div>
 
       <p><strong>Dans une configuration de niveau répertoire pour
       <code>/chemin</code><br />
@@ -1658,8 +1643,7 @@ utilisé dans la directive <code class="directive"><a href="#rewriterule">Rewrite
 						redondant)
 
 ^chemin-local(.*) http://autre hôte/autre-chemin$1 [P] http://autre hôte/autre-chemin/infochemin
-                                                via un mandataire interne
-</pre></div>
+                                                via un mandataire interne</pre></div>
   
 </div>
 </div>

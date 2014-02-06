@@ -342,8 +342,7 @@
 <h2><a name="rpacetstruct" id="rpacetstruct">Request Packet Structure</a></h2>
     <p>For messages from the server to the container of type
     <em>Forward Request</em>:</p>
-    <div class="example"><pre>
-AJP13_FORWARD_REQUEST :=
+    <div class="example"><pre>AJP13_FORWARD_REQUEST :=
     prefix_code      (byte) 0x02 = JK_AJP13_FORWARD_REQUEST
     method           (byte)
     protocol         (string)
@@ -356,25 +355,19 @@ AJP13_FORWARD_REQUEST :=
     num_headers      (integer)
     request_headers *(req_header_name req_header_value)
     attributes      *(attribut_name attribute_value)
-    request_terminator (byte) OxFF
-    </pre></div>
+    request_terminator (byte) OxFF</pre></div>
     <p>The <code>request_headers</code> have the following structure:
-    </p><div class="example"><pre>
-req_header_name := 
+    </p><div class="example"><pre>req_header_name := 
     sc_req_header_name | (string)  [see below for how this is parsed]
 
 sc_req_header_name := 0xA0xx (integer)
 
-req_header_value := (string)
-</pre></div>
+req_header_value := (string)</pre></div>
     <p>The <code>attributes</code> are optional and have the following
     structure:</p>
-    <div class="example"><pre>
-attribute_name := sc_a_name | (sc_a_req_attribute string)
+    <div class="example"><pre>attribute_name := sc_a_name | (sc_a_req_attribute string)
 
-attribute_value := (string)
-
-    </pre></div>
+attribute_value := (string)</pre></div>
     <p>Not that the all-important header is <code>content-length</code>,
     because it determines whether or not the container looks for another
     packet immediately.</p>
@@ -527,8 +520,7 @@ attribute_value := (string)
 <div class="section">
 <h2><a name="resppacketstruct" id="resppacketstruct">Response Packet Structure</a></h2>
     <p>for messages which the container can send back to the server.</p>
-    <div class="example"><pre>
-AJP13_SEND_BODY_CHUNK :=
+    <div class="example"><pre>AJP13_SEND_BODY_CHUNK :=
   prefix_code   3
   chunk_length  (integer)
   chunk        *(byte)
@@ -555,8 +547,7 @@ AJP13_END_RESPONSE :=
 
 AJP13_GET_BODY_CHUNK :=
   prefix_code       6
-  requested_length  (integer)
-    </pre></div>
+  requested_length  (integer)</pre></div>
   <h3>Details:</h3>
   <h3>Send Body Chunk</h3>
     <p>The chunk is basically binary data, and is sent directly back to the

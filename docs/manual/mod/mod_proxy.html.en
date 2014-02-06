@@ -1253,8 +1253,7 @@ through</td></tr>
     scheme can be accomplished with <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> as in the
     following example.</p>
 
-    <pre class="prettyprint lang-config">
-RewriteEngine On
+    <pre class="prettyprint lang-config">RewriteEngine On
 
 RewriteCond %{HTTPS} =off
 RewriteRule . - [E=protocol:http]
@@ -1263,8 +1262,7 @@ RewriteRule . - [E=protocol:https]
 
 RewriteRule ^/mirror/foo/(.*) %{ENV:protocol}://backend.example.com/$1 [P]
 ProxyPassReverse  /mirror/foo/ http://backend.example.com/
-ProxyPassReverse  /mirror/foo/ https://backend.example.com/
-    </pre>
+ProxyPassReverse  /mirror/foo/ https://backend.example.com/</pre>
 
 
 </div>

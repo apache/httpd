@@ -151,8 +151,7 @@
       En général, cela n'a que peu d'effet, à moins que vous n'utilisiez les
       <a href="howto/ssi.html">Inclusions Côté Serveur (SSI)</a>;</p>
 
-      <div class="example"><pre>
-&lt;!-- L'inclusion suivante peut être mise en cache --&gt;
+      <div class="example"><pre>&lt;!-- L'inclusion suivante peut être mise en cache --&gt;
 &lt;!--#include virtual="/footer.html" --&gt;
 
 &lt;!-- L'inclusion suivante ne peut pas être mise en cache --&gt;
@@ -530,8 +529,7 @@ Vary: negotiate,accept-language,accept-charset
       temps nécessaire à la première lecture d'un fichier et le temps
       nécessaire à sa deuxième lecture;</p>
 
-      <div class="example"><pre>
-colm@coroebus:~$ time cat testfile &gt; /dev/null
+      <div class="example"><pre>colm@coroebus:~$ time cat testfile &gt; /dev/null
 real    0m0.065s
 user    0m0.000s
 sys     0m0.001s
@@ -608,8 +606,7 @@ sys     0m0.000s</pre></div>
 
       <p>La mise en cache selon cette méthode est activée comme suit :</p>
 
-      <div class="example"><pre>
-# Activation de la mise en cache en mémoire
+      <div class="example"><pre># Activation de la mise en cache en mémoire
 CacheEnable mem /
 
 # Limite la taille du cache à 1 Mégaoctet
@@ -630,8 +627,7 @@ MCacheSize 1024</pre></div>
 
     <p>Typiquement, le module sera configuré comme suit :</p>
 
-    <div class="example"><pre>
-CacheRoot   /var/cache/apache/
+    <div class="example"><pre>CacheRoot   /var/cache/apache/
 CacheEnable disk /
 CacheDirLevels 2
 CacheDirLength 1</pre></div>

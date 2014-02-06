@@ -95,8 +95,7 @@
 
     <p>以下は、<code>mod_mmap_static</code> に追加したコードです:</p>
 
-      <div class="example"><pre>
-static void register_hooks(void)
+      <div class="example"><pre>static void register_hooks(void)
 {
     static const char * const aszPre[]={ "http_core.c",NULL };
     ap_hook_post_config(mmap_post_config,NULL,NULL,HOOK_MIDDLE);
@@ -139,8 +138,7 @@ static void register_hooks(void)
       <p>モジュールの定義を作成する際に注意しなければならない
       ステージの数は激減しています。古い定義は次のようになっていました。</p>
 
-      <div class="example"><pre>
-module MODULE_VAR_EXPORT <var>module_name</var>_module =
+      <div class="example"><pre>module MODULE_VAR_EXPORT <var>module_name</var>_module =
 {
     STANDARD_MODULE_STUFF,
     /* initializer */
@@ -164,8 +162,7 @@ module MODULE_VAR_EXPORT <var>module_name</var>_module =
 };</pre></div>
 
     <p>新しい構造体はとってもシンプルです…</p>
-      <div class="example"><pre>
-module MODULE_VAR_EXPORT <var>module_name</var>_module =
+      <div class="example"><pre>module MODULE_VAR_EXPORT <var>module_name</var>_module =
 {
     STANDARD20_MODULE_STUFF,
     /* create per-directory config structures */

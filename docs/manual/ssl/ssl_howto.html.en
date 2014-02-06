@@ -191,8 +191,7 @@ Intranet website, for clients coming from the Internet?</a></li>
     you should establish a password database containing <em>all</em>
     clients allowed, as follows:</p>
     
-    <div class="example"><h3>httpd.conf</h3><pre>
-SSLCACertificateFile conf/ssl.crt/ca.crt
+    <div class="example"><h3>httpd.conf</h3><pre>SSLCACertificateFile conf/ssl.crt/ca.crt
 SSLCACertificatePath conf/ssl.crt
 SSLVerifyClient      none
 
@@ -212,8 +211,7 @@ Require              valid-user
     See the <code class="directive"><a href="../mod/mod_ssl.html#ssloptions">SSLOptions</a></code> docs for more 
     information.</p>
     
-    <div class="example"><h3>httpd.passwd</h3><pre>
-/C=DE/L=Munich/O=Snake Oil, Ltd./OU=Staff/CN=Foo:xxj31ZMTZzkVA
+    <div class="example"><h3>httpd.passwd</h3><pre>/C=DE/L=Munich/O=Snake Oil, Ltd./OU=Staff/CN=Foo:xxj31ZMTZzkVA
 /C=US/L=S.F./O=Snake Oil, Ltd./OU=CA/CN=Bar:xxj31ZMTZzkVA
 /C=US/L=L.A./O=Snake Oil, Ltd./OU=Dev/CN=Quux:xxj31ZMTZzkVA</pre></div>
 
@@ -221,8 +219,7 @@ Require              valid-user
     into the DN, you can match them more easily using <code class="directive"><a href="../mod/mod_ssl.html#sslrequire">SSLRequire</a></code>, as follows:</p>
 
 
-    <div class="example"><h3>httpd.conf</h3><pre>
-SSLVerifyClient      none
+    <div class="example"><h3>httpd.conf</h3><pre>SSLVerifyClient      none
 SSLCACertificateFile conf/ssl.crt/ca.crt
 SSLCACertificatePath conf/ssl.crt
 
@@ -248,8 +245,7 @@ plain HTTP access for clients on the Intranet.</a></h3>
    This configuration should remain outside of your HTTPS virtual host, so
    that it applies to both HTTPS and HTTP.</p>
 
-    <div class="example"><h3>httpd.conf</h3><pre>
-SSLCACertificateFile conf/ssl.crt/company-ca.crt
+    <div class="example"><h3>httpd.conf</h3><pre>SSLCACertificateFile conf/ssl.crt/company-ca.crt
 
 &lt;Directory /usr/local/apache2/htdocs&gt;
 #   Outside the subarea only Intranet access is granted

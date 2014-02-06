@@ -82,8 +82,7 @@ CustomLog logs/clickstream "%{cookie}n %r %t"
     <p>(the following is from message
     &lt;022701bda43d$9d32bbb0$1201a8c0@christian.office.sane.com&gt;
     in the new-httpd archives) </p>
-<pre>
-From: "Christian Allen" &lt;christian@sane.com&gt;
+<pre>From: "Christian Allen" &lt;christian@sane.com&gt;
 Subject: Re: Apache Y2K bug in mod_usertrack.c
 Date: Tue, 30 Jun 1998 11:41:56 -0400
 
@@ -112,8 +111,7 @@ Summary:  Mozilla 3.x and up understands two digit dates up until "37"
 (2037).  Mozilla 4.x understands up until at least "50" (2050) in 2-digit
 form, but also understands 4-digit years, which can probably reach up until
 9999.  Your best bet for sending a long-life cookie is to send it for some
-time late in the year "37".
-</pre>
+time late in the year "37".</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

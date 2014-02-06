@@ -159,8 +159,7 @@ yaptığı gibi dizin içeriğini listeler.</td></tr>
       <code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code> tarafından son argüman olarak ele
       alınacak ve çözümleme işlemi o noktada duracaktır.</p>
 
-    <div class="example"><pre>
-&lt;form action="" method="get"&gt;
+    <div class="example"><pre>&lt;form action="" method="get"&gt;
   &lt;input type="text" name="P" value="*" /&gt; ile eşleşen
   &lt;select name="C"&gt;
     &lt;option value="N" selected="selected"&gt;isme&lt;/option&gt;

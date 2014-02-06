@@ -150,8 +150,7 @@
 <h2><a name="security" id="security">The Security Phase</a></h2>
     <p>Needs Documentation. Code is:</p>
 
-    <div class="example"><pre>
-switch (ap_satisfies(r)) {
+    <div class="example"><pre>switch (ap_satisfies(r)) {
 case SATISFY_ALL:
 case SATISFY_NOSPEC:
         if ((access_status = ap_run_access_checker(r)) != 0) {

@@ -126,11 +126,9 @@ RewriteRule   ^/u/<strong>([^/]+)</strong>/?(.*)   http://<strong>${users-to-hos
     <dd>
       This is done via the following ruleset:
 
-<pre class="prettyprint lang-config">
-# This example is valid in per-directory context only
+<pre class="prettyprint lang-config"># This example is valid in per-directory context only
 RewriteCond %{REQUEST_URI}   !-U
-RewriteRule ^(.+)\.html$          /regenerate_page.cgi   [PT,L]
-</pre>
+RewriteRule ^(.+)\.html$          /regenerate_page.cgi   [PT,L]</pre>
 
 
     <p>The <code>-U</code> operator determines whether the test string
@@ -242,8 +240,7 @@ RewriteRule   ^(/[uge]/[^/]+/?.*):refresh  /internal/cgi/apache/nph-refresh?f=$1
       one would usually say "left as an exercise to the reader"
       ;-) I will provide this, too.</p>
 
-<div class="example"><pre>
-#!/sw/bin/perl
+<div class="example"><pre>#!/sw/bin/perl
 ##
 ##  nph-refresh -- NPH/CGI script for auto refreshing pages
 ##  Copyright (c) 1997 Ralf S. Engelschall, All Rights Reserved.
@@ -343,8 +340,7 @@ for ( $n = 0 ; $n &amp; lt ; $QS_n ; $n++ ) {
 
 exit(0);
 
-##EOF##
-</pre></div>
+##EOF##</pre></div>
     </dd>
   </dl>
 

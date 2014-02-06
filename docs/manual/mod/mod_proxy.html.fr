@@ -1406,8 +1406,7 @@ l'espace d'URLs du serveur local</td></tr>
     protocole peut être effectuée à l'aide de
     <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> comme dans l'exemple suivant :</p>
 
-    <pre class="prettyprint lang-config">
-RewriteEngine On
+    <pre class="prettyprint lang-config">RewriteEngine On
 
 RewriteCond %{HTTPS} =off
 RewriteRule . - [E=protocol:http]
@@ -1416,8 +1415,7 @@ RewriteRule . - [E=protocol:https]
 
 RewriteRule ^/mirror/foo/(.*) %{ENV:protocol}://backend.example.com/$1 [P]
 ProxyPassReverse  /mirror/foo/ http://backend.example.com/
-ProxyPassReverse  /mirror/foo/ https://backend.example.com/
-    </pre>
+ProxyPassReverse  /mirror/foo/ https://backend.example.com/</pre>
 
 
 
