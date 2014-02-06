@@ -25,6 +25,9 @@
                   xmlns="http://www.w3.org/1999/xhtml">
 
 
+<!-- load utility snippets -->
+<xsl:include href="../xsl/util/pretrim.xsl" />
+
 <!-- ==================================================================== -->
 <!-- Ordinary HTML that must be converted to latex                        -->
 <!-- ==================================================================== -->
@@ -143,30 +146,6 @@
 <xsl:text>}</xsl:text>
 </xsl:template>
 
-<!-- O(log(n)) (stack usage!) string reverter -->
-<xsl:template name="string-reverse">
-<xsl:param name="string"/>
-<xsl:variable name="length" select="string-length($string)"/>
-
-<xsl:choose>
-<xsl:when test="$length &lt; 2">
-  <xsl:value-of select="$string"/>
-</xsl:when>
-<xsl:when test="$length = 2">
-  <xsl:value-of select="concat(substring($string, 2, 1), substring($string, 1, 1))"/>
-</xsl:when>
-<xsl:otherwise>
-  <xsl:variable name="middle" select="floor($length div 2)"/>
-
-  <xsl:call-template name="string-reverse">
-    <xsl:with-param name="string" select="substring($string, $middle + 1, $middle + 1)"/>
-  </xsl:call-template>
-  <xsl:call-template name="string-reverse">
-    <xsl:with-param name="string" select="substring($string, 1, $middle)"/>
-  </xsl:call-template>
-</xsl:otherwise>
-</xsl:choose>
-</xsl:template>
 
 <!-- Value-of used here explicitly because we don't wan't latex-escaping
 performed.  Of course, this will conflict with html where some tags are
@@ -174,15 +153,20 @@ interpreted in pre -->
 <xsl:template match="pre|highlight">
 <xsl:text>\begin{verbatim}</xsl:text>
 
-<!-- string trimming: ltrim is easy, rtrim is not. so, we're sneaky and use
-ltrim only. The output is then: string-reverse(ltrim(string-reverse(ltrim(.)))) -->
-<xsl:variable name="reversed">
-<xsl:call-template name="string-reverse">
-<xsl:with-param name="string" select="substring(., string-length(substring-before(., substring(normalize-space(.), 1, 1))) + 1, string-length(.))"/>
-</xsl:call-template>
-</xsl:variable>
-<xsl:call-template name="string-reverse">
-<xsl:with-param name="string" select="substring($reversed, string-length(substring-before($reversed, substring(normalize-space($reversed), 1, 1))) + 1, string-length($reversed))"/>
+<!-- If it's a one-liner, trim the initial indentation as well -->
+<!-- it's most likely an accident                              -->
+<xsl:call-template name="pre-ltrim-one">
+  <xsl:with-param name="string">
+    <xsl:call-template name="pre-rtrim">
+      <xsl:with-param name="string">
+        <xsl:call-template name="pre-ltrim">
+          <xsl:with-param name="string">
+            <xsl:value-of select="." />
+          </xsl:with-param>
+        </xsl:call-template>
+      </xsl:with-param>
+    </xsl:call-template>
+  </xsl:with-param>
 </xsl:call-template>
 
 <xsl:text>\end{verbatim}</xsl:text>&lf;

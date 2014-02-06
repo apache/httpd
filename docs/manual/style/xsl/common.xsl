@@ -67,6 +67,7 @@
 
 <!-- load utility snippets -->
 <xsl:include href="util/modtrans.xsl" />
+<xsl:include href="util/pretrim.xsl" />
 
 <!-- make sure, we set relative anchors only, if we're actually -->
 <!-- transforming a modulefile (see <directive> template)       -->
@@ -604,13 +605,85 @@ if (typeof(prettyPrint) !== 'undefined') {
 <!-- /section/section/section/section -->
 
 
+
+<!-- ==================================================================== -->
+<!-- Render trimmed pre/highlight-text                                    -->
+<!-- ==================================================================== -->
+<xsl:template name="pre">
+<xsl:choose>
+<!-- Simple case: only one text node -->
+<xsl:when test="node()[position() = 1 and self::text()] and count(node()) = 1">
+    <xsl:call-template name="pre-ltrim-one">
+        <xsl:with-param name="string">
+            <xsl:call-template name="pre-rtrim">
+                <xsl:with-param name="string">
+                    <xsl:call-template name="pre-ltrim">
+                        <xsl:with-param name="string"
+                            select="node()[position() = 1 and self::text()]" />
+                    </xsl:call-template>
+                </xsl:with-param>
+            </xsl:call-template>
+        </xsl:with-param>
+    </xsl:call-template>
+</xsl:when>
+
+<!-- multiple nodes -->
+<xsl:otherwise>
+    <xsl:variable name="from">
+        <xsl:choose>
+        <xsl:when test="node()[position() = 1 and self::text()]">
+            <xsl:value-of select="2" />
+        </xsl:when>
+        <xsl:otherwise>
+            <xsl:value-of select="1" />
+        </xsl:otherwise>
+        </xsl:choose>
+    </xsl:variable>
+    <xsl:variable name="to">
+        <xsl:choose>
+        <xsl:when test="node()[position() = last() and self::text()]">
+            <xsl:value-of select="count(node()) - 1" />
+        </xsl:when>
+        <xsl:otherwise>
+            <xsl:value-of select="count(node())" />
+        </xsl:otherwise>
+        </xsl:choose>
+    </xsl:variable>
+
+    <xsl:if test="$from = 2">
+        <xsl:choose>
+        <xsl:when test="text()[contains(., '&#x0a;')]">
+            <xsl:call-template name="pre-ltrim">
+                <xsl:with-param name="string"
+                    select="node()[position() = 1 and self::text()]" />
+            </xsl:call-template>
+        </xsl:when>
+        <xsl:otherwise>
+            <xsl:variable name="tmp" select="node()[position() = 1 and self::text()]" />
+            <xsl:value-of select="substring($tmp, string-length(substring-before($tmp, substring(normalize-space($tmp), 1, 1))) + 1, string-length($tmp))" />
+        </xsl:otherwise>
+        </xsl:choose>
+    </xsl:if>
+
+    <xsl:apply-templates select="node()[position() &gt;= $from and position() &lt;= $to]" />
+
+    <xsl:if test="$to &lt; count(node())">
+        <xsl:call-template name="pre-rtrim">
+            <xsl:with-param name="string"
+                select="node()[position() = last() and self::text()]" />
+        </xsl:call-template>
+    </xsl:if>
+</xsl:otherwise>
+</xsl:choose>
+</xsl:template>
+
+
 <!-- ==================================================================== -->
 <!-- Process source code highlighting                                     -->
 <!-- ==================================================================== -->
 <xsl:template match="highlight">
 <pre class="prettyprint lang-{@language}">
-    <!-- highlight body -->
-    <xsl:apply-templates />
+    <xsl:call-template name="pre" />
 </pre>&lf; <!-- /.highlight -->
 </xsl:template>
 <!-- /higlight -->
@@ -1203,7 +1276,7 @@ if (typeof(prettyPrint) !== 'undefined') {
 <xsl:template match="dd"><dd><xsl:apply-templates select="*|@*|text()" /></dd></xsl:template>
 <xsl:template match="em"><em><xsl:apply-templates select="*|@*|text()" /></em></xsl:template>
 <xsl:template match="strong"><strong><xsl:apply-templates select="*|@*|text()" /></strong></xsl:template>
-<xsl:template match="pre"><pre><xsl:apply-templates select="*|@*|text()" /></pre></xsl:template>
+<xsl:template match="pre"><pre><xsl:call-template name="pre" /></pre></xsl:template>
 <xsl:template match="code"><code><xsl:apply-templates select="*|@*|text()" /></code></xsl:template>
 <xsl:template match="var"><var><xsl:apply-templates select="*|@*|text()" /></var></xsl:template>
 <xsl:template match="dfn"><dfn><xsl:apply-templates select="*|@*|text()" /></dfn></xsl:template>

@@ -167,7 +167,6 @@ highlight | blockquote">
 <!ELEMENT dd %BlockOrInline;>
 
 <!ELEMENT pre %Inline;>
-<!ATTLIST pre class CDATA #IMPLIED>
 
 <!ELEMENT highlight %Inline;>
 <!ATTLIST highlight language CDATA #IMPLIED>
