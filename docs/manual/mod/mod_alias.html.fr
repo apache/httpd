@@ -253,7 +253,7 @@ en faisant intervenir les expressions rationnelles</td></tr>
     servir différentes sortes de fichiers à partir de répertoires
     différents :</p>
 
-    <pre class="prettyprint lang-config">AliasMatch ^/image/(.*)\.jpg$ /fichiers/jpg.images/$1.jpg<br />
+    <pre class="prettyprint lang-config">      AliasMatch ^/image/(.*)\.jpg$ /fichiers/jpg.images/$1.jpg<br />
       AliasMatch ^/image/(.*)\.gif$ /fichiers/gif.images/$1.gif</pre>
 
 

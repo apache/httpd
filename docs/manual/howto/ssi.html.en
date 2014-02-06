@@ -107,7 +107,7 @@ existing HTML documents.</p>
     do this. You can tell Apache to parse any file with a
     particular file extension, such as <code>.shtml</code>, with
     the following directives:</p>
-<pre class="prettyprint lang-config">AddType text/html .shtml<br />
+<pre class="prettyprint lang-config">        AddType text/html .shtml<br />
         AddOutputFilter INCLUDES .shtml</pre>
 
 
@@ -440,7 +440,7 @@ modified?</a></h3>
 
     <p>In your configuration file, you could put the following
     line:</p>
-<pre class="prettyprint lang-config">BrowserMatchNoCase macintosh Mac<br />
+<pre class="prettyprint lang-config">        BrowserMatchNoCase macintosh Mac<br />
         BrowserMatchNoCase MSIE InternetExplorer</pre>
 
 

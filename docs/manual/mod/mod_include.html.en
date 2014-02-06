@@ -966,7 +966,7 @@ server.</td></tr>
     output of a file each processing different commands (possibly at
     different times).</p>
 
-    <pre class="prettyprint lang-config">SSIStartTag "&lt;%"<br />
+    <pre class="prettyprint lang-config">      SSIStartTag "&lt;%"<br />
       SSIEndTag   "%&gt;"</pre>
 
 
