@@ -59,9 +59,7 @@ modules</td></tr>
     <p>The <code class="directive">ProtocolEcho</code> directive enables or
     disables the echo server.</p>
 
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
-      ProtocolEcho On
-    </pre>
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">ProtocolEcho On</pre>
 </div>
 
 </div>

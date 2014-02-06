@@ -74,8 +74,7 @@
       gelecek ziyaretçileriniz için DNS kayıtlarınızın olması şarttır.</p>
     </div>
 
-    <pre class="prettyprint lang-config">
-# Apache’nin 80. portu dinlediğinden emin olalım
+    <pre class="prettyprint lang-config"># Apache’nin 80. portu dinlediğinden emin olalım
 Listen 80
 &lt;VirtualHost *:80&gt;
   DocumentRoot /siteler/ecom
@@ -89,8 +88,7 @@ Listen 80
   ServerName example.org
 
   # Diğer yönergeler, burada ...
-&lt;/VirtualHost&gt;
-    </pre>
+&lt;/VirtualHost&gt;</pre>
 
 
     <p>Yıldız imleri tüm adreslerle eşleşmeyi sağladığından ana sunucu
@@ -107,13 +105,11 @@ Listen 80
       <p>IP adresi ve porta dayalı ayrımı umursamıyorsanız, <code>*</code>
         yerine kendi IP adresinizi yazabilirsiniz.</p>
 
-      <pre class="prettyprint lang-config">
-NameVirtualHost 192.168.1.22
+      <pre class="prettyprint lang-config">NameVirtualHost 192.168.1.22
 
 &lt;VirtualHost 192.168.1.22&gt;
   # vs. ...
-&lt;/VirtualHost&gt;
-      </pre>
+&lt;/VirtualHost&gt;</pre>
 
 
       <p>Bununla birlikte, IP adresinin önceden kestirilebilir olmadığı
@@ -145,8 +141,7 @@ NameVirtualHost 192.168.1.22
       <code>192.168.2.2</code> hizmet versin. Bu arada başka sanal konakları
       da sunabilelim istiyoruz.</p>
 
-    <pre class="prettyprint lang-config">
-Listen 80
+    <pre class="prettyprint lang-config">Listen 80
 
 # Bu, 192.168.1.2 adresindeki "ana sunucu" olsun
 ServerName sunucu.example.com
@@ -164,8 +159,7 @@ DocumentRoot /siteler/anasunucu
     ServerName example.org
 
     # Diğer yönergeler, burada ...
-&lt;/VirtualHost&gt;
-    </pre>
+&lt;/VirtualHost&gt;</pre>
 
 
     <p><code>192.168.1.20</code> adresinden gelmeyen tüm isteklere ana sunucu
@@ -187,13 +181,11 @@ DocumentRoot /siteler/anasunucu
       dolayısıyla aynı <code>VirtualHost</code> bölümü ile hizmet
       verebilir.</p>
 
-    <pre class="prettyprint lang-config">
-&lt;VirtualHost 192.168.1.1 172.20.30.40&gt;
+    <pre class="prettyprint lang-config">&lt;VirtualHost 192.168.1.1 172.20.30.40&gt;
     DocumentRoot /siteler/sunucu
     ServerName sunucu.example.com
     ServerAlias sunucu
-&lt;/VirtualHost&gt;
-    </pre>
+&lt;/VirtualHost&gt;</pre>
 
 
     <p>Artık, hem iç hem de dış ağdan gelen isteklere aynı
@@ -219,8 +211,7 @@ DocumentRoot /siteler/anasunucu
       varsayalım. Aşağıdaki örnekte, isim eşleşmesinin, en iyi eşleşen IP
       adresi ve port çifti saptandıktan sonra yer alması gösterilmiştir. </p>
 
-    <pre class="prettyprint lang-config">
-Listen 80
+    <pre class="prettyprint lang-config">Listen 80
 Listen 8080
 
 &lt;VirtualHost 172.20.30.40:80&gt;
@@ -241,8 +232,7 @@ Listen 8080
 &lt;VirtualHost 172.20.30.40:8080&gt;
     ServerName example.org
     DocumentRoot /siteler/eorg-8080
-&lt;/VirtualHost&gt;
-    </pre>
+&lt;/VirtualHost&gt;</pre>
 
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -253,8 +243,7 @@ Listen 8080
       <code>172.20.30.40</code>, diğeri <code>example.org</code> adından
       çözümlenen <code>172.20.30.50</code> diye iki IP adresi olsun.</p>
 
-    <pre class="prettyprint lang-config">
-Listen 80
+    <pre class="prettyprint lang-config">Listen 80
 
 &lt;VirtualHost 172.20.30.40&gt;
     DocumentRoot /siteler/ecom
@@ -264,8 +253,7 @@ Listen 80
 &lt;VirtualHost 172.20.30.50&gt;
     DocumentRoot /siteler/eorg
     ServerName example.org
-&lt;/VirtualHost&gt;
-    </pre>
+&lt;/VirtualHost&gt;</pre>
 
 
     <p><code>&lt;VirtualHost&gt;</code> yönergelerinde belirtilmeyen
@@ -281,8 +269,7 @@ Listen 80
       çözümlenen <code>172.20.30.50</code> diye iki IP adresi olsun ve iki
       konak da hem 80 hem de 8080 portlarında çalışsınlar istiyoruz.</p>
 
-    <pre class="prettyprint lang-config">
-Listen 172.20.30.40:80
+    <pre class="prettyprint lang-config">Listen 172.20.30.40:80
 Listen 172.20.30.40:8080
 Listen 172.20.30.50:80
 Listen 172.20.30.50:8080
@@ -305,8 +292,7 @@ Listen 172.20.30.50:8080
 &lt;VirtualHost 172.20.30.50:8080&gt;
     DocumentRoot /siteler/eorg-8080
     ServerName example.org
-&lt;/VirtualHost&gt;
-    </pre>
+&lt;/VirtualHost&gt;</pre>
 
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -318,8 +304,7 @@ Listen 172.20.30.50:8080
       bir sanal konakta görünmüyorsa bu sankon kesinlikle IP'ye dayalı bir
       sanal konaktır.</p>
 
-    <pre class="prettyprint lang-config">
-Listen 80
+    <pre class="prettyprint lang-config">Listen 80
 
 &lt;VirtualHost 172.20.30.40&gt;
     DocumentRoot /siteler/ecom
@@ -345,8 +330,7 @@ Listen 80
 &lt;VirtualHost 172.20.30.60&gt;
     DocumentRoot /siteler/egov
     ServerName example.gov
-&lt;/VirtualHost&gt;
-    </pre>
+&lt;/VirtualHost&gt;</pre>
 
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -362,14 +346,12 @@ Listen 80
       ve konak isminin de aktarılmasını arzuladığımızdan <code class="directive"><a href="../mod/mod_proxy.html#proxypreservehost on">ProxyPreserveHost On</a></code> yönergesini
       kullandık.</p>
 
-    <pre class="prettyprint lang-config">
-&lt;VirtualHost *:*&gt;
+    <pre class="prettyprint lang-config">&lt;VirtualHost *:*&gt;
     ProxyPreserveHost On
     ProxyPass / http://192.168.111.2/
     ProxyPassReverse / http://192.168.111.2/
     ServerName konak.example.com
-&lt;/VirtualHost&gt;
-    </pre>
+&lt;/VirtualHost&gt;</pre>
 
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -382,11 +364,9 @@ Listen 80
     <p>Bir IP adresi ve port belirtilmeyen veya hiçbir sanal konağın hiçbir
       adresi/portu ile eşleşmeyen istekleri yakalamak istersek...</p>
 
-    <pre class="prettyprint lang-config">
-&lt;VirtualHost _default_:*&gt;
+    <pre class="prettyprint lang-config">&lt;VirtualHost _default_:*&gt;
     DocumentRoot /siteler/default
-&lt;/VirtualHost&gt;
-    </pre>
+&lt;/VirtualHost&gt;</pre>
 
 
     <p>Bütün portlarla eşleşen böyle bir öntanımlı sanal konağın kullanımı
@@ -410,8 +390,7 @@ Listen 80
     <p>Önceki yapılandırmaya ek olarak 80. portta ayrı bir
       <code>_default_</code> sanal konağı kullanmak istersek...</p>
 
-    <pre class="prettyprint lang-config">
-&lt;VirtualHost _default_:80&gt;
+    <pre class="prettyprint lang-config">&lt;VirtualHost _default_:80&gt;
     DocumentRoot /siteler/default80
     # ...
 &lt;/VirtualHost&gt;
@@ -419,8 +398,7 @@ Listen 80
 &lt;VirtualHost _default_:*&gt;
     DocumentRoot /siteler/default
     # ...
-&lt;/VirtualHost&gt;
-    </pre>
+&lt;/VirtualHost&gt;</pre>
 
 
     <p>80. porttan hizmet sunan <code>_default_</code> sanal konağı IP adresi
@@ -435,12 +413,10 @@ Listen 80
     <p><code>_default_</code> sanal konağının sadece 80. porttan hizmet
       sunmasını istersek...</p>
 
-    <pre class="prettyprint lang-config">
-&lt;VirtualHost _default_:80&gt;
+    <pre class="prettyprint lang-config">&lt;VirtualHost _default_:80&gt;
     DocumentRoot /siteler/default
     ...
-&lt;/VirtualHost&gt;
-    </pre>
+&lt;/VirtualHost&gt;</pre>
 
 
     <p>80. porttan gelen IP adresi belirtilmemiş isteklere
@@ -467,8 +443,7 @@ Listen 80
       yönergesine yeni IP adresini (<code>192.168.1.2</code>) eklemek
       olacak.</p>
 
-    <pre class="prettyprint lang-config">
-Listen 80
+    <pre class="prettyprint lang-config">Listen 80
 ServerName example.com
 DocumentRoot /siteler/ecom
 
@@ -483,8 +458,7 @@ DocumentRoot /siteler/ecom
     ServerName example.enet
     ServerAlias *.example.enet
     # ...
-&lt;/VirtualHost&gt;
-    </pre>
+&lt;/VirtualHost&gt;</pre>
 
 
     <p>Böylece sanal konağa hem yeni (bir IP’ye dayalı sanal konak olarak)
@@ -505,8 +479,7 @@ DocumentRoot /siteler/ecom
       bağlantısı içeren bir bilgilendirme sayfası sunmak üzere yeni bir sanal
       konak oluşturabiliriz.</p>
 
-    <pre class="prettyprint lang-config">
-&lt;VirtualHost 172.20.30.40&gt;
+    <pre class="prettyprint lang-config">&lt;VirtualHost 172.20.30.40&gt;
     # ilk sanal konak
     DocumentRoot /siteler/baska
     RewriteEngine On
@@ -530,8 +503,7 @@ DocumentRoot /siteler/baska/bir
     RewriteEngine On
     RewriteRule ^(/iki/.*) /siteler/baska$1
     # ...
-&lt;/VirtualHost&gt;
-    </pre>
+&lt;/VirtualHost&gt;</pre>
 
 
     <p><code class="directive"><a href="../mod/core.html#serverpath">ServerPath</a></code> yönergesinden dolayı

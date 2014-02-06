@@ -64,8 +64,7 @@ for those parts that will need to be substituted.</p>
 <p>For example,  you might use a macro to define a <code class="directive">&lt;VirtualHost&gt;</code> block, in order to define
 multiple similar virtual hosts:</p>
 
-<pre class="prettyprint lang-config">
-&lt;Macro VHost $name $domain&gt;
+<pre class="prettyprint lang-config">&lt;Macro VHost $name $domain&gt;
 &lt;VirtualHost *:80&gt;
     ServerName $domain
     ServerAlias www.$domain
@@ -74,8 +73,7 @@ multiple similar virtual hosts:</p>
     ErrorLog /var/log/httpd/$name.error_log
     CustomLog /var/log/httpd/$name.access_log combined
 &lt;/VirtualHost&gt;
-&lt;/Macro&gt;
-</pre>
+&lt;/Macro&gt;</pre>
 
 
 <p>Macro names are case-insensitive, like httpd configuration
@@ -84,13 +82,11 @@ directives. However, variable names are case sensitive.</p>
 <p>You would then invoke this macro several times to create virtual
 hosts:</p>
 
-<pre class="prettyprint lang-config">
-Use VHost example example.com
+<pre class="prettyprint lang-config">Use VHost example example.com
 Use VHost myhost hostname.org
 Use VHost apache apache.org
 
-UndefMacro VHost
-</pre>
+UndefMacro VHost</pre>
 
 
 <p>At server startup time, each of these <code class="directive">Use</code>
@@ -128,11 +124,9 @@ confusion, the longest possible parameter name is used.</p>
 <p>If you want to use a value within another string, it is useful to
 surround the parameter in braces, to avoid confusion:</p>
 
-<pre class="prettyprint lang-config">
-&lt;Macro DocRoot ${docroot}&gt;
+<pre class="prettyprint lang-config">&lt;Macro DocRoot ${docroot}&gt;
     DocumentRoot /var/www/${docroot}/htdocs
-&lt;/Macro&gt;
-</pre>
+&lt;/Macro&gt;</pre>
 
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -146,8 +140,7 @@ surround the parameter in braces, to avoid confusion:</p>
 <p>A common usage of <code class="module"><a href="../mod/mod_macro.html">mod_macro</a></code> is for the creation of
 dynamically-generated virtual hosts.</p>
 
-<pre class="prettyprint lang-config">
-## Define a VHost Macro for repetitive configurations
+<pre class="prettyprint lang-config">## Define a VHost Macro for repetitive configurations
 
 &lt;Macro VHost $host $port $dir&gt;
   Listen $port
@@ -172,8 +165,7 @@ dynamically-generated virtual hosts.</p>
 
 Use VHost www.apache.org 80 /vhosts/apache/htdocs
 Use VHost example.org 8080 /vhosts/example/htdocs
-Use VHost www.example.fr 1234 /vhosts/example.fr/htdocs
-</pre>
+Use VHost www.example.fr 1234 /vhosts/example.fr/htdocs</pre>
 
  
 
@@ -184,8 +176,7 @@ Use VHost www.example.fr 1234 /vhosts/example.fr/htdocs
 avoids confusion in a complex configuration file where there may be
 conflicts in variable names.</p>
 
-<pre class="prettyprint lang-config">
-&lt;Macro DirGroup $dir $group&gt;
+<pre class="prettyprint lang-config">&lt;Macro DirGroup $dir $group&gt;
   &lt;Directory $dir&gt;
     Require group $group
   &lt;/Directory&gt;
@@ -194,8 +185,7 @@ conflicts in variable names.</p>
 Use DirGroup /www/apache/private private
 Use DirGroup /www/apache/server  admin
 
-UndefMacro DirGroup
-</pre>
+UndefMacro DirGroup</pre>
 
 
  
@@ -220,15 +210,13 @@ UndefMacro DirGroup
     with such characters.
     </p>
 
-    <pre class="prettyprint lang-config">
-&lt;Macro LocalAccessPolicy&gt;
+    <pre class="prettyprint lang-config">&lt;Macro LocalAccessPolicy&gt;
     Require ip 10.2.16.0/24
 &lt;/Macro&gt;
 
 &lt;Macro RestrictedAccessPolicy $ipnumbers&gt;
     Require ip $ipnumbers
-&lt;/Macro&gt;
-    </pre>
+&lt;/Macro&gt;</pre>
 
 
 </div>
@@ -244,10 +232,8 @@ UndefMacro DirGroup
     <p>The <code class="directive">UndefMacro</code> directive undefines a macro
     which has been defined before hand.</p>
 
-    <pre class="prettyprint lang-config">
-UndefMacro LocalAccessPolicy
-UndefMacro RestrictedAccessPolicy
-    </pre>
+    <pre class="prettyprint lang-config">UndefMacro LocalAccessPolicy
+UndefMacro RestrictedAccessPolicy</pre>
 
 
 </div>
@@ -267,20 +253,16 @@ UndefMacro RestrictedAccessPolicy
     associated to their corresponding initial parameters and are substituted
     before processing.</p>
 
-    <pre class="prettyprint lang-config">
-Use LocalAccessPolicy
+    <pre class="prettyprint lang-config">Use LocalAccessPolicy
 ...
-Use RestrictedAccessPolicy "192.54.172.0/24 192.54.148.0/24"
-    </pre>
+Use RestrictedAccessPolicy "192.54.172.0/24 192.54.148.0/24"</pre>
 
 
     <p>is equivalent, with the macros defined above, to:</p>
 
-    <pre class="prettyprint lang-config">
-Require ip 10.2.16.0/24
+    <pre class="prettyprint lang-config">Require ip 10.2.16.0/24
 ...
-Require ip 192.54.172.0/24 192.54.148.0/24
-    </pre>
+Require ip 192.54.172.0/24 192.54.148.0/24</pre>
 
 
 </div>

@@ -65,9 +65,7 @@ doivent s'exécuter</td></tr>
     CGI doivent s'exécuter. Les requêtes non CGI seront toujours
     traitées avec l'utilisateur spécifié par la directive <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code>.</p>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">
-    SuexecUserGroup nobody nogroup
-    </pre>
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">SuexecUserGroup nobody nogroup</pre>
 </div>
 
     <p>Depuis la version 2.3.9, le démarrage va échouer si cette

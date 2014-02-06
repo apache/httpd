@@ -97,15 +97,13 @@
       files in <code>/home/smith/public_html/private</code> unless they
       were owned by <code>jones</code> instead of <code>smith</code>.</p>
 
-      <pre class="prettyprint lang-config">
-&lt;Directory /home/*/public_html/private&gt;
+      <pre class="prettyprint lang-config">&lt;Directory /home/*/public_html/private&gt;
     AuthType Basic
     AuthName MyPrivateFiles
     AuthBasicProvider dbm
     AuthDBMUserFile /usr/local/apache2/etc/.htdbm-all
     Require file-owner
-&lt;/Directory&gt;
-      </pre>
+&lt;/Directory&gt;</pre>
 
     
 
@@ -121,8 +119,7 @@
       authorized to access the <code>project-foo</code> directories of
       each other.</p>
 
-      <pre class="prettyprint lang-config">
-&lt;Directory /home/*/public_html/project-foo&gt;
+      <pre class="prettyprint lang-config">&lt;Directory /home/*/public_html/project-foo&gt;
     AuthType Basic
     AuthName "Project Foo Files"
     AuthBasicProvider dbm
@@ -133,8 +130,7 @@
     
     Satisfy All
     Require file-group
-&lt;/Directory&gt;
-      </pre>
+&lt;/Directory&gt;</pre>
 
     
 </div>

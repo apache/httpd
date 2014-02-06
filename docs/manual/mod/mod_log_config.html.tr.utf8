@@ -406,14 +406,12 @@ expr=<var>ifade</var>]</code></td></tr>
 
     <p>Örneğin, aşağıdaki iki yönerge kümesi aynı etkiye sahiptir:</p>
 
-    <pre class="prettyprint lang-config">
-# Biçem dizgesi yerine takma ad içeren CustomLog
+    <pre class="prettyprint lang-config"># Biçem dizgesi yerine takma ad içeren CustomLog
 LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common
 CustomLog logs/access_log common
 
 # Biçem dizgesinin kendisini içeren CustomLog
-CustomLog logs/access_log "%h %l %u %t \"%r\" %&gt;s %b"
-    </pre>
+CustomLog logs/access_log "%h %l %u %t \"%r\" %&gt;s %b"</pre>
 
 
     <p>Üçüncü argüman isteğe bağlı olup,belli bir isteğin günlüğe kaydedilip
@@ -430,20 +428,16 @@ CustomLog logs/access_log "%h %l %u %t \"%r\" %&gt;s %b"
       istekleri ana günlük dosyasına değil de başka bir dosyaya kaydetmek
       isterseniz:</p>
 
-    <pre class="prettyprint lang-config">
-SetEnvIf Request_URI \.gif$ gif-image
+    <pre class="prettyprint lang-config">SetEnvIf Request_URI \.gif$ gif-image
 CustomLog gif-requests.log common env=gif-image
-CustomLog nongif-requests.log common env=!gif-image
-    </pre>
+CustomLog nongif-requests.log common env=!gif-image</pre>
 
 
     <p>Veya eski <code>RefererIgnore</code> yönergesinin davranışını taklit
       etmek isterseniz:</p>
 
-    <pre class="prettyprint lang-config">
-SetEnvIf Referer example\.com localreferer
-CustomLog referer.log referer env=!localreferer
-    </pre>
+    <pre class="prettyprint lang-config">SetEnvIf Referer example\.com localreferer
+CustomLog referer.log referer env=!localreferer</pre>
 
 
 </div>
@@ -482,9 +476,7 @@ CustomLog referer.log referer env=!localreferer
       takma ada başka bir takma ad tanımlamakta da kullanılamaz. Bir takma
       adın yüzde imi (<code>%</code>) içeremeyeceğine de dikkat ediniz.</p>
 
-    <pre class="prettyprint lang-config">
-      LogFormat "%v %h %l %u %t \"%r\" %&gt;s %b" vhost_common
-    </pre>
+    <pre class="prettyprint lang-config">LogFormat "%v %h %l %u %t \"%r\" %&gt;s %b" vhost_common</pre>
 
 
 </div>
@@ -504,10 +496,8 @@ CustomLog referer.log referer env=!localreferer
       bir takma ad kullanılır. Açıkça bir günlük biçemi takma adı
       belirtilmedikçe Ortak Günlük Biçemi öntanımlıdır.</p>
 
-    <pre class="prettyprint lang-config">
-LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\""
-TransferLog logs/access_log
-    </pre>
+    <pre class="prettyprint lang-config">LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\""
+TransferLog logs/access_log</pre>
 
 
 </div>

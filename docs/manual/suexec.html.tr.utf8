@@ -426,10 +426,8 @@
 
       <p>Örneğin, sunucunuz şöyle yapılandırılmışsa:</p>
 
-      <pre class="prettyprint lang-config">
-User www
-Group webgroup
-      </pre>
+      <pre class="prettyprint lang-config">User www
+Group webgroup</pre>
 
 
       <p>Ve <code class="program"><a href="./programs/suexec.html">suexec</a></code> çalıştırılabilir de

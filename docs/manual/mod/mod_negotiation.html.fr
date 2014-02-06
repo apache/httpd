@@ -197,9 +197,7 @@ contenu</a></li>
     et le fichier <code>.var</code> doit être associé au gestionnaire
     <code>type-map</code> via une directive <code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code> :</p>
 
-    <pre class="prettyprint lang-config">
-    AddHandler type-map .var
-    </pre>
+    <pre class="prettyprint lang-config">AddHandler type-map .var</pre>
 
 
     <p>A l'arrivée d'une requête pour la ressource
@@ -288,10 +286,8 @@ n'est pas trouvé</td></tr>
     première variante acceptable de langue <code>en</code> qui sera
     servie.</p>
 
-    <pre class="prettyprint lang-config">
-LanguagePriority en fr de
-ForceLanguagePriority Prefer
-    </pre>
+    <pre class="prettyprint lang-config">LanguagePriority en fr de
+ForceLanguagePriority Prefer</pre>
 
 
     <p><code>ForceLanguagePriority Fallback</code> utilise la directive
@@ -303,10 +299,8 @@ ForceLanguagePriority Prefer
     dans cette langue n'est trouvée, c'est la première variante de la
     liste définie par la directive <code class="directive"><a href="#languagepriority">LanguagePriority</a></code> qui sera servie.</p>
 
-    <pre class="prettyprint lang-config">
-LanguagePriority en fr de
-ForceLanguagePriority Fallback
-    </pre>
+    <pre class="prettyprint lang-config">LanguagePriority en fr de
+ForceLanguagePriority Fallback</pre>
 
 
     <p>Les deux options, <code>Prefer</code> et <code>Fallback</code>,
@@ -341,9 +335,7 @@ cas où le client n'a pas formulé de préférences</td></tr>
     <var>langages-MIME</var> dans un ordre de préférences
     décroissantes.</p>
 
-    <pre class="prettyprint lang-config">
-      LanguagePriority en fr de
-    </pre>
+    <pre class="prettyprint lang-config">LanguagePriority en fr de</pre>
 
 
     <p>Dans le cas d'une requête pour <code>foo.html</code>, si

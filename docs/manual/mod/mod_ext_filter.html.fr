@@ -81,8 +81,7 @@ externe avant de l'envoyer au client</td></tr>
     <h3>Générer du HTML à partir d'un autre type de
     contenu</h3>
 
-      <pre class="prettyprint lang-config">
-# la directive de mod_ext_filter définissant un filtre
+      <pre class="prettyprint lang-config"># la directive de mod_ext_filter définissant un filtre
 # permettant de mettre des fichiers text/c au format HTML en
 # utilisant le programme externe /usr/bin/enscript, le type du
 # fichier résultant étant défini à text/html
@@ -98,8 +97,7 @@ ExtFilterDefine c-to-html mode=output \
     # directive de mod_mime définissant le type des fichiers dont
     # le nom possède l'extension .c à text/c
     AddType text/c .c
-&lt;/Directory&gt;
-      </pre>
+&lt;/Directory&gt;</pre>
 
     
 
@@ -110,8 +108,7 @@ ExtFilterDefine c-to-html mode=output \
       <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> pour un exemple d'implémentation plus
       réaliste.</p>
 
-      <pre class="prettyprint lang-config">
-# la directive de mod_ext_filter qui définit le filtre externe
+      <pre class="prettyprint lang-config"># la directive de mod_ext_filter qui définit le filtre externe
 ExtFilterDefine gzip mode=output cmd=/bin/gzip
 
 &lt;Location /gzipped&gt;
@@ -123,15 +120,13 @@ ExtFilterDefine gzip mode=output cmd=/bin/gzip
     # la directive de mod_headers permettant d'ajouter le champ
     # d'en-tête "Content-Encoding: gzip"
     Header set Content-Encoding gzip
-&lt;/Location&gt;
-      </pre>
+&lt;/Location&gt;</pre>
 
 
     
 
     <h3>Ralentissement du serveur</h3>
-      <pre class="prettyprint lang-config">
-# directive de mod_ext_filter définissant un filtre qui fait
+      <pre class="prettyprint lang-config"># directive de mod_ext_filter définissant un filtre qui fait
 # passer tout les flux en sortie par la commande cat ; cat ne
 # modifie rien ; elle ne fait que compliquer le cheminement des
 # flux et consommer des ressources supplémentaires
@@ -143,16 +138,14 @@ ExtFilterDefine slowdown mode=output cmd=/bin/cat \
     # sortie avec le filtre slowdown
     #
     SetOutputFilter slowdown;slowdown;slowdown
-&lt;/Location&gt;
-      </pre>
+&lt;/Location&gt;</pre>
 
     
 
     <h3>Utilisation de sed pour remplacer du texte dans la
     réponse</h3>
 
-      <pre class="prettyprint lang-config">
-# directive de mod_ext_filter définissant un filtre qui
+      <pre class="prettyprint lang-config"># directive de mod_ext_filter définissant un filtre qui
 # remplace du texte dans la réponse
 #
 ExtFilterDefine fixtext mode=output intype=text/html \
@@ -162,15 +155,13 @@ ExtFilterDefine fixtext mode=output intype=text/html \
     # directive de base permettant de traiter la sortie avec le
     # filtre fixtext
     SetOutputFilter fixtext
-&lt;/Location&gt;
-      </pre>
+&lt;/Location&gt;</pre>
 
 
     
 
     <h3>Tracer un autre filtre</h3>
-      <pre class="prettyprint lang-config">
-# Trace les données lues et écrites par mod_deflate pour un
+      <pre class="prettyprint lang-config"># Trace les données lues et écrites par mod_deflate pour un
 # client particulier (IP 192.168.1.31) qui a des problèmes de
 # compression.
 # Ce premier filtre va tracer ce qui entre dans mod_deflate.
@@ -192,12 +183,10 @@ ExtFilterDefine traceafter \
 &lt;Directory /usr/local/docs&gt;
     SetEnvIf Remote_Addr 192.168.1.31 trace_this_client
     SetOutputFilter tracebefore;deflate;traceafter
-&lt;/Directory&gt;
-      </pre>
+&lt;/Directory&gt;</pre>
 
 
-      <div class="example"><h3>Voici le filtre qui trace les données :</h3><pre class="prettyprint lang-perl">
-#!/usr/local/bin/perl -w
+      <div class="example"><h3>Voici le filtre qui trace les données :</h3><pre class="prettyprint lang-perl">#!/usr/local/bin/perl -w
 use strict;
 
 open(SAVE, "&gt;$ARGV[0]")
@@ -208,8 +197,7 @@ while (&lt;STDIN&gt;) {
     print $_;
 }
 
-close(SAVE);
-        </pre>
+close(SAVE);</pre>
 </div>
     
 </div>
@@ -345,9 +333,7 @@ close(SAVE);
       sans lui.</dd>
     </dl>
 
-    <pre class="prettyprint lang-config">
-      ExtFilterOptions LogStderr
-    </pre>
+    <pre class="prettyprint lang-config">ExtFilterOptions LogStderr</pre>
 
 
     <p>Les messages envoyés vers la sortie d'erreurs standard du filtre

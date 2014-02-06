@@ -168,11 +168,9 @@ multiples</a></h2>
     <code>AddHandler cgi-script .cgi</code>, utilisez plutôt :</p>
 
     <div class="example"><h3>Configuration du gestionnaire en se basant seulement
-    sur la dernière extension</h3><pre class="prettyprint lang-config">
-&lt;FilesMatch \.cgi$&gt;
+    sur la dernière extension</h3><pre class="prettyprint lang-config">&lt;FilesMatch \.cgi$&gt;
   SetHandler cgi-script
-&lt;/FilesMatch&gt;
-    </pre>
+&lt;/FilesMatch&gt;</pre>
 </div>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -285,12 +283,10 @@ jeu de caractères spécifié</td></tr>
     ajoutée à toutes les autres déjà en vigueur, et écrase toute
     association préexistante pour la même <var>extension</var>.</p>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">
-AddLanguage ja .ja
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">AddLanguage ja .ja
 AddCharset EUC-JP .euc
 AddCharset ISO-2022-JP .jis
-AddCharset SHIFT_JIS .sjis
-      </pre>
+AddCharset SHIFT_JIS .sjis</pre>
 </div>
 
     <p>Avec cet exemple, le document <code>xxxx.ja.jis</code> sera
@@ -337,10 +333,8 @@ de codage spécifié</td></tr>
     ajoutée à toutes les autres déjà en vigueur, et écrase toute
     association préexistante pour la même <var>extension</var>.</p>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">
-AddEncoding x-gzip .gz
-AddEncoding x-compress .Z
-      </pre>
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">AddEncoding x-gzip .gz
+AddEncoding x-compress .Z</pre>
 </div>
 
     <p>Avec cet exemple, les noms de fichiers possédant l'extension
@@ -390,9 +384,7 @@ gestionnaire spécifié</td></tr>
     avec l'extension de fichier <code>.cgi</code>, vous pouvez utiliser
     :</p>
 
-    <pre class="prettyprint lang-config">
-      AddHandler cgi-script .cgi
-    </pre>
+    <pre class="prettyprint lang-config">AddHandler cgi-script .cgi</pre>
 
 
     <p>Une fois cette ligne insérée dans votre fichier httpd.conf, tout
@@ -470,11 +462,9 @@ spécifié</td></tr>
     par la RFC 3066. Cette directive l'emporte sur toute association
     préexistante pour la même <var>extension</var>.</p>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">
-AddEncoding x-compress .Z
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">AddEncoding x-compress .Z
 AddLanguage en .en
-AddLanguage fr .fr
-      </pre>
+AddLanguage fr .fr</pre>
 </div>
 
     <p>Avec cet exemple, le document <code>xxxx.en.Z</code> sera traité
@@ -491,11 +481,9 @@ AddLanguage fr .fr
     langues, c'est la dernière qui sera utilisée. Ainsi, dans le cas
     suivant,</p>
 
-    <pre class="prettyprint lang-config">
-AddLanguage en .en
+    <pre class="prettyprint lang-config">AddLanguage en .en
 AddLanguage en-gb .en
-AddLanguage en-us .en
-    </pre>
+AddLanguage en-us .en</pre>
 
 
     <p>les documents possédant l'extension <code>.en</code> seront
@@ -540,9 +528,7 @@ serveur</td></tr>
     sortie sera compressée à l'aide du module
     <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code>.</p>
 
-    <pre class="prettyprint lang-config">
-      AddOutputFilter INCLUDES;DEFLATE shtml
-    </pre>
+    <pre class="prettyprint lang-config">AddOutputFilter INCLUDES;DEFLATE shtml</pre>
 
 
     <p>Si plusieurs <var>filtres</var> sont spécifiés, ils doivent être
@@ -559,8 +545,7 @@ serveur</td></tr>
     <p>Notez que toute définition de filtres via la directive <code class="directive"><a href="#addoutputfilter">AddOutputFilter</a></code> remplace toutes les
     définitions précédentes effectuées via cette même directive.</p>
 
-    <pre class="prettyprint lang-config">
-# Filtre spécifié "DEFLATE"
+    <pre class="prettyprint lang-config"># Filtre spécifié "DEFLATE"
 AddOutputFilter DEFLATE shtml
 &lt;Location /foo&gt;
   # Filtre spécifié "INCLUDES", remplace "DEFLATE"
@@ -577,8 +562,7 @@ AddOutputFilter DEFLATE shtml
 &lt;Location /bar/baz/buz&gt;
   # Pas de filtre spécifié, suppression de "BUFFER"
   RemoveOutputFilter shtml
-&lt;/Location&gt;
-    </pre>
+&lt;/Location&gt;</pre>
 
 
 <h3>Voir aussi</h3>
@@ -613,17 +597,13 @@ contenu spécifié</td></tr>
       ajouter de nouveaux types de médias.
     </div>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">
-      AddType image/gif .gif
-      </pre>
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">AddType image/gif .gif</pre>
 </div>
 
     <p>Ou, pour spécifier plusieurs extensions dans une seule directive
     :</p>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">
-      AddType image/jpeg jpeg jpg jpe
-      </pre>
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">AddType image/jpeg jpeg jpg jpe</pre>
 </div>
 
     <p>L'argument <var>extension</var> est insensible à la casse et peut
@@ -637,9 +617,7 @@ contenu spécifié</td></tr>
     <code class="module"><a href="../mod/mod_negotiation.html">mod_negotiation</a></code> en qualifiant un <var>type de
     média</var> avec <code>qs</code> :</p>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">
-      AddType application/rss+xml;qs=0.8 .xml
-      </pre>
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">AddType application/rss+xml;qs=0.8 .xml</pre>
 </div>
 
     <p>Ceci peut s'avérer utile dans certaines situations, par exemple
@@ -693,9 +671,7 @@ associé.</td></tr>
     par la directive <code class="directive"><a href="#addlanguage">AddLanguage</a></code>, aucun champ d'en-tête
     Content-Language ne sera généré.</p>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">
-      DefaultLanguage en
-      </pre>
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">DefaultLanguage en</pre>
 </div>
 
 <h3>Voir aussi</h3>
@@ -724,9 +700,7 @@ fichier</td></tr>
     <p>L'utilisation de cette directive est conseillée si vous utilisez
     un système de fichiers virtuel.</p>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">
-      ModMimeUsePathInfo On
-      </pre>
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">ModMimeUsePathInfo On</pre>
 </div>
 
     <p>Considérons une requête pour <code>/index.php/foo.shtml</code>,
@@ -797,9 +771,7 @@ recherche de correspondance de fichier avec les vues multiples
     des extensions associées aux gestionnaires et aux filtres dans les
     vues multiples, tout en excluant les fichiers de type inconnu :</p>
 
-    <pre class="prettyprint lang-config">
-      MultiviewsMatch Handlers Filters
-    </pre>
+    <pre class="prettyprint lang-config">MultiviewsMatch Handlers Filters</pre>
 
 
     <p>L'utilisation de la directive
@@ -835,9 +807,7 @@ ensemble d'extensions de noms de fichiers</td></tr>
     <p>L'argument <var>extension</var> est insensible à la casse et peut
     être spécifié avec ou sans le point initial.</p>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">
-      RemoveCharset .html .shtml
-      </pre>
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">RemoveCharset .html .shtml</pre>
 </div>
 
 </div>
@@ -861,13 +831,11 @@ ensemble d'extensions de noms de fichiers</td></tr>
     serveur pour un répertoire particulier. Voici un exemple
     d'utilisation de cette directive :</p>
 
-    <div class="example"><h3>/foo/.htaccess:</h3><pre class="prettyprint lang-config">
-AddEncoding x-gzip .gz
+    <div class="example"><h3>/foo/.htaccess:</h3><pre class="prettyprint lang-config">AddEncoding x-gzip .gz
 AddType text/plain .asc
 &lt;Files *.gz.asc&gt;
     RemoveEncoding .gz
-&lt;/Files&gt;
-      </pre>
+&lt;/Files&gt;</pre>
 </div>
 
     <p>Avec cette configuration, le fichier <code>foo.gz</code> sera
@@ -905,14 +873,10 @@ d'extensions de noms de fichiers</td></tr>
     serveur pour un répertoire particulier. Voici un exemple
     d'utilisation de cette directive :</p>
 
-    <div class="example"><h3>/foo/.htaccess:</h3><pre class="prettyprint lang-config">
-      AddHandler server-parsed .html
-      </pre>
+    <div class="example"><h3>/foo/.htaccess:</h3><pre class="prettyprint lang-config">AddHandler server-parsed .html</pre>
 </div>
 
-    <div class="example"><h3>/foo/bar/.htaccess:</h3><pre class="prettyprint lang-config">
-      RemoveHandler .html
-      </pre>
+    <div class="example"><h3>/foo/bar/.htaccess:</h3><pre class="prettyprint lang-config">RemoveHandler .html</pre>
 </div>
 
     <p>Avec cette dernière ligne, les fichiers <code>.html</code> du
@@ -999,9 +963,7 @@ ensemble d'extensions de noms de fichiers</td></tr>
     <p>L'argument <var>extension</var> est insensible à la casse et peut
     être spécifié avec ou sans le point initial.</p>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">
-      RemoveOutputFilter shtml
-      </pre>
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">RemoveOutputFilter shtml</pre>
 </div>
 
 <h3>Voir aussi</h3>
@@ -1030,9 +992,7 @@ d'extensions de noms de fichiers</td></tr>
     serveur pour un répertoire particulier. Voici un exemple
     d'utilisation de cette directive :</p>
 
-    <div class="example"><h3>/foo/.htaccess:</h3><pre class="prettyprint lang-config">
-      RemoveType .cgi
-      </pre>
+    <div class="example"><h3>/foo/.htaccess:</h3><pre class="prettyprint lang-config">RemoveType .cgi</pre>
 </div>
 
     <p>Cette ligne aura pour effet de supprimer tout traitement

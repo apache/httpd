@@ -38,11 +38,9 @@ pouvant être utilisées sur le serveur</td></tr>
 pouvant être utilisées sur le serveur. La configuration la plus courante
 est du style :</p>
 
-<pre class="prettyprint lang-config">
-&lt;Location /&gt;
+<pre class="prettyprint lang-config">&lt;Location /&gt;
    AllowMethods GET POST OPTIONS
-&lt;/Location&gt;
-</pre>
+&lt;/Location&gt;</pre>
 
 
 </div>
@@ -71,11 +69,9 @@ HEAD sont considérées comme équivalentes. Le mot-clé
 <code class="module"><a href="../mod/mod_allowmethods.html">mod_allowmethods</a></code> dans les niveaux inférieurs
 d'imbrication :</p>
 
-<pre class="prettyprint lang-config">
-&lt;Location /svn&gt;
+<pre class="prettyprint lang-config">&lt;Location /svn&gt;
    AllowMethods reset
-&lt;/Location&gt;
-</pre>
+&lt;/Location&gt;</pre>
 
 
 <div class="note"><h3>Avertissement</h3>

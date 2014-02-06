@@ -60,10 +60,8 @@ utilisateur sur un site
     journalisé via les formats configurables du module
     <code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code> :</p>
 
-    <pre class="prettyprint lang-config">
-LogFormat "%{Apache}n %r %t" usertrack
-CustomLog logs/clickstream.log usertrack
-    </pre>
+    <pre class="prettyprint lang-config">LogFormat "%{Apache}n %r %t" usertrack
+CustomLog logs/clickstream.log usertrack</pre>
 
 
 
@@ -103,9 +101,7 @@ s'applique</td></tr>
     racine (par exemple <code>.example.co.uk</code>).
     </div>
 
-    <pre class="prettyprint lang-config">
-    CookieDomain .example.com
-    </pre>
+    <pre class="prettyprint lang-config">CookieDomain .example.com</pre>
 
 
 </div>
@@ -131,9 +127,7 @@ s'applique</td></tr>
     <p>Si cette directive est absente, la durée de vie des cookies est
     limitée à la session actuelle du navigateur.</p>
 
-    <pre class="prettyprint lang-config">
-    CookieExpires "3 weeks"
-    </pre>
+    <pre class="prettyprint lang-config">CookieExpires "3 weeks"</pre>
 
 
 </div>
@@ -157,9 +151,7 @@ s'applique</td></tr>
     inhabituels. Les caractères valides font partie des intervales A-Z,
     a-z, 0-9, "_", et "-".</p>
 
-    <pre class="prettyprint lang-config">
-    CookieName clicktrack
-    </pre>
+    <pre class="prettyprint lang-config">CookieName clicktrack</pre>
 
 
 </div>
@@ -196,9 +188,7 @@ s'applique</td></tr>
     document est écrit, la plupart des navigateurs supportent ces trois
     formats, <code>Cookie2</code> étant le format recommandé.</p>
 
-    <pre class="prettyprint lang-config">
-    CookieStyle Cookie2
-    </pre>
+    <pre class="prettyprint lang-config">CookieStyle Cookie2</pre>
 
 
 </div>
@@ -221,9 +211,7 @@ s'applique</td></tr>
     <code class="module"><a href="../mod/mod_usertrack.html">mod_usertrack</a></code> ne suffit <strong>pas</strong> pour
     activer les cookies.</p>
 
-    <pre class="prettyprint lang-config">
-    CookieTracking on
-    </pre>
+    <pre class="prettyprint lang-config">CookieTracking on</pre>
 
 
 

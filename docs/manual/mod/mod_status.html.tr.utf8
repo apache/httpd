@@ -90,12 +90,10 @@
       etkin kılınmak istenirse <code>httpd.conf</code> dosyasına şu satırlar
       eklenebilir:</p>
 
-<pre class="prettyprint lang-config">
-&lt;Location /server-status&gt;
+<pre class="prettyprint lang-config">&lt;Location /server-status&gt;
     SetHandler server-status
     Require host example.com
-&lt;/Location&gt;
-</pre>
+&lt;/Location&gt;</pre>
 
 
     <p>Sunucu istatistiklerine tarayıcınızla erişmek isterseniz,

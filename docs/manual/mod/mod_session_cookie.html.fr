@@ -85,10 +85,8 @@
       <p>Pour créer une session et la stocker dans un cookie nommé
       <var>session</var>, configurez-la comme suit :</p>
 
-      <div class="example"><h3>Session stockée au niveau du navigateur</h3><pre class="prettyprint lang-config">
-Session On
-SessionCookieName session path=/
-        </pre>
+      <div class="example"><h3>Session stockée au niveau du navigateur</h3><pre class="prettyprint lang-config">Session On
+SessionCookieName session path=/</pre>
 </div>
 
       <p>Pour plus d'exemples sur la manière dont une session doit être
@@ -126,10 +124,8 @@ est stockée</td></tr>
     cookies.
     </p>
 
-    <div class="example"><h3>Cookie avec attributs</h3><pre class="prettyprint lang-config">
-Session On
-SessionCookieName session path=/private;domain=example.com;httponly;secure;version=1;
-      </pre>
+    <div class="example"><h3>Cookie avec attributs</h3><pre class="prettyprint lang-config">Session On
+SessionCookieName session path=/private;domain=example.com;httponly;secure;version=1;</pre>
 </div>
 
 
@@ -159,10 +155,8 @@ stockée la session</td></tr>
     cookies.
     </p>
 
-    <div class="example"><h3>Cookie2 avec attributs</h3><pre class="prettyprint lang-config">
-Session On
-SessionCookieName2 session path=/private;domain=example.com;httponly;secure;version=1;
-    </pre>
+    <div class="example"><h3>Cookie2 avec attributs</h3><pre class="prettyprint lang-config">Session On
+SessionCookieName2 session path=/private;domain=example.com;httponly;secure;version=1;</pre>
 </div>
 
 

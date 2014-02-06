@@ -153,9 +153,7 @@
     <p>Bunu <code class="directive">LogLevel</code> yönergesinde modülün ismini
       belirterek yapabilirsiniz:</p>
 
-    <pre class="prettyprint lang-config">
-LogLevel info rewrite:trace5
-    </pre>
+    <pre class="prettyprint lang-config">LogLevel info rewrite:trace5</pre>
 
 
     <p>Bu satırla ana <code class="directive">LogLevel</code> info'ya ayarlanırken
@@ -204,10 +202,8 @@ LogLevel info rewrite:trace5
 
       <p>Erişim günlüğü için sıklıkla kullanılan bir yapılandırma:</p>
 
-      <pre class="prettyprint lang-config">
-LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common
-CustomLog logs/access_log common
-      </pre>
+      <pre class="prettyprint lang-config">LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common
+CustomLog logs/access_log common</pre>
 
 
       <p>İlk satırda belli bir biçem dizgesi için <code>common</code> diye bir
@@ -339,10 +335,8 @@ CustomLog logs/access_log common
       <p>Sıklıkla kullanılan diğer bir biçem dizgesi Birleşik Günlük Biçemi
         (Combined Log Format) olup şöyle kullanılabilir:</p>
 
-      <pre class="prettyprint lang-config">
-LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\"" combined
-CustomLog log/access_log combined
-      </pre>
+      <pre class="prettyprint lang-config">LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\"" combined
+CustomLog log/access_log combined</pre>
 
 
       <p>Bu biçem ilaveten 2 alan içermesi dışında Ortak Günlük Biçemi ile
@@ -388,12 +382,10 @@ CustomLog log/access_log combined
         <code>AgentLog</code> yönergelerinin etkilerinin nasıl taklit
         edileceğini de göstermektedir.</p>
 
-      <pre class="prettyprint lang-config">
-LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common
+      <pre class="prettyprint lang-config">LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common
 CustomLog logs/access_log common
 CustomLog logs/referer_log "%{Referer}i -&gt; %U"
-CustomLog logs/agent_log "%{User-agent}i"
-      </pre>
+CustomLog logs/agent_log "%{User-agent}i"</pre>
 
 
       <p>Bu örnek ayrıca, <code class="directive"><a href="./mod/mod_log_config.html#logformat">LogFormat</a></code> yönergesi ile bir takma ad tanımlamanın şart
@@ -412,34 +404,28 @@ CustomLog logs/agent_log "%{User-agent}i"
         edilip edilmeyeceği <code class="directive"><a href="./mod/mod_log_config.html#customlog">CustomLog</a></code> yönergesinin
         <code>env=</code> deyimi kullanılarak belirtilir. Bazı örnekler:</p>
 
-      <pre class="prettyprint lang-config">
-# yerel konaktan kaynaklanan istekleri imleyelim
+      <pre class="prettyprint lang-config"># yerel konaktan kaynaklanan istekleri imleyelim
 SetEnvIf Remote_Addr "127\.0\.0\.1" kaydetme
 # robots.txt dosyası isteklerini imleyelim
 SetEnvIf Request_URI "^/robots\.txt$" kaydetme
 # Kalanları günlüğe kaydedelim
-CustomLog logs/access_log common env=!kaydetme
-      </pre>
+CustomLog logs/access_log common env=!kaydetme</pre>
 
 
       <p>Başka bir örnek olarak, Türkçe belge isteklerini bir dosyaya diğer
         dillerdeki istekleri başka bir dosyaya kaydedelim.</p>
 
-      <pre class="prettyprint lang-config">
-SetEnvIf Accept-Language "tr" turkce
+      <pre class="prettyprint lang-config">SetEnvIf Accept-Language "tr" turkce
 CustomLog logs/turkce_log common env=turkce
-CustomLog logs/diger_diller_log common env=!turkce
-      </pre>
+CustomLog logs/diger_diller_log common env=!turkce</pre>
 
 
       <p>Bir arabellekleme senaryosuna arabelleğin verimli kullanılıp
         kullanılmadığını bilmek isteyelim. Bu basitçe şöyle yapılabilir:</p>
 
-      <pre class="prettyprint lang-config">
-SetEnv CACHE_MISS 1
+      <pre class="prettyprint lang-config">SetEnv CACHE_MISS 1
 LogFormat "%h %l %u %t "%r " %&gt;s %b %{CACHE_MISS}e" common-cache
-CustomLog logs/access_log common-cache
-      </pre>
+CustomLog logs/access_log common-cache</pre>
 
 
       <p><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> önce <code class="module"><a href="./mod/mod_env.html">mod_env</a></code> modülünü
@@ -451,10 +437,8 @@ CustomLog logs/access_log common-cache
       <p><code>env=</code> sözdizimine ek olarak, <code class="directive"><a href="./mod/mod_log_config.html#logformat">LogFormat</a></code> HTTP yanıt kodudaki koşul
         değerlerini günlüklemeyi de destekler:</p>
 
-      <pre class="prettyprint lang-config">
-LogFormat "%400,501{User-agent}i" browserlog
-LogFormat "%!200,304,302{Referer}i" refererlog
-      </pre>
+      <pre class="prettyprint lang-config">LogFormat "%400,501{User-agent}i" browserlog
+LogFormat "%!200,304,302{Referer}i" refererlog</pre>
 
 
       <p>Bu örnekte, HTTP durum kodu 400 veya 501 ise <code>User-agent</code>
@@ -533,9 +517,7 @@ LogFormat "%!200,304,302{Referer}i" refererlog
       günlükleri 24 saatte bir döndürmek isterseniz bunu şöyle
       yapabilirsiniz:</p>
 
-    <pre class="prettyprint lang-config">
-CustomLog "|/usr/local/apache/bin/rotatelogs /var/log/access_log 86400" common
-    </pre>
+    <pre class="prettyprint lang-config">CustomLog "|/usr/local/apache/bin/rotatelogs /var/log/access_log 86400" common</pre>
 
 
     <p>Borunun diğer ucundaki süreci başlatacak komutun tırnak içine
@@ -554,10 +536,8 @@ CustomLog "|/usr/local/apache/bin/rotatelogs /var/log/access_log 86400" common
       yapılmak istenirse "<code>|</code>" yerine "<code>|$</code>"
       kullanılır:</p>
 
-    <pre class="prettyprint lang-config">
-# Kabuk kullanarak "rotatelogs" çalıştırmak
-CustomLog "|$/usr/local/apache/bin/rotatelogs /var/log/access_log 86400" common
-    </pre>
+    <pre class="prettyprint lang-config"># Kabuk kullanarak "rotatelogs" çalıştırmak
+CustomLog "|$/usr/local/apache/bin/rotatelogs /var/log/access_log 86400" common</pre>
 
 
     <p>Bu, Apache 2.2 için öntanımlı davranıştı. Kabuk özelliklerine bağlı
@@ -599,10 +579,8 @@ CustomLog "|$/usr/local/apache/bin/rotatelogs /var/log/access_log 86400" common
       ayrıştırılabilir. Örneğin, bu işlem için şu yönergeler kullanılıyor
       olsun:</p>
 
-    <pre class="prettyprint lang-config">
-LogFormat "%v %l %u %t \"%r\" %&gt;s %b" ortaksankon
-CustomLog logs/access_log ortaksankon
-    </pre>
+    <pre class="prettyprint lang-config">LogFormat "%v %l %u %t \"%r\" %&gt;s %b" ortaksankon
+CustomLog logs/access_log ortaksankon</pre>
 
 
     <p><code>%v</code> belirteci isteği sunan sanal konağın ismini günlüğe

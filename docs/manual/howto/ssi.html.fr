@@ -99,9 +99,7 @@ HTML préexistants.</p>
     devez ajouter la directive suivante dans votre fichier
     <code>httpd.conf</code>, ou dans un fichier <code>.htaccess</code>
     :</p>
-<pre class="prettyprint lang-config">
-        Options +Includes
-</pre>
+<pre class="prettyprint lang-config">Options +Includes</pre>
 
 
     <p>Cette directive indique à Apache que vous désirez permettre la
@@ -117,10 +115,8 @@ HTML préexistants.</p>
     directives SSI. Vous devez indiquer à Apache quels fichiers seront
     concernés. Vous pouvez y parvenir en indiquant une extension, comme
     <code>.shtml</code>, à l'aide des directives suivantes :</p>
-<pre class="prettyprint lang-config">
-        AddType text/html .shtml<br />
-        AddOutputFilter INCLUDES .shtml
-</pre>
+<pre class="prettyprint lang-config">        AddType text/html .shtml<br />
+        AddOutputFilter INCLUDES .shtml</pre>
 
 
     <p>Un des désavantages de cette approche réside dans le fait que si
@@ -131,9 +127,7 @@ HTML préexistants.</p>
     SSI qu'elle contient soient traitées.</p>
 
     <p>Une autre méthode consiste à utiliser la directive <code class="directive"><a href="../mod/mod_include.html#xbithack">XBitHack</a></code> :</p>
-<pre class="prettyprint lang-config">
-        XBitHack on
-</pre>
+<pre class="prettyprint lang-config">XBitHack on</pre>
 
 
     <p>La directive <code class="directive"><a href="../mod/mod_include.html#xbithack">XBitHack</a></code>
@@ -458,10 +452,8 @@ HTML préexistants.</p>
 
     <p>Vous pouvez ajouter les lignes suivantes dans votre fichier de
     configuration :</p>
-<pre class="prettyprint lang-config">
-        BrowserMatchNoCase macintosh Mac<br />
-        BrowserMatchNoCase MSIE InternetExplorer
-</pre>
+<pre class="prettyprint lang-config">        BrowserMatchNoCase macintosh Mac<br />
+        BrowserMatchNoCase MSIE InternetExplorer</pre>
 
 
     <p>Ces lignes définissent les variables d'environnement "Mac" et

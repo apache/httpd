@@ -82,10 +82,8 @@ Includes ou SSI)</td></tr>
     interpréter et d'assigner le type MIME
     <code>text/html</code> au document obtenu :</p>
 
-    <pre class="prettyprint lang-config">
-AddType text/html .shtml
-AddOutputFilter INCLUDES .shtml
-    </pre>
+    <pre class="prettyprint lang-config">AddType text/html .shtml
+AddOutputFilter INCLUDES .shtml</pre>
 
 
     <p>L'option suivante doit être définie pour les répertoires qui
@@ -95,9 +93,7 @@ AddOutputFilter INCLUDES .shtml
     <code>.htaccess</code> si <code><code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code> Options</code> a été défini pour le
     répertoire considéré) :</p>
 
-    <pre class="prettyprint lang-config">
-      Options +Includes
-    </pre>
+    <pre class="prettyprint lang-config">Options +Includes</pre>
 
 
     <p>Pour des raisons de compatibilité ascendante, le <a href="../handler.html">gestionnaire</a>  <code>server-parsed</code>
@@ -880,9 +876,7 @@ AddOutputFilter INCLUDES .shtml
     <code class="module"><a href="../mod/mod_include.html">mod_include</a></code> interprète comme la fin d'un élément
     include.</p>
 
-    <pre class="prettyprint lang-config">
-      SSIEndTag "%&gt;"
-    </pre>
+    <pre class="prettyprint lang-config">SSIEndTag "%&gt;"</pre>
 
 
 
@@ -914,9 +908,7 @@ directive]"</code></td></tr>
     <p>Cette directive a le même effet que l'élément
     <code>&lt;!--#config errmsg=<var>message</var> --&gt;</code>.</p>
 
-    <pre class="prettyprint lang-config">
-      SSIErrorMsg "&lt;!-- Error --&gt;"
-    </pre>
+    <pre class="prettyprint lang-config">SSIErrorMsg "&lt;!-- Error --&gt;"</pre>
 
 
 </div>
@@ -1050,10 +1042,8 @@ include</td></tr>
     interprètent un fichier avec des commandes différentes (et
     éventuellement à des moments différents).</p>
 
-    <pre class="prettyprint lang-config">
-      SSIStartTag "&lt;%"<br />
-      SSIEndTag   "%&gt;"
-    </pre>
+    <pre class="prettyprint lang-config">      SSIStartTag "&lt;%"<br />
+      SSIEndTag   "%&gt;"</pre>
 
 
     <p>Avec l'exemple ci-dessus, qui définit aussi une directive
@@ -1090,9 +1080,7 @@ formatage</var> est identique à celle de la fonction
     <code>&lt;!--#config timefmt=<var>chaîne de formatage</var>
     --&gt;</code>.</p>
 
-    <pre class="prettyprint lang-config">
-      SSITimeFormat "%R, %B %d, %Y"
-    </pre>
+    <pre class="prettyprint lang-config">SSITimeFormat "%R, %B %d, %Y"</pre>
 
 
     <p>Avec l'exemple ci-dessus, les dates seront affichées dans le
@@ -1115,9 +1103,7 @@ d'une variable non définie</td></tr>
     <code class="module"><a href="../mod/mod_include.html">mod_include</a></code> lorsqu'on tente d'extraire le contenu
     d'une variable non définie.</p>
 
-    <pre class="prettyprint lang-config">
-      SSIUndefinedEcho "&lt;!-- nondef --&gt;"
-    </pre>
+    <pre class="prettyprint lang-config">SSIUndefinedEcho "&lt;!-- nondef --&gt;"</pre>
 
 
 </div>

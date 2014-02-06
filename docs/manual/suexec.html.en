@@ -476,10 +476,8 @@
 
       <p>If for example, your web server is configured to run as:</p>
 
-      <pre class="prettyprint lang-config">
-User www
-Group webgroup
-      </pre>
+      <pre class="prettyprint lang-config">User www
+Group webgroup</pre>
 
 
       <p>and <code class="program"><a href="./programs/suexec.html">suexec</a></code> is installed at

@@ -201,11 +201,9 @@ serveur HTTP Apache 2.2</a></h2>
     <dl>
     <dt>Inclusions côté serveur (SSI)</dt>
     <dd>Un exemple simple de remplacement de la directive <code class="directive"><a href="../mod/core.html#addoutputfilterbytype">AddOutputFilterByType</a></code>
-    <pre class="prettyprint lang-config">
-FilterDeclare SSI
+    <pre class="prettyprint lang-config">FilterDeclare SSI
 FilterProvider SSI INCLUDES "%{CONTENT_TYPE} =~ m|^text/html|"
-FilterChain SSI
-    </pre>
+FilterChain SSI</pre>
 
     </dd>
 
@@ -213,10 +211,8 @@ FilterChain SSI
     <dd>Même exemple que ci-dessus, mais envoi vers un gestionnaire
     (comportement classique des SSI ; les fichiers .shtml sont
     traités).
-    <pre class="prettyprint lang-config">
-FilterProvider SSI INCLUDES "%{HANDLER} = 'server-parsed'"
-FilterChain SSI
-    </pre>
+    <pre class="prettyprint lang-config">FilterProvider SSI INCLUDES "%{HANDLER} = 'server-parsed'"
+FilterChain SSI</pre>
 
     </dd>
 
@@ -224,11 +220,9 @@ FilterChain SSI
     <dd>Insertion du filtre INFLATE seulement si l'en-tête
     Accept-Encoding a une valeur autre que "gzip". Ce filtre s'exécute
     avec le type ftype CONTENT_SET.
-    <pre class="prettyprint lang-config">
-FilterDeclare gzip CONTENT_SET
+    <pre class="prettyprint lang-config">FilterDeclare gzip CONTENT_SET
 FilterProvider gzip inflate "%{req:Accept-Encoding} !~ /gzip/"
-FilterChain gzip
-    </pre>
+FilterChain gzip</pre>
 
     </dd>
 
@@ -236,8 +230,7 @@ FilterChain gzip
     <dd>Supposons que nous voulions réduire la résolution de toutes les
     images web, et que nous disposions de filtres pour les images GIF,
     JPEG et PNG.
-    <pre class="prettyprint lang-config">
-FilterProvider unpack jpeg_unpack "%{CONTENT_TYPE} = 'image/jpeg'"
+    <pre class="prettyprint lang-config">FilterProvider unpack jpeg_unpack "%{CONTENT_TYPE} = 'image/jpeg'"
 FilterProvider unpack gif_unpack "%{CONTENT_TYPE} = 'image/gif'"
 FilterProvider unpack png_unpack "%{CONTENT_TYPE} = 'image/png'"
 
@@ -249,8 +242,7 @@ FilterProvider repack gif_pack "%{CONTENT_TYPE} = 'image/gif'"
 FilterProvider repack png_pack "%{CONTENT_TYPE} = 'image/png'"
 &lt;Location /image-filter&gt;
     FilterChain unpack downsample repack
-&lt;/Location&gt;
-    </pre>
+&lt;/Location&gt;</pre>
 
     </dd>
     </dl>
@@ -326,9 +318,7 @@ particulier</td></tr>
     toute sortie dont le type MIME est <code>text/html</code> ou
     <code>text/plain</code> avant de l'envoyer au client.</p>
 
-    <pre class="prettyprint lang-config">
-      AddOutputFilterByType DEFLATE text/html text/plain
-    </pre>
+    <pre class="prettyprint lang-config">AddOutputFilterByType DEFLATE text/html text/plain</pre>
 
 
     <p>Si vous voulez assigner plusieurs filtres au contenu, leurs noms
@@ -341,12 +331,10 @@ particulier</td></tr>
     lieu par le filtre <code>INCLUDES</code>, puis par le filtre
     <code>DEFLATE</code>.</p>
 
-    <pre class="prettyprint lang-config">
-&lt;Location /cgi-bin/&gt;
+    <pre class="prettyprint lang-config">&lt;Location /cgi-bin/&gt;
     Options Includes
     AddOutputFilterByType INCLUDES;DEFLATE text/html
-&lt;/Location&gt;
-    </pre>
+&lt;/Location&gt;</pre>
 
 
 

@@ -106,15 +106,13 @@
       arrivée à expiration. Ces requêtes sont configurées comme dans
       l'exemple suivant :</p>
 
-      <div class="example"><h3>Exemple de configuration de DBD</h3><pre class="prettyprint lang-config">
-DBDriver pgsql
+      <div class="example"><h3>Exemple de configuration de DBD</h3><pre class="prettyprint lang-config">DBDriver pgsql
 DBDParams "dbname=apachesession user=apache password=xxxxx host=localhost"
 DBDPrepareSQL "delete from session where key = %s" deletesession
 DBDPrepareSQL "update session set value = %s, expiry = %lld, key = %s where key = %s" updatesession
 DBDPrepareSQL "insert into session (value, expiry, key) values (%s, %lld, %s)" insertsession
 DBDPrepareSQL "select value from session where key = %s and (expiry = 0 or expiry &gt; %lld)" selectsession
-DBDPrepareSQL "delete from session where expiry != 0 and expiry &lt; %lld" cleansession
-    </pre>
+DBDPrepareSQL "delete from session where expiry != 0 and expiry &lt; %lld" cleansession</pre>
 </div>
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -131,10 +129,8 @@ DBDPrepareSQL "delete from session where expiry != 0 and expiry &lt; %lld" clean
       sauvegarder l'identifiant de session dans un cookie nommé
       <var>session</var>, configurez la session comme suit :</p>
 
-      <div class="example"><h3>Session anonyme basée sur SQL</h3><pre class="prettyprint lang-config">
-Session On
-SessionDBDCookieName session path=/
-        </pre>
+      <div class="example"><h3>Session anonyme basée sur SQL</h3><pre class="prettyprint lang-config">Session On
+SessionDBDCookieName session path=/</pre>
 </div>
 
       <p>Pour plus d'exemples sur la manière dont une application CGI
@@ -171,10 +167,8 @@ SessionDBDCookieName session path=/
       <var>apachesession</var>, avec comme clé de session l'identifiant
       utilisateur, ajoutez les lignes suivantes :</p>
 
-      <div class="example"><h3>Session propre à un utilisateur basée sur SQL</h3><pre class="prettyprint lang-config">
-Session On
-SessionDBDPerUser On
-        </pre>
+      <div class="example"><h3>Session propre à un utilisateur basée sur SQL</h3><pre class="prettyprint lang-config">Session On
+SessionDBDPerUser On</pre>
 </div>
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -217,10 +211,8 @@ l'identifiant de session</td></tr>
     spécification des cookies.
     </p>
 
-    <div class="example"><h3>Cookie avec attributs</h3><pre class="prettyprint lang-config">
-Session On
-SessionDBDCookieName session path=/private;domain=example.com;httponly;secure;version=1;
-      </pre>
+    <div class="example"><h3>Cookie avec attributs</h3><pre class="prettyprint lang-config">Session On
+SessionDBDCookieName session path=/private;domain=example.com;httponly;secure;version=1;</pre>
 </div>
 
 
@@ -250,10 +242,8 @@ l'identifiant de session</td></tr>
     spécification des cookies.
     </p>
 
-    <div class="example"><h3>Cookie2 avec attributs</h3><pre class="prettyprint lang-config">
-Session On
-SessionDBDCookieName2 session path=/private;domain=example.com;httponly;secure;version=1;
-      </pre>
+    <div class="example"><h3>Cookie2 avec attributs</h3><pre class="prettyprint lang-config">Session On
+SessionDBDCookieName2 session path=/private;domain=example.com;httponly;secure;version=1;</pre>
 </div>
 
 

@@ -92,9 +92,7 @@ existing HTML documents.</p>
     <p>To permit SSI on your server, you must have the following
     directive either in your <code>httpd.conf</code> file, or in a
     <code>.htaccess</code> file:</p>
-<pre class="prettyprint lang-config">
-        Options +Includes
-</pre>
+<pre class="prettyprint lang-config">Options +Includes</pre>
 
 
     <p>This tells Apache that you want to permit files to be parsed
@@ -109,10 +107,8 @@ existing HTML documents.</p>
     do this. You can tell Apache to parse any file with a
     particular file extension, such as <code>.shtml</code>, with
     the following directives:</p>
-<pre class="prettyprint lang-config">
-        AddType text/html .shtml<br />
-        AddOutputFilter INCLUDES .shtml
-</pre>
+<pre class="prettyprint lang-config">        AddType text/html .shtml<br />
+        AddOutputFilter INCLUDES .shtml</pre>
 
 
     <p>One disadvantage to this approach is that if you wanted to
@@ -122,9 +118,7 @@ existing HTML documents.</p>
     directives would be executed.</p>
 
     <p>The other method is to use the <code class="directive"><a href="../mod/mod_include.html#xbithack">XBitHack</a></code> directive:</p>
-<pre class="prettyprint lang-config">
-        XBitHack on
-</pre>
+<pre class="prettyprint lang-config">XBitHack on</pre>
 
 
     <p><code class="directive"><a href="../mod/mod_include.html#xbithack">XBitHack</a></code>
@@ -446,10 +440,8 @@ modified?</a></h3>
 
     <p>In your configuration file, you could put the following
     line:</p>
-<pre class="prettyprint lang-config">
-        BrowserMatchNoCase macintosh Mac<br />
-        BrowserMatchNoCase MSIE InternetExplorer
-</pre>
+<pre class="prettyprint lang-config">        BrowserMatchNoCase macintosh Mac<br />
+        BrowserMatchNoCase MSIE InternetExplorer</pre>
 
 
     <p>This will set environment variables ``Mac'' and

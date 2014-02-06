@@ -67,20 +67,16 @@
     .htaccess si <code class="directive"><a href="./mod/core.html#allowoverride">AllowOverride</a></code> est
     définie à FileInfo.</p>
 
-    <pre class="prettyprint lang-config">
-ErrorDocument 500 "Désolé, notre script s'est
+    <pre class="prettyprint lang-config">ErrorDocument 500 "Désolé, notre script s'est
 crashé ; comme c'est dommage !"<br />
 ErrorDocument 500 /cgi-bin/crash-recover<br />
 ErrorDocument 500 http://error.example.com/server_error.html<br />
 ErrorDocument 404 /errors/not_found.html <br />
-ErrorDocument 401 /subscription/how_to_subscribe.html
-    </pre>
+ErrorDocument 401 /subscription/how_to_subscribe.html</pre>
 
 
 <p>La syntaxe de la directive <code>ErrorDocument</code> est :</p>
-      <pre class="prettyprint lang-config">
-      ErrorDocument &lt;code_3_chiffres&gt; &lt;action&gt;
-    </pre>
+      <pre class="prettyprint lang-config">ErrorDocument &lt;code_3_chiffres&gt; &lt;action&gt;</pre>
 
       <p>où action peut être traitée comme :</p>
         <ol>
@@ -166,12 +162,10 @@ ErrorDocument 401 /subscription/how_to_subscribe.html
       par une directive ErrorDocument pourrait contenir ce qui suit
       :</p>
 
-      <pre class="prettyprint lang-perl">
-...
+      <pre class="prettyprint lang-perl">...
 print  "Content-type: text/html\n"; <br />
 printf "Status: %s Condition Intercepted\n", $ENV{"REDIRECT_STATUS"}; <br />
-...
-      </pre>
+...</pre>
 
 
       <p>Si un script est dédié à la gestion d'une condition d'erreur
@@ -198,10 +192,8 @@ printf "Status: %s Condition Intercepted\n", $ENV{"REDIRECT_STATUS"}; <br />
     <p>Dans le fichier de configuration de votre serveur, vous trouverez
     un groupe de lignes du style :</p>
 
-    <pre class="prettyprint lang-config">
-    # Multi-language error messages<br />
-    #Include conf/extra/httpd-multilang-errordoc.conf
-    </pre>
+    <pre class="prettyprint lang-config">    # Multi-language error messages<br />
+    #Include conf/extra/httpd-multilang-errordoc.conf</pre>
 
 
     <p>Décommentez la ligne <code>Include</code> pour activer cette

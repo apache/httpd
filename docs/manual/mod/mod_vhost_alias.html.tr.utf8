@@ -48,10 +48,8 @@
         her durumda <code>/cgi-bin/script.pl</code> betiğini <code>
         /usr/local/apache2/cgi-bin/script.pl</code> betiğine eşleyecektir:</p>
 
-      <pre class="prettyprint lang-config">
-ScriptAlias /cgi-bin/ /usr/local/apache2/cgi-bin/
-VirtualScriptAlias /nerede/bilinmiyor/%0/cgi-bin/
-      </pre>
+      <pre class="prettyprint lang-config">ScriptAlias /cgi-bin/ /usr/local/apache2/cgi-bin/
+VirtualScriptAlias /nerede/bilinmiyor/%0/cgi-bin/</pre>
 
     </div>
 </div>
@@ -142,10 +140,8 @@ Sanal Barındırma</a></li>
     <p>Sunucu yapılandırma dosyanızda isme dayalı sanal konaklar için
       aşağıdaki yönergeler kullanılıyor olsun:</p>
 
-    <pre class="prettyprint lang-config">
-UseCanonicalName    Off
-VirtualDocumentRoot /usr/local/apache/sankonlar/%0
-    </pre>
+    <pre class="prettyprint lang-config">UseCanonicalName    Off
+VirtualDocumentRoot /usr/local/apache/sankonlar/%0</pre>
 
 
     <p><code>http://example.com/dizin/dosya.html</code> için yapılan bir istek
@@ -156,10 +152,8 @@ VirtualDocumentRoot /usr/local/apache/sankonlar/%0
       boyutlarını küçük tutmak amacıyla dosyalar düzenlenebilir. Bunu
       yapılandırma dosyanızda şöyle yapabilirsiniz:</p>
 
-    <pre class="prettyprint lang-config">
-UseCanonicalName    Off
-VirtualDocumentRoot /usr/local/apache/sankonlar/%3+/%2.1/%2.2/%2.3/%2
-    </pre>
+    <pre class="prettyprint lang-config">UseCanonicalName    Off
+VirtualDocumentRoot /usr/local/apache/sankonlar/%3+/%2.1/%2.2/%2.3/%2</pre>
 
 
     <p><code>http://falan.filan.example.com/dizin/dosya.html</code> için
@@ -169,9 +163,7 @@ VirtualDocumentRoot /usr/local/apache/sankonlar/%3+/%2.1/%2.2/%2.3/%2
 
     <p>Bu sefer de parçaları ismin sonundan toplayalım: </p>
 
-    <pre class="prettyprint lang-config">
-VirtualDocumentRoot /usr/local/apache/sankonlar/%3+/%2.-1/%2.-2/%2.-3/%2
-    </pre>
+    <pre class="prettyprint lang-config">VirtualDocumentRoot /usr/local/apache/sankonlar/%3+/%2.-1/%2.-2/%2.-3/%2</pre>
 
 
     <p>Bu durumda istek
@@ -180,9 +172,7 @@ VirtualDocumentRoot /usr/local/apache/sankonlar/%3+/%2.-1/%2.-2/%2.-3/%2
 
     <p>Şöyle bir şey de yapabilirsiniz:</p>
 
-    <pre class="prettyprint lang-config">
-VirtualDocumentRoot /usr/local/apache/sankonlar/%3+/%2.1/%2.2/%2.3/%2.4+
-    </pre>
+    <pre class="prettyprint lang-config">VirtualDocumentRoot /usr/local/apache/sankonlar/%3+/%2.1/%2.2/%2.3/%2.4+</pre>
 
 
     <p>Bu örnek için istek
@@ -201,9 +191,7 @@ VirtualDocumentRoot /usr/local/apache/sankonlar/%3+/%2.1/%2.2/%2.3/%2.4+
       Böylece, tüm ilk, ikinci ve üçüncü seviye alt alan adlarını aynı dizine
       yönlendirecek bir yapılandırma yapılabilir:</p>
 
-    <pre class="prettyprint lang-config">
-VirtualDocumentRoot "/usr/local/apache/vhosts/%-2.0.%-1.0"
-    </pre>
+    <pre class="prettyprint lang-config">VirtualDocumentRoot "/usr/local/apache/vhosts/%-2.0.%-1.0"</pre>
 
 
     <p>Yukarıdaki örnekte, <code>example.com</code>,
@@ -214,11 +202,9 @@ VirtualDocumentRoot "/usr/local/apache/vhosts/%-2.0.%-1.0"
     <p>IP’ye dayalı sanal konaklar için yapılandırma dosyanızda şu satırlar
       olabilirdi:</p>
 
-    <pre class="prettyprint lang-config">
-UseCanonicalName DNS
+    <pre class="prettyprint lang-config">UseCanonicalName DNS
 VirtualDocumentRootIP /usr/local/apache/sankonlar/%1/%2/%3/%4/belgeler
-VirtualScriptAliasIP  /usr/local/apache/sankonlar/%1/%2/%3/%4/cgi-bin
-    </pre>
+VirtualScriptAliasIP  /usr/local/apache/sankonlar/%1/%2/%3/%4/cgi-bin</pre>
 
 
     <p><code>http://falan.filan.example.com/dizin/dosya.html</code> için
@@ -235,9 +221,7 @@ VirtualScriptAliasIP  /usr/local/apache/sankonlar/%1/%2/%3/%4/cgi-bin
       karakterini içermesini isterseniz, bir biçem belirteci ile karışıklığa
       sebep olmaksızın bunu şöyle sağlayabilirsiniz:</p>
 
-    <pre class="prettyprint lang-config">
-VirtualDocumentRoot /usr/local/apache/sankonlar/%2.0.%3.0
-    </pre>
+    <pre class="prettyprint lang-config">VirtualDocumentRoot /usr/local/apache/sankonlar/%2.0.%3.0</pre>
 
 
     <p>Bu durumda <code>http://falan.filan.example.com/dizin/dosya.html</code>

@@ -37,11 +37,9 @@
 by the various old modem standards. So, you can browse your site with a 56k
 V.92 modem, by adding something like this:</p>
 
-<pre class="prettyprint lang-config">
-&lt;Location /mysite&gt;
+<pre class="prettyprint lang-config">&lt;Location /mysite&gt;
     ModemStandard V.92
-&lt;/Location&gt;
-</pre>
+&lt;/Location&gt;</pre>
 
 
 <p>Previously to do bandwidth rate limiting modules would have to block an entire
@@ -67,11 +65,9 @@ once the timer hits.  From there the handler can continue to send data to the cl
 </table>
 <p>Specify what modem standard you wish to simulate.</p>
 
-<pre class="prettyprint lang-config">
-&lt;Location /mysite&gt;
+<pre class="prettyprint lang-config">&lt;Location /mysite&gt;
     ModemStandard V.26bis
-&lt;/Location&gt;
-</pre>
+&lt;/Location&gt;</pre>
 
 
 

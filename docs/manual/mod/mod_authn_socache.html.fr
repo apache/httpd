@@ -95,8 +95,7 @@ la charge des serveurs d'arrière-plan</td></tr>
     <p>Voici un exemple simple permettant d'accélérer
     <code class="module"><a href="../mod/mod_authn_dbd.html">mod_authn_dbd</a></code> et utilisant dbm comme moteur de la
     mise en cache :</p>
-    <pre class="prettyprint lang-config">
-&lt;Directory /usr/www/myhost/private&gt;
+    <pre class="prettyprint lang-config">&lt;Directory /usr/www/myhost/private&gt;
     AuthType Basic
     AuthName "Cached Authentication Example"
     AuthBasicProvider socache dbd
@@ -105,8 +104,7 @@ la charge des serveurs d'arrière-plan</td></tr>
     AuthnCacheContext dbd-authn-example
     AuthnCacheSOCache dbm
     Require valid-user
-&lt;/Directory&gt;
-    </pre>
+&lt;/Directory&gt;</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -195,9 +193,7 @@ mise en cache</td></tr>
     trouvées par <code class="module"><a href="../mod/mod_authn_dbd.html">mod_authn_dbd</a></code> ou par un fournisseur
     personnalisé <var>mon-fournisseur</var>, et ne pas mettre en cache
     celles trouvées par les fournisseurs légers comme file ou dbm :</p>
-    <pre class="prettyprint lang-config">
-AuthnCacheProvideFor dbd mon-fournisseur
-    </pre>
+    <pre class="prettyprint lang-config">AuthnCacheProvideFor dbd mon-fournisseur</pre>
 
 
 </div>

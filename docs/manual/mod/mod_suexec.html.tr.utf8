@@ -65,9 +65,7 @@
       hala <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code> yönergesinde
       belirtilen kullanıcı tarafından yerine getirilir.</p>
 
-    <pre class="prettyprint lang-config">
-SuexecUserGroup nobody nogroup
-    </pre>
+    <pre class="prettyprint lang-config">SuexecUserGroup nobody nogroup</pre>
 
 
     <p>Apache HTTP Sunucusunun 2.3.9 ve sonraki sürümlerinde, bu yönerge

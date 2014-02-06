@@ -128,8 +128,7 @@
     <code>other.example.com</code>, which points at the same IP address.
     Then you simply add the following to <code>httpd.conf</code>:</p>
 
-    <pre class="prettyprint lang-config">
-&lt;VirtualHost *:80&gt;
+    <pre class="prettyprint lang-config">&lt;VirtualHost *:80&gt;
     # This first-listed virtual host is also the default for *:80
     ServerName www.example.com
     ServerAlias example.com 
@@ -139,8 +138,7 @@
 &lt;VirtualHost *:80&gt;
     ServerName other.example.com
     DocumentRoot /www/otherdomain
-&lt;/VirtualHost&gt;
-    </pre>
+&lt;/VirtualHost&gt;</pre>
 
 
     <p>You can alternatively specify an explicit IP address in place of the
@@ -155,9 +153,7 @@
     the listed names are other names which people can use to see that same
     web site:</p>
 
-    <pre class="prettyprint lang-config">
-        ServerAlias example.com *.example.com
-    </pre>
+    <pre class="prettyprint lang-config">ServerAlias example.com *.example.com</pre>
 
 
     <p>then requests for all hosts in the <code>example.com</code> domain will

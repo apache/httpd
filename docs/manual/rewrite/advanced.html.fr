@@ -103,11 +103,9 @@ http://serveur_physique_utilisateur1/u/utilisateur/chemin
       serveur par défaut qui sera utilisé lorsqu'un utilisateur ne
       possèdera pas d'entrée dans la table de correspondances :</p>
 
-<pre class="prettyprint lang-config">
-RewriteEngine on
+<pre class="prettyprint lang-config">RewriteEngine on
 RewriteMap      users-to-hosts   txt:/path/to/map.users-to-hosts
-RewriteRule   ^/u/([^/]+)/?(.*)   http://${users-to-hosts:$1|server0}/u/$1/$2
-</pre>
+RewriteRule   ^/u/([^/]+)/?(.*)   http://${users-to-hosts:$1|server0}/u/$1/$2</pre>
 
     </dd>
   </dl>
@@ -138,11 +136,9 @@ RewriteRule   ^/u/([^/]+)/?(.*)   http://${users-to-hosts:$1|server0}/u/$1/$2
     <dd>
       A cet effet, on utilise le jeu de règles suivant :
 
-<pre class="prettyprint lang-config">
-# Cet exemple n'est valable que dans un contexte de répertoire
+<pre class="prettyprint lang-config"># Cet exemple n'est valable que dans un contexte de répertoire
 RewriteCond %{REQUEST_URI}   !-U
-RewriteRule ^(.+)\.html$          /regenerate_page.cgi   [PT,L]
-</pre>
+RewriteRule ^(.+)\.html$          /regenerate_page.cgi   [PT,L]</pre>
 
 
       <p>L'opérateur <code>-U</code> permet de déterminer si la chaîne
@@ -183,11 +179,9 @@ RewriteRule ^(.+)\.html$          /regenerate_page.cgi   [PT,L]
       <p>Pour y parvenir, nous allons utiliser la directive <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> et une liste de
       serveurs.</p>
 
-<pre class="prettyprint lang-config">
-RewriteEngine on
+<pre class="prettyprint lang-config">RewriteEngine on
 RewriteMap lb rnd:/path/to/serverlist.txt
-RewriteRule ^/(.*) http://${lb:serveurs}/$1 [P,L]
-</pre>
+RewriteRule ^/(.*) http://${lb:serveurs}/$1 [P,L]</pre>
 
 
 <p><code>liste-serveurs.txt</code> contiendra la liste des serveurs :</p>
@@ -241,9 +235,7 @@ plus de fonctionnalités dans ce domaine que mod_rewrite.</p>
 	  actualisée chaque fois que la ressource est mise à jour dans
 	  le système de fichiers.</p>
 
-<pre class="prettyprint lang-config">
-RewriteRule   ^(/[uge]/[^/]+/?.*):refresh  /interne/cgi/apache/nph-refresh?f=$
-</pre>
+<pre class="prettyprint lang-config">RewriteRule   ^(/[uge]/[^/]+/?.*):refresh  /interne/cgi/apache/nph-refresh?f=$</pre>
 
 
       <p>Nous appelons maintenant cette URL</p>
@@ -262,8 +254,7 @@ RewriteRule   ^(/[uge]/[^/]+/?.*):refresh  /interne/cgi/apache/nph-refresh?f=$
 	  écrive habituellement dans ces cas "laissé à la charge du
 	  lecteur à titre d'exercice", ;-) je vous l'offre, aussi.</p>
 
-<pre class="prettyprint lang-perl">
-#!/sw/bin/perl
+<pre class="prettyprint lang-perl">#!/sw/bin/perl
 ##
 ##  nph-refresh -- script NPH/CGI pour l'actualisation automatique de
 ##  pages
@@ -364,8 +355,7 @@ for ( $n = 0 ; $n &amp; lt ; $QS_n ; $n++ ) {
 
 exit(0);
 
-##EOF##
-</pre>
+##EOF##</pre>
 
     </dd>
   </dl>
@@ -397,10 +387,8 @@ exit(0);
       <p>On utilise le jeu de règles suivant pour développer les
 	  URLs avec tilde selon l'organisation structurée précédente.</p>
 
-<pre class="prettyprint lang-config">
-RewriteEngine on
-RewriteRule   ^/~(<strong>([a-z])</strong>[a-z0-9]+)(.*)  /home/<strong>$2</strong>/$1/public_html$3
-</pre>
+<pre class="prettyprint lang-config">RewriteEngine on
+RewriteRule   ^/~(<strong>([a-z])</strong>[a-z0-9]+)(.*)  /home/<strong>$2</strong>/$1/public_html$3</pre>
 
     </dd>
   </dl>
@@ -460,12 +448,10 @@ RewriteRule   ^/~(<strong>([a-z])</strong>[a-z0-9]+)(.*)  /home/<strong>$2</stro
 	  permettent d'effectuer des redirections dépendant de
 	  l'heure :</p>
 
-<pre class="prettyprint lang-config">
-+RewriteEngine on
+<pre class="prettyprint lang-config">+RewriteEngine on
 +RewriteCond   %{TIME_HOUR}%{TIME_MIN} &gt;0700
 +RewriteCond   %{TIME_HOUR}%{TIME_MIN} &lt;1900
-+RewriteRule   ^foo\.html$             foo.day.html [L]
-</pre>
++RewriteRule   ^foo\.html$             foo.day.html [L]</pre>
 
 
       <p>Avec cet exemple, l'URL <code>foo.html</code> renvoie
@@ -508,19 +494,15 @@ RewriteRule   ^/~(<strong>([a-z])</strong>[a-z0-9]+)(.*)  /home/<strong>$2</stro
       <p>Utiliser le drapeau [E] pour définir une variable
       d'environnement.</p>
 
-<pre class="prettyprint lang-config">
-RewriteEngine on
-RewriteRule   ^/cheval/(.*)   /poney/$1 [E=<strong>rewritten:1</strong>]
-</pre>
+<pre class="prettyprint lang-config">RewriteEngine on
+RewriteRule   ^/cheval/(.*)   /poney/$1 [E=<strong>rewritten:1</strong>]</pre>
 
 
     <p>Plus loin dans votre jeu de règles, vous pouvez vérifier le
     contenu de cette variable d'environnement via une directive
     RewriteCond :</p>
 
-<pre class="prettyprint lang-config">
-RewriteCond %{ENV:rewritten} =1
-</pre>
+<pre class="prettyprint lang-config">RewriteCond %{ENV:rewritten} =1</pre>
 
 
     </dd>

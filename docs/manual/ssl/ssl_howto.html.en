@@ -44,8 +44,7 @@ before progressing to the advanced techniques.</p>
 <p>Your SSL configuration will need to contain, at minimum, the
 following directives.</p>
 
-<pre class="prettyprint lang-config">
-LoadModule ssl_module modules/mod_ssl.so
+<pre class="prettyprint lang-config">LoadModule ssl_module modules/mod_ssl.so
 
 Listen 443
 &lt;VirtualHost *:443&gt;
@@ -53,8 +52,7 @@ Listen 443
     SSLEngine on
     SSLCertificateFile /path/to/www.example.com.cert
     SSLCertificateKeyFile /path/to/www.example.com.key
-&lt;/VirtualHost&gt;
-</pre>
+&lt;/VirtualHost&gt;</pre>
 
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -71,19 +69,15 @@ requires a strong cipher for access to a particular URL?</a></li>
 only?</a></h3>
 
     <p>The following enables only the strongest ciphers:</p>
-    <pre class="prettyprint lang-config">
-      SSLCipherSuite HIGH:!aNULL:!MD5
-    </pre>
+    <pre class="prettyprint lang-config">SSLCipherSuite HIGH:!aNULL:!MD5</pre>
 
 
     <p>While with the following configuration you specify a preference
     for specific speed-optimized ciphers (which will be selected by
     mod_ssl, provided that they are supported by the client):</p>
 
-    <pre class="prettyprint lang-config">
-SSLCipherSuite RC4-SHA:AES128-SHA:HIGH:!aNULL:!MD5
-SSLHonorCipherOrder on
-    </pre>
+    <pre class="prettyprint lang-config">SSLCipherSuite RC4-SHA:AES128-SHA:HIGH:!aNULL:!MD5
+SSLHonorCipherOrder on</pre>
 
 
 
@@ -97,16 +91,14 @@ URL?</a></h3>
     blocks, to give a per-directory solution, and can automatically force
     a renegotiation of the SSL parameters to meet the new configuration.
     This can be done as follows:</p>
-    <pre class="prettyprint lang-config">
-# be liberal in general
+    <pre class="prettyprint lang-config"># be liberal in general
 SSLCipherSuite ALL:!aNULL:RC4+RSA:+HIGH:+MEDIUM:+LOW:+EXP:+eNULL
 
 &lt;Location /strong/area&gt;
 # but https://hostname/strong/area/ and below
 # requires strong ciphers
 SSLCipherSuite HIGH:!aNULL:!MD5
-&lt;/Location&gt;
-    </pre>
+&lt;/Location&gt;</pre>
 
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -132,13 +124,11 @@ Intranet website, for clients coming from the Internet?</a></li>
     need to do is to create client certificates signed by your own CA
     certificate (<code>ca.crt</code>) and then verify the clients against this
     certificate.</p>
-    <pre class="prettyprint lang-config">
-# require a client certificate which has to be directly
+    <pre class="prettyprint lang-config"># require a client certificate which has to be directly
 # signed by our CA certificate in ca.crt
 SSLVerifyClient require
 SSLVerifyDepth 1
-SSLCACertificateFile conf/ssl.crt/ca.crt
-    </pre>
+SSLCACertificateFile conf/ssl.crt/ca.crt</pre>
 
 
 
@@ -150,15 +140,13 @@ SSLCACertificateFile conf/ssl.crt/ca.crt
     you can use the per-directory reconfiguration features of
     <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>:</p>
 
-    <pre class="prettyprint lang-config">
-SSLVerifyClient none
+    <pre class="prettyprint lang-config">SSLVerifyClient none
 SSLCACertificateFile conf/ssl.crt/ca.crt
 
 &lt;Location /secure/area&gt;
 SSLVerifyClient require
 SSLVerifyDepth 1
-&lt;/Location&gt;
-    </pre>
+&lt;/Location&gt;</pre>
 
 
 
@@ -178,8 +166,7 @@ SSLVerifyDepth 1
     you should establish a password database containing <em>all</em>
     clients allowed, as follows:</p>
 
-    <pre class="prettyprint lang-config">
-SSLVerifyClient      none
+    <pre class="prettyprint lang-config">SSLVerifyClient      none
 SSLCACertificateFile conf/ssl.crt/ca.crt
 SSLCACertificatePath conf/ssl.crt
 
@@ -193,16 +180,14 @@ SSLCACertificatePath conf/ssl.crt
     AuthBasicProvider    file
     AuthUserFile         /usr/local/apache2/conf/httpd.passwd
     Require              valid-user
-&lt;/Directory&gt;
-    </pre>
+&lt;/Directory&gt;</pre>
 
 
     <p>The password used in this example is the DES encrypted string "password".
     See the <code class="directive"><a href="../mod/mod_ssl.html#ssloptions">SSLOptions</a></code> docs for more
     information.</p>
 
-    <div class="example"><h3>httpd.passwd</h3><pre>
-/C=DE/L=Munich/O=Snake Oil, Ltd./OU=Staff/CN=Foo:xxj31ZMTZzkVA
+    <div class="example"><h3>httpd.passwd</h3><pre>/C=DE/L=Munich/O=Snake Oil, Ltd./OU=Staff/CN=Foo:xxj31ZMTZzkVA
 /C=US/L=S.F./O=Snake Oil, Ltd./OU=CA/CN=Bar:xxj31ZMTZzkVA
 /C=US/L=L.A./O=Snake Oil, Ltd./OU=Dev/CN=Quux:xxj31ZMTZzkVA</pre></div>
 
@@ -210,8 +195,7 @@ SSLCACertificatePath conf/ssl.crt
     into the DN, you can match them more easily using <code class="directive"><a href="../mod/mod_ssl.html#sslrequire">SSLRequire</a></code>, as follows:</p>
 
 
-    <pre class="prettyprint lang-config">
-SSLVerifyClient      none
+    <pre class="prettyprint lang-config">SSLVerifyClient      none
 SSLCACertificateFile conf/ssl.crt/ca.crt
 SSLCACertificatePath conf/ssl.crt
 
@@ -222,8 +206,7 @@ SSLCACertificatePath conf/ssl.crt
   SSLRequireSSL
   SSLRequire       %{SSL_CLIENT_S_DN_O}  eq "Snake Oil, Ltd." \
                and %{SSL_CLIENT_S_DN_OU} in {"Staff", "CA", "Dev"}
-&lt;/Directory&gt;
-    </pre>
+&lt;/Directory&gt;</pre>
 
 
 
@@ -239,8 +222,7 @@ plain HTTP access for clients on the Intranet.</a></h3>
    This configuration should remain outside of your HTTPS virtual host, so
    that it applies to both HTTPS and HTTP.</p>
 
-    <pre class="prettyprint lang-config">
-SSLCACertificateFile conf/ssl.crt/company-ca.crt
+    <pre class="prettyprint lang-config">SSLCACertificateFile conf/ssl.crt/company-ca.crt
 
 &lt;Directory /usr/local/apache2/htdocs&gt;
     #   Outside the subarea only Intranet access is granted
@@ -277,8 +259,7 @@ SSLCACertificateFile conf/ssl.crt/company-ca.crt
     AuthBasicProvider    file
     AuthUserFile         conf/protected.passwd
     Require              valid-user
-&lt;/Directory&gt;
-    </pre>
+&lt;/Directory&gt;</pre>
 
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

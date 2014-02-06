@@ -113,9 +113,7 @@ Virtual Hosts</a> to help you decide.  </p>
     configuration file to select which IP address (or virtual host)
     that daemon services. e.g.</p>
 
-    <pre class="prettyprint lang-config">
-    Listen 192.0.2.100:80
-    </pre>
+    <pre class="prettyprint lang-config">Listen 192.0.2.100:80</pre>
 
 
     <p>It is recommended that you use an IP address instead of a
@@ -133,8 +131,7 @@ Virtual Hosts</a> to help you decide.  </p>
     configuration directives to different values for each virtual
     host. e.g.</p>
 
-    <pre class="prettyprint lang-config">
-&lt;VirtualHost 172.20.30.40:80&gt;
+    <pre class="prettyprint lang-config">&lt;VirtualHost 172.20.30.40:80&gt;
     ServerAdmin webmaster@www1.example.com
     DocumentRoot /www/vhosts/www1
     ServerName www1.example.com
@@ -148,8 +145,7 @@ Virtual Hosts</a> to help you decide.  </p>
     ServerName www2.example.org
     ErrorLog /www/logs/www2/error_log
     CustomLog /www/logs/www2/access_log combined
-&lt;/VirtualHost&gt;
-    </pre>
+&lt;/VirtualHost&gt;</pre>
 
 
     <p>It is recommended that you use an IP address instead of a

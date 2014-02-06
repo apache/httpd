@@ -164,9 +164,7 @@
     <p>Do this by specifying the name of the module in your
     <code class="directive">LogLevel</code> directive:</p>
 
-    <pre class="prettyprint lang-config">
-    LogLevel info rewrite:trace5
-    </pre>
+    <pre class="prettyprint lang-config">LogLevel info rewrite:trace5</pre>
 
 
     <p>This sets the main <code class="directive">LogLevel</code> to info, but
@@ -219,10 +217,8 @@
       <p>A typical configuration for the access log might look as
       follows.</p>
 
-      <pre class="prettyprint lang-config">
-LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common
-CustomLog logs/access_log common
-      </pre>
+      <pre class="prettyprint lang-config">LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common
+CustomLog logs/access_log common</pre>
 
 
       <p>This defines the <em>nickname</em> <code>common</code> and
@@ -362,10 +358,8 @@ CustomLog logs/access_log common
       <p>Another commonly used format string is called the Combined
       Log Format. It can be used as follows.</p>
 
-      <pre class="prettyprint lang-config">
-LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\"" combined
-CustomLog log/access_log combined
-      </pre>
+      <pre class="prettyprint lang-config">LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\"" combined
+CustomLog log/access_log combined</pre>
 
 
       <p>This format is exactly the same as the Common Log Format,
@@ -414,12 +408,10 @@ CustomLog log/access_log combined
       information. The last two <code class="directive"><a href="./mod/mod_log_config.html#customlog">CustomLog</a></code> lines show how
       to mimic the effects of the <code>ReferLog</code> and <code>AgentLog</code> directives.</p>
 
-      <pre class="prettyprint lang-config">
-LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common
+      <pre class="prettyprint lang-config">LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common
 CustomLog logs/access_log common
 CustomLog logs/referer_log "%{Referer}i -&gt; %U"
-CustomLog logs/agent_log "%{User-agent}i"
-      </pre>
+CustomLog logs/agent_log "%{User-agent}i"</pre>
 
 
       <p>This example also shows that it is not necessary to define a
@@ -440,36 +432,30 @@ CustomLog logs/agent_log "%{User-agent}i"
       include or exclude requests where the environment variable is
       set. Some examples:</p>
 
-      <pre class="prettyprint lang-config">
-# Mark requests from the loop-back interface
+      <pre class="prettyprint lang-config"># Mark requests from the loop-back interface
 SetEnvIf Remote_Addr "127\.0\.0\.1" dontlog
 # Mark requests for the robots.txt file
 SetEnvIf Request_URI "^/robots\.txt$" dontlog
 # Log what remains
-CustomLog logs/access_log common env=!dontlog
-      </pre>
+CustomLog logs/access_log common env=!dontlog</pre>
 
 
       <p>As another example, consider logging requests from
       english-speakers to one log file, and non-english speakers to a
       different log file.</p>
 
-      <pre class="prettyprint lang-config">
-        SetEnvIf Accept-Language "en" english<br />
+      <pre class="prettyprint lang-config">        SetEnvIf Accept-Language "en" english<br />
         CustomLog logs/english_log common env=english<br />
-        CustomLog logs/non_english_log common env=!english
-      </pre>
+        CustomLog logs/non_english_log common env=!english</pre>
 
 
       <p>In a caching scenario one would want to know about
       the efficiency of the cache. A very simple method to
       find this out would be:</p>
 
-      <pre class="prettyprint lang-config">
-SetEnv CACHE_MISS 1
+      <pre class="prettyprint lang-config">SetEnv CACHE_MISS 1
 LogFormat "%h %l %u %t "%r " %&gt;s %b %{CACHE_MISS}e" common-cache
-CustomLog logs/access_log common-cache
-      </pre>
+CustomLog logs/access_log common-cache</pre>
 
 
       <p><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> will run before
@@ -480,10 +466,8 @@ CustomLog logs/access_log common-cache
       <p>In addition to the <code>env=</code> syntax, <code class="directive"><a href="./mod/mod_log_config.html#logformat">LogFormat</a></code> supports logging values
       conditional upon the HTTP response code:</p>
 
-      <pre class="prettyprint lang-config">
-LogFormat "%400,501{User-agent}i" browserlog
-LogFormat "%!200,304,302{Referer}i" refererlog
-      </pre>
+      <pre class="prettyprint lang-config">LogFormat "%400,501{User-agent}i" browserlog
+LogFormat "%!200,304,302{Referer}i" refererlog</pre>
 
 
       <p>In the first example, the <code>User-agent</code> will be
@@ -563,9 +547,7 @@ LogFormat "%!200,304,302{Referer}i" refererlog
     for this purpose. For example, to rotate the logs every 24 hours, you
     can use:</p>
 
-    <pre class="prettyprint lang-config">
-      CustomLog "|/usr/local/apache/bin/rotatelogs /var/log/access_log 86400" common
-    </pre>
+    <pre class="prettyprint lang-config">CustomLog "|/usr/local/apache/bin/rotatelogs /var/log/access_log 86400" common</pre>
 
 
     <p>Notice that quotes are used to enclose the entire command
@@ -585,10 +567,8 @@ LogFormat "%!200,304,302{Referer}i" refererlog
     a shell. Use "<code>|$</code>" instead of "<code>|</code>"
     to spawn using a shell (usually with <code>/bin/sh -c</code>):</p>
 
-    <pre class="prettyprint lang-config">
-# Invoke "rotatelogs" using a shell
-CustomLog "|$/usr/local/apache/bin/rotatelogs   /var/log/access_log 86400" common
-    </pre>
+    <pre class="prettyprint lang-config"># Invoke "rotatelogs" using a shell
+CustomLog "|$/usr/local/apache/bin/rotatelogs   /var/log/access_log 86400" common</pre>
 
 
     <p>This was the default behaviour for Apache 2.2.
@@ -632,10 +612,8 @@ CustomLog "|$/usr/local/apache/bin/rotatelogs   /var/log/access_log 86400" commo
     later split the log into individual files. For example,
     consider the following directives.</p>
 
-    <pre class="prettyprint lang-config">
-LogFormat "%v %l %u %t \"%r\" %&gt;s %b" comonvhost
-CustomLog logs/access_log comonvhost
-    </pre>
+    <pre class="prettyprint lang-config">LogFormat "%v %l %u %t \"%r\" %&gt;s %b" comonvhost
+CustomLog logs/access_log comonvhost</pre>
 
 
     <p>The <code>%v</code> is used to log the name of the virtual

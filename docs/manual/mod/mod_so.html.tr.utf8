@@ -183,9 +183,7 @@ ve etkin modül listesine ekler.</td></tr>
       değişkenin ismi olup modül belgelerinde <a href="module-dict.html#ModuleIdentifier">Modül Betimleyici</a> olarak
       geçer. Örneğin,</p>
 
-    <pre class="prettyprint lang-config">
-LoadModule status_module modules/mod_status.so
-    </pre>
+    <pre class="prettyprint lang-config">LoadModule status_module modules/mod_status.so</pre>
 
 
     <p>satırı ile ismi belirtilen dosya <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code> dizini altındaki

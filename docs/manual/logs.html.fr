@@ -177,9 +177,7 @@
     <p>Pour ce faire, vous devez spécifier le nom du module dans votre
     directive <code class="directive">LogLevel</code> :</p>
 
-    <pre class="prettyprint lang-config">
-    LogLevel info rewrite:trace5
-    </pre>
+    <pre class="prettyprint lang-config">LogLevel info rewrite:trace5</pre>
 
 
     <p>Dans cet exemple, le niveau de journalisation général est défini
@@ -234,10 +232,8 @@
 
       <p>Voici une configuration typique pour le journal des accès :</p>
 
-      <pre class="prettyprint lang-config">
-LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common
-CustomLog logs/access_log common
-      </pre>
+      <pre class="prettyprint lang-config">LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common
+CustomLog logs/access_log common</pre>
 
 
       <p>Ici est définie l'<em>identité</em> <code>common</code> qui est
@@ -386,10 +382,8 @@ CustomLog logs/access_log common
       "Combined Log Format" (Format de journalisation combiné). Il s'utilise
       comme suit :</p>
 
-      <pre class="prettyprint lang-config">
-LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\"" combined
-CustomLog log/access_log combined
-      </pre>
+      <pre class="prettyprint lang-config">LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\"" combined
+CustomLog log/access_log combined</pre>
 
 
       <p>Ce format est identique au Common Log Format, avec deux champs
@@ -439,12 +433,10 @@ CustomLog log/access_log combined
       comment simuler les effets des directives <code>ReferLog</code> et
       <code>AgentLog</code>.</p>
 
-      <pre class="prettyprint lang-config">
-LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common
+      <pre class="prettyprint lang-config">LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common
 CustomLog logs/access_log common
 CustomLog logs/referer_log "%{Referer}i -&gt; %U"
-CustomLog logs/agent_log "%{User-agent}i"
-      </pre>
+CustomLog logs/agent_log "%{User-agent}i"</pre>
 
 
       <p>Cet exemple montre aussi qu'il n'est pas obligatoire d'associer
@@ -470,36 +462,30 @@ CustomLog logs/agent_log "%{User-agent}i"
       la variable d'environnement est définie.
       Quelques exemples :</p>
 
-      <pre class="prettyprint lang-config">
-# Marque les requêtes en provenance de l'interface loop-back
+      <pre class="prettyprint lang-config"># Marque les requêtes en provenance de l'interface loop-back
 SetEnvIf Remote_Addr "127\.0\.0\.1" dontlog
 # Marque les requêtes pour le fichier robots.txt
 SetEnvIf Request_URI "^/robots\.txt$" dontlog
 # Journalise toutes les autres requêtes
-CustomLog logs/access_log common env=!dontlog
-      </pre>
+CustomLog logs/access_log common env=!dontlog</pre>
 
 
       <p>Autre exemple, imaginons l'enregistrement des requêtes en provenance
       d'utilisateurs de langue anglaise dans un journal, et celles des autres
       utilisateurs dans un autre journal.</p>
 
-      <pre class="prettyprint lang-config">
-        SetEnvIf Accept-Language "en" english<br />
+      <pre class="prettyprint lang-config">        SetEnvIf Accept-Language "en" english<br />
         CustomLog logs/english_log common env=english<br />
-        CustomLog logs/non_english_log common env=!english
-      </pre>
+        CustomLog logs/non_english_log common env=!english</pre>
 
 
 	<p>Dans le contexte d'une mise en cache, il peut être
 	intéressant de connaître l'efficacité du cache. Pour y parvenir,
 	on pourrait utiliser cette méthode simple :</p>
 
-      <pre class="prettyprint lang-config">
-SetEnv CACHE_MISS 1
+      <pre class="prettyprint lang-config">SetEnv CACHE_MISS 1
 LogFormat "%h %l %u %t "%r " %&gt;s %b %{CACHE_MISS}e" common-cache
-CustomLog logs/access_log common-cache
-      </pre>
+CustomLog logs/access_log common-cache</pre>
 
 
       <p><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> va s'exécuter avant
@@ -513,10 +499,8 @@ CustomLog logs/access_log common-cache
       valeurs de journalisation conditionnelles basées sur le code de la
       réponse HTTP :</p>
 
-      <pre class="prettyprint lang-config">
-LogFormat "%400,501{User-agent}i" browserlog
-LogFormat "%!200,304,302{Referer}i" refererlog
-      </pre>
+      <pre class="prettyprint lang-config">LogFormat "%400,501{User-agent}i" browserlog
+LogFormat "%!200,304,302{Referer}i" refererlog</pre>
 
 
       <p>Dans le premier exemple, le <code>User-agent</code> sera
@@ -609,9 +593,7 @@ LogFormat "%!200,304,302{Referer}i" refererlog
     appelé <code class="program"><a href="./programs/rotatelogs.html">rotatelogs</a></code>. Par exemple, pour une rotation des
     journaux toutes les 24 heures, ajoutez ces lignes :</p>
 
-    <pre class="prettyprint lang-config">
-      CustomLog "|/usr/local/apache/bin/rotatelogs /var/log/access_log 86400" common
-    </pre>
+    <pre class="prettyprint lang-config">CustomLog "|/usr/local/apache/bin/rotatelogs /var/log/access_log 86400" common</pre>
 
 
     <p>Notez que l'ensemble de la commande qui sera appelée par le tube de
@@ -633,10 +615,8 @@ LogFormat "%!200,304,302{Referer}i" refererlog
   au lieu de "<code>|</code>" (en général avec <code>/bin/sh -c</code>)
   :</p>
 
-    <pre class="prettyprint lang-config">
-# Invocation de "rotatelogs" en utilisant un shell
-CustomLog "|$/usr/local/apache/bin/rotatelogs   /var/log/access_log 86400" common
-    </pre>
+    <pre class="prettyprint lang-config"># Invocation de "rotatelogs" en utilisant un shell
+CustomLog "|$/usr/local/apache/bin/rotatelogs   /var/log/access_log 86400" common</pre>
 
 
 
@@ -679,10 +659,8 @@ CustomLog "|$/usr/local/apache/bin/rotatelogs   /var/log/access_log 86400" commo
     journal, puis de séparer ultérieurement le journal en plusieurs journaux
     individuels. Considérons par exemple les directives suivantes :</p>
 
-    <pre class="prettyprint lang-config">
-LogFormat "%v %l %u %t \"%r\" %&gt;s %b" comonvhost
-CustomLog logs/access_log comonvhost
-    </pre>
+    <pre class="prettyprint lang-config">LogFormat "%v %l %u %t \"%r\" %&gt;s %b" comonvhost
+CustomLog logs/access_log comonvhost</pre>
 
 
     <p>Le champ <code>%v</code> sert à enregistrer le nom de l'hôte virtuel qui

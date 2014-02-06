@@ -99,10 +99,8 @@
       des fichiers possédant une extension <code>html</code> déclenchent
       l'exécution du script CGI <code>footer.pl</code>.</p>
 
-      <pre class="prettyprint lang-config">
-Action add-footer /cgi-bin/footer.pl
-AddHandler add-footer .html
-      </pre>
+      <pre class="prettyprint lang-config">Action add-footer /cgi-bin/footer.pl
+AddHandler add-footer .html</pre>
 
 
       <p>À ce moment-là, le script CGI se charge d'envoyer le document
@@ -121,11 +119,9 @@ AddHandler add-footer .html
       <code>send-as-is</code>, sans tenir compte de l'extension
       de leur nom de fichier.</p>
 
-      <pre class="prettyprint lang-config">
-&lt;Directory /web/htdocs/asis&gt;
+      <pre class="prettyprint lang-config">&lt;Directory /web/htdocs/asis&gt;
     SetHandler send-as-is
-&lt;/Directory&gt;
-      </pre>
+&lt;/Directory&gt;</pre>
 
 
     
@@ -141,9 +137,7 @@ AddHandler add-footer .html
     Plus précisément, un nouvel enregistrement a été ajouté à la structure
     <code>request_rec</code> :</p>
 
-    <pre class="prettyprint lang-c">
-      char *handler
-    </pre>
+    <pre class="prettyprint lang-c">char *handler</pre>
 
 
     <p>Si vous voulez que votre module déclenche l'utilisation d'un

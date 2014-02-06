@@ -72,9 +72,7 @@ fonction de leur appartenance à un groupe spécifié. Le module
     <p>Cette directive permet de spécifier à quel groupe un utilisateur
     doit appartenir pour obtenir l'autorisation d'accès.</p>
 
-    <pre class="prettyprint lang-config">
-      Require group admin
-    </pre>
+    <pre class="prettyprint lang-config">Require group admin</pre>
 
 
 
@@ -84,9 +82,7 @@ fonction de leur appartenance à un groupe spécifié. Le module
     <p>Lorsque cette directive est définie, l'utilisateur doit
     appartenir au groupe du fichier pour pouvoir y accéder.</p>
 
-    <pre class="prettyprint lang-config">
-      Require file-group
-    </pre>
+    <pre class="prettyprint lang-config">Require file-group</pre>
 
 
 

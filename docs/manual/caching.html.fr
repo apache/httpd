@@ -459,12 +459,10 @@ Vary: negotiate,accept-language,accept-charset
 
       <p>En général, le module se configure comme suit :</p>
 
-      <pre class="prettyprint lang-config">
-CacheRoot   "/var/cache/apache/"
+      <pre class="prettyprint lang-config">CacheRoot   "/var/cache/apache/"
 CacheEnable disk /
 CacheDirLevels 2
-CacheDirLength 1
-    </pre>
+CacheDirLength 1</pre>
 
 
     <p>Il est important de savoir que, les fichiers mis en cache étant stockés
@@ -670,9 +668,7 @@ CacheDirLength 1
 	réutiliser le descripteur de fichier mis en cache pour tous les
 	accès futurs à ce fichier.</p>
 
-        <pre class="prettyprint lang-config">
-        CacheFile /usr/local/apache2/htdocs/index.html
-        </pre>
+        <pre class="prettyprint lang-config">CacheFile /usr/local/apache2/htdocs/index.html</pre>
 
 
         <p>Si vous désirez mettre en cache un grand nombre de fichiers
@@ -732,8 +728,7 @@ CacheDirLength 1
       temps nécessaire à la première lecture d'un fichier et le temps
       nécessaire à sa deuxième lecture;</p>
 
-        <div class="example"><pre>
-colm@coroebus:~$ time cat testfile &gt; /dev/null
+        <div class="example"><pre>colm@coroebus:~$ time cat testfile &gt; /dev/null
 real    0m0.065s
 user    0m0.000s
 sys     0m0.001s
@@ -777,9 +772,7 @@ sys     0m0.000s</pre></div>
       utilisera le contenu chargé en mémoire pour satisfaire ultérieurement
       toutes les demandes d'accès à ce fichier.</p>
 
-        <pre class="prettyprint lang-config">
-        MMapFile /usr/local/apache2/htdocs/index.html
-        </pre>
+        <pre class="prettyprint lang-config">MMapFile /usr/local/apache2/htdocs/index.html</pre>
 
 
       <p>Comme dans le cas de la directive

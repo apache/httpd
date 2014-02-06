@@ -78,9 +78,7 @@
     file using the <code class="directive"><a href="../mod/mod_dav_fs.html#davlockdb">DavLockDB</a></code>
     directive:</p>
 
-    <pre class="prettyprint lang-config">
-      DavLockDB /usr/local/apache2/var/DavLock
-    </pre>
+    <pre class="prettyprint lang-config">DavLockDB /usr/local/apache2/var/DavLock</pre>
 
 
     <p>The directory containing the lock database file must be
@@ -95,8 +93,7 @@
     directive. The "normal" <code class="directive"><a href="../mod/core.html#limitrequestbody">LimitRequestBody</a></code> directive has no effect on DAV
     requests.</p>
 
-    <div class="example"><h3>Full Example</h3><pre class="prettyprint lang-config">
-DavLockDB /usr/local/apache2/var/DavLock
+    <div class="example"><h3>Full Example</h3><pre class="prettyprint lang-config">DavLockDB /usr/local/apache2/var/DavLock
 
 &lt;Directory /usr/local/apache2/htdocs/foo&gt;
     Require all granted
@@ -109,8 +106,7 @@ DavLockDB /usr/local/apache2/var/DavLock
     &lt;LimitExcept GET POST OPTIONS&gt;
         Require user admin
     &lt;/LimitExcept&gt;
-&lt;/Directory&gt;
-      </pre>
+&lt;/Directory&gt;</pre>
 </div>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -163,14 +159,12 @@ DavLockDB /usr/local/apache2/var/DavLock
     will run the script, and one of which will allow it to be
     downloaded and manipulated with DAV.</p>
 
-<pre class="prettyprint lang-config">
-Alias /phparea /home/gstein/php_files
+<pre class="prettyprint lang-config">Alias /phparea /home/gstein/php_files
 Alias /php-source /home/gstein/php_files
 &lt;Location /php-source&gt;
     DAV On
     ForceType text/plain
-&lt;/Location&gt;
-</pre>
+&lt;/Location&gt;</pre>
 
 
     <p>With this setup, <code>http://example.com/phparea</code> can be
@@ -191,11 +185,9 @@ Alias /php-source /home/gstein/php_files
     <p>Use the <code class="directive">Dav</code> directive to enable the
     WebDAV HTTP methods for the given container:</p>
 
-    <pre class="prettyprint lang-config">
-&lt;Location /foo&gt;
+    <pre class="prettyprint lang-config">&lt;Location /foo&gt;
     Dav On
-&lt;/Location&gt;
-    </pre>
+&lt;/Location&gt;</pre>
 
 
     <p>The value <code>On</code> is actually an alias for the default
@@ -248,11 +240,9 @@ a DAV resource</td></tr>
     (like 600 seconds) to reduce the chance of the client losing
     the lock due to network latency.</p>
 
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
-&lt;Location /MSWord&gt;
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">&lt;Location /MSWord&gt;
     DavMinTimeout 600
-&lt;/Location&gt;
-    </pre>
+&lt;/Location&gt;</pre>
 </div>
 
 </div>

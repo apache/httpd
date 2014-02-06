@@ -140,27 +140,21 @@ utilisateur</td></tr>
     posséder des répertoires <code>UserDir</code>, utilisez la
     configuration suivante :</p>
 
-    <pre class="prettyprint lang-config">
-UserDir disabled
-UserDir enabled user1 user2 user3
-    </pre>
+    <pre class="prettyprint lang-config">UserDir disabled
+UserDir enabled user1 user2 user3</pre>
 
 
     <p>Pour permettre à la plupart des utilisateurs de posséder des
     répertoires <code>UserDir</code>, mais l'interdire à quelques uns,
     utilisez la configuration suivante :</p>
 
-    <pre class="prettyprint lang-config">
-      UserDir disabled utilisateur4 utilisateur5 utilisateur6
-    </pre>
+    <pre class="prettyprint lang-config">UserDir disabled utilisateur4 utilisateur5 utilisateur6</pre>
 
 
     <p>Il est aussi possible de spécifier des répertoires utilisateurs
     alternatifs. Si vous utilisez une commande comme :</p>
 
-    <pre class="prettyprint lang-config">
-      UserDir public_html /usr/web http://www.example.com/
-    </pre>
+    <pre class="prettyprint lang-config">UserDir public_html /usr/web http://www.example.com/</pre>
 
 
     <p>Avec une requête pour

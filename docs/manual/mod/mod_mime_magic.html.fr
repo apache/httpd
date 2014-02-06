@@ -273,9 +273,7 @@ spécifié</td></tr>
     fichier spécifique a été défini pour ce serveur virtuel, auquel cas
     c'est ce dernier fichier qui sera utilisé.</p>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">
-      MimeMagicFile conf/magic
-    </pre>
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">MimeMagicFile conf/magic</pre>
 </div>
 
 </div>

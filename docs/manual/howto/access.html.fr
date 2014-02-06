@@ -74,10 +74,8 @@ client</a></h2>
 
     <p>Les directives Require s'utilisent comme suit :</p>
 
-    <pre class="prettyprint lang-config">
-Require host address
-Require ip ip.address
-    </pre>
+    <pre class="prettyprint lang-config">Require host address
+Require ip ip.address</pre>
 
 
     <p>Dans la première forme, <var>nom-hôte</var> est un nom de domaine
@@ -104,12 +102,10 @@ Require ip ip.address
     votre forum de messages indésirables, vous pouvez ajouter cette ligne pour lui refuser
     l'accès :</p>
 
-    <pre class="prettyprint lang-config">
-&lt;RequireAll&gt;
+    <pre class="prettyprint lang-config">&lt;RequireAll&gt;
     Require all granted
     Require not ip 10.252.46.165
-&lt;/RequireAll&gt;
-</pre>
+&lt;/RequireAll&gt;</pre>
 
 
     <p>Les visiteurs possédant cette adresse (<code>10.252.46.165</code>) ne pourront pas voir le
@@ -124,11 +120,9 @@ Require ip ip.address
     vous pouvez spécifier des adresses IP partielles ou des noms de
     domaine, comme ceci :</p>
 
-    <pre class="prettyprint lang-config">
-Require not ip 192.168.205
+    <pre class="prettyprint lang-config">Require not ip 192.168.205
 Require not host phishers.example.com moreidiots.example
-Require not host gov
-    </pre>
+Require not host gov</pre>
 
 
     <p>Les directives <code class="directive"><a href="../mod/mod_authz_core.html#requireall">RequireAll</a></code>, <code class="directive"><a href="../mod/mod_authz_core.html#requireany">RequireAny</a></code>, et <code class="directive"><a href="../mod/mod_authz_core.html#requirenone">RequireNone</a></code> permettent également de préciser des
@@ -145,11 +139,9 @@ arbitraires</a></h2>
     fonction du user-agent (le type de navigateur), vous pouvez
     spécifier ceci :</p>
 
-    <pre class="prettyprint lang-config">
-&lt;If "%{HTTP_USER_AGENT} == 'BadBot'"&gt;
+    <pre class="prettyprint lang-config">&lt;If "%{HTTP_USER_AGENT} == 'BadBot'"&gt;
     Require All Denied
-&lt;/If&gt;
-    </pre>
+&lt;/If&gt;</pre>
 
 
     <div class="note"><h3>Avertissement :</h3>
@@ -174,12 +166,10 @@ d'accès</a></h2>
     <p>Par exemple, pour bloquer l'accès à une ressources entre 20h et
     6h du matin, vous pouvez utiliser <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> :</p>
 
-    <pre class="prettyprint lang-config">
-RewriteEngine On
+    <pre class="prettyprint lang-config">RewriteEngine On
 RewriteCond %{TIME_HOUR} &gt;=20 [OR]
 RewriteCond %{TIME_HOUR} &lt;07
-RewriteRule ^/fridge - [F]
-    </pre>
+RewriteRule ^/fridge - [F]</pre>
 
 
     <p>Toute requête arrivant après 20h ou avant 7h du matin provoquera

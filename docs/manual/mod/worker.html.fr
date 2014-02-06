@@ -142,14 +142,12 @@ qu'utilise le serveur HTTP Apache</a></li>
     <p>Voici un exemple typique de configuration du contrôle
     processus-thread pour le MPM <code class="module"><a href="../mod/worker.html">worker</a></code> :</p>
 
-    <pre class="prettyprint lang-config">
-ServerLimit         16
+    <pre class="prettyprint lang-config">ServerLimit         16
 StartServers         2
 MaxRequestWorkers  150
 MinSpareThreads     25
 MaxSpareThreads     75
-ThreadsPerChild     25
-    </pre>
+ThreadsPerChild     25</pre>
 
 
     <p>Alors que le processus parent est en général démarré en tant que

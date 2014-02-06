@@ -46,13 +46,11 @@
 <h2><a name="example" id="example">Basit Bir Örnek</a></h2>
     
 
-    <pre class="prettyprint lang-config">
-# Bu yetersiz bir yapılandırma örneğidir, sunucunuzda kullanmayın.
+    <pre class="prettyprint lang-config"># Bu yetersiz bir yapılandırma örneğidir, sunucunuzda kullanmayın.
 &lt;VirtualHost falan.fesmekan.dom&gt;
   ServerAdmin filanca@fesmekan.dom
   DocumentRoot /siteler/fesmekan
-&lt;/VirtualHost&gt;
-    </pre>
+&lt;/VirtualHost&gt;</pre>
 
 
     <p>httpd’nin beklendiği gibi işlemesi için her sanal konak için iki
@@ -67,13 +65,11 @@
     <p><code>falan.fesmekan.dom</code>’un 192.168.2.1 IP adresine sahip
       olduğunu varsayarsak yapılandırma şöyle olurdu:</p>
 
-    <pre class="prettyprint lang-config">
-# Bu yetersiz bir yapılandırma örneğidir, sunucunuzda kullanmayın.
+    <pre class="prettyprint lang-config"># Bu yetersiz bir yapılandırma örneğidir, sunucunuzda kullanmayın.
 &lt;VirtualHost 192.168.2.1&gt;
   ServerAdmin filanca@fesmekan.dom
   DocumentRoot /siteler/fesmekan
-&lt;/VirtualHost&gt;
-    </pre>
+&lt;/VirtualHost&gt;</pre>
 
 
     <p>Ancak, bu sefer de bu sanal konağın sunucu ismini öğrenmek için
@@ -87,13 +83,11 @@
 
     <p>Her iki sorunu da çözen yapılandırma şöyle olurdu:</p>
 
-    <pre class="prettyprint lang-config">
-&lt;VirtualHost 192.168.2.1&gt;
+    <pre class="prettyprint lang-config">&lt;VirtualHost 192.168.2.1&gt;
   ServerName falan.fesmekan.dom
   ServerAdmin filanca@fesmekan.dom
   DocumentRoot /siteler/fesmekan
-&lt;/VirtualHost&gt;
-    </pre>
+&lt;/VirtualHost&gt;</pre>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -102,8 +96,7 @@
 
     <p>Şöyle bir yapılandırmanız olsun:</p>
 
-    <pre class="prettyprint lang-config">
-&lt;VirtualHost falan.fesmekan.dom&gt;
+    <pre class="prettyprint lang-config">&lt;VirtualHost falan.fesmekan.dom&gt;
   ServerAdmin filanca@fesmekan.dom
   DocumentRoot /siteler/fesmekan
 &lt;/VirtualHost&gt;
@@ -111,8 +104,7 @@
 &lt;VirtualHost misal.mesela.dom&gt;
   ServerAdmin falanca@mesela.dom
   DocumentRoot /siteler/mesela
-&lt;/VirtualHost&gt;
-    </pre>
+&lt;/VirtualHost&gt;</pre>
 
 
     <p><code>falan.fesmekan.dom</code>’a 192.168.2.1,

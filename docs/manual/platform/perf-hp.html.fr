@@ -30,13 +30,11 @@
 </div>
 
 
-<pre>
-Date: Wed, 05 Nov 1997 16:59:34 -0800
+<pre>Date: Wed, 05 Nov 1997 16:59:34 -0800
 From: Rick Jones &lt;<a href="mailto:raj@cup.hp.com">raj@cup.hp.com</a>&gt;
 Reply-To: <a href="mailto:raj@cup.hp.com">raj@cup.hp.com</a>
 Organization: Network Performance
-Subject: HP-UX tuning tips
-</pre>
+Subject: HP-UX tuning tips</pre>
 
     <p>Traduction du corps du message cité ci-dessus :</p>
 

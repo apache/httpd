@@ -156,12 +156,10 @@
       assurer que seules des minuscules sont utilisées dans les URLs,
       vous pouvez utiliser ceci :</p>
 
-      <pre class="prettyprint lang-config">
-RewriteEngine On
+      <pre class="prettyprint lang-config">RewriteEngine On
 RewriteMap lowercase int:tolower
 RewriteCond %{REQUEST_URI} [A-Z]
-RewriteRule (.*) ${lowercase:$1} [R,L]
-      </pre>
+RewriteRule (.*) ${lowercase:$1} [R,L]</pre>
 </li>
 
       <li><p>Lors de son exécution, Apache n'a besoin d'un accès en
@@ -185,9 +183,7 @@ RewriteRule (.*) ${lowercase:$1} [R,L]
       (en plus des directives d'activation de status dans
       <code>access.conf</code>) :</p>
 
-      <pre class="prettyprint lang-config">
-        LoadModule status_module modules/mod_status.so
-      </pre>
+      <pre class="prettyprint lang-config">LoadModule status_module modules/mod_status.so</pre>
 
 
       <p>Des informations sont aussi à votre disposition pour <a href="../mod/mod_so.html#creating">créer des modules
@@ -660,24 +656,18 @@ RewriteRule (.*) ${lowercase:$1} [R,L]
   restriction due aux associations de lettres de lecteur, mais leur
   utilisation est déconseillée).</p>
 
-  <div class="example"><h3>Exemple de DocumentRoot avec chemin UNC</h3><pre class="prettyprint lang-config">
-  DocumentRoot //dochost/www/html/
-  </pre>
+  <div class="example"><h3>Exemple de DocumentRoot avec chemin UNC</h3><pre class="prettyprint lang-config">DocumentRoot //dochost/www/html/</pre>
 </div>
 
-  <div class="example"><h3>Exemple de DocumentRoot avec adresse IP dans le chemin UNC</h3><pre class="prettyprint lang-config">
-  DocumentRoot //192.168.1.50/docs/
-  </pre>
+  <div class="example"><h3>Exemple de DocumentRoot avec adresse IP dans le chemin UNC</h3><pre class="prettyprint lang-config">DocumentRoot //192.168.1.50/docs/</pre>
 </div>
 
   <div class="example"><h3>Exemple d'Alias et répertoire correspondant avec
-  chemin UNC</h3><pre class="prettyprint lang-config">
-Alias /images/ //imagehost/www/images/
+  chemin UNC</h3><pre class="prettyprint lang-config">Alias /images/ //imagehost/www/images/
 
 &lt;Directory //imagehost/www/images/&gt;
 #...
-&lt;Directory&gt;
-  </pre>
+&lt;Directory&gt;</pre>
 </div>
 
   <p>Lorsqu'Apache s'exécute en tant que service, vous devez créer un

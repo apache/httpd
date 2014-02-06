@@ -58,10 +58,8 @@
     <p><code class="module"><a href="../mod/mod_usertrack.html">mod_usertrack</a></code> sets a cookie which can be logged
     via <code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code> configurable logging formats:</p>
 
-    <pre class="prettyprint lang-config">
-LogFormat "%{Apache}n %r %t" usertrack
-CustomLog logs/clickstream.log usertrack
-    </pre>
+    <pre class="prettyprint lang-config">LogFormat "%{Apache}n %r %t" usertrack
+CustomLog logs/clickstream.log usertrack</pre>
 
 
 </div>
@@ -97,9 +95,7 @@ CustomLog logs/clickstream.log usertrack
     level domain (for example <code>.example.co.uk</code>).
     </div>
 
-    <pre class="prettyprint lang-config">
-    CookieDomain .example.com
-    </pre>
+    <pre class="prettyprint lang-config">CookieDomain .example.com</pre>
 
 
 </div>
@@ -124,9 +120,7 @@ CustomLog logs/clickstream.log usertrack
     <p>If this directive is not used, cookies last only for the
     current browser session.</p>
 
-    <pre class="prettyprint lang-config">
-    CookieExpires "3 weeks"
-    </pre>
+    <pre class="prettyprint lang-config">CookieExpires "3 weeks"</pre>
 
 
 </div>
@@ -149,9 +143,7 @@ CustomLog logs/clickstream.log usertrack
     unpredictable if you use a name containing unusual characters.
     Valid characters include A-Z, a-z, 0-9, "_", and "-".</p>
 
-    <pre class="prettyprint lang-config">
-    CookieName clicktrack
-    </pre>
+    <pre class="prettyprint lang-config">CookieName clicktrack</pre>
 
 
 </div>
@@ -188,9 +180,7 @@ CustomLog logs/clickstream.log usertrack
     three of these formats, with <code>Cookie2</code> being the
     preferred format.</p>
 
-    <pre class="prettyprint lang-config">
-    CookieStyle Cookie2
-    </pre>
+    <pre class="prettyprint lang-config">CookieStyle Cookie2</pre>
 
 
 </div>
@@ -213,9 +203,7 @@ CustomLog logs/clickstream.log usertrack
     <code class="module"><a href="../mod/mod_usertrack.html">mod_usertrack</a></code> will <strong>not</strong>
     activate cookies. </p>
 
-    <pre class="prettyprint lang-config">
-    CookieTracking on
-    </pre>
+    <pre class="prettyprint lang-config">CookieTracking on</pre>
 
 
 

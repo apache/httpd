@@ -71,9 +71,7 @@
     fonctionner, vous devez activer <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> et
     <code class="module"><a href="../mod/mod_proxy_scgi.html">mod_proxy_scgi</a></code>.</p>
 
-    <div class="example"><h3>Passerelle simple</h3><pre class="prettyprint lang-config">
-      ProxyPass /scgi-bin/ scgi://localhost:4000/
-      </pre>
+    <div class="example"><h3>Passerelle simple</h3><pre class="prettyprint lang-config">ProxyPass /scgi-bin/ scgi://localhost:4000/</pre>
 </div>
 
     <p>La passerelle à répartition de charge nécessite le chargement du
@@ -83,13 +81,11 @@
     déjà cités. <code class="module"><a href="../mod/mod_lbmethod_byrequests.html">mod_lbmethod_byrequests</a></code> est le module
     par défaut et sera utilisé dans cet exemple de configuration.</p>
 
-    <div class="example"><h3>Passerelle à répartition de charge</h3><pre class="prettyprint lang-config">
-ProxyPass /scgi-bin/ balancer://somecluster/
+    <div class="example"><h3>Passerelle à répartition de charge</h3><pre class="prettyprint lang-config">ProxyPass /scgi-bin/ balancer://somecluster/
 &lt;Proxy balancer://somecluster&gt;
     BalancerMember scgi://localhost:4000
     BalancerMember scgi://localhost:4001
-&lt;/Proxy&gt;
-    </pre>
+&lt;/Proxy&gt;</pre>
 </div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -136,9 +132,7 @@ provenance du serveur cible.</td></tr>
     chose que <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>, mais vous pouvez en plus
     désactiver la fonctionnalité.</p>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">
-    ProxySCGIInternalRedirect Off
-    </pre>
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">ProxySCGIInternalRedirect Off</pre>
 </div>
 
 </div>
@@ -179,13 +173,11 @@ provenance du serveur cible.</td></tr>
     le nom de l'en-tête à rechercher.</dd>
     </dl>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">
-    # Utilise le nom d'en-tête par défaut (X-Sendfile)
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">    # Utilise le nom d'en-tête par défaut (X-Sendfile)
     ProxySCGISendfile On
 
     # Utilise un nom d'en-tête différent
-    ProxySCGISendfile X-Send-Static
-    </pre>
+    ProxySCGISendfile X-Send-Static</pre>
 </div>
 
 </div>

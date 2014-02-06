@@ -36,11 +36,9 @@
 <p>This module makes it easy to restrict what HTTP methods can
 used on an server. The most common configuration would be:</p>
 
-<pre class="prettyprint lang-config">
-&lt;Location /&gt;
+<pre class="prettyprint lang-config">&lt;Location /&gt;
    AllowMethods GET POST OPTIONS
-&lt;/Location&gt;
-</pre>
+&lt;/Location&gt;</pre>
 
 
 </div>
@@ -67,11 +65,9 @@ RFC given in upper case. The GET and HEAD methods are treated as
 equivalent. The <code>reset</code> keyword can be used
 turn off <code class="module"><a href="../mod/mod_allowmethods.html">mod_allowmethods</a></code> in a deeper nested context:</p>
 
-<pre class="prettyprint lang-config">
-&lt;Location /svn&gt;
+<pre class="prettyprint lang-config">&lt;Location /svn&gt;
    AllowMethods reset
-&lt;/Location&gt;
-</pre>
+&lt;/Location&gt;</pre>
 
 
 <div class="note"><h3>Caution</h3>

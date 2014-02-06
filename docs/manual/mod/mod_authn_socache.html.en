@@ -85,8 +85,7 @@ the load on backends</td></tr>
     </ol>
     <p>A simple usage example to accelerate <code class="module"><a href="../mod/mod_authn_dbd.html">mod_authn_dbd</a></code>
     using dbm as a cache engine:</p>
-    <pre class="prettyprint lang-config">
-&lt;Directory /usr/www/myhost/private&gt;
+    <pre class="prettyprint lang-config">&lt;Directory /usr/www/myhost/private&gt;
     AuthType Basic
     AuthName "Cached Authentication Example"
     AuthBasicProvider socache dbd
@@ -95,8 +94,7 @@ the load on backends</td></tr>
     AuthnCacheContext dbd-authn-example
     AuthnCacheSOCache dbm
     Require valid-user
-&lt;/Directory&gt;
-    </pre>
+&lt;/Directory&gt;</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -173,9 +171,7 @@ the load on backends</td></tr>
     <p>For example, to cache credentials found by <code class="module"><a href="../mod/mod_authn_dbd.html">mod_authn_dbd</a></code>
     or by a custom provider <var>myprovider</var>, but leave those looked
     up by lightweight providers like file or dbm lookup alone:</p>
-    <pre class="prettyprint lang-config">
-AuthnCacheProvideFor dbd myprovider
-    </pre>
+    <pre class="prettyprint lang-config">AuthnCacheProvideFor dbd myprovider</pre>
 
 
 </div>

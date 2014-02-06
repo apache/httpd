@@ -143,10 +143,8 @@ may be used, and give examples of each.</p>
     product IDs for easier-to-remember URLs, using the following
     recipe:</p>
 <p><strong>Product to ID configuration</strong></p>
-    <pre class="prettyprint lang-config">
-RewriteMap product2id txt:/etc/apache2/productmap.txt
-RewriteRule ^/product/(.*) /prods.php?id=${product2id:$1|NOTFOUND} [PT]
-    </pre>
+    <pre class="prettyprint lang-config">RewriteMap product2id txt:/etc/apache2/productmap.txt
+RewriteRule ^/product/(.*) /prods.php?id=${product2id:$1|NOTFOUND} [PT]</pre>
 
 
     <p>We assume here that the <code>prods.php</code> script knows what
@@ -216,12 +214,10 @@ static   www1|www2|www3|www4<br />
 dynamic  www5|www6
     </code></p></div>
 <p><strong>Configuration directives</strong></p>
-    <pre class="prettyprint lang-config">
-RewriteMap servers rnd:/path/to/file/map.txt
+    <pre class="prettyprint lang-config">RewriteMap servers rnd:/path/to/file/map.txt
 
 RewriteRule ^/(.*\.(png|gif|jpg)) http://${servers:static}/$1 [NC,P,L]
-RewriteRule ^/(.*) http://${servers:dynamic}/$1 [P,L]
-    </pre>
+RewriteRule ^/(.*) http://${servers:dynamic}/$1 [P,L]</pre>
 
 
     <p>So, when an image is requested and the first of these rules is
@@ -253,9 +249,7 @@ static   www1|www1|www2|www3|www4
 
     <p>You may optionally specify a particular dbm type:</p>
 
- <pre class="prettyprint lang-config">
-RewriteMap examplemap dbm=sdbm:/etc/apache/mapfile.dbm
- </pre>
+ <pre class="prettyprint lang-config">RewriteMap examplemap dbm=sdbm:/etc/apache/mapfile.dbm</pre>
 
 
     <p>The type can be sdbm, gdbm, ndbm or db.
@@ -274,9 +268,7 @@ $ httxt2dbm -i mapfile.txt -o mapfile.map
 <p>You can then reference the resulting file in your
 <code>RewriteMap</code> directive:</p>
 
-<pre class="prettyprint lang-config">
-RewriteMap mapname dbm:/etc/apache/mapfile.map
-</pre>
+<pre class="prettyprint lang-config">RewriteMap mapname dbm:/etc/apache/mapfile.map</pre>
 
 
 <div class="note">
@@ -327,11 +319,8 @@ by many requests.
     </p>
 
    <p> <strong>Redirect a URI to an all-lowercase version of itself</strong></p>
-    <pre class="prettyprint lang-config">
-
-RewriteMap lc int:tolower
-RewriteRule (.*?[A-Z]+.*) ${lc:$1} [R]
-    </pre>
+    <pre class="prettyprint lang-config">RewriteMap lc int:tolower
+RewriteRule (.*?[A-Z]+.*) ${lc:$1} [R]</pre>
 
 
     <div class="note">
@@ -373,22 +362,17 @@ RewriteRule (.*?[A-Z]+.*) ${lc:$1} [R]
     underscores in a request URI.</p>
     
 <p><strong>Rewrite configuration</strong></p>
-    <pre class="prettyprint lang-config">
-
-RewriteMap d2u prg:/www/bin/dash2under.pl<br />
-RewriteRule - ${d2u:%{REQUEST_URI}}
-    </pre>
+    <pre class="prettyprint lang-config">RewriteMap d2u prg:/www/bin/dash2under.pl<br />
+RewriteRule - ${d2u:%{REQUEST_URI}}</pre>
 
 
     <p><strong>dash2under.pl</strong></p>
-    <pre class="prettyprint lang-perl">
-    #!/usr/bin/perl
+    <pre class="prettyprint lang-perl">    #!/usr/bin/perl
     $| = 1; # Turn off I/O buffering
     while (&lt;STDIN&gt;) {
         s/-/_/g; # Replace dashes with underscores
         print $_;
-    }
-    </pre>
+    }</pre>
 
 
 <div class="note"><h3>Caution!</h3>
@@ -431,9 +415,7 @@ this process, or if the script itself is very slow.</li>
     <p>If a query returns more than one row, a random row from
 the result set is used.</p>
 
-	<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">
-RewriteMap myquery "fastdbd:SELECT destination FROM rewrite WHERE source = %s"
-    </pre>
+	<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">RewriteMap myquery "fastdbd:SELECT destination FROM rewrite WHERE source = %s"</pre>
 </div>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

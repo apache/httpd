@@ -71,8 +71,7 @@ d'authentification</a></h2>
 	textes différents.</p>
 
 	<div class="example"><h3>Vérification dans plusieurs fichiers de mots de
-	passe au format texte</h3><pre class="prettyprint lang-config">
-# Première vérification
+	passe au format texte</h3><pre class="prettyprint lang-config"># Première vérification
 &lt;AuthnProviderAlias file file1&gt;
     AuthUserFile /www/conf/passwords1
 &lt;/AuthnProviderAlias&gt;
@@ -88,8 +87,7 @@ d'authentification</a></h2>
     AuthType Basic
     AuthName "Protected Area"
     Require valid-user
-&lt;/Directory&gt;
-        </pre>
+&lt;/Directory&gt;</pre>
 </div>
 
 
@@ -101,8 +99,7 @@ d'authentification</a></h2>
 	ldap :</p>
 
         <div class="example"><h3>Vérification auprès de plusieurs serveurs
-	LDAP</h3><pre class="prettyprint lang-config">
-&lt;AuthnProviderAlias ldap ldap-alias1&gt;
+	LDAP</h3><pre class="prettyprint lang-config">&lt;AuthnProviderAlias ldap ldap-alias1&gt;
     AuthLDAPBindDN cn=youruser,o=ctx
     AuthLDAPBindPassword yourpassword
     AuthLDAPURL ldap://ldap.host/o=ctx
@@ -127,8 +124,7 @@ Alias /secure /webpages/secure
     # AuthnProviderAlias ne fournit pas de configuration pour les
     # fournisseurs d'autorisation implémentés dans le même module que le
     # fournisseur d'authentification.
-&lt;/Directory&gt;
-          </pre>
+&lt;/Directory&gt;</pre>
 </div>
     
 
@@ -155,9 +151,7 @@ l'authentification HTTP</td></tr>
 
    <p>Par exemple :</p>
 
-   <pre class="prettyprint lang-config">
-     AuthName "Top Secret"
-   </pre>
+   <pre class="prettyprint lang-config">AuthName "Top Secret"</pre>
 
 
     <p>La chaîne fournie comme argument à <code>AuthName</code>
@@ -224,8 +218,7 @@ l'alias spécifié</td></tr>
     l'exemple suivant, les clients peuvent accéder au répertoire
     <code>/www/docs/public</code> sans devoir s'authentifier :</p>
 
-    <pre class="prettyprint lang-config">
-&lt;Directory /www/docs&gt;
+    <pre class="prettyprint lang-config">&lt;Directory /www/docs&gt;
     AuthType Basic
     AuthName Documents
     AuthBasicProvider file
@@ -236,8 +229,7 @@ l'alias spécifié</td></tr>
 &lt;Directory /www/docs/public&gt;
     AuthType None
     Require all granted
-&lt;/Directory&gt;
-    </pre>
+&lt;/Directory&gt;</pre>
 
 
     <div class="note">Veuillez noter que, lorsque l'authentification n'est pas

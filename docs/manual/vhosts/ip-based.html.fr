@@ -110,9 +110,7 @@ résident pour des serveurs virtuels</a></li>
     de configuration pour définir l'adresse IP (ou serveur virtuel)
     que le processus résident doit gérer. Par exemple&nbsp;:</p>
 
-    <pre class="prettyprint lang-config">
-    Listen 192.0.2.100:80
-    </pre>
+    <pre class="prettyprint lang-config">Listen 192.0.2.100:80</pre>
 
 
     <p>Il est recommandé d'utiliser une adresse IP plutôt qu'un nom
@@ -137,8 +135,7 @@ résident pour des serveurs virtuels</a></h2>
     <code class="directive"><a href="../mod/mod_log_config.html#customlog">CustomLog</a></code> avec des
     valeurs différentes pour chaque serveur virtuel. Par exemple&nbsp;:</p>
 
-    <pre class="prettyprint lang-config">
-&lt;VirtualHost 172.20.30.40:80&gt;
+    <pre class="prettyprint lang-config">&lt;VirtualHost 172.20.30.40:80&gt;
     ServerAdmin webmaster@www1.example.com
     DocumentRoot /www/vhosts/www1
     ServerName www1.example.com
@@ -152,8 +149,7 @@ résident pour des serveurs virtuels</a></h2>
     ServerName www2.example.org
     ErrorLog /www/logs/www2/error_log
     CustomLog /www/logs/www2/access_log combined
-&lt;/VirtualHost&gt;
-    </pre>
+&lt;/VirtualHost&gt;</pre>
 
 
     <p>Il est recommandé d'utiliser une adresse IP plutôt qu'un nom

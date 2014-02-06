@@ -232,10 +232,8 @@ fichier en fonction de son nom</td></tr>
     peut pas afficher d'images, si le chargement d'images est désactivé
     ou si l'icône ne peut pas être trouvé.</p>
 
-    <pre class="prettyprint lang-config">
-AddAlt "PDF file" *.pdf
-AddAlt Compressed *.gz *.zip *.Z
-    </pre>
+    <pre class="prettyprint lang-config">AddAlt "PDF file" *.pdf
+AddAlt Compressed *.gz *.zip *.Z</pre>
 
 
 </div>
@@ -261,9 +259,7 @@ fichier en fonction de son codage MIME</td></tr>
     peut pas afficher d'images, si le chargement d'images est désactivé
     ou si l'icône ne peut pas être trouvé.</p>
 
-    <pre class="prettyprint lang-config">
-      AddAltByEncoding gzip x-gzip
-    </pre>
+    <pre class="prettyprint lang-config">AddAltByEncoding gzip x-gzip</pre>
 
 
 </div>
@@ -289,9 +285,7 @@ fichier en fonction de son type MIME</td></tr>
     peut pas afficher d'images, si le chargement d'images est désactivé
     ou si l'icône ne peut pas être trouvé.</p>
 
-    <pre class="prettyprint lang-config">
-      AddAltByType 'Fichier texte' text/plain
-    </pre>
+    <pre class="prettyprint lang-config">AddAltByType 'Fichier texte' text/plain</pre>
 
 
 </div>
@@ -313,10 +307,8 @@ fichier en fonction de son type MIME</td></tr>
     <var>texte</var> doit être entouré de guillemets
     (<code>"</code>).</p>
 
-    <pre class="prettyprint lang-config">
-AddDescription "The planet Mars" mars.gif
-AddDescription "My friend Marshall" friends/mars.gif
-    </pre>
+    <pre class="prettyprint lang-config">AddDescription "The planet Mars" mars.gif
+AddDescription "My friend Marshall" friends/mars.gif</pre>
 
 
     <p>La taille par défaut, habituelle du champ de description est de
@@ -391,12 +383,10 @@ nom</td></tr>
     et n'est donc pas nécessaire si vous utilisez <code>IndexOptions
     HTMLTable</code>.</p>
 
-    <pre class="prettyprint lang-config">
-#Examples
+    <pre class="prettyprint lang-config">#Examples
 AddIcon (IMG,/icons/image.png) .gif .jpg .png
 AddIcon /icons/dir.png ^^DIRECTORY^^
-AddIcon /icons/backup.png *~
-    </pre>
+AddIcon /icons/backup.png *~</pre>
 
 
     <p>Lorsque c'est possible, il est préférable d'utiliser <code class="directive"><a href="#addiconbytype">AddIconByType</a></code> plutôt que
@@ -427,9 +417,7 @@ codage MIME</td></tr>
     <p><var>codage MIME</var> doit être un codage valide, comme
     <code>x-compress</code>.</p>
 
-    <pre class="prettyprint lang-config">
-      AddIconByEncoding /icons/compress.png x-compress
-    </pre>
+    <pre class="prettyprint lang-config">AddIconByEncoding /icons/compress.png x-compress</pre>
 
 
 </div>
@@ -458,9 +446,7 @@ type MIME</td></tr>
     <p><var>type MIME</var> est une expression avec caractères
     génériques représentant le type MIME.</p>
 
-    <pre class="prettyprint lang-config">
-      AddIconByType (IMG,/icons/image.png) image/*
-    </pre>
+    <pre class="prettyprint lang-config">AddIconByType (IMG,/icons/image.png) image/*</pre>
 
 
 </div>
@@ -481,9 +467,7 @@ n'est précisé</td></tr>
     <var>chemin URL</var> est une URL relative (échappée par des
     caractères '%') vers l'icône ou une URL pleinement qualifiée.</p>
 
-    <pre class="prettyprint lang-config">
-      DefaultIcon /icon/unknown.png
-    </pre>
+    <pre class="prettyprint lang-config">DefaultIcon /icon/unknown.png</pre>
 
 
 </div>
@@ -502,9 +486,7 @@ contenant l'index</td></tr>
     le nom du fichier qui sera inséré au début de la page contenant
     l'index. <var>nom fichier</var> est le nom du fichier à inclure.</p>
 
-    <pre class="prettyprint lang-config">
-      HeaderName HEADER.html
-    </pre>
+    <pre class="prettyprint lang-config">HeaderName HEADER.html</pre>
 
 
     <div class="note">
@@ -515,9 +497,7 @@ contenant l'index</td></tr>
       considéré comme relatif au répertoire défini par la directive
       <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code>.</p>
 
-      <pre class="prettyprint lang-config">
-        HeaderName /include/HEADER.html
-      </pre>
+      <pre class="prettyprint lang-config">HeaderName /include/HEADER.html</pre>
 
 
       <p><var>nom fichier</var> doit correspondre à un document dont le
@@ -528,9 +508,7 @@ contenant l'index</td></tr>
       sortie) est marqué comme <code>text/html</code> par exemple à
       l'aide d'une directive comme :</p>
 
-      <pre class="prettyprint lang-config">
-        AddType text/html .cgi
-      </pre>
+      <pre class="prettyprint lang-config">AddType text/html .cgi</pre>
 
 
       <p>Une <a href="../content-negotiation.html">négociation de
@@ -571,9 +549,7 @@ d'index.</td></tr>
     spécifier une chaîne de caractères à insérer dans la section
     <var>&lt;head&gt;</var> du code HTML généré pour la page
     d'index.</p>
-    <pre class="prettyprint lang-config">
-      IndexHeadInsert "&lt;link rel=\"sitemap\" href=\"/sitemap.html\"&gt;"
-    </pre>
+    <pre class="prettyprint lang-config">IndexHeadInsert "&lt;link rel=\"sitemap\" href=\"/sitemap.html\"&gt;"</pre>
 
 
 </div>
@@ -598,9 +574,7 @@ de l'index d'un répertoire</td></tr>
     ignorer. Par défaut, la liste contient <code>.</code> (le répertoire
     courant).</p>
 
-    <pre class="prettyprint lang-config">
-      IndexIgnore .??* *~ *# HEADER* README* RCS CVS *,v *,t
-    </pre>
+    <pre class="prettyprint lang-config">IndexIgnore .??* *~ *# HEADER* README* RCS CVS *,v *,t</pre>
 
 
     <div class="note"><h3>Expressions rationnelles</h3>
@@ -627,15 +601,13 @@ contenu d'un répertoire</td></tr>
     <code class="directive">IndexIgnore</code> et héritée par ailleurs d'autres
     sections de configuration.</p>
 
-    <pre class="prettyprint lang-config">
-&lt;Directory /var/www&gt;
+    <pre class="prettyprint lang-config">&lt;Directory /var/www&gt;
     IndexIgnore *.bak .??* *~ *# HEADER* README* RCS CVS *,v *,t
 &lt;/Directory&gt;
 &lt;Directory /var/www/backups&gt;
     IndexIgnoreReset ON
     IndexIgnore .??* *# HEADER* README* RCS CVS *,v *,t
-&lt;/Directory&gt;
-    </pre>
+&lt;/Directory&gt;</pre>
 
 
     <div class="warning"><p>Revoyez la configuration par défaut pour une
@@ -687,9 +659,7 @@ répertoire</td></tr>
       système de fichiers sous-jacent utilise les noms de fichiers en
       Unicode ou non).
 
-      <pre class="prettyprint lang-config">
-        IndexOptions Charset=UTF-8
-      </pre>
+      <pre class="prettyprint lang-config">IndexOptions Charset=UTF-8</pre>
 
       </dd>
 
@@ -920,9 +890,7 @@ répertoire</td></tr>
       MIME de la page générée. La valeur par défaut est
       <var>text/html</var>.
 
-      <pre class="prettyprint lang-config">
-        IndexOptions Type=text/plain
-      </pre>
+      <pre class="prettyprint lang-config">IndexOptions Type=text/plain</pre>
 
       </dd>
 
@@ -975,19 +943,15 @@ répertoire</td></tr>
      apparaissant dans la même section directory sont maintenant
      fusionnées. Le résultat de :
 
-     <pre class="prettyprint lang-config">
-&lt;Directory /foo&gt;
+     <pre class="prettyprint lang-config">&lt;Directory /foo&gt;
     IndexOptions HTMLTable
     IndexOptions SuppressColumnsorting
-&lt;/Directory&gt;
-     </pre>
+&lt;/Directory&gt;</pre>
 
 
      <p>est équivalent à</p>
 
-     <pre class="prettyprint lang-config">
-       IndexOptions HTMLTable SuppressColumnsorting
-     </pre>
+     <pre class="prettyprint lang-config">IndexOptions HTMLTable SuppressColumnsorting</pre>
 
      </li>
 
@@ -1004,10 +968,8 @@ répertoire</td></tr>
      définition incrémentale. Considérons l'exemple
      suivant :</p>
 
-     <pre class="prettyprint lang-config">
-IndexOptions +ScanHTMLTitles -IconsAreLinks FancyIndexing<br />
-IndexOptions +SuppressSize
-     </pre>
+     <pre class="prettyprint lang-config">IndexOptions +ScanHTMLTitles -IconsAreLinks FancyIndexing<br />
+IndexOptions +SuppressSize</pre>
 
 
      <p>L'effet global est équivalent à l'effet qu'aurait provoqué
@@ -1076,9 +1038,7 @@ répertoire</td></tr>
     définir le nom du fichier qui servira de feuille de style CSS pour
     l'index.
     </p>
-    <pre class="prettyprint lang-config">
-      IndexStyleSheet "/css/style.css"
-    </pre>
+    <pre class="prettyprint lang-config">IndexStyleSheet "/css/style.css"</pre>
 
 
     <p>L'utilisation de cette directive en conjonction avec <code>IndexOptions
@@ -1126,16 +1086,12 @@ l'index</td></tr>
     comme relatif au répertoire défini par la directive <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code>.
     </p>
 
-    <pre class="prettyprint lang-config">
-# Example 1
-ReadmeName FOOTER.html
-    </pre>
+    <pre class="prettyprint lang-config"># Example 1
+ReadmeName FOOTER.html</pre>
 
 
-    <pre class="prettyprint lang-config">
-# Example 2
-ReadmeName /include/FOOTER.html
-    </pre>
+    <pre class="prettyprint lang-config"># Example 2
+ReadmeName /include/FOOTER.html</pre>
 
 
     <p>Voir aussi la directive <code class="directive"><a href="#headername">HeaderName</a></code>, où cette fonctionnalité est décrite plus en

@@ -65,9 +65,7 @@
     commentée dans votre <code>httpd.conf</code>. Une directive correcte
     doit ressembler à ceci :
 
-    <pre class="prettyprint lang-config">
-      LoadModule cgi_module modules/mod_cgi.so
-    </pre>
+    <pre class="prettyprint lang-config">LoadModule cgi_module modules/mod_cgi.so</pre>
 </div>
 
     <h3><a name="scriptalias" id="scriptalias">ScriptAlias</a></h3>
@@ -82,9 +80,7 @@
       <p>La directive <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code> se présente comme suit
       :</p>
 
-      <pre class="prettyprint lang-config">
-        ScriptAlias /cgi-bin/ /usr/local/apache2/cgi-bin/
-      </pre>
+      <pre class="prettyprint lang-config">ScriptAlias /cgi-bin/ /usr/local/apache2/cgi-bin/</pre>
 
 
       <p>Cet exemple est tiré de votre fichier de configuration
@@ -149,11 +145,9 @@
       l'exécution des programmes CGI est permise depuis un répertoire
       particulier :</p>
 
-      <pre class="prettyprint lang-config">
-&lt;Directory /usr/local/apache2/htdocs/somedir&gt;
+      <pre class="prettyprint lang-config">&lt;Directory /usr/local/apache2/htdocs/somedir&gt;
     Options +ExecCGI
-&lt;/Directory&gt;
-      </pre>
+&lt;/Directory&gt;</pre>
 
 
       <p>La directive ci-dessus indique à Apache qu'il doit permettre
@@ -163,9 +157,7 @@
       extension <code>cgi</code> ou <code>pl</code> en tant que
       programmes CGI :</p>
 
-      <pre class="prettyprint lang-config">
-        AddHandler cgi-script .cgi .pl
-      </pre>
+      <pre class="prettyprint lang-config">AddHandler cgi-script .cgi .pl</pre>
 
     
 
@@ -186,24 +178,20 @@
       répertoire utilisateur, vous pouvez utiliser la configuration
       suivante :</p>
 
-      <pre class="prettyprint lang-config">
-&lt;Directory /home/*/public_html&gt;
+      <pre class="prettyprint lang-config">&lt;Directory /home/*/public_html&gt;
     Options +ExecCGI
     AddHandler cgi-script .cgi
-&lt;/Directory&gt;
-      </pre>
+&lt;/Directory&gt;</pre>
 
 
       <p>Pour indiquer un sous-répertoire <code>cgi-bin</code> d'un
       répertoire utilisateur où tout fichier sera traité en tant que
       programme CGI, vous pouvez utiliser ceci :</p>
 
-      <pre class="prettyprint lang-config">
-&lt;Directory /home/*/public_html/cgi-bin&gt;
+      <pre class="prettyprint lang-config">&lt;Directory /home/*/public_html/cgi-bin&gt;
     Options ExecCGI
     SetHandler cgi-script
-&lt;/Directory&gt;
-      </pre>
+&lt;/Directory&gt;</pre>
 
 
     
@@ -243,11 +231,9 @@
       <code>premier.pl</code>, et placez le dans votre répertoire
       <code>cgi-bin</code>.</p>
 
-      <pre class="prettyprint lang-perl">
-#!/usr/bin/perl
+      <pre class="prettyprint lang-perl">#!/usr/bin/perl
 print "Content-type: text/html\n\n";
-print "Hello, World.";
-      </pre>
+print "Hello, World.";</pre>
 
 
       <p>Même si Perl ne vous est pas familier, vous devriez être
@@ -362,9 +348,7 @@ print "Hello, World.";
       trouve à la première ligne de votre programme CGI et qui va
       ressembler à ceci :</p>
 
-      <pre class="prettyprint lang-perl">
-        #!/usr/bin/perl
-      </pre>
+      <pre class="prettyprint lang-perl">#!/usr/bin/perl</pre>
 
 
       <p>Assurez-vous qu'il s'agit bien du chemin correct vers
@@ -518,16 +502,14 @@ print "Hello, World.";
       variables d'environnement</a> aux variables de base fournies par
       défaut.</p>
 
-      <pre class="prettyprint lang-perl">
-#!/usr/bin/perl
+      <pre class="prettyprint lang-perl">#!/usr/bin/perl
 use strict;
 use warnings;
 
 print "Content-type: text/html\n\n";
 foreach my $key (keys %ENV) {
     print "$key --&gt; $ENV{$key}&lt;br&gt;";
-}
-      </pre>
+}</pre>
 
     
 

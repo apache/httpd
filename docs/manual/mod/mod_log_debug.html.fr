@@ -50,22 +50,18 @@
         Enregistre un message après le traitement d'une requête pour
 	/foo/* :
 
-        <pre class="prettyprint lang-config">
-&lt;Location /foo/&gt;
-&nbsp;&nbsp;LogMessage "/foo/ has been requested"
-&lt;/Location&gt;
-        </pre>
+        <pre class="prettyprint lang-config">&lt;Location /foo/&gt;
+  LogMessage "/foo/ has been requested"
+&lt;/Location&gt;</pre>
 
       </li>
 
       <li>
         Enregistre un message si une requête pour /foo/* est traitée
 	dans une sous-requête :
-        <pre class="prettyprint lang-config">
-&lt;Location /foo/&gt;
-&nbsp;&nbsp;LogMessage "subrequest to /foo/" hook=type_checker expr=%{IS_SUBREQ}
-&lt;/Location&gt;
-        </pre>
+        <pre class="prettyprint lang-config">&lt;Location /foo/&gt;
+  LogMessage "subrequest to /foo/" hook=type_checker expr=%{IS_SUBREQ}
+&lt;/Location&gt;</pre>
 
 
         Le branchement (hook) par défaut log_transaction n'est pas
@@ -77,9 +73,7 @@
       <li>
         Enregistre un message si un client IPv6 est à l'origine d'un
 	dépassement de délai pour une requête :
-        <pre class="prettyprint lang-config">
-            LogMessage "IPv6 timeout from %{REMOTE_ADDR}" "expr=-T %{IPV6} &amp;&amp; %{REQUEST_STATUS} = 408"
-        </pre>
+        <pre class="prettyprint lang-config">LogMessage "IPv6 timeout from %{REMOTE_ADDR}" "expr=-T %{IPV6} &amp;&amp; %{REQUEST_STATUS} = 408"</pre>
 
         Notez l'emplacement des guillemets pour l'argument
 	<code>expr=</code>.
@@ -88,11 +82,9 @@
       <li>
         Enregistre la valeur de la variable d'environnement de requête
 	"X-Foo" à chaque étape du traitement :
-        <pre class="prettyprint lang-config">
-&lt;Location /&gt;
-&nbsp;&nbsp;LogMessage "%{reqenv:X-Foo}" hook=all
-&lt;/Location&gt;
-        </pre>
+        <pre class="prettyprint lang-config">&lt;Location /&gt;
+  LogMessage "%{reqenv:X-Foo}" hook=all
+&lt;/Location&gt;</pre>
 
         En association avec les repères de temps en microsecondes du journal des erreurs,
 	<code>hook=all</code> permet aussi de déterminer la durée d'exécution des

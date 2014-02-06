@@ -395,12 +395,10 @@
 
       <p>Tipik olarak modül şöyle yapılandırılır:</p>
 
-      <pre class="prettyprint lang-config">
-CacheRoot   "/var/cache/apache/"
+      <pre class="prettyprint lang-config">CacheRoot   "/var/cache/apache/"
 CacheEnable disk /
 CacheDirLevels 2
-CacheDirLength 1
-      </pre>
+CacheDirLength 1</pre>
 
 
       <p>En önemlisi önbelleklenen dosyaların yerel olarak saklanması olup
@@ -582,9 +580,7 @@ CacheDirLength 1
           yapılan sonraki her istekte bu dosya tanıtıcısının kullanılmasını
           sağlar.</p>
 
-        <pre class="prettyprint lang-config">
-CacheFile /usr/local/apache2/htdocs/index.html
-        </pre>
+        <pre class="prettyprint lang-config">CacheFile /usr/local/apache2/htdocs/index.html</pre>
 
 
         <p>Büyük miktarda dosyayı bu anlamda önbelleklemeyi tasarlıyorsanız
@@ -677,9 +673,7 @@ CacheFile /usr/local/apache2/htdocs/index.html
           httpd bu dosyaya gelecek sonraki istekler için dosyanın bellekiçi
           içeriğini kullanacaktır.</p>
 
-        <pre class="prettyprint lang-config">
-MMapFile /usr/local/apache2/htdocs/index.html
-        </pre>
+        <pre class="prettyprint lang-config">MMapFile /usr/local/apache2/htdocs/index.html</pre>
 
 
         <p><code class="directive"><a href="./mod/mod_file_cache.html#cachefile">CacheFile</a></code>

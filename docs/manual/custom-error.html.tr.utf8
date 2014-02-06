@@ -62,20 +62,16 @@
       bağlamlarında da kullanılabilir. <code class="directive"><a href="./mod/core.html#allowoverride">AllowOverride</a></code> yönergesine <code>FileInfo</code>
       atanarak <code>.htaccess</code> dosyalarında da kullanılabilir.</p>
 
-    <pre class="prettyprint lang-config">
-ErrorDocument 500 "Pardon, galiba bizim betik hata verdi."
+    <pre class="prettyprint lang-config">ErrorDocument 500 "Pardon, galiba bizim betik hata verdi."
 ErrorDocument 500 /cgi-bin/hata-kurtarma
 ErrorDocument 500 http://error.example.com/server_error.html
 ErrorDocument 404 /ozuru_kabahatinden_buyuk/yok.html
-ErrorDocument 401 /Uyeler/NASIL_uye_olunur.html
-    </pre>
+ErrorDocument 401 /Uyeler/NASIL_uye_olunur.html</pre>
 
 
     <p><code>ErrorDocument</code> yönergesinin sözdizimi:</p>
 
-    <pre class="prettyprint lang-config">
-ErrorDocument &lt;3-rakamlı-kod&gt; &lt;eylem&gt;
-    </pre>
+    <pre class="prettyprint lang-config">ErrorDocument &lt;3-rakamlı-kod&gt; &lt;eylem&gt;</pre>
 
 
     <p><var>eylem</var> şunlardan biri olabilir:</p>
@@ -152,12 +148,10 @@ ErrorDocument &lt;3-rakamlı-kod&gt; &lt;eylem&gt;
         "<code>Status:</code>" başlık alanına yer verilmelidir. Örneğin, bir
         Perl betiği şunları içerebilirdi:</p>
 
-      <pre class="prettyprint lang-perl">
-...
+      <pre class="prettyprint lang-perl">...
 print  "Content-type: text/html\n";
 printf "Status: %s durumu saptandı.\n", $ENV{"REDIRECT_STATUS"};
-...
-      </pre>
+...</pre>
 
 
       <p>Eğer betik, <code>404&nbsp;Not&nbsp;Found</code> gibi, belli bir hata
@@ -182,10 +176,8 @@ printf "Status: %s durumu saptandı.\n", $ENV{"REDIRECT_STATUS"};
 
     <p>Sunucu yapılandırma dosyanızda şöyle satırlar görebilirsiniz:</p>
 
-    <pre class="prettyprint lang-config">
-# Multi-language error messages
-#Include conf/extra/httpd-multilang-errordoc.conf
-    </pre>
+    <pre class="prettyprint lang-config"># Multi-language error messages
+#Include conf/extra/httpd-multilang-errordoc.conf</pre>
 
 
     <p>Bu <code>Include</code> satırını açıklama olmaktan çıkarırsanız
