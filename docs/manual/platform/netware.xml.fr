@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1174747:1562488 (outdated) -->
+<!-- English Revision : 1562488 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -40,7 +40,7 @@
     ne doivent pas &ecirc;tre utilis&eacute;es pour poser des questions &agrave; propos de
     la configuration ou du lancement d'Apache. Avant de soumettre un
     rapport de bogue ou une question, consultez ce document, la <a
-    href="../faq/">Foire aux questions</a> ou tout autre sujet de la
+    href="http://wiki.apache.org/httpd/FAQ">FAQ</a> ou tout autre sujet de la
     documentation en rapport avec votre probl&egrave;me. Si vous n'avez
     toujours pas r&eacute;solu votre probl&egrave;me, postez votre question dans le
     newsgroup <a
@@ -224,7 +224,7 @@
     simultan&eacute;es d'Apache sous Netware, en chargeant chacune d'entre
     elles dans son propre espace d'adressage prot&eacute;g&eacute;.</p>
 
-    <p>Une fois d&eacute;marr&eacute;, Apache &eacute;coute sur le port 80 (&agrave; moins que vous
+    <p>Une fois d&eacute;marr&eacute;, Apache &eacute;coute le port 80 (&agrave; moins que vous
     n'ayez modifi&eacute; la directive <directive
     module="mpm_common">Listen</directive> dans les fichiers de
     configuration). Pour vous connecter au serveur et afficher la page
@@ -316,9 +316,9 @@
 
     <dl>
       <dt>RESTART</dt>
-      <dd>Demande &agrave; Apache d'arr&ecirc;ter chacun des threads worker en cours
+      <dd>Demande &agrave; Apache d'arr&ecirc;ter tout worker thread en cours
       d'ex&eacute;cution lorsqu'il devient inactif, de recharger le fichier de
-      configuration, et de red&eacute;marrer chaque thread worker en fonction
+      configuration, et de red&eacute;marrer chaque worker thread en fonction
       de la nouvelle configuration.</dd>
 
       <dt>VERSION</dt>
@@ -362,7 +362,7 @@
     <p>Apache lit en g&eacute;n&eacute;ral ses fichiers de configuration dans le
     r&eacute;pertoire <code>conf</code>. Ces fichiers sont les m&ecirc;mes que ceux
     de la version Unix, mais quelques directives sont diff&eacute;rentes sous
-    Netware. Voir la <a href="../">Documentation Apache</a> pour
+    Netware. Voir la <a href="../mod/">Documentation Apache</a> pour
     l'ensemble des directives disponibles.</p>
 
     <p>Les principales diff&eacute;rences propres &agrave; Apache pour NetWare sont
@@ -383,7 +383,7 @@
         <p><directive
 	module="mpm_common">MaxConnectionsPerChild</directive> - comme sous
 	Unix, cette directive contr&ocirc;le le nombre maximum de connexions
-	qu'un thread worker peut traiter avant de s'arr&ecirc;ter. Avec la
+	qu'un worker thread peut traiter avant de s'arr&ecirc;ter. Avec la
 	valeur par d&eacute;faut <code>MaxConnectionsPerChild 0</code>,
 	le thread va pouvoir traiter un nombre illimit&eacute; de requ&ecirc;tes.
 	Cette valeur est recommand&eacute;e sous Netware, &agrave; moins que vous
@@ -413,7 +413,7 @@
 
         <p><directive module="mpm_common">ThreadStackSize</directive> -
 	Cette directive indique au serveur la taille de la pile &agrave;
-	utiliser pour un thread worker individuel. Il est recommand&eacute; de
+	utiliser pour un worker thread individuel. Il est recommand&eacute; de
 	conserver la valeur par d&eacute;faut <code>ThreadStackSize
 	65536</code>.</p>
       </li>
@@ -430,7 +430,7 @@
       </li>
 
       <li>
-        <p>Apache pour Netware peut charger des modules
+        <p>Apache pour Netware a la possibilit&eacute; de charger des modules
 	en cours d'ex&eacute;cution, sans avoir &agrave; recompiler le serveur. Si
 	Apache est compil&eacute; avec les options par d&eacute;faut, il va installer
 	de nombreux modules optionnels dans le r&eacute;pertoire
@@ -465,13 +465,13 @@
       </ul>
       <ul>
         <li><directive module="mod_nw_ssl">NWSSLTrustedCerts</directive> -
-        Cette directive ajoute des certificats de confiance
+        Cette directive permet d'ajouter des certificats de confiance
 	pouvant &ecirc;tre utilis&eacute;s pour cr&eacute;er des connexions s&eacute;curis&eacute;es vers
 	des serveurs mandataires.</li>
       </ul>
       <ul>
         <li><directive module="mod_nw_ssl">NWSSLUpgradeable</directive> -
-        Cette directive active le chiffrement  SSL sur une connexion
+        Cette directive permet de faire passer en SSL une connexion
 	initialis&eacute;e sur les adresse IP et Port sp&eacute;cifi&eacute;s.</li>
       </ul>
 
@@ -488,10 +488,10 @@
     de tout volume Netware. Le r&eacute;pertoire d'installation par d&eacute;faut est
     <code>sys:/Apache2</code>.</p>
 
-    <p>Avant de d&eacute;marrer Apache, vous devez renseigner le r&eacute;pertoire
+    <p>Avant de d&eacute;marrer Apache, vous devez remplir le r&eacute;pertoire
     <code>conf</code>. Copiez le fichier <code>HTTPD-STD.CONF</code>
     depuis le r&eacute;pertoire <code>conf</code> de la distribution et
-    renommez-le en <code>HTTPD.CONF</code>. &Eacute;ditez le fichier
+    renommez-le en <code>HTTPD.CONF</code>. Editez le fichier
     <code>HTTPD.CONF</code> en recherchant les rep&egrave;res
     <code>@@Value@@</code>, et remplacez ces derniers par la valeur
     appropri&eacute;e. Copiez de m&ecirc;me les fichiers <code>conf/magic</code> et
@@ -696,7 +696,7 @@
       <p>Pour fournir les services SSL, Apache pour Netware utilise par
       d&eacute;faut le module int&eacute;gr&eacute; <module>mod_nw_ssl</module>. Ce module ne
       fournit que les services SSL impl&eacute;ment&eacute;s par le syst&egrave;me
-      d'exploitation Netware lui-m&ecirc;me pour g&eacute;rer le chiffrement
+      d'exploitation Netware lui-m&ecirc;me pour g&eacute;rer tous les chiffrements
       pour un port donn&eacute;. Cependant, on peut aussi utiliser mod_ssl de
       la m&ecirc;me mani&egrave;re que sur les autres plate-formes.</p>
 
