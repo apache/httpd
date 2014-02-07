@@ -1036,6 +1036,15 @@ AP_DECLARE(int) ap_state_query(int query_code);
   /** only dump some parts of the config */
 #define AP_SQ_RM_CONFIG_DUMP       4
 
+
+/* ---------------------------------------------------------------------- */
+
+/** Create a slave connection
+ * @param c The connection to create the slave connection from/for
+ * @return The slave connection
+ */
+AP_CORE_DECLARE(conn_rec *) ap_create_slave_connection(conn_rec *c);
+
 #ifdef __cplusplus
 }
 #endif
