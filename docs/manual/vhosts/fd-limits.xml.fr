@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='ISO-8859-1' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 421100:1563423 (outdated) -->
-<!-- French translation by Vincent Deffontaines, review by alain B -->
+<!-- English Revision: 1563423 -->
+<!-- French translation by Vincent Deffontaines, review by alain B, Lucien Gentis -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -115,8 +115,7 @@ CustomLog logs/multiple_vhost_log vhost
 journalisation au format standard (CLF&nbsp;: 'Common Log Format'), mais dont 
 chaque ligne débutera par le nom canonique du serveur virtuel (spécifié 
 par la directive <directive module="core">ServerName</directive>). 
-(Voir <directive module="mod_log_config">Formats de journalisation 
-personnalisés</directive> pour d'autres informations sur la 
+(Voir <module>mod_log_config</module> pour d'autres informations sur la 
 personnalisation des fichiers journaux.)</p>
 
 <p>Au moment de séparer les informations du fichier journal en un fichier 
