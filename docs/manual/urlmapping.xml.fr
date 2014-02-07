@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1491368:1562488 (outdated) -->
+<!-- English Revision: 1562488 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -52,7 +52,7 @@
 <directive module="mod_alias">Alias</directive>
 <directive module="mod_alias">AliasMatch</directive>
 <directive module="mod_speling">CheckSpelling</directive>
-<directive module="core">DirectoryIndex</directive>
+<directive module="mod_dir">DirectoryIndex</directive>
 <directive module="core">DocumentRoot</directive>
 <directive module="core">ErrorDocument</directive>
 <directive module="core">Options</directive>
@@ -93,7 +93,7 @@
     <p>Si la requ&ecirc;te concerne un r&eacute;pertoire (autrement dit un chemin se
     terminant par un slash <code>/</code>), le nom du fichier qui sera
     recherch&eacute; et servi depuis ce r&eacute;pertoire est d&eacute;fini via la directive
-    <directive module="core">DirectoryIndex</directive>. Par exemple,
+    <directive module="mod_dir">DirectoryIndex</directive>. Par exemple,
     supposons que <code>DocumentRoot</code> ait &eacute;t&eacute; d&eacute;finie comme
     pr&eacute;c&eacute;demment, et que vous ayez d&eacute;fini <code>DirectoryIndex</code>
     comme suit :</p>

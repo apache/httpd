@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision: 1304806:1562488 (outdated) -->
+<!-- English Revision : 1562488 -->
 <!-- French translation : Lucien GENTIS -->
-<!-- $LastChangedRevision: 2012040101 $ -->
-
+<!-- Reviewed by : Vincent Deffontaines -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -161,7 +160,7 @@
             le supportent de demander la compression des contenus envoy&#233;s par le serveur. 
             Cela a l'avantage de r&#233;duite l'occupation de la bande passante.</dd>
 
-            <dt><module>mod_auth_ldap</module></dt>
+            <dt><module outdated="true">mod_auth_ldap</module></dt>
 
             <dd>Apparu dans Apache httpd 2.0.41, ce module permet aux administrateurs
             d'utiliser un arbre LDAP pour g&#233;rer la base d'utilisateurs pour les 
@@ -237,11 +236,10 @@
             rationnelles (qui g&#232;rent &#224; pr&#233;sent les regex Perl) sont 
             recup&#233;r&#233;es au moyen des variables <code>$0</code> &#224; <code>$9</code>.</dd>
 
-            <dt><module>mod_auth_dbm</module></dt>
+            <dt><module outdated="true">mod_auth_dbm</module></dt>
 
             <dd>Plusieurs bases de donn&#233;es DBM sont support&#233;es, et s&#233;lectionnables 
-            au moyen du type <a
-	    href="../2.0/mod/mod_auth_dbm.html#AuthDBMType"><code>AuthDBMType</code></a>.</dd>
+            via la directive <directive>AuthDBMType</directive>.</dd>
         </dl>
     </section>
 </manualpage>
