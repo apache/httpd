@@ -1355,7 +1355,10 @@ static void fmt_data(unsigned char *buf, const void *vdata, apr_size_t len, apr_
     while (*off < len && this_time < BYTES_LOGGED_PER_LINE) {
         unsigned char c = data[*off];
 
-        if (apr_isprint(c)) {
+        if (apr_isprint(c)
+	    && c != '\\') {  /* backslash will be escaped later, which throws
+                              * off the formatting
+                              */
             *chars = c;
         }
         else {
