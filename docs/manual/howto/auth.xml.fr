@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1555555:1561569 (outdated) -->
+<!-- English Revision : 1561569 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviwed by : Vincent Deffontaines -->
 
@@ -539,11 +539,9 @@ autorisation</title>
 	bas&eacute; sur leur identit&eacute; ; il peut d&eacute;pendre, par exemple de leur
 	provenance.</p>
 
-        <p>Les fournisseurs d'autorisation <directive module="mod_authz_host">
-        all</directive>, <directive module="mod_authz_host">
-        env</directive>, <directive module="mod_authz_host">
-        host</directive> et <directive module="mod_authz_host">
-        ip</directive> vous permettent d'accorder ou refuser l'acc&egrave;s en
+        <p>Les fournisseurs d'autorisation <code>all</code>,
+	<code>env</code>, <code>host</code> et <code>ip</code> vous
+	permettent d'accorder ou refuser l'acc&egrave;s en
 	fonction de crit&egrave;res tels que le nom d'h&ocirc;te ou l'adresse
 	IP de la machine qui effectue la requ&ecirc;te.</p>
 
@@ -649,7 +647,8 @@ autorisation</title>
     fonctionnement de tout ceci.
     Certaines configurations d'authentification peuvent aussi &ecirc;tre
     simplifi&eacute;es &agrave; l'aide de la directive <directive
-    module="mod_authn_core">&lt;AuthnProviderAlias&gt;</directive>.</p>
+    type="section"
+    module="mod_authn_core">AuthnProviderAlias</directive>.</p>
 
     <p>Les diff&eacute;rents algorithmes de chiffrement support&eacute;s par Apache
     pour authentifier les donn&eacute;es sont expliqu&eacute;s dans <a
