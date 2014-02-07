@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='ISO-8859-1' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 989156:1563423 (outdated) -->
-<!-- French translation by Vincent Deffontaines, Alain B., review by  -->
-<!-- updated by Lucien Gentis -->
+<!-- English Revision: 1563423 -->
+<!-- French translation by Vincent Deffontaines, Alain B.  -->
+<!-- reviewed by Lucien Gentis -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -421,8 +421,9 @@
     un serveur virtuel fonctionnant sur le serveur d'une autre machine. 
     Dans cet exemple, un serveur virtuel de même nom est configuré sur 
     une machine à l'adresse <code>192.168.111.2</code>. La directive 
-    <directive module="mod_proxy">ProxyPreserveHost On</directive> est 
-    employée pour permette au nom de domaine d'être préservé lors du 
+    <directive module="mod_proxy"
+    name="ProxyPreserveHost">ProxyPreserveHost On</directive> est
+    employée pour permettre au nom de domaine d'être préservé lors du 
     transfert, au cas où plusieurs noms de domaines cohabitent sur 
     une même machine.</p>
 
