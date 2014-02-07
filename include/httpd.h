@@ -753,6 +753,8 @@ typedef struct process_rec process_rec;
 typedef struct server_rec server_rec;
 /** A structure that represents one connection */
 typedef struct conn_rec conn_rec;
+/** A structure that represents one slave connection */
+typedef struct conn_slave_rec conn_slave_rec;
 /** A structure that represents the current request */
 typedef struct request_rec request_rec;
 /** A structure that represents the status of the current connection */
@@ -1162,6 +1164,19 @@ struct conn_rec {
 #if APR_HAS_THREADS
     apr_thread_t *current_thread;
 #endif
+
+    /** Array of slave connections (conn_slave_rec *) for this connection. */
+    apr_array_header_t *slaves;
+
+    /** The "real" master connection. NULL if I am the master. */
+    conn_rec *master;
+
+    /** context of this connection */
+    void *ctx;
+};
+
+struct conn_slave_rec {
+  conn_rec *c;
 };
 
 /**

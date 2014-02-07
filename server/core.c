@@ -4832,6 +4832,7 @@ static conn_rec *core_create_conn(apr_pool_t *ptrans, server_rec *s,
                                   apr_bucket_alloc_t *alloc)
 {
     apr_status_t rv;
+    apr_pool_t *pool;
     conn_rec *c = (conn_rec *) apr_pcalloc(ptrans, sizeof(conn_rec));
     core_server_config *sconf = ap_get_core_module_config(s->module_config);
 
@@ -4841,10 +4842,15 @@ static conn_rec *core_create_conn(apr_pool_t *ptrans, server_rec *s,
     /* Got a connection structure, so initialize what fields we can
      * (the rest are zeroed out by pcalloc).
      */
-    c->conn_config = ap_create_conn_config(ptrans);
-    c->notes = apr_table_make(ptrans, 5);
+    apr_pool_create(&pool, ptrans);
+    apr_pool_tag(pool, "master_conn");
+    c->pool = pool;
 
-    c->pool = ptrans;
+    c->conn_config = ap_create_conn_config(c->pool);
+    c->notes = apr_table_make(c->pool, 5);
+    c->slaves = apr_array_make(c->pool, 20, sizeof(conn_rec *));
+
+
     if ((rv = apr_socket_addr_get(&c->local_addr, APR_LOCAL, csd))
         != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_INFO, rv, s, APLOGNO(00137)
@@ -4931,9 +4937,33 @@ static int core_pre_connection(conn_rec *c, void *csd)
     net->client_socket = csd;
 
     ap_set_core_module_config(net->c->conn_config, csd);
-    ap_add_input_filter_handle(ap_core_input_filter_handle, net, NULL, net->c);
-    ap_add_output_filter_handle(ap_core_output_filter_handle, net, NULL, net->c);
+    /* only the master connection talks to the network */
+    if (c->master == NULL) {
+        ap_add_input_filter_handle(ap_core_input_filter_handle, net, NULL,
+                                   net->c);
+        ap_add_output_filter_handle(ap_core_output_filter_handle, net, NULL,
+                                    net->c);
+    }
     return DONE;
+}
+
+AP_CORE_DECLARE(conn_rec *) ap_create_slave_connection(conn_rec *c)
+{
+    apr_pool_t *pool;
+    conn_slave_rec *new;
+    conn_rec *sc = (conn_rec *) apr_palloc(c->pool, sizeof(conn_rec));
+
+    apr_pool_create(&pool, c->pool);
+    apr_pool_tag(pool, "slave_conn");
+    memcpy(sc, c, sizeof(conn_rec));
+    sc->slaves = NULL;
+    sc->master = c;
+    sc->input_filters = NULL;
+    sc->output_filters = NULL;
+    sc->pool = pool;
+    new = apr_array_push(c->slaves);
+    new->c = sc;
+    return sc;
 }
 
 AP_DECLARE(int) ap_state_query(int query)
