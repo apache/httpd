@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1527295:1561569 (outdated) -->
+<!-- English revision : 1561569 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -842,7 +842,7 @@ de 1024 bits ?</title>
     commande <code>openssl dhparam</code>. Vous pouvez aussi ajouter les
     param&egrave;tres DH standards issus de la <a
     href="http://www.ietf.org/rfc/rfc2409.txt">RFC 2409</a>, section 6.2
-    au fichier <directive module="ssl">SSLCertificateFile</directive>
+    au fichier <directive module="mod_ssl">SSLCertificateFile</directive>
     consid&eacute;r&eacute; :</p>
     <example><pre>-----BEGIN DH PARAMETERS-----
 MIGHAoGBAP//////////yQ/aoiFowjTExmKLgNwc0SkCTgiKZ8x0Agu+pjsTmyJR

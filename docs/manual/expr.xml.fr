@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision: 1560918:1564957 (outdated) -->
+<!-- English Revision : 1564957 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -83,7 +83,6 @@
       caract&egrave;res. Dans ce cas, le point de d&eacute;part de la BNF est
       <code>string</code>.
       </p>
-<blockquote>
 <pre>
 expr        ::= "<strong>true</strong>" | "<strong>false</strong>"
               | "<strong>!</strong>" expr
@@ -146,7 +145,6 @@ function     ::= funcname "<strong>(</strong>" word "<strong>)</strong>"
 
 listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
 </pre>
-</blockquote>
 
 </section>
 
