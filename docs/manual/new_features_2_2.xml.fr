@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision: 1223048:1561569 (outdated) -->
+<!-- English revision : 1561569 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -141,7 +141,7 @@
           certaines configurations d'authentification.
       </dd>
 
-      <dt><module>mod_authnz_ldap</module></dt>
+      <dt><module outdated="true">mod_authnz_ldap</module></dt>
       <dd>Ce module est un portage de la version 2.0 du module
           <code>mod_auth_ldap</code> vers la version 2.2 du framework
 	  <code>Authn/Authz</code>.
