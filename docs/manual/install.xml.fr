@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision: 1371056:1563423 (outdated) -->
+<!-- English Revision : 1563423 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -361,7 +361,7 @@ $ tar xvf httpd-<em>NN</em>.tar
 <example>$ vi <em>PREFIX</em>/conf/httpd.conf</example>
 
     <p>Consultez le manuel du serveur HTTP Apache situ&eacute; dans
-    <a href="./">docs/manual/</a> ou
+    <code><em>PREFIX</em>/docs/manual/</code> ou
     <a href="http://httpd.apache.org/docs/&httpd.docs;/"
     >http://httpd.apache.org/docs/&httpd.docs;/</a> pour la version la plus
     r&eacute;cente de ce manuel et la liste compl&egrave;te des <a
