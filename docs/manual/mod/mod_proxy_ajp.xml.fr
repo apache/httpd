@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1371059:1562436 (outdated) -->
+<!-- English Revision : 1562436 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -221,11 +221,12 @@ ProxyPassReverse /apps/foo http://www.example.com/foo
     Bien que ceci puisse faire croire que la taille maximale des donn&eacute;es
     est de 2^16, le code d&eacute;finit en fait ce maximum &agrave; 8K.</p>
     <table>
+       <columnspec><column width=".2"/><column width=".1"/><column width=".1"/><column width=".2"/><column width=".2"/><column width=".2"/></columnspec>    
       <tr>
-        <td colspan="6"><em>Format du paquet (Serveur->Conteneur)</em></td>
+        <th colspan="6"><em>Format du paquet (Serveur->Conteneur)</em></th>
       </tr>
       <tr>
-        <td>Octet</td>
+        <th>Octet</th>
         <td>0</td>
         <td>1</td>
         <td>2</td>
@@ -233,7 +234,7 @@ ProxyPassReverse /apps/foo http://www.example.com/foo
         <td>4...(n+3)</td>
       </tr>
       <tr>
-        <td>Contenu</td>
+        <th>Contenu</th>
         <td>0x12</td>
         <td>0x34</td>
         <td colspan="2">Taille des donn&eacute;es (n)</td>
@@ -241,11 +242,13 @@ ProxyPassReverse /apps/foo http://www.example.com/foo
       </tr>
     </table>
     <table>
+       <columnspec><column width=".2"/><column width=".1"/><column width=".1"/><column width=".2"/><column width=".2"/><column width=".2"/></columnspec>
       <tr>
-        <td colspan="6"><em>Format du paquet (Conteneur->Serveur)</em></td>
+        <th colspan="6"><em>Format du paquet
+	(Conteneur->Serveur)</em></th>
       </tr>
       <tr>
-        <td>Octet</td>
+        <th>Octet</th>
         <td>0</td>
         <td>1</td>
         <td>2</td>
@@ -253,7 +256,7 @@ ProxyPassReverse /apps/foo http://www.example.com/foo
         <td>4...(n+3)</td>
       </tr>
       <tr>
-        <td>Contenu</td>
+        <th>Contenu</th>
         <td>A</td>
         <td>B</td>
         <td colspan="2">Taille des donn&eacute;es (n)</td>
@@ -268,6 +271,7 @@ ProxyPassReverse /apps/foo http://www.example.com/foo
      <p>Le serveur web peut envoyer les messages suivants au conteneur
      de servlets :</p>
     <table>
+       <columnspec><column width=".2"/><column width=".3"/><column width=".5"/></columnspec>
       <tr>
         <td>Code</td>
         <td>Type de paquet</td>
@@ -312,6 +316,7 @@ ProxyPassReverse /apps/foo http://www.example.com/foo
     <p>Le conteneur de servlets peut envoyer les types de messages
     suivants au serveur web :</p>
     <table>
+       <columnspec><column width=".2"/><column width=".3"/><column width=".5"/></columnspec>
       <tr>
         <td>Code</td>
         <td>Type de paquet</td>

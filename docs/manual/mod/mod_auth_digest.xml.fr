@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1555538:1562488 (outdated) -->
+<!-- English Revision : 1562488 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -248,11 +248,7 @@ concernant l'authentification &agrave; base de condens&eacute;s</description>
     <p>Cette directive doit toujours &ecirc;tre pr&eacute;sente et contenir au moins
     le(s) URI(s) racine(s) pour cet espace. Dans le cas contraire, le
     client va envoyer un en-t&ecirc;te d'autorisation avec <em>chaque
-    requ&ecirc;te</em> &agrave; destination de ce serveur. Outre une augmentation de
-    la taille de la requ&ecirc;te, les performances vont s'en trouver
-    affect&eacute;es si la directive <directive
-    module="mod_auth_digest">AuthDigestNcCheck</directive> est d&eacute;finie &agrave;
-    On.</p>
+    requ&ecirc;te</em> &agrave; destination de ce serveur.</p>
 
     <p>Les URIs sp&eacute;cifi&eacute;s peuvent aussi r&eacute;f&eacute;rencer diff&eacute;rents serveurs,
     auquel cas les clients (qui sont &agrave; m&ecirc;me de le comprendre) vont
