@@ -177,7 +177,7 @@ int ssl_hook_ReadReq(request_rec *r)
              * was used for the handshake causing different SSL parameters to
              * be applied as SSLProtocol, SSLCACertificateFile/Path and
              * SSLCADNRequestFile/Path cannot be renegotiated (SSLCA* due
-             * to current limititations in OpenSSL, see
+             * to current limitations in OpenSSL, see
              * http://mail-archives.apache.org/mod_mbox/httpd-dev/200806.mbox/%3C48592955.2090303@velox.ch%3E
              * and
              * http://mail-archives.apache.org/mod_mbox/httpd-dev/201312.mbox/%3CCAKQ1sVNpOrdiBm-UPw1hEdSN7YQXRRjeaT-MCWbW_7mN%3DuFiOw%40mail.gmail.com%3E
