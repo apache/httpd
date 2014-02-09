@@ -177,7 +177,7 @@ int ssl_hook_ReadReq(request_rec *r)
              * was used for the handshake causing different SSL parameters to
              * be applied as SSLProtocol, SSLCACertificateFile/Path and
              * SSLCADNRequestFile/Path cannot be renegotiated (SSLCA* due
-             * to current limitiations in OpenSSL, see
+             * to current limititations in OpenSSL, see
              * http://mail-archives.apache.org/mod_mbox/httpd-dev/200806.mbox/%3C48592955.2090303@velox.ch%3E
              * and
              * http://mail-archives.apache.org/mod_mbox/httpd-dev/201312.mbox/%3CCAKQ1sVNpOrdiBm-UPw1hEdSN7YQXRRjeaT-MCWbW_7mN%3DuFiOw%40mail.gmail.com%3E
@@ -207,7 +207,7 @@ int ssl_hook_ReadReq(request_rec *r)
             /*
              * We are using a name based configuration here, but no hostname was
              * provided via SNI. Don't allow that if are requested to do strict
-             * checking. Check whether this strict checking was setup either in the
+             * checking. Check whether this strict checking was set up either in the
              * server config we used for handshaking or in our current server.
              * This should avoid insecure configuration by accident.
              */
