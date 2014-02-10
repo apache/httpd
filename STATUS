@@ -207,13 +207,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                    PR55972
      trunk patch: https://svn.apache.org/r1564475
      2.4.x patch: trunk works
-     +1: mrumph
+     +1: mrumph, jim
 
    * mod_proxy_fcgi: Fix error message when an unexpected protocol version
      number is received from the application.  PR 56110.
      trunk patch: http://svn.apache.org/r1564756
      2.4.x patch: trunk patch works with manipulation of CHANGES
-     +1: trawick
+     +1: trawick, jim
 
 OTHER PROPOSALS
 
