@@ -213,7 +213,20 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      number is received from the application.  PR 56110.
      trunk patch: http://svn.apache.org/r1564756
      2.4.x patch: trunk patch works with manipulation of CHANGES
-     +1: trawick, jim
+     +1: trawick, jim, jailletc36
+
+   * Easy proposals to synch 2.4 and trunk
+        - server/protocol.c (r_flush): Use int return type as per declaration
+          of apr_vformatter(); no functional change.
+        - core: Use %pm in order to save 8k of stack in 'ap_pcfg_strerror'
+        - core & cache: s/apr_pstrndup/apr_pstrmemdup/ when applicable
+        - mod_cgid: remove unnecessary total_modules calculation (follow-up to r1096569)
+     trunk patch: http://svn.apache.org/r1487528
+                  http://svn.apache.org/r1563379
+                  http://svn.apache.org/r1563381
+                  http://svn.apache.org/r1565711
+     2.4.x patch: trunk patches work
+     +1: jailletc36
 
 OTHER PROPOSALS
 
