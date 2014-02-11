@@ -1983,7 +1983,7 @@ static int lua_set_cookie(lua_State *L)
         }
     }
     out = apr_psprintf(r->pool, "%s=%s; %s %s", key, value, secure ? "Secure;" : "", expires ? strexpires : "");
-    apr_table_set(r->headers_out, "Set-Cookie", out);
+    apr_table_add(r->headers_out, "Set-Cookie", out);
     return 0;
 }
 
