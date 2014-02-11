@@ -26,8 +26,6 @@
 <a href="../ko/programs/configure.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/programs/configure.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p>Le script <code>configure</code> permet de configurer
     l'arborescence des sources afin de compiler et installer le serveur
@@ -132,8 +130,8 @@
       <dt><code>--exec-prefix=<var>EPREFIX</var></code></dt>
       <dd>Installe les fichiers dépendants de l'architecture dans
       <var>EPREFIX</var>. La valeur par défaut de cette option
-      correspond à la valeur définie par l'option
-      <code>--prefix</code>.</dd>
+      correspond à la valeur de la variable
+      <var>PREFIX</var>.</dd>
     </dl>
 
     <p>Par défaut, <code>make install</code> va installer tous les
@@ -259,9 +257,9 @@
 
   <h3><a name="systemtypes" id="systemtypes">Types de systèmes</a></h3>
 
-    <p>Ces options sont utilisées pour la compilation croisée du serveur
-    HTTP Apache afin de pouvoir l'utiliser sur une autre plateforme matérielle.
-    Dans le cas général où la compilation et l'exécution du serveur ont lieu sur
+    <p>Ces options sont utilisées pour la cross-compilation du serveur
+    HTTP Apache afin de pouvoir l'utiliser sur un autre système. Dans le
+    cas général où la compilation et l'exécution du serveur ont lieu sur
     le même système, ces options ne sont pas utilisées.</p>
 
     <dl>
@@ -275,7 +273,7 @@
       Par défaut, <var>HOST</var> est identique à <var>BUILD</var>.</dd>
 
       <dt><code>--target=<var>TARGET</var></code></dt>
-      <dd>Configure les compilateurs de build pour le type de
+      <dd>Configure pour construire des compilateurs pour le type de
       système <var>TARGET</var>. Par défaut, <var>TARGET</var> est
       identique à <var>HOST</var>. Cette option est fournie par
 	<code>autoconf</code> et n'est pas requise par le serveur HTTP
@@ -335,8 +333,8 @@
       exécutez la commande <code>./configure -h</code> ou
       <code>./configure --help</code>, et consultez les <code>Optional
       Features</code>. Par exemple, supposons que vous soyez intéressé
-      par les modules <code class="module"><a href="../mod/mod_example1.html">mod_example1</a></code> et
-      <code class="module"><a href="../mod/mod_example2.html">mod_example2</a></code>, et que vous voyiez ceci :</p>
+      par les modules <code>mod_example1</code> et
+      <code>mod_example2</code>, et que vous voyiez ceci :</p>
 
         <div class="example"><pre>Optional Features:
   ...
@@ -355,9 +353,9 @@
 
     <h4><a name="mpms" id="mpms">Modules Multi-Processus</a></h4>
       <p>Les <a href="../mpm.html">Modules Multi-Processus</a>, ou MPMs,
-      constituent le coeur du serveur. Un et un seul MPM doit être actif pour
+      constituent le coeur du serveur. Un seul MPM doit être actif pour
       que le serveur puisse fonctionner. Vous trouverez la liste des
-      MPMs disponibles à la <a href="../mod/">page d'index des modules</a>.</p>
+      MPMs disponibles à <a href="../mod/">module index page</a>.</p>
 
       <p>Les MPMs peuvent être compilés en tant que modules DSO pour un
       chargement dynamique, ou liés statiquement avec le serveur, et
@@ -487,7 +485,7 @@
 
 	<dt><code>--enable-modules=<var>MODULE-LIST</var></code></dt>
         <dd>Cette option se comporte comme
-	<code>--enable-mods-shared</code>, et va également lier les modules
+	<code>--enable-mods-shared</code>, et va aussi lier les modules
 	concernés dynamiquement. Le mot-clé spécial <code>none</code>
 	désactive la compilation de tous les modules.</dd>
 
@@ -495,7 +493,7 @@
         <dd>Permet aux sockets IPv6 de traiter les connexions IPv4.</dd>
 
         <dt><code>--with-port=<var>PORT</var></code></dt>
-        <dd>Permet de définir le port TCP sur lequel le programme
+        <dd>Permet de définir le port que le programme
 	<code class="program"><a href="../programs/httpd.html">httpd</a></code> va écouter. Ce numéro de port est
 	utilisé lors de la génération du fichier de configuration
 	<code>httpd.conf</code>. Sa valeur par défaut est 80.</dd>

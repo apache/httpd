@@ -24,8 +24,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/ssl/ssl_faq.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/ssl/ssl_faq.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 <blockquote>
 <p>Le sage n'apporte pas de bonnes réponses, il pose les bonnes questions</p>
@@ -835,7 +833,7 @@ de 1024 bits ?</a></h3>
     <p>Pour générer des paramètres DH personnalisés, utilisez la
     commande <code>openssl dhparam</code>. Vous pouvez aussi ajouter les
     paramètres DH standards issus de la <a href="http://www.ietf.org/rfc/rfc2409.txt">RFC 2409</a>, section 6.2
-    au fichier <code class="directive"><a href="../mod/ssl.html#sslcertificatefile">SSLCertificateFile</a></code>
+    au fichier <code class="directive"><a href="../mod/mod_ssl.html#sslcertificatefile">SSLCertificateFile</a></code>
     considéré :</p>
     <div class="example"><pre>-----BEGIN DH PARAMETERS-----
 MIGHAoGBAP//////////yQ/aoiFowjTExmKLgNwc0SkCTgiKZ8x0Agu+pjsTmyJR

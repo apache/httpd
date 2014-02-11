@@ -24,8 +24,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/rewrite/flags.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/rewrite/flags.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 <p>Ce document décrit les drapeaux disponibles dans la directive
 <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>, en fournissant
@@ -440,6 +438,15 @@ ceci jusqu'il n'y ait plus de A à remplacer.
 dire, tant que l'URI contient un <code>A</code>),
 effectuer la substitution (c'est à dire, remplacer le <code>A</code> par
 un <code>B</code>).</p>
+
+<p>A partir de la version 2.4.8, ce module renvoie une erreur après
+32000 itérations afin d'éviter les boucles infinies. Ce nombre maximum
+d'itération peut être modifié via le drapeau N.</p>
+<pre class="prettyprint lang-config"># On veut remplacer 1 caractère à chaque itération de la boucle
+RewriteRule (.+)[&gt;&lt;;]$ $1 [N=64000]
+# ... ou s'arrêter après 10 itérations
+RewriteRule (.+)[&gt;&lt;;]$ $1 [N=10]</pre>
+
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
