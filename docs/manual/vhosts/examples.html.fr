@@ -27,8 +27,6 @@
 <a href="../ko/vhosts/examples.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/vhosts/examples.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 
     <p>Le but de ce document est d'essayer de répondre aux questions 
@@ -448,8 +446,8 @@
     un serveur virtuel fonctionnant sur le serveur d'une autre machine. 
     Dans cet exemple, un serveur virtuel de même nom est configuré sur 
     une machine à l'adresse <code>192.168.111.2</code>. La directive 
-    <code class="directive"><a href="../mod/mod_proxy.html#proxypreservehost on">ProxyPreserveHost On</a></code> est 
-    employée pour permette au nom de domaine d'être préservé lors du 
+    <code class="directive"><a href="../mod/mod_proxy.html#proxypreservehost">ProxyPreserveHost On</a></code> est
+    employée pour permettre au nom de domaine d'être préservé lors du 
     transfert, au cas où plusieurs noms de domaines cohabitent sur 
     une même machine.</p>
 
