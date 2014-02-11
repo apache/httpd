@@ -2061,7 +2061,7 @@ static int lua_set_cookie(lua_State *L)
             strlen(strdomain) ? strdomain : "", 
             strlen(strpath) ? strpath : "");
     
-    apr_table_add(r->headers_out, "Set-Cookie", out);
+    apr_table_add(r->err_headers_out, "Set-Cookie", out);
     return 0;
 }
 
