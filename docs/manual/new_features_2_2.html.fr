@@ -29,8 +29,6 @@
 <a href="./pt-br/new_features_2_2.html" hreflang="pt-br" rel="alternate" title="Português (Brasil)">&nbsp;pt-br&nbsp;</a> |
 <a href="./tr/new_features_2_2.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
   <p>Ce document décrit quelques uns des changements principaux entre
      les versions 2.0 et 2.2 du serveur HTTP Apache. Pour les
@@ -150,7 +148,7 @@
           certaines configurations d'authentification.
       </dd>
 
-      <dt><code class="module"><a href="./mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code></dt>
+      <dt><code class="module">mod_authnz_ldap</code></dt>
       <dd>Ce module est un portage de la version 2.0 du module
           <code>mod_auth_ldap</code> vers la version 2.2 du framework
 	  <code>Authn/Authz</code>.
