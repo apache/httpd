@@ -2,6 +2,10 @@
 
 Changes with Apache 2.4.8
 
+  *) mod_lua: Fix r:setcookie() to add, rather than replace,
+     the Set-Cookie header. PR56105
+     [Kevin J Walters <kjw ms com>, Edward Lu <Chaosed0 gmail com>]
+
   *) mod_rewrite: Add %{CONN_REMOTE_ADDR} as the non-useragent counterpart to
      %{REMOTE_ADDR}. PR 56094. [Edward Lu <Chaosed0 gmail com>]
 
