@@ -1,5 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
+ 
+  *) mod_lua: Fix r:setcookie() to add, rather than replace,
+     the Set-Cookie header. PR56105
+     [Kevin J Walters <kjw ms com>, Edward Lu <Chaosed0 gmail com>]
 
   *) mod_proxy_fcgi: Fix error message when an unexpected protocol version
      number is received from the application.  PR 56110.  [Jeff Trawick]
