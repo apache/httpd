@@ -29,8 +29,6 @@
 <a href="./ko/install.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/install.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 
     <p>Ce document couvre l'installation et la compilation du serveur
@@ -366,7 +364,7 @@ $ tar xvf httpd-<em>NN</em>.tar
 <div class="example"><p><code>$ vi <em>PREFIX</em>/conf/httpd.conf</code></p></div>
 
     <p>Consultez le manuel du serveur HTTP Apache situé dans
-    <a href="./">docs/manual/</a> ou
+    <code><em>PREFIX</em>/docs/manual/</code> ou
     <a href="http://httpd.apache.org/docs/2.2/">http://httpd.apache.org/docs/2.2/</a> pour la version la plus
     récente de ce manuel et la liste complète des <a href="mod/directives.html">directives de configuration</a> disponibles.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
