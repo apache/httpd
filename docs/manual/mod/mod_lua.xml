@@ -972,8 +972,22 @@ r:getcookie(key) -- Gets a HTTP cookie
 </highlight>
 
 <highlight language="lua">
-r:setcookie(key, value, secure, expires) -- Sets a HTTP cookie, for instance:
-r:setcookie("foo", "bar and stuff", false, os.time() + 86400)
+r:setcookie{
+  key = [key],
+  value = [value],
+  expires = [expiry],
+  secure = [boolean],
+  httponly = [boolean],
+  path = [path],
+  domain = [domain]
+} -- Sets a HTTP cookie, for instance:
+
+r:setcookie{
+  key = "cookie1",
+  value = "HDHfa9eyffh396rt",
+  expires = os.time() + 86400,
+  secure = true
+}
 </highlight>
 
 <highlight language="lua">

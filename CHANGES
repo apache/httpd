@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
- 
+
+  *) mod_lua: Update r:setcookie() to accept a table of options and add domain,
+     path and httponly to the list of options available to set.
+     PR 56128 [Edward Lu <Chaosed0 gmail com>, Daniel Gruno]
+     
   *) mod_lua: Fix r:setcookie() to add, rather than replace,
      the Set-Cookie header. PR56105
      [Kevin J Walters <kjw ms com>, Edward Lu <Chaosed0 gmail com>]
