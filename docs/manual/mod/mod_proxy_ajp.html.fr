@@ -28,8 +28,6 @@
 <a href="../fr/mod/mod_proxy_ajp.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_proxy_ajp.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Module de support AJP pour
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -228,11 +226,12 @@ ProxyPassReverse /apps/foo http://www.example.com/foo</pre>
     Bien que ceci puisse faire croire que la taille maximale des données
     est de 2^16, le code définit en fait ce maximum à 8K.</p>
     <table>
+           
       <tr>
-        <td colspan="6"><em>Format du paquet (Serveur-&gt;Conteneur)</em></td>
+        <th colspan="6"><em>Format du paquet (Serveur-&gt;Conteneur)</em></th>
       </tr>
       <tr>
-        <td>Octet</td>
+        <th>Octet</th>
         <td>0</td>
         <td>1</td>
         <td>2</td>
@@ -240,7 +239,7 @@ ProxyPassReverse /apps/foo http://www.example.com/foo</pre>
         <td>4...(n+3)</td>
       </tr>
       <tr>
-        <td>Contenu</td>
+        <th>Contenu</th>
         <td>0x12</td>
         <td>0x34</td>
         <td colspan="2">Taille des données (n)</td>
@@ -248,11 +247,13 @@ ProxyPassReverse /apps/foo http://www.example.com/foo</pre>
       </tr>
     </table>
     <table>
+       
       <tr>
-        <td colspan="6"><em>Format du paquet (Conteneur-&gt;Serveur)</em></td>
+        <th colspan="6"><em>Format du paquet
+	(Conteneur-&gt;Serveur)</em></th>
       </tr>
       <tr>
-        <td>Octet</td>
+        <th>Octet</th>
         <td>0</td>
         <td>1</td>
         <td>2</td>
@@ -260,7 +261,7 @@ ProxyPassReverse /apps/foo http://www.example.com/foo</pre>
         <td>4...(n+3)</td>
       </tr>
       <tr>
-        <td>Contenu</td>
+        <th>Contenu</th>
         <td>A</td>
         <td>B</td>
         <td colspan="2">Taille des données (n)</td>
@@ -275,6 +276,7 @@ ProxyPassReverse /apps/foo http://www.example.com/foo</pre>
      <p>Le serveur web peut envoyer les messages suivants au conteneur
      de servlets :</p>
     <table>
+       
       <tr>
         <td>Code</td>
         <td>Type de paquet</td>
@@ -319,6 +321,7 @@ ProxyPassReverse /apps/foo http://www.example.com/foo</pre>
     <p>Le conteneur de servlets peut envoyer les types de messages
     suivants au serveur web :</p>
     <table>
+       
       <tr>
         <td>Code</td>
         <td>Type de paquet</td>

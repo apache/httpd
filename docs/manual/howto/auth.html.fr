@@ -27,8 +27,6 @@
 <a href="../ko/howto/auth.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/howto/auth.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p>L'authentification est un processus qui vous permet de vérifier
     qu'une personne est bien celle qu'elle prétend être. L'autorisation
@@ -527,11 +525,9 @@ autorisation</a></h2>
 	basé sur leur identité ; il peut dépendre, par exemple de leur
 	provenance.</p>
 
-        <p>Les fournisseurs d'autorisation <code class="directive"><a href="../mod/mod_authz_host.html#all">
-        all</a></code>, <code class="directive"><a href="../mod/mod_authz_host.html#env">
-        env</a></code>, <code class="directive"><a href="../mod/mod_authz_host.html#host">
-        host</a></code> et <code class="directive"><a href="../mod/mod_authz_host.html#ip">
-        ip</a></code> vous permettent d'accorder ou refuser l'accès en
+        <p>Les fournisseurs d'autorisation <code>all</code>,
+	<code>env</code>, <code>host</code> et <code>ip</code> vous
+	permettent d'accorder ou refuser l'accès en
 	fonction de critères tels que le nom d'hôte ou l'adresse
 	IP de la machine qui effectue la requête.</p>
 
@@ -628,7 +624,7 @@ autorisation</a></h2>
     qui contient des informations supplémentaires à propos du
     fonctionnement de tout ceci.
     Certaines configurations d'authentification peuvent aussi être
-    simplifiées à l'aide de la directive <code class="directive"><a href="../mod/mod_authn_core.html#&lt;authnprovideralias&gt;">&lt;AuthnProviderAlias&gt;</a></code>.</p>
+    simplifiées à l'aide de la directive <code class="directive"><a href="../mod/mod_authn_core.html#authnprovideralias">&lt;AuthnProviderAlias&gt;</a></code>.</p>
 
     <p>Les différents algorithmes de chiffrement supportés par Apache
     pour authentifier les données sont expliqués dans <a href="../misc/password_encryptions.html">PasswordEncryptions</a>.</p>
