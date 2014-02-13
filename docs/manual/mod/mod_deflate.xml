@@ -38,38 +38,16 @@ client</description>
 <seealso><a href="../filter.html">Filters</a></seealso>
 
 <section id="recommended"><title>Sample Configurations</title>
-    <p>This is a simple sample configuration for the impatient.</p>
+    <note type="warning"><title>Compression and TLS</title>
+        <p>Some web applications are vulnerable to an information disclosure
+        attack when a TLS connection carries deflate compressed data. For more
+        information, review the details of the "BREACH" family of attacks.</p>
+    </note>
+    <p>This is a simple configuration that compresses common text-based content types.</p>
 
     <example><title>Compress only a few types</title>
     <highlight language="config">
-      AddOutputFilterByType DEFLATE text/html text/plain text/xml
-      </highlight>
-    </example>
-
-    <p>The following configuration, while resulting in more compressed content,
-    is also much more complicated.  Do not use this unless you fully understand
-    all the configuration details.</p>
-
-    <example><title>Compress everything except images</title>
-    <highlight language="config">
-&lt;Location /&gt;
-    # Insert filter
-    SetOutputFilter DEFLATE
-    
-    # Netscape 4.x has some problems...
-    BrowserMatch ^Mozilla/4         gzip-only-text/html
-    
-    # Netscape 4.06-4.08 have some more problems
-    BrowserMatch ^Mozilla/4\.0[678] no-gzip
-    
-    # MSIE masquerades as Netscape, but it is fine
-    BrowserMatch \bMSIE             !no-gzip !gzip-only-text/html
-    # Don't compress images
-    SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip dont-vary
-    
-    # Make sure proxies don't deliver the wrong content
-    Header append Vary User-Agent env=!dont-vary
-&lt;/Location&gt;
+      AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript
       </highlight>
     </example>
 
