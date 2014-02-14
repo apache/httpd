@@ -1680,6 +1680,7 @@ int ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                         continue;
                     }
                     else if (rv == APR_EOF) {
+                        backend->close = 1;
                         break;
                     }
                     else if (rv != APR_SUCCESS) {
