@@ -40,7 +40,7 @@ via the request headers.
 
     <p>The module overrides the client IP address for the connection
     with the useragent IP address reported in the request header configured
-    with the <directive>RemoteIPHeader</directive> directive.</p>
+    with the <directive module="mod_remoteip">RemoteIPHeader</directive> directive.</p>
 
     <p>Once replaced as instructed, this overridden useragent IP address is
     then used for the <module>mod_authz_host</module>
@@ -87,7 +87,7 @@ via the request headers.
     can record using the <code>%{remoteip-proxy-ip-list}n</code> format token.
     If the administrator needs to store this as an additional header, this
     same value can also be recording as a header using the directive
-    <directive>RemoteIPProxiesHeader</directive>.</p>
+    <directive module="mod_remoteip">RemoteIPProxiesHeader</directive>.</p>
 
     <note><title>IPv4-over-IPv6 Mapped Addresses</title>
     As with httpd in general, any IPv4-over-IPv6 mapped addresses are recorded
@@ -96,7 +96,7 @@ via the request headers.
     <note><title>Internal (Private) Addresses</title>
     All internal addresses 10/8, 172.16/12, 192.168/16, 169.254/16 and 127/8
     blocks (and IPv6 addresses outside of the public 2000::/3 block) are only
-    evaluated by mod_remoteip when <directive>RemoteIPInternalProxy</directive>
+    evaluated by mod_remoteip when <directive module="mod_remoteip">RemoteIPInternalProxy</directive>
     internal (intranet) proxies are registered.</note>
 
 </section>
@@ -108,14 +108,14 @@ via the request headers.
 <contextlist><context>server config</context><context>virtual host</context></contextlist>
 
 <usage>
-    <p>The <directive>RemoteIPHeader</directive> directive triggers
+    <p>The <directive module="mod_remoteip">RemoteIPHeader</directive> directive triggers
     <module>mod_remoteip</module> to treat the value of the specified
     <var>header-field</var> header as the useragent IP address, or list
     of intermediate useragent IP addresses, subject to further configuration
-    of the <directive>RemoteIPInternalProxy</directive> and
-    <directive>RemoteIPTrustedProxy</directive> directives.  Unless these
+    of the <directive module="mod_remoteip">RemoteIPInternalProxy</directive> and
+    <directive module="mod_remoteip">RemoteIPTrustedProxy</directive> directives.  Unless these
     other directives are used, <module>mod_remoteip</module> will trust all
-    hosts presenting a <directive>RemoteIPHeader</directive> IP value.</p>
+    hosts presenting a <directive module="mod_remoteip">RemoteIPHeader</directive> IP value.</p>
 
     <example><title>Internal (Load Balancer) Example</title>
     <highlight language="config">
@@ -138,10 +138,10 @@ via the request headers.
 <contextlist><context>server config</context><context>virtual host</context></contextlist>
 
 <usage>
-    <p>The <directive>RemoteIPInternalProxy</directive> directive adds one
+    <p>The <directive module="mod_remoteip">RemoteIPInternalProxy</directive> directive adds one
     or more addresses (or address blocks) to trust as presenting a valid
     RemoteIPHeader value of the useragent IP.  Unlike the
-    <directive>RemoteIPTrustedProxy</directive> directive, any IP address
+    <directive module="mod_remoteip">RemoteIPTrustedProxy</directive> directive, any IP address
     presented in this header, including private intranet addresses, are
     trusted when passed from these proxies.</p>
 
@@ -162,13 +162,13 @@ RemoteIPInternalProxy gateway.localdomain
 <contextlist><context>server config</context><context>virtual host</context></contextlist>
 
 <usage>
-    <p>The <directive>RemoteIPInternalProxyList</directive> directive specifies
+    <p>The <directive module="mod_remoteip">RemoteIPInternalProxyList</directive> directive specifies
     a file parsed at startup, and builds a list of addresses (or address blocks)
     to trust as presenting a valid RemoteIPHeader value of the useragent IP.</p>
 
     <p>The '<code>#</code>' hash character designates a comment line, otherwise
     each whitespace or newline separated entry is processed identically to
-    the <directive>RemoteIPInternalProxy</directive> directive.</p>
+    the <directive module="mod_remoteip">RemoteIPInternalProxy</directive> directive.</p>
 
     <example><title>Internal (Load Balancer) Example</title>
         <highlight language="config">
@@ -194,13 +194,13 @@ gateway.localdomain #The front end balancer
 <contextlist><context>server config</context><context>virtual host</context></contextlist>
 
 <usage>
-    <p>The <directive>RemoteIPProxiesHeader</directive> directive specifies
+    <p>The <directive module="mod_remoteip">RemoteIPProxiesHeader</directive> directive specifies
     a header into which <module>mod_remoteip</module> will collect a list of
     all of the intermediate client IP addresses trusted to resolve the useragent
     IP of the request. Note that intermediate
-    <directive>RemoteIPTrustedProxy</directive> addresses are recorded in
+    <directive module="mod_remoteip">RemoteIPTrustedProxy</directive> addresses are recorded in
     this header, while any intermediate
-    <directive>RemoteIPInternalProxy</directive> addresses are discarded.</p>
+    <directive module="mod_remoteip">RemoteIPInternalProxy</directive> addresses are discarded.</p>
 
     <example><title>Example</title>
     <highlight language="config">
@@ -218,14 +218,14 @@ RemoteIPProxiesHeader X-Forwarded-By
 <contextlist><context>server config</context><context>virtual host</context></contextlist>
 
 <usage>
-    <p>The <directive>RemoteIPTrustedProxy</directive> directive adds one
+    <p>The <directive module="mod_remoteip">RemoteIPTrustedProxy</directive> directive adds one
     or more addresses (or address blocks) to trust as presenting a valid
     RemoteIPHeader value of the useragent IP.  Unlike the
-    <directive>RemoteIPInternalProxy</directive> directive, any intranet
+    <directive module="mod_remoteip">RemoteIPInternalProxy</directive> directive, any intranet
     or private IP address reported by such proxies, including the 10/8, 172.16/12,
     192.168/16, 169.254/16 and 127/8 blocks (or outside of the IPv6 public
     2000::/3 block) are not trusted as the useragent IP, and are left in the
-    <directive>RemoteIPHeader</directive> header's value.</p>
+    <directive module="mod_remoteip">RemoteIPHeader</directive> header's value.</p>
 
     <example><title>Trusted (Load Balancer) Example</title>
         <highlight language="config">
@@ -244,13 +244,13 @@ RemoteIPTrustedProxy proxy.example.com
 <contextlist><context>server config</context><context>virtual host</context></contextlist>
 
 <usage>
-    <p>The <directive>RemoteIPTrustedProxyList</directive> directive specifies
+    <p>The <directive module="mod_remoteip">RemoteIPTrustedProxyList</directive> directive specifies
     a file parsed at startup, and builds a list of addresses (or address blocks)
     to trust as presenting a valid RemoteIPHeader value of the useragent IP.</p>
 
     <p>The '<code>#</code>' hash character designates a comment line, otherwise
     each whitespace or newline separated entry is processed identically to
-    the <directive>RemoteIPTrustedProxy</directive> directive.</p>
+    the <directive module="mod_remoteip">RemoteIPTrustedProxy</directive> directive.</p>
 
     <example><title>Trusted (Load Balancer) Example</title>
     <highlight language="config">
