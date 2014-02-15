@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1421892:1567955 (outdated) -->
+<!-- English Revision : 1567955 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -39,42 +39,19 @@ client</description>
 <seealso><a href="../filter.html">Les filtres</a></seealso>
 
 <section id="recommended"><title>Exemples de configurations</title>
-    <p>Voici un exemple simple de configuration pour les
-    impatients.</p>
+    <note type="warning"><title>Compression et TLS</title>
+        <p>Certaines applications web sont vuln&eacute;rables aux attaques
+	visant le vol d'information lorsqu'une connexion TLS transmet
+	des donn&eacute;es compress&eacute;es par deflate. Pour plus de d&eacute;tails,
+	&eacute;tudiez les attaques de la famille "BREACH".</p>
+    </note>
+    <p>Voici une configuration simple qui comprime les contenus &agrave; base
+    de texte courants.</p>
 
     <example><title>Ne comprime que certains types de documents</title>
     <highlight language="config">
-      AddOutputFilterByType DEFLATE text/html text/plain text/xml
-      </highlight>
-    </example>
-
-    <p>La configuration suivante, tout en produisant un contenu encore
-    plus comprim&eacute;, est aussi beaucoup plus compliqu&eacute;e. N'utilisez pas
-    cet exemple si vous ne comprenez pas tous les d&eacute;tails de la
-    configuration.</p>
-
-    <example><title>Comprime tout, sauf les images</title>
-      <highlight language="config">
-&lt;Location /&gt;
-    # Insert filter
-    SetOutputFilter DEFLATE
-    
-    # Netscape 4.x a quelques probl&egrave;mes ...
-    BrowserMatch ^Mozilla/4         gzip-only-text/html
-    
-    # Netscape 4.06-4.08 ont d'autres probl&egrave;mes
-    BrowserMatch ^Mozilla/4\.0[678] no-gzip
-    
-    # MSIE se fait passer pour Netscape, mais &ccedil;a marche
-    BrowserMatch \bMSIE             !no-gzip !gzip-only-text/html
-    # Ne pas comprimer les images
-    SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip dont-vary
-    
-    # On s'assure que les mandataires ne servent pas le mauvais
-    # contenu
-    Header append Vary User-Agent env=!dont-vary
-&lt;/Location&gt;
-      </highlight>
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript       
+         </highlight>
     </example>
 
 </section>
@@ -89,7 +66,7 @@ client</description>
 
       <highlight language="config">
         SetOutputFilter DEFLATE
-      </highlight>
+	</highlight>
 
       <p>Certains navigateurs populaires ne g&egrave;rent pas la compression de
       tous les contenus, et pour r&eacute;soudre ce probl&egrave;me, vous pouvez

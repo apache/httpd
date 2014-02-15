@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1555118:1566702 (outdated) -->
+<!-- English Revision : 1566702 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -494,6 +494,7 @@ la r&eacute;&eacute;criture soit effectu&eacute;e
 
               <td>
                  REMOTE_ADDR<br />
+		 CONN_REMOTE_ADDR<br />
                  REMOTE_HOST<br />
                  REMOTE_PORT<br />
                  REMOTE_USER<br />
@@ -626,6 +627,15 @@ la r&eacute;&eacute;criture soit effectu&eacute;e
 		  "http" ou "https"). La valeur peut &ecirc;tre modifi&eacute;e par
 		  la directive <directive
 		  module="core">ServerName</directive>.</dd>
+
+		  <dt><code>REMOTE_ADDR</code></dt>
+                  <dd>L'adresse IP de l'h&ocirc;te distant (voir le module
+		  <module>mod_remoteip</module>).</dd>
+
+                  <dt><code>CONN_REMOTE_ADDR</code></dt>
+                  <dd>Depuis la version 2.4.8 : l'adresse IP distante de
+		  la connexion (voir le module
+		  <module>mod_remoteip</module>).</dd>
 
                 </dl>
 </note>
