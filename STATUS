@@ -98,6 +98,11 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * mod_remoteip: Use the correct IP addresses to populate the proxy_ips field.
+                   PR55972
+     trunk patch: https://svn.apache.org/r1564475
+     2.4.x patch: trunk works
+     +1: mrumph, jim, covener
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -201,13 +206,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * mod_remoteip: Correct the trusted proxy match test. PR54651
      trunk patch: https://svn.apache.org/r1564052
      2.4.x patch: trunk works
-     +1: mrumph
-
-   * mod_remoteip: Use the correct IP addresses to populate the proxy_ips field.
-                   PR55972
-     trunk patch: https://svn.apache.org/r1564475
-     2.4.x patch: trunk works
-     +1: mrumph, jim
+     +1: mrumph, covener
 
    * mod_proxy_fcgi: Fix error message when an unexpected protocol version
      number is received from the application.  PR 56110.
