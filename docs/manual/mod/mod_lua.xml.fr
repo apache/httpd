@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1550686:1567430 (outdated) -->
+<!-- English Revision : 1567430 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1068,8 +1068,22 @@ r:getcookie(key) -- Obtient un cookie HTTP
 </highlight>
 
 <highlight language="lua">
-r:setcookie(key, value, secure, expires) -- D&eacute;finit un cookie HTTP, par exemple :
-r:setcookie("foo", "bar and stuff", false, os.time() + 86400)
+r:setcookie{
+  key = [key],
+  value = [value],
+  expires = [expiry],
+  secure = [boolean],
+  httponly = [boolean],
+  path = [path],
+  domain = [domain]
+} -- D&eacute;finit un cookie HTTP, par exemple :
+
+r:setcookie{
+  key = "cookie1",
+  value = "HDHfa9eyffh396rt",
+  expires = os.time() + 86400,
+  secure = true
+}
 </highlight>
 
 <highlight language="lua">
