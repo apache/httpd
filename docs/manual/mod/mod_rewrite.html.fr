@@ -27,8 +27,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_rewrite.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_rewrite.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Ce module fournit un moteur de réécriture à base de
 règles permettant de réécrire les URLs des requêtes
 à la volée</td></tr>
@@ -239,6 +237,7 @@ la réécriture soit effectuée
 
               <td>
                  REMOTE_ADDR<br />
+		 CONN_REMOTE_ADDR<br />
                  REMOTE_HOST<br />
                  REMOTE_PORT<br />
                  REMOTE_USER<br />
@@ -367,6 +366,15 @@ la réécriture soit effectuée
                   <dd>Contient le protocole de la requête (en général
 		  "http" ou "https"). La valeur peut être modifiée par
 		  la directive <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code>.</dd>
+
+		  <dt><code>REMOTE_ADDR</code></dt>
+                  <dd>L'adresse IP de l'hôte distant (voir le module
+		  <code class="module"><a href="../mod/mod_remoteip.html">mod_remoteip</a></code>).</dd>
+
+                  <dt><code>CONN_REMOTE_ADDR</code></dt>
+                  <dd>Depuis la version 2.4.8 : l'adresse IP distante de
+		  la connexion (voir le module
+		  <code class="module"><a href="../mod/mod_remoteip.html">mod_remoteip</a></code>).</dd>
 
                 </dl>
 </div>

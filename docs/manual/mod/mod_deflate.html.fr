@@ -29,8 +29,6 @@
 <a href="../ja/mod/mod_deflate.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_deflate.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Comprime le contenu avant de le servir au
 client</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -62,36 +60,16 @@ client</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="recommended" id="recommended">Exemples de configurations</a></h2>
-    <p>Voici un exemple simple de configuration pour les
-    impatients.</p>
+    <div class="warning"><h3>Compression et TLS</h3>
+        <p>Certaines applications web sont vulnérables aux attaques
+	visant le vol d'information lorsqu'une connexion TLS transmet
+	des données compressées par deflate. Pour plus de détails,
+	étudiez les attaques de la famille "BREACH".</p>
+    </div>
+    <p>Voici une configuration simple qui comprime les contenus à base
+    de texte courants.</p>
 
-    <div class="example"><h3>Ne comprime que certains types de documents</h3><pre class="prettyprint lang-config">AddOutputFilterByType DEFLATE text/html text/plain text/xml</pre>
-</div>
-
-    <p>La configuration suivante, tout en produisant un contenu encore
-    plus comprimé, est aussi beaucoup plus compliquée. N'utilisez pas
-    cet exemple si vous ne comprenez pas tous les détails de la
-    configuration.</p>
-
-    <div class="example"><h3>Comprime tout, sauf les images</h3><pre class="prettyprint lang-config">&lt;Location /&gt;
-    # Insert filter
-    SetOutputFilter DEFLATE
-    
-    # Netscape 4.x a quelques problèmes ...
-    BrowserMatch ^Mozilla/4         gzip-only-text/html
-    
-    # Netscape 4.06-4.08 ont d'autres problèmes
-    BrowserMatch ^Mozilla/4\.0[678] no-gzip
-    
-    # MSIE se fait passer pour Netscape, mais ça marche
-    BrowserMatch \bMSIE             !no-gzip !gzip-only-text/html
-    # Ne pas comprimer les images
-    SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip dont-vary
-    
-    # On s'assure que les mandataires ne servent pas le mauvais
-    # contenu
-    Header append Vary User-Agent env=!dont-vary
-&lt;/Location&gt;</pre>
+    <div class="example"><h3>Ne comprime que certains types de documents</h3><pre class="prettyprint lang-config">AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript</pre>
 </div>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
