@@ -1042,8 +1042,22 @@ end</pre>
 <pre class="prettyprint lang-lua">r:getcookie(key) -- Obtient un cookie HTTP</pre>
 
 
-<pre class="prettyprint lang-lua">r:setcookie(key, value, secure, expires) -- Définit un cookie HTTP, par exemple :
-r:setcookie("foo", "bar and stuff", false, os.time() + 86400)</pre>
+<pre class="prettyprint lang-lua">r:setcookie{
+  key = [key],
+  value = [value],
+  expires = [expiry],
+  secure = [boolean],
+  httponly = [boolean],
+  path = [path],
+  domain = [domain]
+} -- Définit un cookie HTTP, par exemple :
+
+r:setcookie{
+  key = "cookie1",
+  value = "HDHfa9eyffh396rt",
+  expires = os.time() + 86400,
+  secure = true
+}</pre>
 
 
 <pre class="prettyprint lang-lua">r:wsupgrade() -- Met à jour une connexion vers les WebSockets si possible (et si demandé) :
