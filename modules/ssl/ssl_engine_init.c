@@ -1083,11 +1083,16 @@ static apr_status_t ssl_init_server_certs(server_rec *s,
                      OBJ_nid2sn(nid), vhost_id, mctx->pks->cert_files[0]);
     }
     /*
-     * ...otherwise, configure NIST P-256 (required to enable ECDHE)
+     * ...otherwise, enable auto curve selection (OpenSSL 1.0.2 and later)
+     * or configure NIST P-256 (required to enable ECDHE for earlier versions)
      */
     else {
+#if defined(SSL_CTX_set_ecdh_auto)
+        SSL_CTX_set_ecdh_auto(mctx->ssl_ctx, 1);
+#else
         SSL_CTX_set_tmp_ecdh(mctx->ssl_ctx,
                              EC_KEY_new_by_curve_name(NID_X9_62_prime256v1));
+#endif
     }
 #endif
 
