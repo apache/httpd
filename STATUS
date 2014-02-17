@@ -98,12 +98,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_remoteip: Use the correct IP addresses to populate the proxy_ips field.
-                   PR55972
-     trunk patch: https://svn.apache.org/r1564475
-     2.4.x patch: trunk works
-     +1: mrumph, jim, covener
-
    * mod_ssl: enable auto curve selection for ECDHE / OpenSSL 1.0.2
      trunk patch: https://svn.apache.org/r1563420
      2.4.x patch: trunk patch works
