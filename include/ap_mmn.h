@@ -425,6 +425,7 @@
  * 20120211.28 (2.4.7-dev) Add ap_regname
  * 20120211.29 (2.4.7-dev) Add uds_path to proxy_conn_rec
  * 20120211.30 (2.4.7-dev) REWRITE_REDIRECT_HANDLER_NAME in mod_rewrite.h
+ * 20120211.31 (2.4.7-dev) Add ap_proxy_port_of_scheme()
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
@@ -432,7 +433,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20120211
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 30                   /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 31                   /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
