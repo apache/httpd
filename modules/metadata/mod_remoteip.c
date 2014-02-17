@@ -246,14 +246,14 @@ static int remoteip_modify_request(request_rec *r)
 
     while (remote) {
 
-        /* verify c->client_addr is trusted if there is a trusted proxy list
+        /* verify user agent IP against the trusted proxy list
          */
         if (config->proxymatch_ip) {
             int i;
             remoteip_proxymatch_t *match;
             match = (remoteip_proxymatch_t *)config->proxymatch_ip->elts;
             for (i = 0; i < config->proxymatch_ip->nelts; ++i) {
-                if (apr_ipsubnet_test(match[i].ip, c->client_addr)) {
+                if (apr_ipsubnet_test(match[i].ip, temp_sa)) {
                     internal = match[i].internal;
                     break;
                 }
