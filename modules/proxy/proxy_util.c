@@ -21,6 +21,7 @@
 #include "apr_version.h"
 #include "apr_hash.h"
 #include "proxy_util.h"
+#include "ajp.h"
 
 #if APR_HAVE_UNISTD_H
 #include <unistd.h>         /* for getpid() */
@@ -2161,7 +2162,7 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
                                          NULL));
     }
     if (!uri->port) {
-        uri->port = apr_uri_port_of_scheme(uri->scheme);
+        uri->port = ap_proxy_port_of_scheme(uri->scheme);
     }
 
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00944)
@@ -3392,6 +3393,38 @@ PROXY_DECLARE(int) ap_proxy_pass_brigade(apr_bucket_alloc_t *bucket_alloc,
     }
     apr_brigade_cleanup(bb);
     return OK;
+}
+
+/* Fill in unknown schemes from apr_uri_port_of_scheme() */
+
+typedef struct proxy_schemes_t {
+    const char *name;
+    apr_port_t default_port;
+} proxy_schemes_t ;
+
+static proxy_schemes_t pschemes[] =
+{
+    {"fcgi",     8000},
+    {"ajp",      AJP13_DEF_PORT},
+    { NULL, 0xFFFF }     /* unknown port */
+};
+
+PROXY_DECLARE(apr_port_t) ap_proxy_port_of_scheme(const char *scheme)
+{
+    if (scheme) {
+        apr_port_t port;
+        if ((port = apr_uri_port_of_scheme(scheme)) != 0) {
+            return port;
+        } else {
+            proxy_schemes_t *pscheme;
+            for (pscheme = pschemes; pscheme->name != NULL; ++pscheme) {
+                if (strcasecmp(scheme, pscheme->name) == 0) {
+                    return pscheme->default_port;
+                }
+            }
+        }
+    }
+    return 0;
 }
 
 void proxy_util_register_hooks(apr_pool_t *p)

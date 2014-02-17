@@ -30,7 +30,7 @@ static int proxy_fcgi_canon(request_rec *r, char *url)
 {
     char *host, sport[7];
     const char *err, *path;
-    apr_port_t port = 8000;
+    apr_port_t port, def_port;
 
     if (strncasecmp(url, "fcgi:", 5) == 0) {
         url += 5;
@@ -39,9 +39,10 @@ static int proxy_fcgi_canon(request_rec *r, char *url)
         return DECLINED;
     }
 
+    port = def_port = ap_proxy_port_of_scheme("fcgi");
+
     ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r,
                  "canonicalising URL %s", url);
-
     err = ap_proxy_canon_netloc(r->pool, &url, NULL, NULL, &host, &port);
     if (err) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01059)
@@ -49,7 +50,10 @@ static int proxy_fcgi_canon(request_rec *r, char *url)
         return HTTP_BAD_REQUEST;
     }
 
-    apr_snprintf(sport, sizeof(sport), ":%d", port);
+    if (port != def_port)
+        apr_snprintf(sport, sizeof(sport), ":%d", port);
+    else
+        sport[0] = '\0';
 
     if (ap_strchr_c(host, ':')) {
         /* if literal IPv6 address */
@@ -750,7 +754,7 @@ static int proxy_fcgi_handler(request_rec *r, proxy_worker *worker,
     int status;
     char server_portstr[32];
     conn_rec *origin = NULL;
-    proxy_conn_rec *backend = NULL;
+    proxy_conn_rec *backend;
 
     proxy_dir_conf *dconf = ap_get_module_config(r->per_dir_config,
                                                  &proxy_module);
@@ -763,10 +767,7 @@ static int proxy_fcgi_handler(request_rec *r, proxy_worker *worker,
                   "url: %s proxyname: %s proxyport: %d",
                  url, proxyname, proxyport);
 
-    if (strncasecmp(url, "fcgi:", 5) == 0) {
-        url += 5;
-    }
-    else {
+    if (strncasecmp(url, "fcgi:", 5) != 0) {
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01077) "declining URL %s", url);
         return DECLINED;
     }
@@ -774,16 +775,14 @@ static int proxy_fcgi_handler(request_rec *r, proxy_worker *worker,
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01078) "serving URL %s", url);
 
     /* Create space for state information */
-    if (! backend) {
-        status = ap_proxy_acquire_connection(FCGI_SCHEME, &backend, worker,
-                                             r->server);
-        if (status != OK) {
-            if (backend) {
-                backend->close = 1;
-                ap_proxy_release_connection(FCGI_SCHEME, backend, r->server);
-            }
-            return status;
+    status = ap_proxy_acquire_connection(FCGI_SCHEME, &backend, worker,
+                                         r->server);
+    if (status != OK) {
+        if (backend) {
+            backend->close = 1;
+            ap_proxy_release_connection(FCGI_SCHEME, backend, r->server);
         }
+        return status;
     }
 
     backend->is_ssl = 0;
