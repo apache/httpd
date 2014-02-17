@@ -114,7 +114,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              without mod_request and mod_session present would cause the very
              same failure. Would a warning in the release notes be good enough?
 
-
   * mod_proxy: Use consistent canon formats for http, ajp and fcgi (if provided
     port is the default port, don't add to canon URI). Ensures that ajp and
     fcgi uses the defined workers and not the default generic reverse proxy
@@ -195,6 +194,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1565711
      2.4.x patch: trunk patches work
      +1: jailletc36
+
+   * core: Detect incomplete body in HTTP input filter and return
+           APR_INCOMPLETE. PR 55475.
+     trunk patch: http://svn.apache.org/r1538776
+     2.4.x patch: https://people.apache.org/~ylavic/2.4.x-http_filter_incomplete.patch
+     +1: ylavic
+
 
 OTHER PROPOSALS
 
