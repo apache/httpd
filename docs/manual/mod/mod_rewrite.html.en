@@ -1163,10 +1163,18 @@ cannot use <code>$N</code> in the substitution string!
         ...</a></em></td>
     </tr>
     <tr>
+        <td>END</td>
+        <td>Stop the rewriting process immediately and don't apply any
+        more rules. Also prevents further execution of rewrite rules
+        in per-directory and .htaccess context. (Available in 2.3.9 and later)
+        <em><a href="../rewrite/flags.html#flag_end">details ...</a></em></td>
+    </tr>
+    <tr>
         <td>env|E=[!]<em>VAR</em>[:<em>VAL</em>]</td>
         <td>Causes an environment variable <em>VAR</em> to be set (to the
         value <em>VAL</em> if provided). The form !<em>VAR</em> causes
-        the environment variable <em>VAR</em> to be unset.<em><a href="../rewrite/flags.html#flag_e">details ...</a></em></td>
+        the environment variable <em>VAR</em> to be unset.
+        <em><a href="../rewrite/flags.html#flag_e">details ...</a></em></td>
     </tr>
     <tr>
         <td>forbidden|F</td>
@@ -1186,7 +1194,7 @@ cannot use <code>$N</code> in the substitution string!
         <td>last|L</td>
         <td>Stop the rewriting process immediately and don't apply any
         more rules. Especially note caveats for per-directory and
-        .htaccess context (see also the END flag). <em><a href="../rewrite/flags.html#flag_end">details ...</a></em></td>
+        .htaccess context (see also the END flag). <em><a href="../rewrite/flags.html#flag_l">details ...</a></em></td>
     </tr>
     <tr>
         <td>next|N</td>
@@ -1239,13 +1247,6 @@ cannot use <code>$N</code> in the substitution string!
         <td>Forces an external redirect, optionally with the specified
         HTTP status code. <em><a href="../rewrite/flags.html#flag_r">details ...</a></em>
         </td>
-    </tr>
-    <tr>
-        <td>END</td>
-        <td>Stop the rewriting process immediately and don't apply any
-        more rules. Also prevents further execution of rewrite rules
-        in per-directory and .htaccess context. (Available in 2.3.9 and later)
-        <em><a href="../rewrite/flags.html#flag_l">details ...</a></em></td>
     </tr>
     <tr>
         <td>skip|S=<em>num</em></td>
