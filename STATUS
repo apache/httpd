@@ -193,6 +193,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://people.apache.org/~ylavic/2.4.x-http_filter_incomplete.patch
      +1: ylavic
 
+   * mod_proxy_wstunnel: Handle POLLERR/POLLHUP to avoid busy loop
+     trunk patch: http://svn.apache.org/r1569615
+     2.4.x patch: trunk works
+     +1 covener
 
 OTHER PROPOSALS
 
