@@ -185,7 +185,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1563381
                   http://svn.apache.org/r1565711
      2.4.x patch: trunk patches work
-     +1: jailletc36
+     +1: jailletc36, covener
 
    * core: Detect incomplete body in HTTP input filter and return
            APR_INCOMPLETE. PR 55475.
