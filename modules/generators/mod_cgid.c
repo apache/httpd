@@ -87,7 +87,6 @@ static APR_OPTIONAL_FN_TYPE(ap_ssi_get_tag_and_value) *cgid_pfn_gtv;
 static APR_OPTIONAL_FN_TYPE(ap_ssi_parse_string) *cgid_pfn_ps;
 
 static apr_pool_t *pcgi = NULL;
-static int total_modules = 0;
 static pid_t daemon_pid;
 static int daemon_should_exit = 0;
 static server_rec *root_server = NULL;
@@ -896,7 +895,6 @@ static int cgid_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
 {
     apr_proc_t *procnew = NULL;
     const char *userdata_key = "cgid_init";
-    module **m;
     int ret = OK;
     void *data;
 
@@ -918,9 +916,6 @@ static int cgid_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
 
     if (ap_state_query(AP_SQ_MAIN_STATE) != AP_SQ_MS_CREATE_PRE_CONFIG) {
         char *tmp_sockname;
-        total_modules = 0;
-        for (m = ap_preloaded_modules; *m != NULL; m++)
-            total_modules++;
 
         parent_pid = getpid();
         tmp_sockname = ap_runtime_dir_relative(p, sockname);

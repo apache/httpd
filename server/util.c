@@ -115,7 +115,7 @@ AP_DECLARE(char *) ap_field_noparam(apr_pool_t *p, const char *intype)
         while ((semi > intype) && apr_isspace(semi[-1])) {
             semi--;
         }
-        return apr_pstrndup(p, intype, semi - intype);
+        return apr_pstrmemdup(p, intype, semi - intype);
     }
 }
 
@@ -736,7 +736,7 @@ AP_DECLARE(char *) ap_getword_nulls(apr_pool_t *atrans, const char **line,
         return res;
     }
 
-    res = apr_pstrndup(atrans, *line, pos - *line);
+    res = apr_pstrmemdup(atrans, *line, pos - *line);
 
     ++pos;
 
@@ -956,13 +956,15 @@ AP_DECLARE(apr_status_t) ap_cfg_getc(char *ch, ap_configfile_t *cfp)
 AP_DECLARE(const char *) ap_pcfg_strerror(apr_pool_t *p, ap_configfile_t *cfp,
                                           apr_status_t rc)
 {
-    char buf[MAX_STRING_LEN];
     if (rc == APR_SUCCESS)
         return NULL;
-    return apr_psprintf(p, "Error reading %s at line %d: %s",
-                        cfp->name, cfp->line_number,
-                        rc == APR_ENOSPC ? "Line too long"
-                                         : apr_strerror(rc, buf, sizeof(buf)));
+
+    if (rc == APR_ENOSPC)
+        return apr_psprintf(p, "Error reading %s at line %d: Line too long",
+                            cfp->name, cfp->line_number);
+
+    return apr_psprintf(p, "Error reading %s at line %d: %pm",
+                        cfp->name, cfp->line_number, &rc);
 }
 
 /* Read one line from open ap_configfile_t, strip LF, increase line number */
@@ -1461,7 +1463,6 @@ AP_DECLARE(char *) ap_get_token(apr_pool_t *p, const char **accept_line,
     const char *ptr = *accept_line;
     const char *tok_start;
     char *token;
-    int tok_len;
 
     /* Find first non-white byte */
 
@@ -1482,8 +1483,7 @@ AP_DECLARE(char *) ap_get_token(apr_pool_t *p, const char **accept_line,
                     break;
     }
 
-    tok_len = ptr - tok_start;
-    token = apr_pstrndup(p, tok_start, tok_len);
+    token = apr_pstrmemdup(p, tok_start, ptr - tok_start);
 
     /* Advance accept_line pointer to the next non-white byte */
 
