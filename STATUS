@@ -98,6 +98,19 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * Easy proposals to synch 2.4 and trunk
+        - server/protocol.c (r_flush): Use int return type as per declaration
+          of apr_vformatter(); no functional change.
+        - core: Use %pm in order to save 8k of stack in 'ap_pcfg_strerror'
+        - core & cache: s/apr_pstrndup/apr_pstrmemdup/ when applicable
+        - mod_cgid: remove unnecessary total_modules calculation (follow-up to r1096569)
+     trunk patch: http://svn.apache.org/r1487528
+                  http://svn.apache.org/r1563379
+                  http://svn.apache.org/r1563381
+                  http://svn.apache.org/r1565711
+     2.4.x patch: trunk patches work
+     +1: jailletc36, covener, jim
+
   
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -173,19 +186,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                     https://svn.apache.org/r1565081
      2.4.x patch: https://people.apache.org/~kbrand/mod_ssl-2.4.x-certkeyfile-v3.diff
      +1: kbrand
-
-   * Easy proposals to synch 2.4 and trunk
-        - server/protocol.c (r_flush): Use int return type as per declaration
-          of apr_vformatter(); no functional change.
-        - core: Use %pm in order to save 8k of stack in 'ap_pcfg_strerror'
-        - core & cache: s/apr_pstrndup/apr_pstrmemdup/ when applicable
-        - mod_cgid: remove unnecessary total_modules calculation (follow-up to r1096569)
-     trunk patch: http://svn.apache.org/r1487528
-                  http://svn.apache.org/r1563379
-                  http://svn.apache.org/r1563381
-                  http://svn.apache.org/r1565711
-     2.4.x patch: trunk patches work
-     +1: jailletc36, covener, jim
 
    * core: Detect incomplete body in HTTP input filter and return
            APR_INCOMPLETE. PR 55475.
