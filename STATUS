@@ -185,18 +185,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1563381
                   http://svn.apache.org/r1565711
      2.4.x patch: trunk patches work
-     +1: jailletc36, covener
+     +1: jailletc36, covener, jim
 
    * core: Detect incomplete body in HTTP input filter and return
            APR_INCOMPLETE. PR 55475.
      trunk patch: http://svn.apache.org/r1538776
      2.4.x patch: https://people.apache.org/~ylavic/2.4.x-http_filter_incomplete.patch
-     +1: ylavic
+     +1: ylavic, jim
 
    * mod_proxy_wstunnel: Handle POLLERR/POLLHUP to avoid busy loop
      trunk patch: http://svn.apache.org/r1569615
      2.4.x patch: trunk works
-     +1 covener
+     +1 covener, jim
 
 OTHER PROPOSALS
 
