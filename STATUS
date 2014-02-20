@@ -98,10 +98,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * prefork: PR: 54852. Only use a dummy_connection for idle processes
-    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1542379
-    2.4.x patch: trunk patch works mod CHANGES
-    +1: jim, covener, humbedooh
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
