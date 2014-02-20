@@ -97,10 +97,6 @@ Changes with Apache 2.5.0
   *) core: ensure any abnormal exit is reported to stderr if it's a tty.
      PR 55670 [Nick Kew]
 
-  *) mod_proxy: Added support for unix domain sockets as the
-     backend server endpoint [Jim Jagielski, Blaise Tarr
-     <blaise tarr gmail com>]
-
   *) mod_auth_form: Make sure the optional functions are loaded even when
      the AuthFormProvider isn't specified. [Graham Leggett]
 
