@@ -98,18 +98,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * FreeBSD: Disable IPv4-mapped listening sockets by default for versions
-    5+ instead of just for FreeBSD 5. PR 53824.
-    trunk patch: http://svn.apache.org/r1551685
-    2.4.x patch: trunk patch works after resolving CHANGES conflicts
-    +1: trawick, jim, humbedooh
-
-   * core: Detect incomplete body in HTTP input filter and return
-           APR_INCOMPLETE. PR 55475.
-     trunk patch: http://svn.apache.org/r1538776
-     2.4.x patch: https://people.apache.org/~ylavic/2.4.x-http_filter_incomplete.patch
-     +1: ylavic, jim, humbedooh
-
   * prefork: PR: 54852. Only use a dummy_connection for idle processes
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1542379
     2.4.x patch: trunk patch works mod CHANGES
