@@ -2043,12 +2043,12 @@ static int lua_set_cookie(lua_State *L)
     }
     
     /* Create path segment */
-    if (path && strlen(path) > 0) {
+    if (path != NULL && strlen(path) > 0) {
         strpath = apr_psprintf(r->pool, "Path=\"%s\";", path);
     }
     
     /* Create domain segment */
-    if (domain && strlen(domain) > 0) {
+    if (domain != NULL && strlen(domain) > 0) {
         /* Domain does NOT like quotes in most browsers, so let's avoid that */
         strdomain = apr_psprintf(r->pool, "Domain=%s;", domain);
     }
