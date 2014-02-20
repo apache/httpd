@@ -2152,6 +2152,27 @@ static apr_status_t lua_websocket_readbytes(conn_rec* c, char* buffer,
     return rv;
 }
 
+static int lua_websocket_peek(lua_State *L) 
+{
+    apr_status_t rv;
+    apr_bucket_brigade *brigade;
+    
+    request_rec *r = ap_lua_check_request_rec(L, 1);
+    
+    brigade = apr_brigade_create(r->connection->pool, 
+            r->connection->bucket_alloc);
+    rv = ap_get_brigade(r->connection->input_filters, brigade, 
+            AP_MODE_READBYTES, APR_NONBLOCK_READ, 1);
+    if (rv == APR_SUCCESS) {
+        lua_pushboolean(L, 1);
+    }
+    else {
+        lua_pushboolean(L, 0);
+    }
+    apr_brigade_cleanup(brigade);
+    return 1;
+}
+
 static int lua_websocket_read(lua_State *L) 
 {
     apr_socket_t *sock;
@@ -2789,6 +2810,8 @@ void ap_lua_load_request_lmodule(lua_State *L, apr_pool_t *p)
                  makefun(&lua_websocket_greet, APL_REQ_FUNTYPE_LUACFUN, p));
     apr_hash_set(dispatch, "wsread", APR_HASH_KEY_STRING,
                  makefun(&lua_websocket_read, APL_REQ_FUNTYPE_LUACFUN, p));
+    apr_hash_set(dispatch, "wspeek", APR_HASH_KEY_STRING,
+                 makefun(&lua_websocket_peek, APL_REQ_FUNTYPE_LUACFUN, p));
     apr_hash_set(dispatch, "wswrite", APR_HASH_KEY_STRING,
                  makefun(&lua_websocket_write, APL_REQ_FUNTYPE_LUACFUN, p));
     apr_hash_set(dispatch, "wsclose", APR_HASH_KEY_STRING,
