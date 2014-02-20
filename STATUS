@@ -98,11 +98,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_proxy_wstunnel: Handle POLLERR/POLLHUP to avoid busy loop
-     trunk patch: http://svn.apache.org/r1569615
-     2.4.x patch: trunk works
-     +1 covener, jim, humbedooh
-
   * FreeBSD: Disable IPv4-mapped listening sockets by default for versions
     5+ instead of just for FreeBSD 5. PR 53824.
     trunk patch: http://svn.apache.org/r1551685

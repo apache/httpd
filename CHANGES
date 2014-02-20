@@ -2,6 +2,10 @@
 
 Changes with Apache 2.4.8
 
+  *) mod_proxy_wstunnel: Avoid busy loop on client errors, drop message
+     IDs 02445, 02446, and 02448 to TRACE1 from DEBUG. PR 56145.
+     [Joffroy Christen <joffroy.christen solvaxis com>, Eric Covener]
+
   *) mod_remoteip: Correct the trusted proxy match test. PR 54651.
      [Yoshinori Ehara <yoshinori ehara gmail com>, Eugene L <eugenel amazon com>]
 
