@@ -5,14 +5,6 @@ Changes with Apache 2.5.0
      IDs 02445, 02446, and 02448 to TRACE1 from DEBUG. PR 56145.
      [Joffroy Christen <joffroy.christen solvaxis com>, Eric Covener]
 
-  *) mod_lua: Update r:setcookie() to accept a table of options and add domain,
-     path and httponly to the list of options available to set.
-     PR 56128 [Edward Lu <Chaosed0 gmail com>, Daniel Gruno]
-     
-  *) mod_lua: Fix r:setcookie() to add, rather than replace,
-     the Set-Cookie header. PR56105
-     [Kevin J Walters <kjw ms com>, Edward Lu <Chaosed0 gmail com>]
-
   *) mod_proxy_fcgi: Fix error message when an unexpected protocol version
      number is received from the application.  PR 56110.  [Jeff Trawick]
 
@@ -125,8 +117,6 @@ Changes with Apache 2.5.0
   *) WinNT MPM: If ap_run_pre_connection() fails or sets c->aborted, don't
      save the socket for reuse by the next worker as if it were an 
      APR_SO_DISCONNECTED socket. Restores 2.2 behavior. [Eric Covener]
-
-  *) mod_lua: Add a logging hook for modifying/skipping logs. [Daniel Gruno]
 
   *) mod_status, mod_echo: Fix the display of client addresses.
      They were truncated to 31 characters which is not enough for IPv6 addresses.
