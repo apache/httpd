@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.8
 
+  *) prefork: Fix long delays when doing a graceful restart.
+     PR 54852 [Jim Jagielski, Arkadiusz Miskiewicz <arekm maven pl>]
+
   *) FreeBSD: Disable IPv4-mapped listening sockets by default for versions
      5+ instead of just for FreeBSD 5. PR 53824. [Jeff Trawick]
 
