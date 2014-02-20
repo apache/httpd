@@ -1023,6 +1023,18 @@ if r:wsupgrade() then
 end
 </highlight>
 
+<highlight language="lua">
+r:wspeek() -- Checks if any data is ready to be read
+
+-- Sleep while nothing is being sent to us...
+while r:wspeek() == false do
+   r.usleep(50000)
+end
+-- We have data ready!
+local line = r:wsread()
+
+</highlight>
+
 </section>
 
 <section id="logging"><title>Logging Functions</title>
