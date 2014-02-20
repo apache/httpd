@@ -13,21 +13,9 @@ Changes with Apache 2.5.0
      IDs 02445, 02446, and 02448 to TRACE1 from DEBUG. PR 56145.
      [Joffroy Christen <joffroy.christen solvaxis com>, Eric Covener]
 
-  *) mod_proxy_fcgi: Fix error message when an unexpected protocol version
-     number is received from the application.  PR 56110.  [Jeff Trawick]
-
-  *) mod_remoteip: Use the correct IP addresses to populate the proxy_ips field.
-     PR 55972. [Mike Rumph]
-
   *) mod_proxy: Do not try to parse the regular expressions passed by
      ProxyPassMatch as URL as they do not follow their syntax.
      PR 56074. [Ruediger Pluem]
-
-  *) mod_remoteip: Correct the trusted proxy match test. PR 54651.
-     [Yoshinori Ehara <yoshinori ehara gmail com>, Eugene L <eugenel amazon com>]
-
-  *) mod_rewrite: Add %{CONN_REMOTE_ADDR} as the non-useragent counterpart to
-     %{REMOTE_ADDR}. PR 56094. [Edward Lu <Chaosed0 gmail com>]
 
   *) mod_dir: Default to 2.2-like behavior and skip execution when method is
      neither GET nor POST, such as for DAV requests. PR 54914. [Chris Darroch]
@@ -35,9 +23,6 @@ Changes with Apache 2.5.0
   *) mod_rewrite: Rename the handler that does per-directory internal 
      redirects to "rewrite-redirect-handler" from "redirect-handler" so
      it is less ambiguous and less likely to be reused. [Eric Covener]
-
-  *) mod_dir: Add DirectoryCheckHandler to allow a 2.2-like behavior, skipping 
-     execution when a handler is already set. PR53929. [Eric Covener]
 
   *) mod_rewrite: Protect against looping with the [N] flag by enforcing a 
      default limit of 10000 iterations, and allowing each rule to change its
