@@ -185,6 +185,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      +1 covener, jim
 
+   *  mod_rewrite: Add RewriteOptions InheritDown, InheritDownBefore,
+     and IgnoreInherit to allow RewriteRules to be pushed from parent scopes
+     to child scopes without explicitly configuring each child scope.
+     PR56153. 
+     trunk patch: http://svn.apache.org/r1570288
+     2.4.x patch: trunk works
+     +1 covener
+
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
