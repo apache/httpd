@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 
+
 #include "mod_lua.h"
 #include "lua_dbd.h"
 
@@ -228,15 +229,19 @@ int lua_db_escape(lua_State *L)
  */
 int lua_db_get_row(lua_State *L) 
 {
-    int row_no,x;
-    const char      *entry;
+    int row_no,x,alpha = 0;
+    const char      *entry, *rowname;
     apr_dbd_row_t   *row = 0;
     lua_db_result_set *res = lua_get_result_set(L);
     
     row_no = luaL_optinteger(L, 2, 0);
+    if (lua_isboolean(L, 3)) {
+        alpha = lua_toboolean(L, 3);
+    }
     lua_settop(L,0);
     
     /* Fetch all rows at once? */
+    
     if (row_no == 0) {
         row_no = 1;
         lua_newtable(L);
@@ -248,7 +253,14 @@ int lua_db_get_row(lua_State *L)
             for (x = 0; x < res->cols; x++) {
                 entry = apr_dbd_get_entry(res->driver, row, x);
                 if (entry) {
-                    lua_pushinteger(L, x + 1);
+                    if (alpha == 1) {
+                        rowname = apr_dbd_get_name(res->driver, 
+                                res->results, x);
+                        lua_pushstring(L, rowname ? rowname : "(oob)");
+                    }
+                    else {
+                        lua_pushinteger(L, x + 1);
+                    }
                     lua_pushstring(L, entry);
                     lua_rawset(L, -3);
                 }
@@ -268,7 +280,14 @@ int lua_db_get_row(lua_State *L)
         for (x = 0; x < res->cols; x++) {
             entry = apr_dbd_get_entry(res->driver, row, x);
             if (entry) {
-                lua_pushinteger(L, x + 1);
+                if (alpha == 1) {
+                    rowname = apr_dbd_get_name(res->driver, 
+                            res->results, x);
+                    lua_pushstring(L, rowname ? rowname : "(oob)");
+                }
+                else {
+                    lua_pushinteger(L, x + 1);
+                }
                 lua_pushstring(L, entry);
                 lua_rawset(L, -3);
             }
