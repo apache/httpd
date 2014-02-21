@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_lua: Allow for database results to be returned as a hash with 
+     row-name/value pairs instead of just row-number/value.
+
   *) mod_rewrite: Add RewriteOptions InheritDown, InheritDownBefore, 
      and IgnoreInherit to allow RewriteRules to be pushed from parent scopes
      to child scopes without explicitly configuring each child scope.
