@@ -1170,7 +1170,8 @@ local result, err = db:select(r, "SELECT * FROM `tbl` WHERE 1")
 
 local rows = result(0) -- Fetch ALL rows synchronously
 local row = result(-1) -- Fetch the next available row, asynchronously
-local row = result(1234) -- Fetch row number 1234, asynchronously</pre>
+local row = result(1234) -- Fetch row number 1234, asynchronously
+local row = result(-1, true) -- Fetch the next available row, using row names as key indexes.</pre>
 
     <p>One can construct a function that returns an iterative function to iterate over all rows 
     in a synchronous or asynchronous way, depending on the async argument:
