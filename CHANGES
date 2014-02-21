@@ -29,6 +29,9 @@ Changes with Apache 2.4.8
      the Set-Cookie header. PR56105
      [Kevin J Walters <kjw ms com>, Edward Lu <Chaosed0 gmail com>]
 
+  *) mod_lua: Allow for database results to be returned as a hash with 
+     row-name/value pairs instead of just row-number/value. [Daniel Gruno]
+
   *) mod_rewrite: Add %{CONN_REMOTE_ADDR} as the non-useragent counterpart to
      %{REMOTE_ADDR}. PR 56094. [Edward Lu <Chaosed0 gmail com>]
 
