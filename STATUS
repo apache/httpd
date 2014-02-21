@@ -170,17 +170,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      PR56153. 
      trunk patch: http://svn.apache.org/r1570288
      2.4.x patch: trunk works
-     +1 covener, humbedooh
+     +1 covener, humbedooh, jim
 
    * mod_proxy_http: Log an error when reading the request body fails.
      trunk patch: http://svn.apache.org/r1570598
      2.4.x patch:  trunk works modulo next_number
-     +1: ylavic
+     +1: ylavic, jim
 
    * mod_proxy_http: Don't recycle backend connections known to be closed.
      trunk patch: http://svn.apache.org/r1568404
      2.4.x patch:  trunk works
-     +1: ylavic
+     +1: ylavic, jim
 
 OTHER PROPOSALS
 
