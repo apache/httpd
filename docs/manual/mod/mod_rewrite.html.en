@@ -885,6 +885,34 @@ later</td></tr>
       Available in Apache HTTP Server 2.3.10 and later.</p>
       </dd>
 
+      <dt><code>InheritDown</code></dt>
+      <dd>
+
+      <p>If this option is enabled, all child configurations will inherit
+      the configuration of the current configuration. It is equivalent to
+      specifying <code>RewriteOptions Inherit</code> in all child
+      configurations. See the <code>Inherit</code> option for more details
+      on how the parent-child relationships are handled. Available in Apache
+      HTTP Server 2.4.8 and later.</p>
+      </dd>
+
+      <dt><code>InheritDownBefore</code></dt>
+      <dd>
+
+      <p>Like <code>InheritDown</code> above, but the rules from the current
+      scope are applied <strong>before</strong> rules specified in any child's
+      scope. Available in Apache HTTP Server 2.4.8 and later.</p>
+      </dd>
+
+      <dt><code>IgnoreInherit</code></dt>
+      <dd>
+
+      <p>This option forces the current and child configurations to ignore
+      all rules that would be inherited from a parent specifying
+      <code>InheritDown</code> or <code>InheritDownBefore</code>. Available
+      in Apache HTTP Server 2.4.8 and later.</p>
+      </dd>
+
       <dt><code>AllowNoSlash</code></dt>
       <dd>
       <p>By default, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> will ignore URLs that map to a
