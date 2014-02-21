@@ -2,6 +2,11 @@
 
 Changes with Apache 2.4.8
 
+  *) mod_rewrite: Add RewriteOptions InheritDown, InheritDownBefore, 
+     and IgnoreInherit to allow RewriteRules to be pushed from parent scopes
+     to child scopes without explicitly configuring each child scope.
+     PR56153.  [Edward Lu <Chaosed0 gmail com>] 
+
   *) prefork: Fix long delays when doing a graceful restart.
      PR 54852 [Jim Jagielski, Arkadiusz Miskiewicz <arekm maven pl>]
 

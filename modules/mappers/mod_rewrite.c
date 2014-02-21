@@ -192,6 +192,9 @@ static const char* really_last_key = "rewrite_really_last";
 #define OPTION_NOSLASH              1<<3
 #define OPTION_ANYURI               1<<4
 #define OPTION_MERGEBASE            1<<5
+#define OPTION_INHERIT_DOWN         1<<6
+#define OPTION_INHERIT_DOWN_BEFORE  1<<7
+#define OPTION_IGNORE_INHERIT       1<<8
 
 #ifndef RAND_MAX
 #define RAND_MAX 32767
@@ -2765,7 +2768,9 @@ static void *config_server_merge(apr_pool_t *p, void *basev, void *overridesv)
 
     a->server  = overrides->server;
 
-    if (a->options & OPTION_INHERIT) {
+    if (a->options & OPTION_INHERIT ||
+            (base->options & OPTION_INHERIT_DOWN &&
+             !(a->options & OPTION_IGNORE_INHERIT))) {
         /*
          *  local directives override
          *  and anything else is inherited
@@ -2777,7 +2782,9 @@ static void *config_server_merge(apr_pool_t *p, void *basev, void *overridesv)
         a->rewriterules    = apr_array_append(p, overrides->rewriterules,
                                               base->rewriterules);
     }
-    else if (a->options & OPTION_INHERIT_BEFORE) {
+    else if (a->options & OPTION_INHERIT_BEFORE || 
+            (base->options & OPTION_INHERIT_DOWN_BEFORE &&
+             !(a->options & OPTION_IGNORE_INHERIT))) {
         /*
          *  local directives override
          *  and anything else is inherited (preserving order)
@@ -2854,13 +2861,17 @@ static void *config_perdir_merge(apr_pool_t *p, void *basev, void *overridesv)
 
     a->directory  = overrides->directory;
 
-    if (a->options & OPTION_INHERIT) {
+    if (a->options & OPTION_INHERIT ||
+            (base->options & OPTION_INHERIT_DOWN &&
+             !(a->options & OPTION_IGNORE_INHERIT))) {
         a->rewriteconds = apr_array_append(p, overrides->rewriteconds,
                                            base->rewriteconds);
         a->rewriterules = apr_array_append(p, overrides->rewriterules,
                                            base->rewriterules);
     }
-    else if (a->options & OPTION_INHERIT_BEFORE) {
+    else if (a->options & OPTION_INHERIT_BEFORE || 
+            (base->options & OPTION_INHERIT_DOWN_BEFORE &&
+             !(a->options & OPTION_IGNORE_INHERIT))) {
         a->rewriteconds    = apr_array_append(p, base->rewriteconds,
                                               overrides->rewriteconds);
         a->rewriterules    = apr_array_append(p, base->rewriterules,
@@ -2911,6 +2922,15 @@ static const char *cmd_rewriteoptions(cmd_parms *cmd,
         }
         else if (!strcasecmp(w, "inheritbefore")) {
             options |= OPTION_INHERIT_BEFORE;
+        }
+        else if (!strcasecmp(w, "inheritdown")) {
+            options |= OPTION_INHERIT_DOWN;
+        }
+        else if(!strcasecmp(w, "inheritdownbefore")) {
+            options |= OPTION_INHERIT_DOWN_BEFORE;
+        }
+        else if (!strcasecmp(w, "ignoreinherit")) {
+            options |= OPTION_IGNORE_INHERIT;
         }
         else if (!strcasecmp(w, "allownoslash")) {
             options |= OPTION_NOSLASH;
