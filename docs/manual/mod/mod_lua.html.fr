@@ -27,8 +27,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_lua.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_lua.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Fournit des points d'entrée Lua dans différentes parties du
 traitement des requêtes httpd</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
@@ -1044,8 +1042,22 @@ end</pre>
 <pre class="prettyprint lang-lua">r:getcookie(key) -- Obtient un cookie HTTP</pre>
 
 
-<pre class="prettyprint lang-lua">r:setcookie(key, value, secure, expires) -- Définit un cookie HTTP, par exemple :
-r:setcookie("foo", "bar and stuff", false, os.time() + 86400)</pre>
+<pre class="prettyprint lang-lua">r:setcookie{
+  key = [key],
+  value = [value],
+  expires = [expiry],
+  secure = [boolean],
+  httponly = [boolean],
+  path = [path],
+  domain = [domain]
+} -- Définit un cookie HTTP, par exemple :
+
+r:setcookie{
+  key = "cookie1",
+  value = "HDHfa9eyffh396rt",
+  expires = os.time() + 86400,
+  secure = true
+}</pre>
 
 
 <pre class="prettyprint lang-lua">r:wsupgrade() -- Met à jour une connexion vers les WebSockets si possible (et si demandé) :
@@ -1259,7 +1271,8 @@ local result, err = db:select(r, "SELECT * FROM `tbl` WHERE 1")
 
 local rows = result(0) -- sélectionne tous les enregistrements en mode synchrone
 local row = result(-1) -- sélectionne le prochain enregistrement disponible en mode asynchrone
-local row = result(1234) -- sélectionne l'enregistrement 1234 en mode asynchrone</pre>
+local row = result(1234) -- sélectionne l'enregistrement 1234 en mode asynchrone
+local row = result(-1, true) -- Lit l'enregistrement suivant en utilisant les noms d'enregistrements comme index.</pre>
 
     <p>Il est possible de construire une fonction qui renvoie une
 fonction itérative permettant de traiter tous les enregistrement en mode
