@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1566702:1570684 (outdated) -->
+<!-- English Revision : 1570684 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -193,6 +193,38 @@ la version version 2.1</compatibility>
       <strong>avant</strong> les r&egrave;gles sp&eacute;cifi&eacute;es dans le niveau
       enfant. Disponible depuis la version 2.3.10 du serveur HTTP
       Apache.</p>
+      </dd>
+
+      <dt><code>InheritDown</code></dt>
+      <dd>
+
+      <p>Si cette option est activ&eacute;e, toutes les configurations enfants
+      h&eacute;riteront de la configuration courante. Il en est de m&ecirc;me si l'on
+      sp&eacute;cifie <code>RewriteOptions Inherit</code> dans toutes les
+      configurations enfants. Voir l'option <code>Inherit</code> pour
+      plus de d&eacute;tails &agrave; propos de la mani&egrave;re dont les relations
+      parent-enfants sont trait&eacute;es. Cette option est disponible &agrave; partir
+      de la version 2.4.8 du serveur HTTP Apache.</p>
+      </dd>
+
+      <dt><code>InheritDownBefore</code></dt>
+      <dd>
+
+      <p>L'effet de cette option est &eacute;quivalent &agrave; celui de l'option
+      <code>InheritDown</code> ci-dessus, mais les r&egrave;gles de la
+      configuration parente s'appliquent <strong>avant</strong> toute
+      r&egrave;gle de la configuration enfant. Cette option est disponible &agrave; partir
+      de la version 2.4.8 du serveur HTTP Apache.</p>
+      </dd>
+
+      <dt><code>IgnoreInherit</code></dt>
+      <dd>
+
+      <p>Si cette option est activ&eacute;e, les configurations courante et
+      enfants ignoreront toute r&egrave;gle h&eacute;rit&eacute;e d'une configuration parente
+      via les options <code>InheritDown</code> ou
+      <code>InheritDownBefore</code>. Cette option est disponible &agrave; partir
+      de la version 2.4.8 du serveur HTTP Apache.</p>
       </dd>
 
       <dt><code>AllowNoSlash</code></dt>
@@ -1319,6 +1351,15 @@ substitution !
         ...</a></em></td>
     </tr>
     <tr>
+        <td>END</td>
+        <td>Stoppe le processus de r&eacute;&eacute;criture imm&eacute;diatement et
+	n'applique plus aucune r&egrave;gle. Emp&ecirc;che aussi l'application
+	ult&eacute;rieure de r&egrave;gles de r&eacute;&eacute;criture dans les contextes de
+	r&eacute;pertoire et de fichier .htaccess (disponible &agrave; partir de la
+	version 2.3.9 du serveur HTTP Apache). <em><a
+	href="../rewrite/flags.html#flag_end">d&eacute;tails ...</a></em></td>
+    </tr>
+    <tr>    
         <td>env|E=[!]<em>VAR</em>[:<em>VAL</em>]</td>
         <td>D&eacute;finit la variable d'environnement <em>VAR</em> (&agrave; la valeur
 	<em>VAL</em> si elle est fournie). La variante !<em>VAR</em>
@@ -1347,7 +1388,7 @@ substitution !
 	plus aucune r&egrave;gle. Pr&ecirc;tez une attention particuli&egrave;re aux mises
 	en garde concernant les contextes de niveau r&eacute;pertoire et
 	.htaccess (voir aussi le drapeau END). <em><a
-        href="../rewrite/flags.html#flag_end">d&eacute;tails ...</a></em></td>
+        href="../rewrite/flags.html#flag_l">d&eacute;tails ...</a></em></td>
     </tr>
     <tr>
         <td>next|N</td>
@@ -1408,15 +1449,6 @@ substitution !
 	optionnel. <em><a
         href="../rewrite/flags.html#flag_r">d&eacute;tails ...</a></em>
         </td>
-    </tr>
-    <tr>
-        <td>END</td>
-        <td>Arr&ecirc;te le processus de r&eacute;&eacute;criture imm&eacute;diatement et
-	n'applique plus aucune r&egrave;gle. Emp&ecirc;che aussi l'ex&eacute;cution
-	ult&eacute;rieure de r&egrave;gles de r&eacute;&eacute;criture dans des contextes de
-	r&eacute;pertoire et des fichiers .htaccess (disponible depuis la
-	version 2.3.9) <em><a
-	href="../rewrite/flags.html#flag_l">d&eacute;tails ...</a></em></td>
     </tr>
     <tr>
         <td>skip|S=<em>nombre</em></td>
