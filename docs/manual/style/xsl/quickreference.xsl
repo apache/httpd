@@ -219,6 +219,7 @@
     select="$directives[$letter=translate(substring(normalize-space(name), 1,1),
                                           $lowercase,$uppercase)]">
 <xsl:sort select="name" />
+<xsl:sort select="../name" /> <!-- in case of duplicate directives -->
 
     <xsl:choose>
     <xsl:when test="$modules[name=current()/../name]

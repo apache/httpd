@@ -104,6 +104,8 @@
                 [$letter = translate(substring(normalize-space(name), 1, 1),
                                      $lowercase, $uppercase)]">
 <xsl:sort select="name" />
+<xsl:sort select="../name" /> <!-- in case of duplicate directives -->
+
     <li>
         <a href="{../name}.html#{translate(name, $uppercase, $lowercase)}">
             <xsl:if test="position() = 1">
