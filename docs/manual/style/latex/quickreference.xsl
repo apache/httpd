@@ -52,6 +52,7 @@
    select="$directives[translate(substring(normalize-space(name), 1,1),
                                           $lowercase,$uppercase)]">
 <xsl:sort select="name" />
+<xsl:sort select="../name" />
 
    <xsl:text>\texttt{</xsl:text>
    <xsl:apply-templates select="syntax" mode="tabular" />
