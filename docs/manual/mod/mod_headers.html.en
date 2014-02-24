@@ -200,7 +200,7 @@ Header merge Cache-Control no-store env=NO_STORE</pre>
 <div class="directive-section"><h2><a name="Header" id="Header">Header</a> <a name="header" id="header">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure HTTP response headers</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Header [<var>condition</var>] add|append|echo|edit|edit*|merge|set|unset|note
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Header [<var>condition</var>] add|append|echo|edit|edit*|merge|set|setifempty|unset|note
 <var>header</var> [<var>value</var>] [<var>replacement</var>]
 [early|env=[!]<var>variable</var>]|expr=<var>expression</var>]
 </code></td></tr>
@@ -208,7 +208,7 @@ Header merge Cache-Control no-store env=NO_STORE</pre>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_headers</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Default condition was temporarily changed to "always" in 2.3.9 and 2.3.10</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Default condition was temporarily changed to "always" in 2.3.9 and 2.3.10.  SetIfEmpty available since 2.4.7.</td></tr>
 </table>
     <p>This directive can replace, merge or remove HTTP response
     headers. The header is modified just after the content handler
@@ -293,7 +293,7 @@ Header merge Cache-Control no-store env=NO_STORE</pre>
 
     <dt><code>setifempty</code></dt>
     <dd>The request header is set, but only if there is no previous header
-    with this name</dd>
+    with this name. Available in 2.4.7 and later.</dd>
 
     <dt><code>unset</code></dt>
     <dd>The response header of this name is removed, if it exists.
@@ -399,7 +399,7 @@ Header merge Cache-Control no-store env=NO_STORE</pre>
 <div class="directive-section"><h2><a name="RequestHeader" id="RequestHeader">RequestHeader</a> <a name="requestheader" id="requestheader">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure HTTP request headers</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RequestHeader add|append|edit|edit*|merge|set|unset
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RequestHeader add|append|edit|edit*|merge|set|setifempty|unset
 <var>header</var> [<var>value</var>] [<var>replacement</var>]
 [early|env=[!]<var>variable</var>]|expr=<var>expression</var>]
 </code></td></tr>
@@ -407,6 +407,7 @@ Header merge Cache-Control no-store env=NO_STORE</pre>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_headers</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>SetIfEmpty available in 2.4.7 and later</td></tr>
 </table>
     <p>This directive can replace, merge, change or remove HTTP request
     headers. The header is modified just before the content handler
@@ -457,7 +458,7 @@ Header merge Cache-Control no-store env=NO_STORE</pre>
 
     <dt><code>setifempty</code></dt>
     <dd>The request header is set, but only if there is no previous header
-    with this name</dd>
+    with this name. Available in 2.4.7 and later.</dd>
 
     <dt><code>unset</code></dt>
     <dd>The request header of this name is removed, if it exists. If
