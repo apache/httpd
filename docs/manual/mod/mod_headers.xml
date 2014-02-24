@@ -192,13 +192,14 @@ Header merge Cache-Control no-store env=NO_STORE
 <directivesynopsis>
 <name>RequestHeader</name>
 <description>Configure HTTP request headers</description>
-<syntax>RequestHeader add|append|edit|edit*|merge|set|unset
+<syntax>RequestHeader add|append|edit|edit*|merge|set|setifempty|unset
 <var>header</var> [<var>value</var>] [<var>replacement</var>]
 [early|env=[!]<var>variable</var>]|expr=<var>expression</var>]
 </syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
+<compatibility>SetIfEmpty available in 2.4.7 and later</compatibility>
 
 <usage>
     <p>This directive can replace, merge, change or remove HTTP request
@@ -251,7 +252,7 @@ Header merge Cache-Control no-store env=NO_STORE
   
     <dt><code>setifempty</code></dt>
     <dd>The request header is set, but only if there is no previous header
-    with this name</dd>
+    with this name. Available in 2.4.7 and later.</dd>
 
     <dt><code>unset</code></dt>
     <dd>The request header of this name is removed, if it exists. If
@@ -307,6 +308,7 @@ Header merge Cache-Control no-store env=NO_STORE
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
+<compatibility>SetIfEmpty available in 2.4.7 and later</compatibility>
 
 <usage>
     <p>This directive can replace, merge or remove HTTP response
@@ -393,7 +395,7 @@ Header merge Cache-Control no-store env=NO_STORE
 
     <dt><code>setifempty</code></dt>
     <dd>The request header is set, but only if there is no previous header
-    with this name</dd>
+    with this name. Available in 2.4.7 and later.</dd>
 
     <dt><code>unset</code></dt>
     <dd>The response header of this name is removed, if it exists.
