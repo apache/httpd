@@ -388,7 +388,7 @@ static apr_status_t ap_watchdog_register_callback(ap_watchdog_t *w,
 /*                                                                          */
 /* Pre config hook.                                                         */
 /* Create default watchdogs for parent and child                            */
-/* Parent watchdog executes inside parent proces so it doesn't need the     */
+/* Parent watchdog executes inside parent process so it doesn't need the    */
 /* singleton mutex                                                          */
 /*                                                                          */
 /*--------------------------------------------------------------------------*/
