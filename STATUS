@@ -161,7 +161,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                     https://svn.apache.org/r1564760
                     https://svn.apache.org/r1565081
      2.4.x patch: https://people.apache.org/~kbrand/mod_ssl-2.4.x-certkeyfile-v3.diff
-     +1: kbrand
+     +1: kbrand, ylavic
 
 
    * mod_proxy_http: Log an error when reading the request body fails.
