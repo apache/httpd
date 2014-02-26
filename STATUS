@@ -151,6 +151,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.2.x patch: http://people.apache.org/~jailletc36/patch_2.2.diff
     +1: jailletc36
 
+ * mod_ssl: Do not perform SNI / Host header comparison in case of a
+   forward proxy request.
+     Trunk version of patch:
+        http://svn.apache.org/r1553204
+        http://svn.apache.org/r1555240
+        http://svn.apache.org/r1572198
+     Backport version for 2.2.x of patch:
+        http://people.apache.org/~rpluem/patches/no_sni_check_forward_proxy_2.2.x.diff
+     +1: rpluem,
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * mod_cache: Realign the cache_quick_handler() to behave identically
