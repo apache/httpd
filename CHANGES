@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_ssl: Do not perform SNI / Host header comparison in case of a
+     forward proxy request. [Ruediger Pluem]
+
   *) mod_rewrite: Add RewriteOptions InheritDown, InheritDownBefore, 
      and IgnoreInherit to allow RewriteRules to be pushed from parent scopes
      to child scopes without explicitly configuring each child scope.
