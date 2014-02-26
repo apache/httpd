@@ -1125,7 +1125,8 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
                     }
                     ctx->stream.next_in += 4;
                     compLen = getLong(ctx->stream.next_in);
-                    if (ctx->stream.total_out != compLen) {
+                    /* gzip stores original size only as 4 byte value */
+                    if ((ctx->stream.total_out & 0xFFFFFFFF) != compLen) {
                         inflateEnd(&ctx->stream);
                         ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01395)
                                       "Zlib: Length %ld of inflated data does "
@@ -1322,7 +1323,8 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
                 }
                 ctx->validation_buffer += VALIDATION_SIZE / 2;
                 compLen = getLong(ctx->validation_buffer);
-                if (ctx->stream.total_out != compLen) {
+                /* gzip stores original size only as 4 byte value */
+                if ((ctx->stream.total_out & 0xFFFFFFFF) != compLen) {
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01400)
                                   "Zlib: Length of inflated stream invalid");
                     return APR_EGENERAL;
