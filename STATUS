@@ -114,7 +114,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     N/A:         https://svn.apache.org/viewvc?view=revision&revision=1527925
     2.2.x patch (plus CHANGES entry above):
         http://people.apache.org/~wrowe/httpd-2.2-r1524192-r1524770-TE-CL.patch
-    +1:
+    +1: rpluem
     [wrowe asks] Where is verification of (!keepalive)?  Do we know the
                  connection will be closed anytime in the near future?
 
@@ -149,7 +149,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                 http://svn.apache.org/viewvc?view=revision&revision=r1490994
                 http://svn.apache.org/viewvc?view=revision&revision=r1172732
     2.2.x patch: http://people.apache.org/~jailletc36/patch_2.2.diff
-    +1: jailletc36
+    +1: jailletc36, rpluem
 
  * mod_ssl: Do not perform SNI / Host header comparison in case of a
    forward proxy request.
