@@ -164,6 +164,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://people.apache.org/~rpluem/patches/no_sni_check_forward_proxy_2.2.x.diff
      +1: rpluem,
 
+ * mod_proxy: Cleanup the client to backend brigade before returning an error
+              (if any) to avoid buckets lifetime issues (backend connection's
+              pool destroyed before request's one). PR 50335.
+              Follows up r1534321 and r1550061 already accepted for backport in 2.2.27.
+   trunk patch: http://svn.apache.org/r1572543
+   2.2.x patch: http://people.apache.org/~ylavic/2.2.x-ap_proxy_pass_brigade_cleanup.patch
+   +1: ylavic
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * mod_cache: Realign the cache_quick_handler() to behave identically
