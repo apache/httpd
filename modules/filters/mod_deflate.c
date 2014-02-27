@@ -304,7 +304,11 @@ typedef struct deflate_ctx_t
     int (*libz_end_func)(z_streamp);
     unsigned char *validation_buffer;
     apr_size_t validation_buffer_length;
-    unsigned int inflate_init:1;
+    char header[10]; // sizeof(gzip_header)
+    apr_size_t header_len;
+    int zlib_flags;
+    unsigned int consume_pos,
+                 consume_len;
     unsigned int filter_init:1;
     unsigned int done:1;
 } deflate_ctx;
@@ -884,6 +888,96 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
     return APR_SUCCESS;
 }
 
+static apr_status_t consume_zlib_flags(deflate_ctx *ctx,
+                                       const char **data, apr_size_t *len)
+{
+    if ((ctx->zlib_flags & EXTRA_FIELD)) {
+        /* Consume 2 bytes length prefixed data. */
+        if (ctx->consume_pos == 0) {
+            if (!*len) {
+                return APR_INCOMPLETE;
+            }
+            ctx->consume_len = (unsigned int)**data;
+            ctx->consume_pos++;
+            ++*data;
+            --*len;
+        }
+        if (ctx->consume_pos == 1) {
+            if (!*len) {
+                return APR_INCOMPLETE;
+            }
+            ctx->consume_len += ((unsigned int)**data) << 8;
+            ctx->consume_pos++;
+            ++*data;
+            --*len;
+        }
+        if (*len < ctx->consume_len) {
+            ctx->consume_len -= *len;
+            *len = 0;
+            return APR_INCOMPLETE;
+        }
+        *data += ctx->consume_len;
+        *len -= ctx->consume_len;
+
+        ctx->consume_len = ctx->consume_pos = 0;
+        ctx->zlib_flags &= ~EXTRA_FIELD;
+    }
+
+    if ((ctx->zlib_flags & ORIG_NAME)) {
+        /* Consume nul terminated string. */
+        while (*len && **data) {
+            ++*data;
+            --*len;
+        }
+        if (!*len) {
+            return APR_INCOMPLETE;
+        }
+        /* .. and nul. */
+        ++*data;
+        --*len;
+
+        ctx->zlib_flags &= ~ORIG_NAME;
+    }
+
+    if ((ctx->zlib_flags & COMMENT)) {
+        /* Consume nul terminated string. */
+        while (*len && **data) {
+            ++*data;
+            --*len;
+        }
+        if (!*len) {
+            return APR_INCOMPLETE;
+        }
+        /* .. and nul. */
+        ++*data;
+        --*len;
+
+        ctx->zlib_flags &= ~COMMENT;
+    }
+
+    if ((ctx->zlib_flags & HEAD_CRC)) {
+        /* Consume CRC16 (2 octets). */
+        if (ctx->consume_pos == 0) {
+            if (!*len) {
+                return APR_INCOMPLETE;
+            }
+            ctx->consume_pos++;
+            ++*data;
+            --*len;
+        }
+        if (!*len) {
+            return APR_INCOMPLETE;
+        }
+        ++*data;
+        --*len;
+        
+        ctx->consume_pos = 0;
+        ctx->zlib_flags &= ~HEAD_CRC;
+    }
+
+    return APR_SUCCESS;
+}
+
 /* This is the deflate input filter (inflates).  */
 static apr_status_t deflate_in_filter(ap_filter_t *f,
                                       apr_bucket_brigade *bb,
@@ -1196,8 +1290,6 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
 static apr_status_t inflate_out_filter(ap_filter_t *f,
                                       apr_bucket_brigade *bb)
 {
-    int zlib_method;
-    int zlib_flags;
     apr_bucket *e;
     request_rec *r = f->r;
     deflate_ctx *ctx = f->ctx;
@@ -1278,8 +1370,6 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
         /* initialize inflate output buffer */
         ctx->stream.next_out = ctx->buffer;
         ctx->stream.avail_out = c->bufferSize;
-
-        ctx->inflate_init = 0;
     }
 
     while (!APR_BRIGADE_EMPTY(bb))
@@ -1388,55 +1478,58 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
         apr_bucket_read(e, &data, &len, APR_BLOCK_READ);
 
         /* first bucket contains zlib header */
-        if (!ctx->inflate_init) {
-            ctx->inflate_init = 1;
-            if (len < 10) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01403)
-                              "Insufficient data for inflate");
-                return APR_EGENERAL;
+        if (ctx->header_len < sizeof(ctx->header)) {
+            apr_size_t rem;
+
+            rem = sizeof(ctx->header) - ctx->header_len;
+            if (len < rem) {
+                memcpy(ctx->header + ctx->header_len, data, len);
+                ctx->header_len += len;
+                apr_bucket_delete(e);
+                continue;
             }
-            else  {
-                zlib_method = data[2];
-                zlib_flags = data[3];
+            memcpy(ctx->header + ctx->header_len, data, rem);
+            ctx->header_len += rem;
+            {
+                int zlib_method;
+                zlib_method = ctx->header[2];
                 if (zlib_method != Z_DEFLATED) {
                     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01404)
                                   "inflate: data not deflated!");
                     ap_remove_output_filter(f);
                     return ap_pass_brigade(f->next, bb);
                 }
-                if (data[0] != deflate_magic[0] ||
-                    data[1] != deflate_magic[1] ||
-                    (zlib_flags & RESERVED) != 0) {
+                if (ctx->header[0] != deflate_magic[0] ||
+                    ctx->header[1] != deflate_magic[1]) {
                         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01405)
                                       "inflate: bad header");
                     return APR_EGENERAL ;
                 }
-                data += 10 ;
-                len -= 10 ;
-           }
-           if (zlib_flags & EXTRA_FIELD) {
-               unsigned int bytes = (unsigned int)(data[0]);
-               bytes += ((unsigned int)(data[1])) << 8;
-               bytes += 2;
-               if (len < bytes) {
-                   ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01406)
-                                 "inflate: extra field too big (not "
-                                 "supported)");
-                   return APR_EGENERAL;
-               }
-               data += bytes;
-               len -= bytes;
-           }
-           if (zlib_flags & ORIG_NAME) {
-               while (len-- && *data++);
-           }
-           if (zlib_flags & COMMENT) {
-               while (len-- && *data++);
-           }
-           if (zlib_flags & HEAD_CRC) {
-                len -= 2;
-                data += 2;
-           }
+                ctx->zlib_flags = ctx->header[3];
+                if ((ctx->zlib_flags & RESERVED)) {
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO()
+                                  "inflate: bad flags %02x",
+                                  ctx->zlib_flags);
+                    return APR_EGENERAL;
+                }
+            }
+            if (len == rem) {
+                apr_bucket_delete(e);
+                continue;
+            }
+            data += rem;
+            len -= rem;
+        }
+
+        if (ctx->zlib_flags) {
+            rv = consume_zlib_flags(ctx, &data, &len);
+            if (rv == APR_SUCCESS) {
+                ctx->zlib_flags = 0;
+            }
+            if (rv == APR_INCOMPLETE || !len) {
+                apr_bucket_delete(e);
+                continue;
+            }
         }
 
         /* pass through zlib inflate. */
