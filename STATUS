@@ -103,6 +103,15 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     2.2.x: trunk patch applies aka `svn merge -c 1556428 ^/httpd/httpd/trunk`
     +1: breser, rpluem, gstein, wrowe
 
+  * mod_proxy_http: Core dumped under high load due to allocator / pool lifetime
+    issues. PR 50335
+    Trunk version of patch:
+       http://svn.apache.org/viewvc?view=revision&revision=1534321
+       http://svn.apache.org/viewvc?view=revision&revision=1550061
+    Backport version for 2.2.x of patch:
+       http://people.apache.org/~rpluem/patches/mod_proxy_http_50335.2.2.x.diff
+    +1: rpluem, jorton, ylavic
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -114,18 +123,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     N/A:         https://svn.apache.org/viewvc?view=revision&revision=1527925
     2.2.x patch (plus CHANGES entry above):
         http://people.apache.org/~wrowe/httpd-2.2-r1524192-r1524770-TE-CL.patch
-    +1: rpluem
+    +1: rpluem, ylavic
     [wrowe asks] Where is verification of (!keepalive)?  Do we know the
                  connection will be closed anytime in the near future?
-
- * mod_proxy_http: Core dumped under high load due to allocator / pool lifetime
-   issues. PR 50335
-   Trunk version of patch:
-      http://svn.apache.org/viewvc?view=revision&revision=1534321
-      http://svn.apache.org/viewvc?view=revision&revision=1550061
-   Backport version for 2.2.x of patch:
-      http://people.apache.org/~rpluem/patches/mod_proxy_http_50335.2.2.x.diff
-   +1: rpluem, jorton, 
+    ylavic: the discussion is not really ended in
+            https://www.mail-archive.com/dev@httpd.apache.org/msg58307.html
+            but my opinion there is +1, same here...
 
   * back port some bugfix that have already been included in 2.4.x. CHANGES has
     been upgraded with the corresponding entries.
