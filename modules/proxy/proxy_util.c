@@ -1405,7 +1405,6 @@ static void socket_cleanup(proxy_conn_rec *conn)
 {
     conn->sock = NULL;
     conn->connection = NULL;
-    conn->ssl_hostname = NULL;
     apr_pool_clear(conn->scpool);
 }
 
@@ -2346,35 +2345,6 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
                                        proxyname ? NULL : conn->addr)) {
         return ap_proxyerror(r, HTTP_FORBIDDEN,
                              "Connect to remote machine blocked");
-    }
-    /*
-     * When SSL is configured, determine the hostname (SNI) for the request
-     * and save it in conn->ssl_hostname. Close any reused connection whose
-     * SNI differs.
-     */
-    if (conn->is_ssl) {
-        proxy_dir_conf *dconf;
-        const char *ssl_hostname;
-        /*
-         * In the case of ProxyPreserveHost on use the hostname of
-         * the request if present otherwise use the one from the
-         * backend request URI.
-         */
-        dconf = ap_get_module_config(r->per_dir_config, &proxy_module);
-        if (dconf->preserve_host) {
-            ssl_hostname = r->hostname;
-        }
-        else {
-            ssl_hostname = conn->hostname;
-        }
-        if (conn->ssl_hostname != NULL &&
-                (!ssl_hostname || strcasecmp(conn->ssl_hostname,
-                                             ssl_hostname) != 0)) {
-            socket_cleanup(conn);
-        }
-        if (conn->ssl_hostname == NULL) {
-            conn->ssl_hostname = apr_pstrdup(conn->scpool, ssl_hostname);
-        }
     }
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00947)
                  "connected %s to %s:%d", *url, conn->hostname, conn->port);

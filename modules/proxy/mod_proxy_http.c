@@ -1975,10 +1975,25 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
              * requested, such that mod_ssl can check if it is requested to do
              * so.
              */
-            if (backend->ssl_hostname) {
-                apr_table_setn(backend->connection->notes,
-                               "proxy-request-hostname",
-                               backend->ssl_hostname);
+            if (is_ssl) {
+                proxy_dir_conf *dconf;
+                const char *ssl_hostname;
+
+                /*
+                 * In the case of ProxyPreserveHost on use the hostname of
+                 * the request if present otherwise use the one from the
+                 * backend request URI.
+                 */
+                dconf = ap_get_module_config(r->per_dir_config, &proxy_module);
+                if ((dconf->preserve_host != 0) && (r->hostname != NULL)) {
+                    ssl_hostname = r->hostname;
+                }
+                else {
+                    ssl_hostname = uri->hostname;
+                }
+
+                apr_table_set(backend->connection->notes, "proxy-request-hostname",
+                              ssl_hostname);
             }
 
             /* Step Three-and-a-Half: See if the socket is still connected (if
