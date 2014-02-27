@@ -49,6 +49,8 @@
 
 #include "zlib.h"
 
+#include <limits.h>     /* for INT_MAX */
+
 static const char deflateFilterName[] = "DEFLATE";
 module AP_MODULE_DECLARE_DATA deflate_module;
 
@@ -843,6 +845,14 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
 
         /* read */
         apr_bucket_read(e, &data, &len, APR_BLOCK_READ);
+        if (!len) {
+            apr_bucket_delete(e);
+            continue;
+        }
+        if (len > INT_MAX) {
+            apr_bucket_split(e, INT_MAX);
+            apr_bucket_read(e, &data, &len, APR_BLOCK_READ);
+        }
 
         /* This crc32 function is from zlib. */
         ctx->crc = crc32(ctx->crc, (const Bytef *)data, len);
@@ -1187,6 +1197,13 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
 
             /* read */
             apr_bucket_read(bkt, &data, &len, APR_BLOCK_READ);
+            if (!len) {
+                continue;
+            }
+            if (len > INT_MAX) {
+                apr_bucket_split(bkt, INT_MAX);
+                apr_bucket_read(bkt, &data, &len, APR_BLOCK_READ);
+            }
 
             if (ctx->zlib_flags) {
                 rv = consume_zlib_flags(ctx, &data, &len);
@@ -1200,7 +1217,7 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
 
             /* pass through zlib inflate. */
             ctx->stream.next_in = (unsigned char *)data;
-            ctx->stream.avail_in = len;
+            ctx->stream.avail_in = (int)len;
 
             zRC = Z_OK;
 
@@ -1533,6 +1550,14 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
 
         /* read */
         apr_bucket_read(e, &data, &len, APR_BLOCK_READ);
+        if (!len) {
+            apr_bucket_delete(e);
+            continue;
+        }
+        if (len > INT_MAX) {
+            apr_bucket_split(e, INT_MAX);
+            apr_bucket_read(e, &data, &len, APR_BLOCK_READ);
+        }
 
         /* first bucket contains zlib header */
         if (ctx->header_len < sizeof(ctx->header)) {
