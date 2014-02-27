@@ -240,7 +240,6 @@ typedef struct {
                                 * that is used over the backend connection. */
     proxy_worker *worker;      /* Connection pool this connection belongs to */
     apr_pool_t   *pool;        /* Subpool for hostname and addr data */
-    const char   *uds_path;    /* Unix domain socket path */
     const char   *hostname;
     apr_sockaddr_t *addr;      /* Preparsed remote address info */
     apr_pool_t   *scpool;      /* Subpool used for socket and connection data */
@@ -254,6 +253,7 @@ typedef struct {
     unsigned int need_flush:1; /* Flag to decide whether we need to flush the
                                 * filter chain or not */
     unsigned int inreslist:1;  /* connection in apr_reslist? */
+    const char   *uds_path;    /* Unix domain socket path */
 } proxy_conn_rec;
 
 typedef struct {
