@@ -1117,8 +1117,15 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
     if (APR_BRIGADE_EMPTY(ctx->proc_bb)) {
         rv = ap_get_brigade(f->next, ctx->bb, mode, block, readbytes);
 
+        /* Don't terminate on EAGAIN (or success with an empty brigade in
+         * non-blocking mode), just return focus.
+         */
+        if (block == APR_NONBLOCK_READ
+                && (APR_STATUS_IS_EAGAIN(rv)
+                    || (rv == APR_SUCCESS && APR_BRIGADE_EMPTY(ctx->bb)))) {
+            return rv;
+        }
         if (rv != APR_SUCCESS) {
-            /* What about APR_EAGAIN errors? */
             inflateEnd(&ctx->stream);
             return rv;
         }
