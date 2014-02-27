@@ -15,8 +15,6 @@
  * limitations under the License.
  */
 
-#include <mod_core.h>
-
 #include "mod_lua.h"
 #include "lua_apr.h"
 #include "lua_dbd.h"
