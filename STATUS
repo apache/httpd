@@ -201,6 +201,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              https://www.mail-archive.com/dev@httpd.apache.org/msg58307.html
              but my opinion there is +1, same here...
 
+   * mod_proxy: Cleanup the client to backend brigade before returning an error
+                (if any) to avoid buckets lifetime issues (backend connection's
+                pool destroyed before request's one). PR 50335.
+                Follows up r1534321 and r1550061 already backported to 2.4.8.
+     trunk patch: http://svn.apache.org/r1572543
+     2.4.x patch: trunk works
+     +1: ylavic
+
 
 OTHER PROPOSALS
 
