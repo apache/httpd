@@ -1187,36 +1187,62 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
 
             zRC = Z_OK;
 
-            while (ctx->stream.avail_in != 0) {
-                if (ctx->stream.avail_out == 0) {
-                    apr_bucket *tmp_heap;
-                    ctx->stream.next_out = ctx->buffer;
-                    len = c->bufferSize - ctx->stream.avail_out;
+            if (!ctx->validation_buffer) {
+                while (ctx->stream.avail_in != 0) {
+                    if (ctx->stream.avail_out == 0) {
+                        apr_bucket *tmp_heap;
+                        ctx->stream.next_out = ctx->buffer;
+                        len = c->bufferSize - ctx->stream.avail_out;
 
-                    ctx->crc = crc32(ctx->crc, (const Bytef *)ctx->buffer, len);
-                    tmp_heap = apr_bucket_heap_create((char *)ctx->buffer, len,
-                                                      NULL, f->c->bucket_alloc);
-                    APR_BRIGADE_INSERT_TAIL(ctx->proc_bb, tmp_heap);
-                    ctx->stream.avail_out = c->bufferSize;
-                }
+                        ctx->crc = crc32(ctx->crc, (const Bytef *)ctx->buffer, len);
+                        tmp_heap = apr_bucket_heap_create((char *)ctx->buffer, len,
+                                                          NULL, f->c->bucket_alloc);
+                        APR_BRIGADE_INSERT_TAIL(ctx->proc_bb, tmp_heap);
+                        ctx->stream.avail_out = c->bufferSize;
+                    }
 
-                zRC = inflate(&ctx->stream, Z_NO_FLUSH);
+                    zRC = inflate(&ctx->stream, Z_NO_FLUSH);
 
-                if (zRC == Z_STREAM_END) {
-                    break;
-                }
+                    if (zRC == Z_STREAM_END) {
+                        ctx->validation_buffer = apr_pcalloc(r->pool,
+                                                             VALIDATION_SIZE);
+                        ctx->validation_buffer_length = 0;
+                        break;
+                    }
 
-                if (zRC != Z_OK) {
-                    inflateEnd(&ctx->stream);
-                    ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01392)
-                                  "Zlib error %d inflating data (%s)", zRC,
-                                  ctx->stream.msg);
-                    return APR_EGENERAL;
+                    if (zRC != Z_OK) {
+                        inflateEnd(&ctx->stream);
+                        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01392)
+                                      "Zlib error %d inflating data (%s)", zRC,
+                                      ctx->stream.msg);
+                        return APR_EGENERAL;
+                    }
                 }
             }
-            if (zRC == Z_STREAM_END) {
+
+            if (ctx->validation_buffer) {
                 apr_bucket *tmp_heap;
-                apr_size_t avail;
+                apr_size_t avail, valid;
+                unsigned char *buf = ctx->validation_buffer;
+
+                avail = ctx->stream.avail_in;
+                valid = (apr_size_t)VALIDATION_SIZE -
+                         ctx->validation_buffer_length;
+
+                /*
+                 * We have inflated all data. Now try to capture the
+                 * validation bytes. We may not have them all available
+                 * right now, but capture what is there.
+                 */
+                if (avail < valid) {
+                    memcpy(buf + ctx->validation_buffer_length,
+                           ctx->stream.next_in, avail);
+                    ctx->validation_buffer_length += avail;
+                    continue;
+                }
+                memcpy(buf + ctx->validation_buffer_length,
+                       ctx->stream.next_in, valid);
+                ctx->validation_buffer_length += valid;
 
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01393)
                               "Zlib: Inflated %ld to %ld : URL %s",
@@ -1231,20 +1257,16 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
                 APR_BRIGADE_INSERT_TAIL(ctx->proc_bb, tmp_heap);
                 ctx->stream.avail_out = c->bufferSize;
 
-                avail = ctx->stream.avail_in;
-
-                /* Is the remaining 8 bytes already in the avail stream? */
-                if (avail >= 8) {
+                {
                     unsigned long compCRC, compLen;
-                    compCRC = getLong(ctx->stream.next_in);
+                    compCRC = getLong(buf);
                     if (ctx->crc != compCRC) {
                         inflateEnd(&ctx->stream);
                         ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01394)
                                       "Zlib: CRC error inflating data");
                         return APR_EGENERAL;
                     }
-                    ctx->stream.next_in += 4;
-                    compLen = getLong(ctx->stream.next_in);
+                    compLen = getLong(buf + VALIDATION_SIZE / 2);
                     /* gzip stores original size only as 4 byte value */
                     if ((ctx->stream.total_out & 0xFFFFFFFF) != compLen) {
                         inflateEnd(&ctx->stream);
@@ -1255,21 +1277,13 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
                         return APR_EGENERAL;
                     }
                 }
-                else {
-                    /* FIXME: We need to grab the 8 verification bytes
-                     * from the wire! */
-                    inflateEnd(&ctx->stream);
-                    ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01396)
-                                  "Verification data not available (bug?)");
-                    return APR_EGENERAL;
-                }
 
                 inflateEnd(&ctx->stream);
 
                 ctx->done = 1;
 
                 /* Did we have trailing data behind the closing 8 bytes? */
-                if (avail > 8) {
+                if (avail > valid) {
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02485)
                                   "Encountered extra data after compressed data");
                     return APR_EGENERAL;
