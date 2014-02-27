@@ -1087,10 +1087,10 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
             return APR_EGENERAL;
         }
 
-        /* We can't handle flags for now. */
-        if (ctx->header[3] != 0) {
+        ctx->zlib_flags = ctx->header[3];
+        if ((ctx->zlib_flags & RESERVED)) {
             ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01388)
-                          "Zlib: Unsupported flags %02x", (int)ctx->header[3]);
+                          "Zlib: Invalid flags %02x", ctx->zlib_flags);
             return APR_EGENERAL;
         }
 
@@ -1187,6 +1187,16 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
 
             /* read */
             apr_bucket_read(bkt, &data, &len, APR_BLOCK_READ);
+
+            if (ctx->zlib_flags) {
+                rv = consume_zlib_flags(ctx, &data, &len);
+                if (rv == APR_SUCCESS) {
+                    ctx->zlib_flags = 0;
+                }
+                if (rv == APR_INCOMPLETE || !len) {
+                    continue;
+                }
+            }
 
             /* pass through zlib inflate. */
             ctx->stream.next_in = (unsigned char *)data;
