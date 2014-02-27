@@ -15,6 +15,8 @@
  * limitations under the License.
  */
 
+#include <mod_core.h>
+
 #include "mod_lua.h"
 #include "lua_apr.h"
 #include "lua_dbd.h"
@@ -228,7 +230,8 @@ static int req_aprtable2luatable_cb_len(void *l, const char *key,
     requests. Used for multipart POST data.
  =======================================================================================================================
  */
-static int lua_read_body(request_rec *r, const char **rbuf, apr_off_t *size)
+static int lua_read_body(request_rec *r, const char **rbuf, apr_off_t *size,
+        apr_off_t *maxsize)
 {
     int rc = OK;
 
@@ -243,6 +246,9 @@ static int lua_read_body(request_rec *r, const char **rbuf, apr_off_t *size)
         apr_off_t length = r->remaining;
         /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
+        if (maxsize != 0 && length > maxsize) {
+            return APR_EINCOMPLETE; /* Only room for incomplete data chunk :( */
+        }
         *rbuf = (const char *) apr_pcalloc(r->pool, (apr_size_t) (length + 1));
         *size = length;
         while ((len_read = ap_get_client_block(r, argsbuffer, sizeof(argsbuffer))) > 0) {
@@ -336,7 +342,7 @@ static int req_parsebody(lua_State *L)
         int         i;
         size_t      vlen = 0;
         size_t      len = 0;
-        if (lua_read_body(r, &data, (apr_off_t*) &size) != OK) {
+        if (lua_read_body(r, &data, (apr_off_t*) &size, max_post_size) != OK) {
             return 2;
         }
         len = strlen(multipart);
@@ -411,7 +417,7 @@ static int lua_ap_requestbody(lua_State *L)
         if (!filename) {
             const char     *data;
 
-            if (lua_read_body(r, &data, &size) != OK)
+            if (lua_read_body(r, &data, &size, maxSize) != OK)
                 return (0);
 
             lua_pushlstring(L, data, (size_t) size);
