@@ -254,6 +254,7 @@ typedef struct {
     unsigned int need_flush:1; /* Flag to decide whether we need to flush the
                                 * filter chain or not */
     unsigned int inreslist:1;  /* connection in apr_reslist? */
+    const char  *ssl_hostname; /* Hostname (SNI) in use by SSL connection */
 } proxy_conn_rec;
 
 typedef struct {
