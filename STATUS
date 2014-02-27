@@ -209,6 +209,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      +1: ylavic, jim
 
+   * mod_proxy: Don't reuse a SSL backend connection whose SNI differs. PR 55782.
+                This may happen when ProxyPreserveHost is on and the proxy-worker
+                handles connections to different Hosts.
+     trunk patch: http://svn.apache.org/r1572630
+                  http://svn.apache.org/r1572611 (MMN minor bump)
+     2.4.x patch: trunk works (modulo MMN)
+     +1: ylavic
+
 
 OTHER PROPOSALS
 
