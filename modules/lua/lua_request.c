@@ -229,7 +229,7 @@ static int req_aprtable2luatable_cb_len(void *l, const char *key,
  =======================================================================================================================
  */
 static int lua_read_body(request_rec *r, const char **rbuf, apr_off_t *size,
-        apr_off_t *maxsize)
+        apr_off_t maxsize)
 {
     int rc = OK;
 
