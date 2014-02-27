@@ -2284,6 +2284,7 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
                                             conn->pool);
             }
             socket_cleanup(conn);
+            conn->close = 0;
         }
         if (will_reuse) {
             /*
