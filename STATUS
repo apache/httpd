@@ -182,7 +182,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/r1572198
      Backport version for 2.4.x of patch:
         Trunk version of patch works (modulo CHANGES)
-     +1: rpluem,
+     +1: rpluem, jim
 
    * protocol: draft-ietf-httpbis-p1-messaging-23 fixes regarding interactions
                between TE and content-length in the same req/resp.
@@ -207,7 +207,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                 Follows up r1534321 and r1550061 already backported to 2.4.8.
      trunk patch: http://svn.apache.org/r1572543
      2.4.x patch: trunk works
-     +1: ylavic
+     +1: ylavic, jim
 
 
 OTHER PROPOSALS
