@@ -103,6 +103,11 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch:  trunk works modulo next_number
      +1: ylavic, jim, mrumph
 
+   * mod_proxy_http: Don't recycle backend connections known to be closed.
+     trunk patch: http://svn.apache.org/r1568404
+     2.4.x patch:  trunk works
+     +1: ylavic, jim, mrumph
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -166,11 +171,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                     https://svn.apache.org/r1565081
      2.4.x patch: https://people.apache.org/~kbrand/mod_ssl-2.4.x-certkeyfile-v3.diff
      +1: kbrand, ylavic
-
-   * mod_proxy_http: Don't recycle backend connections known to be closed.
-     trunk patch: http://svn.apache.org/r1568404
-     2.4.x patch:  trunk works
-     +1: ylavic, jim
 
    * mod_ssl: Do not perform SNI / Host header comparison in case of a
      forward proxy request.
