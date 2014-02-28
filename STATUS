@@ -212,6 +212,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                 handles connections to different Hosts.
      trunk patch: http://svn.apache.org/r1572630
                   http://svn.apache.org/r1572611 (MMN minor bump)
+                  http://svn.apache.org/r1572967
      2.4.x patch: trunk works (modulo MMN)
      +1: ylavic
 
