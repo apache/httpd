@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.27
 
+  *) mod_proxy_http: Core dumped under high load. PR 50335.
+     [Jan Kaluza <jkaluza redhat.com>]
+
   *) mod_rewrite: Add mod_rewrite.h to the headers installed on Windows. 
      PR46679 [Bob Ionescu]
 
