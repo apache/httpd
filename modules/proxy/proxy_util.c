@@ -2367,9 +2367,10 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
         else {
             ssl_hostname = conn->hostname;
         }
-        if (conn->ssl_hostname != NULL &&
-                (!ssl_hostname || strcasecmp(conn->ssl_hostname,
-                                             ssl_hostname) != 0)) {
+        if (conn->ssl_hostname != NULL
+                ? (ssl_hostname == NULL || strcasecmp(conn->ssl_hostname,
+                                                      ssl_hostname) != 0)
+                : (ssl_hostname != NULL && conn->sock)) {
             socket_cleanup(conn);
         }
         if (conn->ssl_hostname == NULL) {
