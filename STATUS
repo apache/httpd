@@ -170,7 +170,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
               Follows up r1534321 and r1550061 already accepted for backport in 2.2.27.
    trunk patch: http://svn.apache.org/r1572543
    2.2.x patch: http://people.apache.org/~ylavic/2.2.x-ap_proxy_pass_brigade_cleanup.patch
-   +1: ylavic
+   +1: ylavic, rpluem
 
 PATCHES/ISSUES THAT ARE STALLED
 
