@@ -234,6 +234,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   https://svn.apache.org/r1572669
                   https://svn.apache.org/r1572670
                   https://svn.apache.org/r1572671
+                  https://svn.apache.org/r1573224
      2.4.x patch: trunk works, all in one patch below
                   https://people.apache.org/~ylavic/httpd-2.4.x-mod_deflate_reentrance.patch
      +1: ylavic
