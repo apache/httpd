@@ -1210,7 +1210,7 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
                 if (rv == APR_SUCCESS) {
                     ctx->zlib_flags = 0;
                 }
-                if (rv == APR_INCOMPLETE || !len) {
+                if (!len) {
                     continue;
                 }
             }
@@ -1614,7 +1614,7 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
             if (rv == APR_SUCCESS) {
                 ctx->zlib_flags = 0;
             }
-            if (rv == APR_INCOMPLETE || !len) {
+            if (!len) {
                 apr_bucket_delete(e);
                 continue;
             }
