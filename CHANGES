@@ -4,17 +4,8 @@ Changes with Apache 2.5.0
   *) mod_ssl: Do not perform SNI / Host header comparison in case of a
      forward proxy request. [Ruediger Pluem]
 
-  *) mod_rewrite: Add RewriteOptions InheritDown, InheritDownBefore, 
-     and IgnoreInherit to allow RewriteRules to be pushed from parent scopes
-     to child scopes without explicitly configuring each child scope.
-     PR56153.  [Edward Lu <Chaosed0 gmail com>] 
-
   *) mod_lua: Add r:wspeek for checking if there is any data waiting on the line
      [Daniel Gruno]
-
-  *) mod_proxy_wstunnel: Avoid busy loop on client errors, drop message
-     IDs 02445, 02446, and 02448 to TRACE1 from DEBUG. PR 56145.
-     [Joffroy Christen <joffroy.christen solvaxis com>, Eric Covener]
 
   *) mod_proxy: Do not try to parse the regular expressions passed by
      ProxyPassMatch as URL as they do not follow their syntax.
