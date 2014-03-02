@@ -98,11 +98,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_proxy_http: Log an error when reading the request body fails.
-     trunk patch: http://svn.apache.org/r1570598
-     2.4.x patch:  trunk works modulo next_number
-     +1: ylavic, jim, mrumph
-
    * mod_proxy_http: Don't recycle backend connections known to be closed.
      trunk patch: http://svn.apache.org/r1568404
      2.4.x patch:  trunk works
