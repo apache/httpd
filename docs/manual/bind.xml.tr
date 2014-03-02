@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 1512462:1565335 (outdated) -->
+<!-- English Revision: 1565335 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -75,26 +75,26 @@
     <p>Örneğin, sunucunun hem 80 portundan hem de 8000 portundan gelen
       bağlantıları kabul etmesini sağlamak için,</p>
 
-    <highlight language="config">
+    <example><highlight language="config">
 Listen 80
 Listen 8000
-    </highlight>
+    </highlight></example>
 
     <p>yapılandırmasını kullanabilirsiniz. Sunucunun 80 portuna gelen
       bağlantıları bir arabirimden 8000 portuna gelenleri ise başka bir
       arabirimden kabul etmesini sağlamak için ise,</p>
 
-    <highlight language="config">
+    <example><highlight language="config">
 Listen 192.0.2.1:80
 Listen 192.0.2.5:8000
-    </highlight>
+    </highlight></example>
 
     <p>yapılandırmasını kullanabilirsiniz. IPv6 adresleri aşağıdaki örnekteki
       gibi köşeli ayraçlar içine alınarak belirtilmelidir:</p>
 
-    <highlight language="config">
+    <example><highlight language="config">
 Listen [2001:db8::a00:20ff:fea7:ccea]:80
-    </highlight>
+    </highlight></example>
 
     <note type="warning">
       <p>Bir <directive module="mpm_common">Listen</directive> yönergesinin
@@ -145,10 +145,10 @@ Listen [2001:db8::a00:20ff:fea7:ccea]:80
       tüm <directive module="mpm_common">Listen</directive> yönergelerinde
       örnekteki gibi IPv4 adresleri belirtiniz:</p>
 
-    <highlight language="config">
+    <example><highlight language="config">
 Listen 0.0.0.0:80
 Listen 192.0.2.1:80
-    </highlight>
+    </highlight></example>
 
     <p>Platformunuz IPv4 ve IPv6 adresleri ayrı soketlerden kabul ediyorsa ve
       <code>httpd</code>’nin de buna uygun davranmasını (yani IPv4 eşlemli IPv6
@@ -171,9 +171,9 @@ Listen 192.0.2.1:80
       gerekir. Örneğin, bir<code>https</code> sitesini port 8443 üzerinde
       çalıştırmak isterseniz:</p>
 
-    <highlight language="config">
+    <example><highlight language="config">
 Listen 192.170.2.1:8443 https
-    </highlight>
+    </highlight></example>
   </section>
 
   <section id="virtualhost">

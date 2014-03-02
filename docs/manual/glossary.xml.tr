@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 1334033:1556104 (outdated) -->
+<!-- English Revision: 1556104 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -52,6 +52,15 @@
       (IETF) tarafından oluşturulmuş protokol. TLS’nin 1. sürümü ile SSL’in 3.
       sürümü hemen hemen aynıdır.<br />
       Bakınız: <a href="ssl/">SSL/TLS Şifrelemesi</a>
+    </dd>
+
+    <dt><a name="subrequest" id="subrequest">Alt istek</a></dt>
+    <dd>Diğer dosya sistemlerini veya URL yollarını kısmen veya tamamen
+      değerlendiren modüller için sunucuda bir alt istek API'si mevcuttur. Bu
+      API'nin olası müşterileri için
+      <directive module="mod_dir">DirectoryIndex</directive>,
+      <module>mod_autoindex</module> ve <module>mod_include</module> örnek
+      verilebilir.
     </dd>
 
     <dt><a name="passphrase" id="passphrase">Anahtar Parolası</a></dt>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 1384858:1555551 (outdated) -->
+<!-- English Revision: 1555551 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -309,6 +309,18 @@ ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover
     Require all denied
 &lt;/FilesMatch&gt;
     </highlight>
+
+    <p><strong>İsimli gruplar ve geriye başvurular</strong> içeren düzenli
+      ifadeler ortama eklenirken ilgili isimler büyük harfli yapılır. Böylece,
+      URL'lere ve dosya yolları elemanlarına <a href="expr.html">ifadelerin
+      içinden</a> ve <module>mod_rewrite</module> gibi modüllerden başvurmak
+      mümkün olur.</p>
+
+<highlight language="config">
+&lt;DirectoryMatch ^/var/www/combined/(?&lt;SITENAME&gt;[^/]+)&gt;
+    require ldap-group cn=%{env:SITENAME},ou=combined,o=Example
+&lt;/DirectoryMatch&gt;
+</highlight>
   </section>
 
   <section id="expressions"><title>Mantıksal İfadeler</title>
