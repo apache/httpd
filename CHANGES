@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.8
 
+  *) mod_ssl: Do not perform SNI / Host header comparison in case of a
+     forward proxy request. [Ruediger Pluem]
+
   *) mod_ssl: Remove the hardcoded algorithm-type dependency for the
      SSLCertificateFile and SSLCertificateKeyFile directives, to enable
      future algorithm agility, and deprecate the SSLCertificateChainFile
