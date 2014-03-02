@@ -560,7 +560,7 @@ gmon.out.</td></tr>
 s'arrêter dans le cas d'un arrêt "en douceur"</td></tr>
 <tr class="odd"><td><a href="mod_unixd.html#group">Group <var>groupe unix</var></a></td><td> #-1 </td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Groupe sous lequel le serveur va traiter les
 requêtes</td></tr>
-<tr><td><a href="mod_headers.html#header" id="H" name="H">Header [<var>condition</var>] add|append|echo|edit|edit*|merge|set|unset|note
+<tr><td><a href="mod_headers.html#header" id="H" name="H">Header [<var>condition</var>] add|append|echo|edit|edit*|merge|set|setifempty|unset|note
 <var>en-tête</var> [<var>valeur</var>] [<var>remplacement</var>]
 [early|env=[!]<var>variable</var>]|expr=<var>expression</var>]
 </a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Configure les en-têtes d'une réponse HTTP</td></tr>
@@ -982,7 +982,7 @@ ensemble d'extensions de noms de fichiers</td></tr>
 <tr><td><a href="mod_mime.html#removetype">RemoveType <var>extension</var> [<var>extension</var>]
 ...</a></td><td></td><td>vdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Supprime toute association de type de contenu à un ensemble
 d'extensions de noms de fichiers</td></tr>
-<tr class="odd"><td><a href="mod_headers.html#requestheader">RequestHeader add|append|edit|edit*|merge|set|unset
+<tr class="odd"><td><a href="mod_headers.html#requestheader">RequestHeader add|append|edit|edit*|merge|set|setifempty|unset
 <var>en-tête</var> [<var>valeur</var>] [<var>remplacement</var>]
 [early|env=[!]<var>variable</var>]|expr=<var>expression</var>]
 </a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Configure les en-têtes d'une requête HTTP</td></tr>
