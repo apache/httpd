@@ -98,11 +98,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_proxy_http: Don't recycle backend connections known to be closed.
-     trunk patch: http://svn.apache.org/r1568404
-     2.4.x patch:  trunk works
-     +1: ylavic, jim, mrumph
-
    * mod_proxy: Cleanup the client to backend brigade before returning an error
                 (if any) to avoid buckets lifetime issues (backend connection's
                 pool destroyed before request's one). PR 50335.
