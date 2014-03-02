@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1479263:1557618 (outdated) -->
+<!-- English Revision: 1557618 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -51,6 +51,16 @@
 BrowserMatch ^Mozilla netscape
 BrowserMatch MSIE !netscape
     </highlight>
+
+    <p><module>mod_autoindex</module> ile dizin listesi oluşturulması
+      veya bir <directive module="mod_dir" >DirectoryIndex</directive>
+      için yol aranması gibi bir dahili <glossary ref="subrequest">alt
+      istek</glossary> için sunucu yol araması yaparken isteklere özgü
+      ortam değişkenleri alt istekler tarafından miras alınMAZ. Buna ek
+      olarak, <module>mod_setenvif</module> modülünün devreye girdiği API
+      fazlarından dolayı yapılan alt isteklerde
+      <directive module="mod_setenvif">SetEnvIf</directive> yönergeleri
+      ayrı ayrı değerlendirilMEZ.</p>
 </summary>
 
 <seealso><a href="../env.html">Apache HTTP Sunucusundaki Ortam Değişkenleri</a></seealso>
@@ -247,11 +257,11 @@ belgesinde daha fazla örnek bulunabilir.</seealso>
 <override>FileInfo</override>
 
 <usage>
-    <p><directive>SetEnvIfExpr</directive> yönergesi bir
-      <directive type="section">If</directive> <code>ap_expr</code> ifadesine
-      dayanarak ortam değişkenlerine değer atar. Bu ifadeler çalışma anında
-      değerlendirilirerek <directive>SetEnvIf</directive> yönergesindeki gibi
-      <em>ort-değişkeni</em>ne uygulanır.</p>
+    <p><directive>SetEnvIfExpr</directive> yönergesi bir <directive
+      module="core" type="section">If</directive> <code>ap_expr</code>
+      ifadesine dayanarak ortam değişkenlerine değer atar. Bu ifadeler çalışma
+      anında değerlendirilirerek <directive>SetEnvIf</directive> yönergesindeki
+      gibi <em>ort-değişkeni</em>ne uygulanır.</p>
 
     <highlight language="config">
 SetEnvIfExpr "tolower(req('X-Sendfile')) == 'd:\images\very_big.iso')" iso_delivered
@@ -268,10 +278,11 @@ SetEnvIfExpr "-R '10.0.0.0/8' || -R '172.16.0.0/12' || -R '192.168.0.0/16'" rfc1
     </highlight>
 </usage>
 
-<seealso><a href="../expr.html">Expressions in Apache HTTP Server</a>,
-for a complete reference and more examples.</seealso>
-<seealso><directive type="section">If</directive> can be used to achive similar
-results.</seealso>
+<seealso>Eksiksiz bir kılavuz ve daha fazla örnek için
+<a href="../expr.html">Apache HTTP Sunucusundaki İfadeler</a> belgesine
+bakınız.</seealso>
+<seealso>Benzer sonuçlara ulaşmak için <directive module="core"
+type="section">If</directive> yönergesi kullanılabilir.</seealso>
 <seealso><module>mod_filter</module></seealso>
 </directivesynopsis>
 

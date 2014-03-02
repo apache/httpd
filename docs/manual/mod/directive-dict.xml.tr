@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 420990:1544630 (outdated) -->
+<!-- English Revision: 1544630 -->
+<!-- =====================================================
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
+   Reviewed by: Orhan Berent <berent belgeler.gen.tr>
+========================================================== -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -158,7 +162,8 @@
       <dd>Yönergenin sunucunun yapılandırma dosyalarında sadece <directive
         module="core" type="section">Directory</directive>, <directive
         type="section" module="core">Location</directive>, <directive
-        module="core" type="section">Files</directive> ve <directive
+        module="core" type="section">Files</directive>, <directive
+        module="core" type="section">If</directive> ve <directive
         module="mod_proxy" type="section">Proxy</directive> bölümlerinde
         kullanıldığında geçerli kabul edileceğini belirtir. Bu bağlama konu
         sınırlamaların çerçevesi  <a href="../sections.html">Yapılandırma
