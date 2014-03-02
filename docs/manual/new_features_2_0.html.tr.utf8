@@ -30,7 +30,6 @@
 <a href="./ru/new_features_2_0.html" hreflang="ru" rel="alternate" title="Russian">&nbsp;ru&nbsp;</a> |
 <a href="./tr/new_features_2_0.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
   <p>Bu belgede Apache HTTP Sunucusunun 1.3 ve 2.0 sürümleri arasındaki
     başlıca değişikliklerin bazılarına değinilmiştir.</p>
@@ -162,7 +161,7 @@
         gönderilmesini talep eden tarayıcıların desteklenmesi mümkün
         olmuştur.</dd>
 
-      <dt><code class="module"><a href="./mod/mod_auth_ldap.html">mod_auth_ldap</a></code></dt>
+      <dt><code class="module">mod_auth_ldap</code></dt>
 
       <dd>Apache httpd 2.0.41’de yeni olan bu modül, HTTP temel kimlik
         doğrulamasında kullanılan delillerin saklanması için LDAP
@@ -233,9 +232,9 @@
         <code class="module"><a href="./mod/mod_include.html">mod_include</a></code> modülünün <code>$0</code> ..
         <code>$9</code> değişkenleri sayesinde kullanılabilmektedir.</dd>
 
-      <dt><code class="module"><a href="./mod/mod_auth_dbm.html">mod_auth_dbm</a></code></dt>
+      <dt><code class="module">mod_auth_dbm</code></dt>
 
-      <dd><a href="../2.0/mod/mod_auth_dbm.html#AuthDBMType"><code>AuthDBMType</code></a> yönergesi
+      <dd><code class="directive">AuthDBMType</code> yönergesi
         sayesinde artık çok sayıda DBM tarzı veritabanı türü
         desteklenmektedir.</dd>
     </dl>
