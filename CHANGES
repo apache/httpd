@@ -2,6 +2,11 @@
 
 Changes with Apache 2.4.8
 
+  *) mod_ssl: Remove the hardcoded algorithm-type dependency for the
+     SSLCertificateFile and SSLCertificateKeyFile directives, to enable
+     future algorithm agility, and deprecate the SSLCertificateChainFile
+     directive (obsoleted by SSLCertificateFile). [Kaspar Brand]
+
   *) mod_rewrite: Add RewriteOptions InheritDown, InheritDownBefore, 
      and IgnoreInherit to allow RewriteRules to be pushed from parent scopes
      to child scopes without explicitly configuring each child scope.
