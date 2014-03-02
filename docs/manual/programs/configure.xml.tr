@@ -1,10 +1,10 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1296924:1563423 (outdated) -->
+<!-- English Revision: 1563423 -->
 <!-- =====================================================
- Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
-   Reviewed by: Orhan Berent <berent belgeler.org>
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
+   Reviewed by: Orhan Berent <berent belgeler.gen.tr>
 ========================================================== -->
 
 <!--
@@ -324,18 +324,14 @@
           HTTP başlıklı dosya türü desteğini iptal eder.</dd>
 
         <dt><code>--disable-auth-basic</code></dt>
-        <dd><module>mod_auth</module> modülü tarafından sağlanan kullanıcıya
-          dayalı erişim denetimi iptal edilir. Bu modül, kullanıcı isminin ve
-          parolasının salt metin dosyalarda saklandığı Temel HTTP Kimlik
-          Doğrulaması için kullanılır.</dd>
+        <dd><module>mod_auth_basic</module> modülü tarafından sağlanan
+          kullanıcıya dayalı erişim denetimi iptal edilir. Bu modül, kullanıcı
+          isminin ve parolasının salt metin dosyalarda saklandığı Temel HTTP
+          Kimlik Doğrulaması için kullanılır.</dd>
 
         <dt><code>--disable-autoindex</code></dt>
         <dd><module>mod_autoindex</module> modülü tarafından sağlanan dizin
           içerik listelemesini iptal eder.</dd>
-
-        <dt><code>--disable-access</code></dt>
-        <dd><module>mod_access</module> modülü tarafından sağlanan konağa
-          dayalı erişim denetimi iptal edilir.</dd>
 
         <dt><code>--disable-cgi</code></dt>
         <dd>CGI betiklerine destek sağlayan <module>mod_cgi</module>, çok
@@ -422,7 +418,7 @@
 
       <dl>
         <dt><code>--enable-authn-anon</code></dt>
-        <dd><module>mod_auth_anon</module> modülünün sağladığı anonim
+        <dd><module>mod_authn_anon</module> modülünün sağladığı anonim
           kullanıcı erişimi etkin kılınır.</dd>
 
         <dt><code>--enable-authn-dbm</code></dt>

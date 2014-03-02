@@ -1,10 +1,10 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 421100:1563423 (outdated) -->
+<!-- English Revision: 1563423 -->
 <!-- =====================================================
- Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
-   Reviewed by: Orhan Berent <berent belgeler.org>
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
+   Reviewed by: Orhan Berent <berent belgeler.gen.tr>
 ========================================================== -->
 
 <!--
@@ -99,8 +99,7 @@
     <p>Bu yapılandırma ile her günlük kaydının başında sanal konağın
       <directive module="core">ServerName</directive> yönergesine belirtilen
       ismi eklenir. (Günlük dosyalarınızın kişiselleştirilmesi ile ilgili daha
-      fazla bilgi için <a href="../mod/mod_log_config.html#formats">Günlük
-      Girdilerinin Kişiselleştirilmesi</a> konusuna bakınız.)</p>
+      fazla bilgi için <module>mod_log_config</module> belgesine bakınız.)</p>
 
     <p>Günlük dosyanızdaki kayıtları bileşenlere göre gruplamak isterseniz
       <code><a href="../programs/other.html">split-logfile</a></code>

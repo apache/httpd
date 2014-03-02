@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1426995:1555566 (outdated) -->
+<!-- English Revision: 1555566 -->
 <!-- =====================================================
  Translated by: Umut Samuk <umut belgeler.org>
    Reviewed by: Nilgün Belma Bugüner <nilgun belgeler.org>
@@ -213,9 +213,9 @@
     hassasiyete sahip bilgiler için kullanılmamalıdır. Apache bir başka
     kimlik doğrulama yöntemini daha destekler: <code>AuthType
     Digest</code>. Bu yöntem <module>mod_auth_digest</module> tarafından
-    gerçeklenmiştir ve çok daha güvenlidir. Güncel tarayıcılar, Özet
-    (<code>Digest</code>) kimlik doğrulama yöntemini
-    desteklemektedir.</p>
+    gerçeklenmiştir ve çok daha güvenli olacağı düşünülmüştü. Bu artık
+    geçerliliğini yitirmiştir ve bağlantı artık <module>mod_ssl</module>
+    tarafından şifrelenmektedir.</p>
 
     <p><directive module="core">AuthName</directive> yönergesi
     ile kimlik doğrulamada kullanılacak <dfn>Saha</dfn> da
