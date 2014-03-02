@@ -29,8 +29,6 @@
 <a href="../ja/mod/mod_headers.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_headers.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Personnalisation des en-têtes de requêtes et de réponses
 HTTP</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -227,6 +225,8 @@ Header merge Cache-Control no-store env=NO_STORE</pre>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_headers</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>SetIfEmpty est disponible depuis la version 2.4.7 du
+serveur HTTP Apache</td></tr>
 </table>
     <p>Cette directive permet de remplacer, fusionner, ou
     supprimer des en-têtes de réponse HTTP. L'en-tête est modifié juste
@@ -324,7 +324,8 @@ Header merge Cache-Control no-store env=NO_STORE</pre>
 
     <dt><code>setifempty</code></dt>
     <dd>L'en-tête est défini, mais seulement s'il n'existe
-    aucun en-tête avec le même nom.</dd>
+    aucun en-tête avec le même nom. Disponible depuis la
+    version 2.4.7 du serveur HTTP Apache.</dd>
 
     <dt><code>unset</code></dt>
     <dd>L'en-tête est supprimé s'il existe. Si plusieurs en-têtes
@@ -442,7 +443,7 @@ Header merge Cache-Control no-store env=NO_STORE</pre>
 <div class="directive-section"><h2><a name="RequestHeader" id="RequestHeader">RequestHeader</a> <a name="requestheader" id="requestheader">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure les en-têtes d'une requête HTTP</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RequestHeader add|append|edit|edit*|merge|set|unset
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RequestHeader add|append|edit|edit*|merge|set|setifempty|unset
 <var>en-tête</var> [<var>valeur</var>] [<var>remplacement</var>]
 [early|env=[!]<var>variable</var>]|expr=<var>expression</var>]
 </code></td></tr>
@@ -450,6 +451,8 @@ Header merge Cache-Control no-store env=NO_STORE</pre>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_headers</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>SetIfEmpty est disponible depuis la version 2.4.7 du
+serveur HTTP Apache</td></tr>
 </table>
     <p>Cette directive permet de remplacer, fusionner, modifier ou
     supprimer des en-têtes de requête HTTP. L'en-tête est modifié juste
@@ -506,7 +509,8 @@ Header merge Cache-Control no-store env=NO_STORE</pre>
 
     <dt><code>setifempty</code></dt>
     <dd>L'en-tête est défini, mais seulement s'il n'existe
-    aucun en-tête avec le même nom.</dd>
+    aucun en-tête avec le même nom. Disponible depuis la
+    version 2.4.7 du serveur HTTP Apache.</dd>
 
     <dt><code>unset</code></dt>
     <dd>L'en-tête est supprimé s'il existe. Si plusieurs en-têtes
