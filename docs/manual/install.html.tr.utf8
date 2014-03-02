@@ -29,7 +29,6 @@
 <a href="./ko/install.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/install.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
 
     <p>Bu belge Apache HTTP Sunucusunun sadece Unix ve Unix benzeri
@@ -349,7 +348,7 @@
     <div class="example"><p><code>$ vi <em>ÖNEK</em>/conf/httpd.conf</code></p></div>
 
     <p>Bu kılavuz ve kullanılabilecek <a href="mod/directives.html">yapılandırma yönergelerinin</a> kılavuzlarını
-      <a href="./">docs/manual/</a> altında bulabileceğiniz gibi en
+      <code><em>ÖNEK</em>/docs/manual/</code> altında bulabileceğiniz gibi en
       son sürümünü daima <a href="http://httpd.apache.org/docs/2.2/">http://httpd.apache.org/docs/2.2/</a> adresinde
       bulabilirsiniz.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
