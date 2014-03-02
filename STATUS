@@ -98,14 +98,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_proxy: Cleanup the client to backend brigade before returning an error
-                (if any) to avoid buckets lifetime issues (backend connection's
-                pool destroyed before request's one). PR 50335.
-                Follows up r1534321 and r1550061 already backported to 2.4.8.
-     trunk patch: http://svn.apache.org/r1572543
-     2.4.x patch: trunk works
-     +1: ylavic, jim, rpluem
-
    * mod_ssl: Remove the hardcoded algorithm-type dependency for the
      SSLCertificateFile and SSLCertificateKeyFile directives, and deprecate
      SSLCertificateChainFile. A detailed list of the changes is included
