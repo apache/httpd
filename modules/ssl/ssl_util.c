@@ -135,61 +135,8 @@ BOOL ssl_util_path_check(ssl_pathcheck_t pcm, const char *path, apr_pool_t *p)
     return TRUE;
 }
 
-ssl_algo_t ssl_util_algotypeof(X509 *pCert, EVP_PKEY *pKey)
-{
-    ssl_algo_t t;
-    EVP_PKEY *pFreeKey = NULL;
-
-    t = SSL_ALGO_UNKNOWN;
-    if (pCert != NULL)
-        pFreeKey = pKey = X509_get_pubkey(pCert);
-    if (pKey != NULL) {
-        switch (EVP_PKEY_type(pKey->type)) {
-            case EVP_PKEY_RSA:
-                t = SSL_ALGO_RSA;
-                break;
-            case EVP_PKEY_DSA:
-                t = SSL_ALGO_DSA;
-                break;
-#ifdef HAVE_ECC
-            case EVP_PKEY_EC:
-                t = SSL_ALGO_ECC;
-                break;
-#endif
-            default:
-                break;
-        }
-    }
-    if (pFreeKey != NULL)
-        EVP_PKEY_free(pFreeKey);
-    return t;
-}
-
-char *ssl_util_algotypestr(ssl_algo_t t)
-{
-    char *cp;
-
-    cp = "UNKNOWN";
-    switch (t) {
-        case SSL_ALGO_RSA:
-            cp = "RSA";
-            break;
-        case SSL_ALGO_DSA:
-            cp = "DSA";
-            break;
-#ifdef HAVE_ECC
-        case SSL_ALGO_ECC:
-            cp = "ECC";
-            break;
-#endif
-        default:
-            break;
-    }
-    return cp;
-}
-
 /*
- * certain key and cert data needs to survive restarts,
+ * certain key data needs to survive restarts,
  * which are stored in the user data table of s->process->pool.
  * to prevent "leaking" of this data, we use malloc/free
  * rather than apr_palloc and these wrappers to help make sure
@@ -251,30 +198,6 @@ void ssl_asn1_table_unset(apr_hash_t *table,
     free(asn1);
 
     apr_hash_set(table, key, klen, NULL);
-}
-
-#ifdef HAVE_ECC
-static const char *ssl_asn1_key_types[] = {"RSA", "DSA", "ECC"};
-#else
-static const char *ssl_asn1_key_types[] = {"RSA", "DSA"};
-#endif
-
-const char *ssl_asn1_keystr(int keytype)
-{
-    if (keytype >= SSL_AIDX_MAX) {
-        return NULL;
-    }
-
-    return ssl_asn1_key_types[keytype];
-}
-
-const char *ssl_asn1_table_keyfmt(apr_pool_t *p,
-                                  const char *id,
-                                  int keytype)
-{
-    const char *keystr = ssl_asn1_keystr(keytype);
-
-    return apr_pstrcat(p, id, ":", keystr, NULL);
 }
 
 #if APR_HAS_THREADS
