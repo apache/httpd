@@ -116,6 +116,31 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      +1: ylavic, jim, rpluem
 
+   * mod_ssl: Remove the hardcoded algorithm-type dependency for the
+     SSLCertificateFile and SSLCertificateKeyFile directives, and deprecate
+     SSLCertificateChainFile. A detailed list of the changes is included
+     at the beginning of the 2.4.x patch (from the original trunk commit logs)
+     trunk patches: https://svn.apache.org/r1546804
+                    https://svn.apache.org/r1553824
+                    https://svn.apache.org/r1554192
+                    https://svn.apache.org/r1555463
+                    https://svn.apache.org/r1555467
+                    https://svn.apache.org/r1563417
+                    https://svn.apache.org/r1564760
+                    https://svn.apache.org/r1565081
+     2.4.x patch: https://people.apache.org/~kbrand/mod_ssl-2.4.x-certkeyfile-v3.diff
+     +1: kbrand, ylavic, drh
+
+   * mod_ssl: Do not perform SNI / Host header comparison in case of a
+     forward proxy request.
+     Trunk version of patch:
+        http://svn.apache.org/r1553204
+        http://svn.apache.org/r1555240
+        http://svn.apache.org/r1572198
+     Backport version for 2.4.x of patch:
+        Trunk version of patch works (modulo CHANGES)
+     +1: rpluem, jim, kbrand
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -163,31 +188,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1561262
      2.4.x patch:  trunk works mod/ next_number
      +1: jim
-
-   * mod_ssl: Remove the hardcoded algorithm-type dependency for the
-     SSLCertificateFile and SSLCertificateKeyFile directives, and deprecate
-     SSLCertificateChainFile. A detailed list of the changes is included
-     at the beginning of the 2.4.x patch (from the original trunk commit logs)
-     trunk patches: https://svn.apache.org/r1546804
-                    https://svn.apache.org/r1553824
-                    https://svn.apache.org/r1554192
-                    https://svn.apache.org/r1555463
-                    https://svn.apache.org/r1555467
-                    https://svn.apache.org/r1563417
-                    https://svn.apache.org/r1564760
-                    https://svn.apache.org/r1565081
-     2.4.x patch: https://people.apache.org/~kbrand/mod_ssl-2.4.x-certkeyfile-v3.diff
-     +1: kbrand, ylavic, drh
-
-   * mod_ssl: Do not perform SNI / Host header comparison in case of a
-     forward proxy request.
-     Trunk version of patch:
-        http://svn.apache.org/r1553204
-        http://svn.apache.org/r1555240
-        http://svn.apache.org/r1572198
-     Backport version for 2.4.x of patch:
-        Trunk version of patch works (modulo CHANGES)
-     +1: rpluem, jim, kbrand
 
    * protocol: draft-ietf-httpbis-p1-messaging-23 fixes regarding interactions
                between TE and content-length in the same req/resp.
