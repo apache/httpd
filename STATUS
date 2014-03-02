@@ -153,7 +153,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/r1572198
      Backport version for 2.2.x of patch:
         http://people.apache.org/~rpluem/patches/no_sni_check_forward_proxy_2.2.x.diff
-     +1: rpluem,
+     +1: rpluem, kbrand
 
  * mod_proxy: Cleanup the client to backend brigade before returning an error
               (if any) to avoid buckets lifetime issues (backend connection's
