@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 1481368:1562488 (outdated) -->
+<!-- English Revision: 1562488 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -54,7 +54,7 @@
 <directive module="mod_alias">Alias</directive>
 <directive module="mod_alias">AliasMatch</directive>
 <directive module="mod_speling">CheckSpelling</directive>
-<directive module="core">DirectoryIndex</directive>
+<directive module="mod_dir">DirectoryIndex</directive>
 <directive module="core">DocumentRoot</directive>
 <directive module="core">ErrorDocument</directive>
 <directive module="core">Options</directive>
@@ -90,7 +90,7 @@
       dosyası sunulur.</p>
 
     <p>Bir dizin istenirse (<code>/</code> ile biten bir yol belirtilmesi
-      durumu), sunulacak dosya <directive module="core"
+      durumu), sunulacak dosya <directive module="mod_dir"
       >DirectoryIndex</directive> yönergesinde belirtilen dosya olacaktır.
       Örneğin, <code>DocumentRoot</code> yukarıdaki gibi belirtimiş ve siz de
       şunu belirtmişseniz:</p>

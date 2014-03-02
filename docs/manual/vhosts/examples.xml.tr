@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1334000:1562488 (outdated) -->
+<!-- English Revision: 1562488 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by:  Orhan Berent <berent belgeler.gen.tr>
@@ -337,8 +337,8 @@ Listen 80
       adresli bir makinede aynı isimde bir sanal konak yapılandırılmış olsun.
       Çok sayıda konak ismi için vekil olarak tek bir makine kullandığımızdan
       ve konak isminin de aktarılmasını arzuladığımızdan <directive
-      module="mod_proxy">ProxyPreserveHost On</directive> yönergesini
-      kullandık.</p>
+      module="mod_proxy" name="ProxyPreserveHost">ProxyPreserveHost
+      On</directive> yönergesini kullandık.</p>
 
     <highlight language="config">
 &lt;VirtualHost *:*&gt;

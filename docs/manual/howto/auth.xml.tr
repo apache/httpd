@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1430816:1562488 (outdated) -->
+<!-- English Revision: 1562488 -->
 <!-- =====================================================
  Translated by: Umut Samuk <umut belgeler.org>
    Reviewed by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
@@ -225,9 +225,9 @@ Require user umut
     hassasiyete sahip bilgiler için kullanılmamalıdır. Apache bir başka
     kimlik doğrulama yöntemini daha destekler: <code>AuthType
     Digest</code>. Bu yöntem <module>mod_auth_digest</module> tarafından
-    gerçeklenmiştir ve çok daha güvenlidir. Güncel tarayıcılar, Özet
-    (<code>Digest</code>) kimlik doğrulama yöntemini
-    desteklemektedir.</p>
+    gerçeklenmişti ve çok daha güvenli olacağı düşünülmüştü. Bu artık
+    geçerliliğini yitirdiğinden bağlantının bundan böyle
+    <module>mod_ssl</module> ile şifrelenmesi gerekmektedir.</p>
 
     <p><directive module="mod_authn_core">AuthName</directive> yönergesi
     ile kimlik doğrulamada kullanılacak <dfn>Saha</dfn> da
@@ -496,13 +496,10 @@ Require group Grupismi
       değil birşeylere dayanarak izin vermek istersiniz. Örneğin nereden
       geldikleri gibi.</p>
 
-      <p><directive module="mod_authz_host">all</directive>, <directive
-      module="mod_authz_host">env</directive>, <directive
-      module="mod_authz_host">host</directive> ve <directive
-      module="mod_authz_host">ip</directive> gibi yetkilendirme
-      tedarikçileri ile, bir belgenin istendiği makinenin IP adresi veya
-      konak ismi gibi bazı özelliklerine dayalı olarak erişime izin
-      verip vermeyeceğinizi belirtebilirsiniz.</p>
+      <p><code>all</code>, <code>env</code>, <code>host</code> ve
+      <code>ip</code> gibi yetkilendirme tedarikçileri ile, bir belgenin
+      istendiği makinenin IP adresi veya konak ismi gibi bazı özelliklerine
+      dayalı olarak erişime izin verip vermeyeceğinizi belirtebilirsiniz.</p>
 
       <p>Bu tedarikçilerin kullanımı <directive module="mod_authz_core"
       >Require</directive> yönergesinde açıklanmıştır. Bu yönergeler,
@@ -595,7 +592,7 @@ Require group Grupismi
   <section id="moreinformation"><title>Daha fazla bilgi</title>
     <p>Daha fazla bilgi için <module>mod_auth_basic</module> ve
     <module>mod_authz_host</module> modüllerinin belgelerine bakınız.
-    <directive module="mod_authn_core">&lt;AuthnProviderAlias&gt;</directive>
+    <directive module="mod_authn_core">AuthnProviderAlias</directive>
     yönergesi ile bazı yapılandırmalarınızı basitleştirebilirsiniz.</p>
 
     <p>Apache tarafından desteklenen şifrelerle ilgili bilgi için <a

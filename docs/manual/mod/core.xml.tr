@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1450091:1562488 (outdated) -->
+<!-- English Revision: 1562488 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -893,6 +893,21 @@ DocumentRoot /var/www/${servername}/htdocs
       yapılan isteklere uygulanır, dolayısıyla satır sonuna ($) çıpalanmış
       ifadeler dikkatli yazılmalıdır.
     </note>
+
+    <p>2.4.8 itibariyle, isimli gruplar ve geriye başvurular elde edilmekte
+      olup ilgili isim büyük harfe çevrildikren sonra "MATCH_" ile
+      öncelendikten sonra ortama yazılmaktadır. Böylece yol elemanlarına
+      <module>mod_rewrite</module> gibi modüllerden veya <a
+      href="../expr.html">düzenli ifadelerden</a> başvurmak mümkün
+      kılınmıştır. Karışıklığı önlemek için, numaralı (isimsiz) geriye
+      başvurular yoksayılmaktadır. Bunların yerine isimli geriye başvurular
+      kullanılmalıdır.</p>
+
+<highlight language="config">
+&lt;DirectoryMatch ^/var/www/combined/(?&lt;sitename&gt;[^/]+)&gt;
+    require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
+&lt;/DirectoryMatch&gt;
+</highlight>
 </usage>
 <seealso>Normal <directive type="section">Directory</directive>
   bölümlerindeki yönergelerle düzenli ifadelerin nasıl karıştırıldığının bir
@@ -1741,6 +1756,21 @@ ErrorLogFormat connection "[%{uc}t] [C:%{c}L] local\ %a remote\ %A"
 </highlight>
 
     <p>satırı en bilinen resim dosyası biçimleriyle eşleşecektir.</p>
+
+    <p>2.4.8 itibariyle, isimli gruplar ve geriye başvurular elde edilmekte
+      olup ilgili isim büyük harfe çevrildikren sonra "MATCH_" ile
+      öncelendikten sonra ortama yazılmaktadır. Böylece yol elemanlarına
+      <module>mod_rewrite</module> gibi modüllerden veya <a
+      href="../expr.html">düzenli ifadelerden</a> başvurmak mümkün
+      kılınmıştır. Karışıklığı önlemek için, numaralı (isimsiz) geriye
+      başvurular yoksayılmaktadır. Bunların yerine isimli geriye başvurular
+      kullanılmalıdır.</p>
+
+<highlight language="config">
+&lt;DirectoryMatch ^/var/www/combined/(?&lt;sitename&gt;[^/]+)&gt;
+    require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
+&lt;/DirectoryMatch&gt;
+</highlight>
 </usage>
 
 <seealso>Bir istek alındığında farklı yapılandırma bölümlerinin nasıl bir
@@ -1894,6 +1924,10 @@ takdirde uygulanacak yönergeleri barındırır.</description>
       değişkenlerinde (<code>env</code>) ve çok sayıda başka niteliklerin
       üstünde yapılabilir. <a href="../expr.html">Apache HTTP Sunucusundaki
       İfadeler</a> belgesinde daha ayrıntılı bilgi bulabilirsiniz.</p>
+
+    <p>Bu yapılandırma bölümünün içinde sadece
+      <a href="directive-dict.html#Context">dizin bağlamını</a> destekleyen
+      yönergeler kullanılabilir.</p>
 </usage>
 
 <seealso><a href="../expr.html">Apache HTTP Sunucusundaki
@@ -2689,6 +2723,21 @@ uygulanır.</description>
 
     <p>yönergesi <code>/ek/veri</code> ve <code>/hususi/veri</code> alt
       dizgeleriyle eşleşecektir.</p>
+
+    <p>2.4.8 itibariyle, isimli gruplar ve geriye başvurular elde edilmekte
+      olup ilgili isim büyük harfe çevrildikren sonra "MATCH_" ile
+      öncelendikten sonra ortama yazılmaktadır. Böylece yol elemanlarına
+      <module>mod_rewrite</module> gibi modüllerden veya <a
+      href="../expr.html">düzenli ifadelerden</a> başvurmak mümkün
+      kılınmıştır. Karışıklığı önlemek için, numaralı (isimsiz) geriye
+      başvurular yoksayılmaktadır. Bunların yerine isimli geriye başvurular
+      kullanılmalıdır.</p>
+
+<highlight language="config">
+&lt;DirectoryMatch ^/var/www/combined/(?&lt;sitename&gt;[^/]+)&gt;
+    require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
+&lt;/DirectoryMatch&gt;
+</highlight>
 </usage>
 
 <seealso>Bir istek alındığında farklı yapılandırma bölümlerinin nasıl bir

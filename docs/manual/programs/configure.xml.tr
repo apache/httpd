@@ -1,10 +1,10 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1296925:1562488 (outdated) -->
+<!-- English Revision: 1562488 -->
 <!-- =====================================================
- Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
-   Reviewed by: Orhan Berent <berent belgeler.org>
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
+   Reviewed by: Orhan Berent <berent belgeler.gen.tr>
 ========================================================== -->
 
 <!--
@@ -318,8 +318,8 @@
         <p>Hangi modüllerin öntanımlı olarak derlendiğini öğrenmek için
           <code>./configure -h</code> veya <code>./configure --help</code>
           komutunu çalıştırın ve çıktıdaki <code>Optional Features</code>
-          bölümüne bakın. Örnek olarak, <module>mod_example1</module> ve
-          <module>mod_example2</module> modülleriyle ilgilendiğinizi
+          bölümüne bakın. Örnek olarak, <code>mod_example1</code> ve
+          <code>mod_example2</code> modülleriyle ilgilendiğinizi
           varsayalım:</p>
 
         <example><pre>Optional Features:
@@ -464,21 +464,7 @@
             <directive module="mod_so">LoadModule</directive> yönergelerine ek
             olarak, derlenmiş tüm modüller
             <code>--enable-load-all-modules</code> yapılandırma seçeneği ile de
-            etkinleştirilebilir.</p>
-
-          <p><strong>Yetersizlikler:</strong>
-            <code>--enable-mods-shared=all</code> aslında bütün modüllerin
-            derlenmesini sağlamaz. Tüm modülleri derlemek için şunu
-            yapabilirsiniz:</p>
-
-          <example>
-            ./configure \<br />
-            <indent>
-                --with-ldap \<br />
-                --enable-mods-shared="all ssl ldap cache proxy authn_alias file_cache authnz_ldap charset_lite dav_lock cache_disk"
-            </indent>
-          </example>
-        </dd>
+            etkinleştirilebilir.</p></dd>
 
         <dt><code>--enable-mods-static=<var>modül-listesi</var></code></dt>
         <dd>Bu seçenek modülleri devingen değil de durağan ilintilemek dışında
