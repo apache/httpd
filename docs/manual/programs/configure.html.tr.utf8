@@ -25,7 +25,6 @@
 <a href="../ko/programs/configure.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/programs/configure.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p><code>configure</code> betiği, Apache HTTP Sunucusunun kaynak kodlarını
       belli bir platform için yapılandırmakta ve derlemekte kullanılır.
@@ -322,18 +321,14 @@
           HTTP başlıklı dosya türü desteğini iptal eder.</dd>
 
         <dt><code>--disable-auth-basic</code></dt>
-        <dd><code class="module"><a href="../mod/mod_auth.html">mod_auth</a></code> modülü tarafından sağlanan kullanıcıya
-          dayalı erişim denetimi iptal edilir. Bu modül, kullanıcı isminin ve
-          parolasının salt metin dosyalarda saklandığı Temel HTTP Kimlik
-          Doğrulaması için kullanılır.</dd>
+        <dd><code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code> modülü tarafından sağlanan
+          kullanıcıya dayalı erişim denetimi iptal edilir. Bu modül, kullanıcı
+          isminin ve parolasının salt metin dosyalarda saklandığı Temel HTTP
+          Kimlik Doğrulaması için kullanılır.</dd>
 
         <dt><code>--disable-autoindex</code></dt>
         <dd><code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code> modülü tarafından sağlanan dizin
           içerik listelemesini iptal eder.</dd>
-
-        <dt><code>--disable-access</code></dt>
-        <dd><code class="module"><a href="../mod/mod_access.html">mod_access</a></code> modülü tarafından sağlanan konağa
-          dayalı erişim denetimi iptal edilir.</dd>
 
         <dt><code>--disable-cgi</code></dt>
         <dd>CGI betiklerine destek sağlayan <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>, çok
@@ -418,7 +413,7 @@
 
       <dl>
         <dt><code>--enable-authn-anon</code></dt>
-        <dd><code class="module"><a href="../mod/mod_auth_anon.html">mod_auth_anon</a></code> modülünün sağladığı anonim
+        <dd><code class="module"><a href="../mod/mod_authn_anon.html">mod_authn_anon</a></code> modülünün sağladığı anonim
           kullanıcı erişimi etkin kılınır.</dd>
 
         <dt><code>--enable-authn-dbm</code></dt>

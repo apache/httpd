@@ -29,7 +29,6 @@
 <a href="../ko/mod/mod_alias.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_alias.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Belge ağacının parçalarının dosya sisteminin parçalarıyla
 eşlenmesini sağlar ve URL yönlendirmesi yapar.</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
@@ -142,7 +141,9 @@ eşlenmesini sağlar ve URL yönlendirmesi yapar.</td></tr>
       sunucunun da sona bir <code>/</code> ekleyeceğine dikkat ediniz. Yani,
       eğer</p>
 
-    <dl><dd><code>Alias /icons/ /usr/local/apache/icons/</code></dd></dl>
+    <div class="example"><p><code>
+        Alias /icons/ /usr/local/apache/icons/
+    </code></p></div>
 
     <p>diye bir tanım yaparsanız <code>/icons</code> URL’si için, sonunda bir /
       yokmuşçasına bir <code class="directive">Alias</code> kullanılmayacaktır. Benzer

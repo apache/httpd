@@ -27,7 +27,6 @@
 <a href="../ko/howto/auth.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/howto/auth.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p>Kimlik Doğrulama istediğiniz kişileri teyid etme işlemidir.
     Yetkilendirme ise kişilerin nereye gireceklerine ve hangi bilgiye
@@ -220,9 +219,9 @@
     hassasiyete sahip bilgiler için kullanılmamalıdır. Apache bir başka
     kimlik doğrulama yöntemini daha destekler: <code>AuthType
     Digest</code>. Bu yöntem <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code> tarafından
-    gerçeklenmiştir ve çok daha güvenlidir. Güncel tarayıcılar, Özet
-    (<code>Digest</code>) kimlik doğrulama yöntemini
-    desteklemektedir.</p>
+    gerçeklenmiştir ve çok daha güvenli olacağı düşünülmüştü. Bu artık
+    geçerliliğini yitirmiştir ve bağlantı artık <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>
+    tarafından şifrelenmektedir.</p>
 
     <p><code class="directive"><a href="../mod/core.html#authname">AuthName</a></code> yönergesi
     ile kimlik doğrulamada kullanılacak <dfn>Saha</dfn> da
