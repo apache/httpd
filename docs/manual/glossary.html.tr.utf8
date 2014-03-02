@@ -29,7 +29,6 @@
 <a href="./ko/glossary.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/glossary.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p>Bu sözlük, genelinde HTML sayfa sunumuna, özelinde Apache HTTP Sunucusuna
       özgü ortak terminolojinin bir kısmını içerir. Her kavram ile ilgili daha
@@ -54,6 +53,15 @@
       (IETF) tarafından oluşturulmuş protokol. TLS’nin 1. sürümü ile SSL’in 3.
       sürümü hemen hemen aynıdır.<br />
       Bakınız: <a href="ssl/">SSL/TLS Şifrelemesi</a>
+    </dd>
+
+    <dt><a name="subrequest" id="subrequest">Alt istek</a></dt>
+    <dd>Diğer dosya sistemlerini veya URL yollarını kısmen veya tamamen
+      değerlendiren modüller için sunucuda bir alt istek API'si mevcuttur. Bu
+      API'nin olası müşterileri için
+      <code class="directive"><a href="./mod/mod_dir.html#directoryindex">DirectoryIndex</a></code>,
+      <code class="module"><a href="./mod/mod_autoindex.html">mod_autoindex</a></code> ve <code class="module"><a href="./mod/mod_include.html">mod_include</a></code> örnek
+      verilebilir.
     </dd>
 
     <dt><a name="passphrase" id="passphrase">Anahtar Parolası</a></dt>
