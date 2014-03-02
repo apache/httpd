@@ -177,7 +177,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                     https://svn.apache.org/r1564760
                     https://svn.apache.org/r1565081
      2.4.x patch: https://people.apache.org/~kbrand/mod_ssl-2.4.x-certkeyfile-v3.diff
-     +1: kbrand, ylavic
+     +1: kbrand, ylavic, drh
 
    * mod_ssl: Do not perform SNI / Host header comparison in case of a
      forward proxy request.
