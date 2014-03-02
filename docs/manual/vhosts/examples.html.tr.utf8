@@ -27,7 +27,6 @@
 <a href="../ko/vhosts/examples.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/vhosts/examples.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
 
     <p>Bu belgede <a href="index.html">sanal konaklarla</a> ile ilgili olarak
@@ -343,8 +342,8 @@ Listen 172.20.30.50:8080
       çalıştırmak istediğimizi varsayıyoruz. <code>192.168.111.2</code> IP
       adresli bir makinede aynı isimde bir sanal konak yapılandırılmış olsun.
       Çok sayıda konak ismi için vekil olarak tek bir makine kullandığımızdan
-      ve konak isminin de aktarılmasını arzuladığımızdan <code class="directive"><a href="../mod/mod_proxy.html#proxypreservehost on">ProxyPreserveHost On</a></code> yönergesini
-      kullandık.</p>
+      ve konak isminin de aktarılmasını arzuladığımızdan <code class="directive"><a href="../mod/mod_proxy.html#proxypreservehost">ProxyPreserveHost
+      On</a></code> yönergesini kullandık.</p>
 
     <pre class="prettyprint lang-config">&lt;VirtualHost *:*&gt;
     ProxyPreserveHost On

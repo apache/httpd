@@ -30,7 +30,6 @@
 <a href="../ko/mod/mod_setenvif.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_setenvif.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Ortam değişkenlerinin isteğin özelliklerine uygun olarak atanmasını sağlar</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Modül Betimleyici:</a></th><td>setenvif_module</td></tr>
@@ -53,6 +52,16 @@
     <pre class="prettyprint lang-config">BrowserMatch ^Mozilla netscape
 BrowserMatch MSIE !netscape</pre>
 
+
+    <p><code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code> ile dizin listesi oluşturulması
+      veya bir <code class="directive"><a href="../mod/mod_dir.html#directoryindex">DirectoryIndex</a></code>
+      için yol aranması gibi bir dahili <a class="glossarylink" href="../glossary.html#subrequest" title="sözlüğe bakınız">alt
+      istek</a> için sunucu yol araması yaparken isteklere özgü
+      ortam değişkenleri alt istekler tarafından miras alınMAZ. Buna ek
+      olarak, <code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code> modülünün devreye girdiği API
+      fazlarından dolayı yapılan alt isteklerde
+      <code class="directive"><a href="#setenvif">SetEnvIf</a></code> yönergeleri
+      ayrı ayrı değerlendirilMEZ.</p>
 </div>
 <div id="quickview"><h3 class="directives">Yönergeler</h3>
 <ul id="toc">
@@ -247,11 +256,10 @@ belgesinde daha fazla örnek bulunabilir.</li>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_setenvif</td></tr>
 </table>
-    <p><code class="directive">SetEnvIfExpr</code> yönergesi bir
-      <code class="directive">&lt;If&gt;</code> <code>ap_expr</code> ifadesine
-      dayanarak ortam değişkenlerine değer atar. Bu ifadeler çalışma anında
-      değerlendirilirerek <code class="directive">SetEnvIf</code> yönergesindeki gibi
-      <em>ort-değişkeni</em>ne uygulanır.</p>
+    <p><code class="directive">SetEnvIfExpr</code> yönergesi bir <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code> <code>ap_expr</code>
+      ifadesine dayanarak ortam değişkenlerine değer atar. Bu ifadeler çalışma
+      anında değerlendirilirerek <code class="directive">SetEnvIf</code> yönergesindeki
+      gibi <em>ort-değişkeni</em>ne uygulanır.</p>
 
     <pre class="prettyprint lang-config">SetEnvIfExpr "tolower(req('X-Sendfile')) == 'd:\images\very_big.iso')" iso_delivered</pre>
 
@@ -267,10 +275,10 @@ belgesinde daha fazla örnek bulunabilir.</li>
 
 <h3>Ayrıca bakınız:</h3>
 <ul>
-<li><a href="../expr.html">Expressions in Apache HTTP Server</a>,
-for a complete reference and more examples.</li>
-<li><code class="directive">&lt;If&gt;</code> can be used to achive similar
-results.</li>
+<li>Eksiksiz bir kılavuz ve daha fazla örnek için
+<a href="../expr.html">Apache HTTP Sunucusundaki İfadeler</a> belgesine
+bakınız.</li>
+<li>Benzer sonuçlara ulaşmak için <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code> yönergesi kullanılabilir.</li>
 <li><code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code></li>
 </ul>
 </div>

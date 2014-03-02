@@ -27,7 +27,6 @@
 <a href="../ko/howto/auth.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/howto/auth.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p>Kimlik Doğrulama istediğiniz kişileri teyid etme işlemidir.
       Yetkilendirme ise kişilerin nereye gireceklerine ve hangi bilgiye
@@ -232,9 +231,9 @@ Require user umut</pre>
     hassasiyete sahip bilgiler için kullanılmamalıdır. Apache bir başka
     kimlik doğrulama yöntemini daha destekler: <code>AuthType
     Digest</code>. Bu yöntem <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code> tarafından
-    gerçeklenmiştir ve çok daha güvenlidir. Güncel tarayıcılar, Özet
-    (<code>Digest</code>) kimlik doğrulama yöntemini
-    desteklemektedir.</p>
+    gerçeklenmişti ve çok daha güvenli olacağı düşünülmüştü. Bu artık
+    geçerliliğini yitirdiğinden bağlantının bundan böyle
+    <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> ile şifrelenmesi gerekmektedir.</p>
 
     <p><code class="directive"><a href="../mod/mod_authn_core.html#authname">AuthName</a></code> yönergesi
     ile kimlik doğrulamada kullanılacak <dfn>Saha</dfn> da
@@ -489,10 +488,10 @@ Require group Grupismi</pre>
       değil birşeylere dayanarak izin vermek istersiniz. Örneğin nereden
       geldikleri gibi.</p>
 
-      <p><code class="directive"><a href="../mod/mod_authz_host.html#all">all</a></code>, <code class="directive"><a href="../mod/mod_authz_host.html#env">env</a></code>, <code class="directive"><a href="../mod/mod_authz_host.html#host">host</a></code> ve <code class="directive"><a href="../mod/mod_authz_host.html#ip">ip</a></code> gibi yetkilendirme
-      tedarikçileri ile, bir belgenin istendiği makinenin IP adresi veya
-      konak ismi gibi bazı özelliklerine dayalı olarak erişime izin
-      verip vermeyeceğinizi belirtebilirsiniz.</p>
+      <p><code>all</code>, <code>env</code>, <code>host</code> ve
+      <code>ip</code> gibi yetkilendirme tedarikçileri ile, bir belgenin
+      istendiği makinenin IP adresi veya konak ismi gibi bazı özelliklerine
+      dayalı olarak erişime izin verip vermeyeceğinizi belirtebilirsiniz.</p>
 
       <p>Bu tedarikçilerin kullanımı <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> yönergesinde açıklanmıştır. Bu yönergeler,
       isteklerin işlenmesi sırasında yetkilendirme aşamasında
@@ -581,7 +580,7 @@ Require group Grupismi</pre>
 <h2><a name="moreinformation" id="moreinformation">Daha fazla bilgi</a></h2>
     <p>Daha fazla bilgi için <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code> ve
     <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code> modüllerinin belgelerine bakınız.
-    <code class="directive"><a href="../mod/mod_authn_core.html#&lt;authnprovideralias&gt;">&lt;AuthnProviderAlias&gt;</a></code>
+    <code class="directive"><a href="../mod/mod_authn_core.html#authnprovideralias">AuthnProviderAlias</a></code>
     yönergesi ile bazı yapılandırmalarınızı basitleştirebilirsiniz.</p>
 
     <p>Apache tarafından desteklenen şifrelerle ilgili bilgi için <a href="../misc/password_encryptions.html">Parola Biçemleri</a>
