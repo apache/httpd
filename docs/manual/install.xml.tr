@@ -1,10 +1,10 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 1371056:1563423 (outdated) -->
+<!-- English Revision: 1563423 -->
 <!-- =====================================================
- Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
-   Reviewed by: Orhan Berent <berent belgeler.org>
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
+   Reviewed by: Orhan Berent <berent belgeler.gen.tr>
 ========================================================== -->
 
 <!--
@@ -349,7 +349,7 @@
 
     <p>Bu kılavuz ve kullanılabilecek <a
       href="mod/directives.html">yapılandırma yönergelerinin</a> kılavuzlarını
-      <a href="./">docs/manual/</a> altında bulabileceğiniz gibi en
+      <code><em>ÖNEK</em>/docs/manual/</code> altında bulabileceğiniz gibi en
       son sürümünü daima <a href="http://httpd.apache.org/docs/&httpd.docs;/"
       >http://httpd.apache.org/docs/&httpd.docs;/</a> adresinde
       bulabilirsiniz.</p>

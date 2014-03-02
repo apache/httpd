@@ -1,10 +1,10 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 1304981:1563423 (outdated) -->
+<!-- English Revision: 1563423 -->
 <!-- =====================================================
- Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
-   Reviewed by: Orhan Berent <berent belgeler.org>
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
+   Reviewed by: Orhan Berent <berent belgeler.gen.tr>
 ========================================================== -->
 
 <!--
@@ -162,7 +162,7 @@
         gönderilmesini talep eden tarayıcıların desteklenmesi mümkün
         olmuştur.</dd>
 
-      <dt><module>mod_auth_ldap</module></dt>
+      <dt><module outdated="true">mod_auth_ldap</module></dt>
 
       <dd>Apache 2.0.41’de yeni olan bu modül, HTTP temel kimlik
         doğrulamasında kullanılan delillerin saklanması için LDAP
@@ -235,10 +235,9 @@
         <module>mod_include</module> modülünün <code>$0</code> ..
         <code>$9</code> değişkenleri sayesinde kullanılabilmektedir.</dd>
 
-      <dt><module>mod_auth_dbm</module></dt>
+      <dt><module outdated="true">mod_auth_dbm</module></dt>
 
-      <dd><a href="../2.0/mod/mod_auth_dbm.html#AuthDBMType"><code
-        >AuthDBMType</code></a> yönergesi
+      <dd><code>AuthDBMType</code> yönergesi
         sayesinde artık çok sayıda DBM tarzı veritabanı türü
         desteklenmektedir.</dd>
     </dl>

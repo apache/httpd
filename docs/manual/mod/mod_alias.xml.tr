@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1422377:1563423 (outdated) -->
+<!-- English Revision: 1563423 -->
 <!-- =====================================================
- Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
-   Reviewed by: Orhan Berent <berent belgeler.org>
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
+   Reviewed by: Orhan Berent <berent belgeler.gen.tr>
 ========================================================== -->
 
 <!--
@@ -134,7 +134,9 @@ eşlenmesini sağlar ve URL yönlendirmesi yapar.</description>
       sunucunun da sona bir <code>/</code> ekleyeceğine dikkat ediniz. Yani,
       eğer</p>
 
-    <dl><dd><code>Alias /icons/ /usr/local/apache/icons/</code></dd></dl>
+    <example>
+        Alias /icons/ /usr/local/apache/icons/
+    </example>
 
     <p>diye bir tanım yaparsanız <code>/icons</code> URL’si için, sonunda bir /
       yokmuşçasına bir <directive>Alias</directive> kullanılmayacaktır. Benzer
