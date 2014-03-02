@@ -26,7 +26,6 @@
 <a href="../ko/programs/configure.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/programs/configure.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p><code>configure</code> betiği, Apache HTTP Sunucusunun kaynak kodlarını
       belli bir platform için yapılandırmakta ve derlemekte kullanılır.
@@ -317,8 +316,8 @@
         <p>Hangi modüllerin öntanımlı olarak derlendiğini öğrenmek için
           <code>./configure -h</code> veya <code>./configure --help</code>
           komutunu çalıştırın ve çıktıdaki <code>Optional Features</code>
-          bölümüne bakın. Örnek olarak, <code class="module"><a href="../mod/mod_example1.html">mod_example1</a></code> ve
-          <code class="module"><a href="../mod/mod_example2.html">mod_example2</a></code> modülleriyle ilgilendiğinizi
+          bölümüne bakın. Örnek olarak, <code>mod_example1</code> ve
+          <code>mod_example2</code> modülleriyle ilgilendiğinizi
           varsayalım:</p>
 
         <div class="example"><pre>Optional Features:
@@ -459,21 +458,7 @@
             <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code> yönergelerine ek
             olarak, derlenmiş tüm modüller
             <code>--enable-load-all-modules</code> yapılandırma seçeneği ile de
-            etkinleştirilebilir.</p>
-
-          <p><strong>Yetersizlikler:</strong>
-            <code>--enable-mods-shared=all</code> aslında bütün modüllerin
-            derlenmesini sağlamaz. Tüm modülleri derlemek için şunu
-            yapabilirsiniz:</p>
-
-          <div class="example"><p><code>
-            ./configure \<br />
-            <span class="indent">
-                --with-ldap \<br />
-                --enable-mods-shared="all ssl ldap cache proxy authn_alias file_cache authnz_ldap charset_lite dav_lock cache_disk"
-            </span>
-          </code></p></div>
-        </dd>
+            etkinleştirilebilir.</p></dd>
 
         <dt><code>--enable-mods-static=<var>modül-listesi</var></code></dt>
         <dd>Bu seçenek modülleri devingen değil de durağan ilintilemek dışında

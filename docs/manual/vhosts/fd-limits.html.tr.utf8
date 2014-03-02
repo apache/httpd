@@ -27,7 +27,6 @@
 <a href="../ko/vhosts/fd-limits.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/vhosts/fd-limits.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
 
     <p>Çok büyük sayıda sanal konak kullanıyorsanız ve bunların her biri için
@@ -97,8 +96,7 @@ CustomLog logs/multiple_vhost_log vhost</pre>
     <p>Bu yapılandırma ile her günlük kaydının başında sanal konağın
       <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> yönergesine belirtilen
       ismi eklenir. (Günlük dosyalarınızın kişiselleştirilmesi ile ilgili daha
-      fazla bilgi için <a href="../mod/mod_log_config.html#formats">Günlük
-      Girdilerinin Kişiselleştirilmesi</a> konusuna bakınız.)</p>
+      fazla bilgi için <code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code> belgesine bakınız.)</p>
 
     <p>Günlük dosyanızdaki kayıtları bileşenlere göre gruplamak isterseniz
       <code><a href="../programs/other.html">split-logfile</a></code>

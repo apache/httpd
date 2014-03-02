@@ -30,7 +30,6 @@
 <a href="../ko/mod/mod_dir.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_dir.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Bölü çizgisiyle biten yönlendirmeleri yapar ve dizin içeriği dosyalarını sunar.</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Modül Betimleyici:</a></th><td>dir_module</td></tr>
@@ -159,8 +158,22 @@
       <code class="directive">DirectoryIndexRedirect</code> ise harici bir
       yönlendirmeye sebep olur.</p>
 
-    <pre class="prettyprint lang-config">DirectoryIndexRedirect on</pre>
+    <p>Bunlardan biri kullanılabilir:</p>
+    <ul>
+     <li><code>on</code>: Dizin listesi kaynağına bir 302 yönlendirmesi
+     yapılır.</li>
+     <li><code>off</code>: Bir yönlendirme yapılmaz. mod_dir için eski davranış
+     böyleydi.</li>
+     <li><code>permanent</code>: Dizin listesi kaynağına bir 301 (kalıcı)
+     yönlendirmesi yapılır.</li>
+     <li><code>temp</code>: Bu <code>on</code> ile aynı etkiye sahiptir.</li>
+     <li><code>seeother</code>: Dizin listesi kaynağına bir 303 yönlendirmesi
+     ("diğerine bak" olarak da bilinir)yapılır.</li>
+     <li><var>3xx-code</var>: 3xx kodu ile seçilen yönlendirme yapılır.</li>
+    </ul>
 
+    <div class="example"><h3>Örnek</h3><pre class="prettyprint lang-config">DirectoryIndexRedirect on</pre>
+</div>
 
     <p><code>http://example.com/docs/</code> için yapılan bir istek, <code>http://example.com/docs/index.html</code> (mevcutsa) adresine geçici bir
       yönlendirme döndürür.</p>

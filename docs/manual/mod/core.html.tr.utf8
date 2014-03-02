@@ -31,7 +31,6 @@
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Apache HTTP Sunucusunda daima mevcut olan çekirdek
  özellikler</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr></table>
@@ -956,6 +955,19 @@ DocumentRoot /var/www/${servername}/htdocs</pre>
       ifadeler dikkatli yazılmalıdır.
     </div>
 
+    <p>2.4.8 itibariyle, isimli gruplar ve geriye başvurular elde edilmekte
+      olup ilgili isim büyük harfe çevrildikren sonra "MATCH_" ile
+      öncelendikten sonra ortama yazılmaktadır. Böylece yol elemanlarına
+      <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> gibi modüllerden veya <a href="../expr.html">düzenli ifadelerden</a> başvurmak mümkün
+      kılınmıştır. Karışıklığı önlemek için, numaralı (isimsiz) geriye
+      başvurular yoksayılmaktadır. Bunların yerine isimli geriye başvurular
+      kullanılmalıdır.</p>
+
+<pre class="prettyprint lang-config">&lt;DirectoryMatch ^/var/www/combined/(?&lt;sitename&gt;[^/]+)&gt;
+    require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
+&lt;/DirectoryMatch&gt;</pre>
+
+
 <h3>Ayrıca bakınız:</h3>
 <ul>
 <li>Normal <code class="directive">&lt;Directory&gt;</code>
@@ -1763,6 +1775,19 @@ ErrorLogFormat connection "[%{uc}t] [C:%{c}L] local\ %a remote\ %A"</pre>
 
     <p>satırı en bilinen resim dosyası biçimleriyle eşleşecektir.</p>
 
+    <p>2.4.8 itibariyle, isimli gruplar ve geriye başvurular elde edilmekte
+      olup ilgili isim büyük harfe çevrildikren sonra "MATCH_" ile
+      öncelendikten sonra ortama yazılmaktadır. Böylece yol elemanlarına
+      <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> gibi modüllerden veya <a href="../expr.html">düzenli ifadelerden</a> başvurmak mümkün
+      kılınmıştır. Karışıklığı önlemek için, numaralı (isimsiz) geriye
+      başvurular yoksayılmaktadır. Bunların yerine isimli geriye başvurular
+      kullanılmalıdır.</p>
+
+<pre class="prettyprint lang-config">&lt;DirectoryMatch ^/var/www/combined/(?&lt;sitename&gt;[^/]+)&gt;
+    require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
+&lt;/DirectoryMatch&gt;</pre>
+
+
 <h3>Ayrıca bakınız:</h3>
 <ul>
 <li>Bir istek alındığında farklı yapılandırma bölümlerinin nasıl bir
@@ -1918,6 +1943,10 @@ takdirde uygulanacak yönergeleri barındırır.</td></tr>
       değişkenlerinde (<code>env</code>) ve çok sayıda başka niteliklerin
       üstünde yapılabilir. <a href="../expr.html">Apache HTTP Sunucusundaki
       İfadeler</a> belgesinde daha ayrıntılı bilgi bulabilirsiniz.</p>
+
+    <p>Bu yapılandırma bölümünün içinde sadece
+      <a href="directive-dict.html#Context">dizin bağlamını</a> destekleyen
+      yönergeler kullanılabilir.</p>
 
 <h3>Ayrıca bakınız:</h3>
 <ul>
@@ -2695,6 +2724,19 @@ uygulanır.</td></tr>
 
     <p>yönergesi <code>/ek/veri</code> ve <code>/hususi/veri</code> alt
       dizgeleriyle eşleşecektir.</p>
+
+    <p>2.4.8 itibariyle, isimli gruplar ve geriye başvurular elde edilmekte
+      olup ilgili isim büyük harfe çevrildikren sonra "MATCH_" ile
+      öncelendikten sonra ortama yazılmaktadır. Böylece yol elemanlarına
+      <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> gibi modüllerden veya <a href="../expr.html">düzenli ifadelerden</a> başvurmak mümkün
+      kılınmıştır. Karışıklığı önlemek için, numaralı (isimsiz) geriye
+      başvurular yoksayılmaktadır. Bunların yerine isimli geriye başvurular
+      kullanılmalıdır.</p>
+
+<pre class="prettyprint lang-config">&lt;DirectoryMatch ^/var/www/combined/(?&lt;sitename&gt;[^/]+)&gt;
+    require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
+&lt;/DirectoryMatch&gt;</pre>
+
 
 <h3>Ayrıca bakınız:</h3>
 <ul>
