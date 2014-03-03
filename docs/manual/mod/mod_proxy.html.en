@@ -123,6 +123,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#forwardreverse">Forward Proxies and Reverse
        Proxies/Gateways</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#examples">Basic Examples</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#handler">Access via Handler</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#workers">Workers</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#access">Controlling access to your proxy</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#startup">Slow Startup</a></li>
@@ -211,6 +212,20 @@ ProxyVia On
 &lt;Proxy *&gt;
   Require host internal.example.com
 &lt;/Proxy&gt;</pre>
+</div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="handler" id="handler">Access via Handler</a></h2>
+
+    <p>You can also force a request to be handled as a reverse-proxy
+      request, by creating a suitable Handler pass-thru. For example,
+      the below will pass all PHP scripts to the specified
+      reverse-proxy FCGI server:
+    </p>
+
+    <div class="example"><h3>Reverse Proxy PHP scripts</h3><pre class="prettyprint lang-config">&lt;FilesMatch \.php$&gt;
+    SetHandler  "proxy:unix:/path/to/app.sock|fcgi://localhost/"
+&lt;/FilesMatch&gt;</pre>
 </div>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
