@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.8
 
+  *) mod_dir: Add DirectoryCheckHandler to allow a 2.2-like behavior, skipping 
+     execution when a handler is already set. PR53929. [Eric Covener]
+
   *) mod_ssl: Do not perform SNI / Host header comparison in case of a
      forward proxy request. [Ruediger Pluem]
 
