@@ -117,7 +117,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      internals. We work fine w/o it anyway at this stage.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1561385
      2.4.x patch: trunk works
-     +1: jim
+     +1: jim, ylavic
 
    * proxy_util.c: Allow mod_rewrite to also use UDS for proxied links.
      trunk patch: http://svn.apache.org/r1543174
