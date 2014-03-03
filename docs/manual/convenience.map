@@ -193,6 +193,7 @@ deflatememlevel	mod/mod_deflate.html#deflatememlevel
 deflatewindowsize	mod/mod_deflate.html#deflatewindowsize
 deny	mod/mod_access_compat.html#deny
 directory	mod/core.html#directory
+directorycheckhandler	mod/mod_dir.html#directorycheckhandler
 directoryindex	mod/mod_dir.html#directoryindex
 directoryindexredirect	mod/mod_dir.html#directoryindexredirect
 directorymatch	mod/core.html#directorymatch
