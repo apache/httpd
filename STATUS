@@ -119,7 +119,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     trunk patch: http://svn.apache.org/r1557639 
                 http://svn.apache.org/r1557640
     2.4.x patch: http://people.apache.org/~covener/patches/2.4.x-moddir-skiphandler.diff
-    +1: covener, jim
+    +1: covener, jim, ylavic
     (I could be convinced to flip the default here, but I think it's too late)
 
    * mod_slotmem_shm: Remove wonky and dangerous code that knows about APR
