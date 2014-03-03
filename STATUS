@@ -97,6 +97,14 @@ RELEASE SHOWSTOPPERS:
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
+ 
+  * mod_dir: provide a directive to skip mod_dir processing if any other
+    handler has been configured, as in 2.2. 
+    trunk patch: http://svn.apache.org/r1557639 
+                http://svn.apache.org/r1557640
+    2.4.x patch: http://people.apache.org/~covener/patches/2.4.x-moddir-skiphandler.diff
+    +1: covener, jim, ylavic
+    (I could be convinced to flip the default here, but I think it's too late)
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -113,15 +121,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              has been loaded but not used, as any attempt to use mod_auth_form
              without mod_request and mod_session present would cause the very
              same failure. Would a warning in the release notes be good enough?
-  
-  * mod_dir: provide a directive to skip mod_dir processing if any other
-    handler has been configured, as in 2.2. 
-    trunk patch: http://svn.apache.org/r1557639 
-                http://svn.apache.org/r1557640
-    2.4.x patch: http://people.apache.org/~covener/patches/2.4.x-moddir-skiphandler.diff
-    +1: covener, jim, ylavic
-    (I could be convinced to flip the default here, but I think it's too late)
-
+ 
    * mod_slotmem_shm: Remove wonky and dangerous code that knows about APR
      internals. We work fine w/o it anyway at this stage.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1561385
