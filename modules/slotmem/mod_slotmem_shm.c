@@ -316,9 +316,6 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new,
     }
     fname = slotmem_filename(pool, name, 0);
     if (fname) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(02602)
-                     "create looking for %s", fname);
-
         /* first try to attach to existing slotmem */
         if (next) {
             for (;;) {
@@ -326,7 +323,7 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new,
                     /* we already have it */
                     *new = next;
                     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(02603)
-                                 "create found %s", fname);
+                                 "create found %s in global list", fname);
                     return APR_SUCCESS;
                 }
                 if (!next->next) {
@@ -335,6 +332,8 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new,
                 next = next->next;
             }
         }
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(02602)
+                     "create didn't find %s in global list", fname);
     }
     else {
         fbased = 0;
@@ -353,27 +352,29 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new,
     }
     if (rv == APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(02598)
-                     "looks like apr_shm_attach() worked...");
+                     "apr_shm_attach() succeeded");
 
         /* check size */
         if (apr_shm_size_get(shm) != size) {
             apr_shm_detach(shm);
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, ap_server_conf, APLOGNO(02599)
+                         "existing shared memory for %s could not be used (failed size check)",
+                         fname);
             return APR_EINVAL;
         }
         ptr = (char *)apr_shm_baseaddr_get(shm);
         memcpy(&desc, ptr, sizeof(desc));
         if (desc.size != item_size || desc.num != item_num) {
             apr_shm_detach(shm);
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, ap_server_conf, APLOGNO(02600)
+                         "existing shared memory for %s could not be used (failed contents check)",
+                         fname);
             return APR_EINVAL;
         }
         ptr += AP_SLOTMEM_OFFSET;
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(02599)
-                     "apr_shm_attach() for sure worked...");
     }
     else {
         apr_size_t dsize = size - AP_SLOTMEM_OFFSET;
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(02600)
-                     "doing a real apr_shm_create()...");
         if (fbased) {
             apr_shm_remove(fname, gpool);
             rv = apr_shm_create(&shm, size, fname, gpool);
@@ -381,6 +382,11 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new,
         else {
             rv = apr_shm_create(&shm, size, NULL, gpool);
         }
+        ap_log_error(APLOG_MARK, rv == APR_SUCCESS ? APLOG_DEBUG : APLOG_ERR,
+                     rv, ap_server_conf, APLOGNO(02611)
+                     "create: apr_shm_create(%s) %s",
+                     fname ? fname : "",
+                     rv == APR_SUCCESS ? "succeeded" : "failed");
         if (rv != APR_SUCCESS) {
             return rv;
         }
