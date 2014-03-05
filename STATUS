@@ -137,8 +137,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1561923
      2.4.x patch:  trunk works mod/ next_number
      +1: jim, ylavic
-     trawick: see r1574151 for my thoughts
-     ylavic: ++1 with r1574151
+
+     With r1574151 too:
+     +1: ylavic, trawick
 
    * protocol: draft-ietf-httpbis-p1-messaging-23 fixes regarding interactions
                between TE and content-length in the same req/resp.
