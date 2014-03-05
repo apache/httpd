@@ -197,6 +197,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      ylavic: does not depend on r1572092 or r1572655 and al above,
              these proposals can be backported in any order.
 
+   * mod_log_config: Ensure cookies have name/value
+     trunk patch: http://svn.apache.org/r1574518
+     2.4.x patch: trunk works
+     +1: jim
 
 OTHER PROPOSALS
 
