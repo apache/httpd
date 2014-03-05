@@ -542,8 +542,9 @@ static const char *log_cookie(request_rec *r, char *a)
         char *cookies = apr_pstrdup(r->pool, cookies_entry);
 
         while ((cookie = apr_strtok(cookies, ";", &last1))) {
-            char *name = apr_strtok(cookie, "=", &last2);
-            if (name) {
+            char *name;
+            if (strchr(cookie, '=') &&
+               (name = apr_strtok(cookie, "=", &last2)) != NULL) {
                 char *value = name + strlen(name) + 1;
                 apr_collapse_spaces(name, name);
 
