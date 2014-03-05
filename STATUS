@@ -97,7 +97,16 @@ RELEASE SHOWSTOPPERS:
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
- 
+
+   * mod_slotmem_shm: debugging help
+     trunk patch: http://svn.apache.org/r1562472
+                  http://svn.apache.org/r1561262
+                  http://svn.apache.org/r1561923
+                  http://svn.apache.org/r1574151
+     2.4.x patch:  trunk works mod/ next_number
+     +1: jim, ylavic, trawick
+
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -130,14 +139,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
                   http://people.apache.org/~jim/patches/uds-rewrite.patch
      +1: jim
-
-   * mod_slotmem_shm: debugging help
-     trunk patch: http://svn.apache.org/r1562472
-                  http://svn.apache.org/r1561262
-                  http://svn.apache.org/r1561923
-                  http://svn.apache.org/r1574151
-     2.4.x patch:  trunk works mod/ next_number
-     +1: jim, ylavic, trawick
 
    * protocol: draft-ietf-httpbis-p1-messaging-23 fixes regarding interactions
                between TE and content-length in the same req/resp.
