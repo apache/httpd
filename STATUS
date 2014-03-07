@@ -142,13 +142,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   https://svn.apache.org/viewvc?view=revision&revision=1541368
      2.4.x patch (plus CHANGES entry above):
        http://people.apache.org/~wrowe/httpd-2.4-r1524192-r1524770-TE-CL-v2.patch
-     +1: ylavic,
-     [wrowe asks] Where is verification of (!keepalive)?  Do we know the
-                  connection will be closed anytime in the near future?
-     ylavic: proposed for backport in 2.2.x, same comment here :
-             the discussion is not really ended in
-             https://www.mail-archive.com/dev@httpd.apache.org/msg58307.html
-             but my opinion there is +1, same here...
+     +1: ylavic, wrowe
 
    * mod_proxy: Don't reuse a SSL backend connection whose SNI differs. PR 55782.
                 This may happen when ProxyPreserveHost is on and the proxy-worker
@@ -197,11 +191,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      ylavic: does not depend on r1572092 or r1572655 and al above,
              these proposals can be backported in any order.
 
-   * mod_log_config: Ensure cookies have name/value
-     trunk patch: http://svn.apache.org/r1574518
+  *) mod_log_config: Clean up cookie logging with fewer redundant
+     string parsing passes.  Log only cookies with a value assignment.
+     [William Rowe, Ruediger Pluem, Jim Jagielski]
+     trunk patch: http://svn.apache.org/r1575400
      2.4.x patch: trunk works
-     +1: jim
-     -1: wrowe (parsing the same text x4?!?  Really?)
+     +1: wrowe
 
 OTHER PROPOSALS
 
