@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) Clean up cookie logging with fewer redundant string parsing passes.
+     Log only cookies with a value assignment.
+     [William Rowe, Ruediger Pluem, Jim Jagielski]
+
   *) mod_ssl: Do not perform SNI / Host header comparison in case of a
      forward proxy request. [Ruediger Pluem]
 
