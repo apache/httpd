@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision: 1564957:1575406 (outdated) -->
+<!-- English Revision : 1575406 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -361,6 +361,12 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     <tr><td><code>&gt;=</code></td>
         <td></td>
         <td>Cha&icirc;ne sup&eacute;rieure ou &eacute;gale &agrave;</td></tr>
+    <tr><td><code>=~</code></td>
+        <td></td>
+        <td>La cha&icirc;ne correspond &agrave; l'expression rationnelle</td></tr>
+    <tr><td><code>!~</code></td>
+        <td></td>
+        <td>La cha&icirc;ne ne correspond pas &agrave; l'expression rationnelle</td></tr>	
     <tr><td><code>-eq</code></td>
         <td><code>eq</code></td>
         <td>Egalit&eacute; d'entiers</td></tr>
@@ -581,7 +587,7 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
 # N'autoriser l'acc&egrave;s &agrave; ce contenu que pendant les heures de
 # travail
 &lt;Directory "/foo/bar/business"&gt;
-     Require expr "%{TIME_HOUR} -gt 9 &amp;&amp; %{TIME_HOUR} -lt 17"
+     Require expr %{TIME_HOUR} -gt 9 &amp;&amp; %{TIME_HOUR} -lt 17
 &lt;/Directory&gt;	
 	</highlight>
 </section>
