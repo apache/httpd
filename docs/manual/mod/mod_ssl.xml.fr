@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1555876:1573360 (outdated) -->
+<!-- English Revision : 1573360 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -948,27 +948,47 @@ SSLCipherSuite RSA:!EXP:!NULL:+HIGH:+MEDIUM:-LOW
 
 <directivesynopsis>
 <name>SSLCertificateFile</name>
-<description>Fichier contenant le certificat X.509 du serveur cod&eacute; en
+<description>Fichier de donn&eacute;es contenant le certificat X.509 du serveur cod&eacute; en
 PEM</description>
 <syntax>SSLCertificateFile <em>chemin-fichier</em></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 
 <usage>
+<p>Cette directive permet de d&eacute;finir le fichier de donn&eacute;es contenant
+les informations de certificat
+X.509 du serveur cod&eacute;es au format PEM. Ce fichier doit contenir
+au minimum un certificat d'entit&eacute; finale (feuille). Depuis la version
+2.4.8, il peut aussi contenir des certificats de CA
+interm&eacute;diaires tri&eacute;s des feuilles &agrave; la racine, ainsi que des
+<directive module="mod_ssl">SSLCertificateChainFile</directive>
+(obsol&egrave;tes).
+</p>
+
+<p>Des &eacute;l&eacute;ments additionnels peuvent &ecirc;tre pr&eacute;sents, comme des param&egrave;tres
+DH et/ou le nom EC curve pour les cl&eacute;s eph&eacute;m&egrave;res, respectivement g&eacute;n&eacute;r&eacute;s
+par <code>openssl dhparam</code> et <code>openssl ecparam</code>
+(support&eacute; &agrave; partir de la version 2.4.7), et
+enfin la cl&eacute; priv&eacute;e du certificat d'entit&eacute; finale. Si la cl&eacute; priv&eacute;e est
+chiffr&eacute;e, une bo&icirc;te de dialogue demandant le mot de passe s'ouvre au
+d&eacute;marrage.</p>
+
 <p>
-Cette directive permet de d&eacute;finir le fichier contenant le certificat
-X.509 du serveur cod&eacute; au format PEM, &eacute;ventuellement sa
-cl&eacute; priv&eacute;e, et enfin (depuis la version 2.4.7) les
-param&egrave;tres DH et/ou un nom EC curve pour les cl&eacute;s
-&eacute;ph&eacute;m&egrave;res (g&eacute;n&eacute;r&eacute;s respectivement par <code>openssl dhparam</code> et
-<code>openssl ecparam</code>). Si la cl&eacute; priv&eacute;e est chiffr&eacute;e,
-l'ouverture d'une bo&icirc;te de dialogue pour entrer le mot de passe est
-forc&eacute;e au d&eacute;marrage du serveur.</p>
-<p>Cette directive peut &ecirc;tre utilis&eacute;e jusqu'&agrave; trois fois (pour
-r&eacute;f&eacute;rencer diff&eacute;rents fichiers) lorsque des certificats de serveur bas&eacute;s
-sur RSA, DSA et ECC sont utilis&eacute;s en parall&egrave;le. Notez que les param&egrave;tres
-DH et ECDH ne sont lus que par la premi&egrave;re directive
-<directive>SSLCertificateFile</directive>.</p>
+Cette directive peut &ecirc;tre utilis&eacute;e plusieurs fois pour r&eacute;f&eacute;rencer
+diff&eacute;rents noms de fichiers, afin de supporter plusieurs algorithmes
+pour l'authentification du serveur - en g&eacute;n&eacute;ral RSA, DSA et ECC. Le
+nombre d'algorithmes support&eacute;s d&eacute;pend de la version d'OpenSSL utilis&eacute;e
+pour mod_ssl : &agrave; partir de la version 1.0.0, la commande <code>openssl
+list-public-key-algorithms</code> renvoie la liste de ces algorithmes.</p>
+
+<p>
+A partir de la version 1.0.2 d'OpenSSL, cette directive permet de
+configurer la cha&icirc;ne de certification en fonction du certificat, ce qui
+supprime une limitation de la directive obsol&egrave;te <directive
+module="mod_ssl">SSLCertificateChainFile</directive>. Cependant, les
+param&egrave;tres DH et ECDH ne sont lus que depuis la premi&egrave;re directive
+<directive>SSLCertificateFile</directive> car ils s'appliquent
+ind&eacute;pendamment du type d'algorithme d'authentification.</p>
 
 <note>
 <title>Interop&eacute;rabilit&eacute; des param&egrave;tres DH avec les nombres premiers de
@@ -1003,21 +1023,21 @@ PEM</description>
 <context>virtual host</context></contextlist>
 
 <usage>
-<p>
-Cette directive permet de d&eacute;finir le fichier contenant la cl&eacute; priv&eacute;e du
-serveur cod&eacute;e en PEM. Si la cl&eacute; priv&eacute;e n'est pas associ&eacute;e au certificat
+<p>Cette directive permet de d&eacute;finir le fichier contenant la cl&eacute; priv&eacute;e du
+serveur cod&eacute;e en PEM (la cl&eacute; priv&eacute;e peut &ecirc;tre associ&eacute;e au certificat
 dans le fichier d&eacute;fini par la directive
-<directive>SSLCertificateFile</directive>, utilisez cette directive pour
-d&eacute;finir le fichier contenant la cl&eacute; priv&eacute;e seule. Cette directive est
-inutile si le fichier d&eacute;fini par la directive
-<directive>SSLCertificateFile</directive> contient &agrave; la fois le
-certificat et la cl&eacute; priv&eacute;e. Nous d&eacute;conseillons cependant fortement
-cette pratique et nous recommandons plut&ocirc;t de s&eacute;parer le certificat de
-la cl&eacute; priv&eacute;e. Si la cl&eacute; priv&eacute;e est chiffr&eacute;e, le mot de passe sera
-demand&eacute; au d&eacute;marrage. Cette directive peut &ecirc;tre
-utilis&eacute;e trois fois (pour r&eacute;f&eacute;rencer des noms de fichiers diff&eacute;rents),
-lorsque des cl&eacute;s priv&eacute;es RSA, DSA et ECC sont utilis&eacute;es en
-parall&egrave;le.</p>
+<directive>SSLCertificateFile</directive>, mais cette pratique est
+d&eacute;conseill&eacute;e). Si la cl&eacute; priv&eacute;e est
+chiffr&eacute;e, une bo&icirc;te de dialogue demandant le mot de passe s'ouvre au
+d&eacute;marrage.</p>
+
+<p>
+Cette directive peut &ecirc;tre utilis&eacute;e plusieurs fois pour r&eacute;f&eacute;rencer
+diff&eacute;rents noms de fichiers, afin de supporter plusieurs algorithmes
+pour l'authentification du serveur. A chaque directive <directive
+module="mod_ssl">SSLCertificateKeyFile</directive> doit &ecirc;tre associ&eacute;e
+une directive <directive>SSLCertificateFile</directive> correspondante.
+</p>
 <example><title>Exemple</title>
 <highlight language="config">
 SSLCertificateKeyFile /usr/local/apache2/conf/ssl.key/server.key
@@ -1035,6 +1055,13 @@ PEM</description>
 <context>virtual host</context></contextlist>
 
 <usage>
+<note><title>SSLCertificateChainFile est obsol&egrave;te</title>
+<p><code>SSLCertificateChainFile</code> est devenue obsol&egrave;te avec la
+version 2.4.8, lorsque la directive
+<directive module="mod_ssl">SSLCertificateFile</directive> a &eacute;t&eacute; &eacute;tendue
+pour supporter aussi les certificats de CA interm&eacute;diaires dans le
+fichier de certificats du serveur.</p>
+</note>
 <p>
 Cette directive permet de d&eacute;finir le fichier optionnel
 <em>tout-en-un</em> o&ugrave; vous pouvez rassembler les certificats des
