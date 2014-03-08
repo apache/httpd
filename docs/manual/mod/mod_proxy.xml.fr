@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1562300:1573630 (outdated) -->
+<!-- English Revision: 1573630 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -184,6 +184,23 @@ ProxyVia On
     </highlight>
     </example>
     </section> <!-- /examples -->
+
+    <section id="handler"><title>Acc&egrave;s via un gestionnaire</title>
+
+    <p>Vous pouvez aussi forcer le traitement d'une requ&ecirc;te en tant que
+    requ&ecirc;te de mandataire inverse en cr&eacute;ant un gestionnaire de transfert
+    appropri&eacute;. Dans l'exemple suivant, tous les scripts PHP seront
+    transmis au serveur FCGI mandataire inverse sp&eacute;cifi&eacute; :
+    </p>
+
+    <example><title>Scripts PHP et mandataire inverse</title>
+    <highlight language="config">
+&lt;FilesMatch \.php$&gt;
+    SetHandler  "proxy:unix:/path/to/app.sock|fcgi://localhost/"
+&lt;/FilesMatch&gt;
+    </highlight>
+    </example>
+    </section> <!-- /handler -->
 
     <section id="workers"><title>Workers</title>
       <p>Le mandataire g&egrave;re la configuration et les param&egrave;tres de
