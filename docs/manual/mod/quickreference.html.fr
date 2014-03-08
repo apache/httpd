@@ -479,7 +479,8 @@ serveur</td></tr>
 ... &lt;/Directory&gt;</a></td><td></td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Regroupe un ensemble de directives qui ne s'appliquent
 qu'au répertoire concerné du système de fichiers, à ses
 sous-répertoires, et à leur contenu.</td></tr>
-<tr class="odd"><td><a href="mod_dir.html#directorycheckhandler">DirectoryCheckHandler On|Off</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Toggle how this module responds when another handler is configured</td></tr>
+<tr class="odd"><td><a href="mod_dir.html#directorycheckhandler">DirectoryCheckHandler On|Off</a></td><td> Off </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Définit la réponse de ce module lorsqu'un autre
+gestionnaire est utilisé</td></tr>
 <tr><td><a href="mod_dir.html#directoryindex">DirectoryIndex
     disabled | <var>url locale</var> [<var>url locale</var>] ...</a></td><td> index.html </td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Liste des fichiers ressources à rechercher lorsque le
 client envoie une requête pour un répertoire</td></tr>
@@ -1161,7 +1162,7 @@ PEM pour l'authentification des clients</td></tr>
 l'authentification des clients</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslcertificatechainfile">SSLCertificateChainFile <em>chemin-fichier</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Fichier contenant les certificats de CA du serveur codés en
 PEM</td></tr>
-<tr><td><a href="mod_ssl.html#sslcertificatefile">SSLCertificateFile <em>chemin-fichier</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Fichier contenant le certificat X.509 du serveur codé en
+<tr><td><a href="mod_ssl.html#sslcertificatefile">SSLCertificateFile <em>chemin-fichier</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Fichier de données contenant le certificat X.509 du serveur codé en
 PEM</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslcertificatekeyfile">SSLCertificateKeyFile <em>chemin-fichier</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Fichier contenant la clé privée du serveur codée en
 PEM</td></tr>

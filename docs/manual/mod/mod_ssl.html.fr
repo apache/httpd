@@ -27,8 +27,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_ssl.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_ssl.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Chiffrement de haut niveau basé sur les protocoles Secure
 Sockets Layer (SSL) et Transport Layer Security (TLS)</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -587,6 +585,13 @@ PEM</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
 </table>
+<div class="note"><h3>SSLCertificateChainFile est obsolète</h3>
+<p><code>SSLCertificateChainFile</code> est devenue obsolète avec la
+version 2.4.8, lorsque la directive
+<code class="directive"><a href="#sslcertificatefile">SSLCertificateFile</a></code> a été étendue
+pour supporter aussi les certificats de CA intermédiaires dans le
+fichier de certificats du serveur.</p>
+</div>
 <p>
 Cette directive permet de définir le fichier optionnel
 <em>tout-en-un</em> où vous pouvez rassembler les certificats des
@@ -622,27 +627,46 @@ navigateurs.</p>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SSLCertificateFile" id="SSLCertificateFile">SSLCertificateFile</a> <a name="sslcertificatefile" id="sslcertificatefile">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fichier contenant le certificat X.509 du serveur codé en
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fichier de données contenant le certificat X.509 du serveur codé en
 PEM</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLCertificateFile <em>chemin-fichier</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
 </table>
+<p>Cette directive permet de définir le fichier de données contenant
+les informations de certificat
+X.509 du serveur codées au format PEM. Ce fichier doit contenir
+au minimum un certificat d'entité finale (feuille). Depuis la version
+2.4.8, il peut aussi contenir des certificats de CA
+intermédiaires triés des feuilles à la racine, ainsi que des
+<code class="directive"><a href="#sslcertificatechainfile">SSLCertificateChainFile</a></code>
+(obsolètes).
+</p>
+
+<p>Des éléments additionnels peuvent être présents, comme des paramètres
+DH et/ou le nom EC curve pour les clés ephémères, respectivement générés
+par <code>openssl dhparam</code> et <code>openssl ecparam</code>
+(supporté à partir de la version 2.4.7), et
+enfin la clé privée du certificat d'entité finale. Si la clé privée est
+chiffrée, une boîte de dialogue demandant le mot de passe s'ouvre au
+démarrage.</p>
+
 <p>
-Cette directive permet de définir le fichier contenant le certificat
-X.509 du serveur codé au format PEM, éventuellement sa
-clé privée, et enfin (depuis la version 2.4.7) les
-paramètres DH et/ou un nom EC curve pour les clés
-éphémères (générés respectivement par <code>openssl dhparam</code> et
-<code>openssl ecparam</code>). Si la clé privée est chiffrée,
-l'ouverture d'une boîte de dialogue pour entrer le mot de passe est
-forcée au démarrage du serveur.</p>
-<p>Cette directive peut être utilisée jusqu'à trois fois (pour
-référencer différents fichiers) lorsque des certificats de serveur basés
-sur RSA, DSA et ECC sont utilisés en parallèle. Notez que les paramètres
-DH et ECDH ne sont lus que par la première directive
-<code class="directive">SSLCertificateFile</code>.</p>
+Cette directive peut être utilisée plusieurs fois pour référencer
+différents noms de fichiers, afin de supporter plusieurs algorithmes
+pour l'authentification du serveur - en général RSA, DSA et ECC. Le
+nombre d'algorithmes supportés dépend de la version d'OpenSSL utilisée
+pour mod_ssl : à partir de la version 1.0.0, la commande <code>openssl
+list-public-key-algorithms</code> renvoie la liste de ces algorithmes.</p>
+
+<p>
+A partir de la version 1.0.2 d'OpenSSL, cette directive permet de
+configurer la chaîne de certification en fonction du certificat, ce qui
+supprime une limitation de la directive obsolète <code class="directive"><a href="#sslcertificatechainfile">SSLCertificateChainFile</a></code>. Cependant, les
+paramètres DH et ECDH ne sont lus que depuis la première directive
+<code class="directive">SSLCertificateFile</code> car ils s'appliquent
+indépendamment du type d'algorithme d'authentification.</p>
 
 <div class="note">
 <h3>Interopérabilité des paramètres DH avec les nombres premiers de
@@ -673,21 +697,20 @@ PEM</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
 </table>
-<p>
-Cette directive permet de définir le fichier contenant la clé privée du
-serveur codée en PEM. Si la clé privée n'est pas associée au certificat
+<p>Cette directive permet de définir le fichier contenant la clé privée du
+serveur codée en PEM (la clé privée peut être associée au certificat
 dans le fichier défini par la directive
-<code class="directive">SSLCertificateFile</code>, utilisez cette directive pour
-définir le fichier contenant la clé privée seule. Cette directive est
-inutile si le fichier défini par la directive
-<code class="directive">SSLCertificateFile</code> contient à la fois le
-certificat et la clé privée. Nous déconseillons cependant fortement
-cette pratique et nous recommandons plutôt de séparer le certificat de
-la clé privée. Si la clé privée est chiffrée, le mot de passe sera
-demandé au démarrage. Cette directive peut être
-utilisée trois fois (pour référencer des noms de fichiers différents),
-lorsque des clés privées RSA, DSA et ECC sont utilisées en
-parallèle.</p>
+<code class="directive">SSLCertificateFile</code>, mais cette pratique est
+déconseillée). Si la clé privée est
+chiffrée, une boîte de dialogue demandant le mot de passe s'ouvre au
+démarrage.</p>
+
+<p>
+Cette directive peut être utilisée plusieurs fois pour référencer
+différents noms de fichiers, afin de supporter plusieurs algorithmes
+pour l'authentification du serveur. A chaque directive <code class="directive"><a href="#sslcertificatekeyfile">SSLCertificateKeyFile</a></code> doit être associée
+une directive <code class="directive">SSLCertificateFile</code> correspondante.
+</p>
 <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">SSLCertificateKeyFile /usr/local/apache2/conf/ssl.key/server.key</pre>
 </div>
 
