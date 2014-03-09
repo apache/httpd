@@ -74,13 +74,13 @@
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Toggle how this module responds when another handler is configured</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DirectoryCheckHandler On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>DirectorySlash Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>DirectoryCheckHandler Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>Indexes</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dir</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in 2.4.8 and later.  Releases prior to 2.4 implicitly
-act as if "DirectorySlash Off" was specified.</td></tr>
+act as if "DirectoryCheckHandler Off" was specified.</td></tr>
 </table>
     <p>The <code class="directive">DirectoryCheckHandler</code> directive determines 
     whether <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code> should check for directory indexes or
