@@ -185,6 +185,7 @@ FILES_nlm_objs = \
 	$(OBJDIR)/lua_request.o \
 	$(OBJDIR)/lua_vmprep.o \
 	$(OBJDIR)/lua_dbd.o \
+	$(OBJDIR)/libprews.o \
 	$(EOLIST)
 
 #
@@ -229,6 +230,12 @@ FILES_nlm_Ximports = \
 	@libc.imp \
 	$(EOLIST)
 
+# Don't link with Winsock if standard sockets are being used
+ifndef USE_STDSOCKETS
+FILES_nlm_Ximports += @ws2nlm.imp \
+	$(EOLIST)
+endif
+
 #
 # Any symbols exported to here
 #
@@ -265,7 +272,7 @@ install :: nlms FORCE
 # Any specialized rules here
 #
 
-vpath %.c $(LUASRC)/src
+vpath %.c $(LUASRC)/src ../arch/netware
 
 #
 # Include the 'tail' makefile that has targets that depend on variables defined
