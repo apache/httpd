@@ -98,12 +98,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_log_config: Clean up cookie logging with fewer redundant
-     string parsing passes.  Log only cookies with a value assignment.
-     [William Rowe, Ruediger Pluem, Jim Jagielski]
-     trunk patch: http://svn.apache.org/r1575400
-     2.4.x patch: trunk works
-     +1: wrowe, jim, ylavic
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
