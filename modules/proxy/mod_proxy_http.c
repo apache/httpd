@@ -1214,7 +1214,7 @@ apr_status_t ap_proxygetline(apr_bucket_brigade *bb, char *s, int n, request_rec
 }
 
 /*
- * Limit the number of interim respones we sent back to the client. Otherwise
+ * Limit the number of interim responses we sent back to the client. Otherwise
  * we suffer from a memory build up. Besides there is NO sense in sending back
  * an unlimited number of interim responses to the client. Thus if we cross
  * this limit send back a 502 (Bad Gateway).
