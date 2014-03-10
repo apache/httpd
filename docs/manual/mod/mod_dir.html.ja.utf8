@@ -82,13 +82,13 @@
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Toggle how this module responds when another handler is configured</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>DirectoryCheckHandler On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>DirectorySlash Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>DirectoryCheckHandler Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>Indexes</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_dir</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>Available in 2.4.8 and later.  Releases prior to 2.4 implicitly
-act as if "DirectorySlash Off" was specified.</td></tr>
+act as if "DirectoryCheckHandler Off" was specified.</td></tr>
 </table><p>このディレクティブの解説文書は
             まだ翻訳されていません。英語版をご覧ください。
             </p></div>
