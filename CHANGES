@@ -2,6 +2,10 @@
 
 Changes with Apache 2.4.8
 
+  *) Clean up cookie logging with fewer redundant string parsing passes.
+     Log only cookies with a value assignment.
+     [William Rowe, Ruediger Pluem, Jim Jagielski]
+
   *) mod_dir: Add DirectoryCheckHandler to allow a 2.2-like behavior, skipping 
      execution when a handler is already set. PR53929. [Eric Covener]
 
