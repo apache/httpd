@@ -194,7 +194,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) includes: skip unsupported function prototypes on NetWare too.
      trunk patch: http://svn.apache.org/r1423933
      2.4.x patch: trunk works (with offset)
-     +1: fuankg
+     +1: fuankg, trawick
   
 OTHER PROPOSALS
 
