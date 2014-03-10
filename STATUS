@@ -198,6 +198,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      +1: wrowe
 
+  *) includes: skip unsupported function prototypes on NetWare too.
+     trunk patch: http://svn.apache.org/r1423933
+     2.4.x patch: trunk works (with offset)
+     +1: fuankg
+  
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
