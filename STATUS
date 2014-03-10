@@ -97,11 +97,6 @@ RELEASE SHOWSTOPPERS:
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
-
-  *) includes: skip unsupported function prototypes on NetWare too.
-     trunk patch: http://svn.apache.org/r1423933
-     2.4.x patch: trunk works (with offset)
-     +1: fuankg, trawick, jim
   
 
 
