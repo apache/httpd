@@ -1170,8 +1170,8 @@ cannot use <code>$N</code> in the substitution string!
     </tr>
     <tr>
         <td>B</td>
-        <td>Escape non-alphanumeric characters <em>before</em> applying
-        the transformation. <em><a href="../rewrite/flags.html#flag_b">details ...</a></em></td>
+        <td>Escape non-alphanumeric characters in backreferences <em>before</em> 
+        applying the transformation. <em><a href="../rewrite/flags.html#flag_b">details ...</a></em></td>
     </tr>
     <tr>
         <td>chain|C</td>
