@@ -302,6 +302,7 @@ $(OBJDIR)/mod_proxy.imp: NWGNUproxy
 	@echo $(DL) ap_proxy_location_reverse_map,$(DL)>> $@
 	@echo $(DL) ap_proxy_parse_wstatus,$(DL)>> $@
 	@echo $(DL) ap_proxy_pass_brigade,$(DL)>> $@
+	@echo $(DL) ap_proxy_port_of_scheme,$(DL)>> $@
 	@echo $(DL) ap_proxy_post_request,$(DL)>> $@
 	@echo $(DL) ap_proxy_pre_http_request,$(DL)>> $@
 	@echo $(DL) ap_proxy_pre_request,$(DL)>> $@
@@ -317,6 +318,7 @@ $(OBJDIR)/mod_proxy.imp: NWGNUproxy
 	@echo $(DL) ap_proxy_sync_balancer,$(DL)>> $@
 	@echo $(DL) ap_proxy_trans_match,$(DL)>> $@
 	@echo $(DL) ap_proxy_valid_balancer_name,$(DL)>> $@
+	@echo $(DL) ap_proxy_worker_name,$(DL)>> $@
 	@echo $(DL) ap_proxyerror$(DL)>> $@
 
 #
