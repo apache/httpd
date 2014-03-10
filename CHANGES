@@ -6,6 +6,9 @@ Changes with Apache 2.4.8
      Log only cookies with a value assignment.
      [William Rowe, Ruediger Pluem, Jim Jagielski]
 
+  *) core: draft-ietf-httpbis-p1-messaging-23 corrections regarding
+     TE/CL conflicts. [Yann Ylavic <ylavic.dev gmail com>, Jim Jagielski]
+
   *) mod_dir: Add DirectoryCheckHandler to allow a 2.2-like behavior, skipping 
      execution when a handler is already set. PR53929. [Eric Covener]
 
