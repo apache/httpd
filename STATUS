@@ -196,7 +196,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      [William Rowe, Ruediger Pluem, Jim Jagielski]
      trunk patch: http://svn.apache.org/r1575400
      2.4.x patch: trunk works
-     +1: wrowe
+     +1: wrowe, jim
 
   *) includes: skip unsupported function prototypes on NetWare too.
      trunk patch: http://svn.apache.org/r1423933
