@@ -69,7 +69,9 @@ trust, as it can be abused to change the internal workings of httpd.</p>
 which can be used with an <code>AddHandler</code> directive:</p>
 
 <highlight language="config">
-AddHandler lua-script .lua
+&lt;FilesMatch "\.lua$"&gt;
+    AddHandler lua-script .lua
+&lt;/FilesMatch&gt;
 </highlight>
 
 <p>
