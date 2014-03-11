@@ -1,10 +1,6 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
-  *) mod_log_config: Clean up cookie logging with fewer redundant string
-     parsing passes.  Log only cookies with a value assignment.
-     [William Rowe, Ruediger Pluem, Jim Jagielski]
-
   *) mod_ssl: Do not perform SNI / Host header comparison in case of a
      forward proxy request. [Ruediger Pluem]
 
@@ -61,9 +57,6 @@ Changes with Apache 2.5.0
   *) mod_ssl: Don't flush when an EOS is received. Prepares mod_ssl
      to support write completion. [Graham Leggett]
 
-  *) prefork: Fix long delays when doing a graceful restart.
-     PR 54852 [Jim Jagielski, Arkadiusz Miskiewicz <arekm maven pl>]
-
   *) core: Add parse_errorlog_arg callback to ap_errorlog_provider
      to allow providers to check the ErrorLog argument. [Jan Kaluza]
 
@@ -102,9 +95,6 @@ Changes with Apache 2.5.0
   *) core: Add ap_errorlog_provider to make ErrorLog logging modular. Move
      syslog support from core to new mod_syslog. [Jan Kaluza]
 
-  *) core: draft-ietf-httpbis-p1-messaging-23 corrections regarding
-     TE/CL conflicts. [Yann Ylavic <ylavic.dev gmail com>, Jim Jagielski]
-     
   *) WinNT MPM: If ap_run_pre_connection() fails or sets c->aborted, don't
      save the socket for reuse by the next worker as if it were an 
      APR_SO_DISCONNECTED socket. Restores 2.2 behavior. [Eric Covener]
