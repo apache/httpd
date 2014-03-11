@@ -162,7 +162,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      [William Rowe, Ruediger Pluem, Jim Jagielski]
      trunk patch: http://svn.apache.org/r1575400
      2.4.x patch: trunk works
-     +1: wrowe, ylavic
+     +1: wrowe, ylavic, jim
 
    * mod_proxy: Don't reuse a SSL backend connection whose SNI differs. PR 55782.
                 This may happen when ProxyPreserveHost is on and the proxy-worker
