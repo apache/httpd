@@ -173,6 +173,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1573229
      2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-mod_proxy_sni_reuse2.patch
      +1: ylavic
+     rpluem says: +1 if you add the MMN bump
 
 PATCHES/ISSUES THAT ARE STALLED
 
