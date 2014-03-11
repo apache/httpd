@@ -154,15 +154,15 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
    2.2.x patch: http://people.apache.org/~ylavic/2.2.x-ap_proxy_pass_brigade_cleanup.patch
    +1: ylavic, rpluem, wrowe
 
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
-
   *) mod_log_config: Clean up cookie logging with fewer redundant
      string parsing passes.  Log only cookies with a value assignment.
      [William Rowe, Ruediger Pluem, Jim Jagielski]
      trunk patch: http://svn.apache.org/r1575400
      2.4.x patch: trunk works
      +1: wrowe, ylavic, jim
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
 
    * mod_proxy: Don't reuse a SSL backend connection whose SNI differs. PR 55782.
                 This may happen when ProxyPreserveHost is on and the proxy-worker
