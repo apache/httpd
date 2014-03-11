@@ -142,7 +142,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1572967
                   http://svn.apache.org/r1573229
      2.4.x patch: trunk works (modulo MMN)
-     +1: ylavic
+     +1: ylavic, rpluem
 
    * mod_deflate: Fix decompression of files larger than 4GB. According to RFC1952,
                   Input SIZE contains the size of the original input data modulo 2^32.
