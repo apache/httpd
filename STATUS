@@ -171,9 +171,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1572611 (MMN minor bump)
                   http://svn.apache.org/r1572967
                   http://svn.apache.org/r1573229
-     2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-mod_proxy_sni_reuse2.patch
+     2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-mod_proxy_sni_reuse3.patch
      +1: ylavic
      rpluem says: +1 if you add the MMN bump
+	 ylavic: MMN bump in patch #3
 
 PATCHES/ISSUES THAT ARE STALLED
 
