@@ -181,6 +181,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      ylavic: does not depend on r1572092 or r1572655 and al above,
              these proposals can be backported in any order.
 
+   * mod_proxy: Do not parse URL in case of regular expression as they likely
+     do not follow the URL syntax. PR: 56074
+     Trunk version of patch:
+        http://svn.apache.org/r1564437
+     Backport version for 2.4.x of patch:
+        Trunk version of patch works
+     +1: rpluem,
+
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
