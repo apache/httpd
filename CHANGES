@@ -1,9 +1,6 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
-  *) mod_ssl: Do not perform SNI / Host header comparison in case of a
-     forward proxy request. [Ruediger Pluem]
-
   *) mod_lua: Add r:wspeek for checking if there is any data waiting on the line
      [Daniel Gruno]
 
