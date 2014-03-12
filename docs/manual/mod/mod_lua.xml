@@ -66,12 +66,14 @@ trust, as it can be abused to change the internal workings of httpd.</p>
 
 <p>
 <code>mod_lua</code> provides a handler named <code>lua-script</code>,
-which can be used with an <code>AddHandler</code> directive:</p>
+which can be used with a <directive
+module="core">SetHandler</directive> or
+<directive module="mod_mime">AddHandler</directive> directive:</p>
 
 <highlight language="config">
-&lt;FilesMatch "\.lua$"&gt;
-    AddHandler lua-script .lua
-&lt;/FilesMatch&gt;
+&lt;Files *.lua&gt;
+    SetHandler lua-script
+&lt;/Files&gt;
 </highlight>
 
 <p>
@@ -1832,9 +1834,9 @@ onto the Lua script:
 
 <highlight language="config">
 LuaInputFilter myInputFilter /www/filter.lua input_filter
-&lt;FilesMatch "\.lua&gt;
+&lt;Files *.lua&gt;
   SetInputFilter myInputFilter
-&lt;/FilesMatch&gt;
+&lt;/Files&gt;
 </highlight>
 <highlight language="lua">
 --[[
@@ -1889,9 +1891,9 @@ onto the Lua script:
 
 <highlight language="config">
 LuaOutputFilter myOutputFilter /www/filter.lua output_filter
-&lt;FilesMatch "\.lua&gt;
+&lt;Files *.lua&gt;
   SetOutputFilter myOutputFilter
-&lt;/FilesMatch&gt;
+&lt;/Files&gt;
 </highlight>
 <highlight language="lua">
 --[[
