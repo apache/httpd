@@ -97,15 +97,6 @@ RELEASE SHOWSTOPPERS:
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
-  
- *) core: draft-ietf-httpbis-p1-messaging-23 corrections regarding
-    TE/CL conflicts. [Yann Ylavic <ylavic.dev gmail com>, Jim Jagielski] 
-    trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1524192
-                 https://svn.apache.org/viewvc?view=revision&revision=1524770
-    N/A:         https://svn.apache.org/viewvc?view=revision&revision=1527925
-    2.2.x patch (plus CHANGES entry above):
-        http://people.apache.org/~wrowe/httpd-2.2-r1524192-r1524770-TE-CL.patch
-    +1: rpluem, ylavic, wrowe
 
   * back port some bugfix that have already been included in 2.4.x. CHANGES has
     been upgraded with the corresponding entries.
