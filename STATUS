@@ -98,16 +98,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
- * mod_ssl: Do not perform SNI / Host header comparison in case of a
-   forward proxy request.
-     Trunk version of patch:
-        http://svn.apache.org/r1553204
-        http://svn.apache.org/r1555240
-        http://svn.apache.org/r1572198
-     Backport version for 2.2.x of patch:
-        http://people.apache.org/~rpluem/patches/no_sni_check_forward_proxy_2.2.x.diff
-     +1: rpluem, kbrand, wrowe
-
  * mod_proxy: Cleanup the client to backend brigade before returning an error
               (if any) to avoid buckets lifetime issues (backend connection's
               pool destroyed before request's one). PR 50335.
