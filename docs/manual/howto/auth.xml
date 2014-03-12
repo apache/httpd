@@ -448,7 +448,7 @@ Require group GroupName
     and choosing how authorization will be done is now possible.</p>
 
     <section id="authandororder"><title>Applying logic and ordering</title>
-        <p>Controling how and in what order authorization will be applied
+        <p>Controlling how and in what order authorization will be applied
         has been a bit of a mystery in the past. In Apache 2.2 a provider-based
         authentication mechanism was introduced to decouple the actual
         authentication process from authorization and supporting functionality.

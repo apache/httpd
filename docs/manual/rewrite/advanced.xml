@@ -49,7 +49,7 @@ configuration.</note>
 
 <section id="sharding">
 
-  <title>URL-based sharding accross multiple backends</title>
+  <title>URL-based sharding across multiple backends</title>
 
   <dl>
     <dt>Description:</dt>

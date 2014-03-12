@@ -864,7 +864,7 @@ menu_bail:
         /* There's not much else we can do ... we've already sent the headers
          * to the client.
          */
-        ap_rputs("\n\n[an internal server error occured]\n", r);
+        ap_rputs("\n\n[an internal server error occurred]\n", r);
         menu_footer(r);
         return OK;
     }

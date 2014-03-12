@@ -258,7 +258,7 @@ int main(int argc, const char * const argv[])
         resolves++;
 
         /* From here on our we cache each result, even if it was not
-         * succesful
+         * successful
          */
         cachesize++;
 

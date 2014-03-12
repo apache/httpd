@@ -470,7 +470,7 @@ CacheEnable  disk  http://.example.org/
 
 <usage>
     <p>The <directive>CacheMaxExpire</directive> directive specifies the maximum number of
-    seconds for which cachable HTTP documents will be retained without checking the origin
+    seconds for which cacheable HTTP documents will be retained without checking the origin
     server. Thus, documents will be out of date at most this number of seconds. This maximum
     value is enforced even if an expiry date was supplied with the document.</p>
 
@@ -493,7 +493,7 @@ CacheEnable  disk  http://.example.org/
 
 <usage>
     <p>The <directive>CacheMinExpire</directive> directive specifies the minimum number of
-    seconds for which cachable HTTP documents will be retained without checking the origin
+    seconds for which cacheable HTTP documents will be retained without checking the origin
     server. This is only used if no valid expire time was supplied with the document.</p>
 
 
@@ -723,10 +723,10 @@ LastModified date.</description>
       <li><code>/someapplication/image.gif;jsessionid=123456789</code></li>
       <li><code>/someapplication/image.gif?PHPSESSIONID=12345678</code></li>
     </ul>
-    <p>This causes cachable resources to be stored separately for each session, which
+    <p>This causes cacheable resources to be stored separately for each session, which
     is often not desired. <directive>CacheIgnoreURLSessionIdentifiers</directive> lets
     define a list of identifiers that are removed from the key that is used to identify
-    an entity in the cache, such that cachable resources are not stored separately for
+    an entity in the cache, such that cacheable resources are not stored separately for
     each session.
     </p>
     <p><code>CacheIgnoreURLSessionIdentifiers None</code> clears the list of ignored

@@ -321,7 +321,7 @@ Header merge Cache-Control no-store env=NO_STORE
     components of the server may have stored their response headers in either
     the table that corresponds to <code>onsuccess</code> or the table that
     corresponds to <code>always</code>.  "Always" in this context refers to
-    whether headers you add will be sent during both a successful and unsucessful
+    whether headers you add will be sent during both a successful and unsuccessful
     response, but if your action is a function of an existing header, you
     will have to read on for further complications.</p>
 

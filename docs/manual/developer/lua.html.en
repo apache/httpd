@@ -79,7 +79,7 @@ that every call to a Lua script will spawn a new Lua state that handles that
 script and is destroyed immediately after. This option keeps the memory 
 footprint of mod_lua low, but also affects the processing speed of a request. 
 If you have the memory to spare, you can set the scope to <code>thread</code>, 
-which will make mod_lua spawn a Lua state that lasts the entirity of a thread's 
+which will make mod_lua spawn a Lua state that lasts the entirily of a thread's 
 lifetime, speeding up request processing by 2-3 times. Since mod_lua will create 
 a state for each script, this may be an expensive move, memory-wise, so to 
 compromise between speed and memory usage, you can choose the <code>server</code> 
@@ -466,7 +466,7 @@ end</pre>
 
 <pre class="prettyprint lang-lua">--[[ 
      This script has two user groups; members and admins, and whichever 
-     is refered to by the "Require rights" directive is checked to see
+     is referred to by the "Require rights" directive is checked to see
      if the authenticated user belongs to this group.
 ]]--
 

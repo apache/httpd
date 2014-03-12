@@ -2788,7 +2788,7 @@ static int setup_choice_response(request_rec *r, negotiation_state *neg,
      * see that Vary header yet at this point in the control flow.
      * This won't cause any cache consistency problems _unless_ the
      * CGI script also returns a Cache-Control header marking the
-     * response as cachable.  This needs to be fixed, also there are
+     * response as cacheable.  This needs to be fixed, also there are
      * problems if a CGI returns an Etag header which also need to be
      * fixed.
      */

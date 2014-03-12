@@ -1790,13 +1790,13 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
             if (worker->s->smax == -1 || worker->s->smax > worker->s->hmax) {
                 worker->s->smax = worker->s->hmax;
             }
-            /* Set min to be lower then smax */
+            /* Set min to be lower than smax */
             if (worker->s->min > worker->s->smax) {
                 worker->s->min = worker->s->smax;
             }
         }
         else {
-            /* This will supress the apr_reslist creation */
+            /* This will suppress the apr_reslist creation */
             worker->s->min = worker->s->smax = worker->s->hmax = 0;
         }
     }

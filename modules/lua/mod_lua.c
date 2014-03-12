@@ -643,7 +643,7 @@ static apr_status_t lua_input_filter_handle(ap_filter_t *f,
 }
 
 
-/* ---------------- Configury stuff --------------- */
+/* ---------------- Configure stuff --------------- */
 
 /** harnesses for magic hooks **/
 

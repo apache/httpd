@@ -513,7 +513,7 @@ static int req_ssl_var_lookup(lua_State *L)
     return 1;
 }
 
-/* BEGIN dispatch mathods for request_rec fields */
+/* BEGIN dispatch methods for request_rec fields */
 
 /* not really a field, but we treat it like one */
 static const char *req_document_root(request_rec *r)

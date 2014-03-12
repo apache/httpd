@@ -42,7 +42,7 @@
 
 /** Interactive patch:
  * TODO Don't use 65K buffer
- * TODO Handle empty/non-existant parameters
+ * TODO Handle empty/non-existent parameters
  * TODO Allow body elements to be files
  * TODO When running body/get/cookies all at once, include previous cached
  * values (and don't start at 0 in count)
@@ -947,7 +947,7 @@ static apr_status_t ba_cleanup(void *data)
  Always check query_string before prompting user,
   but rewrite body/cookies to get if interactive
 
- Definately more work needed here...
+ Definitely more work needed here...
 */
 static int is_interactive_mode(apr_pool_t *pool) {
     char *value = NULL, qs[] = "GATEWAY_INTERFACE";

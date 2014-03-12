@@ -121,7 +121,7 @@ To Do List
   are accurate, and others are way outdated.
 
 - I'd like to expand the discussion of conditional logging, and add a
-  few more useful exmaples.
+  few more useful examples.
   That would be a good place to document logging of cache hit/miss:
   https://issues.apache.org/bugzilla/show_bug.cgi?id=48241#c2
 

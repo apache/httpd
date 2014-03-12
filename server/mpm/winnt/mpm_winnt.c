@@ -734,7 +734,7 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
  * of this event means that the child process has exited prematurely
  * due to a seg fault or other irrecoverable error. For server
  * robustness, master_main will restart the child process under this
- * condtion.
+ * condition.
  *
  * master_main uses the child_exit_event to signal the child process
  * to exit.
@@ -996,7 +996,7 @@ static void winnt_rewrite_args(process_rec *process)
      *   -k config
      *   -k uninstall
      *   -k stop
-     *   -k shutdown (same as -k stop). Maintained for backward compatability.
+     *   -k shutdown (same as -k stop). Maintained for backward compatibility.
      *
      * We can't leave this phase until we know our identity
      * and modify the command arguments appropriately.
@@ -1041,7 +1041,7 @@ static void winnt_rewrite_args(process_rec *process)
         my_pid = GetCurrentProcessId();
         parent_pid = (DWORD) atol(pid);
 
-        /* Prevent holding open the (nonexistant) console */
+        /* Prevent holding open the (nonexistent) console */
         ap_real_exit_code = 0;
 
         /* The parent gave us stdin, we need to remember this

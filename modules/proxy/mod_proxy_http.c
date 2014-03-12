@@ -866,7 +866,7 @@ int ap_proxy_http_request(apr_pool_t *p, request_rec *r,
      * To reduce server resource use,   setenv proxy-sendchunked
      *
      * Then address specific servers with conditional setenv
-     * options to restore the default behavior where desireable.
+     * options to restore the default behavior where desirable.
      *
      * We have to compute content length by reading the entire request
      * body; if request body is not small, we'll spool the remaining
@@ -1403,7 +1403,7 @@ int ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
 
             /* read the headers. */
             /* N.B. for HTTP/1.0 clients, we have to fold line-wrapped headers*/
-            /* Also, take care with headers with multiple occurences. */
+            /* Also, take care with headers with multiple occurrences. */
 
             /* First, tuck away all already existing cookies */
             save_table = apr_table_make(r->pool, 2);
@@ -1452,7 +1452,7 @@ int ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                  *
                  * To help mitigate HTTP Splitting, unset Content-Length
                  * and shut down the backend server connection
-                 * XXX: We aught to treat such a response as uncachable
+                 * XXX: We aught to treat such a response as uncacheable
                  */
                 apr_table_unset(r->headers_out, "Content-Length");
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01107)
