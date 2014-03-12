@@ -16,6 +16,9 @@ Changes with Apache 2.2.27
   *) mod_ldap: Fix a potential memory leak or corruption.  PR 54936.
      [Zhenbo Xu <zhenbo1987 gmail com>]
 
+  *) mod_ssl: Do not perform SNI / Host header comparison in case of a
+     forward proxy request. [Ruediger Pluem]
+
   *) mod_rewrite: Add mod_rewrite.h to the headers installed on Windows. 
      PR46679 [Bob Ionescu]
 
