@@ -7,6 +7,15 @@ Changes with Apache 2.2.27
   *) mod_proxy_http: Core dumped under high load. PR 50335.
      [Jan Kaluza <jkaluza redhat.com>]
 
+  *) proxy_util: NULL terminate the right buffer in 'send_http_connect'.
+     [Christophe Jaillet]
+
+  *) mod_proxy: Remove (never documented) <Proxy ~ wildcard-url> syntax which
+     is equivalent to <ProxyMatch wildcard-url>. [Christophe Jaillet]
+
+  *) mod_ldap: Fix a potential memory leak or corruption.  PR 54936.
+     [Zhenbo Xu <zhenbo1987 gmail com>]
+
   *) mod_rewrite: Add mod_rewrite.h to the headers installed on Windows. 
      PR46679 [Bob Ionescu]
 

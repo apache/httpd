@@ -98,30 +98,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * back port some bugfix that have already been included in 2.4.x. CHANGES has
-    been upgraded with the corresponding entries.
-   - Correct typo in error message
-   - Unlikely potential memory leak. PR 54936
-   - Remove <Proxy ~ wildcard-url> syntax which:
-      - is equivalent to <ProxyMatch wildcard-url>
-      - has never been documented
-      - incorrectly checks parameters (!cmd->path should be !cmd->path[0])
-      - is buggy (! is missing in front of strncasecmp)
-   - Avoid sending back uninitialized memory, use 'ftpmessage' in order to have
-     something meaningful instead.
-     Save 8k of stack by the same time.
-   - NULL terminate the right buffer
-   - mod_header: wrong string initialization (leading to segfault if format argument is missing)   
-     util_win32: duplicate sizeof (untested; Windows people, please review)
-   trunk patch: http://svn.apache.org/viewvc?view=revision&revision=r1493330
-                http://svn.apache.org/viewvc?view=revision&revision=r1504276
-                http://svn.apache.org/viewvc?view=revision&revision=r1552227
-                http://svn.apache.org/viewvc?view=revision&revision=r1551714
-                http://svn.apache.org/viewvc?view=revision&revision=r1490994
-                http://svn.apache.org/viewvc?view=revision&revision=r1172732
-    2.2.x patch: http://people.apache.org/~jailletc36/patch_2.2.diff
-    +1: jailletc36, rpluem, wrowe
-
  * mod_ssl: Do not perform SNI / Host header comparison in case of a
    forward proxy request.
      Trunk version of patch:
