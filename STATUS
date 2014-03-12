@@ -95,6 +95,12 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
+   * mod_ssl: A bug in some older versions of OpenSSL will cause a crash
+              in SSL_get_certificate for servers where the certificate hasn't
+              been sent.
+     trunk patch: http://svn.apache.org/r1576741
+     2.4.x patch: trunk works
+     +1:
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
@@ -195,6 +201,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                         This problem has been introduced in r1531961.
      trunk patch: http://svn.apache.org/r1576233
      2.4.x patch: trunk works
+
 
 OTHER PROPOSALS
 
