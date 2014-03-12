@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.27
 
+  *) core: draft-ietf-httpbis-p1-messaging-23 corrections regarding
+     TE/CL conflicts. [Yann Ylavic <ylavic.dev gmail com>, Jim Jagielski]
+
   *) mod_proxy_http: Core dumped under high load. PR 50335.
      [Jan Kaluza <jkaluza redhat.com>]
 
