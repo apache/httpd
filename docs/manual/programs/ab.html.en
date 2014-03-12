@@ -135,7 +135,7 @@
 
     <dt><code>-l</code></dt>
     <dd>Do not report errors if the length of the responses is not constant. This 
-    can be usefull for dynamic pages.
+    can be useful for dynamic pages.
     </dd>
 
     <dt><code>-n <var>requests</var></code></dt>

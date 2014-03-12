@@ -27,7 +27,7 @@
  * It is a complete implementation of the ISAPI 2.0 specification,
  * except for "Microsoft extensions" to the API which provide
  * asynchronous I/O.  It is further extended to include additional
- * "Microsoft extentions" through IIS 5.0, with some deficiencies
+ * "Microsoft extensions" through IIS 5.0, with some deficiencies
  * where one-to-one mappings don't exist.
  *
  * Refer to /manual/mod/mod_isapi.html for additional details on
@@ -152,7 +152,7 @@ static const char *isapi_cmd_cachefile(cmd_parms *cmd, void *dummy,
         return NULL;
     }
 
-    /* Load the extention as cached (with null request_rec) */
+    /* Load the extension as cached (with null request_rec) */
     rv = isapi_lookup(cmd->pool, cmd->server, NULL, fspec, &isa);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_WARNING, rv, cmd->server, APLOGNO(02106)

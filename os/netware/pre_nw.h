@@ -55,7 +55,7 @@
 #endif
 #endif
 
-/* C9X defintion used by MSL C++ library */
+/* C9X definition used by MSL C++ library */
 #define DECIMAL_DIG 17
 
 /* some code may want to use the MS convention for long long */

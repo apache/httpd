@@ -77,7 +77,7 @@ struct ap_serf_cluster_provider_t {
      * unable to contact any of the servers, a 502 will be returned to the
      * client.
      *
-     * Returns OK on sucess, all other return codes will result in a 500.
+     * Returns OK on success, all other return codes will result in a 500.
      *
      * This field must be set.
      */

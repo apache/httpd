@@ -15,7 +15,7 @@
  */
 
 /*
- * http_config.c: once was auxillary functions for reading httpd's config
+ * http_config.c: once was auxiliary functions for reading httpd's config
  * file and converting filenames into a namespace
  *
  * Rob McCool
@@ -736,7 +736,7 @@ AP_DECLARE(void) ap_remove_loaded_module(module *mod)
      *
      *  Note: 1. We cannot determine if the module was successfully
      *           removed by ap_remove_module().
-     *        2. We have not to complain explicity when the module
+     *        2. We have not to complain explicitly when the module
      *           is not found because ap_remove_module() did it
      *           for us already.
      */

@@ -632,7 +632,7 @@ AP_DECLARE(void) ap_internal_redirect(const char *new_uri, request_rec *r)
 
     AP_INTERNAL_REDIRECT(r->uri, new_uri);
 
-    /* ap_die was already called, if an error occured */
+    /* ap_die was already called, if an error occurred */
     if (!new) {
         return;
     }
@@ -661,7 +661,7 @@ AP_DECLARE(void) ap_internal_redirect_handler(const char *new_uri, request_rec *
     int access_status;
     request_rec *new = internal_internal_redirect(new_uri, r);
 
-    /* ap_die was already called, if an error occured */
+    /* ap_die was already called, if an error occurred */
     if (!new) {
         return;
     }

@@ -136,7 +136,7 @@ module</description>
 <directivesynopsis>
 <name>CheckBasenameMatch</name>
 <description>Extend the action of the speling module to also check filename
-without paying attention to the extention. (e.g. foo.gif and foo.jpg).
+without paying attention to the extension. (e.g. foo.gif and foo.jpg).
 This can be particulary useful in conjunction with
 <a href="../content-negotiation.html">MultiViews</a></description>
 <syntax>CheckBasenameMatch on|off</syntax>

@@ -216,7 +216,7 @@ AP_DECLARE(void) ap_clear_auth_internal(void);
  * Determine whether access control hooks will be run for all internal
  * requests with URIs distinct from that of the initial request, or only
  * those for which different configurations apply than those which applied
- * to the initial request.  To accomodate legacy external modules which
+ * to the initial request.  To accommodate legacy external modules which
  * may expect access control hooks to be run for all internal requests
  * with distinct URIs, this is the default behaviour unless all access
  * control hooks and authentication and authorization providers are

@@ -934,11 +934,11 @@ r:htpassword(string [,algorithm [,cost]]) -- Creates a password hash from a stri
 </highlight>
 
 <highlight language="lua">
-r:mkdir(dir [,mode]) -- Creates a directory and sets mode to optional mode paramter.
+r:mkdir(dir [,mode]) -- Creates a directory and sets mode to optional mode parameter.
 </highlight>
 
 <highlight language="lua">
-r:mkrdir(dir [,mode]) -- Creates directories recursive and sets mode to optional mode paramter.
+r:mkrdir(dir [,mode]) -- Creates directories recursive and sets mode to optional mode parameter.
 </highlight>
 
 <highlight language="lua">
@@ -1093,7 +1093,7 @@ local line = r:wsread()
 function filter(r)
     -- Our first yield is to signal that we are ready to receive buckets.
     -- Before this yield, we can set up our environment, check for conditions,
-    -- and, if we deem it necessary, decline filtering a request alltogether:
+    -- and, if we deem it necessary, decline filtering a request altogether:
     if something_bad then
         return -- This would skip this filter.
     end

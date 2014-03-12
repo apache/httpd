@@ -387,7 +387,7 @@ static char *substitute(char *buf,
 }
 
 /*
-  find first occurence of args in buf.
+  find first occurrence of args in buf.
   in case of conflict, the LONGEST argument is kept. (could be the FIRST?).
   returns the pointer and the whichone found, or NULL.
 */

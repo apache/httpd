@@ -63,7 +63,7 @@ static void *merge_env_dir_configs(apr_pool_t *p, void *basev, void *addv)
      *     table_set( res->vars, $element.key, $element.val );
      *
      * add->unsetenv already removed the vars from add->vars,
-     * if they preceeded the UnsetEnv directive.
+     * if they preceded the UnsetEnv directive.
      */
     res->vars = apr_table_copy(p, base->vars);
     res->unsetenv = NULL;

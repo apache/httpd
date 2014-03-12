@@ -416,7 +416,7 @@ typedef struct dav_locktoken dav_locktoken;
 ** the sub-pools are a bit more general and heavyweight than these buffers.
 */
 
-/* buffer for reuse; can grow to accomodate needed size */
+/* buffer for reuse; can grow to accommodate needed size */
 typedef struct
 {
     apr_size_t alloc_len;       /* how much has been allocated */
@@ -434,7 +434,7 @@ DAV_DECLARE(void) dav_set_bufsize(apr_pool_t *p, dav_buffer *pbuf,
 DAV_DECLARE(void) dav_buffer_init(apr_pool_t *p, dav_buffer *pbuf,
                                   const char *str);
 
-/* check that the buffer can accomodate <extra_needed> more bytes */
+/* check that the buffer can accommodate <extra_needed> more bytes */
 DAV_DECLARE(void) dav_check_bufsize(apr_pool_t *p, dav_buffer *pbuf,
                                     apr_size_t extra_needed);
 
@@ -864,7 +864,7 @@ struct dav_hooks_liveprop
 **
 ** This structure is used as a standard way to determine if a particular
 ** property is a live property. Its use is not part of the mandated liveprop
-** interface, but can be used by liveprop providers in conjuction with the
+** interface, but can be used by liveprop providers in conjunction with the
 ** utility routines below.
 **
 ** spec->name == NULL is the defined end-sentinel for a list of specs.
@@ -2311,7 +2311,7 @@ struct dav_hooks_vsn
     ** exist. Any <DAV:mkworkspace> element is passed to the provider
     ** in the "doc" structure; it may be empty.
     **
-    ** If workspace creation is succesful, the state of the resource
+    ** If workspace creation is successful, the state of the resource
     ** object is updated appropriately.
     **
     ** This hook is optional; if the provider does not support workspaces,
@@ -2334,7 +2334,7 @@ struct dav_hooks_vsn
     ** Create an activity resource. The resource must not already
     ** exist.
     **
-    ** If activity creation is succesful, the state of the resource
+    ** If activity creation is successful, the state of the resource
     ** object is updated appropriately.
     **
     ** This hook is optional; if the provider does not support activities,

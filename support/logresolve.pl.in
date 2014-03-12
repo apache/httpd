@@ -207,7 +207,7 @@ sub nslookup {
 
 	 # do the hostname lookup inside an eval. The eval will use the
 	 # already configured SIGnal handler and drop out of the {} block
-	 # regardless of whether the alarm occured or not.
+	 # regardless of whether the alarm occurred or not.
 	eval {
 		alarm($TIMEOUT);
 		$hostname = gethostbyaddr(gethostbyname($ip), AF_INET);

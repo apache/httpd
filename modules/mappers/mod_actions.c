@@ -118,7 +118,7 @@ static const char *set_script(cmd_parms *cmd, void *m_v,
     }
     else {
         /* ap_method_register recognizes already registered methods,
-         * so don't bother to check its previous existence explicitely.
+         * so don't bother to check its previous existence explicitly.
          */
         methnum = ap_method_register(cmd->pool, method);
     }
