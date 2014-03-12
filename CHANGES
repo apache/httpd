@@ -1,6 +1,12 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.27
 
+  *) SECURITY: CVE-2014-0098 (cve.mitre.org)
+     Clean up cookie logging with fewer redundant string parsing passes.
+     Log only cookies with a value assignment. Prevents segfaults when
+     logging truncated cookies.
+     [William Rowe, Ruediger Pluem, Jim Jagielski]
+
   *) core: draft-ietf-httpbis-p1-messaging-23 corrections regarding
      TE/CL conflicts. [Yann Ylavic <ylavic.dev gmail com>, Jim Jagielski]
 

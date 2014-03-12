@@ -524,14 +524,24 @@ static const char *log_cookie(request_rec *r, char *a)
 
         while ((cookie = apr_strtok(cookies, ";", &last1))) {
             char *name = apr_strtok(cookie, "=", &last2);
-            if (name) {
-                char *value = name + strlen(name) + 1;
-                apr_collapse_spaces(name, name);
+            /* last2 points to the next char following an '=' delim,
+               or the trailing NUL char of the string */
+            char *value = last2;
+            if (name && *name &&  value && *value) {
+                char *last = value - 2;
+                /* Move past leading WS */
+                name += strspn(name, " \t");
+                while (last >= name && apr_isspace(*last)) {
+                    *last = '\0';
+                    --last;
+                }
 
                 if (!strcasecmp(name, a)) {
-                    char *last;
-                    value += strspn(value, " \t");  /* Move past leading WS */
-                    last = value + strlen(value) - 1;
+                    /* last1 points to the next char following the ';' delim,
+                       or the trailing NUL char of the string */
+                    last = last1 - (*last1 ? 2 : 1);
+                    /* Move past leading WS */
+                    value += strspn(value, " \t");
                     while (last >= value && apr_isspace(*last)) {
                        *last = '\0';
                        --last;
@@ -540,6 +550,7 @@ static const char *log_cookie(request_rec *r, char *a)
                     return ap_escape_logitem(r->pool, value);
                 }
             }
+            /* Iterate the remaining tokens using apr_strtok(NULL, ...) */
             cookies = NULL;
         }
     }
