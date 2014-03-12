@@ -964,8 +964,13 @@ static apr_status_t ssl_init_server_certs(server_rec *s,
          */
         if (!(cert = SSL_CTX_get0_certificate(mctx->ssl_ctx))) {
 #else
-        if (!(ssl = SSL_new(mctx->ssl_ctx)) ||
-            !(cert = SSL_get_certificate(ssl))) {
+        ssl = SSL_new(mctx->ssl_ctx);
+	if (ssl) {
+            /* Workaround bug in SSL_get_certificate in OpenSSL 0.9.8y */
+            SSL_set_connect_state(ssl);
+            cert = SSL_get_certificate(ssl);
+        }
+        if (!ssl || !cert) {
 #endif
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(02566)
                          "Unable to retrieve certificate %s", key_id);
