@@ -734,6 +734,32 @@ static int lua_request_rec_hook_harness(request_rec *r, const char *name, int ap
 }
 
 
+/* Fix for making sure that LuaMapHandler works when FallbackResource is set */
+static int lua_map_handler_fixups(request_rec *r)
+{
+    /* If there is no handler set yet, this might be a LuaMapHandler request */
+    if (r->handler == NULL) {
+        int n = 0;
+        ap_regmatch_t match[10];
+        const ap_lua_dir_cfg *cfg = ap_get_module_config(r->per_dir_config,
+                                                     &lua_module);
+        for (n = 0; n < cfg->mapped_handlers->nelts; n++) {
+            ap_lua_mapped_handler_spec *hook_spec =
+            ((ap_lua_mapped_handler_spec **) cfg->mapped_handlers->elts)[n];
+
+            if (hook_spec == NULL) {
+                continue;
+            }
+            if (!ap_regexec(hook_spec->uri_pattern, r->uri, 10, match, 0)) {
+                r->handler = apr_pstrdup(r->pool, "lua-map-handler");
+                return OK;
+            }
+        }
+    }
+    return DECLINED;
+}
+
+
 static int lua_map_handler(request_rec *r)
 {
     int rc, n = 0;
@@ -2100,6 +2126,9 @@ static void lua_register_hooks(apr_pool_t *p)
     APR_OPTIONAL_HOOK(ap_lua, lua_request, lua_request_hook, NULL, NULL,
                       APR_HOOK_REALLY_FIRST);
     ap_hook_handler(lua_map_handler, NULL, NULL, AP_LUA_HOOK_FIRST);
+    
+    /* Hook this right before FallbackResource kicks in */
+    ap_hook_fixups(lua_map_handler_fixups, NULL, NULL, AP_LUA_HOOK_LAST-2);
 #if APR_HAS_THREADS
     ap_hook_child_init(ap_lua_init_mutex, NULL, NULL, APR_HOOK_MIDDLE);
 #endif
