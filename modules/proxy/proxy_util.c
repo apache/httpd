@@ -2329,7 +2329,7 @@ static apr_status_t send_http_connect(proxy_conn_rec *backend,
         nbytes = sizeof(drain_buffer) - 1;
         while (status == APR_SUCCESS && nbytes) {
             status = apr_socket_recv(backend->sock, drain_buffer, &nbytes);
-            buffer[nbytes] = '\0';
+            drain_buffer[nbytes] = '\0';
             nbytes = sizeof(drain_buffer) - 1;
             if (strstr(drain_buffer, "\r\n\r\n") != NULL) {
                 complete = 1;
