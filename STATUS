@@ -189,6 +189,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         Trunk version of patch works
      +1: rpluem,
 
+   * mod_authn_socache: Fix creation of default socache_instance. Fixes crash
+                        on startup if default socache_provider is used and
+                        AuthnCacheEnable or AuthnCacheProvideFor is used.
+                        This problem has been introduced in r1531961.
+     trunk patch: http://svn.apache.org/r1576233
+     2.4.x patch: trunk works
+
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
