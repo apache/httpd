@@ -98,14 +98,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
- * mod_proxy: Cleanup the client to backend brigade before returning an error
-              (if any) to avoid buckets lifetime issues (backend connection's
-              pool destroyed before request's one). PR 50335.
-              Follows up r1534321 and r1550061 already accepted for backport in 2.2.27.
-   trunk patch: http://svn.apache.org/r1572543
-   2.2.x patch: http://people.apache.org/~ylavic/2.2.x-ap_proxy_pass_brigade_cleanup.patch
-   +1: ylavic, rpluem, wrowe
-
   *) mod_log_config: Clean up cookie logging with fewer redundant
      string parsing passes.  Log only cookies with a value assignment.
      [William Rowe, Ruediger Pluem, Jim Jagielski]
