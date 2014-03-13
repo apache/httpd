@@ -23,6 +23,7 @@ Patches considered for backport are noted in their branches' STATUS:
 Release history:
     [NOTE that x.{odd}.z versions are strictly Alpha/Beta releases,
           while x.{even}.z versions are Stable/GA releases.]
+    2.2.28  : In maintenance.
     2.2.27  : Tagged March 13, 2014
     2.2.26  : Released November 18, 2013
     2.2.25  : Released July 9, 2013
