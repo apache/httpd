@@ -100,7 +100,7 @@ RELEASE SHOWSTOPPERS:
               been sent.
      trunk patch: http://svn.apache.org/r1576741
      2.4.x patch: trunk works
-     +1: wrowe, jim
+     +1: wrowe, jim, rpluem
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
