@@ -9,7 +9,7 @@ Changes with Apache 2.4.9
    *) mod_lua: Add a fixups hook that checks if the original request is intended 
       for LuaMapHandler. This fixes a bug where FallbackResource invalidates the 
       LuaMapHandler directive in certain cases by changing the URI before the map 
-      handler code executes [Daniel Gruno].
+      handler code executes [Daniel Gruno, Daniel Ferradal <dferradal gmail com>].
 
 Changes with Apache 2.4.8
 
