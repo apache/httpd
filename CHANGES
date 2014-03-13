@@ -7,6 +7,12 @@ Changes with Apache 2.2.27
      logging truncated cookies.
      [William Rowe, Ruediger Pluem, Jim Jagielski]
 
+  *) SECURITY: CVE-2013-6438 (cve.mitre.org)
+     mod_dav: Keep track of length of cdata properly when removing
+     leading spaces. Eliminates a potential denial of service from
+     specifically crafted DAV WRITE requests
+     [Amin Tora <Amin.Tora neustar.biz>]
+
   *) core: draft-ietf-httpbis-p1-messaging-23 corrections regarding
      TE/CL conflicts. [Yann Ylavic <ylavic.dev gmail com>, Jim Jagielski]
 
