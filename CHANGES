@@ -6,6 +6,11 @@ Changes with Apache 2.4.9
      would cause a crash in SSL_get_certificate for servers where the
      certificate hadn't been sent. [Stephen Henson]
 
+   *) mod_lua: Add a fixups hook that checks if the original request is intended 
+      for LuaMapHandler. This fixes a bug where FallbackResource invalidates the 
+      LuaMapHandler directive in certain cases by changing the URI before the map 
+      handler code executes [Daniel Gruno].
+
 Changes with Apache 2.4.8
 
   *) SECURITY: CVE-2014-0098 (cve.mitre.org)
