@@ -25,9 +25,6 @@ Changes with Apache 2.5.0
   *) Add HttpContentLengthHeadZero and HttpExpectStrict directives.
      [Yehuda Sadeh <yehuda inktank com>, Justin Erenkrantz]
 
-  *) core: Support named groups and backreferences within the LocationMatch,
-     DirectoryMatch, FilesMatch and ProxyMatch directives. [Graham Leggett]
-
   *) mod_ssl: Remove the hardcoded algorithm-type dependency for the
      SSLCertificateFile and SSLCertificateKeyFile directives, to enable
      future algorithm agility, and deprecate the SSLCertificateChainFile
