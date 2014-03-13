@@ -1,15 +1,18 @@
                                                          -*- coding: utf-8 -*-
 
+Changes with Apache 2.4.10
+
+
 Changes with Apache 2.4.9
 
   *) mod_ssl: Work around a bug in some older versions of OpenSSL that
      would cause a crash in SSL_get_certificate for servers where the
      certificate hadn't been sent. [Stephen Henson]
 
-   *) mod_lua: Add a fixups hook that checks if the original request is intended 
-      for LuaMapHandler. This fixes a bug where FallbackResource invalidates the 
-      LuaMapHandler directive in certain cases by changing the URI before the map 
-      handler code executes [Daniel Gruno, Daniel Ferradal <dferradal gmail com>].
+  *) mod_lua: Add a fixups hook that checks if the original request is intended 
+     for LuaMapHandler. This fixes a bug where FallbackResource invalidates the 
+     LuaMapHandler directive in certain cases by changing the URI before the map 
+     handler code executes [Daniel Gruno, Daniel Ferradal <dferradal gmail com>].
 
 Changes with Apache 2.4.8
 
