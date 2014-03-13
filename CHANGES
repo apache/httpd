@@ -25,6 +25,10 @@ Changes with Apache 2.4.8
     specifically crafted DAV WRITE requests
     [Amin Tora <Amin.Tora neustar.biz>]
 
+  *) core: Support named groups and backreferences within the LocationMatch,
+     DirectoryMatch, FilesMatch and ProxyMatch directives. (Requires
+     non-ancient PCRE library) [Graham Leggett]
+
   *) core: draft-ietf-httpbis-p1-messaging-23 corrections regarding
      TE/CL conflicts. [Yann Ylavic <ylavic.dev gmail com>, Jim Jagielski]
 
