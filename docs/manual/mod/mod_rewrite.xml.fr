@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1570288:1575709 (outdated) -->
+<!-- English Revision : 1575709 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1314,7 +1314,8 @@ substitution !
     </tr>
     <tr>
         <td>B</td>
-        <td>Echappe les caract&egrave;res non-alphanum&eacute;riques <em>avant</em>
+        <td>Echappe les caract&egrave;res non-alphanum&eacute;riques
+	dans les r&eacute;f&eacute;rences arri&egrave;res <em>avant</em>
 	d'appliquer la transformation. <em><a
         href="../rewrite/flags.html#flag_b">d&eacute;tails ...</a></em></td>
     </tr>
