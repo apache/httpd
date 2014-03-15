@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1570528:1576897 (outdated) -->
+<!-- English Revision : 1576897 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -74,10 +74,13 @@ fonctionnement interne de httpd.</p>
 <p>
 <code>mod_lua</code> fournit un gestionnaire nomm&eacute;
 <code>lua-script</code> qui peut &ecirc;tre utilis&eacute; avec une directive
-<code>AddHandler</code> :</p>
+<directive module="mod_mime">AddHandler</directive> ou <directive
+module="core">SetHandler</directive> :</p>
 
 <highlight language="config">
-AddHandler lua-script .lua
+&lt;Files *.lua&gt;
+    SetHandler lua-script .lua
+&lt;/Files&gt;
 </highlight>
 
 <p>
@@ -1977,9 +1980,9 @@ sont transmis au script Lua :
 
 <highlight language="config">
 LuaInputFilter myInputFilter /www/filter.lua input_filter
-&lt;FilesMatch "\.lua&gt;
+&lt;Files *.lua&gt;
   SetInputFilter myInputFilter
-&lt;/FilesMatch&gt;
+&lt;/Files&gt;
 </highlight>
 <highlight language="lua">
 --[[
@@ -2039,9 +2042,9 @@ sont transmis au script Lua :
 
 <highlight language="config">
 LuaOutputFilter myOutputFilter /www/filter.lua output_filter
-&lt;FilesMatch "\.lua&gt;
+&lt;Files *.lua&gt;
   SetOutputFilter myOutputFilter
-&lt;/FilesMatch&gt;
+&lt;/Files&gt;
 </highlight>
 <highlight language="lua">
 --[[
