@@ -285,7 +285,7 @@ later</compatibility>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>Indexes</override>
 <compatibility>Available in 2.4.8 and later.  Releases prior to 2.4 implicitly
-act as if "DirectoryCheckHandler Off" was specified.</compatibility>
+act as if "DirectoryCheckHandler ON" was specified.</compatibility>
 <usage>
     <p>The <directive>DirectoryCheckHandler</directive> directive determines 
     whether <module>mod_dir</module> should check for directory indexes or
