@@ -135,7 +135,7 @@ virtuel basé sur le nom approprié</a></h2>
 	spécifiques (et non par défaut).</p>
     </div>
 
-    <div class="note"><h3>Hérirage du nom de serveur</h3>
+    <div class="note"><h3>Héritage du nom de serveur</h3>
        <p>Il est toujours préférable de définir une directive <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> au niveau de chaque serveur
        virtuel à base de nom. Si un serveur virtuel ne définit pas
        de directive  <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code>, le
