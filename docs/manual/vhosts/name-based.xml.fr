@@ -148,7 +148,7 @@ virtuel basé sur le nom approprié</title>
 	spécifiques (et non par défaut).</p>
     </note>
 
-    <note><title>Hérirage du nom de serveur</title>
+    <note><title>Héritage du nom de serveur</title>
        <p>Il est toujours préférable de définir une directive <directive
        module="core">ServerName</directive> au niveau de chaque serveur
        virtuel à base de nom. Si un serveur virtuel ne définit pas
