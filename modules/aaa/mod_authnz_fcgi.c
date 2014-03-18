@@ -164,7 +164,7 @@ static void setupenv(request_rec *r, const char *password, const char *apache_ro
     apr_table_unset(r->subprocess_env, "HTTP_UPGRADE");
 
     /* Connection hop-by-hop header to prevent the CGI from hanging */
-    apr_table_set(r->subprocess_env, "HTTP_CONNECTION", "close");
+    apr_table_setn(r->subprocess_env, "HTTP_CONNECTION", "close");
 }
 
 static apr_status_t recv_data(const fcgi_provider_conf *conf,
