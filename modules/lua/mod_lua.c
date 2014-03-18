@@ -306,7 +306,7 @@ static int lua_handler(request_rec *r)
         lua_getglobal(L, "handle");
         if (!lua_isfunction(L, -1)) {
             ap_log_rerror(APLOG_MARK, APLOG_CRIT, 0, r, APLOGNO(01475)
-                          "lua: Unable to find function %s in %s",
+                          "lua: Unable to find entry function '%s' in %s (not a valid function)",
                           "handle",
                           spec->file);
             ap_lua_release_state(L, spec, r);
@@ -376,7 +376,7 @@ static apr_status_t lua_setup_filter_ctx(ap_filter_t* f, request_rec* r, lua_fil
                 lua_getglobal(L, hook_spec->function_name);
                 if (!lua_isfunction(L, -1)) {
                     ap_log_rerror(APLOG_MARK, APLOG_CRIT, 0, r, APLOGNO(02329)
-                                    "lua: Unable to find function %s in %s",
+                                "lua: Unable to find entry function '%s' in %s (not a valid function)",
                                     hook_spec->function_name,
                                     hook_spec->file_name);
                     ap_lua_release_state(L, spec, r);
@@ -500,6 +500,9 @@ static apr_status_t lua_output_filter_handle(ap_filter_t *f, apr_bucket_brigade 
                 ap_remove_output_filter(f);
                 apr_brigade_cleanup(pbbIn);
                 apr_brigade_cleanup(ctx->tmpBucket);
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                                    "lua: Error while executing filter: %s",
+                        lua_tostring(L, -1));
                 return HTTP_INTERNAL_SERVER_ERROR;
             }
         }
@@ -680,7 +683,7 @@ static int lua_request_rec_hook_harness(request_rec *r, const char *name, int ap
 
             if (!L) {
                 ap_log_rerror(APLOG_MARK, APLOG_CRIT, 0, r, APLOGNO(01477)
-                              "lua: Failed to obtain lua interpreter for %s %s",
+                    "lua: Failed to obtain lua interpreter for entry function '%s' in %s",
                               hook_spec->function_name, hook_spec->file_name);
                 return HTTP_INTERNAL_SERVER_ERROR;
             }
@@ -689,7 +692,7 @@ static int lua_request_rec_hook_harness(request_rec *r, const char *name, int ap
                 lua_getglobal(L, hook_spec->function_name);
                 if (!lua_isfunction(L, -1)) {
                     ap_log_rerror(APLOG_MARK, APLOG_CRIT, 0, r, APLOGNO(01478)
-                                  "lua: Unable to find function %s in %s",
+                               "lua: Unable to find entry function '%s' in %s (not a valid function)",
                                   hook_spec->function_name,
                                   hook_spec->file_name);
                     ap_lua_release_state(L, spec, r);
@@ -800,7 +803,7 @@ static int lua_map_handler(request_rec *r)
 
             if (!L) {
                 ap_log_rerror(APLOG_MARK, APLOG_CRIT, 0, r, APLOGNO(02330)
-                                "lua: Failed to obtain lua interpreter for %s %s",
+                                "lua: Failed to obtain Lua interpreter for entry function '%s' in %s",
                                 function_name, filename);
                 ap_lua_release_state(L, spec, r);
                 return HTTP_INTERNAL_SERVER_ERROR;
@@ -810,7 +813,7 @@ static int lua_map_handler(request_rec *r)
                 lua_getglobal(L, function_name);
                 if (!lua_isfunction(L, -1)) {
                     ap_log_rerror(APLOG_MARK, APLOG_CRIT, 0, r, APLOGNO(02331)
-                                    "lua: Unable to find function %s in %s",
+                                    "lua: Unable to find entry function '%s' in %s (not a valid function)",
                                     function_name,
                                     filename);
                     ap_lua_release_state(L, spec, r);
@@ -1731,7 +1734,7 @@ static authz_status lua_authz_check(request_rec *r, const char *require_line,
     lua_getglobal(L, prov_spec->function_name);
     if (!lua_isfunction(L, -1)) {
         ap_log_rerror(APLOG_MARK, APLOG_CRIT, 0, r, APLOGNO(02319)
-                      "Unable to find function %s in %s",
+                      "Unable to find entry function '%s' in %s (not a valid function)",
                       prov_spec->function_name, prov_spec->file_name);
         ap_lua_release_state(L, spec, r);
         return AUTHZ_GENERAL_ERROR;
