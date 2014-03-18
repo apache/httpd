@@ -2,6 +2,8 @@
 
 Changes with Apache 2.4.10
 
+  *) mod_lua: Log an error when the initial parsing of a Lua file fails.
+     [Daniel Gruno, Filipe Daragon <filipe syhunt com>]
 
 Changes with Apache 2.4.9
 
