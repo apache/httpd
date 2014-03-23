@@ -196,6 +196,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                         This problem has been introduced in r1531961.
      trunk patch: http://svn.apache.org/r1576233
      2.4.x patch: trunk works
+ 
+   * mod_reqtimeout: Don't add filters and create new connection configs
+     for each keepalive request under event MPM. PR56216
+     trunk patch: http://svn.apache.org/r1580568
+     2.4.x patch: trunk wrks
 
 
 OTHER PROPOSALS
