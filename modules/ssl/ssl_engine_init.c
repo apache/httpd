@@ -952,18 +952,19 @@ static apr_status_t ssl_init_server_certs(server_rec *s,
             return APR_EGENERAL;
         }
 
-#ifdef HAVE_SSL_CONF_CMD
-        /* 
-         * workaround for those OpenSSL versions where SSL_CTX_get0_certificate
+#ifndef SSL_CTRL_SET_CURRENT_CERT
+        /*
+         * OpenSSL up to 1.0.1: configure stapling and perform sanity checks
+         * as we go. In 1.0.2 and later, there's SSL_CTX_set_current_cert and
+         * SSL_CTX_get0_certificate, which allow iterating over all certs in an
+         * SSL_CTX (including those possibly loaded via SSLOpenSSLConfCmd
+         * Certificate), so for 1.0.2 and later, we defer to the code in
+         * ssl_init_server_ctx.
+         *
+         * Workaround for those OpenSSL versions where SSL_CTX_get0_certificate
          * is not yet available: create an SSL struct which we dispose of
-         * as soon as we no longer need access to the cert. (Strictly speaking,
-         * SSL_CTX_get0_certificate does not depend on the SSL_CONF stuff,
-         * but there's no reliable way to check for its existence, so we
-         * assume that if SSL_CONF is available, it's OpenSSL 1.0.2 or later,
-         * and SSL_CTX_get0_certificate is implemented.)
+         * as soon as we no longer need access to the cert.
          */
-        if (!(cert = SSL_CTX_get0_certificate(mctx->ssl_ctx))) {
-#else
         ssl = SSL_new(mctx->ssl_ctx);
 	if (ssl) {
             /* Workaround bug in SSL_get_certificate in OpenSSL 0.9.8y */
@@ -971,38 +972,25 @@ static apr_status_t ssl_init_server_certs(server_rec *s,
             cert = SSL_get_certificate(ssl);
         }
         if (!ssl || !cert) {
-#endif
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(02566)
-                         "Unable to retrieve certificate %s", key_id);
-#ifndef HAVE_SSL_CONF_CMD
-            if (ssl)
-                SSL_free(ssl);
-#endif
-            return APR_EGENERAL;
-        }
+	    ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(02566)
+			 "Unable to retrieve certificate %s", key_id);
+	    if (ssl)
+		SSL_free(ssl);
+	    return APR_EGENERAL;
+	}
 
         /* warn about potential cert issues */
         ssl_check_public_cert(s, ptemp, cert, key_id);
-
-#if defined(HAVE_OCSP_STAPLING) && !defined(SSL_CTRL_SET_CURRENT_CERT)
-        /* 
-         * OpenSSL up to 1.0.1: configure stapling as we go. In 1.0.2
-         * and later, there's SSL_CTX_set_current_cert, which allows
-         * iterating over all certs in an SSL_CTX (including those possibly
-         * loaded via SSLOpenSSLConfCmd Certificate), so for 1.0.2 and
-         * later, we defer to the code in ssl_init_server_ctx.
-         */
-        if ((mctx->stapling_enabled == TRUE) &&
+#ifdef HAVE_OCSP_STAPLING
+        if (mctx->stapling_enabled == TRUE &&
             !ssl_stapling_init_cert(s, mctx, cert)) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(02567)
                          "Unable to configure certificate %s for stapling",
                          key_id);
         }
 #endif
-
-#ifndef HAVE_SSL_CONF_CMD
-        SSL_free(ssl);
-#endif
+	SSL_free(ssl);
+#endif  /* ndef SSL_CTRL_SET_CURRENT_CERT */
 
         ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, APLOGNO(02568)
                      "Certificate and private key %s configured from %s and %s",
@@ -1282,6 +1270,11 @@ static apr_status_t ssl_init_server_ctx(server_rec *s,
     SSL_CONF_CTX *cctx = sc->server->ssl_ctx_config;
     int i;
 #endif
+#ifdef SSL_CTRL_SET_CURRENT_CERT
+    int ret;
+    X509 *cert;
+    const char *vhost_id = sc->vhost_id, *key_id;
+#endif
 
     /*
      *  Check for problematic re-initializations
@@ -1336,29 +1329,45 @@ static apr_status_t ssl_init_server_ctx(server_rec *s,
         return ssl_die(s);
     }
 
-#if defined(HAVE_OCSP_STAPLING) && defined(SSL_CTRL_SET_CURRENT_CERT)
+#ifdef SSL_CTRL_SET_CURRENT_CERT
     /*
      * OpenSSL 1.0.2 and later allows iterating over all SSL_CTX certs
-     * by means of SSL_CTX_set_current_cert. Enabling stapling at this
-     * (late) point makes sure that we catch both certificates loaded
-     * via SSLCertificateFile and SSLOpenSSLConfCmd Certificate.
+     * by means of SSL_CTX_set_current_cert. Enabling stapling and performing
+     * sanity checks at this (late) point makes sure that we catch both
+     * certificates loaded via SSLCertificateFile and SSLOpenSSLConfCmd
+     * Certificate.
      */
-    if (sc->server->stapling_enabled == TRUE) {
-        X509 *cert;
-        int i = 0;
-        int ret = SSL_CTX_set_current_cert(sc->server->ssl_ctx,
-                                           SSL_CERT_SET_FIRST);
-        while (ret) {
-            cert = SSL_CTX_get0_certificate(sc->server->ssl_ctx);
-            if (!cert || !ssl_stapling_init_cert(s, sc->server, cert)) {
-                ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(02604)
-                             "Unable to configure certificate %s:%d "
-                             "for stapling", sc->vhost_id, i);
-            }
-            ret = SSL_CTX_set_current_cert(sc->server->ssl_ctx,
-                                           SSL_CERT_SET_NEXT);
-            i++;
-        }
+    ret = SSL_CTX_set_current_cert(sc->server->ssl_ctx, SSL_CERT_SET_FIRST);
+    i = 0;
+    while (ret) {
+	key_id = apr_psprintf(ptemp, "%s:%d", vhost_id, i);
+	i++;
+	cert = SSL_CTX_get0_certificate(sc->server->ssl_ctx);
+	if (!cert) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(02614)
+                         "Unable to retrieve certificate %s", key_id);
+	    continue;
+	}
+	ssl_check_public_cert(s, ptemp, cert, key_id);
+	// Sanity-check and reorder the chain if necessary;
+	// omit root CA certificate from chain if present.
+	if (!SSL_CTX_build_cert_chain(sc->server->ssl_ctx,
+				      SSL_BUILD_CHAIN_FLAG_CHECK |
+				      SSL_BUILD_CHAIN_FLAG_NO_ROOT)) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(02615)
+                         "Unable to build a certificate chain for %s", key_id);
+	}
+
+#ifdef HAVE_OCSP_STAPLING
+	if (sc->server->stapling_enabled == TRUE &&
+            !ssl_stapling_init_cert(s, sc->server, cert)) {
+	    ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(02604)
+			 "Unable to configure certificate %s for stapling",
+			 key_id);
+	}
+#endif
+	ret = SSL_CTX_set_current_cert(sc->server->ssl_ctx,
+				       SSL_CERT_SET_NEXT);
     }
 #endif
 
