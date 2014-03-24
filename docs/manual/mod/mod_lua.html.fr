@@ -27,8 +27,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_lua.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_lua.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Fournit des points d'entrée Lua dans différentes parties du
 traitement des requêtes httpd</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
@@ -114,9 +112,11 @@ fonctionnement interne de httpd.</p>
 <p>
 <code>mod_lua</code> fournit un gestionnaire nommé
 <code>lua-script</code> qui peut être utilisé avec une directive
-<code>AddHandler</code> :</p>
+<code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code> ou <code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code> :</p>
 
-<pre class="prettyprint lang-config">AddHandler lua-script .lua</pre>
+<pre class="prettyprint lang-config">&lt;Files *.lua&gt;
+    SetHandler lua-script .lua
+&lt;/Files&gt;</pre>
 
 
 <p>
@@ -1744,9 +1744,9 @@ sont transmis au script Lua :
 </p>
 
 <pre class="prettyprint lang-config">LuaInputFilter myInputFilter /www/filter.lua input_filter
-&lt;FilesMatch "\.lua&gt;
+&lt;Files *.lua&gt;
   SetInputFilter myInputFilter
-&lt;/FilesMatch&gt;</pre>
+&lt;/Files&gt;</pre>
 
 <pre class="prettyprint lang-lua">--[[
     Exemple de filtre en entrée qui convertit toutes les données POST en
@@ -1836,9 +1836,9 @@ sont transmis au script Lua :
 </p>
 
 <pre class="prettyprint lang-config">LuaOutputFilter myOutputFilter /www/filter.lua output_filter
-&lt;FilesMatch "\.lua&gt;
+&lt;Files *.lua&gt;
   SetOutputFilter myOutputFilter
-&lt;/FilesMatch&gt;</pre>
+&lt;/Files&gt;</pre>
 
 <pre class="prettyprint lang-lua">--[[
     Exemple de filtre en sortie qui échappe toutes les entités HTML en
