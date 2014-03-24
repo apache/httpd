@@ -88,7 +88,7 @@
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_dir</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>Available in 2.4.8 and later.  Releases prior to 2.4 implicitly
-act as if "DirectoryCheckHandler Off" was specified.</td></tr>
+act as if "DirectoryCheckHandler ON" was specified.</td></tr>
 </table><p>このディレクティブの解説文書は
             まだ翻訳されていません。英語版をご覧ください。
             </p></div>
