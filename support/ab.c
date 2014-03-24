@@ -95,7 +95,7 @@
  * ab - or to due to a change in the distribution it is compiled with
  * (such as an APR change in for example blocking).
  */
-#define AP_AB_BASEREVISION "2.4"
+#define AP_AB_BASEREVISION "2.3"
 
 /*
  * BUGS:
