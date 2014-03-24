@@ -138,6 +138,14 @@ Require not host gov
 &lt;/If&gt;
     </highlight>
 
+    <p>Using the <directive module="mod_authz_core">Require</directive>
+    <code>expr</code> syntax, this could also be written as:</p>
+
+
+    <highlight language="config">
+Require expr %{HTTP_USER_AGENT} != 'BadBot'
+    </highlight>
+
     <note><title>Warning:</title>
     <p>Access control by <code>User-Agent</code> is an unreliable technique,
     since the <code>User-Agent</code> header can be set to anything at all,
