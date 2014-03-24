@@ -79,7 +79,7 @@
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_dir</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>Available in 2.4.8 and later.  Releases prior to 2.4 implicitly
-act as if "DirectoryCheckHandler Off" was specified.</td></tr>
+act as if "DirectoryCheckHandler ON" was specified.</td></tr>
 </table><p>Bu yönergenin belgesi henüz Türkçeye çevrilmedi.
             Lütfen İngilizce sürümüne bakınız.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
