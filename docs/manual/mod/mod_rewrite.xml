@@ -952,25 +952,17 @@ RewriteRule ...some special stuff for any of these hosts...
         use the following: </p>
 
 <highlight language="config">
-RewriteCond  %{HTTP_USER_AGENT}  ^Mozilla
-RewriteRule  ^/$                 /homepage.max.html  [L]
-
-RewriteCond  %{HTTP_USER_AGENT}  ^Lynx
-RewriteRule  ^/$                 /homepage.min.html  [L]
+RewriteCond  %{HTTP_USER_AGENT}  (iPhone|Blackberry|Android)
+RewriteRule  ^/$                 /homepage.mobile.html  [L]
 
 RewriteRule  ^/$                 /homepage.std.html  [L]
 </highlight>
 
         <p>Explanation: If you use a browser which identifies itself
-        as 'Mozilla' (including Netscape Navigator, Mozilla etc), then you
-        get the max homepage (which could include frames, or other special
-        features).
-        If you use the Lynx browser (which is terminal-based), then
-        you get the min homepage (which could be a version designed for
-        easy, text-only browsing).
-        If neither of these conditions apply (you use any other browser,
-        or your browser identifies itself as something non-standard), you get
-        the std (standard) homepage.</p>
+        as a mobile browser (note that the example is incomplete, as
+        there are many other mobile platforms), the mobile version of
+        the homepage is served. Otherwise, the standard page is served.
+        </p>
 
 </usage>
 
