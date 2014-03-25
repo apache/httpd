@@ -133,7 +133,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1561660
      2.4.x patch: trunk works
                   http://people.apache.org/~jim/patches/uds-rewrite.patch
-     +1: jim
+     +1: jim, humbedooh
 
    * mod_proxy: Don't reuse a SSL backend connection whose SNI differs. PR 55782.
                 This may happen when ProxyPreserveHost is on and the proxy-worker
