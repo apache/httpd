@@ -3452,6 +3452,9 @@ static const char *cmd_rewriterule_setflag(apr_pool_t *p, void *_cfg,
         if (!*key || !strcasecmp(key, "PI") || !strcasecmp(key,"iscardpath")) {
             cfg->flags |= (RULEFLAG_DISCARDPATHINFO);
         }
+        else {
+            ++error;
+        }
         break;
     case 'e':
     case 'E':
