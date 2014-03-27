@@ -12,6 +12,10 @@ Changes with Apache 2.4.10
      from causing response splitting.
      [Daniel Gruno, Felipe Daragon <filipe syhunt com>]
 
+  *) mod_lua: Disallow newlines in table values inside the request_rec, 
+     to prevent HTTP Response Splitting via tainted headers.
+     [Daniel Gruno, Felipe Daragon <filipe syhunt com>]
+
 Changes with Apache 2.4.9
 
   *) mod_ssl: Work around a bug in some older versions of OpenSSL that

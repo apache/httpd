@@ -40,6 +40,13 @@ static int lua_table_set(lua_State *L)
     const char     *key = luaL_checkstring(L, 2);
     const char     *val = luaL_checkstring(L, 3);
 
+    /* Prevent response/header splitting by not allowing newlines in tables.
+     * At this stage, we don't have the request_rec handy, and we can't change
+     * a const char*, so we'll redirect to a standard error value instead.
+     */
+    if (ap_strchr_c(val, '\n')) {
+        val = "[ERROR: Value contains newline, ignored.]";
+    }
     apr_table_set(t, key, val);
     return 0;
 }
