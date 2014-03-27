@@ -2057,6 +2057,10 @@ static int lua_set_cookie(lua_State *L)
         strdomain = apr_psprintf(r->pool, "Domain=%s;", domain);
     }
     
+    /* URL-encode key/value */
+    value = ap_escape_urlencoded(r->pool, value);
+    key = ap_escape_urlencoded(r->pool, key);
+    
     /* Create the header */
     out = apr_psprintf(r->pool, "%s=%s; %s %s %s %s %s", key, value, 
             secure ? "Secure;" : "", 
