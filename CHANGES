@@ -5,6 +5,9 @@ Changes with Apache 2.4.10
   *) mod_lua: Log an error when the initial parsing of a Lua file fails.
      [Daniel Gruno, Felipe Daragon <filipe syhunt com>]
 
+  *) mod_lua: Reformat and escape script error output.
+     [Daniel Gruno, Felipe Daragon <filipe syhunt com>]
+
 Changes with Apache 2.4.9
 
   *) mod_ssl: Work around a bug in some older versions of OpenSSL that
