@@ -30,7 +30,7 @@
 
 
 int ap_lua_init(lua_State *L, apr_pool_t * p);
-apr_table_t *ap_lua_check_apr_table(lua_State *L, int index);
-void ap_lua_push_apr_table(lua_State *L, apr_table_t *t);
+req_table_t *ap_lua_check_apr_table(lua_State *L, int index);
+void ap_lua_push_apr_table(lua_State *L, req_table_t *t);
 
 #endif /* !_LUA_APR_H_ */
