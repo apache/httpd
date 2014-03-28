@@ -48,11 +48,9 @@ static int lua_table_set(lua_State *L)
         while ( (badchar = ap_strchr(badchar, '\n')) ) {
             *badchar = ' ';
         }
-        if (t->r != NULL) {
-            ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, t->r, 
+        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, t->r, 
                 APLOGNO(02614) "mod_lua: Value for '%s' in table '%s' contains newline!",
                   key, t->n);
-        }
         apr_table_set(t->t, key, replacement);
     }
     else {
