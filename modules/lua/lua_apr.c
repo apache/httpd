@@ -41,6 +41,10 @@ static int lua_table_set(lua_State *L)
     const char     *key = luaL_checkstring(L, 2);
     const char     *val = luaL_checkstring(L, 3);
     /* Unless it's the 'notes' table, check for newline chars */
+    /* t->r will be NULL in case of the connection notes, but since 
+       we aren't going to check anything called 'notes', we can safely 
+       disregard checking whether t->r is defined.
+    */
     if (strcmp(t->n, "notes") && ap_strchr_c(val, '\n')) {
         char *badchar;
         char *replacement = apr_pstrdup(t->r->pool, val);
