@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1570684:1580934 (outdated) -->
+<!-- English Revision : 1580934 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1040,28 +1040,18 @@ RewriteRule ...r&egrave;gles concernant tous ces h&ocirc;tes...
        pouvez utiliser ce qui suit : </p>
 
 <highlight language="config">
-RewriteCond  %{HTTP_USER_AGENT}  ^Mozilla
-RewriteRule  ^/$                 /homepage.max.html  [L]
-
-RewriteCond  %{HTTP_USER_AGENT}  ^Lynx
-RewriteRule  ^/$                 /homepage.min.html  [L]
+RewriteCond  %{HTTP_USER_AGENT}  (iPhone|Blackberry|Android)
+RewriteRule  ^/$                 /homepage.mobile.html  [L]
 
 RewriteRule  ^/$                 /homepage.std.html  [L]
 </highlight>
 
         <p>Explications : si vous utilisez un navigateur
-	(Netscape Navigator, Mozilla etc) qui s'identifie comme
-	'Mozilla', vous acc&egrave;derez &agrave; la page d'accueil max (qui
-	peut contenir des frames, ou d'autres ressources
-	particuli&egrave;res).
-	Si vous utilisez le navigateur Lynx (qui est un navigateur
-	en mode texte), vous acc&egrave;derez &agrave; une page d'accueil min
-	(qui peut &ecirc;tre une version con&ccedil;ue pour une navigation simple
-	bas&eacute;e sur le texte).
-	Si aucune de ces conditions n'est satisfaite (vous utilisez tout
-	autre navigateur, ou votre navigateur s'identifie de mani&egrave;re non
-	standard), vous acc&egrave;derez &agrave; la page d'accueil std
-	(standard).</p>
+	qui s'identifie comme un navigateur de mobile (notez que cet
+	exemple est incomplet car il existe de nombreuses autres
+	plateformes mobiles), c'est la version mobile de la page
+	d'accueil qui sera servie. Dans le cas contraire, vous verrez
+	s'afficher la page d'accueil standard.</p>
 
 </usage>
 
