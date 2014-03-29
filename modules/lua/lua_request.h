@@ -38,6 +38,15 @@ typedef struct
     int type;
 } req_fun_t;
 
+
+/* Struct to use as userdata for request_rec tables */
+typedef struct
+{
+    request_rec *r; /* Request_rec */
+    apr_table_t *t; /* apr_table_t* */
+     char  *n; /* name of table */
+} req_table_t;
+
 typedef struct {
     int type;
     size_t size;

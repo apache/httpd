@@ -43,7 +43,7 @@ APLOG_USE_MODULE(lua);
 
 typedef char *(*req_field_string_f) (request_rec * r);
 typedef int (*req_field_int_f) (request_rec * r);
-typedef apr_table_t *(*req_field_apr_table_f) (request_rec * r);
+typedef req_table_t *(*req_field_apr_table_f) (request_rec * r);
 
 
 void ap_lua_rstack_dump(lua_State *L, request_rec *r, const char *msg)
@@ -640,29 +640,49 @@ static int req_assbackwards_field(request_rec *r)
     return r->assbackwards;
 }
 
-static apr_table_t* req_headers_in(request_rec *r)
+static req_table_t* req_headers_in(request_rec *r)
 {
-    return r->headers_in;
+  req_table_t* t = apr_palloc(r->pool, sizeof(req_table_t));
+  t->r = r;
+  t->t = r->headers_in;
+  t->n = "headers_in";
+  return t;
 }
 
-static apr_table_t* req_headers_out(request_rec *r)
+static req_table_t* req_headers_out(request_rec *r)
 {
-    return r->headers_out;
+  req_table_t* t = apr_palloc(r->pool, sizeof(req_table_t));
+  t->r = r;
+  t->t = r->headers_out;
+  t->n = "headers_out";
+  return t;
 }
 
-static apr_table_t* req_err_headers_out(request_rec *r)
+static req_table_t* req_err_headers_out(request_rec *r)
 {
-  return r->err_headers_out;
+  req_table_t* t = apr_palloc(r->pool, sizeof(req_table_t));
+  t->r = r;
+  t->t = r->err_headers_out;
+  t->n = "err_headers_out";
+  return t;
 }
 
-static apr_table_t* req_subprocess_env(request_rec *r)
+static req_table_t* req_subprocess_env(request_rec *r)
 {
-  return r->subprocess_env;
+  req_table_t* t = apr_palloc(r->pool, sizeof(req_table_t));
+  t->r = r;
+  t->t = r->subprocess_env;
+  t->n = "subprocess_env";
+  return t;
 }
 
-static apr_table_t* req_notes(request_rec *r)
+static req_table_t* req_notes(request_rec *r)
 {
-  return r->notes;
+  req_table_t* t = apr_palloc(r->pool, sizeof(req_table_t));
+  t->r = r;
+  t->t = r->notes;
+  t->n = "notes";
+  return t;
 }
 
 static int req_ssl_is_https_field(request_rec *r)
@@ -1784,7 +1804,7 @@ static int req_dispatch(lua_State *L)
     if (rft) {
         switch (rft->type) {
         case APL_REQ_FUNTYPE_TABLE:{
-                apr_table_t *rs;
+                req_table_t *rs;
                 req_field_apr_table_f func = (req_field_apr_table_f)rft->fun;
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01486)
                               "request_rec->dispatching %s -> apr table",
@@ -2150,6 +2170,27 @@ static apr_status_t lua_websocket_readbytes(conn_rec* c, char* buffer,
     }
     apr_brigade_cleanup(brigade);
     return rv;
+}
+
+static int lua_websocket_peek(lua_State *L) 
+{
+    apr_status_t rv;
+    apr_bucket_brigade *brigade;
+    
+    request_rec *r = ap_lua_check_request_rec(L, 1);
+    
+    brigade = apr_brigade_create(r->connection->pool, 
+            r->connection->bucket_alloc);
+    rv = ap_get_brigade(r->connection->input_filters, brigade, 
+            AP_MODE_READBYTES, APR_NONBLOCK_READ, 1);
+    if (rv == APR_SUCCESS) {
+        lua_pushboolean(L, 1);
+    }
+    else {
+        lua_pushboolean(L, 0);
+    }
+    apr_brigade_cleanup(brigade);
+    return 1;
 }
 
 static int lua_websocket_read(lua_State *L) 
@@ -2791,12 +2832,15 @@ void ap_lua_load_request_lmodule(lua_State *L, apr_pool_t *p)
                  makefun(&lua_websocket_greet, APL_REQ_FUNTYPE_LUACFUN, p));
     apr_hash_set(dispatch, "wsread", APR_HASH_KEY_STRING,
                  makefun(&lua_websocket_read, APL_REQ_FUNTYPE_LUACFUN, p));
+    apr_hash_set(dispatch, "wspeek", APR_HASH_KEY_STRING,
+                 makefun(&lua_websocket_peek, APL_REQ_FUNTYPE_LUACFUN, p));
     apr_hash_set(dispatch, "wswrite", APR_HASH_KEY_STRING,
                  makefun(&lua_websocket_write, APL_REQ_FUNTYPE_LUACFUN, p));
     apr_hash_set(dispatch, "wsclose", APR_HASH_KEY_STRING,
                  makefun(&lua_websocket_close, APL_REQ_FUNTYPE_LUACFUN, p));
     apr_hash_set(dispatch, "wsping", APR_HASH_KEY_STRING,
                  makefun(&lua_websocket_ping, APL_REQ_FUNTYPE_LUACFUN, p));
+    
 
 
     lua_pushlightuserdata(L, dispatch);
@@ -2830,12 +2874,17 @@ void ap_lua_load_request_lmodule(lua_State *L, apr_pool_t *p)
 
 void ap_lua_push_connection(lua_State *L, conn_rec *c)
 {
+    req_table_t *t;
     lua_boxpointer(L, c);
     luaL_getmetatable(L, "Apache2.Connection");
     lua_setmetatable(L, -2);
     luaL_getmetatable(L, "Apache2.Connection");
 
-    ap_lua_push_apr_table(L, c->notes);
+    t = apr_pcalloc(c->pool, sizeof(req_table_t));
+    t->t = c->notes;
+    t->r = NULL;
+    t->n = "notes";
+    ap_lua_push_apr_table(L, t);
     lua_setfield(L, -2, "notes");
 
     lua_pushstring(L, c->client_ip);
