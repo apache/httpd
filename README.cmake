@@ -59,6 +59,25 @@ enabled:
 * openssl (mod_ssl and https support for ab)
 * zlib (mod_deflate)
 
+OpenSSL
+-------
+
+If you have a binary install of OpenSSL in a well-known directory (e.g.,
+%HOME%\OpenSSL-Win64) and you wish to build httpd against a different
+install of OpenSSL, the cmake build may unexpectedly select OpenSSL
+libraries in the well-known directory even if the expected include files
+are used.  Check the cmake output from your httpd build to confirm that
+the expected OpenSSL libraries and include files are used.
+
+The cmake FindOpenSSL module searches for OpenSSL libraries in a "VC"
+subdirectory of the OpenSSL install with filenames that indicate the build
+type (e.g., "<PREFIX>/lib/VC/ssleay32MD.lib"); defining CMAKE_PREFIX_PATH
+or OPENSSL_ROOT_DIR or even OPENSSL_LIBRARIES does not circumvent finding
+these libraries.
+
+To work around this issue, rename the well-known OpenSSL directory while
+building httpd.  Let us know if you find a better solution.
+
 How to build
 ------------
 
