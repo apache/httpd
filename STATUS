@@ -200,8 +200,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * mod_reqtimeout: Don't add filters and create new connection configs
      for each keepalive request under event MPM. PR56216
      trunk patch: http://svn.apache.org/r1580568
-     2.4.x patch: trunk wrks
+     2.4.x patch: trunk works
 
+   * mod_alias: Fix segfault in mod_alias introduced in r1132494.
+     AliasMatch does not append unmatched parts of the original URI
+     to the new URI. So no need to subtract anything from the new URI length.
+     The existing code crashed when using "AliasMatch / /some/thing" and
+     sending a request with a long URI.
+     trunk patch: http://svn.apache.org/r1583175
+     2.4.x patch: trunk works
+     +1: rjung,
 
 OTHER PROPOSALS
 
