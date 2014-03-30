@@ -211,6 +211,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      +1: rjung,
 
+   * mod_ssl: Send OCSP request's nonce according to SSLOCSPUseRequestNonce on/off.
+              Defaults to on. PR 56233.
+     trunk patch: http://svn.apache.org/r1583191
+     2.4.x patch: trunk works
+     +1: ylavic
+
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
