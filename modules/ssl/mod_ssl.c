@@ -238,6 +238,8 @@ static const command_rec ssl_config_cmds[] = {
                 "Maximum age of OCSP responses")
     SSL_CMD_SRV(OCSPResponderTimeout, TAKE1,
                 "OCSP responder query timeout")
+    SSL_CMD_SRV(OCSPUseRequestNonce, FLAG,
+                "Whether OCSP queries use a nonce or not ('on', 'off')")
 
 #ifdef HAVE_OCSP_STAPLING
     /*
