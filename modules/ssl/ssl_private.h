@@ -610,11 +610,12 @@ typedef struct {
     long ocsp_resptime_skew;
     long ocsp_resp_maxage;
     apr_interval_time_t ocsp_responder_timeout;
+    int ocsp_use_request_nonce;
+
 #ifdef HAVE_SSL_CONF_CMD
     SSL_CONF_CTX *ssl_ctx_config; /* Configuration context */
     apr_array_header_t *ssl_ctx_param; /* parameters to pass to SSL_CTX */
 #endif
-    int ocsp_use_request_nonce;
 } modssl_ctx_t;
 
 struct SSLSrvConfigRec {
