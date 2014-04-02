@@ -186,6 +186,13 @@ Header merge Cache-Control no-store env=NO_STORE
           Header set Set-Cookie testcookie "expr=-z %{req:Cookie}"
         </highlight>
       </li>
+      <li>
+        Append a Caching header for responses with a HTTP status code of 200
+        <highlight language="config">
+          Header append Cache-Control s-maxage=600 "expr=%{REQUEST_STATUS} == 200"
+        </highlight>
+      </li>
+
     </ol>
 </section>
 
@@ -343,9 +350,9 @@ Header merge Cache-Control no-store env=NO_STORE
             <code>onsuccess</code> condition.</li>
     </ul>
 
-    <p>It is not currently possible to limit an action to a range of HTTP 
-    status codes, if the responses are successfully handled by e.g. CGI or
-    proxy modules.</p>
+    <p>Separately from the <var>condition</var> paramete described above, you 
+    can limit an action based on HTTP status codes for e.g. proxied or CGI 
+    requests. See the example that uses %{REQUEST_STATUS} in the section above.</p>
 
     <p>The action it performs is determined by the first
     argument (second argument if a <var>condition</var> is specified).
