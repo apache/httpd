@@ -175,12 +175,11 @@ static int verify_ocsp_status(X509 *cert, X509_STORE_CTX *ctx, conn_rec *c,
     }
 
     if (rc == V_OCSP_CERTSTATUS_GOOD &&
-            sc->server->ocsp_use_request_nonce != FALSE) {
-        if (OCSP_check_nonce(request, basicResponse) != 1) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(01924)
-                        "Bad OCSP responder answer (bad nonce)");
-            rc = V_OCSP_CERTSTATUS_UNKNOWN;
-        }
+            sc->server->ocsp_use_request_nonce != FALSE &&
+            OCSP_check_nonce(request, basicResponse) != 1) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(01924)
+                    "Bad OCSP responder answer (bad nonce)");
+        rc = V_OCSP_CERTSTATUS_UNKNOWN;
     }
 
     if (rc == V_OCSP_CERTSTATUS_GOOD) {

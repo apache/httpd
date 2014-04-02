@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_ssl: Add SSLOCSPUseRequestNonce directive to control whether or not
+     OCSP requests should use a nonce to be checked against the responder's
+     one. PR 56233. [ Yann Ylavic ]
+
   *) mod_reqtimeout: Resolve unexpected timeouts on keepalive requests 
      under the Event MPM. PR56216.  [Frank Meier <frank meier ergon ch>]
 
