@@ -223,8 +223,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      connections/requests change thread affinity.
      trunk: http://svn.apache.org/viewvc?view=revision&revision=1546759
             http://svn.apache.org/viewvc?view=revision&revision=1546760
-     2.4.x patch: http://emptyhammock.com/downloads/suspend_resume_24.txt
-                  (people.apache.org seems to have a home dir issue ATM???)
+     2.4.x patch: http://people.apache.org/~trawick/suspend_resume_24.txt
      +1: trawick
 
 OTHER PROPOSALS
