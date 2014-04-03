@@ -219,6 +219,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic
 
+   * event: Add suspend/resume hooks to event MPM to inform modules when
+     connections/requests change thread affinity.
+     trunk: http://svn.apache.org/viewvc?view=revision&revision=1546759
+            http://svn.apache.org/viewvc?view=revision&revision=1546760
+     2.4.x patch: http://emptyhammock.com/downloads/suspend_resume_24.txt
+                  (people.apache.org seems to have a home dir issue ATM???)
+     +1: trawick
+
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
