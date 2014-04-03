@@ -319,6 +319,7 @@ typedef struct {
     data_item *cookie;               /* added cookies                         */
     int        skip;                 /* number of next rules to skip          */
     int        maxrounds;            /* limit on number of loops with N flag  */
+    char       *escapes;             /* specific backref escapes              */
 } rewriterule_entry;
 
 typedef struct {
@@ -419,7 +420,7 @@ static const char *rewritemap_mutex_type = "rewrite-map";
 /* Optional functions imported from mod_ssl when loaded: */
 static APR_OPTIONAL_FN_TYPE(ssl_var_lookup) *rewrite_ssl_lookup = NULL;
 static APR_OPTIONAL_FN_TYPE(ssl_is_https) *rewrite_is_https = NULL;
-static char *escape_uri(apr_pool_t *p, const char *path);
+static char *escape_uri(apr_pool_t *p, const char *path, const char *escapeme);
 
 /*
  * +-------------------------------------------------------+
@@ -631,21 +632,36 @@ static APR_INLINE unsigned char *c2x(unsigned what, unsigned char prefix,
  * Escapes a uri in a similar way as php's urlencode does.
  * Based on ap_os_escape_path in server/util.c
  */
-static char *escape_uri(apr_pool_t *p, const char *path) {
+static char *escape_uri(apr_pool_t *p, const char *path, const char *escapeme) {
     char *copy = apr_palloc(p, 3 * strlen(path) + 3);
     const unsigned char *s = (const unsigned char *)path;
     unsigned char *d = (unsigned char *)copy;
     unsigned c;
 
     while ((c = *s)) {
-        if (apr_isalnum(c) || c == '_') {
-            *d++ = c;
+        if (!escapeme) { 
+            if (apr_isalnum(c) || c == '_') {
+                *d++ = c;
+            }
+            else if (c == ' ') {
+                *d++ = '+';
+            }
+            else {
+                d = c2x(c, '%', d);
+            }
         }
-        else if (c == ' ') {
-            *d++ = '+';
-        }
-        else {
-            d = c2x(c, '%', d);
+        else { 
+            const char *esc = escapeme;
+            while (*esc) { 
+                if (c == *esc) { 
+                    d = c2x(c, '%', d);
+                    break;
+                }
+                ++esc;
+            }
+            if (!*esc) { 
+                *d++ = c;
+            }
         }
         ++s;
     }
@@ -2368,7 +2384,7 @@ static char *do_expand(char *input, rewrite_ctx *ctx, rewriterule_entry *entry)
                     /* escape the backreference */
                     char *tmp2, *tmp;
                     tmp = apr_pstrmemdup(pool, bri->source + bri->regmatch[n].rm_so, span);
-                    tmp2 = escape_uri(pool, tmp);
+                    tmp2 = escape_uri(pool, tmp, entry->escapes);
                     rewritelog((ctx->r, 5, ctx->perdir, "escaping backreference '%s' to '%s'",
                             tmp, tmp2));
 
@@ -3415,6 +3431,9 @@ static const char *cmd_rewriterule_setflag(apr_pool_t *p, void *_cfg,
     case 'B':
         if (!*key || !strcasecmp(key, "ackrefescaping")) {
             cfg->flags |= RULEFLAG_ESCAPEBACKREF;
+            if (val && *val) { 
+                cfg->escapes = val;
+            }
         }
         else {
             ++error;
