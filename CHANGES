@@ -62,9 +62,6 @@ Changes with Apache 2.5.0
   *) core: Add parse_errorlog_arg callback to ap_errorlog_provider
      to allow providers to check the ErrorLog argument. [Jan Kaluza]
 
-  *) core: Detect incomplete body in HTTP input filter and return
-     APR_INCOMPLETE. PR 55475 [Yann Ylavic <ylavic dev gmail com>]
-
   *) mod_cgid: Use the servers Timeout for each read from a CGI script,
      allow override with new CGIDRequestTimeout directive. PR43494
      [Eric Covener, Toshikuni Fukaya <toshikuni-fukaya cybozu co jp>]
