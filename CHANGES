@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_expires: don't add Expires header to error responses (4xx/5xx),
+     be they generated or forwarded. PR 55669. [ Yann Ylavic ]
+
   *) mod_rewrite: Support an optional list of characters to escape in the 
      argument for the 'B' (escape backreferences) flag. [Eric Covener]
 
