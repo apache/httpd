@@ -1000,6 +1000,8 @@ static apr_status_t cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
              * include the following: an Expires header (section 14.21); a
              * "max-age", "s-maxage",  "must-revalidate", "proxy-revalidate",
              * "public" or "private" cache-control directive (section 14.9).
+             *
+             * FIXME: Wrong if cc_out has just an extension we don't know about 
              */
         }
         else {
