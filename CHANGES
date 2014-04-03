@@ -52,7 +52,10 @@ Changes with Apache 2.4.8
      non-ancient PCRE library) [Graham Leggett]
 
   *) core: draft-ietf-httpbis-p1-messaging-23 corrections regarding
-     TE/CL conflicts. [Yann Ylavic <ylavic.dev gmail com>, Jim Jagielski]
+     TE/CL conflicts. [Yann Ylavic, Jim Jagielski]
+
+  *) core: Detect incomplete request and response bodies, log an error and
+     forward it to the underlying filters. PR 55475 [Yann Ylavic]
 
   *) mod_dir: Add DirectoryCheckHandler to allow a 2.2-like behavior, skipping 
      execution when a handler is already set. PR53929. [Eric Covener]
