@@ -229,6 +229,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~trawick/suspend_resume_24.txt
      +1: trawick
 
+   * mod_expires: don't add Expires header to error responses (4xx/5xx),
+                  be they generated or forwarded. PR 55669.
+     trunk patch: http://svn.apache.org/r1584430
+                  http://svn.apache.org/r1584434
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: ylavic
+
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
