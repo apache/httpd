@@ -201,6 +201,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      for each keepalive request under event MPM. PR56216
      trunk patch: http://svn.apache.org/r1580568
      2.4.x patch: trunk works
+     +1 covener
 
    * mod_alias: Fix segfault in mod_alias introduced in r1132494.
      AliasMatch does not append unmatched parts of the original URI
@@ -210,6 +211,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1583175
      2.4.x patch: trunk works
      +1: rjung,
+     -1: covener would rather take this oppty to remove it from AliasMatch, the
+         prefix and docroot don't make sense.
 
    * mod_ssl: Add SSLOCSPUseRequestNonce directive to control whether or not
      OCSP requests should use a nonce to be checked against the responder's
