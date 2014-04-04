@@ -148,7 +148,6 @@ requests</description>
 <default>On if suexec binary exists with proper owner and mode,
 Off otherwise</default>
 <contextlist><context>server config</context></contextlist>
-<compatibility>Available in Apache httpd 2.3.9 and later</compatibility>
 
 <usage>
     <p>When On, startup will fail if the suexec binary doesn't exist
