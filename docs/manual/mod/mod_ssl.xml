@@ -2579,7 +2579,7 @@ CRIME attack).</p>
 <syntax>SSLOpenSSLConfCmd <em>command-name</em> <em>command-value</em></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
-<compatibility>Available in httpd 2.5.0-dev and later, if using OpenSSL 1.0.2 or later</compatibility>
+<compatibility>Available in httpd 2.4.8 and later, if using OpenSSL 1.0.2 or later</compatibility>
 
 <usage>
 <p>This directive exposes OpenSSL's <em>SSL_CONF</em> API to mod_ssl,
