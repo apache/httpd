@@ -1292,8 +1292,7 @@ ProxyPass / balancer://hotcluster/
     <directive module="mod_rewrite">RewriteRule</directive> directive with the
     <code>[P]</code> flag.</p>
 
-    <p>The optional <var>interpolate</var> keyword (available in
-    httpd 2.2.9 and later), in combination with
+    <p>The optional <var>interpolate</var> keyword, in combination with
     <directive>ProxyPassInterpolateEnv</directive> causes the ProxyPass
     to interpolate environment variables, using the syntax
     <var>${VARNAME}</var>.  Note that many of the standard CGI-derived
@@ -1443,8 +1442,7 @@ ProxyPassReverseCookiePath  /  /mirror/foo/
     because it doesn't depend on a corresponding <directive module="mod_proxy"
     >ProxyPass</directive> directive.</p>
 
-    <p>The optional <var>interpolate</var> keyword (available in
-    httpd 2.2.9 and later), used together with
+    <p>The optional <var>interpolate</var> keyword, used together with
     <directive>ProxyPassInterpolateEnv</directive>, enables interpolation
     of environment variables specified using the format <var>${VARNAME}</var>.
     Note that interpolation is not supported within the scheme portion of a
