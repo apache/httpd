@@ -32,7 +32,6 @@ available</description>
 <description>Configures optimizations for a Protocol's Listener Sockets</description>
 <syntax>AcceptFilter <var>protocol</var> <var>accept_filter</var></syntax>
 <contextlist><context>server config</context></contextlist>
-<compatibility>On Windows only.</compatibility>
 
 <usage>
     <p>This directive enables operating system specific optimizations for a
