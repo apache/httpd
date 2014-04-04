@@ -677,7 +677,10 @@ static meta *metafix(request_rec *r, const char *buf)
                     while (*p && apr_isspace(*++p));
                     if ((*p == '\'') || (*p == '"')) {
                         delim = *p++;
-                        for (q = p; *q != delim; ++q);
+                        for (q = p; *q && *q != delim; ++q);
+                        /* No terminating delimiter found? Skip the boggus directive */
+                        if (*q != delim)
+                           break;
                     } else {
                         for (q = p; *q && !apr_isspace(*q) && (*q != '>'); ++q);
                     }
