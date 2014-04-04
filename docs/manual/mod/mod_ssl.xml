@@ -2277,7 +2277,7 @@ which means that OCSP responses are considered valid as long as their
 <default>SSLOCSPUseRequestNonce on</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
-<compatibility>Available in httpd 2.4.10 and later, if using OpenSSL 0.9.7 or later</compatibility>
+<compatibility>Available in httpd 2.5-dev and later</compatibility>
 
 <usage>
 <p>This option determines whether queries to OCSP responders should contain
