@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_proxy_html: Do not delete the wrong data from HTML code when a
+     "http-equiv" meta tag specifies a Content-Type behind any other
+     "http-equiv" meta tag. PR 56287 [Micha Lenk <micha lenk info>]
+
   *) mod_expires: don't add Expires header to error responses (4xx/5xx),
      be they generated or forwarded. PR 55669. [ Yann Ylavic ]
 
