@@ -318,7 +318,7 @@
       prior to 2.0.46, no escaping was performed on these strings so
       you had to be quite careful when dealing with raw log files.</p>
 
-      <p>In httpd 2.0, unlike 1.3, the <code>%b</code> and
+      <p>Since httpd 2.0, unlike 1.3, the <code>%b</code> and
       <code>%B</code> format strings do not represent the number of
       bytes sent to the client, but simply the size in bytes of the
       HTTP response (which will differ, for instance, if the
