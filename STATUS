@@ -219,6 +219,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      one. PR 56233.
      trunk patch: http://svn.apache.org/r1583191
                   http://svn.apache.org/r1584098
+                  http://svn.apache.org/r1584665 (manual: use 2.4's backport
+                                                  version instead of temporary
+                                                  2.5-dev <compatibility> ref)
      2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic
 
@@ -234,13 +237,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1584430
                   http://svn.apache.org/r1584434
      2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic
-
-   * manuals: Remove modules' compatibility references to httpd < 2.4 and
-              OpenSSL < 0.9.8.
-     trunk patch: http://svn.apache.org/r1584555
-                  http://svn.apache.org/r1584572
-     2.4.x patch: https://people.apache.org/~ylavic/httpd-2.4.x-manuals-obsolete-compatibility.patch
      +1: ylavic
 
 OTHER PROPOSALS
