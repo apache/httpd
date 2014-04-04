@@ -2125,6 +2125,7 @@ SSLUserName SSL_CLIENT_S_DN_CN
 <default>SSLHonorCipherOrder off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
+<compatibility>Available if using OpenSSL 0.9.7 or later</compatibility>
 
 <usage>
 <p>When choosing a cipher during an SSLv3 or TLSv1 handshake, normally
@@ -2172,6 +2173,7 @@ SSLCryptoDevice ubsec
 <default>SSLOCSPEnable off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
+<compatibility>Available in httpd 2.3 and later, if using OpenSSL 0.9.7 or later</compatibility>
 
 <usage>
 <p>This option enables OCSP validation of the client certificate
@@ -2202,6 +2204,7 @@ SSLOCSPOverrideResponder on
 <syntax>SSLOCSDefaultResponder <em>uri</em></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
+<compatibility>Available in httpd 2.3 and later, if using OpenSSL 0.9.7 or later</compatibility>
 
 <usage>
 <p>This option sets the default OCSP responder to use.  If <directive
@@ -2218,6 +2221,7 @@ the certificate being verified.</p>
 <default>SSLOCSPOverrideResponder off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
+<compatibility>Available in httpd 2.3 and later, if using OpenSSL 0.9.7 or later</compatibility>
 
 <usage>
 <p>This option forces the configured default OCSP responder to be used
@@ -2233,6 +2237,7 @@ certificate being validated references an OCSP responder.</p>
 <default>SSLOCSPResponseTimeSkew 300</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
+<compatibility>Available in httpd 2.3 and later, if using OpenSSL 0.9.7 or later</compatibility>
 
 <usage>
 <p>This option sets the maximum allowable time skew for OCSP responses
@@ -2247,6 +2252,7 @@ certificate being validated references an OCSP responder.</p>
 <default>SSLOCSPResponseMaxAge -1</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
+<compatibility>Available in httpd 2.3 and later, if using OpenSSL 0.9.7 or later</compatibility>
 
 <usage>
 <p>This option sets the maximum allowable age ("freshness") for OCSP responses.
@@ -2263,6 +2269,7 @@ which means that OCSP responses are considered valid as long as their
 <default>SSLOCSPResponderTimeout 10</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
+<compatibility>Available in httpd 2.3 and later, if using OpenSSL 0.9.7 or later</compatibility>
 
 <usage>
 <p>This option sets the timeout for queries to OCSP responders, when
@@ -2277,7 +2284,7 @@ which means that OCSP responses are considered valid as long as their
 <default>SSLOCSPUseRequestNonce on</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
-<compatibility>Available in httpd 2.4.10 and later</compatibility>
+<compatibility>Available in httpd 2.4.10 and later, if using OpenSSL 0.9.7 or later</compatibility>
 
 <usage>
 <p>This option determines whether queries to OCSP responders should contain
@@ -2338,7 +2345,7 @@ supported for a given SSL connection.</p>
 <default>SSLUseStapling off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
-<compatibility>Available if using OpenSSL 0.9.8h or later</compatibility>
+<compatibility>Available in httpd 2.3.3 and later, if using OpenSSL 0.9.8h or later</compatibility>
 
 <usage>
 <p>This option enables OCSP stapling, as defined by the "Certificate
@@ -2366,7 +2373,7 @@ stated goal of "saving roundtrips and resources" - see also
 <description>Configures the OCSP stapling cache</description>
 <syntax>SSLStaplingCache <em>type</em></syntax>
 <contextlist><context>server config</context></contextlist>
-<compatibility>Available if using OpenSSL 0.9.8h or later</compatibility>
+<compatibility>Available in httpd 2.3.3 and later, if using OpenSSL 0.9.8h or later</compatibility>
 
 <usage>
 <p>Configures the cache used to store OCSP responses which get included
@@ -2385,7 +2392,7 @@ the same storage types are supported as with
 <default>SSLStaplingResponseTimeSkew 300</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
-<compatibility>Available if using OpenSSL 0.9.8h or later</compatibility>
+<compatibility>Available in httpd 2.3.3 and later, if using OpenSSL 0.9.8h or later</compatibility>
 
 <usage>
 <p>This option sets the maximum allowable time skew when mod_ssl checks the
@@ -2402,7 +2409,7 @@ if <directive module="mod_ssl">SSLUseStapling</directive> is turned on.</p>
 <default>SSLStaplingResponderTimeout 10</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
-<compatibility>Available if using OpenSSL 0.9.8h or later</compatibility>
+<compatibility>Available in httpd 2.3.3 and later, if using OpenSSL 0.9.8h or later</compatibility>
 
 <usage>
 <p>This option sets the timeout for queries to OCSP responders when
@@ -2418,7 +2425,7 @@ and mod_ssl is querying a responder for OCSP stapling purposes.</p>
 <default>SSLStaplingResponseMaxAge -1</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
-<compatibility>Available if using OpenSSL 0.9.8h or later</compatibility>
+<compatibility>Available in httpd 2.3.3 and later, if using OpenSSL 0.9.8h or later</compatibility>
 
 <usage>
 <p>This option sets the maximum allowable age ("freshness") when
@@ -2437,7 +2444,7 @@ which means that OCSP responses are considered valid as long as their
 <default>SSLStaplingStandardCacheTimeout 3600</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
-<compatibility>Available if using OpenSSL 0.9.8h or later</compatibility>
+<compatibility>Available in httpd 2.3.3 and later, if using OpenSSL 0.9.8h or later</compatibility>
 
 <usage>
 <p>Sets the timeout in seconds before responses in the OCSP stapling cache
@@ -2456,7 +2463,7 @@ used for controlling the timeout for invalid/unavailable responses.
 <default>SSLStaplingReturnResponderErrors on</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
-<compatibility>Available if using OpenSSL 0.9.8h or later</compatibility>
+<compatibility>Available in httpd 2.3.3 and later, if using OpenSSL 0.9.8h or later</compatibility>
 
 <usage>
 <p>When enabled, mod_ssl will pass responses from unsuccessful
@@ -2473,7 +2480,7 @@ for failed queries will be included in the TLS handshake.</p>
 <default>SSLStaplingFakeTryLater on</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
-<compatibility>Available if using OpenSSL 0.9.8h or later</compatibility>
+<compatibility>Available in httpd 2.3.3 and later, if using OpenSSL 0.9.8h or later</compatibility>
 
 <usage>
 <p>When enabled and a query to an OCSP responder for stapling
@@ -2491,7 +2498,7 @@ is also enabled.</p>
 <default>SSLStaplingErrorCacheTimeout 600</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
-<compatibility>Available if using OpenSSL 0.9.8h or later</compatibility>
+<compatibility>Available in httpd 2.3.3 and later, if using OpenSSL 0.9.8h or later</compatibility>
 
 <usage>
 <p>Sets the timeout in seconds before <em>invalid</em> responses
@@ -2508,7 +2515,7 @@ To set the cache timeout for valid responses, see
 <syntax>SSLStaplingForceURL <em>uri</em></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
-<compatibility>Available if using OpenSSL 0.9.8h or later</compatibility>
+<compatibility>Available in httpd 2.3.3 and later, if using OpenSSL 0.9.8h or later</compatibility>
 
 <usage>
 <p>This directive overrides the URI of an OCSP responder as obtained from
