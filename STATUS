@@ -219,11 +219,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      one. PR 56233.
      trunk patch: http://svn.apache.org/r1583191
                   http://svn.apache.org/r1584098
-                  http://svn.apache.org/r1584555 (removes mod_ssl's *whole* manual's
-                                                  directives' compatibilty references
-                                                  to httpd < 2.4 and OpenSSL < 0.9.8,
-                                                  not only SSLOCSPUseRequestNonce)
-     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-mod_ssl-ocsp_use_request_nonce.patch
+     2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic
 
    * event: Add suspend/resume hooks to event MPM to inform modules when
@@ -238,6 +234,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1584430
                   http://svn.apache.org/r1584434
      2.4.x patch: trunk works (modulo CHANGES)
+     +1: ylavic
+
+   * manuals: Remove modules' compatibility references to httpd < 2.4 and
+              OpenSSL < 0.9.8.
+     trunk patch: http://svn.apache.org/r1584555
+                  http://svn.apache.org/r1584572
+     2.4.x patch: https://people.apache.org/~ylavic/httpd-2.4.x-manuals-obsolete-compatibility.patch
      +1: ylavic
 
 OTHER PROPOSALS
