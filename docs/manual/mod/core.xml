@@ -32,8 +32,7 @@ available</description>
 <description>Configures optimizations for a Protocol's Listener Sockets</description>
 <syntax>AcceptFilter <var>protocol</var> <var>accept_filter</var></syntax>
 <contextlist><context>server config</context></contextlist>
-<compatibility>Available in Apache httpd 2.1.5 and later.
-On Windows from Apache httpd 2.3.3 and later.</compatibility>
+<compatibility>On Windows only.</compatibility>
 
 <usage>
     <p>This directive enables operating system specific optimizations for a
@@ -1338,7 +1337,6 @@ ErrorDocument 404 /cgi-bin/bad_urls.pl
 <syntax> ErrorLogFormat [connection|request] <var>format</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
-<compatibility>Available in Apache httpd 2.3.9 and later</compatibility>
 
 <usage>
     <p><directive>ErrorLogFormat</directive> allows to specify what
@@ -2178,8 +2176,6 @@ requests on a persistent connection</description>
 <default>KeepAliveTimeout 5</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
-<compatibility>Specifying a value in milliseconds is available in
-Apache httpd 2.3.2 and later</compatibility>
 
 <usage>
     <p>The number of seconds Apache httpd will wait for a subsequent

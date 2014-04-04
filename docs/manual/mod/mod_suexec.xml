@@ -59,8 +59,8 @@ and Group</description>
     </highlight>
     </example>
 
-    <p>In Apache httpd 2.3.9 and later, startup will fail if this
-    directive is specified but the suEXEC feature is disabled.</p>
+    <p>Startup will fail if this directive is specified but the suEXEC
+    feature is disabled.</p>
 </usage>
 <seealso><directive module="mod_unixd">Suexec</directive></seealso>
 </directivesynopsis>
