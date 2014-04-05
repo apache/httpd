@@ -1374,8 +1374,7 @@ ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover
     <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> directive with the
     <code>[P]</code> flag.</p>
 
-    <p>The optional <var>interpolate</var> keyword (available in
-    httpd 2.2.9 and later), in combination with
+    <p>The optional <var>interpolate</var> keyword, in combination with
     <code class="directive">ProxyPassInterpolateEnv</code> causes the ProxyPass
     to interpolate environment variables, using the syntax
     <var>${VARNAME}</var>.  Note that many of the standard CGI-derived
@@ -1563,8 +1562,7 @@ ProxyPassReverseCookiePath  /  /mirror/foo/</pre>
     (<code>RewriteRule ...  [P]</code>) from <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
     because it doesn't depend on a corresponding <code class="directive"><a href="#proxypass">ProxyPass</a></code> directive.</p>
 
-    <p>The optional <var>interpolate</var> keyword (available in
-    httpd 2.2.9 and later), used together with
+    <p>The optional <var>interpolate</var> keyword, used together with
     <code class="directive">ProxyPassInterpolateEnv</code>, enables interpolation
     of environment variables specified using the format <var>${VARNAME}</var>.
     Note that interpolation is not supported within the scheme portion of a
