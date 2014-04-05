@@ -242,6 +242,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * Merge mod_authnz_fcgi from trunk.
      http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/aaa/mod_authnz_fcgi.c
      http://svn.apache.org/viewvc/httpd/httpd/trunk/docs/manual/mod/mod_authnz_fcgi.xml
+     (Note: I'll build a proper patch file for this with all the necessary bits.)
      +1: trawick
 
 OTHER PROPOSALS
