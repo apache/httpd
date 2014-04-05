@@ -295,10 +295,10 @@ query can be done in two ways which can be configured by
 <li><code>exec:/path/to/program</code>
     <p>
     Here an external program is configured which is called at startup for each
-    encrypted Private Key file. It is called with two arguments (the first is
-    of the form ``<code>servername:portnumber</code>'', the second is either
-    ``<code>RSA</code>'', ``<code>DSA</code>'', or ``<code>ECC</code>''), which
-    indicate for which server and algorithm it has to print the corresponding
+    encrypted Private Key file. It is called with one argument, a string of the
+    form ``<code>servername:portnumber:index</code>'' (with <code>index</code>
+    being a zero-based sequence number), which indicates for which server,
+    TCP port and certificate number it has to print the corresponding
     Pass Phrase to <code>stdout</code>.  The intent is that this external
     program first runs security checks to make sure that the system is not
     compromised by an attacker, and only when these checks were passed
