@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_rewrite: Add 'BNF' (backreferences-no-plus) flag to RewriteRule to 
+     allow spaces in backreferences to be encoded as %20 instead of '+'.
+     [Eric Covener]
+     
   *) mod_ssl: bring SNI behavior into better conformance with RFC 6066:
      no longer send warning-level unrecognized_name(112) alerts,
      and limit startup warnings to cases where an OpenSSL version
