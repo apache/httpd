@@ -907,7 +907,6 @@ by the applicable Security Policy.
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.1 and later, if using OpenSSL 0.9.7 or later</td></tr>
 </table>
 <p>When choosing a cipher during an SSLv3 or TLSv1 handshake, normally
 the client's preference is used.  If this directive is enabled, the
@@ -965,7 +964,6 @@ supported for a given SSL connection.</p>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.3 and later, if using OpenSSL 0.9.7 or later</td></tr>
 </table>
 <p>This option sets the default OCSP responder to use.  If <code class="directive"><a href="#sslocspoverrideresponder">SSLOCSPOverrideResponder</a></code> is not enabled,
 the URI given will be used only if no responder URI is specified in
@@ -981,7 +979,6 @@ the certificate being verified.</p>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.3 and later, if using OpenSSL 0.9.7 or later</td></tr>
 </table>
 <p>This option enables OCSP validation of the client certificate
 chain.  If this option is enabled, certificates in the client's
@@ -1010,7 +1007,6 @@ SSLOCSPOverrideResponder on</pre>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.3 and later, if using OpenSSL 0.9.7 or later</td></tr>
 </table>
 <p>This option forces the configured default OCSP responder to be used
 during OCSP certificate validation, regardless of whether the
@@ -1026,7 +1022,6 @@ certificate being validated references an OCSP responder.</p>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.3 and later, if using OpenSSL 0.9.7 or later</td></tr>
 </table>
 <p>This option sets the timeout for queries to OCSP responders, when
 <code class="directive"><a href="#sslocspenable">SSLOCSPEnable</a></code> is turned on.</p>
@@ -1041,7 +1036,6 @@ certificate being validated references an OCSP responder.</p>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.3 and later, if using OpenSSL 0.9.7 or later</td></tr>
 </table>
 <p>This option sets the maximum allowable age ("freshness") for OCSP responses.
 The default value (<code>-1</code>) does not enforce a maximum age,
@@ -1058,7 +1052,6 @@ which means that OCSP responses are considered valid as long as their
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.3 and later, if using OpenSSL 0.9.7 or later</td></tr>
 </table>
 <p>This option sets the maximum allowable time skew for OCSP responses
 (when checking their <code>thisUpdate</code> and <code>nextUpdate</code> fields).</p>
@@ -2208,7 +2201,7 @@ avalable in the <code>SSL_SRP_USERINFO</code> request environment variable.</p>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.3.3 and later, if using OpenSSL 0.9.8h or later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available if using OpenSSL 0.9.8h or later</td></tr>
 </table>
 <p>Configures the cache used to store OCSP responses which get included
 in the TLS handshake if <code class="directive"><a href="#sslusestapling">SSLUseStapling</a></code>
@@ -2227,7 +2220,7 @@ the same storage types are supported as with
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.3.3 and later, if using OpenSSL 0.9.8h or later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available if using OpenSSL 0.9.8h or later</td></tr>
 </table>
 <p>Sets the timeout in seconds before <em>invalid</em> responses
 in the OCSP stapling cache (configured through <code class="directive"><a href="#sslstaplingcache">SSLStaplingCache</a></code>) will expire.
@@ -2244,7 +2237,7 @@ To set the cache timeout for valid responses, see
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.3.3 and later, if using OpenSSL 0.9.8h or later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available if using OpenSSL 0.9.8h or later</td></tr>
 </table>
 <p>When enabled and a query to an OCSP responder for stapling
 purposes fails, mod_ssl will synthesize a "tryLater" response for the
@@ -2260,7 +2253,7 @@ is also enabled.</p>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.3.3 and later, if using OpenSSL 0.9.8h or later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available if using OpenSSL 0.9.8h or later</td></tr>
 </table>
 <p>This directive overrides the URI of an OCSP responder as obtained from
 the authorityInfoAccess (AIA) extension of the certificate.
@@ -2276,7 +2269,7 @@ Of potential use when going through a proxy for retrieving OCSP queries.</p>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.3.3 and later, if using OpenSSL 0.9.8h or later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available if using OpenSSL 0.9.8h or later</td></tr>
 </table>
 <p>This option sets the timeout for queries to OCSP responders when
 <code class="directive"><a href="#sslusestapling">SSLUseStapling</a></code> is enabled
@@ -2292,7 +2285,7 @@ and mod_ssl is querying a responder for OCSP stapling purposes.</p>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.3.3 and later, if using OpenSSL 0.9.8h or later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available if using OpenSSL 0.9.8h or later</td></tr>
 </table>
 <p>This option sets the maximum allowable age ("freshness") when
 considering OCSP responses for stapling purposes, i.e. when
@@ -2311,7 +2304,7 @@ which means that OCSP responses are considered valid as long as their
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.3.3 and later, if using OpenSSL 0.9.8h or later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available if using OpenSSL 0.9.8h or later</td></tr>
 </table>
 <p>This option sets the maximum allowable time skew when mod_ssl checks the
 <code>thisUpdate</code> and <code>nextUpdate</code> fields of OCSP responses
@@ -2328,7 +2321,7 @@ if <code class="directive"><a href="#sslusestapling">SSLUseStapling</a></code> i
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.3.3 and later, if using OpenSSL 0.9.8h or later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available if using OpenSSL 0.9.8h or later</td></tr>
 </table>
 <p>When enabled, mod_ssl will pass responses from unsuccessful
 stapling related OCSP queries (such as status errors, expired responses etc.)
@@ -2345,7 +2338,7 @@ for failed queries will be included in the TLS handshake.</p>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.3.3 and later, if using OpenSSL 0.9.8h or later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available if using OpenSSL 0.9.8h or later</td></tr>
 </table>
 <p>Sets the timeout in seconds before responses in the OCSP stapling cache
 (configured through <code class="directive"><a href="#sslstaplingcache">SSLStaplingCache</a></code>)
@@ -2419,7 +2412,7 @@ any of the <a href="#envvars">SSL environment variables</a>.</p>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.3.3 and later, if using OpenSSL 0.9.8h or later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available if using OpenSSL 0.9.8h or later</td></tr>
 </table>
 <p>This option enables OCSP stapling, as defined by the "Certificate
 Status Request" TLS extension specified in RFC 6066. If enabled (and
