@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1573630 -->
+<!-- English Revision: 1584572 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1476,8 +1476,7 @@ ProxyPass / balancer://hotcluster/
     module="mod_rewrite">RewriteRule</directive> et son drapeau
     <code>[P]</code>.</p>
 
-    <p>Le mot-cl&eacute; optionnel <var>interpolate</var> (disponible depuis
-    httpd 2.2.9), en combinaison avec la directive
+    <p>Le mot-cl&eacute; optionnel <var>interpolate</var>, en combinaison avec la directive
     <directive>ProxyPassInterpolateEnv</directive>, permet &agrave; ProxyPass
     d'interpoler les variables d'environnement &agrave; l'aide de la syntaxe
     <var>${VARNAME}</var>. Notez que de nombreuses variables
@@ -1647,8 +1646,8 @@ ProxyPassReverseCookiePath  /  /mirror/foo/
     <directive module="mod_proxy">ProxyPass</directive>
     correspondante.</p>
 
-    <p>Le mot-cl&eacute; optionnel <var>interpolate</var> (disponible depuis
-    httpd 2.2.9), utilis&eacute; en combinaison avec la directive
+    <p>Le mot-cl&eacute; optionnel <var>interpolate</var>,
+    utilis&eacute; en combinaison avec la directive
     <directive>ProxyPassInterpolateEnv</directive>, permet
     l'interpolation des variables d'environnement sp&eacute;cifi&eacute;es en
     utilisant le format <var>${VARNAME}</var>. Notez que l'interpolation
