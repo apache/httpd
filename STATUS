@@ -240,9 +240,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: ylavic
 
    * Merge mod_authnz_fcgi from trunk.
-     http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/aaa/mod_authnz_fcgi.c
-     http://svn.apache.org/viewvc/httpd/httpd/trunk/docs/manual/mod/mod_authnz_fcgi.xml
-     (Note: I'll build a proper patch file for this with all the necessary bits.)
+     trunk:
+       http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/aaa/mod_authnz_fcgi.c
+       http://svn.apache.org/viewvc/httpd/httpd/trunk/docs/manual/mod/mod_authnz_fcgi.xml
+         and a line each in CMakeLists.txt and modules/aaa/config.m4
+         (It was never added to other build systems.)
+       See the 2.4.x patch mergeinfo for trunk revisions.  I've also added a tiny
+       part of r1522544 to create an entry in os/win32/BaseAddr.ref.
+     2.4.x patch: http://people.apache.org/~trawick/authnz_fcgi-2.4.txt
+       The patch includes generated doc changes in order to carry eol-style.
      +1: trawick
 
 OTHER PROPOSALS
