@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1421892:1584684 (outdated) -->
+<!-- English Revision : 1584684 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -63,7 +63,7 @@ doivent s'ex&eacute;cuter</description>
     </highlight>
     </example>
 
-    <p>Depuis la version 2.3.9, le d&eacute;marrage va &eacute;chouer si cette
+    <p>Le d&eacute;marrage &eacute;chouera si cette
     directive est sp&eacute;cifi&eacute;e et si la fonctionnalit&eacute; suEXEC est
     d&eacute;sactiv&eacute;e.</p>
 

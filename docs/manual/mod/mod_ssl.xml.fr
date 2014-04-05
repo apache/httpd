@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1573360:1584684 (outdated) -->
+<!-- English Revision : 1584684 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -2399,8 +2399,6 @@ du serveur par ordre de pr&eacute;f&eacute;rence</description>
 <default>SSLHonorCipherOrder off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
-<compatibility>Disponible depuis la version 2.1 d'Apache, &agrave; condition
-d'utiliser une version 0.9.7 ou sup&eacute;rieure d'OpenSSL</compatibility>
 
 <usage>
 <p>Normalement, ce sont les pr&eacute;f&eacute;rences du client qui sont prises en
@@ -2453,8 +2451,6 @@ client</description>
 <default>SSLOCSPEnable off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
-<compatibility>Disponible depuis la version 2.3 de httpd, &agrave; condition
-d'utiliser une version 0.9.7 ou sup&eacute;rieure d'OpenSSL</compatibility>
 
 <usage>
 <p>Cette directive permet d'activer la validation OCSP de la cha&icirc;ne de
@@ -2486,8 +2482,6 @@ OCSP</description>
 <syntax>SSLOCSDefaultResponder <em>uri</em></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
-<compatibility>Disponible depuis la version 2.3 de httpd, &agrave; condition
-d'utiliser une version 0.9.7 ou sup&eacute;rieure d'OpenSSL</compatibility>
 
 <usage>
 <p>Cette directive permet de d&eacute;finir le r&eacute;pondeur OCSP par d&eacute;faut. Si la
@@ -2506,8 +2500,6 @@ la validation OCSP</description>
 <default>SSLOCSPOverrideResponder off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
-<compatibility>Disponible depuis la version 2.3 de httpd, &agrave; condition
-d'utiliser une version 0.9.7 ou sup&eacute;rieure d'OpenSSL</compatibility>
 
 <usage>
 <p>Force l'utilisation, au cours d'une validation OCSP de certificat, du
@@ -2525,8 +2517,6 @@ r&eacute;ponses OCSP</description>
 <default>SSLOCSPResponseTimeSkew 300</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
-<compatibility>Disponible depuis la version 2.3 de httpd, sous r&eacute;serve
-d'utiliser une version 0.9.7 ou sup&eacute;rieure d'OpenSSL</compatibility>
 
 <usage>
 <p>Cette option permet de d&eacute;finir la d&eacute;rive temporelle maximale
@@ -2542,8 +2532,6 @@ autoris&eacute;e pour les r&eacute;ponses OCSP (lors de la v&eacute;rification d
 <default>SSLOCSPResponseMaxAge -1</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
-<compatibility>Disponible depuis la version 2.3 de httpd, sous r&eacute;serve
-d'utiliser une version 0.9.7 ou sup&eacute;rieure d'OpenSSL</compatibility>
 
 <usage>
 <p>Cette option permet de d&eacute;finir l'&acirc;ge maximum autoris&eacute; (la
@@ -2561,8 +2549,6 @@ champ <code>nextUpdate</code> se situe dans le futur.</p>
 <default>SSLOCSPResponderTimeout 10</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
-<compatibility>Disponible depuis la version 2.3 de httpd, sous r&eacute;serve
-d'utiliser une version 0.9.7 ou sup&eacute;rieure d'OpenSSL</compatibility>
 
 <usage>
 <p>Cette option permet de d&eacute;finir le d&eacute;lai d'attente pour les requ&ecirc;tes &agrave;
@@ -2625,8 +2611,7 @@ s&eacute;curis&eacute;e est support&eacute;e pour une connexion SSL donn&eacute;
 <default>SSLUseStapling off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
-<compatibility>Disponible depuis la version 2.3.3 du serveur HTTP
-Apache, si on utilise OpenSSL version 0.9.8h ou sup&eacute;rieure</compatibility>
+<compatibility>Disponible si on utilise OpenSSL version 0.9.8h ou sup&eacute;rieure</compatibility>
 
 <usage>
 <p>Cette directive permet d'activer l'"Agrafage OCSP" (OCSP stapling)
@@ -2656,8 +2641,7 @@ Multiple Certificate Status Extension).
 <description>Configuration du cache pour l'agrafage OCSP</description>
 <syntax>SSLStaplingCache <em>type</em></syntax>
 <contextlist><context>server config</context></contextlist>
-<compatibility>Disponible depuis la version 2.3.3 du serveur HTTP
-Apache, si on utilise OpenSSL version 0.9.8h ou sup&eacute;rieure</compatibility>
+<compatibility>Disponible si on utilise OpenSSL version 0.9.8h ou sup&eacute;rieure</compatibility>
 
 <usage>
 <p>Si <directive module="mod_ssl">SSLUseStapling</directive> est &agrave; "on",
@@ -2678,8 +2662,7 @@ n&eacute;gociation TLS</description>
 <default>SSLStaplingResponseTimeSkew 300</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
-<compatibility>Disponible depuis la version 2.3.3 du serveur HTTP
-Apache, si on utilise OpenSSL version 0.9.8h ou sup&eacute;rieure</compatibility>
+<compatibility>Disponible si on utilise OpenSSL version 0.9.8h ou sup&eacute;rieure</compatibility>
 
 <usage>
 <p>Cette directive permet de sp&eacute;cifier l'intervalle de temps maximum que
@@ -2699,8 +2682,7 @@ OCSP</description>
 <default>SSLStaplingResponderTimeout 10</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
-<compatibility>Disponible depuis la version 2.3.3 du serveur HTTP
-Apache, si on utilise OpenSSL version 0.9.8h ou sup&eacute;rieure</compatibility>
+<compatibility>Disponible si on utilise OpenSSL version 0.9.8h ou sup&eacute;rieure</compatibility>
 
 <usage>
 <p>Cette directive permet de d&eacute;finir le temps d'attente maximum lorsque
@@ -2719,8 +2701,7 @@ n&eacute;gociation TLS</description>
 <default>SSLStaplingResponseMaxAge -1</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
-<compatibility>Disponible depuis la version 2.3.3 du serveur HTTP
-Apache, si on utilise OpenSSL version 0.9.8h ou sup&eacute;rieure</compatibility>
+<compatibility>Disponible si on utilise OpenSSL version 0.9.8h ou sup&eacute;rieure</compatibility>
 
 <usage>
 <p>Cette directive permet de d&eacute;finir l'&acirc;ge maximum autoris&eacute;
@@ -2740,8 +2721,7 @@ consid&eacute;r&eacute;es comme valides &agrave; partir du moment o&ugrave; le c
 <default>SSLStaplingStandardCacheTimeout 3600</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
-<compatibility>Disponible depuis la version 2.3.3 du serveur HTTP
-Apache, si on utilise OpenSSL version 0.9.8h ou sup&eacute;rieure</compatibility>
+<compatibility>Disponible si on utilise OpenSSL version 0.9.8h ou sup&eacute;rieure</compatibility>
 
 <usage>
 <p>Cette directive permet de d&eacute;finir la dur&eacute;e de vie des r&eacute;ponses OCSP
@@ -2762,8 +2742,7 @@ OCSP</description>
 <default>SSLStaplingReturnResponderErrors on</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
-<compatibility>Disponible depuis la version 2.3.3 du serveur HTTP
-Apache, si on utilise OpenSSL version 0.9.8h ou sup&eacute;rieure</compatibility>
+<compatibility>Disponible si on utilise OpenSSL version 0.9.8h ou sup&eacute;rieure</compatibility>
 
 <usage>
 <p>Lorsque cette directive est activ&eacute;e, mod_ssl va transmettre au client les
@@ -2781,8 +2760,7 @@ n&eacute;gociation TLS avec les clients.</p>
 <default>SSLStaplingFakeTryLater on</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
-<compatibility>Disponible depuis la version 2.3.3 du serveur HTTP
-Apache, si on utilise OpenSSL version 0.9.8h ou sup&eacute;rieure</compatibility>
+<compatibility>Disponible si on utilise OpenSSL version 0.9.8h ou sup&eacute;rieure</compatibility>
 
 <usage>
 <p>Lorsque cette directive est activ&eacute;e, et si une requ&ecirc;te vers un
@@ -2801,8 +2779,7 @@ agrafage OCSP</description>
 <default>SSLStaplingErrorCacheTimeout 600</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
-<compatibility>Disponible depuis la version 2.3.3 du serveur HTTP
-Apache, si on utilise OpenSSL version 0.9.8h ou sup&eacute;rieure</compatibility>
+<compatibility>Disponible si on utilise OpenSSL version 0.9.8h ou sup&eacute;rieure</compatibility>
 
 <usage>
 <p>Cette directive permet de d&eacute;finir la dur&eacute;e de vie des r&eacute;ponses
@@ -2820,8 +2797,7 @@ AIA du certificat</description>
 <syntax>SSLStaplingForceURL <em>uri</em></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
-<compatibility>Disponible depuis la version 2.3.3 du serveur HTTP
-Apache, si on utilise OpenSSL version 0.9.8h ou sup&eacute;rieure</compatibility>
+<compatibility>Disponible si on utilise OpenSSL version 0.9.8h ou sup&eacute;rieure</compatibility>
 
 <usage>
 <p>Cette directive permet de remplacer l'URI du serveur OCSP extraite de
