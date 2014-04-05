@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1556206 -->
+<!-- English Revision: 1584417 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -73,7 +73,10 @@ d'utilisation.</p>
 <section id="flag_b"><title>B (&eacute;chappement dans les r&eacute;f&eacute;rences arri&egrave;res)</title>
 <p>Avec le drapeau [B], la directive <directive
 module="mod_rewrite">RewriteRule</directive> &eacute;chappe les caract&egrave;res
-non-alphanum&eacute;riques avant d'appliquer la transformation.</p>
+non-alphanum&eacute;riques avant d'appliquer la transformation. A partir
+de la version 2.4.10, vous pouvez limiter l'&eacute;chappement dans les
+r&eacute;f&eacute;rences arri&egrave;res &agrave; une liste de caract&egrave;res que vous pouvez sp&eacute;cifiez comme
+dans cet exemple : <code>[B=#?;]</code></p>
 
 <p><code>mod_rewrite</code> doit supprimer les s&eacute;quences d'&eacute;chappement
 des URLs avant leur
@@ -107,6 +110,11 @@ rencontre un.</p>
 <p>Ce processus d'&eacute;chappement est en particulier n&eacute;cessaire dans le
 contexte d'un mandataire, o&ugrave; l'acc&egrave;s au serveur d'arri&egrave;re-plan &eacute;chouera
 si on pr&eacute;sente &agrave; ce dernier une URL non &eacute;chapp&eacute;e.</p>
+
+<p>Une alternative &agrave; ce drapeau consiste &agrave; utiliser une directive
+<directive module="mod_rewrite">RewriteCond</directive> pour capturer
+%{THE_REQUEST}, les cha&icirc;nes captur&eacute;es se pr&eacute;sentant
+alors sous la forme cod&eacute;e.</p>
 
 </section>
 
