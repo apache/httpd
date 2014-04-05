@@ -69,7 +69,9 @@ of how you might use them.</p>
 module="mod_rewrite">RewriteRule</directive> to escape non-alphanumeric
 characters before applying the transformation.</p>
 <p>In 2.4.10 and later, you can limit the escaping to specific characters 
-in backreferences by listing them: <code>[B=#?;]</code> </p>
+in backreferences by listing them: <code>[B=#?;]</code>. Note: The space 
+character can be used in the list of characters to escape, but it cannot be 
+the last character in the list.</p>
 
 <p><code>mod_rewrite</code> has to unescape URLs before mapping them,
 so backreferences are unescaped at the time they are applied.
