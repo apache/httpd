@@ -759,8 +759,6 @@ static void req_rsp(request_rec *r, const fcgi_provider_conf *conf,
         apr_socket_close(s);
     }
 
-    apr_pool_destroy(temp_pool);
-
     if (rv != APR_SUCCESS) {
         /* some sort of mechanical problem */
         r->status = HTTP_INTERNAL_SERVER_ERROR;
@@ -779,11 +777,17 @@ static void req_rsp(request_rec *r, const fcgi_provider_conf *conf,
          * available to subsequent phases via subprocess_env (and yanked
          * from the client response).
          */
-        apr_table_t *vars = apr_table_make(r->pool, 10);
+        apr_table_t *vars = apr_table_make(temp_pool, /* not used to allocate
+                                                       * any values that end up
+                                                       * in r->(anything)
+                                                       */
+                                           10);
         apr_table_do(mod_fcgid_modify_auth_header, vars,
                      r->err_headers_out, NULL);
         apr_table_do(fix_auth_header, r, vars, NULL);
     }
+
+    apr_pool_destroy(temp_pool);
 }
 
 static int fcgi_check_authn(request_rec *r)
