@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_ssl: bring SNI behavior into better conformance with RFC 6066:
+     no longer send warning-level unrecognized_name(112) alerts,
+     and limit startup warnings to cases where an OpenSSL version
+     without TLS extension support is used. PR 56241. [Kaspar Brand]
+
   *) mod_proxy_html: Do not delete the wrong data from HTML code when a
      "http-equiv" meta tag specifies a Content-Type behind any other
      "http-equiv" meta tag. PR 56287 [Micha Lenk <micha lenk info>]
