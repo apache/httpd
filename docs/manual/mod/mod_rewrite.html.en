@@ -1174,6 +1174,13 @@ cannot use <code>$N</code> in the substitution string!
         applying the transformation. <em><a href="../rewrite/flags.html#flag_b">details ...</a></em></td>
     </tr>
     <tr>
+        <td>backrefnoplus|BNP</td>
+        <td>If backreferences are being escaped, spaces should be escaped to 
+        %20 instead of +. Useful when the backreference will be used in the
+        path component rather than the query string.<em><a href="../rewrite/flags.html#flag_bnp">details ...</a></em></td>
+    </tr>
+
+    <tr>
         <td>chain|C</td>
         <td>Rule is chained to the following rule. If the rule fails,
         the rule(s) chained to it will be skipped. <em><a href="../rewrite/flags.html#flag_c">details ...</a></em></td>
