@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1523269:1584684 (outdated) -->
+<!-- English Revision : 1584684 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -336,7 +336,7 @@ d'Apache</a></seealso>
       fallait &ecirc;tre tr&egrave;s prudent lors de l'exploitation des journaux
       bruts.</p>
 
-      <p>A la diff&eacute;rence de la version 1.3, dans httpd 2.0, les cha&icirc;nes
+      <p>A la diff&eacute;rence de la version 1.3, depuis httpd 2.0, les cha&icirc;nes
       de format <code>%b</code> et <code>%B</code> ne repr&eacute;sentent pas
       le nombre d'octets envoy&eacute;s au client, mais simplement la taille en
       octets de la r&eacute;ponse HTTP (les deux &eacute;tant diff&eacute;rents, par exemple,

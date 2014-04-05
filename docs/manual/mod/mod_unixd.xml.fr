@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1421892:1584684 (outdated) -->
+<!-- English Revision : 1584684 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -162,7 +162,6 @@ d&eacute;marrage apr&egrave;s avoir effectu&eacute; un chroot(8).</description>
 <default>On si le binaire suexec existe avec les mode et propri&eacute;taire
 appropri&eacute;s, Off dans le cas contraire</default>
 <contextlist><context>server config</context></contextlist>
-<compatibility>Disponible depuis la version 2.3.9 d'Apache httpd</compatibility>
 
 <usage>
     <p>Lorsque cette directive est d&eacute;finie &agrave; On, le d&eacute;marrage &eacute;chouera si

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1562488:1584704 (outdated) -->
+<!-- English Revision : 1584704 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -36,8 +36,6 @@ l'&eacute;coute d'un protocole</description>
 <syntax>AcceptFilter <var>protocole</var> <var>filtre
 d'acceptation</var></syntax>
 <contextlist><context>server config</context></contextlist>
-<compatibility>Disponible depuis la version 2.3.3 sous Windows et 2.1.5
-sur les autres plates-formes.</compatibility>
 
 <usage>
     <p>Cette directive permet d'effectuer une optimisation de la socket
@@ -1470,7 +1468,6 @@ host</context>
 <syntax> ErrorLogFormat [connection|request] <var>format</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
-<compatibility>Disponible depuis la version 2.3.9 d'Apache</compatibility>
 
 <usage>
     <p>La directive <directive>ErrorLogFormat</directive> permet de
@@ -2400,8 +2397,6 @@ avant de fermer une connexion persistante</description>
 <contextlist><context>server config</context><context>virtual
 host</context>
 </contextlist>
-<compatibility>La sp&eacute;cification d'une valeur en millisecondes est
-possible depuis les versions 2.3.2 et sup&eacute;rieures d'Apache httpd</compatibility>
 
 <usage>
     <p>Le nombre de secondes pendant lesquelles Apache httpd va attendre une
