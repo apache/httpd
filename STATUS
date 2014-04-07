@@ -251,6 +251,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        The patch includes generated doc changes in order to carry eol-style.
      +1: trawick
 
+   * mod_auth_form: Make sure the optional functions are loaded even when
+                    the AuthFormProvider isn't specified. PR 56351.
+     Submitted/Commited by: minfrin
+     trunk patch: http://svn.apache.org/r1531672
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: ylavic
+
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
