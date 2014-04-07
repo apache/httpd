@@ -255,6 +255,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                     the AuthFormProvider isn't specified. PR 56351.
      Submitted/Commited by: minfrin
      trunk patch: http://svn.apache.org/r1531672
+                  http://svn.apache.org/r1585435
      2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic
 
