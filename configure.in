@@ -272,6 +272,8 @@ APR_ADDTO(INCLUDES, $APU_INCLUDES)
 dnl Add in path to PCRE includes
 APR_ADDTO(INCLUDES, $PCRE_INCLUDES)
 
+save_CPPFLAGS="$CPPFLAGS"
+CPPFLAGS="$CPPFLAGS $PCRE_INCLUDES"
 AC_EGREP_CPP(yes,
 [
 #include <pcre.h>
@@ -282,6 +284,7 @@ yes
 if test "$pcre_have_dupnames" != "yes"; then
     AC_MSG_ERROR([pcre version does not support PCRE_DUPNAMES])
 fi
+CPPFLAGS="$save_CPPFLAGS"
 
 AC_MSG_NOTICE([])
 AC_MSG_NOTICE([Applying OS-specific hints for httpd...])
