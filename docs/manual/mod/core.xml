@@ -608,6 +608,7 @@ headers</description>
 <syntax>DefaultRuntimeDir <var>directory-path</var></syntax>
 <default>DefaultRuntimeDir DEFAULT_REL_RUNTIMEDIR (logs/)</default>
 <contextlist><context>server config</context></contextlist>
+<compatibility>Available in Apache 2.4.2 and later</compatibility>
 
 <usage>
     <p>The <directive>DefaultRuntimeDir</directive> directive sets the
@@ -1746,9 +1747,9 @@ filenames</description>
     (unnamed) backreferences are ignored. Use named groups instead.</p>
 
 <highlight language="config">
-&lt;FileMatch ^(?&lt;sitename&gt;[^/]+)&gt;
+&lt;FilesMatch ^(?&lt;sitename&gt;[^/]+)&gt;
     require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
-&lt;/FileMatch&gt;
+&lt;/FilesMatch&gt;
 </highlight>
 </usage>
 
