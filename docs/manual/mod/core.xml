@@ -612,6 +612,7 @@ headers</description>
 <syntax>DefaultRuntimeDir <var>directory-path</var></syntax>
 <default>DefaultRuntimeDir DEFAULT_REL_RUNTIMEDIR (logs/)</default>
 <contextlist><context>server config</context></contextlist>
+<compatibility>Available in Apache 2.4.2 and later</compatibility>
 
 <usage>
     <p>The <directive>DefaultRuntimeDir</directive> directive sets the
