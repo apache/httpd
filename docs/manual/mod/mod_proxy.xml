@@ -843,7 +843,6 @@ expressions</description>
     a local virtual path; <var>url</var> is a partial URL for the
     remote server and cannot include a query string.</p>
 
-    
     <note><strong>Note: </strong>This directive cannot be used within a 
     <code>&lt;Directory&gt;</code> context.</note>
 
@@ -1208,7 +1207,8 @@ ProxyPass /mirror/foo http://backend.example.com
         <td>Off</td>
         <td>If set, an IO read timeout after a request is sent to the backend will
         force the worker into error state. Worker recovery behaves the same as other
-        worker errors.
+        worker errors.<br />
+        Available in Apache HTTP Server 2.4.5 and later.
     </td></tr>
     <tr><td>nonce</td>
         <td>&lt;auto&gt;</td>
@@ -1234,7 +1234,8 @@ ProxyPass /mirror/foo http://backend.example.com
         in error state. There might be cases where an already overloaded backend
         can get into deeper trouble if the recovery of all workers is enforced
         without considering the retry parameter of each worker. In this case
-        set to <code>Off</code>.
+        set to <code>Off</code>.<br />
+        Available in Apache HTTP Server 2.4.2 and later.
     </td></tr>
 
     </table>
