@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_proxy_fcgi: Fix sending of response without some HTTP headers
+     that might be set by filters.  [Jim Riggs <jim riggs.me>]
+
   *) mod_rewrite: Add 'BNF' (backreferences-no-plus) flag to RewriteRule to 
      allow spaces in backreferences to be encoded as %20 instead of '+'.
      [Eric Covener]
