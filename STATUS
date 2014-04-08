@@ -259,6 +259,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic
 
+   * mod_proxy_fcgi: Fix for oddity with mod_proxy_fcgi which can bork
+     response headers for mod_deflate-ed responses.
+     trunk patch? http://svn.apache.org/r1585824
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: trawick
+
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
