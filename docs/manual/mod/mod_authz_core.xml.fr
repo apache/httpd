@@ -186,7 +186,7 @@ SetEnvIf User-Agent ^KnockKnock/2\.0 let_me_in
   d'acc&egrave;s en fonction d'expressions arbitraires.</p>
 
     <highlight language="config">
-         Require expr %{TIME_HOUR} -ge 9 &amp;&amp; %{TIME_HOUR} -le 17
+         Require expr "%{TIME_HOUR} -ge 9 &amp;&amp; %{TIME_HOUR} -le 17"
     </highlight>
 
     <p>La syntaxe de l'expression est d&eacute;crite dans la documentation de <a
