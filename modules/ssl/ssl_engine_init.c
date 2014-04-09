@@ -914,9 +914,11 @@ static apr_status_t ssl_init_server_certs(server_rec *s,
         }
 
         /* and second, the private key */
-        keyfile = APR_ARRAY_IDX(mctx->pks->key_files, i, const char *);
-        if (keyfile == NULL)
+        if (i < mctx->pks->key_files->nelts) {
+            keyfile = APR_ARRAY_IDX(mctx->pks->key_files, i, const char *);
+        } else {
             keyfile = certfile;
+        }
 
         ERR_clear_error();
 

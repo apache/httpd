@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_ssl: avoid processing bogus SSLCertificateKeyFile values
+     (and logging garbled file names). PR 56306. [Kaspar Brand]
+
   *) mod_proxy_fcgi: Fix sending of response without some HTTP headers
      that might be set by filters.  [Jim Riggs <jim riggs.me>]
 
