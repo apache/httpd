@@ -196,8 +196,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                         on startup if default socache_provider is used and
                         AuthnCacheEnable or AuthnCacheProvideFor is used.
                         This problem has been introduced in r1531961.
+                        PR 56371.
+     Submitted/Committed by: jkaluza
      trunk patch: http://svn.apache.org/r1576233
      2.4.x patch: trunk works
+     +1: ylavic
  
    * mod_reqtimeout: Don't add filters and create new connection configs
      for each keepalive request under event MPM. PR56216
