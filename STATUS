@@ -106,16 +106,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
   * mod_auth_form: Make sure the optional functions are loaded even when
-    the AuthFormProvider isn't specified.
+    the AuthFormProvider isn't specified. PR 56351.
     trunk patch: https://svn.apache.org/r1531672
     2.4.x patch: trunk patch works, modulo CHANGES
-    +1: minfrin, jim
+    +1: minfrin, jim, ylavic
     -0 covener: does that mean just loading mod_auth_form w/o mod_request 
                 and mod_filter now causes a post-config failure?
     minfrin: It does, however it would only affect configs where mod_auth_form
              has been loaded but not used, as any attempt to use mod_auth_form
              without mod_request and mod_session present would cause the very
              same failure. Would a warning in the release notes be good enough?
+    ylavic: It fixes a runtime crash in this situation (PR 56351), I think
+            post_config (startup) is the best choice => +1
  
    * mod_slotmem_shm: Remove wonky and dangerous code that knows about APR
      internals. We work fine w/o it anyway at this stage.
@@ -250,14 +252,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~trawick/authnz_fcgi-2.4.txt
        The patch includes generated doc changes in order to carry eol-style.
      +1: trawick
-
-   * mod_auth_form: Make sure the optional functions are loaded even when
-                    the AuthFormProvider isn't specified. PR 56351.
-     Submitted/Commited by: minfrin
-     trunk patch: http://svn.apache.org/r1531672
-                  http://svn.apache.org/r1585435
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic
 
    * mod_proxy_fcgi: Fix for oddity with mod_proxy_fcgi which can bork
      response headers for mod_deflate-ed responses.
