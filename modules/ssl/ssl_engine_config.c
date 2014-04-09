@@ -243,7 +243,7 @@ void *ssl_config_server_create(apr_pool_t *p, server_rec *s)
 }
 
 #define cfgMerge(el,unset)  mrg->el = (add->el == (unset)) ? base->el : add->el
-#define cfgMergeArray(el)   mrg->el = apr_array_append(p, add->el, base->el)
+#define cfgMergeArray(el)   mrg->el = apr_array_append(p, base->el, add->el)
 #define cfgMergeString(el)  cfgMerge(el, NULL)
 #define cfgMergeBool(el)    cfgMerge(el, UNSET)
 #define cfgMergeInt(el)     cfgMerge(el, UNSET)
