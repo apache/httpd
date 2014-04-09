@@ -265,6 +265,23 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (modulo CHANGES)
      +1: trawick
 
+   * mod_ssl: bring SNI behavior into better conformance with RFC 6066
+     (also addresses PR 56241)
+     trunk patch: https://svn.apache.org/r1585090
+     2.4.x patch: trunk patch works (modulo CHANGES)
+     +1: kbrand
+
+   * mod_ssl: only read "active" values from the key_files array (PR 56306)
+     trunk patch: https://svn.apache.org/r1585918
+     2.4.x patch: trunk patch works (modulo CHANGES)
+     +1: kbrand
+
+   * mod_ssl: reverse the order when merging global and vhost-level config
+     arrays (PR 56353)
+     trunk patch: https://svn.apache.org/r1585919
+     2.4.x patch: trunk patch works (modulo CHANGES)
+     +1: kbrand
+
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
