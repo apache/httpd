@@ -254,8 +254,9 @@ URLs on the fly</description>
       <p>With this option, the value of <directive module="mod_rewrite"
       >RewriteBase</directive> is copied from where it's explicitly defined
       into any sub-directory or sub-location that doesn't define its own
-      <directive module="mod_rewrite">RewriteBase</directive>. Available in 
-      Apache HTTP Server 2.5 and later only.</p>
+      <directive module="mod_rewrite">RewriteBase</directive>. This was the
+      default behavior in 2.4.0 through 2.4.3, and the flag to restore it is
+      available Apache HTTP Server 2.4.4 and later.</p>
       </dd>
       </dl>
 
