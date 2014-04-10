@@ -401,8 +401,10 @@ Header merge Cache-Control no-store env=NO_STORE</pre>
     <p>Except in <a href="#early">early</a> mode, the
     <code class="directive">Header</code> directives are processed just
     before the response is sent to the network. These means that it is
-    possible to set and/or override most headers, except for those headers
-    added by the HTTP header filter, such as Content-Type.</p>
+    possible to set and/or override most headers, except for some headers
+    added by the HTTP header filter.  Prior to 2.2.12, it was not possible 
+    to change the Content-Type header with this directive.</p>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
