@@ -233,7 +233,7 @@ a directory</description>
 <name>FallbackResource</name>
 <description>Define a default URL for requests that don't map to a file</description>
 <syntax>FallbackResource disabled | <var>local-url</var></syntax>
-<default>None - httpd will return 404 (Not Found)</default>
+<default>disabled - httpd will return 404 (Not Found)</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>Indexes</override>
