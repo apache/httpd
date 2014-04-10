@@ -256,7 +256,7 @@ Header merge Cache-Control no-store env=NO_STORE
     <dt><code>set</code></dt>
     <dd>The request header is set, replacing any previous header
     with this name</dd>
-  
+
     <dt><code>setifempty</code></dt>
     <dd>The request header is set, but only if there is no previous header
     with this name. Available in 2.4.7 and later.</dd>
@@ -308,7 +308,7 @@ Header merge Cache-Control no-store env=NO_STORE
 <directivesynopsis>
 <name>Header</name>
 <description>Configure HTTP response headers</description>
-<syntax>Header [<var>condition</var>] add|append|echo|edit|edit*|merge|set|unset|note
+<syntax>Header [<var>condition</var>] add|append|echo|edit|edit*|merge|set|setifempty|unset|note
 <var>header</var> [<var>[expr=]value]</var>] [<var>replacement</var>]
 [early|env=[!]<var>variable</var>]|expr=<var>expression</var>]
 </syntax>
@@ -462,17 +462,20 @@ Header merge Cache-Control no-store env=NO_STORE
         designed to expose the values obtained by <code>getloadavg()</code>
         and this represents the current load average, the 5 minute average, and
         the 15 minute average. The value is preceded by <code>l=</code> with each
-        average separated by <code>/</code>.
+        average separated by <code>/</code>.<br />
+        Available in 2.4.4 and later.
         </td></tr>
 
     <tr><td><code>%i</code></td>
         <td>The current idle percentage of httpd (0 to 100) based on available
-        processes and threads. The value is preceded by <code>i=</code>.
+        processes and threads. The value is preceded by <code>i=</code>.<br />
+        Available in 2.4.4 and later.
         </td></tr>
 
     <tr><td><code>%b</code></td>
         <td>The current busy percentage of httpd (0 to 100) based on available
-        processes and threads. The value is preceded by <code>b=</code>.
+        processes and threads. The value is preceded by <code>b=</code>.<br />
+        Available in 2.4.4 and later.
         </td></tr>
 
     <tr><td><code>%{VARNAME}e</code></td>
