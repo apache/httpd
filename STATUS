@@ -280,6 +280,32 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch works (modulo CHANGES)
      +1: kbrand
 
+   * core: synch with trunk
+       - follow-up to r813376: finish reverting r808965 (ServerTokens set foo)
+       - tweak syntax strings for ServerTokens
+     trunk patch: https://svn.apache.org/r1514255
+                  https://svn.apache.org/r1514267
+     2.4.x patch: http://people.apache.org/~jailletc36/r1514255.patch
+     +1: jailletc36
+
+   * mod_proxy_html: Do not delete the wrong data from HTML code when a
+     "http-equiv" meta tag specifies a Content-Type behind any other "http-equiv"
+     meta tag. PR 56287 [Micha Lenk <micha lenk info>]
+     trunk patch: https://svn.apache.org/r1584878
+     2.4.x patch: trunk patch works (modulo CHANGES)
+     +1: jailletc36
+
+   * mod_proxy_html: Do not scan past the end of the buffer.
+     trunk patch: https://svn.apache.org/r1584884
+     2.4.x patch: trunk patch works
+     +1: jailletc36
+
+   * mod_proxy_html: Do not perform a p+= 7 that could go past the end of the buffer
+     trunk patch: https://svn.apache.org/r1584896
+     2.4.x patch: trunk patch works
+     +1: jailletc36
+
+
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
