@@ -207,6 +207,7 @@ static void *create_deflate_server_config(apr_pool_t *p, server_rec *s)
     c->windowSize = DEFAULT_WINDOWSIZE;
     c->bufferSize = DEFAULT_BUFFERSIZE;
     c->compressionlevel = DEFAULT_COMPRESSION;
+    c->etag_opt = AP_DEFLATE_ETAG_ADDSUFFIX;
 
     return c;
 }
