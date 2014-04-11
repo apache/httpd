@@ -54,6 +54,10 @@
 static const char deflateFilterName[] = "DEFLATE";
 module AP_MODULE_DECLARE_DATA deflate_module;
 
+#define AP_DEFLATE_ETAG_ADDSUFFIX 0
+#define AP_DEFLATE_ETAG_NOCHANGE  1
+#define AP_DEFLATE_ETAG_REMOVE    2
+
 typedef struct deflate_filter_config_t
 {
     int windowSize;
@@ -63,6 +67,7 @@ typedef struct deflate_filter_config_t
     char *note_ratio_name;
     char *note_input_name;
     char *note_output_name;
+    int etag_opt;
 } deflate_filter_config;
 
 /* RFC 1952 Section 2.3 defines the gzip header:
@@ -280,6 +285,29 @@ static const char *deflate_set_memlevel(cmd_parms *cmd, void *dummy,
     return NULL;
 }
 
+static const char *deflate_set_etag(cmd_parms *cmd, void *dummy,
+                                        const char *arg)
+{
+    deflate_filter_config *c = ap_get_module_config(cmd->server->module_config,
+                                                    &deflate_module);
+
+    if (!strcasecmp(arg, "NoChange")) { 
+      c->etag_opt = AP_DEFLATE_ETAG_NOCHANGE;
+    }
+    else if (!strcasecmp(arg, "AddSuffix")) { 
+      c->etag_opt = AP_DEFLATE_ETAG_ADDSUFFIX;
+    }
+    else if (!strcasecmp(arg, "Remove")) { 
+      c->etag_opt = AP_DEFLATE_ETAG_REMOVE;
+    }
+    else { 
+        return "DeflateAlterETAG accepts only 'NoChange', 'AddSuffix', and 'Remove'";
+    }
+
+    return NULL;
+}
+
+
 static const char *deflate_set_compressionlevel(cmd_parms *cmd, void *dummy,
                                         const char *arg)
 {
@@ -398,10 +426,15 @@ static apr_status_t deflate_ctx_cleanup(void *data)
  * value inside the double-quotes if an ETag has already been set
  * and its value already contains double-quotes. PR 39727
  */
-static void deflate_check_etag(request_rec *r, const char *transform)
+static void deflate_check_etag(request_rec *r, const char *transform, int etag_opt)
 {
     const char *etag = apr_table_get(r->headers_out, "ETag");
     apr_size_t etaglen;
+
+    if (etag_opt == AP_DEFLATE_ETAG_REMOVE) { 
+        apr_table_unset(r->headers_out, "ETag");
+        return;
+    }
 
     if ((etag && ((etaglen = strlen(etag)) > 2))) {
         if (etag[etaglen - 1] == '"') {
@@ -708,7 +741,9 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
         }
         apr_table_unset(r->headers_out, "Content-Length");
         apr_table_unset(r->headers_out, "Content-MD5");
-        deflate_check_etag(r, "gzip");
+        if (c->etag_opt != AP_DEFLATE_ETAG_NOCHANGE) {  
+            deflate_check_etag(r, "gzip", c->etag_opt);
+        }
 
         /* For a 304 response, only change the headers */
         if (r->status == HTTP_NOT_MODIFIED) {
@@ -1401,7 +1436,9 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
          */
         apr_table_unset(r->headers_out, "Content-Length");
         apr_table_unset(r->headers_out, "Content-MD5");
-        deflate_check_etag(r, "gunzip");
+        if (c->etag_opt != AP_DEFLATE_ETAG_NOCHANGE) {
+            deflate_check_etag(r, "gunzip", c->etag_opt);
+        }
 
         /* For a 304 response, only change the headers */
         if (r->status == HTTP_NOT_MODIFIED) {
@@ -1741,6 +1778,9 @@ static const command_rec deflate_filter_cmds[] = {
                   "Set the Deflate Memory Level (1-9)"),
     AP_INIT_TAKE1("DeflateCompressionLevel", deflate_set_compressionlevel, NULL, RSRC_CONF,
                   "Set the Deflate Compression Level (1-9)"),
+    AP_INIT_TAKE1("DeflateAlterEtag", deflate_set_etag, NULL, RSRC_CONF,
+                  "Set how mod_deflate should modify ETAG response headers: 'AddSuffix' (default), 'NoChange' (2.2.x behavior), 'Remove'"),
+ 
     {NULL}
 };
 

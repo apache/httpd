@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_deflate: Add DeflateAlterETag to control how the ETag
+     is modified. The 'NoChange' parameter mimics 2.2.x behavior.
+     PR 45023, PR 39727. [Eric Covener]
+
   *) mod_ssl: fix merging of global and vhost-level settings with the
      SSLCertificateFile, SSLCertificateKeyFile, and SSLOpenSSLConfCmd
      directives. PR 56353. [Kaspar Brand]
