@@ -1101,7 +1101,7 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
                     /* If the header was (partially) read it's an error, this
                      * is not a gzip Content-Encoding, as claimed.
                      */
-                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO()
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02619)
                                   "Encountered premature end-of-stream while "
                                   "reading inflate header");
                     return APR_EGENERAL;
@@ -1633,7 +1633,7 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
                 }
                 ctx->zlib_flags = ctx->header[3];
                 if ((ctx->zlib_flags & RESERVED)) {
-                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO()
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02620)
                                   "inflate: bad flags %02x",
                                   ctx->zlib_flags);
                     return APR_EGENERAL;
