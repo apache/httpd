@@ -1309,6 +1309,7 @@ int ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                 apr_table_setn(r->notes, "proxy_timedout", "1");
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01103) "read timeout");
                 if (do_100_continue) {
+                    proxy_run_detach_backend(r, backend);
                     return ap_proxyerror(r, HTTP_SERVICE_UNAVAILABLE, "Timeout on 100-Continue");
                 }
             }
@@ -1341,6 +1342,7 @@ int ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                 /* Mark the backend connection for closing */
                 backend->close = 1;
                 /* Need to return OK to avoid sending an error message */
+                proxy_run_detach_backend(r, backend);
                 return OK;
             }
             else if (!c->keepalives) {
@@ -1350,6 +1352,7 @@ int ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                                    " failed.",
                                    backend->hostname, backend->port);
             }
+            proxy_run_detach_backend(r, backend);
             return ap_proxyerror(r, HTTP_GATEWAY_TIME_OUT,
                                  "Error reading from remote server");
         }
@@ -1369,6 +1372,7 @@ int ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
              * if the status line was > 8192 bytes
              */
             if ((major != 1) || (len >= sizeof(buffer)-1)) {
+                proxy_run_detach_backend(r, backend);
                 return ap_proxyerror(r, HTTP_BAD_GATEWAY,
                 apr_pstrcat(p, "Corrupt status line returned by remote "
                             "server: ", buffer, NULL));
@@ -1427,6 +1431,7 @@ int ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                 r->headers_out = apr_table_make(r->pool,1);
                 r->status = HTTP_BAD_GATEWAY;
                 r->status_line = "bad gateway";
+                proxy_run_detach_backend(r, backend);
                 return r->status;
             }
 
@@ -1624,6 +1629,7 @@ int ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                 (proxy_status != HTTP_NOT_MODIFIED)) { /* not 304 */
                 ap_discard_request_body(backend->r);
             }
+            proxy_run_detach_backend(r, backend);
             return proxy_status;
         }
 
@@ -1778,6 +1784,7 @@ int ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                          * left waiting for a slow client to eventually
                          * acknowledge the data.
                          */
+                        proxy_run_detach_backend(r, backend);
                         ap_proxy_release_connection(backend->worker->s->scheme,
                                 backend, r->server);
                         /* Ensure that the backend is not reused */
@@ -1816,6 +1823,7 @@ int ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
              * left waiting for a slow client to eventually
              * acknowledge the data.
              */
+            proxy_run_detach_backend(r, backend);
             ap_proxy_release_connection(backend->worker->s->scheme,
                     backend, r->server);
             *backend_ptr = NULL;
@@ -1832,6 +1840,10 @@ int ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
     /* We have to cleanup bb brigade, because buckets inserted to it could be
      * created from scpool and this pool can be freed before this brigade. */
     apr_brigade_cleanup(bb);
+
+    if (*backend_ptr) {
+        proxy_run_detach_backend(r, backend);
+    }
 
     /* See define of AP_MAX_INTERIM_RESPONSES for why */
     if (interim_response >= AP_MAX_INTERIM_RESPONSES) {
@@ -2003,6 +2015,7 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
          */
         if ((status = ap_proxy_http_request(p, r, backend, worker,
                                         conf, uri, locurl, server_portstr)) != OK) {
+            proxy_run_detach_backend(r, backend);
             if ((status == HTTP_SERVICE_UNAVAILABLE) &&
                  worker->s->ping_timeout_set &&
                  worker->s->ping_timeout >= 0) {

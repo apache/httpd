@@ -2779,3 +2779,7 @@ APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(proxy, PROXY, int, request_status,
                                     (int *status, request_rec *r),
                                     (status, r),
                                     OK, DECLINED)
+APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(proxy, PROXY, int, detach_backend,
+                                    (request_rec *r, proxy_conn_rec *backend),
+                                    (r, backend), OK, DECLINED)
+
