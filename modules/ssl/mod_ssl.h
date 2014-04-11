@@ -93,7 +93,7 @@ typedef int (*ssl_npn_proto_negotiated)(conn_rec *connection,
  * invoked from a pre_connection hook which runs *after* mod_ssl.c's
  * pre_connection hook.  The function returns OK if the callbacks are
  * register, or DECLINED otherwise (for example if mod_ssl does not
-l * support NPN).  */
+ * support NPN).  */
 APR_DECLARE_OPTIONAL_FN(int, modssl_register_npn, (conn_rec *conn, 
                                                    ssl_npn_advertise_protos advertisefn,
                                                    ssl_npn_proto_negotiated negotiatedfn));
