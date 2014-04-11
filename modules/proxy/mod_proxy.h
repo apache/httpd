@@ -513,6 +513,15 @@ APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, create_req, (request_rec *r, reques
 APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, fixups, (request_rec *r))
 
 /**
+ * Let modules perform processing when the connection to the origin is being
+ * detached from the request.
+ * @param r The client request
+ * @param backend The proxy representation of the backend connection
+ */
+APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, detach_backend, (request_rec *r,
+                                                              proxy_conn_rec *backend))
+
+/**
  * pre request hook.
  * It will return the most suitable worker at the moment
  * and coresponding balancer.

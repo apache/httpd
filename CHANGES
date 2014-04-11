@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_proxy_http: Add detach_backend hook (potentially usable
+     in other proxy scheme handlers).  [Jeff Trawick]
+
   *) mod_deflate: Add DeflateAlterETag to control how the ETag
      is modified. The 'NoChange' parameter mimics 2.2.x behavior.
      PR 45023, PR 39727. [Eric Covener]
