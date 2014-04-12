@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1580934 -->
+<!-- English Revision : 1586447 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -191,7 +191,8 @@ la version version 2.1</compatibility>
       <p>M&ecirc;me effet que l'option <code>Inherit</code> ci-dessus, mais
       les r&egrave;gles sp&eacute;cifi&eacute;es dans le niveau parent s'appliquent
       <strong>avant</strong> les r&egrave;gles sp&eacute;cifi&eacute;es dans le niveau
-      enfant. Disponible depuis la version 2.3.10 du serveur HTTP
+      enfant.<br />
+      Disponible depuis la version 2.3.10 du serveur HTTP
       Apache.</p>
       </dd>
 
@@ -203,7 +204,8 @@ la version version 2.1</compatibility>
       sp&eacute;cifie <code>RewriteOptions Inherit</code> dans toutes les
       configurations enfants. Voir l'option <code>Inherit</code> pour
       plus de d&eacute;tails &agrave; propos de la mani&egrave;re dont les relations
-      parent-enfants sont trait&eacute;es. Cette option est disponible &agrave; partir
+      parent-enfants sont trait&eacute;es.<br />
+      Cette option est disponible &agrave; partir
       de la version 2.4.8 du serveur HTTP Apache.</p>
       </dd>
 
@@ -213,7 +215,8 @@ la version version 2.1</compatibility>
       <p>L'effet de cette option est &eacute;quivalent &agrave; celui de l'option
       <code>InheritDown</code> ci-dessus, mais les r&egrave;gles de la
       configuration parente s'appliquent <strong>avant</strong> toute
-      r&egrave;gle de la configuration enfant. Cette option est disponible &agrave; partir
+      r&egrave;gle de la configuration enfant.<br />
+      Cette option est disponible &agrave; partir
       de la version 2.4.8 du serveur HTTP Apache.</p>
       </dd>
 
@@ -223,7 +226,8 @@ la version version 2.1</compatibility>
       <p>Si cette option est activ&eacute;e, les configurations courante et
       enfants ignoreront toute r&egrave;gle h&eacute;rit&eacute;e d'une configuration parente
       via les options <code>InheritDown</code> ou
-      <code>InheritDownBefore</code>. Cette option est disponible &agrave; partir
+      <code>InheritDownBefore</code>.<br />
+      Cette option est disponible &agrave; partir
       de la version 2.4.8 du serveur HTTP Apache.</p>
       </dd>
 
@@ -240,7 +244,8 @@ la version version 2.1</compatibility>
       s'assurer que les r&egrave;gles de r&eacute;&eacute;criture ne soient plus ignor&eacute;es.
       Si on le souhaite, cette option permet de faire s'appliquer des
       r&egrave;gles de r&eacute;&eacute;criture qui correspondent &agrave; un r&eacute;pertoire sans slash
-      final au sein de fichiers .htaccess. Elle est disponible &agrave;
+      final au sein de fichiers .htaccess.<br />
+      Elle est disponible &agrave;
       partir de la version 2.4.0 du serveur HTTP Apache.</p>
       </dd>
 
@@ -252,7 +257,7 @@ la version version 2.1</compatibility>
       contexte de <code>serveur virtuel</code> ou de serveur principal,
       <module>mod_rewrite</module> ne traitera les r&egrave;gles de r&eacute;&eacute;criture
       que si l'URI de la requ&ecirc;te respecte la syntaxe d'un <a
-      href="./directive-dict.html#Syntax">chemin URL</a>. Ceci permet
+      href="directive-dict.html#Syntax">chemin URL</a>. Ceci permet
       d'&eacute;viter certains probl&egrave;mes de s&eacute;curit&eacute; o&ugrave; des r&egrave;gles
       particuli&egrave;res pourraient permettre  des d&eacute;veloppements de mod&egrave;les
       inattendus (voir <a
@@ -263,7 +268,8 @@ la version version 2.1</compatibility>
       utiliser l'option <code>AllowAnyURI</code>, afin de permettre &agrave;
       <module>mod_rewrite</module> d'appliquer le jeu de r&egrave;gles &agrave; toute
       cha&icirc;ne de requ&ecirc;te URI, sans v&eacute;rifier si cette derni&egrave;re respecte la
-      grammaire des chemins URL d&eacute;finie dans la sp&eacute;cification HTTP.</p>
+      grammaire des chemins URL d&eacute;finie dans la sp&eacute;cification HTTP.<br />
+      Disponible depuis la version 2.4.3 du serveur HTTP Apache.</p>
 
       <note type="warning">
       <title>Avertissement &agrave; propos de la s&eacute;curit&eacute;</title> 

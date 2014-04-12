@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1584704 -->
+<!-- English Revision : 1585830 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -662,6 +662,7 @@ host</context>
 <syntax>DefaultRuntimeDir <var>chemin-r&eacute;pertoire</var></syntax>
 <default>DefaultRuntimeDir DEFAULT_REL_RUNTIMEDIR (logs/)</default>
 <contextlist><context>server config</context></contextlist>
+<compatibility>Disponible depuis la version 2.4.2 du serveur HTTP Apache</compatibility>
 
 <usage>
     <p>La directive <directive>DefaultRuntimeDir</directive> permet de
@@ -1927,9 +1928,9 @@ host</context>
     nomm&eacute;s.</p>
 
 <highlight language="config">
-&lt;FileMatch ^(?&lt;sitename&gt;[^/]+)&gt;
+&lt;FilesMatch ^(?&lt;sitename&gt;[^/]+)&gt;
     require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
-&lt;/FileMatch&gt;
+&lt;/FilesMatch&gt;
 </highlight>
 
 </usage>

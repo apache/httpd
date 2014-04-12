@@ -255,8 +255,8 @@ host</context>
 <name>FallbackResource</name>
 <description>D&eacute;finit une URL par d&eacute;faut pour les requ&ecirc;tes qui ne ciblent
 aucun fichier</description>
-<syntax>FallbackResource disabled <var>url-locale</var></syntax>
-<default>Aucune - httpd renvoie un code d'erreur 404 (Not Found)</default>
+<syntax>FallbackResource disabled | <var>url-locale</var></syntax>
+<default>disabled - httpd renvoie un code d'erreur 404 (Not Found)</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>Indexes</override>
