@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1584703 -->
+<!-- English Revision : 1585829 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -668,6 +668,8 @@ host</context>
 <syntax>DefaultRuntimeDir <var>chemin-r&eacute;pertoire</var></syntax>
 <default>DefaultRuntimeDir DEFAULT_REL_RUNTIMEDIR (logs/)</default>
 <contextlist><context>server config</context></contextlist>
+<compatibility>Disponible depuis de la version 2.4.2 du serveur HTTP
+Apache</compatibility>
 
 <usage>
     <p>La directive <directive>DefaultRuntimeDir</directive> permet de

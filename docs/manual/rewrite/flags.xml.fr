@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1584417:1585159 (outdated) -->
+<!-- English Revision: 1585159 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -76,7 +76,10 @@ module="mod_rewrite">RewriteRule</directive> &eacute;chappe les caract&egrave;re
 non-alphanum&eacute;riques avant d'appliquer la transformation. A partir
 de la version 2.4.10, vous pouvez limiter l'&eacute;chappement dans les
 r&eacute;f&eacute;rences arri&egrave;res &agrave; une liste de caract&egrave;res que vous pouvez sp&eacute;cifiez comme
-dans cet exemple : <code>[B=#?;]</code></p>
+dans cet exemple : <code>[B=#?;]</code>. Notez que l'espace peut faire
+partie de la liste des caract&egrave;res &agrave; &eacute;chapper, mais qu'il ne doit pas
+&ecirc;tre le dernier caract&egrave;re de cette liste.
+</p>
 
 <p><code>mod_rewrite</code> doit supprimer les s&eacute;quences d'&eacute;chappement
 des URLs avant leur
@@ -116,6 +119,15 @@ si on pr&eacute;sente &agrave; ce dernier une URL non &eacute;chapp&eacute;e.</p
 %{THE_REQUEST}, les cha&icirc;nes captur&eacute;es se pr&eacute;sentant
 alors sous la forme cod&eacute;e.</p>
 
+</section>
+
+<section id="flag_bnp"><title>BNP|backrefnoplus (ne pas &eacute;chapper
+l'espace en +)</title>
+<p>Si le drapeau [BNP] est sp&eacute;cifi&eacute;, la directive <directive
+module="mod_rewrite">RewriteRule</directive> &eacute;chappera le caract&egrave;re
+espace en %20 au lieu de '+' dans les r&eacute;f&eacute;rences arri&egrave;res. Ceci s'av&egrave;re
+utile lorsque la r&eacute;f&eacute;rence arri&egrave;re est utilis&eacute;e dans la partie chemin,
+et non dans les param&egrave;tres de la requ&ecirc;te.</p>
 </section>
 
 <section id="flag_c"><title>C|chain</title>

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1517589 -->
+<!-- English Revision : 1586542 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -324,6 +324,41 @@ sortie</description>
 </usage>
 </directivesynopsis>
 
+<directivesynopsis>
+<name>DeflateAlterETag</name>
+<description>Comment l'en-t&ecirc;te sortant ETag doit &ecirc;tre modifi&eacute; au cours
+de la compression</description>
+<syntax>DeflateAlterETag AddSuffix|NoChange|Remove</syntax>
+<default>DeflateAlterETag AddSuffix</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>La directive <directive>DeflateAlterETag</directive> permet de
+    sp&eacute;cifier comment l'en-t&ecirc;te ETag doit &ecirc;tre modifi&eacute; lorsqu'une
+    r&eacute;ponse est compress&eacute;e.</p>
+    <dl>
+    <dt>AddSuffix</dt>
+    <dd><p>Ajoute la m&eacute;thode de compression &agrave; la fin de l'en-t&ecirc;te, ce
+    qui a pour effet d'attribuer un en-t&ecirc;te ETag unique aux
+    repr&eacute;sentations compress&eacute;es et non compress&eacute;es. C'est l'option par
+    d&eacute;faut depuis la version 2.4.0, mais emp&ecirc;che de servir des
+    codes d'&eacute;tat "HTTP Not Modified" (304) en r&eacute;ponse aux requ&ecirc;tes pour un
+    contenu compress&eacute;.</p></dd>
+    <dt>NoChange</dt>
+    <dd><p>Ne modifie pas l'en-t&ecirc;te ETag dans une r&eacute;ponse compress&eacute;e.
+    C'&eacute;tait l'option par
+    d&eacute;faut avant la version 2.4.0, mais cela ne respectait pas la
+    pr&eacute;conisation HTTP/1.1 selon laquelle chaque repr&eacute;sentation de la
+    m&ecirc;me ressource doit poss&eacute;der un en-t&ecirc;te ETag unique.</p></dd>
+    <dt>Remove</dt>
+    <dd><p>Supprime l'en-t&ecirc;te ETag dans les r&eacute;ponses compress&eacute;es, ce qui
+    a pour effet de rendre impossibles certaines requ&ecirc;tes
+    conditionnelles, mais permet d'&eacute;viter les inconv&eacute;nients des options
+    pr&eacute;c&eacute;dentes.</p></dd>
+    </dl>
+</usage>
+</directivesynopsis>
 
 </modulesynopsis>
 

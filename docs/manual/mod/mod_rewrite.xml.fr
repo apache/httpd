@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1575709 -->
+<!-- English Revision : 1586452 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -189,8 +189,8 @@ pour le moteur de r&eacute;&eacute;criture</description>
       <p>M&ecirc;me effet que l'option <code>Inherit</code> ci-dessus, mais
       les r&egrave;gles sp&eacute;cifi&eacute;es dans le niveau parent s'appliquent
       <strong>avant</strong> les r&egrave;gles sp&eacute;cifi&eacute;es dans le niveau
-      enfant. Disponible depuis la version 2.3.10 du serveur HTTP
-      Apache.</p>
+      enfant.<br />
+      Disponible depuis la version 2.3.10 du serveur HTTP Apache.</p>
       </dd>
 
       <dt><code>InheritDown</code></dt>
@@ -201,7 +201,8 @@ pour le moteur de r&eacute;&eacute;criture</description>
       sp&eacute;cifie <code>RewriteOptions Inherit</code> dans toutes les
       configurations enfants. Voir l'option <code>Inherit</code> pour
       plus de d&eacute;tails &agrave; propos de la mani&egrave;re dont les relations
-      parent-enfants sont trait&eacute;es. Cette option est disponible &agrave; partir
+      parent-enfants sont trait&eacute;es.<br />
+      Cette option est disponible &agrave; partir
       de la version 2.4.8 du serveur HTTP Apache.</p>
       </dd>
 
@@ -211,7 +212,8 @@ pour le moteur de r&eacute;&eacute;criture</description>
       <p>L'effet de cette option est &eacute;quivalent &agrave; celui de l'option
       <code>InheritDown</code> ci-dessus, mais les r&egrave;gles de la
       configuration parente s'appliquent <strong>avant</strong> toute
-      r&egrave;gle de la configuration enfant. Cette option est disponible &agrave; partir
+      r&egrave;gle de la configuration enfant.<br />
+      Cette option est disponible &agrave; partir
       de la version 2.4.8 du serveur HTTP Apache.</p>
       </dd>
 
@@ -221,7 +223,8 @@ pour le moteur de r&eacute;&eacute;criture</description>
       <p>Si cette option est activ&eacute;e, les configurations courante et
       enfants ignoreront toute r&egrave;gle h&eacute;rit&eacute;e d'une configuration parente
       via les options <code>InheritDown</code> ou
-      <code>InheritDownBefore</code>. Cette option est disponible &agrave; partir
+      <code>InheritDownBefore</code>.<br />
+      Cette option est disponible &agrave; partir
       de la version 2.4.8 du serveur HTTP Apache.</p>
       </dd>
       
@@ -238,7 +241,8 @@ pour le moteur de r&eacute;&eacute;criture</description>
       s'assurer que les r&egrave;gles de r&eacute;&eacute;criture ne soient plus ignor&eacute;es.
       Si on le souhaite, cette option permet de faire s'appliquer des
       r&egrave;gles de r&eacute;&eacute;criture qui correspondent &agrave; un r&eacute;pertoire sans slash
-      final au sein de fichiers .htaccess. Elle est disponible &agrave;
+      final au sein de fichiers .htaccess.<br />
+      Elle est disponible &agrave;
       partir de la version 2.4.0 du serveur HTTP Apache.</p>
       </dd>
 
@@ -261,7 +265,8 @@ pour le moteur de r&eacute;&eacute;criture</description>
       utiliser l'option <code>AllowAnyURI</code>, afin de permettre &agrave;
       <module>mod_rewrite</module> d'appliquer le jeu de r&egrave;gles &agrave; toute
       cha&icirc;ne de requ&ecirc;te URI, sans v&eacute;rifier si cette derni&egrave;re respecte la
-      grammaire des chemins URL d&eacute;finie dans la sp&eacute;cification HTTP.</p>
+      grammaire des chemins URL d&eacute;finie dans la sp&eacute;cification HTTP.<br />
+      Disponible depuis la version 2.4.3 du serveur HTTP Apache.</p>
 
       <note type="warning">
       <title>Avertissement &agrave; propos de la s&eacute;curit&eacute;</title> 
@@ -283,8 +288,10 @@ pour le moteur de r&eacute;&eacute;criture</description>
       module="mod_rewrite">RewriteBase</directive> est recopi&eacute;e depuis
       une valeur explicitement d&eacute;finie dans tout sous-r&eacute;pertoire qui ne
       d&eacute;finit pas sa propre directive <directive
-      module="mod_rewrite">RewriteBase</directive>. Disponible &agrave; partir
-      de la version 2.5 du serveur HTTP Apache.</p>
+      module="mod_rewrite">RewriteBase</directive>. Il s'agissait du
+      comportement par d&eacute;faut avec les versions 2.4.0 &agrave; 2.4.3, et ce
+      drapeau qui permet de retrouver ce comportement est disponible
+      depuis la version 2.4.4 du serveur HTTP Apache.</p>
       </dd>
 
       </dl>
@@ -1320,7 +1327,17 @@ substitution !
         href="../rewrite/flags.html#flag_b">d&eacute;tails ...</a></em></td>
     </tr>
     <tr>
-        <td>chain|C</td>
+        <td>backrefnoplus|BNP</td>
+        <td>Avec ce drapeau, si les r&eacute;f&eacute;rences arri&egrave;res sont &eacute;chapp&eacute;es,
+	les espaces seront &eacute;chapp&eacute;s en %20 au lieu de +. Ceci s'av&egrave;re
+	utile lorsqu'une r&eacute;f&eacute;rence arri&egrave;re est utilis&eacute;e dans la partie
+	chemin, et non dans la cha&icirc;ne de param&egrave;tres de la requ&ecirc;te ;
+	pour plus de d&eacute;tails, voir <em><a
+	href="../rewrite/flags.html#flag_bnp">ici.</a></em></td>
+    </tr>
+
+    <tr>        
+	<td>chain|C</td>
         <td>La r&egrave;gle est cha&icirc;n&eacute;e avec la r&egrave;gle suivante. Si la r&egrave;gle
 	&eacute;choue, la ou les r&egrave;gles avec lesquelles elle est est cha&icirc;n&eacute;e
 	seront saut&eacute;es. <em><a
