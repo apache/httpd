@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1584082 -->
+<!-- English Revision : 1586470 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -516,19 +516,22 @@ disponible depuis la version 2.4.7 du serveur HTTP Apache.</compatibility>
 	courante, ainsi que la charge moyenne pendant les cinq et les
 	quinze derni&egrave;res minutes. Chaque valeur est pr&eacute;c&eacute;d&eacute;e de
 	<code>l=</code> et s&eacute;par&eacute;e des autres par un slash
-	<code>/</code>.
+	<code>/</code>.<br />
+	Disponible depuis la version 2.4.4 du serveur HTTP Apache.
         </td></tr>
 
     <tr><td><code>%i</code></td>
         <td>Le pourcentage de disponibilit&eacute; de httpd (0 &agrave; 100) bas&eacute; sur
 	le nombre de threads et de processus disponibles. La valeur est
-	pr&eacute;c&eacute;d&eacute;e de <code>i=</code>.
+	pr&eacute;c&eacute;d&eacute;e de <code>i=</code>.<br />
+	Disponible depuis la version 2.4.4 du serveur HTTP Apache.
         </td></tr>
 
     <tr><td><code>%b</code></td>
         <td>Le pourcentage d'utilisation de httpd (0 &agrave; 100) bas&eacute; sur
 	le nombre de threads et de processus disponibles. La valeur est
-	pr&eacute;c&eacute;d&eacute;e de <code>b=</code>.
+	pr&eacute;c&eacute;d&eacute;e de <code>b=</code>.<br />
+	Disponible depuis la version 2.4.4 du serveur HTTP Apache.
         </td></tr>
 
     <tr><td><code>%{NOM_VARIABLE}e</code></td>
@@ -581,8 +584,9 @@ disponible depuis la version 2.4.7 du serveur HTTP Apache.</compatibility>
     directives <directive>Header</directive> sont trait&eacute;es juste avant
     l'envoi de la r&eacute;ponse sur le r&eacute;seau. Cela signifie qu'il est
     possible de d&eacute;finir et/ou modifier la plupart des en-t&ecirc;tes, &agrave;
-    l'exception de ceux qui sont ajout&eacute;s par le filtre HTTP
-    d'en-t&ecirc;te, comme Content-Type.</p>
+    l'exception de certains en-têtes qui sont ajout&eacute;s par le filtre
+    d'en-t&ecirc;te HTTP. Avant la version 2.2.12, il n'&eacute;tait pas
+    possible de modifier l'en-t&ecirc;te Content-Type avec cette directive.</p>
 </usage>
 </directivesynopsis>
 

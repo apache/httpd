@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1562488:1584684 (outdated) -->
+<!-- English Revision: 1586470 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -769,7 +769,7 @@ serveur HTTP Apache</compatibility>
     <default>BalancerPersist Off</default>
     <contextlist><context>server config</context><context>virtual host</context></contextlist>
     <compatibility>BalancerPersist n'est disponible qu'&agrave; partir de la
-    version 2.5.0 du serveur HTTP Apache.</compatibility>
+    version 2.4.4 du serveur HTTP Apache.</compatibility>
     <usage>
         <p>Cette directive permet de conserver le contenu de l'espace
 	m&eacute;moire partag&eacute; associ&eacute; aux r&eacute;partiteurs de charge et &agrave; leurs
@@ -809,7 +809,7 @@ HTTP Apache.</compatibility>
     <syntax>BalancerInherit On|Off</syntax>
     <default>BalancerInherit On</default>
     <contextlist><context>server config</context><context>virtual host</context></contextlist>
-    <compatibility>Disponible &agrave; partir de la version 2.5.0 du serveur
+    <compatibility>Disponible &agrave; partir de la version 2.4.5 du serveur
     HTTP Apache.</compatibility>
     <usage>
         <p>Cette directive permet d'attribuer au serveur virtuel courant
@@ -1312,7 +1312,8 @@ ProxyPass /mirror/foo http://backend.example.com
 	d'application d'arri&egrave;re-plan utilise des noms diff&eacute;rents pour
 	les cookies et les identifiants cod&eacute;s d'URL (comme les
 	conteneurs de servlet), s&eacute;parez-les par le caract&egrave;re '|'. La
-	premi&egrave;re partie contient le cookie et la seconde le chemin.
+	premi&egrave;re partie contient le cookie et la seconde le chemin.<br />
+	Disponible depuis la version 2.4.4 du serveur HTTP Apache.
     </td></tr>
     <tr><td>stickysessionsep</td>
         <td>"."</td>
@@ -1353,7 +1354,7 @@ ProxyPass /mirror/foo http://backend.example.com
 	d&eacute;pass&eacute; en entr&eacute;e/sortie apr&egrave;s envoi d'une requ&ecirc;te au serveur
 	d'arri&egrave;re-plan va mettre le processus en &eacute;tat d'erreur. La
 	sortie de cet &eacute;tat d'erreur se passe de la m&ecirc;me fa&ccedil;on que pour
-	les autres erreurs.
+	les autres erreurs.<br />
 	Disponible &agrave; partir de la version 2.4.5 du serveur HTTP Apache.
     </td></tr>
     <tr><td>nonce</td>
@@ -1384,7 +1385,8 @@ ProxyPass /mirror/foo http://backend.example.com
 	surcharg&eacute; entre dans une situation critique si la relance de
 	tous les membres est forc&eacute;e sans tenir compte du param&egrave;tre retry
 	de chaque membre. Dans ce cas, d&eacute;finissez ce param&egrave;tre &agrave;
-	<code>Off</code>.
+	<code>Off</code>.<br />
+	Disponible depuis la version 2.4.2 du serveur HTTP Apache.
     </td></tr>
 
     </table>
@@ -1449,8 +1451,7 @@ ProxyPass / balancer://hotcluster/
     module="mod_rewrite">RewriteRule</directive> et son drapeau
     <code>[P]</code>.</p>
 
-    <p>Le mot-cl&eacute; optionnel <var>interpolate</var> (disponible depuis
-    httpd 2.2.9), en combinaison avec la directive
+    <p>Le mot-cl&eacute; optionnel <var>interpolate</var>, en combinaison avec la directive
     <directive>ProxyPassInterpolateEnv</directive>, permet &agrave; ProxyPass
     d'interpoler les variables d'environnement &agrave; l'aide de la syntaxe
     <var>${VARNAME}</var>. Notez que de nombreuses variables
@@ -1620,8 +1621,8 @@ ProxyPassReverseCookiePath  /  /mirror/foo/
     <directive module="mod_proxy">ProxyPass</directive>
     correspondante.</p>
 
-    <p>Le mot-cl&eacute; optionnel <var>interpolate</var> (disponible depuis
-    httpd 2.2.9), utilis&eacute; en combinaison avec la directive
+    <p>Le mot-cl&eacute; optionnel <var>interpolate</var>, en
+    combinaison avec la directive
     <directive>ProxyPassInterpolateEnv</directive>, permet
     l'interpolation des variables d'environnement sp&eacute;cifi&eacute;es en
     utilisant le format <var>${VARNAME}</var> Notez que l'interpolation
