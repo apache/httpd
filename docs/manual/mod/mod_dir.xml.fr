@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1562170 -->
+<!-- English Revision: 1586471 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -263,6 +263,8 @@ aucun fichier</description>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>Indexes</override>
+<compatibility>L'argument <code>disabled</code> est disponible depuis la
+version 2.4.4 du serveur HTTP Apache</compatibility>
 <usage>
     <p>Cette directive permet de d&eacute;finir un traitement pour toute URL
     qui ne correspond &agrave; aucune ressource de votre syst&egrave;me de fichiers,

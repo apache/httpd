@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1584081 -->
+<!-- English Revision: 1586471 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -342,7 +342,7 @@ serveur HTTP Apache</compatibility>
 <directivesynopsis>
 <name>Header</name>
 <description>Configure les en-t&ecirc;tes d'une r&eacute;ponse HTTP</description>
-<syntax>Header [<var>condition</var>] add|append|echo|edit|edit*|merge|set|unset|note
+<syntax>Header [<var>condition</var>] add|append|echo|edit|edit*|merge|set|setifempty|unset|note
 <var>en-t&ecirc;te</var> [<var>[expr=]valeur</var>] [<var>remplacement</var>]
 [early|env=[!]<var>variable</var>]|expr=<var>expression</var>]
 </syntax>
@@ -517,19 +517,22 @@ serveur HTTP Apache</compatibility>
 	sont les valeurs obtenues par <code>getloadavg()</code> qui
 	repr&eacute;sentent la charge moyenne courante, sur 5 minutes et sur 15
 	minutes. Chaque valeur est pr&eacute;c&eacute;d&eacute;e de <code>l=</code> et
-	s&eacute;par&eacute;e de la suivante par un <code>/</code>.
+	s&eacute;par&eacute;e de la suivante par un <code>/</code>.<br />
+	Disponible depuis la version 2.4.4 du serveur HTTP Apache.
         </td></tr>
 
     <tr><td><code>%i</code></td>
         <td>Le pourcentage courant de httpd au repos (de 0 &agrave; 100)
 	en se basant sur le nombre de processus et threads disponibles.
-	La valeur est pr&eacute;c&eacute;d&eacute;e de <code>i=</code>.
+	La valeur est pr&eacute;c&eacute;d&eacute;e de <code>i=</code>.<br />
+	Disponible depuis la version 2.4.4 du serveur HTTP Apache.
         </td></tr>
 
     <tr><td><code>%b</code></td>
         <td>Le pourcentage courant de httpd utilis&eacute; (de 0 &agrave; 100)
 	en se basant sur le nombre de processus et threads disponibles.
-	La valeur est pr&eacute;c&eacute;d&eacute;e de <code>b=</code>.
+	La valeur est pr&eacute;c&eacute;d&eacute;e de <code>b=</code>.<br />
+	Disponible depuis la version 2.4.4 du serveur HTTP Apache.
         </td></tr>
 
     <tr><td><code>%{NOM_VARIABLE}e</code></td>
@@ -582,8 +585,9 @@ serveur HTTP Apache</compatibility>
     directives <directive>Header</directive> sont trait&eacute;es juste avant
     l'envoi de la r&eacute;ponse sur le r&eacute;seau. Cela signifie qu'il est
     possible de d&eacute;finir et/ou modifier la plupart des en-t&ecirc;tes, &agrave;
-    l'exception de ceux qui sont ajout&eacute;s par le filtre HTTP
-    d'en-t&ecirc;te, comme Content-Type.</p>
+    l'exception de certains en-t&ecirc;tes qui sont ajout&eacute;s par le filtre
+    d'en-t&ecirc;te HTTP. Avant la version 2.2.12, il n'&eacute;tait pas
+    possible de modifier l'en-t&ecirc;te Content-Type avec cette directive.</p>
 </usage>
 </directivesynopsis>
 
