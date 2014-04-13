@@ -28,6 +28,7 @@ typedef struct ws_baton_t {
     apr_bucket_brigade *bb;
     int is_client;
     apr_pool_t *subpool;
+    char *scheme;
 } ws_baton_t;
 
 static int proxy_wstunnel_transfer(request_rec *r, conn_rec *c_i, conn_rec *c_o,
@@ -138,6 +139,7 @@ static void proxy_wstunnel_callback(void *b) {
     }
     else {
         ap_mpm_unregister_socket_callback(sockets, baton->subpool);
+        ap_proxy_release_connection(baton->scheme, baton->proxy_connrec, baton->r->server);
         apr_thread_mutex_unlock(baton->r->invoke_mtx);
         ap_finalize_request_protocol(baton->r);
         ap_process_request_after_handler(baton->r);
@@ -297,7 +299,7 @@ static int ap_proxy_wstunnel_request(apr_pool_t *p, request_rec *r,
                                 proxy_worker *worker,
                                 proxy_server_conf *conf,
                                 apr_uri_t *uri,
-                                char *url, char *server_portstr)
+                                char *url, char *server_portstr, char *scheme)
 {
     apr_status_t rv = APR_SUCCESS;
     apr_pollset_t *pollset;
@@ -379,6 +381,7 @@ static int ap_proxy_wstunnel_request(apr_pool_t *p, request_rec *r,
     baton->server_soc = sock;
     baton->proxy_connrec = conn;
     baton->bb = bb;
+    baton->scheme = scheme;
     apr_pool_create(&baton->subpool, r->pool);
 
     status = proxy_wstunnel_pump(baton, apr_time_from_sec(5)); 
@@ -476,7 +479,7 @@ static int proxy_wstunnel_handler(request_rec *r, proxy_worker *worker,
 
         /* Step Three: Process the Request */
         status = ap_proxy_wstunnel_request(p, r, backend, worker, conf, uri, locurl,
-                                      server_portstr);
+                                      server_portstr, scheme);
         break;
     }
 
