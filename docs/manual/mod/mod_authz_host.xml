@@ -66,7 +66,7 @@ address)</description>
     access an area of the server. Access can be controlled by
     hostname, IP Address, or IP Address range.</p>
 
-    <p>Since v2.5.0, <a href="../expr.html">expressions</a> are supported
+    <p>Since v2.4.8, <a href="../expr.html">expressions</a> are supported
     within the host require directives.</p>
 
 <section id="reqip"><title>Require ip</title>
@@ -156,6 +156,7 @@ Require host .net example.edu
 </section>
 
 <section id="reqlocal"><title>Require local</title>
+
     <p>The <code>local</code> provider allows access to the server if any
     of the following conditions is true:</p>
 
@@ -172,6 +173,7 @@ Require host .net example.edu
     <highlight language="config">
     Require local
     </highlight>
+
 </section>
 
 <section id="proxy"><title>Security Note</title>

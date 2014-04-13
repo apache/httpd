@@ -37,6 +37,7 @@
 </summary>
 
 <seealso><directive module="mod_authz_core">Require</directive></seealso>
+
 <section id="requiredirectives"><title>The Require Directives</title>
 
     <p>Apache's <directive module="mod_authz_core">Require</directive>
@@ -44,7 +45,7 @@
     a user is allowed to access a resource.  mod_authz_dbm extends the
     authorization types with <code>dbm-group</code>.</p>
 
-    <p>Since v2.5.0, <a href="../expr.html">expressions</a> are supported
+    <p>Since v2.4.8, <a href="../expr.html">expressions</a> are supported
     within the DBM require directives.</p>
 
 <section id="reqgroup"><title>Require dbm-group</title>
@@ -87,6 +88,7 @@ instead of <code>group</code>:</em>
 &lt;/Directory&gt;
 </highlight>
 </section>
+
 <directivesynopsis>
 <name>AuthDBMGroupFile</name>
 <description>Sets the name of the database file containing the list
