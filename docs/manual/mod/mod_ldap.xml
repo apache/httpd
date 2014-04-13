@@ -72,9 +72,9 @@ LDAPOpCacheTTL 600
 
 &lt;Location /ldap-status&gt;
     SetHandler ldap-status
-    
+
     Require host yourdomain.example.com
-    
+
     Satisfy any
     AuthType Basic
     AuthName "LDAP Protected"
@@ -107,9 +107,9 @@ LDAPOpCacheTTL 600
     credentials used when binding to an LDAP server. These
     credentials can be provided to LDAP servers that do not
     allow anonymous binds during referral chasing. To control
-    this feature, see the 
-    <directive module="mod_ldap">LDAPReferrals</directive> and 
-    <directive module="mod_ldap">LDAPReferralHopLimit</directive> 
+    this feature, see the
+    <directive module="mod_ldap">LDAPReferrals</directive> and
+    <directive module="mod_ldap">LDAPReferralHopLimit</directive>
     directives. By default, this feature is enabled.</p>
 </section>
 
@@ -197,26 +197,26 @@ LDAPOpCacheTTL 600
 <section id="usingssltls"><title>Using SSL/TLS</title>
 
     <p>The ability to create an SSL and TLS connections to an LDAP server
-    is defined by the directives 
-    <directive module="mod_ldap">LDAPTrustedGlobalCert</directive>, 
+    is defined by the directives
+    <directive module="mod_ldap">LDAPTrustedGlobalCert</directive>,
     <directive module="mod_ldap">LDAPTrustedClientCert</directive>
-     and <directive module="mod_ldap">LDAPTrustedMode</directive>. 
-    These directives specify the CA and optional client certificates to be used, 
-    as well as the type of encryption to be used on the connection (none, SSL or 
+     and <directive module="mod_ldap">LDAPTrustedMode</directive>.
+    These directives specify the CA and optional client certificates to be used,
+    as well as the type of encryption to be used on the connection (none, SSL or
     TLS/STARTTLS).</p>
 
     <highlight language="config">
-# Establish an SSL LDAP connection on port 636. Requires that 
-# mod_ldap and mod_authnz_ldap be loaded. Change the 
+# Establish an SSL LDAP connection on port 636. Requires that
+# mod_ldap and mod_authnz_ldap be loaded. Change the
 # "yourdomain.example.com" to match your domain.
 
 LDAPTrustedGlobalCert CA_DER /certs/certfile.der
 
 &lt;Location /ldap-status&gt;
     SetHandler ldap-status
-    
+
     Require host yourdomain.example.com
-    
+
     Satisfy any
     AuthType Basic
     AuthName "LDAP Protected"
@@ -227,17 +227,17 @@ LDAPTrustedGlobalCert CA_DER /certs/certfile.der
     </highlight>
 
     <highlight language="config">
-# Establish a TLS LDAP connection on port 389. Requires that 
-# mod_ldap and mod_authnz_ldap be loaded. Change the 
+# Establish a TLS LDAP connection on port 389. Requires that
+# mod_ldap and mod_authnz_ldap be loaded. Change the
 # "yourdomain.example.com" to match your domain.
 
 LDAPTrustedGlobalCert CA_DER /certs/certfile.der
 
 &lt;Location /ldap-status&gt;
     SetHandler ldap-status
-    
+
     Require host yourdomain.example.com
-    
+
     Satisfy any
     AuthType Basic
     AuthName "LDAP Protected"
@@ -356,9 +356,9 @@ LDAPTrustedGlobalCert CA_DER /certs/cacert1.der
 LDAPTrustedGlobalCert CA_BASE64 /certs/cacert2.pem
 &lt;Location /ldap-status&gt;
     SetHandler ldap-status
-    
+
     Require host yourdomain.example.com
-    
+
     LDAPTrustedClientCert CERT_BASE64 /certs/cert1.pem
     LDAPTrustedClientCert KEY_BASE64 /certs/key1.pem
     # CA certs respecified due to per-directory client certs
@@ -497,7 +497,7 @@ valid</description>
 <override>AuthConfig</override>
 
 <usage>
-    <p>This directive, if enabled by the <code>LDAPReferrals</code> directive,
+    <p>This directive, if enabled by the <directive>LDAPReferrals</directive> directive,
     limits the number of referral hops that are followed before terminating an
     LDAP query.</p>
 
@@ -510,40 +510,40 @@ valid</description>
 <directivesynopsis>
 <name>LDAPReferrals</name>
 <description>Enable referral chasing during queries to the LDAP server.</description>
-<syntax>LDAPReferrals On|Off|default</syntax>
+<syntax>LDAPReferrals <var>On|Off|default</var></syntax>
 <default>LDAPReferrals On</default>
 <contextlist><context>directory</context><context>.htaccess</context></contextlist>
 <override>AuthConfig</override>
+<compatibility>The <var>default</var> parameter is available in Apache 2.4.7 and later</compatibility>
 
 <usage>
     <p>Some LDAP servers divide their directory among multiple domains and use referrals
     to direct a client when a domain boundary is crossed. This is similar to a HTTP redirect.
-    LDAP client libraries may or may not chase referrals by default. This directive 
-    explicitly configures the referral chasing in the underlying SDK.</p> 
-    
-  
-    <p><directive>LDAPReferrals</directive> takes the takes the following values:</p>
+    LDAP client libraries may or may not chase referrals by default. This directive
+    explicitly configures the referral chasing in the underlying SDK.</p>
 
+
+    <p><directive>LDAPReferrals</directive> takes the following values:</p>
     <dl>
      <dt>"on"</dt>
      <dd> <p> When set to "on", the underlying SDK's referral chasing state
-              is enabled, <directive>LDAPReferralHopLimit</directive> is used to 
-              override the SDK's hop limit, and an LDAP rebind callback is 
+              is enabled, <directive>LDAPReferralHopLimit</directive> is used to
+              override the SDK's hop limit, and an LDAP rebind callback is
               registered.</p></dd>
      <dt>"off"</dt>
      <dd> <p> When set to "off", the underlying SDK's referral chasing state
               is disabled completely.</p></dd>
      <dt>"default"</dt>
      <dd> <p> When set to "default", the underlying SDK's referral chasing state
-              is not changed, <directive>LDAPReferralHopLimit</directive> is not 
-              used to overide the SDK's hop limit, and no LDAP rebind callback is 
+              is not changed, <directive>LDAPReferralHopLimit</directive> is not
+              used to overide the SDK's hop limit, and no LDAP rebind callback is
               registered.</p></dd>
     </dl>
 
-    <p> The directive <code>LDAPReferralHopLimit</code> works in conjunction with
+    <p>The directive <directive>LDAPReferralHopLimit</directive> works in conjunction with
     this directive to limit the number of referral hops to follow before terminating the LDAP query.
-    When referral processing is enabled by a value of "On", client credentials will be provided, 
-    via a rebind callback, for any LDAP server requiring them. </p>
+    When referral processing is enabled by a value of "On", client credentials will be provided,
+    via a rebind callback, for any LDAP server requiring them.</p>
 </usage>
 </directivesynopsis>
 
@@ -556,7 +556,7 @@ valid</description>
 
 <usage>
     <p>If <directive>LDAPRetryDelay</directive> is set to a non-zero
-    value, the server will delay retrying an LDAP request for the 
+    value, the server will delay retrying an LDAP request for the
     specified amount of time.  Setting this directive to 0 will
     result in any retry to occur without delay.</p>
 
@@ -571,7 +571,7 @@ valid</description>
 <default>LDAPRetries 3</default>
 <contextlist><context>server config</context></contextlist>
 <usage>
-    <p>The server will retry failed LDAP requests up to 
+    <p>The server will retry failed LDAP requests up to
     <directive>LDAPRetries</directive> times.  Setting this
     directive to 0 disables retries.</p>
     <p>LDAP errors such as timeouts and refused connections are retryable.</p>
@@ -757,10 +757,10 @@ connection client certificates.</description>
     connection pool.  The default value of -1, and any other negative value,
      allows connections of any age to be reused.</p>
 
-    <p>The timemout is based on when the LDAP connection is returned to the 
+    <p>The timemout is based on when the LDAP connection is returned to the
     pool, not based on the last time I/O has been performed over the backend
     connection.  If the information is cached, the apparent idle time can exceed
-    the <directive>LDAPConnectionPoolTTL</directive>. </p> 
+    the <directive>LDAPConnectionPoolTTL</directive>. </p>
 
     <note><p>This timeout defaults to units of seconds, but accepts
     suffixes for milliseconds (ms), minutes (min), and hours (h).
