@@ -416,7 +416,7 @@ for a complete reference and examples.</seealso>
     <dl>
     <dt><code>change=yes|no</code></dt>
     <dd>Specifies whether the filter changes the content, including possibly 
-    the content length.</dd>
+    the content length.  The "no" argument is supported in 2.4.7 and later.</dd>
 
     <dt><code>change=1:1</code></dt>
     <dd>The filter changes the content, but will not change the content
