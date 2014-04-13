@@ -523,6 +523,8 @@ Alias /myapp /opt/myapp-1.2.3
                  IS_SUBREQ<br />
                  HTTPS<br />
                  REQUEST_SCHEME<br />
+                 REMOTE_ADDR<br />
+                 CONN_REMOTE_ADDR<br />
               </td>
             </tr>
           </table>

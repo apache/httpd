@@ -322,7 +322,7 @@ for HTTP Basic authentication.</description>
     <code>ldap-filter</code>.  Other authorization types may also be
     used but may require that additional authorization modules be loaded.</p>
 
-    <p>Since v2.5.0, <a href="../expr.html">expressions</a> are supported
+    <p>Since v2.4.8, <a href="../expr.html">expressions</a> are supported
     within the LDAP require directives.</p>
 
 <section id="requser"><title>Require ldap-user</title>
