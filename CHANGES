@@ -1,6 +1,17 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_proxy_wstunnel: Avoid sending error responses down an upgraded
+     websockets connection as it is being close down. [Eric Covener]
+  
+  *) mod_proxy_wstunnel: Allow the administrator to cap the amount
+     of time a synchronous websockets connection stays idle with 
+     ProxyWebsocketIdleTimeout. [Eric Covener]
+
+  *) mod_proxy_wstunnel: Change to opt-in for asynchronous support, adding 
+     directives ProxyWebsocketAsynch and ProxyWebsocketAsynchDelay. 
+     [Eric Covener]
+
   *) mod_proxy_wstunnel: Stop leaking websockets backend connections under
      event MPMi (trunk-only). [Eric Covener]
 
