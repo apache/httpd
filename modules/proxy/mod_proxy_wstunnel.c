@@ -447,7 +447,7 @@ static int proxy_wstunnel_handler(request_rec *r, proxy_worker *worker,
     }
 
     backend->is_ssl = 0;
-    backend->close = 0;
+    backend->close = 1;
 
     retry = 0;
     while (retry < 2) {

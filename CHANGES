@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_proxy_wstunnel: Don't pool backend websockets connections,
+     because we need to handshake every time. PR 55890.
+     [Eric Covener]
+
   *) mod_proxy_http: Add detach_backend hook (potentially usable
      in other proxy scheme handlers).  [Jeff Trawick]
 
