@@ -494,7 +494,7 @@ valid</description>
 <override>AuthConfig</override>
 
 <usage>
-    <p>This directive, if enabled by the <code>LDAPReferrals</code> directive,
+    <p>This directive, if enabled by the <directive>LDAPReferrals</directive> directive,
     limits the number of referral hops that are followed before terminating an
     LDAP query.</p>
 
@@ -511,6 +511,7 @@ valid</description>
 <default>LDAPReferrals On</default>
 <contextlist><context>directory</context><context>.htaccess</context></contextlist>
 <override>AuthConfig</override>
+<compatibility>The <var>default</var> parameter is available in Apache 2.4.7 and later</compatibility>
 
 <usage>
     <p>Some LDAP servers divide their directory among multiple domains and use referrals
@@ -519,8 +520,7 @@ valid</description>
     explicitly configures the referral chasing in the underlying SDK.</p>
 
 
-    <p><directive>LDAPReferrals</directive> takes the takes the following values:
-    </p>
+    <p><directive>LDAPReferrals</directive> takes the following values:</p>
     <dl>
      <dt>"on"</dt>
      <dd> <p> When set to "on", the underlying SDK's referral chasing state
@@ -537,10 +537,10 @@ valid</description>
               registered.</p></dd>
     </dl>
 
-    <p> The directive <code>LDAPReferralHopLimit</code> works in conjunction with
+    <p>The directive <directive>LDAPReferralHopLimit</directive> works in conjunction with
     this directive to limit the number of referral hops to follow before terminating the LDAP query.
     When referral processing is enabled by a value of "On", client credentials will be provided,
-    via a rebind callback, for any LDAP server requiring them. </p>
+    via a rebind callback, for any LDAP server requiring them.</p>
 </usage>
 </directivesynopsis>
 

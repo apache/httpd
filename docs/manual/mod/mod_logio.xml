@@ -70,7 +70,8 @@
 
     <tr><td><code>%S</code></td>
         <td>Bytes transferred (received and sent), including request and headers,
-        cannot be zero. This is the combination of %I and %O.</td></tr>
+        cannot be zero. This is the combination of %I and %O.<br />
+        Available in Apache 2.4.7 and later</td></tr>
     </table>
 
     <p>Usually, the functionality is used like this:</p>

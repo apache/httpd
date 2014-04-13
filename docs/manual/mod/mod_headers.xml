@@ -259,7 +259,8 @@ Header merge Cache-Control no-store env=NO_STORE
 
     <dt><code>setifempty</code></dt>
     <dd>The request header is set, but only if there is no previous header
-    with this name. Available in 2.4.7 and later.</dd>
+    with this name.<br />
+    Available in 2.4.7 and later.</dd>
 
     <dt><code>unset</code></dt>
     <dd>The request header of this name is removed, if it exists. If
@@ -315,7 +316,8 @@ Header merge Cache-Control no-store env=NO_STORE
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
-<compatibility>Default condition was temporarily changed to "always" in 2.3.9 and 2.3.10.  SetIfEmpty available since 2.4.7.</compatibility>
+<compatibility>Default condition was temporarily changed to "always" in 2.3.9 and 2.3.10.<br />
+SetIfEmpty and note available in 2.4.7 and later.</compatibility>
 
 <usage>
     <p>This directive can replace, merge or remove HTTP response
@@ -406,7 +408,8 @@ Header merge Cache-Control no-store env=NO_STORE
 
     <dt><code>setifempty</code></dt>
     <dd>The request header is set, but only if there is no previous header
-    with this name. Available in 2.4.7 and later.</dd>
+    with this name.<br />
+    Available in 2.4.7 and later.</dd>
 
     <dt><code>unset</code></dt>
     <dd>The response header of this name is removed, if it exists.
@@ -417,7 +420,8 @@ Header merge Cache-Control no-store env=NO_STORE
     <dd>The value of the named response <var>header</var> is copied into an
     internal note whose name is given by <var>value</var>.  This is useful
     if a header sent by a CGI or proxied resource is configured to be unset
-    but should also be logged.</dd>
+    but should also be logged.<br />
+    Available in 2.4.7 and later.</dd>
 
     </dl>
 
