@@ -368,12 +368,13 @@ static int ap_proxy_wstunnel_request(apr_pool_t *p, request_rec *r,
     apr_pollset_add(pollset, &pollfd);
 
 
+    remove_reqtimeout(c->input_filters);
+
     r->output_filters = c->output_filters;
     r->proto_output_filters = c->output_filters;
     r->input_filters = c->input_filters;
     r->proto_input_filters = c->input_filters;
 
-    remove_reqtimeout(r->input_filters);
 
     baton->r = r;
     baton->pollset = pollset;
