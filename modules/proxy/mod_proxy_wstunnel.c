@@ -19,6 +19,12 @@
 
 module AP_MODULE_DECLARE_DATA proxy_wstunnel_module;
 
+typedef struct {
+    signed char is_async;
+    apr_time_t idle_timeout;
+    apr_time_t async_delay;
+} proxyws_dir_conf;
+
 typedef struct ws_baton_t {
     request_rec *r;
     proxy_conn_rec *proxy_connrec;
@@ -34,7 +40,7 @@ typedef struct ws_baton_t {
 static int proxy_wstunnel_transfer(request_rec *r, conn_rec *c_i, conn_rec *c_o,
                                      apr_bucket_brigade *bb, char *name);
 
-static int proxy_wstunnel_pump(ws_baton_t *baton, apr_time_t timeout) {
+static int proxy_wstunnel_pump(ws_baton_t *baton, apr_time_t timeout, int try_async) {
     request_rec *r = baton->r;
     conn_rec *c = r->connection;
     proxy_conn_rec *conn = baton->proxy_connrec;
@@ -49,14 +55,20 @@ static int proxy_wstunnel_pump(ws_baton_t *baton, apr_time_t timeout) {
     apr_bucket_brigade *bb = baton->bb;
 
     while(1) { 
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r, "poll timeout is %"APR_TIME_T_FMT"ms %s", apr_time_as_msec(timeout), try_async ? "async" : "sync");
         if ((rv = apr_pollset_poll(pollset, timeout, &pollcnt, &signalled))
                 != APR_SUCCESS) {
             if (APR_STATUS_IS_EINTR(rv)) {
                 continue;
             }
             else if (APR_STATUS_IS_TIMEUP(rv)) { 
-                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02542) "Attempting to go asynch");
-                return SUSPENDED;
+                if (try_async) { 
+                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02542) "Attempting to go asynch");
+                    return SUSPENDED;
+                }
+                else { 
+                    return HTTP_REQUEST_TIME_OUT;
+                }
             }
             else { 
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(02444) "error apr_poll()");
@@ -128,10 +140,12 @@ static int proxy_wstunnel_pump(ws_baton_t *baton, apr_time_t timeout) {
 static void proxy_wstunnel_callback(void *b) { 
     int status;
     ws_baton_t *baton = (ws_baton_t*)b;
+    proxyws_dir_conf *dconf = ap_get_module_config(baton->r->per_dir_config, &proxy_wstunnel_module);
+
     apr_socket_t *sockets[3] = {NULL, NULL, NULL};
     apr_thread_mutex_lock(baton->r->invoke_mtx);
     apr_pool_clear(baton->subpool);
-    status = proxy_wstunnel_pump(baton, apr_time_from_sec(5));
+    status = proxy_wstunnel_pump(baton, dconf->async_delay, dconf->is_async);
     sockets[0] = baton->client_soc;
     sockets[1] = baton->server_soc;
     if (status == SUSPENDED) {
@@ -317,6 +331,7 @@ static int ap_proxy_wstunnel_request(apr_pool_t *p, request_rec *r,
     ws_baton_t *baton = apr_pcalloc(r->pool, sizeof(ws_baton_t));
     apr_socket_t *sockets[3] = {NULL, NULL, NULL};
     int status;
+    proxyws_dir_conf *dconf = ap_get_module_config(r->per_dir_config, &proxy_wstunnel_module);
 
     header_brigade = apr_brigade_create(p, backconn->bucket_alloc);
 
@@ -374,7 +389,6 @@ static int ap_proxy_wstunnel_request(apr_pool_t *p, request_rec *r,
      * nothing else is attempted on the connection after returning. */
     c->keepalive = AP_CONN_CLOSE;
 
-
     baton->r = r;
     baton->pollset = pollset;
     baton->client_soc = client_socket;
@@ -384,25 +398,37 @@ static int ap_proxy_wstunnel_request(apr_pool_t *p, request_rec *r,
     baton->scheme = scheme;
     apr_pool_create(&baton->subpool, r->pool);
 
-    status = proxy_wstunnel_pump(baton, apr_time_from_sec(5)); 
-    if (status == SUSPENDED) {
-        sockets[0] = baton->client_soc;
-        sockets[1] = baton->server_soc;
-        status = ap_mpm_register_socket_callback(sockets, baton->subpool, 1, proxy_wstunnel_callback, baton);
-        if (status == APR_SUCCESS) { 
-            return SUSPENDED;
-        }
-        else if (status == APR_ENOTIMPL) { 
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02544) "No asynch support");
-            status = proxy_wstunnel_pump(baton, -1);
-        }
-        else { 
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
-                          APLOGNO(02543) "error creating websockets tunnel");
-            return HTTP_INTERNAL_SERVER_ERROR;
+    if (!dconf->is_async) { 
+        status = proxy_wstunnel_pump(baton, dconf->idle_timeout, dconf->is_async);
+    }  
+    else { 
+        status = proxy_wstunnel_pump(baton, dconf->async_delay, dconf->is_async); 
+        if (status == SUSPENDED) {
+            sockets[0] = baton->client_soc;
+            sockets[1] = baton->server_soc;
+            status = ap_mpm_register_socket_callback(sockets, baton->subpool, 1, proxy_wstunnel_callback, baton);
+            if (status == APR_SUCCESS) { 
+                return SUSPENDED;
+            }
+            else if (status == APR_ENOTIMPL) { 
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02544) "No asynch support");
+                status = proxy_wstunnel_pump(baton, dconf->idle_timeout, 0); /* force no async */
+            }
+            else { 
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
+                              APLOGNO(02543) "error creating websockets tunnel");
+                return HTTP_INTERNAL_SERVER_ERROR;
+            }
         }
     }
 
+    if (status != OK) { 
+        /* Avoid sending error pages down an upgraded connection */
+        if (status != HTTP_REQUEST_TIME_OUT) {
+            r->status = status;
+        }
+        status = OK;
+    }
     return status;
 }    
     
@@ -490,6 +516,45 @@ static int proxy_wstunnel_handler(request_rec *r, proxy_worker *worker,
     return status;
 }
 
+static void *create_proxyws_dir_config(apr_pool_t *p, char *dummy)
+{
+    proxyws_dir_conf *new =
+        (proxyws_dir_conf *) apr_pcalloc(p, sizeof(proxyws_dir_conf));
+
+    new->idle_timeout = -1; /* no timeout */
+
+    return (void *) new;
+}
+
+static const char * proxyws_set_idle(cmd_parms *cmd, void *conf, const char *val)
+{
+    proxyws_dir_conf *dconf = conf;
+    if (ap_timeout_parameter_parse(val, &(dconf->idle_timeout), "s") != APR_SUCCESS)
+        return "ProxyWebsocketIdleTimeout timeout has wrong format";
+    return NULL;
+}
+static const char * proxyws_set_aysnch_delay(cmd_parms *cmd, void *conf, const char *val)
+{
+    proxyws_dir_conf *dconf = conf;
+    if (ap_timeout_parameter_parse(val, &(dconf->async_delay), "s") != APR_SUCCESS)
+        return "ProxyWebsocketAsynchDelay timeout has wrong format";
+    return NULL;
+}
+
+static const command_rec ws_proxy_cmds[] =
+{
+    AP_INIT_FLAG("ProxyWebsocketAsynch", ap_set_flag_slot_char, (void*)APR_OFFSETOF(proxyws_dir_conf, is_async), 
+                 RSRC_CONF|ACCESS_CONF,
+                 "on if idle websockets connections should be monitored asynchronously"),
+
+    AP_INIT_TAKE1("ProxyWebsocketIdleTimeout", proxyws_set_idle, NULL, RSRC_CONF|ACCESS_CONF,
+                 "timeout for activity in either direction, unlimited by default. Not currently supported with ProxyWebsocketAsynch"),
+
+    AP_INIT_TAKE1("ProxyWebsocketAsynchDelay", proxyws_set_aysnch_delay, NULL, RSRC_CONF|ACCESS_CONF,
+                 "amount of time to poll before going asynchronous"),
+    {NULL}
+};
+
 static void ap_proxy_http_register_hook(apr_pool_t *p)
 {
     proxy_hook_scheme_handler(proxy_wstunnel_handler, NULL, NULL, APR_HOOK_FIRST);
@@ -498,10 +563,10 @@ static void ap_proxy_http_register_hook(apr_pool_t *p)
 
 AP_DECLARE_MODULE(proxy_wstunnel) = {
     STANDARD20_MODULE_STUFF,
-    NULL,                       /* create per-directory config structure */
+    create_proxyws_dir_config,  /* create per-directory config structure */
     NULL,                       /* merge per-directory config structures */
     NULL,                       /* create per-server config structure */
     NULL,                       /* merge per-server config structures */
-    NULL,                       /* command apr_table_t */
+    ws_proxy_cmds,              /* command apr_table_t */
     ap_proxy_http_register_hook /* register hooks */
 };
