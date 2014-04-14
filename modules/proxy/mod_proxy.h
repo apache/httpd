@@ -254,6 +254,7 @@ typedef struct {
                                 * filter chain or not */
     unsigned int inreslist:1;  /* connection in apr_reslist? */
     const char   *uds_path;    /* Unix domain socket path */
+    const char   *ssl_hostname;/* Hostname (SNI) in use by SSL connection */
 } proxy_conn_rec;
 
 typedef struct {
