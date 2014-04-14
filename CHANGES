@@ -9,7 +9,7 @@ Changes with Apache 2.5.0
      ProxyWebsocketIdleTimeout. [Eric Covener]
 
   *) mod_proxy_wstunnel: Change to opt-in for asynchronous support, adding 
-     directives ProxyWebsocketAsynch and ProxyWebsocketAsynchDelay. 
+     directives ProxyWebsocketAsync and ProxyWebsocketAsyncDelay. 
      [Eric Covener]
 
   *) mod_proxy_wstunnel: Stop leaking websockets backend connections under
