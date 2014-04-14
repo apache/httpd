@@ -100,6 +100,16 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
   
+   * mod_proxy: Don't reuse a SSL backend connection whose SNI differs. PR 55782.
+                This may happen when ProxyPreserveHost is on and the proxy-worker
+                handles connections to different Hosts.
+     trunk patch: http://svn.apache.org/r1572630
+                  http://svn.apache.org/r1572611 (MMN minor bump)
+                  http://svn.apache.org/r1572967
+                  http://svn.apache.org/r1573229
+     2.4.x patch: trunk works (modulo MMN)
+     +1: ylavic, rpluem, jim
+
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -136,16 +146,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
                   http://people.apache.org/~jim/patches/uds-rewrite.patch
      +1: jim, humbedooh
-
-   * mod_proxy: Don't reuse a SSL backend connection whose SNI differs. PR 55782.
-                This may happen when ProxyPreserveHost is on and the proxy-worker
-                handles connections to different Hosts.
-     trunk patch: http://svn.apache.org/r1572630
-                  http://svn.apache.org/r1572611 (MMN minor bump)
-                  http://svn.apache.org/r1572967
-                  http://svn.apache.org/r1573229
-     2.4.x patch: trunk works (modulo MMN)
-     +1: ylavic, rpluem, jim
 
    * mod_deflate: Fix decompression of files larger than 4GB. According to RFC1952,
                   Input SIZE contains the size of the original input data modulo 2^32.
