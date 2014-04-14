@@ -295,6 +295,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch works
      +1: jailletc36, jim
 
+   * rotatelogs: Avoid zombie processes on modern UNIX platforms
+     trunk patch: http://svn.apache.org/r1587255
+     +1: druggeri
+
 
 OTHER PROPOSALS
 
