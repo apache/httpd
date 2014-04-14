@@ -145,7 +145,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1572967
                   http://svn.apache.org/r1573229
      2.4.x patch: trunk works (modulo MMN)
-     +1: ylavic, rpluem
+     +1: ylavic, rpluem, jim
 
    * mod_deflate: Fix decompression of files larger than 4GB. According to RFC1952,
                   Input SIZE contains the size of the original input data modulo 2^32.
@@ -191,7 +191,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/r1564437
      Backport version for 2.4.x of patch:
         Trunk version of patch works
-     +1: rpluem,
+     +1: rpluem, jim
 
    * mod_authn_socache: Fix creation of default socache_instance. Fixes crash
                         on startup if default socache_provider is used and
@@ -207,7 +207,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      for each keepalive request under event MPM. PR56216
      trunk patch: http://svn.apache.org/r1580568
      2.4.x patch: trunk works
-     +1 covener
+     +1 covener, jim
 
    * mod_alias: Fix segfault in mod_alias introduced in r1132494.
      AliasMatch does not append unmatched parts of the original URI
@@ -236,7 +236,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk: http://svn.apache.org/viewvc?view=revision&revision=1546759
             http://svn.apache.org/viewvc?view=revision&revision=1546760
      2.4.x patch: http://people.apache.org/~trawick/suspend_resume_24.txt
-     +1: trawick
+     +1: trawick, jim
 
    * mod_expires: don't add Expires header to error responses (4xx/5xx),
                   be they generated or forwarded. PR 55669.
@@ -255,13 +255,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        part of r1522544 to create an entry in os/win32/BaseAddr.ref.
      2.4.x patch: http://people.apache.org/~trawick/authnz_fcgi-2.4.txt
        The patch includes generated doc changes in order to carry eol-style.
-     +1: trawick
+     +1: trawick, jim
 
    * mod_proxy_fcgi: Fix for oddity with mod_proxy_fcgi which can bork
      response headers for mod_deflate-ed responses.
      trunk patch? http://svn.apache.org/r1585824
      2.4.x patch: trunk works (modulo CHANGES)
-     +1: trawick
+     +1: trawick, jim
 
    * mod_ssl: bring SNI behavior into better conformance with RFC 6066
      (also addresses PR 56241)
@@ -293,17 +293,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      meta tag. PR 56287 [Micha Lenk <micha lenk info>]
      trunk patch: https://svn.apache.org/r1584878
      2.4.x patch: trunk patch works (modulo CHANGES)
-     +1: jailletc36
+     +1: jailletc36, jim
 
    * mod_proxy_html: Do not scan past the end of the buffer.
      trunk patch: https://svn.apache.org/r1584884
      2.4.x patch: trunk patch works
-     +1: jailletc36
+     +1: jailletc36, jim
 
    * mod_proxy_html: Do not perform a p+= 7 that could go past the end of the buffer
      trunk patch: https://svn.apache.org/r1584896
      2.4.x patch: trunk patch works
-     +1: jailletc36
+     +1: jailletc36, jim
 
 
 OTHER PROPOSALS
