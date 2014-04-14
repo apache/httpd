@@ -1831,7 +1831,7 @@ end
 <description>Provide a Lua function for content input filtering</description>
 <syntax>LuaInputFilter filter_name /path/to/lua/script.lua function_name</syntax>
 <contextlist><context>server config</context> </contextlist>
-<compatibility>2.5.0 and later</compatibility>
+<compatibility>2.4.5 and later</compatibility>
 
 <usage>
 <p>Provides a means of adding a Lua function as an input filter. 
@@ -1888,7 +1888,7 @@ filters</a>" for more information.
 <description>Provide a Lua function for content output filtering</description>
 <syntax>LuaOutputFilter filter_name /path/to/lua/script.lua function_name</syntax>
 <contextlist><context>server config</context> </contextlist>
-<compatibility>2.5.0 and later</compatibility>
+<compatibility>2.4.5 and later</compatibility>
 
 <usage>
 <p>Provides a means of adding a Lua function as an output filter. 
