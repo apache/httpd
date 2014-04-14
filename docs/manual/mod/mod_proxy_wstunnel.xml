@@ -54,9 +54,9 @@ ProxyPass /wss2/ wss://echo.websocket.org/
 <seealso><module>mod_proxy</module></seealso>
 
 <directivesynopsis>
-<name>ProxyWebsocketAsynch</name>
+<name>ProxyWebsocketAsync</name>
 <description>Instructs this module to try to create an asynchronous tunnel</description>
-<syntax>ProxyWebsocketAsynch ON|OFF</syntax>
+<syntax>ProxyWebsocketAsync ON|OFF</syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context>
 </contextlist>
@@ -79,22 +79,22 @@ ProxyPass /wss2/ wss://echo.websocket.org/
 
 <usage>
     <p>This directive imposes a maximum amount of time for the tunnel to be 
-    left open while idle.  This directive is ignored if <directive>ProxyWebsocketAsynch</directive> 
+    left open while idle.  This directive is ignored if <directive>ProxyWebsocketAsync</directive> 
     is enabled and the running MPM supports the necessary features</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
-<name>ProxyWebsocketAsynchDelay</name>
+<name>ProxyWebsocketAsyncDelay</name>
 <description>Sets the amount of time the tunnel waits synchronously for data</description>
-<syntax>ProxyWebsocketAsynchDelay <var>num</var>[ms]</syntax>
-<default>ProxyWebsocketAsynchDelay 0</default>
+<syntax>ProxyWebsocketAsyncDelay <var>num</var>[ms]</syntax>
+<default>ProxyWebsocketAsyncDelay 0</default>
 <contextlist><context>server config</context>
 <context>virtual host</context>
 </contextlist>
 
 <usage>
-    <p>If <directive>ProxyWebsocketAsynch</directive> is enabled, this directive 
+    <p>If <directive>ProxyWebsocketAsync</directive> is enabled, this directive 
     controls how long the server synchronously waits for more data.</p>
 </usage>
 </directivesynopsis>

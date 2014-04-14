@@ -63,7 +63,7 @@ static int proxy_wstunnel_pump(ws_baton_t *baton, apr_time_t timeout, int try_as
             }
             else if (APR_STATUS_IS_TIMEUP(rv)) { 
                 if (try_async) { 
-                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02542) "Attempting to go asynch");
+                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02542) "Attempting to go async");
                     return SUSPENDED;
                 }
                 else { 
@@ -411,7 +411,7 @@ static int ap_proxy_wstunnel_request(apr_pool_t *p, request_rec *r,
                 return SUSPENDED;
             }
             else if (status == APR_ENOTIMPL) { 
-                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02544) "No asynch support");
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02544) "No async support");
                 status = proxy_wstunnel_pump(baton, dconf->idle_timeout, 0); /* force no async */
             }
             else { 
@@ -537,21 +537,21 @@ static const char * proxyws_set_aysnch_delay(cmd_parms *cmd, void *conf, const c
 {
     proxyws_dir_conf *dconf = conf;
     if (ap_timeout_parameter_parse(val, &(dconf->async_delay), "s") != APR_SUCCESS)
-        return "ProxyWebsocketAsynchDelay timeout has wrong format";
+        return "ProxyWebsocketAsyncDelay timeout has wrong format";
     return NULL;
 }
 
 static const command_rec ws_proxy_cmds[] =
 {
-    AP_INIT_FLAG("ProxyWebsocketAsynch", ap_set_flag_slot_char, (void*)APR_OFFSETOF(proxyws_dir_conf, is_async), 
+    AP_INIT_FLAG("ProxyWebsocketAsync", ap_set_flag_slot_char, (void*)APR_OFFSETOF(proxyws_dir_conf, is_async), 
                  RSRC_CONF|ACCESS_CONF,
-                 "on if idle websockets connections should be monitored asynchronously"),
+                 "on if idle websockets connections should be monitored asyncronously"),
 
     AP_INIT_TAKE1("ProxyWebsocketIdleTimeout", proxyws_set_idle, NULL, RSRC_CONF|ACCESS_CONF,
-                 "timeout for activity in either direction, unlimited by default. Not currently supported with ProxyWebsocketAsynch"),
+                 "timeout for activity in either direction, unlimited by default. Not currently supported with ProxyWebsocketAsync"),
 
-    AP_INIT_TAKE1("ProxyWebsocketAsynchDelay", proxyws_set_aysnch_delay, NULL, RSRC_CONF|ACCESS_CONF,
-                 "amount of time to poll before going asynchronous"),
+    AP_INIT_TAKE1("ProxyWebsocketAsyncDelay", proxyws_set_aysnch_delay, NULL, RSRC_CONF|ACCESS_CONF,
+                 "amount of time to poll before going asyncronous"),
     {NULL}
 };
 
