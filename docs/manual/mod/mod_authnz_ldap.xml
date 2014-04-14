@@ -915,7 +915,7 @@ to perform a DN lookup</description>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
-<compatibility><em>exec:</em> was added in 2.4.6.</compatibility>
+<compatibility><em>exec:</em> was added in 2.4.5.</compatibility>
 
 <usage>
     <p>A bind password to use in conjunction with the bind DN. Note
@@ -928,7 +928,7 @@ to perform a DN lookup</description>
     <p>If the value begins with exec: the resulting command will be
     executed and the first line returned to standard output by the
     program will be used as the password.</p>
-<example><pre>
+<highlight language="config">
 #Password used as-is
 AuthLDAPBindPassword secret
 
@@ -937,7 +937,7 @@ AuthLDAPBindPassword exec:/path/to/program
 
 #Run /path/to/otherProgram and provide arguments
 AuthLDAPBindPassword "exec:/path/to/otherProgram argument1"
-</pre></example>
+</highlight>
 
 </usage>
 </directivesynopsis>

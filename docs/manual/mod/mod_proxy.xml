@@ -546,7 +546,7 @@ proxied resources</description>
     type="section">Proxy</directive> directive, except it matches URLs
     using <glossary ref="regex">regular expressions</glossary>.</p>
 
-    <p>From 2.5.0 onwards, named groups and backreferences are captured and
+    <p>From 2.4.8 onwards, named groups and backreferences are captured and
     written to the environment with the corresponding name prefixed with
     "MATCH_" and in upper case. This allows elements of URLs to be referenced
     from within <a href="../expr.html">expressions</a> and modules like
@@ -715,7 +715,7 @@ expressions</description>
     <syntax>ProxyPassInherit On|Off</syntax>
     <default>ProxyPassInherit On</default>
     <contextlist><context>server config</context><context>virtual host</context></contextlist>
-    <compatibility>ProxyPassInherit is only available in Apache HTTP Server 2.5.0 and later.
+    <compatibility>ProxyPassInherit is only available in Apache HTTP Server 2.4.5 and later.
         and later.</compatibility>
     <usage>
         <p>This directive will cause the current server/vhost to "inherit"
