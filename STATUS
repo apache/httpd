@@ -108,12 +108,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
         Trunk version of patch works
      +1: rpluem, jim, ylavic
  
-   * mod_reqtimeout: Don't add filters and create new connection configs
-     for each keepalive request under event MPM. PR56216
-     trunk patch: http://svn.apache.org/r1580568
-     2.4.x patch: trunk works
-     +1 covener, jim, ylavic
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
