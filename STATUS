@@ -121,12 +121,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~trawick/suspend_resume_24.txt
      +1: trawick, jim, ylavic
 
-   * mod_proxy_fcgi: Fix for oddity with mod_proxy_fcgi which can bork
-     response headers for mod_deflate-ed responses.
-     trunk patch? http://svn.apache.org/r1585824
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: trawick, jim, ylavic
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]

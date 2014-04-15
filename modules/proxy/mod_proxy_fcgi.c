@@ -591,7 +591,11 @@ recv_again:
                                 r->status = HTTP_OK;
                             }
 
-                            if (script_error_status == HTTP_OK) {
+                            if (script_error_status == HTTP_OK
+                                && !APR_BRIGADE_EMPTY(ob)) {
+                                /* Send the part of the body that we read while
+                                 * reading the headers.
+                                 */
                                 rv = ap_pass_brigade(r->output_filters, ob);
                                 if (rv != APR_SUCCESS) {
                                     break;
