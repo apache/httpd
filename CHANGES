@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.10
 
+  *) mod_proxy_fcgi: Fix sending of response without some HTTP headers
+     that might be set by filters.  [Jim Riggs <jim riggs.me>]
+
   *) mod_proxy_html: Do not delete the wrong data from HTML code when a
      "http-equiv" meta tag specifies a Content-Type behind any other
      "http-equiv" meta tag. PR 56287 [Micha Lenk <micha lenk info>]
