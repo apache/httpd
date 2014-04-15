@@ -1217,10 +1217,12 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
                 APR_BRIGADE_INSERT_TAIL(ctx->proc_bb, tmp_heap);
                 ctx->stream.avail_out = c->bufferSize;
 
-                /* Move everything to the returning brigade. */
+                /* Flush everything so far in the returning brigade, but continue
+                 * reading should EOS/more follow (don't lose them).
+                 */
                 APR_BUCKET_REMOVE(bkt);
-                APR_BRIGADE_CONCAT(bb, ctx->bb);
-                break;
+                APR_BRIGADE_INSERT_TAIL(ctx->proc_bb, bkt);
+                continue;
             }
 
             /* sanity check - data after completed compressed body and before eos? */
