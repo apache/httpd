@@ -134,10 +134,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch works (modulo CHANGES)
      +1: jailletc36, jim, ylavic
 
-   * mod_proxy_html: Do not scan past the end of the buffer.
-     trunk patch: https://svn.apache.org/r1584884
-     2.4.x patch: trunk patch works
-     +1: jailletc36, jim, ylavic
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
