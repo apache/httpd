@@ -690,8 +690,8 @@ static meta *metafix(request_rec *r, const char *buf)
         }
         else if (!strncasecmp(header, "Content-Type", 12)) {
             ret = apr_palloc(r->pool, sizeof(meta));
-            ret->start = pmatch[0].rm_so;
-            ret->end = pmatch[0].rm_eo;
+            ret->start = offs+pmatch[0].rm_so;
+            ret->end = offs+pmatch[0].rm_eo;
         }
         if (header && content) {
 #ifndef GO_FASTER
