@@ -1194,7 +1194,6 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
                 /* Move everything to the returning brigade. */
                 APR_BUCKET_REMOVE(bkt);
                 APR_BRIGADE_INSERT_TAIL(ctx->proc_bb, bkt);
-                ap_remove_input_filter(f);
                 break;
             }
 
@@ -1368,8 +1367,8 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
      * some data in our zlib buffer, flush it out so we can return something.
      */
     if (block == APR_BLOCK_READ &&
-        APR_BRIGADE_EMPTY(ctx->proc_bb) &&
-        ctx->stream.avail_out < c->bufferSize) {
+            APR_BRIGADE_EMPTY(ctx->proc_bb) &&
+            ctx->stream.avail_out < c->bufferSize) {
         apr_bucket *tmp_heap;
         apr_size_t len;
         ctx->stream.next_out = ctx->buffer;
@@ -1389,6 +1388,9 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
         else {
             APR_BRIGADE_CONCAT(bb, ctx->proc_bb);
             apr_brigade_split_ex(bb, bkt, ctx->proc_bb);
+        }
+        if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(bb))) {
+            ap_remove_input_filter(f);
         }
     }
 
