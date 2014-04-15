@@ -411,6 +411,47 @@ AP_DECLARE_HOOK(apr_status_t, mpm_register_timed_callback,
 /* get MPM name (e.g., "prefork" or "event") */
 AP_DECLARE_HOOK(const char *,mpm_get_name,(void))
 
+/**
+ * Notification that connection handling is suspending (disassociating from the
+ * current thread)
+ * @param c The current connection
+ * @param r The current request, or NULL if there is no active request
+ * @ingroup hooks
+ * @see ap_hook_resume_connection
+ * @note This hook is not implemented by MPMs like Prefork and Worker which 
+ * handle all processing of a particular connection on the same thread.
+ * @note This hook will be called on the thread that was previously
+ * processing the connection.
+ * @note This hook is not called at the end of connection processing.  This
+ * hook only notifies a module when processing of an active connection is
+ * suspended.
+ * @note Resumption and subsequent suspension of a connection solely to perform
+ * I/O by the MPM, with no execution of non-MPM code, may not necessarily result
+ * in a call to this hook.
+ */
+AP_DECLARE_HOOK(void, suspend_connection,
+                (conn_rec *c, request_rec *r))
+
+/**
+ * Notification that connection handling is resuming (associating with a thread)
+ * @param c The current connection
+ * @param r The current request, or NULL if there is no active request
+ * @ingroup hooks
+ * @see ap_hook_suspend_connection
+ * @note This hook is not implemented by MPMs like Prefork and Worker which 
+ * handle all processing of a particular connection on the same thread.
+ * @note This hook will be called on the thread that will resume processing
+ * the connection.
+ * @note This hook is not called at the beginning of connection processing.
+ * This hook only notifies a module when processing resumes for a
+ * previously-suspended connection.
+ * @note Resumption and subsequent suspension of a connection solely to perform
+ * I/O by the MPM, with no execution of non-MPM code, may not necessarily result
+ * in a call to this hook.
+ */
+AP_DECLARE_HOOK(void, resume_connection,
+                (conn_rec *c, request_rec *r))
+
 /* mutex type string for accept mutex, if any; MPMs should use the
  * same mutex type for ease of configuration
  */
