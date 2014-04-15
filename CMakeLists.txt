@@ -409,6 +409,7 @@ SET(mod_session_crypto_requires      APU_HAVE_CRYPTO)
 SET(mod_session_crypto_extra_libs    mod_session)
 SET(mod_session_dbd_extra_libs       mod_session)
 SET(mod_socache_dc_requires          AN_UNIMPLEMENTED_SUPPORT_LIBRARY_REQUIREMENT)
+SET(mod_ssl_extra_defines            SSL_DECLARE_EXPORT)
 SET(mod_ssl_requires                 OPENSSL_FOUND)
 IF(OPENSSL_FOUND)
   SET(mod_ssl_extra_includes           ${OPENSSL_INCLUDE_DIR})
@@ -614,6 +615,7 @@ SET(other_installed_h
   ${CMAKE_CURRENT_SOURCE_DIR}/modules/proxy/mod_proxy.h
   ${CMAKE_CURRENT_SOURCE_DIR}/modules/session/mod_session.h
   ${CMAKE_CURRENT_SOURCE_DIR}/modules/ssl/mod_ssl.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/modules/ssl/mod_ssl_openssl.h
 )
 # When mod_serf is buildable, don't forget to copy modules/proxy/mod_serf.h
 

@@ -452,6 +452,7 @@ installdev :: FORCE
 	$(call COPY,$(STDMOD)/proxy/mod_serf.h,                        $(INSTALLBASE)/include/)
 	$(call COPY,$(STDMOD)/session/mod_session.h,                   $(INSTALLBASE)/include/)
 	$(call COPY,$(STDMOD)/ssl/mod_ssl.h,                           $(INSTALLBASE)/include/)
+	$(call COPY,$(STDMOD)/ssl/mod_ssl_openssl.h,                   $(INSTALLBASE)/include/)
 	$(call COPY,$(APR)/*.imp,                                      $(INSTALLBASE)/lib/)
 	$(call COPY,$(NWOS)/*.imp,                                     $(INSTALLBASE)/lib/)
 	$(call COPY,$(NWOS)/*.xdc,                                     $(INSTALLBASE)/lib/)
