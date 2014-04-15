@@ -114,13 +114,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      +1 covener, jim, ylavic
 
-   * event: Add suspend/resume hooks to event MPM to inform modules when
-     connections/requests change thread affinity.
-     trunk: http://svn.apache.org/viewvc?view=revision&revision=1546759
-            http://svn.apache.org/viewvc?view=revision&revision=1546760
-     2.4.x patch: http://people.apache.org/~trawick/suspend_resume_24.txt
-     +1: trawick, jim, ylavic
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
