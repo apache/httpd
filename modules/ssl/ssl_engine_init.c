@@ -259,15 +259,11 @@ apr_status_t ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
 
         if (sc->enabled == SSL_ENABLED_TRUE || sc->enabled == SSL_ENABLED_OPTIONAL) {
             if ((rv = ssl_run_init_server(s, p, 0, sc->server->ssl_ctx)) != APR_SUCCESS) {
-                ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO()
-                             "Init: server init_server failed");
                 return rv;
             }
         }
         else if (sc->proxy_enabled == SSL_ENABLED_TRUE) {
             if ((rv = ssl_run_init_server(s, p, 1, sc->proxy->ssl_ctx)) != APR_SUCCESS) {
-                ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO()
-                             "Init: proxy init_server failed");
                 return rv;
             }
         }
