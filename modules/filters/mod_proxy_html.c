@@ -670,8 +670,9 @@ static meta *metafix(request_rec *r, const char *buf)
                     p += 7;
                     while (apr_isspace(*p))
                         ++p;
+                    /* XXX Should we search for another content= pattern? */
                     if (*p != '=')
-                        continue;
+                        break;
                     while (*p && apr_isspace(*++p));
                     if ((*p == '\'') || (*p == '"')) {
                         delim = *p++;
