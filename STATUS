@@ -99,7 +99,50 @@ RELEASE SHOWSTOPPERS:
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
-  
+
+   * mod_proxy: Do not parse URL in case of regular expression as they likely
+     do not follow the URL syntax. PR: 56074
+     Trunk version of patch:
+        http://svn.apache.org/r1564437
+     Backport version for 2.4.x of patch:
+        Trunk version of patch works
+     +1: rpluem, jim, ylavic
+ 
+   * mod_reqtimeout: Don't add filters and create new connection configs
+     for each keepalive request under event MPM. PR56216
+     trunk patch: http://svn.apache.org/r1580568
+     2.4.x patch: trunk works
+     +1 covener, jim, ylavic
+
+   * event: Add suspend/resume hooks to event MPM to inform modules when
+     connections/requests change thread affinity.
+     trunk: http://svn.apache.org/viewvc?view=revision&revision=1546759
+            http://svn.apache.org/viewvc?view=revision&revision=1546760
+     2.4.x patch: http://people.apache.org/~trawick/suspend_resume_24.txt
+     +1: trawick, jim, ylavic
+
+   * mod_proxy_fcgi: Fix for oddity with mod_proxy_fcgi which can bork
+     response headers for mod_deflate-ed responses.
+     trunk patch? http://svn.apache.org/r1585824
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: trawick, jim, ylavic
+
+   * mod_proxy_html: Do not delete the wrong data from HTML code when a
+     "http-equiv" meta tag specifies a Content-Type behind any other "http-equiv"
+     meta tag. PR 56287 [Micha Lenk <micha lenk info>]
+     trunk patch: https://svn.apache.org/r1584878
+     2.4.x patch: trunk patch works (modulo CHANGES)
+     +1: jailletc36, jim, ylavic
+
+   * mod_proxy_html: Do not scan past the end of the buffer.
+     trunk patch: https://svn.apache.org/r1584884
+     2.4.x patch: trunk patch works
+     +1: jailletc36, jim, ylavic
+
+   * mod_proxy_html: Do not perform a p+= 7 that could go past the end of the buffer
+     trunk patch: https://svn.apache.org/r1584896
+     2.4.x patch: trunk patch works
+     +1: jailletc36, jim, ylavic
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -136,6 +179,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
                   http://people.apache.org/~jim/patches/uds-rewrite.patch
      +1: jim, humbedooh
+     -1: ylavic: still being worked on, see issues here in the following thread
+                 https://www.mail-archive.com/dev@httpd.apache.org/msg59276.html
 
    * mod_deflate: Fix decompression of files larger than 4GB. According to RFC1952,
                   Input SIZE contains the size of the original input data modulo 2^32.
@@ -177,14 +222,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      ylavic: does not depend on r1572092 or r1572655 and al above,
              these proposals can be backported in any order.
 
-   * mod_proxy: Do not parse URL in case of regular expression as they likely
-     do not follow the URL syntax. PR: 56074
-     Trunk version of patch:
-        http://svn.apache.org/r1564437
-     Backport version for 2.4.x of patch:
-        Trunk version of patch works
-     +1: rpluem, jim
-
    * mod_authn_socache: Fix creation of default socache_instance. Fixes crash
                         on startup if default socache_provider is used and
                         AuthnCacheEnable or AuthnCacheProvideFor is used.
@@ -194,12 +231,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1576233
      2.4.x patch: trunk works
      +1: ylavic
- 
-   * mod_reqtimeout: Don't add filters and create new connection configs
-     for each keepalive request under event MPM. PR56216
-     trunk patch: http://svn.apache.org/r1580568
-     2.4.x patch: trunk works
-     +1 covener, jim
 
    * mod_alias: Fix segfault in mod_alias introduced in r1132494.
      AliasMatch does not append unmatched parts of the original URI
@@ -223,13 +254,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic
 
-   * event: Add suspend/resume hooks to event MPM to inform modules when
-     connections/requests change thread affinity.
-     trunk: http://svn.apache.org/viewvc?view=revision&revision=1546759
-            http://svn.apache.org/viewvc?view=revision&revision=1546760
-     2.4.x patch: http://people.apache.org/~trawick/suspend_resume_24.txt
-     +1: trawick, jim
-
    * mod_expires: don't add Expires header to error responses (4xx/5xx),
                   be they generated or forwarded. PR 55669.
      trunk patch: http://svn.apache.org/r1584430
@@ -249,12 +273,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        The patch includes generated doc changes in order to carry eol-style.
      +1: trawick, jim
 
-   * mod_proxy_fcgi: Fix for oddity with mod_proxy_fcgi which can bork
-     response headers for mod_deflate-ed responses.
-     trunk patch? http://svn.apache.org/r1585824
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: trawick, jim
-
    * mod_ssl: bring SNI behavior into better conformance with RFC 6066
      (also addresses PR 56241)
      trunk patch: https://svn.apache.org/r1585090
@@ -264,13 +282,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * mod_ssl: only read "active" values from the key_files array (PR 56306)
      trunk patch: https://svn.apache.org/r1585918
      2.4.x patch: trunk patch works (modulo CHANGES)
-     +1: kbrand
+     +1: kbrand, ylavic
 
    * mod_ssl: reverse the order when merging global and vhost-level config
      arrays (PR 56353)
      trunk patch: https://svn.apache.org/r1585919
      2.4.x patch: trunk patch works (modulo CHANGES)
-     +1: kbrand
+     +1: kbrand, ylavic
 
    * core: synch with trunk
        - follow-up to r813376: finish reverting r808965 (ServerTokens set foo)
@@ -280,26 +298,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~jailletc36/r1514255.patch
      +1: jailletc36
 
-   * mod_proxy_html: Do not delete the wrong data from HTML code when a
-     "http-equiv" meta tag specifies a Content-Type behind any other "http-equiv"
-     meta tag. PR 56287 [Micha Lenk <micha lenk info>]
-     trunk patch: https://svn.apache.org/r1584878
-     2.4.x patch: trunk patch works (modulo CHANGES)
-     +1: jailletc36, jim
-
-   * mod_proxy_html: Do not scan past the end of the buffer.
-     trunk patch: https://svn.apache.org/r1584884
-     2.4.x patch: trunk patch works
-     +1: jailletc36, jim
-
-   * mod_proxy_html: Do not perform a p+= 7 that could go past the end of the buffer
-     trunk patch: https://svn.apache.org/r1584896
-     2.4.x patch: trunk patch works
-     +1: jailletc36, jim
-
    * rotatelogs: Avoid zombie processes on modern UNIX platforms
      trunk patch: http://svn.apache.org/r1587255
-     +1: druggeri
+     +1: druggeri, ylavic
 
 
 OTHER PROPOSALS
