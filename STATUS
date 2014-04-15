@@ -100,13 +100,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_proxy: Do not parse URL in case of regular expression as they likely
-     do not follow the URL syntax. PR: 56074
-     Trunk version of patch:
-        http://svn.apache.org/r1564437
-     Backport version for 2.4.x of patch:
-        Trunk version of patch works
-     +1: rpluem, jim, ylavic
  
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
