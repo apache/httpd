@@ -159,6 +159,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   https://svn.apache.org/r1573224
                   https://svn.apache.org/r1586745
                   https://svn.apache.org/r1587594
+                  https://svn.apache.org/r1587639
      2.4.x patch: trunk works
      +1: ylavic
      ylavic: does not depend on r1572092 above or r1572896 and al below,
