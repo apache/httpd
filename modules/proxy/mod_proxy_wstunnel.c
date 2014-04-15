@@ -474,7 +474,7 @@ static int proxy_wstunnel_handler(request_rec *r, proxy_worker *worker,
     }
 
     backend->is_ssl = 0;
-    backend->close = 1;
+    backend->close = 0;
 
     retry = 0;
     while (retry < 2) {
@@ -502,6 +502,8 @@ static int proxy_wstunnel_handler(request_rec *r, proxy_worker *worker,
                                                      c, r->server)) != OK)
                 break;
          }
+
+        backend->close = 1; /* must be after ap_proxy_determine_connection */
 
         /* Step Three: Process the Request */
         status = ap_proxy_wstunnel_request(p, r, backend, worker, conf, uri, locurl,
