@@ -127,13 +127,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (modulo CHANGES)
      +1: trawick, jim, ylavic
 
-   * mod_proxy_html: Do not delete the wrong data from HTML code when a
-     "http-equiv" meta tag specifies a Content-Type behind any other "http-equiv"
-     meta tag. PR 56287 [Micha Lenk <micha lenk info>]
-     trunk patch: https://svn.apache.org/r1584878
-     2.4.x patch: trunk patch works (modulo CHANGES)
-     +1: jailletc36, jim, ylavic
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
