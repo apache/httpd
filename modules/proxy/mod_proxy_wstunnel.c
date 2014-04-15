@@ -378,13 +378,13 @@ static int ap_proxy_wstunnel_request(apr_pool_t *p, request_rec *r,
     pollfd.desc.s = client_socket;
     apr_pollset_add(pollset, &pollfd);
 
-
     remove_reqtimeout(c->input_filters);
 
     r->output_filters = c->output_filters;
     r->proto_output_filters = c->output_filters;
     r->input_filters = c->input_filters;
     r->proto_input_filters = c->input_filters;
+
     /* This handler should take care of the entire connection; make it so that
      * nothing else is attempted on the connection after returning. */
     c->keepalive = AP_CONN_CLOSE;
@@ -501,7 +501,7 @@ static int proxy_wstunnel_handler(request_rec *r, proxy_worker *worker,
             if ((status = ap_proxy_connection_create(scheme, backend,
                                                      c, r->server)) != OK)
                 break;
-         }
+        }
 
         backend->close = 1; /* must be after ap_proxy_determine_connection */
 
