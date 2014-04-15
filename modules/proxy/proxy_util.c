@@ -1123,6 +1123,9 @@ PROXY_DECLARE(char *) ap_proxy_update_balancer(apr_pool_t *p,
                                                 const char *url)
 {
     apr_uri_t puri;
+    if (!url) {
+        return NULL;
+    }
     if (apr_uri_parse(p, url, &puri) != APR_SUCCESS) {
         return apr_psprintf(p, "unable to parse: %s", url);
     }

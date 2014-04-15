@@ -2,6 +2,10 @@
 
 Changes with Apache 2.4.10
 
+  *) mod_proxy: Do not try to parse the regular expressions passed by
+     ProxyPassMatch as URL as they do not follow their syntax.
+     PR 56074. [Ruediger Pluem]
+
   *) mod_reqtimeout: Resolve unexpected timeouts on keepalive requests 
      under the Event MPM. PR56216.  [Frank Meier <frank meier ergon ch>]
 
