@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_ssl: Add hooks to allow other modules to perform processing at
+     several stages of initialization and connection handling.  See
+     mod_ssl_openssl.h.  [Jeff Trawick]
+
   *) mod_proxy_wstunnel: Avoid sending error responses down an upgraded
      websockets connection as it is being close down. [Eric Covener]
   

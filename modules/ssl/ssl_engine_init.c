@@ -27,7 +27,13 @@
                                   see Recursive.''
                                         -- Unknown   */
 #include "ssl_private.h"
+#include "mod_ssl.h"
+#include "mod_ssl_openssl.h"
 #include "mpm_common.h"
+
+APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(ssl, SSL, int, init_server,
+                                    (server_rec *s,apr_pool_t *p,int is_proxy,SSL_CTX *ctx),
+                                    (s,p,is_proxy,ctx), OK, DECLINED)
 
 /*  _________________________________________________________________
 **
@@ -246,6 +252,25 @@ apr_status_t ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
      */
     if ((rv = ssl_init_CheckServers(base_server, ptemp)) != APR_SUCCESS) {
         return rv;
+    }
+
+    for (s = base_server; s; s = s->next) {
+        sc = mySrvConfig(s);
+
+        if (sc->enabled == SSL_ENABLED_TRUE || sc->enabled == SSL_ENABLED_OPTIONAL) {
+            if ((rv = ssl_run_init_server(s, p, 0, sc->server->ssl_ctx)) != APR_SUCCESS) {
+                ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO()
+                             "Init: server init_server failed");
+                return rv;
+            }
+        }
+        else if (sc->proxy_enabled == SSL_ENABLED_TRUE) {
+            if ((rv = ssl_run_init_server(s, p, 1, sc->proxy->ssl_ctx)) != APR_SUCCESS) {
+                ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO()
+                             "Init: proxy init_server failed");
+                return rv;
+            }
+        }
     }
 
     /*

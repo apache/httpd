@@ -1094,6 +1094,7 @@ BEGIN {
 		modules\proxy\mod_proxy.h \
 		modules\proxy\mod_serf.h \
 		modules\ssl\mod_ssl.h \
+		modules\ssl\mod_ssl_openssl.h \
           ) do \
 	    @copy %f "$(INSTDIR)\include" < .y > nul
 	copy srclib\apr\Lib$(SHORT)\apr-1.lib		"$(INSTDIR)\lib" <.y

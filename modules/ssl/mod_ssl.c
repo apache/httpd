@@ -26,6 +26,7 @@
 
 #include "ssl_private.h"
 #include "mod_ssl.h"
+#include "mod_ssl_openssl.h"
 #include "util_md5.h"
 #include "util_mutex.h"
 #include "ap_provider.h"
@@ -36,6 +37,10 @@
 #include <valgrind.h>
 int ssl_running_on_valgrind = 0;
 #endif
+
+APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(ssl, SSL, int, pre_handshake,
+                                    (conn_rec *c,SSL *ssl),
+                                    (c,ssl), OK, DECLINED);
 
 /*
  *  the table of configuration directives we provide
@@ -468,6 +473,7 @@ int ssl_init_ssl_connection(conn_rec *c, request_rec *r)
     SSL *ssl;
     SSLConnRec *sslconn = myConnConfig(c);
     char *vhost_md5;
+    int rc;
     modssl_ctx_t *mctx;
     server_rec *server;
 
@@ -498,6 +504,11 @@ int ssl_init_ssl_connection(conn_rec *c, request_rec *r)
         c->aborted = 1;
 
         return DECLINED; /* XXX */
+    }
+
+    rc = ssl_run_pre_handshake(c, ssl);
+    if (rc != OK && rc != DECLINED) {
+        return rc;
     }
 
     vhost_md5 = ap_md5_binary(c->pool, (unsigned char *)sc->vhost_id,

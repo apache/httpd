@@ -450,6 +450,7 @@
  * 20140207.0 (2.5.0-dev)  Support for slaved connections in core.c
  * 20140207.1 (2.5.0-dev)  Add SSL reusable SNI to mod_proxy.h's proxy_conn_rec
  * 20140207.2 (2.5.0-dev)  Add proxy detach_backend hook
+ * 20140207.3 (2.5.0-dev)  Add mod_ssl_openssl.h and OpenSSL-specific hooks
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
@@ -457,7 +458,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20140207
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 2                  /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 3                  /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
