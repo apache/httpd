@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.10
 
+  *) mod_reqtimeout: Resolve unexpected timeouts on keepalive requests 
+     under the Event MPM. PR56216.  [Frank Meier <frank meier ergon ch>]
+
   *) mod_proxy_fcgi: Fix sending of response without some HTTP headers
      that might be set by filters.  [Jim Riggs <jim riggs.me>]
 
@@ -14,11 +17,11 @@ Changes with Apache 2.4.10
      for any third-party async MPMs.)  [Jeff Trawick]
 
   *) mod_lua: Redesign how request record table access behaves,
-     in order to utilize the request record from within these tables
+     in order to utilize the request record from within these tables.
      [Daniel Gruno]
-     
+
   *) mod_lua: Add r:wspeek for peeking at WebSocket frames. [Daniel Gruno]
-  
+ 
   *) mod_lua: Log an error when the initial parsing of a Lua file fails.
      [Daniel Gruno, Felipe Daragon <filipe syhunt com>]
 
