@@ -136,10 +136,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
                   http://people.apache.org/~jim/patches/uds-rewrite.patch
      +1: jim, humbedooh
-     -1: ylavic: still being worked on, see issues here in the following thread
+         ylavic: still being worked on, see issues here in the following thread
                  https://www.mail-archive.com/dev@httpd.apache.org/msg59276.html
          jim:    Isn't the issue an additional "feature" and not
                  a bug in the as-documented behavior?
+         ylavic: You're right, I'll add another proposal: -1 reverted.
 
    * mod_deflate: Fix decompression of files larger than 4GB. According to RFC1952,
                   Input SIZE contains the size of the original input data modulo 2^32.
