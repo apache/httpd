@@ -106,9 +106,12 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     2.4.x patch: trunk patch works, modulo CHANGES
     +1: minfrin, jim, ylavic
 
+   * rotatelogs: Avoid zombie processes on modern UNIX platforms
+     trunk patch: http://svn.apache.org/r1587255
+     +1: druggeri, ylavic, covener
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
-
 
    * mod_slotmem_shm: Remove wonky and dangerous code that knows about APR
      internals. We work fine w/o it anyway at this stage.
@@ -210,7 +213,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1584430
                   http://svn.apache.org/r1584434
      2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic
+     +1: ylavic, covener
 
    * Merge mod_authnz_fcgi from trunk.
      trunk:
@@ -248,10 +251,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   https://svn.apache.org/r1514267
      2.4.x patch: http://people.apache.org/~jailletc36/r1514255.patch
      +1: jailletc36
-
-   * rotatelogs: Avoid zombie processes on modern UNIX platforms
-     trunk patch: http://svn.apache.org/r1587255
-     +1: druggeri, ylavic
 
    * mod_proxy_wstunnel: wstunnel rollup for connection handling
      trunk patch: http://svn.apache.org/r1587036 (set backend->close)
