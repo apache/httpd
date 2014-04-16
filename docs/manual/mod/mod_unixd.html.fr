@@ -128,7 +128,6 @@ appropriés, Off dans le cas contraire</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_unixd</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.9 d'Apache httpd</td></tr>
 </table>
     <p>Lorsque cette directive est définie à On, le démarrage échouera si
     le binaire suexec n'existe pas, ou possède un propriétaire ou mode

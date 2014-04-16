@@ -68,7 +68,7 @@ doivent s'exécuter</td></tr>
     <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">SuexecUserGroup nobody nogroup</pre>
 </div>
 
-    <p>Depuis la version 2.3.9, le démarrage va échouer si cette
+    <p>Le démarrage échouera si cette
     directive est spécifiée et si la fonctionnalité suEXEC est
     désactivée.</p>
 

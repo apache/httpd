@@ -63,7 +63,7 @@
     authorization types with <code>user</code> and <code>valid-user</code>.
     </p>
 
-    <p>Since v2.5.0, <a href="../expr.html">expressions</a> are supported
+    <p>Since v2.4.8, <a href="../expr.html">expressions</a> are supported
     within the user require directives.</p>
 
 <h3><a name="requser" id="requser">Require user</a></h3>

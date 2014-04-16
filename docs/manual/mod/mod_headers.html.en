@@ -214,7 +214,8 @@ Header merge Cache-Control no-store env=NO_STORE</pre>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_headers</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Default condition was temporarily changed to "always" in 2.3.9 and 2.3.10.  SetIfEmpty available since 2.4.7.</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Default condition was temporarily changed to "always" in 2.3.9 and 2.3.10.<br />
+SetIfEmpty and note available in 2.4.7 and later.</td></tr>
 </table>
     <p>This directive can replace, merge or remove HTTP response
     headers. The header is modified just after the content handler
@@ -303,7 +304,8 @@ Header merge Cache-Control no-store env=NO_STORE</pre>
 
     <dt><code>setifempty</code></dt>
     <dd>The request header is set, but only if there is no previous header
-    with this name. Available in 2.4.7 and later.</dd>
+    with this name.<br />
+    Available in 2.4.7 and later.</dd>
 
     <dt><code>unset</code></dt>
     <dd>The response header of this name is removed, if it exists.
@@ -314,7 +316,8 @@ Header merge Cache-Control no-store env=NO_STORE</pre>
     <dd>The value of the named response <var>header</var> is copied into an
     internal note whose name is given by <var>value</var>.  This is useful
     if a header sent by a CGI or proxied resource is configured to be unset
-    but should also be logged.</dd>
+    but should also be logged.<br />
+    Available in 2.4.7 and later.</dd>
 
     </dl>
 
@@ -351,15 +354,18 @@ Header merge Cache-Control no-store env=NO_STORE</pre>
         designed to expose the values obtained by <code>getloadavg()</code>
         and this represents the current load average, the 5 minute average, and
         the 15 minute average. The value is preceded by <code>l=</code> with each
-        average separated by <code>/</code>.
+        average separated by <code>/</code>.<br />
+        Available in 2.4.4 and later.
         </td></tr>
 <tr><td><code>%i</code></td>
         <td>The current idle percentage of httpd (0 to 100) based on available
-        processes and threads. The value is preceded by <code>i=</code>.
+        processes and threads. The value is preceded by <code>i=</code>.<br />
+        Available in 2.4.4 and later.
         </td></tr>
 <tr class="odd"><td><code>%b</code></td>
         <td>The current busy percentage of httpd (0 to 100) based on available
-        processes and threads. The value is preceded by <code>b=</code>.
+        processes and threads. The value is preceded by <code>b=</code>.<br />
+        Available in 2.4.4 and later.
         </td></tr>
 <tr><td><code>%{VARNAME}e</code></td>
         <td>The contents of the <a href="../env.html">environment
@@ -470,7 +476,8 @@ Header merge Cache-Control no-store env=NO_STORE</pre>
 
     <dt><code>setifempty</code></dt>
     <dd>The request header is set, but only if there is no previous header
-    with this name. Available in 2.4.7 and later.</dd>
+    with this name.<br />
+    Available in 2.4.7 and later.</dd>
 
     <dt><code>unset</code></dt>
     <dd>The request header of this name is removed, if it exists. If

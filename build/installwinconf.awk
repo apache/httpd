@@ -106,6 +106,7 @@ BEGIN {
           print "#LoadModule authn_dbm_module modules/mod_authn_dbm.so" > dstfl;
           print "LoadModule authn_file_module modules/mod_authn_file.so" > dstfl;
           print "#LoadModule authn_socache_module modules/mod_authn_socache.so" > dstfl;
+          print "#LoadModule authnz_fcgi_module modules/mod_authnz_fcgi.so" > dstfl;
           print "#LoadModule authnz_ldap_module modules/mod_authnz_ldap.so" > dstfl;
           print "LoadModule authz_core_module modules/mod_authz_core.so" > dstfl;
           print "#LoadModule authz_dbd_module modules/mod_authz_dbd.so" > dstfl;

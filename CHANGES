@@ -2,6 +2,10 @@
 
 Changes with Apache 2.4.10
 
+  *) mod_authnz_fcgi: New module to enable FastCGI authorizer
+     applications to authenticate and/or authorize clients.
+     [Jeff Trawick]
+
   *) mod_proxy: Do not try to parse the regular expressions passed by
      ProxyPassMatch as URL as they do not follow their syntax.
      PR 56074. [Ruediger Pluem]

@@ -435,7 +435,7 @@ particulier</td></tr>
     en spécifiant <code>change=no</code>.
     </p>
 
-    <p><var>drapeaux protocole</var> peut contenir un ou plusieurs
+    <p><var>drapeaux_protocole</var> peut contenir un ou plusieurs
     drapeaux parmi les suivants :</p>
 
     <dl>
@@ -444,7 +444,7 @@ particulier</td></tr>
     taille</dd>
 
     <dt><code>change=1:1</code></dt>
-    <dd>&gt;Le filtre modifie le contenu, mais pas sa taille</dd>
+    <dd>Le filtre modifie le contenu, mais pas sa taille</dd>
 
     <dt><code>byteranges=no</code></dt>
     <dd>Le filtre ne peut pas traiter de réponses à des sous-requêtes et

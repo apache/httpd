@@ -28,6 +28,8 @@
 <a href="../fr/mod/mod_proxy.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_proxy.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
+            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Serveur mandataire/passerelle multi-protocole</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>proxy_module</td></tr>
@@ -537,7 +539,7 @@ serveur HTTP Apache</td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.5.0 du serveur
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.5 du serveur
     HTTP Apache.</td></tr>
 </table>
         <p>Cette directive permet d'attribuer au serveur virtuel courant
@@ -595,7 +597,7 @@ charge</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>BalancerPersist n'est disponible qu'à partir de la
-    version 2.5.0 du serveur HTTP Apache.</td></tr>
+    version 2.4.4 du serveur HTTP Apache.</td></tr>
 </table>
         <p>Cette directive permet de conserver le contenu de l'espace
 	mémoire partagé associé aux répartiteurs de charge et à leurs
@@ -1428,7 +1430,8 @@ ProxyPass /mirror/foo http://backend.example.com</pre>
 	d'application d'arrière-plan utilise des noms différents pour
 	les cookies et les identifiants codés d'URL (comme les
 	conteneurs de servlet), séparez-les par le caractère '|'. La
-	première partie contient le cookie et la seconde le chemin.
+	première partie contient le cookie et la seconde le chemin.<br />
+	Disponible depuis la version 2.4.4 du serveur HTTP Apache.
     </td></tr>
     <tr><td>stickysessionsep</td>
         <td>"."</td>
@@ -1469,7 +1472,7 @@ ProxyPass /mirror/foo http://backend.example.com</pre>
 	dépassé en entrée/sortie après envoi d'une requête au serveur
 	d'arrière-plan va mettre le processus en état d'erreur. La
 	sortie de cet état d'erreur se passe de la même façon que pour
-	les autres erreurs.
+	les autres erreurs.<br />
 	Disponible à partir de la version 2.4.5 du serveur HTTP Apache.
     </td></tr>
     <tr><td>nonce</td>
@@ -1500,7 +1503,8 @@ ProxyPass /mirror/foo http://backend.example.com</pre>
 	surchargé entre dans une situation critique si la relance de
 	tous les membres est forcée sans tenir compte du paramètre retry
 	de chaque membre. Dans ce cas, définissez ce paramètre à
-	<code>Off</code>.
+	<code>Off</code>.<br />
+	Disponible depuis la version 2.4.2 du serveur HTTP Apache.
     </td></tr>
 
     </table>
@@ -1559,8 +1563,7 @@ ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover
     souple, reportez-vous à la documentaion de la directive <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> et son drapeau
     <code>[P]</code>.</p>
 
-    <p>Le mot-clé optionnel <var>interpolate</var> (disponible depuis
-    httpd 2.2.9), en combinaison avec la directive
+    <p>Le mot-clé optionnel <var>interpolate</var>, en combinaison avec la directive
     <code class="directive">ProxyPassInterpolateEnv</code>, permet à ProxyPass
     d'interpoler les variables d'environnement à l'aide de la syntaxe
     <var>${VARNAME}</var>. Notez que de nombreuses variables
@@ -1775,8 +1778,8 @@ ProxyPassReverseCookiePath  /  /mirror/foo/</pre>
     <code class="directive"><a href="#proxypass">ProxyPass</a></code>
     correspondante.</p>
 
-    <p>Le mot-clé optionnel <var>interpolate</var> (disponible depuis
-    httpd 2.2.9), utilisé en combinaison avec la directive
+    <p>Le mot-clé optionnel <var>interpolate</var>, en
+    combinaison avec la directive
     <code class="directive">ProxyPassInterpolateEnv</code>, permet
     l'interpolation des variables d'environnement spécifiées en
     utilisant le format <var>${VARNAME}</var> Notez que l'interpolation
