@@ -1041,8 +1041,6 @@ du serveur par ordre de préférence</td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.1 d'Apache, à condition
-d'utiliser une version 0.9.7 ou supérieure d'OpenSSL</td></tr>
 </table>
 <p>Normalement, ce sont les préférences du client qui sont prises en
 compte lors du choix d'un algorithme de chiffrement au cours d'une
@@ -1103,8 +1101,6 @@ OCSP</td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3 de httpd, à condition
-d'utiliser une version 0.9.7 ou supérieure d'OpenSSL</td></tr>
 </table>
 <p>Cette directive permet de définir le répondeur OCSP par défaut. Si la
 directive <code class="directive"><a href="#sslocspoverrideresponder">SSLOCSPOverrideResponder</a></code> n'est pas activée,
@@ -1122,8 +1118,6 @@ client</td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3 de httpd, à condition
-d'utiliser une version 0.9.7 ou supérieure d'OpenSSL</td></tr>
 </table>
 <p>Cette directive permet d'activer la validation OCSP de la chaîne de
 certificats du client. Si elle est activée, les certificats de la chaîne
@@ -1151,8 +1145,6 @@ la validation OCSP</td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3 de httpd, à condition
-d'utiliser une version 0.9.7 ou supérieure d'OpenSSL</td></tr>
 </table>
 <p>Force l'utilisation, au cours d'une validation OCSP de certificat, du
 répondeur OCSP par défaut spécifié dans la configuration, que le
@@ -1169,8 +1161,6 @@ non.</p>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3 de httpd, sous réserve
-d'utiliser une version 0.9.7 ou supérieure d'OpenSSL</td></tr>
 </table>
 <p>Cette option permet de définir le délai d'attente pour les requêtes à
 destination des répondeurs OCSP, lorsque la directive <code class="directive"><a href="#sslocspenable">SSLOCSPEnable</a></code> est à on.</p>
@@ -1185,8 +1175,6 @@ destination des répondeurs OCSP, lorsque la directive <code class="directive"><a
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3 de httpd, sous réserve
-d'utiliser une version 0.9.7 ou supérieure d'OpenSSL</td></tr>
 </table>
 <p>Cette option permet de définir l'âge maximum autorisé (la
 "fraicheur") des réponses OCSP. La valeur par défault (<code>-1</code>)
@@ -1205,8 +1193,6 @@ réponses OCSP</td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3 de httpd, sous réserve
-d'utiliser une version 0.9.7 ou supérieure d'OpenSSL</td></tr>
 </table>
 <p>Cette option permet de définir la dérive temporelle maximale
 autorisée pour les réponses OCSP (lors de la vérification des champs
@@ -1441,12 +1427,17 @@ cette demande peut être formulée parmi les trois suivantes :</p>
 <li><code>exec:/chemin/vers/programme</code>
     <p>
     Ici, un programme externe est appelé au démarrage du serveur pour
-    chaque fichier de clé privée chiffré. Il est appelé avec deux
-    arguments (le premier est de la forme
+    chaque fichier de clé privée chiffré. Jusqu'à
+    la version 2.4.7, il était appelé avec deux
+    arguments (le premier était de la forme
     ``<code>nom-serveur:port</code>'', le second
     est ``<code>RSA</code>'', ``<code>DSA</code>'' ou ``<code>ECC</code>''), qui
     indiquent pour quels serveur et algorithme il doit écrire le mot de
-    passe correspondant sur <code>stdout</code>. Le but recherché est
+    passe correspondant sur <code>stdout</code>. Depuis la version
+    2.4.9, il est appelé avec un seul argument, une chaîne de la forme
+    "<code>servername:portnumber:index</code>" (où <code>index</code>
+    est un numéro d'ordre commençant à zéro), qui spécifie le serveur,
+    le port TCP et un numéro de certificat. Le but recherché est
     l'exécution de vérifications de sécurité préalables permettant de
     s'assurer que le système n'est pas victime d'une attaque, et de ne
     fournir le mot de passe que si toutes les vérifications ont été
@@ -2468,8 +2459,7 @@ enregistrée dans la variable d'environnement
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.3 du serveur HTTP
-Apache, si on utilise OpenSSL version 0.9.8h ou supérieure</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible si on utilise OpenSSL version 0.9.8h ou supérieure</td></tr>
 </table>
 <p>Si <code class="directive"><a href="#sslusestapling">SSLUseStapling</a></code> est à "on",
 cette directive permet de configurer le cache destiné à stocker les
@@ -2490,8 +2480,7 @@ agrafage OCSP</td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.3 du serveur HTTP
-Apache, si on utilise OpenSSL version 0.9.8h ou supérieure</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible si on utilise OpenSSL version 0.9.8h ou supérieure</td></tr>
 </table>
 <p>Cette directive permet de définir la durée de vie des réponses
 <em>invalides</em> dans le cache pour agrafage OCSP configuré via la
@@ -2509,8 +2498,7 @@ définir la durée de vie des réponses valides, voir la directive
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.3 du serveur HTTP
-Apache, si on utilise OpenSSL version 0.9.8h ou supérieure</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible si on utilise OpenSSL version 0.9.8h ou supérieure</td></tr>
 </table>
 <p>Lorsque cette directive est activée, et si une requête vers un
 serveur OCSP à des fins d'inclusion dans une négociation TLS échoue,
@@ -2527,8 +2515,7 @@ AIA du certificat</td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.3 du serveur HTTP
-Apache, si on utilise OpenSSL version 0.9.8h ou supérieure</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible si on utilise OpenSSL version 0.9.8h ou supérieure</td></tr>
 </table>
 <p>Cette directive permet de remplacer l'URI du serveur OCSP extraite de
 l'extension authorityInfoAccess (AIA) du certificat. Elle peut s'avérer
@@ -2545,8 +2532,7 @@ OCSP</td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.3 du serveur HTTP
-Apache, si on utilise OpenSSL version 0.9.8h ou supérieure</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible si on utilise OpenSSL version 0.9.8h ou supérieure</td></tr>
 </table>
 <p>Cette directive permet de définir le temps d'attente maximum lorsque
 mod_ssl envoie une requête vers un serveur OCSP afin d'obtenir une
@@ -2565,8 +2551,7 @@ négociation TLS</td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.3 du serveur HTTP
-Apache, si on utilise OpenSSL version 0.9.8h ou supérieure</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible si on utilise OpenSSL version 0.9.8h ou supérieure</td></tr>
 </table>
 <p>Cette directive permet de définir l'âge maximum autorisé
 ("fraîcheur") des réponses OCSP incluses dans la négociation TLS
@@ -2587,8 +2572,7 @@ négociation TLS</td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.3 du serveur HTTP
-Apache, si on utilise OpenSSL version 0.9.8h ou supérieure</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible si on utilise OpenSSL version 0.9.8h ou supérieure</td></tr>
 </table>
 <p>Cette directive permet de spécifier l'intervalle de temps maximum que
 mod_ssl va calculer en faisant la différence entre les contenus des
@@ -2608,8 +2592,7 @@ OCSP</td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.3 du serveur HTTP
-Apache, si on utilise OpenSSL version 0.9.8h ou supérieure</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible si on utilise OpenSSL version 0.9.8h ou supérieure</td></tr>
 </table>
 <p>Lorsque cette directive est activée, mod_ssl va transmettre au client les
 réponses concernant les requêtes OCSP échouées (erreurs d'état, réponses
@@ -2627,8 +2610,7 @@ négociation TLS avec les clients.</p>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.3 du serveur HTTP
-Apache, si on utilise OpenSSL version 0.9.8h ou supérieure</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible si on utilise OpenSSL version 0.9.8h ou supérieure</td></tr>
 </table>
 <p>Cette directive permet de définir la durée de vie des réponses OCSP
 dans le cache configuré via la directive <code class="directive"><a href="#sslstaplingcache">SSLStaplingCache</a></code>. Elle ne s'applique qu'aux
@@ -2705,8 +2687,7 @@ La valeur de l'argument <em>nom-var</em> peut correspondre à toute <a href="#env
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.3 du serveur HTTP
-Apache, si on utilise OpenSSL version 0.9.8h ou supérieure</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible si on utilise OpenSSL version 0.9.8h ou supérieure</td></tr>
 </table>
 <p>Cette directive permet d'activer l'"Agrafage OCSP" (OCSP stapling)
 selon la définition de l'extension TLS "Certificate Status Request"

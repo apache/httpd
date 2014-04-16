@@ -95,6 +95,8 @@ DBM</dd>
 texte</dd>
 <dt><a href="mod_authn_socache.html">mod_authn_socache</a></dt><dd>Gère un cache des données d'authentification pour diminuer
 la charge des serveurs d'arrière-plan</dd>
+<dt><a href="mod_authnz_fcgi.html">mod_authnz_fcgi</a></dt><dd>Allows a FastCGI authorizer application to handle Apache
+httpd authentication and authorization</dd>
 <dt><a href="mod_authnz_ldap.html">mod_authnz_ldap</a></dt><dd>Permet d'utiliser un annuaire LDAP pour l'authentification
 HTTP de base.</dd>
 <dt><a href="mod_authz_core.html">mod_authz_core</a></dt><dd>Autorisation basique</dd>
@@ -168,7 +170,7 @@ HTTP</dd>
 Includes ou SSI)</dd>
 <dt><a href="mod_info.html">mod_info</a></dt><dd>Affiche une présentation complète de la configuration du
 serveur</dd>
-<dt><a href="mod_isapi.html">mod_isapi</a></dt><dd>Extensions ISAPI au coeur d'Apache pour Windows</dd>
+<dt><a href="mod_isapi.html">mod_isapi</a></dt><dd>Extensions ISAPI dans Apache pour Windows</dd>
 <dt><a href="mod_lbmethod_bybusyness.html" id="L" name="L">mod_lbmethod_bybusyness</a></dt><dd>Algorithme de planification avec répartition de charge de
 l'attribution des requêtes en attente pour le module
 <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code></dd>

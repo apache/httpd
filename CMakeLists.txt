@@ -203,6 +203,7 @@ SET(MODULE_LIST
   "modules/aaa/mod_authn_dbm+I+DBM-based authentication control"
   "modules/aaa/mod_authn_file+A+file-based authentication control"
   "modules/aaa/mod_authn_socache+I+Cached authentication control"
+  "modules/aaa/mod_authnz_fcgi+I+FastCGI authorizer-based authentication and authorization"
   "modules/aaa/mod_authnz_ldap+i+LDAP based authentication"
   "modules/aaa/mod_authz_core+A+core authorization provider vector module"
   "modules/aaa/mod_authz_dbd+I+SQL based authorization and Login/Session support"

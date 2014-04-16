@@ -293,6 +293,12 @@ utiliser</td></tr>
 ... &lt;/AuthnProviderAlias&gt;</a></td><td></td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">Regroupe un ensemble de directives qui constituent une
 extension d'un fournisseur d'authentification de base et lui attribue
 l'alias spécifié</td></tr>
+<tr class="odd"><td><a href="mod_authnz_fcgi.html#authnzfcgicheckauthnprovider">AuthnzFcgiCheckAuthnProvider <em>provider-name</em>|<code>None</code>
+<em>option</em> ...</a></td><td></td><td>d</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enables a FastCGI application to handle the check_authn
+authentication hook.</td></tr>
+<tr><td><a href="mod_authnz_fcgi.html#authnzfcgidefineprovider">AuthnzFcgiDefineProvider <em>type</em> <em>provider-name</em>
+<em>backend-address</em></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Defines a FastCGI application as a provider for
+authentication and/or authorization</td></tr>
 <tr class="odd"><td><a href="mod_authn_core.html#authtype">AuthType None|Basic|Digest|Form</a></td><td></td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Type d'authentification utilisateur</td></tr>
 <tr><td><a href="mod_authn_file.html#authuserfile">AuthUserFile <var>chemin-fichier</var></a></td><td></td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Définit le nom d'un fichier texte pour l'authentification
 contenant la liste des utilisateurs et de leurs mots de
@@ -534,7 +540,7 @@ requête</td></tr>
 <tr><td><a href="mod_ext_filter.html#extfilterdefine">ExtFilterDefine <var>nom filtre</var> <var>paramètres</var></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Définit un filtre externe</td></tr>
 <tr class="odd"><td><a href="mod_ext_filter.html#extfilteroptions">ExtFilterOptions <var>option</var> [<var>option</var>] ...</a></td><td> NoLogStderr </td><td>d</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Configure les options de
 <code class="module"><a href="../mod/mod_ext_filter.html">mod_ext_filter</a></code></td></tr>
-<tr><td><a href="mod_dir.html#fallbackresource" id="F" name="F">FallbackResource disabled <var>url-locale</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Définit une URL par défaut pour les requêtes qui ne ciblent
+<tr><td><a href="mod_dir.html#fallbackresource" id="F" name="F">FallbackResource disabled | <var>url-locale</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Définit une URL par défaut pour les requêtes qui ne ciblent
 aucun fichier</td></tr>
 <tr class="odd"><td><a href="core.html#fileetag">FileETag <var>composant</var> ...</a></td><td> MTime Size </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Caractéristiques de fichier utilisées lors de la génération
 de l'en-tête de réponse HTTP ETag pour les fichiers statiques</td></tr>
@@ -630,7 +636,7 @@ dans la partie arguments de la requête</td></tr>
 [<var>chemin-fichier</var>]
 ...</a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Fichiers .dll ISAPI devant être chargés au
 démarrage</td></tr>
-<tr><td><a href="mod_isapi.html#isapifakeasync">ISAPIFakeAsync on|off</a></td><td> off </td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Émulation du support des entrées/sorties asynchrones pour
+<tr><td><a href="mod_isapi.html#isapifakeasync">ISAPIFakeAsync on|off</a></td><td> off </td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Emulation du support des entrées/sorties asynchrones pour
 les appels ISAPI</td></tr>
 <tr class="odd"><td><a href="mod_isapi.html#isapilognotsupported">ISAPILogNotSupported on|off</a></td><td> off </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Journalisation des demandes de fonctionnalités non
 supportées de la part des extensions ISAPI</td></tr>

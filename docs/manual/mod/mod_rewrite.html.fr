@@ -744,28 +744,18 @@ RewriteRule ...règles concernant tous ces hôtes...</pre>
        l'en-tête ``<code>User-Agent:</code>'' de la requête, vous
        pouvez utiliser ce qui suit : </p>
 
-<pre class="prettyprint lang-config">RewriteCond  %{HTTP_USER_AGENT}  ^Mozilla
-RewriteRule  ^/$                 /homepage.max.html  [L]
-
-RewriteCond  %{HTTP_USER_AGENT}  ^Lynx
-RewriteRule  ^/$                 /homepage.min.html  [L]
+<pre class="prettyprint lang-config">RewriteCond  %{HTTP_USER_AGENT}  (iPhone|Blackberry|Android)
+RewriteRule  ^/$                 /homepage.mobile.html  [L]
 
 RewriteRule  ^/$                 /homepage.std.html  [L]</pre>
 
 
         <p>Explications : si vous utilisez un navigateur
-	(Netscape Navigator, Mozilla etc) qui s'identifie comme
-	'Mozilla', vous accèderez à la page d'accueil max (qui
-	peut contenir des frames, ou d'autres ressources
-	particulières).
-	Si vous utilisez le navigateur Lynx (qui est un navigateur
-	en mode texte), vous accèderez à une page d'accueil min
-	(qui peut être une version conçue pour une navigation simple
-	basée sur le texte).
-	Si aucune de ces conditions n'est satisfaite (vous utilisez tout
-	autre navigateur, ou votre navigateur s'identifie de manière non
-	standard), vous accèderez à la page d'accueil std
-	(standard).</p>
+	qui s'identifie comme un navigateur de mobile (notez que cet
+	exemple est incomplet car il existe de nombreuses autres
+	plateformes mobiles), c'est la version mobile de la page
+	d'accueil qui sera servie. Dans le cas contraire, vous verrez
+	s'afficher la page d'accueil standard.</p>
 
 
 </div>
@@ -951,7 +941,8 @@ la version version 2.1</td></tr>
       <p>Même effet que l'option <code>Inherit</code> ci-dessus, mais
       les règles spécifiées dans le niveau parent s'appliquent
       <strong>avant</strong> les règles spécifiées dans le niveau
-      enfant. Disponible depuis la version 2.3.10 du serveur HTTP
+      enfant.<br />
+      Disponible depuis la version 2.3.10 du serveur HTTP
       Apache.</p>
       </dd>
 
@@ -963,7 +954,8 @@ la version version 2.1</td></tr>
       spécifie <code>RewriteOptions Inherit</code> dans toutes les
       configurations enfants. Voir l'option <code>Inherit</code> pour
       plus de détails à propos de la manière dont les relations
-      parent-enfants sont traitées. Cette option est disponible à partir
+      parent-enfants sont traitées.<br />
+      Cette option est disponible à partir
       de la version 2.4.8 du serveur HTTP Apache.</p>
       </dd>
 
@@ -973,7 +965,8 @@ la version version 2.1</td></tr>
       <p>L'effet de cette option est équivalent à celui de l'option
       <code>InheritDown</code> ci-dessus, mais les règles de la
       configuration parente s'appliquent <strong>avant</strong> toute
-      règle de la configuration enfant. Cette option est disponible à partir
+      règle de la configuration enfant.<br />
+      Cette option est disponible à partir
       de la version 2.4.8 du serveur HTTP Apache.</p>
       </dd>
 
@@ -983,7 +976,8 @@ la version version 2.1</td></tr>
       <p>Si cette option est activée, les configurations courante et
       enfants ignoreront toute règle héritée d'une configuration parente
       via les options <code>InheritDown</code> ou
-      <code>InheritDownBefore</code>. Cette option est disponible à partir
+      <code>InheritDownBefore</code>.<br />
+      Cette option est disponible à partir
       de la version 2.4.8 du serveur HTTP Apache.</p>
       </dd>
 
@@ -999,7 +993,8 @@ la version version 2.1</td></tr>
       s'assurer que les règles de réécriture ne soient plus ignorées.
       Si on le souhaite, cette option permet de faire s'appliquer des
       règles de réécriture qui correspondent à un répertoire sans slash
-      final au sein de fichiers .htaccess. Elle est disponible à
+      final au sein de fichiers .htaccess.<br />
+      Elle est disponible à
       partir de la version 2.4.0 du serveur HTTP Apache.</p>
       </dd>
 
@@ -1009,7 +1004,7 @@ la version version 2.1</td></tr>
       <p>A partir de la version 2.2.22 de httpd, lorsqu'une directive <code class="directive"><a href="#rewriterule">RewriteRule</a></code> se situe dans un
       contexte de <code>serveur virtuel</code> ou de serveur principal,
       <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> ne traitera les règles de réécriture
-      que si l'URI de la requête respecte la syntaxe d'un <a href="./directive-dict.html#Syntax">chemin URL</a>. Ceci permet
+      que si l'URI de la requête respecte la syntaxe d'un <a href="directive-dict.html#Syntax">chemin URL</a>. Ceci permet
       d'éviter certains problèmes de sécurité où des règles
       particulières pourraient permettre  des développements de modèles
       inattendus (voir <a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2011-3368">CVE-2011-3368</a>
@@ -1018,7 +1013,8 @@ la version version 2.1</td></tr>
       utiliser l'option <code>AllowAnyURI</code>, afin de permettre à
       <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> d'appliquer le jeu de règles à toute
       chaîne de requête URI, sans vérifier si cette dernière respecte la
-      grammaire des chemins URL définie dans la spécification HTTP.</p>
+      grammaire des chemins URL définie dans la spécification HTTP.<br />
+      Disponible depuis la version 2.4.3 du serveur HTTP Apache.</p>
 
       <div class="warning">
       <h3>Avertissement à propos de la sécurité</h3> 

@@ -55,6 +55,10 @@ APACHE_MODULE(authnz_ldap, LDAP based authentication, , , most, [
   fi
 ])
 
+dnl FastCGI authorizer interface, supporting authn and authz.
+APACHE_MODULE(authnz_fcgi,
+              FastCGI authorizer-based authentication and authorization, , , no)
+
 dnl - host access control compatibility modules. Implements Order, Allow,
 dnl Deny, Satisfy for backward compatibility.  These directives have been
 dnl deprecated in 2.4.

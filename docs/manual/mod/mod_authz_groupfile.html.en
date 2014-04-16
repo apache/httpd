@@ -62,7 +62,7 @@
     authorization types with <code>group</code> and <code>group-file</code>.
     </p>
 
-    <p>Since v2.5.0, <a href="../expr.html">expressions</a> are supported
+    <p>Since v2.4.8, <a href="../expr.html">expressions</a> are supported
     within the groupfile require directives.</p>
 
 <h3><a name="reqgroup" id="reqgroup">Require group</a></h3>

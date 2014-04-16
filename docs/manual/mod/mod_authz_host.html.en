@@ -79,7 +79,7 @@ address)</td></tr>
     access an area of the server. Access can be controlled by
     hostname, IP Address, or IP Address range.</p>
 
-    <p>Since v2.5.0, <a href="../expr.html">expressions</a> are supported
+    <p>Since v2.4.8, <a href="../expr.html">expressions</a> are supported
     within the host require directives.</p>
 
 <h3><a name="reqip" id="reqip">Require ip</a></h3>
@@ -162,6 +162,7 @@ Require host .net example.edu</pre>
 
 
 <h3><a name="reqlocal" id="reqlocal">Require local</a></h3>
+
     <p>The <code>local</code> provider allows access to the server if any
     of the following conditions is true:</p>
 
@@ -176,6 +177,7 @@ Require host .net example.edu</pre>
     the local host:</p>
 
     <pre class="prettyprint lang-config">Require local</pre>
+
 
 
 

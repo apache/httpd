@@ -28,17 +28,16 @@
 <a href="../fr/mod/mod_isapi.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ko/mod/mod_isapi.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Extensions ISAPI au coeur d'Apache pour Windows</td></tr>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Extensions ISAPI dans Apache pour Windows</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>isapi_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_isapi.c</td></tr>
 <tr><th><a href="module-dict.html#Compatibility">Compatibilité:</a></th><td>Win32 only</td></tr></table>
 <h3>Sommaire</h3>
 
-    <p>Ce module implémente l'API des extensions <strong>Internet Server</strong>
-    (l'application IIS de Microsoft). Il
-    permet à Apache pour Windows de servir les extensions <strong>Internet Server</strong>
-    (par exemple les modules .dll ISAPI), compte tenu des
+    <p>Ce module implémente l'API des extensions du Serveur Internet. Il
+    permet à Apache pour Windows de servir les extensions du Serveur
+    Internet (par exemple les modules .dll ISAPI), compte tenu des
     restrictions spécifiées.</p>
 
     <p>Les modules d'extension ISAPI (fichiers .dll) sont des modules
@@ -82,8 +81,8 @@
     gestionnaire était <code>isapi-isa</code> au lieu de
     <code>isapi-handler</code>. Depuis les versions de développement 2.3
     du serveur Apache, <code>isapi-isa</code> n'est plus valide, et vous
-    devrez modifier votre configuration pour utiliser
-    <code>isapi-handler</code> à sa place.</div>
+    devrez éventuellement modifier votre configuration pour utiliser
+    <code>isapi-handler</code> à la place.</div>
 
     <p>Le serveur Apache ne propose aucun moyen de conserver en mémoire
     un module chargé. Vous pouvez cependant précharger et garder un
@@ -93,7 +92,7 @@
 
 
     <p>Que vous ayez ou non préchargé une extension ISAPI, ces dernières
-    sont toutes soumises aux mêmes restrictions et possèdent les mêmes
+    sont toutes soumises au mêmes restrictions et possèdent les mêmes
     permissions que les scripts CGI. En d'autres termes, <code class="directive"><a href="../mod/core.html#options">Options</a></code> <code>ExecCGI</code> doit être
     défini pour le répertoire qui contient le fichier .dll ISAPI.</p>
 
@@ -120,8 +119,8 @@
     <p>Si aucune option de configuration particulière n'est spécifiée,
     certains serveurs, comme Microsoft IIS, chargent l'extension ISAPI
     dans le serveur et la conservent en mémoire jusqu'à ce que
-    l'utilisation de cette dernière devienne trop élevée. Apache, en
-    revanche, charge et décharge réellement l'extension ISAPI chaque fois
+    l'utilisation de cette dernière devienne trop élevée. Apache, par
+    contre, charge et décharge réellement l'extension ISAPI chaque fois
     qu'elle est invoquée, si la directive <code class="directive"><a href="#isapicachefile">ISAPICacheFile</a></code> n'a pas été spécifiée.
     Ce n'est pas très performant, mais le modèle de mémoire d'Apache
     fait que cette méthode est la plus efficace. De nombreux modules
@@ -237,11 +236,11 @@
     <code>GetServerVariable</code>, ainsi que les valeurs
     <code>ALL_HTTP</code> et <code>ALL_RAW</code>.</p>
 
-    <p>Depuis Apache httpd 2.0+, <code class="module"><a href="../mod/mod_isapi.html">mod_isapi</a></code> propose des
+    <p>Depuis httpd 2.0, <code class="module"><a href="../mod/mod_isapi.html">mod_isapi</a></code> propose des
     fonctionnalités supplémentaires introduites dans les versions
     actualisées de la spécification ISAPI, ainsi qu'une émulation
     limitée des entrées/sorties asynchrones et la sémantique
-    <code>TransmitFile</code>. Apache httpd supporte également le préchargement
+    <code>TransmitFile</code>. Apache httpd supporte aussi le préchargement
     des .dlls ISAPI à des fins de performances.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -293,8 +292,8 @@ démarrage</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_isapi</td></tr>
 </table>
-    <p>Cette directive permet de spécifier une liste de noms de fichiers, séparés par des
-    espaces, devant être chargés au démarrage
+    <p>Cette directive permet de spécifier une liste, séparés par des
+    espaces, de noms de fichiers devant être chargés au démarrage
     du serveur Apache, et rester en mémoire jusqu'à l'arrêt du serveur.
     Cette directive peut être répétée pour chaque fichier .dll ISAPI
     souhaité. Le chemin complet du fichier doit être spécifié. Si le
@@ -305,7 +304,7 @@ démarrage</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ISAPIFakeAsync" id="ISAPIFakeAsync">ISAPIFakeAsync</a> <a name="isapifakeasync" id="isapifakeasync">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Émulation du support des entrées/sorties asynchrones pour
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Emulation du support des entrées/sorties asynchrones pour
 les appels ISAPI</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ISAPIFakeAsync on|off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ISAPIFakeAsync off</code></td></tr>

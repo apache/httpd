@@ -482,8 +482,7 @@ ProxyPass /examples http://backend.example.com/examples timeout=10</pre>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>BalancerInherit is only available in Apache HTTP Server 2.5.0
-        and later.</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>BalancerInherit is only available in Apache HTTP Server 2.4.5 and later.</td></tr>
 </table>
         <p>This directive will cause the current server/vhost to "inherit" ProxyPass
             Balancers and Workers defined in the main server. This can cause issues and
@@ -530,8 +529,7 @@ ProxyPass /examples http://backend.example.com/examples timeout=10</pre>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>BalancerPersist is only available in Apache HTTP Server 2.4.4 and later.
-        and later.</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>BalancerPersist is only available in Apache HTTP Server 2.4.4 and later.</td></tr>
 </table>
         <p>This directive will cause the shared memory storage associated
         with the balancers and balancer members to be persisted across
@@ -883,7 +881,7 @@ proxied resources</td></tr>
     identical to the <code class="directive"><a href="#proxy">&lt;Proxy&gt;</a></code> directive, except it matches URLs
     using <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular expressions</a>.</p>
 
-    <p>From 2.5.0 onwards, named groups and backreferences are captured and
+    <p>From 2.4.8 onwards, named groups and backreferences are captured and
     written to the environment with the corresponding name prefixed with
     "MATCH_" and in upper case. This allows elements of URLs to be referenced
     from within <a href="../expr.html">expressions</a> and modules like
@@ -949,7 +947,7 @@ through</td></tr>
 
     <div class="note"><strong>Note: </strong>This directive cannot be used within a 
     <code>&lt;Directory&gt;</code> context.</div>
-    
+
     <div class="warning">The <code class="directive"><a href="#proxyrequests">ProxyRequests</a></code> directive should
     usually be set <strong>off</strong> when using
     <code class="directive">ProxyPass</code>.</div>
@@ -1264,7 +1262,8 @@ ProxyPass /mirror/foo http://backend.example.com</pre>
         and it depends on the backend application server that support sessions.
         If the backend application server uses different name for cookies
         and url encoded id (like servlet containers) use | to to separate them.
-        The first part is for the cookie the second for the path.
+        The first part is for the cookie the second for the path.<br />
+        Available in Apache HTTP Server 2.4.4 and later.
     </td></tr>
     <tr><td>stickysessionsep</td>
         <td>"."</td>
@@ -1295,7 +1294,7 @@ ProxyPass /mirror/foo http://backend.example.com</pre>
         <td>Off</td>
         <td>If set, an IO read timeout after a request is sent to the backend will
         force the worker into error state. Worker recovery behaves the same as other
-        worker errors.
+        worker errors.<br />
         Available in Apache HTTP Server 2.4.5 and later.
     </td></tr>
     <tr><td>nonce</td>
@@ -1322,7 +1321,8 @@ ProxyPass /mirror/foo http://backend.example.com</pre>
         in error state. There might be cases where an already overloaded backend
         can get into deeper trouble if the recovery of all workers is enforced
         without considering the retry parameter of each worker. In this case
-        set to <code>Off</code>.
+        set to <code>Off</code>.<br />
+        Available in Apache HTTP Server 2.4.2 and later.
     </td></tr>
 
     </table>
@@ -1407,7 +1407,7 @@ ProxyPassReverse  /mirror/foo/ https://backend.example.com/</pre>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>ProxyPassInherit is only available in Apache HTTP Server 2.5.0 and later.
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>ProxyPassInherit is only available in Apache HTTP Server 2.4.5 and later.
         and later.</td></tr>
 </table>
         <p>This directive will cause the current server/vhost to "inherit"

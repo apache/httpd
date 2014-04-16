@@ -140,6 +140,8 @@
 <li><a href="mod_authn_socache.html#authncachesocache">AuthnCacheSOCache</a></li>
 <li><a href="mod_authn_socache.html#authncachetimeout">AuthnCacheTimeout</a></li>
 <li><a href="mod_authn_core.html#authnprovideralias">&lt;AuthnProviderAlias&gt;</a></li>
+<li><a href="mod_authnz_fcgi.html#authnzfcgicheckauthnprovider">AuthnzFcgiCheckAuthnProvider</a></li>
+<li><a href="mod_authnz_fcgi.html#authnzfcgidefineprovider">AuthnzFcgiDefineProvider</a></li>
 <li><a href="mod_authn_core.html#authtype">AuthType</a></li>
 <li><a href="mod_authn_file.html#authuserfile">AuthUserFile</a></li>
 <li><a href="mod_authz_dbd.html#authzdbdlogintoreferer">AuthzDBDLoginToReferer</a></li>

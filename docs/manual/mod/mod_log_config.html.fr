@@ -307,7 +307,7 @@ d'Apache</a></li>
       fallait être très prudent lors de l'exploitation des journaux
       bruts.</p>
 
-      <p>A la différence de la version 1.3, dans httpd 2.0, les chaînes
+      <p>A la différence de la version 1.3, depuis httpd 2.0, les chaînes
       de format <code>%b</code> et <code>%B</code> ne représentent pas
       le nombre d'octets envoyés au client, mais simplement la taille en
       octets de la réponse HTTP (les deux étant différents, par exemple,

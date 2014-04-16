@@ -35,7 +35,7 @@ for HTTP Basic authentication.</td></tr>
 <tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.1 and later</td></tr></table>
 <h3>Summary</h3>
 
-    <p>This module provides authentication front-ends such as
+    <p>This module allows authentication front-ends such as
     <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code> to authenticate users through
     an ldap directory.</p>
 
@@ -350,7 +350,7 @@ for HTTP Basic authentication.</td></tr>
     <code>ldap-filter</code>.  Other authorization types may also be
     used but may require that additional authorization modules be loaded.</p>
 
-    <p>Since v2.5.0, <a href="../expr.html">expressions</a> are supported
+    <p>Since v2.4.8, <a href="../expr.html">expressions</a> are supported
     within the LDAP require directives.</p>
 
 <h3><a name="requser" id="requser">Require ldap-user</a></h3>
@@ -848,7 +848,7 @@ authorization</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authnz_ldap</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td><em>exec:</em> was added in 2.4.6.</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td><em>exec:</em> was added in 2.4.5.</td></tr>
 </table>
     <p>A bind password to use in conjunction with the bind DN. Note
     that the bind password is probably sensitive data, and should be
@@ -858,14 +858,15 @@ authorization</td></tr>
     <p>If the value begins with exec: the resulting command will be
     executed and the first line returned to standard output by the
     program will be used as the password.</p>
-<div class="example"><pre>#Password used as-is
+<pre class="prettyprint lang-config">#Password used as-is
 AuthLDAPBindPassword secret
 
 #Run /path/to/program to get my password
 AuthLDAPBindPassword exec:/path/to/program
 
 #Run /path/to/otherProgram and provide arguments
-AuthLDAPBindPassword "exec:/path/to/otherProgram argument1"</pre></div>
+AuthLDAPBindPassword "exec:/path/to/otherProgram argument1"</pre>
+
 
 
 </div>

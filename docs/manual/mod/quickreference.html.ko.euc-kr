@@ -226,6 +226,12 @@ authentication</td></tr>
 ... &lt;/AuthnProviderAlias&gt;</a></td><td></td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">Enclose a group of directives that represent an
 extension of a base authentication provider and referenced by
 the specified alias</td></tr>
+<tr class="odd"><td><a href="mod_authnz_fcgi.html#authnzfcgicheckauthnprovider">AuthnzFcgiCheckAuthnProvider <em>provider-name</em>|<code>None</code>
+<em>option</em> ...</a></td><td></td><td>d</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enables a FastCGI application to handle the check_authn
+authentication hook.</td></tr>
+<tr><td><a href="mod_authnz_fcgi.html#authnzfcgidefineprovider">AuthnzFcgiDefineProvider <em>type</em> <em>provider-name</em>
+<em>backend-address</em></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Defines a FastCGI application as a provider for
+authentication and/or authorization</td></tr>
 <tr class="odd"><td><a href="mod_authn_core.html#authtype">AuthType None|Basic|Digest|Form</a></td><td></td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Type of user authentication</td></tr>
 <tr><td><a href="mod_authn_file.html#authuserfile">AuthUserFile <var>file-path</var></a></td><td></td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">인증할 사용자명와 암호 목록을 저장하는 문자파일명을
 지정한다</td></tr>

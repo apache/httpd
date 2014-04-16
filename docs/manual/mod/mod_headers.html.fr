@@ -29,6 +29,8 @@
 <a href="../ja/mod/mod_headers.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_headers.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
+            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Personnalisation des en-têtes de requêtes et de réponses
 HTTP</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -211,6 +213,12 @@ Header merge Cache-Control no-store env=NO_STORE</pre>
         <pre class="prettyprint lang-config">Header set Set-Cookie testcookie "expr=-z %{req:Cookie}"</pre>
 
       </li>
+      <li>
+        Ajoute un en-tête de mise en cache pour les réponses avec un
+	code d'état HTTP de 200
+        <pre class="prettyprint lang-config">Header append Cache-Control s-maxage=600 "expr=%{REQUEST_STATUS} == 200"</pre>
+
+      </li>
     </ol>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -237,24 +245,28 @@ disponible depuis la version 2.4.7 du serveur HTTP Apache.</td></tr>
 
     <p>L'argument optionnel <var>condition</var> permet de déterminer
     sur quelle table interne d'en-têtes de réponses cette directive va
-    opérer. D'autres composants du serveur peuvent avoir stocké leurs
-    en-têtes de réponses dans la table correspondant à
-    <code>onsuccess</code> ou dans celle correspondant à
-    <code>always</code>. Dans ce contexte, "Always" fait référence au
-    choix d'envoyer les en-têtes que vous ajoutez aux réponses, qu'elle
-    soient avec succès ou échouées ; par contre, si votre action est une
-    fonction d'un en-tête existant, vous devrez lire la documentation de
-    manière plus approfondie car dans ce cas, les choses se compliquent.</p>
+    opérer. En dépit du nom, la valeur par défaut de
+    <code>onsuccess</code> ne limite <em>pas</em> une <var>action</var>
+    aux réponses avec un code d'état de 2xx. Les en-têtes définis sous
+    cette condition sont encore utilisés quand par exemple une requête
+    est mandatée ou générée par un programme CGI avec <em>succès</em>,
+    et ceci même dans le cas où ils ont généré un code d'échec.</p>
 
-    <p>Vous pouvez avoir à changer la valeur par défaut
-    <code>onsuccess</code> en <code>always</code> dans des circonstances
-    similaires à celles exposées plus loin. Notez aussi que la répétition
+    <p>Lorsque votre action est une fonction agissant sur un en-tête
+    existant, vous pourrez être amené à spécifier une condition
+    <code>always</code>, en fonction de la table interne dans laquelle
+    l'en-tête original a été défini. La table qui correspond à
+    <code>always</code> est utilisée pour les réponses d'erreur générées
+    localement ainsi que pour les réponses qui ont abouti.
+    Notez aussi que la répétition
     de cette directive avec les deux conditions peut être pertinente
     dans certains scénarios, car <code>always</code> n'englobe pas
     <code>onsuccess</code> en ce qui concerne les en-têtes existants :</p>
 
     <ul>
-       <li>Vous ajoutez un en-tête à une réponse échouée (non-2xx),
+       <li>Vous ajoutez un en-tête à une réponse
+       générée localement et échouée
+       (non-2xx),
        une redirection par exemple, et dans ce cas, seule la table
        correspondant à <code>always</code> est utilisée dans la réponse
        définitive.</li>
@@ -266,6 +278,12 @@ disponible depuis la version 2.4.7 du serveur HTTP Apache.</td></tr>
        composant du serveur, mais cet en-tête n'est pas trouvé par la
        condition par défaut <code>onsuccess</code>.</li>
     </ul>
+
+    <p>Outre le paramètre <var>condition</var> décrit ci-dessus, vous
+    pouvez limiter une action en fonction de codes d'état HTTP, par
+    exemple pour les requêtes mandatées ou générées par un programme
+    CGI. Voir l'exemple qui utilise %{REQUEST_STATUS} dans la section
+    ci-dessus.</p>
 
     <p>L'action que cette directive provoque est déterminée par le
     premier argument (ou par le second argument si une
@@ -377,17 +395,20 @@ disponible depuis la version 2.4.7 du serveur HTTP Apache.</td></tr>
 	courante, ainsi que la charge moyenne pendant les cinq et les
 	quinze dernières minutes. Chaque valeur est précédée de
 	<code>l=</code> et séparée des autres par un slash
-	<code>/</code>.
+	<code>/</code>.<br />
+	Disponible depuis la version 2.4.4 du serveur HTTP Apache.
         </td></tr>
 <tr><td><code>%i</code></td>
         <td>Le pourcentage de disponibilité de httpd (0 à 100) basé sur
 	le nombre de threads et de processus disponibles. La valeur est
-	précédée de <code>i=</code>.
+	précédée de <code>i=</code>.<br />
+	Disponible depuis la version 2.4.4 du serveur HTTP Apache.
         </td></tr>
 <tr class="odd"><td><code>%b</code></td>
         <td>Le pourcentage d'utilisation de httpd (0 à 100) basé sur
 	le nombre de threads et de processus disponibles. La valeur est
-	précédée de <code>b=</code>.
+	précédée de <code>b=</code>.<br />
+	Disponible depuis la version 2.4.4 du serveur HTTP Apache.
         </td></tr>
 <tr><td><code>%{NOM_VARIABLE}e</code></td>
         <td>Le contenu de la <a href="../env.html">variable
@@ -435,8 +456,9 @@ disponible depuis la version 2.4.7 du serveur HTTP Apache.</td></tr>
     directives <code class="directive">Header</code> sont traitées juste avant
     l'envoi de la réponse sur le réseau. Cela signifie qu'il est
     possible de définir et/ou modifier la plupart des en-têtes, à
-    l'exception de ceux qui sont ajoutés par le filtre HTTP
-    d'en-tête, comme Content-Type.</p>
+    l'exception de certains en-têtes qui sont ajoutés par le filtre
+    d'en-tête HTTP. Avant la version 2.2.12, il n'était pas
+    possible de modifier l'en-tête Content-Type avec cette directive.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

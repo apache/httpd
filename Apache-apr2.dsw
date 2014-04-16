@@ -132,6 +132,9 @@ Package=<4>
     Project_Dep_Name mod_authn_socache
     End Project Dependency
     Begin Project Dependency
+    Project_Dep_Name mod_authnz_fcgi
+    End Project Dependency
+    Begin Project Dependency
     Project_Dep_Name mod_authz_core
     End Project Dependency
     Begin Project Dependency
@@ -1016,6 +1019,24 @@ Package=<4>
 ###############################################################################
 
 Project: "mod_authn_socache"=.\modules\aaa\mod_authn_socache.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_authnz_fcgi"=.\modules\aaa\mod_authnz_fcgi.dsp - Package Owner=<4>
 
 Package=<5>
 {{{

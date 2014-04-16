@@ -126,3 +126,4 @@ mod_optional_fn_export.so   0x70BB0000    0x00010000
 mod_optional_fn_import.so   0x70BC0000    0x00010000
 mod_optional_hook_export.so 0x70BD0000    0x00010000
 mod_optional_hook_import.so 0x70BE0000    0x00010000
+mod_authnz_fcgi.so          0x70BF0000    0x00020000

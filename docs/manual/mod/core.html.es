@@ -594,6 +594,7 @@ headers</td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilidad:</a></th><td>Available in Apache 2.4.2 and later</td></tr>
 </table><p>The documentation for this directive has
             not been translated yet. Please have a look at the English
             version.</p><h3>Consulte también</h3>
