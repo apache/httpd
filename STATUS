@@ -110,6 +110,19 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1587255
      +1: druggeri, ylavic, covener
 
+   * Merge mod_authnz_fcgi from trunk.
+     trunk:
+       http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/aaa/mod_authnz_fcgi.c
+       http://svn.apache.org/viewvc/httpd/httpd/trunk/docs/manual/mod/mod_authnz_fcgi.xml
+         and a line each in CMakeLists.txt and modules/aaa/config.m4
+         (It was never added to other build systems.)
+       See the 2.4.x patch mergeinfo for trunk revisions.  I've also added a tiny
+       part of r1522544 to create an entry in os/win32/BaseAddr.ref.
+     2.4.x patch: http://people.apache.org/~trawick/authnz_fcgi-2.4.txt
+       The patch includes generated doc changes in order to carry eol-style.
+     +1: trawick, jim
+     +1: gsmith, please include r1588054 (tradional Win build) 
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -215,18 +228,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic, covener
 
-   * Merge mod_authnz_fcgi from trunk.
-     trunk:
-       http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/aaa/mod_authnz_fcgi.c
-       http://svn.apache.org/viewvc/httpd/httpd/trunk/docs/manual/mod/mod_authnz_fcgi.xml
-         and a line each in CMakeLists.txt and modules/aaa/config.m4
-         (It was never added to other build systems.)
-       See the 2.4.x patch mergeinfo for trunk revisions.  I've also added a tiny
-       part of r1522544 to create an entry in os/win32/BaseAddr.ref.
-     2.4.x patch: http://people.apache.org/~trawick/authnz_fcgi-2.4.txt
-       The patch includes generated doc changes in order to carry eol-style.
-     +1: trawick, jim
-
    * mod_ssl: bring SNI behavior into better conformance with RFC 6066
      (also addresses PR 56241)
      trunk patch: https://svn.apache.org/r1585090
@@ -250,7 +251,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: https://svn.apache.org/r1514255
                   https://svn.apache.org/r1514267
      2.4.x patch: http://people.apache.org/~jailletc36/r1514255.patch
-     +1: jailletc36
+     +1: jailletc36, gsmith
 
    * mod_proxy_wstunnel: wstunnel rollup for connection handling
      trunk patch: http://svn.apache.org/r1587036 (set backend->close)
@@ -263,7 +264,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    *) mod_headers: allow expr= in the value argument of Header/RequestHeader
       trunk patch: http://svn.apache.org/r1546801
       2.4.x patch: trunk works
-      +1 covener
+      +1 covener, gsmith
 
 OTHER PROPOSALS
 
