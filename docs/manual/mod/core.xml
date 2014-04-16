@@ -1174,6 +1174,7 @@ version 2.3.9.</compatibility>
     </highlight>
 
 </usage>
+<seealso><directive module="core">Warning</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -4429,6 +4430,31 @@ hostname or IP address</description>
 <seealso><a href="../sections.html">How &lt;Directory&gt;, &lt;Location&gt;
     and &lt;Files&gt; sections work</a> for an explanation of how these
     different sections are combined when a request is received</seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>Warning</name>
+<description>Show custom warning message</description>
+<syntax>Warning <var>message</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<compatibility>2.5.0 and later</compatibility>
+
+<usage>
+    <p>If an warning can be detected within the configuration, this
+    directive can be used to generate a custom warning message.</p>
+
+    <highlight language="config">
+# Example
+# show warning if mod_include is not loaded
+&lt;IfModule !include_module&gt;
+  Warning "mod_include is required by mod_foo. mod_foo will not be loaded"
+&lt;/IfModule&gt;
+    </highlight>
+
+</usage>
+<seealso><directive module="core">Error</directive></seealso>
 </directivesynopsis>
 
 </modulesynopsis>
