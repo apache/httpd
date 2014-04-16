@@ -269,7 +269,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1587654 (set backend->close)
      2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-wstunnel.diff 
      +1: covener
-    
+
+   *) mod_headers: allow expr= in the value argument of Header/RequestHeader
+      trunk patch: http://svn.apache.org/r1546801
+      2.4.x patch: trunk works
+      +1 covener
+
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
