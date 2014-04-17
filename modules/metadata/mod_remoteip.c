@@ -230,10 +230,23 @@ static int remoteip_modify_request(request_rec *r)
     char *parse_remote;
     char *eos;
     unsigned char *addrbyte;
+
+    /* If no RemoteIPInternalProxy, RemoteIPInternalProxyList, RemoteIPTrustedProxy
+       or RemoteIPTrustedProxyList directive is configured,
+       all proxies will be considered as external trusted proxies.
+     */
     void *internal = NULL;
 
     if (!config->header_name) {
         return DECLINED;
+    }
+ 
+    if (config->proxymatch_ip) {
+        /* This indicates that a RemoteIPInternalProxy, RemoteIPInternalProxyList, RemoteIPTrustedProxy
+           or RemoteIPTrustedProxyList directive is configured.
+           In this case, default to internal proxy.
+         */
+        internal = (void *) 1;
     }
 
     remote = (char *) apr_table_get(r->headers_in, config->header_name);
@@ -254,7 +267,13 @@ static int remoteip_modify_request(request_rec *r)
             match = (remoteip_proxymatch_t *)config->proxymatch_ip->elts;
             for (i = 0; i < config->proxymatch_ip->nelts; ++i) {
                 if (apr_ipsubnet_test(match[i].ip, temp_sa)) {
-                    internal = match[i].internal;
+                    if (internal) {
+                        /* Allow an internal proxy to present an external proxy,
+                           but do not allow an external proxy to present an internal proxy.
+                           In this case, the presented internal proxy will be considered external.
+                         */
+                        internal = match[i].internal;
+                    }
                     break;
                 }
             }
