@@ -269,6 +269,8 @@ Alias /myapp /opt/myapp-1.2.3
                  IS_SUBREQ<br />
                  HTTPS<br />
                  REQUEST_SCHEME<br />
+                 REMOTE_ADDR<br />
+                 CONN_REMOTE_ADDR<br />
               </td>
             </tr>
           </table>
@@ -871,7 +873,7 @@ RewriteRule  ^/$                 /homepage.std.html  [L]</pre>
       <dt><code>InheritBefore</code></dt>
       <dd>
       <p> Like <code>Inherit</code> above, but the rules from the parent scope
-      are applied <strong>before</strong> rules specified in the child scope.
+      are applied <strong>before</strong> rules specified in the child scope.<br />
       Available in Apache HTTP Server 2.3.10 and later.</p>
       </dd>
 
@@ -882,8 +884,8 @@ RewriteRule  ^/$                 /homepage.std.html  [L]</pre>
       the configuration of the current configuration. It is equivalent to
       specifying <code>RewriteOptions Inherit</code> in all child
       configurations. See the <code>Inherit</code> option for more details
-      on how the parent-child relationships are handled. Available in Apache
-      HTTP Server 2.4.8 and later.</p>
+      on how the parent-child relationships are handled.<br />
+      Available in Apache HTTP Server 2.4.8 and later.</p>
       </dd>
 
       <dt><code>InheritDownBefore</code></dt>
@@ -891,7 +893,8 @@ RewriteRule  ^/$                 /homepage.std.html  [L]</pre>
 
       <p>Like <code>InheritDown</code> above, but the rules from the current
       scope are applied <strong>before</strong> rules specified in any child's
-      scope. Available in Apache HTTP Server 2.4.8 and later.</p>
+      scope.<br />
+      Available in Apache HTTP Server 2.4.8 and later.</p>
       </dd>
 
       <dt><code>IgnoreInherit</code></dt>
@@ -899,8 +902,8 @@ RewriteRule  ^/$                 /homepage.std.html  [L]</pre>
 
       <p>This option forces the current and child configurations to ignore
       all rules that would be inherited from a parent specifying
-      <code>InheritDown</code> or <code>InheritDownBefore</code>. Available
-      in Apache HTTP Server 2.4.8 and later.</p>
+      <code>InheritDown</code> or <code>InheritDownBefore</code>.<br />
+      Available in Apache HTTP Server 2.4.8 and later.</p>
       </dd>
 
       <dt><code>AllowNoSlash</code></dt>
@@ -914,8 +917,8 @@ RewriteRule  ^/$                 /homepage.std.html  [L]</pre>
       is set to off, the <code>AllowNoSlash</code> option can be enabled to ensure
       that rewrite rules are no longer ignored. This option makes it possible to
       apply rewrite rules within .htaccess files that match the directory without
-      a trailing slash, if so desired. Available in Apache HTTP Server 2.4.0 and
-      later.</p>
+      a trailing slash, if so desired.<br />
+      Available in Apache HTTP Server 2.4.0 and later.</p>
       </dd>
 
       <dt><code>AllowAnyURI</code></dt>
@@ -932,7 +935,8 @@ RewriteRule  ^/$                 /homepage.std.html  [L]</pre>
       <code>AllowAnyURI</code> option can be enabled, and
       <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> will apply the rule set to any
       request URI string, regardless of whether that string matches
-      the URL-path grammar required by the HTTP specification.</p>
+      the URL-path grammar required by the HTTP specification.<br />
+      Available in Apache HTTP Server 2.4.3 and later.</p>
 
       <div class="warning">
       <h3>Security Warning</h3> 
@@ -952,8 +956,9 @@ RewriteRule  ^/$                 /homepage.std.html  [L]</pre>
 
       <p>With this option, the value of <code class="directive"><a href="#rewritebase">RewriteBase</a></code> is copied from where it's explicitly defined
       into any sub-directory or sub-location that doesn't define its own
-      <code class="directive"><a href="#rewritebase">RewriteBase</a></code>. Available in 
-      Apache HTTP Server 2.5 and later only.</p>
+      <code class="directive"><a href="#rewritebase">RewriteBase</a></code>. This was the
+      default behavior in 2.4.0 through 2.4.3, and the flag to restore it is
+      available Apache HTTP Server 2.4.4 and later.</p>
       </dd>
       </dl>
 
