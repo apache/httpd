@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.10
 
+  *) mod_auth_form: Make sure the optional functions are loaded even when
+     the AuthFormProvider isn't specified. [Graham Leggett]
+
   *) mod_ssl: avoid processing bogus SSLCertificateKeyFile values
      (and logging garbled file names). PR 56306. [Kaspar Brand]
 
