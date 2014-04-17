@@ -96,6 +96,10 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
+   * Fix build breakage when exception hooks aren't enabled
+     trunk patch: r1546835, r1546836
+     2.4.x patch: http://people.apache.org/~trawick/no_exception_hook_breakage.txt
+     +1: trawick
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
