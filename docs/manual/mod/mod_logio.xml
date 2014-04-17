@@ -52,7 +52,7 @@
 <section id="formats">
 <title>Custom Log Formats</title>
 
-    <p>This modules adds three new logging directives. The characteristics of the
+    <p>This module adds three new logging directives. The characteristics of the
     request itself are logged by placing "<code>%</code>" directives in
     the format string, which are replaced in the log file by the values as
     follows:</p>
