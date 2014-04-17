@@ -80,7 +80,7 @@
     authorization types with <code>dbd-group</code>, <code>dbd-login</code> and
     <code>dbd-logout</code>.</p>
 
-    <p>Since v2.5.0, <a href="../expr.html">expressions</a> are supported
+    <p>Since v2.4.8, <a href="../expr.html">expressions</a> are supported
     within the DBD require directives.</p>
 
 <h3><a name="reqgroup" id="reqgroup">Require dbd-group</a></h3>
