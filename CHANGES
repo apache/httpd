@@ -34,16 +34,6 @@ Changes with Apache 2.5.0
      is modified. The 'NoChange' parameter mimics 2.2.x behavior.
      PR 45023, PR 39727. [Eric Covener]
 
-  *) mod_ssl: fix merging of global and vhost-level settings with the
-     SSLCertificateFile, SSLCertificateKeyFile, and SSLOpenSSLConfCmd
-     directives. PR 56353. [Kaspar Brand]
-
-  *) mod_ssl: avoid processing bogus SSLCertificateKeyFile values
-     (and logging garbled file names). PR 56306. [Kaspar Brand]
-
-  *) mod_proxy_fcgi: Fix sending of response without some HTTP headers
-     that might be set by filters.  [Jim Riggs <jim riggs.me>]
-
   *) mod_rewrite: Add 'BNF' (backreferences-no-plus) flag to RewriteRule to 
      allow spaces in backreferences to be encoded as %20 instead of '+'.
      [Eric Covener]
@@ -52,10 +42,6 @@ Changes with Apache 2.5.0
      no longer send warning-level unrecognized_name(112) alerts,
      and limit startup warnings to cases where an OpenSSL version
      without TLS extension support is used. PR 56241. [Kaspar Brand]
-
-  *) mod_proxy_html: Do not delete the wrong data from HTML code when a
-     "http-equiv" meta tag specifies a Content-Type behind any other
-     "http-equiv" meta tag. PR 56287 [Micha Lenk <micha lenk info>]
 
   *) mod_expires: don't add Expires header to error responses (4xx/5xx),
      be they generated or forwarded. PR 55669. [ Yann Ylavic ]
@@ -66,16 +52,6 @@ Changes with Apache 2.5.0
   *) mod_ssl: Add SSLOCSPUseRequestNonce directive to control whether or not
      OCSP requests should use a nonce to be checked against the responder's
      one. PR 56233. [ Yann Ylavic ]
-
-  *) mod_reqtimeout: Resolve unexpected timeouts on keepalive requests 
-     under the Event MPM. PR56216.  [Frank Meier <frank meier ergon ch>]
-
-  *) mod_lua: Add r:wspeek for checking if there is any data waiting on the line
-     [Daniel Gruno]
-
-  *) mod_proxy: Do not try to parse the regular expressions passed by
-     ProxyPassMatch as URL as they do not follow their syntax.
-     PR 56074. [Ruediger Pluem]
 
   *) mod_dir: Default to 2.2-like behavior and skip execution when method is
      neither GET nor POST, such as for DAV requests. PR 54914. [Chris Darroch]
@@ -104,14 +80,6 @@ Changes with Apache 2.5.0
      configured SSL CA certificates to stdout the same way as DUMP_CERTS does.
      [Jan Kaluza]
 
-  *) mod_headers: Allow the "value" parameter of Header and RequestHeader to 
-     contain an ap_expr expression if prefixed with "expr=". [Eric Covener]
-
-  *) Add suspend_connection and resume_connection hooks to notify modules
-     when the thread/connection relationship changes.  (Currently implemented
-     only for the Event MPM; should be implemented for all async MPMs.)
-     [Jeff Trawick]
-
   *) mod_ssl: Don't flush when an EOS is received. Prepares mod_ssl
      to support write completion. [Graham Leggett]
 
@@ -127,9 +95,6 @@ Changes with Apache 2.5.0
 
   *) core: ensure any abnormal exit is reported to stderr if it's a tty.
      PR 55670 [Nick Kew]
-
-  *) mod_auth_form: Make sure the optional functions are loaded even when
-     the AuthFormProvider isn't specified. [Graham Leggett]
 
   *) mod_lua: Let the Inter-VM get/set functions work with a global 
      shared memory pool instead of a per-process pool. [Daniel Gruno]
@@ -157,10 +122,6 @@ Changes with Apache 2.5.0
   *) mod_status, mod_echo: Fix the display of client addresses.
      They were truncated to 31 characters which is not enough for IPv6 addresses.
      PR 54848 [Bernhard Schmidt <berni birkenwald de>]
-
-  *) mod_authnz_fcgi: New module to enable FastCGI authorizer
-     applications to authenticate and/or authorize clients.
-     [Jeff Trawick]
 
   *) core: Add ap_log_data(), ap_log_rdata(), etc. for logging buffers.
      [Jeff Trawick]
