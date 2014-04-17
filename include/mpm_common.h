@@ -392,30 +392,54 @@ extern const char *ap_mpm_set_exception_hook(cmd_parms *cmd, void *dummy,
                                              const char *arg);
 #endif
 
+/**
+ * This hook allows modules to be called at intervals by some MPMs
+ * in the parent process.  IOW, this is not portable to all platforms
+ * or MPMs.
+ * @param p The pconf pool
+ * @param s The main server
+ * @return OK or DECLINED (errors are ignored)
+ * @ingroup hooks
+ */
 AP_DECLARE_HOOK(int,monitor,(apr_pool_t *p, server_rec *s))
 
 /* register modules that undertake to manage system security */
 AP_DECLARE(int) ap_sys_privileges_handlers(int inc);
 AP_DECLARE_HOOK(int, drop_privileges, (apr_pool_t * pchild, server_rec * s))
 
-/* implement the ap_mpm_query() function
+/**
+ * implement the ap_mpm_query() function
  * The MPM should return OK+APR_ENOTIMPL for any unimplemented query codes;
  * modules which intercede for specific query codes should DECLINE for others.
+ * @ingroup hooks
  */
 AP_DECLARE_HOOK(int, mpm_query, (int query_code, int *result, apr_status_t *rv))
 
-/* register the specified callback */
+/**
+ * register the specified callback
+ * @ingroup hooks
+ */
 AP_DECLARE_HOOK(apr_status_t, mpm_register_timed_callback,
                 (apr_time_t t, ap_mpm_callback_fn_t *cbfn, void *baton))
 
-/* register the specified callback */
+/**
+ * register the specified callback
+ * @ingroup hooks
+ */
 AP_DECLARE_HOOK(apr_status_t, mpm_register_socket_callback,
                 (apr_socket_t **s, apr_pool_t *p, int for_read, ap_mpm_callback_fn_t *cbfn, void *baton))
-/* unregister the specified callback */
+
+/**
+ * Unregister the specified callback
+ * @ingroup hooks
+ */
 AP_DECLARE_HOOK(apr_status_t, mpm_unregister_socket_callback,
                 (apr_socket_t **s, apr_pool_t *p))
 
-/* get MPM name (e.g., "prefork" or "event") */
+/**
+ * Get MPM name (e.g., "prefork" or "event")
+ * @ingroup hooks
+ */
 AP_DECLARE_HOOK(const char *,mpm_get_name,(void))
 
 /**
@@ -435,6 +459,7 @@ AP_DECLARE_HOOK(const char *,mpm_get_name,(void))
  * @note Resumption and subsequent suspension of a connection solely to perform
  * I/O by the MPM, with no execution of non-MPM code, may not necessarily result
  * in a call to this hook.
+ * @ingroup hooks
  */
 AP_DECLARE_HOOK(void, suspend_connection,
                 (conn_rec *c, request_rec *r))
@@ -455,6 +480,7 @@ AP_DECLARE_HOOK(void, suspend_connection,
  * @note Resumption and subsequent suspension of a connection solely to perform
  * I/O by the MPM, with no execution of non-MPM code, may not necessarily result
  * in a call to this hook.
+ * @ingroup hooks
  */
 AP_DECLARE_HOOK(void, resume_connection,
                 (conn_rec *c, request_rec *r))
