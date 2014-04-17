@@ -2,6 +2,10 @@
 
 Changes with Apache 2.4.10
 
+  *) mod_ssl: fix merging of global and vhost-level settings with the
+     SSLCertificateFile, SSLCertificateKeyFile, and SSLOpenSSLConfCmd
+     directives. PR 56353. [Kaspar Brand]
+
   *) mod_headers: Allow the "value" parameter of Header and RequestHeader to 
      contain an ap_expr expression if prefixed with "expr=". [Eric Covener]
 
