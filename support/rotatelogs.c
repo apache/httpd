@@ -24,6 +24,7 @@
 #include "apr_time.h"
 #include "apr_getopt.h"
 #include "apr_thread_proc.h"
+#include "apr_signal.h"
 #if APR_FILES_AS_SOCKETS
 #include "apr_poll.h"
 #endif
@@ -557,6 +558,10 @@ int main (int argc, const char * const argv[])
             break;
         case 'p':
             config.postrotate_prog = opt_arg;
+#ifdef SIGCHLD
+            /* Prevent creation of zombies (on modern Unix systems). */
+            apr_signal(SIGCHLD, SIG_IGN);
+#endif
             break;
         case 'f':
             config.force_open = 1;
