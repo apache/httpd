@@ -454,6 +454,11 @@ ProxyPass /examples http://backend.example.com/examples timeout=10</pre>
     <p>See also the <code class="directive"><a href="#proxypreservehost">ProxyPreserveHost</a></code> and <code class="directive"><a href="#proxyvia">ProxyVia</a></code> directives, which control
     other request headers.</p>
 
+    <p>Note:  If you need to specify custom request headers to be
+    added to the forwarded request, use the 
+    <code class="directive"><a href="../mod/mod_headers.html#requestheader">RequestHeader</a></code>
+    directive.</p>
+
    </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="BalancerGrowth" id="BalancerGrowth">BalancerGrowth</a> <a name="balancergrowth" id="balancergrowth">Directive</a></h2>
