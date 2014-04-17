@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_remoteip: Prevent an external proxy from presenting an internal
+     proxy. PR 55962. [Mike Rumph]
+
   *) mod_ssl: Add hooks to allow other modules to perform processing at
      several stages of initialization and connection handling.  See
      mod_ssl_openssl.h.  [Jeff Trawick]
