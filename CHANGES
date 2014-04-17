@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.10
 
+  *) mod_headers: Allow the "value" parameter of Header and RequestHeader to 
+     contain an ap_expr expression if prefixed with "expr=". [Eric Covener]
+
   *) rotatelogs: Avoid creation of zombie processes when -p is used on
      Unix platforms.  [Joe Orton]
 
