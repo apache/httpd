@@ -106,6 +106,17 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     2.4.x patch: trunk patch works, modulo CHANGES
     +1: minfrin, jim, ylavic
 
+   * mod_ssl: only read "active" values from the key_files array (PR 56306)
+     trunk patch: https://svn.apache.org/r1585918
+     2.4.x patch: trunk patch works (modulo CHANGES)
+     +1: kbrand, ylavic, jorton
+
+   * mod_ssl: reverse the order when merging global and vhost-level config
+     arrays (PR 56353)
+     trunk patch: https://svn.apache.org/r1585919
+     2.4.x patch: trunk patch works (modulo CHANGES)
+     +1: kbrand, ylavic, jorton
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -215,18 +226,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      (also addresses PR 56241)
      trunk patch: https://svn.apache.org/r1585090
      2.4.x patch: trunk patch works (modulo CHANGES)
-     +1: kbrand
-
-   * mod_ssl: only read "active" values from the key_files array (PR 56306)
-     trunk patch: https://svn.apache.org/r1585918
-     2.4.x patch: trunk patch works (modulo CHANGES)
-     +1: kbrand, ylavic
-
-   * mod_ssl: reverse the order when merging global and vhost-level config
-     arrays (PR 56353)
-     trunk patch: https://svn.apache.org/r1585919
-     2.4.x patch: trunk patch works (modulo CHANGES)
-     +1: kbrand, ylavic
+     +1: kbrand, jorton
 
    * core: synch with trunk
        - follow-up to r813376: finish reverting r808965 (ServerTokens set foo)
