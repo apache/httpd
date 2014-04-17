@@ -310,7 +310,7 @@ Header merge Cache-Control no-store env=NO_STORE
 <name>Header</name>
 <description>Configure HTTP response headers</description>
 <syntax>Header [<var>condition</var>] add|append|echo|edit|edit*|merge|set|setifempty|unset|note
-<var>header</var> [<var>value</var>] [<var>replacement</var>]
+<var>header</var> [<var>[expr=]value]</var>] [<var>replacement</var>]
 [early|env=[!]<var>variable</var>]|expr=<var>expression</var>]
 </syntax>
 <contextlist><context>server config</context><context>virtual host</context>
@@ -437,9 +437,12 @@ SetIfEmpty and note available in 2.4.7 and later.</compatibility>
     <code>add</code> a <var>value</var> is specified as the next argument.
     If <var>value</var>
     contains spaces, it should be surrounded by double quotes.
-    <var>value</var> may be a character string, a string containing format
-    specifiers or a combination of both. The following format specifiers
-    are supported in <var>value</var>:</p>
+    <var>value</var> may be a character string, a string containing 
+    <module>mod_headers</module> specific format specifiers (and character 
+    literals), or an <a href="../expr.html">ap_expr</a> expression prefixed
+    with <em>expr=</em></p>
+    
+    <p> The following format specifiers are supported in <var>value</var>:</p>
 
     <table border="1" style="zebra">
     <columnspec><column width=".25"/><column width=".75"/></columnspec>
