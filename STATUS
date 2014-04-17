@@ -100,6 +100,14 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * core: synch with trunk
+       - follow-up to r813376: finish reverting r808965 (ServerTokens set foo)
+       - tweak syntax strings for ServerTokens
+     trunk patch: https://svn.apache.org/r1514255
+                  https://svn.apache.org/r1514267
+     2.4.x patch: http://people.apache.org/~jailletc36/r1514255.patch
+     +1: jailletc36, gsmith, ylavic
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -211,14 +219,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: https://svn.apache.org/r1585090
      2.4.x patch: trunk patch works (modulo CHANGES)
      +1: kbrand, jorton
-
-   * core: synch with trunk
-       - follow-up to r813376: finish reverting r808965 (ServerTokens set foo)
-       - tweak syntax strings for ServerTokens
-     trunk patch: https://svn.apache.org/r1514255
-                  https://svn.apache.org/r1514267
-     2.4.x patch: http://people.apache.org/~jailletc36/r1514255.patch
-     +1: jailletc36, gsmith
 
    * mod_proxy_wstunnel: wstunnel rollup for connection handling
      trunk patch: http://svn.apache.org/r1587036 (set backend->close)
