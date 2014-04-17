@@ -448,6 +448,11 @@ ProxyPass /examples http://backend.example.com/examples timeout=10
     module="mod_proxy">ProxyVia</directive> directives, which control
     other request headers.</p>
 
+    <p>Note:  If you need to specify custom request headers to be
+    added to the forwarded request, use the 
+    <directive module="mod_headers">RequestHeader</directive>
+    directive.</p>
+
    </section> <!--/x-headers -->
 
 
