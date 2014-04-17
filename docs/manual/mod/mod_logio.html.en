@@ -68,7 +68,7 @@
 <h2><a name="formats" id="formats">Custom Log Formats</a></h2>
 
 
-    <p>This modules adds two new logging directives. The characteristics of the
+    <p>This modules adds three new logging directives. The characteristics of the
     request itself are logged by placing "<code>%</code>" directives in
     the format string, which are replaced in the log file by the values as
     follows:</p>
