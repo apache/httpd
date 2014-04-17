@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.10
 
+  *) rotatelogs: Avoid creation of zombie processes when -p is used on
+     Unix platforms.  [Joe Orton]
+
   *) mod_authnz_fcgi: New module to enable FastCGI authorizer
      applications to authenticate and/or authorize clients.
      [Jeff Trawick]
