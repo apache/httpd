@@ -100,11 +100,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_auth_form: Make sure the optional functions are loaded even when
-    the AuthFormProvider isn't specified. PR 56351.
-    trunk patch: https://svn.apache.org/r1531672
-    2.4.x patch: trunk patch works, modulo CHANGES
-    +1: minfrin, jim, ylavic
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
