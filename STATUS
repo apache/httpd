@@ -117,6 +117,11 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch works (modulo CHANGES)
      +1: kbrand, ylavic, jorton
 
+   * mod_headers: allow expr= in the value argument of Header/RequestHeader
+     trunk patch: http://svn.apache.org/r1546801
+     2.4.x patch: trunk works
+     +1 covener, gsmith, ylavic
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -242,12 +247,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1587053 (poll fixes / frontend connection close)
                   http://svn.apache.org/r1587654 (set backend->close)
      2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-wstunnel.diff 
-     +1: covener
-
-   *) mod_headers: allow expr= in the value argument of Header/RequestHeader
-      trunk patch: http://svn.apache.org/r1546801
-      2.4.x patch: trunk works
-      +1 covener, gsmith
+     +1: covener, ylavic
 
 OTHER PROPOSALS
 
