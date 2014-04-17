@@ -2,6 +2,10 @@
 
 Changes with Apache 2.4.10
 
+  *) mod_proxy_html: Avoid some possible memory access violation in case of
+     specially crafted files, when the ProxyHTMLMeta directive is turned on.
+     Follow up of PR 56287 [Christophe Jaillet]
+
   *) mod_auth_form: Make sure the optional functions are loaded even when
      the AuthFormProvider isn't specified. [Graham Leggett]
 
