@@ -100,12 +100,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_ssl: workaround for SSLCertificateFile in 2.4.8 or later,
-     when used with OpenSSL prior to 0.9.8h and not specifying
-     an SSLCertificateChainFile (PR 56410)
-     trunk patch: https://svn.apache.org/r1588427
-     2.4.x patch: trunk patch works (modulo CHANGES)
-     +1: kbrand, ylavic, jim
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]

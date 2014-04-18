@@ -2,6 +2,10 @@
 
 Changes with Apache 2.4.10
 
+  *) mod_ssl: add workaround for SSLCertificateFile when using OpenSSL
+     versions before 0.9.8h and not specifying an SSLCertificateChainFile
+     (regression introduced with 2.4.8). PR 56410. [Kaspar Brand]
+
   *) mod_ssl: bring SNI behavior into better conformance with RFC 6066:
      no longer send warning-level unrecognized_name(112) alerts,
      and limit startup warnings to cases where an OpenSSL version
