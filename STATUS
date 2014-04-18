@@ -100,14 +100,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_proxy_wstunnel: wstunnel rollup for connection handling
-     trunk patch: http://svn.apache.org/r1587036 (set backend->close)
-                  http://svn.apache.org/r1587040 (remove reqtimeout)
-                  http://svn.apache.org/r1587053 (poll fixes / frontend connection close)
-                  http://svn.apache.org/r1587654 (set backend->close)
-     2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-wstunnel.diff 
-     +1: covener, ylavic, jim
-
    * mod_ssl: workaround for SSLCertificateFile in 2.4.8 or later,
      when used with OpenSSL prior to 0.9.8h and not specifying
      an SSLCertificateChainFile (PR 56410)

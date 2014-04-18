@@ -49,6 +49,14 @@ Changes with Apache 2.4.10
      when the thread/connection relationship changes.  (Should be implemented
      for any third-party async MPMs.)  [Jeff Trawick]
 
+  *) mod_proxy_wstunnel: Don't issue AH02447 and log a 500 on routine 
+     hangups from websockets origin servers. PR 56299
+     [Yann Ylavic, Edward Lu <Chaosed0 gmail com>, Eric Covener] 
+
+  *) mod_proxy_wstunnel: Don't pool backend websockets connections,
+     because we need to handshake every time. PR 55890.
+     [Eric Covener]
+
   *) mod_lua: Redesign how request record table access behaves,
      in order to utilize the request record from within these tables.
      [Daniel Gruno]
