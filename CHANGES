@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_proxy: When ping/pong is configured for a worker, don't send or
+     forward "100 Continue" (interim) response to the client if it does
+     not expect one. [Yann Ylavic]
+
   *) mod_ssl: add workaround for SSLCertificateFile when using OpenSSL
      versions before 0.9.8h and not specifying an SSLCertificateChainFile
      (regression introduced with 2.4.8). PR 56410. [Kaspar Brand]
