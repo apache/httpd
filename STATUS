@@ -112,12 +112,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~jailletc36/r1514255.patch
      +1: jailletc36, gsmith, ylavic
 
-   * mod_ssl: bring SNI behavior into better conformance with RFC 6066
-     (also addresses PR 56241)
-     trunk patch: https://svn.apache.org/r1585090
-     2.4.x patch: trunk patch works (modulo CHANGES)
-     +1: kbrand, jorton, ylavic
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]

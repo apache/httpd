@@ -1399,13 +1399,16 @@ apr_status_t ssl_init_ConfigureServer(server_rec *s,
 
 apr_status_t ssl_init_CheckServers(server_rec *base_server, apr_pool_t *p)
 {
-    server_rec *s, *ps;
+    server_rec *s;
     SSLSrvConfigRec *sc;
+#ifndef HAVE_TLSEXT
+    server_rec *ps;
     apr_hash_t *table;
     const char *key;
     apr_ssize_t klen;
 
     BOOL conflict = FALSE;
+#endif
 
     /*
      * Give out warnings when a server has HTTPS configured
@@ -1433,11 +1436,11 @@ apr_status_t ssl_init_CheckServers(server_rec *base_server, apr_pool_t *p)
         }
     }
 
+#ifndef HAVE_TLSEXT
     /*
      * Give out warnings when more than one SSL-aware virtual server uses the
-     * same IP:port. This doesn't work because mod_ssl then will always use
-     * just the certificate/keys of one virtual host (which one cannot be said
-     * easily - but that doesn't matter here).
+     * same IP:port and an OpenSSL version without support for TLS extensions
+     * (SNI in particular) is used.
      */
     table = apr_hash_make(p);
 
@@ -1455,17 +1458,10 @@ apr_status_t ssl_init_CheckServers(server_rec *base_server, apr_pool_t *p)
         klen = strlen(key);
 
         if ((ps = (server_rec *)apr_hash_get(table, key, klen))) {
-#ifndef HAVE_TLSEXT
-            int level = APLOG_WARNING;
-            const char *problem = "conflict";
-#else
-            int level = APLOG_DEBUG;
-            const char *problem = "overlap";
-#endif
-            ap_log_error(APLOG_MARK, level, 0, base_server,
-                         "Init: SSL server IP/port %s: "
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, base_server,
+                         "Init: SSL server IP/port conflict: "
                          "%s (%s:%d) vs. %s (%s:%d)",
-                         problem, ssl_util_vhostid(p, s),
+                         ssl_util_vhostid(p, s),
                          (s->defn_name ? s->defn_name : "unknown"),
                          s->defn_line_number,
                          ssl_util_vhostid(p, ps),
@@ -1479,17 +1475,14 @@ apr_status_t ssl_init_CheckServers(server_rec *base_server, apr_pool_t *p)
     }
 
     if (conflict) {
-#ifndef HAVE_TLSEXT
         ap_log_error(APLOG_MARK, APLOG_WARNING, 0, base_server, APLOGNO(01917)
-                     "Init: You should not use name-based "
-                     "virtual hosts in conjunction with SSL!!");
-#else
-        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, base_server, APLOGNO(02292)
-                     "Init: Name-based SSL virtual hosts only "
-                     "work for clients with TLS server name indication "
-                     "support (RFC 4366)");
-#endif
+                     "Init: Name-based SSL virtual hosts require "
+                     "an OpenSSL version with support for TLS extensions "
+                     "(RFC 6066 - Server Name Indication / SNI), "
+                     "but the currently used library version (%s) is "
+                     "lacking this feature", SSLeay_version(SSLEAY_VERSION));
     }
+#endif
 
     return APR_SUCCESS;
 }

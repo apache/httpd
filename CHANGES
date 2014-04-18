@@ -2,6 +2,11 @@
 
 Changes with Apache 2.4.10
 
+  *) mod_ssl: bring SNI behavior into better conformance with RFC 6066:
+     no longer send warning-level unrecognized_name(112) alerts,
+     and limit startup warnings to cases where an OpenSSL version
+     without TLS extension support is used. PR 56241. [Kaspar Brand]
+
   *) mod_proxy_html: Avoid some possible memory access violation in case of
      specially crafted files, when the ProxyHTMLMeta directive is turned on.
      Follow up of PR 56287 [Christophe Jaillet]
