@@ -913,6 +913,8 @@ static apr_status_t ssl_init_server_certs(server_rec *s,
          i++) {
         key_id = apr_psprintf(ptemp, "%s:%d", vhost_id, i);
 
+        ERR_clear_error();
+
         /* first the certificate (public key) */
         if (mctx->cert_chain) {
             if ((SSL_CTX_use_certificate_file(mctx->ssl_ctx, certfile,

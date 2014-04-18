@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_ssl: add workaround for SSLCertificateFile when using OpenSSL
+     versions before 0.9.8h and not specifying an SSLCertificateChainFile
+     (regression introduced with 2.4.8). PR 56410. [Kaspar Brand]
+
   *) mod_remoteip: Prevent an external proxy from presenting an internal
      proxy. PR 55962. [Mike Rumph]
 
