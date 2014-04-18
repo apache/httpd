@@ -4193,7 +4193,6 @@ static int apply_rewrite_rule(rewriterule_entry *p, rewrite_ctx *ctx)
                     r->filename));
 
         r->filename = apr_pstrcat(r->pool, "proxy:", r->filename, NULL);
-        apr_table_setn(r->notes, "rewrite-proxy", "1");
         return 1;
     }
 
