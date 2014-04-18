@@ -41,11 +41,6 @@ Changes with Apache 2.5.0
      allow spaces in backreferences to be encoded as %20 instead of '+'.
      [Eric Covener]
      
-  *) mod_ssl: bring SNI behavior into better conformance with RFC 6066:
-     no longer send warning-level unrecognized_name(112) alerts,
-     and limit startup warnings to cases where an OpenSSL version
-     without TLS extension support is used. PR 56241. [Kaspar Brand]
-
   *) mod_expires: don't add Expires header to error responses (4xx/5xx),
      be they generated or forwarded. PR 55669. [ Yann Ylavic ]
 
