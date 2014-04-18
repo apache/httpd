@@ -100,18 +100,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * proxy_util.c: Allow mod_rewrite to also use UDS for proxied links.
-     trunk patch: http://svn.apache.org/r1543174
-                  http://svn.apache.org/r1560367
-                  http://svn.apache.org/r1560546
-                  http://svn.apache.org/r1560689
-                  http://svn.apache.org/r1560979
-                  http://svn.apache.org/r1561137
-                  http://svn.apache.org/r1561660
-     2.4.x patch: trunk works
-                  http://people.apache.org/~jim/patches/uds-rewrite.patch
-     +1: jim, humbedooh, ylavic
-
    * mod_proxy_wstunnel: wstunnel rollup for connection handling
      trunk patch: http://svn.apache.org/r1587036 (set backend->close)
                   http://svn.apache.org/r1587040 (remove reqtimeout)
