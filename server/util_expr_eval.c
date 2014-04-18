@@ -885,7 +885,7 @@ AP_DECLARE(const char *) ap_expr_str_exec_re(request_rec *r,
 {
     ap_expr_eval_ctx_t ctx;
     int dont_vary, rc;
-    const char *tmp_source = NULL, *vary_this = NULL;
+    const char *tmp_source, *vary_this;
     ap_regmatch_t tmp_pmatch[AP_MAX_REG_MATCH];
     const char *result;
 
@@ -896,6 +896,9 @@ AP_DECLARE(const char *) ap_expr_str_exec_re(request_rec *r,
         *err = NULL;
         return (const char *)info->root_node->node_arg1;
     }
+
+    tmp_source = NULL;
+    vary_this = NULL;
 
     dont_vary = (info->flags & AP_EXPR_FLAG_DONT_VARY);
 
