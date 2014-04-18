@@ -750,14 +750,8 @@ int ap_proxy_http_request(apr_pool_t *p, request_rec *r,
     if (!r->kept_body && r->main) {
         /* XXX: Why DON'T sub-requests use keepalives? */
         p_conn->close = 1;
-        if (old_cl_val) {
-            old_cl_val = NULL;
-            apr_table_unset(r->headers_in, "Content-Length");
-        }
-        if (old_te_val) {
-            old_te_val = NULL;
-            apr_table_unset(r->headers_in, "Transfer-Encoding");
-        }
+        old_cl_val = NULL;
+        old_te_val = NULL;
         rb_method = RB_STREAM_CL;
         e = apr_bucket_eos_create(input_brigade->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(input_brigade, e);
@@ -783,7 +777,6 @@ int ap_proxy_http_request(apr_pool_t *p, request_rec *r,
                       "client %s (%s) requested Transfer-Encoding "
                       "chunked body with Content-Length (C-L ignored)",
                       c->client_ip, c->remote_host ? c->remote_host: "");
-        apr_table_unset(r->headers_in, "Content-Length");
         old_cl_val = NULL;
         origin->keepalive = AP_CONN_CLOSE;
         p_conn->close = 1;
