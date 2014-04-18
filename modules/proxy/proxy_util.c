@@ -3312,8 +3312,22 @@ PROXY_DECLARE(int) ap_proxy_create_hdrbrgd(apr_pool_t *p,
      * to backend
      */
     if (do_100_continue) {
-        apr_table_mergen(r->headers_in, "Expect", "100-Continue");
-        r->expecting_100 = 1;
+        const char *val;
+
+        if (!r->expecting_100) {
+            /* Don't forward any "100 Continue" response if the client is
+             * not expecting it.
+             */
+            apr_table_setn(r->subprocess_env, "proxy-interim-response",
+                                              "Suppress");
+        }
+
+        /* Add the Expect header if not already there. */
+        if (((val = apr_table_get(r->headers_in, "Expect")) == NULL)
+                || (strcasecmp(val, "100-Continue") != 0 // fast path
+                    && !ap_find_token(r->pool, val, "100-Continue"))) {
+            apr_table_mergen(r->headers_in, "Expect", "100-Continue");
+        }
     }
 
     /* X-Forwarded-*: handling
