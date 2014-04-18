@@ -3203,7 +3203,7 @@ PROXY_DECLARE(int) ap_proxy_create_hdrbrgd(apr_pool_t *p,
     char *buf;
     const apr_array_header_t *headers_in_array;
     const apr_table_entry_t *headers_in;
-    apr_table_t *headers_in_copy;
+    apr_table_t *saved_headers_in;
     apr_bucket *e;
     int do_100_continue;
     conn_rec *origin = p_conn->connection;
@@ -3278,6 +3278,21 @@ PROXY_DECLARE(int) ap_proxy_create_hdrbrgd(apr_pool_t *p,
     ap_xlate_proto_to_ascii(buf, strlen(buf));
     e = apr_bucket_pool_create(buf, strlen(buf), p, c->bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(header_brigade, e);
+
+    /*
+     * Save the original headers in here and restore them when leaving, since
+     * we will apply proxy purpose only modifications (eg. clearing hop-by-hop
+     * headers, add Via or X-Forwarded-* or Expect...), whereas the originals
+     * will be needed later to prepare the correct response and logging.
+     *
+     * Note: We need to take r->pool for apr_table_copy as the key / value
+     * pairs in r->headers_in have been created out of r->pool and
+     * p might be (and actually is) a longer living pool.
+     * This would trigger the bad pool ancestry abort in apr_table_copy if
+     * apr is compiled with APR_POOL_DEBUG.
+     */
+    saved_headers_in = r->headers_in;
+    r->headers_in = apr_table_copy(r->pool, saved_headers_in);
 
     /* handle Via */
     if (conf->viaopt == via_block) {
@@ -3377,21 +3392,10 @@ PROXY_DECLARE(int) ap_proxy_create_hdrbrgd(apr_pool_t *p,
     }
 
     proxy_run_fixups(r);
-    /*
-     * Make a copy of the headers_in table before clearing the connection
-     * headers as we need the connection headers later in the http output
-     * filter to prepare the correct response headers.
-     *
-     * Note: We need to take r->pool for apr_table_copy as the key / value
-     * pairs in r->headers_in have been created out of r->pool and
-     * p might be (and actually is) a longer living pool.
-     * This would trigger the bad pool ancestry abort in apr_table_copy if
-     * apr is compiled with APR_POOL_DEBUG.
-     */
-    headers_in_copy = apr_table_copy(r->pool, r->headers_in);
-    ap_proxy_clear_connection(r, headers_in_copy);
+    ap_proxy_clear_connection(r, r->headers_in);
+
     /* send request headers */
-    headers_in_array = apr_table_elts(headers_in_copy);
+    headers_in_array = apr_table_elts(r->headers_in);
     headers_in = (const apr_table_entry_t *) headers_in_array->elts;
     for (counter = 0; counter < headers_in_array->nelts; counter++) {
         if (headers_in[counter].key == NULL
@@ -3453,6 +3457,11 @@ PROXY_DECLARE(int) ap_proxy_create_hdrbrgd(apr_pool_t *p,
         e = apr_bucket_pool_create(buf, strlen(buf), p, c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(header_brigade, e);
     }
+
+    /* Restore the original headers in (see comment above),
+     * we won't modify them anymore.
+     */
+    r->headers_in = saved_headers_in;
     return OK;
 }
 

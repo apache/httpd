@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_proxy: Preserve original request headers even if they differ
+     from the ones to be forwarded to the backend. PR 45387.
+     [Yann Ylavic]
+
   *) mod_proxy: When ping/pong is configured for a worker, don't send or
      forward "100 Continue" (interim) response to the client if it does
      not expect one. [Yann Ylavic]
