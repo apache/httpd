@@ -99,7 +99,7 @@ RELEASE SHOWSTOPPERS:
    * Fix build breakage when exception hooks aren't enabled
      trunk patch: r1546835, r1546836
      2.4.x patch: http://people.apache.org/~trawick/no_exception_hook_breakage.txt
-     +1: trawick, ylavic
+     +1: trawick, ylavic, jim
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
@@ -182,7 +182,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Submitted/Committed by: jkaluza
      trunk patch: http://svn.apache.org/r1576233
      2.4.x patch: trunk works
-     +1: ylavic
+     +1: ylavic, jim
 
    * mod_alias: Fix segfault in mod_alias introduced in r1132494.
      AliasMatch does not append unmatched parts of the original URI
@@ -219,14 +219,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1587053 (poll fixes / frontend connection close)
                   http://svn.apache.org/r1587654 (set backend->close)
      2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-wstunnel.diff 
-     +1: covener, ylavic
+     +1: covener, ylavic, jim
 
    * mod_ssl: workaround for SSLCertificateFile in 2.4.8 or later,
      when used with OpenSSL prior to 0.9.8h and not specifying
      an SSLCertificateChainFile (PR 56410)
      trunk patch: https://svn.apache.org/r1588427
      2.4.x patch: trunk patch works (modulo CHANGES)
-     +1: kbrand, ylavic
+     +1: kbrand, ylavic, jim
 
 OTHER PROPOSALS
 
