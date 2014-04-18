@@ -938,7 +938,6 @@ static int proxy_handler(request_rec *r)
             strncmp(r->filename, "proxy:", 6) != 0) {
             r->proxyreq = PROXYREQ_REVERSE;
             r->filename = apr_pstrcat(r->pool, r->handler, r->filename, NULL);
-            apr_table_setn(r->notes, "rewrite-proxy", "1");
         }
         else {
             return DECLINED;

@@ -1949,11 +1949,8 @@ PROXY_DECLARE(int) ap_proxy_pre_request(proxy_worker **worker,
                  * In the case of the generic reverse proxy, we need to see if we
                  * were passed a UDS url (eg: from mod_proxy) and adjust uds_path
                  * as required.
-                 *
-                 * NOTE: Here we use a quick note lookup, but we could also
-                 * check to see if r->filename starts with 'proxy:'
                  */
-                if (apr_table_get(r->notes, "rewrite-proxy") &&
+                if (!strncmp(r->filename, "proxy:", 6) &&
                     (ptr2 = ap_strcasestr(r->filename, "unix:")) &&
                     (ptr = ap_strchr(ptr2, '|'))) {
                     apr_uri_t urisock;
