@@ -112,16 +112,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~jailletc36/r1514255.patch
      +1: jailletc36, gsmith, ylavic
 
-
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
-
-   * mod_slotmem_shm: Remove wonky and dangerous code that knows about APR
-     internals. We work fine w/o it anyway at this stage.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1561385
-     2.4.x patch: trunk works
-     +1: jim, ylavic
-
    * proxy_util.c: Allow mod_rewrite to also use UDS for proxied links.
      trunk patch: http://svn.apache.org/r1543174
                   http://svn.apache.org/r1560367
@@ -132,12 +122,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1561660
      2.4.x patch: trunk works
                   http://people.apache.org/~jim/patches/uds-rewrite.patch
-     +1: jim, humbedooh
-         ylavic: still being worked on, see issues here in the following thread
-                 https://www.mail-archive.com/dev@httpd.apache.org/msg59276.html
-         jim:    Isn't the issue an additional "feature" and not
-                 a bug in the as-documented behavior?
-         ylavic: You're right, I'll add another proposal: -1 reverted.
+     +1: jim, humbedooh, ylavic
+
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
+
+   * mod_slotmem_shm: Remove wonky and dangerous code that knows about APR
+     internals. We work fine w/o it anyway at this stage.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1561385
+     2.4.x patch: trunk works
+     +1: jim, ylavic
 
    * mod_deflate: Fix decompression of files larger than 4GB. According to RFC1952,
                   Input SIZE contains the size of the original input data modulo 2^32.
@@ -231,7 +226,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      an SSLCertificateChainFile (PR 56410)
      trunk patch: https://svn.apache.org/r1588427
      2.4.x patch: trunk patch works (modulo CHANGES)
-     +1: kbrand
+     +1: kbrand, ylavic
 
 OTHER PROPOSALS
 
