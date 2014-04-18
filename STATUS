@@ -100,14 +100,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * core: synch with trunk
-       - follow-up to r813376: finish reverting r808965 (ServerTokens set foo)
-       - tweak syntax strings for ServerTokens
-     trunk patch: https://svn.apache.org/r1514255
-                  https://svn.apache.org/r1514267
-     2.4.x patch: http://people.apache.org/~jailletc36/r1514255.patch
-     +1: jailletc36, gsmith, ylavic
-
    * proxy_util.c: Allow mod_rewrite to also use UDS for proxied links.
      trunk patch: http://svn.apache.org/r1543174
                   http://svn.apache.org/r1560367
