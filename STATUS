@@ -124,6 +124,20 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
                   http://people.apache.org/~jim/patches/uds-rewrite.patch
      +1: jim, humbedooh, ylavic
 
+   * mod_proxy_wstunnel: wstunnel rollup for connection handling
+     trunk patch: http://svn.apache.org/r1587036 (set backend->close)
+                  http://svn.apache.org/r1587040 (remove reqtimeout)
+                  http://svn.apache.org/r1587053 (poll fixes / frontend connection close)
+                  http://svn.apache.org/r1587654 (set backend->close)
+     2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-wstunnel.diff 
+     +1: covener, ylavic, jim
+
+   * mod_ssl: workaround for SSLCertificateFile in 2.4.8 or later,
+     when used with OpenSSL prior to 0.9.8h and not specifying
+     an SSLCertificateChainFile (PR 56410)
+     trunk patch: https://svn.apache.org/r1588427
+     2.4.x patch: trunk patch works (modulo CHANGES)
+     +1: kbrand, ylavic, jim
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -213,20 +227,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic, covener
 
-   * mod_proxy_wstunnel: wstunnel rollup for connection handling
-     trunk patch: http://svn.apache.org/r1587036 (set backend->close)
-                  http://svn.apache.org/r1587040 (remove reqtimeout)
-                  http://svn.apache.org/r1587053 (poll fixes / frontend connection close)
-                  http://svn.apache.org/r1587654 (set backend->close)
-     2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-wstunnel.diff 
-     +1: covener, ylavic, jim
-
-   * mod_ssl: workaround for SSLCertificateFile in 2.4.8 or later,
-     when used with OpenSSL prior to 0.9.8h and not specifying
-     an SSLCertificateChainFile (PR 56410)
-     trunk patch: https://svn.apache.org/r1588427
-     2.4.x patch: trunk patch works (modulo CHANGES)
-     +1: kbrand, ylavic, jim
 
 OTHER PROPOSALS
 
