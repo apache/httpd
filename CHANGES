@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_cache: Fix AH00784 errors on Windows when the the CacheLock directive
+     is enabled.  [Eric Covener]
+
   *) mod_proxy: Preserve original request headers even if they differ
      from the ones to be forwarded to the backend. PR 45387.
      [Yann Ylavic]
