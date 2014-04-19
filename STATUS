@@ -189,6 +189,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic, covener
 
+   * mod_cache: Fix CacheLock on Windows
+     trunk patch: http://svn.apache.org/r1588704
+     2.4.x patch: trunk works
+     +1 covener
 
 OTHER PROPOSALS
 
