@@ -123,6 +123,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          (+ CHANGES)
      +1: covener
 
+   * mod_rewrite: Support session cookies with the CO= flag when later parameters
+     are used.  The doc for this implied the feature had been backported for
+     quite some time.  PR56014
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=664333
+     2.2.x patch: http://people.apache.org/~covener/patches/httpd-2.2.x-rewrite-sessioncookie.diff
+     +1 covener
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * mod_cache: Realign the cache_quick_handler() to behave identically
