@@ -317,6 +317,20 @@ static int req_parseargs(lua_State *L)
     return 2;                   /* [table<string, string>, table<string, array<string>>] */
 }
 
+/* ap_lua_binstrstr: Binary strstr function for uploaded data with NULL bytes */
+char* ap_lua_binstrstr (const char * haystack, size_t hsize, const char* needle, size_t nsize)
+{
+    if (haystack == NULL) return NULL;
+    if (needle == NULL) return NULL;
+    if (hsize < nsize) return NULL;
+    for (size_t p = 0; p <= (hsize - nsize); ++p) {
+        if (memcmp(haystack + p, needle, nsize) == 0) {
+            return (char*) (haystack + p);
+        }
+    }
+    return NULL;
+} 
+
 /* r:parsebody(): Parses regular (url-enocded) or multipart POST data and returns two tables*/
 static int req_parsebody(lua_State *L)
 {
@@ -348,15 +362,15 @@ static int req_parsebody(lua_State *L)
         for
         (
             start = strstr((char *) data, multipart);
-            start != start + size;
+            start != NULL;
             start = end
         ) {
             i++;
             if (i == POST_MAX_VARS) break;
-            end = strstr((char *) (start + 1), multipart);
-            if (!end) end = start + size;
             crlf = strstr((char *) start, "\r\n\r\n");
             if (!crlf) break;
+            end = ap_lua_binstrstr(crlf, (size - (crlf - data)), multipart, len);
+            if (end == NULL) break;
             key = (char *) apr_pcalloc(r->pool, 256);
             filename = (char *) apr_pcalloc(r->pool, 256);
             vlen = end - crlf - 8;
