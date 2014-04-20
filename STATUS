@@ -100,6 +100,15 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * mod_authn_socache: Fix creation of default socache_instance. Fixes crash
+                        on startup if default socache_provider is used and
+                        AuthnCacheEnable or AuthnCacheProvideFor is used.
+                        This problem has been introduced in r1531961.
+                        PR 56371.
+     Submitted/Committed by: jkaluza
+     trunk patch: http://svn.apache.org/r1576233
+     2.4.x patch: trunk works
+     +1: ylavic, jim, trawick
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -150,16 +159,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      ylavic: does not depend on r1572092 or r1572655 and al above,
              these proposals can be backported in any order.
 
-   * mod_authn_socache: Fix creation of default socache_instance. Fixes crash
-                        on startup if default socache_provider is used and
-                        AuthnCacheEnable or AuthnCacheProvideFor is used.
-                        This problem has been introduced in r1531961.
-                        PR 56371.
-     Submitted/Committed by: jkaluza
-     trunk patch: http://svn.apache.org/r1576233
-     2.4.x patch: trunk works
-     +1: ylavic, jim
-
    * mod_alias: Fix segfault in mod_alias introduced in r1132494.
      AliasMatch does not append unmatched parts of the original URI
      to the new URI. So no need to subtract anything from the new URI length.
@@ -192,7 +191,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * mod_cache: Fix CacheLock on Windows
      trunk patch: http://svn.apache.org/r1588704
      2.4.x patch: trunk works
-     +1 covener
+     +1 covener, trawick
 
 OTHER PROPOSALS
 
