@@ -318,7 +318,7 @@ static int req_parseargs(lua_State *L)
 }
 
 /* ap_lua_binstrstr: Binary strstr function for uploaded data with NULL bytes */
-char* ap_lua_binstrstr (const char * haystack, size_t hsize, const char* needle, size_t nsize)
+static char* ap_lua_binstrstr (const char * haystack, size_t hsize, const char* needle, size_t nsize)
 {
     if (haystack == NULL) return NULL;
     if (needle == NULL) return NULL;
