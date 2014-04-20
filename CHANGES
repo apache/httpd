@@ -2,6 +2,13 @@
 
 Changes with Apache 2.4.10
 
+  *) mod_lua: Enforce the max post size allowed via r:parsebody()
+     [Daniel Gruno]
+
+  *) mod_lua: Use binary comparison to find boundaries for multipart 
+     objects, as to not terminate our search prematurely when hitting
+     a NULL byte. [Daniel Gruno]
+
   *) mod_ssl: add workaround for SSLCertificateFile when using OpenSSL
      versions before 0.9.8h and not specifying an SSLCertificateChainFile
      (regression introduced with 2.4.8). PR 56410. [Kaspar Brand]
