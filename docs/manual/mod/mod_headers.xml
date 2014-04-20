@@ -200,13 +200,14 @@ Header merge Cache-Control no-store env=NO_STORE
 <name>RequestHeader</name>
 <description>Configure HTTP request headers</description>
 <syntax>RequestHeader add|append|edit|edit*|merge|set|setifempty|unset
-<var>header</var> [<var>value</var>] [<var>replacement</var>]
+<var>header</var> [[expr=]<var>value</var>] [<var>replacement</var>]
 [early|env=[!]<var>variable</var>]|expr=<var>expression</var>]
 </syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
-<compatibility>SetIfEmpty available in 2.4.7 and later</compatibility>
+<compatibility>SetIfEmpty available in 2.4.7 and later, expr= value 
+available in 2.4.10 and later</compatibility>
 
 <usage>
     <p>This directive can replace, merge, change or remove HTTP request
@@ -310,13 +311,14 @@ Header merge Cache-Control no-store env=NO_STORE
 <name>Header</name>
 <description>Configure HTTP response headers</description>
 <syntax>Header [<var>condition</var>] add|append|echo|edit|edit*|merge|set|setifempty|unset|note
-<var>header</var> [<var>[expr=]value]</var>] [<var>replacement</var>]
+<var>header</var> [[expr=]<var>value]</var>] [<var>replacement</var>]
 [early|env=[!]<var>variable</var>]|expr=<var>expression</var>]
 </syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
-<compatibility>SetIfEmpty and note available in 2.4.7 and later</compatibility>
+<compatibility>SetIfEmpty available in 2.4.7 and later, expr= value 
+available in 2.4.10 and later</compatibility>
 
 <usage>
     <p>This directive can replace, merge or remove HTTP response
