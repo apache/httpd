@@ -67,7 +67,7 @@
 <h2><a name="formats" id="formats">Custom Log Formats</a></h2>
 
 
-    <p>This modules adds two new logging directives. The characteristics of the
+    <p>This module adds three new logging directives. The characteristics of the
     request itself are logged by placing "<code>%</code>" directives in
     the format string, which are replaced in the log file by the values as
     follows:</p>
@@ -81,7 +81,8 @@
         <td>Bytes sent, including headers, cannot be zero.</td></tr>
 <tr><td><code>%S</code></td>
         <td>Bytes transferred (received and sent), including request and headers,
-        cannot be zero. This is the combination of %I and %O.</td></tr>
+        cannot be zero. This is the combination of %I and %O.<br />
+        Available in Apache 2.4.7 and later</td></tr>
 </table>
 
     <p>Usually, the functionality is used like this:</p>
