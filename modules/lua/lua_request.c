@@ -320,10 +320,11 @@ static int req_parseargs(lua_State *L)
 /* ap_lua_binstrstr: Binary strstr function for uploaded data with NULL bytes */
 static char* ap_lua_binstrstr (const char * haystack, size_t hsize, const char* needle, size_t nsize)
 {
+    size_t p;
     if (haystack == NULL) return NULL;
     if (needle == NULL) return NULL;
     if (hsize < nsize) return NULL;
-    for (size_t p = 0; p <= (hsize - nsize); ++p) {
+    for (p = 0; p <= (hsize - nsize); ++p) {
         if (memcmp(haystack + p, needle, nsize) == 0) {
             return (char*) (haystack + p);
         }
