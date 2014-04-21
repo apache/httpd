@@ -1753,7 +1753,7 @@ DAV_DECLARE(dav_error *) dav_get_locktoken_list(request_rec *r,
     }
 
     while (if_header != NULL) {
-        if_state = if_header->state;        /* Begining of the if_state linked list */
+        if_state = if_header->state;        /* Beginning of the if_state linked list */
         while (if_state != NULL)        {
             if (if_state->condition == DAV_IF_COND_NORMAL
                 && if_state->type == dav_if_opaquelock) {
