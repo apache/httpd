@@ -1124,7 +1124,7 @@ static apr_status_t ssl_io_filter_handshake(ssl_filter_ctx_t *filter_ctx)
         const char *hostname_note = apr_table_get(c->notes,
                                                   "proxy-request-hostname");
         BOOL proxy_ssl_check_peer_ok = TRUE;
-        int post_handshake_rc;
+        int post_handshake_rc = OK;
 
         sc = mySrvConfig(server);
 
