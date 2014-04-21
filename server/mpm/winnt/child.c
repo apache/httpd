@@ -1094,7 +1094,7 @@ void child_main(apr_pool_t *pconf, DWORD parent_pid)
         ap_log_error(APLOG_MARK, APLOG_TRACE2, 0, ap_server_conf,
                      "Child: %d threads starting up, %d remain from a prior generation",
                      starting_up, from_previous_generation);
-        apr_sleep(1 * APR_USEC_PER_SEC);
+        apr_sleep(apr_time_from_sec(1));
     }
 
     /* Wait for one of three events:
