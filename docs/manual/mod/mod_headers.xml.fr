@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1586471:1587097 (outdated) -->
+<!-- English Revision: 1588747 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -220,14 +220,15 @@ Header merge Cache-Control no-store env=NO_STORE
 <name>RequestHeader</name>
 <description>Configure les en-t&ecirc;tes d'une requ&ecirc;te HTTP</description>
 <syntax>RequestHeader add|append|edit|edit*|merge|set|setifempty|unset
-<var>en-t&ecirc;te</var> [<var>valeur</var>] [<var>remplacement</var>]
+<var>en-t&ecirc;te</var> [[expr=]<var>valeur</var>] [<var>remplacement</var>]
 [early|env=[!]<var>variable</var>]|expr=<var>expression</var>]
 </syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
 <compatibility>SetIfEmpty est disponible depuis la version 2.4.7 du
-serveur HTTP Apache</compatibility>
+serveur HTTP Apache ; le param&egrave;tre expr= valeur a &eacute;t&eacute; introduit avec la
+version 2.4.10</compatibility>
 
 <usage>
     <p>Cette directive permet de remplacer, fusionner, modifier ou
@@ -285,8 +286,8 @@ serveur HTTP Apache</compatibility>
 
     <dt><code>setifempty</code></dt>
     <dd>L'en-t&ecirc;te est d&eacute;fini, mais seulement s'il n'existe
-    aucun en-t&ecirc;te avec le m&ecirc;me nom. Disponible depuis la
-    version 2.4.7 du serveur HTTP Apache.</dd>
+    aucun en-t&ecirc;te avec le m&ecirc;me nom.<br />
+    Disponible depuis la version 2.4.7 du serveur HTTP Apache.</dd>
 
     <dt><code>unset</code></dt>
     <dd>L'en-t&ecirc;te est supprim&eacute; s'il existe. Si plusieurs en-t&ecirc;tes
@@ -343,14 +344,15 @@ serveur HTTP Apache</compatibility>
 <name>Header</name>
 <description>Configure les en-t&ecirc;tes d'une r&eacute;ponse HTTP</description>
 <syntax>Header [<var>condition</var>] add|append|echo|edit|edit*|merge|set|setifempty|unset|note
-<var>en-t&ecirc;te</var> [<var>[expr=]valeur</var>] [<var>remplacement</var>]
+<var>en-t&ecirc;te</var> [[expr=]<var>valeur]</var>] [<var>remplacement</var>]
 [early|env=[!]<var>variable</var>]|expr=<var>expression</var>]
 </syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
 <compatibility>SetIfEmpty est disponible depuis la version 2.4.7 du
-serveur HTTP Apache</compatibility>
+serveur HTTP Apache ; le param&egrave;tre expr= valeur a &eacute;t&eacute; introduit avec la
+version 2.4.10</compatibility>
 
 <usage>
     <p>Cette directive permet de remplacer, fusionner, ou
@@ -458,8 +460,8 @@ serveur HTTP Apache</compatibility>
 
     <dt><code>setifempty</code></dt>
     <dd>L'en-t&ecirc;te est d&eacute;fini, mais seulement s'il n'existe
-    aucun en-t&ecirc;te avec le m&ecirc;me nom. Disponible depuis la
-    version 2.4.7 du serveur HTTP Apache.</dd>
+    aucun en-t&ecirc;te avec le m&ecirc;me nom.<br />
+    Disponible depuis la version 2.4.7 du serveur HTTP Apache.</dd>
 
     <dt><code>unset</code></dt>
     <dd>L'en-t&ecirc;te est supprim&eacute; s'il existe. Si plusieurs en-t&ecirc;tes
@@ -469,9 +471,10 @@ serveur HTTP Apache</compatibility>
     <dt><code>note</code></dt>
     <dd>La valeur de l'<var>en-t&ecirc;te</var> consid&eacute;r&eacute; est copi&eacute;e dans une
     note interne dont le nom est sp&eacute;cifi&eacute; via l'argument
-    <var>valeur</var>. Ceci permet d'enregistrer la valeur d'un en-t&ecirc;te
+    <var>valeur</var>. Ceci permet de journaliser la valeur d'un en-t&ecirc;te
     envoy&eacute; par un programme CGI ou une ressource mandat&eacute;e, m&ecirc;me s'il
-    est pr&eacute;vu de l'effacer.</dd>
+    est pr&eacute;vu de l'effacer.<br />
+    Disponible &agrave; partir de la version 2.4.7 du serveur HTTP Apache.</dd>
 
     </dl>    
 
@@ -559,7 +562,8 @@ serveur HTTP Apache</compatibility>
     <p><code>edit</code>n&eacute;cessite les deux arguments
     <var>valeur</var>, qui est une <glossary ref="regex">expression
     rationnelle</glossary>, et une cha&icirc;ne additionnelle
-    <var>remplacement</var>. La cha&icirc;ne de remplacement peut aussi
+    <var>remplacement</var>. Depuis la version 2.4.7, la cha&icirc;ne de
+    remplacement peut aussi
     contenir des sp&eacute;cificateurs de format.</p>
 
     <p>La directive <directive>Header</directive> peut &ecirc;tre suivie d'un

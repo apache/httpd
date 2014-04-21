@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1576897:1587325 (outdated) -->
+<!-- English Revision : 1587325 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1964,7 +1964,7 @@ end
 <description>Fournit une fonction Lua pour le filtrage en entr&eacute;e</description>
 <syntax>LuaInputFilter filter_name /path/to/lua/script.lua function_name</syntax>
 <contextlist><context>server config</context> </contextlist>
-<compatibility>Disponible depuis la version 2.5.0 du serveur HTTP
+<compatibility>Disponible depuis la version 2.4.5 du serveur HTTP
 Apache</compatibility>
 
 <usage>
@@ -2026,7 +2026,7 @@ filtres Lua</a>" pour plus de d&eacute;tails.
 sortie</description>
 <syntax>LuaOutputFilter filter_name /path/to/lua/script.lua function_name</syntax>
 <contextlist><context>server config</context> </contextlist>
-<compatibility>Disponible &agrave; partir de la version 2.5.0 du serveur HTTP
+<compatibility>Disponible &agrave; partir de la version 2.4.5 du serveur HTTP
 Apache</compatibility>
 
 <usage>
