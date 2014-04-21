@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1555539:1587324 (outdated) -->
+<!-- English Revision : 1587324 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -361,7 +361,7 @@ d'Apache</compatibility>
     disponibles, sous r&eacute;serve du chargement de modules d'autorisation
     suppl&eacute;mentaires.</p>
 
-    <p>Depuis la version 2.5.0, les directives require LDAP supportent
+    <p>Depuis la version 2.4.8, les directives require LDAP supportent
     les <a href="../expr.html">expressions</a>.</p>
 
 <section id="requser"><title>Require ldap-user</title>
@@ -1030,7 +1030,7 @@ connexion</description>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
-<compatibility><em>exec:</em> est disponible depuis la version 2.4.6 du
+<compatibility><em>exec:</em> est disponible depuis la version 2.4.5 du
 serveur HTTP Apache.</compatibility>
 
 <usage>
@@ -1047,7 +1047,7 @@ serveur HTTP Apache.</compatibility>
     <p>Si la valeur sp&eacute;cifi&eacute;e d&eacute;bute par "exec:", la commande qui suit sera
     ex&eacute;cut&eacute;e, et la premi&egrave;re ligne renvoy&eacute;e par la commande sur la
     sortie standard sera utilis&eacute;e comme mot de passe.</p>
-<example><pre>
+<highlight language="config">
 # Mot de passe sp&eacute;cifi&eacute; directement
 AuthLDAPBindPassword secret
 
@@ -1056,7 +1056,7 @@ AuthLDAPBindPassword exec:/path/to/program
 
 # Ex&eacute;cution de /path/to/otherProgram avec un argument pour obtenir le mot de passe
 AuthLDAPBindPassword "exec:/path/to/otherProgram argument1"
-</pre></example>
+</highlight>
 
 </usage>
 </directivesynopsis>

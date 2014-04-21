@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1555540:1587031 (outdated) -->
+<!-- English Revision : 1587031 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -66,7 +66,7 @@ d'Apache</compatibility>
     les types d'autorisation <code>dbd-group</code>,
     <code>dbd-login</code> et <code>dbd-logout</code>.</p>
 
-    <p>A partir de la version 2.5.0, les directives require DBD
+    <p>A partir de la version 2.4.8, les directives require DBD
     supportent les <a href="../expr.html">expressions</a>.</p>
 
 <section id="reqgroup"><title>Require dbd-group</title>
@@ -130,8 +130,9 @@ leur utilisation, voir l'exemple de configuration ci-dessous.</p>
 session c&ocirc;t&eacute; client fonctionnant de concert avec les fonctionnalit&eacute;s de
 connexion/d&eacute;connexion des utilisateurs c&ocirc;t&eacute; serveur offertes par ce module, en
 d&eacute;finissant ou en annulant par exemple un cookie HTTP ou un jeton
-similaire lorsqu'un utilisateur se connecte ou se d&eacute;connecte. Pour
-supporter une telle int&eacute;gration, <module>mod_authz_dbd</module> exporte
+similaire lorsqu'un utilisateur se connecte ou se d&eacute;connecte.</p>
+
+<p>Pour supporter une telle int&eacute;gration, <module>mod_authz_dbd</module> exporte
 un programme &agrave; d&eacute;clenchement optionnel (hook) qui sera lanc&eacute; chaque fois
 que le statut d'un utilisateur sera mis &agrave; jour dans la base de donn&eacute;es.
 D'autres modules de gestion de session pourront alors utiliser ce
