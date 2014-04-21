@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1554161:1587325 (outdated) -->
+<!-- English Revision : 1587325 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -359,7 +359,7 @@ HTTP de base.</description>
     disponibles, sous r&eacute;serve du chargement de modules d'autorisation
     suppl&eacute;mentaires.</p>
 
-    <p>A partir de la version 2.5.0, les directives require LDAP
+    <p>A partir de la version 2.4.8, les directives require LDAP
     supportent les <a href="../expr.html">expressions</a>.</p>
 
 <section id="requser"><title>Require ldap-user</title>
@@ -1028,7 +1028,7 @@ connexion</description>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
-<compatibility><em>exec:</em> est disponible depuis la version 2.4.6 du
+<compatibility><em>exec:</em> est disponible depuis la version 2.4.5 du
 serveur HTTP Apache.</compatibility>
 
 <usage>
@@ -1045,7 +1045,7 @@ serveur HTTP Apache.</compatibility>
     <p>Si la valeur commence par exec:, la commande r&eacute;sultante sera
     ex&eacute;cut&eacute;e, et la premi&egrave;re ligne renvoy&eacute;e sur la sortie standard sera
     utilis&eacute;e comme mot de passe.</p>
-<example><pre>
+<highlight language="config">
 #Mot de passe utilis&eacute; tel quel
 AuthLDAPBindPassword secret
 
@@ -1054,7 +1054,7 @@ AuthLDAPBindPassword exec:/path/to/program
 
 #Ex&eacute;cute /path/to/otherProgram avec un argument pour obtenir le mot de passe
 AuthLDAPBindPassword "exec:/path/to/otherProgram argument1"
-</pre></example>
+</highlight>
 
 </usage>
 </directivesynopsis>
