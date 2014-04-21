@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) Add module mod_ssl_ct, which provides an implementation of Certificate
+     Transparency (RFC 6962) for httpd.  [Jeff Trawick]
+
   *) mod_cache: Fix AH00784 errors on Windows when the the CacheLock directive
      is enabled.  [Eric Covener]
 

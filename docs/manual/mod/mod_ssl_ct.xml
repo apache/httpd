@@ -1,0 +1,299 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision: $ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_ssl_ct.xml.meta">
+
+<name>mod_ssl_ct</name>
+<description>Implementation of Certificate Transparency (RFC 6962)
+</description>
+<status>Extension</status>
+<sourcefile>mod_ssl_ct.c</sourcefile>
+<identifier>ssl_ct_module</identifier>
+
+<summary>
+<p>This module provides an implementation of Certificate Transparency, in 
+conjunction with <module>mod_ssl</module> and command-line tools from the
+<a href="https://code.google.com/p/certificate-transparency/">certificate-transparency</a>
+open source project.  The goal of Certificate Transparency is to expose the
+use of server certificates which are trusted by browsers but were mistakenly
+or maliciously issued.  More information about Certificate Transparency is
+available at <a href="http://www.certificate-transparency.org/">
+http://www.certificate-transparency.org/</a>.</p>
+
+<p>This implementation for Apache httpd provides these features for TLS
+servers and proxies:</p>
+
+<ul>
+  <li>Signed Certificate Timestamps (SCTs) can be obtained from logs 
+  automatically and, in conjunction with any statically configured SCTs, sent
+  to aware clients in the ServerHello (during the handshake).</li>
+  <li>SCTs can be received by the proxy from backend servers in the ServerHello,
+  in a certificate extension, and/or within stapled OCSP responses; any SCTs 
+  received can be partially validated on-line and optionally queued for off-line
+  audit.</li>
+  <li>The proxy can be configured to disallow communication with a backend
+  which does not provide an SCT which passes on-line validation.</li>
+</ul>
+
+<p>Configuration information about logs can be defined statically in the web
+server configuration or maintained in a Sqlite3 database.  In the latter case,
+<module>mod_ssl_ct</module> will reload the database periodically, so any
+site-specific infrastructure for maintaining and propagating log configuration
+information does not have to also restart httpd to make it take effect.</p>
+</summary>
+
+<directivesynopsis>
+<name>CTAuditStorage</name>
+<description>Existing directory where data for off-line audit will be stored</description>
+<syntax>CTAuditStorage <em>directory</em></syntax>
+<default><em>none</em></default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+  <p>The <directive>CTAuditStorage</directive> directive sets the name of a
+  directory where data will be stored for off-line audit.  If <em>directory</em>
+  is not absolute then it is assumed to be relative to <directive module="core">
+  DefaultRuntimeDir</directive>.</p>
+
+  <p>If this directive is not specified, data will not be stored for off-line
+  audit.</p>
+
+  <p>The directory will contain files named <code><em>PID</em>.tmp</code> for
+  active child processes and files named <code><em>PID</em>.out</code> for exited
+  child processes.  These <code>.out</code> files are ready for off-line audit. 
+  The experimental command <code>ctauditscts</code> (in the httpd source tree, not
+  currently installed) interfaces with <em>certificate-transparency</em> tools to
+  perform the audit.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CTLogClient</name>
+<description>Location of certificate-transparency log client tool</description>
+<syntax>CTLogClient <em>executable</em></syntax>
+<default><em>none</em></default>
+<contextlist><context>server config</context>
+</contextlist>
+
+<usage>
+  <p><em>executable</em> is the full path to the log client tool, which is
+  normally file <code>src/client/ct</code> within the source tree of the 
+  <a href="https://code.google.com/p/certificate-transparency/">
+  certificate-transparency</a> open source project.</p>
+
+  <p>An alternative implementation could be used to retrieve SCTs for a
+  server certificate as long as the command-line interface is equivalent.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CTLogConfigDB</name>
+<description>Log configuration database supporting dynamic updates</description>
+<syntax>CTLogConfigDB <em>filename</em></syntax>
+<default><em>none</em></default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+  <p>The <directive>CTLogConfigDB</directive> directive sets the name of a database
+  containing configuration about known logs.  If <em>filename</em> is not absolute
+  then it is assumed to be relative to
+  <directive module="core">ServerRoot</directive>.</p>
+
+  <p>Refer to the documentation for the <program>ctlogconfig</program> program,
+  which manages the database.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CTMaxSCTAge</name>
+<description>Maximum age of SCT obtained from a log, before it will be
+refreshed</description>
+<syntax>CTMaxSCTAge <em>num-seconds</em></syntax>
+<default><em>1 day</em></default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+  <p>Server certificates with SCTs which are older than this maximum age will
+  be resubmitted to configured logs.  Generally the log will return the same SCT
+  as before, but that is subject to log operation.  SCTs will be refreshed as
+  necessary during normal server operation, with new SCTs returned to clients
+  as they become available.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CTProxyAwareness</name>
+<description>Level of CT awareness and enforcement for a proxy
+</description>
+<syntax>CTProxyAwareness <em>oblivious|aware|require</em></syntax>
+<default><em>aware</em></default>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+
+<usage>
+  <p>This directive controls awareness and checks for valid SCTs for a
+  proxy.  Several options are available:</p>
+
+  <dl>
+    <dt>oblivious</dt>
+    <dd>The proxy will neither ask for nor examine SCTs.  Certificate
+    Transparency processing for the proxy is completely disabled.</dd>
+
+    <dt>aware</dt>
+    <dd>The proxy will perform all appropriate Certificate Transparency
+    processing, such as asking for and examining SCTs.  However, the
+    proxy will not disallow communication if the backend server does
+    not provide any valid SCTs.</dd>
+
+    <dt>require</dt>
+    <dd>The proxy will abort communication with the backend server if it
+    does not provide at least one SCT which passes on-line validation.</dd>
+  </dl>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CTSCTStorage</name>
+<description>Existing directory where SCTs are managed</description>
+<syntax>CTSCTStorage <em>directory</em></syntax>
+<default><em>none</em></default>
+<contextlist><context>server config</context>
+</contextlist>
+
+<usage>
+  <p>The <directive>CTSCTStorage</directive> directive sets the name of a
+  directory where SCTs and SCT lists will will be stored.  If <em>directory</em>
+  is not absolute then it is assumed to be relative to <directive module="core">
+  DefaultRuntimeDir</directive>.</p>
+
+  <p>A subdirectory for each server certificate contains information relative
+  to that certificate; the name of the subdirectory is the SHA-256 hash of the
+  certificate.</p>
+
+  <p>The certificate-specific directory contains SCTs retrieved from configured 
+  logs, SCT lists prepared from statically configured SCTs and retrieved SCTs,
+  and other information used for managing SCTs.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CTServerHelloSCTLimit</name>
+<description>Limit on number of SCTs that can be returned in
+ServerHello</description>
+<syntax>CTServerHelloSCTLimit <em>limit</em></syntax>
+<default><em>100</em></default>
+<contextlist><context>server config</context>
+</contextlist>
+
+<usage>
+  <p>This directive can be used to limit the number of SCTs which can be
+  returned by a TLS server in ServerHello, in case the number of configured
+  logs and statically-defined SCTs is relatively high.</p>
+
+  <p>Typically only a few SCTs would be available, so this directive is only
+  needed in special circumstances.</p>
+
+  <p>The directive does not take into account SCTs which may be provided in
+  certificate extensions or in stapled OCSP responses.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CTStaticLogConfig</name>
+<description>Static configuration of information about a log</description>
+<syntax>CTStaticLogConfig <em>log-id|-</em> <em>public-key-file|-</em>
+<em>1|0|-</em> <em>min-timestamp|-</em> <em>max-timestamp|-</em>
+<em>log-URL|-</em></syntax>
+<default><em>none</em></default>
+<contextlist><context>server config</context>
+</contextlist>
+
+<usage>
+  <p>This directive is used to configure information about a particular log.
+  This directive is appropriate when configuration information changes rarely.
+  If dynamic configuration updates must be supported, refer to the 
+  <directive module="mod_ssl_ct">CTLogConfigDB</directive> directive.</p>
+
+  <p>Each of the six fields must be specified, but usually only a small
+  amount of information must be configured for each log; use <em>-</em> when no
+  information is available for the field.  The fields are defined as follows:</p>
+
+  <dl>
+    <dt><em>log-id</em></dt>
+    <dd>This is the id of the log.  The id is the SHA-256 hash of the log's
+    public key.  In some cases it is appropriate and convenient to identify
+    the log by the id (hash), such as when configuring information regarding
+    the log's validity.</dd>
+
+    <dt><em>public-key-file</em></dt>
+    <dd>This is the name of a file containing the PEM encoding of the log's
+    public key.  If the name is not absolute, then it is assumed to be relative
+    to <directive module="core">ServerRoot</directive>.  The public key is
+    required in order to check the signature of SCTs received by the proxy.</dd>
+
+    <dt><em>trust</em></dt>
+    <dd>This is a generic <q>trust</q> flag.  Set this field to <em>0</em> to
+    distrust this log.</dd>
+
+    <dt><em>min-timestamp</em></dt>
+    <dd>SCTs received from this log by the proxy are invalid if the timestamp
+    is older than this value.</dd>
+
+    <dt><em>max-timestamp</em></dt>
+    <dd>SCTs received from this log by the proxy are invalid if the timestamp
+    is newer than this value.</dd>
+
+    <dt><em>log-URL</em></dt>
+    <dd>This is the URL of the log, for use in submitting server certificates
+    and in turn obtaining an SCT to be sent to clients.  Each server certificate
+    will be submitted to all logs for which <em>log-URL</em> is configured.</dd>
+  </dl>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CTStaticSCTs</name>
+<description>Static configuration of one or more SCTs for a server certificate
+</description>
+<syntax>CTStaticSCTs <em>certificate-pem-file</em> <em>sct-directory</em></syntax>
+<default><em>none</em></default>
+<contextlist><context>server config</context>
+</contextlist>
+
+<usage>
+  <p>This directive is used to statically define one or more SCTs corresponding
+  to a server certificate.  This mechanism can be used instead of or in
+  addition to dynamically obtaining SCTs from configured logs.</p>
+
+  <p><em>certificate-pem-file</em> refers to the server certificate in PEM
+  format.  If the name is not absolute, then it is assumed to be relative to
+  <directive module="core">ServerRoot</directive>.</p>
+
+  <p><em>sct-directory</em> must contain one or more files with extension
+  <code>.sct</code>, representing one or more SCTs corresponding to the
+  server certificate.  If <em>sct-directory</em> is not absolute, then it is 
+  assumed to be relative to <directive module="core">ServerRoot</directive>.</p>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

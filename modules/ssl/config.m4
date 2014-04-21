@@ -52,6 +52,14 @@ APACHE_MODULE(ssl, [SSL/TLS support (mod_ssl)], $ssl_objs, , most, [
 # Ensure that other modules can pick up mod_ssl.h
 APR_ADDTO(INCLUDES, [-I\$(top_srcdir)/$modpath_current])
 
+ssl_ct_objs="mod_ssl_ct.lo ssl_ct_log_config.lo ssl_ct_sct.lo ssl_ct_util.lo"
+APACHE_MODULE(ssl_ct, [Support for Certificate Transparency (RFC 6962)], $ssl_ct_objs, , no, [
+    dnl TODO: Check for OpenSSL >= 1.0.2
+    if test "$enable_ssl" = "no"; then
+        AC_MSG_ERROR([mod_ssl_ct is dependent on mod_ssl, which is not enabled.])
+    fi
+])
+
 dnl #  end of module specific part
 APACHE_MODPATH_FINISH
 
