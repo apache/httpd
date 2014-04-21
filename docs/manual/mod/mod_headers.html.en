@@ -207,14 +207,15 @@ Header merge Cache-Control no-store env=NO_STORE</pre>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure HTTP response headers</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Header [<var>condition</var>] add|append|echo|edit|edit*|merge|set|setifempty|unset|note
-<var>header</var> [<var>[expr=]value]</var>] [<var>replacement</var>]
+<var>header</var> [[expr=]<var>value]</var>] [<var>replacement</var>]
 [early|env=[!]<var>variable</var>]|expr=<var>expression</var>]
 </code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_headers</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>SetIfEmpty and note available in 2.4.7 and later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>SetIfEmpty available in 2.4.7 and later, expr= value 
+available in 2.4.10 and later</td></tr>
 </table>
     <p>This directive can replace, merge or remove HTTP response
     headers. The header is modified just after the content handler
@@ -420,14 +421,15 @@ Header merge Cache-Control no-store env=NO_STORE</pre>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure HTTP request headers</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RequestHeader add|append|edit|edit*|merge|set|setifempty|unset
-<var>header</var> [<var>value</var>] [<var>replacement</var>]
+<var>header</var> [[expr=]<var>value</var>] [<var>replacement</var>]
 [early|env=[!]<var>variable</var>]|expr=<var>expression</var>]
 </code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_headers</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>SetIfEmpty available in 2.4.7 and later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>SetIfEmpty available in 2.4.7 and later, expr= value 
+available in 2.4.10 and later</td></tr>
 </table>
     <p>This directive can replace, merge, change or remove HTTP request
     headers. The header is modified just before the content handler

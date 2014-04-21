@@ -234,6 +234,7 @@
 <li><a href="core.html#defaultruntimedir">DefaultRuntimeDir</a></li>
 <li><a href="core.html#defaulttype">DefaultType</a></li>
 <li><a href="core.html#define">Define</a></li>
+<li><a href="mod_deflate.html#deflatealteretag">DeflateAlterETag</a></li>
 <li><a href="mod_deflate.html#deflatebuffersize">DeflateBufferSize</a></li>
 <li><a href="mod_deflate.html#deflatecompressionlevel">DeflateCompressionLevel</a></li>
 <li><a href="mod_deflate.html#deflatefilternote">DeflateFilterNote</a></li>
@@ -479,6 +480,9 @@
 <li><a href="mod_proxy.html#proxystatus">ProxyStatus</a></li>
 <li><a href="mod_proxy.html#proxytimeout">ProxyTimeout</a></li>
 <li><a href="mod_proxy.html#proxyvia">ProxyVia</a></li>
+<li><a href="mod_proxy_wstunnel.html#proxywebsocketasync">ProxyWebsocketAsync</a></li>
+<li><a href="mod_proxy_wstunnel.html#proxywebsocketasyncdelay">ProxyWebsocketAsyncDelay</a></li>
+<li><a href="mod_proxy_wstunnel.html#proxywebsocketidletimeout">ProxyWebsocketIdleTimeout</a></li>
 <li><a href="mod_autoindex.html#readmename" id="R" name="R">ReadmeName</a></li>
 <li><a href="mpm_common.html#receivebuffersize">ReceiveBufferSize</a></li>
 <li><a href="mod_alias.html#redirect">Redirect</a></li>
@@ -595,6 +599,7 @@
 <li><a href="mod_ssl.html#sslocsprespondertimeout">SSLOCSPResponderTimeout</a></li>
 <li><a href="mod_ssl.html#sslocspresponsemaxage">SSLOCSPResponseMaxAge</a></li>
 <li><a href="mod_ssl.html#sslocspresponsetimeskew">SSLOCSPResponseTimeSkew</a></li>
+<li><a href="mod_ssl.html#sslocspuserequestnonce">SSLOCSPUseRequestNonce</a></li>
 <li><a href="mod_ssl.html#sslopensslconfcmd">SSLOpenSSLConfCmd</a></li>
 <li><a href="mod_ssl.html#ssloptions">SSLOptions</a></li>
 <li><a href="mod_ssl.html#sslpassphrasedialog">SSLPassPhraseDialog</a></li>
