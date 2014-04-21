@@ -23,7 +23,7 @@ install:
 	        chmod 755 $(DESTDIR)$(bindir)/$$i; \
 	    fi ; \
 	done
-	@for i in apachectl; do \
+	@for i in apachectl ctlogconfig; do \
 	    if test -f "$(builddir)/$$i"; then \
 	        cp -p $$i $(DESTDIR)$(sbindir); \
 	        chmod 755 $(DESTDIR)$(sbindir)/$$i; \
