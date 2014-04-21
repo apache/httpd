@@ -429,7 +429,7 @@ static int lua_ap_requestbody(lua_State *L)
         if (!filename) {
             const char     *data;
 
-            if (lua_read_body(r, &data, &size) != OK)
+            if (lua_read_body(r, &data, &size, maxSize) != OK)
                 return (0);
 
             lua_pushlstring(L, data, (size_t) size);
