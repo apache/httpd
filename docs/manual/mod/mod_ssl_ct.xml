@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $LastChangedRevision: $ -->
+<!-- $LastChangedRevision$ -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -65,7 +65,7 @@ information does not have to also restart httpd to make it take effect.</p>
 <name>CTAuditStorage</name>
 <description>Existing directory where data for off-line audit will be stored</description>
 <syntax>CTAuditStorage <em>directory</em></syntax>
-<default><em>none</em></default>
+<default>none</default>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
@@ -90,7 +90,7 @@ information does not have to also restart httpd to make it take effect.</p>
 <name>CTLogClient</name>
 <description>Location of certificate-transparency log client tool</description>
 <syntax>CTLogClient <em>executable</em></syntax>
-<default><em>none</em></default>
+<default>none</default>
 <contextlist><context>server config</context>
 </contextlist>
 
@@ -109,7 +109,7 @@ information does not have to also restart httpd to make it take effect.</p>
 <name>CTLogConfigDB</name>
 <description>Log configuration database supporting dynamic updates</description>
 <syntax>CTLogConfigDB <em>filename</em></syntax>
-<default><em>none</em></default>
+<default>none</default>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
@@ -128,7 +128,7 @@ information does not have to also restart httpd to make it take effect.</p>
 <description>Maximum age of SCT obtained from a log, before it will be
 refreshed</description>
 <syntax>CTMaxSCTAge <em>num-seconds</em></syntax>
-<default><em>1 day</em></default>
+<default>1 day</default>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
@@ -145,7 +145,7 @@ refreshed</description>
 <description>Level of CT awareness and enforcement for a proxy
 </description>
 <syntax>CTProxyAwareness <em>oblivious|aware|require</em></syntax>
-<default><em>aware</em></default>
+<default>aware</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 
@@ -176,7 +176,7 @@ refreshed</description>
 <name>CTSCTStorage</name>
 <description>Existing directory where SCTs are managed</description>
 <syntax>CTSCTStorage <em>directory</em></syntax>
-<default><em>none</em></default>
+<default>none</default>
 <contextlist><context>server config</context>
 </contextlist>
 
@@ -201,7 +201,7 @@ refreshed</description>
 <description>Limit on number of SCTs that can be returned in
 ServerHello</description>
 <syntax>CTServerHelloSCTLimit <em>limit</em></syntax>
-<default><em>100</em></default>
+<default>100</default>
 <contextlist><context>server config</context>
 </contextlist>
 
@@ -224,7 +224,7 @@ ServerHello</description>
 <syntax>CTStaticLogConfig <em>log-id|-</em> <em>public-key-file|-</em>
 <em>1|0|-</em> <em>min-timestamp|-</em> <em>max-timestamp|-</em>
 <em>log-URL|-</em></syntax>
-<default><em>none</em></default>
+<default>none</default>
 <contextlist><context>server config</context>
 </contextlist>
 
@@ -276,7 +276,7 @@ ServerHello</description>
 <description>Static configuration of one or more SCTs for a server certificate
 </description>
 <syntax>CTStaticSCTs <em>certificate-pem-file</em> <em>sct-directory</em></syntax>
-<default><em>none</em></default>
+<default>none</default>
 <contextlist><context>server config</context>
 </contextlist>
 
