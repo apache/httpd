@@ -158,6 +158,18 @@ ELSE()
   SET(APR_HAS_LDAP FALSE)
 ENDIF()
 
+# See if we have OpenSSL 1.0.2
+SET(HAVE_OPENSSL_102 FALSE)
+IF(OPENSSL_FOUND)
+  STRING(REGEX REPLACE "^1\\.([0-9]+)\\.[0-9]+" "\\1" minor_ver ${OPENSSL_VERSION})
+  STRING(REGEX REPLACE "^1\\.[0-9]+\\.([0-9]+)" "\\1" patch_ver ${OPENSSL_VERSION})
+  IF(${minor_ver} GREATER "0")
+    SET(HAVE_OPENSSL_102 TRUE)
+  ELSEIF(${patch_ver} GREATER "1")
+    SET(HAVE_OPENSSL_102 TRUE)
+  ENDIF()
+ENDIF()
+
 MESSAGE(STATUS "")
 MESSAGE(STATUS "Summary of feature detection:")
 MESSAGE(STATUS "")
@@ -308,6 +320,7 @@ SET(MODULE_LIST
   "modules/slotmem/mod_slotmem_plain+I+slotmem provider that uses plain memory"
   "modules/slotmem/mod_slotmem_shm+I+slotmem provider that uses shared memory"
   "modules/ssl/mod_ssl+i+SSL/TLS support"
+  "modules/ssl/mod_ssl_ct+O+Certificate Transparency support (requires OpenSSL >= 1.0.2)"
   "modules/test/mod_dialup+O+rate limits static files to dialup modem speeds"
   "modules/test/mod_optional_fn_export+O+example optional function exporter"
   "modules/test/mod_optional_fn_import+O+example optional function importer"
@@ -424,6 +437,16 @@ SET(mod_ssl_extra_sources
   modules/ssl/ssl_engine_vars.c      modules/ssl/ssl_scache.c
   modules/ssl/ssl_util.c             modules/ssl/ssl_util_ocsp.c
   modules/ssl/ssl_util_ssl.c         modules/ssl/ssl_util_stapling.c
+)
+SET(mod_ssl_ct_requires              HAVE_OPENSSL_102)
+IF(OPENSSL_FOUND)
+  SET(mod_ssl_ct_extra_includes        ${OPENSSL_INCLUDE_DIR})
+  SET(mod_ssl_ct_extra_libs            ${OPENSSL_LIBRARIES})
+ENDIF()
+SET(mod_ssl_ct_extra_sources
+  modules/ssl/ssl_ct_log_config.c
+  modules/ssl/ssl_ct_sct.c
+  modules/ssl/ssl_ct_util.c
 )
 SET(mod_status_extra_defines         STATUS_DECLARE_EXPORT)
 SET(mod_watchdog_install_lib 1)
@@ -845,6 +868,7 @@ INSTALL(DIRECTORY include/ DESTINATION include
 INSTALL(FILES ${other_installed_h} DESTINATION include)
 INSTALL(FILES ${installed_mod_libs_exps} DESTINATION lib)
 INSTALL(FILES "${CMAKE_BINARY_DIR}/libhttpd.exp" DESTINATION LIB)
+INSTALL(FILES support/ctlogconfig DESTINATION bin)
 
 IF(INSTALL_MANUAL) # Silly?  This takes a while, and a dev doesn't need it.
   INSTALL(DIRECTORY docs/manual/ DESTINATION manual)
