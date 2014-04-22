@@ -342,33 +342,49 @@ This can be particulary useful in conjunction with
 <tr class="odd"><td><a href="mod_usertrack.html#cookietracking">CookieTracking on|off</a></td><td> off </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enables tracking cookie</td></tr>
 <tr><td><a href="mpm_common.html#coredumpdirectory">CoreDumpDirectory <var>directory</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Apache がコアダンプする前に移動を試みるディレクトリ
 </td></tr>
-<tr class="odd"><td><a href="mod_log_config.html#customlog">CustomLog  <var>file</var>|<var>pipe</var>
-<var>format</var>|<var>nickname</var>
-[env=[!]<var>environment-variable</var>]</a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">ログファイルの名前と書式を設定する</td></tr>
-<tr><td><a href="mod_dav.html#dav" id="D" name="D">Dav On|Off|<var>provider-name</var></a></td><td> Off </td><td>d</td><td>E</td></tr><tr><td class="descr" colspan="4">WebDAV HTTP メソッドを有効にします</td></tr>
-<tr class="odd"><td><a href="mod_dav.html#davdepthinfinity">DavDepthInfinity on|off</a></td><td> off </td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">PROPFIND, Depth: Infinity リクエストを許可します</td></tr>
-<tr><td><a href="mod_dav_lock.html#davgenericlockdb">DavGenericLockDB <var>file-path</var></a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">DAV ロックデータベースの場所</td></tr>
-<tr class="odd"><td><a href="mod_dav_fs.html#davlockdb">DavLockDB <var>file-path</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">DAV ロックデータベースの位置</td></tr>
-<tr><td><a href="mod_dav.html#davmintimeout">DavMinTimeout <var>seconds</var></a></td><td> 0 </td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">サーバが DAV リソースのロックを維持する最小時間です。
+<tr class="odd"><td><a href="mod_ssl_ct.html#ctauditstorage">CTAuditStorage <em>directory</em></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Existing directory where data for off-line audit will be stored</td></tr>
+<tr><td><a href="mod_ssl_ct.html#ctlogclient">CTLogClient <em>executable</em></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Location of certificate-transparency log client tool</td></tr>
+<tr class="odd"><td><a href="mod_ssl_ct.html#ctlogconfigdb">CTLogConfigDB <em>filename</em></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Log configuration database supporting dynamic updates</td></tr>
+<tr><td><a href="mod_ssl_ct.html#ctmaxsctage">CTMaxSCTAge <em>num-seconds</em></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum age of SCT obtained from a log, before it will be
+refreshed</td></tr>
+<tr class="odd"><td><a href="mod_ssl_ct.html#ctproxyawareness">CTProxyAwareness <em>oblivious|aware|require</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Level of CT awareness and enforcement for a proxy
 </td></tr>
-<tr class="odd"><td><a href="mod_dbd.html#dbdexptime">DBDExptime <var>time-in-seconds</var></a></td><td> 300 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Keepalive time for idle connections</td></tr>
-<tr><td><a href="mod_dbd.html#dbdinitsql">DBDInitSQL <var>"SQL statement"</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Execute an SQL statement after connecting to a database</td></tr>
-<tr class="odd"><td><a href="mod_dbd.html#dbdkeep">DBDKeep <var>number</var></a></td><td> 2 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum sustained number of connections</td></tr>
-<tr><td><a href="mod_dbd.html#dbdmax">DBDMax <var>number</var></a></td><td> 10 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum number of connections</td></tr>
-<tr class="odd"><td><a href="mod_dbd.html#dbdmin">DBDMin <var>number</var></a></td><td> 1 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Minimum number of connections</td></tr>
-<tr><td><a href="mod_dbd.html#dbdparams">DBDParams
-<var>param1</var>=<var>value1</var>[,<var>param2</var>=<var>value2</var>]</a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Parameters for database connection</td></tr>
-<tr class="odd"><td><a href="mod_dbd.html#dbdpersist">DBDPersist On|Off</a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Whether to use persistent connections</td></tr>
-<tr><td><a href="mod_dbd.html#dbdpreparesql">DBDPrepareSQL <var>"SQL statement"</var> <var>label</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Define an SQL prepared statement</td></tr>
-<tr class="odd"><td><a href="mod_dbd.html#dbdriver">DBDriver <var>name</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Specify an SQL driver</td></tr>
-<tr><td><a href="mod_autoindex.html#defaulticon">DefaultIcon <var>url-path</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">特定のアイコンが何も設定されていない時に
+<tr><td><a href="mod_ssl_ct.html#ctsctstorage">CTSCTStorage <em>directory</em></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Existing directory where SCTs are managed</td></tr>
+<tr class="odd"><td><a href="mod_ssl_ct.html#ctserverhellosctlimit">CTServerHelloSCTLimit <em>limit</em></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Limit on number of SCTs that can be returned in
+ServerHello</td></tr>
+<tr><td><a href="mod_ssl_ct.html#ctstaticlogconfig">CTStaticLogConfig <em>log-id|-</em> <em>public-key-file|-</em>
+<em>1|0|-</em> <em>min-timestamp|-</em> <em>max-timestamp|-</em>
+<em>log-URL|-</em></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Static configuration of information about a log</td></tr>
+<tr class="odd"><td><a href="mod_ssl_ct.html#ctstaticscts">CTStaticSCTs <em>certificate-pem-file</em> <em>sct-directory</em></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Static configuration of one or more SCTs for a server certificate
+</td></tr>
+<tr><td><a href="mod_log_config.html#customlog">CustomLog  <var>file</var>|<var>pipe</var>
+<var>format</var>|<var>nickname</var>
+[env=[!]<var>environment-variable</var>]</a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">ログファイルの名前と書式を設定する</td></tr>
+<tr class="odd"><td><a href="mod_dav.html#dav" id="D" name="D">Dav On|Off|<var>provider-name</var></a></td><td> Off </td><td>d</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">WebDAV HTTP メソッドを有効にします</td></tr>
+<tr><td><a href="mod_dav.html#davdepthinfinity">DavDepthInfinity on|off</a></td><td> off </td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">PROPFIND, Depth: Infinity リクエストを許可します</td></tr>
+<tr class="odd"><td><a href="mod_dav_lock.html#davgenericlockdb">DavGenericLockDB <var>file-path</var></a></td><td></td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">DAV ロックデータベースの場所</td></tr>
+<tr><td><a href="mod_dav_fs.html#davlockdb">DavLockDB <var>file-path</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">DAV ロックデータベースの位置</td></tr>
+<tr class="odd"><td><a href="mod_dav.html#davmintimeout">DavMinTimeout <var>seconds</var></a></td><td> 0 </td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">サーバが DAV リソースのロックを維持する最小時間です。
+</td></tr>
+<tr><td><a href="mod_dbd.html#dbdexptime">DBDExptime <var>time-in-seconds</var></a></td><td> 300 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Keepalive time for idle connections</td></tr>
+<tr class="odd"><td><a href="mod_dbd.html#dbdinitsql">DBDInitSQL <var>"SQL statement"</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Execute an SQL statement after connecting to a database</td></tr>
+<tr><td><a href="mod_dbd.html#dbdkeep">DBDKeep <var>number</var></a></td><td> 2 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum sustained number of connections</td></tr>
+<tr class="odd"><td><a href="mod_dbd.html#dbdmax">DBDMax <var>number</var></a></td><td> 10 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum number of connections</td></tr>
+<tr><td><a href="mod_dbd.html#dbdmin">DBDMin <var>number</var></a></td><td> 1 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Minimum number of connections</td></tr>
+<tr class="odd"><td><a href="mod_dbd.html#dbdparams">DBDParams
+<var>param1</var>=<var>value1</var>[,<var>param2</var>=<var>value2</var>]</a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Parameters for database connection</td></tr>
+<tr><td><a href="mod_dbd.html#dbdpersist">DBDPersist On|Off</a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Whether to use persistent connections</td></tr>
+<tr class="odd"><td><a href="mod_dbd.html#dbdpreparesql">DBDPrepareSQL <var>"SQL statement"</var> <var>label</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Define an SQL prepared statement</td></tr>
+<tr><td><a href="mod_dbd.html#dbdriver">DBDriver <var>name</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Specify an SQL driver</td></tr>
+<tr class="odd"><td><a href="mod_autoindex.html#defaulticon">DefaultIcon <var>url-path</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">特定のアイコンが何も設定されていない時に
 ファイルに表示するアイコン</td></tr>
-<tr class="odd"><td><a href="mod_mime.html#defaultlanguage">DefaultLanguage <var>MIME-lang</var></a></td><td></td><td>svdh</td><td /></tr><tr class="odd"><td class="descr" colspan="4">あるスコープのすべてのファイルを指定された言語に
+<tr><td><a href="mod_mime.html#defaultlanguage">DefaultLanguage <var>MIME-lang</var></a></td><td></td><td>svdh</td><td /></tr><tr><td class="descr" colspan="4">あるスコープのすべてのファイルを指定された言語に
 設定する</td></tr>
-<tr><td><a href="core.html#defaultruntimedir">DefaultRuntimeDir <var>directory-path</var></a></td><td> DEFAULT_REL_RUNTIME +</td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Base directory for the server run-time files</td></tr>
-<tr class="odd"><td><a href="core.html#defaulttype">DefaultType <var>MIME-type|none</var></a></td><td> text/plain </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">サーバがコンテントタイプを決定できないときに
+<tr class="odd"><td><a href="core.html#defaultruntimedir">DefaultRuntimeDir <var>directory-path</var></a></td><td> DEFAULT_REL_RUNTIME +</td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Base directory for the server run-time files</td></tr>
+<tr><td><a href="core.html#defaulttype">DefaultType <var>MIME-type|none</var></a></td><td> text/plain </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">サーバがコンテントタイプを決定できないときに
 送られる MIME コンテントタイプ</td></tr>
-<tr><td><a href="core.html#define">Define <var>parameter-name</var></a></td><td></td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">変数の存在を宣言する</td></tr>
+<tr class="odd"><td><a href="core.html#define">Define <var>parameter-name</var></a></td><td></td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">変数の存在を宣言する</td></tr>
+<tr><td><a href="mod_deflate.html#deflatealteretag">DeflateAlterETag AddSuffix|NoChange|Remove</a></td><td> AddSuffix </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">How the outgoing ETag header should be modified during compression</td></tr>
 <tr class="odd"><td><a href="mod_deflate.html#deflatebuffersize">DeflateBufferSize <var>value</var></a></td><td> 8096 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">zlib が一度に圧縮する塊の大きさ</td></tr>
 <tr><td><a href="mod_deflate.html#deflatecompressionlevel">DeflateCompressionLevel <var>value</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">出力に対して行なう圧縮の程度</td></tr>
 <tr class="odd"><td><a href="mod_deflate.html#deflatefilternote">DeflateFilterNote [<var>type</var>] <var>notename</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">ロギング用に圧縮比をメモに追加</td></tr>
@@ -527,7 +543,7 @@ operations</td></tr>
 <tr><td><a href="mod_ldap.html#ldapopcachettl">LDAPOpCacheTTL <var>seconds</var></a></td><td> 600 </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Time that entries in the operation cache remain
 valid</td></tr>
 <tr class="odd"><td><a href="mod_ldap.html#ldapreferralhoplimit">LDAPReferralHopLimit <var>number</var></a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The maximum number of referral hops to chase before terminating an LDAP query.</td></tr>
-<tr><td><a href="mod_ldap.html#ldapreferrals">LDAPReferrals On|Off|default</a></td><td> On </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Enable referral chasing during queries to the LDAP server.</td></tr>
+<tr><td><a href="mod_ldap.html#ldapreferrals">LDAPReferrals <var>On|Off|default</var></a></td><td> On </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Enable referral chasing during queries to the LDAP server.</td></tr>
 <tr class="odd"><td><a href="mod_ldap.html#ldapretries">LDAPRetries <var>number-of-retries</var></a></td><td> 3 </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Configures the number of LDAP server retries.</td></tr>
 <tr><td><a href="mod_ldap.html#ldapretrydelay">LDAPRetryDelay <var>seconds</var></a></td><td> 0 </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Configures the delay between LDAP server retries.</td></tr>
 <tr class="odd"><td><a href="mod_ldap.html#ldapsharedcachefile">LDAPSharedCacheFile <var>file-path</var></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the shared memory cache file</td></tr>
@@ -731,183 +747,187 @@ header</td></tr>
 <tr><td><a href="mod_proxy.html#proxytimeout">ProxyTimeout <var>seconds</var></a></td><td> 300 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">プロキシされたリクエストのネットワークタイムアウト</td></tr>
 <tr class="odd"><td><a href="mod_proxy.html#proxyvia">ProxyVia On|Off|Full|Block</a></td><td> Off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">プロキシされたリクエストの <code>Via</code> HTTP 応答ヘッダ
 により提供される情報</td></tr>
-<tr><td><a href="mod_autoindex.html#readmename" id="R" name="R">ReadmeName <var>filename</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">インデックス一覧の最後に挿入されるファイルの名前</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#receivebuffersize">ReceiveBufferSize <var>bytes</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">TCP 受信バッファサイズ</td></tr>
-<tr><td><a href="mod_alias.html#redirect">Redirect [<var>status</var>] <var>URL-path</var>
-<var>URL</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">クライアントが違う URL を取得するように外部へのリダイレクトを
+<tr><td><a href="mod_proxy_wstunnel.html#proxywebsocketasync">ProxyWebsocketAsync ON|OFF</a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Instructs this module to try to create an asynchronous tunnel</td></tr>
+<tr class="odd"><td><a href="mod_proxy_wstunnel.html#proxywebsocketasyncdelay">ProxyWebsocketAsyncDelay <var>num</var>[ms]</a></td><td> 0 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the amount of time the tunnel waits synchronously for data</td></tr>
+<tr><td><a href="mod_proxy_wstunnel.html#proxywebsocketidletimeout">ProxyWebsocketIdleTimeout <var>num</var>[ms]</a></td><td> 0 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets the maximum amount of time to wait for data on the websockets tunnel</td></tr>
+<tr class="odd"><td><a href="mod_autoindex.html#readmename" id="R" name="R">ReadmeName <var>filename</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">インデックス一覧の最後に挿入されるファイルの名前</td></tr>
+<tr><td><a href="mpm_common.html#receivebuffersize">ReceiveBufferSize <var>bytes</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">TCP 受信バッファサイズ</td></tr>
+<tr class="odd"><td><a href="mod_alias.html#redirect">Redirect [<var>status</var>] <var>URL-path</var>
+<var>URL</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">クライアントが違う URL を取得するように外部へのリダイレクトを
 送る</td></tr>
-<tr class="odd"><td><a href="mod_alias.html#redirectmatch">RedirectMatch [<var>status</var>] <var>regex</var>
-<var>URL</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">現在の URL への正規表現のマッチにより
+<tr><td><a href="mod_alias.html#redirectmatch">RedirectMatch [<var>status</var>] <var>regex</var>
+<var>URL</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">現在の URL への正規表現のマッチにより
 外部へのリダイレクトを送る</td></tr>
-<tr><td><a href="mod_alias.html#redirectpermanent">RedirectPermanent <var>URL-path</var> <var>URL</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">クライアントが違う URL を取得するように外部への永久的な
+<tr class="odd"><td><a href="mod_alias.html#redirectpermanent">RedirectPermanent <var>URL-path</var> <var>URL</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">クライアントが違う URL を取得するように外部への永久的な
 リダイレクトを送る</td></tr>
-<tr class="odd"><td><a href="mod_alias.html#redirecttemp">RedirectTemp <var>URL-path</var> <var>URL</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">クライアントが違う URL を取得するように外部への一時的な
+<tr><td><a href="mod_alias.html#redirecttemp">RedirectTemp <var>URL-path</var> <var>URL</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">クライアントが違う URL を取得するように外部への一時的な
 リダイレクトを送る</td></tr>
-<tr><td><a href="mod_reflector.html#reflectorheader">ReflectorHeader <var>inputheader</var> <var>[outputheader]</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Reflect an input header to the output headers</td></tr>
-<tr class="odd"><td><a href="core.html#registerhttpmethod">RegisterHttpMethod <var>method</var> [<var>method</var> [...]]</a></td><td></td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Register non-standard HTTP methods</td></tr>
-<tr><td><a href="mod_remoteip.html#remoteipheader">RemoteIPHeader <var>header-field</var></a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Declare the header field which should be parsed for useragent IP addresses</td></tr>
-<tr class="odd"><td><a href="mod_remoteip.html#remoteipinternalproxy">RemoteIPInternalProxy <var>proxy-ip</var>|<var>proxy-ip/subnet</var>|<var>hostname</var> ...</a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Declare client intranet IP addresses trusted to present the RemoteIPHeader value</td></tr>
-<tr><td><a href="mod_remoteip.html#remoteipinternalproxylist">RemoteIPInternalProxyList <var>filename</var></a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Declare client intranet IP addresses trusted to present the RemoteIPHeader value</td></tr>
-<tr class="odd"><td><a href="mod_remoteip.html#remoteipproxiesheader">RemoteIPProxiesHeader <var>HeaderFieldName</var></a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Declare the header field which will record all intermediate IP addresses</td></tr>
-<tr><td><a href="mod_remoteip.html#remoteiptrustedproxy">RemoteIPTrustedProxy <var>proxy-ip</var>|<var>proxy-ip/subnet</var>|<var>hostname</var> ...</a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Declare client intranet IP addresses trusted to present the RemoteIPHeader value</td></tr>
-<tr class="odd"><td><a href="mod_remoteip.html#remoteiptrustedproxylist">RemoteIPTrustedProxyList <var>filename</var></a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Declare client intranet IP addresses trusted to present the RemoteIPHeader value</td></tr>
-<tr><td><a href="mod_mime.html#removecharset">RemoveCharset <var>extension</var> [<var>extension</var>]
-...</a></td><td></td><td>vdh</td><td /></tr><tr><td class="descr" colspan="4">ファイルの拡張子に関連付けられたすべての文字セット
+<tr class="odd"><td><a href="mod_reflector.html#reflectorheader">ReflectorHeader <var>inputheader</var> <var>[outputheader]</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Reflect an input header to the output headers</td></tr>
+<tr><td><a href="core.html#registerhttpmethod">RegisterHttpMethod <var>method</var> [<var>method</var> [...]]</a></td><td></td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Register non-standard HTTP methods</td></tr>
+<tr class="odd"><td><a href="mod_remoteip.html#remoteipheader">RemoteIPHeader <var>header-field</var></a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Declare the header field which should be parsed for useragent IP addresses</td></tr>
+<tr><td><a href="mod_remoteip.html#remoteipinternalproxy">RemoteIPInternalProxy <var>proxy-ip</var>|<var>proxy-ip/subnet</var>|<var>hostname</var> ...</a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Declare client intranet IP addresses trusted to present the RemoteIPHeader value</td></tr>
+<tr class="odd"><td><a href="mod_remoteip.html#remoteipinternalproxylist">RemoteIPInternalProxyList <var>filename</var></a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Declare client intranet IP addresses trusted to present the RemoteIPHeader value</td></tr>
+<tr><td><a href="mod_remoteip.html#remoteipproxiesheader">RemoteIPProxiesHeader <var>HeaderFieldName</var></a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Declare the header field which will record all intermediate IP addresses</td></tr>
+<tr class="odd"><td><a href="mod_remoteip.html#remoteiptrustedproxy">RemoteIPTrustedProxy <var>proxy-ip</var>|<var>proxy-ip/subnet</var>|<var>hostname</var> ...</a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Declare client intranet IP addresses trusted to present the RemoteIPHeader value</td></tr>
+<tr><td><a href="mod_remoteip.html#remoteiptrustedproxylist">RemoteIPTrustedProxyList <var>filename</var></a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Declare client intranet IP addresses trusted to present the RemoteIPHeader value</td></tr>
+<tr class="odd"><td><a href="mod_mime.html#removecharset">RemoveCharset <var>extension</var> [<var>extension</var>]
+...</a></td><td></td><td>vdh</td><td /></tr><tr class="odd"><td class="descr" colspan="4">ファイルの拡張子に関連付けられたすべての文字セット
 を解除する</td></tr>
-<tr class="odd"><td><a href="mod_mime.html#removeencoding">RemoveEncoding <var>extension</var> [<var>extension</var>]
-...</a></td><td></td><td>vdh</td><td /></tr><tr class="odd"><td class="descr" colspan="4">ファイルの拡張子に関連付けられたすべてのコンテントエンコーディング
+<tr><td><a href="mod_mime.html#removeencoding">RemoveEncoding <var>extension</var> [<var>extension</var>]
+...</a></td><td></td><td>vdh</td><td /></tr><tr><td class="descr" colspan="4">ファイルの拡張子に関連付けられたすべてのコンテントエンコーディング
 を解除する</td></tr>
-<tr><td><a href="mod_mime.html#removehandler">RemoveHandler <var>extension</var> [<var>extension</var>]
-...</a></td><td></td><td>vdh</td><td /></tr><tr><td class="descr" colspan="4">ファイルの拡張子に関連付けられたすべてのハンドラを
+<tr class="odd"><td><a href="mod_mime.html#removehandler">RemoveHandler <var>extension</var> [<var>extension</var>]
+...</a></td><td></td><td>vdh</td><td /></tr><tr class="odd"><td class="descr" colspan="4">ファイルの拡張子に関連付けられたすべてのハンドラを
 解除する</td></tr>
-<tr class="odd"><td><a href="mod_mime.html#removeinputfilter">RemoveInputFilter <var>extension</var> [<var>extension</var>]
-...</a></td><td></td><td>vdh</td><td /></tr><tr class="odd"><td class="descr" colspan="4">ファイル拡張子に関連付けられた入力フィルタを解除する</td></tr>
-<tr><td><a href="mod_mime.html#removelanguage">RemoveLanguage <var>extension</var> [<var>extension</var>]
-...</a></td><td></td><td>vdh</td><td /></tr><tr><td class="descr" colspan="4">ファイル拡張子に関連付けられた言語を解除する</td></tr>
-<tr class="odd"><td><a href="mod_mime.html#removeoutputfilter">RemoveOutputFilter <var>extension</var> [<var>extension</var>]
-...</a></td><td></td><td>vdh</td><td /></tr><tr class="odd"><td class="descr" colspan="4">ファイル拡張子に関連付けられた出力フィルタを解除する</td></tr>
-<tr><td><a href="mod_mime.html#removetype">RemoveType <var>extension</var> [<var>extension</var>]
-...</a></td><td></td><td>vdh</td><td /></tr><tr><td class="descr" colspan="4">ファイルの拡張子と関連付けられたコンテントタイプを
+<tr><td><a href="mod_mime.html#removeinputfilter">RemoveInputFilter <var>extension</var> [<var>extension</var>]
+...</a></td><td></td><td>vdh</td><td /></tr><tr><td class="descr" colspan="4">ファイル拡張子に関連付けられた入力フィルタを解除する</td></tr>
+<tr class="odd"><td><a href="mod_mime.html#removelanguage">RemoveLanguage <var>extension</var> [<var>extension</var>]
+...</a></td><td></td><td>vdh</td><td /></tr><tr class="odd"><td class="descr" colspan="4">ファイル拡張子に関連付けられた言語を解除する</td></tr>
+<tr><td><a href="mod_mime.html#removeoutputfilter">RemoveOutputFilter <var>extension</var> [<var>extension</var>]
+...</a></td><td></td><td>vdh</td><td /></tr><tr><td class="descr" colspan="4">ファイル拡張子に関連付けられた出力フィルタを解除する</td></tr>
+<tr class="odd"><td><a href="mod_mime.html#removetype">RemoveType <var>extension</var> [<var>extension</var>]
+...</a></td><td></td><td>vdh</td><td /></tr><tr class="odd"><td class="descr" colspan="4">ファイルの拡張子と関連付けられたコンテントタイプを
 解除する</td></tr>
-<tr class="odd"><td><a href="mod_headers.html#requestheader">RequestHeader set|append|add|unset <var>header</var>
-[<var>value</var>] [early|env=[!]<var>variable</var>]</a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">HTTP リクエストヘッダの設定</td></tr>
-<tr><td><a href="mod_reqtimeout.html#requestreadtimeout">RequestReadTimeout
+<tr><td><a href="mod_headers.html#requestheader">RequestHeader set|append|add|unset <var>header</var>
+[<var>value</var>] [early|env=[!]<var>variable</var>]</a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">HTTP リクエストヘッダの設定</td></tr>
+<tr class="odd"><td><a href="mod_reqtimeout.html#requestreadtimeout">RequestReadTimeout
 [header=<var>timeout</var>[-<var>maxtimeout</var>][,MinRate=<var>rate</var>]
 [body=<var>timeout</var>[-<var>maxtimeout</var>][,MinRate=<var>rate</var>]
-</a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Set timeout values for receiving request headers and body from client.
+</a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Set timeout values for receiving request headers and body from client.
 </td></tr>
-<tr class="odd"><td><a href="mod_authz_core.html#require">Require [not] <var>entity-name</var>
-    [<var>entity-name</var>] ...</a></td><td></td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Tests whether an authenticated user is authorized by
+<tr><td><a href="mod_authz_core.html#require">Require [not] <var>entity-name</var>
+    [<var>entity-name</var>] ...</a></td><td></td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Tests whether an authenticated user is authorized by
 an authorization provider.</td></tr>
-<tr><td><a href="mod_authz_core.html#requireall">&lt;RequireAll&gt; ... &lt;/RequireAll&gt;</a></td><td></td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Enclose a group of authorization directives of which none
+<tr class="odd"><td><a href="mod_authz_core.html#requireall">&lt;RequireAll&gt; ... &lt;/RequireAll&gt;</a></td><td></td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Enclose a group of authorization directives of which none
 must fail and at least one must succeed for the enclosing directive to
 succeed.</td></tr>
-<tr class="odd"><td><a href="mod_authz_core.html#requireany">&lt;RequireAny&gt; ... &lt;/RequireAny&gt;</a></td><td></td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Enclose a group of authorization directives of which one
+<tr><td><a href="mod_authz_core.html#requireany">&lt;RequireAny&gt; ... &lt;/RequireAny&gt;</a></td><td></td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Enclose a group of authorization directives of which one
 must succeed for the enclosing directive to succeed.</td></tr>
-<tr><td><a href="mod_authz_core.html#requirenone">&lt;RequireNone&gt; ... &lt;/RequireNone&gt;</a></td><td></td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Enclose a group of authorization directives of which none
+<tr class="odd"><td><a href="mod_authz_core.html#requirenone">&lt;RequireNone&gt; ... &lt;/RequireNone&gt;</a></td><td></td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Enclose a group of authorization directives of which none
 must succeed for the enclosing directive to not fail.</td></tr>
-<tr class="odd"><td><a href="mod_rewrite.html#rewritebase">RewriteBase <em>URL-path</em></a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the base URL for per-directory rewrites</td></tr>
-<tr><td><a href="mod_rewrite.html#rewritecond"> RewriteCond
-      <em>TestString</em> <em>CondPattern</em></a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Defines a condition under which rewriting will take place
+<tr><td><a href="mod_rewrite.html#rewritebase">RewriteBase <em>URL-path</em></a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets the base URL for per-directory rewrites</td></tr>
+<tr class="odd"><td><a href="mod_rewrite.html#rewritecond"> RewriteCond
+      <em>TestString</em> <em>CondPattern</em></a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Defines a condition under which rewriting will take place
 </td></tr>
-<tr class="odd"><td><a href="mod_rewrite.html#rewriteengine">RewriteEngine on|off</a></td><td> off </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enables or disables runtime rewriting engine</td></tr>
-<tr><td><a href="mod_rewrite.html#rewritemap">RewriteMap <em>MapName</em> <em>MapType</em>:<em>MapSource</em>
-</a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Defines a mapping function for key-lookup</td></tr>
-<tr class="odd"><td><a href="mod_rewrite.html#rewriteoptions">RewriteOptions <var>Options</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets some special options for the rewrite engine</td></tr>
-<tr><td><a href="mod_rewrite.html#rewriterule">RewriteRule
-      <em>Pattern</em> <em>Substitution</em> [<em>flags</em>]</a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Defines rules for the rewriting engine</td></tr>
-<tr class="odd"><td><a href="core.html#rlimitcpu">RLimitCPU <var>seconds</var>|max [<var>seconds</var>|max]</a></td><td></td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Apache の子プロセスから起動されたプロセスの CPU 消費量を
+<tr><td><a href="mod_rewrite.html#rewriteengine">RewriteEngine on|off</a></td><td> off </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Enables or disables runtime rewriting engine</td></tr>
+<tr class="odd"><td><a href="mod_rewrite.html#rewritemap">RewriteMap <em>MapName</em> <em>MapType</em>:<em>MapSource</em>
+</a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Defines a mapping function for key-lookup</td></tr>
+<tr><td><a href="mod_rewrite.html#rewriteoptions">RewriteOptions <var>Options</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets some special options for the rewrite engine</td></tr>
+<tr class="odd"><td><a href="mod_rewrite.html#rewriterule">RewriteRule
+      <em>Pattern</em> <em>Substitution</em> [<em>flags</em>]</a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Defines rules for the rewriting engine</td></tr>
+<tr><td><a href="core.html#rlimitcpu">RLimitCPU <var>seconds</var>|max [<var>seconds</var>|max]</a></td><td></td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Apache の子プロセスから起動されたプロセスの CPU 消費量を
 制限する</td></tr>
-<tr><td><a href="core.html#rlimitmem">RLimitMEM <var>bytes</var>|max [<var>bytes</var>|max]</a></td><td></td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Apache の子プロセスから起動されたプロセスのメモリ消費量を
+<tr class="odd"><td><a href="core.html#rlimitmem">RLimitMEM <var>bytes</var>|max [<var>bytes</var>|max]</a></td><td></td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Apache の子プロセスから起動されたプロセスのメモリ消費量を
 制限する</td></tr>
-<tr class="odd"><td><a href="core.html#rlimitnproc">RLimitNPROC <var>number</var>|max [<var>number</var>|max]</a></td><td></td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Apache の子プロセスから起動されたプロセスが起動するプロセスの
+<tr><td><a href="core.html#rlimitnproc">RLimitNPROC <var>number</var>|max [<var>number</var>|max]</a></td><td></td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Apache の子プロセスから起動されたプロセスが起動するプロセスの
 数を制限する</td></tr>
-<tr><td><a href="mod_access_compat.html#satisfy" id="S" name="S">Satisfy Any|All</a></td><td> All </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">ホストレベルのアクセス制御とユーザ認証との相互作用を指定</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#scoreboardfile">ScoreBoardFile <var>file-path</var></a></td><td> logs/apache_status </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">子プロセスと連携するためのデータを保存する
+<tr class="odd"><td><a href="mod_access_compat.html#satisfy" id="S" name="S">Satisfy Any|All</a></td><td> All </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">ホストレベルのアクセス制御とユーザ認証との相互作用を指定</td></tr>
+<tr><td><a href="mpm_common.html#scoreboardfile">ScoreBoardFile <var>file-path</var></a></td><td> logs/apache_status </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">子プロセスと連携するためのデータを保存する
 ファイルの位置</td></tr>
-<tr><td><a href="mod_actions.html#script">Script <var>method</var> <var>cgi-script</var></a></td><td></td><td>svd</td><td>B</td></tr><tr><td class="descr" colspan="4">特定のリクエストメソッドに対して CGI スクリプトを
+<tr class="odd"><td><a href="mod_actions.html#script">Script <var>method</var> <var>cgi-script</var></a></td><td></td><td>svd</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">特定のリクエストメソッドに対して CGI スクリプトを
 実行するように設定</td></tr>
-<tr class="odd"><td><a href="mod_alias.html#scriptalias">ScriptAlias <var>URL-path</var>
-<var>file-path</var>|<var>directory-path</var></a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">URL をファイルシステムの位置へマップし、マップ先を
+<tr><td><a href="mod_alias.html#scriptalias">ScriptAlias <var>URL-path</var>
+<var>file-path</var>|<var>directory-path</var></a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">URL をファイルシステムの位置へマップし、マップ先を
 CGI スクリプトに指定</td></tr>
-<tr><td><a href="mod_alias.html#scriptaliasmatch">ScriptAliasMatch <var>regex</var>
-<var>file-path</var>|<var>directory-path</var></a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">URL を正規表現を使ってファイルシステムの位置へマップし、マップ先を
+<tr class="odd"><td><a href="mod_alias.html#scriptaliasmatch">ScriptAliasMatch <var>regex</var>
+<var>file-path</var>|<var>directory-path</var></a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">URL を正規表現を使ってファイルシステムの位置へマップし、マップ先を
 CGI スクリプトに指定</td></tr>
-<tr class="odd"><td><a href="core.html#scriptinterpretersource">ScriptInterpreterSource Registry|Registry-Strict|Script</a></td><td> Script </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">CGI スクリプトのインタープリタの位置を調べるための手法</td></tr>
-<tr><td><a href="mod_cgi.html#scriptlog">ScriptLog <var>file-path</var></a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">CGI スクリプトのエラーログファイルの場所</td></tr>
-<tr class="odd"><td><a href="mod_cgi.html#scriptlogbuffer">ScriptLogBuffer <em>bytes</em></a></td><td> 1024 </td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">スクリプトログに記録される PUT や POST リクエストの内容の上限</td></tr>
-<tr><td><a href="mod_cgi.html#scriptloglength">ScriptLogLength <var>bytes</var></a></td><td> 10385760 </td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">CGI スクリプトのログファイルの大きさの上限</td></tr>
-<tr class="odd"><td><a href="mod_cgid.html#scriptsock">ScriptSock <var>file-path</var></a></td><td> logs/cgisock </td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">CGI デーモンとの通信に使われるソケットのファイル名の接頭辞</td></tr>
-<tr><td><a href="mod_nw_ssl.html#securelisten">SecureListen [<var>IP-address</var>:]<var>portnumber</var>
-<var>Certificate-Name</var> [MUTUAL]</a></td><td></td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">Enables SSL encryption for the specified port</td></tr>
-<tr class="odd"><td><a href="core.html#seerequesttail">SeeRequestTail On|Off</a></td><td> Off </td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Determine if mod_status displays the first 63 characters
+<tr><td><a href="core.html#scriptinterpretersource">ScriptInterpreterSource Registry|Registry-Strict|Script</a></td><td> Script </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">CGI スクリプトのインタープリタの位置を調べるための手法</td></tr>
+<tr class="odd"><td><a href="mod_cgi.html#scriptlog">ScriptLog <var>file-path</var></a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">CGI スクリプトのエラーログファイルの場所</td></tr>
+<tr><td><a href="mod_cgi.html#scriptlogbuffer">ScriptLogBuffer <em>bytes</em></a></td><td> 1024 </td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">スクリプトログに記録される PUT や POST リクエストの内容の上限</td></tr>
+<tr class="odd"><td><a href="mod_cgi.html#scriptloglength">ScriptLogLength <var>bytes</var></a></td><td> 10385760 </td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">CGI スクリプトのログファイルの大きさの上限</td></tr>
+<tr><td><a href="mod_cgid.html#scriptsock">ScriptSock <var>file-path</var></a></td><td> logs/cgisock </td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">CGI デーモンとの通信に使われるソケットのファイル名の接頭辞</td></tr>
+<tr class="odd"><td><a href="mod_nw_ssl.html#securelisten">SecureListen [<var>IP-address</var>:]<var>portnumber</var>
+<var>Certificate-Name</var> [MUTUAL]</a></td><td></td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Enables SSL encryption for the specified port</td></tr>
+<tr><td><a href="core.html#seerequesttail">SeeRequestTail On|Off</a></td><td> Off </td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Determine if mod_status displays the first 63 characters
 of a request or the last 63, assuming the request itself is greater than
 63 chars.</td></tr>
-<tr><td><a href="mpm_common.html#sendbuffersize">SendBufferSize <var>bytes</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">TCP バッファサイズ</td></tr>
-<tr class="odd"><td><a href="core.html#serveradmin">ServerAdmin <var>email-address</var>|<var>URL</var></a></td><td></td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">サーバがクライアントに送るエラーメッセージに含める電子メールの
+<tr class="odd"><td><a href="mpm_common.html#sendbuffersize">SendBufferSize <var>bytes</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">TCP バッファサイズ</td></tr>
+<tr><td><a href="core.html#serveradmin">ServerAdmin <var>email-address</var>|<var>URL</var></a></td><td></td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">サーバがクライアントに送るエラーメッセージに含める電子メールの
 アドレス</td></tr>
-<tr><td><a href="core.html#serveralias">ServerAlias <var>hostname</var> [<var>hostname</var>] ...</a></td><td></td><td>v</td><td>C</td></tr><tr><td class="descr" colspan="4">リクエストを名前ベースのバーチャルホストにマッチさせているときに
+<tr class="odd"><td><a href="core.html#serveralias">ServerAlias <var>hostname</var> [<var>hostname</var>] ...</a></td><td></td><td>v</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">リクエストを名前ベースのバーチャルホストにマッチさせているときに
 使用されるホストの別名</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#serverlimit">ServerLimit <var>number</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">設定可能なサーバプロセス数の上限</td></tr>
-<tr><td><a href="core.html#servername">ServerName [<var>scheme</var>://]<var>fully-qualified-domain-name</var>[:<var>port</var>]</a></td><td></td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">サーバが自分自身を示すときに使うホスト名とポート</td></tr>
-<tr class="odd"><td><a href="core.html#serverpath">ServerPath <var>URL-path</var></a></td><td></td><td>v</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">非互換のブラウザが名前ベースのバーチャルホストにアクセスしたときの
+<tr><td><a href="mpm_common.html#serverlimit">ServerLimit <var>number</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">設定可能なサーバプロセス数の上限</td></tr>
+<tr class="odd"><td><a href="core.html#servername">ServerName [<var>scheme</var>://]<var>fully-qualified-domain-name</var>[:<var>port</var>]</a></td><td></td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">サーバが自分自身を示すときに使うホスト名とポート</td></tr>
+<tr><td><a href="core.html#serverpath">ServerPath <var>URL-path</var></a></td><td></td><td>v</td><td>C</td></tr><tr><td class="descr" colspan="4">非互換のブラウザが名前ベースのバーチャルホストにアクセスしたときの
 ための互換用 URL パス名</td></tr>
-<tr><td><a href="core.html#serverroot">ServerRoot <var>directory-path</var></a></td><td> /usr/local/apache </td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">インストールされたサーバのベースディレクトリ</td></tr>
-<tr class="odd"><td><a href="core.html#serversignature">ServerSignature On|Off|EMail</a></td><td> Off </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">サーバが生成するドキュメントのフッタを設定</td></tr>
-<tr><td><a href="core.html#servertokens">ServerTokens Major|Minor|Min[imal]|Prod[uctOnly]|OS|Full</a></td><td> Full </td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4"><code>Server</code> HTTP 応答ヘッダを設定する</td></tr>
-<tr class="odd"><td><a href="mod_session.html#session">Session On|Off</a></td><td> Off </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enables a session for the current directory or location</td></tr>
-<tr><td><a href="mod_session_cookie.html#sessioncookiename">SessionCookieName <var>name</var> <var>attributes</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Name and attributes for the RFC2109 cookie storing the session</td></tr>
-<tr class="odd"><td><a href="mod_session_cookie.html#sessioncookiename2">SessionCookieName2 <var>name</var> <var>attributes</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Name and attributes for the RFC2965 cookie storing the session</td></tr>
-<tr><td><a href="mod_session_cookie.html#sessioncookieremove">SessionCookieRemove On|Off</a></td><td> Off </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Control for whether session cookies should be removed from incoming HTTP headers</td></tr>
-<tr class="odd"><td><a href="mod_session_crypto.html#sessioncryptocipher">SessionCryptoCipher <var>name</var></a></td><td></td><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">The crypto cipher to be used to encrypt the session</td></tr>
-<tr><td><a href="mod_session_crypto.html#sessioncryptodriver">SessionCryptoDriver <var>name</var> <var>[param[=value]]</var></a></td><td></td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">The crypto driver to be used to encrypt the session</td></tr>
-<tr class="odd"><td><a href="mod_session_crypto.html#sessioncryptopassphrase">SessionCryptoPassphrase <var>secret</var> [ <var>secret</var> ... ] </a></td><td></td><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">The key used to encrypt the session</td></tr>
-<tr><td><a href="mod_session_crypto.html#sessioncryptopassphrasefile">SessionCryptoPassphraseFile <var>filename</var></a></td><td></td><td>svd</td><td>X</td></tr><tr><td class="descr" colspan="4">File containing keys used to encrypt the session</td></tr>
-<tr class="odd"><td><a href="mod_session_dbd.html#sessiondbdcookiename">SessionDBDCookieName <var>name</var> <var>attributes</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Name and attributes for the RFC2109 cookie storing the session ID</td></tr>
-<tr><td><a href="mod_session_dbd.html#sessiondbdcookiename2">SessionDBDCookieName2 <var>name</var> <var>attributes</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Name and attributes for the RFC2965 cookie storing the session ID</td></tr>
-<tr class="odd"><td><a href="mod_session_dbd.html#sessiondbdcookieremove">SessionDBDCookieRemove On|Off</a></td><td> On </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Control for whether session ID cookies should be removed from incoming HTTP headers</td></tr>
-<tr><td><a href="mod_session_dbd.html#sessiondbddeletelabel">SessionDBDDeleteLabel <var>label</var></a></td><td> deletesession </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">The SQL query to use to remove sessions from the database</td></tr>
-<tr class="odd"><td><a href="mod_session_dbd.html#sessiondbdinsertlabel">SessionDBDInsertLabel <var>label</var></a></td><td> insertsession </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The SQL query to use to insert sessions into the database</td></tr>
-<tr><td><a href="mod_session_dbd.html#sessiondbdperuser">SessionDBDPerUser On|Off</a></td><td> Off </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Enable a per user session</td></tr>
-<tr class="odd"><td><a href="mod_session_dbd.html#sessiondbdselectlabel">SessionDBDSelectLabel <var>label</var></a></td><td> selectsession </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The SQL query to use to select sessions from the database</td></tr>
-<tr><td><a href="mod_session_dbd.html#sessiondbdupdatelabel">SessionDBDUpdateLabel <var>label</var></a></td><td> updatesession </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">The SQL query to use to update existing sessions in the database</td></tr>
-<tr class="odd"><td><a href="mod_session.html#sessionenv">SessionEnv On|Off</a></td><td> Off </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Control whether the contents of the session are written to the
+<tr class="odd"><td><a href="core.html#serverroot">ServerRoot <var>directory-path</var></a></td><td> /usr/local/apache </td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">インストールされたサーバのベースディレクトリ</td></tr>
+<tr><td><a href="core.html#serversignature">ServerSignature On|Off|EMail</a></td><td> Off </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">サーバが生成するドキュメントのフッタを設定</td></tr>
+<tr class="odd"><td><a href="core.html#servertokens">ServerTokens Major|Minor|Min[imal]|Prod[uctOnly]|OS|Full</a></td><td> Full </td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4"><code>Server</code> HTTP 応答ヘッダを設定する</td></tr>
+<tr><td><a href="mod_session.html#session">Session On|Off</a></td><td> Off </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Enables a session for the current directory or location</td></tr>
+<tr class="odd"><td><a href="mod_session_cookie.html#sessioncookiename">SessionCookieName <var>name</var> <var>attributes</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Name and attributes for the RFC2109 cookie storing the session</td></tr>
+<tr><td><a href="mod_session_cookie.html#sessioncookiename2">SessionCookieName2 <var>name</var> <var>attributes</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Name and attributes for the RFC2965 cookie storing the session</td></tr>
+<tr class="odd"><td><a href="mod_session_cookie.html#sessioncookieremove">SessionCookieRemove On|Off</a></td><td> Off </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Control for whether session cookies should be removed from incoming HTTP headers</td></tr>
+<tr><td><a href="mod_session_crypto.html#sessioncryptocipher">SessionCryptoCipher <var>name</var></a></td><td></td><td>svdh</td><td>X</td></tr><tr><td class="descr" colspan="4">The crypto cipher to be used to encrypt the session</td></tr>
+<tr class="odd"><td><a href="mod_session_crypto.html#sessioncryptodriver">SessionCryptoDriver <var>name</var> <var>[param[=value]]</var></a></td><td></td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">The crypto driver to be used to encrypt the session</td></tr>
+<tr><td><a href="mod_session_crypto.html#sessioncryptopassphrase">SessionCryptoPassphrase <var>secret</var> [ <var>secret</var> ... ] </a></td><td></td><td>svdh</td><td>X</td></tr><tr><td class="descr" colspan="4">The key used to encrypt the session</td></tr>
+<tr class="odd"><td><a href="mod_session_crypto.html#sessioncryptopassphrasefile">SessionCryptoPassphraseFile <var>filename</var></a></td><td></td><td>svd</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">File containing keys used to encrypt the session</td></tr>
+<tr><td><a href="mod_session_dbd.html#sessiondbdcookiename">SessionDBDCookieName <var>name</var> <var>attributes</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Name and attributes for the RFC2109 cookie storing the session ID</td></tr>
+<tr class="odd"><td><a href="mod_session_dbd.html#sessiondbdcookiename2">SessionDBDCookieName2 <var>name</var> <var>attributes</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Name and attributes for the RFC2965 cookie storing the session ID</td></tr>
+<tr><td><a href="mod_session_dbd.html#sessiondbdcookieremove">SessionDBDCookieRemove On|Off</a></td><td> On </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Control for whether session ID cookies should be removed from incoming HTTP headers</td></tr>
+<tr class="odd"><td><a href="mod_session_dbd.html#sessiondbddeletelabel">SessionDBDDeleteLabel <var>label</var></a></td><td> deletesession </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The SQL query to use to remove sessions from the database</td></tr>
+<tr><td><a href="mod_session_dbd.html#sessiondbdinsertlabel">SessionDBDInsertLabel <var>label</var></a></td><td> insertsession </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">The SQL query to use to insert sessions into the database</td></tr>
+<tr class="odd"><td><a href="mod_session_dbd.html#sessiondbdperuser">SessionDBDPerUser On|Off</a></td><td> Off </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enable a per user session</td></tr>
+<tr><td><a href="mod_session_dbd.html#sessiondbdselectlabel">SessionDBDSelectLabel <var>label</var></a></td><td> selectsession </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">The SQL query to use to select sessions from the database</td></tr>
+<tr class="odd"><td><a href="mod_session_dbd.html#sessiondbdupdatelabel">SessionDBDUpdateLabel <var>label</var></a></td><td> updatesession </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The SQL query to use to update existing sessions in the database</td></tr>
+<tr><td><a href="mod_session.html#sessionenv">SessionEnv On|Off</a></td><td> Off </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Control whether the contents of the session are written to the
 <var>HTTP_SESSION</var> environment variable</td></tr>
-<tr><td><a href="mod_session.html#sessionexclude">SessionExclude <var>path</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Define URL prefixes for which a session is ignored</td></tr>
-<tr class="odd"><td><a href="mod_session.html#sessionheader">SessionHeader <var>header</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Import session updates from a given HTTP response header</td></tr>
-<tr><td><a href="mod_session.html#sessioninclude">SessionInclude <var>path</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Define URL prefixes for which a session is valid</td></tr>
-<tr class="odd"><td><a href="mod_session.html#sessionmaxage">SessionMaxAge <var>maxage</var></a></td><td> 0 </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Define a maximum age in seconds for a session</td></tr>
-<tr><td><a href="mod_env.html#setenv">SetEnv <var>env-variable</var> <var>value</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">環境変数を設定する</td></tr>
-<tr class="odd"><td><a href="mod_setenvif.html#setenvif">SetEnvIf <em>attribute
+<tr class="odd"><td><a href="mod_session.html#sessionexclude">SessionExclude <var>path</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Define URL prefixes for which a session is ignored</td></tr>
+<tr><td><a href="mod_session.html#sessionheader">SessionHeader <var>header</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Import session updates from a given HTTP response header</td></tr>
+<tr class="odd"><td><a href="mod_session.html#sessioninclude">SessionInclude <var>path</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Define URL prefixes for which a session is valid</td></tr>
+<tr><td><a href="mod_session.html#sessionmaxage">SessionMaxAge <var>maxage</var></a></td><td> 0 </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Define a maximum age in seconds for a session</td></tr>
+<tr class="odd"><td><a href="mod_env.html#setenv">SetEnv <var>env-variable</var> <var>value</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">環境変数を設定する</td></tr>
+<tr><td><a href="mod_setenvif.html#setenvif">SetEnvIf <em>attribute
     regex [!]env-variable</em>[=<em>value</em>]
-    [[!]<em>env-variable</em>[=<em>value</em>]] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">リクエストの属性に基づいて環境変数を設定する
+    [[!]<em>env-variable</em>[=<em>value</em>]] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">リクエストの属性に基づいて環境変数を設定する
 </td></tr>
-<tr><td><a href="mod_setenvif.html#setenvifexpr" /></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Sets environment variables based on an ap_expr expression</td></tr>
-<tr class="odd"><td><a href="mod_setenvif.html#setenvifnocase">SetEnvIfNoCase <em>attribute regex 
+<tr class="odd"><td><a href="mod_setenvif.html#setenvifexpr" /></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Sets environment variables based on an ap_expr expression</td></tr>
+<tr><td><a href="mod_setenvif.html#setenvifnocase">SetEnvIfNoCase <em>attribute regex 
         [!]env-variable</em>[=<em>value</em>]
-    [[!]<em>env-variable</em>[=<em>value</em>]] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">リクエストの属性に基づいて大文字小文字を区別せずに環境変数を設定する</td></tr>
-<tr><td><a href="core.html#sethandler">SetHandler <var>handler-name</var>|None</a></td><td></td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">マッチするファイルがハンドラで処理されるようにする</td></tr>
-<tr class="odd"><td><a href="core.html#setinputfilter">SetInputFilter <var>filter</var>[;<var>filter</var>...]</a></td><td></td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">クライアントのリクエストや POST の入力を処理するフィルタを設定する</td></tr>
-<tr><td><a href="core.html#setoutputfilter">SetOutputFilter <var>filter</var>[;<var>filter</var>...]</a></td><td></td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">サーバの応答を処理するフィルタを設定する</td></tr>
-<tr class="odd"><td><a href="mod_include.html#ssiendtag">SSIEndTag <var>tag</var></a></td><td> "--&gt;" </td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">include 要素を終了させる文字列</td></tr>
-<tr><td><a href="mod_include.html#ssierrormsg">SSIErrorMsg <var>message</var></a></td><td> "[an error occurred +</td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">SSI のエラーがあったときに表示されるエラーメッセージ</td></tr>
-<tr class="odd"><td><a href="mod_include.html#ssietag">SSIETag on|off</a></td><td> off </td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Controls whether ETags are generated by the server.</td></tr>
-<tr><td><a href="mod_include.html#ssilastmodified">SSILastModified on|off</a></td><td> off </td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Controls whether <code>Last-Modified</code> headers are generated by the
+    [[!]<em>env-variable</em>[=<em>value</em>]] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">リクエストの属性に基づいて大文字小文字を区別せずに環境変数を設定する</td></tr>
+<tr class="odd"><td><a href="core.html#sethandler">SetHandler <var>handler-name</var>|None</a></td><td></td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">マッチするファイルがハンドラで処理されるようにする</td></tr>
+<tr><td><a href="core.html#setinputfilter">SetInputFilter <var>filter</var>[;<var>filter</var>...]</a></td><td></td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">クライアントのリクエストや POST の入力を処理するフィルタを設定する</td></tr>
+<tr class="odd"><td><a href="core.html#setoutputfilter">SetOutputFilter <var>filter</var>[;<var>filter</var>...]</a></td><td></td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">サーバの応答を処理するフィルタを設定する</td></tr>
+<tr><td><a href="mod_include.html#ssiendtag">SSIEndTag <var>tag</var></a></td><td> "--&gt;" </td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">include 要素を終了させる文字列</td></tr>
+<tr class="odd"><td><a href="mod_include.html#ssierrormsg">SSIErrorMsg <var>message</var></a></td><td> "[an error occurred +</td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">SSI のエラーがあったときに表示されるエラーメッセージ</td></tr>
+<tr><td><a href="mod_include.html#ssietag">SSIETag on|off</a></td><td> off </td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Controls whether ETags are generated by the server.</td></tr>
+<tr class="odd"><td><a href="mod_include.html#ssilastmodified">SSILastModified on|off</a></td><td> off </td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Controls whether <code>Last-Modified</code> headers are generated by the
 server.</td></tr>
-<tr class="odd"><td><a href="mod_include.html#ssilegacyexprparser">SSILegacyExprParser on|off</a></td><td> off </td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Enable compatibility mode for conditional expressions.</td></tr>
-<tr><td><a href="mod_include.html#ssistarttag">SSIStartTag <var>tag</var></a></td><td> "&lt;!--#" </td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">include 要素を開始する文字列</td></tr>
-<tr class="odd"><td><a href="mod_include.html#ssitimeformat">SSITimeFormat <var>formatstring</var></a></td><td> "%A, %d-%b-%Y %H:%M +</td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">日付けを現す文字列の書式を設定する</td></tr>
-<tr><td><a href="mod_include.html#ssiundefinedecho">SSIUndefinedEcho <var>string</var></a></td><td> "(none)" </td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">未定義の変数が echo されたときに表示される文字列</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslcacertificatefile">SSLCACertificateFile <em>file-path</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">File of concatenated PEM-encoded CA Certificates
+<tr><td><a href="mod_include.html#ssilegacyexprparser">SSILegacyExprParser on|off</a></td><td> off </td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Enable compatibility mode for conditional expressions.</td></tr>
+<tr class="odd"><td><a href="mod_include.html#ssistarttag">SSIStartTag <var>tag</var></a></td><td> "&lt;!--#" </td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">include 要素を開始する文字列</td></tr>
+<tr><td><a href="mod_include.html#ssitimeformat">SSITimeFormat <var>formatstring</var></a></td><td> "%A, %d-%b-%Y %H:%M +</td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">日付けを現す文字列の書式を設定する</td></tr>
+<tr class="odd"><td><a href="mod_include.html#ssiundefinedecho">SSIUndefinedEcho <var>string</var></a></td><td> "(none)" </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">未定義の変数が echo されたときに表示される文字列</td></tr>
+<tr><td><a href="mod_ssl.html#sslcacertificatefile">SSLCACertificateFile <em>file-path</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">File of concatenated PEM-encoded CA Certificates
 for Client Auth</td></tr>
-<tr><td><a href="mod_ssl.html#sslcacertificatepath">SSLCACertificatePath <em>directory-path</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Directory of PEM-encoded CA Certificates for
+<tr class="odd"><td><a href="mod_ssl.html#sslcacertificatepath">SSLCACertificatePath <em>directory-path</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Directory of PEM-encoded CA Certificates for
 Client Auth</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslcadnrequestfile">SSLCADNRequestFile <em>file-path</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">File of concatenated PEM-encoded CA Certificates
+<tr><td><a href="mod_ssl.html#sslcadnrequestfile">SSLCADNRequestFile <em>file-path</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">File of concatenated PEM-encoded CA Certificates
 for defining acceptable CA names</td></tr>
-<tr><td><a href="mod_ssl.html#sslcadnrequestpath">SSLCADNRequestPath <em>directory-path</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Directory of PEM-encoded CA Certificates for
+<tr class="odd"><td><a href="mod_ssl.html#sslcadnrequestpath">SSLCADNRequestPath <em>directory-path</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Directory of PEM-encoded CA Certificates for
 defining acceptable CA names</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslcarevocationcheck">SSLCARevocationCheck chain|leaf|none</a></td><td> none </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enable CRL-based revocation checking</td></tr>
-<tr><td><a href="mod_ssl.html#sslcarevocationfile">SSLCARevocationFile <em>file-path</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">File of concatenated PEM-encoded CA CRLs for
+<tr><td><a href="mod_ssl.html#sslcarevocationcheck">SSLCARevocationCheck chain|leaf|none</a></td><td> none </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Enable CRL-based revocation checking</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslcarevocationfile">SSLCARevocationFile <em>file-path</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">File of concatenated PEM-encoded CA CRLs for
 Client Auth</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslcarevocationpath">SSLCARevocationPath <em>directory-path</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Directory of PEM-encoded CA CRLs for
+<tr><td><a href="mod_ssl.html#sslcarevocationpath">SSLCARevocationPath <em>directory-path</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Directory of PEM-encoded CA CRLs for
 Client Auth</td></tr>
-<tr><td><a href="mod_ssl.html#sslcertificatechainfile">SSLCertificateChainFile <em>file-path</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">File of PEM-encoded Server CA Certificates</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslcertificatefile">SSLCertificateFile <em>file-path</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Server PEM-encoded X.509 certificate data file</td></tr>
-<tr><td><a href="mod_ssl.html#sslcertificatekeyfile">SSLCertificateKeyFile <em>file-path</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Server PEM-encoded private key file</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslciphersuite">SSLCipherSuite <em>cipher-spec</em></a></td><td> DEFAULT (depends on +</td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Cipher Suite available for negotiation in SSL
+<tr class="odd"><td><a href="mod_ssl.html#sslcertificatechainfile">SSLCertificateChainFile <em>file-path</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">File of PEM-encoded Server CA Certificates</td></tr>
+<tr><td><a href="mod_ssl.html#sslcertificatefile">SSLCertificateFile <em>file-path</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Server PEM-encoded X.509 certificate data file</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslcertificatekeyfile">SSLCertificateKeyFile <em>file-path</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Server PEM-encoded private key file</td></tr>
+<tr><td><a href="mod_ssl.html#sslciphersuite">SSLCipherSuite <em>cipher-spec</em></a></td><td> DEFAULT (depends on +</td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Cipher Suite available for negotiation in SSL
 handshake</td></tr>
-<tr><td><a href="mod_ssl.html#sslcompression">SSLCompression on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Enable compression on the SSL level</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslcryptodevice">SSLCryptoDevice <em>engine</em></a></td><td> builtin </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enable use of a cryptographic hardware accelerator</td></tr>
-<tr><td><a href="mod_ssl.html#sslengine">SSLEngine on|off|optional</a></td><td> off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">SSL Engine Operation Switch</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslfips">SSLFIPS on|off</a></td><td> off </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">SSL FIPS mode Switch</td></tr>
-<tr><td><a href="mod_ssl.html#sslhonorcipherorder">SSLHonorCipherOrder on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Option to prefer the server's cipher preference order</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslinsecurerenegotiation">SSLInsecureRenegotiation on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Option to enable support for insecure renegotiation</td></tr>
-<tr><td><a href="mod_ssl.html#sslocspdefaultresponder">SSLOCSDefaultResponder <em>uri</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Set the default responder URI for OCSP validation</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslocspenable">SSLOCSPEnable on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enable OCSP validation of the client certificate chain</td></tr>
-<tr><td><a href="mod_ssl.html#sslocspoverrideresponder">SSLOCSPOverrideResponder on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Force use of the default responder URI for OCSP validation</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslocsprespondertimeout">SSLOCSPResponderTimeout <em>seconds</em></a></td><td> 10 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Timeout for OCSP queries</td></tr>
-<tr><td><a href="mod_ssl.html#sslocspresponsemaxage">SSLOCSPResponseMaxAge <em>seconds</em></a></td><td> -1 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum allowable age for OCSP responses</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslocspresponsetimeskew">SSLOCSPResponseTimeSkew <em>seconds</em></a></td><td> 300 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum allowable time skew for OCSP response validation</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslcompression">SSLCompression on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enable compression on the SSL level</td></tr>
+<tr><td><a href="mod_ssl.html#sslcryptodevice">SSLCryptoDevice <em>engine</em></a></td><td> builtin </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Enable use of a cryptographic hardware accelerator</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslengine">SSLEngine on|off|optional</a></td><td> off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">SSL Engine Operation Switch</td></tr>
+<tr><td><a href="mod_ssl.html#sslfips">SSLFIPS on|off</a></td><td> off </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">SSL FIPS mode Switch</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslhonorcipherorder">SSLHonorCipherOrder on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Option to prefer the server's cipher preference order</td></tr>
+<tr><td><a href="mod_ssl.html#sslinsecurerenegotiation">SSLInsecureRenegotiation on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Option to enable support for insecure renegotiation</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslocspdefaultresponder">SSLOCSDefaultResponder <em>uri</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Set the default responder URI for OCSP validation</td></tr>
+<tr><td><a href="mod_ssl.html#sslocspenable">SSLOCSPEnable on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Enable OCSP validation of the client certificate chain</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslocspoverrideresponder">SSLOCSPOverrideResponder on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Force use of the default responder URI for OCSP validation</td></tr>
+<tr><td><a href="mod_ssl.html#sslocsprespondertimeout">SSLOCSPResponderTimeout <em>seconds</em></a></td><td> 10 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Timeout for OCSP queries</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslocspresponsemaxage">SSLOCSPResponseMaxAge <em>seconds</em></a></td><td> -1 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum allowable age for OCSP responses</td></tr>
+<tr><td><a href="mod_ssl.html#sslocspresponsetimeskew">SSLOCSPResponseTimeSkew <em>seconds</em></a></td><td> 300 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum allowable time skew for OCSP response validation</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslocspuserequestnonce">SSLOCSPUseRequestNonce on|off</a></td><td> on </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Use a nonce within OCSP queries</td></tr>
 <tr><td><a href="mod_ssl.html#sslopensslconfcmd">SSLOpenSSLConfCmd <em>command-name</em> <em>command-value</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Configure OpenSSL parameters through its <em>SSL_CONF</em> API</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#ssloptions">SSLOptions [+|-]<em>option</em> ...</a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Configure various SSL engine run-time options</td></tr>
 <tr><td><a href="mod_ssl.html#sslpassphrasedialog">SSLPassPhraseDialog <em>type</em></a></td><td> builtin </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Type of pass phrase dialog for encrypted private

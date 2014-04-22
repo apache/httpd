@@ -128,8 +128,6 @@ available</td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>On Windows only available from Apache httpd 2.3.3 and later.
-</td></tr>
 </table>
     <p>This directive enables operating system specific optimizations for a
        listening socket by the <code class="directive">Protocol</code> type.
@@ -675,6 +673,7 @@ headers</td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.4.2 and later</td></tr>
 </table>
     <p>The <code class="directive">DefaultRuntimeDir</code> directive sets the
     directory in which the server will create various run-time files
@@ -1400,7 +1399,6 @@ ErrorDocument 403 Forbidden!</pre>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache httpd 2.3.9 and later</td></tr>
 </table>
     <p><code class="directive">ErrorLogFormat</code> allows to specify what
     supplementary information is logged in the error log in addition to the
@@ -2189,8 +2187,6 @@ requests on a persistent connection</td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Specifying a value in milliseconds is available in
-Apache httpd 2.3.2 and later</td></tr>
 </table>
     <p>The number of seconds Apache httpd will wait for a subsequent
     request before closing the connection. By adding a postfix of ms the

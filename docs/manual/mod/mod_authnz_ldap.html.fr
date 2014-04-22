@@ -380,7 +380,7 @@ Directory</a></li>
     disponibles, sous réserve du chargement de modules d'autorisation
     supplémentaires.</p>
 
-    <p>A partir de la version 2.5.0, les directives require LDAP
+    <p>A partir de la version 2.4.8, les directives require LDAP
     supportent les <a href="../expr.html">expressions</a>.</p>
 
 <h3><a name="requser" id="requser">Require ldap-user</a></h3>
@@ -933,7 +933,7 @@ connexion</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authnz_ldap</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td><em>exec:</em> est disponible depuis la version 2.4.6 du
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td><em>exec:</em> est disponible depuis la version 2.4.5 du
 serveur HTTP Apache.</td></tr>
 </table>
     <p>Cette directive permet de spécifier un mot de passe à utiliser en
@@ -947,14 +947,15 @@ serveur HTTP Apache.</td></tr>
     <p>Si la valeur commence par exec:, la commande résultante sera
     exécutée, et la première ligne renvoyée sur la sortie standard sera
     utilisée comme mot de passe.</p>
-<div class="example"><pre>#Mot de passe utilisé tel quel
+<pre class="prettyprint lang-config">#Mot de passe utilisé tel quel
 AuthLDAPBindPassword secret
 
 #Exécute /path/to/program pour obtenir le mot de passe
 AuthLDAPBindPassword exec:/path/to/program
 
 #Exécute /path/to/otherProgram avec un argument pour obtenir le mot de passe
-AuthLDAPBindPassword "exec:/path/to/otherProgram argument1"</pre></div>
+AuthLDAPBindPassword "exec:/path/to/otherProgram argument1"</pre>
+
 
 
 </div>

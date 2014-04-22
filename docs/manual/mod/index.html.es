@@ -230,6 +230,8 @@ capitalization, or attempting to correct various minor
 misspellings.</dd>
 <dt><a href="mod_ssl.html">mod_ssl</a></dt><dd>Strong cryptography using the Secure Sockets
 Layer (SSL) and Transport Layer Security (TLS) protocols</dd>
+<dt><a href="mod_ssl_ct.html">mod_ssl_ct</a></dt><dd>Implementation of Certificate Transparency (RFC 6962)
+</dd>
 <dt><a href="mod_status.html">mod_status</a></dt><dd>Provides information on server activity and
 performance</dd>
 <dt><a href="mod_substitute.html">mod_substitute</a></dt><dd>Perform search and replace operations on response bodies</dd>

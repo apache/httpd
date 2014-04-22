@@ -27,6 +27,8 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_rewrite.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_rewrite.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
+            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Ce module fournit un moteur de réécriture à base de
 règles permettant de réécrire les URLs des requêtes
 à la volée</td></tr>
@@ -938,8 +940,8 @@ pour le moteur de réécriture</td></tr>
       <p>Même effet que l'option <code>Inherit</code> ci-dessus, mais
       les règles spécifiées dans le niveau parent s'appliquent
       <strong>avant</strong> les règles spécifiées dans le niveau
-      enfant. Disponible depuis la version 2.3.10 du serveur HTTP
-      Apache.</p>
+      enfant.<br />
+      Disponible depuis la version 2.3.10 du serveur HTTP Apache.</p>
       </dd>
 
       <dt><code>InheritDown</code></dt>
@@ -950,7 +952,8 @@ pour le moteur de réécriture</td></tr>
       spécifie <code>RewriteOptions Inherit</code> dans toutes les
       configurations enfants. Voir l'option <code>Inherit</code> pour
       plus de détails à propos de la manière dont les relations
-      parent-enfants sont traitées. Cette option est disponible à partir
+      parent-enfants sont traitées.<br />
+      Cette option est disponible à partir
       de la version 2.4.8 du serveur HTTP Apache.</p>
       </dd>
 
@@ -960,7 +963,8 @@ pour le moteur de réécriture</td></tr>
       <p>L'effet de cette option est équivalent à celui de l'option
       <code>InheritDown</code> ci-dessus, mais les règles de la
       configuration parente s'appliquent <strong>avant</strong> toute
-      règle de la configuration enfant. Cette option est disponible à partir
+      règle de la configuration enfant.<br />
+      Cette option est disponible à partir
       de la version 2.4.8 du serveur HTTP Apache.</p>
       </dd>
 
@@ -970,7 +974,8 @@ pour le moteur de réécriture</td></tr>
       <p>Si cette option est activée, les configurations courante et
       enfants ignoreront toute règle héritée d'une configuration parente
       via les options <code>InheritDown</code> ou
-      <code>InheritDownBefore</code>. Cette option est disponible à partir
+      <code>InheritDownBefore</code>.<br />
+      Cette option est disponible à partir
       de la version 2.4.8 du serveur HTTP Apache.</p>
       </dd>
       
@@ -986,7 +991,8 @@ pour le moteur de réécriture</td></tr>
       s'assurer que les règles de réécriture ne soient plus ignorées.
       Si on le souhaite, cette option permet de faire s'appliquer des
       règles de réécriture qui correspondent à un répertoire sans slash
-      final au sein de fichiers .htaccess. Elle est disponible à
+      final au sein de fichiers .htaccess.<br />
+      Elle est disponible à
       partir de la version 2.4.0 du serveur HTTP Apache.</p>
       </dd>
 
@@ -1005,7 +1011,8 @@ pour le moteur de réécriture</td></tr>
       utiliser l'option <code>AllowAnyURI</code>, afin de permettre à
       <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> d'appliquer le jeu de règles à toute
       chaîne de requête URI, sans vérifier si cette dernière respecte la
-      grammaire des chemins URL définie dans la spécification HTTP.</p>
+      grammaire des chemins URL définie dans la spécification HTTP.<br />
+      Disponible depuis la version 2.4.3 du serveur HTTP Apache.</p>
 
       <div class="warning">
       <h3>Avertissement à propos de la sécurité</h3> 
@@ -1025,8 +1032,10 @@ pour le moteur de réécriture</td></tr>
 
       <p>Avec cette option, la valeur de la directive <code class="directive"><a href="#rewritebase">RewriteBase</a></code> est recopiée depuis
       une valeur explicitement définie dans tout sous-répertoire qui ne
-      définit pas sa propre directive <code class="directive"><a href="#rewritebase">RewriteBase</a></code>. Disponible à partir
-      de la version 2.5 du serveur HTTP Apache.</p>
+      définit pas sa propre directive <code class="directive"><a href="#rewritebase">RewriteBase</a></code>. Il s'agissait du
+      comportement par défaut avec les versions 2.4.0 à 2.4.3, et ce
+      drapeau qui permet de retrouver ce comportement est disponible
+      depuis la version 2.4.4 du serveur HTTP Apache.</p>
       </dd>
 
       </dl>
@@ -1284,7 +1293,16 @@ substitution !
 	d'appliquer la transformation. <em><a href="../rewrite/flags.html#flag_b">détails ...</a></em></td>
     </tr>
     <tr>
-        <td>chain|C</td>
+        <td>backrefnoplus|BNP</td>
+        <td>Avec ce drapeau, si les références arrières sont échappées,
+	les espaces seront échappés en %20 au lieu de +. Ceci s'avère
+	utile lorsqu'une référence arrière est utilisée dans la partie
+	chemin, et non dans la chaîne de paramètres de la requête ;
+	pour plus de détails, voir <em><a href="../rewrite/flags.html#flag_bnp">ici.</a></em></td>
+    </tr>
+
+    <tr>        
+	<td>chain|C</td>
         <td>La règle est chaînée avec la règle suivante. Si la règle
 	échoue, la ou les règles avec lesquelles elle est est chaînée
 	seront sautées. <em><a href="../rewrite/flags.html#flag_c">détails ...</a></em></td>

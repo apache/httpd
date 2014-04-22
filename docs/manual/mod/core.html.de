@@ -578,6 +578,7 @@ HTTP-Response-Headern</td></tr>
 <tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Kompatibilität:</a></th><td>Available in Apache 2.4.2 and later</td></tr>
 </table><p>Die Dokumentation zu dieser Direktive wurde
             noch nicht übersetzt. Bitte schauen Sie in die englische
             Version.</p><h3>Siehe auch</h3>
@@ -1229,7 +1230,6 @@ Fehlermeldungen</a></li>
 <tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration, Virtual Host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Kompatibilität:</a></th><td>Available in Apache httpd 2.3.9 and later</td></tr>
 </table><p>Die Dokumentation zu dieser Direktive wurde
             noch nicht übersetzt. Bitte schauen Sie in die englische
             Version.</p><h3>Siehe auch</h3>

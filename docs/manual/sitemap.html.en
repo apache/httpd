@@ -297,6 +297,7 @@ log_server_status</a></li>
 <li><a href="mod/mod_socache_shmcb.html">Apache Module mod_socache_shmcb</a></li>
 <li><a href="mod/mod_speling.html">Apache Module mod_speling</a></li>
 <li><a href="mod/mod_ssl.html">Apache Module mod_ssl</a></li>
+<li><a href="mod/mod_ssl_ct.html">Apache Module mod_ssl_ct</a></li>
 <li><a href="mod/mod_status.html">Apache Module mod_status</a></li>
 <li><a href="mod/mod_substitute.html">Apache Module mod_substitute</a></li>
 <li><a href="mod/mod_suexec.html">Apache Module mod_suexec</a></li>
