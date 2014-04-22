@@ -211,14 +211,21 @@ Header merge Cache-Control no-store env=NO_STORE</pre>
         <pre class="prettyprint lang-config">Header set Set-Cookie testcookie "expr=-z %{req:Cookie}"</pre>
 
       </li>
+      <li>
+        Ajoute un en-tête de mise en cache pour les réponses avec un
+	code d'état HTTP de 200
+        <pre class="prettyprint lang-config">Header append Cache-Control s-maxage=600 "expr=%{REQUEST_STATUS} == 200"</pre>
+
+      </li>
+
     </ol>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="Header" id="Header">Header</a> <a name="header" id="header">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure les en-têtes d'une réponse HTTP</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Header [<var>condition</var>] add|append|echo|edit|edit*|merge|set|unset|note
-<var>en-tête</var> [<var>[expr=]valeur</var>] [<var>remplacement</var>]
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Header [<var>condition</var>] add|append|echo|edit|edit*|merge|set|setifempty|unset|note
+<var>en-tête</var> [[expr=]<var>valeur]</var>] [<var>remplacement</var>]
 [early|env=[!]<var>variable</var>]|expr=<var>expression</var>]
 </code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
@@ -226,7 +233,8 @@ Header merge Cache-Control no-store env=NO_STORE</pre>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_headers</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>SetIfEmpty est disponible depuis la version 2.4.7 du
-serveur HTTP Apache</td></tr>
+serveur HTTP Apache ; le paramètre expr= valeur a été introduit avec la
+version 2.4.10</td></tr>
 </table>
     <p>Cette directive permet de remplacer, fusionner, ou
     supprimer des en-têtes de réponse HTTP. L'en-tête est modifié juste
@@ -236,24 +244,27 @@ serveur HTTP Apache</td></tr>
 
     <p>L'argument optionnel <var>condition</var> permet de déterminer
     sur quelle table interne d'en-têtes de réponses cette directive va
-    opérer. D'autres composants du serveur peuvent avoir stocké leurs
-    en-têtes de réponses dans la table correspondant à
-    <code>onsuccess</code> ou dans celle correspondant à
-    <code>always</code>. Dans ce contexte, "Always" fait référence au
-    choix d'envoyer les en-têtes que vous ajoutez aux réponses, qu'elle
-    soient avec succès ou échouées ; par contre, si votre action est une
-    fonction d'un en-tête existant, vous devrez lire la documentation de
-    manière plus approfondie car dans ce cas, les choses se compliquent.</p>
+    opérer. En dépit du nom, la valeur par défaut de
+    <code>onsuccess</code> ne limite <em>pas</em> une <var>action</var>
+    aux réponses avec un code d'état de 2xx. Les en-têtes définis sous
+    cette condition sont encore utilisés quand par exemple une requête
+    est mandatée ou générée par un programme CGI avec <em>succès</em>,
+    et ceci même dans le cas où ils ont généré un code d'échec.</p>
 
-    <p>Vous pouvez avoir à changer la valeur par défaut
-    <code>onsuccess</code> en <code>always</code> dans des circonstances
-    similaires à celles exposées plus loin. Notez aussi que la répétition
+    <p>Lorsque votre action est une fonction agissant sur un en-tête
+    existant, vous pourrez être amené à spécifier une condition
+    <code>always</code>, en fonction de la table interne dans laquelle
+    l'en-tête original a été défini. La table qui correspond à
+    <code>always</code> est utilisée pour les réponses d'erreur générées
+    localement ainsi que pour les réponses qui ont abouti.
+     Notez aussi que la répétition
     de cette directive avec les deux conditions peut être pertinente
     dans certains scénarios, car <code>always</code> n'englobe pas
     <code>onsuccess</code> en ce qui concerne les en-têtes existants :</p>
 
     <ul>
-       <li>Vous ajoutez un en-tête à une réponse échouée (non-2xx),
+       <li>Vous ajoutez un en-tête à une réponse
+       générée localement et échouée (non-2xx),
        une redirection par exemple, et dans ce cas, seule la table
        correspondant à <code>always</code> est utilisée dans la réponse
        définitive.</li>
@@ -265,6 +276,12 @@ serveur HTTP Apache</td></tr>
        composant du serveur, mais cet en-tête n'est pas trouvé par la
        condition par défaut <code>onsuccess</code>.</li>
     </ul>
+
+    <p>Outre le paramètre <var>condition</var> décrit ci-dessus, vous
+    pouvez limiter une action en fonction de codes d'état HTTP, par
+    exemple pour les requêtes mandatées ou générées par un programme
+    CGI. Voir l'exemple qui utilise %{REQUEST_STATUS} dans la section
+    ci-dessus.</p>
 
     <p>L'action que cette directive provoque est déterminée par le
     premier argument (ou par le second argument si une
@@ -324,8 +341,8 @@ serveur HTTP Apache</td></tr>
 
     <dt><code>setifempty</code></dt>
     <dd>L'en-tête est défini, mais seulement s'il n'existe
-    aucun en-tête avec le même nom. Disponible depuis la
-    version 2.4.7 du serveur HTTP Apache.</dd>
+    aucun en-tête avec le même nom.<br />
+    Disponible depuis la version 2.4.7 du serveur HTTP Apache.</dd>
 
     <dt><code>unset</code></dt>
     <dd>L'en-tête est supprimé s'il existe. Si plusieurs en-têtes
@@ -335,9 +352,10 @@ serveur HTTP Apache</td></tr>
     <dt><code>note</code></dt>
     <dd>La valeur de l'<var>en-tête</var> considéré est copiée dans une
     note interne dont le nom est spécifié via l'argument
-    <var>valeur</var>. Ceci permet d'enregistrer la valeur d'un en-tête
+    <var>valeur</var>. Ceci permet de journaliser la valeur d'un en-tête
     envoyé par un programme CGI ou une ressource mandatée, même s'il
-    est prévu de l'effacer.</dd>
+    est prévu de l'effacer.<br />
+    Disponible à partir de la version 2.4.7 du serveur HTTP Apache.</dd>
 
     </dl>    
 
@@ -377,17 +395,20 @@ serveur HTTP Apache</td></tr>
 	sont les valeurs obtenues par <code>getloadavg()</code> qui
 	représentent la charge moyenne courante, sur 5 minutes et sur 15
 	minutes. Chaque valeur est précédée de <code>l=</code> et
-	séparée de la suivante par un <code>/</code>.
+	séparée de la suivante par un <code>/</code>.<br />
+	Disponible depuis la version 2.4.4 du serveur HTTP Apache.
         </td></tr>
 <tr><td><code>%i</code></td>
         <td>Le pourcentage courant de httpd au repos (de 0 à 100)
 	en se basant sur le nombre de processus et threads disponibles.
-	La valeur est précédée de <code>i=</code>.
+	La valeur est précédée de <code>i=</code>.<br />
+	Disponible depuis la version 2.4.4 du serveur HTTP Apache.
         </td></tr>
 <tr class="odd"><td><code>%b</code></td>
         <td>Le pourcentage courant de httpd utilisé (de 0 à 100)
 	en se basant sur le nombre de processus et threads disponibles.
-	La valeur est précédée de <code>b=</code>.
+	La valeur est précédée de <code>b=</code>.<br />
+	Disponible depuis la version 2.4.4 du serveur HTTP Apache.
         </td></tr>
 <tr><td><code>%{NOM_VARIABLE}e</code></td>
         <td>Le contenu de la <a href="../env.html">variable
@@ -411,7 +432,8 @@ serveur HTTP Apache</td></tr>
     <p><code>edit</code>nécessite les deux arguments
     <var>valeur</var>, qui est une <a class="glossarylink" href="../glossary.html#regex" title="voir glossaire">expression
     rationnelle</a>, et une chaîne additionnelle
-    <var>remplacement</var>. La chaîne de remplacement peut aussi
+    <var>remplacement</var>. Depuis la version 2.4.7, la chaîne de
+    remplacement peut aussi
     contenir des spécificateurs de format.</p>
 
     <p>La directive <code class="directive">Header</code> peut être suivie d'un
@@ -435,8 +457,9 @@ serveur HTTP Apache</td></tr>
     directives <code class="directive">Header</code> sont traitées juste avant
     l'envoi de la réponse sur le réseau. Cela signifie qu'il est
     possible de définir et/ou modifier la plupart des en-têtes, à
-    l'exception de ceux qui sont ajoutés par le filtre HTTP
-    d'en-tête, comme Content-Type.</p>
+    l'exception de certains en-têtes qui sont ajoutés par le filtre
+    d'en-tête HTTP. Avant la version 2.2.12, il n'était pas
+    possible de modifier l'en-tête Content-Type avec cette directive.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -444,7 +467,7 @@ serveur HTTP Apache</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure les en-têtes d'une requête HTTP</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RequestHeader add|append|edit|edit*|merge|set|setifempty|unset
-<var>en-tête</var> [<var>valeur</var>] [<var>remplacement</var>]
+<var>en-tête</var> [[expr=]<var>valeur</var>] [<var>remplacement</var>]
 [early|env=[!]<var>variable</var>]|expr=<var>expression</var>]
 </code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
@@ -452,7 +475,8 @@ serveur HTTP Apache</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_headers</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>SetIfEmpty est disponible depuis la version 2.4.7 du
-serveur HTTP Apache</td></tr>
+serveur HTTP Apache ; le paramètre expr= valeur a été introduit avec la
+version 2.4.10</td></tr>
 </table>
     <p>Cette directive permet de remplacer, fusionner, modifier ou
     supprimer des en-têtes de requête HTTP. L'en-tête est modifié juste
@@ -509,8 +533,8 @@ serveur HTTP Apache</td></tr>
 
     <dt><code>setifempty</code></dt>
     <dd>L'en-tête est défini, mais seulement s'il n'existe
-    aucun en-tête avec le même nom. Disponible depuis la
-    version 2.4.7 du serveur HTTP Apache.</dd>
+    aucun en-tête avec le même nom.<br />
+    Disponible depuis la version 2.4.7 du serveur HTTP Apache.</dd>
 
     <dt><code>unset</code></dt>
     <dd>L'en-tête est supprimé s'il existe. Si plusieurs en-têtes

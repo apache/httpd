@@ -1730,7 +1730,7 @@ parentes sont fusionnées dans les enfants</td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.5.0 du serveur HTTP
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.4.5 du serveur HTTP
 Apache</td></tr>
 </table>
 <p>Cette directive permet d'ajouter un filtre en entrée sous la forme
@@ -1822,7 +1822,7 @@ sortie</td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.5.0 du serveur HTTP
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.5 du serveur HTTP
 Apache</td></tr>
 </table>
 <p>&gt;Cette directive permet d'ajouter un filtre en sortie sous la forme

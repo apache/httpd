@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>mod_ssl_ct - Apache HTTP Server</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
+<script src="../style/scripts/prettify.min.js" type="text/javascript">
+</script>
+
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.5</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Apache Module mod_ssl_ct</h1>
+<div class="toplang">
+<p><span>Available Languages: </span><a href="../en/mod/mod_ssl_ct.html" title="English">&nbsp;en&nbsp;</a></p>
+</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Implementation of Certificate Transparency (RFC 6962)
+</td></tr>
+<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>ssl_ct_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_ssl_ct.c</td></tr></table>
+<h3>Summary</h3>
+
+<p>This module provides an implementation of Certificate Transparency, in 
+conjunction with <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> and command-line tools from the
+<a href="https://code.google.com/p/certificate-transparency/">certificate-transparency</a>
+open source project.  The goal of Certificate Transparency is to expose the
+use of server certificates which are trusted by browsers but were mistakenly
+or maliciously issued.  More information about Certificate Transparency is
+available at <a href="http://www.certificate-transparency.org/">
+http://www.certificate-transparency.org/</a>.</p>
+
+<p>This implementation for Apache httpd provides these features for TLS
+servers and proxies:</p>
+
+<ul>
+  <li>Signed Certificate Timestamps (SCTs) can be obtained from logs 
+  automatically and, in conjunction with any statically configured SCTs, sent
+  to aware clients in the ServerHello (during the handshake).</li>
+  <li>SCTs can be received by the proxy from backend servers in the ServerHello,
+  in a certificate extension, and/or within stapled OCSP responses; any SCTs 
+  received can be partially validated on-line and optionally queued for off-line
+  audit.</li>
+  <li>The proxy can be configured to disallow communication with a backend
+  which does not provide an SCT which passes on-line validation.</li>
+</ul>
+
+<p>Configuration information about logs can be defined statically in the web
+server configuration or maintained in a Sqlite3 database.  In the latter case,
+<code class="module"><a href="../mod/mod_ssl_ct.html">mod_ssl_ct</a></code> will reload the database periodically, so any
+site-specific infrastructure for maintaining and propagating log configuration
+information does not have to also restart httpd to make it take effect.</p>
+</div>
+<div id="quickview"><h3 class="directives">Directives</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#ctauditstorage">CTAuditStorage</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#ctlogclient">CTLogClient</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#ctlogconfigdb">CTLogConfigDB</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#ctmaxsctage">CTMaxSCTAge</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#ctproxyawareness">CTProxyAwareness</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#ctsctstorage">CTSCTStorage</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#ctserverhellosctlimit">CTServerHelloSCTLimit</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#ctstaticlogconfig">CTStaticLogConfig</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#ctstaticscts">CTStaticSCTs</a></li>
+</ul>
+<ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
+
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="CTAuditStorage" id="CTAuditStorage">CTAuditStorage</a> <a name="ctauditstorage" id="ctauditstorage">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Existing directory where data for off-line audit will be stored</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CTAuditStorage <em>directory</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl_ct</td></tr>
+</table>
+  <p>The <code class="directive">CTAuditStorage</code> directive sets the name of a
+  directory where data will be stored for off-line audit.  If <em>directory</em>
+  is not absolute then it is assumed to be relative to <code class="directive"><a href="../mod/core.html#defaultruntimedir">
+  DefaultRuntimeDir</a></code>.</p>
+
+  <p>If this directive is not specified, data will not be stored for off-line
+  audit.</p>
+
+  <p>The directory will contain files named <code><em>PID</em>.tmp</code> for
+  active child processes and files named <code><em>PID</em>.out</code> for exited
+  child processes.  These <code>.out</code> files are ready for off-line audit. 
+  The experimental command <code>ctauditscts</code> (in the httpd source tree, not
+  currently installed) interfaces with <em>certificate-transparency</em> tools to
+  perform the audit.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="CTLogClient" id="CTLogClient">CTLogClient</a> <a name="ctlogclient" id="ctlogclient">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Location of certificate-transparency log client tool</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CTLogClient <em>executable</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl_ct</td></tr>
+</table>
+  <p><em>executable</em> is the full path to the log client tool, which is
+  normally file <code>src/client/ct</code> within the source tree of the 
+  <a href="https://code.google.com/p/certificate-transparency/">
+  certificate-transparency</a> open source project.</p>
+
+  <p>An alternative implementation could be used to retrieve SCTs for a
+  server certificate as long as the command-line interface is equivalent.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="CTLogConfigDB" id="CTLogConfigDB">CTLogConfigDB</a> <a name="ctlogconfigdb" id="ctlogconfigdb">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Log configuration database supporting dynamic updates</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CTLogConfigDB <em>filename</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl_ct</td></tr>
+</table>
+  <p>The <code class="directive">CTLogConfigDB</code> directive sets the name of a database
+  containing configuration about known logs.  If <em>filename</em> is not absolute
+  then it is assumed to be relative to
+  <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>.</p>
+
+  <p>Refer to the documentation for the <code class="program"><a href="../programs/ctlogconfig.html">ctlogconfig</a></code> program,
+  which manages the database.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="CTMaxSCTAge" id="CTMaxSCTAge">CTMaxSCTAge</a> <a name="ctmaxsctage" id="ctmaxsctage">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum age of SCT obtained from a log, before it will be
+refreshed</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CTMaxSCTAge <em>num-seconds</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>1 day</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl_ct</td></tr>
+</table>
+  <p>Server certificates with SCTs which are older than this maximum age will
+  be resubmitted to configured logs.  Generally the log will return the same SCT
+  as before, but that is subject to log operation.  SCTs will be refreshed as
+  necessary during normal server operation, with new SCTs returned to clients
+  as they become available.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="CTProxyAwareness" id="CTProxyAwareness">CTProxyAwareness</a> <a name="ctproxyawareness" id="ctproxyawareness">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Level of CT awareness and enforcement for a proxy
+</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CTProxyAwareness <em>oblivious|aware|require</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>aware</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl_ct</td></tr>
+</table>
+  <p>This directive controls awareness and checks for valid SCTs for a
+  proxy.  Several options are available:</p>
+
+  <dl>
+    <dt>oblivious</dt>
+    <dd>The proxy will neither ask for nor examine SCTs.  Certificate
+    Transparency processing for the proxy is completely disabled.</dd>
+
+    <dt>aware</dt>
+    <dd>The proxy will perform all appropriate Certificate Transparency
+    processing, such as asking for and examining SCTs.  However, the
+    proxy will not disallow communication if the backend server does
+    not provide any valid SCTs.</dd>
+
+    <dt>require</dt>
+    <dd>The proxy will abort communication with the backend server if it
+    does not provide at least one SCT which passes on-line validation.</dd>
+  </dl>
+
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="CTSCTStorage" id="CTSCTStorage">CTSCTStorage</a> <a name="ctsctstorage" id="ctsctstorage">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Existing directory where SCTs are managed</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CTSCTStorage <em>directory</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl_ct</td></tr>
+</table>
+  <p>The <code class="directive">CTSCTStorage</code> directive sets the name of a
+  directory where SCTs and SCT lists will will be stored.  If <em>directory</em>
+  is not absolute then it is assumed to be relative to <code class="directive"><a href="../mod/core.html#defaultruntimedir">
+  DefaultRuntimeDir</a></code>.</p>
+
+  <p>A subdirectory for each server certificate contains information relative
+  to that certificate; the name of the subdirectory is the SHA-256 hash of the
+  certificate.</p>
+
+  <p>The certificate-specific directory contains SCTs retrieved from configured 
+  logs, SCT lists prepared from statically configured SCTs and retrieved SCTs,
+  and other information used for managing SCTs.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="CTServerHelloSCTLimit" id="CTServerHelloSCTLimit">CTServerHelloSCTLimit</a> <a name="ctserverhellosctlimit" id="ctserverhellosctlimit">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Limit on number of SCTs that can be returned in
+ServerHello</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CTServerHelloSCTLimit <em>limit</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>100</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl_ct</td></tr>
+</table>
+  <p>This directive can be used to limit the number of SCTs which can be
+  returned by a TLS server in ServerHello, in case the number of configured
+  logs and statically-defined SCTs is relatively high.</p>
+
+  <p>Typically only a few SCTs would be available, so this directive is only
+  needed in special circumstances.</p>
+
+  <p>The directive does not take into account SCTs which may be provided in
+  certificate extensions or in stapled OCSP responses.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="CTStaticLogConfig" id="CTStaticLogConfig">CTStaticLogConfig</a> <a name="ctstaticlogconfig" id="ctstaticlogconfig">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Static configuration of information about a log</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CTStaticLogConfig <em>log-id|-</em> <em>public-key-file|-</em>
+<em>1|0|-</em> <em>min-timestamp|-</em> <em>max-timestamp|-</em>
+<em>log-URL|-</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl_ct</td></tr>
+</table>
+  <p>This directive is used to configure information about a particular log.
+  This directive is appropriate when configuration information changes rarely.
+  If dynamic configuration updates must be supported, refer to the 
+  <code class="directive"><a href="#ctlogconfigdb">CTLogConfigDB</a></code> directive.</p>
+
+  <p>Each of the six fields must be specified, but usually only a small
+  amount of information must be configured for each log; use <em>-</em> when no
+  information is available for the field.  The fields are defined as follows:</p>
+
+  <dl>
+    <dt><em>log-id</em></dt>
+    <dd>This is the id of the log.  The id is the SHA-256 hash of the log's
+    public key.  In some cases it is appropriate and convenient to identify
+    the log by the id (hash), such as when configuring information regarding
+    the log's validity.</dd>
+
+    <dt><em>public-key-file</em></dt>
+    <dd>This is the name of a file containing the PEM encoding of the log's
+    public key.  If the name is not absolute, then it is assumed to be relative
+    to <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>.  The public key is
+    required in order to check the signature of SCTs received by the proxy.</dd>
+
+    <dt><em>trust</em></dt>
+    <dd>This is a generic <q>trust</q> flag.  Set this field to <em>0</em> to
+    distrust this log.</dd>
+
+    <dt><em>min-timestamp</em></dt>
+    <dd>SCTs received from this log by the proxy are invalid if the timestamp
+    is older than this value.</dd>
+
+    <dt><em>max-timestamp</em></dt>
+    <dd>SCTs received from this log by the proxy are invalid if the timestamp
+    is newer than this value.</dd>
+
+    <dt><em>log-URL</em></dt>
+    <dd>This is the URL of the log, for use in submitting server certificates
+    and in turn obtaining an SCT to be sent to clients.  Each server certificate
+    will be submitted to all logs for which <em>log-URL</em> is configured.</dd>
+  </dl>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="CTStaticSCTs" id="CTStaticSCTs">CTStaticSCTs</a> <a name="ctstaticscts" id="ctstaticscts">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Static configuration of one or more SCTs for a server certificate
+</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CTStaticSCTs <em>certificate-pem-file</em> <em>sct-directory</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl_ct</td></tr>
+</table>
+  <p>This directive is used to statically define one or more SCTs corresponding
+  to a server certificate.  This mechanism can be used instead of or in
+  addition to dynamically obtaining SCTs from configured logs.</p>
+
+  <p><em>certificate-pem-file</em> refers to the server certificate in PEM
+  format.  If the name is not absolute, then it is assumed to be relative to
+  <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>.</p>
+
+  <p><em>sct-directory</em> must contain one or more files with extension
+  <code>.sct</code>, representing one or more SCTs corresponding to the
+  server certificate.  If <em>sct-directory</em> is not absolute, then it is 
+  assumed to be relative to <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>.</p>
+
+</div>
+</div>
+<div class="bottomlang">
+<p><span>Available Languages: </span><a href="../en/mod/mod_ssl_ct.html" title="English">&nbsp;en&nbsp;</a></p>
+</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+var comments_shortname = 'httpd';
+var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_ssl_ct.html';
+(function(w, d) {
+    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
+        d.write('<div id="comments_thread"><\/div>');
+        var s = d.createElement('script');
+        s.type = 'text/javascript';
+        s.async = true;
+        s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
+        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
+    }
+    else {
+        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
+    }
+})(window, document);
+//--><!]]></script></div><div id="footer">
+<p class="apache">Copyright 2014 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+if (typeof(prettyPrint) !== 'undefined') {
+    prettyPrint();
+}
+//--><!]]></script>
+</body></html>

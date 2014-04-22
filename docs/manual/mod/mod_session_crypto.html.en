@@ -189,8 +189,9 @@ SessionCryptoPassphrase secret</pre>
     secret to the end of the list, and once rolled out completely to all servers, remove
     the first key from the start of the list.</p>
 
-    <p>If the value begins with exec: the resulting command will be executed and the
-    first line returned to standard output by the program will be used as the key.</p>
+    <p>As of version 2.4.7 if the value begins with <var>exec:</var> the resulting command
+    will be executed and the first line returned to standard output by the program will be
+    used as the key.</p>
 <div class="example"><pre>#key used as-is
 SessionCryptoPassphrase secret
 

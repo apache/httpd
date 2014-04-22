@@ -191,7 +191,7 @@ d'autorisation</a></li>
   <p>Le fournisseur <code>expr</code> permet d'accorder l'autorisation
   d'accès en fonction d'expressions arbitraires.</p>
 
-    <pre class="prettyprint lang-config">Require expr "%{TIME_HOUR} -ge 9 &amp;&amp; %{TIME_HOUR} -le 17"</pre>
+    <pre class="prettyprint lang-config">Require expr %{TIME_HOUR} -ge 9 &amp;&amp; %{TIME_HOUR} -le 17</pre>
 
 
     <p>La syntaxe de l'expression est décrite dans la documentation de <a href="../expr.html">ap_expr</a>.</p>

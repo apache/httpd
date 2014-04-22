@@ -82,7 +82,7 @@ d'Apache</td></tr></table>
     les types d'autorisation <code>dbd-group</code>,
     <code>dbd-login</code> et <code>dbd-logout</code>.</p>
 
-    <p>A partir de la version 2.5.0, les directives require DBD
+    <p>A partir de la version 2.4.8, les directives require DBD
     supportent les <a href="../expr.html">expressions</a>.</p>
 
 <h3><a name="reqgroup" id="reqgroup">Require dbd-group</a></h3>

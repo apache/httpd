@@ -130,7 +130,6 @@ d'acceptation</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Sous Windows, disponible depuis la version 2.3.3.</td></tr>
 </table>
     <p>Cette directive permet d'effectuer une optimisation de la socket
     d'écoute d'un type de protocole en fonction du système
@@ -702,6 +701,8 @@ dans la réponse HTTP</td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis de la version 2.4.2 du serveur HTTP
+Apache</td></tr>
 </table>
     <p>La directive <code class="directive">DefaultRuntimeDir</code> permet de
     définir le répertoire dans lequel le serveur va créer les différents
@@ -1480,7 +1481,6 @@ personnalisation des réponses</a></li>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.9 d'Apache</td></tr>
 </table>
     <p>La directive <code class="directive">ErrorLogFormat</code> permet de
     spécifier quelles informations supplémentaires vont être enregistrées
@@ -2338,8 +2338,6 @@ avant de fermer une connexion persistante</td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>La spécification d'une valeur en millisecondes est
-possible depuis les versions 2.3.2 et supérieures d'Apache httpd</td></tr>
 </table>
     <p>Le nombre de secondes pendant lesquelles Apache httpd va attendre une
     requête avant de fermer la connexion. Le délai peut être défini en

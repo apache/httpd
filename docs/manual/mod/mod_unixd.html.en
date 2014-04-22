@@ -119,7 +119,6 @@ Off otherwise</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_unixd</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache httpd 2.3.9 and later</td></tr>
 </table>
     <p>When On, startup will fail if the suexec binary doesn't exist
     or has an invalid owner or file mode.</p>

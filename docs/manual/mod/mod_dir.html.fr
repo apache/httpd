@@ -300,6 +300,8 @@ aucun fichier</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>Indexes</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dir</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>L'argument <code>disabled</code> est disponible depuis la
+version 2.4.4 du serveur HTTP Apache</td></tr>
 </table>
     <p>Cette directive permet de définir un traitement pour toute URL
     qui ne correspond à aucune ressource de votre système de fichiers,

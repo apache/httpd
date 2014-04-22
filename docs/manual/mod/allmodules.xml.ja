@@ -111,6 +111,7 @@
   <modulefile>mod_socache_shmcb.xml</modulefile>
   <modulefile>mod_speling.xml.ja</modulefile>
   <modulefile>mod_ssl.xml</modulefile>
+  <modulefile>mod_ssl_ct.xml</modulefile>
   <modulefile>mod_status.xml.ja</modulefile>
   <modulefile>mod_substitute.xml</modulefile>
   <modulefile>mod_suexec.xml.ja</modulefile>
