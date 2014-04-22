@@ -29,6 +29,9 @@
     <p><code>ctlogconfig</code> is a tool for maintaining a log configuration
     database, for use with <module>mod_ssl_ct</module>.</p>
 
+    <p>Refer first to <a href="../mod/mod_ssl_ct.html#logconf">Log
+    configuration</a> in the <module>mod_ssl_ct</module> documentation.</p>
+
     <p>Refer to the <a href="#examples">examples below</a> for typical use.</p>
 
 </summary>
@@ -37,39 +40,39 @@
 <section id="synopsis">
   <title>Synopsis</title>
   <p><code>
-    <strong>ctlogconfig</strong> <strong>db-path</strong> <strong>dump</strong>
+    <strong>ctlogconfig</strong> <em>/path/to/db</em> <strong>dump</strong>
   </code></p>
 
   <p><code>
-    <strong>ctlogconfig</strong> <strong>db-path</strong> <strong>configure-public-key</strong>
+    <strong>ctlogconfig</strong> <em>/path/to/db</em> <strong>configure-public-key</strong>
     [ <em>log-id</em>|<em>record-id</em> ]
     <em>/path/to/public-key.pem</em>
   </code></p>
 
   <p><code>
-    <strong>ctlogconfig</strong> <strong>db-path</strong> <strong>configure-url</strong>
+    <strong>ctlogconfig</strong> <em>/path/to/db</em> <strong>configure-url</strong>
     [ <em>log-id</em>|<em>record-id</em> ]
     <em>log-URL</em>
   </code></p>
 
   <p><code>
-    <strong>ctlogconfig</strong> <strong>db-path</strong> <strong>valid-time-range</strong>
+    <strong>ctlogconfig</strong> <em>/path/to/db</em> <strong>valid-time-range</strong>
     <em>log-id</em>|<em>record-id</em>
     <em>min-timestamp</em> <em>max-timestamp</em>
   </code></p>
 
   <p><code>
-    <strong>ctlogconfig</strong> <strong>db-path</strong> <strong>trust</strong>
+    <strong>ctlogconfig</strong> <em>/path/to/db</em> <strong>trust</strong>
     <em>log-id</em>|<em>record-id</em>
   </code></p>
 
   <p><code>
-    <strong>ctlogconfig</strong> <strong>db-path</strong> <strong>distrust</strong>
+    <strong>ctlogconfig</strong> <em>/path/to/db</em> <strong>distrust</strong>
     <em>log-id</em>|<em>record-id</em>
   </code></p>
 
   <p><code>
-    <strong>ctlogconfig</strong> <strong>db-path</strong> <strong>forget</strong>
+    <strong>ctlogconfig</strong> <em>/path/to/db</em> <strong>forget</strong>
     <em>log-id</em>|<em>record-id</em>
   </code></p>
 
