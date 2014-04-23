@@ -2609,9 +2609,12 @@ static int ssl_ct_detach_backend(request_rec *r,
 
 static void ct_register_hooks(apr_pool_t *p)
 {
+    static const char * const run_after_mod_ssl[] = {"mod_ssl.c", NULL};
+
     ap_hook_pre_config(ssl_ct_pre_config, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_check_config(ssl_ct_check_config, NULL, NULL, APR_HOOK_MIDDLE);
-    ap_hook_post_config(ssl_ct_post_config, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_post_config(ssl_ct_post_config, run_after_mod_ssl, NULL,
+                        APR_HOOK_MIDDLE);
     ap_hook_post_read_request(ssl_ct_post_read_request, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_child_init(ssl_ct_child_init, NULL, NULL, APR_HOOK_MIDDLE);
     APR_OPTIONAL_HOOK(proxy, detach_backend, ssl_ct_detach_backend, NULL, NULL,
