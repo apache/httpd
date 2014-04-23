@@ -1,4 +1,4 @@
-﻿<?xml version="1.0"?>
+<?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
 <!-- $LastChangedRevision$ -->
@@ -103,10 +103,10 @@ header</description>
 
 <usage>
     <p>The <directive>ProxySCGISendfile</directive> directive enables the
-    SCGI backend to let files serve directly by the gateway. This is useful
-    performance purposes -- the httpd can use <code>sendfile</code> or other
+    SCGI backend to let files be served directly by the gateway. This is useful
+    for performance purposes &mdash; httpd can use <code>sendfile</code> or other
     optimizations, which are not possible if the file comes over the backend
-    socket.</p>
+    socket.  Additionally, the file contents are not transmitted twice.</p>
     <p>The <directive>ProxySCGISendfile</directive> argument determines the
     gateway behaviour:</p>
     <dl>
@@ -115,22 +115,22 @@ header</description>
 
     <dt><code>On</code></dt>
     <dd>The gateway looks for a backend response header called
-    <code>X-Sendfile</code> and interprets the value as filename to serve. The
-    header is removed from the final response headers. This is equivalent to
+    <code>X-Sendfile</code> and interprets the value as the filename to serve.
+    The  header is removed from the final response headers. This is equivalent to
     <code>ProxySCGISendfile X-Sendfile</code>.</dd>
 
     <dt>anything else</dt>
     <dd>Similar to <code>On</code>, but instead of the hardcoded header name
-    the argument is applied as header name.</dd>
+    <code>X-Sendfile</code>, the argument is used as the header name.</dd>
     </dl>
 
     <example><title>Example</title>
     <highlight language="config">
-    # Use the default header (X-Sendfile)
-    ProxySCGISendfile On
+# Use the default header (X-Sendfile)
+ProxySCGISendfile On
     
-    # Use a different header
-    ProxySCGISendfile X-Send-Static
+# Use a different header
+ProxySCGISendfile X-Send-Static
     </highlight>
     </example>
 </usage>
@@ -148,11 +148,11 @@ backend</description>
 <usage>
     <p>The <directive>ProxySCGIInternalRedirect</directive> enables the backend
     to internally redirect the gateway to a different URL. This feature
-    origins in <module>mod_cgi</module>, which internally redirects the
-    response, if the response status is <code>OK</code> (<code>200</code>) and
+    originates in <module>mod_cgi</module>, which internally redirects the
+    response if the response status is <code>OK</code> (<code>200</code>) and
     the response contains a <code>Location</code> header and its value starts
     with a slash (<code>/</code>). This value is interpreted as a new local
-    URL the apache internally redirects to.</p>
+    URL that Apache httpd internally redirects to.</p>
 
     <p><module>mod_proxy_scgi</module> does the same as
     <module>mod_cgi</module> in this regard, except that you can turn off the
