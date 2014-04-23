@@ -17,14 +17,13 @@
 /*
  * Issues
  *
- * + Major limitations
- *   . ???
- *
  * + Known low-level code kludges/problems
  *   . proxy: an httpd child process validates SCTs from a server only on the
  *     first time the data is received; but it could fail once due to invalid
- *     timestamp and succeed later after time elapses; fixit!
+ *     timestamp, and not be rechecked later after (potentially) time elapses
+ *     and the timestamp is now in a valid range
  *   . server: shouldn't have to read file of server SCTs on every handshake
+ *     (shared memory or cached file?)
  *   . split mod_ssl_ct.c into more pieces
  *   . research: Is it possible to send an SCT that is outside of the known
  *     valid interval for the log?
@@ -764,26 +763,33 @@ static apr_status_t refresh_scts_for_cert(server_rec *s, apr_pool_t *p,
 
     config_elts  = (ct_log_config **)log_config->elts;
 
-    rv = update_log_list_for_cert(s, p, cert_sct_dir, log_config);
-    if (rv != APR_SUCCESS) {
-        return rv;
-    }
-
-    for (i = 0; i < log_config->nelts; i++) {
-        if (!config_elts[i]->url) {
-            continue;
-        }
-        if (!log_valid_for_sent_sct(config_elts[i])) {
-            continue;
-        }
-        rv = fetch_sct(s, p, cert_fn,
-                       cert_sct_dir,
-                       &config_elts[i]->uri,
-                       ct_exe,
-                       max_sct_age);
+    if (ct_exe) {
+        rv = update_log_list_for_cert(s, p, cert_sct_dir, log_config);
         if (rv != APR_SUCCESS) {
             return rv;
         }
+
+        for (i = 0; i < log_config->nelts; i++) {
+            if (!config_elts[i]->url) {
+                continue;
+            }
+            if (!log_valid_for_sent_sct(config_elts[i])) {
+                continue;
+            }
+            rv = fetch_sct(s, p, cert_fn,
+                           cert_sct_dir,
+                           &config_elts[i]->uri,
+                           ct_exe,
+                           max_sct_age);
+            if (rv != APR_SUCCESS) {
+                return rv;
+            }
+        }
+    }
+    else {
+        /* Log client tool (from certificate-transparency open source project)
+         * not configured; we can only use admin-managed SCTs
+         */
     }
 
     rv = collate_scts(s, p, cert_sct_dir, static_cert_sct_dir, max_sh_sct);
@@ -1266,9 +1272,14 @@ static int ssl_ct_post_config(apr_pool_t *pconf, apr_pool_t *plog,
         active_log_config = sconf->db_log_config;
     }
     else {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s_main,
-                     "No non-empty log configuration was provided");
-        return HTTP_INTERNAL_SERVER_ERROR;
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, s_main,
+                     "No log URLs were configured; only admin-managed SCTs can be sent");
+        /* if a db is configured, it could be updated later */
+        if (!sconf->db_log_config) { /* no DB configured, need permanently
+                                      * empty array */
+            active_log_config = apr_array_make(pconf, 1,
+                                               sizeof(ct_log_config *));
+        }
     }
 
     /* Ensure that we already have, or can fetch, fresh SCTs for each 
@@ -1348,9 +1359,10 @@ static int ssl_ct_check_config(apr_pool_t *pconf, apr_pool_t *plog,
     }
 
     if (!sconf->ct_exe) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s_main,
-                     "Directive CTLogClient is required");
-        return HTTP_INTERNAL_SERVER_ERROR;
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, s_main,
+                     "Directive CTLogClient isn't set; server certificates "
+                     "can't be submitted to configured logs; only admin-"
+                     "managed SCTs can be provided to clients");
     }
 
     if (sconf->log_config_fname) {

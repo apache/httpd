@@ -279,6 +279,10 @@ testing.</p>
 
   <p>An alternative implementation could be used to retrieve SCTs for a
   server certificate as long as the command-line interface is equivalent.</p>
+
+  <p>If this directive is not configured, server certificates cannot be
+  submitted to logs in order to obtain SCTs; thus, only admin-managed
+  SCTs will be provided to clients.</p>
 </usage>
 </directivesynopsis>
 
