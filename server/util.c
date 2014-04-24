@@ -1801,7 +1801,11 @@ AP_DECLARE(char *) ap_escape_path_segment(apr_pool_t *p, const char *segment)
 
 AP_DECLARE(char *) ap_os_escape_path(apr_pool_t *p, const char *path, int partial)
 {
-    char *copy = apr_palloc(p, 3 * strlen(path) + 3);
+    /* Allocate +3 for potential "./" and trailing NULL.
+     * Allocate another +1 to allow the caller to add a trailing '/' (see
+     * comment in 'ap_sub_req_lookup_dirent')
+     */
+    char *copy = apr_palloc(p, 3 * strlen(path) + 3 + 1);
     const unsigned char *s = (const unsigned char *)path;
     unsigned char *d = (unsigned char *)copy;
     unsigned c;
