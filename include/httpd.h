@@ -1669,9 +1669,8 @@ AP_DECLARE(char *) ap_escape_path_segment_buffer(char *c, const char *s)
  * @param path The path to convert
  * @param partial if set, assume that the path will be appended to something
  *        with a '/' in it (and thus does not prefix "./").
- *        If not set, there will be one byte of additional space after the
- *        NUL, to allow the caller to append a '/'.
- * @return The converted URL
+ * @return The converted URL, with one byte of extra space after the NUL
+ *         to allow the caller to add a trailing '/'. 
  * @deprecated Replaced by apr_pescape_path() in APR
  */
 AP_DECLARE(char *) ap_os_escape_path(apr_pool_t *p, const char *path, int partial)
