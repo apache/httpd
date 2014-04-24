@@ -38,7 +38,23 @@ open source project.  The goal of Certificate Transparency is to expose the
 use of server certificates which are trusted by browsers but were mistakenly
 or maliciously issued.  More information about Certificate Transparency is
 available at <a href="http://www.certificate-transparency.org/">
-http://www.certificate-transparency.org/</a>.</p>
+http://www.certificate-transparency.org/</a>.  Key terminology used in
+this documentation:</p>
+
+<dl>
+  <dt>Certificate log</dt>
+  <dd>A certificate log, referred to simply as <q>log</q> in this documentation,
+  is a network service to which server certificates have been submitted.  A
+  user agent can confirm that the certificate of a server which it accesses
+  has been submitted to a log which it trusts, and that the log itself has
+  not been tampered with.</dd>
+
+  <dt>Signed Certificate Timestamp (SCT)</dt>
+  <dd>This is an acknowledgement from a log that it has accepted a valid
+  certificate.  It is signed with the log's public key.  One or more SCTs
+  is passed to clients during the handshake, either in the ServerHello
+  (TLS extension), certificate extension, or in a stapled OCSP response.</dd>
+</dl>
 
 <p>This implementation for Apache httpd provides these features for TLS
 servers and proxies:</p>
@@ -190,7 +206,7 @@ testing.</p>
 
   <p>Generally, only a small subset of this information is configured for a
   particular log.  Refer to the documentation for the <directive 
-  module="mod_ssl_ct">CTStaticLogConfig</directive> and the 
+  module="mod_ssl_ct">CTStaticLogConfig</directive> directive and the 
   <program>ctlogconfig</program> command for more specific information.</p>
 
 </section>
