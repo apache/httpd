@@ -80,7 +80,7 @@ fichiers</description>
     module="mod_file_cache">MMapFile</directive>, alors que d'autres
     plates-formes, comme AIX, supportent les deux. Vous recevrez un
     message d'erreur dans le journal des erreurs du serveur si vous
-    essayez d'utiliser une directive non support&eacute;e. si vous utilisez une
+    essayez d'utiliser une directive non support&eacute;e. Si vous utilisez une
     directive non support&eacute;e, le serveur d&eacute;marrera, mais les fichiers ne
     seront pas mis en cache. Sur les plates-formes qui supportent les
     deux directives, vous devez faire des essais afin de d&eacute;terminer

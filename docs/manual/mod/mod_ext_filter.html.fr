@@ -127,7 +127,7 @@ ExtFilterDefine gzip mode=output cmd=/bin/gzip
 
     <h3>Ralentissement du serveur</h3>
       <pre class="prettyprint lang-config"># directive de mod_ext_filter définissant un filtre qui fait
-# passer tout les flux en sortie par la commande cat ; cat ne
+# passer tous les flux en sortie par la commande cat ; cat ne
 # modifie rien ; elle ne fait que compliquer le cheminement des
 # flux et consommer des ressources supplémentaires
 ExtFilterDefine slowdown mode=output cmd=/bin/cat \
@@ -337,7 +337,7 @@ close(SAVE);</pre>
 
 
     <p>Les messages envoyés vers la sortie d'erreurs standard du filtre
-    seront enregistrés dans le journal des erreurs d'Apache..</p>
+    seront enregistrés dans le journal des erreurs d'Apache.</p>
 
 </div>
 </div>

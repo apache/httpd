@@ -565,7 +565,7 @@ charge</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.2 du serveur HTTP Apache.</td></tr>
 </table>
-    <p>Cette directive parmet d'ajouter un membre à un groupe de
+    <p>Cette directive permet d'ajouter un membre à un groupe de
     répartition de charge. Elle peut se trouver dans un conteneur
     <code>&lt;Proxy <var>balancer://</var>...&gt;</code>, et accepte
     tous les paramètres de paires clé/valeur que supporte la directive
@@ -1782,7 +1782,7 @@ ProxyPassReverseCookiePath  /  /mirror/foo/</pre>
     combinaison avec la directive
     <code class="directive">ProxyPassInterpolateEnv</code>, permet
     l'interpolation des variables d'environnement spécifiées en
-    utilisant le format <var>${VARNAME}</var> Notez que l'interpolation
+    utilisant le format <var>${VARNAME}</var>. Notez que l'interpolation
     n'est pas supportée dans la partie protocole d'une URL.
     </p>
 
