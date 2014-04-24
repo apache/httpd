@@ -116,7 +116,7 @@ sessions utilisateur c&ocirc;t&eacute; serveur gr&acirc;ce &agrave; sa fonctionn
 en s'appuyant sur une base de donn&eacute;es. En particulier, il peut mettre &agrave;
 jour le statut de session de l'utilisateur dans la base de donn&eacute;es
 chaque fois que celui-ci visite certaines URLs (sous r&eacute;serve bien
-entendu que l'utilisateur fournissent les informations de connexion
+entendu que l'utilisateur fournisse les informations de connexion
 n&eacute;cessaires).</p>
 <p>Pour cela, il faut definir deux directives <directive
 module="mod_authz_core">Require</directive> sp&eacute;ciales : <code>Require
@@ -201,7 +201,8 @@ DBDExptime 300
 
 <directivesynopsis>
 <name>AuthzDBDQuery</name>
-<description>D&eacute;finit la requ&ecirc;te SQL pour l'op&eacute;ration requise</description>
+<description>D&eacute;finit la requ&ecirc;te SQL pour l'op&eacute;ration
+requise</description>
 <syntax>AuthzDBDQuery <var>requ&ecirc;te</var></syntax>
 <contextlist><context>directory</context></contextlist>
 

@@ -115,7 +115,7 @@ ExtFilterDefine gzip mode=output cmd=/bin/gzip
     <section><title>Ralentissement du serveur</title>
       <highlight language="config">
 # directive de mod_ext_filter d&eacute;finissant un filtre qui fait
-# passer tout les flux en sortie par la commande cat ; cat ne
+# passer tous les flux en sortie par la commande cat ; cat ne
 # modifie rien ; elle ne fait que compliquer le cheminement des
 # flux et consommer des ressources suppl&eacute;mentaires
 ExtFilterDefine slowdown mode=output cmd=/bin/cat \
@@ -330,7 +330,7 @@ close(SAVE);
     </highlight>
 
     <p>Les messages envoy&eacute;s vers la sortie d'erreurs standard du filtre
-    seront enregistr&eacute;s dans le journal des erreurs d'Apache..</p>
+    seront enregistr&eacute;s dans le journal des erreurs d'Apache.</p>
 </usage>
 </directivesynopsis>
 

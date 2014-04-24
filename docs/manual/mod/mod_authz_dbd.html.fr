@@ -27,8 +27,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_authz_dbd.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_authz_dbd.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Autorisation en groupe et reconnaissance d'identité avec base
 SQL</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -84,7 +82,7 @@ d'Apache</td></tr></table>
     les types d'autorisation <code>dbd-group</code>,
     <code>dbd-login</code> et <code>dbd-logout</code>.</p>
 
-    <p>A partir de la version 2.5.0, les directives require DBD
+    <p>A partir de la version 2.4.8, les directives require DBD
     supportent les <a href="../expr.html">expressions</a>.</p>
 
 <h3><a name="reqgroup" id="reqgroup">Require dbd-group</a></h3>
@@ -131,7 +129,7 @@ sessions utilisateur côté serveur grâce à sa fonctionnalité de connexion utilisa
 en s'appuyant sur une base de données. En particulier, il peut mettre à
 jour le statut de session de l'utilisateur dans la base de données
 chaque fois que celui-ci visite certaines URLs (sous réserve bien
-entendu que l'utilisateur fournissent les informations de connexion
+entendu que l'utilisateur fournisse les informations de connexion
 nécessaires).</p>
 <p>Pour cela, il faut definir deux directives <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> spéciales : <code>Require
 dbd-login</code> et <code>Require dbd-logout</code>. Pour les détails de
@@ -144,8 +142,9 @@ leur utilisation, voir l'exemple de configuration ci-dessous.</p>
 session côté client fonctionnant de concert avec les fonctionnalités de
 connexion/déconnexion des utilisateurs côté serveur offertes par ce module, en
 définissant ou en annulant par exemple un cookie HTTP ou un jeton
-similaire lorsqu'un utilisateur se connecte ou se déconnecte. Pour
-supporter une telle intégration, <code class="module"><a href="../mod/mod_authz_dbd.html">mod_authz_dbd</a></code> exporte
+similaire lorsqu'un utilisateur se connecte ou se déconnecte.</p>
+
+<p>Pour supporter une telle intégration, <code class="module"><a href="../mod/mod_authz_dbd.html">mod_authz_dbd</a></code> exporte
 un programme à déclenchement optionnel (hook) qui sera lancé chaque fois
 que le statut d'un utilisateur sera mis à jour dans la base de données.
 D'autres modules de gestion de session pourront alors utiliser ce
@@ -233,7 +232,8 @@ de requête <code>Referer</code> est présent</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AuthzDBDQuery" id="AuthzDBDQuery">AuthzDBDQuery</a> <a name="authzdbdquery" id="authzdbdquery">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit la requête SQL pour l'opération requise</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit la requête SQL pour l'opération
+requise</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthzDBDQuery <var>requête</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>

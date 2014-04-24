@@ -92,7 +92,7 @@ fichiers</td></tr>
     actuellement la directive <code class="directive"><a href="#mmapfile">MMapFile</a></code>, alors que d'autres
     plates-formes, comme AIX, supportent les deux. Vous recevrez un
     message d'erreur dans le journal des erreurs du serveur si vous
-    essayez d'utiliser une directive non supportée. si vous utilisez une
+    essayez d'utiliser une directive non supportée. Si vous utilisez une
     directive non supportée, le serveur démarrera, mais les fichiers ne
     seront pas mis en cache. Sur les plates-formes qui supportent les
     deux directives, vous devez faire des essais afin de déterminer
