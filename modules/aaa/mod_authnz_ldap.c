@@ -367,15 +367,12 @@ static apr_status_t authnz_ldap_cleanup_connection_close(void *param)
     return APR_SUCCESS;
 }
 
-static int set_request_vars(request_rec *r, enum auth_ldap_phase phase) {
+static int set_request_vars(request_rec *r, enum auth_ldap_phase phase, const char **vals) {
     char *prefix = NULL;
     int prefix_len;
     int remote_user_attribute_set = 0;
-    authn_ldap_request_t *req =
-        (authn_ldap_request_t *)ap_get_module_config(r->request_config, &authnz_ldap_module);
     authn_ldap_config_t *sec =
         (authn_ldap_config_t *)ap_get_module_config(r->per_dir_config, &authnz_ldap_module);
-    const char **vals = req->vals;
 
     prefix = (phase == LDAP_AUTHN) ? AUTHN_PREFIX : sec->authz_prefix;
     prefix_len = strlen(prefix);
@@ -599,7 +596,7 @@ static authn_status authn_ldap_check_password(request_rec *r, const char *user,
     }
 
     /* add environment variables */
-    remote_user_attribute_set = set_request_vars(r, LDAP_AUTHN);
+    remote_user_attribute_set = set_request_vars(r, LDAP_AUTHN, req->vals);
 
     /* sanity check */
     if (sec->remote_user_attribute && !remote_user_attribute_set) {
@@ -725,7 +722,7 @@ static authz_status ldapuser_check_authorization(request_rec *r,
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01703)
                           "auth_ldap authorize: require user: authorization "
                           "successful");
-            set_request_vars(r, LDAP_AUTHZ);
+            set_request_vars(r, LDAP_AUTHZ, req->vals);
             return AUTHZ_GRANTED;
         }
         default: {
@@ -747,7 +744,7 @@ static authz_status ldapuser_check_authorization(request_rec *r,
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01705)
                               "auth_ldap authorize: "
                               "require user: authorization successful");
-                set_request_vars(r, LDAP_AUTHZ);
+                set_request_vars(r, LDAP_AUTHZ, req->vals);
                 return AUTHZ_GRANTED;
             }
             default: {
@@ -934,7 +931,7 @@ static authz_status ldapgroup_check_authorization(request_rec *r,
                           "[%s][%d - %s]",
                           ent[i].name, ldc->reason, result,
                           ldap_err2string(result));
-            set_request_vars(r, LDAP_AUTHZ);
+            set_request_vars(r, LDAP_AUTHZ, req->vals);
             return AUTHZ_GRANTED;
         }
         else { 
@@ -973,7 +970,7 @@ static authz_status ldapgroup_check_authorization(request_rec *r,
                           "(attribute %s) [%s][%d - %s]",
                           ent[i].name, ldc->reason, result,
                           ldap_err2string(result));
-            set_request_vars(r, LDAP_AUTHZ);
+            set_request_vars(r, LDAP_AUTHZ, req->vals);
             return AUTHZ_GRANTED;
         }
         else {
@@ -1095,7 +1092,7 @@ static authz_status ldapdn_check_authorization(request_rec *r,
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01726)
                           "auth_ldap authorize: "
                           "require dn: authorization successful");
-            set_request_vars(r, LDAP_AUTHZ);
+            set_request_vars(r, LDAP_AUTHZ, req->vals);
             return AUTHZ_GRANTED;
         }
         default: {
@@ -1224,7 +1221,7 @@ static authz_status ldapattribute_check_authorization(request_rec *r,
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01735)
                               "auth_ldap authorize: "
                               "require attribute: authorization successful");
-                set_request_vars(r, LDAP_AUTHZ);
+                set_request_vars(r, LDAP_AUTHZ, req->vals);
                 return AUTHZ_GRANTED;
             }
             default: {
@@ -1369,7 +1366,7 @@ static authz_status ldapfilter_check_authorization(request_rec *r,
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01745)
                               "auth_ldap authorize: require ldap-filter: "
                               "authorization successful");
-                set_request_vars(r, LDAP_AUTHZ);
+                set_request_vars(r, LDAP_AUTHZ, req->vals);
                 return AUTHZ_GRANTED;
             }
             case LDAP_FILTER_ERROR: {
@@ -1392,6 +1389,80 @@ static authz_status ldapfilter_check_authorization(request_rec *r,
                   "auth_ldap authorize filter: authorization denied for "
                   "user %s to %s",
                   r->user, r->uri);
+
+    return AUTHZ_DENIED;
+}
+
+static authz_status ldapsearch_check_authorization(request_rec *r,
+                                                   const char *require_args,
+                                                   const void *parsed_require_args)
+{
+    int result = 0;
+    authn_ldap_config_t *sec =
+        (authn_ldap_config_t *)ap_get_module_config(r->per_dir_config, &authnz_ldap_module);
+
+    util_ldap_connection_t *ldc = NULL;
+
+    const char *err = NULL;
+    const ap_expr_info_t *expr = parsed_require_args;
+    const char *require;
+    const char *t;
+    const char *dn = NULL;
+
+    if (!sec->have_ldap_url) {
+        return AUTHZ_DENIED;
+    }
+
+    if (sec->host) {
+        ldc = get_connection_for_authz(r, LDAP_SEARCH);
+        apr_pool_cleanup_register(r->pool, ldc,
+                                  authnz_ldap_cleanup_connection_close,
+                                  apr_pool_cleanup_null);
+    }
+    else {
+        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01738)
+                      "auth_ldap authorize: no sec->host - weird...?");
+        return AUTHZ_DENIED;
+    }
+
+    require = ap_expr_str_exec(r, expr, &err);
+    if (err) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO()
+                      "auth_ldap authorize: require ldap-search: Can't "
+                      "evaluate require expression: %s", err);
+        return AUTHZ_DENIED;
+    }
+
+    t = require;
+
+    if (t[0]) {
+        const char **vals;
+
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO()
+                      "auth_ldap authorize: checking filter %s", t);
+
+        /* Search for the user DN */
+        result = util_ldap_cache_getuserdn(r, ldc, sec->url, sec->basedn,
+             sec->scope, sec->attributes, t, &dn, &vals);
+
+        /* Make sure that the filtered search returned a single dn */
+        if (result == LDAP_SUCCESS && dn) {
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO()
+                          "auth_ldap authorize: require ldap-search: "
+                          "authorization successful");
+            return AUTHZ_GRANTED;
+        }
+        else {
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO()
+                          "auth_ldap authorize: require ldap-search: "
+                          "%s authorization failed [%s][%s]",
+                          t, ldc->reason, ldap_err2string(result));
+        }
+    }
+
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO()
+                  "auth_ldap authorize filter: authorization denied for "
+                  "to %s", r->uri);
 
     return AUTHZ_DENIED;
 }
@@ -1899,6 +1970,12 @@ static const authz_provider authz_ldapfilter_provider =
     &ldap_parse_config,
 };
 
+static const authz_provider authz_ldapsearch_provider =
+{
+    &ldapsearch_check_authorization,
+    &ldap_parse_config,
+};
+
 static void ImportULDAPOptFn(void)
 {
     util_ldap_connection_close  = APR_RETRIEVE_OPTIONAL_FN(uldap_connection_close);
@@ -1938,6 +2015,10 @@ static void register_hooks(apr_pool_t *p)
     ap_register_auth_provider(p, AUTHZ_PROVIDER_GROUP, "ldap-filter",
                               AUTHZ_PROVIDER_VERSION,
                               &authz_ldapfilter_provider,
+                              AP_AUTH_INTERNAL_PER_CONF);
+    ap_register_auth_provider(p, AUTHZ_PROVIDER_GROUP, "ldap-search",
+                              AUTHZ_PROVIDER_VERSION,
+                              &authz_ldapsearch_provider,
                               AP_AUTH_INTERNAL_PER_CONF);
 
     ap_hook_post_config(authnz_ldap_post_config,NULL,NULL,APR_HOOK_MIDDLE);

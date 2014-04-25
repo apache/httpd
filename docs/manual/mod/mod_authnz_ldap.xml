@@ -88,6 +88,7 @@ for HTTP Basic authentication.</description>
           <li><a href="#reqdn">Require ldap-dn</a></li>
           <li><a href="#reqattribute">Require ldap-attribute</a></li>
           <li><a href="#reqfilter">Require ldap-filter</a></li>
+          <li><a href="#reqsearch">Require ldap-search</a></li>
         </ul>
       </li>
 
@@ -222,6 +223,11 @@ for HTTP Basic authentication.</description>
       <code>Require ldap-filter</code></a>
       directive, and the search filter successfully finds a single user
       object that matches the dn of the authenticated user.</li>
+
+      <li>Grant access if there is a <a href="#reqsearch">
+      <code>Require ldap-search</code></a>
+      directive, and the search filter successfully returns a single
+      matching object with any distinguished name.</li>
 
       <li>otherwise, deny or decline access</li>
     </ul>
@@ -505,6 +511,28 @@ AuthLDAPMaxSubGroupDepth 1
   Require ldap-filter (memberOf=cn=%{ldap:%{unescape:%{env:MATCH_SITENAME}},ou=Websites,o=Example)
 &lt;/LocationMatch&gt;
 </highlight>
+
+</section>
+
+<section id="reqsearch"><title>Require ldap-search</title>
+
+    <p>The <code>Require ldap-search</code> directive allows the
+    administrator to grant access based on a generic LDAP search filter using an
+    <a href="../expr.html">expression</a>. If there is exactly one match to the search filter,
+    regardless of the distinguished name, access is granted.</p>
+
+    <p>The following directive would grant access to URLs that match the given objects in the
+    LDAP server:</p>
+
+<highlight language="config">
+&lt;LocationMatch ^/dav/(?<SITENAME>[^/]+)/&gt;
+Require ldap-search (cn=%{ldap:%{unescape:%{env:MATCH_SITENAME}} Website)
+&lt;/LocationMatch&gt;
+</highlight>
+
+    <p>Note: care must be taken to ensure that any expressions are properly escaped to guard
+    against LDAP injection. The <strong>ldap</strong> function can be used as per the example
+    above.</p>
 
 </section>
 
