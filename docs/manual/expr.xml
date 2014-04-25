@@ -55,6 +55,7 @@
 <seealso><a href="mod/mod_authnz_ldap.html#reqdn">Require ldap-dn</a></seealso>
 <seealso><a href="mod/mod_authnz_ldap.html#reqattribute">Require ldap-attribute</a></seealso>
 <seealso><a href="mod/mod_authnz_ldap.html#reqfilter">Require ldap-filter</a></seealso>
+<seealso><a href="mod/mod_authnz_ldap.html#reqsearch">Require ldap-search</a></seealso>
 <seealso><a href="mod/mod_authz_dbd.html#reqgroup">Require dbd-group</a></seealso>
 <seealso><a href="mod/mod_authz_dbm.html#reqgroup">Require dbm-group</a></seealso>
 <seealso><a href="mod/mod_authz_groupfile.html#reqgroup">Require group</a></seealso>
