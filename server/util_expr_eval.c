@@ -31,6 +31,7 @@
 #include "apr_fnmatch.h"
 #include "apr_base64.h"
 #include "apr_sha1.h"
+#include "apr_escape.h"
 
 #include <limits.h>     /* for INT_MAX */
 
@@ -1061,6 +1062,12 @@ static const char *md5_func(ap_expr_eval_ctx_t *ctx, const void *data,
 	return ap_md5(ctx->p, (const unsigned char *)arg);
 }
 
+static const char *ldap_func(ap_expr_eval_ctx_t *ctx, const void *data,
+                               const char *arg)
+{
+        return apr_pescape_ldap(ctx->p, arg, APR_ESCAPE_STRING, APR_ESCAPE_LDAP_ALL);
+}
+
 
 #define MAX_FILE_SIZE 10*1024*1024
 static const char *file_func(ap_expr_eval_ctx_t *ctx, const void *data,
@@ -1645,6 +1652,7 @@ static const struct expr_provider_single string_func_providers[] = {
     { unbase64_func,        "unbase64",       NULL, 0 },
     { sha1_func,            "sha1",           NULL, 0 },
     { md5_func,             "md5",            NULL, 0 },
+    { ldap_func,            "ldap",           NULL, 0 },
     { NULL, NULL, NULL}
 };
 

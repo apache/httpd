@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) Add the ldap function to the expression API, allowing LDAP filters and
+     distinguished names based on expressions to be escaped correctly to
+     guard against LDAP injection. [Graham Leggett]
+
   *) Add module mod_ssl_ct, which provides an implementation of Certificate
      Transparency (RFC 6962) for httpd.  [Jeff Trawick]
 
