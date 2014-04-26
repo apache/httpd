@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1562488:1587098 (outdated) -->
+<!-- English Revision : 1587098 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -196,7 +196,7 @@ d'Apache</compatibility>
     liste, puis, une fois la rotation compl&egrave;te effectu&eacute;e, supprimez la
     premi&egrave;re cl&eacute; de la liste.</p>
 
-    <p>Si la valeur de l'argument commence par exec: , la commande
+    <p>Depuis la version 2.4.7, si la valeur de l'argument commence par <var>exec:</var> , la commande
     sp&eacute;cifi&eacute;e sera ex&eacute;cut&eacute;e, et la premi&egrave;re ligne que cette derni&egrave;re
     renverra sur la sortie standard sera utilis&eacute;e comme cl&eacute;.</p>
 <example><pre>
