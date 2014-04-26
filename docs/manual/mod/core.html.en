@@ -1898,7 +1898,7 @@ satisfied by a request at runtime</td></tr>
 
     <p>would match HTTP/1.0 requests without a <var>Host:</var> header.
     Expressions may contain various shell-like operators for string
-    comparison (<code>=</code>, <code>!=</code>, <code>&lt;</code>, ...),
+    comparison (<code>==</code>, <code>!=</code>, <code>&lt;</code>, ...),
     integer comparison (<code>-eq</code>, <code>-ne</code>, ...),
     and others (<code>-n</code>, <code>-z</code>, <code>-f</code>, ...).
     It is also possible to use regular expressions, </p>
