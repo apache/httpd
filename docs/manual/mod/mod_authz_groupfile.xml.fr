@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1554175:1587032 (outdated) -->
+<!-- English Revision : 1587032 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -49,7 +49,7 @@ fonction de leur appartenance &agrave; un groupe sp&eacute;cifi&eacute;. Le modu
     les types d'autorisation <code>group</code> et <code>file-group</code>.
     </p>
 
-    <p>A partir de la version 2.5.0, les directives require groupfile
+    <p>A partir de la version 2.4.8, les directives require groupfile
     supportent les <a href="../expr.html">expressions</a>.</p>
 
 <section id="reqgroup"><title>Require group</title>

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1554170:1587032 (outdated) -->
+<!-- English Revision : 1587032 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -48,7 +48,7 @@
     est bien autoris&eacute; &agrave; acc&eacute;der &agrave; une ressource.  mod_authz_dbm ajoute
     les types d'autorisation <code>dbm-group</code> et <code>dbm-file-group</code>.</p>
 
-    <p>A partir de la version 2.5.0, les directives require DBM
+    <p>A partir de la version 2.4.8, les directives require DBM
     supportent les <a href="../expr.html">expressions</a>.</p>
 
 <section id="reqgroup"><title>Require dbm-group</title>
