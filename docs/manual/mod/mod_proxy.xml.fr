@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1586471:1588213 (outdated) -->
+<!-- English Revision: 1588213 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -506,6 +506,10 @@ ProxyPass /examples http://backend.example.com/examples timeout=10
     module="mod_proxy">ProxyVia</directive> directives, qui permettent
     de contr&ocirc;ler d'autres en-t&ecirc;tes de requ&ecirc;te.</p>
 
+    <p>Note : Si vous devez ajouter des en-t&ecirc;tes particuliers &agrave; la
+    requ&ecirc;te mandat&eacute;e, utilisez la directive  <directive
+    module="mod_headers">RequestHeader</directive>.</p>
+
    </section> <!--/x-headers -->
 
 
@@ -613,7 +617,7 @@ mandat&eacute;es correspondant &agrave; une expression rationnelle</description>
     les URLs auxquelles elle s'applique en utilisant une <glossary
     ref="regex">expression rationnelle</glossary>.</p>
 
-    <p>A partir de la version 2.5.0, les groupes nomm&eacute;s et les
+    <p>A partir de la version 2.4.8, les groupes nomm&eacute;s et les
     r&eacute;f&eacute;rences arri&egrave;res sont extraits et enregistr&eacute;s dans
     l'environnement avec leur nom en majuscules et pr&eacute;fix&eacute; par "MATCH_". Ceci permet
     de r&eacute;f&eacute;rencer des URLs dans des <a href="../expr.html">expressions</a>
@@ -803,7 +807,7 @@ serveur principal</description>
     <syntax>ProxyPassInherit On|Off</syntax>
     <default>ProxyPassInherit On</default>
     <contextlist><context>server config</context><context>virtual host</context></contextlist>
-    <compatibility>Disponible &agrave; partir de la version 2.5.0 du serveur
+    <compatibility>Disponible &agrave; partir de la version 2.4.5 du serveur
 HTTP Apache.</compatibility>
     <usage>
         <p>Cette directive permet &agrave; un serveur virtuel d'h&eacute;riter des
