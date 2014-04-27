@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1585829 -->
+<!-- English Revision : 1590310 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -2100,7 +2100,7 @@ host</context>
     <p>serait satisfaite pour les requ&ecirc;tes HTTP/1.0 sans en-t&ecirc;te
     <var>Host:</var>. Les expressions peuvent contenir diff&eacute;rents
     op&eacute;rateurs de type shell pour la comparaison de cha&icirc;nes
-    (<code>=</code>, <code>!=</code>, <code>&lt;</code>, ...), la
+    (<code>==</code>, <code>!=</code>, <code>&lt;</code>, ...), la
     comparaison d'entiers (<code>-eq</code>, <code>-ne</code>, ...), ou
     &agrave; usages divers (<code>-n</code>, <code>-z</code>, <code>-f</code>,
     ...). Les expressions rationnelles sont aussi support&eacute;es,</p>
