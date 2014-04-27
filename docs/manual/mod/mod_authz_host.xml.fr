@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1555545:1587031 (outdated) -->
+<!-- English Revision : 1587031 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -74,8 +74,8 @@ contr&ocirc;le d'acc&egrave;s</a></seealso>
     l'acc&egrave;s en fonction du nom d'h&ocirc;te, de l'adresse IP, ou d'un intervalle
     d'adresses IP.</p>
 
-    <p>Depuis la version 2.5.0, les directives require host supportent
-    les <a href="../expr.html">expressions</a>.</p>
+    <p>A partir de la version 2.4.8, les directives require host
+    supportent les <a href="../expr.html">expressions</a>.</p>
 
 <section id="reqip"><title>Require ip</title>
 
@@ -130,8 +130,8 @@ Require ip 2001:db8::a00:20ff:fea7:ccea
 Require ip 2001:db8::a00:20ff:fea7:ccea/10
     </highlight>
 
-    <p>Note : comme les adresses IP sont lues au d&eacute;marrage, les
-    expressions ne sont pas &eacute;valu&eacute;es pour chaque requ&ecirc;te.</p>
+    <p>Note: comme les adresses IP sont lues au d&eacute;marrage, les
+    expressions ne sont pas &eacute;valu&eacute;es au moment de la requ&ecirc;te.</p>
 
 </section>
 
@@ -166,6 +166,7 @@ Require host .net example.edu
 </section>
 
 <section id="reqlocal"><title>Require local</title>
+
     <p>Le fournisseur <code>local</code> autorise l'acc&egrave;s au serveur si
     l'une au moins de ces conditions est satisfaite :</p>
 
