@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_proxy_fcgi: Don't segfault when failing to connect to the backend.
+     [Jeff Trawick]
+
   *) Add the ldap-search option to mod_authnz_ldap, allowing authorization
      to be based on arbitrary expressions that do not include the username.
      [Graham Leggett]
