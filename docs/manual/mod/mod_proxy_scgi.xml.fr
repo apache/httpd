@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1484766 -->
+<!-- English Revision : 1589417 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -113,10 +113,12 @@ ProxyPass /scgi-bin/ balancer://somecluster/
 <usage>
     <p>La directive <directive>ProxySCGISendfile</directive> permet au
     serveur cible SCGI de faire servir les fichiers directement par la
-    passerelle. Ceci s'av&egrave;re b&eacute;n&eacute;fique en mati&egrave;re de performances --
+    passerelle. Ceci s'av&egrave;re b&eacute;n&eacute;fique en
+    mati&egrave;re de performances &mdash;
     httpd peut alors utiliser <code>sendfile</code> ou d'autres
     optimisations, ce qui n'est pas possible si les fichiers passent par
-    la socket du serveur cible.</p>
+    la socket du serveur cible. En outre, les fichiers ne sont transmis
+    qu'une seule fois.</p>
     <p>L'argument de la directive
     <directive>ProxySCGISendfile</directive> d&eacute;termine le comportement
     de la passerelle :</p>
@@ -133,8 +135,9 @@ ProxyPass /scgi-bin/ balancer://somecluster/
 
     <dt>toute autre valeur</dt>
     <dd>Identique &agrave; <code>On</code>, mais au lieu de rechercher le nom
-    d'en-t&ecirc;te cod&eacute; en dur, c'est la valeur de l'argument qui constitue
-    le nom de l'en-t&ecirc;te &agrave; rechercher.</dd>
+    d'en-t&ecirc;te cod&eacute; en dur <code>X-Sendfile</code>, c'est la
+    valeur de l'argument qui constitue le nom de l'en-t&ecirc;te
+    &agrave; rechercher.</dd>
     </dl>
 
     <example><title>Exemple</title>
@@ -166,7 +169,7 @@ provenance du serveur cible.</description>
     l'&eacute;tat de la r&eacute;ponse est <code>OK</code> (<code>200</code>), et si
     la r&eacute;ponse contient un en-t&ecirc;te <code>Location</code> dont la valeur
     d&eacute;bute par un slash (<code>/</code>). Cette valeur est interpr&eacute;t&eacute;e
-    comme une nouvelle URL locale vers laquelle Apache effectue sa
+    comme une nouvelle URL locale vers laquelle Apache httpd effectue sa
     redirection.</p>
 
     <p>De ce point de vue, <module>mod_proxy_scgi</module> fait la m&ecirc;me

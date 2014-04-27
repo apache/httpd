@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1544385-->
+<!-- English Revision : 1587098 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -541,7 +541,7 @@ LDAP.</description>
 <override>AuthConfig</override>
 
 <usage>
-    <p>Si elle est activ&eacute;e par la directive <code>LDAPReferrals</code>,
+    <p>Si elle est activ&eacute;e par la directive <directive>LDAPReferrals</directive>,
     cette directive permet de d&eacute;finir le nombre maximum de sauts vers
     des serveurs alternatifs (referrals) avant l'abandon de la requ&ecirc;te
     LDAP.</p>
@@ -560,6 +560,8 @@ cours des requ&ecirc;tes vers le serveur LDAP.</description>
 <default>LDAPReferrals On</default>
 <contextlist><context>directory</context><context>.htaccess</context></contextlist>
 <override>AuthConfig</override>
+<compatibility>Le param&egrave;tre <var>default</var> est disponible depuis la
+version 2.4.7 du serveur HTTP Apache.</compatibility>
 
 <usage>
     <p>Certains serveurs LDAP partagent leur annuaire en plusieurs
@@ -589,7 +591,7 @@ cours des requ&ecirc;tes vers le serveur LDAP.</description>
      "hop limit" du SDK, et aucun "LDAP rebind callback" n'est enregistr&eacute;.</p></dd>
     </dl>
     
-    <p>La directive <code>LDAPReferralHopLimit</code> travaille en
+    <p>La directive <directive>LDAPReferralHopLimit</directive> travaille en
     conjonction avec cette directive pour limiter le nombre de
     redirections &agrave; suivre pour achever le traitement de la requ&ecirc;te LDAP.
     Lorsque le processus de redirection est activ&eacute; par la valeur "On",
