@@ -42,9 +42,9 @@
        <directive module="mod_ssl">SSLSessionCache</directive>), provide
        the list of servers as the optional "arg" parameter.</p>
 
-     <example>
-         SSLSessionCache memcache:memcache.example.com:12345,memcache2.example.com:123455
-     </example>
+     <highlight language="config">
+         SSLSessionCache memcache:memcache.example.com:12345,memcache2.example.com:12345
+     </highlight>
       
     <p>Details of other shared object cache providers can be found
     <a href="../socache.html">here</a>.
