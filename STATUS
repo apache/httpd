@@ -216,6 +216,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://people.apache.org/~kbrand/mod_ssl-2.4.x-pphrase-certkeyfile-compat.diff
      +1: kbrand
 
+   * mod_proxy_fcgi: Don't crash when connect to the backend fails.
+     trunk patch: r1590437
+     2.4.x patch: trunk patch works other than CHANGES
+     +1: trawick
+
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
