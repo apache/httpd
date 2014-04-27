@@ -1198,7 +1198,7 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
             }
 
             if (APR_BUCKET_IS_FLUSH(bkt)) {
-                apr_bucket *tmp_heap;
+                apr_bucket *tmp_b;
                 zRC = inflate(&(ctx->stream), Z_SYNC_FLUSH);
                 if (zRC != Z_OK) {
                     inflateEnd(&ctx->stream);
@@ -1212,16 +1212,18 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
                 len = c->bufferSize - ctx->stream.avail_out;
 
                 ctx->crc = crc32(ctx->crc, (const Bytef *)ctx->buffer, len);
-                tmp_heap = apr_bucket_heap_create((char *)ctx->buffer, len,
-                                                 NULL, f->c->bucket_alloc);
-                APR_BRIGADE_INSERT_TAIL(ctx->proc_bb, tmp_heap);
+                tmp_b = apr_bucket_heap_create((char *)ctx->buffer, len,
+                                                NULL, f->c->bucket_alloc);
+                APR_BRIGADE_INSERT_TAIL(ctx->proc_bb, tmp_b);
                 ctx->stream.avail_out = c->bufferSize;
 
                 /* Flush everything so far in the returning brigade, but continue
                  * reading should EOS/more follow (don't lose them).
                  */
+                tmp_b = APR_BUCKET_PREV(bkt);
                 APR_BUCKET_REMOVE(bkt);
                 APR_BRIGADE_INSERT_TAIL(ctx->proc_bb, bkt);
+                bkt = tmp_b;
                 continue;
             }
 
