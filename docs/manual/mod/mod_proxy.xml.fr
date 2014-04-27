@@ -839,7 +839,7 @@ charge</description>
 </contextlist>
 <compatibility>Disponible depuis la version 2.2 du serveur HTTP Apache.</compatibility>
 <usage>
-    <p>Cette directive parmet d'ajouter un membre &agrave; un groupe de
+    <p>Cette directive permet d'ajouter un membre &agrave; un groupe de
     r&eacute;partition de charge. Elle peut se trouver dans un conteneur
     <code>&lt;Proxy <var>balancer://</var>...&gt;</code>, et accepte
     tous les param&egrave;tres de paires cl&eacute;/valeur que supporte la directive
