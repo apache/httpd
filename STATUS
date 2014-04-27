@@ -180,6 +180,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                                                   2.5-dev <compatibility> ref)
      2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic
+     kbrand: can you fold the trunk patches into a single diff for 2.4.x
+             and put it online under people.apache.org/~ylavic, please?
 
    * mod_expires: don't add Expires header to error responses (4xx/5xx),
                   be they generated or forwarded. PR 55669.
@@ -202,6 +204,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * mod_ssl: make SSL stapling init more robust for certs w/o responder URI
      trunk patch: https://svn.apache.org/r1588853
      2.4.x patch: trunk patch works (w/o docs/log-message-tags/next-number)
+     +1: kbrand
+
+   * mod_ssl: restore argument structure for exec-type SSLPassPhraseDialog
+     programs, and implement a special merging algorithm for
+     SSLCertificate[Key]File to emulate the behavior in versions <= 2.4.7
+     trunk patch: not sensible for trunk (unneeded backwards compatibility)
+     2.4.x patch: https://people.apache.org/~kbrand/mod_ssl-2.4.x-pphrase-certkeyfile-compat.diff
      +1: kbrand
 
 OTHER PROPOSALS
