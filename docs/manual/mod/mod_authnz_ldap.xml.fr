@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1587325 -->
+<!-- English Revision : 1589993 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -90,6 +90,7 @@ HTTP de base.</description>
           <li><a href="#reqdn">Require ldap-dn</a></li>
           <li><a href="#reqattribute">Require ldap-attribute</a></li>
           <li><a href="#reqfilter">Require ldap-filter</a></li>
+	  <li><a href="#reqsearch">Require ldap-search</a></li>
         </ul>
       </li>
 
@@ -244,6 +245,12 @@ HTTP de base.</description>
       est accord&eacute;e si le filtre de recherche renvoie un objet
       utilisateur unique qui corresponde au DN de l'utilisateur
       authentifi&eacute;.</li>
+
+      <li>Avec la directive <a href="#reqsearch">
+      <code>Require ldap-search</code></a>, l'autorisation d'acc&egrave;s
+      est accord&eacute;e si le filtre de recherche renvoie avec succ&egrave;s
+      un seul objet correspondant aux crit&egrave;res avec tout nom distinctif
+      (DN).</li>
 
       <li>dans tous les autres cas, refus ou restriction de
       l'acc&egrave;s.</li>
@@ -550,6 +557,43 @@ AuthLDAPMaxSubGroupDepth 1
     rapide que l'op&eacute;ration de recherche effectu&eacute;e par
     <code>ldap-filter</code>, en particulier dans le cas d'un annuaire
     LDAP de grande taille.</p>
+
+    <p>Lorsqu'on utilise une <a href="../expr.html">expression
+    rationnelle</a> au sein d'un filtre, il faut bien s'assurer que les
+    filtres LDAP sont correctement &eacute;chapp&eacute;s afin de se pr&eacute;munir contre
+    toute injection LDAP. A cet effet, il est possible d'utiliser la
+    fonction ldap.</p>
+
+<highlight language="config">
+&lt;LocationMatch ^/dav/(?<SITENAME>[^/]+)/&gt;
+  Require ldap-filter (memberOf=cn=%{ldap:%{unescape:%{env:MATCH_SITENAME}},ou=Websites,o=Example)
+&lt;/LocationMatch&gt;
+</highlight>
+
+</section>
+
+<section id="reqsearch"><title>Require ldap-search</title>
+
+    <p>La directive <code>Require ldap-search</code> permet &agrave;
+    l'administrateur d'autoriser l'acc&egrave;s en fonction d'un filtre de
+    recherche LDAP g&eacute;n&eacute;rique contenant une <a
+    href="../expr.html">expression rationnelle</a>. Si le filtre de
+    recherche renvoie une et une seule correspondance, l'acc&egrave;s est
+    accord&eacute; sans tenir compte du DN.</p>
+
+    <p>La directive suivante accorderait l'acc&egrave;s aux URLs correspondant
+    aux objets sp&eacute;cifi&eacute;s dans le serveur LDAP :</p>
+
+<highlight language="config">
+&lt;LocationMatch ^/dav/(?<SITENAME>[^/]+)/&gt;
+Require ldap-search (cn=%{ldap:%{unescape:%{env:MATCH_SITENAME}} Website)
+&lt;/LocationMatch&gt;
+</highlight>
+
+    <p>Note : il faut bien s'assurer que les
+    expressions sont correctement &eacute;chapp&eacute;s afin de se pr&eacute;munir contre
+    toute injection LDAP. A cet effet, il est possible d'utiliser la
+    fonction <strong>ldap</strong> comme dans l'exemple ci-dessus.</p>
 
 </section>
 

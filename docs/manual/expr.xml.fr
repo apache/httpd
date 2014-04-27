@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision : 1575406 -->
+<!-- English Revision : 1589993 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -62,6 +62,7 @@
 <seealso><a href="mod/mod_authnz_ldap.html#reqdn">Require ldap-dn</a></seealso>
 <seealso><a href="mod/mod_authnz_ldap.html#reqattribute">Require ldap-attribute</a></seealso>
 <seealso><a href="mod/mod_authnz_ldap.html#reqfilter">Require ldap-filter</a></seealso>
+<seealso><a href="mod/mod_authnz_ldap.html#reqsearch">Require ldap-search</a></seealso>
 <seealso><a href="mod/mod_authz_dbd.html#reqgroup">Require dbd-group</a></seealso>
 <seealso><a href="mod/mod_authz_dbm.html#reqgroup">Require dbm-group</a></seealso>
 <seealso><a href="mod/mod_authz_groupfile.html#reqgroup">Require group</a></seealso>
@@ -535,7 +536,12 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
         <td>Lit le contenu d'un fichier</td><td>oui</td></tr>
     <tr><td><code>filesize</code></td>
         <td>Renvoie la taille d'un fichier (ou 0 si le fichier n'existe
-	pas ou ne correspond pas &agrave; un fichier r&eacute;gulier)</td><td>oui</td></tr>
+	pas ou ne correspond pas &agrave; un fichier
+	r&eacute;gulier)</td><td>oui</td></tr>
+    <tr><td><code>ldap</code></td>
+        <td>Echappe les caract&egrave;res selon la RFC4514 (Echappement des
+	noms distinctifs LDAP - DN) et la RFC4515 (Echappement des
+	filtres LDAP).</td><td></td></tr>
 
     </table>
 
