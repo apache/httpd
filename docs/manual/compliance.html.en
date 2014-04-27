@@ -182,7 +182,7 @@
     
     <p>There are a number of ways of determining the length of a response
     body, described in full in
-    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec4.4">
+    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.4">
     RFC2616 section 4.4 Message Length</a>.</p>
     
     <p>When the <code>Content-Length</code> header is present, the size of
@@ -229,7 +229,7 @@
 
     <p>The media type of the body is placed in the <code>Content-Type</code>
     header, and the format of the header is described in full in
-    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec3.7">
+    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.7">
     RFC2616 section 3.7 Media Types</a>.</p>
     
     <p>A syntactically valid content type might look as follows:</p>
@@ -266,7 +266,7 @@
     
     <p>There are a number of ways of determining the length of a response
     body, described in full in
-    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec4.4">
+    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.4">
     RFC2616 section 4.4 Message Length</a>.</p>
     
     <p>When the <code>Content-Length</code> header is present, the size of
@@ -330,7 +330,7 @@
 
     <p>Full details of how a freshness lifetime is calculated is described in
     full in
-    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec13.2">
+    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html#sec13.2">
     RFC2616 section 13.2 Expiration Model</a>.</p>
 
     <p>During the freshness lifetime, a cache does not need to contact the
