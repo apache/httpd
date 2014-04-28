@@ -1,0 +1,22 @@
+<IfModule spdy_module>
+    # Turn on mod_spdy. To completely disable mod_spdy, you can set
+    # this to "off".
+    SpdyEnabled on
+
+    # In order to support concurrent multiplexing of requests over a
+    # single connection, mod_spdy maintains its own thread pool in
+    # each Apache child process for processing requests.  The default
+    # size of this thread pool is very conservative; you can override
+    # it with a larger value (as below) to increase concurrency, at
+    # the possible cost of increased memory usage.
+    #
+    #SpdyMaxThreadsPerProcess 30
+
+    # Memory usage can also be affected by the maximum number of
+    # simultaneously open SPDY streams permitted for each client
+    # connection.  Ideally, this limit should be set as high as
+    # possible, but you can tweak it as necessary to limit memory
+    # consumption.
+    #
+    #SpdyMaxStreamsPerConnection 100
+</IfModule>

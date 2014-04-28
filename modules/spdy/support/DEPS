@@ -1,0 +1,142 @@
+# Copyright 2010 Google Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+vars = {
+  "chromium_trunk": "http://src.chromium.org/svn/trunk",
+  "chromium_revision": "@228939",
+  "chromium_deps_root": "src/third_party/chromium_deps",
+  "apr_src": "http://svn.apache.org/repos/asf/apr/apr/tags/1.4.2",
+  "apr_revision": "@head",
+  "aprutil_src": "http://svn.apache.org/repos/asf/apr/apr-util/tags/1.3.9",
+  "aprutil_revision": "@head",
+  "apache_httpd_src": "http://svn.apache.org/repos/asf/httpd/httpd/tags/2.2.15",
+  "apache_httpd_revision": "@head",
+  "mod_pagespeed_root": "http://modpagespeed.googlecode.com/svn/tags/0.10.19.5",
+  "mod_pagespeed_revision": "@head",
+}
+
+deps = {
+  # Fetch chromium DEPS so we can sync our other dependencies relative
+  # to it.
+  Var("chromium_deps_root"):
+    File(Var("chromium_trunk") + "/src/DEPS" + Var("chromium_revision")),
+
+  "src/net/instaweb/util":
+    Var("mod_pagespeed_root") + "/src/net/instaweb/util" +
+    Var("mod_pagespeed_revision"),
+
+  "src/testing":
+    Var("chromium_trunk") + "/src/testing" + Var("chromium_revision"),
+
+  "src/third_party/chromium/src/build":
+    Var("chromium_trunk") + "/src/build" + Var("chromium_revision"),
+
+  "src/third_party/chromium/src/base":
+    Var("chromium_trunk") + "/src/base" + Var("chromium_revision"),
+
+  "src/third_party/chromium/src/chrome/tools/build":
+    Var("chromium_trunk") + "/src/chrome/tools/build" +
+    Var("chromium_revision"),
+
+  "src/third_party/chromium/src/net/base":
+    Var("chromium_trunk") + "/src/net/base" + Var("chromium_revision"),
+
+  "src/third_party/chromium/src/net/socket":
+    Var("chromium_trunk") + "/src/net/socket" + Var("chromium_revision"),
+
+  "src/third_party/chromium/src/net/spdy":
+    Var("chromium_trunk") + "/src/net/spdy" + Var("chromium_revision"),
+
+  "src/third_party/chromium/src/net/tools/flip_server":
+    Var("chromium_trunk") + "/src/net/tools/flip_server" +
+    Var("chromium_revision"),
+
+  "src/build/linux":
+    Var("chromium_trunk") + "/src/build/linux" + Var("chromium_revision"),
+  "src/build/mac":
+    Var("chromium_trunk") + "/src/build/mac" + Var("chromium_revision"),
+  "src/build/win":
+    Var("chromium_trunk") + "/src/build/win" + Var("chromium_revision"),
+  "src/build/internal":
+    Var("chromium_trunk") + "/src/build/internal" + Var("chromium_revision"),
+
+  # lastchange.py changed its behavior at some point in a way that it
+  # stopped working for us. Thus we continue to sync just that file at
+  # a known good revision. We do not sync all of src/build/util so as
+  # to make sure that we don't accidentally depend on something else
+  # at that old revision.
+  "src/build/util":
+    File(Var("chromium_trunk") + "/src/build/util/lastchange.py" + "@90205"),
+
+  "src/third_party/apache/apr/src":
+    Var("apr_src") + Var("apr_revision"),
+
+  "src/third_party/apache/aprutil/src":
+    Var("aprutil_src") + Var("aprutil_revision"),
+
+  "src/third_party/apache/httpd/src/include":
+    Var("apache_httpd_src") + "/include" + Var("apache_httpd_revision"),
+
+  "src/third_party/apache/httpd/src/os":
+    Var("apache_httpd_src") + "/os" + Var("apache_httpd_revision"),
+
+  "src/third_party/modp_b64":
+    Var("chromium_trunk") + "/src/third_party/modp_b64" +
+      Var("chromium_revision"),
+
+  "src/third_party/protobuf":
+    (Var("chromium_trunk") + "/src/third_party/protobuf" +
+     Var("chromium_revision")),
+
+  "src/third_party/zlib":
+    Var("chromium_trunk") + "/src/third_party/zlib" + Var("chromium_revision"),
+
+  "src/testing/gmock": From(Var("chromium_deps_root")),
+  "src/testing/gtest": From(Var("chromium_deps_root")),
+  "src/tools/gyp": From(Var("chromium_deps_root")),
+}
+
+
+deps_os = {
+  "win": {
+    "src/third_party/cygwin": From(Var("chromium_deps_root")),
+    "src/third_party/python_26": From(Var("chromium_deps_root")),
+  },
+  "mac": {
+  },
+  "unix": {
+  },
+}
+
+
+include_rules = [
+  # Everybody can use some things.
+  "+base",
+  "+build",
+]
+
+
+# checkdeps.py shouldn't check include paths for files in these dirs:
+skip_child_includes = [
+   "testing",
+]
+
+
+hooks = [
+  {
+    # A change to a .gyp, .gypi, or to GYP itself should run the generator.
+    "pattern": ".",
+    "action": ["python", "src/build/gyp_chromium"],
+  },
+]

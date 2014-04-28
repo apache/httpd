@@ -1,0 +1,20 @@
+# Copyright (c) 2009 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+#
+# This file provides common configuration information for building
+# mod-spdy packages for various platforms.
+
+# Base name of the package.
+PACKAGE="mod-spdy"
+
+# Brief package description.
+SHORTDESC="Apache 2 module to enable SPDY support."
+
+# Detailed package description.
+FULLDESC="mod_spdy is an Apache module that allows an Apache server to support the SPDY protocol for serving HTTP resources."
+
+# Package maintainer information.
+MAINTNAME="mod_spdy developers"
+MAINTMAIL="mod-spdy-dev@googlegroups.com"
+PRODUCTURL="http://code.google.com/p/mod-spdy/"
