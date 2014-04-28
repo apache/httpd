@@ -330,7 +330,7 @@ to all requests regardless of the specific URL.</p>
 
 <h3><a name="nesting" id="nesting">Nesting of sections</a></h3>
 
-<p>Some section types can be nested inside other section types. One the one
+<p>Some section types can be nested inside other section types. On the one
 hand, <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code> can be used
 inside <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>.  On
 the other hand, <code class="directive"><a href="./mod/core.html#if">&lt;If&gt;</a></code> can

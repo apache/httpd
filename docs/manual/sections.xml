@@ -375,7 +375,7 @@ to all requests regardless of the specific URL.</p>
 
 <section id="nesting"><title>Nesting of sections</title>
 
-<p>Some section types can be nested inside other section types. One the one
+<p>Some section types can be nested inside other section types. On the one
 hand, <directive type="section" module="core">Files</directive> can be used
 inside <directive type="section" module="core">Directory</directive>.  On
 the other hand, <directive type="section" module="core">If</directive> can
