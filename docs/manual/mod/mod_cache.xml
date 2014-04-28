@@ -101,7 +101,7 @@
     HTTP header with a 111 response code.</p>
 
     <p><module>mod_cache</module> requires the services of one or more
-    storage management modules. One storage management module is included in
+    storage management modules. The following storage management modules are included in
     the base Apache distribution:</p>
     <dl>
     <dt><module>mod_cache_disk</module></dt>
