@@ -107,8 +107,8 @@ after a crash</description>
 <name>GracefulShutdownTimeout</name>
 <description>Specify a timeout after which a gracefully shutdown server
 will exit.</description>
-<syntax>GracefulShutDownTimeout <var>seconds</var></syntax>
-<default>GracefulShutDownTimeout 0</default>
+<syntax>GracefulShutdownTimeout <var>seconds</var></syntax>
+<default>GracefulShutdownTimeout 0</default>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>prefork</module><module>worker</module>
 <module>event</module></modulelist>
