@@ -1,0 +1,41 @@
+#!/bin/sh
+
+case "$1" in
+    remove)
+        test -e /etc/apache2/mods-enabled/spdy.load && a2dismod spdy
+    ;;
+    upgrade|deconfigure|failed-upgrade)
+    ;;
+    *)
+        echo "prerm called with unknown argument \`$1'" >&2
+        exit 1
+    ;;
+esac
+
+set -e  # If any command fails from here on, the whole scripts fails.
+
+# Regardless of the argument prerm is called with, we should undo our changes
+# to ssl.load.  If we're upgrading to a newer version of mod_spdy, the new
+# package will redo its changes to ssl.load in its postinst script.  See
+# http://www.debian.org/doc/debian-policy/ch-maintainerscripts.html#s-unpackphase
+# for details.
+if [ -f "@@APACHE_CONFDIR@@/ssl.load" ]; then
+  # Don't do anything if we don't see the magic "MOD_SPDY" marker; this helps
+  # ensure that this prerm script is idempotent.  See
+  # http://www.debian.org/doc/debian-policy/ch-maintainerscripts.html#s-idempotency
+  # for why this is important.
+  if grep -q 'MOD_SPDY' @@APACHE_CONFDIR@@/ssl.load; then
+    # First, we uncomment any line that starts with "#ORIG# " (we use that
+    # particular prefix, to reduce the chances that we break the file if the
+    # user has added their own comments to the file for some reason), up until
+    # we see the "MOD_SPDY" marker.  Second, we delete the line containing the
+    # "MOD_SPDY" marker and all lines thereafter, thus removing the stuff we
+    # appended to the file in the postinst script.
+    sed --in-place \
+      -e '1,/MOD_SPDY/ s/^#ORIG# \(.*\)$/\1/' \
+      -e '/MOD_SPDY/,$ d' \
+      @@APACHE_CONFDIR@@/ssl.load
+  fi
+fi
+
+exit 0

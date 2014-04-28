@@ -1,0 +1,15 @@
+# This version of ssl.load was placed here because you installed mod_spdy.
+
+# Using mod_spdy requires using a patched version of mod_ssl that provides
+# hooks into the Next Protocol Negotiation (NPN) data from the SSL handshake.
+# Thus, the mod_spdy package installs mod_ssl_with_npn.so, which is exactly
+# mod_ssl but with the following (small) patch applied:
+#   https://issues.apache.org/bugzilla/attachment.cgi?id=27969
+
+LoadModule ssl_module @@APACHE_MODULEDIR@@/mod_ssl_with_npn.so
+
+# If you'd like to go back to using the original, unpatched version of mod_ssl,
+# simply comment out the above line and uncomment the below line.  However,
+# beware that mod_spdy will probably then cease to function.
+
+#LoadModule ssl_module @@APACHE_MODULEDIR@@/mod_ssl.so

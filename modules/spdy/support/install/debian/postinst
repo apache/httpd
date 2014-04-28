@@ -1,0 +1,67 @@
+#!/bin/sh
+
+# Based on postinst from Chromium and Google Talk.
+
+@@include@@../common/apt.include
+
+MODSPDY_ENABLE_UPDATES=@@MODSPDY_ENABLE_UPDATES@@
+
+case "$1" in
+    configure)
+        if [ -n "${MODSPDY_ENABLE_UPDATES}" -a ! -e "$DEFAULTS_FILE" ]; then
+            echo 'repo_add_once="true"' > "$DEFAULTS_FILE"
+            echo 'repo_reenable_on_distupgrade="true"' >> "$DEFAULTS_FILE"
+        fi
+
+        # Run the cron job immediately to perform repository
+        # configuration.
+        nohup sh /etc/cron.daily/@@PACKAGE@@ > /dev/null 2>&1 &
+
+        test ! -e /etc/apache2/mods-enabled/spdy.load && \
+            a2enmod spdy
+    ;;
+    abort-upgrade|abort-remove|abort-deconfigure)
+    ;;
+    *)
+        echo "postinst called with unknown argument \`$1'" >&2
+        exit 1
+    ;;
+esac
+
+set -e  # If any command fails from here on, the whole scripts fails.
+
+# Regardless of what argument postinst is called with, we should make sure at
+# this point that we're set up to load our version of mod_ssl.  Note that if we
+# upgrade mod-spdy, the old package's prerm will first get called, which will
+# undo changes to ssl.load, and then we'll redo them here.  This is good, in
+# case we ever need to change the way we modify ssl.load.
+if [ -f "@@APACHE_CONFDIR@@/ssl.load" ]; then
+  # Don't do anything if the magic "MOD_SPDY" marker is already present in the
+  # file; this helps ensure that this prerm script is idempotent.  See
+  # http://www.debian.org/doc/debian-policy/ch-maintainerscripts.html#s-idempotency
+  # for why this is important.
+  if ! grep -q 'MOD_SPDY' @@APACHE_CONFDIR@@/ssl.load; then
+    # First, comment out all lines in the file, using a special prefix.  We
+    # will look for that prefix later when we uninstall.
+    sed --in-place 's/^.*$/#ORIG# &/' @@APACHE_CONFDIR@@/ssl.load
+    # Next, append a new LoadModule line to the file, with some explanitory
+    # comments.  The first line we append contains the magic marker "MOD_SPDY",
+    # which we look for in the prerm script so that we can remove the below
+    # text when we uninstall.
+    cat >> @@APACHE_CONFDIR@@/ssl.load <<EOF
+########## MOD_SPDY CHANGES BELOW ##########
+# If mod_spdy is uninstalled, this file will be restored to its original form
+# by deleting everything below here and uncommenting everything above.
+
+# Using mod_spdy requires using a patched version of mod_ssl that provides
+# hooks into the Next Protocol Negotiation (NPN) data from the SSL handshake.
+# Thus, the mod_spdy package installs mod_ssl_with_npn.so, which is exactly
+# mod_ssl but with the following (small) patch applied:
+#   https://issues.apache.org/bugzilla/attachment.cgi?id=27969
+
+LoadModule ssl_module @@APACHE_MODULEDIR@@/mod_ssl_with_npn.so
+EOF
+  fi
+fi
+
+exit 0
