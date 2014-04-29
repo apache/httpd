@@ -674,7 +674,7 @@ Alias /myapp /opt/myapp-1.2.3
         the value of the HTTP header
         ``<code>Proxy-Connection:</code>''.
         <p>If a HTTP header is used in a condition this header is added to
-        the Vary header of the response in case the condition evaluates to
+        the Vary header of the response in case the condition evaluates
         to true for the request. It is <strong>not</strong> added if the
         condition evaluates to false for the request. Adding the HTTP header
         to the Vary header of the response is needed for proper caching.</p>
