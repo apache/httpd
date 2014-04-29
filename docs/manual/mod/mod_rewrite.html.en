@@ -419,7 +419,7 @@ RewriteRule ^index\.html$  welcome.html
         the value of the HTTP header
         ``<code>Proxy-Connection:</code>''.
         <p>If a HTTP header is used in a condition this header is added to
-        the Vary header of the response in case the condition evaluates to
+        the Vary header of the response in case the condition evaluates
         to true for the request. It is <strong>not</strong> added if the
         condition evaluates to false for the request. Adding the HTTP header
         to the Vary header of the response is needed for proper caching.</p>
@@ -1121,7 +1121,7 @@ later</td></tr>
 
       <p>In <code class="directive"><a href="../mod/core.html#directory">Directory</a></code> and htaccess context,
       the <em>Pattern</em> will initially be matched against the  
-      <em>filesystem</em> path, after removing the prefix that lead the server
+      <em>filesystem</em> path, after removing the prefix that led the server
       to the current <code class="directive">RewriteRule</code> (e.g. "app1/index.html" 
       or "index.html" depending on where the directives are defined).</p>
        
