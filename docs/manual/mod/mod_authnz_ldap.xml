@@ -507,7 +507,7 @@ AuthLDAPMaxSubGroupDepth 1
     LDAP injection. The ldap function can be used for this purpose.</p>
 
 <highlight language="config">
-&lt;LocationMatch ^/dav/(?<SITENAME>[^/]+)/&gt;
+&lt;LocationMatch ^/dav/(?&lt;SITENAME&gt;[^/]+)/&gt;
   Require ldap-filter (memberOf=cn=%{ldap:%{unescape:%{env:MATCH_SITENAME}},ou=Websites,o=Example)
 &lt;/LocationMatch&gt;
 </highlight>
@@ -525,7 +525,7 @@ AuthLDAPMaxSubGroupDepth 1
     LDAP server:</p>
 
 <highlight language="config">
-&lt;LocationMatch ^/dav/(?<SITENAME>[^/]+)/&gt;
+&lt;LocationMatch ^/dav/(?&lt;SITENAME&gt;[^/]+)/&gt;
 Require ldap-search (cn=%{ldap:%{unescape:%{env:MATCH_SITENAME}} Website)
 &lt;/LocationMatch&gt;
 </highlight>
