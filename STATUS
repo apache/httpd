@@ -222,6 +222,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch works other than CHANGES
      +1: trawick
 
+   * mod_authnz_ldap: Support primitive LDAP servers do not accept
+     filters, such as "SDBM-backed LDAP" on z/OS, by allowing a special
+     filter "none" to be specified in AuthLDAPURL.
+     trunk patch: https://svn.apache.org/r1497371
+     2.4.x patch: trunk patch works other than CHANGES
+     +1: minfrin
+
+
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
