@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_authnz_ldap: Fail explicitly when the filter is too long. Remove
+     unnecessary apr_pstrdup() and strlen(). [Graham Leggett]
+
   *) mod_proxy_fcgi: Don't segfault when failing to connect to the backend.
      [Jeff Trawick]
 
