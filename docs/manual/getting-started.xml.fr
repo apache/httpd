@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision : 1537109 -->
+<!-- English Revision : 1591197 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -146,12 +146,12 @@ mot-clé suivi d'un ou plusieurs arguments qui définissent sa valeur.</p>
 ?</em>" dépend en général du niveau auquel cette directive doit être
 prise en compte. S'il s'agit du niveau global, elle doit être placée
 dans le fichier de configuration principal, et en dehors de toute
-section  <directive type="section">Directory</directive>, <directive
-type="section">Location</directive>, <directive
-type="section">VirtualHost</directive>, ou de toute autre section. Si
+section  <directive type="section" module="core">Directory</directive>, <directive
+type="section" module="core">Location</directive>, <directive
+type="section" module="core">VirtualHost</directive>, ou de toute autre section. Si
 par exemple elle ne doit s'appliquer qu'à un répertoire particulier,
 elle doit être placée dans la section <directive
-type="section">Directory</directive> qui fait référence à ce répertoire.
+type="section" module="core">Directory</directive> qui fait référence à ce répertoire.
 Voir la documentation sur les <a href="sections.html">Sections de
 configuration</a> pour plus de détails.</p>
 
