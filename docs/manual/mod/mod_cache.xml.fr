@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1564569:1561569 (outdated) -->
+<!-- English Revision : 1590566 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -115,7 +115,7 @@
 
     <p><module>mod_cache</module> requiert les services d'un ou
     plusieurs modules de gestion de stockage. La distribution Apache de base
-    inclut un module de gestion de stockage :</p>
+    inclut les modules de gestion de stockage suivants :</p>
     <dl>
     <dt><module>mod_cache_disk</module></dt>
 

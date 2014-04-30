@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision : 1555604 -->
+<!-- English Revision : 1591198-->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -146,12 +146,12 @@ mot-cl&eacute; suivi d'un ou plusieurs arguments qui d&eacute;finissent sa valeu
 ?</em>" d&eacute;pend en g&eacute;n&eacute;ral du niveau auquel cette directive doit &ecirc;tre
 prise en compte. S'il s'agit du niveau global, elle doit &ecirc;tre plac&eacute;e
 dans le fichier de configuration principal, et en dehors de toute
-section  <directive type="section">Directory</directive>, <directive
-type="section">Location</directive>, <directive
-type="section">VirtualHost</directive>, ou de toute autre section. Si
+section  <directive type="section" module="core">Directory</directive>, <directive
+type="section" module="core">Location</directive>, <directive
+type="section" module="core">VirtualHost</directive>, ou de toute autre section. Si
 par exemple elle ne doit s'appliquer qu'&agrave; un r&eacute;pertoire particulier,
 elle doit &ecirc;tre plac&eacute;e dans la section <directive
-type="section">Directory</directive> qui fait r&eacute;f&eacute;rence &agrave; ce r&eacute;pertoire.
+type="section" module="core">Directory</directive> qui fait r&eacute;f&eacute;rence &agrave; ce r&eacute;pertoire.
 Voir la documentation sur les <a href="sections.html">Sections de
 configuration</a> pour plus de d&eacute;tails.</p>
 
