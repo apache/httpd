@@ -235,6 +235,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1591320
                   http://svn.apache.org/r1591322
                   http://svn.apache.org/r1591390
+                  http://svn.apache.org/r1591394
      2.4.x patch: trunk patch works modulo CHANGES
      +1: ylavic
 
