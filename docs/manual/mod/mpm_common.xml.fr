@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1448589 -->
+<!-- English Revision : 1590654 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -124,8 +124,8 @@ gestionnaires d'exception apr&egrave;s un crash</description>
 <name>GracefulShutdownTimeout</name>
 <description>Sp&eacute;cifie le d&eacute;lai maximum apr&egrave;s lequel le serveur va
 s'arr&ecirc;ter dans le cas d'un arr&ecirc;t "en douceur"</description>
-<syntax>GracefulShutDownTimeout <var>secondes</var></syntax>
-<default>GracefulShutDownTimeout 0</default>
+<syntax>GracefulShutdownTimeout <var>seconds</var></syntax>
+<default>GracefulShutdownTimeout 0</default>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>prefork</module><module>worker</module>
 <module>event</module></modulelist>

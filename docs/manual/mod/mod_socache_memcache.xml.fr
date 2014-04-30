@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1425033 -->
+<!-- English Revision : 1590420 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -46,9 +46,9 @@
     fournir la liste des serveurs sous la forme du param&egrave;tre optionnel
     "arg".</p>
 
-     <example>
-         SSLSessionCache memcache:memcache.example.com:12345,memcache2.example.com:123455
-     </example>
+     <highlight language="config">
+         SSLSessionCache memcache:memcache.example.com:12345,memcache2.example.com:12345
+     </highlight>
 
     <p>Vous trouverez des d&eacute;tails &agrave; propos des autres fournisseurs de
     cache d'objets partag&eacute;s <a href="../socache.html">ici</a>.

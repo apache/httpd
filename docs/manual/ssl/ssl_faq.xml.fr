@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English revision : 1562488 -->
+<!-- English revision : 1591194 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -376,10 +376,11 @@ certification (CA) ?</title>
        <br />
        <code><strong>$ openssl genrsa -des3 -out server.key 2048</strong></code><br />
        <br />
-       Sauvegardez le fichier <code>host.key</code> et le mot de passe
+       Sauvegardez le fichier <code>server.key</code> et le mot de passe
        &eacute;ventuellement d&eacute;fini en lieu s&ucirc;r.
        Vous pouvez afficher les d&eacute;tails de cette cl&eacute; priv&eacute;e RSA &agrave; l'aide de la
        commande :<br />
+       <br />
        <code><strong>$ openssl rsa -noout -text -in server.key</strong></code><br />
        <br />
        Si n&eacute;cessaire, vous pouvez aussi cr&eacute;er une version PEM non chiffr&eacute;e
