@@ -331,7 +331,7 @@ typedef struct deflate_ctx_t
     z_stream stream;
     unsigned char *buffer;
     unsigned long crc;
-    apr_bucket_brigade *bb, *proc_bb, *kept_bb;
+    apr_bucket_brigade *bb, *proc_bb;
     int (*libz_end_func)(z_streamp);
     unsigned char *validation_buffer;
     apr_size_t validation_buffer_length;
@@ -1037,7 +1037,6 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
     int zRC;
     apr_status_t rv;
     deflate_filter_config *c;
-    apr_off_t plainbytes = 0;
 
     /* just get out of the way of things we don't want. */
     if (mode != AP_MODE_READBYTES) {
@@ -1162,32 +1161,27 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
     }
 
     if (APR_BRIGADE_EMPTY(ctx->proc_bb)) {
-        if (ctx->kept_bb && !APR_BRIGADE_EMPTY(ctx->kept_bb)) {
-            APR_BRIGADE_CONCAT(ctx->bb, ctx->kept_bb);
-        }
-        else {
-            rv = ap_get_brigade(f->next, ctx->bb, mode, block, readbytes);
+        rv = ap_get_brigade(f->next, ctx->bb, mode, block, readbytes);
 
-            /* Don't terminate on EAGAIN (or success with an empty brigade in
-             * non-blocking mode), just return focus.
-             */
-            if (block == APR_NONBLOCK_READ
-                    && (APR_STATUS_IS_EAGAIN(rv)
-                        || (rv == APR_SUCCESS
-                            && APR_BRIGADE_EMPTY(ctx->bb)))) {
-                return rv;
-            }
-            if (rv != APR_SUCCESS) {
-                inflateEnd(&ctx->stream);
-                return rv;
-            }
+        /* Don't terminate on EAGAIN (or success with an empty brigade in
+         * non-blocking mode), just return focus.
+         */
+        if (block == APR_NONBLOCK_READ
+                && (APR_STATUS_IS_EAGAIN(rv)
+                    || (rv == APR_SUCCESS && APR_BRIGADE_EMPTY(ctx->bb)))) {
+            return rv;
+        }
+        if (rv != APR_SUCCESS) {
+            inflateEnd(&ctx->stream);
+            return rv;
         }
 
-        while (!APR_BRIGADE_EMPTY(ctx->bb)) {
+        for (bkt = APR_BRIGADE_FIRST(ctx->bb);
+             bkt != APR_BRIGADE_SENTINEL(ctx->bb);
+             bkt = APR_BUCKET_NEXT(bkt))
+        {
             const char *data;
             apr_size_t len;
-
-            bkt = APR_BRIGADE_FIRST(ctx->bb);
 
             if (APR_BUCKET_IS_EOS(bkt)) {
                 if (!ctx->done) {
@@ -1204,7 +1198,7 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
             }
 
             if (APR_BUCKET_IS_FLUSH(bkt)) {
-                apr_bucket *tmp_heap;
+                apr_bucket *tmp_b;
                 zRC = inflate(&(ctx->stream), Z_SYNC_FLUSH);
                 if (zRC != Z_OK) {
                     inflateEnd(&ctx->stream);
@@ -1216,18 +1210,20 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
 
                 ctx->stream.next_out = ctx->buffer;
                 len = c->bufferSize - ctx->stream.avail_out;
- 
+
                 ctx->crc = crc32(ctx->crc, (const Bytef *)ctx->buffer, len);
-                tmp_heap = apr_bucket_heap_create((char *)ctx->buffer, len,
-                                                  NULL, f->c->bucket_alloc);
-                APR_BRIGADE_INSERT_TAIL(ctx->proc_bb, tmp_heap);
+                tmp_b = apr_bucket_heap_create((char *)ctx->buffer, len,
+                                                NULL, f->c->bucket_alloc);
+                APR_BRIGADE_INSERT_TAIL(ctx->proc_bb, tmp_b);
                 ctx->stream.avail_out = c->bufferSize;
 
                 /* Flush everything so far in the returning brigade, but continue
                  * reading should EOS/more follow (don't lose them).
                  */
+                tmp_b = APR_BUCKET_PREV(bkt);
                 APR_BUCKET_REMOVE(bkt);
                 APR_BRIGADE_INSERT_TAIL(ctx->proc_bb, bkt);
+                bkt = tmp_b;
                 continue;
             }
 
@@ -1241,7 +1237,6 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
             /* read */
             apr_bucket_read(bkt, &data, &len, APR_BLOCK_READ);
             if (!len) {
-                apr_bucket_delete(bkt);
                 continue;
             }
             if (len > INT_MAX) {
@@ -1255,7 +1250,6 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
                     ctx->zlib_flags = 0;
                 }
                 if (!len) {
-                    apr_bucket_delete(bkt);
                     continue;
                 }
             }
@@ -1266,74 +1260,37 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
 
             zRC = Z_OK;
 
-            while (!ctx->validation_buffer) {
-                apr_size_t newbytes = c->bufferSize - ctx->stream.avail_out;
+            if (!ctx->validation_buffer) {
+                while (ctx->stream.avail_in != 0) {
+                    if (ctx->stream.avail_out == 0) {
+                        apr_bucket *tmp_heap;
+                        ctx->stream.next_out = ctx->buffer;
+                        len = c->bufferSize - ctx->stream.avail_out;
 
-                if (ctx->stream.avail_out == 0
-                        || plainbytes + newbytes >= readbytes) {
-                    apr_bucket *tmp_heap;
+                        ctx->crc = crc32(ctx->crc, (const Bytef *)ctx->buffer, len);
+                        tmp_heap = apr_bucket_heap_create((char *)ctx->buffer, len,
+                                                          NULL, f->c->bucket_alloc);
+                        APR_BRIGADE_INSERT_TAIL(ctx->proc_bb, tmp_heap);
+                        ctx->stream.avail_out = c->bufferSize;
+                    }
 
-                    ctx->crc = crc32(ctx->crc, (const Bytef *)ctx->buffer,
-                                     newbytes);
-                    tmp_heap = apr_bucket_heap_create((char *)ctx->buffer,
-                                                      newbytes, NULL,
-                                                      f->c->bucket_alloc);
-                    APR_BRIGADE_INSERT_TAIL(ctx->proc_bb, tmp_heap);
+                    zRC = inflate(&ctx->stream, Z_NO_FLUSH);
 
-                    ctx->stream.next_out = ctx->buffer;
-                    ctx->stream.avail_out = c->bufferSize;
-
-                    plainbytes += newbytes;
-                    if (plainbytes >= readbytes) {
-                        /* Split and free up to what's already handled */
-                        if (ctx->stream.avail_in > 0) {
-                            apr_bucket_split(bkt, len - ctx->stream.avail_in);
-                        }
-                        ctx->kept_bb = apr_brigade_split_ex(ctx->bb,
-                                                        APR_BUCKET_NEXT(bkt),
-                                                        ctx->kept_bb);
-                        apr_brigade_cleanup(ctx->bb);
-
-                        /* Save input_brigade. (At least) in the SSL case
-                         * it contains transient buckets whose data would
-                         * get overwritten should the downstream filters
-                         * be called directly (this filter won't call
-                         * ap_get_brigade() unless ctx->bb is empty, but
-                         * be safe since we loose hand now).
-                         */
-                        ap_save_brigade(f, &ctx->bb, &ctx->kept_bb, r->pool);
-                        APR_BRIGADE_CONCAT(ctx->kept_bb, ctx->bb);
-
-                        /* We are done. */
+                    if (zRC == Z_STREAM_END) {
+                        ctx->validation_buffer = apr_pcalloc(r->pool,
+                                                             VALIDATION_SIZE);
+                        ctx->validation_buffer_length = 0;
                         break;
                     }
-                }
-                if (ctx->stream.avail_in == 0) {
-                    break;
-                }
 
-                zRC = inflate(&ctx->stream, Z_NO_FLUSH);
-
-                if (zRC == Z_STREAM_END) {
-                    ctx->validation_buffer = apr_pcalloc(r->pool,
-                                                         VALIDATION_SIZE);
-                    ctx->validation_buffer_length = 0;
-                    break;
+                    if (zRC != Z_OK) {
+                        inflateEnd(&ctx->stream);
+                        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01392)
+                                      "Zlib error %d inflating data (%s)", zRC,
+                                      ctx->stream.msg);
+                        return APR_EGENERAL;
+                    }
                 }
-
-                if (zRC != Z_OK) {
-                    inflateEnd(&ctx->stream);
-                    ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01392)
-                                  "Zlib error %d inflating data (%s)", zRC,
-                                  ctx->stream.msg);
-                    return APR_EGENERAL;
-                }
-            }
-            if (plainbytes >= readbytes) {
-                /* We were done in the inner loop above,
-                 * so we are for this one.
-                 */
-                break;
             }
 
             if (ctx->validation_buffer) {
@@ -1354,7 +1311,6 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
                     memcpy(buf + ctx->validation_buffer_length,
                            ctx->stream.next_in, avail);
                     ctx->validation_buffer_length += avail;
-                    apr_bucket_delete(bkt);
                     continue;
                 }
                 memcpy(buf + ctx->validation_buffer_length,
@@ -1407,9 +1363,8 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
                 }
             }
 
-            apr_bucket_delete(bkt);
         }
-
+        apr_brigade_cleanup(ctx->bb);
     }
 
     /* If we are about to return nothing for a 'blocking' read and we have
