@@ -36,22 +36,6 @@ static ap_filter_rec_t *cache_out_subreq_filter_handle;
 static ap_filter_rec_t *cache_remove_url_filter_handle;
 static ap_filter_rec_t *cache_invalidate_filter_handle;
 
-/**
- * Entity headers' names
- */
-static const char *MOD_CACHE_ENTITY_HEADERS[] = {
-    "Allow",
-    "Content-Encoding",
-    "Content-Language",
-    "Content-Length",
-    "Content-Location",
-    "Content-MD5",
-    "Content-Range",
-    "Content-Type",
-    "Last-Modified",
-    NULL
-};
-
 /*
  * CACHE handler
  * -------------
@@ -818,7 +802,7 @@ static apr_status_t cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
     apr_time_t exp, date, lastmod, now;
     apr_off_t size = -1;
     cache_info *info = NULL;
-    const char *reason, **eh;
+    const char *reason;
     apr_pool_t *p;
     apr_bucket *e;
     apr_table_t *headers;
@@ -1166,9 +1150,14 @@ static apr_status_t cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
      * inconsistencies between cached entity-bodies and updated headers.
      */
     if (r->status == HTTP_NOT_MODIFIED) {
-        for (eh = MOD_CACHE_ENTITY_HEADERS; *eh; ++eh) {
-            apr_table_unset(r->headers_out, *eh);
-        }
+        apr_table_unset(r->headers_out, "Allow");
+        apr_table_unset(r->headers_out, "Content-Encoding");
+        apr_table_unset(r->headers_out, "Content-Language");
+        apr_table_unset(r->headers_out, "Content-Length");
+        apr_table_unset(r->headers_out, "Content-MD5");
+        apr_table_unset(r->headers_out, "Content-Range");
+        apr_table_unset(r->headers_out, "Content-Type");
+        apr_table_unset(r->headers_out, "Last-Modified");
     }
 
     /* Hold the phone. Some servers might allow us to cache a 2xx, but
@@ -1452,14 +1441,10 @@ static apr_status_t cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
          * the cached headers.
          *
          * However, before doing that, we need to first merge in
-         * err_headers_out (note that store_headers() below already selects
-         * the cacheable only headers using ap_cache_cacheable_headers_out(),
-         * here we want to keep the original headers in r->headers_out and
-         * forward all of them to the client, including non-cacheable ones).
+         * err_headers_out and we also need to strip any hop-by-hop
+         * headers that might have snuck in.
          */
-        r->headers_out = apr_table_overlay(r->pool, r->headers_out,
-                                           r->err_headers_out);
-        apr_table_clear(r->err_headers_out);
+        r->headers_out = ap_cache_cacheable_headers_out(r);
 
         /* Merge in our cached headers.  However, keep any updated values. */
         /* take output, overlay on top of cached */
@@ -1508,13 +1493,6 @@ static apr_status_t cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
         status = ap_meets_conditions(r);
         if (status != OK) {
             r->status = status;
-
-            /* Strip the entity headers merged from the cached headers before
-             * updating the entry (see cache_accept_headers() above).
-             */
-            for (eh = MOD_CACHE_ENTITY_HEADERS; *eh; ++eh) {
-                apr_table_unset(r->headers_out, *eh);
-            }
 
             bkt = apr_bucket_flush_create(bb->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(bb, bkt);
