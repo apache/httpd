@@ -99,6 +99,11 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * core: Increase TCP_DEFER_ACCEPT socket option from 1 to 30 seconds. PR 41270.
+     trunk patch: http://svn.apache.org/r501364
+     2.2.x patch: trunk works
+     +1: ylavic, trawick, covener
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -129,11 +134,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=664333
      2.2.x patch: http://people.apache.org/~covener/patches/httpd-2.2.x-rewrite-sessioncookie.diff
      +1 covener
-
-   * core: Increase TCP_DEFER_ACCEPT socket option from 1 to 30 seconds. PR 41270.
-     trunk patch: http://svn.apache.org/r501364
-     2.2.x patch: trunk works
-     +1: ylavic, trawick
 
 PATCHES/ISSUES THAT ARE STALLED
 
