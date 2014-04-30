@@ -133,11 +133,11 @@ arguments that set its value.</p>
 directive?</em>" is generally answered by considering where you want a
 directive to be effective. If it is a global setting, it should appear
 in the configuration file, outside of any <directive
-type="section">Directory</directive>, <directive
-type="section">Location</directive>, <directive
-type="section">VirtualHost</directive>, or other section. If it is to
+type="section" module="core">Directory</directive>, <directive
+type="section" module="core">Location</directive>, <directive
+type="section" module="core">VirtualHost</directive>, or other section. If it is to
 apply only to a particular directory, then it should go inside a
-<directive type="section">Directory</directive> section referring to
+<directive type="section" module="core">Directory</directive> section referring to
 that directory, and so on. See the <a href="sections.html">Configuration
 Sections</a> document for further discussion of these sections.</p>
 
