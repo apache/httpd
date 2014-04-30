@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_proxy_fcgi: Support iobuffersize parameter.  [Jeff Trawick]
+
   *) mod_cache: Preserve non-cacheable headers forwarded from an origin 304
                 response. PR 55547. [Yann Ylavic]
 

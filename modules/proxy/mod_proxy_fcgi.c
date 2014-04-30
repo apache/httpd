@@ -397,7 +397,15 @@ static apr_status_t dispatch(proxy_conn_rec *conn, proxy_dir_conf *conf,
     unsigned char farray[AP_FCGI_HEADER_LEN];
     apr_pollfd_t pfd;
     int header_state = HDR_STATE_READING_HEADERS;
- 
+    char stack_iobuf[AP_IOBUFSIZE];
+    apr_size_t iobuf_size = AP_IOBUFSIZE;
+    char *iobuf = stack_iobuf;
+
+    if (conn->worker->s->io_buffer_size_set) {
+        iobuf_size = conn->worker->s->io_buffer_size;
+        iobuf = apr_palloc(r->pool, iobuf_size);
+    }
+
     pfd.desc_type = APR_POLL_SOCKET;
     pfd.desc.s = conn->sock;
     pfd.p = r->pool;
@@ -424,14 +432,13 @@ static apr_status_t dispatch(proxy_conn_rec *conn, proxy_dir_conf *conf,
         }
 
         if (pfd.rtnevents & APR_POLLOUT) {
-            char writebuf[AP_IOBUFSIZE];
-            apr_size_t writebuflen;
+            apr_size_t to_send, writebuflen;
             int last_stdin = 0;
-            int nvec = 0;
+            char *iobuf_cursor;
 
             rv = ap_get_brigade(r->input_filters, ib,
                                 AP_MODE_READBYTES, APR_BLOCK_READ,
-                                sizeof(writebuf));
+                                iobuf_size);
             if (rv != APR_SUCCESS) {
                 break;
             }
@@ -440,9 +447,9 @@ static apr_status_t dispatch(proxy_conn_rec *conn, proxy_dir_conf *conf,
                 last_stdin = 1;
             }
 
-            writebuflen = sizeof(writebuf);
+            writebuflen = iobuf_size;
 
-            rv = apr_brigade_flatten(ib, writebuf, &writebuflen);
+            rv = apr_brigade_flatten(ib, iobuf, &writebuflen);
 
             apr_brigade_cleanup(ib);
 
@@ -450,22 +457,35 @@ static apr_status_t dispatch(proxy_conn_rec *conn, proxy_dir_conf *conf,
                 break;
             }
 
-            ap_fcgi_fill_in_header(&header, AP_FCGI_STDIN, request_id,
-                                   (apr_uint16_t) writebuflen, 0);
-            ap_fcgi_header_to_array(&header, farray);
+            to_send = writebuflen;
+            iobuf_cursor = iobuf;
+            while (to_send > 0) {
+                int nvec = 0;
+                apr_size_t write_this_time;
 
-            vec[nvec].iov_base = (void *)farray;
-            vec[nvec].iov_len = sizeof(farray);
-            ++nvec;
-            if (writebuflen) {
-                vec[nvec].iov_base = writebuf;
-                vec[nvec].iov_len = writebuflen;
+                write_this_time =
+                    to_send < AP_FCGI_MAX_CONTENT_LEN ? to_send : AP_FCGI_MAX_CONTENT_LEN;
+
+                ap_fcgi_fill_in_header(&header, AP_FCGI_STDIN, request_id,
+                                       (apr_uint16_t)write_this_time, 0);
+                ap_fcgi_header_to_array(&header, farray);
+
+                vec[nvec].iov_base = (void *)farray;
+                vec[nvec].iov_len = sizeof(farray);
                 ++nvec;
-            }
+                if (writebuflen) {
+                    vec[nvec].iov_base = iobuf_cursor;
+                    vec[nvec].iov_len = write_this_time;
+                    ++nvec;
+                }
 
-            rv = send_data(conn, vec, nvec, &len, 0);
-            if (rv != APR_SUCCESS) {
-                break;
+                rv = send_data(conn, vec, nvec, &len, 0);
+                if (rv != APR_SUCCESS) {
+                    break;
+                }
+
+                to_send -= write_this_time;
+                iobuf_cursor += write_this_time;
             }
 
             if (last_stdin) {
@@ -485,7 +505,6 @@ static apr_status_t dispatch(proxy_conn_rec *conn, proxy_dir_conf *conf,
         }
 
         if (pfd.rtnevents & APR_POLLIN) {
-            char readbuf[AP_IOBUFSIZE];
             apr_size_t readbuflen;
             apr_uint16_t clen, rid;
             apr_bucket *b;
@@ -524,8 +543,8 @@ static apr_status_t dispatch(proxy_conn_rec *conn, proxy_dir_conf *conf,
             }
 
 recv_again:
-            if (clen > sizeof(readbuf)) {
-                readbuflen = sizeof(readbuf);
+            if (clen > iobuf_size) {
+                readbuflen = iobuf_size;
             } else {
                 readbuflen = clen;
             }
@@ -534,7 +553,7 @@ recv_again:
              * recv call, this will eventually change when we move to real
              * nonblocking recv calls. */
             if (readbuflen != 0) {
-                rv = get_data(conn, readbuf, &readbuflen);
+                rv = get_data(conn, iobuf, &readbuflen);
                 if (rv != APR_SUCCESS) {
                     break;
                 }
@@ -543,14 +562,14 @@ recv_again:
             switch (type) {
             case AP_FCGI_STDOUT:
                 if (clen != 0) {
-                    b = apr_bucket_transient_create(readbuf,
+                    b = apr_bucket_transient_create(iobuf,
                                                     readbuflen,
                                                     c->bucket_alloc);
 
                     APR_BRIGADE_INSERT_TAIL(ob, b);
 
                     if (! seen_end_of_headers) {
-                        int st = handle_headers(r, &header_state, readbuf);
+                        int st = handle_headers(r, &header_state, iobuf);
 
                         if (st == 1) {
                             int status;
@@ -649,7 +668,7 @@ recv_again:
                 /* TODO: Should probably clean up this logging a bit... */
                 if (clen) {
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01071)
-                                  "Got error '%s'", readbuf);
+                                  "Got error '%s'", iobuf);
                 }
 
                 if (clen > readbuflen) {
@@ -669,7 +688,7 @@ recv_again:
             }
 
             if (plen) {
-                rv = get_data_full(conn, readbuf, plen);
+                rv = get_data_full(conn, iobuf, plen);
                 if (rv != APR_SUCCESS) {
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
                                   APLOGNO(02537) "Error occurred reading padding");
