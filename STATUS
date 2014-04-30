@@ -133,7 +133,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * core: Increase TCP_DEFER_ACCEPT socket option from 1 to 30 seconds. PR 41270.
      trunk patch: http://svn.apache.org/r501364
      2.2.x patch: trunk works
-     +1: ylavic
+     +1: ylavic, trawick
 
 PATCHES/ISSUES THAT ARE STALLED
 
