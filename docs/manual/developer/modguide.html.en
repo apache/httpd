@@ -1210,7 +1210,7 @@ our first step is to make a function for creating new, blank
 configurations. We do so by creating the function we just referenced in 
 our name tag as the Per-directory configuration handler:</p>
 
-<pre class="prettyprint lang-c">void* example_create_dir_conf(apr_pool_t* pool, char* context) {
+<pre class="prettyprint lang-c">void* create_dir_conf(apr_pool_t* pool, char* context) {
     context = context ? context : "(undefined context)";
     example_config *cfg = apr_pcalloc(pool, sizeof(example_config));
     if(cfg) {
