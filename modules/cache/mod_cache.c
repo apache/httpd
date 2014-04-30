@@ -772,17 +772,16 @@ static int cache_save_store(ap_filter_t *f, apr_bucket_brigade *in,
 /**
  * Sanity check for 304 Not Modified responses, as per RFC2616 Section 10.3.5.
  */
-static const char *cache_header_cmp(apr_pool_t *pool, apr_table_t *left,
+static int cache_header_cmp(apr_pool_t *pool, apr_table_t *left,
         apr_table_t *right, const char *key)
 {
     const char *h1, *h2;
 
     if ((h1 = cache_table_getm(pool, left, key))
             && (h2 = cache_table_getm(pool, right, key)) && (strcmp(h1, h2))) {
-        return apr_pstrcat(pool, "contradiction: 304 Not Modified, but ", key,
-                " modified", NULL);
+        return 1;
     }
-    return NULL;
+    return 0;
 }
 
 /*
@@ -1129,29 +1128,22 @@ static apr_status_t cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
     else if (r->status == HTTP_NOT_MODIFIED && cache->stale_handle) {
         apr_table_t *left = cache->stale_handle->resp_hdrs;
         apr_table_t *right = r->headers_out;
+        const char *ehs = NULL;
 
         /* and lastly, contradiction checks for revalidated responses
          * as per RFC2616 Section 10.3.5
          */
-        if (((reason = cache_header_cmp(r->pool, left, right, "Allow")))
-                || ((reason = cache_header_cmp(r->pool, left, right,
-                        "Content-Encoding")))
-                || ((reason = cache_header_cmp(r->pool, left, right,
-                        "Content-Language")))
-                || ((reason = cache_header_cmp(r->pool, left, right,
-                        "Content-Length")))
-                || ((reason = cache_header_cmp(r->pool, left, right,
-                        "Content-Location")))
-                || ((reason = cache_header_cmp(r->pool, left, right,
-                        "Content-MD5")))
-                || ((reason = cache_header_cmp(r->pool, left, right,
-                        "Content-Range")))
-                || ((reason = cache_header_cmp(r->pool, left, right,
-                        "Content-Type")))
-                || ((reason = cache_header_cmp(r->pool, left, right, "ETag")))
-                || ((reason = cache_header_cmp(r->pool, left, right,
-                        "Last-Modified")))) {
-            /* contradiction: 304 Not Modified, but entity header modified */
+        if (cache_header_cmp(r->pool, left, right, "ETag")) {
+            ehs = (ehs) ? apr_pstrcat(r->pool, ehs, ", ETag", NULL) : "ETag";
+        }
+        for (eh = MOD_CACHE_ENTITY_HEADERS; *eh && !reason; ++eh) {
+            if (cache_header_cmp(r->pool, left, right, *eh)) {
+                ehs = (ehs) ? apr_pstrcat(r->pool, ehs, ", ", *eh, NULL) : *eh;
+            }
+        }
+        if (ehs) {
+            reason = apr_pstrcat(r->pool, "contradiction: 304 Not Modified; "
+                                 "but ", ehs, " modified", NULL);
         }
     }
 
