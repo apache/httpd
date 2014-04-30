@@ -1611,8 +1611,7 @@ const char *ssl_cmd_SSLOCSPUseRequestNonce(cmd_parms *cmd, void *dcfg, int flag)
 {
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
 
-    sc->server->ocsp_use_request_nonce = flag ? SSL_ENABLED_TRUE
-                                              : SSL_ENABLED_FALSE;
+    sc->server->ocsp_use_request_nonce = flag ? TRUE : FALSE;
 
     return NULL;
 }
