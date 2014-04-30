@@ -1060,7 +1060,7 @@ la r&eacute;&eacute;criture soit effectu&eacute;e
 	    <em>cha&icirc;ne de test</em> est sup&eacute;rieure au sens
 	    lexicographique &agrave; l'<em>expression</em>.</li>
 
-            <li>'<strong>&gt;expression</strong>' (&eacute;gal au sens
+            <li>'<strong>=expression</strong>' (&eacute;gal au sens
 	    lexicographique)<br />
 	    Traite l'<em>expression</em> comme une cha&icirc;ne de
 	    caract&egrave;res et la compare lexicographiquement &agrave;
