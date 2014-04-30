@@ -355,10 +355,11 @@ SSLCertificateKeyFile /path/to/this/server.key</pre>
        <br />
        <code><strong>$ openssl genrsa -des3 -out server.key 2048</strong></code><br />
        <br />
-       Please backup this <code>host.key</code> file and the
+       Please backup this <code>server.key</code> file and the
        pass-phrase you entered in a secure location.
        You can see the details of this RSA private key by using the
        command:<br />
+       <br />
        <code><strong>$ openssl rsa -noout -text -in server.key</strong></code><br />
        <br />
        If necessary, you can also create a decrypted PEM version (not
