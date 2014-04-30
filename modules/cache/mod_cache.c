@@ -1134,7 +1134,7 @@ static apr_status_t cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
          * as per RFC2616 Section 10.3.5
          */
         if (cache_header_cmp(r->pool, left, right, "ETag")) {
-            ehs = (ehs) ? apr_pstrcat(r->pool, ehs, ", ETag", NULL) : "ETag";
+            ehs = "ETag";
         }
         for (eh = MOD_CACHE_ENTITY_HEADERS; *eh && !reason; ++eh) {
             if (cache_header_cmp(r->pool, left, right, *eh)) {
