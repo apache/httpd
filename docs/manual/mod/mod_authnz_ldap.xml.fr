@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1589993 -->
+<!-- English Revision : 1591113 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -565,7 +565,7 @@ AuthLDAPMaxSubGroupDepth 1
     fonction ldap.</p>
 
 <highlight language="config">
-&lt;LocationMatch ^/dav/(?<SITENAME>[^/]+)/&gt;
+&lt;LocationMatch ^/dav/(?&lt;SITENAME&gt;[^/]+)/&gt;
   Require ldap-filter (memberOf=cn=%{ldap:%{unescape:%{env:MATCH_SITENAME}},ou=Websites,o=Example)
 &lt;/LocationMatch&gt;
 </highlight>
@@ -585,7 +585,7 @@ AuthLDAPMaxSubGroupDepth 1
     aux objets sp&eacute;cifi&eacute;s dans le serveur LDAP :</p>
 
 <highlight language="config">
-&lt;LocationMatch ^/dav/(?<SITENAME>[^/]+)/&gt;
+&lt;LocationMatch ^/dav/(?&lt;SITENAME&gt;[^/]+)/&gt;
 Require ldap-search (cn=%{ldap:%{unescape:%{env:MATCH_SITENAME}} Website)
 &lt;/LocationMatch&gt;
 </highlight>
