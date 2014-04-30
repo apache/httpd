@@ -1136,7 +1136,7 @@ static apr_status_t cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
         if (cache_header_cmp(r->pool, left, right, "ETag")) {
             ehs = "ETag";
         }
-        for (eh = MOD_CACHE_ENTITY_HEADERS; *eh && !reason; ++eh) {
+        for (eh = MOD_CACHE_ENTITY_HEADERS; *eh; ++eh) {
             if (cache_header_cmp(r->pool, left, right, *eh)) {
                 ehs = (ehs) ? apr_pstrcat(r->pool, ehs, ", ", *eh, NULL) : *eh;
             }
