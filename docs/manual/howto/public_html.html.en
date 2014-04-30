@@ -182,7 +182,7 @@
 
     <p>If you want to allows users to modify the server configuration in
     their web space, they will need to use <code>.htaccess</code> files to
-    make these changed. Ensure that you have set <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code> to a
+    make these changes. Ensure that you have set <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code> to a
     value sufficient for the directives that you want to permit the users
     to modify. See the <a href="htaccess.html">.htaccess tutorial</a> for
     additional details on how this works.</p>
