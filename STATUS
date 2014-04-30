@@ -112,7 +112,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-mod_proxy_sni_reuse3.patch
      +1: ylavic
      rpluem says: +1 if you add the MMN bump
-	 ylavic: MMN bump in patch #3
+     ylavic: MMN bump in patch #3
 
    * mod_cache: Don't remove stale cache entries that cannot be conditionally
      revalidated. This prevents the thundring herd protection from serving
@@ -129,6 +129,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=664333
      2.2.x patch: http://people.apache.org/~covener/patches/httpd-2.2.x-rewrite-sessioncookie.diff
      +1 covener
+
+   * core: Increase TCP_DEFER_ACCEPT socket option to from 1 to 30 seconds. PR 41270.
+     trunk patch: http://svn.apache.org/r501364
+     2.2.x patch: trunk works
+     +1: ylavic
 
 PATCHES/ISSUES THAT ARE STALLED
 
