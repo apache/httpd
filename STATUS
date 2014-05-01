@@ -181,14 +181,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                                                   2.5-dev <compatibility> ref)
                   http://svn.apache.org/r1591401
      2.4.x patch: https://people.apache.org/~ylavic/httpd-2.4.x-SSLOCSPUseRequestNonce+manual-2.4.10-v2.patch
-     +1: ylavic
-     kbrand: sorry for not having caught this earlier (i.e. when committed
-             to trunk), but ocsp_use_request_nonce should actually be
-             defined as BOOL (like ocsp_force_default), and
-             ssl_cmd_SSLOCSPUseRequestNonce should set it to either TRUE
-             or FALSE (not SSL_ENABLED_TRUE or SSL_ENABLED_FALSE, which
-             applies to ssl_enabled_t).
-     ylavic: no pb, done in r1591401 (2.4.x patch updated to v2).
+     +1: ylavic, kbrand
 
    * mod_expires: don't add Expires header to error responses (4xx/5xx),
                   be they generated or forwarded. PR 55669.
