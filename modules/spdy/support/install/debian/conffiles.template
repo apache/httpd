@@ -1,3 +1,0 @@
-/etc/apache2/mods-available/spdy.load
-/etc/apache2/mods-available/spdy.conf
-/etc/cron.daily/@@PACKAGE@@
