@@ -24,8 +24,8 @@
 <p><span>Available Languages: </span><a href="../en/programs/ctlogconfig.html" title="English">&nbsp;en&nbsp;</a></p>
 </div>
 
-    <p><code>ctlogconfig</code> is a tool for maintaining a log configuration
-    database, for use with <code class="module"><a href="../mod/mod_ssl_ct.html">mod_ssl_ct</a></code>.</p>
+    <p><code>ctlogconfig</code> is a tool for creating and maintaining a log
+    configuration database, for use with <code class="module"><a href="../mod/mod_ssl_ct.html">mod_ssl_ct</a></code>.</p>
 
     <p>Refer first to <a href="../mod/mod_ssl_ct.html#logconf">Log
     configuration</a> in the <code class="module"><a href="../mod/mod_ssl_ct.html">mod_ssl_ct</a></code> documentation.</p>
@@ -78,6 +78,36 @@
     <em>log-id</em>|<em>record-id</em>
   </code></p>
 
+  <dl>
+    <dt><em>log-id</em></dt>
+    <dd>This is the id of the log, which is the SHA-256 hash of the log's public key,
+    provided in hexadecimal format.  This string is 64 characters in length.</dd>
+
+    <dt><em>record-id</em></dt>
+    <dd>This is the record number in the database, as displayed by the <strong>dump</strong>
+    sub-command, prefixed with <strong>#</strong>.  As an example, <strong>#4</strong>
+    references the fourth record in the database.  (Use shell escaping as necessary.)</dd>
+
+    <dt><em>/path/to/public-key.pem</em></dt>
+    <dd>This is a file containing the log's public key in PEM format.  The public
+    key is not stored in the database.  Instead, a reference to the file is stored.
+    Thus, the file cannot be removed until the public key in the database is removed
+    or changed.</dd>
+
+    <dt><em>min-timestamp</em>, <em>max-timestamp</em></dt>
+    <dd>A timestamp is a time as expressed in the number of milliseconds since the
+    epoch, ignoring leap seconds.  This is the form of time used in Signed Certificate
+    Timestamps.  This must be provided as a decimal number.
+    <br />
+    Specify <strong><code>-</code></strong> for one of the timestamps if it is unknown.
+    For example, when configuring the minimum valid timestamp for a log which remains
+    valid, specify <strong><code>-</code></strong> for <em>max-timestamp</em>.
+    <br />
+    SCTs received from this log by the proxy are invalid if the timestamp
+    is older than <em>min-timestamp</em> or newer than <em>max-timestamp</em>.</dd>
+
+  </dl>
+
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="subcommands" id="subcommands">Sub-commands</a></h2>
@@ -91,24 +121,29 @@
     <dt>configure-public-key</dt>
     <dd>Add a log's public key to the database or set the public key for an
     existing entry.  The log's public key is needed to validate the signature
-    of SCTs received by a proxy from a backend server.</dd>
+    of SCTs received by a proxy from a backend server.  (The database will
+    be created if it does not yet exist.)</dd>
 
     <dt>configure-url</dt>
     <dd>Add a log's URL to the database or set the URL for an existing entry.
     The log's URL is used when submitting server certificates to logs in
-    order to obtain SCTs to send to clients.</dd>
+    order to obtain SCTs to send to clients.  (The database will
+    be created if it does not yet exist.)</dd>
 
     <dt>valid-time-range</dt>
     <dd>Set the minimum valid time and/or the maximum valid time for a log.
     SCTs from the log with timestamps outside of the valid range will not be
-    accepted.  Use <code>-</code> for a time that is not being configured.</dd>
+    accepted.  Use <code>-</code> for a time that is not being configured.
+    (The database will be created if it does not yet exist.)</dd>
 
     <dt>trust</dt>
     <dd>Mark a log as trusted, which is the default setting.  This sub-command
-    is used to reverse a <em>distrust</em> setting.</dd>
+    is used to reverse a <em>distrust</em> setting.  (The database will
+    be created if it does not yet exist.)</dd>
 
     <dt>distrust</dt>
-    <dd>Mark a log as distrusted.</dd>
+    <dd>Mark a log as distrusted.  (The database will be created if it does
+    not yet exist.)</dd>
 
     <dt>forget</dt>
     <dd>Remove information about a log from the database.</dd>
@@ -149,7 +184,7 @@
   http://log2.example.com/ which has already been configured.</p>
 
   <div class="example"><p><code>
-    $ ctlogconfig /path/to/conf/log-config configure-public-key \\#2 /path/to/conf/log2-pub.pem<br />
+    $ ctlogconfig /path/to/conf/log-config configure-public-key \#2 /path/to/conf/log2-pub.pem<br />
     $ ctlogconfig /path/to/conf/log-config dump<br />
     Log entry:<br />
       Record 1<br />
