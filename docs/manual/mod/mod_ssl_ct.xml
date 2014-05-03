@@ -433,12 +433,20 @@ ServerHello</description>
 
   <p>Each of the six fields must be specified, but usually only a small
   amount of information must be configured for each log; use <em>-</em> when no
-  information is available for the field.  The fields are defined as follows:</p>
+  information is available for the field.  For example, in support of a
+  server-only configuration (i.e., no proxy), the administrator might
+  configure only the log URL to be used when submitting server certificates
+  and obtaining a Signed Certificate Timestamp.</p>
+
+  <p>The fields are defined as follows:</p>
 
   <dl>
     <dt><em>log-id</em></dt>
     <dd>This is the id of the log, which is the SHA-256 hash of the log's
-    public key.</dd>
+    public key, provided in hexadecimal format.  This string is 64 characters
+    in length.
+    <br />
+    This field should be omitted when <em>public-key-file</em> is provided.</dd>
 
     <dt><em>public-key-file</em></dt>
     <dd>This is the name of a file containing the PEM encoding of the log's
@@ -447,15 +455,20 @@ ServerHello</description>
 
     <dt><em>trust</em></dt>
     <dd>This is a generic <q>trust</q> flag.  Set this field to <em>0</em> to
-    distrust this log.</dd>
+    distrust this log, or to otherwise avoid using it for server certificate
+    submission.</dd>
 
-    <dt><em>min-timestamp</em></dt>
-    <dd>SCTs received from this log by the proxy are invalid if the timestamp
-    is older than this value.</dd>
-
-    <dt><em>max-timestamp</em></dt>
-    <dd>SCTs received from this log by the proxy are invalid if the timestamp
-    is newer than this value.</dd>
+    <dt><em>min-timestamp</em> and <em>max-timestamp</em></dt>
+    <dd>A timestamp is a time as expressed in the number of milliseconds since the
+    epoch, ignoring leap seconds.  This is the form of time used in Signed Certificate
+    Timestamps.  This must be provided as a decimal number.
+    <br />
+    Specify <strong><code>-</code></strong> for one of the timestamps if it is unknown.
+    For example, when configuring the minimum valid timestamp for a log which remains 
+    valid, specify <strong><code>-</code></strong> for <em>max-timestamp</em>.
+    <br />
+    SCTs received from this log by the proxy are invalid if the timestamp
+    is older than <em>min-timestamp</em> or newer than <em>max-timestamp</em>.</dd>
 
     <dt><em>log-URL</em></dt>
     <dd>This is the URL of the log, for use in submitting server certificates
