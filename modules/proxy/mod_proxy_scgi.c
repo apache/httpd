@@ -37,13 +37,13 @@
 #include "util_script.h"
 
 #include "mod_proxy.h"
+#include "scgi.h"
 
 
 #define SCHEME "scgi"
 #define PROXY_FUNCTION "SCGI"
 #define SCGI_MAGIC "SCGI"
 #define SCGI_PROTOCOL_VERSION "1"
-#define SCGI_DEFAULT_PORT (4000)
 
 /* just protect from typos */
 #define CONTENT_LENGTH "CONTENT_LENGTH"
@@ -183,7 +183,7 @@ static int scgi_canon(request_rec *r, char *url)
     }
     url += sizeof(SCHEME); /* Keep slashes */
 
-    port = def_port = SCGI_DEFAULT_PORT;
+    port = def_port = SCGI_DEF_PORT;
 
     err = ap_proxy_canon_netloc(r->pool, &url, NULL, NULL, &host, &port);
     if (err) {
