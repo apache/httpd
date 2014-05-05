@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_proxy_scgi: Support Unix sockets.  ap_proxy_port_of_scheme():
+     Support default SCGI port (4000).  [Jeff Trawick]
+
   *) mod_proxy_fcgi: Fix occasional high CPU when handling request bodies.
      [Jeff Trawick]
 
