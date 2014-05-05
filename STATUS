@@ -240,6 +240,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch works modulo CHANGES
      +1: ylavic
 
+   * mod_proxy_scgi: Support Unix sockets
+     httpd patch: httpd://svn.apache.org/r1592529
+     2.4.x patch: trunk patch works modulo CHANGES
+     +1: trawick
 
 OTHER PROPOSALS
 
