@@ -216,14 +216,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * mod_proxy_fcgi: Don't crash when connect to the backend fails.
      trunk patch: r1590437 (and additional CHANGES tweak in r1592500)
      2.4.x patch: trunk patch works other than CHANGES
-     +1: trawick
+     +1: trawick, covener
 
    * mod_authnz_ldap: Support primitive LDAP servers do not accept
      filters, such as "SDBM-backed LDAP" on z/OS, by allowing a special
      filter "none" to be specified in AuthLDAPURL.
      trunk patch: https://svn.apache.org/r1497371
      2.4.x patch: trunk patch works other than CHANGES
-     +1: minfrin
+     +1: minfrin, covener
 
    * mod_cache: Don't add cached/revalidated entity headers to a 304 response.
                 PR 55547.
