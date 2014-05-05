@@ -31,4 +31,6 @@
  */
 #define SCGI_DEF_PORT 4000
 
+/** @} */
+
 #endif /* SCGI_H */
