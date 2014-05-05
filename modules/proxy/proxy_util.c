@@ -22,6 +22,7 @@
 #include "apr_hash.h"
 #include "proxy_util.h"
 #include "ajp.h"
+#include "scgi.h"
 
 #if APR_HAVE_UNISTD_H
 #include <unistd.h>         /* for getpid() */
@@ -3514,7 +3515,7 @@ static proxy_schemes_t pschemes[] =
 {
     {"fcgi",     8000},
     {"ajp",      AJP13_DEF_PORT},
-    {"scgi",     4000},
+    {"scgi",     SCGI_DEF_PORT},
     { NULL, 0xFFFF }     /* unknown port */
 };
 
