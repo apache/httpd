@@ -211,7 +211,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      SSLCertificate[Key]File to emulate the behavior in versions <= 2.4.7
      trunk patch: not sensible for trunk (unneeded backwards compatibility)
      2.4.x patch: https://people.apache.org/~kbrand/mod_ssl-2.4.x-pphrase-certkeyfile-compat.diff
-     +1: kbrand
+     +1: kbrand, jkaluza
 
    * mod_proxy_fcgi: Don't crash when connect to the backend fails.
      trunk patch: http://svn.apache.org/r1590437 (and additional CHANGES tweak in r1592500)
