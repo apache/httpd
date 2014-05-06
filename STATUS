@@ -214,7 +214,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: kbrand
 
    * mod_proxy_fcgi: Don't crash when connect to the backend fails.
-     trunk patch: r1590437 (and additional CHANGES tweak in r1592500)
+     trunk patch: http://svn.apache.org/r1590437 (and additional CHANGES tweak in r1592500)
      2.4.x patch: trunk patch works other than CHANGES
      +1: trawick, covener
 
@@ -224,6 +224,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: https://svn.apache.org/r1497371
      2.4.x patch: trunk patch works other than CHANGES
      +1: minfrin, covener
+     jailletc36: When merged, a compatibility note should be added in the doc stating when
+                 the none keyword has been added
 
    * mod_cache: Don't add cached/revalidated entity headers to a 304 response.
                 PR 55547.
@@ -241,7 +243,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: ylavic
 
    * mod_proxy_scgi: Support Unix sockets
-     httpd patch: httpd://svn.apache.org/r1592529
+     httpd patch: http://svn.apache.org/r1592529
      2.4.x patch: trunk patch works modulo CHANGES
      +1: trawick
 
