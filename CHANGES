@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.10
 
+  *) mod_authn_socache: Fix crash at startup in certain configurations.
+     PR 56371. (regression in 2.4.7) [Jan Kaluza]
+
   *) mod_lua: Enforce the max post size allowed via r:parsebody()
      [Daniel Gruno]
 
