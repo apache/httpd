@@ -198,6 +198,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch works
      +1: trawick
 
+   * mod_authn_socache: fix logging of bugus rv in r1576233 (now in 2.4.x)
+     trunk patch: http://svn.apache.org/r1583007
+     2.4.x patch: trunk patch works
+     +1: trawick
+
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
