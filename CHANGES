@@ -14,6 +14,10 @@ Changes with Apache 2.4.10
   *) mod_authn_socache: Fix crash at startup in certain configurations.
      PR 56371. (regression in 2.4.7) [Jan Kaluza]
 
+  *) mod_ssl: restore argument structure for "exec"-type SSLPassPhraseDialog
+     programs to the form used in releases up to 2.4.7, and emulate
+     a backwards-compatible behavior for existing setups. [Kaspar Brand]
+
   *) mod_lua: Enforce the max post size allowed via r:parsebody()
      [Daniel Gruno]
 
