@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.10
 
+  *) mod_expires: don't add Expires header to error responses (4xx/5xx),
+     be they generated or forwarded. PR 55669. [ Yann Ylavic ]
+
   *) mod_proxy_fcgi: Don't segfault when failing to connect to the backend.
      (regression in 2.4.9 release) [Jeff Trawick]
 

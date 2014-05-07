@@ -451,6 +451,12 @@ static apr_status_t expires_filter(ap_filter_t *f,
     const char *expiry;
     apr_table_t *t;
 
+    /* Don't add Expires headers to errors */
+    if (ap_is_HTTP_ERROR(f->r->status)) {
+        ap_remove_output_filter(f);
+        return ap_pass_brigade(f->next, b);
+    }
+
     r = f->r;
     conf = (expires_dir_config *) ap_get_module_config(r->per_dir_config,
                                                        &expires_module);

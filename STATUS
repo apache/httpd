@@ -100,13 +100,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_expires: don't add Expires header to error responses (4xx/5xx),
-                  be they generated or forwarded. PR 55669.
-     trunk patch: http://svn.apache.org/r1584430
-                  http://svn.apache.org/r1584434
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, covener, jim
-
    * mod_cache: Fix CacheLock on Windows
      trunk patch: http://svn.apache.org/r1588704
      2.4.x patch: trunk works
