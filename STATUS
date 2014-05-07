@@ -105,6 +105,41 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch works other than CHANGES
      +1: trawick, covener, ylavic
 
+   * mod_expires: don't add Expires header to error responses (4xx/5xx),
+                  be they generated or forwarded. PR 55669.
+     trunk patch: http://svn.apache.org/r1584430
+                  http://svn.apache.org/r1584434
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: ylavic, covener, jim
+
+   * mod_cache: Fix CacheLock on Windows
+     trunk patch: http://svn.apache.org/r1588704
+     2.4.x patch: trunk works
+     +1 covener, trawick, jim
+
+   * mod_ssl: set the current cert in ssl_callback_TmpDH before calling
+     SSL_get_privatekey(ssl)
+     trunk patch: https://svn.apache.org/r1588851
+     2.4.x patch: trunk patch works
+     +1: kbrand, ylavic, jim
+
+   * mod_ssl: make SSL stapling init more robust for certs w/o responder URI
+     trunk patch: https://svn.apache.org/r1588853
+     2.4.x patch: trunk patch works (w/o docs/log-message-tags/next-number)
+     +1: kbrand, ylavic, jim
+
+   * mod_ssl: restore argument structure for exec-type SSLPassPhraseDialog
+     programs, and implement a special merging algorithm for
+     SSLCertificate[Key]File to emulate the behavior in versions <= 2.4.7
+     trunk patch: not sensible for trunk (unneeded backwards compatibility)
+     2.4.x patch: https://people.apache.org/~kbrand/mod_ssl-2.4.x-pphrase-certkeyfile-compat.diff
+     +1: kbrand, jkaluza, jim
+
+   * mod_proxy_scgi: Support Unix sockets
+     httpd patch: http://svn.apache.org/r1592529
+     2.4.x patch: trunk patch works modulo CHANGES
+     +1: trawick, ylavic, jim
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -179,36 +214,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://people.apache.org/~ylavic/httpd-2.4.x-SSLOCSPUseRequestNonce+manual-2.4.10-v2.patch
      +1: ylavic, kbrand
 
-   * mod_expires: don't add Expires header to error responses (4xx/5xx),
-                  be they generated or forwarded. PR 55669.
-     trunk patch: http://svn.apache.org/r1584430
-                  http://svn.apache.org/r1584434
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, covener, jim
-
-   * mod_cache: Fix CacheLock on Windows
-     trunk patch: http://svn.apache.org/r1588704
-     2.4.x patch: trunk works
-     +1 covener, trawick, jim
-
-   * mod_ssl: set the current cert in ssl_callback_TmpDH before calling
-     SSL_get_privatekey(ssl)
-     trunk patch: https://svn.apache.org/r1588851
-     2.4.x patch: trunk patch works
-     +1: kbrand, ylavic, jim
-
-   * mod_ssl: make SSL stapling init more robust for certs w/o responder URI
-     trunk patch: https://svn.apache.org/r1588853
-     2.4.x patch: trunk patch works (w/o docs/log-message-tags/next-number)
-     +1: kbrand, ylavic, jim
-
-   * mod_ssl: restore argument structure for exec-type SSLPassPhraseDialog
-     programs, and implement a special merging algorithm for
-     SSLCertificate[Key]File to emulate the behavior in versions <= 2.4.7
-     trunk patch: not sensible for trunk (unneeded backwards compatibility)
-     2.4.x patch: https://people.apache.org/~kbrand/mod_ssl-2.4.x-pphrase-certkeyfile-compat.diff
-     +1: kbrand, jkaluza, jim
-
    * mod_authnz_ldap: Support primitive LDAP servers do not accept
      filters, such as "SDBM-backed LDAP" on z/OS, by allowing a special
      filter "none" to be specified in AuthLDAPURL.
@@ -227,10 +232,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch works modulo CHANGES
      +1: ylavic
 
-   * mod_proxy_scgi: Support Unix sockets
-     httpd patch: http://svn.apache.org/r1592529
-     2.4.x patch: trunk patch works modulo CHANGES
-     +1: trawick, ylavic, jim
 
 OTHER PROPOSALS
 
