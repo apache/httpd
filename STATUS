@@ -100,16 +100,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_authn_socache: Fix creation of default socache_instance. Fixes crash
-                        on startup if default socache_provider is used and
-                        AuthnCacheEnable or AuthnCacheProvideFor is used.
-                        This problem has been introduced in r1531961.
-                        PR 56371.
-     Submitted/Committed by: jkaluza
-     trunk patch: http://svn.apache.org/r1576233
-     2.4.x patch: trunk works
-     +1: ylavic, jim, trawick
-
    * mod_proxy_fcgi: Don't crash when connect to the backend fails.
      trunk patch: http://svn.apache.org/r1590437 (and additional CHANGES tweak in r1592500)
      2.4.x patch: trunk patch works other than CHANGES
