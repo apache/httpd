@@ -100,13 +100,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_ssl: restore argument structure for exec-type SSLPassPhraseDialog
-     programs, and implement a special merging algorithm for
-     SSLCertificate[Key]File to emulate the behavior in versions <= 2.4.7
-     trunk patch: not sensible for trunk (unneeded backwards compatibility)
-     2.4.x patch: https://people.apache.org/~kbrand/mod_ssl-2.4.x-pphrase-certkeyfile-compat.diff
-     +1: kbrand, jkaluza, jim
-
    * mod_proxy_scgi: Support Unix sockets
      httpd patch: http://svn.apache.org/r1592529
      2.4.x patch: trunk patch works modulo CHANGES

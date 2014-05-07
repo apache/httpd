@@ -258,6 +258,16 @@ ap_set_module_config(c->conn_config, &ssl_module, val)
 #define DEFAULT_OCSP_TIMEOUT 10
 #endif
 
+/*
+ * For better backwards compatibility with the SSLCertificate[Key]File
+ * and SSLPassPhraseDialog ("exec" type) directives in 2.4.7 and earlier
+ */
+#ifdef HAVE_ECC
+#define CERTKEYS_IDX_MAX 2
+#else
+#define CERTKEYS_IDX_MAX 1
+#endif
+
 /**
  * Define the SSL options
  */
