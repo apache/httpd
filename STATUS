@@ -110,6 +110,11 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      +1: ylavic, jim, trawick
 
+   * mod_proxy_fcgi: Don't crash when connect to the backend fails.
+     trunk patch: http://svn.apache.org/r1590437 (and additional CHANGES tweak in r1592500)
+     2.4.x patch: trunk patch works other than CHANGES
+     +1: trawick, covener, ylavic
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -199,12 +204,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      SSL_get_privatekey(ssl)
      trunk patch: https://svn.apache.org/r1588851
      2.4.x patch: trunk patch works
-     +1: kbrand
+     +1: kbrand, ylavic
 
    * mod_ssl: make SSL stapling init more robust for certs w/o responder URI
      trunk patch: https://svn.apache.org/r1588853
      2.4.x patch: trunk patch works (w/o docs/log-message-tags/next-number)
-     +1: kbrand
+     +1: kbrand, ylavic
 
    * mod_ssl: restore argument structure for exec-type SSLPassPhraseDialog
      programs, and implement a special merging algorithm for
@@ -212,11 +217,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: not sensible for trunk (unneeded backwards compatibility)
      2.4.x patch: https://people.apache.org/~kbrand/mod_ssl-2.4.x-pphrase-certkeyfile-compat.diff
      +1: kbrand, jkaluza
-
-   * mod_proxy_fcgi: Don't crash when connect to the backend fails.
-     trunk patch: http://svn.apache.org/r1590437 (and additional CHANGES tweak in r1592500)
-     2.4.x patch: trunk patch works other than CHANGES
-     +1: trawick, covener
 
    * mod_authnz_ldap: Support primitive LDAP servers do not accept
      filters, such as "SDBM-backed LDAP" on z/OS, by allowing a special
@@ -236,16 +236,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch works modulo CHANGES
      +1: ylavic
 
-   * mod_cache: Preserve non-cacheable headers forwarded from an origin 304
-                response. PR 55547.
-     trunk patch: http://svn.apache.org/r1591328
-     2.4.x patch: trunk patch works modulo CHANGES
-     +1: ylavic
-
    * mod_proxy_scgi: Support Unix sockets
      httpd patch: http://svn.apache.org/r1592529
      2.4.x patch: trunk patch works modulo CHANGES
-     +1: trawick
+     +1: trawick, ylavic
 
 OTHER PROPOSALS
 
@@ -255,6 +249,12 @@ OTHER PROPOSALS
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
+
+   * mod_cache: Preserve non-cacheable headers forwarded from an origin 304
+                response. PR 55547.
+     trunk patch: http://svn.apache.org/r1591328
+     2.4.x patch: trunk patch works modulo CHANGES
+     +1:
 
 
 PATCHES/ISSUES THAT ARE STALLED
