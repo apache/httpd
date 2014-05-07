@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.10
 
+  *) mod_cache: Fix AH00784 errors on Windows when the the CacheLock directive
+     is enabled.  [Eric Covener]
+
   *) mod_expires: don't add Expires header to error responses (4xx/5xx),
      be they generated or forwarded. PR 55669. [ Yann Ylavic ]
 

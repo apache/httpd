@@ -240,7 +240,7 @@ CACHE_DECLARE(apr_int64_t) ap_cache_current_age(cache_info *info,
  * Try obtain a cache wide lock on the given cache key.
  *
  * If we return APR_SUCCESS, we obtained the lock, and we are clear to
- * proceed to the backend. If we return APR_EEXISTS, then the lock is
+ * proceed to the backend. If we return APR_EEXIST, then the lock is
  * already locked, someone else has gone to refresh the backend data
  * already, so we must return stale data with a warning in the mean
  * time. If we return anything else, then something has gone pear
@@ -735,9 +735,9 @@ int cache_check_freshness(cache_handle_t *h, cache_request_rec *cache,
                 r->unparsed_uri);
         return 0;
     }
-    else if (APR_EEXIST == status) {
+    else if (APR_STATUS_IS_EEXIST(status)) {
         /* lock already exists, return stale data anyway, with a warning */
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00783)
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, status, r, APLOGNO(00783)
                 "Cache already locked for stale cached URL, "
                 "pretend it is fresh: %s",
                 r->unparsed_uri);
