@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.10
 
+  *) mod_proxy_scgi: Support Unix sockets.  ap_proxy_port_of_scheme():
+     Support default SCGI port (4000).  [Jeff Trawick]
+
   *) mod_cache: Fix AH00784 errors on Windows when the the CacheLock directive
      is enabled.  [Eric Covener]
 

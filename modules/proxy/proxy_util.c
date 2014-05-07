@@ -3487,6 +3487,7 @@ static proxy_schemes_t pschemes[] =
 {
     {"fcgi",     8000},
     {"ajp",      AJP13_DEF_PORT},
+    {"scgi",     4000},
     { NULL, 0xFFFF }     /* unknown port */
 };
 
