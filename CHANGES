@@ -1,9 +1,6 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
-  *) mod_proxy_scgi: Support Unix sockets.  ap_proxy_port_of_scheme():
-     Support default SCGI port (4000).  [Jeff Trawick]
-
   *) mod_proxy_fcgi: Fix occasional high CPU when handling request bodies.
      [Jeff Trawick]
 
@@ -22,9 +19,6 @@ Changes with Apache 2.5.0
   *) mod_authnz_ldap: Fail explicitly when the filter is too long. Remove
      unnecessary apr_pstrdup() and strlen(). [Graham Leggett]
 
-  *) mod_proxy_fcgi: Don't segfault when failing to connect to the backend.
-     (regression in 2.4.9 release) [Jeff Trawick]
-
   *) Add the ldap-search option to mod_authnz_ldap, allowing authorization
      to be based on arbitrary expressions that do not include the username.
      [Graham Leggett]
@@ -35,9 +29,6 @@ Changes with Apache 2.5.0
 
   *) Add module mod_ssl_ct, which provides an implementation of Certificate
      Transparency (RFC 6962) for httpd.  [Jeff Trawick]
-
-  *) mod_cache: Fix AH00784 errors on Windows when the the CacheLock directive
-     is enabled.  [Eric Covener]
 
   *) mod_proxy: Preserve original request headers even if they differ
      from the ones to be forwarded to the backend. PR 45387.
@@ -87,9 +78,6 @@ Changes with Apache 2.5.0
      allow spaces in backreferences to be encoded as %20 instead of '+'.
      [Eric Covener]
      
-  *) mod_expires: don't add Expires header to error responses (4xx/5xx),
-     be they generated or forwarded. PR 55669. [ Yann Ylavic ]
-
   *) mod_rewrite: Support an optional list of characters to escape in the 
      argument for the 'B' (escape backreferences) flag. [Eric Covener]
 
