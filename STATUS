@@ -100,11 +100,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_cache: Fix CacheLock on Windows
-     trunk patch: http://svn.apache.org/r1588704
-     2.4.x patch: trunk works
-     +1 covener, trawick, jim
-
    * mod_ssl: set the current cert in ssl_callback_TmpDH before calling
      SSL_get_privatekey(ssl)
      trunk patch: https://svn.apache.org/r1588851
