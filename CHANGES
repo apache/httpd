@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.10
 
+  *) mod_proxy_fcgi: Don't segfault when failing to connect to the backend.
+     (regression in 2.4.9 release) [Jeff Trawick]
+
   *) mod_authn_socache: Fix crash at startup in certain configurations.
      PR 56371. (regression in 2.4.7) [Jan Kaluza]
 

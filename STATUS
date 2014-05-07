@@ -100,11 +100,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_proxy_fcgi: Don't crash when connect to the backend fails.
-     trunk patch: http://svn.apache.org/r1590437 (and additional CHANGES tweak in r1592500)
-     2.4.x patch: trunk patch works other than CHANGES
-     +1: trawick, covener, ylavic
-
    * mod_expires: don't add Expires header to error responses (4xx/5xx),
                   be they generated or forwarded. PR 55669.
      trunk patch: http://svn.apache.org/r1584430
