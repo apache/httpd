@@ -100,12 +100,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_ssl: set the current cert in ssl_callback_TmpDH before calling
-     SSL_get_privatekey(ssl)
-     trunk patch: https://svn.apache.org/r1588851
-     2.4.x patch: trunk patch works
-     +1: kbrand, ylavic, jim
-
    * mod_ssl: make SSL stapling init more robust for certs w/o responder URI
      trunk patch: https://svn.apache.org/r1588853
      2.4.x patch: trunk patch works (w/o docs/log-message-tags/next-number)

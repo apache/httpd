@@ -1331,8 +1331,19 @@ make_get_dh(rfc3526, 4096, 2)
 DH *ssl_callback_TmpDH(SSL *ssl, int export, int keylen)
 {
     conn_rec *c = (conn_rec *)SSL_get_app_data(ssl);
-    EVP_PKEY *pkey = SSL_get_privatekey(ssl);
-    int type = pkey ? EVP_PKEY_type(pkey->type) : EVP_PKEY_NONE;
+    EVP_PKEY *pkey;
+    int type;
+
+#ifdef SSL_CERT_SET_SERVER
+    /*
+     * When multiple certs/keys are configured for the SSL_CTX: make sure
+     * that we get the private key which is indeed used for the current
+     * SSL connection (available in OpenSSL 1.0.2 or later only)
+     */
+    SSL_set_current_cert(ssl, SSL_CERT_SET_SERVER);
+#endif
+    pkey = SSL_get_privatekey(ssl);
+    type = pkey ? EVP_PKEY_type(pkey->type) : EVP_PKEY_NONE;
 
     /*
      * OpenSSL will call us with either keylen == 512 or keylen == 1024
