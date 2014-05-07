@@ -140,6 +140,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   https://svn.apache.org/r1590509
      2.4.x patch: trunk works
      +1: ylavic
+     -0: jim (having a hard time applying all the above w/o conflicts)
      ylavic: does not depend on r1572092 above or r1572896 and al below,
              these proposals can be backported in any order.
 
@@ -183,30 +184,30 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1584430
                   http://svn.apache.org/r1584434
      2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, covener
+     +1: ylavic, covener, jim
 
    * mod_cache: Fix CacheLock on Windows
      trunk patch: http://svn.apache.org/r1588704
      2.4.x patch: trunk works
-     +1 covener, trawick
+     +1 covener, trawick, jim
 
    * mod_ssl: set the current cert in ssl_callback_TmpDH before calling
      SSL_get_privatekey(ssl)
      trunk patch: https://svn.apache.org/r1588851
      2.4.x patch: trunk patch works
-     +1: kbrand, ylavic
+     +1: kbrand, ylavic, jim
 
    * mod_ssl: make SSL stapling init more robust for certs w/o responder URI
      trunk patch: https://svn.apache.org/r1588853
      2.4.x patch: trunk patch works (w/o docs/log-message-tags/next-number)
-     +1: kbrand, ylavic
+     +1: kbrand, ylavic, jim
 
    * mod_ssl: restore argument structure for exec-type SSLPassPhraseDialog
      programs, and implement a special merging algorithm for
      SSLCertificate[Key]File to emulate the behavior in versions <= 2.4.7
      trunk patch: not sensible for trunk (unneeded backwards compatibility)
      2.4.x patch: https://people.apache.org/~kbrand/mod_ssl-2.4.x-pphrase-certkeyfile-compat.diff
-     +1: kbrand, jkaluza
+     +1: kbrand, jkaluza, jim
 
    * mod_authnz_ldap: Support primitive LDAP servers do not accept
      filters, such as "SDBM-backed LDAP" on z/OS, by allowing a special
@@ -229,7 +230,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * mod_proxy_scgi: Support Unix sockets
      httpd patch: http://svn.apache.org/r1592529
      2.4.x patch: trunk patch works modulo CHANGES
-     +1: trawick, ylavic
+     +1: trawick, ylavic, jim
 
 OTHER PROPOSALS
 
