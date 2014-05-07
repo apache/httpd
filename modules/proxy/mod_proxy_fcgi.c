@@ -758,7 +758,7 @@ static int proxy_fcgi_handler(request_rec *r, proxy_worker *worker,
     int status;
     char server_portstr[32];
     conn_rec *origin = NULL;
-    proxy_conn_rec *backend;
+    proxy_conn_rec *backend = NULL;
 
     proxy_dir_conf *dconf = ap_get_module_config(r->per_dir_config,
                                                  &proxy_module);
