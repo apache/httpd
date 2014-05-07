@@ -100,11 +100,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_ssl: make SSL stapling init more robust for certs w/o responder URI
-     trunk patch: https://svn.apache.org/r1588853
-     2.4.x patch: trunk patch works (w/o docs/log-message-tags/next-number)
-     +1: kbrand, ylavic, jim
-
    * mod_ssl: restore argument structure for exec-type SSLPassPhraseDialog
      programs, and implement a special merging algorithm for
      SSLCertificate[Key]File to emulate the behavior in versions <= 2.4.7
