@@ -196,7 +196,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * mod_proxy_fcgi: remove wasted memset() calls and other historical bits
      trunk patch: http://svn.apache.org/r1591472
      2.4.x patch: trunk patch works
-     +1: trawick
+     +1: trawick, jim
 
    * mod_authn_socache: fix logging of bugus rv in r1576233 (now in 2.4.x)
      trunk patch: http://svn.apache.org/r1583007
