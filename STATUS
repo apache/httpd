@@ -161,7 +161,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      +1: rjung,
      -1: covener would rather take this oppty to remove it from AliasMatch, the
-         prefix and docroot don't make sense.
+         prefix and docroot don't make sense. See next proposal.
+
+   * mod_alias: Stop setting context document root for AliasMatch.
+     trunk patch: http://svn.apache.org/r1583175
+                  http://svn.apache.org/r1593745
+     2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-aliasmatch_contextinfo.diff
+     +1 covener
 
    * mod_ssl: Add SSLOCSPUseRequestNonce directive to control whether or not
      OCSP requests should use a nonce to be checked against the responder's
