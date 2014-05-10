@@ -370,13 +370,6 @@ static char *try_alias_list(request_rec *r, apr_array_header_t *aliases,
                                                     uri.fragment, NULL);
                             }
                        }
-                       else {
-                           ap_set_context_info(r,
-                                               apr_pstrmemdup(r->pool, r->uri,
-                                                              regm[0].rm_eo),
-                                               apr_pstrmemdup(r->pool, found,
-                                                              strlen(found)));
-                       }
                     }
                     else {
                         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00672)
