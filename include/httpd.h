@@ -1173,6 +1173,9 @@ struct conn_rec {
 
     /** context of this connection */
     void *ctx;
+
+    /** Context under which this connection was suspended */
+    void *suspended_baton;
 };
 
 struct conn_slave_rec {

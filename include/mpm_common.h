@@ -446,6 +446,11 @@ AP_DECLARE_HOOK(apr_status_t, mpm_register_socket_callback_timeout,
 AP_DECLARE_HOOK(apr_status_t, mpm_unregister_socket_callback,
                 (apr_socket_t **s, apr_pool_t *p))
 
+/** Resume the suspended connection 
+ * @ingroup hooks
+ */
+AP_DECLARE_HOOK(apr_status_t, mpm_resume_suspended, (conn_rec*))
+
 /**
  * Get MPM name (e.g., "prefork" or "event")
  * @ingroup hooks

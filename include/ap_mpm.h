@@ -178,6 +178,8 @@ AP_DECLARE(apr_status_t) ap_os_create_privileged_process(
 #define AP_MPMQ_GENERATION           15
 /** MPM can drive serf internally  */
 #define AP_MPMQ_HAS_SERF             16
+/** MPM supports suspending/resuming connections */
+#define AP_MPMQ_CAN_SUSPEND          17
 /** @} */
 
 /**
@@ -197,6 +199,8 @@ AP_DECLARE(apr_status_t) ap_mpm_query(int query_code, int *result);
 
 typedef void (ap_mpm_callback_fn_t)(void *baton);
 
+/* only added support in the Event MPM....  check for APR_ENOTIMPL */
+AP_DECLARE(apr_status_t) ap_mpm_resume_suspended(conn_rec *c);
 /* only added support in the Event MPM....  check for APR_ENOTIMPL */
 AP_DECLARE(apr_status_t) ap_mpm_register_timed_callback(apr_time_t t,
                                                        ap_mpm_callback_fn_t *cbfn,

@@ -72,6 +72,7 @@
     APR_HOOK_LINK(mpm_register_socket_callback_timeout) \
     APR_HOOK_LINK(mpm_unregister_socket_callback) \
     APR_HOOK_LINK(mpm_get_name) \
+    APR_HOOK_LINK(mpm_resume_suspended) \
     APR_HOOK_LINK(end_generation) \
     APR_HOOK_LINK(child_status) \
     APR_HOOK_LINK(suspend_connection) \
@@ -103,6 +104,9 @@ AP_IMPLEMENT_HOOK_RUN_FIRST(int, mpm_query,
 AP_IMPLEMENT_HOOK_RUN_FIRST(apr_status_t, mpm_register_timed_callback,
                             (apr_time_t t, ap_mpm_callback_fn_t *cbfn, void *baton),
                             (t, cbfn, baton), APR_ENOTIMPL)
+AP_IMPLEMENT_HOOK_RUN_FIRST(apr_status_t, mpm_resume_suspended,
+                            (conn_rec *c),
+                            (c), APR_ENOTIMPL)
 AP_IMPLEMENT_HOOK_RUN_FIRST(apr_status_t, mpm_register_socket_callback,
                             (apr_socket_t **s, apr_pool_t *p, int for_read, ap_mpm_callback_fn_t *cbfn, void *baton),
                             (s, p, for_read, cbfn, baton), APR_ENOTIMPL)
@@ -545,6 +549,10 @@ void ap_core_child_status(server_rec *s, pid_t pid,
     ap_log_error(APLOG_MARK, APLOG_TRACE4, 0, s,
                  "mpm child %" APR_PID_T_FMT " (gen %d/slot %d) %s",
                  pid, gen, slot, status_msg);
+}
+
+AP_DECLARE(apr_status_t) ap_mpm_resume_suspended(conn_rec *c) {
+    return ap_run_mpm_resume_suspended(c);
 }
 
 AP_DECLARE(apr_status_t) ap_mpm_register_timed_callback(apr_time_t t, ap_mpm_callback_fn_t *cbfn, void *baton)
