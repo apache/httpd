@@ -551,6 +551,9 @@ static int event_query(int query_code, int *result, apr_status_t *rv)
     case AP_MPMQ_GENERATION:
         *result = retained->my_generation;
         break;
+    case AP_MPMQ_CAN_SUSPEND:
+        *result = 1;
+        break;
     default:
         *rv = APR_ENOTIMPL;
         break;
@@ -1154,6 +1157,7 @@ read_request:
         return;
     }
     else if (cs->pub.state == CONN_STATE_SUSPENDED) {
+        cs->c->suspended_baton = cs;
         apr_atomic_inc32(&suspended_count);
     }
     /*
@@ -1165,6 +1169,33 @@ read_request:
     c->sbh = NULL;
     notify_suspend(cs);
     return;
+}
+
+/* Put a SUSPENDED connection back into a queue. */
+static apr_status_t event_resume_suspended (conn_rec *c) {
+    event_conn_state_t* cs = (event_conn_state_t*) c->suspended_baton;
+    if (cs == NULL) {
+        ap_log_cerror (APLOG_MARK, LOG_WARNING, 0, c, APLOGNO(02615)
+                "event_resume_suspended: suspended_baton is NULL");
+        return APR_EGENERAL;
+    } else if (!cs->suspended) {
+        ap_log_cerror (APLOG_MARK, LOG_WARNING, 0, c, APLOGNO(02616)
+                "event_resume_suspended: Thread isn't suspended");
+        return APR_EGENERAL;
+    }
+    apr_atomic_dec32(&suspended_count);
+    c->suspended_baton = NULL;
+
+    apr_thread_mutex_lock(timeout_mutex);
+    TO_QUEUE_APPEND(write_completion_q, cs);
+    cs->pfd.reqevents = (
+            cs->pub.sense == CONN_SENSE_WANT_READ ? APR_POLLIN :
+                    APR_POLLOUT) | APR_POLLHUP | APR_POLLERR;
+    cs->pub.sense = CONN_SENSE_DEFAULT;
+    apr_pollset_add(event_pollset, &cs->pfd);
+    apr_thread_mutex_unlock(timeout_mutex);
+
+    return OK;
 }
 
 /* conns_this_child has gone to zero or below.  See if the admin coded
@@ -3478,6 +3509,7 @@ static void event_hooks(apr_pool_t * p)
                                         APR_HOOK_MIDDLE);
     ap_hook_pre_read_request(event_pre_read_request, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_mpm_get_name(event_get_name, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_mpm_resume_suspended(event_resume_suspended, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
 static const char *set_daemons_to_start(cmd_parms *cmd, void *dummy,
