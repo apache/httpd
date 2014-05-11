@@ -429,6 +429,16 @@ AP_DECLARE_HOOK(apr_status_t, mpm_register_timed_callback,
 AP_DECLARE_HOOK(apr_status_t, mpm_register_socket_callback,
                 (apr_socket_t **s, apr_pool_t *p, int for_read, ap_mpm_callback_fn_t *cbfn, void *baton))
 
+/* register the specified callback, with timeout 
+ * @ingroup hooks
+ *
+ */
+AP_DECLARE_HOOK(apr_status_t, mpm_register_socket_callback_timeout,
+                (apr_socket_t **s, apr_pool_t *p, int for_read, 
+                 ap_mpm_callback_fn_t *cbfn,  
+                 ap_mpm_callback_fn_t *tofn, 
+                 void *baton, 
+                 apr_time_t timeout))
 /**
  * Unregister the specified callback
  * @ingroup hooks

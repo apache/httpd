@@ -68,8 +68,9 @@ struct timer_event_t {
     apr_time_t when;
     ap_mpm_callback_fn_t *cbfunc;
     void *baton;
+    int canceled;           
+    apr_pollfd_t **remove;  
 };
-
 
 struct fd_queue_t
 {

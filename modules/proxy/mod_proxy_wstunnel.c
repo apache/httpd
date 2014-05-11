@@ -32,13 +32,13 @@ typedef struct ws_baton_t {
     apr_socket_t *client_soc;
     apr_pollset_t *pollset;
     apr_bucket_brigade *bb;
-    int is_client;
-    apr_pool_t *subpool;
-    char *scheme;
+    apr_pool_t *subpool;        /* cleared before each suspend, destroyed when request ends */
+    char *scheme;               /* required to release the proxy connection */
 } ws_baton_t;
 
 static int proxy_wstunnel_transfer(request_rec *r, conn_rec *c_i, conn_rec *c_o,
                                      apr_bucket_brigade *bb, char *name);
+static void proxy_wstunnel_callback(void *b);
 
 static int proxy_wstunnel_pump(ws_baton_t *baton, apr_time_t timeout, int try_async) {
     request_rec *r = baton->r;
@@ -55,7 +55,6 @@ static int proxy_wstunnel_pump(ws_baton_t *baton, apr_time_t timeout, int try_as
     apr_bucket_brigade *bb = baton->bb;
 
     while(1) { 
-        ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r, "poll timeout is %"APR_TIME_T_FMT"ms %s", apr_time_as_msec(timeout), try_async ? "async" : "sync");
         if ((rv = apr_pollset_poll(pollset, timeout, &pollcnt, &signalled))
                 != APR_SUCCESS) {
             if (APR_STATUS_IS_EINTR(rv)) {
@@ -63,7 +62,7 @@ static int proxy_wstunnel_pump(ws_baton_t *baton, apr_time_t timeout, int try_as
             }
             else if (APR_STATUS_IS_TIMEUP(rv)) { 
                 if (try_async) { 
-                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02542) "Attempting to go async");
+                    ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, APLOGNO(02542) "Attempting to go async");
                     return SUSPENDED;
                 }
                 else { 
@@ -137,30 +136,56 @@ static int proxy_wstunnel_pump(ws_baton_t *baton, apr_time_t timeout, int try_as
     return OK;
 }
 
+static void proxy_wstunnel_finish(ws_baton_t *baton) { 
+    ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, baton->r, "proxy_wstunnel_finish");
+    baton->proxy_connrec->close = 1; /* new handshake expected on each back-conn */
+    baton->r->connection->keepalive = AP_CONN_CLOSE;
+    ap_proxy_release_connection(baton->scheme, baton->proxy_connrec, baton->r->server);
+    ap_finalize_request_protocol(baton->r);
+    ap_lingering_close(baton->r->connection);
+    apr_socket_close(baton->client_soc);
+    ap_process_request_after_handler(baton->r); /* don't touch baton or r after here */
+}
+
+/* If neither socket becomes readable in the specified timeout,
+ * this callback will kill the request.  We do not have to worry about
+ * having a cancel and a IO both queued.
+ */
+static void proxy_wstunnel_cancel_callback(void *b)
+{ 
+    ws_baton_t *baton = (ws_baton_t*)b;
+    ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, baton->r, "proxy_wstunnel_cancel_callback, IO timed out");
+    proxy_wstunnel_finish(baton);
+    return;
+}
+
+/* Invoked by the event loop when data is ready on either end. 
+ *  Pump both ends until they'd block and then start over again 
+ *  We don't need the invoke_mtx, since we never put multiple callback events
+ *  in the queue.
+ */
 static void proxy_wstunnel_callback(void *b) { 
     int status;
+    apr_socket_t *sockets[3] = {NULL, NULL, NULL};
     ws_baton_t *baton = (ws_baton_t*)b;
     proxyws_dir_conf *dconf = ap_get_module_config(baton->r->per_dir_config, &proxy_wstunnel_module);
-
-    apr_socket_t *sockets[3] = {NULL, NULL, NULL};
-    apr_thread_mutex_lock(baton->r->invoke_mtx);
     apr_pool_clear(baton->subpool);
     status = proxy_wstunnel_pump(baton, dconf->async_delay, dconf->is_async);
-    sockets[0] = baton->client_soc;
-    sockets[1] = baton->server_soc;
     if (status == SUSPENDED) {
-        ap_mpm_register_socket_callback(sockets, baton->subpool, 1, proxy_wstunnel_callback, baton);
+        sockets[0] = baton->client_soc;
+        sockets[1] = baton->server_soc;
+        ap_mpm_register_socket_callback_timeout(sockets, baton->subpool, 1, 
+            proxy_wstunnel_callback, 
+            proxy_wstunnel_cancel_callback, 
+            baton, 
+            dconf->idle_timeout);
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, baton->r, "proxy_wstunnel_callback suspend");
     }
-    else {
-        ap_mpm_unregister_socket_callback(sockets, baton->subpool);
-        ap_proxy_release_connection(baton->scheme, baton->proxy_connrec, baton->r->server);
-        apr_thread_mutex_unlock(baton->r->invoke_mtx);
-        ap_finalize_request_protocol(baton->r);
-        ap_process_request_after_handler(baton->r);
-        return;
+    else { 
+        proxy_wstunnel_finish(baton);
     }
-    apr_thread_mutex_unlock(baton->r->invoke_mtx);
 }
+
 
 /*
  * Canonicalise http-like URLs.
@@ -403,15 +428,20 @@ static int ap_proxy_wstunnel_request(apr_pool_t *p, request_rec *r,
     }  
     else { 
         status = proxy_wstunnel_pump(baton, dconf->async_delay, dconf->is_async); 
+        apr_pool_clear(baton->subpool);
         if (status == SUSPENDED) {
             sockets[0] = baton->client_soc;
             sockets[1] = baton->server_soc;
-            status = ap_mpm_register_socket_callback(sockets, baton->subpool, 1, proxy_wstunnel_callback, baton);
+            status = ap_mpm_register_socket_callback_timeout(sockets, baton->subpool, 1, 
+                         proxy_wstunnel_callback, 
+                         proxy_wstunnel_cancel_callback, 
+                         baton, 
+                         dconf->idle_timeout);
             if (status == APR_SUCCESS) { 
                 return SUSPENDED;
             }
             else if (status == APR_ENOTIMPL) { 
-                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02544) "No async support");
+                ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, APLOGNO(02544) "No async support");
                 status = proxy_wstunnel_pump(baton, dconf->idle_timeout, 0); /* force no async */
             }
             else { 
@@ -550,7 +580,7 @@ static const command_rec ws_proxy_cmds[] =
                  "on if idle websockets connections should be monitored asyncronously"),
 
     AP_INIT_TAKE1("ProxyWebsocketIdleTimeout", proxyws_set_idle, NULL, RSRC_CONF|ACCESS_CONF,
-                 "timeout for activity in either direction, unlimited by default. Not currently supported with ProxyWebsocketAsync"),
+                 "timeout for activity in either direction, unlimited by default"),
 
     AP_INIT_TAKE1("ProxyWebsocketAsyncDelay", proxyws_set_aysnch_delay, NULL, RSRC_CONF|ACCESS_CONF,
                  "amount of time to poll before going asyncronous"),

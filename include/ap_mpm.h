@@ -213,7 +213,6 @@ AP_DECLARE(apr_status_t) ap_mpm_register_timed_callback(apr_time_t t,
  * APR_ENOTIMPL if no asynch support, or an apr_pollset_add error.
  * @remark When activity is found on any 1 socket in the list, all are removed 
  * from the pollset and only 1 callback is issued.
- * @fn apr_status_t ap_mpm_register_socket_callback(apr_socket_t **s, apr_pool_t *p, int for_read, ap_mpm_callback_fn_t *cbfn, void *baton)
  */
 
 AP_DECLARE(apr_status_t) ap_mpm_register_socket_callback(apr_socket_t **s,
@@ -221,6 +220,30 @@ AP_DECLARE(apr_status_t) ap_mpm_register_socket_callback(apr_socket_t **s,
                                                          int for_read, 
                                                          ap_mpm_callback_fn_t *cbfn,
                                                          void *baton);
+ /**
+ * Register a callback on the readability or writability on a group of sockets, with a timeout
+ * @param s Null-terminated list of sockets
+ * @param p pool for use between registration and callback
+ * @param for_read Whether the sockets are monitored for read or writability
+ * @param cbfn The callback function
+ * @param tofn The callback function if the timeout expires
+ * @param baton userdata for the callback function
+ * @param timeout timeout for I/O in microseconds, unlimited if <= 0
+ * @return APR_SUCCESS if all sockets could be added to a pollset, 
+ * APR_ENOTIMPL if no asynch support, or an apr_pollset_add error.
+ * @remark When activity is found on any 1 socket in the list, all are removed 
+ * from the pollset and only 1 callback is issued. 
+ * @remark For each call, only one of tofn or cbfn will be called, never both.
+ */
+
+AP_DECLARE(apr_status_t) ap_mpm_register_socket_callback_timeout(apr_socket_t **s,
+                                                         apr_pool_t *p,
+                                                         int for_read, 
+                                                         ap_mpm_callback_fn_t *cbfn,
+                                                         ap_mpm_callback_fn_t *tofn,
+                                                         void *baton,
+                                                         apr_time_t timeout);
+
 
 AP_DECLARE(apr_status_t) ap_mpm_unregister_socket_callback(apr_socket_t **s, 
                                                            apr_pool_t *p);

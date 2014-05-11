@@ -320,7 +320,8 @@ typedef struct
  void *user_baton; 
  apr_pollfd_t **pfds;
  int nsock;
- int signaled;
+ timer_event_t *cancel_event;    /* If a timeout was requested, a pointer to the timer event */
+ unsigned int signaled:1;
 } socket_callback_baton_t;
 
 /* data retained by event across load/unload of the module
@@ -1393,12 +1394,15 @@ static int indexing_compk(void *ac, void *b)
 
 static apr_thread_mutex_t *g_timer_skiplist_mtx;
 
-static apr_status_t event_register_timed_callback(apr_time_t t,
-                                                  ap_mpm_callback_fn_t *cbfn,
-                                                  void *baton)
+static timer_event_t * event_get_timer_event(apr_time_t t,
+                                             ap_mpm_callback_fn_t *cbfn,
+                                             void *baton,
+                                             int insert, 
+                                             apr_pollfd_t **remove)
 {
     timer_event_t *te;
     /* oh yeah, and make locking smarter/fine grained. */
+
     apr_thread_mutex_lock(g_timer_skiplist_mtx);
 
     if (!APR_RING_EMPTY(&timer_free_ring, timer_event_t, link)) {
@@ -1412,23 +1416,43 @@ static apr_status_t event_register_timed_callback(apr_time_t t,
 
     te->cbfunc = cbfn;
     te->baton = baton;
-    /* XXXXX: optimize */
-    te->when = t + apr_time_now();
+    te->canceled = 0;
+    te->when = t;
+    te->remove = remove;
 
-    /* Okay, insert sorted by when.. */
-    apr_skiplist_insert(timer_skiplist, (void *)te);
-
+    if (insert) { 
+        /* Okay, insert sorted by when.. */
+        apr_skiplist_insert(timer_skiplist, (void *)te);
+    }
     apr_thread_mutex_unlock(g_timer_skiplist_mtx);
 
+    return te;
+}
+
+static apr_status_t event_register_timed_callback_ex(apr_time_t t,
+                                                  ap_mpm_callback_fn_t *cbfn,
+                                                  void *baton, 
+                                                  apr_pollfd_t **remove)
+{
+    event_get_timer_event(t + apr_time_now(), cbfn, baton, 1, remove);
     return APR_SUCCESS;
 }
 
+static apr_status_t event_register_timed_callback(apr_time_t t,
+                                                  ap_mpm_callback_fn_t *cbfn,
+                                                  void *baton)
+{
+    event_register_timed_callback_ex(t, cbfn, baton, NULL);
+    return APR_SUCCESS;
+}
 
-static apr_status_t event_register_socket_callback(apr_socket_t **s, 
+static apr_status_t event_register_socket_callback_ex(apr_socket_t **s, 
                                                   apr_pool_t *p, 
                                                   int for_read,
                                                   ap_mpm_callback_fn_t *cbfn,
-                                                  void *baton)
+                                                  ap_mpm_callback_fn_t *tofn,
+                                                  void *baton, 
+                                                  apr_time_t timeout)
 {
     apr_status_t rc, final_rc= APR_SUCCESS;
     int i = 0, nsock;
@@ -1440,7 +1464,8 @@ static apr_status_t event_register_socket_callback(apr_socket_t **s,
         i++; 
     }
     nsock = i;
-    pfds = apr_palloc(p, nsock * sizeof(apr_pollfd_t*));
+
+    pfds = apr_pcalloc(p, (nsock+1) * sizeof(apr_pollfd_t*));
 
     pt->type = PT_USER;
     pt->baton = scb;
@@ -1451,15 +1476,35 @@ static apr_status_t event_register_socket_callback(apr_socket_t **s,
     scb->pfds = pfds;
 
     for (i = 0; i<nsock; i++) { 
-        pfds[i] = apr_palloc(p, sizeof(apr_pollfd_t));
+        pfds[i] = apr_pcalloc(p, sizeof(apr_pollfd_t));
         pfds[i]->desc_type = APR_POLL_SOCKET;
         pfds[i]->reqevents = (for_read ? APR_POLLIN : APR_POLLOUT) | APR_POLLERR | APR_POLLHUP;
         pfds[i]->desc.s = s[i];
+        pfds[i]->p = p;
         pfds[i]->client_data = pt;
+    }
+
+    if (timeout > 0) { 
+        /* XXX:  This cancel timer event count fire before the pollset is updated */
+        scb->cancel_event = event_get_timer_event(timeout + apr_time_now(), tofn, baton, 1, pfds);
+    }
+    for (i = 0; i<nsock; i++) { 
         rc = apr_pollset_add(event_pollset, pfds[i]);
         if (rc != APR_SUCCESS) final_rc = rc;
     }
     return final_rc;
+}
+static apr_status_t event_register_socket_callback(apr_socket_t **s, 
+                                                  apr_pool_t *p, 
+                                                  int for_read,
+                                                  ap_mpm_callback_fn_t *cbfn,
+                                                  void *baton)
+{
+    return event_register_socket_callback_ex(s, p, for_read, 
+                                             cbfn, 
+                                             NULL, /* no timeout function */
+                                             baton, 
+                                             0     /* no timeout */);
 }
 static apr_status_t event_unregister_socket_callback(apr_socket_t **s, apr_pool_t *p)
 {
@@ -1484,6 +1529,7 @@ static apr_status_t event_unregister_socket_callback(apr_socket_t **s, apr_pool_
         rc = apr_pollset_remove(event_pollset, pfds[i]);
         if (rc != APR_SUCCESS && !APR_STATUS_IS_NOTFOUND(rc)) final_rc = APR_SUCCESS;
     }
+
     return final_rc;
 }
 
@@ -1670,6 +1716,28 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
             /* TOOD: what should do here? ugh. */
         }
 #endif
+        now = apr_time_now();
+        apr_thread_mutex_lock(g_timer_skiplist_mtx);
+        ep = apr_skiplist_peek(timer_skiplist);
+        while (ep) {
+            if (ep->when < now + EVENT_FUDGE_FACTOR) {
+                apr_skiplist_pop(timer_skiplist, NULL);
+                if (!ep->canceled) { 
+                    if (ep->remove != NULL) {
+                        for (apr_pollfd_t **pfds = (ep->remove); *pfds != NULL; pfds++) { 
+                            apr_pollset_remove(event_pollset, *pfds);
+                        }
+                    }
+                }
+                push_timer2worker(ep);
+            }
+            else {
+                break;
+            }
+            ep = apr_skiplist_peek(timer_skiplist);
+        }
+        apr_thread_mutex_unlock(g_timer_skiplist_mtx);
+
         rc = apr_pollset_poll(event_pollset, timeout_interval, &num, &out_pfd);
         if (rc != APR_SUCCESS) {
             if (APR_STATUS_IS_EINTR(rc)) {
@@ -1689,21 +1757,6 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                 || apr_atomic_read32(&connection_count) == 0)
                 break;
         }
-
-        now = apr_time_now();
-        apr_thread_mutex_lock(g_timer_skiplist_mtx);
-        ep = apr_skiplist_peek(timer_skiplist);
-        while (ep) {
-            if (ep->when < now + EVENT_FUDGE_FACTOR) {
-                apr_skiplist_pop(timer_skiplist, NULL);
-                push_timer2worker(ep);
-            }
-            else {
-                break;
-            }
-            ep = apr_skiplist_peek(timer_skiplist);
-        }
-        apr_thread_mutex_unlock(g_timer_skiplist_mtx);
 
         while (num) {
             pt = (listener_poll_type *) out_pfd->client_data;
@@ -1876,28 +1929,20 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                 timer_event_t *te; 
                 int i = 0;
                 socket_callback_baton_t *baton = (socket_callback_baton_t *) pt->baton;
+                baton->cancel_event->canceled = 1;
 
-                if (!baton->signaled) { 
+                /* We only signal once per N sockets with this baton */
+                if (!(baton->signaled)) { 
                     baton->signaled = 1;
-                    apr_thread_mutex_lock(g_timer_skiplist_mtx);
-
-                    if (!APR_RING_EMPTY(&timer_free_ring, timer_event_t, link)) {
-                        te = APR_RING_FIRST(&timer_free_ring);
-                        APR_RING_REMOVE(te, link);
+                    te = event_get_timer_event(-1 /* fake timer */, 
+                                               baton->cbfunc, 
+                                               baton->user_baton, 
+                                               0, /* don't insert it */
+                                               NULL /* no associated socket callback */);
+                    /* remove other sockets in my set */
+                    for (i = 0; i < baton->nsock; i++) { 
+                        apr_pollset_remove(event_pollset, baton->pfds[i]); 
                     }
-                    else {
-                        te = apr_skiplist_alloc(timer_skiplist, sizeof(timer_event_t));
-                        APR_RING_ELEM_INIT(te, link);
-                    }
-                    apr_thread_mutex_unlock(g_timer_skiplist_mtx);
-
-                    for (i = 0; i < baton->nsock ; i++) { 
-                        apr_pollset_remove(event_pollset, baton->pfds[i]);
-                    }
-
-                    te->cbfunc = baton->cbfunc;
-                    te->baton = baton->user_baton;
-                    te->when = -1;
 
                     push_timer2worker(te);
                 }
@@ -2055,7 +2100,6 @@ static void *APR_THREAD_FUNC worker_thread(apr_thread_t * thd, void *dummy)
         }
         if (te != NULL) {
             te->cbfunc(te->baton);
-
             {
                 apr_thread_mutex_lock(g_timer_skiplist_mtx);
                 APR_RING_INSERT_TAIL(&timer_free_ring, te, timer_event_t, link);
@@ -3427,6 +3471,8 @@ static void event_hooks(apr_pool_t * p)
     ap_hook_mpm_register_timed_callback(event_register_timed_callback, NULL, NULL,
                                         APR_HOOK_MIDDLE);
     ap_hook_mpm_register_socket_callback(event_register_socket_callback, NULL, NULL,
+                                        APR_HOOK_MIDDLE);
+    ap_hook_mpm_register_socket_callback_timeout(event_register_socket_callback_ex, NULL, NULL,
                                         APR_HOOK_MIDDLE);
     ap_hook_mpm_unregister_socket_callback(event_unregister_socket_callback, NULL, NULL,
                                         APR_HOOK_MIDDLE);
