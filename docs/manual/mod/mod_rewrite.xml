@@ -463,27 +463,30 @@ Alias /myapp /opt/myapp-1.2.3
 
             <tr>
               <td>
-                 HTTP_USER_AGENT<br />
-                 HTTP_REFERER<br />
+                 HTTP_ACCEPT<br />
                  HTTP_COOKIE<br />
                  HTTP_FORWARDED<br />
                  HTTP_HOST<br />
                  HTTP_PROXY_CONNECTION<br />
-                 HTTP_ACCEPT<br />
+                 HTTP_REFERER<br />
+                 HTTP_USER_AGENT<br />
               </td>
 
               <td>
-                 REMOTE_ADDR<br />
+                 AUTH_TYPE<br />
                  CONN_REMOTE_ADDR<br />
-                 REMOTE_HOST<br />
-                 REMOTE_PORT<br />
-                 REMOTE_USER<br />
-                 REMOTE_IDENT<br />
-                 REQUEST_METHOD<br />
-                 SCRIPT_FILENAME<br />
+                 CONTEXT_PREFIX<br />
+                 CONTEXT_DOCUMENT_ROOT<br />
+                 IPV6<br />
                  PATH_INFO<br />
                  QUERY_STRING<br />
-                 AUTH_TYPE<br />
+                 REMOTE_ADDR<br />
+                 REMOTE_HOST<br />
+                 REMOTE_IDENT<br />
+                 REMOTE_PORT<br />
+                 REMOTE_USER<br />
+                 REQUEST_METHOD<br />
+                 SCRIPT_FILENAME<br />
               </td>
 
               <td></td>
@@ -496,9 +499,11 @@ Alias /myapp /opt/myapp-1.2.3
             <tr>
               <td>
                  DOCUMENT_ROOT<br />
+                 SCRIPT_GROUP<br />
+                 SCRIPT_USER<br />
+                 SERVER_ADDR<br />
                  SERVER_ADMIN<br />
                  SERVER_NAME<br />
-                 SERVER_ADDR<br />
                  SERVER_PORT<br />
                  SERVER_PROTOCOL<br />
                  SERVER_SOFTWARE<br />
@@ -517,14 +522,14 @@ Alias /myapp /opt/myapp-1.2.3
 
               <td>
                  API_VERSION<br />
-                 THE_REQUEST<br />
-                 REQUEST_URI<br />
-                 REQUEST_FILENAME<br />
-                 IS_SUBREQ<br />
-                 HTTPS<br />
-                 REQUEST_SCHEME<br />
-                 REMOTE_ADDR<br />
                  CONN_REMOTE_ADDR<br />
+                 HTTPS<br />
+                 IS_SUBREQ<br />
+                 REMOTE_ADDR<br />
+                 REQUEST_FILENAME<br />
+                 REQUEST_SCHEME<br />
+                 REQUEST_URI<br />
+                 THE_REQUEST<br />
               </td>
             </tr>
           </table>
@@ -533,8 +538,8 @@ Alias /myapp /opt/myapp-1.2.3
                 correspond to the similarly named HTTP
                 MIME-headers, C variables of the Apache HTTP Server or
                 <code>struct tm</code> fields of the Unix system.
-                Most are documented elsewhere in the Manual or in
-                the CGI specification.</p>
+                Most are documented <a href="../expr.html#vars">here</a>
+                or elsewhere in the Manual or in the CGI specification.</p>
 
                 <p>SERVER_NAME and SERVER_PORT depend on the values of
                 <directive module="core">UseCanonicalName</directive> and
@@ -544,14 +549,6 @@ Alias /myapp /opt/myapp-1.2.3
                 <p>Those that are special to mod_rewrite include those below.</p>
         <note>
                 <dl>
-                  <dt><code>IS_SUBREQ</code></dt>
-
-                  <dd>Will contain the text "true" if the request
-                  currently being processed is a sub-request,
-                  "false" otherwise. Sub-requests may be generated
-                  by modules that need to resolve additional files
-                  or URIs in order to complete their tasks.</dd>
-
                   <dt><code>API_VERSION</code></dt>
 
                   <dd>This is the version of the Apache httpd module API
@@ -563,21 +560,30 @@ Alias /myapp /opt/myapp-1.2.3
                   instance, it is 19990320:10), but is mainly of
                   interest to module authors.</dd>
 
-                  <dt><code>THE_REQUEST</code></dt>
+                  <dt><code>CONN_REMOTE_ADDR</code></dt>
 
-                  <dd>The full HTTP request line sent by the
-                  browser to the server (e.g., "<code>GET
-                  /index.html HTTP/1.1</code>"). This does not
-                  include any additional headers sent by the
-                  browser.  This value has not been unescaped
-                  (decoded), unlike most other variables below.</dd>
+                  <dd>Since 2.4.8: The peer IP address of the connection (see the
+                  <module>mod_remoteip</module> module).</dd>
 
-                  <dt><code>REQUEST_URI</code></dt>
+                  <dt><code>HTTPS</code></dt>
 
-                  <dd>The path component of the requested URI,
-                  such as "/index.html".  This notably excludes the
-                  query string which is available as as its own variable
-                  named <code>QUERY_STRING</code>.</dd>
+                  <dd>Will contain the text "on" if the connection is
+                  using SSL/TLS, or "off" otherwise.  (This variable
+                  can be safely used regardless of whether or not
+                  <module>mod_ssl</module> is loaded).</dd>
+
+                  <dt><code>IS_SUBREQ</code></dt>
+
+                  <dd>Will contain the text "true" if the request
+                  currently being processed is a sub-request,
+                  "false" otherwise. Sub-requests may be generated
+                  by modules that need to resolve additional files
+                  or URIs in order to complete their tasks.</dd>
+
+                  <dt><code>REMOTE_ADDR</code></dt>
+
+                  <dd>The IP address of the remote host (see the
+                  <module>mod_remoteip</module> module).</dd>
 
                   <dt><code>REQUEST_FILENAME</code></dt>
 
@@ -592,26 +598,27 @@ Alias /myapp /opt/myapp-1.2.3
                   <code>REQUEST_URI</code> to map the request to a file.
                   </dd>
 
-                  <dt><code>HTTPS</code></dt>
-
-                  <dd>Will contain the text "on" if the connection is
-                  using SSL/TLS, or "off" otherwise.  (This variable
-                  can be safely used regardless of whether or not
-                  <module>mod_ssl</module> is loaded).</dd>
-
                   <dt><code>REQUEST_SCHEME</code></dt>
 
                   <dd>Will contain the scheme of the request (usually
                   "http" or "https"). This value can be influenced with
                   <directive module="core">ServerName</directive>.</dd>
 
-                  <dt><code>REMOTE_ADDR</code></dt>
-                  <dd>The IP address of the remote host (see the
-                  <module>mod_remoteip</module> module).</dd>
+                  <dt><code>REQUEST_URI</code></dt>
 
-                  <dt><code>CONN_REMOTE_ADDR</code></dt>
-                  <dd>Since 2.4.8: The peer IP address of the connection (see the
-                  <module>mod_remoteip</module> module).</dd>
+                  <dd>The path component of the requested URI,
+                  such as "/index.html".  This notably excludes the
+                  query string which is available as as its own variable
+                  named <code>QUERY_STRING</code>.</dd>
+
+                  <dt><code>THE_REQUEST</code></dt>
+
+                  <dd>The full HTTP request line sent by the
+                  browser to the server (e.g., "<code>GET
+                  /index.html HTTP/1.1</code>"). This does not
+                  include any additional headers sent by the
+                  browser.  This value has not been unescaped
+                  (decoded), unlike most other variables below.</dd>
 
                 </dl>
 </note>
@@ -1183,7 +1190,7 @@ cannot use <code>$N</code> in the substitution string!
       details, and examples, for each flag, are available in the <a
       href="../rewrite/flags.html">Rewrite Flags document</a>.</p>
 
-    <table border="1">
+    <table border="1" style="zebra">
     <tr><th>Flag and syntax</th>
         <th>Function</th>
     </tr>
@@ -1348,7 +1355,7 @@ directive.</p>
       /somepath/pathinfo</code>'':</strong><br />
       </p>
 
-<table border="1">
+<table border="1" style="zebra">
 <tr>
 <th>Given Rule</th>
 <th>Resulting Substitution</th>
@@ -1423,7 +1430,7 @@ directive.</p>
       /somepath/localpath/pathinfo</code>'':</strong><br />
      </p>
 
-<table border="1">
+<table border="1" style="zebra">
 
 <tr>
 <th>Given Rule</th>
