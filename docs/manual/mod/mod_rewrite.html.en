@@ -209,27 +209,30 @@ Alias /myapp /opt/myapp-1.2.3
 
             <tr>
               <td>
-                 HTTP_USER_AGENT<br />
-                 HTTP_REFERER<br />
+                 HTTP_ACCEPT<br />
                  HTTP_COOKIE<br />
                  HTTP_FORWARDED<br />
                  HTTP_HOST<br />
                  HTTP_PROXY_CONNECTION<br />
-                 HTTP_ACCEPT<br />
+                 HTTP_REFERER<br />
+                 HTTP_USER_AGENT<br />
               </td>
 
               <td>
-                 REMOTE_ADDR<br />
+                 AUTH_TYPE<br />
                  CONN_REMOTE_ADDR<br />
-                 REMOTE_HOST<br />
-                 REMOTE_PORT<br />
-                 REMOTE_USER<br />
-                 REMOTE_IDENT<br />
-                 REQUEST_METHOD<br />
-                 SCRIPT_FILENAME<br />
+                 CONTEXT_PREFIX<br />
+                 CONTEXT_DOCUMENT_ROOT<br />
+                 IPV6<br />
                  PATH_INFO<br />
                  QUERY_STRING<br />
-                 AUTH_TYPE<br />
+                 REMOTE_ADDR<br />
+                 REMOTE_HOST<br />
+                 REMOTE_IDENT<br />
+                 REMOTE_PORT<br />
+                 REMOTE_USER<br />
+                 REQUEST_METHOD<br />
+                 SCRIPT_FILENAME<br />
               </td>
 
               <td />
@@ -242,9 +245,11 @@ Alias /myapp /opt/myapp-1.2.3
             <tr>
               <td>
                  DOCUMENT_ROOT<br />
+                 SCRIPT_GROUP<br />
+                 SCRIPT_USER<br />
+                 SERVER_ADDR<br />
                  SERVER_ADMIN<br />
                  SERVER_NAME<br />
-                 SERVER_ADDR<br />
                  SERVER_PORT<br />
                  SERVER_PROTOCOL<br />
                  SERVER_SOFTWARE<br />
@@ -263,14 +268,14 @@ Alias /myapp /opt/myapp-1.2.3
 
               <td>
                  API_VERSION<br />
-                 THE_REQUEST<br />
-                 REQUEST_URI<br />
-                 REQUEST_FILENAME<br />
-                 IS_SUBREQ<br />
-                 HTTPS<br />
-                 REQUEST_SCHEME<br />
-                 REMOTE_ADDR<br />
                  CONN_REMOTE_ADDR<br />
+                 HTTPS<br />
+                 IS_SUBREQ<br />
+                 REMOTE_ADDR<br />
+                 REQUEST_FILENAME<br />
+                 REQUEST_SCHEME<br />
+                 REQUEST_URI<br />
+                 THE_REQUEST<br />
               </td>
             </tr>
           </table>
@@ -279,8 +284,8 @@ Alias /myapp /opt/myapp-1.2.3
                 correspond to the similarly named HTTP
                 MIME-headers, C variables of the Apache HTTP Server or
                 <code>struct tm</code> fields of the Unix system.
-                Most are documented elsewhere in the Manual or in
-                the CGI specification.</p>
+                Most are documented <a href="../expr.html#vars">here</a>
+                or elsewhere in the Manual or in the CGI specification.</p>
 
                 <p>SERVER_NAME and SERVER_PORT depend on the values of
                 <code class="directive"><a href="../mod/core.html#usecanonicalname">UseCanonicalName</a></code> and
@@ -290,14 +295,6 @@ Alias /myapp /opt/myapp-1.2.3
                 <p>Those that are special to mod_rewrite include those below.</p>
         <div class="note">
                 <dl>
-                  <dt><code>IS_SUBREQ</code></dt>
-
-                  <dd>Will contain the text "true" if the request
-                  currently being processed is a sub-request,
-                  "false" otherwise. Sub-requests may be generated
-                  by modules that need to resolve additional files
-                  or URIs in order to complete their tasks.</dd>
-
                   <dt><code>API_VERSION</code></dt>
 
                   <dd>This is the version of the Apache httpd module API
@@ -309,21 +306,30 @@ Alias /myapp /opt/myapp-1.2.3
                   instance, it is 19990320:10), but is mainly of
                   interest to module authors.</dd>
 
-                  <dt><code>THE_REQUEST</code></dt>
+                  <dt><code>CONN_REMOTE_ADDR</code></dt>
 
-                  <dd>The full HTTP request line sent by the
-                  browser to the server (e.g., "<code>GET
-                  /index.html HTTP/1.1</code>"). This does not
-                  include any additional headers sent by the
-                  browser.  This value has not been unescaped
-                  (decoded), unlike most other variables below.</dd>
+                  <dd>Since 2.4.8: The peer IP address of the connection (see the
+                  <code class="module"><a href="../mod/mod_remoteip.html">mod_remoteip</a></code> module).</dd>
 
-                  <dt><code>REQUEST_URI</code></dt>
+                  <dt><code>HTTPS</code></dt>
 
-                  <dd>The path component of the requested URI,
-                  such as "/index.html".  This notably excludes the
-                  query string which is available as as its own variable
-                  named <code>QUERY_STRING</code>.</dd>
+                  <dd>Will contain the text "on" if the connection is
+                  using SSL/TLS, or "off" otherwise.  (This variable
+                  can be safely used regardless of whether or not
+                  <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> is loaded).</dd>
+
+                  <dt><code>IS_SUBREQ</code></dt>
+
+                  <dd>Will contain the text "true" if the request
+                  currently being processed is a sub-request,
+                  "false" otherwise. Sub-requests may be generated
+                  by modules that need to resolve additional files
+                  or URIs in order to complete their tasks.</dd>
+
+                  <dt><code>REMOTE_ADDR</code></dt>
+
+                  <dd>The IP address of the remote host (see the
+                  <code class="module"><a href="../mod/mod_remoteip.html">mod_remoteip</a></code> module).</dd>
 
                   <dt><code>REQUEST_FILENAME</code></dt>
 
@@ -338,26 +344,27 @@ Alias /myapp /opt/myapp-1.2.3
                   <code>REQUEST_URI</code> to map the request to a file.
                   </dd>
 
-                  <dt><code>HTTPS</code></dt>
-
-                  <dd>Will contain the text "on" if the connection is
-                  using SSL/TLS, or "off" otherwise.  (This variable
-                  can be safely used regardless of whether or not
-                  <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> is loaded).</dd>
-
                   <dt><code>REQUEST_SCHEME</code></dt>
 
                   <dd>Will contain the scheme of the request (usually
                   "http" or "https"). This value can be influenced with
                   <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code>.</dd>
 
-                  <dt><code>REMOTE_ADDR</code></dt>
-                  <dd>The IP address of the remote host (see the
-                  <code class="module"><a href="../mod/mod_remoteip.html">mod_remoteip</a></code> module).</dd>
+                  <dt><code>REQUEST_URI</code></dt>
 
-                  <dt><code>CONN_REMOTE_ADDR</code></dt>
-                  <dd>Since 2.4.8: The peer IP address of the connection (see the
-                  <code class="module"><a href="../mod/mod_remoteip.html">mod_remoteip</a></code> module).</dd>
+                  <dd>The path component of the requested URI,
+                  such as "/index.html".  This notably excludes the
+                  query string which is available as as its own variable
+                  named <code>QUERY_STRING</code>.</dd>
+
+                  <dt><code>THE_REQUEST</code></dt>
+
+                  <dd>The full HTTP request line sent by the
+                  browser to the server (e.g., "<code>GET
+                  /index.html HTTP/1.1</code>"). This does not
+                  include any additional headers sent by the
+                  browser.  This value has not been unescaped
+                  (decoded), unlike most other variables below.</dd>
 
                 </dl>
 </div>
@@ -1171,129 +1178,128 @@ cannot use <code>$N</code> in the substitution string!
       brackets, of any of the flags in the following table. More
       details, and examples, for each flag, are available in the <a href="../rewrite/flags.html">Rewrite Flags document</a>.</p>
 
-    <table class="bordered">
-    <tr><th>Flag and syntax</th>
+    <table class="bordered"><tr class="header"><th>Flag and syntax</th>
         <th>Function</th>
     </tr>
-    <tr>
+<tr>
         <td>B</td>
         <td>Escape non-alphanumeric characters <em>before</em> applying
         the transformation. <em><a href="../rewrite/flags.html#flag_b">details ...</a></em></td>
     </tr>
-    <tr>
+<tr class="odd">
         <td>chain|C</td>
         <td>Rule is chained to the following rule. If the rule fails,
         the rule(s) chained to it will be skipped. <em><a href="../rewrite/flags.html#flag_c">details ...</a></em></td>
     </tr>
-    <tr>
+<tr>
         <td>cookie|CO=<em>NAME</em>:<em>VAL</em></td>
         <td>Sets a cookie in the client browser. Full syntax is:
         CO=<em>NAME</em>:<em>VAL</em>:<em>domain</em>[:<em>lifetime</em>[:<em>path</em>[:<em>secure</em>[:<em>httponly</em>]]]] <em><a href="../rewrite/flags.html#flag_co">details ...</a></em>
         </td>
     </tr>
-    <tr>
+<tr class="odd">
         <td>discardpath|DPI</td>
         <td>Causes the PATH_INFO portion of the rewritten URI to be
         discarded. <em><a href="../rewrite/flags.html#flag_dpi">details
         ...</a></em></td>
     </tr>
-    <tr>
+<tr>
         <td>END</td>
         <td>Stop the rewriting process immediately and don't apply any
         more rules. Also prevents further execution of rewrite rules
         in per-directory and .htaccess context. (Available in 2.3.9 and later)
         <em><a href="../rewrite/flags.html#flag_end">details ...</a></em></td>
     </tr>
-    <tr>
+<tr class="odd">
         <td>env|E=[!]<em>VAR</em>[:<em>VAL</em>]</td>
         <td>Causes an environment variable <em>VAR</em> to be set (to the
         value <em>VAL</em> if provided). The form !<em>VAR</em> causes
         the environment variable <em>VAR</em> to be unset.
         <em><a href="../rewrite/flags.html#flag_e">details ...</a></em></td>
     </tr>
-    <tr>
+<tr>
         <td>forbidden|F</td>
         <td>Returns a 403 FORBIDDEN response to the client browser.
         <em><a href="../rewrite/flags.html#flag_f">details ...</a></em></td>
     </tr>
-    <tr>
+<tr class="odd">
         <td>gone|G</td>
         <td>Returns a 410 GONE response to the client browser. <em><a href="../rewrite/flags.html#flag_g">details ...</a></em></td>
     </tr>
-    <tr>
+<tr>
         <td>Handler|H=<em>Content-handler</em></td>
         <td>Causes the resulting URI to be sent to the specified
         <em>Content-handler</em> for processing. <em><a href="../rewrite/flags.html#flag_h">details ...</a></em></td>
     </tr>
-    <tr>
+<tr class="odd">
         <td>last|L</td>
         <td>Stop the rewriting process immediately and don't apply any
         more rules. Especially note caveats for per-directory and
         .htaccess context (see also the END flag). <em><a href="../rewrite/flags.html#flag_l">details ...</a></em></td>
     </tr>
-    <tr>
+<tr>
         <td>next|N</td>
         <td>Re-run the rewriting process, starting again with the first
         rule, using the result of the ruleset so far as a starting
         point. <em><a href="../rewrite/flags.html#flag_n">details
         ...</a></em></td>
     </tr>
-    <tr>
+<tr class="odd">
         <td>nocase|NC</td>
         <td>Makes the pattern comparison case-insensitive.
         <em><a href="../rewrite/flags.html#flag_nc">details ...</a></em></td>
     </tr>
-    <tr>
+<tr>
         <td>noescape|NE</td>
         <td>Prevent mod_rewrite from applying hexcode escaping of
         special characters in the result of the rewrite. <em><a href="../rewrite/flags.html#flag_ne">details ...</a></em></td>
     </tr>
-    <tr>
+<tr class="odd">
         <td>nosubreq|NS</td>
         <td>Causes a rule to be skipped if the current request is an
         internal sub-request. <em><a href="../rewrite/flags.html#flag_ns">details ...</a></em></td>
     </tr>
-    <tr>
+<tr>
         <td>proxy|P</td>
         <td>Force the substitution URL to be internally sent as a proxy
         request. <em><a href="../rewrite/flags.html#flag_p">details
         ...</a></em></td>
     </tr>
-    <tr>
+<tr class="odd">
         <td>passthrough|PT</td>
         <td>Forces the resulting URI to be passed back to the URL
         mapping engine for processing of other URI-to-filename
         translators, such as <code>Alias</code> or
         <code>Redirect</code>. <em><a href="../rewrite/flags.html#flag_pt">details ...</a></em></td>
     </tr>
-    <tr>
+<tr>
         <td>qsappend|QSA</td>
         <td>Appends any query string from the original request URL to 
         any query string created in the rewrite target.<em><a href="../rewrite/flags.html#flag_qsa">details ...</a></em></td>
     </tr>
-    <tr>
+<tr class="odd">
         <td>qsdiscard|QSD</td>
         <td>Discard any query string attached to the incoming URI.
         <em><a href="../rewrite/flags.html#flag_qsd">details
         ...</a></em></td>
     </tr>
-    <tr>
+<tr>
         <td>redirect|R[=<em>code</em>]</td>
         <td>Forces an external redirect, optionally with the specified
         HTTP status code. <em><a href="../rewrite/flags.html#flag_r">details ...</a></em>
         </td>
     </tr>
-    <tr>
+<tr class="odd">
         <td>skip|S=<em>num</em></td>
         <td>Tells the rewriting engine to skip the next <em>num</em>
         rules if the current rule matches. <em><a href="../rewrite/flags.html#flag_s">details ...</a></em></td>
     </tr>
-    <tr>
+<tr>
         <td>type|T=<em>MIME-type</em></td>
         <td>Force the <a class="glossarylink" href="../glossary.html#mime-type" title="see glossary">MIME-type</a> of the target file
         to be the specified type. <em><a href="../rewrite/flags.html#flag_t">details ...</a></em></td>
     </tr>
-    </table>
+</table>
 
 <div class="note"><h3>Home directory expansion</h3>
 <p> When the substitution string begins with a string
@@ -1316,68 +1322,55 @@ directive.</p>
       /somepath/pathinfo</code>'':</strong><br />
       </p>
 
-<table class="bordered">
-<tr>
+<table class="bordered"><tr class="header">
 <th>Given Rule</th>
 <th>Resulting Substitution</th>
 </tr>
-
 <tr>
 <td>^/somepath(.*) otherpath$1</td>
 <td>invalid, not supported</td>
 </tr>
-
-<tr>
+<tr class="odd">
 <td>^/somepath(.*) otherpath$1  [R]</td>
 <td>invalid, not supported</td>
 </tr>
-
 <tr>
 <td>^/somepath(.*) otherpath$1  [P]</td>
 <td>invalid, not supported</td>
 </tr>
-
-<tr>
+<tr class="odd">
 <td>^/somepath(.*) /otherpath$1</td>
 <td>/otherpath/pathinfo</td>
 </tr>
-
 <tr>
 <td>^/somepath(.*) /otherpath$1 [R]</td>
 <td>http://thishost/otherpath/pathinfo via external redirection</td>
 </tr>
-
-<tr>
+<tr class="odd">
 <td>^/somepath(.*) /otherpath$1 [P]</td>
 <td>doesn't make sense, not supported</td>
 </tr>
-
 <tr>
 <td>^/somepath(.*) http://thishost/otherpath$1</td>
 <td>/otherpath/pathinfo</td>
 </tr>
-
-<tr>
+<tr class="odd">
 <td>^/somepath(.*) http://thishost/otherpath$1 [R]</td>
 <td>http://thishost/otherpath/pathinfo via external redirection</td>
 </tr>
-
 <tr>
 <td>^/somepath(.*) http://thishost/otherpath$1 [P]</td>
 <td>doesn't make sense, not supported</td>
 </tr>
-
-<tr>
+<tr class="odd">
 <td>^/somepath(.*) http://otherhost/otherpath$1</td>
 <td>http://otherhost/otherpath/pathinfo via external redirection</td>
 </tr>
-
 <tr>
 <td>^/somepath(.*) http://otherhost/otherpath$1 [R]</td>
 <td>http://otherhost/otherpath/pathinfo via external redirection (the [R] flag is redundant)</td>
 </tr>
-
-<tr>
+<tr class="odd">
 <td>^/somepath(.*) http://otherhost/otherpath$1 [P]</td>
 <td>http://otherhost/otherpath/pathinfo via internal proxy</td>
 </tr>
@@ -1391,74 +1384,59 @@ directive.</p>
       /somepath/localpath/pathinfo</code>'':</strong><br />
      </p>
 
-<table class="bordered">
-
-<tr>
+<table class="bordered"><tr class="header">
 <th>Given Rule</th>
 <th>Resulting Substitution</th>
 </tr>
-
 <tr>
 <td>^localpath(.*) otherpath$1</td>
 <td>/somepath/otherpath/pathinfo</td>
 </tr>
-
-<tr>
+<tr class="odd">
 <td>^localpath(.*) otherpath$1  [R]</td>
 <td>http://thishost/somepath/otherpath/pathinfo via external
 redirection</td>
 </tr>
-
 <tr>
 <td>^localpath(.*) otherpath$1  [P]</td>
 <td>doesn't make sense, not supported</td>
 </tr>
-
-<tr>
+<tr class="odd">
 <td>^localpath(.*) /otherpath$1</td>
 <td>/otherpath/pathinfo</td>
 </tr>
-
 <tr>
 <td>^localpath(.*) /otherpath$1 [R]</td>
 <td>http://thishost/otherpath/pathinfo via external redirection</td>
 </tr>
-
-<tr>
+<tr class="odd">
 <td>^localpath(.*) /otherpath$1 [P]</td>
 <td>doesn't make sense, not supported</td>
 </tr>
-
 <tr>
 <td>^localpath(.*) http://thishost/otherpath$1</td>
 <td>/otherpath/pathinfo</td>
 </tr>
-
-<tr>
+<tr class="odd">
 <td>^localpath(.*) http://thishost/otherpath$1 [R]</td>
 <td>http://thishost/otherpath/pathinfo via external redirection</td>
 </tr>
-
 <tr>
 <td>^localpath(.*) http://thishost/otherpath$1 [P]</td>
 <td>doesn't make sense, not supported</td>
 </tr>
-
-<tr>
+<tr class="odd">
 <td>^localpath(.*) http://otherhost/otherpath$1</td>
 <td>http://otherhost/otherpath/pathinfo via external redirection</td>
 </tr>
-
 <tr>
 <td>^localpath(.*) http://otherhost/otherpath$1 [R]</td>
 <td>http://otherhost/otherpath/pathinfo via external redirection (the [R] flag is redundant)</td>
 </tr>
-
-<tr>
+<tr class="odd">
 <td>^localpath(.*) http://otherhost/otherpath$1 [P]</td>
 <td>http://otherhost/otherpath/pathinfo via internal proxy</td>
 </tr>
-
 </table>
 
   
