@@ -457,7 +457,7 @@ static int volatile restart_pending;
  * Previously this was initiated in sig_term() and restart() signal handlers,
  * but we want to be able to start a shutdown/restart from other sources --
  * e.g. on Win32, from the service manager. Now the service manager can
- * call ap_start_shutdown() or ap_start_restart() as appropiate.  Note that
+ * call ap_start_shutdown() or ap_start_restart() as appropriate.  Note that
  * these functions can also be called by the child processes, since global
  * variables are no longer used to pass on the required action to the parent.
  *
