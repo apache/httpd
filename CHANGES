@@ -10,9 +10,6 @@ Changes with Apache 2.5.0
   *) mod_proxy_wstunnel: Honor ProxyWebsocketIdleTimeout in asynchronous
      processing mode. [Eric Covener]
  
-  *) mod_alias: Stop setting CONTEXT_PREFIX and CONTEXT_DOCUMENT environment
-     variables as a result of AliasMatch. [Eric Covener]
- 
   *) mod_proxy_fcgi: Fix occasional high CPU when handling request bodies.
      [Jeff Trawick]
 
