@@ -100,6 +100,22 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * mod_alias: Stop setting context document root for AliasMatch.
+     trunk patch: http://svn.apache.org/r1583175
+                  http://svn.apache.org/r1593745
+     2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-aliasmatch_contextinfo.diff
+     +1 covener, jim, ylavic
+
+   * mod_proxy_fcgi: remove wasted memset() calls and other historical bits
+     trunk patch: http://svn.apache.org/r1591472
+     2.4.x patch: trunk patch works
+     +1: trawick, jim, ylavic
+
+   * mod_authn_socache: fix logging of bugus rv in r1576233 (now in 2.4.x)
+     trunk patch: http://svn.apache.org/r1583007
+     2.4.x patch: trunk patch works
+     +1: trawick, jim, ylavic
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -134,11 +150,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   https://svn.apache.org/r1587594
                   https://svn.apache.org/r1587639
                   https://svn.apache.org/r1590509
-     2.4.x patch: trunk works
+     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-mod_deflate_reentrant.patch
      +1: ylavic
-     -0: jim (having a hard time applying all the above w/o conflicts)
      ylavic: does not depend on r1572092 above or r1572896 and al below,
              these proposals can be backported in any order.
+     -0: jim (having a hard time applying all the above w/o conflicts)
+     ylavic: I don't have any conflict here but with r1586745 regarding
+             docs/log-message-tags. BTW 2.4.x patch provided above.
 
    * mod_deflate: Don't fail when asked to flush inflated data to the user-agent
                   and that coincides with the end of stream ("Zlib error flushing
@@ -162,12 +180,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: rjung,
      -1: covener would rather take this oppty to remove it from AliasMatch, the
          prefix and docroot don't make sense. See next proposal.
-
-   * mod_alias: Stop setting context document root for AliasMatch.
-     trunk patch: http://svn.apache.org/r1583175
-                  http://svn.apache.org/r1593745
-     2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-aliasmatch_contextinfo.diff
-     +1 covener, jim
 
    * mod_ssl: Add SSLOCSPUseRequestNonce directive to control whether or not
      OCSP requests should use a nonce to be checked against the responder's
@@ -198,16 +210,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1591394
      2.4.x patch: trunk patch works modulo CHANGES
      +1: ylavic, jim
-
-   * mod_proxy_fcgi: remove wasted memset() calls and other historical bits
-     trunk patch: http://svn.apache.org/r1591472
-     2.4.x patch: trunk patch works
-     +1: trawick, jim
-
-   * mod_authn_socache: fix logging of bugus rv in r1576233 (now in 2.4.x)
-     trunk patch: http://svn.apache.org/r1583007
-     2.4.x patch: trunk patch works
-     +1: trawick, jim
 
 OTHER PROPOSALS
 
