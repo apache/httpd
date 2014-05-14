@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
   
+  *) mod_proxy_wstunnel: Fix the use of SSL connections with the "wss:"
+     scheme. PR55320. [Alex Liu <alex.leo.ca gmail.com>]
+ 
   *) core: Add ap_mpm_resume_suspended() API to allow a suspended connection
      to resume. PR56333 
      [Artem <artemciy gmail.com>, Edward Lu <Chaosed0 gmail.com>]
@@ -16,10 +19,10 @@ Changes with Apache 2.5.0
   *) mod_proxy_fcgi: Support iobuffersize parameter.  [Jeff Trawick]
 
   *) mod_cache: Preserve non-cacheable headers forwarded from an origin 304
-                response. PR 55547. [Yann Ylavic]
+     response. PR 55547. [Yann Ylavic]
 
   *) mod_cache: Don't add cached/revalidated entity headers to a 304 response.
-                PR 55547. [Yann Ylavic]
+     PR 55547. [Yann Ylavic]
 
   *) mod_cache: Retry unconditional request with the full URL (including the
      query-string) when the origin server's 304 response does not match the
