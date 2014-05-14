@@ -136,7 +136,8 @@ définie par les différents standards des anciens modems.</dd>
 <dt><a href="mod_dir.html">mod_dir</a></dt><dd>Permet la redirection des adresses se terminant par un
 répertoire sans slash de fin et la mise à disposition des fichiers index
 de répertoire</dd>
-<dt><a href="mod_dumpio.html">mod_dumpio</a></dt><dd>Dumps all I/O to error log as desired.</dd>
+<dt><a href="mod_dumpio.html">mod_dumpio</a></dt><dd>Enregistre toutes les entrées/sorties dans le journal des
+erreurs de la manière souhaitée.</dd>
 <dt><a href="mod_echo.html" id="E" name="E">mod_echo</a></dt><dd>Un simple serveur d'écho pour illustrer les modules de
 protocole</dd>
 <dt><a href="mod_env.html">mod_env</a></dt><dd>Modifie l'environnement transmis aux scripts CGI et aux

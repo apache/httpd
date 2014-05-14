@@ -374,10 +374,11 @@ certification (CA) ?</a></h3>
        <br />
        <code><strong>$ openssl genrsa -des3 -out server.key 2048</strong></code><br />
        <br />
-       Sauvegardez le fichier <code>host.key</code> et le mot de passe
+       Sauvegardez le fichier <code>server.key</code> et le mot de passe
        éventuellement défini en lieu sûr.
        Vous pouvez afficher les détails de cette clé privée RSA à l'aide de la
        commande :<br />
+       <br />
        <code><strong>$ openssl rsa -noout -text -in server.key</strong></code><br />
        <br />
        Si nécessaire, vous pouvez aussi créer une version PEM non chiffrée

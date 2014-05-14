@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1331693:1556102 (outdated) -->
+<!-- English Revision : 1556102 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -49,7 +49,7 @@
       Voir : <a href="ssl/">chiffrement SSL/TLS</a>
     </dd>
 
-    <dt>APR</dt>
+    <dt><a name="apr" id="apr">APR</a></dt>
     <dd>Voir "Biblioth&egrave;ques pour la portabilit&eacute; d'Apache"
     </dd>
 
@@ -167,6 +167,15 @@
   le Protocole de Transfert Hypertexte (HTTP) au dessus de SSL.<br />
     Voir : <a href="ssl/">chiffrement SSL/TLS</a>
   </dd>
+
+  <dt><a name="subrequest" id="subrequest">Sous-requ&ecirc;te</a></dt>
+    <dd>Apache poss&egrave;de une API des sous-requ&ecirc;tes pour les modules qui
+    permettent l'&eacute;valuation compl&egrave;te ou partielle par le serveur de
+    chemins d'autres syst&egrave;mes de fichiers ou d'URL. Par exemple, la
+    directive <directive module="mod_dir">DirectoryIndex</directive>,
+    les modules <module>mod_autoindex</module> et
+    <module>mod_include</module> utilisent cette API.
+    </dd>
 
   <dt><a name="symmetriccryptophraphy" id="symmetriccryptophraphy">
   Cryptographie Sym&eacute;trique (Symmetric Cryptography)</a></dt>
