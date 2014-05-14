@@ -321,6 +321,12 @@ const char *cache_table_getm(apr_pool_t *p, const apr_table_t *t,
  */
 char *cache_strqtok(char *str, const char *sep, char **last);
 
+/**
+ * Merge err_headers_out into headers_out and add request's Content-Type and
+ * Content-Encoding if available.
+ */
+apr_table_t *cache_merge_headers_out(request_rec *r);
+
 #ifdef __cplusplus
 }
 #endif

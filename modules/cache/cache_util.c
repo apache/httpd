@@ -1237,26 +1237,33 @@ CACHE_DECLARE(apr_table_t *)ap_cache_cacheable_headers_out(request_rec *r)
 {
     apr_table_t *headers_out;
 
-    headers_out = apr_table_overlay(r->pool, r->headers_out,
-                                        r->err_headers_out);
-
-    apr_table_clear(r->err_headers_out);
-
-    headers_out = ap_cache_cacheable_headers(r->pool, headers_out,
-                                                  r->server);
+    headers_out = ap_cache_cacheable_headers(r->pool,
+                                             cache_merge_headers_out(r),
+                                             r->server);
 
     cache_control_remove(r,
             cache_table_getm(r->pool, headers_out, "Cache-Control"),
             headers_out);
 
+    return headers_out;
+}
+
+apr_table_t *cache_merge_headers_out(request_rec *r)
+{
+    apr_table_t *headers_out;
+
+    headers_out = apr_table_overlay(r->pool, r->headers_out,
+                                    r->err_headers_out);
+    apr_table_clear(r->err_headers_out);
+
     if (!apr_table_get(headers_out, "Content-Type")
-        && r->content_type) {
+            && r->content_type) {
         apr_table_setn(headers_out, "Content-Type",
                        ap_make_content_type(r, r->content_type));
     }
 
     if (!apr_table_get(headers_out, "Content-Encoding")
-        && r->content_encoding) {
+            && r->content_encoding) {
         apr_table_setn(headers_out, "Content-Encoding",
                        r->content_encoding);
     }
