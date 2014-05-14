@@ -200,7 +200,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1594625
      2.4.x patch: trunk patch works modulo CHANGES
      +1: ylavic
+
+   * mod_cache: Preserve non-cacheable headers forwarded from an origin 304
+                response. PR 55547.
+     trunk patch: http://svn.apache.org/r1591328
+                  http://svn.apache.org/r1594643
+     2.4.x patch: trunk patch works modulo CHANGES
+     +1: ylavic
  
+
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
@@ -209,12 +217,6 @@ OTHER PROPOSALS
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
-
-   * mod_cache: Preserve non-cacheable headers forwarded from an origin 304
-                response. PR 55547.
-     trunk patch: http://svn.apache.org/r1591328
-     2.4.x patch: trunk patch works modulo CHANGES
-     +1:
 
 
 PATCHES/ISSUES THAT ARE STALLED
