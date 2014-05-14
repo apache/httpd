@@ -477,9 +477,11 @@ static int proxy_wstunnel_handler(request_rec *r, proxy_worker *worker,
     conn_rec *c = r->connection;
     apr_pool_t *p = r->pool;
     apr_uri_t *uri;
+    int is_ssl = 0;
 
     if (strncasecmp(url, "wss:", 4) == 0) {
         scheme = "WSS";
+        is_ssl = 1;
     }
     else if (strncasecmp(url, "ws:", 3) == 0) {
         scheme = "WS";
@@ -503,7 +505,7 @@ static int proxy_wstunnel_handler(request_rec *r, proxy_worker *worker,
         return status;
     }
 
-    backend->is_ssl = 0;
+    backend->is_ssl = is_ssl;
     backend->close = 0;
 
     retry = 0;
