@@ -100,12 +100,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_alias: Stop setting context document root for AliasMatch.
-     trunk patch: http://svn.apache.org/r1583175
-                  http://svn.apache.org/r1593745
-     2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-aliasmatch_contextinfo.diff
-     +1 covener, jim, ylavic
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]

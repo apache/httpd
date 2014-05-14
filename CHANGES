@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.10
 
+  *) mod_alias: Stop setting CONTEXT_PREFIX and CONTEXT_DOCUMENT environment
+     variables as a result of AliasMatch. [Eric Covener]
+ 
   *) mod_proxy_scgi: Support Unix sockets.  ap_proxy_port_of_scheme():
      Support default SCGI port (4000).  [Jeff Trawick]
 
