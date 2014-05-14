@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1415962:1555566 (outdated) -->
+<!-- English Revision: 1555566 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -35,8 +35,16 @@ MD5.</description>
     <p>Ce module impl&eacute;mente l'authentification HTTP bas&eacute;e sur les
     condens&eacute;s MD5 (<a
     href="http://www.faqs.org/rfcs/rfc2617.html">RFC2617</a>), et
-    fournit une alternative &agrave; <module>mod_auth_basic</module> plus
-    s&eacute;curis&eacute;e.</p>
+    fournit une alternative &agrave; <module>mod_auth_basic</module> en
+    ne transmettant plus le mot de passe en clair. Cependant, cela ne
+    suffit pas pour am&eacute;liorer la s&eacute;curit&eacute; de mani&egrave;re significative par
+    rapport &agrave; l'authentification basique. En outre, le stockage du mot
+    de passe sur le serveur est encore moins s&ucirc;r dans le cas
+    d'une authentification &agrave; base de condens&eacute; que dans le cas d'une
+    authentification basique. C'est pourquoi l'utilisation de
+    l'authentification basique associ&eacute;e &agrave; un chiffrement de la connexion
+    via <module>mod_ssl</module> constitue une bien meilleure
+    alternative.</p>
 </summary>
 
 <seealso><directive module="core">AuthName</directive></seealso>
@@ -77,10 +85,18 @@ condens&eacute;s</title>
     </example>
 
     <note><title>Note</title>
-    <p>L'authentification &agrave; base de condens&eacute;s MD5 est plus s&eacute;curis&eacute;e que
-    l'authentification Basic, mais ne fonctionne qu'avec les navigateurs
-    qui la supportent. Au moment où ces lignes sont écrites (Décembre
-    2012), c'est le cas des principaux navigateurs.</p>
+    <p>L'authentification &agrave; base de condens&eacute; a &eacute;t&eacute; con&ccedil;ue pour am&eacute;liorer
+    la s&eacute;curit&eacute; par rapport &agrave; l'authentification basique, mais il
+    s'av&egrave;re que ce but n'a pas &eacute;t&eacute; atteint. Un attaquant de type
+    "man-in-the-middle" peut facilement forcer le navigateur &agrave; revenir &agrave;
+    une authentification basique. M&ecirc;me une oreille indiscr&egrave;te passive
+    peut retrouver le mot de passe par force brute avec les moyens
+    modernes, car l'algorithme de hashage utilis&eacute; par l'authentification
+    &agrave; base de condens&eacute; est trop rapide. Autre probl&egrave;me, le stockage des
+    mots de passe sur le serveur n'est pas s&ucirc;r. Le contenu d'un fichier
+    htdigest vol&eacute; peut &ecirc;tre utilis&eacute; directement pour l'authentification
+    &agrave; base de condens&eacute;. Il est donc fortement recommand&eacute; d'utiliser
+    <module>mod_ssl</module> pour chiffrer la connexion.</p>
     </note>
 </section>
 

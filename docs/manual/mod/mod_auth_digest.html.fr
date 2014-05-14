@@ -28,8 +28,6 @@
 <a href="../fr/mod/mod_auth_digest.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ko/mod/mod_auth_digest.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Authentification utilisateur utilisant les condensés
 MD5.</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -39,8 +37,16 @@ MD5.</td></tr>
 
     <p>Ce module implémente l'authentification HTTP basée sur les
     condensés MD5 (<a href="http://www.faqs.org/rfcs/rfc2617.html">RFC2617</a>), et
-    fournit une alternative à <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code> plus
-    sécurisée.</p>
+    fournit une alternative à <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code> en
+    ne transmettant plus le mot de passe en clair. Cependant, cela ne
+    suffit pas pour améliorer la sécurité de manière significative par
+    rapport à l'authentification basique. En outre, le stockage du mot
+    de passe sur le serveur est encore moins sûr dans le cas
+    d'une authentification à base de condensé que dans le cas d'une
+    authentification basique. C'est pourquoi l'utilisation de
+    l'authentification basique associée à un chiffrement de la connexion
+    via <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> constitue une bien meilleure
+    alternative.</p>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
@@ -96,10 +102,18 @@ condensés</a></h2>
     </code></p></div>
 
     <div class="note"><h3>Note</h3>
-    <p>L'authentification à base de condensés MD5 est plus sécurisée que
-    l'authentification Basic, mais ne fonctionne qu'avec les navigateurs
-    qui la supportent. Au moment où ces lignes sont écrites (Décembre
-    2012), c'est le cas des principaux navigateurs.</p>
+    <p>L'authentification à base de condensé a été conçue pour améliorer
+    la sécurité par rapport à l'authentification basique, mais il
+    s'avère que ce but n'a pas été atteint. Un attaquant de type
+    "man-in-the-middle" peut facilement forcer le navigateur à revenir à
+    une authentification basique. Même une oreille indiscrète passive
+    peut retrouver le mot de passe par force brute avec les moyens
+    modernes, car l'algorithme de hashage utilisé par l'authentification
+    à base de condensé est trop rapide. Autre problème, le stockage des
+    mots de passe sur le serveur n'est pas sûr. Le contenu d'un fichier
+    htdigest volé peut être utilisé directement pour l'authentification
+    à base de condensé. Il est donc fortement recommandé d'utiliser
+    <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> pour chiffrer la connexion.</p>
     </div>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

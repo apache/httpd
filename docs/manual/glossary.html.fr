@@ -29,8 +29,6 @@
 <a href="./ko/glossary.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/glossary.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p>Ce glossaire définit la terminologie courante relative à Apache en
     particulier, et aux serveurs web en général. Vous trouverez plus
@@ -55,7 +53,7 @@
       Voir : <a href="ssl/">chiffrement SSL/TLS</a>
     </dd>
 
-    <dt><a name="apr1" id="apr1">APR</a></dt>
+    <dt><a name="apr" id="apr">APR</a></dt>
     <dd>voir "Bibliothèques pour la portabilité d'Apache".
     </dd>
 
@@ -229,7 +227,9 @@
       - par exemple, tous les fichiers .gif et .jpg situés dans tout répertoire
       nommé "images", pourraient être enregistrés comme
       "<code>/images/.*(jpg|gif)$</code>".  Apache utilise les Expressions
-      Rationnelles Compatibles avec Perl fournies par la librairie <a href="http://www.pcre.org/">PCRE</a>.
+      Rationnelles Compatibles avec Perl fournies par la librairie <a href="http://www.pcre.org/">PCRE</a>. Vous trouverez plus
+      d'information à propos de la syntaxe des expressions rationnelles
+      PCRE sur ce site, ou ici : <a href="http://en.wikipedia.org/wiki/PCRE">Wikipedia</a>.
   </dd>
 
     <dt><a name="configurationfile" id="configurationfile">
@@ -326,6 +326,18 @@
   des fichiers HTML.<br />
     Voir : <a href="howto/ssi.html">Introduction aux Inclusions Côté Serveur</a>
   </dd>
+
+  <dt><a name="servernameindication" id="servernameindication">Indication du nom du serveur</a> <a name="sni" id="sni">(SNI)</a></dt>
+    <dd>Une fonctionnalité SSL permettant de spécifier le
+    nom du serveur désiré dans le message initial de la
+    négociation SSL, de façon à ce que le serveur web
+    puisse choisir la bonne configuration de serveur virtuel à
+    utiliser pendant le déroulement de la négociation SSL.
+    Cette fonctionnalité a été ajoutée
+    à SSL lorsque sont apparues les extensions TLS, RFC 3546.<br />
+      Voir <a href="ssl/ssl_faq.html">la FAQ SSL</a>
+      et <a href="http://www.ietf.org/rfc/rfc3546.txt">la RFC 3546</a>
+    </dd>
 
 <dt><a name="commongatewayinterface" id="commongatewayinterface">
 Interface commune avec les programmes externes
