@@ -28,8 +28,6 @@
 <a href="./ko/configuring.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/configuring.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 <p>Ce document décrit les fichiers utilisés pour configurer
 le Serveur HTTP Apache.</p>
@@ -84,6 +82,22 @@ le Serveur HTTP Apache.</p>
     de configuration. Les lignes vides et les espaces précédant une directive
     sont ignorés; vous pouvez par conséquent indenter les directives
     afin d'améliorer la lisibilité.</p>
+
+    <p>On peut utiliser les variables d'environnement du shell dans les
+    lignes du fichier de configuration en utilisant la syntaxe
+    <code>${ENVVAR}</code>. Si "ENVVAR" est le nom d'une variable
+    d'environnement valide, sa valeur remplace l'expression
+    <code>${ENVVAR}</code> dans la ligne du fichier de configuration, et
+    le traitement continue comme si cette valeur avait été inscrite
+    directement dans le fichier de configuration. Si la variable ENVVAR
+    n'est pas trouvée, l'expression "${ENVVAR}" est conservée tel quel
+    pour une utilisation ultérieure dans le traitement du fichier de
+    configuration.</p>
+
+    <p>La longueur maximale d'une ligne du fichier de configuration,
+    après substitution des variables d'environnement, reconstitution des
+    lignes fragmentées et suppression des espaces de début et de fin,
+    est de 8192 caractères.</p>
 
     <p>Vous pouvez vérifier l'absence d'erreurs de syntaxe dans vos fichiers
     de configuration sans démarrer le serveur à l'aide de la commande

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision: 805050:890440 (outdated) -->
+<!-- English Revision : 890440 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -49,7 +49,7 @@
       Voir : <a href="ssl/">chiffrement SSL/TLS</a>
     </dd>
 
-    <dt><a name="apr1" id="apr1">APR</a></dt>
+    <dt><a name="apr" id="apr">APR</a></dt>
     <dd>voir "Biblioth&egrave;ques pour la portabilit&eacute; d'Apache".
     </dd>
 
@@ -235,7 +235,10 @@
       nomm&eacute; "images", pourraient &ecirc;tre enregistr&eacute;s comme
       "<code>/images/.*(jpg|gif)$</code>".  Apache utilise les Expressions
       Rationnelles Compatibles avec Perl fournies par la librairie <a
-      href="http://www.pcre.org/">PCRE</a>.
+      href="http://www.pcre.org/">PCRE</a>. Vous trouverez plus
+      d'information &agrave; propos de la syntaxe des expressions rationnelles
+      PCRE sur ce site, ou ici : <a
+      href="http://en.wikipedia.org/wiki/PCRE">Wikipedia</a>.
   </dd>
 
     <dt><a name="configurationfile" id="configurationfile">
@@ -335,6 +338,20 @@
   des fichiers HTML.<br />
     Voir : <a href="howto/ssi.html">Introduction aux Inclusions C&ocirc;t&eacute; Serveur</a>
   </dd>
+
+  <dt><a name="servernameindication"
+  id="servernameindication">Indication du nom du serveur</a> <a
+  name="sni" id="sni">(SNI)</a></dt>
+    <dd>Une fonctionnalit&eacute; SSL permettant de sp&eacute;cifier le
+    nom du serveur d&eacute;sir&eacute; dans le message initial de la
+    n&eacute;gociation SSL, de fa&ccedil;on &agrave; ce que le serveur web
+    puisse choisir la bonne configuration de serveur virtuel &agrave;
+    utiliser pendant le d&eacute;roulement de la n&eacute;gociation SSL.
+    Cette fonctionnalit&eacute; a &eacute;t&eacute; ajout&eacute;e
+    &agrave; SSL lorsque sont apparues les extensions TLS, RFC 3546.<br />
+      Voir <a href="ssl/ssl_faq.html">la FAQ SSL</a>
+      et <a href="http://www.ietf.org/rfc/rfc3546.txt">la RFC 3546</a>
+    </dd>
 
 <dt><a name="commongatewayinterface" id="commongatewayinterface">
 Interface commune avec les programmes externes

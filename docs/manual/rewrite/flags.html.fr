@@ -69,7 +69,7 @@ la forme courte soit la plus couramment utilisée, nous vous recommandons
 de vous familiariser avec les drapeaux sous leur forme longue, afin de
 bien mémoriser ce que chaque drapeau est supposé faire.
 Certains drapeaux acceptent un ou plusieurs arguments. Les drapeaux ne
-sont pas sensibles Ã&nbsp; la casse.</p>
+sont pas sensibles à la casse.</p>
 
 <p>Les drapeaux qui modifient les métadonnées associées à la requête
 (T=, H=, E=) n'ont aucun effet dans un contexte de répertoire ou de
@@ -159,8 +159,12 @@ ce style de cookie est interdit par le modèle de sécurité des cookies.</dd>
 <dl>
 <dt>Lifetime</dt>
 <dd>La durée de vie du cookie, en minutes.</dd>
-<dd>Une valeur de 0 indique une durée de vie correspondant à la session
-courante du navigateur. Il s'agit de la valeur par défaut.</dd>
+
+<dd>Par défaut, le cookie est maintenu pendant la durée de la session du
+navigateur. Si vous devez spécifier un autre paramètre (Path, Secure,
+httponly), il n'est actuellement pas possible de configurer
+explicitement la durée de vie de la session. Notez que les versions
+précédentes de cette documentation mentionnaient le contraire.</dd>
 
 <dt>Path</dt>
 <dd>Le chemin, sur le site web concerné, pour lequel le cookie est

@@ -516,7 +516,7 @@ la réécriture soit effectuée
 	    <em>chaîne de test</em> est supérieure au sens
 	    lexicographique à l'<em>expression</em>.</li>
 
-            <li>'<strong>&gt;expression</strong>' (égal au sens
+            <li>'<strong>=expression</strong>' (égal au sens
 	    lexicographique)<br />
 	    Traite l'<em>expression</em> comme une chaîne de
 	    caractères et la compare lexicographiquement à
