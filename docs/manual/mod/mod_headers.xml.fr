@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1588748 -->
+<!-- English Revision: 1593664 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -84,8 +84,9 @@ tardif</title>
     pr&eacute;coces ne peuvent &ecirc;tre d&eacute;finis que dans un contexte de serveur
     principal ou de serveur virtuel. Les directives pr&eacute;coces ne peuvent
     pas d&eacute;pendre d'un chemin de requ&ecirc;te, si bien qu'elles &eacute;choueront
-    dans des contextes tels que <code>&lt;Directory&gt;</code> ou
-    <code>&lt;Location&gt;</code>.</p>
+    dans des contextes tels que <directive type="section"
+    module="core">Directory</directive> ou <directive type="section"
+    module="core">Location</directive>.</p>
 </section>
 
 <section id="examples"><title>Exemples</title>
@@ -220,14 +221,14 @@ Header merge Cache-Control no-store env=NO_STORE
 <name>RequestHeader</name>
 <description>Configure les en-t&ecirc;tes d'une requ&ecirc;te HTTP</description>
 <syntax>RequestHeader add|append|edit|edit*|merge|set|setifempty|unset
-<var>en-t&ecirc;te</var> [[expr=]<var>valeur</var>] [<var>remplacement</var>]
-[early|env=[!]<var>variable</var>]|expr=<var>expression</var>]
+<var>en-t&ecirc;te</var> [[expr=]<var>valeur</var> [<var>remplacement</var>
+[early|env=[!]<var>variable</var>|expr=<var>expression</var>]]]
 </syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
 <compatibility>SetIfEmpty est disponible depuis la version 2.4.7 du
-serveur HTTP Apache ; le param&egrave;tre expr= valeur a &eacute;t&eacute; introduit avec la
+serveur HTTP Apache ; le param&egrave;tre expr=valeur a &eacute;t&eacute; introduit avec la
 version 2.4.10</compatibility>
 
 <usage>
@@ -344,14 +345,14 @@ version 2.4.10</compatibility>
 <name>Header</name>
 <description>Configure les en-t&ecirc;tes d'une r&eacute;ponse HTTP</description>
 <syntax>Header [<var>condition</var>] add|append|echo|edit|edit*|merge|set|setifempty|unset|note
-<var>en-t&ecirc;te</var> [[expr=]<var>valeur]</var>] [<var>remplacement</var>]
-[early|env=[!]<var>variable</var>]|expr=<var>expression</var>]
+<var>en-t&ecirc;te</var> [[expr=]<var>valeur</var> [<var>remplacement</var>
+[early|env=[!]<var>variable</var>|expr=<var>expression</var>]]]
 </syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
 <compatibility>SetIfEmpty est disponible depuis la version 2.4.7 du
-serveur HTTP Apache ; le param&egrave;tre expr= valeur a &eacute;t&eacute; introduit avec la
+serveur HTTP Apache ; le param&egrave;tre expr=valeur a &eacute;t&eacute; introduit avec la
 version 2.4.10</compatibility>
 
 <usage>

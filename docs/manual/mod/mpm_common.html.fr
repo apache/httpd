@@ -150,8 +150,8 @@ gestionnaires d'exception après un crash</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Spécifie le délai maximum après lequel le serveur va
 s'arrêter dans le cas d'un arrêt "en douceur"</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>GracefulShutDownTimeout <var>secondes</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>GracefulShutDownTimeout 0</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>GracefulShutdownTimeout <var>seconds</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>GracefulShutdownTimeout 0</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>MPM</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/event.html">event</a></code></td></tr>

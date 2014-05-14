@@ -30,8 +30,6 @@
 <a href="../ko/mod/mod_logio.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_logio.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Journalisation des octets en entrée et en sortie pour
 chaque requête</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -75,7 +73,7 @@ d'Apache</a></li>
 <h2><a name="formats" id="formats">Formats de journaux personnalisés</a></h2>
 
 
-    <p>Ce module introduit deux nouvelles directives de journalisation.
+    <p>Ce module introduit trois nouvelles directives de journalisation.
     Les caractéristiques de la requête en elle-même sont journalisées en
     insérant des directives "<code>%</code>" dans la chaîne de format,
     qui seront remplacées comme suit dans le fichier journal :</p>
@@ -91,7 +89,8 @@ d'Apache</a></li>
 <tr><td><code>%S</code></td>
 	<td>Nombre d'octets transmis (en émission et réception), y
 	compris corps et en-têtes de requête. Ce nombre ne peut pas être
-	nul, et il correspond à la combinaison des formats %I et %O.</td></tr>
+	nul, et il correspond à la combinaison des formats %I et %O.<br />
+	Disponible depuis la version 2.4.7 du serveur HTTP Apache.</td></tr>
 </table>
 
     <p>En général, cette fonctionnalité s'utilise comme suit :</p>
