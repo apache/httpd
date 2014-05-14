@@ -206,7 +206,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1591328
                   http://svn.apache.org/r1594643
                   http://svn.apache.org/r1594648
-     2.4.x patch: trunk patch works modulo CHANGES
+     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-mod_cache-preserve_304_headers.patch
      +1: ylavic
  
 
