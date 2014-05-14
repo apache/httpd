@@ -195,6 +195,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch works modulo CHANGES
      +1: ylavic, jim
 
+   * mod_proxy_wstunnel: Fix the use of SSL connections with the "wss:" scheme.
+                         PR 55320.
+     trunk patch: http://svn.apache.org/r1594625
+     2.4.x patch: trunk patch works modulo CHANGES
+     +1: ylavic
+ 
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
