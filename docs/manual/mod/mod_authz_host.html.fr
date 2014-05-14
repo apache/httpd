@@ -27,8 +27,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_authz_host.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_authz_host.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Autorisations de groupe basées sur l'hôte (nom ou adresse
 IP)</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
@@ -82,8 +80,8 @@ contrôle d'accès</a></li>
     l'accès en fonction du nom d'hôte, de l'adresse IP, ou d'un intervalle
     d'adresses IP.</p>
 
-    <p>Depuis la version 2.5.0, les directives require host supportent
-    les <a href="../expr.html">expressions</a>.</p>
+    <p>A partir de la version 2.4.8, les directives require host
+    supportent les <a href="../expr.html">expressions</a>.</p>
 
 <h3><a name="reqip" id="reqip">Require ip</a></h3>
 
@@ -133,8 +131,8 @@ Require ip 10 172.20 192.168.2</pre>
 Require ip 2001:db8::a00:20ff:fea7:ccea/10</pre>
 
 
-    <p>Note : comme les adresses IP sont lues au démarrage, les
-    expressions ne sont pas évaluées pour chaque requête.</p>
+    <p>Note: comme les adresses IP sont lues au démarrage, les
+    expressions ne sont pas évaluées au moment de la requête.</p>
 
 
 
@@ -168,6 +166,7 @@ Require host .net example.edu</pre>
 
 
 <h3><a name="reqlocal" id="reqlocal">Require local</a></h3>
+
     <p>Le fournisseur <code>local</code> autorise l'accès au serveur si
     l'une au moins de ces conditions est satisfaite :</p>
 

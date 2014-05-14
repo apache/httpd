@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1591088 -->
+<!-- English Revision : 1594088 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -521,27 +521,30 @@ la r&eacute;&eacute;criture soit effectu&eacute;e
 
             <tr>
 	      <td>
-		 HTTP_USER_AGENT<br />
-                 HTTP_REFERER<br />
+		 HTTP_ACCEPT<br />
                  HTTP_COOKIE<br />
                  HTTP_FORWARDED<br />
                  HTTP_HOST<br />
                  HTTP_PROXY_CONNECTION<br />
-                 HTTP_ACCEPT<br />
+                 HTTP_REFERER<br />
+                 HTTP_USER_AGENT<br />
               </td>
 
               <td>
-                 REMOTE_ADDR<br />
+                 AUTH_TYPE<br />
 		 CONN_REMOTE_ADDR<br />
-                 REMOTE_HOST<br />
-                 REMOTE_PORT<br />
-                 REMOTE_USER<br />
-                 REMOTE_IDENT<br />
-                 REQUEST_METHOD<br />
-                 SCRIPT_FILENAME<br />
+		 CONTEXT_PREFIX<br />
+                 CONTEXT_DOCUMENT_ROOT<br />
+                 IPV6<br />
                  PATH_INFO<br />
                  QUERY_STRING<br />
-                 AUTH_TYPE<br />
+                 REMOTE_ADDR<br />
+                 REMOTE_HOST<br />
+		 REMOTE_IDENT<br />
+                 REMOTE_PORT<br />
+                 REMOTE_USER<br />
+                 REQUEST_METHOD<br />
+                 SCRIPT_FILENAME<br />
               </td>
 
 	      <td></td>
@@ -554,9 +557,11 @@ la r&eacute;&eacute;criture soit effectu&eacute;e
             <tr>
 	      <td>
 	         DOCUMENT_ROOT<br />
+		 SCRIPT_GROUP<br />
+                 SCRIPT_USER<br />
+                 SERVER_ADDR<br />
                  SERVER_ADMIN<br />
                  SERVER_NAME<br />
-                 SERVER_ADDR<br />
                  SERVER_PORT<br />
                  SERVER_PROTOCOL<br />
                  SERVER_SOFTWARE<br />
@@ -575,14 +580,14 @@ la r&eacute;&eacute;criture soit effectu&eacute;e
 
               <td>
                  API_VERSION<br />
-                 THE_REQUEST<br />
-                 REQUEST_URI<br />
-                 REQUEST_FILENAME<br />
-                 IS_SUBREQ<br />
+		 CONN_REMOTE_ADDR<br />
                  HTTPS<br />
-		 REQUEST_SCHEME<br />
+		 IS_SUBREQ<br />
 		 REMOTE_ADDR<br />
-                 CONN_REMOTE_ADDR<br />
+                 REQUEST_FILENAME<br />
+                 REQUEST_SCHEME<br />
+                 REQUEST_URI<br />
+                 THE_REQUEST<br />
               </td>
             </tr>
           </table>
@@ -590,8 +595,10 @@ la r&eacute;&eacute;criture soit effectu&eacute;e
                 <p>Ces variables correspondent toutes aux en-t&ecirc;tes MIME
 		HTTP de m&ecirc;mes noms, au variables C du serveur HTTP Apache, ou
 		aux champs <code>struct tm</code> du syst&egrave;me Unix. La
-		plupart d'entre elles sont document&eacute;es ailleurs dans le
-		manuel ou dans la sp&eacute;cification CGI.</p>
+		plupart d'entre elles sont document&eacute;es <a
+		href="../expr.html#vars">ici</a>, dans la
+		sp&eacute;cification CGI ou ailleurs dans le
+		manuel.</p>
 
 		<p>SERVER_NAME et SERVER_PORT d&eacute;pendent respectivement
 		des valeurs des directives <directive
@@ -602,14 +609,6 @@ la r&eacute;&eacute;criture soit effectu&eacute;e
 		sp&eacute;cifiques &agrave; mod_rewrite, ou trouve les suivantes :</p>
         <note>
                 <dl>
-                  <dt><code>IS_SUBREQ</code></dt>
-
-                  <dd>Contient le texte "true" si la requ&ecirc;te en cours
-		  de traitement est une sous-requ&ecirc;te, "false" dans le
-		  cas contraire. Une sous-requ&ecirc;te est g&eacute;n&eacute;r&eacute;e quand un
-		  module a besoin de se r&eacute;f&eacute;rer &agrave; des fichiers ou URIs
-		  addidionnels pour pouvoir mener &agrave; bien sa t&acirc;che.</dd>
-
                   <dt><code>API_VERSION</code></dt>
 
                   <dd>C'est la version de l'API des modules Apache httpd
@@ -623,21 +622,30 @@ la r&eacute;&eacute;criture soit effectu&eacute;e
 		  il s'agit de la version 19990320:10), mais int&eacute;resse
 		  principalement les auteurs de modules.</dd>
 
-                  <dt><code>THE_REQUEST</code></dt>
+                  <dt><code>CONN_REMOTE_ADDR</code></dt>
 
-                  <dd>La ligne de requ&ecirc;te HTTP compl&egrave;te envoy&eacute;e par le
-		  navigateur au serveur (par exemple, "<code>GET
-                  /index.html HTTP/1.1</code>"), &agrave; l'exclusion de tout
-		  en-t&ecirc;te ajout&eacute; par le navigateur. Cette
-		  valeur n'a pas &eacute;t&eacute; d&eacute;s&eacute;chapp&eacute;e (d&eacute;cod&eacute;e), &agrave; la
-		  diff&eacute;rence de la plupart des variables suivantes.</dd>
+		  <dd>A partir de la version 2.4.8 : l'adresse IP distante de
+		  la connexion (voir le module
+		  <module>mod_remoteip</module>).</dd>
 
-                  <dt><code>REQUEST_URI</code></dt>
+		  <dt><code>HTTPS</code></dt>
 
-                  <dd>La partie chemin de l'URI de la requ&ecirc;te, comme
-		  "/index.html". En particulier, ceci exclut la cha&icirc;ne
-		  de param&egrave;tres qui est quant &agrave; elle disponible via sa
-		  propre variable <code>QUERY_STRING</code>.</dd>
+                  <dd>Contient le texte "on" si la connexion
+		  utilise SSL/TLS, "off" dans le cas contraire
+		  (Cette variable peut &ecirc;tre utilis&eacute;e sans probl&egrave;me, que
+		  <module>mod_ssl</module> soit charg&eacute; ou non).</dd>
+
+		  <dt><code>IS_SUBREQ</code></dt>
+
+                  <dd>Contient le texte "true" si la requ&ecirc;te en cours
+		  de traitement est une sous-requ&ecirc;te, "false" dans le
+		  cas contraire. Une sous-requ&ecirc;te est g&eacute;n&eacute;r&eacute;e quand un
+		  module a besoin de se r&eacute;f&eacute;rer &agrave; des fichiers ou URIs
+		  addidionnels pour pouvoir mener &agrave; bien sa t&acirc;che.</dd>
+
+		  <dt><code>REMOTE_ADDR</code></dt>
+                  <dd>L'adresse IP de l'h&ocirc;te distant (se r&eacute;f&eacute;rer au
+		  module <module>mod_remoteip</module>).</dd>
 
                   <dt><code>REQUEST_FILENAME</code></dt>
 
@@ -654,13 +662,6 @@ la r&eacute;&eacute;criture soit effectu&eacute;e
 		  <code>REQUEST_URI</code> pour d&eacute;terminer &agrave; quel
 		  fichier correspond la requ&ecirc;te.</dd>
 
-                  <dt><code>HTTPS</code></dt>
-
-                  <dd>Contient le texte "on" si la connexion
-		  utilise SSL/TLS, "off" dans le cas contraire
-		  (Cette variable peut &ecirc;tre utilis&eacute;e sans probl&egrave;me, que
-		  <module>mod_ssl</module> soit charg&eacute; ou non.</dd>
-
 		  <dt><code>REQUEST_SCHEME</code></dt>
 
                   <dd>Contient le protocole de la requ&ecirc;te (en g&eacute;n&eacute;ral
@@ -668,14 +669,21 @@ la r&eacute;&eacute;criture soit effectu&eacute;e
 		  la directive <directive
 		  module="core">ServerName</directive>.</dd>
 
-		  <dt><code>REMOTE_ADDR</code></dt>
-                  <dd>L'adresse IP de l'h&ocirc;te distant (voir le module
-		  <module>mod_remoteip</module>).</dd>
+		  <dt><code>REQUEST_URI</code></dt>
 
-                  <dt><code>CONN_REMOTE_ADDR</code></dt>
-                  <dd>Depuis la version 2.4.8 : l'adresse IP distante de
-		  la connexion (voir le module
-		  <module>mod_remoteip</module>).</dd>
+		  <dd>La partie chemin de l'URI de la requ&ecirc;te, comme
+		  "/index.html". Ceci exclut en particulier la cha&icirc;ne de
+		  param&egrave;tres de la requ&ecirc;te qui est contenue dans la
+		  variable <code>QUERY_STRING</code>.</dd>
+
+                  <dt><code>THE_REQUEST</code></dt>
+
+                  <dd>La ligne de requ&ecirc;te HTTP compl&egrave;te envoy&eacute;e par le
+		  navigateur au serveur (par exemple, "<code>GET
+                  /index.html HTTP/1.1</code>"), &agrave; l'exclusion de tout
+		  en-t&ecirc;te ajout&eacute; par le navigateur. Cette
+		  valeur n'a pas &eacute;t&eacute; d&eacute;s&eacute;chapp&eacute;e (d&eacute;cod&eacute;e), &agrave; la
+		  diff&eacute;rence de la plupart des variables suivantes.</dd>
 
                 </dl>
 </note>
@@ -1317,7 +1325,7 @@ substitution !
       href="../rewrite/flags.html">document &agrave; propos des drapeaux de
       r&eacute;&eacute;criture.</a></p>
 
-      <table border="1">
+      <table border="1" style="zebra">
     <tr><th>Drapeaux et syntaxe</th>
         <th>Fonction</th>
     </tr>
@@ -1481,7 +1489,7 @@ utilis&eacute; dans la directive <directive module="mod_rewrite">RewriteRule</di
       /chemin/infochemin</code>'':</strong><br />
       </p>
 
-<table border="1">
+<table border="1" style="zebra">
 <tr>
 <th>R&egrave;gle</th>
 <th>R&eacute;sultat de la substitution</th>
@@ -1557,7 +1565,7 @@ redondant)</td>
       /chemin/chemin-local/infochemin</code>'':</strong><br />
      </p>
 
-<table border="1">
+<table border="1" style="zebra">
 
 <tr>
 <th>R&egrave;gle</th>

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1588220-->
+<!-- English Revision: 1593692 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -611,7 +611,7 @@ mandat&eacute;es correspondant &agrave; une expression rationnelle</description>
 
 <highlight language="config">
 &lt;ProxyMatch ^http://(?&lt;sitename&gt;[^/]+)&gt;
-    require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
+    Require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
 &lt;/ProxyMatch&gt;
 </highlight>
 </usage>
@@ -844,12 +844,11 @@ charge</description>
     <code>&lt;Proxy <var>balancer://</var>...&gt;</code>, et accepte
     tous les param&egrave;tres de paires cl&eacute;/valeur que supporte la directive
     <directive module="mod_proxy">ProxyPass</directive>.</p>
-    <p>La directive <directive
-    module="mod_proxy">BalancerMember</directive> accepte un param&egrave;tre
+    <p>La directive <directive>BalancerMember</directive> accepte un param&egrave;tre
     suppl&eacute;mentaire : <var>loadfactor</var>. Il s'agit du facteur de
     charge du membre - un nombre entre 1 (valeur par d&eacute;faut) et 100, qui
     d&eacute;finit la charge &agrave; appliquer au membre en question.</p>
-    <p>L'argument balancerurl n'est requis que s'il ne se trouve pas
+    <p>L'argument <var>balancerurl</var> n'est requis que s'il ne se trouve pas
     d&egrave;j&agrave; dans la directive de conteneur <code>&lt;Proxy
     <var>balancer://</var>...&gt;</code>. Il correspond &agrave; l'URL d'un
     r&eacute;partiteur de charge d&eacute;fini par une directive <directive
@@ -858,7 +857,7 @@ charge</description>
     conteneur <code>&lt;Proxy <var>balancer://</var>...&gt;</code> est
     ignor&eacute;e.</p>
     <p>En particulier, le slash de fin de l'URL d'un
-    <code>BalancerMember</code> doit &ecirc;tre supprim&eacute;.</p>
+    <directive>BalancerMember</directive> doit &ecirc;tre supprim&eacute;.</p>
 </usage>
 </directivesynopsis>
 

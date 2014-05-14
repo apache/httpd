@@ -28,8 +28,6 @@
 <a href="../fr/mod/mod_proxy.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_proxy.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Serveur mandataire/passerelle multi-protocole</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>proxy_module</td></tr>
@@ -509,6 +507,9 @@ ProxyPass /examples http://backend.example.com/examples timeout=10</pre>
     <p>Voir aussi les directives <code class="directive"><a href="#proxypreservehost">ProxyPreserveHost</a></code> et <code class="directive"><a href="#proxyvia">ProxyVia</a></code> directives, qui permettent
     de contrôler d'autres en-têtes de requête.</p>
 
+    <p>Note : Si vous devez ajouter des en-têtes particuliers à la
+    requête mandatée, utilisez la directive  <code class="directive"><a href="../mod/mod_headers.html#requestheader">RequestHeader</a></code>.</p>
+
    </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="BalancerGrowth" id="BalancerGrowth">BalancerGrowth</a> <a name="balancergrowth" id="balancergrowth">Directive</a></h2>
@@ -570,11 +571,11 @@ charge</td></tr>
     <code>&lt;Proxy <var>balancer://</var>...&gt;</code>, et accepte
     tous les paramètres de paires clé/valeur que supporte la directive
     <code class="directive"><a href="#proxypass">ProxyPass</a></code>.</p>
-    <p>La directive <code class="directive"><a href="#balancermember">BalancerMember</a></code> accepte un paramètre
+    <p>La directive <code class="directive">BalancerMember</code> accepte un paramètre
     supplémentaire : <var>loadfactor</var>. Il s'agit du facteur de
     charge du membre - un nombre entre 1 (valeur par défaut) et 100, qui
     définit la charge à appliquer au membre en question.</p>
-    <p>L'argument balancerurl n'est requis que s'il ne se trouve pas
+    <p>L'argument <var>balancerurl</var> n'est requis que s'il ne se trouve pas
     dèjà dans la directive de conteneur <code>&lt;Proxy
     <var>balancer://</var>...&gt;</code>. Il correspond à l'URL d'un
     répartiteur de charge défini par une directive <code class="directive"><a href="#proxypass">ProxyPass</a></code>.</p>
@@ -582,7 +583,7 @@ charge</td></tr>
     conteneur <code>&lt;Proxy <var>balancer://</var>...&gt;</code> est
     ignorée.</p>
     <p>En particulier, le slash de fin de l'URL d'un
-    <code>BalancerMember</code> doit être supprimé.</p>
+    <code class="directive">BalancerMember</code> doit être supprimé.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -993,7 +994,7 @@ mandatées correspondant à une expression rationnelle</td></tr>
     identique à la directive <code class="directive"><a href="#proxy">&lt;Proxy&gt;</a></code>, à l'exception qu'elle définit
     les URLs auxquelles elle s'applique en utilisant une <a class="glossarylink" href="../glossary.html#regex" title="voir glossaire">expression rationnelle</a>.</p>
 
-    <p>A partir de la version 2.5.0, les groupes nommés et les
+    <p>A partir de la version 2.4.8, les groupes nommés et les
     références arrières sont extraits et enregistrés dans
     l'environnement avec leur nom en majuscules et préfixé par "MATCH_". Ceci permet
     de référencer des URLs dans des <a href="../expr.html">expressions</a>
@@ -1003,7 +1004,7 @@ mandatées correspondant à une expression rationnelle</td></tr>
     nommés.</p>
 
 <pre class="prettyprint lang-config">&lt;ProxyMatch ^http://(?&lt;sitename&gt;[^/]+)&gt;
-    require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
+    Require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
 &lt;/ProxyMatch&gt;</pre>
 
 
@@ -1599,7 +1600,7 @@ serveur principal</td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.5.0 du serveur
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.5 du serveur
 HTTP Apache.</td></tr>
 </table>
         <p>Cette directive permet à un serveur virtuel d'hériter des
@@ -1782,7 +1783,7 @@ ProxyPassReverseCookiePath  /  /mirror/foo/</pre>
     combinaison avec la directive
     <code class="directive">ProxyPassInterpolateEnv</code>, permet
     l'interpolation des variables d'environnement spécifiées en
-    utilisant le format <var>${VARNAME}</var>. Notez que l'interpolation
+    utilisant le format <var>${VARNAME}</var> Notez que l'interpolation
     n'est pas supportée dans la partie protocole d'une URL.
     </p>
 

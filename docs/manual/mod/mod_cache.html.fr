@@ -109,7 +109,7 @@
 
     <p><code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> requiert les services d'un ou
     plusieurs modules de gestion de stockage. La distribution Apache de base
-    inclut un module de gestion de stockage :</p>
+    inclut les modules de gestion de stockage suivants :</p>
     <dl>
     <dt><code class="module"><a href="../mod/mod_cache_disk.html">mod_cache_disk</a></code></dt>
 

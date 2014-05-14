@@ -27,8 +27,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_authnz_ldap.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_authnz_ldap.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Permet d'utiliser un annuaire LDAP pour l'authentification
 HTTP de base.</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -384,7 +382,7 @@ Directory</a></li>
     disponibles, sous réserve du chargement de modules d'autorisation
     supplémentaires.</p>
 
-    <p>Depuis la version 2.5.0, les directives require LDAP supportent
+    <p>Depuis la version 2.4.8, les directives require LDAP supportent
     les <a href="../expr.html">expressions</a>.</p>
 
 <h3><a name="requser" id="requser">Require ldap-user</a></h3>
@@ -937,7 +935,7 @@ connexion</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authnz_ldap</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td><em>exec:</em> est disponible depuis la version 2.4.6 du
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td><em>exec:</em> est disponible depuis la version 2.4.5 du
 serveur HTTP Apache.</td></tr>
 </table>
     <p>Cette directive permet de spécifier un mot de passe à utiliser en
@@ -951,14 +949,15 @@ serveur HTTP Apache.</td></tr>
     <p>Si la valeur spécifiée débute par "exec:", la commande qui suit sera
     exécutée, et la première ligne renvoyée par la commande sur la
     sortie standard sera utilisée comme mot de passe.</p>
-<div class="example"><pre># Mot de passe spécifié directement
+<pre class="prettyprint lang-config"># Mot de passe spécifié directement
 AuthLDAPBindPassword secret
 
 # Exécution de /path/to/program pour obtenir le mot de passe
 AuthLDAPBindPassword exec:/path/to/program
 
 # Exécution de /path/to/otherProgram avec un argument pour obtenir le mot de passe
-AuthLDAPBindPassword "exec:/path/to/otherProgram argument1"</pre></div>
+AuthLDAPBindPassword "exec:/path/to/otherProgram argument1"</pre>
+
 
 
 </div>

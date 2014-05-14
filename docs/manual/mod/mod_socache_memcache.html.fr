@@ -47,9 +47,8 @@
     fournir la liste des serveurs sous la forme du paramètre optionnel
     "arg".</p>
 
-     <div class="example"><p><code>
-         SSLSessionCache memcache:memcache.example.com:12345,memcache2.example.com:123455
-     </code></p></div>
+     <pre class="prettyprint lang-config">SSLSessionCache memcache:memcache.example.com:12345,memcache2.example.com:12345</pre>
+
 
     <p>Vous trouverez des détails à propos des autres fournisseurs de
     cache d'objets partagés <a href="../socache.html">ici</a>.

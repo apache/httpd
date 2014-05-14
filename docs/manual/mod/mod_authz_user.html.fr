@@ -29,8 +29,6 @@
 <a href="../ja/mod/mod_authz_user.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_authz_user.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Autorisation basée sur l'utilisateur</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>authz_user_module</td></tr>
@@ -67,7 +65,7 @@ d'Apache</td></tr></table>
     les types d'autorisation <code>user</code> et <code>valid-user</code>.
     </p>
 
-    <p>A partir de la version 2.5.0, les directives require DBM
+    <p>A partir de la version 2.4.8, les directives require DBM
     supportent les <a href="../expr.html">expressions</a>.</p>
 
 <h3><a name="requser" id="requser">Require user</a></h3>

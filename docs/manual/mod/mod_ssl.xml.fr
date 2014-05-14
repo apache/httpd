@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1585902 -->
+<!-- English Revision : 1593003 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -369,16 +369,18 @@ cette demande peut &ecirc;tre formul&eacute;e parmi les trois suivantes :</p>
 <li><code>exec:/chemin/vers/programme</code>
     <p>
     Ici, un programme externe est appel&eacute; au d&eacute;marrage du serveur pour
-    chaque fichier de cl&eacute; priv&eacute;e chiffr&eacute;. Jusqu'&agrave;
-    la version 2.4.7, il &eacute;tait appel&eacute; avec deux
-    arguments (le premier &eacute;tait de la forme
+    chaque fichier de cl&eacute; priv&eacute;e chiffr&eacute;.Il est appel&eacute; avec deux
+    arguments (le premier est de la forme
     ``<code>nom-serveur:port</code>'', le second
-    est ``<code>RSA</code>'', ``<code>DSA</code>'' ou ``<code>ECC</code>''), qui
+    est ``<code>RSA</code>'', ``<code>DSA</code>'', ``<code>ECC</code>''
+    ou un index entier commençant à 3 si plus de 3 clés ont été
+    configurées), qui
     indiquent pour quels serveur et algorithme il doit &eacute;crire le mot de
-    passe correspondant sur <code>stdout</code>. Depuis la version
+    passe correspondant sur <code>stdout</code>. Avec les versions 2.4.8
+    (non réalisée) et
     2.4.9, il est appel&eacute; avec un seul argument, une cha&icirc;ne de la forme
     "<code>servername:portnumber:index</code>" (o&ugrave; <code>index</code>
-    est un num&eacute;ro d'ordre commen&ccedil;ant &agrave; z&eacute;ro), qui sp&eacute;cifie le serveur,
+    est un nombre entier commen&ccedil;ant &agrave; z&eacute;ro), qui sp&eacute;cifie le serveur,
     le port TCP et un num&eacute;ro de certificat. Le but recherch&eacute; est
     l'ex&eacute;cution de v&eacute;rifications de s&eacute;curit&eacute; pr&eacute;alables permettant de
     s'assurer que le syst&egrave;me n'est pas victime d'une attaque, et de ne
