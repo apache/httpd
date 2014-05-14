@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1554195:1587032 (outdated) -->
+<!-- English Revision : 1587032 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -51,7 +51,7 @@
     les types d'autorisation <code>user</code> et <code>valid-user</code>.
     </p>
 
-    <p>A partir de la version 2.5.0, les directives require DBM
+    <p>A partir de la version 2.4.8, les directives require DBM
     supportent les <a href="../expr.html">expressions</a>.</p>
 
 <section id="requser"><title>Require user</title>

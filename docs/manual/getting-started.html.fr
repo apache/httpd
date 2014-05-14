@@ -145,9 +145,9 @@ mot-clé suivi d'un ou plusieurs arguments qui définissent sa valeur.</p>
 ?</em>" dépend en général du niveau auquel cette directive doit être
 prise en compte. S'il s'agit du niveau global, elle doit être placée
 dans le fichier de configuration principal, et en dehors de toute
-section  <code class="directive">&lt;Directory&gt;</code>, <code class="directive">&lt;Location&gt;</code>, <code class="directive">&lt;VirtualHost&gt;</code>, ou de toute autre section. Si
+section  <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>, <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code>, <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>, ou de toute autre section. Si
 par exemple elle ne doit s'appliquer qu'à un répertoire particulier,
-elle doit être placée dans la section <code class="directive">&lt;Directory&gt;</code> qui fait référence à ce répertoire.
+elle doit être placée dans la section <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> qui fait référence à ce répertoire.
 Voir la documentation sur les <a href="sections.html">Sections de
 configuration</a> pour plus de détails.</p>
 

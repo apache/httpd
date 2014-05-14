@@ -196,7 +196,7 @@
     <code>Content-Length</code> explicite.</p>
 
     <p>De nombreuses méthodes pour déterminer la taille d'un
-    corps de réponse sont décrites dans la <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec4.4">RFC2616
+    corps de réponse sont décrites dans la <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.4">RFC2616
     section 4.4 Message Length</a>.</p>
 
     <p>Lorsque l'en-tête <code>Content-Length</code> est présente, la
@@ -247,7 +247,7 @@
 
     <p>Le type de media du corps est placé dans une en-tête
     <code>Content-Type</code> dont le format est décrit en détail dans
-    la <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec3.7">
+    la <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.7">
     RFC2616 section 3.7 Media Types</a>.</p>
 
     <p>Une en-tête <code>Content-Type</code> dont la syntaxe est valide
@@ -284,7 +284,7 @@
     <code>Transfer-Encoding</code> défini à chunked.</p>
 
     <p>De nombreuses manières pour déterminer la taille d'un
-    corps de réponse sont décrites dans la <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec4.4">RFC2616
+    corps de réponse sont décrites dans la <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.4">RFC2616
     section 4.4 Message Length</a>.</p>
 
     <p>Pour indiquer la fin de la réponse au client sans que ce dernier
@@ -351,7 +351,7 @@
     durée de fraîcheur est calculée à partir d'une heuristique.</p>
 
     <p>Vous trouverez tous les détails à propos du calcul d'une durée de
-    fraîcheur dans la <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec13.2">RFC2616
+    fraîcheur dans la <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html#sec13.2">RFC2616
     section 13.2 Expiration Model</a>.</p>
 
     <p>Pendant la durée de fraîcheur, un cache n'a pas besoin de

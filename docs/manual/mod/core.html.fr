@@ -2042,7 +2042,7 @@ requête</td></tr>
     <p>serait satisfaite pour les requêtes HTTP/1.0 sans en-tête
     <var>Host:</var>. Les expressions peuvent contenir différents
     opérateurs de type shell pour la comparaison de chaînes
-    (<code>=</code>, <code>!=</code>, <code>&lt;</code>, ...), la
+    (<code>==</code>, <code>!=</code>, <code>&lt;</code>, ...), la
     comparaison d'entiers (<code>-eq</code>, <code>-ne</code>, ...), ou
     à usages divers (<code>-n</code>, <code>-z</code>, <code>-f</code>,
     ...). Les expressions rationnelles sont aussi supportées,</p>

@@ -98,8 +98,7 @@ tardif</a></h2>
     précoces ne peuvent être définis que dans un contexte de serveur
     principal ou de serveur virtuel. Les directives précoces ne peuvent
     pas dépendre d'un chemin de requête, si bien qu'elles échoueront
-    dans des contextes tels que <code>&lt;Directory&gt;</code> ou
-    <code>&lt;Location&gt;</code>.</p>
+    dans des contextes tels que <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> ou <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="examples" id="examples">Exemples</a></h2>
@@ -225,15 +224,15 @@ Header merge Cache-Control no-store env=NO_STORE</pre>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure les en-têtes d'une réponse HTTP</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Header [<var>condition</var>] add|append|echo|edit|edit*|merge|set|setifempty|unset|note
-<var>en-tête</var> [[expr=]<var>valeur]</var>] [<var>remplacement</var>]
-[early|env=[!]<var>variable</var>]|expr=<var>expression</var>]
+<var>en-tête</var> [[expr=]<var>valeur</var> [<var>remplacement</var>
+[early|env=[!]<var>variable</var>|expr=<var>expression</var>]]]
 </code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_headers</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>SetIfEmpty est disponible depuis la version 2.4.7 du
-serveur HTTP Apache ; le paramètre expr= valeur a été introduit avec la
+serveur HTTP Apache ; le paramètre expr=valeur a été introduit avec la
 version 2.4.10</td></tr>
 </table>
     <p>Cette directive permet de remplacer, fusionner, ou
@@ -467,15 +466,15 @@ version 2.4.10</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure les en-têtes d'une requête HTTP</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RequestHeader add|append|edit|edit*|merge|set|setifempty|unset
-<var>en-tête</var> [[expr=]<var>valeur</var>] [<var>remplacement</var>]
-[early|env=[!]<var>variable</var>]|expr=<var>expression</var>]
+<var>en-tête</var> [[expr=]<var>valeur</var> [<var>remplacement</var>
+[early|env=[!]<var>variable</var>|expr=<var>expression</var>]]]
 </code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_headers</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>SetIfEmpty est disponible depuis la version 2.4.7 du
-serveur HTTP Apache ; le paramètre expr= valeur a été introduit avec la
+serveur HTTP Apache ; le paramètre expr=valeur a été introduit avec la
 version 2.4.10</td></tr>
 </table>
     <p>Cette directive permet de remplacer, fusionner, modifier ou

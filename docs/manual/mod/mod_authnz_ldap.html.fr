@@ -129,6 +129,7 @@ Directory</a></li>
           <li><a href="#reqdn">Require ldap-dn</a></li>
           <li><a href="#reqattribute">Require ldap-attribute</a></li>
           <li><a href="#reqfilter">Require ldap-filter</a></li>
+	  <li><a href="#reqsearch">Require ldap-search</a></li>
         </ul>
       </li>
 
@@ -275,6 +276,12 @@ Directory</a></li>
       est accordée si le filtre de recherche renvoie un objet
       utilisateur unique qui corresponde au DN de l'utilisateur
       authentifié.</li>
+
+      <li>Avec la directive <a href="#reqsearch">
+      <code>Require ldap-search</code></a>, l'autorisation d'accès
+      est accordée si le filtre de recherche renvoie avec succès
+      un seul objet correspondant aux critères avec tout nom distinctif
+      (DN).</li>
 
       <li>dans tous les autres cas, refus ou restriction de
       l'accès.</li>
@@ -563,6 +570,40 @@ AuthLDAPMaxSubGroupDepth 1</pre>
     rapide que l'opération de recherche effectuée par
     <code>ldap-filter</code>, en particulier dans le cas d'un annuaire
     LDAP de grande taille.</p>
+
+    <p>Lorsqu'on utilise une <a href="../expr.html">expression
+    rationnelle</a> au sein d'un filtre, il faut bien s'assurer que les
+    filtres LDAP sont correctement échappés afin de se prémunir contre
+    toute injection LDAP. A cet effet, il est possible d'utiliser la
+    fonction ldap.</p>
+
+<pre class="prettyprint lang-config">&lt;LocationMatch ^/dav/(?&lt;SITENAME&gt;[^/]+)/&gt;
+  Require ldap-filter (memberOf=cn=%{ldap:%{unescape:%{env:MATCH_SITENAME}},ou=Websites,o=Example)
+&lt;/LocationMatch&gt;</pre>
+
+
+
+
+<h3><a name="reqsearch" id="reqsearch">Require ldap-search</a></h3>
+
+    <p>La directive <code>Require ldap-search</code> permet à
+    l'administrateur d'autoriser l'accès en fonction d'un filtre de
+    recherche LDAP générique contenant une <a href="../expr.html">expression rationnelle</a>. Si le filtre de
+    recherche renvoie une et une seule correspondance, l'accès est
+    accordé sans tenir compte du DN.</p>
+
+    <p>La directive suivante accorderait l'accès aux URLs correspondant
+    aux objets spécifiés dans le serveur LDAP :</p>
+
+<pre class="prettyprint lang-config">&lt;LocationMatch ^/dav/(?&lt;SITENAME&gt;[^/]+)/&gt;
+Require ldap-search (cn=%{ldap:%{unescape:%{env:MATCH_SITENAME}} Website)
+&lt;/LocationMatch&gt;</pre>
+
+
+    <p>Note : il faut bien s'assurer que les
+    expressions sont correctement échappés afin de se prémunir contre
+    toute injection LDAP. A cet effet, il est possible d'utiliser la
+    fonction <strong>ldap</strong> comme dans l'exemple ci-dessus.</p>
 
 
 
