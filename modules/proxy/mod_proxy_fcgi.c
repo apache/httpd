@@ -483,18 +483,12 @@ static apr_status_t dispatch(proxy_conn_rec *conn, proxy_dir_conf *conf,
         }
 
         if (pfd.rtnevents & APR_POLLIN) {
-            /* readbuf has one byte on the end that is always 0, so it's
-             * able to work with a strstr when we search for the end of
-             * the headers, even if we fill the entire length in the recv. */
-            char readbuf[AP_IOBUFSIZE + 1];
+            char readbuf[AP_IOBUFSIZE];
             apr_size_t readbuflen;
             apr_uint16_t clen, rid;
             apr_bucket *b;
             unsigned char plen;
             unsigned char type, version;
-
-            memset(readbuf, 0, sizeof(readbuf));
-            memset(farray, 0, sizeof(farray));
 
             /* First, we grab the header... */
             rv = get_data_full(conn, (char *) farray, AP_FCGI_HEADER_LEN);
@@ -528,8 +522,8 @@ static apr_status_t dispatch(proxy_conn_rec *conn, proxy_dir_conf *conf,
             }
 
 recv_again:
-            if (clen > sizeof(readbuf) - 1) {
-                readbuflen = sizeof(readbuf) - 1;
+            if (clen > sizeof(readbuf)) {
+                readbuflen = sizeof(readbuf);
             } else {
                 readbuflen = clen;
             }
@@ -542,7 +536,6 @@ recv_again:
                 if (rv != APR_SUCCESS) {
                     break;
                 }
-                readbuf[readbuflen] = 0;
             }
 
             switch (type) {
