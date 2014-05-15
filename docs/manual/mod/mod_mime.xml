@@ -34,7 +34,7 @@
 <summary>
     <p>This module is used to associate various bits of "meta
     information" with files by their filename extensions. This
-    information relates the filename of the document to it's
+    information relates the filename of the document to its
     mime-type, language, character set and encoding. This
     information is sent to the browser, and participates in content
     negotiation, so the user's preferences are respected when
