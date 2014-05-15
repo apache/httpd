@@ -88,11 +88,18 @@ def time_arg(args):
     t = args.pop(0)
     if t == '-':
         return None
+    bad_val = False
+    val = None
     try:
-        return int(t)
+        val = int(t)
     except ValueError:
+        bad_val = True
+
+    if bad_val or val < 1:
         print >> sys.stderr, 'The timestamp "%s" is invalid' % t
         sys.exit(1)
+
+    return val
 
 
 def configure_public_key(cur, args):
