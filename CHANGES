@@ -1,18 +1,21 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
-  
+
+  *) mod_proxy_balancer: Correctly encode user provided data in management
+     interface. PR 56532 [Maksymilian, <max cert.cx>]
+
   *) mod_proxy_wstunnel: Fix the use of SSL connections with the "wss:"
      scheme. PR55320. [Alex Liu <alex.leo.ca gmail.com>]
- 
+
   *) core: Add ap_mpm_resume_suspended() API to allow a suspended connection
      to resume. PR56333 
      [Artem <artemciy gmail.com>, Edward Lu <Chaosed0 gmail.com>]
- 
+
   *) core: Add ap_mpm_register_socket_callback_timeout() API. [Eric Covener]
 
   *) mod_proxy_wstunnel: Honor ProxyWebsocketIdleTimeout in asynchronous
      processing mode. [Eric Covener]
- 
+
   *) mod_proxy_fcgi: Fix occasional high CPU when handling request bodies.
      [Jeff Trawick]
 

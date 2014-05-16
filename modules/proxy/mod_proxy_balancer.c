@@ -1602,7 +1602,7 @@ static int balancer_handler(request_rec *r)
             ap_rputs("<h3>Edit balancer settings for ", r);
             ap_rvputs(r, bsel->s->name, "</h3>\n", NULL);
             ap_rputs("<form method='POST' enctype='application/x-www-form-urlencoded' action='", r);
-            ap_rvputs(r, action, "'>\n", NULL);
+            ap_rvputs(r, ap_escape_uri(r->pool, action), "'>\n", NULL);
             ap_rputs("<dl>\n<table>\n", r);
             provs = ap_list_provider_names(r->pool, PROXY_LBMETHOD, "0");
             if (provs) {
