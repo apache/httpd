@@ -167,6 +167,7 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
 
     <tr><th>Name</th></tr>
     <tr><td><code>HTTP_ACCEPT</code></td></tr>
+    <tr><td><code>HTTP_COOKIE</code></td></tr>
     <tr><td><code>HTTP_FORWARDED</code></td></tr>
     <tr><td><code>HTTP_HOST</code></td></tr>
     <tr><td><code>HTTP_PROXY_CONNECTION</code></td></tr>
@@ -189,7 +190,7 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     <tr><td><code>REQUEST_URI</code></td>
         <td>The path part of the request's URI</td></tr>
     <tr><td><code>DOCUMENT_URI</code></td>
-        <td>Same as REQUEST_URI</td></tr>
+        <td>Same as <code>REQUEST_URI</code></td></tr>
     <tr><td><code>REQUEST_FILENAME</code></td>
         <td>The full local filesystem path to the file or script matching the
             request, if this has already been determined by the server at the
@@ -266,6 +267,10 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     <tr><td><code>CONN_REMOTE_ADDR</code></td>
         <td>The peer IP address of the connection (see the
             <module>mod_remoteip</module> module)</td></tr>
+    <tr><td><code>CONTEXT_PREFIX</code></td>
+        <td></td></tr>
+    <tr><td><code>CONTEXT_DOCUMENT_ROOT</code></td>
+        <td></td></tr>
 
     </table>
 
