@@ -208,7 +208,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1594648
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-mod_cache-preserve_304_headers.patch
      +1: ylavic
- 
+
+   * mod_cache: Retry unconditional request with the full URL (including the
+     query-string) when the origin server's 304 response does not match the
+     conditions used to revalidate the stale entry.  [Yann Ylavic].
+     trunk patch: http://svn.apache.org/r1591143
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: minfrin
+
 
 OTHER PROPOSALS
 
