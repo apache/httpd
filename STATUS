@@ -100,6 +100,15 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * mod_cache: Don't add cached/revalidated entity headers to a 304 response.
+                PR 55547.
+     trunk patch: http://svn.apache.org/r1591320
+                  http://svn.apache.org/r1591322
+                  http://svn.apache.org/r1591390
+                  http://svn.apache.org/r1591394
+     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-mod_cache-strip_304_entity_headers.patch
+     +1: ylavic, jim, minfrin
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -185,15 +194,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: minfrin, covener
      jailletc36: When merged, a compatibility note should be added in the doc stating when
                  the none keyword has been added
-
-   * mod_cache: Don't add cached/revalidated entity headers to a 304 response.
-                PR 55547.
-     trunk patch: http://svn.apache.org/r1591320
-                  http://svn.apache.org/r1591322
-                  http://svn.apache.org/r1591390
-                  http://svn.apache.org/r1591394
-     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-mod_cache-strip_304_entity_headers.patch
-     +1: ylavic, jim
 
    * mod_proxy_wstunnel: Fix the use of SSL connections with the "wss:" scheme.
                          PR 55320.
