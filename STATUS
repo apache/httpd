@@ -109,6 +109,19 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-mod_cache-strip_304_entity_headers.patch
      +1: ylavic, jim, minfrin
 
+   * mod_cache: Retry unconditional request with the full URL (including the
+     query-string) when the origin server's 304 response does not match the
+     conditions used to revalidate the stale entry.  [Yann Ylavic].
+     trunk patch: http://svn.apache.org/r1591143
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: minfrin, trawick, ylavic
+
+   * mod_socache_shmcb: Correct counting of expirations for status display.
+     Expirations happening during retrieval were not counted.
+     trunk patch: http://svn.apache.org/r1595426
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: rjung, trawick, ylavic
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -209,19 +222,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-mod_cache-preserve_304_headers.patch
      +1: ylavic, minfrin
 
-   * mod_cache: Retry unconditional request with the full URL (including the
-     query-string) when the origin server's 304 response does not match the
-     conditions used to revalidate the stale entry.  [Yann Ylavic].
-     trunk patch: http://svn.apache.org/r1591143
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: minfrin, trawick
-
-   * mod_socache_shmcb: Correct counting of expirations for status display.
-     Expirations happening during retrieval were not counted.
-     trunk patch: http://svn.apache.org/r1595426
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: rjung, trawick
-
    * minor proxy_util cleanups:
      . get rid of unnecessary block scope
      . Clarify an existing requirement of the server_portstr parameter
@@ -231,7 +231,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patches: http://svn.apache.org/viewvc?view=revision&revision=r1592511
                     http://svn.apache.org/viewvc?view=revision&revision=r1592514
      2.4.x patches: trunk patches work
-     +1: trawick
+     +1: trawick, ylavic
 
    * mod_proxy_fcgi: Support iobuffersize parameter.
      trunk patch: http://svn.apache.org/r1591508
