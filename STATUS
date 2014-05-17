@@ -216,6 +216,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (modulo CHANGES)
      +1: minfrin
 
+   * mod_socache_shmcb: Correct counting of expirations for status display.
+     Expirations happening during retrieval were not counted.
+     trunk patch: http://svn.apache.org/r1595426
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: rjung
 
 OTHER PROPOSALS
 
