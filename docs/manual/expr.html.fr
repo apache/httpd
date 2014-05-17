@@ -150,11 +150,12 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"</pr
 
     <table class="bordered"><tr class="header"><th>Nom</th></tr>
 <tr><td><code>HTTP_ACCEPT</code></td></tr>
-<tr class="odd"><td><code>HTTP_FORWARDED</code></td></tr>
-<tr><td><code>HTTP_HOST</code></td></tr>
-<tr class="odd"><td><code>HTTP_PROXY_CONNECTION</code></td></tr>
-<tr><td><code>HTTP_REFERER</code></td></tr>
-<tr class="odd"><td><code>HTTP_USER_AGENT</code></td></tr>
+<tr class="odd"><td><code>HTTP_COOKIE</code></td></tr>
+<tr><td><code>HTTP_FORWARDED</code></td></tr>
+<tr class="odd"><td><code>HTTP_HOST</code></td></tr>
+<tr><td><code>HTTP_PROXY_CONNECTION</code></td></tr>
+<tr class="odd"><td><code>HTTP_REFERER</code></td></tr>
+<tr><td><code>HTTP_USER_AGENT</code></td></tr>
 </table>
 
     <p>Autres variables liées aux requêtes</p>
@@ -168,7 +169,7 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"</pr
 <tr><td><code>REQUEST_URI</code></td>
         <td>La partie chemin de l'URI de la requête</td></tr>
 <tr class="odd"><td><code>DOCUMENT_URI</code></td>
-        <td>Idem REQUEST_URI</td></tr>
+        <td>Idem <code>REQUEST_URI</code></td></tr>
 <tr><td><code>REQUEST_FILENAME</code></td>
         <td>Le chemin complet dans le système de fichiers local du
 	fichier ou du script correspondant à la requête, si le serveur
@@ -242,6 +243,10 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"</pr
 <tr><td><code>CONN_REMOTE_ADDR</code></td>
         <td>L'adresse IP du correspondant pour la connexion (voir le module
 	<code class="module"><a href="./mod/mod_remoteip.html">mod_remoteip</a></code>)</td></tr>
+<tr class="odd"><td><code>CONTEXT_PREFIX</code></td>
+        <td /></tr>
+<tr><td><code>CONTEXT_DOCUMENT_ROOT</code></td>
+        <td /></tr>
 </table>
 
     <p>Variables diverses</p>
