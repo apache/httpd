@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_socache_shmcb: Correct counting of expirations for status display.
+     Expirations happening during retrieval were not counted. [Rainer Jung]
+
   *) mod_proxy_balancer: Correctly encode user provided data in management
      interface. PR 56532 [Maksymilian, <max cert.cx>]
 
