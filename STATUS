@@ -199,7 +199,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                          PR 55320.
      trunk patch: http://svn.apache.org/r1594625
      2.4.x patch: trunk patch works modulo CHANGES
-     +1: ylavic
+     +1: ylavic, trawick
 
    * mod_cache: Preserve non-cacheable headers forwarded from an origin 304
                 response. PR 55547.
@@ -214,13 +214,24 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      conditions used to revalidate the stale entry.  [Yann Ylavic].
      trunk patch: http://svn.apache.org/r1591143
      2.4.x patch: trunk works (modulo CHANGES)
-     +1: minfrin
+     +1: minfrin, trawick
 
    * mod_socache_shmcb: Correct counting of expirations for status display.
      Expirations happening during retrieval were not counted.
      trunk patch: http://svn.apache.org/r1595426
      2.4.x patch: trunk works (modulo CHANGES)
-     +1: rjung
+     +1: rjung, trawick
+
+   * minor proxy_util cleanups:
+     . get rid of unnecessary block scope
+     . Clarify an existing requirement of the server_portstr parameter
+       to ap_proxy_determine_connection(): it must be a buffer of at
+       least one byte in size.  (And don't bother with using strcpy in
+       order to zap a string.)
+     trunk patches: http://svn.apache.org/viewvc?view=revision&revision=r1592511
+                    http://svn.apache.org/viewvc?view=revision&revision=r1592514
+     2.4.x patches: trunk patches work
+     +1: trawick
 
 OTHER PROPOSALS
 
