@@ -169,7 +169,7 @@ AddOutputFilter INCLUDES .shtml</pre>
       attempts to echo an undefined variable. This overrides any <code class="directive"><a href="#ssiundefinedecho">SSIUndefinedEcho</a></code> directives.</p>
 
       <div class="example"><p><code>
-        &lt;!--#config errmsg="[Value Undefined]" --&gt;
+        &lt;!--#config echomsg="[Value Undefined]" --&gt;
       </code></p></div>
       </dd>
 
