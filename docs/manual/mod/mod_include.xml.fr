@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1440768 -->
+<!-- English Revision : 1595576 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -156,7 +156,7 @@ AddOutputFilter INCLUDES .shtml
       module="mod_include">SSIUndefinedEcho</directive>.</p>
 
       <example>
-        &lt;!--#config errmsg="[Valeur non d&eacute;finie]" --&gt;
+        &lt;!--#config echomsg="[Valeur non d&eacute;finie]" --&gt;
       </example>
       </dd>
 
