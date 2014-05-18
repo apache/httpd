@@ -711,7 +711,7 @@ end</pre>
 
 <pre class="prettyprint lang-lua">r:flush()   -- vide le tampon de sortie
             -- Renvoie true si le vidage a été effectué avec succès,
-	    false dans le cas contraire.
+	    -- false dans le cas contraire.
 
 while nous_avons_des_données_à_envoyer do
     r:puts("Bla bla bla\n") -- envoi des données à envoyer vers le tampon
@@ -725,8 +725,9 @@ end</pre>
 r:addoutputfilter("fooFilter") -- insère le filtre fooFilter dans le flux de sortie</pre>
 
 
-<pre class="prettyprint lang-lua">r:sendfile(filename) -- envoie un fichier entier au client en
-utilisant sendfile s'il est supporté par la plateforme :
+<pre class="prettyprint lang-lua">r:sendfile(filename) -- envoie un fichier entier au client en utilisant
+                     -- sendfile s'il est supporté par la
+                     -- plateforme :
 
 if use_sendfile_thing then
     r:sendfile("/var/www/large_file.img")
