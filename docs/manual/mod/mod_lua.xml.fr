@@ -314,7 +314,7 @@ que vous pouvez &eacute;crire dans Lua sous la forme <code>apache2.OK</code>,
 <highlight language="lua">
 <strong>translate_name.lua</strong><br/>
 -- exemple d'accroche qui r&eacute;&eacute;crit un URI en chemin du syst&egrave;me de
-fichiers.
+-- fichiers.
 
 require 'apache2'
 
