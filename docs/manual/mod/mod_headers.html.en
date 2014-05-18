@@ -89,7 +89,8 @@ RequestHeader unset MirrorID</pre>
     configuration is traversed, early headers can only be set in a
     main server or virtual host context.  Early directives cannot depend
     on a request path, so they will fail in contexts such as
-    <code>&lt;Directory&gt;</code> or <code>&lt;Location&gt;</code>.</p>
+    <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> or
+    <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="examples" id="examples">Examples</a></h2>
@@ -207,14 +208,14 @@ Header merge Cache-Control no-store env=NO_STORE</pre>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure HTTP response headers</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Header [<var>condition</var>] add|append|echo|edit|edit*|merge|set|setifempty|unset|note
-<var>header</var> [[expr=]<var>value]</var>] [<var>replacement</var>]
-[early|env=[!]<var>variable</var>]|expr=<var>expression</var>]
+<var>header</var> [[expr=]<var>value</var> [<var>replacement</var>
+[early|env=[!]<var>varname</var>|expr=<var>expression</var>]]]
 </code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_headers</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>SetIfEmpty available in 2.4.7 and later, expr= value 
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>SetIfEmpty available in 2.4.7 and later, expr=value 
 available in 2.4.10 and later</td></tr>
 </table>
     <p>This directive can replace, merge or remove HTTP response
@@ -421,14 +422,14 @@ available in 2.4.10 and later</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure HTTP request headers</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RequestHeader add|append|edit|edit*|merge|set|setifempty|unset
-<var>header</var> [[expr=]<var>value</var>] [<var>replacement</var>]
-[early|env=[!]<var>variable</var>]|expr=<var>expression</var>]
+<var>header</var> [[expr=]<var>value</var> [<var>replacement</var>
+[early|env=[!]<var>varname</var>|expr=<var>expression</var>]]]
 </code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_headers</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>SetIfEmpty available in 2.4.7 and later, expr= value 
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>SetIfEmpty available in 2.4.7 and later, expr=value 
 available in 2.4.10 and later</td></tr>
 </table>
     <p>This directive can replace, merge, change or remove HTTP request
