@@ -98,8 +98,7 @@ ProxyPass /wss2/ wss://echo.websocket.org/</pre>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_wstunnel</td></tr>
 </table>
     <p>This directive imposes a maximum amount of time for the tunnel to be 
-    left open while idle.  This directive is ignored if <code class="directive">ProxyWebsocketAsync</code> 
-    is enabled and the running MPM supports the necessary features</p>
+    left open while idle.</p>
 
 </div>
 </div>
