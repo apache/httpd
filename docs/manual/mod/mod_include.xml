@@ -147,7 +147,7 @@ AddOutputFilter INCLUDES .shtml
       module="mod_include">SSIUndefinedEcho</directive> directives.</p>
 
       <example>
-        &lt;!--#config errmsg="[Value Undefined]" --&gt;
+        &lt;!--#config echomsg="[Value Undefined]" --&gt;
       </example>
       </dd>
 
