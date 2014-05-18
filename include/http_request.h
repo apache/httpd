@@ -541,7 +541,9 @@ AP_DECLARE_HOOK(int,post_perdir_config,(request_rec *r))
 /**
  * This hook allows modules to handle/emulate the apr_stat() calls
  * needed for directory walk.
+ * @param finfo where to put the stat data
  * @param r The current request
+ * @param wanted APR_FINFO_* flags to pass to apr_stat()
  * @return apr_status_t or AP_DECLINED (let later modules decide)
  * @ingroup hooks
  */
