@@ -685,7 +685,7 @@ end
 <highlight language="lua">
 r:flush()   -- vide le tampon de sortie
             -- Renvoie true si le vidage a &eacute;t&eacute; effectu&eacute; avec succ&egrave;s,
-	    false dans le cas contraire.
+	    -- false dans le cas contraire.
 
 while nous_avons_des_donn&eacute;es_&agrave;_envoyer do
     r:puts("Bla bla bla\n") -- envoi des donn&eacute;es &agrave; envoyer vers le tampon
@@ -701,8 +701,9 @@ r:addoutputfilter("fooFilter") -- ins&egrave;re le filtre fooFilter dans le flux
 </highlight>
 
 <highlight language="lua">
-r:sendfile(filename) -- envoie un fichier entier au client en
-utilisant sendfile s'il est support&eacute; par la plateforme :
+r:sendfile(filename) -- envoie un fichier entier au client en utilisant
+                     -- sendfile s'il est support&eacute; par la
+                     -- plateforme :
 
 if use_sendfile_thing then
     r:sendfile("/var/www/large_file.img")
