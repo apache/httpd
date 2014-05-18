@@ -769,8 +769,7 @@ sortie</td></tr>
 traitement de la requête</td></tr>
 <tr><td><a href="mod_lua.html#luaroot">LuaRoot /chemin/vers/un/répertoire</a></td><td></td><td>svdh</td><td>X</td></tr><tr><td class="descr" colspan="4">Spécifie le chemin de base pour la résolution des chemins
 relatifs dans les directives de mod_lua</td></tr>
-<tr class="odd"><td><a href="mod_lua.html#luascope">LuaScope once|request|conn|thread|server [min] [max]</a></td><td> once </td><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Une valeur parmi once, request, conn, thread -- la valeur
-par défaut est once</td></tr>
+<tr class="odd"><td><a href="mod_lua.html#luascope">LuaScope once|request|conn|thread|server [min] [max]</a></td><td> once </td><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Une valeur parmi once, request, conn, thread -- la valeur par défaut est once</td></tr>
 <tr><td><a href="mod_macro.html#macro" id="M" name="M">
 &lt;Macro <var>nom</var> [<var>par1</var> .. <var>parN</var>]&gt;
 ... &lt;/Macro&gt;</a></td><td></td><td>svd</td><td>B</td></tr><tr><td class="descr" colspan="4">Définition d'une macro dans un fichier de configuration</td></tr>
