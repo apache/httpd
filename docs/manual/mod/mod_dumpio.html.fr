@@ -62,7 +62,8 @@ erreurs de la manière souhaitée.</td></tr>
 
     <p>Pour activer le module, ce dernier doit être compilé et chargé
     par l'intermédiaire de la configuration de votre instance d'Apache.
-    La journalisation peut ensuite être activée ou désactivée séparément
+    La journalisation peut ensuite être activée ou
+    désactivée séparément
     pour les entrées et sorties à l'aide des directives ci-dessous. En
     outre, <code class="module"><a href="../mod/mod_dumpio.html">mod_dumpio</a></code> doit être configuré à <code class="directive"><a href="../mod/core.html#loglevel">LogLevel</a></code> <code>trace7</code> :</p>
     <pre class="prettyprint lang-config">LogLevel dumpio:trace7</pre>
