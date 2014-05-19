@@ -1201,7 +1201,7 @@ static apr_status_t cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
         apr_table_unset(r->headers_in, "If-Range");
         apr_table_unset(r->headers_in, "If-Unmodified-Since");
 
-        ap_internal_redirect(r->uri, r);
+        ap_internal_redirect(r->unparsed_uri, r);
 
         return APR_SUCCESS;
     }
