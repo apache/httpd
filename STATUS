@@ -238,6 +238,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (modulo CHANGES)
      +1: trawick
 
+   * mod_proxy: Allow reverse-proxy to be set via explicit handler.
+     Submitted by: [ryo takatsuki <ryotakatsuki gmail com>]
+     Committed by: jim
+     trunk patch: http://svn.apache.org/r1573626
+     2.4.x patch: trunk works
+     +1: ylavic
+
+
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
