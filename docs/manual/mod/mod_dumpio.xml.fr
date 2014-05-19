@@ -40,8 +40,8 @@ erreurs de la mani&egrave;re souhait&eacute;e.</description>
     <p>L'enregistrement des donn&eacute;es s'effectue juste apr&egrave;s le d&eacute;codage
     SSL (pour les entr&eacute;es), et juste avant le codage SSL (pour les
     sorties). Comme on peut s'y attendre, tout ceci peut repr&eacute;senter un
-    volume important de donn&eacute;es, et ne doit &ecirc;tre utilis&eacute; qu'&agrave; des fins
-    de d&eacute;bogage.</p>
+    volume important de donn&eacute;es, et ne doit &ecirc;tre
+    utilis&eacute; qu'&agrave; des fins de d&eacute;bogage.</p>
 </summary>
 
 <section id="enable">
