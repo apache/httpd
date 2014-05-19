@@ -44,7 +44,7 @@
   <modulefile>mod_deflate.xml.fr</modulefile>
   <modulefile>mod_dialup.xml.fr</modulefile>
   <modulefile>mod_dir.xml.fr</modulefile>
-  <modulefile>mod_dumpio.xml</modulefile>
+  <modulefile>mod_dumpio.xml.fr</modulefile>
   <modulefile>mod_echo.xml.fr</modulefile>
   <modulefile>mod_env.xml.fr</modulefile>
   <modulefile>mod_example.xml.fr</modulefile>
