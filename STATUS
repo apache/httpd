@@ -100,13 +100,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_cache: Retry unconditional request with the full URL (including the
-     query-string) when the origin server's 304 response does not match the
-     conditions used to revalidate the stale entry.  [Yann Ylavic].
-     trunk patch: http://svn.apache.org/r1591143
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: minfrin, trawick, ylavic
-
    * mod_socache_shmcb: Correct counting of expirations for status display.
      Expirations happening during retrieval were not counted.
      trunk patch: http://svn.apache.org/r1595426
