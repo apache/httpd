@@ -8,7 +8,6 @@
 
   <variants>
     <variant>en</variant>
-    <variant htmlonly="yes">fr</variant>
     <variant outdated="yes">ja</variant>
   </variants>
 </metafile>
