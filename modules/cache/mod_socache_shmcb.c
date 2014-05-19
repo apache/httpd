@@ -868,6 +868,7 @@ static int shmcb_subcache_retrieve(server_rec *s, SHMCBHeader *header,
             else {
                 /* Already stale, quietly remove and treat as not-found */
                 idx->removed = 1;
+                header->stat_expiries++;
                 ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00850)
                              "shmcb_subcache_retrieve discarding expired entry");
                 return -1;
@@ -991,6 +992,7 @@ static apr_status_t shmcb_subcache_iterate(ap_socache_instance_t *instance,
             else {
                 /* Already stale, quietly remove and treat as not-found */
                 idx->removed = 1;
+                header->stat_expiries++;
                 ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00856)
                              "shmcb_subcache_iterate discarding expired entry");
             }
