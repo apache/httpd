@@ -49,7 +49,8 @@ erreurs de la mani&egrave;re souhait&eacute;e.</description>
 
     <p>Pour activer le module, ce dernier doit &ecirc;tre compil&eacute; et charg&eacute;
     par l'interm&eacute;diaire de la configuration de votre instance d'Apache.
-    La journalisation peut ensuite &ecirc;tre activ&eacute;e ou d&eacute;sactiv&eacute;e s&eacute;par&eacute;ment
+    La journalisation peut ensuite &ecirc;tre activ&eacute;e ou
+    d&eacute;sactiv&eacute;e s&eacute;par&eacute;ment
     pour les entr&eacute;es et sorties &agrave; l'aide des directives ci-dessous. En
     outre, <module>mod_dumpio</module> doit &ecirc;tre configur&eacute; &agrave; <directive
     module="core">LogLevel</directive> <code>trace7</code> :</p>
