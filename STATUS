@@ -100,15 +100,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_cache: Don't add cached/revalidated entity headers to a 304 response.
-                PR 55547.
-     trunk patch: http://svn.apache.org/r1591320
-                  http://svn.apache.org/r1591322
-                  http://svn.apache.org/r1591390
-                  http://svn.apache.org/r1591394
-     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-mod_cache-strip_304_entity_headers.patch
-     +1: ylavic, jim, minfrin
-
    * mod_cache: Retry unconditional request with the full URL (including the
      query-string) when the origin server's 304 response does not match the
      conditions used to revalidate the stale entry.  [Yann Ylavic].
