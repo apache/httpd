@@ -453,10 +453,10 @@ ServerHello</description>
     public key.  If the name is not absolute, then it is assumed to be relative
     to <directive module="core">ServerRoot</directive>.</dd>
 
-    <dt><em>trust</em></dt>
-    <dd>This is a generic <q>trust</q> flag.  Set this field to <em>0</em> to
-    distrust this log, or to otherwise avoid using it for server certificate
-    submission.</dd>
+    <dt><em>trust/distrust</em></dt>
+    <dd>Set this field to <em>1</em> to distrust this log, or to otherwise avoid
+    using it for server certificate submission.  Set this to <em>-</em> or
+    <em>0</em> (the default) to treat the log normally.</dd>
 
     <dt><em>min-timestamp</em> and <em>max-timestamp</em></dt>
     <dd>A timestamp is a time as expressed in the number of milliseconds since the

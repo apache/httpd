@@ -203,7 +203,7 @@ apr_status_t save_log_config_entry(apr_array_header_t *log_config,
         distrusted = DISTRUSTED;
     }
     else if (!strcasecmp(distrusted_str, "0")) {
-        distrusted = DISTRUSTED;
+        distrusted = TRUSTED;
     }
     else {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, ap_server_conf,
