@@ -736,7 +736,7 @@ RewriteRule  ^/$                 /homepage.std.html  [L]</pre>
       all. It does not even update the <code>SCRIPT_URx</code>
       environment variables.</p>
 
-      <p>Use this directive to disable rules in a particular contact,
+      <p>Use this directive to disable rules in a particular context,
       rather than commenting out all the <code class="directive"><a href="#rewriterule">RewriteRule</a></code> directives.</p>
 
       <p>Note that rewrite configurations are not
