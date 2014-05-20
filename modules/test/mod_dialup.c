@@ -153,7 +153,7 @@ dialup_handler(request_rec *r)
 
     rv = ap_mpm_query(AP_MPMQ_CAN_SUSPEND, &mpm_can_suspend);
     if (!mpm_can_suspend) {
-        ap_log_rerror (APLOG_MARK, LOG_NOTICE, rv, r, APLOGNO(02617)
+        ap_log_rerror (APLOG_MARK, LOG_NOTICE, rv, r, APLOGNO(02637)
                 "dialup: MPM doesn't support suspending");
         return DECLINED;
     }
