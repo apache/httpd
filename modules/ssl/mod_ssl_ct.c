@@ -929,11 +929,11 @@ static void daemon_maint(int reason, void *data, apr_wait_t status)
             }
             if (!stopping) {
                 if (status == DAEMON_STARTUP_ERROR) {
-                    ap_log_error(APLOG_MARK, APLOG_CRIT, 0, ap_server_conf, APLOGNO(01238)
+                    ap_log_error(APLOG_MARK, APLOG_CRIT, 0, ap_server_conf, APLOGNO(02634)
                                  DAEMON_NAME " failed to initialize");
                 }
                 else {
-                    ap_log_error(APLOG_MARK, APLOG_ERR, 0, ap_server_conf, APLOGNO(01239)
+                    ap_log_error(APLOG_MARK, APLOG_ERR, 0, ap_server_conf, APLOGNO(02635)
                                  DAEMON_NAME " process died, restarting");
                     daemon_start(root_pool, root_server, proc);
                 }

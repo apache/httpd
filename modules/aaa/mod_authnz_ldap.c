@@ -1454,7 +1454,7 @@ static authz_status ldapsearch_check_authorization(request_rec *r,
                                   apr_pool_cleanup_null);
     }
     else {
-        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01738)
+        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(02636)
                       "auth_ldap authorize: no sec->host - weird...?");
         return AUTHZ_DENIED;
     }
