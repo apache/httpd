@@ -224,6 +224,40 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      +1: ylavic
 
+   * Easy patches - synch with trunk
+        mpm/event: fix whitespace in a debug message
+        mod_ext_filter: self document some apr_sleep usages
+        mod_rewrite: normalize an ugly construct which somehow manages to return the correct value
+        mod_header: This is annoying to see in a casual "LogLevel debug foo:traceX ..."
+        mod_proxy_http: Use 'apr_table_setn' instead of 'apr_table_set' when possible in order to save memory.
+        mod_proxy_scgi: Define default port for "scgi" schemes (as chosen by mod_proxy_scgi) in a common location.
+        mod_proxy_scgi: fix Doxygen markup error
+        util_expr_eval: Tweak a AP_DEBUG_ASSERT condition.
+        mod_auth_form: Add a debug message when the fields on a form are not recognised.
+        mod_auth_form: Make the trace logging consistent through the notes, session and form authentication steps.
+        mod_auth_form: update empty log tags.
+     trunk patch:
+                  http://svn.apache.org/r1546730
+                  http://svn.apache.org/r1583008
+                  http://svn.apache.org/r1571369
+                  http://svn.apache.org/r1552130
+                  http://svn.apache.org/r1578760
+                  http://svn.apache.org/r1592615
+                  http://svn.apache.org/r1592632
+                  http://svn.apache.org/r1595321
+                  http://svn.apache.org/r1550302
+                  http://svn.apache.org/r1550307
+                  http://svn.apache.org/r1585435
+     2.4.x patch:  http://people.apache.org/~jailletc36/backport7.patch
+     +1: jailletc36
+
+   * doc: Add version number in <title> as proposed by Louise Hope in online doc.
+     trunk patch: http://svn.apache.org/r1596441
+     2.4.x patch: trunk works
+     +1: jailletc36
+     jailletc36: does this kind of patch require a vote?
+                 See doc mailing list for discussion and +1
+
 
 OTHER PROPOSALS
 
