@@ -5,7 +5,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>mod_ssl - Apache HTTP Server</title>
+<title>mod_ssl - Apache HTTP Server Version 2.4</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -1258,15 +1258,15 @@ query can be done in two ways which can be configured by
 <li><code>exec:/path/to/program</code>
     <p>
     Here an external program is configured which is called at startup for each
-    encrypted Private Key file.
-    For versions up to 2.4.7, it is called with two arguments (the first is
+    encrypted Private Key file. It is called with two arguments (the first is
     of the form ``<code>servername:portnumber</code>'', the second is either
-    ``<code>RSA</code>'', ``<code>DSA</code>'', or ``<code>ECC</code>''), which
+    ``<code>RSA</code>'', ``<code>DSA</code>'', ``<code>ECC</code>'' or an
+    integer index starting at 3 if more than three keys are configured), which
     indicate for which server and algorithm it has to print the corresponding
-    Pass Phrase to <code>stdout</code>.
-    Starting with version 2.4.9, it is called with one argument, a string of the
+    Pass Phrase to <code>stdout</code>. In versions 2.4.8 (unreleased)
+    and 2.4.9, it is called with one argument, a string of the
     form ``<code>servername:portnumber:index</code>'' (with <code>index</code>
-    being a zero-based sequence number), which indicate the server, TCP port
+    being a zero-based integer number), which indicate the server, TCP port
     and certificate number.  The intent is that this external
     program first runs security checks to make sure that the system is not
     compromised by an attacker, and only when these checks were passed
