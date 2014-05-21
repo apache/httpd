@@ -5,7 +5,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Kullanıcı Dizinleri (public_html) - Apache HTTP Sunucusu</title>
+<title>Kullanıcı Dizinleri (public_html) - Apache HTTP Sunucusu Sürüm 2.2</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -26,6 +26,7 @@
 <a href="../ko/howto/public_html.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/howto/public_html.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
+<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
   <p>Çok kullanıcılı sistemlerde, <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code> yönergesi ile her kullanıcının kendi ev dizininde
     bir sitesi olması sağlanabilir.
