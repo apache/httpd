@@ -5,7 +5,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>mod_proxy_scgi - Apache HTTP Server</title>
+<title>mod_proxy_scgi - Apache HTTP Server Version 2.4</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -113,11 +113,11 @@ backend</td></tr>
 </table>
     <p>The <code class="directive">ProxySCGIInternalRedirect</code> enables the backend
     to internally redirect the gateway to a different URL. This feature
-    origins in <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>, which internally redirects the
-    response, if the response status is <code>OK</code> (<code>200</code>) and
+    originates in <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>, which internally redirects the
+    response if the response status is <code>OK</code> (<code>200</code>) and
     the response contains a <code>Location</code> header and its value starts
     with a slash (<code>/</code>). This value is interpreted as a new local
-    URL the apache internally redirects to.</p>
+    URL that Apache httpd internally redirects to.</p>
 
     <p><code class="module"><a href="../mod/mod_proxy_scgi.html">mod_proxy_scgi</a></code> does the same as
     <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code> in this regard, except that you can turn off the
@@ -139,10 +139,10 @@ header</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_scgi</td></tr>
 </table>
     <p>The <code class="directive">ProxySCGISendfile</code> directive enables the
-    SCGI backend to let files serve directly by the gateway. This is useful
-    performance purposes -- the httpd can use <code>sendfile</code> or other
+    SCGI backend to let files be served directly by the gateway. This is useful
+    for performance purposes &#8212; httpd can use <code>sendfile</code> or other
     optimizations, which are not possible if the file comes over the backend
-    socket.</p>
+    socket.  Additionally, the file contents are not transmitted twice.</p>
     <p>The <code class="directive">ProxySCGISendfile</code> argument determines the
     gateway behaviour:</p>
     <dl>
@@ -151,20 +151,20 @@ header</td></tr>
 
     <dt><code>On</code></dt>
     <dd>The gateway looks for a backend response header called
-    <code>X-Sendfile</code> and interprets the value as filename to serve. The
-    header is removed from the final response headers. This is equivalent to
+    <code>X-Sendfile</code> and interprets the value as the filename to serve.
+    The  header is removed from the final response headers. This is equivalent to
     <code>ProxySCGISendfile X-Sendfile</code>.</dd>
 
     <dt>anything else</dt>
     <dd>Similar to <code>On</code>, but instead of the hardcoded header name
-    the argument is applied as header name.</dd>
+    <code>X-Sendfile</code>, the argument is used as the header name.</dd>
     </dl>
 
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">    # Use the default header (X-Sendfile)
-    ProxySCGISendfile On
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config"># Use the default header (X-Sendfile)
+ProxySCGISendfile On
     
-    # Use a different header
-    ProxySCGISendfile X-Send-Static</pre>
+# Use a different header
+ProxySCGISendfile X-Send-Static</pre>
 </div>
 
 </div>
