@@ -251,13 +251,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch:  http://people.apache.org/~jailletc36/backport7.patch
      +1: jailletc36
 
-   * doc: Add version number in <title> as proposed by Louise Hope in online doc.
-     trunk patch: http://svn.apache.org/r1596441
-     2.4.x patch: trunk works
-     +1: jailletc36
-     jailletc36: does this kind of patch require a vote?
-                 See doc mailing list for discussion and +1
-
 
 OTHER PROPOSALS
 
