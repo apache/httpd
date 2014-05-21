@@ -142,6 +142,8 @@
 
         <xsl:text> </xsl:text>
         <xsl:value-of select="normalize-space($message[@id='apachetitle'])"/>
+        <xsl:text> </xsl:text>
+        <xsl:value-of select="normalize-space($message[@id='version'])"/> 
     </title>&lf;
 
     <!-- chm files get a slightly different stylesheet -->
