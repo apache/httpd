@@ -29,17 +29,11 @@
 <a href="../ja/mod/mod_cgi.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_cgi.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">この日本語訳はすでに古くなっている
-            可能性があります。
-            最近更新された内容を見るには英語版をご覧下さい。
-        </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>CGI スクリプトの実行</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>cgi_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">ソースファイル:</a></th><td>mod_cgi.c</td></tr></table>
 <h3>概要</h3>
-
-    
 
     <p>ハンドラ <code>cgi-script</code>
     が指定されているファイルは CGI スクリプトとして扱われ、
@@ -74,16 +68,16 @@
 </ul><h3>参照</h3>
 <ul class="seealso">
 <li><code class="directive"><a href="../mod/core.html#acceptpathinfo">AcceptPathInfo</a></code></li>
-<li><code class="directive"><a href="../mod/core.html#options">Options</a></code></li>
+<li><code class="directive"><a href="../mod/core.html#options">Options</a></code> ExecCGI</li>
 <li><code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code></li>
 <li><code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code></li>
 <li><a href="../suexec.html">CGI プログラムを別のユーザ ID で実行する</a></li>
-<li><a href="http://hoohoo.ncsa.uiuc.edu/cgi/">CGI 規格書</a></li>
+<li><a href="http://www.ietf.org/rfc/rfc3875">CGI 規格書</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">コメント</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="env" id="env">CGI 環境変数</a></h2>
-    <p>サーバは <a href="http://hoohoo.ncsa.uiuc.edu/cgi/">CGI
+    <p>サーバは <a href="http://www.ietf.org/rfc/rfc3875">CGI
     規格</a> で決められている CGI
     環境変数を設定します。以下のものは、条件付きで設定されます。</p>
 
@@ -111,7 +105,7 @@
 
       <dt>REMOTE_IDENT</dt>
 
-      <dd><code class="directive"><a href="../mod/core.html#identitycheck">IdentityCheck</a></code>
+      <dd><code class="directive"><a href="../mod/mod_ident.html#identitycheck">IdentityCheck</a></code>
       が <code>on</code> に設定されていて、アクセスしているホストが
       ident プロトコルをサポートしているときにのみ設定されます。
       これは簡単に偽ることができ、クライアントとサーバの間に
@@ -130,8 +124,7 @@
     <p>CGI スクリプトのデバッグは、正しく動作していないスクリプトの出力
     (標準出力とエラー)
     を調べることができないために、難しい状態が続いていました。
-    これらの Apache 1.2 以降にある
-    ディレクティブはより詳細なエラーのログ収集を提供します。</p>
+    これらのディレクティブはより詳細なエラーのログ収集を提供します。</p>
 
     <h3>CGI ログファイルの書式</h3>
 	<p>設定されているときには、CGI エラーログは適切に動作しないすべての
@@ -190,12 +183,11 @@
     <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>からの相対パスとして
     扱われます。</p>
 
-    <div class="example"><h3>例</h3><p><code>
-      ScriptLog logs/cgi_log
-    </code></p></div>
+    <div class="example"><h3>例</h3><pre class="prettyprint lang-config">ScriptLog logs/cgi_log</pre>
+</div>
 
     <p>このログは子プロセスが実行されているユーザとしてオープンされます。
-    <em>すなわち</em>、<code class="directive"><a href="../mod/mpm_commmon.html#user">User</a></code> ディレクティブで指定された
+    <em>すなわち</em>、<code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code> ディレクティブで指定された
     ユーザです。これは、スクリプトログが書かれるディレクトリがそのユーザで
     書き込み可能か、スクリプトファイルが手動で作成され、そのユーザで
     書き込み可能になっている必要があるということです。スクリプトログを

@@ -36,8 +36,7 @@
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>ファイルの所有者に基づいた承認</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>authz_owner_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">ソースファイル:</a></th><td>mod_authz_owner.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">互換性:</a></th><td>Apache 2.1 以降で使用可能</td></tr></table>
+<tr><th><a href="module-dict.html#SourceFile">ソースファイル:</a></th><td>mod_authz_owner.c</td></tr></table>
 <h3>概要</h3>
 
     <p>このモジュールはリクエストされたファイルのファイルシステムの
@@ -46,7 +45,7 @@
     <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code> や
     <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code> のような認証モジュールで既に
     適切に検証されている必要があります。<code class="module"><a href="../mod/mod_authz_owner.html">mod_authz_owner</a></code>
-    は以下のように、<code class="directive"><a href="../mod/core.html#require">Require</a></code> ディレクティブの <code>file-owner</code> と
+    は以下のように、<code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> ディレクティブの <code>file-owner</code> と
     <code>file-group</code> という二つの引数を認識します:</p>
 
     <dl>
@@ -104,17 +103,14 @@
       <code>smith</code> の代わりに <code>jones</code> になっていない限り、
       <code>jones</code> にはアクセスは許可されません。</p>
 
-      <div class="example"><p><code>
-        &lt;Directory /home/*/public_html/private&gt;<br />
-        <span class="indent">
-          AuthType Basic<br />
-          AuthName MyPrivateFiles<br />
-          AuthBasicProvider dbm<br />
-          AuthDBMUserFile /usr/local/apache2/etc/.htdbm-all<br />
-          Require file-owner<br />
-        </span>
-        &lt;/Directory&gt;
-      </code></p></div>
+      <pre class="prettyprint lang-config">&lt;Directory /home/*/public_html/private&gt;
+    AuthType Basic
+    AuthName MyPrivateFiles
+    AuthBasicProvider dbm
+    AuthDBMUserFile /usr/local/apache2/etc/.htdbm-all
+    Require file-owner
+&lt;/Directory&gt;</pre>
+
     
 
     <h3><a name="examples.file-group" id="examples.file-group">Require file-group</a></h3>
@@ -129,22 +125,19 @@
       <code>foo</code> のメンバである場合、どちらの人も両方の
       <code>project-foo</code> にアクセスが許可されます。</p>
 
-      <div class="example"><p><code>
-        &lt;Directory /home/*/public_html/project-foo&gt;<br />
-        <span class="indent">
-          AuthType Basic<br />
-          AuthName "Project Foo Files"<br />
-          AuthBasicProvider dbm<br />
-          <br />
-          # combined user/group database<br />
-          AuthDBMUserFile  /usr/local/apache2/etc/.htdbm-all<br />
-          AuthDBMGroupFile /usr/local/apache2/etc/.htdbm-all<br />
-          <br />
-          Satisfy All<br />
-          Require file-group<br />
-        </span>
-        &lt;/Directory&gt;
-      </code></p></div>
+      <pre class="prettyprint lang-config">&lt;Directory /home/*/public_html/project-foo&gt;
+    AuthType Basic
+    AuthName "Project Foo Files"
+    AuthBasicProvider dbm
+    
+    # combined user/group database
+    AuthDBMUserFile  /usr/local/apache2/etc/.htdbm-all
+    AuthDBMGroupFile /usr/local/apache2/etc/.htdbm-all
+    
+    Satisfy All
+    Require file-group
+&lt;/Directory&gt;</pre>
+
     
 </div>
 </div>

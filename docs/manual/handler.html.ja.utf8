@@ -29,10 +29,6 @@
 <a href="./tr/handler.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="./zh-cn/handler.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
-<div class="outofdate">この日本語訳はすでに古くなっている
-            可能性があります。
-            最近更新された内容を見るには英語版をご覧下さい。
-        </div>
 
     <p>Apache のハンドラの使用に関して記述しています。</p>
   </div>
@@ -105,10 +101,9 @@
       であるファイルは <code>footer.pl</code>
       CGI スクリプトを起動するようになります。</p>
 
-      <div class="example"><p><code>
-        Action add-footer /cgi-bin/footer.pl<br />
-        AddHandler add-footer .html
-      </code></p></div>
+      <pre class="prettyprint lang-config">Action add-footer /cgi-bin/footer.pl
+AddHandler add-footer .html</pre>
+
 
       <p>CGI スクリプトは希望の修正や追加を行なって、元々要求された文書
       (環境変数 <code>PATH_TRANSLATED</code>
@@ -125,11 +120,10 @@
       <code>/web/htdocs/asis</code> ディレクトリにある全てのファイルは
       <code>send-as-is</code> ハンドラによって扱われます。</p>
 
-      <div class="example"><p><code>
-        &lt;Directory /web/htdocs/asis&gt;<br />
-        SetHandler send-as-is<br />
-        &lt;/Directory&gt;
-      </code></p></div>
+      <pre class="prettyprint lang-config">&lt;Directory /web/htdocs/asis&gt;
+    SetHandler send-as-is
+&lt;/Directory&gt;</pre>
+
 
     
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -142,9 +136,8 @@
     に追加されました。詳しく言うと、<code>request_rec</code>
     構造体に新しいレコードが追加されたということです。</p>
 
-    <div class="example"><p><code>
-     char *handler
-    </code></p></div>
+    <pre class="prettyprint lang-c">char *handler</pre>
+
 
     <p>もしモジュールがハンドラに関わりたい場合、
     やらなければならないことは、リクエストが <code>invoke_handler</code>

@@ -29,15 +29,10 @@
 <a href="../ja/mod/mod_ident.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_ident.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">この日本語訳はすでに古くなっている
-            可能性があります。
-            最近更新された内容を見るには英語版をご覧下さい。
-        </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>RFC 1413 ident lookups</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>ident_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">ソースファイル:</a></th><td>mod_ident.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">互換性:</a></th><td>Apache 2.1 で使用可能</td></tr></table>
+<tr><th><a href="module-dict.html#SourceFile">ソースファイル:</a></th><td>mod_ident.c</td></tr></table>
 <h3>概要</h3>
 
     <p>このモジュールはリモートホストの <a href="http://www.ietf.org/rfc/rfc1413.txt">RFC 1413</a> 互換デーモン
@@ -63,7 +58,6 @@
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_ident</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>Apache 2.1 で core から移動</td></tr>
 </table>
     <p>このディレクティブは、クライアントマシン上で
     identd やそれに類似したデーモンが動作しているときに、

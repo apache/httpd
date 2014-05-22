@@ -5,7 +5,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>停止と再起動 - Apache HTTP サーバ バージョン 2.5</title>
+<title>Apache HTTP Server の停止と再起動 - Apache HTTP サーバ バージョン 2.5</title>
 <link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="./style/css/prettify.css" />
@@ -19,7 +19,7 @@
 <img alt="" src="./images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs/">ドキュメンテーション</a> &gt; <a href="./">バージョン 2.5</a></div><div id="page-content"><div id="preamble"><h1>停止と再起動</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs/">ドキュメンテーション</a> &gt; <a href="./">バージョン 2.5</a></div><div id="page-content"><div id="preamble"><h1>Apache HTTP Server の停止と再起動</h1>
 <div class="toplang">
 <p><span>翻訳済み言語: </span><a href="./de/stopping.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/stopping.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
@@ -29,16 +29,12 @@
 <a href="./ko/stopping.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/stopping.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">この日本語訳はすでに古くなっている
-            可能性があります。
-            最近更新された内容を見るには英語版をご覧下さい。
-        </div>
 
     <p>この文書では Unix に類似したシステムでの
-    Apache の停止と再起動について扱っています。
+    Apache HTTP Serverの停止と再起動について扱っています。
     Windows NT, 2000, XP ユーザは<a href="platform/windows.html#winsvc">サービスとして
-    Apache を実行する</a>で、Windows 9x, MEユーザは<a href="platform/windows.html#wincons">コンソールアプリケーションとして
-    Apache を実行する</a>で、
+    httpd を実行する</a>で、Windows 9x, MEユーザは<a href="platform/windows.html#wincons">コンソールアプリケーションとして
+    httpd を実行する</a>で、
     これらのプラットホームでの使用方法をご覧下さい。</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#introduction">イントロダクション</a></li>
@@ -51,7 +47,7 @@
 <div class="section">
 <h2><a name="introduction" id="introduction">イントロダクション</a></h2>
 
-    <p>Apache を停止したり再起動したりするためには、実行されている
+    <p>Apache HTTP Server を停止したり再起動したりするためには、実行されている
     <code class="program"><a href="./programs/httpd.html">httpd</a></code> プロセスにシグナルを送る必要があります。
     シグナルを送るには二つの方法があります。
     一つ目はプロセスに直接シグナルを送る unix の <code>kill</code>
@@ -225,14 +221,14 @@
 
     <div class="note"><p><code>graceful-stop</code> を使うとまったく同一に設定された
     複数の <code class="program"><a href="./programs/httpd.html">httpd</a></code> を同時に実行することができます。
-    Apache を緩やかにアップグレードするのにはとても便利ですが、
+    httpd を緩やかにアップグレードするのにはとても便利ですが、
     設定ファイルによってはデッドロックやレースコンディションを
     引き起こすこともあります。</p>
 
-    <p>ディスク上のファイルを使うもの、たとえば
-    <code class="directive"><a href="./mod/core.html#lockfile">Lockfile</a></code> や 
-    <code class="directive"><a href="./mod/mod_cgid.html#scriptsock">ScriptSock</a></code> 
-    のファイルなどはサーバの PID を含めて管理されていて、
+    <p>ディスク上のファイルを使うもの、たとえばロックファイル
+    (<code class="directive"><a href="./mod/core.html#mutex">Mutex</a></code>) や Unix ソケットファイル
+    (<code class="directive"><a href="./mod/mod_cgid.html#scriptsock">ScriptSock</a></code>) 
+    などはサーバの PID を含めて管理されていて、
     共存できるよう注意が払われています。
     しかしその他設定ディレクティブやサードパーティ製のモジュール、
     CGI ユーティリティのパーシステント層などで
