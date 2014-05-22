@@ -29,16 +29,11 @@
 <a href="../ja/mod/mod_authn_anon.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_authn_anon.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">この日本語訳はすでに古くなっている
-            可能性があります。
-            最近更新された内容を見るには英語版をご覧下さい。
-        </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>認証が必要な領域への "anonymous" ユーザのアクセスを許可する
 </td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>authn_anon_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">ソースファイル:</a></th><td>mod_authn_anon.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">互換性:</a></th><td>Apache 2.1 以降</td></tr></table>
+<tr><th><a href="module-dict.html#SourceFile">ソースファイル:</a></th><td>mod_authn_anon.c</td></tr></table>
 <h3>概要</h3>
 
     <p>このモジュールは <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code> のような
@@ -99,27 +94,21 @@
       (<code class="directive"><a href="#anonymous_logemail">Anonymous_LogEmail</a></code>)</li>
     </ul>
 
-    <div class="example"><h3>例</h3><p><code>
-      &lt;Directory /foo&gt;
-      <span class="indent">
-        AuthName "Use 'anonymous' &amp; Email address for guest entry"<br />
-        AuthType Basic<br />
-        AuthBasicProvider file anon<br />
-        AuthUserFile /path/to/your/.htpasswd<br />
-        <br />
-        Anonymous_NoUserID off<br />
-        Anonymous_MustGiveEmail on<br />
-        Anonymous_VerifyEmail on<br />
-        Anonymous_LogEmail on<br />
-        Anonymous anonymous guest www test welcome<br />
-        <br />
-        Order Deny,Allow<br />
-        Allow from all<br />
-        <br />
-        Require valid-user<br />
-      </span>
-      &lt;/Directory&gt;
-    </code></p></div>
+    <div class="example"><h3>例</h3><pre class="prettyprint lang-config">&lt;Directory /var/www/html/private&gt;
+    AuthName "Use 'anonymous' &amp; Email address for guest entry"
+    AuthType Basic
+    AuthBasicProvider file anon
+    AuthUserFile /path/to/your/.htpasswd
+    
+    Anonymous_NoUserID off
+    Anonymous_MustGiveEmail on
+    Anonymous_VerifyEmail on
+    Anonymous_LogEmail on
+    Anonymous anonymous guest www test welcome
+    
+    Require valid-user
+&lt;/Directory&gt;</pre>
+</div>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="Anonymous" id="Anonymous">Anonymous</a> <a name="anonymous" id="anonymous">ディレクティブ</a></h2>
@@ -142,9 +131,8 @@
     魔法のユーザ名 '<code>anonymous</code>' が許可されている userID に
     含むようにすることは強く推奨されています。</p>
 
-    <div class="example"><h3>例:</h3><p><code>
-      Anonymous anonymous "Not Registered" "I don't know"
-    </code></p></div>
+    <div class="example"><h3>例:</h3><pre class="prettyprint lang-config">Anonymous anonymous "Not Registered" "I don't know"</pre>
+</div>
 
     <p>これは、userID "anonymous",
     "AnonyMous", "Not Registered", "I Don't Know" のどれかを使っても

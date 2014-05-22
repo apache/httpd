@@ -28,15 +28,10 @@
 <a href="../fr/mod/mod_dav_lock.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_dav_lock.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">この日本語訳はすでに古くなっている
-            可能性があります。
-            最近更新された内容を見るには英語版をご覧下さい。
-        </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td><code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code> 用の汎用ロックモジュール</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>dav_lock_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">ソースファイル:</a></th><td>mod_dav_lock.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">互換性:</a></th><td>バージョン 2.1 以降</td></tr></table>
+<tr><th><a href="module-dict.html#SourceFile">ソースファイル:</a></th><td>mod_dav_lock.c</td></tr></table>
 <h3>概要</h3>
 
     <p>このモジュールは <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code> のどのバックエンド
@@ -46,7 +41,7 @@
     そのような場合はサーバに読み込むべきではありません。
     <code class="module"><a href="../mod/mod_dav_lock.html">mod_dav_lock</a></code>
     を実際に利用するバックエンドモジュールの例としては subversion
-    プロバイダモジュールの <a href="http://subversion.tigris.org/">mod_dav_svn</a> があります。</p>
+    プロバイダモジュールの <a href="http://subversion.apache.org/">mod_dav_svn</a> があります。</p>
 
     <p><code class="module"><a href="../mod/mod_dav_fs.html">mod_dav_fs</a></code> は特化された専用のバージョンを
     使うため、この汎用モジュールは<em>必要ない</em>ことに注意して
@@ -87,13 +82,12 @@
     扱われます。<code class="module"><a href="../mod/mod_dav_lock.html">mod_dav_lock</a></code> の実装ではユーザの
     ロックを追跡するのに SDBM データベースを使います。</p>
 
-    <div class="example"><h3>例</h3><p><code>
-      DavGenericLockDB var/DavLock
-    </code></p></div>
+    <div class="example"><h3>例</h3><pre class="prettyprint lang-config">DavGenericLockDB var/DavLock</pre>
+</div>
 
     <p>ロックデータベースファイルのあるディレクトリは
-    Apache が実行されている <code class="directive"><a href="../mod/mpm_common.html#user">User</a></code>
-    と <code class="directive"><a href="../mod/mpm_common.html#group">Group</a></code> によって
+    Apache が実行されている <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code>
+    と <code class="directive"><a href="../mod/mod_unixd.html#group">Group</a></code> によって
     書き込み可能でなければなりません。セキュリティ上の理由から、
     既存のディレクトリのパーミッションを変更するのではなく、
     専用のディレクトリを作るのが良いでしょう。上の例では、

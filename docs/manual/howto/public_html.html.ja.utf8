@@ -27,10 +27,6 @@
 <a href="../ko/howto/public_html.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/howto/public_html.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">この日本語訳はすでに古くなっている
-            可能性があります。
-            最近更新された内容を見るには英語版をご覧下さい。
-        </div>
 
 <p>複数のユーザのいるシステムでは、<code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code> ディレクティブを使って
     各ユーザがホームディレクトリにウェブサイトを構築できるように設定することが
@@ -77,9 +73,8 @@
     <p>スラッシュで始まらないパスが与えられたときは、ユーザのホームディレクトリ
     からの相対パスとみなされます。次の設定があったときに:</p>
 
-    <div class="example"><p><code>
-      UserDir public_html
-    </code></p></div>
+    <pre class="prettyprint lang-config">UserDir public_html</pre>
+
 
     <p>URL <code>http://example.com/~rbowen/file.html</code> は
     パス <code>/home/rbowen/public_html/file.html</code> へ
@@ -88,9 +83,8 @@
     <p>パスがスラッシュで始まるときは、ディレクトリパスはそのパスに
     ユーザ名を加えたものからなります。次の設定のとき:</p>
 
-    <div class="example"><p><code>
-      UserDir /var/html
-    </code></p></div>
+    <pre class="prettyprint lang-config">UserDir /var/html</pre>
+
 
     <p>URL <code>http://example.com/~rbowen/file.html</code> は
     パス <code>/var/html/rbowen/file.html</code> へ変換されます。</p>
@@ -98,18 +92,17 @@
     <p>アスタリスク (*) を含むパスが指定されたときは、アスタリスクを
     ユーザ名で置換したものが使用されます。このような設定だと:</p>
 
-    <div class="example"><p><code>
-      UserDir /var/www/*/docs
-    </code></p></div>
+    <pre class="prettyprint lang-config">UserDir /var/www/*/docs</pre>
+
 
     <p>URL <code>http://example.com/~rbowen/file.html</code> は
     パス <code>/var/www/rbowen/docs/file.html</code> へ変換されます。</p>
 
     <p>ディレクトリやディレクトリパスを複数設定することもできます。</p>
 
-    <div class="example"><p><code>
-      UserDir public_html /var/html
-    </code></p></div>
+    <pre class="prettyprint lang-config">UserDir public_html /var/html</pre>
+
+
 
     <p><code>http://example.com/~rbowen/file.html</code> という
     URL に対しては <code>~rbowen</code> を探します。見つからなければ、
@@ -123,10 +116,10 @@
     
     <p><code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code>
     ディレクティブを使って外部 URL にリダイレクトすることもできます。</p>
-    
-    <div class="example"><p><code>
-      UserDir http://example.org/users/*/
-    </code></p></div>
+
+    <pre class="prettyprint lang-config">UserDir http://example.org/users/*/</pre>
+
+
     
     <p>上記例では <code>http://example.com/~bob/abc.html</code>
     へのリクエストは <code>http://example.org/users/bob/abc.html</code>
@@ -148,10 +141,9 @@
     対して UserDir の機能を有効にします。同様にして、以下のように
     数名のユーザ以外に対してこの機能を無効にすることもできます:</p>
 
-    <div class="example"><p><code>
-      UserDir disabled<br />
-      UserDir enabled rbowen krietz
-    </code></p></div>
+    <pre class="prettyprint lang-config">      UserDir disabled<br />
+      UserDir enabled rbowen krietz</pre>
+
 
     <p>他の例は <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code>
     の説明を参照してください。</p>
@@ -166,12 +158,11 @@
     を使ってユーザのホームディレクトリの指定された領域に対して CGI を有効に
     することができます。</p>
 
-    <div class="example"><p><code>
-      &lt;Directory /home/*/public_html/cgi-bin/&gt;<br />
-       Options ExecCGI<br />
-       SetHandler cgi-script<br />
-       &lt;/Directory&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">&lt;Directory /home/*/public_html/cgi-bin/&gt;
+    Options ExecCGI
+    SetHandler cgi-script
+&lt;/Directory&gt;</pre>
+
 
     <p>そして、<code>UserDir</code> が
     <code>public_html</code> に設定されていると仮定すると、
