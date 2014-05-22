@@ -449,7 +449,7 @@ attribute_value := (string)</pre></div>
     header names.  If the first byte is not <code>0xA0</code>, it assumes that
     the two-byte integer is the length of a string, which is then read in.</p>
     <p>This works on the assumption that no header names will have length
-    greater than <code>0x9999 (==0xA000 - 1)</code>, which is perfectly
+    greater than <code>0x9FFF (==0xA000 - 1)</code>, which is perfectly
     reasonable, though somewhat arbitrary.</p>
     <div class="note"><h3>Note:</h3>
     The <code>content-length</code> header is extremely
