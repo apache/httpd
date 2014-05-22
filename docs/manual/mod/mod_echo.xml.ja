@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 1174747:1421821 (outdated) -->
+<!-- English Revision: 1421821 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -28,7 +28,6 @@
 <status>Experimental</status>
 <sourcefile>mod_echo.c</sourcefile>
 <identifier>echo_module</identifier>
-<compatibility>Apache 2.0 以降</compatibility>
 
 <summary>
     <p>本モジュールはコンセプトを伝えるためのプロトコルモジュールの
@@ -44,14 +43,15 @@
 <default>ProtocolEcho Off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
-<compatibility>Apache 2.0 以降</compatibility>
 
 <usage>
     <p><directive>ProtocolEcho</directive> ディレクティブで
     エコーサーバの有効無効を設定します。</p>
 
     <example><title>例</title>
+    <highlight language="config">
       ProtocolEcho On
+    </highlight>
     </example>
 </usage>
 

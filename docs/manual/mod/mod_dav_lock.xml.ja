@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 662627:1437836 (outdated) -->
+<!-- English Revision: 1437836 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -27,7 +27,6 @@
 <status>Extension</status>
 <sourcefile>mod_dav_lock.c</sourcefile>
 <identifier>dav_lock_module</identifier>
-  <compatibility>バージョン 2.1 以降</compatibility>
 
 <summary>
     <p>このモジュールは <module>mod_dav</module> のどのバックエンド
@@ -37,7 +36,7 @@
     そのような場合はサーバに読み込むべきではありません。
     <module>mod_dav_lock</module>
     を実際に利用するバックエンドモジュールの例としては subversion
-    プロバイダモジュールの <a href="http://subversion.tigris.org/"
+    プロバイダモジュールの <a href="http://subversion.apache.org/"
     >mod_dav_svn</a> があります。</p>
 
     <p><module>mod_dav_fs</module> は特化された専用のバージョンを
@@ -75,12 +74,14 @@
     ロックを追跡するのに SDBM データベースを使います。</p>
 
     <example><title>例</title>
+    <highlight language="config">
       DavGenericLockDB var/DavLock
+      </highlight>
     </example>
 
     <p>ロックデータベースファイルのあるディレクトリは
-    Apache が実行されている <directive module="mpm_common">User</directive>
-    と <directive module="mpm_common" >Group</directive> によって
+    Apache が実行されている <directive module="mod_unixd">User</directive>
+    と <directive module="mod_unixd" >Group</directive> によって
     書き込み可能でなければなりません。セキュリティ上の理由から、
     既存のディレクトリのパーミッションを変更するのではなく、
     専用のディレクトリを作るのが良いでしょう。上の例では、

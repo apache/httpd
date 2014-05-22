@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE quickreference SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 636495:1070904 (outdated) -->
+<!-- English Revision: 1070904 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -31,8 +31,8 @@
 
     <p>第 1 列目はディレクティブの名前と使用方法です。
     第 2 列目は (もしあれば) デフォルト値となっています。
-    デフォルト値が長すぎて表示しきれない場合は、最初の文字列の後ろに
-    「 + 」が続きます。</p>
+    デフォルト値が長すぎて表示しきれない場合は、途中まで表示した上で、、
+    「 + 」で続きがあることを示しています。</p>
 
     <p>第 3, 4 列は、下の表の注釈に従って、
     ディレクティブの使用できるコンテキストと、
