@@ -5016,6 +5016,8 @@ static int hook_fixup(request_rec *r)
                 r->filename = apr_pstrdup(r->pool, r->filename+12);
             }
 
+            rewritelog((r, 2, NULL, "local path result: %s", r->filename));
+
             /* the filename must be either an absolute local path or an
              * absolute local URL.
              */
