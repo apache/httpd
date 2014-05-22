@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 659902:1421821 (outdated) -->
+<!-- English Revision: 1421821 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -28,7 +28,6 @@
 <status>Extension</status>
 <sourcefile>mod_authn_anon.c</sourcefile>
 <identifier>authn_anon_module</identifier>
-<compatibility>Apache 2.1 以降</compatibility>
 
 <summary>
     <p>このモジュールは <module>mod_auth_basic</module> のような
@@ -81,25 +80,22 @@
     </ul>
 
     <example><title>例</title>
-      &lt;Directory /foo&gt;
-      <indent>
-        AuthName "Use 'anonymous' &amp; Email address for guest entry"<br />
-        AuthType Basic<br />
-        AuthBasicProvider file anon<br />
-        AuthUserFile /path/to/your/.htpasswd<br />
-        <br />
-        Anonymous_NoUserID off<br />
-        Anonymous_MustGiveEmail on<br />
-        Anonymous_VerifyEmail on<br />
-        Anonymous_LogEmail on<br />
-        Anonymous anonymous guest www test welcome<br />
-        <br />
-        Order Deny,Allow<br />
-        Allow from all<br />
-        <br />
-        Require valid-user<br />
-      </indent>
-      &lt;/Directory&gt;
+    <highlight language="config">
+&lt;Directory /var/www/html/private&gt;
+    AuthName "Use 'anonymous' &amp; Email address for guest entry"
+    AuthType Basic
+    AuthBasicProvider file anon
+    AuthUserFile /path/to/your/.htpasswd
+    
+    Anonymous_NoUserID off
+    Anonymous_MustGiveEmail on
+    Anonymous_VerifyEmail on
+    Anonymous_LogEmail on
+    Anonymous anonymous guest www test welcome
+    
+    Require valid-user
+&lt;/Directory&gt;
+      </highlight>
     </example>
 </section>
 
@@ -124,7 +120,9 @@
     含むようにすることは強く推奨されています。</p>
 
     <example><title>例:</title>
+    <highlight language="config">
       Anonymous anonymous "Not Registered" "I don't know"
+    </highlight>
     </example>
 
     <p>これは、userID "anonymous",

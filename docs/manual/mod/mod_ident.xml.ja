@@ -27,7 +27,6 @@
 <status>Extension</status>
 <sourcefile>mod_ident.c</sourcefile>
 <identifier>ident_module</identifier>
-<compatibility>Apache 2.1 で使用可能</compatibility>
 
 <summary>
     <p>このモジュールはリモートホストの <a
@@ -44,7 +43,6 @@
 <default>IdentityCheck Off</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context></contextlist>
-<compatibility>Apache 2.1 で core から移動</compatibility>
 
 <usage>
     <p>このディレクティブは、クライアントマシン上で
