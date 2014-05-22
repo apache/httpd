@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE indexpage SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English Revision: 636028:1447968 (outdated) -->
+<!-- English Revision: 1447968 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -38,17 +38,18 @@
     <page href="install.html">コンパイルとインストール</page>
     <page href="invoking.html">起動</page>
     <page href="stopping.html">終了と再起動</page>
-    <page href="mod/directives.html">実行の設定用ディレクティブ</page>
-    <page href="mod/quickreference.html">ディレクティブ クイックリファレンス</page>
+    <page href="mod/quickreference.html">実行の設定用ディレクティブ</page>
     <page href="mod/">モジュール</page>
     <page href="mpm.html">マルチプロセッシングモジュール (MPM)</page>
     <page href="filter.html">フィルタ</page>
     <page href="handler.html">ハンドラ</page>
+    <page href="expr.html">Expression parser</page>
     <page href="programs/">サーバとサポートプログラム</page>
     <page href="glossary.html">用語集</page>
 </category>    
 
 <category id="usersguide"><title>ユーザの手引</title>
+    <page href="getting-started.html">Getting Started</page>
     <page href="bind.html">アドレスとポートのバインド</page>
     <page href="configuring.html">設定ファイル</page>
     <page href="sections.html">セクションの設定</page>
@@ -57,13 +58,14 @@
     <page href="dso.html">動的共有オブジェクト (DSO)</page>
     <page href="env.html">環境変数</page>
     <page href="logs.html">ログファイル</page>
+    <page href="compliance.html">HTTPプロトコルへの準拠</page>
     <page href="urlmapping.html">URL をファイルシステムにマップする</page>
     <page href="misc/perf-tuning.html">性能に関する調整</page>
     <page href="misc/security_tips.html">セキュリティ情報</page>
     <page href="server-wide.html">サーバ全体の設定</page>
     <page href="ssl/">SSL/TLS による暗号化</page>
     <page href="suexec.html">CGI の Suexec 実行</page>
-    <page href="rewrite/">URL Rewriting の手引き</page>
+    <page href="rewrite/">mod_rewriteによる URL Rewriting</page>
     <page href="vhosts/">バーチャルホスト</page>
 </category>
 
@@ -79,13 +81,15 @@
 
 <category id="platform"><title>プラットフォーム固有の情報</title>
     <page href="platform/windows.html">Microsoft Windows</page>
+    <page href="platform/rpm.html">RPMベースのシステム (Redhat / CentOS / Fedora)</page>
     <page href="platform/netware.html">Novell NetWare</page>
 </category>
 
 <category id="other"><title>その他</title>
-    <page href="faq/">よくある質問 (FAQ)</page>
+    <page href="http://wiki.apache.org/httpd/FAQ">よくある質問 (FAQ)</page>
     <page href="sitemap.html">サイトマップ</page>
     <page href="developer/">開発者のためのドキュメント</page>
+    <page href="http://httpd.apache.org/docs-project/">ドキュメンテーションプロジェクトへの協力</page>
     <page href="misc/">その他</page>
     <page href="http://wiki.apache.org/httpd/">ウィキ</page>
 </category>
