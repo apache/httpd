@@ -446,7 +446,7 @@ attribute_value := (string)
     header names.  If the first byte is not <code>0xA0</code>, it assumes that
     the two-byte integer is the length of a string, which is then read in.</p>
     <p>This works on the assumption that no header names will have length
-    greater than <code>0x9999 (==0xA000 - 1)</code>, which is perfectly
+    greater than <code>0x9FFF (==0xA000 - 1)</code>, which is perfectly
     reasonable, though somewhat arbitrary.</p>
     <note><title>Note:</title>
     The <code>content-length</code> header is extremely
