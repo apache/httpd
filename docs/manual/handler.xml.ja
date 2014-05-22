@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English Revision: 420990:1330883 (outdated) -->
+<!-- English Revision: 1330883 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -110,10 +110,10 @@
       であるファイルは <code>footer.pl</code>
       CGI スクリプトを起動するようになります。</p>
 
-      <example>
-        Action add-footer /cgi-bin/footer.pl<br/>
-        AddHandler add-footer .html
-      </example>
+      <highlight language="config">
+Action add-footer /cgi-bin/footer.pl
+AddHandler add-footer .html
+      </highlight>
 
       <p>CGI スクリプトは希望の修正や追加を行なって、元々要求された文書
       (環境変数 <code>PATH_TRANSLATED</code>
@@ -130,11 +130,11 @@
       <code>/web/htdocs/asis</code> ディレクトリにある全てのファイルは
       <code>send-as-is</code> ハンドラによって扱われます。</p>
 
-      <example>
-        &lt;Directory /web/htdocs/asis&gt;<br/>
-        SetHandler send-as-is<br/>
-        &lt;/Directory&gt;
-      </example>
+      <highlight language="config">
+&lt;Directory /web/htdocs/asis&gt;
+    SetHandler send-as-is
+&lt;/Directory&gt;
+      </highlight>
 
     </section>
   </section>
@@ -146,9 +146,9 @@
     に追加されました。詳しく言うと、<code>request_rec</code>
     構造体に新しいレコードが追加されたということです。</p>
 
-    <example>
-     char *handler
-    </example>
+    <highlight language="c">
+      char *handler
+    </highlight>
 
     <p>もしモジュールがハンドラに関わりたい場合、
     やらなければならないことは、リクエストが <code>invoke_handler</code>
