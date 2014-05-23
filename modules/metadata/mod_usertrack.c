@@ -308,9 +308,9 @@ static const char *set_cookie_exp(cmd_parms *parms, void *dummy,
      * CookieExpires "[plus] {<num> <type>}*"
      */
 
-    word = ap_getword_conf(parms->pool, &arg);
+    word = ap_getword_conf(parms->temp_pool, &arg);
     if (!strncasecmp(word, "plus", 1)) {
-        word = ap_getword_conf(parms->pool, &arg);
+        word = ap_getword_conf(parms->temp_pool, &arg);
     };
 
     /* {<num> <type>}* */
@@ -322,7 +322,7 @@ static const char *set_cookie_exp(cmd_parms *parms, void *dummy,
             return "bad expires code, numeric value expected.";
 
         /* <type> */
-        word = ap_getword_conf(parms->pool, &arg);
+        word = ap_getword_conf(parms->temp_pool, &arg);
         if (!word[0])
             return "bad expires code, missing <type>";
 
@@ -346,7 +346,7 @@ static const char *set_cookie_exp(cmd_parms *parms, void *dummy,
         modifier = modifier + factor * num;
 
         /* next <num> */
-        word = ap_getword_conf(parms->pool, &arg);
+        word = ap_getword_conf(parms->temp_pool, &arg);
     }
 
     cls->expires = modifier;
