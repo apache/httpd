@@ -25,8 +25,8 @@
   <title>Starting Apache</title>
 
 <summary>
-    <p>On Windows, Apache is normally run as a service on Windows
-    NT, 2000 and XP. For details, see <a
+    <p>On Windows, Apache is normally run as a service.
+    For details, see <a
     href="platform/windows.html#winsvc">Running Apache as a Service</a>.
     </p>
 
