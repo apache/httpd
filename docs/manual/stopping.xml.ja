@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English Revision: 655319:1174747 (outdated) -->
+<!-- English Revision: 1174747 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -22,16 +22,16 @@
 
 <manualpage metafile="stopping.xml.meta">
 
-  <title>停止と再起動</title>
+  <title>Apache HTTP Server の停止と再起動</title>
 
 <summary>
     <p>この文書では Unix に類似したシステムでの
-    Apache の停止と再起動について扱っています。
+    Apache HTTP Serverの停止と再起動について扱っています。
     Windows NT, 2000, XP ユーザは<a
     href="platform/windows.html#winsvc">サービスとして
-    Apache を実行する</a>で、Windows 9x, MEユーザは<a
+    httpd を実行する</a>で、Windows 9x, MEユーザは<a
     href="platform/windows.html#wincons">コンソールアプリケーションとして
-    Apache を実行する</a>で、
+    httpd を実行する</a>で、
     これらのプラットホームでの使用方法をご覧下さい。</p>
 </summary>
 
@@ -41,7 +41,7 @@
 
 <section id="introduction"><title>イントロダクション</title>
 
-    <p>Apache を停止したり再起動したりするためには、実行されている
+    <p>Apache HTTP Server を停止したり再起動したりするためには、実行されている
     <program>httpd</program> プロセスにシグナルを送る必要があります。
     シグナルを送るには二つの方法があります。
     一つ目はプロセスに直接シグナルを送る unix の <code>kill</code>
@@ -217,14 +217,14 @@
 
     <note><p><code>graceful-stop</code> を使うとまったく同一に設定された
     複数の <program>httpd</program> を同時に実行することができます。
-    Apache を緩やかにアップグレードするのにはとても便利ですが、
+    httpd を緩やかにアップグレードするのにはとても便利ですが、
     設定ファイルによってはデッドロックやレースコンディションを
     引き起こすこともあります。</p>
 
-    <p>ディスク上のファイルを使うもの、たとえば
-    <directive module="core">Lockfile</directive> や 
-    <directive module="mod_cgid">ScriptSock</directive> 
-    のファイルなどはサーバの PID を含めて管理されていて、
+    <p>ディスク上のファイルを使うもの、たとえばロックファイル
+    (<directive module="core">Mutex</directive>) や Unix ソケットファイル
+    (<directive module="mod_cgid">ScriptSock</directive>) 
+    などはサーバの PID を含めて管理されていて、
     共存できるよう注意が払われています。
     しかしその他設定ディレクティブやサードパーティ製のモジュール、
     CGI ユーティリティのパーシステント層などで

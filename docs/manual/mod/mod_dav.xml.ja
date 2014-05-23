@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 659902:1334011 (outdated) -->
+<!-- English Revision: 1334011 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -46,7 +46,7 @@
     <p>mod_dav を有効にするには、<code>httpd.conf</code>
     ファイル中のコンテナに次を加えます:</p>
 
-    <example>Dav On</example>
+    <highlight language="config">Dav On</highlight>
 
     <p>これは DAV ファイルシステムプロバイダを有効にします。DAV
     ファイルシステムプロバイダは <module>mod_dav_fs</module>
@@ -60,13 +60,13 @@
     <code>httd.conf</code> ファイルのグローバルセクションに指定されている
     必要があります。</p>
 
-    <example>
+    <highlight language="config">
       DavLockDB /usr/local/apache2/var/DavLock
-    </example>
+    </highlight>
 
     <p>ロックデータベースファイルのあるディレクトリは Apache が実行されている
-    <directive module="mpm_common">User</directive> と <directive
-    module="mpm_common" >Group</directive> に書き込み権限がある必要があります。</p>
+    <directive module="mod_unixd">User</directive> と <directive
+    module="mod_unixd" >Group</directive> に書き込み権限がある必要があります。</p>
 
     <p><directive module="core" type="section">Limit</directive>
     節を <directive module="core" type="section">Location</directive>
@@ -79,30 +79,24 @@
     ディレクティブは DAV リクエストに対しては効力を持ちません。</p>
 
     <example><title>完全な例</title>
-      DavLockDB /usr/local/apache2/var/DavLock<br />
-      <br />
-      &lt;Directory /usr/local/apache2/htdocs/foo&gt;<br />
-      <indent>
-        Order Allow,Deny<br />
-        Allow from all<br />
-        Dav On<br />
-        <br />
-        AuthType Basic<br />
-        AuthName DAV<br />
-        AuthUserFile user.passwd<br />
-        <br />
-        &lt;LimitExcept GET POST OPTIONS&gt;<br />
-        <indent>
-          Require user admin<br />
-        </indent>
-        &lt;/LimitExcept&gt;<br />
-      </indent>
-      &lt;/Directory&gt;<br />
+    <highlight language="config">
+DavLockDB /usr/local/apache2/var/DavLock
+
+&lt;Directory /usr/local/apache2/htdocs/foo&gt;
+    Require all granted
+    Dav On
+
+    AuthType Basic
+    AuthName DAV
+    AuthUserFile user.passwd
+
+    &lt;LimitExcept GET POST OPTIONS&gt;
+        Require user admin
+    &lt;/LimitExcept&gt;
+&lt;/Directory&gt;
+      </highlight>
     </example>
 
-   <p><module>mod_dav</module> は Greg Stein さんの <a
-   href="http://www.webdav.org/mod_dav/">Apache 1.3 用の mod_dav</a> に
-   由来するものです。そのサイトからより多くの情報を手に入れることができます。</p>
 </section>
 
 <section id="security"><title>セキュリティの問題</title>
@@ -120,10 +114,10 @@
 
     <p><module>mod_dav</module> がファイルを操作できるようにするためには、
     管理下のディレクトリとファイルとに Apache が実行されている <directive
-    module="mpm_common">User</directive> と <directive
-    module="mpm_common">Group</directive> で書き込み可能である必要があります。
-    新しく作成されるファイルもこの <directive module="mpm_common">User</directive>
-    と <directive module="mpm_common">Group</directive> に所有される
+    module="mod_unixd">User</directive> と <directive
+    module="mod_unixd">Group</directive> で書き込み可能である必要があります。
+    新しく作成されるファイルもこの <directive module="mod_unixd">User</directive>
+    と <directive module="mod_unixd">Group</directive> に所有される
     ことになります。この理由から、そのアカウントへのアクセスを制御することは
     重要です。DAV リポジトリは Apache 専用のものだとみなされています。
     Apache 以外の方法でファイルを修正すること (例えば FTP やファイルシステム
@@ -152,16 +146,14 @@
     一つはスクリプトを実行させ、もう一つはダウンロードさせたり、DAV から
     操作されたりするように設定するというものがあります。</p>
 
-<example>
-Alias /phparea /home/gstein/php_files<br />
-Alias /php-source /home/gstein/php_files<br />
+<highlight language="config">
+Alias /phparea /home/gstein/php_files
+Alias /php-source /home/gstein/php_files
 &lt;Location /php-source&gt;
-<indent>
-    DAV On<br />
-    ForceType text/plain<br />
-</indent>
+    DAV On
+    ForceType text/plain
 &lt;/Location&gt;
-</example>
+</highlight>
 
     <p>この設定により、<code>http://example.com/phparea</code> を PHP スクリプトの
     出力をアクセスするために使うことができ、
@@ -180,13 +172,11 @@ Alias /php-source /home/gstein/php_files<br />
     <p>与えられたコンテナで WebDAV HTTP メソッドが使えるようにするには
     次のようにします。</p>
 
-    <example>
-      &lt;Location /foo&gt;<br />
-      <indent>
-        Dav On<br />
-      </indent>
-      &lt;/Location&gt;
-    </example>
+    <highlight language="config">
+&lt;Location /foo&gt;
+    Dav On
+&lt;/Location&gt;
+    </highlight>
 
     <p><code>On</code> という指定は実際には <module>mod_dav_fs</module>
     で提供されているデフォルトのプロバイダ、<code>filesystem</code>
@@ -228,13 +218,13 @@ Alias /php-source /home/gstein/php_files<br />
     これをもっと大きな値 (例えば 600 秒) に上書きできます。</p>
 
     <example><title>例</title>
-      &lt;Location /MSWord&gt;<br />
-      <indent>
-        DavMinTimeout 600<br />
-      </indent>
-      &lt;/Location&gt;
+    <highlight language="config">
+&lt;Location /MSWord&gt;
+    DavMinTimeout 600
+&lt;/Location&gt;
+    </highlight>
     </example>
-</usage>     
+</usage>
 </directivesynopsis>
 
 <directivesynopsis>

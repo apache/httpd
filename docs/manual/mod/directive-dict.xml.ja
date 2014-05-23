@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 420990:1544630 (outdated) -->
+<!-- English Revision: 1544630 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -173,6 +173,7 @@
       <directive module="core" type="section">Directory</directive>, 
       <directive module="core" type="section">Location</directive>, 
       <directive module="core" type="section">Files</directive>, 
+      <directive module="core" type="section">If</directive>, 
       <directive module="mod_proxy" type="section">Proxy</directive>
       コンテナの中で、 <a
       href="../sections.html">設定セクション</a>

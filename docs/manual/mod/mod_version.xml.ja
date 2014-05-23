@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 420993:1421892 (outdated) -->
+<!-- English Revision: 1421892 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -26,7 +26,6 @@
 <status>Extension</status>
 <sourcefile>mod_version.c</sourcefile>
 <identifier>version_module</identifier>
-<compatibility>バージョン 2.0.56 以降</compatibility>
 
 <summary>
     <p>様々なバージョンの httpd の異なる設定を扱うことになる、
@@ -37,17 +36,15 @@
     バージョンチェックができるようになります。</p>
 
     <example><title>例</title>
-      &lt;IfVersion 2.1.0&gt;<br />
-      <indent>
-        # current httpd version is exactly 2.1.0<br />
-      </indent>
-      &lt;/IfVersion&gt;<br />
-      <br />
-      &lt;IfVersion >= 2.2&gt;<br />
-      <indent>
-        # use really new features :-)<br />
-      </indent>
-      &lt;/IfVersion&gt;
+    <highlight language="config">
+&lt;IfVersion 2.4.2&gt;
+    # current httpd version is exactly 2.4.2
+&lt;/IfVersion&gt;
+
+&lt;IfVersion >= 2.5&gt;
+    # use really new features :-)
+&lt;/IfVersion&gt;
+      </highlight>
     </example>
 
     <p>詳細は以下を読んでください。</p>
@@ -87,12 +84,12 @@
     </table>
 
     <example><title>例</title>
-      &lt;IfVersion >= 2.1&gt;<br />
-      <indent>
-        # this happens only in versions greater or<br />
-        # equal 2.1.0.<br />
-      </indent>
-      &lt;/IfVersion&gt;
+    <highlight language="config">
+&lt;IfVersion >= 2.3&gt;
+    # this happens only in versions greater or
+    # equal 2.3.0.
+&lt;/IfVersion&gt;
+      </highlight>
     </example>
 
     <p>数値比較に加えて、http のバージョン番号に対して
@@ -110,23 +107,21 @@
     </table>
 
     <example><title>例</title>
-      &lt;IfVersion = /^2.1.[01234]$/&gt;<br />
-      <indent>
-        # e.g. workaround for buggy versions
-      </indent>
-      &lt;/IfVersion&gt;
+    <highlight language="config">
+&lt;IfVersion = /^2.4.[01234]$/&gt;
+    # e.g. workaround for buggy versions
+&lt;/IfVersion&gt;
+      </highlight>
     </example>
 
     <p>マッチングの否定を表現するために、すべてのオペレータは前に
     感嘆符 (<code>!</code>)を付けることができます:</p>
 
-    <example>
-      &lt;IfVersion !~ ^2.1.[01234]$&gt;<br />
-      <indent>
-        # not for those versions<br />
-      </indent>
-      &lt;/IfVersion&gt;
-    </example>
+    <highlight language="config">
+&lt;IfVersion !~ ^2.4.[01234]$&gt;
+    # not for those versions
+&lt;/IfVersion&gt;
+    </highlight>
 
     <p><var>operator</var> が省略されたときは <code>=</code> と
     みなされます。</p>
