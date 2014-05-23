@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision : 1591198-->
+<!-- English Revision : 1597004 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -84,14 +84,14 @@ le nom du serveur en adresse IP, cette derni&egrave;re permettant de localiser
 le serveur sur Internet. Ainsi, pour que votre serveur web soit
 accessible, son nom doit &ecirc;tre enregistr&eacute; dans le DNS.</p>
 
+<p>Si vous ne savez pas comment effectuer cet enregistrement, vous
+devrez contacter votre administrateur r&eacute;seau ou votre fournisseur
+d'acc&egrave;s &agrave; Internet afin qu'il effectue cette op&eacute;ration pour vous.</p>
+
 <p>Plusieurs noms d'h&ocirc;te peuvent pointer vers la m&ecirc;me adresse IP, et
 plusieurs adresses IP peuvent &ecirc;tre attach&eacute;es au m&ecirc;me serveur physique.
 Vous pouvez ainsi h&eacute;berger plusieurs serveurs web sur le m&ecirc;me serveur
 physique gr&acirc;ce au m&eacute;canisme des <a href="vhosts/">serveurs virtuels</a>.</p>
-
-<p>Si vous ne savez pas comment utiliser cette fonctionnalit&eacute;, vous
-devez contacter votre administrateur r&eacute;seau ou votre fournisseur d'acc&egrave;s
-&agrave; Internet qui le feront pour vous.</p>
 
 <p>Pour tester un serveur non encore accessible sur Internet, vous
 pouvez renseigner son nom d'h&ocirc;te dans votre fichier hosts afin
