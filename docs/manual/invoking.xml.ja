@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English Revision: 567441:1597027 (outdated) -->
+<!-- English Revision: 1597027 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -25,13 +25,9 @@
   <title>Apache の起動</title>
 
 <summary>
-    <p>Windows 上では、Apache は通常は
-    Windows NT, 2000, XP ではサービスとして、Windows 9x, ME 
-    ではコンソールアプリケーションとして実行されます。
+    <p>Windows 上では、Apache は通常はサービスとして実行されます。
     詳細に関しては、「<a href="platform/windows.html#winsvc">
-    サービスとして実行する</a>」と「<a 
-    href="platform/windows.html#wincons">
-    コンソールアプリケーションとして実行する</a>」をご覧下さい。</p>
+    サービスとして実行する</a>」をご覧下さい。</p>
 
     <p>Unixでは、<program>httpd</program> 
     プログラムが、バックグラウンドで常にリクエスト処理を行う
@@ -110,7 +106,7 @@
     </ul>
 
     <p>より多くの問題解決の方策の説明は、
-    Apache <a href="faq/">FAQ</a> をご覧下さい。</p>
+	Apache <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> をご覧下さい。</p>
 </section>
 
 <section id="boot"><title>ブート時の起動</title>
