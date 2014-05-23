@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1562436 -->
+<!-- English Revision : 1596969 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -490,7 +490,7 @@ attribute_value := (string)
     octets est consid&eacute;r&eacute; comme la longueur d'une cha&icirc;ne qui est alors
     lue.</p>
     <p>Ceci ne peut fonctionner que si aucun nom d'en-t&ecirc;te ne poss&egrave;de
-    une taille sup&eacute;rieure &agrave; <code>0x9999 (==0xA000 - 1)</code>, ce qui
+    une taille sup&eacute;rieure &agrave; <code>0x9FFF (==0xA000 - 1)</code>, ce qui
     est vraisemblable, bien qu'un peu arbitraire.</p>
     <note><title>Note:</title>
     L'en-t&ecirc;te <code>content-length</code> est extr&ecirc;mement important.
