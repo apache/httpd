@@ -88,14 +88,14 @@ le nom du serveur en adresse IP, cette dernière permettant de localiser
 le serveur sur Internet. Ainsi, pour que votre serveur web soit
 accessible, son nom doit être enregistré dans le DNS.</p>
 
+<p>Si vous ne savez pas comment effectuer cet enregistrement, vous
+devrez contacter votre administrateur réseau ou votre fournisseur
+d'accès à Internet afin qu'il effectue cette opération pour vous.</p>
+
 <p>Plusieurs noms d'hôte peuvent pointer vers la même adresse IP, et
 plusieurs adresses IP peuvent être attachées au même serveur physique.
 Vous pouvez ainsi héberger plusieurs serveurs web sur le même serveur
 physique grâce au mécanisme des <a href="vhosts/">serveurs virtuels</a>.</p>
-
-<p>Si vous ne savez pas comment utiliser cette fonctionnalité, vous
-devez contacter votre administrateur réseau ou votre fournisseur d'accès
-à Internet qui le feront pour vous.</p>
 
 <p>Pour tester un serveur non encore accessible sur Internet, vous
 pouvez renseigner son nom d'hôte dans votre fichier hosts afin
