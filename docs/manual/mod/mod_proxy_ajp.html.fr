@@ -489,7 +489,7 @@ attribute_value := (string)</pre></div>
     octets est considéré comme la longueur d'une chaîne qui est alors
     lue.</p>
     <p>Ceci ne peut fonctionner que si aucun nom d'en-tête ne possède
-    une taille supérieure à <code>0x9999 (==0xA000 - 1)</code>, ce qui
+    une taille supérieure à <code>0x9FFF (==0xA000 - 1)</code>, ce qui
     est vraisemblable, bien qu'un peu arbitraire.</p>
     <div class="note"><h3>Note:</h3>
     L'en-tête <code>content-length</code> est extrêmement important.
