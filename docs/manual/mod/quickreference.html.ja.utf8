@@ -32,10 +32,6 @@
 <a href="../tr/mod/quickreference.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/mod/quickreference.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
-<div class="outofdate">この日本語訳はすでに古くなっている
-            可能性があります。
-            最近更新された内容を見るには英語版をご覧下さい。
-        </div>
 
     <p>ディレクティブ クイックリファレンスでは、各 Apache 設定ディレクティブの
     使用方法、デフォルト値、ステータスとコンテキストを示しています。
@@ -45,8 +41,8 @@
 
     <p>第 1 列目はディレクティブの名前と使用方法です。
     第 2 列目は (もしあれば) デフォルト値となっています。
-    デフォルト値が長すぎて表示しきれない場合は、最初の文字列の後ろに
-    「 + 」が続きます。</p>
+    デフォルト値が長すぎて表示しきれない場合は、途中まで表示した上で、、
+    「 + 」で続きがあることを示しています。</p>
 
     <p>第 3, 4 列は、下の表の注釈に従って、
     ディレクティブの使用できるコンテキストと、

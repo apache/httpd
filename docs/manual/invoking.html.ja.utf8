@@ -29,17 +29,10 @@
 <a href="./ko/invoking.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/invoking.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">この日本語訳はすでに古くなっている
-            可能性があります。
-            最近更新された内容を見るには英語版をご覧下さい。
-        </div>
 
-    <p>Windows 上では、Apache は通常は
-    Windows NT, 2000, XP ではサービスとして、Windows 9x, ME 
-    ではコンソールアプリケーションとして実行されます。
+    <p>Windows 上では、Apache は通常はサービスとして実行されます。
     詳細に関しては、「<a href="platform/windows.html#winsvc">
-    サービスとして実行する</a>」と「<a href="platform/windows.html#wincons">
-    コンソールアプリケーションとして実行する</a>」をご覧下さい。</p>
+    サービスとして実行する</a>」をご覧下さい。</p>
 
     <p>Unixでは、<code class="program"><a href="./programs/httpd.html">httpd</a></code> 
     プログラムが、バックグラウンドで常にリクエスト処理を行う
@@ -119,7 +112,7 @@
     </ul>
 
     <p>より多くの問題解決の方策の説明は、
-    Apache <a href="faq/">FAQ</a> をご覧下さい。</p>
+	Apache <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> をご覧下さい。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="boot" id="boot">ブート時の起動</a></h2>

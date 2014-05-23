@@ -134,6 +134,13 @@ Require not host gov</pre>
 &lt;/If&gt;</pre>
 
 
+    <p>Using the <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code>
+    <code>expr</code> syntax, this could also be written as:</p>
+
+
+    <pre class="prettyprint lang-config">Require expr %{HTTP_USER_AGENT} != 'BadBot'</pre>
+
+
     <div class="note"><h3>Warning:</h3>
     <p>Access control by <code>User-Agent</code> is an unreliable technique,
     since the <code>User-Agent</code> header can be set to anything at all,

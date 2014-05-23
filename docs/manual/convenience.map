@@ -99,6 +99,8 @@ authncacheprovidefor	mod/mod_authn_socache.html#authncacheprovidefor
 authncachesocache	mod/mod_authn_socache.html#authncachesocache
 authncachetimeout	mod/mod_authn_socache.html#authncachetimeout
 authnprovideralias	mod/mod_authn_core.html#authnprovideralias
+authnzfcgicheckauthnprovider	mod/mod_authnz_fcgi.html#authnzfcgicheckauthnprovider
+authnzfcgidefineprovider	mod/mod_authnz_fcgi.html#authnzfcgidefineprovider
 authtype	mod/mod_authn_core.html#authtype
 authuserfile	mod/mod_authn_file.html#authuserfile
 authzdbdlogintoreferer	mod/mod_authz_dbd.html#authzdbdlogintoreferer
