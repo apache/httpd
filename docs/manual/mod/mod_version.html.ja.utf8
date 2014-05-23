@@ -28,15 +28,10 @@
 <a href="../ja/mod/mod_version.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_version.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">この日本語訳はすでに古くなっている
-            可能性があります。
-            最近更新された内容を見るには英語版をご覧下さい。
-        </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>バージョン依存の設定</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>version_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">ソースファイル:</a></th><td>mod_version.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">互換性:</a></th><td>バージョン 2.0.56 以降</td></tr></table>
+<tr><th><a href="module-dict.html#SourceFile">ソースファイル:</a></th><td>mod_version.c</td></tr></table>
 <h3>概要</h3>
 
     <p>様々なバージョンの httpd の異なる設定を扱うことになる、
@@ -45,19 +40,14 @@
     提供します。これを使うと、数字の比較や正規表現による柔軟な
     バージョンチェックができるようになります。</p>
 
-    <div class="example"><h3>例</h3><p><code>
-      &lt;IfVersion 2.1.0&gt;<br />
-      <span class="indent">
-        # current httpd version is exactly 2.1.0<br />
-      </span>
-      &lt;/IfVersion&gt;<br />
-      <br />
-      &lt;IfVersion &gt;= 2.2&gt;<br />
-      <span class="indent">
-        # use really new features :-)<br />
-      </span>
-      &lt;/IfVersion&gt;
-    </code></p></div>
+    <div class="example"><h3>例</h3><pre class="prettyprint lang-config">&lt;IfVersion 2.4.2&gt;
+    # current httpd version is exactly 2.4.2
+&lt;/IfVersion&gt;
+
+&lt;IfVersion &gt;= 2.5&gt;
+    # use really new features :-)
+&lt;/IfVersion&gt;</pre>
+</div>
 
     <p>詳細は以下を読んでください。</p>
 </div>
@@ -100,14 +90,11 @@
         <td>指定以下の httpd バージョン</td></tr>
 </table>
 
-    <div class="example"><h3>例</h3><p><code>
-      &lt;IfVersion &gt;= 2.1&gt;<br />
-      <span class="indent">
-        # this happens only in versions greater or<br />
-        # equal 2.1.0.<br />
-      </span>
-      &lt;/IfVersion&gt;
-    </code></p></div>
+    <div class="example"><h3>例</h3><pre class="prettyprint lang-config">&lt;IfVersion &gt;= 2.3&gt;
+    # this happens only in versions greater or
+    # equal 2.3.0.
+&lt;/IfVersion&gt;</pre>
+</div>
 
     <p>数値比較に加えて、http のバージョン番号に対して
     <a class="glossarylink" href="../glossary.html#regex" title="用語集を参照">正規表現</a>による
@@ -122,24 +109,18 @@
             <code><var>regex</var></code> 形式</td></tr>
 </table>
 
-    <div class="example"><h3>例</h3><p><code>
-      &lt;IfVersion = /^2.1.[01234]$/&gt;<br />
-      <span class="indent">
-        # e.g. workaround for buggy versions
-      </span>
-      &lt;/IfVersion&gt;
-    </code></p></div>
+    <div class="example"><h3>例</h3><pre class="prettyprint lang-config">&lt;IfVersion = /^2.4.[01234]$/&gt;
+    # e.g. workaround for buggy versions
+&lt;/IfVersion&gt;</pre>
+</div>
 
     <p>マッチングの否定を表現するために、すべてのオペレータは前に
     感嘆符 (<code>!</code>)を付けることができます:</p>
 
-    <div class="example"><p><code>
-      &lt;IfVersion !~ ^2.1.[01234]$&gt;<br />
-      <span class="indent">
-        # not for those versions<br />
-      </span>
-      &lt;/IfVersion&gt;
-    </code></p></div>
+    <pre class="prettyprint lang-config">&lt;IfVersion !~ ^2.4.[01234]$&gt;
+    # not for those versions
+&lt;/IfVersion&gt;</pre>
+
 
     <p><var>operator</var> が省略されたときは <code>=</code> と
     みなされます。</p>

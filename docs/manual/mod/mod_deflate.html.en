@@ -74,6 +74,11 @@ client</td></tr>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="enable" id="enable">Enabling Compression</a></h2>
+    <div class="warning"><h3>Compression and TLS</h3>
+        <p>Some web applications are vulnerable to an information disclosure
+        attack when a TLS connection carries deflate compressed data. For more
+        information, review the details of the "BREACH" family of attacks.</p>
+    </div>
 
     <h3><a name="output" id="output">Output Compression</a></h3>
       <p>Compression is implemented by the <code>DEFLATE</code>
@@ -81,14 +86,9 @@ client</td></tr>
       will enable compression for documents in the container where it
       is placed:</p>
 
-      <pre class="prettyprint lang-config">SetOutputFilter DEFLATE</pre>
+      <pre class="prettyprint lang-config">SetOutputFilter DEFLATE
+SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip</pre>
 
-
-      <p>Some popular browsers cannot handle compression of all content
-      so you may want to set the <code>gzip-only-text/html</code> note to
-      <code>1</code> to only allow html files to be compressed (see
-      below). If you set this to <em>anything but <code>1</code></em> it
-      will be ignored.</p>
 
       <p>If you want to restrict the compression to particular MIME types
       in general, you may use the <code class="directive"><a href="../mod/mod_filter.html#addoutputfilterbytype">AddOutputFilterByType</a></code> directive. Here is an example of
@@ -99,34 +99,6 @@ client</td></tr>
     AddOutputFilterByType DEFLATE text/html
 &lt;/Directory&gt;</pre>
 
-
-      <p>For browsers that have problems even with compression of all file
-      types, use the <code class="directive"><a href="../mod/mod_setenvif.html#browsermatch">BrowserMatch</a></code> directive to set the <code>no-gzip</code>
-      note for that particular browser so that no compression will be
-      performed. You may combine <code>no-gzip</code> with <code>gzip-only-text/html</code> to get the best results. In that case
-      the former overrides the latter. Take a look at the following
-      excerpt from the <a href="#recommended">configuration example</a>
-      defined in the section above:</p>
-
-      <pre class="prettyprint lang-config">BrowserMatch ^Mozilla/4         gzip-only-text/html
-BrowserMatch ^Mozilla/4\.0[678] no-gzip
-BrowserMatch \bMSIE             !no-gzip !gzip-only-text/html</pre>
-
-
-      <p>At first we probe for a <code>User-Agent</code> string that
-      indicates a Netscape Navigator version of 4.x. These versions
-      cannot handle compression of types other than
-      <code>text/html</code>. The versions 4.06, 4.07 and 4.08 also
-      have problems with decompressing html files. Thus, we completely
-      turn off the deflate filter for them.</p>
-
-      <p>The third <code class="directive"><a href="../mod/mod_setenvif.html#browsermatch">BrowserMatch</a></code>
-      directive fixes the guessed identity of the user agent, because
-      the Microsoft Internet Explorer identifies itself also as "Mozilla/4"
-      but is actually able to handle requested compression. Therefore we
-      match against the additional string "MSIE" (<code>\b</code> means
-      "word boundary") in the <code>User-Agent</code> Header and turn off
-      the restrictions defined before.</p>
 
       <div class="note"><h3>Note</h3>
         The <code>DEFLATE</code> filter is always inserted after RESOURCE
