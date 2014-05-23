@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed By : Vincent Deffontaines -->
-<!-- English Revision: 1387618 -->
+<!-- English Revision: 1597027 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -27,8 +27,8 @@
   <title>D&eacute;marrage d'Apache</title>
 
 <summary>
-    <p>Apache est habituellement lanc&eacute; en tant que service
-    sous Windows NT, 2000, XP, Vista et Seven. Pour plus de d&eacute;tails, voir <a
+    <p>Sous Windows, Apache est habituellement lanc&eacute; en tant que
+    service. Pour plus de d&eacute;tails, voir <a
     href="platform/windows.html#winsvc">D&eacute;marrer Apache en tant
     que service</a>.</p>
 
