@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 659902:1591193 (outdated) -->
+<!-- English Revision: 1591193 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -77,9 +77,7 @@
     <p>スラッシュで始まらないパスが与えられたときは、ユーザのホームディレクトリ
     からの相対パスとみなされます。次の設定があったときに:</p>
 
-    <example>
-      UserDir public_html
-    </example>
+    <highlight language="config">UserDir public_html</highlight>
 
     <p>URL <code>http://example.com/~rbowen/file.html</code> は
     パス <code>/home/rbowen/public_html/file.html</code> へ
@@ -88,9 +86,7 @@
     <p>パスがスラッシュで始まるときは、ディレクトリパスはそのパスに
     ユーザ名を加えたものからなります。次の設定のとき:</p>
 
-    <example>
-      UserDir /var/html
-    </example>
+    <highlight language="config">UserDir /var/html</highlight>
 
     <p>URL <code>http://example.com/~rbowen/file.html</code> は
     パス <code>/var/html/rbowen/file.html</code> へ変換されます。</p>
@@ -98,18 +94,15 @@
     <p>アスタリスク (*) を含むパスが指定されたときは、アスタリスクを
     ユーザ名で置換したものが使用されます。このような設定だと:</p>
 
-    <example>
-      UserDir /var/www/*/docs
-    </example>
+    <highlight language="config">UserDir /var/www/*/docs</highlight>
 
     <p>URL <code>http://example.com/~rbowen/file.html</code> は
     パス <code>/var/www/rbowen/docs/file.html</code> へ変換されます。</p>
 
     <p>ディレクトリやディレクトリパスを複数設定することもできます。</p>
 
-    <example>
-      UserDir public_html /var/html
-    </example>
+    <highlight language="config">UserDir public_html /var/html</highlight>
+
 
     <p><code>http://example.com/~rbowen/file.html</code> という
     URL に対しては <code>~rbowen</code> を探します。見つからなければ、
@@ -123,10 +116,9 @@
     <title>外部 URL にリダイレクトする</title>
     <p><directive module="mod_userdir">UserDir</directive>
     ディレクティブを使って外部 URL にリダイレクトすることもできます。</p>
-    
-    <example>
-      UserDir http://example.org/users/*/
-    </example>
+
+    <highlight language="config">UserDir http://example.org/users/*/</highlight>
+
     
     <p>上記例では <code>http://example.com/~bob/abc.html</code>
     へのリクエストは <code>http://example.org/users/bob/abc.html</code>
@@ -148,10 +140,10 @@
     対して UserDir の機能を有効にします。同様にして、以下のように
     数名のユーザ以外に対してこの機能を無効にすることもできます:</p>
 
-    <example>
+    <highlight language="config">
       UserDir disabled<br />
       UserDir enabled rbowen krietz
-    </example>
+    </highlight>
 
     <p>他の例は <directive module="mod_userdir">UserDir</directive>
     の説明を参照してください。</p>
@@ -166,12 +158,12 @@
     を使ってユーザのホームディレクトリの指定された領域に対して CGI を有効に
     することができます。</p>
 
-    <example>
-      &lt;Directory /home/*/public_html/cgi-bin/&gt;<br />
-       Options ExecCGI<br />
-       SetHandler cgi-script<br />
-       &lt;/Directory&gt;
-    </example>
+    <highlight language="config">
+&lt;Directory /home/*/public_html/cgi-bin/&gt;
+    Options ExecCGI
+    SetHandler cgi-script
+&lt;/Directory&gt;
+    </highlight>
 
     <p>そして、<code>UserDir</code> が
     <code>public_html</code> に設定されていると仮定すると、

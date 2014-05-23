@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 420990:1070853 (outdated) -->
+<!-- English Revision: 1597081 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -58,7 +58,7 @@
         生成プログラムとどのように相互動作をするかを定義します。
         その外部プログラムは通常 CGI プログラムや CGI スクリプトと呼ばれます。
         CGI はウェブサイトに動的なコンテンツを追加するための、
-        一番単純でよく使われている方法です。この文書は Apache ウェブサーバに
+        単純な方法です。この文書は Apache ウェブサーバに
         CGI を設定し、CGI プログラムを書き始めるためのイントロダクションです。</p>
 
         <p>参照: <a href="cgi.html">CGI: 動的コンテンツ</a></p>
