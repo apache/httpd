@@ -54,6 +54,11 @@ client</description>
 </section>
 
 <section id="enable"><title>Enabling Compression</title>
+    <note type="warning"><title>Compression and TLS</title>
+        <p>Some web applications are vulnerable to an information disclosure
+        attack when a TLS connection carries deflate compressed data. For more
+        information, review the details of the "BREACH" family of attacks.</p>
+    </note>
 
     <section id="output"><title>Output Compression</title>
       <p>Compression is implemented by the <code>DEFLATE</code>
@@ -62,14 +67,9 @@ client</description>
       is placed:</p>
 
       <highlight language="config">
-        SetOutputFilter DEFLATE
+SetOutputFilter DEFLATE
+SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip 
       </highlight>
-
-      <p>Some popular browsers cannot handle compression of all content
-      so you may want to set the <code>gzip-only-text/html</code> note to
-      <code>1</code> to only allow html files to be compressed (see
-      below). If you set this to <em>anything but <code>1</code></em> it
-      will be ignored.</p>
 
       <p>If you want to restrict the compression to particular MIME types
       in general, you may use the <directive module="mod_filter"
@@ -82,37 +82,6 @@ client</description>
     AddOutputFilterByType DEFLATE text/html
 &lt;/Directory&gt;
       </highlight>
-
-      <p>For browsers that have problems even with compression of all file
-      types, use the <directive module="mod_setenvif"
-      >BrowserMatch</directive> directive to set the <code>no-gzip</code>
-      note for that particular browser so that no compression will be
-      performed. You may combine <code>no-gzip</code> with <code
-      >gzip-only-text/html</code> to get the best results. In that case
-      the former overrides the latter. Take a look at the following
-      excerpt from the <a href="#recommended">configuration example</a>
-      defined in the section above:</p>
-
-      <highlight language="config">
-BrowserMatch ^Mozilla/4         gzip-only-text/html
-BrowserMatch ^Mozilla/4\.0[678] no-gzip
-BrowserMatch \bMSIE             !no-gzip !gzip-only-text/html
-      </highlight>
-
-      <p>At first we probe for a <code>User-Agent</code> string that
-      indicates a Netscape Navigator version of 4.x. These versions
-      cannot handle compression of types other than
-      <code>text/html</code>. The versions 4.06, 4.07 and 4.08 also
-      have problems with decompressing html files. Thus, we completely
-      turn off the deflate filter for them.</p>
-
-      <p>The third <directive module="mod_setenvif">BrowserMatch</directive>
-      directive fixes the guessed identity of the user agent, because
-      the Microsoft Internet Explorer identifies itself also as "Mozilla/4"
-      but is actually able to handle requested compression. Therefore we
-      match against the additional string "MSIE" (<code>\b</code> means
-      "word boundary") in the <code>User-Agent</code> Header and turn off
-      the restrictions defined before.</p>
 
       <note><title>Note</title>
         The <code>DEFLATE</code> filter is always inserted after RESOURCE
