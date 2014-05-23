@@ -79,7 +79,7 @@
   <modulefile>mod_policy.xml</modulefile>
   <modulefile>mod_privileges.xml</modulefile>
   <modulefile>mod_proxy.xml.ja</modulefile>
-  <modulefile>mod_proxy_ajp.xml</modulefile>
+  <modulefile>mod_proxy_ajp.xml.ja</modulefile>
   <modulefile>mod_proxy_balancer.xml.ja</modulefile>
   <modulefile>mod_proxy_connect.xml.ja</modulefile>
   <modulefile>mod_proxy_express.xml</modulefile>
