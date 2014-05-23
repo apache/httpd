@@ -30,8 +30,7 @@
 <a href="./tr/invoking.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
 
-    <p>Windows 上では、Apache は通常は
-    Windows NT, 2000, XP ではサービスとして実行されます。
+    <p>Windows 上では、Apache は通常はサービスとして実行されます。
     詳細に関しては、「<a href="platform/windows.html#winsvc">
     サービスとして実行する</a>」をご覧下さい。</p>
 
