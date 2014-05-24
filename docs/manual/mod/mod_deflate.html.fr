@@ -29,8 +29,6 @@
 <a href="../ja/mod/mod_deflate.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_deflate.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Comprime le contenu avant de le servir au
 client</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -78,20 +76,21 @@ client</td></tr>
 <div class="section">
 <h2><a name="enable" id="enable">Activation de la compression</a></h2>
 
+    <div class="warning"><h3>Compression et TLS</h3>
+        <p>Certaines applications web sont vulnérables aux attaques pour
+	vol d'information lorsque la connexion TLS transmet des données
+	compressées par deflate. Pour plus d'informations, voir en
+	détails la famille d'attaques de type "BREACH".</p>
+    </div>
+
     <h3><a name="output" id="output">Compression de la sortie</a></h3>
       <p>La compression est implémentée par le <a href="../filter.html">filtre</a> <code>DEFLATE</code>. La
       directive suivante active la compression des documents dans le
       conteneur où elle est placée :</p>
 
-      <pre class="prettyprint lang-config">SetOutputFilter DEFLATE</pre>
+      <pre class="prettyprint lang-config">SetOutputFilter DEFLATE
+SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip</pre>
 
-
-      <p>Certains navigateurs populaires ne gèrent pas la compression de
-      tous les contenus, et pour résoudre ce problème, vous pouvez
-      définir la note <code>gzip-only-text/html</code> à <code>1</code>
-      pour ne permettre que la compression des fichiers html (voir
-      ci-dessous). Si vous définissez cette note à <em>toute autre
-      valeur que <code>1</code></em>, elle sera ignorée.</p>
 
       <p>Si vous voulez limiter la compression à certains types MIME
       particuliers, vous pouvez utiliser la directive <code class="directive"><a href="../mod/mod_filter.html#addoutputfilterbytype">AddOutputFilterByType</a></code>. Voici un exemple
@@ -102,39 +101,6 @@ client</td></tr>
     AddOutputFilterByType DEFLATE text/html
 &lt;/Directory&gt;</pre>
 
-
-      <p>Pour les navigateurs qui ont des problèmes avec la compression
-      de tous les types de fichiers, vous pouvez utiliser la directive
-      <code class="directive"><a href="../mod/mod_setenvif.html#browsermatch">BrowserMatch</a></code> pour
-      définir la note <code>no-gzip</code>, pour le navigateur
-      considéré, de façon à ce qu'aucune compression ne soit effectuée.
-      Vous pouvez combiner <code>no-gzip</code> avec
-      <code>gzip-only-text/html</code> afin d'obtenir le meilleur
-      résultat possible. Dans ce cas, la première note l'emporte sur la
-      deuxième. Considérons l'extrait suivant de l'<a href="#recommended">exemple de configuration</a> de la section
-      précédente :</p>
-
-      <pre class="prettyprint lang-config">BrowserMatch ^Mozilla/4         gzip-only-text/html
-BrowserMatch ^Mozilla/4\.0[678] no-gzip
-BrowserMatch \bMSIE             !no-gzip !gzip-only-text/html</pre>
-
-
-      <p>Tout d'abord, on recherche un en-tête <code>User-Agent</code>
-      qui signale un navigateur Netscape version 4.x. Ces versions ne
-      gèrent pas la compression des types de fichiers autres que
-      <code>text/html</code>. En outre, les versions 4.06, 4.07 et 4.08
-      ont des problèmes avec la décompression des fichiers html. Par
-      conséquent, nous désactivons complètement le filtre deflate pour
-      ces derniers.</p>
-
-      <p>La troisième directive <code class="directive"><a href="../mod/mod_setenvif.html#browsermatch">BrowserMatch</a></code> corrige l'identité
-      sous laquelle se présente le navigateur ; en effet, Microsoft
-      Internet Explorer s'identifie aussi lui-même comme "Mozilla/4",
-      mais par contre, il sait gérer les contenus compressés. On
-      recherche donc la chaîne additionnelle "MSIE" (<code>\b</code>
-      signifie "par mots entiers") dans l'en-tête
-      <code>User-Agent</code>, et si elle est trouvée, on annule les
-      restrictions définies auparavant.</p>
 
       <div class="note"><h3>Note</h3>
         Le filtre <code>DEFLATE</code> est toujours inséré après les

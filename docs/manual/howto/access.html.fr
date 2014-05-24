@@ -24,8 +24,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/howto/access.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/howto/access.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p>Le contrôle d'accès fait référence à tout concept de contrôle
     d'accès à une ressource quelconque. Il est distinct du processus d'<a href="auth.html">authentification et d'autorisation</a>.</p>
@@ -144,6 +142,13 @@ arbitraires</a></h2>
     <pre class="prettyprint lang-config">&lt;If "%{HTTP_USER_AGENT} == 'BadBot'"&gt;
     Require All Denied
 &lt;/If&gt;</pre>
+
+
+    <p>La syntaxe <code>expr</code> de la directive <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> permet de réécrire
+    l'exemple précédent de la manière suivante :</p>
+
+
+    <pre class="prettyprint lang-config">Require expr %{HTTP_USER_AGENT} != 'BadBot'</pre>
 
 
     <div class="note"><h3>Avertissement :</h3>

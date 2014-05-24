@@ -25,8 +25,6 @@
 <a href="./fr/caching.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="./tr/caching.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p>Ce document complète la documentation de référence des modules
     <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code>, <code class="module"><a href="./mod/mod_cache_disk.html">mod_cache_disk</a></code>,
@@ -177,7 +175,7 @@
       </p>
 
       <dl>
-        <dt>Phase du gestionnaire rapide</dt>
+        <dt>Phase de gestion rapide</dt>
         <dd>
           <p>Cette phase se déroule très tôt au cours du traitement de
 	  la requête, juste après l'interprétation de cette dernière. Si
@@ -194,8 +192,14 @@
 	      phases d'authentification et d'autorisation du traitement
 	      au niveau du serveur, et il doit donc être utilisé avec
 	      prudence lorsque que ces phases sont importantes.</p>
+
+	      <p>Les requêtes comportant un en-tête "Authorization"
+	      (comme par exemple l'authentification HTTP basique) ne
+	      peuvent être ni mises en cache, ni servies depuis ce
+	      dernier lorsque <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> s'exécute dans
+	      cette phase.</p>
           </dd>
-          <dt>Phase du gestionnaire normal</dt>
+          <dt>Phase de gestion normale</dt>
           <dd>
               <p>Cette phase se déroule très tard au cours du traitement
 	      de la requête, en fait après toutes les phases de ce
