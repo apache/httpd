@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- English Revision: 1341451:1597081 (outdated) -->
+<!-- English Revision : 1597081 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -150,6 +150,15 @@ arbitraires</title>
 &lt;If "%{HTTP_USER_AGENT} == 'BadBot'"&gt;
     Require All Denied
 &lt;/If&gt;
+    </highlight>
+
+    <p>La syntaxe <code>expr</code> de la directive <directive
+    module="mod_authz_core">Require</directive> permet de r&eacute;&eacute;crire
+    l'exemple pr&eacute;c&eacute;dent de la mani&egrave;re suivante :</p>
+
+
+    <highlight language="config">
+Require expr %{HTTP_USER_AGENT} != 'BadBot'
     </highlight>
 
     <note><title>Avertissement :</title>

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1567955:1597179 (outdated) -->
+<!-- English Revision : 1597179 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -58,6 +58,13 @@ client</description>
 
 <section id="enable"><title>Activation de la compression</title>
 
+    <note type="warning"><title>Compression et TLS</title>
+        <p>Certaines applications web sont vuln&eacute;rables aux attaques pour
+	vol d'information lorsque la connexion TLS transmet des donn&eacute;es
+	compress&eacute;es par deflate. Pour plus d'informations, voir en
+	d&eacute;tails la famille d'attaques de type "BREACH".</p>
+    </note>
+
     <section id="output"><title>Compression de la sortie</title>
       <p>La compression est impl&eacute;ment&eacute;e par le <a
       href="../filter.html">filtre</a> <code>DEFLATE</code>. La
@@ -65,15 +72,9 @@ client</description>
       conteneur o&ugrave; elle est plac&eacute;e :</p>
 
       <highlight language="config">
-        SetOutputFilter DEFLATE
+SetOutputFilter DEFLATE
+SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip        
 	</highlight>
-
-      <p>Certains navigateurs populaires ne g&egrave;rent pas la compression de
-      tous les contenus, et pour r&eacute;soudre ce probl&egrave;me, vous pouvez
-      d&eacute;finir la note <code>gzip-only-text/html</code> &agrave; <code>1</code>
-      pour ne permettre que la compression des fichiers html (voir
-      ci-dessous). Si vous d&eacute;finissez cette note &agrave; <em>toute autre
-      valeur que <code>1</code></em>, elle sera ignor&eacute;e.</p>
 
       <p>Si vous voulez limiter la compression &agrave; certains types MIME
       particuliers, vous pouvez utiliser la directive <directive
@@ -86,42 +87,6 @@ client</description>
     AddOutputFilterByType DEFLATE text/html
 &lt;/Directory&gt;
       </highlight>
-
-      <p>Pour les navigateurs qui ont des probl&egrave;mes avec la compression
-      de tous les types de fichiers, vous pouvez utiliser la directive
-      <directive module="mod_setenvif">BrowserMatch</directive> pour
-      d&eacute;finir la note <code>no-gzip</code>, pour le navigateur
-      consid&eacute;r&eacute;, de fa&ccedil;on &agrave; ce qu'aucune compression ne soit effectu&eacute;e.
-      Vous pouvez combiner <code>no-gzip</code> avec
-      <code>gzip-only-text/html</code> afin d'obtenir le meilleur
-      r&eacute;sultat possible. Dans ce cas, la premi&egrave;re note l'emporte sur la
-      deuxi&egrave;me. Consid&eacute;rons l'extrait suivant de l'<a
-      href="#recommended">exemple de configuration</a> de la section
-      pr&eacute;c&eacute;dente :</p>
-
-      <highlight language="config">
-BrowserMatch ^Mozilla/4         gzip-only-text/html
-BrowserMatch ^Mozilla/4\.0[678] no-gzip
-BrowserMatch \bMSIE             !no-gzip !gzip-only-text/html
-      </highlight>
-
-      <p>Tout d'abord, on recherche un en-t&ecirc;te <code>User-Agent</code>
-      qui signale un navigateur Netscape version 4.x. Ces versions ne
-      g&egrave;rent pas la compression des types de fichiers autres que
-      <code>text/html</code>. En outre, les versions 4.06, 4.07 et 4.08
-      ont des probl&egrave;mes avec la d&eacute;compression des fichiers html. Par
-      cons&eacute;quent, nous d&eacute;sactivons compl&egrave;tement le filtre deflate pour
-      ces derniers.</p>
-
-      <p>La troisi&egrave;me directive <directive
-      module="mod_setenvif">BrowserMatch</directive> corrige l'identit&eacute;
-      sous laquelle se pr&eacute;sente le navigateur ; en effet, Microsoft
-      Internet Explorer s'identifie aussi lui-m&ecirc;me comme "Mozilla/4",
-      mais par contre, il sait g&eacute;rer les contenus compress&eacute;s. On
-      recherche donc la cha&icirc;ne additionnelle "MSIE" (<code>\b</code>
-      signifie "par mots entiers") dans l'en-t&ecirc;te
-      <code>User-Agent</code>, et si elle est trouv&eacute;e, on annule les
-      restrictions d&eacute;finies auparavant.</p>
 
       <note><title>Note</title>
         Le filtre <code>DEFLATE</code> est toujours ins&eacute;r&eacute; apr&egrave;s les
