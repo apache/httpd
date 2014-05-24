@@ -1313,20 +1313,33 @@ const authz_provider ssl_authz_provider_verify_client =
 /*
  * Grab well-defined DH parameters from OpenSSL, see <openssl/bn.h>
  * (get_rfc*) for all available primes.
+ * Hand out the same DH structure though once generated as we leak
+ * memory otherwise and freeing the structure up after use would be
+ * hard to track and in fact is not needed at all as it is safe to
+ * use the same parameters over and over again security wise (in
+ * contrast to the keys itself) and code safe as the returned structure
+ * is duplicated by OpenSSL anyway. Hence no modification happens
+ * to our copy.
  */
 #define make_get_dh(rfc,size,gen) \
 static DH *get_dh##size(void) \
 { \
-    DH *dh; \
-    if (!(dh = DH_new())) { \
+    static DH *dh = NULL; \
+    DH *dh_tmp; \
+\
+    if (dh) { \
+        return dh; \
+    } \
+    if (!(dh_tmp = DH_new())) { \
         return NULL; \
     } \
-    dh->p = get_##rfc##_prime_##size(NULL); \
-    BN_dec2bn(&dh->g, #gen); \
-    if (!dh->p || !dh->g) { \
-        DH_free(dh); \
+    dh_tmp->p = get_##rfc##_prime_##size(NULL); \
+    BN_dec2bn(&dh_tmp->g, #gen); \
+    if (!dh_tmp->p || !dh_tmp->g) { \
+        DH_free(dh_tmp); \
         return NULL; \
     } \
+    dh = dh_tmp; \
     return dh; \
 }
 
