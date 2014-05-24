@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1334033:1597081 (outdated) -->
+<!-- English Revision : 1597081 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -184,7 +184,7 @@
       </p>
 
       <dl>
-        <dt>Phase du gestionnaire rapide</dt>
+        <dt>Phase de gestion rapide</dt>
         <dd>
           <p>Cette phase se d&eacute;roule tr&egrave;s t&ocirc;t au cours du traitement de
 	  la requ&ecirc;te, juste apr&egrave;s l'interpr&eacute;tation de cette derni&egrave;re. Si
@@ -201,8 +201,14 @@
 	      phases d'authentification et d'autorisation du traitement
 	      au niveau du serveur, et il doit donc &ecirc;tre utilis&eacute; avec
 	      prudence lorsque que ces phases sont importantes.</p>
+
+	      <p>Les requ&ecirc;tes comportant un en-t&ecirc;te "Authorization"
+	      (comme par exemple l'authentification HTTP basique) ne
+	      peuvent &ecirc;tre ni mises en cache, ni servies depuis ce
+	      dernier lorsque <module>mod_cache</module> s'ex&eacute;cute dans
+	      cette phase.</p>
           </dd>
-          <dt>Phase du gestionnaire normal</dt>
+          <dt>Phase de gestion normale</dt>
           <dd>
               <p>Cette phase se d&eacute;roule tr&egrave;s tard au cours du traitement
 	      de la requ&ecirc;te, en fait apr&egrave;s toutes les phases de ce
