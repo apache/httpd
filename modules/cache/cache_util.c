@@ -284,7 +284,25 @@ apr_status_t cache_try_lock(cache_server_conf *conf, cache_request_rec *cache,
 
     /* create the key if it doesn't exist */
     if (!cache->key) {
-        cache_generate_key(r, r->pool, &cache->key);
+        cache_handle_t *h;
+        /*
+         * Try to use the key of a possible open but stale cache
+         * entry if we have one.
+         */
+        if (cache->handle != NULL) {
+            h = cache->handle;
+        }
+        else {
+            h = cache->stale_handle;
+        }
+        if ((h != NULL) &&
+            (h->cache_obj != NULL) &&
+            (h->cache_obj->key != NULL)) {
+            cache->key = apr_pstrdup(r->pool, h->cache_obj->key);
+        }
+        else {
+            cache_generate_key(r, r->pool, &cache->key);
+        }
     }
 
     /* create a hashed filename from the key, and save it for later */
