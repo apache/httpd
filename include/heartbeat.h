@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-#ifndef HEARTBEAT_H
-#define HEARTBEAT_H
-
 /**
  * @file  heartbeat.h
- * @brief commun structures for mod_heartmonitor.c  and mod_lbmethod_heartbeat.c
+ * @brief commun structures for mod_heartmonitor.c and mod_lbmethod_heartbeat.c
  *
- * @defgroup HEARTBEAT mem
+ * @defgroup HEARTBEAT heartbeat
  * @ingroup  APACHE_MODS
  * @{
  */
+
+#ifndef HEARTBEAT_H
+#define HEARTBEAT_H
 
 #include "apr.h"
 #include "apr_time.h"
@@ -56,5 +56,5 @@ typedef struct hm_slot_server_t
 }
 #endif
 
-#endif
+#endif /* HEARTBEAT_H */
 /** @} */
