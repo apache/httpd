@@ -113,6 +113,13 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
          (+ CHANGES)
      +1: covener, jkaluza, ylavic
 
+   * mod_rewrite: Support session cookies with the CO= flag when later parameters
+     are used.  The doc for this implied the feature had been backported for
+     quite some time.  PR56014
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=664333
+     2.2.x patch: http://people.apache.org/~covener/patches/httpd-2.2.x-rewrite-sessioncookie.diff
+     +1 covener, ylavic, rpluem
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -128,13 +135,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      rpluem says: +1 if you add the MMN bump
      ylavic: MMN bump in patch #3
 
-   * mod_rewrite: Support session cookies with the CO= flag when later parameters
-     are used.  The doc for this implied the feature had been backported for
-     quite some time.  PR56014
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=664333
-     2.2.x patch: http://people.apache.org/~covener/patches/httpd-2.2.x-rewrite-sessioncookie.diff
-     +1 covener, ylavic
-
    * mod_cache, mod_disk_cache: Try to use the key of a possible open but
      stale cache entry if there is one. This fixes problem when two different
      cache locks have been created for single stale cache entry leading to two
@@ -144,7 +144,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      entry can be seen as not-cached.
      PR 50317
      2.2.x patch: http://people.apache.org/~jkaluza/patches/httpd-2.2.x-thundering-herd.patch
-     +1: ylavic
+     +1: ylavic, rpluem
 
 PATCHES/ISSUES THAT ARE STALLED
 
