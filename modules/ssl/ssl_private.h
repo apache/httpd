@@ -931,6 +931,11 @@ OCSP_RESPONSE *modssl_dispatch_ocsp_request(const apr_uri_t *uri,
                                             conn_rec *c, apr_pool_t *p);
 #endif
 
+/* Retrieve DH parameters for given key length.  Return value should
+ * be treated as unmutable, since it is stored in process-global
+ * memory. */
+DH *modssl_get_dh_params(unsigned keylen);
+
 #if HAVE_VALGRIND
 extern int ssl_running_on_valgrind;
 #endif
