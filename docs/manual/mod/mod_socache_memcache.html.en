@@ -39,7 +39,7 @@
     </p>
 
  
-    <p>This shared object cache provider's "create" method requies a 
+    <p>This shared object cache provider's "create" method requires a 
        comma separated list of memcached host/port specifications. If using
        this provider via another modules configuration (such as 
        <code class="directive"><a href="../mod/mod_ssl.html#sslsessioncache">SSLSessionCache</a></code>), provide
