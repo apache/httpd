@@ -47,6 +47,72 @@ APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(ssl, SSL, int, init_server,
 #define KEYTYPES "RSA or DSA"
 #endif
 
+/*
+ * Grab well-defined DH parameters from OpenSSL, see the get_rfc*
+ * functions in <openssl/bn.h> for all available primes.
+ */
+static DH *make_dh_params(BIGNUM *(*prime)(BIGNUM *), const char *gen)
+{
+    DH *dh = NULL;
+    DH *dh_tmp;
+
+    if (dh) {
+        return dh;
+    }
+    if (!(dh_tmp = DH_new())) {
+        return NULL;
+    }
+    dh_tmp->p = prime(NULL);
+    BN_dec2bn(&dh_tmp->g, gen);
+    if (!dh_tmp->p || !dh_tmp->g) {
+        DH_free(dh_tmp);
+        return NULL;
+    }
+    dh = dh_tmp;
+    return dh;
+}
+
+static DH *dhparam1024, *dhparam2048, *dhparam3072, *dhparam4096;
+
+static void init_dh_params(void)
+{
+    /*
+     * Prepare DH parameters from 1024 to 4096 bits, in 1024-bit increments
+     */
+    dhparam1024 = make_dh_params(get_rfc2409_prime_1024, "2");
+    dhparam2048 = make_dh_params(get_rfc3526_prime_2048, "2");
+    dhparam3072 = make_dh_params(get_rfc3526_prime_3072, "2");
+    dhparam4096 = make_dh_params(get_rfc3526_prime_4096, "2");
+}
+
+static void free_dh_params(void)
+{
+    DH_free(dhparam1024);
+    DH_free(dhparam2048);
+    DH_free(dhparam3072);
+    DH_free(dhparam4096);
+    dhparam1024 = dhparam2048 = dhparam3072 = dhparam4096 = NULL;
+}
+
+/* Hand out the same DH structure though once generated as we leak
+ * memory otherwise and freeing the structure up after use would be
+ * hard to track and in fact is not needed at all as it is safe to
+ * use the same parameters over and over again security wise (in
+ * contrast to the keys itself) and code safe as the returned structure
+ * is duplicated by OpenSSL anyway. Hence no modification happens
+ * to our copy. */
+DH *modssl_get_dh_params(unsigned keylen)
+{
+    if (keylen >= 4096)
+        return dhparam4096;
+    else if (keylen >= 3072)
+        return dhparam3072;
+    else if (keylen >= 2048)
+        return dhparam2048;
+    else
+        return dhparam1024;
+}
+
 static void ssl_add_version_components(apr_pool_t *p,
                                        server_rec *s)
 {
@@ -276,6 +342,8 @@ apr_status_t ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
     ssl_add_version_components(p, base_server);
 
     SSL_init_app_data2_idx(); /* for SSL_get_app_data2() at request time */
+
+    init_dh_params();
 
     return OK;
 }
@@ -1705,6 +1773,8 @@ apr_status_t ssl_init_ModuleKill(void *data)
 
         ssl_init_ctx_cleanup(sc->server);
     }
+
+    free_dh_params();
 
     return APR_SUCCESS;
 }
