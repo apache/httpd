@@ -391,8 +391,7 @@ mettre en cache avant de les envoyer au client</td></tr>
 avant d'envoyer les données au client</td></tr>
 <tr class="odd"><td><a href="mod_cache_disk.html#cacheroot">CacheRoot <var>répertoire</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">La racine du répertoire dans lequel les fichiers du cache
 seront stockés</td></tr>
-<tr><td><a href="mod_cache_socache.html#cachesocache">CacheSocache <var>type[:args]</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">La racine des répertoires sous lesquels les fichiers de
-cache sont stockés</td></tr>
+<tr><td><a href="mod_cache_socache.html#cachesocache">CacheSocache <var>type[:args]</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">L'implémentation du cache d'objets partagés à utiliser</td></tr>
 <tr class="odd"><td><a href="mod_cache_socache.html#cachesocachemaxsize">CacheSocacheMaxSize <var>octets</var></a></td><td> 102400 </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">La taille maximale d'une entrée pouvant être placée dans le
 cache</td></tr>
 <tr><td><a href="mod_cache_socache.html#cachesocachemaxtime">CacheSocacheMaxTime <var>secondes</var></a></td><td> 86400 </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">La durée maximale de stockage d'un document dans le cache
