@@ -118,7 +118,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Committed by: jkaluza
      trunk patch: http://svn.apache.org/r1572092
      2.4.x patch: trunk works
-     +1: ylavic
+     +1: ylavic, jkaluza
      ylavic: does not depend on r1572655 and al or r1572896 and al below,
              these proposals can be backported in any order.
 
