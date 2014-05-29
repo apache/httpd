@@ -88,8 +88,7 @@ CacheSocacheMaxSize 102400
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CacheSocache" id="CacheSocache">CacheSocache</a> <a name="cachesocache" id="cachesocache">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>La racine des répertoires sous lesquels les fichiers de
-cache sont stockés</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>L'implémentation du cache d'objets partagés à utiliser</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheSocache <var>type[:args]</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
