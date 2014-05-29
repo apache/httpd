@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 669473:1560683 (outdated) -->
+<!-- English Revision: 894522:1560683 (outdated) -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -46,7 +46,32 @@
       インターネット全体にとっても危険です。</p>
     </note>
 </summary>
-<seealso><directive module="mod_proxy">AllowCONNECT</directive></seealso>
 <seealso><module>mod_proxy</module></seealso>
+
+<directivesynopsis>
+<name>AllowCONNECT</name>
+<description>プロキシを経由して、どのポートに <code>CONNECT</code>
+できるかを指定する</description>
+<syntax>AllowCONNECT <var>port</var>[-<var>port</var>]
+[<var>port</var>[-<var>port</var>]] ...</syntax>
+<default>AllowCONNECT 443 563</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+<compatibility><module>mod_proxy</module> から Apache 2.3.5 で移動してきた。
+ポートの範囲指定は Apache 2.3.7 からできるようになった。</compatibility>
+
+<usage>
+    <p><directive>AllowCONNECT</directive> はプロキシの <code>CONNECT</code>
+    メソッドが接続を許可するポート番号のリストや範囲を指定します。
+    今日のブラウザは、<code>https</code> コネクションが要求されていて、
+    HTTP 上でのプロキシによるトンネリングができるときに、
+    このメソッドを使います。</p>
+
+    <p>デフォルトの設定では、https のデフォルトポート (<code>443</code>) と
+    デフォルトの snews ポート (<code>563</code>) が有効になっています。
+    このデフォルトを上書きして、リストに記載したポートにのみ接続を許可したい場合、
+    <directive>AllowCONNECT</directive> ディレクティブを使用します。</p>
+</usage>
+</directivesynopsis>
 
 </modulesynopsis>
