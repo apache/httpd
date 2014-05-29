@@ -61,10 +61,13 @@
     <li>It does not support regex or pattern matching at all.
     </li>
     <li>It emulates:
-      <example>
-        ProxyPass / backend.server:port<br />
-        ProxyPassReverse / backend.server:port<br />
-      </example>
+      <highlight language="config">
+&lt;VirtualHost *:80&gt;
+   ServerName front.end.server
+   ProxyPass / back.end.server:port
+   ProxyPassReverse / back.end.server:port
+&lt;/VirtualHost&gt;
+      </highlight>
       That is, the entire URL is appended to the mapped backend
       URL. This is in keeping with the intent of being a simple
       but fast reverse proxy switch.
