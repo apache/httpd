@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1334008 -->
+<!-- English Revision : 1598136 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -568,7 +568,7 @@ de l'index d'un r&eacute;pertoire</description>
     expression avec caract&egrave;res g&eacute;n&eacute;riques de style shell ou un nom de
     fichier complet. Plusieurs directives IndexIgnore effectuent des
     ajouts &agrave; la liste, et ne remplacent pas la liste des fichiers &agrave;
-    ignorer. Par d&eacute;faut, la liste contient <code>.</code> (le r&eacute;pertoire
+    ignor&eacute;s. Par d&eacute;faut, la liste contient <code>.</code> (le r&eacute;pertoire
     courant).</p>
 
     <highlight language="config">
