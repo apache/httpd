@@ -568,7 +568,7 @@ de l'index d'un répertoire</td></tr>
     expression avec caractères génériques de style shell ou un nom de
     fichier complet. Plusieurs directives IndexIgnore effectuent des
     ajouts à la liste, et ne remplacent pas la liste des fichiers à
-    ignorer. Par défaut, la liste contient <code>.</code> (le répertoire
+    ignorés. Par défaut, la liste contient <code>.</code> (le répertoire
     courant).</p>
 
     <div class="example"><p><code>
