@@ -568,7 +568,7 @@ de l'index d'un r&eacute;pertoire</description>
     expression avec caract&egrave;res g&eacute;n&eacute;riques de style shell ou un nom de
     fichier complet. Plusieurs directives IndexIgnore effectuent des
     ajouts &agrave; la liste, et ne remplacent pas la liste des fichiers &agrave;
-    ignor&eacute;s. Par d&eacute;faut, la liste contient <code>.</code> (le r&eacute;pertoire
+    ignorer. Par d&eacute;faut, la liste contient <code>.</code> (le r&eacute;pertoire
     courant).</p>
 
     <highlight language="config">
