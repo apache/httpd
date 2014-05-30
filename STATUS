@@ -100,14 +100,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_cache: Preserve non-cacheable headers forwarded from an origin 304
-                response. PR 55547.
-     trunk patch: http://svn.apache.org/r1591328
-                  http://svn.apache.org/r1594643
-                  http://svn.apache.org/r1594648
-     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-mod_cache-preserve_304_headers.patch
-     +1: ylavic, minfrin, jim
-
    * minor proxy_util cleanups:
      . get rid of unnecessary block scope
      . Clarify an existing requirement of the server_portstr parameter
