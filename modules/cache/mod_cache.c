@@ -1442,10 +1442,12 @@ static apr_status_t cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
          * the cached headers.
          *
          * However, before doing that, we need to first merge in
-         * err_headers_out and we also need to strip any hop-by-hop
-         * headers that might have snuck in.
+         * err_headers_out (note that store_headers() below already selects
+         * the cacheable only headers using ap_cache_cacheable_headers_out(),
+         * here we want to keep the original headers in r->headers_out and
+         * forward all of them to the client, including non-cacheable ones).
          */
-        r->headers_out = ap_cache_cacheable_headers_out(r);
+        r->headers_out = cache_merge_headers_out(r);
 
         /* Merge in our cached headers.  However, keep any updated values. */
         /* take output, overlay on top of cached */
