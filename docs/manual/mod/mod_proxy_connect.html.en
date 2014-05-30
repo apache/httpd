@@ -43,7 +43,7 @@
     requests, <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> and
     <code class="module"><a href="../mod/mod_proxy_connect.html">mod_proxy_connect</a></code> have to be present in the server.</p>
 
-    <p>CONNECT is also used, when the server needs to send an HTTPS request
+    <p>CONNECT is also used when the server needs to send an HTTPS request
     through a forward proxy. In this case the server acts as a CONNECT client.
     This functionality is part of <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> and
     <code class="module"><a href="../mod/mod_proxy_connect.html">mod_proxy_connect</a></code> is not needed in this case.</p>
