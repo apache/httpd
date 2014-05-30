@@ -100,6 +100,31 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * mod_proxy_wstunnel: Fix the use of SSL connections with the "wss:" scheme.
+                         PR 55320.
+     trunk patch: http://svn.apache.org/r1594625
+     2.4.x patch: trunk patch works modulo CHANGES
+     +1: ylavic, trawick, jim
+
+   * mod_cache: Preserve non-cacheable headers forwarded from an origin 304
+                response. PR 55547.
+     trunk patch: http://svn.apache.org/r1591328
+                  http://svn.apache.org/r1594643
+                  http://svn.apache.org/r1594648
+     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-mod_cache-preserve_304_headers.patch
+     +1: ylavic, minfrin, jim
+
+   * minor proxy_util cleanups:
+     . get rid of unnecessary block scope
+     . Clarify an existing requirement of the server_portstr parameter
+       to ap_proxy_determine_connection(): it must be a buffer of at
+       least one byte in size.  (And don't bother with using strcpy in
+       order to zap a string.)
+     trunk patches: http://svn.apache.org/viewvc?view=revision&revision=r1592511
+                    http://svn.apache.org/viewvc?view=revision&revision=r1592514
+     2.4.x patches: trunk patches work
+     +1: trawick, ylavic, jim
+
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -186,31 +211,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: minfrin, covener
      jailletc36: When merged, a compatibility note should be added in the doc stating when
                  the none keyword has been added
-
-   * mod_proxy_wstunnel: Fix the use of SSL connections with the "wss:" scheme.
-                         PR 55320.
-     trunk patch: http://svn.apache.org/r1594625
-     2.4.x patch: trunk patch works modulo CHANGES
-     +1: ylavic, trawick, jim
-
-   * mod_cache: Preserve non-cacheable headers forwarded from an origin 304
-                response. PR 55547.
-     trunk patch: http://svn.apache.org/r1591328
-                  http://svn.apache.org/r1594643
-                  http://svn.apache.org/r1594648
-     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-mod_cache-preserve_304_headers.patch
-     +1: ylavic, minfrin, jim
-
-   * minor proxy_util cleanups:
-     . get rid of unnecessary block scope
-     . Clarify an existing requirement of the server_portstr parameter
-       to ap_proxy_determine_connection(): it must be a buffer of at
-       least one byte in size.  (And don't bother with using strcpy in
-       order to zap a string.)
-     trunk patches: http://svn.apache.org/viewvc?view=revision&revision=r1592511
-                    http://svn.apache.org/viewvc?view=revision&revision=r1592514
-     2.4.x patches: trunk patches work
-     +1: trawick, ylavic, jim
 
    * mod_proxy_fcgi: Support iobuffersize parameter.
      trunk patch: http://svn.apache.org/r1591508
