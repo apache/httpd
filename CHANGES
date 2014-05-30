@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.10
 
+  *) mod_proxy_wstunnel: Fix the use of SSL connections with the "wss:"
+     scheme. PR55320. [Alex Liu <alex.leo.ca gmail.com>]
+
   *) mod_socache_shmcb: Correct counting of expirations for status display.
      Expirations happening during retrieval were not counted. [Rainer Jung]
 

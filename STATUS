@@ -100,12 +100,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_proxy_wstunnel: Fix the use of SSL connections with the "wss:" scheme.
-                         PR 55320.
-     trunk patch: http://svn.apache.org/r1594625
-     2.4.x patch: trunk patch works modulo CHANGES
-     +1: ylavic, trawick, jim
-
    * mod_cache: Preserve non-cacheable headers forwarded from an origin 304
                 response. PR 55547.
      trunk patch: http://svn.apache.org/r1591328
