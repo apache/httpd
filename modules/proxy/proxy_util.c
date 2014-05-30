@@ -2329,16 +2329,16 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
     }
 
     /* Get the server port for the Via headers */
-    {
-        server_port = ap_get_server_port(r);
-        if (ap_is_default_port(server_port, r)) {
-            strcpy(server_portstr,"");
-        }
-        else {
-            apr_snprintf(server_portstr, server_portstr_size, ":%d",
-                         server_port);
-        }
+    server_port = ap_get_server_port(r);
+    AP_DEBUG_ASSERT(server_portstr_size > 0);
+    if (ap_is_default_port(server_port, r)) {
+        server_portstr[0] = '\0';
     }
+    else {
+        apr_snprintf(server_portstr, server_portstr_size, ":%d",
+                     server_port);
+    }
+
     /* check if ProxyBlock directive on this host */
     if (OK != ap_proxy_checkproxyblock2(r, conf, uri->hostname, 
                                        proxyname ? NULL : conn->addr)) {

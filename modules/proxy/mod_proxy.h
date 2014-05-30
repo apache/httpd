@@ -797,8 +797,9 @@ PROXY_DECLARE(int) ap_proxy_post_request(proxy_worker *worker,
  * @param url     request url
  * @param proxyname are we connecting directly or via a proxy
  * @param proxyport proxy host port
- * @param server_portstr Via headers server port
- * @param server_portstr_size size of the server_portstr buffer
+ * @param server_portstr Via headers server port, must be non-NULL
+ * @param server_portstr_size size of the server_portstr buffer; must
+ * be at least one, even if the protocol doesn't use this
  * @return         OK or HTTP_XXX error
  */
 PROXY_DECLARE(int) ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
