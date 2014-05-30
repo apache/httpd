@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 420990:1433861 (outdated) -->
+<!-- English Revision: 1433861 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -36,7 +36,7 @@
     <p>いくつかのオペレーティングシステムでは、サーバの再コンパイルをする代わりに、
     このモジュールを使用して
     <a href="../dso.html">動的共有オブジェクト</a>
-    (DSO) 機構により、実行時に Apache にモジュールを読み込ませることが
+    (DSO) 機構により、実行時に Apache HTTP Server にモジュールを読み込ませることが
     できます。</p>
 
     <p>Unix 上では、読み込まれるコードは通常は共有オブジェクトファイル
@@ -45,24 +45,28 @@
     です。</p>
 
     <note type="warning"><title>警告</title>
-    <p>Apache 1.3 のモジュールを直接 Apache 2.0 で使うことはできません
-    ― モジュールは Apache 2.0 用に動的にロードされるか、
-    直接組み込まれるために修正されなければなりません。</p>
+    <p>Apache HTTP Server のあるメジャーバージョン向けにビルドされたモジュールは一般に
+    他のメジャーバージョンでは動きません。(例えば 1.3 と 2.0、 2.0 と 2.2)
+    またメジャーバージョン間ではAPIの変更がしばしば発生し、そのため新しい
+    メジャーバージョン向けにモジュールの修正が必要になることがあります。</p>
     </note>
 </summary>
 
 <section><title>Windows 用のロード可能なモジュールを作成する</title>
 
     <note><title>注</title>
-    <p>Apache 1.3.15 と 2.0 とで Windows のモジュール名の形式は変更されました
-    ― モジュールは mod_foo.so という名前になりました。</p>
+    <p>Windows において動的にロードされるモジュールの拡張子は普通 <code>.dll</code>
+    ですが、Apache httpd のモジュールは <code>mod_whatever.so</code>
+    といった名前を持ちます。これは、他のプラットフォームでの通常の形式に
+    あわせたものです。しかしながら、サードパーティ製モジュール、例えばPHPなど、
+    は今でも <code>.dll</code> の拡張子を使っています。</p>
 
-    <p>まだ mod_so で ApacheModuleFoo.dll という名前のモジュールも
-    ロードされますが、新しい名前の付け方を使う方が好まれます。モジュールを
-    2.0 用に移植しているのであれば、2.0 の習慣に合うように名前を
+    <p>まだ <code>mod_so</code> で <code>ApacheModuleFoo.dll</code> という名前の
+    モジュールもロードされますが、新しい名前の付け方を使う方が好まれます。
+    モジュールを 2.0 用に移植しているのであれば、2.0 の習慣に合うように名前を
     修正してください。</p></note>
 
-    <p>Apache のモジュール API は UNIX と Windows 間では変更されていません。
+    <p>Apache httpd のモジュール API は UNIX と Windows 間では変更されていません。
     多くのモジュールは全く変更なし、もしくは簡単な変更により Windows 
     で実行できるようになります。ただし、それ以外の Windows には無い Unix
     アーキテクチャーの機能に依存したモジュールは動作しません。</p>
@@ -70,7 +74,7 @@
     <p>モジュールが実際に動作するときは、
     二つの方法のどちらかでサーバに追加することができます。まず、Unix
     と同様にサーバにコンパイルして組み込むことができます。Windows
-    用の Apache は Unix 用の Apache にある <code>Configure</code>
+    用の Apache httpd は Unix 用の Apache にある <code>Configure</code>
     プログラムがありませんので、モジュールのソースファイルを
     ApacheCore プロジェクトファイルに追加し、シンボルを
     <code>os\win32\modules.c</code> ファイルに追加する必要があります。</p>
@@ -80,13 +84,13 @@
     <code><directive>LoadModule</directive></code>
     ディレクティブによりサーバに読み込むことができます。これらのモジュール
     DLL はそのまま配布することが可能で、サーバを再コンパイルすることなく、Windows
-    用の Apache のすべてのインストールで実行することができます。</p>
+    用の Apache httpd のすべてのインストールで実行することができます。</p>
 
     <p>モジュール DLL を作成するためには、
     モジュールの作成に小さな変更を行なう必要があります。
     つまり、モジュールのレコード (これは後で作成されます。
     以下を参照してください) が DLL からエクスポートされなければなりません。
-    これを行なうには、<code>AP_MODULE_DECLARE_DATA</code> (Apache
+    これを行なうには、<code>AP_MODULE_DECLARE_DATA</code> (Apache httpd
     のヘッダファイルで定義されています) をモジュールのモジュールレコード
     定義の部分に追加してください。たとえば、モジュールに</p>
 <example>
@@ -107,7 +111,7 @@
     <p>さあ、あなたのモジュールの DLL を作成しましょう。これを、
     libhttpd.lib 共有ライブラリがコンパイルされたときに作成された
     ibhttpd.lib エクスポートライブラリとリンクしてください。この時に、
-    Apache のヘッダファイルが正しい位置にあるように、
+    Apache httpd のヘッダファイルが正しい位置にあるように、
     コンパイラの設定を変える必要があるかもしれません。
     このライブラリはサーバルートの modules ディレクトリにあります。
     ビルド環境が正しく設定されるように、既存のモジュール用の .dsp を
@@ -127,6 +131,7 @@
 <syntax>LoadFile <em>filename</em> [<em>filename</em>] ...</syntax>
 <contextlist>
 <context>server config</context>
+<context>virtual host</context>
 </contextlist>
 
 <usage>
@@ -139,7 +144,7 @@
 
     <p>例:</p>
 
-    <example>LoadFile libexec/libxmlparse.so</example>
+    <highlight language="config">LoadFile libexec/libxmlparse.so</highlight>
 
 </usage>
 </directivesynopsis>
@@ -151,6 +156,7 @@
 <syntax>LoadModule <em>module filename</em></syntax>
 <contextlist>
 <context>server config</context>
+<context>virtual host</context>
 </contextlist>
 
 <usage>
@@ -163,9 +169,9 @@
     <a href="module-dict.html#moduleidentifier"
     >モジュール識別子</a>として書かれているものです。例 :</p>
 
-    <example>
+   <highlight language="config">
       LoadModule status_module modules/mod_status.so
-    </example>
+    </highlight>
 
     <p>これは ServerRoot の modules サブディレクトリから指定された名前の
     モジュールをロードします。</p>
