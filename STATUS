@@ -100,17 +100,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * minor proxy_util cleanups:
-     . get rid of unnecessary block scope
-     . Clarify an existing requirement of the server_portstr parameter
-       to ap_proxy_determine_connection(): it must be a buffer of at
-       least one byte in size.  (And don't bother with using strcpy in
-       order to zap a string.)
-     trunk patches: http://svn.apache.org/viewvc?view=revision&revision=r1592511
-                    http://svn.apache.org/viewvc?view=revision&revision=r1592514
-     2.4.x patches: trunk patches work
-     +1: trawick, ylavic, jim
-
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
