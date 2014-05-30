@@ -191,7 +191,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                          PR 55320.
      trunk patch: http://svn.apache.org/r1594625
      2.4.x patch: trunk patch works modulo CHANGES
-     +1: ylavic, trawick
+     +1: ylavic, trawick, jim
 
    * mod_cache: Preserve non-cacheable headers forwarded from an origin 304
                 response. PR 55547.
@@ -199,7 +199,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1594643
                   http://svn.apache.org/r1594648
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-mod_cache-preserve_304_headers.patch
-     +1: ylavic, minfrin
+     +1: ylavic, minfrin, jim
 
    * minor proxy_util cleanups:
      . get rid of unnecessary block scope
@@ -210,19 +210,19 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patches: http://svn.apache.org/viewvc?view=revision&revision=r1592511
                     http://svn.apache.org/viewvc?view=revision&revision=r1592514
      2.4.x patches: trunk patches work
-     +1: trawick, ylavic
+     +1: trawick, ylavic, jim
 
    * mod_proxy_fcgi: Support iobuffersize parameter.
      trunk patch: http://svn.apache.org/r1591508
      2.4.x patch: trunk works (modulo CHANGES)
-     +1: trawick
+     +1: trawick, jim
 
    * mod_proxy: Allow reverse-proxy to be set via explicit handler.
      Submitted by: [ryo takatsuki <ryotakatsuki gmail com>]
      Committed by: jim
      trunk patch: http://svn.apache.org/r1573626
      2.4.x patch: trunk works
-     +1: ylavic
+     +1: ylavic, jim
 
    * Easy patches - synch with trunk
         mpm/event: fix whitespace in a debug message
@@ -249,7 +249,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1550307
                   http://svn.apache.org/r1585435
      2.4.x patch:  http://people.apache.org/~jailletc36/backport7.patch
-     +1: jailletc36
+     +1: jailletc36, jim
 
 
 OTHER PROPOSALS
