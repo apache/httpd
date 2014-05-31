@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1521336:1598284 (outdated) -->
+<!-- English Revision : 1598284 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -66,10 +66,13 @@ dynamique inverse de masse</description>
     expressions rationnelles ou les modèles.
     </li>
     <li>Il émule :
-      <example>
-        ProxyPass / backend.server:port<br />
-        ProxyPassReverse / backend.server:port<br />
-      </example>
+      <highlight language="config">
+&lt;VirtualHost *:80&gt;
+   ServerName front.end.server
+   ProxyPass / back.end.server:port
+   ProxyPassReverse / back.end.server:port
+&lt;/VirtualHost&gt;
+      </highlight>
       En d'autres termes, l'URL dans son ensemble est ajoutée à l'URL
       d'arrière-plan correspondante, tout ceci dans le but de
       proposer un commutateur mandataire inverse simple mais rapide.
