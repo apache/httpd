@@ -59,8 +59,8 @@
     <code class="directive"><a href="../mod/core.html#acceptfilter">AcceptFilter</a></code> with accept filter 
     <code>none</code>.</p>
 
-    <pre class="prettyprint lang-config">        AcceptFilter http none
-        AcceptFilter https none</pre>
+    <pre class="prettyprint lang-config">AcceptFilter http none
+AcceptFilter https none</pre>
 
     
     <p><em>In Apache httpd 2.0 and 2.2,
