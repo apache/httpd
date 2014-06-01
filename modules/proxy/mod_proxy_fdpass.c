@@ -55,6 +55,7 @@ static int proxy_fdpass_canon(request_rec *r, char *url)
 }
 
 /* TODO: In APR 2.x: Extend apr_sockaddr_t to possibly be a path !!! */
+/* XXX: The same function exists in proxy_util.c */
 static apr_status_t socket_connect_un(apr_socket_t *sock,
                                       struct sockaddr_un *sa)
 {
@@ -73,8 +74,9 @@ static apr_status_t socket_connect_un(apr_socket_t *sock,
     }
 
     do {
-        rv = connect(rawsock, (struct sockaddr*)sa,
-                               sizeof(*sa) + strlen(sa->sun_path));
+        const socklen_t addrlen = APR_OFFSETOF(struct sockaddr_un, sun_path)
+                                  + strlen(sa->sun_path) + 1;
+        rv = connect(rawsock, (struct sockaddr*)sa, addrlen);
     } while (rv == -1 && errno == EINTR);
 
     if ((rv == -1) && (errno == EINPROGRESS || errno == EALREADY)
