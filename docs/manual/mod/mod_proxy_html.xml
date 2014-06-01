@@ -227,7 +227,10 @@ for earlier 2.x versions</compatibility>
 <name>ProxyHTMLDocType</name>
 <description>Sets an HTML or XHTML document type declaration.</description>
 <syntax>ProxyHTMLDocType <var>HTML|XHTML [Legacy]</var><br/><strong>OR</strong>
-<br/>ProxyHTMLDocType <var>fpi [SGML|XML]</var></syntax>
+<br/>ProxyHTMLDocType <var>fpi [SGML|XML]</var><br/><strong>OR</strong>
+<br/>ProxyHTMLDocType <var>html5</var><br/><strong>OR</strong>
+<br/>ProxyHTMLDocType <var>auto</var></syntax>
+<default>ProxyHTMLDocType auto (2.5/trunk versions); no FPI (2.4.x)</default>
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
 </contextlist>
@@ -245,9 +248,9 @@ be necessary if you are proxying pre-1998 content or working with defective
 authoring/publishing tools.</p>
 <p>In the second form, it will insert your own FPI.  The optional second
 argument determines whether SGML/HTML or XML/XHTML syntax will be used.</p>
-<p>The default is changed to omitting any FPI,
-on the grounds that no FPI is better than a bogus one.  If your backend
-generates decent HTML or XHTML, set it accordingly.</p>
+<p>The third form declares documents as HTML 5.</p>
+<p>The fourth form is new in HTTPD trunk and not yet available in released
+versions, and uses libxml2's HTML parser to detect the doctype.</p>
 <p>If the first form is used, mod_proxy_html
 will also clean up the HTML to the specified standard.  It cannot
 fix every error, but it will strip out bogus elements and attributes.
