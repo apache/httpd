@@ -54,8 +54,8 @@
     <code>none</code>.</p>
 
     <highlight language="config">
-        AcceptFilter http none
-        AcceptFilter https none
+AcceptFilter http none
+AcceptFilter https none
     </highlight>
     
     <p><em>In Apache httpd 2.0 and 2.2,
