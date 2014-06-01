@@ -58,10 +58,9 @@
     <code class="directive"><a href="../mod/core.html#acceptfilter">AcceptFilter</a></code> with accept filter 
     <code>none</code>.</p>
 
-    <div class="example"><p><code>
-        AcceptFilter http none
-        AcceptFilter https none
-    </code></p></div>
+    <pre class="prettyprint lang-config">AcceptFilter http none
+AcceptFilter https none</pre>
+
     
     <p><em>In Apache httpd 2.0 and 2.2,
     <code class="directive">Win32DisableAcceptEx</code> was used for this purpose.</em></p>

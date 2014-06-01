@@ -53,10 +53,10 @@
     <directive module="core">AcceptFilter</directive> with accept filter 
     <code>none</code>.</p>
 
-    <example>
-        AcceptFilter http none
-        AcceptFilter https none
-    </example>
+    <highlight language="config">
+AcceptFilter http none
+AcceptFilter https none
+    </highlight>
     
     <p><em>In Apache httpd 2.0 and 2.2,
     <directive>Win32DisableAcceptEx</directive> was used for this purpose.</em></p>
