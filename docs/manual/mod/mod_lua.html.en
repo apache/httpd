@@ -105,11 +105,11 @@ trust, as it can be abused to change the internal workings of httpd.</p>
 
 <p>
 <code>mod_lua</code> provides a handler named <code>lua-script</code>,
-which can be used with an <code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code>
-or <code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code> directive:</p>
+which can be used with a <code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code> or
+<code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code> directive:</p>
 
 <pre class="prettyprint lang-config">&lt;Files *.lua&gt;
-    SetHandler lua-script .lua
+    SetHandler lua-script
 &lt;/Files&gt;</pre>
 
 
