@@ -108,6 +108,7 @@ typedef struct {
     size_t avail;
     const char *encoding;
     urlmap *map;
+    const char *etag;
 } saxctxt;
 
 
@@ -279,6 +280,33 @@ static void dump_content(saxctxt *ctx)
         }
     }
     AP_fwrite(ctx, ctx->buf, strlen(ctx->buf), 1);
+}
+static void pinternalSubset(void* ctxt, const xmlChar *name,
+                            const xmlChar *externalID, const xmlChar *sysID)
+{
+    saxctxt* ctx = (saxctxt*) ctxt;
+    if (!ctxt || !name) {
+        /* sanity check */
+        return;
+    }
+    if (ctx->cfg->doctype != DEFAULT_DOCTYPE) {
+        /* do nothing if overridden in config */
+        return;
+    }
+    ap_fputstrs(ctx->f->next, ctx->bb, "<!DOCTYPE ", (const char *)name, NULL);
+    if (externalID) {
+        if (!strcasecmp((const char*)name, "html") &&
+            !strncasecmp((const char *)externalID, "-//W3C//DTD XHTML ", 18)) {
+            ctx->etag = xhtml_etag;
+        }
+        else {
+            ctx->etag = html_etag;
+        }
+        ap_fputstrs(ctx->f->next, ctx->bb, " PUBLIC \"", (const char *)externalID, "\"", NULL);
+    if (sysID)
+        ap_fputstrs(ctx->f->next, ctx->bb, " \"", (const char *)sysID, "\"", NULL);
+    }
+    ap_fputs(ctx->f->next, ctx->bb, ">\n");
 }
 static void pcdata(void *ctxt, const xmlChar *uchars, int length)
 {
@@ -632,7 +660,7 @@ static void pstartElement(void *ctxt, const xmlChar *uname,
     }
     ctx->offset = 0;
     if (desc && desc->empty)
-        ap_fputs(ctx->f->next, ctx->bb, ctx->cfg->etag);
+        ap_fputs(ctx->f->next, ctx->bb, ctx->etag);
     else
         ap_fputc(ctx->f->next, ctx->bb, '>');
 
@@ -837,6 +865,7 @@ static saxctxt *check_filter_init (ap_filter_t *f)
         fctx->bb = apr_brigade_create(f->r->pool,
                                       f->r->connection->bucket_alloc);
         fctx->cfg = cfg;
+        fctx->etag = cfg->etag;
         apr_table_unset(f->r->headers_out, "Content-Length");
 
         if (cfg->interp)
@@ -1129,7 +1158,10 @@ static const char *set_doctype(cmd_parms *cmd, void *CFG,
                                const char *t, const char *l)
 {
     proxy_html_conf *cfg = (proxy_html_conf *)CFG;
-    if (!strcasecmp(t, "xhtml")) {
+    if (!strcasecmp(t, "auto")) {
+        cfg->doctype = DEFAULT_DOCTYPE; /* activates pinternalSubset */
+    }
+    else if (!strcasecmp(t, "xhtml")) {
         cfg->etag = xhtml_etag;
         if (l && !strcasecmp(l, "legacy"))
             cfg->doctype = fpi_xhtml_legacy;
@@ -1249,6 +1281,7 @@ static int mod_proxy_html(apr_pool_t *p, apr_pool_t *p1, apr_pool_t *p2)
     sax.characters = pcharacters;
     sax.comment = pcomment;
     sax.cdataBlock = pcdata;
+    sax.internalSubset = pinternalSubset;
     xml2enc_charset = APR_RETRIEVE_OPTIONAL_FN(xml2enc_charset);
     xml2enc_filter = APR_RETRIEVE_OPTIONAL_FN(xml2enc_filter);
     if (!xml2enc_charset) {

@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_proxy_html: support automatic detection of doctype and processing
+     of FPIs.  PR56285 [Micha Lenk <micha lenk info>, Nick Kew]
+
   *) mod_proxy_html: skip documents shorter than 4 bytes
      PR 56286 [Micha Lenk <micha lenk info>]
 
