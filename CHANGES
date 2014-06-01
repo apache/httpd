@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_proxy_fdpass: Fix computation of the size of 'struct sockaddr_un'
+     when passed to 'connec()'.
+     [Graham Dumpleton <grahamd apache org>]
+
   *) mod_socache_shmcb: Correct counting of expirations for status display.
      Expirations happening during retrieval were not counted. [Rainer Jung]
 
