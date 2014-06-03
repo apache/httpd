@@ -1722,6 +1722,7 @@ static int winnt_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s )
         ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf, APLOGNO(00456)
                      "Server built: %s", ap_get_server_built());
         ap_log_command_line(plog, s);
+        ap_log_common(s);
 
         restart = master_main(ap_server_conf, shutdown_event, restart_event);
 

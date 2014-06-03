@@ -916,6 +916,7 @@ static int netware_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     ap_log_error(APLOG_MARK, APLOG_INFO, 0, ap_server_conf, APLOGNO(00225)
             "Server built: %s", ap_get_server_built());
     ap_log_command_line(plog, s);
+    ap_log_common(s);
     show_server_data();
 
     mpm_state = AP_MPMQ_RUNNING;
