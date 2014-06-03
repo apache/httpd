@@ -78,6 +78,14 @@ struct ap_listen_rec {
  */
 AP_DECLARE_DATA extern ap_listen_rec *ap_listeners;
 
+AP_DECLARE_DATA extern ap_listen_rec **mpm_listen;
+
+AP_DECLARE_DATA extern int enable_default_listener;
+
+AP_DECLARE_DATA extern int num_buckets;
+
+AP_DECLARE_DATA extern int have_so_reuseport;
+
 /**
  * Setup all of the defaults for the listener list
  */
@@ -90,6 +98,14 @@ AP_DECLARE(void) ap_listen_pre_config(void);
  * @return The number of open sockets.
  */
 AP_DECLARE(int) ap_setup_listeners(server_rec *s);
+
+/**This function duplicates ap_listeners.
+ * @param s The global server_rec
+ * @param p The config pool
+ * @param num_buckets The total number of listener buckets.
+**/
+AP_DECLARE(apr_status_t) ap_duplicate_listeners(server_rec *s, apr_pool_t *p, int num_buckets);
+
 
 /**
  * Loop through the global ap_listen_rec list and close each of the sockets.
