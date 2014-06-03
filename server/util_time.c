@@ -15,6 +15,8 @@
  */
 
 #include "util_time.h"
+#include "apr_env.h"
+
 
 
 /* Number of characters needed to format the microsecond part of a timestamp.
@@ -303,4 +305,23 @@ AP_DECLARE(apr_status_t) ap_recent_rfc822_date(char *date_str, apr_time_t t)
     *date_str++ = 'T';
     *date_str++ = 0;
     return APR_SUCCESS;
+}
+
+AP_DECLARE(void) ap_force_set_tz(apr_pool_t *p) {
+    /* If the TZ variable is unset, many operationg systems,
+     * such as Linux, will at runtime read from /etc/localtime
+     * and call fstat on it.
+     *
+     * By forcing the time zone to UTC if it is unset, we gain
+     * about 2% in raw requests/second (since we format log files
+     * in the local time, if present)
+     *
+     * For more info, see:
+     *   <http://www.gnu.org/s/hello/manual/libc/TZ-Variable.html>
+     */
+    char *v = NULL;
+
+    if (apr_env_get(&v, "TZ", p) != APR_SUCCESS) {
+        apr_env_set("TZ", "UTC+0", p);
+    }
 }
