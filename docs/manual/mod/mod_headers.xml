@@ -201,8 +201,8 @@ Header merge Cache-Control no-store env=NO_STORE
 <name>RequestHeader</name>
 <description>Configure HTTP request headers</description>
 <syntax>RequestHeader add|append|edit|edit*|merge|set|setifempty|unset
-<var>header</var> [[expr=]<var>value</var> [<var>replacement</var>
-[early|env=[!]<var>varname</var>|expr=<var>expression</var>]]]
+<var>header</var> [[expr=]<var>value</var> [<var>replacement</var>]
+[early|env=[!]<var>varname</var>|expr=<var>expression</var>]]
 </syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
@@ -312,8 +312,8 @@ available in 2.4.10 and later</compatibility>
 <name>Header</name>
 <description>Configure HTTP response headers</description>
 <syntax>Header [<var>condition</var>] add|append|echo|edit|edit*|merge|set|setifempty|unset|note
-<var>header</var> [[expr=]<var>value</var> [<var>replacement</var>
-[early|env=[!]<var>varname</var>|expr=<var>expression</var>]]]
+<var>header</var> [[expr=]<var>value</var> [<var>replacement</var>]
+[early|env=[!]<var>varname</var>|expr=<var>expression</var>]]
 </syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
