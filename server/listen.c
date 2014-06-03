@@ -38,6 +38,11 @@
 
 AP_DECLARE_DATA ap_listen_rec *ap_listeners = NULL;
 
+AP_DECLARE_DATA ap_listen_rec **mpm_listen = NULL;
+AP_DECLARE_DATA int enable_default_listener = 1;
+AP_DECLARE_DATA int num_buckets = 1;
+AP_DECLARE_DATA int have_so_reuseport = 1;
+
 static ap_listen_rec *old_listeners;
 static int ap_listenbacklog;
 static int send_buffer_size;
@@ -124,6 +129,24 @@ static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server, int do_bind_
     ap_sock_disable_nagle(s);
 #endif
 
+#ifndef SO_REUSEPORT
+#define SO_REUSEPORT 15
+#endif
+    int thesock;
+    apr_os_sock_get(&thesock, s);
+    if (setsockopt(thesock, SOL_SOCKET, SO_REUSEPORT, (void *)&one, sizeof(int)) < 0) {
+        if (errno == ENOPROTOOPT) {
+            have_so_reuseport = 0;
+        } /* Check if SO_REUSEPORT is supported by the running Linux Kernel.*/
+        else {
+            ap_log_perror(APLOG_MARK, APLOG_CRIT, stat, p, APLOGNO()
+                    "make_sock: for address %pI, apr_socket_opt_set: (SO_REUSEPORT)",
+                     server->bind_addr);
+            apr_socket_close(s);
+            return errno;
+        }
+     }
+
     if (do_bind_listen) {
 #if APR_HAVE_IPV6
         if (server->bind_addr->family == APR_INET6) {
@@ -179,7 +202,7 @@ static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server, int do_bind_
 #endif
 
     server->sd = s;
-    server->active = 1;
+    server->active = enable_default_listener;
 
     server->accept_func = NULL;
 
@@ -575,7 +598,7 @@ static int open_listeners(apr_pool_t *pool)
                 }
             }
 #endif
-            if (make_sock(pool, lr, 1) == APR_SUCCESS) {
+            if (make_sock(pool, lr, enable_default_listener) == APR_SUCCESS) {
                 ++num_open;
             }
             else {
@@ -727,13 +750,73 @@ AP_DECLARE(int) ap_setup_listeners(server_rec *s)
     return num_listeners;
 }
 
+AP_DECLARE(apr_status_t) ap_duplicate_listeners(server_rec *s, apr_pool_t *p,
+                                                  int num_buckets) {
+    int i;
+    apr_status_t stat;
+    int use_nonblock = 0;
+    ap_listen_rec *lr;
+
+    mpm_listen = apr_palloc(p, sizeof(ap_listen_rec*) * num_buckets);
+    for (i = 0; i < num_buckets; i++) {
+        lr = ap_listeners;
+        ap_listen_rec *last = NULL;
+        while (lr) {
+            ap_listen_rec *duplr;
+            char *hostname;
+            apr_port_t port;
+            apr_sockaddr_t *sa;
+            duplr  = apr_palloc(p, sizeof(ap_listen_rec));
+            duplr->slave = NULL;
+            duplr->protocol = apr_pstrdup(p, lr->protocol);
+            hostname = apr_pstrdup(p, lr->bind_addr->hostname);
+            port = lr->bind_addr->port;
+            apr_sockaddr_info_get(&sa, hostname, APR_UNSPEC, port, 0, p);
+            duplr->bind_addr = sa;
+            duplr->next = NULL;
+            apr_socket_t *temps = duplr->sd;
+            if ((stat = apr_socket_create(&duplr->sd, duplr->bind_addr->family,
+                                          SOCK_STREAM, 0, p)) != APR_SUCCESS) {
+                ap_log_perror(APLOG_MARK, APLOG_CRIT, 0, p, APLOGNO()
+                              "ap_duplicate_socket: for address %pI, "
+                              "cannot duplicate a new socket!",
+                              duplr->bind_addr);
+                return stat;
+            }
+            make_sock(p, duplr, 1);
+#if AP_NONBLOCK_WHEN_MULTI_LISTEN
+            use_nonblock = (ap_listeners && ap_listeners->next);
+            if ((stat = apr_socket_opt_set(duplr->sd, APR_SO_NONBLOCK, use_nonblock))
+                != APR_SUCCESS) {
+                ap_log_perror(APLOG_MARK, APLOG_CRIT, stat, p, APLOGNO()
+                              "unable to control socket non-blocking status");
+                return stat;
+            }
+#endif
+            ap_apply_accept_filter(p, duplr, s);
+
+            if (last == NULL) {
+                mpm_listen[i] = last = duplr;
+            }
+            else {
+                last->next = duplr;
+                last = duplr;
+            }
+            lr = lr->next;
+        }
+    }
+    return APR_SUCCESS;
+}
+
 AP_DECLARE_NONSTD(void) ap_close_listeners(void)
 {
     ap_listen_rec *lr;
-
-    for (lr = ap_listeners; lr; lr = lr->next) {
-        apr_socket_close(lr->sd);
-        lr->active = 0;
+    int i;
+    for (i = 0; i < num_buckets; i++) {
+        for (lr = mpm_listen[i]; lr; lr = lr->next) {
+            apr_socket_close(lr->sd);
+            lr->active = 0;
+        }
     }
 }
 
