@@ -454,6 +454,7 @@
  * 20140207.4 (2.5.0-dev)  add ap_mpm_register_socket_callback_timeout
  * 20140207.5 (2.5.0-dev)  Add ap_mpm_resume_suspended(), AP_MPMQ_CAN_SUSPEND to
  *                         ap_mpm_query(), and suspended_baton to conn_rec
+ * 20140207.6 (2.5.0-dev)  Added ap_log_common().
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
@@ -461,7 +462,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20140207
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 5                  /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 6                  /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
