@@ -68,6 +68,7 @@
 #include "mpm_default.h"
 #include "util_mutex.h"
 #include "unixd.h"
+#include "util_time.h"
 
 #include <signal.h>
 #include <limits.h>             /* for INT_MAX */
@@ -2367,6 +2368,7 @@ static void worker_hooks(apr_pool_t *p)
      */
     static const char *const aszSucc[] = {"core.c", NULL};
     one_process = 0;
+    ap_force_set_tz(p);
 
     ap_hook_open_logs(worker_open_logs, NULL, aszSucc, APR_HOOK_REALLY_FIRST);
     /* we need to set the MPM state before other pre-config hooks use MPM query

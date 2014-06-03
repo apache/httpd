@@ -57,7 +57,6 @@
 #include "apr_atomic.h"
 #define APR_WANT_STRFUNC
 #include "apr_want.h"
-#include "apr_env.h"
 
 #if APR_HAVE_UNISTD_H
 #include <unistd.h>
@@ -91,6 +90,7 @@
 #include "mpm_default.h"
 #include "http_vhost.h"
 #include "unixd.h"
+#include "util_time.h"
 
 #include <signal.h>
 #include <limits.h>             /* for INT_MAX */
@@ -2231,25 +2231,6 @@ static void join_start_thread(apr_thread_t * start_thread_id)
     }
 }
 
-static void force_set_tz(apr_pool_t *p) {
-    /* If the TZ variable is unset, many operationg systems,
-     * such as Linux, will at runtime read from /etc/localtime
-     * and call fstat on it.
-     *
-     * By forcing the time zone to UTC if it is unset, we gain
-     * about 2% in raw requests/second (since we format log files
-     * in the local time, if present)
-     *
-     * For more info, see:
-     *   <http://www.gnu.org/s/hello/manual/libc/TZ-Variable.html>
-     */
-    char *v = NULL;
-
-    if (apr_env_get(&v, "TZ", p) != APR_SUCCESS) {
-        apr_env_set("TZ", "UTC+0", p);
-    }
-}
-
 static void child_main(int child_num_arg)
 {
     apr_thread_t **threads;
@@ -3395,7 +3376,7 @@ static void event_hooks(apr_pool_t * p)
      */
     static const char *const aszSucc[] = { "core.c", NULL };
     one_process = 0;
-    force_set_tz(p);
+    ap_force_set_tz(p);
 
     ap_hook_open_logs(event_open_logs, NULL, aszSucc, APR_HOOK_REALLY_FIRST);
     /* we need to set the MPM state before other pre-config hooks use MPM query

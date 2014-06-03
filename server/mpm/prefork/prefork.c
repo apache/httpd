@@ -47,6 +47,7 @@
 #include "ap_listen.h"
 #include "ap_mmn.h"
 #include "apr_poll.h"
+#include "util_time.h"
 
 #include <stdlib.h>
 
@@ -1521,6 +1522,7 @@ static void prefork_hooks(apr_pool_t *p)
      * console.
      */
     static const char *const aszSucc[] = {"core.c", NULL};
+    ap_force_set_tz(p);
 
     ap_hook_open_logs(prefork_open_logs, NULL, aszSucc, APR_HOOK_REALLY_FIRST);
     /* we need to set the MPM state before other pre-config hooks use MPM query
