@@ -1396,13 +1396,13 @@ static const char *request_var_fn(ap_expr_eval_ctx_t *ctx, const void *data)
 }
 
 static const char *req_header_var_names[] = {
-    "HTTP_USER_AGENT",
-    "HTTP_PROXY_CONNECTION",
-    "HTTP_REFERER",
-    "HTTP_COOKIE",
-    "HTTP_FORWARDED",
-    "HTTP_HOST",
-    "HTTP_ACCEPT",
+    "HTTP_USER_AGENT",       /* 0 */
+    "HTTP_PROXY_CONNECTION", /* 1 */
+    "HTTP_REFERER",          /* 2 */
+    "HTTP_COOKIE",           /* 3 */
+    "HTTP_FORWARDED",        /* 4 */
+    "HTTP_HOST",             /* 5 */
+    "HTTP_ACCEPT",           /* 6 */
     NULL
 };
 
@@ -1422,7 +1422,7 @@ static const char *req_header_var_fn(ap_expr_eval_ctx_t *ctx, const void *data)
     int index = (varname - req_header_var_names);
     const char *name;
 
-    AP_DEBUG_ASSERT(index < 6);
+    AP_DEBUG_ASSERT(index < 7);
     if (!ctx->r)
         return "";
 

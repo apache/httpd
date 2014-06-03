@@ -505,7 +505,7 @@ static void get_notes_auth(request_rec *r,
         r->user = (char *) *user;
     }
 
-    ap_log_rerror(APLOG_MARK, APLOG_TRACE6, 0, r,
+    ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r,
                   "from notes: user: %s, pw: %s, method: %s, mimetype: %s",
                   user ? *user : "<null>", pw ? *pw : "<null>",
                   method ? *method : "<null>", mimetype ? *mimetype : "<null>");
@@ -566,7 +566,7 @@ static apr_status_t get_session_auth(request_rec * r,
         r->user = (char *) *user;
     }
 
-    ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
+    ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r,
                   "from session: " MOD_SESSION_USER ": %s, " MOD_SESSION_PW
                   ": %s, " MOD_AUTH_FORM_HASH ": %s",
                   user ? *user : "<null>", pw ? *pw : "<null>",
@@ -668,13 +668,33 @@ static int get_form_auth(request_rec * r,
         }
     }
 
+    ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r,
+                  "from form: user: %s, pw: %s, method: %s, mimetype: %s, location: %s",
+                  sent_user ? *sent_user : "<null>", sent_pw ? *sent_pw : "<null>",
+                  sent_method ? *sent_method : "<null>",
+                  sent_mimetype ? *sent_mimetype : "<null>",
+                  sent_loc ? *sent_loc : "<null>");
+
     /* set the user, even though the user is unauthenticated at this point */
-    if (*sent_user) {
+    if (sent_user && *sent_user) {
         r->user = (char *) *sent_user;
     }
 
     /* a missing username or missing password means auth denied */
-    if (!sent_user || !*sent_user || !sent_pw || !*sent_pw) {
+    if (!sent_user || !*sent_user) {
+
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                      "form parsed, but username field '%s' was missing or empty, unauthorized",
+                      username);
+
+        return HTTP_UNAUTHORIZED;
+    }
+    if (!sent_pw || !*sent_pw) {
+
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                      "form parsed, but password field '%s' was missing or empty, unauthorized",
+                      password);
+
         return HTTP_UNAUTHORIZED;
     }
 
@@ -1262,7 +1282,7 @@ static int authenticate_form_post_config(apr_pool_t *pconf, apr_pool_t *plog,
         ap_session_get_fn = APR_RETRIEVE_OPTIONAL_FN(ap_session_get);
         ap_session_set_fn = APR_RETRIEVE_OPTIONAL_FN(ap_session_set);
         if (!ap_session_load_fn || !ap_session_get_fn || !ap_session_set_fn) {
-            ap_log_error(APLOG_MARK, APLOG_CRIT, 0, NULL, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_CRIT, 0, NULL, APLOGNO(02617)
                     "You must load mod_session to enable the mod_auth_form "
                                        "functions");
             return !OK;
@@ -1273,7 +1293,7 @@ static int authenticate_form_post_config(apr_pool_t *pconf, apr_pool_t *plog,
         ap_request_insert_filter_fn = APR_RETRIEVE_OPTIONAL_FN(ap_request_insert_filter);
         ap_request_remove_filter_fn = APR_RETRIEVE_OPTIONAL_FN(ap_request_remove_filter);
         if (!ap_request_insert_filter_fn || !ap_request_remove_filter_fn) {
-            ap_log_error(APLOG_MARK, APLOG_CRIT, 0, NULL, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_CRIT, 0, NULL, APLOGNO(02618)
                     "You must load mod_request to enable the mod_auth_form "
                                        "functions");
             return !OK;
