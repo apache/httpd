@@ -5,6 +5,9 @@ Changes with Apache 2.4.10
   *) mod_auth_form: Add a debug message when the fields on a form are not
      recognised. [Graham Leggett]
 
+  *) mod_cache: Preserve non-cacheable headers forwarded from an origin 304
+     response. PR 55547.  [Yann Ylavic]
+
   *) mod_proxy_wstunnel: Fix the use of SSL connections with the "wss:"
      scheme. PR55320. [Alex Liu <alex.leo.ca gmail.com>]
 
@@ -18,6 +21,9 @@ Changes with Apache 2.4.10
   *) mod_alias: Stop setting CONTEXT_PREFIX and CONTEXT_DOCUMENT environment
      variables as a result of AliasMatch. [Eric Covener]
  
+  *) mod_cache: Don't add cached/revalidated entity headers to a 304 response.
+     PR 55547.  [Yann Ylavic]
+
   *) mod_proxy_scgi: Support Unix sockets.  ap_proxy_port_of_scheme():
      Support default SCGI port (4000).  [Jeff Trawick]
 
@@ -25,7 +31,7 @@ Changes with Apache 2.4.10
      is enabled.  [Eric Covener]
 
   *) mod_expires: don't add Expires header to error responses (4xx/5xx),
-     be they generated or forwarded. PR 55669. [ Yann Ylavic ]
+     be they generated or forwarded. PR 55669.  [Yann Ylavic]
 
   *) mod_proxy_fcgi: Don't segfault when failing to connect to the backend.
      (regression in 2.4.9 release) [Jeff Trawick]
@@ -90,6 +96,9 @@ Changes with Apache 2.4.10
   *) mod_proxy_html: Do not delete the wrong data from HTML code when a
      "http-equiv" meta tag specifies a Content-Type behind any other
      "http-equiv" meta tag. PR 56287 [Micha Lenk <micha lenk info>]
+
+  *) Don't reuse a SSL backend connection whose SNI differs. PR 55782.
+     [Yann Ylavic]
 
   *) Add suspend_connection and resume_connection hooks to notify modules
      when the thread/connection relationship changes.  (Should be implemented
