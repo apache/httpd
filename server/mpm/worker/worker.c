@@ -1865,6 +1865,7 @@ static int worker_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     ap_log_error(APLOG_MARK, APLOG_INFO, 0, ap_server_conf, APLOGNO(00293)
                 "Server built: %s", ap_get_server_built());
     ap_log_command_line(plog, s);
+    ap_log_common(s);
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(00294)
                 "Accept mutex: %s (default: %s)",
                 apr_proc_mutex_name(accept_mutex[0]),
