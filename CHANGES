@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.10
 
+  *) mod_auth_form: Add a debug message when the fields on a form are not
+     recognised. [Graham Leggett]
+
   *) mod_proxy_wstunnel: Fix the use of SSL connections with the "wss:"
      scheme. PR55320. [Alex Liu <alex.leo.ca gmail.com>]
 
