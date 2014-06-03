@@ -208,8 +208,8 @@ Header merge Cache-Control no-store env=NO_STORE</pre>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure HTTP response headers</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Header [<var>condition</var>] add|append|echo|edit|edit*|merge|set|setifempty|unset|note
-<var>header</var> [[expr=]<var>value</var> [<var>replacement</var>
-[early|env=[!]<var>varname</var>|expr=<var>expression</var>]]]
+<var>header</var> [[expr=]<var>value</var> [<var>replacement</var>]
+[early|env=[!]<var>varname</var>|expr=<var>expression</var>]]
 </code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
@@ -422,8 +422,8 @@ available in 2.4.10 and later</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure HTTP request headers</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RequestHeader add|append|edit|edit*|merge|set|setifempty|unset
-<var>header</var> [[expr=]<var>value</var> [<var>replacement</var>
-[early|env=[!]<var>varname</var>|expr=<var>expression</var>]]]
+<var>header</var> [[expr=]<var>value</var> [<var>replacement</var>]
+[early|env=[!]<var>varname</var>|expr=<var>expression</var>]]
 </code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
