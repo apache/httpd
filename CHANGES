@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_log_config: Add GlobalLog to allow a globally defined log to
+     be inherited by virtual hosts that define a CustomLog.
+     [Edward Lu <Chaosed0 gmail.com>]
+
   *) MPMs: Support SO_REUSEPORT to create multiple duplicated listener
      records for scalability. [Yingqi Lu <yingqi.lu@intel.com>,
      Jeff Trawick, Jim Jagielski]
