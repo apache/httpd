@@ -41,7 +41,7 @@ AP_DECLARE_DATA ap_listen_rec *ap_listeners = NULL;
 AP_DECLARE_DATA ap_listen_rec **mpm_listen = NULL;
 AP_DECLARE_DATA int enable_default_listener = 1;
 AP_DECLARE_DATA int num_buckets = 1;
-AP_DECLARE_DATA int have_so_reuseport = 1;
+AP_DECLARE_DATA int have_so_reuseport = 0;
 
 static ap_listen_rec *old_listeners;
 static int ap_listenbacklog;
@@ -129,23 +129,28 @@ static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server, int do_bind_
     ap_sock_disable_nagle(s);
 #endif
 
-#ifndef SO_REUSEPORT
-#define SO_REUSEPORT 15
+#ifdef SO_REUSEPORT
+    {
+      int thesock;
+      apr_os_sock_get(&thesock, s);
+      if (setsockopt(thesock, SOL_SOCKET, SO_REUSEPORT, (void *)&one, sizeof(int)) < 0) {
+          /* defined by not valid? */
+          if (errno == ENOPROTOOPT) {
+              have_so_reuseport = 0;
+          } /* Check if SO_REUSEPORT is supported by the running Linux Kernel.*/
+          else {
+              ap_log_perror(APLOG_MARK, APLOG_CRIT, stat, p, APLOGNO(02638)
+                      "make_sock: for address %pI, apr_socket_opt_set: (SO_REUSEPORT)",
+                       server->bind_addr);
+              apr_socket_close(s);
+              return errno;
+          }
+      }
+      else {
+          have_so_reuseport = 1;
+      }
+    }
 #endif
-    int thesock;
-    apr_os_sock_get(&thesock, s);
-    if (setsockopt(thesock, SOL_SOCKET, SO_REUSEPORT, (void *)&one, sizeof(int)) < 0) {
-        if (errno == ENOPROTOOPT) {
-            have_so_reuseport = 0;
-        } /* Check if SO_REUSEPORT is supported by the running Linux Kernel.*/
-        else {
-            ap_log_perror(APLOG_MARK, APLOG_CRIT, stat, p, APLOGNO()
-                    "make_sock: for address %pI, apr_socket_opt_set: (SO_REUSEPORT)",
-                     server->bind_addr);
-            apr_socket_close(s);
-            return errno;
-        }
-     }
 
     if (do_bind_listen) {
 #if APR_HAVE_IPV6
@@ -774,7 +779,6 @@ AP_DECLARE(apr_status_t) ap_duplicate_listeners(server_rec *s, apr_pool_t *p,
             apr_sockaddr_info_get(&sa, hostname, APR_UNSPEC, port, 0, p);
             duplr->bind_addr = sa;
             duplr->next = NULL;
-            apr_socket_t *temps = duplr->sd;
             if ((stat = apr_socket_create(&duplr->sd, duplr->bind_addr->family,
                                           SOCK_STREAM, 0, p)) != APR_SUCCESS) {
                 ap_log_perror(APLOG_MARK, APLOG_CRIT, 0, p, APLOGNO()
