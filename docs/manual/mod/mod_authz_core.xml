@@ -48,7 +48,7 @@
     through the <directive module="mod_authz_core">Require</directive> directive
     in the same way as a base authorization provider.  Besides the ability to
     create and alias an extended provider, it also allows the same extended
-    authorization provider to be reference by multiple locations.
+    authorization provider to be referenced by multiple locations.
     </p>
 
     <section id="example"><title>Example</title>
@@ -173,23 +173,13 @@ SetEnvIf User-Agent ^KnockKnock/2\.0 let_me_in
     subrequest. Additionally, 
     <directive module="mod_setenvif">SetEnvIf</directive> directives
     are not separately evaluated in the subrequest due to the API phases
-    <module>mod_setenvif</module>.</p>
-
-
-    <p>When the server looks up a path via an internal subrequest,
-    such as looking for a <directive module="mod_dir"
-    >DirectoryIndex</directive> or generating a directory listing with
-    <module>mod_autoindex</module>, per-request environment variables are
-    <em>not</em> inherited in the subrequest. Additionally, environment
-    <directive module="mod_setenvif">SetEnvIf</directive> directives
-    are not separately evaluated in the subrequest due to the API phases
     <module>mod_setenvif</module> takes action in.</p>
 
   </section>
 
   <section id="reqall"><title>Require all</title>
 
-    <p>The <code>all</code> provider mimics the functionality the
+    <p>The <code>all</code> provider mimics the functionality that
     was previously provided by the 'Allow from all' and 'Deny from all'
     directives.  This provider can take one of two arguments which are
     'granted' or 'denied'.  The following examples will grant or deny
@@ -207,7 +197,7 @@ SetEnvIf User-Agent ^KnockKnock/2\.0 let_me_in
 
   <section id="reqmethod"><title>Require method</title>
 
-    <p>The <code>method</code> provider allows to use the HTTP method in
+    <p>The <code>method</code> provider allows using the HTTP method in
     authorization decisions. The GET and HEAD methods are treated as
     equivalent. The TRACE method is not available to this provider,
     use <directive module="core">TraceEnable</directive> instead.</p>
@@ -234,7 +224,7 @@ SetEnvIf User-Agent ^KnockKnock/2\.0 let_me_in
 
   <section id="reqexpr"><title>Require expr</title>
 
-  <p>The <code>expr</code> provider allows to base authorization
+  <p>The <code>expr</code> provider allows basing authorization
   decisions on arbitrary expressions.</p>
 
     <highlight language="config">
@@ -521,11 +511,11 @@ sections.</description>
 <usage>
     <p>When authorization is enabled, it is normally inherited by each
     subsequent <a href="../sections.html#merging">configuration section</a>,
-    unless a different set of authorization directives are specified.
+    unless a different set of authorization directives is specified.
     This is the default action, which corresponds to an explicit setting
     of <code>AuthMerging Off</code>.</p>
 
-    <p>However, there may be circumstances in which is it desirable
+    <p>However, there may be circumstances in which it is desirable
     for a configuration section's authorization to be combined with
     that of its predecessor while configuration sections are being
     merged.  Two options are available for this case, <code>And</code>
