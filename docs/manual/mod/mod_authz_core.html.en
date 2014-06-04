@@ -69,7 +69,7 @@
     through the <code class="directive"><a href="#require">Require</a></code> directive
     in the same way as a base authorization provider.  Besides the ability to
     create and alias an extended provider, it also allows the same extended
-    authorization provider to be reference by multiple locations.
+    authorization provider to be referenced by multiple locations.
     </p>
 
     <h3><a name="example" id="example">Example</a></h3>
@@ -190,22 +190,13 @@ Alias /secure /webpages/secure
     subrequest. Additionally, 
     <code class="directive"><a href="../mod/mod_setenvif.html#setenvif">SetEnvIf</a></code> directives
     are not separately evaluated in the subrequest due to the API phases
-    <code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code>.</p>
-
-
-    <p>When the server looks up a path via an internal subrequest,
-    such as looking for a <code class="directive"><a href="../mod/mod_dir.html#directoryindex">DirectoryIndex</a></code> or generating a directory listing with
-    <code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code>, per-request environment variables are
-    <em>not</em> inherited in the subrequest. Additionally, environment
-    <code class="directive"><a href="../mod/mod_setenvif.html#setenvif">SetEnvIf</a></code> directives
-    are not separately evaluated in the subrequest due to the API phases
     <code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code> takes action in.</p>
 
   
 
   <h3><a name="reqall" id="reqall">Require all</a></h3>
 
-    <p>The <code>all</code> provider mimics the functionality the
+    <p>The <code>all</code> provider mimics the functionality that
     was previously provided by the 'Allow from all' and 'Deny from all'
     directives.  This provider can take one of two arguments which are
     'granted' or 'denied'.  The following examples will grant or deny
@@ -221,7 +212,7 @@ Alias /secure /webpages/secure
 
   <h3><a name="reqmethod" id="reqmethod">Require method</a></h3>
 
-    <p>The <code>method</code> provider allows to use the HTTP method in
+    <p>The <code>method</code> provider allows using the HTTP method in
     authorization decisions. The GET and HEAD methods are treated as
     equivalent. The TRACE method is not available to this provider,
     use <code class="directive"><a href="../mod/core.html#traceenable">TraceEnable</a></code> instead.</p>
@@ -246,7 +237,7 @@ Alias /secure /webpages/secure
 
   <h3><a name="reqexpr" id="reqexpr">Require expr</a></h3>
 
-  <p>The <code>expr</code> provider allows to base authorization
+  <p>The <code>expr</code> provider allows basing authorization
   decisions on arbitrary expressions.</p>
 
     <pre class="prettyprint lang-config">Require expr "%{TIME_HOUR} -ge 9 &amp;&amp; %{TIME_HOUR} -le 17"</pre>
@@ -279,11 +270,11 @@ sections.</td></tr>
 </table>
     <p>When authorization is enabled, it is normally inherited by each
     subsequent <a href="../sections.html#merging">configuration section</a>,
-    unless a different set of authorization directives are specified.
+    unless a different set of authorization directives is specified.
     This is the default action, which corresponds to an explicit setting
     of <code>AuthMerging Off</code>.</p>
 
-    <p>However, there may be circumstances in which is it desirable
+    <p>However, there may be circumstances in which it is desirable
     for a configuration section's authorization to be combined with
     that of its predecessor while configuration sections are being
     merged.  Two options are available for this case, <code>And</code>
