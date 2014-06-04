@@ -46,7 +46,7 @@ person in</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#dbmdbd">Alternate password storage</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#multprovider">Using multiple providers</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#beyond">Beyond just authorization</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#socache">Authentication Cacheing</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#socache">Authentication Caching</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#moreinformation">More information</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -94,7 +94,7 @@ module from each group.</p>
 
   <p>In addition to these modules, there are also
   <code class="module"><a href="../mod/mod_authn_core.html">mod_authn_core</a></code> and
-  <code class="module"><a href="../mod/mod_authz_core.html">mod_authz_core</a></code>.  These module implement core
+  <code class="module"><a href="../mod/mod_authz_core.html">mod_authz_core</a></code>.  These modules implement core
   directives that are core to all auth modules.</p>
 
   <p>The module <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code> is both an
@@ -174,7 +174,7 @@ module from each group.</p>
     <p>This file should be
     placed somewhere not accessible from the web. This is so that
     folks cannot download the password file. For example, if your
-    documents are served out of <code>/usr/local/apache/htdocs</code> you
+    documents are served out of <code>/usr/local/apache/htdocs</code>, you
     might want to put the password file(s) in
     <code>/usr/local/apache/passwd</code>.</p>
 
@@ -433,20 +433,20 @@ Require group GroupName</pre>
     and
     <code class="directive"><a href="../mod/mod_authz_core.html#requireany">&lt;RequireAny&gt;</a></code>
     allow logic to be applied so that the order in which authorization
-    is handled can be completely controled through the configuration.
+    is handled can be completely controlled through the configuration.
     See <a href="../mod/mod_authz_core.html#logic">Authorization
-    Containers</a> for an example of they may be applied.</p>
+    Containers</a> for an example of how they may be applied.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="beyond" id="beyond">Beyond just authorization</a></h2>
 
-    <p>The way that authorization can be apply is now much more flexible
+    <p>The way that authorization can be applied is now much more flexible
     than just a single check against a single data store. Ordering, logic
     and choosing how authorization will be done is now possible.</p>
 
     <h3><a name="authandororder" id="authandororder">Applying logic and ordering</a></h3>
-        <p>Controling how and in what order authorization will be applied
+        <p>Controlling how and in what order authorization will be applied
         has been a bit of a mystery in the past. In Apache 2.2 a provider-based
         authentication mechanism was introduced to decouple the actual
         authentication process from authorization and supporting functionality.
@@ -491,7 +491,7 @@ Require group GroupName</pre>
 
         <p>The authorization providers <code>all</code>,
         <code>env</code>, <code>host</code> and <code>ip</code> let you
-        allow or deny access based other host based criteria such as
+        allow or deny access based on other host based criteria such as
         host name or ip address of the machine requesting a
         document.</p>
 
@@ -554,7 +554,7 @@ Require group GroupName</pre>
 
     <h3><a name="filesystem" id="filesystem">Access Control backwards compatibility</a></h3>
         <p>One of the side effects of adopting a provider based mechanism for
-        authentication is that the need for the previous access control directives
+        authentication is that the previous access control directives
         <code class="directive"><a href="../mod/mod_access_compat.html#order">Order</a></code>,
         <code class="directive"><a href="../mod/mod_access_compat.html#allow">Allow</a></code>,
         <code class="directive"><a href="../mod/mod_access_compat.html#deny">Deny</a></code> and
@@ -565,11 +565,11 @@ Require group GroupName</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="socache" id="socache">Authentication Cacheing</a></h2>
+<h2><a name="socache" id="socache">Authentication Caching</a></h2>
     <p>There may be times when authentication puts an unacceptable load
     on a provider or on your network.  This is most likely to affect users
     of <code class="module"><a href="../mod/mod_authn_dbd.html">mod_authn_dbd</a></code> (or third-party/custom providers).
-    To deal with this, HTTPD 2.3/2.4 introduces a new cacheing provider
+    To deal with this, HTTPD 2.3/2.4 introduces a new caching provider
     <code class="module"><a href="../mod/mod_authn_socache.html">mod_authn_socache</a></code> to cache credentials and reduce
     the load on the origin provider(s).</p>
     <p>This may offer a substantial performance boost to some users.</p>
