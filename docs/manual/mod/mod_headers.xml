@@ -155,7 +155,7 @@ headers</description>
       </li>
 
       <li>
-        Set the same header value under multiple non-exclusive conditions,
+        Set the same header value under multiple nonexclusive conditions,
         but do not duplicate the value in the final header.
         If all of the following conditions applied to a request (i.e.,
         if the <code>CGI</code>, <code>NO_CACHE</code> and
@@ -449,7 +449,7 @@ headers</description>
 
     <p>Except in <a href="#early">early</a> mode, the
     <directive>Header</directive> directives are processed just
-    before the response is sent to the network. These means that it is
+    before the response is sent to the network. This means that it is
     possible to set and/or override most headers, except for some headers
     added by the HTTP header filter.  Prior to 2.2.12, it was not possible 
     to change the Content-Type header with this directive.</p>
