@@ -266,14 +266,14 @@ struct data {
 
 int verbosity = 0;      /* no verbosity by default */
 int recverrok = 0;      /* ok to proceed after socket receive errors */
-enum {NO_METH = 0, GET, HEAD, PUT, POST} method = NO_METH;
-const char *method_str[] = {"bug", "GET", "HEAD", "PUT", "POST"};
+enum {NO_METH = 0, GET, HEAD, PUT, POST, CUSTOM_METHOD} method = NO_METH;
+const char *method_str[] = {"bug", "GET", "HEAD", "PUT", "POST", ""};
 int send_body = 0;      /* non-zero if sending body with request */
 int requests = 1;       /* Number of requests to make */
 int heartbeatres = 100; /* How often do we say we're alive */
 int concurrency = 1;    /* Number of multiple requests to make */
 int percentile = 1;     /* Show percentile served */
-int nolength = 0;		/* Accept variable document length */
+int nolength = 0;       /* Accept variable document length */
 int confidence = 1;     /* Show confidence estimator and warnings */
 int tlimit = 0;         /* time limit in secs */
 int keepalive = 0;      /* try and do keepalive connections */
@@ -1950,6 +1950,7 @@ static void usage(const char *progname)
     fprintf(stderr, "    -g filename     Output collected data to gnuplot format file.\n");
     fprintf(stderr, "    -e filename     Output CSV file with percentages served\n");
     fprintf(stderr, "    -r              Don't exit on socket receive errors.\n");
+    fprintf(stderr, "    -m method       Method name\n");
     fprintf(stderr, "    -h              Display usage information (this message)\n");
 #ifdef USE_SSL
 
@@ -2128,7 +2129,7 @@ int main(int argc, const char * const argv[])
     myhost = NULL; /* 0.0.0.0 or :: */
 
     apr_getopt_init(&opt, cntxt, argc, argv);
-    while ((status = apr_getopt(opt, "n:c:t:s:b:T:p:u:v:lrkVhwix:y:z:C:H:P:A:g:X:de:SqB:"
+    while ((status = apr_getopt(opt, "n:c:t:s:b:T:p:u:v:lrkVhwix:y:z:C:H:P:A:g:X:de:SqB:m:"
 #ifdef USE_SSL
             "Z:f:"
 #endif
@@ -2300,6 +2301,10 @@ int main(int argc, const char * const argv[])
 #ifdef USE_SSL
             case 'Z':
                 ssl_cipher = strdup(opt_arg);
+                break;
+            case 'm':
+                method = CUSTOM_METHOD;
+                method_str[CUSTOM_METHOD] = strdup(opt_arg);
                 break;
             case 'f':
                 if (strncasecmp(opt_arg, "ALL", 3) == 0) {
