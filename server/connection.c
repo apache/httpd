@@ -64,22 +64,32 @@ AP_IMPLEMENT_HOOK_RUN_ALL(int,pre_connection,(conn_rec *c, void *csd),(c, csd),O
 #define MAX_SECS_TO_LINGER 30
 #endif
 
-AP_CORE_DECLARE(void) ap_flush_conn(conn_rec *c)
+AP_CORE_DECLARE(apr_status_t) ap_shutdown_conn(conn_rec *c, int flush)
 {
+    apr_status_t rv;
     apr_bucket_brigade *bb;
     apr_bucket *b;
 
     bb = apr_brigade_create(c->pool, c->bucket_alloc);
 
-    /* FLUSH bucket */
-    b = apr_bucket_flush_create(c->bucket_alloc);
-    APR_BRIGADE_INSERT_TAIL(bb, b);
+    if (flush) {
+        /* FLUSH bucket */
+        b = apr_bucket_flush_create(c->bucket_alloc);
+        APR_BRIGADE_INSERT_TAIL(bb, b);
+    }
 
     /* End Of Connection bucket */
     b = ap_bucket_eoc_create(c->bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(bb, b);
 
-    ap_pass_brigade(c->output_filters, bb);
+    rv = ap_pass_brigade(c->output_filters, bb);
+    apr_brigade_destroy(bb);
+    return rv;
+}
+
+AP_CORE_DECLARE(void) ap_flush_conn(conn_rec *c)
+{
+    (void)ap_shutdown_conn(c, 1);
 }
 
 /* we now proceed to read from the client until we get EOF, or until
