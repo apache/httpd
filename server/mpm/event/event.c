@@ -2607,15 +2607,15 @@ static int make_child(server_rec * s, int slot)
         retained->max_daemons_limit = slot + 1;
     }
 
+    child_listen = mpm_listen[bucket[slot]];
+    child_pod = pod[bucket[slot]];
+
     if (one_process) {
         set_signals();
         event_note_child_started(slot, getpid());
         child_main(slot);
         /* NOTREACHED */
     }
-
-    child_listen = mpm_listen[bucket[slot]];
-    child_pod = pod[bucket[slot]];
 
     if ((pid = fork()) == -1) {
         ap_log_error(APLOG_MARK, APLOG_ERR, errno, s, APLOGNO(00481)
