@@ -308,7 +308,7 @@ AP_DECLARE(apr_status_t) ap_recent_rfc822_date(char *date_str, apr_time_t t)
 }
 
 AP_DECLARE(void) ap_force_set_tz(apr_pool_t *p) {
-    /* If the TZ variable is unset, many operationg systems,
+    /* If the TZ variable is unset, many operating systems,
      * such as Linux, will at runtime read from /etc/localtime
      * and call fstat on it.
      *
