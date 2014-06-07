@@ -755,6 +755,10 @@ static int make_child(server_rec *s, int slot)
         retained->max_daemons_limit = slot + 1;
     }
 
+    child_listen = mpm_listen[bucket[slot]];
+    child_mutex = accept_mutex[bucket[slot]];
+    child_pod = pod[bucket[slot]];
+
     if (one_process) {
         apr_signal(SIGHUP, sig_term);
         /* Don't catch AP_SIG_GRACEFUL in ONE_PROCESS mode :) */
@@ -770,10 +774,6 @@ static int make_child(server_rec *s, int slot)
 
     (void) ap_update_child_status_from_indexes(slot, 0, SERVER_STARTING,
                                                (request_rec *) NULL);
-
-    child_listen = mpm_listen[bucket[slot]];
-    child_mutex = accept_mutex[bucket[slot]];
-    child_pod = pod[bucket[slot]];
 
 #ifdef _OSD_POSIX
     /* BS2000 requires a "special" version of fork() before a setuid() call */
