@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_ssl: Ensure that the SSL close notify alert is flushed to the client.
+     PR54998. [Tim Kosse <tim.kosse filezilla-project.org>, Yann Ylavic] 
+
   *) mod_log_config: Add GlobalLog to allow a globally defined log to
      be inherited by virtual hosts that define a CustomLog.
      [Edward Lu <Chaosed0 gmail.com>]
