@@ -48,8 +48,17 @@ extern "C" {
 AP_CORE_DECLARE(void) ap_process_connection(conn_rec *c, void *csd);
 
 /**
+ * Shutdown the connection for writing.
+ * @param c The connection to shutdown
+ * @param flush Whether or not to flush pending data before
+ * @return APR_SUCCESS or the underlying error
+ */
+AP_CORE_DECLARE(apr_status_t) ap_shutdown_conn(conn_rec *c, int flush);
+
+/**
  * Flushes all remain data in the client send buffer
  * @param c The connection to flush
+ * @remark calls ap_shutdown_conn(c, 1)
  */
 AP_CORE_DECLARE(void) ap_flush_conn(conn_rec *c);
 

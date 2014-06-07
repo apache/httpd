@@ -895,6 +895,7 @@ static int start_lingering_close_nonblocking(event_conn_state_t *cs)
     apr_socket_t *csd = cs->pfd.desc.s;
 
     if (c->aborted
+        || ap_shutdown_conn(c, 0) != APR_SUCCESS || c->aborted
         || apr_socket_shutdown(csd, APR_SHUTDOWN_WRITE) != APR_SUCCESS) {
         apr_socket_close(csd);
         apr_pool_clear(cs->p);

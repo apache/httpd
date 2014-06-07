@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mpm_event[opt]: Send the SSL close notify alert when the KeepAliveTimeout
+     expires. PR54998. [Yann Ylavic] 
+
   *) mod_ssl: Ensure that the SSL close notify alert is flushed to the client.
      PR54998. [Tim Kosse <tim.kosse filezilla-project.org>, Yann Ylavic] 
 
