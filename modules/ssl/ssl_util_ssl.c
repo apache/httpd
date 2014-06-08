@@ -142,7 +142,10 @@ int SSL_smart_shutdown(SSL *ssl)
             /* Once the close notity is sent through the output filters,
              * ensure it is flushed through the socket.
              */
-            BIO_flush(ssl->wbio);
+            if (BIO_flush(SSL_get_wbio(ssl)) <= 0) {
+                rc = -1;
+                break;
+            }
             flush = 0;
         }
         if (rc != 0)
