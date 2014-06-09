@@ -781,7 +781,7 @@ AP_DECLARE(apr_status_t) ap_duplicate_listeners(server_rec *s, apr_pool_t *p,
             duplr->next = NULL;
             if ((stat = apr_socket_create(&duplr->sd, duplr->bind_addr->family,
                                           SOCK_STREAM, 0, p)) != APR_SUCCESS) {
-                ap_log_perror(APLOG_MARK, APLOG_CRIT, 0, p, APLOGNO()
+                ap_log_perror(APLOG_MARK, APLOG_CRIT, 0, p, APLOGNO(02640)
                               "ap_duplicate_socket: for address %pI, "
                               "cannot duplicate a new socket!",
                               duplr->bind_addr);
@@ -792,7 +792,7 @@ AP_DECLARE(apr_status_t) ap_duplicate_listeners(server_rec *s, apr_pool_t *p,
             use_nonblock = (ap_listeners && ap_listeners->next);
             if ((stat = apr_socket_opt_set(duplr->sd, APR_SO_NONBLOCK, use_nonblock))
                 != APR_SUCCESS) {
-                ap_log_perror(APLOG_MARK, APLOG_CRIT, stat, p, APLOGNO()
+                ap_log_perror(APLOG_MARK, APLOG_CRIT, stat, p, APLOGNO(02641)
                               "unable to control socket non-blocking status");
                 return stat;
             }
