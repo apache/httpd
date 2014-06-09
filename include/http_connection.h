@@ -57,10 +57,10 @@ AP_CORE_DECLARE(void) ap_flush_conn(conn_rec *c);
  * This function is responsible for the following cases:
  * <pre>
  * we now proceed to read from the client until we get EOF, or until
- * MAX_SECS_TO_LINGER has passed.  the reasons for doing this are
+ * MAX_SECS_TO_LINGER has passed.  The reasons for doing this are
  * documented in a draft:
  *
- * http://www.ics.uci.edu/pub/ietf/http/draft-ietf-http-connection-00.txt
+ * http://tools.ietf.org/html/draft-ietf-http-connection-00.txt
  *
  * in a nutshell -- if we don't make this effort we risk causing
  * TCP RST packets to be sent which can tear down a connection before
