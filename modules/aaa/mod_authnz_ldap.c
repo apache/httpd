@@ -61,8 +61,8 @@ typedef struct {
     char *bindpw;                   /* Password to bind to server (can be NULL) */
     int bind_authoritative;         /* If true, will return errors when bind fails */
 
-    int user_is_dn;                 /* If true, connection->user is DN instead of userid */
-    char *remote_user_attribute;    /* If set, connection->user is this attribute instead of userid */
+    int user_is_dn;                 /* If true, r->user is replaced by DN during authn */
+    char *remote_user_attribute;    /* If set, r->user is replaced by this attribute during authn */
     int compare_dn_on_server;       /* If true, will use server to do DN compare */
 
     int have_ldap_url;              /* Set if we have found an LDAP url */
