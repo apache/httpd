@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_proxy: Shutdown (eg. close notify) the backend connection before
+     closing. [Yann Ylavic] 
+
   *) mpm_event[opt]: Send the SSL close notify alert when the KeepAliveTimeout
      expires. PR54998. [Yann Ylavic] 
 
