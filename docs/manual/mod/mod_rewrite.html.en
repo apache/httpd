@@ -473,8 +473,9 @@ Alias /myapp /opt/myapp-1.2.3
 
       <ol>
         <li>You can prefix the pattern string with a
-        '<code>!</code>' character (exclamation mark) to specify a
-        <strong>non</strong>-matching pattern.</li>
+        '<code>!</code>' character (exclamation mark) to negate the result
+        of the condition, no matter what kind of <em>CondPattern</em> is used.
+        </li>
 
         <li>
           You can perform lexicographical string comparisons:
@@ -629,11 +630,6 @@ Alias /myapp /opt/myapp-1.2.3
 
           </ul>
 
-<div class="note"><h3>Note:</h3>
-              All of these tests can
-              also be prefixed by an exclamation mark ('!') to
-              negate their meaning.
-</div>
         </li>
 
 	<li>
