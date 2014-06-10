@@ -100,6 +100,10 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * mod_proxy_fcgi: Support iobuffersize parameter.
+     trunk patch: http://svn.apache.org/r1591508
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: trawick, jim, ylavic
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -187,11 +191,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      jailletc36: When merged, a compatibility note should be added in the doc stating when
                  the none keyword has been added
 
-   * mod_proxy_fcgi: Support iobuffersize parameter.
-     trunk patch: http://svn.apache.org/r1591508
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: trawick, jim
-
    * mod_proxy: Allow reverse-proxy to be set via explicit handler.
      Submitted by: [ryo takatsuki <ryotakatsuki gmail com>]
      Committed by: jim
@@ -232,7 +231,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * core: factor out DEFAULT_HANDLER_NAME
      trunk patch: http://svn.apache.org/r1496709
      2.4.x patch: trunk works (modulo ap_mmn.h)
-     +1: jailletc36
+     +1: jailletc36, ylavic
 
    * Easy patches - synch with trunk
         core: avoid a double apr_time_now() call on the first succeeding read.
@@ -252,7 +251,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/r1563193
         http://svn.apache.org/r1597639
      2.4.x patch:  http://people.apache.org/~jailletc36/backport8.patch
-     +1: jailletc36
+     +1: jailletc36, ylavic
 
 OTHER PROPOSALS
 
