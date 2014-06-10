@@ -918,6 +918,8 @@ static apr_status_t proxy_html_filter(ap_filter_t *f, apr_bucket_brigade *bb)
         else if (apr_bucket_read(b, &buf, &bytes, APR_BLOCK_READ)
                  == APR_SUCCESS) {
             if (ctxt->parser == NULL) {
+                const char *cenc;
+
                 /* For documents smaller than four bytes, there is no reason to do
                  * HTML rewriting. The URL schema (i.e. 'http') needs four bytes alone.
                  * And the HTML parser needs at least four bytes to initialise correctly.
@@ -927,7 +929,6 @@ static apr_status_t proxy_html_filter(ap_filter_t *f, apr_bucket_brigade *bb)
                     return ap_pass_brigade(f->next, bb) ;
                 }
 
-                const char *cenc;
                 if (!xml2enc_charset ||
                     (xml2enc_charset(f->r, &enc, &cenc) != APR_SUCCESS)) {
                     if (!xml2enc_charset)
