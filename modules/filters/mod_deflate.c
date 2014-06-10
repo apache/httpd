@@ -930,7 +930,6 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
         apr_bucket_delete(e);
     }
 
-    apr_brigade_cleanup(bb);
     return APR_SUCCESS;
 }
 
@@ -1750,7 +1749,6 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
         apr_bucket_delete(e);
     }
 
-    apr_brigade_cleanup(bb);
     return APR_SUCCESS;
 }
 

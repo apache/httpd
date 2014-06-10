@@ -921,8 +921,6 @@ static int cgi_handler(request_rec *r)
 
     AP_DEBUG_ASSERT(script_in != NULL);
 
-    apr_brigade_cleanup(bb);
-
 #if APR_FILES_AS_SOCKETS
     apr_file_pipe_timeout_set(script_in, 0);
     apr_file_pipe_timeout_set(script_err, 0);
