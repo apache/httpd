@@ -2,6 +2,8 @@
 
 Changes with Apache 2.4.10
 
+  *) mod_proxy_fcgi: Support iobuffersize parameter.  [Jeff Trawick]
+
   *) mod_auth_form: Add a debug message when the fields on a form are not
      recognised. [Graham Leggett]
 
