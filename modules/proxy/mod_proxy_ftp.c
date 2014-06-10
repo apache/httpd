@@ -2085,7 +2085,6 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
 #endif
             /* sanity check */
             if (APR_BRIGADE_EMPTY(bb)) {
-                apr_brigade_cleanup(bb);
                 break;
             }
 
