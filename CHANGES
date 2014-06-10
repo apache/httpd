@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) ab: support custom HTTP method with -m argument. PR 56604.
+     [Yann Ylavic]
+
   *) mod_proxy: Shutdown (eg. close notify) the backend connection before
      closing. [Yann Ylavic] 
 
