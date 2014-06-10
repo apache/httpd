@@ -213,15 +213,46 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                 "100 Continue" (interim) response to the client if it does not
                 expect one.
      trunk patch: http://svn.apache.org/r1588519
-     2.4.x patch: trunk works (module CHANGES)
+     2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic
 
    * mod_proxy: Preserve original request headers even if they differ
                 from the ones to be forwarded to the backend. PR 45387.
      trunk patch: http://svn.apache.org/r1588527
-     2.4.x patch: trunk works (module CHANGES)
+     2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic
 
+   * mod_proxy_fdpass: Fix computation of the size of 'struct sockaddr_un'
+                       when passed to 'connec()'.
+                       [Graham Dumpleton <grahamd apache org>]
+     trunk patch: http://svn.apache.org/r1598946
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: jailletc36
+
+   * core: factor out DEFAULT_HANDLER_NAME
+     trunk patch: http://svn.apache.org/r1496709
+     2.4.x patch: trunk works (modulo ap_mmn.h)
+     +1: jailletc36
+
+   * Easy patches - synch with trunk
+        core: avoid a double apr_time_now() call on the first succeeding read.
+        mod_proxy_balancer: Correctly escape user provided data.
+        mod_usertrack: Save a few bytes of memory. This can be done in temp_pool
+        mod_cache: Fix layout
+        mod_cache_socache: Don't pass uninitialized rv passed to ap_log_rerror()
+                           Stop throwing away a pointer on the heap
+        mod_cache: add the URI to DEBUG message 00765
+        heartbeat: Doxygen fix + reorg to match how other header files are built
+     trunk patch:
+        http://svn.apache.org/r1572905
+        http://svn.apache.org/r1595305
+        http://svn.apache.org/r1597182
+        http://svn.apache.org/r1586827
+        http://svn.apache.org/r1534892
+        http://svn.apache.org/r1563193
+        http://svn.apache.org/r1597639
+     2.4.x patch:  http://people.apache.org/~jailletc36/backport8.patch
+     +1: jailletc36
 
 OTHER PROPOSALS
 
