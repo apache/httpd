@@ -253,6 +253,29 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch:  http://people.apache.org/~jailletc36/backport8.patch
      +1: jailletc36, ylavic
 
+   * ab: support custom HTTP method with -m argument. PR 56604.
+     trunk patch: http://svn.apache.org/r1601076
+                  http://svn.apache.org/r1601680
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: ylavic
+
+   * mod_ssl, event: Ensure that the SSL close notify alert is flushed to the client.
+                     PR54998.
+     trunk patch: http://svn.apache.org/r1601184
+                  http://svn.apache.org/r1601274
+                  http://svn.apache.org/r1601185
+     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-SSL-shutdown.patch
+                  (modulo CHANGES/MMN)
+     +1: ylavic
+
+   * mod_proxy: Shutdown (eg. SSL close notify) the backend connection before closing.
+     trunk patch: http://svn.apache.org/r1601291
+                  http://svn.apache.org/r1601630
+     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-proxy-SSL-shutdown.patch
+                  (modulo CHANGES)
+     note: depends on ap_shutdown_conn() from r1601185 above.
+     +1: ylavic
+
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
