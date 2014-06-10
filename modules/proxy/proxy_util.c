@@ -2917,8 +2917,7 @@ PROXY_DECLARE(int) ap_proxy_connection_create(const char *proxy_function,
     /* Shutdown the connection before closing it (eg. SSL connections
      * need to be close-notify-ed).
      */
-    apr_pool_cleanup_register(conn->scpool, conn, connection_shutdown,
-                              apr_pool_cleanup_null);
+    apr_pool_pre_cleanup_register(conn->scpool, conn, connection_shutdown);
 
     return OK;
 }
