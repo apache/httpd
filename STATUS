@@ -256,7 +256,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * ab: support custom HTTP method with -m argument. PR 56604.
      trunk patch: http://svn.apache.org/r1601076
                   http://svn.apache.org/r1601680
+                  http://svn.apache.org/r1601700
      2.4.x patch: trunk works (modulo CHANGES)
+     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-ab_custom_method.patch
+                  (modulo CHANGES)
      +1: ylavic
 
    * mod_ssl, event: Ensure that the SSL close notify alert is flushed to the client.
