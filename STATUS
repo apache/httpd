@@ -275,6 +275,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      note: depends on ap_shutdown_conn() from r1601185 above.
      +1: ylavic
 
+   * mod_proxy_fcgi: better error messages
+     trunk patch: http://svn.apache.org/r1592032
+     2.4.x patch: trunk patch works
+     +1: trawick
+
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
