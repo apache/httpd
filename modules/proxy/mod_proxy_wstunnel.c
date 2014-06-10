@@ -36,7 +36,7 @@ typedef struct ws_baton_t {
     char *scheme;               /* required to release the proxy connection */
 } ws_baton_t;
 
-static int proxy_wstunnel_transfer(request_rec *r, conn_rec *c_i, conn_rec *c_o,
+static apr_status_t proxy_wstunnel_transfer(request_rec *r, conn_rec *c_i, conn_rec *c_o,
                                      apr_bucket_brigade *bb, char *name);
 static void proxy_wstunnel_callback(void *b);
 
@@ -259,10 +259,10 @@ static int proxy_wstunnel_canon(request_rec *r, char *url)
 }
 
 
-static int proxy_wstunnel_transfer(request_rec *r, conn_rec *c_i, conn_rec *c_o,
+static apr_status_t proxy_wstunnel_transfer(request_rec *r, conn_rec *c_i, conn_rec *c_o,
                                      apr_bucket_brigade *bb, char *name)
 {
-    int rv;
+    apr_status_t rv;
 #ifdef DEBUGGING
     apr_off_t len;
 #endif
@@ -432,20 +432,20 @@ static int proxy_wstunnel_request(apr_pool_t *p, request_rec *r,
         if (status == SUSPENDED) {
             sockets[0] = baton->client_soc;
             sockets[1] = baton->server_soc;
-            status = ap_mpm_register_socket_callback_timeout(sockets, baton->subpool, 1, 
+            rv = ap_mpm_register_socket_callback_timeout(sockets, baton->subpool, 1, 
                          proxy_wstunnel_callback, 
                          proxy_wstunnel_cancel_callback, 
                          baton, 
                          dconf->idle_timeout);
-            if (status == APR_SUCCESS) { 
+            if (rv == APR_SUCCESS) { 
                 return SUSPENDED;
             }
-            else if (status == APR_ENOTIMPL) { 
+            else if (APR_STATUS_IS_ENOTIMPL(rv)) { 
                 ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, APLOGNO(02544) "No async support");
                 status = proxy_wstunnel_pump(baton, dconf->idle_timeout, 0); /* force no async */
             }
             else { 
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
                               APLOGNO(02543) "error creating websockets tunnel");
                 return HTTP_INTERNAL_SERVER_ERROR;
             }
