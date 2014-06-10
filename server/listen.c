@@ -764,8 +764,8 @@ AP_DECLARE(apr_status_t) ap_duplicate_listeners(server_rec *s, apr_pool_t *p,
 
     mpm_listen = apr_palloc(p, sizeof(ap_listen_rec*) * num_buckets);
     for (i = 0; i < num_buckets; i++) {
-        lr = ap_listeners;
         ap_listen_rec *last = NULL;
+        lr = ap_listeners;
         while (lr) {
             ap_listen_rec *duplr;
             char *hostname;
