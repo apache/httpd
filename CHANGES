@@ -213,9 +213,6 @@ Changes with Apache 2.5.0
      been configured with -D Z_PREFIX, which redefines the token "deflate".
      [Eric Covener]
 
-  *) mod_socache_shmcb.c: Remove arbitrary restriction on shared memory size
-     previously limited to 64MB. [Jens Låås <jelaas gmail.com>]
-
   *) mod_auth_digest: Use the secret when generating nonces in all cases and
      not only when AuthName is used in .htaccess files (this change may cause
      problems if used with round robin load balancers). Don't regenerate the
