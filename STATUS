@@ -228,6 +228,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1496709
      2.4.x patch: trunk works (modulo ap_mmn.h)
      +1: jailletc36, ylavic
+     trawick: you probably want r1601995
 
    * Easy patches - synch with trunk
         core: avoid a double apr_time_now() call on the first succeeding read.
@@ -256,7 +257,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (modulo CHANGES)
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-ab_custom_method.patch
                   (modulo CHANGES)
-     +1: ylavic
+     +1: ylavic, trawick
 
    * mod_ssl, event: Ensure that the SSL close notify alert is flushed to the client.
                      PR54998.
