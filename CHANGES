@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_ssl: dump SSL IO/state for the write side of the connection(s),
+     like reads (level TRACE4). [Yann Ylavic]
+
   *) ab: support custom HTTP method with -m argument. PR 56604.
      [Roman Jurkov <winfinit gmail.com>]
 
