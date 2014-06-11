@@ -433,7 +433,7 @@
  * 20121222.13 (2.5.0-dev) Add ap_proxy_clear_connection()
  * 20121222.14 (2.5.0-dev) Add ap_map_http_request_error()
  * 20121222.15 (2.5.0-dev) Add allow/decode_encoded_slashes_set to core_dir_config
- * 20121222.16 (2.5.0-dev) AP_DEFAULT_HANDLER_NAME/AP_IS_DEAULT_HANDLER_NAME
+ * 20121222.16 (2.5.0-dev) AP_DEFAULT_HANDLER_NAME/AP_IS_DEFAULT_HANDLER_NAME
  * 20130702.0 (2.5.0-dev)  Remove pre_htaccess hook, add open_htaccess hook.
  * 20130702.1 (2.5.0-dev)  Restore AUTH_HANDLED to mod_auth.h
  * 20130702.2 (2.5.0-dev)  Add ap_log_data(), ap_log_rdata(), etc.
