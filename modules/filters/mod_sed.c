@@ -317,11 +317,9 @@ static apr_status_t sed_response_filter(ap_filter_t *f,
      * in sed's internal buffer which can't be flushed until new line
      * character is arrived.
      */
-    for (b = APR_BRIGADE_FIRST(bb); b != APR_BRIGADE_SENTINEL(bb);) {
-        const char *buf = NULL;
-        apr_size_t bytes = 0;
+    while (!APR_BRIGADE_EMPTY(bb)) {
+        b = APR_BRIGADE_FIRST(bb);
         if (APR_BUCKET_IS_EOS(b)) {
-            apr_bucket *b1 = APR_BUCKET_NEXT(b);
             /* Now clean up the internal sed buffer */
             sed_finalize_eval(&ctx->eval, ctx);
             status = flush_output_buffer(ctx);
@@ -329,44 +327,37 @@ static apr_status_t sed_response_filter(ap_filter_t *f,
                 clear_ctxpool(ctx);
                 return status;
             }
+            /* Move the eos bucket to ctx->bb brigade */
             APR_BUCKET_REMOVE(b);
-            /* Insert the eos bucket to ctx->bb brigade */
             APR_BRIGADE_INSERT_TAIL(ctx->bb, b);
-            b = b1;
         }
         else if (APR_BUCKET_IS_FLUSH(b)) {
-            apr_bucket *b1 = APR_BUCKET_NEXT(b);
-            APR_BUCKET_REMOVE(b);
             status = flush_output_buffer(ctx);
             if (status != APR_SUCCESS) {
                 clear_ctxpool(ctx);
                 return status;
             }
-            APR_BRIGADE_INSERT_TAIL(ctx->bb, b);
-            b = b1;
-        }
-        else if (APR_BUCKET_IS_METADATA(b)) {
-            b = APR_BUCKET_NEXT(b);
-        }
-        else if (apr_bucket_read(b, &buf, &bytes, APR_BLOCK_READ)
-                 == APR_SUCCESS) {
-            apr_bucket *b1 = APR_BUCKET_NEXT(b);
-            status = sed_eval_buffer(&ctx->eval, buf, bytes, ctx);
-            if (status != APR_SUCCESS) {
-                clear_ctxpool(ctx);
-                return status;
-            }
+            /* Move the flush bucket to ctx->bb brigade */
             APR_BUCKET_REMOVE(b);
-            apr_bucket_delete(b);
-            b = b1;
+            APR_BRIGADE_INSERT_TAIL(ctx->bb, b);
         }
         else {
-            apr_bucket *b1 = APR_BUCKET_NEXT(b);
-            APR_BUCKET_REMOVE(b);
-            b = b1;
+            if (!APR_BUCKET_IS_METADATA(b)) {
+                const char *buf = NULL;
+                apr_size_t bytes = 0;
+
+                status = apr_bucket_read(b, &buf, &bytes, APR_BLOCK_READ);
+                if (status == APR_SUCCESS) {
+                    status = sed_eval_buffer(&ctx->eval, buf, bytes, ctx);
+                }
+                if (status != APR_SUCCESS) {
+                    clear_ctxpool(ctx);
+                    return status;
+                }
+            }
+            apr_bucket_delete(b);
         }
     }
-    apr_brigade_cleanup(bb);
     status = flush_output_buffer(ctx);
     if (status != APR_SUCCESS) {
         clear_ctxpool(ctx);
