@@ -268,7 +268,7 @@ static apr_status_t sed_response_filter(ap_filter_t *f,
                                         apr_bucket_brigade *bb)
 {
     apr_bucket *b;
-    apr_status_t status;
+    apr_status_t status = APR_SUCCESS;
     sed_config *cfg = ap_get_module_config(f->r->per_dir_config,
                                            &sed_module);
     sed_filter_ctxt *ctx = f->ctx;
@@ -293,9 +293,9 @@ static apr_status_t sed_response_filter(ap_filter_t *f,
              return status;
         ctx = f->ctx;
         apr_table_unset(f->r->headers_out, "Content-Length");
-    }
 
-    ctx->bb = apr_brigade_create(f->r->pool, f->c->bucket_alloc);
+        ctx->bb = apr_brigade_create(f->r->pool, f->c->bucket_alloc);
+    }
 
     /* Here is the main logic. Iterate through all the buckets, read the
      * content of the bucket, call sed_eval_buffer on the data.
@@ -324,8 +324,7 @@ static apr_status_t sed_response_filter(ap_filter_t *f,
             sed_finalize_eval(&ctx->eval, ctx);
             status = flush_output_buffer(ctx);
             if (status != APR_SUCCESS) {
-                clear_ctxpool(ctx);
-                return status;
+                break;
             }
             /* Move the eos bucket to ctx->bb brigade */
             APR_BUCKET_REMOVE(b);
@@ -334,8 +333,7 @@ static apr_status_t sed_response_filter(ap_filter_t *f,
         else if (APR_BUCKET_IS_FLUSH(b)) {
             status = flush_output_buffer(ctx);
             if (status != APR_SUCCESS) {
-                clear_ctxpool(ctx);
-                return status;
+                break;
             }
             /* Move the flush bucket to ctx->bb brigade */
             APR_BUCKET_REMOVE(b);
@@ -351,20 +349,19 @@ static apr_status_t sed_response_filter(ap_filter_t *f,
                     status = sed_eval_buffer(&ctx->eval, buf, bytes, ctx);
                 }
                 if (status != APR_SUCCESS) {
-                    clear_ctxpool(ctx);
-                    return status;
+                    break;
                 }
             }
             apr_bucket_delete(b);
         }
     }
-    status = flush_output_buffer(ctx);
-    if (status != APR_SUCCESS) {
-        clear_ctxpool(ctx);
-        return status;
+    if (status == APR_SUCCESS) {
+        status = flush_output_buffer(ctx);
     }
     if (!APR_BRIGADE_EMPTY(ctx->bb)) {
-        status = ap_pass_brigade(f->next, ctx->bb);
+        if (status == APR_SUCCESS) {
+            status = ap_pass_brigade(f->next, ctx->bb);
+        }
         apr_brigade_cleanup(ctx->bb);
     }
     clear_ctxpool(ctx);
