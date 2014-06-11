@@ -38,7 +38,7 @@ typedef struct ws_baton_t {
 
 static apr_status_t proxy_wstunnel_transfer(request_rec *r, conn_rec *c_i, conn_rec *c_o,
                                      apr_bucket_brigade *bb, char *name);
-static void proxy_wstunnel_callback(void *b);
+static void proxy_wstunnel_callback(void *b, const apr_pollfd_t *dummy);
 
 static int proxy_wstunnel_pump(ws_baton_t *baton, apr_time_t timeout, int try_async) {
     request_rec *r = baton->r;
@@ -164,7 +164,7 @@ static void proxy_wstunnel_cancel_callback(void *b)
  *  We don't need the invoke_mtx, since we never put multiple callback events
  *  in the queue.
  */
-static void proxy_wstunnel_callback(void *b) { 
+static void proxy_wstunnel_callback(void *b, const apr_pollfd_t *dummy) { 
     int status;
     apr_socket_t *sockets[3] = {NULL, NULL, NULL};
     ws_baton_t *baton = (ws_baton_t*)b;

@@ -108,10 +108,10 @@ AP_IMPLEMENT_HOOK_RUN_FIRST(apr_status_t, mpm_resume_suspended,
                             (conn_rec *c),
                             (c), APR_ENOTIMPL)
 AP_IMPLEMENT_HOOK_RUN_FIRST(apr_status_t, mpm_register_socket_callback,
-                            (apr_socket_t **s, apr_pool_t *p, int for_read, ap_mpm_callback_fn_t *cbfn, void *baton),
+                            (apr_socket_t **s, apr_pool_t *p, int for_read, ap_mpm_socket_callback_fn_t *cbfn, void *baton),
                             (s, p, for_read, cbfn, baton), APR_ENOTIMPL)
 AP_IMPLEMENT_HOOK_RUN_FIRST(apr_status_t, mpm_register_socket_callback_timeout,
-                            (apr_socket_t **s, apr_pool_t *p, int for_read, ap_mpm_callback_fn_t *cbfn, ap_mpm_callback_fn_t *tofn, void *baton, apr_time_t timeout),
+                            (apr_socket_t **s, apr_pool_t *p, int for_read, ap_mpm_socket_callback_fn_t *cbfn, ap_mpm_callback_fn_t *tofn, void *baton, apr_time_t timeout),
                             (s, p, for_read, cbfn, tofn, baton, timeout), APR_ENOTIMPL)
 AP_IMPLEMENT_HOOK_RUN_FIRST(apr_status_t, mpm_unregister_socket_callback,
                             (apr_socket_t **s, apr_pool_t *p),
@@ -559,14 +559,14 @@ AP_DECLARE(apr_status_t) ap_mpm_register_timed_callback(apr_time_t t, ap_mpm_cal
 {
     return ap_run_mpm_register_timed_callback(t, cbfn, baton);
 }
-AP_DECLARE(apr_status_t) ap_mpm_register_socket_callback(apr_socket_t **s, apr_pool_t *p, int for_read, ap_mpm_callback_fn_t *cbfn, void *baton)
+AP_DECLARE(apr_status_t) ap_mpm_register_socket_callback(apr_socket_t **s, apr_pool_t *p, int for_read, ap_mpm_socket_callback_fn_t *cbfn, void *baton)
 {
     return ap_run_mpm_register_socket_callback(s, p, for_read, cbfn, baton);
 }
 AP_DECLARE(apr_status_t) ap_mpm_register_socket_callback_timeout(apr_socket_t **s, 
                                                                  apr_pool_t *p, 
                                                                  int for_read, 
-                                                                 ap_mpm_callback_fn_t *cbfn, 
+                                                                 ap_mpm_socket_callback_fn_t *cbfn, 
                                                                  ap_mpm_callback_fn_t *tofn, 
                                                                  void *baton, 
                                                                  apr_time_t timeout)
