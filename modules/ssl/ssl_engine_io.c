@@ -2027,8 +2027,14 @@ void ssl_io_filter_init(conn_rec *c, request_rec *r, SSL *ssl)
                               ssl_io_filter_cleanup, apr_pool_cleanup_null);
 
     if (APLOG_CS_IS_LEVEL(c, mySrvFromConn(c), APLOG_TRACE4)) {
-        BIO_set_callback(SSL_get_rbio(ssl), ssl_io_data_cb);
-        BIO_set_callback_arg(SSL_get_rbio(ssl), (void *)ssl);
+        BIO *rbio = SSL_get_rbio(ssl),
+            *wbio = SSL_get_wbio(ssl);
+        BIO_set_callback(rbio, ssl_io_data_cb);
+        BIO_set_callback_arg(rbio, (void *)ssl);
+        if (wbio && wbio != rbio) {
+            BIO_set_callback(wbio, ssl_io_data_cb);
+            BIO_set_callback_arg(wbio, (void *)ssl);
+        }
     }
 
     return;
