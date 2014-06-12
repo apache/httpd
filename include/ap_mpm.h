@@ -198,7 +198,7 @@ AP_DECLARE(apr_status_t) ap_mpm_query(int query_code, int *result);
 /** @} */
 
 typedef void (ap_mpm_callback_fn_t)(void *baton);
-typedef void (ap_mpm_socket_callback_fn_t)(void *baton, const apr_pollfd_t *pdf);
+typedef void (ap_mpm_socket_callback_fn_t)(void *baton, const apr_pollfd_t *pfd);
 
 /* only added support in the Event MPM....  check for APR_ENOTIMPL */
 AP_DECLARE(apr_status_t) ap_mpm_resume_suspended(conn_rec *c);
