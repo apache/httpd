@@ -1974,7 +1974,9 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                 timer_event_t *te; 
                 int i = 0;
                 socket_callback_baton_t *baton = (socket_callback_baton_t *) pt->baton;
-                baton->cancel_event->canceled = 1;
+                if(baton->cancel_event){
+                    baton->cancel_event->canceled = 1;
+                }
 
                 /* We only signal once per N sockets with this baton */
                 if (!(baton->signaled)) { 
