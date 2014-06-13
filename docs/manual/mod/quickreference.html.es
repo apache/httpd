@@ -465,8 +465,8 @@ will exit.</td></tr>
 <tr><td><a href="mod_unixd.html#group">Group <var>unix-group</var></a></td><td> #-1 </td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">Group under which the server will answer
 requests</td></tr>
 <tr class="odd"><td><a href="mod_headers.html#header" id="H" name="H">Header [<var>condition</var>] add|append|echo|edit|edit*|merge|set|setifempty|unset|note
-<var>header</var> [[expr=]<var>value</var> [<var>replacement</var>
-[early|env=[!]<var>varname</var>|expr=<var>expression</var>]]]
+<var>header</var> [[expr=]<var>value</var> [<var>replacement</var>]
+[early|env=[!]<var>varname</var>|expr=<var>expression</var>]]
 </a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Configure HTTP response headers</td></tr>
 <tr><td><a href="mod_autoindex.html#headername">HeaderName <var>filename</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Name of the file that will be inserted at the top
 of the index listing</td></tr>
@@ -787,8 +787,8 @@ extensions</td></tr>
 ...</a></td><td></td><td>vdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Removes any content type associations for a set of file
 extensions</td></tr>
 <tr><td><a href="mod_headers.html#requestheader">RequestHeader add|append|edit|edit*|merge|set|setifempty|unset
-<var>header</var> [[expr=]<var>value</var> [<var>replacement</var>
-[early|env=[!]<var>varname</var>|expr=<var>expression</var>]]]
+<var>header</var> [[expr=]<var>value</var> [<var>replacement</var>]
+[early|env=[!]<var>varname</var>|expr=<var>expression</var>]]
 </a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Configure HTTP request headers</td></tr>
 <tr class="odd"><td><a href="mod_reqtimeout.html#requestreadtimeout">RequestReadTimeout
 [header=<var>timeout</var>[-<var>maxtimeout</var>][,MinRate=<var>rate</var>]
