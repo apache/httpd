@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1593665:1600539 (outdated) -->
+<!-- English Revision: 1600539 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -221,8 +221,9 @@ Header merge Cache-Control no-store env=NO_STORE
 <name>RequestHeader</name>
 <description>Configure les en-t&ecirc;tes d'une requ&ecirc;te HTTP</description>
 <syntax>RequestHeader add|append|edit|edit*|merge|set|setifempty|unset
-<var>en-t&ecirc;te</var> [[expr=]<var>valeur</var> [<var>remplacement</var>
-[early|env=[!]<var>variable</var>|expr=<var>expression</var>]]]
+<var>en-t&ecirc;te</var> [[expr=]<var>valeur</var>
+[<var>remplacement</var>]
+[early|env=[!]<var>variable</var>|expr=<var>expression</var>]]
 </syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
@@ -345,8 +346,9 @@ version 2.4.10</compatibility>
 <name>Header</name>
 <description>Configure les en-t&ecirc;tes d'une r&eacute;ponse HTTP</description>
 <syntax>Header [<var>condition</var>] add|append|echo|edit|edit*|merge|set|setifempty|unset|note
-<var>en-t&ecirc;te</var> [[expr=]<var>valeur</var> [<var>remplacement</var>
-[early|env=[!]<var>variable</var>|expr=<var>expression</var>]]]
+<var>en-t&ecirc;te</var> [[expr=]<var>valeur</var>
+[<var>remplacement</var>]
+[early|env=[!]<var>variable</var>|expr=<var>expression</var>]]
 </syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>

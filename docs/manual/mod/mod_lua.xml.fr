@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1587325:1598962 (outdated) -->
+<!-- English Revision : 1598962 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -74,12 +74,12 @@ fonctionnement interne de httpd.</p>
 <p>
 <code>mod_lua</code> fournit un gestionnaire nomm&eacute;
 <code>lua-script</code> qui peut &ecirc;tre utilis&eacute; avec une directive
-<directive module="mod_mime">AddHandler</directive> ou <directive
-module="core">SetHandler</directive> :</p>
+<directive module="core">SetHandler</directive> ou <directive
+module="mod_mime">AddHandler</directive> :</p>
 
 <highlight language="config">
 &lt;Files *.lua&gt;
-    SetHandler lua-script .lua
+    SetHandler lua-script
 &lt;/Files&gt;
 </highlight>
 
