@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1437838:1599013 (outdated) -->
+<!-- English Revision : 1599013 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -58,9 +58,10 @@ NT.</description>
     erreur, d&eacute;finissez la directive <directive
     module="core">AcceptFilter</directive> &agrave; <code>none</code>.</p>
 
-    <example>
-        AcceptFilter none
-    </example>
+    <highlight language="config">
+AcceptFilter http none
+AcceptFilter https none
+    </highlight>
 
     <p><em>Avec les versions 2.0 et 2.2 d'Apache httpd, c'est la directive
     <directive>Win32DisableAcceptEx</directive> qui &eacute;tait utilis&eacute;e &agrave; cet
