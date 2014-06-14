@@ -224,8 +224,9 @@ Header merge Cache-Control no-store env=NO_STORE</pre>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure les en-têtes d'une réponse HTTP</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Header [<var>condition</var>] add|append|echo|edit|edit*|merge|set|setifempty|unset|note
-<var>en-tête</var> [[expr=]<var>valeur</var> [<var>remplacement</var>
-[early|env=[!]<var>variable</var>|expr=<var>expression</var>]]]
+<var>en-tête</var> [[expr=]<var>valeur</var>
+[<var>remplacement</var>]
+[early|env=[!]<var>variable</var>|expr=<var>expression</var>]]
 </code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
@@ -466,8 +467,9 @@ version 2.4.10</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure les en-têtes d'une requête HTTP</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RequestHeader add|append|edit|edit*|merge|set|setifempty|unset
-<var>en-tête</var> [[expr=]<var>valeur</var> [<var>remplacement</var>
-[early|env=[!]<var>variable</var>|expr=<var>expression</var>]]]
+<var>en-tête</var> [[expr=]<var>valeur</var>
+[<var>remplacement</var>]
+[early|env=[!]<var>variable</var>|expr=<var>expression</var>]]
 </code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>

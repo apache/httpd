@@ -112,10 +112,10 @@ fonctionnement interne de httpd.</p>
 <p>
 <code>mod_lua</code> fournit un gestionnaire nommé
 <code>lua-script</code> qui peut être utilisé avec une directive
-<code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code> ou <code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code> :</p>
+<code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code> ou <code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code> :</p>
 
 <pre class="prettyprint lang-config">&lt;Files *.lua&gt;
-    SetHandler lua-script .lua
+    SetHandler lua-script
 &lt;/Files&gt;</pre>
 
 
