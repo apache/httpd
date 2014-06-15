@@ -1045,11 +1045,6 @@ static int proxy_handler(request_rec *r)
     }
 
     scheme = apr_pstrndup(r->pool, uri, p - uri);
-
-    if (strcmp(scheme, "auto") == 0) {
-        apr_table_set(r->notes, "auto", uri);
-        uri = apr_pstrcat(r->pool, ap_http_scheme(r), p, NULL);
-    }
     /* Check URI's destination host against NoProxy hosts */
     /* Bypass ProxyRemote server lookup if configured as NoProxy */
     for (direct_connect = i = 0; i < conf->dirconn->nelts &&
@@ -1156,8 +1151,8 @@ static int proxy_handler(request_rec *r)
 
         /* handle the scheme */
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01143)
-                      "Running scheme %s handler for %s (attempt %d)",
-                      scheme, url, attempts);
+                      "Running scheme %s handler (attempt %d)",
+                      scheme, attempts);
         AP_PROXY_RUN(r, worker, conf, url, attempts);
         access_status = proxy_run_scheme_handler(r, worker, conf,
                                                  url, NULL, 0);
@@ -1484,7 +1479,7 @@ static const char *
 
 static char *de_socketfy(apr_pool_t *p, char *url)
 {
-    char *ptr, *ret = url;
+    char *ptr;
     /*
      * We could be passed a URL during the config stage that contains
      * the UDS path... ignore it
@@ -1492,7 +1487,7 @@ static char *de_socketfy(apr_pool_t *p, char *url)
     if (!strncasecmp(url, "unix:", 5) &&
         ((ptr = ap_strchr(url, '|')) != NULL)) {
         /* move past the 'unix:...|' UDS path info */
-        char *c;
+        char *ret, *c;
 
         ret = ptr + 1;
         /* special case: "unix:....|scheme:" is OK, expand
@@ -1503,10 +1498,13 @@ static char *de_socketfy(apr_pool_t *p, char *url)
             return NULL;
         }
         if (c[1] == '\0') {
-            ret = apr_pstrcat(p, ret, "//localhost", NULL);
+            return apr_pstrcat(p, ret, "//localhost", NULL);
+        }
+        else {
+            return ret;
         }
     }
-    return ret;
+    return url;
 }
 
 static const char *
