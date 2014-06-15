@@ -443,37 +443,30 @@ modified?</title>
     the ``truth'' of a particular value. (A given string is true if
     it is nonempty.) For a full list of the comparison operators
     available to you, see the <module>mod_include</module>
-    documentation. Here are some examples of how one might use this
-    construct.</p>
+    documentation.</p>
+   
+    <p>For example, if you wish to customize the text on your web page
+    based on the time of day, you could use the following recipe, placed
+    in the HTML page:</p>
 
-    <p>In your configuration file, you could put the following
-    line:</p>
-<highlight language="config">
-        BrowserMatchNoCase macintosh Mac<br />
-        BrowserMatchNoCase MSIE InternetExplorer
-</highlight>
-
-    <p>This will set environment variables ``Mac'' and
-    ``InternetExplorer'' to true, if the client is running Internet
-    Explorer on a Macintosh.</p>
-
-    <p>Then, in your SSI-enabled document, you might do the
-    following:</p>
-<example>
-        &lt;!--#if expr="-T reqenv('Mac') &amp;&amp;
-                         -T reqenv('InternetExplorer')" --&gt;<br />
-        Apologetic text goes here<br />
-        &lt;!--#else --&gt;<br />
-        Cool JavaScript code goes here<br />
-        &lt;!--#endif --&gt;
-</example>
+    <example>
+    Good
+    &lt;!--#if expr="%{TIME_HOUR} &gt;=12" --&gt;<br />
+    morning!<br />
+    &lt;!--#else --&gt;<br />
+    afternoon!<br />
+    &lt;!--#endif --&gt;<br />
+    </example>
 
     <p>Any other variable (either ones that you define, or normal
     environment variables) can be used in conditional statements.
-    With Apache's ability to set environment variables with the
+    See <a href="../expr.html">Expressions in Apache HTTP Server</a> for
+    more information on the expression evaluation engine.</p>
+
+    <p>With Apache's ability to set environment variables with the
     <code>SetEnvIf</code> directives, and other related directives,
-    this functionality can let you do some pretty involved dynamic
-    stuff without ever resorting to CGI.</p>
+    this functionality can let you do a wide variety of dynamic content
+    on the server side without resorting a full web application.</p>
 </section>
 </section>
 
