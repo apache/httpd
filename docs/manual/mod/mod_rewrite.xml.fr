@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1596345:1601533 (outdated) -->
+<!-- English Revision : 1601533 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -805,8 +805,9 @@ la r&eacute;&eacute;criture soit effectu&eacute;e
 
       <ol>
         <li>Vous pouvez pr&eacute;fixer l'expression avec un caract&egrave;re
-	'<code>!</code>' (point d'exclamation) pour indiquer une
-	expression de <strong>non</strong>-correspondance.</li>
+	'<code>!</code>' (point d'exclamation) pour inverser le r&eacute;sultat
+	de la condition, quelle que soit l'<em>expression de
+	comparaison</em> utilis&eacute;e.</li>
 
         <li>Vous pouvez effectuer des comparaisons lexicographiques de
 	cha&icirc;nes	:
@@ -974,10 +975,6 @@ la r&eacute;&eacute;criture soit effectu&eacute;e
 
 	    </ul>
 
-<note><title>Note :</title>
-              Tous ces tests peuvent aussi &ecirc;tre pr&eacute;fix&eacute;s par un point
-	      d'exclamation ('!') pour inverser leur signification.
-</note>
         </li>
 
 	<li>
