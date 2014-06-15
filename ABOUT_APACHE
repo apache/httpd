@@ -235,7 +235,7 @@ We want to see Apache httpd used very widely -- by large companies, small
 companies, research institutions, schools, individuals, in the intranet
 environment, everywhere -- even though this may mean that companies who
 could afford commercial software, and would pay for it without blinking,
-might get a "free ride" by using Apache httpd . We would even be happy if 
+might get a "free ride" by using Apache httpd. We would even be happy if 
 some commercial software companies completely dropped their own HTTP server
 development plans and used Apache httpd as a base, with the proper attributions
 as described in the LICENSE file.
