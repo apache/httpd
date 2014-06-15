@@ -24,6 +24,8 @@
 <p><span>Langues Disponibles: </span><a href="./en/getting-started.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./fr/getting-started.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
+            anglaise pour les changements récents.</div>
 
 <p>Si vous ne connaissez rien au serveur HTTP Apache, ou même au
 fonctionnement d'un site web, vous vous demandez probablement par où
