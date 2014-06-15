@@ -41,13 +41,12 @@ Body:----------en--
 Content-language: es
 Content-type: text/html
 Body:----------es--
-<!--#set var="TITLE" value="Error en la longitud del contenido!" -->
+<!--#set var="TITLE" value="&iexcl;Error en la longitud del contenido!" -->
 <!--#include virtual="include/top.html" -->
 
-    Una solicitud con el m&eacute;todo <!--#echo encoding="none"
-var="REDIRECT_REQUEST_METHOD"-->
-    requiere que el contenido de la variable de los encabezados
-    <code>Content-Length</code> sea v&aacute;lida.
+    Una petici&oacute;n con el m&eacute;todo <!--#echo encoding="none"
+    var="REDIRECT_REQUEST_METHOD"-->  requiere que el contenido de la 
+    variable de los encabezados <code>Content-Length</code> sea v&aacute;lida.
 
 <!--#include virtual="include/bottom.html" -->
 ----------es--

@@ -39,11 +39,11 @@ Body:----------en--
 Content-language: es
 Content-type: text/html
 Body:----------es--
-<!--#set var="TITLE" value="Solicitud err&oacute;nea!" -->
+<!--#set var="TITLE" value="&iexcl;Petici&oacute;n err&oacute;nea!" -->
 <!--#include virtual="include/top.html" -->
 
-    Su buscador (o 'proxy') envi&oacute; una solicitud
-   que el servidor no pudo entender.
+    Su navegador (o 'proxy') ha enviado una petici&oacute;n
+   que el servidor no ha podido entender.
 
 <!--#include virtual="include/bottom.html" -->
 ----------es--
