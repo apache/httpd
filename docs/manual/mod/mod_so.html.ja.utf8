@@ -30,10 +30,6 @@
 <a href="../ko/mod/mod_so.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_so.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">この日本語訳はすでに古くなっている
-            可能性があります。
-            最近更新された内容を見るには英語版をご覧下さい。
-        </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>起動時や再起動時に実行コードとモジュールをサーバにロードする
 </td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
@@ -47,7 +43,7 @@
     <p>いくつかのオペレーティングシステムでは、サーバの再コンパイルをする代わりに、
     このモジュールを使用して
     <a href="../dso.html">動的共有オブジェクト</a>
-    (DSO) 機構により、実行時に Apache にモジュールを読み込ませることが
+    (DSO) 機構により、実行時に Apache HTTP Server にモジュールを読み込ませることが
     できます。</p>
 
     <p>Unix 上では、読み込まれるコードは通常は共有オブジェクトファイル
@@ -56,9 +52,10 @@
     です。</p>
 
     <div class="warning"><h3>警告</h3>
-    <p>Apache 1.3 のモジュールを直接 Apache 2.0 で使うことはできません
-    ― モジュールは Apache 2.0 用に動的にロードされるか、
-    直接組み込まれるために修正されなければなりません。</p>
+    <p>Apache HTTP Server のあるメジャーバージョン向けにビルドされたモジュールは一般に
+    他のメジャーバージョンでは動きません。(例えば 1.3 と 2.0、 2.0 と 2.2)
+    またメジャーバージョン間ではAPIの変更がしばしば発生し、そのため新しい
+    メジャーバージョン向けにモジュールの修正が必要になることがあります。</p>
     </div>
 </div>
 <div id="quickview"><h3 class="directives">ディレクティブ</h3>
@@ -75,15 +72,18 @@
 <h2>Windows 用のロード可能なモジュールを作成する</h2>
 
     <div class="note"><h3>注</h3>
-    <p>Apache 1.3.15 と 2.0 とで Windows のモジュール名の形式は変更されました
-    ― モジュールは mod_foo.so という名前になりました。</p>
+    <p>Windows において動的にロードされるモジュールの拡張子は普通 <code>.dll</code>
+    ですが、Apache httpd のモジュールは <code>mod_whatever.so</code>
+    といった名前を持ちます。これは、他のプラットフォームでの通常の形式に
+    あわせたものです。しかしながら、サードパーティ製モジュール、例えばPHPなど、
+    は今でも <code>.dll</code> の拡張子を使っています。</p>
 
-    <p>まだ mod_so で ApacheModuleFoo.dll という名前のモジュールも
-    ロードされますが、新しい名前の付け方を使う方が好まれます。モジュールを
-    2.0 用に移植しているのであれば、2.0 の習慣に合うように名前を
+    <p>まだ <code>mod_so</code> で <code>ApacheModuleFoo.dll</code> という名前の
+    モジュールもロードされますが、新しい名前の付け方を使う方が好まれます。
+    モジュールを 2.0 用に移植しているのであれば、2.0 の習慣に合うように名前を
     修正してください。</p></div>
 
-    <p>Apache のモジュール API は UNIX と Windows 間では変更されていません。
+    <p>Apache httpd のモジュール API は UNIX と Windows 間では変更されていません。
     多くのモジュールは全く変更なし、もしくは簡単な変更により Windows 
     で実行できるようになります。ただし、それ以外の Windows には無い Unix
     アーキテクチャーの機能に依存したモジュールは動作しません。</p>
@@ -91,7 +91,7 @@
     <p>モジュールが実際に動作するときは、
     二つの方法のどちらかでサーバに追加することができます。まず、Unix
     と同様にサーバにコンパイルして組み込むことができます。Windows
-    用の Apache は Unix 用の Apache にある <code>Configure</code>
+    用の Apache httpd は Unix 用の Apache にある <code>Configure</code>
     プログラムがありませんので、モジュールのソースファイルを
     ApacheCore プロジェクトファイルに追加し、シンボルを
     <code>os\win32\modules.c</code> ファイルに追加する必要があります。</p>
@@ -101,13 +101,13 @@
     <code><code class="directive">LoadModule</code></code>
     ディレクティブによりサーバに読み込むことができます。これらのモジュール
     DLL はそのまま配布することが可能で、サーバを再コンパイルすることなく、Windows
-    用の Apache のすべてのインストールで実行することができます。</p>
+    用の Apache httpd のすべてのインストールで実行することができます。</p>
 
     <p>モジュール DLL を作成するためには、
     モジュールの作成に小さな変更を行なう必要があります。
     つまり、モジュールのレコード (これは後で作成されます。
     以下を参照してください) が DLL からエクスポートされなければなりません。
-    これを行なうには、<code>AP_MODULE_DECLARE_DATA</code> (Apache
+    これを行なうには、<code>AP_MODULE_DECLARE_DATA</code> (Apache httpd
     のヘッダファイルで定義されています) をモジュールのモジュールレコード
     定義の部分に追加してください。たとえば、モジュールに</p>
 <div class="example"><p><code>
@@ -128,7 +128,7 @@
     <p>さあ、あなたのモジュールの DLL を作成しましょう。これを、
     libhttpd.lib 共有ライブラリがコンパイルされたときに作成された
     ibhttpd.lib エクスポートライブラリとリンクしてください。この時に、
-    Apache のヘッダファイルが正しい位置にあるように、
+    Apache httpd のヘッダファイルが正しい位置にあるように、
     コンパイラの設定を変える必要があるかもしれません。
     このライブラリはサーバルートの modules ディレクトリにあります。
     ビルド環境が正しく設定されるように、既存のモジュール用の .dsp を
@@ -146,7 +146,7 @@
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>指定されたオブジェクトファイルやライブラリをリンクする</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>LoadFile <em>filename</em> [<em>filename</em>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_so</td></tr>
 </table>
@@ -158,7 +158,8 @@
 
     <p>例:</p>
 
-    <div class="example"><p><code>LoadFile libexec/libxmlparse.so</code></p></div>
+    <pre class="prettyprint lang-config">LoadFile libexec/libxmlparse.so</pre>
+
 
 
 </div>
@@ -168,7 +169,7 @@
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>オブジェクトファイルやライブラリをリンクし、使用モジュールの
 リストに追加する</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>LoadModule <em>module filename</em></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_so</td></tr>
 </table>
@@ -180,9 +181,8 @@
     型の外部変数の名前で、モジュールのドキュメントに
     <a href="module-dict.html#moduleidentifier">モジュール識別子</a>として書かれているものです。例 :</p>
 
-    <div class="example"><p><code>
-      LoadModule status_module modules/mod_status.so
-    </code></p></div>
+   <pre class="prettyprint lang-config">LoadModule status_module modules/mod_status.so</pre>
+
 
     <p>これは ServerRoot の modules サブディレクトリから指定された名前の
     モジュールをロードします。</p>

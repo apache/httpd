@@ -59,26 +59,35 @@
 </ul>
 <h3>参照</h3>
 <ul class="seealso">
-<li><code class="directive"><a href="../mod/mod_proxy.html#allowconnect">AllowCONNECT</a></code></li>
 <li><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></li>
 </ul><ul class="seealso"><li><a href="#comments_section">コメント</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AllowCONNECT" id="AllowCONNECT">AllowCONNECT</a> <a name="allowconnect" id="allowconnect">ディレクティブ</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Ports that are allowed to <code>CONNECT</code> through the
-proxy</td></tr>
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>プロキシを経由して、どのポートに <code>CONNECT</code>
+できるかを指定する</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>AllowCONNECT <var>port</var>[-<var>port</var>]
 [<var>port</var>[-<var>port</var>]] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>AllowCONNECT 443 563</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_proxy_connect</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>Moved from <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> in Apache 2.3.5.
-Port ranges available since Apache 2.3.7.</td></tr>
-</table><p>このディレクティブの解説文書は
-            まだ翻訳されていません。英語版をご覧ください。
-            </p></div>
+<tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> から Apache 2.3.5 で移動してきた。
+ポートの範囲指定は Apache 2.3.7 からできるようになった。</td></tr>
+</table>
+    <p><code class="directive">AllowCONNECT</code> はプロキシの <code>CONNECT</code>
+    メソッドが接続を許可するポート番号のリストや範囲を指定します。
+    今日のブラウザは、<code>https</code> コネクションが要求されていて、
+    HTTP 上でのプロキシによるトンネリングができるときに、
+    このメソッドを使います。</p>
+
+    <p>デフォルトの設定では、https のデフォルトポート (<code>443</code>) と
+    デフォルトの snews ポート (<code>563</code>) が有効になっています。
+    このデフォルトを上書きして、リストに記載したポートにのみ接続を許可したい場合、
+    <code class="directive">AllowCONNECT</code> ディレクティブを使用します。</p>
+
+</div>
 </div>
 <div class="bottomlang">
 <p><span>翻訳済み言語: </span><a href="../en/mod/mod_proxy_connect.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
