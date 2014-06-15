@@ -160,3 +160,7 @@ To Do List
 
 - Add example of using -p flag to rotatelogs to do something useful.
 
+- Log rotation doc - http://httpd.apache.org/docs/2.4/logs.html#rotation
+  needs to mention rotatelogs as well as fairly standard log rotation
+  stuff, rather than encouraging people to do this by hand.
+
