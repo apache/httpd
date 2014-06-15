@@ -214,15 +214,15 @@ documentation</a>.</p>
 on.</p>
 
 <p>This document covers only the bare basics. We hope that this gets you
-started, but there are many other things that you might need to know.
+started, but there are many other things that you might need to
+know.</p>
 
 <ul>
 <li><a href="http://httpd.apache.org/download.cgi">Download</a></li>
 <li><a href="install.html">Install</a></li>
-<li><a href="configuring.html">Configure</a>
+<li><a href="configuring.html">Configure</a></li>
 <li><a href="invoking.html">Start</a></li>
 <li><a href="http://wiki.apache.org/httpd/FAQ">Frequently Asked Questions</a></li>
-</ul>
 </ul>
 
 </section>
