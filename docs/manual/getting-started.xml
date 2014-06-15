@@ -208,16 +208,21 @@ documentation</a>.</p>
 </section>
 
 <section id="other">
-<title>What Else Do I Need To Know?</title>
+<title>What's next?</title>
+
+<p>Once you have the prerequisites under your belt, it's time to move
+on.</p>
+
 <p>This document covers only the bare basics. We hope that this gets you
 started, but there are many other things that you might need to know.
-Here's a partial list of what you might be looking for:</p>
 
 <ul>
-<li><a href="howto/auth.html">Authentication and Authorization (password protecting resources)</a></li>
-<li><a href="howto/access.html">Access Control</a></li>
-<li><a href="ssl/ssl_howto.html">Setting up SSL</a></li>
+<li><page href="http://httpd.apache.org/download.cgi">Download</page></li>
+<li><page href="install.html">Install</page></li>
+<li><page href="configuring.html">Configure</page>
+<li><page href="invoking.html">Start</page></li>
 <li><a href="http://wiki.apache.org/httpd/FAQ">Frequently Asked Questions</a></li>
+</ul>
 </ul>
 
 </section>
