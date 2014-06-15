@@ -425,41 +425,30 @@ modified?</a></h3>
     the ``truth'' of a particular value. (A given string is true if
     it is nonempty.) For a full list of the comparison operators
     available to you, see the <code class="module"><a href="../mod/mod_include.html">mod_include</a></code>
-    documentation. Here are some examples of how one might use this
-    construct.</p>
+    documentation.</p>
+   
+    <p>For example, if you wish to customize the text on your web page
+    based on the time of day, you could use the following recipe, placed
+    in the HTML page:</p>
 
-    <p>In your configuration file, you could put the following
-    line:</p>
-<div class="example"><p><code>
-        BrowserMatchNoCase macintosh Mac<br />
-        BrowserMatchNoCase MSIE InternetExplorer
-</code></p></div>
-
-    <p>This will set environment variables ``Mac'' and
-    ``InternetExplorer'' to true, if the client is running Internet
-    Explorer on a Macintosh.</p>
-
-    <p>Then, in your SSI-enabled document, you might do the
-    following:</p>
-<div class="example"><p><code>
-        &lt;!--#if expr="${Mac} &amp;&amp; ${InternetExplorer}" --&gt;<br />
-        Apologetic text goes here<br />
-        &lt;!--#else --&gt;<br />
-        Cool JavaScript code goes here<br />
-        &lt;!--#endif --&gt;
-</code></p></div>
-
-    <p>Not that I have anything against IE on Macs - I just
-    struggled for a few hours last week trying to get some
-    JavaScript working on IE on a Mac, when it was working
-    everywhere else. The above was the interim workaround.</p>
+    <div class="example"><p><code>
+    Good
+    &lt;!--#if expr="%{TIME_HOUR} &gt;=12" --&gt;<br />
+    morning!<br />
+    &lt;!--#else --&gt;<br />
+    afternoon!<br />
+    &lt;!--#endif --&gt;<br />
+    </code></p></div>
 
     <p>Any other variable (either ones that you define, or normal
     environment variables) can be used in conditional statements.
-    With Apache's ability to set environment variables with the
+    See <a href="../expr.html">Expressions in Apache HTTP Server</a> for
+    more information on the expression evaluation engine.</p>
+
+    <p>With Apache's ability to set environment variables with the
     <code>SetEnvIf</code> directives, and other related directives,
-    this functionality can let you do some pretty involved dynamic
-    stuff without ever resorting to CGI.</p>
+    this functionality can let you do a wide variety of dynamic content
+    on the server side without resorting a full web application.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
