@@ -497,8 +497,8 @@ will exit.</td></tr>
 <tr class="odd"><td><a href="mod_unixd.html#group">Group <var>unix-group</var></a></td><td> #-1 </td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Group under which the server will answer
 requests</td></tr>
 <tr><td><a href="mod_headers.html#header" id="H" name="H">Header [<var>condition</var>] add|append|echo|edit|edit*|merge|set|setifempty|unset|note
-<var>header</var> [[expr=]<var>value</var> [<var>replacement</var>
-[early|env=[!]<var>varname</var>|expr=<var>expression</var>]]]
+<var>header</var> [[expr=]<var>value</var> [<var>replacement</var>]
+[early|env=[!]<var>varname</var>|expr=<var>expression</var>]]
 </a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Configure HTTP response headers</td></tr>
 <tr class="odd"><td><a href="mod_autoindex.html#headername">HeaderName <var>filename</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Name of the file that will be inserted at the top
 of the index listing</td></tr>
@@ -747,7 +747,9 @@ response</td></tr>
 stylesheets.</td></tr>
 <tr class="odd"><td><a href="mod_proxy_html.html#proxyhtmlcharsetout">ProxyHTMLCharsetOut <var>Charset | *</var></a></td><td></td><td>svd</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Specify a charset for mod_proxy_html output.</td></tr>
 <tr><td><a href="mod_proxy_html.html#proxyhtmldoctype">ProxyHTMLDocType <var>HTML|XHTML [Legacy]</var><br /><strong>OR</strong>
-<br />ProxyHTMLDocType <var>fpi [SGML|XML]</var></a></td><td></td><td>svd</td><td>B</td></tr><tr><td class="descr" colspan="4">Sets an HTML or XHTML document type declaration.</td></tr>
+<br />ProxyHTMLDocType <var>fpi [SGML|XML]</var><br /><strong>OR</strong>
+<br />ProxyHTMLDocType <var>html5</var><br /><strong>OR</strong>
+<br />ProxyHTMLDocType <var>auto</var></a></td><td> auto (2.5/trunk ver +</td><td>svd</td><td>B</td></tr><tr><td class="descr" colspan="4">Sets an HTML or XHTML document type declaration.</td></tr>
 <tr class="odd"><td><a href="mod_proxy_html.html#proxyhtmlenable">ProxyHTMLEnable <var>On|Off</var></a></td><td> Off </td><td>svd</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Turns the proxy_html filter on or off.</td></tr>
 <tr><td><a href="mod_proxy_html.html#proxyhtmlevents">ProxyHTMLEvents <var>attribute [attribute ...]</var></a></td><td></td><td>svd</td><td>B</td></tr><tr><td class="descr" colspan="4">Specify attributes to treat as scripting events.</td></tr>
 <tr class="odd"><td><a href="mod_proxy_html.html#proxyhtmlextended">ProxyHTMLExtended <var>On|Off</var></a></td><td> Off </td><td>svd</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Determines whether to fix links in inline scripts, stylesheets,
@@ -844,8 +846,8 @@ extensions</td></tr>
 ...</a></td><td></td><td>vdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Removes any content type associations for a set of file
 extensions</td></tr>
 <tr><td><a href="mod_headers.html#requestheader">RequestHeader add|append|edit|edit*|merge|set|setifempty|unset
-<var>header</var> [[expr=]<var>value</var> [<var>replacement</var>
-[early|env=[!]<var>varname</var>|expr=<var>expression</var>]]]
+<var>header</var> [[expr=]<var>value</var> [<var>replacement</var>]
+[early|env=[!]<var>varname</var>|expr=<var>expression</var>]]
 </a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Configure HTTP request headers</td></tr>
 <tr class="odd"><td><a href="mod_reqtimeout.html#requestreadtimeout">RequestReadTimeout
 [header=<var>timeout</var>[-<var>maxtimeout</var>][,MinRate=<var>rate</var>]

@@ -115,8 +115,8 @@ MIME タイプによって選択</td></tr>
 <tr class="odd"><td><a href="mod_access_compat.html#allow"> Allow from all|<var>host</var>|env=[!]<var>env-variable</var>
 [<var>host</var>|env=[!]<var>env-variable</var>] ...</a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">サーバのある領域にアクセスできるホストを制御する</td></tr>
 <tr><td><a href="mod_proxy_connect.html#allowconnect">AllowCONNECT <var>port</var>[-<var>port</var>]
-[<var>port</var>[-<var>port</var>]] ...</a></td><td> 443 563 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Ports that are allowed to <code>CONNECT</code> through the
-proxy</td></tr>
+[<var>port</var>[-<var>port</var>]] ...</a></td><td> 443 563 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">プロキシを経由して、どのポートに <code>CONNECT</code>
+できるかを指定する</td></tr>
 <tr class="odd"><td><a href="core.html#allowencodedslashes">AllowEncodedSlashes On|Off</a></td><td> Off </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">URL 中の符号化されたパス分離文字が先に伝えられるのを許可するかどうかを
 決定する</td></tr>
 <tr><td><a href="mod_allowhandlers.html#allowhandlers">AllowHandlers [not] none|<em>handler-name</em>
@@ -569,8 +569,8 @@ Certificate Authority or global client certificates</td></tr>
 <tr class="odd"><td><a href="core.html#limitxmlrequestbody">LimitXMLRequestBody <var>bytes</var></a></td><td> 1000000 </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">XML 形式のリクエストのボディのサイズを制限する</td></tr>
 <tr><td><a href="mpm_common.html#listen">Listen [<var>IP-address</var>:]<var>portnumber</var> [<var>protocol</var>]</a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">サーバが listen するIP アドレスとポート番号</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#listenbacklog">ListenBacklog <var>backlog</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">保留状態のコネクションのキューの最大長</td></tr>
-<tr><td><a href="mod_so.html#loadfile">LoadFile <em>filename</em> [<em>filename</em>] ...</a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">指定されたオブジェクトファイルやライブラリをリンクする</td></tr>
-<tr class="odd"><td><a href="mod_so.html#loadmodule">LoadModule <em>module filename</em></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">オブジェクトファイルやライブラリをリンクし、使用モジュールの
+<tr><td><a href="mod_so.html#loadfile">LoadFile <em>filename</em> [<em>filename</em>] ...</a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">指定されたオブジェクトファイルやライブラリをリンクする</td></tr>
+<tr class="odd"><td><a href="mod_so.html#loadmodule">LoadModule <em>module filename</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">オブジェクトファイルやライブラリをリンクし、使用モジュールの
 リストに追加する</td></tr>
 <tr><td><a href="core.html#location">&lt;Location
     <var>URL-path</var>|<var>URL</var>&gt; ... &lt;/Location&gt;</a></td><td></td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">囲んだディレクティブをマッチする URL のみに適用</td></tr>
@@ -702,7 +702,9 @@ malicious privileges-aware code.</td></tr>
 stylesheets.</td></tr>
 <tr class="odd"><td><a href="mod_proxy_html.html#proxyhtmlcharsetout">ProxyHTMLCharsetOut <var>Charset | *</var></a></td><td></td><td>svd</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Specify a charset for mod_proxy_html output.</td></tr>
 <tr><td><a href="mod_proxy_html.html#proxyhtmldoctype">ProxyHTMLDocType <var>HTML|XHTML [Legacy]</var><br /><strong>OR</strong>
-<br />ProxyHTMLDocType <var>fpi [SGML|XML]</var></a></td><td></td><td>svd</td><td>B</td></tr><tr><td class="descr" colspan="4">Sets an HTML or XHTML document type declaration.</td></tr>
+<br />ProxyHTMLDocType <var>fpi [SGML|XML]</var><br /><strong>OR</strong>
+<br />ProxyHTMLDocType <var>html5</var><br /><strong>OR</strong>
+<br />ProxyHTMLDocType <var>auto</var></a></td><td> auto (2.5/trunk ver +</td><td>svd</td><td>B</td></tr><tr><td class="descr" colspan="4">Sets an HTML or XHTML document type declaration.</td></tr>
 <tr class="odd"><td><a href="mod_proxy_html.html#proxyhtmlenable">ProxyHTMLEnable <var>On|Off</var></a></td><td> Off </td><td>svd</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Turns the proxy_html filter on or off.</td></tr>
 <tr><td><a href="mod_proxy_html.html#proxyhtmlevents">ProxyHTMLEvents <var>attribute [attribute ...]</var></a></td><td></td><td>svd</td><td>B</td></tr><tr><td class="descr" colspan="4">Specify attributes to treat as scripting events.</td></tr>
 <tr class="odd"><td><a href="mod_proxy_html.html#proxyhtmlextended">ProxyHTMLExtended <var>On|Off</var></a></td><td> Off </td><td>svd</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Determines whether to fix links in inline scripts, stylesheets,
