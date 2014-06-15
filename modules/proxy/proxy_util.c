@@ -1907,11 +1907,7 @@ PROXY_DECLARE(int) ap_proxy_pre_request(proxy_worker **worker,
 
     access_status = proxy_run_pre_request(worker, balancer, r, conf, url);
     if (access_status == DECLINED && *balancer == NULL) {
-        const char *murl;
-        if ((murl = apr_table_get(r->notes, "auto")) == NULL) {
-            murl = *url;
-        }
-        *worker = ap_proxy_get_worker(r->pool, NULL, conf, murl);
+        *worker = ap_proxy_get_worker(r->pool, NULL, conf, *url);
         if (*worker) {
             ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
                           "%s: found worker %s for %s",
