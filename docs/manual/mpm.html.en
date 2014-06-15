@@ -149,6 +149,16 @@ two features.</p>
     updating the <code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code> directive
     for the MPM instead of by rebuilding the server.</p>
 
+    <pre class="prettyprint lang-config">LoadModule mpm_prefork_module modules/mod_mpm_prefork.so</pre>
+
+
+    <p>Attempting to <code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code>
+    more than one MPM will result in a startup failure with the
+    following error.</p>
+
+    <div class="example"><p><code>AH00534: httpd: Configuration error: More than one MPM
+    loaded.</code></p></div>
+
     <p>This feature is enabled using the
     <code>--enable-mpms-shared</code> option of the <code class="program"><a href="./programs/configure.html">configure</a></code>
     script.
