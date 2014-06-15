@@ -43,12 +43,12 @@ Body:----------en--
 Content-language: es
 Content-type: text/html
 Body:----------es--
-<!--#set var="TITLE" value="Servicio no disponible!" -->
+<!--#set var="TITLE" value="&iexcl;Servicio no disponible!" -->
 <!--#include virtual="include/top.html" -->
 
    Por el momento el servidor no puede atender su solicitud
    debido a que est&aacute; en mantenimiento o a que tiene
-   problemas de capacidad. Por favor intente nuevamente
+   problemas de capacidad. Por favor, int&eacute;ntelo de nuevo
    m&aacute;s tarde.
 
 <!--#include virtual="include/bottom.html" -->

@@ -40,11 +40,11 @@ Body:----------en--
 Content-language: es
 Content-type: text/html
 Body:----------es--
-<!--#set var="TITLE" value="Tiempo de espera excedido!" -->
+<!--#set var="TITLE" value="&iexcl;Tiempo de espera excedido!" -->
 <!--#include virtual="include/top.html" -->
 
-    El servidor cerr&oacute; la conecci&oacute;n de red
-    debido a que el buscador no termino la solicitud
+    El servidor ha cerrado la conexi&oacute;n de red
+    debido a que el navegador no termin&oacute; la solicitud
     dentro del tiempo permitido.
 
 <!--#include virtual="include/bottom.html" -->

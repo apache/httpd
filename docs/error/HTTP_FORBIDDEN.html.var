@@ -68,20 +68,20 @@ Body:----------en--
 Content-language: es
 Content-type: text/html
 Body:----------es--
-<!--#set var="TITLE" value="Acceso prohibido!" -->
+<!--#set var="TITLE" value="&iexcl;Acceso prohibido!" -->
 <!--#include virtual="include/top.html" -->
 
    <!--#if expr="v('REDIRECT_URL') =~ m:/$:" -->
 
-      Usted no tiene permiso para accesar al directorio solicitado.
+      Usted no tiene permiso para acceder al directorio solicitado.
       No existe un documento &iacute;ndice, o el directorio est&aacute;
       protegido contra lectura.
 
   <!--#else -->
 
-      Usted no tiene permiso de accesar al objeto solicitado.
-      El objeto est&aacute; protegido contra lectura, o no
-      puede ser leido por el servidor.
+      Usted no tiene permiso para acceder al objeto solicitado.
+      El objeto est&aacute; protegido contra lectura o
+      el servidor no puede leerlo.
 
   <!--#endif -->
 

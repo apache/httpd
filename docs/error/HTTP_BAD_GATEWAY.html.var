@@ -54,11 +54,11 @@ Body:----------en--
 Content-language: es
 Content-type: text/html
 Body:----------es--
-<!--#set var="TITLE" value="Puerta de enlace err&oacute;nea!" -->
+<!--#set var="TITLE" value="&iexcl;Puerta de enlace err&oacute;nea!" -->
 <!--#include virtual="include/top.html" -->
 
-    El servidor 'proxy' recibi&oacute; informaci&oacute;n
-    inv&aacute;lida del servidor solicitante.
+    El servidor 'proxy' ha recibido; informaci&oacute;n
+    no v&aacute;lida del servidor de origen.
 
    <!--#if expr="-n v('REDIRECT_ERROR_NOTES')" -->
 

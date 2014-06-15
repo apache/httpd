@@ -39,11 +39,10 @@ Body:----------en--
 Content-language: es
 Content-type: text/html
 Body:----------es--
-<!--#set var="TITLE" value="M&eacute;todo no permitido!" -->
+<!--#set var="TITLE" value="&iexcl;M&eacute;todo no permitido!" -->
 <!--#include virtual="include/top.html" -->
 
-    El m&eacute;todo <!--#echo encoding="none" var="REDIRECT_REQUEST_METHOD"-->
-    no est&aacute; permitido para el URL solicitado.
+    No se permite el m&eacute;todo <!--#echo encoding="none" var="REDIRECT_REQUEST_METHOD"-->  para la URL solicitadia.
 
 <!--#include virtual="include/bottom.html" -->
 ----------es--
