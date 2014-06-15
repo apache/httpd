@@ -217,10 +217,10 @@ on.</p>
 started, but there are many other things that you might need to know.
 
 <ul>
-<li><page href="http://httpd.apache.org/download.cgi">Download</page></li>
-<li><page href="install.html">Install</page></li>
-<li><page href="configuring.html">Configure</page>
-<li><page href="invoking.html">Start</page></li>
+<li><a href="http://httpd.apache.org/download.cgi">Download</a></li>
+<li><a href="install.html">Install</a></li>
+<li><a href="configuring.html">Configure</a>
+<li><a href="invoking.html">Start</a></li>
 <li><a href="http://wiki.apache.org/httpd/FAQ">Frequently Asked Questions</a></li>
 </ul>
 </ul>
