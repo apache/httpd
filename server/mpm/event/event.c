@@ -2453,9 +2453,9 @@ static void child_main(int child_num_arg)
             lr = mpm_listen[i];
             while(lr) {
                 apr_socket_close(lr->sd);
+                lr->active = 0;
                 lr = lr->next;
             }
-            mpm_listen[i]->active = 0;
             ap_mpm_podx_close(pod[i]);
         }
     }
