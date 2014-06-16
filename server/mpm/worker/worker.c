@@ -1241,9 +1241,9 @@ static void child_main(int child_num_arg)
             lr = mpm_listen[i];
             while(lr) {
                 apr_socket_close(lr->sd);
+                lr->active = 0;
                 lr = lr->next;
             }
-            mpm_listen[i]->active = 0;
             ap_mpm_podx_close(pod[i]);
         }
     }
@@ -1801,7 +1801,6 @@ static int worker_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     int remaining_children_to_start;
     apr_status_t rv;
     int i;
-    ap_listen_rec *lr;
 
     ap_log_pid(pconf, ap_pid_fname);
 

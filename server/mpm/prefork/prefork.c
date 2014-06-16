@@ -529,15 +529,15 @@ static void child_main(int child_num_arg)
     apr_pool_create(&ptrans, pchild);
     apr_pool_tag(ptrans, "transaction");
 
-/* close unused listeners and pods */
+    /* close unused listeners and pods */
     for (i = 0; i < num_buckets; i++) {
         if (i != bucket[my_child_num]) {
             lr = mpm_listen[i];
             while(lr) {
                 apr_socket_close(lr->sd);
+                lr->active = 0;
                 lr = lr->next;
             }
-            mpm_listen[i]->active = 0;
             ap_mpm_pod_close(pod[i]);
         }
     }
