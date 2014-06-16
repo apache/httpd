@@ -956,7 +956,6 @@ static int prefork_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     int remaining_children_to_start;
     apr_status_t rv;
     int i;
-    ap_listen_rec *lr;
 
     ap_log_pid(pconf, ap_pid_fname);
 
