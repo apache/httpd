@@ -874,6 +874,17 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
                                             proxy_conn_rec *conn,
                                             proxy_worker *worker,
                                             server_rec *s);
+
+/**
+ * Make a connection to a Unix Domain Socket (UDS) path
+ * @param sock     UDS to connect
+ * @param uds_path UDS path to connect to
+ * @param p        pool to make the sock addr
+ * @return         APR_SUCCESS or error status
+ */
+PROXY_DECLARE(apr_status_t) ap_proxy_connect_uds(apr_socket_t *sock,
+                                                 const char *uds_path,
+                                                 apr_pool_t *p);
 /**
  * Make a connection record for backend connection
  * @param proxy_function calling proxy scheme (http, ajp, ...)
