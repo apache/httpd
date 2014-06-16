@@ -479,18 +479,18 @@ static apr_status_t dispatch(proxy_conn_rec *conn, proxy_dir_conf *conf,
                 pfd.reqevents = APR_POLLIN; /* Done with input data */
 
                 /* signal EOF (empty FCGI_STDIN) */
-                    ap_fcgi_fill_in_header(&header, AP_FCGI_STDIN, request_id,
-                                           0, 0);
-                    ap_fcgi_header_to_array(&header, farray);
+                ap_fcgi_fill_in_header(&header, AP_FCGI_STDIN, request_id,
+                                       0, 0);
+                ap_fcgi_header_to_array(&header, farray);
 
-                    vec[0].iov_base = (void *)farray;
-                    vec[0].iov_len = sizeof(farray);
+                vec[0].iov_base = (void *)farray;
+                vec[0].iov_len = sizeof(farray);
 
-                    rv = send_data(conn, vec, 1, &len);
-                    if (rv != APR_SUCCESS) {
-                        *err = "sending empty stdin";
-                        break;
-                    }
+                rv = send_data(conn, vec, 1, &len);
+                if (rv != APR_SUCCESS) {
+                    *err = "sending empty stdin";
+                    break;
+                }
             }
         }
 
