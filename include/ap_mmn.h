@@ -461,6 +461,7 @@
                            Changes 3rd argument's type of
                            ap_mpm_register_socket_callback and 
                            ap_mpm_register_socket_callback_timeout.
+ * 20140611.1 (2.5.0-dev)  Add ap_proxy_connect_uds().
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
@@ -468,7 +469,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20140611
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 0                  /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 1                  /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_proxy: Don't limit the size of the connectable Unix Domain Socket
+     paths. [Christophe Jaillet, Yann Ylavic]
+
   *) mod_ssl: dump SSL IO/state for the write side of the connection(s),
      like reads (level TRACE4). [Yann Ylavic]
 
@@ -31,7 +34,7 @@ Changes with Apache 2.5.0
      PR 56286 [Micha Lenk <micha lenk info>]
 
   *) mod_proxy_fdpass: Fix computation of the size of 'struct sockaddr_un'
-     when passed to 'connec()'.
+     when passed to 'connect()'.
      [Graham Dumpleton <grahamd apache org>]
 
   *) mod_socache_shmcb: Correct counting of expirations for status display.
