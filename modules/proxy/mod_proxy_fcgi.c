@@ -478,7 +478,7 @@ static apr_status_t dispatch(proxy_conn_rec *conn, proxy_dir_conf *conf,
             if (last_stdin) {
                 pfd.reqevents = APR_POLLIN; /* Done with input data */
 
-                if (writebuflen) { /* empty AP_FCGI_STDIN not already sent? */
+                /* signal EOF (empty FCGI_STDIN) */
                     ap_fcgi_fill_in_header(&header, AP_FCGI_STDIN, request_id,
                                            0, 0);
                     ap_fcgi_header_to_array(&header, farray);
@@ -491,7 +491,6 @@ static apr_status_t dispatch(proxy_conn_rec *conn, proxy_dir_conf *conf,
                         *err = "sending empty stdin";
                         break;
                     }
-                }
             }
         }
 
