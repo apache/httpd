@@ -100,10 +100,10 @@ RELEASE SHOWSTOPPERS:
      in 2.4.x branch after 2.4.9), repair lost error condition
      trunk: http://svn.apache.org/r1603027
             http://svn.apache.org/r1603029
-            http://svn.apache.org/1603122
+            http://svn.apache.org/r1603122
      2.4.x: http://people.apache.org/~trawick/r1603027_plus_r1603029_plus_r1603122.txt
             (the patch file resolves a small intersection with r1592032)
-     +1: trawick
+     +1: trawick, ylavic
      ylavic: what's the point with r1592032 (does not seem to be related, at
      least fixing the above)?
      trawick: the patch resolves a conflict when merging these revisions
@@ -293,7 +293,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                      condition was forgotten
      trunk patch: http://svn.apache.org/r1592032
      2.4.x patch: trunk patch works
-     +1: trawick
+     +1: trawick, ylavic
      ylavic: with r1603122?
      trawick: I added r1603122 to the fix-regression proposal at the top.
               r1592032 does fix an old bug similar to what you fixed in 
