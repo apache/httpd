@@ -96,6 +96,13 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
+   * mod_proxy_fcgi: Repair sending empty stdin after r1601749 (i.e., regression
+     in 2.4.x branch after 2.4.9)
+     trunk: http://svn.apache.org/r1603027
+            http://svn.apache.org/r1603029
+     2.4.x: http://people.apache.org/~trawick/r1603027_plus_r1603029.txt
+            (patch not needed if/when r1592032, proposed below, is approved)
+     +1: trawick
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
