@@ -713,7 +713,7 @@ static int cache_save_store(ap_filter_t *f, apr_bucket_brigade *in,
         rv = cache->provider->store_body(cache->handle, f->r, in, cache->out);
         if (rv != APR_SUCCESS) {
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, f->r, APLOGNO(00765)
-                    "cache: Cache provider's store_body failed!");
+                    "cache: Cache provider's store_body failed for URI %s", f->r->uri);
             ap_remove_output_filter(f);
 
             /* give someone else the chance to cache the file */
@@ -2083,8 +2083,7 @@ static const char *set_cache_quick_handler(cmd_parms *parms, void *dummy,
     cache_server_conf *conf;
 
     conf =
-        (cache_server_conf *)ap_get_module_config(parms->server->module_config
-,
+        (cache_server_conf *)ap_get_module_config(parms->server->module_config,
                                                   &cache_module);
     conf->quick = flag;
     conf->quick_set = 1;

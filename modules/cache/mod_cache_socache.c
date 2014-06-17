@@ -919,7 +919,7 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r,
     if (sobj->headers_in) {
         if (APR_SUCCESS != store_table(sobj->headers_in, sobj->buffer,
                 sobj->buffer_len, &slider)) {
-            ap_log_rerror(APLOG_MARK, APLOG_WARNING, rv, r, APLOGNO(02376)
+            ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(02376)
                     "in-headers didn't fit in buffer %s",
                     sobj->key);
             apr_pool_destroy(sobj->pool);
@@ -1239,10 +1239,11 @@ static void *create_config(apr_pool_t *p, server_rec *s)
 
 static void *merge_config(apr_pool_t *p, void *basev, void *overridesv)
 {
-    cache_socache_conf *ps = apr_pcalloc(p, sizeof(cache_socache_conf));
+    cache_socache_conf *ps;
     cache_socache_conf *base = (cache_socache_conf *) basev;
     cache_socache_conf *overrides = (cache_socache_conf *) overridesv;
 
+    /* socache server config only has one field */
     ps = overrides ? overrides : base;
 
     return ps;

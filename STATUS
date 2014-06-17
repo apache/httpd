@@ -100,26 +100,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * Easy patches - synch with trunk
-        core: avoid a double apr_time_now() call on the first succeeding read.
-        mod_proxy_balancer: Correctly escape user provided data.
-        mod_usertrack: Save a few bytes of memory. This can be done in temp_pool
-        mod_cache: Fix layout
-        mod_cache_socache: Don't pass uninitialized rv passed to ap_log_rerror()
-                           Stop throwing away a pointer on the heap
-        mod_cache: add the URI to DEBUG message 00765
-        heartbeat: Doxygen fix + reorg to match how other header files are built
-     trunk patch:
-        http://svn.apache.org/r1572905
-        http://svn.apache.org/r1595305
-        http://svn.apache.org/r1597182
-        http://svn.apache.org/r1586827
-        http://svn.apache.org/r1534892
-        http://svn.apache.org/r1563193
-        http://svn.apache.org/r1597639
-     2.4.x patch:  http://people.apache.org/~jailletc36/backport8.patch
-     +1: jailletc36, ylavic, jim
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
