@@ -1,6 +1,16 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_deflate: Don't fail when flushing inflated data to the user-agent
+     and that coincides with the end of stream ("Zlib error flushing inflate
+     buffer"). PR 56196. [Christoph Fausak <christoph fausak glueckkanja.com>]
+
+  *) mod_deflate: Fix inflation of files larger than 4GB. PR 56062.
+     [Lukas Bezdicka <social v3.sk>]
+
+  *) mod_deflate: Handle Zlib header and validation bytes received in multiple
+     chunks. PR 46146. [Yann Ylavic]
+
   *) mod_proxy: Don't limit the size of the connectable Unix Domain Socket
      paths. [Christophe Jaillet, Yann Ylavic]
 
