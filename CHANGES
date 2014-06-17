@@ -47,12 +47,6 @@ Changes with Apache 2.5.0
      when passed to 'connect()'.
      [Graham Dumpleton <grahamd apache org>]
 
-  *) mod_socache_shmcb: Correct counting of expirations for status display.
-     Expirations happening during retrieval were not counted. [Rainer Jung]
-
-  *) mod_proxy_balancer: Correctly encode user provided data in management
-     interface. PR 56532 [Maksymilian, <max cert.cx>]
-
   *) core: Add ap_mpm_resume_suspended() API to allow a suspended connection
      to resume. PR56333 
      [Artem <artemciy gmail.com>, Edward Lu <Chaosed0 gmail.com>]
@@ -64,12 +58,6 @@ Changes with Apache 2.5.0
 
   *) mod_proxy_fcgi: Fix occasional high CPU when handling request bodies.
      [Jeff Trawick]
-
-  *) mod_cache: Preserve non-cacheable headers forwarded from an origin 304
-     response. PR 55547. [Yann Ylavic]
-
-  *) mod_cache: Don't add cached/revalidated entity headers to a 304 response.
-     PR 55547. [Yann Ylavic]
 
   *) mod_authnz_ldap: Fail explicitly when the filter is too long. Remove
      unnecessary apr_pstrdup() and strlen(). [Graham Leggett]
@@ -149,12 +137,6 @@ Changes with Apache 2.5.0
   *) Add HttpContentLengthHeadZero and HttpExpectStrict directives.
      [Yehuda Sadeh <yehuda inktank com>, Justin Erenkrantz]
 
-  *) FreeBSD: Disable IPv4-mapped listening sockets by default for versions
-     5+ instead of just for FreeBSD 5. PR 53824. [Jeff Trawick]
-
-  *) mod_auth_form: Add a debug message when the fields on a form are not
-     recognised. [Graham Leggett]
-
   *) mod_ssl: Add -t -DDUMP_CA_CERTS option which dumps the filenames of all
      configured SSL CA certificates to stdout the same way as DUMP_CERTS does.
      [Jan Kaluza]
@@ -168,9 +150,6 @@ Changes with Apache 2.5.0
   *) mod_cgid: Use the servers Timeout for each read from a CGI script,
      allow override with new CGIDRequestTimeout directive. PR43494
      [Eric Covener, Toshikuni Fukaya <toshikuni-fukaya cybozu co jp>]
-
-  *) core: Add missing Reason-Phrase in HTTP response headers.
-     PR 54946. [Rainer Jung]
 
   *) core: ensure any abnormal exit is reported to stderr if it's a tty.
      PR 55670 [Nick Kew]
@@ -193,10 +172,6 @@ Changes with Apache 2.5.0
 
   *) core: Add ap_errorlog_provider to make ErrorLog logging modular. Move
      syslog support from core to new mod_syslog. [Jan Kaluza]
-
-  *) WinNT MPM: If ap_run_pre_connection() fails or sets c->aborted, don't
-     save the socket for reuse by the next worker as if it were an 
-     APR_SO_DISCONNECTED socket. Restores 2.2 behavior. [Eric Covener]
 
   *) mod_status, mod_echo: Fix the display of client addresses.
      They were truncated to 31 characters which is not enough for IPv6 addresses.
@@ -251,11 +226,6 @@ Changes with Apache 2.5.0
   *) mod_dav: mod_dav overrides dav_fs response on PUT failure. PR 35981
      [Basant Kumar Kukreja <basant.kukreja sun.com>, Alejandro Alvarez
      <alejandro.alvarez.ayllon cern.ch>]
-
-  *) core, mod_ssl: Enable the ability for a module to reverse the sense of
-     a poll event from a read to a write or vice versa. This is a step on
-     the way to allow mod_ssl taking full advantage of the event MPM.
-     [Graham Leggett]
 
   *) mod_ldap: LDAP connections used for authentication were not respecting
      LDAPConnectionPoolTimeout.  PR 54587
