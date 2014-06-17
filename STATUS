@@ -103,6 +103,8 @@ RELEASE SHOWSTOPPERS:
      2.4.x: http://people.apache.org/~trawick/r1603027_plus_r1603029.txt
             (patch not needed if/when r1592032, proposed below, is approved)
      +1: trawick
+     ylavic: what's the point with r1592032 (does not seem to be related, at
+     least fixing the above)?
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
@@ -287,7 +289,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * mod_proxy_fcgi: better error messages
      trunk patch: http://svn.apache.org/r1592032
      2.4.x patch: trunk patch works
-     +1: trawick, ylavic
+     +1: trawick
+     ylavic: with r1603122?
 
 OTHER PROPOSALS
 
