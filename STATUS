@@ -258,13 +258,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * mod_proxy_fcgi: better error messages, and fix an old bug where the error
                      condition was forgotten
      trunk patch: http://svn.apache.org/r1592032
-     2.4.x patch: trunk patch works
+     2.4.x patch: http://people.apache.org/~trawick/r1592032.txt
      +1: trawick, ylavic
-     ylavic: with r1603122?
-     trawick: I added r1603122 to the fix-regression proposal at the top.
-              r1592032 does fix an old bug similar to what you fixed in 
-              r1603122, but I think that r1603122 should be grouped with
-              the other follow-ups to r1601749.  (BTW, thanks!!!)
 
 OTHER PROPOSALS
 
