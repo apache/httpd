@@ -224,12 +224,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic
 
-   * mod_proxy_fdpass: Fix computation of the size of 'struct sockaddr_un'
-                       when passed to 'connec()'.
-                       [Graham Dumpleton <grahamd apache org>]
+   * mod_proxy: Don't limit the size of the connectable Unix Domain Socket paths.
+                [Graham Dumpleton, Christophe Jaillet, Yann Ylavic]
      trunk patch: http://svn.apache.org/r1598946
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: jailletc36
+                  http://svn.apache.org/r1602989
+     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-ap_proxy_connect_uds.patch
+                  (modulo CHANGES/MMN)
+     +1: ylavic
 
    * core: factor out DEFAULT_HANDLER_NAME
      trunk patch: http://svn.apache.org/r1496709
@@ -286,7 +287,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * mod_proxy_fcgi: better error messages
      trunk patch: http://svn.apache.org/r1592032
      2.4.x patch: trunk patch works
-     +1: trawick
+     +1: trawick, ylavic
 
 OTHER PROPOSALS
 
