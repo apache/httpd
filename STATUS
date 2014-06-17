@@ -103,7 +103,7 @@ RELEASE SHOWSTOPPERS:
             http://svn.apache.org/r1603122
      2.4.x: http://people.apache.org/~trawick/r1603027_plus_r1603029_plus_r1603122.txt
             (the patch file resolves a small intersection with r1592032)
-     +1: trawick, ylavic
+     +1: trawick, ylavic, jim
      ylavic: what's the point with r1592032 (does not seem to be related, at
      least fixing the above)?
      trawick: the patch resolves a conflict when merging these revisions
@@ -148,10 +148,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   https://svn.apache.org/r1587639
                   https://svn.apache.org/r1590509
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-mod_deflate_reentrant.patch
-     +1: ylavic
+     +1: ylavic, jim
      ylavic: does not depend on r1572092 above or r1572896 and al below,
              these proposals can be backported in any order.
-     -0: jim (having a hard time applying all the above w/o conflicts)
      ylavic: I don't have any conflict here but with r1586745 regarding
              docs/log-message-tags. BTW 2.4.x patch provided above.
 
@@ -261,7 +260,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/r1563193
         http://svn.apache.org/r1597639
      2.4.x patch:  http://people.apache.org/~jailletc36/backport8.patch
-     +1: jailletc36, ylavic
+     +1: jailletc36, ylavic, jim
 
    * ab: support custom HTTP method with -m argument. PR 56604.
      trunk patch: http://svn.apache.org/r1601076
