@@ -116,6 +116,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Submitted by: [Lukas Bezdicka <social v3 sk>]
      Committed by: jkaluza
      trunk patch: http://svn.apache.org/r1572092
+     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-mod_deflate_4GB.patch
+                  (modulo CHANGES, added lately from r1603156)
      2.4.x patch: trunk works
      +1: ylavic, jkaluza
      ylavic: does not depend on r1572655 and al or r1572896 and al below,
@@ -134,7 +136,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   https://svn.apache.org/r1587594
                   https://svn.apache.org/r1587639
                   https://svn.apache.org/r1590509
-     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-mod_deflate_reentrant.patch
+     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-mod_deflate_reentrant_with_CHANGES.patch
+                  (modulo CHANGES, added lately from r1603156)
      +1: ylavic, jim
      ylavic: does not depend on r1572092 above or r1572896 and al below,
              these proposals can be backported in any order.
@@ -148,7 +151,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1572911
      Submitted by: [Christoph Fausak <christoph fausak glueckkanja com>]
      Committed by: ylavic
-     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-mod_cache-flush_end_of_stream.patch
+     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-mod_deflate-flush_end_of_stream.patch
+                  (modulo CHANGES, added lately from r1603156)
      +1: ylavic
      ylavic: does not depend on r1572092 or r1572655 and al above,
              these proposals can be backported in any order.
