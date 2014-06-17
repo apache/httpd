@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 
 Changes with Apache 2.4.10
+  *) mod_proxy_balancer: Correctly encode user provided data in management
+     interface. PR 56532 [Maksymilian, <max cert.cx>]
 
   *) mod_proxy_fcgi: Support iobuffersize parameter.  [Jeff Trawick]
 

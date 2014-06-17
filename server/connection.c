@@ -141,7 +141,7 @@ AP_DECLARE(void) ap_lingering_close(conn_rec *c)
 {
     char dummybuf[512];
     apr_size_t nbytes;
-    apr_time_t timeup = 0;
+    apr_time_t now, timeup = 0;
     apr_socket_t *csd = ap_get_conn_socket(c);
 
     if (ap_start_lingering_close(c)) {
@@ -165,6 +165,7 @@ AP_DECLARE(void) ap_lingering_close(conn_rec *c)
         if (apr_socket_recv(csd, dummybuf, &nbytes) || nbytes == 0)
             break;
 
+        now = apr_time_now();
         if (timeup == 0) {
             /*
              * First time through;
@@ -175,14 +176,14 @@ AP_DECLARE(void) ap_lingering_close(conn_rec *c)
              * DoS attacks.
              */
             if (apr_table_get(c->notes, "short-lingering-close")) {
-                timeup = apr_time_now() + apr_time_from_sec(SECONDS_TO_LINGER);
+                timeup = now + apr_time_from_sec(SECONDS_TO_LINGER);
             }
             else {
-                timeup = apr_time_now() + apr_time_from_sec(MAX_SECS_TO_LINGER);
+                timeup = now + apr_time_from_sec(MAX_SECS_TO_LINGER);
             }
             continue;
         }
-    } while (apr_time_now() < timeup);
+    } while (now < timeup);
 
     apr_socket_close(csd);
     return;
