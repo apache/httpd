@@ -474,6 +474,9 @@ static apr_status_t dispatch(proxy_conn_rec *conn, proxy_dir_conf *conf,
                 to_send -= write_this_time;
                 iobuf_cursor += write_this_time;
             }
+            if (rv != APR_SUCCESS) {
+                break;
+            }
 
             if (last_stdin) {
                 pfd.reqevents = APR_POLLIN; /* Done with input data */
