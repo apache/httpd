@@ -40,9 +40,9 @@ typedef struct {
     ap_expr_info_t *fakeuser;
     ap_expr_info_t *fakepass;
     const char *use_digest_algorithm;
-    int fake_set:1;
-    int use_digest_algorithm_set:1;
-    int authoritative_set:1;
+    unsigned int fake_set:1,
+                 use_digest_algorithm_set:1,
+                 authoritative_set:1;
 } auth_basic_config_rec;
 
 static void *create_auth_basic_dir_config(apr_pool_t *p, char *d)
