@@ -100,6 +100,13 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * mod_proxy: Allow reverse-proxy to be set via explicit handler.
+     Submitted by: [ryo takatsuki <ryotakatsuki gmail com>]
+     Committed by: jim
+     trunk patch: http://svn.apache.org/r1573626
+     2.4.x patch: trunk works
+     +1: ylavic, jim, mrumph
+     mrumph: Verified on Linux with mod_proxy_fcgi and PHP FPM.
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -188,13 +195,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: minfrin, covener
      jailletc36: When merged, a compatibility note should be added in the doc stating when
                  the none keyword has been added
-
-   * mod_proxy: Allow reverse-proxy to be set via explicit handler.
-     Submitted by: [ryo takatsuki <ryotakatsuki gmail com>]
-     Committed by: jim
-     trunk patch: http://svn.apache.org/r1573626
-     2.4.x patch: trunk works
-     +1: ylavic, jim
 
    * mod_proxy_http: Avoid (unlikely) access to freed memory.
      trunk patch: http://svn.apache.org/r1599486
