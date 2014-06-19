@@ -77,7 +77,7 @@ typedef struct http_filter_ctx
         BODY_CHUNK_END, /* chunk terminating CRLF */
         BODY_CHUNK_TRAILER /* trailers */
     } state :3;
-    int eos_sent :1;
+    unsigned int eos_sent :1;
 } http_ctx_t;
 
 /**
