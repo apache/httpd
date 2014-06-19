@@ -53,22 +53,17 @@ APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(ssl, SSL, int, init_server,
  */
 static DH *make_dh_params(BIGNUM *(*prime)(BIGNUM *), const char *gen)
 {
-    DH *dh = NULL;
-    DH *dh_tmp;
+    DH *dh = DH_new();
 
-    if (dh) {
-        return dh;
-    }
-    if (!(dh_tmp = DH_new())) {
+    if (!dh) {
         return NULL;
     }
-    dh_tmp->p = prime(NULL);
-    BN_dec2bn(&dh_tmp->g, gen);
-    if (!dh_tmp->p || !dh_tmp->g) {
-        DH_free(dh_tmp);
+    dh->p = prime(NULL);
+    BN_dec2bn(&dh->g, gen);
+    if (!dh->p || !dh->g) {
+        DH_free(dh);
         return NULL;
     }
-    dh = dh_tmp;
     return dh;
 }
 
@@ -87,6 +82,9 @@ static void init_dh_params(void)
 
 static void free_dh_params(void)
 {
+    /* DH_free() is a noop for a NULL parameter, so these are harmless
+     * in the (unexpected) case where these variables are already
+     * NULL. */
     DH_free(dhparam1024);
     DH_free(dhparam2048);
     DH_free(dhparam3072);
