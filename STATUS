@@ -100,19 +100,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_deflate: Fix decompression of files larger than 4GB. According to RFC1952,
-                  Input SIZE contains the size of the original input data modulo 2^32.
-                  PR 56062.
-     Submitted by: [Lukas Bezdicka <social v3 sk>]
-     Committed by: jkaluza
-     trunk patch: http://svn.apache.org/r1572092
-     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-mod_deflate_4GB.patch
-                  (modulo CHANGES, added lately from r1603156)
-     2.4.x patch: trunk works
-     +1: ylavic, jkaluza, covener
-     ylavic: does not depend on r1572655 and al or r1572896 and al below,
-             these proposals can be backported in any order.
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
