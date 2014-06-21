@@ -113,28 +113,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      ylavic: does not depend on r1572655 and al or r1572896 and al below,
              these proposals can be backported in any order.
 
-   * mod_deflate: Fix reentrance in output and input filters (buffering of
-                  incomplete Zlib header or validation bytes). PR 46146.
-     trunk patch: https://svn.apache.org/r1572655
-                  https://svn.apache.org/r1572663
-                  https://svn.apache.org/r1572668
-                  https://svn.apache.org/r1572669
-                  https://svn.apache.org/r1572670
-                  https://svn.apache.org/r1572671
-                  https://svn.apache.org/r1573224
-                  https://svn.apache.org/r1586745
-                  https://svn.apache.org/r1587594
-                  https://svn.apache.org/r1587639
-                  https://svn.apache.org/r1590509
-     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-mod_deflate_reentrant_with_CHANGES.patch
-                  + r1604353 for trivial comment fix
-                  (modulo CHANGES, added lately from r1603156)
-     +1: ylavic, jim, covener
-     ylavic: does not depend on r1572092 above or r1572896 and al below,
-             these proposals can be backported in any order.
-     ylavic: I don't have any conflict here but with r1586745 regarding
-             docs/log-message-tags. BTW 2.4.x patch provided above.
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
