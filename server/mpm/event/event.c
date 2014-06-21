@@ -845,6 +845,7 @@ static int start_lingering_close_common(event_conn_state_t *cs)
             cs->pub.sense == CONN_SENSE_WANT_WRITE ? APR_POLLOUT :
                     APR_POLLIN) | APR_POLLHUP | APR_POLLERR;
     cs->pub.sense = CONN_SENSE_DEFAULT;
+    cs->c->sbh = NULL;
     rv = apr_pollset_add(event_pollset, &cs->pfd);
     apr_thread_mutex_unlock(timeout_mutex);
     if (rv != APR_SUCCESS && !APR_STATUS_IS_EEXIST(rv)) {
@@ -1130,11 +1131,8 @@ read_request:
     }
 
     if (cs->pub.state == CONN_STATE_LINGER) {
-        if (!start_lingering_close_blocking(cs)) {
-            c->sbh = NULL;
-            notify_suspend(cs);
-            return;
-        }
+        start_lingering_close_blocking(cs);
+        notify_suspend(cs);
     }
     else if (cs->pub.state == CONN_STATE_CHECK_REQUEST_LINE_READABLE) {
         /* It greatly simplifies the logic to use a single timeout value here
@@ -1162,21 +1160,13 @@ read_request:
                          "process_socket: apr_pollset_add failure");
             AP_DEBUG_ASSERT(rc == APR_SUCCESS);
         }
-        return;
     }
     else if (cs->pub.state == CONN_STATE_SUSPENDED) {
         cs->c->suspended_baton = cs;
         apr_atomic_inc32(&suspended_count);
+        c->sbh = NULL;
+        notify_suspend(cs);
     }
-    /*
-     * Prevent this connection from writing to our connection state after it
-     * is no longer associated with this thread. This would happen if the EOR
-     * bucket is destroyed from the listener thread due to a connection abort
-     * or timeout.
-     */
-    c->sbh = NULL;
-    notify_suspend(cs);
-    return;
 }
 
 /* Put a SUSPENDED connection back into a queue. */
