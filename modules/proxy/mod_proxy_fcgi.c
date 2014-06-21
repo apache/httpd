@@ -383,7 +383,8 @@ static int handle_headers(request_rec *r,
 
 static apr_status_t dispatch(proxy_conn_rec *conn, proxy_dir_conf *conf,
                              request_rec *r, apr_pool_t *setaside_pool,
-                             apr_uint16_t request_id)
+                             apr_uint16_t request_id,
+                             const char **err)
 {
     apr_bucket_brigade *ib, *ob;
     int seen_end_of_headers = 0, done = 0;
@@ -399,6 +400,7 @@ static apr_status_t dispatch(proxy_conn_rec *conn, proxy_dir_conf *conf,
     apr_size_t iobuf_size = AP_IOBUFSIZE;
     char *iobuf = stack_iobuf;
 
+    *err = NULL;
     if (conn->worker->s->io_buffer_size_set) {
         iobuf_size = conn->worker->s->io_buffer_size;
         iobuf = apr_palloc(r->pool, iobuf_size);
@@ -426,6 +428,7 @@ static apr_status_t dispatch(proxy_conn_rec *conn, proxy_dir_conf *conf,
             if (APR_STATUS_IS_EINTR(rv)) {
                 continue;
             }
+            *err = "polling";
             break;
         }
 
@@ -438,6 +441,7 @@ static apr_status_t dispatch(proxy_conn_rec *conn, proxy_dir_conf *conf,
                                 AP_MODE_READBYTES, APR_BLOCK_READ,
                                 iobuf_size);
             if (rv != APR_SUCCESS) {
+                *err = "reading input brigade";
                 break;
             }
 
@@ -452,6 +456,7 @@ static apr_status_t dispatch(proxy_conn_rec *conn, proxy_dir_conf *conf,
             apr_brigade_cleanup(ib);
 
             if (rv != APR_SUCCESS) {
+                *err = "flattening brigade";
                 break;
             }
 
@@ -479,6 +484,7 @@ static apr_status_t dispatch(proxy_conn_rec *conn, proxy_dir_conf *conf,
 
                 rv = send_data(conn, vec, nvec, &len, 0);
                 if (rv != APR_SUCCESS) {
+                    *err = "sending stdin";
                     break;
                 }
 
@@ -501,6 +507,10 @@ static apr_status_t dispatch(proxy_conn_rec *conn, proxy_dir_conf *conf,
                 vec[0].iov_len = sizeof(farray);
 
                 rv = send_data(conn, vec, 1, &len, 1);
+                if (rv != APR_SUCCESS) {
+                    *err = "sending empty stdin";
+                    break;
+                }
             }
         }
 
@@ -555,6 +565,7 @@ recv_again:
             if (readbuflen != 0) {
                 rv = get_data(conn, iobuf, &readbuflen);
                 if (rv != APR_SUCCESS) {
+                    *err = "reading response body";
                     break;
                 }
             }
@@ -612,6 +623,7 @@ recv_again:
                                  */
                                 rv = ap_pass_brigade(r->output_filters, ob);
                                 if (rv != APR_SUCCESS) {
+                                    *err = "passing brigade to output filters";
                                     break;
                                 }
                             }
@@ -636,6 +648,7 @@ recv_again:
                         if (script_error_status == HTTP_OK) {
                             rv = ap_pass_brigade(r->output_filters, ob);
                             if (rv != APR_SUCCESS) {
+                                *err = "passing brigade to output filters";
                                 break;
                             }
                         }
@@ -656,6 +669,7 @@ recv_again:
                         APR_BRIGADE_INSERT_TAIL(ob, b);
                         rv = ap_pass_brigade(r->output_filters, ob);
                         if (rv != APR_SUCCESS) {
+                            *err = "passing brigade to output filters";
                             break;
                         }
                     }
@@ -726,6 +740,7 @@ static int fcgi_do_request(apr_pool_t *p, request_rec *r,
     apr_uint16_t request_id = 1;
     apr_status_t rv;
     apr_pool_t *temp_pool;
+    const char *err;
 
     /* Step 1: Send AP_FCGI_BEGIN_REQUEST */
     rv = send_begin_request(conn, request_id);
@@ -748,10 +763,14 @@ static int fcgi_do_request(apr_pool_t *p, request_rec *r,
     }
 
     /* Step 3: Read records from the back end server and handle them. */
-    rv = dispatch(conn, conf, r, temp_pool, request_id);
+    rv = dispatch(conn, conf, r, temp_pool, request_id, &err);
     if (rv != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01075)
-                      "Error dispatching request to %s:", server_portstr);
+                      "Error dispatching request to %s: %s%s%s",
+                      server_portstr,
+                      err ? "(" : "",
+                      err ? err : "",
+                      err ? ")" : "");
         conn->close = 1;
         return HTTP_SERVICE_UNAVAILABLE;
     }
