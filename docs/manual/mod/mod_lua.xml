@@ -1629,16 +1629,18 @@ end
 <directivesynopsis>
 <name>LuaHookCheckUserID</name>
 <description>Provide a hook for the check_user_id phase of request processing</description>
-<syntax>LuaHookCheckUserID  /path/to/lua/script.lua hook_function_name [early|late]</syntax>
+<syntax>LuaHookCheckUserID  /path/to/lua/script.lua hook_function_name</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>All</override>
+<!-- Third argument does not work at the moment!
 <compatibility>The optional third argument is supported in 2.3.15 and later</compatibility>
 <usage><p>...</p>
    <note><title>Ordering</title><p>The optional arguments "early" or "late" 
    control when this script runs relative to other modules.</p></note>
 </usage>
+-->
 </directivesynopsis>
 
 <directivesynopsis>
