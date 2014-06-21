@@ -2,8 +2,8 @@
 Changes with Apache 2.5.0
 
   *) event MPM: Fix possible crashes (third party modules accessing c->sbh)
-     or occasional missed mod_status updates for some initial requests
-     on a connection under load. PR 56639.[Edward Lu <Chaosed0 gmail.com>]
+     or occasional missed mod_status updates under load. 
+     PR 56639.[Edward Lu <Chaosed0 gmail.com>]
   
   *) mod_deflate: Don't fail when flushing inflated data to the user-agent
      and that coincides with the end of stream ("Zlib error flushing inflate
