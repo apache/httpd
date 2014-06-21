@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 
 Changes with Apache 2.4.10
+
+  *) ab: support custom HTTP method with -m argument. PR 56604.
+     [Roman Jurkov <winfinit gmail.com>]
+
   *) mod_proxy_balancer: Correctly encode user provided data in management
      interface. PR 56532 [Maksymilian, <max cert.cx>]
 
