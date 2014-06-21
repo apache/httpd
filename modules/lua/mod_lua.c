@@ -1338,7 +1338,7 @@ static const char *register_check_user_id_hook(cmd_parms *cmd, void *_cfg,
                                                const char *when)
 {
     int apr_hook_when = APR_HOOK_MIDDLE;
-
+/* XXX: This does not currently work!!
     if (when) {
         if (!strcasecmp(when, "early")) {
             apr_hook_when = AP_LUA_HOOK_FIRST;
@@ -1350,7 +1350,7 @@ static const char *register_check_user_id_hook(cmd_parms *cmd, void *_cfg,
             return "Third argument must be 'early' or 'late'";
         }
     }
-
+*/
     return register_named_file_function_hook("check_user_id", cmd, _cfg, file,
                                              function, apr_hook_when);
 }
@@ -2093,13 +2093,16 @@ static void lua_register_hooks(apr_pool_t *p)
     ap_hook_map_to_storage(lua_map_to_storage_harness, NULL, NULL,
                            APR_HOOK_MIDDLE);
 
-    ap_hook_check_user_id(lua_check_user_id_harness_first, NULL, NULL,
+/*  XXX: Does not work :(  
+ *  ap_hook_check_user_id(lua_check_user_id_harness_first, NULL, NULL,
                           AP_LUA_HOOK_FIRST);
+ */
     ap_hook_check_user_id(lua_check_user_id_harness, NULL, NULL,
                            APR_HOOK_MIDDLE);
-    ap_hook_check_user_id(lua_check_user_id_harness_last, NULL, NULL,
+/*  XXX: Does not work :(
+ * ap_hook_check_user_id(lua_check_user_id_harness_last, NULL, NULL,
                           AP_LUA_HOOK_LAST);
-
+*/
     ap_hook_type_checker(lua_type_checker_harness, NULL, NULL,
                          APR_HOOK_MIDDLE);
 
