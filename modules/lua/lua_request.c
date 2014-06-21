@@ -32,7 +32,8 @@
 #define APR_WANT_BYTEFUNC
 #include "apr_want.h"
 
-extern apr_thread_mutex_t* lua_ivm_mutex;
+extern apr_global_mutex_t* lua_ivm_mutex;
+extern apr_shm_t *lua_ivm_shm;
 
 APLOG_USE_MODULE(lua);
 #define POST_MAX_VARS 500
@@ -298,6 +299,8 @@ static apr_status_t lua_write_body(request_rec *r, apr_file_t *file, apr_off_t *
                                      &written);
             if (written != rsize || rc != OK)
                 return APR_ENOSPC;
+            if (rc != APR_SUCCESS)
+                return rc;
             rpos += rsize;
         }
     }
@@ -659,45 +662,45 @@ static int req_assbackwards_field(request_rec *r)
     return r->assbackwards;
 }
 
-static req_table_t* req_headers_in(request_rec *r)
+static req_table_t *req_headers_in(request_rec *r)
 {
-  req_table_t* t = apr_palloc(r->pool, sizeof(req_table_t));
+  req_table_t *t = apr_palloc(r->pool, sizeof(req_table_t));
   t->r = r;
   t->t = r->headers_in;
   t->n = "headers_in";
   return t;
 }
 
-static req_table_t* req_headers_out(request_rec *r)
+static req_table_t *req_headers_out(request_rec *r)
 {
-  req_table_t* t = apr_palloc(r->pool, sizeof(req_table_t));
+  req_table_t *t = apr_palloc(r->pool, sizeof(req_table_t));
   t->r = r;
   t->t = r->headers_out;
   t->n = "headers_out";
   return t;
 }
 
-static req_table_t* req_err_headers_out(request_rec *r)
+static req_table_t *req_err_headers_out(request_rec *r)
 {
-  req_table_t* t = apr_palloc(r->pool, sizeof(req_table_t));
+  req_table_t *t = apr_palloc(r->pool, sizeof(req_table_t));
   t->r = r;
   t->t = r->err_headers_out;
   t->n = "err_headers_out";
   return t;
 }
 
-static req_table_t* req_subprocess_env(request_rec *r)
+static req_table_t *req_subprocess_env(request_rec *r)
 {
-  req_table_t* t = apr_palloc(r->pool, sizeof(req_table_t));
+  req_table_t *t = apr_palloc(r->pool, sizeof(req_table_t));
   t->r = r;
   t->t = r->subprocess_env;
   t->n = "subprocess_env";
   return t;
 }
 
-static req_table_t* req_notes(request_rec *r)
+static req_table_t *req_notes(request_rec *r)
 {
-  req_table_t* t = apr_palloc(r->pool, sizeof(req_table_t));
+  req_table_t *t = apr_palloc(r->pool, sizeof(req_table_t));
   t->r = r;
   t->t = r->notes;
   t->n = "notes";
@@ -1928,21 +1931,23 @@ static int req_debug(lua_State *L)
 static int lua_ivm_get(lua_State *L) 
 {
     const char *key, *raw_key;
+    apr_pool_t *pool;
     lua_ivm_object *object = NULL;
     request_rec *r = ap_lua_check_request_rec(L, 1);
     key = luaL_checkstring(L, 2);
     raw_key = apr_pstrcat(r->pool, "lua_ivm_", key, NULL);
-    apr_thread_mutex_lock(lua_ivm_mutex);
-    apr_pool_userdata_get((void **)&object, raw_key, r->server->process->pool);
+    apr_global_mutex_lock(lua_ivm_mutex);
+    pool = *((apr_pool_t**) apr_shm_baseaddr_get(lua_ivm_shm));
+    apr_pool_userdata_get((void **)&object, raw_key, pool);
     if (object) {
         if (object->type == LUA_TBOOLEAN) lua_pushboolean(L, (int) object->number);
         else if (object->type == LUA_TNUMBER) lua_pushnumber(L, object->number);
         else if (object->type == LUA_TSTRING) lua_pushlstring(L, object->vb.buf, object->size);
-        apr_thread_mutex_unlock(lua_ivm_mutex);
+        apr_global_mutex_unlock(lua_ivm_mutex);
         return 1;
     }
     else {
-        apr_thread_mutex_unlock(lua_ivm_mutex);
+        apr_global_mutex_unlock(lua_ivm_mutex);
         return 0;
     }
 }
@@ -1952,6 +1957,7 @@ static int lua_ivm_set(lua_State *L)
 {
     const char *key, *raw_key;
     const char *value = NULL;
+    apr_pool_t *pool;
     size_t str_len;
     lua_ivm_object *object = NULL;
     request_rec *r = ap_lua_check_request_rec(L, 1);
@@ -1959,11 +1965,12 @@ static int lua_ivm_set(lua_State *L)
     luaL_checkany(L, 3);
     raw_key = apr_pstrcat(r->pool, "lua_ivm_", key, NULL);
     
-    apr_thread_mutex_lock(lua_ivm_mutex);
-    apr_pool_userdata_get((void **)&object, raw_key, r->server->process->pool);
+    apr_global_mutex_lock(lua_ivm_mutex);
+    pool = *((apr_pool_t**) apr_shm_baseaddr_get(lua_ivm_shm));
+    apr_pool_userdata_get((void **)&object, raw_key, pool);
     if (!object) {
-        object = apr_pcalloc(r->server->process->pool, sizeof(lua_ivm_object));
-        ap_varbuf_init(r->server->process->pool, &object->vb, 2);
+        object = apr_pcalloc(pool, sizeof(lua_ivm_object));
+        ap_varbuf_init(pool, &object->vb, 2);
         object->size = 1;
         object->vb_size = 1;
     }
@@ -1981,8 +1988,8 @@ static int lua_ivm_set(lua_State *L)
         memset(object->vb.buf, 0, str_len);
         memcpy(object->vb.buf, value, str_len-1);
     }
-    apr_pool_userdata_set(object, raw_key, NULL, r->server->process->pool);
-    apr_thread_mutex_unlock(lua_ivm_mutex);
+    apr_pool_userdata_set(object, raw_key, NULL, pool);
+    apr_global_mutex_unlock(lua_ivm_mutex);
     return 0;
 }
 
@@ -2087,7 +2094,7 @@ static int lua_set_cookie(lua_State *L)
         /* Domain does NOT like quotes in most browsers, so let's avoid that */
         strdomain = apr_psprintf(r->pool, "Domain=%s;", domain);
     }
-
+    
     /* URL-encode key/value */
     value = ap_escape_urlencoded(r->pool, value);
     key = ap_escape_urlencoded(r->pool, key);
@@ -2111,7 +2118,7 @@ static apr_uint64_t ap_ntoh64(const apr_uint64_t *input)
     if (APR_IS_BIGENDIAN) {
         return *input;
     }
-
+    
     data[0] = *input >> 56;
     data[1] = *input >> 48;
     data[2] = *input >> 40;
@@ -2226,7 +2233,7 @@ static int lua_websocket_read(lua_State *L)
     int plaintext;
     
     
-    request_rec *r = (request_rec *) lua_unboxpointer(L, 1);
+    request_rec *r = ap_lua_check_request_rec(L, 1);
     plaintext = ap_lua_ssl_is_https(r->connection) ? 0 : 1;
 
     
@@ -2374,7 +2381,7 @@ static int lua_websocket_write(lua_State *L)
     size_t len;
     int raw = 0;
     char prelude;
-    request_rec *r = (request_rec *) lua_unboxpointer(L, 1);
+    request_rec *r = ap_lua_check_request_rec(L, 1);
     
     if (lua_isboolean(L, 3)) {
         raw = lua_toboolean(L, 3);
@@ -2423,7 +2430,7 @@ static int lua_websocket_close(lua_State *L)
 {
     apr_socket_t *sock;
     char prelude[2];
-    request_rec *r = (request_rec *) lua_unboxpointer(L, 1);
+    request_rec *r = ap_lua_check_request_rec(L, 1);
     
     sock = ap_get_conn_socket(r->connection);
     
@@ -2436,10 +2443,8 @@ static int lua_websocket_close(lua_State *L)
     apr_socket_close(sock);
     r->output_filters = NULL;
     r->connection->keepalive = AP_CONN_CLOSE;
-    ap_destroy_sub_req(r);
-    return DONE;
+    return 0;
 }
-
 
 static int lua_websocket_ping(lua_State *L) 
 {
@@ -2860,8 +2865,6 @@ void ap_lua_load_request_lmodule(lua_State *L, apr_pool_t *p)
     apr_hash_set(dispatch, "wsping", APR_HASH_KEY_STRING,
                  makefun(&lua_websocket_ping, APL_REQ_FUNTYPE_LUACFUN, p));
     
-
-
     lua_pushlightuserdata(L, dispatch);
     lua_setfield(L, LUA_REGISTRYINDEX, "Apache2.Request.dispatch");
 

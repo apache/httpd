@@ -136,6 +136,12 @@ Changes with Apache 2.4.10
      to prevent HTTP Response Splitting via tainted headers.
      [Daniel Gruno, Felipe Daragon <filipe syhunt com>]
 
+  *) mod_lua: Change IVM storage to use shm [Daniel Gruno]
+
+  *) mod_lua: More verbose error logging when a handler function cannot be
+     found. [Daniel Gruno]
+
+
 Changes with Apache 2.4.9
 
   *) mod_ssl: Work around a bug in some older versions of OpenSSL that
