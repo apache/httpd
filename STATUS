@@ -264,6 +264,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1592032
      2.4.x patch: http://people.apache.org/~trawick/r1592032.txt
      +1: trawick, ylavic
+  
+   * event MPM: fix a race where a worker looks at a conn_rec after it might be
+                in use by another thread or may have been freeed and 
+                re-allocated.
+     trunk patch: http://svn.apache.org/r1604350
+     2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-event_sbh-race.diff
+     +1 covener
 
 OTHER PROPOSALS
 
