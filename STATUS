@@ -211,7 +211,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: ylavic
  
    * event MPM: fix a race where a worker looks at a conn_rec after it might be
-                in use by another thread or may have been freeed and 
+                in use by another thread or may have been freed and 
                 re-allocated.
      trunk patch: http://svn.apache.org/r1604350
      2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-event_sbh-race.diff
