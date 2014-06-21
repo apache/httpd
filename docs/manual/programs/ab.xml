@@ -50,6 +50,7 @@
     [ -<strong>i</strong> ]
     [ -<strong>k</strong> ]
     [ -<strong>l</strong> ]
+    [ -<strong>m</strong> <var>HTTP-method</var> ]
     [ -<strong>n</strong> <var>requests</var> ]
     [ -<strong>p</strong> <var>POST-file</var> ]
     [ -<strong>P</strong> <var>proxy-auth-username</var>:<var>password</var> ]
@@ -132,6 +133,10 @@
     <dd>Do not report errors if the length of the responses is not constant. This 
     can be usefull for dynamic pages.
     </dd>
+
+    <dt><code>-m <var>HTTP-method</var></code></dt>
+    <dd>Custom HTTP method for the requests.  This option is available in Apache
+    HTTP Server 2.4.10 and later.</dd>
 
     <dt><code>-n <var>requests</var></code></dt>
     <dd>Number of requests to perform for the benchmarking session. The default
