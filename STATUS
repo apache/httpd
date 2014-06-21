@@ -108,15 +108,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      +1: ylavic, jim, mrumph
      mrumph: Verified on Linux with mod_proxy_fcgi and PHP FPM.
 
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
-
-   * mod_slotmem_shm: Remove wonky and dangerous code that knows about APR
-     internals. We work fine w/o it anyway at this stage.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1561385
-     2.4.x patch: trunk works
-     +1: jim, ylavic
-
    * mod_deflate: Fix decompression of files larger than 4GB. According to RFC1952,
                   Input SIZE contains the size of the original input data modulo 2^32.
                   PR 56062.
@@ -151,6 +142,31 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              these proposals can be backported in any order.
      ylavic: I don't have any conflict here but with r1586745 regarding
              docs/log-message-tags. BTW 2.4.x patch provided above.
+
+   * ab: support custom HTTP method with -m argument. PR 56604.
+     trunk patch: http://svn.apache.org/r1601076
+                  http://svn.apache.org/r1601680
+                  http://svn.apache.org/r1601700
+     2.4.x patch: trunk works (modulo CHANGES)
+     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-ab_custom_method.patch
+                  (modulo CHANGES)
+     +1: ylavic, trawick, covener
+
+   * mod_proxy_fcgi: better error messages, and fix an old bug where the error
+                     condition was forgotten
+     trunk patch: http://svn.apache.org/r1592032
+     2.4.x patch: http://people.apache.org/~trawick/r1592032.txt
+     +1: trawick, ylavic, covener
+ 
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
+
+   * mod_slotmem_shm: Remove wonky and dangerous code that knows about APR
+     internals. We work fine w/o it anyway at this stage.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1561385
+     2.4.x patch: trunk works
+     +1: jim, ylavic
 
    * mod_deflate: Don't fail when asked to flush inflated data to the user-agent
                   and that coincides with the end of stream ("Zlib error flushing
@@ -236,15 +252,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: jailletc36, ylavic
      trawick: you probably want r1601995
 
-   * ab: support custom HTTP method with -m argument. PR 56604.
-     trunk patch: http://svn.apache.org/r1601076
-                  http://svn.apache.org/r1601680
-                  http://svn.apache.org/r1601700
-     2.4.x patch: trunk works (modulo CHANGES)
-     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-ab_custom_method.patch
-                  (modulo CHANGES)
-     +1: ylavic, trawick, covener
-
    * mod_ssl, event: Ensure that the SSL close notify alert is flushed to the client.
                      PR54998.
      trunk patch: http://svn.apache.org/r1601184
@@ -261,13 +268,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   (modulo CHANGES)
      note: depends on ap_shutdown_conn() from r1601185 above.
      +1: ylavic
-
-   * mod_proxy_fcgi: better error messages, and fix an old bug where the error
-                     condition was forgotten
-     trunk patch: http://svn.apache.org/r1592032
-     2.4.x patch: http://people.apache.org/~trawick/r1592032.txt
-     +1: trawick, ylavic, covener
-  
+ 
    * event MPM: fix a race where a worker looks at a conn_rec after it might be
                 in use by another thread or may have been freeed and 
                 re-allocated.
