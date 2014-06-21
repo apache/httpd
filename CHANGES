@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.10
 
+  *) mod_deflate: Fix inflation of files larger than 4GB. PR 56062.
+     [Lukas Bezdicka <social v3.sk>]
+
   *) mod_deflate: Handle Zlib header and validation bytes received in multiple
      chunks. PR 46146. [Yann Ylavic]
 
