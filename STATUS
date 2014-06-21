@@ -100,14 +100,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_proxy: Allow reverse-proxy to be set via explicit handler.
-     Submitted by: [ryo takatsuki <ryotakatsuki gmail com>]
-     Committed by: jim
-     trunk patch: http://svn.apache.org/r1573626
-     2.4.x patch: trunk works
-     +1: ylavic, jim, mrumph
-     mrumph: Verified on Linux with mod_proxy_fcgi and PHP FPM.
-
    * mod_deflate: Fix decompression of files larger than 4GB. According to RFC1952,
                   Input SIZE contains the size of the original input data modulo 2^32.
                   PR 56062.

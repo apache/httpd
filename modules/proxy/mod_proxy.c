@@ -927,8 +927,25 @@ static int proxy_handler(request_rec *r)
     struct dirconn_entry *list = (struct dirconn_entry *)conf->dirconn->elts;
 
     /* is this for us? */
-    if (!r->proxyreq || !r->filename || strncmp(r->filename, "proxy:", 6) != 0)
+    if (!r->filename) {
         return DECLINED;
+    }
+
+    if (!r->proxyreq) {
+        /* We may have forced the proxy handler via config or .htaccess */
+        if (r->handler &&
+            strncmp(r->handler, "proxy:", 6) == 0 &&
+            strncmp(r->filename, "proxy:", 6) != 0) {
+            r->proxyreq = PROXYREQ_REVERSE;
+            r->filename = apr_pstrcat(r->pool, r->handler, r->filename, NULL);
+            apr_table_setn(r->notes, "rewrite-proxy", "1");
+        }
+        else {
+            return DECLINED;
+        }
+    } else if (strncmp(r->filename, "proxy:", 6) != 0) {
+        return DECLINED;
+    }
 
     /* handle max-forwards / OPTIONS / TRACE */
     if ((str = apr_table_get(r->headers_in, "Max-Forwards"))) {

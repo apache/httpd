@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.10
 
+  *) mod_proxy: Allow reverse-proxy to be set via explicit handler.
+     [ryo takatsuki <ryotakatsuki gmail com>]
+
   *) ab: support custom HTTP method with -m argument. PR 56604.
      [Roman Jurkov <winfinit gmail.com>]
 
