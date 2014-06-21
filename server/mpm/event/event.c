@@ -1765,6 +1765,10 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                     }
                     push_timer2worker(ep);
                 }
+                else {
+                    APR_RING_INSERT_TAIL(&timer_free_ring, ep, timer_event_t,
+                                         link);
+                }
             }
             else {
                 break;
