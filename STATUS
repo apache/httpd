@@ -215,7 +215,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                 re-allocated.
      trunk patch: http://svn.apache.org/r1604350
      2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-event_sbh-race.diff
-     +1 covener
+     +1 covener, ylavic
 
 OTHER PROPOSALS
 
