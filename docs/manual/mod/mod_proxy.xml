@@ -173,21 +173,23 @@ ProxyVia On
 
     <section id="handler"><title>Access via Handler</title>
 
-    <p>You can also force a request to be handled as a reverse-proxy
-      request, by creating a suitable Handler pass-thru. For example,
-      the below will pass all PHP scripts to the specified
-      reverse-proxy FCGI server:
-    </p>
+      <p>You can also force a request to be handled as a reverse-proxy
+        request, by creating a suitable Handler pass-through. The example
+        configuration below will pass all requests for PHP scripts to the
+        specified FastCGI server using reverse proxy:
+      </p>
 
-    <example><title>Reverse Proxy PHP scripts</title>
-    <highlight language="config">
+      <example><title>Reverse Proxy PHP scripts</title>
+      <highlight language="config">
 &lt;FilesMatch \.php$&gt;
     SetHandler  "proxy:unix:/path/to/app.sock|fcgi://localhost/"
 &lt;/FilesMatch&lgt;
-    </highlight>
-    </example>
-    </section> <!-- /handler -->
+      </highlight>
+      </example>
 
+      <p>This feature is available in Apache HTTP Server 2.4.10 and later.</p>
+
+    </section> <!-- /handler -->
 
     <section id="workers"><title>Workers</title>
       <p>The proxy manages the configuration of origin servers and their
