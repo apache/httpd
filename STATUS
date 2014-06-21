@@ -126,7 +126,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-mod_deflate_4GB.patch
                   (modulo CHANGES, added lately from r1603156)
      2.4.x patch: trunk works
-     +1: ylavic, jkaluza
+     +1: ylavic, jkaluza, covener
      ylavic: does not depend on r1572655 and al or r1572896 and al below,
              these proposals can be backported in any order.
 
@@ -144,8 +144,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   https://svn.apache.org/r1587639
                   https://svn.apache.org/r1590509
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-mod_deflate_reentrant_with_CHANGES.patch
+                  + r1604353 for trivial comment fix
                   (modulo CHANGES, added lately from r1603156)
-     +1: ylavic, jim
+     +1: ylavic, jim, covener
      ylavic: does not depend on r1572092 above or r1572896 and al below,
              these proposals can be backported in any order.
      ylavic: I don't have any conflict here but with r1586745 regarding
@@ -160,7 +161,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Committed by: ylavic
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-mod_deflate-flush_end_of_stream.patch
                   (modulo CHANGES, added lately from r1603156)
-     +1: ylavic
+     +1: ylavic, covener
      ylavic: does not depend on r1572092 or r1572655 and al above,
              these proposals can be backported in any order.
 
@@ -200,11 +201,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1599486
      2.4.x patch: trunk works
      +1: ylavic
+     covener: I did not look in depth, but is the preceding log message also bad?
 
    * mod_proxy_http: Avoid useless functions calls.
      trunk patch: http://svn.apache.org/r1572561
      2.4.x patch: trunk works
      +1: ylavic
+     covener: question on dev@ about the proxy_util.c change
 
    * mod_proxy: When ping/pong is configured for a worker, don't send or forward
                 "100 Continue" (interim) response to the client if it does not
@@ -240,7 +243,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (modulo CHANGES)
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-ab_custom_method.patch
                   (modulo CHANGES)
-     +1: ylavic, trawick
+     +1: ylavic, trawick, covener
 
    * mod_ssl, event: Ensure that the SSL close notify alert is flushed to the client.
                      PR54998.
@@ -263,7 +266,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                      condition was forgotten
      trunk patch: http://svn.apache.org/r1592032
      2.4.x patch: http://people.apache.org/~trawick/r1592032.txt
-     +1: trawick, ylavic
+     +1: trawick, ylavic, covener
   
    * event MPM: fix a race where a worker looks at a conn_rec after it might be
                 in use by another thread or may have been freeed and 
