@@ -1773,8 +1773,8 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                             apr_pollset_remove(event_pollset, *pfds);
                         }
                     }
+                    push_timer2worker(ep);
                 }
-                push_timer2worker(ep);
             }
             else {
                 break;
