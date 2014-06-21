@@ -1655,7 +1655,6 @@ static void socket_callback_wrapper(void *baton){
 
 static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
 {
-    timer_event_t *ep;
     timer_event_t *te;
     apr_status_t rc;
     proc_info *ti = dummy;
@@ -1711,8 +1710,8 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
         if (conns_this_child <= 0)
             check_infinite_requests();
 
-        now = apr_time_now();
         if (APLOGtrace6(ap_server_conf)) {
+            now = apr_time_now();
             /* trace log status every second */
             if (now - last_log > apr_time_from_msec(1000)) {
                 last_log = now;
@@ -1730,6 +1729,14 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
             }
         }
 
+#if HAVE_SERF
+        rc = serf_context_prerun(g_serf);
+        if (rc != APR_SUCCESS) {
+            /* TOOD: what should do here? ugh. */
+        }
+#endif
+
+        now = apr_time_now();
         apr_thread_mutex_lock(g_timer_skiplist_mtx);
         te = apr_skiplist_peek(timer_skiplist);
         if (te) {
@@ -1743,37 +1750,26 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
         else {
             timeout_interval = apr_time_from_msec(100);
         }
-        apr_thread_mutex_unlock(g_timer_skiplist_mtx);
-
-#if HAVE_SERF
-        rc = serf_context_prerun(g_serf);
-        if (rc != APR_SUCCESS) {
-            /* TOOD: what should do here? ugh. */
-        }
-#endif
-        now = apr_time_now();
-        apr_thread_mutex_lock(g_timer_skiplist_mtx);
-        ep = apr_skiplist_peek(timer_skiplist);
-        while (ep) {
-            if (ep->when < now + EVENT_FUDGE_FACTOR) {
+        while (te) {
+            if (te->when < now + EVENT_FUDGE_FACTOR) {
                 apr_skiplist_pop(timer_skiplist, NULL);
-                if (!ep->canceled) { 
-                    if (ep->remove != NULL) {
-                        for (apr_pollfd_t **pfds = (ep->remove); *pfds != NULL; pfds++) { 
+                if (!te->canceled) { 
+                    if (te->remove != NULL) {
+                        for (apr_pollfd_t **pfds = (te->remove); *pfds != NULL; pfds++) { 
                             apr_pollset_remove(event_pollset, *pfds);
                         }
                     }
-                    push_timer2worker(ep);
+                    push_timer2worker(te);
                 }
                 else {
-                    APR_RING_INSERT_TAIL(&timer_free_ring, ep, timer_event_t,
+                    APR_RING_INSERT_TAIL(&timer_free_ring, te, timer_event_t,
                                          link);
                 }
             }
             else {
                 break;
             }
-            ep = apr_skiplist_peek(timer_skiplist);
+            te = apr_skiplist_peek(timer_skiplist);
         }
         apr_thread_mutex_unlock(g_timer_skiplist_mtx);
 
@@ -1965,7 +1961,6 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
 #endif
             else if (pt->type == PT_USER) {
                 /* masquerade as a timer event that is firing */
-                timer_event_t *te; 
                 int i = 0;
                 socket_callback_baton_t *baton = (socket_callback_baton_t *) pt->baton;
                 if (baton->cancel_event) {
