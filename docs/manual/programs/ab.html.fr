@@ -59,6 +59,7 @@ Apache</h1>
     [ -<strong>i</strong> ]
     [ -<strong>k</strong> ]
     [ -<strong>l</strong> ]
+    [ -<strong>m</strong> <var>HTTP-method</var> ]
     [ -<strong>n</strong> <var>requêtes</var> ]
     [ -<strong>p</strong> <var>fichier-POST</var> ]
     [ -<strong>P</strong>
@@ -107,8 +108,9 @@ Apache</h1>
     être répété.</dd>
 
     <dt><code>-d</code></dt>
+    
     <dd>N'affiche pas le "pourcentage servi dans la table XX [ms]".
-    (option abandonnée).</dd>
+    (support de l'héritage).</dd>
 
     <dt><code>-e <var>fichier-csv</var></code></dt>
     <dd>Enregistre des valeurs séparées par des virgules (CSV) dans un
@@ -118,7 +120,9 @@ Apache</h1>
     résultats sont déjà sous forme binaire.</dd>
 
     <dt><code>-f <var>protocole</var></code></dt>
-    <dd>Spécifie le protocole SSL/TLS (SSL2, SSL3, TLS1, ou ALL).</dd>
+    <dd>Spécifie le protocole SSL/TLS (SSL2, SSL3, TLS1, TLS1.1, TLS1.2, or ALL).<br />
+    TLS1.1 et TLS1.2 sont supportés à partir de la version 2.4.4 du
+    serveur HTTP Apache.</dd>
 
     <dt><code>-g <var>fichier-gnuplot</var></code></dt>
     <dd>Enregistre toutes les valeurs mesurées dans un fichier 'gnuplot'
@@ -147,9 +151,16 @@ Apache</h1>
     défaut.</dd>
 
     <dt><code>-l</code></dt>
-    <dd>N'indique pas d'erreur si la longueur des réponses n'est pas
-    constante, ce qui peut s'avérer utile pour les pages dynamiques.
+    <dd>Ne signale pas les erreurs si la taille de la réponse n'est pas
+    constante. Cette option peut s'avérer utile pour les pages
+    dynamiques. Disponible à partir de la version 2.4.7 du serveur HTTP
+    Apache.
     </dd>
+
+    <dt><code>-m <var>HTTP-method</var></code></dt>
+    <dd>Méthode HTTP personnalisée à utiliser pour les requêtes.<br />
+    Disponible à partir de la version 2.4.10 du serveur HTTP
+    Apache.</dd>
 
     <dt><code>-n <var>requêtes</var></code></dt>
     <dd>Nombre de requêtes à effectuer au cours du test de performances.
@@ -175,18 +186,21 @@ Apache</h1>
     <code>-q</code> permet de supprimer ces messages.</dd>
 
     <dt><code>-r</code></dt>
-    <dd>Ne s'arrête pas en cas d'erreur de réception sur la connexion.</dd>
+    <dd>Ne s'arrête pas en cas d'erreur de réception du socket.</dd>
 
     <dt><code>-s <var>timeout</var></code></dt>
-    <dd>Temps d'attente maximal du socket. La valeur par défaut est de
-    30 secondes.</dd>
+    <dd>Temps maximum d'attente en secondes du socket avant de considérer
+    le délai comme dépassé. La valeur par défaut est de 30 secondes.<br />
+    Disponible à partir de la version 2.4.4 du serveur HTTP
+    Apache.</dd>
 
     <dt><code>-S</code></dt>
     <dd>N'affiche ni les valeurs de déviation standards et médianes, ni
     les messages d'erreur et d'avertissement lorsque les valeurs
     médianes et moyennes sont égales à une ou deux fois la valeur de
     déviation standard. Par défaut les valeurs mini/moyenne/maxi sont
-    affichées (option historique).</dd>
+    affichées (support de l'héritage).</dd>
+    
 
     <dt><code>-t <var>limite-durée</var></code></dt>
     <dd>Durée maximale en secondes du test de performances. Ceci
@@ -199,7 +213,7 @@ Apache</h1>
     <dd>Valeur de l'en-tête Content-type à utiliser pour les données
     POST/PUT, par exemple
     <code>application/x-www-form-urlencoded</code>.
-    Valeur par défaut : <code>text/plain</code>.</dd>
+    La valeur par défaut est <code>text/plain</code>.</dd>
 
     <dt><code>-u <var>fichier PUT</var></code></dt>
     <dd>Fichier contenant des données PUT.  Ne pas oublier de spécifier
@@ -242,7 +256,7 @@ Apache</h1>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="output" id="output">Sortie</a></h2>
-    <p>Vous trouverez dans ce qui suit la liste des valeurs retournées
+    <p>Vous touverez dans ce qui suit la liste des valeurs retournées
     par <code>ab</code> :
     </p>
 
