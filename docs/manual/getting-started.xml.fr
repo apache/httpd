@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision: 1597004:1602761 (outdated) -->
+<!-- English Revision : 1602761 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -234,17 +234,20 @@ href="logs.html">Documentation sur la journalisation</a>.</p>
 </section>
 
 <section id="other">
-<title>Que dois-je savoir d'autre ?</title>
+<title>Et maintenant, quelle est la suite des op&eacute;rations ?</title>
+
+<p>La question des pr&eacute;requis &eacute;tant r&eacute;gl&eacute;e, il est temps de passer aux
+choses s&eacute;rieuses.</p>
+
 <p>Ce document ne couvre que les notions de base. Nous esp&eacute;rons qu'il
 vous permettra de mettre le pied &agrave; l'&eacute;trier, mais il y a encore de
-nombreuses choses que vous devez savoir. Voici une liste non exhaustive
-des documents que nous vous recommandons de consulter :</p>
+nombreuses choses que vous devez savoir.</p>
 
 <ul>
-<li><a href="howto/auth.html">Authentification et autorisation
-(protection des ressources par mot de passe)</a></li>
-<li><a href="howto/access.html">Contr&ocirc;le d'acc&egrave;s</a></li>
-<li><a href="ssl/ssl_howto.html">Mise en oeuvre de SSL</a></li>
+<li><a href="http://httpd.apache.org/download.cgi">T&eacute;l&eacute;chargement</a></li>
+<li><a href="install.html">Installation</a></li>
+<li><a href="configuring.html">Configuration</a></li>
+<li><a href="invoking.html">D&eacute;marrage du serveur</a></li>
 <li><a href="http://wiki.apache.org/httpd/FAQ">Foire aux questions</a></li>
 </ul>
 
