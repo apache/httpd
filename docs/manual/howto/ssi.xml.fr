@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1440751:1602702 (outdated) -->
+<!-- English Revision : 1602702 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -456,38 +456,33 @@ HTML pr&eacute;existants.</p>
     v&eacute;rification de la "v&eacute;rit&eacute;" d'une valeur particuli&egrave;re (Une cha&icirc;ne
     donn&eacute;e est vraie si elle n'est pas vide). Pour une liste exhaustive
     des op&eacute;rateurs de comparaison disponibles, voir la documentation du
-    module <module>mod_include</module>. Voici quelques exemples
-    illustrant l'utilisation de ces expressions.</p>
+    module <module>mod_include</module>.</p>
 
-    <p>Vous pouvez ajouter les lignes suivantes dans votre fichier de
-    configuration :</p>
-<highlight language="config">
-        BrowserMatchNoCase macintosh Mac<br />
-        BrowserMatchNoCase MSIE InternetExplorer
-</highlight>
+    <p>Par exemple, spour ins&eacute;rer l'heure du jour dans votre page web,
+    vous pouvez ajouter ces lignes dans la page HTML :</p>
 
-    <p>Ces lignes d&eacute;finissent les variables d'environnement "Mac" et
-    "InternetExplorer" &agrave; true, si le client utilise InternetExplorer sur
-    un Macintosh.</p>
-
-    <p>Puis, dans votre document o&ugrave; les SSI sont activ&eacute;es, vous ajoutez
-    ceci :</p>
-<example>
-        &lt;!--#if expr="-T reqenv('Mac') &amp;&amp;
-                         -T reqenv('InternetExplorer')" --&gt;<br />
-        Un texte d'excuses est ins&eacute;r&eacute; ici<br />
-        &lt;!--#else --&gt;<br />
-        Ici se trouve du code JavaScipt sympa<br />
-        &lt;!--#endif --&gt;
-</example>
+    <example>
+    Good
+    &lt;!--#if expr="%{TIME_HOUR} &gt;=12" --&gt;<br />
+    morning!<br />
+    &lt;!--#else --&gt;<br />
+    afternoon!<br />
+    &lt;!--#endif --&gt;<br />
+    </example>    
 
     <p>Toute autre variable (que vous avez d&eacute;finie, ou une variable
     d'environnement normale) peut &ecirc;tre utilis&eacute;e dans les expressions
-    conditionnelles. Associ&eacute;e &agrave; la possibilit&eacute; avec Apache de d&eacute;finir
+    conditionnelles. Voir le document <a href="../expr.html">Expressions
+    rationnelles dans le serveur HTTP Apache</a> pour plus de d&eacute;tails &agrave;
+    propos du fonctionnement du moteur d'&eacute;valuation des expressions
+    rationnelles.</p>
+    
+    <p>Associ&eacute;e &agrave; la possibilit&eacute; avec Apache de d&eacute;finir
     des variables d'environnement &agrave; l'aide de directives
     <code>SetEnvIf</code>, ainsi que d'autres directives en rapport,
-    cette fonctionnalit&eacute; vous permet d'ajouter des contenus dynamiques
-    assez &eacute;volu&eacute;s sans avoir recours aux programmes CGI.</p>
+    cette fonctionnalit&eacute; vous permet d'ajouter une grande vari&eacute;t&eacute;
+    de contenus dynamiques c&ocirc;t&eacute; serveur sans avoir &agrave; concevoir une
+    application web de A &agrave; Z.</p>
 </section>
 </section>
 
