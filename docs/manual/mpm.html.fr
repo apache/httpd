@@ -30,8 +30,6 @@
 <a href="./tr/mpm.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="./zh-cn/mpm.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 <p>Ce document décrit ce qu'est un Module Multi-Processus, ainsi
 que la manière dont ces modules sont utilisés par le serveur HTTP Apache.</p>
@@ -165,6 +163,16 @@ DSO (Dynamic Shared Object)</a></h2>
     modules MPM en tant que modules DSO permet de changer de MPM en
     modifiant la directive <code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code> concernée, sans avoir à
     recompiler le serveur.</p>
+
+    <pre class="prettyprint lang-config">LoadModule mpm_prefork_module modules/mod_mpm_prefork.so</pre>
+
+
+    <p>Toute tentative de charger plusieurs modules MPM via la directive
+    <code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code> empêchera le
+    serveur de démarrer et affichera l'erreur suivante :</p>
+
+    <div class="example"><p><code>AH00534: httpd: Configuration error: More than one MPM
+    loaded.</code></p></div>
 
     <p>Cette fonctionnalité est activée via l'option
     <code>--enable-mpms-shared</code> du script
