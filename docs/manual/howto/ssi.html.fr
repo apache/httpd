@@ -28,8 +28,6 @@
 <a href="../ja/howto/ssi.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/howto/ssi.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 <p>Les SSI permettent d'ajouter du contenu dynamique à des documents
 HTML préexistants.</p>
@@ -449,37 +447,33 @@ HTML préexistants.</p>
     vérification de la "vérité" d'une valeur particulière (Une chaîne
     donnée est vraie si elle n'est pas vide). Pour une liste exhaustive
     des opérateurs de comparaison disponibles, voir la documentation du
-    module <code class="module"><a href="../mod/mod_include.html">mod_include</a></code>. Voici quelques exemples
-    illustrant l'utilisation de ces expressions.</p>
+    module <code class="module"><a href="../mod/mod_include.html">mod_include</a></code>.</p>
 
-    <p>Vous pouvez ajouter les lignes suivantes dans votre fichier de
-    configuration :</p>
-<pre class="prettyprint lang-config">        BrowserMatchNoCase macintosh Mac<br />
-        BrowserMatchNoCase MSIE InternetExplorer</pre>
+    <p>Par exemple, spour insérer l'heure du jour dans votre page web,
+    vous pouvez ajouter ces lignes dans la page HTML :</p>
 
-
-    <p>Ces lignes définissent les variables d'environnement "Mac" et
-    "InternetExplorer" à true, si le client utilise InternetExplorer sur
-    un Macintosh.</p>
-
-    <p>Puis, dans votre document où les SSI sont activées, vous ajoutez
-    ceci :</p>
-<div class="example"><p><code>
-        &lt;!--#if expr="-T reqenv('Mac') &amp;&amp;
-                         -T reqenv('InternetExplorer')" --&gt;<br />
-        Un texte d'excuses est inséré ici<br />
-        &lt;!--#else --&gt;<br />
-        Ici se trouve du code JavaScipt sympa<br />
-        &lt;!--#endif --&gt;
-</code></p></div>
+    <div class="example"><p><code>
+    Good
+    &lt;!--#if expr="%{TIME_HOUR} &gt;=12" --&gt;<br />
+    morning!<br />
+    &lt;!--#else --&gt;<br />
+    afternoon!<br />
+    &lt;!--#endif --&gt;<br />
+    </code></p></div>    
 
     <p>Toute autre variable (que vous avez définie, ou une variable
     d'environnement normale) peut être utilisée dans les expressions
-    conditionnelles. Associée à la possibilité avec Apache de définir
+    conditionnelles. Voir le document <a href="../expr.html">Expressions
+    rationnelles dans le serveur HTTP Apache</a> pour plus de détails à
+    propos du fonctionnement du moteur d'évaluation des expressions
+    rationnelles.</p>
+    
+    <p>Associée à la possibilité avec Apache de définir
     des variables d'environnement à l'aide de directives
     <code>SetEnvIf</code>, ainsi que d'autres directives en rapport,
-    cette fonctionnalité vous permet d'ajouter des contenus dynamiques
-    assez évolués sans avoir recours aux programmes CGI.</p>
+    cette fonctionnalité vous permet d'ajouter une grande variété
+    de contenus dynamiques côté serveur sans avoir à concevoir une
+    application web de A à Z.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
