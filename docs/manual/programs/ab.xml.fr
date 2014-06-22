@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="ISO-8859-1" ?>
+<?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1528053 -->
+<!-- English Revision : 1604534 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -30,10 +30,10 @@ Apache</title>
 
 <summary>
     <p><code>ab</code> est un utilitaire qui vous permet de tester les
-    performances de votre serveur HTTP Apache. Il a &eacute;t&eacute; con&ccedil;u pour vous
-    donner une id&eacute;e du degr&eacute; de performances de votre installation
-    d'Apache. Il vous permet en particulier de d&eacute;terminer le nombre de
-    r&eacute;qu&ecirc;tes que votre installation d'Apache est capable de servir par
+    performances de votre serveur HTTP Apache. Il a été conçu pour vous
+    donner une idée du degré de performances de votre installation
+    d'Apache. Il vous permet en particulier de déterminer le nombre de
+    réquêtes que votre installation d'Apache est capable de servir par
     seconde.</p>
 </summary>
 <seealso><program>httpd</program></seealso>
@@ -43,18 +43,19 @@ Apache</title>
     [ -<strong>A</strong> <var>nom-utilisateur</var>:<var>mot-de-passe</var> ]
     [ -<strong>b</strong> <var>taille-tampon</var> ]
     [ -<strong>B</strong> <var>adresse-locale</var> ]
-    [ -<strong>c</strong> <var>simultan&eacute;it&eacute;</var> ]
+    [ -<strong>c</strong> <var>simultanéité</var> ]
     [ -<strong>C</strong> <var>nom-cookie</var>=<var>valeur</var> ]
     [ -<strong>d</strong> ]
     [ -<strong>e</strong> <var>fichier-csv</var> ]
     [ -<strong>f</strong> <var>protocole</var> ]
     [ -<strong>g</strong> <var>fichier-gnuplot</var> ]
     [ -<strong>h</strong> ]
-    [ -<strong>H</strong> <var>en-t&ecirc;te-personnalis&eacute;</var> ]
+    [ -<strong>H</strong> <var>en-tête-personnalisé</var> ]
     [ -<strong>i</strong> ]
     [ -<strong>k</strong> ]
     [ -<strong>l</strong> ]
-    [ -<strong>n</strong> <var>requ&ecirc;tes</var> ]
+    [ -<strong>m</strong> <var>HTTP-method</var> ]
+    [ -<strong>n</strong> <var>requêtes</var> ]
     [ -<strong>p</strong> <var>fichier-POST</var> ]
     [ -<strong>P</strong>
     <var>nom-utilisateur-mandataire</var>:<var>mot-de-passe</var> ]
@@ -62,10 +63,10 @@ Apache</title>
     [ -<strong>r</strong> ]
     [ -<strong>s</strong> <var>timeout</var> ]
     [ -<strong>S</strong> ]
-    [ -<strong>t</strong> <var>limite-de-dur&eacute;e</var> ]
+    [ -<strong>t</strong> <var>limite-de-durée</var> ]
     [ -<strong>T</strong> <var>type-de-contenu</var> ]
     [ -<strong>u</strong> <var>fichier PUT</var> ]
-    [ -<strong>v</strong> <var>verbosit&eacute;</var>]
+    [ -<strong>v</strong> <var>verbosité</var>]
     [ -<strong>V</strong> ]
     [ -<strong>w</strong> ]
     [ -<strong>x</strong> <var>&lt;table&gt;-attributs</var> ]
@@ -80,268 +81,281 @@ Apache</title>
     <dl>
     <dt><code>-A <var>nom-utilisateur</var>:<var>mot-de-passe</var></code></dt>
     <dd>Fournit le support d'une authentification de base vers le
-    serveur. Les nom-utilisateur et mot-de-passe sont s&eacute;par&eacute;s par un
-    seul caract&egrave;re <code>:</code> et transmis sous forme cod&eacute;e base64.
-    La cha&icirc;ne est envoy&eacute;e que le serveur en ait besoin ou non (qu'il ait
-    renvoy&eacute; un code "401 authentication needed" ou non).</dd>
+    serveur. Les nom-utilisateur et mot-de-passe sont séparés par un
+    seul caractère <code>:</code> et transmis sous forme codée base64.
+    La chaîne est envoyée que le serveur en ait besoin ou non (qu'il ait
+    renvoyé un code "401 authentication needed" ou non).</dd>
 
     <dt><code>-b <var>taille-tampon</var></code></dt>
-    <dd>Taille du tampon d'&eacute;mission/r&eacute;ception TCP, en octets.</dd>
+    <dd>Taille du tampon d'émission/réception TCP, en octets.</dd>
 
     <dt><code>-B <var>adresse-locale</var></code></dt>
-    <dd>Adresse &agrave; laquelle se rattacher lors des connexions sortantes.</dd>
+    <dd>Adresse à laquelle se rattacher lors des connexions sortantes.</dd>
 
-    <dt><code>-c <var>simultan&eacute;it&eacute;</var></code></dt>
-    <dd>Nombre de requ&ecirc;tes &agrave; effectuer simultan&eacute;ment. Par d&eacute;faut, une
-    seule requ&ecirc;te est effectu&eacute;e &agrave; la fois.</dd>
+    <dt><code>-c <var>simultanéité</var></code></dt>
+    <dd>Nombre de requêtes à effectuer simultanément. Par défaut, une
+    seule requête est effectuée à la fois.</dd>
 
     <dt><code>-C <var>nom-cookie</var>=<var>valeur</var></code></dt>
-    <dd>Ajoute une ligne <code>Cookie:</code> &agrave; la requ&ecirc;te. L'argument
-    se pr&eacute;sente en g&eacute;n&eacute;ral sous la forme d'une
+    <dd>Ajoute une ligne <code>Cookie:</code> à la requête. L'argument
+    se présente en général sous la forme d'une
     paire <code><var>nom</var>=<var>valeur</var></code>. Ce champ peut
-    &ecirc;tre r&eacute;p&eacute;t&eacute;.</dd>
+    être répété.</dd>
 
     <dt><code>-d</code></dt>
+    <!-- traduction à confirmer -->
     <dd>N'affiche pas le "pourcentage servi dans la table XX [ms]".
-    (option abandonn&eacute;e).</dd>
+    (support de l'héritage).</dd>
 
     <dt><code>-e <var>fichier-csv</var></code></dt>
-    <dd>Enregistre des valeurs s&eacute;par&eacute;es par des virgules (CSV) dans un
-    fichier, indiquant pour chaque pourcentage (de 1% &agrave; 100 %), le temps
-    (en millisecondes) mis pour servir ce pourcentage de requ&ecirc;tes. Ce
-    fichier est en g&eacute;n&eacute;ral plus utile qu'un fichier 'gnuplot', car les
-    r&eacute;sultats sont d&eacute;j&agrave; sous forme binaire.</dd>
+    <dd>Enregistre des valeurs séparées par des virgules (CSV) dans un
+    fichier, indiquant pour chaque pourcentage (de 1% à 100 %), le temps
+    (en millisecondes) mis pour servir ce pourcentage de requêtes. Ce
+    fichier est en général plus utile qu'un fichier 'gnuplot', car les
+    résultats sont déjà sous forme binaire.</dd>
 
     <dt><code>-f <var>protocole</var></code></dt>
-    <dd>Sp&eacute;cifie le protocole SSL/TLS (SSL2, SSL3, TLS1, ou ALL).</dd>
+    <dd>Spécifie le protocole SSL/TLS (SSL2, SSL3, TLS1, TLS1.1, TLS1.2, or ALL).<br />
+    TLS1.1 et TLS1.2 sont supportés à partir de la version 2.4.4 du
+    serveur HTTP Apache.</dd>
 
     <dt><code>-g <var>fichier-gnuplot</var></code></dt>
-    <dd>Enregistre toutes les valeurs mesur&eacute;es dans un fichier 'gnuplot'
-    ou TSV (valeurs s&eacute;par&eacute;es par des tabulations). Ce fichier peut &ecirc;tre
-    facilement import&eacute; dans des programmes comme Gnuplot, IDL,
-    Mathematica, Igor ou m&ecirc;me Excel. La premi&egrave;re ligne du fichier
+    <dd>Enregistre toutes les valeurs mesurées dans un fichier 'gnuplot'
+    ou TSV (valeurs séparées par des tabulations). Ce fichier peut être
+    facilement importé dans des programmes comme Gnuplot, IDL,
+    Mathematica, Igor ou même Excel. La première ligne du fichier
     contient les noms des valeurs.</dd>
 
     <dt><code>-h</code></dt>
-    <dd>Affiche une aide &agrave; propos de l'utilisation du programme.</dd>
+    <dd>Affiche une aide à propos de l'utilisation du programme.</dd>
 
-    <dt><code>-H <var>en-t&ecirc;te-personnalis&eacute;</var></code></dt>
-    <dd>Ajoute des en-t&ecirc;tes suppl&eacute;mentaires &agrave; la requ&ecirc;te. L'argument se
-    pr&eacute;sente sous la forme d'une ligne d'en-t&ecirc;te valide, autrement dit
-    une paire champ/valeur s&eacute;par&eacute;s par un caract&egrave;re ':' (par exemple
+    <dt><code>-H <var>en-tête-personnalisé</var></code></dt>
+    <dd>Ajoute des en-têtes supplémentaires à la requête. L'argument se
+    présente sous la forme d'une ligne d'en-tête valide, autrement dit
+    une paire champ/valeur séparés par un caractère ':' (par exemple
     <code>"Accept-Encoding: zip/zop;8bit"</code>).</dd>
 
     <dt><code>-i</code></dt>
-    <dd>Effectue des requ&ecirc;tes <code>HEAD</code> plut&ocirc;t que
+    <dd>Effectue des requêtes <code>HEAD</code> plutôt que
     <code>GET</code>.</dd>
 
     <dt><code>-k</code></dt>
-    <dd>Active la fonctionnalit&eacute; des connexions HTTP persistantes
-    (KeepAlive), c'est &agrave; dire effectue plusieurs requ&ecirc;tes au cours d'une
-    seule session HTTP. Cette fonctionnalit&eacute; est d&eacute;sactiv&eacute;e par
-    d&eacute;faut.</dd>
+    <dd>Active la fonctionnalité des connexions HTTP persistantes
+    (KeepAlive), c'est à dire effectue plusieurs requêtes au cours d'une
+    seule session HTTP. Cette fonctionnalité est désactivée par
+    défaut.</dd>
 
     <dt><code>-l</code></dt>
-    <dd>N'indique pas d'erreur si la longueur des r&eacute;ponses n'est pas
-    constante, ce qui peut s'av&eacute;rer utile pour les pages dynamiques.
+    <dd>Ne signale pas les erreurs si la taille de la réponse n'est pas
+    constante. Cette option peut s'avérer utile pour les pages
+    dynamiques. Disponible à partir de la version 2.4.7 du serveur HTTP
+    Apache.
     </dd>
 
-    <dt><code>-n <var>requ&ecirc;tes</var></code></dt>
-    <dd>Nombre de requ&ecirc;tes &agrave; effectuer au cours du test de performances.
-    Par d&eacute;faut, une seule requ&ecirc;te est effectu&eacute;e, ce qui ne permet pas
-    d'obtenir des r&eacute;sultats repr&eacute;sentatifs.</dd>
+    <dt><code>-m <var>HTTP-method</var></code></dt>
+    <dd>Méthode HTTP personnalisée à utiliser pour les requêtes.<br />
+    Disponible à partir de la version 2.4.10 du serveur HTTP
+    Apache.</dd>
+
+    <dt><code>-n <var>requêtes</var></code></dt>
+    <dd>Nombre de requêtes à effectuer au cours du test de performances.
+    Par défaut, une seule requête est effectuée, ce qui ne permet pas
+    d'obtenir des résultats représentatifs.</dd>
 
     <dt><code>-p <var>fichier-POST</var></code></dt>
-    <dd>Fichier contenant les donn&eacute;es pour les requ&ecirc;tes POST.
-    Assurez-vous de sp&eacute;cifier aussi le param&egrave;tre <code>-T</code>.</dd>
+    <dd>Fichier contenant les données pour les requêtes POST.
+    Assurez-vous de spécifier aussi le paramètre <code>-T</code>.</dd>
 
     <dt><code>-P <var>nom-utilisateur-mandataire</var>:<var>mot-de-passe</var></code></dt>
     <dd>Fournit les informations d'authentification basique pour un
     mandataire en-route. Les nom d'utilisateur et mot de passe sont
-    s&eacute;par&eacute;s par un simple caract&egrave;re <code>:</code> et envoy&eacute;s sur le
-    r&eacute;seau cod&eacute;s en base64. La cha&icirc;ne est envoy&eacute;e, que le mandataire en
-    ait besoin ou non (qu'il ait renvoy&eacute; un code "407 proxy
+    séparés par un simple caractère <code>:</code> et envoyés sur le
+    réseau codés en base64. La chaîne est envoyée, que le mandataire en
+    ait besoin ou non (qu'il ait renvoyé un code "407 proxy
     authentication needed" ou non).</dd>
 
     <dt><code>-q</code></dt>
-    <dd>Lorsque plus de 150 requ&ecirc;tes sont trait&eacute;es, <code>ab</code>
+    <dd>Lorsque plus de 150 requêtes sont traitées, <code>ab</code>
     affiche la progression du traitement sur <code>stderr</code> tous
-    les 10% du nombre total ou toutes les 100 requ&ecirc;tes. Le drapeau
+    les 10% du nombre total ou toutes les 100 requêtes. Le drapeau
     <code>-q</code> permet de supprimer ces messages.</dd>
 
     <dt><code>-r</code></dt>
-    <dd>Ne s'arr&ecirc;te pas en cas d'erreur de r&eacute;ception sur la connexion.</dd>
+    <dd>Ne s'arrête pas en cas d'erreur de réception du socket.</dd>
 
     <dt><code>-s <var>timeout</var></code></dt>
-    <dd>Temps d'attente maximal du socket. La valeur par d&eacute;faut est de
-    30 secondes.</dd>
+    <dd>Temps maximum d'attente en secondes du socket avant de considérer
+    le délai comme dépassé. La valeur par défaut est de 30 secondes.<br />
+    Disponible à partir de la version 2.4.4 du serveur HTTP
+    Apache.</dd>
 
     <dt><code>-S</code></dt>
-    <dd>N'affiche ni les valeurs de d&eacute;viation standards et m&eacute;dianes, ni
+    <dd>N'affiche ni les valeurs de déviation standards et médianes, ni
     les messages d'erreur et d'avertissement lorsque les valeurs
-    m&eacute;dianes et moyennes sont &eacute;gales &agrave; une ou deux fois la valeur de
-    d&eacute;viation standard. Par d&eacute;faut les valeurs mini/moyenne/maxi sont
-    affich&eacute;es (option historique).</dd>
+    médianes et moyennes sont égales à une ou deux fois la valeur de
+    déviation standard. Par défaut les valeurs mini/moyenne/maxi sont
+    affichées (support de l'héritage).</dd>
+    <!-- dernière phrase à confirmer -->
 
-    <dt><code>-t <var>limite-dur&eacute;e</var></code></dt>
-    <dd>Dur&eacute;e maximale en secondes du test de performances. Ceci
+    <dt><code>-t <var>limite-durée</var></code></dt>
+    <dd>Durée maximale en secondes du test de performances. Ceci
     implique un <code>-n 50000</code> en interne. Utilisez cette option
     si vous souhaitez tester les performances du serveur pendant une
-    dur&eacute;e fix&eacute;e &agrave; l'avance. Par d&eacute;faut, il n'y a pas de limite de
-    dur&eacute;e.</dd>
+    durée fixée à l'avance. Par défaut, il n'y a pas de limite de
+    durée.</dd>
 
     <dt><code>-T <var>type-contenu</var></code></dt>
-    <dd>Valeur de l'en-t&ecirc;te Content-type &agrave; utiliser pour les donn&eacute;es
+    <dd>Valeur de l'en-tête Content-type à utiliser pour les données
     POST/PUT, par exemple
     <code>application/x-www-form-urlencoded</code>.
-    Valeur par d&eacute;faut : <code>text/plain</code>.</dd>
+    La valeur par défaut est <code>text/plain</code>.</dd>
 
     <dt><code>-u <var>fichier PUT</var></code></dt>
-    <dd>Fichier contenant des donn&eacute;es PUT.  Ne pas oublier de sp&eacute;cifier
+    <dd>Fichier contenant des données PUT.  Ne pas oublier de spécifier
     aussi <code>-T</code>.</dd>
 
-    <dt><code>-v <var>verbosit&eacute;</var></code></dt>
-    <dd>D&eacute;finit le niveau de verbosit&eacute; - les niveaux <code>4</code> et
-    sup&eacute;rieurs permettent d'afficher des informations &agrave; propos des
-    en-t&ecirc;tes, les niveaux <code>3</code> et sup&eacute;rieurs les codes de
-    r&eacute;ponse (404, 200, etc...), et les niveaux <code>2</code> et
-    sup&eacute;rieurs les messages d'avertissement et d'information.</dd>
+    <dt><code>-v <var>verbosité</var></code></dt>
+    <dd>Définit le niveau de verbosité - les niveaux <code>4</code> et
+    supérieurs permettent d'afficher des informations à propos des
+    en-têtes, les niveaux <code>3</code> et supérieurs les codes de
+    réponse (404, 200, etc...), et les niveaux <code>2</code> et
+    supérieurs les messages d'avertissement et d'information.</dd>
 
     <dt><code>-V</code></dt>
-    <dd>Affiche le num&eacute;ro de version et s'arr&ecirc;te.</dd>
+    <dd>Affiche le numéro de version et s'arrête.</dd>
 
     <dt><code>-w</code></dt>
-    <dd>Affiche les r&eacute;sultats dans des tables HTML. La table par d&eacute;faut
+    <dd>Affiche les résultats dans des tables HTML. La table par défaut
     comporte deux colonnes sur fond blanc.</dd>
 
     <dt><code>-x <var>&lt;table&gt;-attributs</var></code></dt>
-    <dd>La cha&icirc;ne &agrave; utiliser comme attributs pour
-    <code>&lt;table&gt;</code>. Les attributs sont ins&eacute;r&eacute;s
+    <dd>La chaîne à utiliser comme attributs pour
+    <code>&lt;table&gt;</code>. Les attributs sont insérés
     <code>&lt;table <var>ici</var> &gt;</code>.</dd>
 
     <dt><code>-X <var>mandataire</var>[:<var>port</var>]</code></dt>
-    <dd>Utilise un serveur mandataire pour les requ&ecirc;tes.</dd>
+    <dd>Utilise un serveur mandataire pour les requêtes.</dd>
 
     <dt><code>-y <var>&lt;tr&gt;-attributs</var></code></dt>
-    <dd>La cha&icirc;ne &agrave; utiliser comme attributs pour
+    <dd>La chaîne à utiliser comme attributs pour
     <code>&lt;tr&gt;</code>.</dd>
 
     <dt><code>-z <var>&lt;td&gt;-attributs</var></code></dt>
-    <dd>La cha&icirc;ne &agrave; utiliser comme attributs pour
+    <dd>La chaîne à utiliser comme attributs pour
     <code>&lt;td&gt;</code>.</dd>
 
     <dt><code>-Z <var>algorithme-chiffrement</var></code></dt>
-    <dd>Sp&eacute;cifie l'algorithme de chiffrement SSL/TLS (Voir les
+    <dd>Spécifie l'algorithme de chiffrement SSL/TLS (Voir les
     algorithme de chiffrement openssl).</dd>
     </dl>
 </section>
 
 <section id="output"><title>Sortie</title>
-    <p>Vous trouverez dans ce qui suit la liste des valeurs retourn&eacute;es
+    <p>Vous touverez dans ce qui suit la liste des valeurs retournées
     par <code>ab</code> :
     </p>
 
     <dl>
         <dt>Server Software</dt>
-        <dd>La valeur, si elle existe, de l'en-t&ecirc;te HTTP
-	<var>server</var> renvoy&eacute;e dans la premi&egrave;re r&eacute;ponse r&eacute;ussie.
-	Elle comporte tous les caract&egrave;res de l'en-t&ecirc;te jusqu'&agrave; ce qu'un
-	caract&egrave;re de valeur d&eacute;cimale 32 soit rencontr&eacute; (le plus souvent
+        <dd>La valeur, si elle existe, de l'en-tête HTTP
+	<var>server</var> renvoyée dans la première réponse réussie.
+	Elle comporte tous les caractères de l'en-tête jusqu'à ce qu'un
+	caractère de valeur décimale 32 soit rencontré (le plus souvent
 	un espace ou une fin de ligne).</dd>
 
         <dt>Server Hostname</dt>
         <dd>Le nom DNS ou l'adresse IP fourni dans la ligne de commande.</dd>
 
         <dt>Server Port</dt>
-        <dd>Le port auquel ab est connect&eacute;. Si la ligne de commande ne
-	sp&eacute;cifie aucun port, le port par d&eacute;faut sera 80 pour http et 443
+        <dd>Le port auquel ab est connecté. Si la ligne de commande ne
+	spécifie aucun port, le port par défaut sera 80 pour http et 443
 	pour https.</dd>
 
         <dt>SSL/TLS Protocol</dt>
-        <dd>Les param&egrave;tres de protocole n&eacute;goci&eacute;s entre le client et le
-	serveur. Uniquement si SSL est utilis&eacute;.</dd>
+        <dd>Les paramètres de protocole négociés entre le client et le
+	serveur. Uniquement si SSL est utilisé.</dd>
 
         <dt>Document Path</dt>
-        <dd>L'URI de la requ&ecirc;te interpr&eacute;t&eacute; &agrave; partir de la cha&icirc;ne de la
+        <dd>L'URI de la requête interprété à partir de la chaîne de la
 	ligne de commande.</dd>
 
         <dt>Document Length</dt>
-        <dd>Il s'agit de la taille en octets du premier document renvoy&eacute;
-	avec succ&egrave;s. Si la taille du document est modifi&eacute;e au cours
-	du test, la r&eacute;ponse est consid&eacute;r&eacute;e comme une erreur.</dd>
+        <dd>Il s'agit de la taille en octets du premier document renvoyé
+	avec succès. Si la taille du document est modifiée au cours
+	du test, la réponse est considérée comme une erreur.</dd>
 
         <dt>Concurrency Level</dt>
-        <dd>Le nombre de clients simultan&eacute;s utilis&eacute;s au cours du test.</dd>
+        <dd>Le nombre de clients simultanés utilisés au cours du test.</dd>
 
         <dt>Time taken for tests</dt>
-        <dd>Il s'agit du temps &eacute;coul&eacute; entre le moment de la premi&egrave;re
-	connexion au socket et la r&eacute;ception de la derni&egrave;re
-	r&eacute;ponse.</dd>
+        <dd>Il s'agit du temps écoulé entre le moment de la première
+	connexion au socket et la réception de la dernière
+	réponse.</dd>
 
         <dt>Complete requests</dt>
-        <dd>Le nombre de r&eacute;ponses re&ccedil;ues avec succ&egrave;s.</dd>
+        <dd>Le nombre de réponses reçues avec succès.</dd>
 
         <dt>Failed requests</dt>
-        <dd>Le nombre de requ&ecirc;tes consid&eacute;r&eacute;es comme erron&eacute;es. Si ce
-	nombre est diff&eacute;rent de 0, une ligne suppl&eacute;mentaire indiquera le
-	nombre de requ&ecirc;tes ayant &eacute;chou&eacute; suite &agrave; un probl&egrave;me de
-	connexion, de lecture, de taille de contenu erron&eacute;e ou
+        <dd>Le nombre de requêtes considérées comme erronées. Si ce
+	nombre est différent de 0, une ligne supplémentaire indiquera le
+	nombre de requêtes ayant échoué suite à un problème de
+	connexion, de lecture, de taille de contenu erronée ou
 	d'exceptions.</dd>
 
         <dt>Write errors</dt>
-        <dd>Le nombre d'erreurs rencontr&eacute;es en cours d'&eacute;criture (broken pipe).</dd>
+        <dd>Le nombre d'erreurs rencontrées en cours d'écriture (broken pipe).</dd>
 
         <dt>Non-2xx responses</dt>
-        <dd>Le nombre de r&eacute;ponses dont le code &eacute;tait en dehors de la
-	s&eacute;rie 200. Si toutes les r&eacute;ponses appartiennent &agrave; la s&eacute;rie 200,
+        <dd>Le nombre de réponses dont le code était en dehors de la
+	série 200. Si toutes les réponses appartiennent à la série 200,
 	cette ligne est absente.</dd>
 
         <dt>Keep-Alive requests</dt>
-        <dd>Le nombre de connexions promues &agrave; l'&eacute;tat de connexions
+        <dd>Le nombre de connexions promues à l'état de connexions
 	persistantes.</dd>
 
         <dt>Total body sent</dt>
-        <dd>Si le test a &eacute;t&eacute; configur&eacute; dans ce sens, il s'agit du nombre
-	total d'octets envoy&eacute;s au cours du test. Ce champ est omis si le
-	test ne pr&eacute;voyait pas d'envoi de corps.</dd>
+        <dd>Si le test a été configuré dans ce sens, il s'agit du nombre
+	total d'octets envoyés au cours du test. Ce champ est omis si le
+	test ne prévoyait pas d'envoi de corps.</dd>
 
         <dt>Total transferred</dt>
-        <dd>Le nombre total d'octets re&ccedil;us du serveur. Ce nombre
-	correspond &agrave; peu pr&egrave;s au nombre d'octets envoy&eacute;s sur la ligne.</dd>
+        <dd>Le nombre total d'octets reçus du serveur. Ce nombre
+	correspond à peu près au nombre d'octets envoyés sur la ligne.</dd>
 
         <dt>HTML transferred</dt>
-        <dd>Le nombre total d'octets utiles (contenus) re&ccedil;us du serveur.
-	Ce nombre n'inclut pas les octets correspondant aux en-t&ecirc;tes
+        <dd>Le nombre total d'octets utiles (contenus) reçus du serveur.
+	Ce nombre n'inclut pas les octets correspondant aux en-têtes
 	HTTP.</dd>
 
         <dt>Requests per second</dt>
-        <dd>Il s'agit du nombre de requ&ecirc;tes par seconde. Il correspond
-	au nombre de requ&ecirc;tes divis&eacute; par la dur&eacute;e totale du traitement.</dd>
+        <dd>Il s'agit du nombre de requêtes par seconde. Il correspond
+	au nombre de requêtes divisé par la durée totale du traitement.</dd>
 
         <dt>Time per request</dt>
-        <dd>La dur&eacute;e moyenne du traitement d'une requ&ecirc;te. La premi&egrave;re
-	valeur est calcul&eacute;e selon la formule <code>concurrency *
+        <dd>La durée moyenne du traitement d'une requête. La première
+	valeur est calculée selon la formule <code>concurrency *
 	timetaken * 1000 / done</code>, alors que la seconde valeur est
-	calcul&eacute;e selon la formule <code>timetaken * 1000 / done</code>.</dd>
+	calculée selon la formule <code>timetaken * 1000 / done</code>.</dd>
 
         <dt>Transfer rate</dt>
-        <dd>Le taux de transfert calcul&eacute; selon la formule
+        <dd>Le taux de transfert calculé selon la formule
 	<code>totalread / 1024 / timetaken</code>.</dd>
     </dl>
 </section>
 
 <section id="bugs"><title>Bogues</title>
-    <p>De nombreux tampons de taille fixe sont d&eacute;clar&eacute;s statiquement.
-    Combin&eacute; avec l'interpr&eacute;tation poussive des arguments de la ligne de
-    commande, les en-t&ecirc;tes de r&eacute;ponse du serveur et autres entr&eacute;es
+    <p>De nombreux tampons de taille fixe sont déclarés statiquement.
+    Combiné avec l'interprétation poussive des arguments de la ligne de
+    commande, les en-têtes de réponse du serveur et autres entrées
     externes, ceci peut vous affecter.</p>
 
-    <p>HTTP/1.x n'est pas compl&egrave;tement impl&eacute;ment&eacute; ; seules certaines
-    formes de r&eacute;ponses 'attendues' sont accept&eacute;es. L'utilisation
+    <p>HTTP/1.x n'est pas complètement implémenté ; seules certaines
+    formes de réponses 'attendues' sont acceptées. L'utilisation
     relativement intense de <code>strstr(3)</code> provoque un affichage
-    en t&ecirc;te de profil, ce qui peut faire croire &agrave; un probl&egrave;me de
+    en tête de profil, ce qui peut faire croire à un problème de
     performances ; en d'autres termes, vous mesurez les performances de
-    <code>ab</code> plut&ocirc;t que celles du serveur.</p>
+    <code>ab</code> plutôt que celles du serveur.</p>
 </section>
 
 </manualpage>
