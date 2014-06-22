@@ -106,7 +106,8 @@
     'gnuplot' file; as the results are already 'binned'.</dd>
 
     <dt><code>-f <var>protocol</var></code></dt>
-    <dd>Specify SSL/TLS protocol (SSL2, SSL3, TLS1, or ALL).</dd>
+    <dd>Specify SSL/TLS protocol (SSL2, SSL3, TLS1, TLS1.1, TLS1.2, or ALL).<br />
+    TLS1.1 and TLS1.2 support available in 2.4.4 and later.</dd>
 
     <dt><code>-g <var>gnuplot-file</var></code></dt>
     <dd>Write all measured values out as a 'gnuplot' or TSV (Tab separate
@@ -131,12 +132,13 @@
 
     <dt><code>-l</code></dt>
     <dd>Do not report errors if the length of the responses is not constant. This 
-    can be usefull for dynamic pages.
+    can be usefull for dynamic pages.<br />
+    Available in 2.4.7 and later.
     </dd>
 
     <dt><code>-m <var>HTTP-method</var></code></dt>
-    <dd>Custom HTTP method for the requests.  This option is available in Apache
-    HTTP Server 2.4.10 and later.</dd>
+    <dd>Custom HTTP method for the requests.<br />
+    Available in 2.4.10 and later.</dd>
 
     <dt><code>-n <var>requests</var></code></dt>
     <dd>Number of requests to perform for the benchmarking session. The default
@@ -163,7 +165,8 @@
 
     <dt><code>-s <var>timeout</var></code></dt>
     <dd>Maximum number of seconds to wait before the socket times out.
-    Default is 30 seconds.</dd>
+    Default is 30 seconds.<br />
+    Available in 2.4.4 and later.</dd>
 
     <dt><code>-S</code></dt>
     <dd>Do not display the median and standard deviation values, nor display
