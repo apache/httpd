@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1598962:1604336 (outdated) -->
+<!-- English Revision : 1604336 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1749,11 +1749,12 @@ end
 <name>LuaHookCheckUserID</name>
 <description>Fournit un point d'entr&eacute;e pour la phase check_user_id du
 traitement de la requ&ecirc;te</description>
-<syntax>LuaHookCheckUserID  /chemin/vers/lua/script.lua hook_function_name [early|late]</syntax>
+<syntax>LuaHookCheckUserID  /path/to/lua/script.lua hook_function_name</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>All</override>
+<!-- Third argument does not work at the moment!
 <compatibility>Le troisi&egrave;me argument optionnel est disponible depuis la
 version 2.3.15 du serveur HTTP Apache.</compatibility>
 <usage><p>...</p>
@@ -1761,6 +1762,7 @@ version 2.3.15 du serveur HTTP Apache.</compatibility>
    "early" ou "late" permettent de contr&ocirc;ler le moment auquel ce script
    s'ex&eacute;cute par rapport aux autres modules.</p></note>
 </usage>
+-->
 </directivesynopsis>
 
 <directivesynopsis>

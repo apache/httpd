@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1593687:1604382 (outdated) -->
+<!-- English Revision: 1604382 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -189,8 +189,9 @@ ProxyVia On
 
     <p>Vous pouvez aussi forcer le traitement d'une requ&ecirc;te en tant que
     requ&ecirc;te de mandataire inverse en cr&eacute;ant un gestionnaire de transfert
-    appropri&eacute;. Dans l'exemple suivant, tous les scripts PHP seront
-    transmis au serveur FCGI mandataire inverse sp&eacute;cifi&eacute; :
+    appropri&eacute;. Dans l'exemple suivant, toutes les requ&ecirc;tes pour
+    des scripts PHP seront transmises au serveur FastCGI
+    sp&eacute;cifi&eacute; via un mandat inverse :
     </p>
 
     <example><title>Scripts PHP et mandataire inverse</title>
@@ -199,7 +200,11 @@ ProxyVia On
     SetHandler  "proxy:unix:/path/to/app.sock|fcgi://localhost/"
 &lt;/FilesMatch&gt;
     </highlight>
-    </example>
+      </example>
+
+      <p>Cette fonctionnalit&eacute; est disponible &agrave; partir de la version
+      2.4.10 du serveur HTTP Apache.</p>
+
     </section> <!-- /handler -->
 
     <section id="workers"><title>Workers</title>

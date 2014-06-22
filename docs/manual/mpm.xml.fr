@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1395555:1602764 (outdated) -->
+<!-- English Revision : 1602764 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -154,6 +154,17 @@ DSO (Dynamic Shared Object)</title>
     modifiant la directive <directive
     module="mod_so">LoadModule</directive> concern&eacute;e, sans avoir &agrave;
     recompiler le serveur.</p>
+
+    <highlight language="config">
+    LoadModule mpm_prefork_module modules/mod_mpm_prefork.so
+    </highlight>
+
+    <p>Toute tentative de charger plusieurs modules MPM via la directive
+    <directive module="mod_so">LoadModule</directive> emp&ecirc;chera le
+    serveur de d&eacute;marrer et affichera l'erreur suivante :</p>
+
+    <example>AH00534: httpd: Configuration error: More than one MPM
+    loaded.</example>
 
     <p>Cette fonctionnalit&eacute; est activ&eacute;e via l'option
     <code>--enable-mpms-shared</code> du script
