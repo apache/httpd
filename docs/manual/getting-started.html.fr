@@ -24,12 +24,10 @@
 <p><span>Langues Disponibles: </span><a href="./en/getting-started.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./fr/getting-started.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 <p>Si vous ne connaissez rien au serveur HTTP Apache, ou même au
 fonctionnement d'un site web, vous vous demandez probablement par où
-commencer ou quelles questions poser. Ce document vous permettra de
+commencer et quelles questions poser. Ce document vous permettra de
 parcourir les bases du sujet.</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#clientserver">Clients, serveurs et URLs</a></li>
@@ -37,7 +35,7 @@ parcourir les bases du sujet.</p>
 <li><img alt="" src="./images/down.gif" /> <a href="#configuration">Fichiers de configuration et directives</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#content">Contenu du site web</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#logs">Fichiers journaux et résolution des problèmes</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#other">Que dois-je savoir d'autre ?</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#other">Et maintenant, quelle est la suite des opérations ?</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -49,13 +47,13 @@ Les adresses des pages web sur la Toile se présentent sous forme d'URLs
 - Uniform Resource Locators - qui comportent un protocole (par
   exemple <code>http</code>), un nom de serveur (par exemple
   <code>www.apache.org</code>), un chemin (par exemple
-  <code>/docs/current/getting-started.html</code>), et parfois
-  une chaîne de paramètres (par exemple <code>?arg=value</code>)
+  <code>/docs/current/getting-started.html</code>), et le cas échéant
+  une chaîne de requête (query string) (par exemple <code>?arg=value</code>)
   permettant de transmettre des informations supplémentaires au serveur.
 </p>
 
-<p>Tout client (par exemple un navigateur web) se connecte à un serveur
-(par exemple votre serveur HTTP Apache) en suivant un protocole spécifique, et
+<p>Un client (par exemple un navigateur web) se connecte à un serveur
+(par exemple votre serveur HTTP Apache) avec un protocole spécifique, et
 effectue une <strong>requête</strong> pour une ressource en spécifiant
 son chemin.</p>
 
@@ -68,7 +66,7 @@ site web</a>.</p>
 
 <p>
 Le serveur envoie alors une <strong>réponse</strong> comportant un code
-d'état, et le plus souvent un corps de réponse. Le code d'état indique si
+d'état, et éventuellement un corps de réponse. Le code d'état indique si
 la requête a été traitée avec succès, ou dans la négative quel type
 d'erreur a été rencontré. Le client est alors sensé savoir quoi faire de
 la réponse. Vous pouvez vous familiariser avec les différents codes
@@ -85,14 +83,14 @@ journaux</a>.</p>
 <h2><a name="dns" id="dns">Noms d'hôte et DNS</a></h2>
 
 
-<p>Pour se connecter à un serveur, le client doit tout d'abord traduire
-le nom du serveur en une adresse IP, cette dernière permettant de localiser
+<p>Pour se connecter à un serveur, le client doit tout d'abord résoudre
+le nom du serveur en adresse IP, cette dernière permettant de localiser
 le serveur sur Internet. Ainsi, pour que votre serveur web soit
 accessible, son nom doit être enregistré dans le DNS.</p>
 
-<p>Si vous ne savez pas comment utiliser cette fonctionnalité, vous
-devez contacter votre administrateur réseau ou votre fournisseur d'accès
-à Internet qui le feront pour vous.</p>
+<p>Si vous ne savez pas comment effectuer cet enregistrement, vous
+devrez contacter votre administrateur réseau ou votre fournisseur
+d'accès à Internet afin qu'il effectue cette opération pour vous.</p>
 
 <p>Plusieurs noms d'hôte peuvent pointer vers la même adresse IP, et
 plusieurs adresses IP peuvent être attachées au même serveur physique.
@@ -131,7 +129,7 @@ Le nom du fichier de configuration par défaut est en général
 <code>httpd.conf</code>, mais peut aussi varier en fonction des
 distributions tierces du serveur.</p>
 
-<p>On trouve souvent la configuration divisée en plusieurs
+<p>L'ensemble de la configuration est en général divisé en plusieurs
 fichiers afin d'en faciliter la gestion. Ces fichiers sont inclus dans
 le fichier de configuration principal via la directive <code class="directive"><a href="./mod/core.html#include">Include</a></code>. Les noms ou positions de ces fichiers
 ne sont pas figés et peuvent varier considérablement d'une distribution
@@ -159,7 +157,7 @@ directives peuvent être insérées dans des fichiers
 concerné. Les fichiers <code>.htaccess</code> sont essentiellement
 destinés aux personnes qui n'ont pas accès aux fichiers de configuration
 du serveur. Vous trouverez plus de détails à propos des fichiers
-<code>.htaccess</code> dans ce howto <a href="howto/htaccess.html"><code>.htaccess</code></a>.</p>
+<code>.htaccess</code> dans ce <a href="howto/htaccess.html"><code>.htaccess</code>howto</a>.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -171,11 +169,11 @@ formes, il peut en général être scindé en deux formes principales : les
 contenus statiques et les contenus dynamiques.</p>
 
 <p>Les contenus statiques sont par exemple les fichiers HTML, les
-images, les fichiers CSS et tout autre fichier résidant sur le système
+images, les fichiers CSS et tout autre fichier résidant dans le système
 de fichiers. La directive <code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code> permet de définir la position
-dans l'arborescence du site où vous devez placer ces fichiers. On peut
-définir cette directive au niveau global, ainsi que dans chaque
-serveur virtuel. Consultez vos fichiers de configuration
+dans l'arborescence du site où vous devez placer ces fichiers. Cette
+directive peut être définie au niveau global, ou au niveau de chaque
+serveur virtuel. Vous pouvez consulter vos fichiers de configuration
 pour vérifier la manière dont cette directive est définie pour votre
 serveur.</p>
 
@@ -191,7 +189,7 @@ client par le serveur.</p>
 traitement de la requête, et qui peut différer d'une requête à l'autre.
 Ces contenus dynamiques peuvent être générés de nombreuses manières par
 l'intermédiaire de <a href="handler.html">gestionnaires de contenu</a>
-ou "handlers". Il est également possible de créer des <a href="howto/cgi.html">programmes CGI</a> pour générer le contenu de
+ou "handlers". Il est aussi possible de créer des <a href="howto/cgi.html">programmes CGI</a> pour générer le contenu de
 votre site.</p>
 
 <p>Enfin, on peut utiliser des modules tiers comme mod_php pour écrire
@@ -212,7 +210,7 @@ consulter le journal des erreurs revient à conduire les yeux fermés.</p>
 
 <p>La position dans le système de fichiers du journal des erreurs est
 spécifiée par la directive <code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code>
-qui peut être définie au niveau global, ainsi que dans chaque serveur
+qui peut être définie au niveau global, ou au niveau de chaque serveur
 virtuel. Chaque entrée du journal des erreurs vous informe sur la nature
 des problèmes et le moment de leur survenue. En outre, elle vous indique
 souvent comment résoudre le problème. Chaque message d'erreur contient
@@ -227,18 +225,21 @@ l'erreur.</p>
 <p>Vous trouverez plus de détails à ce sujet dans la <a href="logs.html">Documentation sur la journalisation</a>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="other" id="other">Que dois-je savoir d'autre ?</a></h2>
+<h2><a name="other" id="other">Et maintenant, quelle est la suite des opérations ?</a></h2>
+
+
+<p>La question des prérequis étant réglée, il est temps de passer aux
+choses sérieuses.</p>
 
 <p>Ce document ne couvre que les notions de base. Nous espérons qu'il
 vous permettra de mettre le pied à l'étrier, mais il y a encore de
-nombreuses choses que vous devez savoir. Voici une liste non exhaustive
-des documents que nous vous recommandons de consulter :</p>
+nombreuses choses que vous devez savoir.</p>
 
 <ul>
-<li><a href="howto/auth.html">Authentification et autorisation
-(protection des ressources par mot de passe)</a></li>
-<li><a href="howto/access.html">Contrôle d'accès</a></li>
-<li><a href="ssl/ssl_howto.html">Mise en oeuvre de SSL</a></li>
+<li><a href="http://httpd.apache.org/download.cgi">Téléchargement</a></li>
+<li><a href="install.html">Installation</a></li>
+<li><a href="configuring.html">Configuration</a></li>
+<li><a href="invoking.html">Démarrage du serveur</a></li>
 <li><a href="http://wiki.apache.org/httpd/FAQ">Foire aux questions</a></li>
 </ul>
 
