@@ -1175,18 +1175,22 @@ static const char *register_filter_function_hook(const char *filter,
     }
     return NULL;
 }
+/* disabled (see reference below)
 static int lua_check_user_id_harness_first(request_rec *r)
 {
     return lua_request_rec_hook_harness(r, "check_user_id", AP_LUA_HOOK_FIRST);
 }
+*/
 static int lua_check_user_id_harness(request_rec *r)
 {
     return lua_request_rec_hook_harness(r, "check_user_id", APR_HOOK_MIDDLE);
 }
+/* disabled (see reference below)
 static int lua_check_user_id_harness_last(request_rec *r)
 {
     return lua_request_rec_hook_harness(r, "check_user_id", AP_LUA_HOOK_LAST);
 }
+*/
 
 static int lua_translate_name_harness_first(request_rec *r)
 {
