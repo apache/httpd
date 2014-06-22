@@ -183,7 +183,7 @@ ProxyVia On
       <highlight language="config">
 &lt;FilesMatch \.php$&gt;
     SetHandler  "proxy:unix:/path/to/app.sock|fcgi://localhost/"
-&lt;/FilesMatch&lgt;
+&lt;/FilesMatch&gt;
       </highlight>
       </example>
 
