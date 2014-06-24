@@ -840,12 +840,12 @@ static int start_lingering_close_common(event_conn_state_t *cs)
     }
     apr_atomic_inc32(&lingering_count);
     apr_thread_mutex_lock(timeout_mutex);
+    cs->c->sbh = NULL;
     TO_QUEUE_APPEND(*q, cs);
     cs->pfd.reqevents = (
             cs->pub.sense == CONN_SENSE_WANT_WRITE ? APR_POLLOUT :
                     APR_POLLIN) | APR_POLLHUP | APR_POLLERR;
     cs->pub.sense = CONN_SENSE_DEFAULT;
-    cs->c->sbh = NULL;
     rv = apr_pollset_add(event_pollset, &cs->pfd);
     apr_thread_mutex_unlock(timeout_mutex);
     if (rv != APR_SUCCESS && !APR_STATUS_IS_EEXIST(rv)) {
