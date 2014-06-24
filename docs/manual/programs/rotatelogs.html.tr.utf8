@@ -110,7 +110,8 @@
     <dt><code><strong>-n</strong> <var>dosya_sayısı</var></code></dt>
     <dd>Zaman damgalarına bakılmaksızın bir dosya serisi açılır. Örneğin -n3
       belirtilirse "logfile", "logfile.1", "logfile.2" serisi açılır ve
-      "logfile" üzerine yazılır.</dd>
+      "logfile" üzerine yazılır.
+      2.4.5 ve sonraki sürümler içindir.</dd>
 
     <dt><code><var>dosyaismi</var></code></dt>
     <dd><p>Günlük dosyasının ismi yoluyla birlikte belirtilir.

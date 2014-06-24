@@ -30,7 +30,6 @@
 <a href="./tr/mpm.html" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="./zh-cn/mpm.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
   <p>Bu belgede Çok Süreçlilik Modülü denince ne anlaşıldığı ve bunların
     Apache HTTP Sunucusu tarafından nasıl kullanıldıkları açıklanmıştır.</p>
@@ -149,6 +148,16 @@
       modülü olarak derlenen MPM'ler, sunucunun yeniden derlenmesini
       gerektirmeden <code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code> yönergesi
       güncellenerek değiştirilebilir.</p>
+
+    <pre class="prettyprint lang-config">LoadModule mpm_prefork_module modules/mod_mpm_prefork.so</pre>
+
+
+    <p><code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code> yönergesini birden
+      fazla MPM için kullanmak sunucunun başlatılması sırasında aşağıdaki
+      hatanın oluşmasına sebep olur.</p>
+
+    <div class="example"><p><code>AH00534: httpd: Configuration error: More than one MPM
+    loaded.</code></p></div>
 
     <p>Bu özellik <code class="program"><a href="./programs/configure.html">configure</a></code> betiğinin
       <code>--enable-mpms-shared</code> seçeneği ile etkinleştirilebilir.
