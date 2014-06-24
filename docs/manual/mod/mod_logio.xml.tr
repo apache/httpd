@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1523269:1588345 (outdated) -->
+<!-- English Revision: 1588345 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -59,7 +59,7 @@
 
     <p>İsteğin belirgin özellikleri için, biçem dizgesinde yer alan % imli
       biçem belirteçlerinin yerine günlük dosyasında değerleri yazılır. Bu
-      modül iki yeni biçem belirteci ekler:</p>
+      modül üç yeni biçem belirteci ekler:</p>
 
     <table border="1" style="zebra">
     <tr><th>Biçem&nbsp;Belirteci</th>
@@ -71,9 +71,11 @@
 
     <tr><td><code>%O</code></td>
         <td>Başlıklar dahil gönderilen bayt sayısı; sıfır olamaz.</td></tr>
+
     <tr><td><code>%S</code></td>
         <td>Aktarılan bayt sayısı (alınan ve gönderilen), istekler ve başlıklar
-          dahil; sıfır olamaz. %I ve %O'nun birleşimidir.</td></tr>
+          dahil; sıfır olamaz. %I ve %O'nun birleşimidir.<br />
+          Apache 2.4.7 ve sonrasında kullanılabilmektedir.</td></tr>
     </table>
 
     <p>Genel olarak, işlevsellik şöyle kullanılır:</p>

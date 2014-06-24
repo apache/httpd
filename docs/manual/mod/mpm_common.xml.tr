@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1448589:1590654 (outdated) -->
+<!-- English Revision: 1590654 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -118,8 +118,8 @@
 <name>GracefulShutdownTimeout</name>
 <description>Sunucunun nazikçe kapatılmasının ardından ana süreç çıkana kadar
   geçecek süre için bir zaman aşımı belirler.</description>
-<syntax>GracefulShutDownTimeout <var>saniye</var></syntax>
-<default>GracefulShutDownTimeout 0</default>
+<syntax>GracefulShutdownTimeout <var>saniye</var></syntax>
+<default>GracefulShutdownTimeout 0</default>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>prefork</module><module>worker</module>
 <module>event</module></modulelist>

@@ -1,10 +1,10 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 1395561:1602766 (outdated) -->
+<!-- English Revision: 1602766 -->
 <!-- =====================================================
- Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
-   Reviewed by: Orhan Berent <berent belgeler.org>
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
+   Reviewed by: Orhan Berent <berent belgeler.gen.tr>
 ========================================================== -->
 
 <!--
@@ -142,6 +142,17 @@
       modülü olarak derlenen MPM'ler, sunucunun yeniden derlenmesini
       gerektirmeden <directive module="mod_so">LoadModule</directive> yönergesi
       güncellenerek değiştirilebilir.</p>
+
+    <highlight language="config">
+    LoadModule mpm_prefork_module modules/mod_mpm_prefork.so
+    </highlight>
+
+    <p><directive module="mod_so">LoadModule</directive> yönergesini birden
+      fazla MPM için kullanmak sunucunun başlatılması sırasında aşağıdaki
+      hatanın oluşmasına sebep olur.</p>
+
+    <example>AH00534: httpd: Configuration error: More than one MPM
+    loaded.</example>
 
     <p>Bu özellik <program>configure</program> betiğinin
       <code>--enable-mpms-shared</code> seçeneği ile etkinleştirilebilir.
