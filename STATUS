@@ -148,6 +148,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      +1: ylavic
      covener: I did not look in depth, but is the preceding log message also bad?
+     ylavic: No, this concerns the next for (;; e = APR_BUCKET_NEXT(e)) iteration.
+             We could also s/apr_bucket_delete/APR_BUCKET_REMOVE/ instead, but
+             stripping some (unhandled) buckets from the source brigade does
+             not look correct to me either (brigade *to is to be consumed, but
+             *from is still living, the caller may want to reuse it, eg:
+             https://issues.apache.org/bugzilla/attachment.cgi?id=31686).
+             Should we?
+
 
    * mod_proxy_http: Avoid useless functions calls.
      trunk patch: http://svn.apache.org/r1572561
@@ -203,7 +211,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                 re-allocated.
      trunk patch: http://svn.apache.org/r1604350
      2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-event_sbh-race.diff
-     +1 covener, ylavic
+     +1 covener
+     ylavic: +1 with http://svn.apache.org/r1605067
 
 OTHER PROPOSALS
 
