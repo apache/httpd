@@ -106,7 +106,7 @@ processed in real time by a further tool in the chain.</dd>
 <dt><code>-n <var>number-of-files</var></code></dt>
 <dd>Use a circular list of filenames without timestamps.
 With -n 3, the series of log files opened would be
-"logfile", "logfile.1", "logfile.2", then overwriting "logfile".<br />
+"logfile", "logfile.1", "logfile.2", then overwriting "logfile".
 Available in 2.4.5 and later.</dd>
 
 <dt><code><var>logfile</var></code></dt>
