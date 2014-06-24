@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1562488:1590308 (outdated) -->
+<!-- English Revision: 1590308 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -37,8 +37,6 @@
 </description>
 <syntax>AcceptFilter <var>protocol</var> <var>kabul_süzgeci</var></syntax>
 <contextlist><context>server config</context></contextlist>
-<compatibility>Windows'ta Apache httpd 2.3.3 ve sonrasında diğerlerinde Apache
-httpd 2.1.5 ve sonrasında mevcuttur.</compatibility>
 
 <usage>
     <p>Bu yönerge <directive module="core">Protocol</directive> yönergesinde belirtilen
@@ -629,6 +627,8 @@ AllowOverrideList CookieTracking CookieName
 <syntax>DefaultRuntimeDir <var>dizin-yolu</var></syntax>
 <default>DefaultRuntimeDir DEFAULT_REL_RUNTIMEDIR (logs/)</default>
 <contextlist><context>server config</context></contextlist>
+<compatibility>Apache 2.4.2 ve sonrasında kullanılabilmektedir.
+</compatibility>
 
 <usage>
     <p><directive>DefaultRuntimeDir</directive> yönergesi sunucunun çalışma
@@ -1351,8 +1351,6 @@ ErrorDocument 404 /cgi-bin/bad_urls.pl
 <syntax> ErrorLogFormat [connection|request] <var>biçem</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
-<compatibility>Apache httpd 2.3.9 ve sonrasında kullanılabilmektedir.
-</compatibility>
 
 <usage>
     <p><directive>ErrorLogFormat</directive> yönergesi, hata günlüğünde asıl
@@ -1767,9 +1765,9 @@ ErrorLogFormat connection "[%{uc}t] [C:%{c}L] local\ %a remote\ %A"
       kullanılmalıdır.</p>
 
 <highlight language="config">
-&lt;DirectoryMatch ^/var/www/combined/(?&lt;sitename&gt;[^/]+)&gt;
+&lt;FilesMatch ^(?&lt;sitename&gt;[^/]+)&gt;
     require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
-&lt;/DirectoryMatch&gt;
+&lt;/FilesMatch&gt;
 </highlight>
 </usage>
 
@@ -1911,7 +1909,7 @@ takdirde uygulanacak yönergeleri barındırır.</description>
     <highlight language="config">&lt;If "-z req('Host')"&gt;</highlight>
 
     <p>Bir <var>Host:</var> başlığı içermeyen HTTP/1.0 istekleriyle
-      eşleşir. İfadeler, dizge karşılaştırması (<code>=</code>,
+      eşleşir. İfadeler, dizge karşılaştırması (<code>==</code>,
       <code>!=</code>, <code>&lt;</code>, ...), tamsayı karşılaştırması
       (<code>-eq</code>, <code>-ne</code>, ...) ve diğerleri (<code>-n</code>,
       <code>-z</code>, <code>-f</code>, ...) için kabuktakilere benzer çeşitli
@@ -2193,7 +2191,6 @@ Include conf/vhosts/*.conf
 <default>KeepAliveTimeout 5</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
-<compatibility>Apache httpd 2.3.2'den itibaren milisaniyelik değerler belirtilebilmektedir.</compatibility>
 
 <usage>
     <p>Sunucunun kalıcı bir bağlantıyı kapatmadan önce bir sonraki isteği kaç

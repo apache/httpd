@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="style/manual.tr.xsl"?>
-<!-- English Revision: 1334033:1597081 (outdated) -->
+<!-- English Revision: 1597081 -->
 <!-- =====================================================
- Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
-   Reviewed by: Orhan Berent <berent belgeler.org>
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
+   Reviewed by: Orhan Berent <berent belgeler.gen.tr>
 ========================================================== -->
 
 <!--
@@ -181,6 +181,11 @@
           Bu kip ayrıca, sunucu işlemlerinin kimlik doğrulama ve yetkilendirme
           aşamalarının da yapılmadan geçilmesini sağlar. Bu bakımdan bu kip
           seçilirken bu durum dikkate alınmalıdır.</p>
+
+          <p>"Authorization" başlığı içeren istekler (örneğin, HTTP Temel
+          Kimlik Kanıtlaması gibi) <module>mod_cache</module> bu kipte
+          çalışırken önbelleğe alınmadıkları gibi önbellekten bir işleme de
+          sokulmazlar.</p>
       </dd>
       <dt>Normal eylem aşaması</dt>
       <dd>

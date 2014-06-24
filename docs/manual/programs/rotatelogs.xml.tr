@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1492708:1604534 (outdated) -->
+<!-- English Revision: 1605004 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -106,7 +106,8 @@
     <dt><code><strong>-n</strong> <var>dosya_sayısı</var></code></dt>
     <dd>Zaman damgalarına bakılmaksızın bir dosya serisi açılır. Örneğin -n3
       belirtilirse "logfile", "logfile.1", "logfile.2" serisi açılır ve
-      "logfile" üzerine yazılır.</dd>
+      "logfile" üzerine yazılır.
+      2.4.5 ve sonraki sürümler içindir.</dd>
 
     <dt><code><var>dosyaismi</var></code></dt>
     <dd><p>Günlük dosyasının ismi yoluyla birlikte belirtilir.
