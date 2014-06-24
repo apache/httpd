@@ -57,6 +57,7 @@
     [ -<strong>i</strong> ]
     [ -<strong>k</strong> ]
     [ -<strong>l</strong> ]
+    [ -<strong>m</strong> <var>HTTP-yöntemi</var> ]
     [ -<strong>n</strong> <var>istek-sayısı</var> ]
     [ -<strong>p</strong> <var>POST-dosyası</var> ]
     [ -<strong>P</strong> <var>vekil-yetkilisi:parola</var> ]
@@ -116,7 +117,9 @@
       dosyasından daha yararlıdır.</dd>
 
     <dt><code><strong>-f</strong> <var>protokol</var></code></dt>
-    <dd>SSL/TLS protokolü belirtilir (SSL2, SSL3, TLS1 veya ALL).</dd>
+    <dd>SSL/TLS protokolü belirtilir (SSL2, SSL3, TLS1, TLS1.1, TLS1.2 veya
+      ALL). TLS1.1 ve TLS1.2 desteği 2.4.4 ve sonraki sürümler
+      içindir.</dd>
 
     <dt><code><strong>-g</strong> <var>gnuplot-dosyası</var></code></dt>
     <dd>Ölçülen değerler bir 'gnuplot' veya TSV (sekme ayraçlı değerler)
@@ -142,9 +145,13 @@
       öntanımlı olarak kapalıdır.</dd>
 
     <dt><code><strong>-l</strong></code></dt>
-    <dd>Yanıtarın uzunluğu sabir değilse hataları raporlamaz. Özdevinimli
-      sayfalarda kullanışlı olabilir.
-    </dd>
+    <dd>Yanıtarın uzunluğu sabit değilse hataları raporlamaz. Özdevinimli
+      sayfalarda kullanışlı olabilir. 2.4.7 ve sonraki sürümler
+      içindir.</dd>
+
+    <dt><code><strong>-m</strong> <var>HTTP-yöntemi</var></code></dt>
+    <dd>İstekler için özel HTTP yöntemi, belirtilir.
+    2.4.10 ve sonraki sürümler içindir.</dd>
 
     <dt><code><strong>-n</strong> <var>istek-sayısı</var></code></dt>
     <dd>Kıyaslama oturumu sırasında sunucuya uygulanacak istek sayısı.
@@ -176,7 +183,8 @@
 
     <dt><code><strong>-s</strong> <var>zamanasimi</var></code></dt>
     <dd>Soket zaman aşımına uğramadan önce beklenecek azami saniye sayısı.
-      30 saniye öntanımlı süredir.</dd>
+      30 saniye öntanımlı süredir.
+      2.4.4 ve sonraki sürümler içindir.</dd>
 
     <dt><code><strong>-S</strong></code></dt>
     <dd>Ortalama ve ortanca değerler arasında bir veya iki standart sapmadan

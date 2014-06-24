@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "ROTATELOGS" 8 "2013-08-16" "Apache HTTP Sunucusu" "rotatelogs"
+.TH "ROTATELOGS" 8 "2014-06-24" "Apache HTTP Sunucusu" "rotatelogs"
 .nh
 .SH İSİM
 rotatelogs \- Apache günlüklerini döndürmek için borulu günlük kayıt programı
@@ -65,7 +65,7 @@ Günlüğü standart çıktıya basar\&. Günlüğün zincirdeki ilgili araç ta
 Create log file for each interval, even if empty\&.  
 .TP
 \fB-n\fR \fIdosya_sayısı\fR
-Zaman damgalarına bakılmaksızın bir dosya serisi açılır\&. Örneğin -n3 belirtilirse "logfile", "logfile\&.1", "logfile\&.2" serisi açılır ve "logfile" üzerine yazılır\&.  
+Zaman damgalarına bakılmaksızın bir dosya serisi açılır\&. Örneğin -n3 belirtilirse "logfile", "logfile\&.1", "logfile\&.2" serisi açılır ve "logfile" üzerine yazılır\&. 2\&.4\&.5 ve sonraki sürümler içindir\&.  
 .TP
 \fIdosyaismi\fR
 .PP Günlük dosyasının ismi yoluyla birlikte belirtilir\&. \fIdosyaismi\fR '%' karakterleri içeriyorsa bunlar strftime(3) biçem belirteçleri olarak ele alınır\&. Aksi takdirde, özdevinimli olarak \fI\&.nnnnnnnnnn\fR uzantısı üretilir\&. (\fB-t\fR seçeneği kullanılmadıkça) Uzantı saniye cinsindendir ve her iki durumda da bu değer, mevcut döngü diliminin başlangıcına göre hesaplanır\&. Örneğin, döndürmenin 86400 saniyede bir yapılacağı belirtilmişse, strftime(3) biçeminde oluşturulan saat, dakika ve saniye alanları, 24 saatlik sürenin başlangıcını (geceyarısı) göstermek üzere sıfırlarla doldurulur\&. .PP strftime(3) dosyaismi biçemlemesi kullanılırken, günlük dosyası biçeminin günlük dosyası döndürülürken her zaman farklı bir dosya ismi üretecek yeterlilikte parçacıklı yapıya sahip olduğundan emin olmalısınız\&. Aks takdirde döndürme işlemi yeni bir dosya başlatmak yerine hep aynı dosyanın üzerine yazar\&. Örneğin, \fIlogfile\fR için /var/logs/errorlog\&.%Y-%m-%d belirtilmişse 5 mega baytta bir yeni bir günlük dosyasına başlanacaktır\&. Fakat 5 megabayta gün içinde iki kez ulaşılırsa aynı günlük dosyası üretilir ve günlük hep aynı dosyanın üzerine yazılır\&.  

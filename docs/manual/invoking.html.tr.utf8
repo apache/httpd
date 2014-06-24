@@ -29,12 +29,10 @@
 <a href="./ko/invoking.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/invoking.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
-    <p>Apache normal olarak, Windows NT, 2000 ve XP, Vista ve 7'de bir hizmet
-      olarak çalışır. Ayrıntılı bilgi için
-      <a href="platform/windows.html#winsvc">Apache HTTPD’nin bir hizmet olarak
-      çalıştırılması</a> bölümüne bakınız.</p>
+    <p>Apache normal olarak, Windows'ta bir hizmet olarak çalışır. Ayrıntılı
+      bilgi için <a href="platform/windows.html#winsvc">Apache HTTPD’nin bir
+      hizmet olarak çalıştırılması</a> bölümüne bakınız.</p>
 
     <p>Unix’te ise artalanda isteklere yanıt vermek için sürekli çalışan bir
       artalan sürecidir. Bu belgede <code class="program"><a href="./programs/httpd.html">httpd</a></code>’nin nasıl

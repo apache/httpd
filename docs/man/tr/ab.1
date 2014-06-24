@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "AB" 1 "2013-11-22" "Apache HTTP Sunucusu" "ab"
+.TH "AB" 1 "2014-06-24" "Apache HTTP Sunucusu" "ab"
 .nh
 .SH İSİM
 ab \- Apache HTTP sunucusu başarım ölçme aracı
@@ -27,7 +27,7 @@ ab \- Apache HTTP sunucusu başarım ölçme aracı
 .SH "KULLANIM"
  
 .PP
-\fBab\fR [ -\fBA\fR \fIyetkili-kullanıcı:parola\fR ] [ -\fBb\fR \fItampon-boyu\fR ] [ -\fBB\fR \fIyerel-adres\fR ] [ -\fBc\fR \fIbağlantı-sayısı\fR ] [ -\fBC\fR \fIçerez-ismi=değer\fR ] [ -\fBd\fR ] [ -\fBe\fR \fIcsv-dosyası\fR ] [ -\fBf\fR \fIprotokol\fR ] [ -\fBg\fR \fIgnuplot-dosyası\fR ] [ -\fBh\fR ] [ -\fBH\fR \fIözel-başlık\fR ] [ -\fBi\fR ] [ -\fBk\fR ] [ -\fBl\fR ] [ -\fBn\fR \fIistek-sayısı\fR ] [ -\fBp\fR \fIPOST-dosyası\fR ] [ -\fBP\fR \fIvekil-yetkilisi:parola\fR ] [ -\fBq\fR ] [ -\fBr\fR ] [ -\fBs\fR \fIzamanasimi\fR ] [ -\fBS\fR ] [ -\fBt\fR \fIsaniye\fR ] [ -\fBT\fR \fIiçerik-türü\fR ] [ -\fBu\fR \fIPUT-dosyası\fR ] [ -\fBv\fR \fIayrıntı-düzeyi\fR] [ -\fBV\fR ] [ -\fBw\fR ] [ -\fBx\fR \fI<table>-öznitelikleri\fR ] [ -\fBX\fR \fIvekil\fR[:\fIport\fR] ] [ -\fBy\fR \fI<tr>-öznitelikleri\fR ] [ -\fBz\fR \fI<td>-öznitelikleri\fR ] [ -\fBZ\fR \fIşifre-kümesi\fR ] [http[s]://]\fIkonakadı\fR[:\fIport\fR]/\fIdizin\fR
+\fBab\fR [ -\fBA\fR \fIyetkili-kullanıcı:parola\fR ] [ -\fBb\fR \fItampon-boyu\fR ] [ -\fBB\fR \fIyerel-adres\fR ] [ -\fBc\fR \fIbağlantı-sayısı\fR ] [ -\fBC\fR \fIçerez-ismi=değer\fR ] [ -\fBd\fR ] [ -\fBe\fR \fIcsv-dosyası\fR ] [ -\fBf\fR \fIprotokol\fR ] [ -\fBg\fR \fIgnuplot-dosyası\fR ] [ -\fBh\fR ] [ -\fBH\fR \fIözel-başlık\fR ] [ -\fBi\fR ] [ -\fBk\fR ] [ -\fBl\fR ] [ -\fBm\fR \fIHTTP-yöntemi\fR ] [ -\fBn\fR \fIistek-sayısı\fR ] [ -\fBp\fR \fIPOST-dosyası\fR ] [ -\fBP\fR \fIvekil-yetkilisi:parola\fR ] [ -\fBq\fR ] [ -\fBr\fR ] [ -\fBs\fR \fIzamanasimi\fR ] [ -\fBS\fR ] [ -\fBt\fR \fIsaniye\fR ] [ -\fBT\fR \fIiçerik-türü\fR ] [ -\fBu\fR \fIPUT-dosyası\fR ] [ -\fBv\fR \fIayrıntı-düzeyi\fR] [ -\fBV\fR ] [ -\fBw\fR ] [ -\fBx\fR \fI<table>-öznitelikleri\fR ] [ -\fBX\fR \fIvekil\fR[:\fIport\fR] ] [ -\fBy\fR \fI<tr>-öznitelikleri\fR ] [ -\fBz\fR \fI<td>-öznitelikleri\fR ] [ -\fBZ\fR \fIşifre-kümesi\fR ] [http[s]://]\fIkonakadı\fR[:\fIport\fR]/\fIdizin\fR
  
 
 .SH "ÖZET"
@@ -62,7 +62,7 @@ Aynı anda işleme sokulacak bağlantı sayısı\&. Aynı anda bir bağlantı ö
 Sunulan isteğin birim zamanda (milisaniye) ne kadarının (yüzde cinsinden) sunulduğunu gösteren virgül ayraçlı değerler (CSV) dosyası\&. Sonuçlar 'bobin haline' getirilmiş olduğundan doğal olarak 'gnuplot' dosyasından daha yararlıdır\&.  
 .TP
 \fB-f\fR \fIprotokol\fR
-SSL/TLS protokolü belirtilir (SSL2, SSL3, TLS1 veya ALL)\&.  
+SSL/TLS protokolü belirtilir (SSL2, SSL3, TLS1, TLS1\&.1, TLS1\&.2 veya ALL)\&. TLS1\&.1 ve TLS1\&.2 desteği 2\&.4\&.4 ve sonraki sürümler içindir\&.  
 .TP
 \fB-g\fR \fIgnuplot-dosyası\fR
 Ölçülen değerler bir 'gnuplot' veya TSV (sekme ayraçlı değerler) dosyasına yazılır\&. Bu dosya, Gnuplot, IDL, Mathematica, Igor hatta Excel tarafından veri dosyası olarak kabul edilir\&. Veri sütunlarının başlıkları dosyanın ilk satırında bulunur\&.  
@@ -80,7 +80,10 @@ GET istekleri yerine HEAD istekleri yapılır\&.
 HTTP KeepAlive (kalıcı bağlantı) özelliğini etkinleştirir, yani tek bir oturum içinde çok sayıda isteğe hizmet sunulabilir\&. Özellik öntanımlı olarak kapalıdır\&.  
 .TP
 \fB-l\fR
-Yanıtarın uzunluğu sabir değilse hataları raporlamaz\&. Özdevinimli sayfalarda kullanışlı olabilir\&.  
+Yanıtarın uzunluğu sabit değilse hataları raporlamaz\&. Özdevinimli sayfalarda kullanışlı olabilir\&. 2\&.4\&.7 ve sonraki sürümler içindir\&.  
+.TP
+\fB-m\fR \fIHTTP-yöntemi\fR
+İstekler için özel HTTP yöntemi, belirtilir\&. 2\&.4\&.10 ve sonraki sürümler içindir\&.  
 .TP
 \fB-n\fR \fIistek-sayısı\fR
 Kıyaslama oturumu sırasında sunucuya uygulanacak istek sayısı\&. Öntanımlı olarak hiçbir başarım ölçütü sağlamayan tek bir istek yapılır\&.  
@@ -98,7 +101,7 @@ Vekil sunucuya TEMEL Kimlik Doğrulamasında kullanılacak kanıtları sağlar\&
 Soket hata alsa bile program çıkmaz\&.  
 .TP
 \fB-s\fR \fIzamanasimi\fR
-Soket zaman aşımına uğramadan önce beklenecek azami saniye sayısı\&. 30 saniye öntanımlı süredir\&.  
+Soket zaman aşımına uğramadan önce beklenecek azami saniye sayısı\&. 30 saniye öntanımlı süredir\&. 2\&.4\&.4 ve sonraki sürümler içindir\&.  
 .TP
 \fB-S\fR
 Ortalama ve ortanca değerler arasında bir veya iki standart sapmadan fazlası varsa ne ortalama değer ne standart sapma değeri ne de uyarı/hata iletileri gösterilir\&. Öntanımlı olarak, asgari/ortalama/azami değerler gösterilir\&. (Geriye uyumluluk)\&.  

@@ -390,7 +390,8 @@ server</td></tr>
 ... &lt;/Directory&gt;</a></td><td></td><td>sk</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Sadece ismi belirtilen dosya sistemi dizininde ve bunun
   altdizinlerinde ve bunların içeriğinde uygulanacak bir yönerge grubunu
   sarmalar.</td></tr>
-<tr class="odd"><td><a href="mod_dir.html#directorycheckhandler">DirectoryCheckHandler On|Off</a></td><td> Off </td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Toggle how this module responds when another handler is configured</td></tr>
+<tr class="odd"><td><a href="mod_dir.html#directorycheckhandler">DirectoryCheckHandler On|Off</a></td><td> Off </td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Başka bir eylemci yapılandırılmışsa bu modülün nasıl yanıt
+  vereceğini belirler</td></tr>
 <tr><td><a href="mod_dir.html#directoryindex">DirectoryIndex
     disabled | <var>yerel-url</var> [<var>yerel-url</var>] ...</a></td><td> index.html </td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">İstemci bir dizin istediğinde dizin içeriğini listeler.
 </td></tr>
@@ -451,7 +452,7 @@ found</td></tr>
   sebep olur.</td></tr>
 <tr class="odd"><td><a href="mod_log_forensic.html#forensiclog">ForensicLog <var>dosya-adı</var>|<var>borulu-süreç</var></a></td><td></td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Adli günlük için dosya ismini belirler.</td></tr>
 <tr><td><a href="core.html#gprofdir" id="G" name="G">GprofDir <var>/tmp/gprof/</var>|<var>/tmp/gprof/</var>%</a></td><td></td><td>sk</td><td>Ç</td></tr><tr><td class="descr" colspan="4">gmon.out ayrıntılı inceleme verisinin yazılacağı dizin</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#gracefulshutdowntimeout">GracefulShutDownTimeout <var>saniye</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Sunucunun nazikçe kapatılmasının ardından ana süreç çıkana kadar
+<tr class="odd"><td><a href="mpm_common.html#gracefulshutdowntimeout">GracefulShutdownTimeout <var>saniye</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Sunucunun nazikçe kapatılmasının ardından ana süreç çıkana kadar
   geçecek süre için bir zaman aşımı belirler.</td></tr>
 <tr><td><a href="mod_unixd.html#group">Group <var>unix-grubu</var></a></td><td> #-1 </td><td>s</td><td>T</td></tr><tr><td class="descr" colspan="4">İsteklere yanıt verecek sunucunun ait olacağı grubu belirler.</td></tr>
 <tr class="odd"><td><a href="mod_headers.html#header" id="H" name="H">Header [<var>condition</var>] add|append|echo|edit|edit*|merge|set|setifempty|unset|note

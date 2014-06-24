@@ -31,7 +31,6 @@
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Apache HTTP Sunucusunda daima mevcut olan çekirdek
  özellikler</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr></table>
@@ -127,8 +126,6 @@
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>Windows'ta Apache httpd 2.3.3 ve sonrasında diğerlerinde Apache
-httpd 2.1.5 ve sonrasında mevcuttur.</td></tr>
 </table>
     <p>Bu yönerge <code class="directive"><a href="#protocol">Protocol</a></code> yönergesinde belirtilen
       protokol türüne göre bir dinleme soketinin işletim
@@ -702,6 +699,8 @@ AllowOverrideList CookieTracking CookieName</pre>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>Apache 2.4.2 ve sonrasında kullanılabilmektedir.
+</td></tr>
 </table>
     <p><code class="directive">DefaultRuntimeDir</code> yönergesi sunucunun çalışma
       anında oluşturacağı dosyaların (paylaşımlı bellek, kilitler, vb.)
@@ -1417,8 +1416,6 @@ ErrorDocument 403 "Kusura bakmayın, bugün hizmet veremiyoruz."</pre>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>Apache httpd 2.3.9 ve sonrasında kullanılabilmektedir.
-</td></tr>
 </table>
     <p><code class="directive">ErrorLogFormat</code> yönergesi, hata günlüğünde asıl
       hata iletisine ek olarak günlüklenecek ek bilgiyi belirtmek için
@@ -1784,9 +1781,9 @@ ErrorLogFormat connection "[%{uc}t] [C:%{c}L] local\ %a remote\ %A"</pre>
       başvurular yoksayılmaktadır. Bunların yerine isimli geriye başvurular
       kullanılmalıdır.</p>
 
-<pre class="prettyprint lang-config">&lt;DirectoryMatch ^/var/www/combined/(?&lt;sitename&gt;[^/]+)&gt;
+<pre class="prettyprint lang-config">&lt;FilesMatch ^(?&lt;sitename&gt;[^/]+)&gt;
     require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
-&lt;/DirectoryMatch&gt;</pre>
+&lt;/FilesMatch&gt;</pre>
 
 
 <h3>Ayrıca bakınız:</h3>
@@ -1930,7 +1927,7 @@ takdirde uygulanacak yönergeleri barındırır.</td></tr>
 
 
     <p>Bir <var>Host:</var> başlığı içermeyen HTTP/1.0 istekleriyle
-      eşleşir. İfadeler, dizge karşılaştırması (<code>=</code>,
+      eşleşir. İfadeler, dizge karşılaştırması (<code>==</code>,
       <code>!=</code>, <code>&lt;</code>, ...), tamsayı karşılaştırması
       (<code>-eq</code>, <code>-ne</code>, ...) ve diğerleri (<code>-n</code>,
       <code>-z</code>, <code>-f</code>, ...) için kabuktakilere benzer çeşitli
@@ -2214,7 +2211,6 @@ Include conf/vhosts/*.conf</pre>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>Apache httpd 2.3.2'den itibaren milisaniyelik değerler belirtilebilmektedir.</td></tr>
 </table>
     <p>Sunucunun kalıcı bir bağlantıyı kapatmadan önce bir sonraki isteği kaç
       saniye bekleyeceğini belirler. Ayrıca, ms soneki kullanılarak süreyi
