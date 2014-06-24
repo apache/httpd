@@ -211,8 +211,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                 re-allocated.
      trunk patch: http://svn.apache.org/r1604350
      2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-event_sbh-race.diff
-     +1 covener
+     +1: covener
      ylavic: +1 with http://svn.apache.org/r1605067
+
+   * mod_proxy_fcgi: Fix occasional high CPU when handling request bodies.
+     trunk patch: http://svn.apache.org/r1592037
+     2.4.x patch: http://people.apache.org/~trawick/r1592037.txt
+     +1: trawick
 
 OTHER PROPOSALS
 
