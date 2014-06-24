@@ -106,7 +106,7 @@
     'gnuplot' file; as the results are already 'binned'.</dd>
 
     <dt><code>-f <var>protocol</var></code></dt>
-    <dd>Specify SSL/TLS protocol (SSL2, SSL3, TLS1, TLS1.1, TLS1.2, or ALL).<br />
+    <dd>Specify SSL/TLS protocol (SSL2, SSL3, TLS1, TLS1.1, TLS1.2, or ALL).
     TLS1.1 and TLS1.2 support available in 2.4.4 and later.</dd>
 
     <dt><code>-g <var>gnuplot-file</var></code></dt>
@@ -132,12 +132,12 @@
 
     <dt><code>-l</code></dt>
     <dd>Do not report errors if the length of the responses is not constant. This 
-    can be usefull for dynamic pages.<br />
+    can be usefull for dynamic pages.
     Available in 2.4.7 and later.
     </dd>
 
     <dt><code>-m <var>HTTP-method</var></code></dt>
-    <dd>Custom HTTP method for the requests.<br />
+    <dd>Custom HTTP method for the requests.
     Available in 2.4.10 and later.</dd>
 
     <dt><code>-n <var>requests</var></code></dt>
@@ -165,7 +165,7 @@
 
     <dt><code>-s <var>timeout</var></code></dt>
     <dd>Maximum number of seconds to wait before the socket times out.
-    Default is 30 seconds.<br />
+    Default is 30 seconds.
     Available in 2.4.4 and later.</dd>
 
     <dt><code>-S</code></dt>
