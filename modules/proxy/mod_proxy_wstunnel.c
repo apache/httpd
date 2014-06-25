@@ -147,6 +147,7 @@ static void proxy_wstunnel_finish(ws_baton_t *baton) {
     ap_finalize_request_protocol(baton->r);
     ap_lingering_close(baton->r->connection);
     apr_socket_close(baton->client_soc);
+    ap_mpm_resume_suspended(baton->r->connection);
     ap_process_request_after_handler(baton->r); /* don't touch baton or r after here */
 }
 
