@@ -2,6 +2,10 @@
 
 Changes with Apache 2.4.10
 
+  *) mod_authnz_ldap: Support primitive LDAP servers do not accept
+     filters, such as "SDBM-backed LDAP" on z/OS, by allowing a special
+     filter "none" to be specified in AuthLDAPURL. [Eric Covener]
+
   *) mod_deflate: Fix inflation of files larger than 4GB. PR 56062.
      [Lukas Bezdicka <social v3.sk>]
 

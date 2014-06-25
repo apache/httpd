@@ -100,15 +100,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_authnz_ldap: Support primitive LDAP servers do not accept
-     filters, such as "SDBM-backed LDAP" on z/OS, by allowing a special
-     filter "none" to be specified in AuthLDAPURL.
-     trunk patch: https://svn.apache.org/r1497371
-     2.4.x patch: trunk patch works other than CHANGES
-     +1: minfrin, covener, trawick
-     jailletc36: When merged, a compatibility note should be added in the doc stating when
-                 the none keyword has been added
-
    * event MPM: fix a race where a worker looks at a conn_rec after it might be
                 in use by another thread or may have been freed and 
                 re-allocated.
