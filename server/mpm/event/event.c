@@ -1969,10 +1969,12 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
 
                 /* We only signal once per N sockets with this baton */
                 if (!(baton->signaled)) { 
+                    apr_pollfd_t *newpfd = apr_palloc(out_pfd->p, sizeof(apr_pollfd_t));
                     baton->signaled = 1;
+                    *newpfd = *out_pfd;
                     te = event_get_timer_event(-1 /* fake timer */, 
                                                socket_callback_wrapper, 
-                                               (apr_pollfd_t *)out_pfd,
+                                               newpfd,
                                                0, /* don't insert it */
                                                NULL /* no associated socket callback */);
                     /* remove other sockets in my set */
