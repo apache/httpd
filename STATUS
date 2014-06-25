@@ -100,16 +100,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * event MPM: fix a race where a worker looks at a conn_rec after it might be
-                in use by another thread or may have been freed and 
-                re-allocated.
-     trunk patch: http://svn.apache.org/r1604350
-                  http://svn.apache.org/r1605067
-     2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-event_sbh-race-2.diff
-     +1: covener, ylavic, trawick
-     trawick: seems to also fix another glitch specific to 2.4.x branch (sbh not cleared
-       in one of the lingering_close_* paths)
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 

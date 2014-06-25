@@ -2,6 +2,10 @@
 
 Changes with Apache 2.4.10
 
+  *) event MPM: Fix possible crashes (third party modules accessing c->sbh) 
+     or occasional missed mod_status updates under load. 
+     [Edward Lu <Chaosed0 gmail com>]
+
   *) mod_authnz_ldap: Support primitive LDAP servers do not accept
      filters, such as "SDBM-backed LDAP" on z/OS, by allowing a special
      filter "none" to be specified in AuthLDAPURL. [Eric Covener]
