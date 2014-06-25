@@ -799,6 +799,7 @@ static int start_lingering_close_common(event_conn_state_t *cs)
     }
     apr_atomic_inc32(&lingering_count);
     apr_thread_mutex_lock(timeout_mutex);
+    cs->c->sbh = NULL;
     TO_QUEUE_APPEND(*q, cs);
     cs->pfd.reqevents = (
             cs->pub.sense == CONN_SENSE_WANT_WRITE ? APR_POLLOUT :
@@ -1087,9 +1088,8 @@ read_request:
     }
 
     if (cs->pub.state == CONN_STATE_LINGER) {
-        if (!start_lingering_close_blocking(cs))
-            notify_suspend(cs);
-            return;
+        start_lingering_close_blocking(cs);
+        notify_suspend(cs);
     }
     else if (cs->pub.state == CONN_STATE_CHECK_REQUEST_LINE_READABLE) {
         /* It greatly simplifies the logic to use a single timeout value here
@@ -1117,20 +1117,12 @@ read_request:
                          "process_socket: apr_pollset_add failure");
             AP_DEBUG_ASSERT(rc == APR_SUCCESS);
         }
-        return;
     }
     else if (cs->pub.state == CONN_STATE_SUSPENDED) {
         apr_atomic_inc32(&suspended_count);
+        c->sbh = NULL;
+        notify_suspend(cs);
     }
-    /*
-     * Prevent this connection from writing to our connection state after it
-     * is no longer associated with this thread. This would happen if the EOR
-     * bucket is destroyed from the listener thread due to a connection abort
-     * or timeout.
-     */
-    c->sbh = NULL;
-    notify_suspend(cs);
-    return;
 }
 
 /* conns_this_child has gone to zero or below.  See if the admin coded
