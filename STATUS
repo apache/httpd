@@ -100,6 +100,25 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * mod_authnz_ldap: Support primitive LDAP servers do not accept
+     filters, such as "SDBM-backed LDAP" on z/OS, by allowing a special
+     filter "none" to be specified in AuthLDAPURL.
+     trunk patch: https://svn.apache.org/r1497371
+     2.4.x patch: trunk patch works other than CHANGES
+     +1: minfrin, covener, trawick
+     jailletc36: When merged, a compatibility note should be added in the doc stating when
+                 the none keyword has been added
+
+   * event MPM: fix a race where a worker looks at a conn_rec after it might be
+                in use by another thread or may have been freed and 
+                re-allocated.
+     trunk patch: http://svn.apache.org/r1604350
+                  http://svn.apache.org/r1605067
+     2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-event_sbh-race-2.diff
+     +1: covener, ylavic, trawick
+     trawick: seems to also fix another glitch specific to 2.4.x branch (sbh not cleared
+       in one of the lingering_close_* paths)
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -133,15 +152,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1591401
      2.4.x patch: https://people.apache.org/~ylavic/httpd-2.4.x-SSLOCSPUseRequestNonce+manual-2.4.10-v2.patch
      +1: ylavic, kbrand
-
-   * mod_authnz_ldap: Support primitive LDAP servers do not accept
-     filters, such as "SDBM-backed LDAP" on z/OS, by allowing a special
-     filter "none" to be specified in AuthLDAPURL.
-     trunk patch: https://svn.apache.org/r1497371
-     2.4.x patch: trunk patch works other than CHANGES
-     +1: minfrin, covener
-     jailletc36: When merged, a compatibility note should be added in the doc stating when
-                 the none keyword has been added
 
    * mod_proxy_http: Avoid (unlikely) access to freed memory.
      trunk patch: http://svn.apache.org/r1599486
@@ -206,14 +216,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      note: depends on ap_shutdown_conn() from r1601185 above.
      +1: ylavic
  
-   * event MPM: fix a race where a worker looks at a conn_rec after it might be
-                in use by another thread or may have been freed and 
-                re-allocated.
-     trunk patch: http://svn.apache.org/r1604350
-                  http://svn.apache.org/r1605067
-     2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-event_sbh-race-2.diff
-     +1: covener, ylavic
-
    * mod_proxy_fcgi: Fix occasional high CPU when handling request bodies.
      trunk patch: http://svn.apache.org/r1592037
      2.4.x patch: http://people.apache.org/~trawick/r1592037.txt
