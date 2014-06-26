@@ -381,7 +381,7 @@ FATAL: only tables with two (2) columns are supported.
 <!-- ==================================================================== -->
 <!-- remove some stuff from the output                                    -->
 <!-- ==================================================================== -->
-<xsl:template match="parentdocument|seealso|dd|td|example/br" />
+<xsl:template match="parentdocument|seealso|dd|td|example/br|dd/br" />
 
 
 <!-- ==================================================================== -->
