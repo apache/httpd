@@ -90,25 +90,12 @@ static int proxy_fcgi_canon(request_rec *r, char *url)
 static apr_status_t send_data(proxy_conn_rec *conn,
                               struct iovec *vec,
                               int nvec,
-                              apr_size_t *len,
-                              int blocking)
+                              apr_size_t *len)
 {
-    apr_status_t rv = APR_SUCCESS, arv;
+    apr_status_t rv = APR_SUCCESS;
     apr_size_t written = 0, to_write = 0;
     int i, offset;
-    apr_interval_time_t old_timeout;
     apr_socket_t *s = conn->sock;
-
-    if (!blocking) {
-        arv = apr_socket_timeout_get(s, &old_timeout);
-        if (arv != APR_SUCCESS) {
-            return arv;
-        }
-        arv = apr_socket_timeout_set(s, 0);
-        if (arv != APR_SUCCESS) {
-            return arv;
-        }
-    }
 
     for (i = 0; i < nvec; i++) {
         to_write += vec[i].iov_len;
@@ -118,7 +105,7 @@ static apr_status_t send_data(proxy_conn_rec *conn,
     while (to_write) {
         apr_size_t n = 0;
         rv = apr_socket_sendv(s, vec + offset, nvec - offset, &n);
-        if ((rv != APR_SUCCESS) && !APR_STATUS_IS_EAGAIN(rv)) {
+        if (rv != APR_SUCCESS) {
             break;
         }
         if (n > 0) {
@@ -141,12 +128,6 @@ static apr_status_t send_data(proxy_conn_rec *conn,
     conn->worker->s->transferred += written;
     *len = written;
 
-    if (!blocking) {
-        arv = apr_socket_timeout_set(s, old_timeout);
-        if ((arv != APR_SUCCESS) && (rv == APR_SUCCESS)) {
-            return arv;
-        }
-    }
     return rv;
 }
 
@@ -207,7 +188,7 @@ static apr_status_t send_begin_request(proxy_conn_rec *conn,
     vec[1].iov_base = (void *)abrb;
     vec[1].iov_len = sizeof(abrb);
 
-    return send_data(conn, vec, 2, &len, 1);
+    return send_data(conn, vec, 2, &len);
 }
 
 static apr_status_t send_environment(proxy_conn_rec *conn, request_rec *r,
@@ -294,7 +275,7 @@ static apr_status_t send_environment(proxy_conn_rec *conn, request_rec *r,
         vec[1].iov_base = body;
         vec[1].iov_len = required_len;
 
-        rv = send_data(conn, vec, 2, &len, 1);
+        rv = send_data(conn, vec, 2, &len);
         apr_pool_clear(temp_pool);
 
         if (rv) {
@@ -309,7 +290,7 @@ static apr_status_t send_environment(proxy_conn_rec *conn, request_rec *r,
     vec[0].iov_base = (void *)farray;
     vec[0].iov_len = sizeof(farray);
 
-    return send_data(conn, vec, 1, &len, 1);
+    return send_data(conn, vec, 1, &len);
 }
 
 enum {
@@ -482,7 +463,7 @@ static apr_status_t dispatch(proxy_conn_rec *conn, proxy_dir_conf *conf,
                     ++nvec;
                 }
 
-                rv = send_data(conn, vec, nvec, &len, 0);
+                rv = send_data(conn, vec, nvec, &len);
                 if (rv != APR_SUCCESS) {
                     *err = "sending stdin";
                     break;
@@ -506,7 +487,7 @@ static apr_status_t dispatch(proxy_conn_rec *conn, proxy_dir_conf *conf,
                 vec[0].iov_base = (void *)farray;
                 vec[0].iov_len = sizeof(farray);
 
-                rv = send_data(conn, vec, 1, &len, 1);
+                rv = send_data(conn, vec, 1, &len);
                 if (rv != APR_SUCCESS) {
                     *err = "sending empty stdin";
                     break;
