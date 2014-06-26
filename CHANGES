@@ -5,8 +5,8 @@ Changes with Apache 2.4.10
   *) mod_proxy_fcgi: Fix occasional high CPU when handling request bodies.
      [Jeff Trawick]
 
-  *) event MPM: Fix possible crashes (third party modules accessing c->sbh) 
-     or occasional missed mod_status updates under load. 
+  *) event MPM: Fix possible crashes (third-party modules accessing c->sbh) 
+     or occasional missed mod_status updates under load. PR 56639.
      [Edward Lu <Chaosed0 gmail com>]
 
   *) mod_authnz_ldap: Support primitive LDAP servers do not accept
