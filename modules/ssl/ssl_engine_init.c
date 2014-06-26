@@ -67,29 +67,39 @@ static DH *make_dh_params(BIGNUM *(*prime)(BIGNUM *), const char *gen)
     return dh;
 }
 
-static DH *dhparam1024, *dhparam2048, *dhparam3072, *dhparam4096;
+/* Storage and initialization for DH parameters. */
+static struct dhparam {
+    BIGNUM *(*const prime)(BIGNUM *); /* function to generate... */
+    DH *dh;                           /* ...this, used for keys.... */
+    const unsigned int min;           /* ...of length >= this. */
+} dhparams[] = {
+    { get_rfc3526_prime_8192, NULL, 6145 },
+    { get_rfc3526_prime_6144, NULL, 4097 },
+    { get_rfc3526_prime_4096, NULL, 3073 },
+    { get_rfc3526_prime_3072, NULL, 2049 },
+    { get_rfc3526_prime_2048, NULL, 1025 },
+    { get_rfc2409_prime_1024, NULL, 0 }
+};
 
 static void init_dh_params(void)
 {
-    /*
-     * Prepare DH parameters from 1024 to 4096 bits, in 1024-bit increments
-     */
-    dhparam1024 = make_dh_params(get_rfc2409_prime_1024, "2");
-    dhparam2048 = make_dh_params(get_rfc3526_prime_2048, "2");
-    dhparam3072 = make_dh_params(get_rfc3526_prime_3072, "2");
-    dhparam4096 = make_dh_params(get_rfc3526_prime_4096, "2");
+    unsigned n;
+
+    for (n = 0; n < sizeof(dhparams)/sizeof(dhparams[0]); n++)
+        dhparams[n].dh = make_dh_params(dhparams[n].prime, "2");
 }
 
 static void free_dh_params(void)
 {
+    unsigned n;
+
     /* DH_free() is a noop for a NULL parameter, so these are harmless
      * in the (unexpected) case where these variables are already
      * NULL. */
-    DH_free(dhparam1024);
-    DH_free(dhparam2048);
-    DH_free(dhparam3072);
-    DH_free(dhparam4096);
-    dhparam1024 = dhparam2048 = dhparam3072 = dhparam4096 = NULL;
+    for (n = 0; n < sizeof(dhparams)/sizeof(dhparams[0]); n++) {
+        DH_free(dhparams[n].dh);
+        dhparams[n].dh = NULL;
+    }
 }
 
 /* Hand out the same DH structure though once generated as we leak
@@ -101,14 +111,13 @@ static void free_dh_params(void)
  * to our copy. */
 DH *modssl_get_dh_params(unsigned keylen)
 {
-    if (keylen >= 4096)
-        return dhparam4096;
-    else if (keylen >= 3072)
-        return dhparam3072;
-    else if (keylen >= 2048)
-        return dhparam2048;
-    else
-        return dhparam1024;
+    unsigned n;
+
+    for (n = 0; n < sizeof(dhparams)/sizeof(dhparams[0]); n++)
+        if (keylen >= dhparams[n].min)
+            return dhparams[n].dh;
+        
+    return NULL; /* impossible to reach. */
 }
 
 static void ssl_add_version_components(apr_pool_t *p,
