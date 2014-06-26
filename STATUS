@@ -99,6 +99,12 @@ RELEASE SHOWSTOPPERS:
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
+ 
+   * mod_proxy_fcgi: Fix occasional high CPU when handling request bodies.
+     trunk patch: http://svn.apache.org/r1592037
+     2.4.x patch: http://people.apache.org/~trawick/r1592037.txt
+     +1: trawick, covener, ylavic
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -196,11 +202,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   (modulo CHANGES)
      note: depends on ap_shutdown_conn() from r1601185 above.
      +1: ylavic
- 
-   * mod_proxy_fcgi: Fix occasional high CPU when handling request bodies.
-     trunk patch: http://svn.apache.org/r1592037
-     2.4.x patch: http://people.apache.org/~trawick/r1592037.txt
-     +1: trawick, covener
 
 OTHER PROPOSALS
 
