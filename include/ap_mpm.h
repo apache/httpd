@@ -198,7 +198,6 @@ AP_DECLARE(apr_status_t) ap_mpm_query(int query_code, int *result);
 /** @} */
 
 typedef void (ap_mpm_callback_fn_t)(void *baton);
-typedef void (ap_mpm_socket_callback_fn_t)(void *baton, const apr_pollfd_t *pfd);
 
 /* only added support in the Event MPM....  check for APR_ENOTIMPL */
 AP_DECLARE(apr_status_t) ap_mpm_resume_suspended(conn_rec *c);
@@ -223,7 +222,7 @@ AP_DECLARE(apr_status_t) ap_mpm_register_timed_callback(apr_time_t t,
 AP_DECLARE(apr_status_t) ap_mpm_register_socket_callback(apr_socket_t **s,
                                                          apr_pool_t *p,
                                                          int for_read, 
-                                                         ap_mpm_socket_callback_fn_t *cbfn,
+                                                         ap_mpm_callback_fn_t *cbfn,
                                                          void *baton);
  /**
  * Register a callback on the readability or writability on a group of sockets, with a timeout
@@ -244,7 +243,7 @@ AP_DECLARE(apr_status_t) ap_mpm_register_socket_callback(apr_socket_t **s,
 AP_DECLARE(apr_status_t) ap_mpm_register_socket_callback_timeout(apr_socket_t **s,
                                                          apr_pool_t *p,
                                                          int for_read, 
-                                                         ap_mpm_socket_callback_fn_t *cbfn,
+                                                         ap_mpm_callback_fn_t *cbfn,
                                                          ap_mpm_callback_fn_t *tofn,
                                                          void *baton,
                                                          apr_time_t timeout);
