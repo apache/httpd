@@ -320,7 +320,7 @@ typedef struct
 
 typedef struct
 {
- ap_mpm_socket_callback_fn_t *cbfunc;
+ ap_mpm_callback_fn_t *cbfunc;
  void *user_baton; 
  apr_pollfd_t **pfds;
  int nsock;
@@ -1478,7 +1478,7 @@ static apr_status_t event_register_timed_callback(apr_time_t t,
 static apr_status_t event_register_socket_callback_ex(apr_socket_t **s, 
                                                   apr_pool_t *p, 
                                                   int for_read,
-                                                  ap_mpm_socket_callback_fn_t *cbfn,
+                                                  ap_mpm_callback_fn_t *cbfn,
                                                   ap_mpm_callback_fn_t *tofn,
                                                   void *baton, 
                                                   apr_time_t timeout)
@@ -1526,7 +1526,7 @@ static apr_status_t event_register_socket_callback_ex(apr_socket_t **s,
 static apr_status_t event_register_socket_callback(apr_socket_t **s, 
                                                   apr_pool_t *p, 
                                                   int for_read,
-                                                  ap_mpm_socket_callback_fn_t *cbfn,
+                                                  ap_mpm_callback_fn_t *cbfn,
                                                   void *baton)
 {
     return event_register_socket_callback_ex(s, p, for_read, 
@@ -1645,12 +1645,6 @@ static void process_timeout_queue(struct timeout_queue *q,
         count--;
     }
     apr_thread_mutex_lock(timeout_mutex);
-}
-
-static void socket_callback_wrapper(void *baton){
-    const apr_pollfd_t *out_pfd = (const apr_pollfd_t *)baton;
-    socket_callback_baton_t *scb_baton = (socket_callback_baton_t *) ((listener_poll_type *) out_pfd->client_data)->baton;
-    scb_baton->cbfunc(scb_baton->user_baton, out_pfd);
 }
 
 static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
@@ -1967,12 +1961,10 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
 
                 /* We only signal once per N sockets with this baton */
                 if (!(baton->signaled)) { 
-                    apr_pollfd_t *newpfd = apr_palloc(out_pfd->p, sizeof(apr_pollfd_t));
                     baton->signaled = 1;
-                    *newpfd = *out_pfd;
                     te = event_get_timer_event(-1 /* fake timer */, 
-                                               socket_callback_wrapper, 
-                                               newpfd,
+                                               baton->cbfunc, 
+                                               baton->user_baton, 
                                                0, /* don't insert it */
                                                NULL /* no associated socket callback */);
                     /* remove other sockets in my set */

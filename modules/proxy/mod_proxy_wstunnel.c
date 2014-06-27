@@ -38,68 +38,21 @@ typedef struct ws_baton_t {
 
 static apr_status_t proxy_wstunnel_transfer(request_rec *r, conn_rec *c_i, conn_rec *c_o,
                                      apr_bucket_brigade *bb, char *name);
-static void proxy_wstunnel_callback(void *b, const apr_pollfd_t *pfd);
+static void proxy_wstunnel_callback(void *b);
 
-static apr_status_t proxy_wstunnel_pump2(ws_baton_t *baton, const apr_pollfd_t *pfd){
+static int proxy_wstunnel_pump(ws_baton_t *baton, apr_time_t timeout, int try_async) {
     request_rec *r = baton->r;
     conn_rec *c = r->connection;
     proxy_conn_rec *conn = baton->proxy_connrec;
     apr_socket_t *sock = conn->sock;
     conn_rec *backconn = conn->connection;
-    apr_int16_t pollevent;
-    apr_socket_t *client_socket = baton->client_soc;
-    apr_bucket_brigade *bb = baton->bb;
-
-    if (pfd->desc.s == sock) {
-        pollevent = pfd->rtnevents;
-        if (pollevent & (APR_POLLIN | APR_POLLHUP)) {
-            ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, APLOGNO(02446)
-                    "sock was readable");
-            return proxy_wstunnel_transfer(r, backconn, c, bb, "sock");
-        }
-        else if (pollevent & APR_POLLERR) {
-            ap_log_rerror(APLOG_MARK, APLOG_NOTICE, 0, r, APLOGNO(02447)
-                    "error on backconn");
-            return APR_EPIPE;
-        }
-        else { 
-            ap_log_rerror(APLOG_MARK, APLOG_NOTICE, 0, r, APLOGNO(02605)
-                    "unknown event on backconn %d", pollevent);
-            return APR_EGENERAL;
-        }
-    }
-    else if (pfd->desc.s == client_socket) {
-        pollevent = pfd->rtnevents;
-        if (pollevent & (APR_POLLIN | APR_POLLHUP)) {
-            ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, APLOGNO(02448)
-                    "client was readable");
-            return proxy_wstunnel_transfer(r, c, backconn, bb, "client");
-        }
-        else if (pollevent & APR_POLLERR) {
-            ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, APLOGNO(02607)
-                    "error on client conn");
-            c->aborted = 1;
-            return APR_EPIPE;
-        }
-        else { 
-            ap_log_rerror(APLOG_MARK, APLOG_NOTICE, 0, r, APLOGNO(02606)
-                    "unknown event on client conn %d", pollevent);
-            return APR_EGENERAL;
-        }
-    }
-    else {
-        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(02449)
-                "unknown socket in pollset");
-        return APR_EBADF;
-    }
-}
-
-static int proxy_wstunnel_pump(ws_baton_t *baton, apr_time_t timeout, int try_async) {
-    request_rec *r = baton->r;
     const apr_pollfd_t *signalled;
     apr_int32_t pollcnt, pi;
+    apr_int16_t pollevent;
     apr_pollset_t *pollset = baton->pollset;
+    apr_socket_t *client_socket = baton->client_soc;
     apr_status_t rv;
+    apr_bucket_brigade *bb = baton->bb;
 
     while(1) { 
         if ((rv = apr_pollset_poll(pollset, timeout, &pollcnt, &signalled))
@@ -126,7 +79,51 @@ static int proxy_wstunnel_pump(ws_baton_t *baton, apr_time_t timeout, int try_as
                 "woke from poll(), i=%d", pollcnt);
 
         for (pi = 0; pi < pollcnt; pi++) {
-            rv = proxy_wstunnel_pump2(baton, &signalled[pi]);
+            const apr_pollfd_t *cur = &signalled[pi];
+
+            if (cur->desc.s == sock) {
+                pollevent = cur->rtnevents;
+                if (pollevent & (APR_POLLIN | APR_POLLHUP)) {
+                    ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, APLOGNO(02446)
+                            "sock was readable");
+                    rv = proxy_wstunnel_transfer(r, backconn, c, bb, "sock");
+                }
+                else if (pollevent & APR_POLLERR) {
+                    rv = APR_EPIPE;
+                    ap_log_rerror(APLOG_MARK, APLOG_NOTICE, 0, r, APLOGNO(02447)
+                            "error on backconn");
+                }
+                else { 
+                    rv = APR_EGENERAL;
+                    ap_log_rerror(APLOG_MARK, APLOG_NOTICE, 0, r, APLOGNO(02605)
+                            "unknown event on backconn %d", pollevent);
+                }
+            }
+            else if (cur->desc.s == client_socket) {
+                pollevent = cur->rtnevents;
+                if (pollevent & (APR_POLLIN | APR_POLLHUP)) {
+                    ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, APLOGNO(02448)
+                            "client was readable");
+                    rv = proxy_wstunnel_transfer(r, c, backconn, bb, "client");
+                }
+                else if (pollevent & APR_POLLERR) {
+                    rv = APR_EPIPE;
+                    c->aborted = 1;
+                    ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, APLOGNO(02607)
+                            "error on client conn");
+                }
+                else { 
+                    rv = APR_EGENERAL;
+                    ap_log_rerror(APLOG_MARK, APLOG_NOTICE, 0, r, APLOGNO(02606)
+                            "unknown event on client conn %d", pollevent);
+                }
+            }
+            else {
+                rv = APR_EBADF;
+                ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(02449)
+                        "unknown socket in pollset");
+            }
+
         }
         if (rv != APR_SUCCESS) {
             break;
@@ -168,12 +165,14 @@ static void proxy_wstunnel_cancel_callback(void *b)
  *  We don't need the invoke_mtx, since we never put multiple callback events
  *  in the queue.
  */
-static void proxy_wstunnel_callback(void *b, const apr_pollfd_t *pfd) { 
+static void proxy_wstunnel_callback(void *b) { 
+    int status;
     apr_socket_t *sockets[3] = {NULL, NULL, NULL};
     ws_baton_t *baton = (ws_baton_t*)b;
     proxyws_dir_conf *dconf = ap_get_module_config(baton->r->per_dir_config, &proxy_wstunnel_module);
     apr_pool_clear(baton->subpool);
-    if (proxy_wstunnel_pump2(baton, pfd) == APR_SUCCESS) {
+    status = proxy_wstunnel_pump(baton, dconf->async_delay, dconf->is_async);
+    if (status == SUSPENDED) {
         sockets[0] = baton->client_soc;
         sockets[1] = baton->server_soc;
         ap_mpm_register_socket_callback_timeout(sockets, baton->subpool, 1, 
