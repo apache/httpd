@@ -800,7 +800,7 @@ static apr_status_t refresh_scts_for_cert(server_rec *s, apr_pool_t *p,
     return rv;
 }
 
-static void *run_service_thread(apr_thread_t *me, void *data)
+static void * APR_THREAD_FUNC run_service_thread(apr_thread_t *me, void *data)
 {
     server_rec *s = data;
     ct_server_config *sconf = ap_get_module_config(s->module_config,
