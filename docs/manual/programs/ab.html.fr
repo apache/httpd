@@ -120,7 +120,7 @@ Apache</h1>
     résultats sont déjà sous forme binaire.</dd>
 
     <dt><code>-f <var>protocole</var></code></dt>
-    <dd>Spécifie le protocole SSL/TLS (SSL2, SSL3, TLS1, TLS1.1, TLS1.2, or ALL).<br />
+    <dd>Spécifie le protocole SSL/TLS (SSL2, SSL3, TLS1, TLS1.1, TLS1.2, or ALL).
     TLS1.1 et TLS1.2 sont supportés à partir de la version 2.4.4 du
     serveur HTTP Apache.</dd>
 
@@ -158,7 +158,7 @@ Apache</h1>
     </dd>
 
     <dt><code>-m <var>HTTP-method</var></code></dt>
-    <dd>Méthode HTTP personnalisée à utiliser pour les requêtes.<br />
+    <dd>Méthode HTTP personnalisée à utiliser pour les requêtes.
     Disponible à partir de la version 2.4.10 du serveur HTTP
     Apache.</dd>
 
@@ -190,7 +190,7 @@ Apache</h1>
 
     <dt><code>-s <var>timeout</var></code></dt>
     <dd>Temps maximum d'attente en secondes du socket avant de considérer
-    le délai comme dépassé. La valeur par défaut est de 30 secondes.<br />
+    le délai comme dépassé. La valeur par défaut est de 30 secondes.
     Disponible à partir de la version 2.4.4 du serveur HTTP
     Apache.</dd>
 

@@ -1497,7 +1497,10 @@ spécifiés.</p>
 	taille des filtres est limitée à environ 8000 caractères (valeur
 	de la macro <code>MAX_STRING_LEN</code> dans le code source
 	d'Apache), ce qui s'avère plus que suffisant pour la plupart des
-	applications.</dd>
+	applications. Depuis la version 2.4.10, il est possible
+	d'utiliser le paramètre "none" pour spécifier qu'aucun filtre
+	n'est activé ; ce paramètre est obligatoire avec certains
+	serveurs LDAP primitifs.</dd>
 </dl>
 
     <p>Pour une recherche, les attribut, filtre et nom d'utilisateur
