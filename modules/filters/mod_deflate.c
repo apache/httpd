@@ -306,7 +306,7 @@ typedef struct deflate_ctx_t
     int (*libz_end_func)(z_streamp);
     unsigned char *validation_buffer;
     apr_size_t validation_buffer_length;
-    char header[10]; // sizeof(gzip_header)
+    char header[10]; /* sizeof(gzip_header) */
     apr_size_t header_len;
     int zlib_flags;
     unsigned int consume_pos,
