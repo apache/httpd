@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1604534:1605004 (outdated) -->
+<!-- English Revision : 1605004 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -111,8 +111,9 @@ utile lorsque les journaux doivent &ecirc;tre trait&eacute;s par un autre progra
 
 <dt><code>-n <var>nombre-de-fichiers</var></code></dt>
 <dd>Utilise une liste circulaire de fichiers sans rep&egrave;res de temps. Avec
--n 3, la s&eacute;rie de fichiers conserv&eacute;s sera "logfile", "logfile.1", "logfile.2".<br />
-Disponible à partir de la version 2.4.5 du serveur HTTP Apache.</dd>
+-n 3, la s&eacute;rie de fichiers conserv&eacute;s sera "logfile",
+"logfile.1", "logfile.2" avec &eacute;crasement de "logfile".
+Disponible &agrave; partir de la version 2.4.5 du serveur HTTP Apache.</dd>
 
 <dt><code><var>fichier-journal</var></code></dt>
 <dd><p>Le chemin et le nom de base du fichier journal. Si
