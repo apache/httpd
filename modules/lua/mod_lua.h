@@ -135,9 +135,6 @@ typedef struct
 
 typedef struct
 {
-    apr_hash_t *vm_reslists;
-    apr_thread_rwlock_t *vm_reslists_lock;
-
     /* value of the LuaRoot directive */
     const char *root_path;
 } ap_lua_server_cfg;
