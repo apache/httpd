@@ -1156,7 +1156,7 @@ void child_main(apr_pool_t *pconf, DWORD parent_pid)
                 if (0 == GetHandleInformation(child_events[i], &out_flags)) {
                     ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(),
                                  ap_server_conf, APLOGNO(02644)
-                                 "Child: Event handle #%d (%ld) is invalid",
+                                 "Child: Event handle #%d (%pp) is invalid",
                                  i, child_events[i]);
                 }
             }
