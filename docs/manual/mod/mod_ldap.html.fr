@@ -506,12 +506,18 @@ Apache</td></tr>
     valeur par défaut -1, ou toute autre valeur négative, les connexions
     peuvent être réutilisées sans limite de durée.</p>
 
-    <p>La durée de vie est basée sur le moment où la connexion LDAP est
-    remise en attente dans le jeu de connexions , et non sur la dernière
-    entrée/sortie effectuée sur le serveur d'arrière-plan. Si
-    l'information est mise en cache, la durée d'inactivité apparente
-    peut excéder la valeur de la directive
-    <code class="directive">LDAPConnectionPoolTTL</code>.</p>
+    <p>Dans le but d'améliorer les performances, le temps de référence
+    qu'utilise cette directive correspond au moment où la connexion LDAP
+    est enregistrée ou remise dans le jeu de connexions, et non au
+    moment du dernier échange réussi avec le serveur LDAP.</p>
+
+    <p>La version 2.4.10 a introduit de nouvelles mesures permettant
+    d'éviter une augmentation excessive du temps de référence due à des
+    correspondances positives dans le cache ou des requêtes lentes. A
+    cet effet, le temps de référence n'est pas réactualisé si aucune
+    connexion LDAP d'arrière-plan n'est requise ; d'autre part, le temps
+    de référence se base sur le moment où la requête HTTP est reçue, et
+    non sur le moment où la requête a été traitée.</p>
 
     <div class="note"><p>Cette durée de vie s'exprime par défaut en secondes, mais
     il est possible d'utiliser d'autres unités en ajoutant un suffixe :
