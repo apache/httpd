@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_ldap: Be more conservative with the last-used time for
+     LDAPConnectionPoolTTL. PR54587 [Eric Covener]
+
   *) mod_deflate: Don't fail when flushing inflated data to the user-agent
      and that coincides with the end of stream ("Zlib error flushing inflate
      buffer"). PR 56196. [Christoph Fausak <christoph fausak glueckkanja.com>]
