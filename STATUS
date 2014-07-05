@@ -199,6 +199,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      note: depends on ap_shutdown_conn() from r1601185 above.
      +1: ylavic
 
+   * mod_ldap: LDAPConnctionPoolTTL enhancements -- apply properly to authn and
+               only update the last used time when we hit the backend server
+               AND use r->request_time instead of end-of-request-time. 
+               PR54587
+      trunk patch: http://svn.apache.org/r1452551
+                   http://svn.apache.org/r1607960
+      2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-ldap-connttl-conservative.diff
+     +1 covener
+               
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
