@@ -524,6 +524,7 @@ static int uldap_simple_bind(util_ldap_connection_t *ldc, char *binddn,
         return uldap_ld_errno(ldc);
     }
     else { 
+        ldc->last_backend_conn = ldc->r->request_time;
         ap_log_rerror(APLOG_MARK, APLOG_TRACE5, 0, ldc->r, "LDC %pp bind", ldc);
     }
     return rc;
@@ -730,10 +731,10 @@ static util_ldap_connection_t *
             && !compare_client_certs(dc->client_certs, l->client_certs))
         {
             if (st->connection_pool_ttl > 0) {
-                if (l->bound && (now - l->freed) > st->connection_pool_ttl) {
+                if (l->bound && (now - l->last_backend_conn) > st->connection_pool_ttl) {
                     ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r,
                                   "Removing LDAP connection last used %" APR_TIME_T_FMT " seconds ago",
-                                  (now - l->freed) / APR_USEC_PER_SEC);
+                                  (now - l->last_backend_conn) / APR_USEC_PER_SEC);
                     l->r = r;
                     uldap_connection_unbind(l);
                     /* Go ahead (by falling through) and use it, so we don't create more just to unbind some other old ones */
@@ -768,10 +769,10 @@ static util_ldap_connection_t *
                 !compare_client_certs(dc->client_certs, l->client_certs))
             {
                 if (st->connection_pool_ttl > 0) {
-                    if (l->bound && (now - l->freed) > st->connection_pool_ttl) {
+                    if (l->bound && (now - l->last_backend_conn) > st->connection_pool_ttl) {
                         ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r,
                                 "Removing LDAP connection last used %" APR_TIME_T_FMT " seconds ago",
-                                (now - l->freed) / APR_USEC_PER_SEC);
+                                (now - l->last_backend_conn) / APR_USEC_PER_SEC);
                         l->r = r;
                         uldap_connection_unbind(l);
                         /* Go ahead (by falling through) and use it, so we don't create more just to unbind some other old ones */
@@ -995,6 +996,7 @@ start_over:
         return result;
     }
 
+    ldc->last_backend_conn = r->request_time;
     entry = ldap_first_entry(ldc->ldap, res);
     searchdn = ldap_get_dn(ldc->ldap, entry);
 
@@ -1146,6 +1148,7 @@ start_over:
         goto start_over;
     }
 
+    ldc->last_backend_conn = r->request_time;
     ldc->reason = "Comparison complete";
     if ((LDAP_COMPARE_TRUE == result) ||
         (LDAP_COMPARE_FALSE == result) ||
@@ -1271,6 +1274,7 @@ start_over:
         return res;
     }
 
+    ldc->last_backend_conn = r->request_time;
     entry = ldap_first_entry(ldc->ldap, sga_res);
 
     /*
@@ -1753,6 +1757,7 @@ start_over:
      * We should have found exactly one entry; to find a different
      * number is an error.
      */
+    ldc->last_backend_conn = r->request_time;
     count = ldap_count_entries(ldc->ldap, res);
     if (count != 1)
     {
@@ -2013,6 +2018,7 @@ start_over:
      * We should have found exactly one entry; to find a different
      * number is an error.
      */
+    ldc->last_backend_conn = r->request_time;
     count = ldap_count_entries(ldc->ldap, res);
     if (count != 1)
     {
