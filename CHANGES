@@ -1,10 +1,14 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.28
 
+  *) mod_rewrite: Support session cookies with the CO= flag when later parameters
+     are used.  The doc for this implied the feature had been backported for
+     quite some time.  PR56014 [Eric Covener]
+
   *) mod_cache: Don't remove stale cache entries that cannot be conditionally
-    revalidated. This prevents the thundring herd protection from serving
-    stale responses during a revalidation. PR 50317.
-    [Eric Covener, Jan Kaluza,  Ruediger Pluem]
+     revalidated. This prevents the thundring herd protection from serving
+     stale responses during a revalidation. PR 50317.
+     [Eric Covener, Jan Kaluza,  Ruediger Pluem]
 
   *) core: Increase TCP_DEFER_ACCEPT socket option to from 1 to 30 seconds. 
      PR 41270. [Dean Gaudet <dean arctic org>]

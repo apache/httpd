@@ -99,13 +99,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_rewrite: Support session cookies with the CO= flag when later parameters
-     are used.  The doc for this implied the feature had been backported for
-     quite some time.  PR56014
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=664333
-     2.2.x patch: http://people.apache.org/~covener/patches/httpd-2.2.x-rewrite-sessioncookie.diff
-     +1 covener, ylavic, rpluem
-
    * mod_cache, mod_disk_cache: Try to use the key of a possible open but
      stale cache entry if there is one. This fixes problem when two different
      cache locks have been created for single stale cache entry leading to two
