@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_authnz_ldap: Return LDAP connections to the pool before the handler
+     is run, instead of waiting until the end of the request. [Eric Covener]
+
   *) mod_ldap: Be more conservative with the last-used time for
      LDAPConnectionPoolTTL. PR54587 [Eric Covener]
 
