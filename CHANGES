@@ -2,6 +2,8 @@
 Changes with Apache 2.2.28
 
 
+  *) core: Increase TCP_DEFER_ACCEPT socket option to from 1 to 30 seconds. 
+     PR 41270. [Dean Gaudet <dean arctic org>]
 
 Changes with Apache 2.2.27
 

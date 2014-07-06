@@ -99,11 +99,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * core: Increase TCP_DEFER_ACCEPT socket option from 1 to 30 seconds. PR 41270.
-     trunk patch: http://svn.apache.org/r501364
-     2.2.x patch: trunk works
-     +1: ylavic, trawick, covener
-
    * mod_cache: Don't remove stale cache entries that cannot be conditionally
      revalidated. This prevents the thundring herd protection from serving
      stale during a revalidation. Reverts most of r572626 which is also gone
