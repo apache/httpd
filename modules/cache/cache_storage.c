@@ -281,6 +281,7 @@ int cache_select(request_rec *r)
                 /* Make response into a conditional */
                 cache->stale_headers = apr_table_copy(r->pool,
                                                       r->headers_in);
+                cache->stale_handle = h;
 
                 /* We can only revalidate with our own conditionals: remove the
                  * conditions from the original request.
@@ -291,12 +292,6 @@ int cache_select(request_rec *r)
                 apr_table_unset(r->headers_in, "If-Range");
                 apr_table_unset(r->headers_in, "If-Unmodified-Since");
 
-                /*
-                 * Do not do Range requests with our own conditionals: If
-                 * we get 304 the Range does not matter and otherwise the
-                 * entity changed and we want to have the complete entity
-                 */
-                apr_table_unset(r->headers_in, "Range");
 
                 etag = apr_table_get(h->resp_hdrs, "ETag");
                 lastmod = apr_table_get(h->resp_hdrs, "Last-Modified");
@@ -314,23 +309,13 @@ int cache_select(request_rec *r)
                         apr_table_set(r->headers_in, "If-Modified-Since",
                                       lastmod);
                     }
-                    cache->stale_handle = h;
-                }
-                else {
-                    int irv;
-
                     /*
-                     * The copy isn't fresh enough, but we cannot revalidate.
-                     * So it is the same case as if there had not been a cached
-                     * entry at all. Thus delete the entry from cache.
+                     * Do not do Range requests with our own conditionals: If
+                     * we get 304 the Range does not matter and otherwise the
+                     * entity changed and we want to have the complete entity
                      */
-                    irv = cache->provider->remove_url(h, r->pool);
-                    if (irv != OK) {
-                        ap_log_error(APLOG_MARK, APLOG_DEBUG, irv, r->server,
-                                     "cache: attempt to remove url from cache unsuccessful.");
-                    }
+                    apr_table_unset(r->headers_in, "Range");
                 }
-
                 return DECLINED;
             }
 

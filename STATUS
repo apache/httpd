@@ -99,15 +99,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_cache: Don't remove stale cache entries that cannot be conditionally
-     revalidated. This prevents the thundring herd protection from serving
-     stale during a revalidation. Reverts most of r572626 which is also gone
-     from later branches.   PR 50317.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1023398
-     2.2.x patch: http://people.apache.org/~covener/patches/httpd-2.2.x-thunder.diff 
-         (+ CHANGES)
-     +1: covener, jkaluza, ylavic
-
    * mod_rewrite: Support session cookies with the CO= flag when later parameters
      are used.  The doc for this implied the feature had been backported for
      quite some time.  PR56014
