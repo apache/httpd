@@ -285,7 +285,7 @@ static apr_status_t alloc_systemd_listener(process_rec * process,
 {
     apr_status_t rv;
     struct sockaddr sa;
-    socklen_t len;
+    socklen_t len = sizeof(struct sockaddr);
     apr_os_sock_info_t si;
     ap_listen_rec *rec;
     *out_rec = NULL;
@@ -303,6 +303,7 @@ static apr_status_t alloc_systemd_listener(process_rec * process,
 
     si.os_sock = &fd;
     si.family = sa.sa_family;
+    si.local = &sa;
     si.type = SOCK_STREAM;
     si.protocol = APR_PROTO_TCP;
 
@@ -771,23 +772,36 @@ AP_DECLARE(apr_status_t) ap_duplicate_listeners(server_rec *s, apr_pool_t *p,
             char *hostname;
             apr_port_t port;
             apr_sockaddr_t *sa;
-            duplr  = apr_palloc(p, sizeof(ap_listen_rec));
-            duplr->slave = NULL;
-            duplr->protocol = apr_pstrdup(p, lr->protocol);
-            hostname = apr_pstrdup(p, lr->bind_addr->hostname);
-            port = lr->bind_addr->port;
-            apr_sockaddr_info_get(&sa, hostname, APR_UNSPEC, port, 0, p);
-            duplr->bind_addr = sa;
-            duplr->next = NULL;
-            if ((stat = apr_socket_create(&duplr->sd, duplr->bind_addr->family,
-                                          SOCK_STREAM, 0, p)) != APR_SUCCESS) {
-                ap_log_perror(APLOG_MARK, APLOG_CRIT, 0, p, APLOGNO(02640)
-                              "ap_duplicate_socket: for address %pI, "
-                              "cannot duplicate a new socket!",
-                              duplr->bind_addr);
-                return stat;
+#ifdef HAVE_SYSTEMD
+            if (use_systemd) {
+                int thesock;
+                apr_os_sock_get(&thesock, lr->sd);
+                if ((stat = alloc_systemd_listener(p, thesock, &duplr))
+                    != APR_SUCCESS) {
+                    return stat;
+                }
             }
-            make_sock(p, duplr, 1);
+            else
+#endif
+            {
+                duplr  = apr_palloc(p, sizeof(ap_listen_rec));
+                duplr->slave = NULL;
+                duplr->protocol = apr_pstrdup(p, lr->protocol);
+                hostname = apr_pstrdup(p, lr->bind_addr->hostname);
+                port = lr->bind_addr->port;
+                apr_sockaddr_info_get(&sa, hostname, APR_UNSPEC, port, 0, p);
+                duplr->bind_addr = sa;
+                duplr->next = NULL;
+                if ((stat = apr_socket_create(&duplr->sd, duplr->bind_addr->family,
+                                            SOCK_STREAM, 0, p)) != APR_SUCCESS) {
+                    ap_log_perror(APLOG_MARK, APLOG_CRIT, 0, p, APLOGNO(02640)
+                                "ap_duplicate_socket: for address %pI, "
+                                "cannot duplicate a new socket!",
+                                duplr->bind_addr);
+                    return stat;
+                }
+                make_sock(p, duplr, 1);
+            }
 #if AP_NONBLOCK_WHEN_MULTI_LISTEN
             use_nonblock = (ap_listeners && ap_listeners->next);
             if ((stat = apr_socket_opt_set(duplr->sd, APR_SO_NONBLOCK, use_nonblock))
