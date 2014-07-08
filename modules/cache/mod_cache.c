@@ -113,6 +113,27 @@ static int cache_url_handler(request_rec *r, int lookup)
     if (rv != OK) {
         if (rv == DECLINED) {
             if (!lookup) {
+                char *key;
+                cache_handle_t *h;
+
+                /*
+                 * Try to use the key of a possible open but stall cache
+                 * entry if we have one.
+                 */
+                if (cache->handle != NULL) {
+                    h = cache->handle;
+                }
+                else {
+                    h = cache->stale_handle;
+                }
+                if ((h != NULL) &&
+                    (h->cache_obj != NULL) &&
+                    (h->cache_obj->key != NULL)) {
+                    key = apr_pstrdup(r->pool, h->cache_obj->key);
+                }
+                else {
+                    key = NULL;
+                }
 
                 /* try to obtain a cache lock at this point. if we succeed,
                  * we are the first to try and cache this url. if we fail,
@@ -121,7 +142,7 @@ static int cache_url_handler(request_rec *r, int lookup)
                  * backend without any attempt to cache. this stops
                  * duplicated simultaneous attempts to cache an entity.
                  */
-                rv = ap_cache_try_lock(conf, r, NULL);
+                rv = ap_cache_try_lock(conf, r, key);
                 if (APR_SUCCESS == rv) {
 
                     /*
