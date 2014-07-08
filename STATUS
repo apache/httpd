@@ -100,18 +100,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_ssl: Add SSLOCSPUseRequestNonce directive to control whether or not
-     OCSP requests should use a nonce to be checked against the responder's
-     one. PR 56233.
-     trunk patch: http://svn.apache.org/r1583191
-                  http://svn.apache.org/r1584098
-                  http://svn.apache.org/r1584665 (manual: use 2.4's backport
-                                                  version instead of temporary
-                                                  2.5-dev <compatibility> ref)
-                  http://svn.apache.org/r1591401
-     2.4.x patch: https://people.apache.org/~ylavic/httpd-2.4.x-SSLOCSPUseRequestNonce+manual-2.4.10-v2.patch
-     +1: ylavic, kbrand, jorton
-
    * mod_proxy_http: Avoid useless functions calls.
      trunk patch: http://svn.apache.org/r1572561
      2.4.x patch: trunk works
@@ -123,13 +111,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1588519
      2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic, covener, jim
-
-   * mod_ssl: Improve compatibility with mod_nss; allow "SSLEngine off" to override
-              Listen-based default.
-     trunk patch: http://svn.apache.org/r1537535
-     2.4.x patch: trunk patch works
-     +1: jorton, trawick, , jim
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
