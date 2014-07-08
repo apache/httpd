@@ -986,7 +986,15 @@ void child_main(apr_pool_t *pconf, DWORD parent_pid)
 
     if (parent_pid != my_pid) {
         child_events[2] = OpenProcess(SYNCHRONIZE, FALSE, parent_pid);
-        num_events = 3;
+        if (child_events[2] == NULL) {
+            num_events = 2;
+            ap_log_error(APLOG_MARK, APLOG_ERR, apr_get_os_error(), ap_server_conf, APLOGNO(02643)
+                         "Child: Failed to open handle to parent process %ld; "
+                         "will not react to abrupt parent termination", parent_pid);
+        }
+        else {
+            num_events = 3;
+        }
     }
     else {
         /* presumably -DONE_PROCESS */
@@ -1084,7 +1092,7 @@ void child_main(apr_pool_t *pconf, DWORD parent_pid)
         apr_sleep(1 * APR_USEC_PER_SEC);
     }
 
-    /* Wait for one of three events:
+    /* Wait for one of these events:
      * exit_event:
      *    The exit_event is signaled by the parent process to notify
      *    the child that it is time to exit.
@@ -1092,6 +1100,8 @@ void child_main(apr_pool_t *pconf, DWORD parent_pid)
      * max_requests_per_child_event:
      *    This event is signaled by the worker threads to indicate that
      *    the process has handled MaxConnectionsPerChild connections.
+     *
+     * parent process exiting
      *
      * TIMEOUT:
      *    To do periodic maintenance on the server (check for thread exits,
@@ -1113,6 +1123,7 @@ void child_main(apr_pool_t *pconf, DWORD parent_pid)
         rv = WaitForMultipleObjects(num_events, (HANDLE *)child_events, FALSE, INFINITE);
         cld = rv - WAIT_OBJECT_0;
 #else
+        /* THIS IS THE EXPECTED BUILD VARIATION */
         rv = WaitForMultipleObjects(num_events, (HANDLE *)child_events, FALSE, 1000);
         cld = rv - WAIT_OBJECT_0;
         if (rv == WAIT_TIMEOUT) {
@@ -1125,6 +1136,17 @@ void child_main(apr_pool_t *pconf, DWORD parent_pid)
             ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(),
                          ap_server_conf, APLOGNO(00356)
                          "Child: WAIT_FAILED -- shutting down server");
+            /* check handle validity to identify a possible culprit */
+            for (i = 0; i < num_events; i++) {
+                DWORD out_flags;
+
+                if (0 == GetHandleInformation(child_events[i], &out_flags)) {
+                    ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(),
+                                 ap_server_conf, APLOGNO(02644)
+                                 "Child: Event handle #%d (%pp) is invalid",
+                                 i, child_events[i]);
+                }
+            }
             break;
         }
         else if (cld == 0) {
