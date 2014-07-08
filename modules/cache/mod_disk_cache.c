@@ -962,15 +962,6 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
 
     apr_file_close(dobj->hfd); /* flush and close */
 
-    /* Remove old file with the same name. If remove fails, then
-     * perhaps we need to create the directory tree where we are
-     * about to write the new headers file.
-     */
-    rv = apr_file_remove(dobj->hdrsfile, r->pool);
-    if (rv != APR_SUCCESS) {
-        mkdir_structure(conf, dobj->hdrsfile, r->pool);
-    }
-
     rv = safe_file_rename(conf, dobj->tempfile, dobj->hdrsfile, r->pool);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_WARNING, rv, r->server,

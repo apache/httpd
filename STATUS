@@ -99,16 +99,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_cache, mod_disk_cache: Try to use the key of a possible open but
-     stale cache entry if there is one. This fixes problem when two different
-     cache locks have been created for single stale cache entry leading to two
-     requests sent to backend.
-     Remove useless apr_file_remove() before renaming the cache entry in
-     mod_disk_cache. This fixes small time-frame during which stale cache
-     entry can be seen as not-cached.
-     PR 50317
-     2.2.x patch: http://people.apache.org/~jkaluza/patches/httpd-2.2.x-thundering-herd.patch
-     +1: ylavic, rpluem, jkaluza
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]

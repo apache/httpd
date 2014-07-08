@@ -1,12 +1,17 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.28
 
+  *) mod_cache, mod_disk_cache: With CacheLock enabled, responses with a Vary 
+     header might not get the benefit of the thundering herd protection due to 
+     an incorrect internal cache key.  PR 50317. 
+     [Ruediger Pluem, Jan Kaluza, Yann Ylavic]
+
   *) mod_rewrite: Support session cookies with the CO= flag when later parameters
      are used.  The doc for this implied the feature had been backported for
      quite some time.  PR56014 [Eric Covener]
 
   *) mod_cache: Don't remove stale cache entries that cannot be conditionally
-     revalidated. This prevents the thundring herd protection from serving
+     revalidated. This prevents the thundering herd protection from serving
      stale responses during a revalidation. PR 50317.
      [Eric Covener, Jan Kaluza,  Ruediger Pluem]
 
