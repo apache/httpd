@@ -209,7 +209,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
               Listen-based default.
      trunk patch: http://svn.apache.org/r1537535
      2.4.x patch: trunk patch works
-     +1: jorton, 
+     +1: jorton, trawick, 
 
    * mod_ssl: Fix tmp DH parameter leak, adjust selection to prefer
               larger keys and support up to 8192-bit keys.
