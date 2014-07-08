@@ -71,10 +71,6 @@ Changes with Apache 2.5.0
      from the ones to be forwarded to the backend. PR 45387.
      [Yann Ylavic]
 
-  *) mod_proxy: When ping/pong is configured for a worker, don't send or
-     forward "100 Continue" (interim) response to the client if it does
-     not expect one. [Yann Ylavic]
-
   *) mod_remoteip: Prevent an external proxy from presenting an internal
      proxy. PR 55962. [Mike Rumph]
 
