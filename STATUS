@@ -150,14 +150,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * mod_proxy_http: Avoid useless functions calls.
      trunk patch: http://svn.apache.org/r1572561
      2.4.x patch: trunk works
-     +1: ylavic, covener
+     +1: ylavic, covener, jim
 
    * mod_proxy: When ping/pong is configured for a worker, don't send or forward
                 "100 Continue" (interim) response to the client if it does not
                 expect one.
      trunk patch: http://svn.apache.org/r1588519
      2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, covener
+     +1: ylavic, covener, jim
 
    * mod_proxy: Preserve original request headers even if they differ
                 from the ones to be forwarded to the backend. PR 45387.
@@ -203,13 +203,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       trunk patch: http://svn.apache.org/r1452551
                    http://svn.apache.org/r1607960
       2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-ldap-connttl-conservative.diff
-     +1 covener
+     +1 covener, jim
 
    * mod_ssl: Improve compatibility with mod_nss; allow "SSLEngine off" to override
               Listen-based default.
      trunk patch: http://svn.apache.org/r1537535
      2.4.x patch: trunk patch works
-     +1: jorton, trawick, 
+     +1: jorton, trawick, , jim
 
    * mod_ssl: Fix tmp DH parameter leak, adjust selection to prefer
               larger keys and support up to 8192-bit keys.
