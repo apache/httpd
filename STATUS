@@ -210,6 +210,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1537535
      2.4.x patch: trunk patch works
      +1: jorton, 
+
+   * mod_ssl: Fix tmp DH parameter leak, adjust selection to prefer
+              larger keys and support up to 8192-bit keys.
+     trunk patch: http://svn.apache.org/r1597349
+                  http://svn.apache.org/r1598107
+                  http://svn.apache.org/r1603915
+                  http://svn.apache.org/r1605827
+     2.4.x patch: http://people.apache.org/~jorton/ms_tmpdh-2.4.x.diff
+     +1: jorton, 
                
 OTHER PROPOSALS
 
