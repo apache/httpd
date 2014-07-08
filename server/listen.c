@@ -288,13 +288,13 @@ static int find_systemd_socket(process_rec * process, apr_port_t port)
         ap_log_perror(APLOG_MARK, APLOG_CRIT, sdc, process->pool, APLOGNO(02486)
                       "find_systemd_socket: Error parsing enviroment, sd_listen_fds returned %d",
                       sdc);
-        return 1;
+        return -1;
     }
 
     if (sdc == 0) {
         ap_log_perror(APLOG_MARK, APLOG_CRIT, sdc, process->pool, APLOGNO(02487)
                       "find_systemd_socket: At least one socket must be set.");
-        return 1;
+        return -1;
     }
 
     fdcount = atoi(getenv("LISTEN_FDS"));
