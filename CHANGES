@@ -2,6 +2,10 @@
 
 Changes with Apache 2.4.10
 
+  *) mod_proxy: When ping/pong is configured for a worker, don't send or
+     forward "100 Continue" (interim) response to the client if it does
+     not expect one. [Yann Ylavic]
+
   *) mod_proxy_fcgi: Fix occasional high CPU when handling request bodies.
      [Jeff Trawick]
 
