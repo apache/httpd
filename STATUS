@@ -100,12 +100,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_slotmem_shm: Remove wonky and dangerous code that knows about APR
-     internals. We work fine w/o it anyway at this stage.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1561385
-     2.4.x patch: trunk works
-     +1: jim, ylavic, jorton
-
    * mod_ssl: Add SSLOCSPUseRequestNonce directive to control whether or not
      OCSP requests should use a nonce to be checked against the responder's
      one. PR 56233.

@@ -86,40 +86,6 @@ static apr_pool_t *gpool = NULL;
 #define DEFAULT_SLOTMEM_SUFFIX ".shm"
 #define DEFAULT_SLOTMEM_PERSIST_SUFFIX ".persist"
 
-/* apr:shmem/unix/shm.c */
-static apr_status_t unixd_set_shm_perms(const char *fname)
-{
-#ifdef AP_NEED_SET_MUTEX_PERMS
-#if APR_USE_SHMEM_SHMGET || APR_USE_SHMEM_SHMGET_ANON
-    struct shmid_ds shmbuf = { { 0 } };
-    key_t shmkey;
-    int shmid;
-
-    shmkey = ftok(fname, 1);
-    if (shmkey == (key_t)-1) {
-        return errno;
-    }
-    if ((shmid = shmget(shmkey, 0, SHM_R | SHM_W)) == -1) {
-        return errno;
-    }
-#if MODULE_MAGIC_NUMBER_MAJOR <= 20081212
-#define ap_unixd_config unixd_config
-#endif
-    shmbuf.shm_perm.uid  = ap_unixd_config.user_id;
-    shmbuf.shm_perm.gid  = ap_unixd_config.group_id;
-    shmbuf.shm_perm.mode = 0600;
-    if (shmctl(shmid, IPC_SET, &shmbuf) == -1) {
-        return errno;
-    }
-    return APR_SUCCESS;
-#else
-    return APR_ENOTIMPL;
-#endif
-#else
-    return APR_ENOTIMPL;
-#endif
-}
-
 /*
  * Persist the slotmem in a file
  * slotmem name and file name.
@@ -421,15 +387,6 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new,
                      rv == APR_SUCCESS ? "succeeded" : "failed");
         if (rv != APR_SUCCESS) {
             return rv;
-        }
-        if (fbased) {
-            /* Set permissions to shared memory
-             * so it can be attached by child process
-             * having different user credentials
-             *
-             * See apr:shmem/unix/shm.c
-             */
-            unixd_set_shm_perms(fname);
         }
         ptr = (char *)apr_shm_baseaddr_get(shm);
         desc.size = item_size;
