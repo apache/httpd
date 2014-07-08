@@ -117,13 +117,16 @@ apr_status_t ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
         sc->vhost_id = ssl_util_vhostid(p, s);
         sc->vhost_id_len = strlen(sc->vhost_id);
 
-        if (ap_get_server_protocol(s) &&
-            strcmp("https", ap_get_server_protocol(s)) == 0) {
+        /* Default to enabled if SSLEngine is not set explicitly, and
+         * the protocol is https. */
+        if (ap_get_server_protocol(s) 
+            && strcmp("https", ap_get_server_protocol(s)) == 0
+            && sc->enabled == SSL_ENABLED_UNSET) {
             sc->enabled = SSL_ENABLED_TRUE;
         }
 
-        /* If sc->enabled is UNSET, then SSL is optional on this vhost  */
-        /* Fix up stuff that may not have been set */
+        /* Fix up stuff that may not have been set.  If sc->enabled is
+         * UNSET, then SSL is disabled on this vhost.  */
         if (sc->enabled == SSL_ENABLED_UNSET) {
             sc->enabled = SSL_ENABLED_FALSE;
         }
