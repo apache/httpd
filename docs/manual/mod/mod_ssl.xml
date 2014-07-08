@@ -2278,6 +2278,23 @@ which means that OCSP responses are considered valid as long as their
 </directivesynopsis>
 
 <directivesynopsis>
+<name>SSLOCSPUseRequestNonce</name>
+<description>Use a nonce within OCSP queries</description>
+<syntax>SSLOCSPUseRequestNonce on|off</syntax>
+<default>SSLOCSPUseRequestNonce on</default>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+<compatibility>Available in httpd 2.4.10 and later</compatibility>
+
+<usage>
+<p>This option determines whether queries to OCSP responders should contain
+a nonce or not. By default, a query nonce is always used and checked against
+the response's one. When the responder does not use nonces (eg. Microsoft OCSP
+Responder), this option ought to be turned <code>off</code>.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>SSLInsecureRenegotiation</name>
 <description>Option to enable support for insecure renegotiation</description>
 <syntax>SSLInsecureRenegotiation on|off</syntax>

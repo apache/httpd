@@ -104,7 +104,8 @@ static apr_uri_t *determine_responder_uri(SSLSrvConfigRec *sc, X509 *cert,
  * request object on success, or NULL on error. */
 static OCSP_REQUEST *create_request(X509_STORE_CTX *ctx, X509 *cert,
                                     OCSP_CERTID **certid,
-                                    server_rec *s, apr_pool_t *p)
+                                    server_rec *s, apr_pool_t *p,
+                                    SSLSrvConfigRec *sc)
 {
     OCSP_REQUEST *req = OCSP_REQUEST_new();
 
@@ -116,7 +117,9 @@ static OCSP_REQUEST *create_request(X509_STORE_CTX *ctx, X509 *cert,
         return NULL;
     }
 
-    OCSP_request_add1_nonce(req, 0, -1);
+    if (sc->server->ocsp_use_request_nonce != FALSE) {
+        OCSP_request_add1_nonce(req, 0, -1);
+    }
 
     return req;
 }
@@ -139,7 +142,7 @@ static int verify_ocsp_status(X509 *cert, X509_STORE_CTX *ctx, conn_rec *c,
         return V_OCSP_CERTSTATUS_UNKNOWN;
     }
 
-    request = create_request(ctx, cert, &certID, s, pool);
+    request = create_request(ctx, cert, &certID, s, pool, sc);
     if (request) {
         apr_interval_time_t to = sc->server->ocsp_responder_timeout == UNSET ?
                                  apr_time_from_sec(DEFAULT_OCSP_TIMEOUT) :
@@ -171,12 +174,12 @@ static int verify_ocsp_status(X509 *cert, X509_STORE_CTX *ctx, conn_rec *c,
         }
     }
 
-    if (rc == V_OCSP_CERTSTATUS_GOOD) {
-        if (OCSP_check_nonce(request, basicResponse) != 1) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(01924)
-                        "Bad OCSP responder answer (bad nonce)");
-            rc = V_OCSP_CERTSTATUS_UNKNOWN;
-        }
+    if (rc == V_OCSP_CERTSTATUS_GOOD &&
+            sc->server->ocsp_use_request_nonce != FALSE &&
+            OCSP_check_nonce(request, basicResponse) != 1) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(01924)
+                    "Bad OCSP responder answer (bad nonce)");
+        rc = V_OCSP_CERTSTATUS_UNKNOWN;
     }
 
     if (rc == V_OCSP_CERTSTATUS_GOOD) {
