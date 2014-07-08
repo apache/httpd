@@ -71,6 +71,10 @@ Changes with Apache 2.4.10
      programs to the form used in releases up to 2.4.7, and emulate
      a backwards-compatible behavior for existing setups. [Kaspar Brand]
 
+  *) mod_ssl: Add SSLOCSPUseRequestNonce directive to control whether or not
+     OCSP requests should use a nonce to be checked against the responder's
+     one. PR 56233. [Yann Ylavic, Kaspar Brand]
+
   *) mod_lua: Enforce the max post size allowed via r:parsebody()
      [Daniel Gruno]
 
