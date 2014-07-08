@@ -776,7 +776,7 @@ AP_DECLARE(apr_status_t) ap_duplicate_listeners(server_rec *s, apr_pool_t *p,
             if (use_systemd) {
                 int thesock;
                 apr_os_sock_get(&thesock, lr->sd);
-                if ((stat = alloc_systemd_listener(p, thesock, &duplr))
+                if ((stat = alloc_systemd_listener(s->process, thesock, &duplr))
                     != APR_SUCCESS) {
                     return stat;
                 }
