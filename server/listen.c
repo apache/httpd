@@ -279,7 +279,8 @@ static apr_status_t close_listeners_on_exec(void *v)
 
 #ifdef HAVE_SYSTEMD
 
-static int find_systemd_socket(process_rec * process, apr_port_t port) {
+static int find_systemd_socket(process_rec * process, apr_port_t port)
+{
     int fdcount, fd;
     int sdc = sd_listen_fds(0);
 
@@ -337,7 +338,6 @@ static apr_status_t alloc_systemd_listener(process_rec * process,
     rec = apr_palloc(process->pool, sizeof(ap_listen_rec));
     rec->active = 0;
     rec->next = 0;
-
 
     rv = apr_os_sock_make(&rec->sd, &si, process->pool);
     if (rv != APR_SUCCESS) {
