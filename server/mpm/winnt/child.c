@@ -1123,7 +1123,7 @@ void child_main(apr_pool_t *pconf, DWORD parent_pid)
         rv = WaitForMultipleObjects(num_events, (HANDLE *)child_events, FALSE, INFINITE);
         cld = rv - WAIT_OBJECT_0;
 #else
-        /* THIS IS THE EXPECTED BUILD VARIATION */
+        /* THIS IS THE EXPECTED BUILD VARIATION -- APR_HAS_OTHER_CHILD */
         rv = WaitForMultipleObjects(num_events, (HANDLE *)child_events, FALSE, 1000);
         cld = rv - WAIT_OBJECT_0;
         if (rv == WAIT_TIMEOUT) {
