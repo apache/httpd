@@ -100,6 +100,15 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * WinNT MPM diagnostics related to child checking for abrupt parent termination; I've
+     noticed 3 users so far with 2.4.9 reporting failures in this recently-modified
+     code.  (There are some references in one of the commits; I just found another
+     was on a German-language PHP list.)
+     trunk patch: http://svn.apache.org/r1606368
+                  http://svn.apache.org/r1607352
+     2.4.x patch: http://people.apache.org/~trawick/winnt_diagnostics_1606368_1607352.txt
+     +1: trawick, covener, gsmith
+               
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -192,7 +201,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1606368
                   http://svn.apache.org/r1607352
      2.4.x patch: http://people.apache.org/~trawick/winnt_diagnostics_1606368_1607352.txt
-     +1: trawick, covener
+     +1: trawick, covener, gsmith
                
 OTHER PROPOSALS
 
