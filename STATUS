@@ -99,17 +99,27 @@ RELEASE SHOWSTOPPERS:
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
- 
-
-
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
 
    * mod_slotmem_shm: Remove wonky and dangerous code that knows about APR
      internals. We work fine w/o it anyway at this stage.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1561385
      2.4.x patch: trunk works
-     +1: jim, ylavic
+     +1: jim, ylavic, jorton
+
+   * mod_ssl: Add SSLOCSPUseRequestNonce directive to control whether or not
+     OCSP requests should use a nonce to be checked against the responder's
+     one. PR 56233.
+     trunk patch: http://svn.apache.org/r1583191
+                  http://svn.apache.org/r1584098
+                  http://svn.apache.org/r1584665 (manual: use 2.4's backport
+                                                  version instead of temporary
+                                                  2.5-dev <compatibility> ref)
+                  http://svn.apache.org/r1591401
+     2.4.x patch: https://people.apache.org/~ylavic/httpd-2.4.x-SSLOCSPUseRequestNonce+manual-2.4.10-v2.patch
+     +1: ylavic, kbrand, jorton
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
 
    * mod_deflate: Don't fail when asked to flush inflated data to the user-agent
                   and that coincides with the end of stream ("Zlib error flushing
@@ -124,22 +134,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      ylavic: does not depend on r1572092 or r1572655 and al above,
              these proposals can be backported in any order.
 
-   * mod_ssl: Add SSLOCSPUseRequestNonce directive to control whether or not
-     OCSP requests should use a nonce to be checked against the responder's
-     one. PR 56233.
-     trunk patch: http://svn.apache.org/r1583191
-                  http://svn.apache.org/r1584098
-                  http://svn.apache.org/r1584665 (manual: use 2.4's backport
-                                                  version instead of temporary
-                                                  2.5-dev <compatibility> ref)
-                  http://svn.apache.org/r1591401
-     2.4.x patch: https://people.apache.org/~ylavic/httpd-2.4.x-SSLOCSPUseRequestNonce+manual-2.4.10-v2.patch
-     +1: ylavic, kbrand
-
    * mod_proxy_http: Avoid (unlikely) access to freed memory.
      trunk patch: http://svn.apache.org/r1599486
      2.4.x patch: trunk works
-     +1: ylavic
+     +1: ylavic, jorton
      covener: I did not look in depth, but is the preceding log message also bad?
      ylavic: No, this concerns the next for (;; e = APR_BUCKET_NEXT(e)) iteration.
              We could also s/apr_bucket_delete/APR_BUCKET_REMOVE/ instead, but
@@ -148,7 +146,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              *from is still living, the caller may want to reuse it, eg:
              https://issues.apache.org/bugzilla/attachment.cgi?id=31686).
              Should we?
-
 
    * mod_proxy_http: Avoid useless functions calls.
      trunk patch: http://svn.apache.org/r1572561
@@ -207,6 +204,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                    http://svn.apache.org/r1607960
       2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-ldap-connttl-conservative.diff
      +1 covener
+
+   * mod_ssl: Improve compatibility with mod_nss; allow "SSLEngine off" to override
+              Listen-based default.
+     trunk patch: http://svn.apache.org/r1537535
+     2.4.x patch: trunk patch works
+     +1: jorton, 
                
 OTHER PROPOSALS
 
