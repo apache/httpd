@@ -100,12 +100,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_proxy: When ping/pong is configured for a worker, don't send or forward
-                "100 Continue" (interim) response to the client if it does not
-                expect one.
-     trunk patch: http://svn.apache.org/r1588519
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, covener, jim
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
