@@ -79,6 +79,9 @@ Changes with Apache 2.4.10
      OCSP requests should use a nonce to be checked against the responder's
      one. PR 56233. [Yann Ylavic, Kaspar Brand]
 
+  *) mod_ssl: "SSLEngine off" will now override a Listen-based default
+     and does disable mod_ssl for the vhost.  [Joe Orton]
+
   *) mod_lua: Enforce the max post size allowed via r:parsebody()
      [Daniel Gruno]
 
