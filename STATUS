@@ -184,6 +184,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1605827
      2.4.x patch: http://people.apache.org/~jorton/ms_tmpdh-2.4.x.diff
      +1: jorton, 
+
+   * WinNT MPM diagnostics related to child checking for abrupt parent termination; I've
+     noticed 3 users so far with 2.4.9 reporting failures in this recently-modified
+     code.  (There are some references in one of the commits; I just found another
+     was on a German-language PHP list.)
+     trunk patch: http://svn.apache.org/r1606368
+                  http://svn.apache.org/r1607352
+     2.4.x patch: http://people.apache.org/~trawick/winnt_diagnostics_1606368_1607352.txt
+     +1: trawick
                
 OTHER PROPOSALS
 
