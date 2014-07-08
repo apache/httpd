@@ -48,7 +48,7 @@ static int ap_listenbacklog;
 static int send_buffer_size;
 static int receive_buffer_size;
 #ifdef HAVE_SYSTEMD
-static int use_systemd;
+static int use_systemd = -1;
 #endif
 
 /* TODO: make_sock is just begging and screaming for APR abstraction */
@@ -279,8 +279,35 @@ static apr_status_t close_listeners_on_exec(void *v)
 
 #ifdef HAVE_SYSTEMD
 
+static int find_systemd_socket(process_rec * process, apr_port_t port) {
+    int fdcount, fd;
+    int sdc = sd_listen_fds(0);
+
+    if (sdc < 0) {
+        ap_log_perror(APLOG_MARK, APLOG_CRIT, sdc, process->pool, APLOGNO(02486)
+                      "find_systemd_socket: Error parsing enviroment, sd_listen_fds returned %d",
+                      sdc);
+        return 1;
+    }
+
+    if (sdc == 0) {
+        ap_log_perror(APLOG_MARK, APLOG_CRIT, sdc, process->pool, APLOGNO(02487)
+                      "find_systemd_socket: At least one socket must be set.");
+        return 1;
+    }
+
+    fdcount = atoi(getenv("LISTEN_FDS"));
+    for (fd = SD_LISTEN_FDS_START; fd < SD_LISTEN_FDS_START + fdcount; fd++) {
+        if (sd_is_socket_inet(fd, 0, 0, -1, port) > 0) {
+            return fd;
+        }
+    }
+
+    return -1;
+}
+
 static apr_status_t alloc_systemd_listener(process_rec * process,
-                                           int fd,
+                                           int fd, const char *proto,
                                            ap_listen_rec **out_rec)
 {
     apr_status_t rv;
@@ -326,37 +353,22 @@ static apr_status_t alloc_systemd_listener(process_rec * process,
         return rv;
     }
 
-    if (rec->bind_addr->port == 443) {
-        rec->protocol = apr_pstrdup(process->pool, "https");
-    } else {
-        rec->protocol = apr_pstrdup(process->pool, "http");
-    }
+    rec->protocol = apr_pstrdup(process->pool, proto);
 
     *out_rec = rec;
 
     return make_sock(process->pool, rec, 0);
 }
 
-static int open_systemd_listeners(process_rec *process)
+static const char *set_systemd_listener(process_rec *process, apr_port_t port,
+                                        const char *proto)
 {
     ap_listen_rec *last, *new;
-    int fdcount, fd;
     apr_status_t rv;
-    void *data;
-    const char *userdata_key = "ap_systemd_listeners";
-    int sdc = sd_listen_fds(0);
-
-    if (sdc < 0) {
-        ap_log_perror(APLOG_MARK, APLOG_CRIT, sdc, process->pool, APLOGNO(02486)
-                      "open_systemd_listeners: Error parsing enviroment, sd_listen_fds returned %d",
-                      sdc);
-        return 1;
-    }
-
-    if (sdc == 0) {
-        ap_log_perror(APLOG_MARK, APLOG_CRIT, sdc, process->pool, APLOGNO(02487)
-                      "open_systemd_listeners: At least one socket must be set.");
-        return 1;
+    int fd = find_systemd_socket(process, port);
+    if (fd < 0) {
+        return "Systemd socket activation is used, but this port is not "
+                "configured in systemd";
     }
 
     last = ap_listeners;
@@ -364,40 +376,20 @@ static int open_systemd_listeners(process_rec *process)
         last = last->next;
     }
 
-    fdcount = atoi(getenv("LISTEN_FDS"));
-
-    for (fd = SD_LISTEN_FDS_START; fd < SD_LISTEN_FDS_START + fdcount; fd++) {
-        rv = alloc_systemd_listener(process, fd, &new);
-
-        if (rv != APR_SUCCESS) {
-            ap_log_perror(APLOG_MARK, APLOG_CRIT, rv, process->pool, APLOGNO(02488)
-                          "open_systemd_listeners: failed to setup socket %d.", fd);
-            return 1;
-        }
-
-        if (last == NULL) {
-            ap_listeners = last = new;
-        }
-        else {
-            last->next = new;
-            last = new;
-        }
+    rv = alloc_systemd_listener(process, fd, proto, &new);
+    if (rv != APR_SUCCESS) {
+        return "Failed to setup socket passed by systemd using socket activation";
     }
 
-    /* clear the enviroment on our second run
-     * so that none of our future children get confused.
-     */
-     apr_pool_userdata_get(&data, userdata_key, process->pool);
-     if (!data) {
-         apr_pool_userdata_set((const void *)1, userdata_key,
-                               apr_pool_cleanup_null, process->pool);
-     }
-     else {
-         sd_listen_fds(1);
-     }
+    if (last == NULL) {
+        ap_listeners = last = new;
+    }
+    else {
+        last->next = new;
+        last = new;
+    }
 
-
-    return 0;
+    return NULL;
 }
 
 #endif /* HAVE_SYSTEMD */
@@ -723,9 +715,19 @@ AP_DECLARE(int) ap_setup_listeners(server_rec *s)
 
 #ifdef HAVE_SYSTEMD
     if (use_systemd) {
-        if (open_systemd_listeners(s->process) != 0) {
-            return 0;
+        const char *userdata_key = "ap_open_systemd_listeners";
+        void *data;
+        /* clear the enviroment on our second run
+        * so that none of our future children get confused.
+        */
+        apr_pool_userdata_get(&data, userdata_key, s->process->pool);
+        if (!data) {
+            apr_pool_userdata_set((const void *)1, userdata_key,
+                                apr_pool_cleanup_null, s->process->pool);
         }
+        else {
+            sd_listen_fds(1);
+        }        
     }
     else
 #endif
@@ -776,8 +778,8 @@ AP_DECLARE(apr_status_t) ap_duplicate_listeners(server_rec *s, apr_pool_t *p,
             if (use_systemd) {
                 int thesock;
                 apr_os_sock_get(&thesock, lr->sd);
-                if ((stat = alloc_systemd_listener(s->process, thesock, &duplr))
-                    != APR_SUCCESS) {
+                if ((stat = alloc_systemd_listener(s->process, thesock,
+                    lr->protocol, &duplr)) != APR_SUCCESS) {
                     return stat;
                 }
             }
@@ -877,22 +879,9 @@ AP_DECLARE_NONSTD(const char *) ap_set_listener(cmd_parms *cmd, void *dummy,
     if (argc < 1 || argc > 2) {
         return "Listen requires 1 or 2 arguments.";
     }
-
-    if (strcmp("systemd", argv[0]) == 0) {
 #ifdef HAVE_SYSTEMD
-      use_systemd = 1;
-      if (ap_listeners != NULL) {
-        return "systemd socket activation support must be used exclusive of normal listeners.";
-      }
-      return NULL;
-#else
-      return "systemd support was not compiled in.";
-#endif
-    }
-
-#ifdef HAVE_SYSTEMD
-    if (use_systemd) {
-      return "systemd socket activation support must be used exclusive of normal listeners.";
+    if (use_systemd == -1) {
+        use_systemd = sd_listen_fds(0) > 0;
     }
 #endif
 
@@ -925,6 +914,12 @@ AP_DECLARE_NONSTD(const char *) ap_set_listener(cmd_parms *cmd, void *dummy,
         proto = apr_pstrdup(cmd->pool, argv[1]);
         ap_str_tolower(proto);
     }
+
+#ifdef HAVE_SYSTEMD
+    if (use_systemd) {
+        return set_systemd_listener(cmd->server->process, port, proto);
+    }
+#endif
 
     return alloc_listener(cmd->server->process, host, port, proto, NULL);
 }
