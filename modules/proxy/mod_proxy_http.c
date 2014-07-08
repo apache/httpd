@@ -1745,7 +1745,6 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
 #endif
                     /* sanity check */
                     if (APR_BRIGADE_EMPTY(bb)) {
-                        apr_brigade_cleanup(bb);
                         break;
                     }
 
