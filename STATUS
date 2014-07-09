@@ -122,9 +122,42 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1572967
                   http://svn.apache.org/r1573229
      2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-mod_proxy_sni_reuse3.patch
-     +1: ylavic
-     rpluem says: +1 if you add the MMN bump
+     +1: ylavic, rpluem
      ylavic: MMN bump in patch #3
+
+   * mod_deflate: Fix reentrance in output and input filters (buffering of
+                  incomplete Zlib header or validation bytes). PR 46146.
+     trunk patch: https://svn.apache.org/r1572655
+                  https://svn.apache.org/r1572663
+                  https://svn.apache.org/r1572668
+                  https://svn.apache.org/r1572669
+                  https://svn.apache.org/r1572670
+                  https://svn.apache.org/r1572671
+                  https://svn.apache.org/r1573224
+                  https://svn.apache.org/r1586745
+                  https://svn.apache.org/r1587594
+                  https://svn.apache.org/r1587639
+                  https://svn.apache.org/r1590509
+     2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-mod_deflate_reentrant_with_CHANGES.patch
+                  (modulo CHANGES)
+     +1: ylavic
+
+   * mod_deflate: Fix decompression of files larger than 4GB. According to RFC1952,
+                  Input SIZE contains the size of the original input data modulo 2^32.
+                  PR 56062.
+     trunk patch: http://svn.apache.org/r1572092
+     2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-mod_deflate_4GB.patch
+                  (modulo CHANGES)
+     +1: ylavic
+
+   * mod_deflate: Don't fail when asked to flush inflated data to the user-agent
+                  and that coincides with the end of stream ("Zlib error flushing
+                  inflate buffer"). PR 56196.
+     trunk patch: http://svn.apache.org/r1572896
+                  http://svn.apache.org/r1572911
+     2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-mod_deflate-flush_end_of_stream.patch
+                  (modulo CHANGES)
+     +1: ylavic
 
 PATCHES/ISSUES THAT ARE STALLED
 
