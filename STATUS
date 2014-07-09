@@ -115,6 +115,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      rpluem says: +1 if you add the MMN bump
      ylavic: MMN bump in patch #3
 
+   * mod_dav: PROPFIND not encoding hrefs properly.  PR 56480.
+              This was an unintentional regression in the PR 55397 fixes previously
+              released to fix the regressions caused by PR 54611.  Causes problems with
+              mod_dav_svn.  Subversion's trunk test suite will show an XPASS test when
+              this is fixed.
+     trunk patch: http://svn.apache.org/r1602338
+     2.2.x patch: run svn merge -c -c 1602338 ^/httpd/httpd/trunk
+                  and add the following CHANGES entry:
+     *) mod_dav: Fix improper encoding in PROPFIND responses.  PR 56480.
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * mod_cache: Realign the cache_quick_handler() to behave identically
