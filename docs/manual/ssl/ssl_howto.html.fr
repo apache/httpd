@@ -35,9 +35,6 @@ manière plus approfondie.</p>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#configexample">Exemple de configuration basique</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ciphersuites">Suites de chiffrement et mise en application de la sécurité
 de haut niveau</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#strongurl">Comment créer un serveur qui accepte tous les types de
-chiffrement en général, mais exige un chiffrement fort pour pouvoir
-accéder à une URL particulière ?</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#accesscontrol">Authentification du client et contrôle d'accès</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#logging">Journalisation</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
@@ -82,8 +79,6 @@ que le chiffrement fort ?</a></h3>
     <pre class="prettyprint lang-config">SSLCipherSuite HIGH:!aNULL:!MD5</pre>
 
 
-
-
  <p>Avec la configuration qui suit, vous indiquez une préférence pour
  des algorityhmes de chiffrement spécifiques optimisés en matière de
  rapidité (le choix final sera opéré par mod_ssl, dans la mesure ou le
@@ -92,11 +87,11 @@ que le chiffrement fort ?</a></h3>
     <pre class="prettyprint lang-config">SSLCipherSuite RC4-SHA:AES128-SHA:HIGH:!aNULL:!MD5
 SSLHonorCipherOrder on</pre>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="strongurl" id="strongurl">Comment créer un serveur qui accepte tous les types de
+
+
+<h3><a name="strongurl" id="strongurl">Comment créer un serveur qui accepte tous les types de
 chiffrement en général, mais exige un chiffrement fort pour pouvoir
-accéder à une URL particulière ?</a></h2>
+accéder à une URL particulière ?</a></h3>
 
     <p>Dans ce cas bien évidemment, une directive <code class="directive"><a href="../mod/mod_ssl.html#sslciphersuite">SSLCipherSuite</a></code> au niveau du serveur principal
     qui restreint le choix des suites de chiffrement aux versions les plus
@@ -114,6 +109,7 @@ SSLCipherSuite ALL:!aNULL:RC4+RSA:+HIGH:+MEDIUM:+LOW:+EXP:+eNULL
 # qui exigent des chiffrements forts
 SSLCipherSuite HIGH:!aNULL:!MD5
 &lt;/Location&gt;</pre>
+
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">

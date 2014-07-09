@@ -562,6 +562,7 @@
 <li><a href="mod_ssl.html#sslocsprespondertimeout">SSLOCSPResponderTimeout</a></li>
 <li><a href="mod_ssl.html#sslocspresponsemaxage">SSLOCSPResponseMaxAge</a></li>
 <li><a href="mod_ssl.html#sslocspresponsetimeskew">SSLOCSPResponseTimeSkew</a></li>
+<li><a href="mod_ssl.html#sslocspuserequestnonce">SSLOCSPUseRequestNonce</a></li>
 <li><a href="mod_ssl.html#sslopensslconfcmd">SSLOpenSSLConfCmd</a></li>
 <li><a href="mod_ssl.html#ssloptions">SSLOptions</a></li>
 <li><a href="mod_ssl.html#sslpassphrasedialog">SSLPassPhraseDialog</a></li>
