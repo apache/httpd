@@ -185,6 +185,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~jorton/ms_tmpdh-2.4.x.diff
      +1: jorton, 
 
+   * mod_dav: PROPFIND not encoding hrefs properly.  PR 56480.
+              This was an unintentional regression in the PR 55397 fixes previously
+              released to fix the regressions caused by PR 54611.  Causes problems with
+              mod_dav_svn.  Subversion's trunk test suite will show an XPASS test when
+              this is fixed.
+     trunk patch: http://svn.apache.org/r1602338
+     2.4.x patch: run svn merge -c 1602338 ^/httpd/httpd/trunk
+                  and add the following CHANGES entry:
+     *) mod_dav: Fix improper encoding in PROPFIND responses.  PR 56480.
+     +1: breser
+
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
