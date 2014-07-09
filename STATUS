@@ -183,7 +183,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1603915
                   http://svn.apache.org/r1605827
      2.4.x patch: http://people.apache.org/~jorton/ms_tmpdh-2.4.x.diff
-     +1: jorton, 
+     +1: jorton, ylavic
 
    * mod_dav: PROPFIND not encoding hrefs properly.  PR 56480.
               This was an unintentional regression in the PR 55397 fixes previously
@@ -194,7 +194,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: run svn merge -c 1602338 ^/httpd/httpd/trunk
                   and add the following CHANGES entry:
      *) mod_dav: Fix improper encoding in PROPFIND responses.  PR 56480.
-     +1: breser
+     +1: breser, ylavic
 
 OTHER PROPOSALS
 
