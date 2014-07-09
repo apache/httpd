@@ -548,9 +548,9 @@ static const char *proxy_interpolate(request_rec *r, const char *str)
         return str;
     }
     /* OK, this is syntax we want to interpolate.  Is there such a var ? */
-    var = apr_pstrndup(r->pool, start+2, end-(start+2));
+    var = apr_pstrmemdup(r->pool, start+2, end-(start+2));
     val = apr_table_get(r->subprocess_env, var);
-    firstpart = apr_pstrndup(r->pool, str, (start-str));
+    firstpart = apr_pstrmemdup(r->pool, str, (start-str));
 
     if (val == NULL) {
         return apr_pstrcat(r->pool, firstpart,
@@ -1044,7 +1044,7 @@ static int proxy_handler(request_rec *r)
             return HTTP_MOVED_PERMANENTLY;
     }
 
-    scheme = apr_pstrndup(r->pool, uri, p - uri);
+    scheme = apr_pstrmemdup(r->pool, uri, p - uri);
     /* Check URI's destination host against NoProxy hosts */
     /* Bypass ProxyRemote server lookup if configured as NoProxy */
     for (direct_connect = i = 0; i < conf->dirconn->nelts &&
