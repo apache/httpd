@@ -74,8 +74,6 @@ que le chiffrement fort ?</title>
     <highlight language="config">
       SSLCipherSuite HIGH:!aNULL:!MD5
     </highlight>
-</section>
-
 
  <p>Avec la configuration qui suit, vous indiquez une pr&eacute;f&eacute;rence pour
  des algorityhmes de chiffrement sp&eacute;cifiques optimis&eacute;s en mati&egrave;re de
@@ -111,6 +109,7 @@ SSLCipherSuite ALL:!aNULL:RC4+RSA:+HIGH:+MEDIUM:+LOW:+EXP:+eNULL
 SSLCipherSuite HIGH:!aNULL:!MD5
 &lt;/Location&gt;
     </highlight>
+</section>
 </section>
 <!-- /ciphersuites -->
 
