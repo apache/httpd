@@ -138,6 +138,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   https://svn.apache.org/r1587594
                   https://svn.apache.org/r1587639
                   https://svn.apache.org/r1590509
+                  https://svn.apache.org/r1603156 (partially, CHANGES update)
+                  https://svn.apache.org/r1604353
      2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-mod_deflate_reentrant_with_CHANGES.patch
                   (modulo CHANGES)
      +1: ylavic
@@ -146,6 +148,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   Input SIZE contains the size of the original input data modulo 2^32.
                   PR 56062.
      trunk patch: http://svn.apache.org/r1572092
+                  http://svn.apache.org/r1603156 (partially, CHANGES update)
      2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-mod_deflate_4GB.patch
                   (modulo CHANGES)
      +1: ylavic
@@ -155,6 +158,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   inflate buffer"). PR 56196.
      trunk patch: http://svn.apache.org/r1572896
                   http://svn.apache.org/r1572911
+                  http://svn.apache.org/r1603156 (partially, CHANGES update)
      2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-mod_deflate-flush_end_of_stream.patch
                   (modulo CHANGES)
      +1: ylavic
