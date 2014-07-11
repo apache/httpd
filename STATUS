@@ -151,7 +151,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1603156 (partially, CHANGES update)
      2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-mod_deflate_4GB.patch
                   (modulo CHANGES)
-     +1: ylavic
+     +1: ylavic, breser
 
    * mod_deflate: Don't fail when asked to flush inflated data to the user-agent
                   and that coincides with the end of stream ("Zlib error flushing
@@ -161,7 +161,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1603156 (partially, CHANGES update)
      2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-mod_deflate-flush_end_of_stream.patch
                   (modulo CHANGES)
-     +1: ylavic
+     +1: ylavic, breser
 
 PATCHES/ISSUES THAT ARE STALLED
 
