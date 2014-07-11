@@ -1664,7 +1664,7 @@ static const char *
 
             PROXY_COPY_CONF_PARAMS(worker, conf);
         }
-        else if ((use_regex != 0) ^ (worker->s->is_name_matchable)) {
+        else if ((use_regex != 0) ^ (worker->s->is_name_matchable != 0)) {
             return apr_pstrcat(cmd->temp_pool, "ProxyPass/<Proxy> and "
                                "ProxyPassMatch/<ProxyMatch> can't be used "
                                "altogether with the same worker name ",
@@ -2383,7 +2383,7 @@ static const char *proxysection(cmd_parms *cmd, void *mconfig, const char *arg)
                     return apr_pstrcat(cmd->temp_pool, thiscmd->name,
                                        " ", err, NULL);
             }
-            else if ((use_regex != 0) ^ (worker->s->is_name_matchable)) {
+            else if ((use_regex != 0) ^ (worker->s->is_name_matchable != 0)) {
                 return apr_pstrcat(cmd->temp_pool, "ProxyPass/<Proxy> and "
                                    "ProxyPassMatch/<ProxyMatch> can't be used "
                                    "altogether with the same worker name ",
