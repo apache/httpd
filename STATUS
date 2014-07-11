@@ -196,6 +196,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      *) mod_dav: Fix improper encoding in PROPFIND responses.  PR 56480.
      +1: breser, ylavic
 
+   * mod_ssl: The SNI callback already logs a debug message when the vhost
+     is found or no vhost matches.  Log one when no name is provided
+     by the client.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1608284
+     2.4.x patch: Trunk patch works after "svn resolved docs/log-message-tags"
+     +1: trawick
+
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
