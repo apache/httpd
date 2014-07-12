@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_ssl: Set an error note for requests rejected due to
+     SSLStrictSNIVHostCheck.  [Jeff Trawick]
+
   *) mod_ssl: Fix issue with redirects to error documents when handling
      SNI errors.  [Jeff Trawick]
 
