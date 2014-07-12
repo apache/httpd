@@ -843,8 +843,10 @@ are applied independently of the authentication algorithm type.</p>
 <note>
 <title>DH parameter interoperability with primes > 1024 bit</title>
 <p>
-Beginning with version 2.5.0-dev, mod_ssl makes use of
-standardized DH parameters with prime lengths of 2048, 3072 and 4096, 6144 and 8192 bits
+Beginning with version 2.4.7, mod_ssl makes use of
+standardized DH parameters with prime lengths of 2048, 3072 and 4096 bits
+and with additional prime lengths of 6144 and 8192 bits beginning with
+version 2.4.10
 (from <a href="http://www.ietf.org/rfc/rfc3526.txt">RFC 3526</a>), and hands
 them out to clients based on the length of the certificate's RSA/DSA key.
 With Java-based clients in particular (Java 7 or earlier), this may lead
