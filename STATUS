@@ -100,12 +100,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * core: factor out DEFAULT_HANDLER_NAME
-     trunk patch: http://svn.apache.org/r1496709
-     2.4.x patch: trunk works (modulo ap_mmn.h)
-     +1: jailletc36, ylavic, trawick
-     trawick: also include tiny comment change in r1601995
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
