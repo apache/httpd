@@ -1922,10 +1922,10 @@ int ssl_callback_ServerNameIndication(SSL *ssl, int *al, modssl_ctx_t *mctx)
 {
     const char *servername =
                 SSL_get_servername(ssl, TLSEXT_NAMETYPE_host_name);
+    conn_rec *c = (conn_rec *)SSL_get_app_data(ssl);
 
-    if (servername) {
-        conn_rec *c = (conn_rec *)SSL_get_app_data(ssl);
-        if (c) {
+    if (c) {
+        if (servername) {
             if (ap_vhost_iterate_given_conn(c, ssl_find_vhost,
                                             (void *)servername)) {
                 ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(02043)
@@ -1954,6 +1954,11 @@ int ssl_callback_ServerNameIndication(SSL *ssl, int *al, modssl_ctx_t *mctx)
                  * the handshake."
                  */
             }
+        }
+        else {
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(02645)
+                          "Server name not provided via TLS extension "
+                          "(using default/first virtual host)");
         }
     }
 
