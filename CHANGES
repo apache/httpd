@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) core: Include any error notes set by modules in the canned error
+     response for 403 errors.  [Jeff Trawick]
+
   *) mod_ssl: Set an error note for requests rejected due to
      SSLStrictSNIVHostCheck.  [Jeff Trawick]
 
