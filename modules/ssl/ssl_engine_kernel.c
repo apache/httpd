@@ -164,7 +164,13 @@ int ssl_hook_ReadReq(request_rec *r)
         return DECLINED;
     }
 #ifdef HAVE_TLSEXT
-    if (r->proxyreq != PROXYREQ_PROXY) {
+    /*
+     * Perform SNI checks only on the initial request.  In particular,
+     * if these checks detect a problem, the checks shouldn't return an
+     * error again when processing an ErrorDocument redirect for the
+     * original problem.
+     */
+    if (r->proxyreq != PROXYREQ_PROXY && ap_is_initial_req(r)) {
         if ((servername = SSL_get_servername(ssl, TLSEXT_NAMETYPE_host_name))) {
             char *host, *scope_id;
             apr_port_t port;
