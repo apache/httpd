@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.10
 
+  *) mod_dav: Fix improper encoding in PROPFIND responses.  PR 56480.
+     [Ben Reser]
+
   *) WinNT MPM: Improve error handling for termination events in child.
      [Jeff Trawick]
 
