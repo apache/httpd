@@ -177,16 +177,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-ldap-connttl-conservative.diff
      +1 covener, jim
 
-   * mod_ssl: Fix tmp DH parameter leak, adjust selection to prefer
-              larger keys and support up to 8192-bit keys.
-     trunk patch: http://svn.apache.org/r1597349
-                  http://svn.apache.org/r1598107
-                  http://svn.apache.org/r1603915
-                  http://svn.apache.org/r1605827
-     2.4.x patch: http://people.apache.org/~jorton/ms_tmpdh-2.4.x.diff
-     +1: jorton, ylavic, kbrand
-     kbrand: please backport the doc change (r1605829), too
-
    * mod_ssl: Fix issue with redirects to error documents when handling
      SNI errors.
      trunk patch: http://svn.apache.org/r1609914
