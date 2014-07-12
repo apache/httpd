@@ -1139,11 +1139,12 @@ static const char *get_canned_error_string(int status,
                                   "error-notes",
                                   "</p>\n"));
     case HTTP_FORBIDDEN:
-        return(apr_pstrcat(p,
-                           "<p>You don't have permission to access ",
-                           ap_escape_html(r->pool, r->uri),
-                           "\non this server.</p>\n",
-                           NULL));
+        s1 = apr_pstrcat(p,
+                         "<p>You don't have permission to access ",
+                         ap_escape_html(r->pool, r->uri),
+                         "\non this server.<br />\n",
+                         NULL);
+        return(add_optional_notes(r, s1, "error-notes", "</p>\n"));
     case HTTP_NOT_FOUND:
         return(apr_pstrcat(p,
                            "<p>The requested URL ",
