@@ -376,12 +376,6 @@ static int invoke_filter_init(request_rec *r, ap_filter_t *filters)
     return OK;
 }
 
-/*
- * TODO: Move this to an appropriate include file and possibly prefix it
- * with AP_.
- */
-#define DEFAULT_HANDLER_NAME ""
-
 AP_CORE_DECLARE(int) ap_invoke_handler(request_rec *r)
 {
     const char *handler;
@@ -430,7 +424,7 @@ AP_CORE_DECLARE(int) ap_invoke_handler(request_rec *r)
             }
         }
         else {
-            handler = DEFAULT_HANDLER_NAME;
+            handler = AP_DEFAULT_HANDLER_NAME;
         }
 
         r->handler = handler;

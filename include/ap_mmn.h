@@ -428,6 +428,7 @@
  * 20120211.31 (2.4.7-dev) Add ap_proxy_port_of_scheme()
  * 20120211.32 (2.4.10-dev) Add SSL reusable SNI to mod_proxy.h's proxy_conn_rec
  * 20120211.33 (2.4.10-dev) Add suspend_connection and resume_connection hooks
+ * 20120211.34 (2.4.10-dev) AP_DEFAULT_HANDLER_NAME/AP_IS_DEFAULT_HANDLER_NAME
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
@@ -435,7 +436,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20120211
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 33                   /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 34                   /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
