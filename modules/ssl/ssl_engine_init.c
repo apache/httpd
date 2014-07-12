@@ -41,6 +41,79 @@
 #define KEYTYPES "RSA or DSA"
 #endif
 
+/*
+ * Grab well-defined DH parameters from OpenSSL, see the get_rfc*
+ * functions in <openssl/bn.h> for all available primes.
+ */
+static DH *make_dh_params(BIGNUM *(*prime)(BIGNUM *), const char *gen)
+{
+    DH *dh = DH_new();
+
+    if (!dh) {
+        return NULL;
+    }
+    dh->p = prime(NULL);
+    BN_dec2bn(&dh->g, gen);
+    if (!dh->p || !dh->g) {
+        DH_free(dh);
+        return NULL;
+    }
+    return dh;
+}
+
+/* Storage and initialization for DH parameters. */
+static struct dhparam {
+    BIGNUM *(*const prime)(BIGNUM *); /* function to generate... */
+    DH *dh;                           /* ...this, used for keys.... */
+    const unsigned int min;           /* ...of length >= this. */
+} dhparams[] = {
+    { get_rfc3526_prime_8192, NULL, 6145 },
+    { get_rfc3526_prime_6144, NULL, 4097 },
+    { get_rfc3526_prime_4096, NULL, 3073 },
+    { get_rfc3526_prime_3072, NULL, 2049 },
+    { get_rfc3526_prime_2048, NULL, 1025 },
+    { get_rfc2409_prime_1024, NULL, 0 }
+};
+
+static void init_dh_params(void)
+{
+    unsigned n;
+
+    for (n = 0; n < sizeof(dhparams)/sizeof(dhparams[0]); n++)
+        dhparams[n].dh = make_dh_params(dhparams[n].prime, "2");
+}
+
+static void free_dh_params(void)
+{
+    unsigned n;
+
+    /* DH_free() is a noop for a NULL parameter, so these are harmless
+     * in the (unexpected) case where these variables are already
+     * NULL. */
+    for (n = 0; n < sizeof(dhparams)/sizeof(dhparams[0]); n++) {
+        DH_free(dhparams[n].dh);
+        dhparams[n].dh = NULL;
+    }
+}
+
+/* Hand out the same DH structure though once generated as we leak
+ * memory otherwise and freeing the structure up after use would be
+ * hard to track and in fact is not needed at all as it is safe to
+ * use the same parameters over and over again security wise (in
+ * contrast to the keys itself) and code safe as the returned structure
+ * is duplicated by OpenSSL anyway. Hence no modification happens
+ * to our copy. */
+DH *modssl_get_dh_params(unsigned keylen)
+{
+    unsigned n;
+
+    for (n = 0; n < sizeof(dhparams)/sizeof(dhparams[0]); n++)
+        if (keylen >= dhparams[n].min)
+            return dhparams[n].dh;
+        
+    return NULL; /* impossible to reach. */
+}
+
 static void ssl_add_version_components(apr_pool_t *p,
                                        server_rec *s)
 {
@@ -255,6 +328,8 @@ apr_status_t ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
     ssl_add_version_components(p, base_server);
 
     SSL_init_app_data2_idx(); /* for SSL_get_app_data2() at request time */
+
+    init_dh_params();
 
     return OK;
 }
@@ -1680,6 +1755,8 @@ apr_status_t ssl_init_ModuleKill(void *data)
 
         ssl_init_ctx_cleanup(sc->server);
     }
+
+    free_dh_params();
 
     return APR_SUCCESS;
 }
