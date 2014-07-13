@@ -163,6 +163,21 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   (modulo CHANGES)
      +1: ylavic, breser
 
+   * mod_proxy_ajp: Forward local IP address as a custom request attribute
+     like we already do for the remote port.
+     Both were forgotten in the original AJP 13 spec
+     but are needed by the Servlet spec. Until now,
+     Tomcat simply returns for getLocalAddr() the same as
+     for getLocalName().
+     The next round of Tomcat releases will look for the
+     optional new request attribute.
+     See also Tomcat BZ 56661.
+     trunk patch: http://svn.apache.org/r1610207
+     2.4.x patch: Trunk patch works plus CHANGES.
+     2.2.x patch: http://people.apache.org/~rjung/patches/mod_proxy_ajp_local_addr-2.2.patch
+     +1: rjung
+
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * mod_cache: Realign the cache_quick_handler() to behave identically
