@@ -51,6 +51,11 @@
  * to contain the forwarded remote port.
  */
 #define SC_A_REQ_REMOTE_PORT    ("AJP_REMOTE_PORT")
+/*
+ * The following request attribute is recognized by Tomcat
+ * to contain the forwarded local ip address.
+ */
+#define SC_A_REQ_LOCAL_ADDR     ("AJP_LOCAL_ADDR")
 
 /*
  * Request methods, coded as numbers instead of strings.
