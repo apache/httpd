@@ -27,8 +27,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_ssl.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_ssl.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Chiffrement de haut niveau basé sur les protocoles Secure
 Sockets Layer (SSL) et Transport Layer Security (TLS)</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -677,7 +675,8 @@ plus de 1024 bits</h3>
 <p>
 Depuis la version 2.4.7, mod_ssl utilise des
 paramètres DH standardisés avec des nombres premiers de 2048, 3072 et
-4096 bits (voir <a href="http://www.ietf.org/rfc/rfc3526.txt">RFC
+4096 bits, et avec des nombres premiers de 6144 et 8192 bits depuis la
+version 2.4.10 (voir <a href="http://www.ietf.org/rfc/rfc3526.txt">RFC
 3526</a>), et les fournit aux clients en fonction de la longueur de la
 clé du certificat RSA/DSA. En particulier avec les clients basés sur
 Java (versions 7 et antérieures), ceci peut provoquer des erreurs au
