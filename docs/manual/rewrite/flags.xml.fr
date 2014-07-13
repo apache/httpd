@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1588759:1608304 (outdated) -->
+<!-- English Revision : 1608304 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -152,11 +152,11 @@ ce style de cookie est interdit par le mod&egrave;le de s&eacute;curit&eacute; d
 <dt>Lifetime</dt>
 <dd>La dur&eacute;e de vie du cookie, en minutes.</dd>
 
-<dd>Par d&eacute;faut, le cookie est maintenu pendant la dur&eacute;e de la session du
-navigateur. Si vous devez sp&eacute;cifier un autre param&egrave;tre (Path, Secure,
-httponly), il n'est actuellement pas possible de configurer
-explicitement la dur&eacute;e de vie de la session. Notez que les versions
-pr&eacute;c&eacute;dentes de cette documentation mentionnaient le contraire.</dd>
+<dd>Avec la valeur 0 (valeur par d&eacute;faut), le cookie est maintenu pendant
+la dur&eacute;e de la session du navigateur. Avant la version 2.2.28, la
+valeur 0 impliquait une expiration imm&eacute;diate du cookie, et il &eacute;tait
+impossible de sp&eacute;cifi&eacute; une autre dur&eacute;e de vie si un autre param&egrave;tre
+(Path, Secure, httponly) &eacute;tait pr&eacute;sent.</dd>
 
 <dt>Path</dt>
 <dd>Le chemin, sur le site web concern&eacute;, pour lequel le cookie est
