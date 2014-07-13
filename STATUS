@@ -201,6 +201,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: Trunk patch works plus CHANGES.
      +1: rjung, trawick
 
+   * mod_ssl: Extend the scope of SSLSessionCacheTimeout to sessions
+     resumed by TLS session resumption (RFC 5077).
+     trunk patch: http://svn.apache.org/r1610311
+     2.4.x patch: Trunk patch works modulo CHANGES
+                  and compatibility note.
+     +1: rjung
+
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
