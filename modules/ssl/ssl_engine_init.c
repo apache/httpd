@@ -1468,6 +1468,10 @@ static apr_status_t ssl_init_server_ctx(server_rec *s,
     }
 #endif
 
+    SSL_CTX_set_timeout(sc->server->ssl_ctx,
+                        sc->session_cache_timeout == UNSET ?
+                        SSL_SESSION_CACHE_TIMEOUT : sc->session_cache_timeout);
+
     return APR_SUCCESS;
 }
 
