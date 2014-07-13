@@ -109,10 +109,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-ldap-connttl-conservative.diff
      +1 covener, jim, trawick
 
-
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
-
    * mod_deflate: Don't fail when asked to flush inflated data to the user-agent
                   and that coincides with the end of stream ("Zlib error flushing
                   inflate buffer"). PR 56196.
@@ -122,9 +118,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Committed by: ylavic
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-mod_deflate-flush_end_of_stream.patch
                   (modulo CHANGES, added lately from r1603156)
-     +1: ylavic, covener
+     +1: ylavic, covener, trawick
      ylavic: does not depend on r1572092 or r1572655 and al above,
              these proposals can be backported in any order.
+
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
 
    * mod_proxy_http: Avoid (unlikely) access to freed memory.
      trunk patch: http://svn.apache.org/r1599486
@@ -199,7 +199,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      See also Tomcat BZ 56661.
      trunk patch: http://svn.apache.org/r1610207
      2.4.x patch: Trunk patch works plus CHANGES.
-     +1: rjung
+     +1: rjung, trawick
 
 OTHER PROPOSALS
 
