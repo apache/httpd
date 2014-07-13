@@ -174,19 +174,19 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      SNI errors.
      trunk patch: http://svn.apache.org/r1609914
      2.4.x patch: Trunk patch works modulo CHANGES.
-     +1: trawick, minfrin
+     +1: trawick, minfrin, rjung
 
    * mod_ssl: Set an error note for requests rejected due to
      SSLStrictSNIVHostCheck
      trunk patch: http://svn.apache.org/r1609936
      2.4.x patch: Trunk patch works modulo CHANGES.
-     +1: trawick, minfrin
+     +1: trawick, minfrin, rjung
 
    * core: Include any error notes set by modules in the canned error
      response for 403 errors.
      trunk patch: http://svn.apache.org/r1609938
      2.4.x patch: Trunk patch works modulo CHANGES.
-     +1: trawick, minfrin
+     +1: trawick, minfrin, rjung
 
    * mod_proxy_ajp: Forward local IP address as a custom request attribute
      like we already do for the remote port.
