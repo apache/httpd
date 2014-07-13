@@ -1745,7 +1745,8 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                 apr_skiplist_pop(timer_skiplist, NULL);
                 if (!te->canceled) { 
                     if (te->remove != NULL) {
-                        for (apr_pollfd_t **pfds = (te->remove); *pfds != NULL; pfds++) { 
+                        apr_pollfd_t **pfds;
+                        for (pfds = (te->remove); *pfds != NULL; pfds++) { 
                             apr_pollset_remove(event_pollset, *pfds);
                         }
                     }
