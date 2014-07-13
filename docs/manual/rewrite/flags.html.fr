@@ -160,11 +160,11 @@ ce style de cookie est interdit par le modèle de sécurité des cookies.</dd>
 <dt>Lifetime</dt>
 <dd>La durée de vie du cookie, en minutes.</dd>
 
-<dd>Par défaut, le cookie est maintenu pendant la durée de la session du
-navigateur. Si vous devez spécifier un autre paramètre (Path, Secure,
-httponly), il n'est actuellement pas possible de configurer
-explicitement la durée de vie de la session. Notez que les versions
-précédentes de cette documentation mentionnaient le contraire.</dd>
+<dd>Avec la valeur 0 (valeur par défaut), le cookie est maintenu pendant
+la durée de la session du navigateur. Avant la version 2.2.28, la
+valeur 0 impliquait une expiration immédiate du cookie, et il était
+impossible de spécifié une autre durée de vie si un autre paramètre
+(Path, Secure, httponly) était présent.</dd>
 
 <dt>Path</dt>
 <dd>Le chemin, sur le site web concerné, pour lequel le cookie est
