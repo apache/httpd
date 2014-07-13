@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1593003:1608758 (outdated) -->
+<!-- English Revision : 1610014 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1003,7 +1003,8 @@ plus de 1024 bits</title>
 <p>
 Depuis la version 2.4.7, mod_ssl utilise des
 param&egrave;tres DH standardis&eacute;s avec des nombres premiers de 2048, 3072 et
-4096 bits (voir <a href="http://www.ietf.org/rfc/rfc3526.txt">RFC
+4096 bits, et avec des nombres premiers de 6144 et 8192 bits depuis la
+version 2.4.10 (voir <a href="http://www.ietf.org/rfc/rfc3526.txt">RFC
 3526</a>), et les fournit aux clients en fonction de la longueur de la
 cl&eacute; du certificat RSA/DSA. En particulier avec les clients bas&eacute;s sur
 Java (versions 7 et ant&eacute;rieures), ceci peut provoquer des erreurs au
