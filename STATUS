@@ -100,15 +100,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_ldap: LDAPConnectionPoolTTL enhancements -- apply properly to authn and
-               only update the last used time when we hit the backend server
-               AND use r->request_time instead of end-of-request-time. 
-               PR54587
-      trunk patch: http://svn.apache.org/r1452551
-                   http://svn.apache.org/r1607960
-      2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-ldap-connttl-conservative.diff
-     +1 covener, jim, trawick
-
    * mod_deflate: Don't fail when asked to flush inflated data to the user-agent
                   and that coincides with the end of stream ("Zlib error flushing
                   inflate buffer"). PR 56196.

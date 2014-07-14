@@ -28,6 +28,12 @@ Changes with Apache 2.4.10
      forward "100 Continue" (interim) response to the client if it does
      not expect one. [Yann Ylavic]
 
+  *) mod_ldap: Be more conservative with the last-used time for
+     LDAPConnectionPoolTTL. PR54587 [Eric Covener]
+
+  *) mod_ldap: LDAP connections used for authn were not respecting
+     LDAPConnectionPoolTTL. PR54587 [Eric Covener]
+
   *) mod_proxy_fcgi: Fix occasional high CPU when handling request bodies.
      [Jeff Trawick]
 

@@ -133,6 +133,9 @@ typedef struct util_ldap_connection_t {
     int ReferralHopLimit;               /* # of referral hops to follow (default = AP_LDAP_DEFAULT_HOPLIMIT) */
     apr_time_t freed;                   /* the time this conn was placed back in the pool */
     apr_pool_t *rebind_pool;            /* frequently cleared pool for rebind data */
+    int must_rebind;                    /* The connection was last bound with other then binddn/bindpw */
+    request_rec *r;                     /* request_rec used to find this util_ldap_connection_t */
+    apr_time_t last_backend_conn;       /* the approximate time of the last backend LDAP requst */
 } util_ldap_connection_t;
 
 typedef struct util_ldap_config_t {
