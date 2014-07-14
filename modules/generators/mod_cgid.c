@@ -1551,7 +1551,7 @@ static int cgid_handler(request_rec *r)
             if (rv != APR_SUCCESS) {
                 /* silly script stopped reading, soak up remaining message */
                 child_stopped_reading = 1;
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, 
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,  APLOGNO(02651)
                               "Error writing request body to script %s", 
                               r->filename);
 
