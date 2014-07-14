@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.10
 
+  *) mod_ssl: Extend the scope of SSLSessionCacheTimeout to sessions
+     resumed by TLS session resumption (RFC 5077). [Rainer Jung]
+
   *) mod_deflate: Don't fail when flushing inflated data to the user-agent
      and that coincides with the end of stream ("Zlib error flushing inflate
      buffer"). PR 56196. [Christoph Fausak <christoph fausak glueckkanja.com>]
