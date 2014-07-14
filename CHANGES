@@ -7,15 +7,6 @@ Changes with Apache 2.5.0
   *) mod_proxy_ajp: Forward local IP address as a custom request attribute
      like we already do for the remote port. [Rainer Jung]
 
-  *) core: Include any error notes set by modules in the canned error
-     response for 403 errors.  [Jeff Trawick]
-
-  *) mod_ssl: Set an error note for requests rejected due to
-     SSLStrictSNIVHostCheck.  [Jeff Trawick]
-
-  *) mod_ssl: Fix issue with redirects to error documents when handling
-     SNI errors.  [Jeff Trawick]
-
   *) mod_authnz_ldap: Return LDAP connections to the pool before the handler
      is run, instead of waiting until the end of the request. [Eric Covener]
 
