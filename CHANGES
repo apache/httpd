@@ -2,6 +2,10 @@
 
 Changes with Apache 2.4.10
 
+  *) SECURITY: CVE-2014-0226 (cve.mitre.org)
+     Fix a race condition in scoreboard handling, which could lead to
+     a heap buffer overflow.  [Joe Orton]
+
   *) mod_ssl: Extend the scope of SSLSessionCacheTimeout to sessions
      resumed by TLS session resumption (RFC 5077). [Rainer Jung]
 
