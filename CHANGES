@@ -4,7 +4,7 @@ Changes with Apache 2.4.10
 
   *) SECURITY: CVE-2014-0226 (cve.mitre.org)
      Fix a race condition in scoreboard handling, which could lead to
-     a heap buffer overflow.  [Joe Orton]
+     a heap buffer overflow.  [Joe Orton, Eric Covener]
 
   *) SECURITY: CVE-2014-0118 (cve.mitre.org)
      mod_deflate: The DEFLATE input filter (inflates request bodies) now
