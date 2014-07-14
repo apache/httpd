@@ -125,6 +125,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x patch: http://people.apache.org/~covener/patches/httpd-2.2.x-cgid-script_timeout.diff
      +1: covener
 
+
+   * SECURITY: CVE-2014-0118 (cve.mitre.org)
+     mod_deflate: The DEFLATE input filter (inflates request bodies) now
+     limits the length and compression ratio of inflated request bodies to avoid
+     denial of sevice via highly compressed bodies.  See directives
+     DeflateInflateLimitRequestBody, DeflateInflateRatioLimit,
+     and DeflateInflateRatioBurst. [Yann Ylavic, Eric Covener]
+ 
+     trunk patch: http://svn.apache.org/r1610501
+     2.2.x patch: http://people.apache.org/~covener/patches/httpd-2.2.x-deflate_limitrequestbody.diff
+     +1: covener
+
    * mod_proxy: Don't reuse a SSL backend connection whose SNI differs. PR 55782.
                 This may happen when ProxyPreserveHost is on and the proxy-worker
                 handles connections to different Hosts.
