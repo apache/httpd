@@ -136,7 +136,7 @@ static int check_gzip(request_rec *r, apr_table_t *hdrs1, apr_table_t *hdrs2)
             }
         }
         else if (ap_strchr_c(encoding, ',') != NULL) {
-            /* If the outermost encoding isn't gzip, there's nowt
+            /* If the outermost encoding isn't gzip, there's nothing
              * we can do.  So only check the last non-identity token
              */
             char *new_encoding = apr_pstrdup(r->pool, encoding);
@@ -1307,7 +1307,7 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
                 ctx->inflate_total += len;
                 if (inflate_limit && ctx->inflate_total > inflate_limit) { 
                     inflateEnd(&ctx->stream);
-                    ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO()
+                    ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(02647)
                             "Inflated content length of %" APR_OFF_T_FMT
                             " is larger than the configured limit"
                             " of %" APR_OFF_T_FMT, 
@@ -1375,7 +1375,7 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
                         ctx->inflate_total += len;
                         if (inflate_limit && ctx->inflate_total > inflate_limit) { 
                             inflateEnd(&ctx->stream);
-                            ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO()
+                            ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(02648)
                                     "Inflated content length of %" APR_OFF_T_FMT
                                     " is larger than the configured limit"
                                     " of %" APR_OFF_T_FMT, 
@@ -1385,7 +1385,7 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
 
                         if (!check_ratio(r, ctx, dc)) {
                             inflateEnd(&ctx->stream);
-                            ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO()
+                            ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(02649)
                                     "Inflated content ratio is larger than the "
                                     "configured limit %i by %i time(s)",
                                     dc->ratio_limit, dc->ratio_burst);
@@ -1827,7 +1827,7 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
             if (ctx->stream.avail_out == 0) {
 
                 if (!check_ratio(r, ctx, dc)) {
-                    ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO()
+                    ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(02650)
                             "Inflated content ratio is larger than the "
                             "configured limit %i by %i time(s)",
                             dc->ratio_limit, dc->ratio_burst);
