@@ -122,12 +122,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      ylavic: does not depend on r1572092 or r1572655 and al above,
              these proposals can be backported in any order.
 
-   * mod_ssl: Fix issue with redirects to error documents when handling
-     SNI errors.
-     trunk patch: http://svn.apache.org/r1609914
-     2.4.x patch: Trunk patch works modulo CHANGES.
-     +1: trawick, minfrin, rjung
-
    * mod_ssl: Set an error note for requests rejected due to
      SSLStrictSNIVHostCheck
      trunk patch: http://svn.apache.org/r1609936
