@@ -13,6 +13,12 @@ Changes with Apache 2.4.10
      DeflateInflateLimitRequestBody, DeflateInflateRatioLimit,
      and DeflateInflateRatioBurst. [Yann Ylavic, Eric Covener]
 
+  *) SECURITY: CVE-2014-0231 (cve.mitre.org)
+     mod_cgid: Fix a denial of service against CGI scripts that do
+     not consume stdin that could lead to lingering HTTPD child processes
+     filling up the scoreboard and eventually hanging the server.
+     [Rainer Jung, Eric Covener, Yann Ylavic]
+
   *) mod_ssl: Extend the scope of SSLSessionCacheTimeout to sessions
      resumed by TLS session resumption (RFC 5077). [Rainer Jung]
 
