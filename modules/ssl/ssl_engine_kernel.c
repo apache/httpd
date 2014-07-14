@@ -219,6 +219,10 @@ int ssl_hook_ReadReq(request_rec *r)
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server, APLOGNO(02033)
                          "No hostname was provided via SNI for a name based"
                          " virtual host");
+            apr_table_setn(r->notes, "error-notes",
+                           "Reason: The client software did not provide a "
+                           "hostname using Server Name Indication (SNI), "
+                           "which is required to access this server.<br />\n");
             return HTTP_FORBIDDEN;
         }
     }
