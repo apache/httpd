@@ -92,7 +92,7 @@ static void getword(char *word, char *line, char stop)
 
 static int get_line(char *s, int n, apr_file_t *f)
 {
-    register int i = 0;
+    int i = 0;
     char ch;
     apr_status_t rv = APR_EINVAL;
 
