@@ -194,7 +194,7 @@ static int status_handler(request_rec *r)
     long req_time;
     int short_report;
     int no_table_report;
-    worker_score *ws_record;
+    worker_score *ws_record = apr_palloc(r->pool, sizeof *ws_record);
     process_score *ps_record;
     char *stat_buffer;
     pid_t *pid_buffer, worker_pid;
@@ -306,7 +306,7 @@ static int status_handler(request_rec *r)
         for (j = 0; j < thread_limit; ++j) {
             int indx = (i * thread_limit) + j;
 
-            ws_record = ap_get_scoreboard_worker_from_indexes(i, j);
+            ap_copy_scoreboard_worker(ws_record, i, j);
             res = ws_record->status;
 
             if ((i >= max_servers || j >= threads_per_child)
@@ -637,7 +637,7 @@ static int status_handler(request_rec *r)
 
         for (i = 0; i < server_limit; ++i) {
             for (j = 0; j < thread_limit; ++j) {
-                ws_record = ap_get_scoreboard_worker_from_indexes(i, j);
+                ap_copy_scoreboard_worker(ws_record, i, j);
 
                 if (ws_record->access_count == 0 &&
                     (ws_record->status == SERVER_READY ||

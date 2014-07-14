@@ -1242,16 +1242,22 @@ static int lua_ap_scoreboard_process(lua_State *L)
  */
 static int lua_ap_scoreboard_worker(lua_State *L)
 {
-    int i,
-        j;
-    worker_score   *ws_record;
+    int i, j;
+    worker_score *ws_record = NULL;
+    request_rec *r = NULL;
 
     luaL_checktype(L, 1, LUA_TUSERDATA);
     luaL_checktype(L, 2, LUA_TNUMBER);
     luaL_checktype(L, 3, LUA_TNUMBER);
+
+    r = ap_lua_check_request_rec(L, 1);
+    if (!r) return 0;
+
     i = lua_tointeger(L, 2);
     j = lua_tointeger(L, 3);
-    ws_record = ap_get_scoreboard_worker_from_indexes(i, j);
+    ws_record = apr_palloc(r->pool, sizeof *ws_record);
+
+    ap_copy_scoreboard_worker(ws_record, i, j);
     if (ws_record) {
         lua_newtable(L);
 
