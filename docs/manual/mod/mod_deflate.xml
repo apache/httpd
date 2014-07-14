@@ -328,6 +328,59 @@ CustomLog logs/deflate_log deflate
 </usage>
 </directivesynopsis>
 
+<directivesynopsis>
+<name>DeflateInflateLimitRequestBody</name>
+<description>Maximum size of inflated request bodies</description>
+<syntax>DeflateInflateLimitRequestBody<var>value</var></syntax>
+<default>None, but LimitRequestBody applies after deflation</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<compatibility>2.4.10 and later</compatibility>
+
+<usage>
+    <p>The <directive>DeflateInflateLimitRequestBody</directive> directive 
+        specifies the maximum size of an inflated request body. If it is unset,
+        <directive module="core">LimitRequestBody</directive> is applied to the
+        inflated body.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>DeflateInflateRatioLimit</name>
+<description>Maximum inflation ratio for request bodies</description>
+<syntax>DeflateInflateRatioLimit <var>value</var></syntax>
+<default>200</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<compatibility>2.4.10 and later</compatibility>
+
+<usage>
+    <p>The <directive>DeflateInflateRatioLimit</directive> directive 
+        specifies the maximum ratio of deflated to inflated size of an 
+        inflated request body. This ratio is checked as the body is
+        streamed in, and if crossed more than 
+        <directive>DeflateInflateRatioBurst</directive> times the request
+        will be terminated.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>DeflateInflateRatioBurst</name>
+<description>Maximum number of times the inflation ratio for request bodies 
+             can be crossed</description>
+<syntax>DeflateInflateRatioBurst <var>value</var></syntax>
+<default>3</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<compatibility>2.4.10 and later</compatibility>
+
+<usage>
+    <p>The <directive>DeflateInflateRatioBurst</directive> directive 
+       specifies the maximum number of times the 
+       <directive>DeflateInflateRatioLimit</directive> cab be crossed before 
+       terminating the request.</p>
+</usage>
+</directivesynopsis>
 
 </modulesynopsis>
 
