@@ -1551,6 +1551,10 @@ static int cgid_handler(request_rec *r)
             if (rv != APR_SUCCESS) {
                 /* silly script stopped reading, soak up remaining message */
                 child_stopped_reading = 1;
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, 
+                              "Error writing request body to script %s", 
+                              r->filename);
+
             }
         }
         apr_brigade_cleanup(bb);
@@ -1781,6 +1785,8 @@ static int include_cmd(include_ctx_t *ctx, ap_filter_t *f,
     request_rec *r = f->r;
     cgid_server_conf *conf = ap_get_module_config(r->server->module_config,
                                                   &cgid_module);
+    cgid_dirconf *dc = ap_get_module_config(r->per_dir_config, &cgid_module);
+
     struct cleanup_script_info *info;
 
     add_ssi_vars(r);
@@ -1810,6 +1816,13 @@ static int include_cmd(include_ctx_t *ctx, ap_filter_t *f,
      * get rid of the cleanup we registered when we created the socket.
      */
     apr_os_pipe_put_ex(&tempsock, &sd, 1, r->pool);
+    if (dc->timeout > 0) {
+        apr_file_pipe_timeout_set(tempsock, dc->timeout);
+    }
+    else {
+        apr_file_pipe_timeout_set(tempsock, r->server->timeout);
+    }
+
     apr_pool_cleanup_kill(r->pool, (void *)((long)sd), close_unix_socket);
 
     APR_BRIGADE_INSERT_TAIL(bb, apr_bucket_pipe_create(tempsock,
