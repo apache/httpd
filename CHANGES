@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.10
 
+  *) mod_proxy_ajp: Forward local IP address as a custom request attribute
+     like we already do for the remote port. [Rainer Jung]
+
   *) core: Include any error notes set by modules in the canned error
      response for 403 errors.  [Jeff Trawick]
 
