@@ -37,6 +37,7 @@
 #include "httpd.h"
 #include "http_config.h"
 #include "http_log.h"
+#include "http_core.h"
 #include "apr_lib.h"
 #include "apr_strings.h"
 #include "apr_general.h"
@@ -54,6 +55,9 @@
 static const char deflateFilterName[] = "DEFLATE";
 module AP_MODULE_DECLARE_DATA deflate_module;
 
+#define AP_INFLATE_RATIO_LIMIT 200
+#define AP_INFLATE_RATIO_BURST 3
+
 typedef struct deflate_filter_config_t
 {
     int windowSize;
@@ -64,6 +68,12 @@ typedef struct deflate_filter_config_t
     char *note_input_name;
     char *note_output_name;
 } deflate_filter_config;
+
+typedef struct deflate_dirconf_t {
+    apr_off_t inflate_limit;
+    int ratio_limit,
+        ratio_burst;
+} deflate_dirconf_t;
 
 /* RFC 1952 Section 2.3 defines the gzip header:
  *
@@ -206,6 +216,14 @@ static void *create_deflate_server_config(apr_pool_t *p, server_rec *s)
     return c;
 }
 
+static void *create_deflate_dirconf(apr_pool_t *p, char *dummy)
+{
+    deflate_dirconf_t *dc = apr_pcalloc(p, sizeof(*dc));
+    dc->ratio_limit = AP_INFLATE_RATIO_LIMIT;
+    dc->ratio_burst = AP_INFLATE_RATIO_BURST;
+    return dc;
+}
+
 static const char *deflate_set_window_size(cmd_parms *cmd, void *dummy,
                                            const char *arg)
 {
@@ -297,6 +315,55 @@ static const char *deflate_set_compressionlevel(cmd_parms *cmd, void *dummy,
     return NULL;
 }
 
+
+static const char *deflate_set_inflate_limit(cmd_parms *cmd, void *dirconf,
+                                      const char *arg)
+{
+    deflate_dirconf_t *dc = (deflate_dirconf_t*) dirconf;
+    char *errp;
+
+    if (APR_SUCCESS != apr_strtoff(&dc->inflate_limit, arg, &errp, 10)) {
+        return "DeflateInflateLimitRequestBody is not parsable.";
+    }
+    if (*errp || dc->inflate_limit < 0) {
+        return "DeflateInflateLimitRequestBody requires a non-negative integer.";
+    }
+
+    return NULL;
+}
+
+static const char *deflate_set_inflate_ratio_limit(cmd_parms *cmd,
+                                                   void *dirconf,
+                                                   const char *arg)
+{
+    deflate_dirconf_t *dc = (deflate_dirconf_t*) dirconf;
+    int i;
+
+    i = atoi(arg);
+    if (i <= 0)
+        return "DeflateInflateRatioLimit must be positive";
+
+    dc->ratio_limit = i;
+
+    return NULL;
+}
+
+static const char *deflate_set_inflate_ratio_burst(cmd_parms *cmd,
+                                                   void *dirconf,
+                                                   const char *arg)
+{
+    deflate_dirconf_t *dc = (deflate_dirconf_t*) dirconf;
+    int i;
+
+    i = atoi(arg);
+    if (i <= 0)
+        return "DeflateInflateRatioBurst must be positive";
+
+    dc->ratio_burst = i;
+
+    return NULL;
+}
+
 typedef struct deflate_ctx_t
 {
     z_stream stream;
@@ -309,6 +376,8 @@ typedef struct deflate_ctx_t
     char header[10]; /* sizeof(gzip_header) */
     apr_size_t header_len;
     int zlib_flags;
+    int ratio_hits;
+    apr_off_t inflate_total;
     unsigned int consume_pos,
                  consume_len;
     unsigned int filter_init:1;
@@ -426,6 +495,22 @@ static void deflate_check_etag(request_rec *r, const char *transform)
             apr_table_setn(r->headers_out, "ETag", newtag);
         }
     }
+}
+
+/* Check whether the (inflate) ratio exceeds the configured limit/burst. */
+static int check_ratio(request_rec *r, deflate_ctx *ctx,
+                       const deflate_dirconf_t *dc)
+{
+    if (ctx->stream.total_in) {
+        int ratio = ctx->stream.total_out / ctx->stream.total_in;
+        if (ratio < dc->ratio_limit) {
+            ctx->ratio_hits = 0;
+        }
+        else if (++ctx->ratio_hits > dc->ratio_burst) {
+            return 0;
+        }
+    }
+    return 1;
 }
 
 static int have_ssl_compression(request_rec *r)
@@ -1001,6 +1086,8 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
     int zRC;
     apr_status_t rv;
     deflate_filter_config *c;
+    deflate_dirconf_t *dc;
+    apr_off_t inflate_limit;
 
     /* just get out of the way of things we don't want. */
     if (mode != AP_MODE_READBYTES) {
@@ -1008,6 +1095,7 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
     }
 
     c = ap_get_module_config(r->server->module_config, &deflate_module);
+    dc = ap_get_module_config(r->per_dir_config, &deflate_module);
 
     if (!ctx || ctx->header_len < sizeof(ctx->header)) {
         apr_size_t len;
@@ -1124,6 +1212,12 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
         apr_brigade_cleanup(ctx->bb);
     }
 
+    inflate_limit = dc->inflate_limit; 
+    if (inflate_limit == 0) { 
+        /* The core is checking the deflated body, we'll check the inflated */
+        inflate_limit = ap_get_limit_req_body(f->r);
+    }
+
     if (APR_BRIGADE_EMPTY(ctx->proc_bb)) {
         rv = ap_get_brigade(f->next, ctx->bb, mode, block, readbytes);
 
@@ -1174,6 +1268,17 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
 
                 ctx->stream.next_out = ctx->buffer;
                 len = c->bufferSize - ctx->stream.avail_out;
+ 
+                ctx->inflate_total += len;
+                if (inflate_limit && ctx->inflate_total > inflate_limit) { 
+                    inflateEnd(&ctx->stream);
+                    ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO()
+                            "Inflated content length of %" APR_OFF_T_FMT
+                            " is larger than the configured limit"
+                            " of %" APR_OFF_T_FMT, 
+                            ctx->inflate_total, inflate_limit);
+                    return APR_ENOSPC;
+                }
 
                 ctx->crc = crc32(ctx->crc, (const Bytef *)ctx->buffer, len);
                 tmp_b = apr_bucket_heap_create((char *)ctx->buffer, len,
@@ -1228,8 +1333,29 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
                 while (ctx->stream.avail_in != 0) {
                     if (ctx->stream.avail_out == 0) {
                         apr_bucket *tmp_heap;
+
                         ctx->stream.next_out = ctx->buffer;
                         len = c->bufferSize - ctx->stream.avail_out;
+
+                        ctx->inflate_total += len;
+                        if (inflate_limit && ctx->inflate_total > inflate_limit) { 
+                            inflateEnd(&ctx->stream);
+                            ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO()
+                                    "Inflated content length of %" APR_OFF_T_FMT
+                                    " is larger than the configured limit"
+                                    " of %" APR_OFF_T_FMT, 
+                                    ctx->inflate_total, inflate_limit);
+                            return APR_ENOSPC;
+                        }
+
+                        if (!check_ratio(r, ctx, dc)) {
+                            inflateEnd(&ctx->stream);
+                            ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO()
+                                    "Inflated content ratio is larger than the "
+                                    "configured limit %i by %i time(s)",
+                                    dc->ratio_limit, dc->ratio_burst);
+                            return APR_EINVAL;
+                        }
 
                         ctx->crc = crc32(ctx->crc, (const Bytef *)ctx->buffer, len);
                         tmp_heap = apr_bucket_heap_create((char *)ctx->buffer, len,
@@ -1376,6 +1502,7 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
     int zRC;
     apr_status_t rv;
     deflate_filter_config *c;
+    deflate_dirconf_t *dc;
 
     /* Do nothing if asked to filter nothing. */
     if (APR_BRIGADE_EMPTY(bb)) {
@@ -1383,6 +1510,7 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
     }
 
     c = ap_get_module_config(r->server->module_config, &deflate_module);
+    dc = ap_get_module_config(r->per_dir_config, &deflate_module);
 
     if (!ctx) {
 
@@ -1661,6 +1789,14 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
         while (ctx->stream.avail_in != 0) {
             if (ctx->stream.avail_out == 0) {
 
+                if (!check_ratio(r, ctx, dc)) {
+                    ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO()
+                            "Inflated content ratio is larger than the "
+                            "configured limit %i by %i time(s)",
+                            dc->ratio_limit, dc->ratio_burst);
+                    return APR_EINVAL;
+                }
+
                 ctx->stream.next_out = ctx->buffer;
                 len = c->bufferSize - ctx->stream.avail_out;
 
@@ -1747,12 +1883,20 @@ static const command_rec deflate_filter_cmds[] = {
                   "Set the Deflate Memory Level (1-9)"),
     AP_INIT_TAKE1("DeflateCompressionLevel", deflate_set_compressionlevel, NULL, RSRC_CONF,
                   "Set the Deflate Compression Level (1-9)"),
+    AP_INIT_TAKE1("DeflateInflateLimitRequestBody", deflate_set_inflate_limit, NULL, OR_ALL,
+                  "Set a limit on size of inflated input"),
+    AP_INIT_TAKE1("DeflateInflateRatioLimit", deflate_set_inflate_ratio_limit, NULL, OR_ALL,
+                  "Set the inflate ratio limit above which inflation is "
+                  "aborted (default: " APR_STRINGIFY(AP_INFLATE_RATIO_LIMIT) ")"),
+    AP_INIT_TAKE1("DeflateInflateRatioBurst", deflate_set_inflate_ratio_burst, NULL, OR_ALL,
+                  "Set the maximum number of following inflate ratios above limit "
+                  "(default: " APR_STRINGIFY(AP_INFLATE_RATIO_BURST) ")"),
     {NULL}
 };
 
 AP_DECLARE_MODULE(deflate) = {
     STANDARD20_MODULE_STUFF,
-    NULL,                         /* dir config creater */
+    create_deflate_dirconf,       /* dir config creater */
     NULL,                         /* dir merger --- default is to override */
     create_deflate_server_config, /* server config */
     NULL,                         /* merge server config */
