@@ -187,7 +187,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1610311
      2.4.x patch: Trunk patch works modulo CHANGES
                   and compatibility note.
-     +1: rjung
+     +1: rjung, ylavic
 
 OTHER PROPOSALS
 
