@@ -100,18 +100,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_deflate: Don't fail when asked to flush inflated data to the user-agent
-                  and that coincides with the end of stream ("Zlib error flushing
-                  inflate buffer"). PR 56196.
-     trunk patch: http://svn.apache.org/r1572896
-                  http://svn.apache.org/r1572911
-     Submitted by: [Christoph Fausak <christoph fausak glueckkanja com>]
-     Committed by: ylavic
-     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-mod_deflate-flush_end_of_stream.patch
-                  (modulo CHANGES, added lately from r1603156)
-     +1: ylavic, covener, trawick
-     ylavic: does not depend on r1572092 or r1572655 and al above,
-             these proposals can be backported in any order.
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
