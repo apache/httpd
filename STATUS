@@ -122,12 +122,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      ylavic: does not depend on r1572092 or r1572655 and al above,
              these proposals can be backported in any order.
 
-   * core: Include any error notes set by modules in the canned error
-     response for 403 errors.
-     trunk patch: http://svn.apache.org/r1609938
-     2.4.x patch: Trunk patch works modulo CHANGES.
-     +1: trawick, minfrin, rjung
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
