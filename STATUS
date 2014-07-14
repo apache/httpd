@@ -114,6 +114,17 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
+   * SECURITY: CVE-2014-0231 
+       mod_cgid: Fix a denial of service against CGI scripts that do
+       not consume stdin that could lead to lingering HTTPD child processes
+       filling up the scoreboard and eventually hanging the server.
+       [Rainer Jung, Eric Covener, Yann Ylavic]
+
+     trunk patch: http://svn.apache.org/r1610509 
+                  http://svn.apache.org/r1535125  
+     2.2.x patch: http://people.apache.org/~covener/patches/httpd-2.2.x-cgid-script_timeout.diff
+     +1: covener
+
    * mod_proxy: Don't reuse a SSL backend connection whose SNI differs. PR 55782.
                 This may happen when ProxyPreserveHost is on and the proxy-worker
                 handles connections to different Hosts.
