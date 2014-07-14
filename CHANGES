@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.10
 
+  *) mod_ssl: Fix issue with redirects to error documents when handling
+     SNI errors.  [Jeff Trawick]
+
   *) mod_ssl: Fix tmp DH parameter leak, adjust selection to prefer
      larger keys and support up to 8192-bit keys.  [Ruediger Pluem,
      Joe Orton]
