@@ -253,7 +253,7 @@ AP_DECLARE(int) ap_os_is_path_absolute(apr_pool_t *p, const char *dir)
 
 AP_DECLARE(int) ap_is_matchexp(const char *str)
 {
-    register int x;
+    int x;
 
     for (x = 0; str[x]; x++)
         if ((str[x] == '*') || (str[x] == '?'))
@@ -529,7 +529,7 @@ AP_DECLARE(void) ap_getparents(char *name)
     while (name[l] != '\0') {
         if (name[l] == '.' && name[l + 1] == '.' && IS_SLASH(name[l + 2])
             && (l == 0 || IS_SLASH(name[l - 1]))) {
-            register int m = l + 3, n;
+            int m = l + 3, n;
 
             l = l - 2;
             if (l >= 0) {
@@ -655,7 +655,7 @@ AP_DECLARE(char *) ap_make_dirstr_parent(apr_pool_t *p, const char *s)
 
 AP_DECLARE(int) ap_count_dirs(const char *path)
 {
-    register int x, n;
+    int x, n;
 
     for (x = 0, n = 0; path[x]; x++)
         if (path[x] == '/')
@@ -1586,7 +1586,7 @@ AP_DECLARE(char *) ap_escape_shell_cmd(apr_pool_t *p, const char *str)
 
 static char x2c(const char *what)
 {
-    register char digit;
+    char digit;
 
 #if !APR_CHARSET_EBCDIC
     digit = ((what[0] >= 'A') ? ((what[0] & 0xdf) - 'A') + 10
@@ -1618,7 +1618,7 @@ static char x2c(const char *what)
 
 static int unescape_url(char *url, const char *forbid, const char *reserved)
 {
-    register int badesc, badpath;
+    int badesc, badpath;
     char *x, *y;
 
     badesc = 0;
@@ -2115,11 +2115,11 @@ AP_DECLARE(char *) ap_make_full_path(apr_pool_t *a, const char *src1,
  */
 AP_DECLARE(int) ap_is_url(const char *u)
 {
-    register int x;
+    int x;
 
     for (x = 0; u[x] != ':'; x++) {
         if ((!u[x]) ||
-            ((!apr_isalpha(u[x])) && (!apr_isdigit(u[x])) &&
+            ((!apr_isalnum(u[x])) &&
              (u[x] != '+') && (u[x] != '-') && (u[x] != '.'))) {
             return 0;
         }
