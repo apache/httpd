@@ -189,7 +189,24 @@ AP_DECLARE(int) ap_update_child_status_from_indexes(int child_num, int thread_nu
                                                     int status, request_rec *r);
 void ap_time_process_request(ap_sb_handle_t *sbh, int status);
 
+/** Return a pointer to the worker_score for a given child, thread pair.
+ * @param child_num The child number.
+ * @param thread_num The thread number.
+ * @return A pointer to the worker_score structure.
+ * @deprecated This function is deprecated, use ap_copy_scoreboard_worker instead. 
+ */
 AP_DECLARE(worker_score *) ap_get_scoreboard_worker(int x, int y);
+
+/** Copy the contents of a worker's scoreboard entry.  The contents of
+ * the worker_score structure are copied verbatim into the dest
+ * structure.
+ * @param dest Output parameter.
+ * @param child_num The child number.
+ * @param thread_num The thread number.
+ */
+AP_DECLARE(void) ap_copy_scoreboard_worker(worker_score *dest,
+                                           int child_num, int thread_num);
+
 AP_DECLARE(process_score *) ap_get_scoreboard_process(int x);
 AP_DECLARE(global_score *) ap_get_scoreboard_global(void);
 AP_DECLARE(lb_score *) ap_get_scoreboard_lb(int lb_num);

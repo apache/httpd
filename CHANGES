@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.28
 
+  *) SECURITY: CVE-2014-0226 (cve.mitre.org)
+     Fix a race condition in scoreboard handling, which could lead to
+     a heap buffer overflow.  [Joe Orton, Eric Covener, Jeff Trawick]
+
   *) mod_cache, mod_disk_cache: With CacheLock enabled, responses with a Vary 
      header might not get the benefit of the thundering herd protection due to 
      an incorrect internal cache key.  PR 50317. 
