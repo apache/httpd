@@ -505,7 +505,8 @@ in the Session Cache</description>
 <usage>
 <p>
 This directive sets the timeout in seconds for the information stored in the
-global/inter-process SSL Session Cache and the OpenSSL internal memory cache.
+global/inter-process SSL Session Cache, the OpenSSL internal memory cache and
+for sessions resumed by TLS session resumption (RFC 5077).
 It can be set as low as 15 for testing, but should be set to higher
 values like 300 in real life.</p>
 <example><title>Example</title>
