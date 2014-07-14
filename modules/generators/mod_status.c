@@ -241,7 +241,7 @@ static int status_handler(request_rec *r)
 #endif
     int short_report;
     int no_table_report;
-    worker_score *ws_record;
+    worker_score *ws_record = apr_palloc(r->pool, sizeof *ws_record);
     process_score *ps_record;
     char *stat_buffer;
     pid_t *pid_buffer, worker_pid;
@@ -333,7 +333,7 @@ static int status_handler(request_rec *r)
         for (j = 0; j < thread_limit; ++j) {
             int indx = (i * thread_limit) + j;
 
-            ws_record = ap_get_scoreboard_worker(i, j);
+            ap_copy_scoreboard_worker(ws_record, i, j);
             res = ws_record->status;
             stat_buffer[indx] = status_flags[res];
 

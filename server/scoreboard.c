@@ -510,6 +510,21 @@ AP_DECLARE(worker_score *) ap_get_scoreboard_worker(int x, int y)
     return &ap_scoreboard_image->servers[x][y];
 }
 
+AP_DECLARE(void) ap_copy_scoreboard_worker(worker_score *dest, 
+                                           int child_num,
+                                           int thread_num)
+{
+    worker_score *ws = ap_get_scoreboard_worker(child_num, thread_num);
+
+    memcpy(dest, ws, sizeof *ws);
+
+    /* For extra safety, NUL-terminate the strings returned, though it
+     * should be true those last bytes are always zero anyway. */
+    dest->client[sizeof(dest->client) - 1] = '\0';
+    dest->request[sizeof(dest->request) - 1] = '\0';
+    dest->vhost[sizeof(dest->vhost) - 1] = '\0';
+}
+
 AP_DECLARE(process_score *) ap_get_scoreboard_process(int x)
 {
     if ((x < 0) || (server_limit < x)) {
