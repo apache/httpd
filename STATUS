@@ -173,7 +173,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      optional new request attribute.
      See also Tomcat BZ 56661.
      trunk patch: http://svn.apache.org/r1610207
-     2.4.x patch: Trunk patch works plus CHANGES.
+     2.4.x patch: http://svn.apache.org/r1610340
      2.2.x patch: http://people.apache.org/~rjung/patches/mod_proxy_ajp_local_addr-2.2.patch
      +1: rjung
 
