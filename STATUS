@@ -122,6 +122,18 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      ylavic: does not depend on r1572092 or r1572655 and al above,
              these proposals can be backported in any order.
 
+   * mod_proxy_ajp: Forward local IP address as a custom request attribute
+     like we already do for the remote port.
+     Both were forgotten in the original AJP 13 spec
+     but are needed by the Servlet spec. Until now,
+     Tomcat simply returns for getLocalAddr() the same as
+     for getLocalName().
+     The next round of Tomcat releases will look for the
+     optional new request attribute.
+     See also Tomcat BZ 56661.
+     trunk patch: http://svn.apache.org/r1610207
+     2.4.x patch: Trunk patch works plus CHANGES.
+     +1: rjung, trawick, ylavic
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -169,19 +181,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   (modulo CHANGES)
      note: depends on ap_shutdown_conn() from r1601185 above.
      +1: ylavic
-
-   * mod_proxy_ajp: Forward local IP address as a custom request attribute
-     like we already do for the remote port.
-     Both were forgotten in the original AJP 13 spec
-     but are needed by the Servlet spec. Until now,
-     Tomcat simply returns for getLocalAddr() the same as
-     for getLocalName().
-     The next round of Tomcat releases will look for the
-     optional new request attribute.
-     See also Tomcat BZ 56661.
-     trunk patch: http://svn.apache.org/r1610207
-     2.4.x patch: Trunk patch works plus CHANGES.
-     +1: rjung, trawick
 
    * mod_ssl: Extend the scope of SSLSessionCacheTimeout to sessions
      resumed by TLS session resumption (RFC 5077).
