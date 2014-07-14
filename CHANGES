@@ -347,6 +347,11 @@ Changes with Apache 2.4.8
 
 Changes with Apache 2.4.7
 
+  *) SECURITY: CVE-2013-4352 (cve.mitre.org)
+     mod_cache: Fix a NULL pointer deference which allowed untrusted
+     origin servers to crash mod_cache in a forward proxy
+     configuration.  [Graham Leggett]
+
   *) APR 1.5.0 or later is now required for the event MPM.
   
   *) slotmem_shm: Error detection. [Jim Jagielski]
@@ -457,9 +462,6 @@ Changes with Apache 2.4.7
   *) mod_proxy: Add a note in the balancer manager stating whether changes
      will or will not be persisted and whether settings are inherited.
      [Daniel Ruggeri, Jim Jagielski]
-
-  *) mod_cache: Avoid a crash with strcmp() when the hostname is not provided.
-     [Graham Leggett]
 
   *) core: Add util_fcgi.h and associated definitions and support
      routines for FastCGI, based largely on mod_proxy_fcgi.
