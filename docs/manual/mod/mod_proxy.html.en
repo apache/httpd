@@ -225,7 +225,7 @@ ProxyVia On
 
       <div class="example"><h3>Reverse Proxy PHP scripts</h3><pre class="prettyprint lang-config">&lt;FilesMatch \.php$&gt;
     SetHandler  "proxy:unix:/path/to/app.sock|fcgi://localhost/"
-&lt;/FilesMatch</pre>
+&lt;/FilesMatch&gt;</pre>
 </div>
 
       <p>This feature is available in Apache HTTP Server 2.4.10 and later.</p>

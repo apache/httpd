@@ -407,73 +407,79 @@ considère comme arrivées à expiration</td></tr>
 l'entête Cache-Control: a pour valeur no-store.</td></tr>
 <tr class="odd"><td><a href="mod_cache.html#cachestoreprivate">CacheStorePrivate On|Off</a></td><td> Off </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Tente de mettre en cache des réponses que le serveur a
 marquées comme privées</td></tr>
-<tr><td><a href="core.html#cgimapextension">CGIMapExtension <var>chemin CGI</var> <var>.extension</var></a></td><td></td><td>dh</td><td>C</td></tr><tr><td class="descr" colspan="4">Technique permettant de localiser l'interpréteur des
+<tr><td><a href="mod_cgid.html#cgidscripttimeout">CGIDScriptTimeout <var>time</var>[s|ms]</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">The length of time to wait for more output from the
+CGI program</td></tr>
+<tr class="odd"><td><a href="core.html#cgimapextension">CGIMapExtension <var>chemin CGI</var> <var>.extension</var></a></td><td></td><td>dh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Technique permettant de localiser l'interpréteur des
 scripts CGI</td></tr>
-<tr class="odd"><td><a href="mod_charset_lite.html#charsetdefault">CharsetDefault <var>jeu de caractères</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Jeu de caractère vers lequel la traduction doit
+<tr><td><a href="mod_charset_lite.html#charsetdefault">CharsetDefault <var>jeu de caractères</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Jeu de caractère vers lequel la traduction doit
 s'effectuer</td></tr>
-<tr><td><a href="mod_charset_lite.html#charsetoptions">CharsetOptions <var>option</var> [<var>option</var>] ...</a></td><td> ImplicitAdd </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Précise les détails de la traduction du jeu de
+<tr class="odd"><td><a href="mod_charset_lite.html#charsetoptions">CharsetOptions <var>option</var> [<var>option</var>] ...</a></td><td> ImplicitAdd </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Précise les détails de la traduction du jeu de
 caractères</td></tr>
-<tr class="odd"><td><a href="mod_charset_lite.html#charsetsourceenc">CharsetSourceEnc <var>jeu de caractères</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Jeu de caractères source des fichiers</td></tr>
-<tr><td><a href="mod_speling.html#checkcaseonly">CheckCaseOnly on|off</a></td><td> Off </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Limite l'action du module aux corrections de
+<tr><td><a href="mod_charset_lite.html#charsetsourceenc">CharsetSourceEnc <var>jeu de caractères</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Jeu de caractères source des fichiers</td></tr>
+<tr class="odd"><td><a href="mod_speling.html#checkcaseonly">CheckCaseOnly on|off</a></td><td> Off </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Limite l'action du module aux corrections de
 majuscules</td></tr>
-<tr class="odd"><td><a href="mod_speling.html#checkspelling">CheckSpelling on|off</a></td><td> Off </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Active le module de correction</td></tr>
-<tr><td><a href="mod_unixd.html#chrootdir">ChrootDir <var>chemin-répertoire</var></a></td><td></td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">Répertoire dans lequel Apache doit se positionner au
+<tr><td><a href="mod_speling.html#checkspelling">CheckSpelling on|off</a></td><td> Off </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Active le module de correction</td></tr>
+<tr class="odd"><td><a href="mod_unixd.html#chrootdir">ChrootDir <var>chemin-répertoire</var></a></td><td></td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Répertoire dans lequel Apache doit se positionner au
 démarrage après avoir effectué un chroot(8).</td></tr>
-<tr class="odd"><td><a href="core.html#contentdigest">ContentDigest On|Off</a></td><td> Off </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Active la génération d'un en-tête <code>Content-MD5</code>
+<tr><td><a href="core.html#contentdigest">ContentDigest On|Off</a></td><td> Off </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Active la génération d'un en-tête <code>Content-MD5</code>
 dans la réponse HTTP</td></tr>
-<tr><td><a href="mod_usertrack.html#cookiedomain">CookieDomain <em>domaine</em></a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Le domaine auquel le cookie traceur
+<tr class="odd"><td><a href="mod_usertrack.html#cookiedomain">CookieDomain <em>domaine</em></a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Le domaine auquel le cookie traceur
 s'applique</td></tr>
-<tr class="odd"><td><a href="mod_usertrack.html#cookieexpires">CookieExpires <em>durée</em></a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Durée avant expiration du cookie traceur</td></tr>
-<tr><td><a href="mod_usertrack.html#cookiename">CookieName <em>symbole</em></a></td><td> Apache </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Nom du cookie traceur</td></tr>
-<tr class="odd"><td><a href="mod_usertrack.html#cookiestyle">CookieStyle
-    <em>Netscape|Cookie|Cookie2|RFC2109|RFC2965</em></a></td><td> Netscape </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Format du champ d'en-tête cookie</td></tr>
-<tr><td><a href="mod_usertrack.html#cookietracking">CookieTracking on|off</a></td><td> off </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Active le cookie traceur</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#coredumpdirectory">CoreDumpDirectory <var>répertoire</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Le répertoire dans lequel le serveur HTTP Apache va tenter de se
+<tr><td><a href="mod_usertrack.html#cookieexpires">CookieExpires <em>durée</em></a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Durée avant expiration du cookie traceur</td></tr>
+<tr class="odd"><td><a href="mod_usertrack.html#cookiename">CookieName <em>symbole</em></a></td><td> Apache </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Nom du cookie traceur</td></tr>
+<tr><td><a href="mod_usertrack.html#cookiestyle">CookieStyle
+    <em>Netscape|Cookie|Cookie2|RFC2109|RFC2965</em></a></td><td> Netscape </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Format du champ d'en-tête cookie</td></tr>
+<tr class="odd"><td><a href="mod_usertrack.html#cookietracking">CookieTracking on|off</a></td><td> off </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Active le cookie traceur</td></tr>
+<tr><td><a href="mpm_common.html#coredumpdirectory">CoreDumpDirectory <var>répertoire</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Le répertoire dans lequel le serveur HTTP Apache va tenter de se
 positionner avant d'effectuer un vidage mémoire</td></tr>
-<tr><td><a href="mod_log_config.html#customlog">CustomLog  <var>fichier</var>|<var>pipe</var>
+<tr class="odd"><td><a href="mod_log_config.html#customlog">CustomLog  <var>fichier</var>|<var>pipe</var>
 <var>format</var>|<var>alias</var>
 [env=[!]<var>variable-environnement</var>|
-expr=<var>expression</var>]</a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Définit le nom et le format du fichier
+expr=<var>expression</var>]</a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Définit le nom et le format du fichier
 journal</td></tr>
-<tr class="odd"><td><a href="mod_dav.html#dav" id="D" name="D">Dav On|Off|<var>nom fournisseur</var></a></td><td> Off </td><td>d</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Active les méthodes HTTP WebDAV</td></tr>
-<tr><td><a href="mod_dav.html#davdepthinfinity">DavDepthInfinity on|off</a></td><td> off </td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Autorise les requêtes PROPFIND avec en-tête Depth:
+<tr><td><a href="mod_dav.html#dav" id="D" name="D">Dav On|Off|<var>nom fournisseur</var></a></td><td> Off </td><td>d</td><td>E</td></tr><tr><td class="descr" colspan="4">Active les méthodes HTTP WebDAV</td></tr>
+<tr class="odd"><td><a href="mod_dav.html#davdepthinfinity">DavDepthInfinity on|off</a></td><td> off </td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Autorise les requêtes PROPFIND avec en-tête Depth:
 Infinity</td></tr>
-<tr class="odd"><td><a href="mod_dav_lock.html#davgenericlockdb">DavGenericLockDB <var>chemin fichier</var></a></td><td></td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Chemin de la base de données des verrous DAV</td></tr>
-<tr><td><a href="mod_dav_fs.html#davlockdb">DavLockDB <var>chemin fichier</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Chemin de la base de données des verrous DAV</td></tr>
-<tr class="odd"><td><a href="mod_dav.html#davmintimeout">DavMinTimeout <var>secondes</var></a></td><td> 0 </td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Durée minimale pendant laquelle le serveur maintient un
+<tr><td><a href="mod_dav_lock.html#davgenericlockdb">DavGenericLockDB <var>chemin fichier</var></a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Chemin de la base de données des verrous DAV</td></tr>
+<tr class="odd"><td><a href="mod_dav_fs.html#davlockdb">DavLockDB <var>chemin fichier</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Chemin de la base de données des verrous DAV</td></tr>
+<tr><td><a href="mod_dav.html#davmintimeout">DavMinTimeout <var>secondes</var></a></td><td> 0 </td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Durée minimale pendant laquelle le serveur maintient un
 verrou sur une ressource DAV</td></tr>
-<tr><td><a href="mod_dbd.html#dbdexptime">DBDExptime <var>durée en secondes</var></a></td><td> 300 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Durée de vie des connexions inactives</td></tr>
-<tr class="odd"><td><a href="mod_dbd.html#dbdinitsql">DBDInitSQL <var>"instruction SQL"</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Exécute une instruction SQL après connexion à une base de
+<tr class="odd"><td><a href="mod_dbd.html#dbdexptime">DBDExptime <var>durée en secondes</var></a></td><td> 300 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Durée de vie des connexions inactives</td></tr>
+<tr><td><a href="mod_dbd.html#dbdinitsql">DBDInitSQL <var>"instruction SQL"</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Exécute une instruction SQL après connexion à une base de
 données</td></tr>
-<tr><td><a href="mod_dbd.html#dbdkeep">DBDKeep <var>nombre</var></a></td><td> 2 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Nombre maximum de connexions maintenues</td></tr>
-<tr class="odd"><td><a href="mod_dbd.html#dbdmax">DBDMax <var>nombre</var></a></td><td> 10 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Nombre maximum de connexions</td></tr>
-<tr><td><a href="mod_dbd.html#dbdmin">DBDMin <var>nombre</var></a></td><td> 1 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Nombre minimum de connexions</td></tr>
-<tr class="odd"><td><a href="mod_dbd.html#dbdparams">DBDParams
-<var>param1</var>=<var>valeur1</var>[,<var>param2</var>=<var>valeur2</var>]</a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Paramètres de la connexion à la base de
+<tr class="odd"><td><a href="mod_dbd.html#dbdkeep">DBDKeep <var>nombre</var></a></td><td> 2 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Nombre maximum de connexions maintenues</td></tr>
+<tr><td><a href="mod_dbd.html#dbdmax">DBDMax <var>nombre</var></a></td><td> 10 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Nombre maximum de connexions</td></tr>
+<tr class="odd"><td><a href="mod_dbd.html#dbdmin">DBDMin <var>nombre</var></a></td><td> 1 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Nombre minimum de connexions</td></tr>
+<tr><td><a href="mod_dbd.html#dbdparams">DBDParams
+<var>param1</var>=<var>valeur1</var>[,<var>param2</var>=<var>valeur2</var>]</a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Paramètres de la connexion à la base de
 données</td></tr>
-<tr><td><a href="mod_dbd.html#dbdpersist">DBDPersist On|Off</a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Utiliser ou non des connexions persistentes</td></tr>
-<tr class="odd"><td><a href="mod_dbd.html#dbdpreparesql">DBDPrepareSQL <var>"requête SQL"</var> <var>étiquette</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Définit une requête SQL préparée</td></tr>
-<tr><td><a href="mod_dbd.html#dbdriver">DBDriver <var>nom</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Spécifie un pilote SQL</td></tr>
-<tr class="odd"><td><a href="mod_autoindex.html#defaulticon">DefaultIcon <var>chemin URL</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Icône à afficher par défaut lorsqu'aucun icône spécifique
+<tr class="odd"><td><a href="mod_dbd.html#dbdpersist">DBDPersist On|Off</a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Utiliser ou non des connexions persistentes</td></tr>
+<tr><td><a href="mod_dbd.html#dbdpreparesql">DBDPrepareSQL <var>"requête SQL"</var> <var>étiquette</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Définit une requête SQL préparée</td></tr>
+<tr class="odd"><td><a href="mod_dbd.html#dbdriver">DBDriver <var>nom</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Spécifie un pilote SQL</td></tr>
+<tr><td><a href="mod_autoindex.html#defaulticon">DefaultIcon <var>chemin URL</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Icône à afficher par défaut lorsqu'aucun icône spécifique
 n'est précisé</td></tr>
-<tr><td><a href="mod_mime.html#defaultlanguage">DefaultLanguage <var>symbole-langue</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Définit un symbole de langue par défaut à affecter au champ
+<tr class="odd"><td><a href="mod_mime.html#defaultlanguage">DefaultLanguage <var>symbole-langue</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Définit un symbole de langue par défaut à affecter au champ
 d'en-tête Content-Language pour toutes les ressources dans le contexte
 courant auxquelles aucun symbole de langue n'a été
 associé.</td></tr>
-<tr class="odd"><td><a href="core.html#defaultruntimedir">DefaultRuntimeDir <var>chemin-répertoire</var></a></td><td> DEFAULT_REL_RUNTIME +</td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Répertoire de base des fichiers créés au cours de l'exécution du serveur</td></tr>
-<tr><td><a href="core.html#defaulttype">DefaultType <var>type média|none</var></a></td><td> none </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Les seuls effets de cette directive sont des émissions
+<tr><td><a href="core.html#defaultruntimedir">DefaultRuntimeDir <var>chemin-répertoire</var></a></td><td> DEFAULT_REL_RUNTIME +</td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Répertoire de base des fichiers créés au cours de l'exécution du serveur</td></tr>
+<tr class="odd"><td><a href="core.html#defaulttype">DefaultType <var>type média|none</var></a></td><td> none </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Les seuls effets de cette directive sont des émissions
 d'avertissements si sa valeur est différente de <code>none</code>. Dans
 les versions précédentes, DefaultType permettait de spécifier un type de
 média à assigner par défaut au contenu d'une réponse pour lequel aucun
 autre type de média n'avait été trouvé.
 </td></tr>
-<tr class="odd"><td><a href="core.html#define">Define <var>nom-paramètre</var> [<var>valeur-paramètre</var>]</a></td><td></td><td>svd</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Permet de définir une variable</td></tr>
-<tr><td><a href="mod_deflate.html#deflatebuffersize">DeflateBufferSize <var>valeur</var></a></td><td> 8096 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Taille du fragment que zlib devra comprimer en une seule
+<tr><td><a href="core.html#define">Define <var>nom-paramètre</var> [<var>valeur-paramètre</var>]</a></td><td></td><td>svd</td><td>C</td></tr><tr><td class="descr" colspan="4">Permet de définir une variable</td></tr>
+<tr class="odd"><td><a href="mod_deflate.html#deflatebuffersize">DeflateBufferSize <var>valeur</var></a></td><td> 8096 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Taille du fragment que zlib devra comprimer en une seule
 fois</td></tr>
-<tr class="odd"><td><a href="mod_deflate.html#deflatecompressionlevel">DeflateCompressionLevel <var>valeur</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Le niveau de compression que nous appliquons à la
+<tr><td><a href="mod_deflate.html#deflatecompressionlevel">DeflateCompressionLevel <var>valeur</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Le niveau de compression que nous appliquons à la
 sortie</td></tr>
-<tr><td><a href="mod_deflate.html#deflatefilternote">DeflateFilterNote [<var>type</var>] <var>nom de la note</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Enregistre le taux de compression sous la forme d'une note
+<tr class="odd"><td><a href="mod_deflate.html#deflatefilternote">DeflateFilterNote [<var>type</var>] <var>nom de la note</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enregistre le taux de compression sous la forme d'une note
 à des fins de journalisation</td></tr>
+<tr><td><a href="mod_deflate.html#deflateinflatelimitrequestbody">DeflateInflateLimitRequestBody<var>value</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum size of inflated request bodies</td></tr>
+<tr class="odd"><td><a href="mod_deflate.html#deflateinflateratioburst">DeflateInflateRatioBurst <var>value</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum number of times the inflation ratio for request bodies 
+             can be crossed</td></tr>
+<tr><td><a href="mod_deflate.html#deflateinflateratiolimit">DeflateInflateRatioLimit <var>value</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum inflation ratio for request bodies</td></tr>
 <tr class="odd"><td><a href="mod_deflate.html#deflatememlevel">DeflateMemLevel <var>valeur</var></a></td><td> 9 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">La quantité de mémoire utilisable par zlib pour la
 compression</td></tr>
 <tr><td><a href="mod_deflate.html#deflatewindowsize">DeflateWindowSize <var>valeur</var></a></td><td> 15 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Taille de la fenêtre de compression zlib</td></tr>
