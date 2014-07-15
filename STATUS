@@ -123,8 +123,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1610509 
                   http://svn.apache.org/r1535125  
      2.2.x patch: http://people.apache.org/~covener/patches/httpd-2.2.x-cgid-script_timeout.diff
-     +1: covener
-
+     +1: covener, trawick
 
    * SECURITY: CVE-2014-0118 (cve.mitre.org)
      mod_deflate: The DEFLATE input filter (inflates request bodies) now
