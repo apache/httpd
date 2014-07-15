@@ -105,6 +105,7 @@ RELEASE SHOWSTOPPERS:
    ALTERNATIVE #2
    2.4.x patch: http://people.apache.org/~jorton/2.4.x-CVE-2014-0117_v2.patch (ylavic)
    +1: jorton, ylavic
+   -0.99: jim (not enough time for a serious review for inclusion in 2.4.10)
    ylavic: works here, and checking RFC compliance if the Connection header
            looks quite important to me.
 
