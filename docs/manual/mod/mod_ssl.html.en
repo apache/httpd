@@ -68,6 +68,7 @@ to provide the cryptography engine.</p>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslocsprespondertimeout">SSLOCSPResponderTimeout</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslocspresponsemaxage">SSLOCSPResponseMaxAge</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslocspresponsetimeskew">SSLOCSPResponseTimeSkew</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#sslocspuserequestnonce">SSLOCSPUseRequestNonce</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslopensslconfcmd">SSLOpenSSLConfCmd</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ssloptions">SSLOptions</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslpassphrasedialog">SSLPassPhraseDialog</a></li>
@@ -592,6 +593,8 @@ are applied independently of the authentication algorithm type.</p>
 <p>
 Beginning with version 2.4.7, mod_ssl makes use of
 standardized DH parameters with prime lengths of 2048, 3072 and 4096 bits
+and with additional prime lengths of 6144 and 8192 bits beginning with
+version 2.4.10
 (from <a href="http://www.ietf.org/rfc/rfc3526.txt">RFC 3526</a>), and hands
 them out to clients based on the length of the certificate's RSA/DSA key.
 With Java-based clients in particular (Java 7 or earlier), this may lead
@@ -1055,6 +1058,23 @@ which means that OCSP responses are considered valid as long as their
 </table>
 <p>This option sets the maximum allowable time skew for OCSP responses
 (when checking their <code>thisUpdate</code> and <code>nextUpdate</code> fields).</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SSLOCSPUseRequestNonce" id="SSLOCSPUseRequestNonce">SSLOCSPUseRequestNonce</a> <a name="sslocspuserequestnonce" id="sslocspuserequestnonce">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Use a nonce within OCSP queries</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLOCSPUseRequestNonce on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLOCSPUseRequestNonce on</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.4.10 and later</td></tr>
+</table>
+<p>This option determines whether queries to OCSP responders should contain
+a nonce or not. By default, a query nonce is always used and checked against
+the response's one. When the responder does not use nonces (eg. Microsoft OCSP
+Responder), this option ought to be turned <code>off</code>.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -2104,7 +2124,8 @@ in the Session Cache</td></tr>
 </table>
 <p>
 This directive sets the timeout in seconds for the information stored in the
-global/inter-process SSL Session Cache and the OpenSSL internal memory cache.
+global/inter-process SSL Session Cache, the OpenSSL internal memory cache and
+for sessions resumed by TLS session resumption (RFC 5077).
 It can be set as low as 15 for testing, but should be set to higher
 values like 300 in real life.</p>
 <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLSessionCacheTimeout 600</pre>

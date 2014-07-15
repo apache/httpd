@@ -62,6 +62,7 @@
 </div>
 <div id="quickview"><h3 class="directives">ディレクティブ</h3>
 <ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#cgidscripttimeout">CGIDScriptTimeout</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mod_cgi.html#scriptlog">ScriptLog</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mod_cgi.html#scriptlogbuffer">ScriptLogBuffer</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mod_cgi.html#scriptloglength">ScriptLogLength</a></li>
@@ -73,6 +74,22 @@
 <li><a href="../suexec.html">CGI プログラムを違うユーザ ID で実行する</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">コメント</a></li></ul></div>
 
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="CGIDScriptTimeout" id="CGIDScriptTimeout">CGIDScriptTimeout</a> <a name="cgidscripttimeout" id="cgidscripttimeout">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>The length of time to wait for more output from the
+CGI program</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>CGIDScriptTimeout <var>time</var>[s|ms]</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>value of <code class="directive"><a href="../mod/core.html#timeout">Timeout</a></code> directive when 
+unset</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_cgid</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>CGIDScriptTimeout defaults to zero in releases 2.4 and earlier
+</td></tr>
+</table><p>このディレクティブの解説文書は
+            まだ翻訳されていません。英語版をご覧ください。
+            </p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ScriptSock" id="ScriptSock">ScriptSock</a> <a name="scriptsock" id="scriptsock">ディレクティブ</a></h2>
 <table class="directive">
