@@ -110,6 +110,20 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      *) mod_dav: Fix improper encoding in PROPFIND responses.  PR 56480.
      +1: breser, rpluem, ylavic
 
+   * mod_proxy_ajp: Forward local IP address as a custom request attribute
+     like we already do for the remote port.
+     Both were forgotten in the original AJP 13 spec
+     but are needed by the Servlet spec. Until now,
+     Tomcat simply returns for getLocalAddr() the same as
+     for getLocalName().
+     The next round of Tomcat releases will look for the
+     optional new request attribute.
+     See also Tomcat BZ 56661.
+     trunk patch: http://svn.apache.org/r1610207
+     2.4.x patch: http://svn.apache.org/r1610340
+     2.2.x patch: http://people.apache.org/~rjung/patches/mod_proxy_ajp_local_addr-2.2.patch
+     +1: rjung, trawick, ylavic
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -123,7 +137,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1610509 
                   http://svn.apache.org/r1535125  
      2.2.x patch: http://people.apache.org/~covener/patches/httpd-2.2.x-cgid-script_timeout.diff
-     +1: covener, trawick
+     +1: covener, trawick, ylavic
 
    * SECURITY: CVE-2014-0118 (cve.mitre.org)
      mod_deflate: The DEFLATE input filter (inflates request bodies) now
@@ -134,7 +148,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
  
      trunk patch: http://svn.apache.org/r1610501
      2.2.x patch: http://people.apache.org/~covener/patches/httpd-2.2.x-deflate_limitrequestbody.diff
-     +1: covener
+     +1: covener, ylavic
 
    * mod_proxy: Don't reuse a SSL backend connection whose SNI differs. PR 55782.
                 This may happen when ProxyPreserveHost is on and the proxy-worker
@@ -143,6 +157,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1572611 (MMN minor bump)
                   http://svn.apache.org/r1572967
                   http://svn.apache.org/r1573229
+     2.4.x patch: http://svn.apache.org/r1587201 (2.4.10)
      2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-mod_proxy_sni_reuse3.patch
      +1: ylavic, rpluem
      ylavic: MMN bump in patch #3
@@ -162,6 +177,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   https://svn.apache.org/r1590509
                   https://svn.apache.org/r1603156 (partially, CHANGES update)
                   https://svn.apache.org/r1604353
+     2.4.x patch: https://svn.apache.org/r1604458 (2.4.10)
      2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-mod_deflate_reentrant_with_CHANGES.patch
                   (modulo CHANGES)
      +1: ylavic
@@ -171,6 +187,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   PR 56062.
      trunk patch: http://svn.apache.org/r1572092
                   http://svn.apache.org/r1603156 (partially, CHANGES update)
+     2.4.x patch: http://svn.apache.org/r1604460 (2.4.10)
      2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-mod_deflate_4GB.patch
                   (modulo CHANGES)
      +1: ylavic, breser
@@ -181,23 +198,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1572896
                   http://svn.apache.org/r1572911
                   http://svn.apache.org/r1603156 (partially, CHANGES update)
+     2.4.x patch: http://svn.apache.org/r1610397 (2.4.10)
      2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-mod_deflate-flush_end_of_stream.patch
                   (modulo CHANGES)
      +1: ylavic, breser
-
-   * mod_proxy_ajp: Forward local IP address as a custom request attribute
-     like we already do for the remote port.
-     Both were forgotten in the original AJP 13 spec
-     but are needed by the Servlet spec. Until now,
-     Tomcat simply returns for getLocalAddr() the same as
-     for getLocalName().
-     The next round of Tomcat releases will look for the
-     optional new request attribute.
-     See also Tomcat BZ 56661.
-     trunk patch: http://svn.apache.org/r1610207
-     2.4.x patch: http://svn.apache.org/r1610340
-     2.2.x patch: http://people.apache.org/~rjung/patches/mod_proxy_ajp_local_addr-2.2.patch
-     +1: rjung, trawick
 
    * mod_ssl: Extend the scope of SSLSessionCacheTimeout to sessions
      resumed by TLS session resumption (RFC 5077).
@@ -205,8 +209,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: Trunk patch works modulo CHANGES
                   and compatibility note.
      2.2.x patch: http://people.apache.org/~rjung/patches/mod_ssl_session_resumption_timeout-2.2.patch
-     +1: rjung
+     +1: rjung, ylavic
 
+   *) core: Detect incomplete request and response bodies, log an error and
+            forward it to the underlying filters. PR 55475 [Yann Ylavic]
+     trunk patch: http://svn.apache.org/r1538776
+     2.4.x patch: http://svn.apache.org/r1570324 (2.4.8)
+     2.2.x patch: http://people.apache.org/~ylavic/2.2.x-http_filter_incomplete.patch
+                  (modulo CHANGES)
+     +1: ylavic
 
 
 PATCHES/ISSUES THAT ARE STALLED
