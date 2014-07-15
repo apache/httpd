@@ -553,6 +553,10 @@ static void *merge_core_server_configs(apr_pool_t *p, void *basev, void *virtv)
         }
     }
 
+    conf->merge_trailers = (virt->merge_trailers != AP_MERGE_TRAILERS_UNSET)
+                           ? virt->merge_trailers
+                           : base->merge_trailers;
+
     return conf;
 }
 
@@ -4107,6 +4111,16 @@ AP_DECLARE(void) ap_register_errorlog_handler(apr_pool_t *p, char *tag,
 }
 
 
+static const char *set_merge_trailers(cmd_parms *cmd, void *dummy, int arg)
+{
+    core_server_config *conf = ap_get_module_config(cmd->server->module_config,
+                                                    &core_module);
+    conf->merge_trailers = (arg ? AP_MERGE_TRAILERS_ENABLE :
+            AP_MERGE_TRAILERS_DISABLE);
+
+    return NULL;
+}
+
 /* Note --- ErrorDocument will now work from .htaccess files.
  * The AllowOverride of Fileinfo allows webmasters to turn it off
  */
@@ -4358,6 +4372,8 @@ AP_INIT_TAKE1("EnableExceptionHook", ap_mpm_set_exception_hook, NULL, RSRC_CONF,
 #endif
 AP_INIT_TAKE1("TraceEnable", set_trace_enable, NULL, RSRC_CONF,
               "'on' (default), 'off' or 'extended' to trace request body content"),
+AP_INIT_FLAG("MergeTrailers", set_merge_trailers, NULL, RSRC_CONF,
+              "merge request trailers into request headers or not"),
 AP_INIT_ITERATE("HttpProtocol", set_http_protocol, NULL, RSRC_CONF,
               "'min=0.9' (default) or 'min=1.0' to allow/deny HTTP/0.9; "
               "'liberal', 'strict', 'strict,log-only'"),
@@ -4448,7 +4464,6 @@ static int core_map_to_storage(request_rec *r)
 
 
 static int do_nothing(request_rec *r) { return OK; }
-
 
 static int core_override_type(request_rec *r)
 {

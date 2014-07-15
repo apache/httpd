@@ -432,6 +432,12 @@ static const char *log_header_in(request_rec *r, char *a)
     return ap_escape_logitem(r->pool, apr_table_get(r->headers_in, a));
 }
 
+static const char *log_trailer_in(request_rec *r, char *a)
+{
+    return ap_escape_logitem(r->pool, apr_table_get(r->trailers_in, a));
+}
+
+
 static APR_INLINE char *find_multiple_headers(apr_pool_t *pool,
                                               const apr_table_t *table,
                                               const char *key)
@@ -513,6 +519,11 @@ static const char *log_header_out(request_rec *r, char *a)
     }
 
     return ap_escape_logitem(r->pool, cp);
+}
+
+static const char *log_trailer_out(request_rec *r, char *a)
+{
+    return ap_escape_logitem(r->pool, apr_table_get(r->trailers_out, a));
 }
 
 static const char *log_note(request_rec *r, char *a)
@@ -1737,6 +1748,9 @@ static int log_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
         log_pfn_register(p, "U", log_request_uri, 1);
         log_pfn_register(p, "s", log_status, 1);
         log_pfn_register(p, "R", log_handler, 1);
+
+        log_pfn_register(p, "^ti", log_trailer_in, 0);
+        log_pfn_register(p, "^to", log_trailer_out, 0);
     }
 
     /* reset to default conditions */

@@ -1010,9 +1010,11 @@ request_rec *ap_read_request(conn_rec *conn)
     r->allowed_methods = ap_make_method_list(p, 2);
 
     r->headers_in      = apr_table_make(r->pool, 25);
+    r->trailers_in     = apr_table_make(r->pool, 5);
     r->subprocess_env  = apr_table_make(r->pool, 25);
     r->headers_out     = apr_table_make(r->pool, 12);
     r->err_headers_out = apr_table_make(r->pool, 5);
+    r->trailers_out    = apr_table_make(r->pool, 5);
     r->notes           = apr_table_make(r->pool, 5);
 
     r->request_config  = ap_create_request_config(r->pool);
@@ -1289,6 +1291,7 @@ AP_DECLARE(void) ap_set_sub_req_protocol(request_rec *rnew,
     rnew->status          = HTTP_OK;
 
     rnew->headers_in      = apr_table_copy(rnew->pool, r->headers_in);
+    rnew->trailers_in     = apr_table_copy(rnew->pool, r->trailers_in);
 
     /* did the original request have a body?  (e.g. POST w/SSI tags)
      * if so, make sure the subrequest doesn't inherit body headers
@@ -1300,6 +1303,7 @@ AP_DECLARE(void) ap_set_sub_req_protocol(request_rec *rnew,
     rnew->subprocess_env  = apr_table_copy(rnew->pool, r->subprocess_env);
     rnew->headers_out     = apr_table_make(rnew->pool, 5);
     rnew->err_headers_out = apr_table_make(rnew->pool, 5);
+    rnew->trailers_out    = apr_table_make(rnew->pool, 5);
     rnew->notes           = apr_table_make(rnew->pool, 5);
 
     rnew->expecting_100   = r->expecting_100;
