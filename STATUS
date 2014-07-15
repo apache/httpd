@@ -105,6 +105,17 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
+  *) SECURITY: CVE-2013-5704 (cve.mitre.org)
+     core: HTTP trailers could be used to replace HTTP headers
+     late during request processing, potentially undoing or
+     otherwise confusing modules that examined or modified
+     request headers earlier.  Adds "MergeTrailers" directive to restore
+     legacy behavior.  [Edward Lu, Yann Ylavic, Joe Orton, Eric Covener]
+
+     trunk patch: http://svn.apache.org/r1610814
+     2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-trailers.diff
+     +1: covener
+
    * mod_proxy_http: Avoid (unlikely) access to freed memory.
      trunk patch: http://svn.apache.org/r1599486
      2.4.x patch: trunk works
