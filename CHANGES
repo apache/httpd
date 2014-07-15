@@ -2,9 +2,12 @@
 
 Changes with Apache 2.4.10
 
-  *) SECURITY (CVE-2014-3523): Fix a memory consumption denial of
-     service in the WinNT MPM (used in all Windows installations).
-     Workaround: AcceptFilter <protocol> {none|connect}
+  *) SECURITY: CVE-2014-0117 (cve.mitre.org)
+     Fix crashing with mod_proxy Connection handling.
+
+  *) SECURITY: CVE-2014-3523 (cve.mitre.org)
+     Fix a memory consumption denial of service in the WinNT MPM (used in all Windows
+     installations). Workaround: AcceptFilter <protocol> {none|connect}
      [Jeff Trawick]
 
   *) SECURITY: CVE-2014-0226 (cve.mitre.org)
