@@ -96,22 +96,16 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
+
+
+PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
+  [ start all new proposals below, under PATCHES PROPOSED. ]
+
    * mod_proxy Connection handling crasher, CVE-2014-0117
    trunk patch: http://svn.apache.org/r1610674
    ALTERNATIVE #1
    2.4.x patch: http://people.apache.org/~jorton/CVE-2014-0117-simple.patch
    +1: jorton, jim, trawick
-
-   ALTERNATIVE #2
-   2.4.x patch: http://people.apache.org/~jorton/2.4.x-CVE-2014-0117_v2.patch (ylavic)
-   +1: jorton, ylavic
-   -0.99: jim (not enough time for a serious review for inclusion in 2.4.10)
-   ylavic: works here, and checking RFC compliance if the Connection header
-           looks quite important to me.
-
-PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
-  [ start all new proposals below, under PATCHES PROPOSED. ]
-
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
