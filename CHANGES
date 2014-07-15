@@ -16,8 +16,10 @@ Changes with Apache 2.4.10
   *) SECURITY: CVE-2014-0231 (cve.mitre.org)
      mod_cgid: Fix a denial of service against CGI scripts that do
      not consume stdin that could lead to lingering HTTPD child processes
-     filling up the scoreboard and eventually hanging the server. Adds
-     "CGIDScriptTimeout" directive.
+     filling up the scoreboard and eventually hanging the server.  By
+     default, the client I/O timeout (Timeout directive) now applies to
+     communication with scripts.  The CGIDScriptTimeout directive can be
+     used to set a different timeout for communication with scripts.
      [Rainer Jung, Eric Covener, Yann Ylavic]
 
   *) mod_ssl: Extend the scope of SSLSessionCacheTimeout to sessions
