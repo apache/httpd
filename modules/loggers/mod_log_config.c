@@ -987,11 +987,11 @@ static char *parse_log_item(apr_pool_t *p, log_format_item *it, const char **sa)
             break;
 
         default:
-            /* check for exactly two character format first */
-            if (*(s+1)) { 
-                handler = (ap_log_handler *)apr_hash_get(log_hash, s, 2); 
+            /* check for '^' + two character format first */
+            if (*s == '^' && *(s+1) && *(s+2)) { 
+                handler = (ap_log_handler *)apr_hash_get(log_hash, s, 3); 
                 if (handler) { 
-                   s += 2;
+                   s += 3;
                 }
             }
             if (!handler) {  
