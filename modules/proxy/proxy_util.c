@@ -3218,68 +3218,58 @@ PROXY_DECLARE(proxy_balancer_shared *) ap_proxy_find_balancershm(ap_slotmem_prov
 typedef struct header_connection {
     apr_pool_t *pool;
     apr_array_header_t *array;
-    const char *first;
-    unsigned int closed:1;
+    const char *error;
+    int is_req;
 } header_connection;
 
 static int find_conn_headers(void *data, const char *key, const char *val)
 {
     header_connection *x = data;
-    const char *name;
-
-    do {
-        while (*val == ',') {
-            val++;
-        }
-        name = ap_get_token(x->pool, &val, 0);
-        if (!strcasecmp(name, "close")) {
-            x->closed = 1;
-        }
-        if (!x->first) {
-            x->first = name;
-        }
-        else {
-            const char **elt;
-            if (!x->array) {
-                x->array = apr_array_make(x->pool, 4, sizeof(char *));
-            }
-            elt = apr_array_push(x->array);
-            *elt = name;
-        }
-    } while (*val);
-
-    return 1;
+    x->error = ap_parse_token_list_strict(x->pool, val, &x->array, !x->is_req);
+    return !x->error;
 }
 
 /**
  * Remove all headers referred to by the Connection header.
+ * Returns -1 on error. Otherwise, returns 1 if 'Close' was seen in
+ * the Connection header tokens, and 0 if not.
  */
 static int ap_proxy_clear_connection(request_rec *r, apr_table_t *headers)
 {
-    const char **name;
+    int closed = 0;
     header_connection x;
 
     x.pool = r->pool;
     x.array = NULL;
-    x.first = NULL;
-    x.closed = 0;
+    x.error = NULL;
+    x.is_req = (headers == r->headers_in);
 
     apr_table_unset(headers, "Proxy-Connection");
 
     apr_table_do(find_conn_headers, &x, headers, "Connection", NULL);
-    if (x.first) {
-        /* fast path - no memory allocated for one header */
-        apr_table_unset(headers, "Connection");
-        apr_table_unset(headers, x.first);
+    apr_table_unset(headers, "Connection");
+
+    if (x.error) {
+        ap_log_rerror(APLOG_MARK, APLOG_NOTICE, 0, r, APLOGNO()
+                "Error parsing Connection header: %s", x.error);
+        return -1;
     }
+
     if (x.array) {
-        /* two or more headers */
-        while ((name = apr_array_pop(x.array))) {
-            apr_table_unset(headers, *name);
+        int i;
+        for (i = 0; i < x.array->nelts; i++) {
+            const char *name = APR_ARRAY_IDX(x.array, i, const char *);
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO()
+                          "Removing header '%s' listed in Connection header",
+                          name);
+            if (!strcasecmp(name, "close")) {
+                closed = 1;
+            }
+            apr_table_unset(headers, name);
         }
     }
 
-    return x.closed;
+    return closed;
 }
 
 PROXY_DECLARE(int) ap_proxy_create_hdrbrgd(apr_pool_t *p,
@@ -3487,7 +3477,9 @@ PROXY_DECLARE(int) ap_proxy_create_hdrbrgd(apr_pool_t *p,
     }
 
     proxy_run_fixups(r);
-    ap_proxy_clear_connection(r, r->headers_in);
+    if (ap_proxy_clear_connection(r, r->headers_in) < 0) {
+        return HTTP_BAD_REQUEST;
+    }
 
     /* send request headers */
     headers_in_array = apr_table_elts(r->headers_in);
