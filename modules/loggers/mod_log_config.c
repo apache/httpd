@@ -917,7 +917,7 @@ static char *parse_log_misc_string(apr_pool_t *p, log_format_item *it,
 static char *parse_log_item(apr_pool_t *p, log_format_item *it, const char **sa)
 {
     const char *s = *sa;
-    ap_log_handler *handler;
+    ap_log_handler *handler = NULL;
 
     if (*s != '%') {
         return parse_log_misc_string(p, it, sa);
@@ -987,7 +987,16 @@ static char *parse_log_item(apr_pool_t *p, log_format_item *it, const char **sa)
             break;
 
         default:
-            handler = (ap_log_handler *)apr_hash_get(log_hash, s++, 1);
+            /* check for exactly two character format first */
+            if (*(s+1)) { 
+                handler = (ap_log_handler *)apr_hash_get(log_hash, s, 2); 
+                if (handler) { 
+                   s += 2;
+                }
+            }
+            if (!handler) {  
+                handler = (ap_log_handler *)apr_hash_get(log_hash, s++, 1);  
+            }
             if (!handler) {
                 char dummy[2];
 
@@ -1550,7 +1559,7 @@ static void ap_register_log_handler(apr_pool_t *p, char *tag,
     log_struct->func = handler;
     log_struct->want_orig_default = def;
 
-    apr_hash_set(log_hash, tag, 1, (const void *)log_struct);
+    apr_hash_set(log_hash, tag, strlen(tag), (const void *)log_struct);
 }
 static ap_log_writer_init *ap_log_set_writer_init(ap_log_writer_init *handle)
 {
