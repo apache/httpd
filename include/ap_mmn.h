@@ -467,6 +467,7 @@
  * 20140627.2 (2.5.0-dev)  Added is_name_matchable to proxy_worker_shared.
                            Added ap_proxy_define_match_worker().
  * 20140627.3 (2.5.0-dev)  Add ap_copy_scoreboard_worker()
+ * 20140627.4 (2.5.0-dev)  Added ap_parse_token_list_strict() to httpd.h.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
@@ -474,7 +475,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20140627
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 3                 /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 4                 /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

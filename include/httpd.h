@@ -1563,6 +1563,23 @@ AP_DECLARE(int) ap_find_etag_weak(apr_pool_t *p, const char *line, const char *t
 AP_DECLARE(int) ap_find_etag_strong(apr_pool_t *p, const char *line, const char *tok);
 
 /**
+ * Retrieve an array of tokens in the format "1#token" defined in RFC2616. Only
+ * accepts ',' as a delimiter, does not accept quoted strings, and errors on
+ * any separator.
+ * @param p The pool to allocate from
+ * @param tok The line to read tokens from
+ * @param tokens Pointer to an array of tokens. If not NULL, must be an array
+ *    of char*, otherwise it will be allocated on @a p when a token is found
+ * @param skip_invalid If true, when an invalid separator is encountered, it
+ *    will be ignored.
+ * @return NULL on success, an error string otherwise.
+ * @remark *tokens may be NULL on output if NULL in input and no token is found
+ */
+AP_DECLARE(const char *) ap_parse_token_list_strict(apr_pool_t *p, const char *tok,
+                                                    apr_array_header_t **tokens,
+                                                    int skip_invalid);
+
+/**
  * Retrieve a token, spacing over it and adjusting the pointer to
  * the first non-white byte afterwards.  Note that these tokens
  * are delimited by semis and commas and can also be delimited
