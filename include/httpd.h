@@ -1039,6 +1039,11 @@ struct request_rec {
      */
     apr_sockaddr_t *useragent_addr;
     char *useragent_ip;
+
+    /** MIME trailer environment from the request */
+    apr_table_t *trailers_in;
+    /** MIME trailer environment from the response */
+    apr_table_t *trailers_out;
 };
 
 /**

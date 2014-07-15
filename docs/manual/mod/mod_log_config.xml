@@ -261,6 +261,14 @@
         cannot be zero. This is the combination of %I and %O. You need to
         enable <module>mod_logio</module> to use this.</td></tr>
 
+    <tr><td><code>%{<var>VARNAME</var>}^ti</code></td>
+        <td>The contents of <code><var>VARNAME</var>:</code> trailer line(s)
+        in the request sent to the server.  </td></tr>
+
+    <tr><td><code>%{<var>VARNAME</var>}^to</code></td>
+        <td>The contents of <code><var>VARNAME</var>:</code> trailer line(s)
+        in the response sent from the server.  </td></tr>
+
     </table>
 
     <section id="modifiers"><title>Modifiers</title>

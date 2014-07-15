@@ -1,6 +1,13 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) SECURITY: CVE-2013-5704 (cve.mitre.org)
+     core: HTTP trailers could be used to replace HTTP headers
+     late during request processing, potentially undoing or
+     otherwise confusing modules that examined or modified
+     request headers earlier.  Adds "MergeTrailers" directive to restore 
+     legacy behavior.  [Edward Lu, Yann Ylavic, Joe Orton, Eric Covener]
+  
   *) http_protocol: fix logic in ap_method_list_(add|remove) in order:
        - to correctly reset bits
        - not to modify the 'method_mask' bitfield unnecessarily
