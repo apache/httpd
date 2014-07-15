@@ -110,20 +110,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      *) mod_dav: Fix improper encoding in PROPFIND responses.  PR 56480.
      +1: breser, rpluem, ylavic
 
-   * mod_proxy_ajp: Forward local IP address as a custom request attribute
-     like we already do for the remote port.
-     Both were forgotten in the original AJP 13 spec
-     but are needed by the Servlet spec. Until now,
-     Tomcat simply returns for getLocalAddr() the same as
-     for getLocalName().
-     The next round of Tomcat releases will look for the
-     optional new request attribute.
-     See also Tomcat BZ 56661.
-     trunk patch: http://svn.apache.org/r1610207
-     2.4.x patch: http://svn.apache.org/r1610340
-     2.2.x patch: http://people.apache.org/~rjung/patches/mod_proxy_ajp_local_addr-2.2.patch
-     +1: rjung, trawick, ylavic
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
