@@ -196,8 +196,8 @@ Changes with Apache 2.4.10
      "http-equiv" meta tag specifies a Content-Type behind any other
      "http-equiv" meta tag. PR 56287 [Micha Lenk <micha lenk info>]
 
-  *) Don't reuse a SSL backend connection whose SNI differs. PR 55782.
-     [Yann Ylavic]
+  *) mod_proxy: Don't reuse a SSL backend connection whose requested SNI
+     differs. PR 55782.  [Yann Ylavic]
 
   *) Add suspend_connection and resume_connection hooks to notify modules
      when the thread/connection relationship changes.  (Should be implemented
