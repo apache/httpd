@@ -601,8 +601,12 @@ reinit: /* target of data or connect upon too many AcceptEx failures */
                 b->length = BytesRead;
                 context->overlapped.Pointer = b;
             }
-            else
+            else {
+                if (accf == 2) {
+                    apr_bucket_free(buf);
+                }
                 context->overlapped.Pointer = NULL;
+            }
         }
         else /* (accf = 0)  e.g. 'none' */
         {
