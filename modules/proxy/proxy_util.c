@@ -3132,7 +3132,7 @@ static int find_conn_headers(void *data, const char *key, const char *val)
     const char *name;
 
     do {
-        while (*val == ',') {
+        while (*val == ',' || *val == ';') {
             val++;
         }
         name = ap_get_token(x->pool, &val, 0);
