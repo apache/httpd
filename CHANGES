@@ -2,7 +2,7 @@
 
 Changes with Apache 2.4.10
 
-  *) SECURITY (CVE-2014-0226): Fix a memory consumption denial of
+  *) SECURITY (CVE-2014-3523): Fix a memory consumption denial of
      service in the WinNT MPM (used in all Windows installations).
      Workaround: AcceptFilter <protocol> {none|connect}
      [Jeff Trawick]
