@@ -161,6 +161,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-mod_proxy_sni_reuse3.patch
      +1: ylavic, rpluem
      ylavic: MMN bump in patch #3
+     ylavic: Changelog is missing in the above patches, it was added in 2.4.x
+             by r1599597 (with others...) and fixed by r1610670 (missing
+             "mod_proxy:" prefix).
 
    * mod_deflate: Fix reentrance in output and input filters (buffering of
                   incomplete Zlib header or validation bytes). PR 46146.
