@@ -198,7 +198,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1610207
      2.4.x patch: http://svn.apache.org/r1610340
      2.2.x patch: http://people.apache.org/~rjung/patches/mod_proxy_ajp_local_addr-2.2.patch
-     +1: rjung
+     +1: rjung, trawick
 
    * mod_ssl: Extend the scope of SSLSessionCacheTimeout to sessions
      resumed by TLS session resumption (RFC 5077).
