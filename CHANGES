@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_log_config: Allow two character log formats to be registered and used.
+     [Eric Covener]
+
   *) mod_ssl: Extend the scope of SSLSessionCacheTimeout to sessions
      resumed by TLS session resumption (RFC 5077). [Rainer Jung]
 
