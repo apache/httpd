@@ -209,6 +209,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   (modulo CHANGES)
      +1: ylavic
 
+   * mpm_winnt service.c: Accept utf-8 service names/descriptions for i18n.
+     trunk patches: http://svn.apache.org/r1611165
+                    http://svn.apache.org/r1611169
+     2.2.x patch: http://people.apache.org/~wrowe/httpd-2.2-utf8-servicename.patch
+     +1: wrowe
 
 PATCHES/ISSUES THAT ARE STALLED
 
