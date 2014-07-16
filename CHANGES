@@ -1,4 +1,4 @@
-                                                         -*- coding: utf-8 -*-
+﻿                                                         -*- coding: utf-8 -*-
 
 Changes with Apache 2.4.11
 
@@ -6,13 +6,13 @@ Changes with Apache 2.4.11
 Changes with Apache 2.4.10
 
   *) SECURITY: CVE-2014-0117 (cve.mitre.org)
-     mod_proxy: Fix crash in Connection header handling which 
-     allowed a denial of service attack against a reverse proxy
-     with a threaded MPM.  [Ben Reser]
+     mod_proxy: Fix crash in Connection header handling which allowed a denial
+     of service attack against a reverse proxy with a threaded MPM.
+     [Ben Reser]
 
   *) SECURITY: CVE-2014-3523 (cve.mitre.org)
-     Fix a memory consumption denial of service in the WinNT MPM (used in all Windows
-     installations). Workaround: AcceptFilter <protocol> {none|connect}
+     Fix a memory consumption denial of service in the WinNT MPM, used in all
+     Windows installations. Workaround: AcceptFilter <protocol> {none|connect}
      [Jeff Trawick]
 
   *) SECURITY: CVE-2014-0226 (cve.mitre.org)
@@ -21,8 +21,8 @@ Changes with Apache 2.4.10
 
   *) SECURITY: CVE-2014-0118 (cve.mitre.org)
      mod_deflate: The DEFLATE input filter (inflates request bodies) now
-     limits the length and compression ratio of inflated request bodies to avoid
-     denial of sevice via highly compressed bodies.  See directives
+     limits the length and compression ratio of inflated request bodies to
+     avoid denial of sevice via highly compressed bodies.  See directives
      DeflateInflateLimitRequestBody, DeflateInflateRatioLimit,
      and DeflateInflateRatioBurst. [Yann Ylavic, Eric Covener]
 
@@ -539,7 +539,8 @@ Changes with Apache 2.4.7
        - Avoid some memory allocation and work when TRACE1 is not activated
        - fix typo in include guard
        - indent
-       - No need to lower the string before removing the path, it is just a waste of time...
+       - No need to lower the string before removing the path, it is just 
+         a waste of time...
        - Save a few cycles
      [Christophe Jaillet <christophe.jaillet wanadoo.fr>]
 
