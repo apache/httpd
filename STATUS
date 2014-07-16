@@ -167,6 +167,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch works (modulo CHANGES)
      +1: jailletc36
 
+   * mpm_winnt service.c: Normalize all error and status messages, clean up
+     source formatting, and accept utf-8 service names/descriptions for i18n.
+     trunk patches: http://svn.apache.org/r1611165
+                    http://svn.apache.org/r1611169
+     2.4.x patches: trunk works
+     +1: wrowe
 
 OTHER PROPOSALS
 
