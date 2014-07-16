@@ -16,9 +16,6 @@ Changes with Apache 2.5.0
      backwards compatibility, the first character of a three-character format
      must be the '^' (caret) character.  [Eric Covener]
 
-  *) mod_ssl: Extend the scope of SSLSessionCacheTimeout to sessions
-     resumed by TLS session resumption (RFC 5077). [Rainer Jung]
-
   *) mod_authnz_ldap: Return LDAP connections to the pool before the handler
      is run, instead of waiting until the end of the request. [Eric Covener]
 
