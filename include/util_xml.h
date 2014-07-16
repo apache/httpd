@@ -35,11 +35,10 @@ extern "C" {
 #endif
 
 /**
- * Get XML post data and parse it
- * @param r The current request
- * @param pdoc The XML post data
+ * Get XML post data and parse it.
+ * @param   r       The current request
+ * @param   pdoc    The XML post data
  * @return HTTP status code
- * @fn int ap_xml_parse_input(request_rec *r, apr_xml_doc **pdoc)
  */
 AP_DECLARE(int) ap_xml_parse_input(request_rec *r, apr_xml_doc **pdoc);
 
