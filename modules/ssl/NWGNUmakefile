@@ -208,7 +208,7 @@ TARGET_lib = \
 # These are the OBJ files needed to create the NLM target above.
 # Paths must all use the '/' character
 #
-FILES_nlm_objs := $(patsubst %.c,$(OBJDIR)/%.o,$(wildcard *.c))
+FILES_nlm_objs := $(patsubst %.c,$(OBJDIR)/%.o,$(filter-out $(wildcard *ssl_ct*.c),$(wildcard *.c)))
 
 
 #
