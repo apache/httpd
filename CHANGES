@@ -1,6 +1,15 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.28
 
+  *) SECURITY: CVE-2014-0231 (cve.mitre.org)
+     mod_cgid: Fix a denial of service against CGI scripts that do
+     not consume stdin that could lead to lingering HTTPD child processes
+     filling up the scoreboard and eventually hanging the server.  By
+     default, the client I/O timeout (Timeout directive) now applies to
+     communication with scripts.  The CGIDScriptTimeout directive can be
+     used to set a different timeout for communication with scripts.
+     [Rainer Jung, Eric Covener, Yann Ylavic]
+
   *) SECURITY: CVE-2014-0226 (cve.mitre.org)
      Fix a race condition in scoreboard handling, which could lead to
      a heap buffer overflow.  [Joe Orton, Eric Covener, Jeff Trawick]
