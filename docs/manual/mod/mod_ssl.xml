@@ -501,6 +501,7 @@ in the Session Cache</description>
 <default>SSLSessionCacheTimeout 300</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
+<compatibility>Applies also to RFC 5077 TLS session resumption in Apache 2.4.10 and later</compatibility>
 
 <usage>
 <p>
