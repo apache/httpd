@@ -21,11 +21,18 @@
 
 #define _WINUSER_
 
+#include "apr.h"
+#include "apr_strings.h"
+#include "apr_lib.h"
+#if APR_HAS_UNICODE_FS
+#include "arch/win32/apr_arch_utf8.h"
+#include "arch/win32/apr_arch_misc.h"
+#include <wchar.h>
+#endif
+
 #include "httpd.h"
 #include "http_log.h"
 #include "mpm_winnt.h"
-#include "apr_strings.h"
-#include "apr_lib.h"
 #include "ap_regkey.h"
 
 #ifdef NOUSER
@@ -40,6 +47,10 @@ APLOG_USE_MODULE(mpm_winnt);
 /* Todo; clear up statics */
 static char *mpm_service_name = NULL;
 static char *mpm_display_name = NULL;
+
+#if APR_HAS_UNICODE_FS
+static apr_wchar_t *mpm_service_name_w;
+#endif
 
 typedef struct nt_service_ctx_t
 {
@@ -56,6 +67,32 @@ static nt_service_ctx_t globdat;
 
 static int ReportStatusToSCMgr(int currentState, int waitHint,
                                nt_service_ctx_t *ctx);
+
+/* Rather than repeat this logic throughout, create an either-or wide or narrow
+ * implementation because we don't actually pass strings to OpenSCManager.
+ * This election is based on build time defines and runtime os version test.
+ */
+#undef OpenSCManager
+typedef SC_HANDLE (WINAPI *fpt_OpenSCManager)(const void *lpMachine,
+                                              const void *lpDatabase,
+                                              DWORD dwAccess);
+static fpt_OpenSCManager pfn_OpenSCManager = NULL;
+static APR_INLINE SC_HANDLE OpenSCManager(const void *lpMachine,
+                                          const void *lpDatabase,
+                                          DWORD dwAccess)
+{
+    if (!pfn_OpenSCManager) {
+#if APR_HAS_UNICODE_FS
+        IF_WIN_OS_IS_UNICODE
+            pfn_OpenSCManager = (fpt_OpenSCManager)OpenSCManagerW;
+#endif
+#if APR_HAS_ANSI_FS
+        ELSE_WIN_OS_IS_ANSI
+            pfn_OpenSCManager = (fpt_OpenSCManager)OpenSCManagerA;
+#endif
+    }
+    return (*(pfn_OpenSCManager))(lpMachine, lpDatabase, dwAccess); 
+}
 
 /* exit() for Win32 is macro mapped (horrible, we agree) that allows us
  * to catch the non-zero conditions and inform the console process that
@@ -245,16 +282,54 @@ static void set_service_description(void)
     if ((ChangeServiceConfig2) &&
         (schSCManager = OpenSCManager(NULL, NULL, SC_MANAGER_CONNECT)))
     {
-        SC_HANDLE schService = OpenService(schSCManager, mpm_service_name,
-                                           SERVICE_CHANGE_CONFIG);
+        SC_HANDLE schService;
+
+#if APR_HAS_UNICODE_FS
+        IF_WIN_OS_IS_UNICODE
+        {
+            schService = OpenServiceW(schSCManager,
+                                      (LPCWSTR)mpm_service_name_w,
+                                      SERVICE_CHANGE_CONFIG);
+        }
+#endif /* APR_HAS_UNICODE_FS */
+#if APR_HAS_ANSI_FS
+        ELSE_WIN_OS_IS_ANSI
+        {
+            schService = OpenService(schSCManager, mpm_service_name,
+                                     SERVICE_CHANGE_CONFIG);
+        }
+#endif
         if (schService) {
             /* Cast is necessary, ChangeServiceConfig2 handles multiple
              * object types, some volatile, some not.
              */
-            /* ###: utf-ize */
-            ChangeServiceConfig2(schService,
-                                 1 /* SERVICE_CONFIG_DESCRIPTION */,
-                                 (LPVOID) &full_description);
+#if APR_HAS_UNICODE_FS
+            IF_WIN_OS_IS_UNICODE
+            {
+                apr_size_t slen = strlen(full_description) + 1;
+                apr_size_t wslen = slen;
+                apr_wchar_t *full_description_w = 
+                    (apr_wchar_t*)apr_palloc(pconf, 
+                                             wslen * sizeof(apr_wchar_t));
+                apr_status_t rv = apr_conv_utf8_to_ucs2(full_description, &slen,
+                                                        full_description_w,
+                                                        &wslen);
+                if ((rv != APR_SUCCESS) || slen
+                        || ChangeServiceConfig2W(schService, 1
+                                                 /*SERVICE_CONFIG_DESCRIPTION*/,
+                                                 (LPVOID) &full_description_w))
+                    full_description = NULL;
+            }
+#endif /* APR_HAS_UNICODE_FS */
+#if APR_HAS_ANSI_FS
+            ELSE_WIN_OS_IS_ANSI
+            {
+                if (ChangeServiceConfig2(schService,
+                                         1 /* SERVICE_CONFIG_DESCRIPTION */,
+                                         (LPVOID) &full_description))
+                    full_description = NULL;
+            }
+#endif
             CloseServiceHandle(schService);
         }
         CloseServiceHandle(schSCManager);
@@ -297,8 +372,84 @@ static DWORD WINAPI service_nt_ctrl(DWORD dwCtrlCode, DWORD dwEventType,
  */
 extern apr_array_header_t *mpm_new_argv;
 
-/* ###: utf-ize */
-static void __stdcall service_nt_main_fn(DWORD argc, LPTSTR *argv)
+#if APR_HAS_UNICODE_FS
+static void __stdcall service_nt_main_fn_w(DWORD argc, LPWSTR *argv)
+{
+    const char *ignored;
+    nt_service_ctx_t *ctx = &globdat;
+    char *service_name;
+    apr_size_t wslen = wcslen(argv[0]) + 1;
+    apr_size_t slen = wslen * 3 - 2;
+
+    service_name = malloc(slen);
+    (void)apr_conv_ucs2_to_utf8(argv[0], &wslen, service_name, &slen);
+
+    /* args and service names live in the same pool */
+    mpm_service_set_name(mpm_new_argv->pool, &ignored, service_name);
+
+    memset(&ctx->ssStatus, 0, sizeof(ctx->ssStatus));
+    ctx->ssStatus.dwServiceType = SERVICE_WIN32_OWN_PROCESS;
+    ctx->ssStatus.dwCurrentState = SERVICE_START_PENDING;
+    ctx->ssStatus.dwCheckPoint = 1;
+    if (!(ctx->hServiceStatus = 
+              RegisterServiceCtrlHandlerExW(argv[0], service_nt_ctrl, ctx)))
+    {
+        ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, 
+                     apr_get_os_error(), NULL, 
+                     APLOGNO(00365) "Failure registering service handler");
+        return;
+    }
+
+    /* Report status, no errors, and buy 3 more seconds */
+    ReportStatusToSCMgr(SERVICE_START_PENDING, 30000, ctx);
+
+    /* We need to append all the command arguments passed via StartService()
+     * to our running service... which just got here via the SCM...
+     * but we have no interest in argv[0] for the mpm_new_argv list.
+     */
+    if (argc > 1)
+    {
+        char **cmb_data, **cmb;
+        DWORD i;
+
+        mpm_new_argv->nalloc = mpm_new_argv->nelts + argc - 1;
+        cmb_data = malloc(mpm_new_argv->nalloc * sizeof(const char *));
+
+        /* mpm_new_argv remains first (of lower significance) */
+        memcpy (cmb_data, mpm_new_argv->elts,
+                mpm_new_argv->elt_size * mpm_new_argv->nelts);
+
+        /* Service args follow from StartService() invocation */
+        memcpy (cmb_data + mpm_new_argv->nelts, argv + 1,
+                mpm_new_argv->elt_size * (argc - 1));
+
+        cmb = cmb_data + mpm_new_argv->nelts;
+
+        for (i = 1; i < argc; ++i)
+        {
+            wslen = wcslen(argv[i]) + 1;
+            slen = wslen * 3 - 2;
+            service_name = malloc(slen);
+            (void)apr_conv_ucs2_to_utf8(argv[i], &wslen, *(cmb++), &slen);
+        }
+
+        /* The replacement arg list is complete */
+        mpm_new_argv->elts = (char *)cmb_data;
+        mpm_new_argv->nelts = mpm_new_argv->nalloc;
+    }
+
+    /* Let the main thread continue now... but hang on to the
+     * signal_monitor event so we can take further action
+     */
+    SetEvent(ctx->service_init);
+
+    WaitForSingleObject(ctx->service_term, INFINITE);
+}
+#endif /* APR_HAS_UNICODE_FS */
+
+
+#if APR_HAS_ANSI_FS
+static void __stdcall service_nt_main_fn(DWORD argc, LPSTR *argv)
 {
     const char *ignored;
     nt_service_ctx_t *ctx = &globdat;
@@ -311,9 +462,9 @@ static void __stdcall service_nt_main_fn(DWORD argc, LPTSTR *argv)
     ctx->ssStatus.dwCurrentState = SERVICE_START_PENDING;
     ctx->ssStatus.dwCheckPoint = 1;
 
-    /* ###: utf-ize */
-    if (!(ctx->hServiceStatus = RegisterServiceCtrlHandlerEx(argv[0], service_nt_ctrl, ctx)))
-    {
+    if (!(ctx->hServiceStatus = 
+              RegisterServiceCtrlHandlerExA(argv[0], service_nt_ctrl, ctx)))
+        {
         ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, 
                      apr_get_os_error(), NULL, 
                      APLOGNO(00365) "Failure registering service handler");
@@ -354,21 +505,39 @@ static void __stdcall service_nt_main_fn(DWORD argc, LPTSTR *argv)
 
     WaitForSingleObject(ctx->service_term, INFINITE);
 }
+#endif
 
 
-static DWORD WINAPI service_nt_dispatch_thread(LPVOID nada)
-{
-    apr_status_t rv = APR_SUCCESS;
-
-    SERVICE_TABLE_ENTRY dispatchTable[] =
+ static DWORD WINAPI service_nt_dispatch_thread(LPVOID nada)
+ {
+#if APR_HAS_UNICODE_FS
+    SERVICE_TABLE_ENTRYW dispatchTable_w[] =
+    {
+        { L"", service_nt_main_fn_w },
+        { NULL, NULL }
+    };
+#endif /* APR_HAS_UNICODE_FS */
+#if APR_HAS_ANSI_FS
+    SERVICE_TABLE_ENTRYA dispatchTable[] =
     {
         { "", service_nt_main_fn },
         { NULL, NULL }
     };
-
-    /* ###: utf-ize */
-    if (!StartServiceCtrlDispatcher(dispatchTable))
-    {
+#endif
+    apr_status_t rv;
+ 
+#if APR_HAS_UNICODE_FS
+    IF_WIN_OS_IS_UNICODE
+        rv = StartServiceCtrlDispatcherW(dispatchTable_w);
+#endif
+#if APR_HAS_ANSI_FS
+    ELSE_WIN_OS_IS_ANSI
+         rv = StartServiceCtrlDispatcherA(dispatchTable);
+#endif
+    if (rv) {
+        apr_status_t rv = APR_SUCCESS;
+    }
+    else {
         /* This is a genuine failure of the SCM. */
         rv = apr_get_os_error();
         ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL,
@@ -402,8 +571,24 @@ apr_status_t mpm_service_set_name(apr_pool_t *p, const char **display_name,
      */
     mpm_service_name = apr_palloc(p, strlen(set_name) + 1);
     apr_collapse_spaces((char*) mpm_service_name, set_name);
+#if APR_HAS_UNICODE_FS
+    IF_WIN_OS_IS_UNICODE
+    {
+        apr_size_t slen = strlen(mpm_service_name) + 1;
+        apr_size_t wslen = slen;
+        mpm_service_name_w = apr_palloc(p, wslen * sizeof(apr_wchar_t));
+        rv = apr_conv_utf8_to_ucs2(mpm_service_name, &slen,
+                                   mpm_service_name_w, &wslen);
+        if (rv != APR_SUCCESS)
+            return rv;
+        else if (slen)
+            return APR_ENAMETOOLONG;
+    }
+#endif /* APR_HAS_UNICODE_FS */
+
     apr_snprintf(key_name, sizeof(key_name), SERVICECONFIG, mpm_service_name);
-    rv = ap_regkey_open(&key, AP_REGKEY_LOCAL_MACHINE, key_name, APR_READ, pconf);
+    rv = ap_regkey_open(&key, AP_REGKEY_LOCAL_MACHINE, key_name,
+                        APR_READ, pconf);
     if (rv == APR_SUCCESS) {
         rv = ap_regkey_value_get(&mpm_display_name, key, "DisplayName", pconf);
         ap_regkey_close(key);
@@ -413,6 +598,7 @@ apr_status_t mpm_service_set_name(apr_pool_t *p, const char **display_name,
         mpm_display_name = apr_pstrdup(p, set_name);
     }
     *display_name = mpm_display_name;
+
     return rv;
 }
 
@@ -559,20 +745,50 @@ apr_status_t mpm_service_install(apr_pool_t *ptemp, int argc,
                                  const char * const * argv, int reconfig)
 {
     char key_name[MAX_PATH];
-    char exe_path[MAX_PATH];
     char *launch_cmd;
     ap_regkey_t *key;
     apr_status_t rv;
     SC_HANDLE   schService;
     SC_HANDLE   schSCManager;
+    DWORD       rc;
+#if APR_HAS_UNICODE_FS
+    apr_wchar_t *display_name_w;
+    apr_wchar_t *launch_cmd_w;
+#endif
 
     fprintf(stderr, reconfig ? "Reconfiguring the '%s' service\n"
                              : "Installing the '%s' service\n",
                     mpm_display_name);
 
-    /* ###: utf-ize */
-    if (GetModuleFileName(NULL, exe_path, sizeof(exe_path)) == 0)
+#if APR_HAS_UNICODE_FS
+    IF_WIN_OS_IS_UNICODE
     {
+        apr_size_t slen = strlen(mpm_display_name) + 1;
+        apr_size_t wslen = slen;
+        display_name_w = apr_palloc(ptemp, wslen * sizeof(apr_wchar_t));
+        rv = apr_conv_utf8_to_ucs2(mpm_display_name, &slen,
+                                   display_name_w, &wslen);
+        if (rv != APR_SUCCESS)
+            return rv;
+        else if (slen)
+            return APR_ENAMETOOLONG;
+
+        launch_cmd_w = apr_palloc(ptemp, (MAX_PATH + 17) * sizeof(apr_wchar_t));
+        launch_cmd_w[0] = L'"';
+        rc = GetModuleFileNameW(NULL, launch_cmd_w + 1, MAX_PATH);
+        wcscpy(launch_cmd_w + rc + 1, L"\" -k runservice");
+    }
+#endif /* APR_HAS_UNICODE_FS */
+#if APR_HAS_ANSI_FS
+    ELSE_WIN_OS_IS_ANSI
+    {
+        launch_cmd = apr_palloc(ptemp, MAX_PATH + 17);
+        launch_cmd[0] = '"';
+        rc = GetModuleFileName(NULL, launch_cmd + 1, MAX_PATH);
+        strcpy(launch_cmd + rc + 1, "\" -k runservice");
+    }
+#endif
+    if (rc == 0) {
         rv = apr_get_os_error();
         ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL,
                      APLOGNO(00368) "GetModuleFileName failed");
@@ -589,25 +805,55 @@ apr_status_t mpm_service_install(apr_pool_t *ptemp, int argc,
         return (rv);
     }
 
-    launch_cmd = apr_psprintf(ptemp, "\"%s\" -k runservice", exe_path);
-
     if (reconfig) {
-        /* ###: utf-ize */
-        schService = OpenService(schSCManager, mpm_service_name,
-                                 SERVICE_CHANGE_CONFIG);
+#if APR_HAS_UNICODE_FS
+        IF_WIN_OS_IS_UNICODE
+        {
+            schService = OpenServiceW(schSCManager, mpm_service_name_w,
+                                      SERVICE_CHANGE_CONFIG);
+        }
+#endif /* APR_HAS_UNICODE_FS */
+#if APR_HAS_ANSI_FS
+        ELSE_WIN_OS_IS_ANSI
+        {
+            schService = OpenService(schSCManager, mpm_service_name,
+                                     SERVICE_CHANGE_CONFIG);
+        }
+#endif
         if (!schService) {
+            rv = apr_get_os_error();
+            CloseServiceHandle(schSCManager);
             ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL,
                          APLOGNO(00373) "Failed to open the '%s' service",
                          mpm_display_name);
+            return (rv);
         }
-        /* ###: utf-ize */
-        else if (!ChangeServiceConfig(schService,
+
+#if APR_HAS_UNICODE_FS
+        IF_WIN_OS_IS_UNICODE
+        {
+            rc = ChangeServiceConfigW(schService,
                                       SERVICE_WIN32_OWN_PROCESS,
                                       SERVICE_AUTO_START,
                                       SERVICE_ERROR_NORMAL,
-                                      launch_cmd, NULL, NULL,
-                                      "Tcpip\0Afd\0", NULL, NULL,
-                                      mpm_display_name)) {
+                                      launch_cmd_w, NULL, NULL,
+                                      L"Tcpip\0Afd\0", NULL, NULL,
+                                      display_name_w);
+        }
+#endif /* APR_HAS_UNICODE_FS */
+#if APR_HAS_ANSI_FS
+        ELSE_WIN_OS_IS_ANSI
+        {
+            rc = ChangeServiceConfig(schService,
+                                     SERVICE_WIN32_OWN_PROCESS,
+                                     SERVICE_AUTO_START,
+                                     SERVICE_ERROR_NORMAL,
+                                     launch_cmd, NULL, NULL,
+                                     "Tcpip\0Afd\0", NULL, NULL,
+                                     mpm_display_name);
+        }
+#endif
+        if (!rc) {
             ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP,
                          apr_get_os_error(), NULL,
                          APLOGNO(02652) "ChangeServiceConfig failed");
@@ -624,21 +870,42 @@ apr_status_t mpm_service_install(apr_pool_t *ptemp, int argc,
          * be warned that future apache modules or ISAPI dll's may
          * depend on it.
          */
-        /* ###: utf-ize */
-        schService = CreateService(schSCManager,         /* SCManager database */
-                                   mpm_service_name,     /* name of service    */
-                                   mpm_display_name,     /* name to display    */
-                                   SERVICE_ALL_ACCESS,   /* access required    */
-                                   SERVICE_WIN32_OWN_PROCESS,  /* service type */
-                                   SERVICE_AUTO_START,   /* start type         */
-                                   SERVICE_ERROR_NORMAL, /* error control type */
-                                   launch_cmd,           /* service's binary   */
-                                   NULL,                 /* no load svc group  */
-                                   NULL,                 /* no tag identifier  */
-                                   "Tcpip\0Afd\0",       /* dependencies       */
-                                   NULL,                 /* use SYSTEM account */
-                                   NULL);                /* no password        */
-
+#if APR_HAS_UNICODE_FS
+        IF_WIN_OS_IS_UNICODE
+        {
+            schService = CreateServiceW(schSCManager,    // SCManager database
+                                 mpm_service_name_w,   // name of service
+                                 display_name_w,   // name to display
+                                 SERVICE_ALL_ACCESS,   // access required
+                                 SERVICE_WIN32_OWN_PROCESS,  // service type
+                                 SERVICE_AUTO_START,   // start type
+                                 SERVICE_ERROR_NORMAL, // error control type
+                                 launch_cmd_w,         // service's binary
+                                 NULL,                 // no load svc group
+                                 NULL,                 // no tag identifier
+                                 L"Tcpip\0Afd\0",      // dependencies
+                                 NULL,                 // use SYSTEM account
+                                 NULL);                // no password
+        }
+#endif /* APR_HAS_UNICODE_FS */
+#if APR_HAS_ANSI_FS
+        ELSE_WIN_OS_IS_ANSI
+        {
+            schService = CreateService(schSCManager,     // SCManager database
+                                 mpm_service_name,     // name of service
+                                 mpm_display_name,     // name to display
+                                 SERVICE_ALL_ACCESS,   // access required
+                                 SERVICE_WIN32_OWN_PROCESS,  // service type
+                                 SERVICE_AUTO_START,   // start type
+                                 SERVICE_ERROR_NORMAL, // error control type
+                                 launch_cmd,           // service's binary
+                                 NULL,                 // no load svc group
+                                 NULL,                 // no tag identifier
+                                 "Tcpip\0Afd\0",       // dependencies
+                                 NULL,                 // use SYSTEM account
+                                 NULL);                // no password
+        }
+#endif
         if (!schService)
         {
             rv = apr_get_os_error();
@@ -694,9 +961,18 @@ apr_status_t mpm_service_uninstall(void)
         return (rv);
     }
 
-    /* ###: utf-ize */
-    schService = OpenService(schSCManager, mpm_service_name, DELETE);
-
+#if APR_HAS_UNICODE_FS
+    IF_WIN_OS_IS_UNICODE
+    {
+        schService = OpenServiceW(schSCManager, mpm_service_name_w, DELETE);
+    }
+#endif /* APR_HAS_UNICODE_FS */
+#if APR_HAS_ANSI_FS
+    ELSE_WIN_OS_IS_ANSI
+    {
+        schService = OpenService(schSCManager, mpm_service_name, DELETE);
+    }
+#endif
     if (!schService) {
         rv = apr_get_os_error();
         ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL,
@@ -760,7 +1036,6 @@ apr_status_t mpm_service_start(apr_pool_t *ptemp, int argc,
                                const char * const * argv)
 {
     apr_status_t rv;
-    CHAR **start_argv;
     SC_HANDLE   schService;
     SC_HANDLE   schSCManager;
 
@@ -776,9 +1051,20 @@ apr_status_t mpm_service_start(apr_pool_t *ptemp, int argc,
         return (rv);
     }
 
-    /* ###: utf-ize */
-    schService = OpenService(schSCManager, mpm_service_name,
-                             SERVICE_START | SERVICE_QUERY_STATUS);
+#if APR_HAS_UNICODE_FS
+    IF_WIN_OS_IS_UNICODE
+    {
+        schService = OpenServiceW(schSCManager, mpm_service_name_w,
+                                  SERVICE_START | SERVICE_QUERY_STATUS);
+    }
+#endif /* APR_HAS_UNICODE_FS */
+#if APR_HAS_ANSI_FS
+    ELSE_WIN_OS_IS_ANSI
+    {
+        schService = OpenService(schSCManager, mpm_service_name,
+                                 SERVICE_START | SERVICE_QUERY_STATUS);
+    }
+#endif
     if (!schService) {
         rv = apr_get_os_error();
         ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL, 
@@ -798,17 +1084,47 @@ apr_status_t mpm_service_start(apr_pool_t *ptemp, int argc,
         return 0;
     }
 
-    start_argv = malloc((argc + 1) * sizeof(const char **));
-    memcpy(start_argv, argv, argc * sizeof(const char **));
-    start_argv[argc] = NULL;
-
     rv = APR_EINIT;
-    /* ###: utf-ize */
-    if (StartService(schService, argc, start_argv)
-        && signal_service_transition(schService, 0, /* test only */
-                                     SERVICE_START_PENDING,
-                                     SERVICE_RUNNING))
-        rv = APR_SUCCESS;
+#if APR_HAS_UNICODE_FS
+    IF_WIN_OS_IS_UNICODE
+    {
+        LPWSTR *start_argv_w = malloc((argc + 1) * sizeof(LPCWSTR));
+        int i;
+
+        for (i = 0; i < argc; ++i)
+        {
+            apr_size_t slen = strlen(argv[i]) + 1;
+            apr_size_t wslen = slen;
+            start_argv_w[i] = malloc(wslen * sizeof(WCHAR));
+            rv = apr_conv_utf8_to_ucs2(argv[i], &slen, start_argv_w[i], &wslen);
+            if (rv != APR_SUCCESS)
+                return rv;
+            else if (slen)
+                return APR_ENAMETOOLONG;
+        }
+        start_argv_w[argc] = NULL;
+
+        if (StartServiceW(schService, argc, start_argv_w)
+            && signal_service_transition(schService, 0, /* test only */
+                                         SERVICE_START_PENDING,
+                                         SERVICE_RUNNING))
+                rv = APR_SUCCESS;
+    }
+#endif /* APR_HAS_UNICODE_FS */
+#if APR_HAS_ANSI_FS
+    ELSE_WIN_OS_IS_ANSI
+    {
+        char **start_argv = malloc((argc + 1) * sizeof(const char *));
+        memcpy(start_argv, argv, argc * sizeof(const char *));
+        start_argv[argc] = NULL;
+
+        if (StartService(schService, argc, start_argv)
+            && signal_service_transition(schService, 0, /* test only */
+                                         SERVICE_START_PENDING,
+                                         SERVICE_RUNNING))
+                rv = APR_SUCCESS;
+    }
+#endif
     if (rv != APR_SUCCESS)
         rv = apr_get_os_error();
 
@@ -845,12 +1161,24 @@ void mpm_signal_service(apr_pool_t *ptemp, int signal)
         return;
     }
 
-    /* ###: utf-ize */
-    schService = OpenService(schSCManager, mpm_service_name,
-                             SERVICE_INTERROGATE | SERVICE_QUERY_STATUS |
-                             SERVICE_USER_DEFINED_CONTROL |
-                             SERVICE_START | SERVICE_STOP);
-
+#if APR_HAS_UNICODE_FS
+    IF_WIN_OS_IS_UNICODE
+    {
+        schService = OpenServiceW(schSCManager, mpm_service_name_w,
+                                  SERVICE_INTERROGATE | SERVICE_QUERY_STATUS |
+                                  SERVICE_USER_DEFINED_CONTROL |
+                                  SERVICE_START | SERVICE_STOP);
+    }
+#endif /* APR_HAS_UNICODE_FS */
+#if APR_HAS_ANSI_FS
+    ELSE_WIN_OS_IS_ANSI
+    {
+        schService = OpenService(schSCManager, mpm_service_name,
+                                 SERVICE_INTERROGATE | SERVICE_QUERY_STATUS |
+                                 SERVICE_USER_DEFINED_CONTROL |
+                                 SERVICE_START | SERVICE_STOP);
+    }
+#endif
     if (schService == NULL) {
         /* Could not open the service */
         ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP,
