@@ -15,6 +15,7 @@ Changes with Apache 2.2.28
      a heap buffer overflow.  [Joe Orton, Eric Covener, Jeff Trawick]
 
   *) mod_dav: Fix improper encoding in PROPFIND responses.  PR 56480.
+     [Ben Reser]
 
   *) mod_ssl: Extend the scope of SSLSessionCacheTimeout to sessions
      resumed by TLS session resumption (RFC 5077). [Rainer Jung]
