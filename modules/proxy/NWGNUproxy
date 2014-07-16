@@ -266,6 +266,7 @@ $(OBJDIR)/mod_proxy.imp: NWGNUproxy
 	@echo $(DL) proxy_hook_scheme_handler,$(DL)>> $@
 	@echo $(DL) proxy_run_canon_handler,$(DL)>> $@
 	@echo $(DL) proxy_run_create_req,$(DL)>> $@
+	@echo $(DL) proxy_run_detach_backend,$(DL)>> $@
 	@echo $(DL) proxy_run_fixups,$(DL)>> $@
 	@echo $(DL) proxy_run_post_request,$(DL)>> $@
 	@echo $(DL) proxy_run_pre_request,$(DL)>> $@
