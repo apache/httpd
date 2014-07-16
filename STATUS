@@ -121,15 +121,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.2.x patch: http://people.apache.org/~covener/patches/httpd-2.2.x-cgid-script_timeout.diff
      +1: covener, trawick, ylavic
 
-   * mod_ssl: Extend the scope of SSLSessionCacheTimeout to sessions
-     resumed by TLS session resumption (RFC 5077).
-     trunk patch: http://svn.apache.org/r1610311
-     2.4.x patch: Trunk patch works modulo CHANGES
-                  and compatibility note.
-     2.2.x patch: http://people.apache.org/~rjung/patches/mod_ssl_session_resumption_timeout-2.2.patch
-     +1: rjung, ylavic, covener
-
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
