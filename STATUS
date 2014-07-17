@@ -99,11 +99,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
-
-
    * SECURITY: CVE-2014-0117 (cve.mitre.org)
      Fix crashing with mod_proxy Connection handling.
      trunk patch: http://svn.apache.org/r1610674
@@ -114,6 +109,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  the code in 2.2.x looks safe by eyeball and testing.
      covener:   +1 for N/A CVE -- no ap_get_token() in this path for 2.2.x
      ylavic: indeed, +1 for N/A
+     wrowe: echo covener, +1, and +1 for CVE N/A
+
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
 
    * mod_proxy: Don't reuse a SSL backend connection whose SNI differs. PR 55782.
                 This may happen when ProxyPreserveHost is on and the proxy-worker
@@ -158,7 +158,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://svn.apache.org/r1604460 (2.4.10)
      2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-mod_deflate_4GB.patch
                   (modulo CHANGES)
-     +1: ylavic, breser
+     +1: ylavic, breser, wrowe
 
    *) core: Detect incomplete request and response bodies, log an error and
             forward it to the underlying filters. PR 55475 [Yann Ylavic]
