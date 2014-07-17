@@ -99,18 +99,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * SECURITY: CVE-2014-0117 (cve.mitre.org)
-     Fix crashing with mod_proxy Connection handling.
-     trunk patch: http://svn.apache.org/r1610674
-     2.4.x patch: http://svn.apache.org/r1610737 (simplified ver)
-     2.2.x patch: 2.4 works
-     +1:
-     -1: jorton: patch does not apply (or should not, though "svn merge" works),
-                 the code in 2.2.x looks safe by eyeball and testing.
-     covener:   +1 for N/A CVE -- no ap_get_token() in this path for 2.2.x
-     ylavic: indeed, +1 for N/A
-     wrowe: echo covener, +1, and +1 for CVE N/A
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
