@@ -535,7 +535,7 @@ static void __stdcall service_nt_main_fn(DWORD argc, LPSTR *argv)
          rv = StartServiceCtrlDispatcherA(dispatchTable);
 #endif
     if (rv) {
-        apr_status_t rv = APR_SUCCESS;
+        rv = APR_SUCCESS;
     }
     else {
         /* This is a genuine failure of the SCM. */
