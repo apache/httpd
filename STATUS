@@ -120,10 +120,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1610674
      2.4.x patch: http://svn.apache.org/r1610737 (simplified ver)
      2.2.x patch: 2.4 works
-     +1: ylavic
+     +1:
      -1: jorton: patch does not apply (or should not, though "svn merge" works),
                  the code in 2.2.x looks safe by eyeball and testing.
      covener:   +1 for N/A CVE -- no ap_get_token() in this path for 2.2.x
+     ylavic: indeed, +1 for N/A
 
    * mod_proxy: Don't reuse a SSL backend connection whose SNI differs. PR 55782.
                 This may happen when ProxyPreserveHost is on and the proxy-worker
