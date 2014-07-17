@@ -1,4 +1,4 @@
-﻿                                                         -*- coding: utf-8 -*-
+                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.28
 
   *) SECURITY: CVE-2014-0118 (cve.mitre.org)
@@ -39,9 +39,9 @@ Changes with Apache 2.2.28
      an incorrect internal cache key.  PR 50317. 
      [Ruediger Pluem, Jan Kaluza, Yann Ylavic]
 
-  *) mod_rewrite: Support session cookies with the CO= flag when later parameters
-     are used.  The doc for this implied the feature had been backported for
-     quite some time.  PR56014 [Eric Covener]
+  *) mod_rewrite: Support session cookies with the CO= flag when later
+     parameters are used.  The doc for this implied the feature had been
+     backported for quite some time.  PR56014 [Eric Covener]
 
   *) mod_cache: Don't remove stale cache entries that cannot be conditionally
      revalidated. This prevents the thundering herd protection from serving
