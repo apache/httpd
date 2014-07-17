@@ -110,6 +110,17 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.2.x patch: http://people.apache.org/~covener/patches/httpd-2.2.x-deflate_limitrequestbody.diff
      +1: covener, ylavic, jorton
 
+   * mod_deflate: Don't fail when asked to flush inflated data to the user-agent
+                  and that coincides with the end of stream ("Zlib error flushing
+                  inflate buffer"). PR 56196.
+     trunk patch: http://svn.apache.org/r1572896
+                  http://svn.apache.org/r1572911
+                  http://svn.apache.org/r1603156 (partially, CHANGES update)
+     2.4.x patch: http://svn.apache.org/r1610397 (2.4.10)
+     2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-mod_deflate-flush_end_of_stream.patch
+                  (modulo CHANGES)
+     +1: ylavic, breser, jim
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -170,17 +181,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-mod_deflate_4GB.patch
                   (modulo CHANGES)
      +1: ylavic, breser
-
-   * mod_deflate: Don't fail when asked to flush inflated data to the user-agent
-                  and that coincides with the end of stream ("Zlib error flushing
-                  inflate buffer"). PR 56196.
-     trunk patch: http://svn.apache.org/r1572896
-                  http://svn.apache.org/r1572911
-                  http://svn.apache.org/r1603156 (partially, CHANGES update)
-     2.4.x patch: http://svn.apache.org/r1610397 (2.4.10)
-     2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-mod_deflate-flush_end_of_stream.patch
-                  (modulo CHANGES)
-     +1: ylavic, breser, jim
 
    *) core: Detect incomplete request and response bodies, log an error and
             forward it to the underlying filters. PR 55475 [Yann Ylavic]
