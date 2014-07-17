@@ -99,16 +99,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * SECURITY: CVE-2014-0118 (cve.mitre.org)
-     mod_deflate: The DEFLATE input filter (inflates request bodies) now
-     limits the length and compression ratio of inflated request bodies to avoid
-     denial of sevice via highly compressed bodies.  See directives
-     DeflateInflateLimitRequestBody, DeflateInflateRatioLimit,
-     and DeflateInflateRatioBurst. [Yann Ylavic, Eric Covener]
- 
-     trunk patch: http://svn.apache.org/r1610501
-     2.2.x patch: http://people.apache.org/~covener/patches/httpd-2.2.x-deflate_limitrequestbody.diff
-     +1: covener, ylavic, jorton
 
    * mod_deflate: Don't fail when asked to flush inflated data to the user-agent
                   and that coincides with the end of stream ("Zlib error flushing
