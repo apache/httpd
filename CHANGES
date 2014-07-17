@@ -30,6 +30,10 @@ Changes with Apache 2.2.28
   *) mod_proxy_ajp: Forward local IP address as a custom request attribute
      like we already do for the remote port. [Rainer Jung]
 
+  *) mod_deflate: Don't fail when flushing inflated data to the user-agent
+     and that coincides with the end of stream ("Zlib error flushing inflate
+     buffer"). PR 56196. [Christoph Fausak <christoph fausak glueckkanja.com>]
+
   *) mod_cache, mod_disk_cache: With CacheLock enabled, responses with a Vary 
      header might not get the benefit of the thundering herd protection due to 
      an incorrect internal cache key.  PR 50317. 
