@@ -71,6 +71,8 @@ ProxyPass /wss2/ wss://echo.websocket.org/</pre>
     <p>This directive instructs the server to try to create an asynchronous tunnel. 
     If the current MPM does not support the necessary features, a synchronous 
     tunnel is used.</p>
+    <div class="note"><h3>Note</h3><p>Async support is experimental and subject 
+    to change.</p></div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -85,6 +87,10 @@ ProxyPass /wss2/ wss://echo.websocket.org/</pre>
 </table>
     <p>If <code class="directive">ProxyWebsocketAsync</code> is enabled, this directive 
     controls how long the server synchronously waits for more data.</p>
+
+    <div class="note"><h3>Note</h3><p>Async support is experimental and subject 
+    to change. </p></div>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
