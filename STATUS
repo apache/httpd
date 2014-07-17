@@ -111,16 +111,16 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      +1: covener, ylavic, jorton
 
 
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
+
+
    * SECURITY: CVE-2014-0117 (cve.mitre.org)
      Fix crashing with mod_proxy Connection handling.
      trunk patch: http://svn.apache.org/r1610674
      2.4.x patch: http://svn.apache.org/r1610737 (simplified ver)
      2.2.x patch: 2.4 works
-     +1: covener, ylavic, jorton
-
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
-
+     +1: covener, ylavic
 
    * mod_proxy: Don't reuse a SSL backend connection whose SNI differs. PR 55782.
                 This may happen when ProxyPreserveHost is on and the proxy-worker
