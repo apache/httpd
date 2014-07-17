@@ -180,7 +180,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://svn.apache.org/r1610397 (2.4.10)
      2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-mod_deflate-flush_end_of_stream.patch
                   (modulo CHANGES)
-     +1: ylavic, breser
+     +1: ylavic, breser, jim
 
    *) core: Detect incomplete request and response bodies, log an error and
             forward it to the underlying filters. PR 55475 [Yann Ylavic]
