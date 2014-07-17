@@ -341,6 +341,14 @@
       information when content caching is involved.</p>
       </note>
 
+      <note>
+      <p>Note: The '^' character at the start of three-character formats
+      has no significance, but it must be the first character of any newly 
+      added three-character format to avoid potential conflicts with log 
+      formats that use literals adjacent to a format specifier, such as 
+      "%Dus".</p>
+      </note>
+
     </section>
 
     <section id="examples"><title>Examples</title>
