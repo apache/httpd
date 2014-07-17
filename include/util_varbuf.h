@@ -62,12 +62,12 @@ struct ap_varbuf {
      *  the buffer memory will be released when this pool is cleared. */
     apr_pool_t *pool;
 
-    /** Opaque info for memory allocation */
+    /** Opaque info for memory allocation. */
     struct ap_varbuf_info *info;
 };
 
 /**
- * Initialize a resizable buffer. It is safe to re-initialize a prevously
+ * Initialize a resizable buffer. It is safe to re-initialize a previously
  * used ap_varbuf. The old buffer will be released when the corresponding
  * pool is cleared. The buffer remains usable until the pool is cleared,
  * even if the ap_varbuf was located on the stack and has gone out of scope.
