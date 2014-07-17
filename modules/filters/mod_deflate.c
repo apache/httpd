@@ -1286,7 +1286,13 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
             /* flush the remaining data from the zlib buffers */
             zRC = flush_libz_buffer(ctx, c, f->c->bucket_alloc, inflate,
                                     Z_SYNC_FLUSH, UPDATE_CRC);
-            if (zRC != Z_OK) {
+            if (zRC == Z_STREAM_END) {
+                if (ctx->validation_buffer == NULL) {
+                    ctx->validation_buffer = apr_pcalloc(f->r->pool,
+                                                         VALIDATION_SIZE);
+                }
+            }
+            else if (zRC != Z_OK) {
                 return APR_EGENERAL;
             }
 
