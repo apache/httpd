@@ -591,8 +591,10 @@ are applied independently of the authentication algorithm type.</p>
 <div class="note">
 <h3>DH parameter interoperability with primes &gt; 1024 bit</h3>
 <p>
-Beginning with version 2.5.0-dev, mod_ssl makes use of
-standardized DH parameters with prime lengths of 2048, 3072 and 4096, 6144 and 8192 bits
+Beginning with version 2.4.7, mod_ssl makes use of
+standardized DH parameters with prime lengths of 2048, 3072 and 4096 bits
+and with additional prime lengths of 6144 and 8192 bits beginning with
+version 2.4.10
 (from <a href="http://www.ietf.org/rfc/rfc3526.txt">RFC 3526</a>), and hands
 them out to clients based on the length of the certificate's RSA/DSA key.
 With Java-based clients in particular (Java 7 or earlier), this may lead
@@ -2118,7 +2120,8 @@ in the Session Cache</td></tr>
 </table>
 <p>
 This directive sets the timeout in seconds for the information stored in the
-global/inter-process SSL Session Cache and the OpenSSL internal memory cache.
+global/inter-process SSL Session Cache, the OpenSSL internal memory cache and
+for sessions resumed by TLS session resumption (RFC 5077).
 It can be set as low as 15 for testing, but should be set to higher
 values like 300 in real life.</p>
 <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLSessionCacheTimeout 600</pre>

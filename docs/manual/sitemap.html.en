@@ -247,6 +247,7 @@ log_server_status</a></li>
 <li><a href="mod/mod_include.html">Apache Module mod_include</a></li>
 <li><a href="mod/mod_info.html">Apache Module mod_info</a></li>
 <li><a href="mod/mod_isapi.html">Apache Module mod_isapi</a></li>
+<li><a href="mod/mod_journald.html">Apache Module mod_journald</a></li>
 <li><a href="mod/mod_lbmethod_bybusyness.html">Apache Module mod_lbmethod_bybusyness</a></li>
 <li><a href="mod/mod_lbmethod_byrequests.html">Apache Module mod_lbmethod_byrequests</a></li>
 <li><a href="mod/mod_lbmethod_bytraffic.html">Apache Module mod_lbmethod_bytraffic</a></li>

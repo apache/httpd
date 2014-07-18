@@ -206,6 +206,9 @@ deflatealteretag	mod/mod_deflate.html#deflatealteretag
 deflatebuffersize	mod/mod_deflate.html#deflatebuffersize
 deflatecompressionlevel	mod/mod_deflate.html#deflatecompressionlevel
 deflatefilternote	mod/mod_deflate.html#deflatefilternote
+deflateinflatelimitrequestbody	mod/mod_deflate.html#deflateinflatelimitrequestbody
+deflateinflateratioburst	mod/mod_deflate.html#deflateinflateratioburst
+deflateinflateratiolimit	mod/mod_deflate.html#deflateinflateratiolimit
 deflatememlevel	mod/mod_deflate.html#deflatememlevel
 deflatewindowsize	mod/mod_deflate.html#deflatewindowsize
 deny	mod/mod_access_compat.html#deny
@@ -288,6 +291,7 @@ isapicachefile	mod/mod_isapi.html#isapicachefile
 isapifakeasync	mod/mod_isapi.html#isapifakeasync
 isapilognotsupported	mod/mod_isapi.html#isapilognotsupported
 isapireadaheadbuffer	mod/mod_isapi.html#isapireadaheadbuffer
+journaldcustomlog	mod/mod_journald.html#journaldcustomlog
 keepalive	mod/core.html#keepalive
 keepalivetimeout	mod/core.html#keepalivetimeout
 keptbodysize	mod/mod_request.html#keptbodysize
@@ -359,6 +363,7 @@ maxrequestworkers	mod/mpm_common.html#maxrequestworkers
 maxspareservers	mod/prefork.html#maxspareservers
 maxsparethreads	mod/mpm_common.html#maxsparethreads
 maxthreads	mod/mpm_netware.html#maxthreads
+mergetrailers	mod/core.html#mergetrailers
 metadir	mod/mod_cern_meta.html#metadir
 metafiles	mod/mod_cern_meta.html#metafiles
 metasuffix	mod/mod_cern_meta.html#metasuffix

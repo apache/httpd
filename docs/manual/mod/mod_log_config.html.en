@@ -233,6 +233,12 @@
         <td>Bytes transferred (received and sent), including request and headers,
         cannot be zero. This is the combination of %I and %O. You need to
         enable <code class="module"><a href="../mod/mod_logio.html">mod_logio</a></code> to use this.</td></tr>
+<tr><td><code>%{<var>VARNAME</var>}^ti</code></td>
+        <td>The contents of <code><var>VARNAME</var>:</code> trailer line(s)
+        in the request sent to the server.  </td></tr>
+<tr class="odd"><td><code>%{<var>VARNAME</var>}^to</code></td>
+        <td>The contents of <code><var>VARNAME</var>:</code> trailer line(s)
+        in the response sent from the server.  </td></tr>
 </table>
 
     <h3><a name="modifiers" id="modifiers">Modifiers</a></h3>
@@ -297,6 +303,14 @@
       quick-handler and not as a standard handler. Therefore, the
       <code>%R</code> format string will not return any handler
       information when content caching is involved.</p>
+      </div>
+
+      <div class="note">
+      <p>Note: The '^' character at the start of three-character formats
+      has no significance, but it must be the first character of any newly 
+      added three-character format to avoid potential conflicts with log 
+      formats that use literals adjacent to a format specifier, such as 
+      "%Dus".</p>
       </div>
 
     

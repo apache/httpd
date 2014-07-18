@@ -262,6 +262,7 @@ pour décrire les directives Apache</a></li>
 <li><a href="mod/mod_include.html">Module Apache mod_include</a></li>
 <li><a href="mod/mod_info.html">Module Apache mod_info</a></li>
 <li><a href="mod/mod_isapi.html">Module Apache mod_isapi</a></li>
+<li><a href="mod/mod_journald.html">Module Apache mod_journald</a></li>
 <li><a href="mod/mod_lbmethod_bybusyness.html">Module Apache mod_lbmethod_bybusyness</a></li>
 <li><a href="mod/mod_lbmethod_byrequests.html">Module Apache mod_lbmethod_byrequests</a></li>
 <li><a href="mod/mod_lbmethod_bytraffic.html">Module Apache mod_lbmethod_bytraffic</a></li>
