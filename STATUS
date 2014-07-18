@@ -147,10 +147,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   https://svn.apache.org/r1604353
                   https://svn.apache.org/r1611725
      2.4.x patch: https://svn.apache.org/r1604458 (2.4.10)
-     2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-mod_deflate_reentrant_with_CHANGES_v3.patch
+     2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-mod_deflate_reentrant_with_CHANGES_v4.patch
                   (modulo CHANGES)
      +1: ylavic, wrowe
-     ylavic: v3 without the merge conflict with PR 56062 above.
+     ylavic: v4 is now merging correctly after http://svn.apache.org/r1611806
 
    *) core: Detect incomplete request and response bodies, log an error and
             forward it to the underlying filters. PR 55475 [Yann Ylavic]
