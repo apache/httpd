@@ -2,6 +2,8 @@
 
 Changes with Apache 2.4.11
 
+  *) mod_lua: Don't quote Expires and Path values. PR 56734.
+     [Keith Mashinter, <kmashint yahoo com>]
 
 Changes with Apache 2.4.10
 
