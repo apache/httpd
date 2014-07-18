@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $LastChangedRevision: 1533940 $ -->
+<!-- $LastChangedRevision$ -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -32,27 +32,6 @@
     <p>This module provides "journald" ErrorLog provider. It allows logging
     error messages and CustomLog/TransferLog via systemd-journald(8).</p>
 </summary>
-
-<directivesynopsis>
-<name>JournaldCustomLog</name>
-<description>Enable logging of CustomLog/TransferLog to systemd-journald</description>
-<syntax>JournaldCustomLog on|off</syntax>
-<default>JournaldCustomLog off</default>
-<contextlist><context>server config</context></contextlist>
-
-<usage>
-
-    <p>The <directive>JournaldCustomLog</directive> directive enables logging
-    of CustomLog and TransferLog messages to systemd-journald.
-    </p>
-
-    <note type="warning"><title>Performance warning</title><p>
-    Currently, systemd-journald is not designed for high-throughput logging
-    and logging access_log to systemd-journald could decrease the performance
-    a lot.
-    </p></note>
-</usage>
-</directivesynopsis>
 
 <section id="structured">
     <title>Structured logging</title>
@@ -99,6 +78,28 @@
     <highlight language="config">ErrorLog journald</highlight>
 
 </section>
+
+
+<directivesynopsis>
+<name>JournaldCustomLog</name>
+<description>Enable logging of CustomLog/TransferLog to systemd-journald</description>
+<syntax>JournaldCustomLog on|off</syntax>
+<default>JournaldCustomLog off</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+
+    <p>The <directive>JournaldCustomLog</directive> directive enables logging
+    of CustomLog and TransferLog messages to systemd-journald.
+    </p>
+
+    <note type="warning"><title>Performance warning</title><p>
+    Currently, systemd-journald is not designed for high-throughput logging
+    and logging access_log to systemd-journald could decrease the performance
+    a lot.
+    </p></note>
+</usage>
+</directivesynopsis>
 
 
 </modulesynopsis>
