@@ -21,6 +21,9 @@ Changes with Apache 2.2.28
      Fix a race condition in scoreboard handling, which could lead to
      a heap buffer overflow.  [Joe Orton, Eric Covener, Jeff Trawick]
 
+  *) mod_proxy: Don't reuse a SSL backend connection whose requested SNI
+     differs. PR 55782.  [Yann Ylavic]
+ 
   *) mod_deflate: Fix inflation of files larger than 4GB. PR 56062.
      [Lukas Bezdicka <social v3.sk>]
 
