@@ -103,6 +103,19 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
+
+  *) SECURITY: CVE-2013-5704 (cve.mitre.org)
+     core: HTTP trailers could be used to replace HTTP headers
+     late during request processing, potentially undoing or
+     otherwise confusing modules that examined or modified
+     request headers earlier.  Adds "MergeTrailers" directive to restore
+     legacy behavior. 
+     trunk patch: http://svn.apache.org/r1610814 
+                  http://svn.apache.org/r1610686 (mod_log_config ^XX support) 
+                  http://svn.apache.org/r1610707 (mod_log_cofnig ^XX support)
+     2.2.x patch:  http://people.apache.org/~covener/patches/httpd-2.2.x-trailers.diff
+     +1: covener
+    
    * mod_proxy: Don't reuse a SSL backend connection whose SNI differs. PR 55782.
                 This may happen when ProxyPreserveHost is on and the proxy-worker
                 handles connections to different Hosts.
