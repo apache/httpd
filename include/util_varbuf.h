@@ -22,7 +22,7 @@
  * usage is with NUL-terminated strings, most functions also work with
  * arbitrary binary data.
  *
- * @defgroup APACHE_CORE_VARBUF
+ * @defgroup APACHE_CORE_VARBUF Variable length buffer library
  * @ingroup APACHE_CORE
  * @{
  */
@@ -168,7 +168,7 @@ AP_DECLARE(apr_status_t) ap_varbuf_regsub(struct ap_varbuf *vb,
 
 /** Read a line from an ap_configfile_t and append it to an ap_varbuf.
  * @param vb pointer to the ap_varbuf struct
- * @param cfg pointer to the ap_configfile_t
+ * @param cfp pointer to the ap_configfile_t
  * @param max_len maximum line length, including leading/trailing whitespace
  * @return see ap_cfg_getline()
  * @note vb->strlen will be set to the length of the line
