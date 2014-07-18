@@ -99,21 +99,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_proxy: Don't reuse a SSL backend connection whose SNI differs. PR 55782.
-                This may happen when ProxyPreserveHost is on and the proxy-worker
-                handles connections to different Hosts.
-     trunk patch: http://svn.apache.org/r1572630
-                  http://svn.apache.org/r1572611 (MMN minor bump)
-                  http://svn.apache.org/r1572967
-                  http://svn.apache.org/r1573229
-     2.4.x patch: http://svn.apache.org/r1587201 (2.4.10)
-     2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-mod_proxy_sni_reuse3.patch
-     +1: ylavic, rpluem, wrowe
-     ylavic: MMN bump in patch #3
-     ylavic: Changelog is missing in the above patches, it was added in 2.4.x
-             by r1599597 (with others...) and fixed by r1610670 (missing
-             "mod_proxy:" prefix).
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
