@@ -113,7 +113,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1610814 
                   http://svn.apache.org/r1610686 (mod_log_config ^XX support) 
                   http://svn.apache.org/r1610707 (mod_log_cofnig ^XX support)
-     2.2.x patch:  http://people.apache.org/~covener/patches/httpd-2.2.x-trailers.diff
+     2.2.x patch:  http://people.apache.org/~covener/patches/httpd-2.2.x-trailers-2.diff
      +1: covener
     
    * mod_proxy: Don't reuse a SSL backend connection whose SNI differs. PR 55782.
