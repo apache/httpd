@@ -114,7 +114,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
      trunk patch: http://svn.apache.org/r1610814
      2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-trailers.diff
-     +1: covener
+     +1: covener, wrowe
 
    * mod_proxy_http: Avoid (unlikely) access to freed memory.
      trunk patch: http://svn.apache.org/r1599486
@@ -171,6 +171,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      source formatting, and accept utf-8 service names/descriptions for i18n.
      trunk patches: http://svn.apache.org/r1611165
                     http://svn.apache.org/r1611169
+                    http://svn.apache.org/r1611244
      2.4.x patches: trunk works
      +1: wrowe
 
