@@ -472,7 +472,7 @@ static apr_status_t handle_response(const fcgi_provider_conf *conf,
 {
     apr_bucket *b;
     apr_bucket_brigade *ob;
-    apr_size_t orspbuflen;
+    apr_size_t orspbuflen = 0;
     apr_status_t rv = APR_SUCCESS;
     const char *fn = "handle_response";
     int header_state = HDR_STATE_READING_HEADERS;
