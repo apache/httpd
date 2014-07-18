@@ -178,7 +178,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * mod_authnz_fcgi: Silence compiler warning.
      trunk patch: http://svn.apache.org/1611600
      2.4.x patch: trunk patch works
-     +1: rjung
+     +1: rjung, trawick
 
 OTHER PROPOSALS
 
