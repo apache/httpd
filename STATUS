@@ -99,16 +99,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_deflate: Fix decompression of files larger than 4GB. According to RFC1952,
-                  Input SIZE contains the size of the original input data modulo 2^32.
-                  PR 56062.
-     trunk patch: http://svn.apache.org/r1572092
-                  http://svn.apache.org/r1603156 (partially, CHANGES update)
-     2.4.x patch: http://svn.apache.org/r1604460 (2.4.10)
-     2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-mod_deflate_4GB.patch
-                  (modulo CHANGES)
-     +1: ylavic, breser, wrowe
-
    * mod_proxy: Don't reuse a SSL backend connection whose SNI differs. PR 55782.
                 This may happen when ProxyPreserveHost is on and the proxy-worker
                 handles connections to different Hosts.
