@@ -347,7 +347,10 @@ Server Documentation Project.  More information is available at
  </xsl:choose>
 </xsl:variable>
 
-
+  <xsl:call-template name="replace-string">
+  <xsl:with-param name="replace" select="'&#8212;'" />
+  <xsl:with-param name="with" select="'-'" />
+  <xsl:with-param name="text">
     <xsl:call-template name="replace-string">
     <xsl:with-param name="replace" select="'_'"/>
     <xsl:with-param name="with" select="'\_'"/>
@@ -395,6 +398,8 @@ Server Documentation Project.  More information is available at
       </xsl:call-template>
     </xsl:with-param>
     </xsl:call-template>
+  </xsl:with-param>
+  </xsl:call-template>
 
 </xsl:template>
 
