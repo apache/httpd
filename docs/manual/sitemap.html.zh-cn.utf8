@@ -225,6 +225,7 @@
 <li><a href="mod/mod_include.html">Apache 模块 mod_include</a></li>
 <li><a href="mod/mod_info.html">Apache 模块 mod_info</a></li>
 <li><a href="mod/mod_isapi.html">Apache 模块 mod_isapi</a></li>
+<li><a href="mod/mod_journald.html">Apache 模块 mod_journald</a></li>
 <li><a href="mod/mod_lbmethod_bybusyness.html">Apache 模块 mod_lbmethod_bybusyness</a></li>
 <li><a href="mod/mod_lbmethod_byrequests.html">Apache 模块 mod_lbmethod_byrequests</a></li>
 <li><a href="mod/mod_lbmethod_bytraffic.html">Apache 模块 mod_lbmethod_bytraffic</a></li>

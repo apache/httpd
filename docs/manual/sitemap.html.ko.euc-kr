@@ -224,6 +224,7 @@
 <li><a href="mod/mod_include.html">아파치 모듈 mod_include</a></li>
 <li><a href="mod/mod_info.html">아파치 모듈 mod_info</a></li>
 <li><a href="mod/mod_isapi.html">아파치 모듈 mod_isapi</a></li>
+<li><a href="mod/mod_journald.html">아파치 모듈 mod_journald</a></li>
 <li><a href="mod/mod_lbmethod_bybusyness.html">아파치 모듈 mod_lbmethod_bybusyness</a></li>
 <li><a href="mod/mod_lbmethod_byrequests.html">아파치 모듈 mod_lbmethod_byrequests</a></li>
 <li><a href="mod/mod_lbmethod_bytraffic.html">아파치 모듈 mod_lbmethod_bytraffic</a></li>

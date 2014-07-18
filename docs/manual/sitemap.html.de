@@ -247,6 +247,7 @@ HPUX betreiben</a></li>
 <li><a href="mod/mod_include.html">Apache-Modul mod_include</a></li>
 <li><a href="mod/mod_info.html">Apache-Modul mod_info</a></li>
 <li><a href="mod/mod_isapi.html">Apache-Modul mod_isapi</a></li>
+<li><a href="mod/mod_journald.html">Apache-Modul mod_journald</a></li>
 <li><a href="mod/mod_lbmethod_bybusyness.html">Apache-Modul mod_lbmethod_bybusyness</a></li>
 <li><a href="mod/mod_lbmethod_byrequests.html">Apache-Modul mod_lbmethod_byrequests</a></li>
 <li><a href="mod/mod_lbmethod_bytraffic.html">Apache-Modul mod_lbmethod_bytraffic</a></li>
