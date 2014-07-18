@@ -155,12 +155,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   https://svn.apache.org/r1590509
                   https://svn.apache.org/r1603156 (partially, CHANGES update)
                   https://svn.apache.org/r1604353
+                  https://svn.apache.org/r1611725
      2.4.x patch: https://svn.apache.org/r1604458 (2.4.10)
-     2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-mod_deflate_reentrant_with_CHANGES.patch
+     2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-mod_deflate_reentrant_with_CHANGES_v2.patch
                   (modulo CHANGES)
      +1: ylavic
      wrowe notes: portability regression; fails to test for APR_HAVE_LIMITS_H 
                   Use APR_INT32_MAX instead for simplicity?
+     ylavic: Fixed in trunk and v2 above. The v2 also applies correctly with
+             the latest sources (and includes missing error logs vs 2.4.x).
 
    *) core: Detect incomplete request and response bodies, log an error and
             forward it to the underlying filters. PR 55475 [Yann Ylavic]
