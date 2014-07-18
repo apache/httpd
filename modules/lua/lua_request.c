@@ -2083,13 +2083,13 @@ static int lua_set_cookie(lua_State *L)
     if (expires > 0) {
         rv = apr_rfc822_date(cdate, apr_time_from_sec(expires));
         if (rv == APR_SUCCESS) {
-            strexpires = apr_psprintf(r->pool, "Expires=\"%s\";", cdate);
+            strexpires = apr_psprintf(r->pool, "Expires=%s;", cdate);
         }
     }
     
     /* Create path segment */
     if (path != NULL && strlen(path) > 0) {
-        strpath = apr_psprintf(r->pool, "Path=\"%s\";", path);
+        strpath = apr_psprintf(r->pool, "Path=%s;", path);
     }
     
     /* Create domain segment */
