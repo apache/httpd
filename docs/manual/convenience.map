@@ -104,6 +104,7 @@ cachenegotiateddocs	mod/mod_negotiation.html#cachenegotiateddocs
 cacheroot	mod/mod_disk_cache.html#cacheroot
 cachestorenostore	mod/mod_cache.html#cachestorenostore
 cachestoreprivate	mod/mod_cache.html#cachestoreprivate
+cgidscripttimeout	mod/mod_cgid.html#cgidscripttimeout
 cgimapextension	mod/core.html#cgimapextension
 charsetdefault	mod/mod_charset_lite.html#charsetdefault
 charsetoptions	mod/mod_charset_lite.html#charsetoptions
@@ -139,6 +140,9 @@ defaulttype	mod/core.html#defaulttype
 deflatebuffersize	mod/mod_deflate.html#deflatebuffersize
 deflatecompressionlevel	mod/mod_deflate.html#deflatecompressionlevel
 deflatefilternote	mod/mod_deflate.html#deflatefilternote
+deflateinflatelimitrequestbody	mod/mod_deflate.html#deflateinflatelimitrequestbody
+deflateinflateratioburst	mod/mod_deflate.html#deflateinflateratioburst
+deflateinflateratiolimit	mod/mod_deflate.html#deflateinflateratiolimit
 deflatememlevel	mod/mod_deflate.html#deflatememlevel
 deflatewindowsize	mod/mod_deflate.html#deflatewindowsize
 deny	mod/mod_authz_host.html#deny

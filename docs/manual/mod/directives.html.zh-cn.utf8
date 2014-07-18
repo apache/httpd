@@ -140,6 +140,7 @@
 <li><a href="mod_disk_cache.html#cacheroot">CacheRoot</a></li>
 <li><a href="mod_cache.html#cachestorenostore">CacheStoreNoStore</a></li>
 <li><a href="mod_cache.html#cachestoreprivate">CacheStorePrivate</a></li>
+<li><a href="mod_cgid.html#cgidscripttimeout">CGIDScriptTimeout</a></li>
 <li><a href="core.html#cgimapextension">CGIMapExtension</a></li>
 <li><a href="mod_charset_lite.html#charsetdefault">CharsetDefault</a></li>
 <li><a href="mod_charset_lite.html#charsetoptions">CharsetOptions</a></li>
@@ -175,6 +176,9 @@
 <li><a href="mod_deflate.html#deflatebuffersize">DeflateBufferSize</a></li>
 <li><a href="mod_deflate.html#deflatecompressionlevel">DeflateCompressionLevel</a></li>
 <li><a href="mod_deflate.html#deflatefilternote">DeflateFilterNote</a></li>
+<li><a href="mod_deflate.html#deflateinflatelimitrequestbody">DeflateInflateLimitRequestBody</a></li>
+<li><a href="mod_deflate.html#deflateinflateratioburst">DeflateInflateRatioBurst</a></li>
+<li><a href="mod_deflate.html#deflateinflateratiolimit">DeflateInflateRatioLimit</a></li>
 <li><a href="mod_deflate.html#deflatememlevel">DeflateMemLevel</a></li>
 <li><a href="mod_deflate.html#deflatewindowsize">DeflateWindowSize</a></li>
 <li><a href="mod_authz_host.html#deny">Deny</a></li>
