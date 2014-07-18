@@ -50,8 +50,6 @@
 
 #include "zlib.h"
 
-#include <limits.h>     /* for INT_MAX */
-
 static const char deflateFilterName[] = "DEFLATE";
 module AP_MODULE_DECLARE_DATA deflate_module;
 
@@ -970,8 +968,8 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
             apr_bucket_delete(e);
             continue;
         }
-        if (len > INT_MAX) {
-            apr_bucket_split(e, INT_MAX);
+        if (len > APR_INT32_MAX) {
+            apr_bucket_split(e, APR_INT32_MAX);
             apr_bucket_read(e, &data, &len, APR_BLOCK_READ);
         }
 
@@ -1343,8 +1341,8 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
             if (!len) {
                 continue;
             }
-            if (len > INT_MAX) {
-                apr_bucket_split(bkt, INT_MAX);
+            if (len > APR_INT32_MAX) {
+                apr_bucket_split(bkt, APR_INT32_MAX);
                 apr_bucket_read(bkt, &data, &len, APR_BLOCK_READ);
             }
 
@@ -1731,8 +1729,8 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
             apr_bucket_delete(e);
             continue;
         }
-        if (len > INT_MAX) {
-            apr_bucket_split(e, INT_MAX);
+        if (len > APR_INT32_MAX) {
+            apr_bucket_split(e, APR_INT32_MAX);
             apr_bucket_read(e, &data, &len, APR_BLOCK_READ);
         }
 
