@@ -22,7 +22,7 @@ Changes with Apache 2.4.10
   *) SECURITY: CVE-2014-0118 (cve.mitre.org)
      mod_deflate: The DEFLATE input filter (inflates request bodies) now
      limits the length and compression ratio of inflated request bodies to
-     avoid denial of sevice via highly compressed bodies.  See directives
+     avoid denial of service via highly compressed bodies.  See directives
      DeflateInflateLimitRequestBody, DeflateInflateRatioLimit,
      and DeflateInflateRatioBurst. [Yann Ylavic, Eric Covener]
 
