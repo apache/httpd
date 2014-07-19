@@ -1086,7 +1086,7 @@ char *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, 
         else if (strcEQ(var, "SERVER_SOFTWARE"))
             result = ap_get_server_banner();
         else if (strcEQ(var, "API_VERSION")) {
-            result = apr_itoa(p, MODULE_MAGIC_NUMBER);
+            result = apr_itoa(p, MODULE_MAGIC_NUMBER_MAJOR);
             resdup = FALSE;
         }
         else if (strcEQ(var, "TIME_YEAR")) {
