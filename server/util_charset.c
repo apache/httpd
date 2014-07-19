@@ -23,20 +23,6 @@
 #include "http_core.h"
 #include "util_charset.h"
 
-/* ap_hdrs_to_ascii, ap_hdrs_from_ascii
- *
- * These are the translation handles used to translate between the network
- * format of protocol headers and the local machine format.
- *
- * For an EBCDIC machine, these are valid handles which are set up at
- * initialization to translate between ISO-8859-1 and the code page of
- * the source code.
- *
- * For an ASCII machine, these remain NULL so that when they are stored
- * in the BUFF via ap_bsetop(BO_RXLATE) it ensures that no translation is
- * performed.
- */
-
 apr_xlate_t *ap_hdrs_to_ascii, *ap_hdrs_from_ascii;
 
 #endif /*APR_CHARSET_EBCDIC */
