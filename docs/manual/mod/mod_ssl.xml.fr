@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1610014:1610915 (outdated) -->
+<!-- English Revision : 1610915 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -373,11 +373,11 @@ cette demande peut &ecirc;tre formul&eacute;e parmi les trois suivantes :</p>
     arguments (le premier est de la forme
     ``<code>nom-serveur:port</code>'', le second
     est ``<code>RSA</code>'', ``<code>DSA</code>'', ``<code>ECC</code>''
-    ou un index entier commençant à 3 si plus de 3 clés ont été
-    configurées), qui
+    ou un index entier commen&ccedil;ant &agrave; 3 si plus de 3 cl&eacute;s ont &eacute;t&eacute;
+    configur&eacute;es), qui
     indiquent pour quels serveur et algorithme il doit &eacute;crire le mot de
     passe correspondant sur <code>stdout</code>. Avec les versions 2.4.8
-    (non réalisée) et
+    (non r&eacute;alis&eacute;e) et
     2.4.9, il est appel&eacute; avec un seul argument, une cha&icirc;ne de la forme
     "<code>servername:portnumber:index</code>" (o&ugrave; <code>index</code>
     est un nombre entier commen&ccedil;ant &agrave; z&eacute;ro), qui sp&eacute;cifie le serveur,
@@ -603,12 +603,15 @@ dans le cache de sessions</description>
 <default>SSLSessionCacheTimeout 300</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
+<compatibility>S'applique aussi &agrave; la reprise de session TLS (RFC 5077) &agrave;
+partir de la version 2.4.10 du serveur HTTP Apache</compatibility>
 
 <usage>
 <p>
 Cette directive permet de d&eacute;finir la dur&eacute;e de vie en secondes des
 informations stock&eacute;es dans le cache de sessions SSL global et
-inter-processus et dans le cache OpenSSL interne en m&eacute;moire. elle peut
+inter-processus, dans le cache OpenSSL interne en m&eacute;moire et pour
+les sessions r&eacute;initialis&eacute;es par la reprise de session TLS (RFC 5077). elle peut
 &ecirc;tre d&eacute;finie &agrave; une valeur d'environ 15 &agrave; des fins de test, mais &agrave; une
 valeur tr&egrave;s sup&eacute;rieure comme 300 en production.</p>
 <example><title>Exemple</title>
