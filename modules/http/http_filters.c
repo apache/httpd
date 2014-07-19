@@ -208,7 +208,7 @@ static apr_status_t read_chunked_trailers(http_ctx_t *ctx, ap_filter_t *f,
     else {
         const char *error_notes = apr_table_get(r->notes,
                                                 "error-notes");
-        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, 
+        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(02656)
                       "Error while reading HTTP trailer: %i%s%s",
                       r->status, error_notes ? ": " : "",
                       error_notes ? error_notes : "");
