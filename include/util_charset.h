@@ -32,17 +32,20 @@ extern "C" {
 
 #include "apr.h"
 
-#if APR_CHARSET_EBCDIC
+#if APR_CHARSET_EBCDIC || defined(DOXYGEN)
 
 #include "apr_xlate.h"
 
 /** On EBCDIC machine this is a translation handle used to translate the
  *  headers from the local machine format to ASCII for network transmission.
- *  On an ASCII machine this is NULL */
+ * 
+ *  On an ASCII machine this is not defined. */
 extern apr_xlate_t *ap_hdrs_to_ascii;
+
 /** On EBCDIC machine this is a translation handle used to translate the
  *  headers from ASCII to the local machine format after network transmission.
- *  On an ASCII machine this is NULL */
+ * 
+ *  On an ASCII machine this is not defined. */
 extern apr_xlate_t *ap_hdrs_from_ascii;
 
 #endif  /* APR_CHARSET_EBCDIC */
