@@ -27,8 +27,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_ssl.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_ssl.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Chiffrement de haut niveau basé sur les protocoles Secure
 Sockets Layer (SSL) et Transport Layer Security (TLS)</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -2363,11 +2361,14 @@ dans le cache de sessions</td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>S'applique aussi à la reprise de session TLS (RFC 5077) à
+partir de la version 2.4.10 du serveur HTTP Apache</td></tr>
 </table>
 <p>
 Cette directive permet de définir la durée de vie en secondes des
 informations stockées dans le cache de sessions SSL global et
-inter-processus et dans le cache OpenSSL interne en mémoire. elle peut
+inter-processus, dans le cache OpenSSL interne en mémoire et pour
+les sessions réinitialisées par la reprise de session TLS (RFC 5077). elle peut
 être définie à une valeur d'environ 15 à des fins de test, mais à une
 valeur très supérieure comme 300 en production.</p>
 <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">SSLSessionCacheTimeout 600</pre>
