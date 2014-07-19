@@ -315,8 +315,8 @@ static int authenticate_basic_user(request_rec *r)
 
     /* We need an authentication realm. */
     if (!ap_auth_name(r)) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR,
-                      0, r, APLOGNO(01615) "need AuthName: %s", r->uri);
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01615)
+                      "need AuthName: %s", r->uri);
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 
