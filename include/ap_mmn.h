@@ -20,24 +20,22 @@
  *
  * @defgroup APACHE_CORE_MMN Module Magic Number
  * @ingroup  APACHE_CORE
+
+ * #MODULE_MAGIC_NUMBER_MAJOR\n
+ * Major API changes that could cause compatibility problems for older modules
+ * such as structure size changes.  No binary compatibility is possible across
+ * a change in the major version.
+ *
+ * #MODULE_MAGIC_NUMBER_MINOR\n
+ * Minor API changes that do not cause binary compatibility problems.
+ * Should be reset to 0 when upgrading MODULE_MAGIC_NUMBER_MAJOR.
+ *
+ * See the #AP_MODULE_MAGIC_AT_LEAST macro below for an example.
  * @{
  */
 
 #ifndef APACHE_AP_MMN_H
 #define APACHE_AP_MMN_H
-
-/*
- * MODULE_MAGIC_NUMBER_MAJOR
- * Major API changes that could cause compatibility problems for older modules
- * such as structure size changes.  No binary compatibility is possible across
- * a change in the major version.
- *
- * MODULE_MAGIC_NUMBER_MINOR
- * Minor API changes that do not cause binary compatibility problems.
- * Should be reset to 0 when upgrading MODULE_MAGIC_NUMBER_MAJOR.
- *
- * See the AP_MODULE_MAGIC_AT_LEAST macro below for an example.
- */
 
 /*
  * 20010224   (2.0.13-dev) MODULE_MAGIC_COOKIE reset to "AP20"
@@ -494,17 +492,17 @@
  * #endif
  * \endcode
  *
- * @param major The major module magic number
- * @param minor The minor module magic number
- * @def AP_MODULE_MAGIC_AT_LEAST(int major, int minor)
+ * @param   major   The major module magic number.
+ * @param   minor   The minor module magic number.
  */
 #define AP_MODULE_MAGIC_AT_LEAST(major,minor)           \
     ((major) < MODULE_MAGIC_NUMBER_MAJOR                \
      || ((major) == MODULE_MAGIC_NUMBER_MAJOR           \
          && (minor) <= MODULE_MAGIC_NUMBER_MINOR))
 
-/** @deprecated present for backwards compatibility */
+/** @deprecated Present for backwards compatibility. */
 #define MODULE_MAGIC_NUMBER MODULE_MAGIC_NUMBER_MAJOR
+/** @deprecated Use AP_MODULE_MAGIC_AT_LEAST. */
 #define MODULE_MAGIC_AT_LEAST old_broken_macro_we_hope_you_are_not_using
 
 #endif /* !APACHE_AP_MMN_H */
