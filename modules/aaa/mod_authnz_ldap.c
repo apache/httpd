@@ -429,7 +429,8 @@ static const char *ldap_determine_binddn(request_rec *r, const char *user) {
  * might be good for the DN lookup but not for later operations. 
  * Requires the per-request config be set to ensure the connection is cleaned up
  */
-static util_ldap_connection_t *get_connection_for_authz(request_rec *r, enum auth_ldap_optype type) {
+static util_ldap_connection_t *get_connection_for_authz(request_rec *r, enum auth_ldap_optype type)
+{
     authn_ldap_request_t *req =
         (authn_ldap_request_t *)ap_get_module_config(r->request_config, &authnz_ldap_module);
     authn_ldap_config_t *sec =
@@ -440,11 +441,14 @@ static util_ldap_connection_t *get_connection_for_authz(request_rec *r, enum aut
     char *bindpw = sec->bindpw;
 
     if (!req) { 
-        ap_log_rerror(APLOG_MARK, APLOG_CRIT, 0, r, "module error: get_connection_for_authz without per-request config");
+        ap_log_rerror(APLOG_MARK, APLOG_CRIT, 0, r, APLOGNO(02659)
+                      "module error: get_connection_for_authz without "
+                      "per-request config");
         return NULL;
     }
 
-    /* If the password isn't set in the per-request config , we didn't authenticate this user, and leave the default credentials */
+    /* If the password isn't set in the per-request config, we didn't
+     * authenticate this user, and leave the default credentials */
     if (req->password &&
          ((type == LDAP_SEARCH && sec->search_as_user)    ||
           (type == LDAP_COMPARE && sec->compare_as_user)  ||
