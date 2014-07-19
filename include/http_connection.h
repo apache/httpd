@@ -32,10 +32,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-/**
- * @file  http_connection.h
- * @brief Apache connection library
- */
 
 /**
  * This is the protocol module driver.  This calls all of the
@@ -145,5 +141,5 @@ AP_DECLARE(apr_bucket *) ap_bucket_eoc_create(apr_bucket_alloc_t *list);
 }
 #endif
 
-#endif  /* !APACHE_HTTP_REQUEST_H */
+#endif  /* !APACHE_HTTP_CONNECTION_H */
 /** @} */
