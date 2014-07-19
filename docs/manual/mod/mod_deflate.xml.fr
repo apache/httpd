@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1597179:1610503 (outdated) -->
+<!-- English Revision : 1610503 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -325,6 +325,66 @@ sortie</description>
 </usage>
 </directivesynopsis>
 
+<directivesynopsis>
+<name>DeflateInflateLimitRequestBody</name>
+<description>Taille maximale des corps de requ&ecirc;te d&eacute;compress&eacute;s</description>
+<syntax>DeflateInflateLimitRequestBody<var>value</var></syntax>
+<default>Aucune limite, mais LimitRequestBody s'applique apr&egrave;s la
+compression</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<compatibility>Disponible &agrave; partir de la version 2.4.10 du serveur HTTP
+Apache</compatibility>
+
+<usage>
+    <p>La directive
+    <directive>DeflateInflateLimitRequestBody</directive> permet de
+    sp&eacute;cifier la taille maximale d'un corps de requ&ecirc;te d&eacute;compress&eacute;. Si
+    elle n'est pas d&eacute;finie, c'est la valeur de la directive <directive
+    module="core">LimitRequestBody</directive> qui s'applique au corps
+    de requ&ecirc;te d&eacute;compress&eacute;.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>DeflateInflateRatioLimit</name>
+<description>Ratio de d&eacute;compression maximum pour les corps de requ&ecirc;tes</description>
+<syntax>DeflateInflateRatioLimit <var>value</var></syntax>
+<default>200</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<compatibility>Disponible &agrave; partir de la version 2.4.10 du serveur HTTP
+Apache</compatibility>
+
+<usage>
+    <p>La directive <directive>DeflateInflateRatioLimit</directive>
+    permet de d&eacute;finir le ratio maximum entre la taille d'un corps de
+    requ&ecirc;te compress&eacute; et sa taille d&eacute;compress&eacute;e. Ce ratio est v&eacute;rifi&eacute; au
+    fur et &agrave; mesure de
+    l'arriv&eacute;e du corps de requ&ecirc;te, et s'il est d&eacute;pass&eacute; plus de
+    <directive>DeflateInflateRatioBurst</directive> fois, le traitement
+    de la requ&ecirc;te est interrompu.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>DeflateInflateRatioBurst</name>
+<description>Nombre maximal de fois que le ratio de d&eacute;compression d'un
+corps de requ&ecirc;te peut &ecirc;tre d&eacute;pass&eacute;</description>
+<syntax>DeflateInflateRatioBurst <var>value</var></syntax>
+<default>3</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<compatibility>Disponible &agrave; partir de la version 2.4.10 du serveur HTTP
+Apache</compatibility>
+
+<usage>
+    <p>La directive <directive>DeflateInflateRatioBurst</directive>
+    permet de sp&eacute;cifier le nombre maximal de fois que la valeur de la
+    directive <directive>DeflateInflateRatioLimit</directive> peut &ecirc;tre
+    d&eacute;pass&eacute; avant l'arr&ecirc;t du traitement de la requ&ecirc;te.</p>
+</usage>
+</directivesynopsis>
 
 </modulesynopsis>
 
