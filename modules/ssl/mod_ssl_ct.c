@@ -303,7 +303,7 @@ static apr_status_t collate_scts(server_rec *s, apr_pool_t *p,
                        APR_FPROT_OS_DEFAULT, p);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
-                     "can't create %s", tmp_collated_fn);
+                     APLOGNO(02683) "can't create %s", tmp_collated_fn);
         return rv;
     }
 
@@ -365,7 +365,8 @@ static apr_status_t collate_scts(server_rec *s, apr_pool_t *p,
          */
         if (fields.time > apr_time_now()) {
             ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s,
-                         "SCT in file %s has timestamp in future (%s), skipping",
+                         APLOGNO(02684) "SCT in file %s has timestamp in future "
+                         "(%s), skipping",
                          cur_sct_file, fields.timestr);
             sct_release(&fields);
             continue;
@@ -391,7 +392,7 @@ static apr_status_t collate_scts(server_rec *s, apr_pool_t *p,
         rv = apr_file_write_full(tmpfile, scts, scts_size, &bytes_written);
         if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
-                         "can't write %hu bytes to %s",
+                         APLOGNO(02685) "can't write %hu bytes to %s",
                          scts_size, tmp_collated_fn);
             break;
         }
@@ -401,8 +402,8 @@ static apr_status_t collate_scts(server_rec *s, apr_pool_t *p,
 
     if (rv == APR_SUCCESS && skipped) {
         ap_log_error(APLOG_MARK, APLOG_INFO, 0, s,
-                     "SCTs sent in ServerHello are limited to %d by "
-                     "CTServerHelloSCTLimit (ignoring %d)",
+                     APLOGNO(02686) "SCTs sent in ServerHello are limited to "
+                     "%d by CTServerHelloSCTLimit (ignoring %d)",
                      max_sh_sct,
                      skipped);
     }
@@ -416,14 +417,16 @@ static apr_status_t collate_scts(server_rec *s, apr_pool_t *p,
         }
         if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
-                         "could not write the SCT list length at the start of the file");
+                         APLOGNO(02687) "could not write the SCT list length "
+                         "at the start of the file");
         }
     }
 
     tmprv = apr_file_close(tmpfile);
     if (tmprv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, tmprv, s,
-                     "error flushing and closing %s", tmp_collated_fn);
+                     APLOGNO(02688) "error flushing and closing %s",
+                     tmp_collated_fn);
         if (rv == APR_SUCCESS) {
             rv = tmprv;
         }
@@ -435,7 +438,7 @@ static apr_status_t collate_scts(server_rec *s, apr_pool_t *p,
         if (replacing) {
             if ((rv = apr_global_mutex_lock(ssl_ct_sct_update)) != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
-                             "global mutex lock failed");
+                             APLOGNO(02689) "global mutex lock failed");
                 return rv;
             }
             apr_file_remove(collated_fn, p);
@@ -443,13 +446,14 @@ static apr_status_t collate_scts(server_rec *s, apr_pool_t *p,
         rv = apr_file_rename(tmp_collated_fn, collated_fn, p);
         if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
-                         "couldn't rename %s to %s, no SCTs to send for now",
+                         APLOGNO(02690) "couldn't rename %s to %s, no SCTs to "
+                         "send for now",
                          tmp_collated_fn, collated_fn);
         }
         if (replacing) {
             if ((tmprv = apr_global_mutex_unlock(ssl_ct_sct_update)) != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, tmprv, s,
-                             "global mutex unlock failed");
+                             APLOGNO(02691) "global mutex unlock failed");
                 if (rv == APR_SUCCESS) {
                     rv = tmprv;
                 }
@@ -536,7 +540,8 @@ static apr_status_t fetch_sct(server_rec *s, apr_pool_t *p,
 
         if (finfo.mtime + max_sct_age < apr_time_now()) {
             ap_log_error(APLOG_MARK, APLOG_INFO, 0, s,
-                         "SCT for %s is older than %d seconds, must refresh",
+                         APLOGNO(02692) "SCT for %s is older than %d seconds, "
+                         "must refresh",
                          cert_file,
                          (int)(apr_time_sec(max_sct_age)));
         }
@@ -549,7 +554,7 @@ static apr_status_t fetch_sct(server_rec *s, apr_pool_t *p,
                      /* no need to print error string for file-not-found err */
                      APR_STATUS_IS_ENOENT(rv) ? 0 : rv,
                      s,
-                     "Did not find SCT for %s in %s, must fetch",
+                     APLOGNO(02693) "Did not find SCT for %s in %s, must fetch",
                      cert_file, sct_fn);
     }
 
@@ -572,7 +577,7 @@ static apr_status_t record_log_urls(server_rec *s, apr_pool_t *p,
                        APR_FPROT_OS_DEFAULT, p);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
-                     "can't create %s", listfile);
+                     APLOGNO(02694) "can't create %s", listfile);
         return rv;
     }
 
@@ -591,7 +596,7 @@ static apr_status_t record_log_urls(server_rec *s, apr_pool_t *p,
         }
         if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
-                         "error writing to %s", listfile);
+                         APLOGNO(02695) "error writing to %s", listfile);
             break;
         }
     }
@@ -599,7 +604,7 @@ static apr_status_t record_log_urls(server_rec *s, apr_pool_t *p,
     tmprv = apr_file_close(f);
     if (tmprv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, tmprv, s,
-                     "error flushing and closing %s", listfile);
+                     APLOGNO(02696) "error flushing and closing %s", listfile);
         if (rv == APR_SUCCESS) {
             rv = tmprv;
         }
@@ -673,7 +678,8 @@ static apr_status_t update_log_list_for_cert(server_rec *s, apr_pool_t *p,
                 rv = apr_uri_parse(p, elts[i], &uri);
                 if (rv != APR_SUCCESS) {
                     ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
-                                 "unparseable log URL %s in file %s - ignoring",
+                                 APLOGNO(02697) "unparseable log URL %s in file "
+                                 "%s - ignoring",
                                  elts[i], listfile);
                     /* some garbage in the file? can't map to an auto-maintained SCT,
                      * so just skip it
@@ -687,7 +693,7 @@ static apr_status_t update_log_list_for_cert(server_rec *s, apr_pool_t *p,
 
                 ap_log_error(APLOG_MARK, 
                              exists ? APLOG_NOTICE : APLOG_DEBUG, 0, s,
-                             "Log %s is no longer enabled%s",
+                             APLOGNO(02698) "Log %s is no longer enabled%s",
                              elts[i],
                              exists ? ", removing SCT" : ", no SCT was present");
 
@@ -695,7 +701,8 @@ static apr_status_t update_log_list_for_cert(server_rec *s, apr_pool_t *p,
                     rv = apr_file_remove(sct_for_log, p);
                     if (rv != APR_SUCCESS) {
                         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
-                                     "can't remove SCT %s from previously trusted log %s",
+                                     APLOGNO(02699) "can't remove SCT %s from "
+                                     "previously trusted log %s",
                                      sct_for_log, elts[i]);
                         return rv;
                     }
@@ -712,7 +719,8 @@ static apr_status_t update_log_list_for_cert(server_rec *s, apr_pool_t *p,
         int i;
 
         ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s,
-                     "List of previous logs doesn't exist (%s), removing previously obtained SCTs",
+                     APLOGNO(02700) "List of previous logs doesn't exist (%s), "
+                     "removing previously obtained SCTs",
                      listfile);
 
         arr = NULL; /* Build list from scratch, creating array */
@@ -731,7 +739,7 @@ static apr_status_t update_log_list_for_cert(server_rec *s, apr_pool_t *p,
             rv = apr_file_remove(cur_sct_file, p);
             if (rv != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
-                             "can't remove %s", cur_sct_file);
+                             APLOGNO(02701) "can't remove %s", cur_sct_file);
             }
         }
     }
@@ -839,7 +847,8 @@ static void * APR_THREAD_FUNC run_service_thread(apr_thread_t *me, void *data)
                 if (rv != APR_SUCCESS) {
                     /* specific issue already logged */
                     ap_log_error(APLOG_MARK, APLOG_CRIT, 0, s,
-                                 SERVICE_THREAD_NAME " - no active configuration until "
+                                 APLOGNO(02702) SERVICE_THREAD_NAME " - no "
+                                 "active configuration until "
                                  "log config DB is corrected");
                 }
                 else {
@@ -882,7 +891,7 @@ static void sct_daemon_cycle(ct_server_config *sconf, server_rec *s_main,
                             sconf->db_log_config);
         if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_CRIT, 0, s_main,
-                         "%s - no active configuration until "
+                         APLOGNO(02703) "%s - no active configuration until "
                          "log config DB is corrected", daemon_name);
             return;
         }
@@ -893,7 +902,8 @@ static void sct_daemon_cycle(ct_server_config *sconf, server_rec *s_main,
     rv = refresh_all_scts(s_main, ptemp, active_log_config);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s_main,
-                     "%s - SCT refresh failed; will try again later",
+                     APLOGNO(02704) "%s - SCT refresh failed; will try again "
+                     "later",
                      daemon_name);
     }
 }
@@ -978,7 +988,7 @@ static int sct_daemon(server_rec *s_main)
                                      apr_global_mutex_lockfile(ssl_ct_sct_update), pdaemon);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, root_server,
-                     "could not initialize " SSL_CT_MUTEX_TYPE
+                     APLOGNO(02705) "could not initialize " SSL_CT_MUTEX_TYPE
                      " mutex in " DAEMON_NAME);
         return DAEMON_STARTUP_ERROR;
     }
@@ -1003,7 +1013,8 @@ static int sct_daemon(server_rec *s_main)
                 if (elts[i] && chown(elts[i], ap_unixd_config.user_id,
                                      ap_unixd_config.group_id) < 0) {
                     ap_log_error(APLOG_MARK, APLOG_ERR, errno, root_server,
-                                 "Couldn't change owner or group of directory %s",
+                                 APLOGNO(02706) "Couldn't change owner or group of "
+                                 "directory %s",
                                  elts[i]);
                     return errno;
                 }
@@ -1011,7 +1022,8 @@ static int sct_daemon(server_rec *s_main)
         }
         else {
             ap_log_error(APLOG_MARK, APLOG_WARNING, rv, root_server,
-                         "Did not read any entries from %s (no server certificate?)",
+                         APLOGNO(02707) "Did not read any entries from %s (no "
+                         "server certificate?)",
                          sconf->sct_storage);
         }
     }
@@ -1041,7 +1053,7 @@ static int daemon_start(apr_pool_t *p, server_rec *main_server,
     daemon_should_exit = 0; /* clear setting from previous generation */
     if ((daemon_pid = fork()) < 0) {
         ap_log_error(APLOG_MARK, APLOG_ERR, errno, main_server,
-                     "Couldn't create " DAEMON_NAME " process");
+                     APLOGNO(02708) "Couldn't create " DAEMON_NAME " process");
         return DECLINED;
     }
     else if (daemon_pid == 0) {
@@ -1106,7 +1118,8 @@ static int daemon_thread_start(apr_pool_t *pconf, server_rec *s_main)
                            pconf);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s_main,
-                     "could not create " DAEMON_THREAD_NAME " in parent");
+                     APLOGNO(02709) "could not create " DAEMON_THREAD_NAME 
+                     " in parent");
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 
@@ -1222,9 +1235,10 @@ static int ssl_ct_post_config(apr_pool_t *pconf, apr_pool_t *plog,
          * configured as a TLS client.  That isn't currently implemented.
          */
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s_main,
-                     "No server certificates were found.");
+                     APLOGNO(02710) "No server certificates were found.");
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s_main,
-                     "mod_ssl_ct only supports configurations with a TLS server.");
+                     APLOGNO(02711) "mod_ssl_ct only supports configurations "
+                     "with a TLS server.");
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 
@@ -1232,7 +1246,7 @@ static int ssl_ct_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                                 SSL_CT_MUTEX_TYPE, NULL, s_main, pconf, 0);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s_main,
-                     "could not create global mutex");
+                     APLOGNO(02712) "could not create global mutex");
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 
@@ -1259,8 +1273,8 @@ static int ssl_ct_post_config(apr_pool_t *pconf, apr_pool_t *plog,
         if (sconf->static_log_config->nelts > 0
             && sconf->db_log_config->nelts > 0) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, s_main,
-                         "Either the static log configuration or the db log "
-                         "configuration must be empty");
+                         APLOGNO(02713) "Either the static log configuration or "
+                         "the db log configuration must be empty");
             return HTTP_INTERNAL_SERVER_ERROR;
         }
     }
@@ -1273,7 +1287,8 @@ static int ssl_ct_post_config(apr_pool_t *pconf, apr_pool_t *plog,
     }
     else {
         ap_log_error(APLOG_MARK, APLOG_INFO, 0, s_main,
-                     "No log URLs were configured; only admin-managed SCTs can be sent");
+                     APLOGNO(02714) "No log URLs were configured; only admin-"
+                     "managed SCTs can be sent");
         /* if a db is configured, it could be updated later */
         if (!sconf->db_log_config) { /* no DB configured, need permanently
                                       * empty array */
@@ -1296,15 +1311,15 @@ static int ssl_ct_post_config(apr_pool_t *pconf, apr_pool_t *plog,
 #if AP_NEED_SET_MUTEX_PERMS /* Unix :) */
     if (!geteuid()) { /* root */
         ap_log_error(APLOG_MARK, APLOG_INFO, 0, s_main,
-                     "SCTs will be fetched from configured logs as needed "
-                     "and may not be available immediately");
+                     APLOGNO(02715) "SCTs will be fetched from configured logs "
+                     "as needed and may not be available immediately");
     }
     else {
 #endif
     rv = refresh_all_scts(s_main, pconf, active_log_config);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s_main,
-                     "refresh_all_scts() failed");
+                     APLOGNO(02716) "refresh_all_scts() failed");
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 #if AP_NEED_SET_MUTEX_PERMS
@@ -1344,7 +1359,7 @@ static int ssl_ct_check_config(apr_pool_t *pconf, apr_pool_t *plog,
 
     if (!sconf->sct_storage) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s_main,
-                     "Directive CTSCTStorage is required");
+                     APLOGNO(02717) "Directive CTSCTStorage is required");
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 
@@ -1354,22 +1369,22 @@ static int ssl_ct_check_config(apr_pool_t *pconf, apr_pool_t *plog,
          * != PROXY_OBLIVIOUS...
          */
         ap_log_error(APLOG_MARK, APLOG_INFO, 0, s_main,
-                     "Directive CTAuditStorage isn't set; proxy will not save "
-                     "data for off-line audit");
+                     APLOGNO(02718) "Directive CTAuditStorage isn't set; proxy "
+                     "will not save data for off-line audit");
     }
 
     if (!sconf->ct_exe) {
         ap_log_error(APLOG_MARK, APLOG_INFO, 0, s_main,
-                     "Directive CTLogClient isn't set; server certificates "
-                     "can't be submitted to configured logs; only admin-"
-                     "managed SCTs can be provided to clients");
+                     APLOGNO(02719) "Directive CTLogClient isn't set; server "
+                     "certificates can't be submitted to configured logs; "
+                     "only admin-managed SCTs can be provided to clients");
     }
 
     if (sconf->log_config_fname) {
         const char *msg = NULL;
         if (!log_config_readable(pconf, sconf->log_config_fname, &msg)) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, s_main,
-                         "Log config file %s cannot be read",
+                         APLOGNO(02720) "Log config file %s cannot be read",
                          sconf->log_config_fname);
             if (msg) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, 0, s_main,
@@ -1402,7 +1417,7 @@ static apr_status_t read_scts(apr_pool_t *p, const char *fingerprint,
 
     if ((rv = apr_global_mutex_lock(ssl_ct_sct_update)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
-                     "global mutex lock failed");
+                     APLOGNO(02721) "global mutex lock failed");
         return rv;
     }
 
@@ -1410,7 +1425,7 @@ static apr_status_t read_scts(apr_pool_t *p, const char *fingerprint,
 
     if ((tmprv = apr_global_mutex_unlock(ssl_ct_sct_update)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, tmprv, s,
-                     "global mutex unlock failed");
+                     APLOGNO(02722) "global mutex unlock failed");
     }
 
     return rv;
@@ -1444,7 +1459,7 @@ static void look_for_server_certs(server_rec *s, SSL_CTX *ctx, const char *sct_d
                 rv = apr_dir_make(cert_sct_dir, APR_FPROT_OS_DEFAULT, p);
                 if (rv != APR_SUCCESS) {
                     ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
-                                 "can't create directory %s",
+                                 APLOGNO(02723) "can't create directory %s",
                                  cert_sct_dir);
                     ap_assert(rv == APR_SUCCESS);
                 }
@@ -1479,7 +1494,8 @@ static void look_for_server_certs(server_rec *s, SSL_CTX *ctx, const char *sct_d
             ap_assert(0 == fclose(concat));
 
             ap_log_error(APLOG_MARK, APLOG_INFO, 0, s,
-                         "wrote server cert and chain to %s", servercerts_pem);
+                         APLOGNO(02724) "wrote server cert and chain to %s",
+                         servercerts_pem);
 
             cert_info = (ct_server_cert_info *)apr_array_push(sconf->server_cert_info);
             cert_info->sct_dir = cert_sct_dir;
@@ -1487,7 +1503,7 @@ static void look_for_server_certs(server_rec *s, SSL_CTX *ctx, const char *sct_d
         }
         else {
             ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s,
-                         "could not find leaf certificate");
+                         APLOGNO(02725) "could not find leaf certificate");
         }
         rc = SSL_CTX_set_current_cert(ctx, SSL_CERT_SET_NEXT);
     }
@@ -1679,7 +1695,8 @@ static apr_status_t validate_server_data(apr_pool_t *p, conn_rec *c,
                               conncfg->cert_sct_list_size);
         if (rv != APR_SUCCESS) {
             ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, c,
-                          "couldn't deserialize SCT list from certificate");
+                          APLOGNO(02726) "couldn't deserialize SCT list from "
+                          "certificate");
         }
     }
     if (rv == APR_SUCCESS && conncfg->serverhello_sct_list) {
@@ -1687,7 +1704,8 @@ static apr_status_t validate_server_data(apr_pool_t *p, conn_rec *c,
                               conncfg->serverhello_sct_list_size);
         if (rv != APR_SUCCESS) {
             ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, c,
-                          "couldn't deserialize SCT list from ServerHello");
+                          APLOGNO(02727) "couldn't deserialize SCT list from "
+                          "ServerHello");
         }
     }
     if (rv == APR_SUCCESS && conncfg->ocsp_sct_list) {
@@ -1695,7 +1713,8 @@ static apr_status_t validate_server_data(apr_pool_t *p, conn_rec *c,
                               conncfg->ocsp_sct_list_size);
         if (rv != APR_SUCCESS) {
             ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, c,
-                          "couldn't deserialize SCT list from stapled OCSP response");
+                          APLOGNO(02728) "couldn't deserialize SCT list from "
+                          "stapled OCSP response");
         }
     }
 
@@ -1703,7 +1722,8 @@ static apr_status_t validate_server_data(apr_pool_t *p, conn_rec *c,
         if (conncfg->all_scts->nelts < 1) {
             /* How did we get here without at least one SCT? */
             ap_log_cerror(APLOG_MARK, APLOG_CRIT, 0, c,
-                          "SNAFU: No deserialized SCTs found in validate_server_data()");
+                          APLOGNO(02729) "SNAFU: No deserialized SCTs found in "
+                          "validate_server_data()");
             rv = APR_EINVAL;
         }
         else {
@@ -1744,12 +1764,14 @@ static apr_status_t validate_server_data(apr_pool_t *p, conn_rec *c,
                                   == APR_SUCCESS);
                         if (tmprv == APR_NOTFOUND) {
                             ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, c,
-                                          "Server sent SCT from unrecognized log");
+                                          APLOGNO(02730) "Server sent SCT from "
+                                          "unrecognized log");
                             unknown_log_ids++;
                         }
                         else if (tmprv != APR_SUCCESS) {
                             ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c,
-                                          "Server sent SCT with invalid signature");
+                                          APLOGNO(02731) "Server sent SCT with "
+                                          "invalid signature");
                             tmprv = APR_EINVAL;
                             verification_failures++;
                         }
@@ -1760,8 +1782,9 @@ static apr_status_t validate_server_data(apr_pool_t *p, conn_rec *c,
                     else {
                         unknown_log_ids++;
                         ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, c,
-                                      "Signature of SCT from server could not be "
-                                      "verified (no configured log public keys)");
+                                      APLOGNO(02732) "Signature of SCT from "
+                                      "server could not be verified (no "
+                                      "configured log public keys)");
                     }
                 }
                 sct_release(&fields);
@@ -1772,7 +1795,8 @@ static apr_status_t validate_server_data(apr_pool_t *p, conn_rec *c,
             }
             ap_log_cerror(APLOG_MARK,
                           rv != APR_SUCCESS ? APLOG_ERR : APLOG_INFO, 0, c,
-                          "Signature/timestamp validation for %d SCTs: %d successes, "
+                          APLOGNO(02733) "Signature/timestamp validation for %d "
+                          "SCTs: %d successes, "
                           "%d failures, %d from unknown logs",
                           conncfg->all_scts->nelts, verification_successes,
                           verification_failures, unknown_log_ids);
@@ -1883,8 +1907,8 @@ static void save_server_data(conn_rec *c, cert_chain *cc,
             if (rv != APR_SUCCESS) {
                 /* an I/O error occurred; file is not usable */
                 ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
-                             "Failed to write to %s, disabling audit for this "
-                             "child", audit_fn_active);
+                             APLOGNO(02734) "Failed to write to %s, disabling "
+                             "audit for this child", audit_fn_active);
                 apr_file_close(audit_file);
                 audit_file = NULL;
                 apr_file_remove(audit_fn_active,
@@ -1924,7 +1948,7 @@ static int ocsp_resp_cb(SSL *ssl, void *arg)
     rsp = d2i_OCSP_RESPONSE(NULL, &p, len); /* UNDOC */
     if (!rsp) {
         ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c,
-                      "Error parsing OCSP response");
+                      APLOGNO(02792) "Error parsing OCSP response");
         return 0;
     }
 
@@ -2048,7 +2072,8 @@ static int ssl_ct_ssl_proxy_verify(server_rec *s, conn_rec *c,
 
     if (chain_size < 1) {
         ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c,
-                      "odd chain size %d -- cannot proceed", chain_size);
+                      APLOGNO(02735) "odd chain size %d -- cannot proceed",
+                      chain_size);
         return APR_EINVAL;
     }
 
@@ -2077,7 +2102,8 @@ static int ssl_ct_ssl_proxy_verify(server_rec *s, conn_rec *c,
 
         if (ext_struct == NULL) {
             ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c,
-                          "Could not retrieve SCT list from certificate (unexpected)");
+                          APLOGNO(02736) "Could not retrieve SCT list from "
+                          "certificate (unexpected)");
         }
         else {
             /* as in Cert::OctetStringExtensionData */
@@ -2182,7 +2208,8 @@ static int ssl_ct_proxy_post_handshake(conn_rec *c, SSL *ssl)
             rv = cached->validation_result;
             if (rv != APR_SUCCESS) {
                 validation_error = 1;
-                ap_log_cerror(APLOG_MARK, APLOG_INFO, rv, c, "bad cached validation result");
+                ap_log_cerror(APLOG_MARK, APLOG_INFO, rv, c,
+                              APLOGNO(02737) "bad cached validation result");
             }
         }
     }
@@ -2198,7 +2225,7 @@ static int ssl_ct_proxy_post_handshake(conn_rec *c, SSL *ssl)
 
     ap_log_cerror(APLOG_MARK,
                   rv == APR_SUCCESS ? APLOG_DEBUG : APLOG_ERR, rv, c,
-                  "SCT list received in: %s%s%s(%s) (c %pp)",
+                  APLOGNO(02738) "SCT list received in: %s%s%s(%s) (c %pp)",
                   conncfg->serverhello_has_sct_list ? "ServerHello " : "",
                   conncfg->server_cert_has_sct_list ? "certificate-extension " : "",
                   conncfg->ocsp_has_sct_list ? "OCSP " : "",
@@ -2208,7 +2235,8 @@ static int ssl_ct_proxy_post_handshake(conn_rec *c, SSL *ssl)
     if (sconf->proxy_awareness == PROXY_REQUIRE) {
         if (missing_sct_error || validation_error) {
             ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c,
-                          "Forbidding access to backend server; no valid SCTs");
+                          APLOGNO(02739) "Forbidding access to backend server; "
+                          "no valid SCTs");
             return HTTP_FORBIDDEN;
         }
     }
@@ -2331,8 +2359,9 @@ static int ssl_ct_init_server(server_rec *s, apr_pool_t *p, int is_proxy,
                                         client_extension_callback_1,
                                         client_extension_callback_2, cbi)) { /* UNDOC */
             ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s,
-                         "Unable to initalize Certificate Transparency client "
-                         "extension callbacks (callback for %d already registered?)",
+                         APLOGNO(02740) "Unable to initalize Certificate "
+                         "Transparency client extension callbacks "
+                         "(callback for %d already registered?)",
                          CT_EXTENSION_TYPE);
             return HTTP_INTERNAL_SERVER_ERROR;
         }
@@ -2352,8 +2381,9 @@ static int ssl_ct_init_server(server_rec *s, apr_pool_t *p, int is_proxy,
                                         server_extension_callback_1,
                                         server_extension_callback_2, cbi)) { /* UNDOC */
             ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s,
-                         "Unable to initalize Certificate Transparency server "
-                         "extension callback (callbacks for %d already registered?)",
+                         APLOGNO(02741) "Unable to initalize Certificate "
+                         "Transparency server extension callback "
+                         "(callbacks for %d already registered?)",
                          CT_EXTENSION_TYPE);
             return HTTP_INTERNAL_SERVER_ERROR;
         }
@@ -2420,7 +2450,8 @@ static apr_status_t inactivate_audit_file(void *data)
     }
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
-                     "error flushing/closing %s or renaming it to %s",
+                     APLOGNO(02742) "error flushing/closing %s or renaming it "
+                     "to %s",
                      audit_fn_active, audit_fn_perm);
     }
 
@@ -2440,7 +2471,7 @@ static void ssl_ct_child_init(apr_pool_t *p, server_rec *s)
                                      apr_global_mutex_lockfile(ssl_ct_sct_update), p);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
-                     "could not initialize " SSL_CT_MUTEX_TYPE
+                     APLOGNO(02743) "could not initialize " SSL_CT_MUTEX_TYPE
                      " mutex in child");
         /* might crash otherwise due to lack of checking for initialized data
          * in all the right places, but this is going to skip pchild cleanup
@@ -2451,14 +2482,15 @@ static void ssl_ct_child_init(apr_pool_t *p, server_rec *s)
     rv = apr_thread_rwlock_create(&log_config_rwlock, p);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
-                     "could not create rwlock in child");
+                     APLOGNO(02744) "could not create rwlock in child");
         exit(APEXIT_CHILDSICK);
     }
 
     rv = apr_thread_create(&service_thread, NULL, run_service_thread, s, p);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
-                     "could not create " SERVICE_THREAD_NAME " in child");
+                     APLOGNO(02745) "could not create " SERVICE_THREAD_NAME
+                     " in child");
         /* might crash otherwise due to lack of checking for initialized data
          * in all the right places, but this is going to skip pchild cleanup
          */
@@ -2474,7 +2506,7 @@ static void ssl_ct_child_init(apr_pool_t *p, server_rec *s)
                                      p);
         if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
-                         "could not allocate a thread mutex");
+                         APLOGNO(02746) "could not allocate a thread mutex");
             /* might crash otherwise due to lack of checking for initialized data
              * in all the right places, but this is going to skip pchild cleanup
              */
@@ -2487,7 +2519,7 @@ static void ssl_ct_child_init(apr_pool_t *p, server_rec *s)
                                      APR_THREAD_MUTEX_DEFAULT, p);
         if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
-                         "could not allocate a thread mutex");
+                         APLOGNO(02747) "could not allocate a thread mutex");
             /* might crash otherwise due to lack of checking for initialized data
              * in all the right places, but this is going to skip pchild cleanup
              */
@@ -2510,14 +2542,16 @@ static void ssl_ct_child_init(apr_pool_t *p, server_rec *s)
 
         if (ctutil_file_exists(p, audit_fn_active)) {
             ap_log_error(APLOG_MARK, APLOG_CRIT, 0, s,
-                         "ummm, pid-specific file %s was reused before audit grabbed it! (removing)",
+                         APLOGNO(02748) "Pid-specific file %s was reused before "
+                         "audit grabbed it! (removing)",
                          audit_fn_active);
             apr_file_remove(audit_fn_active, p);
         }
 
         if (ctutil_file_exists(p, audit_fn_perm)) {
             ap_log_error(APLOG_MARK, APLOG_CRIT, 0, s,
-                         "ummm, pid-specific file %s was reused before audit grabbed it! (removing)",
+                         APLOGNO(02749) "Pid-specific file %s was reused before "
+                         "audit grabbed it! (removing)",
                          audit_fn_perm);
             apr_file_remove(audit_fn_perm, p);
         }
@@ -2528,7 +2562,7 @@ static void ssl_ct_child_init(apr_pool_t *p, server_rec *s)
                            APR_FPROT_OS_DEFAULT, p);
         if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
-                         "can't create %s", audit_fn_active);
+                         APLOGNO(02750) "can't create %s", audit_fn_active);
             audit_file = NULL;
         }
 

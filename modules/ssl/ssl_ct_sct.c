@@ -65,7 +65,8 @@ apr_status_t sct_verify_signature(conn_rec *c, sct_fields_t *sctf,
         if (!memcmp(logid, sctf->logid, LOG_ID_SIZE)) {
             if (!log_valid_for_received_sct(config_elts[i], sctf->time)) {
                 ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c,
-                              "Got SCT from distrusted log, or out of trusted time interval");
+                              APLOGNO(02766) "Got SCT from distrusted log, or "
+                              "out of trusted time interval");
                 return APR_EINVAL;
             }
             rv = verify_signature(sctf, pubkey);
@@ -73,7 +74,7 @@ apr_status_t sct_verify_signature(conn_rec *c, sct_fields_t *sctf,
                 ap_log_cerror(APLOG_MARK, 
                               APLOG_ERR,
                               rv, c,
-                              "verify_signature failed");
+                              APLOGNO(02767) "verify_signature failed");
             }
             else {
                 ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c,
@@ -100,7 +101,7 @@ apr_status_t sct_parse(const char *source,
     if (len < 1 + LOG_ID_SIZE + 8) {
         /* no room for header */
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
-                     "SCT size %" APR_SIZE_T_FMT " is too small",
+                     APLOGNO(02768) "SCT size %" APR_SIZE_T_FMT " is too small",
                      len);
         return APR_EINVAL;
     }
@@ -126,8 +127,8 @@ apr_status_t sct_parse(const char *source,
 
     if (len < 2) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
-                     "SCT size %" APR_SIZE_T_FMT " has no space for extension "
-                     "len", orig_len);
+                     APLOGNO(02769) "SCT size %" APR_SIZE_T_FMT " has no space "
+                     "for extension len", orig_len);
         return APR_EINVAL;
     }
 
@@ -137,8 +138,8 @@ apr_status_t sct_parse(const char *source,
     if (fields->extlen != 0) {
         if (fields->extlen < len) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
-                         "SCT size %" APR_SIZE_T_FMT " has no space for "
-                         "%hu bytes of extensions",
+                         APLOGNO(02770) "SCT size %" APR_SIZE_T_FMT " has no "
+                         "space for %hu bytes of extensions",
                          orig_len, fields->extlen);
             return APR_EINVAL;
         }
@@ -153,8 +154,9 @@ apr_status_t sct_parse(const char *source,
 
     if (len < 4) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
-                     "SCT size %" APR_SIZE_T_FMT " has no space for "
-                     "hash algorithm, signature algorithm, and signature len",
+                     APLOGNO(02771) "SCT size %" APR_SIZE_T_FMT " has no space "
+                     "for hash algorithm, signature algorithm, and "
+                     "signature len",
                      orig_len);
         return APR_EINVAL;
     }
@@ -170,7 +172,7 @@ apr_status_t sct_parse(const char *source,
 
     if (fields->siglen < len) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
-                     "SCT has no space for signature");
+                     APLOGNO(02772) "SCT has no space for signature");
         return APR_EINVAL;
     }
 
@@ -246,13 +248,15 @@ apr_status_t sct_parse(const char *source,
 
         if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
-                         "Failed to reconstruct signed data for SCT");
+                         APLOGNO(02773) "Failed to reconstruct signed data for "
+                         "SCT");
             free(orig_mem);
         }
         else {
             if (avail != 0) {
                 ap_log_error(APLOG_MARK, APLOG_CRIT, 0, s,
-                             "length miscalculation for signed data (%" APR_SIZE_T_FMT
+                             APLOGNO(02774) "length miscalculation for signed "
+                             "data (%" APR_SIZE_T_FMT
                              " vs. %" APR_SIZE_T_FMT ")",
                              orig_len, avail);
             }
@@ -292,7 +296,8 @@ apr_status_t sct_verify_timestamp(conn_rec *c, sct_fields_t *sctf)
 {
     if (sctf->time > apr_time_now()) {
         ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c,
-                      "Server sent SCT not yet valid (timestamp %s)",
+                      APLOGNO(02775) "Server sent SCT not yet valid (timestamp "
+                      "%s)",
                       sctf->timestr);
         return APR_EINVAL;
     }

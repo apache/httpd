@@ -84,7 +84,7 @@ static apr_status_t read_public_key(apr_pool_t *p, const char *pubkey_fname,
     rv = ctutil_fopen(pubkey_fname, "r", &pubkeyf);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf,
-                     "could not open log public key file %s",
+                     APLOGNO(02751) "could not open log public key file %s",
                      pubkey_fname);
         return rv;
     }
@@ -94,7 +94,8 @@ static apr_status_t read_public_key(apr_pool_t *p, const char *pubkey_fname,
         fclose(pubkeyf);
         rv = APR_EINVAL;
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, ap_server_conf,
-                     "PEM_read_PUBKEY() failed to process public key file %s",
+                     APLOGNO(02752) "PEM_read_PUBKEY() failed to process "
+                     "public key file %s",
                      pubkey_fname);
         return rv;
     }
@@ -136,21 +137,22 @@ static apr_status_t parse_log_url(apr_pool_t *p, const char *lu, apr_uri_t *puri
             || !uri.hostname
             || !uri.path) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, ap_server_conf,
-                         "Error in log url \"%s\": URL can't be parsed or is missing required "
-                         "elements", lu);
+                         APLOGNO(02753) "Error in log url \"%s\": URL can't be "
+                         "parsed or is missing required elements", lu);
             rv = APR_EINVAL;
         }
         if (strcmp(uri.scheme, "http")) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, ap_server_conf,
-                         "Error in log url \"%s\": Only scheme \"http\" (instead of \"%s\") "
-                         "is currently accepted",
+                         APLOGNO(02754) "Error in log url \"%s\": Only scheme "
+                         "\"http\" (instead of \"%s\") is currently "
+                         "accepted",
                          lu, uri.scheme);
             rv = APR_EINVAL;
         }
         if (strcmp(uri.path, "/")) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, ap_server_conf,
-                         "Error in log url \"%s\": Only path \"/\" (instead of \"%s\") "
-                         "is currently accepted",
+                         APLOGNO(02755) "Error in log url \"%s\": Only path "
+                         "\"/\" (instead of \"%s\") is currently accepted",
                          lu, uri.path);
             rv = APR_EINVAL;
         }
@@ -207,7 +209,8 @@ apr_status_t save_log_config_entry(apr_array_header_t *log_config,
     }
     else {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, ap_server_conf,
-                     "Trusted status \"%s\" not valid", distrusted_str);
+                     APLOGNO(02756) "Trusted status \"%s\" not valid",
+                     distrusted_str);
         return APR_EINVAL;
     }
 
@@ -215,7 +218,7 @@ apr_status_t save_log_config_entry(apr_array_header_t *log_config,
         rv = apr_unescape_hex(NULL, log_id, strlen(log_id), 0, &len);
         if (rv != 0 || len != 32) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, ap_server_conf,
-                         "Log id \"%s\" not valid", log_id);
+                         APLOGNO(02757) "Log id \"%s\" not valid", log_id);
             log_id_bin = apr_palloc(p, len);
             apr_unescape_hex(log_id_bin, log_id, strlen(log_id), 0, NULL);
         }
@@ -235,7 +238,7 @@ apr_status_t save_log_config_entry(apr_array_header_t *log_config,
         rv = parse_time_str(p, min_time_str, &min_time);
         if (rv) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, ap_server_conf,
-                         "Invalid min time \"%s\"", min_time_str);
+                         APLOGNO(02758) "Invalid min time \"%s\"", min_time_str);
             return rv;
         }
     }
@@ -247,7 +250,7 @@ apr_status_t save_log_config_entry(apr_array_header_t *log_config,
         rv = parse_time_str(p, max_time_str, &max_time);
         if (rv) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, ap_server_conf,
-                         "Invalid max time \"%s\"", max_time_str);
+                         APLOGNO(02759) "Invalid max time \"%s\"", max_time_str);
             return rv;
         }
     }
@@ -278,7 +281,8 @@ apr_status_t save_log_config_entry(apr_array_header_t *log_config,
     if (computed_log_id && log_id_bin) {
         if (memcmp(computed_log_id, log_id_bin, LOG_ID_SIZE)) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, ap_server_conf,
-                         "Provided log id doesn't match digest of public key");
+                         APLOGNO(02760) "Provided log id doesn't match digest "
+                         "of public key");
             return APR_EINVAL;
         }
     }
@@ -314,14 +318,15 @@ apr_status_t read_config_db(apr_pool_t *p, server_rec *s_main,
     rv = apr_dbd_get_driver(p, "sqlite3", &driver);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s_main,
-                     "APR SQLite3 driver can't be loaded");
+                     APLOGNO(02761) "APR SQLite3 driver can't be loaded");
         return rv;
     }
 
     rv = apr_dbd_open(driver, p, log_config_fname, &handle);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s_main,
-                     "Can't open SQLite3 db %s", log_config_fname);
+                     APLOGNO(02762) "Can't open SQLite3 db %s",
+                     log_config_fname);
         return rv;
     }
 
@@ -331,7 +336,7 @@ apr_status_t read_config_db(apr_pool_t *p, server_rec *s_main,
 
     if (rc != 0) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s_main,
-                     "SELECT of loginfo records failed");
+                     APLOGNO(02763) "SELECT of loginfo records failed");
         apr_dbd_close(driver, handle);
         return APR_EINVAL;
     }
@@ -340,13 +345,13 @@ apr_status_t read_config_db(apr_pool_t *p, server_rec *s_main,
     switch (rc) {
     case -1:
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s_main,
-                     "Unexpected asynchronous result reading %s",
+                     APLOGNO(02764) "Unexpected asynchronous result reading %s",
                      log_config_fname);
         apr_dbd_close(driver, handle);
         return APR_EINVAL;
     case 0:
         ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s_main,
-                     "Log configuration in %s is empty",
+                     APLOGNO(02765) "Log configuration in %s is empty",
                      log_config_fname);
         apr_dbd_close(driver, handle);
         return APR_SUCCESS;
