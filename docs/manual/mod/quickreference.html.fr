@@ -407,8 +407,8 @@ considère comme arrivées à expiration</td></tr>
 l'entête Cache-Control: a pour valeur no-store.</td></tr>
 <tr class="odd"><td><a href="mod_cache.html#cachestoreprivate">CacheStorePrivate On|Off</a></td><td> Off </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Tente de mettre en cache des réponses que le serveur a
 marquées comme privées</td></tr>
-<tr><td><a href="mod_cgid.html#cgidscripttimeout">CGIDScriptTimeout <var>time</var>[s|ms]</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">The length of time to wait for more output from the
-CGI program</td></tr>
+<tr><td><a href="mod_cgid.html#cgidscripttimeout">CGIDScriptTimeout <var>time</var>[s|ms]</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Durée maximale d'attente de la prochaine sortie du
+programme CGI</td></tr>
 <tr class="odd"><td><a href="core.html#cgimapextension">CGIMapExtension <var>chemin CGI</var> <var>.extension</var></a></td><td></td><td>dh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Technique permettant de localiser l'interpréteur des
 scripts CGI</td></tr>
 <tr><td><a href="mod_charset_lite.html#charsetdefault">CharsetDefault <var>jeu de caractères</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Jeu de caractère vers lequel la traduction doit
