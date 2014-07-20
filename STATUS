@@ -209,6 +209,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~jailletc36/backport9.patch
      +1: jailletc36
 
+   * Add some missing APLOGNO.
+     Refactor some lines to keep APLOGNO on the same line as ap_log_error, when applicable.
+     Split some lines longer than 80.
+     Improve alignment.
+     trunk patch:
+        http://svn.apache.org/r1611978
+        http://svn.apache.org/r1612068
+     2.4.x patch: trunk patch works
+     +1: jailletc36
+
+
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
