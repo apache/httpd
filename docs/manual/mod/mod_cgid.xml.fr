@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1369607:1610512 (outdated) -->
+<!-- English Revision : 1610512 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -103,6 +103,33 @@ communiquer avec le d&eacute;mon CGI</description>
     <highlight language="config">
       ScriptSock /var/run/cgid.sock
       </highlight>
+    </example>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CGIDScriptTimeout</name>
+<description>Dur&eacute;e maximale d'attente de la prochaine sortie du
+programme CGI</description>
+<syntax>CGIDScriptTimeout <var>time</var>[s|ms]</syntax>
+<default>Valeur de la directive <directive module="core">Timeout</directive></default>
+<contextlist><context>server config</context>
+<context>virtual host</context><context>directory</context>
+<context>.htaccess</context></contextlist>
+<compatibility>La valeur de CGIDScriptTimeout est 0 dans les versions
+2.4 et ant&eacute;rieures
+</compatibility>
+
+<usage>
+    <p>Cette directive permet de limiter la dur&eacute;e d'attente avant les prochaines donn&eacute;es
+    re&ccedil;ues en sortie du programme CGI. Si ce temps est d&eacute;pass&eacute;, la requ&ecirc;te et le
+    programme CGI se terminent.</p>
+
+    <example><title>Exemple</title>
+    <highlight language="config">
+      CGIDScriptTimeout 20
+    </highlight>
     </example>
 
 </usage>

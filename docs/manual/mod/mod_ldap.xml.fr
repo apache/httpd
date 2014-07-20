@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1587098:1610396 (outdated) -->
+<!-- English Revision : 1610396 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -845,12 +845,18 @@ Apache</compatibility>
     valeur par d&eacute;faut -1, ou toute autre valeur n&eacute;gative, les connexions
     peuvent &ecirc;tre r&eacute;utilis&eacute;es sans limite de dur&eacute;e.</p>
 
-    <p>La dur&eacute;e de vie est bas&eacute;e sur le moment o&ugrave; la connexion LDAP est
-    remise en attente dans le jeu de connexions , et non sur la derni&egrave;re
-    entr&eacute;e/sortie effectu&eacute;e sur le serveur d'arri&egrave;re-plan. Si
-    l'information est mise en cache, la dur&eacute;e d'inactivit&eacute; apparente
-    peut exc&eacute;der la valeur de la directive
-    <directive>LDAPConnectionPoolTTL</directive>.</p>
+    <p>Dans le but d'am&eacute;liorer les performances, le temps de r&eacute;f&eacute;rence
+    qu'utilise cette directive correspond au moment o&ugrave; la connexion LDAP
+    est enregistr&eacute;e ou remise dans le jeu de connexions, et non au
+    moment du dernier &eacute;change r&eacute;ussi avec le serveur LDAP.</p>
+
+    <p>La version 2.4.10 a introduit de nouvelles mesures permettant
+    d'&eacute;viter une augmentation excessive du temps de r&eacute;f&eacute;rence due &agrave; des
+    correspondances positives dans le cache ou des requ&ecirc;tes lentes. A
+    cet effet, le temps de r&eacute;f&eacute;rence n'est pas r&eacute;actualis&eacute; si aucune
+    connexion LDAP d'arri&egrave;re-plan n'est requise ; d'autre part, le temps
+    de r&eacute;f&eacute;rence se base sur le moment o&ugrave; la requ&ecirc;te HTTP est re&ccedil;ue, et
+    non sur le moment o&ugrave; la requ&ecirc;te a &eacute;t&eacute; trait&eacute;e.</p>
 
     <note><p>Cette dur&eacute;e de vie s'exprime par d&eacute;faut en secondes, mais
     il est possible d'utiliser d'autres unit&eacute;s en ajoutant un suffixe :
