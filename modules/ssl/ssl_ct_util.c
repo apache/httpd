@@ -33,7 +33,7 @@ apr_status_t ctutil_path_join(char **out, const char *dirname, const char *basen
     rv = apr_filepath_merge(out, dirname, basename, 0, p);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
-                     "can't build filename from %s and %s",
+                     APLOGNO(02776) "can't build filename from %s and %s",
                      dirname, basename);
     }
 
@@ -145,7 +145,8 @@ apr_status_t ctutil_read_dir(apr_pool_t *p,
 
     rv = apr_dir_open(&d, dirname, p);
     if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, "couldn't read dir %s",
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
+                     APLOGNO(02777) "couldn't read dir %s",
                      dirname);
         return rv;
     }
@@ -169,7 +170,7 @@ apr_status_t ctutil_read_dir(apr_pool_t *p,
     }
     else if (rv != APR_SUCCESS && !reported) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
-                     "couldn't read entry from dir %s", dirname);
+                     APLOGNO(02778) "couldn't read entry from dir %s", dirname);
     }
 
     apr_dir_close(d);
@@ -199,14 +200,14 @@ apr_status_t ctutil_read_file(apr_pool_t *p,
     rv = apr_file_open(&f, fn, APR_READ | APR_BINARY, APR_FPROT_OS_DEFAULT, p);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
-                     "couldn't read %s", fn);
+                     APLOGNO(02779) "couldn't read %s", fn);
         return rv;
     }
     
     rv = apr_file_info_get(&finfo, APR_FINFO_SIZE, f);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
-                     "couldn't retrieve size of %s", fn);
+                     APLOGNO(02780) "couldn't retrieve size of %s", fn);
         apr_file_close(f);
         return rv;
     }
@@ -214,8 +215,8 @@ apr_status_t ctutil_read_file(apr_pool_t *p,
     if (finfo.size > limit) {
         rv = APR_ENOSPC;
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
-                     "size %" APR_OFF_T_FMT " of %s exceeds limit (%"
-                     APR_SIZE_T_FMT ")", finfo.size, fn, limit);
+                     APLOGNO(02781) "size %" APR_OFF_T_FMT " of %s exceeds "
+                     "limit (%" APR_SIZE_T_FMT ")", finfo.size, fn, limit);
         apr_file_close(f);
         return rv;
     }
@@ -227,7 +228,7 @@ apr_status_t ctutil_read_file(apr_pool_t *p,
                               * how big the file is
                               */
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
-                         "apr_file_read_full");
+                     APLOGNO(02782) "apr_file_read_full");
     }
     apr_file_close(f);
 
@@ -271,7 +272,7 @@ static void io_loop(apr_pool_t *p, server_rec *s, apr_proc_t *proc,
                               &num_events, &pdesc);
         if (rv != APR_SUCCESS && !APR_STATUS_IS_EINTR(rv)) {
             ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
-                         "apr_pollset_poll");
+                         APLOGNO(02783) "apr_pollset_poll");
             break;
         }
 
@@ -285,7 +286,7 @@ static void io_loop(apr_pool_t *p, server_rec *s, apr_proc_t *proc,
             }
             else if (rv != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
-                             "apr_file_read");
+                             APLOGNO(02784) "apr_file_read");
             }
             else {
                 ap_log_error(APLOG_MARK, APLOG_TRACE2, 0, s,
@@ -326,7 +327,7 @@ static void io_loop(apr_pool_t *p, server_rec *s, apr_proc_t *proc,
             }
             else if (rv != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
-                             "apr_file_read");
+                             APLOGNO(02785) "apr_file_read");
             }
             else {
                 ap_log_error(APLOG_MARK, APLOG_TRACE2, 0, s,
@@ -355,7 +356,8 @@ apr_status_t ctutil_run_to_log(apr_pool_t *p,
 
     rv = apr_procattr_create(&attr, p);
     if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, "apr_procattr_create failed");
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
+                     APLOGNO(02786) "apr_procattr_create failed");
         return rv;
     }
 
@@ -364,13 +366,15 @@ apr_status_t ctutil_run_to_log(apr_pool_t *p,
                              APR_CHILD_BLOCK,
                              APR_CHILD_BLOCK);
     if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, "apr_procattr_io_set failed");
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
+                     APLOGNO(02787) "apr_procattr_io_set failed");
         return rv;
     }
 
     rv = apr_proc_create(&proc, args[0], args, NULL, attr, p);
     if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, "apr_proc_create failed");
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
+                     APLOGNO(02788) "apr_proc_create failed");
         return rv;
     }
 
@@ -382,7 +386,7 @@ apr_status_t ctutil_run_to_log(apr_pool_t *p,
     ap_log_error(APLOG_MARK,
                  rv != APR_SUCCESS || exitcode ? APLOG_ERR : APLOG_DEBUG,
                  rv, s,
-                 "exit code from %s: %d (%s)", 
+                 APLOGNO(02789) "exit code from %s: %d (%s)", 
                  desc_for_log, exitcode,
                  exitwhy == APR_PROC_EXIT ? "exited normally" : "exited due to a signal");
 
@@ -419,7 +423,7 @@ apr_status_t ctutil_file_write_uint16(server_rec *s,
     rv = apr_file_write(f, vals, &nbytes);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
-                     "can't write 2-byte length to file");
+                     APLOGNO(02790) "can't write 2-byte length to file");
     }
     return rv;
 }
@@ -439,7 +443,7 @@ apr_status_t ctutil_file_write_uint24(server_rec *s,
     rv = apr_file_write(f, vals, &nbytes);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
-                     "can't write 3-byte length to file");
+                     APLOGNO(02791) "can't write 3-byte length to file");
     }
     return rv;
 }
