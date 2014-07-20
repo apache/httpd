@@ -1376,8 +1376,8 @@ AP_DECLARE(void) ap_note_auth_failure(request_rec *r)
         ap_run_note_auth_failure(r, type);
     }
     else {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR,
-                      0, r, APLOGNO(00571) "need AuthType to note auth failure: %s", r->uri);
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00571)
+                      "need AuthType to note auth failure: %s", r->uri);
     }
 }
 
@@ -1403,8 +1403,8 @@ AP_DECLARE(int) ap_get_basic_auth_pw(request_rec *r, const char **pw)
         return DECLINED;
 
     if (!ap_auth_name(r)) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR,
-                      0, r, APLOGNO(00572) "need AuthName: %s", r->uri);
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00572) 
+                      "need AuthName: %s", r->uri);
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 
