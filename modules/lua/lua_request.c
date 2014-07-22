@@ -149,7 +149,7 @@ static int req_aprtable2luatable_cb(void *l, const char *key,
         }
     case LUA_TTABLE:{
             /* [array, table<s,t>, table<s,s>] */
-            int size = lua_objlen(L, -1);
+            int size = lua_rawlen(L, -1);
             lua_pushnumber(L, size + 1);        /* [#, array, table<s,t>, table<s,s>] */
             lua_pushstring(L, value);   /* [string, #, array, table<s,t>, table<s,s>] */
             lua_settable(L, -3);        /* [array, table<s,t>, table<s,s>] */
@@ -198,7 +198,7 @@ static int req_aprtable2luatable_cb_len(void *l, const char *key,
         }
     case LUA_TTABLE:{
             /* [array, table<s,t>, table<s,s>] */
-            int size = lua_objlen(L, -1);
+            int size = lua_rawlen(L, -1);
             lua_pushnumber(L, size + 1);        /* [#, array, table<s,t>, table<s,s>] */
             lua_pushlstring(L, value, len);   /* [string, #, array, table<s,t>, table<s,s>] */
             lua_settable(L, -3);        /* [array, table<s,t>, table<s,s>] */
