@@ -1408,7 +1408,7 @@ static const char *generate_message(cmd_parms *cmd, void *dummy,
     /* generate error or warning with a configuration file position.
      * the log is displayed on the terminal as no log file is opened yet.
      */
-    ap_log_error(APLOG_MARK, APLOG_NOERRNO|level, 0, NULL,
+    ap_log_error(APLOG_MARK, level, 0, NULL,
 		 "%s on line %d of %s", msg,
 		 cf? cf->line_number:
 		   ed1? ed1->line_num:
