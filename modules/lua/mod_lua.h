@@ -52,6 +52,8 @@
 /* Load mode for lua_load() */
 #define lua_load(a,b,c,d) lua_load(a,b,c,d,NULL)
 #define lua_resume(a,b)   lua_resume(a, NULL, b)
+#else
+#define lua_rawlen(L,i)   lua_objlen(L, (i))
 #endif
 
 /* Create a set of AP_LUA_DECLARE(type), AP_LUA_DECLARE_NONSTD(type) and
