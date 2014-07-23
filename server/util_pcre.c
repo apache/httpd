@@ -48,6 +48,11 @@ POSSIBILITY OF SUCH DAMAGE.
 #include "apr_tables.h"
 #include "pcre.h"
 
+/* PCRE_DUPNAMES is only present since version 6.7 of PCRE */
+#ifndef PCRE_DUPNAMES
+#error PCRE Version 6.7 or later required!
+#else
+
 #define APR_WANT_STRFUNC
 #include "apr_want.h"
 
@@ -307,5 +312,7 @@ AP_DECLARE(int) ap_regname(const ap_regex_t *preg,
 
     return namecount;
 }
+
+#endif /* PCRE_DUPNAMES defined */
 
 /* End of pcreposix.c */
