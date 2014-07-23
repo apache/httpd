@@ -45,7 +45,7 @@ The following support libraries are mandatory:
     Apache httpd are installed.
   + Additional APR settings affect httpd but are not mandatory, such as
     APR_HAVE_IPV6.
-* PCRE
+* PCRE (version 6.7 or higher)
 
 Certain optional features of APR 2.0-dev (trunk) or APR-Util 1.5.x
 allow some optional features of httpd to be enabled.  For example,
