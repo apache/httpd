@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) core, mod_info: Add compiled and loaded PCRE versions to version
+     number display.  [Rainer Jung]
+
   *) mpm_winnt: Accept utf-8 (Unicode) service names and descriptions for
      internationalization.  [William Rowe]
 
