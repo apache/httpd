@@ -236,7 +236,9 @@ if test "$PCRE_CONFIG" != "false"; then
   fi
   case `$PCRE_CONFIG --version` in
   [[1-5].*])
-    AC_MSG_ERROR([Need at least pcre version 6.0])
+    AC_MSG_ERROR([Need at least pcre version 6.7])
+  [6.[0-6]*])
+    AC_MSG_ERROR([Need at least pcre version 6.7])
     ;;
   esac
   AC_MSG_NOTICE([Using external PCRE library from $PCRE_CONFIG])

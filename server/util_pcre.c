@@ -125,12 +125,7 @@ AP_DECLARE(int) ap_regcomp(ap_regex_t * preg, const char *pattern, int cflags)
     const char *errorptr;
     int erroffset;
     int errcode = 0;
-    /* PCRE_DUPNAMES is only present since version 6.7 of PCRE */
-#ifdef PCRE_DUPNAMES
     int options = PCRE_DUPNAMES;
-#else
-#error PCRE_DUPNAMES does not exist in this PCRE implementation; too old.
-#endif
 
     if ((cflags & AP_REG_ICASE) != 0)
         options |= PCRE_CASELESS;
