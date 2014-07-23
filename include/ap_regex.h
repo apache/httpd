@@ -79,6 +79,12 @@ extern "C" {
 
 #define AP_REG_MATCH "MATCH_" /**< suggested prefix for ap_regname */
 
+/* Arguments for ap_pcre_version_string */
+enum {
+  AP_REG_PCRE_COMPILED = 0, /** PCRE version used during program compilation */
+  AP_REG_PCRE_LOADED        /** PCRE version loaded at runtime */
+};
+
 /* Error values: */
 enum {
   AP_REG_ASSERT = 1,  /** internal error ? */
@@ -101,6 +107,15 @@ typedef struct {
 } ap_regmatch_t;
 
 /* The functions */
+
+/**
+ * Return PCRE version string.
+ * @param which Either AP_REG_PCRE_COMPILED (PCRE version used
+ *              during program compilation) or AP_REG_PCRE_LOADED
+ *              (PCRE version used at runtime)
+ * @return The PCRE version string
+ */
+AP_DECLARE(const char *) ap_pcre_version_string(int which);
 
 /**
  * Compile a regular expression.
