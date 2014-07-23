@@ -92,11 +92,19 @@ static const char *const pstring[] = {
 
 AP_DECLARE(const char *) ap_pcre_version_string(int which)
 {
+#ifdef HAVE_PCRE2
+    static char buf[80];
+#endif
     switch (which) {
     case AP_REG_PCRE_COMPILED:
-        return APR_STRINGIFY(PCRE_MAJOR) "." APR_STRINGIFY(PCRE_MINOR) " " APR_STRINGIFY(PCRE_DATE);
+        return APR_STRINGIFY(PCREn(MAJOR)) "." APR_STRINGIFY(PCREn(MINOR)) " " APR_STRINGIFY(PCREn(DATE));
     case AP_REG_PCRE_LOADED:
+#ifdef HAVE_PCRE2
+        pcre2_config(PCRE2_CONFIG_VERSION, buf);
+        return buf;
+#else
         return pcre_version();
+#endif
     default:
         return "Unknown";
     }
