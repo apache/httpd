@@ -1,0 +1,2 @@
+  *) core, mod_info: Add compiled and loaded PCRE versions to version
+     number display.  [Rainer Jung]

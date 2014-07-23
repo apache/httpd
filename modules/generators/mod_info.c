@@ -455,6 +455,12 @@ static int show_server_settings(request_rec * r)
                "<tt>%s</tt></dt>\n", APU_VERSION_STRING);
 #endif
     ap_rprintf(r,
+               "<dt><strong>Server loaded PCRE Version:</strong> "
+               "<tt>%s</tt></dt>\n", ap_pcre_version_string(AP_REG_PCRE_LOADED));
+    ap_rprintf(r,
+               "<dt><strong>Compiled with PCRE Version:</strong> "
+               "<tt>%s</tt></dt>\n", ap_pcre_version_string(AP_REG_PCRE_COMPILED));
+    ap_rprintf(r,
                "<dt><strong>Module Magic Number:</strong> "
                "<tt>%d:%d</tt></dt>\n", MODULE_MAGIC_NUMBER_MAJOR,
                MODULE_MAGIC_NUMBER_MINOR);

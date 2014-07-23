@@ -99,13 +99,17 @@ static void show_compile_settings(void)
     printf("Server's Module Magic Number: %u:%u\n",
            MODULE_MAGIC_NUMBER_MAJOR, MODULE_MAGIC_NUMBER_MINOR);
 #if APR_MAJOR_VERSION >= 2
-    printf("Server loaded:  APR %s\n", apr_version_string());
-    printf("Compiled using: APR %s\n", APR_VERSION_STRING);
+    printf("Server loaded:  APR %s, PCRE %s\n",
+           apr_version_string(), ap_pcre_version_string(AP_REG_PCRE_LOADED));
+    printf("Compiled using: APR %s, PCRE %s\n",
+           APR_VERSION_STRING, ap_pcre_version_string(AP_REG_PCRE_COMPILED));
 #else
-    printf("Server loaded:  APR %s, APR-UTIL %s\n",
-           apr_version_string(), apu_version_string());
-    printf("Compiled using: APR %s, APR-UTIL %s\n",
-           APR_VERSION_STRING, APU_VERSION_STRING);
+    printf("Server loaded:  APR %s, APR-UTIL %s, PCRE %s\n",
+           apr_version_string(), apu_version_string(),
+           ap_pcre_version_string(AP_REG_PCRE_LOADED));
+    printf("Compiled using: APR %s, APR-UTIL %s, PCRE %s\n",
+           APR_VERSION_STRING, APU_VERSION_STRING,
+           ap_pcre_version_string(AP_REG_PCRE_COMPILED));
 #endif
     /* sizeof(foo) is long on some platforms so we might as well
      * make it long everywhere to keep the printf format
