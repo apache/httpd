@@ -132,6 +132,8 @@ the specified alias</description>
     AuthBasicProvider</directive> or <directive module="mod_auth_digest">
     AuthDigestProvider</directive>.</p>
 
+    <note>This directive has no affect on authorization, even for modules that
+    provide both authentication and authorization.</note>
 </usage>
 </directivesynopsis>
 
