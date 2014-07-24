@@ -237,6 +237,7 @@ if test "$PCRE_CONFIG" != "false"; then
   case `$PCRE_CONFIG --version` in
   [[1-5].*])
     AC_MSG_ERROR([Need at least pcre version 6.7])
+    ;;
   [6.[0-6]*])
     AC_MSG_ERROR([Need at least pcre version 6.7])
     ;;
