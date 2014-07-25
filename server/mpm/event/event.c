@@ -1968,14 +1968,13 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                                                baton->user_baton, 
                                                0, /* don't insert it */
                                                NULL /* no associated socket callback */);
-                    /* remove other sockets in my set */
+                    /* remove all sockets in my set */
                     for (i = 0; i < baton->nsock; i++) { 
                         apr_pollset_remove(event_pollset, baton->pfds[i]); 
                     }
 
                     push_timer2worker(te);
                 }
-                apr_pollset_remove(event_pollset, out_pfd);
             }
             out_pfd++;
             num--;
