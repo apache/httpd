@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_proxy_wstunnel: Concurrent websockets messages could be 
+     lost or delayed with ProxyWebsocketAsync enabled.  
+     [Edward Lu <Chaosed0 gmail.com>]
+
   *) core, mod_info: Add compiled and loaded PCRE versions to version
      number display.  [Rainer Jung]
 
