@@ -225,7 +225,7 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     <tr><td><code>REMOTE_HOST</code></td>
         <td>The host name of the remote host</td></tr>
     <tr><td><code>REMOTE_USER</code></td>
-        <td>The name of the authenticated user (if any)</td></tr>
+        <td>The name of the authenticated user, if any (not available during <directive>&lt;If &gt;</directive>)</td></tr>
     <tr><td><code>REMOTE_IDENT</code></td>
         <td>The user name set by <module>mod_ident</module></td></tr>
     <tr><td><code>SERVER_NAME</code></td>
@@ -260,7 +260,7 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
         module="mod_authn_core">AuthType</directive> (e.g.
         "<code>basic</code>")</td></tr>
     <tr><td><code>CONTENT_TYPE</code></td>
-        <td>The content type of the response</td></tr>
+        <td>The content type of the response (not available during <directive>&lt;If &gt;</directive>)</td></tr>
     <tr><td><code>HANDLER</code></td>
         <td>The name of the <a href="handler.html">handler</a> creating
             the response</td></tr>
