@@ -182,6 +182,10 @@ l'alias spécifié</td></tr>
     ensemble de directives d'authentification qui seront référencées par
     l'alias spécifié à l'aide des directives <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code> ou <code class="directive"><a href="../mod/mod_auth_digest.html#authdigestprovider">AuthDigestProvider</a></code>.</p>
 
+    <div class="note">Cette directive n'a aucun influence sur le processus
+    d'autorisation, même pour les modules qui fournissent à la fois
+    l'authentification et l'autorisation.</div>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
