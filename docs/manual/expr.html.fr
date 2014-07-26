@@ -202,7 +202,9 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"</pr
 <tr><td><code>REMOTE_HOST</code></td>
         <td>Le nom d'hôte de l'hôte distant</td></tr>
 <tr class="odd"><td><code>REMOTE_USER</code></td>
-        <td>Le nom de l'utilisateur authentifié (s'il existe)</td></tr>
+        <td>Le nom de l'utilisateur authentifié, s'il existe (non
+	disponible à l'intérieur d'un bloc <code class="directive">&lt;If
+	&gt;</code>)</td></tr>
 <tr><td><code>REMOTE_IDENT</code></td>
         <td>Le nom de l'utilisateur défini par <code class="module"><a href="./mod/mod_ident.html">mod_ident</a></code></td></tr>
 <tr class="odd"><td><code>SERVER_NAME</code></td>
@@ -234,7 +236,9 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"</pr
         <td>La valeur de la directive <code class="directive"><a href="./mod/mod_authn_core.html#authtype">AuthType</a></code> (par exemple
 	"<code>basic</code>")</td></tr>
 <tr><td><code>CONTENT_TYPE</code></td>
-        <td>Le type de contenu de la réponse</td></tr>
+        <td>Le type de contenu de la réponse (non
+	disponible à l'intérieur d'un bloc <code class="directive">&lt;If
+	&gt;</code>)</td></tr>
 <tr class="odd"><td><code>HANDLER</code></td>
         <td>Le nom du <a href="handler.html">gestionnaire</a> qui a
 	généré la réponse</td></tr>
@@ -245,7 +249,9 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"</pr
         <td>"<code>on</code>" si la connexion utilise IPv6,
 	"<code>off</code>" dans le cas contraire</td></tr>
 <tr><td><code>REQUEST_STATUS</code></td>
-        <td>Le code d'erreur HTTP de la requête</td></tr>
+        <td>Le code d'erreur HTTP de la requête (non
+	disponible à l'intérieur d'un bloc <code class="directive">&lt;If
+	&gt;</code>)</td></tr>
 <tr class="odd"><td><code>REQUEST_LOG_ID</code></td>
         <td>L'identifiant du message d'erreur associé à la requête (voir
 	la directive <code class="directive"><a href="./mod/core.html#errorlogformat">ErrorLogFormat</a></code>)</td></tr>
