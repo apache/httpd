@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision : 1595353 -->
+<!-- English Revision : 1613526 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -233,7 +233,9 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     <tr><td><code>REMOTE_HOST</code></td>
         <td>Le nom d'h&ocirc;te de l'h&ocirc;te distant</td></tr>
     <tr><td><code>REMOTE_USER</code></td>
-        <td>Le nom de l'utilisateur authentifi&eacute; (s'il existe)</td></tr>
+        <td>Le nom de l'utilisateur authentifi&eacute;, s'il existe (non
+	disponible &agrave; l'int&eacute;rieur d'un bloc <directive>&lt;If
+	&gt;</directive>)</td></tr>
     <tr><td><code>REMOTE_IDENT</code></td>
         <td>Le nom de l'utilisateur d&eacute;fini par <module>mod_ident</module></td></tr>
     <tr><td><code>SERVER_NAME</code></td>
@@ -269,7 +271,9 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
 	module="mod_authn_core">AuthType</directive> (par exemple
 	"<code>basic</code>")</td></tr>
     <tr><td><code>CONTENT_TYPE</code></td>
-        <td>Le type de contenu de la r&eacute;ponse</td></tr>
+        <td>Le type de contenu de la r&eacute;ponse (non
+	disponible &agrave; l'int&eacute;rieur d'un bloc <directive>&lt;If
+	&gt;</directive>)</td></tr>
     <tr><td><code>HANDLER</code></td>
         <td>Le nom du <a href="handler.html">gestionnaire</a> qui a
 	g&eacute;n&eacute;r&eacute; la r&eacute;ponse</td></tr>
@@ -280,7 +284,9 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
         <td>"<code>on</code>" si la connexion utilise IPv6,
 	"<code>off</code>" dans le cas contraire</td></tr>
     <tr><td><code>REQUEST_STATUS</code></td>
-        <td>Le code d'erreur HTTP de la requ&ecirc;te</td></tr>
+        <td>Le code d'erreur HTTP de la requ&ecirc;te (non
+	disponible &agrave; l'int&eacute;rieur d'un bloc <directive>&lt;If
+	&gt;</directive>)</td></tr>
     <tr><td><code>REQUEST_LOG_ID</code></td>
         <td>L'identifiant du message d'erreur associ&eacute; &agrave; la requ&ecirc;te (voir
 	la directive <directive
