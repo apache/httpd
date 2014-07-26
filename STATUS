@@ -214,6 +214,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch works
      +1: jailletc36
 
+   * mod_ldap: 2.4.10 regression: Some authorization searches won't use AuthLDAPBindDN
+     which can lead to LDAP authz failurs if AuthLDAPBindDN had extra access. 
+     trunk patch: http://svn.apache.org/r1613682
+     2.4.x patch: trunk works + CHANGES referencing 2.4.10 regression
+     +1: covener
 
 OTHER PROPOSALS
 
