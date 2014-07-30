@@ -201,7 +201,7 @@ definition will look like this:</p>
 
 
 
-<p>This lets the server know that we are not interesting in anything fancy, we 
+<p>This lets the server know that we are not interested in anything fancy, we 
 just want to hook onto the requests and possibly handle some of them. </p> 
 
 <p> The reference in our example declaration, <code>register_hooks</code> 
