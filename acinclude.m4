@@ -657,7 +657,9 @@ AC_DEFUN(APACHE_CHECK_SYSTEMD, [
 dnl Check for systemd support for listen.c's socket activation.
 case $host in
 *-linux-*)
-   if test -n "$PKGCONFIG" && $PKGCONFIG --exists libsystemd-daemon; then
+   if test -n "$PKGCONFIG" && $PKGCONFIG --exists libsystemd; then
+      SYSTEMD_LIBS=`pkg-config --libs libsystemd`
+   elif test -n "$PKGCONFIG" && $PKGCONFIG --exists libsystemd-daemon; then
       SYSTEMD_LIBS=`pkg-config --libs libsystemd-daemon`
    else
       AC_CHECK_LIB(systemd-daemon, sd_notify, SYSTEMD_LIBS="-lsystemd-daemon")
