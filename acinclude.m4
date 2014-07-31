@@ -653,6 +653,27 @@ AC_DEFUN([APACHE_CHECK_SERF], [
   fi
 ])
 
+AC_DEFUN(APACHE_CHECK_SYSTEMD, [
+dnl Check for systemd support for listen.c's socket activation.
+case $host in
+*-linux-*)
+   if test -n "$PKGCONFIG" && $PKGCONFIG --exists libsystemd-daemon; then
+      SYSTEMD_LIBS=`pkg-config --libs libsystemd-daemon`
+   else
+      AC_CHECK_LIB(systemd-daemon, sd_notify, SYSTEMD_LIBS="-lsystemd-daemon")
+   fi
+   if test -n "$SYSTEMD_LIBS"; then
+      AC_CHECK_HEADERS(systemd/sd-daemon.h)
+      if test "${ac_cv_header_systemd_sd_daemon_h}" = "no" || test -z "${SYSTEMD_LIBS}"; then
+        AC_MSG_WARN([Your system does not support systemd.])
+      else
+        APR_ADDTO(HTTPD_LIBS, [$SYSTEMD_LIBS])
+        AC_DEFINE(HAVE_SYSTEMD, 1, [Define if systemd is supported])
+      fi
+   fi
+   ;;
+esac
+])
 
 dnl
 dnl APACHE_EXPORT_ARGUMENTS
