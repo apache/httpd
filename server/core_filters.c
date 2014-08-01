@@ -750,8 +750,7 @@ static void remove_empty_buckets(apr_bucket_brigade *bb)
     apr_bucket *bucket;
     while (((bucket = APR_BRIGADE_FIRST(bb)) != APR_BRIGADE_SENTINEL(bb)) &&
            (APR_BUCKET_IS_METADATA(bucket) || (bucket->length == 0))) {
-        APR_BUCKET_REMOVE(bucket);
-        apr_bucket_destroy(bucket);
+        apr_bucket_delete(bucket);
     }
 }
 
@@ -824,19 +823,16 @@ static apr_status_t writev_nonblocking(apr_socket_t *s,
             for (i = offset; i < nvec; ) {
                 apr_bucket *bucket = APR_BRIGADE_FIRST(bb);
                 if (APR_BUCKET_IS_METADATA(bucket)) {
-                    APR_BUCKET_REMOVE(bucket);
-                    apr_bucket_destroy(bucket);
+                    apr_bucket_delete(bucket);
                 }
                 else if (n >= vec[i].iov_len) {
-                    APR_BUCKET_REMOVE(bucket);
-                    apr_bucket_destroy(bucket);
+                    apr_bucket_delete(bucket);
                     offset++;
                     n -= vec[i++].iov_len;
                 }
                 else {
                     apr_bucket_split(bucket, n);
-                    APR_BUCKET_REMOVE(bucket);
-                    apr_bucket_destroy(bucket);
+                    apr_bucket_delete(bucket);
                     vec[i].iov_len -= n;
                     vec[i].iov_base = (char *) vec[i].iov_base + n;
                     break;
@@ -915,12 +911,10 @@ static apr_status_t sendfile_nonblocking(apr_socket_t *s,
     *cumulative_bytes_written += bytes_written;
     if ((bytes_written < file_length) && (bytes_written > 0)) {
         apr_bucket_split(bucket, bytes_written);
-        APR_BUCKET_REMOVE(bucket);
-        apr_bucket_destroy(bucket);
+        apr_bucket_delete(bucket);
     }
     else if (bytes_written == file_length) {
-        APR_BUCKET_REMOVE(bucket);
-        apr_bucket_destroy(bucket);
+        apr_bucket_delete(bucket);
     }
     return rv;
 }
