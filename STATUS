@@ -226,6 +226,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch works
      +1: jailletc36
 
+   * mod_proxy_http: Proxy responses with error status and "ProxyErrorOverride On"
+     hang until proxy timeout.  PR53420
+     Regression from 2.2. It was introduced by r912063 in order to fix PR41646.
+     trunk patch: http://svn.apache.org/r1615289
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: rjung
+
 
 OTHER PROPOSALS
 
