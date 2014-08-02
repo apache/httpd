@@ -132,7 +132,7 @@ be sure the log file format has enough granularity to produce
 a different file name each time the logs are rotated.  Otherwise
 rotation will overwrite the same file instead of starting a new
 one.  For example, if <var>logfile</var> was
-<code>/var/logs/errorlog.%Y-%m-%d</code> with log rotation at 5
+<code>/var/log/errorlog.%Y-%m-%d</code> with log rotation at 5
 megabytes, but 5 megabytes was reached twice in the same day, the
 same log file name would be produced and log rotation would keep
 writing to the same file.</p>
@@ -172,32 +172,32 @@ an offset.</dd>
 <section id="examples"><title>Examples</title>
 
 <example>
-     CustomLog "|bin/rotatelogs /var/logs/logfile 86400" common
+     CustomLog "|bin/rotatelogs /var/log/logfile 86400" common
 </example>
 
-     <p>This creates the files /var/logs/logfile.nnnn where nnnn  is
+     <p>This creates the files /var/log/logfile.nnnn where nnnn  is
      the system time at which the log nominally starts (this time
      will always be a multiple of the rotation time, so  you  can
      synchronize cron scripts with it).  At the end of each rotation
      time (here after 24 hours) a new log is started.</p>
 
 <example>
-     CustomLog "|bin/rotatelogs -l /var/logs/logfile.%Y.%m.%d 86400" common
+     CustomLog "|bin/rotatelogs -l /var/log/logfile.%Y.%m.%d 86400" common
 </example>
 
-     <p>This creates the files /var/logs/logfile.yyyy.mm.dd where
+     <p>This creates the files /var/log/logfile.yyyy.mm.dd where
      yyyy is the year, mm is the month, and dd is the day of the month.
      Logging will switch to a new file every day at midnight, local time.</p>
 
 <example>
-     CustomLog "|bin/rotatelogs /var/logs/logfile 5M" common
+     CustomLog "|bin/rotatelogs /var/log/logfile 5M" common
 </example>
 
      <p>This configuration will rotate the logfile whenever it reaches
      a size of 5 megabytes.</p>
 
 <example>
-     ErrorLog "|bin/rotatelogs /var/logs/errorlog.%Y-%m-%d-%H_%M_%S 5M"
+     ErrorLog "|bin/rotatelogs /var/log/errorlog.%Y-%m-%d-%H_%M_%S 5M"
 </example>
      <p>This configuration will rotate the error logfile whenever it
      reaches a size of 5 megabytes, and the suffix to the logfile name
@@ -205,10 +205,10 @@ an offset.</dd>
      <code>errorlog.YYYY-mm-dd-HH_MM_SS</code>.</p>
 
 <example>
-     CustomLog "|bin/rotatelogs -t /var/logs/logfile 86400" common
+     CustomLog "|bin/rotatelogs -t /var/log/logfile 86400" common
 </example>
 
-     <p>This creates the file /var/logs/logfile, truncating the file at
+     <p>This creates the file /var/log/logfile, truncating the file at
      startup and then truncating the file once per day. It is expected
      in this scenario that a separate process (such as tail) would
      process the file in real time.</p>
