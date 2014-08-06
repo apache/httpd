@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "ROTATELOGS" 8 "2014-06-26" "Apache HTTP Server" "rotatelogs"
+.TH "ROTATELOGS" 8 "2014-08-06" "Apache HTTP Server" "rotatelogs"
 
 .SH NAME
 rotatelogs \- Piped logging program to rotate Apache logs
@@ -71,7 +71,7 @@ Create log file for each interval, even if empty\&.
 Use a circular list of filenames without timestamps\&. With -n 3, the series of log files opened would be "logfile", "logfile\&.1", "logfile\&.2", then overwriting "logfile"\&. Available in 2\&.4\&.5 and later\&.  
 .TP
 \fIlogfile\fR
-.PP The path plus basename of the logfile\&. If \fIlogfile\fR includes any '%' characters, it is treated as a format string for strftime(3)\&. Otherwise, the suffix \fI\&.nnnnnnnnnn\fR is automatically added and is the time in seconds (unless the -t option is used)\&. Both formats compute the start time from the beginning of the current period\&. For example, if a rotation time of 86400 is specified, the hour, minute, and second fields created from the strftime(3) format will all be zero, referring to the beginning of the current 24-hour period (midnight)\&. .PP When using strftime(3) filename formatting, be sure the log file format has enough granularity to produce a different file name each time the logs are rotated\&. Otherwise rotation will overwrite the same file instead of starting a new one\&. For example, if \fIlogfile\fR was /var/logs/errorlog\&.%Y-%m-%d with log rotation at 5 megabytes, but 5 megabytes was reached twice in the same day, the same log file name would be produced and log rotation would keep writing to the same file\&.  
+.PP The path plus basename of the logfile\&. If \fIlogfile\fR includes any '%' characters, it is treated as a format string for strftime(3)\&. Otherwise, the suffix \fI\&.nnnnnnnnnn\fR is automatically added and is the time in seconds (unless the -t option is used)\&. Both formats compute the start time from the beginning of the current period\&. For example, if a rotation time of 86400 is specified, the hour, minute, and second fields created from the strftime(3) format will all be zero, referring to the beginning of the current 24-hour period (midnight)\&. .PP When using strftime(3) filename formatting, be sure the log file format has enough granularity to produce a different file name each time the logs are rotated\&. Otherwise rotation will overwrite the same file instead of starting a new one\&. For example, if \fIlogfile\fR was /var/log/errorlog\&.%Y-%m-%d with log rotation at 5 megabytes, but 5 megabytes was reached twice in the same day, the same log file name would be produced and log rotation would keep writing to the same file\&.  
 .TP
 \fIrotationtime\fR
 The time between log file rotations in seconds\&. The rotation occurs at the beginning of this interval\&. For example, if the rotation time is 3600, the log file will be rotated at the beginning of every hour; if the rotation time is 86400, the log file will be rotated every night at midnight\&. (If no data is logged during an interval, no file will be created\&.)  
@@ -86,25 +86,25 @@ The number of minutes offset from UTC\&. If omitted, zero is assumed and UTC is 
  
 .nf
 
-     CustomLog "|bin/rotatelogs /var/logs/logfile 86400" common
+     CustomLog "|bin/rotatelogs /var/log/logfile 86400" common
 
 .fi
  
 .PP
-This creates the files /var/logs/logfile\&.nnnn where nnnn is the system time at which the log nominally starts (this time will always be a multiple of the rotation time, so you can synchronize cron scripts with it)\&. At the end of each rotation time (here after 24 hours) a new log is started\&.
+This creates the files /var/log/logfile\&.nnnn where nnnn is the system time at which the log nominally starts (this time will always be a multiple of the rotation time, so you can synchronize cron scripts with it)\&. At the end of each rotation time (here after 24 hours) a new log is started\&.
  
 .nf
 
-     CustomLog "|bin/rotatelogs -l /var/logs/logfile\&.%Y\&.%m\&.%d 86400" common
+     CustomLog "|bin/rotatelogs -l /var/log/logfile\&.%Y\&.%m\&.%d 86400" common
 
 .fi
  
 .PP
-This creates the files /var/logs/logfile\&.yyyy\&.mm\&.dd where yyyy is the year, mm is the month, and dd is the day of the month\&. Logging will switch to a new file every day at midnight, local time\&.
+This creates the files /var/log/logfile\&.yyyy\&.mm\&.dd where yyyy is the year, mm is the month, and dd is the day of the month\&. Logging will switch to a new file every day at midnight, local time\&.
  
 .nf
 
-     CustomLog "|bin/rotatelogs /var/logs/logfile 5M" common
+     CustomLog "|bin/rotatelogs /var/log/logfile 5M" common
 
 .fi
  
@@ -113,7 +113,7 @@ This configuration will rotate the logfile whenever it reaches a size of 5 megab
  
 .nf
 
-     ErrorLog "|bin/rotatelogs /var/logs/errorlog\&.%Y-%m-%d-%H_%M_%S 5M"
+     ErrorLog "|bin/rotatelogs /var/log/errorlog\&.%Y-%m-%d-%H_%M_%S 5M"
 
 .fi
  
@@ -122,12 +122,12 @@ This configuration will rotate the error logfile whenever it reaches a size of 5
  
 .nf
 
-     CustomLog "|bin/rotatelogs -t /var/logs/logfile 86400" common
+     CustomLog "|bin/rotatelogs -t /var/log/logfile 86400" common
 
 .fi
  
 .PP
-This creates the file /var/logs/logfile, truncating the file at startup and then truncating the file once per day\&. It is expected in this scenario that a separate process (such as tail) would process the file in real time\&.
+This creates the file /var/log/logfile, truncating the file at startup and then truncating the file once per day\&. It is expected in this scenario that a separate process (such as tail) would process the file in real time\&.
  
 .SH "PORTABILITY"
  
