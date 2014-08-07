@@ -28,6 +28,7 @@ httpd authentication and authorization</description>
 <status>Extension</status>
 <sourcefile>mod_authnz_fcgi.c</sourcefile>
 <identifier>authnz_fcgi_module</identifier>
+<compatibility>Available in version 2.4.10 and later</compatibility>
 
 <summary>
     <p>This module allows FastCGI authorizer applications to
@@ -419,7 +420,7 @@ authentication and/or authorization</description>
     <dl>
       <dt><em>type</em></dt>
       <dd>This must be set to <em>authn</em> for authentication,
-      <em>authz</em> for authentication, or <em>authnz</em> for
+      <em>authz</em> for authorization, or <em>authnz</em> for
       a generic FastCGI authorizer which performs both checks.</dd>
 
       <dt><em>provider-name</em></dt>
