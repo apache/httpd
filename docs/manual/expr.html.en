@@ -197,7 +197,7 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"</pr
 <tr><td><code>REMOTE_HOST</code></td>
         <td>The host name of the remote host</td></tr>
 <tr class="odd"><td><code>REMOTE_USER</code></td>
-        <td>The name of the authenticated user (if any)</td></tr>
+        <td>The name of the authenticated user, if any (not available during <code class="directive">&lt;If &gt;</code>)</td></tr>
 <tr><td><code>REMOTE_IDENT</code></td>
         <td>The user name set by <code class="module"><a href="./mod/mod_ident.html">mod_ident</a></code></td></tr>
 <tr class="odd"><td><code>SERVER_NAME</code></td>
@@ -218,7 +218,7 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"</pr
         <td>The configured <code class="directive"><a href="./mod/mod_authn_core.html#authtype">AuthType</a></code> (e.g.
         "<code>basic</code>")</td></tr>
 <tr class="odd"><td><code>CONTENT_TYPE</code></td>
-        <td>The content type of the response</td></tr>
+        <td>The content type of the response (not available during <code class="directive">&lt;If &gt;</code>)</td></tr>
 <tr><td><code>HANDLER</code></td>
         <td>The name of the <a href="handler.html">handler</a> creating
             the response</td></tr>
@@ -229,7 +229,7 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"</pr
         <td>"<code>on</code>" if the connection uses IPv6,
             "<code>off</code>" otherwise</td></tr>
 <tr class="odd"><td><code>REQUEST_STATUS</code></td>
-        <td>The HTTP error status of the request</td></tr>
+        <td>The HTTP error status of the request (not available during <code class="directive">&lt;If &gt;</code>)</td></tr>
 <tr><td><code>REQUEST_LOG_ID</code></td>
         <td>The error log id of the request (see
             <code class="directive"><a href="./mod/core.html#errorlogformat">ErrorLogFormat</a></code>)</td></tr>
