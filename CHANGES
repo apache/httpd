@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_ratelimit: Drop severity of AH01455 and AH01457 (ap_pass_brigade
+     failed) messages from ERROR to TRACE1.  Other filters do not bother 
+     re-reporting failures from lower level filters.  PR56832.  [Eric Covener]
+
   *) mod_proxy_http: Proxy responses with error status and
      "ProxyErrorOverride On" hang until proxy timeout.
      PR53420 [Rainer Jung]
