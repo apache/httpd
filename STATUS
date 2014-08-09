@@ -95,8 +95,6 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
-  * Something like CVE-2014-0118 (zipbomb) + PROXYREQ_REVERSE + LimitRequestBody looks 
-    like it may be broken in 2.4.10.
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
