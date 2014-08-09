@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1605004:1615363 (outdated) -->
+<!-- English Revision : 1615363 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -133,7 +133,7 @@ poss&egrave;de une granularit&eacute; suffisamment importante pour g&eacute;n&ea
 fichier diff&eacute;rent &agrave; chaque rotation des journaux. Si ce n'est pas le
 cas, la rotation va &eacute;craser le fichier existant au lieu d'en g&eacute;n&eacute;rer un
 nouveau. Par exemple, si <var>fichier-journal</var> &eacute;tait
-<code>/var/logs/errorlog.%Y-%m-%d</code> avec une rotation &agrave; 5
+<code>/var/log/errorlog.%Y-%m-%d</code> avec une rotation &agrave; 5
 m&eacute;gaoctets, et si la limite de 5 m&eacute;gaoctets a &eacute;t&eacute; atteinte deux fois
 dans la m&ecirc;me journ&eacute;e, le m&ecirc;me nom de fichier va &ecirc;tre g&eacute;n&eacute;r&eacute;, et la
 rotation va &eacute;craser le fichier existant.</p>
@@ -176,10 +176,10 @@ sp&eacute;cifier un d&eacute;calage.</dd>
 <section id="examples"><title>Exemples</title>
 
 <example>
-     CustomLog "|bin/rotatelogs /var/logs/fichier-journal 86400" common
+     CustomLog "|bin/rotatelogs /var/log/fichier-journal 86400" common
 </example>
 
-     <p>Cette directive cr&eacute;e les fichiers /var/logs/fichier-journal.nnnn
+     <p>Cette directive cr&eacute;e les fichiers /var/log/fichier-journal.nnnn
      o&ugrave; nnnn correspond au temps syst&egrave;me auquel la journalisation
      d&eacute;marre effectivement (ce temps sera toujours un multiple du temps
      de rotation, si bien que vous pouvez synchroniser les scripts cron
@@ -187,23 +187,23 @@ sp&eacute;cifier un d&eacute;calage.</dd>
      heures), une nouvelle journalisation d&eacute;marre.</p>
 
 <example>
-     CustomLog "|bin/rotatelogs -l /var/logs/fichier-journal.%Y.%m.%d 86400" common
+     CustomLog "|bin/rotatelogs -l /var/log/fichier-journal.%Y.%m.%d 86400" common
 </example>
 
      <p>Cette directive cr&eacute;e les fichiers
-     /var/logs/fichier-journal.yyyy.mm.dd o&ugrave; yyyy correspond &agrave; l'ann&eacute;e,
+     /var/log/fichier-journal.yyyy.mm.dd o&ugrave; yyyy correspond &agrave; l'ann&eacute;e,
      mm au mois et dd au jour du mois. La journalisation basculera vers
      un nouveau fichier chaque jour &agrave; minuit, temps local.</p>
 
 <example>
-     CustomLog "|bin/rotatelogs /var/logs/fichier-journal 5M" common
+     CustomLog "|bin/rotatelogs /var/log/fichier-journal 5M" common
 </example>
 
      <p>Cette directive va effectuer une rotation du fichier journal
      chaque fois que la taille de ce dernier atteindra 5 MOctets.</p>
 
 <example>
-     ErrorLog "|bin/rotatelogs /var/logs/journal-erreurs.%Y-%m-%d-%H_%M_%S 5M"
+     ErrorLog "|bin/rotatelogs /var/log/journal-erreurs.%Y-%m-%d-%H_%M_%S 5M"
 </example>
      <p>Cette directive va effectuer une rotation du fichier journal des
      erreurs chaque fois que la taille de ce dernier atteindra 5
@@ -211,10 +211,10 @@ sp&eacute;cifier un d&eacute;calage.</dd>
      la forme <code>journal-erreurs.YYYY-mm-dd-HH_MM_SS</code>.</p>
 
 <example>
-     CustomLog "|bin/rotatelogs -t /var/logs/journal 86400" common
+     CustomLog "|bin/rotatelogs -t /var/log/journal 86400" common
 </example>
 
-     <p>Cet exemple cr&eacute;e le fichier /var/logs/journal en le tronquant
+     <p>Cet exemple cr&eacute;e le fichier /var/log/journal en le tronquant
      au d&eacute;marrage, puis une fois par jour. Ce sc&eacute;nario implique qu'un
      processus s&eacute;par&eacute; (tel que tail) traite le fichier en temps
      r&eacute;el.</p>
