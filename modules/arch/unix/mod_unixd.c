@@ -150,8 +150,7 @@ AP_DECLARE(int) ap_unixd_setup_child(void)
 
     if (NULL != ap_unixd_config.chroot_dir) {
         if (geteuid()) {
-            rv = errno;
-            ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL, APLOGNO(02158)
+            ap_log_error(APLOG_MARK, APLOG_ALERT, 0, NULL, APLOGNO(02158)
                          "Cannot chroot when not started as root");
             return rv;
         }
