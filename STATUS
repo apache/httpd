@@ -99,10 +99,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
-
   *) SECURITY: CVE-2013-5704 (cve.mitre.org)
      core: HTTP trailers could be used to replace HTTP headers
      late during request processing, potentially undoing or
@@ -113,7 +109,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1610686 (mod_log_config ^XX support) 
                   http://svn.apache.org/r1610707 (mod_log_cofnig ^XX support)
      2.2.x patch:  http://people.apache.org/~covener/patches/httpd-2.2.x-trailers-2.diff
-     +1: covener, wrowe
+     +1: covener, wrowe, rpluem
     
    * mod_deflate: Fix reentrance in output and input filters (buffering of
                   incomplete Zlib header or validation bytes). PR 46146.
@@ -134,7 +130,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://svn.apache.org/r1604458 (2.4.10)
      2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-mod_deflate_reentrant_with_CHANGES_v4.patch
                   (modulo CHANGES)
-     +1: ylavic, wrowe
+     +1: ylavic, wrowe, rpluem
      ylavic: v4 is now merging correctly after http://svn.apache.org/r1611806
 
    *) core: Detect incomplete request and response bodies, log an error and
@@ -143,7 +139,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://svn.apache.org/r1570324 (2.4.8)
      2.2.x patch: http://people.apache.org/~ylavic/2.2.x-http_filter_incomplete.patch
                   (modulo CHANGES)
-     +1: ylavic, wrowe
+     +1: ylavic, wrowe, rpluem
+
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
 
    * mpm_winnt service.c: Accept utf-8 service names/descriptions for i18n.
      trunk patches: http://svn.apache.org/r1611165
