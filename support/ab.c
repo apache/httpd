@@ -1029,7 +1029,7 @@ static void output_results(int sig)
                            ap_round_ms(stats[done - 1].time));
                 else
                     printf("  %d%%  %5" APR_TIME_T_FMT "\n", percs[i],
-                           ap_round_ms(stats[(int) (done * percs[i] / 100)].time));
+                           ap_round_ms(stats[(unsigned long)done * percs[i] / 100].time));
             }
         }
         if (csvperc) {
@@ -1046,7 +1046,7 @@ static void output_results(int sig)
                 else if (i == 100)
                     t = ap_double_ms(stats[done - 1].time);
                 else
-                    t = ap_double_ms(stats[(int) (0.5 + done * i / 100.0)].time);
+                    t = ap_double_ms(stats[(unsigned long) (0.5 + (double)done * i / 100.0)].time);
                 fprintf(out, "%d,%.3f\n", i, t);
             }
             fclose(out);
