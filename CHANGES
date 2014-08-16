@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_proxy_fcgi: Fix faulty logging of large amounts of stderr from the
+     application.  PR 56858.  [Manuel Mausz <manuel-asf mausz.at>]
+
   *) mod_ratelimit: Drop severity of AH01455 and AH01457 (ap_pass_brigade
      failed) messages from ERROR to TRACE1.  Other filters do not bother 
      re-reporting failures from lower level filters.  PR56832.  [Eric Covener]
