@@ -240,6 +240,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      +1 covener
 
+   * mod_proxy_fcgi: Fix faulty logging of large amounts of stderr from the
+     application.  PR 56858.
+     trunk patch: http://svn.apache.org/r1618401
+     2.4.x patch: trunk works modulo CHANGES
+     +1: trawick
+
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
