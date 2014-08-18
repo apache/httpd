@@ -85,6 +85,7 @@ static int systemd_monitor(apr_pool_t *p, server_rec *s)
 
     /* Shutdown httpd when nothing is sent for shutdown_timer seconds. */
     if (sload.bytes_served == bytes_served) {
+        /* mpm_common.c: INTERVAL_OF_WRITABLE_PROBES is 10 */
         shutdown_counter += 10;
         if (shutdown_timer > 0 && shutdown_counter >= shutdown_timer) {
             rv = sd_notifyf(0, "READY=1\n"
@@ -94,7 +95,7 @@ static int systemd_monitor(apr_pool_t *p, server_rec *s)
                 ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(02804)
                             "sd_notifyf returned an error %d", rv);
             }
-            kill(mainpid, SIGWINCH);
+            kill(mainpid, AP_SIG_GRACEFUL);
         }
     }
     else {
