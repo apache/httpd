@@ -252,6 +252,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch works (modulo CHANGES)
      +1: jailletc36
 
+   * authz_core: Let providers defined with AuthzProviderAlias be useable in 
+     virtual hosts. PR56870
+     trunk patch: http://svn.apache.org/r1618851
+     2.4.x patch: trunk works + CHANGES
+     +1 covener
 
 OTHER PROPOSALS
 
