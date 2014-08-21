@@ -1882,6 +1882,7 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
                 return APR_EGENERAL;
             }
 
+            /* Don't check length limits on inflate_out */
             if (!check_ratio(r, ctx, dc)) {
                 ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(02650)
                               "Inflated content ratio is larger than the "
