@@ -542,6 +542,10 @@ static void *merge_core_server_configs(apr_pool_t *p, void *basev, void *virtv)
                          ? virt->trace_enable
                          : base->trace_enable;
 
+    conf->merge_trailers = (virt->merge_trailers != AP_MERGE_TRAILERS_UNSET)
+                           ? virt->merge_trailers
+                           : base->merge_trailers;
+
     return conf;
 }
 
@@ -3295,6 +3299,16 @@ static const char *set_trace_enable(cmd_parms *cmd, void *dummy,
     return NULL;
 }
 
+static const char *set_merge_trailers(cmd_parms *cmd, void *dummy, int arg)
+{
+    core_server_config *conf = ap_get_module_config(cmd->server->module_config,
+                                                    &core_module);
+    conf->merge_trailers = (arg ? AP_MERGE_TRAILERS_ENABLE :
+            AP_MERGE_TRAILERS_DISABLE);
+
+    return NULL;
+}
+
 /* Note --- ErrorDocument will now work from .htaccess files.
  * The AllowOverride of Fileinfo allows webmasters to turn it off
  */
@@ -3534,6 +3548,8 @@ AP_INIT_TAKE1("TraceEnable", set_trace_enable, NULL, RSRC_CONF,
 AP_INIT_FLAG("Suexec", unixd_set_suexec, NULL, RSRC_CONF,
              "Enable or disable suEXEC support"),
 #endif
+AP_INIT_FLAG("MergeTrailers", set_merge_trailers, NULL, RSRC_CONF,
+              "merge request trailers into request headers or not"),
 { NULL }
 };
 
