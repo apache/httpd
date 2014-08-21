@@ -3250,7 +3250,7 @@ static int ap_proxy_clear_connection(request_rec *r, apr_table_t *headers)
     apr_table_unset(headers, "Connection");
 
     if (x.error) {
-        ap_log_rerror(APLOG_MARK, APLOG_NOTICE, 0, r, APLOGNO()
+        ap_log_rerror(APLOG_MARK, APLOG_NOTICE, 0, r, APLOGNO(02806)
                 "Error parsing Connection header: %s", x.error);
         return -1;
     }
@@ -3259,7 +3259,7 @@ static int ap_proxy_clear_connection(request_rec *r, apr_table_t *headers)
         int i;
         for (i = 0; i < x.array->nelts; i++) {
             const char *name = APR_ARRAY_IDX(x.array, i, const char *);
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO()
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02807)
                           "Removing header '%s' listed in Connection header",
                           name);
             if (!strcasecmp(name, "close")) {
