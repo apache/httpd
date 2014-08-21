@@ -110,6 +110,7 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1610707 (mod_log_cofnig ^XX support)
      2.2.x patch:  http://people.apache.org/~covener/patches/httpd-2.2.x-trailers-2.diff
      +1: covener, wrowe, rpluem
+     covener: Since this was not released yet in 2.4.x, maybe it's better to cut 2.2.28 w/o it?
     
    * mod_deflate: Fix reentrance in output and input filters (buffering of
                   incomplete Zlib header or validation bytes). PR 46146.
