@@ -258,6 +258,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works + CHANGES
      +1 covener
 
+   * mod_deflate: A misplaced check prevents limiting small bodies with the new
+     inflate limits. 
+     trunk patch: http://svn.apache.org/r1619383
+     2.4.x patch: trunk works  + CHANGES
+     +1 covener
+
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
