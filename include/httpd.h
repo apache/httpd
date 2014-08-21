@@ -1006,6 +1006,11 @@ struct request_rec {
  * record to improve 64bit alignment the next time we need to break
  * binary compatibility for some other reason.
  */
+
+    /** MIME trailer environment from the request */
+    apr_table_t *trailers_in;
+    /** MIME trailer environment from the response */
+    apr_table_t *trailers_out;
 };
 
 /**

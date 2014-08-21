@@ -412,6 +412,12 @@ static const char *log_header_in(request_rec *r, char *a)
     return ap_escape_logitem(r->pool, apr_table_get(r->headers_in, a));
 }
 
+static const char *log_trailer_in(request_rec *r, char *a)
+{
+    return ap_escape_logitem(r->pool, apr_table_get(r->trailers_in, a));
+}
+
+
 static APR_INLINE char *find_multiple_headers(apr_pool_t *pool,
                                               const apr_table_t *table,
                                               const char *key)
@@ -493,6 +499,11 @@ static const char *log_header_out(request_rec *r, char *a)
     }
 
     return ap_escape_logitem(r->pool, cp);
+}
+
+static const char *log_trailer_out(request_rec *r, char *a)
+{
+    return ap_escape_logitem(r->pool, apr_table_get(r->trailers_out, a));
 }
 
 static const char *log_note(request_rec *r, char *a)
@@ -813,7 +824,7 @@ static char *parse_log_misc_string(apr_pool_t *p, log_format_item *it,
 static char *parse_log_item(apr_pool_t *p, log_format_item *it, const char **sa)
 {
     const char *s = *sa;
-    ap_log_handler *handler;
+    ap_log_handler *handler = NULL;
 
     if (*s != '%') {
         return parse_log_misc_string(p, it, sa);
@@ -883,7 +894,16 @@ static char *parse_log_item(apr_pool_t *p, log_format_item *it, const char **sa)
             break;
 
         default:
-            handler = (ap_log_handler *)apr_hash_get(log_hash, s++, 1);
+            /* check for '^' + two character format first */
+            if (*s == '^' && *(s+1) && *(s+2)) { 
+                handler = (ap_log_handler *)apr_hash_get(log_hash, s, 3); 
+                if (handler) { 
+                   s += 3;
+                }
+            }
+            if (!handler) {  
+                handler = (ap_log_handler *)apr_hash_get(log_hash, s++, 1);  
+            }
             if (!handler) {
                 char dummy[2];
 
@@ -1389,7 +1409,7 @@ static void ap_register_log_handler(apr_pool_t *p, char *tag,
     log_struct->func = handler;
     log_struct->want_orig_default = def;
 
-    apr_hash_set(log_hash, tag, 1, (const void *)log_struct);
+    apr_hash_set(log_hash, tag, strlen(tag), (const void *)log_struct);
 }
 static ap_log_writer_init* ap_log_set_writer_init(ap_log_writer_init *handle)
 {
@@ -1558,6 +1578,9 @@ static int log_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
         log_pfn_register(p, "U", log_request_uri, 1);
         log_pfn_register(p, "s", log_status, 1);
         log_pfn_register(p, "R", log_handler, 1);
+
+        log_pfn_register(p, "^ti", log_trailer_in, 0);
+        log_pfn_register(p, "^to", log_trailer_out, 0);
     }
 
     /* reset to default conditions */

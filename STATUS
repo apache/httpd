@@ -99,22 +99,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) SECURITY: CVE-2013-5704 (cve.mitre.org)
-     core: HTTP trailers could be used to replace HTTP headers
-     late during request processing, potentially undoing or
-     otherwise confusing modules that examined or modified
-     request headers earlier.  Adds "MergeTrailers" directive to restore
-     legacy behavior. 
-     trunk patch: http://svn.apache.org/r1610814 
-                  http://svn.apache.org/r1610686 (mod_log_config ^XX support) 
-                  http://svn.apache.org/r1610707 (mod_log_cofnig ^XX support)
-     2.2.x patch:  http://people.apache.org/~covener/patches/httpd-2.2.x-trailers-2.diff
-     +1: covener, wrowe, rpluem
-     covener: Since this was not released yet in 2.4.x, maybe it's better to cut 2.2.28 w/o it?
-     mrumph:  Delaying a nonCVE fix would be reasonable to maintain backward compatibility.
-              But for a CVE that has already been made public,
-              wouldn't it make more sense to make the fix available as quickly as possible?
-     
    * mod_deflate: Fix reentrance in output and input filters (buffering of
                   incomplete Zlib header or validation bytes). PR 46146.
      trunk patch: https://svn.apache.org/r1572655

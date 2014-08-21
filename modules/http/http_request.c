@@ -384,8 +384,10 @@ static request_rec *internal_internal_redirect(const char *new_uri,
     new->main            = r->main;
 
     new->headers_in      = r->headers_in;
+    new->trailers_in     = r->trailers_in;
     new->headers_out     = apr_table_make(r->pool, 12);
     new->err_headers_out = r->err_headers_out;
+    new->trailers_out    = apr_table_make(r->pool, 5);
     new->subprocess_env  = rename_original_env(r->pool, r->subprocess_env);
     new->notes           = apr_table_make(r->pool, 5);
 
@@ -495,6 +497,8 @@ AP_DECLARE(void) ap_internal_fast_redirect(request_rec *rr, request_rec *r)
                                        r->headers_out);
     r->err_headers_out = apr_table_overlay(r->pool, rr->err_headers_out,
                                            r->err_headers_out);
+    r->trailers_out = apr_table_overlay(r->pool, rr->trailers_out,
+                                           r->trailers_out);
     r->subprocess_env = apr_table_overlay(r->pool, rr->subprocess_env,
                                           r->subprocess_env);
 

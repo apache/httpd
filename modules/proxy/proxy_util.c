@@ -350,8 +350,11 @@ PROXY_DECLARE(request_rec *)ap_proxy_make_fake_req(conn_rec *c, request_rec *r)
     rp->status          = HTTP_OK;
 
     rp->headers_in      = apr_table_make(r->pool, 50);
+    rp->trailers_in     = apr_table_make(r->pool, 5);
+
     rp->subprocess_env  = apr_table_make(r->pool, 50);
     rp->headers_out     = apr_table_make(r->pool, 12);
+    rp->trailers_out    = apr_table_make(r->pool, 5);
     rp->err_headers_out = apr_table_make(r->pool, 5);
     rp->notes           = apr_table_make(r->pool, 5);
 
