@@ -101,10 +101,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
-
   *) SECURITY: CVE-2013-5704 (cve.mitre.org)
      core: HTTP trailers could be used to replace HTTP headers
      late during request processing, potentially undoing or
@@ -114,7 +110,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
      trunk patch: http://svn.apache.org/r1610814
      2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-trailers.diff
-     +1: covener, wrowe
+     +1: covener, wrowe, ylavic
+
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
 
    * mod_proxy_http: Avoid (unlikely) access to freed memory.
      trunk patch: http://svn.apache.org/r1599486
@@ -202,7 +202,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/r1610353
         http://svn.apache.org/r1611871
      2.4.x patch: http://people.apache.org/~jailletc36/backport9.patch
-     +1: jailletc36
+     +1: jailletc36, ylavic
 
    * Add some missing APLOGNO.
      Refactor some lines to keep APLOGNO on the same line as ap_log_error, when applicable.
@@ -212,7 +212,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/r1611978
         http://svn.apache.org/r1612068
      2.4.x patch: trunk patch works
-     +1: jailletc36
+     +1: jailletc36, ylavic
 
    * mod_ldap: 2.4.10 regression: Some authorization searches won't use AuthLDAPBindDN
      which can lead to LDAP authz failurs if AuthLDAPBindDN had extra access. 
@@ -224,7 +224,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      apr_bucket_delete(e) to reduce code verbosity
      trunk patch: http://svn.apache.org/r1615026
      2.4.x patch: trunk patch works
-     +1: jailletc36
+     +1: jailletc36, ylavic
 
    * mod_proxy_http: Proxy responses with error status and "ProxyErrorOverride On"
      hang until proxy timeout.  PR53420
@@ -238,19 +238,19 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      re-reporting failures from lower level filters.  PR56832.
      trunk patch: http://svn.apache.org/r1617018
      2.4.x patch: trunk works
-     +1 covener
+     +1 covener, ylavic
 
    * mod_proxy_fcgi: Fix faulty logging of large amounts of stderr from the
      application.  PR 56858.
      trunk patch: http://svn.apache.org/r1618401
      2.4.x patch: trunk works modulo CHANGES
-     +1: trawick
+     +1: trawick, ylavic
 
    * core: Avoid useless warning message when parsing a section guarded by
      <IfDefine foo> if $(foo) is used within the section.  PR56858
      trunk patch: http://svn.apache.org/r1618541
      2.4.x patch: trunk patch works (modulo CHANGES)
-     +1: jailletc36
+     +1: jailletc36, ylavic
 
    * authz_core: Let providers defined with AuthzProviderAlias be useable in 
      virtual hosts. PR56870
