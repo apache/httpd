@@ -152,7 +152,7 @@
  * 20051115.32 (2.2.24) Add ap_get_exec_line
  * 20051115.33 (2.2.24) Add ap_pregsub_ex()
  * 20051115.34 (2.2.28) Add ap_copy_scoreboard_worker()
- * 20051115.35 (2.2.27) Add SSL reusable SNI to mod_proxy.h's proxy_conn_rec
+ * 20051115.35 (2.2.28) Add SSL reusable SNI to mod_proxy.h's proxy_conn_rec
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503232UL /* "AP22" */
