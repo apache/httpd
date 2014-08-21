@@ -66,7 +66,7 @@ typedef struct deflate_filter_config_t
     int windowSize;
     int memlevel;
     int compressionlevel;
-    apr_size_t bufferSize;
+    int bufferSize;
     const char *note_ratio_name;
     const char *note_input_name;
     const char *note_output_name;
@@ -254,7 +254,7 @@ static const char *deflate_set_buffer_size(cmd_parms *cmd, void *dummy,
         return "DeflateBufferSize should be positive";
     }
 
-    c->bufferSize = (apr_size_t)n;
+    c->bufferSize = n;
 
     return NULL;
 }
@@ -416,35 +416,40 @@ typedef struct deflate_ctx_t
 /* Do update ctx->crc, see comment in flush_libz_buffer */
 #define UPDATE_CRC 1
 
+static void consume_buffer(deflate_ctx *ctx, deflate_filter_config *c,
+                           int len, int crc, apr_bucket_brigade *bb)
+{
+    apr_bucket *b;
+
+    /*
+     * Do we need to update ctx->crc? Usually this is the case for
+     * inflate action where we need to do a crc on the output, whereas
+     * in the deflate case we need to do a crc on the input
+     */
+    if (crc) {
+        ctx->crc = crc32(ctx->crc, (const Bytef *)ctx->buffer, len);
+    }
+
+    b = apr_bucket_heap_create((char *)ctx->buffer, len, NULL,
+                               bb->bucket_alloc);
+    APR_BRIGADE_INSERT_TAIL(bb, b);
+
+    ctx->stream.next_out = ctx->buffer;
+    ctx->stream.avail_out = c->bufferSize;
+}
+
 static int flush_libz_buffer(deflate_ctx *ctx, deflate_filter_config *c,
-                             struct apr_bucket_alloc_t *bucket_alloc,
                              int (*libz_func)(z_streamp, int), int flush,
                              int crc)
 {
     int zRC = Z_OK;
     int done = 0;
-    unsigned int deflate_len;
-    apr_bucket *b;
+    int deflate_len;
 
     for (;;) {
          deflate_len = c->bufferSize - ctx->stream.avail_out;
-
-         if (deflate_len != 0) {
-             /*
-              * Do we need to update ctx->crc? Usually this is the case for
-              * inflate action where we need to do a crc on the output, whereas
-              * in the deflate case we need to do a crc on the input
-              */
-             if (crc) {
-                 ctx->crc = crc32(ctx->crc, (const Bytef *)ctx->buffer,
-                                  deflate_len);
-             }
-             b = apr_bucket_heap_create((char *)ctx->buffer,
-                                        deflate_len, NULL,
-                                        bucket_alloc);
-             APR_BRIGADE_INSERT_TAIL(ctx->bb, b);
-             ctx->stream.next_out = ctx->buffer;
-             ctx->stream.avail_out = c->bufferSize;
+         if (deflate_len > 0) {
+             consume_buffer(ctx, c, deflate_len, crc, ctx->bb);
          }
 
          if (done)
@@ -560,6 +565,7 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
     request_rec *r = f->r;
     deflate_ctx *ctx = f->ctx;
     int zRC;
+    apr_status_t rv;
     apr_size_t len = 0, blen;
     const char *data;
     deflate_filter_config *c;
@@ -891,8 +897,7 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
 
             ctx->stream.avail_in = 0; /* should be zero already anyway */
             /* flush the remaining data from the zlib buffers */
-            flush_libz_buffer(ctx, c, f->c->bucket_alloc, deflate, Z_FINISH,
-                              NO_UPDATE_CRC);
+            flush_libz_buffer(ctx, c, deflate, Z_FINISH, NO_UPDATE_CRC);
 
             buf = apr_palloc(r->pool, VALIDATION_SIZE);
             putLong((unsigned char *)&buf[0], ctx->crc);
@@ -945,15 +950,15 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
             /* Okay, we've seen the EOS.
              * Time to pass it along down the chain.
              */
-            return ap_pass_brigade(f->next, ctx->bb);
+            rv = ap_pass_brigade(f->next, ctx->bb);
+            apr_brigade_cleanup(ctx->bb);
+            return rv;
         }
 
         if (APR_BUCKET_IS_FLUSH(e)) {
-            apr_status_t rv;
-
             /* flush the remaining data from the zlib buffers */
-            zRC = flush_libz_buffer(ctx, c, f->c->bucket_alloc, deflate,
-                                    Z_SYNC_FLUSH, NO_UPDATE_CRC);
+            zRC = flush_libz_buffer(ctx, c, deflate, Z_SYNC_FLUSH,
+                                    NO_UPDATE_CRC);
             if (zRC != Z_OK) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01385)
                               "Zlib error %d flushing zlib output buffer (%s)",
@@ -965,6 +970,7 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
             APR_BUCKET_REMOVE(e);
             APR_BRIGADE_INSERT_TAIL(ctx->bb, e);
             rv = ap_pass_brigade(f->next, ctx->bb);
+            apr_brigade_cleanup(ctx->bb);
             if (rv != APR_SUCCESS) {
                 return rv;
             }
@@ -999,21 +1005,15 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
         ctx->stream.next_in = (unsigned char *)data; /* We just lost const-ness,
                                                       * but we'll just have to
                                                       * trust zlib */
-        ctx->stream.avail_in = len;
+        ctx->stream.avail_in = (int)len;
 
         while (ctx->stream.avail_in != 0) {
             if (ctx->stream.avail_out == 0) {
-                apr_status_t rv;
+                consume_buffer(ctx, c, c->bufferSize, NO_UPDATE_CRC, ctx->bb);
 
-                ctx->stream.next_out = ctx->buffer;
-                len = c->bufferSize - ctx->stream.avail_out;
-
-                b = apr_bucket_heap_create((char *)ctx->buffer, len,
-                                           NULL, f->c->bucket_alloc);
-                APR_BRIGADE_INSERT_TAIL(ctx->bb, b);
-                ctx->stream.avail_out = c->bufferSize;
                 /* Send what we have right now to the next filter. */
                 rv = ap_pass_brigade(f->next, ctx->bb);
+                apr_brigade_cleanup(ctx->bb);
                 if (rv != APR_SUCCESS) {
                     return rv;
                 }
@@ -1340,14 +1340,8 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
                     return APR_EINVAL;
                 }
 
-                len = c->bufferSize - ctx->stream.avail_out;
-                ctx->crc = crc32(ctx->crc, (const Bytef *)ctx->buffer, len);
-                tmp_b = apr_bucket_heap_create((char *)ctx->buffer, len,
-                                                NULL, f->c->bucket_alloc);
-                APR_BRIGADE_INSERT_TAIL(ctx->proc_bb, tmp_b);
-
-                ctx->stream.next_out = ctx->buffer;
-                ctx->stream.avail_out = c->bufferSize;
+                consume_buffer(ctx, c, c->bufferSize - ctx->stream.avail_out,
+                               UPDATE_CRC, ctx->proc_bb);
 
                 /* Flush everything so far in the returning brigade, but continue
                  * reading should EOS/more follow (don't lose them).
@@ -1393,16 +1387,8 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
             if (!ctx->validation_buffer) {
                 while (ctx->stream.avail_in != 0) {
                     if (ctx->stream.avail_out == 0) {
-                        apr_bucket *tmp_heap;
-
-                        ctx->stream.next_out = ctx->buffer;
-                        len = c->bufferSize - ctx->stream.avail_out;
-
-                        ctx->crc = crc32(ctx->crc, (const Bytef *)ctx->buffer, len);
-                        tmp_heap = apr_bucket_heap_create((char *)ctx->buffer, len,
-                                                          NULL, f->c->bucket_alloc);
-                        APR_BRIGADE_INSERT_TAIL(ctx->proc_bb, tmp_heap);
-                        ctx->stream.avail_out = c->bufferSize;
+                        consume_buffer(ctx, c, c->bufferSize, UPDATE_CRC,
+                                       ctx->proc_bb);
                     }
 
                     ctx->inflate_total += ctx->stream.avail_out;
@@ -1445,7 +1431,6 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
             }
 
             if (ctx->validation_buffer) {
-                apr_bucket *tmp_heap;
                 apr_size_t avail, valid;
                 unsigned char *buf = ctx->validation_buffer;
 
@@ -1474,13 +1459,8 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
                               (apr_uint64_t)ctx->stream.total_in,
                               (apr_uint64_t)ctx->stream.total_out, r->uri);
 
-                len = c->bufferSize - ctx->stream.avail_out;
-
-                ctx->crc = crc32(ctx->crc, (const Bytef *)ctx->buffer, len);
-                tmp_heap = apr_bucket_heap_create((char *)ctx->buffer, len,
-                                                  NULL, f->c->bucket_alloc);
-                APR_BRIGADE_INSERT_TAIL(ctx->proc_bb, tmp_heap);
-                ctx->stream.avail_out = c->bufferSize;
+                consume_buffer(ctx, c, c->bufferSize - ctx->stream.avail_out,
+                               UPDATE_CRC, ctx->proc_bb);
 
                 {
                     unsigned long compCRC, compLen;
@@ -1526,16 +1506,8 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
     if (block == APR_BLOCK_READ &&
             APR_BRIGADE_EMPTY(ctx->proc_bb) &&
             ctx->stream.avail_out < c->bufferSize) {
-        apr_bucket *tmp_heap;
-        apr_size_t len;
-        ctx->stream.next_out = ctx->buffer;
-        len = c->bufferSize - ctx->stream.avail_out;
-
-        ctx->crc = crc32(ctx->crc, (const Bytef *)ctx->buffer, len);
-        tmp_heap = apr_bucket_heap_create((char *)ctx->buffer, len,
-                                          NULL, f->c->bucket_alloc);
-        APR_BRIGADE_INSERT_TAIL(ctx->proc_bb, tmp_heap);
-        ctx->stream.avail_out = c->bufferSize;
+        consume_buffer(ctx, c, c->bufferSize - ctx->stream.avail_out,
+                       UPDATE_CRC, ctx->proc_bb);
     }
 
     if (!APR_BRIGADE_EMPTY(ctx->proc_bb)) {
@@ -1651,7 +1623,6 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
     while (!APR_BRIGADE_EMPTY(bb))
     {
         const char *data;
-        apr_bucket *b;
         apr_size_t len;
 
         e = APR_BRIGADE_FIRST(bb);
@@ -1673,8 +1644,7 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
              * fails, whereas in the deflate case you can empty a filled output
              * buffer and call it again until no more output can be created.
              */
-            flush_libz_buffer(ctx, c, f->c->bucket_alloc, inflate, Z_SYNC_FLUSH,
-                              UPDATE_CRC);
+            flush_libz_buffer(ctx, c, inflate, Z_SYNC_FLUSH, UPDATE_CRC);
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01398)
                           "Zlib: Inflated %" APR_UINT64_T_FMT 
                           " to %" APR_UINT64_T_FMT " : URL %s",
@@ -1716,15 +1686,14 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
              * Okay, we've seen the EOS.
              * Time to pass it along down the chain.
              */
-            return ap_pass_brigade(f->next, ctx->bb);
+            rv = ap_pass_brigade(f->next, ctx->bb);
+            apr_brigade_cleanup(ctx->bb);
+            return rv;
         }
 
         if (APR_BUCKET_IS_FLUSH(e)) {
-            apr_status_t rv;
-
             /* flush the remaining data from the zlib buffers */
-            zRC = flush_libz_buffer(ctx, c, f->c->bucket_alloc, inflate,
-                                    Z_SYNC_FLUSH, UPDATE_CRC);
+            zRC = flush_libz_buffer(ctx, c, inflate, Z_SYNC_FLUSH, UPDATE_CRC);
             if (zRC == Z_STREAM_END) {
                 if (ctx->validation_buffer == NULL) {
                     ctx->validation_buffer = apr_pcalloc(f->r->pool,
@@ -1742,6 +1711,7 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
             APR_BUCKET_REMOVE(e);
             APR_BRIGADE_INSERT_TAIL(ctx->bb, e);
             rv = ap_pass_brigade(f->next, ctx->bb);
+            apr_brigade_cleanup(ctx->bb);
             if (rv != APR_SUCCESS) {
                 return rv;
             }
@@ -1858,16 +1828,11 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
 
         while (ctx->stream.avail_in != 0) {
             if (ctx->stream.avail_out == 0) {
-                ctx->stream.next_out = ctx->buffer;
-                len = c->bufferSize - ctx->stream.avail_out;
+                consume_buffer(ctx, c, c->bufferSize, UPDATE_CRC, ctx->bb);
 
-                ctx->crc = crc32(ctx->crc, (const Bytef *)ctx->buffer, len);
-                b = apr_bucket_heap_create((char *)ctx->buffer, len,
-                                           NULL, f->c->bucket_alloc);
-                APR_BRIGADE_INSERT_TAIL(ctx->bb, b);
-                ctx->stream.avail_out = c->bufferSize;
                 /* Send what we have right now to the next filter. */
                 rv = ap_pass_brigade(f->next, ctx->bb);
+                apr_brigade_cleanup(ctx->bb);
                 if (rv != APR_SUCCESS) {
                     return rv;
                 }
