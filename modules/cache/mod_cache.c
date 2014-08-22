@@ -1203,6 +1203,8 @@ static apr_status_t cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
         apr_table_unset(r->headers_in, "If-Range");
         apr_table_unset(r->headers_in, "If-Unmodified-Since");
 
+        /* Currentlty HTTP_NOT_MODIFIED, and after the redirect, handlers won't think to set status to HTTP_OK */
+        r->status = HTTP_OK; 
         ap_internal_redirect(r->unparsed_uri, r);
 
         return APR_SUCCESS;
