@@ -432,6 +432,7 @@
  * 20120211.35 (2.4.10-dev) Add "r", "must_rebind", and last_backend_conn  
                             to util_ldap_connection_t
  * 20120211.36 (2.4.10-dev) Add ap_copy_scoreboard_worker()
+ * 20120211.37 (2.4.11-dev) Add r->trailers_{in,out}
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
@@ -439,7 +440,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20120211
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 36                   /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 37                   /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

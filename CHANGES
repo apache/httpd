@@ -2,6 +2,13 @@
 
 Changes with Apache 2.4.11
 
+  *) SECURITY: CVE-2013-5704 (cve.mitre.org)
+     core: HTTP trailers could be used to replace HTTP headers
+     late during request processing, potentially undoing or
+     otherwise confusing modules that examined or modified
+     request headers earlier.  Adds "MergeTrailers" directive to restore
+     legacy behavior.  [Edward Lu, Yann Ylavic, Joe Orton, Eric Covener]
+
   *) mod_lua: Don't quote Expires and Path values. PR 56734.
      [Keith Mashinter, <kmashint yahoo com>]
 
@@ -248,7 +255,6 @@ Changes with Apache 2.4.10
 
   *) mod_lua: More verbose error logging when a handler function cannot be
      found. [Daniel Gruno]
-
 
 Changes with Apache 2.4.9
 
