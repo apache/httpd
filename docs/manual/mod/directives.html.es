@@ -293,6 +293,7 @@
 <li><a href="mod_mem_cache.html#mcacheminobjectsize">MCacheMinObjectSize</a></li>
 <li><a href="mod_mem_cache.html#mcacheremovalalgorithm">MCacheRemovalAlgorithm</a></li>
 <li><a href="mod_mem_cache.html#mcachesize">MCacheSize</a></li>
+<li><a href="core.html#mergetrailers">MergeTrailers</a></li>
 <li><a href="mod_cern_meta.html#metadir">MetaDir</a></li>
 <li><a href="mod_cern_meta.html#metafiles">MetaFiles</a></li>
 <li><a href="mod_cern_meta.html#metasuffix">MetaSuffix</a></li>
