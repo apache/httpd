@@ -85,6 +85,23 @@ static apr_status_t bail_out_on_error(http_ctx_t *ctx,
     apr_bucket_brigade *bb = ctx->bb;
 
     apr_brigade_cleanup(bb);
+
+    if (f->r->proxyreq == PROXYREQ_RESPONSE) {
+        switch (http_error) {
+        case HTTP_REQUEST_ENTITY_TOO_LARGE:
+            return APR_ENOSPC;
+
+        case HTTP_REQUEST_TIME_OUT:
+            return APR_INCOMPLETE;
+
+        case HTTP_NOT_IMPLEMENTED:
+            return APR_ENOTIMPL;
+
+        default:
+            return APR_EGENERAL;
+        }
+    }
+
     e = ap_bucket_error_create(http_error,
                                NULL, f->r->pool,
                                f->c->bucket_alloc);
@@ -441,11 +458,11 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
             if (rv != APR_SUCCESS || ctx->remaining < 0) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, f->r, "Error reading first chunk %s ", 
                               (ctx->remaining < 0) ? "(overflow)" : "");
-                ctx->remaining = 0; /* Reset it in case we have to
-                                     * come back here later */
-                if (APR_STATUS_IS_TIMEUP(rv)) { 
+                if (APR_STATUS_IS_TIMEUP(rv) || ctx->remaining > 0) {
                     http_error = HTTP_REQUEST_TIME_OUT;
                 }
+                ctx->remaining = 0; /* Reset it in case we have to
+                                     * come back here later */
                 return bail_out_on_error(ctx, f, http_error);
             }
 
@@ -489,6 +506,9 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                         return APR_EAGAIN;
                     }
                     /* If we get an error, then leave */
+                    if (rv == APR_EOF) {
+                        return APR_INCOMPLETE;
+                    }
                     if (rv != APR_SUCCESS) {
                         return rv;
                     }
@@ -542,11 +562,11 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                 if (rv != APR_SUCCESS || ctx->remaining < 0) {
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, f->r, "Error reading chunk %s ", 
                                   (ctx->remaining < 0) ? "(overflow)" : "");
-                    ctx->remaining = 0; /* Reset it in case we have to
-                                         * come back here later */
-                    if (APR_STATUS_IS_TIMEUP(rv)) { 
+                    if (APR_STATUS_IS_TIMEUP(rv) || ctx->remaining > 0) {
                         http_error = HTTP_REQUEST_TIME_OUT;
                     }
+                    ctx->remaining = 0; /* Reset it in case we have to
+                                         * come back here later */
                     return bail_out_on_error(ctx, f, http_error);
                 }
 
@@ -569,6 +589,10 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
 
     rv = ap_get_brigade(f->next, b, mode, block, readbytes);
 
+    if (rv == APR_EOF && ctx->state != BODY_NONE &&
+            ctx->remaining > 0) {
+        return APR_INCOMPLETE;
+    }
     if (rv != APR_SUCCESS) {
         return rv;
     }
@@ -584,8 +608,10 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
         ctx->remaining -= totalread;
         if (ctx->remaining > 0) {
             e = APR_BRIGADE_LAST(b);
-            if (APR_BUCKET_IS_EOS(e))
-                return APR_EOF;
+            if (APR_BUCKET_IS_EOS(e)) {
+                apr_bucket_delete(e);
+                return APR_INCOMPLETE;
+            }
         }
     }
 
