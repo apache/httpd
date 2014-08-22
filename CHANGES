@@ -21,15 +21,18 @@ Changes with Apache 2.2.28
      Fix a race condition in scoreboard handling, which could lead to
      a heap buffer overflow.  [Joe Orton, Eric Covener, Jeff Trawick]
  
-  *) mod_deflate: Handle Zlib header and validation bytes received in multiple
-     chunks. PR 46146. [Yann Ylavic]
-
   *) SECURITY: CVE-2013-5704 (cve.mitre.org)
      core: HTTP trailers could be used to replace HTTP headers
      late during request processing, potentially undoing or
      otherwise confusing modules that examined or modified
      request headers earlier.  Adds "MergeTrailers" directive to restore
      legacy behavior.  [Edward Lu, Yann Ylavic, Joe Orton, Eric Covener]
+
+  *) core: Detect incomplete request and response bodies, log an error and
+     forward it to the underlying filters. PR 55475.  [Yann Ylavic]
+
+  *) mod_deflate: Handle Zlib header and validation bytes received in multiple
+     chunks. PR 46146. [Yann Ylavic]
 
   *) mod_proxy: Don't reuse a SSL backend connection whose requested SNI
      differs. PR 55782.  [Yann Ylavic]
@@ -49,9 +52,6 @@ Changes with Apache 2.2.28
   *) mod_deflate: Don't fail when flushing inflated data to the user-agent
      and that coincides with the end of stream ("Zlib error flushing inflate
      buffer"). PR 56196. [Christoph Fausak <christoph fausak glueckkanja.com>]
-
-  *) core: Detect incomplete request and response bodies, log an error and
-     forward it to the underlying filters. PR 55475.  [Yann Ylavic]
 
   *) mod_cache, mod_disk_cache: With CacheLock enabled, responses with a Vary 
      header might not get the benefit of the thundering herd protection due to 

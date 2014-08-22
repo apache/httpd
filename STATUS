@@ -99,35 +99,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_deflate: Fix reentrance in output and input filters (buffering of
-                  incomplete Zlib header or validation bytes). PR 46146.
-     trunk patch: https://svn.apache.org/r1572655
-                  https://svn.apache.org/r1572663
-                  https://svn.apache.org/r1572668
-                  https://svn.apache.org/r1572669
-                  https://svn.apache.org/r1572670
-                  https://svn.apache.org/r1572671
-                  https://svn.apache.org/r1573224
-                  https://svn.apache.org/r1586745
-                  https://svn.apache.org/r1587594
-                  https://svn.apache.org/r1587639
-                  https://svn.apache.org/r1590509
-                  https://svn.apache.org/r1603156 (partially, CHANGES update)
-                  https://svn.apache.org/r1604353
-                  https://svn.apache.org/r1611725
-     2.4.x patch: https://svn.apache.org/r1604458 (2.4.10)
-     2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-mod_deflate_reentrant_with_CHANGES_v4.patch
-                  (modulo CHANGES)
-     +1: ylavic, wrowe, rpluem
-     ylavic: v4 is now merging correctly after http://svn.apache.org/r1611806
-
-   *) core: Detect incomplete request and response bodies, log an error and
-            forward it to the underlying filters. PR 55475 [Yann Ylavic]
-     trunk patch: http://svn.apache.org/r1538776
-     2.4.x patch: http://svn.apache.org/r1570324 (2.4.8)
-     2.2.x patch: http://people.apache.org/~ylavic/2.2.x-http_filter_incomplete.patch
-                  (modulo CHANGES)
-     +1: ylavic, wrowe, rpluem
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
