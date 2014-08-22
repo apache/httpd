@@ -1011,8 +1011,11 @@ static request_rec *make_fake_req(conn_rec *c, request_rec *r)
     rp->status          = HTTP_OK;
 
     rp->headers_in      = apr_table_make(pool, 50);
+    rp->trailers_in     = apr_table_make(pool, 5);
+
     rp->subprocess_env  = apr_table_make(pool, 50);
     rp->headers_out     = apr_table_make(pool, 12);
+    rp->trailers_out    = apr_table_make(pool, 5);
     rp->err_headers_out = apr_table_make(pool, 5);
     rp->notes           = apr_table_make(pool, 5);
 
@@ -1093,6 +1096,7 @@ static void ap_proxy_read_headers(request_rec *r, request_rec *rr,
     psc = (proxy_server_conf *) ap_get_module_config(sconf, &proxy_module);
 
     r->headers_out = apr_table_make(r->pool, 20);
+    r->trailers_out = apr_table_make(r->pool, 5);
     *pread_len = 0;
 
     /*
@@ -1222,6 +1226,14 @@ apr_status_t ap_proxygetline(apr_bucket_brigade *bb, char *s, int n, request_rec
 #ifndef AP_MAX_INTERIM_RESPONSES
 #define AP_MAX_INTERIM_RESPONSES 10
 #endif
+
+static int add_trailers(void *data, const char *key, const char *val)
+{
+    if (val) {
+        apr_table_add((apr_table_t*)data, key, val);
+    }
+    return 1;
+}
 
 static
 apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
@@ -1734,6 +1746,12 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                     }
                     /* next time try a non-blocking read */
                     mode = APR_NONBLOCK_READ;
+
+                    if (!apr_is_empty_table(backend->r->trailers_in)) {
+                        apr_table_do(add_trailers, r->trailers_out,
+                                backend->r->trailers_in, NULL);
+                        apr_table_clear(backend->r->trailers_in);
+                    }
 
                     apr_brigade_length(bb, 0, &readbytes);
                     backend->worker->s->read += readbytes;

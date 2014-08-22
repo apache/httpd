@@ -667,6 +667,10 @@ typedef struct {
 #define AP_TRACE_ENABLE    1
 #define AP_TRACE_EXTENDED  2
     int trace_enable;
+#define AP_MERGE_TRAILERS_UNSET    0
+#define AP_MERGE_TRAILERS_ENABLE   1
+#define AP_MERGE_TRAILERS_DISABLE  2
+    int merge_trailers;
 
 } core_server_config;
 

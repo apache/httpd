@@ -4431,4 +4431,23 @@ hostname or IP address</description>
     different sections are combined when a request is received</seealso>
 </directivesynopsis>
 
+<directivesynopsis>
+<name>MergeTrailers</name>
+<description>Determins whether trailers are merged into headers</description>
+<syntax>MergeTrailers [on|off]</syntax>
+<default>MergeTrailers off</default>
+<contextlist><context>server config</context><context>virtual host</context></contextlist>
+<compatibility>2.4.10 and later</compatibility>
+
+<usage>
+    <p>This directive controls whether HTTP trailers are copied into the
+    internal representation of HTTP headers. This mergeing occurs when the 
+    request body has been completely consumed, long after most header 
+    processing would have a chance to examine or modify request headers.</p>
+    <p>This option is provided for compatibility with releases prior to 2.4.10,
+    where trailers were always merged.</p>
+</usage>
+</directivesynopsis>
+
+
 </modulesynopsis>
