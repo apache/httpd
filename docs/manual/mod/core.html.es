@@ -92,6 +92,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#maxrangeoverlaps">MaxRangeOverlaps</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#maxrangereversals">MaxRangeReversals</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#maxranges">MaxRanges</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#mergetrailers">MergeTrailers</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mutex">Mutex</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#namevirtualhost">NameVirtualHost</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#options">Options</a></li>
@@ -2826,6 +2827,19 @@ resource </td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilidad:</a></th><td>Available in Apache HTTP Server 2.3.15 and later</td></tr>
+</table><p>The documentation for this directive has
+            not been translated yet. Please have a look at the English
+            version.</p></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="MergeTrailers" id="MergeTrailers">MergeTrailers</a> <a name="mergetrailers" id="mergetrailers">Directiva</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Determins whether trailers are merged into headers</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>MergeTrailers [on|off]</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Valor por defecto:</a></th><td><code>MergeTrailers off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilidad:</a></th><td>2.4.10 and later</td></tr>
 </table><p>The documentation for this directive has
             not been translated yet. Please have a look at the English
             version.</p></div>
