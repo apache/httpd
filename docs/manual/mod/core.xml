@@ -4541,7 +4541,6 @@ for external processing, e.g. to a CGI script.</p>
 <syntax>MergeTrailers [on|off]</syntax>
 <default>MergeTrailers off</default>
 <contextlist><context>server config</context><context>virtual host</context></contextlist>
-<compatibility>2.4.10 and later</compatibility>
 
 <usage>
     <p>This directive controls whether HTTP trailers are copied into the
