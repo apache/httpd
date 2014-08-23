@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1584684 -->
+<!-- English Revision : 1619884 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -289,6 +289,14 @@ d'Apache</a></seealso>
 	nul, et il correspond &agrave; la combinaison des formats %I et %O.
 	<module>mod_logio</module> doit &ecirc;tre charg&eacute; pour pouvoir
 	utiliser ce format.</td></tr>
+	
+    <tr><td><code>%{<var>VARNAME</var>}^ti</code></td>
+        <td>Le contenu de <code><var>VARNAME</var>:</code> dans les
+	param&egrave;tres de la requ&ecirc;te envoy&eacute;e au serveur.</td></tr>
+
+    <tr><td><code>%{<var>VARNAME</var>}^to</code></td>
+        <td>Le contenu de <code><var>VARNAME</var>:</code> dans les
+	param&egrave;tres de la r&eacute;ponse envoy&eacute;e par le serveur.</td></tr>
 
     </table>
 
