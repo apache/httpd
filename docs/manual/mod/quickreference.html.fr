@@ -801,7 +801,8 @@ simultanément</td></tr>
 inactifs</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#maxsparethreads">MaxSpareThreads <var>nombre</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Nombre maximum de threads inactifs</td></tr>
 <tr><td><a href="mpm_netware.html#maxthreads">MaxThreads <var>nombre</var></a></td><td> 2048 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Définit le nombre maximum de threads esclaves</td></tr>
-<tr class="odd"><td><a href="core.html#mergetrailers">MergeTrailers [on|off]</a></td><td> off </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Determins whether trailers are merged into headers</td></tr>
+<tr class="odd"><td><a href="core.html#mergetrailers">MergeTrailers [on|off]</a></td><td> off </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Détermine si les données supplémentaires (trailers) sont
+fusionnées avec les en-têtes</td></tr>
 <tr><td><a href="mod_cern_meta.html#metadir">MetaDir <var>répertoire</var></a></td><td> .web </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Le nom du répertoire où trouver les fichiers de
 métainformations dans le style du CERN</td></tr>
 <tr class="odd"><td><a href="mod_cern_meta.html#metafiles">MetaFiles on|off</a></td><td> off </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Active le traitement des métafichiers du CERN</td></tr>

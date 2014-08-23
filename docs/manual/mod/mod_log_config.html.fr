@@ -261,6 +261,12 @@ d'Apache</a></li>
 	nul, et il correspond à la combinaison des formats %I et %O.
 	<code class="module"><a href="../mod/mod_logio.html">mod_logio</a></code> doit être chargé pour pouvoir
 	utiliser ce format.</td></tr>
+<tr><td><code>%{<var>VARNAME</var>}^ti</code></td>
+        <td>Le contenu de <code><var>VARNAME</var>:</code> dans les
+	paramètres de la requête envoyée au serveur.</td></tr>
+<tr class="odd"><td><code>%{<var>VARNAME</var>}^to</code></td>
+        <td>Le contenu de <code><var>VARNAME</var>:</code> dans les
+	paramètres de la réponse envoyée par le serveur.</td></tr>
 </table>
 
     <h3><a name="modifiers" id="modifiers">Modificateurs</a></h3>
