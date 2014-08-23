@@ -3661,7 +3661,7 @@ hostname or IP address</description>
 <syntax>MergeTrailers [on|off]</syntax>
 <default>MergeTrailers off</default>
 <contextlist><context>server config</context><context>virtual host</context></contextlist>
-<compatibility>2.4.10 and later</compatibility>
+<compatibility>2.2.29 and later</compatibility>
 
 <usage>
     <p>This directive controls whether HTTP trailers are copied into the
