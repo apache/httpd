@@ -2375,7 +2375,7 @@ resource </td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>2.4.10 and later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>2.2.29 and later</td></tr>
 </table>
     <p>This directive controls whether HTTP trailers are copied into the
     internal representation of HTTP headers. This mergeing occurs when the 
