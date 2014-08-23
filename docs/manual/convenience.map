@@ -250,6 +250,7 @@ mcachemaxstreamingbuffer	mod/mod_mem_cache.html#mcachemaxstreamingbuffer
 mcacheminobjectsize	mod/mod_mem_cache.html#mcacheminobjectsize
 mcacheremovalalgorithm	mod/mod_mem_cache.html#mcacheremovalalgorithm
 mcachesize	mod/mod_mem_cache.html#mcachesize
+mergetrailers	mod/core.html#mergetrailers
 metadir	mod/mod_cern_meta.html#metadir
 metafiles	mod/mod_cern_meta.html#metafiles
 metasuffix	mod/mod_cern_meta.html#metasuffix
