@@ -269,6 +269,7 @@ heartbeatstorage	mod/mod_heartmonitor.html#heartbeatstorage
 hostnamelookups	mod/core.html#hostnamelookups
 identitycheck	mod/mod_ident.html#identitycheck
 identitychecktimeout	mod/mod_ident.html#identitychecktimeout
+idleshutdown	mod/mod_systemd.html#idleshutdown
 if	mod/core.html#if
 ifdefine	mod/core.html#ifdefine
 ifmodule	mod/core.html#ifmodule
