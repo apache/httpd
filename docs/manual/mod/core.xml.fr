@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1590308 -->
+<!-- English Revision : 1619884 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -4867,6 +4867,29 @@ qu'utilise le serveur HTTP Apache</a></seealso>
 &lt;Directory&gt;, &lt;Location&gt; et &lt;Files&gt;</a> pour une
 explication de la mani&egrave;re dont ces diff&eacute;rentes sections se combinent
 entre elles &agrave; la r&eacute;ception d'une requ&ecirc;te</seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>MergeTrailers</name>
+<description>D&eacute;termine si les donn&eacute;es suppl&eacute;mentaires (trailers) sont
+fusionn&eacute;es avec les en-t&ecirc;tes</description>
+<syntax>MergeTrailers [on|off]</syntax>
+<default>MergeTrailers off</default>
+<contextlist><context>server config</context><context>virtual host</context></contextlist>
+<compatibility>Disponible &agrave; partir de la version 2.4.10 du serveur HTTP
+Apache</compatibility>
+
+<usage>
+    <p>Cette directive permet de contr&ocirc;ler la fusion des donn&eacute;es HTTP
+    suppl&eacute;mentaires (trailers) avec la repr&eacute;sentation interne des
+    en-t&ecirc;tes. Cette fusion intervient lorsque le corps de la requ&ecirc;te a
+    &eacute;t&eacute; enti&egrave;rement re&ccedil;u, bien longtemps apr&egrave;s que la majeure partie du
+    traitement des en-t&ecirc;tes ait une chance de pouvoir examiner ou
+    modifier les en-t&ecirc;tes de la requ&ecirc;te.</p>
+    <p>Cette option a &eacute;t&eacute; introduite dans un souci de compatibilit&eacute; avec
+    les versions ant&eacute;rieures &agrave; 2.4.10, o&ugrave; les donn&eacute;es suppl&eacute;mentaires
+    &eacute;taient syst&eacute;matiquement fusionn&eacute;es avec les en-t&ecirc;tes de la requ&ecirc;te.</p>
+</usage>
 </directivesynopsis>
 
 </modulesynopsis>
