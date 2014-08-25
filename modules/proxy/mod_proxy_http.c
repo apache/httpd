@@ -1640,11 +1640,11 @@ int ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                 const char *tmp;
                 /* Add minimal headers needed to allow http_in filter
                  * detecting end of body without waiting for a timeout. */
-                if ((tmp = apr_table_get(r->headers_out, "Content-Length"))) {
-                    apr_table_set(backend->r->headers_in, "Content-Length", tmp);
-                }
-                else if ((tmp = apr_table_get(r->headers_out, "Transfer-Encoding"))) {
+                if ((tmp = apr_table_get(r->headers_out, "Transfer-Encoding"))) {
                     apr_table_set(backend->r->headers_in, "Transfer-Encoding", tmp);
+                }
+                else if ((tmp = apr_table_get(r->headers_out, "Content-Length"))) {
+                    apr_table_set(backend->r->headers_in, "Content-Length", tmp);
                 }
                 else if (te) {
                     apr_table_set(backend->r->headers_in, "Transfer-Encoding", te);
