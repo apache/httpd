@@ -220,6 +220,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      hang until proxy timeout.  PR53420
      Regression from 2.2. It was introduced by r912063 in order to fix PR41646.
      trunk patch: http://svn.apache.org/r1615289
+                  http://svn.apache.org/r1620324
      2.4.x patch: trunk works (modulo CHANGES)
      +1: rjung
 
