@@ -2097,10 +2097,10 @@ static int worker_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
                              "apr_proc_detach failed");
                 return HTTP_INTERNAL_SERVER_ERROR;
             }
-            retained->idle_spawn_rate = apr_palloc(pconf, sizeof(int) * num_buckets);
-            for (i = 0; i< num_buckets; i++) {
-                retained->idle_spawn_rate[i] = 1;
-            }
+        }
+        retained->idle_spawn_rate = apr_palloc(pconf, sizeof(int) * num_buckets);
+        for (i = 0; i< num_buckets; i++) {
+            retained->idle_spawn_rate[i] = 1;
         }
     }
 
