@@ -59,6 +59,75 @@ static int ssl_is_https(conn_rec *c)
     return sslconn && sslconn->ssl;
 }
 
+/* SSLv3 uses 36 bytes for Finishd messages, TLS1.0 12 bytes,
+ * So tls-unique is max 36 bytes, however with tls-server-end-point,
+ * the CB data is the certificate signature, so we use the maximum
+ * hash size known to the library (currently 64).
+ * */
+#define TLS_CB_MAX EVP_MAX_MD_SIZE
+#define TLS_UNIQUE_PREFIX "tls-unique:"
+#define TLS_SERVER_END_POINT_PREFIX "tls-server-end-point:"
+
+static apr_status_t ssl_get_tls_cb(apr_pool_t *p, conn_rec *c, const char *type,
+                                   unsigned char **buf, apr_size_t *size)
+{
+    SSLConnRec *sslconn = myConnConfig(c);
+    const char *prefix;
+    apr_size_t preflen;
+    const unsigned char *data;
+    unsigned char cb[TLS_CB_MAX], *retbuf;
+    unsigned int l = 0;
+    X509 *x = NULL;
+
+    if (!sslconn || !sslconn->ssl) {
+        return APR_EGENERAL;
+    }
+    if (strcEQ(type, "SERVER_TLS_UNIQUE")) {
+        l = SSL_get_peer_finished(sslconn->ssl, cb, TLS_CB_MAX);
+    }
+    else if (strcEQ(type, "CLIENT_TLS_UNIQUE")) {
+        l = SSL_get_finished(sslconn->ssl, cb, TLS_CB_MAX);
+    }
+    else if (strcEQ(type, "SERVER_TLS_SERVER_END_POINT")) {
+        x = SSL_get_certificate(sslconn->ssl);
+    }
+    else if (strcEQ(type, "CLIENT_TLS_SERVER_END_POINT")) {
+        x = SSL_get_peer_certificate(sslconn->ssl);
+    }
+    if (l > 0) {
+        preflen = sizeof(TLS_UNIQUE_PREFIX) -1;
+        prefix = TLS_UNIQUE_PREFIX;
+        data = cb;
+    } 
+    else if (x != NULL) {
+        const EVP_MD *md;
+
+        md = EVP_get_digestbynid(OBJ_obj2nid(x->sig_alg->algorithm));
+        /* Override digest as specified by RFC 5929 section 4.1. */
+        if (md == NULL || md == EVP_md5() || md == EVP_sha1()) {
+            md = EVP_sha256();
+        }
+        if (!X509_digest(x, md, cb, &l)) {
+            return APR_EGENERAL;
+        }
+
+        preflen = sizeof(TLS_SERVER_END_POINT_PREFIX) - 1;
+        prefix = TLS_SERVER_END_POINT_PREFIX;
+        data = cb;
+    } 
+    else {
+        return APR_EGENERAL;
+    }
+
+    retbuf = apr_palloc(p, preflen + l);
+    memcpy(retbuf, prefix, preflen);
+    memcpy(&retbuf[preflen], data, l);
+    *size = preflen + l;
+    *buf = retbuf;
+
+    return APR_SUCCESS;
+}
+
 static const char var_interface[] = "mod_ssl/" AP_SERVER_BASEREVISION;
 static char var_library_interface[] = SSL_LIBRARY_TEXT;
 static char *var_library = NULL;
@@ -107,6 +176,7 @@ void ssl_var_register(apr_pool_t *p)
     char *cp, *cp2;
 
     APR_REGISTER_OPTIONAL_FN(ssl_is_https);
+    APR_REGISTER_OPTIONAL_FN(ssl_get_tls_cb);
     APR_REGISTER_OPTIONAL_FN(ssl_var_lookup);
     APR_REGISTER_OPTIONAL_FN(ssl_ext_list);
 
