@@ -222,7 +222,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1615289
                   http://svn.apache.org/r1620324
      2.4.x patch: trunk works (modulo CHANGES)
-     +1: rjung
+     +1: rjung, ylavic
 
    * mod_ratelimit: Drop severity of AH01455 and AH01457 (ap_pass_brigade
      failed) messages from ERROR to TRACE1.  Other filters do not bother
