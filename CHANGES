@@ -1,5 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
+  
+  *) mod_ssl: Add optional function "ssl_get_tls_cb" to allow support
+     for channel bindings.  [Simo Sorce <simo redhat.com>]
 
   *) mod_cache: Avoid sending 304 responses during failed revalidations
      PR56881. [Eric Covener]
