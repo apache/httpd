@@ -76,6 +76,15 @@ APR_DECLARE_OPTIONAL_FN(apr_array_header_t *, ssl_ext_list,
  * is using SSL/TLS. */
 APR_DECLARE_OPTIONAL_FN(int, ssl_is_https, (conn_rec *));
 
+/** A function that returns the TLS channel binding data as per
+ * RFC5929.  A buffer containing the Channel Binding Token for the
+ * given type will be allocated from the pool and returned to the
+ * caller, along with the size.  Returns APR_SUCCESS on success; buf
+ * and size are not adjusted on error. */
+APR_DECLARE_OPTIONAL_FN(apr_status_t, ssl_get_tls_cb,
+                        (apr_pool_t *p, conn_rec *c, const char *type,
+                         unsigned char **buf, apr_size_t *size));
+
 /** The ssl_proxy_enable() and ssl_engine_disable() optional functions
  * are used by mod_proxy to enable use of SSL for outgoing
  * connections. */
