@@ -18,28 +18,9 @@
    well as the fact that the bundled versions are up-to-date: 
    autoconf 2.52 and (g)libtool 1.4.2.
 
-   Earlier versions of OS X are not so fortunate, and the bundled tools
-   are not only older versions, but also, for the most part, do not work
-   well.  If you are interested in developing under Darwin, we
-   recommend that you obtain and install replacement versions of what
-   are normally installed on Darwin (and OS X, as of v10.1.5).  If
-   you build your own versions of autoconf 2.52 and libtool 1.4.2, be
-   aware that there are some Darwin specific patches to the official
-   code that still must be applied for them to fully work.  A useful
-   page to check out is:
-
-      http://fink.sourceforge.net/doc/porting/libtool.php
-
-   Pier Fumagalli also provides pre-built Darwin packages of the
-   patched autoconf and libtool suites, available at:
-
-      http://www.apache.org/~pier/macosx/
-
    You will note that GNU libtool should actually be installed as
    glibtool, to avoid conflict with a Darwin program of the same
-   name.  Pier's packages have this change already.  All files are
-   installed under /usr/local/ so to use these versions, and be sure
-   that /usr/local/bin is earlier in your PATH.
+   name.
 
    There have been some reports that autoconf 2.52 prevents Apache's
    build system from correctly handling passing multi-value envvars
@@ -56,11 +37,9 @@
    This is a known issue and will be fixed in a later version of the
    autoconf suite. These errors can be safely ignored.
 
-   With Darwin 10, the default C compiler (gcc) will try to build
-   multi-architecture bundles. This causes problems with APR, which
-   needs to know various data-type sizes which it assumes are universal
-   for platforms. Until this is fully fixed, we recommend using the
-   '-arch i386' gcc option when building both Apache and APR.
+   For later versions of OS X, (10.8 and 10.9), be sure to have Xcode
+   AND Xcode Command Line Tools installed. httpd will built both with
+   gcc and clang.
    
 ==========
   FreeBSD:
