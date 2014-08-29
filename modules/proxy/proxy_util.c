@@ -1733,7 +1733,8 @@ PROXY_DECLARE(char *) ap_proxy_define_worker(apr_pool_t *p,
 
     ptr = apr_uri_unparse(p, &uri, APR_URI_UNP_REVEALPASSWORD);
     if (PROXY_STRNCPY(wshared->name, ptr) != APR_SUCCESS) {
-        return apr_psprintf(p, "worker name (%s) too long", ptr);
+        ap_log_error(APLOG_MARK, APLOG_ALERT, 0, ap_server_conf, APLOGNO(2808)
+        "Alert! worker name (%s) too long; truncated to: %s", ptr, wshared->name);
     }
     if (PROXY_STRNCPY(wshared->scheme, uri.scheme) != APR_SUCCESS) {
         return apr_psprintf(p, "worker scheme (%s) too long", uri.scheme);
