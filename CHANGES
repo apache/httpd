@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
-  
+
+  *) mod_proxy: Now allow for 191 character worker names, with non-fatal
+     errors if name is truncated. PR53218. [Jim Jagielski]
+
   *) mod_ssl: Add optional function "ssl_get_tls_cb" to allow support
      for channel bindings.  [Simo Sorce <simo redhat.com>]
 
