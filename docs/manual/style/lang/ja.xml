@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE messages SYSTEM "../lang.dtd">
-<!-- English revision: 1.5 -->
+<!-- English revision: 1044720 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -41,8 +41,10 @@
          <!-- Used for the moduleindex -->
         <message id="corefeatures">コア機能と MPM</message>
         <message id="othermodules">他のモジュール</message>
+        <message id="obsoletemodules">旧式のモジュール</message>
 
         <!-- Used for the modulesynopsis and sitemap -->
+        <message id="obsoleteapachemodule">旧式の Apache Module</message>
         <message id="apachemodule">Apache モジュール</message>
         <message id="apachecore">Apache コア機能</message>
         <message id="apachempmcommon">Apache MPM 共通ディレクティブ</message>
@@ -88,21 +90,28 @@
 
         <!-- Used for directive lists -->
         <message id="directives">ディレクティブ</message>
+        <!-- the optional attribute replace-space-with takes a string.
+             if present, the space between <directive name> and 'Directive'
+             in directivesynopsis headings will be replaced by the given string.
+             (see de.xml for an example) -->
         <message id="directive">ディレクティブ</message>
         <message id="nodirectives">このモジュールにディレクティブはありません。</message>
 
         <!-- Used in summaries -->
         <message id="summary">概要</message>
 
+        <!-- Used for translation notes -->
+        <message id="transnote">訳注:</message>
+
         <!-- Used for glossary link titles -->
-        <message id="glossarylink">see glossary</message>
+        <message id="glossarylink">用語集を参照</message>
 
         <!-- Used in headers and footers -->
         <message id="apachetitle">- Apache HTTP サーバ</message>
         <message id="apachehttpserver">Apache HTTP サーバ
             バージョン &httpd.major;.&httpd.minor;</message>
         <message id="apachedocalt">[APACHE DOCUMENTATION]</message>
-        <message id="search">Google Search</message> <!-- search button -->
+        <message id="search">Google 検索</message> <!-- search button -->
         <message id="index">索引</message> <!-- deprecated -->
         <message id="home">ホーム</message> <!-- deprecated -->
 
@@ -119,17 +128,19 @@
         <message id="sitemap">サイトマップ</message>
 
         <!-- footer line -->
-        <message id="before-license">Licensed under the</message>
-        <message id="after-license"></message>
-        <message id="langavail">Available Languages</message>
+        <message id="before-license">この文書は</message>
+        <message id="after-license">のライセンスで提供されています。</message>
+        <message id="langavail">翻訳済み言語</message>
 
         <!-- not up to date -->
-        <message id="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</message>
+        <message id="outofdate">この日本語訳はすでに古くなっている
+            可能性があります。
+            最近更新された内容を見るには英語版をご覧下さい。
+        </message>
         <!-- directive not translated yet -->
-        <message id="nottranslated">The documentation for this directive has
-            not been translated yet. Please have a look at the English
-            version.</message>
+        <message id="nottranslated">このディレクティブの解説文書は
+            まだ翻訳されていません。英語版をご覧ください。
+            </message>
 
         <!-- retirement -->
         <message id="retired.headline">Please note</message>
