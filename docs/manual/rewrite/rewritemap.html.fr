@@ -163,7 +163,7 @@ RewriteRule ^/product/(.*) /prods.php?id=${product2id:$1|NOTFOUND} [PT]</pre>
 
 
     <p>Nous supposons ici que le script <code>prods.php</code> sait quoi
-    faire lorsqu'il reçoit un argument <code>id=NON-TROUVE</code>, dans
+    faire lorsqu'il reçoit un argument <code>id=NOTFOUND</code>, dans
     le cas où le produit ne se trouve pas dans la table de
     correspondances.</p>
 
