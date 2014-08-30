@@ -252,6 +252,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1527509
      2.4.x patch: trunk works
      +1: jkaluza
+ 
+   * mod_cache: Avoid sending a 304 to an unconditional request during a 
+     revalidation. PR56881
+     trunk patch:  http://svn.apache.org/r1619835 
+                   http://svn.apache.org/r1620461
+     2.4.x patch: trunk works
+     +1: covener
 
 OTHER PROPOSALS
 
