@@ -183,6 +183,16 @@ static apr_status_t reqtimeout_filter(ap_filter_t *f,
         return ap_get_brigade(f->next, bb, mode, block, readbytes);
     }
 
+    if (block == APR_NONBLOCK_READ && mode == AP_MODE_SPECULATIVE) { 
+        /*  The source of these above us in the core is check_pipeline(), which
+         *  is between requests but before this filter knows to reset timeouts 
+         *  during log_transaction().  If they appear elsewhere, just don't 
+         *  check or extend the time since they won't block and we'll see the
+         *  bytes again later
+         */
+        return ap_get_brigade(f->next, bb, mode, block, readbytes);
+    }
+
     if (ccfg->new_timeout > 0) {
         /* set new timeout */
         now = apr_time_now();
