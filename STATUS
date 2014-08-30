@@ -122,7 +122,7 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      +1: trawick, ylavic, covener
 
    * core: Avoid useless warning message when parsing a section guarded by
-     <IfDefine foo> if $(foo) is used within the section.  PR56858
+     <IfDefine foo> if $(foo) is used within the section.  PR56503
      trunk patch: http://svn.apache.org/r1618541
      2.4.x patch: trunk patch works (modulo CHANGES)
      +1: jailletc36, ylavic, covener
