@@ -2589,7 +2589,7 @@ static apr_status_t send_http_connect(proxy_conn_rec *backend,
 
     /* Check for HTTP_OK response status */
     if (status == APR_SUCCESS) {
-        int major, minor;
+        unsigned int major, minor;
         /* Only scan for three character status code */
         char code_str[4];
 
@@ -2607,7 +2607,7 @@ static apr_status_t send_http_connect(proxy_conn_rec *backend,
                 ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(00950)
                              "send_http_connect: the forward proxy returned code is '%s'",
                              code_str);
-            status = APR_INCOMPLETE;
+                status = APR_INCOMPLETE;
             }
         }
     }
@@ -3529,7 +3529,7 @@ PROXY_DECLARE(int) ap_proxy_create_hdrbrgd(apr_pool_t *p,
 
         /* for sub-requests, ignore freshness/expiry headers */
         if (r->main) {
-            if (    !strcasecmp(headers_in[counter].key, "If-Match")
+            if (   !strcasecmp(headers_in[counter].key, "If-Match")
                 || !strcasecmp(headers_in[counter].key, "If-Modified-Since")
                 || !strcasecmp(headers_in[counter].key, "If-Range")
                 || !strcasecmp(headers_in[counter].key, "If-Unmodified-Since")
