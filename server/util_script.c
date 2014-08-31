@@ -704,8 +704,7 @@ static int getsfunc_BRIGADE(char *buf, int len, void *arg)
             apr_bucket_split(e, src - bucket_data);
         }
         next = APR_BUCKET_NEXT(e);
-        APR_BUCKET_REMOVE(e);
-        apr_bucket_destroy(e);
+        apr_bucket_delete(e);
         e = next;
     }
     *dst = 0;
