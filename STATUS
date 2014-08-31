@@ -101,14 +101,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_proxy_http: Proxy responses with error status and "ProxyErrorOverride On"
-     hang until proxy timeout.  PR53420
-     Regression from 2.2. It was introduced by r912063 in order to fix PR41646.
-     trunk patch: http://svn.apache.org/r1615289
-                  http://svn.apache.org/r1620324
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: rjung, ylavic, covener
-
    * mod_proxy_fcgi: Fix faulty logging of large amounts of stderr from the
      application.  PR 56858.
      trunk patch: http://svn.apache.org/r1618401
