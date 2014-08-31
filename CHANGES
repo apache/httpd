@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.11
 
+  *) mod_proxy_fcgi: Fix faulty logging of large amounts of stderr from the
+     application.  PR 56858.  [Manuel Mausz <manuel-asf mausz.at>]
+
   *) mod_proxy_http: Proxy responses with error status and
      "ProxyErrorOverride On" hang until proxy timeout.
      PR53420 [Rainer Jung]

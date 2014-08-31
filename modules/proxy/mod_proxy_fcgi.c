@@ -663,7 +663,7 @@ recv_again:
                 /* TODO: Should probably clean up this logging a bit... */
                 if (clen) {
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01071)
-                                  "Got error '%s'", iobuf);
+                                  "Got error '%.*s'", (int)readbuflen, iobuf);
                 }
 
                 if (clen > readbuflen) {
