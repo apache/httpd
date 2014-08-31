@@ -2,6 +2,10 @@
 
 Changes with Apache 2.4.11
 
+  *) mod_proxy_http: Proxy responses with error status and
+     "ProxyErrorOverride On" hang until proxy timeout.
+     PR53420 [Rainer Jung]
+
   *) SECURITY: CVE-2013-5704 (cve.mitre.org)
      core: HTTP trailers could be used to replace HTTP headers
      late during request processing, potentially undoing or
