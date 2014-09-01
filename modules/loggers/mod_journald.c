@@ -114,9 +114,9 @@ static void journald_log(apr_pool_t *pool, const char *log,
     /* Adds new entry to iovec if previous additions were successful. */
 #define IOVEC_ADD_LEN(FORMAT, VAR, LEN) \
     if (rv == APR_SUCCESS && iov_size < MAX_ENTRIES) { \
-        if ((rv = iovec_add_entry(subpool, &iov[iov_size], FORMAT, LEN, VAR)) \
-            == APR_SUCCESS) \
-                iov_size++; \
+        rv = iovec_add_entry(subpool, &iov[iov_size], FORMAT, LEN, VAR); \
+        if (rv == APR_SUCCESS) \
+            iov_size++; \
     }
 #define IOVEC_ADD(FORMAT, VAR) IOVEC_ADD_LEN(FORMAT, VAR, -1)
 
