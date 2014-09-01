@@ -1707,7 +1707,7 @@ static void set_language_quality(negotiation_state *neg, var_rec *variant)
              * we are allowed to use the prefix of in HTTP/1.1
              */
             char *lang = ((char **) (variant->content_languages->elts))[j];
-            int idx = -1;
+            int idx;
 
             /* If we wish to fallback or
              * we use our own LanguagePriority index.
