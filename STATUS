@@ -235,6 +235,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      +1: covener
 
+   * core: Add missing va_end spotted by cppcheck
+     various: Silent some cppcheck warnings
+     trunk patch: http://svn.apache.org/r1619297 
+                  http://svn.apache.org/r1621806
+     2.4.x patch: trunk works (except for mod_journald which is not part of 2.4.x)
+     +1: jailletc36
+
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
