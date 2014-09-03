@@ -4,7 +4,7 @@ Changes with Apache 2.4.11
 
   *) core: Avoid useless warning message when parsing a section guarded by
      <IfDefine foo> if $(foo) is used within the section.
-     PR 56858 [Christophe Jaillet]
+     PR 56503 [Christophe Jaillet]
 
   *) mod_proxy_fcgi: Fix faulty logging of large amounts of stderr from the
      application.  PR 56858.  [Manuel Mausz <manuel-asf mausz.at>]
