@@ -31,6 +31,13 @@
 <a href="../mod/mod_rewrite.html">reference documentation</a>. It provides
 a few advanced techniques using mod_rewrite.</p>
 
+<!--
+I question whether anything remailing in this document qualifies as
+"advanced". It's probably time to take inventory of the examples that we
+have in the various docs, and consider a reorg of the stuff in this
+directory. Again.
+-->
+
 <note type="warning">Note that many of these examples won't work unchanged in your
 particular server configuration, so it's important that you understand
 them, rather than merely cutting and pasting the examples into your
