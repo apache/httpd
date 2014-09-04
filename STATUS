@@ -242,6 +242,20 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (except for mod_journald which is not part of 2.4.x)
      +1: jailletc36
 
+   * mod_proxy: Increase limits for worker names, routes and
+     worker host names. Make worker name truncation a non-fatal
+     error.
+     mod_slotmem: Increase log level for some originally
+     debug messages.
+     trunk patch: http://svn.apache.org/r1540318
+                  http://svn.apache.org/r1621367
+                  http://svn.apache.org/r1621372
+                  http://svn.apache.org/r1621373
+                  http://svn.apache.org/r1621382
+     2.4.x patch: trunk works (adjust CHANGES) for convenience:
+                  http://people.apache.org/~rjung/patches/proxy-worker-max-name-2_4.patch
+     +1: rjung
+
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
