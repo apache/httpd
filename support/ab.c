@@ -220,7 +220,7 @@ typedef enum {
     STATE_READ
 } connect_state_e;
 
-#define CBUFFSIZE (2048)
+#define CBUFFSIZE (8192)
 
 struct connection {
     apr_pool_t *ctx;
@@ -340,7 +340,7 @@ BIO *bio_out,*bio_err;
 apr_time_t start, lasttime, stoptime;
 
 /* global request (and its length) */
-char _request[2048];
+char _request[8192];
 char *request = _request;
 apr_size_t reqlen;
 
@@ -1516,12 +1516,14 @@ static void read_connection(struct connection * c)
                  * this is first time, extract some interesting info
                  */
                 char *p, *q;
+                size_t len = 0;
                 p = strstr(c->cbuff, "Server:");
                 q = servername;
                 if (p) {
                     p += 8;
-                    while (*p > 32)
-                    *q++ = *p++;
+                    /* -1 to not overwrite last '\0' byte */
+                    while (*p > 32 && len++ < sizeof(servername) - 1)
+                        *q++ = *p++;
                 }
                 *q = 0;
             }
