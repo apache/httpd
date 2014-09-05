@@ -21,9 +21,9 @@
  * @file  mod_watchdog.h
  * @brief Watchdog module for Apache
  *
- * @defgroup MOD_WATCHDOG watchdog
+ * @defgroup MOD_WATCHDOG mod_watchdog
  * @ingroup  APACHE_MODS
- * \@{
+ * @{
  */
 
 #include "httpd.h"
@@ -210,4 +210,4 @@ APR_DECLARE_EXTERNAL_HOOK(ap, AP_WD, int, watchdog_step, (
 #endif
 
 #endif /* MOD_WATCHDOG_H */
-/** \@} */
+/** @} */

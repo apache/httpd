@@ -1416,7 +1416,7 @@ static char *terminate_description(autoindex_config_rec *d, char *desc,
                                    apr_int32_t autoindex_opts, int desc_width)
 {
     int maxsize = desc_width;
-    register int x;
+    int x;
 
     /*
      * If there's no DescriptionWidth in effect, default to the old
