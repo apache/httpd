@@ -500,9 +500,9 @@ static apr_status_t lua_output_filter_handle(ap_filter_t *f, apr_bucket_brigade 
                 ap_remove_output_filter(f);
                 apr_brigade_cleanup(pbbIn);
                 apr_brigade_cleanup(ctx->tmpBucket);
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                                    "lua: Error while executing filter: %s",
-                        lua_tostring(L, -1));
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02663)
+                              "lua: Error while executing filter: %s",
+                              lua_tostring(L, -1));
                 return HTTP_INTERNAL_SERVER_ERROR;
             }
         }
@@ -2003,7 +2003,7 @@ static int lua_post_config(apr_pool_t *pconf, apr_pool_t *plog,
     /* Create shared memory space */
     rs = apr_temp_dir_get(&tempdir, pconf);
     if (rs != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, rs, s,
+        ap_log_error(APLOG_MARK, APLOG_ERR, rs, s, APLOGNO(02664)
                  "mod_lua IVM: Failed to find temporary directory");
         return HTTP_INTERNAL_SERVER_ERROR;
     }
@@ -2012,7 +2012,7 @@ static int lua_post_config(apr_pool_t *pconf, apr_pool_t *plog,
     rs = apr_shm_create(&lua_ivm_shm, sizeof(apr_pool_t**),
                     (const char *) lua_ivm_shmfile, pconf);
     if (rs != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, rs, s,
+        ap_log_error(APLOG_MARK, APLOG_ERR, rs, s, APLOGNO(02665)
             "mod_lua: Failed to create shared memory segment on file %s",
                      lua_ivm_shmfile);
         return HTTP_INTERNAL_SERVER_ERROR;

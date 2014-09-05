@@ -1542,7 +1542,7 @@ apr_status_t ssl_init_CheckServers(server_rec *base_server, apr_pool_t *p)
         klen = strlen(key);
 
         if ((ps = (server_rec *)apr_hash_get(table, key, klen))) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, base_server,
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, base_server, APLOGNO(02662)
                          "Init: SSL server IP/port conflict: "
                          "%s (%s:%d) vs. %s (%s:%d)",
                          ssl_util_vhostid(p, s),
