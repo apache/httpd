@@ -242,6 +242,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (except for mod_journald which is not part of 2.4.x)
      +1: jailletc36
 
+   * mod_proxy: Make worker name truncation a non-fatal error.
+     trunk patch: http://svn.apache.org/r1621367
+                  http://svn.apache.org/r1621372
+     2.4.x patch: http://people.apache.org/~jim/patches/worker-trunc.patch
+     +1: jim
+
+   * mod_slotmem: Increase log level for some originally debug messages.
+     trunk patch: http://svn.apache.org/r1621373
+     2.4.x patch: trunk works
+                  http://people.apache.org/~jim/patches/slotmem-loglevel.patch
+     +1: jim
+
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
