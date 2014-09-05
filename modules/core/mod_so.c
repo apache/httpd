@@ -209,8 +209,8 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
     for (i = 0; i < sconf->loaded_modules->nelts; i++) {
         modi = &modie[i];
         if (modi->name != NULL && strcmp(modi->name, modname) == 0) {
-            ap_log_perror(APLOG_MARK, APLOG_WARNING, 0,
-                          cmd->pool, APLOGNO(01574) "module %s is already loaded, skipping",
+            ap_log_perror(APLOG_MARK, APLOG_WARNING, 0, cmd->pool, APLOGNO(01574)
+                          "module %s is already loaded, skipping",
                           modname);
             return NULL;
         }

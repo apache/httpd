@@ -327,7 +327,7 @@ DBD_DECLARE_NONSTD(void) ap_dbd_prepare(server_rec *s, const char *query,
 
     if (apr_hash_get(svr->cfg->queries, label, APR_HASH_KEY_STRING)
         && strcmp(query, "")) {
-        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(02653)
                      "conflicting SQL statements with label %s", label);
     }
 
@@ -799,7 +799,8 @@ DBD_DECLARE_NONSTD(ap_dbd_t*) ap_dbd_open(apr_pool_t *pool, server_rec *s)
 
     /* If nothing is configured, we shouldn't be here */
     if (cfg->name == no_dbdriver) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "not configured");
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(02654)
+                     "not configured");
         return NULL;
     }
 
@@ -822,7 +823,7 @@ DBD_DECLARE_NONSTD(ap_dbd_t*) ap_dbd_open(apr_pool_t *pool, server_rec *s)
 
     rv = apr_reslist_acquire(group->reslist, (void*) &rec);
     if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(02655)
                      "Failed to acquire DBD connection from pool!");
         return NULL;
     }

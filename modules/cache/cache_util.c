@@ -443,7 +443,7 @@ int ap_cache_check_no_cache(cache_request_rec *cache, request_rec *r)
             return 0;
         }
         else {
-            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(02657)
                     "Incoming request is asking for an uncached version of "
                     "%s, but we have been configured to ignore it and serve "
                     "cached content anyway", r->unparsed_uri);
@@ -483,7 +483,7 @@ int ap_cache_check_no_store(cache_request_rec *cache, request_rec *r)
             return 0;
         }
         else {
-            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(02658)
                     "Incoming request is asking for a no-store version of "
                     "%s, but we have been configured to ignore it and serve "
                     "cached content anyway", r->unparsed_uri);
