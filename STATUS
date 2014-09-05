@@ -101,6 +101,44 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * Easy patches - synch with trunk
+        - mod_watchdog: Rename module name in doxygen + partly revert r832442 which
+                        skipped doxygen doc generation for 'mod_watchdog.h'
+        - mod_proxy: s/apr_pstrndup/apr_pstrmemdup/ to save a few cycles
+        - mod_proxy_wstunnel: Use ap_remove_input_filter_byhandle instead of
+                              duplicating the code.
+        - Remove some 'register' in variable declaration.
+        - core: Remove some 'register' in variable declaration.
+                Save a few cycles by calling 'apr_isalnum' instead of
+                'apr_isalpha' and 'apr_isdigit'.
+        - Do not use deprecated define. s/MODULE_MAGIC_NUMBER/MODULE_MAGIC_NUMBER_MAJOR/
+     trunk patch:
+        http://svn.apache.org/r1597642
+        http://svn.apache.org/r1608999
+        http://svn.apache.org/r1605207
+        http://svn.apache.org/r1610366
+        http://svn.apache.org/r1610353
+        http://svn.apache.org/r1611871
+     2.4.x patch: http://people.apache.org/~jailletc36/backport9.patch
+     +1: jailletc36, ylavic, jim
+
+   * Add some missing APLOGNO.
+     Refactor some lines to keep APLOGNO on the same line as ap_log_error, when applicable.
+     Split some lines longer than 80.
+     Improve alignment.
+     trunk patch:
+        http://svn.apache.org/r1611978
+        http://svn.apache.org/r1612068
+     2.4.x patch: trunk patch works
+     +1: jailletc36, ylavic, jim
+
+   * mod_ratelimit: Drop severity of AH01455 and AH01457 (ap_pass_brigade
+     failed) messages from ERROR to TRACE1.  Other filters do not bother
+     re-reporting failures from lower level filters.  PR56832.
+     trunk patch: http://svn.apache.org/r1617018
+     2.4.x patch: trunk works
+     +1 covener, ylavic, jim
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -172,49 +210,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch works
      +1: jailletc36
 
-   * Easy patches - synch with trunk
-        - mod_watchdog: Rename module name in doxygen + partly revert r832442 which
-                        skipped doxygen doc generation for 'mod_watchdog.h'
-        - mod_proxy: s/apr_pstrndup/apr_pstrmemdup/ to save a few cycles
-        - mod_proxy_wstunnel: Use ap_remove_input_filter_byhandle instead of
-                              duplicating the code.
-        - Remove some 'register' in variable declaration.
-        - core: Remove some 'register' in variable declaration.
-                Save a few cycles by calling 'apr_isalnum' instead of
-                'apr_isalpha' and 'apr_isdigit'.
-        - Do not use deprecated define. s/MODULE_MAGIC_NUMBER/MODULE_MAGIC_NUMBER_MAJOR/
-     trunk patch:
-        http://svn.apache.org/r1597642
-        http://svn.apache.org/r1608999
-        http://svn.apache.org/r1605207
-        http://svn.apache.org/r1610366
-        http://svn.apache.org/r1610353
-        http://svn.apache.org/r1611871
-     2.4.x patch: http://people.apache.org/~jailletc36/backport9.patch
-     +1: jailletc36, ylavic, jim
-
-   * Add some missing APLOGNO.
-     Refactor some lines to keep APLOGNO on the same line as ap_log_error, when applicable.
-     Split some lines longer than 80.
-     Improve alignment.
-     trunk patch:
-        http://svn.apache.org/r1611978
-        http://svn.apache.org/r1612068
-     2.4.x patch: trunk patch works
-     +1: jailletc36, ylavic, jim
-
    * mod_ldap: 2.4.10 regression: Some authorization searches won't use AuthLDAPBindDN
      which can lead to LDAP authz failurs if AuthLDAPBindDN had extra access. 
      trunk patch: http://svn.apache.org/r1613682
      2.4.x patch: trunk works + CHANGES referencing 2.4.10 regression
      +1: covener, jim
-
-   * mod_ratelimit: Drop severity of AH01455 and AH01457 (ap_pass_brigade
-     failed) messages from ERROR to TRACE1.  Other filters do not bother
-     re-reporting failures from lower level filters.  PR56832.
-     trunk patch: http://svn.apache.org/r1617018
-     2.4.x patch: trunk works
-     +1 covener, ylavic, jim
 
    * authz_core: Let providers defined with AuthzProviderAlias be useable in 
      virtual hosts. PR56870
