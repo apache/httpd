@@ -130,7 +130,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1602989
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-ap_proxy_connect_uds.patch
                   (modulo CHANGES/MMN)
-     +1: ylavic
+     +1: ylavic, jim
 
    * mod_ssl, event: Ensure that the SSL close notify alert is flushed to the client.
                      PR54998.
@@ -191,7 +191,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/r1610353
         http://svn.apache.org/r1611871
      2.4.x patch: http://people.apache.org/~jailletc36/backport9.patch
-     +1: jailletc36, ylavic
+     +1: jailletc36, ylavic, jim
 
    * Add some missing APLOGNO.
      Refactor some lines to keep APLOGNO on the same line as ap_log_error, when applicable.
@@ -201,26 +201,26 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/r1611978
         http://svn.apache.org/r1612068
      2.4.x patch: trunk patch works
-     +1: jailletc36, ylavic
+     +1: jailletc36, ylavic, jim
 
    * mod_ldap: 2.4.10 regression: Some authorization searches won't use AuthLDAPBindDN
      which can lead to LDAP authz failurs if AuthLDAPBindDN had extra access. 
      trunk patch: http://svn.apache.org/r1613682
      2.4.x patch: trunk works + CHANGES referencing 2.4.10 regression
-     +1: covener
+     +1: covener, jim
 
    * mod_ratelimit: Drop severity of AH01455 and AH01457 (ap_pass_brigade
      failed) messages from ERROR to TRACE1.  Other filters do not bother
      re-reporting failures from lower level filters.  PR56832.
      trunk patch: http://svn.apache.org/r1617018
      2.4.x patch: trunk works
-     +1 covener, ylavic
+     +1 covener, ylavic, jim
 
    * authz_core: Let providers defined with AuthzProviderAlias be useable in 
      virtual hosts. PR56870
      trunk patch: http://svn.apache.org/r1618851
      2.4.x patch: trunk works + CHANGES
-     +1 covener
+     +1 covener, jim
 
    * mod_dav: set r->status_line in dav_error_response.
      It's used as argument in next ap_rvputs call. PR 55426.
