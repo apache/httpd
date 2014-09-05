@@ -101,22 +101,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * Add some missing APLOGNO.
-     Refactor some lines to keep APLOGNO on the same line as ap_log_error, when applicable.
-     Split some lines longer than 80.
-     Improve alignment.
-     trunk patch:
-        http://svn.apache.org/r1611978
-        http://svn.apache.org/r1612068
-     2.4.x patch: trunk patch works
-     +1: jailletc36, ylavic, jim
-
-   * mod_ratelimit: Drop severity of AH01455 and AH01457 (ap_pass_brigade
-     failed) messages from ERROR to TRACE1.  Other filters do not bother
-     re-reporting failures from lower level filters.  PR56832.
-     trunk patch: http://svn.apache.org/r1617018
-     2.4.x patch: trunk works
-     +1 covener, ylavic, jim
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:

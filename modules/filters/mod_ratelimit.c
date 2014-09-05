@@ -146,7 +146,7 @@ rate_limit_filter(ap_filter_t *f, apr_bucket_brigade *input_bb)
 
             if (rv != APR_SUCCESS) {
                 ctx->state = RATE_ERROR;
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, f->r, APLOGNO(01455)
+                ap_log_rerror(APLOG_MARK, APLOG_TRACE1, rv, f->r, APLOGNO(01455)
                               "rl: full speed brigade pass failed.");
             }
         }
@@ -218,7 +218,7 @@ rate_limit_filter(ap_filter_t *f, apr_bucket_brigade *input_bb)
 
                 if (rv != APR_SUCCESS) {
                     ctx->state = RATE_ERROR;
-                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, f->r, APLOGNO(01457)
+                    ap_log_rerror(APLOG_MARK, APLOG_TRACE1, rv, f->r, APLOGNO(01457)
                                   "rl: brigade pass failed.");
                     break;
                 }
