@@ -447,7 +447,7 @@ static apr_status_t proxy_send_dir_filter(ap_filter_t *f,
     apr_bucket_brigade *out = apr_brigade_create(p, c->bucket_alloc);
     apr_status_t rv;
 
-    register int n;
+    int n;
     char *dir, *path, *reldir, *site, *str, *type;
 
     const char *pwd = apr_table_get(r->notes, "Directory-PWD");
