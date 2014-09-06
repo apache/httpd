@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1610814:1620075 (outdated) -->
+<!-- English Revision : 1620075 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -4993,8 +4993,6 @@ fusionn&eacute;es avec les en-t&ecirc;tes</description>
 <syntax>MergeTrailers [on|off]</syntax>
 <default>MergeTrailers off</default>
 <contextlist><context>server config</context><context>virtual host</context></contextlist>
-<compatibility>Disponible &agrave; partir de la version 2.4.10 du serveur HTTP
-Apache</compatibility>
 
 <usage>
     <p>Cette directive permet de contr&ocirc;ler la fusion des donn&eacute;es HTTP
