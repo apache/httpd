@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1562488:1622292 (outdated) -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
+<!-- English Revision : 1622705 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -211,168 +211,6 @@ plus de fonctionnalit&eacute;s dans ce domaine que mod_rewrite.</p>
 
 </section>
 
-<section id="autorefresh">
-
-  <title>Actualisation automatique d'un document</title>
-
-  <!--
-+I'm trying to decide whether this example is worthwhile to keep, and, if
-+so, whether it needs to be updated/rewritten. Certainly the description
-+needs to be rewritten. I'm not sure we really need to be recommending
-+nph-refresh techniques.
-+-->
-
-  <dl>
-    <dt>Description :</dt>
-
-    <dd>
-      <p>Lorsque nous cr&eacute;ons une page web complexe, ne serait-il pas
-	  souhaitable que le navigateur web actualise automatiquement la
-	  page chaque fois que nous en sauvegardons une nouvelle version
-	  &agrave; partir de notre &eacute;diteur ? Impossible ?</p>
-    </dd>
-
-    <dt>Solution :</dt>
-
-    <dd>
-      <p>Non ! Nous allons pour cela combiner la fonctionnalit&eacute; MIME
-	  multipart, la fonctionnalit&eacute; NPH du serveur web et la
-	  puissance de <module>mod_rewrite</module> pour la manipulation
-	  d'URLs. Tout d'abord, nous d&eacute;finissons une nouvelle
-	  fonctionnalit&eacute; pour les URLs : l'ajout de
-	  <code>:refresh</code> &agrave; toute URL fait que la 'page' est
-	  actualis&eacute;e chaque fois que la ressource est mise &agrave; jour dans
-	  le syst&egrave;me de fichiers.</p>
-
-<highlight language="config">
-RewriteRule   ^(/[uge]/[^/]+/?.*):refresh  /interne/cgi/apache/nph-refresh?f=$
-</highlight>
-
-      <p>Nous appelons maintenant cette URL</p>
-
-<example>
-/u/foo/bar/page.html:refresh
-</example>
-
-      <p>ce qui entra&icirc;ne en interne l'invocation de l'URL</p>
-
-<example>
-/interne/cgi/apache/nph-refresh?f=/u/foo/bar/page.html
-</example>
-
-      <p>Il ne reste plus qu'&agrave; &eacute;crire le script NPH-CGI. Bien que l'on
-	  &eacute;crive habituellement dans ces cas "laiss&eacute; &agrave; la charge du
-	  lecteur &agrave; titre d'exercice", ;-) je vous l'offre, aussi.</p>
-
-<highlight language="perl">
-#!/sw/bin/perl
-##
-##  nph-refresh -- script NPH/CGI pour l'actualisation automatique de
-##  pages
-##  Copyright (c) 1997 Ralf S. Engelschall, All Rights Reserved.
-##
-$| = 1;
-
-#   &eacute;clate la variable QUERY_STRING
-@pairs = split( /&amp;/, $ENV{'QUERY_STRING'} );
-foreach $pair (@pairs) {
-    ( $name, $value ) = split( /=/, $pair );
-    $name =~ tr/A-Z/a-z/;
-    $name = 'QS_' . $name;
-    $value =~ s/%([a-fA-F0-9][a-fA-F0-9])/pack("C", hex($1))/eg;
-    eval "\$$name = \"$value\"";
-}
-$QS_s = 1    if ( $QS_s eq '' );
-$QS_n = 3600 if ( $QS_n eq '' );
-if ( $QS_f eq '' ) {
-    print "HTTP/1.0 200 OK\n";
-    print "Content-type: text/html\n\n";
-    print "&lt;b&gt;ERROR&lt;/b&gt;: No file given\n";
-    exit(0);
-}
-if ( !-f $QS_f ) {
-    print "HTTP/1.0 200 OK\n";
-    print "Content-type: text/html\n\n";
-    print "&lt;b&gt;ERROR&lt;/b&gt;: File $QS_f not found\n";
-    exit(0);
-}
-
-sub print_http_headers_multipart_begin {
-    print "HTTP/1.0 200 OK\n";
-    $bound = "ThisRandomString12345";
-    print "Content-type: multipart/x-mixed-replace;boundary=$bound\n";
-    &amp;print_http_headers_multipart_next;
-}
-
-sub print_http_headers_multipart_next {
-    print "\n--$bound\n";
-}
-
-sub print_http_headers_multipart_end {
-    print "\n--$bound--\n";
-}
-
-sub displayhtml {
-    local ($buffer) = @_;
-    $len = length($buffer);
-    print "Content-type: text/html\n";
-    print "Content-length: $len\n\n";
-    print $buffer;
-}
-
-sub readfile {
-    local ($file) = @_;
-    local ( *FP, $size, $buffer, $bytes );
-    ( $x, $x, $x, $x, $x, $x, $x, $size ) = stat($file);
-    $size = sprintf( "%d", $size );
-    open( FP, "&lt;$file" );
-    $bytes = sysread( FP, $buffer, $size );
-    close(FP);
-    return $buffer;
-}
-
-$buffer = &amp;readfile($QS_f);
-&amp;print_http_headers_multipart_begin;
-&amp;displayhtml($buffer);
-
-sub mystat {
-    local ($file) = $_[0];
-    local ($time);
-
-    ( $x, $x, $x, $x, $x, $x, $x, $x, $x, $mtime ) = stat($file);
-    return $mtime;
-}
-
-$mtimeL = &amp;mystat($QS_f);
-$mtime  = $mtime;
-for ( $n = 0 ; $n &amp; lt ; $QS_n ; $n++ ) {
-    while (1) {
-        $mtime = &amp;mystat($QS_f);
-        if ( $mtime ne $mtimeL ) {
-            $mtimeL = $mtime;
-            sleep(2);
-            $buffer = &amp;readfile($QS_f);
-            &amp;print_http_headers_multipart_next;
-            &amp;displayhtml($buffer);
-            sleep(5);
-            $mtimeL = &amp;mystat($QS_f);
-            last;
-        }
-        sleep($QS_s);
-    }
-}
-
-&amp;print_http_headers_multipart_end;
-
-exit(0);
-
-##EOF##
-</highlight>
-    </dd>
-  </dl>
-
-</section>
-
 <section id="structuredhomedirs">
 
   <title>R&eacute;pertoires Home structur&eacute;s</title>
@@ -478,8 +316,7 @@ RewriteRule   ^/~(<strong>([a-z])</strong>[a-z0-9]+)(.*)  /home/<strong>$2</stro
 	la fen&ecirc;tre de temps configur&eacute;e. On peut utiliser
 	<module>mod_expires</module> pour contourner ce probl&egrave;me. Il est
 	cependant bien plus commode de servir un contenu dynamique, et
-	de le personnaliser en fonction de l'heure du jour.</note>
-    </dd>
+	de le personnaliser en fonction de l'heure du jour.</note> </dd>
   </dl>
 
 </section>
