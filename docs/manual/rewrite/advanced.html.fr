@@ -24,8 +24,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/rewrite/advanced.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/rewrite/advanced.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 
 <p>Ce document complète la <a href="../mod/mod_rewrite.html">documentation de référence</a> du
@@ -43,7 +41,6 @@ simplement les copier/coller dans votre configuration.</div>
   d'arrière-plan en fonction de l'adresse IP</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#on-the-fly-content">Régéneration de contenu à la volée</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#load-balancing">Répartition de charge</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#autorefresh">Actualisation automatique d'un document</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#structuredhomedirs">Répertoires Home structurés</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#redirectanchors">Redirection des ancrages</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#time-dependent">Réécriture dépendant de l'heure</a></li>
@@ -207,161 +204,6 @@ plus de fonctionnalités dans ce domaine que mod_rewrite.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="autorefresh" id="autorefresh">Actualisation automatique d'un document</a></h2>
-
-  
-
-  
-
-  <dl>
-    <dt>Description :</dt>
-
-    <dd>
-      <p>Lorsque nous créons une page web complexe, ne serait-il pas
-	  souhaitable que le navigateur web actualise automatiquement la
-	  page chaque fois que nous en sauvegardons une nouvelle version
-	  à partir de notre éditeur ? Impossible ?</p>
-    </dd>
-
-    <dt>Solution :</dt>
-
-    <dd>
-      <p>Non ! Nous allons pour cela combiner la fonctionnalité MIME
-	  multipart, la fonctionnalité NPH du serveur web et la
-	  puissance de <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> pour la manipulation
-	  d'URLs. Tout d'abord, nous définissons une nouvelle
-	  fonctionnalité pour les URLs : l'ajout de
-	  <code>:refresh</code> à toute URL fait que la 'page' est
-	  actualisée chaque fois que la ressource est mise à jour dans
-	  le système de fichiers.</p>
-
-<pre class="prettyprint lang-config">RewriteRule   ^(/[uge]/[^/]+/?.*):refresh  /interne/cgi/apache/nph-refresh?f=$</pre>
-
-
-      <p>Nous appelons maintenant cette URL</p>
-
-<div class="example"><p><code>
-/u/foo/bar/page.html:refresh
-</code></p></div>
-
-      <p>ce qui entraîne en interne l'invocation de l'URL</p>
-
-<div class="example"><p><code>
-/interne/cgi/apache/nph-refresh?f=/u/foo/bar/page.html
-</code></p></div>
-
-      <p>Il ne reste plus qu'à écrire le script NPH-CGI. Bien que l'on
-	  écrive habituellement dans ces cas "laissé à la charge du
-	  lecteur à titre d'exercice", ;-) je vous l'offre, aussi.</p>
-
-<pre class="prettyprint lang-perl">#!/sw/bin/perl
-##
-##  nph-refresh -- script NPH/CGI pour l'actualisation automatique de
-##  pages
-##  Copyright (c) 1997 Ralf S. Engelschall, All Rights Reserved.
-##
-$| = 1;
-
-#   éclate la variable QUERY_STRING
-@pairs = split( /&amp;/, $ENV{'QUERY_STRING'} );
-foreach $pair (@pairs) {
-    ( $name, $value ) = split( /=/, $pair );
-    $name =~ tr/A-Z/a-z/;
-    $name = 'QS_' . $name;
-    $value =~ s/%([a-fA-F0-9][a-fA-F0-9])/pack("C", hex($1))/eg;
-    eval "\$$name = \"$value\"";
-}
-$QS_s = 1    if ( $QS_s eq '' );
-$QS_n = 3600 if ( $QS_n eq '' );
-if ( $QS_f eq '' ) {
-    print "HTTP/1.0 200 OK\n";
-    print "Content-type: text/html\n\n";
-    print "&lt;b&gt;ERROR&lt;/b&gt;: No file given\n";
-    exit(0);
-}
-if ( !-f $QS_f ) {
-    print "HTTP/1.0 200 OK\n";
-    print "Content-type: text/html\n\n";
-    print "&lt;b&gt;ERROR&lt;/b&gt;: File $QS_f not found\n";
-    exit(0);
-}
-
-sub print_http_headers_multipart_begin {
-    print "HTTP/1.0 200 OK\n";
-    $bound = "ThisRandomString12345";
-    print "Content-type: multipart/x-mixed-replace;boundary=$bound\n";
-    &amp;print_http_headers_multipart_next;
-}
-
-sub print_http_headers_multipart_next {
-    print "\n--$bound\n";
-}
-
-sub print_http_headers_multipart_end {
-    print "\n--$bound--\n";
-}
-
-sub displayhtml {
-    local ($buffer) = @_;
-    $len = length($buffer);
-    print "Content-type: text/html\n";
-    print "Content-length: $len\n\n";
-    print $buffer;
-}
-
-sub readfile {
-    local ($file) = @_;
-    local ( *FP, $size, $buffer, $bytes );
-    ( $x, $x, $x, $x, $x, $x, $x, $size ) = stat($file);
-    $size = sprintf( "%d", $size );
-    open( FP, "&lt;$file" );
-    $bytes = sysread( FP, $buffer, $size );
-    close(FP);
-    return $buffer;
-}
-
-$buffer = &amp;readfile($QS_f);
-&amp;print_http_headers_multipart_begin;
-&amp;displayhtml($buffer);
-
-sub mystat {
-    local ($file) = $_[0];
-    local ($time);
-
-    ( $x, $x, $x, $x, $x, $x, $x, $x, $x, $mtime ) = stat($file);
-    return $mtime;
-}
-
-$mtimeL = &amp;mystat($QS_f);
-$mtime  = $mtime;
-for ( $n = 0 ; $n &amp; lt ; $QS_n ; $n++ ) {
-    while (1) {
-        $mtime = &amp;mystat($QS_f);
-        if ( $mtime ne $mtimeL ) {
-            $mtimeL = $mtime;
-            sleep(2);
-            $buffer = &amp;readfile($QS_f);
-            &amp;print_http_headers_multipart_next;
-            &amp;displayhtml($buffer);
-            sleep(5);
-            $mtimeL = &amp;mystat($QS_f);
-            last;
-        }
-        sleep($QS_s);
-    }
-}
-
-&amp;print_http_headers_multipart_end;
-
-exit(0);
-
-##EOF##</pre>
-
-    </dd>
-  </dl>
-
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
 <h2><a name="structuredhomedirs" id="structuredhomedirs">Répertoires Home structurés</a></h2>
 
   
@@ -465,8 +307,7 @@ RewriteRule   ^/~(<strong>([a-z])</strong>[a-z0-9]+)(.*)  /home/<strong>$2</stro
 	la fenêtre de temps configurée. On peut utiliser
 	<code class="module"><a href="../mod/mod_expires.html">mod_expires</a></code> pour contourner ce problème. Il est
 	cependant bien plus commode de servir un contenu dynamique, et
-	de le personnaliser en fonction de l'heure du jour.</div>
-    </dd>
+	de le personnaliser en fonction de l'heure du jour.</div> </dd>
   </dl>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
