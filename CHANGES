@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) SECURITY: CVE-2014-3581 (cve.mitre.org)
+     mod_cache: Avoid a crash when Content-Type has an empty value. PR56924.
+     [Mark Montague <mark catseye.org>, Jan Kaluza]
+
   *) mod_proxy: Now allow for 191 character worker names, with non-fatal
      errors if name is truncated. PR53218. [Jim Jagielski]
 
