@@ -149,7 +149,7 @@ SCRIPT_URI=http://en1.engelschall.com/u/rse/</pre></div>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit l'URL de base pour les réécritures au niveau
 répertoire</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RewriteBase <em>chemin URL</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RewriteBase <em>chemin_URL</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>None</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
@@ -199,7 +199,7 @@ RewriteRule ^index\.html$  welcome.html
 la réécriture soit effectuée
 </td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code> RewriteCond
-      <em>chaîne de test</em> <em>expression de comparaison</em></code></td></tr>
+      <em>chaîne_de_test</em> <em>expression_de_comparaison</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -213,7 +213,7 @@ la réécriture soit effectuée
       qui suit n'est appliquée que si l'état actuel de l'URI
       correspond à son modèle, <strong>et</strong> si les conditions sont satisfaites.</p>
 
-      <p><em>chaîne de test</em> est une chaîne de caractères qui peut
+      <p><em>chaîne_de_test</em> est une chaîne de caractères qui peut
       contenir, en plus du plein texte, les constructions étendues
       suivantes :</p>
 
@@ -479,14 +479,14 @@ la réécriture soit effectuée
 	LA-U vue précédemment.</li>
       </ol>
 
-      <p><em>expression de comparaison</em> est une expression
+      <p><em>expression_de_comparaison</em> est une expression
       rationnelle qui est appliquée à l'instance actuelle de
-      <em>chaîne de test</em>. <em>chaîne de test</em> est d'abord
+      <em>chaîne_de_test</em>. <em>chaîne_de_test</em> est d'abord
       évaluée, puis comparée à
-      l'<em>expression de comparaison</em>.</p>
+      l'<em>expression_de_comparaison</em>.</p>
 
       <p><strong>A savoir :</strong>
-      <em>expression de comparaison</em> est une
+      <em>expression_de_comparaison</em> est une
       <em>expression rationnelle compatible perl</em> avec
       quelques extensions :</p>
 
@@ -504,61 +504,61 @@ la réécriture soit effectuée
 	    lexicographique)<br />
 	    Traite l'<em>expression</em> comme une chaîne de
 	    caractères et la compare lexicographiquement à
-	    <em>chaîne de test</em>. La condition est satisfaite si
-	    <em>chaîne de test</em> est inférieure au sens
+	    <em>chaîne_de_test</em>. La condition est satisfaite si
+	    <em>chaîne_de_test</em> est inférieure au sens
 	    lexicographique à l'<em>expression</em>.</li>
 
             <li>'<strong>&gt;expression</strong>' (supérieur au sens
 	    lexicographique)<br />
 	    Traite l'<em>expression</em> comme une chaîne de
 	    caractères et la compare lexicographiquement à
-	    <em>chaîne de test</em>. La condition est satisfaite si
-	    <em>chaîne de test</em> est supérieure au sens
+	    <em>chaîne_de_test</em>. La condition est satisfaite si
+	    <em>chaîne_de_test</em> est supérieure au sens
 	    lexicographique à l'<em>expression</em>.</li>
 
             <li>'<strong>=expression</strong>' (égal au sens
 	    lexicographique)<br />
 	    Traite l'<em>expression</em> comme une chaîne de
 	    caractères et la compare lexicographiquement à
-	    <em>chaîne de test</em>. La condition est satisfaite si
-	    <em>chaîne de test</em> est égale au sens
+	    <em>chaîne_de_test</em>. La condition est satisfaite si
+	    <em>chaîne_de_test</em> est égale au sens
 	    lexicographique à l'<em>expression</em> (les deux chaînes
 	    sont exactement identiques, caractère pour caractère). Si
 	    <em>expression</em> est <code>""</code> (deux guillemets),
-	    <em>chaîne de test</em> est comparée à la chaîne vide.</li>
+	    <em>chaîne_de_test</em> est comparée à la chaîne vide.</li>
 
             <li>'<strong>-d</strong>' (est un
 	    <strong>r</strong>épertoire)<br />
-	    Traite <em>chaîne de test</em> comme un chemin et vérifie
+	    Traite <em>chaîne_de_test</em> comme un chemin et vérifie
 	    s'il existe ou pas, et s'il s'agit d'un répertoire.</li>
 
             <li>'<strong>-f</strong>' (est un
 	    <strong>f</strong>ichier régulier)<br />
-	    Traite <em>chaîne de test</em> comme un chemin et vérifie
+	    Traite <em>chaîne_de_test</em> comme un chemin et vérifie
 	    s'il existe ou pas, et s'il s'agit d'un fichier régulier.</li>
 
             <li>'<strong>-s</strong>' (est un fichier régulier d'une
 	    certaine <strong>t</strong>aille)<br />
-	    Traite <em>chaîne de test</em> comme un chemin et vérifie
+	    Traite <em>chaîne_de_test</em> comme un chemin et vérifie
 	    s'il existe ou pas, et s'il s'agit d'un fichier régulier
 	    dont la taille est supérieure à zéro.</li>
 
             <li>'<strong>-l</strong>' (est un
 	    <strong>l</strong>ien symbolique)<br />
-	    Traite <em>chaîne de test</em> comme un chemin et vérifie
+	    Traite <em>chaîne_de_test</em> comme un chemin et vérifie
 	    s'il existe ou pas, et s'il s'agit d'un lien
 	    symbolique.</li>
 
             <li>'<strong>-x</strong>' (a le droit
 	    d'e<strong>x</strong>écussion)<br />
-	    Traite <em>chaîne de test</em> comme un chemin et vérifie
+	    Traite <em>chaîne_de_test</em> comme un chemin et vérifie
 	    s'il existe ou pas, et a le droit d'exécution. Ce droit est
 	    déterminé en accord avec le système d'exploitation
 	    sous-jacent.</li>
 
             <li>'<strong>-F</strong>' (test de l'existence d'un fichier
 	    via une sous-requête)<br />
-	    Vérifie si <em>chaîne de test</em> est un fichier valide,
+	    Vérifie si <em>chaîne_de_test</em> est un fichier valide,
 	    accessible à travers tous les contrôles d'accès du serveur
 	    actuellement configurés pour ce chemin. C'est une
 	    sous-requête interne qui effectue cette vérification - à
@@ -567,7 +567,7 @@ la réécriture soit effectuée
 
             <li><p>'<strong>-U</strong>' (test de l'existence d'une URL
 	    via une sous-requête)<br />
-	    Vérifie si <em>chaîne de test</em> est une URL valide,
+	    Vérifie si <em>chaîne_de_test</em> est une URL valide,
 	    accessible à travers tous les contrôles d'accès du serveur
 	    actuellement configurés pour ce chemin. C'est une
 	    sous-requête interne qui effectue cette vérification - à
@@ -588,7 +588,7 @@ la réécriture soit effectuée
         </li>
 
 	<li>Vous pouvez aussi définir certains drapeaux pour
-	l'<em>expression de comparaison</em> en ajoutant ces
+	l'<em>expression_de_comparaison</em> en ajoutant ces
 	<strong><code>[</code><em>drapeaux</em><code>]</code></strong>
 	comme troisième argument de la directive
 	<code>RewriteCond</code>, où <em>drapeaux</em> est un
@@ -599,10 +599,10 @@ la réécriture soit effectuée
 	(<strong>n</strong>o <strong>c</strong>ase)<br />
 	Rend le test insensible à la casse - il n'est pas fait de
 	distinction entre majuscules et minuscules, à la fois dans le
-	développement de <em>chaîne de test</em> et dans
-	<em>expression de comparaison</em>. Ce drapeau n'est pris en
-	compte que lors d'une comparaison entre <em>chaîne de test</em>
-	et <em>expression de comparaison</em>. Il ne l'est pas pour les
+	développement de <em>chaîne_de_test</em> et dans
+	<em>expression_de_comparaison</em>. Ce drapeau n'est pris en
+	compte que lors d'une comparaison entre <em>chaîne_de_test</em>
+	et <em>expression_de_comparaison</em>. Il ne l'est pas pour les
 	vérification par sous-requêtes ou sur le système de
 	fichiers.</li>
 
@@ -827,8 +827,7 @@ RewriteLogLevel 3
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit une fonction de mise en correspondance pour la
 recherche de mots-clés</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RewriteMap <em>nom de la correspondance</em> <em>type de
-correspondance</em>:<em>source de la correspondance</em>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RewriteMap <em>nom_de_la_correspondance</em> <em>type_de_correspondance</em>:<em>source_de_la_correspondance</em>
 </code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -885,8 +884,8 @@ bases de données depuis la version 2.0.41 d'Apache</td></tr>
       RewriteRule ^/ex/(.*) ${map-exemple:$1}
       </code></p></div>
 
-      <p>Les combinaisons suivantes pour <em>type de correspondance</em>
-      et <em>source de la correspondance</em>
+      <p>Les combinaisons suivantes pour <em>type_de_correspondance</em>
+      et <em>source_de_la_correspondance</em>
       peuvent être utilisées :</p>
 
       <ul>
@@ -898,7 +897,7 @@ bases de données depuis la version 2.0.41 d'Apache</td></tr>
 
           <p>Il s'agit de la mise en oeuvre standard de la table de
 	  correspondance pour la réécriture où
-	  <em>source de la correspondance</em> est un fichier ASCII
+	  <em>source_de_la_correspondance</em> est un fichier ASCII
 	  dont les différentes lignes sont soit des lignes vides, soit
 	  des lignes de commentaires (commençant par un caractère "#"),
 	  soit des paires de valeurs (une seule paire
