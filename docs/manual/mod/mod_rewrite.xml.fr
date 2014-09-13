@@ -304,8 +304,7 @@ la version version 2.1</compatibility>
 <name>RewriteMap</name>
 <description>D&eacute;finit une fonction de mise en correspondance pour la
 recherche de mots-cl&eacute;s</description>
-<syntax>RewriteMap <em>nom de la correspondance</em> <em>type de
-correspondance</em>:<em>source de la correspondance</em>
+<syntax>RewriteMap <em>nom_de_la_correspondance</em> <em>type_de_correspondance</em>:<em>source_de_la_correspondance</em>
 </syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
@@ -319,24 +318,22 @@ correspondance</em>:<em>source de la correspondance</em>
       La source utilis&eacute;e pour cette recherche peut &ecirc;tre de plusieurs
       types.</p>
 
-      <p><a id="mapfunc" name="mapfunc"><em>nom de la
-      correspondance</em></a> est le nom de la table de correspondance
+      <p><a id="mapfunc" name="mapfunc"><em>nom_de_la_correspondance</em></a>
+      est le nom de la table de correspondance
       et servira &agrave; sp&eacute;cifier une fonction de mise en correspondance
       pour les cha&icirc;nes de substitution d'une r&egrave;gle de r&eacute;&eacute;criture selon
       une des constructions suivantes :</p>
 
       <p class="indent">
-        <strong><code>${</code> <em>nom de la
-      correspondance</em> <code>:</code>
+        <strong><code>${</code> <em>nom_de_la_correspondance</em> <code>:</code>
         <em>mot-cl&eacute;</em> <code>}</code><br />
-         <code>${</code> <em>nom de la
-      correspondance</em> <code>:</code>
+         <code>${</code> <em>nom_de_la_correspondance</em> <code>:</code>
         <em>mot-cl&eacute;</em> <code>|</code> <em>valeur par d&eacute;faut</em>
         <code>}</code></strong>
       </p>
 
       <p>Lorsqu'une telle construction est rencontr&eacute;e, la table de
-      correspondance <em>Nom de la correspondance</em> est consult&eacute;e
+      correspondance <em>Nom_de_la_correspondance</em> est consult&eacute;e
       et la cl&eacute; <em>mot-cl&eacute;</em> recherch&eacute;e. Si la cl&eacute; est trouv&eacute;e, la
       construction est remplac&eacute;e par
       la <em>valeur de remplacement</em>. Si la cl&eacute; n'est pas trouv&eacute;e,
@@ -388,12 +385,12 @@ correspondance</em>:<em>source de la correspondance</em>
 
     <dt>prg</dt>
         <dd>Appelle un programme externe ou un script pour effectuer la
-	r&eacute;&eacute;criture (<a href="../rewrite/rewritemap.html#int">D&eacute;tails
+	r&eacute;&eacute;criture (<a href="../rewrite/rewritemap.html#prg">D&eacute;tails
 	...</a>).</dd>
 
     <dt>dbd or fastdbd</dt>
         <dd>Une commande SQL SELECT &agrave; ex&eacute;cuter pour rechercher la cible
-	de r&eacute;&eacute;criture (<a href="../rewrite/rewritemap.html#int">D&eacute;tails
+	de r&eacute;&eacute;criture (<a href="../rewrite/rewritemap.html#dbd">D&eacute;tails
 	...</a>).</dd>
     </dl>
 
@@ -407,7 +404,7 @@ href="../rewrite/rewritemap.html">RewriteMap HowTo</a>.</p>
 <name>RewriteBase</name>
 <description>D&eacute;finit l'URL de base pour les r&eacute;&eacute;critures au niveau
 r&eacute;pertoire</description>
-<syntax>RewriteBase <em>chemin URL</em></syntax>
+<syntax>RewriteBase <em>chemin_URL</em></syntax>
 <default>Pas de valeur par d&eacute;faut</default>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
@@ -461,7 +458,7 @@ Alias /myapp /opt/myapp-1.2.3
 la r&eacute;&eacute;criture soit effectu&eacute;e
 </description>
 <syntax> RewriteCond
-      <em>cha&icirc;ne de test</em> <em>expression de comparaison</em></syntax>
+      <em>cha&icirc;ne_de_test</em> <em>expression_de_comparaison</em></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
@@ -690,8 +687,8 @@ la r&eacute;&eacute;criture soit effectu&eacute;e
         </li>
       </ul>
 
-      <p>Si la <em>cha&icirc;ne de test</em> contient la valeur sp&eacute;ciale
-      <code>expr</code>, <em>expression de comparaison</em> sera trait&eacute;
+      <p>Si <em>cha&icirc;ne_de_test</em> contient la valeur sp&eacute;ciale
+      <code>expr</code>, <em>expression_de_comparaison</em> sera trait&eacute;
       en tant qu'expression rationnelle de type <a
       href="../expr.html">ap_expr</a>. Si des en-t&ecirc;tes HTTP sont
       r&eacute;f&eacute;renc&eacute;s dans l'expression rationnelle, et si le drapeau
@@ -791,23 +788,22 @@ la r&eacute;&eacute;criture soit effectu&eacute;e
       </ol>
 
 
-      <p><em>expression de comparaison</em> est une expression
+      <p><em>expression_de_comparaison</em> est une expression
       rationnelle qui est appliqu&eacute;e &agrave; l'instance actuelle de
-      <em>cha&icirc;ne de test</em>. <em>cha&icirc;ne de test</em> est d'abord
+      <em>cha&icirc;ne_de_test</em>. <em>cha&icirc;ne_de_test</em> est d'abord
       &eacute;valu&eacute;e, puis compar&eacute;e &agrave;
-      l'<em>expression de comparaison</em>.</p>
+      l'<em>expression_de_comparaison</em>.</p>
 
-      <p><em>expression de comparaison</em> est en g&eacute;n&eacute;ral une
+      <p><em>expression_de_comparaison</em> est en g&eacute;n&eacute;ral une
       <em>expression rationnelle compatible perl</em>, mais vous
       disposez des syntaxes suppl&eacute;mentaires suivantes pour effectuer
-      d'autres tests utiles sur <em>cha&icirc;ne de test</em> :
+      d'autres tests utiles sur <em>cha&icirc;ne_de_test</em> :
       </p>
 
       <ol>
         <li>Vous pouvez pr&eacute;fixer l'expression avec un caract&egrave;re
 	'<code>!</code>' (point d'exclamation) pour inverser le r&eacute;sultat
-	de la condition, quelle que soit l'<em>expression de
-	comparaison</em> utilis&eacute;e.</li>
+	de la condition, quelle que soit l'<em>expression_de_comparaison</em> utilis&eacute;e.</li>
 
         <li>Vous pouvez effectuer des comparaisons lexicographiques de
 	cha&icirc;nes	:
@@ -817,45 +813,45 @@ la r&eacute;&eacute;criture soit effectu&eacute;e
 	    lexicographique)<br />
 	    Traite l'<em>expression</em> comme une cha&icirc;ne de
 	    caract&egrave;res et la compare lexicographiquement &agrave;
-	    <em>cha&icirc;ne de test</em>. La condition est satisfaite si
-	    <em>cha&icirc;ne de test</em> est inf&eacute;rieure au sens
+	    <em>cha&icirc;ne_de_test</em>. La condition est satisfaite si
+	    <em>cha&icirc;ne_de_test</em> est inf&eacute;rieure au sens
 	    lexicographique &agrave; l'<em>expression</em>.</li>
 
             <li>'<strong>&gt;expression</strong>' (sup&eacute;rieur au sens
 	    lexicographique)<br />
 	    Traite l'<em>expression</em> comme une cha&icirc;ne de
 	    caract&egrave;res et la compare lexicographiquement &agrave;
-	    <em>cha&icirc;ne de test</em>. La condition est satisfaite si
-	    <em>cha&icirc;ne de test</em> est sup&eacute;rieure au sens
+	    <em>cha&icirc;ne_de_test</em>. La condition est satisfaite si
+	    <em>cha&icirc;ne_de_test</em> est sup&eacute;rieure au sens
 	    lexicographique &agrave; l'<em>expression</em>.</li>
 
             <li>'<strong>=expression</strong>' (&eacute;gal au sens
 	    lexicographique)<br />
 	    Traite l'<em>expression</em> comme une cha&icirc;ne de
 	    caract&egrave;res et la compare lexicographiquement &agrave;
-	    <em>cha&icirc;ne de test</em>. La condition est satisfaite si
-	    <em>cha&icirc;ne de test</em> est &eacute;gale au sens
+	    <em>cha&icirc;ne_de_test</em>. La condition est satisfaite si
+	    <em>cha&icirc;ne_de_test</em> est &eacute;gale au sens
 	    lexicographique &agrave; l'<em>expression</em> (les deux cha&icirc;nes
 	    sont exactement identiques, caract&egrave;re pour caract&egrave;re). Si
 	    <em>expression</em> est <code>""</code> (deux guillemets),
-	    <em>cha&icirc;ne de test</em> est compar&eacute;e &agrave; la cha&icirc;ne vide.</li>
+	    <em>cha&icirc;ne_de_test</em> est compar&eacute;e &agrave; la cha&icirc;ne vide.</li>
 
-	    <li>'<strong>&lt;=expression de comparaison</strong>' (inf&eacute;rieur ou &eacute;gal &agrave;
+	    <li>'<strong>&lt;=expression_de_comparaison</strong>' (inf&eacute;rieur ou &eacute;gal &agrave;
 	    au sens lexicographique)<br />
-            Consid&egrave;re l'<em>expression de comparaison</em> comme une
+            Consid&egrave;re l'<em>expression_de_comparaison</em> comme une
 	    cha&icirc;ne de caract&egrave;res et la compare au sens lexicographique &agrave;
-	    la <em>cha&icirc;ne de test</em>. Vrai si <em>cha&icirc;ne de test</em>
-	    pr&eacute;c&egrave;de lexicographiquement <em>expression de comparaison</em>, ou est
-	    &eacute;gale &agrave; <em>expression de comparaison</em> (les deux cha&icirc;nes
+	    la <em>cha&icirc;ne_de_test</em>. Vrai si <em>cha&icirc;ne_de_test</em>
+	    pr&eacute;c&egrave;de lexicographiquement <em>expression_de_comparaison</em>, ou est
+	    &eacute;gale &agrave; <em>expression_de_comparaison</em> (les deux cha&icirc;nes
 	    sont identiques, caract&egrave;re pour caract&egrave;re).</li>
 
-            <li>'<strong>&gt;=expression de comparaison</strong>'
+            <li>'<strong>&gt;=expression_de_comparaison</strong>'
 	    (sup&eacute;rieur ou &eacute;gal &agrave; au sens lexicographique)<br />
-            Consid&egrave;re l'<em>expression de comparaison</em> comme une
+            Consid&egrave;re l'<em>expression_de_comparaison</em> comme une
 	    cha&icirc;ne de caract&egrave;res et la compare au sens lexicographique &agrave;
-	    la <em>cha&icirc;ne de test</em>. Vrai si <em>cha&icirc;ne de test</em>
-	    suit lexicographiquement <em>expression de comparaison</em>, ou est
-	    &eacute;gale &agrave; <em>expression de comparaison</em> (les deux cha&icirc;nes
+	    la <em>cha&icirc;ne_de_test</em>. Vrai si <em>cha&icirc;ne_de_test</em>
+	    suit lexicographiquement <em>expression_de_comparaison</em>, ou est
+	    &eacute;gale &agrave; <em>expression_de_comparaison</em> (les deux cha&icirc;nes
 	    sont identiques, caract&egrave;re pour caract&egrave;re).</li>
         </ul></li>
 
@@ -864,43 +860,38 @@ la r&eacute;&eacute;criture soit effectu&eacute;e
           <ul>
 
             <li>'<strong>-eq</strong>' (est num&eacute;riquement &eacute;gal &agrave;)<br />
-            La <em>cha&icirc;ne de test</em> est consid&eacute;r&eacute;e comme un entier,
-	    et est compar&eacute;e num&eacute;riquement &agrave; l'<em>expression de
-	    comparaison</em>. Vrai si les deux expressions sont
+            La <em>cha&icirc;ne_de_test</em> est consid&eacute;r&eacute;e comme un entier,
+	    et est compar&eacute;e num&eacute;riquement &agrave; l'<em>expression_de_comparaison</em>. Vrai si les deux expressions sont
 	    num&eacute;riquement &eacute;gales.</li>
 
             <li>'<strong>-ge</strong>' (est num&eacute;riquement sup&eacute;rieur ou
 	    &eacute;gal &agrave;)<br />
-            La <em>cha&icirc;ne de test</em> est consid&eacute;r&eacute;e comme un entier,
-	    et est compar&eacute;e num&eacute;riquement &agrave; l'<em>expression de
-	    comparaison</em>. Vrai si <em>cha&icirc;ne de test</em> est
+            La <em>cha&icirc;ne_de_test</em> est consid&eacute;r&eacute;e comme un entier,
+	    et est compar&eacute;e num&eacute;riquement &agrave; l'<em>expression_de_comparaison</em>. Vrai si <em>cha&icirc;ne_de_test</em> est
 	    num&eacute;riquement
-	    sup&eacute;rieure ou &eacute;gale &agrave; <em>expression de comparaison</em>.</li>
+	    sup&eacute;rieure ou &eacute;gale &agrave; <em>expression_de_comparaison</em>.</li>
 
              <li>'<strong>-gt</strong>' (est num&eacute;riquement sup&eacute;rieur &agrave;)<br />
-            La <em>cha&icirc;ne de test</em> est consid&eacute;r&eacute;e comme un entier,
-	    et est compar&eacute;e num&eacute;riquement &agrave; l'<em>expression de
-	    comparaison</em>. Vrai si <em>cha&icirc;ne de test</em> est
+            La <em>cha&icirc;ne_de_test</em> est consid&eacute;r&eacute;e comme un entier,
+	    et est compar&eacute;e num&eacute;riquement &agrave; l'<em>expression_de_comparaison</em>. Vrai si <em>cha&icirc;ne_de_test</em> est
 	    num&eacute;riquement
-	    sup&eacute;rieure &agrave; <em>expression de comparaison</em>.</li>
+	    sup&eacute;rieure &agrave; <em>expression_de_comparaison</em>.</li>
 
             <li>'<strong>-le</strong>' (est num&eacute;riquement inf&eacute;rieur ou
 	    &eacute;gal &agrave;)<br />
-            La <em>cha&icirc;ne de test</em> est consid&eacute;r&eacute;e comme un entier,
-	    et est compar&eacute;e num&eacute;riquement &agrave; l'<em>expression de
-	    comparaison</em>. Vrai si <em>cha&icirc;ne de test</em> est
+            La <em>cha&icirc;ne_de_test</em> est consid&eacute;r&eacute;e comme un entier,
+	    et est compar&eacute;e num&eacute;riquement &agrave; l'<em>expression_de_comparaison</em>. Vrai si <em>cha&icirc;ne_de_test</em> est
 	    num&eacute;riquement
-	    inf&eacute;rieure ou &eacute;gale &agrave; <em>expression de comparaison</em>.
+	    inf&eacute;rieure ou &eacute;gale &agrave; <em>expression_de_comparaison</em>.
 	    Attention &agrave; la confusion avec le drapeau <strong>-l</strong>
 	    en utilisant la variante the <strong>-L</strong> ou
 	    <strong>-h</strong>.</li>
 
              <li>'<strong>-lt</strong>' (est num&eacute;riquement inf&eacute;rieur &agrave;)<br />
-            La <em>cha&icirc;ne de test</em> est consid&eacute;r&eacute;e comme un entier,
-	    et est compar&eacute;e num&eacute;riquement &agrave; l'<em>expression de
-	    comparaison</em>. Vrai si <em>cha&icirc;ne de test</em> est
+            La <em>cha&icirc;ne_de_test</em> est consid&eacute;r&eacute;e comme un entier,
+	    et est compar&eacute;e num&eacute;riquement &agrave; l'<em>expression_de_comparaison</em>. Vrai si <em>cha&icirc;ne_de_test</em> est
 	    num&eacute;riquement
-	    inf&eacute;rieure &agrave; <em>expression de comparaison</em>.
+	    inf&eacute;rieure &agrave; <em>expression_de_comparaison</em>.
 	    Attention &agrave; la confusion avec le drapeau <strong>-l</strong>
 	    en utilisant la variante the <strong>-L</strong> ou
 	    <strong>-h</strong>.</li>
@@ -914,17 +905,17 @@ la r&eacute;&eacute;criture soit effectu&eacute;e
 
             <li>'<strong>-d</strong>' (est un r&eacute;pertoire -
 	    <strong>d</strong>irectory)<br />
-	    Traite <em>cha&icirc;ne de test</em> comme un chemin et v&eacute;rifie
+	    Traite <em>cha&icirc;ne_de_test</em> comme un chemin et v&eacute;rifie
 	    s'il existe ou pas, et s'il s'agit d'un r&eacute;pertoire.</li>
 
             <li>'<strong>-f</strong>' (est un
 	    <strong>f</strong>ichier r&eacute;gulier)<br />
-	    Traite <em>cha&icirc;ne de test</em> comme un chemin et v&eacute;rifie
+	    Traite <em>cha&icirc;ne_de_test</em> comme un chemin et v&eacute;rifie
 	    s'il existe ou pas, et s'il s'agit d'un fichier r&eacute;gulier.</li>
 
             <li>'<strong>-F</strong>' (test de l'existence d'un fichier
 	    via une sous-requ&ecirc;te)<br />
-	    V&eacute;rifie si <em>cha&icirc;ne de test</em> est un fichier valide,
+	    V&eacute;rifie si <em>cha&icirc;ne_de_test</em> est un fichier valide,
 	    accessible &agrave; travers tous les contr&ocirc;les d'acc&egrave;s du serveur
 	    actuellement configur&eacute;s pour ce chemin. C'est une
 	    sous-requ&ecirc;te interne qui effectue cette v&eacute;rification - &agrave;
@@ -936,7 +927,7 @@ la r&eacute;&eacute;criture soit effectu&eacute;e
             Voir <strong>-l</strong>.</li>
 
             <li>'<strong>-l</strong>' (est un lien symbolique)<br />
-            Consid&egrave;re la <em>cha&icirc;ne de test</em> comme un chemin et
+            Consid&egrave;re la <em>cha&icirc;ne_de_test</em> comme un chemin et
 	    v&eacute;rifie son existence et si elle est un lien symbolique. On
 	    peut aussi utiliser la convention bash <strong>-L</strong>
 	    ou <strong>-h</strong> lorsqu'il y a risque de confusion
@@ -948,13 +939,13 @@ la r&eacute;&eacute;criture soit effectu&eacute;e
 
             <li>'<strong>-s</strong>' (est un fichier r&eacute;gulier d'une
 	    certaine taille)<br />
-            Consid&egrave;re la <em>cha&icirc;ne de test</em> comme un chemin et
+            Consid&egrave;re la <em>cha&icirc;ne_de_test</em> comme un chemin et
 	    v&eacute;rifie son existence et si elle est un fichier r&eacute;gulier
 	    d'une taille sup&eacute;rieure &agrave; z&eacute;ro.</li>
 
             <li><p>'<strong>-U</strong>' (test de l'existence d'une
 	    URL via une sous-requ&ecirc;te)<br />
-	    V&eacute;rifie si <em>cha&icirc;ne de test</em> est une URL valide,
+	    V&eacute;rifie si <em>cha&icirc;ne_de_test</em> est une URL valide,
 	    accessible &agrave; travers tous les contr&ocirc;les d'acc&egrave;s du serveur
 	    actuellement configur&eacute;s pour ce chemin. C'est une
 	    sous-requ&ecirc;te interne qui effectue cette v&eacute;rification - &agrave;
@@ -968,7 +959,7 @@ la r&eacute;&eacute;criture soit effectu&eacute;e
 	    retourn&eacute;.</p></li>
 
 	  <li>'<strong>-x</strong>' (a l'attribut d'ex&eacute;cution positionn&eacute;)<br />
-            Consid&egrave;re la <em>cha&icirc;ne de test</em> comme un chemin et
+            Consid&egrave;re la <em>cha&icirc;ne_de_test</em> comme un chemin et
 	    v&eacute;rifie son existence et si elle a son attribut d'ex&eacute;cution
 	    positionn&eacute;. Ce positionnement est d&eacute;termin&eacute; en fonction de
 	    l'OS sous-jacent.</li>
@@ -978,8 +969,8 @@ la r&eacute;&eacute;criture soit effectu&eacute;e
         </li>
 
 	<li>
-           <p>Si la <em>cha&icirc;ne de test</em> contient la valeur sp&eacute;ciale
-	   <code>expr</code>, la <em>cha&icirc;ne de comparaison</em> sera
+           <p>Si la <em>cha&icirc;ne_de_test</em> contient la valeur sp&eacute;ciale
+	   <code>expr</code>, la <em>cha&icirc;ne_de_comparaison</em> sera
 	   trait&eacute;e en tant qu'expression rationnelle de type <a
 	   href="../expr.html">ap_expr</a>.</p>
 
@@ -997,7 +988,7 @@ la r&eacute;&eacute;criture soit effectu&eacute;e
         </li>
 
 	<li>Vous pouvez aussi d&eacute;finir certains drapeaux pour
-	l'<em>expression de comparaison</em> en ajoutant ces
+	l'<em>expression_de_comparaison</em> en ajoutant ces
 	<strong><code>[</code><em>drapeaux</em><code>]</code></strong>
 	comme troisi&egrave;me argument de la directive
 	<code>RewriteCond</code>, o&ugrave; <em>drapeaux</em> est un
@@ -1008,10 +999,10 @@ la r&eacute;&eacute;criture soit effectu&eacute;e
 	(<strong>n</strong>o <strong>c</strong>ase)<br />
 	Rend le test insensible &agrave; la casse - il n'est pas fait de
 	distinction entre majuscules et minuscules, &agrave; la fois dans le
-	d&eacute;veloppement de <em>cha&icirc;ne de test</em> et dans
-	<em>expression de comparaison</em>. Ce drapeau n'est pris en
-	compte que lors d'une comparaison entre <em>cha&icirc;ne de test</em>
-	et <em>expression de comparaison</em>. Il ne l'est pas pour les
+	d&eacute;veloppement de <em>cha&icirc;ne_de_test</em> et dans
+	<em>expression_de_comparaison</em>. Ce drapeau n'est pris en
+	compte que lors d'une comparaison entre <em>cha&icirc;ne_de_test</em>
+	et <em>expression_de_comparaison</em>. Il ne l'est pas pour les
 	v&eacute;rification par sous-requ&ecirc;tes ou sur le syst&egrave;me de
 	fichiers.</li>
 
