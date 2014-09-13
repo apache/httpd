@@ -119,7 +119,7 @@ règles permettant de réécrire les URLs des requêtes
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit l'URL de base pour les réécritures au niveau
 répertoire</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RewriteBase <em>chemin URL</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RewriteBase <em>chemin_URL</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>Pas de valeur par défaut</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
@@ -170,7 +170,7 @@ Alias /myapp /opt/myapp-1.2.3
 la réécriture soit effectuée
 </td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code> RewriteCond
-      <em>chaîne de test</em> <em>expression de comparaison</em></code></td></tr>
+      <em>chaîne_de_test</em> <em>expression_de_comparaison</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -390,8 +390,8 @@ la réécriture soit effectuée
         </li>
       </ul>
 
-      <p>Si la <em>chaîne de test</em> contient la valeur spéciale
-      <code>expr</code>, <em>expression de comparaison</em> sera traité
+      <p>Si <em>chaîne_de_test</em> contient la valeur spéciale
+      <code>expr</code>, <em>expression_de_comparaison</em> sera traité
       en tant qu'expression rationnelle de type <a href="../expr.html">ap_expr</a>. Si des en-têtes HTTP sont
       référencés dans l'expression rationnelle, et si le drapeau
       <code>novary</code> n'est pas activé, ils seront ajoutés à
@@ -490,23 +490,22 @@ la réécriture soit effectuée
       </ol>
 
 
-      <p><em>expression de comparaison</em> est une expression
+      <p><em>expression_de_comparaison</em> est une expression
       rationnelle qui est appliquée à l'instance actuelle de
-      <em>chaîne de test</em>. <em>chaîne de test</em> est d'abord
+      <em>chaîne_de_test</em>. <em>chaîne_de_test</em> est d'abord
       évaluée, puis comparée à
-      l'<em>expression de comparaison</em>.</p>
+      l'<em>expression_de_comparaison</em>.</p>
 
-      <p><em>expression de comparaison</em> est en général une
+      <p><em>expression_de_comparaison</em> est en général une
       <em>expression rationnelle compatible perl</em>, mais vous
       disposez des syntaxes supplémentaires suivantes pour effectuer
-      d'autres tests utiles sur <em>chaîne de test</em> :
+      d'autres tests utiles sur <em>chaîne_de_test</em> :
       </p>
 
       <ol>
         <li>Vous pouvez préfixer l'expression avec un caractère
 	'<code>!</code>' (point d'exclamation) pour inverser le résultat
-	de la condition, quelle que soit l'<em>expression de
-	comparaison</em> utilisée.</li>
+	de la condition, quelle que soit l'<em>expression_de_comparaison</em> utilisée.</li>
 
         <li>Vous pouvez effectuer des comparaisons lexicographiques de
 	chaînes	:
@@ -516,45 +515,45 @@ la réécriture soit effectuée
 	    lexicographique)<br />
 	    Traite l'<em>expression</em> comme une chaîne de
 	    caractères et la compare lexicographiquement à
-	    <em>chaîne de test</em>. La condition est satisfaite si
-	    <em>chaîne de test</em> est inférieure au sens
+	    <em>chaîne_de_test</em>. La condition est satisfaite si
+	    <em>chaîne_de_test</em> est inférieure au sens
 	    lexicographique à l'<em>expression</em>.</li>
 
             <li>'<strong>&gt;expression</strong>' (supérieur au sens
 	    lexicographique)<br />
 	    Traite l'<em>expression</em> comme une chaîne de
 	    caractères et la compare lexicographiquement à
-	    <em>chaîne de test</em>. La condition est satisfaite si
-	    <em>chaîne de test</em> est supérieure au sens
+	    <em>chaîne_de_test</em>. La condition est satisfaite si
+	    <em>chaîne_de_test</em> est supérieure au sens
 	    lexicographique à l'<em>expression</em>.</li>
 
             <li>'<strong>=expression</strong>' (égal au sens
 	    lexicographique)<br />
 	    Traite l'<em>expression</em> comme une chaîne de
 	    caractères et la compare lexicographiquement à
-	    <em>chaîne de test</em>. La condition est satisfaite si
-	    <em>chaîne de test</em> est égale au sens
+	    <em>chaîne_de_test</em>. La condition est satisfaite si
+	    <em>chaîne_de_test</em> est égale au sens
 	    lexicographique à l'<em>expression</em> (les deux chaînes
 	    sont exactement identiques, caractère pour caractère). Si
 	    <em>expression</em> est <code>""</code> (deux guillemets),
-	    <em>chaîne de test</em> est comparée à la chaîne vide.</li>
+	    <em>chaîne_de_test</em> est comparée à la chaîne vide.</li>
 
-	    <li>'<strong>&lt;=expression de comparaison</strong>' (inférieur ou égal à
+	    <li>'<strong>&lt;=expression_de_comparaison</strong>' (inférieur ou égal à
 	    au sens lexicographique)<br />
-            Considère l'<em>expression de comparaison</em> comme une
+            Considère l'<em>expression_de_comparaison</em> comme une
 	    chaîne de caractères et la compare au sens lexicographique à
-	    la <em>chaîne de test</em>. Vrai si <em>chaîne de test</em>
-	    précède lexicographiquement <em>expression de comparaison</em>, ou est
-	    égale à <em>expression de comparaison</em> (les deux chaînes
+	    la <em>chaîne_de_test</em>. Vrai si <em>chaîne_de_test</em>
+	    précède lexicographiquement <em>expression_de_comparaison</em>, ou est
+	    égale à <em>expression_de_comparaison</em> (les deux chaînes
 	    sont identiques, caractère pour caractère).</li>
 
-            <li>'<strong>&gt;=expression de comparaison</strong>'
+            <li>'<strong>&gt;=expression_de_comparaison</strong>'
 	    (supérieur ou égal à au sens lexicographique)<br />
-            Considère l'<em>expression de comparaison</em> comme une
+            Considère l'<em>expression_de_comparaison</em> comme une
 	    chaîne de caractères et la compare au sens lexicographique à
-	    la <em>chaîne de test</em>. Vrai si <em>chaîne de test</em>
-	    suit lexicographiquement <em>expression de comparaison</em>, ou est
-	    égale à <em>expression de comparaison</em> (les deux chaînes
+	    la <em>chaîne_de_test</em>. Vrai si <em>chaîne_de_test</em>
+	    suit lexicographiquement <em>expression_de_comparaison</em>, ou est
+	    égale à <em>expression_de_comparaison</em> (les deux chaînes
 	    sont identiques, caractère pour caractère).</li>
         </ul></li>
 
@@ -563,43 +562,38 @@ la réécriture soit effectuée
           <ul>
 
             <li>'<strong>-eq</strong>' (est numériquement égal à)<br />
-            La <em>chaîne de test</em> est considérée comme un entier,
-	    et est comparée numériquement à l'<em>expression de
-	    comparaison</em>. Vrai si les deux expressions sont
+            La <em>chaîne_de_test</em> est considérée comme un entier,
+	    et est comparée numériquement à l'<em>expression_de_comparaison</em>. Vrai si les deux expressions sont
 	    numériquement égales.</li>
 
             <li>'<strong>-ge</strong>' (est numériquement supérieur ou
 	    égal à)<br />
-            La <em>chaîne de test</em> est considérée comme un entier,
-	    et est comparée numériquement à l'<em>expression de
-	    comparaison</em>. Vrai si <em>chaîne de test</em> est
+            La <em>chaîne_de_test</em> est considérée comme un entier,
+	    et est comparée numériquement à l'<em>expression_de_comparaison</em>. Vrai si <em>chaîne_de_test</em> est
 	    numériquement
-	    supérieure ou égale à <em>expression de comparaison</em>.</li>
+	    supérieure ou égale à <em>expression_de_comparaison</em>.</li>
 
              <li>'<strong>-gt</strong>' (est numériquement supérieur à)<br />
-            La <em>chaîne de test</em> est considérée comme un entier,
-	    et est comparée numériquement à l'<em>expression de
-	    comparaison</em>. Vrai si <em>chaîne de test</em> est
+            La <em>chaîne_de_test</em> est considérée comme un entier,
+	    et est comparée numériquement à l'<em>expression_de_comparaison</em>. Vrai si <em>chaîne_de_test</em> est
 	    numériquement
-	    supérieure à <em>expression de comparaison</em>.</li>
+	    supérieure à <em>expression_de_comparaison</em>.</li>
 
             <li>'<strong>-le</strong>' (est numériquement inférieur ou
 	    égal à)<br />
-            La <em>chaîne de test</em> est considérée comme un entier,
-	    et est comparée numériquement à l'<em>expression de
-	    comparaison</em>. Vrai si <em>chaîne de test</em> est
+            La <em>chaîne_de_test</em> est considérée comme un entier,
+	    et est comparée numériquement à l'<em>expression_de_comparaison</em>. Vrai si <em>chaîne_de_test</em> est
 	    numériquement
-	    inférieure ou égale à <em>expression de comparaison</em>.
+	    inférieure ou égale à <em>expression_de_comparaison</em>.
 	    Attention à la confusion avec le drapeau <strong>-l</strong>
 	    en utilisant la variante the <strong>-L</strong> ou
 	    <strong>-h</strong>.</li>
 
              <li>'<strong>-lt</strong>' (est numériquement inférieur à)<br />
-            La <em>chaîne de test</em> est considérée comme un entier,
-	    et est comparée numériquement à l'<em>expression de
-	    comparaison</em>. Vrai si <em>chaîne de test</em> est
+            La <em>chaîne_de_test</em> est considérée comme un entier,
+	    et est comparée numériquement à l'<em>expression_de_comparaison</em>. Vrai si <em>chaîne_de_test</em> est
 	    numériquement
-	    inférieure à <em>expression de comparaison</em>.
+	    inférieure à <em>expression_de_comparaison</em>.
 	    Attention à la confusion avec le drapeau <strong>-l</strong>
 	    en utilisant la variante the <strong>-L</strong> ou
 	    <strong>-h</strong>.</li>
@@ -613,17 +607,17 @@ la réécriture soit effectuée
 
             <li>'<strong>-d</strong>' (est un répertoire -
 	    <strong>d</strong>irectory)<br />
-	    Traite <em>chaîne de test</em> comme un chemin et vérifie
+	    Traite <em>chaîne_de_test</em> comme un chemin et vérifie
 	    s'il existe ou pas, et s'il s'agit d'un répertoire.</li>
 
             <li>'<strong>-f</strong>' (est un
 	    <strong>f</strong>ichier régulier)<br />
-	    Traite <em>chaîne de test</em> comme un chemin et vérifie
+	    Traite <em>chaîne_de_test</em> comme un chemin et vérifie
 	    s'il existe ou pas, et s'il s'agit d'un fichier régulier.</li>
 
             <li>'<strong>-F</strong>' (test de l'existence d'un fichier
 	    via une sous-requête)<br />
-	    Vérifie si <em>chaîne de test</em> est un fichier valide,
+	    Vérifie si <em>chaîne_de_test</em> est un fichier valide,
 	    accessible à travers tous les contrôles d'accès du serveur
 	    actuellement configurés pour ce chemin. C'est une
 	    sous-requête interne qui effectue cette vérification - à
@@ -635,7 +629,7 @@ la réécriture soit effectuée
             Voir <strong>-l</strong>.</li>
 
             <li>'<strong>-l</strong>' (est un lien symbolique)<br />
-            Considère la <em>chaîne de test</em> comme un chemin et
+            Considère la <em>chaîne_de_test</em> comme un chemin et
 	    vérifie son existence et si elle est un lien symbolique. On
 	    peut aussi utiliser la convention bash <strong>-L</strong>
 	    ou <strong>-h</strong> lorsqu'il y a risque de confusion
@@ -647,13 +641,13 @@ la réécriture soit effectuée
 
             <li>'<strong>-s</strong>' (est un fichier régulier d'une
 	    certaine taille)<br />
-            Considère la <em>chaîne de test</em> comme un chemin et
+            Considère la <em>chaîne_de_test</em> comme un chemin et
 	    vérifie son existence et si elle est un fichier régulier
 	    d'une taille supérieure à zéro.</li>
 
             <li><p>'<strong>-U</strong>' (test de l'existence d'une
 	    URL via une sous-requête)<br />
-	    Vérifie si <em>chaîne de test</em> est une URL valide,
+	    Vérifie si <em>chaîne_de_test</em> est une URL valide,
 	    accessible à travers tous les contrôles d'accès du serveur
 	    actuellement configurés pour ce chemin. C'est une
 	    sous-requête interne qui effectue cette vérification - à
@@ -667,7 +661,7 @@ la réécriture soit effectuée
 	    retourné.</p></li>
 
 	  <li>'<strong>-x</strong>' (a l'attribut d'exécution positionné)<br />
-            Considère la <em>chaîne de test</em> comme un chemin et
+            Considère la <em>chaîne_de_test</em> comme un chemin et
 	    vérifie son existence et si elle a son attribut d'exécution
 	    positionné. Ce positionnement est déterminé en fonction de
 	    l'OS sous-jacent.</li>
@@ -677,8 +671,8 @@ la réécriture soit effectuée
         </li>
 
 	<li>
-           <p>Si la <em>chaîne de test</em> contient la valeur spéciale
-	   <code>expr</code>, la <em>chaîne de comparaison</em> sera
+           <p>Si la <em>chaîne_de_test</em> contient la valeur spéciale
+	   <code>expr</code>, la <em>chaîne_de_comparaison</em> sera
 	   traitée en tant qu'expression rationnelle de type <a href="../expr.html">ap_expr</a>.</p>
 
 	   <p>
@@ -694,7 +688,7 @@ la réécriture soit effectuée
         </li>
 
 	<li>Vous pouvez aussi définir certains drapeaux pour
-	l'<em>expression de comparaison</em> en ajoutant ces
+	l'<em>expression_de_comparaison</em> en ajoutant ces
 	<strong><code>[</code><em>drapeaux</em><code>]</code></strong>
 	comme troisième argument de la directive
 	<code>RewriteCond</code>, où <em>drapeaux</em> est un
@@ -705,10 +699,10 @@ la réécriture soit effectuée
 	(<strong>n</strong>o <strong>c</strong>ase)<br />
 	Rend le test insensible à la casse - il n'est pas fait de
 	distinction entre majuscules et minuscules, à la fois dans le
-	développement de <em>chaîne de test</em> et dans
-	<em>expression de comparaison</em>. Ce drapeau n'est pris en
-	compte que lors d'une comparaison entre <em>chaîne de test</em>
-	et <em>expression de comparaison</em>. Il ne l'est pas pour les
+	développement de <em>chaîne_de_test</em> et dans
+	<em>expression_de_comparaison</em>. Ce drapeau n'est pris en
+	compte que lors d'une comparaison entre <em>chaîne_de_test</em>
+	et <em>expression_de_comparaison</em>. Il ne l'est pas pour les
 	vérification par sous-requêtes ou sur le système de
 	fichiers.</li>
 
@@ -805,8 +799,7 @@ moteur de réécriture</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit une fonction de mise en correspondance pour la
 recherche de mots-clés</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RewriteMap <em>nom de la correspondance</em> <em>type de
-correspondance</em>:<em>source de la correspondance</em>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RewriteMap <em>nom_de_la_correspondance</em> <em>type_de_correspondance</em>:<em>source_de_la_correspondance</em>
 </code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -820,24 +813,22 @@ correspondance</em>:<em>source de la correspondance</em>
       La source utilisée pour cette recherche peut être de plusieurs
       types.</p>
 
-      <p><a id="mapfunc" name="mapfunc"><em>nom de la
-      correspondance</em></a> est le nom de la table de correspondance
+      <p><a id="mapfunc" name="mapfunc"><em>nom_de_la_correspondance</em></a>
+      est le nom de la table de correspondance
       et servira à spécifier une fonction de mise en correspondance
       pour les chaînes de substitution d'une règle de réécriture selon
       une des constructions suivantes :</p>
 
       <p class="indent">
-        <strong><code>${</code> <em>nom de la
-      correspondance</em> <code>:</code>
+        <strong><code>${</code> <em>nom_de_la_correspondance</em> <code>:</code>
         <em>mot-clé</em> <code>}</code><br />
-         <code>${</code> <em>nom de la
-      correspondance</em> <code>:</code>
+         <code>${</code> <em>nom_de_la_correspondance</em> <code>:</code>
         <em>mot-clé</em> <code>|</code> <em>valeur par défaut</em>
         <code>}</code></strong>
       </p>
 
       <p>Lorsqu'une telle construction est rencontrée, la table de
-      correspondance <em>Nom de la correspondance</em> est consultée
+      correspondance <em>Nom_de_la_correspondance</em> est consultée
       et la clé <em>mot-clé</em> recherchée. Si la clé est trouvée, la
       construction est remplacée par
       la <em>valeur de remplacement</em>. Si la clé n'est pas trouvée,
@@ -883,12 +874,12 @@ correspondance</em>:<em>source de la correspondance</em>
 
     <dt>prg</dt>
         <dd>Appelle un programme externe ou un script pour effectuer la
-	réécriture (<a href="../rewrite/rewritemap.html#int">Détails
+	réécriture (<a href="../rewrite/rewritemap.html#prg">Détails
 	...</a>).</dd>
 
     <dt>dbd or fastdbd</dt>
         <dd>Une commande SQL SELECT à exécuter pour rechercher la cible
-	de réécriture (<a href="../rewrite/rewritemap.html#int">Détails
+	de réécriture (<a href="../rewrite/rewritemap.html#dbd">Détails
 	...</a>).</dd>
     </dl>
 

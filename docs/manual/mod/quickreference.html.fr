@@ -1023,16 +1023,15 @@ retourne elle-même un résultat positif.</td></tr>
 <tr><td><a href="mod_authz_core.html#requirenone">&lt;RequireNone&gt; ... &lt;/RequireNone&gt;</a></td><td></td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Regroupe des directives d'autorisation dont aucune ne doit
 retourner un résultat positif pour que la directive globale n'échoue
 pas.</td></tr>
-<tr class="odd"><td><a href="mod_rewrite.html#rewritebase">RewriteBase <em>chemin URL</em></a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Définit l'URL de base pour les réécritures au niveau
+<tr class="odd"><td><a href="mod_rewrite.html#rewritebase">RewriteBase <em>chemin_URL</em></a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Définit l'URL de base pour les réécritures au niveau
 répertoire</td></tr>
 <tr><td><a href="mod_rewrite.html#rewritecond"> RewriteCond
-      <em>chaîne de test</em> <em>expression de comparaison</em></a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Définit une condition qui devra être satisfaite pour que
+      <em>chaîne_de_test</em> <em>expression_de_comparaison</em></a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Définit une condition qui devra être satisfaite pour que
 la réécriture soit effectuée
 </td></tr>
 <tr class="odd"><td><a href="mod_rewrite.html#rewriteengine">RewriteEngine on|off</a></td><td> off </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Active ou désactive l'exécution du
 moteur de réécriture</td></tr>
-<tr><td><a href="mod_rewrite.html#rewritemap">RewriteMap <em>nom de la correspondance</em> <em>type de
-correspondance</em>:<em>source de la correspondance</em>
+<tr><td><a href="mod_rewrite.html#rewritemap">RewriteMap <em>nom_de_la_correspondance</em> <em>type_de_correspondance</em>:<em>source_de_la_correspondance</em>
 </a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Définit une fonction de mise en correspondance pour la
 recherche de mots-clés</td></tr>
 <tr class="odd"><td><a href="mod_rewrite.html#rewriteoptions">RewriteOptions <var>Options</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Configure certaines options spéciales
