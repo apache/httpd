@@ -387,8 +387,7 @@ module="mod_rewrite">RewriteMap</directive></description>
 <name>RewriteMap</name>
 <description>D&eacute;finit une fonction de mise en correspondance pour la
 recherche de mots-cl&eacute;s</description>
-<syntax>RewriteMap <em>nom de la correspondance</em> <em>type de
-correspondance</em>:<em>source de la correspondance</em>
+<syntax>RewriteMap <em>nom_de_la_correspondance</em> <em>type_de_correspondance</em>:<em>source_de_la_correspondance</em>
 </syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
@@ -445,8 +444,8 @@ bases de donn&eacute;es depuis la version 2.0.41 d'Apache</compatibility>
       RewriteRule ^/ex/(.*) ${map-exemple:$1}
       </example>
 
-      <p>Les combinaisons suivantes pour <em>type de correspondance</em>
-      et <em>source de la correspondance</em>
+      <p>Les combinaisons suivantes pour <em>type_de_correspondance</em>
+      et <em>source_de_la_correspondance</em>
       peuvent &ecirc;tre utilis&eacute;es :</p>
 
       <ul>
@@ -458,7 +457,7 @@ bases de donn&eacute;es depuis la version 2.0.41 d'Apache</compatibility>
 
           <p>Il s'agit de la mise en oeuvre standard de la table de
 	  correspondance pour la r&eacute;&eacute;criture o&ugrave;
-	  <em>source de la correspondance</em> est un fichier ASCII
+	  <em>source_de_la_correspondance</em> est un fichier ASCII
 	  dont les diff&eacute;rentes lignes sont soit des lignes vides, soit
 	  des lignes de commentaires (commen&ccedil;ant par un caract&egrave;re "#"),
 	  soit des paires de valeurs (une seule paire
@@ -682,7 +681,7 @@ recherche externe n'intervient qu'une seule fois !
 <name>RewriteBase</name>
 <description>D&eacute;finit l'URL de base pour les r&eacute;&eacute;critures au niveau
 r&eacute;pertoire</description>
-<syntax>RewriteBase <em>chemin URL</em></syntax>
+<syntax>RewriteBase <em>chemin_URL</em></syntax>
 <default>None</default>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
@@ -738,7 +737,7 @@ RewriteRule ^index\.html$  welcome.html
 la r&eacute;&eacute;criture soit effectu&eacute;e
 </description>
 <syntax> RewriteCond
-      <em>cha&icirc;ne de test</em> <em>expression de comparaison</em></syntax>
+      <em>cha&icirc;ne_de_test</em> <em>expression_de_comparaison</em></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
@@ -753,7 +752,7 @@ la r&eacute;&eacute;criture soit effectu&eacute;e
       correspond &agrave; son mod&egrave;le, <strong
       >et</strong> si les conditions sont satisfaites.</p>
 
-      <p><em>cha&icirc;ne de test</em> est une cha&icirc;ne de caract&egrave;res qui peut
+      <p><em>cha&icirc;ne_de_test</em> est une cha&icirc;ne de caract&egrave;res qui peut
       contenir, en plus du plein texte, les constructions &eacute;tendues
       suivantes :</p>
 
@@ -1023,14 +1022,14 @@ la r&eacute;&eacute;criture soit effectu&eacute;e
 	LA-U vue pr&eacute;c&eacute;demment.</li>
       </ol>
 
-      <p><em>expression de comparaison</em> est une expression
+      <p><em>expression_de_comparaison</em> est une expression
       rationnelle qui est appliqu&eacute;e &agrave; l'instance actuelle de
-      <em>cha&icirc;ne de test</em>. <em>cha&icirc;ne de test</em> est d'abord
+      <em>cha&icirc;ne_de_test</em>. <em>cha&icirc;ne_de_test</em> est d'abord
       &eacute;valu&eacute;e, puis compar&eacute;e &agrave;
-      l'<em>expression de comparaison</em>.</p>
+      l'<em>expression_de_comparaison</em>.</p>
 
       <p><strong>A savoir :</strong>
-      <em>expression de comparaison</em> est une
+      <em>expression_de_comparaison</em> est une
       <em>expression rationnelle compatible perl</em> avec
       quelques extensions :</p>
 
@@ -1048,61 +1047,61 @@ la r&eacute;&eacute;criture soit effectu&eacute;e
 	    lexicographique)<br />
 	    Traite l'<em>expression</em> comme une cha&icirc;ne de
 	    caract&egrave;res et la compare lexicographiquement &agrave;
-	    <em>cha&icirc;ne de test</em>. La condition est satisfaite si
-	    <em>cha&icirc;ne de test</em> est inf&eacute;rieure au sens
+	    <em>cha&icirc;ne_de_test</em>. La condition est satisfaite si
+	    <em>cha&icirc;ne_de_test</em> est inf&eacute;rieure au sens
 	    lexicographique &agrave; l'<em>expression</em>.</li>
 
             <li>'<strong>&gt;expression</strong>' (sup&eacute;rieur au sens
 	    lexicographique)<br />
 	    Traite l'<em>expression</em> comme une cha&icirc;ne de
 	    caract&egrave;res et la compare lexicographiquement &agrave;
-	    <em>cha&icirc;ne de test</em>. La condition est satisfaite si
-	    <em>cha&icirc;ne de test</em> est sup&eacute;rieure au sens
+	    <em>cha&icirc;ne_de_test</em>. La condition est satisfaite si
+	    <em>cha&icirc;ne_de_test</em> est sup&eacute;rieure au sens
 	    lexicographique &agrave; l'<em>expression</em>.</li>
 
             <li>'<strong>=expression</strong>' (&eacute;gal au sens
 	    lexicographique)<br />
 	    Traite l'<em>expression</em> comme une cha&icirc;ne de
 	    caract&egrave;res et la compare lexicographiquement &agrave;
-	    <em>cha&icirc;ne de test</em>. La condition est satisfaite si
-	    <em>cha&icirc;ne de test</em> est &eacute;gale au sens
+	    <em>cha&icirc;ne_de_test</em>. La condition est satisfaite si
+	    <em>cha&icirc;ne_de_test</em> est &eacute;gale au sens
 	    lexicographique &agrave; l'<em>expression</em> (les deux cha&icirc;nes
 	    sont exactement identiques, caract&egrave;re pour caract&egrave;re). Si
 	    <em>expression</em> est <code>""</code> (deux guillemets),
-	    <em>cha&icirc;ne de test</em> est compar&eacute;e &agrave; la cha&icirc;ne vide.</li>
+	    <em>cha&icirc;ne_de_test</em> est compar&eacute;e &agrave; la cha&icirc;ne vide.</li>
 
             <li>'<strong>-d</strong>' (est un
 	    <strong>r</strong>&eacute;pertoire)<br />
-	    Traite <em>cha&icirc;ne de test</em> comme un chemin et v&eacute;rifie
+	    Traite <em>cha&icirc;ne_de_test</em> comme un chemin et v&eacute;rifie
 	    s'il existe ou pas, et s'il s'agit d'un r&eacute;pertoire.</li>
 
             <li>'<strong>-f</strong>' (est un
 	    <strong>f</strong>ichier r&eacute;gulier)<br />
-	    Traite <em>cha&icirc;ne de test</em> comme un chemin et v&eacute;rifie
+	    Traite <em>cha&icirc;ne_de_test</em> comme un chemin et v&eacute;rifie
 	    s'il existe ou pas, et s'il s'agit d'un fichier r&eacute;gulier.</li>
 
             <li>'<strong>-s</strong>' (est un fichier r&eacute;gulier d'une
 	    certaine <strong>t</strong>aille)<br />
-	    Traite <em>cha&icirc;ne de test</em> comme un chemin et v&eacute;rifie
+	    Traite <em>cha&icirc;ne_de_test</em> comme un chemin et v&eacute;rifie
 	    s'il existe ou pas, et s'il s'agit d'un fichier r&eacute;gulier
 	    dont la taille est sup&eacute;rieure &agrave; z&eacute;ro.</li>
 
             <li>'<strong>-l</strong>' (est un
 	    <strong>l</strong>ien symbolique)<br />
-	    Traite <em>cha&icirc;ne de test</em> comme un chemin et v&eacute;rifie
+	    Traite <em>cha&icirc;ne_de_test</em> comme un chemin et v&eacute;rifie
 	    s'il existe ou pas, et s'il s'agit d'un lien
 	    symbolique.</li>
 
             <li>'<strong>-x</strong>' (a le droit
 	    d'e<strong>x</strong>&eacute;cussion)<br />
-	    Traite <em>cha&icirc;ne de test</em> comme un chemin et v&eacute;rifie
+	    Traite <em>cha&icirc;ne_de_test</em> comme un chemin et v&eacute;rifie
 	    s'il existe ou pas, et a le droit d'ex&eacute;cution. Ce droit est
 	    d&eacute;termin&eacute; en accord avec le syst&egrave;me d'exploitation
 	    sous-jacent.</li>
 
             <li>'<strong>-F</strong>' (test de l'existence d'un fichier
 	    via une sous-requ&ecirc;te)<br />
-	    V&eacute;rifie si <em>cha&icirc;ne de test</em> est un fichier valide,
+	    V&eacute;rifie si <em>cha&icirc;ne_de_test</em> est un fichier valide,
 	    accessible &agrave; travers tous les contr&ocirc;les d'acc&egrave;s du serveur
 	    actuellement configur&eacute;s pour ce chemin. C'est une
 	    sous-requ&ecirc;te interne qui effectue cette v&eacute;rification - &agrave;
@@ -1111,7 +1110,7 @@ la r&eacute;&eacute;criture soit effectu&eacute;e
 
             <li><p>'<strong>-U</strong>' (test de l'existence d'une URL
 	    via une sous-requ&ecirc;te)<br />
-	    V&eacute;rifie si <em>cha&icirc;ne de test</em> est une URL valide,
+	    V&eacute;rifie si <em>cha&icirc;ne_de_test</em> est une URL valide,
 	    accessible &agrave; travers tous les contr&ocirc;les d'acc&egrave;s du serveur
 	    actuellement configur&eacute;s pour ce chemin. C'est une
 	    sous-requ&ecirc;te interne qui effectue cette v&eacute;rification - &agrave;
@@ -1132,7 +1131,7 @@ la r&eacute;&eacute;criture soit effectu&eacute;e
         </li>
 
 	<li>Vous pouvez aussi d&eacute;finir certains drapeaux pour
-	l'<em>expression de comparaison</em> en ajoutant ces
+	l'<em>expression_de_comparaison</em> en ajoutant ces
 	<strong><code>[</code><em>drapeaux</em><code>]</code></strong>
 	comme troisi&egrave;me argument de la directive
 	<code>RewriteCond</code>, o&ugrave; <em>drapeaux</em> est un
@@ -1143,10 +1142,10 @@ la r&eacute;&eacute;criture soit effectu&eacute;e
 	(<strong>n</strong>o <strong>c</strong>ase)<br />
 	Rend le test insensible &agrave; la casse - il n'est pas fait de
 	distinction entre majuscules et minuscules, &agrave; la fois dans le
-	d&eacute;veloppement de <em>cha&icirc;ne de test</em> et dans
-	<em>expression de comparaison</em>. Ce drapeau n'est pris en
-	compte que lors d'une comparaison entre <em>cha&icirc;ne de test</em>
-	et <em>expression de comparaison</em>. Il ne l'est pas pour les
+	d&eacute;veloppement de <em>cha&icirc;ne_de_test</em> et dans
+	<em>expression_de_comparaison</em>. Ce drapeau n'est pris en
+	compte que lors d'une comparaison entre <em>cha&icirc;ne_de_test</em>
+	et <em>expression_de_comparaison</em>. Il ne l'est pas pour les
 	v&eacute;rification par sous-requ&ecirc;tes ou sur le syst&egrave;me de
 	fichiers.</li>
 
