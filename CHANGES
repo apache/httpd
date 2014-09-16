@@ -1,6 +1,9 @@
-﻿                                                         -*- coding: utf-8 -*-
+                                                         -*- coding: utf-8 -*-
 
 Changes with Apache 2.4.11
+
+  *) cmake-based build for Windows: Fix incompatibility with cmake 2.8.12
+     and later.  PR 56615.  [Chuck Liu <cliu81 gmail.com>, Jeff Trawick]
 
   *) mod_ratelimit: Drop severity of AH01455 and AH01457 (ap_pass_brigade
      failed) messages from ERROR to TRACE1.  Other filters do not bother 
