@@ -223,6 +223,28 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (modulo CHANGES)
      +1: jkaluza
 
+   * mod_systemd: New module, for integration with systemd on Linux.
+     trunk patch: http://svn.apache.org/r1393976
+                  http://svn.apache.org/r1393997
+                  http://svn.apache.org/r1484554
+                  http://svn.apache.org/r1528032
+                  http://svn.apache.org/r1528034
+                  http://svn.apache.org/r1614821
+                  http://svn.apache.org/r1618579
+                  http://svn.apache.org/r1618588
+     2.4.x patch: http://people.apache.org/~jkaluza/patches/mod_systemd/httpd-2.4.x-mod_systemd.patch
+     +1: jkaluza
+
+   * core: Add support for systemd socket activation.
+     trunk patch: http://svn.apache.org/r1511033
+                  http://svn.apache.org/r1608686
+                  http://svn.apache.org/r1608694
+                  http://svn.apache.org/r1608703
+                  http://svn.apache.org/r1608721
+                  http://svn.apache.org/r1608744
+     2.4.x patch: http://people.apache.org/~jkaluza/patches/mod_systemd/httpd-2.4.x-socket-activation.patch
+     +1: jkaluza
+
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
