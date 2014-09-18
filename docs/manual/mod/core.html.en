@@ -516,7 +516,7 @@ NoDecode option available in 2.2.18 and later.</td></tr>
       separated lists of options that may be set using the <code class="directive"><a href="#options">Options</a></code> command.
 
       <div class="note"><h3>Implicit disabling of Options</h3>
-      <p>Even though the list of options that may be used in .htaccess files 
+      <p>Even though the list of options that may be used in .htaccess files
          can be limited with this directive, as long as any <code class="directive"><a href="#options">Options</a></code> directive is allowed any
          other inherited option can be disabled by using the non-relative
          syntax.  In other words, this mechanism cannot force a specific option
@@ -2349,13 +2349,13 @@ resource </td></tr>
     return to the client. If more ranges than permitted are requested,
     the complete resource is returned instead.</p>
 
-    <dl>  
+    <dl>
       <dt><strong>default</strong></dt>
       <dd>Limits the number of ranges to a compile-time default of 200.</dd>
-   
+
       <dt><strong>none</strong></dt>
       <dd>Range headers are ignored.</dd>
-          
+
       <dt><strong>unlimited</strong></dt>
       <dd>The server does not limit the number of ranges it is
           willing to satisfy.</dd>
@@ -2750,6 +2750,14 @@ a resource</td></tr>
       &lt;/Directory&gt;<br />
     </code></p></div>
     </div>
+    <div class="note"><h3>Combined use of authentication backends</h3>
+    <p>Multiple <code class="directive">Require</code> directives do operate as
+    logical "OR", but some underlying authentication modules may require
+    an explicit configuration to let authentication be chained to others.
+    This is typically the case with <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code>,
+    which exports the <code class="directive">AuthzLDAPAuthoritative</code> in
+    that intent.</p>
+    </div>
 
 
 <h3>See also</h3>
@@ -3050,7 +3058,7 @@ to name-virtual hosts</td></tr>
     (nor for ServerName vs. ServerAlias).  </p>
 
     <p>The complete list of names in the <code class="directive">VirtualHost</code>
-    directive are treated just like a (non wildcard) 
+    directive are treated just like a (non wildcard)
     <code class="directive">ServerAlias</code>.</p>
 
 
