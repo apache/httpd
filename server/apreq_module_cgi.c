@@ -352,7 +352,7 @@ static void init_body(apreq_handle_t *handle)
 
     if (cl_header != NULL) {
         char *dummy;
-        apr_int64_t content_length = apr_strtoi64(cl_header, &dummy, 0);
+        apr_int64_t content_length = apr_strtoi64(cl_header, &dummy, 10);
 
         if (dummy == NULL || *dummy != 0) {
             req->body_status = APREQ_ERROR_BADHEADER;
