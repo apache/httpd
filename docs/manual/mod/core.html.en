@@ -2378,8 +2378,8 @@ resource </td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>2.2.29 and later</td></tr>
 </table>
     <p>This directive controls whether HTTP trailers are copied into the
-    internal representation of HTTP headers. This mergeing occurs when the 
-    request body has been completely consumed, long after most header 
+    internal representation of HTTP headers. This mergeing occurs when the
+    request body has been completely consumed, long after most header
     processing would have a chance to examine or modify request headers.</p>
     <p>This option is provided for compatibility with releases prior to 2.4.10,
     where trailers were always merged.</p>
@@ -2728,6 +2728,13 @@ a resource</td></tr>
     then the interaction of these restrictions is controlled by
     the <code class="directive"><a href="#satisfy">Satisfy</a></code> directive.</p>
 
+    <p>Multiple <code class="directive">Require</code> directives do operate as
+    logical "OR", but some underlying authentication modules may require
+    an explicit configuration to let authentication be chained to others.
+    This is typically the case with <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code>,
+    which exports the <code class="directive">AuthzLDAPAuthoritative</code> in
+    that intent.</p>
+
     <div class="note"><h3>Removing controls in subdirectories</h3>
     <p>The following example shows how to use the <code class="directive"><a href="#satisfy">Satisfy</a></code> directive to disable access
     controls in a subdirectory of a protected directory.  This
@@ -2749,14 +2756,6 @@ a resource</td></tr>
         </span>
       &lt;/Directory&gt;<br />
     </code></p></div>
-    </div>
-    <div class="note"><h3>Combined use of authentication backends</h3>
-    <p>Multiple <code class="directive">Require</code> directives do operate as
-    logical "OR", but some underlying authentication modules may require
-    an explicit configuration to let authentication be chained to others.
-    This is typically the case with <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code>,
-    which exports the <code class="directive">AuthzLDAPAuthoritative</code> in
-    that intent.</p>
     </div>
 
 
