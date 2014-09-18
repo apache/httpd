@@ -208,6 +208,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * mod_proxy: Make worker name truncation a non-fatal error.
      trunk patch: http://svn.apache.org/r1621367
                   http://svn.apache.org/r1621372
+                  http://svn.apache.org/r1625952
      2.4.x patch: http://people.apache.org/~jim/patches/worker-trunc.patch
      +1: jim
 
