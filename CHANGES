@@ -1,8 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
-  *) Content-Length header should be always interpreted as a decimal. Leading 0
-     could be erroneously considered as an octal value. PR 56598.
+  *) apreq: Content-Length header should be always interpreted as a decimal.
+     Leading 0 could be erroneously considered as an octal value. PR 56598.
      [Chris Card <ctcard hotmail com>]
   
   *) SECURITY: CVE-2014-3581 (cve.mitre.org)
