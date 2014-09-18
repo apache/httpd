@@ -245,6 +245,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~jkaluza/patches/mod_systemd/httpd-2.4.x-socket-activation.patch
      +1: jkaluza
 
+   * mod_status: honor mod_remoteip.
+     trunk patch: http://svn.apache.org/r1624349
+     2.4.x patch: trunk patch works
+     +1: jim
+
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
