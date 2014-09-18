@@ -124,7 +124,7 @@ void apreq_filter_init_context(ap_filter_t *f)
 
     if (cl_header != NULL) {
         char *dummy;
-        apr_uint64_t content_length = apr_strtoi64(cl_header,&dummy,0);
+        apr_uint64_t content_length = apr_strtoi64(cl_header, &dummy, 10);
 
         if (dummy == NULL || *dummy != 0) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, APR_EGENERAL, r, APLOGNO(02045)

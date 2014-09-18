@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) Content-Length header should be always interpreted as a decimal. Leading 0
+     could be erroneously considered as an octal value. PR 56598.
+     [Chris Card <ctcard hotmail com>]
+  
   *) SECURITY: CVE-2014-3581 (cve.mitre.org)
      mod_cache: Avoid a crash when Content-Type has an empty value. PR56924.
      [Mark Montague <mark catseye.org>, Jan Kaluza]
