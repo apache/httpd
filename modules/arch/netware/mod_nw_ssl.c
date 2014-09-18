@@ -1192,8 +1192,8 @@ static apr_status_t ssl_io_filter_Upgrade(ap_filter_t *f,
     /* Send the interim 101 response. */
     upgradebb = apr_brigade_create(r->pool, f->c->bucket_alloc);
 
-    ap_fputstrs(f->next, upgradebb, SWITCH_STATUS_LINE, CRLF,
-                UPGRADE_HEADER, CRLF, CONNECTION_HEADER, CRLF, CRLF, NULL);
+    ap_fputs(f->next, upgradebb, SWITCH_STATUS_LINE CRLF
+             UPGRADE_HEADER CRLF CONNECTION_HEADER CRLF CRLF);
 
     b = apr_bucket_flush_create(f->c->bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(upgradebb, b);
