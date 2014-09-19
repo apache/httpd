@@ -101,6 +101,11 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * authz_core: Let providers defined with AuthzProviderAlias be useable in 
+     virtual hosts. PR56870
+     trunk patch: http://svn.apache.org/r1618851
+     2.4.x patch: trunk works + CHANGES
+     +1 covener, jim, jkaluza
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -178,12 +183,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1613682
      2.4.x patch: trunk works + CHANGES referencing 2.4.10 regression
      +1: covener, jim
-
-   * authz_core: Let providers defined with AuthzProviderAlias be useable in 
-     virtual hosts. PR56870
-     trunk patch: http://svn.apache.org/r1618851
-     2.4.x patch: trunk works + CHANGES
-     +1 covener, jim
 
    * mod_dav: set r->status_line in dav_error_response.
      It's used as argument in next ap_rvputs call. PR 55426.
