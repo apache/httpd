@@ -168,6 +168,13 @@ static void *merge_authz_core_dir_config(apr_pool_t *p,
     return (void*)conf;
 }
 
+/* Only per-server directive we have is GLOBAL_ONLY */
+static void *merge_authz_core_svr_config(apr_pool_t *p,
+                                         void *basev, void *newv)
+{
+    return basev;
+}
+
 static void *create_authz_core_svr_config(apr_pool_t *p, server_rec *s)
 {
     authz_core_srv_conf *authcfg;
@@ -1140,7 +1147,7 @@ AP_DECLARE_MODULE(authz_core) =
     create_authz_core_dir_config,   /* dir config creater */
     merge_authz_core_dir_config,    /* dir merger */
     create_authz_core_svr_config,   /* server config */
-    NULL,                           /* merge server config */
+    merge_authz_core_svr_config ,   /* merge server config */
     authz_cmds,
     register_hooks                  /* register hooks */
 };
