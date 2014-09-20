@@ -2949,6 +2949,14 @@ uniquement depuis la version 2.3.3 sous Windows.</td></tr>
     différentes restrictions imposées est contrôlée par la directive
     <code class="directive"><a href="#satisfy">Satisfy</a></code>.</p>
 
+    <p>Plusieurs directives <code class="directive">Require</code> se combinent
+    entre elles via un "OU" logique, mais certains modules
+    d'authentification sous-jacents peuvent nécessiter une configuration
+    explicite afin que l'authentification puisse être chaînée avec
+    d'autres. <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code> qui exporte la directive
+    <code class="directive">AuthzLDAPAuthoritative</code> à cet effet en est un cas
+    typique.</p>
+
     <div class="note"><h3>Désactivation des contrôles d'accès pour certains
     sous-répertoires</h3>
     <p>L'exemple suivant montre comment utiliser la directive <code class="directive"><a href="#satisfy">Satisfy</a></code> pour désactiver les contrôles
