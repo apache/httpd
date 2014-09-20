@@ -333,7 +333,7 @@ apr_status_t cache_try_lock(cache_server_conf *conf, cache_request_rec *cache,
     status = apr_stat(&finfo, lockname,
                 APR_FINFO_MTIME | APR_FINFO_NLINK, r->pool);
     if (!(APR_STATUS_IS_ENOENT(status)) && APR_SUCCESS != status) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, APR_EEXIST, r, APLOGNO(00779)
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(00779)
                 "Could not stat a cache lock file: %s",
                 lockname);
         return status;
