@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1620012 -->
+<!-- English Revision: 1626059 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -2915,6 +2915,14 @@ particulier</description>
     module="mod_authz_host">Deny</directive>, l'interaction entre les
     diff&eacute;rentes restrictions impos&eacute;es est contr&ocirc;l&eacute;e par la directive
     <directive module="core">Satisfy</directive>.</p>
+
+    <p>Plusieurs directives <directive>Require</directive> se combinent
+    entre elles via un "OU" logique, mais certains modules
+    d'authentification sous-jacents peuvent n&eacute;cessiter une configuration
+    explicite afin que l'authentification puisse &ecirc;tre cha&icirc;n&eacute;e avec
+    d'autres. <module>mod_authnz_ldap</module> qui exporte la directive
+    <directive>AuthzLDAPAuthoritative</directive> &agrave; cet effet en est un cas
+    typique.</p>
 
     <note><title>D&eacute;sactivation des contr&ocirc;les d'acc&egrave;s pour certains
     sous-r&eacute;pertoires</title>
