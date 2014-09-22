@@ -190,14 +190,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch:  http://svn.apache.org/r1619835 
                    http://svn.apache.org/r1620461
      2.4.x patch: trunk works
-     +1: covener
+     +1: covener, jim
 
    * core: Add missing va_end spotted by cppcheck
      various: Silent some cppcheck warnings
      trunk patch: http://svn.apache.org/r1619297 
                   http://svn.apache.org/r1621806
      2.4.x patch: trunk works (except for mod_journald which is not part of 2.4.x)
-     +1: jailletc36
+     +1: jailletc36, jim
 
    * mod_proxy: Make worker name truncation a non-fatal error.
      trunk patch: http://svn.apache.org/r1621367
@@ -216,7 +216,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      value. PR56924.
      trunk patch: http://svn.apache.org/r1624234
      2.4.x patch: trunk works (modulo CHANGES)
-     +1: jkaluza
+     +1: jkaluza, jim
 
    * mod_systemd: New module, for integration with systemd on Linux.
      trunk patch: http://svn.apache.org/r1393976
