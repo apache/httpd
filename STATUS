@@ -244,7 +244,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * mod_status: honor mod_remoteip.
      trunk patch: http://svn.apache.org/r1624349
      2.4.x patch: trunk patch works
-     +1: jim
+     +1: jim, jkaluza
 
 OTHER PROPOSALS
 
