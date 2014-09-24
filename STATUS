@@ -102,6 +102,11 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * mod_status: honor mod_remoteip.
+     trunk patch: http://svn.apache.org/r1624349
+     2.4.x patch: trunk patch works
+     +1: jim, jkaluza, mrumph
+     mrumph: This fix should be credited to bug 55886.
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -240,11 +245,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1608744
      2.4.x patch: http://people.apache.org/~jkaluza/patches/mod_systemd/httpd-2.4.x-socket-activation.patch
      +1: jkaluza
-
-   * mod_status: honor mod_remoteip.
-     trunk patch: http://svn.apache.org/r1624349
-     2.4.x patch: trunk patch works
-     +1: jim, jkaluza
 
 OTHER PROPOSALS
 
