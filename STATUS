@@ -102,11 +102,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_cache: CVE-2014-3581 - Avoid a crash when Content-Type has an empty
-     value. PR56924.
-     trunk patch: http://svn.apache.org/r1624234
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: jkaluza, jim, ylavic
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
