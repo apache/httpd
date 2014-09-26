@@ -151,7 +151,7 @@ static int ap_proxy_wstunnel_request(apr_pool_t *p, request_rec *r,
                                 apr_uri_t *uri,
                                 char *url, char *server_portstr)
 {
-    apr_status_t rv = APR_SUCCESS;
+    apr_status_t rv;
     apr_pollset_t *pollset;
     apr_pollfd_t pollfd;
     const apr_pollfd_t *signalled;
