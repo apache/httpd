@@ -102,13 +102,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_cache: Avoid sending a 304 to an unconditional request during a 
-     revalidation. PR56881
-     trunk patch:  http://svn.apache.org/r1619835 
-                   http://svn.apache.org/r1620461
-     2.4.x patch: trunk works
-     +1: covener, jim, ylavic
- 
    * core: Add missing va_end spotted by cppcheck
      various: Silent some cppcheck warnings
      trunk patch: http://svn.apache.org/r1619297 
