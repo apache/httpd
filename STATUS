@@ -102,12 +102,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_status: honor mod_remoteip.
-     trunk patch: http://svn.apache.org/r1624349
-     2.4.x patch: trunk patch works
-     +1: jim, jkaluza, mrumph
-     mrumph: This fix should be credited to bug 55886.
-
    * mod_cache: Avoid sending a 304 to an unconditional request during a 
      revalidation. PR56881
      trunk patch:  http://svn.apache.org/r1619835 
