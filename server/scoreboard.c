@@ -484,8 +484,14 @@ static int update_child_status_internal(int child_num,
             ws->conn_bytes = 0;
         }
         if (r) {
-            apr_cpystrn(ws->client, ap_get_remote_host(c, r->per_dir_config,
-                        REMOTE_NOLOOKUP, NULL), sizeof(ws->client));
+            const char *client = ap_get_remote_host(c, r->per_dir_config,
+                                 REMOTE_NOLOOKUP, NULL);
+            if (!client || !strcmp(client, c->client_ip)) {
+                apr_cpystrn(ws->client, r->useragent_ip, sizeof(ws->client));
+            }
+            else {
+                apr_cpystrn(ws->client, client, sizeof(ws->client));
+            }
             copy_request(ws->request, sizeof(ws->request), r);
             if (r->server) {
                 apr_snprintf(ws->vhost, sizeof(ws->vhost), "%s:%d",

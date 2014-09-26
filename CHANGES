@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.11
 
+  *) mod_status: Honor client IP address using mod_remoteip. PR 55886.
+     [Jim Jagielski]
+
   *) cmake-based build for Windows: Fix incompatibility with cmake 2.8.12
      and later.  PR 56615.  [Chuck Liu <cliu81 gmail.com>, Jeff Trawick]
 
