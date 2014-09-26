@@ -102,13 +102,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * core: Add missing va_end spotted by cppcheck
-     various: Silent some cppcheck warnings
-     trunk patch: http://svn.apache.org/r1619297 
-                  http://svn.apache.org/r1621806
-     2.4.x patch: trunk works (except for mod_journald which is not part of 2.4.x)
-     +1: jailletc36, jim, ylavic
-
    * mod_cache: CVE-2014-3581 - Avoid a crash when Content-Type has an empty
      value. PR56924.
      trunk patch: http://svn.apache.org/r1624234
