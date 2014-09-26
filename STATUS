@@ -108,6 +108,26 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      +1: jim, jkaluza, mrumph
      mrumph: This fix should be credited to bug 55886.
 
+   * mod_cache: Avoid sending a 304 to an unconditional request during a 
+     revalidation. PR56881
+     trunk patch:  http://svn.apache.org/r1619835 
+                   http://svn.apache.org/r1620461
+     2.4.x patch: trunk works
+     +1: covener, jim, ylavic
+ 
+   * core: Add missing va_end spotted by cppcheck
+     various: Silent some cppcheck warnings
+     trunk patch: http://svn.apache.org/r1619297 
+                  http://svn.apache.org/r1621806
+     2.4.x patch: trunk works (except for mod_journald which is not part of 2.4.x)
+     +1: jailletc36, jim, ylavic
+
+   * mod_cache: CVE-2014-3581 - Avoid a crash when Content-Type has an empty
+     value. PR56924.
+     trunk patch: http://svn.apache.org/r1624234
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: jkaluza, jim, ylavic
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -161,7 +181,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        - not to modify the 'method_mask' bitfield unnecessarily
      trunk patch: http://svn.apache.org/r1610813
      2.4.x patch: trunk patch works (modulo CHANGES)
-     +1: jailletc36
+     +1: jailletc36, ylavic
 
    * mpm_winnt service.c: Normalize all error and status messages, clean up
      source formatting, and accept utf-8 service names/descriptions for i18n.
@@ -189,40 +209,20 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      It's used as argument in next ap_rvputs call. PR 55426.
      trunk patch: http://svn.apache.org/r1527509
      2.4.x patch: trunk works
-     +1: jkaluza
- 
-   * mod_cache: Avoid sending a 304 to an unconditional request during a 
-     revalidation. PR56881
-     trunk patch:  http://svn.apache.org/r1619835 
-                   http://svn.apache.org/r1620461
-     2.4.x patch: trunk works
-     +1: covener, jim
-
-   * core: Add missing va_end spotted by cppcheck
-     various: Silent some cppcheck warnings
-     trunk patch: http://svn.apache.org/r1619297 
-                  http://svn.apache.org/r1621806
-     2.4.x patch: trunk works (except for mod_journald which is not part of 2.4.x)
-     +1: jailletc36, jim
+     +1: jkaluza, ylavic
 
    * mod_proxy: Make worker name truncation a non-fatal error.
      trunk patch: http://svn.apache.org/r1621367
                   http://svn.apache.org/r1621372
                   http://svn.apache.org/r1625952
      2.4.x patch: http://people.apache.org/~jim/patches/worker-trunc.patch
-     +1: jim
+     +1: jim, ylavic
 
    * mod_slotmem: Increase log level for some originally debug messages.
      trunk patch: http://svn.apache.org/r1621373
      2.4.x patch: trunk works
                   http://people.apache.org/~jim/patches/slotmem-loglevel.patch
-     +1: jim
-
-   * mod_cache: CVE-2014-3581 - Avoid a crash when Content-Type has an empty
-     value. PR56924.
-     trunk patch: http://svn.apache.org/r1624234
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: jkaluza, jim
+     +1: jim, ylavic
 
    * mod_systemd: New module, for integration with systemd on Linux.
      trunk patch: http://svn.apache.org/r1393976
