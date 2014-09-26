@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.11
 
+  *) mod_cache: Avoid sending 304 responses during failed revalidations
+     PR56881. [Eric Covener]
+
   *) mod_status: Honor client IP address using mod_remoteip. PR 55886.
      [Jim Jagielski]
 
