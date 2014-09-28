@@ -235,9 +235,11 @@ static apr_status_t do_pattmatch(ap_filter_t *f, apr_bucket *inb,
                         have_match = 1;
                         if (script->flatten && !force_quick) {
                             /* copy bytes before the match */
+                            if (vb.strlen + regm[0].rm_so >= AP_SUBST_MAX_LINE_LENGTH)
+                                return APR_ENOMEM;
                             if (regm[0].rm_so > 0)
                                 ap_varbuf_strmemcat(&vb, pos, regm[0].rm_so);
-                            /* add replacement string */
+                            /* add replacement string, last argument is unsigned! */
                             rv = ap_varbuf_regsub(&vb, script->replacement, pos,
                                                   AP_MAX_REG_MATCH, regm,
                                                   AP_SUBST_MAX_LINE_LENGTH - vb.strlen);
