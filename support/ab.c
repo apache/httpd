@@ -343,6 +343,7 @@ apr_time_t start, lasttime, stoptime;
 char _request[8192];
 char *request = _request;
 apr_size_t reqlen;
+int requests_initialized = 0;
 
 /* one global throw-away buffer to read stuff into */
 char buffer[8192];
@@ -1395,6 +1396,7 @@ static void read_connection(struct connection * c)
     apr_status_t status;
     char *part;
     char respcode[4];       /* 3 digits and null */
+    int i;
 
     r = sizeof(buffer);
 #ifdef USE_SSL
@@ -1593,6 +1595,16 @@ static void read_connection(struct connection * c)
             }
             c->bread += c->cbx - (s + l - c->cbuff) + r - tocopy;
             totalbread += c->bread;
+
+            /* We have received the header, so we know this destination socket
+             * address is working, so initialize all remaining requests. */
+            if (!requests_initialized) {
+                for (i = 1; i < concurrency; i++) {
+                    con[i].socknum = i;
+                    start_connect(&con[i]);
+                }
+                requests_initialized = 1;
+            }
         }
     }
     else {
@@ -1797,11 +1809,10 @@ static void test(void)
     apr_signal(SIGINT, output_results);
 #endif
 
-    /* initialise lots of requests */
-    for (i = 0; i < concurrency; i++) {
-        con[i].socknum = i;
-        start_connect(&con[i]);
-    }
+    /* initialise first connection to determine destination socket address
+     * which should be used for next connections. */
+    con[0].socknum = 0;
+    start_connect(&con[0]);
 
     do {
         apr_int32_t n;
