@@ -79,8 +79,8 @@
 #include "openssl/x509v3.h"
 #include "openssl/ocsp.h"
 
-#if OPENSSL_VERSION_NUMBER < 0x10002001L
-#error "mod_ssl_ct requires OpenSSL 1.0.2-beta1 or later"
+#if OPENSSL_VERSION_NUMBER < 0x10002003L
+#error "mod_ssl_ct requires OpenSSL 1.0.2-beta3 or later"
 #endif
 
 #ifdef WIN32
@@ -1449,7 +1449,7 @@ static void look_for_server_certs(server_rec *s, SSL_CTX *ctx, const char *sct_d
 
     rc = SSL_CTX_set_current_cert(ctx, SSL_CERT_SET_FIRST);
     while (rc) {
-        x = SSL_CTX_get0_certificate(ctx); /* UNDOC */
+        x = SSL_CTX_get0_certificate(ctx); /* UNDOC (mentioned in ssl.pod) */
         if (x) {
             fingerprint = get_cert_fingerprint(s->process->pool, x);
             rv = ctutil_path_join(&cert_sct_dir, sct_dir, fingerprint, p, s);
@@ -1999,20 +1999,20 @@ static int ocsp_resp_cb(SSL *ssl, void *arg)
 }
 
 /* Callbacks and structures for handling custom TLS Extensions:
- *   cli_ext_first_cb  - sends data for ClientHello TLS Extension
- *   cli_ext_second_cb - receives data from ServerHello TLS Extension
+ *   client_extension_add_callback - sends data for ClientHello TLS Extension
+ *   client_extension_parse_callback - receives data from ServerHello TLS Extension
  */
-static int client_extension_callback_1(SSL *ssl, unsigned short ext_type,
-                                       const unsigned char **out,
-                                       unsigned short *outlen, int *al,
-                                       void *arg)
+static int client_extension_add_callback(SSL *ssl, unsigned ext_type, 
+                                         const unsigned char **out,
+                                         size_t *outlen, int *al,
+                                         void *arg)
 {
     conn_rec *c = (conn_rec *)SSL_get_app_data(ssl);
 
     /* nothing to send in ClientHello */
 
     ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c,
-                  "client_extension_callback_1 called, "
+                  "client_extension_add_callback called, "
                   "ext %hu will be in ClientHello",
                   ext_type);
 
@@ -2020,16 +2020,16 @@ static int client_extension_callback_1(SSL *ssl, unsigned short ext_type,
 }
 
 /* Get SCT(s) from ServerHello */
-static int client_extension_callback_2(SSL *ssl, unsigned short ext_type,
-                                       const unsigned char *in, unsigned short inlen,
-                                       int *al, void *arg)
+static int client_extension_parse_callback(SSL *ssl, unsigned ext_type,
+                                           const unsigned char *in, size_t inlen, 
+                                           int *al, void *arg)
 {
     conn_rec *c = (conn_rec *)SSL_get_app_data(ssl);
     ct_conn_config *conncfg = get_conn_config(c);
 
     ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c,
-                  "client_extension_callback_2 called, "
-                  "ext %hu was in ServerHello (len %hu)",
+                  "client_extension_parse_callback called, "
+                  "ext %u was in ServerHello (len %" APR_SIZE_T_FMT ")",
                   ext_type, inlen);
 
     /* Note: Peer certificate is not available in this callback via
@@ -2244,10 +2244,10 @@ static int ssl_ct_proxy_post_handshake(conn_rec *c, SSL *ssl)
     return OK;
 }
 
-static int server_extension_callback_1(SSL *ssl, unsigned short ext_type,
-                                       const unsigned char *in,
-                                       unsigned short inlen, int *al,
-                                       void *arg)
+static int server_extension_parse_callback(SSL *ssl, unsigned ext_type,
+                                           const unsigned char *in,
+                                           size_t inlen, int *al,
+                                           void *arg)
 {
     conn_rec *c = (conn_rec *)SSL_get_app_data(ssl);
 
@@ -2257,17 +2257,17 @@ static int server_extension_callback_1(SSL *ssl, unsigned short ext_type,
     client_is_ct_aware(c);
 
     ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c,
-                  "server_extension_callback_1 called, "
-                  "ext %hu was in ClientHello (len %hu)",
+                  "server_extension_parse_callback called, "
+                  "ext %u was in ClientHello (len %" APR_SIZE_T_FMT ")",
                   ext_type, inlen);
 
     return 1;
 }
 
-static int server_extension_callback_2(SSL *ssl, unsigned short ext_type,
-                                       const unsigned char **out,
-                                       unsigned short *outlen, int *al,
-                                       void *arg)
+static int server_extension_add_callback(SSL *ssl, unsigned ext_type,
+                                         const unsigned char **out,
+                                         size_t *outlen, int *al,
+                                         void *arg)
 {
     conn_rec *c = (conn_rec *)SSL_get_app_data(ssl);
     ct_server_config *sconf = ap_get_module_config(c->base_server->module_config,
@@ -2294,7 +2294,7 @@ static int server_extension_callback_2(SSL *ssl, unsigned short ext_type,
     fingerprint = get_cert_fingerprint(c->pool, server_cert);
 
     ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c,
-                  "server_extension_callback_2 called, "
+                  "server_extension_add_callback called, "
                   "ext %hu will be in ServerHello",
                   ext_type);
 
@@ -2354,10 +2354,10 @@ static int ssl_ct_init_server(server_rec *s, apr_pool_t *p, int is_proxy,
     cbi->s = s;
 
     if (is_proxy && sconf->proxy_awareness != PROXY_OBLIVIOUS) {
-        /* _cli_ = "client" */
-        if (!SSL_CTX_set_custom_cli_ext(ssl_ctx, CT_EXTENSION_TYPE,
-                                        client_extension_callback_1,
-                                        client_extension_callback_2, cbi)) { /* UNDOC */
+        if (!SSL_CTX_add_client_custom_ext(ssl_ctx, CT_EXTENSION_TYPE,
+                                           client_extension_add_callback,
+                                           NULL, NULL,
+                                           client_extension_parse_callback, cbi)) {
             ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s,
                          APLOGNO(02740) "Unable to initalize Certificate "
                          "Transparency client extension callbacks "
@@ -2376,10 +2376,10 @@ static int ssl_ct_init_server(server_rec *s, apr_pool_t *p, int is_proxy,
     else if (!is_proxy) {
         look_for_server_certs(s, ssl_ctx, sconf->sct_storage);
 
-        /* _srv_ = "server" */
-        if (!SSL_CTX_set_custom_srv_ext(ssl_ctx, CT_EXTENSION_TYPE,
-                                        server_extension_callback_1,
-                                        server_extension_callback_2, cbi)) { /* UNDOC */
+        if (!SSL_CTX_add_server_custom_ext(ssl_ctx, CT_EXTENSION_TYPE,
+                                           server_extension_add_callback,
+                                           NULL, NULL,
+                                           server_extension_parse_callback, cbi)) {
             ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s,
                          APLOGNO(02741) "Unable to initalize Certificate "
                          "Transparency server extension callback "
