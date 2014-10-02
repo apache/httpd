@@ -129,4 +129,37 @@ Substitute "s|http://internal.blog.example.com/|http://www.example.com/blog/|i"
 </usage>
 </directivesynopsis>
 
+<directivesynopsis>
+<name>SubstituteMaxLineLength</name>
+<description>Set the maximum line size</description>
+<syntax>SubstituteMaxLineLength <var>bytes</var>(b|B|k|K|m|M|g|G)</syntax>
+<default>SubstituteMaxLineLength 1m</default>
+<contextlist><context>directory</context>
+<context>.htaccess</context></contextlist>
+<override>FileInfo</override>
+<compatibility>Available in httpd 2.5-dev and later</compatibility>
+
+<usage>
+    <p>The maximum line size handled by <module>mod_substitute</module>
+    is limited to restrict memory use. The limit can be configured
+    using <directive>SubstituteMaxLineLength</directive>.
+    The value can be given as the number of bytes and can be suffixed
+    with a single letter <code>b</code>, <code>B</code>, <code>k</code>,
+    <code>K</code>, <code>m</code>, <code>M</code>, <code>g</code>,
+    <code>G</code> to provide the size in bytes, kilobytes, megabytes
+    or gigabytes respectively.</p>
+
+    <example><title>Example</title>
+    <highlight language="config">
+&lt;Location /&gt;
+    AddOutputFilterByType SUBSTITUTE text/html
+    SubstituteMaxLineLength 10m
+    Substitute s/foo/bar/ni
+&lt;/Location&gt;
+        </highlight>
+    </example>
+
+</usage>
+</directivesynopsis>
+
 </modulesynopsis>
