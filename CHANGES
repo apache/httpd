@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_substitute: Make maximum line length configurable.  [Rainer Jung]
+
   *) mod_substitute: Fix line length limitation in case of regexp plus flatten.
      [Rainer Jung]
   
