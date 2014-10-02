@@ -687,9 +687,9 @@ static void register_hooks(apr_pool_t *pool)
 }
 
 static const command_rec substitute_cmds[] = {
-    AP_INIT_TAKE1("Substitute", set_pattern, NULL, OR_ALL,
+    AP_INIT_TAKE1("Substitute", set_pattern, NULL, OR_FILEINFO,
                   "Pattern to filter the response content (s/foo/bar/[inf])"),
-    AP_INIT_TAKE1("SubstituteMaxLineLength", set_max_line_length, NULL, OR_ALL,
+    AP_INIT_TAKE1("SubstituteMaxLineLength", set_max_line_length, NULL, OR_FILEINFO,
                   "Maximum line length"),
     {NULL}
 };
