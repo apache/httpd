@@ -221,6 +221,24 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~jkaluza/patches/mod_systemd/httpd-2.4.x-socket-activation.patch
      +1: jkaluza
 
+   * mod_substitute: Fix memory limitation in case of regexp plus flatten.
+     trunk patch: http://svn.apache.org/r1628104
+                  http://svn.apache.org/r1628918 (CHANGES)
+     2.4.x patch: trunk works
+     +1: rjung
+
+   * mod_substitute: Make maximum line length configurable.
+     trunk patch: http://svn.apache.org/r1628919
+                  http://svn.apache.org/r1628950 (docs, adjust "compatibility")
+     2.4.x patch: trunk works modulo CHANGES and compatibility
+     +1: rjung
+
+   * mod_substitute: Restrict configuration in .htaccess to
+     FileInfo as documented.
+     trunk patch: http://svn.apache.org/r1628924
+     2.4.x patch: trunk works modulo CHANGES
+     +1: rjung
+
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
