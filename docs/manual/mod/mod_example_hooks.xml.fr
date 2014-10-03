@@ -22,41 +22,41 @@
  limitations under the License.
 -->
 
-<modulesynopsis metafile="mod_example.xml.meta">
+<modulesynopsis metafile="mod_example_hooks.xml.meta">
 
-<name>mod_example</name>
+<name>mod_example_hooks</name>
 <description>Illustration de l'API des modules Apache</description>
 <status>Experimental</status>
-<sourcefile>mod_example.c</sourcefile>
-<identifier>example_module</identifier>
+<sourcefile>mod_example_hooks.c</sourcefile>
+<identifier>example_hooks_module</identifier>
 
 <summary>
     <p>Certains fichiers situ&eacute;s dans le r&eacute;pertoire
-    <code>modules/experimental</code> de l'arborescence de la
+    <code>modules/examples</code> de l'arborescence de la
     distribution d'Apache sont fournis &agrave; titre d'exemples pour ceux qui
     souhaitent &eacute;crire des modules qui utilisent l'API d'Apache.</p>
 
-    <p>Le fichier principal est <code>mod_example.c</code>, qui
+    <p>Le fichier principal est <code>mod_example_hooks.c</code>, qui
     constitue une illustration exhaustive des diff&eacute;rents m&eacute;canismes et
     syntaxes d'appels. En aucun cas un module additionnel n'aura &agrave;
     inclure des routines pour tous les appels - il n'en n&eacute;cessitera au
     contraire qu'un petit nombre !</p>
 
-    <p>Le module example fonctionne r&eacute;ellement. Si vous le chargez dans
-    votre serveur, activez le gestionnaire "example-handler" dans une
+    <p>Le module example_hooks fonctionne r&eacute;ellement. Si vous le chargez dans
+    votre serveur, activez le gestionnaire "example-hooks-handler" dans une
     section location, et essayez d'acc&eacute;der &agrave; la zone du site web
     correspondante, vous verrez s'afficher certaines sorties que le
-    module example produit au cours des diff&eacute;rents appels.</p>
+    module example_hooks produit au cours des diff&eacute;rents appels.</p>
 </summary>
 
-<section id="compiling"><title>Compilation du module example</title>
+<section id="compiling"><title>Compilation du module example_hooks</title>
 
-    <p>Pour inclure le module example dans votre serveur, effectuez les
+    <p>Pour inclure le module example_hooks dans votre serveur, effectuez les
     &eacute;tapes suivantes :</p>
 
     <ol>
       <li>Ex&eacute;cutez <program>configure</program> avec l'option
-      <code>--enable-example</code>.</li>
+      <code>--enable-example-hooks</code>.</li>
 
       <li>Compilez le serveur (ex&eacute;cutez la commande
       "<code>make</code>").</li>
@@ -65,7 +65,7 @@
     <p>Pour ajouter votre propre module :</p>
 
     <ol type="A">
-      <li><code>cp modules/experimental/mod_example.c
+      <li><code>cp modules/examples/mod_example_hooks.c
       modules/nouveau_module/<em>mod_monexemple.c</em></code></li>
 
       <li>Modifiez le fichier.</li>
@@ -73,9 +73,9 @@
       <li>Cr&eacute;ez <code>modules/nouveau_module/config.m4</code>.
         <ol>
           <li>Ajoutez <code>APACHE_MODPATH_INIT(nouveau_module)</code>.</li>
-          <li>Copiez la ligne APACHE_MODULE contenant "example" depuis
-	  <code>modules/experimental/config.m4</code>.</li>
-          <li>Remplacez le premier argument "example" par
+          <li>Copiez la ligne APACHE_MODULE contenant "example_hooks" depuis
+	  <code>modules/examples/config.m4</code>.</li>
+          <li>Remplacez le premier argument "example-hooks" par
 	  <em>monexemple</em>.</li>
           <li>Remplacez le second argument par une br&egrave;ve description de
 	  votre module. Cette description sera utilis&eacute;e par la commande
@@ -105,13 +105,13 @@
 </section>
 
 <section id="using"><title>Utilisation du module
-<code>mod_example</code></title>
+<code>mod_example_hooks</code></title>
 
-    <p>Pour activer le module example, ajoutez &agrave; votre fichier
+    <p>Pour activer le module example_hooks, ajoutez &agrave; votre fichier
     <code>httpd.conf</code> un bloc du style :</p>
 <highlight language="config">
-&lt;Location /example-info&gt;
-   SetHandler example-handler
+&lt;Location /example-hooks-info&gt;
+   SetHandler example-hooks-handler
 &lt;/Location&gt;
 </highlight>
 
@@ -121,7 +121,7 @@
     correspondant :</p>
 
 <highlight language="config">
-   AddHandler example-handler .example
+   AddHandler example-hooks-handler .example
    </highlight>
 
 
@@ -142,9 +142,9 @@ Apache</description>
 <usage>
     <p>La directive <directive>Example</directive> n'a pour fonction que
     de d&eacute;finir un drapeau de d&eacute;monstration que le gestionnaire de
-    contenu du module example va afficher. Elle ne poss&egrave;de aucun
+    contenu du module example_hooks va afficher. Elle ne poss&egrave;de aucun
     argument. Si vous naviguez vers une URL &agrave; laquelle le gestionnaire
-    de contenu example s'applique, vous verrez s'afficher les routines
+    de contenu example_hooks s'applique, vous verrez s'afficher les routines
     du module, ainsi que l'ordre dans lequel elles ont &eacute;t&eacute; appel&eacute;es pour
     servir le document demand&eacute;. On peut observer l'effet de cette
     directive dans la phrase "<code>Example
