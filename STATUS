@@ -239,6 +239,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works modulo CHANGES
      +1: rjung
 
+   * mod_macro: Remove APLOG_NOERRNO. Add some APLOGNO. Fix some alignment.
+     trunk patch: http://svn.apache.org/r1612466
+     2.4.x patch: trunk works
+     +1: jailletc36
+
+   * various: Concat string at compile time when possible.
+     trunk patch: http://svn.apache.org/r1626050
+     2.4.x patch: trunk works
+     +1: jailletc36
+
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
