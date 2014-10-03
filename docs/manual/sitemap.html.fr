@@ -245,7 +245,7 @@ pour décrire les directives Apache</a></li>
 <li><a href="mod/mod_dumpio.html">Module Apache mod_dumpio</a></li>
 <li><a href="mod/mod_echo.html">Module Apache mod_echo</a></li>
 <li><a href="mod/mod_env.html">Module Apache mod_env</a></li>
-<li><a href="mod/mod_example.html">Module Apache mod_example</a></li>
+<li><a href="mod/mod_example_hooks.html">Module Apache mod_example_hooks</a></li>
 <li><a href="mod/mod_expires.html">Module Apache mod_expires</a></li>
 <li><a href="mod/mod_ext_filter.html">Module Apache mod_ext_filter</a></li>
 <li><a href="mod/mod_file_cache.html">Module Apache mod_file_cache</a></li>

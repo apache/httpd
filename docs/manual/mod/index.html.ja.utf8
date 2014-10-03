@@ -125,7 +125,7 @@ HTTP caching filter.</dd>
 </dd>
 <dt><a href="mod_env.html">mod_env</a></dt><dd>CGI スクリプト及び SSI
 ページに渡される環境変数を変更する機能を提供する</dd>
-<dt><a href="mod_example.html">mod_example</a></dt><dd>Illustrates the Apache module API</dd>
+<dt><a href="mod_example_hooks.html">mod_example_hooks</a></dt><dd>Illustrates the Apache module API</dd>
 <dt><a href="mod_expires.html">mod_expires</a></dt><dd>ユーザの指定した基準に基づいた <code>Expires</code> と
 <code>Cache-Control</code> HTTP ヘッダの生成</dd>
 <dt><a href="mod_ext_filter.html">mod_ext_filter</a></dt><dd>レスポンスのボディをクライアントに送る前に外部プログラムで処理する</dd>

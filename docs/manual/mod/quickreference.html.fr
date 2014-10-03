@@ -532,7 +532,7 @@ d'erreur personnalisé</td></tr>
 d'erreur</td></tr>
 <tr class="odd"><td><a href="core.html#errorlog"> ErrorLog <var>chemin fichier</var>|syslog[:<var>facility</var>]</a></td><td> logs/error_log (Uni +</td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Définition du chemin du journal des erreurs</td></tr>
 <tr><td><a href="core.html#errorlogformat"> ErrorLogFormat [connection|request] <var>format</var></a></td><td></td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Spécification du format des entrées du journal des erreurs</td></tr>
-<tr class="odd"><td><a href="mod_example.html#example">Example</a></td><td></td><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Directive de démonstration pour illustrer l'API des modules
+<tr class="odd"><td><a href="mod_example_hooks.html#example">Example</a></td><td></td><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Directive de démonstration pour illustrer l'API des modules
 Apache</td></tr>
 <tr><td><a href="mod_expires.html#expiresactive">ExpiresActive On|Off</a></td><td> Off </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Active la génération d'en-têtes
 <code>Expires</code></td></tr>
