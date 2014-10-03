@@ -5,7 +5,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>mod_example - Apache HTTP Server Version 2.4</title>
+<title>mod_example_hooks - Apache HTTP Server Version 2.4</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -22,30 +22,30 @@
 <div id="path">
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">모듈</a></div>
 <div id="page-content">
-<div id="preamble"><h1>아파치 모듈 mod_example</h1>
+<div id="preamble"><h1>아파치 모듈 mod_example_hooks</h1>
 <div class="toplang">
-<p><span>가능한 언어: </span><a href="../en/mod/mod_example.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_example.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
-<a href="../ko/mod/mod_example.html" title="Korean">&nbsp;ko&nbsp;</a></p>
+<p><span>가능한 언어: </span><a href="../en/mod/mod_example_hooks.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_example_hooks.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="../ko/mod/mod_example_hooks.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
 <div class="outofdate">이 문서는 최신판 번역이 아닙니다.
             최근에 변경된 내용은 영어 문서를 참고하세요.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">설명:</a></th><td>아파치 모듈 API를 설명한다</td></tr>
 <tr><th><a href="module-dict.html#Status">상태:</a></th><td>Experimental</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">모듈명:</a></th><td>example_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">소스파일:</a></th><td>mod_example.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">모듈명:</a></th><td>example_hooks_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">소스파일:</a></th><td>mod_example_hooks.c</td></tr></table>
 <h3>요약</h3>
 
-    <p>아파치 배포본 <code>modules/experimental</code> 디렉토리에
+    <p>아파치 배포본 <code>modules/examples</code> 디렉토리에
     있는 파일들은 아파치 API를 사용하여 모듈을 작성하려는 사람들을
     돕기위한 예제다.</p>
 
-    <p><code>mod_example.c</code>는 모든 콜백(callback) 구조와
+    <p><code>mod_example_hooks.c</code>는 모든 콜백(callback) 구조와
     호출 문법을 설명하는 파일이다. 당신은 모듈에 이 모든 콜백을
     구현할 필요가 없다. 사실 정반대다!</p>
 
     <p>example 모듈은 실제로 동작하는 모듈이다. 이 모듈을 서버에
-    연결하고 특정 위치에 "example-handler" 핸들러를 할당하여
+    연결하고 특정 위치에 "example-hooks-handler" 핸들러를 할당하여
     그곳을 브라우징하면 example 모듈의 여러 콜백을 확인할 수
     있다.</p>
 </div>
@@ -56,7 +56,7 @@
 <h3>주제</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#compiling">example 모듈 컴파일하기</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#using"><code>mod_example</code> 모듈 사용하기</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#using"><code>mod_example_hooks</code> 모듈 사용하기</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -66,7 +66,7 @@
 
     <ol>
       <li>
-        <code>--enable-example</code> 옵션과 함께
+        <code>--enable-example-hooks</code> 옵션과 함께
         <code>configure</code>를 실행한다.</li>
 
       <li>서버를 컴파일한다 ("<code>make</code>"를 실행한다).</li>
@@ -75,7 +75,7 @@
     <p>자신이 만든 모듈을 추가하려면:</p>
 
     <ol class="up-A">
-      <li><code>cp modules/experimental/mod_example.c
+      <li><code>cp modules/examples/mod_example_hooks.c
       modules/new_module/<em>mod_myexample.c</em></code></li>
 
       <li>파일을 수정한다.</li>
@@ -84,9 +84,9 @@
         <ol>
           <li><code>APACHE_MODPATH_INIT(new_module)</code>을
             추가한다.</li>
-          <li><code>modules/experimental/config.m4</code> 파일에서
-            "example"이 있는 APACHE_MODULE 줄을 복사해온다.</li>
-          <li>첫번째 아규먼트 "example"을 <em>myexample</em>로
+          <li><code>modules/examples/config.m4</code> 파일에서
+            "example_hooks"이 있는 APACHE_MODULE 줄을 복사해온다.</li>
+          <li>첫번째 아규먼트 "example_hooks"을 <em>myexample</em>로
             변경한다.</li>
           <li>두번째 아규먼트 자리에 자신이 만든 모듈에 대한
             간단한 설명을 적는다. <code>configure --help</code>를
@@ -111,13 +111,13 @@
     </ol>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="using" id="using"><code>mod_example</code> 모듈 사용하기</a></h2>
+<h2><a name="using" id="using"><code>mod_example_hooks</code> 모듈 사용하기</a></h2>
 
     <p>example 모듈을 사용하려면 <code>httpd.conf</code> 파일에
     다음과 같은 설정을 추가하라:</p>
 <div class="example"><p><code>
-   &lt;Location /example-info&gt;<br />
-       SetHandler example-handler<br />
+   &lt;Location /example-hooks-info&gt;<br />
+       SetHandler example-hooks-handler<br />
    &lt;/Location&gt;
 </code></p></div>
 
@@ -125,7 +125,7 @@
     파일에 다음과 같은 내용을 추가하고, 그 위치에서 "test.example"
     같은 파일을 요청하라:</p>
 <div class="example"><p><code>
-   AddHandler example-handler .example
+   AddHandler example-hooks-handler .example
 </code></p></div>
 
     <p>서버를 재시작한 후 이 위치를 브라우징하면 앞에서 말한
@@ -138,7 +138,7 @@
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>Example</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Experimental</td></tr>
-<tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_example</td></tr>
+<tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_example_hooks</td></tr>
 </table>
     <p><code class="directive">Example</code> 지시어는 example 모듈의
     내용핸들러가 간단한 문구를 보일지 여부를 설정한다. 이 지시어는
@@ -151,13 +151,13 @@
 </div>
 </div>
 <div class="bottomlang">
-<p><span>가능한 언어: </span><a href="../en/mod/mod_example.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_example.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
-<a href="../ko/mod/mod_example.html" title="Korean">&nbsp;ko&nbsp;</a></p>
+<p><span>가능한 언어: </span><a href="../en/mod/mod_example_hooks.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_example_hooks.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="../ko/mod/mod_example_hooks.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/2.4/mod/mod_example.html';
+var comments_identifier = 'http://httpd.apache.org/docs/2.4/mod/mod_example_hooks.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');

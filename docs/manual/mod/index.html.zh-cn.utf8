@@ -124,7 +124,7 @@ client</dd>
 modules</dd>
 <dt><a href="mod_env.html">mod_env</a></dt><dd>Modifies the environment which is passed to CGI scripts and
 SSI pages</dd>
-<dt><a href="mod_example.html">mod_example</a></dt><dd>Illustrates the Apache module API</dd>
+<dt><a href="mod_example_hooks.html">mod_example_hooks</a></dt><dd>Illustrates the Apache module API</dd>
 <dt><a href="mod_expires.html">mod_expires</a></dt><dd>Generation of <code>Expires</code> and
 <code>Cache-Control</code> HTTP headers according to user-specified
 criteria</dd>
