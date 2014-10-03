@@ -213,7 +213,7 @@ Windows ile Apache Kullanımı</a></li>
 <li><a href="mod/mod_dumpio.html">Apache Modülü mod_dumpio</a></li>
 <li><a href="mod/mod_echo.html">Apache Modülü mod_echo</a></li>
 <li><a href="mod/mod_env.html">Apache Modülü mod_env</a></li>
-<li><a href="mod/mod_example.html">Apache Modülü mod_example</a></li>
+<li><a href="mod/mod_example_hooks.html">Apache Modülü mod_example_hooks</a></li>
 <li><a href="mod/mod_expires.html">Apache Modülü mod_expires</a></li>
 <li><a href="mod/mod_ext_filter.html">Apache Modülü mod_ext_filter</a></li>
 <li><a href="mod/mod_file_cache.html">Apache Modülü mod_file_cache</a></li>

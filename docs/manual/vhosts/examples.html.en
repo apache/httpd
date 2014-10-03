@@ -63,10 +63,9 @@
 <h2><a name="purename" id="purename">Running several name-based web
     sites on a single IP address.</a></h2>
 
-    <p>Your server has a single IP address, and multiple aliases (CNAMES)
-    point to this machine in DNS. You want to run a web server for
-    <code>www.example.com</code> and <code>www.example.org</code> on this
-    machine.</p>
+    <p>Your server has multiple hostnames that resolve to a single address,
+    and you want to respond differently for <code>www.example.com</code> 
+    and <code>www.example.org</code>.</p>
 
     <div class="note"><h3>Note</h3><p>Creating virtual
           host configurations on your Apache server does not magically
@@ -104,12 +103,18 @@ Listen 80
     <code>ServerName</code> directives, it will be served by this first
     <code>VirtualHost</code>.</p>
 
+    <p>The above configuration is what you will want to use in almost
+    all name-based virtual hosting situations. The only thing that this
+    configuration will not work for, in fact, is when you are serving
+    different content based on differing IP addresses or ports.</p>
+
     <div class="note">
             <h3>Note</h3>
 
-           <p>You can, if you wish, replace <code>*</code> with the actual
-           IP address of the system, when you don't care to discriminate based
-           on the IP address or port.</p>
+           <p>You may replace <code>*</code> with a specific IP address
+           on the system.  Such virtual hosts will only be used for 
+           HTTP requests received on connection to the specified IP 
+           address.</p>
 
            <p>However, it is additionally useful to use <code>*</code>
            on systems where the IP address is not predictable - for
@@ -119,12 +124,6 @@ Listen 80
            would work without changes whenever your IP address
            changes.</p>
     </div>
-
-    <p>The above configuration is what you will want to use in almost
-    all name-based virtual hosting situations. The only thing that this
-    configuration will not work for, in fact, is when you are serving
-    different content based on differing IP addresses or ports.</p>
-
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="twoips" id="twoips">Name-based hosts on more than one

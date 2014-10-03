@@ -231,7 +231,7 @@ error	mod/core.html#error
 errordocument	mod/core.html#errordocument
 errorlog	mod/core.html#errorlog
 errorlogformat	mod/core.html#errorlogformat
-example	mod/mod_example.html#example
+example	mod/mod_example_hooks.html#example
 expiresactive	mod/mod_expires.html#expiresactive
 expiresbytype	mod/mod_expires.html#expiresbytype
 expiresdefault	mod/mod_expires.html#expiresdefault
@@ -620,6 +620,7 @@ sslverifydepth	mod/mod_ssl.html#sslverifydepth
 startservers	mod/mpm_common.html#startservers
 startthreads	mod/mpm_common.html#startthreads
 substitute	mod/mod_substitute.html#substitute
+substitutemaxlinelength	mod/mod_substitute.html#substitutemaxlinelength
 suexec	mod/mod_unixd.html#suexec
 suexecusergroup	mod/mod_suexec.html#suexecusergroup
 threadlimit	mod/mpm_common.html#threadlimit
