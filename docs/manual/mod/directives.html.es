@@ -274,7 +274,7 @@
 <li><a href="core.html#errordocument">ErrorDocument</a></li>
 <li><a href="core.html#errorlog">ErrorLog</a></li>
 <li><a href="core.html#errorlogformat">ErrorLogFormat</a></li>
-<li><a href="mod_example.html#example">Example</a></li>
+<li><a href="mod_example_hooks.html#example">Example</a></li>
 <li><a href="mod_expires.html#expiresactive">ExpiresActive</a></li>
 <li><a href="mod_expires.html#expiresbytype">ExpiresByType</a></li>
 <li><a href="mod_expires.html#expiresdefault">ExpiresDefault</a></li>
@@ -663,6 +663,7 @@
 <li><a href="mpm_common.html#startservers">StartServers</a></li>
 <li><a href="mpm_common.html#startthreads">StartThreads</a></li>
 <li><a href="mod_substitute.html#substitute">Substitute</a></li>
+<li><a href="mod_substitute.html#substitutemaxlinelength">SubstituteMaxLineLength</a></li>
 <li><a href="mod_unixd.html#suexec">Suexec</a></li>
 <li><a href="mod_suexec.html#suexecusergroup">SuexecUserGroup</a></li>
 <li><a href="mpm_common.html#threadlimit" id="T" name="T">ThreadLimit</a></li>

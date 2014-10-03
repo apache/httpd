@@ -47,7 +47,7 @@
   <modulefile>mod_dumpio.xml</modulefile>
   <modulefile>mod_echo.xml.ko</modulefile>
   <modulefile>mod_env.xml.ko</modulefile>
-  <modulefile>mod_example.xml.ko</modulefile>
+  <modulefile>mod_example_hooks.xml.ko</modulefile>
   <modulefile>mod_expires.xml.ko</modulefile>
   <modulefile>mod_ext_filter.xml.ko</modulefile>
   <modulefile>mod_file_cache.xml.ko</modulefile>

@@ -142,7 +142,7 @@ erreurs de la manière souhaitée.</dd>
 protocole</dd>
 <dt><a href="mod_env.html">mod_env</a></dt><dd>Modifie l'environnement transmis aux scripts CGI et aux
 pages SSI</dd>
-<dt><a href="mod_example.html">mod_example</a></dt><dd>Illustration de l'API des modules Apache</dd>
+<dt><a href="mod_example_hooks.html">mod_example_hooks</a></dt><dd>Illustration de l'API des modules Apache</dd>
 <dt><a href="mod_expires.html">mod_expires</a></dt><dd>Génération des en-têtes HTTP <code>Expires</code> et
 <code>Cache-Control</code> en fonction de critères spécifiés par
 l'utilisateur</dd>

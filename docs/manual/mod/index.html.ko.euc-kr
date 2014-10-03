@@ -123,7 +123,7 @@ index 파일을 서비스한다</dd>
 <dt><a href="mod_echo.html" id="E" name="E">mod_echo</a></dt><dd>프로토콜 모듈을 설명하기위한 간단한 echo 서버</dd>
 <dt><a href="mod_env.html">mod_env</a></dt><dd>CGI 스크립트나 SSI 페이지에 전달할 환경변수를
 수정한다</dd>
-<dt><a href="mod_example.html">mod_example</a></dt><dd>아파치 모듈 API를 설명한다</dd>
+<dt><a href="mod_example_hooks.html">mod_example_hooks</a></dt><dd>아파치 모듈 API를 설명한다</dd>
 <dt><a href="mod_expires.html">mod_expires</a></dt><dd>사용자가 지정한 기준에 따라 <code>Expires</code>와
 <code>Cache-Control</code> HTTP 헤더를 생성한다</dd>
 <dt><a href="mod_ext_filter.html">mod_ext_filter</a></dt><dd>응답 내용을 외부 프로그램으로 처리한 후 클라이언트로
