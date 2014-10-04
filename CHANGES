@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_ssl: Move OCSP stapling information from a per-certificate store to
+     a per-server hash. PR 54357, PR 56919. [Alex Bligh <alex alex.org.uk>,
+     Kaspar Brand]
+
   *) mod_substitute: Restrict configuration in .htaccess to
      FileInfo as documented.  [Rainer Jung]
 
