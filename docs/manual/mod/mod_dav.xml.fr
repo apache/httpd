@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1334011:1628085 (outdated) -->
+<!-- English Revision : 1628085 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -166,7 +166,7 @@ DavLockDB /usr/local/apache2/var/DavLock
 Alias /phparea /home/gstein/php_files
 Alias /php-source /home/gstein/php_files
 &lt;Location /php-source&gt;
-DAV On
+Dav On
 ForceType text/plain
 &lt;/Location&gt;
 </highlight>
