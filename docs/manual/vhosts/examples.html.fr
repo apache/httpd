@@ -27,8 +27,6 @@
 <a href="../ko/vhosts/examples.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/vhosts/examples.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 
     <p>Le but de ce document est d'essayer de répondre aux questions 
@@ -67,10 +65,10 @@
 <h2><a name="purename" id="purename">Fonctionnement de plusieurs serveurs 
   virtuels par nom sur une seule adresse IP.</a></h2>
 
-    <p>Votre serveur ne dispose que d'une seule adresse IP, et de 
-    nombreux alias (CNAMES) pointent vers cette adresse dans le DNS. 
-    Pour l'exemple, <code>www.example.com</code> et 
-    <code>www.example.org</code> doivent tourner sur cette machine.</p>
+    <p>Votre serveur possède plusieurs noms d'hôte qui correspondent à
+    une seule adresse IP, ce qui lui permet de répondre différemment si
+    une requête est envoyée à <code>www.example.com</code> ou
+    <code>www.example.org</code>.</p>
 
     <div class="note"><h3>Note&nbsp;:</h3><p>La configuration de serveurs virtuels 
     sous Apache ne provoque pas leur apparition magique dans la 
@@ -110,13 +108,18 @@ Listen 80
     des directives <code>ServerName</code> sera servie par ce premier 
     <code>VirtualHost</code>.</p>
 
+    <p>La configuration ci-dessus correspond à ce que l'on souhaite pour
+    la plupart des serveurs virtuels à base de nom. Il faudra cependant
+    utiliser une configuration différente si vous souhaitez servir un
+    contenu différent en fonction de l'adresse IP ou du port.</p>
+
     <div class="note">
             <h3>Note&nbsp;:</h3>
 
             <p>Vous pouvez remplacer <code>*</code> 
-            par l'adresse IP du système si vous ne souhaitez pas faire
-	    opérer la sélection du serveur virtuel en fonction de la
-	    paire adresse IP/port.</p>
+            par une adresse IP du système. Le serveur virtuel concerné
+	    ne sera alors sélectionné que pour les requêtes HTTP vers
+	    cette adresse IP.</p>
 
            <p>En général, il est commode d'utiliser <code>*</code> sur 
            les systèmes dont l'adresse IP n'est pas constante - par 
@@ -127,12 +130,6 @@ Listen 80
            fonctionne sans devoir être modifiée quand l'adresse IP du 
            système est modifiée.</p>
     </div>
-
-    <p>La configuration ci-dessus est en pratique utilisée dans la 
-    plupart des cas pour les serveurs virtuels par nom. En fait, le 
-    seul cas où cette configuration ne fonctionne pas est lorsque 
-    différents contenus doivent être servis en fonction de l'adresse IP 
-    et du port contactés par le client.</p>
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
