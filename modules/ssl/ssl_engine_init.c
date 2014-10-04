@@ -278,7 +278,7 @@ apr_status_t ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 #ifdef HAVE_OCSP_STAPLING
-    ssl_stapling_ex_init();
+    ssl_stapling_certinfo_hash_init(p);
 #endif
 
     /*
@@ -1093,7 +1093,7 @@ static apr_status_t ssl_init_server_certs(server_rec *s,
          * later, we defer to the code in ssl_init_server_ctx.
          */
         if ((mctx->stapling_enabled == TRUE) &&
-            !ssl_stapling_init_cert(s, mctx, cert)) {
+            !ssl_stapling_init_cert(s, p, ptemp, mctx, cert)) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(02567)
                          "Unable to configure certificate %s for stapling",
                          key_id);
@@ -1450,7 +1450,8 @@ static apr_status_t ssl_init_server_ctx(server_rec *s,
                                            SSL_CERT_SET_FIRST);
         while (ret) {
             cert = SSL_CTX_get0_certificate(sc->server->ssl_ctx);
-            if (!cert || !ssl_stapling_init_cert(s, sc->server, cert)) {
+            if (!cert || !ssl_stapling_init_cert(s, p, ptemp, sc->server,
+                                                 cert)) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(02604)
                              "Unable to configure certificate %s:%d "
                              "for stapling", sc->vhost_id, i);
