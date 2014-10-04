@@ -110,7 +110,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * mod_proxy_http: Avoid (unlikely) access to freed memory.
      trunk patch: http://svn.apache.org/r1599486
      2.4.x patch: trunk works
-     +1: ylavic, jorton
+     +1: ylavic, jorton, rjung (as is)
      covener: I did not look in depth, but is the preceding log message also bad?
      ylavic: No, this concerns the next for (;; e = APR_BUCKET_NEXT(e)) iteration.
              We could also s/apr_bucket_delete/APR_BUCKET_REMOVE/ instead, but
@@ -124,7 +124,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                 from the ones to be forwarded to the backend. PR 45387.
      trunk patch: http://svn.apache.org/r1588527
      2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic
+     +1: ylavic, rjung
 
    * mod_proxy: Don't limit the size of the connectable Unix Domain Socket paths.
                 [Graham Dumpleton, Christophe Jaillet, Yann Ylavic]
@@ -141,7 +141,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1601185
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-SSL-shutdown.patch
                   (modulo CHANGES/MMN)
-     +1: ylavic
+     +1: ylavic, rjung
 
    * mod_proxy: Shutdown (eg. SSL close notify) the backend connection before closing.
      trunk patch: http://svn.apache.org/r1601291
@@ -149,14 +149,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-proxy-SSL-shutdown.patch
                   (modulo CHANGES)
      note: depends on ap_shutdown_conn() from r1601185 above.
-     +1: ylavic
+     +1: ylavic, rjung
 
    * http_protocol: fix logic in ap_method_list_(add|remove) in order:
        - to correctly reset bits
        - not to modify the 'method_mask' bitfield unnecessarily
      trunk patch: http://svn.apache.org/r1610813
      2.4.x patch: trunk patch works (modulo CHANGES)
-     +1: jailletc36, ylavic
+     +1: jailletc36, ylavic, rjung
 
    * mpm_winnt service.c: Normalize all error and status messages, clean up
      source formatting, and accept utf-8 service names/descriptions for i18n.
@@ -172,19 +172,19 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1611908
                   http://svn.apache.org/r1611916
      2.4.x patch: trunk patch works
-     +1: jailletc36
+     +1: jailletc36, rjung
 
    * mod_ldap: 2.4.10 regression: Some authorization searches won't use AuthLDAPBindDN
      which can lead to LDAP authz failurs if AuthLDAPBindDN had extra access. 
      trunk patch: http://svn.apache.org/r1613682
      2.4.x patch: trunk works + CHANGES referencing 2.4.10 regression
-     +1: covener, jim
+     +1: covener, jim, rjung
 
    * mod_dav: set r->status_line in dav_error_response.
      It's used as argument in next ap_rvputs call. PR 55426.
      trunk patch: http://svn.apache.org/r1527509
      2.4.x patch: trunk works
-     +1: jkaluza, ylavic
+     +1: jkaluza, ylavic, rjung
 
    * mod_proxy: Make worker name truncation a non-fatal error.
      trunk patch: http://svn.apache.org/r1621367
@@ -197,7 +197,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1621373
      2.4.x patch: trunk works
                   http://people.apache.org/~jim/patches/slotmem-loglevel.patch
-     +1: jim, ylavic
+     +1: jim, ylavic, rjung
 
    * mod_systemd: New module, for integration with systemd on Linux.
      trunk patch: http://svn.apache.org/r1393976
@@ -242,12 +242,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * mod_macro: Remove APLOG_NOERRNO. Add some APLOGNO. Fix some alignment.
      trunk patch: http://svn.apache.org/r1612466
      2.4.x patch: trunk works
-     +1: jailletc36
+     +1: jailletc36, rjung
 
    * various: Concat string at compile time when possible.
      trunk patch: http://svn.apache.org/r1626050
      2.4.x patch: trunk works
-     +1: jailletc36
+     +1: jailletc36, rjung
 
 OTHER PROPOSALS
 
