@@ -85,9 +85,10 @@ static void *am_create_conf(apr_pool_t *p, char *dummy)
     return conf;
 }
 
-static void* am_merge_conf(apr_pool_t *pool, void *a, void *b) {
-    am_conf_t *base = (am_conf_t*) a;
-    am_conf_t *add = (am_conf_t*) b;
+static void *am_merge_conf(apr_pool_t *pool, void *a, void *b)
+{
+    am_conf_t *base = (am_conf_t *)a;
+    am_conf_t *add = (am_conf_t *)b;
     am_conf_t *conf = apr_palloc(pool, sizeof(am_conf_t));
 
     if (add->allowed_set) {
@@ -106,7 +107,7 @@ static const char *am_allowmethods(cmd_parms *cmd, void *d, int argc,
                                    char *const argv[])
 {
     int i;
-    am_conf_t *conf = (am_conf_t*) d;
+    am_conf_t *conf = (am_conf_t *)d;
 
     if (argc == 0) {
         return "AllowMethods: No method or 'reset' keyword given";
