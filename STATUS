@@ -102,10 +102,24 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * mod_ldap: 2.4.10 regression: Some authorization searches won't use AuthLDAPBindDN
+     which can lead to LDAP authz failurs if AuthLDAPBindDN had extra access. 
+     trunk patch: http://svn.apache.org/r1613682
+     2.4.x patch: trunk works + CHANGES referencing 2.4.10 regression
+     +1: covener, jim, rjung
 
+   * mod_dav: set r->status_line in dav_error_response.
+     It's used as argument in next ap_rvputs call. PR 55426.
+     trunk patch: http://svn.apache.org/r1527509
+     2.4.x patch: trunk works
+     +1: jkaluza, ylavic, rjung
 
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
+   * http_protocol: fix logic in ap_method_list_(add|remove) in order:
+       - to correctly reset bits
+       - not to modify the 'method_mask' bitfield unnecessarily
+     trunk patch: http://svn.apache.org/r1610813
+     2.4.x patch: trunk patch works (modulo CHANGES)
+     +1: jailletc36, ylavic, rjung
 
    * mod_proxy_http: Avoid (unlikely) access to freed memory.
      trunk patch: http://svn.apache.org/r1599486
@@ -119,6 +133,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              *from is still living, the caller may want to reuse it, eg:
              https://issues.apache.org/bugzilla/attachment.cgi?id=31686).
              Should we?
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
 
    * mod_proxy: Preserve original request headers even if they differ
                 from the ones to be forwarded to the backend. PR 45387.
@@ -151,13 +168,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      note: depends on ap_shutdown_conn() from r1601185 above.
      +1: ylavic, rjung
 
-   * http_protocol: fix logic in ap_method_list_(add|remove) in order:
-       - to correctly reset bits
-       - not to modify the 'method_mask' bitfield unnecessarily
-     trunk patch: http://svn.apache.org/r1610813
-     2.4.x patch: trunk patch works (modulo CHANGES)
-     +1: jailletc36, ylavic, rjung
-
    * mpm_winnt service.c: Normalize all error and status messages, clean up
      source formatting, and accept utf-8 service names/descriptions for i18n.
      trunk patches: http://svn.apache.org/r1611165
@@ -174,17 +184,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch works
      +1: jailletc36, rjung
 
-   * mod_ldap: 2.4.10 regression: Some authorization searches won't use AuthLDAPBindDN
-     which can lead to LDAP authz failurs if AuthLDAPBindDN had extra access. 
-     trunk patch: http://svn.apache.org/r1613682
-     2.4.x patch: trunk works + CHANGES referencing 2.4.10 regression
-     +1: covener, jim, rjung
-
-   * mod_dav: set r->status_line in dav_error_response.
-     It's used as argument in next ap_rvputs call. PR 55426.
-     trunk patch: http://svn.apache.org/r1527509
-     2.4.x patch: trunk works
-     +1: jkaluza, ylavic, rjung
 
    * mod_proxy: Make worker name truncation a non-fatal error.
      trunk patch: http://svn.apache.org/r1621367
