@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_cache_socache: Add cache status to server-status.  [Rainer Jung]
+
   *) mod_ssl: Move OCSP stapling information from a per-certificate store to
      a per-server hash. PR 54357, PR 56919. [Alex Bligh <alex alex.org.uk>,
      Kaspar Brand]
