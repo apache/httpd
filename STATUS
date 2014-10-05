@@ -134,6 +134,12 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
              https://issues.apache.org/bugzilla/attachment.cgi?id=31686).
              Should we?
 
+   * mod_slotmem: Increase log level for some originally debug messages.
+     trunk patch: http://svn.apache.org/r1621373
+     2.4.x patch: trunk works
+                  http://people.apache.org/~jim/patches/slotmem-loglevel.patch
+     +1: jim, ylavic, rjung
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -191,12 +197,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1625952
      2.4.x patch: http://people.apache.org/~jim/patches/worker-trunc.patch
      +1: jim, ylavic
-
-   * mod_slotmem: Increase log level for some originally debug messages.
-     trunk patch: http://svn.apache.org/r1621373
-     2.4.x patch: trunk works
-                  http://people.apache.org/~jim/patches/slotmem-loglevel.patch
-     +1: jim, ylavic, rjung
 
    * mod_systemd: New module, for integration with systemd on Linux.
      trunk patch: http://svn.apache.org/r1393976
