@@ -151,6 +151,13 @@
 /* OCSP stapling */
 #if !defined(OPENSSL_NO_OCSP) && defined(SSL_CTX_set_tlsext_status_cb)
 #define HAVE_OCSP_STAPLING
+/* backward compatibility with OpenSSL < 1.0 */
+#ifndef sk_OPENSSL_STRING_num
+#define sk_OPENSSL_STRING_num sk_num
+#endif
+#ifndef sk_OPENSSL_STRING_value
+#define sk_OPENSSL_STRING_value sk_value
+#endif
 #ifndef sk_OPENSSL_STRING_pop
 #define sk_OPENSSL_STRING_pop sk_pop
 #endif
