@@ -109,6 +109,7 @@ static apr_status_t bucketeer_out_filter(ap_filter_t *f,
         if (APR_BUCKET_IS_METADATA(e)) {
             /* metadata bucket */
             apr_bucket *cpy;
+
             apr_bucket_copy(e, &cpy);
             APR_BRIGADE_INSERT_TAIL(ctx->bb, cpy);
             continue;
@@ -124,13 +125,14 @@ static apr_status_t bucketeer_out_filter(ap_filter_t *f,
                     data[i] == c->bucketdelimiter ||
                     data[i] == c->passdelimiter) {
                     apr_bucket *p;
+
                     if (i - lastpos > 0) {
                         p = apr_bucket_pool_create(apr_pmemdup(f->r->pool,
                                                                &data[lastpos],
                                                                i - lastpos),
-                                                    i - lastpos,
-                                                    f->r->pool,
-                                                    f->c->bucket_alloc);
+                                                   i - lastpos,
+                                                   f->r->pool,
+                                                   f->c->bucket_alloc);
                         APR_BRIGADE_INSERT_TAIL(ctx->bb, p);
                     }
                     lastpos = i + 1;
@@ -166,7 +168,7 @@ static apr_status_t bucketeer_out_filter(ap_filter_t *f,
     return APR_SUCCESS;
 }
 
-static void register_hooks(apr_pool_t * p)
+static void register_hooks(apr_pool_t *p)
 {
     ap_register_output_filter(bucketeerFilterName, bucketeer_out_filter,
                               NULL, AP_FTYPE_RESOURCE-1);
