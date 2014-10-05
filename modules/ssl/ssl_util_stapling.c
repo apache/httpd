@@ -32,6 +32,11 @@
 #include "ap_mpm.h"
 #include "apr_thread_mutex.h"
 
+#ifndef sk_OPENSSL_STRING_value
+/* backward compatibility with OpenSSL < 1.0 */
+#define sk_OPENSSL_STRING_value sk_value
+#endif
+
 #ifdef HAVE_OCSP_STAPLING
 
 /**
