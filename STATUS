@@ -140,6 +140,18 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
                   http://people.apache.org/~jim/patches/slotmem-loglevel.patch
      +1: jim, ylavic, rjung
 
+   * mod_proxy: Make worker name truncation a non-fatal error.
+     trunk patch: http://svn.apache.org/r1621367
+                  http://svn.apache.org/r1621372
+                  http://svn.apache.org/r1625952
+     2.4.x patch: http://people.apache.org/~jim/patches/worker-trunc.patch
+     +1: jim, ylavic, covener
+
+   * mod_macro: Remove APLOG_NOERRNO. Add some APLOGNO. Fix some alignment.
+     trunk patch: http://svn.apache.org/r1612466
+     2.4.x patch: trunk works
+     +1: jailletc36, rjung, covener
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -190,14 +202,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch works
      +1: jailletc36, rjung
 
-
-   * mod_proxy: Make worker name truncation a non-fatal error.
-     trunk patch: http://svn.apache.org/r1621367
-                  http://svn.apache.org/r1621372
-                  http://svn.apache.org/r1625952
-     2.4.x patch: http://people.apache.org/~jim/patches/worker-trunc.patch
-     +1: jim, ylavic
-
    * mod_systemd: New module, for integration with systemd on Linux.
      trunk patch: http://svn.apache.org/r1393976
                   http://svn.apache.org/r1393997
@@ -224,24 +228,19 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1628104
                   http://svn.apache.org/r1628918 (CHANGES)
      2.4.x patch: trunk works
-     +1: rjung
+     +1: rjung, covener
 
    * mod_substitute: Make maximum line length configurable.
      trunk patch: http://svn.apache.org/r1628919
                   http://svn.apache.org/r1628950 (docs, adjust "compatibility")
      2.4.x patch: trunk works modulo CHANGES and compatibility
-     +1: rjung
+     +1: rjung, covener
 
    * mod_substitute: Restrict configuration in .htaccess to
      FileInfo as documented.
      trunk patch: http://svn.apache.org/r1628924
      2.4.x patch: trunk works modulo CHANGES
-     +1: rjung
-
-   * mod_macro: Remove APLOG_NOERRNO. Add some APLOGNO. Fix some alignment.
-     trunk patch: http://svn.apache.org/r1612466
-     2.4.x patch: trunk works
-     +1: jailletc36, rjung
+     +1: rjung, covener
 
    * various: Concat string at compile time when possible.
      trunk patch: http://svn.apache.org/r1626050
