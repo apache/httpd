@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_cache_socache: Change average object size hint from 32 bytes to
+     2048 bytes.  [Rainer Jung]
+
   *) mod_cache_socache: Add cache status to server-status.  [Rainer Jung]
 
   *) mod_ssl: Move OCSP stapling information from a per-certificate store to
