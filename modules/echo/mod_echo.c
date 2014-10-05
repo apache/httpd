@@ -82,7 +82,7 @@ static apr_status_t brigade_peek(apr_bucket_brigade *bbIn,
             len = pos - str;
         if (len > bufflen - readbytes)
             len = bufflen - readbytes;
-        memcpy (buff + readbytes, str, len);
+        memcpy(buff + readbytes, str, len);
         readbytes += len;
         buff[readbytes] = '\0';
 
@@ -151,7 +151,7 @@ static int process_echo_connection(conn_rec *c)
         if (((rv = ap_get_brigade(c->input_filters, bb, AP_MODE_GETLINE,
                                   APR_BLOCK_READ, 0)) != APR_SUCCESS)) {
             apr_brigade_cleanup(bb);
-            if (!APR_STATUS_IS_EOF(rv) && ! APR_STATUS_IS_TIMEUP(rv))
+            if (!APR_STATUS_IS_EOF(rv) && !APR_STATUS_IS_TIMEUP(rv))
                 ap_log_error(APLOG_MARK, APLOG_INFO, rv, c->base_server, APLOGNO(01611)
                              "ProtocolEcho: Failure reading from %s",
                              c->client_ip);
