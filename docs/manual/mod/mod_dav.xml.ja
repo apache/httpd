@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 1330980:1628084 (outdated) -->
+<!-- English Revision: 1628084 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -150,7 +150,7 @@ DavLockDB /usr/local/apache2/var/DavLock
 Alias /phparea /home/gstein/php_files
 Alias /php-source /home/gstein/php_files
 &lt;Location /php-source&gt;
-    DAV On
+    Dav On
     ForceType text/plain
 &lt;/Location&gt;
 </highlight>
