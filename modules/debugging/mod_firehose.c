@@ -106,14 +106,16 @@ typedef struct firehose_ctx_t
 
 static apr_status_t filter_output_cleanup(void *dummy)
 {
-    ap_filter_t *f = (ap_filter_t *) dummy;
+    ap_filter_t *f = (ap_filter_t *)dummy;
+
     ap_remove_output_filter(f);
     return APR_SUCCESS;
 }
 
 static apr_status_t filter_input_cleanup(void *dummy)
 {
-    ap_filter_t *f = (ap_filter_t *) dummy;
+    ap_filter_t *f = (ap_filter_t *)dummy;
+
     ap_remove_input_filter(f);
     return APR_SUCCESS;
 }
@@ -123,7 +125,7 @@ static apr_status_t filter_input_cleanup(void *dummy)
  */
 static apr_status_t pumpit_cleanup(void *dummy)
 {
-    firehose_ctx_t *ctx = (firehose_ctx_t *) dummy;
+    firehose_ctx_t *ctx = (firehose_ctx_t *)dummy;
     apr_status_t rv;
     apr_size_t hdr_len;
     char header[HEADER_LEN + 1];
@@ -133,8 +135,8 @@ static apr_status_t pumpit_cleanup(void *dummy)
     }
 
     hdr_len = apr_snprintf(header, sizeof(header), HEADER_FMT,
-            (apr_uint64_t) 0, (apr_uint64_t) apr_time_now(), ctx->direction,
-            ctx->uuid, ctx->count);
+                           (apr_uint64_t)0, (apr_uint64_t)apr_time_now(),
+                           ctx->direction, ctx->uuid, ctx->count);
     ap_xlate_proto_to_ascii(header, hdr_len);
 
     rv = apr_file_write_full(ctx->conn->file, header, hdr_len, NULL);
@@ -143,22 +145,24 @@ static apr_status_t pumpit_cleanup(void *dummy)
             /* ignore the error */
         }
         else if (ctx->r) {
-            ap_log_rerror(
-                    APLOG_MARK,
-                    APLOG_WARNING,
-                    rv,
-                    ctx->r,
-                    "mod_firehose: could not write %" APR_UINT64_T_FMT " bytes to '%s' for '%c' connection '%s' and count '%0" APR_UINT64_T_HEX_FMT "', bytes dropped (further errors will be suppressed)",
-                    (apr_uint64_t)(hdr_len), ctx->conn->filename, ctx->conn->direction, ctx->uuid, ctx->count);
+            ap_log_rerror(APLOG_MARK, APLOG_WARNING, rv, ctx->r,
+                          "mod_firehose: could not write %"
+                          APR_UINT64_T_FMT
+                          " bytes to '%s' for '%c' connection '%s' and"
+                          " count '%0" APR_UINT64_T_HEX_FMT "', bytes"
+                          " dropped (further errors will be suppressed)",
+                          (apr_uint64_t)(hdr_len), ctx->conn->filename,
+                          ctx->conn->direction, ctx->uuid, ctx->count);
         }
         else {
-            ap_log_cerror(
-                    APLOG_MARK,
-                    APLOG_WARNING,
-                    rv,
-                    ctx->c,
-                    "mod_firehose: could not write %" APR_UINT64_T_FMT " bytes to '%s' for '%c' connection '%s' and count '%0" APR_UINT64_T_HEX_FMT "', bytes dropped (further errors will be suppressed)",
-                    (apr_uint64_t)(hdr_len), ctx->conn->filename, ctx->conn->direction, ctx->uuid, ctx->count);
+            ap_log_cerror(APLOG_MARK, APLOG_WARNING, rv, ctx->c,
+                          "mod_firehose: could not write %"
+                          APR_UINT64_T_FMT
+                          " bytes to '%s' for '%c' connection '%s' and"
+                          " count '%0" APR_UINT64_T_HEX_FMT "', bytes"
+                          " dropped (further errors will be suppressed)",
+                          (apr_uint64_t)(hdr_len), ctx->conn->filename,
+                          ctx->conn->direction, ctx->uuid, ctx->count);
         }
         ctx->conn->suppress = 1;
     }
@@ -208,13 +212,14 @@ static apr_status_t pumpit(ap_filter_t *f, apr_bucket *b, firehose_ctx_t *ctx)
                  * the chunk.
                  */
                 hdr_len = apr_snprintf(header, sizeof(header), HEADER_FMT,
-                        (apr_uint64_t) body_len, (apr_uint64_t) apr_time_now(),
-                        ctx->direction, ctx->uuid, ctx->count);
+                                       (apr_uint64_t)body_len,
+                                       (apr_uint64_t)apr_time_now(),
+                                       ctx->direction, ctx->uuid, ctx->count);
                 ap_xlate_proto_to_ascii(header, hdr_len);
 
                 vec[0].iov_base = header;
                 vec[0].iov_len = hdr_len;
-                vec[1].iov_base = (void *) (buf + offset);
+                vec[1].iov_base = (void *)(buf + offset);
                 vec[1].iov_len = body_len;
                 vec[2].iov_base = CRLF;
                 vec[2].iov_len = 2;
@@ -225,22 +230,32 @@ static apr_status_t pumpit(ap_filter_t *f, apr_bucket *b, firehose_ctx_t *ctx)
                         /* ignore the error */
                     }
                     else if (ctx->r) {
-                        ap_log_rerror(
-                                APLOG_MARK,
-                                APLOG_WARNING,
-                                rv,
-                                ctx->r,
-                                "mod_firehose: could not write %" APR_UINT64_T_FMT " bytes to '%s' for '%c' connection '%s' and count '%0" APR_UINT64_T_HEX_FMT "', bytes dropped (further errors will be suppressed)",
-                                (apr_uint64_t)(vec[0].iov_len + vec[1].iov_len + vec[2].iov_len), ctx->conn->filename, ctx->conn->direction, ctx->uuid, ctx->count);
+                        ap_log_rerror(APLOG_MARK, APLOG_WARNING, rv, ctx->r,
+                                      "mod_firehose: could not write %"
+                                      APR_UINT64_T_FMT
+                                      " bytes to '%s' for '%c' connection '%s' and"
+                                      " count '%0" APR_UINT64_T_HEX_FMT "', bytes"
+                                      " dropped (further errors will be suppressed)",
+                                      (apr_uint64_t)(vec[0].iov_len +
+                                                     vec[1].iov_len +
+                                                     vec[2].iov_len),
+                                      ctx->conn->filename,
+                                      ctx->conn->direction, ctx->uuid,
+                                      ctx->count);
                     }
                     else {
-                        ap_log_cerror(
-                                APLOG_MARK,
-                                APLOG_WARNING,
-                                rv,
-                                ctx->c,
-                                "mod_firehose: could not write %" APR_UINT64_T_FMT " bytes to '%s' for '%c' connection '%s' and count '%0" APR_UINT64_T_HEX_FMT "', bytes dropped (further errors will be suppressed)",
-                                (apr_uint64_t)(vec[0].iov_len + vec[1].iov_len + vec[2].iov_len), ctx->conn->filename, ctx->conn->direction, ctx->uuid, ctx->count);
+                        ap_log_cerror(APLOG_MARK, APLOG_WARNING, rv, ctx->c,
+                                      "mod_firehose: could not write %"
+                                      APR_UINT64_T_FMT
+                                      " bytes to '%s' for '%c' connection '%s' and"
+                                      " count '%0" APR_UINT64_T_HEX_FMT "', bytes"
+                                      " dropped (further errors will be suppressed)",
+                                      (apr_uint64_t)(vec[0].iov_len +
+                                                     vec[1].iov_len +
+                                                     vec[2].iov_len),
+                                      ctx->conn->filename,
+                                      ctx->conn->direction, ctx->uuid,
+                                      ctx->count);
                     }
                     ctx->conn->suppress = 1;
                     rv = APR_SUCCESS;
@@ -288,8 +303,9 @@ static apr_status_t firehose_input_filter(ap_filter_t *f,
         return rv;
     }
 
-    for (b = APR_BRIGADE_FIRST(bb); b != APR_BRIGADE_SENTINEL(bb); b
-            = APR_BUCKET_NEXT(b)) {
+    for (b = APR_BRIGADE_FIRST(bb);
+         b != APR_BRIGADE_SENTINEL(bb);
+         b = APR_BUCKET_NEXT(b)) {
         rv = pumpit(f, b, ctx);
         if (APR_SUCCESS != rv) {
             return rv;
@@ -351,7 +367,7 @@ static int firehose_create_request(request_rec *r)
     f = r->connection->input_filters;
     while (f) {
         if (f->frec->filter_func.in_func == &firehose_input_filter) {
-            ctx = (firehose_ctx_t *) f->ctx;
+            ctx = (firehose_ctx_t *)f->ctx;
             if (ctx->conn->request == FIREHOSE_REQUEST) {
                 pumpit_cleanup(ctx);
                 if (!set) {
@@ -367,7 +383,7 @@ static int firehose_create_request(request_rec *r)
     f = r->connection->output_filters;
     while (f) {
         if (f->frec->filter_func.out_func == &firehose_output_filter) {
-            ctx = (firehose_ctx_t *) f->ctx;
+            ctx = (firehose_ctx_t *)f->ctx;
             if (ctx->conn->request == FIREHOSE_REQUEST) {
                 pumpit_cleanup(ctx);
                 if (!set) {
@@ -415,17 +431,17 @@ static int firehose_pre_conn(conn_rec *c, void *csd)
     firehose_conn_t *conn;
 
     conf = ap_get_module_config(c->base_server->module_config,
-            &firehose_module);
+                                &firehose_module);
 
     if (conf->firehoses->nelts) {
         apr_uuid_get(&uuid);
     }
 
-    conn = (firehose_conn_t *) conf->firehoses->elts;
+    conn = (firehose_conn_t *)conf->firehoses->elts;
     for (i = 0; i < conf->firehoses->nelts; i++) {
 
-        if (!conn->file || (conn->proxy == FIREHOSE_NORMAL
-                && !c->sbh) || (conn->proxy == FIREHOSE_PROXY && c->sbh)) {
+        if (!conn->file || (conn->proxy == FIREHOSE_NORMAL && !c->sbh) ||
+                           (conn->proxy == FIREHOSE_PROXY && c->sbh)) {
             conn++;
             continue;
         }
@@ -441,13 +457,13 @@ static int firehose_pre_conn(conn_rec *c, void *csd)
             ctx->direction = conn->proxy == FIREHOSE_PROXY ? '>' : '<';
             ctx->f = ap_add_input_filter("FIREHOSE_IN", ctx, NULL, c);
             apr_pool_cleanup_register(c->pool, ctx->f, filter_input_cleanup,
-                    filter_input_cleanup);
+                                      filter_input_cleanup);
         }
         if (conn->direction == FIREHOSE_OUT) {
             ctx->direction = conn->proxy == FIREHOSE_PROXY ? '<' : '>';
             ctx->f = ap_add_output_filter("FIREHOSE_OUT", ctx, NULL, c);
             apr_pool_cleanup_register(c->pool, ctx->f, filter_output_cleanup,
-                    filter_output_cleanup);
+                                      filter_output_cleanup);
         }
 
         conn++;
@@ -457,7 +473,7 @@ static int firehose_pre_conn(conn_rec *c, void *csd)
 }
 
 static int firehose_open_logs(apr_pool_t *p, apr_pool_t *plog,
-        apr_pool_t *ptemp, server_rec *s)
+                              apr_pool_t *ptemp, server_rec *s)
 {
     firehose_conf_t *conf;
     apr_status_t rv;
@@ -468,27 +484,26 @@ static int firehose_open_logs(apr_pool_t *p, apr_pool_t *plog,
     /* make sure we only open the files on the second pass for config */
     apr_pool_userdata_get(&data, "mod_firehose", s->process->pool);
     if (!data) {
-        apr_pool_userdata_set((const void *) 1, "mod_firehose",
-                apr_pool_cleanup_null, s->process->pool);
+        apr_pool_userdata_set((const void *)1, "mod_firehose",
+                              apr_pool_cleanup_null, s->process->pool);
         return OK;
     }
 
     while (s) {
 
-        conf = ap_get_module_config(s->module_config,
-                &firehose_module);
+        conf = ap_get_module_config(s->module_config, &firehose_module);
 
-        conn = (firehose_conn_t *) conf->firehoses->elts;
+        conn = (firehose_conn_t *)conf->firehoses->elts;
         for (i = 0; i < conf->firehoses->nelts; i++) {
             if (APR_SUCCESS != (rv = apr_file_open(&conn->file, conn->filename,
                     APR_FOPEN_WRITE | APR_FOPEN_CREATE | APR_FOPEN_APPEND
                             | conn->nonblock, APR_OS_DEFAULT, plog))) {
-                ap_log_error(APLOG_MARK,
-                        APLOG_WARNING,
-                        rv, s, "mod_firehose: could not open '%s' for write, disabling firehose %s%s %s filter",
-                        conn->filename, conn->proxy == FIREHOSE_PROXY ? "proxy " : "",
-                        conn->request == FIREHOSE_REQUEST ? " request" : "connection",
-                        conn->direction == FIREHOSE_IN ? "input" : "output");
+                ap_log_error(APLOG_MARK, APLOG_WARNING, rv, s,
+                             "mod_firehose: could not open '%s' for write, "
+						     "disabling firehose %s%s %s filter",
+	                         conn->filename, conn->proxy == FIREHOSE_PROXY ? "proxy " : "",
+     	                     conn->request == FIREHOSE_REQUEST ? " request" : "connection",
+         	                 conn->direction == FIREHOSE_IN ? "input" : "output");
             }
             conn++;
         }
@@ -505,15 +520,15 @@ static void firehose_register_hooks(apr_pool_t *p)
      * We know that SSL is CONNECTION + 5
      */
     ap_register_output_filter("FIREHOSE_OUT", firehose_output_filter, NULL,
-            AP_FTYPE_CONNECTION + 3);
+                              AP_FTYPE_CONNECTION + 3);
 
     ap_register_input_filter("FIREHOSE_IN", firehose_input_filter, NULL,
-            AP_FTYPE_CONNECTION + 3);
+                             AP_FTYPE_CONNECTION + 3);
 
     ap_hook_open_logs(firehose_open_logs, NULL, NULL, APR_HOOK_LAST);
     ap_hook_pre_connection(firehose_pre_conn, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_create_request(firehose_create_request, NULL, NULL,
-            APR_HOOK_REALLY_LAST + 1);
+                           APR_HOOK_REALLY_LAST + 1);
 }
 
 static void *firehose_create_sconfig(apr_pool_t *p, server_rec *s)
@@ -526,29 +541,31 @@ static void *firehose_create_sconfig(apr_pool_t *p, server_rec *s)
 }
 
 static void *firehose_merge_sconfig(apr_pool_t *p, void *basev,
-        void *overridesv)
+                                    void *overridesv)
 {
     firehose_conf_t *cconf = apr_pcalloc(p, sizeof(firehose_conf_t));
-    firehose_conf_t *base = (firehose_conf_t *) basev;
-    firehose_conf_t *overrides = (firehose_conf_t *) overridesv;
+    firehose_conf_t *base = (firehose_conf_t *)basev;
+    firehose_conf_t *overrides = (firehose_conf_t *)overridesv;
 
     cconf->firehoses = apr_array_append(p, overrides->firehoses,
-            base->firehoses);
+                                        base->firehoses);
 
     return cconf;
 }
 
-static const char *firehose_enable_connection(cmd_parms *cmd, const char *arg1,
-        const char *arg2, proxy_enum proxy, direction_enum direction,
-        request_enum request)
+static const char *firehose_enable_connection(cmd_parms *cmd,
+                                              const char *arg1,
+                                              const char *arg2,
+                                              proxy_enum proxy,
+                                              direction_enum direction,
+                                              request_enum request)
 {
     const char *name = arg2 ? arg2 : arg1;
 
     firehose_conn_t *firehose;
-    firehose_conf_t
-            *ptr =
-                    (firehose_conf_t *) ap_get_module_config(cmd->server->module_config,
-                            &firehose_module);
+    firehose_conf_t *ptr =
+        (firehose_conf_t *)ap_get_module_config(cmd->server->module_config,
+                                                &firehose_module);
 
     firehose = apr_array_push(ptr->firehoses);
 
@@ -562,7 +579,8 @@ static const char *firehose_enable_connection(cmd_parms *cmd, const char *arg1,
 #ifdef APR_FOPEN_NONBLOCK
             firehose->nonblock = APR_FOPEN_NONBLOCK;
 #else
-            return "The parameter 'nonblock' is not supported by APR on this platform";
+            return "The parameter 'nonblock' is not supported by APR on this "
+			       "platform";
 #endif
         }
         else if (!strcmp(arg1, "block")) {
@@ -570,7 +588,8 @@ static const char *firehose_enable_connection(cmd_parms *cmd, const char *arg1,
         }
         else {
             return apr_psprintf(cmd->pool,
-                    "The parameter '%s' should be 'block' or 'nonblock'", arg1);
+                                "The parameter '%s' should be 'block' or 'nonblock'",
+                                arg1);
         }
     }
     else {
@@ -581,92 +600,96 @@ static const char *firehose_enable_connection(cmd_parms *cmd, const char *arg1,
 }
 
 static const char *firehose_enable_connection_input(cmd_parms *cmd,
-        void *dummy, const char *arg1, const char *arg2)
+                                                    void *dummy,
+                                                    const char *arg1,
+                                                    const char *arg2)
 {
 
-    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY
-            | NOT_IN_LIMIT);
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY | NOT_IN_LIMIT);
     if (err != NULL) {
         return err;
     }
 
     return firehose_enable_connection(cmd, arg1, arg2, FIREHOSE_NORMAL,
-            FIREHOSE_IN, FIREHOSE_CONNECTION);
+                                      FIREHOSE_IN, FIREHOSE_CONNECTION);
 
 }
 
 static const char *firehose_enable_connection_output(cmd_parms *cmd,
-        void *dummy, const char *arg1, const char *arg2)
+                                                     void *dummy,
+                                                     const char *arg1,
+                                                     const char *arg2)
 {
 
-    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY
-            | NOT_IN_LIMIT);
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY | NOT_IN_LIMIT);
     if (err != NULL) {
         return err;
     }
 
     return firehose_enable_connection(cmd, arg1, arg2, FIREHOSE_NORMAL,
-            FIREHOSE_OUT, FIREHOSE_CONNECTION);
+                                      FIREHOSE_OUT, FIREHOSE_CONNECTION);
 
 }
 
 static const char *firehose_enable_request_input(cmd_parms *cmd, void *dummy,
-        const char *arg1, const char *arg2)
+                                                 const char *arg1,
+                                                 const char *arg2)
 {
 
-    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY
-            | NOT_IN_LIMIT);
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY | NOT_IN_LIMIT);
     if (err != NULL) {
         return err;
     }
 
     return firehose_enable_connection(cmd, arg1, arg2, FIREHOSE_NORMAL,
-            FIREHOSE_IN, FIREHOSE_REQUEST);
+                                      FIREHOSE_IN, FIREHOSE_REQUEST);
 
 }
 
 static const char *firehose_enable_request_output(cmd_parms *cmd, void *dummy,
-        const char *arg1, const char *arg2)
+                                                  const char *arg1,
+                                                  const char *arg2)
 {
 
-    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY
-            | NOT_IN_LIMIT);
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY | NOT_IN_LIMIT);
     if (err != NULL) {
         return err;
     }
 
     return firehose_enable_connection(cmd, arg1, arg2, FIREHOSE_NORMAL,
-            FIREHOSE_OUT, FIREHOSE_REQUEST);
+                                      FIREHOSE_OUT, FIREHOSE_REQUEST);
 
 }
 
 static const char *firehose_enable_proxy_connection_input(cmd_parms *cmd,
-        void *dummy, const char *arg1, const char *arg2)
+                                                          void *dummy,
+                                                          const char *arg1,
+                                                          const char *arg2)
 {
 
-    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY
-            | NOT_IN_LIMIT);
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY | NOT_IN_LIMIT);
     if (err != NULL) {
         return err;
     }
 
     return firehose_enable_connection(cmd, arg1, arg2, FIREHOSE_PROXY,
-            FIREHOSE_IN, FIREHOSE_CONNECTION);
+                                      FIREHOSE_IN, FIREHOSE_CONNECTION);
 
 }
 
 static const char *firehose_enable_proxy_connection_output(cmd_parms *cmd,
-        void *dummy, const char *arg1, const char *arg2)
+                                                           void *dummy,
+                                                           const char *arg1,
+                                                           const char *arg2)
 {
 
-    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY
-            | NOT_IN_LIMIT);
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY | NOT_IN_LIMIT);
     if (err != NULL) {
         return err;
     }
 
     return firehose_enable_connection(cmd, arg1, arg2, FIREHOSE_PROXY,
-            FIREHOSE_OUT, FIREHOSE_CONNECTION);
+                                      FIREHOSE_OUT, FIREHOSE_CONNECTION);
 
 }
 
