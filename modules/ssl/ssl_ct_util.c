@@ -371,6 +371,18 @@ apr_status_t ctutil_run_to_log(apr_pool_t *p,
         return rv;
     }
 
+    if (APLOGtrace1(s)) {
+        const char *cmdline = "";
+        const char **curarg = args;
+
+        while (*curarg) {
+            cmdline = apr_pstrcat(p, cmdline, *curarg, " ", NULL);
+            curarg++;
+        }
+        ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, s,
+                     "Running \"%s\"", cmdline);
+    }
+
     rv = apr_proc_create(&proc, args[0], args, NULL, attr, p);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
