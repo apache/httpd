@@ -247,6 +247,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      +1: jailletc36, rjung
 
+   * event: Fix worker-listener deadlock in graceful restart caused by
+     get_worker() allocating new worker after ap_queue_info_term(),
+     but not setting the have_idle_worker variable. PR 56960.
+     trunk patch: http://svn.apache.org/r1629577
+     2.4.x patch: trunk works
+     +1: jkaluza
+
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
