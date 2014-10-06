@@ -254,6 +254,21 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      +1: jkaluza
 
+   * mod_cache_socache: Add cache status to server-status.
+     The status_hook simply calls the status function of
+     socache, very much like mod_ssl does for the ssl
+     session cache. 
+     trunk patch: http://svn.apache.org/r1629507
+     trunk patch: http://svn.apache.org/r1629652
+     2.4.x patch: trunk works modulo CHANGES
+     +1: rjung
+
+   * mod_cache_socache: Change average object size
+     hint from 32 bytes to 2048 bytes. 
+     trunk patch: http://svn.apache.org/r1629508
+     2.4.x patch: trunk works modulo CHANGES
+     +1: rjung
+
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
