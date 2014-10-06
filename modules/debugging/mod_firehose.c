@@ -500,10 +500,10 @@ static int firehose_open_logs(apr_pool_t *p, apr_pool_t *plog,
                             | conn->nonblock, APR_OS_DEFAULT, plog))) {
                 ap_log_error(APLOG_MARK, APLOG_WARNING, rv, s,
                              "mod_firehose: could not open '%s' for write, "
-						     "disabling firehose %s%s %s filter",
-	                         conn->filename, conn->proxy == FIREHOSE_PROXY ? "proxy " : "",
-     	                     conn->request == FIREHOSE_REQUEST ? " request" : "connection",
-         	                 conn->direction == FIREHOSE_IN ? "input" : "output");
+                             "disabling firehose %s%s %s filter",
+                             conn->filename, conn->proxy == FIREHOSE_PROXY ? "proxy " : "",
+                             conn->request == FIREHOSE_REQUEST ? " request" : "connection",
+                             conn->direction == FIREHOSE_IN ? "input" : "output");
             }
             conn++;
         }
@@ -580,7 +580,7 @@ static const char *firehose_enable_connection(cmd_parms *cmd,
             firehose->nonblock = APR_FOPEN_NONBLOCK;
 #else
             return "The parameter 'nonblock' is not supported by APR on this "
-			       "platform";
+                "platform";
 #endif
         }
         else if (!strcmp(arg1, "block")) {
@@ -604,7 +604,6 @@ static const char *firehose_enable_connection_input(cmd_parms *cmd,
                                                     const char *arg1,
                                                     const char *arg2)
 {
-
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY | NOT_IN_LIMIT);
     if (err != NULL) {
         return err;
@@ -612,7 +611,6 @@ static const char *firehose_enable_connection_input(cmd_parms *cmd,
 
     return firehose_enable_connection(cmd, arg1, arg2, FIREHOSE_NORMAL,
                                       FIREHOSE_IN, FIREHOSE_CONNECTION);
-
 }
 
 static const char *firehose_enable_connection_output(cmd_parms *cmd,
@@ -620,7 +618,6 @@ static const char *firehose_enable_connection_output(cmd_parms *cmd,
                                                      const char *arg1,
                                                      const char *arg2)
 {
-
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY | NOT_IN_LIMIT);
     if (err != NULL) {
         return err;
@@ -628,14 +625,12 @@ static const char *firehose_enable_connection_output(cmd_parms *cmd,
 
     return firehose_enable_connection(cmd, arg1, arg2, FIREHOSE_NORMAL,
                                       FIREHOSE_OUT, FIREHOSE_CONNECTION);
-
 }
 
 static const char *firehose_enable_request_input(cmd_parms *cmd, void *dummy,
                                                  const char *arg1,
                                                  const char *arg2)
 {
-
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY | NOT_IN_LIMIT);
     if (err != NULL) {
         return err;
@@ -643,14 +638,12 @@ static const char *firehose_enable_request_input(cmd_parms *cmd, void *dummy,
 
     return firehose_enable_connection(cmd, arg1, arg2, FIREHOSE_NORMAL,
                                       FIREHOSE_IN, FIREHOSE_REQUEST);
-
 }
 
 static const char *firehose_enable_request_output(cmd_parms *cmd, void *dummy,
                                                   const char *arg1,
                                                   const char *arg2)
 {
-
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY | NOT_IN_LIMIT);
     if (err != NULL) {
         return err;
@@ -658,7 +651,6 @@ static const char *firehose_enable_request_output(cmd_parms *cmd, void *dummy,
 
     return firehose_enable_connection(cmd, arg1, arg2, FIREHOSE_NORMAL,
                                       FIREHOSE_OUT, FIREHOSE_REQUEST);
-
 }
 
 static const char *firehose_enable_proxy_connection_input(cmd_parms *cmd,
@@ -666,7 +658,6 @@ static const char *firehose_enable_proxy_connection_input(cmd_parms *cmd,
                                                           const char *arg1,
                                                           const char *arg2)
 {
-
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY | NOT_IN_LIMIT);
     if (err != NULL) {
         return err;
@@ -674,7 +665,6 @@ static const char *firehose_enable_proxy_connection_input(cmd_parms *cmd,
 
     return firehose_enable_connection(cmd, arg1, arg2, FIREHOSE_PROXY,
                                       FIREHOSE_IN, FIREHOSE_CONNECTION);
-
 }
 
 static const char *firehose_enable_proxy_connection_output(cmd_parms *cmd,
@@ -682,7 +672,6 @@ static const char *firehose_enable_proxy_connection_output(cmd_parms *cmd,
                                                            const char *arg1,
                                                            const char *arg2)
 {
-
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY | NOT_IN_LIMIT);
     if (err != NULL) {
         return err;
@@ -690,7 +679,6 @@ static const char *firehose_enable_proxy_connection_output(cmd_parms *cmd,
 
     return firehose_enable_connection(cmd, arg1, arg2, FIREHOSE_PROXY,
                                       FIREHOSE_OUT, FIREHOSE_CONNECTION);
-
 }
 
 static const command_rec firehose_cmds[] =
