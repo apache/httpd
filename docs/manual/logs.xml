@@ -661,7 +661,7 @@ CustomLog logs/access_log comonvhost
 
     <p>The <code>%v</code> is used to log the name of the virtual
     host that is serving the request. Then a program like <a
-    href="programs/other.html">split-logfile</a> can be used to
+    href="programs/split-logfile.html">split-logfile</a> can be used to
     post-process the access log in order to split it into one file
     per virtual host.</p>
   </section>
