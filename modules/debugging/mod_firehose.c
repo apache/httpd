@@ -580,7 +580,7 @@ static const char *firehose_enable_connection(cmd_parms *cmd,
             firehose->nonblock = APR_FOPEN_NONBLOCK;
 #else
             return "The parameter 'nonblock' is not supported by APR on this "
-                "platform";
+                   "platform";
 #endif
         }
         else if (!strcmp(arg1, "block")) {
