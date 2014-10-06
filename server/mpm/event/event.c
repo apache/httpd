@@ -1655,6 +1655,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
     apr_pool_t *tpool = apr_thread_pool_get(thd);
     apr_time_t timeout_time = 0, last_log;
     int closed = 0, listeners_disabled = 0;
+    int have_idle_worker = 0;
 
     last_log = apr_time_now();
     free(ti);
@@ -1689,7 +1690,6 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
         apr_interval_time_t timeout_interval;
         apr_time_t now;
         int workers_were_busy = 0;
-        int have_idle_worker = 0;
         if (listener_may_exit) {
             close_listeners(process_slot, &closed);
             if (terminate_mode == ST_UNGRACEFUL
