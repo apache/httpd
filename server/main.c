@@ -475,6 +475,7 @@ int main(int argc, const char * const argv[])
     module **mod;
     const char *opt_arg;
     APR_OPTIONAL_FN_TYPE(ap_signal_server) *signal_server;
+    int rc = OK;
 
     AP_MONCONTROL(0); /* turn off profiling of startup */
 
@@ -723,7 +724,7 @@ int main(int argc, const char * const argv[])
 
     apr_pool_destroy(ptemp);
 
-    for (;;) {
+    do {
         ap_main_state = AP_SQ_MS_DESTROY_CONFIG;
         apr_hook_deregister_all();
         apr_pool_clear(pconf);
@@ -796,16 +797,23 @@ int main(int argc, const char * const argv[])
         ap_run_optional_fn_retrieve();
 
         ap_main_state = AP_SQ_MS_RUN_MPM;
-        if (ap_run_mpm(pconf, plog, ap_server_conf) != OK)
-            break;
+        rc = ap_run_mpm(pconf, plog, ap_server_conf);
 
         apr_pool_lock(pconf, 0);
+
+    } while (rc == OK);
+
+    if (rc == DONE) {
+        rc = OK;
     }
+    else if (rc != OK) {
+        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, NULL, APLOGNO()
+                     "MPM run failed, exiting");
+    }
+    destroy_and_exit_process(process, rc);
 
-    apr_pool_lock(pconf, 0);
-    destroy_and_exit_process(process, 0);
-
-    return 0; /* Termination 'ok' */
+    /* NOTREACHED */
+    return !OK;
 }
 
 #ifdef AP_USING_AUTOCONF

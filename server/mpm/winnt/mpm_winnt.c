@@ -1696,7 +1696,7 @@ static int winnt_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s )
     if (!restart && ((parent_pid == my_pid) || one_process)) {
         /* Set up the scoreboard. */
         if (ap_run_pre_mpm(s->process->pool, SB_SHARED) != OK) {
-            return DONE;
+            return !OK;
         }
     }
 

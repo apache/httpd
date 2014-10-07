@@ -153,7 +153,7 @@ static int mpmt_os2_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s )
         ap_mpm_child_main(pconf);
 
         /* Outta here */
-        return 1;
+        return DONE;
     }
     else {
         /* Parent process */
@@ -163,7 +163,7 @@ static int mpmt_os2_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s )
         if (ap_setup_listeners(ap_server_conf) < 1) {
             ap_log_error(APLOG_MARK, APLOG_ALERT, 0, s, APLOGNO(00200)
                          "no listening sockets available, shutting down");
-            return 1;
+            return !OK;
         }
 
         ap_log_pid(pconf, ap_pid_fname);
@@ -176,11 +176,11 @@ static int mpmt_os2_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s )
             ap_remove_pid(pconf, ap_pid_fname);
             ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf, APLOGNO(00201)
                          "caught SIGTERM, shutting down");
-            return 1;
+            return DONE;
         }
     }  /* Parent process */
 
-    return 0; /* Restart */
+    return OK; /* Restart */
 }
 
 
