@@ -1817,14 +1817,14 @@ static int worker_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
                                   s, _pconf, 0);
         if (rv != APR_SUCCESS) {
             mpm_state = AP_MPMQ_STOPPING;
-            return DONE;
+            return !OK;
         }
     }
 
     if (!retained->is_graceful) {
         if (ap_run_pre_mpm(s->process->pool, SB_SHARED) != OK) {
             mpm_state = AP_MPMQ_STOPPING;
-            return DONE;
+            return !OK;
         }
         /* fix the generation number in the global score; we just got a new,
          * cleared scoreboard

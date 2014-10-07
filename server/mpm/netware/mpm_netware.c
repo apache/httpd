@@ -872,7 +872,7 @@ static int netware_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     if (setup_listeners(s)) {
         ap_log_error(APLOG_MARK, APLOG_ALERT, status, s, APLOGNO(00223)
             "no listening sockets available, shutting down");
-        return -1;
+        return !OK;
     }
 
     restart_pending = shutdown_pending = 0;
@@ -880,7 +880,7 @@ static int netware_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 
     if (!is_graceful) {
         if (ap_run_pre_mpm(s->process->pool, SB_NOT_SHARED) != OK) {
-            return 1;
+            return !OK;
         }
     }
 
@@ -949,7 +949,7 @@ static int netware_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
         }
 
         mpm_main_cleanup();
-        return 1;
+        return DONE;
     }
     else {  /* the only other way out is a restart */
         /* advance to the next generation */
@@ -972,7 +972,7 @@ static int netware_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     }
 
     mpm_main_cleanup();
-    return 0;
+    return OK;
 }
 
 static int netware_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)

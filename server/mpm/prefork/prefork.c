@@ -978,14 +978,14 @@ static int prefork_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
                                   s, _pconf, 0);
         if (rv != APR_SUCCESS) {
             mpm_state = AP_MPMQ_STOPPING;
-            return DONE;
+            return !OK;
         }
      }
 
     if (!retained->is_graceful) {
         if (ap_run_pre_mpm(s->process->pool, SB_SHARED) != OK) {
             mpm_state = AP_MPMQ_STOPPING;
-            return DONE;
+            return !OK;
         }
         /* fix the generation number in the global score; we just got a new,
          * cleared scoreboard
@@ -1001,7 +1001,7 @@ static int prefork_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
         make_child(ap_server_conf, 0, 0);
         /* NOTREACHED */
         ap_assert(0);
-        return DONE;
+        return !OK;
     }
 
     /* Don't thrash... */
@@ -1071,7 +1071,7 @@ static int prefork_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
                     || ap_get_scoreboard_process(child_slot)->generation
                        == retained->my_generation) {
                     mpm_state = AP_MPMQ_STOPPING;
-                    return DONE;
+                    return !OK;
                 }
                 else {
                     ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ap_server_conf, APLOGNO(00166)
