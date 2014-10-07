@@ -100,7 +100,6 @@ static ap_pod_t **pod;
 static ap_pod_t *child_pod;
 static apr_proc_mutex_t *child_mutex;
 static ap_listen_rec *child_listen;
-static int *bucket;    /* bucket array for the httpd child processes */
 
 
 /* data retained by prefork across load/unload of the module
@@ -488,7 +487,7 @@ static void set_signals(void)
 static int requests_this_child;
 static int num_listensocks = 0;
 
-static void child_main(int child_num_arg)
+static void child_main(int child_num_arg, int child_bucket)
 {
 #if APR_HAS_THREADS
     apr_thread_t *thd = NULL;
@@ -513,6 +512,10 @@ static void child_main(int child_num_arg)
     ap_my_pid = getpid();
     requests_this_child = 0;
 
+    child_listen = mpm_listen[child_bucket];
+    child_mutex = accept_mutex[child_bucket];
+    child_pod = pod[child_bucket];
+
     ap_fatal_signal_child_setup(ap_server_conf);
 
     /* Get a sub context for global allocations in this child, so that
@@ -534,7 +537,7 @@ static void child_main(int child_num_arg)
 
     /* close unused listeners and pods */
     for (i = 0; i < num_buckets; i++) {
-        if (i != bucket[my_child_num]) {
+        if (i != child_bucket) {
             lr = mpm_listen[i];
             while(lr) {
                 apr_socket_close(lr->sd);
@@ -750,17 +753,13 @@ static void child_main(int child_num_arg)
 }
 
 
-static int make_child(server_rec *s, int slot)
+static int make_child(server_rec *s, int slot, int bucket)
 {
     int pid;
 
     if (slot + 1 > retained->max_daemons_limit) {
         retained->max_daemons_limit = slot + 1;
     }
-
-    child_listen = mpm_listen[bucket[slot]];
-    child_mutex = accept_mutex[bucket[slot]];
-    child_pod = pod[bucket[slot]];
 
     if (one_process) {
         apr_signal(SIGHUP, sig_term);
@@ -771,7 +770,7 @@ static int make_child(server_rec *s, int slot)
 #endif
         apr_signal(SIGTERM, sig_term);
         prefork_note_child_started(slot, getpid());
-        child_main(slot);
+        child_main(slot, bucket);
         /* NOTREACHED */
     }
 
@@ -831,9 +830,10 @@ static int make_child(server_rec *s, int slot)
          * The pod is used for signalling the graceful restart.
          */
         apr_signal(AP_SIG_GRACEFUL, stop_listening);
-        child_main(slot);
+        child_main(slot, bucket);
     }
 
+    ap_scoreboard_image->parent[slot].bucket = bucket;
     prefork_note_child_started(slot, pid);
 
     return 0;
@@ -849,8 +849,7 @@ static void startup_children(int number_to_start)
         if (ap_scoreboard_image->servers[i][0].status != SERVER_DEAD) {
             continue;
         }
-        bucket[i] = i % num_buckets;
-        if (make_child(ap_server_conf, i) < 0) {
+        if (make_child(ap_server_conf, i, i % num_buckets) < 0) {
             break;
         }
         --number_to_start;
@@ -937,8 +936,9 @@ static void perform_idle_server_maintenance(apr_pool_t *p)
                     idle_count, total_non_dead);
             }
             for (i = 0; i < free_length; ++i) {
-                bucket[free_slots[i]]= (++bucket_make_child_record) % num_buckets;
-                make_child(ap_server_conf, free_slots[i]);
+                bucket_make_child_record++;
+                make_child(ap_server_conf, free_slots[i],
+                           bucket_make_child_record % num_buckets);
             }
             /* the next time around we want to spawn twice as many if this
              * wasn't good enough, but not if we've just done a graceful
@@ -969,7 +969,6 @@ static int prefork_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 
     ap_log_pid(pconf, ap_pid_fname);
 
-    bucket = apr_palloc(_pconf, sizeof(int) *  ap_daemons_limit);
     /* Initialize cross-process accept lock for each bucket*/
     accept_mutex = apr_palloc(_pconf, sizeof(apr_proc_mutex_t *) * num_buckets);
     for (i = 0; i < num_buckets; i++) {
@@ -997,12 +996,14 @@ static int prefork_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 
     if (one_process) {
         AP_MONCONTROL(1);
-        bucket[0] = 0;
-        make_child(ap_server_conf, 0);
+        make_child(ap_server_conf, 0, 0);
         /* NOTREACHED */
+        ap_assert(0);
+        return DONE;
     }
-    else {
-    if (ap_daemons_max_free < ap_daemons_min_free + num_buckets)  /* Don't thrash... */
+
+    /* Don't thrash... */
+    if (ap_daemons_max_free < ap_daemons_min_free + num_buckets)
         ap_daemons_max_free = ap_daemons_min_free + num_buckets;
 
     /* If we're doing a graceful_restart then we're going to see a lot
@@ -1094,7 +1095,8 @@ static int prefork_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
                     /* we're still doing a 1-for-1 replacement of dead
                      * children with new children
                      */
-                    make_child(ap_server_conf, child_slot);
+                    make_child(ap_server_conf, child_slot,
+                               ap_get_scoreboard_process(child_slot)->bucket);
                     --remaining_children_to_start;
                 }
 #if APR_HAS_OTHER_CHILD
@@ -1135,7 +1137,6 @@ static int prefork_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 
         perform_idle_server_maintenance(pconf);
     }
-    } /* one_process */
 
     mpm_state = AP_MPMQ_STOPPING;
 
@@ -1290,7 +1291,6 @@ static int prefork_open_logs(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
     int level_flags = 0;
     apr_status_t rv;
     int i;
-    int num_of_cores = 0;
 
     pconf = p;
 
@@ -1309,23 +1309,6 @@ static int prefork_open_logs(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
     }
 
     enable_default_listener = 1;
-    if (have_so_reuseport) {
-#ifdef _SC_NPROCESSORS_ONLN
-        num_of_cores = sysconf(_SC_NPROCESSORS_ONLN);
-#else
-        num_of_cores = 1;
-#endif
-        if (num_of_cores > 8) {
-            num_buckets = num_of_cores/8;
-        }
-        else {
-            num_buckets = 1;
-        }
-    }
-    else {
-        num_buckets = 1;
-    }
-
     ap_duplicate_listeners(ap_server_conf, pconf, num_buckets);
 
     pod = apr_palloc(pconf, sizeof(ap_pod_t *) * num_buckets);
@@ -1370,6 +1353,17 @@ static int prefork_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp
         retained = ap_retained_data_create(userdata_key, sizeof(*retained));
         retained->max_daemons_limit = -1;
         retained->idle_spawn_rate = 1;
+    }
+    if (!retained->is_graceful) {
+        num_buckets = 1;
+#ifdef _SC_NPROCESSORS_ONLN
+        if (have_so_reuseport) {
+            int num_online_cores = sysconf(_SC_NPROCESSORS_ONLN);
+            if (num_online_cores > 8) {
+                num_buckets = num_online_cores / 8;
+            }
+        }
+#endif
     }
     ++retained->module_loads;
     if (retained->module_loads == 2) {
@@ -1484,6 +1478,12 @@ static int prefork_check_config(apr_pool_t *p, apr_pool_t *plog,
         }
         ap_daemons_limit = 1;
     }
+    if (ap_daemons_limit < num_buckets) {
+        /* Don't thrash since num_buckets depends on
+         * the system and the number of CPU cores.
+         */
+        ap_daemons_limit = num_buckets;
+    }
 
     /* ap_daemons_to_start > ap_daemons_limit checked in prefork_run() */
     if (ap_daemons_to_start < 0) {
@@ -1497,6 +1497,12 @@ static int prefork_check_config(apr_pool_t *p, apr_pool_t *plog,
                          ap_daemons_to_start);
         }
         ap_daemons_to_start = 1;
+    }
+    if (ap_daemons_to_start < num_buckets) {
+        /* Don't thrash since num_buckets depends on
+         * the system and the number of CPU cores.
+         */
+        ap_daemons_to_start = num_buckets;
     }
 
     if (ap_daemons_min_free < 1) {
@@ -1514,6 +1520,12 @@ static int prefork_check_config(apr_pool_t *p, apr_pool_t *plog,
                          ap_daemons_min_free);
         }
         ap_daemons_min_free = 1;
+    }
+    if (ap_daemons_min_free < num_buckets) {
+        /* Don't thrash since num_buckets depends on
+         * the system and the number of CPU cores.
+         */
+        ap_daemons_min_free = num_buckets;
     }
 
     /* ap_daemons_max_free < ap_daemons_min_free + 1 checked in prefork_run() */

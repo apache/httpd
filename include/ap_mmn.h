@@ -469,6 +469,7 @@
  * 20140627.5 (2.5.0-dev)  Add r->trailers_{in,out}
  * 20140627.6 (2.5.0-dev)  Added ap_pcre_version_string(), AP_REG_PCRE_COMPILED
  *                         and AP_REG_PCRE_LOADED to ap_regex.h.
+ * 20140627.7 (2.5.0-dev)  Add listener bucket in scoreboard.h's process_score.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
@@ -476,7 +477,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20140627
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 6                 /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 7                 /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
