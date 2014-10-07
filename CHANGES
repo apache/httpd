@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) core: Ensure that httpd exits with an error status when the MPM fails
+     to run.  [Yann Ylavic]
+
   *) mod_cache_socache: Change average object size hint from 32 bytes to
      2048 bytes.  [Rainer Jung]
 
