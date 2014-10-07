@@ -2809,7 +2809,7 @@ static void perform_idle_server_maintenance(int child_bucket)
         ap_mpm_podx_signal(pod[child_bucket], AP_MPM_PODX_GRACEFUL);
         retained->idle_spawn_rate[child_bucket] = 1;
     }
-    else if (idle_thread_count < min_spare_threads) {
+    else if (idle_thread_count < min_spare_threads / num_buckets) {
         /* terminate the free list */
         if (free_length == 0) { /* scoreboard is full, can't fork */
 
@@ -3004,7 +3004,10 @@ static int event_run(apr_pool_t * _pconf, apr_pool_t * plog, server_rec * s)
 
     restart_pending = shutdown_pending = 0;
     set_signals();
+
     /* Don't thrash... */
+    if (min_spare_threads < threads_per_child * num_buckets)
+        min_spare_threads = threads_per_child * num_buckets;
     if (max_spare_threads < min_spare_threads + threads_per_child * num_buckets)
         max_spare_threads = min_spare_threads + threads_per_child * num_buckets;
 
@@ -3196,7 +3199,6 @@ static int event_open_logs(apr_pool_t * p, apr_pool_t * plog,
     }
 
     enable_default_listener = 1;
-
     ap_duplicate_listeners(ap_server_conf, pconf, num_buckets);
 
     pod = apr_palloc(pconf, sizeof(ap_pod_t *) * num_buckets);

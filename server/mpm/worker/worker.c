@@ -1616,7 +1616,7 @@ static void perform_idle_server_maintenance(int child_bucket)
         ap_mpm_podx_signal(pod[child_bucket], AP_MPM_PODX_GRACEFUL);
         retained->idle_spawn_rate[child_bucket] = 1;
     }
-    else if (idle_thread_count < min_spare_threads) {
+    else if (idle_thread_count < min_spare_threads / num_buckets) {
         /* terminate the free list */
         if (free_length == 0) { /* scoreboard is full, can't fork */
 
@@ -1834,7 +1834,10 @@ static int worker_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 
     restart_pending = shutdown_pending = 0;
     set_signals();
+
     /* Don't thrash... */
+    if (min_spare_threads < threads_per_child * num_buckets)
+        min_spare_threads = threads_per_child * num_buckets;
     if (max_spare_threads < min_spare_threads + threads_per_child * num_buckets)
         max_spare_threads = min_spare_threads + threads_per_child * num_buckets;
 
