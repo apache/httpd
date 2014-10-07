@@ -772,6 +772,8 @@ static int make_child(server_rec *s, int slot, int bucket)
         prefork_note_child_started(slot, getpid());
         child_main(slot, bucket);
         /* NOTREACHED */
+        ap_assert(0);
+        return -1;
     }
 
     (void) ap_update_child_status_from_indexes(slot, 0, SERVER_STARTING,
