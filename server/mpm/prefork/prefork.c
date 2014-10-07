@@ -1486,7 +1486,7 @@ static int prefork_check_config(apr_pool_t *p, apr_pool_t *plog,
     }
 
     /* ap_daemons_to_start > ap_daemons_limit checked in prefork_run() */
-    if (ap_daemons_to_start < 0) {
+    if (ap_daemons_to_start < 1) {
         if (startup) {
             ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(00184)
                          "WARNING: StartServers of %d not allowed, "
