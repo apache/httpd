@@ -807,7 +807,7 @@ int main(int argc, const char * const argv[])
         rc = OK;
     }
     else if (rc != OK) {
-        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, NULL, APLOGNO()
+        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, NULL, APLOGNO(02818)
                      "MPM run failed, exiting");
     }
     destroy_and_exit_process(process, rc);
