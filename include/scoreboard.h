@@ -142,6 +142,7 @@ struct process_score {
     apr_uint32_t lingering_close;   /* async connections in lingering close */
     apr_uint32_t keep_alive;        /* async connections in keep alive */
     apr_uint32_t suspended;         /* connections suspended by some module */
+    int bucket;             /* Listener bucket used by this child */
 };
 
 /* Scoreboard is now in 'local' memory, since it isn't updated once created,
