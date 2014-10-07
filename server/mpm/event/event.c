@@ -2604,6 +2604,8 @@ static int make_child(server_rec * s, int slot, int bucket)
         event_note_child_started(slot, getpid());
         child_main(0, 0);
         /* NOTREACHED */
+        ap_assert(0);
+        return -1;
     }
 
     if ((pid = fork()) == -1) {
@@ -2642,8 +2644,10 @@ static int make_child(server_rec * s, int slot, int bucket)
         apr_signal(SIGTERM, just_die);
         child_main(slot, bucket);
         /* NOTREACHED */
+        ap_assert(0);
+        return -1;
     }
-    /* else */
+
     if (ap_scoreboard_image->parent[slot].pid != 0) {
         /* This new child process is squatting on the scoreboard
          * entry owned by an exiting child process, which cannot
