@@ -2637,7 +2637,13 @@ uygulanır.</description>
       birlikte kullanırsanız bu sınırlamalarla olan etkileşim <directive
       module="core">Satisfy</directive> yönergesi tarafından denetlenir.</p>
 
-    <p>Çok sayıda <directive>Require</directive> yönergesi mantıksal VEYAlanmış gibi işlem yapar, fakat bazı kimlik kanıtlama modüllerinin diğerlerine eklemlenmiş olarak kimlik kanıtlaması yapabilmesi için bunun açıkça yapılandırılması gerekebilir. Bu amaçla <directive>AuthzLDAPAuthoritative</directive> yönergesini aktaran <module>mod_authnz_ldap</module> modülü ile ilgili durum buna iyi bir örnektir.</p>
+    <p>Çok sayıda <directive>Require</directive> yönergesi mantıksal VEYAlanmış
+      gibi işlem yapar, fakat bazı kimlik kanıtlama modüllerinin diğerlerine
+      eklemlenmiş olarak kimlik kanıtlaması yapabilmesi için bunun açıkça
+      yapılandırılması gerekebilir. Bu amaçla
+      <directive>AuthzLDAPAuthoritative</directive> yönergesini aktaran
+      <module>mod_authnz_ldap</module> modülü ile ilgili durum buna iyi bir
+      örnektir.</p>
 
     <note><title>Denetimlerin alt dizinlerden kaldırılması</title>
      <p>Aşağıdaki örnekte korunmuş bir dizinin bir alt dizinindeki erişim
@@ -3607,8 +3613,12 @@ gerçekleşmesi için sunucunun geçmesini bekleyeceği süre.</description>
 <compatibility>2.2.29 ve sonrası</compatibility>
 
 <usage>
-    <p>Bu yönerge HTTP Trailer alanlarının dahili HTTP başlıklarına kopyalanıp kopyalanmayacağını belirler. Kopyalama işlemi istek gövdesi tamamen alındığında gerçekleşir, çoğu başlık işleminin çok sonra istek başlıklarını inceleme veya değiştirme şansı olur.</p>
-    <p>Bu seçenek, Trailer alanlarını daima kopyalayan 2.4.10 öncesi dağıtımlarla uyumluluk için vardır.</p>
+    <p>Bu yönerge HTTP Trailer alanlarının dahili HTTP başlıklarına kopyalanıp
+      kopyalanmayacağını belirler. Kopyalama işlemi istek gövdesi tamamen
+      alındığında gerçekleşir, çoğu başlık işleminin çok sonra istek
+      başlıklarını inceleme veya değiştirme şansı olur.</p>
+    <p>Bu seçenek, Trailer alanlarını daima kopyalayan 2.4.10 öncesi
+      dağıtımlarla uyumluluk için vardır.</p>
 </usage>
 </directivesynopsis>
 
