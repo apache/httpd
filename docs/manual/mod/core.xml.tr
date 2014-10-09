@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1449541:1626059 (outdated) -->
+<!-- English Revision: 1626059 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -2637,6 +2637,8 @@ uygulanır.</description>
       birlikte kullanırsanız bu sınırlamalarla olan etkileşim <directive
       module="core">Satisfy</directive> yönergesi tarafından denetlenir.</p>
 
+    <p>Çok sayıda <directive>Require</directive> yönergesi mantıksal VEYAlanmış gibi işlem yapar, fakat bazı kimlik kanıtlama modüllerinin diğerlerine eklemlenmiş olarak kimlik kanıtlaması yapabilmesi için bunun açıkça yapılandırılması gerekebilir. Bu amaçla <directive>AuthzLDAPAuthoritative</directive> yönergesini aktaran <module>mod_authnz_ldap</module> modülü ile ilgili durum buna iyi bir örnektir.</p>
+
     <note><title>Denetimlerin alt dizinlerden kaldırılması</title>
      <p>Aşağıdaki örnekte korunmuş bir dizinin bir alt dizinindeki erişim
      denetimlerinin kaldırılması için <directive
@@ -3595,5 +3597,20 @@ gerçekleşmesi için sunucunun geçmesini bekleyeceği süre.</description>
   &lt;Directory&gt;, &lt;Location&gt; ve &lt;Files&gt; bölümleri nasıl
   çalışır?</a> belgesine bakınız.</seealso>
 </directivesynopsis>
+
+<directivesynopsis>
+<name>MergeTrailers</name>
+<description>Trailer alanlarının başlığa dahil edilip edilmeyeceğini belirler</description>
+<syntax>MergeTrailers [on|off]</syntax>
+<default>MergeTrailers off</default>
+<contextlist><context>server config</context><context>virtual host</context></contextlist>
+<compatibility>2.2.29 ve sonrası</compatibility>
+
+<usage>
+    <p>Bu yönerge HTTP Trailer alanlarının dahili HTTP başlıklarına kopyalanıp kopyalanmayacağını belirler. Kopyalama işlemi istek gövdesi tamamen alındığında gerçekleşir, çoğu başlık işleminin çok sonra istek başlıklarını inceleme veya değiştirme şansı olur.</p>
+    <p>Bu seçenek, Trailer alanlarını daima kopyalayan 2.4.10 öncesi dağıtımlarla uyumluluk için vardır.</p>
+</usage>
+</directivesynopsis>
+
 
 </modulesynopsis>
