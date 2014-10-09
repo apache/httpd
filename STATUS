@@ -111,7 +111,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x patch: http://people.apache.org/~wrowe/httpd-2.2-utf8-servicename.patch
      +1: wrowe
 
-   * mod_proxy: Reuse proxy workers's parameters and scores accross graceful
+   * mod_proxy: Reuse proxy workers' parameters and scores accross graceful
      restarts, even if new workers added, old ones removed, or the order
      changes.  [Jan Kaluza]
      2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-mod_proxy-balancer_graceful.patch
