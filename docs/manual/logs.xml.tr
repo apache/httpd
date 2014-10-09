@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 1480903 -->
+<!-- English Revision: 1629731 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -633,7 +633,7 @@ CustomLog logs/access_log ortaksankon
 
     <p><code>%v</code> belirteci isteği sunan sanal konağın ismini günlüğe
       yazmak için kullanılır. Daha sonra <a
-      href="programs/other.html">split-logfile</a> gibi bir program
+      href="programs/split-logfile.html">split-logfile</a> gibi bir program
       kullanarak, bu dosyadan her sanal konak için ayrı birer dosya elde
       edilebilir.</p>
   </section>

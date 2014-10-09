@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1590308:1619884 (outdated) -->
+<!-- English Revision: 1619884 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -4387,6 +4387,24 @@ gerçekleşmesi için sunucunun geçmesini bekleyeceği süre.</description>
   arada ele alındığının açıklaması için <a href="../sections.html">
   &lt;Directory&gt;, &lt;Location&gt; ve &lt;Files&gt; bölümleri nasıl
   çalışır?</a> belgesine bakınız.</seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>MergeTrailers</name>
+<description>Trailer alanlarının başlığa dahil edilip edilmeyeceğini belirler</description>
+<syntax>MergeTrailers [on|off]</syntax>
+<default>MergeTrailers off</default>
+<contextlist><context>server config</context><context>virtual host</context></contextlist>
+<compatibility>2.4.10 ve sonrası</compatibility>
+
+<usage>
+    <p>Bu yönerge HTTP Trailer alanlarının dahili HTTP başlıklarına kopyalanıp
+      kopyalanmayacağını belirler. Kopyalama işlemi istek gövdesi tamamen
+      alındığında gerçekleşir, çoğu başlık işleminin çok sonra istek
+      başlıklarını inceleme veya değiştirme şansı olur.</p>
+    <p>Bu seçenek, Trailer alanlarını daima kopyalayan 2.4.10 öncesi
+      dağıtımlarla uyumluluk için vardır.</p>
+</usage>
 </directivesynopsis>
 
 </modulesynopsis>

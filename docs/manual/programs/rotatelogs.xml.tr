@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1605004:1615363 (outdated) -->
+<!-- English Revision: 1615363 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -126,7 +126,7 @@
       ismi üretecek yeterlilikte parçacıklı yapıya sahip olduğundan emin
       olmalısınız. Aks takdirde döndürme işlemi yeni bir dosya başlatmak yerine
       hep aynı dosyanın üzerine yazar. Örneğin, <var>logfile</var> için
-      <code>/var/logs/errorlog.%Y-%m-%d</code> belirtilmişse 5 mega baytta bir
+      <code>/var/log/errorlog.%Y-%m-%d</code> belirtilmişse 5 mega baytta bir
       yeni bir günlük dosyasına başlanacaktır. Fakat 5 megabayta gün içinde iki
       kez ulaşılırsa aynı günlük dosyası üretilir ve günlük hep aynı dosyanın
       üzerine yazılır.</p>
@@ -160,42 +160,42 @@
 <section id="examples"><title>Örnekler</title>
 
 <example>
-     CustomLog "|bin/rotatelogs /var/logs/logfile 86400" common
+     CustomLog "|bin/rotatelogs /var/log/logfile 86400" common
 </example>
 
      <p>nnnn, günlük kaydının başladığı sistem zamanı olmak üzere
-     /var/logs/logfile.nnnn dosyası oluşturulur. Bu zaman, daima döngü
+     /var/log/logfile.nnnn dosyası oluşturulur. Bu zaman, daima döngü
      süresinin katları olacağından bunu cron betiklerinizi eşzamanlamakta
      kullanabilirsiniz. Her döngü süresinin sonunda (burada 24 saat sonra)
      yeni bir günlük dosyası açılır.</p>
 
 <example>
-     CustomLog "|bin/rotatelogs -l /var/logs/logfile.%Y.%m.%d 86400" common
+     CustomLog "|bin/rotatelogs -l /var/log/logfile.%Y.%m.%d 86400" common
 </example>
 
      <p>yyyy, yıl; mm, ay; dd, ayın gününü belirtmek üzere
-     /var/logs/logfile.yyyy.mm.dd dosyası oluşturulur. Her gün yerel zamanla
+     /var/log/logfile.yyyy.mm.dd dosyası oluşturulur. Her gün yerel zamanla
      geceyarısı yeni bir günlük dosyasına geçilecektir.</p>
 
 <example>
-     CustomLog "|bin/rotatelogs /var/logs/logfile 5M" common
+     CustomLog "|bin/rotatelogs /var/log/logfile 5M" common
 </example>
 
      <p>Günlük dosyası 5 megabaytlık olunca yenisinin oluşturulmasını sağlar.
      </p>
 
 <example>
-     ErrorLog "|bin/rotatelogs /var/logs/errorlog.%Y-%m-%d-%H_%M_%S 5M"
+     ErrorLog "|bin/rotatelogs /var/log/errorlog.%Y-%m-%d-%H_%M_%S 5M"
 </example>
      <p>Hata günlüğünün 5 megabaytta bir
      <code>errorlog.YYYY-mm-dd-HH_MM_SS</code> biçemli bir isimle
      oluşturulmasını sağlar.</p>
 
 <example>
-     CustomLog "|bin/rotatelogs -t /var/logs/logfile 86400" common
+     CustomLog "|bin/rotatelogs -t /var/log/logfile 86400" common
 </example>
 
-     <p>/var/logs/logfile dosyasını oluşturur, sunucu başlatılırken ve günde
+     <p>/var/log/logfile dosyasını oluşturur, sunucu başlatılırken ve günde
        bir kere dosyanın tepesi kırpılır. Bu senaryoda ayrı bir sürecin (tail
        gibi) dosyayı gerçek zamanlı işleyeceği umulur.</p>
 
