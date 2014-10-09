@@ -29,10 +29,6 @@
 <a href="../ja/mod/mod_dav.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_dav.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">この日本語訳はすでに古くなっている
-            可能性があります。
-            最近更新された内容を見るには英語版をご覧下さい。
-        </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>分散オーサリングとバージョン管理
 (<a href="http://www.webdav.org/">WebDAV</a>) 機能</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
@@ -166,7 +162,7 @@
 <pre class="prettyprint lang-config">Alias /phparea /home/gstein/php_files
 Alias /php-source /home/gstein/php_files
 &lt;Location /php-source&gt;
-    DAV On
+    Dav On
     ForceType text/plain
 &lt;/Location&gt;</pre>
 
