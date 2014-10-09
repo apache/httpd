@@ -102,7 +102,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
 
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -112,6 +111,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x patch: http://people.apache.org/~wrowe/httpd-2.2-utf8-servicename.patch
      +1: wrowe
 
+   * mod_proxy: Reuse proxy workers's parameters and scores accross graceful
+     restarts, even if new workers added, old ones removed, or the order
+     changes.  [Jan Kaluza]
+     2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-mod_proxy-balancer_graceful.patch
+     ylavic: trunk/2.4.x not concerned, 2.2.x only.
 
 PATCHES/ISSUES THAT ARE STALLED
 
