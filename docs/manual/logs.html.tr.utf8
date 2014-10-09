@@ -584,7 +584,7 @@ CustomLog logs/access_log ortaksankon</pre>
 
 
     <p><code>%v</code> belirteci isteği sunan sanal konağın ismini günlüğe
-      yazmak için kullanılır. Daha sonra <a href="programs/other.html">split-logfile</a> gibi bir program
+      yazmak için kullanılır. Daha sonra <a href="programs/split-logfile.html">split-logfile</a> gibi bir program
       kullanarak, bu dosyadan her sanal konak için ayrı birer dosya elde
       edilebilir.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
