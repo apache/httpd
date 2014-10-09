@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1584684:1619884 (outdated) -->
+<!-- English Revision: 1619884 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -258,6 +258,14 @@
         <td>Aktarılan bayt sayısı (alınan ve gönderilen), istekler ve başlıklar
           dahil; sıfır olamaz. %I ve %O'nun birleşimidir. Bunu kullanmak için
           <module>mod_logio</module> etkinleştirilmelidir.</td></tr>
+
+    <tr><td><code>%{<var>ALANADI</var>}^ti</code></td>
+        <td>Sunucuya gönderilen istekteki <code><var>ALANADI</var>:</code>
+          Trailer satır(lar)ının içeriği.</td></tr>
+
+    <tr><td><code>%{<var>VARNAME</var>}^to</code></td>
+        <td>Sunucudan gönderilen yanıttaki <code><var>ALANADI</var>:</code>
+          Trailer satır(lar)ının içeriği.</td></tr>
     </table>
 
     <section id="modifiers"><title>Değiştiriciler</title>
