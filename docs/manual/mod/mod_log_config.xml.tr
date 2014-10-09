@@ -230,10 +230,12 @@
           kullanmak için <module>mod_logio</module> etkin olmalıdır.</td></tr>
 
     <tr><td><code>%{<var>ALANADI</var>}^ti</code></td>
-        <td>Sunucuya gönderilen istekteki <code><var>ALANADI</var>:</code> Trailer satır(lar)ının içeriği.</td></tr>
+        <td>Sunucuya gönderilen istekteki <code><var>ALANADI</var>:</code>
+          Trailer satır(lar)ının içeriği.</td></tr>
 
     <tr><td><code>%{<var>VARNAME</var>}^to</code></td>
-        <td>Sunucudan gönderilen yanıttaki <code><var>ALANADI</var>:</code> Trailer satır(lar)ının içeriği.</td></tr>
+        <td>Sunucudan gönderilen yanıttaki <code><var>ALANADI</var>:</code>
+          Trailer satır(lar)ının içeriği.</td></tr>
 
     </table>
 
