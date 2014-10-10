@@ -126,7 +126,7 @@ static int noloris_monitor(apr_pool_t *pool, server_rec *s)
             if (ws->status == SERVER_BUSY_READ) {
                 n = apr_hash_get(connections, ws->client, APR_HASH_KEY_STRING);
                 if (n == NULL) {
-                    n = totals + index++ ;
+                    n = totals + index++;
                     *n = 0;
                 }
                 ++*n;
