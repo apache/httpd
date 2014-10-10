@@ -26,6 +26,7 @@
  *  It can produce a *huge* amount of data.
  */
 
+
 #include "httpd.h"
 #include "http_connection.h"
 #include "http_config.h"
@@ -33,7 +34,7 @@
 #include "http_log.h"
 #include "apr_strings.h"
 
-module AP_MODULE_DECLARE_DATA dumpio_module;
+module AP_MODULE_DECLARE_DATA dumpio_module ;
 
 typedef struct dumpio_conf_t {
     int enable_input;
@@ -59,9 +60,10 @@ static void dumpit(ap_filter_t *f, apr_bucket *b, dumpio_conf_t *ptr)
                   f->frec->name,
                   (APR_BUCKET_IS_METADATA(b)) ? "metadata" : "data",
                   b->type->name,
-                  b->length);
+                  b->length) ;
 
-    if (!(APR_BUCKET_IS_METADATA(b))) {
+    if (!(APR_BUCKET_IS_METADATA(b)))
+    {
 #if APR_CHARSET_EBCDIC
         char xlatebuf[dumpio_MAX_STRING_LEN + 1];
 #endif
@@ -69,10 +71,11 @@ static void dumpit(ap_filter_t *f, apr_bucket *b, dumpio_conf_t *ptr)
         apr_size_t nbytes;
         apr_status_t rv = apr_bucket_read(b, &buf, &nbytes, APR_BLOCK_READ);
 
-        if (rv == APR_SUCCESS) {
-            while (nbytes) {
+        if (rv == APR_SUCCESS)
+        {
+            while (nbytes)
+            {
                 apr_size_t logbytes = nbytes;
-
                 if (logbytes > dumpio_MAX_STRING_LEN)
                     logbytes = dumpio_MAX_STRING_LEN;
                 nbytes -= logbytes;
@@ -120,10 +123,10 @@ static void dumpit(ap_filter_t *f, apr_bucket *b, dumpio_conf_t *ptr)
    (( mode ) == AP_MODE_INIT) ? "init" : "unknown" \
  )
 
-static int dumpio_input_filter(ap_filter_t *f, apr_bucket_brigade *bb,
-                               ap_input_mode_t mode, apr_read_type_e block,
-                               apr_off_t readbytes)
+static int dumpio_input_filter (ap_filter_t *f, apr_bucket_brigade *bb,
+    ap_input_mode_t mode, apr_read_type_e block, apr_off_t readbytes)
 {
+
     apr_bucket *b;
     apr_status_t ret;
     conn_rec *c = f->c;
@@ -139,33 +142,28 @@ static int dumpio_input_filter(ap_filter_t *f, apr_bucket_brigade *bb,
     ret = ap_get_brigade(f->next, bb, mode, block, readbytes);
 
     if (ret == APR_SUCCESS) {
-        for (b = APR_BRIGADE_FIRST(bb);
-             b != APR_BRIGADE_SENTINEL(bb);
-             b = APR_BUCKET_NEXT(b)) {
-            dumpit(f, b, ptr);
+        for (b = APR_BRIGADE_FIRST(bb); b != APR_BRIGADE_SENTINEL(bb); b = APR_BUCKET_NEXT(b)) {
+          dumpit(f, b, ptr);
         }
     }
     else {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE7, 0, c,
-                      "mod_dumpio: %s - %d", f->frec->name, ret);
+                      "mod_dumpio: %s - %d", f->frec->name, ret) ;
         return ret;
     }
 
-    return APR_SUCCESS;
+    return APR_SUCCESS ;
 }
 
-static int dumpio_output_filter(ap_filter_t *f, apr_bucket_brigade *bb)
+static int dumpio_output_filter (ap_filter_t *f, apr_bucket_brigade *bb)
 {
     apr_bucket *b;
     conn_rec *c = f->c;
     dumpio_conf_t *ptr = f->ctx;
 
-    ap_log_cerror(APLOG_MARK, APLOG_TRACE7, 0, c, "mod_dumpio: %s",
-                  f->frec->name);
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE7, 0, c, "mod_dumpio: %s", f->frec->name);
 
-    for (b = APR_BRIGADE_FIRST(bb);
-         b != APR_BRIGADE_SENTINEL(bb);
-         b = APR_BUCKET_NEXT(b)) {
+    for (b = APR_BRIGADE_FIRST(bb); b != APR_BRIGADE_SENTINEL(bb); b = APR_BUCKET_NEXT(b)) {
         /*
          * If we ever see an EOS, make sure to FLUSH.
          */
@@ -176,15 +174,15 @@ static int dumpio_output_filter(ap_filter_t *f, apr_bucket_brigade *bb)
         dumpit(f, b, ptr);
     }
 
-    return ap_pass_brigade(f->next, bb);
+    return ap_pass_brigade(f->next, bb) ;
 }
 
 static int dumpio_pre_conn(conn_rec *c, void *csd)
 {
     dumpio_conf_t *ptr;
 
-    ptr = (dumpio_conf_t *)ap_get_module_config(c->base_server->module_config,
-                                                &dumpio_module);
+    ptr = (dumpio_conf_t *) ap_get_module_config(c->base_server->module_config,
+                                                 &dumpio_module);
 
     if (ptr->enable_input)
         ap_add_input_filter("DUMPIO_IN", ptr, NULL, c);
@@ -195,22 +193,21 @@ static int dumpio_pre_conn(conn_rec *c, void *csd)
 
 static void dumpio_register_hooks(apr_pool_t *p)
 {
-    /*
-     * We know that SSL is CONNECTION + 5
-     */
-    ap_register_output_filter("DUMPIO_OUT", dumpio_output_filter,
-                              NULL, AP_FTYPE_CONNECTION + 3);
+/*
+ * We know that SSL is CONNECTION + 5
+ */
+  ap_register_output_filter("DUMPIO_OUT", dumpio_output_filter,
+        NULL, AP_FTYPE_CONNECTION + 3) ;
 
-    ap_register_input_filter("DUMPIO_IN", dumpio_input_filter,
-                             NULL, AP_FTYPE_CONNECTION + 3);
+  ap_register_input_filter("DUMPIO_IN", dumpio_input_filter,
+        NULL, AP_FTYPE_CONNECTION + 3) ;
 
-    ap_hook_pre_connection(dumpio_pre_conn, NULL, NULL, APR_HOOK_MIDDLE);
+  ap_hook_pre_connection(dumpio_pre_conn, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
 static void *dumpio_create_sconfig(apr_pool_t *p, server_rec *s)
 {
     dumpio_conf_t *ptr = apr_pcalloc(p, sizeof *ptr);
-
     ptr->enable_input = 0;
     ptr->enable_output = 0;
     return ptr;
