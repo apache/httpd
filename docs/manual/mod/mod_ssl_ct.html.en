@@ -83,8 +83,8 @@ information does not have to also restart httpd to make it take effect.</p>
 <div class="note">This module is experimental for the following reasons:
 <ul>
   <li>Insufficient test and review</li>
-  <li>Reliance on an unreleased version of OpenSSL (1.0.2) for basic
-  operation</li>
+  <li>Reliance on an unreleased version of OpenSSL (1.0.2, Beta 3 or later) for
+  basic operation</li>
   <li>Incomplete <a href="#audit">off-line audit capability</a></li>
 </ul>
 
@@ -205,7 +205,10 @@ testing.</p>
 
     <dt>public key of the log</dt>
     <dd>A proxy must have the public key of the log in order to check the
-    signature in SCTs it receives which were obtained from the log.</dd>
+    signature in SCTs it receives which were obtained from the log.
+    <br />
+    A server must have the public key of the log in order to submit certificates
+    to it.</dd>
 
     <dt>general trust/distrust setting</dt>
     <dd>This is a mechanism to distrust or restore trust in a particular log,
@@ -251,20 +254,21 @@ testing.</p>
   
 
   <p>Experimental support for this is implemented in the <code>ctauditscts</code>
-  command (in the httpd source tree, not currently installed), which itself
-  relies on the <code>verify_single_proof.py</code> tool in the 
+  command, which itself relies on the <code>verify_single_proof.py</code> tool in the
   <em>certificate-transparency</em> open source project.  <code>ctauditscts</code>
   can parse data for off-line audit (enabled with the <code class="directive"><a href="#ctauditstorage">
   CTAuditStorage</a></code> directive) and invoke <code>verify_single_proof.py</code>.
-  However, <code>verify_single_proof.py</code> is not complete currently and does
-  not provide a way to identify audit failures.</p>
+  </p>
 
   <p>Here are rough notes for using <code>ctauditscts</code>:</p>
 
   <ul>
-    <li>Set <code>PYTHONPATH</code> to include the <code>src/python</code>
+    <li>Create a <em>virtualenv</em> using the <code>requirements.txt</code> file
+    from the <em>certificate-transparency</em> project and run the following steps
+    with that <em>virtualenv</em> activated.</li>
+    <li>Set <code>PYTHONPATH</code> to include the <code>python</code>
     directory within the <em>certificate-transparency</em> tools.</li>
-    <li>Set <code>PATH</code> to include the <code>src/python/ct/client/tools</code>
+    <li>Set <code>PATH</code> to include the <code>python/ct/client/tools</code>
     directory.</li>
     <li>Run <code>ctauditscts</code>, passing the value of the
     <code class="directive">CTAuditStorage</code> directive and, optionally, the path to
@@ -273,7 +277,7 @@ testing.</p>
   </ul>
 
   <p>The data saved for audit can also be used by other programs; refer to the
-  <code>ctauditscts</code> source code for details.</p>
+  <code>ctauditscts</code> source code for details on processing the data.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CTAuditStorage" id="CTAuditStorage">CTAuditStorage</a> <a name="ctauditstorage" id="ctauditstorage">Directive</a></h2>
@@ -312,7 +316,8 @@ testing.</p>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl_ct</td></tr>
 </table>
   <p><em>executable</em> is the full path to the log client tool, which is
-  normally file <code>src/client/ct</code> within the source tree of the 
+  normally file <code>cpp/client/ct</code> (or <code>ct.exe</code>) within the
+  source tree of the
   <a href="https://code.google.com/p/certificate-transparency/">
   certificate-transparency</a> open source project.</p>
 
@@ -321,7 +326,7 @@ testing.</p>
 
   <p>If this directive is not configured, server certificates cannot be
   submitted to logs in order to obtain SCTs; thus, only admin-managed
-  SCTs will be provided to clients.</p>
+  SCTs or SCTs in certificate extensions will be provided to clients.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
