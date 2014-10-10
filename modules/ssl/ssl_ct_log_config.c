@@ -422,3 +422,11 @@ int log_valid_for_sent_sct(const ct_log_config *l)
      */
     return log_valid_for_received_sct(l, apr_time_now());
 }
+
+int log_configured_for_fetching_sct(const ct_log_config *l)
+{
+    /* must have a url and a public key configured in order to obtain
+     * an SCT from the log
+     */
+    return l->url != NULL && l->public_key != NULL;
+}
