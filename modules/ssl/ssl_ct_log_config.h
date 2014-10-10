@@ -54,4 +54,6 @@ int log_valid_for_sent_sct(const ct_log_config *l);
 
 int log_valid_for_received_sct(const ct_log_config *l, apr_time_t to_check);
 
+int log_configured_for_fetching_sct(const ct_log_config *l);
+
 #endif /* SSL_CT_LOG_CONFIG_H */

@@ -491,8 +491,8 @@ static const char *url_to_fn(apr_pool_t *p, const apr_uri_t *log_url)
 }
 
 static apr_status_t submission(server_rec *s, apr_pool_t *p, const char *ct_exe,
-                               const apr_uri_t *log_url, const char *cert_file,
-                               const char *sct_fn)
+                               const ct_log_config *log_cfg,
+                               const char *cert_file, const char *sct_fn)
 {
     apr_status_t rv;
     const char *args[8];
@@ -500,11 +500,11 @@ static apr_status_t submission(server_rec *s, apr_pool_t *p, const char *ct_exe,
 
     i = 0;
     args[i++] = ct_exe;
-    args[i++] = apr_pstrcat(p, "--ct_server=", log_url->hostinfo, NULL);
-    args[i++] = "--http_log";
-    args[i++] = "--logtostderr";
+    args[i++] = apr_pstrcat(p, "--ct_server=", log_cfg->url, NULL);
+    args[i++] = "--logtostderr=true";
     args[i++] = apr_pstrcat(p, "--ct_server_submission=", cert_file, NULL);
     args[i++] = apr_pstrcat(p, "--ct_server_response_out=", sct_fn, NULL);
+    args[i++] = apr_pstrcat(p, "--ct_server_public_key=", log_cfg->public_key_pem, NULL);
     args[i++] = "upload";
     args[i++] = NULL;
     ap_assert(i == sizeof args / sizeof args[0]);
@@ -517,7 +517,7 @@ static apr_status_t submission(server_rec *s, apr_pool_t *p, const char *ct_exe,
 static apr_status_t fetch_sct(server_rec *s, apr_pool_t *p,
                               const char *cert_file,
                               const char *cert_sct_dir,
-                              const apr_uri_t *log_url,
+                              const ct_log_config *log_cfg,
                               const char *ct_exe, apr_time_t max_sct_age)
 {
     apr_status_t rv;
@@ -525,7 +525,7 @@ static apr_status_t fetch_sct(server_rec *s, apr_pool_t *p,
     apr_finfo_t finfo;
     const char *log_url_basename;
 
-    log_url_basename = url_to_fn(p, log_url);
+    log_url_basename = url_to_fn(p, &log_cfg->uri);
 
     rv = ctutil_path_join(&sct_fn, cert_sct_dir, log_url_basename, p, s);
     if (rv != APR_SUCCESS) {
@@ -558,7 +558,7 @@ static apr_status_t fetch_sct(server_rec *s, apr_pool_t *p,
                      cert_file, sct_fn);
     }
 
-    rv = submission(s, p, ct_exe, log_url, cert_file, sct_fn);
+    rv = submission(s, p, ct_exe, log_cfg, cert_file, sct_fn);
 
     return rv;
 }
@@ -584,7 +584,7 @@ static apr_status_t record_log_urls(server_rec *s, apr_pool_t *p,
     config_elts  = (ct_log_config **)log_config->elts;
 
     for (i = 0; i < log_config->nelts; i++) {
-        if (!config_elts[i]->uri_str) {
+        if (!log_configured_for_fetching_sct(config_elts[i])) {
             continue;
         }
         if (!log_valid_for_sent_sct(config_elts[i])) {
@@ -620,7 +620,7 @@ static int uri_in_config(const char *needle, const apr_array_header_t *haystack)
 
     elts = (ct_log_config **)haystack->elts;
     for (i = 0; i < haystack->nelts; i++) {
-        if (!elts[i]->uri_str) {
+        if (!log_configured_for_fetching_sct(elts[i])) {
             continue;
         }
         if (!log_valid_for_sent_sct(elts[i])) {
@@ -778,7 +778,7 @@ static apr_status_t refresh_scts_for_cert(server_rec *s, apr_pool_t *p,
         }
 
         for (i = 0; i < log_config->nelts; i++) {
-            if (!config_elts[i]->url) {
+            if (!log_configured_for_fetching_sct(config_elts[i])) {
                 continue;
             }
             if (!log_valid_for_sent_sct(config_elts[i])) {
@@ -786,7 +786,7 @@ static apr_status_t refresh_scts_for_cert(server_rec *s, apr_pool_t *p,
             }
             rv = fetch_sct(s, p, cert_fn,
                            cert_sct_dir,
-                           &config_elts[i]->uri,
+                           config_elts[i],
                            ct_exe,
                            max_sct_age);
             if (rv != APR_SUCCESS) {
