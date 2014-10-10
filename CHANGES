@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_ssl: Do not crash when looking up SSL related variables during
+     expression evaluation on non SSL connections. PR 57070 [Ruediger Pluem]
+
   *) core: Ensure that httpd exits with an error status when the MPM fails
      to run.  [Yann Ylavic]
 
