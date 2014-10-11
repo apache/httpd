@@ -98,7 +98,8 @@ static const TRANS priorities[] = {
     {NULL,      -1},
 };
 
-static char* chomp(char* str) {
+static char* chomp(char* str)
+{
     long p = (long)strlen(str);
     while (--p >= 0) {
         switch ((char)(str[p])) {
@@ -949,7 +950,8 @@ static apr_status_t ba_cleanup(void *data)
 
  Definately more work needed here...
 */
-static int is_interactive_mode(apr_pool_t *pool) {
+static int is_interactive_mode(apr_pool_t *pool)
+{
     char *value = NULL, qs[] = "GATEWAY_INTERFACE";
     apr_status_t rv;
 

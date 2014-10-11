@@ -321,7 +321,8 @@ APREQ_DECLARE(apreq_charset_t) apreq_charset_divine(const char *src,
 }
 
 
-static APR_INLINE apr_uint16_t hex4_to_bmp(const char *what) {
+static APR_INLINE apr_uint16_t hex4_to_bmp(const char *what)
+{
     register apr_uint16_t digit = 0;
 
 #if !APR_CHARSET_EBCDIC
@@ -524,7 +525,8 @@ APREQ_DECLARE(apr_size_t) apreq_encode(char *dest, const char *src,
     return d - dest;
 }
 
-static int is_quoted(const char *p, const apr_size_t len) {
+static int is_quoted(const char *p, const apr_size_t len)
+{
     if (len > 1 && p[0] == '"' && p[len-1] == '"') {
         apr_size_t i;
         int backslash = 0;

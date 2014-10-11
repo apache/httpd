@@ -1565,7 +1565,8 @@ static cert_chain *cert_chain_init(apr_pool_t *p, STACK_OF(X509) *chain)
     return cc;
 }
 
-static void cert_chain_free(cert_chain *cc) {
+static void cert_chain_free(cert_chain *cc)
+{
     X509 **elts = (X509 **)cc->cert_arr->elts;
     int i;
 
