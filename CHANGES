@@ -6,6 +6,10 @@ Changes with Apache 2.4.11
      mod_cache: Avoid a crash when Content-Type has an empty value.
      PR 56924.  [Mark Montague <mark catseye.org>, Jan Kaluza]
 
+  *) mod_ldap: In 2.4.10, some LDAP searches or comparisons might be done with
+     the wrong credentials when a backend connection is reused.
+     [Eric Covener]
+
   *) mod_macro: Add missing APLOGNO for some Warning log messages.
      [Christophe Jaillet]
 
