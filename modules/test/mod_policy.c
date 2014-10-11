@@ -335,7 +335,8 @@ static apr_status_t policy_keepalive_out_filter(ap_filter_t *f,
     return ap_pass_brigade(f->next, bb);
 }
 
-static int vary_test(void *rec, const char *key, const char *value) {
+static int vary_test(void *rec, const char *key, const char *value)
+{
     request_rec *r = (request_rec *)rec;
     char *token = apr_pstrdup(r->pool, value);
     char *last;
