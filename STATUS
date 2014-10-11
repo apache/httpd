@@ -269,6 +269,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works modulo CHANGES
      +1: rjung
 
+   * mod_ssl: Move OCSP stapling information to a per-server hash. PR 54357.
+     trunk patches: https://svn.apache.org/r1629372
+                    https://svn.apache.org/r1629485
+                    https://svn.apache.org/r1629519
+     2.4.x patch: https://people.apache.org/~kbrand/mod_ssl-2.4.x-PR54357.diff
+     +1: kbrand
+
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
