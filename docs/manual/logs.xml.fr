@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1480904:1629730 (outdated) -->
+<!-- English Revision : 1629730 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -698,7 +698,7 @@ CustomLog logs/access_log comonvhost
 
     <p>Le champ <code>%v</code> sert &agrave; enregistrer le nom de l'h&ocirc;te virtuel qui
     traite la requ&ecirc;te. Un programme tel que <a
-    href="programs/other.html">split-logfile</a> peut ensuite &ecirc;tre utilis&eacute;
+    href="programs/split-logfile.html">split-logfile</a> peut ensuite &ecirc;tre utilis&eacute;
     pour g&eacute;n&eacute;rer "&agrave; froid" autant de journaux que d'h&ocirc;tes virtuels.</p>
   </section>
 
