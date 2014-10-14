@@ -2290,8 +2290,8 @@ which means that OCSP responses are considered valid as long as their
 <usage>
 <p>This option determines whether queries to OCSP responders should contain
 a nonce or not. By default, a query nonce is always used and checked against
-the response's one. When the responder does not use nonces (eg. Microsoft OCSP
-Responder), this option ought to be turned <code>off</code>.</p>
+the response's one. When the responder does not use nonces (e.g. Microsoft OCSP
+Responder), this option should be turned <code>off</code>.</p>
 </usage>
 </directivesynopsis>
 
@@ -2383,6 +2383,10 @@ is enabled. Configuration of a cache is mandatory for OCSP stapling.
 With the exception of <code>none</code> and <code>nonenotnull</code>,
 the same storage types are supported as with
 <directive module="mod_ssl">SSLSessionCache</directive>.</p>
+
+<p>The <code>ssl-stapling</code> mutex is used to serialize access to the
+OCSP stapling cache to prevent corruption.  This mutex can be configured
+using the <directive module="core">Mutex</directive> directive.</p>
 </usage>
 </directivesynopsis>
 
@@ -2521,7 +2525,7 @@ To set the cache timeout for valid responses, see
 <usage>
 <p>This directive overrides the URI of an OCSP responder as obtained from
 the authorityInfoAccess (AIA) extension of the certificate.
-Of potential use when going through a proxy for retrieving OCSP queries.</p>
+One potential use is when a proxy is used for retrieving OCSP queries.</p>
 </usage>
 </directivesynopsis>
 
