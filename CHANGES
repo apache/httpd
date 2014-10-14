@@ -171,10 +171,6 @@ Changes with Apache 2.5.0
   *) mod_rewrite: Support an optional list of characters to escape in the 
      argument for the 'B' (escape backreferences) flag. [Eric Covener]
 
-  *) mod_ssl: Add SSLOCSPUseRequestNonce directive to control whether or not
-     OCSP requests should use a nonce to be checked against the responder's
-     one. PR 56233. [ Yann Ylavic ]
-
   *) mod_dir: Default to 2.2-like behavior and skip execution when method is
      neither GET nor POST, such as for DAV requests. PR 54914. [Chris Darroch]
 
