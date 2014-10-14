@@ -6,6 +6,13 @@ Changes with Apache 2.4.11
      mod_cache: Avoid a crash when Content-Type has an empty value.
      PR 56924.  [Mark Montague <mark catseye.org>, Jan Kaluza]
 
+  *) SECURITY: CVE-2013-5704 (cve.mitre.org)
+     core: HTTP trailers could be used to replace HTTP headers
+     late during request processing, potentially undoing or
+     otherwise confusing modules that examined or modified
+     request headers earlier.  Adds "MergeTrailers" directive to restore
+     legacy behavior.  [Edward Lu, Yann Ylavic, Joe Orton, Eric Covener]
+
   *) mod_ldap: In 2.4.10, some LDAP searches or comparisons might be done with
      the wrong credentials when a backend connection is reused.
      [Eric Covener]
@@ -36,13 +43,6 @@ Changes with Apache 2.4.11
   *) mod_proxy_http: Proxy responses with error status and
      "ProxyErrorOverride On" hang until proxy timeout.
      PR53420 [Rainer Jung]
-
-  *) SECURITY: CVE-2013-5704 (cve.mitre.org)
-     core: HTTP trailers could be used to replace HTTP headers
-     late during request processing, potentially undoing or
-     otherwise confusing modules that examined or modified
-     request headers earlier.  Adds "MergeTrailers" directive to restore
-     legacy behavior.  [Edward Lu, Yann Ylavic, Joe Orton, Eric Covener]
 
   *) mod_log_config: Allow three character log formats to be registered. For
      backwards compatibility, the first character of a three-character format
