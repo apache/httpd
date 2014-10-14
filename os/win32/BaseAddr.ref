@@ -131,3 +131,4 @@ mod_optional_fn_import.so   0x70C30000    0x00010000
 mod_optional_hook_export.so 0x70C40000    0x00010000
 mod_optional_hook_import.so 0x70C50000    0x00010000
 mod_policy.so               0x70C60000    0x00020000
+mod_ssl_ct.so               0x70c80000    0x00020000
