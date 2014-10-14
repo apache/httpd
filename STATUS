@@ -116,7 +116,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      changes. PR 44736.  [Jan Kaluza]
      2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-mod_proxy-balancer_graceful.patch
      ylavic: trunk/2.4.x not concerned, 2.2.x only.
-     +1: ylavic
+     +1: ylavic, jkaluza
 
    * mod_proxy_balancer: Always initialize the shared parameters of a load
      balancer member, even if it is already used as standalone.  PR 57067.
