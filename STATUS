@@ -265,6 +265,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://people.apache.org/~kbrand/mod_ssl-2.4.x-PR54357.diff
      +1: kbrand, ylavic
 
+   * mod_substitute: no real functional change, but:
+     - define default for maximum line length
+       indepenent of MAX_STRING_LEN
+     - Clarify line length check with a comment
+     - add supported 'b' suffix to directive
+       description
+     trunk patches: https://svn.apache.org/r1631983
+     2.4.x patch: trunk works, no CHANGES
+     +1: rjung
+
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
