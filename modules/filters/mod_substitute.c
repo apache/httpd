@@ -38,7 +38,7 @@
  * Therefore we limit the resulting length of the line.
  * This is the default value.
  */
-#define AP_SUBST_MAX_LINE_LENGTH (128*MAX_STRING_LEN)
+#define AP_SUBST_MAX_LINE_LENGTH (1024*1024)
 
 static const char substitute_filter_name[] = "SUBSTITUTE";
 
@@ -243,9 +243,13 @@ static apr_status_t do_pattmatch(ap_filter_t *f, apr_bucket *inb,
                         apr_status_t rv;
                         have_match = 1;
                         if (script->flatten && !force_quick) {
-                            /* copy bytes before the match */
+                            /* check remaining buffer size */
+                            /* Note that the last param in ap_varbuf_regsub below
+                             * must stay positive. If it gets 0, it would mean
+                             * unlimited space available. */
                             if (vb.strlen + regm[0].rm_so >= cfg->max_line_length)
                                 return APR_ENOMEM;
+                            /* copy bytes before the match */
                             if (regm[0].rm_so > 0)
                                 ap_varbuf_strmemcat(&vb, pos, regm[0].rm_so);
                             /* add replacement string, last argument is unsigned! */
@@ -672,7 +676,7 @@ static const char *set_max_line_length(cmd_parms *cmd, void *cfg, const char *ar
     if (rv != APR_SUCCESS || max < 0)
     {
         return "SubstituteMaxLineLength must be a non-negative integer optionally "
-               "suffixed with 'k', 'm' or 'g'.";
+               "suffixed with 'b', 'k', 'm' or 'g'.";
     }
     dcfg->max_line_length = (apr_size_t)max;
     dcfg->max_line_length_set = 1;
