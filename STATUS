@@ -241,7 +241,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      but not setting the have_idle_worker variable. PR 56960.
      trunk patch: http://svn.apache.org/r1629577
      2.4.x patch: trunk works
-     +1: jkaluza
+     +1: jkaluza, ylavic
 
    * mod_cache_socache: Add cache status to server-status.
      The status_hook simply calls the status function of
@@ -263,7 +263,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                     https://svn.apache.org/r1629485
                     https://svn.apache.org/r1629519
      2.4.x patch: https://people.apache.org/~kbrand/mod_ssl-2.4.x-PR54357.diff
-     +1: kbrand
+     +1: kbrand, ylavic
 
 OTHER PROPOSALS
 
