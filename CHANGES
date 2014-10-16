@@ -13,6 +13,9 @@ Changes with Apache 2.4.11
      request headers earlier.  Adds "MergeTrailers" directive to restore
      legacy behavior.  [Edward Lu, Yann Ylavic, Joe Orton, Eric Covener]
 
+  *) mod_slotmem_shm: Increase log level for some originally debug messages.
+     [Jim Jagielski]
+
   *) mod_ldap: In 2.4.10, some LDAP searches or comparisons might be done with
      the wrong credentials when a backend connection is reused.
      [Eric Covener]

@@ -128,12 +128,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
              https://issues.apache.org/bugzilla/attachment.cgi?id=31686).
              Should we?
 
-   * mod_slotmem: Increase log level for some originally debug messages.
-     trunk patch: http://svn.apache.org/r1621373
-     2.4.x patch: trunk works
-                  http://people.apache.org/~jim/patches/slotmem-loglevel.patch
-     +1: jim, ylavic, rjung
-
    * mod_proxy: Make worker name truncation a non-fatal error.
      trunk patch: http://svn.apache.org/r1621367
                   http://svn.apache.org/r1621372
