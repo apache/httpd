@@ -1608,8 +1608,8 @@ AP_DECLARE(void) ap_method_list_add(ap_method_list_t *l, const char *method)
      * bitmask.
      */
     methnum = ap_method_number_of(method);
-    l->method_mask |= (AP_METHOD_BIT << methnum);
     if (methnum != M_INVALID) {
+        l->method_mask |= (AP_METHOD_BIT << methnum);
         return;
     }
     /*
@@ -1641,15 +1641,15 @@ AP_DECLARE(void) ap_method_list_remove(ap_method_list_t *l,
      * by a module, use the bitmask.
      */
     methnum = ap_method_number_of(method);
-    l->method_mask |= ~(AP_METHOD_BIT << methnum);
     if (methnum != M_INVALID) {
+        l->method_mask &= ~(AP_METHOD_BIT << methnum);
         return;
     }
     /*
      * Otherwise, see if the method name is in the array of string names.
      */
     if (l->method_list->nelts != 0) {
-        register int i, j, k;
+        int i, j, k;
         methods = (char **)l->method_list->elts;
         for (i = 0; i < l->method_list->nelts; ) {
             if (strcmp(method, methods[i]) == 0) {
