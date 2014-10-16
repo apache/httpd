@@ -108,13 +108,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      +1: jkaluza, ylavic, rjung
 
-   * http_protocol: fix logic in ap_method_list_(add|remove) in order:
-       - to correctly reset bits
-       - not to modify the 'method_mask' bitfield unnecessarily
-     trunk patch: http://svn.apache.org/r1610813
-     2.4.x patch: trunk patch works (modulo CHANGES)
-     +1: jailletc36, ylavic, rjung
-
    * mod_proxy_http: Avoid (unlikely) access to freed memory.
      trunk patch: http://svn.apache.org/r1599486
      2.4.x patch: trunk works
