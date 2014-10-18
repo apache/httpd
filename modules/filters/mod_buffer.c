@@ -213,28 +213,33 @@ static apr_status_t buffer_in_filter(ap_filter_t *f, apr_bucket_brigade *bb,
 
     /* if our buffer is empty, read off the network until the buffer is full */
     if (APR_BRIGADE_EMPTY(ctx->bb)) {
+        int seen_flush = 0;
+
         ctx->remaining = ctx->conf->size;
 
-        while (!ctx->seen_eos && ctx->remaining > 0) {
+        while (!ctx->seen_eos && !seen_flush && ctx->remaining > 0) {
             const char *data;
             apr_size_t size = 0;
 
-            rv = ap_get_brigade(f->next, ctx->tmp, mode, block, ctx->remaining);
+            if (APR_BRIGADE_EMPTY(ctx->tmp)) {
+                rv = ap_get_brigade(f->next, ctx->tmp, mode, block,
+                                    ctx->remaining);
 
-            /* if an error was received, bail out now. If the error is
-             * EAGAIN and we have not yet seen an EOS, we will definitely
-             * be called again, at which point we will send our buffered
-             * data. Instead of sending EAGAIN, some filters return an
-             * empty brigade instead when data is not yet available. In
-             * this case, pass through the APR_SUCCESS and emulate the
-             * underlying filter.
-             */
-            if (rv != APR_SUCCESS || APR_BRIGADE_EMPTY(ctx->tmp)) {
-                return rv;
+                /* if an error was received, bail out now. If the error is
+                 * EAGAIN and we have not yet seen an EOS, we will definitely
+                 * be called again, at which point we will send our buffered
+                 * data. Instead of sending EAGAIN, some filters return an
+                 * empty brigade instead when data is not yet available. In
+                 * this case, pass through the APR_SUCCESS and emulate the
+                 * underlying filter.
+                 */
+                if (rv != APR_SUCCESS || APR_BRIGADE_EMPTY(ctx->tmp)) {
+                    return rv;
+                }
             }
 
-            for (e = APR_BRIGADE_FIRST(ctx->tmp); e != APR_BRIGADE_SENTINEL(
-                    ctx->tmp); e = APR_BUCKET_NEXT(e)) {
+            do {
+                e = APR_BRIGADE_FIRST(ctx->tmp);
 
                 /* if we see an EOS, we are done */
                 if (APR_BUCKET_IS_EOS(e)) {
@@ -248,6 +253,7 @@ static apr_status_t buffer_in_filter(ap_filter_t *f, apr_bucket_brigade *bb,
                 if (APR_BUCKET_IS_FLUSH(e)) {
                     APR_BUCKET_REMOVE(e);
                     APR_BRIGADE_INSERT_TAIL(ctx->bb, e);
+                    seen_flush = 1;
                     break;
                 }
 
@@ -260,7 +266,7 @@ static apr_status_t buffer_in_filter(ap_filter_t *f, apr_bucket_brigade *bb,
 
                 /* read the bucket in, pack it into the buffer */
                 if (APR_SUCCESS == (rv = apr_bucket_read(e, &data, &size,
-                        APR_BLOCK_READ))) {
+                                                         APR_BLOCK_READ))) {
                     apr_brigade_write(ctx->bb, NULL, NULL, data, size);
                     ctx->remaining -= size;
                     apr_bucket_delete(e);
@@ -268,7 +274,7 @@ static apr_status_t buffer_in_filter(ap_filter_t *f, apr_bucket_brigade *bb,
                     return rv;
                 }
 
-            }
+            } while (!APR_BRIGADE_EMPTY(ctx->tmp));
         }
     }
 
