@@ -636,7 +636,6 @@ static int cache_handler(request_rec *r)
 static apr_status_t cache_out_filter(ap_filter_t *f, apr_bucket_brigade *in)
 {
     request_rec *r = f->r;
-    apr_bucket *e;
     cache_request_rec *cache = (cache_request_rec *)f->ctx;
 
     if (!cache) {
@@ -652,10 +651,8 @@ static apr_status_t cache_out_filter(ap_filter_t *f, apr_bucket_brigade *in)
             "cache: running CACHE_OUT filter");
 
     /* clean out any previous response up to EOS, if any */
-    for (e = APR_BRIGADE_FIRST(in);
-         e != APR_BRIGADE_SENTINEL(in);
-         e = APR_BUCKET_NEXT(e))
-    {
+    while (!APR_BRIGADE_EMPTY(in)) {
+        apr_bucket *e = APR_BRIGADE_FIRST(in);
         if (APR_BUCKET_IS_EOS(e)) {
             apr_bucket_brigade *bb = apr_brigade_create(r->pool,
                     r->connection->bucket_alloc);
