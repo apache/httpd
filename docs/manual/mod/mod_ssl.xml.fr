@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1610915:1631887 (outdated) -->
+<!-- English Revision : 1631887 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -2662,6 +2662,11 @@ cache est obligatoire pour pouvoir utiliser l'agrafage OCSP. A
 l'exception de <code>none</code> et <code>nonenotnull</code>, cette
 directive supporte les m&ecirc;mes types de stockage que la directive
 <directive module="mod_ssl">SSLSessionCache</directive>.</p>
+
+<p>Le mutex <code>ssl-stapling</code> permet de s&eacute;rialiser l'acc&egrave;s au
+cache d'agrafage OCSP afin d'en pr&eacute;venir la corruption. Ce mutex peut
+&ecirc;tre configur&eacute; via la directive <directive
+module="core">Mutex</directive>.</p>
 </usage>
 </directivesynopsis>
 
