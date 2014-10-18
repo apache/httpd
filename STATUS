@@ -108,19 +108,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      +1: jkaluza, ylavic, rjung
 
-   * mod_proxy_http: Avoid (unlikely) access to freed memory.
-     trunk patch: http://svn.apache.org/r1599486
-     2.4.x patch: trunk works
-     +1: ylavic, jorton, rjung (as is)
-     covener: I did not look in depth, but is the preceding log message also bad?
-     ylavic: No, this concerns the next for (;; e = APR_BUCKET_NEXT(e)) iteration.
-             We could also s/apr_bucket_delete/APR_BUCKET_REMOVE/ instead, but
-             stripping some (unhandled) buckets from the source brigade does
-             not look correct to me either (brigade *to is to be consumed, but
-             *from is still living, the caller may want to reuse it, eg:
-             https://issues.apache.org/bugzilla/attachment.cgi?id=31686).
-             Should we?
-
    * mod_proxy: Make worker name truncation a non-fatal error.
      trunk patch: http://svn.apache.org/r1621367
                   http://svn.apache.org/r1621372

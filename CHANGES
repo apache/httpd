@@ -13,6 +13,8 @@ Changes with Apache 2.4.11
      request headers earlier.  Adds "MergeTrailers" directive to restore
      legacy behavior.  [Edward Lu, Yann Ylavic, Joe Orton, Eric Covener]
 
+  *) mod_proxy_http: Avoid (unlikely) access to freed memory. [Yann Ylavic]
+
   *) http_protocol: fix logic in ap_method_list_(add|remove) in order:
        - to correctly reset bits
        - not to modify the 'method_mask' bitfield unnecessarily
