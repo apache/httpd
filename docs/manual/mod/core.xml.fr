@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1619884:1631517 (outdated) -->
+<!-- English Revision : 1631517 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -2750,10 +2750,8 @@ HTTP</description>
 
     <highlight language="config">LimitRequestLine 4094</highlight>
 
-    <note>Dans des conditions normales, la valeur par d&eacute;faut de cette
-    directive ne doit pas &ecirc;tre modifi&eacute;e. En outre, vous ne
-    pouvez pas sp&eacute;cifier une valeur sup&eacute;rieure &agrave; 8190 sans modifier le
-    code source et recompiler.</note>
+    <note>Dans des conditions normales, cette directive doit conserver
+    sa valeur par d&eacute;faut.</note>
 
     <note type="warning"><title>Avertissement</title>
      <p>Dans le cas des serveurs virtuels &agrave; base de noms, la valeur de
