@@ -24,8 +24,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/ssl/ssl_howto.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/ssl/ssl_howto.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 
 <p>Ce document doit vous permettre de démarrer et de faire fonctionner
@@ -37,6 +35,7 @@ manière plus approfondie.</p>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#configexample">Exemple de configuration basique</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ciphersuites">Suites de chiffrement et mise en application de la sécurité
 de haut niveau</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#ocspstapling">Agrafage OCSP</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#accesscontrol">Authentification du client et contrôle d'accès</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#logging">Journalisation</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
@@ -109,6 +108,106 @@ SSLCipherSuite ALL:!aNULL:RC4+RSA:+HIGH:+MEDIUM:+LOW:+EXP:+eNULL
 # qui exigent des chiffrements forts
 SSLCipherSuite HIGH:!aNULL:!MD5
 &lt;/Location&gt;</pre>
+
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="ocspstapling" id="ocspstapling">Agrafage OCSP</a></h2>
+
+
+<p>Le protocole de contrôle du statut des certificats en ligne (Online
+Certificate Status Protocol - OCSP) est un mécanisme permettant de
+déterminer si un certificat a été révoqué ou non, et l'agrafage OCSP en
+est une fonctionnalité particulière par laquelle le serveur, par exemple
+httpd et mod_ssl, maintient une liste des réponses OCSP actuelles pour
+ses certificats et l'envoie aux clients qui communiquent avec lui. La
+plupart des certificats contiennent l'adresse d'un répondeur OCSP maintenu
+par l'Autorité de Certification (CA) spécifiée, et mod_ssl peut requérir
+ce répondeur pour obtenir une réponse signée qui peut être envoyée aux
+clients qui communiquent avec le serveur.</p>
+
+<p>L'agrafage OCSP est la méthode la plus performante pour obtenir le
+statut d'un certificat car il est disponible au niveau du serveur, et le
+client n'a donc pas besoin d'ouvrir une nouvelle connexion vers
+l'autorité de certification. Autres avantages de l'absence de
+communication entre le client et l'autorité de certification :
+l'autorité de certification n'a pas accès à l'historique de navigation
+du client, et l'obtention du statut du certificat est plus efficace car
+elle n'est plus assujettie à une surcharge éventuelle des serveurs de
+l'autorité de certification.</p>
+
+<p>La charge du serveur est moindre car la réponse qu'il a obtenu du
+répondeur OCSP peut être réutilisée par tous les clients qui utilisent
+le même certificat dans la limite du temps de validité de la réponse.</p>
+
+<p>Une fois le support général SSL correctement configuré, l'activation
+de l'agrafage OCSP ne requiert que des modifications mineures
+à la configuration de httpd et il suffit en général de l'ajout de ces
+deux directives :</p>
+
+    <pre class="prettyprint lang-config">SSLUseStapling On
+SSLStaplingCache "shmcb:ssl_stapling(32768)"</pre>
+
+
+<p>Ces directives sont placées de façon à ce qu'elles aient une portée
+globale (et particulièrement en dehors de toute section VirtualHost), le
+plus souvent où sont placées les autres directives de configuration
+globales SSL, comme <code>conf/extra/httpd-ssl.conf</code> pour les
+installations de httpd à partir des sources, ou
+<code>/etc/apache2/mods-enabled/ssl.conf</code> pour Ubuntu ou Debian,
+etc...</p>
+
+<p>Les sections suivantes explicitent les situations courantes qui
+requièrent des modifications supplémentaires de la configuration. Vous
+pouvez aussi vous référer au manuel de référence de
+<code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>.</p>
+
+<h3>Si l'on utilise plus que quelques certificats SSL pour le serveur</h3>
+
+<p>Les réponses OCSP sont stockées dans le cache d'agrafage SSL. Alors
+que les réponses ont une taille de quelques centaines à quelques
+milliers d'octets, mod_ssl supporte des réponses d'une taille jusqu'à
+environ 10 ko. Dans notre cas, le nombre de certificats est conséquent
+et la taille du cache (32768 octets dans l'exemple ci-dessus) doit être
+augmentée.</p>
+
+
+<h3>Si le certificat ne spécifie pas de répondeur OCSP, ou si une
+adresse différente doit être utilisée</h3>
+
+<p>Veuillez vous référer à la documentation de la directive <code class="directive"><a href="../mod/mod_ssl.html#sslstaplingforceurl">SSLStaplingForceURL</a></code>.</p>
+
+<p>Vous pouvez vérifier si un certificat spécifie un répondeur OCSP en
+utilisant la commande openssl comme suit :</p>
+
+<pre>$ openssl x509 -in ./www.example.com.crt -text | grep 'OCSP.*http'
+OCSP - URI:http://ocsp.example.com</pre>
+
+<p>Si un URI OCSP est fourni et si le serveur web peut communiquer
+directement avec lui sans passer par un mandataire, aucune modification
+supplémentaire de la configuration n'est requise. Notez que les règles
+du pare-feu qui contrôlent les connexions sortantes en provenance du
+serveur web devront peut-être subir quelques ajustements.</p>
+
+<p>Si aucun URI OCSP n'est fourni, contactez votre autorité de
+certification pour savoir s'il en existe une ; si c'est le
+cas, utilisez la directive <code class="directive"><a href="../mod/mod_ssl.html#sslstaplingforceurl">SSLStaplingForceURL</a></code> pour la spécifier dans
+la configuration du serveur virtuel qui utilise le certificat.</p>
+
+
+<h3>Si plusieurs serveurs virtuels sont configurés pour utiliser SSL
+et si l'agrafage OCSP doit être désactivé pour certains d'entre eux</h3>
+
+
+<p>Ajoutez la directive <code>SSLUseStapling Off</code> à la
+configuration des serveurs virtuels pour lesquels l'agrafage OCSP doit
+être désactivé.</p>
+
+
+<h3>Si le répondeur OCSP est lent ou instable</h3>
+
+<p>De nombreuses directives permettent de gérer les temps de réponse et
+les erreurs. Référez-vous à la documentation de <code class="directive"><a href="../mod/mod_ssl.html#sslstaplingfaketrylater">SSLStaplingFakeTryLater</a></code>, <code class="directive"><a href="../mod/mod_ssl.html#sslstaplingrespondertimeout">SSLStaplingResponderTimeout</a></code>, et <code class="directive"><a href="../mod/mod_ssl.html#sslstaplingreturnrespondererrors">SSLStaplingReturnResponderErrors</a></code>.</p>
 
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
