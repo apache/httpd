@@ -249,6 +249,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works, no CHANGES
      +1: rjung
 
+   * mod_proxy: Avoid (unlikely) more accesses to freed memory.
+     trunk patch: http://svn.apache.org/r1632740
+                  http://svn.apache.org/r1632742
+     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-apr_bucket_delete_more_fixes.patch
+     +1: ylavic
+     ylavic: No CHANGES entry is added but rather the existing one for the same
+             issue in mod_proxy_http (2.4.11's backport r1632736) has been modified.
+
+
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
