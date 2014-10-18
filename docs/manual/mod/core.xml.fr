@@ -2168,10 +2168,8 @@ HTTP</description>
       LimitRequestLine 4094
     </example>
 
-    <note>Dans des conditions normales, la valeur par d&eacute;faut de cette
-    directive ne doit pas &ecirc;tre modifi&eacute;e. En outre, vous ne
-    pouvez pas sp&eacute;cifier une valeur sup&eacute;rieure &agrave; 8190 sans modifier le
-    code source et recompiler.</note>
+    <note>Dans des conditions normales, cette directive doit conserver
+    sa valeur par d&eacute;faut.</note>
 
     <note type="warning"><title>Avertissement</title>
      <p>Dans le cas des serveurs virtuels par noms, la valeur de
