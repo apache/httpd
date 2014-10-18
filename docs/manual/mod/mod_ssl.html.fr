@@ -27,8 +27,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_ssl.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_ssl.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Chiffrement de haut niveau basé sur les protocoles Secure
 Sockets Layer (SSL) et Transport Layer Security (TLS)</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -2490,6 +2488,10 @@ cache est obligatoire pour pouvoir utiliser l'agrafage OCSP. A
 l'exception de <code>none</code> et <code>nonenotnull</code>, cette
 directive supporte les mêmes types de stockage que la directive
 <code class="directive"><a href="#sslsessioncache">SSLSessionCache</a></code>.</p>
+
+<p>Le mutex <code>ssl-stapling</code> permet de sérialiser l'accès au
+cache d'agrafage OCSP afin d'en prévenir la corruption. Ce mutex peut
+être configuré via la directive <code class="directive"><a href="../mod/core.html#mutex">Mutex</a></code>.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
