@@ -1322,6 +1322,11 @@ static apr_status_t ssl_io_filter_handshake(ssl_filter_ctx_t *filter_ctx)
                           "\"SSLVerifyClient optional_no_ca\" "
                           "configuration");
             ssl_log_ssl_error(SSLLOG_MARK, APLOG_INFO, server);
+
+            /* on session resumption ssl_callback_SSLVerify() 
+             * will not be called, therefore we have to set it here
+             */
+            sslconn->verify_info = "GENEROUS";
         }
         else {
             const char *error = sslconn->verify_error ?
