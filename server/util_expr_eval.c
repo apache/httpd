@@ -1060,14 +1060,14 @@ static const char *sha1_func(ap_expr_eval_ctx_t *ctx, const void *data,
 static const char *md5_func(ap_expr_eval_ctx_t *ctx, const void *data,
                                const char *arg)
 {
-	return ap_md5(ctx->p, (const unsigned char *)arg);
+    return ap_md5(ctx->p, (const unsigned char *)arg);
 }
 
 #if APR_VERSION_AT_LEAST(1,6,0)
 static const char *ldap_func(ap_expr_eval_ctx_t *ctx, const void *data,
                                const char *arg)
 {
-        return apr_pescape_ldap(ctx->p, arg, APR_ESCAPE_STRING, APR_ESCAPE_LDAP_ALL);
+    return apr_pescape_ldap(ctx->p, arg, APR_ESCAPE_STRING, APR_ESCAPE_LDAP_ALL);
 }
 #endif
 
