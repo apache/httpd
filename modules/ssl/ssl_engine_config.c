@@ -1806,7 +1806,7 @@ const char *ssl_cmd_SSLStaplingForceURL(cmd_parms *cmd, void *dcfg,
 
 #ifdef HAVE_SSL_CONF_CMD
 const char *ssl_cmd_SSLOpenSSLConfCmd(cmd_parms *cmd, void *dcfg,
-					const char *arg1, const char *arg2)
+                                      const char *arg1, const char *arg2)
 {
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
     SSL_CONF_CTX *cctx = sc->server->ssl_ctx_config;
