@@ -98,13 +98,13 @@ APREQ_DECLARE(apr_ssize_t ) apreq_index(const char* hay, apr_size_t hlen,
     const char *begin = hay;
 
     while ( (hay = memchr(hay, ndl[0], len)) ) {
-	len = end - hay;
+        len = end - hay;
 
-	/* done if matches up to capacity of buffer */
-	if ( memcmp(hay, ndl, MIN(nlen, len)) == 0 ) {
+        /* done if matches up to capacity of buffer */
+        if ( memcmp(hay, ndl, MIN(nlen, len)) == 0 ) {
             if (type == APREQ_MATCH_FULL && len < nlen)
                 hay = NULL;     /* insufficient room for match */
-	    break;
+            break;
         }
         --len;
         ++hay;
@@ -365,11 +365,10 @@ static apr_status_t url_decode(char *dest, apr_size_t *dlen,
             break;
 
         case '%':
-	    if (s + 2 < end && apr_isxdigit(s[1]) && apr_isxdigit(s[2]))
-            {
+            if (s + 2 < end && apr_isxdigit(s[1]) && apr_isxdigit(s[2])) {
                 *d = hex2_to_char(s + 1);
                 s += 2;
-	    }
+            }
             else if (s + 5 < end && (s[1] == 'u' || s[1] == 'U') &&
                      apr_isxdigit(s[2]) && apr_isxdigit(s[3]) &&
                      apr_isxdigit(s[4]) && apr_isxdigit(s[5]))
@@ -390,7 +389,7 @@ static apr_status_t url_decode(char *dest, apr_size_t *dlen,
                 }
                 s += 5;
             }
-	    else {
+            else {
                 *dlen = d - start;
                 *slen = s - src;
                 if (s + 5 < end
@@ -405,7 +404,7 @@ static apr_status_t url_decode(char *dest, apr_size_t *dlen,
                 memmove(d, s, end - s);
                 d[end - s] = 0;
                 return APR_INCOMPLETE;
-	    }
+            }
             break;
 
         default:
