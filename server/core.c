@@ -1409,13 +1409,13 @@ static const char *generate_message(cmd_parms *cmd, void *dummy,
      * the log is displayed on the terminal as no log file is opened yet.
      */
     ap_log_error(APLOG_MARK, level, 0, NULL,
-		 "%s on line %d of %s", msg,
-		 cf? cf->line_number:
-		   ed1? ed1->line_num:
-		     ed2? ed2->line_num: -1,
-		 cf? cf->name:
-		   ed1? ed1->filename:
-		     ed2? ed2->filename: "<UNKNOWN>");
+                 "%s on line %d of %s", msg,
+                 cf? cf->line_number:
+                   ed1? ed1->line_num:
+                     ed2? ed2->line_num: -1,
+                 cf? cf->name:
+                   ed1? ed1->filename:
+                     ed2? ed2->filename: "<UNKNOWN>");
 
     /* message displayed above, return will stop configuration processing */
     return level==APLOG_ERR?
