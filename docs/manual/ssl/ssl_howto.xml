@@ -200,6 +200,22 @@ to the documentation for the
 directives.</p>
 </section>
 
+<section>
+<title>If mod_ssl logs error AH02217</title>
+<pre>
+AH02217: ssl_stapling_init_cert: Can't retrieve issuer certificate!
+</pre>
+<p>In order to support OCSP Stapling when a particular server certificate is
+used, the certificate chain for that certificate must be configured.  If it 
+was not configured as part of enabling SSL, the AH02217 error will be issued
+when stapling is enabled, and an OCSP response will not be provided for clients
+using the certificate.</p>
+
+<p>Refer to the <directive module="mod_ssl">SSLCertificateChainFile</directive>
+and <directive module="mod_ssl">SSLCertificateFile</directive> for instructions
+for configuring the certificate chain.</p>
+</section>
+
 </section>
 <!-- /ocspstapling -->
 
