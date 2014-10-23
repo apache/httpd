@@ -104,6 +104,128 @@ SSLCipherSuite HIGH:!aNULL:!MD5
 </section>
 <!-- /ciphersuites -->
 
+<section id="ocspstapling">
+<title>OCSP Stapling</title>
+
+<p>The Online Certificate Status Protocol (OCSP) is a mechanism for
+determining whether or not a server certificate has been revoked, and OCSP
+Stapling is a special form of this in which the server, such as httpd and
+mod_ssl, maintains current OCSP responses for its certificates and sends
+them to clients which communicate with the server.  Most certificates
+contain the address of an OCSP responder maintained by the issuing
+Certificate Authority, and mod_ssl can communicate with that responder to
+obtain a signed response that can be sent to clients communicating with
+the server.</p>
+
+<p>Because the client can obtain the certificate revocation status from
+the server, without requiring an extra connection from the client to the
+Certificate Authority, OCSP Stapling is the preferred way for the
+revocation status to be obtained.  Other benefits of eliminating the 
+communication between clients and the Certificate Authority are that the
+client browsing history is not exposed to the Certificate Authority and
+obtaining status is more reliable by not depending on potentially heavily
+loaded Certificate Authority servers.</p>
+
+<p>Because the response obtained by the server can be reused for all clients
+using the same certificate during the time that the response is valid, the
+overhead for the server is minimal.</p>
+
+<p>Once general SSL support has been configured properly, enabling OCSP
+Stapling generally requires only very minor modifications to the httpd
+configuration &mdash; the addition of these two directives:</p>
+
+    <highlight language="config">
+SSLUseStapling On
+SSLStaplingCache "shmcb:logs/ssl_stapling(32768)"
+    </highlight>
+
+<p>These directives are placed at global scope (i.e., not within a virtual
+host definition) wherever other global SSL configuration directives are
+placed, such as in <code>conf/extra/httpd-ssl.conf</code> for normal 
+open source builds of httpd, <code>/etc/apache2/mods-enabled/ssl.conf</code>
+for the Ubuntu or Debian-bundled httpd, etc.</p>
+
+<p>The path on the <directive>SSLStaplingCache</directive> directive
+(e.g., <code>logs/</code>) should match the one on the 
+<directive>SSLSessionCache</directive> directive.  This path is relative
+to <directive>ServerRoot</directive>.</p>
+
+<p>The following sections highlight the most common situations which require
+further modification to the configuration.  Refer also to the 
+<module>mod_ssl</module> reference manual.</p>
+
+<section>
+<title>If more than a few SSL certificates are used for the server</title>
+<p>OCSP responses are stored in the SSL stapling cache.  While the responses
+are typically a few hundred to a few thousand bytes in size, mod_ssl 
+supports OCSP responses up to around 10K bytes in size.  With more than a 
+few certificates, the stapling cache size (32768 bytes in the example above) 
+may need to be increased.  Error message AH01929 will be logged in case of
+an error storing a response.</p>
+</section>
+
+<section>
+<title>If the certificate does not point to an OCSP responder, or if a
+different address must be used</title>
+<p>Refer to the 
+<directive module="mod_ssl">SSLStaplingForceURL</directive> directive.</p>
+
+<p>You can confirm that a server certificate points to an OCSP responder
+using the openssl command-line program, as follows:</p>
+
+<pre>
+$ openssl x509 -in ./www.example.com.crt -text | grep 'OCSP.*http'
+OCSP - URI:http://ocsp.example.com
+</pre>
+
+<p>If the OCSP URI is provided and the web server can communicate to it
+directly without using a proxy, no configuration is required.  Note that
+firewall rules that control outbound connections from the web server may
+need to be adjusted.</p>
+
+<p>If no OCSP URI is provided, contact your Certificate Authority to
+determine if one is available; if so, configure it with
+<directive module="mod_ssl">SSLStaplingForceURL</directive> in the virtual
+host that uses the certificate.</p>
+</section>
+
+<section>
+<title>If multiple SSL-enabled virtual hosts are configured and OCSP
+Stapling should be disabled for some</title>
+
+<p>Add <code>SSLUseStapling Off</code> to the virtual hosts for which OCSP
+Stapling should be disabled.</p>
+</section>
+
+<section>
+<title>If the OCSP responder is slow or unreliable</title>
+<p>Several directives are available to handle timeouts and errors.  Refer
+to the documentation for the
+<directive module="mod_ssl">SSLStaplingFakeTryLater</directive>,
+<directive module="mod_ssl">SSLStaplingResponderTimeout</directive>, and
+<directive module="mod_ssl">SSLStaplingReturnResponderErrors</directive>
+directives.</p>
+</section>
+
+<section>
+<title>If mod_ssl logs error AH02217</title>
+<pre>
+AH02217: ssl_stapling_init_cert: Can't retrieve issuer certificate!
+</pre>
+<p>In order to support OCSP Stapling when a particular server certificate is
+used, the certificate chain for that certificate must be configured.  If it 
+was not configured as part of enabling SSL, the AH02217 error will be issued
+when stapling is enabled, and an OCSP response will not be provided for clients
+using the certificate.</p>
+
+<p>Refer to the <directive module="mod_ssl">SSLCertificateChainFile</directive>
+and <directive module="mod_ssl">SSLCertificateFile</directive> for instructions
+for configuring the certificate chain.</p>
+</section>
+
+</section>
+<!-- /ocspstapling -->
+
 <section id="accesscontrol">
 <title>Client Authentication and Access Control</title>
 <ul>
