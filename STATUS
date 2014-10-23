@@ -257,6 +257,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      ylavic: No CHANGES entry is added but rather the existing one for the same
              issue in mod_proxy_http (2.4.11's backport r1632736) has been modified.
 
+   * default SSL configuration: provide sample OCSP Stapling configuration
+     trunk patch: http://svn.apache.org/r1633730
+     2.4.x patch: http://people.apache.org/~trawick/2.4.x-sample-ocsp-stapling.txt
+     +1: trawick
 
 OTHER PROPOSALS
 
