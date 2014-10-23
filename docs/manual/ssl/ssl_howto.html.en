@@ -152,7 +152,8 @@ further modification to the configuration.  Refer also to the
 are typically a few hundred to a few thousand bytes in size, mod_ssl 
 supports OCSP responses up to around 10K bytes in size.  With more than a 
 few certificates, the stapling cache size (32768 bytes in the example above) 
-may need to be increased.</p>
+may need to be increased.  Error message AH01929 will be logged in case of
+an error storing a response.</p>
 
 
 <h3>If the certificate does not point to an OCSP responder, or if a
@@ -194,6 +195,20 @@ to the documentation for the
 <code class="directive"><a href="../mod/mod_ssl.html#sslstaplingrespondertimeout">SSLStaplingResponderTimeout</a></code>, and
 <code class="directive"><a href="../mod/mod_ssl.html#sslstaplingreturnrespondererrors">SSLStaplingReturnResponderErrors</a></code>
 directives.</p>
+
+
+<h3>If mod_ssl logs error AH02217</h3>
+
+<pre>AH02217: ssl_stapling_init_cert: Can't retrieve issuer certificate!</pre>
+<p>In order to support OCSP Stapling when a particular server certificate is
+used, the certificate chain for that certificate must be configured.  If it 
+was not configured as part of enabling SSL, the AH02217 error will be issued
+when stapling is enabled, and an OCSP response will not be provided for clients
+using the certificate.</p>
+
+<p>Refer to the <code class="directive"><a href="../mod/mod_ssl.html#sslcertificatechainfile">SSLCertificateChainFile</a></code>
+and <code class="directive"><a href="../mod/mod_ssl.html#sslcertificatefile">SSLCertificateFile</a></code> for instructions
+for configuring the certificate chain.</p>
 
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
