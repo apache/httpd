@@ -153,7 +153,8 @@ further modification to the configuration.  Refer also to the
 are typically a few hundred to a few thousand bytes in size, mod_ssl 
 supports OCSP responses up to around 10K bytes in size.  With more than a 
 few certificates, the stapling cache size (32768 bytes in the example above) 
-may need to be increased.</p>
+may need to be increased.  Error message AH01929 will be logged in case of
+an error storing a response.</p>
 </section>
 
 <section>
