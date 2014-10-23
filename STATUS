@@ -262,6 +262,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~trawick/2.4.x-sample-ocsp-stapling.txt
      +1: trawick
 
+   * style fix
+     trunk patch: http://svn.apache.org/r1633031
+                  http://svn.apache.org/r1633522
+                  http://svn.apache.org/r1633529
+                  http://svn.apache.org/r1633530
+     2.4.x patch: trunk works
+     +1: jailletc36
+
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
