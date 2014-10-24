@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_proxy: Use the correct server name for SNI in case the backend
+     SSL connection itself is established via a proxy server.
+     PR 57139 [Szabolcs Gyurko <szabolcs gyurko.org>]
+
   *) mod_ssl: Do not crash when looking up SSL related variables during
      expression evaluation on non SSL connections. PR 57070 [Ruediger Pluem]
 

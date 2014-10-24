@@ -2429,6 +2429,10 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
         if (dconf->preserve_host) {
             ssl_hostname = r->hostname;
         }
+        else if (conn->forward
+                 && ((forward_info *)(conn->forward))->use_http_connect) {
+            ssl_hostname = ((forward_info *)conn->forward)->target_host;
+        }
         else {
             ssl_hostname = conn->hostname;
         }
