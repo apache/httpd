@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
-
+ 
+  *) mod_cache: Avoid a 304 response to an unconditional requst when an AH00752
+     CacheLock error occurs during cache revalidation. [Eric Covener]
+     
   *) mod_proxy: Use the correct server name for SNI in case the backend
      SSL connection itself is established via a proxy server.
      PR 57139 [Szabolcs Gyurko <szabolcs gyurko.org>]
