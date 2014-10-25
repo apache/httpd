@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1411510:1633796 (outdated) -->
+<!-- English Revision : 1633796 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -114,6 +114,134 @@ SSLCipherSuite HIGH:!aNULL:!MD5
 </section>
 </section>
 <!-- /ciphersuites -->
+
+<section id="ocspstapling">
+<title>Agrafage OCSP</title>
+
+<p>Le protocole de contr&ocirc;le du statut des certificats en ligne (Online
+Certificate Status Protocol - OCSP) est un m&eacute;canisme permettant de
+d&eacute;terminer si un certificat a &eacute;t&eacute; r&eacute;voqu&eacute; ou non, et l'agrafage OCSP en
+est une fonctionnalit&eacute; particuli&egrave;re par laquelle le serveur, par exemple
+httpd et mod_ssl, maintient une liste des r&eacute;ponses OCSP actuelles pour
+ses certificats et l'envoie aux clients qui communiquent avec lui. La
+plupart des certificats contiennent l'adresse d'un r&eacute;pondeur OCSP maintenu
+par l'Autorit&eacute; de Certification (CA) sp&eacute;cifi&eacute;e, et mod_ssl peut requ&eacute;rir
+ce r&eacute;pondeur pour obtenir une r&eacute;ponse sign&eacute;e qui peut &ecirc;tre envoy&eacute;e aux
+clients qui communiquent avec le serveur.</p>
+
+<p>L'agrafage OCSP est la m&eacute;thode la plus performante pour obtenir le
+statut d'un certificat car il est disponible au niveau du serveur, et le
+client n'a donc pas besoin d'ouvrir une nouvelle connexion vers
+l'autorit&eacute; de certification. Autres avantages de l'absence de
+communication entre le client et l'autorit&eacute; de certification :
+l'autorit&eacute; de certification n'a pas acc&egrave;s &agrave; l'historique de navigation
+du client, et l'obtention du statut du certificat est plus efficace car
+elle n'est plus assujettie &agrave; une surcharge &eacute;ventuelle des serveurs de
+l'autorit&eacute; de certification.</p>
+
+<p>La charge du serveur est moindre car la r&eacute;ponse qu'il a obtenu du
+r&eacute;pondeur OCSP peut &ecirc;tre r&eacute;utilis&eacute;e par tous les clients qui utilisent
+le m&ecirc;me certificat dans la limite du temps de validit&eacute; de la r&eacute;ponse.</p>
+
+<p>Une fois le support g&eacute;n&eacute;ral SSL correctement configur&eacute;, l'activation
+de l'agrafage OCSP ne requiert que des modifications mineures
+&agrave; la configuration de httpd et il suffit en g&eacute;n&eacute;ral de l'ajout de ces
+deux directives :</p>
+
+    <highlight language="config">
+SSLUseStapling On
+SSLStaplingCache "shmcb:ssl_stapling(32768)"
+    </highlight>
+
+<p>Ces directives sont plac&eacute;es de fa&ccedil;on &agrave; ce qu'elles aient une port&eacute;e
+globale (et particuli&egrave;rement en dehors de toute section VirtualHost), le
+plus souvent o&ugrave; sont plac&eacute;es les autres directives de configuration
+globales SSL, comme <code>conf/extra/httpd-ssl.conf</code> pour les
+installations de httpd &agrave; partir des sources, ou
+<code>/etc/apache2/mods-enabled/ssl.conf</code> pour Ubuntu ou Debian,
+etc...</p>
+
+<p>Les sections suivantes explicitent les situations courantes qui
+requi&egrave;rent des modifications suppl&eacute;mentaires de la configuration. Vous
+pouvez aussi vous r&eacute;f&eacute;rer au manuel de r&eacute;f&eacute;rence de
+<module>mod_ssl</module>.</p>
+
+<section>
+<title>Si l'on utilise plus que quelques certificats SSL pour le serveur</title>
+<p>Les r&eacute;ponses OCSP sont stock&eacute;es dans le cache d'agrafage SSL. Alors
+que les r&eacute;ponses ont une taille de quelques centaines &agrave; quelques
+milliers d'octets, mod_ssl supporte des r&eacute;ponses d'une taille jusqu'&agrave;
+environ 10 ko. Dans notre cas, le nombre de certificats est cons&eacute;quent
+et la taille du cache (32768 octets dans l'exemple ci-dessus) doit &ecirc;tre
+augment&eacute;e. En cas d'erreur lors du stockage d'une r&eacute;ponse, le
+message AH01929 sera enregistr&eacute; dans le journal.</p>
+</section>
+
+<section>
+<title>Si le certificat ne sp&eacute;cifie pas de r&eacute;pondeur OCSP, ou si une
+adresse diff&eacute;rente doit &ecirc;tre utilis&eacute;e</title>
+<p>Veuillez vous r&eacute;f&eacute;rer &agrave; la documentation de la directive <directive
+module="mod_ssl">SSLStaplingForceURL</directive>.</p>
+
+<p>Vous pouvez v&eacute;rifier si un certificat sp&eacute;cifie un r&eacute;pondeur OCSP en
+utilisant la commande openssl comme suit :</p>
+
+<pre>
+$ openssl x509 -in ./www.example.com.crt -text | grep 'OCSP.*http'
+OCSP - URI:http://ocsp.example.com
+</pre>
+
+<p>Si un URI OCSP est fourni et si le serveur web peut communiquer
+directement avec lui sans passer par un mandataire, aucune modification
+suppl&eacute;mentaire de la configuration n'est requise. Notez que les r&egrave;gles
+du pare-feu qui contr&ocirc;lent les connexions sortantes en provenance du
+serveur web devront peut-&ecirc;tre subir quelques ajustements.</p>
+
+<p>Si aucun URI OCSP n'est fourni, contactez votre autorit&eacute; de
+certification pour savoir s'il en existe une ; si c'est le
+cas, utilisez la directive <directive
+module="mod_ssl">SSLStaplingForceURL</directive> pour la sp&eacute;cifier dans
+la configuration du serveur virtuel qui utilise le certificat.</p>
+</section>
+
+<section>
+<title>Si plusieurs serveurs virtuels sont configur&eacute;s pour utiliser SSL
+et si l'agrafage OCSP doit &ecirc;tre d&eacute;sactiv&eacute; pour certains d'entre eux</title>
+
+<p>Ajoutez la directive <code>SSLUseStapling Off</code> &agrave; la
+configuration des serveurs virtuels pour lesquels l'agrafage OCSP doit
+&ecirc;tre d&eacute;sactiv&eacute;.</p>
+</section>
+
+<section>
+<title>Si le r&eacute;pondeur OCSP est lent ou instable</title>
+<p>De nombreuses directives permettent de g&eacute;rer les temps de r&eacute;ponse et
+les erreurs. R&eacute;f&eacute;rez-vous &agrave; la documentation de <directive
+module="mod_ssl">SSLStaplingFakeTryLater</directive>, <directive
+module="mod_ssl">SSLStaplingResponderTimeout</directive>, et <directive
+module="mod_ssl">SSLStaplingReturnResponderErrors</directive>.</p>
+</section>
+
+<section>
+<title>Si mod_ssl enregistre l'erreur AH02217 dans le journal</title>
+<pre>
+AH02217: ssl_stapling_init_cert: Can't retrieve issuer certificate!
+</pre>
+<p>Afin de pouvoir supporter l'agrafage OCSP lorsqu'un certificat de
+serveur particulier est utilis&eacute;, une cha&icirc;ne de certification pour ce
+certificat doit &ecirc;tre sp&eacute;cifi&eacute;e. Si cela n'a pas &eacute;t&eacute; fait lors de
+l'activation de SSL, l'erreur AH02217 sera enregistr&eacute;e lorsque
+l'agrafage OCSP sera activ&eacute;, et les clients qui utilisent le certificat
+consid&eacute;r&eacute; ne recevront pas de r&eacute;ponse OCSP.</p>
+
+<p>Veuillez vous r&eacute;f&eacute;rer &agrave; la documentation des directives <directive
+module="mod_ssl">SSLCertificateChainFile</directive> et <directive
+module="mod_ssl">SSLCertificateFile</directive> pour sp&eacute;cifier une
+cha&icirc;ne de certification.</p>
+</section>
+
+</section>
+<!-- /ocspstapling -->
 
 <section id="accesscontrol">
 <title>Authentification du client et contr&ocirc;le d'acc&egrave;s</title>
