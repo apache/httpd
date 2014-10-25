@@ -155,7 +155,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                     http://svn.apache.org/r1611169
                     http://svn.apache.org/r1611244
      2.4.x patches: trunk works
-     +1: wrowe
+     +1: wrowe, gsmith
 
    * doc: improve doxygen output for util_ebcdic.h and util_charset.h.
      I propose it for vote because of the #if defined(DOXYGEN)
