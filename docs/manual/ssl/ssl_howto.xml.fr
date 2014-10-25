@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1632454:1633793 (outdated) -->
+<!-- English Revision : 1633793 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -171,7 +171,8 @@ que les r&eacute;ponses ont une taille de quelques centaines &agrave; quelques
 milliers d'octets, mod_ssl supporte des r&eacute;ponses d'une taille jusqu'&agrave;
 environ 10 ko. Dans notre cas, le nombre de certificats est cons&eacute;quent
 et la taille du cache (32768 octets dans l'exemple ci-dessus) doit &ecirc;tre
-augment&eacute;e.</p>
+augment&eacute;e. En cas d'erreur lors du stockage d'une r&eacute;ponse, le
+message AH01929 sera enregistr&eacute; dans le journal.</p>
 </section>
 
 <section>
@@ -217,6 +218,24 @@ les erreurs. R&eacute;f&eacute;rez-vous &agrave; la documentation de <directive
 module="mod_ssl">SSLStaplingFakeTryLater</directive>, <directive
 module="mod_ssl">SSLStaplingResponderTimeout</directive>, et <directive
 module="mod_ssl">SSLStaplingReturnResponderErrors</directive>.</p>
+</section>
+
+<section>
+<title>Si mod_ssl enregistre l'erreur AH02217 dans le journal</title>
+<pre>
+AH02217: ssl_stapling_init_cert: Can't retrieve issuer certificate!
+</pre>
+<p>Afin de pouvoir supporter l'agrafage OCSP lorsqu'un certificat de
+serveur particulier est utilis&eacute;, une cha&icirc;ne de certification pour ce
+certificat doit &ecirc;tre sp&eacute;cifi&eacute;e. Si cela n'a pas &eacute;t&eacute; fait lors de
+l'activation de SSL, l'erreur AH02217 sera enregistr&eacute;e lorsque
+l'agrafage OCSP sera activ&eacute;, et les clients qui utilisent le certificat
+consid&eacute;r&eacute; ne recevront pas de r&eacute;ponse OCSP.</p>
+
+<p>Veuillez vous r&eacute;f&eacute;rer &agrave; la documentation des directives <directive
+module="mod_ssl">SSLCertificateChainFile</directive> et <directive
+module="mod_ssl">SSLCertificateFile</directive> pour sp&eacute;cifier une
+cha&icirc;ne de certification.</p>
 </section>
 
 </section>
