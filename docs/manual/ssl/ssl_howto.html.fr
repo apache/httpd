@@ -24,8 +24,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/ssl/ssl_howto.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/ssl/ssl_howto.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 
 <p>Ce document doit vous permettre de démarrer et de faire fonctionner
@@ -171,7 +169,8 @@ que les réponses ont une taille de quelques centaines à quelques
 milliers d'octets, mod_ssl supporte des réponses d'une taille jusqu'à
 environ 10 ko. Dans notre cas, le nombre de certificats est conséquent
 et la taille du cache (32768 octets dans l'exemple ci-dessus) doit être
-augmentée.</p>
+augmentée. En cas d'erreur lors du stockage d'une réponse, le
+message AH01929 sera enregistré dans le journal.</p>
 
 
 <h3>Si le certificat ne spécifie pas de répondeur OCSP, ou si une
@@ -210,6 +209,20 @@ configuration des serveurs virtuels pour lesquels l'agrafage OCSP doit
 
 <p>De nombreuses directives permettent de gérer les temps de réponse et
 les erreurs. Référez-vous à la documentation de <code class="directive"><a href="../mod/mod_ssl.html#sslstaplingfaketrylater">SSLStaplingFakeTryLater</a></code>, <code class="directive"><a href="../mod/mod_ssl.html#sslstaplingrespondertimeout">SSLStaplingResponderTimeout</a></code>, et <code class="directive"><a href="../mod/mod_ssl.html#sslstaplingreturnrespondererrors">SSLStaplingReturnResponderErrors</a></code>.</p>
+
+
+<h3>Si mod_ssl enregistre l'erreur AH02217 dans le journal</h3>
+
+<pre>AH02217: ssl_stapling_init_cert: Can't retrieve issuer certificate!</pre>
+<p>Afin de pouvoir supporter l'agrafage OCSP lorsqu'un certificat de
+serveur particulier est utilisé, une chaîne de certification pour ce
+certificat doit être spécifiée. Si cela n'a pas été fait lors de
+l'activation de SSL, l'erreur AH02217 sera enregistrée lorsque
+l'agrafage OCSP sera activé, et les clients qui utilisent le certificat
+considéré ne recevront pas de réponse OCSP.</p>
+
+<p>Veuillez vous référer à la documentation des directives <code class="directive"><a href="../mod/mod_ssl.html#sslcertificatechainfile">SSLCertificateChainFile</a></code> et <code class="directive"><a href="../mod/mod_ssl.html#sslcertificatefile">SSLCertificateFile</a></code> pour spécifier une
+chaîne de certification.</p>
 
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
