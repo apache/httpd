@@ -224,13 +224,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1629507
      trunk patch: http://svn.apache.org/r1629652
      2.4.x patch: trunk works modulo CHANGES
-     +1: rjung
+     +1: rjung, covener
 
    * mod_cache_socache: Change average object size
      hint from 32 bytes to 2048 bytes. 
      trunk patch: http://svn.apache.org/r1629508
      2.4.x patch: trunk works modulo CHANGES
-     +1: rjung
+     +1: rjung, covener
 
    * mod_ssl: Move OCSP stapling information to a per-server hash. PR 54357.
      trunk patches: https://svn.apache.org/r1629372
@@ -260,7 +260,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * default SSL configuration: provide sample OCSP Stapling configuration
      trunk patch: http://svn.apache.org/r1633730
      2.4.x patch: http://people.apache.org/~trawick/2.4.x-sample-ocsp-stapling.txt
-     +1: trawick
+     +1: trawick, covener
 
    * style fix
      trunk patch: http://svn.apache.org/r1633031
@@ -269,6 +269,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1633530
      2.4.x patch: trunk works
      +1: jailletc36
+ 
+   * mod_cache: Restore original request headers when skipping updating the cache due to
+     a busy/broken CacheLock.  Can result in a 304 to an uncoditional request.
+     trunk patch: http://svn.apache.org/r1634237
+     2.4.x patch: trunk works
+     +1 covener
 
 OTHER PROPOSALS
 
