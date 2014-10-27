@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.11
 
+  *) event: Fix worker-listener deadlock in graceful restart.
+     PR 56960.
+
   *) Concat strings at compile time when possible. PR 53741.
 
   *) mod_substitute: Restrict configuration in .htaccess to

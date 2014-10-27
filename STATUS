@@ -102,13 +102,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * event: Fix worker-listener deadlock in graceful restart caused by
-     get_worker() allocating new worker after ap_queue_info_term(),
-     but not setting the have_idle_worker variable. PR 56960.
-     trunk patch: http://svn.apache.org/r1629577
-     2.4.x patch: trunk works
-     +1: jkaluza, ylavic, jim
-
    * mod_cache_socache: Add cache status to server-status.
      The status_hook simply calls the status function of
      socache, very much like mod_ssl does for the ssl
