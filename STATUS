@@ -102,11 +102,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * various: Concat string at compile time when possible.
-     trunk patch: http://svn.apache.org/r1626050
-     2.4.x patch: trunk works
-     +1: jailletc36, rjung, jim
-
    * event: Fix worker-listener deadlock in graceful restart caused by
      get_worker() allocating new worker after ap_queue_info_term(),
      but not setting the have_idle_worker variable. PR 56960.
