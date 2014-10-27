@@ -102,11 +102,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * default SSL configuration: provide sample OCSP Stapling configuration
-     trunk patch: http://svn.apache.org/r1633730
-     2.4.x patch: http://people.apache.org/~trawick/2.4.x-sample-ocsp-stapling.txt
-     +1: trawick, covener, gsmith
-
    * mod_substitute: Fix memory limitation in case of regexp plus flatten.
      trunk patch: http://svn.apache.org/r1628104
                   http://svn.apache.org/r1628918 (CHANGES)
