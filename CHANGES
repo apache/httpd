@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
  
+
+  *) mod_proxy_connect: Fix ProxyRemote to https:// backends on EBCDIC 
+     systems. PR 57092 [Edward Lu <Chaosed0 gmail.com>]
+
   *) mod_cache: Avoid a 304 response to an unconditional requst when an AH00752
      CacheLock error occurs during cache revalidation. [Eric Covener]
      
