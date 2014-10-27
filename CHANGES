@@ -2,6 +2,8 @@
 
 Changes with Apache 2.4.11
 
+  *) mod_cache_socache: Add cache status to server-status.  [Rainer Jung]
+
   *) event: Fix worker-listener deadlock in graceful restart.
      PR 56960.
 
