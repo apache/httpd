@@ -33,6 +33,13 @@
 #define APR_WANT_STRFUNC
 #include "apr_want.h"
 
+/*
+ * We want to limit the memory usage in a way that is predictable.
+ * Therefore we limit the resulting length of the line.
+ * This is the default value.
+ */
+#define AP_SUBST_MAX_LINE_LENGTH (128*MAX_STRING_LEN)
+
 static const char substitute_filter_name[] = "SUBSTITUTE";
 
 module AP_MODULE_DECLARE_DATA substitute_module;
@@ -48,6 +55,8 @@ typedef struct subst_pattern_t {
 
 typedef struct {
     apr_array_header_t *patterns;
+    apr_size_t max_line_length;
+    int max_line_length_set;
 } subst_dir_conf;
 
 typedef struct {
@@ -64,6 +73,7 @@ static void *create_substitute_dcfg(apr_pool_t *p, char *d)
     (subst_dir_conf *) apr_pcalloc(p, sizeof(subst_dir_conf));
 
     dcfg->patterns = apr_array_make(p, 10, sizeof(subst_pattern_t));
+    dcfg->max_line_length = AP_SUBST_MAX_LINE_LENGTH;
     return dcfg;
 }
 
@@ -76,15 +86,14 @@ static void *merge_substitute_dcfg(apr_pool_t *p, void *basev, void *overv)
 
     a->patterns = apr_array_append(p, over->patterns,
                                                   base->patterns);
+    a->max_line_length = over->max_line_length_set ?
+                         over->max_line_length : base->max_line_length;
+    a->max_line_length_set = over->max_line_length_set ?
+                             over->max_line_length_set : base->max_line_length_set;
     return a;
 }
 
 #define AP_MAX_BUCKETS 1000
-/*
- * We want to limit the memory usage in a way that is predictable. Therefore
- * we limit the resulting length of the line to this value.
- */
-#define AP_SUBST_MAX_LINE_LENGTH (128*MAX_STRING_LEN)
 
 #define SEDRMPATBCKT(b, offset, tmp_b, patlen) do {  \
     apr_bucket_split(b, offset);                     \
@@ -143,9 +152,9 @@ static apr_status_t do_pattmatch(ap_filter_t *f, apr_bucket *inb,
                     const char *repl;
                     /*
                      * space_left counts how many bytes we have left until the
-                     * line length reaches AP_SUBST_MAX_LINE_LENGTH.
+                     * line length reaches max_line_length.
                      */
-                    apr_size_t space_left = AP_SUBST_MAX_LINE_LENGTH;
+                    apr_size_t space_left = cfg->max_line_length;
                     apr_size_t repl_len = strlen(script->replacement);
                     while ((repl = apr_strmatch(script->pattern, buff, bytes)))
                     {
@@ -161,7 +170,7 @@ static apr_status_t do_pattmatch(ap_filter_t *f, apr_bucket *inb,
                              * are constanting allocing space and copying
                              * strings.
                              */
-                            if (vb.strlen + len + repl_len > AP_SUBST_MAX_LINE_LENGTH)
+                            if (vb.strlen + len + repl_len > cfg->max_line_length)
                                 return APR_ENOMEM;
                             ap_varbuf_strmemcat(&vb, buff, len);
                             ap_varbuf_strmemcat(&vb, script->replacement, repl_len);
@@ -228,21 +237,21 @@ static apr_status_t do_pattmatch(ap_filter_t *f, apr_bucket *inb,
                     int left = bytes;
                     const char *pos = buff;
                     char *repl;
-                    apr_size_t space_left = AP_SUBST_MAX_LINE_LENGTH;
+                    apr_size_t space_left = cfg->max_line_length;
                     while (!ap_regexec_len(script->regexp, pos, left,
                                        AP_MAX_REG_MATCH, regm, 0)) {
                         apr_status_t rv;
                         have_match = 1;
                         if (script->flatten && !force_quick) {
                             /* copy bytes before the match */
-                            if (vb.strlen + regm[0].rm_so >= AP_SUBST_MAX_LINE_LENGTH)
+                            if (vb.strlen + regm[0].rm_so >= cfg->max_line_length)
                                 return APR_ENOMEM;
                             if (regm[0].rm_so > 0)
                                 ap_varbuf_strmemcat(&vb, pos, regm[0].rm_so);
                             /* add replacement string, last argument is unsigned! */
                             rv = ap_varbuf_regsub(&vb, script->replacement, pos,
                                                   AP_MAX_REG_MATCH, regm,
-                                                  AP_SUBST_MAX_LINE_LENGTH - vb.strlen);
+                                                  cfg->max_line_length - vb.strlen);
                             if (rv != APR_SUCCESS)
                                 return rv;
                         }
@@ -311,6 +320,9 @@ static apr_status_t substitute_filter(ap_filter_t *f, apr_bucket_brigade *bb)
     apr_bucket *tmp_b;
     apr_bucket_brigade *tmp_bb = NULL;
     apr_status_t rv;
+    subst_dir_conf *cfg =
+    (subst_dir_conf *) ap_get_module_config(f->r->per_dir_config,
+                                             &substitute_module);
 
     substitute_module_ctx *ctx = f->ctx;
 
@@ -383,7 +395,7 @@ static apr_status_t substitute_filter(ap_filter_t *f, apr_bucket_brigade *bb)
                                           &fbytes, ctx->tpool);
                 if (rv != APR_SUCCESS)
                     goto err;
-                if (fbytes > AP_SUBST_MAX_LINE_LENGTH) {
+                if (fbytes > cfg->max_line_length) {
                     rv = APR_ENOMEM;
                     goto err;
                 }
@@ -449,7 +461,7 @@ static apr_status_t substitute_filter(ap_filter_t *f, apr_bucket_brigade *bb)
                                                       &fbytes, ctx->tpool);
                             if (rv != APR_SUCCESS)
                                 goto err;
-                            if (fbytes > AP_SUBST_MAX_LINE_LENGTH) {
+                            if (fbytes > cfg->max_line_length) {
                                 /* Avoid pflattening further lines, we will
                                  * abort later on anyway.
                                  */
@@ -629,6 +641,44 @@ static const char *set_pattern(cmd_parms *cmd, void *cfg, const char *line)
     return NULL;
 }
 
+#define KBYTE         1024
+#define MBYTE         1048576
+#define GBYTE         1073741824
+
+static const char *set_max_line_length(cmd_parms *cmd, void *cfg, const char *arg)
+{
+    subst_dir_conf *dcfg = (subst_dir_conf *)cfg;
+    apr_off_t max;
+    char *end;
+    apr_status_t rv;
+
+    rv = apr_strtoff(&max, arg, &end, 10);
+    if (rv == APR_SUCCESS) {
+        if ((*end == 'K' || *end == 'k') && !end[1]) {
+            max *= KBYTE;
+        }
+        else if ((*end == 'M' || *end == 'm') && !end[1]) {
+            max *= MBYTE;
+        }
+        else if ((*end == 'G' || *end == 'g') && !end[1]) {
+            max *= GBYTE;
+        }
+        else if (*end && /* neither empty nor [Bb] */
+                 ((*end != 'B' && *end != 'b') || end[1])) {
+            rv = APR_EGENERAL;
+        }
+    }
+
+    if (rv != APR_SUCCESS || max < 0)
+    {
+        return "SubstituteMaxLineLength must be a non-negative integer optionally "
+               "suffixed with 'k', 'm' or 'g'.";
+    }
+    dcfg->max_line_length = (apr_size_t)max;
+    dcfg->max_line_length_set = 1;
+    return NULL;
+}
+
 #define PROTO_FLAGS AP_FILTER_PROTO_CHANGE|AP_FILTER_PROTO_CHANGE_LENGTH
 static void register_hooks(apr_pool_t *pool)
 {
@@ -639,6 +689,8 @@ static void register_hooks(apr_pool_t *pool)
 static const command_rec substitute_cmds[] = {
     AP_INIT_TAKE1("Substitute", set_pattern, NULL, OR_ALL,
                   "Pattern to filter the response content (s/foo/bar/[inf])"),
+    AP_INIT_TAKE1("SubstituteMaxLineLength", set_max_line_length, NULL, OR_ALL,
+                  "Maximum line length"),
     {NULL}
 };
 

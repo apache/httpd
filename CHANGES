@@ -2,6 +2,8 @@
 
 Changes with Apache 2.4.11
 
+  *) mod_substitute: Make maximum line length configurable.  [Rainer Jung]
+
   *) mod_substitute: Fix line length limitation in case of regexp plus flatten.
      [Rainer Jung]
   

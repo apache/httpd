@@ -102,12 +102,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_substitute: Make maximum line length configurable.
-     trunk patch: http://svn.apache.org/r1628919
-                  http://svn.apache.org/r1628950 (docs, adjust "compatibility")
-     2.4.x patch: trunk works modulo CHANGES and compatibility
-     +1: rjung, covener, jim
-
    * mod_substitute: Restrict configuration in .htaccess to
      FileInfo as documented.
      trunk patch: http://svn.apache.org/r1628924
