@@ -196,31 +196,31 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1628104
                   http://svn.apache.org/r1628918 (CHANGES)
      2.4.x patch: trunk works
-     +1: rjung, covener
+     +1: rjung, covener, jim
 
    * mod_substitute: Make maximum line length configurable.
      trunk patch: http://svn.apache.org/r1628919
                   http://svn.apache.org/r1628950 (docs, adjust "compatibility")
      2.4.x patch: trunk works modulo CHANGES and compatibility
-     +1: rjung, covener
+     +1: rjung, covener, jim
 
    * mod_substitute: Restrict configuration in .htaccess to
      FileInfo as documented.
      trunk patch: http://svn.apache.org/r1628924
      2.4.x patch: trunk works modulo CHANGES
-     +1: rjung, covener
+     +1: rjung, covener, jim
 
    * various: Concat string at compile time when possible.
      trunk patch: http://svn.apache.org/r1626050
      2.4.x patch: trunk works
-     +1: jailletc36, rjung
+     +1: jailletc36, rjung, jim
 
    * event: Fix worker-listener deadlock in graceful restart caused by
      get_worker() allocating new worker after ap_queue_info_term(),
      but not setting the have_idle_worker variable. PR 56960.
      trunk patch: http://svn.apache.org/r1629577
      2.4.x patch: trunk works
-     +1: jkaluza, ylavic
+     +1: jkaluza, ylavic, jim
 
    * mod_cache_socache: Add cache status to server-status.
      The status_hook simply calls the status function of
@@ -229,20 +229,20 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1629507
      trunk patch: http://svn.apache.org/r1629652
      2.4.x patch: trunk works modulo CHANGES
-     +1: rjung, covener
+     +1: rjung, covener, jim
 
    * mod_cache_socache: Change average object size
      hint from 32 bytes to 2048 bytes. 
      trunk patch: http://svn.apache.org/r1629508
      2.4.x patch: trunk works modulo CHANGES
-     +1: rjung, covener
+     +1: rjung, covener, jim
 
    * mod_ssl: Move OCSP stapling information to a per-server hash. PR 54357.
      trunk patches: https://svn.apache.org/r1629372
                     https://svn.apache.org/r1629485
                     https://svn.apache.org/r1629519
      2.4.x patch: https://people.apache.org/~kbrand/mod_ssl-2.4.x-PR54357.diff
-     +1: kbrand, ylavic
+     +1: kbrand, ylavic, jim
 
    * mod_substitute: no real functional change, but:
      - define default for maximum line length
@@ -252,7 +252,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        description
      trunk patches: https://svn.apache.org/r1631983
      2.4.x patch: trunk works, no CHANGES
-     +1: rjung
+     +1: rjung, jim
 
    * mod_proxy: Avoid (unlikely) more accesses to freed memory.
      trunk patch: http://svn.apache.org/r1632740
@@ -268,18 +268,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1633529
                   http://svn.apache.org/r1633530
      2.4.x patch: trunk works
-     +1: jailletc36
+     +1: jailletc36, jim
  
    * mod_cache: Restore original request headers when skipping updating the cache due to
      a busy/broken CacheLock.  Can result in a 304 to an uncoditional request.
      trunk patch: http://svn.apache.org/r1634237
      2.4.x patch: trunk works
-     +1 covener
+     +1 covener, jim
   
    * mod_proxy_connect: EBCDIC fix for ProxyRemote to HTTPS. PR57092
      trunk patch: http://svn.apache.org/r1634425
      2.4.x patch: trunk works
-     +1 covener
+     +1 covener, jim
 
 OTHER PROPOSALS
 
