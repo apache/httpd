@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.11
 
+  *) mod_proxy: Truncated character worker names are no longer fatal
+     errors. PR53218. [Jim Jagielski]
+
   *) mod_dav: Set r->status_line in dav_error_response. PR 55426.
 
   *) SECURITY: CVE-2014-3581 (cve.mitre.org)
