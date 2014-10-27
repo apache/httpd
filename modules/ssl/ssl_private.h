@@ -151,6 +151,13 @@
 /* OCSP stapling */
 #if !defined(OPENSSL_NO_OCSP) && defined(SSL_CTX_set_tlsext_status_cb)
 #define HAVE_OCSP_STAPLING
+/* backward compatibility with OpenSSL < 1.0 */
+#ifndef sk_OPENSSL_STRING_num
+#define sk_OPENSSL_STRING_num sk_num
+#endif
+#ifndef sk_OPENSSL_STRING_value
+#define sk_OPENSSL_STRING_value sk_value
+#endif
 #ifndef sk_OPENSSL_STRING_pop
 #define sk_OPENSSL_STRING_pop sk_pop
 #endif
@@ -812,10 +819,11 @@ const char *ssl_cmd_SSLStaplingErrorCacheTimeout(cmd_parms *, void *, const char
 const char *ssl_cmd_SSLStaplingReturnResponderErrors(cmd_parms *, void *, int);
 const char *ssl_cmd_SSLStaplingFakeTryLater(cmd_parms *, void *, int);
 const char *ssl_cmd_SSLStaplingResponderTimeout(cmd_parms *, void *, const char *);
-const char  *ssl_cmd_SSLStaplingForceURL(cmd_parms *, void *, const char *);
+const char *ssl_cmd_SSLStaplingForceURL(cmd_parms *, void *, const char *);
 apr_status_t modssl_init_stapling(server_rec *, apr_pool_t *, apr_pool_t *, modssl_ctx_t *);
-void         ssl_stapling_ex_init(void);
-int          ssl_stapling_init_cert(server_rec *s, modssl_ctx_t *mctx, X509 *x);
+void         ssl_stapling_certinfo_hash_init(apr_pool_t *);
+int          ssl_stapling_init_cert(server_rec *, apr_pool_t *, apr_pool_t *,
+                                    modssl_ctx_t *, X509 *);
 #endif
 #ifdef HAVE_SRP
 int          ssl_callback_SRPServerParams(SSL *, int *, void *);

@@ -102,12 +102,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_ssl: Move OCSP stapling information to a per-server hash. PR 54357.
-     trunk patches: https://svn.apache.org/r1629372
-                    https://svn.apache.org/r1629485
-                    https://svn.apache.org/r1629519
-     2.4.x patch: https://people.apache.org/~kbrand/mod_ssl-2.4.x-PR54357.diff
-     +1: kbrand, ylavic, jim
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
