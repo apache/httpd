@@ -1450,7 +1450,7 @@ static int socache_post_config(apr_pool_t *pconf, apr_pool_t *plog,
     apr_status_t rv;
     const char *errmsg;
     static struct ap_socache_hints socache_hints =
-    { 64, 32, 60000000 };
+    { 64, 2048, 60000000 };
 
     for (s = base_server; s; s = s->next) {
         cache_socache_conf *conf =
