@@ -102,13 +102,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_proxy: Make worker name truncation a non-fatal error.
-     trunk patch: http://svn.apache.org/r1621367
-                  http://svn.apache.org/r1621372
-                  http://svn.apache.org/r1625952
-     2.4.x patch: http://people.apache.org/~jim/patches/worker-trunc.patch
-     +1: jim, ylavic, covener
-
    * default SSL configuration: provide sample OCSP Stapling configuration
      trunk patch: http://svn.apache.org/r1633730
      2.4.x patch: http://people.apache.org/~trawick/2.4.x-sample-ocsp-stapling.txt
