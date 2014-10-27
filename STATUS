@@ -102,12 +102,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_substitute: Restrict configuration in .htaccess to
-     FileInfo as documented.
-     trunk patch: http://svn.apache.org/r1628924
-     2.4.x patch: trunk works modulo CHANGES
-     +1: rjung, covener, jim
-
    * various: Concat string at compile time when possible.
      trunk patch: http://svn.apache.org/r1626050
      2.4.x patch: trunk works
