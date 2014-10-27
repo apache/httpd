@@ -102,12 +102,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_substitute: Fix memory limitation in case of regexp plus flatten.
-     trunk patch: http://svn.apache.org/r1628104
-                  http://svn.apache.org/r1628918 (CHANGES)
-     2.4.x patch: trunk works
-     +1: rjung, covener, jim
-
    * mod_substitute: Make maximum line length configurable.
      trunk patch: http://svn.apache.org/r1628919
                   http://svn.apache.org/r1628950 (docs, adjust "compatibility")
