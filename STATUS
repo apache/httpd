@@ -102,12 +102,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_cache_socache: Change average object size
-     hint from 32 bytes to 2048 bytes. 
-     trunk patch: http://svn.apache.org/r1629508
-     2.4.x patch: trunk works modulo CHANGES
-     +1: rjung, covener, jim
-
    * mod_ssl: Move OCSP stapling information to a per-server hash. PR 54357.
      trunk patches: https://svn.apache.org/r1629372
                     https://svn.apache.org/r1629485
