@@ -120,6 +120,59 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~trawick/2.4.x-sample-ocsp-stapling.txt
      +1: trawick, covener, gsmith
 
+   * mod_substitute: Fix memory limitation in case of regexp plus flatten.
+     trunk patch: http://svn.apache.org/r1628104
+                  http://svn.apache.org/r1628918 (CHANGES)
+     2.4.x patch: trunk works
+     +1: rjung, covener, jim
+
+   * mod_substitute: Make maximum line length configurable.
+     trunk patch: http://svn.apache.org/r1628919
+                  http://svn.apache.org/r1628950 (docs, adjust "compatibility")
+     2.4.x patch: trunk works modulo CHANGES and compatibility
+     +1: rjung, covener, jim
+
+   * mod_substitute: Restrict configuration in .htaccess to
+     FileInfo as documented.
+     trunk patch: http://svn.apache.org/r1628924
+     2.4.x patch: trunk works modulo CHANGES
+     +1: rjung, covener, jim
+
+   * various: Concat string at compile time when possible.
+     trunk patch: http://svn.apache.org/r1626050
+     2.4.x patch: trunk works
+     +1: jailletc36, rjung, jim
+
+   * event: Fix worker-listener deadlock in graceful restart caused by
+     get_worker() allocating new worker after ap_queue_info_term(),
+     but not setting the have_idle_worker variable. PR 56960.
+     trunk patch: http://svn.apache.org/r1629577
+     2.4.x patch: trunk works
+     +1: jkaluza, ylavic, jim
+
+   * mod_cache_socache: Add cache status to server-status.
+     The status_hook simply calls the status function of
+     socache, very much like mod_ssl does for the ssl
+     session cache. 
+     trunk patch: http://svn.apache.org/r1629507
+     trunk patch: http://svn.apache.org/r1629652
+     2.4.x patch: trunk works modulo CHANGES
+     +1: rjung, covener, jim
+
+   * mod_cache_socache: Change average object size
+     hint from 32 bytes to 2048 bytes. 
+     trunk patch: http://svn.apache.org/r1629508
+     2.4.x patch: trunk works modulo CHANGES
+     +1: rjung, covener, jim
+
+   * mod_ssl: Move OCSP stapling information to a per-server hash. PR 54357.
+     trunk patches: https://svn.apache.org/r1629372
+                    https://svn.apache.org/r1629485
+                    https://svn.apache.org/r1629519
+     2.4.x patch: https://people.apache.org/~kbrand/mod_ssl-2.4.x-PR54357.diff
+     +1: kbrand, ylavic, jim
+
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -191,58 +244,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1608744
      2.4.x patch: http://people.apache.org/~jkaluza/patches/mod_systemd/httpd-2.4.x-socket-activation.patch
      +1: jkaluza
-
-   * mod_substitute: Fix memory limitation in case of regexp plus flatten.
-     trunk patch: http://svn.apache.org/r1628104
-                  http://svn.apache.org/r1628918 (CHANGES)
-     2.4.x patch: trunk works
-     +1: rjung, covener, jim
-
-   * mod_substitute: Make maximum line length configurable.
-     trunk patch: http://svn.apache.org/r1628919
-                  http://svn.apache.org/r1628950 (docs, adjust "compatibility")
-     2.4.x patch: trunk works modulo CHANGES and compatibility
-     +1: rjung, covener, jim
-
-   * mod_substitute: Restrict configuration in .htaccess to
-     FileInfo as documented.
-     trunk patch: http://svn.apache.org/r1628924
-     2.4.x patch: trunk works modulo CHANGES
-     +1: rjung, covener, jim
-
-   * various: Concat string at compile time when possible.
-     trunk patch: http://svn.apache.org/r1626050
-     2.4.x patch: trunk works
-     +1: jailletc36, rjung, jim
-
-   * event: Fix worker-listener deadlock in graceful restart caused by
-     get_worker() allocating new worker after ap_queue_info_term(),
-     but not setting the have_idle_worker variable. PR 56960.
-     trunk patch: http://svn.apache.org/r1629577
-     2.4.x patch: trunk works
-     +1: jkaluza, ylavic, jim
-
-   * mod_cache_socache: Add cache status to server-status.
-     The status_hook simply calls the status function of
-     socache, very much like mod_ssl does for the ssl
-     session cache. 
-     trunk patch: http://svn.apache.org/r1629507
-     trunk patch: http://svn.apache.org/r1629652
-     2.4.x patch: trunk works modulo CHANGES
-     +1: rjung, covener, jim
-
-   * mod_cache_socache: Change average object size
-     hint from 32 bytes to 2048 bytes. 
-     trunk patch: http://svn.apache.org/r1629508
-     2.4.x patch: trunk works modulo CHANGES
-     +1: rjung, covener, jim
-
-   * mod_ssl: Move OCSP stapling information to a per-server hash. PR 54357.
-     trunk patches: https://svn.apache.org/r1629372
-                    https://svn.apache.org/r1629485
-                    https://svn.apache.org/r1629519
-     2.4.x patch: https://people.apache.org/~kbrand/mod_ssl-2.4.x-PR54357.diff
-     +1: kbrand, ylavic, jim
 
    * mod_substitute: no real functional change, but:
      - define default for maximum line length
