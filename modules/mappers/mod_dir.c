@@ -262,7 +262,7 @@ static int fixup_dir(request_rec *r)
 
         if (r->args != NULL) {
             ifile = apr_pstrcat(r->pool, ap_escape_uri(r->pool, r->uri),
-                                "/", "?", r->args, NULL);
+                                "/?", r->args, NULL);
         }
         else {
             ifile = apr_pstrcat(r->pool, ap_escape_uri(r->pool, r->uri),

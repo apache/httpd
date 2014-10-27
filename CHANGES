@@ -2,6 +2,8 @@
 
 Changes with Apache 2.4.11
 
+  *) Concat strings at compile time when possible. PR 53741.
+
   *) mod_substitute: Restrict configuration in .htaccess to
      FileInfo as documented.  [Rainer Jung]
 

@@ -98,7 +98,7 @@ static int proxy_balancer_canon(request_rec *r, char *url)
     if (path == NULL)
         return HTTP_BAD_REQUEST;
 
-    r->filename = apr_pstrcat(r->pool, "proxy:", BALANCER_PREFIX, host,
+    r->filename = apr_pstrcat(r->pool, "proxy:" BALANCER_PREFIX, host,
             "/", path, (search) ? "?" : "", (search) ? search : "", NULL);
 
     r->path_info = apr_pstrcat(r->pool, "/", path, NULL);
