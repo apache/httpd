@@ -73,6 +73,31 @@ SSLPassPhraseDialog  builtin
 SSLSessionCache        "shmcb:@exp_runtimedir@/ssl_scache(512000)"
 SSLSessionCacheTimeout  300
 
+#   OCSP Stapling (requires OpenSSL 0.9.8h or later)
+#
+#   This feature is disabled by default and requires at least
+#   the two directives SSLUseStapling and SSLStaplingCache.
+#   Refer to the documentation on OCSP Stapling in the SSL/TLS
+#   How-To for more information.
+#
+#   Enable stapling for all SSL-enabled servers:
+#SSLUseStapling On
+
+#   Define a relatively small cache for OCSP Stapling using
+#   the same mechanism that is used for the SSL session cache
+#   above.  If stapling is used with more than a few certificates,
+#   the size may need to be increased.  (AH01929 will be logged.)
+#SSLStaplingCache "shmcb:@exp_runtimedir@/ssl_stapling(32768)"
+
+#   Override the OCSP responder URL specified in the certificate
+#SSLStaplingForceURL http://ocsp.example.com/
+
+#   Seconds before valid OCSP responses are expired from the cache
+#SSLStaplingStandardCacheTimeout 3600
+
+#   Seconds before invalid OCSP responses are expired from the cache
+#SSLStaplingErrorCacheTimeout 600
+
 ##
 ## SSL Virtual Host Context
 ##
