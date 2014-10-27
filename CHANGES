@@ -2,6 +2,8 @@
 
 Changes with Apache 2.4.11
 
+  *) mod_dav: Set r->status_line in dav_error_response. PR 55426.
+
   *) SECURITY: CVE-2014-3581 (cve.mitre.org)
      mod_cache: Avoid a crash when Content-Type has an empty value.
      PR 56924.  [Mark Montague <mark catseye.org>, Jan Kaluza]
