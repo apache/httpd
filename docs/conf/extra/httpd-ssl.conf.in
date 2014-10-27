@@ -89,9 +89,6 @@ SSLSessionCacheTimeout  300
 #   the size may need to be increased.  (AH01929 will be logged.)
 #SSLStaplingCache "shmcb:@exp_runtimedir@/ssl_stapling(32768)"
 
-#   Override the OCSP responder URL specified in the certificate
-#SSLStaplingForceURL http://ocsp.example.com/
-
 #   Seconds before valid OCSP responses are expired from the cache
 #SSLStaplingStandardCacheTimeout 3600
 
