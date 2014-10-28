@@ -137,7 +137,7 @@ Substitute "s|http://internal.blog.example.com/|http://www.example.com/blog/|i"
 <contextlist><context>directory</context>
 <context>.htaccess</context></contextlist>
 <override>FileInfo</override>
-<compatibility>Available in httpd 2.5-dev and later</compatibility>
+<compatibility>Available in httpd 2.4.11 and later</compatibility>
 
 <usage>
     <p>The maximum line size handled by <module>mod_substitute</module>
