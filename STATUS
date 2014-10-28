@@ -204,6 +204,24 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~jkaluza/patches/mod_systemd/httpd-2.4.x-socket-activation.patch
      +1: jkaluza
 
+   * mod_cache: Avoid another (unlikely) access to freed memory.
+     trunk patch: http://svn.apache.org/r1632740
+     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-apr_bucket_delete_new_fix.patch
+     +1: ylavic
+     ylavic: No CHANGES entry is added but rather the existing one for the same
+             issue in mod_proxy_http (2.4.11's backport r1632736) has been modified.
+     jailletc36: Could you split r1632742 in order to separate the '(unlikely) more accesses
+                 to freed memory' from the change of behavior in mod_buffer. This one should need
+                 a changelog, IMHO.
+     ylavic: Done below (this one now contains r1632740 only, existing CHANGES modified still).
+
+   * mod_buffer: Forward flushed input data immediatly and avoid (unlikely)
+                 access to freed memory.
+     trunk patch: http://svn.apache.org/r1632742
+                  http://svn.apache.org/r1634836
+     2.4.x patches: trunk works (modulo CHANGES).
+     +1: ylavic
+
 
 OTHER PROPOSALS
 
@@ -213,18 +231,6 @@ OTHER PROPOSALS
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
-
-   * mod_proxy: Avoid more (unlikely) accesses to freed memory.
-     trunk patch: http://svn.apache.org/r1632740
-                  http://svn.apache.org/r1632742
-     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-apr_bucket_delete_more_fixes.patch
-     +1: ylavic
-     ylavic: No CHANGES entry is added but rather the existing one for the same
-             issue in mod_proxy_http (2.4.11's backport r1632736) has been modified.
-     jailletc36: Could you split r1632742 in order to separate the '(unlikely) more accesses
-                 to freed memory' from the change of behavior in mod_buffer. This one should need
-                 a changelog, IMHO.
-     ylavic: OK, will do.
 
 
 PATCHES/ISSUES THAT ARE STALLED
