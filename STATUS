@@ -110,16 +110,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch works
      +1: jailletc36, rjung, ylavic
 
-   * mod_substitute: no real functional change, but:
-     - define default for maximum line length
-       indepenent of MAX_STRING_LEN
-     - Clarify line length check with a comment
-     - add supported 'b' suffix to directive
-       description
-     trunk patches: https://svn.apache.org/r1631983
-     2.4.x patch: trunk works, no CHANGES
-     +1: rjung, jim, ylavic
-
    * style fix
      trunk patch: http://svn.apache.org/r1633031
                   http://svn.apache.org/r1633522
