@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
  
+  *) mod_buffer: Forward flushed input data immediatly and avoid (unlikely)
+     access to freed memory. [Yann Ylavic, Christophe Jaillet]
 
   *) mod_proxy_connect: Fix ProxyRemote to https:// backends on EBCDIC 
      systems. PR 57092 [Edward Lu <Chaosed0 gmail.com>]
