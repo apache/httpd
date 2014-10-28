@@ -102,6 +102,42 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * doc: improve doxygen output for util_ebcdic.h and util_charset.h.
+     I propose it for vote because of the #if defined(DOXYGEN)
+     trunk patch: http://svn.apache.org/r1611858
+                  http://svn.apache.org/r1611908
+                  http://svn.apache.org/r1611916
+     2.4.x patch: trunk patch works
+     +1: jailletc36, rjung, ylavic
+
+   * mod_substitute: no real functional change, but:
+     - define default for maximum line length
+       indepenent of MAX_STRING_LEN
+     - Clarify line length check with a comment
+     - add supported 'b' suffix to directive
+       description
+     trunk patches: https://svn.apache.org/r1631983
+     2.4.x patch: trunk works, no CHANGES
+     +1: rjung, jim, ylavic
+
+   * style fix
+     trunk patch: http://svn.apache.org/r1633031
+                  http://svn.apache.org/r1633522
+                  http://svn.apache.org/r1633529
+                  http://svn.apache.org/r1633530
+     2.4.x patch: trunk works
+     +1: jailletc36, jim, ylavic
+ 
+   * mod_cache: Restore original request headers when skipping updating the cache due to
+     a busy/broken CacheLock.  Can result in a 304 to an uncoditional request.
+     trunk patch: http://svn.apache.org/r1634237
+     2.4.x patch: trunk works
+     +1 covener, jim, ylavic
+
+   * mod_proxy_connect: EBCDIC fix for ProxyRemote to HTTPS. PR57092
+     trunk patch: http://svn.apache.org/r1634425
+     2.4.x patch: trunk works
+     +1 covener, jim, ylavic
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -146,14 +182,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patches: trunk works
      +1: wrowe, gsmith
 
-   * doc: improve doxygen output for util_ebcdic.h and util_charset.h.
-     I propose it for vote because of the #if defined(DOXYGEN)
-     trunk patch: http://svn.apache.org/r1611858
-                  http://svn.apache.org/r1611908
-                  http://svn.apache.org/r1611916
-     2.4.x patch: trunk patch works
-     +1: jailletc36, rjung
-
    * mod_systemd: New module, for integration with systemd on Linux.
      trunk patch: http://svn.apache.org/r1393976
                   http://svn.apache.org/r1393997
@@ -176,16 +204,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~jkaluza/patches/mod_systemd/httpd-2.4.x-socket-activation.patch
      +1: jkaluza
 
-   * mod_substitute: no real functional change, but:
-     - define default for maximum line length
-       indepenent of MAX_STRING_LEN
-     - Clarify line length check with a comment
-     - add supported 'b' suffix to directive
-       description
-     trunk patches: https://svn.apache.org/r1631983
-     2.4.x patch: trunk works, no CHANGES
-     +1: rjung, jim
-
    * mod_proxy: Avoid (unlikely) more accesses to freed memory.
      trunk patch: http://svn.apache.org/r1632740
                   http://svn.apache.org/r1632742
@@ -197,24 +215,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  to freed memory' from the change of behavior in mod_buffer. This one should need
                  a changelog, IMHO.
 
-   * style fix
-     trunk patch: http://svn.apache.org/r1633031
-                  http://svn.apache.org/r1633522
-                  http://svn.apache.org/r1633529
-                  http://svn.apache.org/r1633530
-     2.4.x patch: trunk works
-     +1: jailletc36, jim
- 
-   * mod_cache: Restore original request headers when skipping updating the cache due to
-     a busy/broken CacheLock.  Can result in a 304 to an uncoditional request.
-     trunk patch: http://svn.apache.org/r1634237
-     2.4.x patch: trunk works
-     +1 covener, jim
-  
-   * mod_proxy_connect: EBCDIC fix for ProxyRemote to HTTPS. PR57092
-     trunk patch: http://svn.apache.org/r1634425
-     2.4.x patch: trunk works
-     +1 covener, jim
 
 OTHER PROPOSALS
 
