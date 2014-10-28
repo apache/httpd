@@ -136,7 +136,7 @@ Substitute "s|http://internal.blog.example.com/|http://www.example.com/blog/|i"<
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_substitute</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.5-dev and later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.4.11 and later</td></tr>
 </table>
     <p>The maximum line size handled by <code class="module"><a href="../mod/mod_substitute.html">mod_substitute</a></code>
     is limited to restrict memory use. The limit can be configured
