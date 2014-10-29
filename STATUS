@@ -115,7 +115,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      compile-time limits.
      trunk patch: http://svn.apache.org/r819480
      2.2.x patch: trunk works
-     +1 covener
+     +1 covener, ylavic
 
    * mod_proxy: Reuse proxy workers' parameters and scores across graceful
      restarts, even if new workers added, old ones removed, or the order
