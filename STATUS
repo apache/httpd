@@ -111,26 +111,38 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x patch: http://people.apache.org/~wrowe/httpd-2.2-utf8-servicename.patch
      +1: wrowe
 
-   * mod_proxy: Reuse proxy workers' parameters and scores across graceful
-     restarts, even if new workers added, old ones removed, or the order
-     changes. PR 44736.  [Jan Kaluza]
-     2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-mod_proxy-balancer_graceful.patch
-     ylavic: trunk/2.4.x not concerned, 2.2.x only.
-     +1: ylavic, jkaluza
-
-   * mod_proxy_balancer: Always initialize the shared parameters of a load
-     balancer member, even if it is already used as standalone.  PR 57067.
-     2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-mod_proxy_balancer-lbfactor.patch
-     ylavic: trunk/2.4.x not concerned, 2.2.x only.
-     +1: ylavic
-
    * core: remove misleading/outdated httpd.h comment about LimitRequestLine
      compile-time limits.
      trunk patch: http://svn.apache.org/r819480
      2.2.x patch: trunk works
      +1 covener
 
+   * mod_proxy: Reuse proxy workers' parameters and scores across graceful
+     restarts, even if new workers added, old ones removed, or the order
+     changes. PR 44736.  [Jan Kaluza]
+     2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-graceful_share_full-v7.patch
+     ylavic: trunk/2.4.x not concerned, 2.2.x only.
+     +1: ylavic
+     ylavic: Following the defect reported in PR44736, patch replaced with v7.
+             Each worker scoreboard entry needs to be unique per vhost and balancer,
+             hence the digest must include their identifiers (to avoid reusing stats
+             from a worker with the same name (URI) from another vhost or balancer,
+             and avoid ap_proxy_initialize_worker_share() from mod_proxy's
+             child_init() to prevent balancer specific parameters initialization in
+             init_balancer_members(). Jan, I reset your vote which was based on the
+             previous version...
+
+
 PATCHES/ISSUES THAT ARE STALLED
+
+   * mod_proxy_balancer: Always initialize the shared parameters of a load
+     balancer member, even if it is already used as standalone.  PR 57067.
+     2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-mod_proxy_balancer-lbfactor.patch
+     ylavic: trunk/2.4.x not concerned, 2.2.x only.
+     -1: ylavic
+     ylavic: After some work on PR 44736, this patch seems to not be needed,
+             each balancer has its own scorebord entry. Withdrawing for now,
+             until I get a clear reproducer.
 
   * mod_cache: Realign the cache_quick_handler() to behave identically
     to the default_handler() when reacting to errors when writing to the
