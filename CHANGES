@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
  
+  *) mod_proxy_wstunnel: abort backend connection on polling error to avoid
+     further processing.  [Yann Ylavic]
+
   *) mod_buffer: Forward flushed input data immediatly and avoid (unlikely)
      access to freed memory. [Yann Ylavic, Christophe Jaillet]
 
