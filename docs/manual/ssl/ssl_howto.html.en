@@ -149,6 +149,30 @@ for the Ubuntu or Debian-bundled httpd, etc.</p>
 <code class="directive">SSLSessionCache</code> directive.  This path is relative
 to <code class="directive">ServerRoot</code>.</p>
 
+<p>This particular <code class="directive">SSLStaplingCache</code> directive requires
+<code class="module"><a href="../mod/mod_socache_shmcb.html">mod_socache_shmcb</a></code> (from the <code>shmcb</code> prefix on the
+directive's argument).  This module is usually enabled already for
+<code class="directive">SSLSessionCache</code> or on behalf of some module other than
+<code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>.  If you enabled an SSL session cache using a 
+mechanism other than <code class="module"><a href="../mod/mod_socache_shmcb.html">mod_socache_shmcb</a></code>, use that alternative
+mechanism for <code class="directive">SSLStaplingCache</code> as well.  For example:</p>
+
+    <pre class="prettyprint lang-config">SSLSessionCache "dbm:logs/ssl_scache"
+SSLStaplingCache "dbm:logs/ssl_stapling"</pre>
+
+
+<p>You can use the openssl command-line program to verify that an OCSP response
+is sent by your server:</p>
+
+<pre>$ openssl s_client -connect www.example.com:443 -status -servername www.example.com
+...
+OCSP response: 
+======================================
+OCSP Response Data:
+    OCSP Response Status: successful (0x0)
+    Response Type: Basic OCSP Response
+...</pre>
+
 <p>The following sections highlight the most common situations which require
 further modification to the configuration.  Refer also to the 
 <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> reference manual.</p>
