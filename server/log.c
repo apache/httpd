@@ -1493,8 +1493,8 @@ AP_DECLARE(void) ap_log_common(server_rec *s)
 {
     ap_log_error(APLOG_MARK, APLOG_DEBUG , 0, s, APLOGNO(02639)
                  "Using SO_REUSEPORT: %s (%d)",
-                 have_so_reuseport ? "yes" : "no",
-                 num_buckets);
+                 ap_have_so_reuseport ? "yes" : "no",
+                 ap_num_listen_buckets);
 }
 
 AP_DECLARE(void) ap_remove_pid(apr_pool_t *p, const char *rel_fname)

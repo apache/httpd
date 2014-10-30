@@ -361,11 +361,15 @@ typedef struct event_retained_data {
 } event_retained_data;
 static event_retained_data *retained;
 
-#define ID_FROM_CHILD_THREAD(c, t)    ((c * thread_limit) + t)
+typedef struct event_child_bucket {
+    ap_pod_t *pod;
+    ap_listen_rec *listeners;
+} event_child_bucket;
+static int                 num_buckets; /* Number of listeners buckets */
+static event_child_bucket *all_buckets, /* All listeners buckets */
+                          *my_bucket;   /* Current child bucket */
 
-static ap_pod_t **pod;
-static ap_pod_t *child_pod;
-static ap_listen_rec *child_listen;
+#define ID_FROM_CHILD_THREAD(c, t)    ((c * thread_limit) + t)
 
 /* The event MPM respects a couple of runtime flags that can aid
  * in debugging. Setting the -DNO_DETACH flag will prevent the root process
@@ -1211,11 +1215,12 @@ static void check_infinite_requests(void)
     }
 }
 
-static void close_listeners(int process_slot, int *closed) {
+static void close_listeners(int process_slot, int *closed)
+{
     if (!*closed) {
         int i;
         disable_listensocks(process_slot);
-        ap_close_listeners();
+        ap_close_listeners_ex(my_bucket->listeners);
         *closed = 1;
         dying = 1;
         ap_scoreboard_image->parent[process_slot].quiescing = 1;
@@ -1289,7 +1294,7 @@ static apr_status_t init_pollset(apr_pool_t *p)
     TO_QUEUE_INIT(short_linger_q);
 
     listener_pollfd = apr_palloc(p, sizeof(apr_pollfd_t) * num_listensocks);
-    for (lr = child_listen; lr != NULL; lr = lr->next, i++) {
+    for (lr = my_bucket->listeners; lr != NULL; lr = lr->next, i++) {
         apr_pollfd_t *pfd;
         AP_DEBUG_ASSERT(i < num_listensocks);
         pfd = &listener_pollfd[i];
@@ -2418,7 +2423,6 @@ static void child_main(int child_num_arg, int child_bucket)
     apr_thread_t *start_thread_id;
     apr_pool_t *pskip;
     int i;
-    ap_listen_rec *lr;
 
     mpm_state = AP_MPMQ_STARTING;       /* for benefit of any hooks that run as this
                                          * child initializes
@@ -2427,19 +2431,11 @@ static void child_main(int child_num_arg, int child_bucket)
     ap_fatal_signal_child_setup(ap_server_conf);
     apr_pool_create(&pchild, pconf);
 
-    child_listen = mpm_listen[child_bucket];
-    child_pod = pod[child_bucket];
-
     /* close unused listeners and pods */
     for (i = 0; i < num_buckets; i++) {
         if (i != child_bucket) {
-            lr = mpm_listen[i];
-            while(lr) {
-                apr_socket_close(lr->sd);
-                lr->active = 0;
-                lr = lr->next;
-            }
-            ap_mpm_podx_close(pod[i]);
+            ap_close_listeners_ex(all_buckets[i].listeners);
+            ap_mpm_podx_close(all_buckets[i].pod);
         }
     }
 
@@ -2553,7 +2549,7 @@ static void child_main(int child_num_arg, int child_bucket)
         apr_signal(SIGTERM, dummy_signal_handler);
         /* Watch for any messages from the parent over the POD */
         while (1) {
-            rv = ap_mpm_podx_check(child_pod);
+            rv = ap_mpm_podx_check(my_bucket->pod);
             if (rv == AP_MPM_PODX_NORESTART) {
                 /* see if termination was triggered while we slept */
                 switch (terminate_mode) {
@@ -2600,9 +2596,11 @@ static int make_child(server_rec * s, int slot, int bucket)
     }
 
     if (one_process) {
+        my_bucket = &all_buckets[0];
+
         set_signals();
         event_note_child_started(slot, getpid());
-        child_main(0, 0);
+        child_main(slot, 0);
         /* NOTREACHED */
         ap_assert(0);
         return -1;
@@ -2628,6 +2626,8 @@ static int make_child(server_rec * s, int slot, int bucket)
     }
 
     if (!pid) {
+        my_bucket = &all_buckets[bucket];
+
 #ifdef HAVE_BINDPROCESSOR
         /* By default, AIX binds to a single processor.  This bit unbinds
          * children which will then bind to another CPU.
@@ -2806,7 +2806,8 @@ static void perform_idle_server_maintenance(int child_bucket)
 
     if (idle_thread_count > max_spare_threads / num_buckets) {
         /* Kill off one child */
-        ap_mpm_podx_signal(pod[child_bucket], AP_MPM_PODX_GRACEFUL);
+        ap_mpm_podx_signal(all_buckets[child_bucket].pod,
+                           AP_MPM_PODX_GRACEFUL);
         retained->idle_spawn_rate[child_bucket] = 1;
     }
     else if (idle_thread_count < min_spare_threads / num_buckets) {
@@ -3052,7 +3053,8 @@ static int event_run(apr_pool_t * _pconf, apr_pool_t * plog, server_rec * s)
          * Kill child processes, tell them to call child_exit, etc...
          */
         for (i = 0; i < num_buckets; i++) {
-            ap_mpm_podx_killpg(pod[i], ap_daemons_limit, AP_MPM_PODX_RESTART);
+            ap_mpm_podx_killpg(all_buckets[i].pod, ap_daemons_limit,
+                               AP_MPM_PODX_RESTART);
         }
         ap_reclaim_child_processes(1, /* Start with SIGTERM */
                                    event_note_child_killed);
@@ -3075,7 +3077,8 @@ static int event_run(apr_pool_t * _pconf, apr_pool_t * plog, server_rec * s)
         /* Close our listeners, and then ask our children to do same */
         ap_close_listeners();
         for (i = 0; i < num_buckets; i++) {
-            ap_mpm_podx_killpg(pod[i], ap_daemons_limit, AP_MPM_PODX_GRACEFUL);
+            ap_mpm_podx_killpg(all_buckets[i].pod, ap_daemons_limit,
+                               AP_MPM_PODX_GRACEFUL);
         }
         ap_relieve_child_processes(event_note_child_killed);
 
@@ -3117,7 +3120,8 @@ static int event_run(apr_pool_t * _pconf, apr_pool_t * plog, server_rec * s)
          * really dead.
          */
         for (i = 0; i < num_buckets; i++) {
-            ap_mpm_podx_killpg(pod[i], ap_daemons_limit, AP_MPM_PODX_RESTART);
+            ap_mpm_podx_killpg(all_buckets[i].pod, ap_daemons_limit,
+                               AP_MPM_PODX_RESTART);
         }
         ap_reclaim_child_processes(1, event_note_child_killed);
 
@@ -3145,7 +3149,8 @@ static int event_run(apr_pool_t * _pconf, apr_pool_t * plog, server_rec * s)
                      " received.  Doing graceful restart");
         /* wake up the children...time to die.  But we'll have more soon */
         for (i = 0; i < num_buckets; i++) {
-            ap_mpm_podx_killpg(pod[i], ap_daemons_limit, AP_MPM_PODX_GRACEFUL);
+            ap_mpm_podx_killpg(all_buckets[i].pod, ap_daemons_limit,
+                               AP_MPM_PODX_GRACEFUL);
         }
 
         /* This is mostly for debugging... so that we know what is still
@@ -3159,7 +3164,8 @@ static int event_run(apr_pool_t * _pconf, apr_pool_t * plog, server_rec * s)
          * pthreads are stealing signals from us left and right.
          */
         for (i = 0; i < num_buckets; i++) {
-            ap_mpm_podx_killpg(pod[i], ap_daemons_limit, AP_MPM_PODX_RESTART);
+            ap_mpm_podx_killpg(all_buckets[i].pod, ap_daemons_limit,
+                               AP_MPM_PODX_RESTART);
         }
 
         ap_reclaim_child_processes(1,  /* Start with SIGTERM */
@@ -3179,6 +3185,7 @@ static int event_open_logs(apr_pool_t * p, apr_pool_t * plog,
 {
     int startup = 0;
     int level_flags = 0;
+    ap_listen_rec **listen_buckets;
     apr_status_t rv;
     int i;
 
@@ -3190,7 +3197,6 @@ static int event_open_logs(apr_pool_t * p, apr_pool_t * plog,
         level_flags |= APLOG_STARTUP;
     }
 
-    enable_default_listener = 0;
     if ((num_listensocks = ap_setup_listeners(ap_server_conf)) < 1) {
         ap_log_error(APLOG_MARK, APLOG_ALERT | level_flags, 0,
                      (startup ? NULL : s),
@@ -3198,21 +3204,33 @@ static int event_open_logs(apr_pool_t * p, apr_pool_t * plog,
         return DONE;
     }
 
-    enable_default_listener = 1;
-    ap_duplicate_listeners(ap_server_conf, pconf, num_buckets);
-
-    pod = apr_palloc(pconf, sizeof(ap_pod_t *) * num_buckets);
-
-    if (!one_process) {
-        for (i = 0; i < num_buckets; i++) {
-            if ((rv = ap_mpm_podx_open(pconf, &pod[i]))) {
-                ap_log_error(APLOG_MARK, APLOG_CRIT | level_flags, rv,
-                             (startup ? NULL : s),
-                             "could not open pipe-of-death");
-                return DONE;
-            }
-        }
+    if (one_process) {
+        num_buckets = 1;
     }
+    else if (!retained->is_graceful) { /* Preserve the number of buckets
+                                          on graceful restarts. */
+        num_buckets = 0;
+    }
+    if ((rv = ap_duplicate_listeners(pconf, ap_server_conf,
+                                     &listen_buckets, &num_buckets))) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT | level_flags, rv,
+                     (startup ? NULL : s),
+                     "could not duplicate listeners");
+        return DONE;
+    }
+    all_buckets = apr_pcalloc(pconf, num_buckets *
+                                     sizeof(event_child_bucket));
+    for (i = 0; i < num_buckets; i++) {
+        if (!one_process && /* no POD in one_process mode */
+                (rv = ap_mpm_podx_open(pconf, &all_buckets[i].pod))) {
+            ap_log_error(APLOG_MARK, APLOG_CRIT | level_flags, rv,
+                         (startup ? NULL : s),
+                         "could not open pipe-of-death");
+            return DONE;
+        }
+        all_buckets[i].listeners = listen_buckets[i];
+    }
+
     /* for skiplist */
     srand((unsigned int)apr_time_now());
     return OK;
@@ -3245,17 +3263,6 @@ static int event_pre_config(apr_pool_t * pconf, apr_pool_t * plog,
     if (!retained) {
         retained = ap_retained_data_create(userdata_key, sizeof(*retained));
         retained->max_daemons_limit = -1;
-    }
-    if (!retained->is_graceful) {
-        num_buckets = 1;
-#ifdef _SC_NPROCESSORS_ONLN
-        if (have_so_reuseport) {
-            int num_online_cores = sysconf(_SC_NPROCESSORS_ONLN);
-            if (num_online_cores > 8) {
-                num_buckets = num_online_cores / 8;
-            }
-        }
-#endif
     }
     ++retained->module_loads;
     if (retained->module_loads == 2) {
