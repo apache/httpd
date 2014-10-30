@@ -27,6 +27,8 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_substitute.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_substitute.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
+            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Effectue des opérations de recherche/remplacement sur les
 corps de réponses</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -43,6 +45,7 @@ du serveur HTTP Apache</td></tr></table>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#substitute">Substitute</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#substitutemaxlinelength">SubstituteMaxLineLength</a></li>
 </ul>
 <ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
 
@@ -140,6 +143,20 @@ Substitute "s|http://internal.blog.example.com/|http://www.example.com/blog/|i"<
 
 
 </div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SubstituteMaxLineLength" id="SubstituteMaxLineLength">SubstituteMaxLineLength</a> <a name="substitutemaxlinelength" id="substitutemaxlinelength">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Set the maximum line size</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SubstituteMaxLineLength <var>bytes</var>(b|B|k|K|m|M|g|G)</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SubstituteMaxLineLength 1m</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_substitute</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Available in httpd 2.4.11 and later</td></tr>
+</table><p>La documentation de cette directive
+	n'a pas encore t traduite. Veuillez vous reporter  la version
+	en langue anglaise.</p></div>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_substitute.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
