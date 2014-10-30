@@ -143,6 +143,33 @@ placed, such as in <code>conf/extra/httpd-ssl.conf</code> for normal
 open source builds of httpd, <code>/etc/apache2/mods-enabled/ssl.conf</code>
 for the Ubuntu or Debian-bundled httpd, etc.</p>
 
+<p>This particular <directive>SSLStaplingCache</directive> directive requires
+<module>mod_socache_shmcb</module> (from the <code>shmcb</code> prefix on the
+directive's argument).  This module is usually enabled already for
+<directive>SSLSessionCache</directive> or on behalf of some module other than
+<module>mod_ssl</module>.  If you enabled an SSL session cache using a 
+mechanism other than <module>mod_socache_shmcb</module>, use that alternative
+mechanism for <directive>SSLStaplingCache</directive> as well.  For example:</p>
+
+    <highlight language="config">
+SSLSessionCache "dbm:ssl_scache"
+SSLStaplingCache "dbm:ssl_stapling"
+    </highlight>
+
+<p>You can use the openssl command-line program to verify that an OCSP response
+is sent by your server:</p>
+
+<pre>
+$ openssl s_client -connect www.example.com:443 -status -servername www.example.com
+...
+OCSP response: 
+======================================
+OCSP Response Data:
+    OCSP Response Status: successful (0x0)
+    Response Type: Basic OCSP Response
+...
+</pre>
+
 <p>The following sections highlight the most common situations which require
 further modification to the configuration.  Refer also to the 
 <module>mod_ssl</module> reference manual.</p>
