@@ -2224,6 +2224,7 @@ static const char *dirsection(cmd_parms *cmd, void *mconfig, const char *arg)
     conf->r = r;
     conf->d = cmd->path;
     conf->d_is_fnmatch = (apr_fnmatch_test(conf->d) != 0);
+    conf->d_is_directory = 1;
 
     if (r) {
         conf->refs = apr_array_make(cmd->pool, 8, sizeof(char *));

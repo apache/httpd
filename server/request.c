@@ -1216,6 +1216,13 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
                 pmatch = apr_palloc(rxpool, nmatch*sizeof(ap_regmatch_t));
             }
 
+            /* core_dir_config is Directory*, but the requested file is
+             * not a directory, so although the regexp could match,
+             * we skip it. */
+            if (entry_core->d_is_directory && r->finfo.filetype != APR_DIR) {
+                continue;
+            }
+
             if (ap_regexec(entry_core->r, r->filename, nmatch, pmatch, 0)) {
                 continue;
             }
