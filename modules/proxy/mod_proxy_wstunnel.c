@@ -90,6 +90,7 @@ static int proxy_wstunnel_pump(ws_baton_t *baton, apr_time_t timeout, int try_as
                 }
                 else if (pollevent & APR_POLLERR) {
                     rv = APR_EPIPE;
+                    backconn->aborted = 1;
                     ap_log_rerror(APLOG_MARK, APLOG_NOTICE, 0, r, APLOGNO(02447)
                             "error on backconn");
                 }
