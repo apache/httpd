@@ -164,6 +164,8 @@ OCSP response:
 OCSP Response Data:
     OCSP Response Status: successful (0x0)
     Response Type: Basic OCSP Response
+...
+    Cert Status: Good
 ...</pre>
 
 <p>The following sections highlight the most common situations which require
