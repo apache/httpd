@@ -212,6 +212,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patches: trunk works (modulo CHANGES).
      +1: ylavic
 
+   * ab: Increase request and response header size to 8192 bytes.
+     Fix potential buffer-overflow in Server: header handling.
+     trunk patch: http://svn.apache.org/r1622450
+     2.4.x patch: trunk works
+     +1: jkaluza
+
+   * mod_cgi: Log CGI script stderr to ScriptLog, use APLOGNO for
+     log_scripterror errors.
+     trunk patch: http://svn.apache.org/r1626978
+     2.4.x patch: trunk works
+     +1 jkaluza
+
 
 OTHER PROPOSALS
 
