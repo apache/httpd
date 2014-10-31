@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
  
+  *) mod_proxy_connect: Don't issue AH02447 on sockets hangups, let the read
+     determine whether it is a normal close or a real error. PR 57168. [Yann
+     Ylavic]
+
   *) mod_proxy_wstunnel: abort backend connection on polling error to avoid
      further processing.  [Yann Ylavic]
 

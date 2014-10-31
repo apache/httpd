@@ -210,7 +210,6 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
     char buffer[HUGE_STRING_LEN];
     apr_socket_t *client_socket = ap_get_conn_socket(c);
     int failed, rc;
-    int client_error = 0;
     apr_pollset_t *pollset;
     apr_pollfd_t pollfd;
     const apr_pollfd_t *signalled;
@@ -320,7 +319,7 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
     /* Add client side to the poll */
     pollfd.p = r->pool;
     pollfd.desc_type = APR_POLL_SOCKET;
-    pollfd.reqevents = APR_POLLIN;
+    pollfd.reqevents = APR_POLLIN | APR_POLLHUP;
     pollfd.desc.s = client_socket;
     pollfd.client_data = NULL;
     apr_pollset_add(pollset, &pollfd);
@@ -434,30 +433,34 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
 
             if (cur->desc.s == sock) {
                 pollevent = cur->rtnevents;
-                if (pollevent & APR_POLLIN) {
+                if (pollevent & (APR_POLLIN | APR_POLLHUP)) {
 #ifdef DEBUGGING
                     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01025)
                                   "sock was readable");
 #endif
                     rv = proxy_connect_transfer(r, backconn, c, bb, "sock");
-                    }
-                else if ((pollevent & APR_POLLERR)
-                         || (pollevent & APR_POLLHUP)) {
-                         rv = APR_EPIPE;
-                         ap_log_rerror(APLOG_MARK, APLOG_NOTICE, 0, r, APLOGNO(01026)
-                                       "err/hup on backconn");
                 }
-                if (rv != APR_SUCCESS)
-                    client_error = 1;
+                else if (pollevent & APR_POLLERR) {
+                    rv = APR_EPIPE;
+                    backconn->aborted = 1;
+                    ap_log_rerror(APLOG_MARK, APLOG_NOTICE, 0, r, APLOGNO(01026)
+                                  "err on backconn");
+                }
             }
             else if (cur->desc.s == client_socket) {
                 pollevent = cur->rtnevents;
-                if (pollevent & APR_POLLIN) {
+                if (pollevent & (APR_POLLIN | APR_POLLHUP)) {
 #ifdef DEBUGGING
                     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01027)
                                   "client was readable");
 #endif
                     rv = proxy_connect_transfer(r, c, backconn, bb, "client");
+                }
+                else if (pollevent & APR_POLLERR) {
+                    rv = APR_EPIPE;
+                    c->aborted = 1;
+                    ap_log_rerror(APLOG_MARK, APLOG_NOTICE, 0, r, APLOGNO(01026)
+                                  "err on client");
                 }
             }
             else {
@@ -481,12 +484,11 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
      * Close the socket and clean up
      */
 
-    if (client_error)
+    if (backconn->aborted)
         apr_socket_close(sock);
     else
         ap_lingering_close(backconn);
 
-    c->aborted = 1;
     c->keepalive = AP_CONN_CLOSE;
 
     return OK;
