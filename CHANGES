@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
  
+  *) core: Support custom ErrorDocuments for HTTP 501 and 414 status codes.
+     PR 57167 [Edward Lu <Chaosed0 gmail.com>]
+
   *) mod_proxy_connect: Don't issue AH02447 on sockets hangups, let the read
      determine whether it is a normal close or a real error. PR 57168. [Yann
      Ylavic]
