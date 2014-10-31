@@ -22,6 +22,7 @@
 
 #include "ap_config.h"
 #include "httpd.h"
+#include "http_main.h"
 #include "http_config.h"
 #include "http_core.h"
 #include "ap_listen.h"
