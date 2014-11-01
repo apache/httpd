@@ -2494,6 +2494,7 @@ static apr_status_t send_http_connect(proxy_conn_rec *backend,
     nbytes += apr_snprintf(buffer + nbytes, sizeof(buffer) - nbytes,
                            "Proxy-agent: %s" CRLF CRLF,
                            ap_get_server_banner());
+    ap_xlate_proto_to_ascii(buffer, nbytes);
     apr_socket_send(backend->sock, buffer, &nbytes);
 
     /* Receive the whole CONNECT response */
@@ -2505,7 +2506,8 @@ static apr_status_t send_http_connect(proxy_conn_rec *backend,
         len += nbytes;
         left -= nbytes;
         buffer[len] = '\0';
-        if (strstr(buffer + len - nbytes, "\r\n\r\n") != NULL) {
+        if (strstr(buffer + len - nbytes, CRLF_ASCII CRLF_ASCII) != NULL) {
+            ap_xlate_proto_from_ascii(buffer, len);
             complete = 1;
             break;
         }
@@ -2517,7 +2519,7 @@ static apr_status_t send_http_connect(proxy_conn_rec *backend,
             status = apr_socket_recv(backend->sock, drain_buffer, &nbytes);
             drain_buffer[nbytes] = '\0';
             nbytes = sizeof(drain_buffer) - 1;
-            if (strstr(drain_buffer, "\r\n\r\n") != NULL) {
+            if (strstr(drain_buffer, CRLF_ASCII CRLF_ASCII) != NULL) {
                 break;
             }
         }
