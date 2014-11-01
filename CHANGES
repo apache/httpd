@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.11
 
+  *) mod_cache: Avoid a 304 response to an unconditional requst when an AH00752
+     CacheLock error occurs during cache revalidation. [Eric Covener]
+ 
   *) mod_ssl: Move OCSP stapling information from a per-certificate store to
      a per-server hash. PR 54357, PR 56919. [Alex Bligh <alex alex.org.uk>,
      Yann Ylavic, Kaspar Brand]
