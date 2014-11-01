@@ -2,6 +2,17 @@
 
 Changes with Apache 2.4.11
 
+  *) SECURITY: CVE-2014-3581 (cve.mitre.org)
+     mod_cache: Avoid a crash when Content-Type has an empty value.
+     PR 56924.  [Mark Montague <mark catseye.org>, Jan Kaluza]
+
+  *) SECURITY: CVE-2013-5704 (cve.mitre.org)
+     core: HTTP trailers could be used to replace HTTP headers
+     late during request processing, potentially undoing or
+     otherwise confusing modules that examined or modified
+     request headers earlier.  Adds "MergeTrailers" directive to restore
+     legacy behavior.  [Edward Lu, Yann Ylavic, Joe Orton, Eric Covener]
+
   *) mod_proxy_connect: Fix ProxyRemote to https:// backends on EBCDIC 
      systems. PR 57092 [Edward Lu <Chaosed0 gmail.com>]
 
@@ -34,17 +45,6 @@ Changes with Apache 2.4.11
      errors. PR53218. [Jim Jagielski]
 
   *) mod_dav: Set r->status_line in dav_error_response. PR 55426.
-
-  *) SECURITY: CVE-2014-3581 (cve.mitre.org)
-     mod_cache: Avoid a crash when Content-Type has an empty value.
-     PR 56924.  [Mark Montague <mark catseye.org>, Jan Kaluza]
-
-  *) SECURITY: CVE-2013-5704 (cve.mitre.org)
-     core: HTTP trailers could be used to replace HTTP headers
-     late during request processing, potentially undoing or
-     otherwise confusing modules that examined or modified
-     request headers earlier.  Adds "MergeTrailers" directive to restore
-     legacy behavior.  [Edward Lu, Yann Ylavic, Joe Orton, Eric Covener]
 
   *) mod_proxy_http: Avoid (unlikely) access to freed memory. [Yann Ylavic]
 
