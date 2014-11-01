@@ -102,12 +102,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_cache: Restore original request headers when skipping updating the cache due to
-     a busy/broken CacheLock.  Can result in a 304 to an uncoditional request.
-     trunk patch: http://svn.apache.org/r1634237
-     2.4.x patch: trunk works
-     +1 covener, jim, ylavic
-
    * mod_proxy_connect: EBCDIC fix for ProxyRemote to HTTPS. PR57092
      trunk patch: http://svn.apache.org/r1634425
      2.4.x patch: trunk works
