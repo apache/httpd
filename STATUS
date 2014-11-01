@@ -102,14 +102,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * style fix
-     trunk patch: http://svn.apache.org/r1633031
-                  http://svn.apache.org/r1633522
-                  http://svn.apache.org/r1633529
-                  http://svn.apache.org/r1633530
-     2.4.x patch: trunk works
-     +1: jailletc36, jim, ylavic
- 
    * mod_cache: Restore original request headers when skipping updating the cache due to
      a busy/broken CacheLock.  Can result in a 304 to an uncoditional request.
      trunk patch: http://svn.apache.org/r1634237

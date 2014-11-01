@@ -1090,7 +1090,7 @@ static apr_status_t ssl_io_filter_handshake(ssl_filter_ctx_t *filter_ctx)
                               "request to '%s'", hostname_note);
                 ssl_log_ssl_error(SSLLOG_MARK, APLOG_WARNING, server);
             }
-	}
+        }
 #endif
 
         if ((n = SSL_connect(filter_ctx->pssl)) <= 0) {
