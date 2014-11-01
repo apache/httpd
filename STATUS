@@ -197,13 +197,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * mod_cache: Avoid another (unlikely) access to freed memory.
      trunk patch: http://svn.apache.org/r1632740
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-apr_bucket_delete_new_fix.patch
-     +1: ylavic
+     +1: ylavic, jailletc36
      ylavic: No CHANGES entry is added but rather the existing one for the same
              issue in mod_proxy_http (2.4.11's backport r1632736) has been modified.
-     jailletc36: Could you split r1632742 in order to separate the '(unlikely) more accesses
-                 to freed memory' from the change of behavior in mod_buffer. This one should need
-                 a changelog, IMHO.
-     ylavic: Done below (this one now contains r1632740 only, existing CHANGES modified still).
 
    * mod_buffer: Forward flushed input data immediatly and avoid (unlikely)
                  access to freed memory.
