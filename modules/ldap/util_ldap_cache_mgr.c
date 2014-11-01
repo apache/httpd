@@ -359,9 +359,11 @@ util_ald_cache_t *util_ald_create_cache(util_ldap_state_t *st,
     cache->maxentries = cache_size;
     cache->numentries = 0;
     cache->size = cache_size / 3;
-    if (cache->size < 64) cache->size = 64;
-        for (i = 0; primes[i] && primes[i] < cache->size; ++i) ;
-            cache->size = primes[i]? primes[i] : primes[i-1];
+    if (cache->size < 64)
+        cache->size = 64;
+    for (i = 0; primes[i] && primes[i] < cache->size; ++i)
+        ;
+    cache->size = primes[i] ? primes[i] : primes[i-1];
 
     cache->nodes = (util_cache_node_t **)util_ald_alloc(cache, cache->size * sizeof(util_cache_node_t *));
     if (!cache->nodes) {
