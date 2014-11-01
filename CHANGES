@@ -24,23 +24,6 @@ Changes with Apache 2.5.0
   *) core: Ensure that httpd exits with an error status when the MPM fails
      to run.  [Yann Ylavic]
 
-  *) mod_cache_socache: Change average object size hint from 32 bytes to
-     2048 bytes.  [Rainer Jung]
-
-  *) mod_cache_socache: Add cache status to server-status.  [Rainer Jung]
-
-  *) mod_ssl: Move OCSP stapling information from a per-certificate store to
-     a per-server hash. PR 54357, PR 56919. [Alex Bligh <alex alex.org.uk>,
-     Kaspar Brand]
-
-  *) mod_substitute: Restrict configuration in .htaccess to
-     FileInfo as documented.  [Rainer Jung]
-
-  *) mod_substitute: Make maximum line length configurable.  [Rainer Jung]
-
-  *) mod_substitute: Fix line length limitation in case of regexp plus flatten.
-     [Rainer Jung]
-  
   *) apreq: Content-Length header should be always interpreted as a decimal.
      Leading 0 could be erroneously considered as an octal value. PR 56598.
      [Chris Card <ctcard hotmail com>]
