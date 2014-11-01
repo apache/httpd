@@ -102,14 +102,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * doc: improve doxygen output for util_ebcdic.h and util_charset.h.
-     I propose it for vote because of the #if defined(DOXYGEN)
-     trunk patch: http://svn.apache.org/r1611858
-                  http://svn.apache.org/r1611908
-                  http://svn.apache.org/r1611916
-     2.4.x patch: trunk patch works
-     +1: jailletc36, rjung, ylavic
-
    * style fix
      trunk patch: http://svn.apache.org/r1633031
                   http://svn.apache.org/r1633522
@@ -220,7 +212,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      +1 jkaluza
  
-    *core: Support custom ErrorDocuments for HTTP 501 and 414 status codes.
+   * core: Support custom ErrorDocuments for HTTP 501 and 414 status codes.
      PR 57167 
      trunk patch: http://svn.apache.org/r1635762
      2.4.x patch: trunk works
