@@ -304,7 +304,7 @@ and modules like <module>mod_rewrite</module>.</p>
 
 <highlight language="config">
 &lt;DirectoryMatch ^/var/www/combined/(?&lt;SITENAME&gt;[^/]+)&gt;
-    require ldap-group cn=%{env:SITENAME},ou=combined,o=Example
+    require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
 &lt;/DirectoryMatch&gt;
 </highlight>
 
