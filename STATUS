@@ -177,7 +177,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * mod_buffer: Forward flushed input data immediatly and avoid (unlikely)
                  access to freed memory.
      trunk patch: http://svn.apache.org/r1632742
-                  http://svn.apache.org/r1634836
+                  http://svn.apache.org/r1634836 (CHANGES entry)
      2.4.x patches: trunk works (modulo CHANGES).
      +1: ylavic
 
@@ -186,18 +186,23 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1622450
      2.4.x patch: trunk works
      +1: jkaluza
+     ylavic: there may still be an off by 1 (http://mail-archives.apache.org/mod_mbox/httpd-dev/201411.mbox/%3CCAKQ1sVPTHoM9kPLuXcMnO2hGhEgBtnN4K_ORN12QoBmGioNjWg%40mail.gmail.com%3E)
 
    * mod_cgi: Log CGI script stderr to ScriptLog, use APLOGNO for
      log_scripterror errors.
      trunk patch: http://svn.apache.org/r1626978
      2.4.x patch: trunk works
      +1 jkaluza
+     ylavic: shouldn't we also (still) log on ErrorLog, at least on 2.4.x?
+             The log_script_err() line may somewhere be expected in error_log.
+             The new AH* in script_log could also cause parsing issues, but I'm
+             fine with this personnaly.
  
    * core: Support custom ErrorDocuments for HTTP 501 and 414 status codes.
      PR 57167 
      trunk patch: http://svn.apache.org/r1635762
      2.4.x patch: trunk works
-     +1 covener
+     +1 covener, ylavic
 
 OTHER PROPOSALS
 
