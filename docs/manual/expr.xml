@@ -498,7 +498,8 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
         <td>Hash the string using SHA1, then encode the hash with hexadecimal
             encoding</td><td></td></tr>
     <tr><td><code>file</code></td>
-        <td>Read contents from a file</td><td>yes</td></tr>
+        <td>Read contents from a file (including line endings, when present)
+        </td><td>yes</td></tr>
     <tr><td><code>filesize</code></td>
         <td>Return size of a file (or 0 if file does not exist or is not
             regular file)</td><td>yes</td></tr>
@@ -549,6 +550,13 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
 &lt;Directory "/foo/bar/business"&gt;
     Require expr %{TIME_HOUR} -gt 9 &amp;&amp; %{TIME_HOUR} -lt 17
 &lt;/Directory&gt;	
+
+# Check a HTTP header for a list of values
+&lt;If "%{HTTP:X-example-header} in { 'foo', 'bar', 'baz'}"&gt;
+    Header set matched true
+&lt;/If&gt;
+
+
 	</highlight>
 </section>
 
@@ -561,7 +569,7 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     <tr><th>Name</th><th>Alternative</th> <th>Description</th></tr>
     <tr><td><code>-in</code></td>
         <td><code>in</code></td>
-        <td>string contained in string list</td></tr>
+        <td>string contained in wordlist</td></tr>
     <tr><td><code>/regexp/</code></td>
         <td><code>m#regexp#</code></td>
         <td>Regular expression (the second form allows different
