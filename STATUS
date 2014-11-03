@@ -132,7 +132,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              init_balancer_members(). Jan, I reset your vote which was based on the
              previous version...
 
-   * mod_reqtimeout:PR56729: mod_reqtimeout gets confused when it sees a read 
+   * mod_reqtimeout: PR56729: mod_reqtimeout gets confused when it sees a read 
      via check_pipeline() just before a slow HTTP response completes.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=r1621453
      2.2.x patch: http://people.apache.org/~covener/patches/httpd-2.2.2-reqtimeout-slow-post.diff
