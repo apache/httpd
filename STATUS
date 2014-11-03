@@ -185,8 +185,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Fix potential buffer-overflow in Server: header handling.
      trunk patch: http://svn.apache.org/r1622450
      2.4.x patch: trunk works
-     +1: jkaluza
-     ylavic: there may still be an off by 1 (http://mail-archives.apache.org/mod_mbox/httpd-dev/201411.mbox/%3CCAKQ1sVPTHoM9kPLuXcMnO2hGhEgBtnN4K_ORN12QoBmGioNjWg%40mail.gmail.com%3E)
+     +1: jkaluza, ylavic
 
    * mod_cgi: Log CGI script stderr to ScriptLog, use APLOGNO for
      log_scripterror errors.
