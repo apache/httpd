@@ -27,21 +27,24 @@
 
 
     <p>There are many important points to consider before you begin compiling
-    Apache. See <a href="windows.html">Using Apache with Microsoft
-    Windows</a> before you begin.</p>
+    Apache HTTP Server (httpd). See <a href="windows.html">Using Apache HTTP
+    Server on Microsoft Windows</a> before you begin.</p>
+
+    <p>httpd can be built on Windows using a cmake-based build system or with
+    Visual Studio project files maintained by httpd developers.  The cmake-based
+    build system directly supports more versions of Visual Studio but currently
+    has considerable functional limitations.</p>
 
   </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#requirements">Requirements</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#unixsrcbuild">Building from Unix sources</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#commandbuild">Command-Line Build</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#workspacebuild">Developer Studio Workspace IDE Build</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#exportingmakfiles">Exporting command-line .mak files</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#installation">Installation</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#projectcomponents-warn">Warning about building Apache from the development tree</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#vstudio">Building httpd with the included Visual Studio project files</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#cmake">Building httpd with cmake</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="requirements" id="requirements">Requirements</a></h2>
+<h2><a name="vstudio" id="vstudio">Building httpd with the included Visual Studio project files</a></h2>
+  
+
+  <h3><a name="requirements" id="requirements">Requirements</a></h3>
 
     
 
@@ -250,9 +253,9 @@
       </li>
     </ul>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="unixsrcbuild" id="unixsrcbuild">Building from Unix sources</a></h2>
+  
+
+  <h3><a name="unixsrcbuild" id="unixsrcbuild">Building from Unix sources</a></h3>
 
     
 
@@ -280,9 +283,9 @@
     below.
     </p>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="commandbuild" id="commandbuild">Command-Line Build</a></h2>
+  
+
+  <h3><a name="commandbuild" id="commandbuild">Command-Line Build</a></h3>
 
     
 
@@ -305,9 +308,9 @@
     Review the initial comments in Makefile.win for additional options
     that can be provided when invoking the build.</p>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="workspacebuild" id="workspacebuild">Developer Studio Workspace IDE Build</a></h2>
+  
+
+  <h3><a name="workspacebuild" id="workspacebuild">Developer Studio Workspace IDE Build</a></h3>
 
     
 
@@ -361,9 +364,9 @@
     <code>zlib</code> exist, and based on the setting of <code>DBD_LIST</code>
     and <code>DBM_LIST</code> environment variables.</p>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="exportingmakfiles" id="exportingmakfiles">Exporting command-line .mak files</a></h2>
+  
+
+  <h3><a name="exportingmakfiles" id="exportingmakfiles">Exporting command-line .mak files</a></h3>
 
     
 
@@ -405,9 +408,9 @@
     should be simple, with minimal compilation and linkage flags that
     can be recognized by all Visual Studio environments.</p>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="installation" id="installation">Installation</a></h2>
+  
+
+  <h3><a name="installation" id="installation">Installation</a></h3>
 
     
 
@@ -429,9 +432,9 @@
     to be installed into <code>\Apache22</code> (of the current
     drive).</p>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="projectcomponents-warn" id="projectcomponents-warn">Warning about building Apache from the development tree</a></h2>
+  
+
+  <h3><a name="projectcomponents-warn" id="projectcomponents-warn">Warning about building Apache from the development tree</a></h3>
 
     
 
@@ -442,6 +445,33 @@
     then export all <code>.mak</code> files yourself from the project. This is
     unnecessary if you build from within the Microsoft
     Developer Studio environment.</div>
+
+  
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="cmake" id="cmake">Building httpd with cmake</a></h2>
+  
+
+  <p>The primary documentation for this build mechanism is in the 
+  <code>README.cmake</code> file in the source distribution.  Refer to that file
+  for detailed instructions.</p>
+
+  <p>Building httpd with cmake requires building APR and APR-util separately.
+  Refer to their <code>README.cmake</code> files for instructions.</p>
+
+  <p>The primary limitations of the cmake-based build are inherited from the APR-util
+  project, and are listed below because of their impact on httpd:</p>
+
+  <ul>
+    <li>No cmake build for the APR-iconv subproject is available, and the
+      APR-util cmake build cannot consume an existing APR-iconv build.  Thus,
+      <code class="module"><a href="../mod/mod_charset_lite.html">mod_charset_lite</a></code> and possibly some third-party modules 
+      cannot be used.</li>
+    <li>The cmake build for the APR-util subproject does not support most of the
+      optional DBM and DBD libraries supported by the included Visual Studio
+      project files.  This limits the database backends supported by a number of
+      bundled and third-party modules.</li>
+  </ul>
 
   </div></div>
 <div class="bottomlang">
