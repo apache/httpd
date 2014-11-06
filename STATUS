@@ -139,6 +139,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   (minor merge conflict)
      +1 covener
 
+   * mod_deflate: Define APR_INT32_MAX when it is missing so to be able to
+                  compile against APR-1.2.x (minimum required version).
+     trunk/2.4.x patch: not concerned (require APR-1.5.x)
+     2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-mod_deflate_APR_INT32_MAX.patch
+     +1: ylavic
+
 PATCHES/ISSUES THAT ARE STALLED
 
    * mod_proxy_balancer: Always initialize the shared parameters of a load
