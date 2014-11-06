@@ -101,6 +101,12 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * core: remove misleading/outdated httpd.h comment about LimitRequestLine
+     compile-time limits.
+     trunk patch: http://svn.apache.org/r819480
+     2.2.x patch: trunk works
+     +1 covener, ylavic, trawick
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -110,12 +116,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                     http://svn.apache.org/r1611169
      2.2.x patch: http://people.apache.org/~wrowe/httpd-2.2-utf8-servicename.patch
      +1: wrowe
-
-   * core: remove misleading/outdated httpd.h comment about LimitRequestLine
-     compile-time limits.
-     trunk patch: http://svn.apache.org/r819480
-     2.2.x patch: trunk works
-     +1 covener, ylavic
 
    * mod_proxy: Reuse proxy workers' parameters and scores across graceful
      restarts, even if new workers added, old ones removed, or the order
@@ -137,13 +137,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=r1621453
      2.2.x patch: http://people.apache.org/~covener/patches/httpd-2.2.2-reqtimeout-slow-post.diff
                   (minor merge conflict)
-     +1 covener
+     +1 covener, trawick
 
    * mod_deflate: Define APR_INT32_MAX when it is missing so to be able to
                   compile against APR-1.2.x (minimum required version).
      trunk/2.4.x patch: not concerned (require APR-1.5.x)
      2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-mod_deflate_APR_INT32_MAX.patch
-     +1: ylavic
+     +1: ylavic, trawick
 
 PATCHES/ISSUES THAT ARE STALLED
 
