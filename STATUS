@@ -102,6 +102,25 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * ab: Increase request and response header size to 8192 bytes.
+     Fix potential buffer-overflow in Server: header handling.
+     trunk patch: http://svn.apache.org/r1622450
+     2.4.x patch: trunk works
+     +1: jkaluza, ylavic, trawick
+
+   * mod_cache: Avoid another (unlikely) access to freed memory.
+     trunk patch: http://svn.apache.org/r1632740
+     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-apr_bucket_delete_new_fix.patch
+     +1: ylavic, jailletc36, trawick
+     ylavic: No CHANGES entry is added but rather the existing one for the same
+             issue in mod_proxy_http (2.4.11's backport r1632736) has been modified.
+
+   * core: Support custom ErrorDocuments for HTTP 501 and 414 status codes.
+     PR 57167 
+     trunk patch: http://svn.apache.org/r1635762
+     2.4.x patch: trunk works
+     +1 covener, ylavic, trawick
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -167,25 +186,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~jkaluza/patches/mod_systemd/httpd-2.4.x-socket-activation.patch
      +1: jkaluza
 
-   * mod_cache: Avoid another (unlikely) access to freed memory.
-     trunk patch: http://svn.apache.org/r1632740
-     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-apr_bucket_delete_new_fix.patch
-     +1: ylavic, jailletc36
-     ylavic: No CHANGES entry is added but rather the existing one for the same
-             issue in mod_proxy_http (2.4.11's backport r1632736) has been modified.
-
-   * mod_buffer: Forward flushed input data immediatly and avoid (unlikely)
+   * mod_buffer: Forward flushed input data immediately and avoid (unlikely)
                  access to freed memory.
      trunk patch: http://svn.apache.org/r1632742
                   http://svn.apache.org/r1634836 (CHANGES entry)
      2.4.x patches: trunk works (modulo CHANGES).
      +1: ylavic
-
-   * ab: Increase request and response header size to 8192 bytes.
-     Fix potential buffer-overflow in Server: header handling.
-     trunk patch: http://svn.apache.org/r1622450
-     2.4.x patch: trunk works
-     +1: jkaluza, ylavic
 
    * mod_cgi: Log CGI script stderr to ScriptLog, use APLOGNO for
      log_scripterror errors.
@@ -197,12 +203,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              The new AH* in script_log could also cause parsing issues, but I'm
              fine with this personnaly.
  
-   * core: Support custom ErrorDocuments for HTTP 501 and 414 status codes.
-     PR 57167 
-     trunk patch: http://svn.apache.org/r1635762
-     2.4.x patch: trunk works
-     +1 covener, ylavic
-
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
