@@ -28,10 +28,18 @@
   <summary>
 
     <p>There are many important points to consider before you begin compiling
-    Apache. See <a href="windows.html">Using Apache with Microsoft
-    Windows</a> before you begin.</p>
+    Apache HTTP Server (httpd). See <a href="windows.html">Using Apache HTTP
+    Server on Microsoft Windows</a> before you begin.</p>
+
+    <p>httpd can be built on Windows using a cmake-based build system or with
+    Visual Studio project files maintained by httpd developers.  The cmake-based
+    build system directly supports more versions of Visual Studio but currently
+    has considerable functional limitations.</p>
 
   </summary>
+
+  <section id="vstudio">
+  <title>Building httpd with the included Visual Studio project files</title>
 
   <section id="requirements">
 
@@ -439,6 +447,33 @@
     then export all <code>.mak</code> files yourself from the project. This is
     unnecessary if you build from within the Microsoft
     Developer Studio environment.</note>
+
+  </section>
+  </section>
+
+  <section id="cmake">
+  <title>Building httpd with cmake</title>
+
+  <p>The primary documentation for this build mechanism is in the 
+  <code>README.cmake</code> file in the source distribution.  Refer to that file
+  for detailed instructions.</p>
+
+  <p>Building httpd with cmake requires building APR and APR-util separately.
+  Refer to their <code>README.cmake</code> files for instructions.</p>
+
+  <p>The primary limitations of the cmake-based build are inherited from the APR-util
+  project, and are listed below because of their impact on httpd:</p>
+
+  <ul>
+    <li>No cmake build for the APR-iconv subproject is available, and the
+      APR-util cmake build cannot consume an existing APR-iconv build.  Thus,
+      <module>mod_charset_lite</module> and possibly some third-party modules 
+      cannot be used.</li>
+    <li>The cmake build for the APR-util subproject does not support most of the
+      optional DBM and DBD libraries supported by the included Visual Studio
+      project files.  This limits the database backends supported by a number of
+      bundled and third-party modules.</li>
+  </ul>
 
   </section>
 
