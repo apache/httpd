@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1334024:1634793 (outdated) -->
+<!-- English Revision : 1634793 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -144,6 +144,41 @@ Substitute "s|http://internal.blog.example.com/|http://www.example.com/blog/|i"
     d'arri&egrave;re-plan et, dans cet exemple, la directive
     <code>Substitute</code> se charge &agrave; son tour de la modification de
     la r&eacute;ponse HTML.</p>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SubstituteMaxLineLength</name>
+<description>Définit la longueur de ligne maximale</description>
+<syntax>SubstituteMaxLineLength <var>octets</var>(b|B|k|K|m|M|g|G)</syntax>
+<default>SubstituteMaxLineLength 1m</default>
+<contextlist><context>directory</context>
+<context>.htaccess</context></contextlist>
+<override>FileInfo</override>
+<compatibility>Disponible à partir de la version 2.4.11 du serveur HTTP
+Apache</compatibility>
+
+<usage>
+    <p>La taille de la ligne traitée par <module>mod_substitute</module>
+    est limitée afin de restreindre l'utilisation des ressources
+    mémoire. La directive <directive>SubstituteMaxLineLength</directive>
+    permet de définir cette limite. La valeur de la limite peut être
+    spécifiée sous la forme d'un nombre d'octets, et peut être suffixée
+    par une des lettres <code>b</code>, <code>B</code>, <code>k</code>,
+    <code>K</code>, <code>m</code>, <code>M</code>, <code>g</code> ou
+    <code>G</code> pour fournir une valeur respectivement en octets,
+    kiloOctets, mégaOctets ou gigaOctets.</p>
+
+    <example><title>Example</title>
+    <highlight language="config">
+&lt;Location /&gt;
+    AddOutputFilterByType SUBSTITUTE text/html
+    SubstituteMaxLineLength 10m
+    Substitute s/foo/bar/ni
+&lt;/Location&gt;
+        </highlight>
+    </example>
 
 </usage>
 </directivesynopsis>

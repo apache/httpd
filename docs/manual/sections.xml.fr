@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1590671:1636196 (outdated) -->
+<!-- English Revision : 1636196 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -334,7 +334,7 @@ href="expr.html">expression</a> et au sein de modules comme
 
 <highlight language="config">
 &lt;DirectoryMatch ^/var/www/combined/(?&lt;SITENAME&gt;[^/]+)&gt;
-    require ldap-group cn=%{env:SITENAME},ou=combined,o=Example
+    require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
 &lt;/DirectoryMatch&gt;
 </highlight>
 
