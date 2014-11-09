@@ -27,8 +27,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_substitute.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_substitute.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Effectue des opérations de recherche/remplacement sur les
 corps de réponses</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -146,17 +144,35 @@ Substitute "s|http://internal.blog.example.com/|http://www.example.com/blog/|i"<
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SubstituteMaxLineLength" id="SubstituteMaxLineLength">SubstituteMaxLineLength</a> <a name="substitutemaxlinelength" id="substitutemaxlinelength">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Set the maximum line size</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SubstituteMaxLineLength <var>bytes</var>(b|B|k|K|m|M|g|G)</code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit la longueur de ligne maximale</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SubstituteMaxLineLength <var>octets</var>(b|B|k|K|m|M|g|G)</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SubstituteMaxLineLength 1m</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_substitute</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Available in httpd 2.4.11 and later</td></tr>
-</table><p>La documentation de cette directive
-	n'a pas encore t traduite. Veuillez vous reporter  la version
-	en langue anglaise.</p></div>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.11 du serveur HTTP
+Apache</td></tr>
+</table>
+    <p>La taille de la ligne traitée par <code class="module"><a href="../mod/mod_substitute.html">mod_substitute</a></code>
+    est limitée afin de restreindre l'utilisation des ressources
+    mémoire. La directive <code class="directive">SubstituteMaxLineLength</code>
+    permet de définir cette limite. La valeur de la limite peut être
+    spécifiée sous la forme d'un nombre d'octets, et peut être suffixée
+    par une des lettres <code>b</code>, <code>B</code>, <code>k</code>,
+    <code>K</code>, <code>m</code>, <code>M</code>, <code>g</code> ou
+    <code>G</code> pour fournir une valeur respectivement en octets,
+    kiloOctets, mégaOctets ou gigaOctets.</p>
+
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">&lt;Location /&gt;
+    AddOutputFilterByType SUBSTITUTE text/html
+    SubstituteMaxLineLength 10m
+    Substitute s/foo/bar/ni
+&lt;/Location&gt;</pre>
+</div>
+
+
+</div>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_substitute.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |

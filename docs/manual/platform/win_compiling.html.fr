@@ -26,14 +26,19 @@
 <a href="../fr/platform/win_compiling.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ko/platform/win_compiling.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 
     <p>Il y a de nombreux points importants à connaître avant de
-    compiler Apache pour Microsoft Windows. Avant de commencer, lisez le
-    document <a href="windows.html">Utiliser Apache avec Microsoft
+    compiler Le serveur HTTP Apache pour Microsoft Windows. Avant de commencer, lisez le
+    document <a href="windows.html">Utiliser le serveur HTTP Apache avec Microsoft
     Windows</a>.</p>
+
+    <p>httpd peut être compilé sous Windows en utilisant une chaîne de
+    compilation basée sur cmake, ou à partir de fichiers projet Visual
+    Studio maintenus par les développeurs de httpd. La chaîne de
+    compilation basée sur cmake supporte directement davantage de
+    versions de Visual Studio, mais possède actuellement des
+    fonctionnalités très limitées.</p>
 
   </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#requirements">Prérequis</a></li>
@@ -45,6 +50,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#installation">Installation</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#projectcomponents-warn">Avertissement à propos de la compilation d'Apache à partir de
 l'arborescence de développement</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#cmake">Compilation de httpd avec cmake</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -524,7 +530,37 @@ l'arborescence de développement</a></h2>
 	si vous effectuez la compilation depuis l'environnement
 	Microsoft Developer Studio.</div>
 
-</div></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="cmake" id="cmake">Compilation de httpd avec cmake</a></h2>
+  
+
+  <p>La documentation principale pour ce mécanisme de compilation se trouve
+  dans le fichier <code>README.cmake</code> situé dans l'arborescence
+  des sources. Consultez ce fichier pour des instructions détaillées.</p>
+
+  <p>Pour compiler httpd avec cmake, vous devez compiler APR et APR-util
+  séparément. Consultez les fichiers <code>README.cmake</code> de ces
+  projets pour obtenir des instructions.</p>
+
+  <p>Les principales limitations de la compilation basée sur cmake sont
+  héritées du projet APR-util et sont énumérées ci-dessous à cause de
+  leur impact sur httpd :</p>
+
+  <ul>
+    <li>Il n'est pas possible de compiler le projet APR-iconv avec
+    cmake, et la compilation de APR-util ne peut pas utiliser de projet
+    APR-iconv précompilé. A cause de cela, il n'est pas possible
+    d'utiliser <code class="module"><a href="../mod/mod_charset_lite.html">mod_charset_lite</a></code> et probablement
+    d'autres modules tiers.</li>
+    <li>La compilation du sous-projet APR-util avec cmake ne supporte
+    pas la plupart des bibliothèques optionnelles DBM et DBD utilisées
+    par les fichiers projet Visual Studio inclus. Cela limite les
+    serveurs de bases de données d'arrière-plan supportés par de
+    nombreux modules tiers ou inclus.</li>
+  </ul>
+
+  </div></div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/platform/win_compiling.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/platform/win_compiling.html" title="Français">&nbsp;fr&nbsp;</a> |
