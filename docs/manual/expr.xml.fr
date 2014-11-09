@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision: 1613527:1636190 (outdated) -->
+<!-- English Revision : 1636190 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -527,7 +527,8 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
         <td>G&eacute;n&egrave;re un hash de la cha&icirc;ne en utilisant SHA1, puis encode
 	le hash obtenu en hexad&eacute;cimal</td><td></td></tr>
     <tr><td><code>file</code></td>
-        <td>Lit le contenu d'un fichier</td><td>oui</td></tr>
+        <td>Lit le contenu d'un fichier(fins de lignes incluses, si
+	elles existent)</td><td>oui</td></tr>
     <tr><td><code>filesize</code></td>
         <td>Renvoie la taille d'un fichier (ou 0 si le fichier n'existe
 	pas ou ne correspond pas &agrave; un fichier r&eacute;gulier)</td><td>oui</td></tr>
@@ -584,7 +585,12 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
 # travail
 &lt;Directory "/foo/bar/business"&gt;
      Require expr %{TIME_HOUR} -gt 9 &amp;&amp; %{TIME_HOUR} -lt 17
-&lt;/Directory&gt;	
+&lt;/Directory&gt;
+
+# V&eacute;rifie si un en-t&ecirc;te HTTP correspond &agrave; une des valeurs d'une liste
+&lt;If "%{HTTP:X-example-header} in { 'foo', 'bar', 'baz'}"&gt;
+    La d&eacute;finition de l'en-t&ecirc;te correspond &agrave; une des valeurs recherch&eacute;es
+&lt;/If&gt;
 	</highlight>
 </section>
 
@@ -597,7 +603,7 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     <tr><th>Nom</th><th>Alternative</th> <th>Description</th></tr>
     <tr><td><code>-in</code></td>
         <td><code>in</code></td>
-        <td>cha&icirc;ne contenue dans une liste de cha&icirc;nes</td></tr>
+        <td>cha&icirc;ne contenue dans une liste de mots</td></tr>
     <tr><td><code>/regexp/</code></td>
         <td><code>m#regexp#</code></td>
         <td>Expression rationnelle (la seconde forme permet de sp&eacute;cifier
