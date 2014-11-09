@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1633793:1635558 (outdated) -->
+<!-- English Revision : 1635558 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -158,6 +158,37 @@ globales SSL, comme <code>conf/extra/httpd-ssl.conf</code> pour les
 installations de httpd &agrave; partir des sources, ou
 <code>/etc/apache2/mods-enabled/ssl.conf</code> pour Ubuntu ou Debian,
 etc...</p>
+
+<p>Cette directive <directive>SSLStaplingCache</directive> particuli&egrave;re
+n&eacute;cessite le chargement du module <module>mod_socache_shmcb</module> (&agrave;
+cause du pr&eacute;fixe <code>shmcb</code> de son argument). Ce module est en
+g&eacute;n&eacute;ral d&eacute;j&agrave; activ&eacute; pour la directive
+<directive>SSLSessionCache</directive>, ou pour des modules autres que
+<module>mod_ssl</module>. Si vous activez un cache de session SSL
+utilisant un m&eacute;canisme autre que <module>mod_socache_shmcb</module>,
+utilisez aussi ce m&eacute;canisme alternatif pour la directive
+<directive>SSLStaplingCache</directive>. Par exemple :</p>
+
+    <highlight language="config">
+SSLSessionCache "dbm:ssl_scache"
+SSLStaplingCache "dbm:ssl_stapling"
+    </highlight>
+
+<p>Vous pouvez utiliser la commande openssl pour v&eacute;rifier que votre
+serveur envoie bien une r&eacute;ponse OCSP :</p>
+
+<pre>
+$ openssl s_client -connect www.example.com:443 -status -servername www.example.com
+...
+OCSP response: 
+======================================
+OCSP Response Data:
+    OCSP Response Status: successful (0x0)
+    Response Type: Basic OCSP Response
+...
+    Cert Status: Good
+...
+</pre>
 
 <p>Les sections suivantes explicitent les situations courantes qui
 requi&egrave;rent des modifications suppl&eacute;mentaires de la configuration. Vous
