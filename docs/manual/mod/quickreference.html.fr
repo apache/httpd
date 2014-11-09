@@ -1289,7 +1289,7 @@ démarrage</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#startthreads">StartThreads <var>nombre</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Nombre de threads créés au démarrage</td></tr>
 <tr><td><a href="mod_substitute.html#substitute">Substitute <var>s/modèle/substitution/[infq]</var></a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Modèle de substition dans le contenu de la
 réponse</td></tr>
-<tr class="odd"><td><a href="mod_substitute.html#substitutemaxlinelength">SubstituteMaxLineLength <var>bytes</var>(b|B|k|K|m|M|g|G)</a></td><td> 1m </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Set the maximum line size</td></tr>
+<tr class="odd"><td><a href="mod_substitute.html#substitutemaxlinelength">SubstituteMaxLineLength <var>octets</var>(b|B|k|K|m|M|g|G)</a></td><td> 1m </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Définit la longueur de ligne maximale</td></tr>
 <tr><td><a href="mod_unixd.html#suexec">Suexec On|Off</a></td><td></td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">Active ou désactive la fonctionnalité suEXEC</td></tr>
 <tr class="odd"><td><a href="mod_suexec.html#suexecusergroup">SuexecUserGroup <em>Utilisateur Groupe</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">L'utilisateur et le groupe sous lesquels les programmes CGI
 doivent s'exécuter</td></tr>
