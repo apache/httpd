@@ -24,8 +24,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/ssl/ssl_howto.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/ssl/ssl_howto.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 
 <p>Ce document doit vous permettre de démarrer et de faire fonctionner
@@ -158,6 +156,34 @@ globales SSL, comme <code>conf/extra/httpd-ssl.conf</code> pour les
 installations de httpd à partir des sources, ou
 <code>/etc/apache2/mods-enabled/ssl.conf</code> pour Ubuntu ou Debian,
 etc...</p>
+
+<p>Cette directive <code class="directive">SSLStaplingCache</code> particulière
+nécessite le chargement du module <code class="module"><a href="../mod/mod_socache_shmcb.html">mod_socache_shmcb</a></code> (à
+cause du préfixe <code>shmcb</code> de son argument). Ce module est en
+général déjà activé pour la directive
+<code class="directive">SSLSessionCache</code>, ou pour des modules autres que
+<code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>. Si vous activez un cache de session SSL
+utilisant un mécanisme autre que <code class="module"><a href="../mod/mod_socache_shmcb.html">mod_socache_shmcb</a></code>,
+utilisez aussi ce mécanisme alternatif pour la directive
+<code class="directive">SSLStaplingCache</code>. Par exemple :</p>
+
+    <pre class="prettyprint lang-config">SSLSessionCache "dbm:ssl_scache"
+SSLStaplingCache "dbm:ssl_stapling"</pre>
+
+
+<p>Vous pouvez utiliser la commande openssl pour vérifier que votre
+serveur envoie bien une réponse OCSP :</p>
+
+<pre>$ openssl s_client -connect www.example.com:443 -status -servername www.example.com
+...
+OCSP response: 
+======================================
+OCSP Response Data:
+    OCSP Response Status: successful (0x0)
+    Response Type: Basic OCSP Response
+...
+    Cert Status: Good
+...</pre>
 
 <p>Les sections suivantes explicitent les situations courantes qui
 requièrent des modifications supplémentaires de la configuration. Vous

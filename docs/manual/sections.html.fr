@@ -295,7 +295,7 @@ chemins de fichiers et d'URLs depuis une <a href="expr.html">expression</a> et a
 <code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code>.</p>
 
 <pre class="prettyprint lang-config">&lt;DirectoryMatch ^/var/www/combined/(?&lt;SITENAME&gt;[^/]+)&gt;
-    require ldap-group cn=%{env:SITENAME},ou=combined,o=Example
+    require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
 &lt;/DirectoryMatch&gt;</pre>
 
 
