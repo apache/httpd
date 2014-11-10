@@ -117,7 +117,7 @@ cache</description>
 
 <directivesynopsis>
 <name>CacheSocacheMinTime</name>
-<description>The maximum time (in seconds) for a document to be placed in the
+<description>The minimum time (in seconds) for a document to be placed in the
 cache</description>
 <syntax>CacheSocacheMinTime <var>seconds</var></syntax>
 <default>CacheSocacheMinTime 600</default>
