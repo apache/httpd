@@ -731,11 +731,15 @@ static authz_status ldapuser_check_authorization(request_rec *r,
     if (!req) {
         authz_status rv = AUTHZ_DENIED;
         req = build_request_config(r);
+        ldc = get_connection_for_authz(r, LDAP_COMPARE);
         if (AUTHZ_GRANTED != (rv = get_dn_for_nonldap_authn(r, ldc))) { 
             return rv;
         }
     }
-    ldc = get_connection_for_authz(r, LDAP_COMPARE);
+    else { 
+        ldc = get_connection_for_authz(r, LDAP_COMPARE);
+    }
+
 
     /*
      * If we have been authenticated by some other module than mod_authnz_ldap,
@@ -855,11 +859,14 @@ static authz_status ldapgroup_check_authorization(request_rec *r,
     if (!req) {
         authz_status rv = AUTHZ_DENIED;
         req = build_request_config(r);
+        ldc = get_connection_for_authz(r, LDAP_COMPARE);
         if (AUTHZ_GRANTED != (rv = get_dn_for_nonldap_authn(r, ldc))) {
             return rv;
         }
     }
-    ldc = get_connection_for_authz(r, LDAP_COMPARE);
+    else { 
+        ldc = get_connection_for_authz(r, LDAP_COMPARE);
+    }
 
     /*
      * If there are no elements in the group attribute array, the default should be
@@ -1065,11 +1072,14 @@ static authz_status ldapdn_check_authorization(request_rec *r,
     if (!req) {
         authz_status rv = AUTHZ_DENIED;
         req = build_request_config(r);
+        ldc = get_connection_for_authz(r, LDAP_SEARCH); /* comparedn is a search */
         if (AUTHZ_GRANTED != (rv = get_dn_for_nonldap_authn(r, ldc))) {
             return rv;
         }
     }
-    ldc = get_connection_for_authz(r, LDAP_SEARCH); /* comparedn is a search */
+    else { 
+        ldc = get_connection_for_authz(r, LDAP_SEARCH); /* comparedn is a search */
+    }
 
     require = ap_expr_str_exec(r, expr, &err);
     if (err) {
@@ -1162,11 +1172,14 @@ static authz_status ldapattribute_check_authorization(request_rec *r,
     if (!req) {
         authz_status rv = AUTHZ_DENIED;
         req = build_request_config(r);
+        ldc = get_connection_for_authz(r, LDAP_COMPARE);
         if (AUTHZ_GRANTED != (rv = get_dn_for_nonldap_authn(r, ldc))) {
             return rv;
         }
     }
-    ldc = get_connection_for_authz(r, LDAP_COMPARE);
+    else { 
+        ldc = get_connection_for_authz(r, LDAP_COMPARE);
+    }
 
     if (req->dn == NULL || strlen(req->dn) == 0) {
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01733)
@@ -1268,11 +1281,14 @@ static authz_status ldapfilter_check_authorization(request_rec *r,
     if (!req) {
         authz_status rv = AUTHZ_DENIED;
         req = build_request_config(r);
+        ldc = get_connection_for_authz(r, LDAP_SEARCH);
         if (AUTHZ_GRANTED != (rv = get_dn_for_nonldap_authn(r, ldc))) {
             return rv;
         }
     }
-    ldc = get_connection_for_authz(r, LDAP_SEARCH);
+    else { 
+        ldc = get_connection_for_authz(r, LDAP_SEARCH);
+    }
 
     if (req->dn == NULL || strlen(req->dn) == 0) {
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01742)

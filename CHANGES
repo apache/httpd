@@ -1,5 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
+
+  *) mod_authnz_ldap: Resolve rashes with LDAP authz and non-LDAP authn since 
+     r1608202. [Eric Covener]
  
   *) core: Support custom ErrorDocuments for HTTP 501 and 414 status codes.
      PR 57167 [Edward Lu <Chaosed0 gmail.com>]
