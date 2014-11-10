@@ -156,7 +156,7 @@ cache</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CacheSocacheMinTime" id="CacheSocacheMinTime">CacheSocacheMinTime</a> <a name="cachesocachemintime" id="cachesocachemintime">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The maximum time (in seconds) for a document to be placed in the
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The minimum time (in seconds) for a document to be placed in the
 cache</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CacheSocacheMinTime <var>seconds</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>CacheSocacheMinTime 600</code></td></tr>
