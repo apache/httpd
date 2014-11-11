@@ -102,12 +102,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * ab: Increase request and response header size to 8192 bytes.
-     Fix potential buffer-overflow in Server: header handling.
-     trunk patch: http://svn.apache.org/r1622450
-     2.4.x patch: trunk works
-     +1: jkaluza, ylavic, trawick
-
    * mod_cache: Avoid another (unlikely) access to freed memory.
      trunk patch: http://svn.apache.org/r1632740
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-apr_bucket_delete_new_fix.patch
