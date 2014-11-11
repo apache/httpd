@@ -102,13 +102,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_cache: Avoid another (unlikely) access to freed memory.
-     trunk patch: http://svn.apache.org/r1632740
-     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-apr_bucket_delete_new_fix.patch
-     +1: ylavic, jailletc36, trawick
-     ylavic: No CHANGES entry is added but rather the existing one for the same
-             issue in mod_proxy_http (2.4.11's backport r1632736) has been modified.
-
    * core: Support custom ErrorDocuments for HTTP 501 and 414 status codes.
      PR 57167 
      trunk patch: http://svn.apache.org/r1635762
