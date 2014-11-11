@@ -46,7 +46,8 @@ Changes with Apache 2.4.11
 
   *) mod_dav: Set r->status_line in dav_error_response. PR 55426.
 
-  *) mod_proxy_http: Avoid (unlikely) access to freed memory. [Yann Ylavic]
+  *) mod_proxy_http, mod_cache: Avoid (unlikely) accesses to freed memory.
+     [Yann Ylavic, Christophe Jaillet]
 
   *) http_protocol: fix logic in ap_method_list_(add|remove) in order:
        - to correctly reset bits
