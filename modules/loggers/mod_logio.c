@@ -52,7 +52,8 @@ typedef struct logio_config_t {
  * Optional function for the core to add to bytes_out
  */
 
-static void ap_logio_add_bytes_out(conn_rec *c, apr_off_t bytes){
+static void ap_logio_add_bytes_out(conn_rec *c, apr_off_t bytes)
+{
     logio_config_t *cf = ap_get_module_config(c->conn_config, &logio_module);
 
     cf->bytes_out += bytes;
@@ -62,7 +63,8 @@ static void ap_logio_add_bytes_out(conn_rec *c, apr_off_t bytes){
  * Optional function for modules to adjust bytes_in
  */
 
-static void ap_logio_add_bytes_in(conn_rec *c, apr_off_t bytes){
+static void ap_logio_add_bytes_in(conn_rec *c, apr_off_t bytes)
+{
     logio_config_t *cf = ap_get_module_config(c->conn_config, &logio_module);
 
     cf->bytes_in += bytes;
@@ -132,7 +134,8 @@ static apr_status_t logio_in_filter(ap_filter_t *f,
                                     apr_bucket_brigade *bb,
                                     ap_input_mode_t mode,
                                     apr_read_type_e block,
-                                    apr_off_t readbytes) {
+                                    apr_off_t readbytes)
+{
     apr_off_t length;
     apr_status_t status;
     logio_config_t *cf = ap_get_module_config(f->c->conn_config, &logio_module);
@@ -151,7 +154,8 @@ static apr_status_t logio_in_filter(ap_filter_t *f,
  * The hooks...
  */
 
-static int logio_pre_conn(conn_rec *c, void *csd) {
+static int logio_pre_conn(conn_rec *c, void *csd)
+{
     logio_config_t *cf = apr_pcalloc(c->pool, sizeof(*cf));
 
     ap_set_module_config(c->conn_config, &logio_module, cf);
