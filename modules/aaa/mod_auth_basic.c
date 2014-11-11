@@ -431,7 +431,7 @@ static int authenticate_basic_user(request_rec *r)
             break;
         }
 
-        /* If we're returning 403, tell them to try again. */
+        /* If we're returning 401, tell them to try again. */
         if (return_code == HTTP_UNAUTHORIZED) {
             note_basic_auth_failure(r);
         }
