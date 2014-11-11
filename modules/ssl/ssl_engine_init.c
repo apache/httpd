@@ -1065,7 +1065,7 @@ static apr_status_t ssl_init_server_certs(server_rec *s,
         if (!(cert = SSL_CTX_get0_certificate(mctx->ssl_ctx))) {
 #else
         ssl = SSL_new(mctx->ssl_ctx);
-	if (ssl) {
+        if (ssl) {
             /* Workaround bug in SSL_get_certificate in OpenSSL 0.9.8y */
             SSL_set_connect_state(ssl);
             cert = SSL_get_certificate(ssl);
