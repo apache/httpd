@@ -102,11 +102,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * core: Support custom ErrorDocuments for HTTP 501 and 414 status codes.
-     PR 57167 
-     trunk patch: http://svn.apache.org/r1635762
-     2.4.x patch: trunk works
-     +1 covener, ylavic, trawick
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
