@@ -18,6 +18,8 @@
 #include "util_fcgi.h"
 #include "util_script.h"
 
+#include "apr_lib.h" /* for apr_iscntrl() */
+
 module AP_MODULE_DECLARE_DATA proxy_fcgi_module;
 
 /*
@@ -310,13 +312,12 @@ enum {
  *
  * Returns 0 if it can't find the end of the headers, and 1 if it found the
  * end of the headers. */
-static int handle_headers(request_rec *r,
-                          int *state,
-                          char *readbuf)
+static int handle_headers(request_rec *r, int *state,
+                          const char *readbuf, apr_size_t readlen)
 {
     const char *itr = readbuf;
 
-    while (*itr) {
+    while (readlen) {
         if (*itr == '\r') {
             switch (*state) {
                 case HDR_STATE_GOT_CRLF:
@@ -347,13 +348,17 @@ static int handle_headers(request_rec *r,
                      break;
             }
         }
-        else {
+        else if (*itr == '\t' || !apr_iscntrl(*itr)) {
             *state = HDR_STATE_READING_HEADERS;
+        }
+        else {
+            return -1;
         }
 
         if (*state == HDR_STATE_DONE_WITH_HEADERS)
             break;
 
+        --readlen;
         ++itr;
     }
 
@@ -563,7 +568,14 @@ recv_again:
                     APR_BRIGADE_INSERT_TAIL(ob, b);
 
                     if (! seen_end_of_headers) {
-                        int st = handle_headers(r, &header_state, iobuf);
+                        int st = handle_headers(r, &header_state, iobuf,
+                                                readbuflen);
+
+                        if (st == -1) {
+                            *err = "parsing response headers";
+                            rv = APR_EINVAL;
+                            break;
+                        }
 
                         if (st == 1) {
                             int status;
@@ -681,6 +693,11 @@ recv_again:
             default:
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01072)
                               "Got bogus record %d", type);
+                break;
+            }
+
+            if (*err) {
+                /* stop on error in the above switch */
                 break;
             }
 
