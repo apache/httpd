@@ -1,5 +1,7 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
+  
+  *) event: Resolve potential crashes under load after r1604350. [Eric Covener]
 
   *) mod_authnz_ldap: Resolve crashes with LDAP authz and non-LDAP authn since 
      r1608202. [Eric Covener]
