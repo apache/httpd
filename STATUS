@@ -189,7 +189,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      in the event MPM under load.
      trunk patch: http://svn.apache.org/r1638691
      2.4.x patch: trunk works + tweak changes
-     +1 covener
+     +1 covener, ylavic
 
 OTHER PROPOSALS
 
