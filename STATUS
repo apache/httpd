@@ -203,6 +203,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      +1 jkaluza
 
+   * event: avoid dereferencing a recently apr_pool_clear()'ed 
+     event_conn_state_t *cs when ptrans is being recycled at EOR.
+     trunk patch: http://svn.apache.org/r1638879
+     2.4.x patch: trunk works
+     +1 covener
+
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
