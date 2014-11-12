@@ -184,7 +184,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              The log_script_err() line may somewhere be expected in error_log.
              The new AH* in script_log could also cause parsing issues, but I'm
              fine with this personnaly.
- 
+
+   * event: Fix a bug in 2.4.10 and 2.4.11 that can lead to crashes 
+     in the event MPM under load.
+     trunk patch: http://svn.apache.org/r1638691
+     2.4.x patch: trunk works + tweak changes
+     +1 covener
+
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
