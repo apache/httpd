@@ -811,7 +811,19 @@ static void set_signals(void)
 #endif
 }
 
-static int start_lingering_close_common(event_conn_state_t *cs)
+static void notify_suspend(event_conn_state_t *cs)
+{
+    ap_run_suspend_connection(cs->c, cs->r);
+    cs->suspended = 1;
+}
+
+static void notify_resume(event_conn_state_t *cs)
+{
+    cs->suspended = 0;
+    ap_run_resume_connection(cs->c, cs->r);
+}
+
+static int start_lingering_close_common(event_conn_state_t *cs, int in_worker)
 {
     apr_status_t rv;
     struct timeout_queue *q;
@@ -849,6 +861,9 @@ static int start_lingering_close_common(event_conn_state_t *cs)
             cs->pub.sense == CONN_SENSE_WANT_WRITE ? APR_POLLOUT :
                     APR_POLLIN) | APR_POLLHUP | APR_POLLERR;
     cs->pub.sense = CONN_SENSE_DEFAULT;
+    if (in_worker) { 
+        notify_suspend(cs);
+    }
     rv = apr_pollset_add(event_pollset, &cs->pfd);
     apr_thread_mutex_unlock(timeout_mutex);
     if (rv != APR_SUCCESS && !APR_STATUS_IS_EEXIST(rv)) {
@@ -882,7 +897,7 @@ static int start_lingering_close_blocking(event_conn_state_t *cs)
         ap_push_pool(worker_queue_info, p);
         return 0;
     }
-    return start_lingering_close_common(cs);
+    return start_lingering_close_common(cs, 1);
 }
 
 /*
@@ -908,7 +923,7 @@ static int start_lingering_close_nonblocking(event_conn_state_t *cs)
         ap_push_pool(worker_queue_info, cs->p);
         return 0;
     }
-    return start_lingering_close_common(cs);
+    return start_lingering_close_common(cs, 0);
 }
 
 /*
@@ -932,18 +947,6 @@ static int stop_lingering_close(event_conn_state_t *cs)
     apr_pool_clear(cs->p);
     ap_push_pool(worker_queue_info, p);
     return 0;
-}
-
-static void notify_suspend(event_conn_state_t *cs)
-{
-    ap_run_suspend_connection(cs->c, cs->r);
-    cs->suspended = 1;
-}
-
-static void notify_resume(event_conn_state_t *cs)
-{
-    cs->suspended = 0;
-    ap_run_resume_connection(cs->c, cs->r);
 }
 
 /*
@@ -1138,7 +1141,6 @@ read_request:
 
     if (cs->pub.state == CONN_STATE_LINGER) {
         start_lingering_close_blocking(cs);
-        notify_suspend(cs);
     }
     else if (cs->pub.state == CONN_STATE_CHECK_REQUEST_LINE_READABLE) {
         /* It greatly simplifies the logic to use a single timeout value here
