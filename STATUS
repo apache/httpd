@@ -221,6 +221,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
                   http://people.apache.org/~jailletc36/backport10.patch
      +1: jailletc36
+
+    * event: avoid potentially concurrent access to a 'cs' right as it goes
+      into lingering close.
+      trunk patch: http://svn.apache.org/r1639614
+      2.4.x patch: trunk works
+      +1: covener
      
 
 OTHER PROPOSALS
