@@ -1137,9 +1137,8 @@ read_request:
     }
 
     if (cs->pub.state == CONN_STATE_LINGER) {
-        if (start_lingering_close_blocking(cs)) { 
-            notify_suspend(cs);
-        }
+        start_lingering_close_blocking(cs);
+        notify_suspend(cs);
     }
     else if (cs->pub.state == CONN_STATE_CHECK_REQUEST_LINE_READABLE) {
         /* It greatly simplifies the logic to use a single timeout value here
