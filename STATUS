@@ -227,7 +227,19 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       trunk patch: http://svn.apache.org/r1639614
       2.4.x patch: trunk works
       +1: covener
-     
+
+   * mod_proxy_connect: Don't issue AH02447 on sockets hangups, let the read
+     determine whether it is a normal close or a real error. PR 57168.
+     trunk patch: http://svn.apache.org/r1635645
+     2.4.x patches: trunk works (modulo CHANGES).
+     +1: ylavic
+
+   * mod_proxy_wstunnel: abort backend connection on polling error to avoid
+     further processing (lingering close, SSL shutdown).
+     trunk patch: http://svn.apache.org/r1635644
+     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-mod_proxy_wstunnel-aborted.patch
+     +1: ylavic
+
 
 OTHER PROPOSALS
 
