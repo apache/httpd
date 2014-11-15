@@ -196,13 +196,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      leak in mod_ssl on graceful restart. PR 53435.
      trunk patch: http://svn.apache.org/r1638772
      2.4.x patch: trunk works
-     +1 jkaluza
+     +1 jkaluza, ylavic
 
    * event: avoid dereferencing a recently apr_pool_clear()'ed 
      event_conn_state_t *cs when ptrans is being recycled at EOR.
      trunk patch: http://svn.apache.org/r1638879
      2.4.x patch: trunk works
-     +1 covener
+     +1 covener, ylavic
 
    * easy proposals to synch 2.4.x and trunk
         - ssl: Axe needless string duplication in setup for call to apr_proc_create()
@@ -221,13 +221,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1418763
      2.4.x patch: trunk works
                   http://people.apache.org/~jailletc36/backport10.patch
-     +1: jailletc36
+     +1: jailletc36, ylavic
 
     * event: avoid potentially concurrent access to a 'cs' right as it goes
       into lingering close.
       trunk patch: http://svn.apache.org/r1639614
       2.4.x patch: trunk works
-      +1: covener
+      +1: covener, ylavic
 
    * mod_proxy_connect: Don't issue AH02447 on sockets hangups, let the read
      determine whether it is a normal close or a real error. PR 57168.
