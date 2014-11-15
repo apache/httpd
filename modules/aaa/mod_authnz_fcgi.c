@@ -442,11 +442,8 @@ static int handle_headers(request_rec *r, int *state,
                      break;
             }
         }
-        else if (*itr == '\t' || !apr_iscntrl(*itr)) {
-            *state = HDR_STATE_READING_HEADERS;
-        }
         else {
-            return -1;
+            *state = HDR_STATE_READING_HEADERS;
         }
 
         if (*state == HDR_STATE_DONE_WITH_HEADERS)
