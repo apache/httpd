@@ -110,6 +110,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * SECURITY: CVE-2014-3583 (cve.mitre.org)
      mod_proxy_fcgi: Fix a potential crash with response headers' size above 8K.
      trunk patch: http://svn.apache.org/r1638818
+                  http://svn.apache.org/r1639812
      2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic
 
@@ -238,6 +239,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      further processing (lingering close, SSL shutdown).
      trunk patch: http://svn.apache.org/r1635644
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-mod_proxy_wstunnel-aborted.patch
+     +1: ylavic
+
+   * mod_authnz_fcgi: Fix a potential crash with response headers' size above 8K.
+     trunk patch: http://svn.apache.org/r1639717
+                  http://svn.apache.org/r1639814
+     2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic
 
 
