@@ -820,12 +820,10 @@ static int process_pollop(pollset_op_t *op)
     rv = apr_pollset_add(event_pollset, &op->cs->pfd);
 
     if (rv != APR_SUCCESS && !APR_STATUS_IS_EEXIST(rv)) {
-        apr_pool_t *p = cs->p;
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf, APLOGNO(00467)
                      "%s: apr_pollset_add failure", op->tag);
         apr_socket_close(cs->pfd.desc.s);
-        apr_pool_clear(cs->p);
-        ap_push_pool(worker_queue_info, p);
+        ap_push_pool(worker_queue_info, cs->p);
         return 0;
     }
     return 1;
@@ -911,9 +909,7 @@ static int start_lingering_close(event_conn_state_t *cs, ap_equeue_t *eq)
 static int start_lingering_close_blocking(event_conn_state_t *cs, ap_equeue_t *eq)
 {
     if (ap_start_lingering_close(cs->c)) {
-        apr_pool_t *p = cs->p;
-        apr_pool_clear(cs->p);
-        ap_push_pool(worker_queue_info, p);
+        ap_push_pool(worker_queue_info, cs->p);
         return 0;
     }
     return start_lingering_close(cs, eq);
@@ -937,10 +933,8 @@ static int start_lingering_close_nonblocking(event_conn_state_t *cs, ap_equeue_t
     if (c->aborted
         || ap_shutdown_conn(c, 0) != APR_SUCCESS || c->aborted
         || apr_socket_shutdown(csd, APR_SHUTDOWN_WRITE) != APR_SUCCESS) {
-        apr_pool_t *p = cs->p;
         apr_socket_close(csd);
-        apr_pool_clear(cs->p);
-        ap_push_pool(worker_queue_info, p);
+        ap_push_pool(worker_queue_info, cs->p);
         return 0;
     }
     return start_lingering_close(cs, eq);
@@ -956,7 +950,6 @@ static int stop_lingering_close(event_conn_state_t *cs, ap_equeue_t *eq)
 {
     apr_status_t rv;
     apr_socket_t *csd = ap_get_conn_socket(cs->c);
-    apr_pool_t *p = cs->p;
     ap_log_error(APLOG_MARK, APLOG_TRACE4, 0, ap_server_conf,
                  "socket reached timeout in lingering-close state");
     rv = apr_socket_close(csd);
@@ -964,8 +957,7 @@ static int stop_lingering_close(event_conn_state_t *cs, ap_equeue_t *eq)
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf, APLOGNO(00468) "error closing socket");
         AP_DEBUG_ASSERT(0);
     }
-    apr_pool_clear(cs->p);
-    ap_push_pool(worker_queue_info, p);
+    ap_push_pool(worker_queue_info, cs->p);
     return 0;
 }
 
@@ -992,8 +984,6 @@ static void process_socket(apr_thread_t *thd, apr_pool_t * p, apr_socket_t * soc
         c = ap_run_create_connection(p, ap_server_conf, sock,
                                      conn_id, sbh, cs->bucket_alloc);
         if (!c) {
-            apr_bucket_alloc_destroy(cs->bucket_alloc);
-            apr_pool_clear(p);
             ap_push_pool(worker_queue_info, p);
             return;
         }
@@ -1315,7 +1305,6 @@ static apr_status_t push2worker(const apr_pollfd_t * pfd,
 
     rc = ap_queue_push(worker_queue, cs->pfd.desc.s, cs, cs->p);
     if (rc != APR_SUCCESS) {
-        apr_pool_t *p = cs->p;
         /* trash the connection; we couldn't queue the connected
          * socket to a worker
          */
@@ -1323,8 +1312,7 @@ static apr_status_t push2worker(const apr_pollfd_t * pfd,
         apr_socket_close(cs->pfd.desc.s);
         ap_log_error(APLOG_MARK, APLOG_CRIT, rc,
                      ap_server_conf, APLOGNO(00471) "push2worker: ap_queue_push failed");
-        apr_pool_clear(cs->p);
-        ap_push_pool(worker_queue_info, p);
+        ap_push_pool(worker_queue_info, cs->p);
     }
 
     return rc;
@@ -1436,7 +1424,6 @@ static void process_lingering_close(event_conn_state_t *cs, const apr_pollfd_t *
     apr_size_t nbytes;
     apr_status_t rv;
     struct timeout_queue *q;
-    apr_pool_t *p = cs->p;
     q = (cs->pub.state == CONN_STATE_LINGER_SHORT) ?  &short_linger_q : &linger_q;
 
     /* socket is already in non-blocking state */
@@ -1458,8 +1445,7 @@ static void process_lingering_close(event_conn_state_t *cs, const apr_pollfd_t *
     TO_QUEUE_REMOVE(*q, cs);
     TO_QUEUE_ELEM_INIT(cs);
 
-    apr_pool_clear(cs->p);
-    ap_push_pool(worker_queue_info, p);
+    ap_push_pool(worker_queue_info, cs->p);
 }
 
 /* call 'func' for all elements of 'q' with timeout less than 'timeout_time'.
@@ -1773,7 +1759,6 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                             ap_log_error(APLOG_MARK, APLOG_CRIT, rc,
                                          ap_server_conf,
                                          "ap_queue_push failed");
-                            apr_pool_clear(ptrans);
                             ap_push_pool(worker_queue_info, ptrans);
                         }
                         else {
@@ -1781,7 +1766,6 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                         }
                     }
                     else {
-                        apr_pool_clear(ptrans);
                         ap_push_pool(worker_queue_info, ptrans);
                     }
                 }
