@@ -245,9 +245,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-mod_proxy_wstunnel-aborted.patch
      +1: ylavic
 
-   * mod_authnz_fcgi: Fix a potential crash with response headers' size above 8K.
-     trunk patch: http://svn.apache.org/r1639717
-                  http://svn.apache.org/r1639814
+   * mod_proxy_fcgi, mod_authnz_fcgi: stop reading the response and issue an error
+     when parsing or forwarding the response fails.
+     trunk patch: http://svn.apache.org/r1640040
+                  http://svn.apache.org/r1640042
      2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic
 
