@@ -683,6 +683,10 @@ recv_again:
                               "Got bogus record %d", type);
                 break;
             }
+            /* Leave on above switch's inner error. */
+            if (rv != APR_SUCCESS) {
+                break;
+            }
 
             if (plen) {
                 rv = get_data_full(conn, iobuf, plen);
