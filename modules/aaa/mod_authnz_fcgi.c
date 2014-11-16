@@ -406,12 +406,13 @@ enum {
  *
  * Returns 0 if it can't find the end of the headers, and 1 if it found the
  * end of the headers. */
-static int handle_headers(request_rec *r, int *state,
-                          char *readbuf, apr_size_t readlen)
+static int handle_headers(request_rec *r,
+                          int *state,
+                          char *readbuf)
 {
     const char *itr = readbuf;
 
-    while (readlen) {
+    while (*itr) {
         if (*itr == '\r') {
             switch (*state) {
                 case HDR_STATE_GOT_CRLF:
@@ -449,7 +450,6 @@ static int handle_headers(request_rec *r, int *state,
         if (*state == HDR_STATE_DONE_WITH_HEADERS)
             break;
 
-        --readlen;
         ++itr;
     }
 
@@ -555,17 +555,7 @@ static apr_status_t handle_response(const fcgi_provider_conf *conf,
                 APR_BRIGADE_INSERT_TAIL(ob, b);
 
                 if (!seen_end_of_headers) {
-                    int st = handle_headers(r, &header_state, readbuf,
-                                            readbuflen);
-
-                    if (st == -1) {
-                        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                                      APLOGNO(02821) "%s: error reading "
-                                      "headers from %s",
-                                      fn, conf->backend);
-                        rv = APR_EINVAL;
-                        break;
-                    }
+                    int st = handle_headers(r, &header_state, readbuf);
 
                     if (st == 1) {
                         int status;
@@ -656,7 +646,7 @@ static apr_status_t handle_response(const fcgi_provider_conf *conf,
         /*
          * Read/discard any trailing padding.
          */
-        if (rv == APR_SUCCESS && plen) {
+        if (plen) {
             rv = recv_data_full(conf, r, s, readbuf, plen);
             if (rv != APR_SUCCESS) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
