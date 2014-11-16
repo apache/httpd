@@ -1,13 +1,6 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
   
-  *) SECURITY: CVE-2014-3583 (cve.mitre.org)
-     mod_proxy_fcgi: Fix a potential crash with response headers' size above 8K.
-     [Teguh <chain rop.io>, Yann Ylavic]
-
-  *) mod_authnz_fcgi: Fix a potential crash with response headers' size above 8K.
-     [Yann Ylavic]
-
   *) mod_authnz_ldap: Resolve crashes with LDAP authz and non-LDAP authn since 
      r1608202. [Eric Covener]
  
