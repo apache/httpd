@@ -858,10 +858,10 @@ static void startup_children(int number_to_start)
     }
 }
 
-static int bucket_make_child_record = -1;
-static int bucket_kill_child_record = -1;
 static void perform_idle_server_maintenance(apr_pool_t *p)
 {
+    static int bucket_make_child_record = -1;
+    static int bucket_kill_child_record = -1;
     int i;
     int idle_count;
     worker_score *ws;
@@ -939,8 +939,9 @@ static void perform_idle_server_maintenance(apr_pool_t *p)
             }
             for (i = 0; i < free_length; ++i) {
                 bucket_make_child_record++;
+                bucket_make_child_record %= num_buckets;
                 make_child(ap_server_conf, free_slots[i],
-                           bucket_make_child_record % num_buckets);
+                           bucket_make_child_record);
             }
             /* the next time around we want to spawn twice as many if this
              * wasn't good enough, but not if we've just done a graceful
