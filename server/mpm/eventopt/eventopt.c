@@ -338,7 +338,8 @@ typedef struct event_retained_data {
      * doubled up to MAX_SPAWN_RATE, and reset only when a cycle goes by
      * without the need to spawn.
      */
-    int *idle_spawn_rate;
+    int *idle_spawn_rate,
+         idle_spawn_rate_len;
 #ifndef MAX_SPAWN_RATE
 #define MAX_SPAWN_RATE        (32)
 #endif
@@ -3042,6 +3043,22 @@ static int event_open_logs(apr_pool_t * p, apr_pool_t * plog,
         all_buckets[i].listeners = listen_buckets[i];
     }
 
+    if (retained->idle_spawn_rate_len < num_buckets) {
+        int *new_ptr, new_len;
+        new_len = retained->idle_spawn_rate_len * 2;
+        if (new_len < num_buckets) {
+            new_len = num_buckets;
+        }
+        new_ptr = (int *)apr_palloc(ap_pglobal, new_len * sizeof(int));
+        memcpy(new_ptr, retained->idle_spawn_rate,
+               retained->idle_spawn_rate_len * sizeof(int));
+        for (i = retained->idle_spawn_rate_len; i < new_len; i++) {
+            new_ptr[i] = 1;
+        }
+        retained->idle_spawn_rate_len = new_len;
+        retained->idle_spawn_rate = new_ptr;
+    }
+
     /* for skiplist */
     srand((unsigned int)apr_time_now());
     return OK;
@@ -3053,7 +3070,6 @@ static int event_pre_config(apr_pool_t * pconf, apr_pool_t * plog,
     int no_detach, debug, foreground;
     apr_status_t rv;
     const char *userdata_key = "mpm_eventopt_module";
-    int i;
 
     mpm_state = AP_MPMQ_STARTING;
 
@@ -3087,10 +3103,7 @@ static int event_pre_config(apr_pool_t * pconf, apr_pool_t * plog,
                          "atomics not working as expected - add32 of negative number");
             return HTTP_INTERNAL_SERVER_ERROR;
         }
-        retained->idle_spawn_rate = apr_palloc(pconf, sizeof(int) * num_buckets);
-        for (i = 0; i< num_buckets; i++) {
-            retained->idle_spawn_rate[i] = 1;
-        }
+
         rv = apr_pollset_create(&event_pollset, 1, plog,
                                 APR_POLLSET_WAKEABLE|APR_POLLSET_NOCOPY);
         if (rv != APR_SUCCESS) {
