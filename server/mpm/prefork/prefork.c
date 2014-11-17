@@ -1281,6 +1281,7 @@ static int prefork_open_logs(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
     int level_flags = 0;
     ap_listen_rec **listen_buckets;
     apr_status_t rv;
+    char id[16];
     int i;
 
     pconf = p;
@@ -1322,10 +1323,11 @@ static int prefork_open_logs(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
                          "could not open pipe-of-death");
             return DONE;
         }
-        /* Initialize cross-process accept lock when safe accept is needed */
-        if ((rv = SAFE_ACCEPT(ap_proc_mutex_create(&all_buckets[i].mutex, NULL,
-                                                   AP_ACCEPT_MUTEX_TYPE, NULL,
-                                                   s, pconf, 0)))) {
+        /* Initialize cross-process accept lock (safe accept is needed only) */
+        if ((rv = SAFE_ACCEPT((apr_snprintf(id, sizeof id, "%i", i),
+                               ap_proc_mutex_create(&all_buckets[i].mutex,
+                                                    NULL, AP_ACCEPT_MUTEX_TYPE,
+                                                    id, s, pconf, 0))))) {
             ap_log_error(APLOG_MARK, APLOG_CRIT | level_flags, rv,
                          (startup ? NULL : s),
                          "could not create accept mutex");
