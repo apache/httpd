@@ -491,7 +491,7 @@ static apr_status_t handle_response(const fcgi_provider_conf *conf,
         apr_size_t readbuflen;
         apr_uint16_t clen;
         apr_uint16_t rid;
-        char readbuf[AP_IOBUFSIZE + 1];
+        char readbuf[AP_IOBUFSIZE];
         unsigned char farray[AP_FCGI_HEADER_LEN];
         unsigned char plen;
         unsigned char type;
@@ -527,8 +527,8 @@ static apr_status_t handle_response(const fcgi_provider_conf *conf,
 
     recv_again: /* if we need to keep reading more of a record's content */
 
-        if (clen > sizeof(readbuf) - 1) {
-            readbuflen = sizeof(readbuf) - 1;
+        if (clen > sizeof(readbuf)) {
+            readbuflen = sizeof(readbuf);
         } else {
             readbuflen = clen;
         }
@@ -541,7 +541,6 @@ static apr_status_t handle_response(const fcgi_provider_conf *conf,
             if (rv != APR_SUCCESS) {
                 break;
             }
-            readbuf[readbuflen] = '\0';
         }
 
         switch (type) {
