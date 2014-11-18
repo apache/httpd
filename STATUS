@@ -108,11 +108,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
    * SECURITY: CVE-2014-3583 (cve.mitre.org)
-     mod_proxy_fcgi, mod_authnz_fcgi: Fix a potential crash with response
-     headers' size above 8K.
+     mod_proxy_fcgi: Fix a potential crash with response headers' size above 8K.
      trunk patch: http://svn.apache.org/r1640036
+                  http://svn.apache.org/r1640331 (tweak to CHANGES)
      2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic
+     +1: ylavic, trawick
 
    * mod_proxy: Preserve original request headers even if they differ
                 from the ones to be forwarded to the backend. PR 45387.
@@ -250,7 +250,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1640040
                   http://svn.apache.org/r1640042
      2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic
+     +1: ylavic, trawick
 
 
 OTHER PROPOSALS
