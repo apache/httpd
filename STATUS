@@ -263,6 +263,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      +1: jkaluza
 
+   * core: Do not match files when using DirectoryMatch. PR 41867.
+     trunk patch: http://svn.apache.org/r1635428
+     2.4.x patch: http://people.apache.org/~jkaluza/patches/httpd-2.4.x-directorymatch.patch
+     +1: jkaluza
 
 OTHER PROPOSALS
 
