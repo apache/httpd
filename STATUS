@@ -122,7 +122,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      changes. PR 44736.  [Jan Kaluza]
      2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-graceful_share_full-v7.patch
      ylavic: trunk/2.4.x not concerned, 2.2.x only.
-     +1: ylavic
+     +1: ylavic, jkaluza
      ylavic: Following the defect reported in PR44736, patch replaced with v7.
              Each worker scoreboard entry needs to be unique per vhost and balancer,
              hence the digest must include their identifiers (to avoid reusing stats
@@ -131,6 +131,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              child_init() to prevent balancer specific parameters initialization in
              init_balancer_members(). Jan, I reset your vote which was based on the
              previous version...
+     jkaluza: I've tested the updated patch in production and it works
+              as expected. Giving my +1 back again.
 
    * mod_reqtimeout: PR56729: mod_reqtimeout gets confused when it sees a read 
      via check_pipeline() just before a slow HTTP response completes.
