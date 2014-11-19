@@ -252,6 +252,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic, trawick
 
+   * mod_auth_basic: Fix comment mentioning 403 instead of 401. PR 57175.
+     trunk patch: http://svn.apache.org/r1638072
+     2.4.x patch: trunk works
+     +1: jkaluza
+
+   * core: Check for child_num < 0 also in ap_update_child_status
+     and ap_update_child_status_from_conn in scoreboard.c. PR 56767.
+     trunk patch: http://svn.apache.org/r1638073
+     2.4.x patch: trunk works
+     +1: jkaluza
+
 
 OTHER PROPOSALS
 
