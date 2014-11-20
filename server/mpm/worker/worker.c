@@ -160,15 +160,20 @@ typedef struct worker_retained_data {
     /*
      * idle_spawn_rate is the number of children that will be spawned on the
      * next maintenance cycle if there aren't enough idle servers.  It is
-     * doubled up to MAX_SPAWN_RATE, and reset only when a cycle goes by
-     * without the need to spawn.
+     * maintained per listeners bucket, doubled up to MAX_SPAWN_RATE, and
+     * reset only when a cycle goes by without the need to spawn.
      */
-    int *idle_spawn_rate,
-         idle_spawn_rate_len;
+    int *idle_spawn_rate;
 #ifndef MAX_SPAWN_RATE
 #define MAX_SPAWN_RATE        (32)
 #endif
     int hold_off_on_exponential_spawning;
+    /*
+     * Current number of listeners buckets and maximum reached accross
+     * restarts (to size retained data according to dynamic num_buckets,
+     * eg. idle_spawn_rate).
+     */
+    int num_buckets, max_buckets;
 } worker_retained_data;
 static worker_retained_data *retained;
 
@@ -177,7 +182,6 @@ typedef struct worker_child_bucket {
     ap_listen_rec *listeners;
     apr_proc_mutex_t *mutex;
 } worker_child_bucket;
-static int                  num_buckets; /* Number of listeners buckets */
 static worker_child_bucket *all_buckets, /* All listeners buckets */
                            *my_bucket;   /* Current child bucket */
 
@@ -1236,7 +1240,7 @@ static void child_main(int child_num_arg, int child_bucket)
     apr_pool_create(&pchild, pconf);
 
     /* close unused listeners and pods */
-    for (i = 0; i < num_buckets; i++) {
+    for (i = 0; i < retained->num_buckets; i++) {
         if (i != child_bucket) {
             ap_close_listeners_ex(all_buckets[i].listeners);
             ap_mpm_podx_close(all_buckets[i].pod);
@@ -1476,14 +1480,14 @@ static void startup_children(int number_to_start)
         if (ap_scoreboard_image->parent[i].pid != 0) {
             continue;
         }
-        if (make_child(ap_server_conf, i, i % num_buckets) < 0) {
+        if (make_child(ap_server_conf, i, i % retained->num_buckets) < 0) {
             break;
         }
         --number_to_start;
     }
 }
 
-static void perform_idle_server_maintenance(int child_bucket)
+static void perform_idle_server_maintenance(int child_bucket, int num_buckets)
 {
     int i, j;
     int idle_thread_count;
@@ -1680,7 +1684,7 @@ static void perform_idle_server_maintenance(int child_bucket)
     }
 }
 
-static void server_main_loop(int remaining_children_to_start)
+static void server_main_loop(int remaining_children_to_start, int num_buckets)
 {
     ap_generation_t old_gen;
     int child_slot;
@@ -1794,13 +1798,14 @@ static void server_main_loop(int remaining_children_to_start)
         }
 
         for (i = 0; i < num_buckets; i++) {
-            perform_idle_server_maintenance(i);
+            perform_idle_server_maintenance(i, num_buckets);
         }
     }
 }
 
 static int worker_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 {
+    int num_buckets = retained->num_buckets;
     int remaining_children_to_start;
     int i;
 
@@ -1820,7 +1825,13 @@ static int worker_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     restart_pending = shutdown_pending = 0;
     set_signals();
 
-    /* Don't thrash... */
+    /* Don't thrash since num_buckets depends on the
+     * system and the number of online CPU cores...
+     */
+    if (ap_daemons_limit < num_buckets)
+        ap_daemons_limit = num_buckets;
+    if (ap_daemons_to_start < num_buckets)
+        ap_daemons_to_start = num_buckets;
     if (min_spare_threads < threads_per_child * num_buckets)
         min_spare_threads = threads_per_child * num_buckets;
     if (max_spare_threads < min_spare_threads + threads_per_child * num_buckets)
@@ -1862,7 +1873,7 @@ static int worker_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
                 apr_proc_mutex_defname());
     mpm_state = AP_MPMQ_RUNNING;
 
-    server_main_loop(remaining_children_to_start);
+    server_main_loop(remaining_children_to_start, num_buckets);
     mpm_state = AP_MPMQ_STOPPING;
 
     if (shutdown_pending && !retained->is_graceful) {
@@ -2001,6 +2012,7 @@ static int worker_open_logs(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, 
 {
     int startup = 0;
     int level_flags = 0;
+    int num_buckets = 0;
     ap_listen_rec **listen_buckets;
     apr_status_t rv;
     char id[16];
@@ -2024,9 +2036,9 @@ static int worker_open_logs(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, 
     if (one_process) {
         num_buckets = 1;
     }
-    else if (!retained->is_graceful) { /* Preserve the number of buckets
-                                          on graceful restarts. */
-        num_buckets = 0;
+    else if (retained->is_graceful) {
+        /* Preserve the number of buckets on graceful restarts. */
+        num_buckets = retained->num_buckets;
     }
     if ((rv = ap_duplicate_listeners(pconf, ap_server_conf,
                                      &listen_buckets, &num_buckets))) {
@@ -2035,8 +2047,8 @@ static int worker_open_logs(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, 
                      "could not duplicate listeners");
         return DONE;
     }
-    all_buckets = apr_pcalloc(pconf, num_buckets *
-                                     sizeof(worker_child_bucket));
+
+    all_buckets = apr_pcalloc(pconf, num_buckets * sizeof(*all_buckets));
     for (i = 0; i < num_buckets; i++) {
         if (!one_process && /* no POD in one_process mode */
                 (rv = ap_mpm_podx_open(pconf, &all_buckets[i].pod))) {
@@ -2045,7 +2057,7 @@ static int worker_open_logs(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, 
                          "could not open pipe-of-death");
             return DONE;
         }
-        /* Initialize cross-process accept lock (safe accept is needed only) */
+        /* Initialize cross-process accept lock (safe accept needed only) */
         if ((rv = SAFE_ACCEPT((apr_snprintf(id, sizeof id, "%i", i),
                                ap_proc_mutex_create(&all_buckets[i].mutex,
                                                     NULL, AP_ACCEPT_MUTEX_TYPE,
@@ -2058,21 +2070,34 @@ static int worker_open_logs(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, 
         all_buckets[i].listeners = listen_buckets[i];
     }
 
-    if (retained->idle_spawn_rate_len < num_buckets) {
-        int *new_ptr, new_len;
-        new_len = retained->idle_spawn_rate_len * 2;
-        if (new_len < num_buckets) {
-            new_len = num_buckets;
+    if (retained->max_buckets < num_buckets) {
+        int new_max, *new_ptr;
+        new_max = retained->max_buckets * 2;
+        if (new_max < num_buckets) {
+            new_max = num_buckets;
         }
-        new_ptr = (int *)apr_palloc(ap_pglobal, new_len * sizeof(int));
+        new_ptr = (int *)apr_palloc(ap_pglobal, new_max * sizeof(int));
         memcpy(new_ptr, retained->idle_spawn_rate,
-               retained->idle_spawn_rate_len * sizeof(int));
-        for (i = retained->idle_spawn_rate_len; i < new_len; i++) {
-            new_ptr[i] = 1;
-        }
-        retained->idle_spawn_rate_len = new_len;
+               retained->num_buckets * sizeof(int));
         retained->idle_spawn_rate = new_ptr;
+        retained->max_buckets = new_max;
     }
+    if (retained->num_buckets < num_buckets) {
+        int rate_max = 1;
+        /* If new buckets are added, set their idle spawn rate to
+         * the highest so far, so that they get filled as quickly
+         * as the existing ones.
+         */
+        for (i = 0; i < retained->num_buckets; i++) {
+            if (rate_max < retained->idle_spawn_rate[i]) {
+                rate_max = retained->idle_spawn_rate[i];
+            }
+        }
+        for (/* up to date i */; i < num_buckets; i++) {
+            retained->idle_spawn_rate[i] = rate_max;
+        }
+    }
+    retained->num_buckets = num_buckets;
 
     return OK;
 }
@@ -2334,12 +2359,6 @@ static int worker_check_config(apr_pool_t *p, apr_pool_t *plog,
         }
         ap_daemons_limit = server_limit;
     }
-    else if (ap_daemons_limit < num_buckets) {
-        /* Don't thrash since num_buckets depends on
-         * the system and the number of CPU cores.
-         */
-        ap_daemons_limit = num_buckets;
-    }
 
     /* ap_daemons_to_start > ap_daemons_limit checked in worker_run() */
     if (ap_daemons_to_start < 1) {
@@ -2353,12 +2372,6 @@ static int worker_check_config(apr_pool_t *p, apr_pool_t *plog,
                          ap_daemons_to_start);
         }
         ap_daemons_to_start = 1;
-    }
-    if (ap_daemons_to_start < num_buckets) {
-        /* Don't thrash since num_buckets depends on
-         * the system and the number of CPU cores.
-         */
-        ap_daemons_to_start = num_buckets;
     }
 
     if (min_spare_threads < 1) {
@@ -2376,12 +2389,6 @@ static int worker_check_config(apr_pool_t *p, apr_pool_t *plog,
                          min_spare_threads);
         }
         min_spare_threads = 1;
-    }
-    if (min_spare_threads < num_buckets) {
-        /* Don't thrash since num_buckets depends on
-         * the system and the number of CPU cores.
-         */
-        min_spare_threads = num_buckets;
     }
 
     /* max_spare_threads < min_spare_threads + threads_per_child
