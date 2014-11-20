@@ -993,7 +993,15 @@ static int prefork_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
         return !OK;
     }
 
-    /* Don't thrash... */
+    /* Don't thrash since num_buckets depends on the
+     * system and the number of online CPU cores...
+     */
+    if (ap_daemons_limit < num_buckets)
+        ap_daemons_limit = num_buckets;
+    if (ap_daemons_to_start < num_buckets)
+        ap_daemons_to_start = num_buckets;
+    if (ap_daemons_min_free < num_buckets)
+        ap_daemons_min_free = num_buckets;
     if (ap_daemons_max_free < ap_daemons_min_free + num_buckets)
         ap_daemons_max_free = ap_daemons_min_free + num_buckets;
 
@@ -1324,7 +1332,7 @@ static int prefork_open_logs(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
                          "could not open pipe-of-death");
             return DONE;
         }
-        /* Initialize cross-process accept lock (safe accept is needed only) */
+        /* Initialize cross-process accept lock (safe accept needed only) */
         if ((rv = SAFE_ACCEPT((apr_snprintf(id, sizeof id, "%i", i),
                                ap_proc_mutex_create(&all_buckets[i].mutex,
                                                     NULL, AP_ACCEPT_MUTEX_TYPE,
@@ -1483,12 +1491,6 @@ static int prefork_check_config(apr_pool_t *p, apr_pool_t *plog,
         }
         ap_daemons_limit = 1;
     }
-    if (ap_daemons_limit < num_buckets) {
-        /* Don't thrash since num_buckets depends on
-         * the system and the number of CPU cores.
-         */
-        ap_daemons_limit = num_buckets;
-    }
 
     /* ap_daemons_to_start > ap_daemons_limit checked in prefork_run() */
     if (ap_daemons_to_start < 1) {
@@ -1502,12 +1504,6 @@ static int prefork_check_config(apr_pool_t *p, apr_pool_t *plog,
                          ap_daemons_to_start);
         }
         ap_daemons_to_start = 1;
-    }
-    if (ap_daemons_to_start < num_buckets) {
-        /* Don't thrash since num_buckets depends on
-         * the system and the number of CPU cores.
-         */
-        ap_daemons_to_start = num_buckets;
     }
 
     if (ap_daemons_min_free < 1) {
@@ -1525,12 +1521,6 @@ static int prefork_check_config(apr_pool_t *p, apr_pool_t *plog,
                          ap_daemons_min_free);
         }
         ap_daemons_min_free = 1;
-    }
-    if (ap_daemons_min_free < num_buckets) {
-        /* Don't thrash since num_buckets depends on
-         * the system and the number of CPU cores.
-         */
-        ap_daemons_min_free = num_buckets;
     }
 
     /* ap_daemons_max_free < ap_daemons_min_free + 1 checked in prefork_run() */
