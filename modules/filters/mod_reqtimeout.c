@@ -164,6 +164,7 @@ static apr_status_t brigade_append(apr_bucket_brigade *bbOut, apr_bucket_brigade
 }
 
 
+#define MIN(x,y) ((x) < (y) ? (x) : (y))
 static apr_status_t reqtimeout_filter(ap_filter_t *f,
                                       apr_bucket_brigade *bb,
                                       ap_input_mode_t mode,
@@ -227,10 +228,8 @@ static apr_status_t reqtimeout_filter(ap_filter_t *f,
     rv = apr_socket_timeout_get(ccfg->socket, &saved_sock_timeout);
     AP_DEBUG_ASSERT(rv == APR_SUCCESS);
 
-    if (time_left < saved_sock_timeout) {
-        rv = apr_socket_timeout_set(ccfg->socket, time_left);
-        AP_DEBUG_ASSERT(rv == APR_SUCCESS);
-    }
+    rv = apr_socket_timeout_set(ccfg->socket, MIN(time_left, saved_sock_timeout));
+    AP_DEBUG_ASSERT(rv == APR_SUCCESS);
 
     if (mode == AP_MODE_GETLINE) {
         /*
@@ -299,10 +298,9 @@ static apr_status_t reqtimeout_filter(ap_filter_t *f,
             if (rv != APR_SUCCESS)
                 break;
 
-            if (time_left < saved_sock_timeout) {
-                rv = apr_socket_timeout_set(ccfg->socket, time_left);
-                AP_DEBUG_ASSERT(rv == APR_SUCCESS);
-            }
+            rv = apr_socket_timeout_set(ccfg->socket,
+                                   MIN(time_left, saved_sock_timeout));
+            AP_DEBUG_ASSERT(rv == APR_SUCCESS);
 
         } while (1);
 
@@ -318,9 +316,7 @@ static apr_status_t reqtimeout_filter(ap_filter_t *f,
         }
     }
 
-    if (saved_sock_timeout != time_left) {
-        apr_socket_timeout_set(ccfg->socket, saved_sock_timeout);
-    }
+    apr_socket_timeout_set(ccfg->socket, saved_sock_timeout);
 
 out:
     if (APR_STATUS_IS_TIMEUP(rv)) {
