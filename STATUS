@@ -19,6 +19,8 @@ Consult the following STATUS files for information on related projects:
   * http://svn.apache.org/repos/asf/apr/apr/trunk/STATUS
   * http://svn.apache.org/repos/asf/apr/apr/branches/1.4.x/STATUS
   * http://svn.apache.org/repos/asf/apr/apr-util/branches/1.4.x/STATUS
+  * http://svn.apache.org/repos/asf/apr/apr/branches/1.5.x/STATUS
+  * http://svn.apache.org/repos/asf/apr/apr-util/branches/1.5.x/STATUS
 
 Patches considered for backport are noted in their branches' STATUS:
 
@@ -102,17 +104,16 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-
-
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
-
    * SECURITY: CVE-2014-3583 (cve.mitre.org)
      mod_proxy_fcgi: Fix a potential crash with response headers' size above 8K.
      trunk patch: http://svn.apache.org/r1640036
                   http://svn.apache.org/r1640331 (tweak to CHANGES)
      2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, trawick
+     +1: ylavic, trawick, mrumph
+
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
 
    * mod_proxy: Preserve original request headers even if they differ
                 from the ones to be forwarded to the backend. PR 45387.
