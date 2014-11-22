@@ -210,13 +210,13 @@ static BOOL stapling_cache_response(server_rec *s, modssl_ctx_t *mctx,
                                     BOOL ok, apr_pool_t *pool)
 {
     SSLModConfigRec *mc = myModConfig(s);
-    unsigned char resp_der[MAX_STAPLING_DER];
+    unsigned char resp_der[MAX_STAPLING_DER]; /* includes one-byte flag + response */
     unsigned char *p;
     int resp_derlen;
     BOOL rv;
     apr_time_t expiry;
 
-    resp_derlen = i2d_OCSP_RESPONSE(rsp, NULL) + 1;
+    resp_derlen = i2d_OCSP_RESPONSE(rsp, NULL);
 
     if (resp_derlen <= 0) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(01927)
@@ -224,7 +224,7 @@ static BOOL stapling_cache_response(server_rec *s, modssl_ctx_t *mctx,
         return FALSE;
     }
 
-    if (resp_derlen > sizeof resp_der) {
+    if (resp_derlen + 1 > sizeof resp_der) { /* response + ok flag too big? */
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(01928)
                      "OCSP stapling response too big (%u bytes)", resp_derlen);
         return FALSE;
