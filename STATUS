@@ -238,13 +238,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      determine whether it is a normal close or a real error. PR 57168.
      trunk patch: http://svn.apache.org/r1635645
      2.4.x patches: trunk works (modulo CHANGES).
-     +1: ylavic
+     +1: ylavic, covener
 
    * mod_proxy_wstunnel: abort backend connection on polling error to avoid
      further processing (lingering close, SSL shutdown).
      trunk patch: http://svn.apache.org/r1635644
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-mod_proxy_wstunnel-aborted.patch
-     +1: ylavic
+     +1: ylavic, covener
 
    * mod_proxy_fcgi, mod_authnz_fcgi: stop reading the response and issue an error
      when parsing or forwarding the response fails.
@@ -262,12 +262,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      and ap_update_child_status_from_conn in scoreboard.c. PR 56767.
      trunk patch: http://svn.apache.org/r1638073
      2.4.x patch: trunk works
-     +1: jkaluza
+     +1: jkaluza, covener
 
    * core: Do not match files when using DirectoryMatch. PR 41867.
      trunk patch: http://svn.apache.org/r1635428
      2.4.x patch: http://people.apache.org/~jkaluza/patches/httpd-2.4.x-directorymatch.patch
-     +1: jkaluza
+     +1: jkaluza, covener
 
 OTHER PROPOSALS
 
