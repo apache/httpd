@@ -5,6 +5,9 @@ Changes with Apache 2.5.0
      mod_proxy_fcgi: Fix a potential crash with response headers' size above 
      8K. [Teguh <chain rop.io>, Yann Ylavic, Jeff Trawick]
 
+  *) mod_ssl: Fix recognition of OCSP stapling responses that are encoded
+     improperly or too large.  [Jeff Trawick]
+
   *) mod_proxy_fcgi, mod_authnz_fcgi: stop reading the response and issue an
      error when parsing or forwarding the response fails. [Yann Ylavic]
 
