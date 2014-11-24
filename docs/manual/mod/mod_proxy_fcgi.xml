@@ -120,6 +120,22 @@ ProxyPass /myapp/ balancer://myappcluster/
 &lt;/Proxy&gt;
     </highlight>
     </example>
+
+    <example><title>Proxy via Handler</title>
+      <p>You can also force a request to be handled as a reverse-proxy
+        request, by creating a suitable Handler pass-through. The example
+        configuration below will pass all requests for PHP scripts to the
+        specified FastCGI server using reverse proxy:
+      </p>
+      <highlight language="config">
+&lt;FilesMatch \.php$&gt;
+    SetHandler  "proxy:unix:/path/to/app.sock|fcgi://localhost/"
+&lt;/FilesMatch&gt;
+      </highlight>
+   <p>This feature is available in Apache HTTP Server 2.4.10 and later. For performance
+   reasons, you will want to define a <a href="../mod_proxy.html#worker">worker</a>
+   representing the same fcgi:// backend.</p>
+   </example>
 </section>
 
 <section id="env"><title>Environment Variables</title>
