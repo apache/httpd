@@ -1493,7 +1493,7 @@ ProxyPassReverse  /mirror/foo/ https://backend.example.com/</pre>
     <p>Suppose the local server has address <code>http://example.com/</code>;
     then</p>
 
-    <pre class="prettyprint lang-config">ProxyPassMatch ^(/.*\.gif)$ http://backend.example.com$1</pre>
+    <pre class="prettyprint lang-config">ProxyPassMatch ^/(.*\.gif)$ http://backend.example.com/$1</pre>
 
 
     <p>will cause a local request for
