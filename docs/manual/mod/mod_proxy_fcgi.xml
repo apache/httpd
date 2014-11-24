@@ -85,6 +85,26 @@
       </highlight>
     </example>
 
+    <p> The following example passes the request URI as a filesystem 
+    path for the PHP-FPM daemon to run. The request URL is implicitly added 
+    to the 2nd parameter. The hostname and port following fcgi:// are where
+    PHP-FPM is listening.</p>
+    <example><title>PHP-FPM</title>
+    <highlight language="config">
+      ProxyPassMatch ^/myapp/.*\.php(/.*)?$ fcgi://localhost:9000/var/www/
+    </highlight>
+    </example>
+
+    <p> The following example passes the request URI as a filesystem
+    path for the PHP-FPM daemon to run. In this case, PHP-FPM is listening on
+    a unix domain socket (UDS).  Requires 2.4.9 or later. With this syntax,
+    the hostname and optional port following fci:// are ignored.</p>
+    <example><title>PHP-FPM with UDS</title>
+    <highlight language="config">
+      ProxyPassMatch ^/(.*\.php(/.*)?)$ "unix:/var/run/php5-fpm.sock|fcgi://localhost/var/www/"
+    </highlight>
+    </example>
+
     <p>The balanced gateway needs <module>mod_proxy_balancer</module> and
     at least one load balancer algorithm module, such as
     <module>mod_lbmethod_byrequests</module>, in addition to the proxy
