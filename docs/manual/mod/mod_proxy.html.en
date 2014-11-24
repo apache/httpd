@@ -1521,6 +1521,13 @@ ProxyPassReverse  /mirror/foo/ https://backend.example.com/</pre>
     <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> directive with the
     <code>[P]</code> flag.</p>
 
+    <div class="note">
+      <h3>Default Substitution</h3>
+      <p>When the URL parameter doesn't use any backreferences into the regular
+      expression, the original URL will be appended to the URL parameter.
+      </p>
+    </div>
+
     <div class="warning">
       <h3>Security Warning</h3>
       <p>Take care when constructing the target URL of the rule, considering
