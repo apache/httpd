@@ -1544,7 +1544,8 @@ static int ap_proxy_strcmp_ematch(const char *str, const char *expected)
         if (str[x] != expected[y])
             return 1;
     }
-    return (str[x] != '\0');
+    /* We got all the way through the worker path without a difference */
+    return 0;
 }
 
 PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p,
