@@ -1343,7 +1343,7 @@ ProxyPassReverse  /mirror/foo/ https://backend.example.com/
     then</p>
 
     <highlight language="config">
-      ProxyPassMatch ^(/.*\.gif)$ http://backend.example.com$1
+      ProxyPassMatch ^/(.*\.gif)$ http://backend.example.com/$1
     </highlight>
 
     <p>will cause a local request for
