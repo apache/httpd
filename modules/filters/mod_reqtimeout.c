@@ -311,7 +311,12 @@ static apr_status_t reqtimeout_filter(ap_filter_t *f,
     else {
         /* mode != AP_MODE_GETLINE */
         rv = ap_get_brigade(f->next, bb, mode, block, readbytes);
-        if (ccfg->min_rate > 0 && rv == APR_SUCCESS) {
+        /* Don't extend the timeout in speculative mode, wait for
+         * the real (relevant) bytes to be asked later, within the
+         * currently alloted time.
+         */
+        if (ccfg->min_rate > 0 && rv == APR_SUCCESS
+                && mode != AP_MODE_SPECULATIVE) {
             extend_timeout(ccfg, bb);
         }
     }
