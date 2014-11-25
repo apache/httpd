@@ -104,13 +104,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * SECURITY: CVE-2014-3583 (cve.mitre.org)
-     mod_proxy_fcgi: Fix a potential crash with response headers' size above 8K.
-     trunk patch: http://svn.apache.org/r1640036
-                  http://svn.apache.org/r1640331 (tweak to CHANGES)
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, trawick, mrumph
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
