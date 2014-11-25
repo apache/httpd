@@ -196,6 +196,7 @@ static int req_aprtable2luatable_cb_len(void *l, const char *key,
             lua_setfield(L, -2, key);   /* [table<s,t>, table<s,s>] */
             break;
         }
+    
     case LUA_TTABLE:{
             /* [array, table<s,t>, table<s,s>] */
             int size = lua_rawlen(L, -1);
@@ -2580,6 +2581,73 @@ static int req_newindex(lua_State *L)
     return 0;
 }
 
+
+
+/* helper function for walking config trees */
+static void read_cfg_tree(lua_State *L, request_rec *r, ap_directive_t *rcfg) {
+    int x = 0;
+    const char* value;
+    ap_directive_t *cfg;
+    lua_newtable(L);
+    
+    for (cfg = rcfg; cfg; cfg = cfg->next) {
+        x++;
+        lua_pushnumber(L, x);
+        lua_newtable(L);
+        value = apr_psprintf(r->pool, "%s %s", cfg->directive, cfg->args);
+        lua_pushstring(L, "directive");
+        lua_pushstring(L, value);
+        lua_settable(L, -3);
+        lua_pushstring(L, "file");
+        lua_pushstring(L, cfg->filename);
+        lua_settable(L, -3);
+        lua_pushstring(L, "line");
+        lua_pushnumber(L, cfg->line_num);
+        lua_settable(L, -3);
+        if (cfg->first_child) {
+            lua_pushstring(L, "children");
+            read_cfg_tree(L, r, cfg->first_child);
+            lua_settable(L, -3);
+        }
+        lua_settable(L, -3);
+    }
+}
+
+static int lua_ap_get_config(lua_State *L) {
+    request_rec *r = ap_lua_check_request_rec(L, 1);   
+    read_cfg_tree(L, r, ap_conftree);
+    
+    return 1;
+}
+
+
+/* Hack, hack, hack...! TODO: Make this actually work properly */
+static int lua_ap_get_active_config(lua_State *L) {
+    ap_directive_t *subdir;
+    ap_directive_t *dir = ap_conftree;
+    request_rec *r = ap_lua_check_request_rec(L, 1);
+    
+    for (dir = ap_conftree; dir; dir = dir->next) {
+        if (ap_strcasestr(dir->directive, "<virtualhost") && dir->first_child) {
+            for (subdir = dir->first_child; subdir; subdir = subdir->next) {
+                if (ap_strcasecmp_match(subdir->directive, "servername") &&
+                        !ap_strcasecmp_match(r->hostname, subdir->args)) {
+                    read_cfg_tree(L, r, dir->first_child);
+                    return 1;
+                }
+                if (ap_strcasecmp_match(subdir->directive, "serveralias") &&
+                        !ap_strcasecmp_match(r->hostname, subdir->args)) {
+                    read_cfg_tree(L, r, dir->first_child);
+                    return 1;
+                }
+            }
+        }
+    }     
+    return 0;
+}
+
+
+
 static const struct luaL_Reg request_methods[] = {
     {"__index", req_dispatch},
     {"__newindex", req_newindex},
@@ -2867,7 +2935,10 @@ void ap_lua_load_request_lmodule(lua_State *L, apr_pool_t *p)
                  makefun(&lua_websocket_close, APL_REQ_FUNTYPE_LUACFUN, p));
     apr_hash_set(dispatch, "wsping", APR_HASH_KEY_STRING,
                  makefun(&lua_websocket_ping, APL_REQ_FUNTYPE_LUACFUN, p));
-    
+    apr_hash_set(dispatch, "config", APR_HASH_KEY_STRING,
+                 makefun(&lua_ap_get_config, APL_REQ_FUNTYPE_LUACFUN, p));
+    apr_hash_set(dispatch, "activeconfig", APR_HASH_KEY_STRING,
+                 makefun(&lua_ap_get_active_config, APL_REQ_FUNTYPE_LUACFUN, p));
     lua_pushlightuserdata(L, dispatch);
     lua_setfield(L, LUA_REGISTRYINDEX, "Apache2.Request.dispatch");
 
