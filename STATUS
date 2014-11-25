@@ -262,6 +262,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~jkaluza/patches/httpd-2.4.x-directorymatch.patch
      +1: jkaluza, covener
 
+   * mod_proxy_fcgi: Ignore body data from backend for 304 responses. PR 57198.
+     trunk patch: http://svn.apache.org/r1640495
+     2.4.x patch: trunk works
+     +1 jkaluza
+
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
