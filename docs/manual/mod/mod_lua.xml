@@ -1039,6 +1039,16 @@ local line = r:wsread()
 
 </highlight>
 
+
+<highlight language="lua">
+r:config() -- Get a walkable tree of the entire httpd configuration
+</highlight>
+
+<highlight language="lua">
+r:activeconfig() -- Get a walkable tree of the active (virtualhost-specific) httpd configuration
+</highlight>
+
+
 </section>
 
 <section id="logging"><title>Logging Functions</title>
