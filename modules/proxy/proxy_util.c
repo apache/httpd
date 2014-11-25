@@ -2004,7 +2004,7 @@ PROXY_DECLARE(int) ap_proxy_pre_request(proxy_worker **worker,
                 char *ptr;
                 char *ptr2;
                 ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
-                              "*: found reverse proxy worker for %s", *url);
+                              "*: using default reverse proxy worker for %s (no keepalive)", *url);
                 *balancer = NULL;
                 *worker = conf->reverse;
                 access_status = OK;
