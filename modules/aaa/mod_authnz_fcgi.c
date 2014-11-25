@@ -406,13 +406,12 @@ enum {
  *
  * Returns 0 if it can't find the end of the headers, and 1 if it found the
  * end of the headers. */
-static int handle_headers(request_rec *r,
-                          int *state,
-                          char *readbuf)
+static int handle_headers(request_rec *r, int *state,
+                          const char *readbuf, apr_size_t readlen)
 {
     const char *itr = readbuf;
 
-    while (*itr) {
+    while (readlen--) {
         if (*itr == '\r') {
             switch (*state) {
                 case HDR_STATE_GOT_CRLF:
@@ -555,7 +554,8 @@ static apr_status_t handle_response(const fcgi_provider_conf *conf,
                 APR_BRIGADE_INSERT_TAIL(ob, b);
 
                 if (!seen_end_of_headers) {
-                    int st = handle_headers(r, &header_state, readbuf);
+                    int st = handle_headers(r, &header_state,
+                                            readbuf, readbuflen);
 
                     if (st == 1) {
                         int status;

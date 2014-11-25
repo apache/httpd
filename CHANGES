@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 
 Changes with Apache 2.4.11
+  
+  *) SECURITY: CVE-2014-3583 (cve.mitre.org)
+     mod_proxy_fcgi: Fix a potential crash due to buffer over-read, with 
+     response headers' size above 8K.  [Yann Ylavic, Jeff Trawick]
 
   *) SECURITY: CVE-2014-3581 (cve.mitre.org)
      mod_cache: Avoid a crash when Content-Type has an empty value.
