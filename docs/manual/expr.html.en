@@ -508,7 +508,20 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"</pr
 # Check a HTTP header for a list of values
 &lt;If "%{HTTP:X-example-header} in { 'foo', 'bar', 'baz'}"&gt;
     Header set matched true
-&lt;/If&gt;</pre>
+&lt;/If&gt;
+
+# Check an environment variable for a regular expression, negated.
+&lt;If "! reqenv('REDIRECT_FOO') =~ /bar/"&gt;
+    Header set matched true
+&lt;/If&gt;
+
+# Check result of URI mapping by running in Directory context with -f
+&lt;Directory /var/www&gt;
+    AddEncoding x-gzip gz
+&lt;If "-f '%{REQUEST_FILENAME}.unzipme' &amp;&amp; ! %{HTTP:Accept-Encoding} =~ /gzip/"&gt;
+      SetOutputFilter INFLATE
+&lt;/If&gt;
+&lt;/Directory&gt;</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
