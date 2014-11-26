@@ -190,7 +190,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      leak in mod_ssl on graceful restart. PR 53435.
      trunk patch: http://svn.apache.org/r1638772
      2.4.x patch: trunk works
-     +1 jkaluza, ylavic
+     +1 jkaluza, ylavic, covener
 
    * event: avoid dereferencing a recently apr_pool_clear()'ed 
      event_conn_state_t *cs when ptrans is being recycled at EOR.
@@ -216,7 +216,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1418763
      2.4.x patch: trunk works
                   http://people.apache.org/~jailletc36/backport10.patch
-     +1: jailletc36, ylavic
+     +1: jailletc36, ylavic, covener
 
     * event: avoid potentially concurrent access to a 'cs' right as it goes
       into lingering close.
@@ -246,7 +246,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * mod_auth_basic: Fix comment mentioning 403 instead of 401. PR 57175.
      trunk patch: http://svn.apache.org/r1638072
      2.4.x patch: trunk works
-     +1: jkaluza
+     +1: jkaluza, covener
 
    * core: Check for child_num < 0 also in ap_update_child_status
      and ap_update_child_status_from_conn in scoreboard.c. PR 56767.
@@ -262,7 +262,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * mod_proxy_fcgi: Ignore body data from backend for 304 responses. PR 57198.
      trunk patch: http://svn.apache.org/r1640495
      2.4.x patch: trunk works
-     +1 jkaluza
+     +1 jkaluza, covener
 
 OTHER PROPOSALS
 
