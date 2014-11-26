@@ -104,6 +104,31 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * mod_ssl: call ERR_free_strings() with OpenSSL >= 0.9.8e. Fixes memory
+     leak in mod_ssl on graceful restart. PR 53435.
+     trunk patch: http://svn.apache.org/r1638772
+     2.4.x patch: trunk works
+     +1 jkaluza, ylavic, covener
+
+   * easy proposals to synch 2.4.x and trunk
+        - ssl: Axe needless string duplication in setup for call to apr_proc_create()
+        - Fix sscanf format spotted by cppcheck
+        - fix indent.
+        - fix style
+        - Private function doesn't need ap_ prefix.
+        - tab vs space
+        - rename variables: s should be the server_rec
+     trunk patch: http://svn.apache.org/r1533765
+                  http://svn.apache.org/r1621419
+                  http://svn.apache.org/r1638159
+                  http://svn.apache.org/r1638188
+                  http://svn.apache.org/r1601603
+                  http://svn.apache.org/r1638412
+                  http://svn.apache.org/r1418763
+     2.4.x patch: trunk works
+                  http://people.apache.org/~jailletc36/backport10.patch
+     +1: jailletc36, ylavic, covener
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -186,37 +211,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              The new AH* in script_log could also cause parsing issues, but I'm
              fine with this personnaly.
 
-   * mod_ssl: call ERR_free_strings() with OpenSSL >= 0.9.8e. Fixes memory
-     leak in mod_ssl on graceful restart. PR 53435.
-     trunk patch: http://svn.apache.org/r1638772
-     2.4.x patch: trunk works
-     +1 jkaluza, ylavic, covener
-
    * event: avoid dereferencing a recently apr_pool_clear()'ed 
      event_conn_state_t *cs when ptrans is being recycled at EOR.
      trunk patch: http://svn.apache.org/r1638879
                   http://svn.apache.org/r1640031
      2.4.x patch: trunk works
      +1 covener, ylavic
-
-   * easy proposals to synch 2.4.x and trunk
-        - ssl: Axe needless string duplication in setup for call to apr_proc_create()
-        - Fix sscanf format spotted by cppcheck
-        - fix indent.
-        - fix style
-        - Private function doesn't need ap_ prefix.
-        - tab vs space
-        - rename variables: s should be the server_rec
-     trunk patch: http://svn.apache.org/r1533765
-                  http://svn.apache.org/r1621419
-                  http://svn.apache.org/r1638159
-                  http://svn.apache.org/r1638188
-                  http://svn.apache.org/r1601603
-                  http://svn.apache.org/r1638412
-                  http://svn.apache.org/r1418763
-     2.4.x patch: trunk works
-                  http://people.apache.org/~jailletc36/backport10.patch
-     +1: jailletc36, ylavic, covener
 
     * event: avoid potentially concurrent access to a 'cs' right as it goes
       into lingering close.
