@@ -195,12 +195,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * event: avoid dereferencing a recently apr_pool_clear()'ed 
      event_conn_state_t *cs when ptrans is being recycled at EOR.
      trunk patch: http://svn.apache.org/r1638879
+                  http://svn.apache.org/r1640031
      2.4.x patch: trunk works
-     +1 covener
-     jailletc36: -0.1
-         - One has been missed in start_lingering_close_nonblocking()
-         - apr_pool_clear(cs->p) could also be turned into apr_pool_clear(p)
-     ylavic: +1 with http://svn.apache.org/r1640031
+     +1 covener, ylavic
 
    * easy proposals to synch 2.4.x and trunk
         - ssl: Axe needless string duplication in setup for call to apr_proc_create()
