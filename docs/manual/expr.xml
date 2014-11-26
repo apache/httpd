@@ -556,6 +556,18 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     Header set matched true
 &lt;/If&gt;
 
+# Check an environment variable for a regular expression, negated.
+&lt;If "! reqenv('REDIRECT_FOO') =~ /bar/"&gt;
+    Header set matched true
+&lt;/If&gt;
+
+# Check result of URI mapping by running in Directory context with -f
+&lt;Directory /var/www&gt;
+    AddEncoding x-gzip gz
+&lt;If "-f '%{REQUEST_FILENAME}.unzipme' &amp;&amp; ! %{HTTP:Accept-Encoding} =~ /gzip/"&gt;
+      SetOutputFilter INFLATE
+&lt;/If&gt;
+&lt;/Directory&gt;
 
 	</highlight>
 </section>
