@@ -205,6 +205,7 @@ lstfunccall : T_ID '(' word ')' { $$ = ap_expr_list_func_make($1, $3, ctx); }
             ;
 
 strfunccall : T_ID '(' word ')' { $$ = ap_expr_str_func_make($1, $3, ctx); }
+            | T_ID '(' words ')' { $$ = ap_expr_str_func_make($1, $3, ctx); }
             ;
 
 %%

@@ -136,7 +136,7 @@ variable    ::= "<strong>%{</strong>" varname "<strong>}</strong>"
 
 rebackref   ::= "<strong>$</strong>" [0-9]
 
-function     ::= funcname "<strong>(</strong>" word "<strong>)</strong>"
+function     ::= funcname "<strong>(</strong>" wordlist "<strong>)</strong>"
 
 listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
 </pre>
@@ -526,6 +526,9 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     <tr><td><code>ldap</code></td>
         <td>Escape characters as required by LDAP distinguished name escaping
             (RFC4514) and LDAP filter escaping (RFC4515).</td><td></td></tr>
+    <tr><td><code>replace</code></td>
+        <td>replace(string, "from", "to") replaces all occurences of "from"
+            in the string with "to".</td><td></td></tr>
 
     </table>
 

@@ -232,6 +232,16 @@ typedef const char *(ap_expr_string_func_t)(ap_expr_eval_ctx_t *ctx,
                                             const void *data,
                                             const char *arg);
 
+/** String valued function, takes a list argument and returns a string
+ * @param ctx The evaluation context
+ * @param data An opaque context provided by the lookup hook function
+ * @param args The list of string arguments
+ * @return The functions result string, may be NULL for 'empty string'
+ */
+typedef const char *(ap_expr_string_list_func_t)(ap_expr_eval_ctx_t *ctx,
+                                            const void *data,
+                                            const apr_array_header_t *args);
+
 /** List valued function, takes a string argument and returns a list of strings
  * Can currently only be called following the builtin '-in' operator.
  * @param ctx The evaluation context
@@ -276,7 +286,9 @@ typedef struct {
     const char **err;
 
     /** arg for pre-parsing (only if a simple string).
-     *  For binary ops, this is the right argument. */
+     *  For binary ops, this is the right argument.
+     *  For functions with more arguments, this is the first string
+     *  argument. */
     const char *arg;
 } ap_expr_lookup_parms;
 
