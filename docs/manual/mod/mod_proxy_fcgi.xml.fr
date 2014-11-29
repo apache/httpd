@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1520876 -->
+<!-- English Revision : 1641436 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -25,7 +25,7 @@
 <modulesynopsis metafile="mod_proxy_fcgi.xml.meta">
 
 <name>mod_proxy_fcgi</name>
-<description>Module fournissant le support de FastCGI à
+<description>Module fournissant le support de FastCGI &agrave;
 <module>mod_proxy</module></description>
 <status>Extension</status>
 <sourcefile>mod_proxy_fcgi.c</sourcefile>
@@ -33,28 +33,28 @@
 <compatibility>Disponible depuis la version 2.3 d'Apache</compatibility>
 
 <summary>
-    <p>Pour fonctionner, ce module <em>nécessite</em> le chargement de
+    <p>Pour fonctionner, ce module <em>n&eacute;cessite</em> le chargement de
     <module>mod_proxy</module>. Il fournit le support du protocole <a
     href="http://www.fastcgi.com/">FastCGI</a>.</p>
 
     <p>Ainsi, pour pouvoir traiter le protocole <code>FastCGI</code>,
     <module>mod_proxy</module> et <module>mod_proxy_fcgi</module>
-    doivent être chargés dans le serveur.</p>
+    doivent &ecirc;tre charg&eacute;s dans le serveur.</p>
 
-    <p>A la différence de <a
+    <p>A la diff&eacute;rence de <a
     href="http://httpd.apache.org/mod_fcgid/">mod_fcgid</a> et <a
     href="http://www.fastcgi.com/">mod_fastcgi</a>,
-    <module>mod_proxy_fcgi</module> n'est pas en mesure de démarrer le
+    <module>mod_proxy_fcgi</module> n'est pas en mesure de d&eacute;marrer le
     processus de l'application ; <program>fcgistarter</program> est
-    fourni à cet effet sur certaines plateformes. Le framework
-    applicatif FastCGI utilisé peut aussi fournir la gestion des
+    fourni &agrave; cet effet sur certaines plateformes. Le framework
+    applicatif FastCGI utilis&eacute; peut aussi fournir la gestion des
     processus ou des lancements de programmes externes.</p>
 
     <note type="warning"><title>Avertissement</title>
-      <p>N'activez pas la fonctionnalité de mandataire avant d'avoir <a
-      href="mod_proxy.html#access">sécurisé votre serveur</a>. Les
+      <p>N'activez pas la fonctionnalit&eacute; de mandataire avant d'avoir <a
+      href="mod_proxy.html#access">s&eacute;curis&eacute; votre serveur</a>. Les
       serveurs mandataires ouverts sont dangereux non seulement pour
-      votre réseau, mais aussi pour l'Internet au sens large.</p>
+      votre r&eacute;seau, mais aussi pour l'Internet au sens large.</p>
     </note>
 </summary>
 
@@ -72,35 +72,57 @@
       </highlight>
     </example>
 
-    <p>Cette application doit être en mesure de gérer plusieurs
-    connexions simultanées. Par défaut, <module>mod_proxy</module>
-    permet la réutilisation des connexions, si bien que lorsque le
-    traitement d'une requête est terminé, le processus enfant httpd
-    garde la connexion ouverte, et cette dernière ne sera pas réutilisée
-    avant que le même processus httpd ne redirige une autre requête vers
-    l'application. Si l'application FastCGI n'est pas en mesure de gérer
-    un nombre suffisant de connexions simultanées avec httpd, les
-    requêtes peuvent être bloquées jusqu'à ce que l'application ferme
-    une connexion existante. Pour remédier à ce problème, on peut
-    désactiver la réutilisation des connexions à l'aide de la directive
-    <directive>ProxyPass</directive>, comme indiqué dans l'exemple
+    <p>Cette application doit &ecirc;tre en mesure de g&eacute;rer plusieurs
+    connexions simultan&eacute;es. Par d&eacute;faut, <module>mod_proxy</module>
+    permet la r&eacute;utilisation des connexions, si bien que lorsque le
+    traitement d'une requ&ecirc;te est termin&eacute;, le processus enfant httpd
+    garde la connexion ouverte, et cette derni&egrave;re ne sera pas r&eacute;utilis&eacute;e
+    avant que le m&ecirc;me processus httpd ne redirige une autre requ&ecirc;te vers
+    l'application. Si l'application FastCGI n'est pas en mesure de g&eacute;rer
+    un nombre suffisant de connexions simultan&eacute;es avec httpd, les
+    requ&ecirc;tes peuvent &ecirc;tre bloqu&eacute;es jusqu'&agrave; ce que l'application ferme
+    une connexion existante. Pour rem&eacute;dier &agrave; ce probl&egrave;me, on peut
+    d&eacute;sactiver la r&eacute;utilisation des connexions &agrave; l'aide de la directive
+    <directive>ProxyPass</directive>, comme indiqu&eacute; dans l'exemple
     suivant :</p>
 
-    <example><title>Instance d'application unique, pas de réutilisation
+    <example><title>Instance d'application unique, pas de r&eacute;utilisation
     des connexions</title>
     <highlight language="config">
       ProxyPass /mon_appli/ fcgi://localhost:4000/ disablereuse=on
       </highlight>
     </example>
 
-    <p>La passerelle à répartition de charge nécessite le chargement du
-    module <module>mod_proxy_balancer</module> et d'au moins un module
-    fournissant un algorithme de répartition de charge, comme
-    <module>mod_lbmethod_byrequests</module> en plus des modules
-    déjà cités. <module>mod_lbmethod_byrequests</module> est le module
-    par défaut et sera utilisé dans cet exemple de configuration.</p>
+    <p>Dans l'exemple suivant, l'URI de la requ&ecirc;te est transmis en tant
+    que chemin du syst&egrave;me de fichiers pour l'ex&eacute;cution du d&eacute;mon PHP-FPM.
+    L'URL de la requ&ecirc;te est implicitement ajout&eacute;e au second param&egrave;tre.
+    PHP-FPM est &agrave; l'&eacute;coute de l'h&ocirc;te et du port qui suivent fcgi://.</p>
+    <example><title>PHP-FPM</title>
+    <highlight language="config">
+      ProxyPassMatch ^/myapp/.*\.php(/.*)?$ fcgi://localhost:9000/var/www/
+    </highlight>
+    </example>
 
-    <example><title>Passerelle à répartition de charge vers plusieurs
+    <p>Dans l'exemple suivant, l'URI de la requ&ecirc;te est transmis en tant
+    que chemin du syst&egrave;me de fichiers pour l'ex&eacute;cution du d&eacute;mon PHP-FPM.
+    Dans ce cas cependant, PHP-FPM est &agrave; l'&eacute;coute d'un socket de domaine
+    unix (UDS). Cette fonctionnalit&eacute; est disponible &agrave; partir de la
+    version 2.4.9. Avec cette syntaxe, si un nom d'h&ocirc;te et un port sont
+    ajout&eacute;s apr&egrave;s fcgi://, ils seront ignor&eacute;s.</p>
+    <example><title>PHP-FPM with UDS</title>
+    <highlight language="config">
+      ProxyPassMatch ^/(.*\.php(/.*)?)$ "unix:/var/run/php5-fpm.sock|fcgi://localhost/var/www/"
+    </highlight>
+    </example>
+
+    <p>La passerelle &agrave; r&eacute;partition de charge n&eacute;cessite le chargement du
+    module <module>mod_proxy_balancer</module> et d'au moins un module
+    fournissant un algorithme de r&eacute;partition de charge, comme
+    <module>mod_lbmethod_byrequests</module> en plus des modules
+    d&eacute;j&agrave; cit&eacute;s. <module>mod_lbmethod_byrequests</module> est le module
+    par d&eacute;faut et sera utilis&eacute; dans cet exemple de configuration.</p>
+
+    <example><title>Passerelle &agrave; r&eacute;partition de charge vers plusieurs
     instances de l'application</title>
     <highlight language="config">
 ProxyPass /myapp/ balancer://myappcluster/
@@ -113,23 +135,23 @@ ProxyPass /myapp/ balancer://myappcluster/
 </section>
 
 <section id="env"><title>Variables d'environnement</title>
-    <p>En plus des directives de configuration qui contrôlent le
+    <p>En plus des directives de configuration qui contr&ocirc;lent le
     comportement de <module>mod_proxy</module>, de nombreuses
     <dfn>variables d'environnement</dfn> permettent de piloter le
     fournisseur du protocole FCGI :</p>
     <dl>
         <dt>proxy-fcgi-pathinfo</dt>
-        <dd>Par défaut, <module>mod_proxy_fcgi</module> ne créera jamais
+        <dd>Par d&eacute;faut, <module>mod_proxy_fcgi</module> ne cr&eacute;era jamais
 	ni n'exportera la variable d'environnement <var>PATH_INFO</var>,
-	ce qui permet au serveur FCGI d'arrière-plan de déterminer
+	ce qui permet au serveur FCGI d'arri&egrave;re-plan de d&eacute;terminer
 	correctement <var>SCRIPT_NAME</var> et <var>Script-URI</var>, et
-	de se conformer à la section 3.3 de la RFC 3875. Si au contraire
-	vous avez souhaitez que <module>mod_proxy_fcgi</module> génère une
+	de se conformer &agrave; la section 3.3 de la RFC 3875. Si au contraire
+	vous avez souhaitez que <module>mod_proxy_fcgi</module> g&eacute;n&egrave;re une
 	"estimation la plus exacte possible" de <var>PATH_INFO</var>,
-	définissez la variable d'environnement
+	d&eacute;finissez la variable d'environnement
 	<var>proxy-fcgi-pathinfo</var>. Ceci peut servir de
-	contournement pour une bogue présente dans certaines
-	implémentations de FCGI.</dd>
+	contournement pour une bogue pr&eacute;sente dans certaines
+	impl&eacute;mentations de FCGI.</dd>
     </dl>
 </section>
 
