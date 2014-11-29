@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1604382:1641384 (outdated) -->
+<!-- English Revision: 1641384 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1542,7 +1542,7 @@ du serveur local en utilisant des expressions rationnelles</description>
     <code>http://example.com/</code> ; alors</p>
 
     <highlight language="config">
-      ProxyPassMatch ^(/.*\.gif)$ http://backend.example.com$1
+      ProxyPassMatch ^(/.*\.gif)$ http://backend.example.com/$1
     </highlight>
 
     <p>va provoquer la conversion interne de la requ&ecirc;te locale
@@ -1578,6 +1578,14 @@ du serveur local en utilisant des expressions rationnelles</description>
     plus flexible, voyez la directive <directive
     module="mod_rewrite">RewriteRule</directive> avec le drapeau
     <code>[P]</code>.</p>
+
+    <note>
+ 	<title>Substitution par d&eacute;faut</title>
+ 	<p>Lorsque le param&egrave;tre URL n'utilise pas de r&eacute;f&eacute;rences arri&egrave;res
+	dans l'expression rationnelle, l'URL originale sera ajout&eacute;e au
+	param&egrave;tre URL.
+ 	</p>
+ 	</note>
 
     <note type="warning">
       <title>Avertissement &agrave; propos de la s&eacute;curit&eacute;</title>

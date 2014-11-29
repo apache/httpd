@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1604336 -->
+<!-- English Revision : 1641661 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1108,6 +1108,18 @@ end
 local line = r:wsread()
 
 </highlight>
+
+
+<highlight language="lua">
+r:config() -- Extrait une arborescence de l'ensemble de
+	   -- la configuration de httpd pouvant &ecirc;tre parcourue
+</highlight>
+
+<highlight language="lua">
+r:activeconfig() -- Extrait une arborescence de la configuration active
+		 -- de httpd (pour le serveur virtuel s&eacute;lectionn&eacute;)
+</highlight>
+
 
 </section>
 
