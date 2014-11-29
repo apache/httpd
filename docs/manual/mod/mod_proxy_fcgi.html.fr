@@ -94,6 +94,22 @@
     des connexions</h3><pre class="prettyprint lang-config">ProxyPass /mon_appli/ fcgi://localhost:4000/ disablereuse=on</pre>
 </div>
 
+    <p>Dans l'exemple suivant, l'URI de la requête est transmis en tant
+    que chemin du système de fichiers pour l'exécution du démon PHP-FPM.
+    L'URL de la requête est implicitement ajoutée au second paramètre.
+    PHP-FPM est à l'écoute de l'hôte et du port qui suivent fcgi://.</p>
+    <div class="example"><h3>PHP-FPM</h3><pre class="prettyprint lang-config">ProxyPassMatch ^/myapp/.*\.php(/.*)?$ fcgi://localhost:9000/var/www/</pre>
+</div>
+
+    <p>Dans l'exemple suivant, l'URI de la requête est transmis en tant
+    que chemin du système de fichiers pour l'exécution du démon PHP-FPM.
+    Dans ce cas cependant, PHP-FPM est à l'écoute d'un socket de domaine
+    unix (UDS). Cette fonctionnalité est disponible à partir de la
+    version 2.4.9. Avec cette syntaxe, si un nom d'hôte et un port sont
+    ajoutés après fcgi://, ils seront ignorés.</p>
+    <div class="example"><h3>PHP-FPM with UDS</h3><pre class="prettyprint lang-config">ProxyPassMatch ^/(.*\.php(/.*)?)$ "unix:/var/run/php5-fpm.sock|fcgi://localhost/var/www/"</pre>
+</div>
+
     <p>La passerelle à répartition de charge nécessite le chargement du
     module <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code> et d'au moins un module
     fournissant un algorithme de répartition de charge, comme
