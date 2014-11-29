@@ -258,8 +258,22 @@ URLs on the fly</description>
       default behavior in 2.4.0 through 2.4.3, and the flag to restore it is
       available Apache HTTP Server 2.4.4 and later.</p>
       </dd>
-      </dl>
 
+      <dt><code>IgnoreContextInfo</code></dt>
+      <dd>
+
+      <p>In versions 2.4.11 and later, when a relative substitution is made
+         in directory (htaccess) context and <directive module="mod_rewrite"
+         >RewriteBase</directive> has not been set, this module uses some
+         extended URL and filesystem context information to change the 
+         relative substitution back into a URL. Modules such as 
+         <module>mod_userdir</module> and <module>mod_alias</module>
+         supply this extended context info.  This option disable the behavior
+         introduced in 2.4.11 and should only be set if all of the conditions 
+         above are present and a substituion has an unexpected result.  </p>
+      </dd>
+
+      </dl>
 </usage>
 
 </directivesynopsis>
@@ -379,6 +393,10 @@ URLs on the fly</description>
                <directive>RewriteRule</directive>, suffixed by the relative 
                substitution is also valid as a URL path on the server 
                (this is rare).</li>
+          <li> In Apache HTTP Server 2.4.11 and later, this directive may be 
+                omitted when the request is mapped via 
+                <directive module="mod_alias">Alias</directive>
+                or <module>mod_userdir</module>.</li>
       </ul>
 
 <p> In the example below, <directive>RewriteBase</directive> is necessary
@@ -388,13 +406,14 @@ URLs on the fly</description>
     directory under the document root.</p>
 <highlight language="config">
 DocumentRoot /var/www/example.com
-Alias /myapp /opt/myapp-1.2.3
+AliasMatch ^/myapp /opt/myapp-1.2.3
 &lt;Directory /opt/myapp-1.2.3&gt;
     RewriteEngine On
     RewriteBase /myapp/
     RewriteRule ^index\.html$  welcome.html 
 &lt;/Directory&gt;
 </highlight>
+
 </usage>
 
 </directivesynopsis>

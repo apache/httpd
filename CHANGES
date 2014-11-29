@@ -5,6 +5,10 @@ Changes with Apache 2.5.0
      mod_proxy_fcgi: Fix a potential crash with response headers' size above 
      8K. [Teguh <chain rop.io>, Yann Ylavic, Jeff Trawick]
 
+  *) mod_rewrite: Improve relative substitutions in per-directory/htaccess
+     context for directories found by mod_userdir and mod_alias.  These no
+     loner require RewriteBase to be specified. [Eric Covener]
+
   *) mod_ssl: Fix recognition of OCSP stapling responses that are encoded
      improperly or too large.  [Jeff Trawick]
 

@@ -200,6 +200,7 @@ static const char* really_last_key = "rewrite_really_last";
 #define OPTION_INHERIT_DOWN         1<<6
 #define OPTION_INHERIT_DOWN_BEFORE  1<<7
 #define OPTION_IGNORE_INHERIT       1<<8
+#define OPTION_IGNORE_CONTEXT_INFO  1<<9
 
 #ifndef RAND_MAX
 #define RAND_MAX 32767
@@ -935,7 +936,7 @@ static int prefix_stat(const char *path, apr_pool_t *pool)
 /*
  * substitute the prefix path 'match' in 'input' with 'subst' (RewriteBase)
  */
-static char *subst_prefix_path(request_rec *r, char *input, char *match,
+static char *subst_prefix_path(request_rec *r, char *input, const char *match,
                                const char *subst)
 {
     apr_size_t len = strlen(match);
@@ -2974,6 +2975,9 @@ static const char *cmd_rewriteoptions(cmd_parms *cmd,
         else if (!strcasecmp(w, "mergebase")) {
             options |= OPTION_MERGEBASE;
         }
+        else if (!strcasecmp(w, "ignorecontextinfo")) {
+            options |= OPTION_IGNORE_CONTEXT_INFO;
+        }
         else {
             return apr_pstrcat(cmd->pool, "RewriteOptions: unknown option '",
                                w, "'", NULL);
@@ -5006,6 +5010,7 @@ static int hook_fixup(request_rec *r)
             return n;
         }
         else {
+            const char *tmpfilename = NULL;
             /* it was finally rewritten to a local path */
 
             /* if someone used the PASSTHROUGH flag in per-dir
@@ -5038,6 +5043,8 @@ static int hook_fixup(request_rec *r)
                             " URL: %s [IGNORING REWRITE]", r->filename));
                 return OK;
             }
+
+            tmpfilename = r->filename;
 
             /* if there is a valid base-URL then substitute
              * the per-dir prefix with this base-URL if the
@@ -5072,6 +5079,27 @@ static int hook_fixup(request_rec *r)
                                     r->filename+l));
 
                         r->filename = apr_pstrdup(r->pool, r->filename+l);
+                    }
+                }
+            }
+
+            /* No base URL, or r->filename wasn't still under dconf->directory
+             * or, r->filename wasn't still under the document root. 
+             * If there's a context document root AND a context prefix, and 
+             * the context document root is a prefix of r->filename, replace.
+             * This allows a relative substitution on a path found by mod_userdir 
+             * or mod_alias without baking in a RewriteBase.
+             */
+            if (tmpfilename == r->filename && 
+                !(dconf->options & OPTION_IGNORE_CONTEXT_INFO)) { 
+                if ((ccp = ap_context_document_root(r)) != NULL) { 
+                    const char *prefix = ap_context_prefix(r);
+                    if (prefix != NULL) { 
+                        rewritelog((r, 2, dconf->directory, "trying to replace "
+                                    "context docroot %s with context prefix %s",
+                                    ccp, prefix));
+                        r->filename = subst_prefix_path(r, r->filename,
+                                ccp, prefix);
                     }
                 }
             }
