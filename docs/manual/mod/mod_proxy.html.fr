@@ -1721,7 +1721,7 @@ du serveur local en utilisant des expressions rationnelles</td></tr>
     <p>Supposons que le serveur local a pour adresse
     <code>http://example.com/</code> ; alors</p>
 
-    <pre class="prettyprint lang-config">ProxyPassMatch ^(/.*\.gif)$ http://backend.example.com$1</pre>
+    <pre class="prettyprint lang-config">ProxyPassMatch ^(/.*\.gif)$ http://backend.example.com/$1</pre>
 
 
     <p>va provoquer la conversion interne de la requête locale
@@ -1753,6 +1753,14 @@ du serveur local en utilisant des expressions rationnelles</td></tr>
     <p>Si vous avez besoin d'une configuration du mandataire inverse
     plus flexible, voyez la directive <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> avec le drapeau
     <code>[P]</code>.</p>
+
+    <div class="note">
+ 	<h3>Substitution par défaut</h3>
+ 	<p>Lorsque le paramètre URL n'utilise pas de références arrières
+	dans l'expression rationnelle, l'URL originale sera ajoutée au
+	paramètre URL.
+ 	</p>
+ 	</div>
 
     <div class="warning">
       <h3>Avertissement à propos de la sécurité</h3>

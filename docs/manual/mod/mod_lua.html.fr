@@ -1078,6 +1078,16 @@ end
 local line = r:wsread()</pre>
 
 
+
+<pre class="prettyprint lang-lua">r:config() -- Extrait une arborescence de l'ensemble de
+	   -- la configuration de httpd pouvant être parcourue</pre>
+
+
+<pre class="prettyprint lang-lua">r:activeconfig() -- Extrait une arborescence de la configuration active
+		 -- de httpd (pour le serveur virtuel sélectionné)</pre>
+
+
+
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="logging" id="logging">Fonctions de journalisation</a></h2>
