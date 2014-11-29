@@ -121,7 +121,7 @@ variable    ::= "<strong>%{</strong>" varname "<strong>}</strong>"
 
 rebackref   ::= "<strong>$</strong>" [0-9]
 
-function     ::= funcname "<strong>(</strong>" word "<strong>)</strong>"
+function     ::= funcname "<strong>(</strong>" wordlist "<strong>)</strong>"
 
 listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"</pre>
 </blockquote>
@@ -502,6 +502,9 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"</pr
         <td>Echappe les caractères selon la RFC4514 (Echappement des
 	noms distinctifs LDAP - DN) et la RFC4515 (Echappement des
 	filtres LDAP).</td><td /></tr>
+<tr><td><code>replace</code></td>
+        <td>replace(chaîne, "de", "vers") remplace dans la chaîne
+	spécifiée toutes les occurrences de "de" par "vers".</td><td /></tr>
 </table>
 
     <p>Les fonctions marquées comme "restreints" ne sont pas disponibles
@@ -557,7 +560,21 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"</pr
 # Vérifie si un en-tête HTTP correspond à une des valeurs d'une liste
 &lt;If "%{HTTP:X-example-header} in { 'foo', 'bar', 'baz'}"&gt;
     La définition de l'en-tête correspond à une des valeurs recherchées
-&lt;/If&gt;</pre>
+&lt;/If&gt;
+# Recherche la valeur d'une expression rationnelle dans une variable
+# d'environnement, et renvoie la négation du résultat.
+&lt;If "! reqenv('REDIRECT_FOO') =~ /bar/"&gt;
+    La condition est vérifiée
+&lt;/If&gt;
+
+# Vérifie le résultat de la recherche d'une correspondance d'URI dans un
+# contexte de répertoire avec l'option -f
+&lt;Directory /var/www&gt;
+    AddEncoding x-gzip gz
+&lt;If "-f '%{REQUEST_FILENAME}.unzipme' &amp;&amp; ! %{HTTP:Accept-Encoding} =~ /gzip/"&gt;
+      SetOutputFilter INFLATE
+&lt;/If&gt;
+&lt;/Directory&gt;</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
