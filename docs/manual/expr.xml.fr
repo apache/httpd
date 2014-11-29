@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision : 1636190 -->
+<!-- English Revision : 1641890 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -591,6 +591,21 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
 &lt;If "%{HTTP:X-example-header} in { 'foo', 'bar', 'baz'}"&gt;
     La d&eacute;finition de l'en-t&ecirc;te correspond &agrave; une des valeurs recherch&eacute;es
 &lt;/If&gt;
+
+# Recherche la valeur d'une expression rationnelle dans une variable
+# d'environnement, et renvoie la n&eacute;gation du r&eacute;sultat.
+&lt;If "! reqenv('REDIRECT_FOO') =~ /bar/"&gt;
+    La condition est v&eacute;rifi&eacute;e
+&lt;/If&gt;
+
+# V&eacute;rifie le r&eacute;sultat de la recherche d'une correspondance d'URI dans un
+# contexte de r&eacute;pertoire avec l'option -f
+&lt;Directory /var/www&gt;
+    AddEncoding x-gzip gz
+&lt;If "-f '%{REQUEST_FILENAME}.unzipme' &amp;&amp; ! %{HTTP:Accept-Encoding} =~ /gzip/"&gt;
+      SetOutputFilter INFLATE
+&lt;/If&gt;
+&lt;/Directory&gt;
 	</highlight>
 </section>
 

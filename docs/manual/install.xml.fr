@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision : 1502534 -->
+<!-- English Revision : 1642311 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -43,7 +43,7 @@
     des projets Open Source .</p>
 
     <p>Si vous effectuez une mise &agrave; jour depuis une version mineure vers
-    la suivante (par exemple, 2.2.50 &agrave; 2.2.51), veuillez passer &agrave; la section
+    la suivante (par exemple, 2.4.9 &agrave; 2.4.10), veuillez passer &agrave; la section
     <a href="#upgrading">mise &agrave; jour</a>.</p>
 
 </summary>
