@@ -874,12 +874,13 @@ static int dav_fs_is_parent_resource(
             && ctx2->pathname[len1] == '/');
 }
 
-static apr_status_t tmpfile_cleanup(void *data) {
-        dav_stream *ds = data;
-        if (ds->temppath) {
-                apr_file_remove(ds->temppath, ds->p);
-        }
-        return APR_SUCCESS;
+static apr_status_t tmpfile_cleanup(void *data)
+{
+    dav_stream *ds = data;
+    if (ds->temppath) {
+        apr_file_remove(ds->temppath, ds->p);
+    }
+    return APR_SUCCESS;
 }
 
 /* custom mktemp that creates the file with APR_OS_DEFAULT permissions */

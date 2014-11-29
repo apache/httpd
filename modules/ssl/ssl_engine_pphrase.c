@@ -415,12 +415,10 @@ static apr_status_t ssl_pipe_child_create(apr_pool_t *p, const char *progname)
                                    APR_FULL_BLOCK,
                                    APR_NO_PIPE)) == APR_SUCCESS)) {
         char **args;
-        const char *pname;
 
         apr_tokenize_to_argv(progname, &args, p);
-        pname = apr_pstrdup(p, args[0]);
         procnew = (apr_proc_t *)apr_pcalloc(p, sizeof(*procnew));
-        rc = apr_proc_create(procnew, pname, (const char * const *)args,
+        rc = apr_proc_create(procnew, args[0], (const char * const *)args,
                              NULL, procattr, p);
         if (rc == APR_SUCCESS) {
             /* XXX: not sure if we aught to...

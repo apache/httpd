@@ -144,7 +144,7 @@ static int proxy_wstunnel_transfer(request_rec *r, conn_rec *c_i, conn_rec *c_o,
 /*
  * process the request and write the response.
  */
-static int ap_proxy_wstunnel_request(apr_pool_t *p, request_rec *r,
+static int proxy_wstunnel_request(apr_pool_t *p, request_rec *r,
                                 proxy_conn_rec *conn,
                                 proxy_worker *worker,
                                 proxy_server_conf *conf,
@@ -371,7 +371,7 @@ static int proxy_wstunnel_handler(request_rec *r, proxy_worker *worker,
 
 
         /* Step Three: Process the Request */
-        status = ap_proxy_wstunnel_request(p, r, backend, worker, conf, uri, locurl,
+        status = proxy_wstunnel_request(p, r, backend, worker, conf, uri, locurl,
                                       server_portstr);
         break;
     }
