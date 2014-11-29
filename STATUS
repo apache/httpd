@@ -104,12 +104,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_ssl: call ERR_free_strings() with OpenSSL >= 0.9.8e. Fixes memory
-     leak in mod_ssl on graceful restart. PR 53435.
-     trunk patch: http://svn.apache.org/r1638772
-     2.4.x patch: trunk works
-     +1 jkaluza, ylavic, covener
-
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:

@@ -299,9 +299,12 @@ static apr_status_t ssl_cleanup_pre_config(void *data)
 #endif
     ERR_remove_state(0);
 
-    /* Don't call ERR_free_strings here; ERR_load_*_strings only
-     * actually load the error strings once per process due to static
+    /* Don't call ERR_free_strings in earlier versions, ERR_load_*_strings only
+     * actually loaded the error strings once per process due to static
      * variable abuse in OpenSSL. */
+#if (OPENSSL_VERSION_NUMBER >= 0x00090805f)
+    ERR_free_strings();
+#endif
 
     /* Also don't call CRYPTO_cleanup_all_ex_data here; any registered
      * ex_data indices may have been cached in static variables in
