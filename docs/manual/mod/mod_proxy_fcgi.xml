@@ -98,7 +98,7 @@
     <p> The following example passes the request URI as a filesystem
     path for the PHP-FPM daemon to run. In this case, PHP-FPM is listening on
     a unix domain socket (UDS).  Requires 2.4.9 or later. With this syntax,
-    the hostname and optional port following fci:// are ignored.</p>
+    the hostname and optional port following fcgi:// are ignored.</p>
     <example><title>PHP-FPM with UDS</title>
     <highlight language="config">
       ProxyPassMatch ^/(.*\.php(/.*)?)$ "unix:/var/run/php5-fpm.sock|fcgi://localhost/var/www/"
