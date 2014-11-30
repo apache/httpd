@@ -579,7 +579,7 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
 &lt;/Directory&gt;	
 
 # Check a HTTP header for a list of values
-&lt;If "%{HTTP:X-example-header} in { 'foo', 'bar', 'baz'}"&gt;
+&lt;If "%{HTTP:X-example-header} in { 'foo', 'bar', 'baz' }"&gt;
     Header set matched true
 &lt;/If&gt;
 
