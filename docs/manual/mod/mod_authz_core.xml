@@ -186,12 +186,12 @@ SetEnvIf User-Agent ^KnockKnock/2\.0 let_me_in
     <highlight language="config">
 &lt;RequireAll&gt;
     Require expr "!(%{QUERY_STRING} =~ /secret/)"
-    Require expr "%{REQUEST_URI} in { '/example.cgi' }" 
+    Require expr "%{REQUEST_URI} in { '/example.cgi', '/other.cgi' }" 
 &lt;/RequireAll&gt;
     </highlight>
 
     <highlight language="config">
-        Require expr "!(%{QUERY_STRING} =~ /secret/) &amp;&amp; %{REQUEST_URI} in { '/example.cgi' }" 
+        Require expr "!(%{QUERY_STRING} =~ /secret/) &amp;&amp; %{REQUEST_URI} in { '/example.cgi', '/other.cgi' }" 
     </highlight>
 
   <p>The syntax is described in the <a href="../expr.html">ap_expr</a>
