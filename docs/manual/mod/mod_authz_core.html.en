@@ -196,6 +196,15 @@
     <pre class="prettyprint lang-config">Require expr %{TIME_HOUR} -ge 9 &amp;&amp; %{TIME_HOUR} -le 17</pre>
 
 
+    <pre class="prettyprint lang-config">&lt;RequireAll&gt;
+    Require expr "!(%{QUERY_STRING} =~ /secret/)"
+    Require expr "%{REQUEST_URI} in { '/example.cgi' }" 
+&lt;/RequireAll&gt;</pre>
+
+
+    <pre class="prettyprint lang-config">Require expr "!(%{QUERY_STRING} =~ /secret/) &amp;&amp; %{REQUEST_URI} in { '/example.cgi' }"</pre>
+
+
   <p>The syntax is described in the <a href="../expr.html">ap_expr</a>
   documentation.</p>
 
