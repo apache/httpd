@@ -1,10 +1,6 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
   
-  *) SECURITY: CVE-2014-3583 (cve.mitre.org)
-     mod_proxy_fcgi: Fix a potential crash with response headers' size above 
-     8K. [Teguh <chain rop.io>, Yann Ylavic, Jeff Trawick]
-
   *) SECURITY: CVE-2014-8109 (cve.mitre.org)
      mod_lua: Fix handling of the Require line when a LuaAuthzProvider is
      used in multiple Require directives with different arguments.
