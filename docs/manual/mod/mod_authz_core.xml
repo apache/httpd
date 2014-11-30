@@ -183,6 +183,17 @@ SetEnvIf User-Agent ^KnockKnock/2\.0 let_me_in
         Require expr %{TIME_HOUR} -ge 9 &amp;&amp; %{TIME_HOUR} -le 17
     </highlight>
 
+    <highlight language="config">
+&lt;RequireAll&gt;
+    Require expr "!(%{QUERY_STRING} =~ /secret/)"
+    Require expr "%{REQUEST_URI} in { '/example.cgi' }" 
+&lt;/RequireAll&gt;
+    </highlight>
+
+    <highlight language="config">
+        Require expr "!(%{QUERY_STRING} =~ /secret/) &amp;&amp; %{REQUEST_URI} in { '/example.cgi' }" 
+    </highlight>
+
   <p>The syntax is described in the <a href="../expr.html">ap_expr</a>
   documentation.</p>
 
