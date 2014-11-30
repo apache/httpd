@@ -198,11 +198,11 @@
 
     <pre class="prettyprint lang-config">&lt;RequireAll&gt;
     Require expr "!(%{QUERY_STRING} =~ /secret/)"
-    Require expr "%{REQUEST_URI} in { '/example.cgi' }" 
+    Require expr "%{REQUEST_URI} in { '/example.cgi', '/other.cgi' }" 
 &lt;/RequireAll&gt;</pre>
 
 
-    <pre class="prettyprint lang-config">Require expr "!(%{QUERY_STRING} =~ /secret/) &amp;&amp; %{REQUEST_URI} in { '/example.cgi' }"</pre>
+    <pre class="prettyprint lang-config">Require expr "!(%{QUERY_STRING} =~ /secret/) &amp;&amp; %{REQUEST_URI} in { '/example.cgi', '/other.cgi' }"</pre>
 
 
   <p>The syntax is described in the <a href="../expr.html">ap_expr</a>
