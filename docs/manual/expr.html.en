@@ -116,7 +116,7 @@ variable    ::= "<strong>%{</strong>" varname "<strong>}</strong>"
 
 rebackref   ::= "<strong>$</strong>" [0-9]
 
-function     ::= funcname "<strong>(</strong>" word "<strong>)</strong>"
+function     ::= funcname "<strong>(</strong>" wordlist "<strong>)</strong>"
 
 listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"</pre>
 </blockquote>
@@ -481,6 +481,9 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"</pr
 <tr class="odd"><td><code>ldap</code></td>
         <td>Escape characters as required by LDAP distinguished name escaping
             (RFC4514) and LDAP filter escaping (RFC4515).</td><td /></tr>
+<tr><td><code>replace</code></td>
+        <td>replace(string, "from", "to") replaces all occurences of "from"
+            in the string with "to".</td><td /></tr>
 </table>
 
     <p>The functions marked as "restricted" are not available in some modules
@@ -529,7 +532,7 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"</pr
 &lt;/Directory&gt;	
 
 # Check a HTTP header for a list of values
-&lt;If "%{HTTP:X-example-header} in { 'foo', 'bar', 'baz'}"&gt;
+&lt;If "%{HTTP:X-example-header} in { 'foo', 'bar', 'baz' }"&gt;
     Header set matched true
 &lt;/If&gt;
 
