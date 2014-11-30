@@ -109,6 +109,14 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
+  *) SECURITY: CVE-2014-8109 (cve.mitre.org)
+     mod_lua: Fix handling of the Require line when a LuaAuthzProvider is
+              used in multiple Require directives with different arguments.
+              PR57204. 
+     trunk patch: http://svn.apache.org/r1642499
+     2.4.x patch: trunk works:
+     +1 covener
+       
    * mod_proxy: Preserve original request headers even if they differ
                 from the ones to be forwarded to the backend. PR 45387.
      trunk patch: http://svn.apache.org/r1588527
