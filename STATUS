@@ -104,6 +104,21 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * mod_auth_basic: Fix comment mentioning 403 instead of 401. PR 57175.
+     trunk patch: http://svn.apache.org/r1638072
+     2.4.x patch: trunk works
+     +1: jkaluza, covener, ylavic
+
+   * core: Check for child_num < 0 also in ap_update_child_status
+     and ap_update_child_status_from_conn in scoreboard.c. PR 56767.
+     trunk patch: http://svn.apache.org/r1638073
+     2.4.x patch: trunk works
+     +1: jkaluza, covener, ylavic
+
+   * core: Do not match files when using DirectoryMatch. PR 41867.
+     trunk patch: http://svn.apache.org/r1635428
+     2.4.x patch: http://people.apache.org/~jkaluza/patches/httpd-2.4.x-directorymatch.patch
+     +1: jkaluza, covener, ylavic
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -115,7 +130,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
               PR57204. 
      trunk patch: http://svn.apache.org/r1642499
      2.4.x patch: trunk works:
-     +1 covener
+     +1 covener, ylavic
        
    * mod_proxy: Preserve original request headers even if they differ
                 from the ones to be forwarded to the backend. PR 45387.
@@ -227,26 +242,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic, trawick
 
-   * mod_auth_basic: Fix comment mentioning 403 instead of 401. PR 57175.
-     trunk patch: http://svn.apache.org/r1638072
-     2.4.x patch: trunk works
-     +1: jkaluza, covener
-
-   * core: Check for child_num < 0 also in ap_update_child_status
-     and ap_update_child_status_from_conn in scoreboard.c. PR 56767.
-     trunk patch: http://svn.apache.org/r1638073
-     2.4.x patch: trunk works
-     +1: jkaluza, covener
-
-   * core: Do not match files when using DirectoryMatch. PR 41867.
-     trunk patch: http://svn.apache.org/r1635428
-     2.4.x patch: http://people.apache.org/~jkaluza/patches/httpd-2.4.x-directorymatch.patch
-     +1: jkaluza, covener
-
    * mod_proxy_fcgi: Ignore body data from backend for 304 responses. PR 57198.
      trunk patch: http://svn.apache.org/r1640495
      2.4.x patch: trunk works
      +1 jkaluza, covener
+     ylavic: Shouldn't we handle more cases here to ignore the body?
+             Please see my comment on dev@ as a reply to commit e-mail.
 
    * mod_proxy: Add ap_proxy_define_match_worker() and use it for ProxyPassMatch
      and ProxyMatch section to distinguish between normal workers and workers
@@ -256,7 +257,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1609680
                   http://svn.apache.org/r1641381
      2.4.x patch: trunk works
-     +1: jkaluza
+     +1: jkaluza, ylavic
 
    * mod_rewrite: use the context info API to alleviate the need to specify
                   a RewriteBase in some situations
