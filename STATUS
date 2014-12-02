@@ -215,7 +215,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1641077
                   http://svn.apache.org/r1641095
      2.4.x patch: trunk works other than CHANGES
-     +1: trawick
+     +1: trawick, covener
 
    * mpm_event: Notify suspend in any case when starting lingering close (blocking),
      and outside the lingering queue's critical section.
@@ -223,7 +223,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      So it (probably) does not need its own CHANGES entry.
      trunk patch: http://svn.apache.org/r1642868
      2.4.x patch: trunk works (CHANGES 
-     +1: ylavic
+     +1: ylavic, covener
 
 OTHER PROPOSALS
 
