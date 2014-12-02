@@ -342,12 +342,14 @@ static proxy_worker *find_best_hb(proxy_balancer *balancer,
     return mycandidate;
 }
 
-static apr_status_t reset(proxy_balancer *balancer, server_rec *s) {
-        return APR_SUCCESS;
+static apr_status_t reset(proxy_balancer *balancer, server_rec *s)
+{
+    return APR_SUCCESS;
 }
 
-static apr_status_t age(proxy_balancer *balancer, server_rec *s) {
-        return APR_SUCCESS;
+static apr_status_t age(proxy_balancer *balancer, server_rec *s)
+{
+    return APR_SUCCESS;
 }
 
 static const proxy_balancer_method heartbeat =
@@ -360,7 +362,7 @@ static const proxy_balancer_method heartbeat =
 };
 
 static int lb_hb_init(apr_pool_t *p, apr_pool_t *plog,
-                          apr_pool_t *ptemp, server_rec *s)
+                      apr_pool_t *ptemp, server_rec *s)
 {
     apr_size_t size;
     unsigned int num;
