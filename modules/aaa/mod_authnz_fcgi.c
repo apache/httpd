@@ -642,6 +642,10 @@ static apr_status_t handle_response(const fcgi_provider_conf *conf,
                           "%d", fn, type);
             break;
         }
+        /* Leave on above switch's inner error. */
+        if (rv != APR_SUCCESS) {
+            break;
+        }
 
         /*
          * Read/discard any trailing padding.
