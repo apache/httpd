@@ -115,7 +115,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
               PR57204. 
      trunk patch: http://svn.apache.org/r1642499
      2.4.x patch: trunk works:
-     +1 covener, ylavic
+     +1 covener, ylavic, jim
        
    * mod_proxy: Preserve original request headers even if they differ
                 from the ones to be forwarded to the backend. PR 45387.
@@ -200,32 +200,32 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1638879
                   http://svn.apache.org/r1640031
      2.4.x patch: trunk works
-     +1 covener, ylavic
+     +1 covener, ylavic, jim
 
     * event: avoid potentially concurrent access to a 'cs' right as it goes
       into lingering close.
       trunk patch: http://svn.apache.org/r1639614
       2.4.x patch: trunk works
-      +1: covener, ylavic
+      +1: covener, ylavic, jim
 
    * mod_proxy_connect: Don't issue AH02447 on sockets hangups, let the read
      determine whether it is a normal close or a real error. PR 57168.
      trunk patch: http://svn.apache.org/r1635645
      2.4.x patches: trunk works (modulo CHANGES).
-     +1: ylavic, covener
+     +1: ylavic, covener, jim
 
    * mod_proxy_wstunnel: abort backend connection on polling error to avoid
      further processing (lingering close, SSL shutdown).
      trunk patch: http://svn.apache.org/r1635644
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-mod_proxy_wstunnel-aborted.patch
-     +1: ylavic, covener
+     +1: ylavic, covener, jim
 
    * mod_proxy_fcgi, mod_authnz_fcgi: stop reading the response and issue an error
      when parsing or forwarding the response fails.
      trunk patch: http://svn.apache.org/r1640040
                   http://svn.apache.org/r1640042
      2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, trawick
+     +1: ylavic, trawick, jim
 
    * mod_proxy_fcgi: Ignore body data from backend for 304 responses. PR 57198.
      trunk patch: http://svn.apache.org/r1640495
