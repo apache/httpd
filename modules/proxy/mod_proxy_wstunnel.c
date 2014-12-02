@@ -248,6 +248,7 @@ static int proxy_wstunnel_request(apr_pool_t *p, request_rec *r,
                 }
                 else if (pollevent & APR_POLLERR) {
                     rv = APR_EPIPE;
+                    backconn->aborted = 1;
                     ap_log_rerror(APLOG_MARK, APLOG_NOTICE, 0, r, APLOGNO(02447)
                             "error on backconn");
                 }

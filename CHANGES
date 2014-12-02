@@ -23,6 +23,9 @@ Changes with Apache 2.4.11
   *) mod_ssl: Fix a memory leak in case of graceful restarts with OpenSSL >= 0.9.8e
      PR 53435 [tadanori <tadanori2007 yahoo.com>, Sebastian Wiedenroth <wiedi frubar.net>]
 
+  *) mod_proxy_wstunnel: abort backend connection on polling error to avoid
+     further processing.  [Yann Ylavic]
+
   *) core: Support custom ErrorDocuments for HTTP 501 and 414 status codes.
      PR 57167 [Edward Lu <Chaosed0 gmail.com>]
 
