@@ -6,6 +6,10 @@ Changes with Apache 2.5.0
      used in multiple Require directives with different arguments.
      PR57204 [Edward Lu <Chaosed0 gmail.com>]
 
+  *) core: Add CGIPassAuth directive to control whether HTTP authorization
+     headers are passed to scripts as CGI variables.  PR 56855.  [Jeff 
+     Trawick]
+
   *) mod_rewrite: Improve relative substitutions in per-directory/htaccess
      context for directories found by mod_userdir and mod_alias.  These no
      loner require RewriteBase to be specified. [Eric Covener]
