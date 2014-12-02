@@ -859,16 +859,16 @@ static int start_lingering_close_common(event_conn_state_t *cs, int in_worker)
         cs->pub.state = CONN_STATE_LINGER_NORMAL;
     }
     apr_atomic_inc32(&lingering_count);
-    apr_thread_mutex_lock(timeout_mutex);
     cs->c->sbh = NULL;
+    if (in_worker) { 
+        notify_suspend(cs);
+    }
+    apr_thread_mutex_lock(timeout_mutex);
     TO_QUEUE_APPEND(*q, cs);
     cs->pfd.reqevents = (
             cs->pub.sense == CONN_SENSE_WANT_WRITE ? APR_POLLOUT :
                     APR_POLLIN) | APR_POLLHUP | APR_POLLERR;
     cs->pub.sense = CONN_SENSE_DEFAULT;
-    if (in_worker) { 
-        notify_suspend(cs);
-    }
     rv = apr_pollset_add(event_pollset, &cs->pfd);
     apr_thread_mutex_unlock(timeout_mutex);
     if (rv != APR_SUCCESS && !APR_STATUS_IS_EEXIST(rv)) {
@@ -895,6 +895,8 @@ static int start_lingering_close_common(event_conn_state_t *cs, int in_worker)
 static int start_lingering_close_blocking(event_conn_state_t *cs)
 {
     if (ap_start_lingering_close(cs->c)) {
+        cs->c->sbh = NULL;
+        notify_suspend(cs);
         ap_push_pool(worker_queue_info, cs->p);
         return 0;
     }
