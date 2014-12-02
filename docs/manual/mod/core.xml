@@ -565,6 +565,43 @@ scripts</description>
 </directivesynopsis>
 
 <directivesynopsis>
+<name>CGIPassAuth</name>
+<description>Enables passing HTTP authorization headers to scripts as CGI
+variables</description>
+<syntax>CGIPassAuth On|Off</syntax>
+<default>CGIPassAuth Off</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+<compatibility>Available in Apache HTTP Server 2.5.0 and later</compatibility>
+
+<usage>
+    <p><directive>CGIPassAuth</directive> allows scripts access to HTTP
+    authorization headers such as <code>Authorization</code>, which is
+    required for scripts that implement HTTP Basic authentication.
+    Normally these HTTP headers are hidden from scripts, as it allows
+    scripts to see user ids and passwords used to access the server when
+    HTTP Basic authentication is enabled in the web server.  This directive
+    should be used when scripts are allowed to implement HTTP Basic
+    authentication.</p>
+
+    <p>This directive can be used instead of the compile-time setting
+    <code>SECURITY_HOLE_PASS_AUTHORIZATION</code> which has been available
+    in previous versions of Apache HTTP Server.</p>
+
+    <p>The setting is respected by any modules which use
+    <code>ap_add_common_vars()</code>, such as <module>mod_cgi</module>,
+    <module>mod_cgid</module>, <module>mod_proxy_fcgi</module>,
+    <module>mod_proxy_scgi</module>, and so on.  Notably, it affects
+    modules which don't handle the request in the usual sense but
+    still use this API; examples of this are <module>mod_include</module>
+    and <module>mod_ext_filter</module>.  Third-party modules that don't
+    use <code>ap_add_common_vars()</code> may choose to respect the setting
+    as well.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>ContentDigest</name>
 <description>Enables the generation of <code>Content-MD5</code> HTTP Response
 headers</description>
