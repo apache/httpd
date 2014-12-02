@@ -104,13 +104,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) SECURITY: CVE-2014-8109 (cve.mitre.org)
-     mod_lua: Fix handling of the Require line when a LuaAuthzProvider is
-              used in multiple Require directives with different arguments.
-              PR57204. 
-     trunk patch: http://svn.apache.org/r1642499
-     2.4.x patch: trunk works:
-     +1 covener, ylavic, jim
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
