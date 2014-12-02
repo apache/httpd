@@ -829,7 +829,6 @@ static int start_lingering_close_common(event_conn_state_t *cs, int in_worker)
         TO_QUEUE_REMOVE(*q, cs);
         apr_thread_mutex_unlock(timeout_mutex);
         apr_socket_close(cs->pfd.desc.s);
-        apr_pool_clear(cs->p);
         ap_push_pool(worker_queue_info, cs->p);
         return 0;
     }
@@ -847,7 +846,6 @@ static int start_lingering_close_common(event_conn_state_t *cs, int in_worker)
 static int start_lingering_close_blocking(event_conn_state_t *cs)
 {
     if (ap_start_lingering_close(cs->c)) {
-        apr_pool_clear(cs->p);
         ap_push_pool(worker_queue_info, cs->p);
         return 0;
     }
@@ -872,7 +870,6 @@ static int start_lingering_close_nonblocking(event_conn_state_t *cs)
     if (c->aborted
         || apr_socket_shutdown(csd, APR_SHUTDOWN_WRITE) != APR_SUCCESS) {
         apr_socket_close(csd);
-        apr_pool_clear(cs->p);
         ap_push_pool(worker_queue_info, cs->p);
         return 0;
     }
@@ -896,7 +893,6 @@ static int stop_lingering_close(event_conn_state_t *cs)
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf, APLOGNO(00468) "error closing socket");
         AP_DEBUG_ASSERT(0);
     }
-    apr_pool_clear(cs->p);
     ap_push_pool(worker_queue_info, cs->p);
     return 0;
 }
@@ -962,8 +958,6 @@ static void process_socket(apr_thread_t *thd, apr_pool_t * p, apr_socket_t * soc
         c = ap_run_create_connection(p, ap_server_conf, sock,
                                      conn_id, sbh, cs->bucket_alloc);
         if (!c) {
-            apr_bucket_alloc_destroy(cs->bucket_alloc);
-            apr_pool_clear(p);
             ap_push_pool(worker_queue_info, p);
             return;
         }
@@ -1241,7 +1235,6 @@ static apr_status_t push2worker(const apr_pollfd_t * pfd,
         apr_socket_close(cs->pfd.desc.s);
         ap_log_error(APLOG_MARK, APLOG_CRIT, rc,
                      ap_server_conf, APLOGNO(00471) "push2worker: ap_queue_push failed");
-        apr_pool_clear(cs->p);
         ap_push_pool(worker_queue_info, cs->p);
     }
 
@@ -1378,7 +1371,6 @@ static void process_lingering_close(event_conn_state_t *cs, const apr_pollfd_t *
     apr_thread_mutex_unlock(timeout_mutex);
     TO_QUEUE_ELEM_INIT(cs);
 
-    apr_pool_clear(cs->p);
     ap_push_pool(worker_queue_info, cs->p);
 }
 
@@ -1699,7 +1691,6 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                             ap_log_error(APLOG_MARK, APLOG_CRIT, rc,
                                          ap_server_conf,
                                          "ap_queue_push failed");
-                            apr_pool_clear(ptrans);
                             ap_push_pool(worker_queue_info, ptrans);
                         }
                         else {
@@ -1707,7 +1698,6 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                         }
                     }
                     else {
-                        apr_pool_clear(ptrans);
                         ap_push_pool(worker_queue_info, ptrans);
                     }
                 }
