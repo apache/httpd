@@ -1067,8 +1067,10 @@ matches in per-directory context.</li>
 
 <li>Although rewrite rules are syntactically permitted in <directive
 type="section" module="core">Location</directive> and <directive
-type="section" module="core">Files</directive> sections, this
-should never be necessary and is unsupported.</li>
+type="section" module="core">Files</directive> sections
+(including their regular expression counterparts), this
+should never be necessary and is unsupported. A likely feature
+to break in these contexts is relative substitutions.</li>
 </ul>
 </note>
 
