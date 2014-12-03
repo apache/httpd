@@ -194,7 +194,7 @@ static const char *ap_expr_eval_string_func(ap_expr_eval_ctx_t *ctx,
     if (arg->node_op == op_ListElement) {
         /* Evaluate the list elements and store them in apr_array_header. */
         ap_expr_string_list_func_t *func = (ap_expr_string_list_func_t *)info->node_arg1;
-        apr_array_header_t *args = apr_array_make(ctx->p, 1, sizeof(char *));
+        apr_array_header_t *args = apr_array_make(ctx->p, 2, sizeof(char *));
         do {
             const ap_expr_t *val = arg->node_arg1;
             const char **new = apr_array_push(args);
@@ -1130,7 +1130,7 @@ static const char *replace_func(ap_expr_eval_ctx_t *ctx, const void *data,
 {
     char *buff, *original, *replacement;
     struct ap_varbuf vb;
-    apr_size_t repl_len;
+    apr_size_t repl_len, orig_len;
     const char *repl;
     apr_size_t bytes;
     apr_size_t len;
@@ -1145,6 +1145,7 @@ static const char *replace_func(ap_expr_eval_ctx_t *ctx, const void *data,
     original = APR_ARRAY_IDX(args, 1, char *);
     replacement = APR_ARRAY_IDX(args, 0, char *);
     repl_len = strlen(replacement);
+    orig_len = strlen(original);
     bytes = strlen(buff);
 
     ap_varbuf_init(ctx->p, &vb, 0);
@@ -1155,7 +1156,7 @@ static const char *replace_func(ap_expr_eval_ctx_t *ctx, const void *data,
         ap_varbuf_strmemcat(&vb, buff, len);
         ap_varbuf_strmemcat(&vb, replacement, repl_len);
 
-        len += repl_len;
+        len += orig_len;
         bytes -= len;
         buff += len;
     }
