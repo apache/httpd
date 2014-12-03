@@ -225,7 +225,7 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     <tr><td><code>REMOTE_HOST</code></td>
         <td>The host name of the remote host</td></tr>
     <tr><td><code>REMOTE_USER</code></td>
-        <td>The name of the authenticated user, if any (not available during <directive>&lt;If &gt;</directive>)</td></tr>
+        <td>The name of the authenticated user, if any (not available during <directive>&lt;If&gt;</directive>)</td></tr>
     <tr><td><code>REMOTE_IDENT</code></td>
         <td>The user name set by <module>mod_ident</module></td></tr>
     <tr><td><code>SERVER_NAME</code></td>
@@ -260,7 +260,7 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
         module="mod_authn_core">AuthType</directive> (e.g.
         "<code>basic</code>")</td></tr>
     <tr><td><code>CONTENT_TYPE</code></td>
-        <td>The content type of the response (not available during <directive>&lt;If &gt;</directive>)</td></tr>
+        <td>The content type of the response (not available during <directive>&lt;If&gt;</directive>)</td></tr>
     <tr><td><code>HANDLER</code></td>
         <td>The name of the <a href="handler.html">handler</a> creating
             the response</td></tr>
@@ -271,7 +271,7 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
         <td>"<code>on</code>" if the connection uses IPv6,
             "<code>off</code>" otherwise</td></tr>
     <tr><td><code>REQUEST_STATUS</code></td>
-        <td>The HTTP error status of the request (not available during <directive>&lt;If &gt;</directive>)</td></tr>
+        <td>The HTTP error status of the request (not available during <directive>&lt;If&gt;</directive>)</td></tr>
     <tr><td><code>REQUEST_LOG_ID</code></td>
         <td>The error log id of the request (see
             <directive module="core">ErrorLogFormat</directive>)</td></tr>
@@ -485,7 +485,7 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
         <td>Same as <code>req</code>, but header names will not be added to the
             Vary header</td><td></td></tr>
     <tr><td><code>resp</code></td>
-        <td>Get HTTP response header</td><td></td></tr>
+        <td>Get HTTP response header (most response headers will not yet be set during <directive>&lt;If&gt;</directive>)</td><td></td></tr>
     <tr><td><code>reqenv</code></td>
         <td>Lookup request environment variable (as a shortcut,
         <code>v</code> can be used too to access
