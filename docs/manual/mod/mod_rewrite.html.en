@@ -1057,8 +1057,10 @@ a <code class="directive">RewriteCond</code>.</li>
 <em>never</em> has a leading slash.  Therefore, a <em>Pattern</em> with <code>^/</code> never
 matches in per-directory context.</li>
 
-<li>Although rewrite rules are syntactically permitted in <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> and <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code> sections, this
-should never be necessary and is unsupported.</li>
+<li>Although rewrite rules are syntactically permitted in <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> and <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code> sections
+(including their regular expression counterparts), this
+should never be necessary and is unsupported. A likely feature
+to break in these contexts is relative substitutions.</li>
 </ul>
 </div>
 
