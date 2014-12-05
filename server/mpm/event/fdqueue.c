@@ -17,7 +17,7 @@
 #include "fdqueue.h"
 #include "apr_atomic.h"
 
-static apr_uint32_t zero_pt = APR_UINT32_MAX/2;
+static const apr_uint32_t zero_pt = APR_UINT32_MAX/2;
 
 struct recycled_pool
 {
