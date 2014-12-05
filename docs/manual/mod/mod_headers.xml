@@ -503,6 +503,25 @@ available in 2.4.10 and later</compatibility>
       more efficient than <code>%s</code>.</p>
     </note>
 
+    <note><title>Note on expression values</title>
+    <p> When the value parameter uses the <a href="../expr.html">ap_expr</a>
+    parser, some expression syntax will differ from examples that evaluate
+    <em>boolean</em> expressions such as &lt;If&gt;:
+    <ul>
+      <li>The starting point of the grammar is 'string' rather than 'expr'.</li>
+      <li>Function calls use the %{funcname:arg} syntax rather than 
+          funcname(arg).</li>
+      <li>Multi-argument functions are not currently accessible from this
+          starting point</li>
+      <li>Quote the entire parameter, such as 
+          <highlight language="config">
+        Header set foo-checksum "expr=%{md5:foo}"
+          </highlight>
+       </li>
+                   
+    </ul>
+    </p></note>
+
     <p>For <code>edit</code> there is both a <var>value</var> argument
     which is a <glossary ref="regex">regular expression</glossary>,
     and an additional <var>replacement</var> string. As of version 2.4.7
