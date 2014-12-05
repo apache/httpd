@@ -97,15 +97,11 @@ apr_status_t ap_queue_info_set_idle(fd_queue_info_t * queue_info,
                                     apr_pool_t * pool_to_recycle)
 {
     apr_status_t rv;
-    apr_int32_t prev_idlers;
 
     ap_push_pool(queue_info, pool_to_recycle);
 
-    /* Atomically increment the count of idle workers */
-    prev_idlers = apr_atomic_inc32(&(queue_info->idlers)) - zero_pt;
-
     /* If other threads are waiting on a worker, wake one up */
-    if (prev_idlers < 0) {
+    if (apr_atomic_inc32(&queue_info->idlers) < zero_pt) {
         rv = apr_thread_mutex_lock(queue_info->idlers_mutex);
         if (rv != APR_SUCCESS) {
             AP_DEBUG_ASSERT(0);
@@ -127,9 +123,13 @@ apr_status_t ap_queue_info_set_idle(fd_queue_info_t * queue_info,
 
 apr_status_t ap_queue_info_try_get_idler(fd_queue_info_t * queue_info)
 {
-    apr_int32_t new_idlers;
-    new_idlers = apr_atomic_add32(&(queue_info->idlers), -1) - zero_pt;
-    if (--new_idlers <= 0) {
+    /* Don't block if there isn't any idle worker.
+     * apr_atomic_add32(x, -1) does the same as dec32(x), except
+     * that it returns the previous value (whereas dec32 is a bool).
+     *
+     * XXX: why don't we consume the last idler?
+     */
+    if (apr_atomic_add32(&(queue_info->idlers), -1) <= zero_pt + 1) {
         apr_atomic_inc32(&(queue_info->idlers));    /* back out dec */
         return APR_EAGAIN;
     }
@@ -140,18 +140,15 @@ apr_status_t ap_queue_info_wait_for_idler(fd_queue_info_t * queue_info,
                                           int *had_to_block)
 {
     apr_status_t rv;
-    apr_int32_t prev_idlers;
 
-    /* Atomically decrement the idle worker count, saving the old value */
-    /* See TODO in ap_queue_info_set_idle() */
-    prev_idlers = apr_atomic_add32(&(queue_info->idlers), -1) - zero_pt;
-
-    /* Block if there weren't any idle workers */
-    if (prev_idlers <= 0) {
+    /* Block if there isn't any idle worker.
+     * apr_atomic_add32(x, -1) does the same as dec32(x), except
+     * that it returns the previous value (whereas dec32 is a bool).
+     */
+    if (apr_atomic_add32(&queue_info->idlers, -1) <= zero_pt) {
         rv = apr_thread_mutex_lock(queue_info->idlers_mutex);
         if (rv != APR_SUCCESS) {
             AP_DEBUG_ASSERT(0);
-            /* See TODO in ap_queue_info_set_idle() */
             apr_atomic_inc32(&(queue_info->idlers));    /* back out dec */
             return rv;
         }
@@ -205,11 +202,11 @@ apr_status_t ap_queue_info_wait_for_idler(fd_queue_info_t * queue_info,
 
 apr_uint32_t ap_queue_info_get_idlers(fd_queue_info_t * queue_info)
 {
-    apr_int32_t val;
-    val = (apr_int32_t)apr_atomic_read32(&queue_info->idlers) - zero_pt;
-    if (val < 0)
+    apr_uint32_t val;
+    val = apr_atomic_read32(&queue_info->idlers);
+    if (val <= zero_pt)
         return 0;
-    return val;
+    return val - zero_pt;
 }
 
 void ap_push_pool(fd_queue_info_t * queue_info,

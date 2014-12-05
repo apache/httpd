@@ -1543,6 +1543,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
     apr_signal(LISTENER_SIGNAL, dummy_signal_handler);
 
     for (;;) {
+        apr_uint32_t i_count;
         int workers_were_busy = 0;
         if (listener_may_exit) {
             close_listeners(process_slot, &closed);
@@ -1689,7 +1690,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
             }
             else if (pt->type == PT_ACCEPT) {
                 int skip_accept = 0;
-                int connection_count_local = connection_count;
+                apr_uint32_t connection_count_local = connection_count;
 
                 /* A Listener Socket is ready for an accept() */
                 if (workers_were_busy) {
@@ -1702,9 +1703,10 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                     listeners_disabled = 0;
                     enable_listensocks(process_slot);
                 }
-                else if (connection_count_local > threads_per_child
-                         + ap_queue_info_get_idlers(worker_queue_info) *
-                           worker_factor / WORKER_FACTOR_SCALE)
+                else if (connection_count_local >
+                            (ap_queue_info_get_idlers(worker_queue_info)
+                             * worker_factor / WORKER_FACTOR_SCALE
+                             + threads_per_child))
                 {
                     skip_accept = 1;
                     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf,
@@ -1847,10 +1849,11 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
             ps->suspended = apr_atomic_read32(&suspended_count);
             ps->lingering_close = apr_atomic_read32(&lingering_count);
         }
-        if (listeners_disabled && !workers_were_busy &&
-            (int)apr_atomic_read32(&connection_count) <
-            ((int)ap_queue_info_get_idlers(worker_queue_info) - 1) *
-            worker_factor / WORKER_FACTOR_SCALE + threads_per_child)
+        if (listeners_disabled && !workers_were_busy
+            && (i_count = ap_queue_info_get_idlers(worker_queue_info)) > 0
+            && (apr_atomic_read32(&connection_count)
+                    < (i_count - 1) * worker_factor / WORKER_FACTOR_SCALE
+                      + threads_per_child))
         {
             listeners_disabled = 0;
             enable_listensocks(process_slot);
