@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
   
+  *) ap_expr: Add filemod function for checking file modification dates
+     [Daniel Gruno]
+     
   *) SECURITY: CVE-2014-8109 (cve.mitre.org)
      mod_lua: Fix handling of the Require line when a LuaAuthzProvider is
      used in multiple Require directives with different arguments.
