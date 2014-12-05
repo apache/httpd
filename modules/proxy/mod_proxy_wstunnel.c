@@ -303,9 +303,12 @@ static apr_status_t proxy_wstunnel_transfer(request_rec *r, conn_rec *c_i, conn_
         }
     } while (rv == APR_SUCCESS);
 
+    ap_log_rerror(APLOG_MARK, APLOG_TRACE2, rv, r, "wstunnel_transfer complete");
+
     if (APR_STATUS_IS_EAGAIN(rv)) {
         rv = APR_SUCCESS;
     }
+
     return rv;
 }
 
