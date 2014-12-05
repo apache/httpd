@@ -318,7 +318,7 @@ Changes with Apache 2.4.10
      under the Event MPM. PR56216.  [Frank Meier <frank meier ergon ch>]
 
   *) mod_proxy_fcgi: Fix sending of response without some HTTP headers
-     that might be set by filters.  [Jim Riggs <jim riggs.me>]
+     that might be set by filters.  PR 55558. [Jim Riggs <jim riggs.me>]
 
   *) mod_proxy_html: Do not delete the wrong data from HTML code when a
      "http-equiv" meta tag specifies a Content-Type behind any other
