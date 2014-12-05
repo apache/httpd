@@ -1755,7 +1755,7 @@ static const struct expr_provider_single string_func_providers[] = {
     { unescape_func,        "unescape",       NULL, 0 },
     { file_func,            "file",           NULL, 1 },
     { filesize_func,        "filesize",       NULL, 1 },
-    { filemod_func,        "filemod",       NULL, 1 },
+    { filemod_func,         "filemod",        NULL, 1 },
     { base64_func,          "base64",         NULL, 0 },
     { unbase64_func,        "unbase64",       NULL, 0 },
     { sha1_func,            "sha1",           NULL, 0 },
