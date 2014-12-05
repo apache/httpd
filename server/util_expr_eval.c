@@ -1220,6 +1220,18 @@ static const char *filesize_func(ap_expr_eval_ctx_t *ctx, const void *data,
         return "0";
 }
 
+static const char *filemod_func(ap_expr_eval_ctx_t *ctx, const void *data,
+                                  char *arg)
+{
+    apr_finfo_t sb;
+    if (apr_stat(&sb, arg, APR_FINFO_MIN, ctx->p) == APR_SUCCESS
+        && sb.filetype == APR_REG && sb.mtime > 0)
+        return apr_psprintf(ctx->p, "%" APR_OFF_T_FMT, sb.mtime);
+    else
+        return "0";
+}
+
+
 static const char *unescape_func(ap_expr_eval_ctx_t *ctx, const void *data,
                                  const char *arg)
 {
@@ -1743,6 +1755,7 @@ static const struct expr_provider_single string_func_providers[] = {
     { unescape_func,        "unescape",       NULL, 0 },
     { file_func,            "file",           NULL, 1 },
     { filesize_func,        "filesize",       NULL, 1 },
+    { filemod_func,        "filemod",       NULL, 1 },
     { base64_func,          "base64",         NULL, 0 },
     { unbase64_func,        "unbase64",       NULL, 0 },
     { sha1_func,            "sha1",           NULL, 0 },
