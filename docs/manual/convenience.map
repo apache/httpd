@@ -159,6 +159,7 @@ cachestorenostore	mod/mod_cache.html#cachestorenostore
 cachestoreprivate	mod/mod_cache.html#cachestoreprivate
 cgidscripttimeout	mod/mod_cgid.html#cgidscripttimeout
 cgimapextension	mod/core.html#cgimapextension
+cgipassauth	mod/core.html#cgipassauth
 charsetdefault	mod/mod_charset_lite.html#charsetdefault
 charsetoptions	mod/mod_charset_lite.html#charsetoptions
 charsetsourceenc	mod/mod_charset_lite.html#charsetsourceenc
