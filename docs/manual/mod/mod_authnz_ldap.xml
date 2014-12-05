@@ -419,11 +419,11 @@ uniqueMember: cn=Elliot Rhodes, o=Example
 </pre></example>
 
     <p>The following directives would allow access for Bob Ellis, Tom Jackson,
-    Barbara Jensen, Fred User, Allan Jefferson, and Paul Tilley but would not
+    Barbara Jenson, Fred User, Allan Jefferson, and Paul Tilley but would not
     allow access for Jim Swenson, or Elliot Rhodes (since they are at a
     sub-group depth of 2):</p>
 <highlight language="config">
-Require ldap-group cn=Employees, o-Example
+Require ldap-group cn=Employees, o=Example
 AuthLDAPMaxSubGroupDepth 1
 </highlight>
 
