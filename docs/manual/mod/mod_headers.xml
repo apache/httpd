@@ -506,7 +506,7 @@ available in 2.4.10 and later</compatibility>
     <note><title>Note on expression values</title>
     <p> When the value parameter uses the <a href="../expr.html">ap_expr</a>
     parser, some expression syntax will differ from examples that evaluate
-    <em>boolean</em> expressions such as &lt;If&gt;:
+    <em>boolean</em> expressions such as &lt;If&gt;:</p>
     <ul>
       <li>The starting point of the grammar is 'string' rather than 'expr'.</li>
       <li>Function calls use the %{funcname:arg} syntax rather than 
@@ -520,7 +520,7 @@ available in 2.4.10 and later</compatibility>
        </li>
                    
     </ul>
-    </p></note>
+    </note>
 
     <p>For <code>edit</code> there is both a <var>value</var> argument
     which is a <glossary ref="regex">regular expression</glossary>,
