@@ -388,6 +388,24 @@ available in 2.4.10 and later</td></tr>
       more efficient than <code>%s</code>.</p>
     </div>
 
+    <div class="note"><h3>Note on expression values</h3>
+    <p> When the value parameter uses the <a href="../expr.html">ap_expr</a>
+    parser, some expression syntax will differ from examples that evaluate
+    <em>boolean</em> expressions such as &lt;If&gt;:</p>
+    <ul>
+      <li>The starting point of the grammar is 'string' rather than 'expr'.</li>
+      <li>Function calls use the %{funcname:arg} syntax rather than 
+          funcname(arg).</li>
+      <li>Multi-argument functions are not currently accessible from this
+          starting point</li>
+      <li>Quote the entire parameter, such as 
+          <pre class="prettyprint lang-config">Header set foo-checksum "expr=%{md5:foo}"</pre>
+
+       </li>
+                   
+    </ul>
+    </div>
+
     <p>For <code>edit</code> there is both a <var>value</var> argument
     which is a <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular expression</a>,
     and an additional <var>replacement</var> string. As of version 2.4.7
