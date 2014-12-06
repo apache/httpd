@@ -686,7 +686,8 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
         }
     }
     else if (output_failed) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(02822)
+        int level = (r->connection->aborted) ? APLOG_DEBUG : APLOG_ERR;
+        ap_log_rerror(APLOG_MARK, level, status, r, APLOGNO(02822)
                       "dialog with client %pI failed",
                       r->connection->client_addr);
         if (rv == OK) {
