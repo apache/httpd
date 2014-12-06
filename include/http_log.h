@@ -555,7 +555,7 @@ AP_DECLARE(void) ap_log_cserror_(const char *file, int line, int module_index,
 /*
  * The buffer logging functions, ap_log_data, ap_log_rdata, ap_log_cdata,
  * and ap_log_csdata log a buffer in printable and hex format.  The exact
- * format is controlled by processing flags, describe next.
+ * format is controlled by processing flags, described next.
  */
 
 /**
@@ -582,9 +582,9 @@ AP_DECLARE(void) ap_log_cserror_(const char *file, int line, int module_index,
  * @param flags Special processing flags like AP_LOG_DATA_SHOW_OFFSET
  * @note ap_log_data is implemented as a macro.
  * @note Use APLOG_MARK to fill out file, line, and module_index
- * @note If a request_rec is available, use that with ap_log_rerror()
+ * @note If a request_rec is available, use that with ap_log_rdata()
  * in preference to calling this function.  Otherwise, if a conn_rec is
- * available, use that with ap_log_cerror() in preference to calling
+ * available, use that with ap_log_cdata() in preference to calling
  * this function.
  */
 #ifdef DOXYGEN
@@ -721,9 +721,9 @@ AP_DECLARE(void) ap_log_csdata(const char *file, int line, int module_index,
 #define ap_log_cdata ap_log_cdata_
 #endif
 AP_DECLARE(void) ap_log_csdata_(const char *file, int line, int module_index,
-                               int level, const conn_rec *c, const server_rec *s,
-                               const char *label, const void *data,
-                               apr_size_t len, unsigned int flags);
+                                int level, const conn_rec *c, const server_rec *s,
+                                const char *label, const void *data,
+                                apr_size_t len, unsigned int flags);
 #endif
 
 /**
