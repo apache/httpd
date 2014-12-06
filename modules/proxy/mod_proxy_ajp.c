@@ -186,7 +186,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
     int data_sent = 0;
     int request_ended = 0;
     int headers_sent = 0;
-    int rv = 0;
+    int rv = OK;
     apr_int32_t conn_poll_fd;
     apr_pollfd_t *conn_poll;
     proxy_server_conf *psf =
@@ -394,6 +394,9 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                         if (status != APR_SUCCESS) {
                             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, status, r, APLOGNO(00880)
                                           "ap_get_brigade failed");
+                            if (APR_STATUS_IS_TIMEUP(status)) {
+                                rv = HTTP_REQUEST_TIME_OUT;
+                            }
                             output_failed = 1;
                             break;
                         }
@@ -404,6 +407,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                         if (status != APR_SUCCESS) {
                             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, status, r, APLOGNO(00881)
                                          "apr_brigade_flatten failed");
+                            rv = HTTP_INTERNAL_SERVER_ERROR;
                             output_failed = 1;
                             break;
                         }
@@ -559,15 +563,19 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
 
         /*
          * If connection has been aborted by client: Stop working.
-         * Nevertheless, we regard our operation so far as a success:
-         * So reset output_failed to 0 and set result to CMD_AJP13_END_RESPONSE
-         * But: Close this connection to the backend.
+         * Pretend we are done (data_sent) to avoid further processing.
          */
         if (r->connection->aborted) {
-            conn->close = 1;
-            output_failed = 0;
-            result = CMD_AJP13_END_RESPONSE;
-            request_ended = 1;
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02821)
+                          "client connection aborted");
+            /* no response yet (or ever), set status for access log */
+            if (!headers_sent) {
+                r->status = HTTP_BAD_REQUEST;
+            }
+            /* return DONE */
+            output_failed = 1;
+            data_sent = 1;
+            break;
         }
 
         /*
@@ -677,6 +685,14 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
             }
         }
     }
+    else if (output_failed) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(02822)
+                      "dialog with client %pI failed",
+                      r->connection->client_addr);
+        if (rv == OK) {
+            rv = HTTP_BAD_REQUEST;
+        }
+    }
 
     /*
      * Ensure that we sent an EOS bucket thru the filter chain, if we already
@@ -684,7 +700,8 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
      * one to the brigade already (no longer making it empty). So we should
      * not do this in this case.
      */
-    if (data_sent && !r->eos_sent && APR_BRIGADE_EMPTY(output_brigade)) {
+    if (data_sent && !r->eos_sent && !r->connection->aborted
+            && APR_BRIGADE_EMPTY(output_brigade)) {
         e = apr_bucket_eos_create(r->connection->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(output_brigade, e);
     }
