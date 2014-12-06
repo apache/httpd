@@ -225,6 +225,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (CHANGES 
      +1: ylavic, covener
 
+   * core: Add ap_log_data(), ap_log_rdata(), etc. for logging buffers.
+     trunk patch: http://svn.apache.org/r1512819
+                  http://svn.apache.org/r1513461 ONLY the change to http_log.h
+                  http://svn.apache.org/r1565777
+                  http://svn.apache.org/r1643538
+     2.4.x patch: http://people.apache.org/~trawick/ap_log_data-to-2.4.x.txt
+                  (trunk works with the expected minor conflicts in CHANGES
+                  and ap_mmn.h)
+     +1: trawick
+
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
