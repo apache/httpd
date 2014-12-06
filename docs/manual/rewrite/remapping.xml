@@ -580,4 +580,66 @@ file, as well as in a &lt;Directory&gt; block.</p>
 
 </section>
 
+<section id="rewrite-query">
+<title>Rewrite query string</title>
+
+<dl>
+<dt>Description:</dt>
+<dd>You want to capture a particular value from a query string
+and either replace it or incorporate it into another component
+of the URL.</dd>
+
+<dt>Solutions:</dt>
+<dd>
+<p> Many of the solutions in this section will all use the same condition,
+which leaves the matched value in the %2 backreference.  %1 is the beginining
+of the query string (up to the key of intererest), and %3 is the remainder. This
+condition is a bit complex for flexibility and to avoid double '&amp;&amp;' in the 
+substitutions.</p>
+<ul>
+  <li>This solution removes the matching key and value:
+
+<highlight language="config">
+# Remove mykey=???
+RewriteCond %{QUERY_STRING} (.*(?:^|&amp;))mykey=([^&amp;]*)&amp;?(.*)&amp;?$
+RewriteRule (.*) $1?%1%3
+</highlight>
+  </li>
+
+  <li>This solution uses the captured value in the URL subsitution,
+  discarding the rest of the original query by appending a '?':
+
+<highlight language="config">
+# Copy from query string to PATH_INFO
+RewriteCond %{QUERY_STRING} (.*(?:^|&amp;))mykey=([^&amp;]*)&amp;?(.*)&amp;?$
+RewriteRule (.*) $1/products/%2/? [PT]
+</highlight>
+  </li>
+
+  <li>This solution checks the captured value in a subsequent condition:
+
+<highlight language="config">
+# Capture the value of mykey in the query string
+RewriteCond %{QUERY_STRING} (.*(?:^|&amp;))mykey=([^&amp;]*)&amp;?(.*)&amp;?$
+RewriteCond %2 !=not-so-secret-value 
+RewriteRule (.*) - [F]
+</highlight>
+  </li>
+
+  <li>This solution shows the reverse of the previous ones, copying
+      path components (perhaps PATH_INFO) from the URL into the query string.
+<highlight language="config">
+# The desired URL might be /products/kitchen-sink, and the script expects 
+# /path?products=kitchen-sink.
+RewriteRule ^/?path/([^/]+)/([^/]+) /path?$1=$2 [PT]
+</highlight>
+  </li>
+</ul>
+
+</dd>
+
+</dl>
+</section>
+
+
 </manualpage>
