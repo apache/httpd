@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
   
+  *) mod_proxy_ajp: Fix client connection errors handling and logged status
+     when it occurs.  PR 56823.  [Yann Ylavic]
+
   *) ap_expr: Add filemod function for checking file modification dates
      [Daniel Gruno]
      
