@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1631516:1642847 (outdated) -->
+<!-- English Revision : 1642847 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -614,6 +614,47 @@ scripts CGI</description>
     la d&eacute;finition <code>CGIMapExtension sys:\foo.nlm .foo</code>, tous
     les fichiers scripts CGI poss&eacute;dant une extension <code>.foo</code>
     seront pass&eacute;s &agrave; l'interpr&eacute;teur FOO.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CGIPassAuth</name>
+<description>Active la transmission d'en-t&ecirc;tes d'autorisation HTTP aux scripts en
+tant que variables CGI</description>
+<syntax>CGIPassAuth On|Off</syntax>
+<default>CGIPassAuth Off</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+<compatibility>Disponible &agrave; partir de la version 2.5.0 du serveur HTTP
+Apache</compatibility>
+
+<usage>
+    <p>La directive <directive>CGIPassAuth</directive> permet aux
+    scripts d'acc&eacute;der aux en-t&ecirc;tes d'autorisation HTTP tels que
+    <code>Authorization</code>, en-t&ecirc;te n&eacute;cessaire aux scripts qui
+    impl&eacute;mente une authentification HTTP de base. Normalement, ces
+    en-t&ecirc;tes HTTP sont invisibles pour les scripts car ils leurs
+    permettraient de voir les identifiants et mots de passe
+    utilis&eacute;s pour acc&eacute;der au serveur lorsque l'authentification HTTP de
+    base est activ&eacute;e au niveau du serveur web. Cette directive doit &ecirc;tre
+    d&eacute;finie &agrave; "On" lorsque des scripts sont autoris&eacute;s &agrave; impl&eacute;menter une
+    authentification HTTP de base.</p>
+
+    <p>Cette directive constitue une alternative &agrave; l'option de
+    compilation <code>SECURITY_HOLE_PASS_AUTHORIZATION</code> qui &eacute;tait
+    d&eacute;j&agrave; disponible dans les versions pr&eacute;c&eacute;dentes du serveur HTTP
+    Apache.</p>
+
+    <p>Cette option est prise en compte par tout module qui utilise
+    <code>ap_add_common_vars()</code>, comme <module>mod_cgi</module>,
+    <module>mod_cgid</module>, <module>mod_proxy_fcgi</module>,
+    <module>mod_proxy_scgi</module>, etc... En particulier, elle affecte
+    les modules qui ne traitent pas &agrave; proprement parler les requ&ecirc;tes,
+    mais utilisent quand-m&ecirc;me cette API, comme
+    <module>mod_include</module> ou <module>mod_ext_filter</module>. Les
+    modules tiers qui n'utilisent pas <code>ap_add_common_vars()</code>
+    peuvent aussi choisir de prendre en compte cette option.</p>
 </usage>
 </directivesynopsis>
 

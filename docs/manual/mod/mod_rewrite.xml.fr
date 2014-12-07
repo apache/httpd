@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1601532:1643034 (outdated) -->
+<!-- English Revision : 1643034 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -294,6 +294,23 @@ pour le moteur de r&eacute;&eacute;criture</description>
       depuis la version 2.4.4 du serveur HTTP Apache.</p>
       </dd>
 
+      <dt><code>IgnoreContextInfo</code></dt>
+      <dd>
+
+      <p>Dans les versions 2.4.11 et ant&eacute;rieures, lors d'une
+      substitution relative dans un contexte de r&eacute;pertoire (htaccess),
+      et si la directive <directive
+      module="mod_rewrite">RewriteBase</directive> n'a pas &eacute;t&eacute; d&eacute;finie,
+      ce module utilise des informations en provenance d'une extension
+      d'URL et du contexte du syst&egrave;me de fichiers pour transformer la
+      sustitution relative en URL. Par exemple, les modules
+      <module>mod_userdir</module> et <module>mod_alias</module>
+      utilisent ces informations de contexte &eacute;tendu. Cette option
+      d&eacute;sactive le comportement introduit avec la version 2.4.11, et ne
+      doit &ecirc;tre utilis&eacute;e que si toutes les conditions pr&eacute;c&eacute;dentes sont
+      v&eacute;rifi&eacute;es, et si la substitution renvoie un r&eacute;sultat inattendu.</p>
+      </dd>
+
       </dl>
 </usage>
 
@@ -423,8 +440,9 @@ r&eacute;pertoire</description>
       r&eacute;pertoire (htaccess), sauf si au moins une de ces conditions est
       v&eacute;rifi&eacute;e :</p>
       <ul>
-          <li>La requ&ecirc;te initiale, ainsi que la substitution, sont dans
-	  la <directive module="core">DocumentRoot</directive> (c'est &agrave;
+          <li>La requ&ecirc;te initiale, ainsi que la substitution, se
+	  situent par raport &agrave; la valeur de la directive
+	  <directive module="core">DocumentRoot</directive> (c'est &agrave;
 	  dire que pour y acc&eacute;der, il n'est pas n&eacute;cessaire d'utiliser
 	  une directive telle qu'<directive
 	  module="mod_alias">Alias</directive>).</li>
@@ -432,6 +450,11 @@ r&eacute;pertoire</description>
 	  contenant la <directive>RewriteRule</directive>, suffix&eacute; par
 	  la substitution relative est aussi valide en tant qu'URL sur
 	  le serveur (ce qui est rare).</li>
+	  <li>A partir de la version 2.4.11 du serveur HTTP Apache,
+	  cette directive peut &ecirc;tre omise lorsque la requ&ecirc;te est mise en
+	  correspondance avec le syst&egrave;me de fichiers via la directive
+	  <directive module="mod_alias">Alias</directive> ou le module
+	  <module>mod_userdir</module>.</li>
       </ul>
 
 <p>Dans l'exemple ci-dessous, la directive
@@ -443,13 +466,14 @@ de configuration aurait conduit le serveur &agrave; rechercher un r&eacute;perto
 
 <highlight language="config">
 DocumentRoot /var/www/example.com
-Alias /myapp /opt/myapp-1.2.3
+AliasMatch ^/myapp /opt/myapp-1.2.3
 &lt;Directory /opt/myapp-1.2.3&gt;
  RewriteEngine On
     RewriteBase /myapp/
     RewriteRule ^index\.html$  welcome.html
 &lt;/Directory&gt;
 </highlight>
+
 </usage>
 
 </directivesynopsis>
@@ -1163,8 +1187,11 @@ signifie que la comparaison s'effectue avec une cha&icirc;ne qui ne comporte
 <li>Bien que les r&egrave;gles de r&eacute;&eacute;criture soient permises du point de vue de
 la syntaxe dans les sections <directive type="section"
 module="core">Location</directive> et <directive type="section"
-module="core">Files</directive>, elles n'y sont pas prises en compte, et
-n'y sont &agrave; priori d'aucune utilit&eacute;.</li>
+module="core">Files</directive> (y compris leurs versions sous forme
+d'expression rationnelle), elles n'y sont pas prises en compte, et
+n'y sont &agrave; priori d'aucune utilit&eacute;. Les substitutions
+relatives sont une fonctionnalit&eacute; qui n'est, elle non-plus pas support&eacute;e
+dans ce genre de contexte.</li>
 </ul>
 </note>
 

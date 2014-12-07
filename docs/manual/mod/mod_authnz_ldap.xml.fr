@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1591113:1643416 (outdated) -->
+<!-- English Revision : 1643416 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -462,12 +462,12 @@ uniqueMember: cn=Elliot Rhodes, o=Example
 </pre></example>
 
     <p>Les directives suivantes autoriseraient alors l'acc&egrave;s &agrave; Bob
-    Ellis, Tom Jackson, Barbara Jensen, Fred User, Allan Jefferson, et
+    Ellis, Tom Jackson, Barbara Jenson, Fred User, Allan Jefferson, et
     Paul Tilley, mais l'interdiraient &agrave; Jim Swenson, ou Elliot Rhodes
     (car ils sont situ&eacute;s dans un sous-groupe de niveau de profondeur 2)
     :</p>
 <highlight language="config">
-Require ldap-group cn=Employees, o-Example
+Require ldap-group cn=Employees, o=Example
 AuthLDAPMaxSubGroupDepth 1
 </highlight>
 
