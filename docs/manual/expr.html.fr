@@ -24,8 +24,6 @@
 <p><span>Langues Disponibles: </span><a href="./en/expr.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./fr/expr.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p>Historiquement, il existe de nombreuses variantes dans la syntaxe
     des expressions permettant d'exprimer une condition dans les
@@ -536,7 +534,7 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"</pr
 &lt;/Directory&gt;
 
 # Vérifie si un en-tête HTTP correspond à une des valeurs d'une liste
-&lt;If "%{HTTP:X-example-header} in { 'foo', 'bar', 'baz'}"&gt;
+&lt;If "%{HTTP:X-example-header} in { 'foo', 'bar', 'baz' }"&gt;
     La définition de l'en-tête correspond à une des valeurs recherchées
 &lt;/If&gt;
 
@@ -553,7 +551,18 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"</pr
 &lt;If "-f '%{REQUEST_FILENAME}.unzipme' &amp;&amp; ! %{HTTP:Accept-Encoding} =~ /gzip/"&gt;
       SetOutputFilter INFLATE
 &lt;/If&gt;
-&lt;/Directory&gt;</pre>
+&lt;/Directory&gt;
+
+# Exemples de fonctions dans un contexte booléen
+&lt;If "md5('foo') == 'acbd18db4cc2f85cedef654fccc4a4d8'"&gt;
+  Header set checksum-matched true
+&lt;/If&gt;
+&lt;If "md5('foo') == replace('md5:XXXd18db4cc2f85cedef654fccc4a4d8', 'md5:XXX', 'acb')&gt;
+  Header set checksum-matched-2 true
+&lt;/If&gt;
+
+# Function example in string context
+Header set foo-checksum "expr=%{md5:foo}"</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
