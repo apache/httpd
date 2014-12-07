@@ -221,17 +221,15 @@ static apr_status_t send_environment(proxy_conn_rec *conn, request_rec *r,
     envarr = apr_table_elts(r->subprocess_env);
     elts = (const apr_table_entry_t *) envarr->elts;
 
-#ifdef FCGI_DUMP_ENV_VARS
-    {
+    if (APLOGrtrace8(r)) {
         int i;
         
         for (i = 0; i < envarr->nelts; ++i) {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01062)
+            ap_log_rerror(APLOG_MARK, APLOG_TRACE8, 0, r, APLOGNO(01062)
                           "sending env var '%s' value '%s'",
                           elts[i].key, elts[i].val);
         }
     }
-#endif
 
     /* Send envvars over in as many FastCGI records as it takes, */
     next_elem = 0; /* starting with the first one */
@@ -511,10 +509,8 @@ static apr_status_t dispatch(proxy_conn_rec *conn, proxy_dir_conf *conf,
                 break;
             }
 
-#ifdef FCGI_DUMP_HEADERS
-            ap_log_rdata(APLOG_MARK, APLOG_DEBUG, r, "FastCGI header",
+            ap_log_rdata(APLOG_MARK, APLOG_TRACE8, r, "FastCGI header",
                          farray, AP_FCGI_HEADER_LEN, 0);
-#endif
 
             ap_fcgi_header_fields_from_array(&version, &type, &rid,
                                              &clen, &plen, farray);
