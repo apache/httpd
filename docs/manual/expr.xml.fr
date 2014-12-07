@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision: 1642154:1643267 (outdated) -->
+<!-- English Revision : 1643267 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -234,8 +234,7 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
         <td>Le nom d'h&ocirc;te de l'h&ocirc;te distant</td></tr>
     <tr><td><code>REMOTE_USER</code></td>
         <td>Le nom de l'utilisateur authentifi&eacute;, s'il existe (non
-	disponible &agrave; l'int&eacute;rieur d'un bloc <directive>&lt;If
-	&gt;</directive>)</td></tr>
+	disponible &agrave; l'int&eacute;rieur d'un bloc <directive>&lt;If&gt;</directive>)</td></tr>
     <tr><td><code>REMOTE_IDENT</code></td>
         <td>Le nom de l'utilisateur d&eacute;fini par <module>mod_ident</module></td></tr>
     <tr><td><code>SERVER_NAME</code></td>
@@ -272,8 +271,7 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
 	"<code>basic</code>")</td></tr>
     <tr><td><code>CONTENT_TYPE</code></td>
         <td>Le type de contenu de la r&eacute;ponse (non
-	disponible &agrave; l'int&eacute;rieur d'un bloc <directive>&lt;If
-	&gt;</directive>)</td></tr>
+	disponible &agrave; l'int&eacute;rieur d'un bloc <directive>&lt;If&gt;</directive>)</td></tr>
     <tr><td><code>HANDLER</code></td>
         <td>Le nom du <a href="handler.html">gestionnaire</a> qui a
 	g&eacute;n&eacute;r&eacute; la r&eacute;ponse</td></tr>
@@ -285,8 +283,7 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
 	"<code>off</code>" dans le cas contraire</td></tr>
     <tr><td><code>REQUEST_STATUS</code></td>
         <td>Le code d'erreur HTTP de la requ&ecirc;te (non
-	disponible &agrave; l'int&eacute;rieur d'un bloc <directive>&lt;If
-	&gt;</directive>)</td></tr>
+	disponible &agrave; l'int&eacute;rieur d'un bloc <directive>&lt;If&gt;</directive>)</td></tr>
     <tr><td><code>REQUEST_LOG_ID</code></td>
         <td>L'identifiant du message d'erreur associ&eacute; &agrave; la requ&ecirc;te (voir
 	la directive <directive
@@ -511,7 +508,9 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
         <td>Identique &agrave; <code>req</code>, mais les noms
 	d'en-t&ecirc;te correspondants ne seront pas ajout&eacute;s &agrave; l'en-t&ecirc;te Vary</td><td></td></tr>
     <tr><td><code>resp</code></td>
-        <td>Lit l'en-t&ecirc;te de r&eacute;ponse HTTP</td><td></td></tr>
+        <td>Lit l'en-t&ecirc;te de r&eacute;ponse HTTP (la plupart des
+	en-t&ecirc;te de la r&eacute;ponse ne sont pas encore d&eacute;finis pendant
+	l'ex&eacute;cution de la directive <directive>&lt;If&gt;</directive>)</td><td></td></tr>
     <tr><td><code>reqenv</code></td>
         <td>Recherche une variable d'environnement de requ&ecirc;te (on
 	peut aussi utiliser le raccourci <code>v</code>).</td><td></td></tr>
@@ -613,7 +612,7 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
 &lt;/Directory&gt;	
 
 # V&eacute;rifie si un en-t&ecirc;te HTTP correspond &agrave; une des valeurs d'une liste
-&lt;If "%{HTTP:X-example-header} in { 'foo', 'bar', 'baz'}"&gt;
+&lt;If "%{HTTP:X-example-header} in { 'foo', 'bar', 'baz' }"&gt;
     La d&eacute;finition de l'en-t&ecirc;te correspond &agrave; une des valeurs recherch&eacute;es
 &lt;/If&gt;
 # Recherche la valeur d'une expression rationnelle dans une variable
@@ -630,6 +629,17 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
       SetOutputFilter INFLATE
 &lt;/If&gt;
 &lt;/Directory&gt;
+
+# Exemples de fonctions dans un contexte bool&eacute;en
+&lt;If "md5('foo') == 'acbd18db4cc2f85cedef654fccc4a4d8'"&gt;
+  Header set checksum-matched true
+&lt;/If&gt;
+&lt;If "md5('foo') == replace('md5:XXXd18db4cc2f85cedef654fccc4a4d8', 'md5:XXX', 'acb')&gt;
+  Header set checksum-matched-2 true
+&lt;/If&gt;
+
+# Function example in string context
+Header set foo-checksum "expr=%{md5:foo}"
 
 	</highlight>
 </section>

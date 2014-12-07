@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1600383:1642590 (outdated) -->
+<!-- English Revision : 1642590 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -187,6 +187,17 @@ SetEnvIf User-Agent ^KnockKnock/2\.0 let_me_in
 
     <highlight language="config">
          Require expr %{TIME_HOUR} -ge 9 &amp;&amp; %{TIME_HOUR} -le 17
+    </highlight>
+
+    <highlight language="config">
+&lt;RequireAll&gt;
+    Require expr "!(%{QUERY_STRING} =~ /secret/)"
+    Require expr "%{REQUEST_URI} in { '/example.cgi', '/other.cgi' }" 
+&lt;/RequireAll&gt;
+    </highlight>
+
+    <highlight language="config">
+        Require expr "!(%{QUERY_STRING} =~ /secret/) &amp;&amp; %{REQUEST_URI} in { '/example.cgi', '/other.cgi' }"
     </highlight>
 
     <p>La syntaxe de l'expression est d&eacute;crite dans la documentation de <a
