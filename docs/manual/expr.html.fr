@@ -24,8 +24,6 @@
 <p><span>Langues Disponibles: </span><a href="./en/expr.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./fr/expr.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p>Historiquement, il existe de nombreuses variantes dans la syntaxe
     des expressions permettant d'exprimer une condition dans les
@@ -205,8 +203,7 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"</pr
         <td>Le nom d'hôte de l'hôte distant</td></tr>
 <tr class="odd"><td><code>REMOTE_USER</code></td>
         <td>Le nom de l'utilisateur authentifié, s'il existe (non
-	disponible à l'intérieur d'un bloc <code class="directive">&lt;If
-	&gt;</code>)</td></tr>
+	disponible à l'intérieur d'un bloc <code class="directive">&lt;If&gt;</code>)</td></tr>
 <tr><td><code>REMOTE_IDENT</code></td>
         <td>Le nom de l'utilisateur défini par <code class="module"><a href="./mod/mod_ident.html">mod_ident</a></code></td></tr>
 <tr class="odd"><td><code>SERVER_NAME</code></td>
@@ -239,8 +236,7 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"</pr
 	"<code>basic</code>")</td></tr>
 <tr><td><code>CONTENT_TYPE</code></td>
         <td>Le type de contenu de la réponse (non
-	disponible à l'intérieur d'un bloc <code class="directive">&lt;If
-	&gt;</code>)</td></tr>
+	disponible à l'intérieur d'un bloc <code class="directive">&lt;If&gt;</code>)</td></tr>
 <tr class="odd"><td><code>HANDLER</code></td>
         <td>Le nom du <a href="handler.html">gestionnaire</a> qui a
 	généré la réponse</td></tr>
@@ -252,8 +248,7 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"</pr
 	"<code>off</code>" dans le cas contraire</td></tr>
 <tr><td><code>REQUEST_STATUS</code></td>
         <td>Le code d'erreur HTTP de la requête (non
-	disponible à l'intérieur d'un bloc <code class="directive">&lt;If
-	&gt;</code>)</td></tr>
+	disponible à l'intérieur d'un bloc <code class="directive">&lt;If&gt;</code>)</td></tr>
 <tr class="odd"><td><code>REQUEST_LOG_ID</code></td>
         <td>L'identifiant du message d'erreur associé à la requête (voir
 	la directive <code class="directive"><a href="./mod/core.html#errorlogformat">ErrorLogFormat</a></code>)</td></tr>
@@ -460,7 +455,9 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"</pr
         <td>Identique à <code>req</code>, mais les noms
 	d'en-tête correspondants ne seront pas ajoutés à l'en-tête Vary</td><td /></tr>
 <tr><td><code>resp</code></td>
-        <td>Lit l'en-tête de réponse HTTP</td><td /></tr>
+        <td>Lit l'en-tête de réponse HTTP (la plupart des
+	en-tête de la réponse ne sont pas encore définis pendant
+	l'exécution de la directive <code class="directive">&lt;If&gt;</code>)</td><td /></tr>
 <tr class="odd"><td><code>reqenv</code></td>
         <td>Recherche une variable d'environnement de requête (on
 	peut aussi utiliser le raccourci <code>v</code>).</td><td /></tr>
@@ -560,7 +557,7 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"</pr
 &lt;/Directory&gt;	
 
 # Vérifie si un en-tête HTTP correspond à une des valeurs d'une liste
-&lt;If "%{HTTP:X-example-header} in { 'foo', 'bar', 'baz'}"&gt;
+&lt;If "%{HTTP:X-example-header} in { 'foo', 'bar', 'baz' }"&gt;
     La définition de l'en-tête correspond à une des valeurs recherchées
 &lt;/If&gt;
 # Recherche la valeur d'une expression rationnelle dans une variable
@@ -576,7 +573,18 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"</pr
 &lt;If "-f '%{REQUEST_FILENAME}.unzipme' &amp;&amp; ! %{HTTP:Accept-Encoding} =~ /gzip/"&gt;
       SetOutputFilter INFLATE
 &lt;/If&gt;
-&lt;/Directory&gt;</pre>
+&lt;/Directory&gt;
+
+# Exemples de fonctions dans un contexte booléen
+&lt;If "md5('foo') == 'acbd18db4cc2f85cedef654fccc4a4d8'"&gt;
+  Header set checksum-matched true
+&lt;/If&gt;
+&lt;If "md5('foo') == replace('md5:XXXd18db4cc2f85cedef654fccc4a4d8', 'md5:XXX', 'acb')&gt;
+  Header set checksum-matched-2 true
+&lt;/If&gt;
+
+# Function example in string context
+Header set foo-checksum "expr=%{md5:foo}"</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
