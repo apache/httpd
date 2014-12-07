@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1601533:1643036 (outdated) -->
+<!-- English Revision : 1643036 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1155,8 +1155,11 @@ signifie que la comparaison s'effectue avec une cha&icirc;ne qui ne comporte
 <li>Bien que les r&egrave;gles de r&eacute;&eacute;criture soient permises du point de vue de
 la syntaxe dans les sections <directive type="section"
 module="core">Location</directive> et <directive type="section"
-module="core">Files</directive>, elles n'y sont pas prises en compte, et
-n'y sont &agrave; priori d'aucune utilit&eacute;.</li>
+module="core">Files</directive> (y compris leurs versions sous forme
+d'expression rationnelle), elles n'y sont pas prises en compte, et
+n'y sont &agrave; priori d'aucune utilit&eacute;. Les substitutions
+relatives sont une fonctionnalit&eacute; qui n'est, elle non-plus pas support&eacute;e
+dans ce genre de contexte.</li>
 </ul>
 </note>
 

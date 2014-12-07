@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1363237 -->
+<!-- English Revision : 1643532 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -645,6 +645,69 @@ fichier <code>.htaccess</code> que dans une section
 
 </dl>
 
+</section>
+
+<section id="rewrite-query">
+<title>Rewrite query string</title>
+
+<dl>
+<dt>Description :</dt>
+<dd>Vous voulez extraire une valeur particuli&egrave;re d'une cha&icirc;ne de
+param&egrave;tres d'une URL, et soit la remplacer, soit l'incorporer dans un
+autre composant de l'URL.</dd>
+
+<dt>Solutions :</dt>
+<dd>
+<p>Dans la plupart des solutions de cette section, on utilise la m&ecirc;me
+condition qui stocke la valeur recherch&eacute;e dans la r&eacute;f&eacute;rence arri&egrave;re %2.
+%1 est le d&eacute;but de la requ&ecirc;te, et %3 ce qui reste. Cette condition est
+un peu complexe car elle introduit de la flexibilit&eacute; et &eacute;vite les
+doubles perluettes '&amp;&amp;' dans les substitutions.</p>
+<ul>
+  <li>Cette solution supprime le couple cl&eacute;/valeur recherch&eacute; :
+
+<highlight language="config">
+# Remove mykey=???
+RewriteCond %{QUERY_STRING} (.*(?:^|&amp;))mykey=([^&amp;]*)&amp;?(.*)&amp;?$
+RewriteRule (.*) $1?%1%3
+</highlight>
+  </li>
+
+  <li>Cette solution remplace la partie de l'URL qui suit la valeur
+  recherch&eacute;e par un '?' :
+
+<highlight language="config">
+# Copy from query string to PATH_INFO
+RewriteCond %{QUERY_STRING} (.*(?:^|&amp;))mykey=([^&amp;]*)&amp;?(.*)&amp;?$
+RewriteRule (.*) $1/products/%2/? [PT]
+</highlight>
+  </li>
+
+  <li>Cette solution utilise la valeur recherch&eacute;e dans une deuxi&egrave;me
+  condition ::
+
+<highlight language="config">
+# Capture the value of mykey in the query string
+RewriteCond %{QUERY_STRING} (.*(?:^|&amp;))mykey=([^&amp;]*)&amp;?(.*)&amp;?$
+RewriteCond %2 !=not-so-secret-value 
+RewriteRule (.*) - [F]
+</highlight>
+  </li>
+
+  <li>Cette solution produit l'effet inverse des pr&eacute;c&eacute;dentes ; elle
+  copie des composantes du chemin (peut-&ecirc;tre PATH_INFO) depuis l'URL
+  vers sa cha&icirc;ne de param&egrave;tres :
+<highlight language="config">
+# The desired URL might be /products/kitchen-sink, and the script expects 
+# /path?products=kitchen-sink.
+RewriteRule ^/?path/([^/]+)/([^/]+) /path?$1=$2 [PT]
+</highlight>
+  </li>
+</ul>
+
+</dd>
+
+</dl>
 </section>
 
 </manualpage>
