@@ -27,8 +27,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_rewrite.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_rewrite.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Ce module fournit un moteur de réécriture à base de
 règles permettant de réécrire les URLs des requêtes
 à la volée</td></tr>
@@ -138,14 +136,20 @@ répertoire</td></tr>
       répertoire (htaccess), sauf si au moins une de ces conditions est
       vérifiée :</p>
       <ul>
-          <li>La requête initiale, ainsi que la substitution, sont dans
-	  la <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> (c'est à
+          <li>La requête initiale, ainsi que la substitution, se
+	  situent par raport à la valeur de la directive
+	  <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> (c'est à
 	  dire que pour y accéder, il n'est pas nécessaire d'utiliser
 	  une directive telle qu'<code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code>).</li>
           <li>Le chemin du système de fichiers vers le répertoire
 	  contenant la <code class="directive">RewriteRule</code>, suffixé par
 	  la substitution relative est aussi valide en tant qu'URL sur
 	  le serveur (ce qui est rare).</li>
+	  <li>A partir de la version 2.4.11 du serveur HTTP Apache,
+	  cette directive peut être omise lorsque la requête est mise en
+	  correspondance avec le système de fichiers via la directive
+	  <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code> ou le module
+	  <code class="module"><a href="../mod/mod_userdir.html">mod_userdir</a></code>.</li>
       </ul>
 
 <p>Dans l'exemple ci-dessous, la directive
@@ -156,12 +160,13 @@ de configuration aurait conduit le serveur à rechercher un répertoire
 "opt" à la racine des documents.</p>
 
 <pre class="prettyprint lang-config">DocumentRoot /var/www/example.com
-Alias /myapp /opt/myapp-1.2.3
+AliasMatch ^/myapp /opt/myapp-1.2.3
 &lt;Directory /opt/myapp-1.2.3&gt;
  RewriteEngine On
     RewriteBase /myapp/
     RewriteRule ^index\.html$  welcome.html
 &lt;/Directory&gt;</pre>
+
 
 
 </div>
@@ -1043,6 +1048,22 @@ pour le moteur de réécriture</td></tr>
       depuis la version 2.4.4 du serveur HTTP Apache.</p>
       </dd>
 
+      <dt><code>IgnoreContextInfo</code></dt>
+      <dd>
+
+      <p>Dans les versions 2.4.11 et antérieures, lors d'une
+      substitution relative dans un contexte de répertoire (htaccess),
+      et si la directive <code class="directive"><a href="#rewritebase">RewriteBase</a></code> n'a pas été définie,
+      ce module utilise des informations en provenance d'une extension
+      d'URL et du contexte du système de fichiers pour transformer la
+      sustitution relative en URL. Par exemple, les modules
+      <code class="module"><a href="../mod/mod_userdir.html">mod_userdir</a></code> et <code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code>
+      utilisent ces informations de contexte étendu. Cette option
+      désactive le comportement introduit avec la version 2.4.11, et ne
+      doit être utilisée que si toutes les conditions précédentes sont
+      vérifiées, et si la substitution renvoie un résultat inattendu.</p>
+      </dd>
+
       </dl>
 
 </div>
@@ -1136,8 +1157,11 @@ signifie que la comparaison s'effectue avec une chaîne qui ne comporte
 <code>^/</code> ne correspondra jamais dans un contexte de répertoire.</li>
 
 <li>Bien que les règles de réécriture soient permises du point de vue de
-la syntaxe dans les sections <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> et <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code>, elles n'y sont pas prises en compte, et
-n'y sont à priori d'aucune utilité.</li>
+la syntaxe dans les sections <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> et <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code> (y compris leurs versions sous forme
+d'expression rationnelle), elles n'y sont pas prises en compte, et
+n'y sont à priori d'aucune utilité. Les substitutions
+relatives sont une fonctionnalité qui n'est, elle non-plus pas supportée
+dans ce genre de contexte.</li>
 </ul>
 </div>
 

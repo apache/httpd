@@ -29,8 +29,6 @@
 <a href="../ja/mod/mod_headers.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_headers.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Personnalisation des en-têtes de requêtes et de réponses
 HTTP</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -429,6 +427,26 @@ version 2.4.10</td></tr>
       <code>SSLOptions +StdEnvVars</code> doit tout de même être
       spécifié pour une raison quelconque, <code>%e</code> sera plus
       efficace que <code>%s</code>.</p>
+    </div>
+
+    <div class="note"><h3>Note à propos des valeurs des expressions</h3>
+    <p>Lorsque le paramètre valeur utilise l'interpréteur <a href="../expr.html">ap_expr</a>, certaines syntaxes d'expressions
+    seront différentes des exemples qui évaluent des expressions
+    <em>booléennes</em> telles que &lt;If&gt; :</p>
+    <ul>
+      <li>Le point de départ de la syntaxe est 'string' au lieu de
+      'expr'.</li>
+      <li>Les appels de fonction utilisent la syntaxe %{funcname:arg} au
+      lieu de funcname(arg).</li>
+      <li>Les fonctions multi-arguments ne sont pas encore disponibles
+      depuis le point de départ 'string'.</li>
+      <li>Il faut mettre entre guillemets l'ensemble du paramètre, comme
+      dans l'exemple suivant : 
+          <pre class="prettyprint lang-config">Header set foo-checksum "expr=%{md5:foo}"</pre>
+
+       </li>
+                   
+    </ul>
     </div>
 
     <p><code>edit</code>nécessite les deux arguments
