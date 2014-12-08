@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
   
+  *) core: Fix -D[efined] or <Define>[d] variables lifetime accross restarts. 
+     PR 57328.  [Armin Abfalterer <a.abfalterer gmail.com>, Yann Ylavic].
+
   *) mod_proxy_ajp: Fix client connection errors handling and logged status
      when it occurs.  PR 56823.  [Yann Ylavic]
 

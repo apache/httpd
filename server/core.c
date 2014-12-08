@@ -1308,6 +1308,7 @@ AP_DECLARE(const char *) ap_resolve_env(apr_pool_t *p, const char * word)
 static int reset_config_defines(void *dummy)
 {
     ap_server_config_defines = saved_server_config_defines;
+    saved_server_config_defines = NULL;
     server_config_defined_vars = NULL;
     return OK;
 }
