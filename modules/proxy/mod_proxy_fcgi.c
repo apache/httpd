@@ -603,7 +603,7 @@ recv_again:
                             }
 
                             if (script_error_status == HTTP_OK
-                                && !APR_BRIGADE_EMPTY(ob)) {
+                                && !APR_BRIGADE_EMPTY(ob) && !ignore_body) {
                                 /* Send the part of the body that we read while
                                  * reading the headers.
                                  */
