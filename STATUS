@@ -247,6 +247,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (module CHANGES)
      +1: ylavic
 
+   * mod_ssl: Fix renegotiation failures redirected to an ErrorDocument.
+              PR 57334.
+     trunk patch: http://svn.apache.org/r1644498
+     2.4.x patch: trunk works (module CHANGES)
+     +1: ylavic
+
+   * mod_ssl: mod_ssl: dump SSL IO/state for the write side of the connection(s),
+              like reads.
+     trunk patch: http://svn.apache.org/r1601919
+     2.4.x patch: trunk works (module CHANGES)
+     +1: ylavic
+
 
 OTHER PROPOSALS
 
