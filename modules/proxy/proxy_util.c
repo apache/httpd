@@ -1732,6 +1732,9 @@ PROXY_DECLARE(char *) ap_proxy_define_worker(apr_pool_t *p,
 
     memset(wshared, 0, sizeof(proxy_worker_shared));
 
+    if (uri.port && uri.port == ap_proxy_port_of_scheme(uri.scheme)) {
+        uri.port = 0;
+    }
     ptr = apr_uri_unparse(p, &uri, APR_URI_UNP_REVEALPASSWORD);
     if (PROXY_STRNCPY(wshared->name, ptr) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, ap_server_conf, APLOGNO(02808)
@@ -2725,6 +2728,13 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
                              worker->s->hostname);
                 break;
             }
+
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(02823)
+                         "%s: connection established with Unix domain socket "
+                         "%s (%s)",
+                         proxy_function,
+                         conn->uds_path,
+                         worker->s->hostname);
         }
         else
 #endif
@@ -2817,6 +2827,12 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
                 backend_addr = backend_addr->next;
                 continue;
             }
+
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(02824)
+                         "%s: connection established with %pI (%s)",
+                         proxy_function,
+                         backend_addr,
+                         worker->s->hostname);
         }
 
         /* Set a timeout on the socket */
