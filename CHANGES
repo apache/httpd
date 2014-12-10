@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
   
+  *) mod_proxy_ajp: Fix handling of the default port (8009) in the
+     ProxyPass and <Proxy> configurations.  PR 57259.  [Yann Ylavic].
+
   *) mod_ssl: Fix renegotiation failures redirected to an ErrorDocument.
      PR 57334.  [Yann Ylavic].
 
