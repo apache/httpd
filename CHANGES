@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
   
+  *) mod_ssl: Fix renegotiation failures redirected to an ErrorDocument.
+     PR 57334.  [Yann Ylavic].
+
   *) core: Fix -D[efined] or <Define>[d] variables lifetime accross restarts. 
      PR 57328.  [Armin Abfalterer <a.abfalterer gmail.com>, Yann Ylavic].
 

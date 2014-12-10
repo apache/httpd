@@ -81,7 +81,8 @@ static apr_status_t upgrade_connection(request_rec *r)
 
     if (SSL_get_state(ssl) != SSL_ST_OK) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02030)
-                      "TLS upgrade handshake failed: not accepted by client!?");
+                      "TLS upgrade handshake failed");
+        ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, r->server);
 
         return APR_ECONNABORTED;
     }
@@ -315,6 +316,16 @@ int ssl_hook_Access(request_rec *r)
     int depth, verify_old, verify, n;
 
     if (ssl) {
+        /*
+         * We should have handshaken here (on handshakeserver),
+         * otherwise we are being redirected (ErrorDocument) from
+         * a renegotiation failure below. The access is still 
+         * forbidden in the latter case, let ap_die() handle
+         * this recursive (same) error.
+         */
+        if (SSL_get_state(ssl) != SSL_ST_OK) {
+            return HTTP_FORBIDDEN;
+        }
         ctx = SSL_get_SSL_CTX(ssl);
     }
 
@@ -829,8 +840,8 @@ int ssl_hook_Access(request_rec *r)
 
             if (SSL_get_state(ssl) != SSL_ST_OK) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02261)
-                              "Re-negotiation handshake failed: "
-                              "Not accepted by client!?");
+                              "Re-negotiation handshake failed");
+                ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, r->server);
 
                 r->connection->keepalive = AP_CONN_CLOSE;
                 return HTTP_FORBIDDEN;
