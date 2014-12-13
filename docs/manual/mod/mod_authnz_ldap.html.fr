@@ -473,7 +473,7 @@ uniqueMember: cn=Jim Swenson, o=Example
 uniqueMember: cn=Elliot Rhodes, o=Example</pre></div>
 
     <p>Les directives suivantes autoriseraient alors l'accès à Bob
-    Ellis, Tom Jackson, Barbara Jonsen, Fred User, Allan Jefferson, et
+    Ellis, Tom Jackson, Barbara Jenson, Fred User, Allan Jefferson, et
     Paul Tilley, mais l'interdiraient à Jim Swenson, ou Elliot Rhodes
     (car ils sont situés dans un sous-groupe de niveau de profondeur 2)
     :</p>
