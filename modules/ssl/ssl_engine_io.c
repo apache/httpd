@@ -1229,7 +1229,7 @@ static apr_status_t ssl_io_filter_handshake(ssl_filter_ctx_t *filter_ctx)
             /* ensure that the SSL structures etc are freed, etc: */
             ssl_filter_io_shutdown(filter_ctx, c, 1);
             apr_table_setn(c->notes, "SSL_connect_rv", "err");
-            return HTTP_BAD_GATEWAY;
+            return MODSSL_ERROR_BAD_GATEWAY;
         }
 
         apr_table_setn(c->notes, "SSL_connect_rv", "ok");
