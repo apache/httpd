@@ -1746,20 +1746,20 @@ Changes with Apache 2.3.15
      <smichael rightnow com>]
 
   *) mpm_event: Check the return value from ap_run_create_connection.
-     PR: 41194. [Davi Arnaut]
+     PR 41194. [Davi Arnaut]
 
   *) mod_mime_magic: Add signatures for PNG and SWF to the example config.
-     PR: 48352. [Jeremy Wagner-Kaiser <jwagner-kaiser adknowledge com>]
+     PR 48352. [Jeremy Wagner-Kaiser <jwagner-kaiser adknowledge com>]
 
   *) core, unixd: Add -D DUMP_RUN_CFG option to dump some configuration items
      from the parsed (or default) config. This is useful for init scripts that
      need to setup temporary directories and permissions. [Stefan Fritsch]
 
   *) core, mod_actions, mod_asis: Downgrade error log messages which accompany
-     a 404 request status from loglevel error to info. PR: 35768. [Stefan
+     a 404 request status from loglevel error to info. PR 35768. [Stefan
      Fritsch]
 
-  *) core: Fix hook sorting with Perl modules. PR: 45076. [Torsten Foertsch
+  *) core: Fix hook sorting with Perl modules. PR 45076. [Torsten Foertsch
      <torsten foertsch gmx net>]
 
   *) core: Enforce LimitRequestFieldSize after multiple headers with the same
@@ -2264,7 +2264,7 @@ Changes with Apache 2.3.11
      per-balancer 'nonce' parameter. [Jim Jagielski]
 
   *) mod_status: Don't show slots which are disabled by MaxClients as open.
-     PR: 47022 [Jordi Prats <jordi prats gmail com>, Stefan Fritsch]
+     PR 47022 [Jordi Prats <jordi prats gmail com>, Stefan Fritsch]
 
   *) mpm_prefork: Fix ap_mpm_query results for AP_MPMQ_MAX_DAEMONS and
      AP_MPMQ_MAX_THREADS.
@@ -2655,7 +2655,7 @@ Changes with Apache 2.3.7
 
   *) SECURITY: CVE-2010-1452 (cve.mitre.org)
      mod_dav, mod_cache, mod_session: Fix Handling of requests without a path
-     segment. PR: 49246 [Mark Drayton, Jeff Trawick]
+     segment. PR 49246 [Mark Drayton, Jeff Trawick]
 
   *) mod_ldap: Properly check the result returned by apr_ldap_init. PR 46076.
      [Stefan Fritsch]
