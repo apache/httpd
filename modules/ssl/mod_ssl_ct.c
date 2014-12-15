@@ -1963,9 +1963,10 @@ static int ocsp_resp_cb(SSL *ssl, void *arg)
     rd = br->tbsResponseData;
 
     for (i = 0; i < sk_OCSP_SINGLERESP_num(rd->responses); i++) { /* UNDOC */
+        const unsigned char *p;
         X509_EXTENSION *ext;
         int idx;
-        ASN1_OCTET_STRING *oct;
+        ASN1_OCTET_STRING *oct1, *oct2;
 
         single = sk_OCSP_SINGLERESP_value(rd->responses, i); /* UNDOC */
         if (!single) {
@@ -1979,19 +1980,23 @@ static int ocsp_resp_cb(SSL *ssl, void *arg)
             continue;
         }
 
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c,
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c,
                       "index of NID_ct_cert_scts: %d", idx);
 
         exts = single->singleExtensions;
 
         ext = sk_X509_EXTENSION_value(exts, idx); /* UNDOC */
-        oct = X509_EXTENSION_get_data(ext); /* UNDOC */
+        oct1 = X509_EXTENSION_get_data(ext); /* UNDOC */
 
-        conncfg->ocsp_has_sct_list = 1;
-        conncfg->peer_ct_aware = 1;
-        conncfg->ocsp_sct_list_size = oct->length - 2;
-        conncfg->ocsp_sct_list = apr_pmemdup(c->pool, oct->data + 2,
-                                             conncfg->ocsp_sct_list_size);
+        p = oct1->data;
+        if ((oct2 = d2i_ASN1_OCTET_STRING(NULL, &p, oct1->length)) != NULL) {
+            conncfg->ocsp_has_sct_list = 1;
+            conncfg->peer_ct_aware = 1;
+            conncfg->ocsp_sct_list_size = oct2->length;
+            conncfg->ocsp_sct_list = apr_pmemdup(c->pool, oct2->data,
+                                                 conncfg->ocsp_sct_list_size);
+            ASN1_OCTET_STRING_free(oct2);
+        }
     }
 
     OCSP_RESPONSE_free(rsp); /* UNDOC */
