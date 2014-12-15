@@ -144,7 +144,7 @@ static const char *expr_var_fn(ap_expr_eval_ctx_t *ctx, const void *data)
     char *var = (char *)data;
     SSLConnRec *sslconn = myConnConfig(ctx->c);
 
-    return sslconn ? ssl_var_lookup_ssl(ctx->p, ctx->c, ctx->r, var) : "";
+    return sslconn ? ssl_var_lookup_ssl(ctx->p, ctx->c, ctx->r, var) : NULL;
 }
 
 static int ssl_expr_lookup(ap_expr_lookup_parms *parms)
