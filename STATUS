@@ -265,6 +265,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (module CHANGES)
      +1: ylavic
 
+   * mod_ssl: Check if we are having an SSL connection before looking up SSL
+              related variables during expression evaluation to avoid a crash.
+              If not return an empty string.  PR 57070
+     trunk patch: http://svn.apache.org/r1630947
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: jailletc36
+     Note jailletc36: maybe returning NULL (instead of "") would be better ?
+                      See https://marc.info/?l=apache-httpd-dev&m=141862214816677
 
 OTHER PROPOSALS
 
