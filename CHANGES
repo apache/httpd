@@ -24,12 +24,6 @@ Changes with Apache 2.5.0
      context for directories found by mod_userdir and mod_alias.  These no
      loner require RewriteBase to be specified. [Eric Covener]
 
-  *) mod_ssl: Fix recognition of OCSP stapling responses that are encoded
-     improperly or too large.  [Jeff Trawick]
-
-  *) mod_proxy_fcgi, mod_authnz_fcgi: stop reading the response and issue an
-     error when parsing or forwarding the response fails. [Yann Ylavic]
-
   *) mod_authnz_ldap: Resolve crashes with LDAP authz and non-LDAP authn since 
      r1608202. [Eric Covener]
  
@@ -39,9 +33,6 @@ Changes with Apache 2.5.0
   *) mod_proxy_connect: Don't issue AH02447 on sockets hangups, let the read
      determine whether it is a normal close or a real error. PR 57168. [Yann
      Ylavic]
-
-  *) mod_proxy_wstunnel: abort backend connection on polling error to avoid
-     further processing.  [Yann Ylavic]
 
   *) mod_buffer: Forward flushed input data immediatly and avoid (unlikely)
      access to freed memory. [Yann Ylavic, Christophe Jaillet]
