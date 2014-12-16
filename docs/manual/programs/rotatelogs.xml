@@ -38,6 +38,7 @@
      [ -<strong>L</strong> <var>linkname</var> ]
      [ -<strong>p</strong> <var>program</var> ]
      [ -<strong>f</strong> ]
+     [ -<strong>t</strong> ]
      [ -<strong>v</strong> ]
      [ -<strong>e</strong> ]
      [ -<strong>c</strong> ]
