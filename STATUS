@@ -267,12 +267,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
    * mod_ssl: Check if we are having an SSL connection before looking up SSL
               related variables during expression evaluation to avoid a crash.
-              If not return an empty string.  PR 57070
+              If not return NULL as ssl_var_lookup_ssl does by default.  PR 57070
      trunk patch: http://svn.apache.org/r1630947
+                  http://svn.apache.org/r1645670
      2.4.x patch: trunk works (modulo CHANGES)
      +1: jailletc36
-     Note jailletc36: maybe returning NULL (instead of "") would be better ?
-                      See https://marc.info/?l=apache-httpd-dev&m=141862214816677
+
 
 OTHER PROPOSALS
 
