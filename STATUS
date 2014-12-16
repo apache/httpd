@@ -222,7 +222,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   a RewriteBase in some situations
      trunk patch: http://svn.apache.org/r1642484
      2.4.x patch: trunk works
-     +1 covener
+     +1 covener, jim
 
    * mpm_event: Notify suspend in any case when starting lingering close (blocking),
      and outside the lingering queue's critical section.
@@ -230,7 +230,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      So it (probably) does not need its own CHANGES entry.
      trunk patch: http://svn.apache.org/r1642868
      2.4.x patch: trunk works (CHANGES 
-     +1: ylavic, covener
+     +1: ylavic, covener, jim
 
    * core: Add ap_log_data(), ap_log_rdata(), etc. for logging buffers.
      trunk patch: http://svn.apache.org/r1512819
@@ -271,7 +271,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      ProxyPass and <Proxy> configurations.  PR 57259.
      trunk patch: http://svn.apache.org/r1644503
      2.4.x patch: trunk works (module CHANGES)
-     +1: ylavic
+     +1: ylavic, jim
 
    * mod_ssl: Check if we are having an SSL connection before looking up SSL
               related variables during expression evaluation to avoid a crash.
