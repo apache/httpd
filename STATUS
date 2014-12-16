@@ -104,21 +104,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_ssl: Fix recognition of OCSP stapling responses that are encoded
-     improperly or too large.
-     trunk patch: http://svn.apache.org/r1641077
-                  http://svn.apache.org/r1641095
-     2.4.x patch: trunk works other than CHANGES
-     +1: trawick, covener, ylavic
-
-   * mpm_event: Notify suspend in any case when starting lingering close (blocking),
-     and outside the lingering queue's critical section.
-     This is a follow up to r1639614 already backported to 2.4.11 as r1642858.
-     So it (probably) does not need its own CHANGES entry.
-     trunk patch: http://svn.apache.org/r1642868
-     2.4.x patch: trunk works (CHANGES 
-     +1: ylavic, covener, jim
-
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
