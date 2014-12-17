@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
-  
+
+  *) mod_http: Fix incorrect If-Match handling. PR 57358
+     [Kunihiko Sakamoto <ksakamoto google.com>]
+
   *) mod_proxy_ajp: Fix handling of the default port (8009) in the
      ProxyPass and <Proxy> configurations.  PR 57259.  [Yann Ylavic].
 
