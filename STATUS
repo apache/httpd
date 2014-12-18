@@ -181,26 +181,19 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      log_scripterror errors.
      trunk patch: http://svn.apache.org/r1626978
      2.4.x patch: trunk works
-     +1 jkaluza
-     ylavic: shouldn't we also (still) log on ErrorLog, at least on 2.4.x?
-             The log_script_err() line may somewhere be expected in error_log.
-             The new AH* in script_log could also cause parsing issues, but I'm
-             fine with this personnaly.
-     jkaluza: It's long time I wrote it, but log_script_err calls
-              log_scripterror, which calls ap_log_rerror the same way as
-              original log_script_err did. Correct me, if I'm wrong, but that
-              should result in the log message being also in ErrorLog.
+     +1 jkaluza, ylavic
 
    * mod_proxy_fcgi: Ignore body data from backend for 304 responses. PR 57198.
      trunk patch: http://svn.apache.org/r1640495
                   http://svn.apache.org/r1644031
      2.4.x patch: trunk works
-     +1 jkaluza
+     +1 jkaluza, ylavic
      ylavic: Shouldn't we handle more cases here to ignore the body?
              Please see my comment on dev@ as a reply to commit e-mail.
      jkaluza: I've added also r1644031 as reaction to Yann's comment above.
               Eric, I'm removing your +1, because it's based just on original
               r1640495. See my reply on dev@ for more info.
+     ylavic: +1 now for me.
 
    * mod_proxy: Add ap_proxy_define_match_worker() and use it for ProxyPassMatch
      and ProxyMatch section to distinguish between normal workers and workers
@@ -265,7 +258,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1630947
                   http://svn.apache.org/r1645670
      2.4.x patch: trunk works (modulo CHANGES)
-     +1: jailletc36
+     +1: jailletc36, ylavic
 
    * core: Add ap_errorlog_provider to make ErrorLog logging modular. This
            backport keeps syslog logging as part of httpd core and only adds
