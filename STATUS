@@ -267,6 +267,30 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (modulo CHANGES)
      +1: jailletc36
 
+   * core: Add ap_errorlog_provider to make ErrorLog logging modular. This
+           backport keeps syslog logging as part of httpd core and only adds
+           API to allow other modules to be used for error logging.
+     trunk patch: http://svn.apache.org/r1525597
+                  http://svn.apache.org/r1525664
+                  http://svn.apache.org/r1525845
+                  http://svn.apache.org/r1527003
+                  http://svn.apache.org/r1527005
+                  http://svn.apache.org/r1532344
+                  http://svn.apache.org/r1539988
+                  http://svn.apache.org/r1541029
+                  http://svn.apache.org/r1543979
+                  http://svn.apache.org/r1544156
+                  http://svn.apache.org/r1626978
+     2.4.x patch: http://people.apache.org/~jkaluza/patches/httpd-2.4.x-errorlog_provider.patch
+     +1: jkaluza
+
+   * mod_journald: Add new module mod_journald to log error logs into journald.
+                   This patch needs changes done in mod_systemd patch (already
+                   proposed for 2.4.x).
+     trunk patch: http://svn.apache.org/r1610339
+                  http://svn.apache.org/r1621806
+     2.4.x patch: http://people.apache.org/~jkaluza/patches/httpd-2.4.x-mod_journald.patch
+     +1: jkaluza
 
 OTHER PROPOSALS
 
