@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_proxy_fcgi: Remove proxy:balancer:// prefix from SCRIPT_FILENAME
+     passed to fastcgi backends. [Eric Covener]
+
   *) mod_http: Fix incorrect If-Match handling. PR 57358
      [Kunihiko Sakamoto <ksakamoto google.com>]
 
