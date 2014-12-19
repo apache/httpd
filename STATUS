@@ -104,7 +104,31 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * mod_proxy_ajp: Fix handling of the default port (8009) in the
+     ProxyPass and <Proxy> configurations.  PR 57259.
+     trunk patch: http://svn.apache.org/r1644503
+     2.4.x patch: trunk works (module CHANGES)
+     +1: ylavic, jim, covener
 
+   * mod_ssl: Check if we are having an SSL connection before looking up SSL
+              related variables during expression evaluation to avoid a crash.
+              If not return NULL as ssl_var_lookup_ssl does by default.  PR 57070
+     trunk patch: http://svn.apache.org/r1630947
+                  http://svn.apache.org/r1645670
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: jailletc36, ylavic, covener
+
+   * mod_proxy_fcgi: Ignore body data from backend for 304 responses. PR 57198.
+     trunk patch: http://svn.apache.org/r1640495
+                  http://svn.apache.org/r1644031
+     2.4.x patch: trunk works
+     +1 jkaluza, ylavic, covener
+
+   * mod_cgi: Log CGI script stderr to ScriptLog, use APLOGNO for
+     log_scripterror errors.
+     trunk patch: http://svn.apache.org/r1626978
+     2.4.x patch: trunk works
+     +1 jkaluza, ylavic, covener
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -177,24 +201,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patches: trunk works (modulo CHANGES).
      +1: ylavic
 
-   * mod_cgi: Log CGI script stderr to ScriptLog, use APLOGNO for
-     log_scripterror errors.
-     trunk patch: http://svn.apache.org/r1626978
-     2.4.x patch: trunk works
-     +1 jkaluza, ylavic
-
-   * mod_proxy_fcgi: Ignore body data from backend for 304 responses. PR 57198.
-     trunk patch: http://svn.apache.org/r1640495
-                  http://svn.apache.org/r1644031
-     2.4.x patch: trunk works
-     +1 jkaluza, ylavic
-     ylavic: Shouldn't we handle more cases here to ignore the body?
-             Please see my comment on dev@ as a reply to commit e-mail.
-     jkaluza: I've added also r1644031 as reaction to Yann's comment above.
-              Eric, I'm removing your +1, because it's based just on original
-              r1640495. See my reply on dev@ for more info.
-     ylavic: +1 now for me.
-
    * mod_proxy: Add ap_proxy_define_match_worker() and use it for ProxyPassMatch
      and ProxyMatch section to distinguish between normal workers and workers
      with regex substitutions in the name. Implement handling of such workers
@@ -245,20 +251,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1601919
      2.4.x patch: trunk works (module CHANGES)
      +1: ylavic
-
-   * mod_proxy_ajp: Fix handling of the default port (8009) in the
-     ProxyPass and <Proxy> configurations.  PR 57259.
-     trunk patch: http://svn.apache.org/r1644503
-     2.4.x patch: trunk works (module CHANGES)
-     +1: ylavic, jim
-
-   * mod_ssl: Check if we are having an SSL connection before looking up SSL
-              related variables during expression evaluation to avoid a crash.
-              If not return NULL as ssl_var_lookup_ssl does by default.  PR 57070
-     trunk patch: http://svn.apache.org/r1630947
-                  http://svn.apache.org/r1645670
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: jailletc36, ylavic
 
    * core: Add ap_errorlog_provider to make ErrorLog logging modular. This
            backport keeps syslog logging as part of httpd core and only adds
