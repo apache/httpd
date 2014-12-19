@@ -129,12 +129,23 @@ ProxyPass /myapp/ balancer://myappcluster/
        reasons, you will want to define a <a href="../mod_proxy.html#worker">worker</a>
        representing the same fcgi:// backend. The benefit of this form is that it 
        allows the normal mapping of URI to filename to occur in the server, and the 
-       local filesystem result is passed to the backend.
+       local filesystem result is passed to the backend.  When FastCGI is 
+       configured this way, the server can calculate the most accurate
+       PATH_INFO.
       </p>
     <example><title>Proxy via Handler</title>
       <highlight language="config">
 &lt;FilesMatch \.php$&gt;
+    # Note: The only part that varies is /path/to/app.sock
     SetHandler  "proxy:unix:/path/to/app.sock|fcgi://localhost/"
+&lt;/FilesMatch&gt;
+
+&lt;FilesMatch ...&gt;
+    SetHandler  "proxy:fcgi://localhost:9000"
+&lt;/FilesMatch&gt;
+
+&lt;FilesMatch ...&gt;
+    SetHandler  "proxy:balancer://myappcluster/"
 &lt;/FilesMatch&gt;
       </highlight>
    </example>
