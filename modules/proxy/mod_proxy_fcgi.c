@@ -206,9 +206,20 @@ static apr_status_t send_environment(proxy_conn_rec *conn, request_rec *r,
     apr_status_t rv;
     apr_size_t avail_len, len, required_len;
     int next_elem, starting_elem;
+    char *proxyfilename = r->filename;
+
+    /* Strip balancer prefix */
+    if (r->filename && !strncmp(r->filename, "proxy:balancer://", 17)) { 
+        char *newfname = apr_pstrdup(r->pool, r->filename);
+        newfname += 17; 
+        newfname = ap_strchr(newfname, '/');
+        r->filename  = newfname;
+    }
 
     ap_add_common_vars(r);
     ap_add_cgi_vars(r);
+ 
+    r->filename = proxyfilename;
 
     /* XXX are there any FastCGI specific env vars we need to send? */
 
