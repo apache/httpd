@@ -77,7 +77,7 @@
 
     <example><title>Single application instance, connection reuse</title>
     <highlight language="config">
-      ProxyPass /myapp/ fcgi://localhost:4000/ disablereuse=off
+      ProxyPass /myapp/ fcgi://localhost:4000/ enablereuse=on
       </highlight>
     </example>
 
@@ -87,7 +87,7 @@
     PHP-FPM is listening.  Connection pooling is enabled.</p>
     <example><title>PHP-FPM</title>
     <highlight language="config">
-      ProxyPassMatch ^/myapp/.*\.php(/.*)?$ fcgi://localhost:9000/var/www/ disablereuse=off
+      ProxyPassMatch ^/myapp/.*\.php(/.*)?$ fcgi://localhost:9000/var/www/ enablereuse=on
     </highlight>
     </example>
 

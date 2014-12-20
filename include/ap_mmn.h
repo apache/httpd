@@ -475,6 +475,7 @@
  *                         ap_have_so_reuseport to ap_listen.h.
  * 20140627.9 (2.5.0-dev)  Add cgi_pass_auth and AP_CGI_PASS_AUTH_* to 
  *                         core_dir_config
+ * 20140627.10 (2.5.0-dev) Add ap_proxy_de_socketfy to mod_proxy.h
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
@@ -482,7 +483,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20140627
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 9                 /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 10                 /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
