@@ -1070,6 +1070,14 @@ int ap_proxy_lb_workers(void);
  */
 PROXY_DECLARE(apr_port_t) ap_proxy_port_of_scheme(const char *scheme);
 
+/**
+ * Strip a unix domain socket (UDS) prefix from the input URL
+ * @param p             pool to allocate result from
+ * @param url           a URL potentially prefixed with a UDS path
+ * @return              URL with the UDS prefix removed
+ */
+PROXY_DECLARE(char *) ap_proxy_de_socketfy(apr_pool_t *p, const char *url);
+
 extern module PROXY_DECLARE_DATA proxy_module;
 
 #endif /*MOD_PROXY_H*/

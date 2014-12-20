@@ -1020,6 +1020,12 @@ ProxyPass /mirror/foo http://backend.example.com
     robin DNS. To disable connection pooling reuse,
     set this property value to <code>On</code>.
     </td></tr>
+    <tr><td>enablereuse</td>
+        <td>On</td>
+        <td>This is the inverse of 'disablereuse' above, provided as a
+        convenience for scheme handlers that require opt-in for connection
+        reuse (such as <module>mod_proxy_fcgi</module>).
+    </td></tr>
     <tr><td>flushpackets</td>
         <td>off</td>
         <td>Determines whether the proxy module will auto-flush the output
