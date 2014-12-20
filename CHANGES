@@ -15,7 +15,7 @@ Changes with Apache 2.5.0
   *) mod_proxy_fcgi: Remove proxy:balancer:// prefix from SCRIPT_FILENAME
      passed to fastcgi backends. [Eric Covener]
 
-  *) mod_http: Fix incorrect If-Match handling. PR 57358
+  *) mod_http: Fix incorrect If-Match handling. PR 57358.
      [Kunihiko Sakamoto <ksakamoto google.com>]
 
   *) mod_proxy_ajp: Fix handling of the default port (8009) in the
@@ -39,7 +39,7 @@ Changes with Apache 2.5.0
 
   *) mod_rewrite: Improve relative substitutions in per-directory/htaccess
      context for directories found by mod_userdir and mod_alias.  These no
-     loner require RewriteBase to be specified. [Eric Covener]
+     longer require RewriteBase to be specified. [Eric Covener]
 
   *) mod_authnz_ldap: Resolve crashes with LDAP authz and non-LDAP authn since 
      r1608202. [Eric Covener]
