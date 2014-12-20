@@ -68,30 +68,26 @@
       </highlight>
     </example>
 
-    <p>This application should be able to handle multiple concurrent
-    connections.  <module>mod_proxy</module> enables connection reuse by
-    default, so after a request has been completed the connection will be
-    held open by that httpd child process and won't be reused until that
-    httpd process routes another request to the application.  If the
-    FastCGI application is unable to handle enough concurrent connections
-    from httpd, requests can block waiting for the application to close
-    an existing connection.  One way to resolve this is to disable connection
-    reuse on the <directive>ProxyPass</directive> directive, as shown in
-    the following example:</p>
+    <p> <module>mod_proxy_fcgi</module> disables connection reuse by
+    default, so after a request has been completed the connection will NOT be
+    held open by that httpd child process and won't be reused.  If the
+    FastCGI application is able to handle concurrent connections
+    from httpd, you can opt-in to connection reuse as shown in the following
+    example:</p>
 
-    <example><title>Single application instance, no connection reuse</title>
+    <example><title>Single application instance, connection reuse</title>
     <highlight language="config">
-      ProxyPass /myapp/ fcgi://localhost:4000/ disablereuse=on
+      ProxyPass /myapp/ fcgi://localhost:4000/ disablereuse=off
       </highlight>
     </example>
 
     <p> The following example passes the request URI as a filesystem 
     path for the PHP-FPM daemon to run. The request URL is implicitly added 
     to the 2nd parameter. The hostname and port following fcgi:// are where
-    PHP-FPM is listening.</p>
+    PHP-FPM is listening.  Connection pooling is enabled.</p>
     <example><title>PHP-FPM</title>
     <highlight language="config">
-      ProxyPassMatch ^/myapp/.*\.php(/.*)?$ fcgi://localhost:9000/var/www/
+      ProxyPassMatch ^/myapp/.*\.php(/.*)?$ fcgi://localhost:9000/var/www/ disablereuse=off
     </highlight>
     </example>
 
@@ -101,7 +97,8 @@
     the hostname and optional port following fcgi:// are ignored.</p>
     <example><title>PHP-FPM with UDS</title>
     <highlight language="config">
-      ProxyPassMatch ^/(.*\.php(/.*)?)$ "unix:/var/run/php5-fpm.sock|fcgi://localhost/var/www/"
+      # UDS does not currently support connection reuse
+      ProxyPassMatch ^/(.*\.php(/.*)?)$ "unix:/var/run/php5-fpm.sock|fcgi://localhost/var/www/" 
     </highlight>
     </example>
 

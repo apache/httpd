@@ -834,11 +834,15 @@ static int proxy_fcgi_handler(request_rec *r, proxy_worker *worker,
         goto cleanup;
     }
 
-    /* XXX Setting close to 0 is a great way to end up with
-     *     timeouts at this point, since we lack good ways to manage the
-     *     back end fastcgi processes.  This should be revisited when we
-     *     have a better story on that part of things. */
+    /* This scheme handler does not reuse connections by default, to
+     * avoid tieing up a fastcgi that isn't expecting to work on 
+     * parallel requests.  But if the user went out of their way to
+     * type the default value of disablereuse=off, we'll allow it.
+     */  
     backend->close = 1;
+    if (worker->s->disablereuse_set && !worker->s->disablereuse) { 
+        backend->close = 0;
+    }
 
     /* Step Two: Make the Connection */
     if (ap_proxy_connect_backend(FCGI_SCHEME, backend, worker, r->server)) {
