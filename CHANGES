@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_proxy_fcgi: Provide some basic alternate options for specifying 
+     how PATH_INFO is passed to FastCGI backends by adding significance to
+     the value of proxy-fcgi-pathinfo. PR 55329. [Eric Covener]
+ 
   *) mod_proxy_fcgi: Enable UDS backends configured with SetHandler/RewriteRule
      to opt-in to connection reuse and other Proxy options via explicitly
      declared "proxy workers" (<Proxy unix:... enablereuse=on max=...) 

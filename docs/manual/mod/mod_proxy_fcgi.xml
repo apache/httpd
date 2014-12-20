@@ -169,7 +169,27 @@ ProxyPass /myapp/ balancer://myappcluster/
         and <var>Script-URI</var> and be compliant with RFC 3875 section 3.3.
         If instead you need <module>mod_proxy_fcgi</module> to generate
         a "best guess" for <var>PATH_INFO</var>, set this env-var.
-        This is a workaround for a bug in some FCGI implementations.</dd>
+        This is a workaround for a bug in some FCGI implementations.  This
+        variable can be set to multiple values to tweak at how the best guess
+        is chosen:
+        <dl>
+          <dt>first-dot</dt>
+          <dd>PATH_INFO is split from the slash following the 
+              <em>first</em> "." in the URL.</dd>
+          <dt>last-dot</dt>
+          <dd>PATH_INFO is split from the slash following the 
+              <em>last</em> "." in the URL.</dd>
+          <dt>full</dt> 
+          <dd>PATH_INFO is calculated by an attempt to map the URL to the 
+              local filesystem.</dd>
+          <dt>unescape</dt>
+          <dd>PATH_INFO is the path component of the URL, unescaped / 
+              decoded.</dd>
+          <dt>any other value</dt>
+          <dd>PATH_INFO is the same as the path component of the URL.  
+              Originally, this was the only proxy-fcgi-pathinfo option.</dd>
+         </dl>
+        </dd>
     </dl>
 </section>
 

@@ -20,6 +20,10 @@
 
 module AP_MODULE_DECLARE_DATA proxy_fcgi_module;
 
+typedef struct {
+    int need_dirwalk;
+} fcgi_req_config_t;
+
 /*
  * Canonicalise http-like URLs.
  * scheme is the scheme for the URL
@@ -29,8 +33,11 @@ module AP_MODULE_DECLARE_DATA proxy_fcgi_module;
 static int proxy_fcgi_canon(request_rec *r, char *url)
 {
     char *host, sport[7];
-    const char *err, *path;
+    const char *err;
+    char *path;
     apr_port_t port, def_port;
+    fcgi_req_config_t *rconf = NULL;
+    const char *pathinfo_type = NULL;
 
     if (strncasecmp(url, "fcgi:", 5) == 0) {
         url += 5;
@@ -76,11 +83,51 @@ static int proxy_fcgi_canon(request_rec *r, char *url)
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01060)
                   "set r->filename to %s", r->filename);
 
-    if (apr_table_get(r->subprocess_env, "proxy-fcgi-pathinfo")) {
-        r->path_info = apr_pstrcat(r->pool, "/", path, NULL);
+    rconf = ap_get_module_config(r->request_config, &proxy_fcgi_module);
+    if (rconf == NULL) { 
+        rconf = apr_pcalloc(r->pool, sizeof(fcgi_req_config_t));
+        ap_set_module_config(r->request_config, &proxy_fcgi_module, rconf);
+    }
 
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01061)
-                      "set r->path_info to %s", r->path_info);
+    if (NULL != (pathinfo_type = apr_table_get(r->subprocess_env, "proxy-fcgi-pathinfo"))) {
+        /* It has to be on disk for this to work */
+        if (!strcasecmp(pathinfo_type, "full")) { 
+            rconf->need_dirwalk = 1;
+            ap_unescape_url_keep2f(path, 0);
+        }
+        else if (!strcasecmp(pathinfo_type, "first-dot")) { 
+            char *split = ap_strchr(path, '.');
+            if (split) { 
+                char *slash = ap_strchr(split, '/');
+                if (slash) { 
+                    r->path_info = apr_pstrdup(r->pool, slash);
+                    ap_unescape_url_keep2f(r->path_info, 0);
+                    *slash = '\0'; /* truncate path */
+                }
+            }
+        }
+        else if (!strcasecmp(pathinfo_type, "last-dot")) { 
+            char *split = ap_strrchr(path, '.');
+            if (split) { 
+                char *slash = ap_strchr(split, '/');
+                if (slash) { 
+                    r->path_info = apr_pstrdup(r->pool, slash);
+                    ap_unescape_url_keep2f(r->path_info, 0);
+                    *slash = '\0'; /* truncate path */
+                }
+            }
+        }
+        else { 
+            /* before proxy-fcgi-pathinfo had multi-values. This requires the
+             * the FCGI server to fixup PATH_INFO because it's the entire path
+             */
+            r->path_info = apr_pstrcat(r->pool, "/", path, NULL);
+            if (!strcasecmp(pathinfo_type, "unescape")) { 
+                ap_unescape_url_keep2f(r->path_info, 0);
+            }
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01061)
+                    "set r->path_info to %s", r->path_info);
+        }
     }
 
     return OK;
@@ -207,13 +254,20 @@ static apr_status_t send_environment(proxy_conn_rec *conn, request_rec *r,
     apr_size_t avail_len, len, required_len;
     int next_elem, starting_elem;
     char *proxyfilename = r->filename;
+    fcgi_req_config_t *rconf = ap_get_module_config(r->request_config, &proxy_fcgi_module);
+
+    if (rconf) { 
+       if (rconf->need_dirwalk) { 
+          ap_directory_walk(r);
+       }
+    }
 
     /* Strip balancer prefix */
     if (r->filename && !strncmp(r->filename, "proxy:balancer://", 17)) { 
         char *newfname = apr_pstrdup(r->pool, r->filename);
         newfname += 17; 
         newfname = ap_strchr(newfname, '/');
-        r->filename  = newfname;
+        r->filename = newfname;
     }
 
     ap_add_common_vars(r);
