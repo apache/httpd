@@ -136,6 +136,12 @@ ProxyPass /myapp/ balancer://myappcluster/
     # Note: The only part that varies is /path/to/app.sock
     SetHandler  "proxy:unix:/path/to/app.sock|fcgi://localhost/"
 &lt;/FilesMatch&gt;
+   # Define a matching worker.
+   # The part that is matched to the SetHandler is the part that 
+   # follows the pipe. If you need to distinguish, "localhost; can
+   # be anything unique.
+   &lt;Proxy fcgi://localhost/ enablereuse=on max=10&gt;
+   &lt;/Proxy&gt;
 
 &lt;FilesMatch ...&gt;
     SetHandler  "proxy:fcgi://localhost:9000"
