@@ -119,7 +119,7 @@
         configuration below will pass all requests for PHP scripts to the
         specified FastCGI server using reverse proxy.
         This feature is available in Apache HTTP Server 2.4.10 and later. For performance
-       reasons, you will want to define a <a href="../mod_proxy.html#worker">worker</a>
+       reasons, you will want to define a <a href="mod_proxy.html#workers">worker</a>
        representing the same fcgi:// backend. The benefit of this form is that it 
        allows the normal mapping of URI to filename to occur in the server, and the 
        local filesystem result is passed to the backend.  When FastCGI is 
@@ -160,7 +160,27 @@
         and <var>Script-URI</var> and be compliant with RFC 3875 section 3.3.
         If instead you need <code class="module"><a href="../mod/mod_proxy_fcgi.html">mod_proxy_fcgi</a></code> to generate
         a "best guess" for <var>PATH_INFO</var>, set this env-var.
-        This is a workaround for a bug in some FCGI implementations.</dd>
+        This is a workaround for a bug in some FCGI implementations.  This
+        variable can be set to multiple values to tweak at how the best guess
+        is chosen:
+        <dl>
+          <dt>first-dot</dt>
+          <dd>PATH_INFO is split from the slash following the 
+              <em>first</em> "." in the URL.</dd>
+          <dt>last-dot</dt>
+          <dd>PATH_INFO is split from the slash following the 
+              <em>last</em> "." in the URL.</dd>
+          <dt>full</dt> 
+          <dd>PATH_INFO is calculated by an attempt to map the URL to the 
+              local filesystem.</dd>
+          <dt>unescape</dt>
+          <dd>PATH_INFO is the path component of the URL, unescaped / 
+              decoded.</dd>
+          <dt>any other value</dt>
+          <dd>PATH_INFO is the same as the path component of the URL.  
+              Originally, this was the only proxy-fcgi-pathinfo option.</dd>
+         </dl>
+        </dd>
     </dl>
 </div>
 </div>
