@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1615363 -->
+<!-- English Revision : 1645865 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -42,6 +42,7 @@
      [ -<strong>L</strong> <var>nom-lien</var> ]
      [ -<strong>p</strong> <var>programme</var> ]
      [ -<strong>f</strong> ]
+     [ -<strong>t</strong> ]
      [ -<strong>v</strong> ]
      [ -<strong>e</strong> ]
      [ -<strong>c</strong> ]
