@@ -1285,6 +1285,13 @@ ProxyPass /mirror/foo http://backend.example.com</pre>
 	(round-robin DNS). Pour désactiver la réutilisation du jeu de
 	connexions, définissez cette clé à <code>On</code>.
     </td></tr>
+    <tr><td>enablereuse</td>
+        <td>On</td>
+        <td>Fournie à l'intention des gestionnaires de projet
+	qui nécessitent un accord pour la réutilisation des connexions
+	(tels que <code class="module"><a href="../mod/mod_proxy_fcgi.html">mod_proxy_fcgi</a></code>),
+	cette option est l'inverse de l'option 'disablereuse' ci-dessus.
+    </td></tr>
     <tr><td>flushpackets</td>
         <td>off</td>
         <td>Permet de définir si le module mandataire doit vider
