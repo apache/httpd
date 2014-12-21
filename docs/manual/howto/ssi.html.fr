@@ -454,7 +454,7 @@ HTML préexistants.</p>
 
     <div class="example"><p><code>
     Good
-    &lt;!--#if expr="%{TIME_HOUR} &gt;=12" --&gt;<br />
+    &lt;!--#if expr="%{TIME_HOUR} &lt;12" --&gt;<br />
     morning!<br />
     &lt;!--#else --&gt;<br />
     afternoon!<br />
