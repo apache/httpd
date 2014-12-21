@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1602702 -->
+<!-- English Revision : 1646392 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -463,7 +463,7 @@ HTML pr&eacute;existants.</p>
 
     <example>
     Good
-    &lt;!--#if expr="%{TIME_HOUR} &gt;=12" --&gt;<br />
+    &lt;!--#if expr="%{TIME_HOUR} &lt;12" --&gt;<br />
     morning!<br />
     &lt;!--#else --&gt;<br />
     afternoon!<br />
