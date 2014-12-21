@@ -481,8 +481,6 @@ static ap_expr_t *ap_expr_info_make(int type, const char *name,
                 break;
         }
     }
-                        ap_log_error(APLOG_MARK, APLOG_ERR, 0, 0,
-                                    "sss %s", parms.arg);
     if (ctx->lookup_fn(&parms) != OK)
         return NULL;
     return info;
