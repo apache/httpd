@@ -48,6 +48,7 @@
      [ -<strong>L</strong> <var>nom-lien</var> ]
      [ -<strong>p</strong> <var>programme</var> ]
      [ -<strong>f</strong> ]
+     [ -<strong>t</strong> ]
      [ -<strong>v</strong> ]
      [ -<strong>e</strong> ]
      [ -<strong>c</strong> ]
