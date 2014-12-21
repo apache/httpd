@@ -123,7 +123,7 @@ ProxyPass /myapp/ balancer://myappcluster/
         configuration below will pass all requests for PHP scripts to the
         specified FastCGI server using reverse proxy.
         This feature is available in Apache HTTP Server 2.4.10 and later. For performance
-       reasons, you will want to define a <a href="../mod_proxy.html#worker">worker</a>
+       reasons, you will want to define a <a href="../mod_proxy.html#workers">worker</a>
        representing the same fcgi:// backend. The benefit of this form is that it 
        allows the normal mapping of URI to filename to occur in the server, and the 
        local filesystem result is passed to the backend.  When FastCGI is 
