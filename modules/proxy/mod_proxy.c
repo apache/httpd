@@ -1486,24 +1486,23 @@ static const char *
     return add_proxy(cmd, dummy, f1, r1, 1);
 }
 
-PROXY_DECLARE(char *) ap_proxy_de_socketfy(apr_pool_t *p, const char *url)
+PROXY_DECLARE(const char *) ap_proxy_de_socketfy(apr_pool_t *p, const char *url)
 {
-    char *ptr;
+    const char *ptr;
     /*
      * We could be passed a URL during the config stage that contains
      * the UDS path... ignore it
      */
-    char *url_copy = apr_pstrdup(p, url);
     if (!strncasecmp(url, "unix:", 5) &&
-        ((ptr = ap_strchr(url_copy, '|')) != NULL)) {
+        ((ptr = ap_strchr_c(url, '|')) != NULL)) {
         /* move past the 'unix:...|' UDS path info */
-        char *ret, *c;
+        const char *ret, *c;
 
         ret = ptr + 1;
         /* special case: "unix:....|scheme:" is OK, expand
          * to "unix:....|scheme://localhost"
          * */
-        c = ap_strchr(ret, ':');
+        c = ap_strchr_c(ret, ':');
         if (c == NULL) {
             return NULL;
         }
@@ -1514,7 +1513,7 @@ PROXY_DECLARE(char *) ap_proxy_de_socketfy(apr_pool_t *p, const char *url)
             return ret;
         }
     }
-    return url_copy;
+    return url;
 }
 
 static const char *
