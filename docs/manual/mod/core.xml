@@ -3899,8 +3899,10 @@ itself</description>
     server).</p>
 
     <p>If no <directive>ServerName</directive> is specified, then the
-    server attempts to deduce the hostname by performing a reverse
-    lookup on the IP address. If no port is specified in the
+    server attempts to deduce the client visible hostname by performing a
+    reverse lookup on an IP address of the systems hostname.</p>
+    
+    <p>If no port is specified in the
     <directive>ServerName</directive>, then the server will use the
     port from the incoming request. For optimal reliability and
     predictability, you should specify an explicit hostname and port
