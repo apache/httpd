@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1642847 -->
+<!-- English Revision : 1647229 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -4285,8 +4285,11 @@ host</context>
     annule cependant la pr&eacute;c&eacute;dente (pour ce serveur).</p>
 
     <p>Si la directive <directive>ServerName</directive> n'est pas
-    d&eacute;finie, le serveur tente de d&eacute;terminer le nom d'h&ocirc;te en effectuant
-    une recherche DNS inverse sur son adresse IP. Si la directive
+    d&eacute;finie, le serveur tente de d&eacute;terminer le nom
+    d'h&ocirc;te visible du point de vue du client en effectuant
+    une recherche DNS inverse sur une adresse IP du serveur.</p>
+    
+    <p>Si la directive
     <directive>ServerName</directive> ne pr&eacute;cise pas de port, le serveur
     utilisera celui de la requ&ecirc;te entrante. Il est recommand&eacute; de
     sp&eacute;cifier un nom d'h&ocirc;te et un port sp&eacute;cifiques &agrave; l'aide de la
