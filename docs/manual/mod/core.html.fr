@@ -4219,8 +4219,11 @@ entièrement qualifié</var>[:<var>port</var>]</code></td></tr>
     annule cependant la précédente (pour ce serveur).</p>
 
     <p>Si la directive <code class="directive">ServerName</code> n'est pas
-    définie, le serveur tente de déterminer le nom d'hôte en effectuant
-    une recherche DNS inverse sur son adresse IP. Si la directive
+    définie, le serveur tente de déterminer le nom
+    d'hôte visible du point de vue du client en effectuant
+    une recherche DNS inverse sur une adresse IP du serveur.</p>
+    
+    <p>Si la directive
     <code class="directive">ServerName</code> ne précise pas de port, le serveur
     utilisera celui de la requête entrante. Il est recommandé de
     spécifier un nom d'hôte et un port spécifiques à l'aide de la
