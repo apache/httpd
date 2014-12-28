@@ -277,8 +277,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~jkaluza/patches/httpd-2.4.x-mod_journald.patch
      +1: jkaluza
 
-   * mod_autoindex: Fix (add) class attribute for description column when there is no
-                    description.
+   * mod_autoindex: Fix (add) css attribute for description column when column
+                    contains no data. PR 57227. [Bruno Raoult]
      trunk patch: http://svn.apache.org/r1648201
      2.4.x patch: https://issues.apache.org/bugzilla/attachment.cgi?id=32209
      +1: druggeri
