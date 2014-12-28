@@ -281,7 +281,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                     contains no data. PR 57227. [Bruno Raoult]
      trunk patch: http://svn.apache.org/r1648201
      2.4.x patch: https://issues.apache.org/bugzilla/attachment.cgi?id=32209
-     +1: druggeri
+     +1: druggeri, gsmith
 
 OTHER PROPOSALS
 
