@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1642454 -->
+<!-- English Revision: 1647155 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -132,6 +132,29 @@ ProxyPass /myapp/ balancer://myappcluster/
 &lt;/Proxy&gt;
     </highlight>
     </example>
+
+    <p>Vous pouvez aussi forcer le traitement d'une requ&ecirc;te en tant que
+    requ&ecirc;te de mandataire inverse en cr&eacute;ant un court-circuiteur de
+    gestionnaire appropri&eacute;. Dans l'exemple ci-dessous, toutes les
+    requ&ecirc;tes pour des scripts PHP seront transmises au serveur FastCGI
+    sp&eacute;cifi&eacute; par mandat inverse. Cette fonctionnalit&eacute; est disponible &agrave;
+    partir de la version 2.4.10 du serveur HTTP Apache. Pour des raisons
+    de performances, il est recommand&eacute; de d&eacute;finir un <a
+    href="mod_proxy.html#workers">worker (configuration d'un
+    mandataire)</a> repr&eacute;sentant le m&ecirc;me serveur fcgi:// d'arri&egrave;re-plan.
+    Avec cette configuration, il est possible d'effectuer une
+    correspondance directe entre l'URI et le chemin du fichier sur le
+    serveur, et le chemin local du fichier sera alors transmis au serveur
+    d'arri&egrave;re-plan. Lorsque FastCGI est configur&eacute; ainsi, le serveur est
+    en mesure de calculer le PATH_INFO le plus appropri&eacute;.
+      </p>
+      <example><title>Proxy via Handler</title>
+      <highlight language="config">
+&lt;FilesMatch \.php$&gt;
+    SetHandler  "proxy:unix:/path/to/app.sock|fcgi://localhost/"
+&lt;/FilesMatch&gt;
+      </highlight>
+   </example>
 </section>
 
 <section id="env"><title>Variables d'environnement</title>
