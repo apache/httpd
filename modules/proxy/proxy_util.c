@@ -933,7 +933,7 @@ PROXY_DECLARE(const char *) ap_proxy_location_reverse_map(request_rec *r,
                     part = url;
                 }
             }
-            if (l1 >= l2 && strncasecmp(real, part, l2) == 0) {
+            if (l2 > 0 && l1 >= l2 && strncasecmp(real, part, l2) == 0) {
                 u = apr_pstrcat(r->pool, ent[i].fake, &part[l2], NULL);
                 return ap_is_url(u) ? u : ap_construct_url(r->pool, u, r);
             }
