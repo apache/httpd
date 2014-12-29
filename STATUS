@@ -225,7 +225,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~trawick/ap_log_data-to-2.4.x.txt
                   (trunk works with the expected minor conflicts in CHANGES
                   and ap_mmn.h)
-     +1: trawick
+     +1: trawick, covener
 
    * mod_proxy_ajp: Fix client connection errors handling and logged status
                     when it occurs.  PR 56823.
