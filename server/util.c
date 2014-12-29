@@ -971,20 +971,20 @@ AP_DECLARE(const char *) ap_pcfg_strerror(apr_pool_t *p, ap_configfile_t *cfp,
 /* Read one line from open ap_configfile_t, strip LF, increase line number */
 /* If custom handler does not define a getstr() function, read char by char */
 static apr_status_t ap_cfg_getline_core(char *buf, apr_size_t bufsize,
-                                        ap_configfile_t *cfp)
+                                        apr_size_t offset, ap_configfile_t *cfp)
 {
     apr_status_t rc;
     /* If a "get string" function is defined, use it */
     if (cfp->getstr != NULL) {
         char *cp;
-        char *cbuf = buf;
-        apr_size_t cbufsize = bufsize;
+        char *cbuf = buf + offset;
+        apr_size_t cbufsize = bufsize - offset;
 
         while (1) {
             ++cfp->line_number;
             rc = cfp->getstr(cbuf, cbufsize, cfp->param);
             if (rc == APR_EOF) {
-                if (cbuf != buf) {
+                if (cbuf != buf + offset) {
                     *cbuf = '\0';
                     break;
                 }
@@ -1002,11 +1002,11 @@ static apr_status_t ap_cfg_getline_core(char *buf, apr_size_t bufsize,
              */
             cp = cbuf;
             cp += strlen(cp);
-            if (cp > cbuf && cp[-1] == LF) {
+            if (cp > buf && cp[-1] == LF) {
                 cp--;
-                if (cp > cbuf && cp[-1] == CR)
+                if (cp > buf && cp[-1] == CR)
                     cp--;
-                if (cp > cbuf && cp[-1] == '\\') {
+                if (cp > buf && cp[-1] == '\\') {
                     cp--;
                     /*
                      * line continuation requested -
@@ -1024,19 +1024,19 @@ static apr_status_t ap_cfg_getline_core(char *buf, apr_size_t bufsize,
         }
     } else {
         /* No "get string" function defined; read character by character */
-        apr_size_t i = 0;
+        apr_size_t i = offset;
 
         if (bufsize < 2) {
             /* too small, assume caller is crazy */
             return APR_EINVAL;
         }
-        buf[0] = '\0';
+        buf[offset] = '\0';
 
         while (1) {
             char c;
             rc = cfp->getch(&c, cfp->param);
             if (rc == APR_EOF) {
-                if (i > 0)
+                if (i > offset)
                     break;
                 else
                     return APR_EOF;
@@ -1054,11 +1054,11 @@ static apr_status_t ap_cfg_getline_core(char *buf, apr_size_t bufsize,
                     break;
                 }
             }
-            else if (i >= bufsize - 2) {
-                return APR_ENOSPC;
-            }
             buf[i] = c;
             ++i;
+            if (i >= bufsize - 1) {
+                return APR_ENOSPC;
+            }
         }
         buf[i] = '\0';
     }
@@ -1092,7 +1092,7 @@ static int cfg_trim_line(char *buf)
 AP_DECLARE(apr_status_t) ap_cfg_getline(char *buf, apr_size_t bufsize,
                                         ap_configfile_t *cfp)
 {
-    apr_status_t rc = ap_cfg_getline_core(buf, bufsize, cfp);
+    apr_status_t rc = ap_cfg_getline_core(buf, bufsize, 0, cfp);
     if (rc == APR_SUCCESS)
         cfg_trim_line(buf);
     return rc;
@@ -1119,7 +1119,7 @@ AP_DECLARE(apr_status_t) ap_varbuf_cfg_getline(struct ap_varbuf *vb,
     }
 
     for (;;) {
-        rc = ap_cfg_getline_core(vb->buf + vb->strlen, vb->avail - vb->strlen, cfp);
+        rc = ap_cfg_getline_core(vb->buf, vb->avail, vb->strlen, cfp);
         if (rc == APR_ENOSPC || rc == APR_SUCCESS)
             vb->strlen += strlen(vb->buf + vb->strlen);
         if (rc != APR_ENOSPC)

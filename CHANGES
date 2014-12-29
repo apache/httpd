@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) core: Configuration files with long lines and continuation characters
+     are not read properly. PR 55910. [Manuel Mausz <manuel-as mausz.at>]
+
   *) mod_proxy_fcgi: Provide some basic alternate options for specifying 
      how PATH_INFO is passed to FastCGI backends by adding significance to
      the value of proxy-fcgi-pathinfo. PR 55329. [Eric Covener]
