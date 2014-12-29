@@ -147,6 +147,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-mod_deflate_APR_INT32_MAX.patch
      +1: ylavic, trawick
 
+   * default conf: Disable SSLv3, like SSLv2, in the default configuration.
+     trunk patch: n/a -- Only 2.2.x has SSLProtocol in httpd-ssl.conf.in
+     2.2.x patch: https://issues.apache.org/bugzilla/attachment.cgi?id=32131     
+     +1: covener 
+
 PATCHES/ISSUES THAT ARE STALLED
 
    * mod_proxy_balancer: Always initialize the shared parameters of a load
