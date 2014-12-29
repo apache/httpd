@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_proxy: Prevent ProxyPassReverse from doing a substitution when
+     the URL parameter interpolates to an empty string. PR 56603.
+     [<ajprout hotmail.com>]
+
   *) core: Configuration files with long lines and continuation characters
      are not read properly. PR 55910. [Manuel Mausz <manuel-as mausz.at>]
 
