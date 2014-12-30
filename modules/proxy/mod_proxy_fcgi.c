@@ -636,7 +636,7 @@ recv_again:
                         apr_brigade_cleanup(ob);
                     }
 
-                    /* If we didn't read all the data go back and get the
+                    /* If we didn't read all the data, go back and get the
                      * rest of it. */
                     if (clen > readbuflen) {
                         clen -= readbuflen;
@@ -718,7 +718,7 @@ static int fcgi_do_request(apr_pool_t *p, request_rec *r,
                            char *url, char *server_portstr)
 {
     /* Request IDs are arbitrary numbers that we assign to a
-     * single request. This would allow multiplex/pipelinig of
+     * single request. This would allow multiplex/pipelining of
      * multiple requests to the same FastCGI connection, but
      * we don't support that, and always use a value of '1' to
      * keep things simple. */
