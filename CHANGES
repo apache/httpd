@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) split-logfile: Fix perl error:  'Can't use string ("example.org:80") 
+     as a symbol ref while "strict refs"'. PR 56329.
+     [Holger Mauermann <mauermann gmail.com>]
+
   *) mod_proxy: Prevent ProxyPassReverse from doing a substitution when
      the URL parameter interpolates to an empty string. PR 56603.
      [<ajprout hotmail.com>]
