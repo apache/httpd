@@ -79,6 +79,12 @@
     compare the <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> and <code class="directive"><a href="../mod/core.html#serveralias">ServerAlias</a></code> directives to the server name
     present in the request.</p>
 
+    <p>If you omit the <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> 
+    directive from any name-based virtual host, the server will default
+    to a fully qualified domain name (FQDN) derived from the system hostname.
+    This implicitly set server name can lead to counter-intuitive virtual host
+    matching and is discouraged.</p>
+ 
     <h3><a name="defaultvhost" id="defaultvhost">The default name-based vhost for an IP and port combination </a></h3>
     <p> If no matching ServerName or ServerAlias is found in the set of
     virtual hosts containing the most specific matching IP address and port
@@ -207,7 +213,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/vhosts/name-based.
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2014 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2015 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
