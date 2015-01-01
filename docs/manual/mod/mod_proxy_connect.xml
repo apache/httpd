@@ -63,6 +63,19 @@
         <dt>proxy-source-port</dt>
         <dd>The local port used for the connection to the backend server.</dd>
     </dl>
+
+   <p>CONNECT method requests are controlled by the
+   <directive module="mod_proxy">Proxy</directive> block
+   as any other HTTP request going through.
+   SSL connections through a proxy may be filtered explicitely
+   by specifying the target host and port, for instance:
+   </p>
+
+   <highlight language="config">
+&lt;Proxy www.example.com:443&gt;
+  Require ip 192.168.0.0/16
+&lt;/Proxy&gt;
+   </highlight>
 </section>
 
 <directivesynopsis>

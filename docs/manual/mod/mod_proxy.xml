@@ -490,6 +490,18 @@ ProxyPass /examples http://backend.example.com/examples timeout=10
 &lt;/Proxy&gt;
     </highlight>
 
+    <p>The next example will allow web clients from the specified IP
+    addresses to issue <code>CONNECT</code> requests to access the
+    <code>https://www.example.com/</code> SSL server, if
+    <module>mod_proxy_connect</module> is enabled.
+    </p>
+
+   <highlight language="config">
+&lt;Proxy www.example.com:443&gt;
+  Require ip 192.168.0.0/16
+&lt;/Proxy&gt;
+   </highlight>
+
     <note><title>Differences from the Location configuration section</title>
       <p>A backend URL matches the configuration section if it begins with the 
       the <var>wildcard-url</var> string, even if the last path segment in the
