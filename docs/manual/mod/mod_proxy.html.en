@@ -1151,6 +1151,12 @@ ProxyPass /mirror/foo http://backend.example.com</pre>
     robin DNS. To disable connection pooling reuse,
     set this property value to <code>On</code>.
     </td></tr>
+    <tr><td>enablereuse</td>
+        <td>On</td>
+        <td>This is the inverse of 'disablereuse' above, provided as a
+        convenience for scheme handlers that require opt-in for connection
+        reuse (such as <code class="module"><a href="../mod/mod_proxy_fcgi.html">mod_proxy_fcgi</a></code>).
+    </td></tr>
     <tr><td>flushpackets</td>
         <td>off</td>
         <td>Determines whether the proxy module will auto-flush the output
@@ -1965,7 +1971,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_proxy.html
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2014 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2015 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
