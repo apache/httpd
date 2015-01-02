@@ -76,6 +76,18 @@
         <dt>proxy-source-port</dt>
         <dd>The local port used for the connection to the backend server.</dd>
     </dl>
+
+   <p>CONNECT method requests are controlled by the
+   <code class="directive"><a href="../mod/mod_proxy.html#proxy">Proxy</a></code> block
+   as any other HTTP request going through.
+   SSL connections through a proxy may be filtered explicitely
+   by specifying the target host and port, for instance:
+   </p>
+
+   <pre class="prettyprint lang-config">&lt;Proxy www.example.com:443&gt;
+  Require ip 192.168.0.0/16
+&lt;/Proxy&gt;</pre>
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AllowCONNECT" id="AllowCONNECT">AllowCONNECT</a> <a name="allowconnect" id="allowconnect">Directive</a></h2>

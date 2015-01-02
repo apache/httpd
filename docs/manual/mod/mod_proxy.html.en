@@ -714,6 +714,17 @@ NoProxy         .example.com 192.168.112.0/21</pre>
 &lt;/Proxy&gt;</pre>
 
 
+    <p>The next example will allow web clients from the specified IP
+    addresses to issue <code>CONNECT</code> requests to access the
+    <code>https://www.example.com/</code> SSL server, if
+    <code class="module"><a href="../mod/mod_proxy_connect.html">mod_proxy_connect</a></code> is enabled.
+    </p>
+
+   <pre class="prettyprint lang-config">&lt;Proxy www.example.com:443&gt;
+  Require ip 192.168.0.0/16
+&lt;/Proxy&gt;</pre>
+
+
     <div class="note"><h3>Differences from the Location configuration section</h3>
       <p>A backend URL matches the configuration section if it begins with the 
       the <var>wildcard-url</var> string, even if the last path segment in the
