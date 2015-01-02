@@ -152,6 +152,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x patch: https://issues.apache.org/bugzilla/attachment.cgi?id=32131     
      +1: covener 
 
+   * mod_proxy_ajp: Fix get_content_length().
+     clength in request_rec is for response sizes, not request body size.
+     It is initialized to 0, so the "if" branch was never taken.
+     trunk patch: http://svn.apache.org/r1649043
+     2.2.x patch: trunks works (plus CHANGES)
+     +1 rjung
+
 PATCHES/ISSUES THAT ARE STALLED
 
    * mod_proxy_balancer: Always initialize the shared parameters of a load
