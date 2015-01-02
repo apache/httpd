@@ -155,11 +155,7 @@ ProxyPassReverse /apps/foo http://www.example.com/foo</pre>
 <h2><a name="basppacketstruct" id="basppacketstruct">Basic Packet Structure</a></h2>
     <p>There is a bit of an XDR heritage to this protocol, but it differs
     in lots of ways (no 4 byte alignment, for example).</p>
-    <p>Byte order: I am not clear about the endian-ness of the individual
-    bytes.  I'm guessing the bytes are little-endian, because that's what
-    XDR specifies, and I'm guessing that sys/socket library is magically
-    making that so (on the C side).  If anyone with a better knowledge of
-    socket calls can step in, that would be great.</p>
+    <p>AJP13 uses network byte order for all data types.</p>
     <p>There are four data types in the protocol: bytes, booleans,
     integers and strings.</p>
     <dl>
@@ -572,9 +568,9 @@ AJP13_GET_BODY_CHUNK :=
   
   <h3>End Response</h3>
     <p>Signals the end of this request-handling cycle.  If the
-    <code>reuse</code> flag is true <code>(==1)</code>, this TCP connection can
-    now be used to handle new incoming requests.  If <code>reuse</code> is false
-    (anything other than 1 in the actual C code), the connection should
+    <code>reuse</code> flag is true <code>(anything other than 0 in the actual
+    C code)</code>, this TCP connection can now be used to handle new incoming
+    requests.  If <code>reuse</code> is false (==0), the connection should
     be closed.</p>
   
   <h3>Get Body Chunk</h3>
