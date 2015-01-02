@@ -299,6 +299,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunks works
      +1 covener
 
+   * mod_proxy_ajp: Fix get_content_length().
+     clength in request_rec is for response sizes, not request body size.
+     It is initialized to 0, so the "if" branch was never taken.
+     trunk patch: http://svn.apache.org/r1649043
+     2.4.x patch: trunks works (plus CHANGES)
+     +1 rjung
+
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
