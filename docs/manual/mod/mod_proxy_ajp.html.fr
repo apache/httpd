@@ -28,8 +28,6 @@
 <a href="../fr/mod/mod_proxy_ajp.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_proxy_ajp.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Module de support AJP pour
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -177,13 +175,8 @@ ProxyPassReverse /apps/foo http://www.example.com/foo</pre>
 <h2><a name="basppacketstruct" id="basppacketstruct">Structure de base des paquets</a></h2>
     <p>Ce protocole hérite en partie de XDR, mais il diffère sur de
     nombreux points (pas d'alignement sur 4 bits, par exemple).</p>
-    <p>Ordre des octets : je ne suis pas sûr du type endian des octets
-    individuels. Je suppose qu'ils sont de type little-endian, car cela
-    correspond à la spécification XDR, et je suppose aussi que la
-    bibliothèque sys/socket fonctionne ainsi automatiquement (du point
-    de vue du langage C). Il serait souhaitable que quelqu'un possèdant
-    une meilleure connaissance des appels socket puisse prendre le
-    relai.</p>
+    <p>AJP13 utilise les octets selon leur ordre d'arrivée par le réseau
+    pour tous les types de données.</p>
     <p>Le protocole comporte quatre types de données : octets, booléens,
     entiers et chaînes de caractères.</p>
     <dl>
@@ -628,11 +621,11 @@ AJP13_GET_BODY_CHUNK :=
   
   <h3>Fin de la réponse</h3>
     <p>Signale la fin de ce cycle de traitement de requête. Si le
-    drapeau <code>reuse</code> est à true <code>(==1)</code>, cette
+    drapeau <code>reuse</code> est à true <code>(toute valeur autre que
+    0 en langage C pur)</code>, cette
     connexion TCP peut être réutilisée pour traiter de nouvelles
-    requêtes entrantes. Si <code>reuse</code> est à false (toute autre
-    valeur que 1 dans le véritable code C), la connexion sera
-    fermée.</p>
+    requêtes entrantes. Si <code>reuse</code> est à false
+    (==0), la connexion sera fermée.</p>
   
   <h3>Réception d'un tronçon de corps</h3>
     <p>Le conteneur réclame la suite des données de la requête (dans le
