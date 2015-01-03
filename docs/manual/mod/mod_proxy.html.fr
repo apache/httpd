@@ -28,8 +28,6 @@
 <a href="../fr/mod/mod_proxy.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_proxy.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Serveur mandataire/passerelle multi-protocole</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>proxy_module</td></tr>
@@ -801,6 +799,18 @@ mandatées</td></tr>
 
     <pre class="prettyprint lang-config">&lt;Proxy http://example.com/foo/*&gt;
   SetOutputFilter INCLUDES
+&lt;/Proxy&gt;</pre>
+
+
+    <p>Dans l'exemple suivant, les clients web possédant l'adresse IP
+    spécifiée seront autorisés à effectuer des requêtes
+    <code>CONNECT</code> pour accéder au serveur
+    <code>https://www.example.com/</code>, sous réserve que le module
+    <code class="module"><a href="../mod/mod_proxy_connect.html">mod_proxy_connect</a></code> soit chargé.
+    </p>
+
+   <pre class="prettyprint lang-config">&lt;Proxy www.example.com:443&gt;
+  Require ip 192.168.0.0/16
 &lt;/Proxy&gt;</pre>
 
 
