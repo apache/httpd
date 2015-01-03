@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1647009:1648846 (outdated) -->
+<!-- English Revision: 1648846 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -551,6 +551,19 @@ mandat&eacute;es</description>
   SetOutputFilter INCLUDES
 &lt;/Proxy&gt;
     </highlight>
+
+    <p>Dans l'exemple suivant, les clients web possédant l'adresse IP
+    spécifiée seront autorisés à effectuer des requêtes
+    <code>CONNECT</code> pour accéder au serveur
+    <code>https://www.example.com/</code>, sous réserve que le module
+    <module>mod_proxy_connect</module> soit chargé.
+    </p>
+
+   <highlight language="config">
+&lt;Proxy www.example.com:443&gt;
+  Require ip 192.168.0.0/16
+&lt;/Proxy&gt;
+   </highlight>
 
     <note><title>Diff&eacute;rences avec la section de configuration Location</title>
       <p>Une URL d'arri&egrave;re-plan sera concern&eacute;e par le conteneur Proxy si
