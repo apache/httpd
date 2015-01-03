@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1596969:1649003 (outdated) -->
+<!-- English Revision : 1649003 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -170,13 +170,8 @@ ProxyPassReverse /apps/foo http://www.example.com/foo
 <section id="basppacketstruct"><title>Structure de base des paquets</title>
     <p>Ce protocole h&eacute;rite en partie de XDR, mais il diff&egrave;re sur de
     nombreux points (pas d'alignement sur 4 bits, par exemple).</p>
-    <p>Ordre des octets : je ne suis pas s&ucirc;r du type endian des octets
-    individuels. Je suppose qu'ils sont de type little-endian, car cela
-    correspond &agrave; la sp&eacute;cification XDR, et je suppose aussi que la
-    biblioth&egrave;que sys/socket fonctionne ainsi automatiquement (du point
-    de vue du langage C). Il serait souhaitable que quelqu'un poss&egrave;dant
-    une meilleure connaissance des appels socket puisse prendre le
-    relai.</p>
+    <p>AJP13 utilise les octets selon leur ordre d'arriv&eacute;e par le r&eacute;seau
+    pour tous les types de donn&eacute;es.</p>
     <p>Le protocole comporte quatre types de donn&eacute;es : octets, bool&eacute;ens,
     entiers et cha&icirc;nes de caract&egrave;res.</p>
     <dl>
@@ -629,11 +624,11 @@ AJP13_GET_BODY_CHUNK :=
   </section>
   <section><title>Fin de la r&eacute;ponse</title>
     <p>Signale la fin de ce cycle de traitement de requ&ecirc;te. Si le
-    drapeau <code>reuse</code> est &agrave; true <code>(==1)</code>, cette
+    drapeau <code>reuse</code> est &agrave; true <code>(toute valeur autre que
+    0 en langage C pur)</code>, cette
     connexion TCP peut &ecirc;tre r&eacute;utilis&eacute;e pour traiter de nouvelles
-    requ&ecirc;tes entrantes. Si <code>reuse</code> est &agrave; false (toute autre
-    valeur que 1 dans le v&eacute;ritable code C), la connexion sera
-    ferm&eacute;e.</p>
+    requ&ecirc;tes entrantes. Si <code>reuse</code> est &agrave; false
+    (==0), la connexion sera ferm&eacute;e.</p>
   </section>
   <section><title>R&eacute;ception d'un tron&ccedil;on de corps</title>
     <p>Le conteneur r&eacute;clame la suite des donn&eacute;es de la requ&ecirc;te (dans le
