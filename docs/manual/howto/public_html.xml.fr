@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1591193:1649334 (outdated) -->
+<!-- English Revision : 1649334 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -42,7 +42,8 @@ d&eacute;commentant la ligne</p>
     <example>
       #Include conf/extra/httpd-userdir.conf
     </example>
-    <p>dans le fichier de configuration par d&eacute;faut, et en adaptant le
+    <p>dans le fichier de configuration par d&eacute;faut
+    <code>conf/httpd.conf</code>, et en adaptant le
     fichier <code>httpd-userdir.conf</code> selon vos besoins, ou en
     incluant les directives appropri&eacute;es dans une section
     <code>Directory</code> du fichier de configuration principal.</p>
