@@ -42,7 +42,8 @@ d&eacute;commentant la ligne</p>
     <example>
       #Include conf/extra/httpd-userdir.conf
     </example>
-    <p>dans le fichier de configuration par d&eacute;faut, et en adaptant le
+    <p>dans le fichier de configuration par d&eacute;faut
+    <code>conf/httpd.conf</code>, et en adaptant le
     fichier <code>httpd-userdir.conf</code> selon vos besoins, ou en
     incluant les directives appropri&eacute;es dans une section
     <code>Directory</code> du fichier de configuration principal.</p>
