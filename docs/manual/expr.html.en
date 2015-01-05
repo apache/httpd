@@ -440,11 +440,12 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"</pr
         <td>Same as <code>req</code>, but header names will not be added to the
             Vary header</td><td /></tr>
 <tr><td><code>resp</code></td>
-        <td>Get HTTP response header (most response headers will not yet be set during <code class="directive">&lt;If&gt;</code>)</td><td /></tr>
+        <td>Get HTTP response header (most response headers will not yet be set
+            during <code class="directive">&lt;If&gt;</code>)</td><td /></tr>
 <tr class="odd"><td><code>reqenv</code></td>
         <td>Lookup request environment variable (as a shortcut,
         <code>v</code> can be used too to access
-        variables).</td><td /></tr>
+        variables)</td><td /></tr>
 <tr><td><code>osenv</code></td>
         <td>Lookup operating system environment variable</td><td /></tr>
 <tr class="odd"><td><code>note</code></td>
@@ -475,13 +476,16 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"</pr
 <tr class="odd"><td><code>file</code></td>
         <td>Read contents from a file (including line endings, when present)
         </td><td>yes</td></tr>
-<tr><td><code>filesize</code></td>
+<tr><td><code>filemod</code></td>
+        <td>Return last modification time of a file (or 0 if file does not exist
+            or is not regular file)</td><td>yes</td></tr>
+<tr class="odd"><td><code>filesize</code></td>
         <td>Return size of a file (or 0 if file does not exist or is not
             regular file)</td><td>yes</td></tr>
-<tr class="odd"><td><code>ldap</code></td>
+<tr><td><code>ldap</code></td>
         <td>Escape characters as required by LDAP distinguished name escaping
             (RFC4514) and LDAP filter escaping (RFC4515).</td><td /></tr>
-<tr><td><code>replace</code></td>
+<tr class="odd"><td><code>replace</code></td>
         <td>replace(string, "from", "to") replaces all occurences of "from"
             in the string with "to".</td><td /></tr>
 </table>
