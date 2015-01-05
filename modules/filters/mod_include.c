@@ -698,7 +698,7 @@ static const char *include_expr_var_fn(ap_expr_eval_ctx_t *eval_ctx,
 {
     const char *res, *name = data;
     include_ctx_t *ctx = eval_ctx->data;
-    if (name[0] == 'e') {
+    if ((name[0] == 'e') || (name[0] == 'E')) {
         /* keep legacy "env" semantics */
         if ((res = apr_table_get(ctx->r->notes, arg)) != NULL)
             return res;
