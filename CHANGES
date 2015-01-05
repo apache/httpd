@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_socache_memcache: Pass expiration time through to memcached.
+     [Faidon Liambotis <paravoid debian.org>, Joe Orton]
+
   *) split-logfile: Fix perl error:  'Can't use string ("example.org:80") 
      as a symbol ref while "strict refs"'. PR 56329.
      [Holger Mauermann <mauermann gmail.com>]
