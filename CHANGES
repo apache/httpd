@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_include: the 'env' function was incorrectly handled as 'getenv' if the
+     leading 'e' was written in upper case in <!--#if expr="..." -->
+     statements. [Christophe Jaillet]
+
   *) mod_socache_memcache: Pass expiration time through to memcached. PR 55445.
      [Faidon Liambotis <paravoid debian.org>, Joe Orton]
 
