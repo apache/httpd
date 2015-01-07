@@ -185,22 +185,32 @@ BOOL SSL_X509_getBC(X509 *cert, int *ca, int *pathlen)
     return TRUE;
 }
 
-/* convert a NAME_ENTRY to UTF8 string */
-char *SSL_X509_NAME_ENTRY_to_string(apr_pool_t *p, X509_NAME_ENTRY *xsne)
+/* convert an ASN.1 string to a UTF-8 string (escaping control characters) */
+char *SSL_ASN1_STRING_to_utf8(apr_pool_t *p, ASN1_STRING *asn1str)
 {
     char *result = NULL;
-    BIO* bio;
+    BIO *bio;
     int len;
 
     if ((bio = BIO_new(BIO_s_mem())) == NULL)
         return NULL;
-    ASN1_STRING_print_ex(bio, X509_NAME_ENTRY_get_data(xsne),
-                         ASN1_STRFLGS_ESC_CTRL|ASN1_STRFLGS_UTF8_CONVERT);
+
+    ASN1_STRING_print_ex(bio, asn1str, ASN1_STRFLGS_ESC_CTRL|
+                                       ASN1_STRFLGS_UTF8_CONVERT);
     len = BIO_pending(bio);
-    result = apr_palloc(p, len+1);
-    len = BIO_read(bio, result, len);
-    result[len] = NUL;
+    if (len > 0) {
+        result = apr_palloc(p, len+1);
+        len = BIO_read(bio, result, len);
+        result[len] = NUL;
+    }
     BIO_free(bio);
+    return result;
+}
+
+/* convert a NAME_ENTRY to UTF8 string */
+char *SSL_X509_NAME_ENTRY_to_string(apr_pool_t *p, X509_NAME_ENTRY *xsne)
+{
+    char *result = SSL_ASN1_STRING_to_utf8(p, X509_NAME_ENTRY_get_data(xsne));
     ap_xlate_proto_from_ascii(result, len);
     return result;
 }
@@ -237,51 +247,84 @@ char *SSL_X509_NAME_to_string(apr_pool_t *p, X509_NAME *dn, int maxlen)
     return result;
 }
 
+/* 
+ * Return an array of subjectAltName entries of type "type". If idx is -1,
+ * return all entries of the given type, otherwise return an array consisting
+ * of the n-th occurrence of that type only. Currently supported types:
+ * GEN_EMAIL (rfc822Name)
+ * GEN_DNS (dNSName)
+ */
+BOOL SSL_X509_getSAN(apr_pool_t *p, X509 *x509, int type, int idx,
+                     apr_array_header_t **entries)
+{
+    STACK_OF(GENERAL_NAME) *names;
+
+    if (!x509 || (type < GEN_OTHERNAME) || (type > GEN_RID) || (idx < -1) ||
+        !(*entries = apr_array_make(p, 0, sizeof(char *)))) {
+        *entries = NULL;
+        return FALSE;
+    }
+
+    if ((names = X509_get_ext_d2i(x509, NID_subject_alt_name, NULL, NULL))) {
+        int i, n = 0;
+        GENERAL_NAME *name;
+        const char *utf8str;
+
+        for (i = 0; i < sk_GENERAL_NAME_num(names); i++) {
+            name = sk_GENERAL_NAME_value(names, i);
+            if (name->type == type) {
+                if ((idx == -1) || (n == idx)) {
+                    switch (type) {
+                    case GEN_EMAIL:
+                    case GEN_DNS:
+                        utf8str = SSL_ASN1_STRING_to_utf8(p, name->d.ia5);
+                        if (utf8str) {
+                            APR_ARRAY_PUSH(*entries, const char *) = utf8str;
+                        }
+                        break;
+                    default:
+                        /*
+                         * Not implemented right now:
+                         * GEN_OTHERNAME (otherName)
+                         * GEN_X400 (x400Address)
+                         * GEN_DIRNAME (directoryName)
+                         * GEN_EDIPARTY (ediPartyName)
+                         * GEN_URI (uniformResourceIdentifier)
+                         * GEN_IPADD (iPAddress)
+                         * GEN_RID (registeredID)
+                         */
+                        break;
+                    }
+                }
+                if ((idx != -1) && (n++ > idx))
+                   break;
+            }
+        }
+
+        sk_GENERAL_NAME_pop_free(names, GENERAL_NAME_free);
+    }
+
+    return apr_is_empty_array(*entries) ? FALSE : TRUE;
+}
+
 /* return an array of (RFC 6125 coined) DNS-IDs and CN-IDs in a certificate */
 BOOL SSL_X509_getIDs(apr_pool_t *p, X509 *x509, apr_array_header_t **ids)
 {
-    STACK_OF(GENERAL_NAME) *names;
-    BIO *bio;
     X509_NAME *subj;
-    char **cpp;
-    int i, n;
+    int i = -1;
 
-    if (!x509 || !(*ids = apr_array_make(p, 0, sizeof(char *)))) {
+    /* First, the DNS-IDs (dNSName entries in the subjectAltName extension) */
+    if (!x509 ||
+        (SSL_X509_getSAN(p, x509, GEN_DNS, -1, ids) == FALSE && !*ids)) {
         *ids = NULL;
         return FALSE;
     }
 
-    /* First, the DNS-IDs (dNSName entries in the subjectAltName extension) */
-    if ((names = X509_get_ext_d2i(x509, NID_subject_alt_name, NULL, NULL)) &&
-        (bio = BIO_new(BIO_s_mem()))) {
-        GENERAL_NAME *name;
-
-        for (i = 0; i < sk_GENERAL_NAME_num(names); i++) {
-            name = sk_GENERAL_NAME_value(names, i);
-            if (name->type == GEN_DNS) {
-                ASN1_STRING_print_ex(bio, name->d.ia5, ASN1_STRFLGS_ESC_CTRL|
-                                     ASN1_STRFLGS_UTF8_CONVERT);
-                n = BIO_pending(bio);
-                if (n > 0) {
-                    cpp = (char **)apr_array_push(*ids);
-                    *cpp = apr_palloc(p, n+1);
-                    n = BIO_read(bio, *cpp, n);
-                    (*cpp)[n] = NUL;
-                }
-            }
-        }
-        BIO_free(bio);
-    }
-
-    if (names)
-        sk_GENERAL_NAME_pop_free(names, GENERAL_NAME_free);
-
     /* Second, the CN-IDs (commonName attributes in the subject DN) */
     subj = X509_get_subject_name(x509);
-    i = -1;
     while ((i = X509_NAME_get_index_by_NID(subj, NID_commonName, i)) != -1) {
-        cpp = (char **)apr_array_push(*ids);
-        *cpp = SSL_X509_NAME_ENTRY_to_string(p, X509_NAME_get_entry(subj, i));
+        APR_ARRAY_PUSH(*ids, const char *) = 
+            SSL_X509_NAME_ENTRY_to_string(p, X509_NAME_get_entry(subj, i));
     }
 
     return apr_is_empty_array(*ids) ? FALSE : TRUE;

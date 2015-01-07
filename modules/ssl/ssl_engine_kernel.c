@@ -1199,6 +1199,7 @@ int ssl_hook_Fixup(request_rec *r)
     /* standard SSL environment variables */
     if (dc->nOptions & SSL_OPT_STDENVVARS) {
         modssl_var_extract_dns(env, sslconn->ssl, r->pool);
+        modssl_var_extract_san_entries(env, sslconn->ssl, r->pool);
 
         for (i = 0; ssl_hook_Fixup_vars[i]; i++) {
             var = (char *)ssl_hook_Fixup_vars[i];
