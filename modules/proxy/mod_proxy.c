@@ -1172,7 +1172,8 @@ static int proxy_handler(request_rec *r)
              * We can not failover to another worker.
              * Mark the worker as unusable if member of load balancer
              */
-            if (balancer) {
+            if (balancer
+                && !(worker->s->status & PROXY_WORKER_IGNORE_ERRORS)) {
                 worker->s->status |= PROXY_WORKER_IN_ERROR;
                 worker->s->error_time = apr_time_now();
             }
@@ -1183,7 +1184,8 @@ static int proxy_handler(request_rec *r)
              * We can failover to another worker
              * Mark the worker as unusable if member of load balancer
              */
-            if (balancer) {
+            if (balancer
+                && !(worker->s->status & PROXY_WORKER_IGNORE_ERRORS)) {
                 worker->s->status |= PROXY_WORKER_IN_ERROR;
                 worker->s->error_time = apr_time_now();
             }
