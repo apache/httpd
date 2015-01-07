@@ -1767,6 +1767,9 @@ PROXY_DECLARE(char *) ap_proxy_define_worker(apr_pool_t *p,
     else {
         *wshared->uds_path = '\0';
     }
+    if (!balancer) {
+        wshared->status |= PROXY_WORKER_IGNORE_ERRORS;
+    }
 
     (*worker)->hash = wshared->hash;
     (*worker)->context = NULL;
@@ -1951,7 +1954,8 @@ static int ap_proxy_retry_worker(const char *proxy_function, proxy_worker *worke
         server_rec *s)
 {
     if (worker->s->status & PROXY_WORKER_IN_ERROR) {
-        if (apr_time_now() > worker->s->error_time + worker->s->retry) {
+        if ((worker->s->status & PROXY_WORKER_IGNORE_ERRORS)
+            || apr_time_now() > worker->s->error_time + worker->s->retry) {
             ++worker->s->retries;
             worker->s->status &= ~PROXY_WORKER_IN_ERROR;
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00932)

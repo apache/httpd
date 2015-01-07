@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_proxy: Don't put non balancer-member workers in error state by
+     default for connection or 500/503 errors, and honor status=+I for
+     any error.  PR 48388.  [Yann Ylavic]
+
   *) mod_include: the 'env' function was incorrectly handled as 'getenv' if the
      leading 'e' was written in upper case in <!--#if expr="..." -->
      statements. [Christophe Jaillet]
