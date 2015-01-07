@@ -249,6 +249,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * mod_ssl: mod_ssl: dump SSL IO/state for the write side of the connection(s),
               like reads.
      trunk patch: http://svn.apache.org/r1601919
+                  http://svn.apache.org/r1650061
      2.4.x patch: trunk works (module CHANGES)
      +1: ylavic
 
