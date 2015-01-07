@@ -42,6 +42,7 @@
 static char *ssl_var_lookup_ssl(apr_pool_t *p, conn_rec *c, request_rec *r, char *var);
 static char *ssl_var_lookup_ssl_cert(apr_pool_t *p, request_rec *r, X509 *xs, char *var);
 static char *ssl_var_lookup_ssl_cert_dn(apr_pool_t *p, X509_NAME *xsname, char *var);
+static char *ssl_var_lookup_ssl_cert_san(apr_pool_t *p, X509 *xs, char *var);
 static char *ssl_var_lookup_ssl_cert_valid(apr_pool_t *p, ASN1_TIME *tm);
 static char *ssl_var_lookup_ssl_cert_remain(apr_pool_t *p, ASN1_TIME *tm);
 static char *ssl_var_lookup_ssl_cert_serial(apr_pool_t *p, X509 *xs);
@@ -564,6 +565,10 @@ static char *ssl_var_lookup_ssl_cert(apr_pool_t *p, request_rec *r, X509 *xs,
         result = ssl_var_lookup_ssl_cert_dn(p, xsname, var+5);
         resdup = FALSE;
     }
+    else if (strlen(var) > 4 && strcEQn(var, "SAN_", 4)) {
+        result = ssl_var_lookup_ssl_cert_san(p, xs, var+4);
+        resdup = FALSE;
+    }
     else if (strcEQ(var, "A_SIG")) {
         nid = OBJ_obj2nid((ASN1_OBJECT *)(xs->cert_info->signature->algorithm));
         result = apr_pstrdup(p,
@@ -650,6 +655,34 @@ static char *ssl_var_lookup_ssl_cert_dn(apr_pool_t *p, X509_NAME *xsname, char *
         }
     }
     return result;
+}
+
+static char *ssl_var_lookup_ssl_cert_san(apr_pool_t *p, X509 *xs, char *var)
+{
+    int type, numlen;
+    apr_array_header_t *entries;
+
+    if (strcEQn(var, "Email_", 6)) {
+        type = GEN_EMAIL;
+        var += 6;
+    }
+    else if (strcEQn(var, "DNS_", 4)) {
+        type = GEN_DNS;
+        var += 4;
+    }
+    else
+        return NULL;
+
+    /* sanity check: number must be between 1 and 4 digits */
+    numlen = strspn(var, "0123456789");
+    if ((numlen < 1) || (numlen > 4) || (numlen != strlen(var)))
+        return NULL;
+
+    if (SSL_X509_getSAN(p, xs, type, atoi(var), &entries))
+       /* return the first entry from this 1-element array */
+       return APR_ARRAY_IDX(entries, 0, char *);
+    else
+       return NULL;
 }
 
 static char *ssl_var_lookup_ssl_cert_valid(apr_pool_t *p, ASN1_TIME *tm)
@@ -941,6 +974,47 @@ void modssl_var_extract_dns(apr_table_t *t, SSL *ssl, apr_pool_t *p)
     if (xs) {
         extract_dn(t, nids, "SSL_CLIENT_S_DN_", X509_get_subject_name(xs), p);
         extract_dn(t, nids, "SSL_CLIENT_I_DN_", X509_get_issuer_name(xs), p);
+        X509_free(xs);
+    }
+}
+
+static void extract_san_array(apr_table_t *t, const char *pfx,
+                              apr_array_header_t *entries, apr_pool_t *p)
+{
+    int i;
+
+    for (i = 0; i < entries->nelts; i++) {
+        const char *key = apr_psprintf(p, "%s_%d", pfx, i);
+        apr_table_setn(t, key, APR_ARRAY_IDX(entries, i, const char *));
+    }
+}
+
+void modssl_var_extract_san_entries(apr_table_t *t, SSL *ssl, apr_pool_t *p)
+{
+    X509 *xs;
+    apr_array_header_t *entries;
+
+    /* subjectAltName entries of the server certificate */
+    xs = SSL_get_certificate(ssl);
+    if (xs) {
+        if (SSL_X509_getSAN(p, xs, GEN_EMAIL, -1, &entries)) {
+            extract_san_array(t, "SSL_SERVER_SAN_Email", entries, p);
+        }
+        if (SSL_X509_getSAN(p, xs, GEN_DNS, -1, &entries)) {
+            extract_san_array(t, "SSL_SERVER_SAN_DNS", entries, p);
+        }
+        /* no need to free xs (refcount does not increase) */
+    }
+
+    /* subjectAltName entries of the client certificate */
+    xs = SSL_get_peer_certificate(ssl);
+    if (xs) {
+        if (SSL_X509_getSAN(p, xs, GEN_EMAIL, -1, &entries)) {
+            extract_san_array(t, "SSL_CLIENT_SAN_Email", entries, p);
+        }
+        if (SSL_X509_getSAN(p, xs, GEN_DNS, -1, &entries)) {
+            extract_san_array(t, "SSL_CLIENT_SAN_DNS", entries, p);
+        }
         X509_free(xs);
     }
 }

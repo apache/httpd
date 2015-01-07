@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_ssl: Add support for extracting subjectAltName entries of type
+     rfc822Name and dNSName into SSL_{CLIENT,SERVER}_SAN_{Email,DNS}_n
+     environment variables. Also addresses PR 57207. [Kaspar Brand]
+
   *) mod_proxy: Don't put non balancer-member workers in error state by
      default for connection or 500/503 errors, and honor status=+I for
      any error.  PR 48388.  [Yann Ylavic]
