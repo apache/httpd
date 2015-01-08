@@ -602,6 +602,7 @@ sslrequiressl	mod/mod_ssl.html#sslrequiressl
 sslsessioncache	mod/mod_ssl.html#sslsessioncache
 sslsessioncachetimeout	mod/mod_ssl.html#sslsessioncachetimeout
 sslsessionticketkeyfile	mod/mod_ssl.html#sslsessionticketkeyfile
+sslsessiontickets	mod/mod_ssl.html#sslsessiontickets
 sslsrpunknownuserseed	mod/mod_ssl.html#sslsrpunknownuserseed
 sslsrpverifierfile	mod/mod_ssl.html#sslsrpverifierfile
 sslstaplingcache	mod/mod_ssl.html#sslstaplingcache
