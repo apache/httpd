@@ -225,7 +225,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~trawick/ap_log_data-to-2.4.x.txt
                   (trunk works with the expected minor conflicts in CHANGES
                   and ap_mmn.h)
-     +1: trawick, covener
+     +1: trawick, covener, rjung
 
    * mod_proxy_ajp: Fix client connection errors handling and logged status
                     when it occurs.  PR 56823.
@@ -238,7 +238,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
            PR 57328.
      trunk patch: http://svn.apache.org/r1643825
      2.4.x patch: trunk works (module CHANGES)
-     +1: ylavic
+     +1: ylavic, rjung
 
    * mod_ssl: Fix renegotiation failures redirected to an ErrorDocument.
               PR 57334.
@@ -251,7 +251,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1601919
                   http://svn.apache.org/r1650061
      2.4.x patch: trunk works (module CHANGES)
-     +1: ylavic
+     +1: ylavic, rjung
 
    * core: Add ap_errorlog_provider to make ErrorLog logging modular. This
            backport keeps syslog logging as part of httpd core and only adds
@@ -282,7 +282,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                     contains no data. PR 57227. [Bruno Raoult]
      trunk patch: http://svn.apache.org/r1648201
      2.4.x patch: https://issues.apache.org/bugzilla/attachment.cgi?id=32209
-     +1: druggeri, gsmith
+     +1: druggeri, gsmith, rjung
 
    * core: Fix long lines in config file w/ continuations. PR 55910
      trunk patch: http://svn.apache.org/r1648394
@@ -293,12 +293,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      empty string. PR56603
      trunk patch: http://svn.apache.org/r1648433
      2.4.x patch: trunk works
-     +1 covener
+     +1 covener, rjung
 
    * split-logfile: Fix perl strict refs error PR56329.
      trunk patch: 1648719
      2.4.x patch: trunks works
-     +1 covener
+     +1 covener, rjung
 
    * mod_proxy_ajp: Fix get_content_length().
      clength in request_rec is for response sizes, not request body size.
