@@ -2593,7 +2593,7 @@ CRIME attack).</p>
 <name>SSLSessionTickets</name>
 <description>Enable or disable use of TLS session tickets</description>
 <syntax>SSLSessionTickets on|off</syntax>
-<default>SSLCompression on</default>
+<default>SSLSessionTickets on</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 <compatibility>Available in httpd 2.4.11 and later, if using OpenSSL 0.9.8f
