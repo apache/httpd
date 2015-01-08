@@ -2590,6 +2590,27 @@ CRIME attack).</p>
 </directivesynopsis>
 
 <directivesynopsis>
+<name>SSLSessionTickets</name>
+<description>Enable or disable use of TLS session tickets</description>
+<syntax>SSLSessionTickets on|off</syntax>
+<default>SSLCompression on</default>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+<compatibility>Available in httpd 2.4.11 and later, if using OpenSSL 0.9.8f
+or later.</compatibility>
+
+<usage>
+<p>This directive allows to enable or disable the use of TLS session tickets
+(RFC 5077).</p>
+<note type="warning">
+<p>TLS session tickets are enabled by default. Using them without restarting
+the web server with an appropriate frequency (e.g. daily) compromises perfect
+forward secrecy.</p>
+</note>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>SSLOpenSSLConfCmd</name>
 <description>Configure OpenSSL parameters through its <em>SSL_CONF</em> API</description>
 <syntax>SSLOpenSSLConfCmd <em>command-name</em> <em>command-value</em></syntax>

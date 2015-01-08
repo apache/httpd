@@ -574,6 +574,16 @@ static apr_status_t ssl_init_ctx_protocol(server_rec *s,
     }
 #endif
 
+#ifdef SSL_OP_NO_TICKET
+    /*
+     * Configure using RFC 5077 TLS session tickets
+     * for session resumption.
+     */
+    if (sc->session_tickets == FALSE) {
+        SSL_CTX_set_options(ctx, SSL_OP_NO_TICKET);
+    }
+#endif
+
 #ifdef SSL_OP_ALLOW_UNSAFE_LEGACY_RENEGOTIATION
     if (sc->insecure_reneg == TRUE) {
         SSL_CTX_set_options(ctx, SSL_OP_ALLOW_UNSAFE_LEGACY_RENEGOTIATION);

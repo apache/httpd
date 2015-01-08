@@ -648,6 +648,7 @@ struct SSLSrvConfigRec {
 #ifndef OPENSSL_NO_COMP
     BOOL             compression;
 #endif
+    BOOL             session_tickets;
 };
 
 /**
@@ -702,6 +703,7 @@ const char  *ssl_cmd_SSLCARevocationFile(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLCARevocationCheck(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLHonorCipherOrder(cmd_parms *cmd, void *dcfg, int flag);
 const char  *ssl_cmd_SSLCompression(cmd_parms *, void *, int flag);
+const char  *ssl_cmd_SSLSessionTickets(cmd_parms *, void *, int flag);
 const char  *ssl_cmd_SSLVerifyClient(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLVerifyDepth(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLSessionCache(cmd_parms *, void *, const char *);
