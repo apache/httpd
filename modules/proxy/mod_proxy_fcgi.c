@@ -264,8 +264,7 @@ static apr_status_t send_environment(proxy_conn_rec *conn, request_rec *r,
 
     /* Strip balancer prefix */
     if (r->filename && !strncmp(r->filename, "proxy:balancer://", 17)) { 
-        char *newfname = apr_pstrdup(r->pool, r->filename);
-        newfname += 17; 
+        char *newfname = apr_pstrdup(r->pool, r->filename+17);
         newfname = ap_strchr(newfname, '/');
         r->filename = newfname;
     }
