@@ -130,6 +130,22 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      +1 jkaluza, ylavic, covener
 
+   * core: Add ap_log_data(), ap_log_rdata(), etc. for logging buffers.
+     trunk patch: http://svn.apache.org/r1512819
+                  http://svn.apache.org/r1513461 ONLY the change to http_log.h
+                  http://svn.apache.org/r1565777
+                  http://svn.apache.org/r1643538
+     2.4.x patch: http://people.apache.org/~trawick/ap_log_data-to-2.4.x.txt
+                  (trunk works with the expected minor conflicts in CHANGES
+                  and ap_mmn.h)
+     +1: trawick, covener, rjung
+
+   * mod_autoindex: Fix (add) css attribute for description column when column
+                    contains no data. PR 57227. [Bruno Raoult]
+     trunk patch: http://svn.apache.org/r1648201
+     2.4.x patch: https://issues.apache.org/bugzilla/attachment.cgi?id=32209
+     +1: druggeri, gsmith, rjung
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -217,16 +233,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      +1 covener, jim
 
-   * core: Add ap_log_data(), ap_log_rdata(), etc. for logging buffers.
-     trunk patch: http://svn.apache.org/r1512819
-                  http://svn.apache.org/r1513461 ONLY the change to http_log.h
-                  http://svn.apache.org/r1565777
-                  http://svn.apache.org/r1643538
-     2.4.x patch: http://people.apache.org/~trawick/ap_log_data-to-2.4.x.txt
-                  (trunk works with the expected minor conflicts in CHANGES
-                  and ap_mmn.h)
-     +1: trawick, covener, rjung
-
    * mod_proxy_ajp: Fix client connection errors handling and logged status
                     when it occurs.  PR 56823.
      trunk patch: http://svn.apache.org/r1643537
@@ -277,12 +283,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1621806
      2.4.x patch: http://people.apache.org/~jkaluza/patches/httpd-2.4.x-mod_journald.patch
      +1: jkaluza
-
-   * mod_autoindex: Fix (add) css attribute for description column when column
-                    contains no data. PR 57227. [Bruno Raoult]
-     trunk patch: http://svn.apache.org/r1648201
-     2.4.x patch: https://issues.apache.org/bugzilla/attachment.cgi?id=32209
-     +1: druggeri, gsmith, rjung
 
    * core: Fix long lines in config file w/ continuations. PR 55910
      trunk patch: http://svn.apache.org/r1648394
