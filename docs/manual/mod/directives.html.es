@@ -645,6 +645,7 @@
 <li><a href="mod_ssl.html#sslsessioncache">SSLSessionCache</a></li>
 <li><a href="mod_ssl.html#sslsessioncachetimeout">SSLSessionCacheTimeout</a></li>
 <li><a href="mod_ssl.html#sslsessionticketkeyfile">SSLSessionTicketKeyFile</a></li>
+<li><a href="mod_ssl.html#sslsessiontickets">SSLSessionTickets</a></li>
 <li><a href="mod_ssl.html#sslsrpunknownuserseed">SSLSRPUnknownUserSeed</a></li>
 <li><a href="mod_ssl.html#sslsrpverifierfile">SSLSRPVerifierFile</a></li>
 <li><a href="mod_ssl.html#sslstaplingcache">SSLStaplingCache</a></li>
