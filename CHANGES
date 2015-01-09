@@ -22,6 +22,9 @@ Changes with Apache 2.4.11
      request headers earlier.  Adds "MergeTrailers" directive to restore
      legacy behavior.  [Edward Lu, Yann Ylavic, Joe Orton, Eric Covener]
 
+  *) mod_proxy_ajp: Fix handling of the default port (8009) in the
+     ProxyPass and <Proxy> configurations.  PR 57259.  [Yann Ylavic].
+
   *) mpm_event: Avoid a possible use after free when notifying the end of
      connection during lingering close.  PR 57268.  [Eric Covener, Yann Ylavic]
 
