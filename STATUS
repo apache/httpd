@@ -104,14 +104,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_ssl: Check if we are having an SSL connection before looking up SSL
-              related variables during expression evaluation to avoid a crash.
-              If not return NULL as ssl_var_lookup_ssl does by default.  PR 57070
-     trunk patch: http://svn.apache.org/r1630947
-                  http://svn.apache.org/r1645670
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: jailletc36, ylavic, covener
-
    * mod_proxy_fcgi: Ignore body data from backend for 304 responses. PR 57198.
      trunk patch: http://svn.apache.org/r1640495
                   http://svn.apache.org/r1644031
