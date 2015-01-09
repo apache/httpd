@@ -319,6 +319,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunks works (plus CHANGES)
      +1 rjung
 
+   * mod_include: the 'env' function was incorrectly handled as 'getenv' if the
+     leading 'e' was written in upper case in <!--#if expr="..." -->
+     statements. [Christophe Jaillet]
+     trunk patch: http://svn.apache.org/r1649632
+                  http://svn.apache.org/r1649966
+     2.4.x patch: 1st trunk patch works, 2nd is for CHANGES
+     +1 jailletc36
+
+
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
