@@ -367,7 +367,7 @@ static apr_status_t dispatch(proxy_conn_rec *conn, proxy_dir_conf *conf,
                              const char **err)
 {
     apr_bucket_brigade *ib, *ob;
-    int seen_end_of_headers = 0, done = 0;
+    int seen_end_of_headers = 0, done = 0, ignore_body = 0;
     apr_status_t rv = APR_SUCCESS;
     int script_error_status = HTTP_OK;
     conn_rec *c = r->connection;
@@ -577,9 +577,16 @@ recv_again:
                                 APR_BRIGADE_INSERT_TAIL(ob, tmp_b);
                                 r->status = status;
                                 ap_pass_brigade(r->output_filters, ob);
-                                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01070)
-                                              "Error parsing script headers");
-                                rv = APR_EINVAL;
+                                if (status == HTTP_NOT_MODIFIED) {
+                                    /* The 304 response MUST NOT contain
+                                     * a message-body, ignore it. */
+                                    ignore_body = 1;
+                                }
+                                else {
+                                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01070)
+                                                    "Error parsing script headers");
+                                    rv = APR_EINVAL;
+                                }
                                 break;
                             }
 
@@ -598,7 +605,7 @@ recv_again:
                             }
 
                             if (script_error_status == HTTP_OK
-                                && !APR_BRIGADE_EMPTY(ob)) {
+                                && !APR_BRIGADE_EMPTY(ob) && !ignore_body) {
                                 /* Send the part of the body that we read while
                                  * reading the headers.
                                  */
@@ -626,7 +633,7 @@ recv_again:
                          * but that could be a huge amount of data; so we pass
                          * along smaller chunks
                          */
-                        if (script_error_status == HTTP_OK) {
+                        if (script_error_status == HTTP_OK && !ignore_body) {
                             rv = ap_pass_brigade(r->output_filters, ob);
                             if (rv != APR_SUCCESS) {
                                 *err = "passing brigade to output filters";

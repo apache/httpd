@@ -22,6 +22,9 @@ Changes with Apache 2.4.11
      request headers earlier.  Adds "MergeTrailers" directive to restore
      legacy behavior.  [Edward Lu, Yann Ylavic, Joe Orton, Eric Covener]
 
+  *) mod_proxy_fcgi: Ignore body data from backend for 304 responses. PR 57198.
+     [Jan Kaluza]
+
   *) mod_ssl: Do not crash when looking up SSL related variables during
      expression evaluation on non SSL connections. PR 57070  [Ruediger Pluem]
 
