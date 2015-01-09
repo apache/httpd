@@ -104,12 +104,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_proxy_fcgi: Ignore body data from backend for 304 responses. PR 57198.
-     trunk patch: http://svn.apache.org/r1640495
-                  http://svn.apache.org/r1644031
-     2.4.x patch: trunk works
-     +1 jkaluza, ylavic, covener
-
    * mod_cgi: Log CGI script stderr to ScriptLog, use APLOGNO for
      log_scripterror errors.
      trunk patch: http://svn.apache.org/r1626978
