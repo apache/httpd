@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision: 1643267:1649636 (outdated) -->
+<!-- English Revision : 1649636 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -546,6 +546,10 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     <tr><td><code>file</code></td>
         <td>Lit le contenu d'un fichier (fins de lignes incluses, si
 	elles existent)</td><td>oui</td></tr>
+    <tr><td><code>filemod</code></td>
+        <td>Renvoie la date de derni&egrave;re modification d'un fichier (ou 0
+	si le fichier n'existe pas ou n'est pas un fichier
+	r&eacute;gulier)</td><td>oui</td></tr>
     <tr><td><code>filesize</code></td>
         <td>Renvoie la taille d'un fichier (ou 0 si le fichier n'existe
 	pas ou ne correspond pas &agrave; un fichier
