@@ -132,14 +132,11 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (module CHANGES)
      +1: ylavic, rjung, trawick
 
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
-
    * mod_proxy: Preserve original request headers even if they differ
                 from the ones to be forwarded to the backend. PR 45387.
      trunk patch: http://svn.apache.org/r1588527
      2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, rjung
+     +1: ylavic, rjung, covener
 
    * mod_proxy: Don't limit the size of the connectable Unix Domain Socket paths.
                 [Graham Dumpleton, Christophe Jaillet, Yann Ylavic]
@@ -147,7 +144,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1602989
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-ap_proxy_connect_uds.patch
                   (modulo CHANGES/MMN)
-     +1: ylavic, jim
+     +1: ylavic, jim, covener
 
    * mod_ssl, event: Ensure that the SSL close notify alert is flushed to the client.
                      PR54998.
@@ -156,7 +153,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1601185
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-SSL-shutdown.patch
                   (modulo CHANGES/MMN)
-     +1: ylavic, rjung
+     +1: ylavic, rjung, covener
 
    * mod_proxy: Shutdown (eg. SSL close notify) the backend connection before closing.
      trunk patch: http://svn.apache.org/r1601291
@@ -164,7 +161,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-proxy-SSL-shutdown.patch
                   (modulo CHANGES)
      note: depends on ap_shutdown_conn() from r1601185 above.
-     +1: ylavic, rjung
+     +1: ylavic, rjung, covener
+
+   * mod_ssl: mod_ssl: dump SSL IO/state for the write side of the connection(s),
+              like reads.
+     trunk patch: http://svn.apache.org/r1601919
+                  http://svn.apache.org/r1650061
+     2.4.x patch: trunk works (module CHANGES)
+     +1: ylavic, rjung, covener
+
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
 
    * mpm_winnt service.c: Normalize all error and status messages, clean up
      source formatting, and accept utf-8 service names/descriptions for i18n.
@@ -232,13 +240,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (module CHANGES)
      +1: ylavic
 
-   * mod_ssl: mod_ssl: dump SSL IO/state for the write side of the connection(s),
-              like reads.
-     trunk patch: http://svn.apache.org/r1601919
-                  http://svn.apache.org/r1650061
-     2.4.x patch: trunk works (module CHANGES)
-     +1: ylavic, rjung
-
    * core: Add ap_errorlog_provider to make ErrorLog logging modular. This
            backport keeps syslog logging as part of httpd core and only adds
            API to allow other modules to be used for error logging.
@@ -285,7 +286,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      It is initialized to 0, so the "if" branch was never taken.
      trunk patch: http://svn.apache.org/r1649043
      2.4.x patch: trunks works (plus CHANGES)
-     +1 rjung
+     +1 rjung, covener
 
    * mod_ssl: Add SSLSessionTickets (on|off).
      It controls the use of TLS session tickets (RFC 5077).
@@ -297,7 +298,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1650310
                   http://svn.apache.org/r1650320
      2.4.x patch: trunks works (plus CHANGES)
-     +1 rjung
+     +1 rjung, covener
 
    * mod_include: the 'env' function was incorrectly handled as 'getenv' if the
      leading 'e' was written in upper case in <!--#if expr="..." -->
@@ -305,7 +306,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1649632
                   http://svn.apache.org/r1649966
      2.4.x patch: 1st trunk patch works, 2nd is for CHANGES
-     +1 jailletc36
+     +1 jailletc36, covener
 
 
 OTHER PROPOSALS
