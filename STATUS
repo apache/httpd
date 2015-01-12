@@ -207,25 +207,25 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * core: Fix long lines in config file w/ continuations. PR 55910
      trunk patch: http://svn.apache.org/r1648394
      2.4.x patch: trunk works
-     +1: covener
+     +1: covener, jim
 
    * mod_proxy: Inappropiate ProxyPassReverse match when interpolated URL is 
      empty string. PR56603
      trunk patch: http://svn.apache.org/r1648433
      2.4.x patch: trunk works
-     +1 covener, rjung
+     +1 covener, rjung, jim
 
    * split-logfile: Fix perl strict refs error PR56329.
      trunk patch: 1648719
      2.4.x patch: trunks works
-     +1 covener, rjung
+     +1 covener, rjung, jim
 
    * mod_proxy_ajp: Fix get_content_length().
      clength in request_rec is for response sizes, not request body size.
      It is initialized to 0, so the "if" branch was never taken.
      trunk patch: http://svn.apache.org/r1649043
      2.4.x patch: trunks works (plus CHANGES)
-     +1 rjung, covener
+     +1 rjung, covener, jim
 
    * mod_ssl: Add SSLSessionTickets (on|off).
      It controls the use of TLS session tickets (RFC 5077).
@@ -245,13 +245,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1649632
                   http://svn.apache.org/r1649966
      2.4.x patch: 1st trunk patch works, 2nd is for CHANGES
-     +1 jailletc36, covener
+     +1 jailletc36, covener, jim
 
    * event: Update conn_rec.id when a new thread begins working on a connection, because
      the old thread may work on a new connection and assign the same ID in parallel. PR57435
      trunk patch: http://svn.apache.org/r1651088
      2.4.x patch: trunk works
-     +1 covener
+     +1 covener, jim
 
 OTHER PROPOSALS
 
