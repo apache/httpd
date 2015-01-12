@@ -126,12 +126,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://issues.apache.org/bugzilla/attachment.cgi?id=32209
      +1: druggeri, gsmith, rjung
 
-   * core: Fix -D[efined] or <Define>[d] variables lifetime accross restarts.
-           PR 57328.
-     trunk patch: http://svn.apache.org/r1643825
-     2.4.x patch: trunk works (module CHANGES)
-     +1: ylavic, rjung, trawick
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 

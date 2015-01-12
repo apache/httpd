@@ -5,7 +5,6 @@ Changes with Apache 2.4.11
   *) SECURITY: CVE-2014-3583 (cve.mitre.org)
      mod_proxy_fcgi: Fix a potential crash due to buffer over-read, with 
      response headers' size above 8K.  [Yann Ylavic, Jeff Trawick]
-
   *) SECURITY: CVE-2014-3581 (cve.mitre.org)
      mod_cache: Avoid a crash when Content-Type has an empty value.
      PR 56924.  [Mark Montague <mark catseye.org>, Jan Kaluza]
@@ -21,6 +20,9 @@ Changes with Apache 2.4.11
      otherwise confusing modules that examined or modified
      request headers earlier.  Adds "MergeTrailers" directive to restore
      legacy behavior.  [Edward Lu, Yann Ylavic, Joe Orton, Eric Covener]
+
+  *) core: Fix -D[efined] or <Define>[d] variables lifetime accross restarts. 
+     PR 57328.  [Armin Abfalterer <a.abfalterer gmail.com>, Yann Ylavic].
 
   *) mod_proxy: Preserve original request headers even if they differ
      from the ones to be forwarded to the backend. PR 45387.
