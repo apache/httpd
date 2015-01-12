@@ -238,6 +238,9 @@ Changes with Apache 2.4.10
   *) mod_proxy_balancer: Correctly encode user provided data in management
      interface. PR 56532 [Maksymilian, <max cert.cx>]
 
+  *) mod_proxy: Don't limit the size of the connectable Unix Domain Socket
+     paths. [Graham Dumpleton, Christophe Jaillet, Yann Ylavic]
+
   *) mod_proxy_fcgi: Support iobuffersize parameter.  [Jeff Trawick]
 
   *) event: Send the SSL close notify alert when the KeepAliveTimeout
