@@ -1293,6 +1293,21 @@ static void log_error_core(const char *file, int line, int module_index,
     }
 }
 
+/* For internal calls to log_error_core with self-composed arg lists */
+static void log_error_va_glue(const char *file, int line, int module_index,
+                              int level, apr_status_t status,
+                              const server_rec *s, const conn_rec *c,
+                              const request_rec *r, apr_pool_t *pool,
+                              const char *fmt, ...)
+{
+    va_list args;
+
+    va_start(args, fmt);
+    log_error_core(file, line, module_index, level, status, s, c, r, pool,
+                   fmt, args);
+    va_end(args);
+}
+
 AP_DECLARE(void) ap_log_error_(const char *file, int line, int module_index,
                                int level, apr_status_t status,
                                const server_rec *s, const char *fmt, ...)
@@ -1369,6 +1384,129 @@ AP_DECLARE(void) ap_log_cerror_(const char *file, int line, int module_index,
     log_error_core(file, line, module_index, level, status, c->base_server, c,
                    NULL, NULL, fmt, args);
     va_end(args);
+}
+
+#define BYTES_LOGGED_PER_LINE 16
+#define LOG_BYTES_BUFFER_SIZE (BYTES_LOGGED_PER_LINE * 3 + 2)
+
+static void fmt_data(unsigned char *buf, const void *vdata, apr_size_t len, apr_size_t *off)
+{
+    const unsigned char *data = (const unsigned char *)vdata;
+    unsigned char *chars;
+    unsigned char *hex;
+    apr_size_t this_time = 0;
+
+    memset(buf, ' ', LOG_BYTES_BUFFER_SIZE - 1);
+    buf[LOG_BYTES_BUFFER_SIZE - 1] = '\0';
+    
+    chars = buf; /* start character dump here */
+    hex   = buf + BYTES_LOGGED_PER_LINE + 1; /* start hex dump here */
+    while (*off < len && this_time < BYTES_LOGGED_PER_LINE) {
+        unsigned char c = data[*off];
+
+        if (apr_isprint(c)
+	    && c != '\\') {  /* backslash will be escaped later, which throws
+                              * off the formatting
+                              */
+            *chars = c;
+        }
+        else {
+            *chars = '.';
+        }
+
+        if ((c >> 4) >= 10) {
+            *hex = 'a' + ((c >> 4) - 10);
+        }
+        else {
+            *hex = '0' + (c >> 4);
+        }
+
+        if ((c & 0x0F) >= 10) {
+            *(hex + 1) = 'a' + ((c & 0x0F) - 10);
+        }
+        else {
+            *(hex + 1) = '0' + (c & 0x0F);
+        }
+
+        chars += 1;
+        hex += 2;
+        *off += 1;
+        ++this_time;
+    }
+}
+
+static void log_data_core(const char *file, int line, int module_index,
+                          int level, const server_rec *s,
+                          const conn_rec *c, const request_rec *r,
+                          const char *label, const void *data, apr_size_t len,
+                          unsigned int flags)
+{
+    unsigned char buf[LOG_BYTES_BUFFER_SIZE];
+    apr_size_t off;
+    char prefix[20];
+
+    if (!(flags & AP_LOG_DATA_SHOW_OFFSET)) {
+        prefix[0] = '\0';
+    }
+
+    if (len > 0xffff) { /* bug in caller? */
+        len = 0xffff;
+    }
+
+    if (label) {
+        log_error_va_glue(file, line, module_index, level, APR_SUCCESS, s,
+                          c, r, NULL, "%s (%" APR_SIZE_T_FMT " bytes)",
+                          label, len);
+    }
+
+    off = 0;
+    while (off < len) {
+        if (flags & AP_LOG_DATA_SHOW_OFFSET) {
+            apr_snprintf(prefix, sizeof prefix, "%04x: ", (unsigned int)off);
+        }
+        fmt_data(buf, data, len, &off);
+        log_error_va_glue(file, line, module_index, level, APR_SUCCESS, s,
+                          c, r, NULL, "%s%s", prefix, buf);
+    }
+}
+
+AP_DECLARE(void) ap_log_data_(const char *file, int line, 
+                              int module_index, int level,
+                              const server_rec *s, const char *label,
+                              const void *data, apr_size_t len,
+                              unsigned int flags)
+{
+    log_data_core(file, line, module_index, level, s, NULL, NULL, label,
+                  data, len, flags);
+}
+
+AP_DECLARE(void) ap_log_rdata_(const char *file, int line,
+                               int module_index, int level,
+                               const request_rec *r, const char *label,
+                               const void *data, apr_size_t len,
+                               unsigned int flags)
+{
+    log_data_core(file, line, module_index, level, r->server, NULL, r, label,
+                  data, len, flags);
+}
+
+AP_DECLARE(void) ap_log_cdata_(const char *file, int line,
+                               int module_index, int level,
+                               const conn_rec *c, const char *label,
+                               const void *data, apr_size_t len,
+                               unsigned int flags)
+{
+    log_data_core(file, line, module_index, level, c->base_server, c, NULL,
+                  label, data, len, flags);
+}
+
+AP_DECLARE(void) ap_log_csdata_(const char *file, int line, int module_index,
+                                int level, const conn_rec *c, const server_rec *s,
+                                const char *label, const void *data,
+                                apr_size_t len, unsigned int flags)
+{
+    log_data_core(file, line, module_index, level, s, c, NULL, label, data,
+                  len, flags);
 }
 
 AP_DECLARE(void) ap_log_command_line(apr_pool_t *plog, server_rec *s)
