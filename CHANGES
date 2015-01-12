@@ -21,6 +21,10 @@ Changes with Apache 2.4.11
      request headers earlier.  Adds "MergeTrailers" directive to restore
      legacy behavior.  [Edward Lu, Yann Ylavic, Joe Orton, Eric Covener]
 
+  *) mod_include: the 'env' function was incorrectly handled as 'getenv' if the
+     leading 'e' was written in upper case in <!--#if expr="..." -->
+     statements. [Christophe Jaillet]
+
   *) split-logfile: Fix perl error:  'Can't use string ("example.org:80") 
      as a symbol ref while "strict refs"'. PR 56329.
      [Holger Mauermann <mauermann gmail.com>]
