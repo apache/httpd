@@ -246,6 +246,9 @@ Changes with Apache 2.4.10
   *) mod_ssl: Ensure that the SSL close notify alert is flushed to the client.
      PR54998. [Tim Kosse <tim.kosse filezilla-project.org>, Yann Ylavic] 
 
+  *) mod_proxy: Shutdown (eg. SSL close notify) the backend connection before
+     closing. [Yann Ylavic] 
+
   *) mod_auth_form: Add a debug message when the fields on a form are not
      recognised. [Graham Leggett]
 
