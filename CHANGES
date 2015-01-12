@@ -237,6 +237,12 @@ Changes with Apache 2.4.10
 
   *) mod_proxy_fcgi: Support iobuffersize parameter.  [Jeff Trawick]
 
+  *) event: Send the SSL close notify alert when the KeepAliveTimeout
+     expires. PR54998. [Yann Ylavic] 
+
+  *) mod_ssl: Ensure that the SSL close notify alert is flushed to the client.
+     PR54998. [Tim Kosse <tim.kosse filezilla-project.org>, Yann Ylavic] 
+
   *) mod_auth_form: Add a debug message when the fields on a form are not
      recognised. [Graham Leggett]
 
