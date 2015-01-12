@@ -138,23 +138,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic, rjung, covener
 
-   * mod_proxy: Don't limit the size of the connectable Unix Domain Socket paths.
-                [Graham Dumpleton, Christophe Jaillet, Yann Ylavic]
-     trunk patch: http://svn.apache.org/r1598946
-                  http://svn.apache.org/r1602989
-     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-ap_proxy_connect_uds.patch
-                  (modulo CHANGES/MMN)
-     +1: ylavic, jim, covener
-
-   * mod_proxy: Shutdown (eg. SSL close notify) the backend connection before closing.
-     trunk patch: http://svn.apache.org/r1601291
-                  http://svn.apache.org/r1601630
-     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-proxy-SSL-shutdown.patch
-                  (modulo CHANGES)
-     note: depends on ap_shutdown_conn() from r1601185 above.
-     +1: ylavic, rjung, covener
-
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
