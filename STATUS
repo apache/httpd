@@ -247,6 +247,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: 1st trunk patch works, 2nd is for CHANGES
      +1 jailletc36, covener
 
+   * event: Update conn_rec.id when a new thread begins working on a connection, because
+     the old thread may work on a new connection and assign the same ID in parallel. PR57435
+     trunk patch: http://svn.apache.org/r1651088
+     2.4.x patch: trunk works
+     +1 covener
 
 OTHER PROPOSALS
 
