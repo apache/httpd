@@ -22,6 +22,9 @@ Changes with Apache 2.4.11
      request headers earlier.  Adds "MergeTrailers" directive to restore
      legacy behavior.  [Edward Lu, Yann Ylavic, Joe Orton, Eric Covener]
 
+  *) mod_ssl: dump SSL IO/state for the write side of the connection(s),
+     like reads (level TRACE4). [Yann Ylavic]
+
   *) mod_proxy_fcgi: Ignore body data from backend for 304 responses. PR 57198.
      [Jan Kaluza]
 
