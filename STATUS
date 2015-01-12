@@ -110,11 +110,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://issues.apache.org/bugzilla/attachment.cgi?id=32209
      +1: druggeri, gsmith, rjung
 
-   * split-logfile: Fix perl strict refs error PR56329.
-     trunk patch: 1648719
-     2.4.x patch: trunks works
-     +1 covener, rjung, jim
-
    * mod_proxy_ajp: Fix get_content_length().
      clength in request_rec is for response sizes, not request body size.
      It is initialized to 0, so the "if" branch was never taken.

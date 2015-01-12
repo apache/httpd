@@ -29,7 +29,7 @@
 use strict;
 use warnings;
 
-my %is_open = ();
+my %log_file = ();
 
 while (my $log_line = <STDIN>) {
     #
@@ -54,10 +54,9 @@ while (my $log_line = <STDIN>) {
     # If the log file for this virtual host isn't opened
     # yet, do it now.
     #
-    if (! $is_open{$vhost}) {
-        open $vhost, ">>${vhost}.log"
+    if (! $log_file{$vhost}) {
+        open $log_file{$vhost}, ">>${vhost}.log"
             or die ("Can't open ${vhost}.log");
-        $is_open{$vhost} = 1;
     }
     #
     # Strip off the first token (which may be null in the
@@ -65,6 +64,6 @@ while (my $log_line = <STDIN>) {
     # record to the current log file.
     #
     $log_line =~ s/^\S*\s+//;
-    printf $vhost "%s", $log_line;
+    print {$log_file{$vhost}} $log_line;
 }
 exit 0;
