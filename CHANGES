@@ -22,6 +22,10 @@ Changes with Apache 2.4.11
      request headers earlier.  Adds "MergeTrailers" directive to restore
      legacy behavior.  [Edward Lu, Yann Ylavic, Joe Orton, Eric Covener]
 
+  *) mod_proxy: Preserve original request headers even if they differ
+     from the ones to be forwarded to the backend. PR 45387.
+     [Yann Ylavic]
+
   *) mod_ssl: dump SSL IO/state for the write side of the connection(s),
      like reads (level TRACE4). [Yann Ylavic]
 
