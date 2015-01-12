@@ -227,6 +227,30 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      +1 covener, jim
 
+   * proxy_fcgi: Remove balancer prefix from SCRIPT_FILENAME
+     trunk patch: http://svn.apache.org/r1646724
+                  http://svn.apache.org/r1650309
+     2.4.x patch: trunk works
+     +1 covener
+
+   * proxy_fcgi: Support opt-in connection reuse for fcgi backend connections
+                 (includes some sync-up work from trunk)
+     trunk patch: http://svn.apache.org/r1588544 (rewrite+UDS)
+                  http://svn.apache.org/r1641636 ('using default worker' msg tweak)
+                  http://svn.apache.org/r1647005 (tcp reuse)
+                  http://svn.apache.org/r1647009 (uds reuse)
+                  http://svn.apache.org/r1647334 (uds reuse fix)
+     2.4.x patch: One additional call to de_socketfy in 2.4 + MMN + CHANGES:
+         http://people.apache.org/~covener/patches/httpd-2.4.x-fcgi-rollup.diff
+     +1 covener
+
+   * proxy_fcgi: Allow some alternate PATH_INFO guessing schemes 
+                 for non SetHandler configs
+     trunk patch: http://svn.apache.org/r1647035
+     2.4.x patch: trunk works
+     +1 covener
+
+
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
