@@ -1036,6 +1036,8 @@ static void process_socket(apr_thread_t *thd, apr_pool_t * p, apr_socket_t * soc
         c = cs->c;
         c->sbh = sbh;
         c->current_thread = thd;
+        /* Subsequent request on a conn, and thread number is part of ID */
+        c->id = conn_id;
     }
 
     if (c->clogging_input_filters && !c->aborted) {
