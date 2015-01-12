@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) event: Update the internal "connection id" when requests
+     move from thread to thread. Reuse can confuse modules like
+     mod_cgid. PR 57435. [Michael Thorpe <mike gistnet.com>]
+
   *) mod_ssl: Add support for extracting subjectAltName entries of type
      rfc822Name and dNSName into SSL_{CLIENT,SERVER}_SAN_{Email,DNS}_n
      environment variables. Also addresses PR 57207. [Kaspar Brand]
