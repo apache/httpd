@@ -146,28 +146,12 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
                   (modulo CHANGES/MMN)
      +1: ylavic, jim, covener
 
-   * mod_ssl, event: Ensure that the SSL close notify alert is flushed to the client.
-                     PR54998.
-     trunk patch: http://svn.apache.org/r1601184
-                  http://svn.apache.org/r1601274
-                  http://svn.apache.org/r1601185
-     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-SSL-shutdown.patch
-                  (modulo CHANGES/MMN)
-     +1: ylavic, rjung, covener
-
    * mod_proxy: Shutdown (eg. SSL close notify) the backend connection before closing.
      trunk patch: http://svn.apache.org/r1601291
                   http://svn.apache.org/r1601630
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-proxy-SSL-shutdown.patch
                   (modulo CHANGES)
      note: depends on ap_shutdown_conn() from r1601185 above.
-     +1: ylavic, rjung, covener
-
-   * mod_ssl: mod_ssl: dump SSL IO/state for the write side of the connection(s),
-              like reads.
-     trunk patch: http://svn.apache.org/r1601919
-                  http://svn.apache.org/r1650061
-     2.4.x patch: trunk works (module CHANGES)
      +1: ylavic, rjung, covener
 
 
