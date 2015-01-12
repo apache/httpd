@@ -110,13 +110,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://issues.apache.org/bugzilla/attachment.cgi?id=32209
      +1: druggeri, gsmith, rjung
 
-   * mod_proxy_ajp: Fix get_content_length().
-     clength in request_rec is for response sizes, not request body size.
-     It is initialized to 0, so the "if" branch was never taken.
-     trunk patch: http://svn.apache.org/r1649043
-     2.4.x patch: trunks works (plus CHANGES)
-     +1 rjung, covener, jim
-
    * mod_include: the 'env' function was incorrectly handled as 'getenv' if the
      leading 'e' was written in upper case in <!--#if expr="..." -->
      statements. [Christophe Jaillet]
