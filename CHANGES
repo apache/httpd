@@ -21,6 +21,10 @@ Changes with Apache 2.4.11
      request headers earlier.  Adds "MergeTrailers" directive to restore
      legacy behavior.  [Edward Lu, Yann Ylavic, Joe Orton, Eric Covener]
 
+  *) mod_proxy: Prevent ProxyPassReverse from doing a substitution when
+     the URL parameter interpolates to an empty string. PR 56603.
+     [<ajprout hotmail.com>]
+
   *) core: Fix -D[efined] or <Define>[d] variables lifetime accross restarts. 
      PR 57328.  [Armin Abfalterer <a.abfalterer gmail.com>, Yann Ylavic].
 
