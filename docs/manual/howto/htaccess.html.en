@@ -37,6 +37,7 @@ changes on a per-directory basis.</p>
 <li><img alt="" src="../images/down.gif" /> <a href="#how">How directives are applied</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#auth">Authentication example</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ssi">Server Side Includes example</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#rewrite">Rewrite Rules in .htaccess files</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cgi">CGI example</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#troubleshoot">Troubleshooting</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
@@ -329,6 +330,34 @@ AddHandler server-parsed shtml</pre>
 
     <p>Please see the <a href="ssi.html">SSI tutorial</a> for a more
     complete discussion of server-side includes.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="rewrite" id="rewrite">Rewrite Rules in .htaccess files</a></h2>
+<p>When using <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> in
+<code>.htaccess</code> files, be aware that the per-directory context
+changes things a bit. In particular, rules are taken to be relative to
+the current directory, rather than being the original requested URI.
+Consider the following examples:</p>
+
+<pre class="prettyprint lang-config"># In httpd.conf
+RewriteRule ^/images/(.+)\.jpg /images/$1.png
+
+# In .htaccess in root dir
+RewriteRule ^images/(.+)\.jpg images/$1.png
+
+# In .htaccess in images/
+RewriteRule ^(.+)\.jpg $1.png</pre>
+
+
+<p>In a <code>.htaccess</code> in your document directory, the leading
+slash is removed from the value supplied to <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>, and in the
+<code>images</code> subdirectory, <code>/images/</code> is removed from
+it. Thus, your regular expression needs to omit that portion as
+well.</p>
+
+<p>Consult the <a href="../rewrite/">mod_rewrite documentation</a> for
+further details on using <code>mod_rewrite</code>.</p>
+
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="cgi" id="cgi">CGI example</a></h2>
