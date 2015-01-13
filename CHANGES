@@ -13,20 +13,12 @@ Changes with Apache 2.5.0
      default for connection or 500/503 errors, and honor status=+I for
      any error.  PR 48388.  [Yann Ylavic]
 
-  *) mod_include: the 'env' function was incorrectly handled as 'getenv' if the
-     leading 'e' was written in upper case in <!--#if expr="..." -->
-     statements. [Christophe Jaillet]
-
   *) mod_socache_memcache: Pass expiration time through to memcached. PR 55445.
      [Faidon Liambotis <paravoid debian.org>, Joe Orton]
 
   *) split-logfile: Fix perl error:  'Can't use string ("example.org:80") 
      as a symbol ref while "strict refs"'. PR 56329.
      [Holger Mauermann <mauermann gmail.com>]
-
-  *) mod_proxy: Prevent ProxyPassReverse from doing a substitution when
-     the URL parameter interpolates to an empty string. PR 56603.
-     [<ajprout hotmail.com>]
 
   *) core: Configuration files with long lines and continuation characters
      are not read properly. PR 55910. [Manuel Mausz <manuel-as mausz.at>]
@@ -51,9 +43,6 @@ Changes with Apache 2.5.0
 
   *) mod_http: Fix incorrect If-Match handling. PR 57358.
      [Kunihiko Sakamoto <ksakamoto google.com>]
-
-  *) mod_proxy_ajp: Fix handling of the default port (8009) in the
-     ProxyPass and <Proxy> configurations.  PR 57259.  [Yann Ylavic].
 
   *) mod_ssl: Fix renegotiation failures redirected to an ErrorDocument.
      PR 57334.  [Yann Ylavic].
@@ -91,9 +80,6 @@ Changes with Apache 2.5.0
   *) mod_proxy: Use the correct server name for SNI in case the backend
      SSL connection itself is established via a proxy server.
      PR 57139 [Szabolcs Gyurko <szabolcs gyurko.org>]
-
-  *) mod_ssl: Do not crash when looking up SSL related variables during
-     expression evaluation on non SSL connections. PR 57070 [Ruediger Pluem]
 
   *) core: Ensure that httpd exits with an error status when the MPM fails
      to run.  [Yann Ylavic]
