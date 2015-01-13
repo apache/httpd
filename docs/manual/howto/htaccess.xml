@@ -363,6 +363,36 @@ AddHandler server-parsed shtml
     complete discussion of server-side includes.</p>
 </section>
 
+<section id="rewrite"><title>Rewrite Rules in .htaccess files</title>
+<p>When using <directive module="mod_rewrite">RewriteRule</directive> in
+<code>.htaccess</code> files, be aware that the per-directory context
+changes things a bit. In particular, rules are taken to be relative to
+the current directory, rather than being the original requested URI.
+Consider the following examples:</p>
+
+<highlight language="config">
+# In httpd.conf
+RewriteRule ^/images/(.+)\.jpg /images/$1.png
+
+# In .htaccess in root dir
+RewriteRule ^images/(.+)\.jpg images/$1.png
+
+# In .htaccess in images/
+RewriteRule ^(.+)\.jpg $1.png
+</highlight>
+
+<p>In a <code>.htaccess</code> in your document directory, the leading
+slash is removed from the value supplied to <directive
+module="mod_rewrite">RewriteRule</directive>, and in the
+<code>images</code> subdirectory, <code>/images/</code> is removed from
+it. Thus, your regular expression needs to omit that portion as
+well.</p>
+
+<p>Consult the <a href="../rewrite/">mod_rewrite documentation</a> for
+further details on using <code>mod_rewrite</code>.</p>
+
+</section>
+
 <section id="cgi"><title>CGI example</title>
 
     <p>Finally, you may wish to use a <code>.htaccess</code> file to permit
