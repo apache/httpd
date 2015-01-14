@@ -104,11 +104,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * core: Fix long lines in config file w/ continuations. PR 55910
-     trunk patch: http://svn.apache.org/r1648394
-     2.4.x patch: trunk works
-     +1: covener, jim, ylavic
-
    * mod_ssl: Add SSLSessionTickets (on|off).
      It controls the use of TLS session tickets (RFC 5077).
      Default is unchanged (on).
