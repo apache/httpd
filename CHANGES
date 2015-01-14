@@ -5,6 +5,9 @@ Changes with Apache 2.4.11
   *) SECURITY: CVE-2014-3583 (cve.mitre.org)
      mod_proxy_fcgi: Fix a potential crash due to buffer over-read, with 
      response headers' size above 8K.  [Yann Ylavic, Jeff Trawick]
+  *) event: Update the internal "connection id" when requests
+     move from thread to thread. Reuse can confuse modules like
+     mod_cgid. PR 57435. [Michael Thorpe <mike gistnet.com>]
 
   *) SECURITY: CVE-2014-3581 (cve.mitre.org)
      mod_cache: Avoid a crash when Content-Type has an empty value.
@@ -21,6 +24,10 @@ Changes with Apache 2.4.11
      otherwise confusing modules that examined or modified
      request headers earlier.  Adds "MergeTrailers" directive to restore
      legacy behavior.  [Edward Lu, Yann Ylavic, Joe Orton, Eric Covener]
+
+  *) mod_ssl: Add support for extracting subjectAltName entries of type
+     rfc822Name and dNSName into SSL_{CLIENT,SERVER}_SAN_{Email,DNS}_n
+     environment variables. Also addresses PR 57207. [Kaspar Brand]
 
   *) core: Configuration files with long lines and continuation characters
      are not read properly. PR 55910. [Manuel Mausz <manuel-as mausz.at>]
