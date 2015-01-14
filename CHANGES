@@ -22,6 +22,17 @@ Changes with Apache 2.4.11
      request headers earlier.  Adds "MergeTrailers" directive to restore
      legacy behavior.  [Edward Lu, Yann Ylavic, Joe Orton, Eric Covener]
 
+  *) mod_proxy_fcgi: Enable UDS backends configured with SetHandler/RewriteRule
+     to opt-in to connection reuse and other Proxy options via explicitly
+     declared "proxy workers" (<Proxy unix:... enablereuse=on max=...)
+     [Eric Covener]
+
+  *) mod_proxy: Add "enablereuse" option as the inverse of "disablereuse".
+     [Eric Covener]
+
+  *) mod_proxy_fcgi: Enable opt-in to TCP connection reuse by explicitly
+     setting proxy option disablereuse=off. [Eric Covener] PR 57378.
+
   *) event: Update the internal "connection id" when requests
      move from thread to thread. Reuse can confuse modules like
      mod_cgid. PR 57435. [Michael Thorpe <mike gistnet.com>]
