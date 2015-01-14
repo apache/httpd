@@ -44,10 +44,6 @@ Changes with Apache 2.4.11
   *) mod_proxy_fcgi: Remove proxy:balancer:// prefix from SCRIPT_FILENAME
      passed to fastcgi backends. [Eric Covener]
 
-  *) mod_ssl: Add support for extracting subjectAltName entries of type
-     rfc822Name and dNSName into SSL_{CLIENT,SERVER}_SAN_{Email,DNS}_n
-     environment variables. Also addresses PR 57207. [Kaspar Brand]
-
   *) core: Configuration files with long lines and continuation characters
      are not read properly. PR 55910. [Manuel Mausz <manuel-as mausz.at>]
 
