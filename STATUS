@@ -104,6 +104,52 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * core: Fix long lines in config file w/ continuations. PR 55910
+     trunk patch: http://svn.apache.org/r1648394
+     2.4.x patch: trunk works
+     +1: covener, jim, ylavic
+
+   * mod_ssl: Add SSLSessionTickets (on|off).
+     It controls the use of TLS session tickets (RFC 5077).
+     Default is unchanged (on).
+     Using session tickets without restarting the web server with
+     an appropriate frequency (e.g. daily) compromises perfect forward
+     secrecy. As long as we do not have a nice key management
+     there needs to be a way to deactivate the use of session tickets.
+     trunk patch: http://svn.apache.org/r1650310
+                  http://svn.apache.org/r1650320
+     2.4.x patch: trunks works (plus CHANGES)
+     +1 rjung, covener, ylavic
+
+   * event: Update conn_rec.id when a new thread begins working on a connection, because
+     the old thread may work on a new connection and assign the same ID in parallel. PR57435
+     trunk patch: http://svn.apache.org/r1651088
+     2.4.x patch: trunk works
+     +1 covener, jim, ylavic
+
+   * proxy_fcgi: Remove balancer prefix from SCRIPT_FILENAME
+     trunk patch: http://svn.apache.org/r1646724
+                  http://svn.apache.org/r1650309
+     2.4.x patch: trunk works
+     +1 covener, jim, ylavic
+
+   * proxy_fcgi: Support opt-in connection reuse for fcgi backend connections
+                 (includes some sync-up work from trunk)
+     trunk patch: http://svn.apache.org/r1588544 (rewrite+UDS)
+                  http://svn.apache.org/r1641636 ('using default worker' msg tweak)
+                  http://svn.apache.org/r1647005 (tcp reuse)
+                  http://svn.apache.org/r1647009 (uds reuse)
+                  http://svn.apache.org/r1647334 (uds reuse fix)
+     2.4.x patch: One additional call to de_socketfy in 2.4 + MMN + CHANGES:
+         http://people.apache.org/~covener/patches/httpd-2.4.x-fcgi-rollup.diff
+     +1 covener, jim, ylavic
+
+   * proxy_fcgi: Allow some alternate PATH_INFO guessing schemes 
+                 for non SetHandler configs
+     trunk patch: http://svn.apache.org/r1647035
+     2.4.x patch: trunk works
+     +1 covener, jim, ylavic
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -198,52 +244,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1621806
      2.4.x patch: http://people.apache.org/~jkaluza/patches/httpd-2.4.x-mod_journald.patch
      +1: jkaluza
-
-   * core: Fix long lines in config file w/ continuations. PR 55910
-     trunk patch: http://svn.apache.org/r1648394
-     2.4.x patch: trunk works
-     +1: covener, jim
-
-   * mod_ssl: Add SSLSessionTickets (on|off).
-     It controls the use of TLS session tickets (RFC 5077).
-     Default is unchanged (on).
-     Using session tickets without restarting the web server with
-     an appropriate frequency (e.g. daily) compromises perfect forward
-     secrecy. As long as we do not have a nice key management
-     there needs to be a way to deactivate the use of session tickets.
-     trunk patch: http://svn.apache.org/r1650310
-                  http://svn.apache.org/r1650320
-     2.4.x patch: trunks works (plus CHANGES)
-     +1 rjung, covener
-
-   * event: Update conn_rec.id when a new thread begins working on a connection, because
-     the old thread may work on a new connection and assign the same ID in parallel. PR57435
-     trunk patch: http://svn.apache.org/r1651088
-     2.4.x patch: trunk works
-     +1 covener, jim
-
-   * proxy_fcgi: Remove balancer prefix from SCRIPT_FILENAME
-     trunk patch: http://svn.apache.org/r1646724
-                  http://svn.apache.org/r1650309
-     2.4.x patch: trunk works
-     +1 covener, jim
-
-   * proxy_fcgi: Support opt-in connection reuse for fcgi backend connections
-                 (includes some sync-up work from trunk)
-     trunk patch: http://svn.apache.org/r1588544 (rewrite+UDS)
-                  http://svn.apache.org/r1641636 ('using default worker' msg tweak)
-                  http://svn.apache.org/r1647005 (tcp reuse)
-                  http://svn.apache.org/r1647009 (uds reuse)
-                  http://svn.apache.org/r1647334 (uds reuse fix)
-     2.4.x patch: One additional call to de_socketfy in 2.4 + MMN + CHANGES:
-         http://people.apache.org/~covener/patches/httpd-2.4.x-fcgi-rollup.diff
-     +1 covener, jim
-
-   * proxy_fcgi: Allow some alternate PATH_INFO guessing schemes 
-                 for non SetHandler configs
-     trunk patch: http://svn.apache.org/r1647035
-     2.4.x patch: trunk works
-     +1 covener, jim
 
 
 OTHER PROPOSALS
