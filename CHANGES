@@ -22,6 +22,10 @@ Changes with Apache 2.4.11
      request headers earlier.  Adds "MergeTrailers" directive to restore
      legacy behavior.  [Edward Lu, Yann Ylavic, Joe Orton, Eric Covener]
 
+  *) event: Update the internal "connection id" when requests
+     move from thread to thread. Reuse can confuse modules like
+     mod_cgid. PR 57435. [Michael Thorpe <mike gistnet.com>]
+
   *) mod_proxy_fcgi: Remove proxy:balancer:// prefix from SCRIPT_FILENAME
      passed to fastcgi backends. [Eric Covener]
 
