@@ -174,6 +174,15 @@ static const char *set_worker_param(apr_pool_t *p,
             return "DisableReuse must be On|Off";
         worker->s->disablereuse_set = 1;
     }
+    else if (!strcasecmp(key, "enablereuse")) {
+        if (!strcasecmp(val, "on"))
+            worker->s->disablereuse = 0;
+        else if (!strcasecmp(val, "off"))
+            worker->s->disablereuse = 1;
+        else
+            return "EnableReuse must be On|Off";
+        worker->s->disablereuse_set = 1;
+    }
     else if (!strcasecmp(key, "route")) {
         /* Worker route.
          */
@@ -938,7 +947,6 @@ static int proxy_handler(request_rec *r)
             strncmp(r->filename, "proxy:", 6) != 0) {
             r->proxyreq = PROXYREQ_REVERSE;
             r->filename = apr_pstrcat(r->pool, r->handler, r->filename, NULL);
-            apr_table_setn(r->notes, "rewrite-proxy", "1");
         }
         else {
             return DECLINED;
@@ -1461,23 +1469,23 @@ static const char *
     return add_proxy(cmd, dummy, f1, r1, 1);
 }
 
-static char *de_socketfy(apr_pool_t *p, char *url)
+PROXY_DECLARE(const char *) ap_proxy_de_socketfy(apr_pool_t *p, const char *url)
 {
-    char *ptr;
+    const char *ptr;
     /*
      * We could be passed a URL during the config stage that contains
      * the UDS path... ignore it
      */
     if (!strncasecmp(url, "unix:", 5) &&
-        ((ptr = ap_strchr(url, '|')) != NULL)) {
+        ((ptr = ap_strchr_c(url, '|')) != NULL)) {
         /* move past the 'unix:...|' UDS path info */
-        char *ret, *c;
+        const char *ret, *c;
 
         ret = ptr + 1;
         /* special case: "unix:....|scheme:" is OK, expand
          * to "unix:....|scheme://localhost"
          * */
-        c = ap_strchr(ret, ':');
+        c = ap_strchr_c(ret, ':');
         if (c == NULL) {
             return NULL;
         }
@@ -1582,7 +1590,7 @@ static const char *
     }
 
     new->fake = apr_pstrdup(cmd->pool, f);
-    new->real = apr_pstrdup(cmd->pool, de_socketfy(cmd->pool, r));
+    new->real = apr_pstrdup(cmd->pool, ap_proxy_de_socketfy(cmd->pool, r));
     new->flags = flags;
     if (use_regex) {
         new->regex = ap_pregcomp(cmd->pool, f, AP_REG_EXTENDED);
@@ -1631,7 +1639,7 @@ static const char *
         new->balancer = balancer;
     }
     else {
-        proxy_worker *worker = ap_proxy_get_worker(cmd->temp_pool, NULL, conf, de_socketfy(cmd->pool, r));
+        proxy_worker *worker = ap_proxy_get_worker(cmd->temp_pool, NULL, conf, ap_proxy_de_socketfy(cmd->pool, r));
         int reuse = 0;
         if (!worker) {
             const char *err = ap_proxy_define_worker(cmd->pool, &worker, NULL, conf, r, 0);
@@ -2110,7 +2118,7 @@ static const char *add_member(cmd_parms *cmd, void *dummy, const char *arg)
     }
 
     /* Try to find existing worker */
-    worker = ap_proxy_get_worker(cmd->temp_pool, balancer, conf, de_socketfy(cmd->temp_pool, name));
+    worker = ap_proxy_get_worker(cmd->temp_pool, balancer, conf, ap_proxy_de_socketfy(cmd->temp_pool, name));
     if (!worker) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server, APLOGNO(01147)
                      "Defining worker '%s' for balancer '%s'",
@@ -2196,7 +2204,7 @@ static const char *
         }
     }
     else {
-        worker = ap_proxy_get_worker(cmd->temp_pool, NULL, conf, de_socketfy(cmd->temp_pool, name));
+        worker = ap_proxy_get_worker(cmd->temp_pool, NULL, conf, ap_proxy_de_socketfy(cmd->temp_pool, name));
         if (!worker) {
             if (in_proxy_section) {
                 err = ap_proxy_define_worker(cmd->pool, &worker, NULL,
@@ -2336,7 +2344,7 @@ static const char *proxysection(cmd_parms *cmd, void *mconfig, const char *arg)
         }
         else {
             worker = ap_proxy_get_worker(cmd->temp_pool, NULL, sconf,
-                                         de_socketfy(cmd->temp_pool, (char*)conf->p));
+                                         ap_proxy_de_socketfy(cmd->temp_pool, (char*)conf->p));
             if (!worker) {
                 err = ap_proxy_define_worker(cmd->pool, &worker, NULL,
                                           sconf, conf->p, 0);
