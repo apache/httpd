@@ -226,7 +226,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1646724
                   http://svn.apache.org/r1650309
      2.4.x patch: trunk works
-     +1 covener
+     +1 covener, jim
 
    * proxy_fcgi: Support opt-in connection reuse for fcgi backend connections
                  (includes some sync-up work from trunk)
@@ -237,13 +237,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1647334 (uds reuse fix)
      2.4.x patch: One additional call to de_socketfy in 2.4 + MMN + CHANGES:
          http://people.apache.org/~covener/patches/httpd-2.4.x-fcgi-rollup.diff
-     +1 covener
+     +1 covener, jim
 
    * proxy_fcgi: Allow some alternate PATH_INFO guessing schemes 
                  for non SetHandler configs
      trunk patch: http://svn.apache.org/r1647035
      2.4.x patch: trunk works
-     +1 covener
+     +1 covener, jim
 
 
 OTHER PROPOSALS
