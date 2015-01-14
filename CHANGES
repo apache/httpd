@@ -1,10 +1,6 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
-  *) event: Update the internal "connection id" when requests
-     move from thread to thread. Reuse can confuse modules like
-     mod_cgid. PR 57435. [Michael Thorpe <mike gistnet.com>]
-
   *) mod_ssl: Add support for extracting subjectAltName entries of type
      rfc822Name and dNSName into SSL_{CLIENT,SERVER}_SAN_{Email,DNS}_n
      environment variables. Also addresses PR 57207. [Kaspar Brand]
@@ -38,9 +34,6 @@ Changes with Apache 2.5.0
   *) mod_proxy_fcgi: Enable opt-in to TCP connection reuse by explicitly
      setting proxy option disablereuse=off. [Eric Covener] PR 57378.
  
-  *) mod_proxy_fcgi: Remove proxy:balancer:// prefix from SCRIPT_FILENAME
-     passed to fastcgi backends. [Eric Covener]
-
   *) mod_http: Fix incorrect If-Match handling. PR 57358.
      [Kunihiko Sakamoto <ksakamoto google.com>]
 
