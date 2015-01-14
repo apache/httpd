@@ -1022,7 +1022,7 @@ ProxyPass /mirror/foo http://backend.example.com
         <td>On</td>
         <td>This is the inverse of 'disablereuse' above, provided as a
         convenience for scheme handlers that require opt-in for connection
-        reuse (such as <module>mod_proxy_fcgi</module>).
+        reuse (such as <module>mod_proxy_fcgi</module>).  2.4.11 and later only.
     </td></tr>
     <tr><td>flushpackets</td>
         <td>off</td>
