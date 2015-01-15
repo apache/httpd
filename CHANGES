@@ -2,6 +2,11 @@
 
 Changes with Apache 2.4.12
 
+  *) mpm_winnt: Accept utf-8 (Unicode) service names and descriptions for
+     internationalization.  [William Rowe]
+
+  *) mpm_winnt: Normalize the error and status messages emitted by service.c,
+     the service control interface for Windows.  [William Rowe]
 
 Changes with Apache 2.4.11
   
