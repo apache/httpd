@@ -22,6 +22,15 @@ Changes with Apache 2.4.11
      request headers earlier.  Adds "MergeTrailers" directive to restore
      legacy behavior.  [Edward Lu, Yann Ylavic, Joe Orton, Eric Covener]
 
+  *) mod_ssl: New directive SSLSessionTickets (On|Off).
+     The directive controls the use of TLS session tickets (RFC 5077),
+     default value is "On" (unchanged behavior).
+     Session ticket creation uses a random key created during web
+     server startup and recreated during restarts. No other key
+     recreation mechanism is available currently. Therefore using session
+     tickets without restarting the web server with an appropriate frequency
+     (e.g. daily) compromises perfect forward secrecy. [Rainer Jung]
+
   *) mod_proxy_fcgi: Provide some basic alternate options for specifying 
      how PATH_INFO is passed to FastCGI backends by adding significance to
      the value of proxy-fcgi-pathinfo. PR 55329. [Eric Covener]
