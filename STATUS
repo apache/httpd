@@ -109,14 +109,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
-   * mpm_winnt service.c: Normalize all error and status messages, clean up
-     source formatting, and accept utf-8 service names/descriptions for i18n.
-     trunk patches: http://svn.apache.org/r1611165
-                    http://svn.apache.org/r1611169
-                    http://svn.apache.org/r1611244
-     2.4.x patches: trunk works
-     +1: wrowe, gsmith
-
    * mod_systemd: New module, for integration with systemd on Linux.
      trunk patch: http://svn.apache.org/r1393976
                   http://svn.apache.org/r1393997
