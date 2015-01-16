@@ -103,8 +103,8 @@
         compliant, or <code>proxy-interim-response Suppress</code>
         to suppress interim responses.</dd>
         <dt>proxy-initial-not-pooled</dt>
-        <dd>If this variable is set no pooled connection will be reused
-        if the client connection is an initial connection. This avoids
+        <dd>If this variable is set, no pooled connection will be reused
+        if the client request is the initial request on the frontend connection. This avoids
         the "proxy: error reading status line from remote server" error message
         caused by the race condition that the backend server closed the
         pooled connection after the connection check by the proxy and
