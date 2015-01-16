@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_rewrite: Improve 'bad flag delimeters' startup error by showing
+     how the input was tokenized.  PR 56528. [Edward Lu <Chaosed0 gmail.com>]
+
   *) mod_ssl: Add support for extracting subjectAltName entries of type
      rfc822Name and dNSName into SSL_{CLIENT,SERVER}_SAN_{Email,DNS}_n
      environment variables. Also addresses PR 57207. [Kaspar Brand]

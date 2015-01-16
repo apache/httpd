@@ -2680,7 +2680,7 @@ static apr_status_t rewritelock_remove(void *data)
  * XXX: what an inclined parser. Seems we have to leave it so
  *      for backwards compat. *sigh*
  */
-static int parseargline(char *str, char **a1, char **a2, char **a3)
+static char *parseargline(apr_pool_t *p, char *str, char **a1, char **a2, char **a3)
 {
     char quote;
 
@@ -2705,7 +2705,7 @@ static int parseargline(char *str, char **a1, char **a2, char **a3)
     }
 
     if (!*str) {
-        return 1;
+        return "bad argument line: at least two arguments required";
     }
     *str++ = '\0';
 
@@ -2731,7 +2731,7 @@ static int parseargline(char *str, char **a1, char **a2, char **a3)
 
     if (!*str) {
         *a3 = NULL; /* 3rd argument is optional */
-        return 0;
+        return NULL;
     }
     *str++ = '\0';
 
@@ -2741,7 +2741,7 @@ static int parseargline(char *str, char **a1, char **a2, char **a3)
 
     if (!*str) {
         *a3 = NULL; /* 3rd argument is still optional */
-        return 0;
+        return NULL;
     }
 
     /*
@@ -2760,7 +2760,17 @@ static int parseargline(char *str, char **a1, char **a2, char **a3)
     }
     *str = '\0';
 
-    return 0;
+    if (**a3 != '[') {
+        return apr_psprintf(p, "bad flag delimiters: third argument must begin "
+               "with '[' but found '%c' - too many arguments or rogue "
+               "whitespace?", **a3);
+    }
+    else if ((*a3)[strlen(*a3)-1] != ']') {
+        return apr_psprintf(p, "bad flag delimiters: third argument must end "
+                "with ']' but found '%c' - unintended whitespace within the "
+                "flags definition?", (*a3)[strlen(*a3)-1]);
+    }
+    return NULL;
 }
 
 static void *config_server_create(apr_pool_t *p, server_rec *s)
@@ -3185,6 +3195,7 @@ static const char *cmd_parseflagfield(apr_pool_t *p, void *cfg, char *key,
     const char *err;
 
     endp = key + strlen(key) - 1;
+    /* This should have been checked before, but just in case... */
     if (*key != '[' || *endp != ']') {
         return "bad flag delimiters";
     }
@@ -3282,9 +3293,10 @@ static const char *cmd_rewritecond(cmd_parms *cmd, void *in_dconf,
      * of the argument line. So we can use a1 .. a3 without
      * copying them again.
      */
-    if (parseargline(str, &a1, &a2, &a3)) {
-        return apr_pstrcat(cmd->pool, "RewriteCond: bad argument line '", str,
-                           "'", NULL);
+    if ((err = parseargline(cmd->pool, str, &a1, &a2, &a3))) {
+        return apr_psprintf(cmd->pool, "RewriteCond: %s "
+                "(TestString=%s, CondPattern=%s, flags=%s)",
+                err, a1, a2, a3);
     }
 
     /* arg1: the input string */
@@ -3703,9 +3715,10 @@ static const char *cmd_rewriterule(cmd_parms *cmd, void *in_dconf,
     }
 
     /*  parse the argument line ourself */
-    if (parseargline(str, &a1, &a2, &a3)) {
-        return apr_pstrcat(cmd->pool, "RewriteRule: bad argument line '", str,
-                           "'", NULL);
+    if ((err = parseargline(cmd->pool, str, &a1, &a2, &a3))) {
+        return apr_psprintf(cmd->pool, "RewriteRule: %s "
+                "(pattern='%s', substitution='%s', flags='%s')",
+                err, a1, a2, a3);
     }
 
     /* arg3: optional flags field */
