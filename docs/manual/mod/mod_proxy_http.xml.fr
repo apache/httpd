@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1507326 -->
+<!-- English Revision : 1652400 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -121,8 +121,9 @@
 	Suppress</code> pour supprimer les r&eacute;ponses interm&eacute;diaires.</dd>
         <dt>proxy-initial-not-pooled</dt>
         <dd>Si cette variable est d&eacute;finie, aucune connexion faisant
-	partie d'un jeu ne sera r&eacute;utilis&eacute;e si la connexion client est
-	une connexion initiale. Ceci permet d'&eacute;viter le message d'erreur
+	partie d'un jeu ne sera r&eacute;utilis&eacute;e si la requ&ecirc;te
+	du client est la requ&ecirc;te initiale pour une connexion.
+	Ceci permet d'&eacute;viter le message d'erreur
 	"proxy: error reading status line from remote server" caus&eacute; par
 	la situation de comp&eacute;tition au cours de laquelle le serveur
 	cible ferme la connexion du jeu apr&egrave;s la v&eacute;rification de la
