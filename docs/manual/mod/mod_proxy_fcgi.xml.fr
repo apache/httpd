@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1647155:1651668 (outdated) -->
+<!-- English Revision: 1651668 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -72,34 +72,29 @@
       </highlight>
     </example>
 
-    <p>Cette application doit &ecirc;tre en mesure de g&eacute;rer plusieurs
-    connexions simultan&eacute;es. Par d&eacute;faut, <module>mod_proxy</module>
-    permet la r&eacute;utilisation des connexions, si bien que lorsque le
-    traitement d'une requ&ecirc;te est termin&eacute;, le processus enfant httpd
-    garde la connexion ouverte, et cette derni&egrave;re ne sera pas r&eacute;utilis&eacute;e
-    avant que le m&ecirc;me processus httpd ne redirige une autre requ&ecirc;te vers
-    l'application. Si l'application FastCGI n'est pas en mesure de g&eacute;rer
-    un nombre suffisant de connexions simultan&eacute;es avec httpd, les
-    requ&ecirc;tes peuvent &ecirc;tre bloqu&eacute;es jusqu'&agrave; ce que l'application ferme
-    une connexion existante. Pour rem&eacute;dier &agrave; ce probl&egrave;me, on peut
-    d&eacute;sactiver la r&eacute;utilisation des connexions &agrave; l'aide de la directive
-    <directive>ProxyPass</directive>, comme indiqu&eacute; dans l'exemple
-    suivant :</p>
+    
+    <p><module>mod_proxy_fcgi</module> interdisant par d&eacute;faut la
+    r&eacute;utilisation des connexions, lorsqu'une requ&ecirc;te a &eacute;t&eacute; trait&eacute;e, la
+    connexion ne sera pas maintenue ouverte par le processus enfant
+    httpd, et ne sera donc pas r&eacute;utilis&eacute;e. Cependant, si l'application
+    FastCGI supporte les connexions httpd simultan&eacute;es, vous pouvez opter
+    pour la r&eacute;utilisation des connexions comme dans l'exemple suivant :</p>
 
-    <example><title>Instance d'application unique, pas de r&eacute;utilisation
-    des connexions</title>
+    <example><title>Instance d'application unique, r&eacute;utilisation
+    des connexions (versions 2.4.11 et sup&eacute;rieures)</title>
     <highlight language="config">
-      ProxyPass /mon_appli/ fcgi://localhost:4000/ disablereuse=on
+      ProxyPass /myapp/ fcgi://localhost:4000/ enablereuse=on
       </highlight>
     </example>
 
     <p>Dans l'exemple suivant, l'URI de la requ&ecirc;te est transmis en tant
     que chemin du syst&egrave;me de fichiers pour l'ex&eacute;cution du d&eacute;mon PHP-FPM.
     L'URL de la requ&ecirc;te est implicitement ajout&eacute;e au second param&egrave;tre.
-    PHP-FPM est &agrave; l'&eacute;coute de l'h&ocirc;te et du port qui suivent fcgi://.</p>
+    PHP-FPM est &agrave; l'&eacute;coute de l'h&ocirc;te et du port qui
+    suivent fcgi://. La conservation des connexions est activ&eacute;e.</p>
     <example><title>PHP-FPM</title>
     <highlight language="config">
-      ProxyPassMatch ^/myapp/.*\.php(/.*)?$ fcgi://localhost:9000/var/www/
+      ProxyPassMatch ^/myapp/.*\.php(/.*)?$ fcgi://localhost:9000/var/www/ enablereuse=on
     </highlight>
     </example>
 
@@ -111,6 +106,7 @@
     ajout&eacute;s apr&egrave;s fcgi://, ils seront ignor&eacute;s.</p>
     <example><title>PHP-FPM with UDS</title>
     <highlight language="config">
+      # A ce jour, UDS ne supporte pas la r&eacute;utilisation des connexions
       ProxyPassMatch ^/(.*\.php(/.*)?)$ "unix:/var/run/php5-fpm.sock|fcgi://localhost/var/www/"
     </highlight>
     </example>
@@ -148,10 +144,26 @@ ProxyPass /myapp/ balancer://myappcluster/
     d'arri&egrave;re-plan. Lorsque FastCGI est configur&eacute; ainsi, le serveur est
     en mesure de calculer le PATH_INFO le plus appropri&eacute;.
       </p>
-      <example><title>Proxy via Handler</title>
+	<example><title>Mandataire via un gestionnaire</title>
       <highlight language="config">
 &lt;FilesMatch \.php$&gt;
+    # Note : la seule partie variable est /path/to/app.sock
     SetHandler  "proxy:unix:/path/to/app.sock|fcgi://localhost/"
+&lt;/FilesMatch&gt;
+   # D&eacute;finition d'une configuration de mandataire qui convient.
+   # La partie qui est mise en correspondance avec la valeur de
+   # SetHandler est la partie qui suit le "pipe". Si vous devez faire
+   # une distinction, "localhost" peut &ecirc;tre chang&eacute; en un nom de serveur
+   # unique.
+   &lt;Proxy fcgi://localhost/ enablereuse=on max=10&gt;
+   &lt;/Proxy&gt;
+
+&lt;FilesMatch ...&gt;
+    SetHandler  "proxy:fcgi://localhost:9000"
+&lt;/FilesMatch&gt;
+
+&lt;FilesMatch ...&gt;
+    SetHandler  "proxy:balancer://myappcluster/"
 &lt;/FilesMatch&gt;
       </highlight>
    </example>
@@ -174,7 +186,27 @@ ProxyPass /myapp/ balancer://myappcluster/
 	d&eacute;finissez la variable d'environnement
 	<var>proxy-fcgi-pathinfo</var>. Ceci peut servir de
 	contournement pour une bogue pr&eacute;sente dans certaines
-	impl&eacute;mentations de FCGI.</dd>
+	impl&eacute;mentations de FCGI. Cette variable peut &ecirc;tre
+	multivalu&eacute;e afin de pouvoir choisir la valeur la plus appropri&eacute;e
+	(versions 2.4.11 et sup&eacute;rieures) :
+	<dl>
+          <dt>first-dot</dt>
+          <dd>PATH_INFO est extrait &agrave; partir du slash qui suit le
+	  <em>premier</em> "." de l'URL.</dd>
+          <dt>last-dot</dt>
+          <dd>PATH_INFO est extrait &agrave; partir du slash qui suit le
+	  <em>dernier</em> "." de l'URL.</dd>
+          <dt>full</dt> 
+          <dd>PATH_INFO est calcul&eacute; en supposant que l'URL correspond au
+	  chemin du syst&egrave;me de fichiers.</dd>
+          <dt>unescape</dt>
+          <dd>PATH_INFO correspond &agrave; la partie chemin de l'URL avec ses
+	  s&eacute;quences d'&eacute;chappement d&eacute;cod&eacute;es.</dd>
+          <dt>toute autre valeur</dt>
+          <dd>PATH_INFO correspond &agrave; la partie chemin de l'URL.  
+              Auparavant, c'&eacute;tait la seule option pour proxy-fcgi-pathinfo.</dd>
+         </dl>
+	</dd>
     </dl>
 </section>
 

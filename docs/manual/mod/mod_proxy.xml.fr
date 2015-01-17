@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1641386:1651668 (outdated) -->
+<!-- English Revision: 1651668 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1145,6 +1145,14 @@ ProxyPass /mirror/foo http://backend.example.com
 	d'arri&egrave;re-plan lui-m&ecirc;me est accessible par rotation de DNS
 	(round-robin DNS). Pour d&eacute;sactiver la r&eacute;utilisation du jeu de
 	connexions, d&eacute;finissez cette cl&eacute; &agrave; <code>On</code>.
+    </td></tr>
+    <tr><td>enablereuse</td>
+        <td>On</td>
+        <td>Ce param&egrave;tre est utilis&eacute; par les gestionnaires de protocole pour
+	lesquels la r&eacute;utilisation des connexions est optionnelle (comme
+	<module>mod_proxy_fcgi</module>). C'est le contraire du
+	param&egrave;tre 'disablereuse' ci-dessus, et il est support&eacute; par les
+	versions 2.4.11 et sup&eacute;rieures du serveur HTTP Apache.
     </td></tr>
     <tr><td>flushpackets</td>
         <td>off</td>
