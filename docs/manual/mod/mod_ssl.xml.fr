@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1631887:1652074 (outdated) -->
+<!-- English Revision : 1652074 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -2881,6 +2881,28 @@ d&eacute;faut &eacute;tait <code>on</code> dans la version 2.4.3.</compatibility
 <note type="warning">
 <p>L'activation de la compression est &agrave; l'origine de probl&egrave;mes de
 s&eacute;curit&eacute; dans la plupart des configurations (l'attaque nomm&eacute;e CRIME).</p>
+</note>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLSessionTickets</name>
+<description>Active ou d&eacute;sactive les tickets de session TLS</description>
+<syntax>SSLSessionTickets on|off</syntax>
+<default>SSLSessionTickets on</default>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+<compatibility>Disponible &agrave; partir de la version 2.4.11 du serveur HTTP
+Apache, sous r&eacute;serve d'utiliser OpenSSL version 0.9.8f ou sup&eacute;rieure.
+</compatibility>
+
+<usage>
+<p>Cette directive permet d'activer ou de d&eacute;sactiver l'utilisation des
+tickets de session TLS (RFC 5077).</p>
+<note type="warning">
+<p>Les tickets de session TLS sont activ&eacute;s par d&eacute;faut. Les utiliser sans
+red&eacute;marrer le serveur selon une p&eacute;riodicit&eacute; appropri&eacute;e (par exemple
+quotidiennement) compromet cependant le niveau de confidentialit&eacute;.</p>
 </note>
 </usage>
 </directivesynopsis>
