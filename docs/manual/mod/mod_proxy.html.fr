@@ -28,8 +28,6 @@
 <a href="../fr/mod/mod_proxy.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_proxy.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Serveur mandataire/passerelle multi-protocole</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>proxy_module</td></tr>
@@ -1261,6 +1259,14 @@ ProxyPass /mirror/foo http://backend.example.com</pre>
 	d'arrière-plan lui-même est accessible par rotation de DNS
 	(round-robin DNS). Pour désactiver la réutilisation du jeu de
 	connexions, définissez cette clé à <code>On</code>.
+    </td></tr>
+    <tr><td>enablereuse</td>
+        <td>On</td>
+        <td>Ce paramètre est utilisé par les gestionnaires de protocole pour
+	lesquels la réutilisation des connexions est optionnelle (comme
+	<code class="module"><a href="../mod/mod_proxy_fcgi.html">mod_proxy_fcgi</a></code>). C'est le contraire du
+	paramètre 'disablereuse' ci-dessus, et il est supporté par les
+	versions 2.4.11 et supérieures du serveur HTTP Apache.
     </td></tr>
     <tr><td>flushpackets</td>
         <td>off</td>
