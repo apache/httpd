@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1561569:1651479 (outdated) -->
+<!-- English Revision : 1651479 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -397,6 +397,41 @@ AddHandler server-parsed shtml
 
     <p>Vous pouvez vous r&eacute;f&eacute;rer au <a href="ssi.html">tutoriel SSI</a>
     pour une description plus d&eacute;taill&eacute;e des SSI.</p>
+</section>
+
+<section id="rewrite"><title>Les r&egrave;gles de r&eacute;&eacute;criture dans les fichiers .htaccess</title>
+<p>Sivous utilisez des directives <directive
+module="mod_rewrite">RewriteRule</directive> dans un fichier
+<code>.htaccess</code>, gardez &agrave; l'esprit que les choses sont l&eacute;g&egrave;rement
+diff&eacute;rentes dans un contexte de r&eacute;pertoire. En particulier, les r&egrave;gles
+sont relatives au r&eacute;pertoire courant, et non &agrave; l'URI original. Consid&eacute;rez
+les exemples suivants :</p>
+
+<highlight language="config">
+# Dans httpd.conf
+RewriteRule ^/images/(.+)\.jpg /images/$1.png
+
+# Dans un fichier .htaccess situ&eacute; dans le r&eacute;pertoire racine de vos
+# documents
+RewriteRule ^images/(.+)\.jpg images/$1.png
+
+# Dans un fichier .htaccess situ&eacute; dans le r&eacute;pertoire images/
+RewriteRule ^(.+)\.jpg $1.png
+</highlight>
+
+<p>On voit que si le fichier <code>.htaccess</code> se situe &agrave; la racine
+de vos documents, le slash de t&ecirc;te est supprim&eacute; de la valeur de
+remplacement sp&eacute;cifi&eacute;e pour la r&egrave;gle <directive
+module="mod_rewrite">RewriteRule</directive>, et que si le fichier
+<code>.htaccess</code> se situe dans le r&eacute;pertoire <code>images</code>,
+la cha&icirc;ne <code>/images/</code> dispara&icirc;t de cette m&ecirc;me valeur de
+remplacement. Il doit donc en &ecirc;tre de m&ecirc;me dans votre expression
+rationnelle.</p>
+
+<p>Veuillez vous r&eacute;f&eacute;rer &agrave; cette <a href="../rewrite/">documentation</a>
+pour une &eacute;tude d&eacute;taill&eacute;e de l'utilisation du module
+<code>mod_rewrite</code>.</p>
+
 </section>
 
 <section id="cgi"><title>Exemple de CGI</title>
