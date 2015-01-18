@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1618966:1647230 (outdated) -->
+<!-- English Revision: 1647230 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -85,6 +85,13 @@ Barındırma</a></seealso>
       sunucu ismini <directive module="core" >ServerName</directive> ve
       <directive module="core">ServerAlias</directive> yönergelerindeki
       isimlerle karşılaştırır.</p>
+
+    <p>Herhangi bir isme dayalı sanal konakta <directive
+      module="core">ServerName</directive> yönergesini kullanmazsanız, sunucu
+      bu yönergeye sistem konak adından türetilmiş tam nitelenmiş alan adının
+      (FQDN) tanımlandığını varsayacaktır. Bu örtük atama sezgiselliğin
+      istenmediği bir sanal konak eşleşmesi ile sonuçlanabilir ve bu
+      önerilmez.</p>
 
   <section id="defaultvhost">
    <title>Bir IP adresi ve port çifti için öntanımlı isme dayalı sankon</title>

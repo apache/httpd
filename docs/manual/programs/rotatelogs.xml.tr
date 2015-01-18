@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1615363:1645865 (outdated) -->
+<!-- English Revision: 1645865 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -44,6 +44,7 @@
      [ -<strong>L</strong> <var>isim</var> ]
      [ -<strong>p</strong> <var>program</var> ]
      [ -<strong>f</strong> ]
+     [ -<strong>t</strong> ]
      [ -<strong>v</strong> ]
      [ -<strong>e</strong> ]
      [ -<strong>c</strong> ]
