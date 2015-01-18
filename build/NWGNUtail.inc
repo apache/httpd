@@ -221,7 +221,7 @@ $(OBJDIR)/$(NLM_NAME)_link.opt : $($(NLM_NAME)_LINKOPT_DEPENDS)
 	$(call DEL,$@)
 	$(call DEL,$(@:.opt=.def))
 	@echo $(DL)GEN  $@$(DL)
-	@echo $(DL)-nlmversion=$(NLM_VERSION)$(DL)>> $@
+	@echo $(DL)-nlmversion=$(NLM_VERSION) $(DL)>> $@
 	@echo $(DL)-warnings off$(DL)>> $@
 	@echo $(DL)-zerobss$(DL)>> $@
 	@echo $(DL)-o $(TARGET_nlm)$(DL)>> $@
