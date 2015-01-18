@@ -701,7 +701,7 @@ static void req_rsp(request_rec *r, const fcgi_provider_conf *conf,
 {
     const char *fn = "req_rsp";
     apr_pool_t *temp_pool;
-    apr_size_t orspbuflen;
+    apr_size_t orspbuflen = 0;
     apr_socket_t *s;
     apr_status_t rv;
     apr_table_t *saved_subprocess_env = 
@@ -1167,7 +1167,7 @@ static const char *fcgi_define_provider(cmd_parms *cmd,
     char *host;
     const char *err, *stype;
     fcgi_provider_conf *conf = apr_pcalloc(cmd->pool, sizeof(*conf));
-    int ca = 0, rc;
+    int ca = 0, rc, port;
 
     fcgi_backend_regex = ap_rxplus_compile(cmd->pool, FCGI_BACKEND_REGEX_STR);
     if (!fcgi_backend_regex) {
@@ -1230,8 +1230,8 @@ static const char *fcgi_define_provider(cmd_parms *cmd,
         host[strlen(host) - 1] = '\0';
     }
 
-    conf->port = atoi(ap_rxplus_pmatch(cmd->pool, fcgi_backend_regex, 2));
-    if (conf->port > 65535) {
+    port = atoi(ap_rxplus_pmatch(cmd->pool, fcgi_backend_regex, 2));
+    if (port > 65535) {
         return apr_pstrcat(cmd->pool,
                            dname, ": backend-address '",
                            argv[ca],
@@ -1241,6 +1241,7 @@ static const char *fcgi_define_provider(cmd_parms *cmd,
 
     conf->backend = argv[ca];
     conf->host = host;
+    conf->port = port;
     ca++;
 
     rv = apr_sockaddr_info_get(&conf->backend_addrs, conf->host,
