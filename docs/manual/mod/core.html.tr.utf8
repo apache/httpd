@@ -31,7 +31,6 @@
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Apache HTTP Sunucusunda daima mevcut olan çekirdek
  özellikler</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr></table>
@@ -2528,9 +2527,7 @@ sınırlar.</td></tr>
     <pre class="prettyprint lang-config">LimitRequestLine 4094</pre>
 
 
-    <div class="note">Normal şartlar altında öntanımlı değer değiştirilmemelidir. Ayrıca,
-      kaynak kodu değiştirip yeniden derlemeden bu değeri 8190'dan büyük
-      yapamazsınız.</div>
+    <div class="note">Normal şartlar altında öntanımlı değer değiştirilmemelidir.</div>
 
     <div class="warning"><h3>Uyarı</h3>
     <p>İsme dayalı sanal konaklar kullanıldığında, bu yönergenin değeri,
@@ -3800,9 +3797,10 @@ kullanılacak konak adları için başka isimler belirtebilmeyi sağlar.
       herhangi bir yerde görünebilirse de her göründüğü yerde bir öncekini
       iptal eder.</p>
 
-    <p>Bir <code class="directive">ServerName</code> ataması yapılmamışsa sunucu IP
-      adresine atanmış sunucu ismi için bir ters DNS sorgusu yapacaktır.
-      <code class="directive">ServerName</code> yönergesinde bir port belirtilmediği
+    <p>Bir <code class="directive">ServerName</code> ataması yapılmamışsa sunucu
+      istemciye görünen sunucu ismi için IP adresine bir ters DNS sorgusu yapacaktır.</p>
+
+    <p><code class="directive">ServerName</code> yönergesinde bir port belirtilmediği
       takdirde sunucu, isteğin geldiği portu kullanacaktır. Öngörülebilirlik ve
       güvenilirlik açısından en iyisi <code class="directive">ServerName</code>
       yönergesini kullanarak açıkça bir konak ismi ve port belirtmektir.</p>
