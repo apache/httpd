@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1619884:1647230 (outdated) -->
+<!-- English Revision: 1647230 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -2514,9 +2514,7 @@ sınırlar.</description>
 
     <highlight language="config">LimitRequestLine 4094</highlight>
 
-    <note>Normal şartlar altında öntanımlı değer değiştirilmemelidir. Ayrıca,
-      kaynak kodu değiştirip yeniden derlemeden bu değeri 8190'dan büyük
-      yapamazsınız.</note>
+    <note>Normal şartlar altında öntanımlı değer değiştirilmemelidir.</note>
 
     <note type="warning"><title>Uyarı</title>
     <p>İsme dayalı sanal konaklar kullanıldığında, bu yönergenin değeri,
@@ -3775,9 +3773,11 @@ kullanılacak konak adları için başka isimler belirtebilmeyi sağlar.
       herhangi bir yerde görünebilirse de her göründüğü yerde bir öncekini
       iptal eder.</p>
 
-    <p>Bir <directive>ServerName</directive> ataması yapılmamışsa sunucu IP
-      adresine atanmış sunucu ismi için bir ters DNS sorgusu yapacaktır.
-      <directive>ServerName</directive> yönergesinde bir port belirtilmediği
+    <p>Bir <directive>ServerName</directive> ataması yapılmamışsa sunucu
+      istemciye görünen sunucu ismi için IP adresine bir ters DNS sorgusu
+      yapacaktır.</p>
+
+    <p><directive>ServerName</directive> yönergesinde bir port belirtilmediği
       takdirde sunucu, isteğin geldiği portu kullanacaktır. Öngörülebilirlik ve
       güvenilirlik açısından en iyisi <directive>ServerName</directive>
       yönergesini kullanarak açıkça bir konak ismi ve port belirtmektir.</p>
