@@ -28,7 +28,6 @@
 <a href="../ko/vhosts/name-based.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/vhosts/name-based.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p>Bu belgede isme dayalı sanal konakların ne zaman, nasıl kullanılacakları
       açıklanmıştır.</p>
@@ -85,6 +84,12 @@ Barındırma</a></li><li><a href="examples.html">Çok kullanılan sanal konak ya
       sunucu ismini <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> ve
       <code class="directive"><a href="../mod/core.html#serveralias">ServerAlias</a></code> yönergelerindeki
       isimlerle karşılaştırır.</p>
+
+    <p>Herhangi bir isme dayalı sanal konakta <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> yönergesini kullanmazsanız, sunucu
+      bu yönergeye sistem konak adından türetilmiş tam nitelenmiş alan adının
+      (FQDN) tanımlandığını varsayacaktır. Bu örtük atama sezgiselliğin
+      istenmediği bir sanal konak eşleşmesi ile sonuçlanabilir ve bu
+      önerilmez.</p>
 
   <h3><a name="defaultvhost" id="defaultvhost">Bir IP adresi ve port çifti için öntanımlı isme dayalı sankon</a></h3>
    
