@@ -233,6 +233,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      +1: rjung
 
+   * mod_cgi, mod_cgid: If both modules get installed,
+     use IfModule for MPM to LoadModule mod_cgi for prefork
+     and mod_cgid for all other MPMs. PR 57379.
+     Previously when combined with --enable-load-all-modules
+     both modules were loaded and it was undefined
+     which one actually handled cgi requests.
+     trunk patch: http://svn.apache.org/r1652955
+     2.4.x patch: trunk works
+     +1: rjung
+
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
