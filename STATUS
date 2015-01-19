@@ -215,7 +215,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1652929
                   http://svn.apache.org/r1652931 (CHANGES)
      2.4.x patch: trunks works (modulo CHANGES)
-     +1: ylavic
+     +1: ylavic, rjung
 
    * acinclude.m4: Generate #LoadModule directive in default httpd.conf for
                    every --enable-mpms-shared. PR 53882.
@@ -242,6 +242,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Based on a patch by olli hauer <ohauer gmx.de>.
      trunk patch: http://svn.apache.org/r1652955
      2.4.x patch: trunk works
+     +1: rjung
+
+   * configure: Fix detection of old Solaris platforms.
+     Autotools need double square brackets.
+     Inspired by checking PR 53824 patch above for consistency.
+     trunk patch: http://svn.apache.org/r1652982
+     2.4.x patch: trunks works
      +1: rjung
 
 OTHER PROPOSALS
