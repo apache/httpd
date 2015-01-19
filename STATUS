@@ -231,7 +231,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
            comparison is always false due to limited range of data type
      trunk patch: http://svn.apache.org/r1652829
      2.4.x patch: trunk works
-     +1: rjung
+     +1: rjung, ylavic
 
    * mod_cgi, mod_cgid: If both modules get installed,
      use IfModule for MPM to LoadModule mod_cgi for prefork
