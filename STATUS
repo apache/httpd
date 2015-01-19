@@ -222,7 +222,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1652930
                   http://svn.apache.org/r1652933 (CHANGES)
      2.4.x patch: trunks works (modulo CHANGES)
-     +1: ylavic
+     +1: ylavic, rjung
 
    * mod_authnz_fcgi.c: Silence compiler warnings:
          - modules/aaa/mod_authnz_fcgi.c:705: warning:
