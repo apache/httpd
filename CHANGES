@@ -8,8 +8,10 @@ Changes with Apache 2.4.12
   *) mpm_winnt: Normalize the error and status messages emitted by service.c,
      the service control interface for Windows.  [William Rowe]
 
-  *) configure: Fix --enable-v4-mapped configuration on *BSD. PR 53824.
-     [ olli hauer <ohauer gmx.de>, Yann Ylavic ]
+  *) acinclude.m4: Generate #LoadModule directive in default httpd.conf for
+     every --enable-mpms-shared.  PR 53882.  [ olli hauer <ohauer gmx.de>,
+     Yann Ylavic ]
+
 
 Changes with Apache 2.4.11
   
