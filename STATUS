@@ -244,14 +244,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1652985
                   http://svn.apache.org/r1652989
      2.4.x patch: trunk works
-     +1: rjung
+     +1: rjung, ylavic
 
    * configure: Fix detection of old Solaris platforms.
      Autotools need double square brackets.
      Inspired by checking PR 53824 patch above for consistency.
      trunk patch: http://svn.apache.org/r1652982
      2.4.x patch: trunks works
-     +1: rjung
+     +1: rjung, ylavic
 
 OTHER PROPOSALS
 
