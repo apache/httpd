@@ -3798,7 +3798,8 @@ kullanılacak konak adları için başka isimler belirtebilmeyi sağlar.
       iptal eder.</p>
 
     <p>Bir <code class="directive">ServerName</code> ataması yapılmamışsa sunucu
-      istemciye görünen sunucu ismi için IP adresine bir ters DNS sorgusu yapacaktır.</p>
+      istemciye görünen sunucu ismi için IP adresine bir ters DNS sorgusu
+      yapacaktır.</p>
 
     <p><code class="directive">ServerName</code> yönergesinde bir port belirtilmediği
       takdirde sunucu, isteğin geldiği portu kullanacaktır. Öngörülebilirlik ve
