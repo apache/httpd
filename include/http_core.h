@@ -597,7 +597,6 @@ typedef struct {
 #define AP_CONDITION_ELSE      2
 #define AP_CONDITION_ELSEIF    (AP_CONDITION_ELSE|AP_CONDITION_IF)
     unsigned int condition_ifelse : 2; /* is this an <If>, <ElseIf>, or <Else> */
-    unsigned int d_is_directory : 1; /* Whether core_dir_config is Directory* */
 
     ap_expr_info_t *condition;   /* Conditionally merge <If> sections */
 
