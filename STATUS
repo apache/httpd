@@ -242,6 +242,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Based on a patch by olli hauer <ohauer gmx.de>.
      trunk patch: http://svn.apache.org/r1652955
                   http://svn.apache.org/r1652985
+                  http://svn.apache.org/r1652989
      2.4.x patch: trunk works
      +1: rjung
 
