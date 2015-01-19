@@ -241,6 +241,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      which one actually handled cgi requests.
      Based on a patch by olli hauer <ohauer gmx.de>.
      trunk patch: http://svn.apache.org/r1652955
+                  http://svn.apache.org/r1652985
      2.4.x patch: trunk works
      +1: rjung
 
