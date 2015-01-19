@@ -239,6 +239,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Previously when combined with --enable-load-all-modules
      both modules were loaded and it was undefined
      which one actually handled cgi requests.
+     Based on a patch by olli hauer <ohauer gmx.de>.
      trunk patch: http://svn.apache.org/r1652955
      2.4.x patch: trunk works
      +1: rjung
