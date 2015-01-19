@@ -46,6 +46,9 @@ XCFLAGS		+= \
 #
 XDEFINES	+= \
 			-DLUA_COMPAT_ALL \
+			-DLUA_COMPAT_5_2 \
+			-DLUA_COMPAT_5_1 \
+			-DLUA_COMPAT_MODULE \
 			$(EOLIST)
 
 #

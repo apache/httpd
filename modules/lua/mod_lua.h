@@ -43,6 +43,10 @@
 
 /* Allow for Lua 5.2 backwards compatibility */
 #define LUA_COMPAT_ALL
+/* Allow for Lua 5.3 backwards compatibility */
+#define LUA_COMPAT_5_2
+#define LUA_COMPAT_5_1
+#define LUA_COMPAT_MODULE
 
 #include "lua.h"
 #include "lauxlib.h"
@@ -54,6 +58,10 @@
 #define lua_resume(a,b)   lua_resume(a, NULL, b)
 #else
 #define lua_rawlen(L,i)   lua_objlen(L, (i))
+#endif
+#if LUA_VERSION_NUM > 502
+/* Load mode for lua_dump() */
+#define lua_dump(a,b,c)   lua_dump(a,b,c,0)
 #endif
 
 /* Create a set of AP_LUA_DECLARE(type), AP_LUA_DECLARE_NONSTD(type) and
