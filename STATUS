@@ -216,6 +216,19 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-ap_listeners_buckets.patch
      +1: ylavic
 
+   * configure: Fix --enable-v4-mapped configuration on *BSD. PR 53824.
+     trunk patch: http://svn.apache.org/r1652929
+                  http://svn.apache.org/r1652931 (CHANGES)
+     2.4.x patch: trunks works (modulo CHANGES)
+     +1: ylavic
+
+   * acinclude.m4: Generate #LoadModule directive in default httpd.conf for
+                   every --enable-mpms-shared. PR 53882.
+     trunk patch: http://svn.apache.org/r1652930
+                  http://svn.apache.org/r1652933 (CHANGES)
+     2.4.x patch: trunks works (modulo CHANGES)
+     +1: ylavic
+
 
 OTHER PROPOSALS
 
