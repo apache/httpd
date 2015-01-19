@@ -105,11 +105,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * core: Do not match files when using DirectoryMatch. PR 41867.
-     trunk patch: http://svn.apache.org/r1635428
-     2.4.x patch: http://people.apache.org/~jkaluza/patches/httpd-2.4.x-directorymatch.patch
-     +1: jkaluza, covener, ylavic
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -229,6 +224,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunks works (modulo CHANGES)
      +1: ylavic
 
+   * mod_authnz_fcgi.c: Silence compiler warnings:
+         - modules/aaa/mod_authnz_fcgi.c:705: warning:
+           'orspbuflen' may be used uninitialized in this function
+         - modules/aaa/mod_authnz_fcgi.c:1235: warning:
+           comparison is always false due to limited range of data type
+     trunk patch: http://svn.apache.org/r1652829
+     2.4.x patch: trunk works
+     +1: rjung
 
 OTHER PROPOSALS
 
