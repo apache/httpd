@@ -619,7 +619,6 @@ typedef struct {
 
     unsigned int allow_encoded_slashes_set : 1;
     unsigned int decode_encoded_slashes_set : 1;
-    unsigned int d_is_directory : 1;
 
     /** Named back references */
     apr_array_header_t *refs;
