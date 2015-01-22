@@ -249,6 +249,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * mod_alias: Introduce expression parser support for Alias, ScriptAlias
      and Redirect.
      trunk patch: http://svn.apache.org/r1653941
+                  http://svn.apache.org/r1653978
      2.4.x patch: trunk works (modulo CHANGES)
      +1: minfrin
 
