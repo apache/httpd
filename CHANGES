@@ -1,5 +1,7 @@
                                                          -*- coding: utf-8 -*-
 
+Changes with Apache 2.4.13
+
 Changes with Apache 2.4.12
 
   *) mpm_winnt: Accept utf-8 (Unicode) service names and descriptions for
