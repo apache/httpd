@@ -110,7 +110,7 @@ static void modssl_ctx_init(modssl_ctx_t *mctx, apr_pool_t *p)
     mctx->ticket_key          = NULL;
 #endif
 
-    mctx->protocol            = SSL_PROTOCOL_ALL;
+    mctx->protocol            = SSL_PROTOCOL_UNSET;
 
     mctx->pphrase_dialog_type = SSL_PPTYPE_UNSET;
     mctx->pphrase_dialog_path = NULL;
@@ -254,7 +254,7 @@ static void modssl_ctx_cfg_merge(apr_pool_t *p,
                                  modssl_ctx_t *add,
                                  modssl_ctx_t *mrg)
 {
-    cfgMerge(protocol, SSL_PROTOCOL_ALL);
+    cfgMerge(protocol, SSL_PROTOCOL_UNSET);
 
     cfgMerge(pphrase_dialog_type, SSL_PPTYPE_UNSET);
     cfgMergeString(pphrase_dialog_path);
