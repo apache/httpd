@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_ssl: 'SSLProtocol ALL' was being ignored in virtual host context. 
+     PR 57100.  [Michael Kaufmann <apache-bugzilla michael-kaufmann.ch>,
+     Yann Ylavic]
+
   *) mod_alias: Introduce expression parser support for Alias, ScriptAlias
      and Redirect. [Graham Leggett]
 

@@ -577,6 +577,7 @@ typedef struct {
 #endif
 
     ssl_proto_t  protocol;
+    int protocol_set;
 
     /** config for handling encrypted keys */
     ssl_pphrase_t pphrase_dialog_type;
