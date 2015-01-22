@@ -209,17 +209,8 @@ apr_status_t ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
         if (sc->enabled == SSL_ENABLED_UNSET) {
             sc->enabled = SSL_ENABLED_FALSE;
         }
-
         if (sc->proxy_enabled == UNSET) {
             sc->proxy_enabled = FALSE;
-        }
-
-        if (sc->server && sc->server->protocol == SSL_PROTOCOL_UNSET) {
-            sc->server->protocol = SSL_PROTOCOL_ALL;
-        }
-
-        if (sc->proxy && sc->proxy->protocol == SSL_PROTOCOL_UNSET) {
-            sc->proxy->protocol = SSL_PROTOCOL_ALL;
         }
 
         if (sc->session_cache_timeout == UNSET) {
