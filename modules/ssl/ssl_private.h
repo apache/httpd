@@ -286,14 +286,13 @@ typedef int ssl_opt_t;
 /**
  * Define the SSL Protocol options
  */
-#define SSL_PROTOCOL_UNSET (0)
-#define SSL_PROTOCOL_NONE  (1<<0)
-#define SSL_PROTOCOL_SSLV2 (1<<1)
-#define SSL_PROTOCOL_SSLV3 (1<<2)
-#define SSL_PROTOCOL_TLSV1 (1<<3)
+#define SSL_PROTOCOL_NONE  (0)
+#define SSL_PROTOCOL_SSLV2 (1<<0)
+#define SSL_PROTOCOL_SSLV3 (1<<1)
+#define SSL_PROTOCOL_TLSV1 (1<<2)
 #ifdef HAVE_TLSV1_X
-#define SSL_PROTOCOL_TLSV1_1 (1<<4)
-#define SSL_PROTOCOL_TLSV1_2 (1<<5)
+#define SSL_PROTOCOL_TLSV1_1 (1<<3)
+#define SSL_PROTOCOL_TLSV1_2 (1<<4)
 #define SSL_PROTOCOL_ALL   (SSL_PROTOCOL_SSLV3|SSL_PROTOCOL_TLSV1| \
                             SSL_PROTOCOL_TLSV1_1|SSL_PROTOCOL_TLSV1_2)
 #else

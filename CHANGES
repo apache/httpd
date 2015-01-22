@@ -4,9 +4,6 @@ Changes with Apache 2.5.0
   *) mod_alias: Introduce expression parser support for Alias, ScriptAlias
      and Redirect. [Graham Leggett]
 
-  *) mod_ssl: 'SSLProtocol ALL' was being ignored in virtual host context. 
-     PR 57100.  [Michael Kaufmann <apache-bugzilla michael-kaufmann.ch>]
-
   *) mod_rewrite: Improve 'bad flag delimeters' startup error by showing
      how the input was tokenized.  PR 56528. [Edward Lu <Chaosed0 gmail.com>]
 
