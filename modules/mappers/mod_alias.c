@@ -51,8 +51,8 @@ typedef struct {
 } alias_server_conf;
 
 typedef struct {
-    int alias_set:1;
-    int redirect_set:1;
+    unsigned int alias_set:1;
+    unsigned int redirect_set:1;
     apr_array_header_t *redirects;
     const ap_expr_info_t *alias;
     char *handler;
