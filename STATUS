@@ -118,6 +118,13 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunks works
      +1: rjung, ylavic, wrowe
 
+   * mod_ssl: Fix renegotiation failures redirected to an ErrorDocument.
+              (segfault flaw) PR 57334.
+     trunk patch: http://svn.apache.org/r1644498
+     2.4.x patch: trunk works (module CHANGES)
+     +1: ylavic, wrowe, minfrin
+
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -172,12 +179,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1643543
      2.4.x patch: trunk works (module CHANGES)
      +1: ylavic
-
-   * mod_ssl: Fix renegotiation failures redirected to an ErrorDocument.
-              (segfault flaw) PR 57334.
-     trunk patch: http://svn.apache.org/r1644498
-     2.4.x patch: trunk works (module CHANGES)
-     +1: ylavic, wrowe
 
    * core: Add ap_errorlog_provider to make ErrorLog logging modular. This
            backport keeps syslog logging as part of httpd core and only adds
