@@ -105,12 +105,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * configure: Fix --enable-v4-mapped configuration on *BSD. PR 53824.
-     trunk patch: http://svn.apache.org/r1652929
-                  http://svn.apache.org/r1652931 (CHANGES)
-     2.4.x patch: trunks works (modulo CHANGES)
-     +1: ylavic, rjung, wrowe
-
    * configure: Fix detection of old Solaris platforms.
      Autotools need double square brackets.
      Inspired by checking PR 53824 patch above for consistency.
