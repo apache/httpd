@@ -254,6 +254,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (modulo CHANGES)
      +1: minfrin
 
+   * mod_authz_groupfile: Don't log routine authz failure at ERROR because
+     it's just as likely to be OR'ed with other authz results. PR55523, try 2.
+     trunk patch:  http://svn.apache.org/r1654184
+     2.4.x patch: trunk works + CHANGES
+     +1: covener
 
 OTHER PROPOSALS
 
