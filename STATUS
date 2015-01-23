@@ -258,7 +258,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      it's just as likely to be OR'ed with other authz results. PR55523, try 2.
      trunk patch:  http://svn.apache.org/r1654184
      2.4.x patch: trunk works + CHANGES
-     +1: covener
+     +1: covener, minfrin
 
 OTHER PROPOSALS
 
