@@ -159,6 +159,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x patch: trunks works (plus CHANGES)
      +1 rjung
 
+   * mod_ssl: Add SSLSessionTickets (on|off). [Rainer Jung]
+     It controls the use of TLS session tickets (RFC 5077).
+     Default is unchanged (on).
+     Using session tickets without restarting the web server with
+     an appropriate frequency (e.g. daily) compromises perfect forward
+     secrecy. As long as we do not have a nice key management
+     there needs to be a way to deactivate the use of session tickets.
+     trunk patch: http://svn.apache.org/r1650310
+                  http://svn.apache.org/r1650320
+     2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-SSLSessionTickets.patch
+     +1: ylavic
+
 PATCHES/ISSUES THAT ARE STALLED
 
    * mod_proxy_balancer: Always initialize the shared parameters of a load
