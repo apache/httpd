@@ -517,7 +517,7 @@ la r&eacute;&eacute;criture soit effectu&eacute;e
 	  </strong> : ce sont des r&eacute;f&eacute;rences arri&egrave;res de la forme
 	  <strong><code>%N</code></strong> (0 &lt;= N &lt;= 9). %1 &agrave; %9
 	  permettent d'acc&eacute;der aux parties regroup&eacute;es (entre
-	  parenth&egrave;ses) du mod&egrave;le, issues de la dernière
+	  parenth&egrave;ses) du mod&egrave;le, issues de la derni&egrave;re
 	  condition <code>RewriteCond</code> satisfaite du jeu de conditions <code>RewriteCond</code>
 	  courant. %0 donne acc&egrave;s &agrave; l'ensemble de la cha&icirc;ne
 	  correspondant au mod&egrave;le.</li>
