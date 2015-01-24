@@ -209,8 +209,8 @@ la réécriture soit effectuée
 	  </strong> : ce sont des références arrières de la forme
 	  <strong><code>%N</code></strong> (0 &lt;= N &lt;= 9). %1 à %9
 	  permettent d'accéder aux parties regroupées (entre
-	  parenthèses) du modèle, issues de la <code>RewriteRule</code>
-	  concernée par le jeu de conditions <code>RewriteCond</code>
+	  parenthèses) du modèle, issues de la dernière
+	  condition <code>RewriteCond</code> satisfaite du jeu de conditions <code>RewriteCond</code>
 	  courant. %0 donne accès à l'ensemble de la chaîne
 	  correspondant au modèle.</li>
         <li>
