@@ -408,7 +408,7 @@ establishing a protocol session.</p>
         >TLS11</a>]</td>
         <td>Update of TLS 1.0 to add protection against Cipher block chaining
         (CBC) attacks.</td>
-        <td>-</td></tr>
+    </tr>
     <tr><td>TLS v1.2</td>
         <td>Proposed Internet Standard (from IETF) [<a href="#TLS12"
         >TLS12</a>]</td>
