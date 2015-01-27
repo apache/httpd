@@ -305,10 +305,10 @@ while ((e = APR_BRIGADE_FIRST(bb)) != APR_BRIGADE_SENTINEL(bb)) {
     temporary brigade in such a structure, to avoid having to allocate
     a new brigade per invocation as described in the <a href="#brigade">Brigade structure</a> section.</p>
 
-  <div class="example"><h3>Example code to maintain filter state</h3><pre class="prettyprint lang-c">struct dummy_state {
+    <div class="example"><h3>Example code to maintain filter state</h3><pre class="prettyprint lang-c">struct dummy_state {
    apr_bucket_brigade *tmpbb;
    int filter_state;
-   ....
+   ...
 };
 
 apr_status_t dummy_filter(ap_filter_t *f, apr_bucket_brigade *bb)
@@ -321,7 +321,7 @@ apr_status_t dummy_filter(ap_filter_t *f, apr_bucket_brigade *bb)
     
        /* First invocation for this response: initialise state structure.
         */
-       f-&gt;ctx = state = apr_palloc(sizeof *state, f-&gt;r-&gt;pool);
+       f-&gt;ctx = state = apr_palloc(f-&gt;r-&gt;pool, sizeof *state);
 
        state-&gt;tmpbb = apr_brigade_create(f-&gt;r-&gt;pool, f-&gt;c-&gt;bucket_alloc);
        state-&gt;filter_state = ...;
