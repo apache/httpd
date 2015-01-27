@@ -147,7 +147,7 @@
 
     <p>There are a variety of functions and macros for traversing and
     manipulating bucket brigades; see the <a
-    href="http://apr.apache.org/docs/apr-util/trunk/group___a_p_r___util___bucket___brigades.html">apr_bucket.h</a>
+    href="http://apr.apache.org/docs/apr-util/trunk/group___a_p_r___util___bucket___brigades.html">apr_buckets.h</a>
     header for complete coverage.  Commonly used macros include:</p>
 
     <dl>
@@ -252,12 +252,11 @@
     <highlight language="c">
 apr_bucket *e = APR_BRIGADE_FIRST(bb);
 const char *data;
-apr_size_t len;
+apr_size_t length;
 
 while (e != APR_BRIGADE_SENTINEL(bb)) {
     apr_bucket_read(e, &amp;data, &amp;length, APR_BLOCK_READ);
     e = APR_BUCKET_NEXT(e);
-
 }
 
 return ap_pass_brigade(bb);
@@ -279,7 +278,7 @@ return ap_pass_brigade(bb);
 <highlight language="c">
 apr_bucket *e;
 const char *data;
-apr_size_t len;
+apr_size_t length;
 
 while ((e = APR_BRIGADE_FIRST(bb)) != APR_BRIGADE_SENTINEL(bb)) {
    rv = apr_bucket_read(e, &amp;data, &amp;length, APR_BLOCK_READ);

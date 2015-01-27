@@ -152,7 +152,7 @@
     behaviour (i.e. will crash the process).</p>
 
     <p>There are a variety of functions and macros for traversing and
-    manipulating bucket brigades; see the <a href="http://apr.apache.org/docs/apr-util/trunk/group___a_p_r___util___bucket___brigades.html">apr_bucket.h</a>
+    manipulating bucket brigades; see the <a href="http://apr.apache.org/docs/apr-util/trunk/group___a_p_r___util___bucket___brigades.html">apr_buckets.h</a>
     header for complete coverage.  Commonly used macros include:</p>
 
     <dl>
@@ -254,12 +254,11 @@
 
     <div class="example"><h3>Bad output filter -- do not imitate!</h3><pre class="prettyprint lang-c">apr_bucket *e = APR_BRIGADE_FIRST(bb);
 const char *data;
-apr_size_t len;
+apr_size_t length;
 
 while (e != APR_BRIGADE_SENTINEL(bb)) {
     apr_bucket_read(e, &amp;data, &amp;length, APR_BLOCK_READ);
     e = APR_BUCKET_NEXT(e);
-
 }
 
 return ap_pass_brigade(bb);</pre>
@@ -277,7 +276,7 @@ return ap_pass_brigade(bb);</pre>
 
     <div class="example"><h3>Better output filter</h3><pre class="prettyprint lang-c">apr_bucket *e;
 const char *data;
-apr_size_t len;
+apr_size_t length;
 
 while ((e = APR_BRIGADE_FIRST(bb)) != APR_BRIGADE_SENTINEL(bb)) {
    rv = apr_bucket_read(e, &amp;data, &amp;length, APR_BLOCK_READ);
