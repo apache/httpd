@@ -385,7 +385,7 @@ establishing a protocol session.</p>
     <tr><th>Version</th>
         <th>Source</th>
         <th>Description</th>
-        <th>Browser Support</th></tr>
+    </tr>
     <tr><td>SSL v2.0</td>
         <td>Vendor Standard (from Netscape Corp.)</td>
         <td>First SSL protocol for which implementations exist</td>
