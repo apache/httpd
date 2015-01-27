@@ -117,7 +117,7 @@ typedef union {
 
 /** mechanism for declaring a directive with no arguments */
 # define AP_INIT_NO_ARGS(directive, func, mconfig, where, help) \
-    { directive, { .no_args=func }, mconfig, where, RAW_ARGS, help }
+    { directive, { .no_args=func }, mconfig, where, NO_ARGS, help }
 /** mechanism for declaring a directive with raw argument parsing */
 # define AP_INIT_RAW_ARGS(directive, func, mconfig, where, help) \
     { directive, { .raw_args=func }, mconfig, where, RAW_ARGS, help }
@@ -168,7 +168,7 @@ typedef const char *(*cmd_func) ();
 # define AP_FLAG     func
 
 # define AP_INIT_NO_ARGS(directive, func, mconfig, where, help) \
-    { directive, func, mconfig, where, RAW_ARGS, help }
+    { directive, func, mconfig, where, NO_ARGS, help }
 # define AP_INIT_RAW_ARGS(directive, func, mconfig, where, help) \
     { directive, func, mconfig, where, RAW_ARGS, help }
 # define AP_INIT_TAKE_ARGV(directive, func, mconfig, where, help) \

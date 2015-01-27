@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) config: For directives that do not expect any arguments, enforce
+     that none are specified in the configuration file. 
+     [Joachim Zobel <jzobel heute-morgen.de>, Eric Covener]
+
   *) mod_ssl: 'SSLProtocol ALL' was being ignored in virtual host context. 
      PR 57100.  [Michael Kaufmann <apache-bugzilla michael-kaufmann.ch>,
      Yann Ylavic]
