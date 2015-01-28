@@ -2,9 +2,6 @@
 
 Changes with Apache 2.4.13
 
-  *) Reverted <DirectoryMatch > behavior regression introduced in 2.4.12
-     (not released).
-
 Changes with Apache 2.4.12
 
   *) mpm_winnt: Accept utf-8 (Unicode) service names and descriptions for
@@ -15,6 +12,9 @@ Changes with Apache 2.4.12
 
   *) configure: Fix --enable-v4-mapped configuration on *BSD. PR 53824.
      [ olli hauer <ohauer gmx.de>, Yann Ylavic ]
+
+  *) Reverted <DirectoryMatch > behavior regression introduced in 2.4.11
+     (not released).
 
 Changes with Apache 2.4.11
   
