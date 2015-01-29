@@ -57,6 +57,7 @@
 
 <seealso><program>fcgistarter</program></seealso>
 <seealso><module>mod_proxy</module></seealso>
+<seealso><module>mod_authnz_fcgi</module></seealso>
 
 <section id="examples"><title>Examples</title>
     <p>Remember, in order to make the following examples work, you have to
