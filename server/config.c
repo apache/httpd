@@ -841,7 +841,8 @@ AP_DECLARE(module *) ap_find_linked_module(const char *name)
 #define AP_MAX_ARGC 64
 
 static const char *invoke_cmd(const command_rec *cmd, cmd_parms *parms,
-                              void *mconfig, const char *args)
+                              void *mconfig, const char *args, 
+                              ap_directive_t *parent)
 {
     int override_list_ok = 0;
     char *w, *w2, *w3;
@@ -870,6 +871,7 @@ static const char *invoke_cmd(const command_rec *cmd, cmd_parms *parms,
 
     parms->info = cmd->cmd_data;
     parms->cmd = cmd;
+    parms->parent = parent;
 
     switch (cmd->args_how) {
     case RAW_ARGS:
@@ -1306,7 +1308,7 @@ static const char *ap_walk_config_sub(const ap_directive_t *current,
             continue;
         }
 
-        retval = invoke_cmd(cmd, parms, dir_config, current->args);
+        retval = invoke_cmd(cmd, parms, dir_config, current->args, NULL);
 
         if (retval != NULL && strcmp(retval, DECLINE_CMD) != 0) {
             /* If the directive in error has already been set, don't
@@ -1670,7 +1672,7 @@ static const char *execute_now(char *cmd_line, const char *args,
         const char *retval;
         cmd = ml->cmd;
 
-        retval = invoke_cmd(cmd, parms, sub_tree, args);
+        retval = invoke_cmd(cmd, parms, sub_tree, args, parent);
 
         if (retval != NULL) {
             return retval;
