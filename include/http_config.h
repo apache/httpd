@@ -326,8 +326,8 @@ struct cmd_parms_struct {
     /** directive with syntax error */
     const ap_directive_t *err_directive;
  
-    /** If the current directive is EXEC_ON_READ, this is the 
-        enclosing directive  */
+    /** If the current directive is EXEC_ON_READ, this is the last 
+        (non-EXEC_ON_READ)  enclosing directive  */
     ap_directive_t *parent;
 };
 
