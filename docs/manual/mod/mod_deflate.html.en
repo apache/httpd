@@ -109,7 +109,7 @@ SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip</pre>
         filters like PHP or SSI. It never touches internal subrequests.
       </div>
       <div class="note"><h3>Note</h3>
-        There is a environment variable <code>force-gzip</code>,
+        There is an environment variable <code>force-gzip</code>,
         set via <code class="directive"><a href="../mod/mod_env.html#setenv">SetEnv</a></code>, which
         will ignore the accept-encoding setting of your browser and will
         send compressed output.
@@ -120,7 +120,7 @@ SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip</pre>
       <p>The <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> module also provides a filter for
       inflating/uncompressing a gzip compressed response body. In order to activate
       this feature you have to insert the <code>INFLATE</code> filter into
-      the outputfilter chain using <code class="directive"><a href="../mod/core.html#setoutputfilter">SetOutputFilter</a></code> or <code class="directive"><a href="../mod/mod_mime.html#addoutputfilter">AddOutputFilter</a></code>, for example:</p>
+      the output filter chain using <code class="directive"><a href="../mod/core.html#setoutputfilter">SetOutputFilter</a></code> or <code class="directive"><a href="../mod/mod_mime.html#addoutputfilter">AddOutputFilter</a></code>, for example:</p>
 
       <pre class="prettyprint lang-config">&lt;Location /dav-area&gt;
     ProxyPass http://example.com/
@@ -202,14 +202,14 @@ SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip</pre>
     <dl>
     <dt>AddSuffix</dt>
     <dd><p>Append the compression method onto the end of the ETag, causing 
-        compressed and uncompressed representatins to have unique ETags.  
+        compressed and uncompressed representations to have unique ETags.  
         This has been the default since 2.4.0, but prevents serving 
         "HTTP Not Modified" (304) responses to conditional requests for 
         compressed content.</p></dd>
     <dt>NoChange</dt>
     <dd><p>Don't change the ETag on a compressed response. This was the default
         prior to 2.4.0, but does not satisfy the HTTP/1.1 property that all
-        representations of the same resource have unique ETags </p></dd>
+        representations of the same resource have unique ETags. </p></dd>
     <dt>Remove</dt>
     <dd><p>Remove the ETag header from compressed responses. This prevents 
         some conditional requests from being possible, but avoids the 
@@ -272,7 +272,7 @@ SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip</pre>
 
     <p>If you want to extract more accurate values from your logs, you
     can use the <var>type</var> argument to specify the type of data
-    left as note for logging. <var>type</var> can be one of:</p>
+    left as a note for logging. <var>type</var> can be one of:</p>
 
     <dl>
       <dt><code>Input</code></dt>
@@ -352,7 +352,7 @@ CustomLog logs/deflate_log deflate</pre>
         specifies the maximum ratio of deflated to inflated size of an 
         inflated request body. This ratio is checked as the body is
         streamed in, and if crossed more than 
-        <code class="directive">DeflateInflateRatioBurst</code> times the request
+        <code class="directive">DeflateInflateRatioBurst</code> times, the request
         will be terminated.</p>
 
 </div>
