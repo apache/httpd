@@ -333,7 +333,7 @@ CustomLog logs/deflate_log deflate</pre>
 </table>
     <p>The <code class="directive">DeflateInflateRatioBurst</code> directive 
        specifies the maximum number of times the 
-       <code class="directive">DeflateInflateRatioLimit</code> cab be crossed before 
+       <code class="directive">DeflateInflateRatioLimit</code> can be crossed before 
        terminating the request.</p>
 
 </div>
