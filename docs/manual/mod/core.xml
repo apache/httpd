@@ -717,7 +717,7 @@ which no other media type configuration could be found.
 <description>Define a variable</description>
 <syntax>Define <var>parameter-name</var> [<var>parameter-value</var>]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
-<context>directory</context></contextlist>
+</contextlist>
 
 <usage>
     <p>In its one parameter form, <directive>Define</directive> is equivalent
@@ -746,6 +746,10 @@ DocumentRoot /var/www/${servername}/htdocs
 
     <p>Variable names may not contain colon ":" characters, to avoid clashes
     with <directive module="mod_rewrite">RewriteMap</directive>'s syntax.</p>
+
+    <p>While this directive is supported in virtual host context,
+       the changes it makes are visible to any later configuration
+       directives, beyond any enclosing virtual host</p>
 </usage>
 </directivesynopsis>
 
@@ -4291,7 +4295,8 @@ certain events before failing a request</description>
 <name>UnDefine</name>
 <description>Undefine the existence of a variable</description>
 <syntax>UnDefine <var>parameter-name</var></syntax>
-<contextlist><context>server config</context></contextlist>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
 
 <usage>
     <p>Undoes the effect of a <directive module="core">Define</directive> or
@@ -4299,6 +4304,9 @@ certain events before failing a request</description>
     <p>This directive can be used to toggle the use of <directive module="core"
     type="section">IfDefine</directive> sections without needing to alter
     <code>-D</code> arguments in any startup scripts.</p>
+    <p>While this directive is supported in virtual host context,
+       the changes it makes are visible to any later configuration
+       directives, beyond any enclosing virtual host</p>
 </usage>
 </directivesynopsis>
 

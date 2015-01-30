@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) core: Define and UnDefine are no longer permitted in
+     directory context. Previously they would always be evaulated
+     as the configuration was read without regard for the directory
+     context. [Eric Covener]
+
   *) config: For directives that do not expect any arguments, enforce
      that none are specified in the configuration file. 
      [Joachim Zobel <jzobel heute-morgen.de>, Eric Covener]

@@ -1332,9 +1332,10 @@ static void init_config_defines(apr_pool_t *pconf)
 static const char *set_define(cmd_parms *cmd, void *dummy,
                               const char *name, const char *value)
 {
-    const char *err = ap_check_cmd_context(cmd, NOT_IN_HTACCESS);
-    if (err)
-        return err;
+    if (cmd->parent && strcasecmp(cmd->parent->directive, "<VirtualHost")) { 
+        return apr_pstrcat(cmd->pool, "Define is not valid in ", cmd->parent->directive, " context", NULL);
+    }
+
     if (ap_strchr_c(name, ':') != NULL)
         return "Variable name must not contain ':'";
 
@@ -1358,9 +1359,10 @@ static const char *unset_define(cmd_parms *cmd, void *dummy,
 {
     int i;
     char **defines;
-    const char *err = ap_check_cmd_context(cmd, NOT_IN_HTACCESS);
-    if (err)
-        return err;
+    if (cmd->parent && strcasecmp(cmd->parent->directive, "<VirtualHost")) { 
+        return apr_pstrcat(cmd->pool, "Define is not valid in ", cmd->parent->directive, " context", NULL);
+    }
+
     if (ap_strchr_c(name, ':') != NULL)
         return "Variable name must not contain ':'";
 
@@ -4181,9 +4183,9 @@ AP_INIT_TAKE1("AddDefaultCharset", set_add_default_charset, NULL, OR_FILEINFO,
   "The name of the default charset to add to any Content-Type without one or 'Off' to disable"),
 AP_INIT_TAKE1("AcceptPathInfo", set_accept_path_info, NULL, OR_FILEINFO,
   "Set to on or off for PATH_INFO to be accepted by handlers, or default for the per-handler preference"),
-AP_INIT_TAKE12("Define", set_define, NULL, EXEC_ON_READ|ACCESS_CONF|RSRC_CONF,
+AP_INIT_TAKE12("Define", set_define, NULL, EXEC_ON_READ|RSRC_CONF,
               "Define a variable, optionally to a value.  Same as passing -D to the command line."),
-AP_INIT_TAKE1("UnDefine", unset_define, NULL, EXEC_ON_READ|ACCESS_CONF|RSRC_CONF,
+AP_INIT_TAKE1("UnDefine", unset_define, NULL, EXEC_ON_READ|RSRC_CONF,
               "Undefine the existence of a variable. Undo a Define."),
 AP_INIT_RAW_ARGS("Error", generate_message, (void*) APLOG_ERR, OR_ALL,
                  "Generate error message from within configuration."),
