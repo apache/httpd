@@ -1333,7 +1333,7 @@ static const char *set_define(cmd_parms *cmd, void *dummy,
                               const char *name, const char *value)
 {
     if (cmd->parent && strcasecmp(cmd->parent->directive, "<VirtualHost")) { 
-        return apr_pstrcat(cmd->pool, "Define is not valid in ", cmd->parent->directive, " context", NULL);
+        return apr_pstrcat(cmd->pool, cmd->cmd->name, " is not valid in ", cmd->parent->directive, " context", NULL);
     }
 
     if (ap_strchr_c(name, ':') != NULL)
@@ -1360,7 +1360,7 @@ static const char *unset_define(cmd_parms *cmd, void *dummy,
     int i;
     char **defines;
     if (cmd->parent && strcasecmp(cmd->parent->directive, "<VirtualHost")) { 
-        return apr_pstrcat(cmd->pool, "Define is not valid in ", cmd->parent->directive, " context", NULL);
+        return apr_pstrcat(cmd->pool, cmd->cmd->name, " is not valid in ", cmd->parent->directive, " context", NULL);
     }
 
     if (ap_strchr_c(name, ':') != NULL)
