@@ -325,7 +325,10 @@ struct cmd_parms_struct {
     struct ap_conf_vector_t *context;
     /** directive with syntax error */
     const ap_directive_t *err_directive;
-
+ 
+    /** If the current directive is EXEC_ON_READ, this is the 
+        enclosing directive  */
+    ap_directive_t *parent;
 };
 
 /**
