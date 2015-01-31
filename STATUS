@@ -261,6 +261,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works + CHANGES
      +1: covener, minfrin
 
+   * mod_proxy_connect: fix duplicated AH introduced by r1635645
+                        (and merged in r1642857).
+     trunk patch:  http://svn.apache.org/r1656230
+     2.4.x patch: trunk works
+     +1: ylavic
+
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
