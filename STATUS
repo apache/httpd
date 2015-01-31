@@ -251,9 +251,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      and Redirect.
      trunk patch: http://svn.apache.org/r1653941
                   http://svn.apache.org/r1653978
-                  http://svn.apache.org/r1656225
      2.4.x patch: trunk works (modulo CHANGES)
      +1: minfrin
+     ylavic: please add r1656225 (make update-log-tags)
 
    * mod_authz_groupfile: Don't log routine authz failure at ERROR because
      it's just as likely to be OR'ed with other authz results. PR55523, try 2.
