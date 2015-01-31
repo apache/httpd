@@ -459,7 +459,7 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
                 else if (pollevent & APR_POLLERR) {
                     rv = APR_EPIPE;
                     c->aborted = 1;
-                    ap_log_rerror(APLOG_MARK, APLOG_NOTICE, 0, r, APLOGNO(01026)
+                    ap_log_rerror(APLOG_MARK, APLOG_NOTICE, 0, r, APLOGNO(02827)
                                   "err on client");
                 }
             }
