@@ -455,7 +455,7 @@ static char *try_alias(request_rec *r)
         char *found = apr_pstrdup(r->pool,
                 ap_expr_str_exec(r, dirconf->alias, &err));
         if (err) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO()
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02825)
                           "Can't evaluate alias expression: %s", err);
             return PREGSUB_ERROR;
         }
@@ -492,8 +492,8 @@ static char *try_redirect(request_rec *r, int *status)
             found = apr_pstrdup(r->pool,
                     ap_expr_str_exec(r, dirconf->redirect, &err));
             if (err) {
-                ap_log_rerror(
-                        APLOG_MARK, APLOG_ERR, 0, r, APLOGNO() "Can't evaluate redirect expression: %s", err);
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02826)
+                              "Can't evaluate redirect expression: %s", err);
                 return PREGSUB_ERROR;
             }
 
