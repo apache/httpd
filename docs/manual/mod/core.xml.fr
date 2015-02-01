@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1647229 -->
+<!-- English Revision : 1656063 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -818,6 +818,10 @@ DESACTIV&Eacute;S &agrave; partir de la version 2.3.0.</compatibility>
     <p>Le caract&egrave;re ":" est interdit dans les noms de variables afin
     d'&eacute;viter les conflits avec la syntaxe de la directive <directive
     module="mod_rewrite">RewriteMap</directive>.</p>
+
+    <p>Si cette directive est définie au sein d'un bloc VirtualHost, les
+    changements qu'elle induit sont visibles de toute directive
+    ultérieure, au delà de tout bloc VirtualHost.</p>
 </usage>
 </directivesynopsis>
 
@@ -4712,7 +4716,8 @@ host</context></contextlist>
 <name>UnDefine</name>
 <description>Invalide la d&eacute;finition d'une variable</description>
 <syntax>UnDefine <var>nom-variable</var></syntax>
-<contextlist><context>server config</context></contextlist>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
 
 <usage>
     <p>Annule l'effet d'une directive <directive
@@ -4723,6 +4728,9 @@ host</context></contextlist>
     section <directive module="core" type="section">IfDefine</directive>
     sans avoir &agrave; modifier les arguments <code>-D</code> dans les scripts
     de d&eacute;marrage.</p>
+    <p>Si cette directive est définie au sein d'un bloc VirtualHost, les
+    changements qu'elle induit sont visibles de toute directive
+    ultérieure, au delà de tout bloc VirtualHost.</p>    
 </usage>
 </directivesynopsis>
 

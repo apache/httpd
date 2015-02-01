@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1364341:1654831 (outdated) -->
+<!-- English Revision : 1654831 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -170,10 +170,21 @@ arri&egrave;res dans les expressions rationnelles</title>
       un des <em>mod&egrave;les de conditions</em>, des r&eacute;f&eacute;rences arri&egrave;res
       sont cr&eacute;&eacute;es en interne et peuvent &ecirc;tre rappel&eacute;es via les cha&icirc;nes
       <code>$N</code> et <code>%N</code> (voir ci-dessous). Ces
-      r&eacute;f&eacute;rences sont disponibles lors de la cr&eacute;ation des cha&icirc;nes de
-      <em>Substitution</em> et des <em>Cha&icirc;nes de test</em> comme
-      pr&eacute;cis&eacute; dans les chapitres suivants. La figure 1
-      montre &agrave; quels endroits les r&eacute;f&eacute;rences arri&egrave;res sont suceptibles
+      r&eacute;f&eacute;rences sont disponibles lors de la
+      cr&eacute;ation de la cha&icirc;ne de substitution d'une directive
+      <directive module="mod_rewrite">RewriteRule</directive> ou de la
+      cha&icirc;ne de test d'une directive <directive
+      module="mod_rewrite">RewriteCond</directive>.</p>
+      <p>Les captures dans les mod&egrave;les de directives <directive
+      module="mod_rewrite">RewriteRule</directive> sont paradoxalement
+      disponibles dans toutes les directives <directive
+      module="mod_rewrite">RewriteCond</directive> qui pr&eacute;c&egrave;dent, car
+      les expressions des directives <directive
+      module="mod_rewrite">RewriteRule</directive> sont &eacute;valu&eacute;es avant
+      les conditions individuelles.</p>
+      
+      <p>La figure 1 montre &agrave; quels endroits les
+      r&eacute;f&eacute;rences arri&egrave;res sont suceptibles
       d'&ecirc;tre d&eacute;velopp&eacute;es, et illustre le flux des comparaisons
       effectu&eacute;es par les r&egrave;gles RewriteRule et
       RewriteCond. Dans les chapitres suivants, nous examinerons comment
