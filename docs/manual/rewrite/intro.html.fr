@@ -24,8 +24,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/rewrite/intro.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/rewrite/intro.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 <p>Ce document est un complément à la <a href="../mod/mod_rewrite.html">documentation de référence</a> du module
 <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>. Il décrit les concepts de base dont la
