@@ -128,6 +128,12 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunks works (modulo CHANGES)
      +1: ylavic, rjung, jailletc36
 
+   * mod_authz_groupfile: Don't log routine authz failure at ERROR because
+     it's just as likely to be OR'ed with other authz results. PR55523, try 2.
+     trunk patch:  http://svn.apache.org/r1654184
+     2.4.x patch: trunk works + CHANGES
+     +1: covener, minfrin, ylavic
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -255,12 +261,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (modulo CHANGES)
      +1: minfrin
      ylavic: please add r1656225 (make update-log-tags)
-
-   * mod_authz_groupfile: Don't log routine authz failure at ERROR because
-     it's just as likely to be OR'ed with other authz results. PR55523, try 2.
-     trunk patch:  http://svn.apache.org/r1654184
-     2.4.x patch: trunk works + CHANGES
-     +1: covener, minfrin
 
    * mod_proxy_connect: fix duplicated AH introduced by r1635645
                         (and merged to 2.4.11 in r1642857).
