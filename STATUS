@@ -112,6 +112,22 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (module CHANGES)
      +1: ylavic, wrowe, minfrin
 
+   * mod_authnz_fcgi.c: Silence compiler warnings:
+         - modules/aaa/mod_authnz_fcgi.c:705: warning:
+           'orspbuflen' may be used uninitialized in this function
+         - modules/aaa/mod_authnz_fcgi.c:1235: warning:
+           comparison is always false due to limited range of data type
+     trunk patch: http://svn.apache.org/r1652829
+     2.4.x patch: trunk works
+     +1: rjung, ylavic, jailletc36
+
+   * acinclude.m4: Generate #LoadModule directive in default httpd.conf for
+                   every --enable-mpms-shared. PR 53882.
+     trunk patch: http://svn.apache.org/r1652930
+                  http://svn.apache.org/r1652933 (CHANGES)
+     2.4.x patch: trunks works (modulo CHANGES)
+     +1: ylavic, rjung, jailletc36
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -213,22 +229,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-ap_listeners_buckets.patch
      +1: ylavic
 
-   * acinclude.m4: Generate #LoadModule directive in default httpd.conf for
-                   every --enable-mpms-shared. PR 53882.
-     trunk patch: http://svn.apache.org/r1652930
-                  http://svn.apache.org/r1652933 (CHANGES)
-     2.4.x patch: trunks works (modulo CHANGES)
-     +1: ylavic, rjung
-
-   * mod_authnz_fcgi.c: Silence compiler warnings:
-         - modules/aaa/mod_authnz_fcgi.c:705: warning:
-           'orspbuflen' may be used uninitialized in this function
-         - modules/aaa/mod_authnz_fcgi.c:1235: warning:
-           comparison is always false due to limited range of data type
-     trunk patch: http://svn.apache.org/r1652829
-     2.4.x patch: trunk works
-     +1: rjung, ylavic
-
    * mod_cgi, mod_cgid: If both modules get installed,
      use IfModule for MPM to LoadModule mod_cgi for prefork
      and mod_cgid for all other MPMs. PR 57379.
@@ -265,7 +265,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                         (and merged in r1642857).
      trunk patch:  http://svn.apache.org/r1656230
      2.4.x patch: trunk works
-     +1: ylavic
+     +1: ylavic, jailletc36
+
 
 OTHER PROPOSALS
 
