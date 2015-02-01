@@ -3358,7 +3358,9 @@ PROXY_DECLARE(int) ap_proxy_create_hdrbrgd(apr_pool_t *p,
         buf = apr_pstrcat(p, r->method, " ", url, " HTTP/1.1" CRLF, NULL);
     }
     if (apr_table_get(r->subprocess_env, "proxy-nokeepalive")) {
-        origin->keepalive = AP_CONN_CLOSE;
+        if (origin) {
+            origin->keepalive = AP_CONN_CLOSE;
+        }
         p_conn->close = 1;
     }
     ap_xlate_proto_to_ascii(buf, strlen(buf));
