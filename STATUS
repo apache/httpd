@@ -262,9 +262,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: covener, minfrin
 
    * mod_proxy_connect: fix duplicated AH introduced by r1635645
-                        (and merged in r1642857).
-     trunk patch:  http://svn.apache.org/r1656230
-     2.4.x patch: trunk works
+                        (and merged to 2.4.11 in r1642857).
+     trunk patch: http://svn.apache.org/r1656230
+     2.4.x patch: trunk works (modulo docs/log-message-tags)
      +1: ylavic, jailletc36
 
    * mod_ssl: Add support for extracting subjectAltName entries of type
@@ -273,6 +273,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: https://svn.apache.org/r1650047
      2.4.x patch: trunk patch works (modulo CHANGES)
      +1: kbrand
+
+   * mod_proxy_http: Don't establish or reuse a backend connection before pre-
+     fetching the request body, so to minimize the delay between it is supposed
+     to be alive and the first bytes sent: this is a best effort to prevent the
+     backend from closing because of idle or keepalive timeout in the meantime.
+     Also, handle a new "proxy-flushall" environment variable which allows to
+     flush any forwarded body data immediately. PR 56541+37920.
+     trunk patch: http://svn.apache.org/r1656259
+                  http://svn.apache.org/r1656359 (CHANGES entry)
+     2.4.x patch: trunk works (modulo CHANGES, docs/log-message-tags)
+     +1: ylavic
+
 
 OTHER PROPOSALS
 
