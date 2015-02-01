@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1651668:1655800 (outdated) -->
+<!-- English Revision: 1655800 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -60,6 +60,7 @@
 
 <seealso><program>fcgistarter</program></seealso>
 <seealso><module>mod_proxy</module></seealso>
+<seealso><module>mod_authnz_fcgi</module></seealso>
 
 <section id="examples"><title>Exemples</title>
     <p>Pour que ces exemples fonctionnent, vous ne devez pas oublier
