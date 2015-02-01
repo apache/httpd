@@ -1237,7 +1237,7 @@ ce dernier beaucoup plus souple.</p>
 utilisée pour <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> (la version minimale 1.0.2 est un
 prérequis). Pour obtenir la liste des commandes supportées, voir la
 section <em>Supported configuration file commands</em> de la page de
-manuel <a href="http://www.openssl.org/docs/ssl/SSL_CONF_cmd.html#SUPPORTED_CONFIGURATION_FILE_COM">SSL_CONF_cmd(3)</a>
+manuel <a href="http://www.openssl.org/docs/ssl/SSL_CONF_cmd.html#supported_configuration_file_commands">SSL_CONF_cmd(3)</a>
 d'OpenSSL.</p>
 
 <p>Certaines commandes peuvent remplacer des directives existantes
