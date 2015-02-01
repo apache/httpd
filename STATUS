@@ -226,6 +226,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1640184
                   http://svn.apache.org/r1640763
                   http://svn.apache.org/r1643179
+                  http://svn.apache.org/r1656368
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-ap_listeners_buckets.patch
      +1: ylavic
 
