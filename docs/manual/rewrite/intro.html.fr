@@ -157,10 +157,17 @@ arrières dans les expressions rationnelles</a></h3>
       un des <em>modèles de conditions</em>, des références arrières
       sont créées en interne et peuvent être rappelées via les chaînes
       <code>$N</code> et <code>%N</code> (voir ci-dessous). Ces
-      références sont disponibles lors de la création des chaînes de
-      <em>Substitution</em> et des <em>Chaînes de test</em> comme
-      précisé dans les chapitres suivants. La figure 1
-      montre à quels endroits les références arrières sont suceptibles
+      références sont disponibles lors de la
+      création de la chaîne de substitution d'une directive
+      <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> ou de la
+      chaîne de test d'une directive <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code>.</p>
+      <p>Les captures dans les modèles de directives <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> sont paradoxalement
+      disponibles dans toutes les directives <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code> qui précèdent, car
+      les expressions des directives <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> sont évaluées avant
+      les conditions individuelles.</p>
+      
+      <p>La figure 1 montre à quels endroits les
+      références arrières sont suceptibles
       d'être développées, et illustre le flux des comparaisons
       effectuées par les règles RewriteRule et
       RewriteCond. Dans les chapitres suivants, nous examinerons comment
