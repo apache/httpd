@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_macro: Clear macros before initialization to avoid use-after-free
+     on startup or restart when the module is linked statically. PR 57525
+     [apache.org tech.futurequest.net, Yann Ylavic]
+
   *) mod_proxy_http: Don't establish or reuse a backend connection before pre-
      fetching the request body, so to minimize the delay between it is supposed
      to be alive and the first bytes sent: this is a best effort to prevent the
