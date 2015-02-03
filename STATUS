@@ -286,6 +286,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (modulo CHANGES, docs/log-message-tags)
      +1: ylavic
 
+   * mod_macro: Clear macros before initialization to avoid use-after-free
+     on startup or restart when the module is linked statically. PR 57525
+     trunk patch: http://svn.apache.org/r1656669
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: ylavic
 
 OTHER PROPOSALS
 
