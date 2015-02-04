@@ -2227,6 +2227,7 @@ static int lua_websocket_read(lua_State *L)
 {
     apr_socket_t *sock;
     apr_status_t rv;
+    int do_read = 1;
     int n = 0;
     apr_size_t len = 1;
     apr_size_t plen = 0;
@@ -2244,6 +2245,8 @@ static int lua_websocket_read(lua_State *L)
     mask_bytes = apr_pcalloc(r->pool, 4);
     sock = ap_get_conn_socket(r->connection);
 
+    while (do_read) { 
+    do_read = 0;
     /* Get opcode and FIN bit */
     if (plaintext) {
         rv = apr_socket_recv(sock, &byte, &len);
@@ -2377,9 +2380,10 @@ static int lua_websocket_read(lua_State *L)
                 frame[0] = 0x8A;
                 frame[1] = 0;
                 apr_socket_send(sock, frame, &plen); /* Pong! */
-                lua_websocket_read(L); /* read the next frame instead */
+                do_read = 1;
             }
         }
+    }
     }
     return 0;
 }

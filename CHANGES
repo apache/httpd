@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) SECURITY: CVE-2015-0228 (cve.mitre.org)
+     mod_lua: A maliciously crafted websockets PING after a script
+     calls r:wsupgrade() can cause a child process crash. 
+     [Edward Lu <Chaosed0 gmail.com>]
+
   *) mod_lua: After a r:wsupgrade(), mod_lua was not properly
      responding to a websockets PING but instead invoking the specified 
      script. PR57524. [Edward Lu <Chaosed0 gmail.com>]
