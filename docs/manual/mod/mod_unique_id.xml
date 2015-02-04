@@ -182,7 +182,7 @@ identifier for each request</description>
     and can otherwise use the same alphabet and bit length. Since
     the time stamps are essentially an increasing sequence, it's
     sufficient to have a <em>flag second</em> in which all machines
-    in the cluster stop serving and request, and stop using the old
+    in the cluster stop serving any request, and stop using the old
     encoding format. Afterwards they can resume requests and begin
     issuing the new encodings.</p>
 
