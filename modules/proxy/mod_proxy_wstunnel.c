@@ -55,8 +55,8 @@ static int proxy_wstunnel_pump(ws_baton_t *baton, apr_time_t timeout, int try_as
     apr_bucket_brigade *bb = baton->bb;
 
     while(1) { 
-        if ((rv = apr_pollset_poll(pollset, timeout, &pollcnt, &signalled))
-                != APR_SUCCESS) {
+        rv = apr_pollset_poll(pollset, timeout, &pollcnt, &signalled);
+        if (rv != APR_SUCCESS) {
             if (APR_STATUS_IS_EINTR(rv)) {
                 continue;
             }
@@ -86,16 +86,16 @@ static int proxy_wstunnel_pump(ws_baton_t *baton, apr_time_t timeout, int try_as
                 if (pollevent & (APR_POLLIN | APR_POLLHUP)) {
                     ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, APLOGNO(02446)
                             "sock was readable");
-                    rv = proxy_wstunnel_transfer(r, backconn, c, bb, "sock");
+                    rv |= proxy_wstunnel_transfer(r, backconn, c, bb, "sock");
                 }
                 else if (pollevent & APR_POLLERR) {
-                    rv = APR_EPIPE;
+                    rv |= APR_EPIPE;
                     backconn->aborted = 1;
                     ap_log_rerror(APLOG_MARK, APLOG_NOTICE, 0, r, APLOGNO(02447)
                             "error on backconn");
                 }
                 else { 
-                    rv = APR_EGENERAL;
+                    rv |= APR_EGENERAL;
                     ap_log_rerror(APLOG_MARK, APLOG_NOTICE, 0, r, APLOGNO(02605)
                             "unknown event on backconn %d", pollevent);
                 }
@@ -105,22 +105,22 @@ static int proxy_wstunnel_pump(ws_baton_t *baton, apr_time_t timeout, int try_as
                 if (pollevent & (APR_POLLIN | APR_POLLHUP)) {
                     ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, APLOGNO(02448)
                             "client was readable");
-                    rv = proxy_wstunnel_transfer(r, c, backconn, bb, "client");
+                    rv |= proxy_wstunnel_transfer(r, c, backconn, bb, "client");
                 }
                 else if (pollevent & APR_POLLERR) {
-                    rv = APR_EPIPE;
+                    rv |= APR_EPIPE;
                     c->aborted = 1;
                     ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, APLOGNO(02607)
                             "error on client conn");
                 }
                 else { 
-                    rv = APR_EGENERAL;
+                    rv |= APR_EGENERAL;
                     ap_log_rerror(APLOG_MARK, APLOG_NOTICE, 0, r, APLOGNO(02606)
                             "unknown event on client conn %d", pollevent);
                 }
             }
             else {
-                rv = APR_EBADF;
+                rv |= APR_EBADF;
                 ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(02449)
                         "unknown socket in pollset");
             }
