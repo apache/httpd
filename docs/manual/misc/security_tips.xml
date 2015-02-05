@@ -122,7 +122,7 @@
       uses asynchronous processing to avoid devoting a thread to each
       connection. Due to the nature of the OpenSSL library the
       <module>event</module> mpm is currently incompatible with
-	  <module>mod_ssl</module> and other input filters. In these
+      <module>mod_ssl</module> and other input filters. In these
       cases it falls back to the behaviour of the
       <module>worker</module> mpm.</li>
 
@@ -335,6 +335,8 @@
 
     <p>This prevents the use of <code>.htaccess</code> files in all
     directories apart from those specifically enabled.</p>
+
+    <p>Note that this setting is the default since Apache 2.3.9.</p>
 
   </section>
 
