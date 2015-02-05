@@ -7,8 +7,8 @@ Changes with Apache 2.5.0
      [Edward Lu <Chaosed0 gmail.com>]
 
   *) mod_proxy_connect/wstunnel: If both client and backend sides get readable
-     at the same time, don't ignore errors while forwarding from the first side
-     if none occurs next on the other side.  [Yann Ylavic]
+     at the same time, don't lose errors occuring while forwarding on the first
+     side when none occurs next on the other side, and abort.  [Yann Ylavic]
 
   *) mod_lua: After a r:wsupgrade(), mod_lua was not properly
      responding to a websockets PING but instead invoking the specified 
