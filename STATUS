@@ -112,15 +112,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (module CHANGES)
      +1: ylavic, wrowe, minfrin
 
-   * mod_authnz_fcgi.c: Silence compiler warnings:
-         - modules/aaa/mod_authnz_fcgi.c:705: warning:
-           'orspbuflen' may be used uninitialized in this function
-         - modules/aaa/mod_authnz_fcgi.c:1235: warning:
-           comparison is always false due to limited range of data type
-     trunk patch: http://svn.apache.org/r1652829
-     2.4.x patch: trunk works
-     +1: rjung, ylavic, jailletc36
-
    * acinclude.m4: Generate #LoadModule directive in default httpd.conf for
                    every --enable-mpms-shared. PR 53882.
      trunk patch: http://svn.apache.org/r1652930
