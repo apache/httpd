@@ -28,8 +28,6 @@
 #ifdef AP_NEED_SET_MUTEX_PERMS
 #include "unixd.h"
 #endif
-#include "apr_version.h"
-#include "apr_hash.h"
 
 #if APR_HAVE_UNISTD_H
 #include <unistd.h>         /* for getpid() */
