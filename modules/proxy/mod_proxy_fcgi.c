@@ -427,8 +427,8 @@ static int handle_headers(request_rec *r, int *state,
 
 static apr_status_t dispatch(proxy_conn_rec *conn, proxy_dir_conf *conf,
                              request_rec *r, apr_pool_t *setaside_pool,
-                             apr_uint16_t request_id,
-                             const char **err)
+                             apr_uint16_t request_id, const char **err,
+                             int *bad_request, int *has_responded)
 {
     apr_bucket_brigade *ib, *ob;
     int seen_end_of_headers = 0, done = 0, ignore_body = 0;
@@ -486,6 +486,7 @@ static apr_status_t dispatch(proxy_conn_rec *conn, proxy_dir_conf *conf,
                                 iobuf_size);
             if (rv != APR_SUCCESS) {
                 *err = "reading input brigade";
+                *bad_request = 1;
                 break;
             }
 
@@ -637,9 +638,14 @@ recv_again:
                                 apr_brigade_cleanup(ob);
                                 tmp_b = apr_bucket_eos_create(c->bucket_alloc);
                                 APR_BRIGADE_INSERT_TAIL(ob, tmp_b);
+
+                                *has_responded = 1;
                                 r->status = status;
-                                ap_pass_brigade(r->output_filters, ob);
-                                if (status == HTTP_NOT_MODIFIED) {
+                                rv = ap_pass_brigade(r->output_filters, ob);
+                                if (rv != APR_SUCCESS) {
+                                    *err = "passing headers brigade to output filters";
+                                }
+                                else if (status == HTTP_NOT_MODIFIED) {
                                     /* The 304 response MUST NOT contain
                                      * a message-body, ignore it. */
                                     ignore_body = 1;
@@ -671,6 +677,7 @@ recv_again:
                                 /* Send the part of the body that we read while
                                  * reading the headers.
                                  */
+                                *has_responded = 1;
                                 rv = ap_pass_brigade(r->output_filters, ob);
                                 if (rv != APR_SUCCESS) {
                                     *err = "passing brigade to output filters";
@@ -696,6 +703,7 @@ recv_again:
                          * along smaller chunks
                          */
                         if (script_error_status == HTTP_OK && !ignore_body) {
+                            *has_responded = 1;
                             rv = ap_pass_brigade(r->output_filters, ob);
                             if (rv != APR_SUCCESS) {
                                 *err = "passing brigade to output filters";
@@ -717,6 +725,8 @@ recv_again:
                     if (script_error_status == HTTP_OK) {
                         b = apr_bucket_eos_create(c->bucket_alloc);
                         APR_BRIGADE_INSERT_TAIL(ob, b);
+
+                        *has_responded = 1;
                         rv = ap_pass_brigade(r->output_filters, ob);
                         if (rv != APR_SUCCESS) {
                             *err = "passing brigade to output filters";
@@ -771,6 +781,7 @@ recv_again:
 
     if (script_error_status != HTTP_OK) {
         ap_die(script_error_status, r); /* send ErrorDocument */
+        *has_responded = 1;
     }
 
     return rv;
@@ -795,6 +806,8 @@ static int fcgi_do_request(apr_pool_t *p, request_rec *r,
     apr_status_t rv;
     apr_pool_t *temp_pool;
     const char *err;
+    int bad_request = 0,
+        has_responded = 0;
 
     /* Step 1: Send AP_FCGI_BEGIN_REQUEST */
     rv = send_begin_request(conn, request_id);
@@ -817,7 +830,8 @@ static int fcgi_do_request(apr_pool_t *p, request_rec *r,
     }
 
     /* Step 3: Read records from the back end server and handle them. */
-    rv = dispatch(conn, conf, r, temp_pool, request_id, &err);
+    rv = dispatch(conn, conf, r, temp_pool, request_id,
+                  &err, &bad_request, &has_responded);
     if (rv != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01075)
                       "Error dispatching request to %s: %s%s%s",
@@ -826,6 +840,12 @@ static int fcgi_do_request(apr_pool_t *p, request_rec *r,
                       err ? err : "",
                       err ? ")" : "");
         conn->close = 1;
+        if (has_responded) {
+            return AP_FILTER_ERROR;
+        }
+        if (bad_request) {
+            return ap_map_http_request_error(rv, HTTP_BAD_REQUEST);
+        }
         return HTTP_SERVICE_UNAVAILABLE;
     }
 

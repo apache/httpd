@@ -337,7 +337,7 @@ static int stream_reqbody_chunked(apr_pool_t *p,
                           " from %s (%s)", p_conn->addr,
                           p_conn->hostname ? p_conn->hostname: "",
                           c->client_ip, c->remote_host ? c->remote_host: "");
-            return HTTP_BAD_REQUEST;
+            return ap_map_http_request_error(status, HTTP_BAD_REQUEST);
         }
     }
 
@@ -502,7 +502,7 @@ static int stream_reqbody_cl(apr_pool_t *p,
                           " from %s (%s)", p_conn->addr,
                           p_conn->hostname ? p_conn->hostname: "",
                           c->client_ip, c->remote_host ? c->remote_host: "");
-            return HTTP_BAD_REQUEST;
+            return ap_map_http_request_error(status, HTTP_BAD_REQUEST);
         }
     }
 
@@ -653,7 +653,7 @@ static int spool_reqbody_cl(apr_pool_t *p,
         ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(02610)
                       "read request body failed from %s (%s)",
                       c->client_ip, c->remote_host ? c->remote_host: "");
-        return HTTP_BAD_REQUEST;
+        return ap_map_http_request_error(status, HTTP_BAD_REQUEST);
     }
 
     if (bytes_spooled || force_cl) {
@@ -837,7 +837,7 @@ static int ap_proxy_http_prefetch(apr_pool_t *p, request_rec *r,
                           " from %s (%s)",
                           p_conn->addr, p_conn->hostname ? p_conn->hostname: "",
                           c->client_ip, c->remote_host ? c->remote_host: "");
-            return HTTP_BAD_REQUEST;
+            return ap_map_http_request_error(status, HTTP_BAD_REQUEST);
         }
 
         apr_brigade_length(temp_brigade, 1, &bytes);

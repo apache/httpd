@@ -256,10 +256,10 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
         if (status != APR_SUCCESS) {
             /* We had a failure: Close connection to backend */
             conn->close = 1;
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00871)
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, status, r, APLOGNO(00871)
                           "ap_get_brigade failed");
             apr_brigade_destroy(input_brigade);
-            return HTTP_BAD_REQUEST;
+            return ap_map_http_request_error(status, HTTP_BAD_REQUEST);
         }
 
         /* have something */
@@ -393,6 +393,9 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                                           "ap_get_brigade failed");
                             if (APR_STATUS_IS_TIMEUP(status)) {
                                 rv = HTTP_REQUEST_TIME_OUT;
+                            }
+                            else if (status == AP_FILTER_ERROR) {
+                                data_sent = -1;
                             }
                             output_failed = 1;
                             break;
@@ -608,8 +611,13 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                       "output: %i", backend_failed, output_failed);
         /* We had a failure: Close connection to backend */
         conn->close = 1;
-        /* Return DONE to avoid error messages being added to the stream */
-        if (data_sent) {
+        if (data_sent < 0) {
+            /* Return AP_FILTER_ERROR to let ap_die() handle the error */
+            rv = AP_FILTER_ERROR;
+            data_sent = 0;
+        }
+        else if (data_sent) {
+            /* Return DONE to avoid error messages being added to the stream */
             rv = DONE;
         }
     }
@@ -705,8 +713,10 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
     }
 
     /* If we have added something to the brigade above, send it */
-    if (!APR_BRIGADE_EMPTY(output_brigade))
-        ap_pass_brigade(r->output_filters, output_brigade);
+    if (!APR_BRIGADE_EMPTY(output_brigade)
+        && ap_pass_brigade(r->output_filters, output_brigade) != APR_SUCCESS) {
+        rv = AP_FILTER_ERROR;
+    }
 
     apr_brigade_destroy(output_brigade);
 
