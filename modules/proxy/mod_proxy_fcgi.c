@@ -890,7 +890,7 @@ static int proxy_fcgi_handler(request_rec *r, proxy_worker *worker,
     }
 
     /* This scheme handler does not reuse connections by default, to
-     * avoid tieing up a fastcgi that isn't expecting to work on 
+     * avoid tying up a fastcgi that isn't expecting to work on 
      * parallel requests.  But if the user went out of their way to
      * type the default value of disablereuse=off, we'll allow it.
      */  
