@@ -6,6 +6,9 @@ Changes with Apache 2.5.0
      calls r:wsupgrade() can cause a child process crash. 
      [Edward Lu <Chaosed0 gmail.com>]
 
+  *) http: Make ap_die() robust against any HTTP error code and not modify
+     response status (finally logged) when nothing is to be done. [Yann Ylavic]
+
   *) mod_proxy_connect/wstunnel: If both client and backend sides get readable
      at the same time, don't lose errors occuring while forwarding on the first
      side when none occurs next on the other side, and abort.  [Yann Ylavic]
