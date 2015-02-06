@@ -594,10 +594,6 @@ LogFormat "%!200,304,302{Referer}i" refererlog
     for the access log, the same technique can be used for the
     error log.</p>
 
-    <p>A similar but much more flexible log rotation program
-    called <a href="http://www.cronolog.org/">cronolog</a>
-    is available at an external site.</p>
-
     <p>As with conditional logging, piped logs are a very powerful
     tool, but they should not be used where a simpler solution like
     off-line post-processing is available.</p>
@@ -618,6 +614,18 @@ CustomLog "|$/usr/local/apache/bin/rotatelogs   /var/log/access_log 86400" commo
     For compatibility reasons with Apache 2.2 the notation
     "<code>||</code>" is also supported and equivalent to using
     "<code>|</code>".</p>
+
+    <note><title>Windows note</title>
+    <p>Note that on Windows, you may run into problems when running many piped
+    logger processes, especially when HTTPD is running as a service. This is
+    caused by running out of desktop heap space. The desktop heap space given
+    to each service is specified by the third argument to the
+    <code>SharedSection</code> parameter in the
+    HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\SessionManager\SubSystems\Windows
+    registry value. <strong>Change this value with care</strong>; the normal
+    caveats for changing the Windows registry apply, but you might also exhaust
+    the desktop heap pool if the number is adjusted too high.</p>
+    </note>
   </section>
 
   <section id="virtualhost">
