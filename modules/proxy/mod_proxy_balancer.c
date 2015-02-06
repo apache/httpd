@@ -1039,7 +1039,7 @@ static int balancer_handler(request_rec *r)
         rv = ap_get_brigade(r->input_filters, ib, AP_MODE_READBYTES,
                                 APR_BLOCK_READ, len);
         if (rv != APR_SUCCESS) {
-            return HTTP_INTERNAL_SERVER_ERROR;
+            return ap_map_http_request_error(rv, HTTP_BAD_REQUEST);
         }
         apr_brigade_flatten(ib, buf, &len);
         buf[len] = '\0';

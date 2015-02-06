@@ -6,6 +6,9 @@ Changes with Apache 2.5.0
      calls r:wsupgrade() can cause a child process crash. 
      [Edward Lu <Chaosed0 gmail.com>]
 
+  *) mod_proxy(es): Avoid error response/document handling by the core if some
+     input filter already did it while reading client's payload. [Yann Ylavic]
+
   *) http: Make ap_die() robust against any HTTP error code and not modify
      response status (finally logged) when nothing is to be done. [Yann Ylavic]
 
