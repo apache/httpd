@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1479872:1657687 (outdated) -->
+<!-- English revision : 1657687 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -345,6 +345,8 @@
     <p>Ceci interdit l'utilisation des fichiers <code>.htaccess</code> dans
     tous les r&eacute;pertoires, sauf ceux pour lesquels c'est explicitement
     autoris&eacute;.</p>
+
+    <p>Notez que c'est la configuration par d&eacute;faut depuis Apache 2.3.9.</p>
 
   </section>
 
