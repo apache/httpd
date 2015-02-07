@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 981084 -->
+<!-- English Revision : 1657403 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -203,8 +203,8 @@ identifiant unique pour chaque requ&ecirc;te</description>
     conserver le rep&egrave;re de temps comme premier &eacute;l&eacute;ment, et pour le
     reste, utiliser les m&ecirc;me alphabet et longueur en bits. Comme les
     rep&egrave;res de temps constituent essentiellement un s&eacute;quence croissante,
-    il suffit que toutes les machines du cluster arr&ecirc;tent de servir et
-    de requ&eacute;rir dans la m&ecirc;me <em>seconde rep&egrave;re</em>, et n'utilisent
+    il suffit que toutes les machines du cluster arr&ecirc;tent de traiter
+    toute requ&ecirc;te dans la m&ecirc;me <em>seconde rep&egrave;re</em>, et n'utilisent
     alors plus l'ancien format de codage. Ensuite, elles peuvent
     reprendre le traitement des requ&ecirc;tes en utilisant les nouveaux
     codages.</p>
