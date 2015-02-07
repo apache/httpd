@@ -214,8 +214,8 @@ identifiant unique pour chaque requête</td></tr>
     conserver le repère de temps comme premier élément, et pour le
     reste, utiliser les même alphabet et longueur en bits. Comme les
     repères de temps constituent essentiellement un séquence croissante,
-    il suffit que toutes les machines du cluster arrêtent de servir et
-    de requérir dans la même <em>seconde repère</em>, et n'utilisent
+    il suffit que toutes les machines du cluster arrêtent de traiter
+    toute requête dans la même <em>seconde repère</em>, et n'utilisent
     alors plus l'ancien format de codage. Ensuite, elles peuvent
     reprendre le traitement des requêtes en utilisant les nouveaux
     codages.</p>

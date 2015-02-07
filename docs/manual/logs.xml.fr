@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1629730:1657854 (outdated) -->
+<!-- English Revision : 1657854 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -629,10 +629,6 @@ LogFormat "%!200,304,302{Referer}i" refererlog
     concerne le journal des acc&egrave;s, la m&ecirc;me technique peut &ecirc;tre utilis&eacute;e
     pour le journal des erreurs.</p>
 
-    <p>Il existe un autre programme de rotation des journaux similaire mais
-    beaucoup plus souple : il s'agit de "cronolog", non fourni par Apache,
-    mais disponible <a href="http://www.cronolog.org/">ici</a>.</p>
-
     <p>Comme la journalisation conditionnelle, la journalisation redirig&eacute;e est
     un outil tr&egrave;s puissant, mais si elle existe, il est pr&eacute;f&eacute;rable d'utiliser
     une solution plus simple comme le traitement &agrave; posteriori hors ligne.</p>
@@ -656,6 +652,21 @@ CustomLog "|$/usr/local/apache/bin/rotatelogs   /var/log/access_log 86400" commo
     red&eacute;marrage. La notation "<code>||</code>" est aussi support&eacute;e pour
     des raisons de compatibilit&eacute; avec Apache 2.2 et est &eacute;quivalente &agrave;
     "<code>|</code>".</p>
+
+    <note><title>Note &agrave; propos de la plateforme Windows</title>
+    <p>Notez que sous Windows, la m&eacute;moire allou&eacute;e au bureau (desktop
+    heap) peut devenir insuffisante si vous utilisez de nombreux
+    processus vers lesquels sont redirig&eacute;s des journaux via un pipe, et
+    ceci particuli&egrave;rement si httpd s'ex&eacute;cute en temps que service. La
+    quantit&eacute; de m&eacute;moire du bureau allou&eacute;e &agrave; chaque service est sp&eacute;cifi&eacute;e
+    dans le troisi&egrave;me argument du param&egrave;tre <code>SharedSection</code>
+    de la cl&eacute; de registre
+    HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\SessionManager\SubSystems\Windows.
+    <strong>Modifiez cette valeur avec prudence</strong> ; les
+    pr&eacute;cautions d'usage s'imposent lorsqu'on modifie la base de registre,
+    mais vous pouvez aussi saturer la m&eacute;moire du bureau si vous
+    sp&eacute;cifiez une valeur trop &eacute;l&eacute;v&eacute;e.</p>
+    </note>
     </section>
 
   <section id="virtualhost">
