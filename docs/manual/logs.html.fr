@@ -522,10 +522,6 @@
     concerne le journal des accès, mais la même technique peut être utilisée
     pour le journal des erreurs.</p>
 
-    <p>Il existe un autre programme de rotation des journaux similaire mais
-    beaucoup plus souple : il s'agit de "cronolog", non fourni par Apache,
-    mais disponible <a href="http://www.cronolog.org/">ici</a>.</p>
-
     <p>Comme la journalisation conditionnelle, la journalisation redirigée est
     un outil très puissant, mais si elle existe, il est préférable d'utiliser
     une solution plus simple comme le traitement a posteriori hors ligne.</p>
@@ -548,6 +544,21 @@
       CustomLog "||/usr/local/apache/bin/rotatelogs
       /var/log/access_log 86400" common
     </code></p></div>
+
+    <div class="note"><h3>Note à propos de la plateforme Windows</h3>
+    <p>Notez que sous Windows, la mémoire allouée au bureau (desktop
+    heap) peut devenir insuffisante si vous utilisez de nombreux
+    processus vers lesquels sont redirigés des journaux via un pipe, et
+    ceci particulièrement si httpd s'exécute en temps que service. La
+    quantité de mémoire du bureau allouée à chaque service est spécifiée
+    dans le troisième argument du paramètre <code>SharedSection</code>
+    de la clé de registre
+    HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\SessionManager\SubSystems\Windows.
+    <strong>Modifiez cette valeur avec prudence</strong> ; les
+    précautions d'usage s'imposent lorsqu'on modifie la base de registre,
+    mais vous pouvez aussi saturer la mémoire du bureau si vous
+    spécifiez une valeur trop élévée.</p>
+    </div>
    </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="virtualhost" id="virtualhost">Hôtes virtuels</a></h2>
