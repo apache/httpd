@@ -294,6 +294,34 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (modulo CHANGES)
      +1: rjung
 
+   * Save a few bytes in conf pool when parsing some directives. Use temp_pool
+     when applicable.
+     trunk patch: http://svn.apache.org/r1657692
+     2.4.x patch: trunk works
+     +1: jailletc36
+
+   * Easy patches - synch with trunk
+        - Add missing APLOGNO.
+        - mod_deflate: don't require <limits.h> by using APR_INT32_MAX instead of INT_MAX.
+        - Move two variable assignments off the fast path.
+        - Fix curly braces style. Remove useless empty lines
+        - tab vs space
+        - Removed tabs.
+        - dump fcgi headers with trace8 instead of debug+compile-time flag.
+        - mod_proxy_connect: fix duplicated AH introduced by r1635645.
+        - Drop severity of "LDAP: Setting referrals to ON" from DEBUG to TRACE4
+     trunk patch:
+        http://svn.apache.org/r1611979
+        http://svn.apache.org/r1611725
+        http://svn.apache.org/r1588448
+        http://svn.apache.org/r1642803
+        http://svn.apache.org/r1657949
+        http://svn.apache.org/r1451108 (only one part still has to be applied. Done manually)
+        http://svn.apache.org/r1656230
+        http://svn.apache.org/r1496178
+     2.4.x patch: http://people.apache.org/~jailletc36/backport11.patch
+     +1: jailletc36
+
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
