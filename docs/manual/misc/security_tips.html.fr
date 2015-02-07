@@ -352,6 +352,8 @@
     tous les répertoires, sauf ceux pour lesquels c'est explicitement
     autorisé.</p>
 
+    <p>Notez que c'est la configuration par défaut depuis Apache 2.3.9.</p>
+
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="protectserverfiles" id="protectserverfiles">Protection par défaut des fichiers du serveur</a></h2>
