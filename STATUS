@@ -169,7 +169,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1650310
                   http://svn.apache.org/r1650320
      2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-SSLSessionTickets.patch
-     +1: ylavic
+     +1: ylavic, rjung
+     rjung: Adjust compatibility note in docs.
 
    * mod_unique_id: Update docs and comment: the unique id is now 24 characters, not 19
      See explanation in:
