@@ -308,7 +308,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         - tab vs space
         - Removed tabs.
         - dump fcgi headers with trace8 instead of debug+compile-time flag.
-        - mod_proxy_connect: fix duplicated AH introduced by r1635645.
         - Drop severity of "LDAP: Setting referrals to ON" from DEBUG to TRACE4
      trunk patch:
         http://svn.apache.org/r1611979
@@ -317,9 +316,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/r1642803
         http://svn.apache.org/r1657949
         http://svn.apache.org/r1451108 (only one part still has to be applied. Done manually)
-        http://svn.apache.org/r1656230
         http://svn.apache.org/r1496178
-     2.4.x patch: http://people.apache.org/~jailletc36/backport11.patch
+     2.4.x patch: http://people.apache.org/~jailletc36/backport11-v2.patch
      +1: jailletc36
 
 OTHER PROPOSALS
