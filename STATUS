@@ -170,6 +170,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x patch: trunks works
      +1 jailletc36, ylavic
 
+   * mod_ssl: Add support for configuring persistent TLS session ticket
+     encryption/decryption keys (useful for clustered environments).
+     [Paul Querna, Kaspar Brand]
+     trunk patch: http://svn.apache.org/r1200040
+                  http://svn.apache.org/r1200372
+                  http://svn.apache.org/r1200374
+                  http://svn.apache.org/r1213380
+     2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-SSLSessionTicketKeyFile.patch
+     +1: ylavic
+
 PATCHES/ISSUES THAT ARE STALLED
 
    * mod_proxy_balancer: Always initialize the shared parameters of a load
