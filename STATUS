@@ -320,6 +320,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~jailletc36/backport11-v2.patch
      +1: jailletc36
 
+   * mod_authn_dbd: Precedence issue. Fix the error message logged in case of
+     error while querying the database.
+     trunk patch: http://svn.apache.org/r1658567
+     2.4.x patch: trunk works
+     +1: jailletc36
+
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
