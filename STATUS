@@ -107,6 +107,13 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.2.x patch: trunk works
      +1 covener, ylavic, trawick
 
+   * mod_reqtimeout: PR56729: mod_reqtimeout gets confused when it sees a read 
+     via check_pipeline() just before a slow HTTP response completes.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=r1621453
+     2.2.x patch: http://people.apache.org/~covener/patches/httpd-2.2.2-reqtimeout-slow-post.diff
+                  (minor merge conflict)
+     +1 covener, trawick, ylavic
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -123,23 +130,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-graceful_share_full-v7.patch
      ylavic: trunk/2.4.x not concerned, 2.2.x only.
      +1: ylavic, jkaluza
-     ylavic: Following the defect reported in PR44736, patch replaced with v7.
-             Each worker scoreboard entry needs to be unique per vhost and balancer,
-             hence the digest must include their identifiers (to avoid reusing stats
-             from a worker with the same name (URI) from another vhost or balancer,
-             and avoid ap_proxy_initialize_worker_share() from mod_proxy's
-             child_init() to prevent balancer specific parameters initialization in
-             init_balancer_members(). Jan, I reset your vote which was based on the
-             previous version...
-     jkaluza: I've tested the updated patch in production and it works
-              as expected. Giving my +1 back again.
-
-   * mod_reqtimeout: PR56729: mod_reqtimeout gets confused when it sees a read 
-     via check_pipeline() just before a slow HTTP response completes.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=r1621453
-     2.2.x patch: http://people.apache.org/~covener/patches/httpd-2.2.2-reqtimeout-slow-post.diff
-                  (minor merge conflict)
-     +1 covener, trawick
 
    * mod_deflate: Define APR_INT32_MAX when it is missing so to be able to
                   compile against APR-1.2.x (minimum required version).
@@ -150,14 +140,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * default conf: Disable SSLv3, like SSLv2, in the default configuration.
      trunk patch: n/a -- Only 2.2.x has SSLProtocol in httpd-ssl.conf.in
      2.2.x patch: https://issues.apache.org/bugzilla/attachment.cgi?id=32131     
-     +1: covener 
+     +1: covener, ylavic
 
    * mod_proxy_ajp: Fix get_content_length().
      clength in request_rec is for response sizes, not request body size.
      It is initialized to 0, so the "if" branch was never taken.
      trunk patch: http://svn.apache.org/r1649043
      2.2.x patch: trunks works (plus CHANGES)
-     +1 rjung
+     +1 rjung, ylavic
 
    * mod_ssl: Add SSLSessionTickets (on|off). [Rainer Jung]
      It controls the use of TLS session tickets (RFC 5077).
@@ -168,16 +158,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      there needs to be a way to deactivate the use of session tickets.
      trunk patch: http://svn.apache.org/r1650310
                   http://svn.apache.org/r1650320
-     2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-SSLSessionTickets.patch
+     2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-SSLSessionTickets-v2.patch
      +1: ylavic, rjung
      rjung: Adjust compatibility note in docs.
+     ylavic: Done, thanks.
 
    * mod_unique_id: Update docs and comment: the unique id is now 24 characters, not 19
      See explanation in:
         http://httpd.apache.org/docs/2.2/mod/mod_unique_id.html#comment_3564
      trunk patch: http://svn.apache.org/r981084
      2.2.x patch: trunks works
-     +1 jailletc36
+     +1 jailletc36, ylavic
 
 PATCHES/ISSUES THAT ARE STALLED
 
