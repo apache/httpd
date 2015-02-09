@@ -182,6 +182,7 @@ ProxyVia On
       <example><title>Reverse Proxy PHP scripts</title>
       <highlight language="config">
 &lt;FilesMatch \.php$&gt;
+    # Unix sockets require 2.4.7 or later
     SetHandler  "proxy:unix:/path/to/app.sock|fcgi://localhost/"
 &lt;/FilesMatch&gt;
       </highlight>
@@ -840,6 +841,7 @@ expressions</description>
   <var>[key=value</var> ...]] [nocanon] [interpolate] [noquery]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context>
+<compatibility>Unix Domain Socket (UDS) support added in 2.4.7</compatibility>
 </contextlist>
 
 <usage>
@@ -859,7 +861,7 @@ expressions</description>
     usually be set <strong>off</strong> when using
     <directive>ProxyPass</directive>.</note>
 
-    <p>Support for using a Unix Domain Socket is available by using a target
+    <p>In 2.4.7 and later, support for using a Unix Domain Socket is available by using a target
     which prepends <code>unix:/path/lis.sock|</code>. For example, to proxy
     HTTP and target the UDS at /home/www/socket you would use
     <code>unix:/home/www.socket|http://localhost/whatever/</code>.</p>
