@@ -324,7 +324,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      error while querying the database.
      trunk patch: http://svn.apache.org/r1658567
      2.4.x patch: trunk works
-     +1: jailletc36
+     +1: jailletc36, mrumph
 
 OTHER PROPOSALS
 
