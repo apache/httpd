@@ -1548,10 +1548,12 @@ int ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
 
             /* strip connection listed hop-by-hop headers from response */
             toclose = ap_proxy_clear_connection_fn(r, r->headers_out);
-            backend->close = (toclose != 0);
-            if (toclose < 0) {
-                return ap_proxyerror(r, HTTP_BAD_REQUEST,
-                        "Malformed connection header");
+            if (toclose) {
+                backend->close = 1;
+                if (toclose < 0) {
+                    return ap_proxyerror(r, HTTP_BAD_GATEWAY,
+                                         "Malformed connection header");
+                }
             }
 
             if ((buf = apr_table_get(r->headers_out, "Content-Type"))) {

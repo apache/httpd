@@ -6,6 +6,11 @@ Changes with Apache 2.5.0
      calls r:wsupgrade() can cause a child process crash. 
      [Edward Lu <Chaosed0 gmail.com>]
 
+  *) mod_proxy_http: Don't expect the backend to ack the "Connection: close" to
+     finally close those not meant to be kept alive by SetEnv proxy-nokeepalive
+     or force-proxy-request-1.0, and respond with 502 instead of 400 if its
+     Connection header is invalid.  [Yann Ylavic]
+
   *) mod_authn_dbd: Fix the error message logged in case of error while querying
      the database. This is associated to AH01656 and AH01661. [Christophe Jaillet]
   
