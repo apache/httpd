@@ -6,6 +6,9 @@ Changes with Apache 2.5.0
      calls r:wsupgrade() can cause a child process crash. 
      [Edward Lu <Chaosed0 gmail.com>]
 
+  *) suexec: Filter out the HTTP_PROXY environment variable because it is
+     treated as alias for http_proxy by some programs. [Stefan Fritsch]
+
   *) mod_proxy_http: Use the "Connection: close" header for requests to
      backends not recycling connections (disablereuse), including the default
      reverse and forward proxies.  [Yann Ylavic]

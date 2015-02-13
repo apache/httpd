@@ -91,8 +91,8 @@ static FILE *log = NULL;
 static const char *const safe_env_lst[] =
 {
     /* variable name starts with */
-    "HTTP_",
     "SSL_",
+    /* "HTTP_" is handled specially in clean_env() */
 
     /* variable name is */
     "AUTH_TYPE=",
@@ -253,6 +253,20 @@ static void clean_env(void)
     cidx++;
 
     for (ep = envp; *ep && cidx < AP_ENVBUF-1; ep++) {
+        if (strncmp(*ep, "HTTP_", 5) == 0) {
+            if (strncmp(*ep + 5, "PROXY=", 6) == 0) {
+                /*
+		 * HTTP_PROXY is treated as alias for http_proxy by some
+		 * programs.
+		 */
+            }
+            else {
+                /* Other HTTP_* are safe */
+                cleanenv[cidx] = *ep;
+                cidx++;
+            }
+            continue;
+        }
         for (idx = 0; safe_env_lst[idx]; idx++) {
             if (!strncmp(*ep, safe_env_lst[idx],
                          strlen(safe_env_lst[idx]))) {
