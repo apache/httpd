@@ -488,9 +488,9 @@ apr_pool_t *p, const char *fmt, ...)</code>: Similar to <code>sprintf</code>, ex
 <highlight language="c">
 static int example_handler(request_rec *r)
 {
-    const char* original = "You can't edit this!";
-    char* copy;
-    int* integers;
+    const char *original = "You can't edit this!";
+    char *copy;
+    int *integers;
     
     /* Allocate space for 10 integer values and set them all to zero. */
     integers = apr_pcalloc(r->pool, sizeof(int)*10); 
@@ -920,7 +920,7 @@ const char *example_set_path(cmd_parms *cmd, void *cfg, const char *arg)
 /* Handler for the "exampleAction" directive */
 /* Let's pretend this one takes one argument (file or db), and a second (deny or allow), */
 /* and we store it in a bit-wise manner. */
-const char *example_set_action(cmd_parms *cmd, void *cfg, const char *arg1, const char* arg2)
+const char *example_set_action(cmd_parms *cmd, void *cfg, const char *arg1, const char *arg2)
 {
     if(!strcasecmp(arg1, "file")) config.typeOfAction = 0x01;
     else config.typeOfAction = 0x02;
@@ -990,7 +990,7 @@ const char *example_set_path(cmd_parms *cmd, void *cfg, const char *arg)
 /* Handler for the &quot;exampleAction&quot; directive */
 /* Let's pretend this one takes one argument (file or db), and a second (deny or allow), */
 /* and we store it in a bit-wise manner. */
-const char *example_set_action(cmd_parms *cmd, void *cfg, const char *arg1, const char* arg2)
+const char *example_set_action(cmd_parms *cmd, void *cfg, const char *arg1, const char *arg2)
 {
     if(!strcasecmp(arg1, &quot;file&quot;)) config.typeOfAction = 0x01;
     else config.typeOfAction = 0x02;
@@ -1234,12 +1234,12 @@ configurations. We do so by creating the function we just referenced in
 our name tag as the Per-directory configuration handler:</p>
 <!-- BEGIN EXAMPLE CODE -->
 <highlight language="c">
-void* create_dir_conf(apr_pool_t* pool, char* context) {
+void *create_dir_conf(apr_pool_t *pool, char *context) {
     context = context ? context : "(undefined context)";
     example_config *cfg = apr_pcalloc(pool, sizeof(example_config));
     if(cfg) {
         /* Set some default values */
-        strcpy(cfg->context, x);
+        strcpy(cfg->context, context);
         cfg->enabled = 0;
         cfg->path = "/foo/bar";
         cfg->typeOfAction = 0x11;
@@ -1290,10 +1290,10 @@ two configurations and decide how they are to be merged:</p>
 
 <!-- BEGIN EXAMPLE CODE -->
 <highlight language="c">
-void* merge_dir_conf(apr_pool_t* pool, void* BASE, void* ADD) {
-    example_config* base = (example_config *) BASE ; /* This is what was set in the parent context */
-    example_config* add = (example_config *) ADD ;   /* This is what is set in the new context */
-    example_config* conf = (example_config *) create_dir_conf(pool, "Merged configuration"); /* This will be the merged configuration */
+void *merge_dir_conf(apr_pool_t *pool, void *BASE, void *ADD) {
+    example_config *base = (example_config *) BASE ; /* This is what was set in the parent context */
+    example_config *add = (example_config *) ADD ;   /* This is what is set in the new context */
+    example_config *conf = (example_config *) create_dir_conf(pool, "Merged configuration"); /* This will be the merged configuration */
     
     /* Merge configurations */
     conf->enabled = ( add->enabled == 0 ) ? base->enabled : add->enabled ;
@@ -1593,18 +1593,18 @@ or check out the rest of our documentation for further tips.
 <!-- BEGIN EXAMPLE CODE -->
 <highlight language="c">
 typedef struct {
-    const char* key;
-    const char* value;
+    const char *key;
+    const char *value;
 } keyValuePair;
 
-keyValuePair* readPost(request_rec* r) {
+keyValuePair *readPost(request_rec *r) {
     apr_array_header_t *pairs = NULL;
     apr_off_t len;
     apr_size_t size;
     int res;
     int i = 0;
     char *buffer;
-    keyValuePair* kvp;
+    keyValuePair *kvp;
 
     res = ap_parse_form_data(r, NULL, &amp;pairs, -1, HUGE_STRING_LEN);
     if (res != OK || !pairs) return NULL; /* Return NULL if we failed or if there are is no POST data */
@@ -1626,7 +1626,7 @@ keyValuePair* readPost(request_rec* r) {
 static int example_handler(request_rec *r)
 {
     /*~~~~~~~~~~~~~~~~~~~~~~*/
-    keyValuePair* formData;
+    keyValuePair *formData;
     /*~~~~~~~~~~~~~~~~~~~~~~*/
 
     formData = readPost(r);
@@ -1718,7 +1718,7 @@ static int util_read(request_rec *r, const char **rbuf, apr_off_t *size)
     return(rc);
 }
 
-static int example_handler(request_rec* r) 
+static int example_handler(request_rec *r) 
 {
     /*~~~~~~~~~~~~~~~~*/
     apr_off_t   size;
