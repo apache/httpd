@@ -326,6 +326,7 @@ limitrequestline	mod/core.html#limitrequestline
 limitxmlrequestbody	mod/core.html#limitxmlrequestbody
 listen	mod/mpm_common.html#listen
 listenbacklog	mod/mpm_common.html#listenbacklog
+listencoresbucketsratio	mod/mpm_common.html#listencoresbucketsratio
 loadfile	mod/mod_so.html#loadfile
 loadmodule	mod/mod_so.html#loadmodule
 location	mod/core.html#location
