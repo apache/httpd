@@ -369,6 +369,7 @@
 <li><a href="core.html#limitxmlrequestbody">LimitXMLRequestBody</a></li>
 <li><a href="mpm_common.html#listen">Listen</a></li>
 <li><a href="mpm_common.html#listenbacklog">ListenBackLog</a></li>
+<li><a href="mpm_common.html#listencoresbucketsratio">ListenCoresBucketsRatio</a></li>
 <li><a href="mod_so.html#loadfile">LoadFile</a></li>
 <li><a href="mod_so.html#loadmodule">LoadModule</a></li>
 <li><a href="core.html#location">&lt;Location&gt;</a></li>

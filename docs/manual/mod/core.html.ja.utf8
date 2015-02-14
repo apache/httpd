@@ -3329,7 +3329,7 @@ of a request or the last 63, assuming the request itself is greater than
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Undefine the existence of a variable</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>UnDefine <var>parameter-name</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>core</td></tr>
 </table><p>このディレクティブの解説文書は
