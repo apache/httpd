@@ -627,8 +627,8 @@ RewriteRule (.*) ${lowercase:$1} [R,L]</pre>
     
     <ul>
       <li><p>If more than a few dozen piped loggers are used on an operating system 
-      instance is necesar, scaling up the "desktop heap" is often necessary. For
-      more detailed information, refer to the <a href="../logs.html#piped">piped logging</a> documntation.</p></li>
+      instance, scaling up the "desktop heap" is often necessary. For
+      more detailed information, refer to the <a href="../logs.html#piped">piped logging</a> documentation.</p></li>
     </ul>
   </div></div>
 <div class="bottomlang">
