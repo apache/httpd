@@ -75,7 +75,7 @@ CacheSocacheMaxSize 102400
 <syntax>CacheSocache <var>type[:args]</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
-<compatibility>Available in Apache 2.5 and later</compatibility>
+<compatibility>Available in Apache 2.4.5 and later</compatibility>
 
 <usage>
     <p>The <directive>CacheSocache</directive> directive defines the name of
@@ -101,7 +101,7 @@ cache</description>
   <context>directory</context>
   <context>.htaccess</context>
 </contextlist>
-<compatibility>Available in Apache 2.5 and later</compatibility>
+<compatibility>Available in Apache 2.4.5 and later</compatibility>
 
 <usage>
     <p>The <directive>CacheSocacheMaxTime</directive> directive sets the
@@ -126,7 +126,7 @@ cache</description>
   <context>directory</context>
   <context>.htaccess</context>
 </contextlist>
-<compatibility>Available in Apache 2.5 and later</compatibility>
+<compatibility>Available in Apache 2.4.5 and later</compatibility>
 
 <usage>
     <p>The <directive>CacheSocacheMinTime</directive> directive sets the
@@ -152,7 +152,7 @@ cache</description>
   <context>directory</context>
   <context>.htaccess</context>
 </contextlist>
-<compatibility>Available in Apache 2.5 and later</compatibility>
+<compatibility>Available in Apache 2.4.5 and later</compatibility>
 
 <usage>
     <p>The <directive>CacheSocacheMaxSize</directive> directive sets the
@@ -184,7 +184,7 @@ cache</description>
     <context>directory</context>
     <context>.htaccess</context>
 </contextlist>
-<compatibility>Available in Apache 2.5 and later</compatibility>
+<compatibility>Available in Apache 2.4.5 and later</compatibility>
 
 <usage>
     <p>The <directive>CacheSocacheReadSize</directive> directive sets the
@@ -215,7 +215,7 @@ cache</description>
   <context>directory</context>
   <context>.htaccess</context>
 </contextlist>
-<compatibility>Available in Apache 2.5 and later</compatibility>
+<compatibility>Available in Apache 2.4.5 and later</compatibility>
 
 <usage>
     <p>The <directive>CacheSocacheReadTime</directive> directive sets the minimum amount

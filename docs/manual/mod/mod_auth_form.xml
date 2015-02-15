@@ -554,7 +554,8 @@ lower level modules</description>
 <default>none</default>
 <contextlist><context>directory</context>
 </contextlist>
-<compatibility>Available in Apache HTTP Server 2.3.0 and later</compatibility>
+<compatibility>Available in Apache HTTP Server 2.3.0 and later. The use of the expression
+parser has been added in 2.4.4.</compatibility>
 
 <usage>
     <p>The <directive module="mod_auth_form">AuthFormLoginRequiredLocation</directive> directive
@@ -577,7 +578,8 @@ lower level modules</description>
 <default>none</default>
 <contextlist><context>directory</context>
 </contextlist>
-<compatibility>Available in Apache HTTP Server 2.3.0 and later</compatibility>
+<compatibility>Available in Apache HTTP Server 2.3.0 and later. The use of the expression
+parser has been added in 2.4.4.</compatibility>
 
 <usage>
     <p>The <directive module="mod_auth_form">AuthFormLoginSuccessLocation</directive> directive
@@ -618,7 +620,8 @@ lower level modules</description>
 <default>none</default>
 <contextlist><context>directory</context>
 </contextlist>
-<compatibility>Available in Apache HTTP Server 2.3.0 and later</compatibility>
+<compatibility>Available in Apache HTTP Server 2.3.0 and later. The use of the expression
+parser has been added in 2.4.4.</compatibility>
 
 <usage>
     <p>The <directive module="mod_auth_form">AuthFormLogoutLocation</directive> directive
