@@ -87,7 +87,7 @@ fonction de leur appartenance à un groupe spécifié. Le module
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthGroupFile" id="AuthGroupFile">AuthGroupFile</a> <a name="authgroupfile" id="authgroupfile">Directive</a></h2>
+<div class="directive-section"><h2><a name="authgroupfile" id="authgroupfile">Directive</a> <a name="AuthGroupFile" id="AuthGroupFile">AuthGroupFile</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le nom d'un fichier texte contenant la liste des
 groupes d'utilisateurs permettant de définir les autorisations des

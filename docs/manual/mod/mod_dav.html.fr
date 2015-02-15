@@ -186,7 +186,7 @@ ForceType text/plain
     DAV.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Dav" id="Dav">Dav</a> <a name="dav" id="dav">Directive</a></h2>
+<div class="directive-section"><h2><a name="dav" id="dav">Directive</a> <a name="Dav" id="Dav">Dav</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active les méthodes HTTP WebDAV</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Dav On|Off|<var>nom fournisseur</var></code></td></tr>
@@ -218,7 +218,7 @@ ForceType text/plain
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DavDepthInfinity" id="DavDepthInfinity">DavDepthInfinity</a> <a name="davdepthinfinity" id="davdepthinfinity">Directive</a></h2>
+<div class="directive-section"><h2><a name="davdepthinfinity" id="davdepthinfinity">Directive</a> <a name="DavDepthInfinity" id="DavDepthInfinity">DavDepthInfinity</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Autorise les requêtes PROPFIND avec en-tête Depth:
 Infinity</td></tr>
@@ -236,7 +236,7 @@ Infinity</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DavMinTimeout" id="DavMinTimeout">DavMinTimeout</a> <a name="davmintimeout" id="davmintimeout">Directive</a></h2>
+<div class="directive-section"><h2><a name="davmintimeout" id="davmintimeout">Directive</a> <a name="DavMinTimeout" id="DavMinTimeout">DavMinTimeout</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Durée minimale pendant laquelle le serveur maintient un
 verrou sur une ressource DAV</td></tr>
