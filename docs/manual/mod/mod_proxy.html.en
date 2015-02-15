@@ -988,6 +988,7 @@ through</td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Unix Domain Socket (UDS) support added in 2.4.7</td></tr>
 </table>
     <p>This directive allows remote servers to be mapped into the
     space of the local server; the local server does not act as a
@@ -1004,7 +1005,7 @@ through</td></tr>
     usually be set <strong>off</strong> when using
     <code class="directive">ProxyPass</code>.</div>
 
-    <p>Support for using a Unix Domain Socket is available by using a url target
+    <p>In 2.4.7 and later, support for using a Unix Domain Socket is available by using a target
     which prepends <code>unix:/path/lis.sock|</code>. For example, to proxy
     HTTP and target the UDS at /home/www/socket you would use
     <code>unix:/home/www.socket|http://localhost/whatever/</code>. Since
