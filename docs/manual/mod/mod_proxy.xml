@@ -841,8 +841,8 @@ expressions</description>
   <var>[key=value</var> ...]] [nocanon] [interpolate] [noquery]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context>
-<compatibility>Unix Domain Socket (UDS) support added in 2.4.7</compatibility>
 </contextlist>
+<compatibility>Unix Domain Socket (UDS) support added in 2.4.7</compatibility>
 
 <usage>
     <p>This directive allows remote servers to be mapped into the
