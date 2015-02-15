@@ -195,7 +195,7 @@ APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const c
     offre la sécurité des requêtes préparées authentiques.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DBDExptime" id="DBDExptime">DBDExptime</a> <a name="dbdexptime" id="dbdexptime">Directive</a></h2>
+<div class="directive-section"><h2><a name="dbdexptime" id="dbdexptime">Directive</a> <a name="DBDExptime" id="DBDExptime">DBDExptime</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Durée de vie des connexions inactives</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DBDExptime <var>durée en secondes</var></code></td></tr>
@@ -210,7 +210,7 @@ APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const c
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DBDInitSQL" id="DBDInitSQL">DBDInitSQL</a> <a name="dbdinitsql" id="dbdinitsql">Directive</a></h2>
+<div class="directive-section"><h2><a name="dbdinitsql" id="dbdinitsql">Directive</a> <a name="DBDInitSQL" id="DBDInitSQL">DBDInitSQL</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Exécute une instruction SQL après connexion à une base de
 données</td></tr>
@@ -226,7 +226,7 @@ données</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DBDKeep" id="DBDKeep">DBDKeep</a> <a name="dbdkeep" id="dbdkeep">Directive</a></h2>
+<div class="directive-section"><h2><a name="dbdkeep" id="dbdkeep">Directive</a> <a name="DBDKeep" id="DBDKeep">DBDKeep</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nombre maximum de connexions maintenues</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DBDKeep <var>nombre</var></code></td></tr>
@@ -241,7 +241,7 @@ données</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DBDMax" id="DBDMax">DBDMax</a> <a name="dbdmax" id="dbdmax">Directive</a></h2>
+<div class="directive-section"><h2><a name="dbdmax" id="dbdmax">Directive</a> <a name="DBDMax" id="DBDMax">DBDMax</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nombre maximum de connexions</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DBDMax <var>nombre</var></code></td></tr>
@@ -255,7 +255,7 @@ données</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DBDMin" id="DBDMin">DBDMin</a> <a name="dbdmin" id="dbdmin">Directive</a></h2>
+<div class="directive-section"><h2><a name="dbdmin" id="dbdmin">Directive</a> <a name="DBDMin" id="DBDMin">DBDMin</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nombre minimum de connexions</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DBDMin <var>nombre</var></code></td></tr>
@@ -269,7 +269,7 @@ données</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DBDParams" id="DBDParams">DBDParams</a> <a name="dbdparams" id="dbdparams">Directive</a></h2>
+<div class="directive-section"><h2><a name="dbdparams" id="dbdparams">Directive</a> <a name="DBDParams" id="DBDParams">DBDParams</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Paramètres de la connexion à la base de
 données</td></tr>
@@ -307,7 +307,7 @@ données</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DBDPersist" id="DBDPersist">DBDPersist</a> <a name="dbdpersist" id="dbdpersist">Directive</a></h2>
+<div class="directive-section"><h2><a name="dbdpersist" id="dbdpersist">Directive</a> <a name="DBDPersist" id="DBDPersist">DBDPersist</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Utiliser ou non des connexions persistentes</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DBDPersist On|Off</code></td></tr>
@@ -333,7 +333,7 @@ données</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DBDPrepareSQL" id="DBDPrepareSQL">DBDPrepareSQL</a> <a name="dbdpreparesql" id="dbdpreparesql">Directive</a></h2>
+<div class="directive-section"><h2><a name="dbdpreparesql" id="dbdpreparesql">Directive</a> <a name="DBDPrepareSQL" id="DBDPrepareSQL">DBDPrepareSQL</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit une requête SQL préparée</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DBDPrepareSQL <var>"requête SQL"</var> <var>étiquette</var></code></td></tr>
@@ -349,7 +349,7 @@ données</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DBDriver" id="DBDriver">DBDriver</a> <a name="dbdriver" id="dbdriver">Directive</a></h2>
+<div class="directive-section"><h2><a name="dbdriver" id="dbdriver">Directive</a> <a name="DBDriver" id="DBDriver">DBDriver</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Spécifie un pilote SQL</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DBDriver <var>nom</var></code></td></tr>

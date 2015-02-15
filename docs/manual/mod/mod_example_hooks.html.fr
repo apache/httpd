@@ -141,7 +141,7 @@
     a été décrit plus haut.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Example" id="Example">Example</a> <a name="example" id="example">Directive</a></h2>
+<div class="directive-section"><h2><a name="example" id="example">Directive</a> <a name="Example" id="Example">Example</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Directive de démonstration pour illustrer l'API des modules
 Apache</td></tr>

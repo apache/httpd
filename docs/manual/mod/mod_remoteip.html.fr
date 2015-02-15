@@ -130,7 +130,7 @@ répartiteur de charge via les en-têtes de la requête.
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RemoteIPHeader" id="RemoteIPHeader">RemoteIPHeader</a> <a name="remoteipheader" id="remoteipheader">Directive</a></h2>
+<div class="directive-section"><h2><a name="remoteipheader" id="remoteipheader">Directive</a> <a name="RemoteIPHeader" id="RemoteIPHeader">RemoteIPHeader</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le champ d'en-tête qui contiendra les adresses IP
 du client</td></tr>
@@ -159,7 +159,7 @@ du client</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RemoteIPInternalProxy" id="RemoteIPInternalProxy">RemoteIPInternalProxy</a> <a name="remoteipinternalproxy" id="remoteipinternalproxy">Directive</a></h2>
+<div class="directive-section"><h2><a name="remoteipinternalproxy" id="remoteipinternalproxy">Directive</a> <a name="RemoteIPInternalProxy" id="RemoteIPInternalProxy">RemoteIPInternalProxy</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Déclare les adresses IP intranet clients comme dignes de
 confiance pour présenter la valeur RemoteIPHeader</td></tr>
@@ -186,7 +186,7 @@ RemoteIPInternalProxy gateway.localdomain</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RemoteIPInternalProxyList" id="RemoteIPInternalProxyList">RemoteIPInternalProxyList</a> <a name="remoteipinternalproxylist" id="remoteipinternalproxylist">Directive</a></h2>
+<div class="directive-section"><h2><a name="remoteipinternalproxylist" id="remoteipinternalproxylist">Directive</a> <a name="RemoteIPInternalProxyList" id="RemoteIPInternalProxyList">RemoteIPInternalProxyList</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Déclare les adresses IP intranet clients comme dignes de
 confiance pour présenter la valeur RemoteIPHeader</td></tr>
@@ -219,7 +219,7 @@ RemoteIPInternalProxyList conf/trusted-proxies.lst</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RemoteIPProxiesHeader" id="RemoteIPProxiesHeader">RemoteIPProxiesHeader</a> <a name="remoteipproxiesheader" id="remoteipproxiesheader">Directive</a></h2>
+<div class="directive-section"><h2><a name="remoteipproxiesheader" id="remoteipproxiesheader">Directive</a> <a name="RemoteIPProxiesHeader" id="RemoteIPProxiesHeader">RemoteIPProxiesHeader</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Déclare le champ d'en-tête qui contiendra toutes les
 adresses IP intermédiaires</td></tr>
@@ -243,7 +243,7 @@ RemoteIPProxiesHeader X-Forwarded-By</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RemoteIPTrustedProxy" id="RemoteIPTrustedProxy">RemoteIPTrustedProxy</a> <a name="remoteiptrustedproxy" id="remoteiptrustedproxy">Directive</a></h2>
+<div class="directive-section"><h2><a name="remoteiptrustedproxy" id="remoteiptrustedproxy">Directive</a> <a name="RemoteIPTrustedProxy" id="RemoteIPTrustedProxy">RemoteIPTrustedProxy</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Déclare les adresses IP intranet clients comme dignes de
 confiance pour présenter la valeur RemoteIPHeader</td></tr>
@@ -273,7 +273,7 @@ RemoteIPTrustedProxy proxy.example.com</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RemoteIPTrustedProxyList" id="RemoteIPTrustedProxyList">RemoteIPTrustedProxyList</a> <a name="remoteiptrustedproxylist" id="remoteiptrustedproxylist">Directive</a></h2>
+<div class="directive-section"><h2><a name="remoteiptrustedproxylist" id="remoteiptrustedproxylist">Directive</a> <a name="RemoteIPTrustedProxyList" id="RemoteIPTrustedProxyList">RemoteIPTrustedProxyList</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Déclare les adresses IP intranet clients comme dignes de
 confiance pour présenter la valeur RemoteIPHeader</td></tr>

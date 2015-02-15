@@ -159,7 +159,7 @@ configuration nécessaire de certaines applications web.
   sécurité dans ce domaine.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthDBDUserPWQuery" id="AuthDBDUserPWQuery">AuthDBDUserPWQuery</a> <a name="authdbduserpwquery" id="authdbduserpwquery">Directive</a></h2>
+<div class="directive-section"><h2><a name="authdbduserpwquery" id="authdbduserpwquery">Directive</a> <a name="AuthDBDUserPWQuery" id="AuthDBDUserPWQuery">AuthDBDUserPWQuery</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Requête SQL servant à vérifier le mot de passe d'un
 utilisateur</td></tr>
@@ -195,7 +195,7 @@ utilisateur</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthDBDUserRealmQuery" id="AuthDBDUserRealmQuery">AuthDBDUserRealmQuery</a> <a name="authdbduserrealmquery" id="authdbduserrealmquery">Directive</a></h2>
+<div class="directive-section"><h2><a name="authdbduserrealmquery" id="authdbduserrealmquery">Directive</a> <a name="AuthDBDUserRealmQuery" id="AuthDBDUserRealmQuery">AuthDBDUserRealmQuery</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Requête SQL servant à vérifier une empreinte de mot de
 passe pour un utilisateur et un identifiant d'authentification.
