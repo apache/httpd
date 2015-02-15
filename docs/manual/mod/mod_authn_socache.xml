@@ -70,15 +70,17 @@ the load on backends</description>
     <p>A simple usage example to accelerate <module>mod_authn_dbd</module>
     using dbm as a cache engine:</p>
     <highlight language="config">
+#AuthnCacheSOCache is optional.  If specified, it is server-wide
+AuthnCacheSOCache dbm
 &lt;Directory /usr/www/myhost/private&gt;
     AuthType Basic
     AuthName "Cached Authentication Example"
     AuthBasicProvider socache dbd
     AuthDBDUserPWQuery "SELECT password FROM authn WHERE user = %s"
     AuthnCacheProvideFor dbd
-    AuthnCacheContext dbd-authn-example
-    AuthnCacheSOCache dbm
     Require valid-user
+    #Optional
+    AuthnCacheContext dbd-authn-example
 &lt;/Directory&gt;
     </highlight>
 </section>
