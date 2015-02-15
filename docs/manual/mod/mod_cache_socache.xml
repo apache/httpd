@@ -126,7 +126,7 @@ cache</description>
   <context>directory</context>
   <context>.htaccess</context>
 </contextlist>
-<compatibility>Available in Apache 2.5 and later</compatibility>
+<compatibility>Available in Apache 2.4.5 and later</compatibility>
 
 <usage>
     <p>The <directive>CacheSocacheMinTime</directive> directive sets the
