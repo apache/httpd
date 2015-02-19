@@ -297,6 +297,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * Save a few bytes in conf pool when parsing some directives. Use temp_pool
      when applicable.
      trunk patch: http://svn.apache.org/r1657692
+                  http://svn.apache.org/r1660800
      2.4.x patch: trunk works
      +1: jailletc36
 
