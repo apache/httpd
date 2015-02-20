@@ -327,6 +327,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      +1: jailletc36, mrumph
 
+   * mod_proxy_ajp: Forward SSL protocol name (from SSL_PROTOCOL).
+     Forthcoming Tomcat versions know how to extract it and will
+     provide it as a servlet request attribute.
+     The change is compatible with existing AJP13, because we forward
+     the protocol name as a normal named attribute, not with a new
+     byte abbreviated attribute name.
+     trunk patch: http://svn.apache.org/r1661067
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: rjung
+
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
