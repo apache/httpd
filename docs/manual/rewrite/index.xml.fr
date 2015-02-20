@@ -79,7 +79,7 @@ r&eacute;f&eacute;rence de mod_rewrite</a></li>
 <li><a href="intro.html">Introduction aux expressions rationnelles et &agrave;
 mod_rewrite</a></li>
 <li><a href="remapping.html">Utilisation de mod_rewrite pour la
-redirection et la remise en corespondance avec le syst&egrave;me de
+redirection et la remise en correspondance avec le syst&egrave;me de
 fichiers des URLs</a></li>
 <li><a href="access.html">Utilisation de mod_rewrite pour le
 contr&ocirc;le d'acc&egrave;s</a></li>
