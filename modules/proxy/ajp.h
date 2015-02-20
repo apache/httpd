@@ -60,6 +60,7 @@
 
 /* The following environment variables match mod_ssl! */
 #define AJP13_HTTPS_INDICATOR           "HTTPS"
+#define AJP13_SSL_PROTOCOL_INDICATOR    "SSL_PROTOCOL"
 #define AJP13_SSL_CLIENT_CERT_INDICATOR "SSL_CLIENT_CERT"
 #define AJP13_SSL_CIPHER_INDICATOR      "SSL_CIPHER"
 #define AJP13_SSL_SESSION_INDICATOR     "SSL_SESSION_ID"
