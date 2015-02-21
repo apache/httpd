@@ -131,12 +131,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      +1: jailletc36, mrumph, minfrin
 
-   * mod_proxy_connect: fix duplicated AH introduced by r1635645
-                        (and merged to 2.4.11 in r1642857).
-     trunk patch: http://svn.apache.org/r1656230
-     2.4.x patch: trunk works (modulo docs/log-message-tags)
-     +1: ylavic, jailletc36, minfrin
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
