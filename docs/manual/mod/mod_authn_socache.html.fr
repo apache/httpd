@@ -35,9 +35,8 @@ la charge des serveurs d'arrière-plan</td></tr>
 <tr><th><a href="module-dict.html#Compatibility">Compatibilité:</a></th><td>Versions 2.3 et ultérieures</td></tr></table>
 <h3>Sommaire</h3>
 
-    <p>Maintient un cache des données d'authentification afin que la
-    recherche d'un nouveau serveur d'arrière-plan pour chaque requête
-    authentifiée ne soit plus nécessaire.</p>
+    <p>Maintient un cache des données d'authentification pour limiter
+    les sollicitations du serveur d'arrière-plan.</p>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
@@ -95,15 +94,18 @@ la charge des serveurs d'arrière-plan</td></tr>
     <p>Voici un exemple simple permettant d'accélérer
     <code class="module"><a href="../mod/mod_authn_dbd.html">mod_authn_dbd</a></code> et utilisant dbm comme moteur de la
     mise en cache :</p>
-    <pre class="prettyprint lang-config">&lt;Directory /usr/www/myhost/private&gt;
+    <pre class="prettyprint lang-config">    #AuthnCacheSOCache est optionnel. S'il est défini, il l'est pour
+    #l'ensemble du serveur
+AuthnCacheSOCache dbm
+&lt;Directory /usr/www/myhost/private&gt;
     AuthType Basic
     AuthName "Cached Authentication Example"
     AuthBasicProvider socache dbd
     AuthDBDUserPWQuery "SELECT password FROM authn WHERE user = %s"
     AuthnCacheProvideFor dbd
-    AuthnCacheContext dbd-authn-example
-    AuthnCacheSOCache dbm
     Require valid-user
+    #Optionnel
+    AuthnCacheContext dbd-authn-example
 &lt;/Directory&gt;</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -111,7 +113,7 @@ la charge des serveurs d'arrière-plan</td></tr>
 <h2><a name="dev" id="dev">La mise en cache avec les modules tiers</a></h2>
     <p>Les développeurs de modules doivent savoir que la mise en cache
     avec mod_authn_socache doit être activée dans leurs modules. La
-    fonction simple de l'API <var>ap_authn_cache_store</var> permet de
+    fonction de l'API <var>ap_authn_cache_store</var> permet de
     mettre en cache les données d'authentification qu'un fournisseur
     vient de rechercher ou de générer. Vous trouverez des exemples
     d'utilisation à <a href="http://svn.eu.apache.org/viewvc?view=revision&amp;revision=957072">r957072</a>, où trois fournisseurs authn sont activés pour la mise
@@ -207,8 +209,8 @@ utiliser</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>None</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authn_socache</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Les paramètres optionnels du fournisseur sont disponibles
-depuis la version 2.4.7 du serveur HTTP Apache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Les arguments optionnels du fournisseur sont disponibles
+à partir de la version 2.4.7 du serveur HTTP Apache</td></tr>
 </table>
     <p>Cette définition s'applique à l'ensemble du serveur et permet de
     sélectionner un fournisseur pour le <a href="../socache.html">cache
@@ -235,8 +237,8 @@ depuis la version 2.4.7 du serveur HTTP Apache</td></tr>
     un trou de sécurité, bien qu'un mise en cache de courte durée ne
     posera probablement pas de problème. En général, il est conseillé de
     conserver les entrées du cache de façon à ce que la charge du serveur
-    d'arrière-plan reste normale, mais pas plus longtemps, bien
-    qu'une durée de vie plus longue puisse être nécessaire si les
+    d'arrière-plan reste normale, mais pas plus longtemps ;
+    une durée de vie plus longue peut être paramétrée si les
     changements d'utilisateurs et de mots de passe sont peu fréquents.
     La durée de vie par défaut de 300 secondes (5 minutes) est à la fois
     raisonnable et suffisamment importante pour réduire la charge d'un

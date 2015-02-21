@@ -628,7 +628,7 @@ CustomLog "|$/usr/local/apache/bin/rotatelogs   /var/log/access_log 86400" commo
     <p>Notez que sous Windows, la mémoire allouée au bureau (desktop
     heap) peut devenir insuffisante si vous utilisez de nombreux
     processus vers lesquels sont redirigés des journaux via un pipe, et
-    ceci particulièrement si httpd s'exécute en temps que service. La
+    ceci particulièrement si httpd s'exécute en tant que service. La
     quantité de mémoire du bureau allouée à chaque service est spécifiée
     dans le troisième argument du paramètre <code>SharedSection</code>
     de la clé de registre
@@ -636,7 +636,7 @@ CustomLog "|$/usr/local/apache/bin/rotatelogs   /var/log/access_log 86400" commo
     <strong>Modifiez cette valeur avec prudence</strong> ; les
     précautions d'usage s'imposent lorsqu'on modifie la base de registre,
     mais vous pouvez aussi saturer la mémoire du bureau si vous
-    spécifiez une valeur trop élévée.</p>
+    spécifiez une valeur trop élevée.</p>
     </div>
     </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
