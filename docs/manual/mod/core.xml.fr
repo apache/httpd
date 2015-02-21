@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1656063:1659902 (outdated) -->
+<!-- English Revision : 1659902 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -819,9 +819,9 @@ DESACTIV&Eacute;S &agrave; partir de la version 2.3.0.</compatibility>
     d'&eacute;viter les conflits avec la syntaxe de la directive <directive
     module="mod_rewrite">RewriteMap</directive>.</p>
 
-    <p>Si cette directive est définie au sein d'un bloc VirtualHost, les
+    <p>Si cette directive est d&eacute;finie au sein d'un bloc VirtualHost, les
     changements qu'elle induit sont visibles de toute directive
-    ultérieure, au delà de tout bloc VirtualHost.</p>
+    ult&eacute;rieure, au del&agrave; de tout bloc VirtualHost.</p>
 </usage>
 </directivesynopsis>
 
@@ -4728,9 +4728,9 @@ host</context></contextlist>
     section <directive module="core" type="section">IfDefine</directive>
     sans avoir &agrave; modifier les arguments <code>-D</code> dans les scripts
     de d&eacute;marrage.</p>
-    <p>Si cette directive est définie au sein d'un bloc VirtualHost, les
+    <p>Si cette directive est d&eacute;finie au sein d'un bloc VirtualHost, les
     changements qu'elle induit sont visibles de toute directive
-    ultérieure, au delà de tout bloc VirtualHost.</p>    
+    ult&eacute;rieure, au del&agrave; de tout bloc VirtualHost.</p>    
 </usage>
 </directivesynopsis>
 
@@ -5043,6 +5043,8 @@ fusionn&eacute;es avec les en-t&ecirc;tes</description>
 <syntax>MergeTrailers [on|off]</syntax>
 <default>MergeTrailers off</default>
 <contextlist><context>server config</context><context>virtual host</context></contextlist>
+<compatibility>Disponible &agrave; partir de la version 2.4.10 du serveur HTTP
+Apache</compatibility>
 
 <usage>
     <p>Cette directive permet de contr&ocirc;ler la fusion des donn&eacute;es HTTP

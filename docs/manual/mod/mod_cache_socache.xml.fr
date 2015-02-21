@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1637768:1659902 (outdated) -->
+<!-- English Revision: 1637768 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -79,7 +79,7 @@ CacheSocacheMaxSize 102400
 <syntax>CacheSocache <var>type[:args]</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
-<compatibility>Disponible &agrave; partir de la version 2.5 du serveur HTTP
+<compatibility>Disponible &agrave; partir de la version 2.4.5 du serveur HTTP
 Apache</compatibility>
 
 <usage>
@@ -107,7 +107,7 @@ avant p&eacute;remption</description>
   <context>directory</context>
   <context>.htaccess</context>
 </contextlist>
-<compatibility>Disponible &agrave; partir de la version 2.5 du serveur HTTP
+<compatibility>Disponible &agrave; partir de la version 2.4.5 du serveur HTTP
 Apache</compatibility>
 
 <usage>
@@ -132,7 +132,7 @@ Apache</compatibility>
   <context>directory</context>
   <context>.htaccess</context>
 </contextlist>
-<compatibility>Disponible &agrave; partir de la version 2.5 du serveur HTTP
+<compatibility>Disponible &agrave; partir de la version 2.4.5 du serveur HTTP
 Apache</compatibility>
 
 <usage>
@@ -160,7 +160,7 @@ cache</description>
   <context>directory</context>
   <context>.htaccess</context>
 </contextlist>
-<compatibility>Disponible &agrave; partir de la version 2.5 du serveur HTTP
+<compatibility>Disponible &agrave; partir de la version 2.4.5 du serveur HTTP
 Apache</compatibility>
 
 <usage>
@@ -195,7 +195,7 @@ mettre en cache avant envoi au client</description>
     <context>directory</context>
     <context>.htaccess</context>
 </contextlist>
-<compatibility>Disponible &agrave; partir de la version 2.5 du serveur HTTP
+<compatibility>Disponible &agrave; partir de la version 2.4.5 du serveur HTTP
 Apache</compatibility>
 
 <usage>
@@ -229,7 +229,7 @@ Apache</compatibility>
   <context>directory</context>
   <context>.htaccess</context>
 </contextlist>
-<compatibility>Disponible &agrave; partir de la version 2.5 du serveur HTTP
+<compatibility>Disponible &agrave; partir de la version 2.4.5 du serveur HTTP
 Apache</compatibility>
 
 <usage>

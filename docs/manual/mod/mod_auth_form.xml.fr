@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1450136:1659902 (outdated) -->
+<!-- English Revision : 1659902 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -80,7 +80,7 @@ l'authentification</a></seealso>
       <module>mod_session_cookie</module>, et l'authentification utilise
       un fichier en s'appuyant sur le module
       <module>mod_authn_file</module>. Si l'authentification &eacute;choue,
-      l'utilisateur sera redirig&eacute; vers la page du formulaire de
+      l'utilisateur dera redirig&eacute; vers la page du formulaire de
       connexion.</p>
 
       <example><title>Exemple simple</title>
@@ -640,7 +640,9 @@ authentification est requise</description>
 <default>none</default>
 <contextlist><context>directory</context>
 </contextlist>
-<compatibility>Disponible depuis la version 2.3.0 du serveur HTTP Apache</compatibility>
+<compatibility>Disponible depuis la version 2.3.0 du serveur HTTP
+Apache. L'interpr&eacute;tation des expressions rationnelles est support&eacute;e
+depuis la version 2.4.4.</compatibility>
 
 <usage>
     <p>La directive <directive
@@ -670,7 +672,9 @@ de connexion r&eacute;ussie</description>
 <default>none</default>
 <contextlist><context>directory</context>
 </contextlist>
-<compatibility>Disponible depuis la version 2.3.0 du serveur HTTP Apache</compatibility>
+<compatibility>Disponible depuis la version 2.3.0 du serveur HTTP
+Apache. L'interpr&eacute;tation des expressions rationnelles est support&eacute;e
+depuis la version 2.4.4.</compatibility>
 
 <usage>
     <p>La directive <directive
@@ -720,7 +724,9 @@ apr&egrave;s s'&ecirc;tre d&eacute;connect&eacute;</description>
 <default>none</default>
 <contextlist><context>directory</context>
 </contextlist>
-<compatibility>Disponible depuis la version 2.3.0 du serveur HTTP Apache</compatibility>
+<compatibility>Disponible depuis la version 2.3.0 du serveur HTTP
+Apache. L'interpr&eacute;tation des expressions rationnelles est support&eacute;e
+depuis la version 2.4.4.</compatibility>
 
 <usage>
     <p>La directive <directive
