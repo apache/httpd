@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English revision : 1555605 -->
+<!-- English Revision : 1659891 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -41,9 +41,9 @@
       en compte avant d'activer les sessions sur votre serveur.</p>
     </note>
 
-    <p>Ce module permet de restreindre les acc&egrave;s, au moyen d'un formulaire de
-    connexion HTML, en recherchant les utilisateurs aupr&egrave;s des fournisseurs
-    sp&eacute;cifi&eacute;s. Les formulaires HTML requi&egrave;rent
+    <p>Ce module permet de restreindre l'acc&egrave;s en recherchant les
+    utilisateurs dans les fournisseurs sp&eacute;cifi&eacute;s &agrave; l'aide d'un
+    formulaire de connexion HTML. Les formulaires HTML requi&egrave;rent
     davantage de configuration que les m&eacute;thodes d'authentification
     alternatives, mais ils peuvent s'av&eacute;rer beaucoup plus conviviaux
     pour les utilisateurs.
@@ -80,7 +80,7 @@ l'authentification</a></seealso>
       <module>mod_session_cookie</module>, et l'authentification utilise
       un fichier en s'appuyant sur le module
       <module>mod_authn_file</module>. Si l'authentification &eacute;choue,
-      l'utilisateur sera redirig&eacute; vers la page du formulaire de
+      l'utilisateur dera redirig&eacute; vers la page du formulaire de
       connexion.</p>
 
       <example><title>Exemple simple</title>
@@ -116,7 +116,7 @@ SessionCryptoPassphrase secret
 
       <p>Dans l'exemple simple ci-dessus, une URL a &eacute;t&eacute; prot&eacute;g&eacute;e par
       <module>mod_auth_form</module>, mais on doit maintenant fournir
-      &agrave; l'utilisateur un moyen de saisir un nom et un mot de passe. &Agrave; cet
+      &agrave; l'utilisateur un moyen d'entrer un nom et un mot de passe. &Agrave; cet
       effet, on peut soit &eacute;crire une page de connexion ind&eacute;pendante
       d&eacute;di&eacute;e, soit inclure le formulaire de connexion dans la page
       courante.</p>
@@ -169,8 +169,8 @@ SessionCryptoPassphrase secret
         </highlight>
       </example>
 
-      <p>L'URL sp&eacute;cifi&eacute;e par la directive <directive
-      module="mod_auth_form">AuthFormLoginRequiredLocation</directive>
+      <p>L'URL sp&eacute;cifi&eacute;e par la directive
+      <directive module="mod_auth_form">AuthFormLoginRequiredLocation</directive>
       r&eacute;f&eacute;rencera en g&eacute;n&eacute;ral une page expliquant &agrave; l'utilisateur que sa
       tentative de connexion a &eacute;chou&eacute;, et qu'il doit la renouveler. La
       directive <directive
@@ -185,7 +185,7 @@ SessionCryptoPassphrase secret
       <var>form-login-handler</var> pourra &ecirc;tre utilis&eacute; pour diff&eacute;rentes
       zones du site web.</p>
 
-      <example><title>Exemple de formulaire de login avec page cible</title>
+      <example><title>Exemple de formulaire d'authentification multizone</title>
         <highlight language="html">
 &lt;form method="POST" action="/dologin.html"&gt;
   Username: &lt;input type="text" name="httpd_username" value="" /&gt;
@@ -363,10 +363,10 @@ SessionCryptoPassphrase secret
       </example>
 
       <p>Notez que la d&eacute;connexion d'un utilisateur ne supprime pas la
-      session ; elle supprime seulement l'Utilisateur et le mot de passe
+      session ; elle supprime seulement l'utilisateur et le mot de passe
       de la session. Si la session qui en r&eacute;sulte est vide, elle sera
       probablement supprim&eacute;e, mais ce n'est pas garanti. Si vous voulez
-      &ecirc;tre s&ucirc;r que la session sera supprim&eacute;e, affectez une petite valeur
+      &ecirc;tre s&ucirc;r que la session sera supprim&eacute;e, affectez une valeur faible
       &agrave; la directive <directive
       module="mod_session">SessionMaxAge</directive>, par exemple 1
       (affecter &agrave; cette directive la valeur z&eacute;ro signifie une session
@@ -516,8 +516,8 @@ r&eacute;ussie</description>
 
 <usage>
     <p>La directive <directive
-    module="mod_auth_form">AuthFormLocation</directive> permet de
-    sp&eacute;cifier le nom du champ HTML qui, s'il existe, contiendra l'URL
+    module="mod_auth_form">AuthFormLocation</directive>
+    sp&eacute;cifie le nom du champ HTML qui, s'il existe, contiendra l'URL
     vers laquelle rediriger le navigateur en cas de connexion
     r&eacute;ussie.</p>
 </usage>
@@ -535,8 +535,8 @@ requ&ecirc;te &agrave; effectuer en cas de connexion r&eacute;ussie</description
 
 <usage>
     <p>La directive <directive
-    module="mod_auth_form">AuthFormMethod</directive> permet de
-    sp&eacute;cifier le nom du champ HTML qui, s'il existe, contiendra le type
+    module="mod_auth_form">AuthFormMethod</directive>
+    sp&eacute;cifie le nom du champ HTML qui, s'il existe, contiendra le type
     MIME de la requ&ecirc;te &agrave; effectuer en cas de connexion r&eacute;ussie.</p>
 
     <p>En ajoutant au formulaire les champs d&eacute;crits dans <directive
@@ -562,8 +562,8 @@ r&eacute;ussie</description>
 
 <usage>
     <p>La directive <directive
-    module="mod_auth_form">AuthFormMimetype</directive> permet de
-    sp&eacute;cifier le nom du champ HTML qui, s'il existe, contiendra le type
+    module="mod_auth_form">AuthFormMimetype</directive>
+    sp&eacute;cifie le nom du champ HTML qui, s'il existe, contiendra le type
     MIME de la requ&ecirc;te &agrave; effectuer en cas de connexion r&eacute;ussie.</p>
 
     <p>En ajoutant au formulaire les champs d&eacute;crits dans <directive
@@ -588,8 +588,8 @@ requ&ecirc;te &agrave; effectuer en cas de connexion r&eacute;ussie</description
 
 <usage>
     <p>La directive <directive
-    module="mod_auth_form">AuthFormBody</directive> permet de
-    sp&eacute;cifier le nom du champ HTML qui, s'il existe, contiendra le corps
+    module="mod_auth_form">AuthFormBody</directive>
+    sp&eacute;cifie le nom du champ HTML qui, s'il existe, contiendra le corps
     de la requ&ecirc;te &agrave; effectuer en cas de connexion r&eacute;ussie.</p>
 
     <p>En ajoutant au formulaire les champs d&eacute;crits dans <directive
@@ -614,7 +614,7 @@ extraites les informations de connexion</description>
 
 <usage>
     <p>La directive <directive
-    module="mod_auth_form">AuthFormSize</directive> permet de sp&eacute;cifier
+    module="mod_auth_form">AuthFormSize</directive> sp&eacute;cifie
     la taille maximale du corps de la requ&ecirc;te qui sera utilis&eacute;e pour
     trouver le formulaire de connexion.</p>
 
@@ -641,17 +641,16 @@ authentification est requise</description>
 <contextlist><context>directory</context>
 </contextlist>
 <compatibility>Disponible depuis la version 2.3.0 du serveur HTTP
-Apache. L'interpr&eacute;teur d'expressions a &eacute;t&eacute; ajout&eacute; &agrave; partir de la version
-2.4.4.</compatibility>
+Apache. L'interpr&eacute;tation des expressions rationnelles est support&eacute;e
+depuis la version 2.4.4.</compatibility>
 
 <usage>
     <p>La directive <directive
     module="mod_auth_form">AuthFormLoginRequiredLocation</directive>
-    permet de sp&eacute;cifier l'URL vers laquelle l'utilisateur devra &ecirc;tre
-    redirig&eacute; s'il n'est pas autoris&eacute; &agrave;
-    acc&eacute;der &agrave; une page. L'argument pass&eacute; &agrave; cette directive
-    est lu au moyen de l'analyseur lexical <a href="../expr.html">ap_expr</a> avant d'&ecirc;tre
-    envoy&eacute; au client. Par d&eacute;faut,
+    sp&eacute;cifie l'URL vers laquelle l'utilisateur devra &ecirc;tre
+    redirig&eacute; s'il n'est pas autoris&eacute; &agrave; acc&eacute;der &agrave; une page. Sa valeur est
+    interpr&eacute;t&eacute;e via l'interpr&eacute;teur <a href="../expr.html">ap_expr</a>
+    avant d'&ecirc;tre envoy&eacute;e au client. Par d&eacute;faut,
     si un utilisateur n'est pas autoris&eacute; &agrave; acc&eacute;der &agrave; une page, le code
     de r&eacute;ponse HTTP <code>HTTP_UNAUTHORIZED</code> est renvoy&eacute; avec la
     page sp&eacute;cifi&eacute;e par la directive <directive
@@ -674,16 +673,16 @@ de connexion r&eacute;ussie</description>
 <contextlist><context>directory</context>
 </contextlist>
 <compatibility>Disponible depuis la version 2.3.0 du serveur HTTP
-Apache. L'interpr&eacute;teur d'expressions a &eacute;t&eacute; ajout&eacute; &agrave; partir de la version
-2.4.4.</compatibility>
+Apache. L'interpr&eacute;tation des expressions rationnelles est support&eacute;e
+depuis la version 2.4.4.</compatibility>
 
 <usage>
     <p>La directive <directive
     module="mod_auth_form">AuthFormLoginSuccessLocation</directive>
-    permet de sp&eacute;cifier l'URL vers laquelle l'utilisateur doit &ecirc;tre
-    redirig&eacute; en cas de connexion r&eacute;ussie. L'argument pass&eacute; &agrave; cette directive
-    est lu au moyen de l'analyseur lexical <a href="../expr.html">ap_expr</a> avant d'&ecirc;tre
-    envoy&eacute; au client.  L'effet de cette directive
+    sp&eacute;cifie l'URL vers laquelle l'utilisateur doit &ecirc;tre
+    redirig&eacute; en cas de connexion r&eacute;ussie. Sa valeur est
+    interpr&eacute;t&eacute;e via l'interpr&eacute;teur <a href="../expr.html">ap_expr</a>
+    avant d'&ecirc;tre envoy&eacute;e au client. L'effet de cette directive
     peut &ecirc;tre annul&eacute; si l'on a d&eacute;fini un champ de formulaire contenant
     une autre URL &agrave; l'aide de la directive <directive
     module="mod_auth_form">AuthFormLocation</directive>.</p>
@@ -697,7 +696,7 @@ Apache. L'interpr&eacute;teur d'expressions a &eacute;t&eacute; ajout&eacute; &a
 
 <directivesynopsis>
 <name>AuthFormFakeBasicAuth</name>
-<description>Simule un en-t&ecirc;te d'authentification de base</description>
+<description>Simule une en-t&ecirc;te d'authentification de base</description>
 <syntax>AuthFormFakeBasicAuth <var>On|Off</var></syntax>
 <default>AuthFormFakeBasicAuth Off</default>
 <contextlist><context>directory</context>
@@ -706,9 +705,9 @@ Apache. L'interpr&eacute;teur d'expressions a &eacute;t&eacute; ajout&eacute; &a
 
 <usage>
     <p>Le drapeau <directive
-    module="mod_auth_form">AuthFormFakeBasicAuth</directive> permet de
-    d&eacute;terminer si un en-t&ecirc;te d'<code>Authentification de base</code>
-    sera ajout&eacute; aux en-t&ecirc;tes de la requ&ecirc;te. On peut utiliser cette
+    module="mod_auth_form">AuthFormFakeBasicAuth</directive>
+    d&eacute;termine si une en-t&ecirc;te d'<code>Authentification de base</code>
+    sera ajout&eacute;e aux en-t&ecirc;tes de la requ&ecirc;te. On peut utiliser cette
     m&eacute;thode pour pr&eacute;senter le nom d'utilisateur et le mot de passe &agrave;
     l'application sous-jacente, sans que cette derni&egrave;re ait besoin de
     conna&icirc;tre la mani&egrave;re dont le processus de connexion a &eacute;t&eacute; men&eacute; &agrave;
@@ -726,17 +725,16 @@ apr&egrave;s s'&ecirc;tre d&eacute;connect&eacute;</description>
 <contextlist><context>directory</context>
 </contextlist>
 <compatibility>Disponible depuis la version 2.3.0 du serveur HTTP
-Apache. L'interpr&eacute;teur d'expressions a &eacute;t&eacute; ajout&eacute; &agrave; partir de la version
-2.4.4.</compatibility>
+Apache. L'interpr&eacute;tation des expressions rationnelles est support&eacute;e
+depuis la version 2.4.4.</compatibility>
 
 <usage>
     <p>La directive <directive
-    module="mod_auth_form">AuthFormLogoutLocation</directive> permet de
-    sp&eacute;cifier l'URL de la page du serveur vers laquelle l'utilisateur
-    devra &ecirc;tre redirig&eacute; s'il se d&eacute;connecte.
-    L'argument pass&eacute; &agrave; cette directive
-    est lu au moyen de l'analyseur lexical <a href="../expr.html">ap_expr</a> avant d'&ecirc;tre
-    envoy&eacute; au client.</p>
+    module="mod_auth_form">AuthFormLogoutLocation</directive>
+    sp&eacute;cifie l'URL de la page du serveur vers laquelle l'utilisateur
+    devra &ecirc;tre redirig&eacute; s'il se d&eacute;connecte. Sa valeur est
+    interpr&eacute;t&eacute;e via l'interpr&eacute;teur <a href="../expr.html">ap_expr</a>
+    avant d'&ecirc;tre envoy&eacute;e au client.</p>
 
     <p>Lorsqu'un acc&egrave;s est tent&eacute; sur un URI trait&eacute; par le gestionnaire
     <code>form-logout-handler</code>, la page sp&eacute;cifi&eacute;e par cette
@@ -776,8 +774,8 @@ connexion</description>
     <p>Le drapeau <directive
     module="mod_auth_form">AuthFormDisableNoStore</directive> supprime
     l'envoi d'un en-t&ecirc;te <code>Cache-Control no-store</code> lorsqu'une
-    page avec code d'erreur 401 est renvoy&eacute;e si l'utilisateur n'est pas
-    encore connect&eacute;. Avec cet en-t&ecirc;te, il est plus difficile pour une
+    page avec code d'erreur 401 est renvoy&eacute;e, si l'utilisateur n'est pas
+    encore connect&eacute;. Avec cette en-t&ecirc;te, il est plus difficile pour une
     application <code>ecmascript</code> de resoumettre un formulaire de connexion, et
     ainsi r&eacute;v&eacute;ler le nom d'utilisateur et le mot de passe &agrave;
     l'application sous-jacente. Vous devez &ecirc;tre conscient des risques
@@ -798,8 +796,8 @@ trafic</description>
 
 <usage>
     <p>La directive <directive
-    module="mod_auth_form">AuthFormSitePassphrase</directive> permet de
-    sp&eacute;cifier un mot de passe qui, s'il est pr&eacute;sent dans la session
+    module="mod_auth_form">AuthFormSitePassphrase</directive>
+    sp&eacute;cifie un mot de passe qui, s'il est pr&eacute;sent dans la session
     utilisateur, indique &agrave; Apache httpd de court-circuiter l'authentification
     pour l'URL consid&eacute;r&eacute;e. On peut l'utiliser dans le cas de sites web &agrave;
     fort trafic afin de r&eacute;duire la charge induite sur l'infrastructure
