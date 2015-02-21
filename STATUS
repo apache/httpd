@@ -337,6 +337,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (modulo CHANGES)
      +1: rjung
 
+   * mod_ssl: Add the SSL_CLIENT_CERT_RFC4523_CEA variable, which provides
+     a combination of certificate serialNumber and issuer as defined by
+     CertificateExactMatch in RFC4523.
+     trunk patch: http://svn.apache.org/r1661258
+     2.4.x patch: trunk works
+     +1: minfrin
+
+
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
