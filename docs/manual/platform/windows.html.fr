@@ -26,8 +26,6 @@
 <a href="../fr/platform/windows.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ko/platform/windows.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 
     <p>Ce document décrit l'installation, la configuration et
@@ -51,6 +49,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#wincons">Exécuter Apache depuis la console</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#test">Vérification de l'installation</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#windrivemap">Configuration de l'accès aux ressources réseau</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#tuning">Personnalisation sous Windows</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -675,6 +674,16 @@ RewriteRule (.*) ${lowercase:$1} [R,L]</pre>
   <p>Lorsqu'Apache s'exécute en tant que service, vous devez créer un
   compte spécifique afin de pouvoir accéder aux ressources réseau, comme
   décrit ci-dessus.</p>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="tuning" id="tuning">Personnalisation sous Windows</a></h2>
+    
+    <ul>
+      <li><p>Si l'on utilise un grand nombre de redirections de journaux
+      via des pipes, il s'avère souvent nécessaire d'augmenter la
+      mémoire du bureau ("desktop heap"). Pour une information plus
+      détaillée, veuillez vous reporter à la documentation sur les <a href="../logs.html#piped">redirections de journaux</a>.</p></li>
+    </ul>
   </div></div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/platform/windows.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |

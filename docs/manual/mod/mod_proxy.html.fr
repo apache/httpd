@@ -243,6 +243,8 @@ ProxyVia On
     </p>
 
     <div class="example"><h3>Scripts PHP et mandataire inverse</h3><pre class="prettyprint lang-config">&lt;FilesMatch \.php$&gt;
+    # Les sockets Unix nécessitent une version 2.4.7 ou supérieure du
+    # serveur HTTP Apache
     SetHandler  "proxy:unix:/path/to/app.sock|fcgi://localhost/"
 &lt;/FilesMatch&gt;</pre>
 </div>
@@ -1077,6 +1079,8 @@ l'espace d'URLs du serveur local</td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Les sockets de style Unix (Unix Domain Socket - UDS)
+sont supportés à partir de la version 2.4.7 du serveur HTTP Apache</td></tr>
 </table>
     <p>Cette directive permet de référencer des serveurs distants depuis
     l'espace d'URLs du serveur local ; le serveur
@@ -1094,8 +1098,9 @@ l'espace d'URLs du serveur local</td></tr>
     <strong>off</strong> lorsqu'on utilise la directive
     <code class="directive">ProxyPass</code>.</div>
 
-    <p>Le support des sockets de style Unix est fourni ; il suffit pour
-    cela d'utiliser une URL cible préfixée par
+    <p>Les sockets de style Unix sont supportés à partir de la version
+    2.4.7 du serveur HTTP Apache ; pour utiliser cette fonctionnalité,
+    il suffit d'utiliser une URL cible préfixée par
     <code>unix:/path/lis.sock|</code>. Par exemple, pour mandater HTTP
     et cibler l'UDS /home/www/socket, vous devez utiliser
     <code>unix:/home/www.socket|http://localhost/whatever/</code>.</p>
