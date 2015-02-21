@@ -327,6 +327,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~jailletc36/backport11-v2.patch
      +1: jailletc36
      minfrin: getting a 404 on the above URL?
+     jailletc36: fixed.
 
    * mod_proxy_ajp: Forward SSL protocol name (from SSL_PROTOCOL).
      Forthcoming Tomcat versions know how to extract it and will
