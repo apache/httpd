@@ -249,9 +249,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      and Redirect.
      trunk patch: http://svn.apache.org/r1653941
                   http://svn.apache.org/r1653978
-     2.4.x patch: trunk works (modulo CHANGES)
+                  http://svn.apache.org/r1656225
+     2.4.x patch: trunk works (modulo CHANGES, docs/log-message-tags)
      +1: minfrin
-     ylavic: please add r1656225 (make update-log-tags)
 
    * mod_proxy_connect: fix duplicated AH introduced by r1635645
                         (and merged to 2.4.11 in r1642857).
