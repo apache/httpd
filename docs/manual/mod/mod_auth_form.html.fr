@@ -27,8 +27,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_auth_form.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_auth_form.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Authentification à l'aide d'un formulaire</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>auth_form_module</td></tr>
@@ -116,7 +114,7 @@ l'authentification</a></li>
       <code class="module"><a href="../mod/mod_session_cookie.html">mod_session_cookie</a></code>, et l'authentification utilise
       un fichier en s'appuyant sur le module
       <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code>. Si l'authentification échoue,
-      l'utilisateur sera redirigé vers la page du formulaire de
+      l'utilisateur dera redirigé vers la page du formulaire de
       connexion.</p>
 
       <div class="example"><h3>Exemple simple</h3><pre class="prettyprint lang-config">AuthFormProvider file
@@ -517,7 +515,9 @@ authentification est requise</td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_form</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP Apache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP
+Apache. L'interprétation des expressions rationnelles est supportée
+depuis la version 2.4.4.</td></tr>
 </table>
     <p>La directive <code class="directive"><a href="#authformloginrequiredlocation">AuthFormLoginRequiredLocation</a></code>
     spécifie l'URL vers laquelle l'utilisateur devra être
@@ -544,7 +544,9 @@ de connexion réussie</td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_form</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP Apache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP
+Apache. L'interprétation des expressions rationnelles est supportée
+depuis la version 2.4.4.</td></tr>
 </table>
     <p>La directive <code class="directive"><a href="#authformloginsuccesslocation">AuthFormLoginSuccessLocation</a></code>
     spécifie l'URL vers laquelle l'utilisateur doit être
@@ -570,7 +572,9 @@ après s'être déconnecté</td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_form</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP Apache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP
+Apache. L'interprétation des expressions rationnelles est supportée
+depuis la version 2.4.4.</td></tr>
 </table>
     <p>La directive <code class="directive"><a href="#authformlogoutlocation">AuthFormLogoutLocation</a></code>
     spécifie l'URL de la page du serveur vers laquelle l'utilisateur
