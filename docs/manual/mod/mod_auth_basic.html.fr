@@ -103,6 +103,8 @@ d'utilisateur et mot de passe fournis</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_basic</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.5 du serveur HTTP
+Apache</td></tr>
 </table>
     <p>Les nom d'utilisateur et mot de passe spécifiés sont rassemblés
     dans un en-tête d'autorisation qui est transmis au serveur ou au
@@ -209,6 +211,8 @@ d'authentification à la manière de l'authentification de type Digest.
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_basic</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.7 du serveur HTTP
+Apache</td></tr>
 </table>
     <p>Normalement, lorsqu'on utilise l'authentification basique, les
     fournisseurs spécifiés via la directive <code class="directive"><a href="#authbasicprovider">AuthBasicProvider</a></code> tentent de
