@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1554857:1657858 (outdated) -->
+<!-- English Revision : 1659838 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -691,6 +691,17 @@ Alias /images/ //imagehost/www/images/
   <p>Lorsqu'Apache s'ex&eacute;cute en tant que service, vous devez cr&eacute;er un
   compte sp&eacute;cifique afin de pouvoir acc&eacute;der aux ressources r&eacute;seau, comme
   d&eacute;crit ci-dessus.</p>
+  </section>
+
+  <section id="tuning">
+    <title>Personnalisation sous Windows</title>
+    <ul>
+      <li><p>Si l'on utilise un grand nombre de redirections de journaux
+      via des pipes, il s'av&egrave;re souvent n&eacute;cessaire d'augmenter la
+      m&eacute;moire du bureau ("desktop heap"). Pour une information plus
+      d&eacute;taill&eacute;e, veuillez vous reporter &agrave; la documentation sur les <a
+      href="../logs.html#piped">redirections de journaux</a>.</p></li>
+    </ul>
   </section>
 
 </manualpage>

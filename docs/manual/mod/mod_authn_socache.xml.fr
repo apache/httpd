@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1540798 -->
+<!-- English Revision : 1659892 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -33,9 +33,8 @@ la charge des serveurs d'arri&egrave;re-plan</description>
 <compatibility>Versions 2.3 et ult&eacute;rieures</compatibility>
 
 <summary>
-    <p>Maintient un cache des donn&eacute;es d'authentification afin que la
-    recherche d'un nouveau serveur d'arri&egrave;re-plan pour chaque requ&ecirc;te
-    authentifi&eacute;e ne soit plus n&eacute;cessaire.</p>
+    <p>Maintient un cache des donn&eacute;es d'authentification pour limiter
+    les sollicitations du serveur d'arri&egrave;re-plan.</p>
 </summary>
 
 <section id="intro"><title>Mise en cache des donn&eacute;es d'authentification</title>
@@ -80,15 +79,18 @@ la charge des serveurs d'arri&egrave;re-plan</description>
     <module>mod_authn_dbd</module> et utilisant dbm comme moteur de la
     mise en cache :</p>
     <highlight language="config">
+    #AuthnCacheSOCache est optionnel. S'il est d&eacute;fini, il l'est pour
+    #l'ensemble du serveur
+AuthnCacheSOCache dbm
 &lt;Directory /usr/www/myhost/private&gt;
     AuthType Basic
     AuthName "Cached Authentication Example"
     AuthBasicProvider socache dbd
     AuthDBDUserPWQuery "SELECT password FROM authn WHERE user = %s"
     AuthnCacheProvideFor dbd
-    AuthnCacheContext dbd-authn-example
-    AuthnCacheSOCache dbm
     Require valid-user
+    #Optionnel
+    AuthnCacheContext dbd-authn-example
 &lt;/Directory&gt;
     </highlight>
 </section>
@@ -96,7 +98,7 @@ la charge des serveurs d'arri&egrave;re-plan</description>
 <section id="dev"><title>La mise en cache avec les modules tiers</title>
     <p>Les d&eacute;veloppeurs de modules doivent savoir que la mise en cache
     avec mod_authn_socache doit &ecirc;tre activ&eacute;e dans leurs modules. La
-    fonction simple de l'API <var>ap_authn_cache_store</var> permet de
+    fonction de l'API <var>ap_authn_cache_store</var> permet de
     mettre en cache les donn&eacute;es d'authentification qu'un fournisseur
     vient de rechercher ou de g&eacute;n&eacute;rer. Vous trouverez des exemples
     d'utilisation &agrave; <a
@@ -132,8 +134,8 @@ utiliser</description>
 <syntax>AuthnCacheSOCache <var>nom-fournisseur[:arguments-fournisseur]</var></syntax>
 <contextlist><context>server config</context></contextlist>
 <override>None</override>
-<compatibility>Les param&egrave;tres optionnels du fournisseur sont disponibles
-depuis la version 2.4.7 du serveur HTTP Apache</compatibility>
+<compatibility>Les arguments optionnels du fournisseur sont disponibles
+&agrave; partir de la version 2.4.7 du serveur HTTP Apache</compatibility>
 
 <usage>
     <p>Cette d&eacute;finition s'applique &agrave; l'ensemble du serveur et permet de
@@ -185,8 +187,8 @@ AuthnCacheProvideFor dbd mon-fournisseur
     un trou de s&eacute;curit&eacute;, bien qu'un mise en cache de courte dur&eacute;e ne
     posera probablement pas de probl&egrave;me. En g&eacute;n&eacute;ral, il est conseill&eacute; de
     conserver les entr&eacute;es du cache de fa&ccedil;on &agrave; ce que la charge du serveur
-    d'arri&egrave;re-plan reste normale, mais pas plus longtemps, bien
-    qu'une dur&eacute;e de vie plus longue puisse &ecirc;tre n&eacute;cessaire si les
+    d'arri&egrave;re-plan reste normale, mais pas plus longtemps ;
+    une dur&eacute;e de vie plus longue peut &ecirc;tre param&eacute;tr&eacute;e si les
     changements d'utilisateurs et de mots de passe sont peu fr&eacute;quents.
     La dur&eacute;e de vie par d&eacute;faut de 300 secondes (5 minutes) est &agrave; la fois
     raisonnable et suffisamment importante pour r&eacute;duire la charge d'un

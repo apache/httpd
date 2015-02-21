@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1637769 -->
+<!-- English Revision: 1659895 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -75,8 +75,7 @@ CacheSocacheMaxSize 102400
 
 <directivesynopsis>
 <name>CacheSocache</name>
-<description>L'impl&eacute;mentation du cache d'objets partag&eacute;s &agrave; utiliser</description>
-<!-- La description ne correspond pas &agrave; la directive -->
+<description>Impl&eacute;mentation du cache d'objets partag&eacute;s &agrave; utiliser</description>
 <syntax>CacheSocache <var>type[:args]</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
@@ -84,10 +83,11 @@ CacheSocacheMaxSize 102400
 Apache</compatibility>
 
 <usage>
-    <p>La directive <directive>CacheSocache</directive> d&eacute;finit
-    l'impl&eacute;mentation du cache d'objets partag&eacute;s &agrave; utiliser,
-    suivie d'arguments optionnels. On peut choisir entre <a
-    href="../socache.html">plusieurs impl&eacute;mentations</a> de caches d'objets
+    <p>La directive <directive>CacheSocache</directive>
+    d&eacute;finit l'impl&eacute;mentation du cache d'objets partag&eacute;s &agrave; utiliser,
+    suivie d'arguments optionnels. Il est
+    possible de choisir entre plusieurs <a
+    href="../socache.html">impl&eacute;mentations</a> de caches d'objets
     partag&eacute;s.</p>
 
     <highlight language="config">
@@ -111,8 +111,8 @@ avant p&eacute;remption</description>
 Apache</compatibility>
 
 <usage>
-    <p>La directive <directive>CacheSocacheMaxTime</directive> permet de
-    d&eacute;finir la dur&eacute;e de stockage maximale en secondes d'un document dans
+    <p>La directive <directive>CacheSocacheMaxTime</directive>
+    d&eacute;finit la dur&eacute;e de stockage maximale en secondes d'un document dans
     le cache avant p&eacute;remption. Cette d&eacute;finition l'emporte sur la dur&eacute;e
     de fra&icirc;cheur d&eacute;finie pour le document par le protocole HTTP.</p>
 
@@ -132,16 +132,16 @@ Apache</compatibility>
   <context>directory</context>
   <context>.htaccess</context>
 </contextlist>
-<compatibility>Disponible &agrave; partir de la version 2.5 du serveur HTTP
+<compatibility>Disponible &agrave; partir de la version 2.4.5 du serveur HTTP
 Apache</compatibility>
 
 <usage>
-    <p>La directive <directive>CacheSocacheMinTime</directive> d&eacute;finit
-    le nombre de secondes au del&agrave; de la dur&eacute;e de fra&icirc;cheur de la
+    <p>La directive <directive>CacheSocacheMinTime</directive>
+    d&eacute;finit le nombre de secondes au del&agrave; de la dur&eacute;e de fra&icirc;cheur de la
     r&eacute;ponse pendant lesquelles cette derni&egrave;re devra &ecirc;tre stock&eacute;e dans le
-    cache d'objets partag&eacute;s. Si une r&eacute;ponse n'est stock&eacute;e que
-    pour une dur&eacute;e &eacute;gale &agrave; sa dur&eacute;e de fra&icirc;cheur, il n'y aura pas lieu
-    de la rafra&icirc;chir.</p>
+    cache d'objets partag&eacute;s. En effet, si une r&eacute;ponse n'est stock&eacute;e que
+    pour une dur&eacute;e &eacute;gale &agrave; sa dur&eacute;e de fra&icirc;cheur, elle n'a pas besoin
+    d'&ecirc;tre rafra&icirc;chie.</p>
 
     <highlight language="config">
       CacheSocacheMinTime 600
@@ -164,8 +164,8 @@ cache</description>
 Apache</compatibility>
 
 <usage>
-    <p>La directive <directive>CacheSocacheMaxSize</directive> d&eacute;finit
-    la taille maximale, en octets, de la somme des en-t&ecirc;tes et
+    <p>La directive <directive>CacheSocacheMaxSize</directive>
+    d&eacute;finit la taille maximale, en octets, de la somme des en-t&ecirc;tes et
     du corps d'un document pouvant &ecirc;tre stock&eacute; dans le cache. Bien
     entendu, plus la taille des en-t&ecirc;tes sera grande, plus la taille
     maximale du corps du document s'en trouvera r&eacute;duite.</p>
@@ -173,8 +173,8 @@ Apache</compatibility>
     <p>Le module <module>mod_cache_socache</module> ne tentera de mettre
     en cache que des r&eacute;ponses qui poss&egrave;dent une taille de contenu
     explicite, ou dont la taille est suffisamment petite pour qu'elles
-    soient &eacute;crites en une seule passe. On pourra ainsi laisser le module
-    <module>mod_cache_disk</module> mettre en cache des r&eacute;ponses dont
+    soient &eacute;crites en une seule passe. Ceci permet au module
+    <module>mod_cache_disk</module> de mettre en cache des r&eacute;ponses dont
     la taille est trop importante pour pouvoir &ecirc;tre mises en cache par
     <module>mod_cache_socache</module>.</p>
 
@@ -195,12 +195,12 @@ mettre en cache avant envoi au client</description>
     <context>directory</context>
     <context>.htaccess</context>
 </contextlist>
-<compatibility>Disponible &agrave; partir de la version 2.5 du serveur HTTP
+<compatibility>Disponible &agrave; partir de la version 2.4.5 du serveur HTTP
 Apache</compatibility>
 
 <usage>
-    <p>La directive <directive>CacheSocacheReadSize</directive> d&eacute;finit
-    la quantit&eacute; minimale de donn&eacute;es, en octets, &agrave; lire depuis
+    <p>La directive <directive>CacheSocacheReadSize</directive>
+    d&eacute;finit la quantit&eacute; minimale de donn&eacute;es, en octets, &agrave; lire depuis
     l'arri&egrave;re-plan avant envoi au client. Avec la valeur par d&eacute;faut 0,
     les donn&eacute;es sont transmises au client d&egrave;s leur arriv&eacute;e et quelle que
     soit leur taille. Si la valeur d&eacute;finie est non nulle, le cache
@@ -233,8 +233,8 @@ Apache</compatibility>
 Apache</compatibility>
 
 <usage>
-    <p>La directive <directive>CacheSocacheReadTime</directive> d&eacute;finit
-    le temps minimal qui doit s'&eacute;couler avant de tenter
+    <p>La directive <directive>CacheSocacheReadTime</directive>
+    d&eacute;finit le temps minimal qui doit s'&eacute;couler avant de tenter
     l'envoi des donn&eacute;es au client. Cette dur&eacute;e sera mise &agrave; profit pour
     lire et mettre en tampon les donn&eacute;es avant leur envoi au client.
     Ceci peut am&eacute;liorer les performances en cas de mise en cache de
