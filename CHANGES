@@ -6,6 +6,10 @@ Changes with Apache 2.5.0
      calls r:wsupgrade() can cause a child process crash. 
      [Edward Lu <Chaosed0 gmail.com>]
 
+  *) mod_ssl: Add the SSL_CLIENT_CERT_RFC4523_CEA variable, which provides
+     a combination of certificate serialNumber and issuer as defined by
+     CertificateExactMatch in RFC4523. [Graham Leggett]
+
   *) suexec: Filter out the HTTP_PROXY environment variable because it is
      treated as alias for http_proxy by some programs. [Stefan Fritsch]
 
