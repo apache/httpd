@@ -125,6 +125,12 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works + CHANGES
      +1: covener, minfrin, ylavic
 
+   * mod_authn_dbd: Precedence issue. Fix the error message logged in case of
+     error while querying the database.
+     trunk patch: http://svn.apache.org/r1658567
+     2.4.x patch: trunk works
+     +1: jailletc36, mrumph, minfrin
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -320,12 +326,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/r1496178
      2.4.x patch: http://people.apache.org/~jailletc36/backport11-v2.patch
      +1: jailletc36
-
-   * mod_authn_dbd: Precedence issue. Fix the error message logged in case of
-     error while querying the database.
-     trunk patch: http://svn.apache.org/r1658567
-     2.4.x patch: trunk works
-     +1: jailletc36, mrumph
 
    * mod_proxy_ajp: Forward SSL protocol name (from SSL_PROTOCOL).
      Forthcoming Tomcat versions know how to extract it and will
