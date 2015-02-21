@@ -478,6 +478,7 @@
  * 20140627.10 (2.5.0-dev) Add ap_proxy_de_socketfy to mod_proxy.h
  * 20150121.0 (2.5.0-dev)  Revert field addition from core_dir_config; r1653666
  * 20150121.1 (2.5.0-dev)  Add cmd_parms_struct.parent to http_config.h
+ * 20150121.2 (2.5.0-dev)  Add response_code_exprs to http_core.h
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
@@ -485,7 +486,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20150121
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 1                 /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 2                 /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
