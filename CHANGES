@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.13
 
+  *) mod_authn_dbd: Fix the error message logged in case of error while querying
+     the database. This is associated to AH01656 and AH01661. [Christophe Jaillet]
+  
 Changes with Apache 2.4.12
 
   *) mpm_winnt: Accept utf-8 (Unicode) service names and descriptions for
