@@ -33,6 +33,7 @@ typedef struct {
     const char *user;
     const char *realm;
 } authn_dbd_conf;
+
 typedef struct {
     const char *label;
     const char *query;
@@ -51,6 +52,7 @@ static void *authn_dbd_cr_conf(apr_pool_t *pool, char *dummy)
     authn_dbd_conf *ret = apr_pcalloc(pool, sizeof(authn_dbd_conf));
     return ret;
 }
+
 static void *authn_dbd_merge_conf(apr_pool_t *pool, void *BASE, void *ADD)
 {
     authn_dbd_conf *add = ADD;
@@ -60,6 +62,7 @@ static void *authn_dbd_merge_conf(apr_pool_t *pool, void *BASE, void *ADD)
     ret->realm = (add->realm == NULL) ? base->realm : add->realm;
     return ret;
 }
+
 static const char *authn_dbd_prepare(cmd_parms *cmd, void *cfg, const char *query)
 {
     static unsigned int label_num = 0;
@@ -82,6 +85,7 @@ static const char *authn_dbd_prepare(cmd_parms *cmd, void *cfg, const char *quer
     /* save the label here for our own use */
     return ap_set_string_slot(cmd, cfg, label);
 }
+
 static const command_rec authn_dbd_cmds[] =
 {
     AP_INIT_TAKE1("AuthDBDUserPWQuery", authn_dbd_prepare,
@@ -92,6 +96,7 @@ static const command_rec authn_dbd_cmds[] =
                   "Query used to fetch password for user+realm"),
     {NULL}
 };
+
 static authn_status authn_dbd_password(request_rec *r, const char *user,
                                        const char *password)
 {
@@ -126,7 +131,7 @@ static authn_status authn_dbd_password(request_rec *r, const char *user,
         return AUTH_GENERAL_ERROR;
     }
     if ((ret = apr_dbd_pvselect(dbd->driver, r->pool, dbd->handle, &res,
-                                statement, 0, user, NULL) != 0)) {
+                                statement, 0, user, NULL)) != 0) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01656)
                       "Query execution error looking up '%s' "
                       "in database [%s]",
@@ -187,6 +192,7 @@ static authn_status authn_dbd_password(request_rec *r, const char *user,
 
     return AUTH_GRANTED;
 }
+
 static authn_status authn_dbd_realm(request_rec *r, const char *user,
                                     const char *realm, char **rethash)
 {
@@ -219,7 +225,7 @@ static authn_status authn_dbd_realm(request_rec *r, const char *user,
         return AUTH_GENERAL_ERROR;
     }
     if ((ret = apr_dbd_pvselect(dbd->driver, r->pool, dbd->handle, &res,
-                                statement, 0, user, realm, NULL) != 0)) {
+                                statement, 0, user, realm, NULL)) != 0) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01661)
                       "Query execution error looking up '%s:%s' "
                       "in database [%s]",
@@ -275,10 +281,12 @@ static authn_status authn_dbd_realm(request_rec *r, const char *user,
     *rethash = apr_pstrdup(r->pool, dbd_hash);
     return AUTH_USER_FOUND;
 }
+
 static void opt_retr(void)
 {
     authn_cache_store = APR_RETRIEVE_OPTIONAL_FN(ap_authn_cache_store);
 }
+
 static void authn_dbd_hooks(apr_pool_t *p)
 {
     static const authn_provider authn_dbd_provider = {
@@ -291,6 +299,7 @@ static void authn_dbd_hooks(apr_pool_t *p)
                               &authn_dbd_provider, AP_AUTH_INTERNAL_PER_CONF);
     ap_hook_optional_fn_retrieve(opt_retr, NULL, NULL, APR_HOOK_MIDDLE);
 }
+
 AP_DECLARE_MODULE(authn_dbd) =
 {
     STANDARD20_MODULE_STUFF,
