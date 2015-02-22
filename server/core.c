@@ -206,7 +206,6 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
     core_dir_config *base = (core_dir_config *)basev;
     core_dir_config *new = (core_dir_config *)newv;
     core_dir_config *conf;
-    int i;
 
     /* Create this conf by duplicating the base, replacing elements
      * (or creating copies for merging) where new-> values exist.
@@ -826,7 +825,6 @@ char *ap_response_code_string(request_rec *r, int error_index)
     core_request_config *reqconf = ap_get_core_module_config(r->request_config);
     const char *err;
     const char *response;
-    void *val;
     ap_expr_info_t *expr;
 
     /* check for string registered via ap_custom_response() first */
