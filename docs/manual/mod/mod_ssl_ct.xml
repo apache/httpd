@@ -214,6 +214,19 @@ testing.</p>
 
 </section>
 
+<section id="static">
+  <title>Storing SCTs in a form consumable by mod_ssl_ct</title>
+
+  <p><module>mod_ssl_ct</module> allows you to configure SCTs statically
+  using the <directive>CTStaticSCTs</directive> directive.  These must be
+  in binary form, ready to send to a client.</p>
+
+  <p>Sample code in the form of a Python script to build an SCT in the correct
+  format from data received from a log can be found in
+  <a href="https://github.com/tomrittervg/ct-tools">Tom Ritter's ct-tools 
+  repository</a>.  Refer to <code>write-sct.py</code></p>
+</section>
+
 <section id="logging">
   <title>Logging CT status in the access log</title>
 
