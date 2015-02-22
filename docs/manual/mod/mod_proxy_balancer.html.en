@@ -191,7 +191,7 @@ ProxyPassReverse /test balancer://mycluster</pre>
     <code class="module"><a href="../mod/mod_status.html">mod_status</a></code>.
     Balancer manager enables dynamic update of balancer
     members. You can use balancer manager to change the balance
-    factor or a particular member, or put it in the off line
+    factor of a particular member, or put it in the off line
     mode.
     </p>
 
