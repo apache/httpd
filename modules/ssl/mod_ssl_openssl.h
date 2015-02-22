@@ -55,9 +55,10 @@ APR_DECLARE_EXTERNAL_HOOK(ssl, SSL, int, init_server,
  * pre_handshake hook
  * @param c conn_rec for new connection from client or to backend server
  * @param ssl OpenSSL SSL Connection for the client or backend server
+ * @param is_proxy 1 if this handshake is for a backend connection, 0 otherwise
  */
 APR_DECLARE_EXTERNAL_HOOK(ssl, SSL, int, pre_handshake,
-                          (conn_rec *c, SSL *ssl))
+                          (conn_rec *c, SSL *ssl, int is_proxy))
 
 /**
  * proxy_post_handshake hook -- allow module to abort after successful

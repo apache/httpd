@@ -89,11 +89,12 @@
 #define DOTEXE ""
 #endif
 
-#define STATUS_VAR                "SSL_CT_PEER_STATUS"
+#define CLIENT_STATUS_VAR         "SSL_CT_CLIENT_STATUS"
+#define PROXY_STATUS_VAR          "SSL_CT_PROXY_STATUS"
 #define STATUS_VAR_AWARE_VAL      "peer-aware"
 #define STATUS_VAR_UNAWARE_VAL    "peer-unaware"
 
-#define PROXY_SCT_SOURCES_VAR     "SSL_PROXY_SCT_SOURCES"
+#define PROXY_SCT_SOURCES_VAR     "SSL_CT_PROXY_SCT_SOURCES"
 
 #define DAEMON_NAME         "SCT maintenance daemon"
 #define DAEMON_THREAD_NAME  DAEMON_NAME " thread"
@@ -129,6 +130,8 @@ typedef struct ct_server_config {
 
 typedef struct ct_conn_config {
     int peer_ct_aware;
+    int client_handshake;
+    int proxy_handshake;
     /* proxy mode only */
     cert_chain *certs;
     int server_cert_has_sct_list;
@@ -2334,8 +2337,17 @@ static void tlsext_cb(SSL *ssl, int client_server, int type,
     }
 }
 
-static int ssl_ct_pre_handshake(conn_rec *c, SSL *ssl)
+static int ssl_ct_pre_handshake(conn_rec *c, SSL *ssl, int is_proxy)
 {
+    ct_conn_config *conncfg = get_conn_config(c);
+
+    if (is_proxy) {
+        conncfg->proxy_handshake = 1;
+    }
+    else {
+        conncfg->client_handshake = 1;
+    }
+
     ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, "client connected (pre-handshake)");
 
     SSL_set_tlsext_status_type(ssl, TLSEXT_STATUSTYPE_ocsp); /* UNDOC */
@@ -2403,11 +2415,13 @@ static int ssl_ct_post_read_request(request_rec *r)
     ct_conn_config *conncfg =
       ap_get_module_config(r->connection->conn_config, &ssl_ct_module);
 
-    if (conncfg && conncfg->peer_ct_aware) {
-        apr_table_set(r->subprocess_env, STATUS_VAR, STATUS_VAR_AWARE_VAL);
-    }
-    else {
-        apr_table_set(r->subprocess_env, STATUS_VAR, STATUS_VAR_UNAWARE_VAL);
+    if (conncfg) {
+        if (conncfg->client_handshake) {
+            apr_table_set(r->subprocess_env, CLIENT_STATUS_VAR,
+                          conncfg->peer_ct_aware ?
+                              STATUS_VAR_AWARE_VAL : STATUS_VAR_UNAWARE_VAL);
+        }
+        /* else no SSL on this client connection */
     }
 
     return DECLINED;
@@ -2631,29 +2645,30 @@ static int ssl_ct_detach_backend(request_rec *r,
                       conncfg->serverhello_has_sct_list,
                       conncfg->ocsp_has_sct_list);
 
-        apr_table_set(r->subprocess_env, STATUS_VAR,
-                      conncfg->peer_ct_aware ? STATUS_VAR_AWARE_VAL : STATUS_VAR_UNAWARE_VAL);
+        if (conncfg->proxy_handshake) {
+            apr_table_set(r->subprocess_env, PROXY_STATUS_VAR,
+                          conncfg->peer_ct_aware ?
+                              STATUS_VAR_AWARE_VAL : STATUS_VAR_UNAWARE_VAL);
 
-        list = apr_pstrcat(r->pool,
-                           conncfg->server_cert_has_sct_list ? "certext," : "",
-                           conncfg->serverhello_has_sct_list ? "tlsext," : "",
-                           conncfg->ocsp_has_sct_list ? "ocsp" : "",
-                           NULL);
-        if (*list) {
-            last = list + strlen(list) - 1;
-            if (*last == ',') {
-                *last = '\0';
+            list = apr_pstrcat(r->pool,
+                               conncfg->server_cert_has_sct_list ? "certext," : "",
+                               conncfg->serverhello_has_sct_list ? "tlsext," : "",
+                               conncfg->ocsp_has_sct_list ? "ocsp" : "",
+                               NULL);
+            if (*list) {
+                last = list + strlen(list) - 1;
+                if (*last == ',') {
+                    *last = '\0';
+                }
             }
-        }
 
-        apr_table_set(r->subprocess_env, PROXY_SCT_SOURCES_VAR, list);
+            apr_table_set(r->subprocess_env, PROXY_SCT_SOURCES_VAR, list);
+        }
     }
     else {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
-                      "No backend connection available in "
-                      "ssl_ct_detach_backend(); assuming peer unaware");
-        apr_table_set(r->subprocess_env, STATUS_VAR,
-                      STATUS_VAR_UNAWARE_VAL);
+        /* why here?  some odd error path? */
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, 
+                      "No backend connection available in ssl_ct_detach_backend()");
     }
 
     return OK;

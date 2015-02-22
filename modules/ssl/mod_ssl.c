@@ -39,8 +39,8 @@ int ssl_running_on_valgrind = 0;
 #endif
 
 APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(ssl, SSL, int, pre_handshake,
-                                    (conn_rec *c,SSL *ssl),
-                                    (c,ssl), OK, DECLINED);
+                                    (conn_rec *c,SSL *ssl,int is_proxy),
+                                    (c,ssl,is_proxy), OK, DECLINED);
 
 /*
  *  the table of configuration directives we provide
@@ -512,7 +512,7 @@ int ssl_init_ssl_connection(conn_rec *c, request_rec *r)
         return DECLINED; /* XXX */
     }
 
-    rc = ssl_run_pre_handshake(c, ssl);
+    rc = ssl_run_pre_handshake(c, ssl, sslconn->is_proxy ? 1 : 0);
     if (rc != OK && rc != DECLINED) {
         return rc;
     }

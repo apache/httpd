@@ -217,10 +217,11 @@ testing.</p>
 <section id="logging">
   <title>Logging CT status in the access log</title>
 
-  <p>Both proxy and server modes set the <code>SSL_CT_PEER_STATUS</code>
-  variable to indicate if the peer is CT-aware.</p>
+  <p>Proxy and server modes set the <code>SSL_CT_PROXY_STATUS</code> and
+  <code>SSL_CT_CLIENT_STATUS</code> variables, respectively, to indicate
+  if the corresponding peer is CT-aware.</p>
 
-  <p>Proxy mode sets the <code>SSL_PROXY_SCT_SOURCES</code> variable to
+  <p>Proxy mode sets the <code>SSL_CT_PROXY_SCT_SOURCES</code> variable to
   indicate whether and where SCTs were obtained (ServerHello, certificate
   extension, etc.).</p>
 
