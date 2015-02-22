@@ -110,6 +110,7 @@ testing.</p>
 <li><img alt="" src="../images/down.gif" /> <a href="#server">Server processing overview</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxy">Proxy processing overview</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#logconf">Log configuration</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#static">Storing SCTs in a form consumable by mod_ssl_ct</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#logging">Logging CT status in the access log</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#audit">Off-line audit for proxy</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
@@ -236,13 +237,27 @@ testing.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
+<h2><a name="static" id="static">Storing SCTs in a form consumable by mod_ssl_ct</a></h2>
+  
+
+  <p><code class="module"><a href="../mod/mod_ssl_ct.html">mod_ssl_ct</a></code> allows you to configure SCTs statically
+  using the <code class="directive">CTStaticSCTs</code> directive.  These must be
+  in binary form, ready to send to a client.</p>
+
+  <p>Sample code in the form of a Python script to build an SCT in the correct
+  format from data received from a log can be found in
+  <a href="https://github.com/tomrittervg/ct-tools">Tom Ritter's ct-tools 
+  repository</a>.  Refer to <code>write-sct.py</code></p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
 <h2><a name="logging" id="logging">Logging CT status in the access log</a></h2>
   
 
-  <p>Both proxy and server modes set the <code>SSL_CT_PEER_STATUS</code>
-  variable to indicate if the peer is CT-aware.</p>
+  <p>Proxy and server modes set the <code>SSL_CT_PROXY_STATUS</code> and
+  <code>SSL_CT_CLIENT_STATUS</code> variables, respectively, to indicate
+  if the corresponding peer is CT-aware.</p>
 
-  <p>Proxy mode sets the <code>SSL_PROXY_SCT_SOURCES</code> variable to
+  <p>Proxy mode sets the <code>SSL_CT_PROXY_SCT_SOURCES</code> variable to
   indicate whether and where SCTs were obtained (ServerHello, certificate
   extension, etc.).</p>
 
