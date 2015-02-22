@@ -178,6 +178,9 @@ static apr_global_mutex_t *ssl_ct_sct_update;
 static int refresh_all_scts(server_rec *s_main, apr_pool_t *p,
                             apr_array_header_t *log_config);
 
+static ct_server_config *copy_ct_server_config(apr_pool_t *p,
+                                               ct_server_config *base);
+
 static apr_thread_t *service_thread;
 
 static apr_hash_t *cached_server_data;
@@ -2369,6 +2372,23 @@ static int ssl_ct_init_server(server_rec *s, apr_pool_t *p, int is_proxy,
     ct_server_config *sconf = ap_get_module_config(s->module_config,
                                                    &ssl_ct_module);
 
+    if (s != ap_server_conf) {
+        ct_server_config *main_conf = 
+            ap_get_module_config(ap_server_conf->module_config,
+                                 &ssl_ct_module);
+
+        if (sconf == main_conf) {
+            /* There weren't any directives for this module in the vhost,
+             * so core httpd gave us the global scope's module config.
+             * We need to be able to represent some mod_ssl-related
+             * config (certs) that are generally configured in the vhost,
+             * so we have to create a vhost-specific module config.
+             */
+            sconf = copy_ct_server_config(p, main_conf);
+            ap_set_module_config(s->module_config, &ssl_ct_module, sconf);
+        }
+    }
+
     cbi->s = s;
 
     if (is_proxy && sconf->proxy_awareness != PROXY_OBLIVIOUS) {
@@ -2613,6 +2633,9 @@ static void *merge_ct_server_config(apr_pool_t *p, void *basev, void *virtv)
 
     conf = (ct_server_config *)apr_pmemdup(p, virt, sizeof(ct_server_config));
 
+    /* copy non-per-vhost fields from base (other than a few that aren't
+     * referenced from per-vhost config)
+     */
     conf->sct_storage = base->sct_storage;
     conf->audit_storage = base->audit_storage;
     conf->ct_exe = base->ct_exe;
@@ -2628,6 +2651,18 @@ static void *merge_ct_server_config(apr_pool_t *p, void *basev, void *virtv)
         : base->proxy_awareness;
 
     return conf;
+}
+
+static ct_server_config *copy_ct_server_config(apr_pool_t *p,
+                                               ct_server_config *base)
+{
+    /* make a copy of the existing server config and initialize anything
+     * that is per-vhost
+     */
+    ct_server_config *sconf = 
+        (ct_server_config *)apr_pmemdup(p, base, sizeof(ct_server_config));
+    sconf->server_cert_info = NULL;
+    return sconf;
 }
 
 static int ssl_ct_detach_backend(request_rec *r,
