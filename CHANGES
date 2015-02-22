@@ -25,9 +25,6 @@ Changes with Apache 2.5.0
      or force-proxy-request-1.0, and respond with 502 instead of 400 if its
      Connection header is invalid.  [Yann Ylavic]
 
-  *) mod_authn_dbd: Fix the error message logged in case of error while querying
-     the database. This is associated to AH01656 and AH01661. [Christophe Jaillet]
-  
   *) mod_proxy(es): Avoid error response/document handling by the core if some
      input filter already did it while reading client's payload. [Yann Ylavic]
 
