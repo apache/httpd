@@ -178,6 +178,16 @@
       <dd>Formerly a third-party module, this supports internationalisation
       in libxml2-based (markup-aware) filter modules.</dd>
 
+      <dt><code class="module"><a href="./mod/mod_macro.html">mod_macro</a></code> (available since 2.4.5)</dt>
+      <dd>Provide macros within configuration files.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_proxy_wstunnel.html">mod_proxy_wstunnel</a></code> (available since 2.4.5)</dt>
+      <dd>Support web-socket tunnels.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_authnz_fcgi.html">mod_authnz_fcgi</a></code> (available since 2.4.10)</dt>
+      <dd>Enable FastCGI authorizer applications to authenticate and/or
+      authorize clients.</dd>
+
     </dl>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -201,6 +211,8 @@
 
       <dd>EC keys are now supported in addition to RSA and DSA.</dd>
 
+      <dd>Support for TLS-SRP (available in 2.4.4 and later).</dd>
+
       <dt><code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code></dt>
 
       <dd>The <code class="directive"><a href="./mod/mod_proxy.html#proxypass">ProxyPass</a></code> directive
@@ -209,7 +221,9 @@
       <code class="directive"><a href="./mod/core.html#locationmatch">LocationMatch</a></code>
       block, and offers a significant performance advantage over the traditional
       two-parameter syntax when present in large numbers.</dd>
-  <dd>The source address used for proxy requests is now configurable.</dd>
+      <dd>The source address used for proxy requests is now configurable.</dd>
+      <dd>Support for Unix domain sockets to the backend (available in 2.4.7
+      and later).</dd>
 
       <dt><code class="module"><a href="./mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code></dt>
 
@@ -290,6 +304,9 @@
       <dd><code class="module"><a href="./mod/mod_info.html">mod_info</a></code> can now dump the pre-parsed configuration
           to stdout during server startup.</dd>
 
+      <dt><code class="module"><a href="./mod/mod_auth_basic.html">mod_auth_basic</a></code></dt>
+      <dd>New generic mechanism to fake basic authentication (available in
+      2.4.5 and later).</dd>
 
     </dl>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -314,6 +331,10 @@
         <dt><code class="program"><a href="./programs/rotatelogs.html">rotatelogs</a></code></dt>
         <dd>May now create a link to the current log file.</dd>
         <dd>May now invoke a custom post-rotate script.</dd>
+
+        <dt><code class="program"><a href="./programs/htpasswd.html">htpasswd</a></code>, <code class="program"><a href="./programs/htdbm.html">htdbm</a></code></dt>
+        <dd>Support for the bcrypt algorithm (available in 2.4.4 and later).
+        </dd>
     </dl>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
