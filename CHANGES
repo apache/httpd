@@ -5,7 +5,7 @@ Changes with Apache 2.4.13
   *) mod_authn_dbd: Fix the error message logged in case of error while querying
      the database. This is associated to AH01656 and AH01661. [Christophe Jaillet]
 
-  *) mod_authz_goupfile: Reduce the severity of AH01667 from ERROR to DEBUG,
+  *) mod_authz_groupfile: Reduce the severity of AH01667 from ERROR to DEBUG,
      because it may be evaluated inside <RequireAny>. PR55523. [Eric Covener] 
   
 Changes with Apache 2.4.12
