@@ -125,6 +125,26 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works + CHANGES
      +1: covener, minfrin, ylavic
 
+   * Easy patches - synch with trunk
+        - Add missing APLOGNO.
+        - mod_deflate: don't require <limits.h> by using APR_INT32_MAX instead of INT_MAX.
+        - Move two variable assignments off the fast path.
+        - Fix curly braces style. Remove useless empty lines
+        - tab vs space
+        - Removed tabs.
+        - dump fcgi headers with trace8 instead of debug+compile-time flag.
+        - Drop severity of "LDAP: Setting referrals to ON" from DEBUG to TRACE4
+     trunk patch:
+        http://svn.apache.org/r1611979
+        http://svn.apache.org/r1611725
+        http://svn.apache.org/r1588448
+        http://svn.apache.org/r1642803
+        http://svn.apache.org/r1657949
+        http://svn.apache.org/r1451108 (only one part still has to be applied. Done manually)
+        http://svn.apache.org/r1496178
+     2.4.x patch: http://people.apache.org/~jailletc36/backport11-v2.patch
+     +1: jailletc36, minfrin, ylavic
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -258,7 +278,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      variables. (also covers PR57207)
      trunk patch: https://svn.apache.org/r1650047
      2.4.x patch: trunk patch works (modulo CHANGES)
-     +1: kbrand
+     +1: kbrand, ylavic
 
    * mod_proxy_http: Don't establish or reuse a backend connection before pre-
      fetching the request body, so to minimize the delay between it is supposed
@@ -293,27 +313,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1657692
                   http://svn.apache.org/r1660800
      2.4.x patch: trunk works
-     +1: jailletc36
-
-   * Easy patches - synch with trunk
-        - Add missing APLOGNO.
-        - mod_deflate: don't require <limits.h> by using APR_INT32_MAX instead of INT_MAX.
-        - Move two variable assignments off the fast path.
-        - Fix curly braces style. Remove useless empty lines
-        - tab vs space
-        - Removed tabs.
-        - dump fcgi headers with trace8 instead of debug+compile-time flag.
-        - Drop severity of "LDAP: Setting referrals to ON" from DEBUG to TRACE4
-     trunk patch:
-        http://svn.apache.org/r1611979
-        http://svn.apache.org/r1611725
-        http://svn.apache.org/r1588448
-        http://svn.apache.org/r1642803
-        http://svn.apache.org/r1657949
-        http://svn.apache.org/r1451108 (only one part still has to be applied. Done manually)
-        http://svn.apache.org/r1496178
-     2.4.x patch: http://people.apache.org/~jailletc36/backport11-v2.patch
-     +1: jailletc36, minfrin
+     +1: jailletc36, ylavic
 
    * mod_proxy_ajp: Forward SSL protocol name (from SSL_PROTOCOL).
      Forthcoming Tomcat versions know how to extract it and will
@@ -323,14 +323,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      byte abbreviated attribute name.
      trunk patch: http://svn.apache.org/r1661067
      2.4.x patch: trunk works (modulo CHANGES)
-     +1: rjung
+     +1: rjung, ylavic
 
    * mod_ssl: Add the SSL_CLIENT_CERT_RFC4523_CEA variable, which provides
      a combination of certificate serialNumber and issuer as defined by
      CertificateExactMatch in RFC4523.
      trunk patch: http://svn.apache.org/r1661258
      2.4.x patch: trunk works
-     +1: minfrin
+     +1: minfrin, ylavic
 
 
 OTHER PROPOSALS
