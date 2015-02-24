@@ -112,6 +112,35 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (module CHANGES)
      +1: ylavic, wrowe, minfrin
 
+   * Expression parser: Optimize another concatenation case by using iteration
+     instead of recursion.
+     We have a relatively small recursion limit of about 10 operations. This
+     is a compilation limit (a define). It can be hit if many expr vars or
+     function calls are concatenated. The new optimization is very similar to
+     the existing one, which optimizes consecutive concatenations in node2 of
+     the tree. The new one optimizes consecutive concatenations in node 1.
+     trunk patch: http://svn.apache.org/r1657685
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: rjung, ylavic, covener
+
+   * Save a few bytes in conf pool when parsing some directives. Use temp_pool
+     when applicable.
+     trunk patch: http://svn.apache.org/r1657692
+                  http://svn.apache.org/r1660800
+     2.4.x patch: trunk works
+     +1: jailletc36, ylavic, covener
+
+   * mod_proxy_ajp: Forward SSL protocol name (from SSL_PROTOCOL).
+     Forthcoming Tomcat versions know how to extract it and will
+     provide it as a servlet request attribute.
+     The change is compatible with existing AJP13, because we forward
+     the protocol name as a normal named attribute, not with a new
+     byte abbreviated attribute name.
+     trunk patch: http://svn.apache.org/r1661067
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: rjung, ylavic, covener
+
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -230,7 +259,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * mod_ssl: Fix merge of SSLProtocol ALL in virtualhost context PR57100
      trunk patch: http://svn.apache.org/r1653997
      2.4.x patch: trunk works
-     +1: ylavic
+     +1: ylavic, covener
 
    * mod_alias: Introduce expression parser support for Alias, ScriptAlias
      and Redirect.
@@ -238,7 +267,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1653978
                   http://svn.apache.org/r1656225
      2.4.x patch: trunk works (modulo CHANGES, docs/log-message-tags)
-     +1: minfrin
+     +1: minfrin, covener
 
    * mod_ssl: Add support for extracting subjectAltName entries of type
      rfc822Name and dNSName into SSL_{CLIENT,SERVER}_SAN_{Email,DNS}_n
@@ -262,35 +291,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      on startup or restart when the module is linked statically. PR 57525
      trunk patch: http://svn.apache.org/r1656669
      2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic
-
-   * Expression parser: Optimize another concatenation case by using iteration
-     instead of recursion.
-     We have a relatively small recursion limit of about 10 operations. This
-     is a compilation limit (a define). It can be hit if many expr vars or
-     function calls are concatenated. The new optimization is very similar to
-     the existing one, which optimizes consecutive concatenations in node2 of
-     the tree. The new one optimizes consecutive concatenations in node 1.
-     trunk patch: http://svn.apache.org/r1657685
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: rjung, ylavic
-
-   * Save a few bytes in conf pool when parsing some directives. Use temp_pool
-     when applicable.
-     trunk patch: http://svn.apache.org/r1657692
-                  http://svn.apache.org/r1660800
-     2.4.x patch: trunk works
-     +1: jailletc36, ylavic
-
-   * mod_proxy_ajp: Forward SSL protocol name (from SSL_PROTOCOL).
-     Forthcoming Tomcat versions know how to extract it and will
-     provide it as a servlet request attribute.
-     The change is compatible with existing AJP13, because we forward
-     the protocol name as a normal named attribute, not with a new
-     byte abbreviated attribute name.
-     trunk patch: http://svn.apache.org/r1661067
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: rjung, ylavic
+     +1: ylavic, covener
 
    * mod_ssl: Add the SSL_CLIENT_CERT_RFC4523_CEA variable, which provides
      a combination of certificate serialNumber and issuer as defined by
