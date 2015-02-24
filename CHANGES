@@ -2,6 +2,11 @@
 
 Changes with Apache 2.4.13
 
+  *) mod_proxy_ajp: Forward SSL protocol name (SSLv3, TLSv1.1 etc.) as a
+     request attribute to the backend. Recent Tomcat versions will extract
+     it and provide it as a servlet request attribute named
+     "org.apache.tomcat.util.net.secure_protocol_version". [Rainer Jung]
+
   *) core: Optimize string concatenation in expression parser when evaluating
      a string expression. [Rainer Jung]
 
