@@ -270,7 +270,7 @@ static const command_rec ssl_config_cmds[] = {
 
 #ifdef HAVE_SSL_CONF_CMD
     SSL_CMD_SRV(OpenSSLConfCmd, TAKE2,
-		"OpenSSL configuration command")
+                "OpenSSL configuration command")
 #endif
 
     /* Deprecated directives. */
