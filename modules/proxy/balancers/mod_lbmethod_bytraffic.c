@@ -115,14 +115,14 @@ static proxy_worker *find_best_bytraffic(proxy_balancer *balancer,
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server, APLOGNO(01210)
                      "proxy: bytraffic selected worker \"%s\" : busy %" APR_SIZE_T_FMT,
                      mycandidate->s->name, mycandidate->s->busy);
-
     }
 
     return mycandidate;
 }
 
 /* assumed to be mutex protected by caller */
-static apr_status_t reset(proxy_balancer *balancer, server_rec *s) {
+static apr_status_t reset(proxy_balancer *balancer, server_rec *s)
+{
     int i;
     proxy_worker **worker;
     worker = (proxy_worker **)balancer->workers->elts;
@@ -135,8 +135,9 @@ static apr_status_t reset(proxy_balancer *balancer, server_rec *s) {
     return APR_SUCCESS;
 }
 
-static apr_status_t age(proxy_balancer *balancer, server_rec *s) {
-        return APR_SUCCESS;
+static apr_status_t age(proxy_balancer *balancer, server_rec *s)
+{
+    return APR_SUCCESS;
 }
 
 static const proxy_balancer_method bytraffic =

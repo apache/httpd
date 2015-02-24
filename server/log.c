@@ -1405,7 +1405,7 @@ static void fmt_data(unsigned char *buf, const void *vdata, apr_size_t len, apr_
         unsigned char c = data[*off];
 
         if (apr_isprint(c)
-	    && c != '\\') {  /* backslash will be escaped later, which throws
+            && c != '\\') {  /* backslash will be escaped later, which throws
                               * off the formatting
                               */
             *chars = c;

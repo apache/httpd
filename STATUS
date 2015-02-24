@@ -119,26 +119,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunks works (modulo CHANGES)
      +1: ylavic, rjung, jailletc36
 
-   * Easy patches - synch with trunk
-        - Add missing APLOGNO.
-        - mod_deflate: don't require <limits.h> by using APR_INT32_MAX instead of INT_MAX.
-        - Move two variable assignments off the fast path.
-        - Fix curly braces style. Remove useless empty lines
-        - tab vs space
-        - Removed tabs.
-        - dump fcgi headers with trace8 instead of debug+compile-time flag.
-        - Drop severity of "LDAP: Setting referrals to ON" from DEBUG to TRACE4
-     trunk patch:
-        http://svn.apache.org/r1611979
-        http://svn.apache.org/r1611725
-        http://svn.apache.org/r1588448
-        http://svn.apache.org/r1642803
-        http://svn.apache.org/r1657949
-        http://svn.apache.org/r1451108 (only one part still has to be applied. Done manually)
-        http://svn.apache.org/r1496178
-     2.4.x patch: http://people.apache.org/~jailletc36/backport11-v2.patch
-     +1: jailletc36, minfrin, ylavic
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]

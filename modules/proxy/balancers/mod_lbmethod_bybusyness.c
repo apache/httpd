@@ -28,7 +28,6 @@ static int (*ap_proxy_retry_worker_fn)(const char *proxy_function,
 static proxy_worker *find_best_bybusyness(proxy_balancer *balancer,
                                 request_rec *r)
 {
-
     int i;
     proxy_worker **worker;
     proxy_worker *mycandidate = NULL;
@@ -116,11 +115,11 @@ static proxy_worker *find_best_bybusyness(proxy_balancer *balancer,
     }
 
     return mycandidate;
-
 }
 
 /* assumed to be mutex protected by caller */
-static apr_status_t reset(proxy_balancer *balancer, server_rec *s) {
+static apr_status_t reset(proxy_balancer *balancer, server_rec *s)
+{
     int i;
     proxy_worker **worker;
     worker = (proxy_worker **)balancer->workers->elts;
@@ -131,8 +130,9 @@ static apr_status_t reset(proxy_balancer *balancer, server_rec *s) {
     return APR_SUCCESS;
 }
 
-static apr_status_t age(proxy_balancer *balancer, server_rec *s) {
-        return APR_SUCCESS;
+static apr_status_t age(proxy_balancer *balancer, server_rec *s)
+{
+    return APR_SUCCESS;
 }
 
 static const proxy_balancer_method bybusyness =
@@ -143,7 +143,6 @@ static const proxy_balancer_method bybusyness =
     &reset,
     &age
 };
-
 
 static void register_hook(apr_pool_t *p)
 {

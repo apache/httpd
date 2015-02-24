@@ -99,12 +99,14 @@ static proxy_worker *find_best_roundrobin(proxy_balancer *balancer,
     return mycandidate;
 }
 
-static apr_status_t reset(proxy_balancer *balancer, server_rec *s) {
-        return APR_SUCCESS;
+static apr_status_t reset(proxy_balancer *balancer, server_rec *s)
+{
+    return APR_SUCCESS;
 }
 
-static apr_status_t age(proxy_balancer *balancer, server_rec *s) {
-        return APR_SUCCESS;
+static apr_status_t age(proxy_balancer *balancer, server_rec *s)
+{
+    return APR_SUCCESS;
 }
 
 static const proxy_balancer_method roundrobin =
@@ -115,7 +117,6 @@ static const proxy_balancer_method roundrobin =
     &reset,
     &age
 };
-
 
 static void ap_proxy_rr_register_hook(apr_pool_t *p)
 {
