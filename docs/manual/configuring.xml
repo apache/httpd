@@ -73,9 +73,9 @@ HTTP server.</p>
     but arguments to directives are often case sensitive. Lines
     that begin with the hash character "#" are considered
     comments, and are ignored. Comments may <strong>not</strong> be
-    included on a line after a configuration directive. Blank lines
-    and white space occurring before a directive are ignored, so
-    you may indent directives for clarity.</p>
+    included on the same line as a configuration directive. 
+    White space occurring before a directive is ignored, so
+    you may indent directives for clarity. Blank lines are also ignored.</p>
 
     <p>The values of shell environment variables can be used in
     configuration file lines using the syntax <code>${ENVVAR}</code>.
