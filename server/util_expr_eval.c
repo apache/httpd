@@ -96,7 +96,8 @@ static const char *ap_expr_eval_word(ap_expr_eval_ctx_t *ctx,
                                   node->node_arg2);
         break;
     case op_Concat:
-        if (((ap_expr_t *)node->node_arg2)->node_op != op_Concat) {
+        if (((ap_expr_t *)node->node_arg2)->node_op != op_Concat &&
+            ((ap_expr_t *)node->node_arg1)->node_op != op_Concat) {
             const char *s1 = ap_expr_eval_word(ctx, node->node_arg1);
             const char *s2 = ap_expr_eval_word(ctx, node->node_arg2);
             if (!*s1)
@@ -105,6 +106,30 @@ static const char *ap_expr_eval_word(ap_expr_eval_ctx_t *ctx,
                 result = s1;
             else
                 result = apr_pstrcat(ctx->p, s1, s2, NULL);
+        }
+        else if (((ap_expr_t *)node->node_arg1)->node_op == op_Concat) {
+            const ap_expr_t *nodep = node;
+            int n;
+            int i = 1;
+            struct iovec *vec;
+            do {
+                nodep = nodep->node_arg1;
+                i++;
+            } while (nodep->node_op == op_Concat);
+            vec = apr_palloc(ctx->p, i * sizeof(struct iovec));
+            n = i;
+            nodep = node;
+            i--;
+            do {
+                vec[i].iov_base = (void *)ap_expr_eval_word(ctx,
+                                                            nodep->node_arg2);
+                vec[i].iov_len = strlen(vec[i].iov_base);
+                i--;
+                nodep = nodep->node_arg1;
+            } while (nodep->node_op == op_Concat);
+            vec[i].iov_base = (void *)ap_expr_eval_word(ctx, nodep);
+            vec[i].iov_len = strlen(vec[i].iov_base);
+            result = apr_pstrcatv(ctx->p, vec, n, NULL);
         }
         else {
             const ap_expr_t *nodep = node;
