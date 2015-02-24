@@ -2,6 +2,10 @@
 
 Changes with Apache 2.4.13
 
+  *) acinclude.m4: Generate #LoadModule directive in default httpd.conf for
+     every --enable-mpms-shared. PR 53882.  [olli hauer <ohauer gmx.de>,
+     Yann Ylavic]
+
   *) mod_authn_dbd: Fix the error message logged in case of error while querying
      the database. This is associated to AH01656 and AH01661. [Christophe Jaillet]
 
