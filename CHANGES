@@ -6,6 +6,9 @@ Changes with Apache 2.5.0
      calls r:wsupgrade() can cause a child process crash. 
      [Edward Lu <Chaosed0 gmail.com>]
 
+  *) ab: Add missing longest request (100%) to CSV export.
+     [Marcin Fabrykowski <bugzilla fabrykowski.pl>]
+
   *) core: Add expression support to ErrorDocument. Switch from a fixed
      sized 664 byte array per merge to a hash table. [Graham Leggett]
 
