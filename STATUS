@@ -273,7 +273,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      the tree. The new one optimizes consecutive concatenations in node 1.
      trunk patch: http://svn.apache.org/r1657685
      2.4.x patch: trunk works (modulo CHANGES)
-     +1: rjung
+     +1: rjung, ylavic
 
    * Save a few bytes in conf pool when parsing some directives. Use temp_pool
      when applicable.
