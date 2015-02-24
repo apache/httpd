@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.13
 
+  *) core: Optimize string concatenation in expression parser when evaluating
+     a string expression. [Rainer Jung]
+
   *) acinclude.m4: Generate #LoadModule directive in default httpd.conf for
      every --enable-mpms-shared. PR 53882.  [olli hauer <ohauer gmx.de>,
      Yann Ylavic]

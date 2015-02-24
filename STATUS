@@ -112,17 +112,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (module CHANGES)
      +1: ylavic, wrowe, minfrin
 
-   * Expression parser: Optimize another concatenation case by using iteration
-     instead of recursion.
-     We have a relatively small recursion limit of about 10 operations. This
-     is a compilation limit (a define). It can be hit if many expr vars or
-     function calls are concatenated. The new optimization is very similar to
-     the existing one, which optimizes consecutive concatenations in node2 of
-     the tree. The new one optimizes consecutive concatenations in node 1.
-     trunk patch: http://svn.apache.org/r1657685
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: rjung, ylavic, covener
-
    * Save a few bytes in conf pool when parsing some directives. Use temp_pool
      when applicable.
      trunk patch: http://svn.apache.org/r1657692
