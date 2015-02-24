@@ -145,28 +145,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
-   * mod_systemd: New module, for integration with systemd on Linux.
-     trunk patch: http://svn.apache.org/r1393976
-                  http://svn.apache.org/r1393997
-                  http://svn.apache.org/r1484554
-                  http://svn.apache.org/r1528032
-                  http://svn.apache.org/r1528034
-                  http://svn.apache.org/r1614821
-                  http://svn.apache.org/r1618579
-                  http://svn.apache.org/r1618588
-     2.4.x patch: http://people.apache.org/~jkaluza/patches/mod_systemd/httpd-2.4.x-mod_systemd.patch
-     +1: jkaluza
-
-   * core: Add support for systemd socket activation.
-     trunk patch: http://svn.apache.org/r1511033
-                  http://svn.apache.org/r1608686
-                  http://svn.apache.org/r1608694
-                  http://svn.apache.org/r1608703
-                  http://svn.apache.org/r1608721
-                  http://svn.apache.org/r1608744
-     2.4.x patch: http://people.apache.org/~jkaluza/patches/mod_systemd/httpd-2.4.x-socket-activation.patch
-     +1: jkaluza
-
    * mod_buffer: Forward flushed input data immediately and avoid (unlikely)
                  access to freed memory.
      trunk patch: http://svn.apache.org/r1632742
@@ -312,6 +290,28 @@ PATCHES/ISSUES THAT ARE BEING WORKED
 
 
 PATCHES/ISSUES THAT ARE STALLED
+
+   * mod_systemd: New module, for integration with systemd on Linux.
+     trunk patch: http://svn.apache.org/r1393976
+                  http://svn.apache.org/r1393997
+                  http://svn.apache.org/r1484554
+                  http://svn.apache.org/r1528032
+                  http://svn.apache.org/r1528034
+                  http://svn.apache.org/r1614821
+                  http://svn.apache.org/r1618579
+                  http://svn.apache.org/r1618588
+     2.4.x patch: http://people.apache.org/~jkaluza/patches/mod_systemd/httpd-2.4.x-mod_systemd.patch
+     +1: jkaluza
+
+   * core: Add support for systemd socket activation.
+     trunk patch: http://svn.apache.org/r1511033
+                  http://svn.apache.org/r1608686
+                  http://svn.apache.org/r1608694
+                  http://svn.apache.org/r1608703
+                  http://svn.apache.org/r1608721
+                  http://svn.apache.org/r1608744
+     2.4.x patch: http://people.apache.org/~jkaluza/patches/mod_systemd/httpd-2.4.x-socket-activation.patch
+     +1: jkaluza
 
   * core: Stop the HTTP_IN filter from attempting to write error buckets
     to the output filters
