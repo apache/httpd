@@ -6,6 +6,9 @@ Changes with Apache 2.5.0
      calls r:wsupgrade() can cause a child process crash. 
      [Edward Lu <Chaosed0 gmail.com>]
 
+  *) mod_deflate: A misplaced check prevents limiting small bodies with the
+     new inflate limits.  [Edward Lu, Eric Covener, Yann Ylavic]
+
   *) ab: Add missing longest request (100%) to CSV export.
      [Marcin Fabrykowski <bugzilla fabrykowski.pl>]
 
