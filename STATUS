@@ -264,6 +264,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1662245 (CHANGES entry)
                   http://svn.apache.org/r1662246 (updated CHANGES entry)
      2.4.x patch: trunk works (modulo CHANGES)
+                  http://people.apache.org/~ylavic/httpd-2.4.x-mod_deflate-PR56872.patch
      ylavic: +1
 
 
