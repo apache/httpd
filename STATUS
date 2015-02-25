@@ -128,6 +128,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1634836 (CHANGES entry)
      2.4.x patches: trunk works (modulo CHANGES).
      +1: ylavic
+     ylavic: http://people.apache.org/~ylavic/httpd-r1632742-x-w.diff is the
+             same patch without space changes (may be easier to review).
 
    * mod_proxy: Add ap_proxy_define_match_worker() and use it for ProxyPassMatch
      and ProxyMatch section to distinguish between normal workers and workers
@@ -254,6 +256,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1661258
      2.4.x patch: trunk works
      +1: minfrin, ylavic
+
+  *) mod_deflate: A misplaced check prevents limiting small bodies with the
+     new inflate limits.  PR56872.
+     trunk patch: http://svn.apache.org/r1619383
+                  http://svn.apache.org/r1619444
+                  http://svn.apache.org/r1662245 (CHANGES entry)
+                  http://svn.apache.org/r1662246 (updated CHANGES entry)
+     2.4.x patch: trunk works (modulo CHANGES)
+     ylavic: +1
 
 
 OTHER PROPOSALS
