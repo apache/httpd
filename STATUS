@@ -267,6 +267,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://people.apache.org/~ylavic/httpd-2.4.x-mod_deflate-PR56872.patch
      ylavic: +1
 
+  *) mod_proxy: Use the correct server name for SNI in case the backend
+     SSL connection itself is established via a proxy server.  PR 57139
+     trunk patch: http://svn.apache.org/r1634120
+     2.4.x patch: trunk works (modulo CHANGES)
+     ylavic: +1
+
 
 OTHER PROPOSALS
 
