@@ -1527,7 +1527,9 @@ static apr_status_t event_register_socket_callback_ex(apr_socket_t **s,
     }
     for (i = 0; i<nsock; i++) { 
         rc = apr_pollset_add(event_pollset, pfds[i]);
-        if (rc != APR_SUCCESS) final_rc = rc;
+        if (rc != APR_SUCCESS) {
+			final_rc = rc;
+		}
     }
     return final_rc;
 }
@@ -1564,7 +1566,9 @@ static apr_status_t event_unregister_socket_callback(apr_socket_t **s, apr_pool_
         pfds[i]->desc.s = s[i];
         pfds[i]->client_data = NULL;
         rc = apr_pollset_remove(event_pollset, pfds[i]);
-        if (rc != APR_SUCCESS && !APR_STATUS_IS_NOTFOUND(rc)) final_rc = APR_SUCCESS;
+        if (rc != APR_SUCCESS && !APR_STATUS_IS_NOTFOUND(rc)) {
+			final_rc = rc;
+		}
     }
 
     return final_rc;
