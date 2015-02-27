@@ -343,7 +343,7 @@ const char *ap_mpm_set_coredumpdir(cmd_parms *cmd, void *dummy,
         return err;
     }
 
-    fname = ap_server_root_relative(cmd->pool, arg);
+    fname = ap_server_root_relative(cmd->temp_pool, arg);
     if (!fname) {
         return apr_pstrcat(cmd->pool, "Invalid CoreDumpDirectory path ",
                            arg, NULL);
