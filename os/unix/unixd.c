@@ -74,7 +74,7 @@ AP_DECLARE(void) ap_unixd_set_rlimit(cmd_parms *cmd, struct rlimit **plimit,
         return;
     }
 
-    if (*(str = ap_getword_conf(cmd->pool, &arg)) != '\0') {
+    if (*(str = ap_getword_conf(cmd->temp_pool, &arg)) != '\0') {
         if (!strcasecmp(str, "max")) {
             cur = limit->rlim_max;
         }
@@ -88,7 +88,7 @@ AP_DECLARE(void) ap_unixd_set_rlimit(cmd_parms *cmd, struct rlimit **plimit,
         return;
     }
 
-    if (arg2 && (*(str = ap_getword_conf(cmd->pool, &arg2)) != '\0')) {
+    if (arg2 && (*(str = ap_getword_conf(cmd->temp_pool, &arg2)) != '\0')) {
         max = atol(str);
     }
 

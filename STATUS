@@ -112,13 +112,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (module CHANGES)
      +1: ylavic, wrowe, minfrin
 
-   * Save a few bytes in conf pool when parsing some directives. Use temp_pool
-     when applicable.
-     trunk patch: http://svn.apache.org/r1657692
-                  http://svn.apache.org/r1660800
-     2.4.x patch: trunk works
-     +1: jailletc36, ylavic, covener
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 

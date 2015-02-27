@@ -1016,7 +1016,11 @@ static const char *invoke_cmd(const command_rec *cmd, cmd_parms *parms,
         return errmsg;
 
     case FLAG:
-        w = ap_getword_conf(parms->pool, &args);
+        /*
+         * This is safe to use temp_pool here, because the 'flag' itself is not
+         * forwarded as-is
+         */
+        w = ap_getword_conf(parms->temp_pool, &args);
 
         if (*w == '\0' || (strcasecmp(w, "on") && strcasecmp(w, "off")))
             return apr_pstrcat(parms->pool, cmd->name, " must be On or Off",
