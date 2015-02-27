@@ -86,21 +86,8 @@ Changes with Apache 2.5.0
   *) mod_socache_memcache: Pass expiration time through to memcached. PR 55445.
      [Faidon Liambotis <paravoid debian.org>, Joe Orton]
 
-  *) split-logfile: Fix perl error:  'Can't use string ("example.org:80") 
-     as a symbol ref while "strict refs"'. PR 56329.
-     [Holger Mauermann <mauermann gmail.com>]
-
-  *) mod_proxy_fcgi: Enable opt-in to TCP connection reuse by explicitly
-     setting proxy option disablereuse=off. [Eric Covener] PR 57378.
- 
   *) mod_http: Fix incorrect If-Match handling. PR 57358.
      [Kunihiko Sakamoto <ksakamoto google.com>]
-
-  *) mod_ssl: Fix renegotiation failures redirected to an ErrorDocument.
-     PR 57334.  [Yann Ylavic].
-
-  *) core: Fix -D[efined] or <Define>[d] variables lifetime accross restarts. 
-     PR 57328.  [Armin Abfalterer <a.abfalterer gmail.com>, Yann Ylavic].
 
   *) mod_proxy_ajp: Fix client connection errors handling and logged status
      when it occurs.  PR 56823.  [Yann Ylavic]
@@ -119,13 +106,6 @@ Changes with Apache 2.5.0
   *) mod_authnz_ldap: Resolve crashes with LDAP authz and non-LDAP authn since 
      r1608202. [Eric Covener]
  
-  *) core: Support custom ErrorDocuments for HTTP 501 and 414 status codes.
-     PR 57167 [Edward Lu <Chaosed0 gmail.com>]
-
-  *) mod_proxy_connect: Don't issue AH02447 on sockets hangups, let the read
-     determine whether it is a normal close or a real error. PR 57168. [Yann
-     Ylavic]
-
   *) mod_buffer: Forward flushed input data immediatly and avoid (unlikely)
      access to freed memory. [Yann Ylavic, Christophe Jaillet]
 
@@ -161,16 +141,6 @@ Changes with Apache 2.5.0
   
   *) mod_authnz_ldap: Return LDAP connections to the pool before the handler
      is run, instead of waiting until the end of the request. [Eric Covener]
-
-  *) mod_ldap: Be more conservative with the last-used time for
-     LDAPConnectionPoolTTL. PR54587 [Eric Covener]
-
-  *) mod_deflate: Don't fail when flushing inflated data to the user-agent
-     and that coincides with the end of stream ("Zlib error flushing inflate
-     buffer"). PR 56196. [Christoph Fausak <christoph fausak glueckkanja.com>]
-
-  *) mod_proxy: Don't limit the size of the connectable Unix Domain Socket
-     paths. [Christophe Jaillet, Yann Ylavic]
 
   *) mod_ssl: dump SSL IO/state for the write side of the connection(s),
      like reads (level TRACE4). [Yann Ylavic]
