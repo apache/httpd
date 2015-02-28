@@ -31,8 +31,6 @@
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Fonctionnalités de base du serveur HTTP Apache toujours
 disponibles</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Core</td></tr></table>
@@ -1376,17 +1374,24 @@ d'erreur</td></tr>
     httpd fournit parfois des informations supplémentaires à propos du
     problème ou de l'erreur.</p>
 
+    <p>A partir de la version 2.4.13, cette directive peut utiliser la
+    <a href="../expr.html">syntaxe des expressions</a> pour générer des
+    chaînes de caractères et des URLs dynamiques.</p>
+
     <p>Les URLs peuvent commencer par un slash (/) pour les chemins web
     locaux (relatifs au répertoire défini par la directive <code class="directive"><a href="#documentroot">DocumentRoot</a></code>), ou se présenter sous la
     forme d'une URL complète que le client pourra résoudre.
     Alternativement, un message à afficher par le navigateur pourra être
-    fourni. Exemples :</p>
+    fourni. Notez que la décision à propos de la nature du paramètre, à
+    savoir une URL, un chemin ou un message, est prise avant
+    l'interprétation de toute expression. Exemples :</p>
 
     <pre class="prettyprint lang-config">ErrorDocument 500 http://foo.example.com/cgi-bin/tester
 ErrorDocument 404 /cgi-bin/bad_urls.pl
 ErrorDocument 401 /subscription_info.html
-ErrorDocument 403 "Sorry can't allow you access today"
-ErrorDocument 403 Forbidden!</pre>
+ErrorDocument 403 "Désolé, nous ne pouvons pas vous accorder l'accès aujourd'hui"
+ErrorDocument 403 Forbidden!
+ErrorDocument 403 /cgi-bin/forbidden.pl?referrer=%{escape:%{HTTP_REFERER}}</pre>
 
 
     <p>De plus, on peut spécifier la valeur spéciale <code>default</code>

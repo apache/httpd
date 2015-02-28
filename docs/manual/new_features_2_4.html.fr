@@ -27,8 +27,6 @@ serveur HTTP Apache</h1>
 <a href="./fr/new_features_2_4.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="./tr/new_features_2_4.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
   <p>Ce document décrit les modifications majeures apportées par
   la version 2.4 du serveur HTTP Apache. Pour les nouvelles fonctionnalités
@@ -48,7 +46,7 @@ serveur HTTP Apache</h1>
 <h2><a name="core" id="core">Améliorations du noyau</a></h2>
     
     <dl>
-      <dt>Modules multiprocessus (MPMs) chargeables Ã&nbsp; l'exécution</dt>
+      <dt>Modules multiprocessus (MPMs) chargeables à l'exécution</dt>
       <dd>On peut maintenant <a href="mpm.html#dynamic">built as
       loadable modules</a> plusieurs MPMs en tant que modules
       chargeables. Le choix du MPM à utiliser s'effectue à
@@ -198,6 +196,17 @@ serveur HTTP Apache</h1>
       dans les modules de filtrage basés sur libxml2 (support du
       markup)</dd>
 
+      <dt><code class="module"><a href="./mod/mod_macro.html">mod_macro</a></code> (disponible à partir de la version 2.4.5)</dt>
+      <dd>Permet d'utiliser des macros au sein des fichiers de
+      configuration.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_proxy_wstunnel.html">mod_proxy_wstunnel</a></code> (disponible à partir de la version 2.4.5)</dt>
+      <dd>Support des tunnels web-socket.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_authnz_fcgi.html">mod_authnz_fcgi</a></code> (disponible à partir de la version 2.4.10)</dt>
+      <dd>Permet aux applications d'autorisation FastCGI d'authentifier
+      et/ou autoriser les clients.</dd>
+
     </dl>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -225,6 +234,8 @@ serveur HTTP Apache</h1>
       <dd>Le support des clés EC a été ajouté à celui des clés RSA et
       DSA.</dd>
 
+      <dd>Support de TLS-SRP (disponible à partir de la version 2.4.4).</dd>
+
       <dt><code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code></dt>
 
       <dd>La directive <code class="directive"><a href="./mod/mod_proxy.html#proxypass">ProxyPass</a></code> est maintenant configurée
@@ -234,6 +245,9 @@ serveur HTTP Apache</h1>
 
       <dd>Il est maintenant possible de configurer l'adresse source dans
       les requêtes mandatées.</dd>
+
+      <dd>Support des sockets de type Unix vers le serveur
+      d'arrière-plan (disponible à partir de la version 2.4.7).</dd>
 
       <dt><code class="module"><a href="./mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code></dt>
 
@@ -329,6 +343,10 @@ serveur HTTP Apache</h1>
       configuration préinterprétée sur stdout au cours du démarrage du
       serveur.</dd>
 
+      <dt><code class="module"><a href="./mod/mod_auth_basic.html">mod_auth_basic</a></code></dt>
+      <dd>Nouveau mécanisme générique permettant d'effectuer une
+      authentification basique (disponible à partir de la version 2.4.5).</dd>
+
     </dl>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -354,6 +372,11 @@ serveur HTTP Apache</h1>
 	courant.</dd>
         <dd>Possibilité d'invoquer un script personnalisé après la
 	rotation.</dd>
+
+	<dt><code class="program"><a href="./programs/htpasswd.html">htpasswd</a></code>, <code class="program"><a href="./programs/htdbm.html">htdbm</a></code></dt>
+        <dd>Support de l'algorithme bcrypt (disponible à partir de la
+	version 2.4.4).
+        </dd>
     </dl>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
