@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision : 1522935 -->
+<!-- English Revision : 1662015 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -84,10 +84,11 @@ le Serveur HTTP Apache.</p>
     sensibles &agrave; la casse, mais leurs arguments le sont souvent. Les lignes
     qui d&eacute;butent par le caract&egrave;re "#" sont interpr&eacute;t&eacute;es comme des
     commentaires, et sont ignor&eacute;es. Les commentaires ne doivent
-    <strong>pas</strong> &ecirc;tre inclus dans une ligne apr&egrave;s une directive
-    de configuration. Les lignes vides et les espaces pr&eacute;c&eacute;dant une directive
+    <strong>pas</strong> appara&icirc;tre sur la m&ecirc;me ligne qu'une directive
+    de configuration. Les espaces pr&eacute;c&eacute;dant une directive
     sont ignor&eacute;s; vous pouvez par cons&eacute;quent indenter les directives
-    afin d'am&eacute;liorer la lisibilit&eacute;.</p>
+    afin d'am&eacute;liorer la lisibilit&eacute;. Les lignes vides sont
+    aussi ignor&eacute;es.</p>
 
     <p>Les valeurs des variables d'environnement ou des variables
     d&eacute;finies via la directive <directive
