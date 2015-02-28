@@ -82,10 +82,11 @@ le Serveur HTTP Apache.</p>
     sensibles à la casse, mais leurs arguments le sont souvent. Les lignes
     qui débutent par le caractère "#" sont interprétées comme des
     commentaires, et sont ignorées. Les commentaires ne doivent
-    <strong>pas</strong> être inclus dans une ligne après une directive
-    de configuration. Les lignes vides et les espaces précédant une directive
+    <strong>pas</strong> apparaître sur la même ligne qu'une directive
+    de configuration. Les espaces précédant une directive
     sont ignorés; vous pouvez par conséquent indenter les directives
-    afin d'améliorer la lisibilité.</p>
+    afin d'améliorer la lisibilité. Les lignes vides sont
+    aussi ignorées.</p>
 
     <p>Les valeurs des variables d'environnement ou des variables
     définies via la directive <code class="directive"><a href="./mod/core.html#define">Define</a></code> peuvent être utilisées dans le
