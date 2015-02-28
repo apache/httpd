@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1659902:1661448 (outdated) -->
+<!-- English Revision : 1661448 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1371,19 +1371,26 @@ host</context>
     httpd fournit parfois des informations suppl&eacute;mentaires &agrave; propos du
     probl&egrave;me ou de l'erreur.</p>
 
+    <p>A partir de la version 2.4.13, cette directive peut utiliser la
+    <a href="../expr.html">syntaxe des expressions</a> pour g&eacute;n&eacute;rer des
+    cha&icirc;nes de caract&egrave;res et des URLs dynamiques.</p>
+
     <p>Les URLs peuvent commencer par un slash (/) pour les chemins web
     locaux (relatifs au r&eacute;pertoire d&eacute;fini par la directive <directive
     module="core">DocumentRoot</directive>), ou se pr&eacute;senter sous la
     forme d'une URL compl&egrave;te que le client pourra r&eacute;soudre.
     Alternativement, un message &agrave; afficher par le navigateur pourra &ecirc;tre
-    fourni. Exemples :</p>
+    fourni. Notez que la d&eacute;cision &agrave; propos de la nature du param&egrave;tre, &agrave;
+    savoir une URL, un chemin ou un message, est prise avant
+    l'interpr&eacute;tation de toute expression. Exemples :</p>
 
     <highlight language="config">
 ErrorDocument 500 http://foo.example.com/cgi-bin/tester
 ErrorDocument 404 /cgi-bin/bad_urls.pl
 ErrorDocument 401 /subscription_info.html
-ErrorDocument 403 "Sorry can't allow you access today"
+ErrorDocument 403 "D&eacute;sol&eacute;, nous ne pouvons pas vous accorder l'acc&egrave;s aujourd'hui"
 ErrorDocument 403 Forbidden!
+ErrorDocument 403 /cgi-bin/forbidden.pl?referrer=%{escape:%{HTTP_REFERER}}
     </highlight>
 
     <p>De plus, on peut sp&eacute;cifier la valeur sp&eacute;ciale <code>default</code>
