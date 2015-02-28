@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1521343:1661466 (outdated) -->
+<!-- English Revision : 1661466 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -193,6 +193,17 @@ serveur HTTP Apache</title>
       dans les modules de filtrage bas&eacute;s sur libxml2 (support du
       markup)</dd>
 
+      <dt><module>mod_macro</module> (disponible &agrave; partir de la version 2.4.5)</dt>
+      <dd>Permet d'utiliser des macros au sein des fichiers de
+      configuration.</dd>
+
+      <dt><module>mod_proxy_wstunnel</module> (disponible &agrave; partir de la version 2.4.5)</dt>
+      <dd>Support des tunnels web-socket.</dd>
+
+      <dt><module>mod_authnz_fcgi</module> (disponible &agrave; partir de la version 2.4.10)</dt>
+      <dd>Permet aux applications d'autorisation FastCGI d'authentifier
+      et/ou autoriser les clients.</dd>
+
     </dl>
   </section>
 
@@ -220,6 +231,8 @@ serveur HTTP Apache</title>
       <dd>Le support des cl&eacute;s EC a &eacute;t&eacute; ajout&eacute; &agrave; celui des cl&eacute;s RSA et
       DSA.</dd>
 
+      <dd>Support de TLS-SRP (disponible &agrave; partir de la version 2.4.4).</dd>
+
       <dt><module>mod_proxy</module></dt>
 
       <dd>La directive <directive
@@ -232,6 +245,9 @@ serveur HTTP Apache</title>
 
       <dd>Il est maintenant possible de configurer l'adresse source dans
       les requ&ecirc;tes mandat&eacute;es.</dd>
+
+      <dd>Support des sockets de type Unix vers le serveur
+      d'arri&egrave;re-plan (disponible &agrave; partir de la version 2.4.7).</dd>
 
       <dt><module>mod_proxy_balancer</module></dt>
 
@@ -336,6 +352,10 @@ serveur HTTP Apache</title>
       configuration pr&eacute;interpr&eacute;t&eacute;e sur stdout au cours du d&eacute;marrage du
       serveur.</dd>
 
+      <dt><module>mod_auth_basic</module></dt>
+      <dd>Nouveau m&eacute;canisme g&eacute;n&eacute;rique permettant d'effectuer une
+      authentification basique (disponible &agrave; partir de la version 2.4.5).</dd>
+
     </dl>
   </section>
 
@@ -361,6 +381,11 @@ serveur HTTP Apache</title>
 	courant.</dd>
         <dd>Possibilit&eacute; d'invoquer un script personnalis&eacute; apr&egrave;s la
 	rotation.</dd>
+
+	<dt><program>htpasswd</program>, <program>htdbm</program></dt>
+        <dd>Support de l'algorithme bcrypt (disponible &agrave; partir de la
+	version 2.4.4).
+        </dd>
     </dl>
   </section>
 
