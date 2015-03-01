@@ -6,6 +6,9 @@ Changes with Apache 2.5.0
      calls r:wsupgrade() can cause a child process crash. 
      [Edward Lu <Chaosed0 gmail.com>]
 
+  *) mod_authn_core: Add expression support to AuthName and AuthType.
+     [Graham Leggett]
+
   *) mod_deflate: A misplaced check prevents limiting small bodies with the
      new inflate limits. PR56872. [Edward Lu, Eric Covener, Yann Ylavic]
 
