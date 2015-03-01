@@ -270,6 +270,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   (trunk works, but the above contains the CHANGES entry, which is 2.4.x only...)
      ylavic: +1
 
+  *) ab: Add missing longest request (100%) to CSV export. PR57614.
+     trunk patch: http://svn.apache.org/r1661913
+     2.4.x patch: trunk works (modulo CHANGES)
+     ylavic: +1
+
 
 OTHER PROPOSALS
 
