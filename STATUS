@@ -106,6 +106,10 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) ab: Add missing longest request (100%) to CSV export. PR57614.
+     trunk patch: http://svn.apache.org/r1661913
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: ylavic, covener, minfrin
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -251,11 +255,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-mpm_event-notify_suspend_sbh.patch
                   (trunk works, but the above contains the CHANGES entry, which is 2.4.x only...)
      +1 ylavic, covener
-
-  *) ab: Add missing longest request (100%) to CSV export. PR57614.
-     trunk patch: http://svn.apache.org/r1661913
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, covener
 
   *) core: Add expression support to ErrorDocument. Switch from a fixed
      sized 664 byte array per merge to a hash table.
