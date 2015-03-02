@@ -2,6 +2,10 @@
 
 Changes with Apache 2.4.13
 
+  *) mod_macro: Clear macros before initialization to avoid use-after-free
+     on startup or restart when the module is linked statically. PR 57525
+     [apache.org tech.futurequest.net, Yann Ylavic]
+
   *) mod_alias: Introduce expression parser support for Alias, ScriptAlias
      and Redirect. [Graham Leggett]
 
