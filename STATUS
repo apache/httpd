@@ -235,7 +235,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1662246 (updated CHANGES entry)
      2.4.x patch: trunk works (modulo CHANGES)
                   http://people.apache.org/~ylavic/httpd-2.4.x-mod_deflate-PR56872.patch
-     +1: ylavic
+     +1: ylavic, covener
 
   *) mod_proxy: Use the correct server name for SNI in case the backend
      SSL connection itself is established via a proxy server.  PR 57139
@@ -250,12 +250,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1663017
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-mpm_event-notify_suspend_sbh.patch
                   (trunk works, but the above contains the CHANGES entry, which is 2.4.x only...)
-     +1 ylavic
+     +1 ylavic, covener
 
   *) ab: Add missing longest request (100%) to CSV export. PR57614.
      trunk patch: http://svn.apache.org/r1661913
      2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic
+     +1: ylavic, covener
 
   *) SECURITY: CVE-2015-0228 (cve.mitre.org)
      mod_lua: A maliciously crafted websockets PING after a script
