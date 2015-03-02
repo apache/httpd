@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.13
 
+  *) ab: Add missing longest request (100%) to CSV export.
+     [Marcin Fabrykowski <bugzilla fabrykowski.pl>] 
+
   *) mod_macro: Clear macros before initialization to avoid use-after-free
      on startup or restart when the module is linked statically. PR 57525
      [apache.org tech.futurequest.net, Yann Ylavic]

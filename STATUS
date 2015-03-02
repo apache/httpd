@@ -106,11 +106,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) ab: Add missing longest request (100%) to CSV export. PR57614.
-     trunk patch: http://svn.apache.org/r1661913
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, covener, minfrin
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
