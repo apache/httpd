@@ -106,11 +106,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_ssl: Fix merge of SSLProtocol ALL in virtualhost context PR57100
-     trunk patch: http://svn.apache.org/r1653997
-     2.4.x patch: trunk works
-     +1: ylavic, covener, jim
-
    * mod_alias: Introduce expression parser support for Alias, ScriptAlias
      and Redirect.
      trunk patch: http://svn.apache.org/r1653941
