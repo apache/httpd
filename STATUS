@@ -106,6 +106,25 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * mod_ssl: Fix merge of SSLProtocol ALL in virtualhost context PR57100
+     trunk patch: http://svn.apache.org/r1653997
+     2.4.x patch: trunk works
+     +1: ylavic, covener, jim
+
+   * mod_alias: Introduce expression parser support for Alias, ScriptAlias
+     and Redirect.
+     trunk patch: http://svn.apache.org/r1653941
+                  http://svn.apache.org/r1653978
+                  http://svn.apache.org/r1656225
+     2.4.x patch: trunk works (modulo CHANGES, docs/log-message-tags)
+     +1: minfrin, covener, jim
+
+   * mod_macro: Clear macros before initialization to avoid use-after-free
+     on startup or restart when the module is linked statically. PR 57525
+     trunk patch: http://svn.apache.org/r1656669
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: ylavic, covener, jim
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -201,19 +220,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      +1: rjung, ylavic
 
-   * mod_ssl: Fix merge of SSLProtocol ALL in virtualhost context PR57100
-     trunk patch: http://svn.apache.org/r1653997
-     2.4.x patch: trunk works
-     +1: ylavic, covener, jim
-
-   * mod_alias: Introduce expression parser support for Alias, ScriptAlias
-     and Redirect.
-     trunk patch: http://svn.apache.org/r1653941
-                  http://svn.apache.org/r1653978
-                  http://svn.apache.org/r1656225
-     2.4.x patch: trunk works (modulo CHANGES, docs/log-message-tags)
-     +1: minfrin, covener, jim
-
    * mod_ssl: Add support for extracting subjectAltName entries of type
      rfc822Name and dNSName into SSL_{CLIENT,SERVER}_SAN_{Email,DNS}_n
      variables. (also covers PR57207)
@@ -231,12 +237,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1656359 (CHANGES entry)
      2.4.x patch: trunk works (modulo CHANGES, docs/log-message-tags)
      +1: ylavic
-
-   * mod_macro: Clear macros before initialization to avoid use-after-free
-     on startup or restart when the module is linked statically. PR 57525
-     trunk patch: http://svn.apache.org/r1656669
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, covener, jim
 
    * mod_ssl: Add the SSL_CLIENT_CERT_RFC4523_CEA variable, which provides
      a combination of certificate serialNumber and issuer as defined by
