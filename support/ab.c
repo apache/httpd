@@ -1038,7 +1038,7 @@ static void output_results(int sig)
                 exit(1);
             }
             fprintf(out, "" "Percentage served" "," "Time in ms" "\n");
-            for (i = 0; i < 100; i++) {
+            for (i = 0; i <= 100; i++) {
                 double t;
                 if (i == 0)
                     t = ap_double_ms(stats[0].time);
