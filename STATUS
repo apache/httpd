@@ -106,6 +106,14 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) SECURITY: CVE-2015-0228 (cve.mitre.org)
+     mod_lua: A maliciously crafted websockets PING after a script
+     calls r:wsupgrade() can cause a child process crash.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1657261
+     2.4.x patch: trunk works
+     Note: Technically CTR but it's a CVE.
+     +1: covener, minfrin, ylavic
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -256,14 +264,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1661448
      2.4.x patch: http://people.apache.org/~minfrin/httpd-core-errordocument24-3.patch
      minfrin: +1
-
-  *) SECURITY: CVE-2015-0228 (cve.mitre.org)
-     mod_lua: A maliciously crafted websockets PING after a script
-     calls r:wsupgrade() can cause a child process crash.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1657261
-     2.4.x patch: trunk works
-     Note: Technically CTR but it's a CVE.
-     +1: covener, minfrin
 
 
 OTHER PROPOSALS
