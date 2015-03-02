@@ -140,7 +140,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1643537
                   http://svn.apache.org/r1643543
      2.4.x patch: trunk works (module CHANGES)
-     +1: ylavic
+     +1: ylavic, jim
 
    * core: Add ap_errorlog_provider to make ErrorLog logging modular. This
            backport keeps syslog logging as part of httpd core and only adds
@@ -204,7 +204,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * mod_ssl: Fix merge of SSLProtocol ALL in virtualhost context PR57100
      trunk patch: http://svn.apache.org/r1653997
      2.4.x patch: trunk works
-     +1: ylavic, covener
+     +1: ylavic, covener, jim
 
    * mod_alias: Introduce expression parser support for Alias, ScriptAlias
      and Redirect.
@@ -212,7 +212,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1653978
                   http://svn.apache.org/r1656225
      2.4.x patch: trunk works (modulo CHANGES, docs/log-message-tags)
-     +1: minfrin, covener
+     +1: minfrin, covener, jim
 
    * mod_ssl: Add support for extracting subjectAltName entries of type
      rfc822Name and dNSName into SSL_{CLIENT,SERVER}_SAN_{Email,DNS}_n
@@ -236,7 +236,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      on startup or restart when the module is linked statically. PR 57525
      trunk patch: http://svn.apache.org/r1656669
      2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, covener
+     +1: ylavic, covener, jim
 
    * mod_ssl: Add the SSL_CLIENT_CERT_RFC4523_CEA variable, which provides
      a combination of certificate serialNumber and issuer as defined by
