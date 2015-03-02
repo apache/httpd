@@ -257,6 +257,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic, covener
 
+  *) core: Add expression support to ErrorDocument. Switch from a fixed
+     sized 664 byte array per merge to a hash table.
+     trunk patch: http://svn.apache.org/r1661448
+     2.4.x patch: trunks works (module CHANGES)
+     minfrin: +1
+
   *) SECURITY: CVE-2015-0228 (cve.mitre.org)
      mod_lua: A maliciously crafted websockets PING after a script
      calls r:wsupgrade() can cause a child process crash.
@@ -264,6 +270,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      Note: Technically CTR but it's a CVE.
      +1: covener
+
 
 OTHER PROPOSALS
 
