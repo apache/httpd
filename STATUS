@@ -269,7 +269,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1657261
      2.4.x patch: trunk works
      Note: Technically CTR but it's a CVE.
-     +1: covener
+     +1: covener, minfrin
 
 
 OTHER PROPOSALS
