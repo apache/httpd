@@ -2,6 +2,10 @@
 
 Changes with Apache 2.4.13
 
+  *) mod_ssl: 'SSLProtocol ALL' was being ignored in virtual host context. 
+     PR 57100.  [Michael Kaufmann <apache-bugzilla michael-kaufmann.ch>,
+     Yann Ylavic]
+
   *) mod_ssl: Fix renegotiation failures redirected to an ErrorDocument.
      PR 57334.  [Yann Ylavic].
 
