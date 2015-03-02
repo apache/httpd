@@ -107,12 +107,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
 
-   * mod_macro: Clear macros before initialization to avoid use-after-free
-     on startup or restart when the module is linked statically. PR 57525
-     trunk patch: http://svn.apache.org/r1656669
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, covener, jim
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]

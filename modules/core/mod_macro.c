@@ -75,14 +75,9 @@ typedef struct
   Macros are kept globally...
   They are not per-server or per-directory entities.
 
-  I would need a hook BEFORE and AFTER configuration processing
-  to initialize and close them properly, but no such thing is exported,
-  although it could be available from within apache.
-
-  I would have such a hook if in server/config.c
-  The "initializer" does not seem to be called before.
-
   note: they are in a temp_pool, and there is a lazy initialization.
+        ap_macros is reset to NULL in pre_config hook to not depend
+        on static vs dynamic configuration.
 
   hash type: (char *) name -> (ap_macro_t *) macro
 */
@@ -914,6 +909,12 @@ static const char *undef_macro(cmd_parms * cmd, void *dummy, const char *arg)
     return NULL;
 }
 
+static int macro_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp)
+{
+    ap_macros = NULL;
+    return OK;
+}
+
 /************************************************************* EXPORT MODULE */
 
 /*
@@ -932,6 +933,11 @@ static const command_rec macro_cmds[] = {
     {NULL}
 };
 
+static void macro_hooks(apr_pool_t *p)
+{
+    ap_hook_pre_config(macro_pre_config, NULL, NULL, APR_HOOK_MIDDLE);
+}
+
 /*
   Module hooks are request-oriented thus it does not suit configuration
   file utils a lot. I haven't found any clean hook to apply something
@@ -949,5 +955,5 @@ AP_DECLARE_MODULE(macro) = {
         NULL,                   /* create per-server config structure */
         NULL,                   /* merge per-server config structures */
         macro_cmds,             /* configuration commands */
-        NULL                    /* register hooks */
+        macro_hooks             /* register hooks */
 };
