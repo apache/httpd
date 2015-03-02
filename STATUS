@@ -254,7 +254,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) core: Add expression support to ErrorDocument. Switch from a fixed
      sized 664 byte array per merge to a hash table.
      trunk patch: http://svn.apache.org/r1661448
-     2.4.x patch: trunks works (module CHANGES)
+     2.4.x patch: http://people.apache.org/~minfrin/httpd-core-errordocument24-3.patch
      minfrin: +1
 
   *) SECURITY: CVE-2015-0228 (cve.mitre.org)
