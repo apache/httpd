@@ -257,6 +257,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (modulo CHANGES)
      ylavic: +1
 
+  *) SECURITY: CVE-2015-0228 (cve.mitre.org)
+     mod_lua: A maliciously crafted websockets PING after a script
+     calls r:wsupgrade() can cause a child process crash.
+     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1657261
+     2.4.x patch: trunk works
+     Note: Technically CTR but it's a CVE.
+     covener: +1
 
 OTHER PROPOSALS
 
