@@ -6,6 +6,11 @@ Changes with Apache 2.5.0
      calls r:wsupgrade() can cause a child process crash. 
      [Edward Lu <Chaosed0 gmail.com>]
 
+  *) core: If explicitly configured, use the KeepaliveTimeout value of the
+     virtual host which handled the latest request on the connection, or by
+     default the one of the first virtual host bound to the same IP:port.
+     PR56226.  [Yann Ylavic]
+
   *) mod_authn_core: Add expression support to AuthName and AuthType.
      [Graham Leggett]
 
