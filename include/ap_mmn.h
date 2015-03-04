@@ -480,6 +480,7 @@
  * 20150121.1 (2.5.0-dev)  Add cmd_parms_struct.parent to http_config.h
  * 20150121.2 (2.5.0-dev)  Add response_code_exprs to http_core.h
  * 20150222.0 (2.5.0-dev)  ssl pre_handshake hook now indicates proxy|client
+ * 20150222.1 (2.5.0-dev)  Add keep_alive_timeout_set to server_rec
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
@@ -487,7 +488,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20150222
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 0                 /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 1                 /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

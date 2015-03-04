@@ -1335,9 +1335,12 @@ struct server_rec {
     /** limit on number of request header fields  */
     int limit_req_fields;
 
-
     /** Opaque storage location */
     void *context;
+
+    /** Whether the keepalive timeout is explicit or inherited
+     *  from the default vhost or main server. */
+    unsigned int keep_alive_timeout_set:1;
 };
 
 /**

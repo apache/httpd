@@ -2242,8 +2242,9 @@ requests on a persistent connection</description>
     higher the timeout, the more server processes will be kept
     occupied waiting on connections with idle clients.</p>
 
-    <p>In a name-based virtual host context, the value of the first
-    defined virtual host best matching the local IP and port will be used.</p>
+    <p>If <directive>KeepAliveTimeout</directive> is <strong>not</strong>
+    set for a name-based virtual host, the value of the first defined
+    virtual host best matching the local IP and port will be used.</p>
 </usage>
 </directivesynopsis>
 
