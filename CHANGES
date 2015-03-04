@@ -1,11 +1,6 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
-  *) SECURITY: CVE-2015-0228 (cve.mitre.org)
-     mod_lua: A maliciously crafted websockets PING after a script
-     calls r:wsupgrade() can cause a child process crash. 
-     [Edward Lu <Chaosed0 gmail.com>]
-
   *) core: If explicitly configured, use the KeepaliveTimeout value of the
      virtual host which handled the latest request on the connection, or by
      default the one of the first virtual host bound to the same IP:port.
