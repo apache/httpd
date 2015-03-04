@@ -44,10 +44,6 @@ Changes with Apache 2.5.0
      at the same time, don't lose errors occuring while forwarding on the first
      side when none occurs next on the other side, and abort.  [Yann Ylavic]
 
-  *) mod_lua: After a r:wsupgrade(), mod_lua was not properly
-     responding to a websockets PING but instead invoking the specified 
-     script. PR57524. [Edward Lu <Chaosed0 gmail.com>]
-
   *) mod_macro: Clear macros before initialization to avoid use-after-free
      on startup or restart when the module is linked statically. PR 57525
      [apache.org tech.futurequest.net, Yann Ylavic]
