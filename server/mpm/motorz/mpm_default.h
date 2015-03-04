@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-
 /**
- * @file  event/mpm_default.h
- * @brief Event MPM defaults
+ * @file  motorz/mpm_default.h
+ * @brief MotorZ MPM defaults
  *
- * @defgroup APACHE_MPM_EVENTOPT EventOpt MPM
+ * @defgroup APACHE_MPM_MOTORZ MotorZ MPM
  * @ingroup APACHE_INTERNAL
  * @{
  */
@@ -27,11 +26,10 @@
 #ifndef APACHE_MPM_DEFAULT_H
 #define APACHE_MPM_DEFAULT_H
 
-/* Number of servers to spawn off by default --- also, if fewer than
- * this free when the caretaker checks, it will spawn more.
+/* Number of servers to spawn off by default --- 
  */
 #ifndef DEFAULT_START_DAEMON
-#define DEFAULT_START_DAEMON 3
+#define DEFAULT_START_DAEMON 1
 #endif
 
 /* Maximum number of *free* server processes --- more than this, and
@@ -39,17 +37,13 @@
  */
 
 #ifndef DEFAULT_MAX_FREE_DAEMON
-#define DEFAULT_MAX_FREE_DAEMON 10
+#define DEFAULT_MAX_FREE_DAEMON 2
 #endif
 
 /* Minimum --- fewer than this, and more will be created */
 
 #ifndef DEFAULT_MIN_FREE_DAEMON
-#define DEFAULT_MIN_FREE_DAEMON 3
-#endif
-
-#ifndef DEFAULT_THREADS_PER_CHILD
-#define DEFAULT_THREADS_PER_CHILD 25
+#define DEFAULT_MIN_FREE_DAEMON 1
 #endif
 
 #endif /* AP_MPM_DEFAULT_H */
