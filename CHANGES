@@ -2,6 +2,10 @@
 
 Changes with Apache 2.4.13
 
+  *) mod_lua: After a r:wsupgrade(), mod_lua was not properly
+     responding to a websockets PING but instead invoking the specified 
+     script. PR57524. [Edward Lu <Chaosed0 gmail.com>]
+
   *) ab: Add missing longest request (100%) to CSV export.
      [Marcin Fabrykowski <bugzilla fabrykowski.pl>] 
 
