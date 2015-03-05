@@ -29,6 +29,9 @@ Changes with Apache 2.4.13
      PR 57100.  [Michael Kaufmann <apache-bugzilla michael-kaufmann.ch>,
      Yann Ylavic]
 
+  *) mpm_event: Avoid access to the scoreboard from the connection while
+     it is suspended (waiting for events).  [Eric Covener, Jeff Trawick]
+
   *) mod_ssl: Fix renegotiation failures redirected to an ErrorDocument.
      PR 57334.  [Yann Ylavic].
 
