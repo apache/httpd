@@ -106,6 +106,22 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * mod_ssl: Add the SSL_CLIENT_CERT_RFC4523_CEA variable, which provides
+     a combination of certificate serialNumber and issuer as defined by
+     CertificateExactMatch in RFC4523.
+     trunk patch: http://svn.apache.org/r1661258
+     2.4.x patch: trunk works
+     +1: minfrin, ylavic, jim
+
+  *) mpm_event: Clear and restore sbh in notify_suspend() and notify_resume()
+     respectively.  This merges a missing fix from r1545736 (sbh = NULL before
+     notify_suspend() for write completion, near line 1068 in 2.4.12) which was
+     missed between r1541207 and r1642858.
+     trunk patch: http://svn.apache.org/r1663017
+     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-mpm_event-notify_suspend_sbh.patch
+                  (trunk works, but the above contains the CHANGES entry, which is 2.4.x only...)
+     +1 ylavic, covener, jim
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -219,13 +235,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (modulo CHANGES, docs/log-message-tags)
      +1: ylavic
 
-   * mod_ssl: Add the SSL_CLIENT_CERT_RFC4523_CEA variable, which provides
-     a combination of certificate serialNumber and issuer as defined by
-     CertificateExactMatch in RFC4523.
-     trunk patch: http://svn.apache.org/r1661258
-     2.4.x patch: trunk works
-     +1: minfrin, ylavic, jim
-
   *) mod_deflate: A misplaced check prevents limiting small bodies with the
      new inflate limits.  PR56872.
      trunk patch: http://svn.apache.org/r1619383
@@ -241,15 +250,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1634120
      2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic
-
-  *) mpm_event: Clear and restore sbh in notify_suspend() and notify_resume()
-     respectively.  This merges a missing fix from r1545736 (sbh = NULL before
-     notify_suspend() for write completion, near line 1068 in 2.4.12) which was
-     missed between r1541207 and r1642858.
-     trunk patch: http://svn.apache.org/r1663017
-     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-mpm_event-notify_suspend_sbh.patch
-                  (trunk works, but the above contains the CHANGES entry, which is 2.4.x only...)
-     +1 ylavic, covener, jim
 
   *) core: Add expression support to ErrorDocument. Switch from a fixed
      sized 664 byte array per merge to a hash table.
