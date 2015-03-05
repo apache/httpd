@@ -922,10 +922,10 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
 
 static void create_radio(const char *name, unsigned int flag, request_rec *r)
 {
-    ap_rvputs(r, "<td>On <input name='", name, "' id='", name, "' value='1' type=radio", NULL);
+    ap_rvputs(r, "<td><label for='", name, "1'>On</label> <input name='", name, "' id='", name, "1' value='1' type=radio", NULL);
     if (flag)
         ap_rputs(" checked", r);
-    ap_rvputs(r, "> <br/> Off <input name='", name, "' id='", name, "' value='0' type=radio", NULL);
+    ap_rvputs(r, "> <br/> <label for='", name, "0'>Off</label> <input name='", name, "' id='", name, "0' value='0' type=radio", NULL);
     if (!flag)
         ap_rputs(" checked", r);
     ap_rputs("></td>\n", r);
@@ -1481,7 +1481,7 @@ static int balancer_handler(request_rec *r)
             ap_rputs("<hr />\n<h3>LoadBalancer Status for ", r);
             ap_rvputs(r, "<a href=\"", ap_escape_uri(r->pool, r->uri), "?b=",
                       balancer->s->name + sizeof(BALANCER_PREFIX) - 1,
-                      "&nonce=", balancer->s->nonce,
+                      "&amp;nonce=", balancer->s->nonce,
                       "\">", NULL);
             ap_rvputs(r, balancer->s->name, "</a> [",balancer->s->sname, "]</h3>\n", NULL);
             ap_rputs("\n\n<table><tr>"
@@ -1503,9 +1503,9 @@ static int balancer_handler(request_rec *r)
             else {
                 ap_rputs("<td> (None) ", r);
             }
-            ap_rprintf(r, "<td>%s</td>\n",
+            ap_rprintf(r, "</td><td>%s</td>\n",
                        balancer->s->sticky_force ? "On" : "Off");
-            ap_rprintf(r, "</td><td>%" APR_TIME_T_FMT "</td>",
+            ap_rprintf(r, "<td>%" APR_TIME_T_FMT "</td>",
                 apr_time_sec(balancer->s->timeout));
             ap_rprintf(r, "<td>%d</td>\n", balancer->s->max_attempts);
             ap_rprintf(r, "<td>%s</td>\n",
@@ -1531,9 +1531,9 @@ static int balancer_handler(request_rec *r)
                 worker = *workers;
                 ap_rvputs(r, "<tr>\n<td><a href=\"",
                           ap_escape_uri(r->pool, r->uri), "?b=",
-                          balancer->s->name + sizeof(BALANCER_PREFIX) - 1, "&w=",
+                          balancer->s->name + sizeof(BALANCER_PREFIX) - 1, "&amp;w=",
                           ap_escape_uri(r->pool, worker->s->name),
-                          "&nonce=", balancer->s->nonce,
+                          "&amp;nonce=", balancer->s->nonce,
                           "\">", NULL);
                 ap_rvputs(r, (*worker->s->uds_path ? "<i>" : ""), ap_proxy_worker_name(r->pool, worker),
                           (*worker->s->uds_path ? "</i>" : ""), "</a></td>", NULL);
@@ -1564,7 +1564,7 @@ static int balancer_handler(request_rec *r)
             ap_rvputs(r, (*wsel->s->uds_path?"<i>":""), ap_proxy_worker_name(r->pool, wsel), (*wsel->s->uds_path?"</i>":""), "</h3>\n", NULL);
             ap_rputs("<form method=\"POST\" enctype=\"application/x-www-form-urlencoded\" action=\"", r);
             ap_rvputs(r, ap_escape_uri(r->pool, action), "\">\n", NULL);
-            ap_rputs("<dl>\n<table><tr><td>Load factor:</td><td><input name='w_lf' id='w_lf' type=text ", r);
+            ap_rputs("<table><tr><td>Load factor:</td><td><input name='w_lf' id='w_lf' type=text ", r);
             ap_rprintf(r, "value='%d'></td></tr>\n", wsel->s->lbfactor);
             ap_rputs("<tr><td>LB Set:</td><td><input name='w_ls' id='w_ls' type=text ", r);
             ap_rprintf(r, "value='%d'></td></tr>\n", wsel->s->lbset);
@@ -1605,7 +1605,7 @@ static int balancer_handler(request_rec *r)
             ap_rvputs(r, bsel->s->name, "</h3>\n", NULL);
             ap_rputs("<form method='POST' enctype='application/x-www-form-urlencoded' action='", r);
             ap_rvputs(r, ap_escape_uri(r->pool, action), "'>\n", NULL);
-            ap_rputs("<dl>\n<table>\n", r);
+            ap_rputs("<table>\n", r);
             provs = ap_list_provider_names(r->pool, PROXY_LBMETHOD, "0");
             if (provs) {
                 ap_rputs("<tr><td>LBmethod:</td>", r);
