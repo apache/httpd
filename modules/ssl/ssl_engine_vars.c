@@ -46,6 +46,7 @@ static char *ssl_var_lookup_ssl_cert_valid(apr_pool_t *p, ASN1_TIME *tm);
 static char *ssl_var_lookup_ssl_cert_remain(apr_pool_t *p, ASN1_TIME *tm);
 static char *ssl_var_lookup_ssl_cert_serial(apr_pool_t *p, X509 *xs);
 static char *ssl_var_lookup_ssl_cert_chain(apr_pool_t *p, STACK_OF(X509) *sk, char *var);
+static char *ssl_var_lookup_ssl_cert_rfc4523_cea(apr_pool_t *p, SSL *ssl);
 static char *ssl_var_lookup_ssl_cert_PEM(apr_pool_t *p, X509 *xs);
 static char *ssl_var_lookup_ssl_cert_verify(apr_pool_t *p, conn_rec *c);
 static char *ssl_var_lookup_ssl_cipher(apr_pool_t *p, conn_rec *c, char *var);
@@ -364,6 +365,9 @@ static char *ssl_var_lookup_ssl(apr_pool_t *p, conn_rec *c, request_rec *r,
         sk = SSL_get_peer_cert_chain(ssl);
         result = ssl_var_lookup_ssl_cert_chain(p, sk, var+18);
     }
+    else if (ssl != NULL && strcEQ(var, "CLIENT_CERT_RFC4523_CEA")) {
+        result = ssl_var_lookup_ssl_cert_rfc4523_cea(p, ssl);
+    }
     else if (ssl != NULL && strcEQ(var, "CLIENT_VERIFY")) {
         result = ssl_var_lookup_ssl_cert_verify(p, c);
     }
@@ -676,6 +680,37 @@ static char *ssl_var_lookup_ssl_cert_chain(apr_pool_t *p, STACK_OF(X509) *sk, ch
         }
     }
 
+    return result;
+}
+
+static char *ssl_var_lookup_ssl_cert_rfc4523_cea(apr_pool_t *p, SSL *ssl)
+{
+    char *result;
+    X509 *xs;
+
+    ASN1_INTEGER *serialNumber;
+
+    if (!(xs = SSL_get_peer_certificate(ssl))) {
+        return NULL;
+    }
+
+    result = NULL;
+
+    serialNumber = X509_get_serialNumber(xs);
+    if (serialNumber) {
+        X509_NAME *issuer = X509_get_issuer_name(xs);
+        if (issuer) {
+            BIGNUM *bn = ASN1_INTEGER_to_BN(serialNumber, NULL);
+            char *decimal = BN_bn2dec(bn);
+            result = apr_pstrcat(p, "{ serialNumber ", decimal,
+                    ", issuer rdnSequence:\"",
+                    SSL_X509_NAME_to_string(p, issuer, 0), "\" }", NULL);
+            OPENSSL_free(decimal);
+            BN_free(bn);
+        }
+    }
+
+    X509_free(xs);
     return result;
 }
 
