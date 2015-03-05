@@ -16,6 +16,43 @@
 
 #include "motorz.h"
 
+/**
+ * config globals
+ */
+static motorz_core_t *g_motorz_core;
+static int threads_per_child = 0;
+static int ap_num_kids=0;
+static int ap_daemons_min_free=0;
+static int ap_daemons_max_free=0;
+static int ap_daemons_limit=0;      /* MaxRequestWorkers */
+static int server_limit = 0;
+static int mpm_state = AP_MPMQ_STARTING;
+
+/* one_process --- debugging mode variable; can be set from the command line
+ * with the -X flag.  If set, this gets you the child_main loop running
+ * in the process which originally started up (no detach, no make_child),
+ * which is a pretty nice debugging environment.  (You'll get a SIGHUP
+ * early in standalone_main; just continue through.  This is the server
+ * trying to kill off any child processes which it might have lying
+ * around --- Apache doesn't keep track of their pids, it just sends
+ * SIGHUP to the process group, ignoring it in the root process.
+ * Continue through and you'll be fine.).
+ */
+static int one_process = 0;
+
+static apr_pool_t *pconf;               /* Pool for config stuff */
+static apr_pool_t *pchild;              /* Pool for httpd child stuff */
+
+static pid_t ap_my_pid; /* it seems silly to call getpid all the time */
+static pid_t parent_pid;
+static int my_child_num;
+static int num_buckets; /* Number of listeners buckets */
+static motorz_child_bucket *all_buckets, /* All listeners buckets */
+                            *my_bucket;   /* Current child bucket */
+
+static void clean_child_exit(int code) __attribute__ ((noreturn));
+
+
 static apr_status_t motorz_io_process(motorz_conn_t *scon);
 static void clean_child_exit(int code) __attribute__ ((noreturn));
 
