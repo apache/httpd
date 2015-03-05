@@ -301,7 +301,7 @@ static apr_status_t motorz_io_process(motorz_conn_t *scon)
         if (scon->pfd.reqevents != 0) {
             rv = apr_pollcb_remove(mz->pollcb, &scon->pfd);
             if (rv) {
-                ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf, APLOGNO(00248)
+                ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf, APLOGNO()
                              "motorz_io_process: apr_pollcb_remove failure");
                 /*AP_DEBUG_ASSERT(rv == APR_SUCCESS);*/
             }
@@ -392,13 +392,13 @@ static apr_status_t motorz_io_process(motorz_conn_t *scon)
             
             scon->pfd.reqevents = (
                                    scon->cs.sense == CONN_SENSE_WANT_WRITE ? APR_POLLOUT :
-                                   APR_POLLIN);
+                                   APR_POLLIN)  | APR_POLLHUP | APR_POLLERR;
             scon->cs.sense = CONN_SENSE_DEFAULT;
             
             rv = apr_pollcb_add(mz->pollcb, &scon->pfd);
             
             if (rv) {
-                ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf, APLOGNO(00251)
+                ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf, APLOGNO()
                              "process_socket: apr_pollcb_add failure in read request line");
                 AP_DEBUG_ASSERT(rv == APR_SUCCESS);
             }
@@ -562,7 +562,7 @@ static int motorz_query(int query_code, int *result, apr_status_t *rv)
         *result = AP_MPMQ_STATIC;
         break;
     case AP_MPMQ_IS_FORKED:
-        *result = AP_MPMQ_DYNAMIC;
+        *result = AP_MPMQ_STATIC;
         break;
     case AP_MPMQ_HARD_LIMIT_DAEMONS:
         *result = server_limit;
