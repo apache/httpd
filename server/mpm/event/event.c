@@ -771,10 +771,12 @@ static void notify_suspend(event_conn_state_t *cs)
 {
     ap_run_suspend_connection(cs->c, cs->r);
     cs->suspended = 1;
+    cs->c->sbh = NULL;
 }
 
-static void notify_resume(event_conn_state_t *cs)
+static void notify_resume(event_conn_state_t *cs, ap_sb_handle_t *sbh)
 {
+    cs->c->sbh = sbh;
     cs->suspended = 0;
     ap_run_resume_connection(cs->c, cs->r);
 }
@@ -810,9 +812,11 @@ static int start_lingering_close_common(event_conn_state_t *cs, int in_worker)
         cs->pub.state = CONN_STATE_LINGER_NORMAL;
     }
     apr_atomic_inc32(&lingering_count);
-    cs->c->sbh = NULL;
     if (in_worker) { 
         notify_suspend(cs);
+    }
+    else {
+        cs->c->sbh = NULL;
     }
     apr_thread_mutex_lock(timeout_mutex);
     TO_QUEUE_APPEND(*q, cs);
@@ -846,7 +850,6 @@ static int start_lingering_close_common(event_conn_state_t *cs, int in_worker)
 static int start_lingering_close_blocking(event_conn_state_t *cs)
 {
     if (ap_start_lingering_close(cs->c)) {
-        cs->c->sbh = NULL;
         notify_suspend(cs);
         ap_push_pool(worker_queue_info, cs->p);
         return 0;
@@ -910,7 +913,7 @@ static apr_status_t ptrans_pre_cleanup(void *dummy)
     event_conn_state_t *cs = dummy;
 
     if (cs->suspended) {
-        notify_resume(cs);
+        notify_resume(cs, NULL);
     }
     return APR_SUCCESS;
 }
@@ -1009,8 +1012,7 @@ static void process_socket(apr_thread_t *thd, apr_pool_t * p, apr_socket_t * soc
     }
     else {
         c = cs->c;
-        c->sbh = sbh;
-        notify_resume(cs);
+        notify_resume(cs, sbh);
         c->current_thread = thd;
         /* Subsequent request on a conn, and thread number is part of ID */
         c->id = conn_id;
@@ -1103,7 +1105,6 @@ read_request:
          */
         cs->expiration_time = ap_server_conf->keep_alive_timeout +
                               apr_time_now();
-        c->sbh = NULL;
         notify_suspend(cs);
         apr_thread_mutex_lock(timeout_mutex);
         TO_QUEUE_APPEND(keepalive_q, cs);
@@ -1121,7 +1122,6 @@ read_request:
     }
     else if (cs->pub.state == CONN_STATE_SUSPENDED) {
         apr_atomic_inc32(&suspended_count);
-        c->sbh = NULL;
         notify_suspend(cs);
     }
 }

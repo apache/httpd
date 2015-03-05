@@ -106,14 +106,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mpm_event: Clear and restore sbh in notify_suspend() and notify_resume()
-     respectively.  This merges a missing fix from r1545736 (sbh = NULL before
-     notify_suspend() for write completion, near line 1068 in 2.4.12) which was
-     missed between r1541207 and r1642858.
-     trunk patch: http://svn.apache.org/r1663017
-     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-mpm_event-notify_suspend_sbh.patch
-                  (trunk works, but the above contains the CHANGES entry, which is 2.4.x only...)
-     +1 ylavic, covener, jim
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
