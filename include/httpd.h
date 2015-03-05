@@ -1338,8 +1338,9 @@ struct server_rec {
     /** Opaque storage location */
     void *context;
 
-    /** Whether the keepalive timeout is explicit or inherited
-     *  from the default vhost or main server. */
+    /** Whether the keepalive timeout is explicit (1) or
+     *  inherited (0) from the base server (either first
+     *  server on the same IP:port or main server) */
     unsigned int keep_alive_timeout_set:1;
 };
 
