@@ -106,13 +106,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_ssl: Add the SSL_CLIENT_CERT_RFC4523_CEA variable, which provides
-     a combination of certificate serialNumber and issuer as defined by
-     CertificateExactMatch in RFC4523.
-     trunk patch: http://svn.apache.org/r1661258
-     2.4.x patch: trunk works
-     +1: minfrin, ylavic, jim
-
   *) mpm_event: Clear and restore sbh in notify_suspend() and notify_resume()
      respectively.  This merges a missing fix from r1545736 (sbh = NULL before
      notify_suspend() for write completion, near line 1068 in 2.4.12) which was
