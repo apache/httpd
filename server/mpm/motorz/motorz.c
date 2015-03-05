@@ -116,12 +116,11 @@ static void *motorz_io_setup_conn(apr_thread_t * thread, void *baton)
         ap_log_error(APLOG_MARK, APLOG_DEBUG, status, ap_server_conf, APLOGNO()
                      "motorz_io_setup_conn: motorz_io_process failed (?)");
     }
-    
-    return NULL;
 }
 
 static apr_status_t motorz_io_user(motorz_core_t *mz, motorz_sb_t *sb)
 {
+    /* TODO */
     return APR_SUCCESS;
 }
 
@@ -169,8 +168,6 @@ static void *motorz_timer_invoke(apr_thread_t *thread, void *baton)
     motorz_timer_t *ep = (motorz_timer_t *)baton;
     
     motorz_timer_run(ep);
-    
-    return NULL;
 }
 
 static void *motorz_io_invoke(apr_thread_t * thread, void *baton)
@@ -187,8 +184,6 @@ static void *motorz_io_invoke(apr_thread_t * thread, void *baton)
         ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, ap_server_conf, APLOGNO()
                      "motorz_io_invoke: motorz_io_process failed (?)");
     }
-    
-    return NULL;
 }
 
 static apr_status_t motorz_io_event_process(motorz_core_t *mz, motorz_sb_t *sb)
