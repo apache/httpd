@@ -6,6 +6,10 @@ Changes with Apache 2.5.0
      to a local URL-path with the INCLUDES filter active, introduced
      in 2.4.11. PR 57531. [Yann Ylavic]
 
+  *) mod_rewrite: Add support for starting External Rewriting Programs
+     as non-root user on UNIX systems by specifying username and group name
+     as third argument of RewriteMap directive. [Jan Kaluza]
+
   *) core: If explicitly configured, use the KeepaliveTimeout value of the
      virtual host which handled the latest request on the connection, or by
      default the one of the first virtual host bound to the same IP:port.
