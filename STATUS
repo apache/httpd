@@ -249,11 +249,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1664205
      2.4.x patch: trunk works
      +1 covener, jim
+     ylavic: with http://svn.apache.org/r1664576 (as suggested by Rüdiger)?
 
   *) mod_proxy_balancer: Fix HTML of balancer-manager. Bugz: 55466
      trunk patch: http://svn.apache.org/r1664356
      2.4.x patch: trunk works
-     +1 jim
+     +1 jim, ylavic
 
 OTHER PROPOSALS
 
