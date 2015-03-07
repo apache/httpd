@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1613318 -->
+<!-- English Revision : 1663123 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -130,7 +130,7 @@ Alias /secure /webpages/secure
 <name>AuthName</name>
 <description>L'identifiant de l'autorisation &agrave; utiliser avec
 l'authentification HTTP</description>
-<syntax>AuthName <var>domaine d'autorisation</var></syntax>
+<syntax>AuthName <var>identifiant d'autorisation</var></syntax>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
@@ -158,6 +158,18 @@ l'authentification HTTP</description>
     <p>La cha&icirc;ne fournie comme argument &agrave; <code>AuthName</code>
     appara&icirc;tra dans la bo&icirc;te de dialogue d'authentification pour la
     plupart des navigateurs.</p>
+
+    <p>A partir de la version 2.4.13, il est possible de d&eacute;finir cette
+    directive en utilisant la <a
+    href="../expr.html">syntaxe des expressions</a> pour
+    sp&eacute;cifier l'identifiant d'autorisation de mani&egrave;re dynamique.</p>
+
+   <p>Exemple :</p>
+
+   <highlight language="config">
+     AuthName "%{HTTP_HOST}"
+   </highlight>
+
 </usage>
 <seealso><a
     href="../howto/auth.html">Authentification, autorisation et contr&ocirc;le
@@ -215,6 +227,11 @@ l'authentification HTTP</description>
     Require all granted
 &lt;/Directory&gt;
     </highlight>
+
+    <p>A partir de la version 2.4.13, il est possible de d&eacute;finir cette
+    directive en utilisant la <a
+    href="../expr.html">syntaxe des expressions</a> pour
+    sp&eacute;cifier le type d'authentification de mani&egrave;re dynamique.</p>
 
     <note>Veuillez noter que, lorsque l'authentification n'est pas
     activ&eacute;e, les clients qui se sont d&eacute;j&agrave; authentifi&eacute;s pour une autre
