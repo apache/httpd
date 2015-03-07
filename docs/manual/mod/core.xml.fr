@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1661448 -->
+<!-- English Revision : 1664071 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -2472,9 +2472,10 @@ host</context>
     est &eacute;l&eacute;v&eacute;, plus nombreux seront les processus serveur en attente de
     requ&ecirc;tes de la part de clients inactifs.</p>
 
-    <p>Dans un contexte de serveur virtuel &agrave; base de nom, c'est
-    la valeur de la paire adresse IP/port du serveur virtuel qui
-    correspond le mieux qui sera utilis&eacute;e.</p>
+    <p>Si la directive <directive>KeepAliveTimeout</directive>
+    <strong>n'est pas</strong> d&eacute;finie pour un des serveurs virtuels
+    &agrave; base de nom, c'est le serveur virtuel dont la paire adresse
+    IP/port correspond le mieux qui sera utilis&eacute;e.</p>
 </usage>
 </directivesynopsis>
 

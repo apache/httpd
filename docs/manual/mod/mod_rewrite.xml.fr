@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1643034 -->
+<!-- English Revision : 1664575 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -322,6 +322,7 @@ pour le moteur de r&eacute;&eacute;criture</description>
 recherche de mots-cl&eacute;s</description>
 <syntax>RewriteMap <em>nom de la correspondance</em> <em>type de
 correspondance</em>:<em>source de la correspondance</em>
+    <em>options du type de correspondance</em>
 </syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
@@ -375,6 +376,12 @@ correspondance</em>:<em>source de la correspondance</em>
       <highlight language="config">
       RewriteRule ^/ex/(.*) ${map-exemple:$1}
       </highlight>
+
+      <p>La signification de l'argument <em>options du type de
+      correspondance</em> d&eacute;pend du <em>type de correspondance</em>
+      sp&eacute;cifi&eacute;. Veuillez vous r&eacute;f&eacute;rer au document <a
+      href="../rewrite/rewritemap.html">Utiliser RewriteMap</a> pour
+      plus de d&eacute;tails.</p>
 
       <p>Les combinaisons suivantes pour <em>type de correspondance</em>
       et <em>source de la correspondance</em>
