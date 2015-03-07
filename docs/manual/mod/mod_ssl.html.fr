@@ -199,6 +199,9 @@ exporté</td></tr>
 <tr><td><code>SSL_CLIENT_CERT_CHAIN_</code><em>n</em></td>
 <td>chaîne</td>    <td>Certificats de la chaîne de certification du
 client au format PEM</td></tr>
+<tr><td><code>SSL_CLIENT_CERT_RFC4523_CEA</code></td>   <td>chaîne</td>
+<td>Numéro de série et fournisseur du certificat. le format correspond à
+celui de la CertificateExactAssertion dans la RFC4523</td></tr>
 <tr><td><code>SSL_CLIENT_VERIFY</code></td>             <td>chaîne</td>
 <td><code>NONE</code>, <code>SUCCESS</code>, <code>GENEROUS</code> ou
 <code>FAILED:</code><em>raison</em></td></tr>
