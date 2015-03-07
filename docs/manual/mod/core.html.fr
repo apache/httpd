@@ -2405,9 +2405,10 @@ avant de fermer une connexion persistante</td></tr>
     est élévé, plus nombreux seront les processus serveur en attente de
     requêtes de la part de clients inactifs.</p>
 
-    <p>Dans un contexte de serveur virtuel à base de nom, c'est
-    la valeur de la paire adresse IP/port du serveur virtuel qui
-    correspond le mieux qui sera utilisée.</p>
+    <p>Si la directive <code class="directive">KeepAliveTimeout</code>
+    <strong>n'est pas</strong> définie pour un des serveurs virtuels
+    à base de nom, c'est le serveur virtuel dont la paire adresse
+    IP/port correspond le mieux qui sera utilisée.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

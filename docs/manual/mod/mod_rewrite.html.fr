@@ -814,6 +814,7 @@ moteur de réécriture</td></tr>
 recherche de mots-clés</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RewriteMap <em>nom de la correspondance</em> <em>type de
 correspondance</em>:<em>source de la correspondance</em>
+    <em>options du type de correspondance</em>
 </code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -865,6 +866,11 @@ correspondance</em>:<em>source de la correspondance</em>
 
       <pre class="prettyprint lang-config">RewriteRule ^/ex/(.*) ${map-exemple:$1}</pre>
 
+
+      <p>La signification de l'argument <em>options du type de
+      correspondance</em> dépend du <em>type de correspondance</em>
+      spécifié. Veuillez vous référer au document <a href="../rewrite/rewritemap.html">Utiliser RewriteMap</a> pour
+      plus de détails.</p>
 
       <p>Les combinaisons suivantes pour <em>type de correspondance</em>
       et <em>source de la correspondance</em>

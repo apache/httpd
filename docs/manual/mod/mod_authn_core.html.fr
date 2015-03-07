@@ -134,7 +134,7 @@ Alias /secure /webpages/secure
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>L'identifiant de l'autorisation à utiliser avec
 l'authentification HTTP</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthName <var>domaine d'autorisation</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthName <var>identifiant d'autorisation</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
@@ -157,6 +157,16 @@ l'authentification HTTP</td></tr>
     <p>La chaîne fournie comme argument à <code>AuthName</code>
     apparaîtra dans la boîte de dialogue d'authentification pour la
     plupart des navigateurs.</p>
+
+    <p>A partir de la version 2.4.13, il est possible de définir cette
+    directive en utilisant la <a href="../expr.html">syntaxe des expressions</a> pour
+    spécifier l'identifiant d'autorisation de manière dynamique.</p>
+
+   <p>Exemple :</p>
+
+   <pre class="prettyprint lang-config">AuthName "%{HTTP_HOST}"</pre>
+
+
 
 <h3>Voir aussi</h3>
 <ul>
@@ -235,6 +245,10 @@ l'alias spécifié</td></tr>
     Require all granted
 &lt;/Directory&gt;</pre>
 
+
+    <p>A partir de la version 2.4.13, il est possible de définir cette
+    directive en utilisant la <a href="../expr.html">syntaxe des expressions</a> pour
+    spécifier le type d'authentification de manière dynamique.</p>
 
     <div class="note">Veuillez noter que, lorsque l'authentification n'est pas
     activée, les clients qui se sont déjà authentifiés pour une autre
