@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1656269 -->
+<!-- English Revision : 1664363 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -119,6 +119,9 @@ export&eacute;</td></tr>
 <tr><td><code>SSL_CLIENT_CERT_CHAIN_</code><em>n</em></td>
 <td>cha&icirc;ne</td>    <td>Certificats de la cha&icirc;ne de certification du
 client au format PEM</td></tr>
+<tr><td><code>SSL_CLIENT_CERT_RFC4523_CEA</code></td>   <td>cha&icirc;ne</td>
+<td>Num&eacute;ro de s&eacute;rie et fournisseur du certificat. le format correspond &agrave;
+celui de la CertificateExactAssertion dans la RFC4523</td></tr>
 <tr><td><code>SSL_CLIENT_VERIFY</code></td>             <td>cha&icirc;ne</td>
 <td><code>NONE</code>, <code>SUCCESS</code>, <code>GENEROUS</code> ou
 <code>FAILED:</code><em>raison</em></td></tr>
