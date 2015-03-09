@@ -256,6 +256,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      +1 jim, ylavic
 
+  *) mod_proxy: use the original (non absolute) form of the request-line's URI
+     for requests embedded in CONNECT payloads used to connect SSL backends via
+     a ProxyRemote forward-proxy. PR 55892.
+     trunk patch: http://svn.apache.org/r1665215
+                  http://svn.apache.org/r1665218 (CHANGES entry)
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: ylavic
+
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
