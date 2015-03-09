@@ -180,6 +180,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-SSLSessionTicketKeyFile.patch
      +1: ylavic
 
+  *) mod_proxy: use the original (non absolute) form of the request-line's URI
+     for requests embedded in CONNECT payloads used to connect SSL backends via
+     a ProxyRemote forward-proxy. PR 55892.
+     trunk patch: http://svn.apache.org/r1665215
+                  http://svn.apache.org/r1665218 (CHANGES entry)
+     2.2.x patch: trunk works (modulo CHANGES)
+     +1: ylavic
+
 PATCHES/ISSUES THAT ARE STALLED
 
    * mod_proxy_balancer: Always initialize the shared parameters of a load
