@@ -128,7 +128,7 @@ struct motorz_core_t {
     int max_daemons_limit;
     apr_pool_t *pool;
     apr_thread_mutex_t *mtx;
-    apr_pollcb_t *pollcb;
+    apr_pollset_t *pollset;
     apr_skiplist *timer_ring;
     apr_thread_pool_t *workers;
 };
@@ -179,7 +179,12 @@ struct motorz_conn_t
     apr_socket_t *sock;
     apr_bucket_alloc_t *ba;
     ap_sb_handle_t *sbh;
+    /** connection record this struct refers to */
     conn_rec *c;
+    /** request record (if any) this struct refers to */
+    request_rec *r;
+    /** is the current conn_rec suspended? */
+    int suspended;
     /** poll file descriptor information */
     apr_pollfd_t pfd;
     /** public parts of the connection state */
