@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_proxy: use the original (non absolute) form of the request-line's URI
+     for requests embedded in CONNECT payloads used to connect SSL backends via
+     a ProxyRemote forward-proxy.  PR 55892.  [Hendrik Harms <hendrik.harms
+     gmail com>, William Rowe, Yann Ylavic]
+
   *) mod_proxy: Fix a race condition that caused a failed worker to be retried
      before the retry period is over. [Ruediger Pluem]
 
