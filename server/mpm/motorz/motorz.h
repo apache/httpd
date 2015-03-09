@@ -178,6 +178,7 @@ struct motorz_conn_t
     motorz_core_t *mz;
     apr_socket_t *sock;
     apr_bucket_alloc_t *ba;
+    ap_sb_handle_t *sbh;
     conn_rec *c;
     /** poll file descriptor information */
     apr_pollfd_t pfd;

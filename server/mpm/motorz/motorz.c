@@ -114,7 +114,7 @@ static void *motorz_io_setup_conn(apr_thread_t * thread, void *baton)
     motorz_conn_t *scon = (motorz_conn_t *) baton;
     
     ap_create_sb_handle(&sbh, scon->pool, 0, 0);
-    
+    scon->sbh = sbh;
     scon->ba = apr_bucket_alloc_create(scon->pool);
     
     scon->c = ap_run_create_connection(scon->pool, ap_server_conf, scon->sock,
@@ -299,8 +299,14 @@ static apr_status_t motorz_io_process(motorz_conn_t *scon)
     while (!c->aborted) {
         
         if (scon->pfd.reqevents != 0) {
+            /*
+             * Some of the pollset backends, like KQueue or Epoll
+             * automagically remove the FD if the socket is closed,
+             * therefore, we can accept _SUCCESS or _NOTFOUND,
+             * and we still want to keep going
+             */
             rv = apr_pollcb_remove(mz->pollcb, &scon->pfd);
-            if (rv) {
+            if (rv != APR_SUCCESS && !APR_STATUS_IS_NOTFOUND(rv)) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf, APLOGNO()
                              "motorz_io_process: apr_pollcb_remove failure");
                 /*AP_DEBUG_ASSERT(rv == APR_SUCCESS);*/
@@ -323,6 +329,7 @@ static apr_status_t motorz_io_process(motorz_conn_t *scon)
         
         if (scon->cs.state == CONN_STATE_WRITE_COMPLETION) {
             ap_filter_t *output_filter = c->output_filters;
+            ap_update_child_status_from_conn(scon->sbh, SERVER_BUSY_WRITE, c);
             while (output_filter->next != NULL) {
                 output_filter = output_filter->next;
             }
@@ -331,7 +338,7 @@ static apr_status_t motorz_io_process(motorz_conn_t *scon)
                                                            NULL);
             
             if (rv != APR_SUCCESS) {
-                ap_log_error(APLOG_MARK, APLOG_WARNING, rv, ap_server_conf, APLOGNO(00249)
+                ap_log_error(APLOG_MARK, APLOG_WARNING, rv, ap_server_conf, APLOGNO()
                              "network write failure in core output filter");
                 scon->cs.state = CONN_STATE_LINGER;
             }
@@ -358,9 +365,8 @@ static apr_status_t motorz_io_process(motorz_conn_t *scon)
                 
                 if (rv != APR_SUCCESS) {
                     ap_log_error(APLOG_MARK, APLOG_WARNING, rv,
-                                 ap_server_conf, APLOGNO(00250)
+                                 ap_server_conf, APLOGNO()
                                  "apr_pollcb_add: failed in write completion");
-                    AP_DEBUG_ASSERT(rv == APR_SUCCESS);
                 }
                 return APR_SUCCESS;
             }
@@ -397,10 +403,9 @@ static apr_status_t motorz_io_process(motorz_conn_t *scon)
             
             rv = apr_pollcb_add(mz->pollcb, &scon->pfd);
             
-            if (rv) {
+            if (rv != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf, APLOGNO()
                              "process_socket: apr_pollcb_add failure in read request line");
-                AP_DEBUG_ASSERT(rv == APR_SUCCESS);
             }
             
             return APR_SUCCESS;
@@ -438,18 +443,32 @@ static int motorz_setup_pollcb(motorz_core_t *mz)
     int i;
     apr_status_t rv;
     int good_methods[] = {APR_POLLSET_KQUEUE, APR_POLLSET_PORT, APR_POLLSET_EPOLL};
+    char *methods[] = {"kqueue", "port", "epoll"};
     
     for (i = 0; i < sizeof(good_methods) / sizeof(void*); i++) {
-        rv = apr_pollcb_create_ex(&mz->pollcb, 512,
-                                  mz->pool, APR_POLLSET_NODEFAULT, good_methods[i]);
-        if (!rv) {
+        rv = apr_pollcb_create_ex(&mz->pollcb,
+                                  512,
+                                  mz->pool,
+                                  APR_POLLSET_THREADSAFE | APR_POLLSET_NOCOPY | APR_POLLSET_NODEFAULT,
+                                  good_methods[i]);
+        if (rv == APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, ap_server_conf, APLOGNO()
+                         "motorz_setup_pollcb: apr_pollcb_create_ex using %s", methods[i]);
+
             break;
         }
     }
-    if (rv) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL, APLOGNO()
+    if (rv != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_INFO, rv, ap_server_conf, APLOGNO()
+                     "motorz_setup_pollcb: apr_pollcb_create_ex failed for all possible backends!");
+        rv = apr_pollcb_create(&mz->pollcb,
+                                    512,
+                                    mz->pool,
+                                    APR_POLLSET_THREADSAFE | APR_POLLSET_NOCOPY);
+    }
+    if (rv != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf, APLOGNO()
                      "motorz_setup_pollcb: apr_pollcb_create failed for all possible backends!");
-        return rv;
     }
     return rv;
 }
@@ -833,7 +852,7 @@ static void child_main(motorz_core_t *mz, int child_num_arg, int child_bucket)
 
     status = motorz_setup_workers(mz);
     if (status != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, status, NULL, APLOGNO()
+        ap_log_error(APLOG_MARK, APLOG_CRIT, status, ap_server_conf, APLOGNO()
                      "child_main: motorz_setup_workers failed");
         clean_child_exit(APEXIT_CHILDSICK);
     }
