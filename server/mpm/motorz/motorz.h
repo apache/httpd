@@ -109,9 +109,6 @@
 /**
  * typedefs
  */
-struct motorz_timer_t;
-typedef struct motorz_timer_t motorz_timer_t;
-
 /* data retained by prefork across load/unload of the module
  * allocated on first call to pre-config hook; located on
  * subsequent calls to pre-config hook
@@ -134,7 +131,6 @@ struct motorz_core_t {
     apr_pollset_t *pollset;
     apr_skiplist *timer_ring;
     apr_thread_pool_t *workers;
-    motorz_timer_t *spare_timers;
 };
 
 typedef struct motorz_child_bucket motorz_child_bucket;
@@ -165,6 +161,7 @@ typedef void (*motorz_io_file_cb) (motorz_core_t *mz, apr_socket_t *sock,
                                    int flags, void *baton);
 
 
+typedef struct motorz_timer_t motorz_timer_t;
 struct motorz_timer_t
 {
     apr_time_t expires;
@@ -172,7 +169,6 @@ struct motorz_timer_t
     void *baton;
     apr_pool_t *pool;
     motorz_core_t *mz;
-    motorz_timer_t *next;
 };
 
 typedef struct motorz_conn_t motorz_conn_t;

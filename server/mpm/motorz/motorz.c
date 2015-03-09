@@ -81,25 +81,6 @@ static int indexing_compk(void *ac, void *b)
     return ((*t1 < t2) ? -1 : ((*t1 > t2) ? 1 : 0));
 }
 
-static motorz_timer_t *motorz_acquire_timer(motorz_core_t *mz)
-{
-    motorz_timer_t *elem = mz->spare_timers;
-    if (elem) {
-        mz->spare_timers = elem->next;
-    }
-    else {
-        elem = apr_palloc(mz->pool, sizeof *elem);
-    }
-    memset(elem, 0, sizeof *elem);
-    return elem;
-}
-
-static void motorz_release_timer(motorz_core_t *mz, motorz_timer_t *elem)
-{
-    elem->next = mz->spare_timers;
-    mz->spare_timers = elem;;
-}
-
 static apr_status_t motorz_timer_pool_cleanup(void *baton)
 {
     motorz_timer_t *elem = (motorz_timer_t *)baton;
@@ -107,7 +88,6 @@ static apr_status_t motorz_timer_pool_cleanup(void *baton)
 
     apr_thread_mutex_lock(mz->mtx);
     apr_skiplist_remove(mz->timer_ring, elem, NULL);
-    motorz_release_timer(mz, elem);
     apr_thread_mutex_unlock(mz->mtx);
 
     return APR_SUCCESS;
@@ -217,25 +197,19 @@ static apr_status_t motorz_io_accept(motorz_core_t *mz, motorz_sb_t *sb)
     return APR_SUCCESS;
 }
 
+static void motorz_timer_run(motorz_timer_t *ep)
+{
+    apr_pool_cleanup_kill(ep->pool, ep, motorz_timer_pool_cleanup);
+
+    ep->cb(ep->mz, ep->baton);
+}
+
 static void *motorz_timer_invoke(apr_thread_t *thread, void *baton)
 {
     motorz_timer_t *ep = (motorz_timer_t *)baton;
-    motorz_conn_t *scon = (motorz_conn_t *) ep->baton;
 
-    scon->c->current_thread = thread;
-    ep->cb(ep->mz, ep->baton);
-
+    motorz_timer_run(ep);
     return NULL;
-}
-
-static apr_status_t motorz_timer_event_process(motorz_core_t *mz, motorz_timer_t *te)
-{
-    apr_pool_cleanup_kill(te->pool, te, motorz_timer_pool_cleanup);
-    motorz_release_timer(mz, te);
-
-    return apr_thread_pool_push(mz->workers,
-                                motorz_timer_invoke,
-                                te, APR_THREAD_TASK_PRIORITY_NORMAL, NULL);
 }
 
 static void *motorz_io_invoke(apr_thread_t * thread, void *baton)
@@ -291,7 +265,7 @@ static void motorz_register_timer(motorz_core_t *mz,
 
     apr_thread_mutex_lock(mz->mtx);
 
-    elem = motorz_acquire_timer(mz);
+    elem = (motorz_timer_t *) apr_pcalloc(shutdown_pool, sizeof(motorz_timer_t));
 
     elem->expires = t;
     elem->cb = cb;
@@ -420,9 +394,9 @@ static apr_status_t motorz_io_process(motorz_conn_t *scon)
             motorz_register_timer(scon->mz,
                                   motorz_io_timeout_cb,
                                   scon,
-                                  scon->c->base_server != NULL
-                                  ? scon->c->base_server->keep_alive_timeout
-                                  : ap_server_conf->keep_alive_timeout,
+                                  scon->c->base_server !=
+                                  NULL ? scon->c->base_server->
+                                  timeout : ap_server_conf->timeout,
                                   scon->pool);
 
             scon->pfd.reqevents = (
@@ -564,7 +538,6 @@ static void clean_child_exit(int code)
     exit(code);
 }
 
-#if 0 /* unused for now */
 static apr_status_t accept_mutex_on(void)
 {
     motorz_core_t *mz = motorz_core_get();
@@ -607,7 +580,6 @@ static apr_status_t accept_mutex_off(void)
     }
     return APR_SUCCESS;
 }
-#endif
 
 /* On some architectures it's safe to do unserialized accept()s in the single
  * Listen case.  But it's never safe to do it in the case where there's
@@ -1013,10 +985,16 @@ static void child_main(motorz_core_t *mz, int child_num_arg, int child_bucket)
             apr_thread_mutex_lock(mz->mtx);
 
             /* now iterate any timers and push to worker pool */
-            while (te && te->expires < tnow) {
-                apr_skiplist_pop(mz->timer_ring, NULL);
-                motorz_timer_event_process(mz, te);
-
+            while (te) {
+                if (te->expires < tnow) {
+                    apr_skiplist_pop(mz->timer_ring, NULL);
+                    apr_thread_pool_push(mz->workers,
+                                         motorz_timer_invoke,
+                                         te,
+                                         APR_THREAD_TASK_PRIORITY_NORMAL, NULL);
+                } else {
+                    break;
+                }
                 te = apr_skiplist_peek(mz->timer_ring);
             }
 
