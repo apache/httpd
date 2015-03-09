@@ -973,12 +973,20 @@ static apr_status_t cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
     /* Have we received a 304 response without any headers at all? Fall back to
      * the original headers in the original cached request.
      */
-    if (r->status == HTTP_NOT_MODIFIED && cache->stale_handle && !cc_out
-            && !pragma) {
-        cc_out = cache_table_getm(r->pool, cache->stale_handle->resp_hdrs,
-                "Cache-Control");
-        pragma = cache_table_getm(r->pool, cache->stale_handle->resp_hdrs,
-                "Pragma");
+    if (r->status == HTTP_NOT_MODIFIED && cache->stale_handle) {
+        if (!cc_out && !pragma) {
+            cc_out = cache_table_getm(r->pool, cache->stale_handle->resp_hdrs,
+                    "Cache-Control");
+            pragma = cache_table_getm(r->pool, cache->stale_handle->resp_hdrs,
+                    "Pragma");
+        }
+
+        /* 304 does not contain Content-Type and mod_mime regenerates the
+         * Content-Type based on the r->filename. This would lead to original
+         * Content-Type to be lost (overwriten by whatever mod_mime generates).
+         * We preserves the original Content-Type here. */
+        ap_set_content_type(r, apr_table_get(
+                cache->stale_handle->resp_hdrs, "Content-Type"));
     }
 
     /* Parse the cache control header */
