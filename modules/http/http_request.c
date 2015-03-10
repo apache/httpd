@@ -102,8 +102,14 @@ static void ap_die_r(int type, request_rec *r, int recursive_error)
          * next->frec == ap_http_header_filter
          */
         if (next) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01579)
-                          "Invalid response status %i", type);
+            if (type != AP_FILTER_ERROR) {
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01579)
+                              "Invalid response status %i", type);
+            }
+            else {
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02831)
+                              "Response from AP_FILTER_ERROR");
+            }
             type = HTTP_INTERNAL_SERVER_ERROR;
         }
         else {
