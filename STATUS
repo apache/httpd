@@ -306,6 +306,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic
 
+  *) mod_proxy_http: Use the "Connection: close" header for requests to
+     backends not recycling connections (disablereuse), including the default
+     reverse and forward proxies.
+     trunk patch: http://svn.apache.org/r1658765
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: ylavic
+
 
 OTHER PROPOSALS
 
