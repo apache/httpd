@@ -254,8 +254,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mod_proxy_balancer: Fix HTML of balancer-manager. Bugz: 55466
      trunk patch: http://svn.apache.org/r1664356
      2.4.x patch: trunk works
-     +1: jim, ylavic
+     +1: jim
      +0: jailletc36 - see a few comments on dev@, especially about unclosed <tr>
+         ylavic: indeed, Christophe looks right
 
   *) mod_proxy: use the original (non absolute) form of the request-line's URI
      for requests embedded in CONNECT payloads used to connect SSL backends via
