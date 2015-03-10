@@ -186,7 +186,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1665215
                   http://svn.apache.org/r1665218 (CHANGES entry)
      2.2.x patch: trunk works (modulo CHANGES)
-     +1: ylavic
+     +1: ylavic, wrowe
 
 PATCHES/ISSUES THAT ARE STALLED
 
