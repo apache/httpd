@@ -263,7 +263,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1665215
                   http://svn.apache.org/r1665218 (CHANGES entry)
      2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic
+     +1: ylavic, wrowe
 
   *) core: If explicitly configured, use the KeepaliveTimeout value of the
      virtual host which handled the latest request on the connection, or by
