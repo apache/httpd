@@ -302,7 +302,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              though)
 
   *) mod_http: Fix incorrect If-Match handling. PR 57358.
-     trunk patch: http://svn.apache.org/r1482522
+     trunk patch: http://svn.apache.org/r1646282
      2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic
 
