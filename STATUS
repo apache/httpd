@@ -301,6 +301,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              collides, this patch shows the final result on mod_proxy_ajp
              though)
 
+  *) mod_http: Fix incorrect If-Match handling. PR 57358.
+     trunk patch: http://svn.apache.org/r1482522
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: ylavic
+
 
 OTHER PROPOSALS
 
