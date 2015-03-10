@@ -753,7 +753,7 @@ static int hm_handler(request_rec *r)
     input_brigade = apr_brigade_create(r->connection->pool, r->connection->bucket_alloc);
     status = ap_get_brigade(r->input_filters, input_brigade, AP_MODE_READBYTES, APR_BLOCK_READ, MAX_MSG_LEN);
     if (status != APR_SUCCESS) {
-        return HTTP_INTERNAL_SERVER_ERROR;
+        return ap_map_http_request_error(status, HTTP_BAD_REQUEST);
     }
     apr_brigade_flatten(input_brigade, buf, &len);
 

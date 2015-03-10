@@ -1105,7 +1105,7 @@ static dav_error * dav_fs_deliver(const dav_resource *resource,
     APR_BRIGADE_INSERT_TAIL(bb, bkt);
 
     if ((status = ap_pass_brigade(output, bb)) != APR_SUCCESS) {
-        return dav_new_error(pool, HTTP_FORBIDDEN, 0, status,
+        return dav_new_error(pool, AP_FILTER_ERROR, 0, status,
                              "Could not write contents to filter.");
     }
 
