@@ -189,4 +189,6 @@ struct motorz_conn_t
     apr_pollfd_t pfd;
     /** public parts of the connection state */
     conn_state_t cs;
+    /** timer associated with the connection */
+    motorz_timer_t timer;
 };

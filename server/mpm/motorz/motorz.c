@@ -81,16 +81,41 @@ static int indexing_compk(void *ac, void *b)
     return ((*t1 < t2) ? -1 : ((*t1 > t2) ? 1 : 0));
 }
 
-static apr_status_t motorz_timer_pool_cleanup(void *baton)
+static apr_status_t motorz_conn_pool_cleanup(void *baton)
 {
-    motorz_timer_t *elem = (motorz_timer_t *)baton;
-    motorz_core_t *mz = elem->mz;
+    motorz_conn_t *scon = (motorz_conn_t *)baton;
 
-    apr_thread_mutex_lock(mz->mtx);
-    apr_skiplist_remove(mz->timer_ring, elem, NULL);
-    apr_thread_mutex_unlock(mz->mtx);
+    if (scon->timer.expires) {
+        motorz_core_t *mz = scon->mz;
+
+        apr_thread_mutex_lock(mz->mtx);
+        apr_skiplist_remove(mz->timer_ring, &scon->timer, NULL);
+        apr_thread_mutex_unlock(mz->mtx);
+    }
 
     return APR_SUCCESS;
+}
+
+static APR_INLINE apr_interval_time_t
+motorz_get_timeout(motorz_conn_t *scon)
+{
+    if (scon->c->base_server) {
+        return scon->c->base_server->timeout;
+    }
+    else {
+        return ap_server_conf->timeout;
+    }
+}
+
+static APR_INLINE apr_interval_time_t
+motorz_get_keep_alive_timeout(motorz_conn_t *scon)
+{
+    if (scon->c->base_server) {
+        return scon->c->base_server->keep_alive_timeout;
+    }
+    else {
+        return ap_server_conf->keep_alive_timeout;
+    }
 }
 
 static void motorz_io_timeout_cb(motorz_core_t * sc, void *baton)
@@ -188,6 +213,9 @@ static apr_status_t motorz_io_accept(motorz_core_t *mz, motorz_sb_t *sb)
         scon->sock = socket;
         scon->mz = mz;
 
+        apr_pool_cleanup_register(scon->pool, scon, motorz_conn_pool_cleanup,
+                                  apr_pool_cleanup_null);
+
         return apr_thread_pool_push(mz->workers,
                                     motorz_io_setup_conn,
                                     scon,
@@ -197,19 +225,26 @@ static apr_status_t motorz_io_accept(motorz_core_t *mz, motorz_sb_t *sb)
     return APR_SUCCESS;
 }
 
-static void motorz_timer_run(motorz_timer_t *ep)
-{
-    apr_pool_cleanup_kill(ep->pool, ep, motorz_timer_pool_cleanup);
-
-    ep->cb(ep->mz, ep->baton);
-}
-
 static void *motorz_timer_invoke(apr_thread_t *thread, void *baton)
 {
     motorz_timer_t *ep = (motorz_timer_t *)baton;
+    motorz_conn_t *scon = (motorz_conn_t *)ep->baton;
 
-    motorz_timer_run(ep);
+    scon->c->current_thread = thread;
+
+    ep->cb(ep->mz, ep->baton);
+
     return NULL;
+}
+
+static apr_status_t motorz_timer_event_process(motorz_core_t *mz, motorz_timer_t *te)
+{
+    motorz_conn_t *scon = (motorz_conn_t *)te->baton;
+    scon->timer.expires = 0;
+
+    return apr_thread_pool_push(mz->workers,
+                                motorz_timer_invoke,
+                                te, APR_THREAD_TASK_PRIORITY_NORMAL, NULL);
 }
 
 static void *motorz_io_invoke(apr_thread_t * thread, void *baton)
@@ -255,24 +290,21 @@ static apr_status_t motorz_io_callback(void *baton, const apr_pollfd_t *pfd)
     return status;
 }
 
-static void motorz_register_timer(motorz_core_t *mz,
-                      motorz_timer_cb cb,
-                      void *baton, apr_time_t relative_time,
-                      apr_pool_t *shutdown_pool)
+static void motorz_register_timer(motorz_conn_t *scon,
+                                  motorz_timer_cb cb,
+                                  apr_interval_time_t relative_time)
 {
-    motorz_timer_t *elem = NULL;
     apr_time_t t = apr_time_now() + relative_time;
-
-    apr_thread_mutex_lock(mz->mtx);
-
-    elem = (motorz_timer_t *) apr_pcalloc(shutdown_pool, sizeof(motorz_timer_t));
+    motorz_timer_t *elem = &scon->timer;
+    motorz_core_t *mz = scon->mz;
 
     elem->expires = t;
     elem->cb = cb;
-    elem->baton = baton;
-    elem->pool = shutdown_pool;
+    elem->baton = scon;
+    elem->pool = scon->pool;
     elem->mz = mz;
-    apr_pool_cleanup_register(elem->pool, elem, motorz_timer_pool_cleanup, apr_pool_cleanup_null);
+
+    apr_thread_mutex_lock(mz->mtx);
     apr_skiplist_insert(mz->timer_ring, (void *)elem);
     apr_thread_mutex_unlock(mz->mtx);
 }
@@ -351,13 +383,9 @@ static apr_status_t motorz_io_process(motorz_conn_t *scon)
                  * event thread poll for writeability.
                  */
 
-                motorz_register_timer(scon->mz,
+                motorz_register_timer(scon,
                                       motorz_io_timeout_cb,
-                                      scon,
-                                      scon->c->base_server !=
-                                      NULL ? scon->c->base_server->
-                                      timeout : ap_server_conf->timeout,
-                                      scon->pool);
+                                      motorz_get_timeout(scon));
 
                 scon->pfd.reqevents = (
                                        scon->cs.sense == CONN_SENSE_WANT_READ ? APR_POLLIN :
@@ -391,13 +419,9 @@ static apr_status_t motorz_io_process(motorz_conn_t *scon)
         }
 
         if (scon->cs.state == CONN_STATE_CHECK_REQUEST_LINE_READABLE) {
-            motorz_register_timer(scon->mz,
+            motorz_register_timer(scon,
                                   motorz_io_timeout_cb,
-                                  scon,
-                                  scon->c->base_server !=
-                                  NULL ? scon->c->base_server->
-                                  timeout : ap_server_conf->timeout,
-                                  scon->pool);
+                                  motorz_get_keep_alive_timeout(scon));
 
             scon->pfd.reqevents = (
                                    scon->cs.sense == CONN_SENSE_WANT_WRITE ? APR_POLLOUT :
@@ -538,6 +562,7 @@ static void clean_child_exit(int code)
     exit(code);
 }
 
+#if 0 /* unused for now */
 static apr_status_t accept_mutex_on(void)
 {
     motorz_core_t *mz = motorz_core_get();
@@ -580,6 +605,7 @@ static apr_status_t accept_mutex_off(void)
     }
     return APR_SUCCESS;
 }
+#endif
 
 /* On some architectures it's safe to do unserialized accept()s in the single
  * Listen case.  But it's never safe to do it in the case where there's
@@ -985,16 +1011,9 @@ static void child_main(motorz_core_t *mz, int child_num_arg, int child_bucket)
             apr_thread_mutex_lock(mz->mtx);
 
             /* now iterate any timers and push to worker pool */
-            while (te) {
-                if (te->expires < tnow) {
-                    apr_skiplist_pop(mz->timer_ring, NULL);
-                    apr_thread_pool_push(mz->workers,
-                                         motorz_timer_invoke,
-                                         te,
-                                         APR_THREAD_TASK_PRIORITY_NORMAL, NULL);
-                } else {
-                    break;
-                }
+            while (te && te->expires < tnow) {
+                apr_skiplist_pop(mz->timer_ring, NULL);
+                motorz_timer_event_process(mz, te);
                 te = apr_skiplist_peek(mz->timer_ring);
             }
 
