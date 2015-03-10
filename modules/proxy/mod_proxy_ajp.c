@@ -395,7 +395,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                                 rv = HTTP_REQUEST_TIME_OUT;
                             }
                             else if (status == AP_FILTER_ERROR) {
-                                data_sent = -1;
+                                rv = AP_FILTER_ERROR;
                             }
                             output_failed = 1;
                             break;
@@ -611,12 +611,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                       "output: %i", backend_failed, output_failed);
         /* We had a failure: Close connection to backend */
         conn->close = 1;
-        if (data_sent < 0) {
-            /* Return AP_FILTER_ERROR to let ap_die() handle the error */
-            rv = AP_FILTER_ERROR;
-            data_sent = 0;
-        }
-        else if (data_sent) {
+        if (data_sent) {
             /* Return DONE to avoid error messages being added to the stream */
             rv = DONE;
         }
@@ -627,8 +622,8 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
         /* We had a failure: Close connection to backend */
         conn->close = 1;
         backend_failed = 1;
-        /* Return DONE to avoid error messages being added to the stream */
         if (data_sent) {
+            /* Return DONE to avoid error messages being added to the stream */
             rv = DONE;
         }
     }

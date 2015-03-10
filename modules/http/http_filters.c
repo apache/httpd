@@ -377,7 +377,10 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                 e = apr_bucket_flush_create(f->c->bucket_alloc);
                 APR_BRIGADE_INSERT_TAIL(bb, e);
 
-                ap_pass_brigade(f->c->output_filters, bb);
+                rv = ap_pass_brigade(f->c->output_filters, bb);
+                if (rv != APR_SUCCESS) {
+                    return AP_FILTER_ERROR;
+                }
             }
         }
     }
@@ -1597,6 +1600,13 @@ AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer,
     /* We lose the failure code here.  This is why ap_get_client_block should
      * not be used.
      */
+    if (rv == AP_FILTER_ERROR) {
+        /* AP_FILTER_ERROR means a filter has responded already,
+         * we are DONE.
+         */
+        apr_brigade_destroy(bb);
+        return -1;
+    }
     if (rv != APR_SUCCESS) {
         apr_bucket *e;
 

@@ -582,6 +582,11 @@ static int dav_handle_err(request_rec *r, dav_error *err,
     /* log the errors */
     dav_log_err(r, err, APLOG_ERR);
 
+    if (!ap_is_HTTP_VALID_RESPONSE(err->status)) {
+        /* we have responded already */
+        return AP_FILTER_ERROR;
+    }
+
     if (response == NULL) {
         dav_error *stackerr = err;
 
@@ -1006,9 +1011,7 @@ static int dav_method_put(request_rec *r)
                                        "(URI: %s)", msg);
                 }
                 else {
-                    /* XXX: should this actually be HTTP_BAD_REQUEST? */
-                    http_err = ap_map_http_request_error(rc,
-                            HTTP_INTERNAL_SERVER_ERROR);
+                    http_err = ap_map_http_request_error(rc, HTTP_BAD_REQUEST);
                     msg = apr_psprintf(r->pool,
                             "An error occurred while reading"
                                     " the request body (URI: %s)", msg);

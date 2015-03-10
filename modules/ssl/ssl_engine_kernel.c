@@ -133,7 +133,7 @@ int ssl_hook_ReadReq(request_rec *r)
         && (upgrade = apr_table_get(r->headers_in, "Upgrade")) != NULL
         && ap_find_token(r->pool, upgrade, "TLS/1.0")) {
         if (upgrade_connection(r)) {
-            return HTTP_INTERNAL_SERVER_ERROR;
+            return AP_FILTER_ERROR;
         }
     }
 
