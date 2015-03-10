@@ -274,6 +274,33 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-keep_alive_timeout_set.patch
      +1: ylavic
 
+  *) http: Make ap_die() robust against any HTTP error code and not modify
+     response status (finally logged) when nothing is to be done. PR 56035.
+     trunk patch: http://svn.apache.org/r1657881
+                  http://svn.apache.org/r1665643
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: ylavic
+
+  *) mod_proxy(es): Avoid error response/document handling by the core if some
+     input filter already did it while reading client's payload (double response).
+     trunk patch: http://svn.apache.org/r1482522 (partial, ap_map_http_request_error() things only!)
+                  http://svn.apache.org/r1529988
+                  http://svn.apache.org/r1529991
+                  http://svn.apache.org/r1643537
+                  http://svn.apache.org/r1643543
+                  http://svn.apache.org/r1657897
+                  http://svn.apache.org/r1665625
+                  http://svn.apache.org/r1665721
+     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-ap_map_http_request_error.patch
+     +1: ylavic
+     ylavic: depends on r1657881 above, and also r1643537+r1643543 already
+             proposed separately (if the latter proposal is accepted before
+             this one, I'll take it easily into account with a v2 of the
+             2.4.x patch, but currently the code from r1657897+r1665625
+             collides, this patch shows the final result on mod_proxy_ajp
+             though)
+
+
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
