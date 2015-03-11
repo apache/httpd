@@ -327,6 +327,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1657636
                   http://svn.apache.org/r1657638
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-mod_proxy-transfer.patch
+     +1: ylavic
 
 
 OTHER PROPOSALS
