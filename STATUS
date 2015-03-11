@@ -321,6 +321,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-mod_proxy_http-nokeepalive_close.patch
      +1: ylavic
 
+  *) mod_proxy_connect/wstunnel: If both client and backend sides get readable
+     at the same time, don't lose errors occuring while forwarding on the first
+     side when none occurs next on the other side, and abort.
+     trunk patch: http://svn.apache.org/r1657636
+                  http://svn.apache.org/r1657638
+     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-mod_proxy-transfer.patch
+
 
 OTHER PROPOSALS
 
