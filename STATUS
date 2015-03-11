@@ -246,9 +246,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      to a local URL-path with the INCLUDES filter active, introduced
      in 2.4.11. PR 57531. [Yann Ylavic]
      trunk patch: http://svn.apache.org/r1664205
-                  http://svn.apache.org/r1664576
      2.4.x patch: trunk works
-     +1 covener, ylavic
+     +1 covener, jim, ylavic
+     ylavic: I removed r1664576 which is trunk only since HttpProtocol
+             directive (conformance) is not in 2.4.x, consequently not
+             a failing path in read_request_line()... Hence I also
+             restored Jim's vote (removed in r1665109 when r1664576 was
+             added), and kept Eric's mine. Good to go?
 
   *) mod_proxy_balancer: Fix HTML of balancer-manager. Bugz: 55466
      trunk patch: http://svn.apache.org/r1664356
