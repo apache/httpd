@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) SECURITY: CVE-2015-0253 (cve.mitre.org)
+     core: Fix a crash introduced in with ErrorDocument 400 pointing
+     to a local URL-path with the INCLUDES filter active, introduced
+     in 2.4.11. PR 57531. [Yann Ylavic]
+
   *) core, modules: Avoid error response/document handling by the core if some
      handler or input filter already did it while reading the request (causing
      a double response body).  [Yann Ylavic]
@@ -12,11 +17,6 @@ Changes with Apache 2.5.0
 
   *) mod_proxy: Fix a race condition that caused a failed worker to be retried
      before the retry period is over. [Ruediger Pluem]
-
-  *) SECURITY: CVE-2015-0253 (cve.mitre.org)
-     core: Fix a crash introduced in with ErrorDocument 400 pointing
-     to a local URL-path with the INCLUDES filter active, introduced
-     in 2.4.11. PR 57531. [Yann Ylavic]
 
   *) mod_rewrite: Add support for starting External Rewriting Programs
      as non-root user on UNIX systems by specifying username and group name
@@ -32,9 +32,6 @@ Changes with Apache 2.5.0
 
   *) mod_deflate: A misplaced check prevents limiting small bodies with the
      new inflate limits. PR56872. [Edward Lu, Eric Covener, Yann Ylavic]
-
-  *) ab: Add missing longest request (100%) to CSV export.
-     [Marcin Fabrykowski <bugzilla fabrykowski.pl>]
 
   *) core: Add expression support to ErrorDocument. Switch from a fixed
      sized 664 byte array per merge to a hash table. [Graham Leggett]
@@ -62,10 +59,6 @@ Changes with Apache 2.5.0
      at the same time, don't lose errors occuring while forwarding on the first
      side when none occurs next on the other side, and abort.  [Yann Ylavic]
 
-  *) mod_macro: Clear macros before initialization to avoid use-after-free
-     on startup or restart when the module is linked statically. PR 57525
-     [apache.org tech.futurequest.net, Yann Ylavic]
-
   *) mod_proxy_http: Don't establish or reuse a backend connection before pre-
      fetching the request body, so to minimize the delay between it is supposed
      to be alive and the first bytes sent: this is a best effort to prevent the
@@ -81,10 +74,6 @@ Changes with Apache 2.5.0
   *) config: For directives that do not expect any arguments, enforce
      that none are specified in the configuration file. 
      [Joachim Zobel <jzobel heute-morgen.de>, Eric Covener]
-
-  *) mod_ssl: 'SSLProtocol ALL' was being ignored in virtual host context. 
-     PR 57100.  [Michael Kaufmann <apache-bugzilla michael-kaufmann.ch>,
-     Yann Ylavic]
 
   *) mod_alias: Introduce expression parser support for Alias, ScriptAlias
      and Redirect. [Graham Leggett]
@@ -159,18 +148,6 @@ Changes with Apache 2.5.0
   *) mod_authnz_ldap: Return LDAP connections to the pool before the handler
      is run, instead of waiting until the end of the request. [Eric Covener]
 
-  *) mod_ssl: dump SSL IO/state for the write side of the connection(s),
-     like reads (level TRACE4). [Yann Ylavic]
-
-  *) mod_proxy: Shutdown (eg. close notify) the backend connection before
-     closing. [Yann Ylavic] 
-
-  *) mpm_event[opt]: Send the SSL close notify alert when the KeepAliveTimeout
-     expires. PR54998. [Yann Ylavic] 
-
-  *) mod_ssl: Ensure that the SSL close notify alert is flushed to the client.
-     PR54998. [Tim Kosse <tim.kosse filezilla-project.org>, Yann Ylavic] 
-
   *) mod_log_config: Add GlobalLog to allow a globally defined log to
      be inherited by virtual hosts that define a CustomLog.
      [Edward Lu <Chaosed0 gmail.com>]
@@ -211,10 +188,6 @@ Changes with Apache 2.5.0
 
   *) Add module mod_ssl_ct, which provides an implementation of Certificate
      Transparency (RFC 6962) for httpd.  [Jeff Trawick]
-
-  *) mod_proxy: Preserve original request headers even if they differ
-     from the ones to be forwarded to the backend. PR 45387.
-     [Yann Ylavic]
 
   *) mod_remoteip: Prevent an external proxy from presenting an internal
      proxy. PR 55962. [Mike Rumph]
