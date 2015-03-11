@@ -332,7 +332,7 @@ AuthType Basic
 AuthName "Password Required"
 AuthUserFile /www/passwords/password.file
 AuthGroupFile /www/passwords/group.file
-Require Group admins
+Require group admins
     </highlight>
 
     <p>Note that <code>AllowOverride AuthConfig</code> must be in effect
