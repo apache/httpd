@@ -302,7 +302,7 @@ changes on a per-directory basis.</p>
 AuthName "Password Required"
 AuthUserFile /www/passwords/password.file
 AuthGroupFile /www/passwords/group.file
-Require Group admins</pre>
+Require group admins</pre>
 
 
     <p>Note that <code>AllowOverride AuthConfig</code> must be in effect

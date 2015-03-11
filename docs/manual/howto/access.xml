@@ -134,7 +134,7 @@ Require not host gov
 
     <highlight language="config">
 &lt;If "%{HTTP_USER_AGENT} == 'BadBot'"&gt;
-    Require All Denied
+    Require all denied
 &lt;/If&gt;
     </highlight>
 
