@@ -112,6 +112,15 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      +1 covener, jim, ylavic
 
+  *) SECURITY: CVE-2015-0253 (cve.mitre.org)
+     core: Fix a crash introduced in with ErrorDocument 400 pointing
+     to a local URL-path with the INCLUDES filter active, introduced
+     in 2.4.11. PR 57531. [Yann Ylavic]
+     trunk patch: http://svn.apache.org/r1664205
+     2.4.x patch: trunk works
+     +1 covener, jim, ylavic
+
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -241,19 +250,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~minfrin/httpd-core-errordocument24-3.patch
      +1: minfrin
 
-  *) SECURITY: CVE-2015-0253 (cve.mitre.org)
-     core: Fix a crash introduced in with ErrorDocument 400 pointing
-     to a local URL-path with the INCLUDES filter active, introduced
-     in 2.4.11. PR 57531. [Yann Ylavic]
-     trunk patch: http://svn.apache.org/r1664205
-     2.4.x patch: trunk works
-     +1 covener, jim, ylavic
-     ylavic: I removed r1664576 which is trunk only since HttpProtocol
-             directive (conformance) is not in 2.4.x, consequently not
-             a failing path in read_request_line()... Hence I also
-             restored Jim's vote (removed in r1665109 when r1664576 was
-             added), and kept Eric's and mine. Good to go?
-
   *) mod_proxy_balancer: Fix HTML of balancer-manager. Bugz: 55466
      trunk patch: http://svn.apache.org/r1664356
      2.4.x patch: trunk works
@@ -315,14 +311,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      reverse and forward proxies.
      trunk patch: http://svn.apache.org/r1658765
      2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic
+     +1: ylavic, covener
 
   *) mod_proxy_http: Don't expect the backend to ack the "Connection: close" to
      finally close those not meant to be kept alive by SetEnv proxy-nokeepalive
      or force-proxy-request-1.0.
      trunk patch: http://svn.apache.org/r1658760 (partial, ap_proxy_clear_connection() raises no error in 2.4.x)
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-mod_proxy_http-nokeepalive_close.patch
-     +1: ylavic
+     +1: ylavic, covener
 
   *) mod_proxy_connect/wstunnel: If both client and backend sides get readable
      at the same time, don't lose errors occuring while forwarding on the first
@@ -331,6 +327,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1657638
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-mod_proxy-transfer.patch
      +1: ylavic
+     covener: I noticed while reviewing that rv is not used in ap_log_rerror at least
+     in the path context. If it had, the |= would have dropped the strerror.  Think
+     there's any risk in having rv like that floating around?
 
 
 OTHER PROPOSALS
