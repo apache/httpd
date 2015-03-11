@@ -252,7 +252,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              directive (conformance) is not in 2.4.x, consequently not
              a failing path in read_request_line()... Hence I also
              restored Jim's vote (removed in r1665109 when r1664576 was
-             added), and kept Eric's mine. Good to go?
+             added), and kept Eric's and mine. Good to go?
 
   *) mod_proxy_balancer: Fix HTML of balancer-manager. Bugz: 55466
      trunk patch: http://svn.apache.org/r1664356
