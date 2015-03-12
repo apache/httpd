@@ -6,6 +6,9 @@ Changes with Apache 2.5.0
      to a local URL-path with the INCLUDES filter active, introduced
      in 2.4.11. PR 57531. [Yann Ylavic]
 
+  *) mod_ssl: Fix possible crash when loading server certificate constraints.
+     PR 57694. [Paul Spangler <paul.spangler ni com>, Yann Ylavic]
+
   *) core, modules: Avoid error response/document handling by the core if some
      handler or input filter already did it while reading the request (causing
      a double response body).  [Yann Ylavic]
