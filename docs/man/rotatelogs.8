@@ -52,7 +52,7 @@ If given, rotatelogs will execute the specified program every time a new log fil
 -f
 Causes the logfile to be opened immediately, as soon as rotatelogs starts, instead of waiting for the first logfile entry to be read (for non-busy sites, there may be a substantial delay between when the server is started and when the first request is handled, meaning that the associated logfile does not "exist" until then, which causes problems from some automated logging tools)  
 .TP
--d
+-D
 Creates the parent directories of the path that the log file will be placed in if they do not already exist\&. This allows strftime(3) formatting to be used in the path and not just the filename\&.  
 .TP
 -t
