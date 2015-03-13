@@ -6,6 +6,8 @@ Changes with Apache 2.5.0
      to a local URL-path with the INCLUDES filter active, introduced
      in 2.4.11. PR 57531. [Yann Ylavic]
 
+  *) mpm_event: Allow for timer events duplicates. [Jim Jagielski, Yann Ylavic]
+
   *) mod_dav: Avoid a potential integer underflow in the lock timeout value sent
      back to a client. The answer to a LOCK request could be an extremly large
      integer if the time needed to lock the resource was longer that the

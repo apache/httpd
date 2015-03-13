@@ -1460,7 +1460,7 @@ static int indexing_comp(void *a, void *b)
     apr_time_t t2 = (apr_time_t) (((timer_event_t *) b)->when);
     AP_DEBUG_ASSERT(t1);
     AP_DEBUG_ASSERT(t2);
-    return ((t1 < t2) ? -1 : ((t1 > t2) ? 1 : 0));
+    return ((t1 < t2) ? -1 : (t1 > t2));
 }
 
 static int indexing_compk(void *ac, void *b)
@@ -1468,7 +1468,16 @@ static int indexing_compk(void *ac, void *b)
     apr_time_t *t1 = (apr_time_t *) ac;
     apr_time_t t2 = (apr_time_t) (((timer_event_t *) b)->when);
     AP_DEBUG_ASSERT(t2);
-    return ((*t1 < t2) ? -1 : ((*t1 > t2) ? 1 : 0));
+    return ((*t1 < t2) ? -1 : (*t1 > t2));
+}
+
+static int indexing_add_comp(void *a, void *b)
+{
+    apr_time_t t1 = (apr_time_t) (((timer_event_t *) a)->when);
+    apr_time_t t2 = (apr_time_t) (((timer_event_t *) b)->when);
+    AP_DEBUG_ASSERT(t1);
+    AP_DEBUG_ASSERT(t2);
+    return ((t1 < t2) ? -1 : 1);
 }
 
 static apr_thread_mutex_t *g_timer_skiplist_mtx;
@@ -1500,8 +1509,8 @@ static timer_event_t * event_get_timer_event(apr_time_t t,
     te->remove = remove;
 
     if (insert) { 
-        /* Okay, insert sorted by when.. */
-        apr_skiplist_insert(timer_skiplist, (void *)te);
+        /* Okay, add sorted by when.. */
+        apr_skiplist_insert_compare(timer_skiplist, te, indexing_add_comp);
     }
     apr_thread_mutex_unlock(g_timer_skiplist_mtx);
 
