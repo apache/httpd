@@ -122,7 +122,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patches: http://svn.apache.org/r1611165
                     http://svn.apache.org/r1611169
      2.2.x patch: http://people.apache.org/~wrowe/httpd-2.2-utf8-servicename.patch
-     +1: wrowe
+     +1: wrowe, gsmith
 
    * mod_proxy: Reuse proxy workers' parameters and scores across graceful
      restarts, even if new workers added, old ones removed, or the order
