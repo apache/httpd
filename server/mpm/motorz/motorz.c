@@ -70,7 +70,7 @@ static int indexing_comp(void *a, void *b)
     apr_time_t t2 = (apr_time_t) (((motorz_timer_t *) b)->expires);
     AP_DEBUG_ASSERT(t1);
     AP_DEBUG_ASSERT(t2);
-    return ((t1 < t2) ? -1 : ((t1 > t2) ? 1 : 0));
+    return ((t1 < t2) ? -1 : 1);
 }
 
 static int indexing_compk(void *ac, void *b)
@@ -78,7 +78,7 @@ static int indexing_compk(void *ac, void *b)
     apr_time_t *t1 = (apr_time_t *) ac;
     apr_time_t t2 = (apr_time_t) (((motorz_timer_t *) b)->expires);
     AP_DEBUG_ASSERT(t2);
-    return ((*t1 < t2) ? -1 : ((*t1 > t2) ? 1 : 0));
+    return ((*t1 < t2) ? -1 : 1);
 }
 
 static apr_status_t motorz_conn_pool_cleanup(void *baton)
