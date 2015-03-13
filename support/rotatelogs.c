@@ -109,9 +109,9 @@ static void usage(const char *argv0, const char *reason)
     }
     fprintf(stderr,
 #if APR_FILES_AS_SOCKETS
-            "Usage: %s [-v] [-l] [-L linkname] [-p prog] [-f] [-d] [-t] [-e] [-c] [-n number] <logfile> "
+            "Usage: %s [-v] [-l] [-L linkname] [-p prog] [-f] [-D] [-t] [-e] [-c] [-n number] <logfile> "
 #else
-            "Usage: %s [-v] [-l] [-L linkname] [-p prog] [-f] [-d] [-t] [-e] [-n number] <logfile> "
+            "Usage: %s [-v] [-l] [-L linkname] [-p prog] [-f] [-D] [-t] [-e] [-n number] <logfile> "
 #endif
             "{<rotation time in seconds>|<rotation size>(B|K|M|G)} "
             "[offset minutes from UTC]\n\n",
@@ -143,7 +143,7 @@ static void usage(const char *argv0, const char *reason)
             "  -L path  Create hard link from current log to specified path.\n"
             "  -p prog  Run specified program after opening a new log file. See below.\n"
             "  -f       Force opening of log on program start.\n"
-            "  -d       Create parent directories of log file.\n" 
+            "  -D       Create parent directories of log file.\n" 
             "  -t       Truncate logfile instead of rotating, tail friendly.\n"
             "  -e       Echo log to stdout for further processing.\n"
 #if APR_FILES_AS_SOCKETS
@@ -583,9 +583,9 @@ int main (int argc, const char * const argv[])
     apr_pool_create(&status.pool, NULL);
     apr_getopt_init(&opt, status.pool, argc, argv);
 #if APR_FILES_AS_SOCKETS
-    while ((rv = apr_getopt(opt, "lL:p:fdtvecn:", &c, &opt_arg)) == APR_SUCCESS) {
+    while ((rv = apr_getopt(opt, "lL:p:fDtvecn:", &c, &opt_arg)) == APR_SUCCESS) {
 #else
-    while ((rv = apr_getopt(opt, "lL:p:fdtven:", &c, &opt_arg)) == APR_SUCCESS) {
+    while ((rv = apr_getopt(opt, "lL:p:fDtven:", &c, &opt_arg)) == APR_SUCCESS) {
 #endif
         switch (c) {
         case 'l':
@@ -604,7 +604,7 @@ int main (int argc, const char * const argv[])
         case 'f':
             config.force_open = 1;
             break;
-        case 'd':
+        case 'D':
             config.create_path = 1;
             break;
         case 't':

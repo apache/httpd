@@ -85,7 +85,7 @@ and when the first request is handled, meaning that the
 associated logfile does not "exist" until then, which
 causes problems from some automated logging tools)</dd>
 
-<dt><code>-d</code></dt>
+<dt><code>-D</code></dt>
 <dd>Creates the parent directories of the path that the log file will be
 placed in if they do not already exist.  This allows <code>strftime(3)</code>
 formatting to be used in the path and not just the filename.</dd>
