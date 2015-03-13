@@ -6,6 +6,13 @@ Changes with Apache 2.5.0
      to a local URL-path with the INCLUDES filter active, introduced
      in 2.4.11. PR 57531. [Yann Ylavic]
 
+  *) mod_dav: Avoid a potential integer underflow in the lock timeout value sent
+     back to a client. The answer to a LOCK request could be an extremly large
+     integer if the time needed to lock the resource was longer that the
+     requested timeout given in the LOCK request. In such a case, we now answer
+     "Second-0".  PR55420
+     [Christophe Jaillet]
+
   *) mod_ssl: Fix possible crash when loading server certificate constraints.
      PR 57694. [Paul Spangler <paul.spangler ni com>, Yann Ylavic]
 
