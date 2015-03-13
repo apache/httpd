@@ -133,8 +133,18 @@ DAV_DECLARE(const char *) dav_lock_get_activelock(request_rec *r,
         }
         else {
             time_t now = time(NULL);
-            apr_snprintf(tmp, sizeof(tmp), "Second-%lu", (long unsigned int)(lock->timeout - now));
-            dav_buffer_append(p, pbuf, tmp);
+            
+            /*
+            ** Check if the timeout is not, for any reason, already elapsed.
+            ** (e.g., because of a large collection, or disk under heavy load...)
+             */
+            if (now >= lock->timeout) {
+                dav_buffer_append(p, pbuf, "Second-0");
+            }
+            else {
+                apr_snprintf(tmp, sizeof(tmp), "Second-%lu", (long unsigned int)(lock->timeout - now));
+                dav_buffer_append(p, pbuf, tmp);
+            }
         }
 
         dav_buffer_append(p, pbuf,
