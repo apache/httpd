@@ -1454,30 +1454,18 @@ static APR_RING_HEAD(timer_free_ring_t, timer_event_t) timer_free_ring;
 
 static apr_skiplist *timer_skiplist;
 
-static int indexing_comp(void *a, void *b)
+static int timer_comp(void *a, void *b)
 {
-    apr_time_t t1 = (apr_time_t) (((timer_event_t *) a)->when);
-    apr_time_t t2 = (apr_time_t) (((timer_event_t *) b)->when);
-    AP_DEBUG_ASSERT(t1);
-    AP_DEBUG_ASSERT(t2);
-    return ((t1 < t2) ? -1 : (t1 > t2));
-}
-
-static int indexing_compk(void *ac, void *b)
-{
-    apr_time_t *t1 = (apr_time_t *) ac;
-    apr_time_t t2 = (apr_time_t) (((timer_event_t *) b)->when);
-    AP_DEBUG_ASSERT(t2);
-    return ((*t1 < t2) ? -1 : (*t1 > t2));
-}
-
-static int indexing_add_comp(void *a, void *b)
-{
-    apr_time_t t1 = (apr_time_t) (((timer_event_t *) a)->when);
-    apr_time_t t2 = (apr_time_t) (((timer_event_t *) b)->when);
-    AP_DEBUG_ASSERT(t1);
-    AP_DEBUG_ASSERT(t2);
-    return ((t1 < t2) ? -1 : 1);
+    if (a != b) {
+        apr_time_t t1 = (apr_time_t) (((timer_event_t *) a)->when);
+        apr_time_t t2 = (apr_time_t) (((timer_event_t *) b)->when);
+        AP_DEBUG_ASSERT(t1);
+        AP_DEBUG_ASSERT(t2);
+        return ((t1 < t2) ? -1 : 1);
+    }
+    else {
+        return 0;
+    }
 }
 
 static apr_thread_mutex_t *g_timer_skiplist_mtx;
@@ -1510,7 +1498,11 @@ static timer_event_t * event_get_timer_event(apr_time_t t,
 
     if (insert) { 
         /* Okay, add sorted by when.. */
-        apr_skiplist_insert_compare(timer_skiplist, te, indexing_add_comp);
+#ifdef AP_DEBUG
+        ap_assert(apr_skiplist_insert(timer_skiplist, te));
+#else
+        apr_skiplist_insert(timer_skiplist, te);
+#endif
     }
     apr_thread_mutex_unlock(g_timer_skiplist_mtx);
 
@@ -2538,7 +2530,7 @@ static void child_main(int child_num_arg, int child_bucket)
     APR_RING_INIT(&timer_free_ring, timer_event_t, link);
     apr_pool_create(&pskip, pchild);
     apr_skiplist_init(&timer_skiplist, pskip);
-    apr_skiplist_set_compare(timer_skiplist, indexing_comp, indexing_compk);
+    apr_skiplist_set_compare(timer_skiplist, timer_comp, timer_comp);
     ap_run_child_init(pchild, ap_server_conf);
 
     /* done with init critical section */
