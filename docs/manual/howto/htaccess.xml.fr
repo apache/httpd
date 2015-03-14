@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1651482 -->
+<!-- English Revision : 1666026 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -365,7 +365,7 @@ AuthType Basic
 AuthName "Password Required"
 AuthUserFile /www/passwords/password.file
 AuthGroupFile /www/passwords/group.file
-Require Group admins
+Require group admins
     </highlight>
 
     <p>Notez que <code>AllowOverride AuthConfig</code> doit &ecirc;tre pr&eacute;sent
