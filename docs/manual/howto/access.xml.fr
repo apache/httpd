@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- English Revision : 1580895 -->
+<!-- English Revision : 1666025 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -148,7 +148,7 @@ arbitraires</title>
 
     <highlight language="config">
 &lt;If "%{HTTP_USER_AGENT} == 'BadBot'"&gt;
-    Require All Denied
+    Require all denied
 &lt;/If&gt;
     </highlight>
 
