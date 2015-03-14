@@ -337,7 +337,7 @@ Includes - SSI)</a></li>
 AuthName "Password Required"
 AuthUserFile /www/passwords/password.file
 AuthGroupFile /www/passwords/group.file
-Require Group admins</pre>
+Require group admins</pre>
 
 
     <p>Notez que <code>AllowOverride AuthConfig</code> doit être présent
