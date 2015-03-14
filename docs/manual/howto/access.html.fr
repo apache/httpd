@@ -140,7 +140,7 @@ arbitraires</a></h2>
     spécifier ceci :</p>
 
     <pre class="prettyprint lang-config">&lt;If "%{HTTP_USER_AGENT} == 'BadBot'"&gt;
-    Require All Denied
+    Require all denied
 &lt;/If&gt;</pre>
 
 
