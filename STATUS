@@ -114,6 +114,31 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
                   (minor merge conflict)
      +1 covener, trawick, ylavic
 
+   * mod_deflate: Define APR_INT32_MAX when it is missing so to be able to
+                  compile against APR-1.2.x (minimum required version).
+     trunk/2.4.x patch: not concerned (require APR-1.5.x)
+     2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-mod_deflate_APR_INT32_MAX.patch
+     +1: ylavic, trawick, gsmith
+
+   * default conf: Disable SSLv3, like SSLv2, in the default configuration.
+     trunk patch: n/a -- Only 2.2.x has SSLProtocol in httpd-ssl.conf.in
+     2.2.x patch: https://issues.apache.org/bugzilla/attachment.cgi?id=32131     
+     +1: covener, ylavic, gsmith
+
+   * mod_ssl: Add SSLSessionTickets (on|off). [Rainer Jung]
+     It controls the use of TLS session tickets (RFC 5077).
+     Default is unchanged (on).
+     Using session tickets without restarting the web server with
+     an appropriate frequency (e.g. daily) compromises perfect forward
+     secrecy. As long as we do not have a nice key management
+     there needs to be a way to deactivate the use of session tickets.
+     trunk patch: http://svn.apache.org/r1650310
+                  http://svn.apache.org/r1650320
+     2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-SSLSessionTickets-v2.patch
+     +1: ylavic, rjung, gsmith
+     rjung: Adjust compatibility note in docs.
+     ylavic: Done, thanks.
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -131,37 +156,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      ylavic: trunk/2.4.x not concerned, 2.2.x only.
      +1: ylavic, jkaluza
 
-   * mod_deflate: Define APR_INT32_MAX when it is missing so to be able to
-                  compile against APR-1.2.x (minimum required version).
-     trunk/2.4.x patch: not concerned (require APR-1.5.x)
-     2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-mod_deflate_APR_INT32_MAX.patch
-     +1: ylavic, trawick
-
-   * default conf: Disable SSLv3, like SSLv2, in the default configuration.
-     trunk patch: n/a -- Only 2.2.x has SSLProtocol in httpd-ssl.conf.in
-     2.2.x patch: https://issues.apache.org/bugzilla/attachment.cgi?id=32131     
-     +1: covener, ylavic
-
    * mod_proxy_ajp: Fix get_content_length().
      clength in request_rec is for response sizes, not request body size.
      It is initialized to 0, so the "if" branch was never taken.
      trunk patch: http://svn.apache.org/r1649043
      2.2.x patch: trunks works (plus CHANGES)
      +1 rjung, ylavic
-
-   * mod_ssl: Add SSLSessionTickets (on|off). [Rainer Jung]
-     It controls the use of TLS session tickets (RFC 5077).
-     Default is unchanged (on).
-     Using session tickets without restarting the web server with
-     an appropriate frequency (e.g. daily) compromises perfect forward
-     secrecy. As long as we do not have a nice key management
-     there needs to be a way to deactivate the use of session tickets.
-     trunk patch: http://svn.apache.org/r1650310
-                  http://svn.apache.org/r1650320
-     2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-SSLSessionTickets-v2.patch
-     +1: ylavic, rjung
-     rjung: Adjust compatibility note in docs.
-     ylavic: Done, thanks.
 
    * mod_unique_id: Update docs and comment: the unique id is now 24 characters, not 19
      See explanation in:
