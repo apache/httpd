@@ -64,21 +64,18 @@ static motorz_core_t *motorz_core_get()
     return g_motorz_core;
 }
 
-static int indexing_comp(void *a, void *b)
+static int timer_comp(void *a, void *b)
 {
-    apr_time_t t1 = (apr_time_t) (((motorz_timer_t *) a)->expires);
-    apr_time_t t2 = (apr_time_t) (((motorz_timer_t *) b)->expires);
-    AP_DEBUG_ASSERT(t1);
-    AP_DEBUG_ASSERT(t2);
-    return ((t1 < t2) ? -1 : 1);
-}
-
-static int indexing_compk(void *ac, void *b)
-{
-    apr_time_t *t1 = (apr_time_t *) ac;
-    apr_time_t t2 = (apr_time_t) (((motorz_timer_t *) b)->expires);
-    AP_DEBUG_ASSERT(t2);
-    return ((*t1 < t2) ? -1 : 1);
+    if (a != b) {
+        apr_time_t t1 = (apr_time_t) (((motorz_timer_t *) a)->expires);
+        apr_time_t t2 = (apr_time_t) (((motorz_timer_t *) b)->expires);
+        AP_DEBUG_ASSERT(t1);
+        AP_DEBUG_ASSERT(t2);
+        return ((t1 < t2) ? -1 : 1);
+    }
+    else {
+        return 0;
+    }
 }
 
 static apr_status_t motorz_conn_pool_cleanup(void *baton)
@@ -305,7 +302,11 @@ static void motorz_register_timer(motorz_conn_t *scon,
     elem->mz = mz;
 
     apr_thread_mutex_lock(mz->mtx);
-    apr_skiplist_insert(mz->timer_ring, (void *)elem);
+#ifdef AP_DEBUG
+    ap_assert(apr_skiplist_insert(mz->timer_ring, elem));
+#else
+    apr_skiplist_insert(mz->timer_ring, elem);
+#endif
     apr_thread_mutex_unlock(mz->mtx);
 }
 
@@ -901,7 +902,7 @@ static void child_main(motorz_core_t *mz, int child_num_arg, int child_bucket)
 
 #if 0
     apr_skiplist_init(&mz->timer_ring, mz->pool);
-    apr_skiplist_set_compare(mz->timer_ring, indexing_comp, indexing_compk);
+    apr_skiplist_set_compare(mz->timer_ring, timer_comp, timer_comp);
 #endif
     status = motorz_setup_workers(mz);
     if (status != APR_SUCCESS) {
@@ -1611,7 +1612,7 @@ static int motorz_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
     apr_pool_create(&mz->pool, ap_pglobal);
     apr_pool_tag(mz->pool, "motorz-mpm-core");
     apr_skiplist_init(&mz->timer_ring, mz->pool);
-    apr_skiplist_set_compare(mz->timer_ring, indexing_comp, indexing_compk);
+    apr_skiplist_set_compare(mz->timer_ring, timer_comp, timer_comp);
     apr_thread_mutex_create(&mz->mtx, 0, mz->pool);
 
     ap_listen_pre_config();
