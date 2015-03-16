@@ -228,12 +228,12 @@ AP_DECLARE(void) ap_die(int type, request_rec *r)
     ap_die_r(type, r, r->status);
 }
 
-static void check_pipeline(conn_rec *c)
+static void check_pipeline(conn_rec *c, apr_bucket_brigade *bb)
 {
-    if (c->keepalive != AP_CONN_CLOSE) {
+    if (c->keepalive != AP_CONN_CLOSE && !c->aborted) {
         apr_status_t rv;
-        apr_bucket_brigade *bb = apr_brigade_create(c->pool, c->bucket_alloc);
 
+        AP_DEBUG_ASSERT(APR_BRIGADE_EMPTY(bb));
         rv = ap_get_brigade(c->input_filters, bb, AP_MODE_SPECULATIVE,
                             APR_NONBLOCK_READ, 1);
         if (rv != APR_SUCCESS || APR_BRIGADE_EMPTY(bb)) {
@@ -246,7 +246,6 @@ static void check_pipeline(conn_rec *c)
         else {
             c->data_in_input_filters = 1;
         }
-        apr_brigade_destroy(bb);
     }
 }
 
@@ -261,20 +260,30 @@ AP_DECLARE(void) ap_process_request_after_handler(request_rec *r)
      * this bucket is destroyed, the request will be logged and
      * its pool will be freed
      */
-    bb = apr_brigade_create(r->connection->pool, r->connection->bucket_alloc);
-    b = ap_bucket_eor_create(r->connection->bucket_alloc, r);
+    bb = apr_brigade_create(c->pool, c->bucket_alloc);
+    b = ap_bucket_eor_create(c->bucket_alloc, r);
     APR_BRIGADE_INSERT_HEAD(bb, b);
 
-    ap_pass_brigade(r->connection->output_filters, bb);
+    ap_pass_brigade(c->output_filters, bb);
+    
+    /* The EOR bucket has either been handled by an output filter (eg.
+     * deleted or moved to a buffered_bb => no more in bb), or an error
+     * occured before that (eg. c->aborted => still in bb) and we ought
+     * to destroy it now. So cleanup any remaining bucket along with
+     * the orphan request (if any).
+     */
+    apr_brigade_cleanup(bb);
 
     /* From here onward, it is no longer safe to reference r
      * or r->pool, because r->pool may have been destroyed
      * already by the EOR bucket's cleanup function.
      */
 
+    check_pipeline(c, bb);
+    apr_brigade_destroy(bb);
     if (c->cs)
-        c->cs->state = CONN_STATE_WRITE_COMPLETION;
-    check_pipeline(c);
+        c->cs->state = (c->aborted) ? CONN_STATE_LINGER
+                                    : CONN_STATE_WRITE_COMPLETION;
     AP_PROCESS_REQUEST_RETURN((uintptr_t)r, r->uri, r->status);
     if (ap_extended_status) {
         ap_time_process_request(c->sbh, STOP_PREQUEST);
