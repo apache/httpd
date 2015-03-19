@@ -164,7 +164,8 @@ static authz_status host_check_authorization(request_rec *r,
                                              const char *require_line,
                                              const void *parsed_require_line)
 {
-    const char *t, *w;
+    const char *t;
+    char *w, *hash_ptr;
     const char *remotehost = NULL;
     int remotehost_is_ip;
 
@@ -196,8 +197,20 @@ static authz_status host_check_authorization(request_rec *r,
             from the previous host based syntax. */
         t = require;
         while ((w = ap_getword_conf(r->pool, &t)) && w[0]) {
+            /* '#' is not valid hostname character and admin could specify
+             * 'Require host localhost# Add example.com later'. We should not
+             * grant access to 'example.com' in that case. */
+            if ((hash_ptr = ap_strchr(w, '#'))) {
+                if (hash_ptr == w) {
+                    break;
+                }
+                *hash_ptr = '\0';
+            }
             if (in_domain(w, remotehost)) {
                 return AUTHZ_GRANTED;
+            }
+            if (hash_ptr) {
+                break;
             }
         }
     }
