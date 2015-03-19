@@ -443,6 +443,11 @@ typedef struct {
     unsigned int    inactive:1;
     unsigned int    forcerecovery:1;
     char      sticky_separator;                                /* separator for sessionid/route */
+    unsigned int    forcerecovery_set:1;
+    unsigned int    scolonsep_set:1;
+    unsigned int    sticky_force_set:1; 
+    unsigned int    nonce_set:1;
+    unsigned int    sticky_separator_set:1;
 } proxy_balancer_shared;
 
 #define ALIGNED_PROXY_BALANCER_SHARED_SIZE (APR_ALIGN_DEFAULT(sizeof(proxy_balancer_shared)))
@@ -463,6 +468,9 @@ struct proxy_balancer {
     void            *context;    /* general purpose storage */
     proxy_balancer_shared *s;    /* Shared data */
     int failontimeout;           /* Whether to mark a member in Err if IO timeout occurs */
+    unsigned int failontimeout_set:1;
+    unsigned int growth_set:1;
+    unsigned int lbmethod_set:1;
 };
 
 struct proxy_balancer_method {
