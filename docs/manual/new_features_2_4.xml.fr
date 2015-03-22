@@ -39,13 +39,13 @@ serveur HTTP Apache</title>
     <title>Am&eacute;liorations du noyau</title>
     <dl>
       <dt>Modules multiprocessus (MPMs) chargeables &agrave; l'ex&eacute;cution</dt>
-      <dd>On peut maintenant <a href="mpm.html#dynamic">built as
-      loadable modules</a> plusieurs MPMs en tant que modules
-      chargeables. Le choix du MPM &agrave; utiliser s'effectue &agrave;
-      l'ex&eacute;cution.</dd>
+      <dd>Plusieurs MPMs peuvent maintenant &ecirc;tre <a
+      href="mpm.html#dynamic">compil&eacute;s en tant que modules
+      chargeables</a>. Le choix du MPM &agrave; utiliser s'effectue
+      &agrave; l'ex&eacute;cution.</dd>
 
       <dt>MPM Event</dt>
-      <dd>Le <a href="mod/event.html">Event MPM</a> est sorti du stade exp&eacute;rimental et est
+      <dd>Le <a href="mod/event.html">MPM Event</a> n'est plus au stade exp&eacute;rimental et est
       maintenant pleinement support&eacute;.</dd>
 
       <dt>Support du mode asynchrone</dt>
@@ -76,13 +76,13 @@ serveur HTTP Apache</title>
       <directive module="core" type="section">If</directive>, etc...
       </dd>
 
-      <dt>KeepAliveTimeout in milliseconds</dt>
-      <dd>It is now possible to specify <directive module="core"
-      >KeepAliveTimeout</directive> in milliseconds.
+      <dt>KeepAliveTimeout en millisecondes</dt>
+      <dd>Il est maintenant possible de d&eacute;finir la directive <directive
+      module="core">KeepAliveTimeout</directive> en millisecondes.
       </dd>
 
-      <dt>NameVirtualHost directive</dt>
-      <dd>Cette directive obsol&egrave;te n'est plus utile.</dd>
+      <dt>Directive NameVirtualHost</dt>
+      <dd>Cette directive n'est plus n&eacute;cessaire et est maintenant obsol&egrave;te.</dd>
 
       <dt>Directives autoris&eacute;es dans les fichiers <code>.htaccess</code></dt>
       <dd>La nouvelle directive <directive
@@ -93,7 +93,7 @@ serveur HTTP Apache</title>
       <dt>Variables dans les fichiers de configuration</dt>
       <dd>La directive <directive module="core">Define</directive>
       permet de d&eacute;finir des variables dans les fichiers de
-      configuration, am&eacute;liorant ainsi la claret&eacute; de la repr&eacute;sentation si
+      configuration, am&eacute;liorant ainsi la claret&eacute; de la pr&eacute;sentation si
       la m&ecirc;me valeur est utilis&eacute;e en plusieurs points de la
       configuration.
       </dd>
@@ -159,7 +159,8 @@ serveur HTTP Apache</title>
 
       <dt><module>mod_lua</module></dt>
       <dd>Embarque le langage <a href="http://www.lua.org/">Lua</a> dans
-      httpd pour la configuration et les fonctions logiques courantes (Experimental).</dd>
+      httpd pour la configuration et les fonctions logiques courantes
+      (Exp&eacute;rimental).</dd>
 
       <dt><module>mod_log_debug</module></dt>
       <dd>Permet d'introduire une journalisation personnalis&eacute;e &agrave;
@@ -310,7 +311,7 @@ serveur HTTP Apache</title>
       clients anciens qui n&eacute;cessitent de tels en-t&ecirc;tes (Ceci affecte
       tous les modules qui utilisent ces variables d'environnement).</dd>
 
-      <dt><module>mod_authz_core</module>Conteneurs de logique d'autorisation</dt>
+      <dt><module>mod_authz_core</module> Conteneurs de logique d'autorisation</dt>
 
       <dd>La directive <directive
       module="mod_authz_core">Require</directive> et les directives de
@@ -345,7 +346,7 @@ serveur HTTP Apache</title>
       <dd><module>mod_ldap</module> propose la directive <directive
       module="mod_ldap">LDAPLibraryDebug</directive> qui permet de
       journaliser les informations de d&eacute;bogage fournies par la bo&icirc;te &agrave;
-      outils LDAP utilis&eacute;e</dd>
+      outils LDAP utilis&eacute;e.</dd>
 
       <dt><module>mod_info</module></dt>
       <dd><module>mod_info</module> est maintenant capable d'afficher la
@@ -363,7 +364,8 @@ serveur HTTP Apache</title>
     <title>Am&eacute;liorations des programmes</title>
     <dl>
         <dt><program>fcgistarter</program></dt>
-        <dd>Nouvel utilitaire pour le d&eacute;marrage des d&eacute;mons FastCGI</dd>
+        <dd>Nouvel utilitaire pour le d&eacute;marrage des d&eacute;mons
+	FastCGI.</dd>
 	<dt><program>htcacheclean</program></dt>
         <dd>Les URLs pr&eacute;sentes dans le cache peuvent maintenant &ecirc;tre
 	affich&eacute;es, accompagn&eacute;es &eacute;ventuellement de leurs m&eacute;tadonn&eacute;es.</dd>
@@ -396,7 +398,7 @@ serveur HTTP Apache</title>
         <dd>La documentation du module <module>mod_rewrite</module> a
 	&eacute;t&eacute; r&eacute;organis&eacute;e et presque enti&egrave;rement r&eacute;&eacute;crite en mettant
 	l'accent sur les exemples et l'utilisation courante, ainsi que
-	sur la l'incitation &agrave; utiliser d'autres solutions lorsque cela
+	sur l'incitation &agrave; utiliser d'autres solutions lorsque cela
 	s'av&egrave;re plus appropri&eacute;. Le document <a href="rewrite/">Rewrite
 	Guide</a> constitue maintenant une section de premier niveau ;
 	il est mieux organis&eacute; et contient beaucoup plus de d&eacute;tails.</dd>
