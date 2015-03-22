@@ -331,6 +331,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      in the path context. If it had, the |= would have dropped the strerror.  Think
      there's any risk in having rv like that floating around?
 
+  *) mod_dav: Avoid a potential integer underflow in the lock timeout value sent
+     back to a client. PR 55420
+     trunk patch: http://svn.apache.org/r1666361
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: jailletc36
+
 
 OTHER PROPOSALS
 
