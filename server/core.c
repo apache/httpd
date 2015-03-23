@@ -5063,6 +5063,11 @@ static void core_child_init(apr_pool_t *pchild, server_rec *s)
     apr_random_after_fork(&proc);
 }
 
+static void core_optional_fn_retrieve(void)
+{
+    ap_init_scoreboard(NULL);
+}
+
 AP_CORE_DECLARE(void) ap_random_parent_after_fork(void)
 {
     /*
@@ -5242,6 +5247,8 @@ static void register_hooks(apr_pool_t *p)
                                   APR_HOOK_REALLY_LAST);
     ap_hook_dirwalk_stat(core_dirwalk_stat, NULL, NULL, APR_HOOK_REALLY_LAST);
     ap_hook_open_htaccess(ap_open_htaccess, NULL, NULL, APR_HOOK_REALLY_LAST);
+    ap_hook_optional_fn_retrieve(core_optional_fn_retrieve, NULL, NULL,
+                                 APR_HOOK_MIDDLE);
     
     /* register the core's insert_filter hook and register core-provided
      * filters
