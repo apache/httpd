@@ -337,6 +337,31 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (modulo CHANGES)
      +1: jailletc36
 
+  *) core: Initialize scoreboard's used optional functions on graceful restarts to
+     avoid a crash when relocation occurs.  PR 57177.
+     trunk patch: http://svn.apache.org/r1668532
+                  http://svn.apache.org/r1668535 (CHANGES entry)
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: ylavic
+
+  *) core: Cleanup the request soon/even if some output filter fails to
+     handle the EOR bucket.
+     trunk patch: http://svn.apache.org/r1666998
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: ylavic
+
+  *) mpm_event: Allow for timer events duplicates.
+     trunk patch: http://svn.apache.org/r1666468
+                  http://svn.apache.org/r1666618
+     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-event_timers_duplicates.patch
+     +1: ylavic
+
+  *) mod_ssl: Fix possible crash when loading server certificate constraints.
+     PR 57694.
+     trunk patch: http://svn.apache.org/r1666297
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: ylavic
+
 
 OTHER PROPOSALS
 
