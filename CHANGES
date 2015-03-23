@@ -6,6 +6,9 @@ Changes with Apache 2.5.0
      to a local URL-path with the INCLUDES filter active, introduced
      in 2.4.11. PR 57531. [Yann Ylavic]
 
+  *) core: Initialize scoreboard's used optional functions on graceful restarts
+     to avoid a crash when relocation occurs.  PR 57177.  [Yann Ylavic]
+
   *) mod_cgid: Within the first minute of a server start or restart, 
      allow mod_cgid to retry connecting to its daemon process. Previously,
      'No such file or directory: unable to connect to cgi daemon...' could
