@@ -341,6 +341,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      avoid a crash when relocation occurs.  PR 57177.
      trunk patch: http://svn.apache.org/r1668532
                   http://svn.apache.org/r1668535 (CHANGES entry)
+                  http://svn.apache.org/r1668553
      2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic
 
