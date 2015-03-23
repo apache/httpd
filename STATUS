@@ -351,12 +351,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic
 
-  *) mpm_event: Allow for timer events duplicates.
-     trunk patch: http://svn.apache.org/r1666468
-                  http://svn.apache.org/r1666618
-     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-event_timers_duplicates.patch
-     +1: ylavic
-
   *) mod_ssl: Fix possible crash when loading server certificate constraints.
      PR 57694.
      trunk patch: http://svn.apache.org/r1666297
@@ -372,6 +366,12 @@ OTHER PROPOSALS
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
+
+  *) mpm_event: Allow for timer events duplicates.
+     trunk patch: http://svn.apache.org/r1666468
+                  http://svn.apache.org/r1666618
+     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-event_timers_duplicates.patch
+     +1: ylavic
 
 
 PATCHES/ISSUES THAT ARE STALLED
