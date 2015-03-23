@@ -138,8 +138,6 @@ AP_DECLARE(int) ap_calc_scoreboard_size(void)
     scoreboard_size += sizeof(process_score) * server_limit;
     scoreboard_size += sizeof(worker_score) * server_limit * thread_limit;
 
-    pfn_ap_logio_get_last_bytes = APR_RETRIEVE_OPTIONAL_FN(ap_logio_get_last_bytes);
-
     return scoreboard_size;
 }
 
@@ -148,6 +146,11 @@ AP_DECLARE(void) ap_init_scoreboard(void *shared_score)
     char *more_storage;
     int i;
 
+    pfn_ap_logio_get_last_bytes = APR_RETRIEVE_OPTIONAL_FN(ap_logio_get_last_bytes);
+    if (!shared_score) {
+        return;
+    }
+    
     ap_calc_scoreboard_size();
     ap_scoreboard_image =
         ap_calloc(1, sizeof(scoreboard) + server_limit * sizeof(worker_score *));
@@ -298,8 +301,6 @@ int ap_create_scoreboard(apr_pool_t *p, ap_scoreboard_e sb_type)
 #if APR_HAS_SHARED_MEMORY
     apr_status_t rv;
 #endif
-
-    pfn_ap_logio_get_last_bytes = APR_RETRIEVE_OPTIONAL_FN(ap_logio_get_last_bytes);
 
     if (ap_scoreboard_image) {
         ap_scoreboard_image->global->restart_time = apr_time_now();
