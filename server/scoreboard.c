@@ -310,6 +310,7 @@ int ap_create_scoreboard(apr_pool_t *p, ap_scoreboard_e sb_type)
             memset(ap_scoreboard_image->servers[i], 0,
                    sizeof(worker_score) * thread_limit);
         }
+        ap_init_scoreboard(NULL);
         return OK;
     }
 
