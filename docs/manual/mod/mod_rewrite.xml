@@ -268,7 +268,7 @@ URLs on the fly</description>
          extended URL and filesystem context information to change the 
          relative substitution back into a URL. Modules such as 
          <module>mod_userdir</module> and <module>mod_alias</module>
-         supply this extended context info.  
+         supply this extended context info.  </p>
       </dd>
 
       </dl>
