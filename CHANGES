@@ -7,6 +7,10 @@ Changes with Apache 2.4.13
      calls r:wsupgrade() can cause a child process crash. 
      [Edward Lu <Chaosed0 gmail.com>]
 
+  *) mod_rewrite: Improve relative substitutions in per-directory/htaccess
+     context for directories found by mod_userdir and mod_alias.  These no
+     longer require RewriteBase to be specified. [Eric Covener]
+
   *) mod_lua: After a r:wsupgrade(), mod_lua was not properly
      responding to a websockets PING but instead invoking the specified 
      script. PR57524. [Edward Lu <Chaosed0 gmail.com>]
