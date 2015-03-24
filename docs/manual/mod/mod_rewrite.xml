@@ -262,15 +262,13 @@ URLs on the fly</description>
       <dt><code>IgnoreContextInfo</code></dt>
       <dd>
 
-      <p>In versions 2.4.11 and later, when a relative substitution is made
+      <p>When a relative substitution is made
          in directory (htaccess) context and <directive module="mod_rewrite"
          >RewriteBase</directive> has not been set, this module uses some
          extended URL and filesystem context information to change the 
          relative substitution back into a URL. Modules such as 
          <module>mod_userdir</module> and <module>mod_alias</module>
-         supply this extended context info.  This option disable the behavior
-         introduced in 2.4.11 and should only be set if all of the conditions 
-         above are present and a substituion has an unexpected result.  </p>
+         supply this extended context info.  
       </dd>
 
       </dl>
