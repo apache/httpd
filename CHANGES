@@ -1,11 +1,6 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
-  *) SECURITY: CVE-2015-0253 (cve.mitre.org)
-     core: Fix a crash introduced in with ErrorDocument 400 pointing
-     to a local URL-path with the INCLUDES filter active, introduced
-     in 2.4.11. PR 57531. [Yann Ylavic]
-
   *) core: Initialize scoreboard's used optional functions on graceful restarts
      to avoid a crash when relocation occurs.  PR 57177.  [Yann Ylavic]
 
@@ -128,10 +123,6 @@ Changes with Apache 2.5.0
   *) core: Add CGIPassAuth directive to control whether HTTP authorization
      headers are passed to scripts as CGI variables.  PR 56855.  [Jeff 
      Trawick]
-
-  *) mod_rewrite: Improve relative substitutions in per-directory/htaccess
-     context for directories found by mod_userdir and mod_alias.  These no
-     longer require RewriteBase to be specified. [Eric Covener]
 
   *) mod_authnz_ldap: Resolve crashes with LDAP authz and non-LDAP authn since 
      r1608202. [Eric Covener]
