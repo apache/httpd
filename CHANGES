@@ -2,6 +2,11 @@
 
 Changes with Apache 2.4.13
 
+  *) SECURITY: CVE-2015-0253 (cve.mitre.org)
+     core: Fix a crash introduced in with ErrorDocument 400 pointing
+     to a local URL-path with the INCLUDES filter active, introduced
+     in 2.4.11. PR 57531. [Yann Ylavic]
+
   *) SECURITY: CVE-2015-0228 (cve.mitre.org)
      mod_lua: A maliciously crafted websockets PING after a script
      calls r:wsupgrade() can cause a child process crash. 
