@@ -756,6 +756,7 @@ RewriteRule  ^/$                 /homepage.std.html  [L]</pre>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Defines a mapping function for key-lookup</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RewriteMap <em>MapName</em> <em>MapType</em>:<em>MapSource</em>
+    <em>MapTypeOptions</em>
 </code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
@@ -800,6 +801,11 @@ RewriteRule  ^/$                 /homepage.std.html  [L]</pre>
 
       <pre class="prettyprint lang-config">RewriteRule ^/ex/(.*) ${examplemap:$1}</pre>
 
+
+      <p>The meaning of the <em>MapTypeOptions</em> argument depends on
+      particular <em>MapType</em>. See the
+      <a href="../rewrite/rewritemap.html">Using RewriteMap</a> for
+      more information.</p>
 
       <p>The following combinations for <em>MapType</em> and
       <em>MapSource</em> can be used:</p>
@@ -972,14 +978,12 @@ RewriteRule  ^/$                 /homepage.std.html  [L]</pre>
       <dt><code>IgnoreContextInfo</code></dt>
       <dd>
 
-      <p>In versions 2.4.11 and later, when a relative substitution is made
+      <p>When a relative substitution is made
          in directory (htaccess) context and <code class="directive"><a href="#rewritebase">RewriteBase</a></code> has not been set, this module uses some
          extended URL and filesystem context information to change the 
          relative substitution back into a URL. Modules such as 
          <code class="module"><a href="../mod/mod_userdir.html">mod_userdir</a></code> and <code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code>
-         supply this extended context info.  This option disable the behavior
-         introduced in 2.4.11 and should only be set if all of the conditions 
-         above are present and a substituion has an unexpected result.  </p>
+         supply this extended context info.  </p>
       </dd>
 
       </dl>
