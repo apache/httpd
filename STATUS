@@ -311,11 +311,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      side when none occurs next on the other side, and abort.
      trunk patch: http://svn.apache.org/r1657636
                   http://svn.apache.org/r1657638
-     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-mod_proxy-transfer.patch
+                  http://svn.apache.org/r1669130
+     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-mod_proxy-transfer-v2.patch
      +1: ylavic
      covener: I noticed while reviewing that rv is not used in ap_log_rerror at least
      in the path context. If it had, the |= would have dropped the strerror.  Think
      there's any risk in having rv like that floating around?
+     ylavic: Agreed, fixed in r1669130 (and v2) by using a pure boolean instead.
 
   *) mod_dav: Avoid a potential integer underflow in the lock timeout value sent
      back to a client. PR 55420
