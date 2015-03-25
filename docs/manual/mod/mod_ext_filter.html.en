@@ -170,6 +170,14 @@ delivery to the client</td></tr>
         </span>
         &lt;/Location&gt;
       </code></p></div>
+
+        <div class="note">
+        <p>You can do the same thing using <code class="module"><a href="../mod/mod_substitute.html">mod_substitute</a></code>
+        without invoking an external process.</p>
+        </div>
+     
+ 
+     <h3>Tracing another filter</h3>
     
 
     <h3>Tracing another filter</h3>
