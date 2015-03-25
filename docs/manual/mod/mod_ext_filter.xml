@@ -153,6 +153,14 @@ delivery to the client</description>
         </indent>
         &lt;/Location&gt;
       </example>
+
+        <note>
+        <p>You can do the same thing using <module>mod_substitute</module>
+        without invoking an external process.</p>
+        </note>
+     </section>
+ 
+     <section><title>Tracing another filter</title>
     </section>
 
     <section><title>Tracing another filter</title>
