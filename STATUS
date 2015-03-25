@@ -293,9 +293,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mod_proxy_http: Use the "Connection: close" header for requests to
      backends not recycling connections (disablereuse), including the default
      reverse and forward proxies.
-     trunk patch: http://svn.apache.org/r1658765
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, covener
+     trunk patch: http://svn.apache.org/r1526189
+                  http://svn.apache.org/r1658765
+     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-ap_proxy_connection_reusable.patch
+     +1: ylavic
+     ylavic: updated with ap_proxy_connection_reusable(), missing in 2.4.x.
 
   *) mod_proxy_http: Don't expect the backend to ack the "Connection: close" to
      finally close those not meant to be kept alive by SetEnv proxy-nokeepalive
