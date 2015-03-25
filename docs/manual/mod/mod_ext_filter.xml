@@ -135,6 +135,11 @@ ExtFilterDefine fixtext mode=output intype=text/html \
     SetOutputFilter fixtext
 &lt;/Location&gt;
       </highlight>
+
+<note>
+<p>You can do the same thing using <module>mod_substitute</module>
+without invoking an external process.</p>
+</note>
     </section>
 
     <section><title>Tracing another filter</title>
