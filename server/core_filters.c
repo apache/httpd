@@ -677,7 +677,6 @@ static apr_status_t send_brigade_nonblocking(apr_socket_t *s,
                 if (nvec > 0) {
                     (void)apr_socket_opt_set(s, APR_TCP_NOPUSH, 1);
                     rv = writev_nonblocking(s, vec, nvec, bb, bytes_written, c);
-                    nvec = 0;
                     if (rv != APR_SUCCESS) {
                         (void)apr_socket_opt_set(s, APR_TCP_NOPUSH, 0);
                         return rv;
@@ -686,6 +685,7 @@ static apr_status_t send_brigade_nonblocking(apr_socket_t *s,
                 rv = sendfile_nonblocking(s, bucket, bytes_written, c);
                 if (nvec > 0) {
                     (void)apr_socket_opt_set(s, APR_TCP_NOPUSH, 0);
+                    nvec = 0;
                 }
                 if (rv != APR_SUCCESS) {
                     return rv;
