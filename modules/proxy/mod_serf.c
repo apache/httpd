@@ -700,7 +700,7 @@ static const char *add_cluster(cmd_parms *cmd, void *d,
 
         if (x && strlen(p) > 1) {
             apr_table_addn(cluster->params,
-                           apr_pstrndup(cmd->pool, p, x-p),
+                           apr_pstrmemdup(cmd->pool, p, x-p),
                            x+1);
         }
         else {
@@ -884,7 +884,7 @@ static apr_status_t read_heartbeats(const char *path,
                 continue;
             }
 
-            ip = apr_pstrndup(pool, buf, t - buf);
+            ip = apr_pstrmemdup(pool, buf, t - buf);
             t++;
             server = apr_pcalloc(pool, sizeof(hb_server_t));
             server->ip = ip;
