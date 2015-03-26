@@ -323,7 +323,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      back to a client. PR 55420
      trunk patch: http://svn.apache.org/r1666361
      2.4.x patch: trunk works (modulo CHANGES)
-     +1: jailletc36
+     +1: jailletc36, ylavic
 
   *) core: Initialize scoreboard's used optional functions on graceful restarts to
      avoid a crash when relocation occurs.  PR 57177.
@@ -350,7 +350,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                used for ECONNREFUSED. PR57685
      trunk patch: http://svn.apache.org/r1667385 
      2.4.x patch: trunk works
-     +1: covener
+     +1: covener, ylavic
 
   *) core_filters: restore/disable TCP_NOPUSH option after non-blocking
      sendfile.
