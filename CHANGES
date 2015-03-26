@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_proxy_wstunnel: Avoid an empty response by failing with 502 (Bad
+     Gateway) when no response is ever received from the backend.
+     [Jan Kaluza]
+
   *) core_filters: restore/disable TCP_NOPUSH option after non-blocking
      sendfile.  [Yann Ylavic]
 
