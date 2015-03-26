@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) core_filters: restore/disable TCP_NOPUSH option after non-blocking
+     sendfile.  [Yann Ylavic]
+
   *) core: Initialize scoreboard's used optional functions on graceful restarts
      to avoid a crash when relocation occurs.  PR 57177.  [Yann Ylavic]
 
