@@ -359,6 +359,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic
 
+  *) doc: allows placing the 'directive' word before the directive name in the
+          module synopsis
+     trunk patch: http://svn.apache.org/r1659855 
+     2.4.x patch: trunk works
+     +1: jailletc36
+     note jailletc36: not sure a vote is needed for that, this is only doc
+
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
