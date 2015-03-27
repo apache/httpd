@@ -44,6 +44,9 @@ Changes with Apache 2.4.13
   *) mod_ssl: Fix renegotiation failures redirected to an ErrorDocument.
      PR 57334.  [Yann Ylavic].
 
+  *) mod_deflate: A misplaced check prevents limiting small bodies with the
+     new inflate limits. PR56872. [Edward Lu, Eric Covener, Yann Ylavic]
+
   *) mod_proxy_ajp: Forward SSL protocol name (SSLv3, TLSv1.1 etc.) as a
      request attribute to the backend. Recent Tomcat versions will extract
      it and provide it as a servlet request attribute named
