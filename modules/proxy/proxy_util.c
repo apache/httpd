@@ -2197,8 +2197,12 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
      * The scheme handler decides if this is permanent or
      * short living pool.
      */
-    /* are we connecting directly, or via a proxy? */
-    if (!proxyname) {
+    /* Unless we are connecting the backend via a (forward Proxy)Remote, we
+     * have to use the original form of the URI (non absolute), but this is
+     * also the case via a remote proxy using the CONNECT method since the
+     * original request (and URI) is to be embedded in the body.
+     */
+    if (!proxyname || conn->is_ssl) {
         *url = apr_pstrcat(p, uri->path, uri->query ? "?" : "",
                            uri->query ? uri->query : "",
                            uri->fragment ? "#" : "",
