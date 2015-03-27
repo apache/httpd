@@ -106,16 +106,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_proxy: Add ap_proxy_define_match_worker() and use it for ProxyPassMatch
-     and ProxyMatch section to distinguish between normal workers and workers
-     with regex substitutions in the name. Implement handling of such workers
-     in ap_proxy_get_worker(). Fixes the bug when regex workers were not
-     matched and used for request. PR 43513.
-     trunk patch: http://svn.apache.org/r1609680
-                  http://svn.apache.org/r1641381
-     2.4.x patch: trunk works
-     +1: jkaluza, ylavic, jim
-
   *) mod_deflate: A misplaced check prevents limiting small bodies with the
      new inflate limits.  PR56872.
      trunk patch: http://svn.apache.org/r1619383
@@ -151,6 +141,17 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
+
+   * mod_proxy: Add ap_proxy_define_match_worker() and use it for ProxyPassMatch
+     and ProxyMatch section to distinguish between normal workers and workers
+     with regex substitutions in the name. Implement handling of such workers
+     in ap_proxy_get_worker(). Fixes the bug when regex workers were not
+     matched and used for request. PR 43513.
+     trunk patch: http://svn.apache.org/r1609680
+                  http://svn.apache.org/r1641381
+     2.4.x patch: trunk works
+     +1: jkaluza, ylavic
+
 
    * mod_buffer: Forward flushed input data immediately and avoid (unlikely)
                  access to freed memory.
