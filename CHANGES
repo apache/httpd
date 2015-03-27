@@ -12,6 +12,12 @@ Changes with Apache 2.4.13
      calls r:wsupgrade() can cause a child process crash. 
      [Edward Lu <Chaosed0 gmail.com>]
 
+  *) mod_cgid: Within the first minute of a server start or restart, 
+     allow mod_cgid to retry connecting to its daemon process. Previously,
+     'No such file or directory: unable to connect to cgi daemon...' could
+     be logged without an actual retry. PR57685. 
+     [Edward Lu <Chaosed0 gmail.com>]
+     
   *) mod_proxy: use the original (non absolute) form of the request-line's URI
      for requests embedded in CONNECT payloads used to connect SSL backends via
      a ProxyRemote forward-proxy.  PR 55892.  [Hendrik Harms <hendrik.harms
