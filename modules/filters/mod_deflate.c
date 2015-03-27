@@ -1278,6 +1278,15 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
                     return APR_ENOSPC;
                 }
 
+                if (!check_ratio(r, ctx, dc)) {
+                    inflateEnd(&ctx->stream);
+                    ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO()
+                            "Inflated content ratio is larger than the "
+                            "configured limit %i by %i time(s)",
+                            dc->ratio_limit, dc->ratio_burst);
+                    return APR_EINVAL;
+                }
+
                 ctx->crc = crc32(ctx->crc, (const Bytef *)ctx->buffer, len);
                 tmp_b = apr_bucket_heap_create((char *)ctx->buffer, len,
                                                 NULL, f->c->bucket_alloc);
@@ -1335,26 +1344,6 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
                         ctx->stream.next_out = ctx->buffer;
                         len = c->bufferSize - ctx->stream.avail_out;
 
-                        ctx->inflate_total += len;
-                        if (inflate_limit && ctx->inflate_total > inflate_limit) { 
-                            inflateEnd(&ctx->stream);
-                            ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(02648)
-                                    "Inflated content length of %" APR_OFF_T_FMT
-                                    " is larger than the configured limit"
-                                    " of %" APR_OFF_T_FMT, 
-                                    ctx->inflate_total, inflate_limit);
-                            return APR_ENOSPC;
-                        }
-
-                        if (!check_ratio(r, ctx, dc)) {
-                            inflateEnd(&ctx->stream);
-                            ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(02649)
-                                    "Inflated content ratio is larger than the "
-                                    "configured limit %i by %i time(s)",
-                                    dc->ratio_limit, dc->ratio_burst);
-                            return APR_EINVAL;
-                        }
-
                         ctx->crc = crc32(ctx->crc, (const Bytef *)ctx->buffer, len);
                         tmp_heap = apr_bucket_heap_create((char *)ctx->buffer, len,
                                                           NULL, f->c->bucket_alloc);
@@ -1362,21 +1351,42 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
                         ctx->stream.avail_out = c->bufferSize;
                     }
 
+                    len = ctx->stream.avail_out;
                     zRC = inflate(&ctx->stream, Z_NO_FLUSH);
+
+                    if (zRC != Z_OK && zRC != Z_STREAM_END) {
+                        inflateEnd(&ctx->stream);
+                        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01392)
+                                      "Zlib error %d inflating data (%s)", zRC,
+                                      ctx->stream.msg);
+                        return APR_EGENERAL;
+                    }
+
+                    ctx->inflate_total += len - ctx->stream.avail_out;
+                    if (inflate_limit && ctx->inflate_total > inflate_limit) { 
+                        inflateEnd(&ctx->stream);
+                        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(02648)
+                                "Inflated content length of %" APR_OFF_T_FMT
+                                " is larger than the configured limit"
+                                " of %" APR_OFF_T_FMT, 
+                                ctx->inflate_total, inflate_limit);
+                        return APR_ENOSPC;
+                    }
+
+                    if (!check_ratio(r, ctx, dc)) {
+                        inflateEnd(&ctx->stream);
+                        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(02649)
+                                "Inflated content ratio is larger than the "
+                                "configured limit %i by %i time(s)",
+                                dc->ratio_limit, dc->ratio_burst);
+                        return APR_EINVAL;
+                    }
 
                     if (zRC == Z_STREAM_END) {
                         ctx->validation_buffer = apr_pcalloc(r->pool,
                                                              VALIDATION_SIZE);
                         ctx->validation_buffer_length = 0;
                         break;
-                    }
-
-                    if (zRC != Z_OK) {
-                        inflateEnd(&ctx->stream);
-                        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01392)
-                                      "Zlib error %d inflating data (%s)", zRC,
-                                      ctx->stream.msg);
-                        return APR_EGENERAL;
                     }
                 }
             }
@@ -1786,15 +1796,6 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
 
         while (ctx->stream.avail_in != 0) {
             if (ctx->stream.avail_out == 0) {
-
-                if (!check_ratio(r, ctx, dc)) {
-                    ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(02650)
-                            "Inflated content ratio is larger than the "
-                            "configured limit %i by %i time(s)",
-                            dc->ratio_limit, dc->ratio_burst);
-                    return APR_EINVAL;
-                }
-
                 ctx->stream.next_out = ctx->buffer;
                 len = c->bufferSize - ctx->stream.avail_out;
 
@@ -1812,6 +1813,21 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
 
             zRC = inflate(&ctx->stream, Z_NO_FLUSH);
 
+            if (zRC != Z_OK && zRC != Z_STREAM_END) {
+                ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01409)
+                              "Zlib error %d inflating data (%s)", zRC,
+                              ctx->stream.msg);
+                return APR_EGENERAL;
+            }
+
+            if (!check_ratio(r, ctx, dc)) {
+                ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(02650)
+                              "Inflated content ratio is larger than the "
+                              "configured limit %i by %i time(s)",
+                              dc->ratio_limit, dc->ratio_burst);
+                return APR_EINVAL;
+            }
+
             if (zRC == Z_STREAM_END) {
                 /*
                  * We have inflated all data. Now try to capture the
@@ -1826,20 +1842,14 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
                                   "Zlib: %d bytes of garbage at the end of "
                                   "compressed stream.",
                                   ctx->stream.avail_in - VALIDATION_SIZE);
-                } else if (ctx->stream.avail_in > 0) {
-                           ctx->validation_buffer_length = ctx->stream.avail_in;
+                }
+                else if (ctx->stream.avail_in > 0) {
+                    ctx->validation_buffer_length = ctx->stream.avail_in;
                 }
                 if (ctx->validation_buffer_length)
                     memcpy(ctx->validation_buffer, ctx->stream.next_in,
                            ctx->validation_buffer_length);
                 break;
-            }
-
-            if (zRC != Z_OK) {
-                ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01409)
-                              "Zlib error %d inflating data (%s)", zRC,
-                              ctx->stream.msg);
-                return APR_EGENERAL;
             }
         }
 

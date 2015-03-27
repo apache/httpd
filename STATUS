@@ -106,16 +106,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_deflate: A misplaced check prevents limiting small bodies with the
-     new inflate limits.  PR56872.
-     trunk patch: http://svn.apache.org/r1619383
-                  http://svn.apache.org/r1619444
-                  http://svn.apache.org/r1662245 (CHANGES entry)
-                  http://svn.apache.org/r1662246 (updated CHANGES entry)
-     2.4.x patch: trunk works (modulo CHANGES)
-                  http://people.apache.org/~ylavic/httpd-2.4.x-mod_deflate-PR56872.patch
-     +1: ylavic, covener, jim
-
   *) mod_proxy: use the original (non absolute) form of the request-line's URI
      for requests embedded in CONNECT payloads used to connect SSL backends via
      a ProxyRemote forward-proxy. PR 55892.
