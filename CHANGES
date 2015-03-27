@@ -21,6 +21,10 @@ Changes with Apache 2.4.13
      context for directories found by mod_userdir and mod_alias.  These no
      longer require RewriteBase to be specified. [Eric Covener]
 
+  *) mod_proxy_http: Don't expect the backend to ack the "Connection: close" to
+     finally close those not meant to be kept alive by SetEnv proxy-nokeepalive
+     or force-proxy-request-1.0.  [Yann Ylavic]
+
   *) mod_lua: After a r:wsupgrade(), mod_lua was not properly
      responding to a websockets PING but instead invoking the specified 
      script. PR57524. [Edward Lu <Chaosed0 gmail.com>]

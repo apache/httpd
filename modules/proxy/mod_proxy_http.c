@@ -1383,6 +1383,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
          */
         if (apr_date_checkmask(buffer, "HTTP/#.# ###*")) {
             int major, minor;
+            int toclose;
 
             major = buffer[5] - '0';
             minor = buffer[7] - '0';
@@ -1491,7 +1492,10 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
             te = apr_table_get(r->headers_out, "Transfer-Encoding");
 
             /* strip connection listed hop-by-hop headers from response */
-            backend->close = ap_proxy_clear_connection_fn(r, r->headers_out);
+            toclose = ap_proxy_clear_connection_fn(r, r->headers_out);
+            if (toclose) {
+                backend->close = 1;
+            }
 
             if ((buf = apr_table_get(r->headers_out, "Content-Type"))) {
                 ap_set_content_type(r, apr_pstrdup(p, buf));
