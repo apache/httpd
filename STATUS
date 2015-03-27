@@ -141,7 +141,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1641381
      2.4.x patch: trunk works
      +1: jkaluza, ylavic
-
+     -1: jim (does not cleanly apply)
 
    * mod_buffer: Forward flushed input data immediately and avoid (unlikely)
                  access to freed memory.

@@ -12,6 +12,11 @@ Changes with Apache 2.4.13
      calls r:wsupgrade() can cause a child process crash. 
      [Edward Lu <Chaosed0 gmail.com>]
 
+  *) mod_proxy: use the original (non absolute) form of the request-line's URI
+     for requests embedded in CONNECT payloads used to connect SSL backends via
+     a ProxyRemote forward-proxy.  PR 55892.  [Hendrik Harms <hendrik.harms
+     gmail com>, William Rowe, Yann Ylavic]
+
   *) mod_rewrite: Improve relative substitutions in per-directory/htaccess
      context for directories found by mod_userdir and mod_alias.  These no
      longer require RewriteBase to be specified. [Eric Covener]
