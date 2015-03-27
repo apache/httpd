@@ -126,7 +126,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1609680
                   http://svn.apache.org/r1641381
      2.4.x patch: trunk works
-     +1: jkaluza, ylavic
+     +1: jkaluza, ylavic, jim
 
    * mod_proxy_ajp: Fix client connection errors handling and logged status
                     when it occurs.  PR 56823.
@@ -220,7 +220,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1662246 (updated CHANGES entry)
      2.4.x patch: trunk works (modulo CHANGES)
                   http://people.apache.org/~ylavic/httpd-2.4.x-mod_deflate-PR56872.patch
-     +1: ylavic, covener
+     +1: ylavic, covener, jim
 
   *) mod_proxy: Use the correct server name for SNI in case the backend
      SSL connection itself is established via a proxy server.  PR 57139
@@ -232,7 +232,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      sized 664 byte array per merge to a hash table.
      trunk patch: http://svn.apache.org/r1661448
      2.4.x patch: http://people.apache.org/~minfrin/httpd-core-errordocument24-3.patch
-     +1: minfrin
+     +1: minfrin, jim
 
   *) mod_proxy_balancer: Fix HTML of balancer-manager. Bugz: 55466
      trunk patch: http://svn.apache.org/r1664356
@@ -247,7 +247,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1665215
                   http://svn.apache.org/r1665218 (CHANGES entry)
      2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, wrowe
+     +1: ylavic, wrowe, jim
 
   *) core: If explicitly configured, use the KeepaliveTimeout value of the
      virtual host which handled the latest request on the connection, or by
@@ -304,7 +304,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      or force-proxy-request-1.0.
      trunk patch: http://svn.apache.org/r1658760 (partial, ap_proxy_clear_connection() raises no error in 2.4.x)
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-mod_proxy_http-nokeepalive_close.patch
-     +1: ylavic, covener
+     +1: ylavic, covener, jim
 
   *) mod_proxy_connect/wstunnel: If both client and backend sides get readable
      at the same time, don't lose errors occuring while forwarding on the first
@@ -350,7 +350,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                used for ECONNREFUSED. PR57685
      trunk patch: http://svn.apache.org/r1667385 
      2.4.x patch: trunk works
-     +1: covener, ylavic
+     +1: covener, ylavic, jim
 
   *) core_filters: restore/disable TCP_NOPUSH option after non-blocking
      sendfile.
