@@ -814,9 +814,7 @@ moteur de réécriture</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit une fonction de mise en correspondance pour la
 recherche de mots-clés</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RewriteMap <em>nom de la correspondance</em> <em>type de
-correspondance</em>:<em>source de la correspondance</em>
-    <em>options du type de correspondance</em>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RewriteMap <em>MapName</em> <em>MapType</em>:<em>MapSource</em> <em>MapTypeOptions</em>
 </code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -830,24 +828,21 @@ correspondance</em>:<em>source de la correspondance</em>
       La source utilisée pour cette recherche peut être de plusieurs
       types.</p>
 
-      <p><a id="mapfunc" name="mapfunc"><em>nom de la
-      correspondance</em></a> est le nom de la table de correspondance
+      <p><a id="mapfunc" name="mapfunc"><em>MapName</em></a> est le nom de la table de correspondance
       et servira à spécifier une fonction de mise en correspondance
       pour les chaînes de substitution d'une règle de réécriture selon
       une des constructions suivantes :</p>
 
       <p class="indent">
-        <strong><code>${</code> <em>nom de la
-      correspondance</em> <code>:</code>
+        <strong><code>${</code> <em>MapName</em> <code>:</code>
         <em>mot-clé</em> <code>}</code><br />
-         <code>${</code> <em>nom de la
-      correspondance</em> <code>:</code>
+         <code>${</code> <em>MapName</em> <code>:</code>
         <em>mot-clé</em> <code>|</code> <em>valeur par défaut</em>
         <code>}</code></strong>
       </p>
 
       <p>Lorsqu'une telle construction est rencontrée, la table de
-      correspondance <em>Nom de la correspondance</em> est consultée
+      correspondance <em>MapName</em> est consultée
       et la clé <em>mot-clé</em> recherchée. Si la clé est trouvée, la
       construction est remplacée par
       la <em>valeur de remplacement</em>. Si la clé n'est pas trouvée,
@@ -869,13 +864,12 @@ correspondance</em>:<em>source de la correspondance</em>
       <pre class="prettyprint lang-config">RewriteRule ^/ex/(.*) ${map-exemple:$1}</pre>
 
 
-      <p>La signification de l'argument <em>options du type de
-      correspondance</em> dépend du <em>type de correspondance</em>
+      <p>La signification de l'argument <em>MapTypeOptions</em> dépend du <em>MapType</em>
       spécifié. Veuillez vous référer au document <a href="../rewrite/rewritemap.html">Utiliser RewriteMap</a> pour
       plus de détails.</p>
 
       <p>Les combinaisons suivantes pour <em>type de correspondance</em>
-      et <em>source de la correspondance</em>
+      et <em>MapSource</em>
       peuvent être utilisées :</p>
 
 <dl>
@@ -1059,17 +1053,14 @@ pour le moteur de réécriture</td></tr>
       <dt><code>IgnoreContextInfo</code></dt>
       <dd>
 
-      <p>Dans les versions 2.4.11 et antérieures, lors d'une
+      <p>Lors d'une
       substitution relative dans un contexte de répertoire (htaccess),
       et si la directive <code class="directive"><a href="#rewritebase">RewriteBase</a></code> n'a pas été définie,
       ce module utilise des informations en provenance d'une extension
       d'URL et du contexte du système de fichiers pour transformer la
       sustitution relative en URL. Par exemple, les modules
       <code class="module"><a href="../mod/mod_userdir.html">mod_userdir</a></code> et <code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code>
-      utilisent ces informations de contexte étendu. Cette option
-      désactive le comportement introduit avec la version 2.4.11, et ne
-      doit être utilisée que si toutes les conditions précédentes sont
-      vérifiées, et si la substitution renvoie un résultat inattendu.</p>
+      utilisent ces informations de contexte étendu.</p>
       </dd>
 
       </dl>
