@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1562488:1669205 (outdated) -->
+<!-- English Revision : 1669205 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -92,7 +92,7 @@ ExtFilterDefine c-to-html mode=output \
       <p>Note : cet exemple avec gzip n'est fourni qu'&agrave; titre
       d'illustration. Veuillez vous reporter &agrave; la documentation de
       <module>mod_deflate</module> pour un exemple d'impl&eacute;mentation plus
-      r&eacute;aliste.</p>
+      pratique.</p>
 
       <highlight language="config">
 # la directive de mod_ext_filter qui d&eacute;finit le filtre externe
@@ -101,11 +101,11 @@ ExtFilterDefine gzip mode=output cmd=/bin/gzip
 &lt;Location /gzipped&gt;
 
     # directive de base permettant de traiter la sortie avec le
-    # filtre gzip
+  # filtre gzip
     SetOutputFilter gzip
 
     # la directive de mod_headers permettant d'ajouter le champ
-    # d'en-t&ecirc;te "Content-Encoding: gzip"
+  # d'en-t&ecirc;te "Content-Encoding: gzip"
     Header set Content-Encoding gzip
 &lt;/Location&gt;
       </highlight>
@@ -118,6 +118,7 @@ ExtFilterDefine gzip mode=output cmd=/bin/gzip
 # passer tous les flux en sortie par la commande cat ; cat ne
 # modifie rien ; elle ne fait que compliquer le cheminement des
 # flux et consommer des ressources suppl&eacute;mentaires
+       ExtFilterDefine slowdown mode=output cmd=/bin/cat \
 ExtFilterDefine slowdown mode=output cmd=/bin/cat \
     preservescontentlength
 
@@ -146,6 +147,12 @@ ExtFilterDefine fixtext mode=output intype=text/html \
     SetOutputFilter fixtext
 &lt;/Location&gt;
       </highlight>
+
+<note>
+<p>Vous pouvez aussi utiliser <module>mod_substitute</module> pour
+effectuer le m&ecirc;me traitement sans avoir &agrave; invoquer un programme
+externe.</p>
+</note>      
 
     </section>
 
@@ -198,15 +205,15 @@ close(SAVE);
 <directivesynopsis>
 <name>ExtFilterDefine</name>
 <description>D&eacute;finit un filtre externe</description>
-<syntax>ExtFilterDefine <var>nom filtre</var> <var>param&egrave;tres</var></syntax>
+<syntax>ExtFilterDefine <var>nom_filtre</var> <var>param&egrave;tres</var></syntax>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
-    <p>La directive <directive>ExtFilterDefine</directive> permet de
-    d&eacute;finir les caract&eacute;ristiques d'un filtre externe, et en particulier
+    <p>La directive <directive>ExtFilterDefine</directive>
+    d&eacute;finit les caract&eacute;ristiques d'un filtre externe, et en particulier
     le programme &agrave; ex&eacute;cuter ainsi que ses arguments.</p>
 
-    <p><var>nom filtre</var> sp&eacute;cifie le nom du filtre en cours de
+    <p><var>nom_filtre</var> sp&eacute;cifie le nom du filtre en cours de
     d&eacute;finition. On peut ensuite utiliser ce nom pour r&eacute;f&eacute;rencer le
     filtre dans les directives <directive module="core"
     >SetOutputFilter</directive>. Il doit &ecirc;tre unique parmi les noms de
@@ -223,7 +230,7 @@ close(SAVE);
     <dl>
       <dt><code>cmd=<var>ligne de commande</var></code></dt>
 
-      <dd>Le mot-cl&eacute; <code>cmd=</code> permet de sp&eacute;cifier la commande
+      <dd>Le mot-cl&eacute; <code>cmd=</code> sp&eacute;cifie la commande
       externe &agrave; ex&eacute;cuter. Si la ligne de commande comporte des
       arguments, elle doit &ecirc;tre entour&eacute;e de guillemets (par exemple
       <code>cmd="<var>/bin/mypgm</var> <var>arg1</var>
@@ -235,7 +242,7 @@ close(SAVE);
       argument contient des antislashes '\', ces derniers doivent &ecirc;tre
       eux-m&ecirc;mes &eacute;chapp&eacute;s par un antislash '\'. Outre les variables
       d'environnement CGI standards, les variables DOCUMENT_URI,
-      DOCUMENT_PATH_INFO, et QUERY_STRING_UNESCAPED seront aussi
+      DOCUMENT_PATH_INFO, et QUERY_STRING_UNESCAPED seront &eacute;galement
       d&eacute;finies pour le programme.</dd>
 
       <dt><code>mode=<var>mode</var></code></dt>
@@ -248,15 +255,15 @@ close(SAVE);
 
       <dt><code>intype=<var>type MIME</var></code></dt>
 
-      <dd>Ce param&egrave;tre permet de sp&eacute;cifier le type de m&eacute;dium Internet
+      <dd>Ce param&egrave;tre sp&eacute;cifie le type de m&eacute;dium Internet
       (c'est &agrave; dire le type MIME) des documents qui doivent &ecirc;tre
-      filtr&eacute;s. Par d&eacute;faut, tous les documents sont filtr&eacute;s. Tous les
+      filtr&eacute;s. Par d&eacute;faut, tous les documents sont filtr&eacute;s. Aucun des
       documents poss&eacute;dant un type MIME autre que celui sp&eacute;cifi&eacute; par
-      <code>intype=</code> ne seront pas filtr&eacute;s.</dd>
+      <code>intype=</code> ne sera filtr&eacute;.</dd>
 
       <dt><code>outtype=<var>type MIME</var></code></dt>
 
-      <dd>Ce param&egrave;tre permet de sp&eacute;cifier le type de m&eacute;dium Internet
+      <dd>Ce param&egrave;tre sp&eacute;cifie le type de m&eacute;dium Internet
       (c'est &agrave; dire le type MIME) des documents filtr&eacute;s. Il intervient
       lorsque les op&eacute;rations de filtrage comprennent une modification du
       type MIME. Par d&eacute;faut, le type MIME n'est pas modifi&eacute;.</dd>
@@ -271,23 +278,24 @@ close(SAVE);
 
       <dt><code>ftype=<var>type de filtre</var></code></dt>
 
-      <dd>Ce param&egrave;tre permet de sp&eacute;cifier une valeur num&eacute;rique
+      <dd>Ce param&egrave;tre sp&eacute;cifie une valeur num&eacute;rique
       repr&eacute;sentant le type de filtre sous lequel le filtre doit &ecirc;tre
       enregistr&eacute;. La valeur par d&eacute;faut, AP_FTYPE_RESOURCE, convient dans
-      la plupart des situations. Si le filtre doit op&eacute;rer dans la cha&icirc;ne
-      de filtrage &agrave; un autre point que les filtres de ressources, ce
-      param&egrave;tre est n&eacute;cessaire. Voir les d&eacute;finitions de AP_FTYPE_...
+      la plupart des situations. Ce param&egrave;tre devient n&eacute;cessaire d&egrave;s lors
+      que le filtre doit op&eacute;rer &agrave; un autre point de la cha&icirc;ne de filtrage
+      que les filtres de ressources.
+      Voir les d&eacute;finitions de AP_FTYPE_...
       dans util_filter.h pour trouver une valeur appropri&eacute;e.</dd>
 
       <dt><code>disableenv=<var>env</var></code></dt>
 
-      <dd>Ce param&egrave;tre permet de sp&eacute;cifier le nom d'une variable
+      <dd>Ce param&egrave;tre sp&eacute;cifie le nom d'une variable
       d'environnement qui, si elle est d&eacute;finie, va d&eacute;sactiver le
       filtre.</dd>
 
       <dt><code>enableenv=<var>env</var></code></dt>
 
-      <dd>Ce param&egrave;tre permet de sp&eacute;cifier le nom d'une variable
+      <dd>Ce param&egrave;tre sp&eacute;cifie le nom d'une variable
       d'environnement qui doit &ecirc;tre d&eacute;finie pour que le filtre ne soit
       pas d&eacute;sactiv&eacute;.</dd>
     </dl>
@@ -303,8 +311,8 @@ close(SAVE);
 <contextlist><context>directory</context></contextlist>
 
 <usage>
-    <p>La directive <directive>ExtFilterOptions</directive> permet de
-    sp&eacute;cifier des options de traitement particuli&egrave;res pour
+    <p>La directive <directive>ExtFilterOptions</directive>
+    sp&eacute;cifie des options de traitement particuli&egrave;res pour
     <module>mod_ext_filter</module>. Les arguments <var>option</var>
     peuvent contenir :</p>
 
@@ -320,7 +328,7 @@ close(SAVE);
       <dt><code>Onfail=[abort|remove]</code></dt>
       <dd>Indique la marche &agrave; suivre si le programme de filtrage externe
       ne peut pas d&eacute;marrer. Avec <code>abort</code> (la valeur par
-      d&eacute;faut), la requ&ecirc;te sera abandonn&eacute;e. Avec <code>remove</code>, le
+      d&eacute;faut), le traitement de la requ&ecirc;te sera abandonn&eacute;. Avec <code>remove</code>, le
       filtre est supprim&eacute;, et le traitement de la requ&ecirc;te se poursuit
       sans lui.</dd>
     </dl>
