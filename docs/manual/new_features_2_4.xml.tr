@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.en.xsl"?>
-<!-- English Revision: 1521343:1661466 (outdated) -->
+<!-- English Revision: 1661466 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -174,6 +174,16 @@
       <dt><module>mod_xml2enc</module></dt>
       <dd>Başta bir üçüncü parti modüldü. libxml2 temelli süzgeç modüllerinde
         i18n'i destekler.</dd>
+
+      <dt><module>mod_macro</module> (2.4.5'den itibaren kullanılabilir)</dt>
+      <dd>Yapılandırma dosyalarında makro kullanımını sağlar.</dd>
+
+      <dt><module>mod_proxy_wstunnel</module> (2.4.5'den itibaren kullanılabilir)</dt>
+      <dd>Web-socket tünelleri için destek.</dd>
+
+      <dt><module>mod_authnz_fcgi</module> (2.4.10'dan itibaren kullanılabilir)</dt>
+      <dd>Kimlik kanıtlama ve/veya istemcileri yetkilendirmek için FastCGI
+        yetkilendirme uygulamalarını etkinleştirir.</dd>
     </dl>
   </section>
 
@@ -198,6 +208,8 @@
       <dd>RSA ve DSA'ya ek olarak EC anahtarları da artık desteklenmektedir.
       </dd>
 
+      <dd>TLS-SRP için destek (2.4.4 itibariyle kullanılabilir).</dd>
+
       <dt><module>mod_proxy</module></dt>
 
       <dd><directive module="mod_proxy">ProxyPass</directive> yönergesi bir
@@ -209,6 +221,9 @@
 
       <dd>Vekil istekleri için kullanılan kaynak adresi artık
         yapılandırılabilmektedir.</dd>
+
+      <dd>Artalanda Unix alan soketleri için destek (2.4.7 itibariyle
+        kullanılabilir).</dd>
 
       <dt><module>mod_proxy_balancer</module></dt>
 
@@ -302,6 +317,10 @@
       <dd><module>mod_info</module> önceden çözümlenmiş yapılandırmayı artık
         sunucunun başlatılması sırasında standart çıktıya
         dökümleyebilmektedir.</dd>
+
+      <dt><module>mod_auth_basic</module></dt>
+      <dd>Temel kimlik kanıtlamayı taklit eden yeni temel mekanizma
+        (2.4.5 itibariyle kullanılabilmektedir).</dd>
     </dl>
   </section>
 
@@ -325,6 +344,10 @@
         <dt><program>rotatelogs</program></dt>
         <dd>Artık geçerli günlük dosyasına bir bağ oluşturulabiliyor.</dd>
         <dd>Artık özel bir döndürme sonrası betiği çalıştırılabiliyor.</dd>
+
+      <dt><program>htpasswd</program>, <program>htdbm</program></dt>
+      <dd>Bcrypt algoritması için destek (2.4.4 itibariyle
+        kullanılabilmektedir).</dd>
     </dl>
   </section>
 

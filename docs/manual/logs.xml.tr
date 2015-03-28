@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 1629731:1657858 (outdated) -->
+<!-- English Revision: 1657858 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -593,6 +593,18 @@ CustomLog "|$/usr/local/apache/bin/rotatelogs /var/log/access_log 86400" common
       gösterimi de desteklenmekte olup "<code>|</code>" kullanımına
       eşdeğerdir.</p>
 
+    <note><title>Windows'ta yığın alanı</title>
+    <p>Windows'ta çok sayıda borulu günlükleme süreci çalışırken ve özellikle
+      HTTPD bir hizmet olarak çalışıyorsa sorunlar baş gösterebilir. Bunun
+      başlıca sebebi masaüstü yığın alanının (heap) dışına taşılmasıdır. Her
+      hizmete ayrılan masüstü yığın alanı, kayıt defterindeki
+      HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\SessionManager\SubSystems\Windows
+      kaydındaki üçüncü değiştirge olan <code>SharedSection</code>
+      değeridir. <strong>Bu değeri değiştirirken çok dikkatli olun</strong>;
+      bu, Windows kayıt defterini değiştirirken verilen normal
+      uyarılardandır, fakat eğer bu değer çok yüksek olursa masaüstü yığın
+      alanının tükenebileceği dikkate alınmalıdır.</p>
+    </note>
   </section>
 
   <section id="virtualhost">
