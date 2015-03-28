@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1664575:1668875 (outdated) -->
+<!-- English Revision : 1668575 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -297,7 +297,7 @@ pour le moteur de r&eacute;&eacute;criture</description>
       <dt><code>IgnoreContextInfo</code></dt>
       <dd>
 
-      <p>Dans les versions 2.4.11 et ant&eacute;rieures, lors d'une
+      <p>Lors d'une
       substitution relative dans un contexte de r&eacute;pertoire (htaccess),
       et si la directive <directive
       module="mod_rewrite">RewriteBase</directive> n'a pas &eacute;t&eacute; d&eacute;finie,
@@ -305,10 +305,7 @@ pour le moteur de r&eacute;&eacute;criture</description>
       d'URL et du contexte du syst&egrave;me de fichiers pour transformer la
       sustitution relative en URL. Par exemple, les modules
       <module>mod_userdir</module> et <module>mod_alias</module>
-      utilisent ces informations de contexte &eacute;tendu. Cette option
-      d&eacute;sactive le comportement introduit avec la version 2.4.11, et ne
-      doit &ecirc;tre utilis&eacute;e que si toutes les conditions pr&eacute;c&eacute;dentes sont
-      v&eacute;rifi&eacute;es, et si la substitution renvoie un r&eacute;sultat inattendu.</p>
+      utilisent ces informations de contexte &eacute;tendu.</p>
       </dd>
 
       </dl>
@@ -320,9 +317,7 @@ pour le moteur de r&eacute;&eacute;criture</description>
 <name>RewriteMap</name>
 <description>D&eacute;finit une fonction de mise en correspondance pour la
 recherche de mots-cl&eacute;s</description>
-<syntax>RewriteMap <em>nom de la correspondance</em> <em>type de
-correspondance</em>:<em>source de la correspondance</em>
-    <em>options du type de correspondance</em>
+<syntax>RewriteMap <em>MapName</em> <em>MapType</em>:<em>MapSource</em> <em>MapTypeOptions</em>
 </syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
@@ -336,24 +331,21 @@ correspondance</em>:<em>source de la correspondance</em>
       La source utilis&eacute;e pour cette recherche peut &ecirc;tre de plusieurs
       types.</p>
 
-      <p><a id="mapfunc" name="mapfunc"><em>nom de la
-      correspondance</em></a> est le nom de la table de correspondance
+      <p><a id="mapfunc" name="mapfunc"><em>MapName</em></a> est le nom de la table de correspondance
       et servira &agrave; sp&eacute;cifier une fonction de mise en correspondance
       pour les cha&icirc;nes de substitution d'une r&egrave;gle de r&eacute;&eacute;criture selon
       une des constructions suivantes :</p>
 
       <p class="indent">
-        <strong><code>${</code> <em>nom de la
-      correspondance</em> <code>:</code>
+        <strong><code>${</code> <em>MapName</em> <code>:</code>
         <em>mot-cl&eacute;</em> <code>}</code><br />
-         <code>${</code> <em>nom de la
-      correspondance</em> <code>:</code>
+         <code>${</code> <em>MapName</em> <code>:</code>
         <em>mot-cl&eacute;</em> <code>|</code> <em>valeur par d&eacute;faut</em>
         <code>}</code></strong>
       </p>
 
       <p>Lorsqu'une telle construction est rencontr&eacute;e, la table de
-      correspondance <em>Nom de la correspondance</em> est consult&eacute;e
+      correspondance <em>MapName</em> est consult&eacute;e
       et la cl&eacute; <em>mot-cl&eacute;</em> recherch&eacute;e. Si la cl&eacute; est trouv&eacute;e, la
       construction est remplac&eacute;e par
       la <em>valeur de remplacement</em>. Si la cl&eacute; n'est pas trouv&eacute;e,
@@ -377,14 +369,13 @@ correspondance</em>:<em>source de la correspondance</em>
       RewriteRule ^/ex/(.*) ${map-exemple:$1}
       </highlight>
 
-      <p>La signification de l'argument <em>options du type de
-      correspondance</em> d&eacute;pend du <em>type de correspondance</em>
+      <p>La signification de l'argument <em>MapTypeOptions</em> d&eacute;pend du <em>MapType</em>
       sp&eacute;cifi&eacute;. Veuillez vous r&eacute;f&eacute;rer au document <a
       href="../rewrite/rewritemap.html">Utiliser RewriteMap</a> pour
       plus de d&eacute;tails.</p>
 
       <p>Les combinaisons suivantes pour <em>type de correspondance</em>
-      et <em>source de la correspondance</em>
+      et <em>MapSource</em>
       peuvent &ecirc;tre utilis&eacute;es :</p>
 
 <dl>
