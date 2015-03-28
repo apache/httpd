@@ -28,7 +28,6 @@
 <a href="./ko/configuring.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/configuring.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
 <p>Bu belgede Apache HTTP Sunucusunu yapılandırmakta kullanılan dosyalar
 açıklanmıştır.</p>
@@ -77,10 +76,11 @@ açıklanmıştır.</p>
     <p>Yapılandırma dosyalarındaki yönergelerin isimleri harf büyüklüğüne
     duyarlı olduğu halde argümanları genellikle harf büyüklüğüne duyarlı
     değildir. Diyez (“#”) karakteri ile başlayan satırlar açıklama olarak
-    ele alınır ve yok sayılırlar. Yapılandırma yönergesi içeren satırların
-    ardına  açıklama yerleştirilemez. Yönerge isminden önce yer alan boşluklar
-    ve boş satırlar yok sayılır; bu özellik, okunabilirliği sağlamak için
-    yönergelerin girintilenebilmesi olanağını verir.</p>
+    ele alınır ve yok sayılırlar. Yapılandırma yönergesi içeren satırlara
+    açıklama yerleştirilemez. Yönerge isminden önce yer alan boşluklar
+    yoksayılır; bu özellik, okunabilirliği sağlamak için yönergelerin
+    girintilenebilmesi olanağını verir. Ayrıca, boş satırlar da
+    yoksayılır.</p>
 
 
     <p><code class="directive"><a href="./mod/core.html#define">Define</a></code> ile veya kabuğun ortam
