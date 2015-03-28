@@ -115,8 +115,8 @@ responses from the server</td></tr>
 <tr><td><a href="mod_mime.html#addtype">AddType <var>media-type</var> <var>extension</var>
 [<var>extension</var>] ...</a></td><td></td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">Maps the given filename extensions onto the specified content
 type</td></tr>
-<tr class="odd"><td><a href="mod_alias.html#alias">Alias <var>URL-yolu</var> <var>dosya-yolu</var> |
-<var>dizin-yolu</var></a></td><td></td><td>sk</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">URL’leri dosya sistemi konumlarıyla eşler.</td></tr>
+<tr class="odd"><td><a href="mod_alias.html#alias">Alias [<var>URL-yolu</var>] <var>dosya-yolu</var> |
+<var>dizin-yolu</var></a></td><td></td><td>skd</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">URL’leri dosya sistemi konumlarıyla eşler.</td></tr>
 <tr><td><a href="mod_alias.html#aliasmatch">AliasMatch <var>düzenli-ifade</var>
 <var>dosya-yolu</var>|<var>dizin-yolu</var></a></td><td></td><td>sk</td><td>T</td></tr><tr><td class="descr" colspan="4">URL’leri dosya sistemi konumlarıyla düzenli ifadeleri kullanarak
 eşler.</td></tr>
@@ -747,7 +747,7 @@ header for proxied requests</td></tr>
 <tr class="odd"><td><a href="mod_autoindex.html#readmename" id="R" name="R">ReadmeName <var>dosya-ismi</var></a></td><td></td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Dizin listesinin sonuna yerleştirilecek dosyanın ismini
 belirler.</td></tr>
 <tr><td><a href="mpm_common.html#receivebuffersize">ReceiveBufferSize <var>bayt-sayısı</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">TCP alım tamponu boyu</td></tr>
-<tr class="odd"><td><a href="mod_alias.html#redirect">Redirect [<var>durum</var>] <var>URL-yolu</var>
+<tr class="odd"><td><a href="mod_alias.html#redirect">Redirect [<var>durum</var>] [<var>URL-yolu</var>]
 <var>URL</var></a></td><td></td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">İstemciyi, bir yönlendirme isteği döndürerek farklı bir URL’ye
 yönlendirir.</td></tr>
 <tr><td><a href="mod_alias.html#redirectmatch">RedirectMatch [<var>durum</var>] <var>düzenli-ifade</var>
@@ -827,8 +827,8 @@ user authentication</td></tr>
   dosyanın yerini belirler.</td></tr>
 <tr><td><a href="mod_actions.html#script">Script <var>method</var> <var>cgi-script</var></a></td><td></td><td>skd</td><td>T</td></tr><tr><td class="descr" colspan="4">Activates a CGI script for a particular request
 method.</td></tr>
-<tr class="odd"><td><a href="mod_alias.html#scriptalias">ScriptAlias <var>URL-yolu</var>
-<var>dosya-yolu</var>|<var>dizin-yolu</var></a></td><td></td><td>sk</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Bir URL’yi dosya sistemindeki bir yere eşler ve hedefi bir CGI betiği olarak çalıştırır.</td></tr>
+<tr class="odd"><td><a href="mod_alias.html#scriptalias">ScriptAlias [<var>URL-yolu</var>]
+<var>dosya-yolu</var>|<var>dizin-yolu</var></a></td><td></td><td>skd</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Bir URL’yi dosya sistemindeki bir yere eşler ve hedefi bir CGI betiği olarak çalıştırır.</td></tr>
 <tr><td><a href="mod_alias.html#scriptaliasmatch">ScriptAliasMatch <var>düzenli-ifade</var>
 <var>dosya-yolu</var>|<var>dizin-yolu</var></a></td><td></td><td>sk</td><td>T</td></tr><tr><td class="descr" colspan="4">Bir URL’yi dosya sistemindeki bir yere düzenli ifade kullanarak
 eşler ve hedefi bir CGI betiği olarak çalıştırır.</td></tr>
