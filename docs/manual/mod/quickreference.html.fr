@@ -543,7 +543,7 @@ en fonction du type MIME</td></tr>
 d'expiration</td></tr>
 <tr class="odd"><td><a href="core.html#extendedstatus">ExtendedStatus On|Off</a></td><td> Off </td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Extrait des informations d'état étendues pour chaque
 requête</td></tr>
-<tr><td><a href="mod_ext_filter.html#extfilterdefine">ExtFilterDefine <var>nom filtre</var> <var>paramètres</var></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Définit un filtre externe</td></tr>
+<tr><td><a href="mod_ext_filter.html#extfilterdefine">ExtFilterDefine <var>nom_filtre</var> <var>paramètres</var></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Définit un filtre externe</td></tr>
 <tr class="odd"><td><a href="mod_ext_filter.html#extfilteroptions">ExtFilterOptions <var>option</var> [<var>option</var>] ...</a></td><td> NoLogStderr </td><td>d</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Configure les options de
 <code class="module"><a href="../mod/mod_ext_filter.html">mod_ext_filter</a></code></td></tr>
 <tr><td><a href="mod_dir.html#fallbackresource" id="F" name="F">FallbackResource disabled | <var>url-locale</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Définit une URL par défaut pour les requêtes qui ne ciblent
