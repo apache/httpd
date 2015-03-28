@@ -116,10 +116,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      in ap_proxy_get_worker(). Fixes the bug when regex workers were not
      matched and used for request. PR 43513.
      trunk patch: http://svn.apache.org/r1609680
+                  http://svn.apache.org/r1609688
                   http://svn.apache.org/r1641381
-     2.4.x patch: trunk works
-     +1: jkaluza, ylavic
+     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-ap_proxy_define_match_worker.patch
+     +1: ylavic
      -1: jim (does not cleanly apply)
+     ylavic: Merge patch provided (reusing new->real to avoid double de_socketfy() call).
+             Also added missing r1609688 to the patchset.
 
    * mod_buffer: Forward flushed input data immediately and avoid (unlikely)
                  access to freed memory.
