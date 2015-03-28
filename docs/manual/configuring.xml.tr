@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 1522935:1662015 (outdated) -->
+<!-- English Revision: 1662015 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -80,10 +80,11 @@ açıklanmıştır.</p>
     <p>Yapılandırma dosyalarındaki yönergelerin isimleri harf büyüklüğüne
     duyarlı olduğu halde argümanları genellikle harf büyüklüğüne duyarlı
     değildir. Diyez (“#”) karakteri ile başlayan satırlar açıklama olarak
-    ele alınır ve yok sayılırlar. Yapılandırma yönergesi içeren satırların
-    ardına  açıklama yerleştirilemez. Yönerge isminden önce yer alan boşluklar
-    ve boş satırlar yok sayılır; bu özellik, okunabilirliği sağlamak için
-    yönergelerin girintilenebilmesi olanağını verir.</p>
+    ele alınır ve yok sayılırlar. Yapılandırma yönergesi içeren satırlara
+    açıklama yerleştirilemez. Yönerge isminden önce yer alan boşluklar
+    yoksayılır; bu özellik, okunabilirliği sağlamak için yönergelerin
+    girintilenebilmesi olanağını verir. Ayrıca, boş satırlar da
+    yoksayılır.</p>
 
 
     <p><directive module="core">Define</directive> ile veya kabuğun ortam

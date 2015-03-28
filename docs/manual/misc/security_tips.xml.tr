@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1479873:1657689 (outdated) -->
+<!-- English Revision: 1657689 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -339,6 +339,7 @@
       dizinlerde <code>.htaccess</code> dosyalarının kullanımını engellemiş
       olursunuz.</p>
 
+    <p>Bu ayar Apache 2.3.9 itibariyle öntanımlıdır.</p>
   </section>
 
   <section id="protectserverfiles">
