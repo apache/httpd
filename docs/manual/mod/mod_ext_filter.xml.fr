@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1561569:1669200 (outdated) -->
+<!-- English Revision : 1669200 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -147,6 +147,12 @@ ExtFilterDefine fixtext mode=output intype=text/html \
     SetOutputFilter fixtext
 &lt;/Location&gt;
       </highlight>
+
+<note>
+<p>Vous pouvez aussi utiliser <module>mod_substitute</module> pour
+effectuer le m&ecirc;me traitement sans avoir &agrave; invoquer un programme
+externe.</p>
+</note>      
 
     </section>
 
