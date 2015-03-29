@@ -101,7 +101,7 @@ SessionCryptoPassphrase secret</pre>
 
     </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SessionCryptoCipher" id="SessionCryptoCipher">SessionCryptoCipher</a> <a name="sessioncryptocipher" id="sessioncryptocipher">Directive</a></h2>
+<div class="directive-section"><h2><a name="sessioncryptocipher" id="sessioncryptocipher">Directive</a> <a name="SessionCryptoCipher" id="SessionCryptoCipher">SessionCryptoCipher</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>L'algorithme à utiliser pour le chiffrement de la session</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SessionCryptoCipher <var>algorithme</var></code></td></tr>
@@ -123,7 +123,7 @@ SessionCryptoPassphrase secret</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SessionCryptoDriver" id="SessionCryptoDriver">SessionCryptoDriver</a> <a name="sessioncryptodriver" id="sessioncryptodriver">Directive</a></h2>
+<div class="directive-section"><h2><a name="sessioncryptodriver" id="sessioncryptodriver">Directive</a> <a name="SessionCryptoDriver" id="SessionCryptoDriver">SessionCryptoDriver</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le pilote de chiffrement à utiliser pour chiffrer les
 sessions</td></tr>
@@ -181,7 +181,7 @@ d'Apache</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SessionCryptoPassphrase" id="SessionCryptoPassphrase">SessionCryptoPassphrase</a> <a name="sessioncryptopassphrase" id="sessioncryptopassphrase">Directive</a></h2>
+<div class="directive-section"><h2><a name="sessioncryptopassphrase" id="sessioncryptopassphrase">Directive</a> <a name="SessionCryptoPassphrase" id="SessionCryptoPassphrase">SessionCryptoPassphrase</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>La clé utilisée pour chiffrer la session</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SessionCryptoPassphrase <var>secret</var> [ <var>secret</var> ... ] </code></td></tr>
@@ -225,7 +225,7 @@ SessionCryptoPassphrase "exec:/path/to/otherProgram argument1"</pre></div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SessionCryptoPassphraseFile" id="SessionCryptoPassphraseFile">SessionCryptoPassphraseFile</a> <a name="sessioncryptopassphrasefile" id="sessioncryptopassphrasefile">Directive</a></h2>
+<div class="directive-section"><h2><a name="sessioncryptopassphrasefile" id="sessioncryptopassphrasefile">Directive</a> <a name="SessionCryptoPassphraseFile" id="SessionCryptoPassphraseFile">SessionCryptoPassphraseFile</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le fichier contenant les clés utilisées pour chiffrer la
 session</td></tr>

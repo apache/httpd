@@ -297,7 +297,7 @@ FilterProvider repack png_pack "%{CONTENT_TYPE} = 'image/png'"
     l'expérimenter avec précautions.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AddOutputFilterByType" id="AddOutputFilterByType">AddOutputFilterByType</a> <a name="addoutputfilterbytype" id="addoutputfilterbytype">Directive</a></h2>
+<div class="directive-section"><h2><a name="addoutputfilterbytype" id="addoutputfilterbytype">Directive</a> <a name="AddOutputFilterByType" id="AddOutputFilterByType">AddOutputFilterByType</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>assigne un filtre en sortie pour un type de média
 particulier</td></tr>
@@ -346,7 +346,7 @@ particulier</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="FilterChain" id="FilterChain">FilterChain</a> <a name="filterchain" id="filterchain">Directive</a></h2>
+<div class="directive-section"><h2><a name="filterchain" id="filterchain">Directive</a> <a name="FilterChain" id="FilterChain">FilterChain</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure la chaîne de filtrage</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>FilterChain [+=-@!]<var>nom_filtre</var> <var>...</var></code></td></tr>
@@ -384,7 +384,7 @@ particulier</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="FilterDeclare" id="FilterDeclare">FilterDeclare</a> <a name="filterdeclare" id="filterdeclare">Directive</a></h2>
+<div class="directive-section"><h2><a name="filterdeclare" id="filterdeclare">Directive</a> <a name="FilterDeclare" id="FilterDeclare">FilterDeclare</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Déclare un filtre intelligent</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>FilterDeclare <var>nom_filtre</var> <var>[type]</var></code></td></tr>
@@ -406,7 +406,7 @@ particulier</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="FilterProtocol" id="FilterProtocol">FilterProtocol</a> <a name="filterprotocol" id="filterprotocol">Directive</a></h2>
+<div class="directive-section"><h2><a name="filterprotocol" id="filterprotocol">Directive</a> <a name="FilterProtocol" id="FilterProtocol">FilterProtocol</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Vérifie le respect du protocole HTTP</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>FilterProtocol <var>nom_filtre</var> [<var>nom_fournisseur</var>]
@@ -465,7 +465,7 @@ particulier</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="FilterProvider" id="FilterProvider">FilterProvider</a> <a name="filterprovider" id="filterprovider">Directive</a></h2>
+<div class="directive-section"><h2><a name="filterprovider" id="filterprovider">Directive</a> <a name="FilterProvider" id="FilterProvider">FilterProvider</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enregistre un filtre de contenu</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>FilterProvider <var>nom_filtre</var> <var>nom_fournisseur</var>
@@ -497,7 +497,7 @@ Apache</a>, pour une référence complète et d'autres exemples.</li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="FilterTrace" id="FilterTrace">FilterTrace</a> <a name="filtertrace" id="filtertrace">Directive</a></h2>
+<div class="directive-section"><h2><a name="filtertrace" id="filtertrace">Directive</a> <a name="FilterTrace" id="FilterTrace">FilterTrace</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Obtention d'informations de débogage/diagnostique en
 provenance de <code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code></td></tr>

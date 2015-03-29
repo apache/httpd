@@ -177,7 +177,7 @@ serveur</td></tr>
     </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AddModuleInfo" id="AddModuleInfo">AddModuleInfo</a> <a name="addmoduleinfo" id="addmoduleinfo">Directive</a></h2>
+<div class="directive-section"><h2><a name="addmoduleinfo" id="addmoduleinfo">Directive</a> <a name="AddModuleInfo" id="AddModuleInfo">AddModuleInfo</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ajoute des données supplémentaires aux informations de
 module affichées par le gestionnaire server-info</td></tr>

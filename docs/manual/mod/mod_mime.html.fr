@@ -263,7 +263,7 @@ Content-Type: text/plain; charset=ISO-8859-1
     
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AddCharset" id="AddCharset">AddCharset</a> <a name="addcharset" id="addcharset">Directive</a></h2>
+<div class="directive-section"><h2><a name="addcharset" id="addcharset">Directive</a> <a name="AddCharset" id="AddCharset">AddCharset</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Associe les extensions de noms de fichiers spécifiées au
 jeu de caractères spécifié</td></tr>
@@ -314,7 +314,7 @@ AddCharset SHIFT_JIS .sjis</pre>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AddEncoding" id="AddEncoding">AddEncoding</a> <a name="addencoding" id="addencoding">Directive</a></h2>
+<div class="directive-section"><h2><a name="addencoding" id="addencoding">Directive</a> <a name="AddEncoding" id="AddEncoding">AddEncoding</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Associe les extensions de noms de fichiers données au type
 de codage spécifié</td></tr>
@@ -365,7 +365,7 @@ AddEncoding x-compress .Z</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AddHandler" id="AddHandler">AddHandler</a> <a name="addhandler" id="addhandler">Directive</a></h2>
+<div class="directive-section"><h2><a name="addhandler" id="addhandler">Directive</a> <a name="AddHandler" id="AddHandler">AddHandler</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Associe les extensions de noms de fichiers données au
 gestionnaire spécifié</td></tr>
@@ -403,7 +403,7 @@ gestionnaire spécifié</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AddInputFilter" id="AddInputFilter">AddInputFilter</a> <a name="addinputfilter" id="addinputfilter">Directive</a></h2>
+<div class="directive-section"><h2><a name="addinputfilter" id="addinputfilter">Directive</a> <a name="AddInputFilter" id="AddInputFilter">AddInputFilter</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Associe les extensions de noms de fichiers aux
 filtres spécifiés qui traiteront les requêtes clients</td></tr>
@@ -442,7 +442,7 @@ filtres spécifiés qui traiteront les requêtes clients</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AddLanguage" id="AddLanguage">AddLanguage</a> <a name="addlanguage" id="addlanguage">Directive</a></h2>
+<div class="directive-section"><h2><a name="addlanguage" id="addlanguage">Directive</a> <a name="AddLanguage" id="AddLanguage">AddLanguage</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Associe l'extension de nom de fichier donnée à la langue
 spécifié</td></tr>
@@ -501,7 +501,7 @@ AddLanguage en-us .en</pre>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AddOutputFilter" id="AddOutputFilter">AddOutputFilter</a> <a name="addoutputfilter" id="addoutputfilter">Directive</a></h2>
+<div class="directive-section"><h2><a name="addoutputfilter" id="addoutputfilter">Directive</a> <a name="AddOutputFilter" id="AddOutputFilter">AddOutputFilter</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Associe les extensions de noms de fichiers aux
 filtres spécifiés qui traiteront les réponses en provenance du
@@ -572,7 +572,7 @@ AddOutputFilter DEFLATE shtml
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AddType" id="AddType">AddType</a> <a name="addtype" id="addtype">Directive</a></h2>
+<div class="directive-section"><h2><a name="addtype" id="addtype">Directive</a> <a name="AddType" id="AddType">AddType</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Associe les extensions de noms de fichiers au type de
 contenu spécifié</td></tr>
@@ -639,7 +639,7 @@ contenu spécifié</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DefaultLanguage" id="DefaultLanguage">DefaultLanguage</a> <a name="defaultlanguage" id="defaultlanguage">Directive</a></h2>
+<div class="directive-section"><h2><a name="defaultlanguage" id="defaultlanguage">Directive</a> <a name="DefaultLanguage" id="DefaultLanguage">DefaultLanguage</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit un symbole de langue par défaut à affecter au champ
 d'en-tête Content-Language pour toutes les ressources dans le contexte
@@ -680,7 +680,7 @@ associé.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ModMimeUsePathInfo" id="ModMimeUsePathInfo">ModMimeUsePathInfo</a> <a name="modmimeusepathinfo" id="modmimeusepathinfo">Directive</a></h2>
+<div class="directive-section"><h2><a name="modmimeusepathinfo" id="modmimeusepathinfo">Directive</a> <a name="ModMimeUsePathInfo" id="ModMimeUsePathInfo">ModMimeUsePathInfo</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Indique à <code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code> de traiter les éléments
 de <code>path_info</code> en tant que parties du nom de
@@ -719,7 +719,7 @@ fichier</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MultiviewsMatch" id="MultiviewsMatch">MultiviewsMatch</a> <a name="multiviewsmatch" id="multiviewsmatch">Directive</a></h2>
+<div class="directive-section"><h2><a name="multiviewsmatch" id="multiviewsmatch">Directive</a> <a name="MultiviewsMatch" id="MultiviewsMatch">MultiviewsMatch</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Les types de fichiers qui seront inclus lors d'une
 recherche de correspondance de fichier avec les vues multiples
@@ -786,7 +786,7 @@ recherche de correspondance de fichier avec les vues multiples
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RemoveCharset" id="RemoveCharset">RemoveCharset</a> <a name="removecharset" id="removecharset">Directive</a></h2>
+<div class="directive-section"><h2><a name="removecharset" id="removecharset">Directive</a> <a name="RemoveCharset" id="RemoveCharset">RemoveCharset</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Supprime toute association de jeu de caractères pour un
 ensemble d'extensions de noms de fichiers</td></tr>
@@ -812,7 +812,7 @@ ensemble d'extensions de noms de fichiers</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RemoveEncoding" id="RemoveEncoding">RemoveEncoding</a> <a name="removeencoding" id="removeencoding">Directive</a></h2>
+<div class="directive-section"><h2><a name="removeencoding" id="removeencoding">Directive</a> <a name="RemoveEncoding" id="RemoveEncoding">RemoveEncoding</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Supprime toute association de codage de contenu pour un
 ensemble d'extensions de noms de fichiers</td></tr>
@@ -854,7 +854,7 @@ AddType text/plain .asc
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RemoveHandler" id="RemoveHandler">RemoveHandler</a> <a name="removehandler" id="removehandler">Directive</a></h2>
+<div class="directive-section"><h2><a name="removehandler" id="removehandler">Directive</a> <a name="RemoveHandler" id="RemoveHandler">RemoveHandler</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Supprime toute association de gestionnaire à un ensemble
 d'extensions de noms de fichiers</td></tr>
@@ -890,7 +890,7 @@ d'extensions de noms de fichiers</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RemoveInputFilter" id="RemoveInputFilter">RemoveInputFilter</a> <a name="removeinputfilter" id="removeinputfilter">Directive</a></h2>
+<div class="directive-section"><h2><a name="removeinputfilter" id="removeinputfilter">Directive</a> <a name="RemoveInputFilter" id="RemoveInputFilter">RemoveInputFilter</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Supprime toute association de filtre en entrée à un
 ensemble d'extensions de noms de fichiers</td></tr>
@@ -919,7 +919,7 @@ ensemble d'extensions de noms de fichiers</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RemoveLanguage" id="RemoveLanguage">RemoveLanguage</a> <a name="removelanguage" id="removelanguage">Directive</a></h2>
+<div class="directive-section"><h2><a name="removelanguage" id="removelanguage">Directive</a> <a name="RemoveLanguage" id="RemoveLanguage">RemoveLanguage</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Supprime toute association de langue à un ensemble
 d'extensions de noms de fichiers</td></tr>
@@ -942,7 +942,7 @@ d'extensions de noms de fichiers</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RemoveOutputFilter" id="RemoveOutputFilter">RemoveOutputFilter</a> <a name="removeoutputfilter" id="removeoutputfilter">Directive</a></h2>
+<div class="directive-section"><h2><a name="removeoutputfilter" id="removeoutputfilter">Directive</a> <a name="RemoveOutputFilter" id="RemoveOutputFilter">RemoveOutputFilter</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Supprime toute association de filtre en sortie à un
 ensemble d'extensions de noms de fichiers</td></tr>
@@ -972,7 +972,7 @@ ensemble d'extensions de noms de fichiers</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RemoveType" id="RemoveType">RemoveType</a> <a name="removetype" id="removetype">Directive</a></h2>
+<div class="directive-section"><h2><a name="removetype" id="removetype">Directive</a> <a name="RemoveType" id="RemoveType">RemoveType</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Supprime toute association de type de contenu à un ensemble
 d'extensions de noms de fichiers</td></tr>
@@ -1014,7 +1014,7 @@ d'extensions de noms de fichiers</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="TypesConfig" id="TypesConfig">TypesConfig</a> <a name="typesconfig" id="typesconfig">Directive</a></h2>
+<div class="directive-section"><h2><a name="typesconfig" id="typesconfig">Directive</a> <a name="TypesConfig" id="TypesConfig">TypesConfig</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le chemin du fichier <code>mime.types</code></td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>TypesConfig <var>chemin-fichier</var></code></td></tr>

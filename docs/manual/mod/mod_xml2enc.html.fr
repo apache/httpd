@@ -148,7 +148,7 @@ tout de même leur associer un alias vers un code supporté via la
 directive <code class="directive">xml2EncAlias</code>.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="xml2EncAlias" id="xml2EncAlias">xml2EncAlias</a> <a name="xml2encalias" id="xml2encalias">Directive</a></h2>
+<div class="directive-section"><h2><a name="xml2encalias" id="xml2encalias">Directive</a> <a name="xml2EncAlias" id="xml2EncAlias">xml2EncAlias</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit des alias pour les valeurs d'encodage</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>xml2EncAlias <var>jeu-de-caractères alias [alias ...]</var></code></td></tr>
@@ -166,7 +166,7 @@ directive <code class="directive">xml2EncAlias</code>.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="xml2EncDefault" id="xml2EncDefault">xml2EncDefault</a> <a name="xml2encdefault" id="xml2encdefault">Directive</a></h2>
+<div class="directive-section"><h2><a name="xml2encdefault" id="xml2encdefault">Directive</a> <a name="xml2EncDefault" id="xml2EncDefault">xml2EncDefault</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit un encodage par défaut à utiliser lorsqu'aucune
 information ne peut être <a href="#sniffing">automatiquement détectée</a></td></tr>
@@ -188,7 +188,7 @@ information ne peut être <a href="#sniffing">automatiquement détectée</a></td></
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="xml2StartParse" id="xml2StartParse">xml2StartParse</a> <a name="xml2startparse" id="xml2startparse">Directive</a></h2>
+<div class="directive-section"><h2><a name="xml2startparse" id="xml2startparse">Directive</a> <a name="xml2StartParse" id="xml2StartParse">xml2StartParse</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Indique à l'interpréteur à partir de quelle balise il doit
 commencer son traitement.</td></tr>

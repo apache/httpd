@@ -210,7 +210,7 @@ shell Win32 <code>dir</code></td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AddAlt" id="AddAlt">AddAlt</a> <a name="addalt" id="addalt">Directive</a></h2>
+<div class="directive-section"><h2><a name="addalt" id="addalt">Directive</a> <a name="AddAlt" id="AddAlt">AddAlt</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Texte optionnel à afficher à la place d'un icône pour un
 fichier en fonction de son nom</td></tr>
@@ -238,7 +238,7 @@ AddAlt Compressed *.gz *.zip *.Z</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AddAltByEncoding" id="AddAltByEncoding">AddAltByEncoding</a> <a name="addaltbyencoding" id="addaltbyencoding">Directive</a></h2>
+<div class="directive-section"><h2><a name="addaltbyencoding" id="addaltbyencoding">Directive</a> <a name="AddAltByEncoding" id="AddAltByEncoding">AddAltByEncoding</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Texte optionnel à afficher à la place d'un icône pour un
 fichier en fonction de son codage MIME</td></tr>
@@ -264,7 +264,7 @@ fichier en fonction de son codage MIME</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AddAltByType" id="AddAltByType">AddAltByType</a> <a name="addaltbytype" id="addaltbytype">Directive</a></h2>
+<div class="directive-section"><h2><a name="addaltbytype" id="addaltbytype">Directive</a> <a name="AddAltByType" id="AddAltByType">AddAltByType</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Texte optionnel à afficher à la place d'un icône pour un
 fichier en fonction de son type MIME</td></tr>
@@ -290,7 +290,7 @@ fichier en fonction de son type MIME</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AddDescription" id="AddDescription">AddDescription</a> <a name="adddescription" id="adddescription">Directive</a></h2>
+<div class="directive-section"><h2><a name="adddescription" id="adddescription">Directive</a> <a name="AddDescription" id="AddDescription">AddDescription</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Afficher la description d'un fichier</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AddDescription <var>texte</var> [<var>fichier</var>] ...</code></td></tr>
@@ -353,7 +353,7 @@ AddDescription "My friend Marshall" friends/mars.gif</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AddIcon" id="AddIcon">AddIcon</a> <a name="addicon" id="addicon">Directive</a></h2>
+<div class="directive-section"><h2><a name="addicon" id="addicon">Directive</a> <a name="AddIcon" id="AddIcon">AddIcon</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Icône à afficher pour un fichier en fonction de son
 nom</td></tr>
@@ -394,7 +394,7 @@ AddIcon /icons/backup.png *~</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AddIconByEncoding" id="AddIconByEncoding">AddIconByEncoding</a> <a name="addiconbyencoding" id="addiconbyencoding">Directive</a></h2>
+<div class="directive-section"><h2><a name="addiconbyencoding" id="addiconbyencoding">Directive</a> <a name="AddIconByEncoding" id="AddIconByEncoding">AddIconByEncoding</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Icône à afficher à côté d'un fichier en fonction de son
 codage MIME</td></tr>
@@ -422,7 +422,7 @@ codage MIME</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AddIconByType" id="AddIconByType">AddIconByType</a> <a name="addiconbytype" id="addiconbytype">Directive</a></h2>
+<div class="directive-section"><h2><a name="addiconbytype" id="addiconbytype">Directive</a> <a name="AddIconByType" id="AddIconByType">AddIconByType</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Icône à afficher à côté d'un fichier en fonction de son
 type MIME</td></tr>
@@ -451,7 +451,7 @@ type MIME</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DefaultIcon" id="DefaultIcon">DefaultIcon</a> <a name="defaulticon" id="defaulticon">Directive</a></h2>
+<div class="directive-section"><h2><a name="defaulticon" id="defaulticon">Directive</a> <a name="DefaultIcon" id="DefaultIcon">DefaultIcon</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Icône à afficher par défaut lorsqu'aucun icône spécifique
 n'est précisé</td></tr>
@@ -472,7 +472,7 @@ n'est précisé</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="HeaderName" id="HeaderName">HeaderName</a> <a name="headername" id="headername">Directive</a></h2>
+<div class="directive-section"><h2><a name="headername" id="headername">Directive</a> <a name="HeaderName" id="HeaderName">HeaderName</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nom du fichier qui sera inséré au début de la page
 contenant l'index</td></tr>
@@ -535,7 +535,7 @@ contenant l'index</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="IndexHeadInsert" id="IndexHeadInsert">IndexHeadInsert</a> <a name="indexheadinsert" id="indexheadinsert">Directive</a></h2>
+<div class="directive-section"><h2><a name="indexheadinsert" id="indexheadinsert">Directive</a> <a name="IndexHeadInsert" id="IndexHeadInsert">IndexHeadInsert</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Insère du texte dans la section HEAD de la page
 d'index.</td></tr>
@@ -554,7 +554,7 @@ d'index.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="IndexIgnore" id="IndexIgnore">IndexIgnore</a> <a name="indexignore" id="indexignore">Directive</a></h2>
+<div class="directive-section"><h2><a name="indexignore" id="indexignore">Directive</a> <a name="IndexIgnore" id="IndexIgnore">IndexIgnore</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ajouts à la liste des fichiers à cacher lors de l'affichage
 de l'index d'un répertoire</td></tr>
@@ -585,7 +585,7 @@ de l'index d'un répertoire</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="IndexIgnoreReset" id="IndexIgnoreReset">IndexIgnoreReset</a> <a name="indexignorereset" id="indexignorereset">Directive</a></h2>
+<div class="directive-section"><h2><a name="indexignorereset" id="indexignorereset">Directive</a> <a name="IndexIgnoreReset" id="IndexIgnoreReset">IndexIgnoreReset</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Vide la liste des fichiers à cacher lors de l'affichage du
 contenu d'un répertoire</td></tr>
@@ -616,7 +616,7 @@ contenu d'un répertoire</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="IndexOptions" id="IndexOptions">IndexOptions</a> <a name="indexoptions" id="indexoptions">Directive</a></h2>
+<div class="directive-section"><h2><a name="indexoptions" id="indexoptions">Directive</a> <a name="IndexOptions" id="IndexOptions">IndexOptions</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Diverses options de configuration pour l'indexation d'un
 répertoire</td></tr>
@@ -987,7 +987,7 @@ IndexOptions +SuppressSize</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="IndexOrderDefault" id="IndexOrderDefault">IndexOrderDefault</a> <a name="indexorderdefault" id="indexorderdefault">Directive</a></h2>
+<div class="directive-section"><h2><a name="indexorderdefault" id="indexorderdefault">Directive</a> <a name="IndexOrderDefault" id="IndexOrderDefault">IndexOrderDefault</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit l'ordre d'affichage par défaut d'un index de
 répertoire</td></tr>
@@ -1024,7 +1024,7 @@ Name|Date|Size|Description</code></td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="IndexStyleSheet" id="IndexStyleSheet">IndexStyleSheet</a> <a name="indexstylesheet" id="indexstylesheet">Directive</a></h2>
+<div class="directive-section"><h2><a name="indexstylesheet" id="indexstylesheet">Directive</a> <a name="IndexStyleSheet" id="IndexStyleSheet">IndexStyleSheet</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ajoute une feuille de style CSS à l'index du
 répertoire</td></tr>
@@ -1067,7 +1067,7 @@ répertoire</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ReadmeName" id="ReadmeName">ReadmeName</a> <a name="readmename" id="readmename">Directive</a></h2>
+<div class="directive-section"><h2><a name="readmename" id="readmename">Directive</a> <a name="ReadmeName" id="ReadmeName">ReadmeName</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nom du fichier dont le contenu sera inséré à la fin de
 l'index</td></tr>

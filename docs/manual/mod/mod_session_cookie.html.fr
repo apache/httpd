@@ -101,7 +101,7 @@ SessionCookieName session path=/</pre>
 
     </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SessionCookieName" id="SessionCookieName">SessionCookieName</a> <a name="sessioncookiename" id="sessioncookiename">Directive</a></h2>
+<div class="directive-section"><h2><a name="sessioncookiename" id="sessioncookiename">Directive</a> <a name="SessionCookieName" id="SessionCookieName">SessionCookieName</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nom et attributs du cookie RFC2109 dans lequel la session
 est stockée</td></tr>
@@ -131,7 +131,7 @@ SessionCookieName session path=/private;domain=example.com;httponly;secure;versi
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SessionCookieName2" id="SessionCookieName2">SessionCookieName2</a> <a name="sessioncookiename2" id="sessioncookiename2">Directive</a></h2>
+<div class="directive-section"><h2><a name="sessioncookiename2" id="sessioncookiename2">Directive</a> <a name="SessionCookieName2" id="SessionCookieName2">SessionCookieName2</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nom et attributs pour le cookie RFC2965 dans lequel est
 stockée la session</td></tr>
@@ -162,7 +162,7 @@ SessionCookieName2 session path=/private;domain=example.com;httponly;secure;vers
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SessionCookieRemove" id="SessionCookieRemove">SessionCookieRemove</a> <a name="sessioncookieremove" id="sessioncookieremove">Directive</a></h2>
+<div class="directive-section"><h2><a name="sessioncookieremove" id="sessioncookieremove">Directive</a> <a name="SessionCookieRemove" id="SessionCookieRemove">SessionCookieRemove</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Détermine si les cookies de session doivent être supprimés
 des en-têtes HTTP entrants</td></tr>

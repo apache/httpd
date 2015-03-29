@@ -257,7 +257,7 @@ VirtualScriptAliasIP  /usr/local/apache/vhosts/%1/%2/%3/%4/cgi-bin</pre>
     lorsqu'ils sont utilisés en conjonction avec ce module.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="VirtualDocumentRoot" id="VirtualDocumentRoot">VirtualDocumentRoot</a> <a name="virtualdocumentroot" id="virtualdocumentroot">Directive</a></h2>
+<div class="directive-section"><h2><a name="virtualdocumentroot" id="virtualdocumentroot">Directive</a> <a name="VirtualDocumentRoot" id="VirtualDocumentRoot">VirtualDocumentRoot</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Permet une configuration dynamique de la racine des
 documents d'un serveur virtuel donné</td></tr>
@@ -295,7 +295,7 @@ serveur virtuel.
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="VirtualDocumentRootIP" id="VirtualDocumentRootIP">VirtualDocumentRootIP</a> <a name="virtualdocumentrootip" id="virtualdocumentrootip">Directive</a></h2>
+<div class="directive-section"><h2><a name="virtualdocumentrootip" id="virtualdocumentrootip">Directive</a> <a name="VirtualDocumentRootIP" id="VirtualDocumentRootIP">VirtualDocumentRootIP</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configuration dynamique de la racine des documents pour un
 serveur virtuel donné</td></tr>
@@ -313,7 +313,7 @@ l'interpolation du répertoire à la place du nom du serveur.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="VirtualScriptAlias" id="VirtualScriptAlias">VirtualScriptAlias</a> <a name="virtualscriptalias" id="virtualscriptalias">Directive</a></h2>
+<div class="directive-section"><h2><a name="virtualscriptalias" id="virtualscriptalias">Directive</a> <a name="VirtualScriptAlias" id="VirtualScriptAlias">VirtualScriptAlias</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configuration dynamique du répertoire des scripts CGI pour
 un serveur virtuel donné</td></tr>
@@ -333,7 +333,7 @@ un serveur virtuel donné</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="VirtualScriptAliasIP" id="VirtualScriptAliasIP">VirtualScriptAliasIP</a> <a name="virtualscriptaliasip" id="virtualscriptaliasip">Directive</a></h2>
+<div class="directive-section"><h2><a name="virtualscriptaliasip" id="virtualscriptaliasip">Directive</a> <a name="VirtualScriptAliasIP" id="VirtualScriptAliasIP">VirtualScriptAliasIP</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configuration dynamique du répertoire des scripts CGI pour
 un serveur virtuel donné</td></tr>
