@@ -95,6 +95,9 @@
              if present, the space between <directive name> and 'Directive'
              in directivesynopsis headings will be replaced by the given string.
              (see de.xml for an example) -->
+        <!-- the optional attribute before-name takes a string.
+             if "yes", the 'Directive' word is place before the name instead of
+             being placed behind. See fr.xml for an example. -->
         <message id="directive">ディレクティブ</message>
         <message id="nodirectives">このモジュールにディレクティブはありません。</message>
 
