@@ -131,7 +131,7 @@ sécurité</a></h2>
     lisibles que par l'utilisateur qui démarre le serveur.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ForensicLog" id="ForensicLog">ForensicLog</a> <a name="forensiclog" id="forensiclog">Directive</a></h2>
+<div class="directive-section"><h2><a name="forensiclog" id="forensiclog">Directive</a> <a name="ForensicLog" id="ForensicLog">ForensicLog</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le nom de fichier du journal légal</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ForensicLog <var>nom-fichier</var>|<var>pipe</var></code></td></tr>

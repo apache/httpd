@@ -69,7 +69,7 @@ erreurs de la manière souhaitée.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DumpIOInput" id="DumpIOInput">DumpIOInput</a> <a name="dumpioinput" id="dumpioinput">Directive</a></h2>
+<div class="directive-section"><h2><a name="dumpioinput" id="dumpioinput">Directive</a> <a name="DumpIOInput" id="DumpIOInput">DumpIOInput</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enregistre toutes les entrées dans le journal des
 erreurs</td></tr>
@@ -88,7 +88,7 @@ d'Apache.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DumpIOOutput" id="DumpIOOutput">DumpIOOutput</a> <a name="dumpiooutput" id="dumpiooutput">Directive</a></h2>
+<div class="directive-section"><h2><a name="dumpiooutput" id="dumpiooutput">Directive</a> <a name="DumpIOOutput" id="DumpIOOutput">DumpIOOutput</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enregistre toutes les sorties dans le journal des
 erreurs</td></tr>

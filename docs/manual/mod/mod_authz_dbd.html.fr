@@ -210,7 +210,7 @@ DBDExptime 300
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthzDBDLoginToReferer" id="AuthzDBDLoginToReferer">AuthzDBDLoginToReferer</a> <a name="authzdbdlogintoreferer" id="authzdbdlogintoreferer">Directive</a></h2>
+<div class="directive-section"><h2><a name="authzdbdlogintoreferer" id="authzdbdlogintoreferer">Directive</a> <a name="AuthzDBDLoginToReferer" id="AuthzDBDLoginToReferer">AuthzDBDLoginToReferer</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit si le client doit être redirigé vers la page
 d'origine en cas de connexion ou de déconnexion réussie si un en-tête
@@ -230,7 +230,7 @@ de requête <code>Referer</code> est présent</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthzDBDQuery" id="AuthzDBDQuery">AuthzDBDQuery</a> <a name="authzdbdquery" id="authzdbdquery">Directive</a></h2>
+<div class="directive-section"><h2><a name="authzdbdquery" id="authzdbdquery">Directive</a> <a name="AuthzDBDQuery" id="AuthzDBDQuery">AuthzDBDQuery</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit la requête SQL pour l'opération
 requise</td></tr>
@@ -275,7 +275,7 @@ AuthzDBDQuery "UPDATE authn SET login = 'true' WHERE user = %s"</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthzDBDRedirectQuery" id="AuthzDBDRedirectQuery">AuthzDBDRedirectQuery</a> <a name="authzdbdredirectquery" id="authzdbdredirectquery">Directive</a></h2>
+<div class="directive-section"><h2><a name="authzdbdredirectquery" id="authzdbdredirectquery">Directive</a> <a name="AuthzDBDRedirectQuery" id="AuthzDBDRedirectQuery">AuthzDBDRedirectQuery</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit une requête pour rechercher une page vers laquelle
 rediriger l'utilisateur après une connexion réussie</td></tr>

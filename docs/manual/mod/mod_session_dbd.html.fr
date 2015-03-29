@@ -187,7 +187,7 @@ SessionDBDPerUser On</pre>
 
     </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SessionDBDCookieName" id="SessionDBDCookieName">SessionDBDCookieName</a> <a name="sessiondbdcookiename" id="sessiondbdcookiename">Directive</a></h2>
+<div class="directive-section"><h2><a name="sessiondbdcookiename" id="sessiondbdcookiename">Directive</a> <a name="SessionDBDCookieName" id="SessionDBDCookieName">SessionDBDCookieName</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nom et attributs du cookie RFC2109 qui contient
 l'identifiant de session</td></tr>
@@ -218,7 +218,7 @@ SessionDBDCookieName session path=/private;domain=example.com;httponly;secure;ve
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SessionDBDCookieName2" id="SessionDBDCookieName2">SessionDBDCookieName2</a> <a name="sessiondbdcookiename2" id="sessiondbdcookiename2">Directive</a></h2>
+<div class="directive-section"><h2><a name="sessiondbdcookiename2" id="sessiondbdcookiename2">Directive</a> <a name="SessionDBDCookieName2" id="SessionDBDCookieName2">SessionDBDCookieName2</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nom et attributs du cookie RFC2965 qui contient
 l'identifiant de session</td></tr>
@@ -249,7 +249,7 @@ SessionDBDCookieName2 session path=/private;domain=example.com;httponly;secure;v
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SessionDBDCookieRemove" id="SessionDBDCookieRemove">SessionDBDCookieRemove</a> <a name="sessiondbdcookieremove" id="sessiondbdcookieremove">Directive</a></h2>
+<div class="directive-section"><h2><a name="sessiondbdcookieremove" id="sessiondbdcookieremove">Directive</a> <a name="SessionDBDCookieRemove" id="SessionDBDCookieRemove">SessionDBDCookieRemove</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Détermine si les cookies de session doivent être supprimés
 des en-têtes HTTP entrants</td></tr>
@@ -273,7 +273,7 @@ des en-têtes HTTP entrants</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SessionDBDDeleteLabel" id="SessionDBDDeleteLabel">SessionDBDDeleteLabel</a> <a name="sessiondbddeletelabel" id="sessiondbddeletelabel">Directive</a></h2>
+<div class="directive-section"><h2><a name="sessiondbddeletelabel" id="sessiondbddeletelabel">Directive</a> <a name="SessionDBDDeleteLabel" id="SessionDBDDeleteLabel">SessionDBDDeleteLabel</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>La requête SQL à utiliser pour supprimer des sessions de la
 base de données</td></tr>
@@ -292,7 +292,7 @@ base de données</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SessionDBDInsertLabel" id="SessionDBDInsertLabel">SessionDBDInsertLabel</a> <a name="sessiondbdinsertlabel" id="sessiondbdinsertlabel">Directive</a></h2>
+<div class="directive-section"><h2><a name="sessiondbdinsertlabel" id="sessiondbdinsertlabel">Directive</a> <a name="SessionDBDInsertLabel" id="SessionDBDInsertLabel">SessionDBDInsertLabel</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>La requête SQL à utiliser pour insérer des sessions dans la
 base de données</td></tr>
@@ -315,7 +315,7 @@ base de données</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SessionDBDPerUser" id="SessionDBDPerUser">SessionDBDPerUser</a> <a name="sessiondbdperuser" id="sessiondbdperuser">Directive</a></h2>
+<div class="directive-section"><h2><a name="sessiondbdperuser" id="sessiondbdperuser">Directive</a> <a name="SessionDBDPerUser" id="SessionDBDPerUser">SessionDBDPerUser</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active une session propre à un utilisateur</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SessionDBDPerUser On|Off</code></td></tr>
@@ -332,7 +332,7 @@ base de données</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SessionDBDSelectLabel" id="SessionDBDSelectLabel">SessionDBDSelectLabel</a> <a name="sessiondbdselectlabel" id="sessiondbdselectlabel">Directive</a></h2>
+<div class="directive-section"><h2><a name="sessiondbdselectlabel" id="sessiondbdselectlabel">Directive</a> <a name="SessionDBDSelectLabel" id="SessionDBDSelectLabel">SessionDBDSelectLabel</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>La requête SQL à utiliser pour sélectionner des sessions
 dans la base de données</td></tr>
@@ -350,7 +350,7 @@ dans la base de données</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SessionDBDUpdateLabel" id="SessionDBDUpdateLabel">SessionDBDUpdateLabel</a> <a name="sessiondbdupdatelabel" id="sessiondbdupdatelabel">Directive</a></h2>
+<div class="directive-section"><h2><a name="sessiondbdupdatelabel" id="sessiondbdupdatelabel">Directive</a> <a name="SessionDBDUpdateLabel" id="SessionDBDUpdateLabel">SessionDBDUpdateLabel</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>La requête SQL à utiliser pour mettre à jour des sessions
 préexistantes dans la base de données</td></tr>

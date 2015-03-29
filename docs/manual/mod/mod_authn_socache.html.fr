@@ -120,7 +120,7 @@ AuthnCacheSOCache dbm
     en cache.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthnCacheContext" id="AuthnCacheContext">AuthnCacheContext</a> <a name="authncachecontext" id="authncachecontext">Directive</a></h2>
+<div class="directive-section"><h2><a name="authncachecontext" id="authncachecontext">Directive</a> <a name="AuthnCacheContext" id="AuthnCacheContext">AuthnCacheContext</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Spécifie une chaîne de contexte à utiliser dans la clé du
 cache</td></tr>
@@ -154,7 +154,7 @@ cache</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthnCacheEnable" id="AuthnCacheEnable">AuthnCacheEnable</a> <a name="authncacheenable" id="authncacheenable">Directive</a></h2>
+<div class="directive-section"><h2><a name="authncacheenable" id="authncacheenable">Directive</a> <a name="AuthnCacheEnable" id="AuthnCacheEnable">AuthnCacheEnable</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active la mise en cache de l'authentification en tout
 endroit</td></tr>
@@ -175,7 +175,7 @@ endroit</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthnCacheProvideFor" id="AuthnCacheProvideFor">AuthnCacheProvideFor</a> <a name="authncacheprovidefor" id="authncacheprovidefor">Directive</a></h2>
+<div class="directive-section"><h2><a name="authncacheprovidefor" id="authncacheprovidefor">Directive</a> <a name="AuthnCacheProvideFor" id="AuthnCacheProvideFor">AuthnCacheProvideFor</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Spécifie le fournisseur pour lequel on veut effectuer une
 mise en cache</td></tr>
@@ -200,7 +200,7 @@ mise en cache</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthnCacheSOCache" id="AuthnCacheSOCache">AuthnCacheSOCache</a> <a name="authncachesocache" id="authncachesocache">Directive</a></h2>
+<div class="directive-section"><h2><a name="authncachesocache" id="authncachesocache">Directive</a> <a name="AuthnCacheSOCache" id="AuthnCacheSOCache">AuthnCacheSOCache</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sélectionne le fournisseur socache d'arrière-plan à
 utiliser</td></tr>
@@ -223,7 +223,7 @@ utiliser</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthnCacheTimeout" id="AuthnCacheTimeout">AuthnCacheTimeout</a> <a name="authncachetimeout" id="authncachetimeout">Directive</a></h2>
+<div class="directive-section"><h2><a name="authncachetimeout" id="authncachetimeout">Directive</a> <a name="AuthnCacheTimeout" id="AuthnCacheTimeout">AuthnCacheTimeout</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit une durée de vie pour les entrées du cache</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthnCacheTimeout <var>durée-de-vie</var> (secondes)</code></td></tr>

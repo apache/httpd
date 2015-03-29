@@ -108,7 +108,7 @@
     </dl>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxySCGIInternalRedirect" id="ProxySCGIInternalRedirect">ProxySCGIInternalRedirect</a> <a name="proxyscgiinternalredirect" id="proxyscgiinternalredirect">Directive</a></h2>
+<div class="directive-section"><h2><a name="proxyscgiinternalredirect" id="proxyscgiinternalredirect">Directive</a> <a name="ProxySCGIInternalRedirect" id="ProxySCGIInternalRedirect">ProxySCGIInternalRedirect</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active ou désactive les réponses de redirection interne en
 provenance du serveur cible.</td></tr>
@@ -137,7 +137,7 @@ provenance du serveur cible.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxySCGISendfile" id="ProxySCGISendfile">ProxySCGISendfile</a> <a name="proxyscgisendfile" id="proxyscgisendfile">Directive</a></h2>
+<div class="directive-section"><h2><a name="proxyscgisendfile" id="proxyscgisendfile">Directive</a> <a name="ProxySCGISendfile" id="ProxySCGISendfile">ProxySCGISendfile</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active l'évaluation du pseudo en-tête de réponse
 <var>X-Sendfile</var></td></tr>

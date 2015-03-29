@@ -155,7 +155,7 @@ début du cycle de traitement de la requête.</em></p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DTracePrivileges" id="DTracePrivileges">DTracePrivileges</a> <a name="dtraceprivileges" id="dtraceprivileges">Directive</a></h2>
+<div class="directive-section"><h2><a name="dtraceprivileges" id="dtraceprivileges">Directive</a> <a name="DTracePrivileges" id="DTracePrivileges">DTracePrivileges</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Détermine si les privilèges requis par dtrace sont
 activés.</td></tr>
@@ -176,7 +176,7 @@ personnalisé).</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="PrivilegesMode" id="PrivilegesMode">PrivilegesMode</a> <a name="privilegesmode" id="privilegesmode">Directive</a></h2>
+<div class="directive-section"><h2><a name="privilegesmode" id="privilegesmode">Directive</a> <a name="PrivilegesMode" id="PrivilegesMode">PrivilegesMode</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fait un compromis entre d'une part l'efficacité et la
 vitesse de traitement et d'autre part la sécurité à l'encontre des codes
@@ -222,7 +222,7 @@ n'aurait pas de sens).</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="VHostCGIMode" id="VHostCGIMode">VHostCGIMode</a> <a name="vhostcgimode" id="vhostcgimode">Directive</a></h2>
+<div class="directive-section"><h2><a name="vhostcgimode" id="vhostcgimode">Directive</a> <a name="VHostCGIMode" id="VHostCGIMode">VHostCGIMode</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Détermine si le serveur virtuel peut exécuter des
 sous-processus, et définit les privilèges disponibles pour ces
@@ -258,7 +258,7 @@ personnalisé).</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="VHostCGIPrivs" id="VHostCGIPrivs">VHostCGIPrivs</a> <a name="vhostcgiprivs" id="vhostcgiprivs">Directive</a></h2>
+<div class="directive-section"><h2><a name="vhostcgiprivs" id="vhostcgiprivs">Directive</a> <a name="VHostCGIPrivs" id="VHostCGIPrivs">VHostCGIPrivs</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Assigne des privilèges au choix aux sous-processus créés
 par un serveur virtuel.</td></tr>
@@ -295,7 +295,7 @@ avec l'option de compilation
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="VHostGroup" id="VHostGroup">VHostGroup</a> <a name="vhostgroup" id="vhostgroup">Directive</a></h2>
+<div class="directive-section"><h2><a name="vhostgroup" id="vhostgroup">Directive</a> <a name="VHostGroup" id="VHostGroup">VHostGroup</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit l'identifiant du groupe sous lequel s'exécute un
 serveur virtuel.</td></tr>
@@ -339,7 +339,7 @@ personnalisé).</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="VHostPrivs" id="VHostPrivs">VHostPrivs</a> <a name="vhostprivs" id="vhostprivs">Directive</a></h2>
+<div class="directive-section"><h2><a name="vhostprivs" id="vhostprivs">Directive</a> <a name="VHostPrivs" id="VHostPrivs">VHostPrivs</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Assigne des privilèges à un serveur virtuel.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>VHostPrivs [+-]?<var>nom-privilège</var> [[+-]?nom-privilège] ...</code></td></tr>
@@ -373,7 +373,7 @@ avec l'option de compilation
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="VHostSecure" id="VHostSecure">VHostSecure</a> <a name="vhostsecure" id="vhostsecure">Directive</a></h2>
+<div class="directive-section"><h2><a name="vhostsecure" id="vhostsecure">Directive</a> <a name="VHostSecure" id="VHostSecure">VHostSecure</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Détermine si le serveur s'exécute avec une sécurité avancée
 pour les serveurs virtuels.</td></tr>
@@ -402,7 +402,7 @@ personnalisé).</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="VHostUser" id="VHostUser">VHostUser</a> <a name="vhostuser" id="vhostuser">Directive</a></h2>
+<div class="directive-section"><h2><a name="vhostuser" id="vhostuser">Directive</a> <a name="VHostUser" id="VHostUser">VHostUser</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit l'identifiant utilisateur sous lequel s'exécute un
 serveur virtuel.</td></tr>

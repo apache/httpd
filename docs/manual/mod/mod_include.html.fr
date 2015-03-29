@@ -863,7 +863,7 @@ AddOutputFilter INCLUDES .shtml</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSIEndTag" id="SSIEndTag">SSIEndTag</a> <a name="ssiendtag" id="ssiendtag">Directive</a></h2>
+<div class="directive-section"><h2><a name="ssiendtag" id="ssiendtag">Directive</a> <a name="SSIEndTag" id="SSIEndTag">SSIEndTag</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Chaîne qui termine l'élément include</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSIEndTag <var>tag</var></code></td></tr>
@@ -886,7 +886,7 @@ AddOutputFilter INCLUDES .shtml</pre>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSIErrorMsg" id="SSIErrorMsg">SSIErrorMsg</a> <a name="ssierrormsg" id="ssierrormsg">Directive</a></h2>
+<div class="directive-section"><h2><a name="ssierrormsg" id="ssierrormsg">Directive</a> <a name="SSIErrorMsg" id="SSIErrorMsg">SSIErrorMsg</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Message d'erreur affiché lorsqu'une erreur SSI
 survient</td></tr>
@@ -913,7 +913,7 @@ directive]"</code></td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSIETag" id="SSIETag">SSIETag</a> <a name="ssietag" id="ssietag">Directive</a></h2>
+<div class="directive-section"><h2><a name="ssietag" id="ssietag">Directive</a> <a name="SSIETag" id="SSIETag">SSIETag</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit si des en-têtes ETags sont générés par le serveur.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSIETag on|off</code></td></tr>
@@ -960,7 +960,7 @@ Apache.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSILastModified" id="SSILastModified">SSILastModified</a> <a name="ssilastmodified" id="ssilastmodified">Directive</a></h2>
+<div class="directive-section"><h2><a name="ssilastmodified" id="ssilastmodified">Directive</a> <a name="SSILastModified" id="SSILastModified">SSILastModified</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit si des en-têtes <code>Last-Modified</code> sont
 générés par le serveur.</td></tr>
@@ -1004,7 +1004,7 @@ Apache.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSILegacyExprParser" id="SSILegacyExprParser">SSILegacyExprParser</a> <a name="ssilegacyexprparser" id="ssilegacyexprparser">Directive</a></h2>
+<div class="directive-section"><h2><a name="ssilegacyexprparser" id="ssilegacyexprparser">Directive</a> <a name="SSILegacyExprParser" id="SSILegacyExprParser">SSILegacyExprParser</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active le mode de compatibilité pour les expressions
 conditionnelles.</td></tr>
@@ -1024,7 +1024,7 @@ conditionnelles.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSIStartTag" id="SSIStartTag">SSIStartTag</a> <a name="ssistarttag" id="ssistarttag">Directive</a></h2>
+<div class="directive-section"><h2><a name="ssistarttag" id="ssistarttag">Directive</a> <a name="SSIStartTag" id="SSIStartTag">SSIStartTag</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Chaîne qui marque le début d'un élément
 include</td></tr>
@@ -1061,7 +1061,7 @@ include</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSITimeFormat" id="SSITimeFormat">SSITimeFormat</a> <a name="ssitimeformat" id="ssitimeformat">Directive</a></h2>
+<div class="directive-section"><h2><a name="ssitimeformat" id="ssitimeformat">Directive</a> <a name="SSITimeFormat" id="SSITimeFormat">SSITimeFormat</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configuration du format d'affichage des dates</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSITimeFormat <var>chaîne de formatage</var></code></td></tr>
@@ -1088,7 +1088,7 @@ formatage</var> est identique à celle de la fonction
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSIUndefinedEcho" id="SSIUndefinedEcho">SSIUndefinedEcho</a> <a name="ssiundefinedecho" id="ssiundefinedecho">Directive</a></h2>
+<div class="directive-section"><h2><a name="ssiundefinedecho" id="ssiundefinedecho">Directive</a> <a name="SSIUndefinedEcho" id="SSIUndefinedEcho">SSIUndefinedEcho</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Chaîne à afficher lorsqu'on tente d'extraire le contenu
 d'une variable non définie</td></tr>
@@ -1108,7 +1108,7 @@ d'une variable non définie</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="XBitHack" id="XBitHack">XBitHack</a> <a name="xbithack" id="xbithack">Directive</a></h2>
+<div class="directive-section"><h2><a name="xbithack" id="xbithack">Directive</a> <a name="XBitHack" id="XBitHack">XBitHack</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Interprète les directives SSI dans les fichiers dont le bit
 d'exécution est positionné</td></tr>

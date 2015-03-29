@@ -200,7 +200,7 @@
       </p>
     </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyFtpDirCharset" id="ProxyFtpDirCharset">ProxyFtpDirCharset</a> <a name="proxyftpdircharset" id="proxyftpdircharset">Directive</a></h2>
+<div class="directive-section"><h2><a name="proxyftpdircharset" id="proxyftpdircharset">Directive</a> <a name="ProxyFtpDirCharset" id="ProxyFtpDirCharset">ProxyFtpDirCharset</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le jeu de caractères des listings FTP
 mandatés</td></tr>
@@ -218,7 +218,7 @@ depuis <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyFtpEscapeWildcards" id="ProxyFtpEscapeWildcards">ProxyFtpEscapeWildcards</a> <a name="proxyftpescapewildcards" id="proxyftpescapewildcards">Directive</a></h2>
+<div class="directive-section"><h2><a name="proxyftpescapewildcards" id="proxyftpescapewildcards">Directive</a> <a name="ProxyFtpEscapeWildcards" id="ProxyFtpEscapeWildcards">ProxyFtpEscapeWildcards</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Les caractères génériques dans les noms de fichiers
 doivent-ils être échappés lorsqu'ils sont envoyés au serveur FTP ?</td></tr>
@@ -244,7 +244,7 @@ doivent-ils être échappés lorsqu'ils sont envoyés au serveur FTP ?</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyFtpListOnWildcard" id="ProxyFtpListOnWildcard">ProxyFtpListOnWildcard</a> <a name="proxyftplistonwildcard" id="proxyftplistonwildcard">Directive</a></h2>
+<div class="directive-section"><h2><a name="proxyftplistonwildcard" id="proxyftplistonwildcard">Directive</a> <a name="ProxyFtpListOnWildcard" id="ProxyFtpListOnWildcard">ProxyFtpListOnWildcard</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Les caractères génériques dans les noms de fichiers
 demandés doivent-ils déclencher l'affichage d'un listing ?</td></tr>

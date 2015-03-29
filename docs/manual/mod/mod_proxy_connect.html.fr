@@ -82,7 +82,7 @@ des requêtes <code>CONNECT</code></td></tr>
     </dl>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AllowCONNECT" id="AllowCONNECT">AllowCONNECT</a> <a name="allowconnect" id="allowconnect">Directive</a></h2>
+<div class="directive-section"><h2><a name="allowconnect" id="allowconnect">Directive</a> <a name="AllowCONNECT" id="AllowCONNECT">AllowCONNECT</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ports autorisés à se <code>CONNECT</code>er à travers le
 mandataire</td></tr>

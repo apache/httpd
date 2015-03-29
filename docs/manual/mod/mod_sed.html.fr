@@ -128,7 +128,7 @@ recherche/remplacement de chaîne ou d'expression rationnelle.</p>
     </dl>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="InputSed" id="InputSed">InputSed</a> <a name="inputsed" id="inputsed">Directive</a></h2>
+<div class="directive-section"><h2><a name="inputsed" id="inputsed">Directive</a> <a name="InputSed" id="InputSed">InputSed</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Commande sed à exécuter pour le filtrage des données d'une
 requête (en général des données <code>POST</code>)</td></tr>
@@ -144,7 +144,7 @@ requête (en général des données <code>POST</code>)</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="OutputSed" id="OutputSed">OutputSed</a> <a name="outputsed" id="outputsed">Directive</a></h2>
+<div class="directive-section"><h2><a name="outputsed" id="outputsed">Directive</a> <a name="OutputSed" id="OutputSed">OutputSed</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Commande sed pour le filtrage des contenus de type
 réponse</td></tr>

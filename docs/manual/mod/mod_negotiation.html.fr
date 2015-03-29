@@ -233,7 +233,7 @@ contenu</a></li>
     de négociation de contenu lors du choix du fichier à servir.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CacheNegotiatedDocs" id="CacheNegotiatedDocs">CacheNegotiatedDocs</a> <a name="cachenegotiateddocs" id="cachenegotiateddocs">Directive</a></h2>
+<div class="directive-section"><h2><a name="cachenegotiateddocs" id="cachenegotiateddocs">Directive</a> <a name="CacheNegotiatedDocs" id="CacheNegotiatedDocs">CacheNegotiatedDocs</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Permet la mise en cache au niveau des serveurs mandataires
 des documents dont le contenu a été négocié</td></tr>
@@ -259,7 +259,7 @@ des documents dont le contenu a été négocié</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ForceLanguagePriority" id="ForceLanguagePriority">ForceLanguagePriority</a> <a name="forcelanguagepriority" id="forcelanguagepriority">Directive</a></h2>
+<div class="directive-section"><h2><a name="forcelanguagepriority" id="forcelanguagepriority">Directive</a> <a name="ForceLanguagePriority" id="ForceLanguagePriority">ForceLanguagePriority</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Action à entreprendre si un document acceptable unique
 n'est pas trouvé</td></tr>
@@ -317,7 +317,7 @@ ForceLanguagePriority Fallback</pre>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LanguagePriority" id="LanguagePriority">LanguagePriority</a> <a name="languagepriority" id="languagepriority">Directive</a></h2>
+<div class="directive-section"><h2><a name="languagepriority" id="languagepriority">Directive</a> <a name="LanguagePriority" id="LanguagePriority">LanguagePriority</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>L'ordre de priorité des variantes de langages pour les
 cas où le client n'a pas formulé de préférences</td></tr>

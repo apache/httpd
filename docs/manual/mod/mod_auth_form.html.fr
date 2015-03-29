@@ -392,7 +392,7 @@ SessionCryptoPassphrase secret</pre>
     d'obtenir des résultats inattendus.</p>
     </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthFormAuthoritative" id="AuthFormAuthoritative">AuthFormAuthoritative</a> <a name="authformauthoritative" id="authformauthoritative">Directive</a></h2>
+<div class="directive-section"><h2><a name="authformauthoritative" id="authformauthoritative">Directive</a> <a name="AuthFormAuthoritative" id="AuthFormAuthoritative">AuthFormAuthoritative</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Détermine si l'autorisation et l'authentification sont confiés à
 des modules de plus bas niveau</td></tr>
@@ -421,7 +421,7 @@ des modules de plus bas niveau</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthFormBody" id="AuthFormBody">AuthFormBody</a> <a name="authformbody" id="authformbody">Directive</a></h2>
+<div class="directive-section"><h2><a name="authformbody" id="authformbody">Directive</a> <a name="AuthFormBody" id="AuthFormBody">AuthFormBody</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le nom du champ de formulaire contenant le corps de la
 requête à effectuer en cas de connexion réussie</td></tr>
@@ -443,7 +443,7 @@ requête à effectuer en cas de connexion réussie</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthFormDisableNoStore" id="AuthFormDisableNoStore">AuthFormDisableNoStore</a> <a name="authformdisablenostore" id="authformdisablenostore">Directive</a></h2>
+<div class="directive-section"><h2><a name="authformdisablenostore" id="authformdisablenostore">Directive</a> <a name="AuthFormDisableNoStore" id="AuthFormDisableNoStore">AuthFormDisableNoStore</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Désactive l'en-tête CacheControl no-store sur la page de
 connexion</td></tr>
@@ -466,7 +466,7 @@ connexion</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthFormFakeBasicAuth" id="AuthFormFakeBasicAuth">AuthFormFakeBasicAuth</a> <a name="authformfakebasicauth" id="authformfakebasicauth">Directive</a></h2>
+<div class="directive-section"><h2><a name="authformfakebasicauth" id="authformfakebasicauth">Directive</a> <a name="AuthFormFakeBasicAuth" id="AuthFormFakeBasicAuth">AuthFormFakeBasicAuth</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Simule une en-tête d'authentification de base</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthFormFakeBasicAuth <var>On|Off</var></code></td></tr>
@@ -487,7 +487,7 @@ connexion</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthFormLocation" id="AuthFormLocation">AuthFormLocation</a> <a name="authformlocation" id="authformlocation">Directive</a></h2>
+<div class="directive-section"><h2><a name="authformlocation" id="authformlocation">Directive</a> <a name="AuthFormLocation" id="AuthFormLocation">AuthFormLocation</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le nom du champ de formulaire qui contiendra l'URL vers
 laquelle l'utilisateur sera redirigé en cas de connexion
@@ -506,7 +506,7 @@ réussie</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthFormLoginRequiredLocation" id="AuthFormLoginRequiredLocation">AuthFormLoginRequiredLocation</a> <a name="authformloginrequiredlocation" id="authformloginrequiredlocation">Directive</a></h2>
+<div class="directive-section"><h2><a name="authformloginrequiredlocation" id="authformloginrequiredlocation">Directive</a> <a name="AuthFormLoginRequiredLocation" id="AuthFormLoginRequiredLocation">AuthFormLoginRequiredLocation</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>L'URL de la page vers laquelle on doit être redirigé si une
 authentification est requise</td></tr>
@@ -535,7 +535,7 @@ depuis la version 2.4.4.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthFormLoginSuccessLocation" id="AuthFormLoginSuccessLocation">AuthFormLoginSuccessLocation</a> <a name="authformloginsuccesslocation" id="authformloginsuccesslocation">Directive</a></h2>
+<div class="directive-section"><h2><a name="authformloginsuccesslocation" id="authformloginsuccesslocation">Directive</a> <a name="AuthFormLoginSuccessLocation" id="AuthFormLoginSuccessLocation">AuthFormLoginSuccessLocation</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>L'URL de la page vers laquelle on doit être redirigé en cas
 de connexion réussie</td></tr>
@@ -563,7 +563,7 @@ depuis la version 2.4.4.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthFormLogoutLocation" id="AuthFormLogoutLocation">AuthFormLogoutLocation</a> <a name="authformlogoutlocation" id="authformlogoutlocation">Directive</a></h2>
+<div class="directive-section"><h2><a name="authformlogoutlocation" id="authformlogoutlocation">Directive</a> <a name="AuthFormLogoutLocation" id="AuthFormLogoutLocation">AuthFormLogoutLocation</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>L'URL vers laquelle un utilisateur devra être redirigé
 après s'être déconnecté</td></tr>
@@ -603,7 +603,7 @@ depuis la version 2.4.4.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthFormMethod" id="AuthFormMethod">AuthFormMethod</a> <a name="authformmethod" id="authformmethod">Directive</a></h2>
+<div class="directive-section"><h2><a name="authformmethod" id="authformmethod">Directive</a> <a name="AuthFormMethod" id="AuthFormMethod">AuthFormMethod</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le nom du champ de formulaire contenant la méthode de la
 requête à effectuer en cas de connexion réussie</td></tr>
@@ -625,7 +625,7 @@ requête à effectuer en cas de connexion réussie</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthFormMimetype" id="AuthFormMimetype">AuthFormMimetype</a> <a name="authformmimetype" id="authformmimetype">Directive</a></h2>
+<div class="directive-section"><h2><a name="authformmimetype" id="authformmimetype">Directive</a> <a name="AuthFormMimetype" id="AuthFormMimetype">AuthFormMimetype</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le nom du champ de formulaire contenant le type MIME du
 corps de la requête à effectuer en cas de connexion
@@ -648,7 +648,7 @@ réussie</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthFormPassword" id="AuthFormPassword">AuthFormPassword</a> <a name="authformpassword" id="authformpassword">Directive</a></h2>
+<div class="directive-section"><h2><a name="authformpassword" id="authformpassword">Directive</a> <a name="AuthFormPassword" id="AuthFormPassword">AuthFormPassword</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le nom du champ de formulaire qui contient le mot de passe
 de connexion</td></tr>
@@ -665,7 +665,7 @@ de connexion</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthFormProvider" id="AuthFormProvider">AuthFormProvider</a> <a name="authformprovider" id="authformprovider">Directive</a></h2>
+<div class="directive-section"><h2><a name="authformprovider" id="authformprovider">Directive</a> <a name="AuthFormProvider" id="AuthFormProvider">AuthFormProvider</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le(s) fournisseur(s) d'authentification pour la
 zone concernée</td></tr>
@@ -702,7 +702,7 @@ zone concernée</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthFormSitePassphrase" id="AuthFormSitePassphrase">AuthFormSitePassphrase</a> <a name="authformsitepassphrase" id="authformsitepassphrase">Directive</a></h2>
+<div class="directive-section"><h2><a name="authformsitepassphrase" id="authformsitepassphrase">Directive</a> <a name="AuthFormSitePassphrase" id="AuthFormSitePassphrase">AuthFormSitePassphrase</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Court-circuite l'authentification pour les sites à fort
 trafic</td></tr>
@@ -742,7 +742,7 @@ trafic</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthFormSize" id="AuthFormSize">AuthFormSize</a> <a name="authformsize" id="authformsize">Directive</a></h2>
+<div class="directive-section"><h2><a name="authformsize" id="authformsize">Directive</a> <a name="AuthFormSize" id="AuthFormSize">AuthFormSize</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>La taille maximale en octets du formulaire dont seront
 extraites les informations de connexion</td></tr>
@@ -768,7 +768,7 @@ extraites les informations de connexion</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthFormUsername" id="AuthFormUsername">AuthFormUsername</a> <a name="authformusername" id="authformusername">Directive</a></h2>
+<div class="directive-section"><h2><a name="authformusername" id="authformusername">Directive</a> <a name="AuthFormUsername" id="AuthFormUsername">AuthFormUsername</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le nom du champ de formulaire qui contient le nom de
 connexion</td></tr>

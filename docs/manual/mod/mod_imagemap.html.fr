@@ -310,7 +310,7 @@ imagemap</a></h2>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ImapBase" id="ImapBase">ImapBase</a> <a name="imapbase" id="imapbase">Directive</a></h2>
+<div class="directive-section"><h2><a name="imapbase" id="imapbase">Directive</a> <a name="ImapBase" id="ImapBase">ImapBase</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Valeur par défaut de la directive <code>base</code> des
 fichiers imagemap</td></tr>
@@ -335,7 +335,7 @@ fichiers imagemap</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ImapDefault" id="ImapDefault">ImapDefault</a> <a name="imapdefault" id="imapdefault">Directive</a></h2>
+<div class="directive-section"><h2><a name="imapdefault" id="imapdefault">Directive</a> <a name="ImapDefault" id="ImapDefault">ImapDefault</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Action à entreprendre par défaut lorsqu'un fichier imagemap
 est invoqué avec des coordonnées qui ne correspondent à aucune
@@ -358,7 +358,7 @@ cible</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ImapMenu" id="ImapMenu">ImapMenu</a> <a name="imapmenu" id="imapmenu">Directive</a></h2>
+<div class="directive-section"><h2><a name="imapmenu" id="imapmenu">Directive</a> <a name="ImapMenu" id="ImapMenu">ImapMenu</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Action à entreprendre si aucune coordonnée n'est fournie
 lorsqu'on invoque un fichier imagemap</td></tr>

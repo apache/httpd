@@ -244,7 +244,7 @@
     des .dlls ISAPI à des fins de performances.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ISAPIAppendLogToErrors" id="ISAPIAppendLogToErrors">ISAPIAppendLogToErrors</a> <a name="isapiappendlogtoerrors" id="isapiappendlogtoerrors">Directive</a></h2>
+<div class="directive-section"><h2><a name="isapiappendlogtoerrors" id="isapiappendlogtoerrors">Directive</a> <a name="ISAPIAppendLogToErrors" id="ISAPIAppendLogToErrors">ISAPIAppendLogToErrors</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enregistrement des requêtes
 <code>HSE_APPEND_LOG_PARAMETER</code> de la part des extensions ISAPI
@@ -262,7 +262,7 @@ dans le journal des erreurs</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ISAPIAppendLogToQuery" id="ISAPIAppendLogToQuery">ISAPIAppendLogToQuery</a> <a name="isapiappendlogtoquery" id="isapiappendlogtoquery">Directive</a></h2>
+<div class="directive-section"><h2><a name="isapiappendlogtoquery" id="isapiappendlogtoquery">Directive</a> <a name="ISAPIAppendLogToQuery" id="ISAPIAppendLogToQuery">ISAPIAppendLogToQuery</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enregistre les requêtes
 <code>HSE_APPEND_LOG_PARAMETER</code> de la part des extensions ISAPI
@@ -281,7 +281,7 @@ dans la partie arguments de la requête</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ISAPICacheFile" id="ISAPICacheFile">ISAPICacheFile</a> <a name="isapicachefile" id="isapicachefile">Directive</a></h2>
+<div class="directive-section"><h2><a name="isapicachefile" id="isapicachefile">Directive</a> <a name="ISAPICacheFile" id="ISAPICacheFile">ISAPICacheFile</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fichiers .dll ISAPI devant être chargés au
 démarrage</td></tr>
@@ -302,7 +302,7 @@ démarrage</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ISAPIFakeAsync" id="ISAPIFakeAsync">ISAPIFakeAsync</a> <a name="isapifakeasync" id="isapifakeasync">Directive</a></h2>
+<div class="directive-section"><h2><a name="isapifakeasync" id="isapifakeasync">Directive</a> <a name="ISAPIFakeAsync" id="ISAPIFakeAsync">ISAPIFakeAsync</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Emulation du support des entrées/sorties asynchrones pour
 les appels ISAPI</td></tr>
@@ -318,7 +318,7 @@ les appels ISAPI</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ISAPILogNotSupported" id="ISAPILogNotSupported">ISAPILogNotSupported</a> <a name="isapilognotsupported" id="isapilognotsupported">Directive</a></h2>
+<div class="directive-section"><h2><a name="isapilognotsupported" id="isapilognotsupported">Directive</a> <a name="ISAPILogNotSupported" id="ISAPILogNotSupported">ISAPILogNotSupported</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Journalisation des demandes de fonctionnalités non
 supportées de la part des extensions ISAPI</td></tr>
@@ -337,7 +337,7 @@ supportées de la part des extensions ISAPI</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ISAPIReadAheadBuffer" id="ISAPIReadAheadBuffer">ISAPIReadAheadBuffer</a> <a name="isapireadaheadbuffer" id="isapireadaheadbuffer">Directive</a></h2>
+<div class="directive-section"><h2><a name="isapireadaheadbuffer" id="isapireadaheadbuffer">Directive</a> <a name="ISAPIReadAheadBuffer" id="ISAPIReadAheadBuffer">ISAPIReadAheadBuffer</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Taille du tampon de lecture anticipée envoyé aux extensions
 ISAPI</td></tr>

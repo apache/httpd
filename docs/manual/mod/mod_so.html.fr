@@ -154,7 +154,7 @@ Windows</a></h2>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LoadFile" id="LoadFile">LoadFile</a> <a name="loadfile" id="loadfile">Directive</a></h2>
+<div class="directive-section"><h2><a name="loadfile" id="loadfile">Directive</a> <a name="LoadFile" id="LoadFile">LoadFile</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Liaison du fichier objet ou de la bibliothèque
 spécifié</td></tr>
@@ -179,7 +179,7 @@ spécifié</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LoadModule" id="LoadModule">LoadModule</a> <a name="loadmodule" id="loadmodule">Directive</a></h2>
+<div class="directive-section"><h2><a name="loadmodule" id="loadmodule">Directive</a> <a name="LoadModule" id="LoadModule">LoadModule</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Liaison avec le serveur du fichier objet ou de la
 bibliothèque spécifié, et ajout de ce dernier à la liste des modules

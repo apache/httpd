@@ -112,7 +112,7 @@ condensés</a></h2>
     </div>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthDigestAlgorithm" id="AuthDigestAlgorithm">AuthDigestAlgorithm</a> <a name="authdigestalgorithm" id="authdigestalgorithm">Directive</a></h2>
+<div class="directive-section"><h2><a name="authdigestalgorithm" id="authdigestalgorithm">Directive</a> <a name="AuthDigestAlgorithm" id="AuthDigestAlgorithm">AuthDigestAlgorithm</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sélectionne l'algorithme utilisé pour calculer les
 condensés du défit et de sa réponse</td></tr>
@@ -134,7 +134,7 @@ condensés du défit et de sa réponse</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthDigestDomain" id="AuthDigestDomain">AuthDigestDomain</a> <a name="authdigestdomain" id="authdigestdomain">Directive</a></h2>
+<div class="directive-section"><h2><a name="authdigestdomain" id="authdigestdomain">Directive</a> <a name="AuthDigestDomain" id="AuthDigestDomain">AuthDigestDomain</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Les URIs qui se trouvent dans le même espace de protection
 concernant l'authentification à base de condensés</td></tr>
@@ -166,7 +166,7 @@ concernant l'authentification à base de condensés</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthDigestNonceLifetime" id="AuthDigestNonceLifetime">AuthDigestNonceLifetime</a> <a name="authdigestnoncelifetime" id="authdigestnoncelifetime">Directive</a></h2>
+<div class="directive-section"><h2><a name="authdigestnoncelifetime" id="authdigestnoncelifetime">Directive</a> <a name="AuthDigestNonceLifetime" id="AuthDigestNonceLifetime">AuthDigestNonceLifetime</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Durée de validité du nombre à valeur unique du
 serveur (nonce)</td></tr>
@@ -191,7 +191,7 @@ serveur (nonce)</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthDigestProvider" id="AuthDigestProvider">AuthDigestProvider</a> <a name="authdigestprovider" id="authdigestprovider">Directive</a></h2>
+<div class="directive-section"><h2><a name="authdigestprovider" id="authdigestprovider">Directive</a> <a name="AuthDigestProvider" id="AuthDigestProvider">AuthDigestProvider</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le(s) fournisseurs(s) d'authentification pour la
 zone du site web concernée</td></tr>
@@ -218,7 +218,7 @@ zone du site web concernée</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthDigestQop" id="AuthDigestQop">AuthDigestQop</a> <a name="authdigestqop" id="authdigestqop">Directive</a></h2>
+<div class="directive-section"><h2><a name="authdigestqop" id="authdigestqop">Directive</a> <a name="AuthDigestQop" id="AuthDigestQop">AuthDigestQop</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Détermine le niveau de protection fourni par
 l'authentification à base de condensé</td></tr>
@@ -249,7 +249,7 @@ l'authentification à base de condensé</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthDigestShmemSize" id="AuthDigestShmemSize">AuthDigestShmemSize</a> <a name="authdigestshmemsize" id="authdigestshmemsize">Directive</a></h2>
+<div class="directive-section"><h2><a name="authdigestshmemsize" id="authdigestshmemsize">Directive</a> <a name="AuthDigestShmemSize" id="AuthDigestShmemSize">AuthDigestShmemSize</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>La quantité de mémoire partagée à allouer afin de conserver
 les informations à propos des clients</td></tr>

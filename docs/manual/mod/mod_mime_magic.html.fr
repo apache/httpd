@@ -255,7 +255,7 @@ octets de son contenu</td></tr>
     </div>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MimeMagicFile" id="MimeMagicFile">MimeMagicFile</a> <a name="mimemagicfile" id="mimemagicfile">Directive</a></h2>
+<div class="directive-section"><h2><a name="mimemagicfile" id="mimemagicfile">Directive</a> <a name="MimeMagicFile" id="MimeMagicFile">MimeMagicFile</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active la détermination du type MIME en se basant sur le
 contenu du fichier et en utilisant le fichier magique

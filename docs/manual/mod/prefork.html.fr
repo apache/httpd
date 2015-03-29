@@ -129,7 +129,7 @@ qu'utilise le serveur HTTP Apache</a></li>
     performances</a></p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MaxSpareServers" id="MaxSpareServers">MaxSpareServers</a> <a name="maxspareservers" id="maxspareservers">Directive</a></h2>
+<div class="directive-section"><h2><a name="maxspareservers" id="maxspareservers">Directive</a> <a name="MaxSpareServers" id="MaxSpareServers">MaxSpareServers</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nombre maximum de processus serveurs enfants
 inactifs</td></tr>
@@ -162,7 +162,7 @@ inactifs</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MinSpareServers" id="MinSpareServers">MinSpareServers</a> <a name="minspareservers" id="minspareservers">Directive</a></h2>
+<div class="directive-section"><h2><a name="minspareservers" id="minspareservers">Directive</a> <a name="MinSpareServers" id="MinSpareServers">MinSpareServers</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nombre minimum de processus serveurs enfants
 inactifs</td></tr>
