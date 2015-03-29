@@ -129,7 +129,7 @@
     </code></p></div>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthnProviderAlias" id="AuthnProviderAlias">&lt;AuthnProviderAlias&gt;</a> <a name="authnprovideralias" id="authnprovideralias">Directive</a></h2>
+<div class="directive-section"><h2><a name="authnprovideralias" id="authnprovideralias">Directive</a> <a name="AuthnProviderAlias" id="AuthnProviderAlias">&lt;AuthnProviderAlias&gt;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Regroupe un ensemble de directives qui représentent une
 extension d'un fournisseur d'authentification de base référencé par

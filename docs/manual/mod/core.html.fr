@@ -109,7 +109,7 @@ en toutes circonstances</td></tr>
 <ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AcceptFilter" id="AcceptFilter">AcceptFilter</a> <a name="acceptfilter" id="acceptfilter">Directive</a></h2>
+<div class="directive-section"><h2><a name="acceptfilter" id="acceptfilter">Directive</a> <a name="AcceptFilter" id="AcceptFilter">AcceptFilter</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Permet d'optimiser la configuration d'un socket pour
 l'écoute d'un protocole</td></tr>
@@ -167,7 +167,7 @@ supérieures</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AcceptPathInfo" id="AcceptPathInfo">AcceptPathInfo</a> <a name="acceptpathinfo" id="acceptpathinfo">Directive</a></h2>
+<div class="directive-section"><h2><a name="acceptpathinfo" id="acceptpathinfo">Directive</a> <a name="AcceptPathInfo" id="AcceptPathInfo">AcceptPathInfo</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Les ressources acceptent des informations sous forme d'un
 nom de chemin en fin de requête.</td></tr>
@@ -239,7 +239,7 @@ supérieures</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AccessFileName" id="AccessFileName">AccessFileName</a> <a name="accessfilename" id="accessfilename">Directive</a></h2>
+<div class="directive-section"><h2><a name="accessfilename" id="accessfilename">Directive</a> <a name="AccessFileName" id="AccessFileName">AccessFileName</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nom du fichier de configuration distribué</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AccessFileName <var>nom-du-fichier</var>
@@ -282,7 +282,7 @@ supérieures</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AddDefaultCharset" id="AddDefaultCharset">AddDefaultCharset</a> <a name="adddefaultcharset" id="adddefaultcharset">Directive</a></h2>
+<div class="directive-section"><h2><a name="adddefaultcharset" id="adddefaultcharset">Directive</a> <a name="AddDefaultCharset" id="AddDefaultCharset">AddDefaultCharset</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Paramètre jeu de caractères par défaut à ajouter quand le
 type de contenu d'une réponse est <code>text/plain</code> ou
@@ -335,7 +335,7 @@ type de contenu d'une réponse est <code>text/plain</code> ou
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AddOutputFilterByType" id="AddOutputFilterByType">AddOutputFilterByType</a> <a name="addoutputfilterbytype" id="addoutputfilterbytype">Directive</a></h2>
+<div class="directive-section"><h2><a name="addoutputfilterbytype" id="addoutputfilterbytype">Directive</a> <a name="AddOutputFilterByType" id="AddOutputFilterByType">AddOutputFilterByType</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>assigne un filtre en sortie pour un type MIME
 particulier</td></tr>
@@ -407,7 +407,7 @@ obsolète depuis les versions 2.1</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AllowEncodedSlashes" id="AllowEncodedSlashes">AllowEncodedSlashes</a> <a name="allowencodedslashes" id="allowencodedslashes">Directive</a></h2>
+<div class="directive-section"><h2><a name="allowencodedslashes" id="allowencodedslashes">Directive</a> <a name="AllowEncodedSlashes" id="AllowEncodedSlashes">AllowEncodedSlashes</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Détermine si les séparateurs de chemin encodés sont
 autorisés à transiter dans les URLs tel quel</td></tr>
@@ -454,7 +454,7 @@ ultérieures. L'option NoDecode est disponible depuis la version
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AllowOverride" id="AllowOverride">AllowOverride</a> <a name="allowoverride" id="allowoverride">Directive</a></h2>
+<div class="directive-section"><h2><a name="allowoverride" id="allowoverride">Directive</a> <a name="AllowOverride" id="AllowOverride">AllowOverride</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Types de directives autorisées dans les fichiers
 <code>.htaccess</code></td></tr>
@@ -582,7 +582,7 @@ ultérieures. L'option NoDecode est disponible depuis la version
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthName" id="AuthName">AuthName</a> <a name="authname" id="authname">Directive</a></h2>
+<div class="directive-section"><h2><a name="authname" id="authname">Directive</a> <a name="AuthName" id="AuthName">AuthName</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Identificateur d'autorisation à utiliser pour
 l'authentification HTTP</td></tr>
@@ -620,7 +620,7 @@ l'authentification HTTP</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthType" id="AuthType">AuthType</a> <a name="authtype" id="authtype">Directive</a></h2>
+<div class="directive-section"><h2><a name="authtype" id="authtype">Directive</a> <a name="AuthType" id="AuthType">AuthType</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le type d'authentification de l'utilisateur</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthType Basic|Digest</code></td></tr>
@@ -649,7 +649,7 @@ l'authentification HTTP</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CGIMapExtension" id="CGIMapExtension">CGIMapExtension</a> <a name="cgimapextension" id="cgimapextension">Directive</a></h2>
+<div class="directive-section"><h2><a name="cgimapextension" id="cgimapextension">Directive</a> <a name="CGIMapExtension" id="CGIMapExtension">CGIMapExtension</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Technique permettant de localiser l'interpréteur des
 scripts CGI</td></tr>
@@ -668,7 +668,7 @@ scripts CGI</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ContentDigest" id="ContentDigest">ContentDigest</a> <a name="contentdigest" id="contentdigest">Directive</a></h2>
+<div class="directive-section"><h2><a name="contentdigest" id="contentdigest">Directive</a> <a name="ContentDigest" id="ContentDigest">ContentDigest</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active la génération d'un en-tête <code>Content-MD5</code>
 dans la réponse HTTP</td></tr>
@@ -710,7 +710,7 @@ dans la réponse HTTP</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DefaultType" id="DefaultType">DefaultType</a> <a name="defaulttype" id="defaulttype">Directive</a></h2>
+<div class="directive-section"><h2><a name="defaulttype" id="defaulttype">Directive</a> <a name="DefaultType" id="DefaultType">DefaultType</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Type de contenu MIME qui sera envoyé par défaut si le
 serveur ne peut le déterminer d'aucune manière</td></tr>
@@ -756,7 +756,7 @@ versions d'Apache 2.2.7 et supérieures</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Directory" id="Directory">&lt;Directory&gt;</a> <a name="directory" id="directory">Directive</a></h2>
+<div class="directive-section"><h2><a name="directory" id="directory">Directive</a> <a name="Directory" id="Directory">&lt;Directory&gt;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Regroupe un ensemble de directives qui ne s'appliquent
 qu'au répertoire concerné du système de fichiers, à ses
@@ -905,7 +905,7 @@ combinent entre elles à la réception d'une requête</li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DirectoryMatch" id="DirectoryMatch">&lt;DirectoryMatch&gt;</a> <a name="directorymatch" id="directorymatch">Directive</a></h2>
+<div class="directive-section"><h2><a name="directorymatch" id="directorymatch">Directive</a> <a name="DirectoryMatch" id="DirectoryMatch">&lt;DirectoryMatch&gt;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Regroupe des directives qui s'appliquent à des répertoires
 du système de fichiers correspondant à une expression rationnelle et à
@@ -947,7 +947,7 @@ combinent entre elles à la réception d'une requête</li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DocumentRoot" id="DocumentRoot">DocumentRoot</a> <a name="documentroot" id="documentroot">Directive</a></h2>
+<div class="directive-section"><h2><a name="documentroot" id="documentroot">Directive</a> <a name="DocumentRoot" id="DocumentRoot">DocumentRoot</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Racine de l'arborescence des documents principale visible
 depuis Internet</td></tr>
@@ -983,7 +983,7 @@ correspondance des URLs avec le système de fichiers</a></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="EnableMMAP" id="EnableMMAP">EnableMMAP</a> <a name="enablemmap" id="enablemmap">Directive</a></h2>
+<div class="directive-section"><h2><a name="enablemmap" id="enablemmap">Directive</a> <a name="EnableMMAP" id="EnableMMAP">EnableMMAP</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Utilise la projection en mémoire (Memory-Mapping) pour
 lire les fichiers pendant qu'ils sont servis</td></tr>
@@ -1042,7 +1042,7 @@ lire les fichiers pendant qu'ils sont servis</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="EnableSendfile" id="EnableSendfile">EnableSendfile</a> <a name="enablesendfile" id="enablesendfile">Directive</a></h2>
+<div class="directive-section"><h2><a name="enablesendfile" id="enablesendfile">Directive</a> <a name="EnableSendfile" id="EnableSendfile">EnableSendfile</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Utilise le support sendfile du noyau pour servir les
 fichiers aux clients</td></tr>
@@ -1115,7 +1115,7 @@ supérieures</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ErrorDocument" id="ErrorDocument">ErrorDocument</a> <a name="errordocument" id="errordocument">Directive</a></h2>
+<div class="directive-section"><h2><a name="errordocument" id="errordocument">Directive</a> <a name="ErrorDocument" id="ErrorDocument">ErrorDocument</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Document que le serveur renvoie au client en cas
 d'erreur</td></tr>
@@ -1233,7 +1233,7 @@ personnalisation des réponses</a></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ErrorLog" id="ErrorLog">ErrorLog</a> <a name="errorlog" id="errorlog">Directive</a></h2>
+<div class="directive-section"><h2><a name="errorlog" id="errorlog">Directive</a> <a name="ErrorLog" id="ErrorLog">ErrorLog</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définition du chemin du journal des erreurs</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code> ErrorLog <var>chemin fichier</var>|syslog[:<var>facility</var>]</code></td></tr>
@@ -1297,7 +1297,7 @@ et OS/2)</code></td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="FileETag" id="FileETag">FileETag</a> <a name="fileetag" id="fileetag">Directive</a></h2>
+<div class="directive-section"><h2><a name="fileetag" id="fileetag">Directive</a> <a name="FileETag" id="FileETag">FileETag</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Caractéristiques de fichier utilisés lors de la génération
 de l'en-tête de réponse HTTP ETag pour les fichiers statiques</td></tr>
@@ -1376,7 +1376,7 @@ de l'en-tête de réponse HTTP ETag pour les fichiers statiques</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Files" id="Files">&lt;Files&gt;</a> <a name="files" id="files">Directive</a></h2>
+<div class="directive-section"><h2><a name="files" id="files">Directive</a> <a name="Files" id="Files">&lt;Files&gt;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Contient des directives qui s'appliquent aux fichiers
 précisés</td></tr>
@@ -1440,7 +1440,7 @@ entre elles à la réception d'une requête</li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="FilesMatch" id="FilesMatch">&lt;FilesMatch&gt;</a> <a name="filesmatch" id="filesmatch">Directive</a></h2>
+<div class="directive-section"><h2><a name="filesmatch" id="filesmatch">Directive</a> <a name="FilesMatch" id="FilesMatch">&lt;FilesMatch&gt;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Contient des directives qui s'appliquent à des fichiers
 spécifiés sous la forme d'expressions rationnelles</td></tr>
@@ -1473,7 +1473,7 @@ entre elles à la réception d'une requête</li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ForceType" id="ForceType">ForceType</a> <a name="forcetype" id="forcetype">Directive</a></h2>
+<div class="directive-section"><h2><a name="forcetype" id="forcetype">Directive</a> <a name="ForceType" id="ForceType">ForceType</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Force un type de contenu MIME pour les fichiers
 spécifiés</td></tr>
@@ -1525,7 +1525,7 @@ spécifiés</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="GprofDir" id="GprofDir">GprofDir</a> <a name="gprofdir" id="gprofdir">Directive</a></h2>
+<div class="directive-section"><h2><a name="gprofdir" id="gprofdir">Directive</a> <a name="GprofDir" id="GprofDir">GprofDir</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Répertoire dans lequel écrire les données de profiling
 gmon.out.</td></tr>
@@ -1546,7 +1546,7 @@ gmon.out.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="HostnameLookups" id="HostnameLookups">HostnameLookups</a> <a name="hostnamelookups" id="hostnamelookups">Directive</a></h2>
+<div class="directive-section"><h2><a name="hostnamelookups" id="hostnamelookups">Directive</a> <a name="HostnameLookups" id="HostnameLookups">HostnameLookups</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active la recherche DNS sur les adresses IP des
 clients</td></tr>
@@ -1594,7 +1594,7 @@ clients</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="IfDefine" id="IfDefine">&lt;IfDefine&gt;</a> <a name="ifdefine" id="ifdefine">Directive</a></h2>
+<div class="directive-section"><h2><a name="ifdefine" id="ifdefine">Directive</a> <a name="IfDefine" id="IfDefine">&lt;IfDefine&gt;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Contient des directives qui ne s'appliqueront que si un
 test retourne "vrai" au démarrage du serveur</td></tr>
@@ -1664,7 +1664,7 @@ test retourne "vrai" au démarrage du serveur</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="IfModule" id="IfModule">&lt;IfModule&gt;</a> <a name="ifmodule" id="ifmodule">Directive</a></h2>
+<div class="directive-section"><h2><a name="ifmodule" id="ifmodule">Directive</a> <a name="IfModule" id="IfModule">&lt;IfModule&gt;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Contient des directives qui ne s'appliquent qu'en fonction
 de la présence ou de l'absence d'un module spécifique</td></tr>
@@ -1720,7 +1720,7 @@ versions 2.1 et supérieures.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Include" id="Include">Include</a> <a name="include" id="include">Directive</a></h2>
+<div class="directive-section"><h2><a name="include" id="include">Directive</a> <a name="Include" id="Include">Include</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Inclut d'autres fichiers de configuration dans un des
 fichiers de configuration du serveur</td></tr>
@@ -1786,7 +1786,7 @@ depuis la version 2.3.6</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="KeepAlive" id="KeepAlive">KeepAlive</a> <a name="keepalive" id="keepalive">Directive</a></h2>
+<div class="directive-section"><h2><a name="keepalive" id="keepalive">Directive</a> <a name="KeepAlive" id="KeepAlive">KeepAlive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active les connexions HTTP persistantes</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>KeepAlive On|Off</code></td></tr>
@@ -1827,7 +1827,7 @@ depuis la version 2.3.6</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="KeepAliveTimeout" id="KeepAliveTimeout">KeepAliveTimeout</a> <a name="keepalivetimeout" id="keepalivetimeout">Directive</a></h2>
+<div class="directive-section"><h2><a name="keepalivetimeout" id="keepalivetimeout">Directive</a> <a name="KeepAliveTimeout" id="KeepAliveTimeout">KeepAliveTimeout</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Durée pendant laquelle le serveur va attendre une requête
 avant de fermer une connexion persistante</td></tr>
@@ -1855,7 +1855,7 @@ avant de fermer une connexion persistante</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Limit" id="Limit">&lt;Limit&gt;</a> <a name="limit" id="limit">Directive</a></h2>
+<div class="directive-section"><h2><a name="limit" id="limit">Directive</a> <a name="Limit" id="Limit">&lt;Limit&gt;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Restreint les contrôles d'accès que la section contient à
 certaines méthodes HTTP</td></tr>
@@ -1908,7 +1908,7 @@ certaines méthodes HTTP</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LimitExcept" id="LimitExcept">&lt;LimitExcept&gt;</a> <a name="limitexcept" id="limitexcept">Directive</a></h2>
+<div class="directive-section"><h2><a name="limitexcept" id="limitexcept">Directive</a> <a name="LimitExcept" id="LimitExcept">&lt;LimitExcept&gt;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Applique les contrôles d'accès à toutes les méthodes HTTP,
 sauf celles qui sont spécifiées</td></tr>
@@ -1943,7 +1943,7 @@ sauf celles qui sont spécifiées</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LimitInternalRecursion" id="LimitInternalRecursion">LimitInternalRecursion</a> <a name="limitinternalrecursion" id="limitinternalrecursion">Directive</a></h2>
+<div class="directive-section"><h2><a name="limitinternalrecursion" id="limitinternalrecursion">Directive</a> <a name="LimitInternalRecursion" id="LimitInternalRecursion">LimitInternalRecursion</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Détermine le nombre maximal de redirections internes et de
 sous-requêtes imbriquées</td></tr>
@@ -1980,7 +1980,7 @@ sous-requêtes imbriquées</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LimitRequestBody" id="LimitRequestBody">LimitRequestBody</a> <a name="limitrequestbody" id="limitrequestbody">Directive</a></h2>
+<div class="directive-section"><h2><a name="limitrequestbody" id="limitrequestbody">Directive</a> <a name="LimitRequestBody" id="LimitRequestBody">LimitRequestBody</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>limite la taille maximale du corps de la requête HTTP
 envoyée par le client</td></tr>
@@ -2029,7 +2029,7 @@ envoyée par le client</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LimitRequestFields" id="LimitRequestFields">LimitRequestFields</a> <a name="limitrequestfields" id="limitrequestfields">Directive</a></h2>
+<div class="directive-section"><h2><a name="limitrequestfields" id="limitrequestfields">Directive</a> <a name="LimitRequestFields" id="LimitRequestFields">LimitRequestFields</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Limite le nombre de champs d'en-tête autorisés dans une
 requête HTTP</td></tr>
@@ -2080,7 +2080,7 @@ requête HTTP</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LimitRequestFieldSize" id="LimitRequestFieldSize">LimitRequestFieldSize</a> <a name="limitrequestfieldsize" id="limitrequestfieldsize">Directive</a></h2>
+<div class="directive-section"><h2><a name="limitrequestfieldsize" id="limitrequestfieldsize">Directive</a> <a name="LimitRequestFieldSize" id="LimitRequestFieldSize">LimitRequestFieldSize</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Dédinit la taille maximale autorisée d'un en-tête de
 requête HTTP</td></tr>
@@ -2128,7 +2128,7 @@ requête HTTP</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LimitRequestLine" id="LimitRequestLine">LimitRequestLine</a> <a name="limitrequestline" id="limitrequestline">Directive</a></h2>
+<div class="directive-section"><h2><a name="limitrequestline" id="limitrequestline">Directive</a> <a name="LimitRequestLine" id="LimitRequestLine">LimitRequestLine</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit la taille maximale d'une ligne de requête
 HTTP</td></tr>
@@ -2176,7 +2176,7 @@ HTTP</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LimitXMLRequestBody" id="LimitXMLRequestBody">LimitXMLRequestBody</a> <a name="limitxmlrequestbody" id="limitxmlrequestbody">Directive</a></h2>
+<div class="directive-section"><h2><a name="limitxmlrequestbody" id="limitxmlrequestbody">Directive</a> <a name="LimitXMLRequestBody" id="LimitXMLRequestBody">LimitXMLRequestBody</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit la taille maximale du corps d'une requête au format
 XML</td></tr>
@@ -2200,7 +2200,7 @@ XML</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Location" id="Location">&lt;Location&gt;</a> <a name="location" id="location">Directive</a></h2>
+<div class="directive-section"><h2><a name="location" id="location">Directive</a> <a name="Location" id="Location">&lt;Location&gt;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>N'applique les directives contenues qu'aux URLs
 spécifiées</td></tr>
@@ -2346,7 +2346,7 @@ entre elles à la réception d'une requête.</li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LocationMatch" id="LocationMatch">&lt;LocationMatch&gt;</a> <a name="locationmatch" id="locationmatch">Directive</a></h2>
+<div class="directive-section"><h2><a name="locationmatch" id="locationmatch">Directive</a> <a name="LocationMatch" id="LocationMatch">&lt;LocationMatch&gt;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>N'applique les directives contenues qu'aux URLs
 correspondant à une expression rationnelle</td></tr>
@@ -2378,7 +2378,7 @@ entre elles à la réception d'une requête.</li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LogLevel" id="LogLevel">LogLevel</a> <a name="loglevel" id="loglevel">Directive</a></h2>
+<div class="directive-section"><h2><a name="loglevel" id="loglevel">Directive</a> <a name="LogLevel" id="LogLevel">LogLevel</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Contrôle la verbosité du journal des erreurs</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LogLevel <var>niveau</var></code></td></tr>
@@ -2496,7 +2496,7 @@ entre elles à la réception d'une requête.</li>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MaxKeepAliveRequests" id="MaxKeepAliveRequests">MaxKeepAliveRequests</a> <a name="maxkeepaliverequests" id="maxkeepaliverequests">Directive</a></h2>
+<div class="directive-section"><h2><a name="maxkeepaliverequests" id="maxkeepaliverequests">Directive</a> <a name="MaxKeepAliveRequests" id="MaxKeepAliveRequests">MaxKeepAliveRequests</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nombre de requêtes permises pour une connexion
 persistante</td></tr>
@@ -2521,7 +2521,7 @@ persistante</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MaxRanges" id="MaxRanges">MaxRanges</a> <a name="maxranges" id="maxranges">Directive</a></h2>
+<div class="directive-section"><h2><a name="maxranges" id="maxranges">Directive</a> <a name="MaxRanges" id="MaxRanges">MaxRanges</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nombre de segments de données autorisé avant le renvoi de
 l'intégralité de la ressource</td></tr>
@@ -2556,7 +2556,7 @@ Apache</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MergeTrailers" id="MergeTrailers">MergeTrailers</a> <a name="mergetrailers" id="mergetrailers">Directive</a></h2>
+<div class="directive-section"><h2><a name="mergetrailers" id="mergetrailers">Directive</a> <a name="MergeTrailers" id="MergeTrailers">MergeTrailers</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Détermine si les données supplémentaires (trailers) sont
 fusionnées avec les en-têtes</td></tr>
@@ -2580,7 +2580,7 @@ Apache</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="NameVirtualHost" id="NameVirtualHost">NameVirtualHost</a> <a name="namevirtualhost" id="namevirtualhost">Directive</a></h2>
+<div class="directive-section"><h2><a name="namevirtualhost" id="namevirtualhost">Directive</a> <a name="NameVirtualHost" id="NameVirtualHost">NameVirtualHost</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit une adresse IP pour les serveurs virtuels à base de
 nom</td></tr>
@@ -2664,7 +2664,7 @@ virtuels</a></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Options" id="Options">Options</a> <a name="options" id="options">Directive</a></h2>
+<div class="directive-section"><h2><a name="options" id="options">Directive</a> <a name="Options" id="Options">Options</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit les fonctionnalités disponibles pour un répertoire
 particulier</td></tr>
@@ -2839,7 +2839,7 @@ particulier</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Protocol" id="Protocol">Protocol</a> <a name="protocol" id="protocol">Directive</a></h2>
+<div class="directive-section"><h2><a name="protocol" id="protocol">Directive</a> <a name="Protocol" id="Protocol">Protocol</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Protocole pour une socket d'écoute</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Protocol <var>protocole</var></code></td></tr>
@@ -2878,7 +2878,7 @@ uniquement depuis la version 2.3.3 sous Windows.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Require" id="Require">Require</a> <a name="require" id="require">Directive</a></h2>
+<div class="directive-section"><h2><a name="require" id="require">Directive</a> <a name="Require" id="Require">Require</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Détermine les utilisateurs authentifiés autorisés à accéder
 à une ressource</td></tr>
@@ -2989,7 +2989,7 @@ uniquement depuis la version 2.3.3 sous Windows.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RLimitCPU" id="RLimitCPU">RLimitCPU</a> <a name="rlimitcpu" id="rlimitcpu">Directive</a></h2>
+<div class="directive-section"><h2><a name="rlimitcpu" id="rlimitcpu">Directive</a> <a name="RLimitCPU" id="RLimitCPU">RLimitCPU</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Limite le temps CPU alloué aux processus initiés par les
 processus enfants d'Apache</td></tr>
@@ -3028,7 +3028,7 @@ d'exploitation</code></td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RLimitMEM" id="RLimitMEM">RLimitMEM</a> <a name="rlimitmem" id="rlimitmem">Directive</a></h2>
+<div class="directive-section"><h2><a name="rlimitmem" id="rlimitmem">Directive</a> <a name="RLimitMEM" id="RLimitMEM">RLimitMEM</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Limite la mémoire allouée aux processus initiés par les
 processus enfants d'Apache</td></tr>
@@ -3067,7 +3067,7 @@ d'exploitation</code></td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RLimitNPROC" id="RLimitNPROC">RLimitNPROC</a> <a name="rlimitnproc" id="rlimitnproc">Directive</a></h2>
+<div class="directive-section"><h2><a name="rlimitnproc" id="rlimitnproc">Directive</a> <a name="RLimitNPROC" id="RLimitNPROC">RLimitNPROC</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Limite le nombre de processus qui peuvent être initiés par
 les processus initiés par les processus enfants d'Apache</td></tr>
@@ -3114,7 +3114,7 @@ les processus initiés par les processus enfants d'Apache</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Satisfy" id="Satisfy">Satisfy</a> <a name="satisfy" id="satisfy">Directive</a></h2>
+<div class="directive-section"><h2><a name="satisfy" id="satisfy">Directive</a> <a name="Satisfy" id="Satisfy">Satisfy</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Interaction entre les contrôles d'accès par hôte
 et l'authentification des utilisateurs</td></tr>
@@ -3167,7 +3167,7 @@ supérieures</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ScriptInterpreterSource" id="ScriptInterpreterSource">ScriptInterpreterSource</a> <a name="scriptinterpretersource" id="scriptinterpretersource">Directive</a></h2>
+<div class="directive-section"><h2><a name="scriptinterpretersource" id="scriptinterpretersource">Directive</a> <a name="ScriptInterpreterSource" id="ScriptInterpreterSource">ScriptInterpreterSource</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Permet de localiser l'interpréteur des scripts
 CGI</td></tr>
@@ -3241,7 +3241,7 @@ l'option <code>Registry-Strict</code> est disponible dans les versions
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ServerAdmin" id="ServerAdmin">ServerAdmin</a> <a name="serveradmin" id="serveradmin">Directive</a></h2>
+<div class="directive-section"><h2><a name="serveradmin" id="serveradmin">Directive</a> <a name="ServerAdmin" id="ServerAdmin">ServerAdmin</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>L'adresse électronique que le serveur inclut dans les
 messages d'erreur envoyés au client</td></tr>
@@ -3273,7 +3273,7 @@ messages d'erreur envoyés au client</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ServerAlias" id="ServerAlias">ServerAlias</a> <a name="serveralias" id="serveralias">Directive</a></h2>
+<div class="directive-section"><h2><a name="serveralias" id="serveralias">Directive</a> <a name="ServerAlias" id="ServerAlias">ServerAlias</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Autres noms d'un serveur utilisables pour atteindre des
 serveurs virtuels à base de nom</td></tr>
@@ -3316,7 +3316,7 @@ d'Apache</a></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ServerName" id="ServerName">ServerName</a> <a name="servername" id="servername">Directive</a></h2>
+<div class="directive-section"><h2><a name="servername" id="servername">Directive</a> <a name="ServerName" id="ServerName">ServerName</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nom d'hôte et port que le serveur utilise pour
 s'authentifier lui-même</td></tr>
@@ -3397,7 +3397,7 @@ d'Apache</a></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ServerPath" id="ServerPath">ServerPath</a> <a name="serverpath" id="serverpath">Directive</a></h2>
+<div class="directive-section"><h2><a name="serverpath" id="serverpath">Directive</a> <a name="ServerPath" id="ServerPath">ServerPath</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nom de chemin d'URL hérité pour un serveur virtuel à base
 de nom accédé par un navigateur incompatible</td></tr>
@@ -3416,7 +3416,7 @@ d'Apache</a></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ServerRoot" id="ServerRoot">ServerRoot</a> <a name="serverroot" id="serverroot">Directive</a></h2>
+<div class="directive-section"><h2><a name="serverroot" id="serverroot">Directive</a> <a name="ServerRoot" id="ServerRoot">ServerRoot</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Racine du répertoire d'installation du
 serveur</td></tr>
@@ -3449,7 +3449,7 @@ correctement les permissions sur le répertoire indiqué par la directive
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ServerSignature" id="ServerSignature">ServerSignature</a> <a name="serversignature" id="serversignature">Directive</a></h2>
+<div class="directive-section"><h2><a name="serversignature" id="serversignature">Directive</a> <a name="ServerSignature" id="ServerSignature">ServerSignature</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit un pied de page pour les documents générés par le
 serveur</td></tr>
@@ -3489,7 +3489,7 @@ serveur</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ServerTokens" id="ServerTokens">ServerTokens</a> <a name="servertokens" id="servertokens">Directive</a></h2>
+<div class="directive-section"><h2><a name="servertokens" id="servertokens">Directive</a> <a name="ServerTokens" id="ServerTokens">ServerTokens</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure l'en-tête <code>Server</code> de la réponse
 HTTP</td></tr>
@@ -3549,7 +3549,7 @@ HTTP</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SetHandler" id="SetHandler">SetHandler</a> <a name="sethandler" id="sethandler">Directive</a></h2>
+<div class="directive-section"><h2><a name="sethandler" id="sethandler">Directive</a> <a name="SetHandler" id="SetHandler">SetHandler</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Force le traitement des fichiers spécifiés par un
 gestionnaire particulier</td></tr>
@@ -3597,7 +3597,7 @@ gestionnaire particulier</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SetInputFilter" id="SetInputFilter">SetInputFilter</a> <a name="setinputfilter" id="setinputfilter">Directive</a></h2>
+<div class="directive-section"><h2><a name="setinputfilter" id="setinputfilter">Directive</a> <a name="SetInputFilter" id="SetInputFilter">SetInputFilter</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit les filtres par lesquels vont passer les requêtes
 client et les données POST</td></tr>
@@ -3623,7 +3623,7 @@ client et les données POST</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SetOutputFilter" id="SetOutputFilter">SetOutputFilter</a> <a name="setoutputfilter" id="setoutputfilter">Directive</a></h2>
+<div class="directive-section"><h2><a name="setoutputfilter" id="setoutputfilter">Directive</a> <a name="SetOutputFilter" id="SetOutputFilter">SetOutputFilter</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit les filtres par lesquels vont passer les réponses
 du serveur</td></tr>
@@ -3661,7 +3661,7 @@ du serveur</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Suexec" id="Suexec">Suexec</a> <a name="suexec" id="suexec">Directive</a></h2>
+<div class="directive-section"><h2><a name="suexec" id="suexec">Directive</a> <a name="Suexec" id="Suexec">Suexec</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active ou désactive la fonctionnalité suEXEC</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Suexec On|Off</code></td></tr>
@@ -3681,7 +3681,7 @@ appropriés, Off dans le cas contraire</code></td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="TimeOut" id="TimeOut">TimeOut</a> <a name="timeout" id="timeout">Directive</a></h2>
+<div class="directive-section"><h2><a name="timeout" id="timeout">Directive</a> <a name="TimeOut" id="TimeOut">TimeOut</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Temps pendant lequel le serveur va attendre certains
 évènements avant de considérer qu'une requête a échoué</td></tr>
@@ -3719,7 +3719,7 @@ appropriés, Off dans le cas contraire</code></td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="TraceEnable" id="TraceEnable">TraceEnable</a> <a name="traceenable" id="traceenable">Directive</a></h2>
+<div class="directive-section"><h2><a name="traceenable" id="traceenable">Directive</a> <a name="TraceEnable" id="TraceEnable">TraceEnable</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Détermine le comportement des requêtes
 <code>TRACE</code></td></tr>
@@ -3753,7 +3753,7 @@ supérieures d'Apache</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="UseCanonicalName" id="UseCanonicalName">UseCanonicalName</a> <a name="usecanonicalname" id="usecanonicalname">Directive</a></h2>
+<div class="directive-section"><h2><a name="usecanonicalname" id="usecanonicalname">Directive</a> <a name="UseCanonicalName" id="UseCanonicalName">UseCanonicalName</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit la manière dont le serveur détermine son propre nom
 et son port</td></tr>
@@ -3823,7 +3823,7 @@ et son port</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="UseCanonicalPhysicalPort" id="UseCanonicalPhysicalPort">UseCanonicalPhysicalPort</a> <a name="usecanonicalphysicalport" id="usecanonicalphysicalport">Directive</a></h2>
+<div class="directive-section"><h2><a name="usecanonicalphysicalport" id="usecanonicalphysicalport">Directive</a> <a name="UseCanonicalPhysicalPort" id="UseCanonicalPhysicalPort">UseCanonicalPhysicalPort</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit la manière dont le serveur détermine son propre nom
 et son port</td></tr>
@@ -3875,7 +3875,7 @@ et son port</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="VirtualHost" id="VirtualHost">&lt;VirtualHost&gt;</a> <a name="virtualhost" id="virtualhost">Directive</a></h2>
+<div class="directive-section"><h2><a name="virtualhost" id="virtualhost">Directive</a> <a name="VirtualHost" id="VirtualHost">&lt;VirtualHost&gt;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Contient des directives qui ne s'appliquent qu'à un nom
 d'hôte spécifique ou à une adresse IP</td></tr>
