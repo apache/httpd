@@ -480,7 +480,7 @@
 
    </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AllowCONNECT" id="AllowCONNECT">AllowCONNECT</a> <a name="allowconnect" id="allowconnect">Directive</a></h2>
+<div class="directive-section"><h2><a name="allowconnect" id="allowconnect">Directive</a> <a name="AllowCONNECT" id="AllowCONNECT">AllowCONNECT</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ports autorisés à se <code>CONNECT</code>er à travers le
 mandataire</td></tr>
@@ -509,7 +509,7 @@ mandataire</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="BalancerMember" id="BalancerMember">BalancerMember</a> <a name="balancermember" id="balancermember">Directive</a></h2>
+<div class="directive-section"><h2><a name="balancermember" id="balancermember">Directive</a> <a name="BalancerMember" id="BalancerMember">BalancerMember</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ajoute un membre à un groupe de répartition de
 charge</td></tr>
@@ -531,7 +531,7 @@ charge</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="NoProxy" id="NoProxy">NoProxy</a> <a name="noproxy" id="noproxy">Directive</a></h2>
+<div class="directive-section"><h2><a name="noproxy" id="noproxy">Directive</a> <a name="NoProxy" id="NoProxy">NoProxy</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Serveurs, domaines ou réseaux auquels on se connectera
 directement</td></tr>
@@ -675,7 +675,7 @@ directement</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Proxy" id="Proxy">&lt;Proxy&gt;</a> <a name="proxy" id="proxy">Directive</a></h2>
+<div class="directive-section"><h2><a name="proxy" id="proxy">Directive</a> <a name="Proxy" id="Proxy">&lt;Proxy&gt;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Conteneur de directives s'appliquant à des ressources
 mandatées</td></tr>
@@ -736,7 +736,7 @@ mandatées</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyBadHeader" id="ProxyBadHeader">ProxyBadHeader</a> <a name="proxybadheader" id="proxybadheader">Directive</a></h2>
+<div class="directive-section"><h2><a name="proxybadheader" id="proxybadheader">Directive</a> <a name="ProxyBadHeader" id="ProxyBadHeader">ProxyBadHeader</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Détermine la manière de traiter les lignes d'en-tête
 incorrectes d'une réponse</td></tr>
@@ -772,7 +772,7 @@ incorrectes d'une réponse</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyBlock" id="ProxyBlock">ProxyBlock</a> <a name="proxyblock" id="proxyblock">Directive</a></h2>
+<div class="directive-section"><h2><a name="proxyblock" id="proxyblock">Directive</a> <a name="ProxyBlock" id="ProxyBlock">ProxyBlock</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Termes, serveurs ou domaines bloqués par le
 mandataire</td></tr>
@@ -813,7 +813,7 @@ mandataire</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyDomain" id="ProxyDomain">ProxyDomain</a> <a name="proxydomain" id="proxydomain">Directive</a></h2>
+<div class="directive-section"><h2><a name="proxydomain" id="proxydomain">Directive</a> <a name="ProxyDomain" id="ProxyDomain">ProxyDomain</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nom de domaine par défaut pour les requêtes
 mandatées</td></tr>
@@ -838,7 +838,7 @@ mandatées</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyErrorOverride" id="ProxyErrorOverride">ProxyErrorOverride</a> <a name="proxyerroroverride" id="proxyerroroverride">Directive</a></h2>
+<div class="directive-section"><h2><a name="proxyerroroverride" id="proxyerroroverride">Directive</a> <a name="ProxyErrorOverride" id="ProxyErrorOverride">ProxyErrorOverride</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Outrepasser les pages d'erreur pour les contenus
 mandatés</td></tr>
@@ -864,7 +864,7 @@ mandatés</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyFtpDirCharset" id="ProxyFtpDirCharset">ProxyFtpDirCharset</a> <a name="proxyftpdircharset" id="proxyftpdircharset">Directive</a></h2>
+<div class="directive-section"><h2><a name="proxyftpdircharset" id="proxyftpdircharset">Directive</a> <a name="ProxyFtpDirCharset" id="ProxyFtpDirCharset">ProxyFtpDirCharset</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le jeu de caractères des listings FTP
 mandatés</td></tr>
@@ -881,7 +881,7 @@ mandatés</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyIOBufferSize" id="ProxyIOBufferSize">ProxyIOBufferSize</a> <a name="proxyiobuffersize" id="proxyiobuffersize">Directive</a></h2>
+<div class="directive-section"><h2><a name="proxyiobuffersize" id="proxyiobuffersize">Directive</a> <a name="ProxyIOBufferSize" id="ProxyIOBufferSize">ProxyIOBufferSize</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Détermine la taille du tampon interne de transfert de
 données</td></tr>
@@ -907,7 +907,7 @@ données</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyMatch" id="ProxyMatch">&lt;ProxyMatch&gt;</a> <a name="proxymatch" id="proxymatch">Directive</a></h2>
+<div class="directive-section"><h2><a name="proxymatch" id="proxymatch">Directive</a> <a name="ProxyMatch" id="ProxyMatch">&lt;ProxyMatch&gt;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Conteneur de directives s'appliquant à des ressources
 mandatées correspondant à une expression rationnelle</td></tr>
@@ -926,7 +926,7 @@ mandatées correspondant à une expression rationnelle</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyMaxForwards" id="ProxyMaxForwards">ProxyMaxForwards</a> <a name="proxymaxforwards" id="proxymaxforwards">Directive</a></h2>
+<div class="directive-section"><h2><a name="proxymaxforwards" id="proxymaxforwards">Directive</a> <a name="ProxyMaxForwards" id="ProxyMaxForwards">ProxyMaxForwards</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nombre maximum de mandataires à travers lesquelles une
 requête peut être redirigée</td></tr>
@@ -961,7 +961,7 @@ modifié dans 2.2.7</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyPass" id="ProxyPass">ProxyPass</a> <a name="proxypass" id="proxypass">Directive</a></h2>
+<div class="directive-section"><h2><a name="proxypass" id="proxypass">Directive</a> <a name="ProxyPass" id="ProxyPass">ProxyPass</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Référencer des serveurs distants depuis
 l'espace d'URLs du serveur local</td></tr>
@@ -1421,7 +1421,7 @@ ProxyPassReverse  /mirror/foo/ https://backend.example.com/</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyPassInterpolateEnv" id="ProxyPassInterpolateEnv">ProxyPassInterpolateEnv</a> <a name="proxypassinterpolateenv" id="proxypassinterpolateenv">Directive</a></h2>
+<div class="directive-section"><h2><a name="proxypassinterpolateenv" id="proxypassinterpolateenv">Directive</a> <a name="ProxyPassInterpolateEnv" id="ProxyPassInterpolateEnv">ProxyPassInterpolateEnv</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active l'interpolation des variables d'environnement dans
 les configurations de mandataires inverses</td></tr>
@@ -1453,7 +1453,7 @@ les configurations de mandataires inverses</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyPassMatch" id="ProxyPassMatch">ProxyPassMatch</a> <a name="proxypassmatch" id="proxypassmatch">Directive</a></h2>
+<div class="directive-section"><h2><a name="proxypassmatch" id="proxypassmatch">Directive</a> <a name="ProxyPassMatch" id="ProxyPassMatch">ProxyPassMatch</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fait correspondre des serveurs distants dans l'espace d'URL
 du serveur local en utilisant des expressions rationnelles</td></tr>
@@ -1525,7 +1525,7 @@ d'Apache</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyPassReverse" id="ProxyPassReverse">ProxyPassReverse</a> <a name="proxypassreverse" id="proxypassreverse">Directive</a></h2>
+<div class="directive-section"><h2><a name="proxypassreverse" id="proxypassreverse">Directive</a> <a name="ProxyPassReverse" id="ProxyPassReverse">ProxyPassReverse</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ajuste l'URL dans les en-têtes de la réponse HTTP envoyée
 par un serveur mandaté en inverse</td></tr>
@@ -1613,7 +1613,7 @@ par un serveur mandaté en inverse</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyPassReverseCookieDomain" id="ProxyPassReverseCookieDomain">ProxyPassReverseCookieDomain</a> <a name="proxypassreversecookiedomain" id="proxypassreversecookiedomain">Directive</a></h2>
+<div class="directive-section"><h2><a name="proxypassreversecookiedomain" id="proxypassreversecookiedomain">Directive</a> <a name="ProxyPassReverseCookieDomain" id="ProxyPassReverseCookieDomain">ProxyPassReverseCookieDomain</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ajuste la chaîne correspondant au domaine dans les en-têtes
 Set-Cookie en provenance d'un serveur mandaté</td></tr>
@@ -1631,7 +1631,7 @@ réécrit la chaîne correspondant au domaine dans les en-têtes
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyPassReverseCookiePath" id="ProxyPassReverseCookiePath">ProxyPassReverseCookiePath</a> <a name="proxypassreversecookiepath" id="proxypassreversecookiepath">Directive</a></h2>
+<div class="directive-section"><h2><a name="proxypassreversecookiepath" id="proxypassreversecookiepath">Directive</a> <a name="ProxyPassReverseCookiePath" id="ProxyPassReverseCookiePath">ProxyPassReverseCookiePath</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ajuste la chaîne correspondant au chemin dans les en-têtes
 Set-Cookie en provenance d'un serveur mandaté</td></tr>
@@ -1662,7 +1662,7 @@ en <code>/mirror/foo/</code>..
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyPreserveHost" id="ProxyPreserveHost">ProxyPreserveHost</a> <a name="proxypreservehost" id="proxypreservehost">Directive</a></h2>
+<div class="directive-section"><h2><a name="proxypreservehost" id="proxypreservehost">Directive</a> <a name="ProxyPreserveHost" id="ProxyPreserveHost">ProxyPreserveHost</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Utilise l'en-tête de requête entrante Host pour la requête
 du mandataire</td></tr>
@@ -1685,7 +1685,7 @@ du mandataire</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyReceiveBufferSize" id="ProxyReceiveBufferSize">ProxyReceiveBufferSize</a> <a name="proxyreceivebuffersize" id="proxyreceivebuffersize">Directive</a></h2>
+<div class="directive-section"><h2><a name="proxyreceivebuffersize" id="proxyreceivebuffersize">Directive</a> <a name="ProxyReceiveBufferSize" id="ProxyReceiveBufferSize">ProxyReceiveBufferSize</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Taille du tampon réseau pour les connexions mandatées HTTP
 et FTP</td></tr>
@@ -1708,7 +1708,7 @@ et FTP</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyRemote" id="ProxyRemote">ProxyRemote</a> <a name="proxyremote" id="proxyremote">Directive</a></h2>
+<div class="directive-section"><h2><a name="proxyremote" id="proxyremote">Directive</a> <a name="ProxyRemote" id="ProxyRemote">ProxyRemote</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Mandataire distant à utiliser pour traiter certaines
 requêtes</td></tr>
@@ -1753,7 +1753,7 @@ requêtes</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyRemoteMatch" id="ProxyRemoteMatch">ProxyRemoteMatch</a> <a name="proxyremotematch" id="proxyremotematch">Directive</a></h2>
+<div class="directive-section"><h2><a name="proxyremotematch" id="proxyremotematch">Directive</a> <a name="ProxyRemoteMatch" id="ProxyRemoteMatch">ProxyRemoteMatch</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le mandataire distant à utiliser pour traiter les requêtes
 correspondant à une expression rationnelle</td></tr>
@@ -1770,7 +1770,7 @@ correspondant à une expression rationnelle</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyRequests" id="ProxyRequests">ProxyRequests</a> <a name="proxyrequests" id="proxyrequests">Directive</a></h2>
+<div class="directive-section"><h2><a name="proxyrequests" id="proxyrequests">Directive</a> <a name="ProxyRequests" id="ProxyRequests">ProxyRequests</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active la fonctionnalité (standard) de mandataire
 direct</td></tr>
@@ -1812,7 +1812,7 @@ inverses</a></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxySet" id="ProxySet">ProxySet</a> <a name="proxyset" id="proxyset">Directive</a></h2>
+<div class="directive-section"><h2><a name="proxyset" id="proxyset">Directive</a> <a name="ProxySet" id="ProxySet">ProxySet</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit différents paramètres relatifs à la répartition de
 charge des mandataires et aux membres des groupes de répartition de
@@ -1869,7 +1869,7 @@ d'Apache.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyStatus" id="ProxyStatus">ProxyStatus</a> <a name="proxystatus" id="proxystatus">Directive</a></h2>
+<div class="directive-section"><h2><a name="proxystatus" id="proxystatus">Directive</a> <a name="ProxyStatus" id="ProxyStatus">ProxyStatus</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Affiche l'état du répartiteur de charge du mandataire dans
 mod_status</td></tr>
@@ -1891,7 +1891,7 @@ mod_status</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyTimeout" id="ProxyTimeout">ProxyTimeout</a> <a name="proxytimeout" id="proxytimeout">Directive</a></h2>
+<div class="directive-section"><h2><a name="proxytimeout" id="proxytimeout">Directive</a> <a name="ProxyTimeout" id="ProxyTimeout">ProxyTimeout</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Délai d'attente réseau pour les requêtes
 mandatées</td></tr>
@@ -1911,7 +1911,7 @@ mandatées</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyVia" id="ProxyVia">ProxyVia</a> <a name="proxyvia" id="proxyvia">Directive</a></h2>
+<div class="directive-section"><h2><a name="proxyvia" id="proxyvia">Directive</a> <a name="ProxyVia" id="ProxyVia">ProxyVia</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Information fourni dans l'en-tête de réponse HTTP
 <code>Via</code> pour les requêtes mandatées</td></tr>
