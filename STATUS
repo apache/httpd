@@ -140,7 +140,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1632742
                   http://svn.apache.org/r1634836 (CHANGES entry)
      2.4.x patches: trunk works (modulo CHANGES).
-     +1: ylavic
+     +1: ylavic, covener
      ylavic: http://people.apache.org/~ylavic/httpd-r1632742-x-w.diff is the
              same patch without space changes (may be easier to review).
 
@@ -248,7 +248,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1664071
                   http://svn.apache.org/r1664299
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-keep_alive_timeout_set.patch
-     +1: ylavic
+     +1: ylavic, covener
 
   *) http: Make ap_die() robust against any HTTP error code and not modify
      response status (finally logged) when nothing is to be done. PR 56035.
