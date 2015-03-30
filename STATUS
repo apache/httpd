@@ -106,6 +106,17 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_dav: Avoid a potential integer underflow in the lock timeout value sent
+     back to a client. PR 55420
+     trunk patch: http://svn.apache.org/r1666361
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: jailletc36, ylavic, covener
+
+  *) core: Add expression support to ErrorDocument. Switch from a fixed
+     sized 664 byte array per merge to a hash table.
+     trunk patch: http://svn.apache.org/r1661448
+     2.4.x patch: http://people.apache.org/~minfrin/httpd-core-errordocument24-3.patch
+     +1: minfrin, jim, covener
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -223,12 +234,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic
 
-  *) core: Add expression support to ErrorDocument. Switch from a fixed
-     sized 664 byte array per merge to a hash table.
-     trunk patch: http://svn.apache.org/r1661448
-     2.4.x patch: http://people.apache.org/~minfrin/httpd-core-errordocument24-3.patch
-     +1: minfrin, jim
-
   *) mod_proxy_balancer: Fix HTML of balancer-manager. Bugz: 55466
      trunk patch: http://svn.apache.org/r1664356
      2.4.x patch: trunk works
@@ -293,17 +298,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1657638
                   http://svn.apache.org/r1669130
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-mod_proxy-transfer-v3.patch
-     +1: ylavic
-     covener: I noticed while reviewing that rv is not used in ap_log_rerror at least
-     in the path context. If it had, the |= would have dropped the strerror.  Think
-     there's any risk in having rv like that floating around?
-     ylavic: Agreed, fixed in r1669130 (and v3) by using a pure boolean instead.
-
-  *) mod_dav: Avoid a potential integer underflow in the lock timeout value sent
-     back to a client. PR 55420
-     trunk patch: http://svn.apache.org/r1666361
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: jailletc36, ylavic
+     +1: ylavic, covener
 
   *) core: Initialize scoreboard's used optional functions on graceful restarts to
      avoid a crash when relocation occurs.  PR 57177.
@@ -311,7 +306,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1668535 (CHANGES entry)
                   http://svn.apache.org/r1668553
      2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic
+     +1: ylavic, covener
 
   *) core: Cleanup the request soon/even if some output filter fails to
      handle the EOR bucket.
@@ -330,15 +325,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1669289
                   http://svn.apache.org/r1669292 (CHANGES entry)
      2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic
+     +1: ylavic, covener
 
   *) doc: allows placing the 'directive' word before the directive name in the
           module synopsis
      trunk patch: http://svn.apache.org/r1659855 
      2.4.x patch: trunk works
-     +1: jailletc36
+     +1: jailletc36, covener 
      note jailletc36: not sure a vote is needed for that, this is only doc
-
+           
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
