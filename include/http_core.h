@@ -497,12 +497,7 @@ typedef struct {
     overrides_t override;
     allow_options_t override_opts;
 
-    /* Custom response config. These can contain text or a URL to redirect to.
-     * if response_code_strings is NULL then there are none in the config,
-     * if it's not null then it's allocated to sizeof(char*)*RESPONSE_CODES.
-     * This lets us do quick merges in merge_core_dir_configs().
-     */
-
+    /* Used to be the custom response config. No longer used. */
     char **response_code_strings; /* from ErrorDocument, not from
                                    * ap_custom_response() */
 
@@ -617,9 +612,14 @@ typedef struct {
     /** Max number of Range reversals (eg: 200-300, 100-125) allowed **/
     int max_reversals;
 
-
     /** Named back references */
     apr_array_header_t *refs;
+
+    /** Custom response config with expression support. The hash table
+     * contains compiled expressions keyed against the custom response
+     * code.
+     */
+    apr_hash_t *response_code_exprs;
 
 } core_dir_config;
 
