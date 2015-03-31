@@ -12,6 +12,9 @@ Changes with Apache 2.4.13
      calls r:wsupgrade() can cause a child process crash. 
      [Edward Lu <Chaosed0 gmail.com>]
 
+  *) core_filters: restore/disable TCP_NOPUSH option after non-blocking
+     sendfile.  [Yann Ylavic]
+
   *) core: Initialize scoreboard's used optional functions on graceful restarts
      to avoid a crash when relocation occurs.  PR 57177.  [Yann Ylavic]
 

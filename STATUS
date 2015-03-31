@@ -106,12 +106,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) core_filters: restore/disable TCP_NOPUSH option after non-blocking
-     sendfile.
-     trunk patch: http://svn.apache.org/r1669289
-                  http://svn.apache.org/r1669292 (CHANGES entry)
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, covener, jim
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
