@@ -343,7 +343,7 @@ static const char *authn_ap_auth_type(request_rec *r)
         type = ap_expr_str_exec(r, conf->ap_auth_type, &err);
         if (err) {
             ap_log_rerror(
-                    APLOG_MARK, APLOG_ERR, APR_SUCCESS, r, APLOGNO() "AuthType expression could not be evaluated: %s", err);
+                    APLOG_MARK, APLOG_ERR, APR_SUCCESS, r, APLOGNO(02834) "AuthType expression could not be evaluated: %s", err);
             return NULL;
         }
 
@@ -365,7 +365,7 @@ static const char *authn_ap_auth_name(request_rec *r)
         name = ap_expr_str_exec(r, conf->ap_auth_name, &err);
         if (err) {
             ap_log_rerror(
-                    APLOG_MARK, APLOG_ERR, APR_SUCCESS, r, APLOGNO() "AuthName expression could not be evaluated: %s", err);
+                    APLOG_MARK, APLOG_ERR, APR_SUCCESS, r, APLOGNO(02835) "AuthName expression could not be evaluated: %s", err);
             return NULL;
         }
 
