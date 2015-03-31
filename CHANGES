@@ -30,6 +30,10 @@ Changes with Apache 2.4.13
      a ProxyRemote forward-proxy.  PR 55892.  [Hendrik Harms <hendrik.harms
      gmail com>, William Rowe, Yann Ylavic]
 
+  *) mod_proxy_connect/wstunnel: If both client and backend sides get readable
+     at the same time, don't lose errors occuring while forwarding on the first
+     side when none occurs next on the other side, and abort.  [Yann Ylavic]
+
   *) mod_rewrite: Improve relative substitutions in per-directory/htaccess
      context for directories found by mod_userdir and mod_alias.  These no
      longer require RewriteBase to be specified. [Eric Covener]
