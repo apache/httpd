@@ -106,11 +106,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_dav: Avoid a potential integer underflow in the lock timeout value sent
-     back to a client. PR 55420
-     trunk patch: http://svn.apache.org/r1666361
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: jailletc36, ylavic, covener
 
   *) core: Add expression support to ErrorDocument. Switch from a fixed
      sized 664 byte array per merge to a hash table.
@@ -129,11 +124,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1609680
                   http://svn.apache.org/r1609688
                   http://svn.apache.org/r1641381
-     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-ap_proxy_define_match_worker.patch
-     +1: ylavic
-     -1: jim (does not cleanly apply)
      ylavic: Merge patch provided (reusing new->real to avoid double de_socketfy() call).
              Also added missing r1609688 to the patchset.
+     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-ap_proxy_define_match_worker.patch
+     +1: ylavic
 
    * mod_buffer: Forward flushed input data immediately and avoid (unlikely)
                  access to freed memory.
