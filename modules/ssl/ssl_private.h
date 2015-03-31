@@ -454,8 +454,8 @@ typedef struct {
     apr_array_header_t *npn_negofns; /* list of ssl_npn_proto_negotiated callbacks. */
 #endif
 
-#if defined(HAVE_TLS_ALPN) || defined(HAVE_TLS_NPN)
-    /* Poor man's inter-module optional hooks for NPN. */
+#ifdef HAVE_TLS_ALPN
+    /* Poor man's inter-module optional hooks for ALPN. */
     apr_array_header_t *alpn_proposefns; /* list of ssl_alpn_propose_protos callbacks */
     apr_array_header_t *alpn_negofns; /* list of ssl_alpn_proto_negotiated callbacks. */
 #endif
@@ -821,14 +821,13 @@ int          ssl_callback_ServerNameIndication(SSL *, int *, modssl_ctx_t *);
 int         ssl_callback_SessionTicket(SSL *, unsigned char *, unsigned char *,
                                        EVP_CIPHER_CTX *, HMAC_CTX *, int);
 #endif
-int ssl_callback_AdvertiseNextProtos(SSL *ssl, const unsigned char **data, unsigned int *len, void *arg);
 
 #ifdef HAVE_TLS_ALPN
 int ssl_callback_alpn_select(SSL *ssl, const unsigned char **out,
                              unsigned char *outlen, const unsigned char *in,
                              unsigned int inlen, void *arg);
 #endif
-#if defined(HAVE_TLS_NPN)
+#ifdef HAVE_TLS_NPN
 int ssl_callback_AdvertiseNextProtos(SSL *ssl, const unsigned char **data, unsigned int *len, void *arg);
 #endif
 
