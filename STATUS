@@ -106,6 +106,38 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_proxy_connect/wstunnel: If both client and backend sides get readable
+     at the same time, don't lose errors occuring while forwarding on the first
+     side when none occurs next on the other side, and abort.
+     trunk patch: http://svn.apache.org/r1657636
+                  http://svn.apache.org/r1657638
+                  http://svn.apache.org/r1669130
+     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-mod_proxy-transfer-v3.patch
+     +1: ylavic, covener, jim
+
+  *) core: Initialize scoreboard's used optional functions on graceful restarts to
+     avoid a crash when relocation occurs.  PR 57177.
+     trunk patch: http://svn.apache.org/r1668532
+                  http://svn.apache.org/r1668535 (CHANGES entry)
+                  http://svn.apache.org/r1668553
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: ylavic, covener, jim
+
+  *) core: If explicitly configured, use the KeepaliveTimeout value of the
+     virtual host which handled the latest request on the connection, or by
+     default the one of the first virtual host bound to the same IP:port.
+     PR 56226 + PR 57374.
+     trunk patch: http://svn.apache.org/r1664071
+                  http://svn.apache.org/r1664299
+     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-keep_alive_timeout_set.patch
+     +1: ylavic, covener, jim
+
+  *) core_filters: restore/disable TCP_NOPUSH option after non-blocking
+     sendfile.
+     trunk patch: http://svn.apache.org/r1669289
+                  http://svn.apache.org/r1669292 (CHANGES entry)
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: ylavic, covener, jim
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -223,15 +255,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic
 
-  *) core: If explicitly configured, use the KeepaliveTimeout value of the
-     virtual host which handled the latest request on the connection, or by
-     default the one of the first virtual host bound to the same IP:port.
-     PR 56226 + PR 57374.
-     trunk patch: http://svn.apache.org/r1664071
-                  http://svn.apache.org/r1664299
-     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-keep_alive_timeout_set.patch
-     +1: ylavic, covener, jim
-
   *) http: Make ap_die() robust against any HTTP error code and not modify
      response status (finally logged) when nothing is to be done. PR 56035.
      trunk patch: http://svn.apache.org/r1657881
@@ -273,23 +296,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: ylavic
      ylavic: updated with ap_proxy_connection_reusable(), missing in 2.4.x.
 
-  *) mod_proxy_connect/wstunnel: If both client and backend sides get readable
-     at the same time, don't lose errors occuring while forwarding on the first
-     side when none occurs next on the other side, and abort.
-     trunk patch: http://svn.apache.org/r1657636
-                  http://svn.apache.org/r1657638
-                  http://svn.apache.org/r1669130
-     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-mod_proxy-transfer-v3.patch
-     +1: ylavic, covener, jim
-
-  *) core: Initialize scoreboard's used optional functions on graceful restarts to
-     avoid a crash when relocation occurs.  PR 57177.
-     trunk patch: http://svn.apache.org/r1668532
-                  http://svn.apache.org/r1668535 (CHANGES entry)
-                  http://svn.apache.org/r1668553
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, covener, jim
-
   *) core: Cleanup the request soon/even if some output filter fails to
      handle the EOR bucket.
      trunk patch: http://svn.apache.org/r1666998
@@ -301,13 +307,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1666297
      2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic
-
-  *) core_filters: restore/disable TCP_NOPUSH option after non-blocking
-     sendfile.
-     trunk patch: http://svn.apache.org/r1669289
-                  http://svn.apache.org/r1669292 (CHANGES entry)
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, covener, jim
 
 
 OTHER PROPOSALS
