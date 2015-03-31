@@ -106,15 +106,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) core: If explicitly configured, use the KeepaliveTimeout value of the
-     virtual host which handled the latest request on the connection, or by
-     default the one of the first virtual host bound to the same IP:port.
-     PR 56226 + PR 57374.
-     trunk patch: http://svn.apache.org/r1664071
-                  http://svn.apache.org/r1664299
-     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-keep_alive_timeout_set.patch
-     +1: ylavic, covener, jim
-
   *) core_filters: restore/disable TCP_NOPUSH option after non-blocking
      sendfile.
      trunk patch: http://svn.apache.org/r1669289
