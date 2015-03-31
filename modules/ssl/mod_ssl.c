@@ -483,7 +483,7 @@ static int modssl_register_alpn(conn_rec *c,
                                ssl_alpn_propose_protos advertisefn,
                                ssl_alpn_proto_negotiated negotiatedfn)
 {
-#if defined(HAVE_TLS_ALPN) || defined(HAVE_TLS_NPN)
+#ifdef HAVE_TLS_ALPN
     SSLConnRec *sslconn = myConnConfig(c);
     
     if (!sslconn) {
