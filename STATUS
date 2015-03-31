@@ -106,23 +106,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_proxy_connect/wstunnel: If both client and backend sides get readable
-     at the same time, don't lose errors occuring while forwarding on the first
-     side when none occurs next on the other side, and abort.
-     trunk patch: http://svn.apache.org/r1657636
-                  http://svn.apache.org/r1657638
-                  http://svn.apache.org/r1669130
-     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-mod_proxy-transfer-v3.patch
-     +1: ylavic, covener, jim
-
-  *) core: Initialize scoreboard's used optional functions on graceful restarts to
-     avoid a crash when relocation occurs.  PR 57177.
-     trunk patch: http://svn.apache.org/r1668532
-                  http://svn.apache.org/r1668535 (CHANGES entry)
-                  http://svn.apache.org/r1668553
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, covener, jim
-
   *) core: If explicitly configured, use the KeepaliveTimeout value of the
      virtual host which handled the latest request on the connection, or by
      default the one of the first virtual host bound to the same IP:port.
