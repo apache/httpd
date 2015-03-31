@@ -12,6 +12,13 @@ Changes with Apache 2.4.13
      calls r:wsupgrade() can cause a child process crash. 
      [Edward Lu <Chaosed0 gmail.com>]
 
+  *) mod_dav: Avoid a potential integer underflow in the lock timeout value sent
+     back to a client. The answer to a LOCK request could be an extremly large
+     integer if the time needed to lock the resource was longer that the
+     requested timeout given in the LOCK request. In such a case, we now answer
+     "Second-0".  PR55420
+     [Christophe Jaillet]
+
   *) mod_cgid: Within the first minute of a server start or restart, 
      allow mod_cgid to retry connecting to its daemon process. Previously,
      'No such file or directory: unable to connect to cgi daemon...' could
