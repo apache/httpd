@@ -2235,7 +2235,7 @@ int ssl_callback_alpn_select(SSL *ssl,
     
     if (inlen == 0) {
         // someone tries to trick us?
-        ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO()
+        ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO(02837)
                       "alpn client protocol list empty");
         return SSL_TLSEXT_ERR_ALERT_FATAL;
     }
@@ -2245,7 +2245,7 @@ int ssl_callback_alpn_select(SSL *ssl,
         unsigned int plen = in[i++];
         if (plen + i > inlen) {
             // someone tries to trick us?
-            ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO()
+            ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO(02838)
                           "alpn protocol identier too long");
             return SSL_TLSEXT_ERR_ALERT_FATAL;
         }
@@ -2280,7 +2280,7 @@ int ssl_callback_alpn_select(SSL *ssl,
     }
 
     if (proposed_protos->nelts <= 0) {
-        ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO()
+        ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO(02839)
                       "none of the client alpn protocols are supported");
         return SSL_TLSEXT_ERR_ALERT_FATAL;
     }
@@ -2297,7 +2297,7 @@ int ssl_callback_alpn_select(SSL *ssl,
     
     size_t len = strlen((const char*)*out);
     if (len > 255) {
-        ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO()
+        ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO(02840)
                       "alpn negotiated protocol name too long");
         return SSL_TLSEXT_ERR_ALERT_FATAL;
     }
