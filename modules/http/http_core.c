@@ -61,6 +61,17 @@ static const char *set_keep_alive_timeout(cmd_parms *cmd, void *dummy,
     if (ap_timeout_parameter_parse(arg, &timeout, "s") != APR_SUCCESS)
         return "KeepAliveTimeout has wrong format";
     cmd->server->keep_alive_timeout = timeout;
+
+    /* We don't want to take into account whether or not KeepAliveTimeout is
+     * set for the main server, because if no http_module directive is used
+     * for a vhost, it will inherit the http_srv_cfg from the main server.
+     * However keep_alive_timeout_set helps determine whether the vhost should
+     * use its own configured timeout or the one from the vhost delared first
+     * on the same IP:port (ie. c->base_server, and the legacy behaviour).
+     */
+    if (cmd->server->is_virtual) {
+        cmd->server->keep_alive_timeout_set = 1;
+    }
     return NULL;
 }
 
@@ -179,6 +190,15 @@ static int ap_process_http_sync_connection(conn_rec *c)
 
     ap_update_child_status_from_conn(c->sbh, SERVER_BUSY_READ, c);
     while ((r = ap_read_request(c)) != NULL) {
+        apr_interval_time_t keep_alive_timeout = r->server->keep_alive_timeout;
+
+        /* To preserve legacy behaviour, use the keepalive timeout from the
+         * base server (first on this IP:port) when none is explicitly
+         * configured on this server.
+         */
+        if (!r->server->keep_alive_timeout_set) {
+            keep_alive_timeout = c->base_server->keep_alive_timeout;
+        }
 
         c->keepalive = AP_CONN_UNKNOWN;
         /* process the request if it was read without error */
@@ -215,7 +235,7 @@ static int ap_process_http_sync_connection(conn_rec *c)
             csd = ap_get_conn_socket(c);
         }
         apr_socket_opt_set(csd, APR_INCOMPLETE_READ, 1);
-        apr_socket_timeout_set(csd, c->base_server->keep_alive_timeout);
+        apr_socket_timeout_set(csd, keep_alive_timeout);
         /* Go straight to select() to wait for the next request */
     }
 
