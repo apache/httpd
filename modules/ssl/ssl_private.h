@@ -181,6 +181,16 @@
 #define HAVE_TLS_NPN
 #endif
 
+/* ALPN Protocol Negotiation */
+#if OPENSSL_VERSION_NUMBER >= 0x10002000L && !defined(OPENSSL_NO_TLSEXT)
+#define HAVE_TLS_ALPN
+#endif
+
+/* Next Protocol Negotiation */
+#if !defined(OPENSSL_NO_NEXTPROTONEG) && !defined(OPENSSL_NO_TLSEXT) && defined(OPENSSL_NPN_NEGOTIATED)
+#define HAVE_TLS_NPN
+#endif
+
 /* Secure Remote Password */
 #if !defined(OPENSSL_NO_SRP) && defined(SSL_CTRL_SET_TLS_EXT_SRP_USERNAME_CB)
 #define HAVE_SRP
@@ -444,6 +454,12 @@ typedef struct {
     apr_array_header_t *npn_negofns; /* list of ssl_npn_proto_negotiated callbacks. */
 #endif
 
+#if defined(HAVE_TLS_ALPN) || defined(HAVE_TLS_NPN)
+    /* Poor man's inter-module optional hooks for NPN. */
+    apr_array_header_t *alpn_proposefns; /* list of ssl_alpn_propose_protos callbacks */
+    apr_array_header_t *alpn_negofns; /* list of ssl_alpn_proto_negotiated callbacks. */
+#endif
+
     server_rec *server;
 } SSLConnRec;
 
@@ -624,6 +640,10 @@ typedef struct {
     SSL_CONF_CTX *ssl_ctx_config; /* Configuration context */
     apr_array_header_t *ssl_ctx_param; /* parameters to pass to SSL_CTX */
 #endif
+  
+#if defined(HAVE_TLS_ALPN) || defined(HAVE_TLS_NPN)
+  apr_array_header_t *ssl_alpn_pref; /* protocol names in order of preference */
+#endif
 } modssl_ctx_t;
 
 struct SSLSrvConfigRec {
@@ -750,6 +770,10 @@ const char *ssl_cmd_SSLOCSPEnable(cmd_parms *cmd, void *dcfg, int flag);
 const char *ssl_cmd_SSLOpenSSLConfCmd(cmd_parms *cmd, void *dcfg, const char *arg1, const char *arg2);
 #endif
 
+#if defined(HAVE_TLS_ALPN) || defined(HAVE_TLS_NPN)
+const char *ssl_cmd_SSLAlpnPreference(cmd_parms *cmd, void *dcfg, const char *protocol);
+#endif
+
 #ifdef HAVE_SRP
 const char *ssl_cmd_SSLSRPVerifierFile(cmd_parms *cmd, void *dcfg, const char *arg);
 const char *ssl_cmd_SSLSRPUnknownUserSeed(cmd_parms *cmd, void *dcfg, const char *arg);
@@ -798,6 +822,15 @@ int         ssl_callback_SessionTicket(SSL *, unsigned char *, unsigned char *,
                                        EVP_CIPHER_CTX *, HMAC_CTX *, int);
 #endif
 int ssl_callback_AdvertiseNextProtos(SSL *ssl, const unsigned char **data, unsigned int *len, void *arg);
+
+#ifdef HAVE_TLS_ALPN
+int ssl_callback_alpn_select(SSL *ssl, const unsigned char **out,
+                             unsigned char *outlen, const unsigned char *in,
+                             unsigned int inlen, void *arg);
+#endif
+#if defined(HAVE_TLS_NPN)
+int ssl_callback_AdvertiseNextProtos(SSL *ssl, const unsigned char **data, unsigned int *len, void *arg);
+#endif
 
 /**  Session Cache Support  */
 apr_status_t ssl_scache_init(server_rec *, apr_pool_t *);

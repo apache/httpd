@@ -128,5 +128,46 @@ APR_DECLARE_OPTIONAL_FN(int, modssl_register_npn, (conn_rec *conn,
                                                    ssl_npn_advertise_protos advertisefn,
                                                    ssl_npn_proto_negotiated negotiatedfn));
 
+/** The alpn_propose_proto callback allows other modules to propose
+ * the name of the protocol that will be chosen during the
+ * Application-Layer Protocol Negotiation (ALPN) portion of the SSL handshake.
+ * The callback is given the connection and a list of NULL-terminated
+ * protocol strings as supported by the client.  If this client_protos is 
+ * non-empty, it must pick its preferred protocol from that list. Otherwise
+ * it should add its supported protocols in order of precedence.
+ * The callback should not yet modify the connection or install any filters
+ * as its proposal(s) may be overridden by another callback or server 
+ * configuration. 
+ * It should return OK or, to prevent further processing of (other modules') 
+ * callbacks, return DONE.
+ */
+typedef int (*ssl_alpn_propose_protos)(conn_rec *connection,
+                                    apr_array_header_t *client_protos,
+                                    apr_array_header_t *proposed_protos);
+
+/** The alpn_proto_negotiated callback allows other modules to discover
+ * the name of the protocol that was chosen during the Application-Layer
+ * Protocol Negotiation (ALPN) portion of the SSL handshake.  
+ * The callback is given the connection, a
+ * non-NUL-terminated string containing the protocol name, and the
+ * length of the string; it should do something appropriate
+ * (i.e. insert or remove filters) and return OK. To prevent further
+ * processing of (other modules') callbacks, return DONE. */
+typedef int (*ssl_alpn_proto_negotiated)(conn_rec *connection,
+                                        const char *proto_name,
+                                        apr_size_t proto_name_len);
+
+/* An optional function which can be used to register a pair of callbacks 
+ * for ALPN handling.
+ * This optional function should be invoked from a pre_connection hook 
+ * which runs *after* mod_ssl.c's pre_connection hook.  The function returns 
+ * OK if the callbacks are registered, or DECLINED otherwise (for example if 
+ * mod_ssl does not support ALPN).
+ */
+APR_DECLARE_OPTIONAL_FN(int, modssl_register_alpn,
+                        (conn_rec *conn,
+                         ssl_alpn_propose_protos proposefn,
+                         ssl_alpn_proto_negotiated negotiatedfn));
+
 #endif /* __MOD_SSL_H__ */
 /** @} */
