@@ -1499,7 +1499,7 @@ static apr_status_t ssl_io_filter_input(ap_filter_t *f,
         if (sslconn->alpn_negofns) {
             SSL_get0_alpn_selected(inctx->ssl, &next_proto, &next_proto_len);
             ap_log_cerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, f->c,
-                          APLOGNO() "SSL negotiated protocol: '%s'",
+                          APLOGNO(02836) "SSL negotiated protocol: '%s'",
                           (next_proto && next_proto_len)?
                          apr_pstrmemdup(f->c->pool, (const char *)next_proto,
                               next_proto_len) : "(null)");
