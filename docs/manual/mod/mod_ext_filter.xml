@@ -160,9 +160,6 @@ delivery to the client</description>
         </note>
      </section>
  
-     <section><title>Tracing another filter</title>
-    </section>
-
     <section><title>Tracing another filter</title>
       <example>
         # Trace the data read and written by mod_deflate<br />
