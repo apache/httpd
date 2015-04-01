@@ -177,9 +177,6 @@ delivery to the client</td></tr>
         </div>
      
  
-     <h3>Tracing another filter</h3>
-    
-
     <h3>Tracing another filter</h3>
       <div class="example"><p><code>
         # Trace the data read and written by mod_deflate<br />
