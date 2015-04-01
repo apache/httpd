@@ -2162,6 +2162,7 @@ int ssl_callback_SessionTicket(SSL *ssl,
 }
 #endif /* HAVE_TLS_SESSION_TICKETS */
 
+#ifdef HAVE_TLS_ALPN
 static int ssl_array_index(apr_array_header_t *array,
                            const char *s)
 {
@@ -2175,7 +2176,6 @@ static int ssl_array_index(apr_array_header_t *array,
     return -1;
 }
 
-#ifdef HAVE_TLS_ALPN
 /*
  * Compare to ALPN protocol proposal. Result is similar to strcmp():
  * 0 gives same precedence, >0 means proto1 is prefered.
