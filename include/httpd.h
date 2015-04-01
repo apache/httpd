@@ -518,6 +518,7 @@ AP_DECLARE(const char *) ap_get_server_built(void);
 #define HTTP_UNSUPPORTED_MEDIA_TYPE          415
 #define HTTP_RANGE_NOT_SATISFIABLE           416
 #define HTTP_EXPECTATION_FAILED              417
+#define HTTP_IM_A_TEAPOT                     418
 #define HTTP_UNPROCESSABLE_ENTITY            422
 #define HTTP_LOCKED                          423
 #define HTTP_FAILED_DEPENDENCY               424
@@ -605,6 +606,8 @@ AP_DECLARE(const char *) ap_get_server_built(void);
 #define M_BASELINE_CONTROL      24
 #define M_MERGE                 25
 #define M_INVALID               26      /** no valid method */
+#define M_BREW                  27      /** RFC 2324: HTCPCP/1.0 */
+#define M_WHEN                  28      /** RFC 2324: HTCPCP/1.0 */
 
 /**
  * METHODS needs to be equal to the number of bits

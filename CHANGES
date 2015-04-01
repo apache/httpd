@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) http: Add support for RFC2324/RFC7168. [Graham Leggett]
+
   *) mod_proxy_wstunnel: Avoid an empty response by failing with 502 (Bad
      Gateway) when no response is ever received from the backend.
      [Jan Kaluza]
