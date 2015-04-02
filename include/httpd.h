@@ -960,8 +960,9 @@ struct request_rec {
     char *uri;
     /** The filename on disk corresponding to this response */
     char *filename;
-    /* XXX: What does this mean? Please define "canonicalize" -aaron */
-    /** The true filename, we canonicalize r->filename if these don't match */
+    /** The true filename stored in the filesystem, as in the true alpha case
+     *  and alias correction, e.g. "Image.jpeg" not "IMAGE$1.JPE" on Windows.
+     *  The core map_to_storage canonicalizes r->filename when they mismatch */
     char *canonical_filename;
     /** The PATH_INFO extracted from this request */
     char *path_info;
