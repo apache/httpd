@@ -118,7 +118,7 @@ AP_DECLARE(char *) ap_make_etag(request_rec *r, int force_weak)
          * FileETag keywords.
          */
         etag = apr_palloc(r->pool, weak_len + sizeof("\"---\"") +
-                          3 * CHARS_PER_UINT64 + APR_MD5_DIGESTSIZE + 1);
+                          3 * CHARS_PER_UINT64 + 25 * sizeof(char) + 1);
         next = etag;
         if (weak) {
             while (*weak) {
