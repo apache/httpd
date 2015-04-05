@@ -7,29 +7,10 @@ Changes with Apache 2.5.0
      Gateway) when no response is ever received from the backend.
      [Jan Kaluza]
 
-  *) core_filters: restore/disable TCP_NOPUSH option after non-blocking
-     sendfile.  [Yann Ylavic]
-
-  *) core: Initialize scoreboard's used optional functions on graceful restarts
-     to avoid a crash when relocation occurs.  PR 57177.  [Yann Ylavic]
-
-  *) mod_cgid: Within the first minute of a server start or restart, 
-     allow mod_cgid to retry connecting to its daemon process. Previously,
-     'No such file or directory: unable to connect to cgi daemon...' could
-     be logged without an actual retry. PR57685. 
-     [Edward Lu <Chaosed0 gmail.com>]
-     
   *) core: Cleanup the request soon/even if some output filter fails to
      handle the EOR bucket.  [Yann Ylavic]
 
   *) mpm_event: Allow for timer events duplicates. [Jim Jagielski, Yann Ylavic]
-
-  *) mod_dav: Avoid a potential integer underflow in the lock timeout value sent
-     back to a client. The answer to a LOCK request could be an extremly large
-     integer if the time needed to lock the resource was longer that the
-     requested timeout given in the LOCK request. In such a case, we now answer
-     "Second-0".  PR55420
-     [Christophe Jaillet]
 
   *) mod_ssl: Fix possible crash when loading server certificate constraints.
      PR 57694. [Paul Spangler <paul.spangler ni com>, Yann Ylavic]
@@ -38,11 +19,6 @@ Changes with Apache 2.5.0
      handler or input filter already did it while reading the request (causing
      a double response body).  [Yann Ylavic]
 
-  *) mod_proxy: use the original (non absolute) form of the request-line's URI
-     for requests embedded in CONNECT payloads used to connect SSL backends via
-     a ProxyRemote forward-proxy.  PR 55892.  [Hendrik Harms <hendrik.harms
-     gmail com>, William Rowe, Yann Ylavic]
-
   *) mod_proxy: Fix a race condition that caused a failed worker to be retried
      before the retry period is over. [Ruediger Pluem]
 
@@ -50,19 +26,8 @@ Changes with Apache 2.5.0
      as non-root user on UNIX systems by specifying username and group name
      as third argument of RewriteMap directive. [Jan Kaluza]
 
-  *) core: If explicitly configured, use the KeepaliveTimeout value of the
-     virtual host which handled the latest request on the connection, or by
-     default the one of the first virtual host bound to the same IP:port.
-     PR56226.  [Yann Ylavic]
-
   *) mod_authn_core: Add expression support to AuthName and AuthType.
      [Graham Leggett]
-
-  *) mod_deflate: A misplaced check prevents limiting small bodies with the
-     new inflate limits. PR56872. [Edward Lu, Eric Covener, Yann Ylavic]
-
-  *) core: Add expression support to ErrorDocument. Switch from a fixed
-     sized 664 byte array per merge to a hash table. [Graham Leggett]
 
   *) suexec: Filter out the HTTP_PROXY environment variable because it is
      treated as alias for http_proxy by some programs. [Stefan Fritsch]
