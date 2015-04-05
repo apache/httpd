@@ -158,7 +158,7 @@ AP_DECLARE(char *) ap_make_etag(request_rec *r, int force_weak)
                               "file permissions deny server access: %s", r->filename);
             } else {
                 apr_cpystrn(next, ap_md5digest(r->pool, fd), APR_MD5_DIGESTSIZE);
-                next += APR_MD5_DIGESTSIZE
+                next += APR_MD5_DIGESTSIZE;
             }
         }
         *next++ = '"';
