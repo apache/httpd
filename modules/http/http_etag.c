@@ -26,6 +26,7 @@
 #include "http_core.h"
 #include "http_protocol.h"   /* For index_of_response().  Grump. */
 #include "http_request.h"
+#include "util_md5.h"
 
 /* Generate the human-readable hex representation of an apr_uint64_t
  * (basically a faster version of 'sprintf("%llx")')
@@ -69,6 +70,8 @@ AP_DECLARE(char *) ap_make_etag(request_rec *r, int force_weak)
     core_dir_config *cfg;
     etag_components_t etag_bits;
     etag_components_t bits_added;
+    apr_file_t *fd = NULL;
+    apr_status_t status;
 
     cfg = (core_dir_config *)ap_get_core_module_config(r->per_dir_config);
     etag_bits = (cfg->etag_bits & (~ cfg->etag_remove)) | cfg->etag_add;
@@ -113,8 +116,8 @@ AP_DECLARE(char *) ap_make_etag(request_rec *r, int force_weak)
          * ETag gets set to [W/]"inode-size-mtime", modulo any
          * FileETag keywords.
          */
-        etag = apr_palloc(r->pool, weak_len + sizeof("\"--\"") +
-                          3 * CHARS_PER_UINT64 + 1);
+        etag = apr_palloc(r->pool, weak_len + sizeof("\"---\"") +
+                          3 * CHARS_PER_UINT64 + APR_MD5_DIGESTSIZE + 1);
         next = etag;
         if (weak) {
             while (*weak) {
@@ -139,6 +142,23 @@ AP_DECLARE(char *) ap_make_etag(request_rec *r, int force_weak)
                 *next++ = '-';
             }
             next = etag_uint64_to_hex(next, r->mtime);
+            bits_added |= ETAG_MTIME;
+        }
+        if (etag_bits & ETAG_MD5) {
+            if (bits_added != 0) {
+                *next++ = '-';
+            }
+            if ((status = apr_file_open(&fd, r->filename, APR_READ | APR_BINARY
+#if APR_HAS_SENDFILE
+                                | AP_SENDFILE_ENABLED(cfg->enable_sendfile)
+#endif
+                                        , 0, r->pool)) != APR_SUCCESS) {
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(00132)
+                              "file permissions deny server access: %s", r->filename);
+            } else {
+                apr_cpystrn(next, ap_md5digest(r->pool, fd), APR_MD5_DIGESTSIZE);
+                next += APR_MD5_DIGESTSIZE
+            }
         }
         *next++ = '"';
         *next = '\0';

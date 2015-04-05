@@ -2000,6 +2000,9 @@ static const char *set_etag_bits(cmd_parms *cmd, void *mconfig,
         else if (strcasecmp(token, "INode") == 0) {
             bit = ETAG_INODE;
         }
+        else if (strcasecmp(token, "MD5") == 0) {
+            bit = ETAG_MD5;
+        }
         else {
             return apr_pstrcat(cmd->pool, "Unknown keyword '",
                                token, "' for ", cmd->cmd->name,
