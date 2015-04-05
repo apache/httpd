@@ -157,8 +157,8 @@ AP_DECLARE(char *) ap_make_etag(request_rec *r, int force_weak)
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(00132)
                               "file permissions deny server access: %s", r->filename);
             } else {
-                apr_cpystrn(next, ap_md5digest(r->pool, fd), APR_MD5_DIGESTSIZE);
-                next += APR_MD5_DIGESTSIZE;
+                apr_cpystrn(next, ap_md5digest(r->pool, fd), 25 * sizeof(char));
+                next += 25 * sizeof(char);
             }
         }
         *next++ = '"';
