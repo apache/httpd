@@ -20,6 +20,7 @@
 #include "http_protocol.h"
 #include "http_config.h"
 #include "mpm_common.h"
+#include "mod_status.h"
 
 #include "apr.h"
 #include "apr_strings.h"
@@ -497,9 +498,18 @@ static void socache_dbm_status(ap_socache_instance_t *ctx, request_rec *r,
         avg = (int)(size / (long)elts);
     else
         avg = 0;
-    ap_rprintf(r, "cache type: <b>DBM</b>, maximum size: <b>unlimited</b><br>");
-    ap_rprintf(r, "current entries: <b>%d</b>, current size: <b>%ld</b> bytes<br>", elts, size);
-    ap_rprintf(r, "average entry size: <b>%d</b> bytes<br>", avg);
+    if (!(flags & AP_STATUS_SHORT)) {
+        ap_rprintf(r, "cache type: <b>DBM</b>, maximum size: <b>unlimited</b><br>");
+        ap_rprintf(r, "current entries: <b>%d</b>, current size: <b>%ld</b> bytes<br>", elts, size);
+        ap_rprintf(r, "average entry size: <b>%d</b> bytes<br>", avg);
+    }
+    else {
+        ap_rputs("CacheType: DBM\n", r);
+        ap_rputs("CacheMaximumSize: unlimited\n", r);
+        ap_rprintf(r, "CacheCurrentEntries: %d\n", elts);
+        ap_rprintf(r, "CacheCurrentSize: %ld\n", size);
+        ap_rprintf(r, "CacheAvgEntrySize: %d\n", avg);
+    }
     return;
 }
 
