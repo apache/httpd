@@ -13,7 +13,7 @@ Changes with Apache 2.4.13
      [Edward Lu <Chaosed0 gmail.com>]
 
   *) core_filters: restore/disable TCP_NOPUSH option after non-blocking
-     sendfile.  [Joe Orton]
+     sendfile.  [Yann Ylavic]
 
   *) core: Initialize scoreboard's used optional functions on graceful restarts
      to avoid a crash when relocation occurs.  PR 57177.  [Yann Ylavic]
