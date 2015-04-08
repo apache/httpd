@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) core: Make sure to also print VirtualHost log messages of level
+     "warn" or higher at configuration parsing time. [Kaspar Brand]
+
   *) mod_logio: Add LogIOTrackTTFB and %^FB logformat to log the time 
      taken to start writing response headers. [Eric Covener]
 
