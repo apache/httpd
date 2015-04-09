@@ -278,7 +278,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
   *) core.c: Fix warnings about unused variables
      trunk patch: http://svn.apache.org/r1661486
-     trunk patch: trunk works
+     2.4.x patch: trunk works
+     +1: trawick
+
+  *) core: Add CGIPassAuth directive to control whether HTTP authorization
+     headers are passed to scripts as CGI variables.  PR: 56855
+     trunk patch: http://svn.apache.org/r1642847
+     2.4.x patch: http://people.apache.org/~trawick/r1642847-to-2.4.x.txt
+                  (trunk works if you do the normal CHANGES/ap_mmn/core_dir_config
+                   merge conflict resolution ;) )
      +1: trawick
 
 OTHER PROPOSALS
