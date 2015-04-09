@@ -276,6 +276,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic
 
+  *) core.c: Fix warnings about unused variables
+     trunk patch: http://svn.apache.org/r1661486
+     trunk patch: trunk works
+     +1: trawick
 
 OTHER PROPOSALS
 
