@@ -447,7 +447,6 @@ static int status_handler(request_rec *r)
                    ap_state_query(AP_SQ_CONFIG_GEN));
         ap_rprintf(r, "ParentServerMPMGeneration: %d\n",
                    (int)mpm_generation);
-        ap_rputs("ServerUptimeSeconds: ", r);
         ap_rprintf(r, "ServerUptimeSeconds: %u\n",
                    up_time);
         ap_rputs("ServerUptime:", r);
