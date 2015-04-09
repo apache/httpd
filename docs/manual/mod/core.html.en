@@ -1257,16 +1257,22 @@ in case of an error</td></tr>
     or a message. Apache httpd will sometimes offer additional information
     regarding the problem/error.</p>
 
+    <p>From 2.4.13, <a href="../expr.html">expression syntax</a> can be
+    used inside the directive to produce dynamic strings and URLs.</p>
+
     <p>URLs can begin with a slash (/) for local web-paths (relative
     to the <code class="directive"><a href="#documentroot">DocumentRoot</a></code>), or be a
     full URL which the client can resolve. Alternatively, a message
-    can be provided to be displayed by the browser. Examples:</p>
+    can be provided to be displayed by the browser. Note that deciding
+    whether the parameter is an URL, a path or a message is performed
+    before any expression is parsed. Examples:</p>
 
     <pre class="prettyprint lang-config">ErrorDocument 500 http://foo.example.com/cgi-bin/tester
 ErrorDocument 404 /cgi-bin/bad_urls.pl
 ErrorDocument 401 /subscription_info.html
 ErrorDocument 403 "Sorry can't allow you access today"
-ErrorDocument 403 Forbidden!</pre>
+ErrorDocument 403 Forbidden!
+ErrorDocument 403 /cgi-bin/forbidden.pl?referrer=%{escape:%{HTTP_REFERER}}</pre>
 
 
     <p>Additionally, the special value <code>default</code> can be used
@@ -2192,8 +2198,9 @@ requests on a persistent connection</td></tr>
     higher the timeout, the more server processes will be kept
     occupied waiting on connections with idle clients.</p>
 
-    <p>In a name-based virtual host context, the value of the first
-    defined virtual host best matching the local IP and port will be used.</p>
+    <p>If <code class="directive">KeepAliveTimeout</code> is <strong>not</strong>
+    set for a name-based virtual host, the value of the first defined
+    virtual host best matching the local IP and port will be used.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
