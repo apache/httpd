@@ -464,7 +464,7 @@ static int status_handler(request_rec *r)
 
 #ifdef HAVE_TIMES
             /* Allow for OS/2 not having CPU stats */
-            ap_rprintf(r, "CPUUser: %g\nCPUSystem: %g\nCPUChildrenUser: %g\nCPUChildrenSystem: %g",
+            ap_rprintf(r, "CPUUser: %g\nCPUSystem: %g\nCPUChildrenUser: %g\nCPUChildrenSystem: %g\n",
                        tu / tick, ts / tick, tcu / tick, tcs / tick);
 
             if (ts || tu || tcu || tcs)
