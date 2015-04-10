@@ -2760,7 +2760,9 @@ static int proxy_status_hook(request_rec *r, int flags)
 
             ++worker;
         }
-        ap_rputs("</table>\n", r);
+        if (!(flags & AP_STATUS_SHORT)) {
+            ap_rputs("</table>\n", r);
+        }
         ++balancer;
     }
     if (!(flags & AP_STATUS_SHORT)) {
