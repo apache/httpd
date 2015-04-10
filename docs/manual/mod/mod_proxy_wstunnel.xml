@@ -28,7 +28,7 @@
 <status>Extension</status>
 <sourcefile>mod_proxy_wstunnel.c</sourcefile>
 <identifier>proxy_wstunnel_module</identifier>
-<compatibility>Available for unix in version 2.4.5 and later</compatibility>
+<compatibility>Available in httpd 2.4.5 and later</compatibility>
 
 <summary>
     <p>This module <em>requires</em> the service of <module
