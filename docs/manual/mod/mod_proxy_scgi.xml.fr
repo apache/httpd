@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1589417:1672484 (outdated) -->
+<!-- English Revision : 1672484 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -84,8 +84,8 @@ ProxyPass /scgi-bin/ balancer://somecluster/
 
 <section id="env"><title>Variables d'environnement</title>
     <p>En plus des directives de configuration qui permettent de
-    contr&ocirc;ler le comportement de <module>mod_proxy</module>, de
-    nombreuses <dfn>variables d'environnement</dfn> permettent de
+    contr&ocirc;ler le comportement de <module>mod_proxy</module>, une
+    <dfn>variable d'environnement</dfn> peut aussi
     contr&ocirc;ler le fournisseur de protocole SCGI :</p>
     <dl>
         <dt>proxy-scgi-pathinfo</dt>
@@ -97,7 +97,12 @@ ProxyPass /scgi-bin/ balancer://somecluster/
 	3.3 de la RFC 3875. Si au contraire vous souhaitez que
 	<module>mod_proxy_scgi</module> g&eacute;n&egrave;re une estimation la plus
 	pr&eacute;cise possible de <var>PATH_INFO</var>, d&eacute;finissez cette
-	variable d'environnement.</dd>
+	variable d'environnement. La variable doit &ecirc;tre d&eacute;finie avant
+	que la directive <directive
+	module="env">SetEnv</directive> ne soit effective. Il est possible
+	d'utiliser &agrave; la	place la directive <directive
+	module="setenv">SetEnvIf</directive> : <code>SetEnvIf Request_URI . proxy-scgi-pathinfo</code>
+	</dd>
     </dl>
 </section>
 
