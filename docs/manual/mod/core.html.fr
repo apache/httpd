@@ -31,8 +31,6 @@
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Fonctionnalités de base du serveur HTTP Apache toujours
 disponibles</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Core</td></tr></table>
@@ -1323,17 +1321,23 @@ d'erreur</td></tr>
     httpd fournit parfois des informations supplémentaires à propos du
     problème ou de l'erreur.</p>
 
+    <p>A partir de la version 2.4.13, il est possible d'utiliser la <a href="../expr.html">syntaxe des expressions</a> dans cette directive
+    afin de générer des chaînes et URLs dynamiques.</p>
+
     <p>Les URLs peuvent commencer par un slash (/) pour les chemins web
     locaux (relatifs au répertoire défini par la directive <code class="directive"><a href="#documentroot">DocumentRoot</a></code>), ou se présenter sous la
     forme d'une URL complète que le client pourra résoudre.
     Alternativement, un message à afficher par le navigateur pourra être
-    fourni. Exemples :</p>
+    fourni. Notez que la décision de considérer le paramètre comme URL,
+    chemin ou message intervient avant toute interprètation
+    d'expression. Exemples :</p>
 
     <pre class="prettyprint lang-config">ErrorDocument 500 http://foo.example.com/cgi-bin/tester
 ErrorDocument 404 /cgi-bin/bad_urls.pl
 ErrorDocument 401 /subscription_info.html
 ErrorDocument 403 "Sorry can't allow you access today"
-ErrorDocument 403 Forbidden!</pre>
+ErrorDocument 403 Forbidden!
+ErrorDocument 403 /cgi-bin/forbidden.pl?referrer=%{escape:%{HTTP_REFERER}}</pre>
 
 
     <p>De plus, on peut spécifier la valeur spéciale <code>default</code>
@@ -2345,7 +2349,8 @@ avant de fermer une connexion persistante</td></tr>
     est élévé, plus nombreux seront les processus serveur en attente de
     requêtes de la part de clients inactifs.</p>
 
-    <p>Dans un contexte de serveur virtuel à base de nom, c'est
+    <p>Si la directive <code class="directive">KeepAliveTimeout</code> n'est
+    <strong>pas</strong> définie pour un serveur virtuel à base de nom, c'est
     la valeur de la paire adresse IP/port du serveur virtuel qui
     correspond le mieux qui sera utilisée.</p>
 
