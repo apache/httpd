@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1647230:1670326 (outdated) -->
+<!-- English Revision : 1670326 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1321,12 +1321,18 @@ host</context>
     httpd fournit parfois des informations suppl&eacute;mentaires &agrave; propos du
     probl&egrave;me ou de l'erreur.</p>
 
+    <p>A partir de la version 2.4.13, il est possible d'utiliser la <a
+    href="../expr.html">syntaxe des expressions</a> dans cette directive
+    afin de g&eacute;n&eacute;rer des cha&icirc;nes et URLs dynamiques.</p>
+
     <p>Les URLs peuvent commencer par un slash (/) pour les chemins web
     locaux (relatifs au r&eacute;pertoire d&eacute;fini par la directive <directive
     module="core">DocumentRoot</directive>), ou se pr&eacute;senter sous la
     forme d'une URL compl&egrave;te que le client pourra r&eacute;soudre.
     Alternativement, un message &agrave; afficher par le navigateur pourra &ecirc;tre
-    fourni. Exemples :</p>
+    fourni. Notez que la d&eacute;cision de consid&eacute;rer le param&egrave;tre comme URL,
+    chemin ou message intervient avant toute interpr&egrave;tation
+    d'expression. Exemples :</p>
 
     <highlight language="config">
 ErrorDocument 500 http://foo.example.com/cgi-bin/tester
@@ -1334,6 +1340,7 @@ ErrorDocument 404 /cgi-bin/bad_urls.pl
 ErrorDocument 401 /subscription_info.html
 ErrorDocument 403 "Sorry can't allow you access today"
 ErrorDocument 403 Forbidden!
+ErrorDocument 403 /cgi-bin/forbidden.pl?referrer=%{escape:%{HTTP_REFERER}}
     </highlight>
 
     <p>De plus, on peut sp&eacute;cifier la valeur sp&eacute;ciale <code>default</code>
@@ -2413,7 +2420,8 @@ host</context>
     est &eacute;l&eacute;v&eacute;, plus nombreux seront les processus serveur en attente de
     requ&ecirc;tes de la part de clients inactifs.</p>
 
-    <p>Dans un contexte de serveur virtuel &agrave; base de nom, c'est
+    <p>Si la directive <directive>KeepAliveTimeout</directive> n'est
+    <strong>pas</strong> d&eacute;finie pour un serveur virtuel &agrave; base de nom, c'est
     la valeur de la paire adresse IP/port du serveur virtuel qui
     correspond le mieux qui sera utilis&eacute;e.</p>
 </usage>
