@@ -129,7 +129,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1632742
                   http://svn.apache.org/r1634836 (CHANGES entry)
      2.4.x patches: trunk works (modulo CHANGES).
-     +1: ylavic, covener
+     +1: ylavic, covener, rjung
      ylavic: http://people.apache.org/~ylavic/httpd-r1632742-x-w.diff is the
              same patch without space changes (may be easier to review).
 
@@ -221,7 +221,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      SSL connection itself is established via a proxy server.  PR 57139
      trunk patch: http://svn.apache.org/r1634120
      2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic
+     +1: ylavic, rjung
 
   *) http: Make ap_die() robust against any HTTP error code and not modify
      response status (finally logged) when nothing is to be done. PR 56035.
@@ -261,7 +261,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1526189
                   http://svn.apache.org/r1658765
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-ap_proxy_connection_reusable.patch
-     +1: ylavic
+     +1: ylavic, rjung
      ylavic: updated with ap_proxy_connection_reusable(), missing in 2.4.x.
 
   *) core: Cleanup the request soon/even if some output filter fails to
@@ -274,12 +274,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      PR 57694.
      trunk patch: http://svn.apache.org/r1666297
      2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic
+     +1: ylavic, rjung
 
   *) core.c: Fix warnings about unused variables
      trunk patch: http://svn.apache.org/r1661486
      2.4.x patch: trunk works
-     +1: trawick
+     +1: trawick, rjung
 
   *) core: Add CGIPassAuth directive to control whether HTTP authorization
      headers are passed to scripts as CGI variables.  PR: 56855
@@ -287,7 +287,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~trawick/r1642847-to-2.4.x.txt
                   (trunk works if you do the normal CHANGES/ap_mmn/core_dir_config
                    merge conflict resolution ;) )
-     +1: trawick
+     +1: trawick, rjung
+     rjung: minor nits: "compatibility" in docs, "Controls which HTTP authorization headers"
+            in "AP_INIT_FLAG" maybe "whether" instaed of "which" or "enables ...".
 
   *) mod_status: Improve server-status output when called with "?auto"
      (machine readable form).
