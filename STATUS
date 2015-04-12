@@ -289,6 +289,26 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                    merge conflict resolution ;) )
      +1: trawick
 
+  *) mod_status: Improve server-status output when called with "?auto"
+     (machine readable form).
+     trunk patch: http://svn.apache.org/r1671396
+                  http://svn.apache.org/r1672289
+                  http://svn.apache.org/r1672453
+     2.4.x patch: http://people.apache.org/~rjung/patches/enhance-server-status-auto.patch
+                  (same as trunk but combined into one)
+     +1: rjung
+
+  *) mod_ssl, mod_proxy, mod_cache_socache, mod_socache_*: Add plain text
+     output to status hook (server-status) when called with "?auto"
+     (machine readable form).
+     trunk patch: http://svn.apache.org/r1671397
+                  http://svn.apache.org/r1672466
+                  http://svn.apache.org/r1672564
+     2.4.x patch: http://people.apache.org/~rjung/patches/enhance-socache-status-auto.patch
+                  (same as trunk but combined into one)
+     +1: rjung
+
+
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
