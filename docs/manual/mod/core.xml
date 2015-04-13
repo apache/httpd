@@ -573,7 +573,7 @@ variables</description>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
-<compatibility>Available in Apache HTTP Server 2.5.0 and later</compatibility>
+<compatibility>Available in Apache HTTP Server 2.4.13 and later</compatibility>
 
 <usage>
     <p><directive>CGIPassAuth</directive> allows scripts access to HTTP
