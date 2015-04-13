@@ -115,11 +115,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      ylavic: http://people.apache.org/~ylavic/httpd-r1632742-x-w.diff is the
              same patch without space changes (may be easier to review).
 
-  *) core.c: Fix warnings about unused variables
-     trunk patch: http://svn.apache.org/r1661486
-     2.4.x patch: trunk works
-     +1: trawick, rjung, jailletc36
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
