@@ -106,7 +106,19 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * mod_buffer: Forward flushed input data immediately and avoid (unlikely)
+                 access to freed memory.
+     trunk patch: http://svn.apache.org/r1632742
+                  http://svn.apache.org/r1634836 (CHANGES entry)
+     2.4.x patches: trunk works (modulo CHANGES).
+     +1: ylavic, covener, rjung
+     ylavic: http://people.apache.org/~ylavic/httpd-r1632742-x-w.diff is the
+             same patch without space changes (may be easier to review).
 
+  *) core.c: Fix warnings about unused variables
+     trunk patch: http://svn.apache.org/r1661486
+     2.4.x patch: trunk works
+     +1: trawick, rjung, jailletc36
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -123,15 +135,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              Also added missing r1609688 to the patchset.
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-ap_proxy_define_match_worker.patch
      +1: ylavic
-
-   * mod_buffer: Forward flushed input data immediately and avoid (unlikely)
-                 access to freed memory.
-     trunk patch: http://svn.apache.org/r1632742
-                  http://svn.apache.org/r1634836 (CHANGES entry)
-     2.4.x patches: trunk works (modulo CHANGES).
-     +1: ylavic, covener, rjung
-     ylavic: http://people.apache.org/~ylavic/httpd-r1632742-x-w.diff is the
-             same patch without space changes (may be easier to review).
 
    * mod_proxy_ajp: Fix client connection errors handling and logged status
                     when it occurs.  PR 56823.
@@ -275,11 +278,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1666297
      2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic, rjung
-
-  *) core.c: Fix warnings about unused variables
-     trunk patch: http://svn.apache.org/r1661486
-     2.4.x patch: trunk works
-     +1: trawick, rjung
 
   *) core: Add CGIPassAuth directive to control whether HTTP authorization
      headers are passed to scripts as CGI variables.  PR: 56855
