@@ -49,11 +49,11 @@ typedef struct logio_config_t {
     apr_off_t bytes_last_request;
     apr_time_t ttfb;
     request_rec *r;         /* Use for TTFB only */
-    int first_byte_seen:1;
+    unsigned int first_byte_seen:1;
 } logio_config_t;
 
 typedef struct logio_dirconf_t {
-    int track_ttfb:1;
+    unsigned int track_ttfb:1;
 } logio_dirconf_t;
 
 /*
