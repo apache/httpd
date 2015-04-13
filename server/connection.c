@@ -213,4 +213,3 @@ AP_CORE_DECLARE(void) ap_process_connection(conn_rec *c, void *csd)
         ap_run_process_connection(c);
     }
 }
-
