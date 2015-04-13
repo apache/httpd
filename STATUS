@@ -281,10 +281,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://people.apache.org/~trawick/r1642847-r1673155-to-2.4.x.txt
                   (trunk works if you do the normal CHANGES/ap_mmn/core_dir_config
                    merge conflict resolution ;) )
-     +1: trawick
-     rjung: minor nits: "compatibility" in docs, "Controls which HTTP authorization headers"
-            in "AP_INIT_FLAG" maybe "whether" instaed of "which" or "enables ...".
-     trawick: thanks; addressed in current patch
+     +1: trawick, rjung
 
   *) mod_status: Improve server-status output when called with "?auto"
      (machine readable form).
