@@ -1738,12 +1738,16 @@ filenames</description>
     expression</glossary>. For example:</p>
 
 <highlight language="config">
-&lt;FilesMatch "\.(gif|jpe?g|png)$"&gt;
+&lt;FilesMatch ".+\.(gif|jpe?g|png)$"&gt;
     # ...
 &lt;/FilesMatch&gt;
 </highlight>
 
     <p>would match most common Internet graphics formats.</p>
+
+    <note>The <code>.+</code> at the start of the regex ensures that
+    files named <code>.png</code>, or <code>.gif</code>, for example,
+    are not matched.</note>
 
     <p>From 2.4.8 onwards, named groups and backreferences are captured and
     written to the environment with the corresponding name prefixed with
@@ -2710,6 +2714,16 @@ matching URLs</description>
 
     <p>would match URLs that contained the substring <code>/extra/data</code>
     or <code>/special/data</code>.</p>
+
+    <note><p>If the intent is that a URL <strong>starts with</strong>
+    <code>/extra/data</code>, rather than merely
+    <strong>contains</strong> <code>/extra/data</code>, prefix the
+    regular expression with a <code>^</code> to require this.</p>
+
+    <highlight language="config">
+    &lt;LocationMatch "^/(extra|special)/data"&gt;
+    </highlight>
+    </note>
 
     <p>From 2.4.8 onwards, named groups and backreferences are captured and
     written to the environment with the corresponding name prefixed with
