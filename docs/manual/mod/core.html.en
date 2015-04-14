@@ -1925,6 +1925,13 @@ satisfied by a request at runtime</td></tr>
 
     <p>Only directives that support the <a href="directive-dict.html#Context">directory context</a> can be used within this configuration section.</p>
 
+    <div class="warning">
+    Certain variables, such as <code>CONTENT_TYPE</code> and other
+    response headers, are set after &lt;If&gt; conditions have already
+    been evaluated, and so will not be available to use in this
+    directive.
+    </div>
+
 
 <h3>See also</h3>
 <ul>
