@@ -174,8 +174,8 @@ relative hyperlinks?</a></li>
     manipulate relative hyperlinks, to achieve the same effect.</p>
     <highlight language="config">
 RewriteEngine on
-RewriteRule   ^/(.*)_SSL$   https://%{SERVER_NAME}/$1 [R,L]
-RewriteRule   ^/(.*)_NOSSL$ http://%{SERVER_NAME}/$1  [R,L]
+RewriteRule   "^/(.*)_SSL$"   "https://%{SERVER_NAME}/$1" [R,L]
+RewriteRule   "^/(.*)_NOSSL$" "http://%{SERVER_NAME}/$1"  [R,L]
     </highlight>
 
     <p>This rewrite ruleset lets you use hyperlinks of the form
@@ -254,8 +254,8 @@ Certificate for testing purposes?</title>
         These can be used as follows in your <code>httpd.conf</code>
         file:
         <highlight language="config">
-SSLCertificateFile    /path/to/this/server.crt
-SSLCertificateKeyFile /path/to/this/server.key
+SSLCertificateFile    "/path/to/this/server.crt"
+SSLCertificateKeyFile "/path/to/this/server.key"
         </highlight>
     </li>
     <li>It is important that you are aware that this
@@ -334,8 +334,8 @@ SSLCertificateKeyFile /path/to/this/server.key
     <code>server.crt</code>. These can be used as follows in your
     <code>httpd.conf</code> file:
        <highlight language="config">
-SSLCertificateFile    /path/to/this/server.crt
-SSLCertificateKeyFile /path/to/this/server.key
+SSLCertificateFile    "/path/to/this/server.crt"
+SSLCertificateKeyFile "/path/to/this/server.key"
        </highlight>
        The <code>server.csr</code> file is no longer needed.
     </li>

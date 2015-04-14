@@ -76,8 +76,8 @@ RewriteEngine on
 
 RewriteMap    lowercase int:tolower
 
-RewriteCond   ${lowercase:%{<strong>HTTP_HOST</strong>}}   ^www\.<strong>([^.]+)</strong>\.example\.com$
-RewriteRule   ^(.*) /home/<strong>%1</strong>/www$1
+RewriteCond   "${lowercase:%{<strong>HTTP_HOST</strong>}}"   "^www\.<strong>([^.]+)</strong>\.example\.com$"
+RewriteRule   "^(.*)" "/home/<strong>%1</strong>/www$1"
 </highlight></dd>
 
 <dt>Discussion</dt>
@@ -135,9 +135,9 @@ UseCanonicalName Off
 
 # splittable logs
 LogFormat "%{Host}i %h %l %u %t \"%r\" %s %b" vcommon
-CustomLog logs/access_log vcommon
+CustomLog "logs/access_log" vcommon
 
-&lt;Directory /www/hosts&gt;
+&lt;Directory "/www/hosts"&gt;
     # ExecCGI is needed here because we can't force
     # CGI execution in the way that ScriptAlias does
     Options FollowSymLinks ExecCGI
@@ -149,16 +149,16 @@ RewriteEngine On
 RewriteMap  lowercase  int:tolower
 
 ## deal with normal documents first:
-# allow Alias /icons/ to work - repeat for other aliases
-RewriteCond  %{REQUEST_URI}  !^/icons/
+# allow Alias "/icons/" to work - repeat for other aliases
+RewriteCond  "%{REQUEST_URI}"  "!^/icons/"
 # allow CGIs to work
-RewriteCond  %{REQUEST_URI}  !^/cgi-bin/
+RewriteCond  "%{REQUEST_URI}"  "!^/cgi-bin/"
 # do the magic
-RewriteRule  ^/(.*)$  /www/hosts/${lowercase:%{SERVER_NAME}}/docs/$1
+RewriteRule  "^/(.*)$"  "/www/hosts/${lowercase:%{SERVER_NAME}}/docs/$1"
 
 ## and now deal with CGIs - we have to force a handler
-RewriteCond  %{REQUEST_URI}  ^/cgi-bin/
-RewriteRule  ^/(.*)$  /www/hosts/${lowercase:%{SERVER_NAME}}/cgi-bin/$1  [H=cgi-script]
+RewriteCond  "%{REQUEST_URI}"  "^/cgi-bin/"
+RewriteRule  "^/(.*)$"  "/www/hosts/${lowercase:%{SERVER_NAME}}/cgi-bin/$1"  [H=cgi-script]
 </highlight>
 
 </section>
@@ -188,20 +188,20 @@ RewriteEngine on
 RewriteMap   lowercase  int:tolower
 
 # define the map file
-RewriteMap   vhost      txt:/www/conf/vhost.map
+RewriteMap   vhost      "txt:/www/conf/vhost.map"
 
 # deal with aliases as above
-RewriteCond  %{REQUEST_URI}               !^/icons/
-RewriteCond  %{REQUEST_URI}               !^/cgi-bin/
-RewriteCond  ${lowercase:%{SERVER_NAME}}  ^(.+)$
+RewriteCond  "%{REQUEST_URI}"               "!^/icons/"
+RewriteCond  "%{REQUEST_URI}"               "!^/cgi-bin/"
+RewriteCond  "${lowercase:%{SERVER_NAME}}"  "^(.+)$"
 # this does the file-based remap
-RewriteCond  ${vhost:%1}                  ^(/.*)$
-RewriteRule  ^/(.*)$                      %1/docs/$1
+RewriteCond  "${vhost:%1}"                  "^(/.*)$"
+RewriteRule  "^/(.*)$"                      "%1/docs/$1"
 
-RewriteCond  %{REQUEST_URI}               ^/cgi-bin/
-RewriteCond  ${lowercase:%{SERVER_NAME}}  ^(.+)$
-RewriteCond  ${vhost:%1}                  ^(/.*)$
-RewriteRule  ^/(.*)$                      %1/cgi-bin/$1 [H=cgi-script]
+RewriteCond  "%{REQUEST_URI}"               "^/cgi-bin/"
+RewriteCond  "${lowercase:%{SERVER_NAME}}"  "^(.+)$"
+RewriteCond  "${vhost:%1}"                  "^(/.*)$"
+RewriteRule  "^/(.*)$"                      "%1/cgi-bin/$1" [H=cgi-script]
 </highlight>
 
 </section>

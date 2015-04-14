@@ -103,7 +103,7 @@
 
     <example><title>Example</title>
     <highlight language="config">
-&lt;Directory /export/home/trawick/apacheinst/htdocs/convert&gt;
+&lt;Directory "/export/home/trawick/apacheinst/htdocs/convert"&gt;
     CharsetSourceEnc  UTF-16BE
     CharsetDefault    ISO-8859-1
 &lt;/Directory&gt;
@@ -144,7 +144,7 @@
 
     <example><title>Example</title>
     <highlight language="config">
-&lt;Directory /export/home/trawick/apacheinst/htdocs/convert&gt;
+&lt;Directory "/export/home/trawick/apacheinst/htdocs/convert"&gt;
     CharsetSourceEnc  UTF-16BE
     CharsetDefault    ISO-8859-1
 &lt;/Directory&gt;

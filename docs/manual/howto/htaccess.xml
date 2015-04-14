@@ -77,7 +77,9 @@ changes on a per-directory basis.</p>
       if you would rather call the file <code>.config</code> then you
       can put the following in your server configuration file:</p>
 
-      <highlight language="config">AccessFileName .config</highlight>
+      <highlight language="config">
+AccessFileName ".config"
+      </highlight>
     </note>
 
     <p>In general, <code>.htaccess</code> files use the same syntax as
@@ -209,21 +211,23 @@ changes on a per-directory basis.</p>
     <p>Note that it is completely equivalent to put a <code>.htaccess</code>
     file in a directory <code>/www/htdocs/example</code> containing a
     directive, and to put that same directive in a Directory section
-    <code>&lt;Directory /www/htdocs/example&gt;</code> in your main server
+    <code>&lt;Directory "/www/htdocs/example"&gt;</code> in your main server
     configuration:</p>
 
     <p><code>.htaccess</code> file in <code>/www/htdocs/example</code>:</p>
 
     <example><title>Contents of .htaccess file in
     <code>/www/htdocs/example</code></title>
-    <highlight language="config">AddType text/example .exm</highlight>
+    <highlight language="config">
+AddType text/example ".exm"
+    </highlight>
     </example>
 
     <example><title>Section from your <code>httpd.conf</code>
     file</title>
     <highlight language="config">
-&lt;Directory /www/htdocs/example&gt;
-    AddType text/example .exm
+&lt;Directory "/www/htdocs/example"&gt;
+    AddType text/example ".exm"
 &lt;/Directory&gt;
     </highlight>
     </example>
@@ -237,7 +241,9 @@ changes on a per-directory basis.</p>
     by setting the <directive module="core">AllowOverride</directive>
     directive to <code>none</code>:</p>
 
-    <highlight language="config">AllowOverride None</highlight>
+    <highlight language="config">
+AllowOverride None
+    </highlight>
 </section>
 
 <section id="how"><title>How directives are applied</title>
@@ -258,7 +264,9 @@ changes on a per-directory basis.</p>
     <p>In the directory <code>/www/htdocs/example1</code> we have a
     <code>.htaccess</code> file containing the following:</p>
 
-    <highlight language="config">Options +ExecCGI</highlight>
+    <highlight language="config">
+Options +ExecCGI
+    </highlight>
 
     <p>(Note: you must have "<code>AllowOverride Options</code>" in effect
     to permit the use of the "<directive
@@ -268,7 +276,9 @@ changes on a per-directory basis.</p>
     <p>In the directory <code>/www/htdocs/example1/example2</code> we have
     a <code>.htaccess</code> file containing:</p>
 
-    <highlight language="config">Options Includes</highlight>
+    <highlight language="config">
+Options Includes
+    </highlight>
 
     <p>Because of this second <code>.htaccess</code> file, in the directory
     <code>/www/htdocs/example1/example2</code>, CGI execution is not
@@ -292,11 +302,11 @@ changes on a per-directory basis.</p>
     <code>.htaccess</code> you can use:</p>
 
     <highlight language="config">
-&lt;Directory /www/htdocs&gt;
+&lt;Directory "/www/htdocs"&gt;
     AllowOverride All
 &lt;/Directory&gt;
 
-&lt;Location /&gt;
+&lt;Location "/"&gt;
     Options +IncludesNoExec -ExecCGI<br />
 &lt;/Location&gt;
     </highlight>
@@ -330,8 +340,8 @@ changes on a per-directory basis.</p>
     <highlight language="config">
 AuthType Basic
 AuthName "Password Required"
-AuthUserFile /www/passwords/password.file
-AuthGroupFile /www/passwords/group.file
+AuthUserFile "/www/passwords/password.file"
+AuthGroupFile "/www/passwords/group.file"
 Require group admins
     </highlight>
 
@@ -372,13 +382,13 @@ Consider the following examples:</p>
 
 <highlight language="config">
 # In httpd.conf
-RewriteRule ^/images/(.+)\.jpg /images/$1.png
+RewriteRule "^/images/(.+)\.jpg" "/images/$1.png"
 
 # In .htaccess in root dir
-RewriteRule ^images/(.+)\.jpg images/$1.png
+RewriteRule "^images/(.+)\.jpg" "images/$1.png"
 
 # In .htaccess in images/
-RewriteRule ^(.+)\.jpg $1.png
+RewriteRule "^(.+)\.jpg" "$1.png"
 </highlight>
 
 <p>In a <code>.htaccess</code> in your document directory, the leading

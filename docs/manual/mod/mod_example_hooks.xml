@@ -100,7 +100,7 @@
     <p>To activate the example_hooks module, include a block similar to
     the following in your <code>httpd.conf</code> file:</p>
 <highlight language="config">
-&lt;Location /example-hooks-info&gt;
+&lt;Location "/example-hooks-info"&gt;
    SetHandler example-hooks-handler
 &lt;/Location&gt;
 </highlight>
@@ -109,7 +109,7 @@
     href="core.html#accessfilename"><code>.htaccess</code></a> file
     and then request the file "test.example" from that location:</p>
 <highlight language="config">
-   AddHandler example-hooks-handler .example
+   AddHandler example-hooks-handler ".example"
 </highlight>
 
     <p>After reloading/restarting your server, you should be able

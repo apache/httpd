@@ -194,7 +194,7 @@ FilterProtocol downsample "change=yes"
 FilterProvider repack jpeg_pack "%{CONTENT_TYPE} = 'image/jpeg'"
 FilterProvider repack gif_pack "%{CONTENT_TYPE} = 'image/gif'"
 FilterProvider repack png_pack "%{CONTENT_TYPE} = 'image/png'"
-&lt;Location /image-filter&gt;
+&lt;Location "/image-filter"&gt;
     FilterChain unpack downsample repack
 &lt;/Location&gt;
     </highlight>
@@ -282,7 +282,7 @@ being moved to <module>mod_filter</module> in version 2.3.7</compatibility>
     filter.</p>
 
     <highlight language="config">
-&lt;Location /cgi-bin/&gt;
+&lt;Location "/cgi-bin/"&gt;
     Options Includes
     AddOutputFilterByType INCLUDES;DEFLATE text/html
 &lt;/Location&gt;

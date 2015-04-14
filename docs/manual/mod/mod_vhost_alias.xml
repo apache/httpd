@@ -45,8 +45,8 @@ hosting</description>
       /usr/local/apache2/cgi-bin/script.pl</code> in all cases:</p>
 
       <highlight language="config">
-ScriptAlias /cgi-bin/ /usr/local/apache2/cgi-bin/
-VirtualScriptAlias /never/found/%0/cgi-bin/
+ScriptAlias "/cgi-bin/" "/usr/local/apache2/cgi-bin/"
+VirtualScriptAlias "/never/found/%0/cgi-bin/"
       </highlight>
     </note>
 </summary>
@@ -128,7 +128,7 @@ VirtualScriptAlias /never/found/%0/cgi-bin/
 
     <highlight language="config">
 UseCanonicalName    Off
-VirtualDocumentRoot /usr/local/apache/vhosts/%0
+VirtualDocumentRoot "/usr/local/apache/vhosts/%0"
     </highlight>
 
     <p>A request for
@@ -144,7 +144,7 @@ VirtualDocumentRoot /usr/local/apache/vhosts/%0
 
     <highlight language="config">
 UseCanonicalName    Off
-VirtualDocumentRoot /usr/local/apache/vhosts/%3+/%2.1/%2.2/%2.3/%2
+VirtualDocumentRoot "/usr/local/apache/vhosts/%3+/%2.1/%2.2/%2.3/%2"
     </highlight>
 
     <p>A request for
@@ -156,7 +156,7 @@ VirtualDocumentRoot /usr/local/apache/vhosts/%3+/%2.1/%2.2/%2.3/%2
     end of the name, for example: </p>
 
 <highlight language="config">
-    VirtualDocumentRoot /usr/local/apache/vhosts/%3+/%2.-1/%2.-2/%2.-3/%2
+    VirtualDocumentRoot "/usr/local/apache/vhosts/%3+/%2.-1/%2.-2/%2.-3/%2"
 </highlight>
 
     <p>The example request would come from
@@ -165,7 +165,7 @@ VirtualDocumentRoot /usr/local/apache/vhosts/%3+/%2.1/%2.2/%2.3/%2
     <p>Alternatively you might use: </p>
 
 <highlight language="config">
-    VirtualDocumentRoot /usr/local/apache/vhosts/%3+/%2.1/%2.2/%2.3/%2.4+
+    VirtualDocumentRoot "/usr/local/apache/vhosts/%3+/%2.1/%2.2/%2.3/%2.4+"
 </highlight>
 
     <p>The example request would come from
@@ -195,8 +195,8 @@ or <code>example.com</code> will all point to <code>/usr/local/apache/vhosts/exa
 
     <highlight language="config">
 UseCanonicalName DNS
-VirtualDocumentRootIP /usr/local/apache/vhosts/%1/%2/%3/%4/docs
-VirtualScriptAliasIP  /usr/local/apache/vhosts/%1/%2/%3/%4/cgi-bin
+VirtualDocumentRootIP "/usr/local/apache/vhosts/%1/%2/%3/%4/docs"
+VirtualScriptAliasIP  "/usr/local/apache/vhosts/%1/%2/%3/%4/cgi-bin"
     </highlight>
 
     <p>A request for
@@ -215,7 +215,7 @@ VirtualScriptAliasIP  /usr/local/apache/vhosts/%1/%2/%3/%4/cgi-bin
     the following way:</p>
 
 <highlight language="config">
-    VirtualDocumentRoot /usr/local/apache/vhosts/%2.0.%3.0
+    VirtualDocumentRoot "/usr/local/apache/vhosts/%2.0.%3.0"
 </highlight>
 
     <p>A request for

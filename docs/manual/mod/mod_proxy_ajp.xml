@@ -58,19 +58,19 @@
 
     <example><title>Simple Reverse Proxy</title>
     <highlight language="config">
-    ProxyPass /app ajp://backend.example.com:8009/app
+    ProxyPass "/app" "ajp://backend.example.com:8009/app"
     </highlight>
     </example>
 
     <p>Balancers may also be used:</p>
     <example><title>Balancer Reverse Proxy</title>
     <highlight language="config">
-&lt;Proxy balancer://cluster&gt;
-    BalancerMember ajp://app1.example.com:8009 loadfactor=1
-    BalancerMember ajp://app2.example.com:8009 loadfactor=2
+&lt;Proxy "balancer://cluster"&gt;
+    BalancerMember "ajp://app1.example.com:8009" loadfactor=1
+    BalancerMember "ajp://app2.example.com:8009" loadfactor=2
     ProxySet lbmethod=bytraffic
 &lt;/Proxy&gt;
-ProxyPass /app balancer://cluster/app
+ProxyPass "/app" "balancer://cluster/app"
       </highlight>
     </example>
 
@@ -88,8 +88,8 @@ ProxyPass /app balancer://cluster/app
     example:</p>
     <example><title>Rewriting Proxied Path</title>
     <highlight language="config">
-ProxyPass /apps/foo ajp://backend.example.com:8009/foo
-ProxyPassReverse /apps/foo http://www.example.com/foo
+ProxyPass "/apps/foo" "ajp://backend.example.com:8009/foo"
+ProxyPassReverse "/apps/foo" "http://www.example.com/foo"
     </highlight>
     </example>
     <p>However, it is usually better to deploy the application on the backend

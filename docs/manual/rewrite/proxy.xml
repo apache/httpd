@@ -67,9 +67,9 @@ A number of recipes are provided that describe common scenarios.</p>
 
 <highlight language="config">
 RewriteEngine  on
-RewriteBase    /products/
-RewriteRule    ^widget/(.*)$  http://product.example.com/widget/$1  [P]
-ProxyPassReverse /products/widget/ http://product.example.com/widget/
+RewriteBase    "/products/"
+RewriteRule    "^widget/(.*)$"  "http://product.example.com/widget/$1"  [P]
+ProxyPassReverse "/products/widget/" "http://product.example.com/widget/"
 </highlight>
 
    <p>In the second example, we proxy the request only if we can't find
@@ -78,10 +78,10 @@ ProxyPassReverse /products/widget/ http://product.example.com/widget/
    has been migrated yet.</p>
 
 <highlight language="config">
-RewriteCond %{REQUEST_FILENAME}       !-f
-RewriteCond %{REQUEST_FILENAME}       !-d
-RewriteRule ^/(.*) http://old.example.com/$1 [P]
-ProxyPassReverse / http://old.example.com/
+RewriteCond "%{REQUEST_FILENAME}"       !-f
+RewriteCond "%{REQUEST_FILENAME}"       !-d
+RewriteRule "^/(.*)" "http://old.example.com/$1" [P]
+ProxyPassReverse "/" "http://old.example.com/"
 </highlight>
     </dd>
 

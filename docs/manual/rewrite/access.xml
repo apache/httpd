@@ -84,27 +84,27 @@ configuration.</note>
 <!-- TODO: Add discussion here of why we have !^$ in there. -->
 
 <highlight language="config">
-RewriteCond %{HTTP_REFERER} !^$
-RewriteCond %{HTTP_REFERER} !www.example.com [NC]
-RewriteRule \.(gif|jpg|png)$    -   [F,NC]
+RewriteCond "%{HTTP_REFERER}" "!^$"
+RewriteCond "%{HTTP_REFERER}" "!www.example.com" [NC]
+RewriteRule "\.(gif|jpg|png)$"    "-"   [F,NC]
 </highlight>
 
     <p>In this second example, instead of failing the request, we display
     an alternate image instead.</p>
 
 <highlight language="config">
-RewriteCond %{HTTP_REFERER} !^$
-RewriteCond %{HTTP_REFERER} !www.example.com [NC]
-RewriteRule \.(gif|jpg|png)$    /images/go-away.png   [R,NC]
+RewriteCond "%{HTTP_REFERER}" "!^$"
+RewriteCond "%{HTTP_REFERER}" "!www.example.com" [NC]
+RewriteRule "\.(gif|jpg|png)$"    "/images/go-away.png"   [R,NC]
 </highlight>
 
     <p>In the third example, we redirect the request to an image on some
     other site.</p>
 
 <highlight language="config">
-RewriteCond %{HTTP_REFERER} !^$
-RewriteCond %{HTTP_REFERER} !www.example.com [NC]
-RewriteRule \.(gif|jpg|png)$ http://other.example.com/image.gif   [R,NC]
+RewriteCond "%{HTTP_REFERER}" "!^$"
+RewriteCond "%{HTTP_REFERER}" "!www.example.com" [NC]
+RewriteRule "\.(gif|jpg|png)$" "http://other.example.com/image.gif"   [R,NC]
 </highlight>
 
     <p>Of these techniques, the last two tend to be the most effective
@@ -121,8 +121,8 @@ RewriteRule \.(gif|jpg|png)$ http://other.example.com/image.gif   [R,NC]
         accomplished without the use of mod_rewrite:</p>
 
         <highlight language="config">
-SetEnvIf Referer example\.com localreferer
-&lt;FilesMatch \.(jpg|png|gif)$&gt;
+SetEnvIf Referer "example\.com" localreferer
+&lt;FilesMatch "\.(jpg|png|gif)$"&gt;
     Require env localreferer
 &lt;/FilesMatch&gt;
         </highlight>
@@ -169,9 +169,9 @@ SetEnvIf Referer example\.com localreferer
         particular source.</p>
 
 <highlight language="config">
-RewriteCond %{HTTP_USER_AGENT}   ^NameOfBadRobot
-RewriteCond %{REMOTE_ADDR}       =123\.45\.67\.[8-9]
-RewriteRule ^/secret/files/   -   [F]
+RewriteCond "%{HTTP_USER_AGENT}"   "^NameOfBadRobot"
+RewriteCond "%{REMOTE_ADDR}"       "=123\.45\.67\.[8-9]"
+RewriteRule "^/secret/files/"   "-"   [F]
 </highlight>
         </dd>
 
@@ -183,8 +183,8 @@ RewriteRule ^/secret/files/   -   [F]
         same end using alternate means, as illustrated here:
       </p>
       <highlight language="config">
-SetEnvIfNoCase User-Agent ^NameOfBadRobot goaway
-&lt;Location /secret/files&gt;
+SetEnvIfNoCase User-Agent "^NameOfBadRobot" goaway
+&lt;Location "/secret/files"&gt;
     &lt;RequireAll&gt;
         Require all granted
         Require not env goaway
@@ -222,10 +222,10 @@ SetEnvIfNoCase User-Agent ^NameOfBadRobot goaway
     <dd>
 <highlight language="config">
 RewriteEngine on
-RewriteMap    hosts-deny  txt:/path/to/hosts.deny
-RewriteCond   ${hosts-deny:%{REMOTE_ADDR}|NOT-FOUND} !=NOT-FOUND [OR]
-RewriteCond   ${hosts-deny:%{REMOTE_HOST}|NOT-FOUND} !=NOT-FOUND
-RewriteRule   ^  -  [F]
+RewriteMap    hosts-deny  "txt:/path/to/hosts.deny"
+RewriteCond   "${hosts-deny:%{REMOTE_ADDR}|NOT-FOUND}" "!=NOT-FOUND" [OR]
+RewriteCond   "${hosts-deny:%{REMOTE_HOST}|NOT-FOUND}" "!=NOT-FOUND"
+RewriteRule   "^"  "-"  [F]
 </highlight>
 
 <example>
@@ -275,15 +275,15 @@ bsdti1.sdm.de  -<br />
   with a redirection target.</p>
 
 <highlight language="config">
-RewriteMap  deflector txt:/path/to/deflector.map
+RewriteMap  deflector "txt:/path/to/deflector.map"
 
-RewriteCond %{HTTP_REFERER} !=""
-RewriteCond ${deflector:%{HTTP_REFERER}} =-
-RewriteRule ^ %{HTTP_REFERER} [R,L]
+RewriteCond "%{HTTP_REFERER}" !=""
+RewriteCond "${deflector:%{HTTP_REFERER}}" "=-"
+RewriteRule "^" "%{HTTP_REFERER}" [R,L]
 
-RewriteCond %{HTTP_REFERER} !=""
-RewriteCond ${deflector:%{HTTP_REFERER}|NOT-FOUND} !=NOT-FOUND
-RewriteRule ^ ${deflector:%{HTTP_REFERER}} [R,L]
+RewriteCond "%{HTTP_REFERER}" !=""
+RewriteCond "${deflector:%{HTTP_REFERER}|NOT-FOUND}" "!=NOT-FOUND"
+RewriteRule "^" "${deflector:%{HTTP_REFERER}}" [R,L]
 </highlight>
 
       <p>The map file lists redirection targets for each referer, or, if

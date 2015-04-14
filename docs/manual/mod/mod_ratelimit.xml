@@ -39,7 +39,7 @@ variable <code>rate-limit</code>.</p>
 
 <example><title>Example Configuration</title>
 <highlight language="config">
-&lt;Location /downloads&gt;
+&lt;Location "/downloads"&gt;
     SetOutputFilter RATE_LIMIT
     SetEnv rate-limit 400 
 &lt;/Location&gt;

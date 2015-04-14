@@ -71,7 +71,7 @@ module="core">SetHandler</directive> or
 <directive module="mod_mime">AddHandler</directive> directive:</p>
 
 <highlight language="config">
-&lt;Files *.lua&gt;
+&lt;Files "*.lua"&gt;
     SetHandler lua-script
 &lt;/Files&gt;
 </highlight>
@@ -194,7 +194,7 @@ end
 <code>foo</code> and configures it for URL <code>/</code>:</p>
 <highlight language="config">
 LuaAuthzProvider foo authz_provider.lua authz_check_foo
-&lt;Location /&gt;
+&lt;Location "/"&gt;
   Require foo 10.1.2.3 john_doe
 &lt;/Location&gt;
 </highlight>
@@ -1356,7 +1356,7 @@ collectgarbage() -- close the handle via GC
     issues.</p>
    <example><title>Examples:</title>
    <highlight language="config">
-    LuaMapHandler /(\w+)/(\w+) /scripts/$1.lua handle_$2
+    LuaMapHandler "/(\w+)/(\w+)" "/scripts/$1.lua" "handle_$2"
     </highlight>
    </example>
         <p>This would match uri's such as /photos/show?id=9
@@ -1365,7 +1365,7 @@ collectgarbage() -- close the handle via GC
         loading that file.</p>
 
 <highlight language="config">
-    LuaMapHandler /bingo /scripts/wombat.lua
+    LuaMapHandler "/bingo" "/scripts/wombat.lua"
 </highlight>
         <p>This would invoke the "handle" function, which
         is the default if no specific function name is
@@ -1387,8 +1387,8 @@ collectgarbage() -- close the handle via GC
 
     <example><title>Examples:</title>
     <highlight language="config">
-LuaPackagePath /scripts/lib/?.lua
-LuaPackagePath /scripts/lib/?/init.lua
+LuaPackagePath "/scripts/lib/?.lua"
+LuaPackagePath "/scripts/lib/?/init.lua"
     </highlight>
     </example>
 </usage>
@@ -1472,7 +1472,7 @@ LuaCodeCache never
 
 <highlight language="config">
 # httpd.conf
-LuaHookTranslateName /scripts/conf/hooks.lua silly_mapper
+LuaHookTranslateName "/scripts/conf/hooks.lua" silly_mapper
 </highlight>
 
 <highlight language="lua">
@@ -1535,7 +1535,7 @@ processing</description>
 </p>
 <p>Example:</p>
 <highlight language="config">
-LuaHookLog /path/to/script.lua logger
+LuaHookLog "/path/to/script.lua" logger
 </highlight>
 <highlight language="lua">
 -- /path/to/script.lua --
@@ -1577,7 +1577,7 @@ end
     map-to-storage phase of a request. Modules like mod_cache run at this phase,
     which makes for an interesting example on what to do here:</p>
     <highlight language="config">
-    LuaHookMapToStorage /path/to/lua/script.lua check_cache
+    LuaHookMapToStorage "/path/to/lua/script.lua" check_cache
     </highlight>
     <highlight language="lua">
 require"apache2"
@@ -1643,7 +1643,7 @@ end
     be used to modify the type and handler based on input:
     </p>
     <highlight language="config">
-    LuaHookTypeChecker /path/to/lua/script.lua type_checker
+    LuaHookTypeChecker "/path/to/lua/script.lua" type_checker
     </highlight>
     <highlight language="lua">
     function type_checker(r)
@@ -1796,9 +1796,9 @@ hook function usually returns OK, DECLINED, or HTTP_FORBIDDEN.</p>
 with the <directive module="mod_authz_core">Require</directive> directive:</p>
 
 <highlight language="config">
-LuaRoot /usr/local/apache2/lua
+LuaRoot "/usr/local/apache2/lua"
 LuaAuthzProvider foo authz.lua authz_check_foo
-&lt;Location /&gt;
+&lt;Location "/"&gt;
   Require foo johndoe
 &lt;/Location&gt;
 </highlight>
@@ -1833,8 +1833,8 @@ onto the Lua script:
 </p>
 
 <highlight language="config">
-LuaInputFilter myInputFilter /www/filter.lua input_filter
-&lt;Files *.lua&gt;
+LuaInputFilter myInputFilter "/www/filter.lua" input_filter
+&lt;Files "*.lua"&gt;
   SetInputFilter myInputFilter
 &lt;/Files&gt;
 </highlight>
@@ -1890,8 +1890,8 @@ onto the Lua script:
 </p>
 
 <highlight language="config">
-LuaOutputFilter myOutputFilter /www/filter.lua output_filter
-&lt;Files *.lua&gt;
+LuaOutputFilter myOutputFilter "/www/filter.lua" output_filter
+&lt;Files "*.lua"&gt;
   SetOutputFilter myOutputFilter
 &lt;/Files&gt;
 </highlight>

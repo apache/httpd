@@ -705,8 +705,8 @@ AuthLDAPURL ldap://10.0.0.1:3268/?userPrincipalName?sub
     that gets created in the web</p>
 <highlight language="config">
 AuthLDAPURL       "the url"
-AuthGroupFile     mygroupfile
-Require group     mygroupfile
+AuthGroupFile     "mygroupfile"
+Require group     "mygroupfile"
 </highlight>
 
 <section id="howitworks"><title>How It Works</title>

@@ -46,7 +46,9 @@ providing detailed explanations and examples.</p>
 its behavior modified by one or more flags. Flags are included in
 square brackets at the end of the rule, and multiple flags are separated
 by commas.</p>
-<highlight language="config">RewriteRule pattern target [Flag1,Flag2,Flag3]</highlight>
+<highlight language="config">
+RewriteRule pattern target [Flag1,Flag2,Flag3]
+</highlight>
 
 <p>Each flag (with a few exceptions) has a short form, such as
 <code>CO</code>, as well as a longer form, such as <code>cookie</code>. 
@@ -75,7 +77,9 @@ so backreferences are unescaped at the time they are applied.
 Using the B flag, non-alphanumeric characters in backreferences
 will be escaped. For example, consider the rule:</p>
 
-<highlight language="config">RewriteRule ^search/(.*)$ /search.php?term=$1</highlight>
+<highlight language="config">
+RewriteRule "^search/(.*)$" "/search.php?term=$1"
+</highlight>
 
 <p>Given a search term of 'x &amp; y/z', a browser will encode it as
 'x%20%26%20y%2Fz', making the request 'search/x%20%26%20y%2Fz'. Without the B
@@ -163,7 +167,7 @@ browsers that support this feature.</dd>
 
 <highlight language="config">
 RewriteEngine On
-RewriteRule ^/index\.html - [CO=frontdoor:yes:.example.com:1440:/]
+RewriteRule "^/index\.html" "-" [CO=frontdoor:yes:.example.com:1440:/]
 </highlight>
 
 <p>In the example give, the rule doesn't rewrite the request.
@@ -250,8 +254,8 @@ environment variable is used to exclude those requests from the access
 log.</p>
 
 <highlight language="config">
-RewriteRule \.(png|gif|jpg)$ - [E=image:1]
-CustomLog logs/access_log combined env=!image
+RewriteRule "\.(png|gif|jpg)$" "-" [E=image:1]
+CustomLog "logs/access_log" combined env=!image
 </highlight>
 
 <p>Note that this same effect can be obtained using <directive
@@ -277,7 +281,9 @@ allows more flexibility in assigning a Forbidden status.</p>
 <p>The following rule will forbid <code>.exe</code> files from being
 downloaded from your server.</p>
 
-<highlight language="config">RewriteRule \.exe - [F]</highlight>
+<highlight language="config">
+RewriteRule "\.exe" "-" [F]
+</highlight>
 
 <p>This example uses the "-" syntax for the rewrite target, which means
 that the requested URI is not modified. There's no reason to rewrite to
@@ -296,7 +302,9 @@ longer available.</p>
 <p>As with the [F] flag, you will typically use the "-" syntax for the
 rewrite target when using the [G] flag:</p>
 
-<highlight language="config">RewriteRule oldproduct - [G,NC]</highlight>
+<highlight language="config">
+RewriteRule "oldproduct" "-" [G,NC]
+</highlight>
 
 <p>When using [G], an [L] is implied - that is, the response is returned
 immediately, and no further rules are evaluated.</p>
@@ -308,7 +316,9 @@ immediately, and no further rules are evaluated.</p>
 handler. For example, one might use this to force all files without a
 file extension to be parsed by the php handler:</p>
 
-<highlight language="config">RewriteRule !\. - [H=application/x-httpd-php]</highlight>
+<highlight language="config">
+RewriteRule "!\." "-" [H=application/x-httpd-php]
+</highlight>
 
 <p>
 The regular expression above - <code>!\.</code> - will match any request
@@ -321,7 +331,7 @@ For example, the following snippet used in per-server context allows
 if they are requested with the <code>.phps</code> extension:</p>
 
 <highlight language="config">
-RewriteRule ^(/source/.+\.php)s$ $1 [H=application/x-httpd-php-source]
+RewriteRule "^(/source/.+\.php)s$" "$1" [H=application/x-httpd-php-source]
 </highlight>
 
 <p>The regular expression above - <code>^(/source/.+\.php)s$</code> - will
@@ -374,9 +384,9 @@ is already for <code>index.php</code>, the <directive
 module="mod_rewrite">RewriteRule</directive> will be skipped.</p>
 
 <highlight language="config">
-RewriteBase /
-RewriteCond %{REQUEST_URI} !=/index.php
-RewriteRule ^(.*) /index.php?req=$1 [L,PT]
+RewriteBase "/"
+RewriteCond "%{REQUEST_URI}" "!=/index.php"
+RewriteRule "^(.*)" "/index.php?req=$1" [L,PT]
 </highlight>
 </section>
 
@@ -392,7 +402,9 @@ certain string or letter repeatedly in a request. The example shown here
 will replace A with B everywhere in a request, and will continue doing
 so until there are no more As to be replaced.
 </p>
-<highlight language="config">RewriteRule (.*)A(.*) $1B$2 [N]</highlight>
+<highlight language="config">
+RewriteRule "(.*)A(.*)" "$1B$2" [N]
+</highlight>
 <p>You can think of this as a <code>while</code> loop: While this
 pattern still matches (i.e., while the URI still contains an
 <code>A</code>), perform this substitution (i.e., replace the
@@ -403,9 +415,9 @@ protect against unintended looping.  An alternative maximum number of
 iterations can be specified by adding to the N flag.  </p>
 <highlight language="config">
 # Be willing to replace 1 character in each pass of the loop
-RewriteRule (.+)[&gt;&lt;;]$ $1 [N=64000]
+RewriteRule "(.+)[&gt;&lt;;]$" "$1" [N=64000]
 # ... or, give up if after 10 loops
-RewriteRule (.+)[&gt;&lt;;]$ $1 [N=10]
+RewriteRule "(.+)[&gt;&lt;;]$" "$1" [N=10]
 </highlight>
 
 </section>
@@ -421,7 +433,9 @@ to your dedicated image server. The match is case-insensitive, so that
 <code>.jpg</code> and <code>.JPG</code> files are both acceptable, for
 example.</p>
 
-<highlight language="config">RewriteRule (.*\.(jpg|gif|png))$ http://images.example.com$1 [P,NC]</highlight>
+<highlight language="config">
+RewriteRule "(.*\.(jpg|gif|png))$" "http://images.example.com$1" [P,NC]
+</highlight>
 </section>
 
 <section id="flag_ne"><title>NE|noescape</title>
@@ -430,7 +444,9 @@ example.</p>
 equivalent. Using the [NE] flag prevents that from happening.
 </p>
 
-<highlight language="config">RewriteRule ^/anchor/(.+) /bigpage.html#$1 [NE,R]</highlight>
+<highlight language="config">
+RewriteRule "^/anchor/(.+)" "/bigpage.html#$1" [NE,R]
+</highlight>
 
 <p>
 The above example will redirect <code>/anchor/xyz</code> to
@@ -471,7 +487,9 @@ requests.
 example, if you wanted all image requests to be handled by a back-end
 image server, you might do something like the following:</p>
 
-<highlight language="config">RewriteRule /(.*)\.(jpg|gif|png)$ http://images.example.com/$1.$2 [P]</highlight>
+<highlight language="config">
+RewriteRule "/(.*)\.(jpg|gif|png)$" "http://images.example.com/$1.$2" [P]
+</highlight>
 
 <p>Use of the [P] flag implies [L] - that is, the request is immediately
 pushed through the proxy, and any following rules will not be
@@ -534,8 +552,8 @@ use the [PT] flag to ensure that the
 </p>
 
 <highlight language="config">
-Alias /icons /usr/local/apache/icons
-RewriteRule /pics/(.+)\.jpg$ /icons/$1.gif [PT]
+Alias "/icons" "/usr/local/apache/icons"
+RewriteRule "/pics/(.+)\.jpg$" "/icons/$1.gif" [PT]
 </highlight>
 
 <p>
@@ -565,7 +583,9 @@ Using the [QSA] flag causes the query strings to be combined.
 
 <p>Consider the following rule:</p>
 
-<highlight language="config">RewriteRule /pages/(.+) /page.php?page=$1 [QSA]</highlight>
+<highlight language="config">
+RewriteRule "/pages/(.+)" "/page.php?page=$1" [QSA]
+</highlight>
 
 <p>With the [QSA] flag, a request for <code>/pages/123?one=two</code> will be
 mapped to <code>/page.php?page=123&amp;one=two</code>. Without the [QSA]
@@ -642,13 +662,13 @@ requested URI doesn't correspond with an actual file.</p>
 
 <highlight language="config">
 # Is the request for a non-existent file?
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond "%{REQUEST_FILENAME}" "!-f"
+RewriteCond "%{REQUEST_FILENAME}" "!-d"
 # If so, skip these two RewriteRules
-RewriteRule .? - [S=2]
+RewriteRule ".?" "-" [S=2]
 
-RewriteRule (.*\.gif) images.php?$1
-RewriteRule (.*\.html) docs.php?$1
+RewriteRule "(.*\.gif)" "images.php?$1"
+RewriteRule "(.*\.html)" "docs.php?$1"
 </highlight>
 
 <p>This technique is useful because a <directive
@@ -662,18 +682,18 @@ the then-clause becomes <code>skip=N</code>, where N is the
 number of rules in the else-clause:</p>
 <highlight language="config">
 # Does the file exist?
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond "%{REQUEST_FILENAME}" "!-f"
+RewriteCond "%{REQUEST_FILENAME}" "!-d"
 # Create an if-then-else construct by skipping 3 lines if we meant to go to the &quot;else&quot; stanza.
-RewriteRule .? - [S=3]
+RewriteRule ".?" "-" [S=3]
 
 # IF the file exists, then:
-    RewriteRule (.*\.gif) images.php?$1
-    RewriteRule (.*\.html) docs.php?$1
+    RewriteRule "(.*\.gif)" "images.php?$1"
+    RewriteRule "(.*\.html)" "docs.php?$1"
     # Skip past the &quot;else&quot; stanza.
-    RewriteRule .? - [S=1]
+    RewriteRule ".?" "-" [S=1]
 # ELSE...
-    RewriteRule (.*) 404.php?file=$1
+    RewriteRule "(.*)" "404.php?file=$1"
 # END
 </highlight>
 
@@ -694,7 +714,7 @@ source code as plain text, if requested in a particular way:</p>
 
 <highlight language="config">
 # Serve .pl files as plain text
-RewriteRule \.pl$ - [T=text/plain]
+RewriteRule "\.pl$" "-" [T=text/plain]
 </highlight>
 
 <p>Or, perhaps, if you have a camera that produces jpeg images without
@@ -703,7 +723,7 @@ correct MIME type by virtue of their file names:</p>
 
 <highlight language="config">
 # Files with 'IMG' in the name are jpg images.
-RewriteRule IMG - [T=image/jpg]
+RewriteRule "IMG" "-" [T=image/jpg]
 </highlight>
 
 <p>Please note that this is a trivial example, and could be better done

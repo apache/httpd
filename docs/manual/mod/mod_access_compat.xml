@@ -198,7 +198,7 @@ Allow from 2001:db8::a00:20ff:fea7:ccea/10
 
     <highlight language="config">
 SetEnvIf User-Agent ^KnockKnock/2\.0 let_me_in
-&lt;Directory /docroot&gt;
+&lt;Directory "/docroot"&gt;
     Order Deny,Allow
     Deny from all
     Allow from env=let_me_in
@@ -376,7 +376,7 @@ Deny from foo.example.org
     example,</p>
 
     <highlight language="config">
-&lt;Directory /www&gt;
+&lt;Directory "/www"&gt;
     Order Allow,Deny
 &lt;/Directory&gt;
     </highlight>
@@ -456,11 +456,11 @@ Satisfy Any
     </p>
 
     <highlight language="config">
-&lt;Directory /var/www/private&gt;
+&lt;Directory "/var/www/private"&gt;
     Require valid-user
 &lt;/Directory&gt;
 
-&lt;Directory /var/www/private/public&gt;
+&lt;Directory "/var/www/private/public"&gt;
     Allow from all
     Satisfy Any
 &lt;/Directory&gt;

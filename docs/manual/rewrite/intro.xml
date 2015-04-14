@@ -206,7 +206,7 @@ value.
 <dt>A full filesystem path to a resource</dt>
 <dd>
 <highlight language="config">
-RewriteRule ^/games /usr/local/games/web
+RewriteRule "^/games" "/usr/local/games/web"
 </highlight>
 <p>This maps a request to an arbitrary location on your filesystem, much
 like the <directive module="mod_alias">Alias</directive> directive.</p>
@@ -215,7 +215,7 @@ like the <directive module="mod_alias">Alias</directive> directive.</p>
 <dt>A web-path to a resource</dt>
 <dd>
 <highlight language="config">
-RewriteRule ^/foo$ /bar
+RewriteRule "^/foo$" "/bar"
 </highlight>
 <p>If <directive module="core">DocumentRoot</directive> is set
 to <code>/usr/local/apache2/htdocs</code>, then this directive would
@@ -226,7 +226,7 @@ path <code>/usr/local/apache2/htdocs/bar</code>.</p>
 <dt>An absolute URL</dt>
 <dd>
 <highlight language="config">
-RewriteRule ^/product/view$ http://site2.example.com/seeproduct.html [R]
+RewriteRule "^/product/view$" "http://site2.example.com/seeproduct.html" [R]
 </highlight>
 <p>This tells the client to make a new request for the specified URL.</p>
 </dd>
@@ -236,7 +236,7 @@ RewriteRule ^/product/view$ http://site2.example.com/seeproduct.html [R]
 contain <em>back-references</em> to parts of the incoming URL-path
 matched by the <var>Pattern</var>. Consider the following:</p>
 <highlight language="config">
-RewriteRule ^/product/(.*)/view$ /var/web/productdb/$1
+RewriteRule "^/product/(.*)/view$" "/var/web/productdb/$1"
 </highlight>
 <p>The variable <code>$1</code> will be replaced with whatever text
 was matched by the expression inside the parenthesis in
@@ -260,7 +260,7 @@ matching behavior of a rule can be made case-insensitive by the
 application of the <code>[NC]</code> flag:
 </p>
 <highlight language="config">
-RewriteRule ^puppy.html smalldog.html [NC]
+RewriteRule "^puppy.html" "smalldog.html" [NC]
 </highlight>
 
 <p>For more details on the available flags, their meanings, and
@@ -288,8 +288,8 @@ argument is a list of flags that modify how the match is evaluated.</p>
 <p>For example, to send all requests from a particular IP range to a
 different server, you could use:</p>
 <highlight language="config">
-RewriteCond %{REMOTE_ADDR} ^10\.2\.
-RewriteRule (.*) http://intranet.example.com$1
+RewriteCond "%{REMOTE_ADDR}" "^10\.2\."
+RewriteRule "(.*)" "http://intranet.example.com$1"
 </highlight>
 
 <p>When more than
@@ -300,9 +300,9 @@ applied. For example, to deny requests that contain the word "hack" in
 their query string, unless they also contain a cookie containing
 the word "go", you could use:</p>
 <highlight language="config">
-RewriteCond %{QUERY_STRING} hack
-RewriteCond %{HTTP_COOKIE} !go
-RewriteRule . - [F]
+RewriteCond "%{QUERY_STRING}" "hack"
+RewriteCond "%{HTTP_COOKIE}" "!go"
+RewriteRule "." "-" [F]
 </highlight>
 <p>Notice that the exclamation mark specifies a negative match, so the rule is only applied if the cookie does not contain "go".</p>
 
@@ -314,8 +314,8 @@ variables <code>%1</code>, <code>%2</code>, etc. For example, this
 will direct the request to a different directory depending on the
 hostname used to access the site:</p>
 <highlight language="config">
-RewriteCond %{HTTP_HOST} (.*)
-RewriteRule ^/(.*) /sites/%1/$1
+RewriteCond "%{HTTP_HOST}" "(.*)"
+RewriteRule "^/(.*)" "/sites/%1/$1"
 </highlight>
 <p>If the request was for <code>http://example.com/foo/bar</code>,
 then <code>%1</code> would contain <code>example.com</code>
