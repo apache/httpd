@@ -1018,7 +1018,7 @@ int ap_proxy_http_request(apr_pool_t *p, request_rec *r,
         break;
     default:
         /* shouldn't be possible */
-        rv = HTTP_INTERNAL_SERVER_ERROR ;
+        rv = HTTP_INTERNAL_SERVER_ERROR;
         break;
     }
 
@@ -1185,7 +1185,7 @@ static void ap_proxy_read_headers(request_rec *r, request_rec *rr,
                 if (psc->badopt == bad_error) {
                     /* Nope, it wasn't even an extra HTTP header. Give up. */
                     r->headers_out = NULL;
-                    return ;
+                    return;
                 }
                 else if (psc->badopt == bad_body) {
                     /* if we've already started loading headers_out, then
@@ -1199,12 +1199,12 @@ static void ap_proxy_read_headers(request_rec *r, request_rec *rr,
                                       "in headers returned by %s (%s)",
                                       r->uri, r->method);
                         *pread_len = len;
-                        return ;
+                        return;
                     } else {
                          ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01099)
                                        "No HTTP headers returned by %s (%s)",
                                        r->uri, r->method);
-                        return ;
+                        return;
                     }
                 }
             }
@@ -1224,15 +1224,14 @@ static void ap_proxy_read_headers(request_rec *r, request_rec *rr,
             ++value;            /* Skip to start of value   */
 
         /* should strip trailing whitespace as well */
-        for (end = &value[strlen(value)-1]; end > value && apr_isspace(*end); --
-end)
+        for (end = &value[strlen(value)-1]; end > value && apr_isspace(*end); --end)
             *end = '\0';
 
         /* make sure we add so as not to destroy duplicated headers
          * Modify headers requiring canonicalisation and/or affected
          * by ProxyPassReverse and family with process_proxy_header
          */
-        process_proxy_header(r, dconf, buffer, value) ;
+        process_proxy_header(r, dconf, buffer, value);
         saw_headers = 1;
 
         /* the header was too long; at the least we should skip extra data */
