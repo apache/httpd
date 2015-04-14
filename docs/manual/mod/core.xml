@@ -904,13 +904,13 @@ the contents of file-system directories matching a regular expression.</descript
     <glossary ref="regex">regular expression</glossary>.  For example:</p>
 
     <highlight language="config">
-&lt;DirectoryMatch "^/www/(.+/)?[0-9]{3}"&gt;
+&lt;DirectoryMatch "^/www/(.+/)?[0-9]{3}/"&gt;
     # ...
 &lt;/DirectoryMatch&gt;
 </highlight>
 
-    <p>would match directories in <code>/www/</code> that consisted of three
-    numbers.</p>
+    <p>matches directories in <code>/www/</code> (or any subdirectory thereof)
+    that consist of three numbers.</p>
 
    <note><title>Compatability</title>
       Prior to 2.3.9, this directive implicitly applied to sub-directories
@@ -935,7 +935,7 @@ the contents of file-system directories matching a regular expression.</descript
 
 <highlight language="config">
 &lt;DirectoryMatch ^/var/www/combined/(?&lt;sitename&gt;[^/]+)&gt;
-    require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
+    Require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
 &lt;/DirectoryMatch&gt;
 </highlight>
 </usage>
