@@ -217,7 +217,7 @@ expressions</description>
     use:</p>
 
     <highlight language="config">
-      AliasMatch ^/icons(.*) /usr/local/apache/icons$1
+      AliasMatch ^/icons(/|$)(.*) /usr/local/apache/icons$1$2
     </highlight>
 
     <p>The full range of <glossary ref="regex">regular expression</glossary>
