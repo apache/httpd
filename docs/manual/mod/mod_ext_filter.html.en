@@ -106,7 +106,7 @@ ExtFilterDefine c-to-html mode=output \
       <pre class="prettyprint lang-config"># mod_ext_filter directive to define the external filter
 ExtFilterDefine gzip mode=output cmd=/bin/gzip
 
-&lt;Location /gzipped&gt;
+&lt;Location "/gzipped"&gt;
     
     # core directive to cause the gzip filter to be
     # run on output
@@ -127,7 +127,7 @@ ExtFilterDefine gzip mode=output cmd=/bin/gzip
 ExtFilterDefine slowdown mode=output cmd=/bin/cat \
     preservescontentlength
 
-&lt;Location /&gt;
+&lt;Location "/"&gt;
     # core directive to cause the slowdown filter to
     # be run several times on output
     #
@@ -143,7 +143,7 @@ ExtFilterDefine slowdown mode=output cmd=/bin/cat \
 ExtFilterDefine fixtext mode=output intype=text/html \
     cmd="/bin/sed s/verdana/arial/g"
 
-&lt;Location /&gt;
+&lt;Location "/"&gt;
     # core directive to cause the fixtext filter to
     # be run on output
     SetOutputFilter fixtext
@@ -176,7 +176,7 @@ ExtFilterDefine traceafter \
     cmd="/bin/tracefilter.pl /tmp/traceafter" \
     EnableEnv=trace_this_client ftype=21
 
-&lt;Directory /usr/local/docs&gt;
+&lt;Directory "/usr/local/docs"&gt;
     SetEnvIf Remote_Addr 192.168.1.31 trace_this_client
     SetOutputFilter tracebefore;deflate;traceafter
 &lt;/Directory&gt;</pre>

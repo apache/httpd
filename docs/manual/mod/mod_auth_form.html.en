@@ -108,10 +108,10 @@
       the user will be redirected to the form login page.</p>
 
       <div class="example"><h3>Basic example</h3><pre class="prettyprint lang-config">AuthFormProvider file
-AuthUserFile conf/passwd
+AuthUserFile "conf/passwd"
 AuthType form
 AuthName realm
-AuthFormLoginRequiredLocation http://example.com/login.html
+AuthFormLoginRequiredLocation "http://example.com/login.html"
 Session On
 SessionCookieName session path=/
 SessionCryptoPassphrase secret</pre>
@@ -159,12 +159,12 @@ SessionCryptoPassphrase secret</pre>
       The action of the form should point at this handler, which is configured within
       Apache httpd as follows:</p>
 
-      <div class="example"><h3>Form login handler example</h3><pre class="prettyprint lang-config">&lt;Location /dologin.html&gt;
+      <div class="example"><h3>Form login handler example</h3><pre class="prettyprint lang-config">&lt;Location "/dologin.html"&gt;
     SetHandler form-login-handler
-    AuthFormLoginRequiredLocation http://example.com/login.html
-    AuthFormLoginSuccessLocation http://example.com/success.html
+    AuthFormLoginRequiredLocation "http://example.com/login.html"
+    AuthFormLoginSuccessLocation "http://example.com/success.html"
     AuthFormProvider file
-    AuthUserFile conf/passwd
+    AuthUserFile "conf/passwd"
     AuthType form
     AuthName realm
     Session On
@@ -221,11 +221,11 @@ SessionCryptoPassphrase secret</pre>
       containing the login form, as follows:</p>
 
       <div class="example"><h3>Basic inline example</h3><pre class="prettyprint lang-config">AuthFormProvider file
-ErrorDocument 401 /login.shtml
-AuthUserFile conf/passwd
+ErrorDocument 401 "/login.shtml"
+AuthUserFile "conf/passwd"
 AuthType form
 AuthName realm
-AuthFormLoginRequiredLocation http://example.com/login.html
+AuthFormLoginRequiredLocation "http://example.com/login.html"
 Session On
 SessionCookieName session path=/
 SessionCryptoPassphrase secret</pre>
@@ -291,7 +291,7 @@ SessionCryptoPassphrase secret</pre>
       technology.</p>
 
       <div class="example"><h3>CGI example</h3><pre class="prettyprint lang-config">        AuthFormProvider file
-        ErrorDocument 401 /cgi-bin/login.cgi
+        ErrorDocument 401 "/cgi-bin/login.cgi"
         ...</pre>
 </div>
 
@@ -312,7 +312,7 @@ SessionCryptoPassphrase secret</pre>
 
       <div class="example"><h3>Basic logout example</h3><pre class="prettyprint lang-config">SetHandler form-logout-handler
 AuthName realm
-AuthFormLogoutLocation http://example.com/loggedout.html
+AuthFormLogoutLocation "http://example.com/loggedout.html"
 Session On
 SessionCookieName session path=/
 SessionCryptoPassphrase secret</pre>
@@ -327,7 +327,7 @@ SessionCryptoPassphrase secret</pre>
       </p>
 
       <div class="example"><h3>Basic session expiry example</h3><pre class="prettyprint lang-config">SetHandler form-logout-handler
-AuthFormLogoutLocation http://example.com/loggedout.html
+AuthFormLogoutLocation "http://example.com/loggedout.html"
 Session On
 SessionMaxAge 1
 SessionCookieName session path=/
@@ -513,9 +513,9 @@ parser has been added in 2.4.4.</td></tr>
     <p>When a URI is accessed that is served by the handler <code>form-logout-handler</code>,
     the page specified by this directive will be shown to the end user. For example:</p>
 
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">&lt;Location /logout&gt;
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">&lt;Location "/logout"&gt;
     SetHandler form-logout-handler
-    AuthFormLogoutLocation http://example.com/loggedout.html
+    AuthFormLogoutLocation "http://example.com/loggedout.html"
     Session on
     #...
 &lt;/Location&gt;</pre>
@@ -608,12 +608,12 @@ parser has been added in 2.4.4.</td></tr>
     by the <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code> module.  Make sure
     that the chosen provider module is present in the server.</p>
 
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">&lt;Location /secure&gt;
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">&lt;Location "/secure"&gt;
     AuthType form
     AuthName "private area"
     AuthFormProvider  dbm
     AuthDBMType        SDBM
-    AuthDBMUserFile    /www/etc/dbmpasswd
+    AuthDBMUserFile    "/www/etc/dbmpasswd"
     Require            valid-user
     #...
 &lt;/Location&gt;</pre>

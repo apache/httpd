@@ -27,6 +27,8 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_log_debug.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_log_debug.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
+            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Journalisation supplémentaire à des fins de débogage</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>log_debug_module</td></tr>

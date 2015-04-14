@@ -711,8 +711,8 @@ AuthLDAPURL ldap://10.0.0.1:3268/?userPrincipalName?sub</pre>
     directives to <em>every</em> <code>.htaccess</code> file
     that gets created in the web</p>
 <pre class="prettyprint lang-config">AuthLDAPURL       "the url"
-AuthGroupFile     mygroupfile
-Require group     mygroupfile</pre>
+AuthGroupFile     "mygroupfile"
+Require group     "mygroupfile"</pre>
 
 
 <h3><a name="howitworks" id="howitworks">How It Works</a></h3>

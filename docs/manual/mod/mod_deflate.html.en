@@ -92,7 +92,7 @@ content</a></li>
       is placed:</p>
 
       <pre class="prettyprint lang-config">SetOutputFilter DEFLATE
-SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip</pre>
+SetEnvIfNoCase Request_URI "\.(?:gif|jpe?g|png)$" no-gzip</pre>
 
 
       <p>If you want to restrict the compression to particular MIME types
@@ -123,8 +123,8 @@ SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip</pre>
       this feature you have to insert the <code>INFLATE</code> filter into
       the output filter chain using <code class="directive"><a href="../mod/core.html#setoutputfilter">SetOutputFilter</a></code> or <code class="directive"><a href="../mod/mod_mime.html#addoutputfilter">AddOutputFilter</a></code>, for example:</p>
 
-      <pre class="prettyprint lang-config">&lt;Location /dav-area&gt;
-    ProxyPass http://example.com/
+      <pre class="prettyprint lang-config">&lt;Location "/dav-area"&gt;
+    ProxyPass "http://example.com/"
     SetOutputFilter INFLATE
 &lt;/Location&gt;</pre>
 
@@ -140,7 +140,7 @@ SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip</pre>
       this feature you have to insert the <code>DEFLATE</code> filter into
       the input filter chain using <code class="directive"><a href="../mod/core.html#setinputfilter">SetInputFilter</a></code> or <code class="directive"><a href="../mod/mod_mime.html#addinputfilter">AddInputFilter</a></code>, for example:</p>
 
-      <pre class="prettyprint lang-config">&lt;Location /dav-area&gt;
+      <pre class="prettyprint lang-config">&lt;Location "/dav-area"&gt;
     SetInputFilter DEFLATE
 &lt;/Location&gt;</pre>
 
@@ -201,20 +201,20 @@ content</a></h2>
     <pre class="prettyprint lang-config">&lt;IfModule mod_headers.c&gt;
     # Serve gzip compressed CSS files if they exist 
     # and the client accepts gzip.
-    RewriteCond %{HTTP:Accept-encoding} gzip
-    RewriteCond %{REQUEST_FILENAME}\.gz -s
-    RewriteRule ^(.*)\.css $1\.css\.gz [QSA]
+    RewriteCond "%{HTTP:Accept-encoding}" "gzip"
+    RewriteCond "%{REQUEST_FILENAME}\.gz" -s
+    RewriteRule "^(.*)\.css" "$1\.css\.gz" [QSA]
 
     # Serve gzip compressed JS files if they exist 
     # and the client accepts gzip.
-    RewriteCond %{HTTP:Accept-encoding} gzip
-    RewriteCond %{REQUEST_FILENAME}\.gz -s
-    RewriteRule ^(.*)\.js $1\.js\.gz [QSA]
+    RewriteCond "%{HTTP:Accept-encoding}" "gzip"
+    RewriteCond "%{REQUEST_FILENAME}\.gz" -s
+    RewriteRule "^(.*)\.js" "$1\.js\.gz" [QSA]
 
 
     # Serve correct content types, and prevent mod_deflate double gzip.
-    RewriteRule \.css\.gz$ - [T=text/css,E=no-gzip:1]
-    RewriteRule \.js\.gz$ - [T=text/javascript,E=no-gzip:1]
+    RewriteRule "\.css\.gz$" "-" [T=text/css,E=no-gzip:1]
+    RewriteRule "\.js\.gz$" "-" [T=text/javascript,E=no-gzip:1]
 
 
     &lt;FilesMatch "(\.js\.gz|\.css\.gz)$"&gt;
@@ -279,7 +279,7 @@ content</a></h2>
     <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">      DeflateFilterNote ratio
     
       LogFormat '"%r" %b (%{ratio}n) "%{User-agent}i"' deflate
-      CustomLog logs/deflate_log deflate</pre>
+      CustomLog "logs/deflate_log" deflate</pre>
 </div>
 
     <p>If you want to extract more accurate values from your logs, you
@@ -306,7 +306,7 @@ DeflateFilterNote Output outstream
 DeflateFilterNote Ratio ratio
 
 LogFormat '"%r" %{outstream}n/%{instream}n (%{ratio}n%%)' deflate
-CustomLog logs/deflate_log deflate</pre>
+CustomLog "logs/deflate_log" deflate</pre>
 </div>
 
 <h3>See also</h3>

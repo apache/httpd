@@ -726,8 +726,8 @@ telling an individual module (or a set of modules) how to behave, such as
 these directives control how <code>mod_rewrite</code> works:
 </p>
 <pre class="prettyprint lang-config">RewriteEngine On
-RewriteCond %{REQUEST_URI} ^/foo/bar
-RewriteRule ^/foo/bar/(.*)$ /foobar?page=$1</pre>
+RewriteCond "%{REQUEST_URI}" "^/foo/bar"
+RewriteRule "^/foo/bar/(.*)$" "/foobar?page=$1"</pre>
 
 <p>
 Each of these configuration directives are handled by a separate function, 
@@ -800,7 +800,7 @@ module AP_MODULE_DECLARE_DATA   example_module =
 So far so good. To access our new handler, we could add the following to 
 our configuration:
 </p>
-<pre class="prettyprint lang-config">&lt;Location /example&gt;
+<pre class="prettyprint lang-config">&lt;Location "/example"&gt;
     SetHandler example-handler
 &lt;/Location&gt;</pre>
 
@@ -1069,11 +1069,11 @@ within which modules must operate. For example, let's assume you have this
 configuration set up for mod_rewrite:
 </p>
 <pre class="prettyprint lang-config">&lt;Directory "/var/www"&gt;
-    RewriteCond %{HTTP_HOST} ^example.com$
-    RewriteRule (.*) http://www.example.com/$1
+    RewriteCond "%{HTTP_HOST}" "^example.com$"
+    RewriteRule "(.*)" "http://www.example.com/$1"
 &lt;/Directory&gt;
 &lt;Directory "/var/www/sub"&gt;
-    RewriteRule ^foobar$ index.php?foobar=true
+    RewriteRule "^foobar$" "index.php?foobar=true"
 &lt;/Directory&gt;</pre>
 
 <p>
@@ -1236,7 +1236,7 @@ where you have a parent configuration and a child, such as the following:
 </p>
 <pre class="prettyprint lang-config">&lt;Directory "/var/www"&gt;
     ExampleEnabled On
-    ExamplePath /foo/bar
+    ExamplePath "/foo/bar"
     ExampleAction file allow
 &lt;/Directory&gt;
 &lt;Directory "/var/www/subdir"&gt;

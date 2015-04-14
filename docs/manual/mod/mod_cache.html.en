@@ -176,14 +176,14 @@ LoadModule cache_module modules/mod_cache.so
 &lt;IfModule mod_cache.c&gt;
     LoadModule cache_disk_module modules/mod_cache_disk.so
     &lt;IfModule mod_cache_disk.c&gt;
-        CacheRoot c:/cacheroot
-        CacheEnable disk  /
+        CacheRoot "c:/cacheroot"
+        CacheEnable disk  "/"
         CacheDirLevels 5
         CacheDirLength 3
     &lt;/IfModule&gt;
 
     # When acting as a proxy, don't cache the list of security updates
-    CacheDisable http://security.update.server/update-list/
+    CacheDisable "http://security.update.server/update-list/"
 &lt;/IfModule&gt;</pre>
 </div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -242,7 +242,7 @@ LoadModule cache_module modules/mod_cache.so
 #
 &lt;IfModule mod_cache.c&gt;
     CacheLock on
-    CacheLockPath /tmp/mod_cache-lock
+    CacheLockPath "/tmp/mod_cache-lock"
     CacheLockMaxAge 5
 &lt;/IfModule&gt;</pre>
 </div>
@@ -337,10 +337,10 @@ AddOutputFilterByType INCLUDES;CACHE;DEFLATE text/html</pre>
   <p>This makes it possible to support conditional logging of cached requests
   as per the following example:</p>
 
-  <pre class="prettyprint lang-config">CustomLog cached-requests.log common env=cache-hit
-CustomLog uncached-requests.log common env=cache-miss
-CustomLog revalidated-requests.log common env=cache-revalidate
-CustomLog invalidated-requests.log common env=cache-invalidate</pre>
+  <pre class="prettyprint lang-config">CustomLog "cached-requests.log" common env=cache-hit
+CustomLog "uncached-requests.log" common env=cache-miss
+CustomLog "revalidated-requests.log" common env=cache-revalidate
+CustomLog "invalidated-requests.log" common env=cache-invalidate</pre>
 
 
   <p>For module authors, a hook called <var>cache_status</var> is available,
@@ -415,14 +415,14 @@ CacheDetailHeader on</pre>
     <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> to <em>not</em> cache urls at or below
     <var>url-string</var>.</p>
 
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">CacheDisable /local_files</pre>
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">CacheDisable "/local_files"</pre>
 </div>
 
     <p>If used in a <code class="directive">&lt;Location&gt;</code> directive,
     the path needs to be specified below the Location, or if the word "on"
     is used, caching for the whole location will be disabled.</p>
 
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">&lt;Location /foo&gt;
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">&lt;Location "/foo"&gt;
     CacheDisable on
 &lt;/Location&gt;</pre>
 </div>
@@ -478,13 +478,13 @@ manager</td></tr>
 
     <pre class="prettyprint lang-config"># Cache content (normal handler only)
 CacheQuickHandler off
-&lt;Location /foo&gt;
+&lt;Location "/foo"&gt;
     CacheEnable disk
 &lt;/Location&gt;
 
 # Cache regex (normal handler only)
 CacheQuickHandler off
-&lt;LocationMatch foo$&gt;
+&lt;LocationMatch "foo$"&gt;
     CacheEnable disk
 &lt;/LocationMatch&gt;
 
@@ -503,9 +503,9 @@ CacheEnable  disk  http://www.example.org/</pre>
     hostnames containing the domain components that follow.</p>
 
     <pre class="prettyprint lang-config"># Match www.example.org, and fooexample.org
-CacheEnable  disk  http://*example.org/
+CacheEnable  disk  "http://*example.org/"
 # Match www.example.org, but not fooexample.org
-CacheEnable  disk  http://.example.org/</pre>
+CacheEnable  disk  "http://.example.org/"</pre>
 
 
     <p> The <code>no-cache</code> environment variable can be set to
@@ -744,7 +744,7 @@ header.</td></tr>
   with this directive.</p>
 
   <pre class="prettyprint lang-config"># Override the base URL of the cache key.
-CacheKeyBaseURL http://www.example.com/</pre>
+CacheKeyBaseURL "http://www.example.com/"</pre>
 
 
   <div class="warning">Take care when setting this directive. If two separate virtual

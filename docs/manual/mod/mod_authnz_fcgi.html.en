@@ -125,7 +125,7 @@ while (FCGI::accept &gt;= 0) {
 
       Example configuration:
 <pre class="prettyprint lang-config">AuthnzFcgiDefineProvider authn FooAuthn fcgi://localhost:10102/
-&lt;Location /protected/&gt;
+&lt;Location "/protected/"&gt;
   AuthType Basic
   AuthName "Restricted"
   AuthBasicProvider FooAuthn
@@ -166,7 +166,7 @@ while (FCGI::accept &gt;= 0) {
 
       Example configuration:
 <pre class="prettyprint lang-config">AuthnzFcgiDefineProvider authz FooAuthz fcgi://localhost:10103/
-&lt;Location /protected/&gt;
+&lt;Location "/protected/"&gt;
   AuthType ...
   AuthName ...
   AuthBasicProvider ...
@@ -217,7 +217,7 @@ while (FCGI::accept &gt;= 0) {
 
       Example configuration:
 <pre class="prettyprint lang-config">AuthnzFcgiDefineProvider authnz FooAuthnz fcgi://localhost:10103/
-&lt;Location /protected/&gt;
+&lt;Location "/protected/"&gt;
   AuthType Basic
   AuthName "Restricted"
   AuthBasicProvider FooAuthnz
@@ -265,7 +265,7 @@ while (FCGI::accept &gt;= 0) {
 
       Example configuration:
 <pre class="prettyprint lang-config">AuthnzFcgiDefineProvider authn FooAuthn fcgi://localhost:10103/
-&lt;Location /protected/&gt;
+&lt;Location "/protected/"&gt;
   AuthType ...
   AuthName ...
   AuthnzFcgiCheckAuthnProvider FooAuthn \

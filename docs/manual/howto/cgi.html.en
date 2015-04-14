@@ -83,7 +83,7 @@
       <p>The <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code>
       directive looks like:</p>
 
-      <pre class="prettyprint lang-config">ScriptAlias /cgi-bin/ /usr/local/apache2/cgi-bin/</pre>
+      <pre class="prettyprint lang-config">ScriptAlias "/cgi-bin/" "/usr/local/apache2/cgi-bin/"</pre>
 
 
       <p>The example shown is from your default <code>httpd.conf</code>
@@ -137,7 +137,7 @@
       file, to specify that CGI execution was permitted in a particular
       directory:</p>
 
-      <pre class="prettyprint lang-config">&lt;Directory /usr/local/apache2/htdocs/somedir&gt;
+      <pre class="prettyprint lang-config">&lt;Directory "/usr/local/apache2/htdocs/somedir"&gt;
     Options +ExecCGI
 &lt;/Directory&gt;</pre>
 
@@ -167,7 +167,7 @@
       <code>.cgi</code> in users' directories, you can use the
       following configuration.</p>
 
-      <pre class="prettyprint lang-config">&lt;Directory /home/*/public_html&gt;
+      <pre class="prettyprint lang-config">&lt;Directory "/home/*/public_html"&gt;
     Options +ExecCGI
     AddHandler cgi-script .cgi
 &lt;/Directory&gt;</pre>
@@ -177,7 +177,7 @@
       a user's directory where everything will be treated as a CGI
       program, you can use the following.</p>
 
-      <pre class="prettyprint lang-config">&lt;Directory /home/*/public_html/cgi-bin&gt;
+      <pre class="prettyprint lang-config">&lt;Directory "/home/*/public_html/cgi-bin"&gt;
     Options ExecCGI
     SetHandler cgi-script
 &lt;/Directory&gt;</pre>

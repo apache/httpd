@@ -49,7 +49,7 @@
       <li>
         Log message after request to /foo/* is processed:
 
-        <pre class="prettyprint lang-config">&lt;Location /foo/&gt;
+        <pre class="prettyprint lang-config">&lt;Location "/foo/"&gt;
   LogMessage "/foo/ has been requested"
 &lt;/Location&gt;</pre>
 
@@ -57,7 +57,7 @@
 
       <li>
         Log message if request to /foo/* is processed in a sub-request:
-        <pre class="prettyprint lang-config">&lt;Location /foo/&gt;
+        <pre class="prettyprint lang-config">&lt;Location "/foo/"&gt;
   LogMessage "subrequest to /foo/" hook=type_checker expr=%{IS_SUBREQ}
 &lt;/Location&gt;</pre>
 
@@ -77,7 +77,7 @@
       <li>
         Log the value of the "X-Foo" request environment variable in each
         stage of the request:
-        <pre class="prettyprint lang-config">&lt;Location /&gt;
+        <pre class="prettyprint lang-config">&lt;Location "/"&gt;
   LogMessage "%{reqenv:X-Foo}" hook=all
 &lt;/Location&gt;</pre>
 

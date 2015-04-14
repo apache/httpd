@@ -157,7 +157,7 @@
     script, but not the file <code>bar.cgi.html</code>, then instead
     of using <code>AddHandler cgi-script .cgi</code>, use</p>
 
-    <div class="example"><h3>Configure handler based on final extension only</h3><pre class="prettyprint lang-config">&lt;FilesMatch \.cgi$&gt;
+    <div class="example"><h3>Configure handler based on final extension only</h3><pre class="prettyprint lang-config">&lt;FilesMatch "\.cgi$"&gt;
   SetHandler cgi-script
 &lt;/FilesMatch&gt;</pre>
 </div>
@@ -513,19 +513,19 @@ responses from the server</td></tr>
 
     <pre class="prettyprint lang-config"># Effective filter "DEFLATE"
 AddOutputFilter DEFLATE shtml
-&lt;Location /foo&gt;
+&lt;Location "/foo"&gt;
   # Effective filter "INCLUDES", replacing "DEFLATE"
   AddOutputFilter INCLUDES shtml
 &lt;/Location&gt;
-&lt;Location /bar&gt;
+&lt;Location "/bar"&gt;
   # Effective filter "INCLUDES;DEFLATE", replacing "DEFLATE"
   AddOutputFilter INCLUDES;DEFLATE shtml
 &lt;/Location&gt;
-&lt;Location /bar/baz&gt;
+&lt;Location "/bar/baz"&gt;
   # Effective filter "BUFFER", replacing "INCLUDES;DEFLATE"
   AddOutputFilter BUFFER shtml
 &lt;/Location&gt;
-&lt;Location /bar/baz/buz&gt;
+&lt;Location "/bar/baz/buz"&gt;
   # No effective filter, replacing "BUFFER"
   RemoveOutputFilter shtml
 &lt;/Location&gt;</pre>
@@ -777,7 +777,7 @@ extensions</td></tr>
 
     <div class="example"><h3>/foo/.htaccess:</h3><pre class="prettyprint lang-config">AddEncoding x-gzip .gz
 AddType text/plain .asc
-&lt;Files *.gz.asc&gt;
+&lt;Files "*.gz.asc"&gt;
     RemoveEncoding .gz
 &lt;/Files&gt;</pre>
 </div>

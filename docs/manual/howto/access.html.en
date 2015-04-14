@@ -163,9 +163,9 @@ Require not host gov</pre>
     and 6am, you can do this using <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>.</p>
 
     <pre class="prettyprint lang-config">RewriteEngine On
-RewriteCond %{TIME_HOUR} &gt;=20 [OR]
-RewriteCond %{TIME_HOUR} &lt;07
-RewriteRule ^/fridge - [F]</pre>
+RewriteCond "%{TIME_HOUR}" "&gt;=20" [OR]
+RewriteCond "%{TIME_HOUR}" "&lt;07"
+RewriteRule "^/fridge" "-" [F]</pre>
 
 
     <p>This will return a 403 Forbidden response for any request after 8pm

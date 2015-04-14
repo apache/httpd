@@ -425,10 +425,10 @@ expr=<var>expression</var>]</code></td></tr>
 
     <pre class="prettyprint lang-config"># CustomLog with format nickname
 LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common
-CustomLog logs/access_log common
+CustomLog "logs/access_log" common
 
 # CustomLog with explicit format string
-CustomLog logs/access_log "%h %l %u %t \"%r\" %&gt;s %b"</pre>
+CustomLog "logs/access_log" "%h %l %u %t \"%r\" %&gt;s %b"</pre>
 
 
     <p>The third argument is optional and controls whether or
@@ -448,15 +448,15 @@ CustomLog logs/access_log "%h %l %u %t \"%r\" %&gt;s %b"</pre>
     log, you can use:</p>
 
     <pre class="prettyprint lang-config">SetEnvIf Request_URI \.gif$ gif-image
-CustomLog gif-requests.log common env=gif-image
-CustomLog nongif-requests.log common env=!gif-image</pre>
+CustomLog "gif-requests.log" common env=gif-image
+CustomLog "nongif-requests.log" common env=!gif-image</pre>
 
 
     <p>Or, to reproduce the behavior of the old RefererIgnore
     directive, you might use the following:</p>
 
     <pre class="prettyprint lang-config">SetEnvIf Referer example\.com localreferer
-CustomLog referer.log referer env=!localreferer</pre>
+CustomLog "referer.log" referer env=!localreferer</pre>
 
 
 </div>

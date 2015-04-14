@@ -274,7 +274,7 @@ SessionCookieName session path=/private;domain=example.com;httponly;secure;</pre
 SessionCryptoPassphrase secret
 SessionCookieName session path=/
 AuthFormProvider file
-AuthUserFile conf/passwd
+AuthUserFile "conf/passwd"
 AuthType form
 AuthName realm
 #...</pre>

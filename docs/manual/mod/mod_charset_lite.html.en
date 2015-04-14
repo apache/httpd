@@ -115,7 +115,7 @@
     <a class="glossarylink" href="../glossary.html#apr" title="see glossary">APR</a>. Generally, this means that it must be
     supported by iconv.</p>
 
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">&lt;Directory /export/home/trawick/apacheinst/htdocs/convert&gt;
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">&lt;Directory "/export/home/trawick/apacheinst/htdocs/convert"&gt;
     CharsetSourceEnc  UTF-16BE
     CharsetDefault    ISO-8859-1
 &lt;/Directory&gt;</pre>
@@ -183,7 +183,7 @@
     <a class="glossarylink" href="../glossary.html#apr" title="see glossary">APR</a>. Generally, this means that it must be
     supported by iconv.</p>
 
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">&lt;Directory /export/home/trawick/apacheinst/htdocs/convert&gt;
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">&lt;Directory "/export/home/trawick/apacheinst/htdocs/convert"&gt;
     CharsetSourceEnc  UTF-16BE
     CharsetDefault    ISO-8859-1
 &lt;/Directory&gt;</pre>

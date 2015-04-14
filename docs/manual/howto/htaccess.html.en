@@ -66,7 +66,7 @@ changes on a per-directory basis.</p>
       if you would rather call the file <code>.config</code> then you
       can put the following in your server configuration file:</p>
 
-      <pre class="prettyprint lang-config">AccessFileName .config</pre>
+      <pre class="prettyprint lang-config">AccessFileName ".config"</pre>
 
     </div>
 
@@ -188,18 +188,18 @@ changes on a per-directory basis.</p>
     <p>Note that it is completely equivalent to put a <code>.htaccess</code>
     file in a directory <code>/www/htdocs/example</code> containing a
     directive, and to put that same directive in a Directory section
-    <code>&lt;Directory /www/htdocs/example&gt;</code> in your main server
+    <code>&lt;Directory "/www/htdocs/example"&gt;</code> in your main server
     configuration:</p>
 
     <p><code>.htaccess</code> file in <code>/www/htdocs/example</code>:</p>
 
     <div class="example"><h3>Contents of .htaccess file in
-    <code>/www/htdocs/example</code></h3><pre class="prettyprint lang-config">AddType text/example .exm</pre>
+    <code>/www/htdocs/example</code></h3><pre class="prettyprint lang-config">AddType text/example ".exm"</pre>
 </div>
 
     <div class="example"><h3>Section from your <code>httpd.conf</code>
-    file</h3><pre class="prettyprint lang-config">&lt;Directory /www/htdocs/example&gt;
-    AddType text/example .exm
+    file</h3><pre class="prettyprint lang-config">&lt;Directory "/www/htdocs/example"&gt;
+    AddType text/example ".exm"
 &lt;/Directory&gt;</pre>
 </div>
 
@@ -265,11 +265,11 @@ changes on a per-directory basis.</p>
     prevent script execution while allowing anything else to be set in
     <code>.htaccess</code> you can use:</p>
 
-    <pre class="prettyprint lang-config">&lt;Directory /www/htdocs&gt;
+    <pre class="prettyprint lang-config">&lt;Directory "/www/htdocs"&gt;
     AllowOverride All
 &lt;/Directory&gt;
 
-&lt;Location /&gt;
+&lt;Location "/"&gt;
     Options +IncludesNoExec -ExecCGI<br />
 &lt;/Location&gt;</pre>
 
@@ -300,8 +300,8 @@ changes on a per-directory basis.</p>
 
     <pre class="prettyprint lang-config">AuthType Basic
 AuthName "Password Required"
-AuthUserFile /www/passwords/password.file
-AuthGroupFile /www/passwords/group.file
+AuthUserFile "/www/passwords/password.file"
+AuthGroupFile "/www/passwords/group.file"
 Require group admins</pre>
 
 
@@ -340,13 +340,13 @@ the current directory, rather than being the original requested URI.
 Consider the following examples:</p>
 
 <pre class="prettyprint lang-config"># In httpd.conf
-RewriteRule ^/images/(.+)\.jpg /images/$1.png
+RewriteRule "^/images/(.+)\.jpg" "/images/$1.png"
 
 # In .htaccess in root dir
-RewriteRule ^images/(.+)\.jpg images/$1.png
+RewriteRule "^images/(.+)\.jpg" "images/$1.png"
 
 # In .htaccess in images/
-RewriteRule ^(.+)\.jpg $1.png</pre>
+RewriteRule "^(.+)\.jpg" "$1.png"</pre>
 
 
 <p>In a <code>.htaccess</code> in your document directory, the leading

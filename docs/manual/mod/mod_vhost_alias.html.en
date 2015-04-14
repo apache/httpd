@@ -49,8 +49,8 @@ hosting</td></tr>
       /cgi-bin/script.pl</code> to <code>
       /usr/local/apache2/cgi-bin/script.pl</code> in all cases:</p>
 
-      <pre class="prettyprint lang-config">ScriptAlias /cgi-bin/ /usr/local/apache2/cgi-bin/
-VirtualScriptAlias /never/found/%0/cgi-bin/</pre>
+      <pre class="prettyprint lang-config">ScriptAlias "/cgi-bin/" "/usr/local/apache2/cgi-bin/"
+VirtualScriptAlias "/never/found/%0/cgi-bin/"</pre>
 
     </div>
 </div>
@@ -144,7 +144,7 @@ VirtualScriptAlias /never/found/%0/cgi-bin/</pre>
     following directives in your server configuration file:</p>
 
     <pre class="prettyprint lang-config">UseCanonicalName    Off
-VirtualDocumentRoot /usr/local/apache/vhosts/%0</pre>
+VirtualDocumentRoot "/usr/local/apache/vhosts/%0"</pre>
 
 
     <p>A request for
@@ -159,7 +159,7 @@ VirtualDocumentRoot /usr/local/apache/vhosts/%0</pre>
     following in your configuration file:</p>
 
     <pre class="prettyprint lang-config">UseCanonicalName    Off
-VirtualDocumentRoot /usr/local/apache/vhosts/%3+/%2.1/%2.2/%2.3/%2</pre>
+VirtualDocumentRoot "/usr/local/apache/vhosts/%3+/%2.1/%2.2/%2.3/%2"</pre>
 
 
     <p>A request for
@@ -170,7 +170,7 @@ VirtualDocumentRoot /usr/local/apache/vhosts/%3+/%2.1/%2.2/%2.3/%2</pre>
     <p>A more even spread of files can be achieved by hashing from the
     end of the name, for example: </p>
 
-<pre class="prettyprint lang-config">VirtualDocumentRoot /usr/local/apache/vhosts/%3+/%2.-1/%2.-2/%2.-3/%2</pre>
+<pre class="prettyprint lang-config">VirtualDocumentRoot "/usr/local/apache/vhosts/%3+/%2.-1/%2.-2/%2.-3/%2"</pre>
 
 
     <p>The example request would come from
@@ -178,7 +178,7 @@ VirtualDocumentRoot /usr/local/apache/vhosts/%3+/%2.1/%2.2/%2.3/%2</pre>
 
     <p>Alternatively you might use: </p>
 
-<pre class="prettyprint lang-config">VirtualDocumentRoot /usr/local/apache/vhosts/%3+/%2.1/%2.2/%2.3/%2.4+</pre>
+<pre class="prettyprint lang-config">VirtualDocumentRoot "/usr/local/apache/vhosts/%3+/%2.1/%2.2/%2.3/%2.4+"</pre>
 
 
     <p>The example request would come from
@@ -206,8 +206,8 @@ or <code>example.com</code> will all point to <code>/usr/local/apache/vhosts/exa
     your configuration file:</p>
 
     <pre class="prettyprint lang-config">UseCanonicalName DNS
-VirtualDocumentRootIP /usr/local/apache/vhosts/%1/%2/%3/%4/docs
-VirtualScriptAliasIP  /usr/local/apache/vhosts/%1/%2/%3/%4/cgi-bin</pre>
+VirtualDocumentRootIP "/usr/local/apache/vhosts/%1/%2/%3/%4/docs"
+VirtualScriptAliasIP  "/usr/local/apache/vhosts/%1/%2/%3/%4/cgi-bin"</pre>
 
 
     <p>A request for
@@ -225,7 +225,7 @@ VirtualScriptAliasIP  /usr/local/apache/vhosts/%1/%2/%3/%4/cgi-bin</pre>
     a <code>%</code> directive, you can work around the problem in
     the following way:</p>
 
-<pre class="prettyprint lang-config">VirtualDocumentRoot /usr/local/apache/vhosts/%2.0.%3.0</pre>
+<pre class="prettyprint lang-config">VirtualDocumentRoot "/usr/local/apache/vhosts/%2.0.%3.0"</pre>
 
 
     <p>A request for

@@ -132,7 +132,7 @@
       using these directives, if possible.</p>
 
       <p>Note that it's possible to scope the directives, such as
-      within a <code>&lt;Location /server-status&gt;</code> section.
+      within a <code>&lt;Location "/server-status"&gt;</code> section.
       In this case the DNS lookups are only performed on requests
       matching the criteria. Here's an example which disables lookups
       except for <code>.html</code> and <code>.cgi</code> files:</p>
@@ -159,8 +159,8 @@
       system calls to check up on symlinks. One extra call per
       filename component. For example, if you had:</p>
 
-      <pre class="prettyprint lang-config">DocumentRoot /www/htdocs
-&lt;Directory /&gt;
+      <pre class="prettyprint lang-config">DocumentRoot "/www/htdocs"
+&lt;Directory "/"&gt;
   Options SymLinksIfOwnerMatch
 &lt;/Directory&gt;</pre>
 
@@ -173,12 +173,12 @@
       every single request. If you really desire the symlinks
       security checking you can do something like this:</p>
 
-      <pre class="prettyprint lang-config">DocumentRoot /www/htdocs
-&lt;Directory /&gt;
+      <pre class="prettyprint lang-config">DocumentRoot "/www/htdocs"
+&lt;Directory "/"&gt;
   Options FollowSymLinks
 &lt;/Directory&gt;
 
-&lt;Directory /www/htdocs&gt;
+&lt;Directory "/www/htdocs"&gt;
   Options -FollowSymLinks +SymLinksIfOwnerMatch
 &lt;/Directory&gt;</pre>
 
@@ -203,8 +203,8 @@
       <code>.htaccess</code> for each filename component. For
       example,</p>
 
-      <pre class="prettyprint lang-config">DocumentRoot /www/htdocs
-&lt;Directory /&gt;
+      <pre class="prettyprint lang-config">DocumentRoot "/www/htdocs"
+&lt;Directory "/"&gt;
   AllowOverride all
 &lt;/Directory&gt;</pre>
 

@@ -154,7 +154,7 @@
     directive to make a particular subdirectory of a user's home directory
     cgi-enabled.</p>
 
-    <pre class="prettyprint lang-config">&lt;Directory /home/*/public_html/cgi-bin/&gt;
+    <pre class="prettyprint lang-config">&lt;Directory "/home/*/public_html/cgi-bin/"&gt;
     Options ExecCGI
     SetHandler cgi-script
 &lt;/Directory&gt;</pre>
