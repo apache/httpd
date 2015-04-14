@@ -73,7 +73,7 @@ configuration.</note>
 
 <highlight language="config">
 RewriteEngine  on
-RewriteRule    ^<strong>/foo</strong>\.html$  <strong>/bar</strong>.html [PT]
+RewriteRule    "^<strong>/foo</strong>\.html$"  "<strong>/bar</strong>.html" [PT]
 </highlight>
     </dd>
   </dl>
@@ -104,7 +104,7 @@ RewriteRule    ^<strong>/foo</strong>\.html$  <strong>/bar</strong>.html [PT]
 
 <highlight language="config">
 RewriteEngine  on
-RewriteRule    ^<strong>/foo</strong>\.html$  <strong>bar</strong>.html  [<strong>R</strong>]
+RewriteRule    "^<strong>/foo</strong>\.html$"  "<strong>bar</strong>.html"  [<strong>R</strong>]
 </highlight>
 </dd>
 
@@ -116,7 +116,9 @@ RewriteRule    ^<strong>/foo</strong>\.html$  <strong>bar</strong>.html  [<stron
     use the Redirect directive. mod_rewrite was used in that earlier
     example in order to hide the redirect from the client:</p>
 
-    <highlight language="config">Redirect /foo.html /bar.html</highlight>
+    <highlight language="config">
+Redirect "/foo.html" "/bar.html"
+    </highlight>
 
     </dd>
   </dl>
@@ -143,17 +145,20 @@ RewriteRule    ^<strong>/foo</strong>\.html$  <strong>bar</strong>.html  [<stron
       to the new server, but you might also consider using the Redirect
       or RedirectMatch directive.</p>
 
-<highlight language="config">#With mod_rewrite
+<highlight language="config">
+#With mod_rewrite
 RewriteEngine on
-RewriteRule   ^/docs/(.+)  http://new.example.com/docs/$1  [R,L]
+RewriteRule   "^/docs/(.+)"  "http://new.example.com/docs/$1"  [R,L]
 </highlight>
 
-<highlight language="config">#With RedirectMatch
-RedirectMatch ^/docs/(.*) http://new.example.com/docs/$1
+<highlight language="config">
+#With RedirectMatch
+RedirectMatch "^/docs/(.*)" "http://new.example.com/docs/$1"
 </highlight>
 
-<highlight language="config">#With Redirect
-Redirect /docs/ http://new.example.com/docs/
+<highlight language="config">
+#With Redirect
+Redirect "/docs/" "http://new.example.com/docs/"
 </highlight>
     </dd>
   </dl>
@@ -186,8 +191,8 @@ Redirect /docs/ http://new.example.com/docs/
 
 <highlight language="config">
 RewriteEngine  on
-RewriteBase    /~quux/
-RewriteRule    ^foo\.html$  foo.cgi &nbsp; [H=<strong>cgi-script</strong>]
+RewriteBase    "/~quux/"
+RewriteRule    "^foo\.html$"  "foo.cgi" &nbsp; [H=<strong>cgi-script</strong>]
 </highlight>
     </dd>
   </dl>
@@ -219,13 +224,13 @@ RewriteRule    ^foo\.html$  foo.cgi &nbsp; [H=<strong>cgi-script</strong>]
 #   backward compatibility ruleset for
 #   rewriting document.html to document.php
 #   when and only when document.php exists
-&lt;Directory /var/www/htdocs&gt;
+&lt;Directory "/var/www/htdocs"&gt;
     RewriteEngine on
-    RewriteBase /var/www/htdocs
+    RewriteBase "/var/www/htdocs"
 
-    RewriteCond $1.php -f
-    RewriteCond $1.html !-f
-    RewriteRule ^(.*).html$ $1.php
+    RewriteCond "$1.php" -f
+    RewriteCond "$1.html" !-f
+    RewriteRule "^(.*).html$" "$1.php"
 &lt;/Directory&gt;
 </highlight>
     </dd>
@@ -280,7 +285,7 @@ hostname(s).</p>
   ServerName undesired.example.com
   ServerAlias example.com notthis.example.com
 
-  Redirect / http://www.example.com/
+  Redirect "/" "http://www.example.com/"
 &lt;/VirtualHost&gt;
 
 &lt;VirtualHost *:80&gt;
@@ -294,7 +299,7 @@ directive:</p>
 
 <highlight language="config">
 &lt;If "%{HTTP_HOST} != 'www.example.com'"&gt;
-	Redirect / http://www.example.com/
+	Redirect "/" "http://www.example.com/"
 &lt;/If&gt;
 </highlight>
 
@@ -303,7 +308,7 @@ might do the following:</p>
 
 <highlight language="config">
 &lt;If "%{SERVER_PROTOCOL} != 'HTTPS'"&gt;
-	Redirect /admin/ https://www.example.com/admin/
+	Redirect "/admin/" "https://www.example.com/admin/"
 &lt;/If&gt;
 </highlight>
 
@@ -313,17 +318,17 @@ you might use one of the recipes below.</p>
 
 <p>For sites running on a port other than 80:</p>
 <highlight language="config">
-RewriteCond %{HTTP_HOST}   !^www\.example\.com [NC]
-RewriteCond %{HTTP_HOST}   !^$
-RewriteCond %{SERVER_PORT} !^80$
-RewriteRule ^/?(.*)         http://www.example.com:%{SERVER_PORT}/$1 [L,R,NE]
+RewriteCond "%{HTTP_HOST}"   "!^www\.example\.com" [NC]
+RewriteCond "%{HTTP_HOST}"   "!^$"
+RewriteCond "%{SERVER_PORT}" "!^80$"
+RewriteRule "^/?(.*)         "http://www.example.com:%{SERVER_PORT}/$1" [L,R,NE]
 </highlight>
 
 <p>And for a site running on port 80</p>
 <highlight language="config">
-RewriteCond %{HTTP_HOST}   !^www\.example\.com [NC]
-RewriteCond %{HTTP_HOST}   !^$
-RewriteRule ^/?(.*)         http://www.example.com/$1 [L,R,NE]
+RewriteCond "%{HTTP_HOST}"   "!^www\.example\.com" [NC]
+RewriteCond "%{HTTP_HOST}"   "!^$"
+RewriteRule "^/?(.*)"        "http://www.example.com/$1" [L,R,NE]
 </highlight>
 
         <p>
@@ -334,9 +339,9 @@ RewriteRule ^/?(.*)         http://www.example.com/$1 [L,R,NE]
         recipe:</p>
 
 <highlight language="config">
-RewriteCond %{HTTP_HOST} !^www\. [NC]
-RewriteCond %{HTTP_HOST} !^$
-RewriteRule ^/?(.*) http://www.%{HTTP_HOST}/$1 [L,R,NE]
+RewriteCond "%{HTTP_HOST}" "!^www\." [NC]
+RewriteCond "%{HTTP_HOST}" "!^$"
+RewriteRule "^/?(.*)"      "http://www.%{HTTP_HOST}/$1" [L,R,NE]
 </highlight>
 
     <p>These rulesets will work either in your main server configuration
@@ -373,17 +378,17 @@ RewriteEngine on
 
 #   first try to find it in dir1/...
 #   ...and if found stop and be happy:
-RewriteCond         %{DOCUMENT_ROOT}/<strong>dir1</strong>/%{REQUEST_URI}  -f
-RewriteRule  ^(.+)  %{DOCUMENT_ROOT}/<strong>dir1</strong>/$1  [L]
+RewriteCond         "%{DOCUMENT_ROOT}/<strong>dir1</strong>/%{REQUEST_URI}"  -f
+RewriteRule "^(.+)" "%{DOCUMENT_ROOT}/<strong>dir1</strong>/$1"  [L]
 
 #   second try to find it in dir2/...
 #   ...and if found stop and be happy:
-RewriteCond         %{DOCUMENT_ROOT}/<strong>dir2</strong>/%{REQUEST_URI}  -f
-RewriteRule  ^(.+)  %{DOCUMENT_ROOT}/<strong>dir2</strong>/$1  [L]
+RewriteCond         "%{DOCUMENT_ROOT}/<strong>dir2</strong>/%{REQUEST_URI}"  -f
+RewriteRule "^(.+)" "%{DOCUMENT_ROOT}/<strong>dir2</strong>/$1"  [L]
 
 #   else go on for other Alias or ScriptAlias directives,
 #   etc.
-RewriteRule   ^  -  [PT]
+RewriteRule   "^"  "-"  [PT]
 </highlight>
     </dd>
   </dl>
@@ -415,9 +420,9 @@ RewriteRule   ^  -  [PT]
 <highlight language="config">
 HostnameLookups on
 RewriteEngine on
-RewriteMap    multiplex         txt:/path/to/map.mirrors
-RewriteCond  %{REMOTE_HOST}     ([a-z]+)$ [NC]
-RewriteRule   ^/(.*)$  ${multiplex:<strong>%1</strong>|http://www.example.com/}$1  [R,L]
+RewriteMap    multiplex         "txt:/path/to/map.mirrors"
+RewriteCond   "%{REMOTE_HOST}"  "([a-z]+)$" [NC]
+RewriteRule   "^/(.*)$"  "${multiplex:<strong>%1</strong>|http://www.example.com/}$1"  [R,L]
 </highlight>
 
 <example>
@@ -473,14 +478,14 @@ com       http://www.example.com/<br />
       This is done with the following ruleset:</p>
 
 <highlight language="config">
-RewriteCond %{HTTP_USER_AGENT}  ^<strong>Mozilla/3</strong>.*
-RewriteRule ^foo\.html$         foo.<strong>NS</strong>.html          [<strong>L</strong>]
+RewriteCond "%{HTTP_USER_AGENT}"  "^<strong>Mozilla/3</strong>.*"
+RewriteRule "^foo\.html$"         "foo.<strong>NS</strong>.html"          [<strong>L</strong>]
 
-RewriteCond %{HTTP_USER_AGENT}  ^Lynx/ [OR]
-RewriteCond %{HTTP_USER_AGENT}  ^Mozilla/[12]
-RewriteRule ^foo\.html$         foo.<strong>20</strong>.html          [<strong>L</strong>]
+RewriteCond "%{HTTP_USER_AGENT}"  "^Lynx/" [OR]
+RewriteCond "%{HTTP_USER_AGENT}"  "^Mozilla/[12]"
+RewriteRule "^foo\.html$"         "foo.<strong>20</strong>.html"          [<strong>L</strong>]
 
-RewriteRule ^foo\.html$         foo.<strong>32</strong>.html          [<strong>L</strong>]
+RewriteRule "^foo\.html$"         "foo.<strong>32</strong>.html"          [<strong>L</strong>]
 </highlight>
     </dd>
   </dl>
@@ -512,7 +517,9 @@ RewriteRule ^foo\.html$         foo.<strong>32</strong>.html          [<strong>L
        we replace <code>/puppies</code> and <code>/canines</code>
        by the canonical <code>/dogs</code>.</p>
 
-<highlight language="config">RewriteRule   ^/(puppies|canines)/(.*)    /dogs/$2  [R]</highlight>
+<highlight language="config">
+RewriteRule   "^/(puppies|canines)/(.*)"    "/dogs/$2"  [R]
+</highlight>
         </dd>
 
      <dt>Discussion:</dt>
@@ -520,7 +527,9 @@ RewriteRule ^foo\.html$         foo.<strong>32</strong>.html          [<strong>L
      This should really be accomplished with Redirect or RedirectMatch
      directives:
 
-     <highlight language="config"> RedirectMatch ^/(puppies|canines)/(.*) /dogs/$2 </highlight>
+     <highlight language="config">
+RedirectMatch "^/(puppies|canines)/(.*)" "/dogs/$2"
+</highlight>
      </dd>
       </dl>
 
@@ -551,13 +560,15 @@ using the following ruleset:</p>
 
 <highlight language="config">
 RewriteEngine on
-RewriteRule   ^/$  /about/  [<strong>R</strong>]
+RewriteRule   "^/$"  "/about/"  [<strong>R</strong>]
 </highlight>
 
 <p>Note that this can also be handled using the <directive
 module="mod_alias">RedirectMatch</directive> directive:</p>
 
-<highlight language="config">RedirectMatch ^/$ http://example.com/about/</highlight>
+<highlight language="config">
+RedirectMatch "^/$" "http://example.com/about/"
+</highlight>
 
 <p>Note also that the example rewrites only the root URL. That is, it
 rewrites a request for <code>http://example.com/</code>, but not a
@@ -587,8 +598,8 @@ that should go to an existing resource such as an image, or a css file.</dd>
 module="mod_dir">FallbackResource</directive> directive for this:</p>
 
 <highlight language="config">
-&lt;Directory /var/www/my_blog&gt;
-  FallbackResource index.php
+&lt;Directory "/var/www/my_blog"&gt;
+  FallbackResource "index.php"
 &lt;/Directory&gt;
 </highlight>
 
@@ -597,19 +608,21 @@ complicated than this, you can use a variation of the following rewrite
 set to accomplish the same thing:</p>
 
 <highlight language="config">
-&lt;Directory /var/www/my_blog&gt;
-  RewriteBase /my_blog
+&lt;Directory "/var/www/my_blog"&gt;
+  RewriteBase "/my_blog"
 
-  RewriteCond /var/www/my_blog/%{REQUEST_FILENAME} !-f
-  RewriteCond /var/www/my_blog/%{REQUEST_FILENAME} !-d
-  RewriteRule ^ index.php [PT]
+  RewriteCond "/var/www/my_blog/%{REQUEST_FILENAME}" !-f
+  RewriteCond "/var/www/my_blog/%{REQUEST_FILENAME}" !-d
+  RewriteRule "^" "index.php" [PT]
 &lt;/Directory&gt;
 </highlight>
 
 <p>If, on the other hand, you wish to pass the requested URI as a query
 string argument to index.php, you can replace that RewriteRule with:</p>
 
-<highlight language="config">RewriteRule (.*) index.php?$1 [PT,QSA]</highlight>
+<highlight language="config">
+RewriteRule "(.*)" "index.php?$1" [PT,QSA]
+</highlight>
 
 <p>Note that these rulesets can be used in a <code>.htaccess</code>
 file, as well as in a &lt;Directory&gt; block.</p>
@@ -641,8 +654,8 @@ substitutions.</p>
 
 <highlight language="config">
 # Remove mykey=???
-RewriteCond %{QUERY_STRING} (.*(?:^|&amp;))mykey=([^&amp;]*)&amp;?(.*)&amp;?$
-RewriteRule (.*) $1?%1%3
+RewriteCond "%{QUERY_STRING}" "(.*(?:^|&amp;))mykey=([^&amp;]*)&amp;?(.*)&amp;?$"
+RewriteRule "(.*)" "$1?%1%3"
 </highlight>
   </li>
 
@@ -651,8 +664,8 @@ RewriteRule (.*) $1?%1%3
 
 <highlight language="config">
 # Copy from query string to PATH_INFO
-RewriteCond %{QUERY_STRING} (.*(?:^|&amp;))mykey=([^&amp;]*)&amp;?(.*)&amp;?$
-RewriteRule (.*) $1/products/%2/? [PT]
+RewriteCond "%{QUERY_STRING}" "(.*(?:^|&amp;))mykey=([^&amp;]*)&amp;?(.*)&amp;?$"
+RewriteRule "(.*)" "$1/products/%2/?" [PT]
 </highlight>
   </li>
 
@@ -660,9 +673,9 @@ RewriteRule (.*) $1/products/%2/? [PT]
 
 <highlight language="config">
 # Capture the value of mykey in the query string
-RewriteCond %{QUERY_STRING} (.*(?:^|&amp;))mykey=([^&amp;]*)&amp;?(.*)&amp;?$
-RewriteCond %2 !=not-so-secret-value 
-RewriteRule (.*) - [F]
+RewriteCond "%{QUERY_STRING}" "(.*(?:^|&amp;))mykey=([^&amp;]*)&amp;?(.*)&amp;?$"
+RewriteCond "%2" !=not-so-secret-value 
+RewriteRule "(.*)" - [F]
 </highlight>
   </li>
 
@@ -671,7 +684,7 @@ RewriteRule (.*) - [F]
 <highlight language="config">
 # The desired URL might be /products/kitchen-sink, and the script expects 
 # /path?products=kitchen-sink.
-RewriteRule ^/?path/([^/]+)/([^/]+) /path?$1=$2 [PT]
+RewriteRule "^/?path/([^/]+)/([^/]+)" "/path?$1=$2" [PT]
 </highlight>
   </li>
 </ul>

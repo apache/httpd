@@ -72,9 +72,9 @@
 
     <example><title>Example</title>
     <highlight language="config">
-&lt;Location /&gt;
+&lt;Location "/"&gt;
     AddOutputFilterByType SUBSTITUTE text/html
-    Substitute s/foo/bar/ni
+    Substitute "s/foo/bar/ni"
 &lt;/Location&gt;
         </highlight>
     </example>
@@ -84,7 +84,7 @@
 
     <example><title>Example of using an alternate delimiter</title>
     <highlight language="config">
-&lt;Location /&gt;
+&lt;Location "/"&gt;
     AddOutputFilterByType SUBSTITUTE text/html
     Substitute "s|&lt;BR */?&gt;|&lt;br /&gt;|i"
 &lt;/Location&gt;
@@ -95,7 +95,7 @@
     when regular expressions are used, as illustrated in the following example: </p>
     <example><title>Example of using backreferences and captures</title>
     <highlight language="config">
-&lt;Location /&gt;
+&lt;Location "/"&gt;
     AddOutputFilterByType SUBSTITUTE text/html
     # "foo=k,bar=k" -> "foo/bar=k" 
     Substitute "s|foo=(\w+),bar=\1|foo/bar=$1"
@@ -114,8 +114,8 @@
 
     <example><title>Rewriting URLs embedded in proxied content</title>
     <highlight language="config">
-ProxyPass /blog/ http://internal.blog.example.com
-ProxyPassReverse /blog/ http://internal.blog.example.com/
+ProxyPass "/blog/" "http://internal.blog.example.com"
+ProxyPassReverse "/blog/" "http://internal.blog.example.com/"
 
 Substitute "s|http://internal.blog.example.com/|http://www.example.com/blog/|i"
     </highlight>
@@ -152,10 +152,10 @@ Substitute "s|http://internal.blog.example.com/|http://www.example.com/blog/|i"
 
     <example><title>Example</title>
     <highlight language="config">
-&lt;Location /&gt;
+&lt;Location "/"&gt;
     AddOutputFilterByType SUBSTITUTE text/html
     SubstituteMaxLineLength 10m
-    Substitute s/foo/bar/ni
+    Substitute "s/foo/bar/ni"
 &lt;/Location&gt;
         </highlight>
     </example>

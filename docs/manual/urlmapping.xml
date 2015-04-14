@@ -139,7 +139,9 @@
     module="mod_alias">Alias</directive> directive will map any part
     of the filesystem into the web space. For example, with</p>
 
-<highlight language="config">Alias /docs /var/web</highlight>
+<highlight language="config">
+Alias "/docs" "/var/web"
+</highlight>
 
     <p>the URL <code>http://www.example.com/docs/dir/file.html</code>
     will be served from <code>/var/web/dir/file.html</code>. The
@@ -156,7 +158,7 @@
     example,</p>
 
     <highlight language="config">
-    ScriptAliasMatch ^/~([a-zA-Z0-9]+)/cgi-bin/(.+)   /home/$1/cgi-bin/$2
+    ScriptAliasMatch "^/~([a-zA-Z0-9]+)/cgi-bin/(.+)"   "/home/$1/cgi-bin/$2"
     </highlight>
 
     <p>will map a request to
@@ -204,7 +206,7 @@
     <code>AliasMatch</code> directive:</p>
 
     <highlight language="config">
-    AliasMatch ^/upages/([a-zA-Z0-9]+)(/(.*))?$   /home/$1/public_html/$3
+    AliasMatch "^/upages/([a-zA-Z0-9]+)(/(.*))?$"   "/home/$1/public_html/$3"
     </highlight>
 </section>
 
@@ -224,7 +226,7 @@
     to request the content at the new location as follows:</p>
 
     <highlight language="config">
-    Redirect permanent /foo/   http://www.example.com/bar/
+    Redirect permanent "/foo/"   "http://www.example.com/bar/"
     </highlight>
 
     <p>This will redirect any URL-Path starting in
@@ -240,14 +242,14 @@
     requests alone, use the following configuration:</p>
 
     <highlight language="config">
-    RedirectMatch permanent ^/$    http://www.example.com/startpage.html
+    RedirectMatch permanent "^/$"    "http://www.example.com/startpage.html"
     </highlight>
 
     <p>Alternatively, to temporarily redirect all pages on one site
     to a particular page on another site, use the following:</p>
 
     <highlight language="config">
-    RedirectMatch temp .*  http://othersite.example.com/startpage.html
+    RedirectMatch temp ".*"  "http://othersite.example.com/startpage.html"
     </highlight>
 </section>
 
@@ -267,10 +269,10 @@ and returns them to the client as if they were from the local
 server.</p>
 
 <highlight language="config">
-ProxyPass /foo/ http://internal.example.com/bar/<br />
-ProxyPassReverse /foo/ http://internal.example.com/bar/<br />
+ProxyPass "/foo/" "http://internal.example.com/bar/"<br />
+ProxyPassReverse "/foo/" "http://internal.example.com/bar/"<br />
 ProxyPassReverseCookieDomain internal.example.com public.example.com<br />
-ProxyPassReverseCookiePath /foo/ /bar/
+ProxyPassReverseCookiePath "/foo/" "/bar/"
 </highlight>
 
 <p>The <directive module="mod_proxy">ProxyPass</directive> configures
@@ -291,7 +293,7 @@ content) in a page as it is being served to the client using
 <module>mod_substitute</module>.</p>
 
 <highlight language="config">
-Substitute s/internal\.example\.com/www.example.com/i
+Substitute "s/internal\.example\.com/www.example.com/i"
 </highlight>
 
 <p>For more sophisticated rewriting of links in HTML and XHTML, the 

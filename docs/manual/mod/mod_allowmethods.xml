@@ -43,7 +43,7 @@ in order for it to rebuild correctly.
 used on an server. The most common configuration would be:</p>
 
 <highlight language="config">
-&lt;Location /&gt;
+&lt;Location "/"&gt;
    AllowMethods GET POST OPTIONS
 &lt;/Location&gt;
 </highlight>
@@ -67,7 +67,7 @@ equivalent. The <code>reset</code> keyword can be used
 turn off <module>mod_allowmethods</module> in a deeper nested context:</p>
 
 <highlight language="config">
-&lt;Location /svn&gt;
+&lt;Location "/svn"&gt;
    AllowMethods reset
 &lt;/Location&gt;
 </highlight>

@@ -55,9 +55,9 @@ multiple similar virtual hosts:</p>
     ServerName $domain
     ServerAlias www.$domain
 
-    DocumentRoot /var/www/vhosts/$name
-    ErrorLog /var/log/httpd/$name.error_log
-    CustomLog /var/log/httpd/$name.access_log combined
+    DocumentRoot "/var/www/vhosts/$name"
+    ErrorLog "/var/log/httpd/$name.error_log"
+    CustomLog "/var/log/httpd/$name.access_log" combined
 &lt;/VirtualHost&gt;
 &lt;/Macro&gt;
 </highlight>
@@ -114,7 +114,7 @@ surround the parameter in braces, to avoid confusion:</p>
 
 <highlight language="config">
 &lt;Macro DocRoot ${docroot}&gt;
-    DocumentRoot /var/www/${docroot}/htdocs
+    DocumentRoot "/var/www/${docroot}/htdocs"
 &lt;/Macro&gt;
 </highlight>
 
@@ -137,15 +137,15 @@ dynamically-generated virtual hosts.</p>
   &lt;VirtualHost *:$port&gt;
 
     ServerName $host
-    DocumentRoot $dir
+    DocumentRoot "$dir"
 
     # Public document root
-    &lt;Directory $dir&gt;
+    &lt;Directory "$dir"&gt;
         Require all granted
     &lt;/Directory&gt;
 
     # limit access to intranet subdir.
-    &lt;Directory $dir/intranet&gt;
+    &lt;Directory "$dir/intranet"&gt;
       Require ip 10.0.0.0/8
     &lt;/Directory&gt;
   &lt;/VirtualHost&gt;
@@ -168,7 +168,7 @@ conflicts in variable names.</p>
 
 <highlight language="config">
 &lt;Macro DirGroup $dir $group&gt;
-  &lt;Directory $dir&gt;
+  &lt;Directory "$dir"&gt;
     Require group $group
   &lt;/Directory&gt;
 &lt;/Macro&gt;

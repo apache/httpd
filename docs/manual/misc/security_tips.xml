@@ -328,7 +328,7 @@
     <p>In the server configuration file, put</p>
 
     <highlight language="config">
-&lt;Directory /&gt;
+&lt;Directory "/"&gt;
     AllowOverride None
 &lt;/Directory&gt;
     </highlight>
@@ -361,7 +361,7 @@
     configuration:</p>
 
     <highlight language="config">
-&lt;Directory /&gt;
+&lt;Directory "/"&gt;
     Require all denied
 &lt;/Directory&gt;
     </highlight>
@@ -371,10 +371,10 @@
     allow access only in those areas you wish. For example,</p>
 
     <highlight language="config">
-&lt;Directory /usr/users/*/public_html&gt;
+&lt;Directory "/usr/users/*/public_html"&gt;
     Require all granted
 &lt;/Directory&gt;
-&lt;Directory /usr/local/httpd&gt;
+&lt;Directory "/usr/local/httpd"&gt;
     Require all granted
 &lt;/Directory&gt;
     </highlight>
@@ -382,8 +382,8 @@
     <p>Pay particular attention to the interactions of <directive
     module="core">Location</directive> and <directive
     module="core">Directory</directive> directives; for instance, even
-    if <code>&lt;Directory /&gt;</code> denies access, a <code>
-    &lt;Location /&gt;</code> directive might overturn it.</p>
+    if <code>&lt;Directory "/"&gt;</code> denies access, a <code>
+    &lt;Location "/"&gt;</code> directive might overturn it.</p>
 
     <p>Also be wary of playing games with the <directive
     module="mod_userdir">UserDir</directive> directive; setting it to

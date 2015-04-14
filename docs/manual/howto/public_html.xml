@@ -154,7 +154,7 @@
     cgi-enabled.</p>
 
     <highlight language="config">
-&lt;Directory /home/*/public_html/cgi-bin/&gt;
+&lt;Directory "/home/*/public_html/cgi-bin/"&gt;
     Options ExecCGI
     SetHandler cgi-script
 &lt;/Directory&gt;

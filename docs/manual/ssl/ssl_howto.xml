@@ -46,8 +46,8 @@ Listen 443
 &lt;VirtualHost *:443&gt;
     ServerName www.example.com
     SSLEngine on
-    SSLCertificateFile /path/to/www.example.com.cert
-    SSLCertificateKeyFile /path/to/www.example.com.key
+    SSLCertificateFile "/path/to/www.example.com.cert"
+    SSLCertificateKeyFile "/path/to/www.example.com.key"
 &lt;/VirtualHost&gt;
 </highlight>
 
@@ -94,7 +94,7 @@ URL?</title>
 # be liberal in general
 SSLCipherSuite ALL:!aNULL:RC4+RSA:+HIGH:+MEDIUM:+LOW:+EXP:+eNULL
 
-&lt;Location /strong/area&gt;
+&lt;Location "/strong/area"&gt;
 # but https://hostname/strong/area/ and below
 # requires strong ciphers
 SSLCipherSuite HIGH:!aNULL:!MD5
@@ -281,7 +281,7 @@ Intranet website, for clients coming from the Internet?</a></li>
 # signed by our CA certificate in ca.crt
 SSLVerifyClient require
 SSLVerifyDepth 1
-SSLCACertificateFile conf/ssl.crt/ca.crt
+SSLCACertificateFile "conf/ssl.crt/ca.crt"
     </highlight>
 </section>
 
@@ -295,9 +295,9 @@ SSLCACertificateFile conf/ssl.crt/ca.crt
 
     <highlight language="config">
 SSLVerifyClient none
-SSLCACertificateFile conf/ssl.crt/ca.crt
+SSLCACertificateFile "conf/ssl.crt/ca.crt"
 
-&lt;Location /secure/area&gt;
+&lt;Location "/secure/area"&gt;
 SSLVerifyClient require
 SSLVerifyDepth 1
 &lt;/Location&gt;
@@ -322,10 +322,10 @@ SSLVerifyDepth 1
 
     <highlight language="config">
 SSLVerifyClient      none
-SSLCACertificateFile conf/ssl.crt/ca.crt
-SSLCACertificatePath conf/ssl.crt
+SSLCACertificateFile "conf/ssl.crt/ca.crt"
+SSLCACertificatePath "conf/ssl.crt"
 
-&lt;Directory /usr/local/apache2/htdocs/secure/area&gt;
+&lt;Directory "/usr/local/apache2/htdocs/secure/area"&gt;
     SSLVerifyClient      require
     SSLVerifyDepth       5
     SSLOptions           +FakeBasicAuth
@@ -333,7 +333,7 @@ SSLCACertificatePath conf/ssl.crt
     AuthName             "Snake Oil Authentication"
     AuthType             Basic
     AuthBasicProvider    file
-    AuthUserFile         /usr/local/apache2/conf/httpd.passwd
+    AuthUserFile         "/usr/local/apache2/conf/httpd.passwd"
     Require              valid-user
 &lt;/Directory&gt;
     </highlight>
@@ -355,10 +355,10 @@ SSLCACertificatePath conf/ssl.crt
 
     <highlight language="config">
 SSLVerifyClient      none
-SSLCACertificateFile conf/ssl.crt/ca.crt
-SSLCACertificatePath conf/ssl.crt
+SSLCACertificateFile "conf/ssl.crt/ca.crt"
+SSLCACertificatePath "conf/ssl.crt"
 
-&lt;Directory /usr/local/apache2/htdocs/secure/area&gt;
+&lt;Directory "/usr/local/apache2/htdocs/secure/area"&gt;
   SSLVerifyClient      require
   SSLVerifyDepth       5
   SSLOptions           +FakeBasicAuth
@@ -382,14 +382,14 @@ plain HTTP access for clients on the Intranet.</title>
    that it applies to both HTTPS and HTTP.</p>
 
     <highlight language="config">
-SSLCACertificateFile conf/ssl.crt/company-ca.crt
+SSLCACertificateFile "conf/ssl.crt/company-ca.crt"
 
-&lt;Directory /usr/local/apache2/htdocs&gt;
+&lt;Directory "/usr/local/apache2/htdocs"&gt;
     #   Outside the subarea only Intranet access is granted
     Require              ip 192.168.1.0/24
 &lt;/Directory&gt;
 
-&lt;Directory /usr/local/apache2/htdocs/subarea&gt;
+&lt;Directory "/usr/local/apache2/htdocs/subarea"&gt;
     #   Inside the subarea any Intranet access is allowed
     #   but from the Internet only HTTPS + Strong-Cipher + Password
     #   or the alternative HTTPS + Strong-Cipher + Client-Certificate
@@ -403,9 +403,9 @@ SSLCACertificateFile conf/ssl.crt/company-ca.crt
     
     #   Force clients from the Internet to use HTTPS
     RewriteEngine        on
-    RewriteCond          %{REMOTE_ADDR} !^192\.168\.1\.[0-9]+$
-    RewriteCond          %{HTTPS} !=on
-    RewriteRule          . - [F]
+    RewriteCond          "%{REMOTE_ADDR}" "!^192\.168\.1\.[0-9]+$"
+    RewriteCond          "%{HTTPS}" "!=on"
+    RewriteRule          "." "-" [F]
     
     #   Allow Network Access and/or Basic Auth
     Satisfy              any
@@ -417,7 +417,7 @@ SSLCACertificateFile conf/ssl.crt/company-ca.crt
     AuthType             basic
     AuthName             "Protected Intranet Area"
     AuthBasicProvider    file
-    AuthUserFile         conf/protected.passwd
+    AuthUserFile         "conf/protected.passwd"
     Require              valid-user
 &lt;/Directory&gt;
     </highlight>

@@ -197,14 +197,14 @@ module from each group.</p>
     following directives, either placed in the file
     <code>/usr/local/apache/htdocs/secret/.htaccess</code>, or
     placed in <code>httpd.conf</code> inside a &lt;Directory
-    /usr/local/apache/htdocs/secret&gt; section.</p>
+    "/usr/local/apache/htdocs/secret"&gt; section.</p>
 
     <highlight language="config">
 AuthType Basic
 AuthName "Restricted Files"
 # (Following line optional)
 AuthBasicProvider file
-AuthUserFile /usr/local/apache/passwd/passwords
+AuthUserFile "/usr/local/apache/passwd/passwords"
 Require user rbowen
     </highlight>
 
@@ -310,8 +310,8 @@ AuthType Basic
 AuthName "By Invitation Only"
 # Optional line:
 AuthBasicProvider file
-AuthUserFile /usr/local/apache/passwd/passwords
-AuthGroupFile /usr/local/apache/passwd/groups
+AuthUserFile "/usr/local/apache/passwd/passwords"
+AuthGroupFile "/usr/local/apache/passwd/groups"
 Require group GroupName
     </highlight>
 
@@ -365,11 +365,11 @@ Require group GroupName
     <p>To select a dbm file rather than a text file, for example:</p>
 
     <highlight language="config">
-&lt;Directory /www/docs/private&gt;
+&lt;Directory "/www/docs/private"&gt;
     AuthName "Private"
     AuthType Basic
     AuthBasicProvider dbm
-    AuthDBMUserFile /www/passwords/passwd.dbm
+    AuthDBMUserFile "/www/passwords/passwd.dbm"
     Require valid-user
 &lt;/Directory&gt;
     </highlight>
@@ -388,11 +388,11 @@ Require group GroupName
     file and LDAP based authentication providers are being used.</p>
 
     <highlight language="config">
-&lt;Directory /www/docs/private&gt;
+&lt;Directory "/www/docs/private"&gt;
     AuthName "Private"
     AuthType Basic
     AuthBasicProvider file ldap
-    AuthUserFile /usr/local/apache/passwd/passwords
+    AuthUserFile "/usr/local/apache/passwd/passwords"
     AuthLDAPURL ldap://ldaphost/o=yourorg
     Require valid-user
 &lt;/Directory&gt;
@@ -412,13 +412,13 @@ Require group GroupName
     authorization as well as LDAP group authorization is being used.</p>
 
     <highlight language="config">
-&lt;Directory /www/docs/private&gt;
+&lt;Directory "/www/docs/private"&gt;
     AuthName "Private"
     AuthType Basic
     AuthBasicProvider file
-    AuthUserFile /usr/local/apache/passwd/passwords
+    AuthUserFile "/usr/local/apache/passwd/passwords"
     AuthLDAPURL ldap://ldaphost/o=yourorg
-    AuthGroupFile /usr/local/apache/passwd/groups
+    AuthGroupFile "/usr/local/apache/passwd/groups"
     Require group GroupName
     Require ldap-group cn=mygroup,o=yourorg
 &lt;/Directory&gt;

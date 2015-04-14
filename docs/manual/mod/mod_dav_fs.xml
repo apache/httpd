@@ -70,8 +70,8 @@
 
     <example><title>Example</title>
     <highlight language="config">
-      DavLockDB var/DavLock
-      </highlight>
+      DavLockDB "var/DavLock"
+    </highlight>
     </example>
 
     <p>The directory containing the lock database file must be

@@ -65,7 +65,7 @@
 
     <example><title>Single application instance</title>
     <highlight language="config">
-      ProxyPass /myapp/ fcgi://localhost:4000/
+      ProxyPass "/myapp/" "fcgi://localhost:4000/"
       </highlight>
     </example>
 
@@ -78,7 +78,7 @@
 
     <example><title>Single application instance, connection reuse (2.4.11 and later)</title>
     <highlight language="config">
-      ProxyPass /myapp/ fcgi://localhost:4000/ enablereuse=on
+      ProxyPass "/myapp/" "fcgi://localhost:4000/" enablereuse=on
       </highlight>
     </example>
 
@@ -88,7 +88,7 @@
     PHP-FPM is listening.  Connection pooling is enabled.</p>
     <example><title>PHP-FPM</title>
     <highlight language="config">
-      ProxyPassMatch ^/myapp/.*\.php(/.*)?$ fcgi://localhost:9000/var/www/ enablereuse=on
+      ProxyPassMatch "^/myapp/.*\.php(/.*)?$" "fcgi://localhost:9000/var/www/" enablereuse=on
     </highlight>
     </example>
 
@@ -99,7 +99,7 @@
     <example><title>PHP-FPM with UDS</title>
     <highlight language="config">
       # UDS does not currently support connection reuse
-      ProxyPassMatch ^/(.*\.php(/.*)?)$ "unix:/var/run/php5-fpm.sock|fcgi://localhost/var/www/" 
+      ProxyPassMatch "^/(.*\.php(/.*)?)$" "unix:/var/run/php5-fpm.sock|fcgi://localhost/var/www/" 
     </highlight>
     </example>
 
@@ -111,10 +111,10 @@
 
     <example><title>Balanced gateway to multiple application instances</title>
     <highlight language="config">
-ProxyPass /myapp/ balancer://myappcluster/
-&lt;Proxy balancer://myappcluster/&gt;
-    BalancerMember fcgi://localhost:4000
-    BalancerMember fcgi://localhost:4001
+ProxyPass "/myapp/" "balancer://myappcluster/"
+&lt;Proxy "balancer://myappcluster/"&gt;
+    BalancerMember "fcgi://localhost:4000"
+    BalancerMember "fcgi://localhost:4001"
 &lt;/Proxy&gt;
     </highlight>
     </example>
@@ -133,7 +133,7 @@ ProxyPass /myapp/ balancer://myappcluster/
       </p>
     <example><title>Proxy via Handler</title>
       <highlight language="config">
-&lt;FilesMatch \.php$&gt;
+&lt;FilesMatch "\.php$"&gt;
     # Note: The only part that varies is /path/to/app.sock
     SetHandler  "proxy:unix:/path/to/app.sock|fcgi://localhost/"
 &lt;/FilesMatch&gt;
@@ -141,7 +141,7 @@ ProxyPass /myapp/ balancer://myappcluster/
    # The part that is matched to the SetHandler is the part that 
    # follows the pipe. If you need to distinguish, "localhost; can
    # be anything unique.
-   &lt;Proxy fcgi://localhost/ enablereuse=on max=10&gt;
+   &lt;Proxy "fcgi://localhost/" enablereuse=on max=10&gt;
    &lt;/Proxy&gt;
 
 &lt;FilesMatch ...&gt;

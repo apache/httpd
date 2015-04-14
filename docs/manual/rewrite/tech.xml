@@ -112,17 +112,17 @@ and URL matching.</p>
 
         <tr>
             <td>VirtualHost section</td>
-            <td>RewriteRule ^/images/(.+)\.jpg /images/$1.gif</td>
+            <td>RewriteRule "^/images/(.+)\.jpg" "/images/$1.gif"</td>
         </tr>
 
         <tr>
             <td>.htaccess file in document root</td>
-            <td>RewriteRule ^images/(.+)\.jpg images/$1.gif</td>
+            <td>RewriteRule "^images/(.+)\.jpg" "images/$1.gif"</td>
         </tr>
 
         <tr>
             <td>.htaccess file in images directory</td>
-            <td>RewriteRule ^(.+)\.jpg $1.gif</td>
+            <td>RewriteRule "^(.+)\.jpg" "$1.gif"</td>
         </tr>
 
     </table>

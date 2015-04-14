@@ -97,7 +97,7 @@ module</description>
       directory names.</li>
 
       <li>spelling corrections apply strictly to existing files, so
-      a request for the <code>&lt;Location /status&gt;</code> may
+      a request for the <code>&lt;Location "/status"&gt;</code> may
       get incorrectly treated as the negotiated file
       "<code>/stats.html</code>".</li>
     </ul>

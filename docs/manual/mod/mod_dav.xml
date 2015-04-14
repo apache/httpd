@@ -78,15 +78,15 @@
 
     <example><title>Full Example</title>
     <highlight language="config">
-DavLockDB /usr/local/apache2/var/DavLock
+DavLockDB "/usr/local/apache2/var/DavLock"
 
-&lt;Directory /usr/local/apache2/htdocs/foo&gt;
+&lt;Directory "/usr/local/apache2/htdocs/foo"&gt;
     Require all granted
     Dav On
 
     AuthType Basic
     AuthName DAV
-    AuthUserFile user.passwd
+    AuthUserFile "user.passwd"
 
     &lt;LimitExcept GET POST OPTIONS&gt;
         Require user admin
@@ -149,9 +149,9 @@ DavLockDB /usr/local/apache2/var/DavLock
     downloaded and manipulated with DAV.</p>
 
 <highlight language="config">
-Alias /phparea /home/gstein/php_files
-Alias /php-source /home/gstein/php_files
-&lt;Location /php-source&gt;
+Alias "/phparea" "/home/gstein/php_files"
+Alias "/php-source" "/home/gstein/php_files"
+&lt;Location "/php-source"&gt;
     Dav On
     ForceType text/plain
 &lt;/Location&gt;
@@ -175,7 +175,7 @@ Alias /php-source /home/gstein/php_files
     WebDAV HTTP methods for the given container:</p>
 
     <highlight language="config">
-&lt;Location /foo&gt;
+&lt;Location "/foo"&gt;
     Dav On
 &lt;/Location&gt;
     </highlight>
@@ -218,7 +218,7 @@ a DAV resource</description>
 
     <example><title>Example</title>
     <highlight language="config">
-&lt;Location /MSWord&gt;
+&lt;Location "/MSWord"&gt;
     DavMinTimeout 600
 &lt;/Location&gt;
     </highlight>

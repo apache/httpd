@@ -88,7 +88,7 @@ Action image/gif /cgi-bin/images.cgi
     <highlight language="config">
 # Files of a particular file extension
 AddHandler my-file-type .xyz
-Action my-file-type /cgi-bin/program.cgi
+Action my-file-type "/cgi-bin/program.cgi"
     </highlight>
     </example>
     <p>In this example, requests for files with a file extension of
@@ -101,9 +101,9 @@ Action my-file-type /cgi-bin/program.cgi
     virtual locations.</p>
 
     <highlight language="config">
-&lt;Location /news&gt;
+&lt;Location "/news"&gt;
     SetHandler news-handler
-    Action news-handler /cgi-bin/news.cgi virtual
+    Action news-handler "/cgi-bin/news.cgi" virtual
 &lt;/Location&gt;
     </highlight>
 </usage>
@@ -147,10 +147,10 @@ method.</description>
 
     <highlight language="config">
 # All GET requests go here
-Script GET /cgi-bin/search
+Script GET "/cgi-bin/search"
 
 # A CGI PUT handler
-Script PUT /~bob/put.cgi
+Script PUT "/~bob/put.cgi"
     </highlight>
 </usage>
 </directivesynopsis>

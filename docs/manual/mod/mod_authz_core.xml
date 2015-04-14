@@ -71,8 +71,8 @@
     AuthLDAPURL ldap://other.ldap.host/o=dev?cn
 &lt;/AuthzProviderAlias&gt;
 
-Alias /secure /webpages/secure
-&lt;Directory /webpages/secure&gt;
+Alias "/secure" "/webpages/secure"
+&lt;Directory "/webpages/secure"&gt;
     Require all granted
     
     AuthBasicProvider file
@@ -111,7 +111,7 @@ Alias /secure /webpages/secure
     LDAP group <code>Temporary Employees</code>.</p>
 
     <highlight language="config">
-&lt;Directory /www/mydocs&gt;
+&lt;Directory "/www/mydocs"&gt;
     &lt;RequireAll&gt;
         &lt;RequireAny&gt;
             Require user superadmin
@@ -156,7 +156,7 @@ Alias /secure /webpages/secure
 
     <highlight language="config">
 SetEnvIf User-Agent ^KnockKnock/2\.0 let_me_in
-&lt;Directory /docroot&gt;
+&lt;Directory "/docroot"&gt;
     Require env let_me_in
 &lt;/Directory&gt;
     </highlight>
@@ -332,8 +332,8 @@ an authorization provider.</description>
 AuthType Basic
 AuthName "Restricted Resource"
 AuthBasicProvider file
-AuthUserFile /web/users
-AuthGroupFile /web/groups
+AuthUserFile "/web/users"
+AuthGroupFile "/web/groups"
 Require group admin
     </highlight>
 
@@ -358,7 +358,7 @@ Require group admin
     are also in the <code>reject</code> group.</p>
 
     <highlight language="config">
-&lt;Directory /www/docs&gt;
+&lt;Directory "/www/docs"&gt;
     &lt;RequireAll&gt;
         Require group alpha beta
         Require not group reject
@@ -556,20 +556,20 @@ sections.</description>
     <code>gamma</code> may access <code>/www/docs/ab/gamma</code>.</note>
 
     <highlight language="config">
-&lt;Directory /www/docs&gt;
+&lt;Directory "/www/docs"&gt;
     AuthType Basic
     AuthName Documents
     AuthBasicProvider file
-    AuthUserFile /usr/local/apache/passwd/passwords
+    AuthUserFile "/usr/local/apache/passwd/passwords"
     Require group alpha
 &lt;/Directory&gt;
 
-&lt;Directory /www/docs/ab&gt;
+&lt;Directory "/www/docs/ab"&gt;
     AuthMerging Or
     Require group beta
 &lt;/Directory&gt;
 
-&lt;Directory /www/docs/ab/gamma&gt;
+&lt;Directory "/www/docs/ab/gamma"&gt;
     Require group gamma
 &lt;/Directory&gt;
     </highlight>

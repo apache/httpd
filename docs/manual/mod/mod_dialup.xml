@@ -37,8 +37,8 @@ by the various old modem standards. So, you can browse your site with a 56k
 V.92 modem, by adding something like this:</p>
 
 <highlight language="config">
-&lt;Location /mysite&gt;
-    ModemStandard V.92
+&lt;Location "/mysite"&gt;
+    ModemStandard "V.92"
 &lt;/Location&gt;
 </highlight>
 
@@ -59,8 +59,8 @@ once the timer hits.  From there the handler can continue to send data to the cl
 <p>Specify what modem standard you wish to simulate.</p>
 
 <highlight language="config">
-&lt;Location /mysite&gt;
-    ModemStandard V.26bis
+&lt;Location "/mysite"&gt;
+    ModemStandard "V.26bis"
 &lt;/Location&gt;
 </highlight>
 

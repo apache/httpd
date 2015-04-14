@@ -77,7 +77,7 @@ to another site only if the server is started using
 
 <highlight language="config">
 &lt;IfDefine ClosedForNow&gt;
-    Redirect / http://otherserver.example.com/
+    Redirect "/" "http://otherserver.example.com/"
 &lt;/IfDefine&gt;
 </highlight>
 
@@ -99,7 +99,7 @@ applied only if <module>mod_mime_magic</module> is available.</p>
 
 <highlight language="config">
 &lt;IfModule mod_mime_magic.c&gt;
-    MimeMagicFile conf/magic
+    MimeMagicFile "conf/magic"
 &lt;/IfModule&gt;
 </highlight>
 
@@ -161,7 +161,7 @@ following configuration, directory indexes will be enabled for the
 <code>/var/web/dir1</code> directory and all subdirectories.</p>
 
 <highlight language="config">
-&lt;Directory /var/web/dir1&gt;
+&lt;Directory "/var/web/dir1"&gt;
     Options +Indexes
 &lt;/Directory&gt;
 </highlight>
@@ -175,7 +175,7 @@ deny access to any file named <code>private.html</code> regardless
 of where it is found.</p>
 
 <highlight language="config">
-&lt;Files private.html&gt;
+&lt;Files "private.html"&gt;
     Require all denied
 &lt;/Files&gt;
 </highlight>
@@ -191,8 +191,8 @@ of <code>private.html</code> found under the <code>/var/web/dir1/</code>
 directory.</p>
 
 <highlight language="config">
-&lt;Directory /var/web/dir1&gt;
-    &lt;Files private.html&gt;
+&lt;Directory "/var/web/dir1"&gt;
+    &lt;Files "private.html"&gt;
         Require all denied
     &lt;/Files&gt;
 &lt;/Directory&gt;
@@ -213,7 +213,7 @@ In particular, it will apply to requests for
 as any other requests starting with the <code>/private</code> string.</p>
 
 <highlight language="config">
-&lt;LocationMatch ^/private&gt;
+&lt;LocationMatch "^/private"&gt;
     Require all denied
 &lt;/LocationMatch&gt;
 </highlight>
@@ -226,7 +226,7 @@ No file called <code>server-status</code> needs to exist in the
 filesystem.</p>
 
 <highlight language="config">
-&lt;Location /server-status&gt;
+&lt;Location "/server-status"&gt;
     SetHandler server-status
 &lt;/Location&gt;
 </highlight>
@@ -237,22 +237,22 @@ filesystem.</p>
 certain sections or directives are evaluated. For
 <directive type="section" module="core">Location</directive> this would be:</p>
 <highlight language="config">
-&lt;Location /foo&gt;
+&lt;Location "/foo"&gt;
 &lt;/Location&gt;
-&lt;Location /foo/bar&gt;
+&lt;Location "/foo/bar"&gt;
 &lt;/Location>
 </highlight>
 <p><directive type="section" module="mod_alias">Alias</directive>es on the other hand,
 are mapped vice-versa:</p>
 <highlight language="config">
-Alias /foo/bar /srv/www/uncommon/bar
-Alias /foo /srv/www/common/foo
+Alias "/foo/bar" "/srv/www/uncommon/bar"
+Alias "/foo" "/srv/www/common/foo"
 </highlight>
 <p>The same is true for the <directive module="mod_proxy">ProxyPass</directive>
 directives:</p>
 <highlight language="config">
-ProxyPass /special-area http://special.example.com smax=5 max=10
-ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover=On
+ProxyPass "/special-area" "http://special.example.com" smax=5 max=10
+ProxyPass "/" "balancer://mycluster/" stickysession=JSESSIONID|jsessionid nofailover=On
 </highlight>
 </section>
 
@@ -283,7 +283,7 @@ how directives are applied.</p>
 all user directories could look as follows:</p>
 
 <highlight language="config">
-&lt;Directory /home/*/public_html&gt;
+&lt;Directory "/home/*/public_html"&gt;
     Options Indexes
 &lt;/Directory&gt;
 </highlight>
@@ -291,7 +291,7 @@ all user directories could look as follows:</p>
 <p>Using regex sections, we can deny access to many types of image files
 at once:</p>
 <highlight language="config">
-&lt;FilesMatch \.(?i:gif|jpe?g|png)$&gt;
+&lt;FilesMatch "\.(?i:gif|jpe?g|png)$"&gt;
     Require all denied
 &lt;/FilesMatch&gt;
 </highlight>
@@ -303,8 +303,8 @@ and URLs to be referenced from within <a href="expr.html">expressions</a>
 and modules like <module>mod_rewrite</module>.</p>
 
 <highlight language="config">
-&lt;DirectoryMatch ^/var/www/combined/(?&lt;SITENAME&gt;[^/]+)&gt;
-    require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
+&lt;DirectoryMatch "^/var/www/combined/(?&lt;SITENAME&gt;[^/]+)"&gt;
+    require ldap-group "cn=%{env:MATCH_SITENAME},ou=combined,o=Example"
 &lt;/DirectoryMatch&gt;
 </highlight>
 
@@ -343,7 +343,7 @@ location, allowing your restrictions to be circumvented.
 For example, consider the following configuration:</p>
 
 <highlight language="config">
-&lt;Location /dir/&gt;
+&lt;Location "/dir/"&gt;
     Require all denied
 &lt;/Location&gt;
 </highlight>
@@ -369,7 +369,7 @@ many other ways to map multiple webspace locations to the same
 filesystem location.  Therefore you should always use the filesystem
 containers when you can.  There is, however, one exception to this
 rule.  Putting configuration restrictions in a <code>&lt;Location
-/&gt;</code> section is perfectly safe because this section will apply
+"/"&gt;</code> section is perfectly safe because this section will apply
 to all requests regardless of the specific URL.</p>
 </section>
 
@@ -410,7 +410,7 @@ will prevent the proxy server from being used to access the
 <code>www.example.com</code> website.</p>
 
 <highlight language="config">
-&lt;Proxy http://www.example.com/*&gt;
+&lt;Proxy "http://www.example.com/*"&gt;
     Require all granted
 &lt;/Proxy&gt;
 </highlight>
@@ -467,7 +467,7 @@ are interpreted, it is important to understand how this works.</p>
       <directive type="section" module="core">Directory</directive>)</li>
 
       <li><directive type="section" module="core">DirectoryMatch</directive>
-      (and <code>&lt;Directory ~&gt;</code>)</li>
+      (and <code>&lt;Directory "~"&gt;</code>)</li>
 
       <li><directive type="section"
       module="core">Files</directive> and <directive
@@ -488,9 +488,9 @@ are interpreted, it is important to understand how this works.</p>
     the order that they appear in the configuration files.  <directive
     type="section" module="core">Directory</directive> (group 1 above)
     is processed in the order shortest directory component to longest.
-    So for example, <code>&lt;Directory /var/web/dir&gt;</code> will
+    So for example, <code>&lt;Directory "/var/web/dir"&gt;</code> will
     be processed before <code>&lt;Directory
-    /var/web/dir/subdir&gt;</code>.  If multiple <directive
+    "/var/web/dir/subdir"&gt;</code>.  If multiple <directive
     type="section" module="core">Directory</directive> sections apply
     to the same directory they are processed in the configuration file
     order. Configurations included via the <directive
@@ -535,16 +535,16 @@ this example will be applied in the order A &gt; B &gt; C &gt; D &gt;
 E.</p>
 
 <highlight language="config">
-&lt;Location /&gt;
+&lt;Location "/"&gt;
     E
 &lt;/Location&gt;
 
-&lt;Files f.html&gt;
+&lt;Files "f.html"&gt;
     D
 &lt;/Files&gt;
 
 &lt;VirtualHost *&gt;
-&lt;Directory /a/b&gt;
+&lt;Directory "/a/b"&gt;
     B
 &lt;/Directory&gt;
 &lt;/VirtualHost&gt;
@@ -553,7 +553,7 @@ E.</p>
     C
 &lt;/DirectoryMatch&gt;
 
-&lt;Directory /a/b&gt;
+&lt;Directory "/a/b"&gt;
     A
 &lt;/Directory&gt;
 
@@ -567,12 +567,12 @@ evaluated last and will allow unrestricted access to the server.  In
 other words, order of merging is important, so be careful!</p>
 
 <highlight language="config">
-&lt;Location /&gt;
+&lt;Location "/"&gt;
     Require all granted
 &lt;/Location&gt;
 
 # Woops!  This &lt;Directory&gt; section will have no effect
-&lt;Directory /&gt;
+&lt;Directory "/"&gt;
     &lt;RequireAll&gt;
         Require all granted
         Require not host badguy.example.com

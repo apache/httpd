@@ -337,22 +337,22 @@ Let's try out some of these variables in another example handler:<br/>
 static int example_handler(request_rec *r)
 {
     /* Set the appropriate content type */
-    ap_set_content_type(r, &quot;text/html&quot;);
+    ap_set_content_type(r, "text/html");
 
     /* Print out the IP address of the client connecting to us: */
-    ap_rprintf(r, &quot;&lt;h2&gt;Hello, %s!&lt;/h2&gt;&quot;, r-&gt;useragent_ip);
+    ap_rprintf(r, "&lt;h2&gt;Hello, %s!&lt;/h2&gt;", r-&gt;useragent_ip);
     
     /* If we were reached through a GET or a POST request, be happy, else sad. */
-    if ( !strcmp(r-&gt;method, &quot;POST&quot;) || !strcmp(r-&gt;method, &quot;GET&quot;) ) {
-        ap_rputs(&quot;You used a GET or a POST method, that makes us happy!&lt;br/&gt;&quot;, r);
+    if ( !strcmp(r-&gt;method, "POST") || !strcmp(r-&gt;method, "GET") ) {
+        ap_rputs("You used a GET or a POST method, that makes us happy!&lt;br/&gt;", r);
     }
     else {
-        ap_rputs(&quot;You did not use POST or GET, that makes us sad :(&lt;br/&gt;&quot;, r);
+        ap_rputs("You did not use POST or GET, that makes us sad :(&lt;br/&gt;", r);
     }
 
     /* Lastly, if there was a query string, let's print that too! */
     if (r-&gt;args) {
-        ap_rprintf(r, &quot;Your query string was: %s&quot;, r-&gt;args);
+        ap_rprintf(r, "Your query string was: %s", r-&gt;args);
     }
     return OK;
 }
@@ -611,8 +611,8 @@ static int example_handler(request_rec *r)
     const char *digestType;
     
     
-    /* Check that the &quot;example-handler&quot; handler is being called. */
-    if (!r-&gt;handler || strcmp(r-&gt;handler, &quot;example-handler&quot;)) return (DECLINED);
+    /* Check that the "example-handler" handler is being called. */
+    if (!r-&gt;handler || strcmp(r-&gt;handler, "example-handler")) return (DECLINED);
     
     /* Figure out which file is being requested by removing the .sum from it */
     filename = apr_pstrdup(r-&gt;pool, r-&gt;filename);
@@ -637,22 +637,22 @@ static int example_handler(request_rec *r)
     ap_parse_form_data(r, NULL, &amp;POST, -1, 8192);
     
     /* Set the appropriate content type */
-    ap_set_content_type(r, &quot;text/html&quot;);
+    ap_set_content_type(r, "text/html");
     
     /* Print a title and some general information */
-    ap_rprintf(r, &quot;&lt;h2&gt;Information on %s:&lt;/h2&gt;&quot;, filename);
-    ap_rprintf(r, &quot;&lt;b&gt;Size:&lt;/b&gt; %u bytes&lt;br/&gt;&quot;, finfo.size);
+    ap_rprintf(r, "&lt;h2&gt;Information on %s:&lt;/h2&gt;", filename);
+    ap_rprintf(r, "&lt;b&gt;Size:&lt;/b&gt; %u bytes&lt;br/&gt;", finfo.size);
     
     /* Get the digest type the client wants to see */
-    digestType = apr_table_get(GET, &quot;digest&quot;);
-    if (!digestType) digestType = &quot;MD5&quot;;
+    digestType = apr_table_get(GET, "digest");
+    if (!digestType) digestType = "MD5";
     
     
     rc = apr_file_open(&amp;file, filename, APR_READ, APR_OS_DEFAULT, r-&gt;pool);
     if (rc == APR_SUCCESS) {
         
         /* Are we trying to calculate the MD5 or the SHA1 digest? */
-        if (!strcasecmp(digestType, &quot;md5&quot;)) {
+        if (!strcasecmp(digestType, "md5")) {
             /* Calculate the MD5 sum of the file */
             union {
                 char      chr[16];
@@ -667,13 +667,13 @@ static int example_handler(request_rec *r)
             apr_md5_final(digest.chr, &amp;md5);
             
             /* Print out the MD5 digest */
-            ap_rputs(&quot;&lt;b&gt;MD5: &lt;/b&gt;&lt;code&gt;&quot;, r);
+            ap_rputs("&lt;b&gt;MD5: &lt;/b&gt;&lt;code&gt;", r);
             for (n = 0; n &lt; APR_MD5_DIGESTSIZE/4; n++) {
-                ap_rprintf(r, &quot;%08x&quot;, digest.num[n]);
+                ap_rprintf(r, "%08x", digest.num[n]);
             }
-            ap_rputs(&quot;&lt;/code&gt;&quot;, r);
+            ap_rputs("&lt;/code&gt;", r);
             /* Print a link to the SHA1 version */
-            ap_rputs(&quot;&lt;br/&gt;&lt;a href='?digest=sha1'&gt;View the SHA1 hash instead&lt;/a&gt;&quot;, r);
+            ap_rputs("&lt;br/&gt;&lt;a href='?digest=sha1'&gt;View the SHA1 hash instead&lt;/a&gt;", r);
         }
         else {
             /* Calculate the SHA1 sum of the file */
@@ -690,14 +690,14 @@ static int example_handler(request_rec *r)
             apr_sha1_final(digest.chr, &amp;sha1);
             
             /* Print out the SHA1 digest */
-            ap_rputs(&quot;&lt;b&gt;SHA1: &lt;/b&gt;&lt;code&gt;&quot;, r);
+            ap_rputs("&lt;b&gt;SHA1: &lt;/b&gt;&lt;code&gt;", r);
             for (n = 0; n &lt; APR_SHA1_DIGESTSIZE/4; n++) {
-                ap_rprintf(r, &quot;%08x&quot;, digest.num[n]);
+                ap_rprintf(r, "%08x", digest.num[n]);
             }
-            ap_rputs(&quot;&lt;/code&gt;&quot;, r);
+            ap_rputs("&lt;/code&gt;", r);
             
             /* Print a link to the MD5 version */
-            ap_rputs(&quot;&lt;br/&gt;&lt;a href='?digest=md5'&gt;View the MD5 hash instead&lt;/a&gt;&quot;, r);
+            ap_rputs("&lt;br/&gt;&lt;a href='?digest=md5'&gt;View the MD5 hash instead&lt;/a&gt;", r);
         }
         apr_file_close(file);
         
@@ -735,8 +735,8 @@ these directives control how <code>mod_rewrite</code> works:
 </p>
 <highlight language="config">
 RewriteEngine On
-RewriteCond %{REQUEST_URI} ^/foo/bar
-RewriteRule ^/foo/bar/(.*)$ /foobar?page=$1
+RewriteCond "%{REQUEST_URI}" "^/foo/bar"
+RewriteRule "^/foo/bar/(.*)$" "/foobar?page=$1"
 </highlight>
 <p>
 Each of these configuration directives are handled by a separate function, 
@@ -776,18 +776,18 @@ static example_config config;
 
 static int example_handler(request_rec *r)
 {
-    if (!r-&gt;handler || strcmp(r-&gt;handler, &quot;example-handler&quot;)) return(DECLINED);
-    ap_set_content_type(r, &quot;text/plain&quot;);
-    ap_rprintf(r, &quot;Enabled: %u\n&quot;, config.enabled);
-    ap_rprintf(r, &quot;Path: %s\n&quot;, config.path);
-    ap_rprintf(r, &quot;TypeOfAction: %x\n&quot;, config.typeOfAction);
+    if (!r-&gt;handler || strcmp(r-&gt;handler, "example-handler")) return(DECLINED);
+    ap_set_content_type(r, "text/plain");
+    ap_rprintf(r, "Enabled: %u\n", config.enabled);
+    ap_rprintf(r, "Path: %s\n", config.path);
+    ap_rprintf(r, "TypeOfAction: %x\n", config.typeOfAction);
     return OK;
 }
 
 static void register_hooks(apr_pool_t *pool) 
 {
     config.enabled = 1;
-    config.path = &quot;/foo/bar&quot;;
+    config.path = "/foo/bar";
     config.typeOfAction = 0x00;
     ap_hook_handler(example_handler, NULL, NULL, APR_HOOK_LAST);
 }
@@ -812,7 +812,7 @@ So far so good. To access our new handler, we could add the following to
 our configuration:
 </p>
 <highlight language="config">
-&lt;Location /example&gt;
+&lt;Location "/example"&gt;
     SetHandler example-handler
 &lt;/Location&gt;
 </highlight>
@@ -972,30 +972,30 @@ static example_config config;
  Our directive handlers:
  ==============================================================================
  */
-/* Handler for the &quot;exampleEnabled&quot; directive */
+/* Handler for the "exampleEnabled" directive */
 const char *example_set_enabled(cmd_parms *cmd, void *cfg, const char *arg)
 {
-    if(!strcasecmp(arg, &quot;on&quot;)) config.enabled = 1;
+    if(!strcasecmp(arg, "on")) config.enabled = 1;
     else config.enabled = 0;
     return NULL;
 }
 
-/* Handler for the &quot;examplePath&quot; directive */
+/* Handler for the "examplePath" directive */
 const char *example_set_path(cmd_parms *cmd, void *cfg, const char *arg)
 {
     config.path = arg;
     return NULL;
 }
 
-/* Handler for the &quot;exampleAction&quot; directive */
+/* Handler for the "exampleAction" directive */
 /* Let's pretend this one takes one argument (file or db), and a second (deny or allow), */
 /* and we store it in a bit-wise manner. */
 const char *example_set_action(cmd_parms *cmd, void *cfg, const char *arg1, const char *arg2)
 {
-    if(!strcasecmp(arg1, &quot;file&quot;)) config.typeOfAction = 0x01;
+    if(!strcasecmp(arg1, "file")) config.typeOfAction = 0x01;
     else config.typeOfAction = 0x02;
     
-    if(!strcasecmp(arg2, &quot;deny&quot;)) config.typeOfAction += 0x10;
+    if(!strcasecmp(arg2, "deny")) config.typeOfAction += 0x10;
     else config.typeOfAction += 0x20;
     return NULL;
 }
@@ -1007,9 +1007,9 @@ const char *example_set_action(cmd_parms *cmd, void *cfg, const char *arg1, cons
  */
 static const command_rec        example_directives[] =
 {
-    AP_INIT_TAKE1(&quot;exampleEnabled&quot;, example_set_enabled, NULL, RSRC_CONF, &quot;Enable or disable mod_example&quot;),
-    AP_INIT_TAKE1(&quot;examplePath&quot;, example_set_path, NULL, RSRC_CONF, &quot;The path to whatever&quot;),
-    AP_INIT_TAKE2(&quot;exampleAction&quot;, example_set_action, NULL, RSRC_CONF, &quot;Special action value!&quot;),
+    AP_INIT_TAKE1("exampleEnabled", example_set_enabled, NULL, RSRC_CONF, "Enable or disable mod_example"),
+    AP_INIT_TAKE1("examplePath", example_set_path, NULL, RSRC_CONF, "The path to whatever"),
+    AP_INIT_TAKE2("exampleAction", example_set_action, NULL, RSRC_CONF, "Special action value!"),
     { NULL }
 };
 /*
@@ -1019,11 +1019,11 @@ static const command_rec        example_directives[] =
  */
 static int example_handler(request_rec *r)
 {
-    if(!r-&gt;handler || strcmp(r-&gt;handler, &quot;example-handler&quot;)) return(DECLINED);
-    ap_set_content_type(r, &quot;text/plain&quot;);
-    ap_rprintf(r, &quot;Enabled: %u\n&quot;, config.enabled);
-    ap_rprintf(r, &quot;Path: %s\n&quot;, config.path);
-    ap_rprintf(r, &quot;TypeOfAction: %x\n&quot;, config.typeOfAction);
+    if(!r-&gt;handler || strcmp(r-&gt;handler, "example-handler")) return(DECLINED);
+    ap_set_content_type(r, "text/plain");
+    ap_rprintf(r, "Enabled: %u\n", config.enabled);
+    ap_rprintf(r, "Path: %s\n", config.path);
+    ap_rprintf(r, "TypeOfAction: %x\n", config.typeOfAction);
     return OK;
 }
 
@@ -1035,7 +1035,7 @@ static int example_handler(request_rec *r)
 static void register_hooks(apr_pool_t *pool) 
 {
     config.enabled = 1;
-    config.path = &quot;/foo/bar&quot;;
+    config.path = "/foo/bar";
     config.typeOfAction = 3;
     ap_hook_handler(example_handler, NULL, NULL, APR_HOOK_LAST);
 }
@@ -1086,12 +1086,12 @@ within which modules must operate. For example, let's assume you have this
 configuration set up for mod_rewrite:
 </p>
 <highlight language="config">
-&lt;Directory &quot;/var/www&quot;&gt;
-    RewriteCond %{HTTP_HOST} ^example.com$
-    RewriteRule (.*) http://www.example.com/$1
+&lt;Directory "/var/www"&gt;
+    RewriteCond "%{HTTP_HOST}" "^example.com$"
+    RewriteRule "(.*)" "http://www.example.com/$1"
 &lt;/Directory&gt;
-&lt;Directory &quot;/var/www/sub&quot;&gt;
-    RewriteRule ^foobar$ index.php?foobar=true
+&lt;Directory "/var/www/sub"&gt;
+    RewriteRule "^foobar$" "index.php?foobar=true"
 &lt;/Directory&gt;
 </highlight>
 <p>
@@ -1259,12 +1259,12 @@ configurations. This part of the process particularly applies to scenarios
 where you have a parent configuration and a child, such as the following: 
 </p>
 <highlight language="config">
-&lt;Directory &quot;/var/www&quot;&gt;
+&lt;Directory "/var/www"&gt;
     ExampleEnabled On
-    ExamplePath /foo/bar
+    ExamplePath "/foo/bar"
     ExampleAction file allow
 &lt;/Directory&gt;
-&lt;Directory &quot;/var/www/subdir&quot;&gt;
+&lt;Directory "/var/www/subdir"&gt;
     ExampleAction file deny
 &lt;/Directory&gt;
 </highlight>
@@ -1315,21 +1315,21 @@ context aware. First off, we'll create a configuration that lets us test
 how the module works:
 </p>
 <highlight language="config">
-&lt;Location &quot;/a&quot;&gt;
+&lt;Location "/a"&gt;
     SetHandler example-handler
     ExampleEnabled on
-    ExamplePath &quot;/foo/bar&quot;
+    ExamplePath "/foo/bar"
     ExampleAction file allow
 &lt;/Location&gt;
 
-&lt;Location &quot;/a/b&quot;&gt;
+&lt;Location "/a/b"&gt;
     ExampleAction file deny
     ExampleEnabled off
 &lt;/Location&gt;
 
-&lt;Location &quot;/a/b/c&quot;&gt;
+&lt;Location "/a/b/c"&gt;
     ExampleAction db deny
-    ExamplePath &quot;/foo/bar/baz&quot;
+    ExamplePath "/foo/bar/baz"
     ExampleEnabled on
 &lt;/Location&gt;
 </highlight>
@@ -1395,9 +1395,9 @@ static void   register_hooks(apr_pool_t *pool);
 
 static const command_rec    directives[] =
 {
-    AP_INIT_TAKE1(&quot;exampleEnabled&quot;, example_set_enabled, NULL, ACCESS_CONF, &quot;Enable or disable mod_example&quot;),
-    AP_INIT_TAKE1(&quot;examplePath&quot;, example_set_path, NULL, ACCESS_CONF, &quot;The path to whatever&quot;),
-    AP_INIT_TAKE2(&quot;exampleAction&quot;, example_set_action, NULL, ACCESS_CONF, &quot;Special action value!&quot;),
+    AP_INIT_TAKE1("exampleEnabled", example_set_enabled, NULL, ACCESS_CONF, "Enable or disable mod_example"),
+    AP_INIT_TAKE1("examplePath", example_set_path, NULL, ACCESS_CONF, "The path to whatever"),
+    AP_INIT_TAKE2("exampleAction", example_set_action, NULL, ACCESS_CONF, "Special action value!"),
     { NULL }
 };
 
@@ -1435,23 +1435,23 @@ static void register_hooks(apr_pool_t *pool)
  */
 static int example_handler(request_rec *r)
 {
-    if(!r-&gt;handler || strcmp(r-&gt;handler, &quot;example-handler&quot;)) return(DECLINED);
+    if(!r-&gt;handler || strcmp(r-&gt;handler, "example-handler")) return(DECLINED);
 
     /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
     example_config    *config = (example_config *) ap_get_module_config(r-&gt;per_dir_config, &amp;example_module);
     /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
-    ap_set_content_type(r, &quot;text/plain&quot;);
-    ap_rprintf(r, &quot;Enabled: %u\n&quot;, config-&gt;enabled);
-    ap_rprintf(r, &quot;Path: %s\n&quot;, config-&gt;path);
-    ap_rprintf(r, &quot;TypeOfAction: %x\n&quot;, config-&gt;typeOfAction);
-    ap_rprintf(r, &quot;Context: %s\n&quot;, config-&gt;context);
+    ap_set_content_type(r, "text/plain");
+    ap_rprintf(r, "Enabled: %u\n", config-&gt;enabled);
+    ap_rprintf(r, "Path: %s\n", config-&gt;path);
+    ap_rprintf(r, "TypeOfAction: %x\n", config-&gt;typeOfAction);
+    ap_rprintf(r, "Context: %s\n", config-&gt;context);
     return OK;
 }
 
 /*
  =======================================================================================================================
-    Handler for the &quot;exampleEnabled&quot; directive
+    Handler for the "exampleEnabled" directive
  =======================================================================================================================
  */
 const char *example_set_enabled(cmd_parms *cmd, void *cfg, const char *arg)
@@ -1462,7 +1462,7 @@ const char *example_set_enabled(cmd_parms *cmd, void *cfg, const char *arg)
 
     if(conf)
     {
-        if(!strcasecmp(arg, &quot;on&quot;))
+        if(!strcasecmp(arg, "on"))
             conf-&gt;enabled = 1;
         else
             conf-&gt;enabled = 0;
@@ -1473,7 +1473,7 @@ const char *example_set_enabled(cmd_parms *cmd, void *cfg, const char *arg)
 
 /*
  =======================================================================================================================
-    Handler for the &quot;examplePath&quot; directive
+    Handler for the "examplePath" directive
  =======================================================================================================================
  */
 const char *example_set_path(cmd_parms *cmd, void *cfg, const char *arg)
@@ -1492,7 +1492,7 @@ const char *example_set_path(cmd_parms *cmd, void *cfg, const char *arg)
 
 /*
  =======================================================================================================================
-    Handler for the &quot;exampleAction&quot; directive ;
+    Handler for the "exampleAction" directive ;
     Let's pretend this one takes one argument (file or db), and a second (deny or allow), ;
     and we store it in a bit-wise manner.
  =======================================================================================================================
@@ -1506,11 +1506,11 @@ const char *example_set_action(cmd_parms *cmd, void *cfg, const char *arg1, cons
     if(conf)
     {
         {
-            if(!strcasecmp(arg1, &quot;file&quot;))
+            if(!strcasecmp(arg1, "file"))
                 conf-&gt;typeOfAction = 0x01;
             else
                 conf-&gt;typeOfAction = 0x02;
-            if(!strcasecmp(arg2, &quot;deny&quot;))
+            if(!strcasecmp(arg2, "deny"))
                 conf-&gt;typeOfAction += 0x10;
             else
                 conf-&gt;typeOfAction += 0x20;
@@ -1527,7 +1527,7 @@ const char *example_set_action(cmd_parms *cmd, void *cfg, const char *arg1, cons
  */
 void *create_dir_conf(apr_pool_t *pool, char *context)
 {
-    context = context ? context : &quot;Newly created configuration&quot;;
+    context = context ? context : "Newly created configuration";
 
     /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
     example_config    *cfg = apr_pcalloc(pool, sizeof(example_config));
@@ -1557,7 +1557,7 @@ void *merge_dir_conf(apr_pool_t *pool, void *BASE, void *ADD)
     /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
     example_config    *base = (example_config *) BASE;
     example_config    *add = (example_config *) ADD;
-    example_config    *conf = (example_config *) create_dir_conf(pool, &quot;Merged configuration&quot;);
+    example_config    *conf = (example_config *) create_dir_conf(pool, "Merged configuration");
     /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
     conf-&gt;enabled = (add-&gt;enabled == 0) ? base-&gt;enabled : add-&gt;enabled;
@@ -1634,11 +1634,11 @@ static int example_handler(request_rec *r)
         int i;
         for (i = 0; &amp;formData[i]; i++) {
             if (formData[i].key &amp;&amp; formData[i].value) {
-                ap_rprintf(r, &quot;%s = %s\n&quot;, formData[i].key, formData[i].value);
+                ap_rprintf(r, "%s = %s\n", formData[i].key, formData[i].value);
             } else if (formData[i].key) {
-                ap_rprintf(r, &quot;%s\n&quot;, formData[i].key);
+                ap_rprintf(r, "%s\n", formData[i].key);
             } else if (formData[i].value) {
-                ap_rprintf(r, &quot;= %s\n&quot;, formData[i].value);
+                ap_rprintf(r, "= %s\n", formData[i].value);
             } else {
                 break;
             }
@@ -1668,7 +1668,7 @@ static int example_handler(request_rec *r)
     fields = apr_table_elts(r-&gt;headers_in);
     e = (apr_table_entry_t *) fields-&gt;elts;
     for(i = 0; i &lt; fields-&gt;nelts; i++) {
-        ap_rprintf(r, &quot;%s: %s\n&quot;, e[i].key, e[i].val);
+        ap_rprintf(r, "%s: %s\n", e[i].key, e[i].val);
     }
     return OK;
 }
@@ -1726,7 +1726,7 @@ static int example_handler(request_rec *r)
     /*~~~~~~~~~~~~~~~~*/
 
     if(util_read(r, &amp;buffer, &amp;size) == OK) {
-        ap_rprintf(r, &quot;We read a request body that was %" APR_OFF_T_FMT " bytes long&quot;, size);
+        ap_rprintf(r, "We read a request body that was %" APR_OFF_T_FMT " bytes long", size);
     }
     return OK;
 }

@@ -144,7 +144,7 @@ module="mod_mime_magic">MimeMagicFile</directive></seealso>
 
     <example><title>Configure handler based on final extension only</title>
     <highlight language="config">
-&lt;FilesMatch \.cgi$&gt;
+&lt;FilesMatch "\.cgi$"&gt;
   SetHandler cgi-script
 &lt;/FilesMatch&gt;
     </highlight>
@@ -519,19 +519,19 @@ responses from the server</description>
     <highlight language="config">
 # Effective filter "DEFLATE"
 AddOutputFilter DEFLATE shtml
-&lt;Location /foo&gt;
+&lt;Location "/foo"&gt;
   # Effective filter "INCLUDES", replacing "DEFLATE"
   AddOutputFilter INCLUDES shtml
 &lt;/Location&gt;
-&lt;Location /bar&gt;
+&lt;Location "/bar"&gt;
   # Effective filter "INCLUDES;DEFLATE", replacing "DEFLATE"
   AddOutputFilter INCLUDES;DEFLATE shtml
 &lt;/Location&gt;
-&lt;Location /bar/baz&gt;
+&lt;Location "/bar/baz"&gt;
   # Effective filter "BUFFER", replacing "INCLUDES;DEFLATE"
   AddOutputFilter BUFFER shtml
 &lt;/Location&gt;
-&lt;Location /bar/baz/buz&gt;
+&lt;Location "/bar/baz/buz"&gt;
   # No effective filter, replacing "BUFFER"
   RemoveOutputFilter shtml
 &lt;/Location&gt;
@@ -792,7 +792,7 @@ extensions</description>
     <highlight language="config">
 AddEncoding x-gzip .gz
 AddType text/plain .asc
-&lt;Files *.gz.asc&gt;
+&lt;Files "*.gz.asc"&gt;
     RemoveEncoding .gz
 &lt;/Files&gt;
       </highlight>

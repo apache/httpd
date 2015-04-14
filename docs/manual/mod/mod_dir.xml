@@ -108,19 +108,19 @@ a directory</description>
     </p>
     <highlight language="config">
 # Example A: Set index.html as an index page, then add index.php to that list as well.
-&lt;Directory /foo&gt;
+&lt;Directory "/foo"&gt;
     DirectoryIndex index.html
     DirectoryIndex index.php
 &lt;/Directory&gt;
 
 # Example B: This is identical to example A, except it's done with a single directive.
-&lt;Directory /foo&gt;
+&lt;Directory "/foo"&gt;
     DirectoryIndex index.html index.php
 &lt;/Directory&gt;
 
 # Example C: To replace the list, you must explicitly reset it first:
 # In this example, only index.php will remain as an index resource.
-&lt;Directory /foo&gt;
+&lt;Directory "/foo"&gt;
     DirectoryIndex index.html
     DirectoryIndex disabled
     DirectoryIndex index.php
@@ -209,7 +209,7 @@ a directory</description>
 
     <highlight language="config">
 # see security warning below!
-&lt;Location /some/path&gt;
+&lt;Location "/some/path"&gt;
     DirectorySlash Off
     SetHandler some-handler
 &lt;/Location&gt;
@@ -267,10 +267,10 @@ later</compatibility>
     <p>In a sub-URI, such as <em>http://example.com/blog/</em> this
     <em>sub-URI</em> has to be supplied as <var>local-url</var>:</p>
     <highlight language="config">
-&lt;Directory /web/example.com/htdocs/blog&gt;
+&lt;Directory "/web/example.com/htdocs/blog"&gt;
     FallbackResource /blog/index.php
 &lt;/Directory&gt;
-&lt;Directory /web/example.com/htdocs/blog/images&gt;
+&lt;Directory "/web/example.com/htdocs/blog/images"&gt;
     FallbackResource disabled
 &lt;/Directory&gt;
     </highlight>

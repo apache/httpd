@@ -157,14 +157,14 @@ LoadModule cache_module modules/mod_cache.so
 &lt;IfModule mod_cache.c&gt;
     LoadModule cache_disk_module modules/mod_cache_disk.so
     &lt;IfModule mod_cache_disk.c&gt;
-        CacheRoot c:/cacheroot
-        CacheEnable disk  /
+        CacheRoot "c:/cacheroot"
+        CacheEnable disk  "/"
         CacheDirLevels 5
         CacheDirLength 3
     &lt;/IfModule&gt;
 
     # When acting as a proxy, don't cache the list of security updates
-    CacheDisable http://security.update.server/update-list/
+    CacheDisable "http://security.update.server/update-list/"
 &lt;/IfModule&gt;
       </highlight>
     </example>
@@ -226,7 +226,7 @@ LoadModule cache_module modules/mod_cache.so
 #
 &lt;IfModule mod_cache.c&gt;
     CacheLock on
-    CacheLockPath /tmp/mod_cache-lock
+    CacheLockPath "/tmp/mod_cache-lock"
     CacheLockMaxAge 5
 &lt;/IfModule&gt;
       </highlight>
@@ -327,10 +327,10 @@ AddOutputFilterByType INCLUDES;CACHE;DEFLATE text/html
   as per the following example:</p>
 
   <highlight language="config">
-CustomLog cached-requests.log common env=cache-hit
-CustomLog uncached-requests.log common env=cache-miss
-CustomLog revalidated-requests.log common env=cache-revalidate
-CustomLog invalidated-requests.log common env=cache-invalidate
+CustomLog "cached-requests.log" common env=cache-hit
+CustomLog "uncached-requests.log" common env=cache-miss
+CustomLog "revalidated-requests.log" common env=cache-revalidate
+CustomLog "invalidated-requests.log" common env=cache-invalidate
   </highlight>
 
   <p>For module authors, a hook called <var>cache_status</var> is available,
@@ -380,13 +380,13 @@ manager</description>
     <highlight language="config">
 # Cache content (normal handler only)
 CacheQuickHandler off
-&lt;Location /foo&gt;
+&lt;Location "/foo"&gt;
     CacheEnable disk
 &lt;/Location&gt;
 
 # Cache regex (normal handler only)
 CacheQuickHandler off
-&lt;LocationMatch foo$&gt;
+&lt;LocationMatch "foo$"&gt;
     CacheEnable disk
 &lt;/LocationMatch&gt;
 
@@ -406,9 +406,9 @@ CacheEnable  disk  http://www.example.org/
 
     <highlight language="config">
 # Match www.example.org, and fooexample.org
-CacheEnable  disk  http://*example.org/
+CacheEnable  disk  "http://*example.org/"
 # Match www.example.org, but not fooexample.org
-CacheEnable  disk  http://.example.org/
+CacheEnable  disk  "http://.example.org/"
     </highlight>
 
     <p> The <code>no-cache</code> environment variable can be set to
@@ -434,7 +434,7 @@ CacheEnable  disk  http://.example.org/
 
     <example><title>Example</title>
     <highlight language="config">
-      CacheDisable /local_files
+      CacheDisable "/local_files"
       </highlight>
     </example>
 
@@ -444,7 +444,7 @@ CacheEnable  disk  http://.example.org/
 
     <example><title>Example</title>
     <highlight language="config">
-&lt;Location /foo&gt;
+&lt;Location "/foo"&gt;
     CacheDisable on
 &lt;/Location&gt;
       </highlight>
@@ -1055,7 +1055,7 @@ CacheDetailHeader on
 
   <highlight language="config">
 # Override the base URL of the cache key.
-CacheKeyBaseURL http://www.example.com/
+CacheKeyBaseURL "http://www.example.com/"
   </highlight>
 
   <note type="warning">Take care when setting this directive. If two separate virtual

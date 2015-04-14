@@ -147,7 +147,7 @@
       using these directives, if possible.</p>
 
       <p>Note that it's possible to scope the directives, such as
-      within a <code>&lt;Location /server-status&gt;</code> section.
+      within a <code>&lt;Location "/server-status"&gt;</code> section.
       In this case the DNS lookups are only performed on requests
       matching the criteria. Here's an example which disables lookups
       except for <code>.html</code> and <code>.cgi</code> files:</p>
@@ -176,8 +176,8 @@ HostnameLookups off
       filename component. For example, if you had:</p>
 
       <highlight language="config">
-DocumentRoot /www/htdocs
-&lt;Directory /&gt;
+DocumentRoot "/www/htdocs"
+&lt;Directory "/"&gt;
   Options SymLinksIfOwnerMatch
 &lt;/Directory&gt;
       </highlight>
@@ -191,12 +191,12 @@ DocumentRoot /www/htdocs
       security checking you can do something like this:</p>
 
       <highlight language="config">
-DocumentRoot /www/htdocs
-&lt;Directory /&gt;
+DocumentRoot "/www/htdocs"
+&lt;Directory "/"&gt;
   Options FollowSymLinks
 &lt;/Directory&gt;
 
-&lt;Directory /www/htdocs&gt;
+&lt;Directory "/www/htdocs"&gt;
   Options -FollowSymLinks +SymLinksIfOwnerMatch
 &lt;/Directory&gt;
       </highlight>
@@ -222,8 +222,8 @@ DocumentRoot /www/htdocs
       example,</p>
 
       <highlight language="config">
-DocumentRoot /www/htdocs
-&lt;Directory /&gt;
+DocumentRoot "/www/htdocs"
+&lt;Directory "/"&gt;
   AllowOverride all
 &lt;/Directory&gt;
       </highlight>

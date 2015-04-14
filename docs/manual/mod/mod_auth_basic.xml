@@ -61,12 +61,12 @@
     that the chosen provider module is present in the server.</p>
     <example><title>Example</title>
     <highlight language="config">
-&lt;Location /secure&gt;
+&lt;Location "/secure"&gt;
     AuthType basic
     AuthName "private area"
     AuthBasicProvider  dbm
     AuthDBMType        SDBM
-    AuthDBMUserFile    /www/etc/dbmpasswd
+    AuthDBMUserFile    "/www/etc/dbmpasswd"
     Require            valid-user
 &lt;/Location&gt;
     </highlight>
@@ -137,7 +137,7 @@ username and password</description>
 
     <example><title>Fixed Example</title>
     <highlight language="config">
-&lt;Location /demo&gt;
+&lt;Location "/demo"&gt;
     AuthBasicFake demo demopass
 &lt;/Location&gt;
     </highlight>
@@ -151,8 +151,8 @@ username and password</description>
 
     <example><title>Certificate Example</title>
     <highlight language="config">
-&lt;Location /secure&gt;
-    AuthBasicFake %{SSL_CLIENT_S_DN_Email}
+&lt;Location "/secure"&gt;
+    AuthBasicFake "%{SSL_CLIENT_S_DN_Email}"
 &lt;/Location&gt;
     </highlight>
     </example>
@@ -164,15 +164,15 @@ username and password</description>
 
     <example><title>Password Example</title>
     <highlight language="config">
-&lt;Location /secure&gt;
-    AuthBasicFake %{SSL_CLIENT_S_DN_Email} %{sha1:passphrase-%{SSL_CLIENT_S_DN_Email}}
+&lt;Location "/secure"&gt;
+    AuthBasicFake "%{SSL_CLIENT_S_DN_Email}" "%{sha1:passphrase-%{SSL_CLIENT_S_DN_Email}}"
 &lt;/Location&gt;
     </highlight>
     </example>
 
     <example><title>Exclusion Example</title>
     <highlight language="config">
-&lt;Location /public&gt;
+&lt;Location "/public"&gt;
     AuthBasicFake off
 &lt;/Location&gt;
     </highlight>

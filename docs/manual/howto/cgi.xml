@@ -84,7 +84,7 @@
       directive looks like:</p>
 
       <highlight language="config">
-        ScriptAlias /cgi-bin/ /usr/local/apache2/cgi-bin/
+        ScriptAlias "/cgi-bin/" "/usr/local/apache2/cgi-bin/"
       </highlight>
 
       <p>The example shown is from your default <code>httpd.conf</code>
@@ -146,7 +146,7 @@
       directory:</p>
 
       <highlight language="config">
-&lt;Directory /usr/local/apache2/htdocs/somedir&gt;
+&lt;Directory "/usr/local/apache2/htdocs/somedir"&gt;
     Options +ExecCGI
 &lt;/Directory&gt;
       </highlight>
@@ -179,7 +179,7 @@
       following configuration.</p>
 
       <highlight language="config">
-&lt;Directory /home/*/public_html&gt;
+&lt;Directory "/home/*/public_html"&gt;
     Options +ExecCGI
     AddHandler cgi-script .cgi
 &lt;/Directory&gt;
@@ -190,7 +190,7 @@
       program, you can use the following.</p>
 
       <highlight language="config">
-&lt;Directory /home/*/public_html/cgi-bin&gt;
+&lt;Directory "/home/*/public_html/cgi-bin"&gt;
     Options ExecCGI
     SetHandler cgi-script
 &lt;/Directory&gt;
