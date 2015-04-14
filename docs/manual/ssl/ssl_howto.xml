@@ -44,8 +44,8 @@ Listen 443
 &lt;VirtualHost *:443&gt;
     ServerName www.example.com
     SSLEngine on
-    SSLCertificateFile /path/to/www.example.com.cert
-    SSLCertificateKeyFile /path/to/www.example.com.key
+    SSLCertificateFile "/path/to/www.example.com.cert"
+    SSLCertificateKeyFile "/path/to/www.example.com.key"
 &lt;/VirtualHost&gt;
 </highlight>
 
@@ -92,7 +92,7 @@ URL?</title>
 # be liberal in general
 SSLCipherSuite ALL:!aNULL:RC4+RSA:+HIGH:+MEDIUM:+LOW:+EXP:+eNULL
 
-&lt;Location /strong/area&gt;
+&lt;Location "/strong/area"&gt;
 # but https://hostname/strong/area/ and below
 # requires strong ciphers
 SSLCipherSuite HIGH:!aNULL:!MD5
@@ -118,7 +118,7 @@ the server.</p>
 <p>Because the client can obtain the certificate revocation status from
 the server, without requiring an extra connection from the client to the
 Certificate Authority, OCSP Stapling is the preferred way for the
-revocation status to be obtained.  Other benefits of eliminating the 
+revocation status to be obtained.  Other benefits of eliminating the
 communication between clients and the Certificate Authority are that the
 client browsing history is not exposed to the Certificate Authority and
 obtaining status is more reliable by not depending on potentially heavily
@@ -139,7 +139,7 @@ SSLStaplingCache "shmcb:ssl_stapling(32768)"
 
 <p>These directives are placed at global scope (i.e., not within a virtual
 host definition) wherever other global SSL configuration directives are
-placed, such as in <code>conf/extra/httpd-ssl.conf</code> for normal 
+placed, such as in <code>conf/extra/httpd-ssl.conf</code> for normal
 open source builds of httpd, <code>/etc/apache2/mods-enabled/ssl.conf</code>
 for the Ubuntu or Debian-bundled httpd, etc.</p>
 
@@ -147,7 +147,7 @@ for the Ubuntu or Debian-bundled httpd, etc.</p>
 <module>mod_socache_shmcb</module> (from the <code>shmcb</code> prefix on the
 directive's argument).  This module is usually enabled already for
 <directive>SSLSessionCache</directive> or on behalf of some module other than
-<module>mod_ssl</module>.  If you enabled an SSL session cache using a 
+<module>mod_ssl</module>.  If you enabled an SSL session cache using a
 mechanism other than <module>mod_socache_shmcb</module>, use that alternative
 mechanism for <directive>SSLStaplingCache</directive> as well.  For example:</p>
 
@@ -162,7 +162,7 @@ is sent by your server:</p>
 <pre>
 $ openssl s_client -connect www.example.com:443 -status -servername www.example.com
 ...
-OCSP response: 
+OCSP response:
 ======================================
 OCSP Response Data:
     OCSP Response Status: successful (0x0)
@@ -173,15 +173,15 @@ OCSP Response Data:
 </pre>
 
 <p>The following sections highlight the most common situations which require
-further modification to the configuration.  Refer also to the 
+further modification to the configuration.  Refer also to the
 <module>mod_ssl</module> reference manual.</p>
 
 <section>
 <title>If more than a few SSL certificates are used for the server</title>
 <p>OCSP responses are stored in the SSL stapling cache.  While the responses
-are typically a few hundred to a few thousand bytes in size, mod_ssl 
-supports OCSP responses up to around 10K bytes in size.  With more than a 
-few certificates, the stapling cache size (32768 bytes in the example above) 
+are typically a few hundred to a few thousand bytes in size, mod_ssl
+supports OCSP responses up to around 10K bytes in size.  With more than a
+few certificates, the stapling cache size (32768 bytes in the example above)
 may need to be increased.  Error message AH01929 will be logged in case of
 an error storing a response.</p>
 </section>
@@ -189,7 +189,7 @@ an error storing a response.</p>
 <section>
 <title>If the certificate does not point to an OCSP responder, or if a
 different address must be used</title>
-<p>Refer to the 
+<p>Refer to the
 <directive module="mod_ssl">SSLStaplingForceURL</directive> directive.</p>
 
 <p>You can confirm that a server certificate points to an OCSP responder
@@ -235,7 +235,7 @@ directives.</p>
 AH02217: ssl_stapling_init_cert: Can't retrieve issuer certificate!
 </pre>
 <p>In order to support OCSP Stapling when a particular server certificate is
-used, the certificate chain for that certificate must be configured.  If it 
+used, the certificate chain for that certificate must be configured.  If it
 was not configured as part of enabling SSL, the AH02217 error will be issued
 when stapling is enabled, and an OCSP response will not be provided for clients
 using the certificate.</p>
@@ -274,7 +274,7 @@ Intranet website, for clients coming from the Internet?</a></li>
 # signed by our CA certificate in ca.crt
 SSLVerifyClient require
 SSLVerifyDepth 1
-SSLCACertificateFile conf/ssl.crt/ca.crt
+SSLCACertificateFile "conf/ssl.crt/ca.crt"
     </highlight>
 </section>
 
@@ -288,9 +288,9 @@ SSLCACertificateFile conf/ssl.crt/ca.crt
 
     <highlight language="config">
 SSLVerifyClient none
-SSLCACertificateFile conf/ssl.crt/ca.crt
+SSLCACertificateFile "conf/ssl.crt/ca.crt"
 
-&lt;Location /secure/area&gt;
+&lt;Location "/secure/area"&gt;
 SSLVerifyClient require
 SSLVerifyDepth 1
 &lt;/Location&gt;
@@ -315,10 +315,10 @@ SSLVerifyDepth 1
 
     <highlight language="config">
 SSLVerifyClient      none
-SSLCACertificateFile conf/ssl.crt/ca.crt
-SSLCACertificatePath conf/ssl.crt
+SSLCACertificateFile "conf/ssl.crt/ca.crt"
+SSLCACertificatePath "conf/ssl.crt"
 
-&lt;Directory /usr/local/apache2/htdocs/secure/area&gt;
+&lt;Directory "/usr/local/apache2/htdocs/secure/area"&gt;
     SSLVerifyClient      require
     SSLVerifyDepth       5
     SSLOptions           +FakeBasicAuth
@@ -326,7 +326,7 @@ SSLCACertificatePath conf/ssl.crt
     AuthName             "Snake Oil Authentication"
     AuthType             Basic
     AuthBasicProvider    file
-    AuthUserFile         /usr/local/apache2/conf/httpd.passwd
+    AuthUserFile         "/usr/local/apache2/conf/httpd.passwd"
     Require              valid-user
 &lt;/Directory&gt;
     </highlight>
@@ -348,10 +348,10 @@ SSLCACertificatePath conf/ssl.crt
 
     <highlight language="config">
 SSLVerifyClient      none
-SSLCACertificateFile conf/ssl.crt/ca.crt
-SSLCACertificatePath conf/ssl.crt
+SSLCACertificateFile "conf/ssl.crt/ca.crt"
+SSLCACertificatePath "conf/ssl.crt"
 
-&lt;Directory /usr/local/apache2/htdocs/secure/area&gt;
+&lt;Directory "/usr/local/apache2/htdocs/secure/area"&gt;
   SSLVerifyClient      require
   SSLVerifyDepth       5
   SSLOptions           +FakeBasicAuth
@@ -375,42 +375,42 @@ plain HTTP access for clients on the Intranet.</title>
    that it applies to both HTTPS and HTTP.</p>
 
     <highlight language="config">
-SSLCACertificateFile conf/ssl.crt/company-ca.crt
+SSLCACertificateFile "conf/ssl.crt/company-ca.crt"
 
-&lt;Directory /usr/local/apache2/htdocs&gt;
+&lt;Directory "/usr/local/apache2/htdocs"&gt;
     #   Outside the subarea only Intranet access is granted
     Require              ip 192.168.1.0/24
 &lt;/Directory&gt;
 
-&lt;Directory /usr/local/apache2/htdocs/subarea&gt;
+&lt;Directory "/usr/local/apache2/htdocs/subarea"&gt;
     #   Inside the subarea any Intranet access is allowed
     #   but from the Internet only HTTPS + Strong-Cipher + Password
     #   or the alternative HTTPS + Strong-Cipher + Client-Certificate
-    
+
     #   If HTTPS is used, make sure a strong cipher is used.
     #   Additionally allow client certs as alternative to basic auth.
     SSLVerifyClient      optional
     SSLVerifyDepth       1
     SSLOptions           +FakeBasicAuth +StrictRequire
     SSLRequire           %{SSL_CIPHER_USEKEYSIZE} &gt;= 128
-    
+
     #   Force clients from the Internet to use HTTPS
     RewriteEngine        on
-    RewriteCond          %{REMOTE_ADDR} !^192\.168\.1\.[0-9]+$
-    RewriteCond          %{HTTPS} !=on
-    RewriteRule          . - [F]
-    
+    RewriteCond          "%{REMOTE_ADDR}" "!^192\.168\.1\.[0-9]+$"
+    RewriteCond          "%{HTTPS}" "!=on"
+    RewriteRule          "." "-" [F]
+
     #   Allow Network Access and/or Basic Auth
     Satisfy              any
-    
+
     #   Network Access Control
     Require              ip 192.168.1.0/24
-    
+
     #   HTTP Basic Authentication
     AuthType             basic
     AuthName             "Protected Intranet Area"
     AuthBasicProvider    file
-    AuthUserFile         conf/protected.passwd
+    AuthUserFile         "conf/protected.passwd"
     Require              valid-user
 &lt;/Directory&gt;
     </highlight>
@@ -430,4 +430,3 @@ SSLCACertificateFile conf/ssl.crt/company-ca.crt
 </section>
 
 </manualpage>
-

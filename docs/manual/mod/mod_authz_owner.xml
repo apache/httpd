@@ -85,11 +85,11 @@
       were owned by <code>jones</code> instead of <code>smith</code>.</p>
 
       <highlight language="config">
-&lt;Directory /home/*/public_html/private&gt;
+&lt;Directory "/home/*/public_html/private"&gt;
     AuthType Basic
-    AuthName MyPrivateFiles
+    AuthName "MyPrivateFiles"
     AuthBasicProvider dbm
-    AuthDBMUserFile /usr/local/apache2/etc/.htdbm-all
+    AuthDBMUserFile "/usr/local/apache2/etc/.htdbm-all"
     Require file-owner
 &lt;/Directory&gt;
       </highlight>
@@ -109,15 +109,15 @@
       each other.</p>
 
       <highlight language="config">
-&lt;Directory /home/*/public_html/project-foo&gt;
+&lt;Directory "/home/*/public_html/project-foo"&gt;
     AuthType Basic
     AuthName "Project Foo Files"
     AuthBasicProvider dbm
-    
+
     # combined user/group database
-    AuthDBMUserFile  /usr/local/apache2/etc/.htdbm-all
-    AuthDBMGroupFile /usr/local/apache2/etc/.htdbm-all
-    
+    AuthDBMUserFile  "/usr/local/apache2/etc/.htdbm-all"
+    AuthDBMGroupFile "/usr/local/apache2/etc/.htdbm-all"
+
     Satisfy All
     Require file-group
 &lt;/Directory&gt;
