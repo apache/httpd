@@ -223,7 +223,7 @@ expressions</td></tr>
     example, to activate the <code>/icons</code> directory, one might
     use:</p>
 
-    <pre class="prettyprint lang-config">AliasMatch ^/icons(.*) /usr/local/apache/icons$1</pre>
+    <pre class="prettyprint lang-config">AliasMatch ^/icons(/|$)(.*) /usr/local/apache/icons$1$2</pre>
 
 
     <p>The full range of <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular expression</a>
