@@ -39,7 +39,7 @@ configuration</td></tr>
     <p>To configure <code class="module"><a href="../mod/mod_info.html">mod_info</a></code>, add the following to your
     <code>httpd.conf</code> file.</p>
 
-    <pre class="prettyprint lang-config">&lt;Location /server-info&gt;
+    <pre class="prettyprint lang-config">&lt;Location "/server-info"&gt;
     SetHandler server-info
 &lt;/Location&gt;</pre>
 
@@ -49,7 +49,7 @@ configuration</td></tr>
     directive to limit access to your server configuration
     information:</p>
 
-    <pre class="prettyprint lang-config">&lt;Location /server-info&gt;
+    <pre class="prettyprint lang-config">&lt;Location "/server-info"&gt;
     SetHandler server-info
     Require host example.com
 &lt;/Location&gt;</pre>
@@ -87,7 +87,7 @@ configuration</td></tr>
     <p>You will probably want to use <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code>
     to limit access to your server configuration information.</p>
 
-    <div class="example"><h3>Access control</h3><pre class="prettyprint lang-config">&lt;Location /server-info&gt;
+    <div class="example"><h3>Access control</h3><pre class="prettyprint lang-config">&lt;Location "/server-info"&gt;
     SetHandler server-info
     Order allow,deny
     # Allow access from server itself

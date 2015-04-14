@@ -565,10 +565,10 @@ a directory</td></tr>
     any files ignored by <code class="directive">IndexIgnore</code> otherwise
     inherited from other configuration sections. </p>
 
-    <pre class="prettyprint lang-config">&lt;Directory /var/www&gt;
+    <pre class="prettyprint lang-config">&lt;Directory "/var/www"&gt;
     IndexIgnore *.bak .??* *~ *# HEADER* README* RCS CVS *,v *,t
 &lt;/Directory&gt;
-&lt;Directory /var/www/backups&gt;
+&lt;Directory "/var/www/backups"&gt;
     IndexIgnoreReset ON
     IndexIgnore .??* *# HEADER* README* RCS CVS *,v *,t
 &lt;/Directory&gt;</pre>
@@ -874,7 +874,7 @@ indexing</td></tr>
      <li>Multiple <code class="directive">IndexOptions</code> directives for a
      single directory are now merged together. The result of:
 
-     <pre class="prettyprint lang-config">&lt;Directory /foo&gt;
+     <pre class="prettyprint lang-config">&lt;Directory "/foo"&gt;
     IndexOptions HTMLTable
     IndexOptions SuppressColumnsorting
 &lt;/Directory&gt;</pre>

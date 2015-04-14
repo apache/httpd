@@ -177,8 +177,8 @@ relative hyperlinks?</a></li>
     scheme).  Using <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> however, you can
     manipulate relative hyperlinks, to achieve the same effect.</p>
     <pre class="prettyprint lang-config">RewriteEngine on
-RewriteRule   ^/(.*)_SSL$   https://%{SERVER_NAME}/$1 [R,L]
-RewriteRule   ^/(.*)_NOSSL$ http://%{SERVER_NAME}/$1  [R,L]</pre>
+RewriteRule   "^/(.*)_SSL$"   "https://%{SERVER_NAME}/$1" [R,L]
+RewriteRule   "^/(.*)_NOSSL$" "http://%{SERVER_NAME}/$1"  [R,L]</pre>
 
 
     <p>This rewrite ruleset lets you use hyperlinks of the form
@@ -255,8 +255,8 @@ Certificate for testing purposes?</a></h3>
                         -keyout server.key</strong></code><br />
         These can be used as follows in your <code>httpd.conf</code>
         file:
-        <pre class="prettyprint lang-config">SSLCertificateFile    /path/to/this/server.crt
-SSLCertificateKeyFile /path/to/this/server.key</pre>
+        <pre class="prettyprint lang-config">SSLCertificateFile    "/path/to/this/server.crt"
+SSLCertificateKeyFile "/path/to/this/server.key"</pre>
 
     </li>
     <li>It is important that you are aware that this
@@ -334,8 +334,8 @@ SSLCertificateKeyFile /path/to/this/server.key</pre>
     <li>You should now have two files: <code>server.key</code> and
     <code>server.crt</code>. These can be used as follows in your
     <code>httpd.conf</code> file:
-       <pre class="prettyprint lang-config">SSLCertificateFile    /path/to/this/server.crt
-SSLCertificateKeyFile /path/to/this/server.key</pre>
+       <pre class="prettyprint lang-config">SSLCertificateFile    "/path/to/this/server.crt"
+SSLCertificateKeyFile "/path/to/this/server.key"</pre>
 
        The <code>server.csr</code> file is no longer needed.
     </li>

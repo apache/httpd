@@ -74,7 +74,7 @@
 
     
 
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">DavLockDB var/DavLock</pre>
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">DavLockDB "var/DavLock"</pre>
 </div>
 
     <p>The directory containing the lock database file must be

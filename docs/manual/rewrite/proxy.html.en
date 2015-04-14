@@ -58,9 +58,9 @@ A number of recipes are provided that describe common scenarios.</p>
       follows:</p>
 
 <pre class="prettyprint lang-config">RewriteEngine  on
-RewriteBase    /products/
-RewriteRule    ^widget/(.*)$  http://product.example.com/widget/$1  [P]
-ProxyPassReverse /products/widget/ http://product.example.com/widget/</pre>
+RewriteBase    "/products/"
+RewriteRule    "^widget/(.*)$"  "http://product.example.com/widget/$1"  [P]
+ProxyPassReverse "/products/widget/" "http://product.example.com/widget/"</pre>
 
 
    <p>In the second example, we proxy the request only if we can't find
@@ -68,10 +68,10 @@ ProxyPassReverse /products/widget/ http://product.example.com/widget/</pre>
    from one server to another, and you're not sure if all the content
    has been migrated yet.</p>
 
-<pre class="prettyprint lang-config">RewriteCond %{REQUEST_FILENAME}       !-f
-RewriteCond %{REQUEST_FILENAME}       !-d
-RewriteRule ^/(.*) http://old.example.com/$1 [P]
-ProxyPassReverse / http://old.example.com/</pre>
+<pre class="prettyprint lang-config">RewriteCond "%{REQUEST_FILENAME}"       !-f
+RewriteCond "%{REQUEST_FILENAME}"       !-d
+RewriteRule "^/(.*)" "http://old.example.com/$1" [P]
+ProxyPassReverse "/" "http://old.example.com/"</pre>
 
     </dd>
 

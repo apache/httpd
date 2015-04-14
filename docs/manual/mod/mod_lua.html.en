@@ -108,7 +108,7 @@ trust, as it can be abused to change the internal workings of httpd.</p>
 which can be used with a <code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code> or
 <code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code> directive:</p>
 
-<pre class="prettyprint lang-config">&lt;Files *.lua&gt;
+<pre class="prettyprint lang-config">&lt;Files "*.lua"&gt;
     SetHandler lua-script
 &lt;/Files&gt;</pre>
 
@@ -230,7 +230,7 @@ end</pre>
 <p>The following configuration registers this function as provider
 <code>foo</code> and configures it for URL <code>/</code>:</p>
 <pre class="prettyprint lang-config">LuaAuthzProvider foo authz_provider.lua authz_check_foo
-&lt;Location /&gt;
+&lt;Location "/"&gt;
   Require foo 10.1.2.3 john_doe
 &lt;/Location&gt;</pre>
 
@@ -1248,9 +1248,9 @@ collectgarbage() -- close the handle via GC</pre>
 <p>After a lua function has been registered as authorization provider, it can be used
 with the <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> directive:</p>
 
-<pre class="prettyprint lang-config">LuaRoot /usr/local/apache2/lua
+<pre class="prettyprint lang-config">LuaRoot "/usr/local/apache2/lua"
 LuaAuthzProvider foo authz.lua authz_check_foo
-&lt;Location /&gt;
+&lt;Location "/"&gt;
   Require foo johndoe
 &lt;/Location&gt;</pre>
 
@@ -1422,7 +1422,7 @@ processing</td></tr>
     <code>apache2.OK</code> to tell httpd to log as normal.
 </p>
 <p>Example:</p>
-<pre class="prettyprint lang-config">LuaHookLog /path/to/script.lua logger</pre>
+<pre class="prettyprint lang-config">LuaHookLog "/path/to/script.lua" logger</pre>
 
 <pre class="prettyprint lang-lua">-- /path/to/script.lua --
 function logger(r)
@@ -1461,7 +1461,7 @@ end</pre>
     <p>Like <code class="directive">LuaHookTranslateName</code> but executed at the 
     map-to-storage phase of a request. Modules like mod_cache run at this phase,
     which makes for an interesting example on what to do here:</p>
-    <pre class="prettyprint lang-config">LuaHookMapToStorage /path/to/lua/script.lua check_cache</pre>
+    <pre class="prettyprint lang-config">LuaHookMapToStorage "/path/to/lua/script.lua" check_cache</pre>
 
     <pre class="prettyprint lang-lua">require"apache2"
 cached_files = {}
@@ -1523,7 +1523,7 @@ end</pre>
     <p>Example:</p>
 
 <pre class="prettyprint lang-config"># httpd.conf
-LuaHookTranslateName /scripts/conf/hooks.lua silly_mapper</pre>
+LuaHookTranslateName "/scripts/conf/hooks.lua" silly_mapper</pre>
 
 
 <pre class="prettyprint lang-lua">-- /scripts/conf/hooks.lua --
@@ -1560,7 +1560,7 @@ end</pre>
     This phase is where requests are assigned a content type and a handler, and thus can 
     be used to modify the type and handler based on input:
     </p>
-    <pre class="prettyprint lang-config">LuaHookTypeChecker /path/to/lua/script.lua type_checker</pre>
+    <pre class="prettyprint lang-config">LuaHookTypeChecker "/path/to/lua/script.lua" type_checker</pre>
 
     <pre class="prettyprint lang-lua">    function type_checker(r)
         if r.uri:match("%.to_gif$") then -- match foo.png.to_gif
@@ -1614,8 +1614,8 @@ global variable <code>bucket</code> holds the buckets as they are passed
 onto the Lua script:
 </p>
 
-<pre class="prettyprint lang-config">LuaInputFilter myInputFilter /www/filter.lua input_filter
-&lt;Files *.lua&gt;
+<pre class="prettyprint lang-config">LuaInputFilter myInputFilter "/www/filter.lua" input_filter
+&lt;Files "*.lua"&gt;
   SetInputFilter myInputFilter
 &lt;/Files&gt;</pre>
 
@@ -1666,14 +1666,14 @@ filters</a>" for more information.
     match groups into both the file path and the function name. 
     Be careful writing your regular expressions to avoid security
     issues.</p>
-   <div class="example"><h3>Examples:</h3><pre class="prettyprint lang-config">LuaMapHandler /(\w+)/(\w+) /scripts/$1.lua handle_$2</pre>
+   <div class="example"><h3>Examples:</h3><pre class="prettyprint lang-config">LuaMapHandler "/(\w+)/(\w+)" "/scripts/$1.lua" "handle_$2"</pre>
 </div>
         <p>This would match uri's such as /photos/show?id=9
         to the file /scripts/photos.lua and invoke the
         handler function handle_show on the lua vm after
         loading that file.</p>
 
-<pre class="prettyprint lang-config">LuaMapHandler /bingo /scripts/wombat.lua</pre>
+<pre class="prettyprint lang-config">LuaMapHandler "/bingo" "/scripts/wombat.lua"</pre>
 
         <p>This would invoke the "handle" function, which
         is the default if no specific function name is
@@ -1699,8 +1699,8 @@ global variable <code>bucket</code> holds the buckets as they are passed
 onto the Lua script:
 </p>
 
-<pre class="prettyprint lang-config">LuaOutputFilter myOutputFilter /www/filter.lua output_filter
-&lt;Files *.lua&gt;
+<pre class="prettyprint lang-config">LuaOutputFilter myOutputFilter "/www/filter.lua" output_filter
+&lt;Files "*.lua"&gt;
   SetOutputFilter myOutputFilter
 &lt;/Files&gt;</pre>
 
@@ -1771,8 +1771,8 @@ information.
     conventions as lua. This just munges the package.path in the
     lua vms.</p>
 
-    <div class="example"><h3>Examples:</h3><pre class="prettyprint lang-config">LuaPackagePath /scripts/lib/?.lua
-LuaPackagePath /scripts/lib/?/init.lua</pre>
+    <div class="example"><h3>Examples:</h3><pre class="prettyprint lang-config">LuaPackagePath "/scripts/lib/?.lua"
+LuaPackagePath "/scripts/lib/?/init.lua"</pre>
 </div>
 
 </div>

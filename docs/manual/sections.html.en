@@ -63,7 +63,7 @@ to another site only if the server is started using
 <code>httpd -DClosedForNow</code>:</p>
 
 <pre class="prettyprint lang-config">&lt;IfDefine ClosedForNow&gt;
-    Redirect / http://otherserver.example.com/
+    Redirect "/" "http://otherserver.example.com/"
 &lt;/IfDefine&gt;</pre>
 
 
@@ -82,7 +82,7 @@ about missing modules.</p>
 applied only if <code class="module"><a href="./mod/mod_mime_magic.html">mod_mime_magic</a></code> is available.</p>
 
 <pre class="prettyprint lang-config">&lt;IfModule mod_mime_magic.c&gt;
-    MimeMagicFile conf/magic
+    MimeMagicFile "conf/magic"
 &lt;/IfModule&gt;</pre>
 
 
@@ -138,7 +138,7 @@ The same effect can be obtained using <a href="howto/htaccess.html">.htaccess fi
 following configuration, directory indexes will be enabled for the
 <code>/var/web/dir1</code> directory and all subdirectories.</p>
 
-<pre class="prettyprint lang-config">&lt;Directory /var/web/dir1&gt;
+<pre class="prettyprint lang-config">&lt;Directory "/var/web/dir1"&gt;
     Options +Indexes
 &lt;/Directory&gt;</pre>
 
@@ -150,7 +150,7 @@ when placed in the main section of the configuration file,
 deny access to any file named <code>private.html</code> regardless
 of where it is found.</p>
 
-<pre class="prettyprint lang-config">&lt;Files private.html&gt;
+<pre class="prettyprint lang-config">&lt;Files "private.html"&gt;
     Require all denied
 &lt;/Files&gt;</pre>
 
@@ -165,8 +165,8 @@ access to <code>/var/web/dir1/private.html</code>,
 of <code>private.html</code> found under the <code>/var/web/dir1/</code>
 directory.</p>
 
-<pre class="prettyprint lang-config">&lt;Directory /var/web/dir1&gt;
-    &lt;Files private.html&gt;
+<pre class="prettyprint lang-config">&lt;Directory "/var/web/dir1"&gt;
+    &lt;Files "private.html"&gt;
         Require all denied
     &lt;/Files&gt;
 &lt;/Directory&gt;</pre>
@@ -186,7 +186,7 @@ In particular, it will apply to requests for
 <code>http://yoursite.example.com/private/dir/file.html</code> as well
 as any other requests starting with the <code>/private</code> string.</p>
 
-<pre class="prettyprint lang-config">&lt;LocationMatch ^/private&gt;
+<pre class="prettyprint lang-config">&lt;LocationMatch "^/private"&gt;
     Require all denied
 &lt;/LocationMatch&gt;</pre>
 
@@ -198,7 +198,7 @@ URL to an internal Apache HTTP Server handler provided by <code class="module"><
 No file called <code>server-status</code> needs to exist in the
 filesystem.</p>
 
-<pre class="prettyprint lang-config">&lt;Location /server-status&gt;
+<pre class="prettyprint lang-config">&lt;Location "/server-status"&gt;
     SetHandler server-status
 &lt;/Location&gt;</pre>
 
@@ -208,20 +208,20 @@ filesystem.</p>
 <p>In order to have two overlapping URLs one has to consider the order in which
 certain sections or directives are evaluated. For
 <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code> this would be:</p>
-<pre class="prettyprint lang-config">&lt;Location /foo&gt;
+<pre class="prettyprint lang-config">&lt;Location "/foo"&gt;
 &lt;/Location&gt;
-&lt;Location /foo/bar&gt;
+&lt;Location "/foo/bar"&gt;
 &lt;/Location&gt;</pre>
 
 <p><code class="directive"><a href="./mod/mod_alias.html#alias">&lt;Alias&gt;</a></code>es on the other hand,
 are mapped vice-versa:</p>
-<pre class="prettyprint lang-config">Alias /foo/bar /srv/www/uncommon/bar
-Alias /foo /srv/www/common/foo</pre>
+<pre class="prettyprint lang-config">Alias "/foo/bar" "/srv/www/uncommon/bar"
+Alias "/foo" "/srv/www/common/foo"</pre>
 
 <p>The same is true for the <code class="directive"><a href="./mod/mod_proxy.html#proxypass">ProxyPass</a></code>
 directives:</p>
-<pre class="prettyprint lang-config">ProxyPass /special-area http://special.example.com smax=5 max=10
-ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover=On</pre>
+<pre class="prettyprint lang-config">ProxyPass "/special-area" "http://special.example.com" smax=5 max=10
+ProxyPass "/" "balancer://mycluster/" stickysession=JSESSIONID|jsessionid nofailover=On</pre>
 
 
 
@@ -248,14 +248,14 @@ how directives are applied.</p>
 <p>A non-regex wildcard section that changes the configuration of
 all user directories could look as follows:</p>
 
-<pre class="prettyprint lang-config">&lt;Directory /home/*/public_html&gt;
+<pre class="prettyprint lang-config">&lt;Directory "/home/*/public_html"&gt;
     Options Indexes
 &lt;/Directory&gt;</pre>
 
 
 <p>Using regex sections, we can deny access to many types of image files
 at once:</p>
-<pre class="prettyprint lang-config">&lt;FilesMatch \.(?i:gif|jpe?g|png)$&gt;
+<pre class="prettyprint lang-config">&lt;FilesMatch "\.(?i:gif|jpe?g|png)$"&gt;
     Require all denied
 &lt;/FilesMatch&gt;</pre>
 
@@ -266,8 +266,8 @@ corresponding name in uppercase. This allows elements of filename paths
 and URLs to be referenced from within <a href="expr.html">expressions</a>
 and modules like <code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code>.</p>
 
-<pre class="prettyprint lang-config">&lt;DirectoryMatch ^/var/www/combined/(?&lt;SITENAME&gt;[^/]+)&gt;
-    require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
+<pre class="prettyprint lang-config">&lt;DirectoryMatch "^/var/www/combined/(?&lt;SITENAME&gt;[^/]+)"&gt;
+    require ldap-group "cn=%{env:MATCH_SITENAME},ou=combined,o=Example"
 &lt;/DirectoryMatch&gt;</pre>
 
 
@@ -300,7 +300,7 @@ different webspace locations (URLs) could map to the same filesystem
 location, allowing your restrictions to be circumvented.
 For example, consider the following configuration:</p>
 
-<pre class="prettyprint lang-config">&lt;Location /dir/&gt;
+<pre class="prettyprint lang-config">&lt;Location "/dir/"&gt;
     Require all denied
 &lt;/Location&gt;</pre>
 
@@ -324,7 +324,7 @@ many other ways to map multiple webspace locations to the same
 filesystem location.  Therefore you should always use the filesystem
 containers when you can.  There is, however, one exception to this
 rule.  Putting configuration restrictions in a <code>&lt;Location
-/&gt;</code> section is perfectly safe because this section will apply
+"/"&gt;</code> section is perfectly safe because this section will apply
 to all requests regardless of the specific URL.</p>
 
 
@@ -363,7 +363,7 @@ that match the specified URL.  For example, the following configuration
 will prevent the proxy server from being used to access the
 <code>www.example.com</code> website.</p>
 
-<pre class="prettyprint lang-config">&lt;Proxy http://www.example.com/*&gt;
+<pre class="prettyprint lang-config">&lt;Proxy "http://www.example.com/*"&gt;
     Require all granted
 &lt;/Proxy&gt;</pre>
 
@@ -416,7 +416,7 @@ are interpreted, it is important to understand how this works.</p>
       <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>)</li>
 
       <li><code class="directive"><a href="./mod/core.html#directorymatch">&lt;DirectoryMatch&gt;</a></code>
-      (and <code>&lt;Directory ~&gt;</code>)</li>
+      (and <code>&lt;Directory "~"&gt;</code>)</li>
 
       <li><code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code> and <code class="directive"><a href="./mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code> done
       simultaneously</li>
@@ -432,9 +432,9 @@ are interpreted, it is important to understand how this works.</p>
     <p>Apart from <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>, each group is processed in
     the order that they appear in the configuration files.  <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> (group 1 above)
     is processed in the order shortest directory component to longest.
-    So for example, <code>&lt;Directory /var/web/dir&gt;</code> will
+    So for example, <code>&lt;Directory "/var/web/dir"&gt;</code> will
     be processed before <code>&lt;Directory
-    /var/web/dir/subdir&gt;</code>.  If multiple <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> sections apply
+    "/var/web/dir/subdir"&gt;</code>.  If multiple <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> sections apply
     to the same directory they are processed in the configuration file
     order. Configurations included via the <code class="directive"><a href="./mod/core.html#include">Include</a></code> directive will be treated as if
     they were inside the including file at the location of the
@@ -474,16 +474,16 @@ merging. Assuming they all apply to the request, the directives in
 this example will be applied in the order A &gt; B &gt; C &gt; D &gt;
 E.</p>
 
-<pre class="prettyprint lang-config">&lt;Location /&gt;
+<pre class="prettyprint lang-config">&lt;Location "/"&gt;
     E
 &lt;/Location&gt;
 
-&lt;Files f.html&gt;
+&lt;Files "f.html"&gt;
     D
 &lt;/Files&gt;
 
 &lt;VirtualHost *&gt;
-&lt;Directory /a/b&gt;
+&lt;Directory "/a/b"&gt;
     B
 &lt;/Directory&gt;
 &lt;/VirtualHost&gt;
@@ -492,7 +492,7 @@ E.</p>
     C
 &lt;/DirectoryMatch&gt;
 
-&lt;Directory /a/b&gt;
+&lt;Directory "/a/b"&gt;
     A
 &lt;/Directory&gt;</pre>
 
@@ -502,12 +502,12 @@ any access restrictions placed in <code class="directive"><a href="./mod/core.ht
 evaluated last and will allow unrestricted access to the server.  In
 other words, order of merging is important, so be careful!</p>
 
-<pre class="prettyprint lang-config">&lt;Location /&gt;
+<pre class="prettyprint lang-config">&lt;Location "/"&gt;
     Require all granted
 &lt;/Location&gt;
 
 # Woops!  This &lt;Directory&gt; section will have no effect
-&lt;Directory /&gt;
+&lt;Directory "/"&gt;
     &lt;RequireAll&gt;
         Require all granted
         Require not host badguy.example.com

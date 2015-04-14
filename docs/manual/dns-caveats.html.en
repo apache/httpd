@@ -49,7 +49,7 @@
     <pre class="prettyprint lang-config"># This is a misconfiguration example, do not use on your server
 &lt;VirtualHost www.example.dom&gt;
   ServerAdmin webgirl@example.dom
-  DocumentRoot /www/example
+  DocumentRoot "/www/example"
 &lt;/VirtualHost&gt;</pre>
 
 
@@ -70,7 +70,7 @@
     <pre class="prettyprint lang-config"># This is a misconfiguration example, do not use on your server
 &lt;VirtualHost 192.0.2.1&gt;
   ServerAdmin webgirl@example.dom
-  DocumentRoot /www/example
+  DocumentRoot "/www/example"
 &lt;/VirtualHost&gt;</pre>
 
 
@@ -88,7 +88,7 @@
     <pre class="prettyprint lang-config">&lt;VirtualHost 192.0.2.1&gt;
   ServerName www.example.dom
   ServerAdmin webgirl@example.dom
-  DocumentRoot /www/example
+  DocumentRoot "/www/example"
 &lt;/VirtualHost&gt;</pre>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -100,11 +100,11 @@
 
     <pre class="prettyprint lang-config">&lt;VirtualHost www.example1.dom&gt;
   ServerAdmin webgirl@example1.dom
-  DocumentRoot /www/example1
+  DocumentRoot "/www/example1"
 &lt;/VirtualHost&gt;
 &lt;VirtualHost www.example2.dom&gt;
   ServerAdmin webguy@example2.dom
-  DocumentRoot /www/example2
+  DocumentRoot "/www/example2"
 &lt;/VirtualHost&gt;</pre>
 
 

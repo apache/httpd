@@ -242,7 +242,7 @@ a directory</td></tr>
     this.</p>
 
     <pre class="prettyprint lang-config"># see security warning below!
-&lt;Location /some/path&gt;
+&lt;Location "/some/path"&gt;
     DirectorySlash Off
     SetHandler some-handler
 &lt;/Location&gt;</pre>

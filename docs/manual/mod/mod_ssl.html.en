@@ -251,7 +251,7 @@ you find in the above table.</p>
 For backward compatibility there is additionally a special
 ``<code>%{</code><em>name</em><code>}c</code>'' cryptography format function
 provided. Information about this function is provided in the <a href="../ssl/ssl_compat.html">Compatibility</a> chapter.</p>
-<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">CustomLog logs/ssl_request_log "%t %h %{SSL_PROTOCOL}x %{SSL_CIPHER}x \"%r\" %b"</pre>
+<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">CustomLog "logs/ssl_request_log" "%t %h %{SSL_PROTOCOL}x %{SSL_CIPHER}x \"%r\" %b"</pre>
 </div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -333,7 +333,7 @@ with. These are used for Client Authentication. Such a file is simply the
 concatenation of the various PEM-encoded Certificate files, in order of
 preference. This can be used alternatively and/or additionally to
 <code class="directive"><a href="#sslcacertificatepath">SSLCACertificatePath</a></code>.</p>
-<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLCACertificateFile /usr/local/apache2/conf/ssl.crt/ca-bundle-client.crt</pre>
+<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLCACertificateFile "/usr/local/apache2/conf/ssl.crt/ca-bundle-client.crt"</pre>
 </div>
 
 </div>
@@ -357,7 +357,7 @@ hash filenames. So usually you can't just place the Certificate files
 there: you also have to create symbolic links named
 <em>hash-value</em><code>.N</code>. And you should always make sure this directory
 contains the appropriate symbolic links.</p>
-<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLCACertificatePath /usr/local/apache2/conf/ssl.crt/</pre>
+<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLCACertificatePath "/usr/local/apache2/conf/ssl.crt/"</pre>
 </div>
 
 </div>
@@ -395,7 +395,7 @@ directives.</p>
 specify an <em>all-in-one</em> file containing a concatenation of
 PEM-encoded CA certificates.</p>
 
-<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLCADNRequestFile /usr/local/apache2/conf/ca-names.crt</pre>
+<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLCADNRequestFile "/usr/local/apache2/conf/ca-names.crt"</pre>
 </div>
 
 </div>
@@ -420,7 +420,7 @@ through hash filenames. So usually you can't just place the
 Certificate files there: you also have to create symbolic links named
 <em>hash-value</em><code>.N</code>. And you should always make sure
 this directory contains the appropriate symbolic links.</p>
-<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLCADNRequestPath /usr/local/apache2/conf/ca-names.crt/</pre>
+<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLCADNRequestPath "/usr/local/apache2/conf/ca-names.crt/"</pre>
 </div>
 
 </div>
@@ -477,7 +477,7 @@ Authorities (CA) whose <em>clients</em> you deal with. These are used
 for Client Authentication.  Such a file is simply the concatenation of
 the various PEM-encoded CRL files, in order of preference. This can be
 used alternatively and/or additionally to <code class="directive"><a href="#sslcarevocationpath">SSLCARevocationPath</a></code>.</p>
-<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLCARevocationFile /usr/local/apache2/conf/ssl.crl/ca-bundle-client.crl</pre>
+<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLCARevocationFile "/usr/local/apache2/conf/ssl.crl/ca-bundle-client.crl"</pre>
 </div>
 
 </div>
@@ -501,7 +501,7 @@ hash filenames. So usually you have not only to place the CRL files there.
 Additionally you have to create symbolic links named
 <em>hash-value</em><code>.rN</code>. And you should always make sure this directory
 contains the appropriate symbolic links.</p>
-<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLCARevocationPath /usr/local/apache2/conf/ssl.crl/</pre>
+<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLCARevocationPath "/usr/local/apache2/conf/ssl.crl/"</pre>
 </div>
 
 </div>
@@ -544,7 +544,7 @@ But be careful: Providing the certificate chain works only if you are using a
 using a coupled RSA+DSA certificate pair, this will work only if actually both
 certificates use the <em>same</em> certificate chain. Else the browsers will be
 confused in this situation.</p>
-<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLCertificateChainFile /usr/local/apache2/conf/ssl.crt/ca.crt</pre>
+<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLCertificateChainFile "/usr/local/apache2/conf/ssl.crt/ca.crt"</pre>
 </div>
 
 </div>
@@ -606,7 +606,7 @@ such issues.
 </p>
 </div>
 
-<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLCertificateFile /usr/local/apache2/conf/ssl.crt/server.crt</pre>
+<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLCertificateFile "/usr/local/apache2/conf/ssl.crt/server.crt"</pre>
 </div>
 
 </div>
@@ -633,7 +633,7 @@ to support multiple algorithms for server authentication. For each
 directive, there must be a matching <code class="directive">SSLCertificateFile</code>
 directive.</p>
 
-<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLCertificateKeyFile /usr/local/apache2/conf/ssl.key/server.key</pre>
+<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLCertificateKeyFile "/usr/local/apache2/conf/ssl.key/server.key"</pre>
 </div>
 
 </div>
@@ -998,7 +998,7 @@ directives.</p>
 
 <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLVerifyClient on
 SSLOCSPEnable on
-SSLOCSPDefaultResponder http://responder.example.com:8888/responder
+SSLOCSPDefaultResponder "http://responder.example.com:8888/responder"
 SSLOCSPOverrideResponder on</pre>
 </div>
 
@@ -1109,7 +1109,7 @@ may sometimes differ.</p>
 
 <div class="example"><h3>Examples</h3><pre class="prettyprint lang-config">SSLOpenSSLConfCmd Options -SessionTicket,ServerPreference
 SSLOpenSSLConfCmd ECDHParameters brainpoolP256r1
-SSLOpenSSLConfCmd ServerInfoFile /usr/local/apache2/conf/server-info.pem
+SSLOpenSSLConfCmd ServerInfoFile "/usr/local/apache2/conf/server-info.pem"
 SSLOpenSSLConfCmd Protocol "-ALL, TLSv1.2"
 SSLOpenSSLConfCmd SignatureAlgorithms RSA+SHA384:ECDSA+SHA256</pre>
 </div>
@@ -1304,7 +1304,7 @@ query can be done in two ways which can be configured by
     The reuse-algorithm above is used here, too. In other words: The external
     program is called only once per unique Pass Phrase.</p></li>
 </ul>
-<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLPassPhraseDialog exec:/usr/local/apache/sbin/pp-filter</pre>
+<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLPassPhraseDialog "exec:/usr/local/apache/sbin/pp-filter"</pre>
 </div>
 
 </div>
@@ -1374,7 +1374,7 @@ with. These are used for Remote Server Authentication. Such a file is simply the
 concatenation of the various PEM-encoded Certificate files, in order of
 preference. This can be used alternatively and/or additionally to
 <code class="directive"><a href="#sslproxycacertificatepath">SSLProxyCACertificatePath</a></code>.</p>
-<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLProxyCACertificateFile /usr/local/apache2/conf/ssl.crt/ca-bundle-remote-server.crt</pre>
+<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLProxyCACertificateFile "/usr/local/apache2/conf/ssl.crt/ca-bundle-remote-server.crt"</pre>
 </div>
 
 </div>
@@ -1398,7 +1398,7 @@ hash filenames. So usually you can't just place the Certificate files
 there: you also have to create symbolic links named
 <em>hash-value</em><code>.N</code>. And you should always make sure this directory
 contains the appropriate symbolic links.</p>
-<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLProxyCACertificatePath /usr/local/apache2/conf/ssl.crt/</pre>
+<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLProxyCACertificatePath "/usr/local/apache2/conf/ssl.crt/"</pre>
 </div>
 
 </div>
@@ -1456,7 +1456,7 @@ Authorities (CA) whose <em>remote servers</em> you deal with. These are used
 for Remote Server Authentication.  Such a file is simply the concatenation of
 the various PEM-encoded CRL files, in order of preference. This can be
 used alternatively and/or additionally to <code class="directive"><a href="#sslproxycarevocationpath">SSLProxyCARevocationPath</a></code>.</p>
-<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLProxyCARevocationFile /usr/local/apache2/conf/ssl.crl/ca-bundle-remote-server.crl</pre>
+<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLProxyCARevocationFile "/usr/local/apache2/conf/ssl.crl/ca-bundle-remote-server.crl"</pre>
 </div>
 
 </div>
@@ -1480,7 +1480,7 @@ hash filenames. So usually you have not only to place the CRL files there.
 Additionally you have to create symbolic links named
 <em>hash-value</em><code>.rN</code>. And you should always make sure this directory
 contains the appropriate symbolic links.</p>
-<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLProxyCARevocationPath /usr/local/apache2/conf/ssl.crl/</pre>
+<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLProxyCARevocationPath "/usr/local/apache2/conf/ssl.crl/"</pre>
 </div>
 
 </div>
@@ -1633,7 +1633,7 @@ be examined and a chain of trust will be constructed.
 trusted as if they were also in <code class="directive"><a href="#sslproxycacertificatefile">
 SSLProxyCACertificateFile</a></code>.</p>
 </div>
-<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLProxyMachineCertificateChainFile /usr/local/apache2/conf/ssl.crt/proxyCA.pem</pre>
+<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLProxyMachineCertificateChainFile "/usr/local/apache2/conf/ssl.crt/proxyCA.pem"</pre>
 </div>
 
 </div>
@@ -1659,7 +1659,7 @@ or additionally to <code>SSLProxyMachineCertificatePath</code>.
 <div class="warning">
 <p>Currently there is no support for encrypted private keys</p>
 </div>
-<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLProxyMachineCertificateFile /usr/local/apache2/conf/ssl.crt/proxy.pem</pre>
+<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLProxyMachineCertificateFile "/usr/local/apache2/conf/ssl.crt/proxy.pem"</pre>
 </div>
 
 </div>
@@ -1684,7 +1684,7 @@ directory contains the appropriate symbolic links.</p>
 <div class="warning">
 <p>Currently there is no support for encrypted private keys</p>
 </div>
-<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLProxyMachineCertificatePath /usr/local/apache2/conf/proxy.crt/</pre>
+<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLProxyMachineCertificatePath "/usr/local/apache2/conf/proxy.crt/"</pre>
 </div>
 
 </div>
@@ -1847,12 +1847,12 @@ The following <em>source</em> variants are available:</p>
     on your platform.</p></li>
 </ul>
 <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLRandomSeed startup builtin
-SSLRandomSeed startup file:/dev/random
-SSLRandomSeed startup file:/dev/urandom 1024
-SSLRandomSeed startup exec:/usr/local/bin/truerand 16
+SSLRandomSeed startup "file:/dev/random"
+SSLRandomSeed startup "file:/dev/urandom" 1024
+SSLRandomSeed startup "exec:/usr/local/bin/truerand" 16
 SSLRandomSeed connect builtin
-SSLRandomSeed connect file:/dev/random
-SSLRandomSeed connect file:/dev/urandom 1024</pre>
+SSLRandomSeed connect "file:/dev/random"
+SSLRandomSeed connect "file:/dev/urandom" 1024</pre>
 </div>
 
 </div>
@@ -2104,8 +2104,8 @@ The following five storage <em>type</em>s are currently supported:</p>
 
 </ul>
 
-<div class="example"><h3>Examples</h3><pre class="prettyprint lang-config">SSLSessionCache dbm:/usr/local/apache/logs/ssl_gcache_data
-SSLSessionCache shmcb:/usr/local/apache/logs/ssl_gcache_data(512000)</pre>
+<div class="example"><h3>Examples</h3><pre class="prettyprint lang-config">SSLSessionCache "dbm:/usr/local/apache/logs/ssl_gcache_data"
+SSLSessionCache "shmcb:/usr/local/apache/logs/ssl_gcache_data(512000)"</pre>
 </div>
 
 <p>The <code>ssl-cache</code> mutex is used to serialize access to

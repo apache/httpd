@@ -211,7 +211,7 @@ FilterProtocol downsample "change=yes"
 FilterProvider repack jpeg_pack "%{CONTENT_TYPE} = 'image/jpeg'"
 FilterProvider repack gif_pack "%{CONTENT_TYPE} = 'image/gif'"
 FilterProvider repack png_pack "%{CONTENT_TYPE} = 'image/png'"
-&lt;Location /image-filter&gt;
+&lt;Location "/image-filter"&gt;
     FilterChain unpack downsample repack
 &lt;/Location&gt;</pre>
 
@@ -294,7 +294,7 @@ being moved to <code class="module"><a href="../mod/mod_filter.html">mod_filter<
     <code>INCLUDES</code> filter and then by the <code>DEFLATE</code>
     filter.</p>
 
-    <pre class="prettyprint lang-config">&lt;Location /cgi-bin/&gt;
+    <pre class="prettyprint lang-config">&lt;Location "/cgi-bin/"&gt;
     Options Includes
     AddOutputFilterByType INCLUDES;DEFLATE text/html
 &lt;/Location&gt;</pre>

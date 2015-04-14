@@ -334,7 +334,7 @@
 
     <p>In the server configuration file, put</p>
 
-    <pre class="prettyprint lang-config">&lt;Directory /&gt;
+    <pre class="prettyprint lang-config">&lt;Directory "/"&gt;
     AllowOverride None
 &lt;/Directory&gt;</pre>
 
@@ -366,7 +366,7 @@
     work around this, add the following block to your server's
     configuration:</p>
 
-    <pre class="prettyprint lang-config">&lt;Directory /&gt;
+    <pre class="prettyprint lang-config">&lt;Directory "/"&gt;
     Require all denied
 &lt;/Directory&gt;</pre>
 
@@ -375,17 +375,17 @@
     appropriate <code class="directive"><a href="../mod/core.html#directory">Directory</a></code> blocks to
     allow access only in those areas you wish. For example,</p>
 
-    <pre class="prettyprint lang-config">&lt;Directory /usr/users/*/public_html&gt;
+    <pre class="prettyprint lang-config">&lt;Directory "/usr/users/*/public_html"&gt;
     Require all granted
 &lt;/Directory&gt;
-&lt;Directory /usr/local/httpd&gt;
+&lt;Directory "/usr/local/httpd"&gt;
     Require all granted
 &lt;/Directory&gt;</pre>
 
 
     <p>Pay particular attention to the interactions of <code class="directive"><a href="../mod/core.html#location">Location</a></code> and <code class="directive"><a href="../mod/core.html#directory">Directory</a></code> directives; for instance, even
-    if <code>&lt;Directory /&gt;</code> denies access, a <code>
-    &lt;Location /&gt;</code> directive might overturn it.</p>
+    if <code>&lt;Directory "/"&gt;</code> denies access, a <code>
+    &lt;Location "/"&gt;</code> directive might overturn it.</p>
 
     <p>Also be wary of playing games with the <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code> directive; setting it to
     something like <code>./</code> would have the same effect, for root, as

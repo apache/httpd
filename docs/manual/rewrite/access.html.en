@@ -79,25 +79,25 @@ configuration.</div>
 
 
 
-<pre class="prettyprint lang-config">RewriteCond %{HTTP_REFERER} !^$
-RewriteCond %{HTTP_REFERER} !www.example.com [NC]
-RewriteRule \.(gif|jpg|png)$    -   [F,NC]</pre>
+<pre class="prettyprint lang-config">RewriteCond "%{HTTP_REFERER}" "!^$"
+RewriteCond "%{HTTP_REFERER}" "!www.example.com" [NC]
+RewriteRule "\.(gif|jpg|png)$"    "-"   [F,NC]</pre>
 
 
     <p>In this second example, instead of failing the request, we display
     an alternate image instead.</p>
 
-<pre class="prettyprint lang-config">RewriteCond %{HTTP_REFERER} !^$
-RewriteCond %{HTTP_REFERER} !www.example.com [NC]
-RewriteRule \.(gif|jpg|png)$    /images/go-away.png   [R,NC]</pre>
+<pre class="prettyprint lang-config">RewriteCond "%{HTTP_REFERER}" "!^$"
+RewriteCond "%{HTTP_REFERER}" "!www.example.com" [NC]
+RewriteRule "\.(gif|jpg|png)$"    "/images/go-away.png"   [R,NC]</pre>
 
 
     <p>In the third example, we redirect the request to an image on some
     other site.</p>
 
-<pre class="prettyprint lang-config">RewriteCond %{HTTP_REFERER} !^$
-RewriteCond %{HTTP_REFERER} !www.example.com [NC]
-RewriteRule \.(gif|jpg|png)$ http://other.example.com/image.gif   [R,NC]</pre>
+<pre class="prettyprint lang-config">RewriteCond "%{HTTP_REFERER}" "!^$"
+RewriteCond "%{HTTP_REFERER}" "!www.example.com" [NC]
+RewriteRule "\.(gif|jpg|png)$" "http://other.example.com/image.gif"   [R,NC]</pre>
 
 
     <p>Of these techniques, the last two tend to be the most effective
@@ -113,8 +113,8 @@ RewriteRule \.(gif|jpg|png)$ http://other.example.com/image.gif   [R,NC]</pre>
         than redirecting that request elsewhere, this can be
         accomplished without the use of mod_rewrite:</p>
 
-        <pre class="prettyprint lang-config">SetEnvIf Referer example\.com localreferer
-&lt;FilesMatch \.(jpg|png|gif)$&gt;
+        <pre class="prettyprint lang-config">SetEnvIf Referer "example\.com" localreferer
+&lt;FilesMatch "\.(jpg|png|gif)$"&gt;
     Require env localreferer
 &lt;/FilesMatch&gt;</pre>
 
@@ -160,9 +160,9 @@ RewriteRule \.(gif|jpg|png)$ http://other.example.com/image.gif   [R,NC]</pre>
         range, if you are trying to block that user agent only from the
         particular source.</p>
 
-<pre class="prettyprint lang-config">RewriteCond %{HTTP_USER_AGENT}   ^NameOfBadRobot
-RewriteCond %{REMOTE_ADDR}       =123\.45\.67\.[8-9]
-RewriteRule ^/secret/files/   -   [F]</pre>
+<pre class="prettyprint lang-config">RewriteCond "%{HTTP_USER_AGENT}"   "^NameOfBadRobot"
+RewriteCond "%{REMOTE_ADDR}"       "=123\.45\.67\.[8-9]"
+RewriteRule "^/secret/files/"   "-"   [F]</pre>
 
         </dd>
 
@@ -173,8 +173,8 @@ RewriteRule ^/secret/files/   -   [F]</pre>
         Rather than using mod_rewrite for this, you can accomplish the
         same end using alternate means, as illustrated here:
       </p>
-      <pre class="prettyprint lang-config">SetEnvIfNoCase User-Agent ^NameOfBadRobot goaway
-&lt;Location /secret/files&gt;
+      <pre class="prettyprint lang-config">SetEnvIfNoCase User-Agent "^NameOfBadRobot" goaway
+&lt;Location "/secret/files"&gt;
     &lt;RequireAll&gt;
         Require all granted
         Require not env goaway
@@ -211,10 +211,10 @@ RewriteRule ^/secret/files/   -   [F]</pre>
 
     <dd>
 <pre class="prettyprint lang-config">RewriteEngine on
-RewriteMap    hosts-deny  txt:/path/to/hosts.deny
-RewriteCond   ${hosts-deny:%{REMOTE_ADDR}|NOT-FOUND} !=NOT-FOUND [OR]
-RewriteCond   ${hosts-deny:%{REMOTE_HOST}|NOT-FOUND} !=NOT-FOUND
-RewriteRule   ^  -  [F]</pre>
+RewriteMap    hosts-deny  "txt:/path/to/hosts.deny"
+RewriteCond   "${hosts-deny:%{REMOTE_ADDR}|NOT-FOUND}" "!=NOT-FOUND" [OR]
+RewriteCond   "${hosts-deny:%{REMOTE_HOST}|NOT-FOUND}" "!=NOT-FOUND"
+RewriteRule   "^"  "-"  [F]</pre>
 
 
 <div class="example"><p><code>
@@ -263,15 +263,15 @@ bsdti1.sdm.de  -<br />
   <p>The following ruleset uses a map file to associate each Referer
   with a redirection target.</p>
 
-<pre class="prettyprint lang-config">RewriteMap  deflector txt:/path/to/deflector.map
+<pre class="prettyprint lang-config">RewriteMap  deflector "txt:/path/to/deflector.map"
 
-RewriteCond %{HTTP_REFERER} !=""
-RewriteCond ${deflector:%{HTTP_REFERER}} =-
-RewriteRule ^ %{HTTP_REFERER} [R,L]
+RewriteCond "%{HTTP_REFERER}" !=""
+RewriteCond "${deflector:%{HTTP_REFERER}}" "=-"
+RewriteRule "^" "%{HTTP_REFERER}" [R,L]
 
-RewriteCond %{HTTP_REFERER} !=""
-RewriteCond ${deflector:%{HTTP_REFERER}|NOT-FOUND} !=NOT-FOUND
-RewriteRule ^ ${deflector:%{HTTP_REFERER}} [R,L]</pre>
+RewriteCond "%{HTTP_REFERER}" !=""
+RewriteCond "${deflector:%{HTTP_REFERER}|NOT-FOUND}" "!=NOT-FOUND"
+RewriteRule "^" "${deflector:%{HTTP_REFERER}}" [R,L]</pre>
 
 
       <p>The map file lists redirection targets for each referer, or, if

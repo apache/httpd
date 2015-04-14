@@ -87,7 +87,7 @@ Action image/gif /cgi-bin/images.cgi</pre>
 
     <div class="example"><h3>Example: File extension</h3><pre class="prettyprint lang-config"># Files of a particular file extension
 AddHandler my-file-type .xyz
-Action my-file-type /cgi-bin/program.cgi</pre>
+Action my-file-type "/cgi-bin/program.cgi"</pre>
 </div>
     <p>In this example, requests for files with a file extension of
     <code>.xyz</code> are handled by the specified cgi script
@@ -98,9 +98,9 @@ Action my-file-type /cgi-bin/program.cgi</pre>
     if you want to use the <code class="directive">Action</code> directive in
     virtual locations.</p>
 
-    <pre class="prettyprint lang-config">&lt;Location /news&gt;
+    <pre class="prettyprint lang-config">&lt;Location "/news"&gt;
     SetHandler news-handler
-    Action news-handler /cgi-bin/news.cgi virtual
+    Action news-handler "/cgi-bin/news.cgi" virtual
 &lt;/Location&gt;</pre>
 
 
@@ -143,10 +143,10 @@ method.</td></tr>
     proceed normally.</p>
 
     <pre class="prettyprint lang-config"># All GET requests go here
-Script GET /cgi-bin/search
+Script GET "/cgi-bin/search"
 
 # A CGI PUT handler
-Script PUT /~bob/put.cgi</pre>
+Script PUT "/~bob/put.cgi"</pre>
 
 
 </div>
