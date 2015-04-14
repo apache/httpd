@@ -261,9 +261,9 @@ Session On
 SessionCryptoPassphrase secret
 SessionCookieName session path=/
 AuthFormProvider file
-AuthUserFile conf/passwd
+AuthUserFile "conf/passwd"
 AuthType form
-AuthName realm
+AuthName "realm"
 #...
         </highlight>
       </example>

@@ -482,7 +482,7 @@ AuthLDAPMaxSubGroupDepth 1</pre>
     <p>The following directive would grant access to anyone with
     the attribute employeeType = active</p>
 
-    <pre class="prettyprint lang-config">Require ldap-attribute employeeType=active</pre>
+    <pre class="prettyprint lang-config">Require ldap-attribute "employeeType=active"</pre>
 
 
     <p>Multiple attribute/value pairs can be specified on the same line
@@ -496,7 +496,7 @@ AuthLDAPMaxSubGroupDepth 1</pre>
     <p>The following directive would grant access to anyone with
     the city attribute equal to "San Jose" or status equal to "Active"</p>
 
-    <pre class="prettyprint lang-config">Require ldap-attribute city="San Jose" status=active</pre>
+    <pre class="prettyprint lang-config">Require ldap-attribute city="San Jose" "status=active"</pre>
 
 
 
@@ -511,7 +511,7 @@ AuthLDAPMaxSubGroupDepth 1</pre>
     <p>The following directive would grant access to anyone having a cell phone
     and is in the marketing department</p>
 
-    <pre class="prettyprint lang-config">Require ldap-filter &amp;(cell=*)(department=marketing)</pre>
+    <pre class="prettyprint lang-config">Require ldap-filter "&amp;(cell=*)(department=marketing)"</pre>
 
 
     <p>The difference between the <code>Require ldap-filter</code> directive and the
@@ -526,8 +526,8 @@ AuthLDAPMaxSubGroupDepth 1</pre>
     must be taken to ensure that LDAP filters are escaped correctly to guard against
     LDAP injection. The ldap function can be used for this purpose.</p>
 
-<pre class="prettyprint lang-config">&lt;LocationMatch ^/dav/(?&lt;SITENAME&gt;[^/]+)/&gt;
-  Require ldap-filter (memberOf=cn=%{ldap:%{unescape:%{env:MATCH_SITENAME}},ou=Websites,o=Example)
+<pre class="prettyprint lang-config">&lt;LocationMatch "^/dav/(?&lt;SITENAME&gt;[^/]+)/"&gt;
+  Require ldap-filter "(memberOf=cn=%{ldap:%{unescape:%{env:MATCH_SITENAME}},ou=Websites,o=Example)"
 &lt;/LocationMatch&gt;</pre>
 
 
@@ -543,8 +543,8 @@ AuthLDAPMaxSubGroupDepth 1</pre>
     <p>The following directive would grant access to URLs that match the given objects in the
     LDAP server:</p>
 
-<pre class="prettyprint lang-config">&lt;LocationMatch ^/dav/(?&lt;SITENAME&gt;[^/]+)/&gt;
-Require ldap-search (cn=%{ldap:%{unescape:%{env:MATCH_SITENAME}} Website)
+<pre class="prettyprint lang-config">&lt;LocationMatch "^/dav/(?&lt;SITENAME&gt;[^/]+)/"&gt;
+Require ldap-search "(cn=%{ldap:%{unescape:%{env:MATCH_SITENAME}} Website)"
 &lt;/LocationMatch&gt;</pre>
 
 

@@ -64,13 +64,13 @@
 
     <example><title>Example:</title>
     <highlight language="config">
-&lt;Location /private/&gt;
+&lt;Location "/private/"&gt;
     AuthType Digest
     AuthName "private area"
-    AuthDigestDomain /private/ http://mirror.my.dom/private2/
+    AuthDigestDomain "/private/" "http://mirror.my.dom/private2/"
     
     AuthDigestProvider file
-    AuthUserFile /web/auth/.digest_pw
+    AuthUserFile "/web/auth/.digest_pw"
     Require valid-user
 &lt;/Location&gt;
       </highlight>

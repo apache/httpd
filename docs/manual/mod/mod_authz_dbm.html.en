@@ -88,16 +88,16 @@
 <div class="section">
 <h2><a name="examples" id="examples">Example usage</a></h2>
 
-<p><em>Note that using mod_authz_dbm requires you to require <code>dbm-group</code> 
+<p><em>Note that using mod_authz_dbm requires you to require <code>dbm-group</code>
 instead of <code>group</code>:</em>
 </p>
 <pre class="prettyprint lang-config">&lt;Directory "/foo/bar"&gt;
-  AuthType Basic 
+  AuthType Basic
   AuthName "Secure Area"
-  AuthBasicProvider dbm 
-  AuthDBMUserFile site/data/users 
-  AuthDBMGroupFile site/data/users 
-  Require dbm-group admin 
+  AuthBasicProvider dbm
+  AuthDBMUserFile "site/data/users"
+  AuthDBMGroupFile "site/data/users"
+  Require dbm-group admin
 &lt;/Directory&gt;</pre>
 
 </div>
@@ -139,8 +139,8 @@ of user groups for authorization</td></tr>
     accomplished by first setting the group and password files to
     point to the same DBM:</p>
 
-    <pre class="prettyprint lang-config">AuthDBMGroupFile /www/userbase
-AuthDBMUserFile /www/userbase</pre>
+    <pre class="prettyprint lang-config">AuthDBMGroupFile "/www/userbase"
+AuthDBMUserFile "/www/userbase"</pre>
 
 
     <p>The key for the single DBM is the username. The value consists
