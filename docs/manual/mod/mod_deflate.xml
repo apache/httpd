@@ -178,6 +178,51 @@ SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip
     </example>
 </section>
 
+<section id="precompressed"><title>Serving pre-compressed
+content</title>
+
+    <p>Since <module>mod_deflate</module> re-compresses content each 
+    time a request is made, some performance benefit can be derived by
+    pre-compressing the content and telling mod_deflate to serve them
+    without re-compressing them. This may be accomplished using a
+    configuration like the following:</p>
+
+    <highlight language="config">
+  &lt;IfModule mod_headers.c&gt;
+    # Serve gzip compressed CSS files if they exist 
+    # and the client accepts gzip.
+    RewriteCond %{HTTP:Accept-encoding} gzip
+    RewriteCond %{REQUEST_FILENAME}\.gz -s
+    RewriteRule ^(.*)\.css $1\.css\.gz [QSA]
+
+    # Serve gzip compressed JS files if they exist 
+    # and the client accepts gzip.
+    RewriteCond %{HTTP:Accept-encoding} gzip
+    RewriteCond %{REQUEST_FILENAME}\.gz -s
+    RewriteRule ^(.*)\.js $1\.js\.gz [QSA]
+
+
+    # Serve correct content types, and prevent mod_deflate double gzip.
+    RewriteRule \.css\.gz$ - [T=text/css,E=no-gzip:1]
+    RewriteRule \.js\.gz$ - [T=text/javascript,E=no-gzip:1]
+
+
+    &lt;FilesMatch "(\.js\.gz|\.css\.gz)$"&gt;
+      # Serve correct encoding type.
+      Header append Content-Encoding gzip
+
+      # Force proxies to cache gzipped &amp; 
+      # non-gzipped css/js files separately.
+      Header append Vary Accept-Encoding
+    &lt;/FilesMatch&gt;
+  &lt;/IfModule&gt;
+</IfModule>
+
+
+    </highlight>
+
+</section>
+
 <directivesynopsis>
 <name>DeflateFilterNote</name>
 <description>Places the compression ratio in a note for logging</description>
