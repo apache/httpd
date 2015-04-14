@@ -910,13 +910,13 @@ the contents of file-system directories matching a regular expression.</td></tr>
     However, it takes as an argument a
     <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular expression</a>.  For example:</p>
 
-    <pre class="prettyprint lang-config">&lt;DirectoryMatch "^/www/(.+/)?[0-9]{3}"&gt;
+    <pre class="prettyprint lang-config">&lt;DirectoryMatch "^/www/(.+/)?[0-9]{3}/"&gt;
     # ...
 &lt;/DirectoryMatch&gt;</pre>
 
 
-    <p>would match directories in <code>/www/</code> that consisted of three
-    numbers.</p>
+    <p>matches directories in <code>/www/</code> (or any subdirectory thereof)
+    that consist of three numbers.</p>
 
    <div class="note"><h3>Compatability</h3>
       Prior to 2.3.9, this directive implicitly applied to sub-directories
@@ -940,7 +940,7 @@ the contents of file-system directories matching a regular expression.</td></tr>
     (unnamed) backreferences are ignored. Use named groups instead.</p>
 
 <pre class="prettyprint lang-config">&lt;DirectoryMatch ^/var/www/combined/(?&lt;sitename&gt;[^/]+)&gt;
-    require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
+    Require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
 &lt;/DirectoryMatch&gt;</pre>
 
 
