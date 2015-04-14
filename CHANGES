@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_ssl: Avoid compilation errors with LibreSSL related to
+     the use of ENGINE_CTRL_CHIL_SET_FORKCHECK. 
+     [Stuart Henderson <sthen openbsd.org>]
+
   *) ssl: Add a warning if protocol given in SSLProtocol or SSLProxyProtocol
      will override other parameters given in the same directive. This could be
      a missing + or - prefix.  PR 52820 [Christophe Jaillet]
