@@ -328,6 +328,20 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trawick: Could we add r1673769 too?
      ylavic: +1 with r1673769.
 
+  *) mpm_event: Allow for timer events duplicates.
+     trunk patch: http://svn.apache.org/r1666468
+                  http://svn.apache.org/r1666618
+     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-event_timers_duplicates.patch
+     +1: ylavic
+     covener: what's the background here? What's currently broken?
+     ylavic: I expected to find a common compare function for both MPMs event
+             and motorz, but I now think that won't be the case (not the same
+             constraints for both since event does not apr_skiplist_remove(),
+             see http://marc.info/?l=apache-httpd-dev&m=142714857911558&w=2 for
+             details). Hence I'm moving this backport back to proposals, it is
+             IMO the right fix to not lose timers registered in the same micro-
+             second (in MPM event).
+
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
@@ -336,13 +350,6 @@ OTHER PROPOSALS
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
-
-  *) mpm_event: Allow for timer events duplicates.
-     trunk patch: http://svn.apache.org/r1666468
-                  http://svn.apache.org/r1666618
-     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-event_timers_duplicates.patch
-     +1: ylavic
-     covener: what's the background here? What's currently broken?
 
 
 PATCHES/ISSUES THAT ARE STALLED
