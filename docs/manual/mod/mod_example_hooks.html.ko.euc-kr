@@ -59,6 +59,24 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#using"><code>mod_example_hooks</code> 모듈 사용하기</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="Example" id="Example">Example</a> <a name="example" id="example">지시어</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">설명:</a></th><td>아파치 모듈 API를 설명하기위한 예제 지시어</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>Example</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_example_hooks</td></tr>
+</table>
+    <p><code class="directive">Example</code> 지시어는 example 모듈의
+    내용핸들러가 간단한 문구를 보일지 여부를 설정한다. 이 지시어는
+    아규먼트를 받지않는다. example 내용핸들러를 적용한 URL에
+    접속하면 문서 요청을 서비스하기위해 모듈안에 함수들이 어떻게
+    그리고 어떤 순서로 불리는지 알 수 있다. 이 지시어의 효과는
+    "<code>Example directive declared here: YES/NO</code>"로
+    확인할 수 있다.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="compiling" id="compiling">example 모듈 컴파일하기</a></h2>
 
@@ -130,24 +148,6 @@
 
     <p>서버를 재시작한 후 이 위치를 브라우징하면 앞에서 말한
     내용을 보게될 것이다.</p>
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Example" id="Example">Example</a> <a name="example" id="example">지시어</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">설명:</a></th><td>아파치 모듈 API를 설명하기위한 예제 지시어</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>Example</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트, directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Experimental</td></tr>
-<tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_example_hooks</td></tr>
-</table>
-    <p><code class="directive">Example</code> 지시어는 example 모듈의
-    내용핸들러가 간단한 문구를 보일지 여부를 설정한다. 이 지시어는
-    아규먼트를 받지않는다. example 내용핸들러를 적용한 URL에
-    접속하면 문서 요청을 서비스하기위해 모듈안에 함수들이 어떻게
-    그리고 어떤 순서로 불리는지 알 수 있다. 이 지시어의 효과는
-    "<code>Example directive declared here: YES/NO</code>"로
-    확인할 수 있다.</p>
-
 </div>
 </div>
 <div class="bottomlang">

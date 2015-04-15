@@ -85,7 +85,6 @@ NetWare</td></tr>
 qu'utilise Apache httpd</a>
 </li>
 </ul><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
-
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="maxthreads" id="maxthreads">Directive</a> <a name="MaxThreads" id="MaxThreads">MaxThreads</a></h2>
 <table class="directive">
@@ -107,6 +106,7 @@ qu'utilise Apache httpd</a>
     </code></p></div>
 
 </div>
+
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mpm_netware.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |

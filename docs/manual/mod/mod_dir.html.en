@@ -68,7 +68,6 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#fallbackresource">FallbackResource</a></li>
 </ul>
 <ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
-
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="DirectoryCheckHandler" id="DirectoryCheckHandler">DirectoryCheckHandler</a> <a name="directorycheckhandler" id="directorycheckhandler">Directive</a></h2>
 <table class="directive">
@@ -307,6 +306,7 @@ later</td></tr>
 
 
 </div>
+
 </div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_dir.html" title="English">&nbsp;en&nbsp;</a> |

@@ -77,75 +77,6 @@ SQL</td></tr>
 passe</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="socache" id="socache">Performances et mise en cache</a></h2>
-
-<p>Certains utilisateurs de l'authentification DBD sous HTTPD 2.2/2.4 ont
-signalé une charge problématique au niveau de la base de données. Cela
-se produit en général lorsqu'une page HTML contient des centaines d'objets
-(comme des images, des scripts, etc...), chacun d'entre eux nécessitant
-une authentification. Les utilisateurs qui rencontrent ce genre de
-problème peuvent utiliser le module <code class="module"><a href="../mod/mod_authn_socache.html">mod_authn_socache</a></code>
-qui permet de mettre les données d'authentification en cache, et
-soulager ainsi la base de données de la plus grande partie de la charge.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="example" id="example">Exemple de configuration</a></h2>
-
-<p>Voici un exemple simple d'utilisation de ce module dans un contexte
-d'authentification et de bases de données.</p>
-<pre class="prettyprint lang-config"># configuration de mod_dbd
-# MISE À JOUR pour inclure la mise en cache de l'authentification
-DBDriver pgsql
-DBDParams "dbname=apacheauth user=apache password=xxxxxx"
-
-DBDMin  4
-DBDKeep 8
-DBDMax  20
-DBDExptime 300
-
-&lt;Directory /usr/www/mon-serveur/private&gt;
-  # configuration de mod_authn_core et mod_auth_basic
-  # pour mod_authn_dbd
-  AuthType Basic
-  AuthName "Mon serveur"
-
-  # Pour mettre en cache les données d'authentification, placez socache
-  # avant dbd
-  AuthBasicProvider socache dbd
-
-  # Aussi nécessaire à la mise en cache : dire au cache de mettre en
-  # cache les recherches dbd !
-  AuthnCacheProvideFor dbd
-  AuthnCacheContext mon-serveur
-
-  # configuration de mod_authz_core
-  Require valid-user
-
-  # la requête SQL de mod_authn_dbd pour authentifier un utilisateur
-  AuthDBDUserPWQuery "SELECT password FROM authn WHERE user = %s"
-&lt;/Directory&gt;</pre>
-
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="exposed" id="exposed">Mise à disposition des informations de connexion</a></h2>
-
-<p>
-Si httpd a été compilé avec la version 1.3.0 ou supérieure de
-l'<a class="glossarylink" href="../glossary.html#apr" title="voir glossaire">APR</a>, pour chaque requête envoyée au serveur de
-base de données, toutes les valeurs de colonnes du premier
-enregistrement renvoyé par la requête sont affectées à des variables
-d'environnement avec le préfixe "AUTHENTICATE_".
-</p>
-<p>Par exemple, si une requête renvoie un nom d'utilisateur, un nom
-complet et un numéro de téléphone, un programme CGI pourra accéder à ces
-informations sans avoir besoin d'effectuer une deuxième requête vers la
-base de données.</p>
-<p>Ceci va entraîner une simplification considérable du code et de la
-configuration nécessaire de certaines applications web.
-</p>
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="authdbduserpwquery" id="authdbduserpwquery">Directive</a> <a name="AuthDBDUserPWQuery" id="AuthDBDUserPWQuery">AuthDBDUserPWQuery</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Requête SQL servant à vérifier le mot de passe d'un
@@ -219,6 +150,75 @@ passe pour un utilisateur et un identifiant d'authentification.
     <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code>). Voir la documentation sur les <a href="../misc/password_encryptions.html">Formats de mots de passe</a> pour
     plus de détails.</p>
 
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="socache" id="socache">Performances et mise en cache</a></h2>
+
+<p>Certains utilisateurs de l'authentification DBD sous HTTPD 2.2/2.4 ont
+signalé une charge problématique au niveau de la base de données. Cela
+se produit en général lorsqu'une page HTML contient des centaines d'objets
+(comme des images, des scripts, etc...), chacun d'entre eux nécessitant
+une authentification. Les utilisateurs qui rencontrent ce genre de
+problème peuvent utiliser le module <code class="module"><a href="../mod/mod_authn_socache.html">mod_authn_socache</a></code>
+qui permet de mettre les données d'authentification en cache, et
+soulager ainsi la base de données de la plus grande partie de la charge.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="example" id="example">Exemple de configuration</a></h2>
+
+<p>Voici un exemple simple d'utilisation de ce module dans un contexte
+d'authentification et de bases de données.</p>
+<pre class="prettyprint lang-config"># configuration de mod_dbd
+# MISE À JOUR pour inclure la mise en cache de l'authentification
+DBDriver pgsql
+DBDParams "dbname=apacheauth user=apache password=xxxxxx"
+
+DBDMin  4
+DBDKeep 8
+DBDMax  20
+DBDExptime 300
+
+&lt;Directory /usr/www/mon-serveur/private&gt;
+  # configuration de mod_authn_core et mod_auth_basic
+  # pour mod_authn_dbd
+  AuthType Basic
+  AuthName "Mon serveur"
+
+  # Pour mettre en cache les données d'authentification, placez socache
+  # avant dbd
+  AuthBasicProvider socache dbd
+
+  # Aussi nécessaire à la mise en cache : dire au cache de mettre en
+  # cache les recherches dbd !
+  AuthnCacheProvideFor dbd
+  AuthnCacheContext mon-serveur
+
+  # configuration de mod_authz_core
+  Require valid-user
+
+  # la requête SQL de mod_authn_dbd pour authentifier un utilisateur
+  AuthDBDUserPWQuery "SELECT password FROM authn WHERE user = %s"
+&lt;/Directory&gt;</pre>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="exposed" id="exposed">Mise à disposition des informations de connexion</a></h2>
+
+<p>
+Si httpd a été compilé avec la version 1.3.0 ou supérieure de
+l'<a class="glossarylink" href="../glossary.html#apr" title="voir glossaire">APR</a>, pour chaque requête envoyée au serveur de
+base de données, toutes les valeurs de colonnes du premier
+enregistrement renvoyé par la requête sont affectées à des variables
+d'environnement avec le préfixe "AUTHENTICATE_".
+</p>
+<p>Par exemple, si une requête renvoie un nom d'utilisateur, un nom
+complet et un numéro de téléphone, un programme CGI pourra accéder à ces
+informations sans avoir besoin d'effectuer une deuxième requête vers la
+base de données.</p>
+<p>Ceci va entraîner une simplification considérable du code et de la
+configuration nécessaire de certaines applications web.
+</p>
 </div>
 </div>
 <div class="bottomlang">

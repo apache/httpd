@@ -69,7 +69,6 @@
 <ul class="seealso">
 <li><code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
-
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="davgenericlockdb" id="davgenericlockdb">Directive</a> <a name="DavGenericLockDB" id="DavGenericLockDB">DavGenericLockDB</a></h2>
 <table class="directive">
@@ -103,6 +102,7 @@
 
 
 </div>
+
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_dav_lock.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |

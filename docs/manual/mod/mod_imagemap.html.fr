@@ -72,6 +72,101 @@
 imagemap</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="imapbase" id="imapbase">Directive</a> <a name="ImapBase" id="ImapBase">ImapBase</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Valeur par défaut de la directive <code>base</code> des
+fichiers imagemap</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ImapBase map|referer|<var>URL</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ImapBase http://nom_serveur/</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_imagemap</td></tr>
+</table>
+    <p>La directive <code class="directive">ImapBase</code> permet de définir la
+    valeur par défaut de la directive <code>base</code> des fichiers
+    imagemap. Sa valeur est écrasée par la présence éventuelle d'une
+    directive <code>base</code> dans le fichier imagemap. Si cette
+    directive est absente, la valeur par défaut de la directive
+    <code>base</code> est
+    <code>http://<var>nom_serveur</var>/</code>.</p>
+
+<h3>Voir aussi</h3>
+<ul>
+<li><code class="directive"><a href="../mod/core.html#usecanonicalname">UseCanonicalName</a></code></li>
+</ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="imapdefault" id="imapdefault">Directive</a> <a name="ImapDefault" id="ImapDefault">ImapDefault</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Action à entreprendre par défaut lorsqu'un fichier imagemap
+est invoqué avec des coordonnées qui ne correspondent à aucune
+cible</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ImapDefault error|nocontent|map|referer|<var>URL</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ImapDefault nocontent</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_imagemap</td></tr>
+</table>
+    <p>La directive <code class="directive">ImapDefault</code> permet de définir
+    la valeur par défaut de la directive <code>default</code> utilisée
+    dans les fichiers imagemap. Sa valeur est écrasée par la présence
+    éventuelle d'une directive <code>default</code> dans le fichier
+    imagemap. Si cette directive est absente, l'action associée à
+    <code>default</code> est <code>nocontent</code>, ce qui implique
+    l'envoi d'un code de statut <code>204 No Content</code> au client.
+    Dans ce cas, le client doit continuer à afficher la même page.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="imapmenu" id="imapmenu">Directive</a> <a name="ImapMenu" id="ImapMenu">ImapMenu</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Action à entreprendre si aucune coordonnée n'est fournie
+lorsqu'on invoque un fichier imagemap</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ImapMenu none|formatted|semiformatted|unformatted</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ImapMenu formatted</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_imagemap</td></tr>
+</table>
+    <p>La directive <code class="directive">ImapMenu</code> permet de spécifier
+    l'action à entreprendre lorsqu'un fichier imagemap est invoqué sans
+    coordonnées valides.</p>
+
+    <dl>
+      <dt><code>none</code></dt>
+      <dd>Si l'argument d'ImapMenu est <code>none</code>, aucun menu
+      n'est généré, et l'action <code>default</code> est effectuée.</dd>
+
+      <dt><code>formatted</code></dt>
+      <dd>Le menu <code>formatted</code> est le menu le plus simple. Les
+      commentaires du fichier imagemap sont ignorés. Un en-tête de
+      niveau un est affiché, puis un séparateur horizontal, puis chacun
+      des liens sur une ligne séparée. L'aspect du menu est similaire à
+      celui d'un listing de répertoire.</dd>
+
+      <dt><code>semiformatted</code></dt>
+      <dd>Dans le menu <code>semiformatted</code>, les commentaires sont
+      affichés au moment où ils apparaissent dans le fichier imagemap.
+      Les lignes vides sont interprètées comme des lignes de séparation
+      HTML. Aucun en-tête ni séparateur horizontal n'est affiché. À part
+      ces différences, le menu <code>semiformatted</code> est identique
+      au menu <code>formatted</code>.</dd>
+
+      <dt><code>unformatted</code></dt>
+      <dd>Les commentaires sont affichés et les lignes vides sont
+      ignorées. N'est affiché que ce qui apparait dans le fichier
+      imagemap. Toutes les lignes de séparation HTML et les
+      en-têtes doivent être inclus en tant que commentaires dans le
+      fichier imagemap. Cela vous procure une grande souplesse pour
+      définir l'apparence de vos menus, mais vous oblige à rédiger vos
+      fichiers imagemap en HTML, et non en texte plat.</dd>
+    </dl>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="features" id="features">Nouvelles fonctionnalités</a></h2>
 
@@ -307,101 +402,6 @@ imagemap</a></h2>
       </span>
       &lt;/a&gt;
     </code></p></div>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="imapbase" id="imapbase">Directive</a> <a name="ImapBase" id="ImapBase">ImapBase</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Valeur par défaut de la directive <code>base</code> des
-fichiers imagemap</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ImapBase map|referer|<var>URL</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ImapBase http://nom_serveur/</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>Indexes</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_imagemap</td></tr>
-</table>
-    <p>La directive <code class="directive">ImapBase</code> permet de définir la
-    valeur par défaut de la directive <code>base</code> des fichiers
-    imagemap. Sa valeur est écrasée par la présence éventuelle d'une
-    directive <code>base</code> dans le fichier imagemap. Si cette
-    directive est absente, la valeur par défaut de la directive
-    <code>base</code> est
-    <code>http://<var>nom_serveur</var>/</code>.</p>
-
-<h3>Voir aussi</h3>
-<ul>
-<li><code class="directive"><a href="../mod/core.html#usecanonicalname">UseCanonicalName</a></code></li>
-</ul>
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="imapdefault" id="imapdefault">Directive</a> <a name="ImapDefault" id="ImapDefault">ImapDefault</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Action à entreprendre par défaut lorsqu'un fichier imagemap
-est invoqué avec des coordonnées qui ne correspondent à aucune
-cible</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ImapDefault error|nocontent|map|referer|<var>URL</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ImapDefault nocontent</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>Indexes</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_imagemap</td></tr>
-</table>
-    <p>La directive <code class="directive">ImapDefault</code> permet de définir
-    la valeur par défaut de la directive <code>default</code> utilisée
-    dans les fichiers imagemap. Sa valeur est écrasée par la présence
-    éventuelle d'une directive <code>default</code> dans le fichier
-    imagemap. Si cette directive est absente, l'action associée à
-    <code>default</code> est <code>nocontent</code>, ce qui implique
-    l'envoi d'un code de statut <code>204 No Content</code> au client.
-    Dans ce cas, le client doit continuer à afficher la même page.</p>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="imapmenu" id="imapmenu">Directive</a> <a name="ImapMenu" id="ImapMenu">ImapMenu</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Action à entreprendre si aucune coordonnée n'est fournie
-lorsqu'on invoque un fichier imagemap</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ImapMenu none|formatted|semiformatted|unformatted</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ImapMenu formatted</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>Indexes</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_imagemap</td></tr>
-</table>
-    <p>La directive <code class="directive">ImapMenu</code> permet de spécifier
-    l'action à entreprendre lorsqu'un fichier imagemap est invoqué sans
-    coordonnées valides.</p>
-
-    <dl>
-      <dt><code>none</code></dt>
-      <dd>Si l'argument d'ImapMenu est <code>none</code>, aucun menu
-      n'est généré, et l'action <code>default</code> est effectuée.</dd>
-
-      <dt><code>formatted</code></dt>
-      <dd>Le menu <code>formatted</code> est le menu le plus simple. Les
-      commentaires du fichier imagemap sont ignorés. Un en-tête de
-      niveau un est affiché, puis un séparateur horizontal, puis chacun
-      des liens sur une ligne séparée. L'aspect du menu est similaire à
-      celui d'un listing de répertoire.</dd>
-
-      <dt><code>semiformatted</code></dt>
-      <dd>Dans le menu <code>semiformatted</code>, les commentaires sont
-      affichés au moment où ils apparaissent dans le fichier imagemap.
-      Les lignes vides sont interprètées comme des lignes de séparation
-      HTML. Aucun en-tête ni séparateur horizontal n'est affiché. À part
-      ces différences, le menu <code>semiformatted</code> est identique
-      au menu <code>formatted</code>.</dd>
-
-      <dt><code>unformatted</code></dt>
-      <dd>Les commentaires sont affichés et les lignes vides sont
-      ignorées. N'est affiché que ce qui apparait dans le fichier
-      imagemap. Toutes les lignes de séparation HTML et les
-      en-têtes doivent être inclus en tant que commentaires dans le
-      fichier imagemap. Cela vous procure une grande souplesse pour
-      définir l'apparence de vos menus, mais vous oblige à rédiger vos
-      fichiers imagemap en HTML, et non en texte plat.</dd>
-    </dl>
 
 </div>
 </div>

@@ -86,370 +86,6 @@ cache du résultat à destination des autres modules LDAP</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#settingcerts">Certificats SSL/TLS</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="exampleconfig" id="exampleconfig">Exemple de configuration</a></h2>
-    <p>Ce qui suit est un exemple de configuration qui utilise
-    <code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code> pour améliorer les performances de
-    l'authentification HTTP de base fournie par
-    <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code>.</p>
-
-    <pre class="prettyprint lang-config"># Active la conservation des connexions LDAP et le cache partagé en
-# mémoire. Active le gestionnaire de statut du cache LDAP.
-# Nécessite le chargement de mod_ldap et de mod_authnz_ldap.
-# Remplacez "votre-domaine.example.com" par le nom de votre
-# domaine.
-
-LDAPSharedCacheSize 500000
-LDAPCacheEntries 1024
-LDAPCacheTTL 600
-LDAPOpCacheEntries 1024
-LDAPOpCacheTTL 600
-
-&lt;Location /ldap-status&gt;
-    SetHandler ldap-status
-    
-    Require host yourdomain.example.com
-    
-    Satisfy any
-    AuthType Basic
-    AuthName "LDAP Protected"
-    AuthBasicProvider ldap
-    AuthLDAPURL ldap://127.0.0.1/dc=example,dc=com?uid?one
-    Require valid-user
-&lt;/Location&gt;</pre>
-
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="pool" id="pool">Conservation des connexions LDAP</a></h2>
-
-    <p>Les connexions LDAP sont conservées de requête en requête. Ceci
-    permet de rester connecté et identifié au serveur LDAP, ce dernier
-    étant ainsi prêt pour la prochaine requête, sans avoir à se
-    déconnecter, reconnecter et réidentifier. Le gain en performances
-    est similaire à celui des connexions persistantes (keepalives)
-    HTTP.</p>
-
-    <p>Sur un serveur très sollicité, il est possible que de nombreuses
-    requêtes tentent d'accéder simultanément à la même connexion au
-    serveur LDAP. Lorsqu'une connexion LDAP est utilisée, Apache en crée
-    une deuxième en parallèle à la première, ce qui permet d'éviter que
-    le système de conservation des connexions ne devienne un goulot
-    d'étranglement.</p>
-
-    <p>Il n'est pas nécessaire d'activer explicitement la conservation
-    des connexions dans la configuration d'Apache. Tout module utilisant
-    le module ldap pour accéder aux services LDAP partagera le jeu de
-    connexions.</p>
-
-    <p>Les connexions LDAP peuvent garder la trace des données
-    d'identification du client ldap utilisées pour l'identification
-    auprès du serveur LDAP. Ces données peuvent être fournies aux
-    serveurs LDAP qui ne permettent pas les connexions anonymes au cours
-    lors des tentatives de sauts vers des serveurs alternatifs. Pour
-    contrôler cette fonctionnalité, voir les directives <code class="directive"><a href="#ldapreferrals">LDAPReferrals</a></code> et <code class="directive"><a href="#ldapreferralhoplimit">LDAPReferralHopLimit</a></code>. Cette
-    fonctionnalité est activée par défaut.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="cache" id="cache">Cache LDAP</a></h2>
-
-    <p>Pour améliorer les performances, <code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code> met en
-    oeuvre une stratégie de mise en cache agressive visant à minimiser
-    le nombre de fois que le serveur LDAP doit être contacté. La mise en
-    cache peut facilement doubler et même tripler le débit d'Apache
-    lorsqu'il sert des pages protégées par mod_authnz_ldap. De plus, le
-    serveur LDAP verra lui-même sa charge sensiblement diminuée.</p>
-
-    <p><code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code> supporte deux types de mise en cache
-    LDAP : un <em>cache recherche/identification</em> durant la phase
-    de recherche/identification et deux <em>caches d'opérations</em>
-    durant la phase de comparaison. Chaque URL LDAP utilisée par le
-    serveur a son propre jeu d'instances dans ces trois caches.</p>
-
-    <h3><a name="search-bind" id="search-bind">Le cache
-    recherche/identification</a></h3>
-      <p>Les processus de recherche et d'identification sont les
-      opérations LDAP les plus consommatrices en temps, en particulier
-      si l'annuaire est de grande taille. Le cache de
-      recherche/identification met en cache toutes les recherches qui
-      ont abouti à une identification positive. Les résultats négatifs
-      (c'est à dire les recherches sans succès, ou les recherches qui
-      n'ont pas abouti à une identification positive) ne sont pas mis en
-      cache. La raison de cette décision réside dans le fait que les
-      connexions avec des données d'identification invalides ne
-      représentent qu'un faible pourcentage du nombre total de
-      connexions, et ainsi, le fait de ne pas mettre en cache les
-      données d'identification invalides réduira d'autant la taille du
-      cache.</p>
-
-      <p><code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code> met en cache le nom d'utilisateur, le
-      DN extrait, le mot de passe utilisé pour l'identification, ainsi
-      que l'heure de l'identification. Chaque fois qu'une nouvelle
-      connexion est initialisée avec le même nom d'utilisateur,
-      <code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code> compare le mot de passe de la nouvelle
-      connexion avec le mot de passe enregistré dans le cache. Si les
-      mots de passe correspondent, et si l'entrée du cache n'est pas
-      trop ancienne, <code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code> court-circuite la phase
-      de recherche/identification.</p>
-
-      <p>Le cache de recherche/identification est contrôlé par les
-      directives <code class="directive"><a href="#ldapcacheentries">LDAPCacheEntries</a></code> et <code class="directive"><a href="#ldapcachettl">LDAPCacheTTL</a></code>.</p>
-    
-
-    <h3><a name="opcaches" id="opcaches">Les caches d'opérations</a></h3>
-      <p>Au cours des opérations de comparaison d'attributs et de noms
-      distinctifs (DN), <code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code> utilise deux caches
-      d'opérations pour mettre en cache les opérations de comparaison.
-      Le premier cache de comparaison sert à mettre en cache les
-      résultats de comparaisons effectuées pour vérifier l'appartenance
-      à un groupe LDAP. Le second cache de comparaison sert à mettre en
-      cache les résultats de comparaisons entre DNs.</p>
-
-      <p>Notez que, lorsque l'appartenance à un groupe est vérifiée,
-      toute comparaison de sous-groupes est mise en cache afin
-      d'accélérer les comparaisons de sous-groupes ultérieures.</p>
-
-      <p>Le comportement de ces deux caches est contrôlé par les
-      directives <code class="directive"><a href="#ldapopcacheentries">LDAPOpCacheEntries</a></code> et <code class="directive"><a href="#ldapopcachettl">LDAPOpCacheTTL</a></code>.</p>
-    
-
-    <h3><a name="monitoring" id="monitoring">Superviser le cache</a></h3>
-      <p><code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code> possède un gestionnaire de contenu
-      qui permet aux administrateurs de superviser les performances du
-      cache. Le nom du gestionnaire de contenu est
-      <code>ldap-status</code>, et on peut utiliser les directives
-      suivantes pour accéder aux informations du cache de
-      <code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code> :</p>
-
-      <pre class="prettyprint lang-config">&lt;Location /server/cache-info&gt;
-    SetHandler ldap-status
-&lt;/Location&gt;</pre>
-
-
-      <p>En se connectant à l'URL
-      <code>http://nom-serveur/infos-cache</code>, l'administrateur peut
-      obtenir un rapport sur le statut de chaque cache qu'utilise
-      <code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code>. Notez que si Apache ne supporte pas la
-      mémoire partagée, chaque instance de <code class="program"><a href="../programs/httpd.html">httpd</a></code>
-      possèdera son propre cache, et chaque fois que l'URL sera
-      rechargée, un résultat différent pourra être affiché, en fonction
-      de l'instance de <code class="program"><a href="../programs/httpd.html">httpd</a></code> qui traitera la
-      requête.</p>
-    
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="usingssltls" id="usingssltls">Utiliser SSL/TLS</a></h2>
-
-    <p>La possibilité de créer des connexions SSL et TLS avec un serveur
-    LDAP est définie par les directives <code class="directive"><a href="#ldaptrustedglobalcert">
-    LDAPTrustedGlobalCert</a></code>, <code class="directive"><a href="#ldaptrustedclientcert">
-    LDAPTrustedClientCert</a></code> et <code class="directive"><a href="#ldaptrustedmode">
-    LDAPTrustedMode</a></code>. Ces directives permettent de spécifier
-    l'autorité de certification (CA), les certificats clients éventuels,
-    ainsi que le type de chiffrement à utiliser pour la connexion (none,
-    SSL ou TLS/STARTTLS).</p>
-
-    <pre class="prettyprint lang-config"># Etablissement d'une connexion SSL LDAP sur le port 636.
-# Nécessite le chargement de mod_ldap et mod_authnz_ldap.
-# Remplacez "votre-domaine.example.com" par le nom de votre
-# domaine.
-
-LDAPTrustedGlobalCert CA_DER /certs/certfile.der
-
-&lt;Location /ldap-status&gt;
-    SetHandler ldap-status
-    
-    Require host yourdomain.example.com
-    
-    Satisfy any
-    AuthType Basic
-    AuthName "LDAP Protected"
-    AuthBasicProvider ldap
-    AuthLDAPURL ldaps://127.0.0.1/dc=example,dc=com?uid?one
-    Require valid-user
-&lt;/Location&gt;</pre>
-
-
-    <pre class="prettyprint lang-config"># Etablissement d'une connexion TLS LDAP sur le port 389.
-# Nécessite le chargement de mod_ldap et mod_authnz_ldap.
-# Remplacez "votre-domaine.example.com" par le nom de votre
-# domaine.
-
-LDAPTrustedGlobalCert CA_DER /certs/certfile.der
-
-&lt;Location /ldap-status&gt;
-    SetHandler ldap-status
-    
-    Require host yourdomain.example.com
-    
-    Satisfy any
-    AuthType Basic
-    AuthName "LDAP Protected"
-    AuthBasicProvider ldap
-    AuthLDAPURL ldap://127.0.0.1/dc=example,dc=com?uid?one TLS
-    Require valid-user
-&lt;/Location&gt;</pre>
-
-
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="settingcerts" id="settingcerts">Certificats SSL/TLS</a></h2>
-
-    <p>Les différents SDKs LDAP disposent de nombreuses méthodes pour
-    définir et gérer les certificats des clients et des autorités de
-    certification (CA).</p>
-
-    <p>Si vous avez l'intention d'utiliser SSL ou TLS, lisez cette
-    section ATTENTIVEMENT de façon à bien comprendre les différences de
-    configurations entre les différents SDKs LDAP supportés.</p>
-
-    <h3><a name="settingcerts-netscape" id="settingcerts-netscape">SDK Netscape/Mozilla/iPlanet</a></h3>
-        <p>Les certificat de CA sont enregistrés dans un fichier nommé
-	cert7.db. Le SDK ne dialoguera avec aucun serveur LDAP dont le
-	certificat n'a pas été signé par une CA spécifiée dans ce
-	fichier. Si des certificats clients sont requis, un fichier
-	key3.db ainsi qu'un mot de passe optionnels peuvent être
-	spécifiés. On peut aussi spécifier le fichier secmod si
-	nécessaire. Ces fichiers sont du même format que celui utilisé
-	par les navigateurs web Netscape Communicator ou Mozilla. Le
-	moyen le plus simple pour obtenir ces fichiers consiste à les
-	extraire de l'installation de votre navigateur.</p>
-
-        <p>Les certificats clients sont spécifiés pour chaque connexion
-	en utilisant la directive LDAPTrustedClientCert et en se
-	référant au certificat "nickname". On peut éventuellement
-	spécifier un mot de passe pour déverrouiller la clé privée du
-	certificat.</p>
-
-        <p>Le SDK supporte seulement SSL. Toute tentative d'utilisation
-	de STARTTLS engendrera une erreur lors des tentatives de
-	contacter le serveur LDAP pendant l'exécution.</p>
-
-        <pre class="prettyprint lang-config"># Spécifie un fichier de certificats de CA Netscape
-LDAPTrustedGlobalCert CA_CERT7_DB /certs/cert7.db
-# Spécifie un fichier key3db optionnel pour le support des
-# certificats clients
-LDAPTrustedGlobalCert CERT_KEY3_DB /certs/key3.db
-# Spécifie le fichier secmod si nécessaire
-LDAPTrustedGlobalCert CA_SECMOD /certs/secmod
-&lt;Location /ldap-status&gt;
-    SetHandler ldap-status
-
-    Require host yourdomain.example.com
-
-    Satisfy any
-    AuthType Basic
-    AuthName "LDAP Protected"
-    AuthBasicProvider ldap
-    LDAPTrustedClientCert CERT_NICKNAME &lt;nickname&gt; [password]
-    AuthLDAPURL ldaps://127.0.0.1/dc=example,dc=com?uid?one
-    Require valid-user
-&lt;/Location&gt;</pre>
-
-
-    
-
-    <h3><a name="settingcerts-novell" id="settingcerts-novell">SDK Novell</a></h3>
-
-        <p>Un ou plusieurs certificats de CA doivent être spécifiés pour
-	que le SDK Novell fonctionne correctement. Ces certificats
-	peuvent être spécifiés sous forme de fichiers au format binaire
-	DER ou codés en Base64 (PEM).</p>
-
-        <p>Note: Les certificats clients sont spécifiés globalement
-	plutôt qu'à chaque connexion, et doivent être spécifiés à l'aide
-	de la directive LDAPTrustedGlobalCert comme ci-dessous. Définir
-	des certificats clients via la directive LDAPTrustedClientCert
-	engendrera une erreur qui sera journalisée, au moment de la
-	tentative de connexion avec le serveur LDAP.</p>
-
-        <p>Le SDK supporte SSL et STARTTLS, le choix étant défini par le
-	paramètre de la directive LDAPTrustedMode. Si une URL de type
-	ldaps:// est spécifiée, le mode SSL est forcé, et l'emporte sur
-	cette directive.</p>
-
-        <pre class="prettyprint lang-config"># Spécifie deux fichiers contenant des certificats de CA
-LDAPTrustedGlobalCert CA_DER /certs/cacert1.der
-LDAPTrustedGlobalCert CA_BASE64 /certs/cacert2.pem
-# Spécifie un fichier contenant des certificats clients
-# ainsi qu'une clé
-LDAPTrustedGlobalCert CERT_BASE64 /certs/cert1.pem
-LDAPTrustedGlobalCert KEY_BASE64 /certs/key1.pem [password]
-# N'utilisez pas cette directive, sous peine de provoquer
-# une erreur
-#LDAPTrustedClientCert CERT_BASE64 /certs/cert1.pem</pre>
-
-
-    
-
-    <h3><a name="settingcerts-openldap" id="settingcerts-openldap">SDK OpenLDAP</a></h3>
-
-        <p>Un ou plusieurs certificats de CA doivent être spécifiés pour
-	que le SDK OpenLDAP fonctionne correctement. Ces certificats
-	peuvent être spécifiés sous forme de fichiers au format binaire
-	DER ou codés en Base64 (PEM).</p>
-
-        <p>Les certificats clients sont spécifiés pour chaque connexion
-	à l'aide de la directive LDAPTrustedClientCert.</p>
-
-        <p>La documentation du SDK prétend que SSL et STARTTLS sont
-	supportés ; cependant, STARTTLS semble ne pas fonctionner avec
-	toutes les versions du SDK. Le mode SSL/TLS peut être défini en
-	utilisant le paramètre de la directive LDAPTrustedMode. Si une
-	URL de type
-	ldaps:// est spécifiée, le mode SSL est forcé. La documentation
-	OpenLDAP indique que le support SSL (ldaps://) tend à être
-	remplacé par TLS, bien que le mode SSL fonctionne toujours.</p>
-
-        <pre class="prettyprint lang-config"># Spécifie deux fichiers contenant des certificats de CA
-LDAPTrustedGlobalCert CA_DER /certs/cacert1.der
-LDAPTrustedGlobalCert CA_BASE64 /certs/cacert2.pem
-&lt;Location /ldap-status&gt;
-    SetHandler ldap-status
-    
-    Require host yourdomain.example.com
-    
-    LDAPTrustedClientCert CERT_BASE64 /certs/cert1.pem
-    LDAPTrustedClientCert KEY_BASE64 /certs/key1.pem
-    # CA certs respecified due to per-directory client certs
-    LDAPTrustedClientCert CA_DER /certs/cacert1.der
-    LDAPTrustedClientCert CA_BASE64 /certs/cacert2.pem
-    Satisfy any
-    AuthType Basic
-    AuthName "LDAP Protected"
-    AuthBasicProvider ldap
-    AuthLDAPURL ldaps://127.0.0.1/dc=example,dc=com?uid?one
-    Require valid-user
-&lt;/Location&gt;</pre>
-
-
-    
-
-    <h3><a name="settingcerts-solaris" id="settingcerts-solaris">SDK Solaris</a></h3>
-
-        <p>SSL/TLS pour les bibliothèques LDAP propres à Solaris n'est
-	pas encore supporté. Si nécessaire, installez et utilisez plutôt
-	les bibliothèques OpenLDAP.</p>
-
-    
-
-    <h3><a name="settingcerts-microsoft" id="settingcerts-microsoft">SDK Microsoft</a></h3>
-
-        <p>La configuration des certificats SSL/TLS pour les
-	bibliothèques LDAP propres à Microsoft s'effectue à l'intérieur
-	du registre système, et aucune directive de configuration n'est
-	requise.</p>
-
-        <p>SSL et TLS sont tous deux supportés en utilisant des URLs de
-	type ldaps://, ou en définissant la directive LDAPTrustedMode à
-	cet effet.</p>
-
-        <p>Note: L'état du support des certificats clients n'est pas
-	encore connu pour ce SDK.</p>
-
-    
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ldapcacheentries" id="ldapcacheentries">Directive</a> <a name="LDAPCacheEntries" id="LDAPCacheEntries">LDAPCacheEntries</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nombre maximum d'entrées dans le cache LDAP
@@ -928,6 +564,370 @@ serveur</td></tr>
     <p>Cette directive permet de spécifier s'il faut forcer la
     vérification d'un certificat de serveur lors de l'établissement
     d'une connexion SSL avec un serveur LDAP.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="exampleconfig" id="exampleconfig">Exemple de configuration</a></h2>
+    <p>Ce qui suit est un exemple de configuration qui utilise
+    <code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code> pour améliorer les performances de
+    l'authentification HTTP de base fournie par
+    <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code>.</p>
+
+    <pre class="prettyprint lang-config"># Active la conservation des connexions LDAP et le cache partagé en
+# mémoire. Active le gestionnaire de statut du cache LDAP.
+# Nécessite le chargement de mod_ldap et de mod_authnz_ldap.
+# Remplacez "votre-domaine.example.com" par le nom de votre
+# domaine.
+
+LDAPSharedCacheSize 500000
+LDAPCacheEntries 1024
+LDAPCacheTTL 600
+LDAPOpCacheEntries 1024
+LDAPOpCacheTTL 600
+
+&lt;Location /ldap-status&gt;
+    SetHandler ldap-status
+    
+    Require host yourdomain.example.com
+    
+    Satisfy any
+    AuthType Basic
+    AuthName "LDAP Protected"
+    AuthBasicProvider ldap
+    AuthLDAPURL ldap://127.0.0.1/dc=example,dc=com?uid?one
+    Require valid-user
+&lt;/Location&gt;</pre>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="pool" id="pool">Conservation des connexions LDAP</a></h2>
+
+    <p>Les connexions LDAP sont conservées de requête en requête. Ceci
+    permet de rester connecté et identifié au serveur LDAP, ce dernier
+    étant ainsi prêt pour la prochaine requête, sans avoir à se
+    déconnecter, reconnecter et réidentifier. Le gain en performances
+    est similaire à celui des connexions persistantes (keepalives)
+    HTTP.</p>
+
+    <p>Sur un serveur très sollicité, il est possible que de nombreuses
+    requêtes tentent d'accéder simultanément à la même connexion au
+    serveur LDAP. Lorsqu'une connexion LDAP est utilisée, Apache en crée
+    une deuxième en parallèle à la première, ce qui permet d'éviter que
+    le système de conservation des connexions ne devienne un goulot
+    d'étranglement.</p>
+
+    <p>Il n'est pas nécessaire d'activer explicitement la conservation
+    des connexions dans la configuration d'Apache. Tout module utilisant
+    le module ldap pour accéder aux services LDAP partagera le jeu de
+    connexions.</p>
+
+    <p>Les connexions LDAP peuvent garder la trace des données
+    d'identification du client ldap utilisées pour l'identification
+    auprès du serveur LDAP. Ces données peuvent être fournies aux
+    serveurs LDAP qui ne permettent pas les connexions anonymes au cours
+    lors des tentatives de sauts vers des serveurs alternatifs. Pour
+    contrôler cette fonctionnalité, voir les directives <code class="directive"><a href="#ldapreferrals">LDAPReferrals</a></code> et <code class="directive"><a href="#ldapreferralhoplimit">LDAPReferralHopLimit</a></code>. Cette
+    fonctionnalité est activée par défaut.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="cache" id="cache">Cache LDAP</a></h2>
+
+    <p>Pour améliorer les performances, <code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code> met en
+    oeuvre une stratégie de mise en cache agressive visant à minimiser
+    le nombre de fois que le serveur LDAP doit être contacté. La mise en
+    cache peut facilement doubler et même tripler le débit d'Apache
+    lorsqu'il sert des pages protégées par mod_authnz_ldap. De plus, le
+    serveur LDAP verra lui-même sa charge sensiblement diminuée.</p>
+
+    <p><code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code> supporte deux types de mise en cache
+    LDAP : un <em>cache recherche/identification</em> durant la phase
+    de recherche/identification et deux <em>caches d'opérations</em>
+    durant la phase de comparaison. Chaque URL LDAP utilisée par le
+    serveur a son propre jeu d'instances dans ces trois caches.</p>
+
+    <h3><a name="search-bind" id="search-bind">Le cache
+    recherche/identification</a></h3>
+      <p>Les processus de recherche et d'identification sont les
+      opérations LDAP les plus consommatrices en temps, en particulier
+      si l'annuaire est de grande taille. Le cache de
+      recherche/identification met en cache toutes les recherches qui
+      ont abouti à une identification positive. Les résultats négatifs
+      (c'est à dire les recherches sans succès, ou les recherches qui
+      n'ont pas abouti à une identification positive) ne sont pas mis en
+      cache. La raison de cette décision réside dans le fait que les
+      connexions avec des données d'identification invalides ne
+      représentent qu'un faible pourcentage du nombre total de
+      connexions, et ainsi, le fait de ne pas mettre en cache les
+      données d'identification invalides réduira d'autant la taille du
+      cache.</p>
+
+      <p><code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code> met en cache le nom d'utilisateur, le
+      DN extrait, le mot de passe utilisé pour l'identification, ainsi
+      que l'heure de l'identification. Chaque fois qu'une nouvelle
+      connexion est initialisée avec le même nom d'utilisateur,
+      <code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code> compare le mot de passe de la nouvelle
+      connexion avec le mot de passe enregistré dans le cache. Si les
+      mots de passe correspondent, et si l'entrée du cache n'est pas
+      trop ancienne, <code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code> court-circuite la phase
+      de recherche/identification.</p>
+
+      <p>Le cache de recherche/identification est contrôlé par les
+      directives <code class="directive"><a href="#ldapcacheentries">LDAPCacheEntries</a></code> et <code class="directive"><a href="#ldapcachettl">LDAPCacheTTL</a></code>.</p>
+    
+
+    <h3><a name="opcaches" id="opcaches">Les caches d'opérations</a></h3>
+      <p>Au cours des opérations de comparaison d'attributs et de noms
+      distinctifs (DN), <code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code> utilise deux caches
+      d'opérations pour mettre en cache les opérations de comparaison.
+      Le premier cache de comparaison sert à mettre en cache les
+      résultats de comparaisons effectuées pour vérifier l'appartenance
+      à un groupe LDAP. Le second cache de comparaison sert à mettre en
+      cache les résultats de comparaisons entre DNs.</p>
+
+      <p>Notez que, lorsque l'appartenance à un groupe est vérifiée,
+      toute comparaison de sous-groupes est mise en cache afin
+      d'accélérer les comparaisons de sous-groupes ultérieures.</p>
+
+      <p>Le comportement de ces deux caches est contrôlé par les
+      directives <code class="directive"><a href="#ldapopcacheentries">LDAPOpCacheEntries</a></code> et <code class="directive"><a href="#ldapopcachettl">LDAPOpCacheTTL</a></code>.</p>
+    
+
+    <h3><a name="monitoring" id="monitoring">Superviser le cache</a></h3>
+      <p><code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code> possède un gestionnaire de contenu
+      qui permet aux administrateurs de superviser les performances du
+      cache. Le nom du gestionnaire de contenu est
+      <code>ldap-status</code>, et on peut utiliser les directives
+      suivantes pour accéder aux informations du cache de
+      <code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code> :</p>
+
+      <pre class="prettyprint lang-config">&lt;Location /server/cache-info&gt;
+    SetHandler ldap-status
+&lt;/Location&gt;</pre>
+
+
+      <p>En se connectant à l'URL
+      <code>http://nom-serveur/infos-cache</code>, l'administrateur peut
+      obtenir un rapport sur le statut de chaque cache qu'utilise
+      <code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code>. Notez que si Apache ne supporte pas la
+      mémoire partagée, chaque instance de <code class="program"><a href="../programs/httpd.html">httpd</a></code>
+      possèdera son propre cache, et chaque fois que l'URL sera
+      rechargée, un résultat différent pourra être affiché, en fonction
+      de l'instance de <code class="program"><a href="../programs/httpd.html">httpd</a></code> qui traitera la
+      requête.</p>
+    
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="usingssltls" id="usingssltls">Utiliser SSL/TLS</a></h2>
+
+    <p>La possibilité de créer des connexions SSL et TLS avec un serveur
+    LDAP est définie par les directives <code class="directive"><a href="#ldaptrustedglobalcert">
+    LDAPTrustedGlobalCert</a></code>, <code class="directive"><a href="#ldaptrustedclientcert">
+    LDAPTrustedClientCert</a></code> et <code class="directive"><a href="#ldaptrustedmode">
+    LDAPTrustedMode</a></code>. Ces directives permettent de spécifier
+    l'autorité de certification (CA), les certificats clients éventuels,
+    ainsi que le type de chiffrement à utiliser pour la connexion (none,
+    SSL ou TLS/STARTTLS).</p>
+
+    <pre class="prettyprint lang-config"># Etablissement d'une connexion SSL LDAP sur le port 636.
+# Nécessite le chargement de mod_ldap et mod_authnz_ldap.
+# Remplacez "votre-domaine.example.com" par le nom de votre
+# domaine.
+
+LDAPTrustedGlobalCert CA_DER /certs/certfile.der
+
+&lt;Location /ldap-status&gt;
+    SetHandler ldap-status
+    
+    Require host yourdomain.example.com
+    
+    Satisfy any
+    AuthType Basic
+    AuthName "LDAP Protected"
+    AuthBasicProvider ldap
+    AuthLDAPURL ldaps://127.0.0.1/dc=example,dc=com?uid?one
+    Require valid-user
+&lt;/Location&gt;</pre>
+
+
+    <pre class="prettyprint lang-config"># Etablissement d'une connexion TLS LDAP sur le port 389.
+# Nécessite le chargement de mod_ldap et mod_authnz_ldap.
+# Remplacez "votre-domaine.example.com" par le nom de votre
+# domaine.
+
+LDAPTrustedGlobalCert CA_DER /certs/certfile.der
+
+&lt;Location /ldap-status&gt;
+    SetHandler ldap-status
+    
+    Require host yourdomain.example.com
+    
+    Satisfy any
+    AuthType Basic
+    AuthName "LDAP Protected"
+    AuthBasicProvider ldap
+    AuthLDAPURL ldap://127.0.0.1/dc=example,dc=com?uid?one TLS
+    Require valid-user
+&lt;/Location&gt;</pre>
+
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="settingcerts" id="settingcerts">Certificats SSL/TLS</a></h2>
+
+    <p>Les différents SDKs LDAP disposent de nombreuses méthodes pour
+    définir et gérer les certificats des clients et des autorités de
+    certification (CA).</p>
+
+    <p>Si vous avez l'intention d'utiliser SSL ou TLS, lisez cette
+    section ATTENTIVEMENT de façon à bien comprendre les différences de
+    configurations entre les différents SDKs LDAP supportés.</p>
+
+    <h3><a name="settingcerts-netscape" id="settingcerts-netscape">SDK Netscape/Mozilla/iPlanet</a></h3>
+        <p>Les certificat de CA sont enregistrés dans un fichier nommé
+	cert7.db. Le SDK ne dialoguera avec aucun serveur LDAP dont le
+	certificat n'a pas été signé par une CA spécifiée dans ce
+	fichier. Si des certificats clients sont requis, un fichier
+	key3.db ainsi qu'un mot de passe optionnels peuvent être
+	spécifiés. On peut aussi spécifier le fichier secmod si
+	nécessaire. Ces fichiers sont du même format que celui utilisé
+	par les navigateurs web Netscape Communicator ou Mozilla. Le
+	moyen le plus simple pour obtenir ces fichiers consiste à les
+	extraire de l'installation de votre navigateur.</p>
+
+        <p>Les certificats clients sont spécifiés pour chaque connexion
+	en utilisant la directive LDAPTrustedClientCert et en se
+	référant au certificat "nickname". On peut éventuellement
+	spécifier un mot de passe pour déverrouiller la clé privée du
+	certificat.</p>
+
+        <p>Le SDK supporte seulement SSL. Toute tentative d'utilisation
+	de STARTTLS engendrera une erreur lors des tentatives de
+	contacter le serveur LDAP pendant l'exécution.</p>
+
+        <pre class="prettyprint lang-config"># Spécifie un fichier de certificats de CA Netscape
+LDAPTrustedGlobalCert CA_CERT7_DB /certs/cert7.db
+# Spécifie un fichier key3db optionnel pour le support des
+# certificats clients
+LDAPTrustedGlobalCert CERT_KEY3_DB /certs/key3.db
+# Spécifie le fichier secmod si nécessaire
+LDAPTrustedGlobalCert CA_SECMOD /certs/secmod
+&lt;Location /ldap-status&gt;
+    SetHandler ldap-status
+
+    Require host yourdomain.example.com
+
+    Satisfy any
+    AuthType Basic
+    AuthName "LDAP Protected"
+    AuthBasicProvider ldap
+    LDAPTrustedClientCert CERT_NICKNAME &lt;nickname&gt; [password]
+    AuthLDAPURL ldaps://127.0.0.1/dc=example,dc=com?uid?one
+    Require valid-user
+&lt;/Location&gt;</pre>
+
+
+    
+
+    <h3><a name="settingcerts-novell" id="settingcerts-novell">SDK Novell</a></h3>
+
+        <p>Un ou plusieurs certificats de CA doivent être spécifiés pour
+	que le SDK Novell fonctionne correctement. Ces certificats
+	peuvent être spécifiés sous forme de fichiers au format binaire
+	DER ou codés en Base64 (PEM).</p>
+
+        <p>Note: Les certificats clients sont spécifiés globalement
+	plutôt qu'à chaque connexion, et doivent être spécifiés à l'aide
+	de la directive LDAPTrustedGlobalCert comme ci-dessous. Définir
+	des certificats clients via la directive LDAPTrustedClientCert
+	engendrera une erreur qui sera journalisée, au moment de la
+	tentative de connexion avec le serveur LDAP.</p>
+
+        <p>Le SDK supporte SSL et STARTTLS, le choix étant défini par le
+	paramètre de la directive LDAPTrustedMode. Si une URL de type
+	ldaps:// est spécifiée, le mode SSL est forcé, et l'emporte sur
+	cette directive.</p>
+
+        <pre class="prettyprint lang-config"># Spécifie deux fichiers contenant des certificats de CA
+LDAPTrustedGlobalCert CA_DER /certs/cacert1.der
+LDAPTrustedGlobalCert CA_BASE64 /certs/cacert2.pem
+# Spécifie un fichier contenant des certificats clients
+# ainsi qu'une clé
+LDAPTrustedGlobalCert CERT_BASE64 /certs/cert1.pem
+LDAPTrustedGlobalCert KEY_BASE64 /certs/key1.pem [password]
+# N'utilisez pas cette directive, sous peine de provoquer
+# une erreur
+#LDAPTrustedClientCert CERT_BASE64 /certs/cert1.pem</pre>
+
+
+    
+
+    <h3><a name="settingcerts-openldap" id="settingcerts-openldap">SDK OpenLDAP</a></h3>
+
+        <p>Un ou plusieurs certificats de CA doivent être spécifiés pour
+	que le SDK OpenLDAP fonctionne correctement. Ces certificats
+	peuvent être spécifiés sous forme de fichiers au format binaire
+	DER ou codés en Base64 (PEM).</p>
+
+        <p>Les certificats clients sont spécifiés pour chaque connexion
+	à l'aide de la directive LDAPTrustedClientCert.</p>
+
+        <p>La documentation du SDK prétend que SSL et STARTTLS sont
+	supportés ; cependant, STARTTLS semble ne pas fonctionner avec
+	toutes les versions du SDK. Le mode SSL/TLS peut être défini en
+	utilisant le paramètre de la directive LDAPTrustedMode. Si une
+	URL de type
+	ldaps:// est spécifiée, le mode SSL est forcé. La documentation
+	OpenLDAP indique que le support SSL (ldaps://) tend à être
+	remplacé par TLS, bien que le mode SSL fonctionne toujours.</p>
+
+        <pre class="prettyprint lang-config"># Spécifie deux fichiers contenant des certificats de CA
+LDAPTrustedGlobalCert CA_DER /certs/cacert1.der
+LDAPTrustedGlobalCert CA_BASE64 /certs/cacert2.pem
+&lt;Location /ldap-status&gt;
+    SetHandler ldap-status
+    
+    Require host yourdomain.example.com
+    
+    LDAPTrustedClientCert CERT_BASE64 /certs/cert1.pem
+    LDAPTrustedClientCert KEY_BASE64 /certs/key1.pem
+    # CA certs respecified due to per-directory client certs
+    LDAPTrustedClientCert CA_DER /certs/cacert1.der
+    LDAPTrustedClientCert CA_BASE64 /certs/cacert2.pem
+    Satisfy any
+    AuthType Basic
+    AuthName "LDAP Protected"
+    AuthBasicProvider ldap
+    AuthLDAPURL ldaps://127.0.0.1/dc=example,dc=com?uid?one
+    Require valid-user
+&lt;/Location&gt;</pre>
+
+
+    
+
+    <h3><a name="settingcerts-solaris" id="settingcerts-solaris">SDK Solaris</a></h3>
+
+        <p>SSL/TLS pour les bibliothèques LDAP propres à Solaris n'est
+	pas encore supporté. Si nécessaire, installez et utilisez plutôt
+	les bibliothèques OpenLDAP.</p>
+
+    
+
+    <h3><a name="settingcerts-microsoft" id="settingcerts-microsoft">SDK Microsoft</a></h3>
+
+        <p>La configuration des certificats SSL/TLS pour les
+	bibliothèques LDAP propres à Microsoft s'effectue à l'intérieur
+	du registre système, et aucune directive de configuration n'est
+	requise.</p>
+
+        <p>SSL et TLS sont tous deux supportés en utilisant des URLs de
+	type ldaps://, ou en définissant la directive LDAPTrustedMode à
+	cet effet.</p>
+
+        <p>Note: L'état du support des certificats clients n'est pas
+	encore connu pour ce SDK.</p>
+
+    
 
 </div>
 </div>

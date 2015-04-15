@@ -67,6 +67,26 @@ du serveur HTTP Apache</td></tr></table>
 <li><img alt="" src="../images/down.gif" /> <a href="#consuming">Utilisation de la sortie de mod_heartbeat</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="heartbeataddress" id="heartbeataddress">Directive</a> <a name="HeartbeatAddress" id="HeartbeatAddress">HeartbeatAddress</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Adresse multicast à laquelle envoyer les requêtes
+heartbeat</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>HeartbeatAddress <var>addr:port</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>disabled</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_heartbeat</td></tr>
+</table>
+    <p>La directive <code class="directive">HeartbeatAddress</code> permet de
+    spécifier l'adresse multicast à laquelle <code class="module"><a href="../mod/mod_heartbeat.html">mod_heartbeat</a></code> va
+    envoyer ses informations. En général, cette adresse correspond à la
+    valeur définie par la directive  <code class="directive"><a href="../mod/mod_heartmonitor.html#heartbeatlisten">HeartbeatListen</a></code> sur le serveur
+    mandataire frontal.</p>
+    <pre class="prettyprint lang-config">HeartbeatAddress 239.0.0.1:27999</pre>
+
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="consuming" id="consuming">Utilisation de la sortie de mod_heartbeat</a></h2>
     
@@ -85,26 +105,6 @@ v=1&amp;ready=75&amp;busy=0
     Les utilisateurs disposeront dans le futur de nouvelles variables en
     plus de busy et ready, et toujours séparées par des '&amp;'.
   </p>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="heartbeataddress" id="heartbeataddress">Directive</a> <a name="HeartbeatAddress" id="HeartbeatAddress">HeartbeatAddress</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Adresse multicast à laquelle envoyer les requêtes
-heartbeat</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>HeartbeatAddress <var>addr:port</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>disabled</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_heartbeat</td></tr>
-</table>
-    <p>La directive <code class="directive">HeartbeatAddress</code> permet de
-    spécifier l'adresse multicast à laquelle <code class="module"><a href="../mod/mod_heartbeat.html">mod_heartbeat</a></code> va
-    envoyer ses informations. En général, cette adresse correspond à la
-    valeur définie par la directive  <code class="directive"><a href="../mod/mod_heartmonitor.html#heartbeatlisten">HeartbeatListen</a></code> sur le serveur
-    mandataire frontal.</p>
-    <pre class="prettyprint lang-config">HeartbeatAddress 239.0.0.1:27999</pre>
-
 
 </div>
 </div>

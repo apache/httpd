@@ -63,7 +63,6 @@
 <li><code class="directive"><a href="../mod/mod_proxy.html#allowconnect">AllowCONNECT</a></code></li>
 <li><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></li>
 </ul><ul class="seealso"><li><a href="#comments_section">コメント</a></li></ul></div>
-
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AllowCONNECT" id="AllowCONNECT">AllowCONNECT</a> <a name="allowconnect" id="allowconnect">ディレクティブ</a></h2>
 <table class="directive">
@@ -80,6 +79,7 @@ Port ranges available since Apache 2.3.7.</td></tr>
 </table><p>このディレクティブの解説文書は
             まだ翻訳されていません。英語版をご覧ください。
             </p></div>
+
 </div>
 <div class="bottomlang">
 <p><span>翻訳済み言語: </span><a href="../en/mod/mod_proxy_connect.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |

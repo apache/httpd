@@ -82,79 +82,6 @@ séparation des privilèges constitue un problème.</p>
 <li><img alt="" src="../images/down.gif" /> <a href="#security">Considérations à propos de sécurité</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="security" id="security">Considérations à propos de sécurité</a></h2>
-
-<p><code class="module"><a href="../mod/mod_privileges.html">mod_privileges</a></code> introduit de nouveaux problèmes de
-sécurité dans les situations où du <strong>code non sûr</strong> peut
-s'exécuter <strong>à l'intérieur du processus du serveur web</strong>.
-Ceci s'applique aux modules non sûrs, et aux scripts s'exécutant sous
-des modules comme mod_php ou mod_perl. Les scripts s'exécutant en
-externe (comme par exemple les scripts CGI ou ceux s'exécutant sur un
-serveur d'applications derrière mod_proxy ou mod_jk) ne sont pas
-concernés.</p>
-
-<p>Les principaux problèmes de sécurité que l'on rencontre avec
-mod_privileges sont :</p>
-
-
-<ul><li>L'exécution sous un utilisateur système pose les mêmes problèmes
-de sécurité que mod_suexec, et pratiquement les mêmes que cgiwrap et
-suphp.</li>
-<li>Une extension utilisateur (module ou script) malveillante, écrite en connaissant les mécanismes
-utilisés par <strong>mod_privileges</strong>,
-pourrait élever ses privilèges à tout niveau
-accessible au processus httpd dans tout serveur virtuel. Ceci introduit
-de nouveaux risques si (et seulement si) mod_privileges est compilé avec
-l'option <var>BIG_SECURITY_HOLE</var>.</li>
-<li>Une extension utilisateur (module ou script) malveillante, écrite en connaissant les mécanismes
-utilisés par <strong>mod_privileges</strong>,
-pourrait élever ses privilèges pour s'attribuer
-l'identifiant utilisateur d'un autre utilisateur (et/ou groupe)
-système.</li>
-</ul>
-
-<p>La directive <code class="directive">PrivilegesMode</code> vous permet de
-sélectionner soit le mode <var>FAST</var>, soit le mode
-<var>SECURE</var>. Vous pouvez panacher les modes en utilisant par
-exemple le mode <var>FAST</var> pour les utilisateurs de confiance et
-les chemins contenant du code entièrement audité, tout en imposant le
-mode <var>SECURE</var> où un utilisateur non sûr a la possibilité
-d'introduire du code.</p>
-<p>Avant de décrire les modes, il nous faut présenter les cas
-d'utilisation de la cible : "Benign" ou "Hostile". Dans une situation
-"Benign", vous voulez séparer les utilisateurs pour leur confort, et les
-protéger, ainsi que le serveur, contre les risques induits par les
-erreurs involontaires. Dans une situation "Hostile" - par exemple
-l'hébergement d'un site commercial - il se peut que des utilisateurs
-attaquent délibérément le serveur ou s'attaquent entre eux.</p>
-<dl>
-<dt>Mode FAST</dt>
-<dd>En mode <var>FAST</var>, les requêtes sont traitées "in-process"
-avec les uid/gid et privilèges sélectionnés, si bien que la
-surcharge est négligeable. Ceci convient aux situations "Benign", mais
-n'est pas sécurisé contre un attaquant augmentant ses privilèges avec un
-module ou script "in-process".</dd>
-<dt>Mode SECURE</dt>
-<dd>Une requête en mode <var>SECURE</var> génère un sous-processus qui
-supprime les privilèges. Ce comportement est très similaire à
-l'exécution d'un programme CGI avec suexec, mais il reste valable tout
-au long du cycle de traitement de la requête, avec en plus l'avantage
-d'un contrôle précis des privilèges.</dd>
-</dl>
-<p>Vous pouvez sélectionner différents
-<code class="directive">PrivilegesMode</code>s pour chaque serveur virtuel, et
-même dans un contexte de répertoire à l'intérieur d'un serveur virtuel.
-Le mode <var>FAST</var> convient lorsque les utilisateurs sont sûrs
-et/ou n'ont pas le privilège de charger du code "in-process". Le mode
-<var>SECURE</var> convient dans les cas où du code non sûr peut
-s'exécuter "in-process".  Cependant, même en mode <var>SECURE</var>, il
-n'y a pas de protection contre un utilisateur malveillant qui a la
-possibilité d'introduire du code supportant les privilèges <em>avant le
-début du cycle de traitement de la requête.</em></p>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="dtraceprivileges" id="dtraceprivileges">Directive</a> <a name="DTracePrivileges" id="DTracePrivileges">DTracePrivileges</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Détermine si les privilèges requis par dtrace sont
@@ -444,6 +371,79 @@ personnalisé).</td></tr>
 <li><code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code></li>
 <li><code class="directive"><a href="../mod/mod_suexec.html#suexecusergroup">SuexecUserGroup</a></code></li>
 </ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="security" id="security">Considérations à propos de sécurité</a></h2>
+
+<p><code class="module"><a href="../mod/mod_privileges.html">mod_privileges</a></code> introduit de nouveaux problèmes de
+sécurité dans les situations où du <strong>code non sûr</strong> peut
+s'exécuter <strong>à l'intérieur du processus du serveur web</strong>.
+Ceci s'applique aux modules non sûrs, et aux scripts s'exécutant sous
+des modules comme mod_php ou mod_perl. Les scripts s'exécutant en
+externe (comme par exemple les scripts CGI ou ceux s'exécutant sur un
+serveur d'applications derrière mod_proxy ou mod_jk) ne sont pas
+concernés.</p>
+
+<p>Les principaux problèmes de sécurité que l'on rencontre avec
+mod_privileges sont :</p>
+
+
+<ul><li>L'exécution sous un utilisateur système pose les mêmes problèmes
+de sécurité que mod_suexec, et pratiquement les mêmes que cgiwrap et
+suphp.</li>
+<li>Une extension utilisateur (module ou script) malveillante, écrite en connaissant les mécanismes
+utilisés par <strong>mod_privileges</strong>,
+pourrait élever ses privilèges à tout niveau
+accessible au processus httpd dans tout serveur virtuel. Ceci introduit
+de nouveaux risques si (et seulement si) mod_privileges est compilé avec
+l'option <var>BIG_SECURITY_HOLE</var>.</li>
+<li>Une extension utilisateur (module ou script) malveillante, écrite en connaissant les mécanismes
+utilisés par <strong>mod_privileges</strong>,
+pourrait élever ses privilèges pour s'attribuer
+l'identifiant utilisateur d'un autre utilisateur (et/ou groupe)
+système.</li>
+</ul>
+
+<p>La directive <code class="directive">PrivilegesMode</code> vous permet de
+sélectionner soit le mode <var>FAST</var>, soit le mode
+<var>SECURE</var>. Vous pouvez panacher les modes en utilisant par
+exemple le mode <var>FAST</var> pour les utilisateurs de confiance et
+les chemins contenant du code entièrement audité, tout en imposant le
+mode <var>SECURE</var> où un utilisateur non sûr a la possibilité
+d'introduire du code.</p>
+<p>Avant de décrire les modes, il nous faut présenter les cas
+d'utilisation de la cible : "Benign" ou "Hostile". Dans une situation
+"Benign", vous voulez séparer les utilisateurs pour leur confort, et les
+protéger, ainsi que le serveur, contre les risques induits par les
+erreurs involontaires. Dans une situation "Hostile" - par exemple
+l'hébergement d'un site commercial - il se peut que des utilisateurs
+attaquent délibérément le serveur ou s'attaquent entre eux.</p>
+<dl>
+<dt>Mode FAST</dt>
+<dd>En mode <var>FAST</var>, les requêtes sont traitées "in-process"
+avec les uid/gid et privilèges sélectionnés, si bien que la
+surcharge est négligeable. Ceci convient aux situations "Benign", mais
+n'est pas sécurisé contre un attaquant augmentant ses privilèges avec un
+module ou script "in-process".</dd>
+<dt>Mode SECURE</dt>
+<dd>Une requête en mode <var>SECURE</var> génère un sous-processus qui
+supprime les privilèges. Ce comportement est très similaire à
+l'exécution d'un programme CGI avec suexec, mais il reste valable tout
+au long du cycle de traitement de la requête, avec en plus l'avantage
+d'un contrôle précis des privilèges.</dd>
+</dl>
+<p>Vous pouvez sélectionner différents
+<code class="directive">PrivilegesMode</code>s pour chaque serveur virtuel, et
+même dans un contexte de répertoire à l'intérieur d'un serveur virtuel.
+Le mode <var>FAST</var> convient lorsque les utilisateurs sont sûrs
+et/ou n'ont pas le privilège de charger du code "in-process". Le mode
+<var>SECURE</var> convient dans les cas où du code non sûr peut
+s'exécuter "in-process".  Cependant, même en mode <var>SECURE</var>, il
+n'y a pas de protection contre un utilisateur malveillant qui a la
+possibilité d'introduire du code supportant les privilèges <em>avant le
+début du cycle de traitement de la requête.</em></p>
+
 </div>
 </div>
 <div class="bottomlang">
