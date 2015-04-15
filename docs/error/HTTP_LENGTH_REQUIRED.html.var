@@ -139,6 +139,19 @@ Body:----------nl--
 <!--#include virtual="include/bottom.html" -->
 ----------nl--
 
+Content-language: nb
+Content-type: text/html; charset=UTF-8
+Body:----------nb--
+<!--#set var="CONTENT_LANGUAGE" value="nb"
+--><!--#set var="TITLE" value="Feil Content-Length!"
+--><!--#include virtual="include/top.html" -->
+
+    En forespørsel med <!--#echo var="REDIRECT_REQUEST_METHOD" -->
+    metoden krever en korrekt <code>Content-Length</code> header.
+
+<!--#include virtual="include/bottom.html" -->
+----------nb--
+
 Content-language: pl
 Content-type: text/html; charset=ISO-8859-2
 Body:----------pl--

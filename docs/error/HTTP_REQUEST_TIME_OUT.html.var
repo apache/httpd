@@ -133,6 +133,19 @@ Body:----------nl--
 <!--#include virtual="include/bottom.html" -->
 ----------nl--
 
+Content-language: nb
+Content-type: text/html; charset=UTF-8
+Body:----------nb--
+<!--#set var="CONTENT_LANGUAGE" value="nb"
+--><!--#set var="TITLE" value="Tidsgrense overskredet!"
+--><!--#include virtual="include/top.html" -->
+
+    Serveren stengte forbindelsen fordi nettleseren ikke avsluttet
+    forespørselen innen tidsgrensen.
+
+<!--#include virtual="include/bottom.html" -->
+----------nb--
+
 Content-language: pl
 Content-type: text/html; charset=ISO-8859-2
 Body:----------pl--
