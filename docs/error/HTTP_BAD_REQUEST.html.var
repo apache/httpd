@@ -126,6 +126,19 @@ Body:----------nl--
 <!--#include virtual="include/bottom.html" -->
 ----------nl--
 
+Content-language: nb
+Content-type: text/html; charset=UTF-8
+Body:----------nb--
+<!--#set var="CONTENT_LANGUAGE" value="nb"
+--><!--#set var="TITLE" value="Ugyldig spørring!"
+--><!--#include virtual="include/top.html" -->
+
+    Din nettleser eller proxy sendte en forespørsel
+    som denne serveren ikke kunne forstå.
+
+<!--#include virtual="include/bottom.html" -->  
+----------nb--
+
 Content-language: pl
 Content-type: text/html; charset=UTF-8
 Body:----------pl--

@@ -119,6 +119,19 @@ Body:----------nl--
 <!--#include virtual="include/bottom.html" -->
 ----------nl--
 
+Content-language: nb
+Content-type: text/html; charset=UTF-8
+Body:----------nb--
+<!--#set var="CONTENT_LANGUAGE" value="nb"
+--><!--#set var="TITLE" value="Kan ikke behandle forspørsel!"
+--><!--#include virtual="include/top.html" -->
+
+    Serveren støtter ikke den handlingen som ønskes utført av
+    nettleseren.
+
+<!--#include virtual="include/bottom.html" -->
+----------nb--
+
 Content-language: pl
 Content-type: text/html; charset=UTF-8
 Body:----------pl--
@@ -184,7 +197,7 @@ Content-language: sv
 Content-type: text/html; charset=UTF-8
 Body:----------sv--
 <!--#set var="CONTENT_LANGUAGE" value="sv"
---><!--#set var="TITLE" value="Kan ej utf&ouml;ra f&ouml;rfr&aring;gan!"
+--><!--#set var="TITLE" value="Kan ikke utf!"
 --><!--#include virtual="include/top.html" -->
 
     Servern st&ouml;djer inte den handling som &ouml;nskades

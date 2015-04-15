@@ -120,6 +120,18 @@ Body:----------nl--
 <!--#include virtual="include/bottom.html" -->
 ----------nl--
 
+Content-language: nb
+Content-type: text/html; charset=UTF-8
+Body:----------nb--
+<!--#set var="CONTENT_LANGUAGE" value="nb"
+--><!--#set var="TITLE" value="Mediatypen støttes ikke!"
+--><!--#include virtual="include/top.html" -->
+
+    Serveren støtter ikke den mediatypen som ble forespurt.
+
+<!--#include virtual="include/bottom.html" -->
+----------nb--
+
 Content-language: pl
 Content-type: text/html; charset=UTF-8
 Body:----------pl--
