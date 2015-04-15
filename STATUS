@@ -105,12 +105,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_ssl: Protect ENGINE_CTRL_CHIL_SET_FORKCHECK macro with a 
-     featue check for libressl. 
-     trunk patch: http://svn.apache.org/r1673455
-     2.4.x patch:  trunk works (modulo CHANGES)
-     +1: covener, trawick, ylavic
-
   *) mod_proxy_wstunnel: Avoid an empty response by failing with 502 (Bad
      Gateway) when no response is ever received from the backend.
      trunk patch: http://svn.apache.org/r1669299
