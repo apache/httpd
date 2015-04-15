@@ -105,12 +105,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_ssl: Fix possible crash when loading server certificate constraints.
-     PR 57694.
-     trunk patch: http://svn.apache.org/r1666297
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, rjung, trawick
-
   *) mod_proxy: Use the correct server name for SNI in case the backend
      SSL connection itself is established via a proxy server.  PR 57139
      trunk patch: http://svn.apache.org/r1634120
