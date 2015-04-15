@@ -168,6 +168,18 @@
             <xsl:if test="not($is-chm) or seealso">
                 <div id="quickview">
                     <xsl:if test="not($is-chm)">
+                        <xsl:if test="section">
+                            <h3>
+                                <xsl:value-of select="$message
+                                                      [@id='topics']" />
+                            </h3>&lf;
+
+                            <ul id="topics">&lf;
+                            <xsl:apply-templates
+                                select="section" mode="index" />
+                            </ul>
+                        </xsl:if>
+
                         <h3 class="directives">
                             <xsl:value-of select="$message
                                                   [@id='directives']" />
@@ -230,18 +242,6 @@
                             </p>&lf;
                         </xsl:otherwise>
                         </xsl:choose>
-
-                        <xsl:if test="section">
-                            <h3>
-                                <xsl:value-of select="$message
-                                                      [@id='topics']" />
-                            </h3>&lf;
-
-                            <ul id="topics">&lf;
-                            <xsl:apply-templates
-                                select="section" mode="index" />
-                            </ul>
-                        </xsl:if>
                     </xsl:if> <!-- /!is-chm -->
 
                     <xsl:if test="seealso">
@@ -268,6 +268,9 @@
                 </div> <!-- /#quickview -->
             </xsl:if>&lf; <!-- have sidebar -->
 
+            <!-- Sections of documentation about the module as a whole -->
+            <xsl:apply-templates select="section" />&lf;
+
             <xsl:variable name="this" select="directivesynopsis" />
 
             <!-- Directive documentation -->
@@ -285,9 +288,6 @@
                 </xsl:otherwise>
                 </xsl:choose>
             </xsl:for-each>
-
-            <!-- Sections of documentation about the module as a whole -->
-            <xsl:apply-templates select="section" />&lf;
         </div>&lf; <!-- /#page-content -->
 
         <xsl:call-template name="bottom" />&lf;
