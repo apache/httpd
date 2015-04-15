@@ -57,6 +57,7 @@
 <li><code class="directive"><a href="../mod/core.html#satisfy">Satisfy</a></code></li>
 <li><a href="../howto/auth.html">Authentication howto</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
+
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AuthBasicAuthoritative" id="AuthBasicAuthoritative">AuthBasicAuthoritative</a> <a name="authbasicauthoritative" id="authbasicauthoritative">Directive</a></h2>
 <table class="directive">
@@ -124,7 +125,6 @@ lower level modules</td></tr>
     and <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code>.</p>
 
 </div>
-
 </div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_auth_basic.html" title="English">&nbsp;en&nbsp;</a> |

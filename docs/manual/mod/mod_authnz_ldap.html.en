@@ -60,7 +60,18 @@ for HTTP Basic authentication.</td></tr>
     via the <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code>
     directive with the <code>ldap</code> value.</p>
 </div>
-<div id="quickview"><h3 class="directives">Directives</h3>
+<div id="quickview"><h3>Topics</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#contents">Contents</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#operation">Operation</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#requiredirectives">The Require Directives</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#examples">Examples</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#usingtls">Using TLS</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#usingssl">Using SSL</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#exposed">Exposing Login Information</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#frontpage">Using Microsoft
+    FrontPage with mod_authnz_ldap</a></li>
+</ul><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#authldapbindauthoritative">AuthLDAPBindAuthoritative</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authldapbinddn">AuthLDAPBindDN</a></li>
@@ -75,390 +86,13 @@ for HTTP Basic authentication.</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#authldapurl">AuthLDAPUrl</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authzldapauthoritative">AuthzLDAPAuthoritative</a></li>
 </ul>
-<h3>Topics</h3>
-<ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#contents">Contents</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#operation">Operation</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#requiredirectives">The Require Directives</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#examples">Examples</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#usingtls">Using TLS</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#usingssl">Using SSL</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#exposed">Exposing Login Information</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#frontpage">Using Microsoft
-    FrontPage with mod_authnz_ldap</a></li>
-</ul><h3>See also</h3>
+<h3>See also</h3>
 <ul class="seealso">
 <li><code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code></li>
 <li><code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code></li>
 <li><code class="module"><a href="../mod/mod_authz_user.html">mod_authz_user</a></code></li>
 <li><code class="module"><a href="../mod/mod_authz_groupfile.html">mod_authz_groupfile</a></code></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthLDAPBindAuthoritative" id="AuthLDAPBindAuthoritative">AuthLDAPBindAuthoritative</a> <a name="authldapbindauthoritative" id="authldapbindauthoritative">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Determines if other authentication providers are used when a user can be mapped to a DN but the server cannot successfully bind with the user's credentials.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthLDAPBindAuthoritative<em>off|on</em></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthLDAPBindAuthoritative on</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authnz_ldap</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in versions later than 2.2.14</td></tr>
-</table>
-    <p>By default, subsequent authentication providers are only queried if a 
-    user cannot be mapped to a DN, but not if the user can be mapped to a DN and their
-    password cannot be verified with an LDAP bind.  
-    If <code class="directive"><a href="#authldapbindauthoritative">AuthLDAPBindAuthoritative</a></code> 
-    is set to <em>off</em>, other configured authentication modules will have 
-    a chance to validate the user if the LDAP bind (with the current user's credentials) 
-    fails for any reason.</p>
-    <p> This allows users present in both LDAP and 
-    <code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code> to authenticate
-    when the LDAP server is available but the user's account is locked or password
-    is otherwise unusable.</p>
-
-<h3>See also</h3>
-<ul>
-<li><code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code></li>
-<li><code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code></li>
-</ul>
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthLDAPBindDN" id="AuthLDAPBindDN">AuthLDAPBindDN</a> <a name="authldapbinddn" id="authldapbinddn">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Optional DN to use in binding to the LDAP server</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthLDAPBindDN <em>distinguished-name</em></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authnz_ldap</td></tr>
-</table>
-    <p>An optional DN used to bind to the server when searching for
-    entries. If not provided, <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code> will use
-    an anonymous bind.</p>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthLDAPBindPassword" id="AuthLDAPBindPassword">AuthLDAPBindPassword</a> <a name="authldapbindpassword" id="authldapbindpassword">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Password used in conjuction with the bind DN</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthLDAPBindPassword <em>password</em></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authnz_ldap</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td><em>exec:</em> was added in 2.2.25.</td></tr>
-</table>
-    <p>A bind password to use in conjunction with the bind DN. Note
-    that the bind password is probably sensitive data, and should be
-    properly protected. You should only use the <code class="directive"><a href="#authldapbinddn">AuthLDAPBindDN</a></code> and <code class="directive"><a href="#authldapbindpassword">AuthLDAPBindPassword</a></code> if you
-    absolutely need them to search the directory.</p> 
-
-    <p>If the value begins with exec: the resulting command will be
-    executed and the first line returned to standard output by the
-    program will be used as the password.</p>
-<div class="example"><pre>#Password used as-is
-AuthLDAPBindPassword secret
-
-#Run /path/to/program to get my password
-AuthLDAPBindPassword exec:/path/to/program
-
-#Run /path/to/otherProgram and provide arguments
-AuthLDAPBindPassword "exec:/path/to/otherProgram argument1"</pre></div>
-
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthLDAPCharsetConfig" id="AuthLDAPCharsetConfig">AuthLDAPCharsetConfig</a> <a name="authldapcharsetconfig" id="authldapcharsetconfig">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Language to charset conversion configuration file</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthLDAPCharsetConfig <em>file-path</em></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authnz_ldap</td></tr>
-</table>
-    <p>The <code class="directive">AuthLDAPCharsetConfig</code> directive sets the location
-    of the language to charset conversion configuration file. <var>File-path</var> is relative
-    to the <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>. This file specifies
-    the list of language extensions to character sets.
-    Most administrators use the provided <code>charset.conv</code>
-    file, which associates common language extensions to character sets.</p>
-
-    <p>The file contains lines in the following format:</p>
-
-    <div class="example"><p><code>
-      <var>Language-Extension</var> <var>charset</var> [<var>Language-String</var>] ...
-    </code></p></div>
-
-    <p>The case of the extension does not matter. Blank lines, and lines
-    beginning with a hash character (<code>#</code>) are ignored.</p>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthLDAPCompareDNOnServer" id="AuthLDAPCompareDNOnServer">AuthLDAPCompareDNOnServer</a> <a name="authldapcomparednonserver" id="authldapcomparednonserver">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Use the LDAP server to compare the DNs</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthLDAPCompareDNOnServer on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthLDAPCompareDNOnServer on</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authnz_ldap</td></tr>
-</table>
-    <p>When set, <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code> will use the LDAP
-    server to compare the DNs. This is the only foolproof way to
-    compare DNs.  <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code> will search the
-    directory for the DN specified with the <a href="#reqdn"><code>Require dn</code></a> directive, then,
-    retrieve the DN and compare it with the DN retrieved from the user
-    entry. If this directive is not set,
-    <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code> simply does a string comparison. It
-    is possible to get false negatives with this approach, but it is
-    much faster. Note the <code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code> cache can speed up
-    DN comparison in most situations.</p>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthLDAPDereferenceAliases" id="AuthLDAPDereferenceAliases">AuthLDAPDereferenceAliases</a> <a name="authldapdereferencealiases" id="authldapdereferencealiases">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>When will the module de-reference aliases</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthLDAPDereferenceAliases never|searching|finding|always</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthLDAPDereferenceAliases Always</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authnz_ldap</td></tr>
-</table>
-    <p>This directive specifies when <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code> will
-    de-reference aliases during LDAP operations. The default is
-    <code>always</code>.</p>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthLDAPGroupAttribute" id="AuthLDAPGroupAttribute">AuthLDAPGroupAttribute</a> <a name="authldapgroupattribute" id="authldapgroupattribute">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>LDAP attributes used to check for group membership</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthLDAPGroupAttribute <em>attribute</em></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthLDAPGroupAttribute member uniquemember</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authnz_ldap</td></tr>
-</table>
-    <p>This directive specifies which LDAP attributes are used to
-    check for group membership. Multiple attributes can be used by
-    specifying this directive multiple times. If not specified,
-    then <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code> uses the <code>member</code> and
-    <code>uniquemember</code> attributes.</p>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthLDAPGroupAttributeIsDN" id="AuthLDAPGroupAttributeIsDN">AuthLDAPGroupAttributeIsDN</a> <a name="authldapgroupattributeisdn" id="authldapgroupattributeisdn">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Use the DN of the client username when checking for
-group membership</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthLDAPGroupAttributeIsDN on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthLDAPGroupAttributeIsDN on</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authnz_ldap</td></tr>
-</table>
-    <p>When set <code>on</code>, this directive says to use the
-    distinguished name of the client username when checking for group
-    membership.  Otherwise, the username will be used. For example,
-    assume that the client sent the username <code>bjenson</code>,
-    which corresponds to the LDAP DN <code>cn=Babs Jenson,
-    o=Airius</code>. If this directive is set,
-    <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code> will check if the group has
-    <code>cn=Babs Jenson, o=Airius</code> as a member. If this
-    directive is not set, then <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code> will
-    check if the group has <code>bjenson</code> as a member.</p>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthLDAPRemoteUserAttribute" id="AuthLDAPRemoteUserAttribute">AuthLDAPRemoteUserAttribute</a> <a name="authldapremoteuserattribute" id="authldapremoteuserattribute">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Use the value of the attribute returned during the user
-query to set the REMOTE_USER environment variable</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthLDAPRemoteUserAttribute uid</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>none</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authnz_ldap</td></tr>
-</table>
-    <p>If this directive is set, the value of the 
-    <code>REMOTE_USER</code> environment variable will be set to the
-    value of the attribute specified. Make sure that this attribute is
-    included in the list of attributes in the AuthLDAPUrl definition,
-    otherwise this directive will have no effect. This directive, if
-    present, takes precedence over AuthLDAPRemoteUserIsDN. This
-    directive is useful should you want people to log into a website
-    using an email address, but a backend application expects the
-    username as a userid.</p>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthLDAPRemoteUserIsDN" id="AuthLDAPRemoteUserIsDN">AuthLDAPRemoteUserIsDN</a> <a name="authldapremoteuserisdn" id="authldapremoteuserisdn">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Use the DN of the client username to set the REMOTE_USER
-environment variable</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthLDAPRemoteUserIsDN on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthLDAPRemoteUserIsDN off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authnz_ldap</td></tr>
-</table>
-    <p>If this directive is set to on, the value of the
-    <code>REMOTE_USER</code> environment variable will be set to the full
-    distinguished name of the authenticated user, rather than just
-    the username that was passed by the client. It is turned off by
-    default.</p>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthLDAPUrl" id="AuthLDAPUrl">AuthLDAPUrl</a> <a name="authldapurl" id="authldapurl">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>URL specifying the LDAP search parameters</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthLDAPUrl <em>url [NONE|SSL|TLS|STARTTLS]</em></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authnz_ldap</td></tr>
-</table>
-    <p>An RFC 2255 URL which specifies the LDAP search parameters
-    to use. The syntax of the URL is</p>
-<div class="example"><p><code>ldap://host:port/basedn?attribute?scope?filter</code></p></div>
-
-<dl>
-<dt>ldap</dt>
-
-        <dd>For regular ldap, use the
-        string <code>ldap</code>. For secure LDAP, use <code>ldaps</code>
-        instead. Secure LDAP is only available if Apache was linked
-        to an LDAP library with SSL support.</dd>
-
-<dt>host:port</dt>
-
-        <dd>
-          <p>The name/port of the ldap server (defaults to
-          <code>localhost:389</code> for <code>ldap</code>, and
-          <code>localhost:636</code> for <code>ldaps</code>). To
-          specify multiple, redundant LDAP servers, just list all
-          servers, separated by spaces. <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code>
-          will try connecting to each server in turn, until it makes a
-          successful connection.</p>
-
-          <p>Once a connection has been made to a server, that
-          connection remains active for the life of the
-          <code class="program"><a href="../programs/httpd.html">httpd</a></code> process, or until the LDAP server goes
-          down.</p>
-
-          <p>If the LDAP server goes down and breaks an existing
-          connection, <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code> will attempt to
-          re-connect, starting with the primary server, and trying
-          each redundant server in turn. Note that this is different
-          than a true round-robin search.</p>
-        </dd>
-
-<dt>basedn</dt>
-
-        <dd>The DN of the branch of the
-        directory where all searches should start from. At the very
-        least, this must be the top of your directory tree, but
-        could also specify a subtree in the directory.</dd>
-
-<dt>attribute</dt>
-
-        <dd>The attribute to search for.
-        Although RFC 2255 allows a comma-separated list of
-        attributes, only the first attribute will be used, no
-        matter how many are provided. If no attributes are
-        provided, the default is to use <code>uid</code>. It's a good
-        idea to choose an attribute that will be unique across all
-        entries in the subtree you will be using.</dd>
-
-<dt>scope</dt>
-
-        <dd>The scope of the search. Can be either <code>one</code> or
-        <code>sub</code>. Note that a scope of <code>base</code> is
-        also supported by RFC 2255, but is not supported by this
-        module. If the scope is not provided, or if <code>base</code> scope
-        is specified, the default is to use a scope of
-        <code>sub</code>.</dd>
-
-<dt>filter</dt>
-
-        <dd>A valid LDAP search filter. If
-        not provided, defaults to <code>(objectClass=*)</code>, which
-        will search for all objects in the tree. Filters are
-        limited to approximately 8000 characters (the definition of
-        <code>MAX_STRING_LEN</code> in the Apache source code). This
-        should be more than sufficient for any application.</dd>
-</dl>
-
-    <p>When doing searches, the attribute, filter and username passed
-    by the HTTP client are combined to create a search filter that
-    looks like
-    <code>(&amp;(<em>filter</em>)(<em>attribute</em>=<em>username</em>))</code>.</p>
-
-    <p>For example, consider an URL of
-    <code>ldap://ldap.airius.com/o=Airius?cn?sub?(posixid=*)</code>. When
-    a client attempts to connect using a username of <code>Babs
-    Jenson</code>, the resulting search filter will be
-    <code>(&amp;(posixid=*)(cn=Babs Jenson))</code>.</p>
-
-    <p>An optional parameter can be added to allow the LDAP Url to override 
-    the connection type.  This parameter can be one of the following:</p>
-
-<dl>
-    <dt>NONE</dt>
-        <dd>Establish an unsecure connection on the default LDAP port. This
-        is the same as <code>ldap://</code> on port 389.</dd>
-    <dt>SSL</dt>
-        <dd>Establish a secure connection on the default secure LDAP port.
-        This is the same as <code>ldaps://</code></dd>
-    <dt>TLS | STARTTLS</dt>
-        <dd>Establish an upgraded secure connection on the default LDAP port.
-        This connection will be initiated on port 389 by default and then 
-        upgraded to a secure connection on the same port.</dd>
-</dl>
-
-    <p>See above for examples of <code class="directive"><a href="#authldapurl">AuthLDAPURL</a></code> URLs.</p>
-
-    <p> When <code class="directive"><a href="#authldapurl">AuthLDAPURL</a></code>
-    is enabled in a particular context, but some other module has performed
-    authentication for the request, the server will try to map the username to a DN
-    during authorization regardless of whether or not LDAP-specific requirements
-    are present. To ignore the failures to map a username to a DN during
-    authorization, set <code class="directive"><a href="#authzldapauthoritative">
-    AuthzLDAPAuthoritative</a></code> to "off".</p>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthzLDAPAuthoritative" id="AuthzLDAPAuthoritative">AuthzLDAPAuthoritative</a> <a name="authzldapauthoritative" id="authzldapauthoritative">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Prevent other authentication modules from
-authenticating the user if this one fails</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthzLDAPAuthoritative on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthzLDAPAuthoritative on</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authnz_ldap</td></tr>
-</table>
-    <p>Set to <code>off</code> if this module should let other
-    authorization modules attempt to authorize the user, should
-    authorization with this module fail. Control is only passed on
-    to lower modules if there is no DN or rule that matches the
-    supplied user name (as passed by the client).</p>
-    <p> When no LDAP-specific <code class="directive"><a href="../mod/core.html#require">Require</a></code>  directives
-    are used, authorization is allowed to fall back to other modules
-    as if <code class="directive"><a href="#authzldapauthoritative">AuthzLDAPAuthoritative</a></code>
-    was set to <code>off</code>. </p>
-
-</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="contents" id="contents">Contents</a></h2>
@@ -1023,6 +657,372 @@ Require group <em>mygroupfile</em>
       never get a chance to process the <code>.htaccess</code> file,
       and won't be able to find the FrontPage-managed user file.</li>
     </ul>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AuthLDAPBindAuthoritative" id="AuthLDAPBindAuthoritative">AuthLDAPBindAuthoritative</a> <a name="authldapbindauthoritative" id="authldapbindauthoritative">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Determines if other authentication providers are used when a user can be mapped to a DN but the server cannot successfully bind with the user's credentials.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthLDAPBindAuthoritative<em>off|on</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthLDAPBindAuthoritative on</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authnz_ldap</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in versions later than 2.2.14</td></tr>
+</table>
+    <p>By default, subsequent authentication providers are only queried if a 
+    user cannot be mapped to a DN, but not if the user can be mapped to a DN and their
+    password cannot be verified with an LDAP bind.  
+    If <code class="directive"><a href="#authldapbindauthoritative">AuthLDAPBindAuthoritative</a></code> 
+    is set to <em>off</em>, other configured authentication modules will have 
+    a chance to validate the user if the LDAP bind (with the current user's credentials) 
+    fails for any reason.</p>
+    <p> This allows users present in both LDAP and 
+    <code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code> to authenticate
+    when the LDAP server is available but the user's account is locked or password
+    is otherwise unusable.</p>
+
+<h3>See also</h3>
+<ul>
+<li><code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code></li>
+<li><code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code></li>
+</ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AuthLDAPBindDN" id="AuthLDAPBindDN">AuthLDAPBindDN</a> <a name="authldapbinddn" id="authldapbinddn">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Optional DN to use in binding to the LDAP server</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthLDAPBindDN <em>distinguished-name</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authnz_ldap</td></tr>
+</table>
+    <p>An optional DN used to bind to the server when searching for
+    entries. If not provided, <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code> will use
+    an anonymous bind.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AuthLDAPBindPassword" id="AuthLDAPBindPassword">AuthLDAPBindPassword</a> <a name="authldapbindpassword" id="authldapbindpassword">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Password used in conjuction with the bind DN</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthLDAPBindPassword <em>password</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authnz_ldap</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td><em>exec:</em> was added in 2.2.25.</td></tr>
+</table>
+    <p>A bind password to use in conjunction with the bind DN. Note
+    that the bind password is probably sensitive data, and should be
+    properly protected. You should only use the <code class="directive"><a href="#authldapbinddn">AuthLDAPBindDN</a></code> and <code class="directive"><a href="#authldapbindpassword">AuthLDAPBindPassword</a></code> if you
+    absolutely need them to search the directory.</p> 
+
+    <p>If the value begins with exec: the resulting command will be
+    executed and the first line returned to standard output by the
+    program will be used as the password.</p>
+<div class="example"><pre>#Password used as-is
+AuthLDAPBindPassword secret
+
+#Run /path/to/program to get my password
+AuthLDAPBindPassword exec:/path/to/program
+
+#Run /path/to/otherProgram and provide arguments
+AuthLDAPBindPassword "exec:/path/to/otherProgram argument1"</pre></div>
+
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AuthLDAPCharsetConfig" id="AuthLDAPCharsetConfig">AuthLDAPCharsetConfig</a> <a name="authldapcharsetconfig" id="authldapcharsetconfig">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Language to charset conversion configuration file</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthLDAPCharsetConfig <em>file-path</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authnz_ldap</td></tr>
+</table>
+    <p>The <code class="directive">AuthLDAPCharsetConfig</code> directive sets the location
+    of the language to charset conversion configuration file. <var>File-path</var> is relative
+    to the <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>. This file specifies
+    the list of language extensions to character sets.
+    Most administrators use the provided <code>charset.conv</code>
+    file, which associates common language extensions to character sets.</p>
+
+    <p>The file contains lines in the following format:</p>
+
+    <div class="example"><p><code>
+      <var>Language-Extension</var> <var>charset</var> [<var>Language-String</var>] ...
+    </code></p></div>
+
+    <p>The case of the extension does not matter. Blank lines, and lines
+    beginning with a hash character (<code>#</code>) are ignored.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AuthLDAPCompareDNOnServer" id="AuthLDAPCompareDNOnServer">AuthLDAPCompareDNOnServer</a> <a name="authldapcomparednonserver" id="authldapcomparednonserver">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Use the LDAP server to compare the DNs</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthLDAPCompareDNOnServer on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthLDAPCompareDNOnServer on</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authnz_ldap</td></tr>
+</table>
+    <p>When set, <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code> will use the LDAP
+    server to compare the DNs. This is the only foolproof way to
+    compare DNs.  <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code> will search the
+    directory for the DN specified with the <a href="#reqdn"><code>Require dn</code></a> directive, then,
+    retrieve the DN and compare it with the DN retrieved from the user
+    entry. If this directive is not set,
+    <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code> simply does a string comparison. It
+    is possible to get false negatives with this approach, but it is
+    much faster. Note the <code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code> cache can speed up
+    DN comparison in most situations.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AuthLDAPDereferenceAliases" id="AuthLDAPDereferenceAliases">AuthLDAPDereferenceAliases</a> <a name="authldapdereferencealiases" id="authldapdereferencealiases">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>When will the module de-reference aliases</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthLDAPDereferenceAliases never|searching|finding|always</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthLDAPDereferenceAliases Always</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authnz_ldap</td></tr>
+</table>
+    <p>This directive specifies when <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code> will
+    de-reference aliases during LDAP operations. The default is
+    <code>always</code>.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AuthLDAPGroupAttribute" id="AuthLDAPGroupAttribute">AuthLDAPGroupAttribute</a> <a name="authldapgroupattribute" id="authldapgroupattribute">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>LDAP attributes used to check for group membership</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthLDAPGroupAttribute <em>attribute</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthLDAPGroupAttribute member uniquemember</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authnz_ldap</td></tr>
+</table>
+    <p>This directive specifies which LDAP attributes are used to
+    check for group membership. Multiple attributes can be used by
+    specifying this directive multiple times. If not specified,
+    then <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code> uses the <code>member</code> and
+    <code>uniquemember</code> attributes.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AuthLDAPGroupAttributeIsDN" id="AuthLDAPGroupAttributeIsDN">AuthLDAPGroupAttributeIsDN</a> <a name="authldapgroupattributeisdn" id="authldapgroupattributeisdn">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Use the DN of the client username when checking for
+group membership</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthLDAPGroupAttributeIsDN on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthLDAPGroupAttributeIsDN on</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authnz_ldap</td></tr>
+</table>
+    <p>When set <code>on</code>, this directive says to use the
+    distinguished name of the client username when checking for group
+    membership.  Otherwise, the username will be used. For example,
+    assume that the client sent the username <code>bjenson</code>,
+    which corresponds to the LDAP DN <code>cn=Babs Jenson,
+    o=Airius</code>. If this directive is set,
+    <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code> will check if the group has
+    <code>cn=Babs Jenson, o=Airius</code> as a member. If this
+    directive is not set, then <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code> will
+    check if the group has <code>bjenson</code> as a member.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AuthLDAPRemoteUserAttribute" id="AuthLDAPRemoteUserAttribute">AuthLDAPRemoteUserAttribute</a> <a name="authldapremoteuserattribute" id="authldapremoteuserattribute">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Use the value of the attribute returned during the user
+query to set the REMOTE_USER environment variable</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthLDAPRemoteUserAttribute uid</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authnz_ldap</td></tr>
+</table>
+    <p>If this directive is set, the value of the 
+    <code>REMOTE_USER</code> environment variable will be set to the
+    value of the attribute specified. Make sure that this attribute is
+    included in the list of attributes in the AuthLDAPUrl definition,
+    otherwise this directive will have no effect. This directive, if
+    present, takes precedence over AuthLDAPRemoteUserIsDN. This
+    directive is useful should you want people to log into a website
+    using an email address, but a backend application expects the
+    username as a userid.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AuthLDAPRemoteUserIsDN" id="AuthLDAPRemoteUserIsDN">AuthLDAPRemoteUserIsDN</a> <a name="authldapremoteuserisdn" id="authldapremoteuserisdn">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Use the DN of the client username to set the REMOTE_USER
+environment variable</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthLDAPRemoteUserIsDN on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthLDAPRemoteUserIsDN off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authnz_ldap</td></tr>
+</table>
+    <p>If this directive is set to on, the value of the
+    <code>REMOTE_USER</code> environment variable will be set to the full
+    distinguished name of the authenticated user, rather than just
+    the username that was passed by the client. It is turned off by
+    default.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AuthLDAPUrl" id="AuthLDAPUrl">AuthLDAPUrl</a> <a name="authldapurl" id="authldapurl">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>URL specifying the LDAP search parameters</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthLDAPUrl <em>url [NONE|SSL|TLS|STARTTLS]</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authnz_ldap</td></tr>
+</table>
+    <p>An RFC 2255 URL which specifies the LDAP search parameters
+    to use. The syntax of the URL is</p>
+<div class="example"><p><code>ldap://host:port/basedn?attribute?scope?filter</code></p></div>
+
+<dl>
+<dt>ldap</dt>
+
+        <dd>For regular ldap, use the
+        string <code>ldap</code>. For secure LDAP, use <code>ldaps</code>
+        instead. Secure LDAP is only available if Apache was linked
+        to an LDAP library with SSL support.</dd>
+
+<dt>host:port</dt>
+
+        <dd>
+          <p>The name/port of the ldap server (defaults to
+          <code>localhost:389</code> for <code>ldap</code>, and
+          <code>localhost:636</code> for <code>ldaps</code>). To
+          specify multiple, redundant LDAP servers, just list all
+          servers, separated by spaces. <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code>
+          will try connecting to each server in turn, until it makes a
+          successful connection.</p>
+
+          <p>Once a connection has been made to a server, that
+          connection remains active for the life of the
+          <code class="program"><a href="../programs/httpd.html">httpd</a></code> process, or until the LDAP server goes
+          down.</p>
+
+          <p>If the LDAP server goes down and breaks an existing
+          connection, <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code> will attempt to
+          re-connect, starting with the primary server, and trying
+          each redundant server in turn. Note that this is different
+          than a true round-robin search.</p>
+        </dd>
+
+<dt>basedn</dt>
+
+        <dd>The DN of the branch of the
+        directory where all searches should start from. At the very
+        least, this must be the top of your directory tree, but
+        could also specify a subtree in the directory.</dd>
+
+<dt>attribute</dt>
+
+        <dd>The attribute to search for.
+        Although RFC 2255 allows a comma-separated list of
+        attributes, only the first attribute will be used, no
+        matter how many are provided. If no attributes are
+        provided, the default is to use <code>uid</code>. It's a good
+        idea to choose an attribute that will be unique across all
+        entries in the subtree you will be using.</dd>
+
+<dt>scope</dt>
+
+        <dd>The scope of the search. Can be either <code>one</code> or
+        <code>sub</code>. Note that a scope of <code>base</code> is
+        also supported by RFC 2255, but is not supported by this
+        module. If the scope is not provided, or if <code>base</code> scope
+        is specified, the default is to use a scope of
+        <code>sub</code>.</dd>
+
+<dt>filter</dt>
+
+        <dd>A valid LDAP search filter. If
+        not provided, defaults to <code>(objectClass=*)</code>, which
+        will search for all objects in the tree. Filters are
+        limited to approximately 8000 characters (the definition of
+        <code>MAX_STRING_LEN</code> in the Apache source code). This
+        should be more than sufficient for any application.</dd>
+</dl>
+
+    <p>When doing searches, the attribute, filter and username passed
+    by the HTTP client are combined to create a search filter that
+    looks like
+    <code>(&amp;(<em>filter</em>)(<em>attribute</em>=<em>username</em>))</code>.</p>
+
+    <p>For example, consider an URL of
+    <code>ldap://ldap.airius.com/o=Airius?cn?sub?(posixid=*)</code>. When
+    a client attempts to connect using a username of <code>Babs
+    Jenson</code>, the resulting search filter will be
+    <code>(&amp;(posixid=*)(cn=Babs Jenson))</code>.</p>
+
+    <p>An optional parameter can be added to allow the LDAP Url to override 
+    the connection type.  This parameter can be one of the following:</p>
+
+<dl>
+    <dt>NONE</dt>
+        <dd>Establish an unsecure connection on the default LDAP port. This
+        is the same as <code>ldap://</code> on port 389.</dd>
+    <dt>SSL</dt>
+        <dd>Establish a secure connection on the default secure LDAP port.
+        This is the same as <code>ldaps://</code></dd>
+    <dt>TLS | STARTTLS</dt>
+        <dd>Establish an upgraded secure connection on the default LDAP port.
+        This connection will be initiated on port 389 by default and then 
+        upgraded to a secure connection on the same port.</dd>
+</dl>
+
+    <p>See above for examples of <code class="directive"><a href="#authldapurl">AuthLDAPURL</a></code> URLs.</p>
+
+    <p> When <code class="directive"><a href="#authldapurl">AuthLDAPURL</a></code>
+    is enabled in a particular context, but some other module has performed
+    authentication for the request, the server will try to map the username to a DN
+    during authorization regardless of whether or not LDAP-specific requirements
+    are present. To ignore the failures to map a username to a DN during
+    authorization, set <code class="directive"><a href="#authzldapauthoritative">
+    AuthzLDAPAuthoritative</a></code> to "off".</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AuthzLDAPAuthoritative" id="AuthzLDAPAuthoritative">AuthzLDAPAuthoritative</a> <a name="authzldapauthoritative" id="authzldapauthoritative">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Prevent other authentication modules from
+authenticating the user if this one fails</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthzLDAPAuthoritative on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthzLDAPAuthoritative on</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authnz_ldap</td></tr>
+</table>
+    <p>Set to <code>off</code> if this module should let other
+    authorization modules attempt to authorize the user, should
+    authorization with this module fail. Control is only passed on
+    to lower modules if there is no DN or rule that matches the
+    supplied user name (as passed by the client).</p>
+    <p> When no LDAP-specific <code class="directive"><a href="../mod/core.html#require">Require</a></code>  directives
+    are used, authorization is allowed to fall back to other modules
+    as if <code class="directive"><a href="#authzldapauthoritative">AuthzLDAPAuthoritative</a></code>
+    was set to <code>off</code>. </p>
 
 </div>
 </div>

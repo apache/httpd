@@ -64,7 +64,19 @@
     <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>.  These additional modules will need
     to be loaded and configured to take advantage of these features.</p>
 </div>
-<div id="quickview"><h3 class="directives">Directives</h3>
+<div id="quickview"><h3>Topics</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#forwardreverse">Forward Proxies and Reverse 
+       Proxies/Gateways</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#examples">Basic Examples</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#workers">Workers</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#access">Controlling access to your proxy</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#startup">Slow Startup</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#intranet">Intranet Proxy</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#envsettings">Protocol Adjustments</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#request-bodies">Request Bodies</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#x-headers">Reverse Proxy Request Headers</a></li>
+</ul><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#allowconnect">AllowCONNECT</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#balancermember">BalancerMember</a></li>
@@ -94,19 +106,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#proxytimeout">ProxyTimeout</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxyvia">ProxyVia</a></li>
 </ul>
-<h3>Topics</h3>
-<ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#forwardreverse">Forward Proxies and Reverse 
-       Proxies/Gateways</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#examples">Basic Examples</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#workers">Workers</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#access">Controlling access to your proxy</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#startup">Slow Startup</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#intranet">Intranet Proxy</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#envsettings">Protocol Adjustments</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#request-bodies">Request Bodies</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#x-headers">Reverse Proxy Request Headers</a></li>
-</ul><h3>See also</h3>
+<h3>See also</h3>
 <ul class="seealso">
 <li><code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code></li>
 <li><code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code></li>
@@ -115,6 +115,327 @@
 <li><code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code></li>
 <li><code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="forwardreverse" id="forwardreverse">Forward Proxies and Reverse 
+       Proxies/Gateways</a></h2>
+      <p>Apache can be configured in both a <dfn>forward</dfn> and
+      <dfn>reverse</dfn> proxy (also known as <dfn>gateway</dfn>) mode.</p>
+
+      <p>An ordinary <dfn>forward proxy</dfn> is an intermediate
+      server that sits between the client and the <em>origin
+      server</em>.  In order to get content from the origin server,
+      the client sends a request to the proxy naming the origin server
+      as the target and the proxy then requests the content from the
+      origin server and returns it to the client.  The client must be
+      specially configured to use the forward proxy to access other
+      sites.</p>
+
+      <p>A typical usage of a forward proxy is to provide Internet
+      access to internal clients that are otherwise restricted by a
+      firewall.  The forward proxy can also use caching (as provided
+      by <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code>) to reduce network usage.</p>
+
+      <p>The forward proxy is activated using the <code class="directive"><a href="#proxyrequests">ProxyRequests</a></code> directive.  Because
+      forward proxies allow clients to access arbitrary sites through
+      your server and to hide their true origin, it is essential that
+      you <a href="#access">secure your server</a> so that only
+      authorized clients can access the proxy before activating a
+      forward proxy.</p>
+
+      <p>A <dfn>reverse proxy</dfn> (or <dfn>gateway</dfn>), by
+      contrast, appears to the client just like an ordinary web
+      server.  No special configuration on the client is necessary.
+      The client makes ordinary requests for content in the name-space
+      of the reverse proxy.  The reverse proxy then decides where to
+      send those requests, and returns the content as if it was itself
+      the origin.</p>
+
+      <p>A typical usage of a reverse proxy is to provide Internet
+      users access to a server that is behind a firewall.  Reverse
+      proxies can also be used to balance load among several back-end
+      servers, or to provide caching for a slower back-end server.
+      In addition, reverse proxies can be used simply to bring
+      several servers into the same URL space.</p>
+
+      <p>A reverse proxy is activated using the <code class="directive"><a href="#proxypass">ProxyPass</a></code> directive or the
+      <code>[P]</code> flag to the <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> directive.  It is
+      <strong>not</strong> necessary to turn <code class="directive"><a href="#proxyrequests">ProxyRequests</a></code> on in order to
+      configure a reverse proxy.</p>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="examples" id="examples">Basic Examples</a></h2>
+
+    <p>The examples below are only a very basic idea to help you
+    get started.  Please read the documentation on the individual
+    directives.</p>
+
+    <p>In addition, if you wish to have caching enabled, consult
+    the documentation from <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code>.</p>
+
+    <div class="example"><h3>Reverse Proxy</h3><p><code>
+    ProxyPass /foo http://foo.example.com/bar<br />
+    ProxyPassReverse /foo http://foo.example.com/bar
+    </code></p></div>
+
+    <div class="example"><h3>Forward Proxy</h3><p><code>
+    ProxyRequests On<br />
+    ProxyVia On<br />
+    <br />
+    &lt;Proxy *&gt;<br />
+    <span class="indent">
+      Order deny,allow<br />
+      Deny from all<br />
+      Allow from internal.example.com<br />
+    </span>
+    &lt;/Proxy&gt;
+    </code></p></div>
+
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="workers" id="workers">Workers</a></h2>
+      <p>The proxy manages the configuration of origin servers and their
+      communication parameters in objects called <dfn>workers</dfn>.
+      There are two built-in workers, the default forward proxy worker and the
+      default reverse proxy worker. Additional workers can be configured
+      explicitly.</p>
+
+      <p>The two default workers have a fixed configuration
+      and will be used if no other worker matches the request.
+      They do not use HTTP Keep-Alive or connection pooling.
+      The TCP connections to the origin server will instead be
+      opened and closed for each request.</p>
+
+      <p>Explicitly configured workers are identified by their URL.
+      They are usually created and configured using
+      <code class="directive"><a href="#proxypass">ProxyPass</a></code> or
+      <code class="directive"><a href="#proxypassmatch">ProxyPassMatch</a></code> when used
+      for a reverse proxy:</p>
+
+      <div class="example"><p><code>
+          ProxyPass /example http://backend.example.com connectiontimeout=5 timeout=30
+      </code></p></div>
+
+      <p>This will create a worker associated with the origin server URL
+      <code>http://backend.example.com</code> and using the given timeout
+      values. When used in a forward proxy, workers are usually defined
+      via the <code class="directive"><a href="#proxyset">ProxySet</a></code> directive:</p>
+
+      <div class="example"><p><code>
+          ProxySet http://backend.example.com connectiontimeout=5 timeout=30
+      </code></p></div>
+
+      <p>or alternatively using <code class="directive"><a href="#proxy">Proxy</a></code>
+      and <code class="directive"><a href="#proxyset">ProxySet</a></code>:</p>
+
+      <div class="example"><p><code>
+        &lt;Proxy http://backend.example.com&gt;<br />
+        <span class="indent">
+          ProxySet connectiontimeout=5 timeout=30
+        </span>
+        &lt;/Proxy&gt;
+      </code></p></div>
+
+      <p>Using explicitly configured workers in the forward mode is
+      not very common, because forward proxies usually communicate with many
+      different origin servers. Creating explicit workers for some of the
+      origin servers can still be useful, if they are used very often.
+      Explicitly configured workers have no concept of forward or reverse
+      proxying by themselves. They encapsulate a common concept of
+      communication with origin servers. A worker created by
+      <code class="directive"><a href="#proxypass">ProxyPass</a></code> for use in a
+      reverse proxy will be also used for forward proxy requests whenever
+      the URL to the origin server matches the worker URL and vice versa.</p>
+
+      <p>The URL identifying a direct worker is the URL of its
+      origin server including any path components given:</p>
+
+      <div class="example"><p><code>
+          ProxyPass /examples http://backend.example.com/examples<br />
+          ProxyPass /docs http://backend.example.com/docs
+      </code></p></div>
+
+      <p>This example defines two different workers, each using a separate
+      connection pool and configuration.</p>
+
+      <div class="warning"><h3>Worker Sharing</h3>
+        <p>Worker sharing happens if the worker URLs overlap, which occurs when
+        the URL of some worker is a leading substring of the URL of another
+        worker defined later in the configuration file. In the following example</p>
+
+        <div class="example"><p><code>
+            ProxyPass /apps http://backend.example.com/ timeout=60<br />
+            ProxyPass /examples http://backend.example.com/examples timeout=10
+        </code></p></div>
+
+        <p>the second worker isn't actually created. Instead the first
+        worker is used. The benefit is, that there is only one connection pool,
+        so connections are more often reused. Note that all configuration attributes
+        given explicitly for the later worker and some configuration defaults will
+        overwrite the configuration given for the first worker. This will be logged
+        as a warning. In the above example the resulting timeout value
+        for the URL <code>/apps</code> will be <code>10</code> instead
+        of <code>60</code>!</p>
+
+        <p>If you want to avoid worker sharing, sort your worker definitions
+        by URL length, starting with the longest worker URLs. If you want to maximize
+        worker sharing use the reverse sort order. See also the related warning about
+        ordering <code class="directive"><a href="#proxypass">ProxyPass</a></code> directives.</p>
+
+      </div> 
+
+      <p>Explicitly configured workers come in two flavors:
+      <dfn>direct workers</dfn> and <dfn>(load) balancer workers</dfn>.
+      They support many important configuration attributes which are
+      described below in the <code class="directive"><a href="#proxypass">ProxyPass</a></code>
+      directive. The same attributes can also be set using
+      <code class="directive"><a href="#proxyset">ProxySet</a></code>.</p>
+
+      <p>The set of options available for a direct worker
+      depends on the protocol, which is specified in the origin server URL.
+      Available protocols include <code>ajp</code>,
+      <code>ftp</code>, <code>http</code> and <code>scgi</code>.</p>
+
+      <p>Balancer workers are virtual workers that use direct workers known
+      as their members to actually handle the requests. Each balancer can
+      have multiple members. When it handles a request, it chooses a member
+      based on the configured load balancing algorithm.</p>
+
+      <p>A balancer worker is created if its worker URL uses
+      <code>balancer</code> as the protocol scheme.
+      The balancer URL uniquely identifies the balancer worker.
+      Members are added to a balancer using
+      <code class="directive"><a href="#balancermember">BalancerMember</a></code>.</p>
+
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="access" id="access">Controlling access to your proxy</a></h2>
+      <p>You can control who can access your proxy via the <code class="directive"><a href="#proxy">&lt;Proxy&gt;</a></code> control block as in
+      the following example:</p>
+
+      <div class="example"><p><code>
+        &lt;Proxy *&gt;<br />
+        <span class="indent">
+          Order Deny,Allow<br />
+          Deny from all<br />
+          Allow from 192.168.0<br />
+        </span>
+        &lt;/Proxy&gt;
+      </code></p></div>
+
+      <p>For more information on access control directives, see
+      <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code>.</p>
+
+      <p>Strictly limiting access is essential if you are using a
+      forward proxy (using the <code class="directive"><a href="#proxyrequests">ProxyRequests</a></code> directive).
+      Otherwise, your server can be used by any client to access
+      arbitrary hosts while hiding his or her true identity.  This is
+      dangerous both for your network and for the Internet at large.
+      When using a reverse proxy (using the <code class="directive"><a href="#proxypass">ProxyPass</a></code> directive with
+      <code>ProxyRequests Off</code>), access control is less
+      critical because clients can only contact the hosts that you
+      have specifically configured.</p>
+
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="startup" id="startup">Slow Startup</a></h2>
+      <p>If you're using the <code class="directive"><a href="#proxyblock">ProxyBlock</a></code> directive, hostnames' IP addresses are looked up
+      and cached during startup for later match test. This may take a few
+      seconds (or more) depending on the speed with which the hostname lookups
+      occur.</p>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="intranet" id="intranet">Intranet Proxy</a></h2>
+      <p>An Apache proxy server situated in an intranet needs to forward
+      external requests through the company's firewall (for this, configure
+      the <code class="directive"><a href="#proxyremote">ProxyRemote</a></code> directive
+      to forward the respective <var>scheme</var> to the firewall proxy).
+      However, when it has to
+      access resources within the intranet, it can bypass the firewall when
+      accessing hosts. The <code class="directive"><a href="#noproxy">NoProxy</a></code>
+      directive is useful for specifying which hosts belong to the intranet and
+      should be accessed directly.</p>
+
+      <p>Users within an intranet tend to omit the local domain name from their
+      WWW requests, thus requesting "http://somehost/" instead of
+      <code>http://somehost.example.com/</code>. Some commercial proxy servers
+      let them get away with this and simply serve the request, implying a
+      configured local domain. When the <code class="directive"><a href="#proxydomain">ProxyDomain</a></code> directive is used and the server is <a href="#proxyrequests">configured for proxy service</a>, Apache can return
+      a redirect response and send the client to the correct, fully qualified,
+      server address. This is the preferred method since the user's bookmark
+      files will then contain fully qualified hosts.</p>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="envsettings" id="envsettings">Protocol Adjustments</a></h2>
+      <p>For circumstances where <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> is sending
+      requests to an origin server that doesn't properly implement
+      keepalives or HTTP/1.1, there are two <a href="../env.html">environment variables</a> that can force the
+      request to use HTTP/1.0 with no keepalive. These are set via the
+      <code class="directive"><a href="../mod/mod_env.html#setenv">SetEnv</a></code> directive.</p>
+
+      <p>These are the <code>force-proxy-request-1.0</code> and
+      <code>proxy-nokeepalive</code> notes.</p>
+
+      <div class="example"><p><code>
+        &lt;Location /buggyappserver/&gt;<br />
+        <span class="indent">
+          ProxyPass http://buggyappserver:7001/foo/<br />
+          SetEnv force-proxy-request-1.0 1<br />
+          SetEnv proxy-nokeepalive 1<br />
+        </span>
+        &lt;/Location&gt;
+      </code></p></div>
+
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="request-bodies" id="request-bodies">Request Bodies</a></h2>
+
+    <p>Some request methods such as POST include a request body.
+    The HTTP protocol requires that requests which include a body
+    either use chunked transfer encoding or send a
+    <code>Content-Length</code> request header.  When passing these
+    requests on to the origin server, <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code>
+    will always attempt to send the <code>Content-Length</code>.  But
+    if the body is large and the original request used chunked
+    encoding, then chunked encoding may also be used in the upstream
+    request.  You can control this selection using <a href="../env.html">environment variables</a>.  Setting
+    <code>proxy-sendcl</code> ensures maximum compatibility with
+    upstream servers by always sending the
+    <code>Content-Length</code>, while setting
+    <code>proxy-sendchunked</code> minimizes resource usage by using
+    chunked encoding.</p>
+
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="x-headers" id="x-headers">Reverse Proxy Request Headers</a></h2>
+
+    <p>When acting in a reverse-proxy mode (using the <code class="directive"><a href="#proxypass">ProxyPass</a></code> directive, for example),
+    <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code> adds several request headers in
+    order to pass information to the origin server. These headers
+    are:</p>
+
+    <dl>
+      <dt><code>X-Forwarded-For</code></dt>
+      <dd>The IP address of the client.</dd>
+      <dt><code>X-Forwarded-Host</code></dt>
+      <dd>The original host requested by the client in the <code>Host</code> 
+       HTTP request header.</dd>
+      <dt><code>X-Forwarded-Server</code></dt>
+      <dd>The hostname of the proxy server.</dd>
+    </dl>
+
+    <p>Be careful when using these headers on the origin server, since
+    they will contain more than one (comma-separated) value if the
+    original request already contained one of these headers. For
+    example, you can use <code>%{X-Forwarded-For}i</code> in the log
+    format string of the origin server to log the original clients IP
+    address, but you may get more than one address if the request
+    passes through several proxies.</p>
+
+    <p>See also the <code class="directive"><a href="#proxypreservehost">ProxyPreserveHost</a></code> and <code class="directive"><a href="#proxyvia">ProxyVia</a></code> directives, which control
+    other request headers.</p>
+
+   </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AllowCONNECT" id="AllowCONNECT">AllowCONNECT</a> <a name="allowconnect" id="allowconnect">Directive</a></h2>
 <table class="directive">
@@ -1415,327 +1736,6 @@ header for proxied requests</td></tr>
     </ul>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="forwardreverse" id="forwardreverse">Forward Proxies and Reverse 
-       Proxies/Gateways</a></h2>
-      <p>Apache can be configured in both a <dfn>forward</dfn> and
-      <dfn>reverse</dfn> proxy (also known as <dfn>gateway</dfn>) mode.</p>
-
-      <p>An ordinary <dfn>forward proxy</dfn> is an intermediate
-      server that sits between the client and the <em>origin
-      server</em>.  In order to get content from the origin server,
-      the client sends a request to the proxy naming the origin server
-      as the target and the proxy then requests the content from the
-      origin server and returns it to the client.  The client must be
-      specially configured to use the forward proxy to access other
-      sites.</p>
-
-      <p>A typical usage of a forward proxy is to provide Internet
-      access to internal clients that are otherwise restricted by a
-      firewall.  The forward proxy can also use caching (as provided
-      by <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code>) to reduce network usage.</p>
-
-      <p>The forward proxy is activated using the <code class="directive"><a href="#proxyrequests">ProxyRequests</a></code> directive.  Because
-      forward proxies allow clients to access arbitrary sites through
-      your server and to hide their true origin, it is essential that
-      you <a href="#access">secure your server</a> so that only
-      authorized clients can access the proxy before activating a
-      forward proxy.</p>
-
-      <p>A <dfn>reverse proxy</dfn> (or <dfn>gateway</dfn>), by
-      contrast, appears to the client just like an ordinary web
-      server.  No special configuration on the client is necessary.
-      The client makes ordinary requests for content in the name-space
-      of the reverse proxy.  The reverse proxy then decides where to
-      send those requests, and returns the content as if it was itself
-      the origin.</p>
-
-      <p>A typical usage of a reverse proxy is to provide Internet
-      users access to a server that is behind a firewall.  Reverse
-      proxies can also be used to balance load among several back-end
-      servers, or to provide caching for a slower back-end server.
-      In addition, reverse proxies can be used simply to bring
-      several servers into the same URL space.</p>
-
-      <p>A reverse proxy is activated using the <code class="directive"><a href="#proxypass">ProxyPass</a></code> directive or the
-      <code>[P]</code> flag to the <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> directive.  It is
-      <strong>not</strong> necessary to turn <code class="directive"><a href="#proxyrequests">ProxyRequests</a></code> on in order to
-      configure a reverse proxy.</p>
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="examples" id="examples">Basic Examples</a></h2>
-
-    <p>The examples below are only a very basic idea to help you
-    get started.  Please read the documentation on the individual
-    directives.</p>
-
-    <p>In addition, if you wish to have caching enabled, consult
-    the documentation from <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code>.</p>
-
-    <div class="example"><h3>Reverse Proxy</h3><p><code>
-    ProxyPass /foo http://foo.example.com/bar<br />
-    ProxyPassReverse /foo http://foo.example.com/bar
-    </code></p></div>
-
-    <div class="example"><h3>Forward Proxy</h3><p><code>
-    ProxyRequests On<br />
-    ProxyVia On<br />
-    <br />
-    &lt;Proxy *&gt;<br />
-    <span class="indent">
-      Order deny,allow<br />
-      Deny from all<br />
-      Allow from internal.example.com<br />
-    </span>
-    &lt;/Proxy&gt;
-    </code></p></div>
-
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="workers" id="workers">Workers</a></h2>
-      <p>The proxy manages the configuration of origin servers and their
-      communication parameters in objects called <dfn>workers</dfn>.
-      There are two built-in workers, the default forward proxy worker and the
-      default reverse proxy worker. Additional workers can be configured
-      explicitly.</p>
-
-      <p>The two default workers have a fixed configuration
-      and will be used if no other worker matches the request.
-      They do not use HTTP Keep-Alive or connection pooling.
-      The TCP connections to the origin server will instead be
-      opened and closed for each request.</p>
-
-      <p>Explicitly configured workers are identified by their URL.
-      They are usually created and configured using
-      <code class="directive"><a href="#proxypass">ProxyPass</a></code> or
-      <code class="directive"><a href="#proxypassmatch">ProxyPassMatch</a></code> when used
-      for a reverse proxy:</p>
-
-      <div class="example"><p><code>
-          ProxyPass /example http://backend.example.com connectiontimeout=5 timeout=30
-      </code></p></div>
-
-      <p>This will create a worker associated with the origin server URL
-      <code>http://backend.example.com</code> and using the given timeout
-      values. When used in a forward proxy, workers are usually defined
-      via the <code class="directive"><a href="#proxyset">ProxySet</a></code> directive:</p>
-
-      <div class="example"><p><code>
-          ProxySet http://backend.example.com connectiontimeout=5 timeout=30
-      </code></p></div>
-
-      <p>or alternatively using <code class="directive"><a href="#proxy">Proxy</a></code>
-      and <code class="directive"><a href="#proxyset">ProxySet</a></code>:</p>
-
-      <div class="example"><p><code>
-        &lt;Proxy http://backend.example.com&gt;<br />
-        <span class="indent">
-          ProxySet connectiontimeout=5 timeout=30
-        </span>
-        &lt;/Proxy&gt;
-      </code></p></div>
-
-      <p>Using explicitly configured workers in the forward mode is
-      not very common, because forward proxies usually communicate with many
-      different origin servers. Creating explicit workers for some of the
-      origin servers can still be useful, if they are used very often.
-      Explicitly configured workers have no concept of forward or reverse
-      proxying by themselves. They encapsulate a common concept of
-      communication with origin servers. A worker created by
-      <code class="directive"><a href="#proxypass">ProxyPass</a></code> for use in a
-      reverse proxy will be also used for forward proxy requests whenever
-      the URL to the origin server matches the worker URL and vice versa.</p>
-
-      <p>The URL identifying a direct worker is the URL of its
-      origin server including any path components given:</p>
-
-      <div class="example"><p><code>
-          ProxyPass /examples http://backend.example.com/examples<br />
-          ProxyPass /docs http://backend.example.com/docs
-      </code></p></div>
-
-      <p>This example defines two different workers, each using a separate
-      connection pool and configuration.</p>
-
-      <div class="warning"><h3>Worker Sharing</h3>
-        <p>Worker sharing happens if the worker URLs overlap, which occurs when
-        the URL of some worker is a leading substring of the URL of another
-        worker defined later in the configuration file. In the following example</p>
-
-        <div class="example"><p><code>
-            ProxyPass /apps http://backend.example.com/ timeout=60<br />
-            ProxyPass /examples http://backend.example.com/examples timeout=10
-        </code></p></div>
-
-        <p>the second worker isn't actually created. Instead the first
-        worker is used. The benefit is, that there is only one connection pool,
-        so connections are more often reused. Note that all configuration attributes
-        given explicitly for the later worker and some configuration defaults will
-        overwrite the configuration given for the first worker. This will be logged
-        as a warning. In the above example the resulting timeout value
-        for the URL <code>/apps</code> will be <code>10</code> instead
-        of <code>60</code>!</p>
-
-        <p>If you want to avoid worker sharing, sort your worker definitions
-        by URL length, starting with the longest worker URLs. If you want to maximize
-        worker sharing use the reverse sort order. See also the related warning about
-        ordering <code class="directive"><a href="#proxypass">ProxyPass</a></code> directives.</p>
-
-      </div> 
-
-      <p>Explicitly configured workers come in two flavors:
-      <dfn>direct workers</dfn> and <dfn>(load) balancer workers</dfn>.
-      They support many important configuration attributes which are
-      described below in the <code class="directive"><a href="#proxypass">ProxyPass</a></code>
-      directive. The same attributes can also be set using
-      <code class="directive"><a href="#proxyset">ProxySet</a></code>.</p>
-
-      <p>The set of options available for a direct worker
-      depends on the protocol, which is specified in the origin server URL.
-      Available protocols include <code>ajp</code>,
-      <code>ftp</code>, <code>http</code> and <code>scgi</code>.</p>
-
-      <p>Balancer workers are virtual workers that use direct workers known
-      as their members to actually handle the requests. Each balancer can
-      have multiple members. When it handles a request, it chooses a member
-      based on the configured load balancing algorithm.</p>
-
-      <p>A balancer worker is created if its worker URL uses
-      <code>balancer</code> as the protocol scheme.
-      The balancer URL uniquely identifies the balancer worker.
-      Members are added to a balancer using
-      <code class="directive"><a href="#balancermember">BalancerMember</a></code>.</p>
-
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="access" id="access">Controlling access to your proxy</a></h2>
-      <p>You can control who can access your proxy via the <code class="directive"><a href="#proxy">&lt;Proxy&gt;</a></code> control block as in
-      the following example:</p>
-
-      <div class="example"><p><code>
-        &lt;Proxy *&gt;<br />
-        <span class="indent">
-          Order Deny,Allow<br />
-          Deny from all<br />
-          Allow from 192.168.0<br />
-        </span>
-        &lt;/Proxy&gt;
-      </code></p></div>
-
-      <p>For more information on access control directives, see
-      <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code>.</p>
-
-      <p>Strictly limiting access is essential if you are using a
-      forward proxy (using the <code class="directive"><a href="#proxyrequests">ProxyRequests</a></code> directive).
-      Otherwise, your server can be used by any client to access
-      arbitrary hosts while hiding his or her true identity.  This is
-      dangerous both for your network and for the Internet at large.
-      When using a reverse proxy (using the <code class="directive"><a href="#proxypass">ProxyPass</a></code> directive with
-      <code>ProxyRequests Off</code>), access control is less
-      critical because clients can only contact the hosts that you
-      have specifically configured.</p>
-
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="startup" id="startup">Slow Startup</a></h2>
-      <p>If you're using the <code class="directive"><a href="#proxyblock">ProxyBlock</a></code> directive, hostnames' IP addresses are looked up
-      and cached during startup for later match test. This may take a few
-      seconds (or more) depending on the speed with which the hostname lookups
-      occur.</p>
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="intranet" id="intranet">Intranet Proxy</a></h2>
-      <p>An Apache proxy server situated in an intranet needs to forward
-      external requests through the company's firewall (for this, configure
-      the <code class="directive"><a href="#proxyremote">ProxyRemote</a></code> directive
-      to forward the respective <var>scheme</var> to the firewall proxy).
-      However, when it has to
-      access resources within the intranet, it can bypass the firewall when
-      accessing hosts. The <code class="directive"><a href="#noproxy">NoProxy</a></code>
-      directive is useful for specifying which hosts belong to the intranet and
-      should be accessed directly.</p>
-
-      <p>Users within an intranet tend to omit the local domain name from their
-      WWW requests, thus requesting "http://somehost/" instead of
-      <code>http://somehost.example.com/</code>. Some commercial proxy servers
-      let them get away with this and simply serve the request, implying a
-      configured local domain. When the <code class="directive"><a href="#proxydomain">ProxyDomain</a></code> directive is used and the server is <a href="#proxyrequests">configured for proxy service</a>, Apache can return
-      a redirect response and send the client to the correct, fully qualified,
-      server address. This is the preferred method since the user's bookmark
-      files will then contain fully qualified hosts.</p>
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="envsettings" id="envsettings">Protocol Adjustments</a></h2>
-      <p>For circumstances where <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> is sending
-      requests to an origin server that doesn't properly implement
-      keepalives or HTTP/1.1, there are two <a href="../env.html">environment variables</a> that can force the
-      request to use HTTP/1.0 with no keepalive. These are set via the
-      <code class="directive"><a href="../mod/mod_env.html#setenv">SetEnv</a></code> directive.</p>
-
-      <p>These are the <code>force-proxy-request-1.0</code> and
-      <code>proxy-nokeepalive</code> notes.</p>
-
-      <div class="example"><p><code>
-        &lt;Location /buggyappserver/&gt;<br />
-        <span class="indent">
-          ProxyPass http://buggyappserver:7001/foo/<br />
-          SetEnv force-proxy-request-1.0 1<br />
-          SetEnv proxy-nokeepalive 1<br />
-        </span>
-        &lt;/Location&gt;
-      </code></p></div>
-
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="request-bodies" id="request-bodies">Request Bodies</a></h2>
-
-    <p>Some request methods such as POST include a request body.
-    The HTTP protocol requires that requests which include a body
-    either use chunked transfer encoding or send a
-    <code>Content-Length</code> request header.  When passing these
-    requests on to the origin server, <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code>
-    will always attempt to send the <code>Content-Length</code>.  But
-    if the body is large and the original request used chunked
-    encoding, then chunked encoding may also be used in the upstream
-    request.  You can control this selection using <a href="../env.html">environment variables</a>.  Setting
-    <code>proxy-sendcl</code> ensures maximum compatibility with
-    upstream servers by always sending the
-    <code>Content-Length</code>, while setting
-    <code>proxy-sendchunked</code> minimizes resource usage by using
-    chunked encoding.</p>
-
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="x-headers" id="x-headers">Reverse Proxy Request Headers</a></h2>
-
-    <p>When acting in a reverse-proxy mode (using the <code class="directive"><a href="#proxypass">ProxyPass</a></code> directive, for example),
-    <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code> adds several request headers in
-    order to pass information to the origin server. These headers
-    are:</p>
-
-    <dl>
-      <dt><code>X-Forwarded-For</code></dt>
-      <dd>The IP address of the client.</dd>
-      <dt><code>X-Forwarded-Host</code></dt>
-      <dd>The original host requested by the client in the <code>Host</code> 
-       HTTP request header.</dd>
-      <dt><code>X-Forwarded-Server</code></dt>
-      <dd>The hostname of the proxy server.</dd>
-    </dl>
-
-    <p>Be careful when using these headers on the origin server, since
-    they will contain more than one (comma-separated) value if the
-    original request already contained one of these headers. For
-    example, you can use <code>%{X-Forwarded-For}i</code> in the log
-    format string of the origin server to log the original clients IP
-    address, but you may get more than one address if the request
-    passes through several proxies.</p>
-
-    <p>See also the <code class="directive"><a href="#proxypreservehost">ProxyPreserveHost</a></code> and <code class="directive"><a href="#proxyvia">ProxyVia</a></code> directives, which control
-    other request headers.</p>
-
-   </div>
 </div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_proxy.html" title="English">&nbsp;en&nbsp;</a> |

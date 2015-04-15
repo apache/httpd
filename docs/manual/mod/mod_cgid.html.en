@@ -73,6 +73,7 @@
 <li><a href="../suexec.html">Running CGI programs under different
     user IDs</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
+
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CGIDScriptTimeout" id="CGIDScriptTimeout">CGIDScriptTimeout</a> <a name="cgidscripttimeout" id="cgidscripttimeout">Directive</a></h2>
 <table class="directive">
@@ -121,7 +122,6 @@ the cgi daemon</td></tr>
 
 
 </div>
-
 </div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_cgid.html" title="English">&nbsp;en&nbsp;</a> |
