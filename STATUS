@@ -144,6 +144,25 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (modulo CHANGES)
      +1: covener, ylavic, trawick
 
+  *) mod_cgi, mod_cgid: If both modules get installed,
+     use IfModule for MPM to LoadModule mod_cgi for prefork
+     and mod_cgid for all other MPMs. PR 57379.
+     Previously when combined with --enable-load-all-modules
+     both modules were loaded and it was undefined
+     which one actually handled cgi requests.
+     Based on a patch by olli hauer <ohauer gmx.de>.
+     trunk patch: http://svn.apache.org/r1652955
+                  http://svn.apache.org/r1652985
+                  http://svn.apache.org/r1652989
+     2.4.x patch: trunk works
+     +1: rjung, ylavic, covener
+
+  *) mod_proxy: Use the correct server name for SNI in case the backend
+     SSL connection itself is established via a proxy server.  PR 57139
+     trunk patch: http://svn.apache.org/r1634120
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: ylavic, rjung, covener
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -230,19 +249,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-ap_listeners_buckets.patch
      +1: ylavic
 
-   * mod_cgi, mod_cgid: If both modules get installed,
-     use IfModule for MPM to LoadModule mod_cgi for prefork
-     and mod_cgid for all other MPMs. PR 57379.
-     Previously when combined with --enable-load-all-modules
-     both modules were loaded and it was undefined
-     which one actually handled cgi requests.
-     Based on a patch by olli hauer <ohauer gmx.de>.
-     trunk patch: http://svn.apache.org/r1652955
-                  http://svn.apache.org/r1652985
-                  http://svn.apache.org/r1652989
-     2.4.x patch: trunk works
-     +1: rjung, ylavic
-
    * mod_ssl: Add support for extracting subjectAltName entries of type
      rfc822Name and dNSName into SSL_{CLIENT,SERVER}_SAN_{Email,DNS}_n
      variables. (also covers PR57207)
@@ -260,12 +266,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1656359 (CHANGES entry)
      2.4.x patch: trunk works (modulo CHANGES, docs/log-message-tags)
      +1: ylavic
-
-  *) mod_proxy: Use the correct server name for SNI in case the backend
-     SSL connection itself is established via a proxy server.  PR 57139
-     trunk patch: http://svn.apache.org/r1634120
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, rjung
 
   *) http: Make ap_die() robust against any HTTP error code and not modify
      response status (finally logged) when nothing is to be done. PR 56035.
