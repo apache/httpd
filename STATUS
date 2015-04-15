@@ -198,6 +198,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1626978
      2.4.x patch: http://people.apache.org/~jkaluza/patches/httpd-2.4.x-errorlog_provider.patch
      +1: jkaluza
+     +1: covener w/ doc or code to fix syntax (providername:providerarg not supported like syslog or socacheproviders, 
+                 needs 2 args which is not valid in ErrorLog manual)
 
    * mod_journald: Add new module mod_journald to log error logs into journald.
                    This patch needs changes done in mod_systemd patch (already
