@@ -318,7 +318,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      featue check for libressl. 
      trunk patch: http://svn.apache.org/r1673455
      2.4.x patch:  trunk works (modulo CHANGES)
-     +1: covener
+     +1: covener, trawick
 
   *) mod_proxy_wstunnel: Avoid an empty response by failing with 502 (Bad
      Gateway) when no response is ever received from the backend.
