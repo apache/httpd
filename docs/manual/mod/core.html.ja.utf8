@@ -110,7 +110,6 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#virtualhost">&lt;VirtualHost&gt;</a></li>
 </ul>
 <ul class="seealso"><li><a href="#comments_section">コメント</a></li></ul></div>
-
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AcceptFilter" id="AcceptFilter">AcceptFilter</a> <a name="acceptfilter" id="acceptfilter">ディレクティブ</a></h2>
 <table class="directive">
@@ -3499,6 +3498,7 @@ Off otherwise</code></td></tr>
     &lt;Directory&gt;, &lt;Location&gt;, &lt;Files&gt; セクションの動作法</a></li>
 </ul>
 </div>
+
 </div>
 <div class="bottomlang">
 <p><span>翻訳済み言語: </span><a href="../de/mod/core.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |

@@ -73,6 +73,145 @@
 <li><a href="../filter.html">フィルタ</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">コメント</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ExtFilterDefine" id="ExtFilterDefine">ExtFilterDefine</a> <a name="extfilterdefine" id="extfilterdefine">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>外部フィルタを定義</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ExtFilterDefine <var>filtername</var> <var>parameters</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_ext_filter</td></tr>
+</table>
+    <p><code class="directive">ExtFilterDefine</code> は、実行するプログラムや
+    引数など、外部フィルタの特性を定義します。</p>
+
+    <p><var>filtername</var> は定義するフィルタの名前を指定します。
+    この名前は後で <code class="directive"><a href="../mod/core.html#setoutputfilter">SetOutputFilter</a></code>
+    ディレクティブで指定できます。名前は登録されるすべてのフィルタで
+    一意でなくてはなりません。<em>現時点では、フィルタの登録 API からは
+    エラーは報告されません。ですから、重複する名前を使ってしまったときでも
+    ユーザにはそのことは報告されません。</em></p>
+
+    <p>続くパラメータの順番は関係無く、それらは実行する外部コマンドと、
+    他の特性を定義します。<code>cmd=</code> だけが必須のパラメータです。
+    指定可能なパラメータは:</p>
+
+    <dl>
+      <dt><code>cmd=<var>cmdline</var></code></dt>
+
+      <dd><code>cmd=</code> キーワードは実行する外部コマンドを指定します。
+      プログラム名の後に引数がある場合は、コマンド行は引用符で囲む
+      必要があります (<em>例えば</em>、<code>cmd="<var>/bin/mypgm</var>
+      <var>arg1</var> <var>arg2</var>"</code> のように)。プログラムは
+      シェル経由でなく、直接実行されますので、通常のシェル用の
+      エスケープは必要ありません。プログラムの引数は空白で区切られます。
+      プログラムの引数の一部となる必要のある空白はバックスペースでエスケープ
+      できます。引数の一部になるバックスラッシュはバックスラッシュで
+      エスケープする必要があります。標準の CGI 環境変数に加えて、
+      環境変数 DOCUMENT_URI, DOCUMENT_PATH_INFO, and 
+      QUERY_STRING_UNESCAPED がプログラムのために設定されます。</dd>
+
+      <dt><code>mode=<var>mode</var></code></dt>
+
+      <dd>応答を処理するフィルタには <code>mode=output</code> (デフォルト)
+      を使います。リクエストを処理するフィルタには <code>mode=input</code>
+      を使います。<code>mode=input</code> は Apache 2.1 以降で使用できます。</dd>
+
+      <dt><code>intype=<var>imt</var></code></dt>
+
+      <dd>このパラメータはフィルタされるべきドキュメントの
+      インターネットメディアタイプ (<em>すなわち</em>、MIME タイプ) を
+      指定します。デフォルトではすべてのドキュメントがフィルタされます。
+      <code>intype=</code> が指定されていれば、フィルタは指定されていない
+      ドキュメントには適用されなくなります。</dd>
+
+      <dt><code>outtype=<var>imt</var></code></dt>
+
+      <dd>このパラメータはフィルタされたドキュメントの
+      インターネットメディアタイプ (<em>すなわち</em>、MIME タイプ) を
+      指定します。フィルタ動作にともなってインターネットメディアタイプが
+      変わる場合に有用です。デフォルトではインターネットメディアタイプは
+      変更されません。</dd>
+
+      <dt><code>PreservesContentLength</code></dt>
+
+      <dd><code>PreservesContentLength</code> キーワードはフィルタが
+      content length <span class="transnote">(<em>訳注:</em> コンテントの長さ)</span>
+      を変更しないということを指定します。ほとんどのフィルタは
+      content length を変更するため、これはデフォルトではありません。
+      フィルタが長さを変えないときは、このキーワードを指定すると
+      よいでしょう。</dd>
+
+      <dt><code>ftype=<var>filtertype</var></code></dt>
+
+      <dd>このパラメータはフィルタが登録されるべきフィルタタイプの
+      数値を指定します。ほとんどの場合は、デフォルトの AP_FTYPE_RESOURCE で
+      十分です。フィルタがフィルタチェーンの別の場所で動作する必要がある
+      場合は、このパラメータを指定する必要があります。指定可能な値は
+      util_filter.h の AP_FTYPE_foo 定義を参照してください。</dd>
+
+      <dt><code>disableenv=<var>env</var></code></dt>
+
+      <dd>設定されていた場合にフィルタを無効にするための環境変数を
+      指定します。</dd>
+
+      <dt><code>enableenv=<var>env</var></code></dt>
+
+      <dd>このパラメータはフィルタが有効になるために設定されていなければ
+      ならない環境変数を指定します。</dd>
+    </dl>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ExtFilterOptions" id="ExtFilterOptions">ExtFilterOptions</a> <a name="extfilteroptions" id="extfilteroptions">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td><code class="module"><a href="../mod/mod_ext_filter.html">mod_ext_filter</a></code> のオプションを設定</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ExtFilterOptions <var>option</var> [<var>option</var>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>ExtFilterOptions DebugLevel=0 NoLogStderr</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>ディレクトリ</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_ext_filter</td></tr>
+</table>
+    <p><code class="directive">ExtFilterOptions</code> ディレクティブは
+    <code class="module"><a href="../mod/mod_ext_filter.html">mod_ext_filter</a></code> の特別な処理用のオプションを
+    指定します。<var>Option</var> には以下のどれかを指定します。</p>
+
+    <dl>
+      <dt><code>DebugLevel=<var>n</var></code></dt>
+
+      <dd>
+        <code>DebugLevel</code> で <code class="module"><a href="../mod/mod_ext_filter.html">mod_ext_filter</a></code> 
+        の生成するデバッグメッセージのレベルを設定できます。
+        デフォルトでは、デバッグメッセージは生成されません。
+        これは <code>DebugLevel=0</code> と設定するのと同じです。
+        数字が大きくなればなるほど、より多くのデバッグメッセージが
+        生成され、サーバの性能は落ちます。数値の実際の意味は
+        <code>mod_ext_filter.c</code> の先頭近くの DBGLVL_ 定数の
+        定義で説明されています。
+
+        <p>注: デバッグメッセージを Apache のエラーログに
+        保存するようにするためには、core のディレクティブ 
+        <code class="directive"><a href="../mod/core.html#loglevel">LogLevel</a></code> 
+        を使う必要があります。</p>
+      </dd>
+
+      <dt><code>LogStderr | NoLogStderr</code></dt>
+
+      <dd><code>LogStderr</code> キーワードは外部フィルタプログラムにより
+      標準エラー <span class="transnote">(<em>訳注:</em> stderr)</span> に書かれたメッセージを
+      Apache のエラーログに保存するようにします。<code>NoLogStderr</code> は
+      逆に保存しないようにします。</dd>
+    </dl>
+
+    <div class="example"><h3>例</h3><p><code>
+      ExtFilterOptions LogStderr DebugLevel=0
+    </code></p></div>
+
+    <p>この例では、フィルタの標準出力に書かれたメッセージは
+    Apache のエラーログに保存されます。<code class="module"><a href="../mod/mod_ext_filter.html">mod_ext_filter</a></code> からは
+    デバッグメッセージは生成されません。</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="examples" id="examples">例</a></h2>
 
@@ -223,145 +362,6 @@
         close(SAVE);
       </code></p></div>
     
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ExtFilterDefine" id="ExtFilterDefine">ExtFilterDefine</a> <a name="extfilterdefine" id="extfilterdefine">ディレクティブ</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>外部フィルタを定義</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ExtFilterDefine <var>filtername</var> <var>parameters</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_ext_filter</td></tr>
-</table>
-    <p><code class="directive">ExtFilterDefine</code> は、実行するプログラムや
-    引数など、外部フィルタの特性を定義します。</p>
-
-    <p><var>filtername</var> は定義するフィルタの名前を指定します。
-    この名前は後で <code class="directive"><a href="../mod/core.html#setoutputfilter">SetOutputFilter</a></code>
-    ディレクティブで指定できます。名前は登録されるすべてのフィルタで
-    一意でなくてはなりません。<em>現時点では、フィルタの登録 API からは
-    エラーは報告されません。ですから、重複する名前を使ってしまったときでも
-    ユーザにはそのことは報告されません。</em></p>
-
-    <p>続くパラメータの順番は関係無く、それらは実行する外部コマンドと、
-    他の特性を定義します。<code>cmd=</code> だけが必須のパラメータです。
-    指定可能なパラメータは:</p>
-
-    <dl>
-      <dt><code>cmd=<var>cmdline</var></code></dt>
-
-      <dd><code>cmd=</code> キーワードは実行する外部コマンドを指定します。
-      プログラム名の後に引数がある場合は、コマンド行は引用符で囲む
-      必要があります (<em>例えば</em>、<code>cmd="<var>/bin/mypgm</var>
-      <var>arg1</var> <var>arg2</var>"</code> のように)。プログラムは
-      シェル経由でなく、直接実行されますので、通常のシェル用の
-      エスケープは必要ありません。プログラムの引数は空白で区切られます。
-      プログラムの引数の一部となる必要のある空白はバックスペースでエスケープ
-      できます。引数の一部になるバックスラッシュはバックスラッシュで
-      エスケープする必要があります。標準の CGI 環境変数に加えて、
-      環境変数 DOCUMENT_URI, DOCUMENT_PATH_INFO, and 
-      QUERY_STRING_UNESCAPED がプログラムのために設定されます。</dd>
-
-      <dt><code>mode=<var>mode</var></code></dt>
-
-      <dd>応答を処理するフィルタには <code>mode=output</code> (デフォルト)
-      を使います。リクエストを処理するフィルタには <code>mode=input</code>
-      を使います。<code>mode=input</code> は Apache 2.1 以降で使用できます。</dd>
-
-      <dt><code>intype=<var>imt</var></code></dt>
-
-      <dd>このパラメータはフィルタされるべきドキュメントの
-      インターネットメディアタイプ (<em>すなわち</em>、MIME タイプ) を
-      指定します。デフォルトではすべてのドキュメントがフィルタされます。
-      <code>intype=</code> が指定されていれば、フィルタは指定されていない
-      ドキュメントには適用されなくなります。</dd>
-
-      <dt><code>outtype=<var>imt</var></code></dt>
-
-      <dd>このパラメータはフィルタされたドキュメントの
-      インターネットメディアタイプ (<em>すなわち</em>、MIME タイプ) を
-      指定します。フィルタ動作にともなってインターネットメディアタイプが
-      変わる場合に有用です。デフォルトではインターネットメディアタイプは
-      変更されません。</dd>
-
-      <dt><code>PreservesContentLength</code></dt>
-
-      <dd><code>PreservesContentLength</code> キーワードはフィルタが
-      content length <span class="transnote">(<em>訳注:</em> コンテントの長さ)</span>
-      を変更しないということを指定します。ほとんどのフィルタは
-      content length を変更するため、これはデフォルトではありません。
-      フィルタが長さを変えないときは、このキーワードを指定すると
-      よいでしょう。</dd>
-
-      <dt><code>ftype=<var>filtertype</var></code></dt>
-
-      <dd>このパラメータはフィルタが登録されるべきフィルタタイプの
-      数値を指定します。ほとんどの場合は、デフォルトの AP_FTYPE_RESOURCE で
-      十分です。フィルタがフィルタチェーンの別の場所で動作する必要がある
-      場合は、このパラメータを指定する必要があります。指定可能な値は
-      util_filter.h の AP_FTYPE_foo 定義を参照してください。</dd>
-
-      <dt><code>disableenv=<var>env</var></code></dt>
-
-      <dd>設定されていた場合にフィルタを無効にするための環境変数を
-      指定します。</dd>
-
-      <dt><code>enableenv=<var>env</var></code></dt>
-
-      <dd>このパラメータはフィルタが有効になるために設定されていなければ
-      ならない環境変数を指定します。</dd>
-    </dl>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ExtFilterOptions" id="ExtFilterOptions">ExtFilterOptions</a> <a name="extfilteroptions" id="extfilteroptions">ディレクティブ</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">説明:</a></th><td><code class="module"><a href="../mod/mod_ext_filter.html">mod_ext_filter</a></code> のオプションを設定</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ExtFilterOptions <var>option</var> [<var>option</var>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>ExtFilterOptions DebugLevel=0 NoLogStderr</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>ディレクトリ</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_ext_filter</td></tr>
-</table>
-    <p><code class="directive">ExtFilterOptions</code> ディレクティブは
-    <code class="module"><a href="../mod/mod_ext_filter.html">mod_ext_filter</a></code> の特別な処理用のオプションを
-    指定します。<var>Option</var> には以下のどれかを指定します。</p>
-
-    <dl>
-      <dt><code>DebugLevel=<var>n</var></code></dt>
-
-      <dd>
-        <code>DebugLevel</code> で <code class="module"><a href="../mod/mod_ext_filter.html">mod_ext_filter</a></code> 
-        の生成するデバッグメッセージのレベルを設定できます。
-        デフォルトでは、デバッグメッセージは生成されません。
-        これは <code>DebugLevel=0</code> と設定するのと同じです。
-        数字が大きくなればなるほど、より多くのデバッグメッセージが
-        生成され、サーバの性能は落ちます。数値の実際の意味は
-        <code>mod_ext_filter.c</code> の先頭近くの DBGLVL_ 定数の
-        定義で説明されています。
-
-        <p>注: デバッグメッセージを Apache のエラーログに
-        保存するようにするためには、core のディレクティブ 
-        <code class="directive"><a href="../mod/core.html#loglevel">LogLevel</a></code> 
-        を使う必要があります。</p>
-      </dd>
-
-      <dt><code>LogStderr | NoLogStderr</code></dt>
-
-      <dd><code>LogStderr</code> キーワードは外部フィルタプログラムにより
-      標準エラー <span class="transnote">(<em>訳注:</em> stderr)</span> に書かれたメッセージを
-      Apache のエラーログに保存するようにします。<code>NoLogStderr</code> は
-      逆に保存しないようにします。</dd>
-    </dl>
-
-    <div class="example"><h3>例</h3><p><code>
-      ExtFilterOptions LogStderr DebugLevel=0
-    </code></p></div>
-
-    <p>この例では、フィルタの標準出力に書かれたメッセージは
-    Apache のエラーログに保存されます。<code class="module"><a href="../mod/mod_ext_filter.html">mod_ext_filter</a></code> からは
-    デバッグメッセージは生成されません。</p>
-
 </div>
 </div>
 <div class="bottomlang">

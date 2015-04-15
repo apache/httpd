@@ -65,7 +65,6 @@ on characteristics of the request</td></tr>
 <ul class="seealso">
 <li><a href="../env.html">Environment Variables in Apache</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
-
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="BrowserMatch" id="BrowserMatch">BrowserMatch</a> <a name="browsermatch" id="browsermatch">Directive</a></h2>
 <table class="directive">
@@ -278,6 +277,7 @@ without respect to case</td></tr>
     combination.</p>
 
 </div>
+
 </div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_setenvif.html" title="English">&nbsp;en&nbsp;</a> |

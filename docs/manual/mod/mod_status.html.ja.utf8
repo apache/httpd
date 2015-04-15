@@ -85,58 +85,6 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#machinereadable">機械読み取り可能なステータスファイル</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">コメント</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="enable" id="enable">Status を使用可能にする</a></h2>
-    
-
-    <p>example.com ドメインからのブラウザのみに対して
-    ステータスの報告を使用可能にするには
-    以下のコードを <code>httpd.conf</code> 設定ファイルに追加します</p>
-<div class="example"><p><code>
-    &lt;Location /server-status&gt;<br />
-    SetHandler server-status<br />
-<br />
-    Order Deny,Allow<br />
-    Deny from all<br />
-    Allow from .example.com<br />
-    &lt;/Location&gt;
-</code></p></div>
-
-    <p>これで、サーバの統計情報をウェブブラウザを使って
-    <code>http://your.server.name/server-status</code> をアクセスすることにより
-    知ることができるようになります。</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="autoupdate" id="autoupdate">自動更新</a></h2>
-
-    
-    <p>ブラウザが「リフレッシュ」機能をサポートしていれば、ステータスページを
-    自動的に更新するようにできます。N 秒毎に更新させるためには
-    <code>http://your.server.name/server-status?refresh=N</code>
-    というページをアクセスしてください。</p>
-
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="machinereadable" id="machinereadable">機械読み取り可能なステータスファイル</a></h2>
-
-    
-    <p><code>http://your.server.name/server-status?auto</code> を
-    アクセスすることにより、ステータスファイルの機械読み取り可能なバージョンを
-    得ることができます。これは自動的に実行されるときに便利です。
-    Apache の <code>/support</code> ディレクトリにある
-    Perl プログラム <code>log_server_status</code> を見てください。</p>
-
-    <div class="note">
-      <strong><code class="module"><a href="../mod/mod_status.html">mod_status</a></code> がサーバに組み込まれている
-      場合、ハンドラの機能はディレクトリ<em>毎</em>のファイル
-      (<em>すなわち</em>、<code>.htaccess</code>) も含む<em>すべて</em>の
-      設定ファイルで使用可能になることには注意をしておく必要があります。
-      これは、サイトによってはセキュリティに関する望ましくない結果を
-      もたらすことがあるかもしれません。</strong>
-    </div>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ExtendedStatus" id="ExtendedStatus">ExtendedStatus</a> <a name="extendedstatus" id="extendedstatus">ディレクティブ</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>各リクエストに対して拡張ステータス情報を保存する</td></tr>
@@ -186,6 +134,58 @@
       </tr>
     </table>
 
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="enable" id="enable">Status を使用可能にする</a></h2>
+    
+
+    <p>example.com ドメインからのブラウザのみに対して
+    ステータスの報告を使用可能にするには
+    以下のコードを <code>httpd.conf</code> 設定ファイルに追加します</p>
+<div class="example"><p><code>
+    &lt;Location /server-status&gt;<br />
+    SetHandler server-status<br />
+<br />
+    Order Deny,Allow<br />
+    Deny from all<br />
+    Allow from .example.com<br />
+    &lt;/Location&gt;
+</code></p></div>
+
+    <p>これで、サーバの統計情報をウェブブラウザを使って
+    <code>http://your.server.name/server-status</code> をアクセスすることにより
+    知ることができるようになります。</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="autoupdate" id="autoupdate">自動更新</a></h2>
+
+    
+    <p>ブラウザが「リフレッシュ」機能をサポートしていれば、ステータスページを
+    自動的に更新するようにできます。N 秒毎に更新させるためには
+    <code>http://your.server.name/server-status?refresh=N</code>
+    というページをアクセスしてください。</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="machinereadable" id="machinereadable">機械読み取り可能なステータスファイル</a></h2>
+
+    
+    <p><code>http://your.server.name/server-status?auto</code> を
+    アクセスすることにより、ステータスファイルの機械読み取り可能なバージョンを
+    得ることができます。これは自動的に実行されるときに便利です。
+    Apache の <code>/support</code> ディレクトリにある
+    Perl プログラム <code>log_server_status</code> を見てください。</p>
+
+    <div class="note">
+      <strong><code class="module"><a href="../mod/mod_status.html">mod_status</a></code> がサーバに組み込まれている
+      場合、ハンドラの機能はディレクトリ<em>毎</em>のファイル
+      (<em>すなわち</em>、<code>.htaccess</code>) も含む<em>すべて</em>の
+      設定ファイルで使用可能になることには注意をしておく必要があります。
+      これは、サイトによってはセキュリティに関する望ましくない結果を
+      もたらすことがあるかもしれません。</strong>
+    </div>
 
 </div>
 </div>

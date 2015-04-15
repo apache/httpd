@@ -68,118 +68,6 @@ Negotiation</a></li>
 <li><a href="../env.html">Environment Variables</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="typemaps" id="typemaps">Type maps</a></h2>
-    <p>A type map has a format similar to RFC822 mail headers. It
-    contains document descriptions separated by blank lines, with
-    lines beginning with a hash character ('#') treated as
-    comments. A document description consists of several header
-    records; records may be continued on multiple lines if the
-    continuation lines start with spaces. The leading space will be
-    deleted and the lines concatenated. A header record consists of
-    a keyword name, which always ends in a colon, followed by a
-    value. Whitespace is allowed between the header name and value,
-    and between the tokens of value. The headers allowed are: </p>
-
-    <dl>
-      <dt><code>Content-Encoding:</code></dt>
-      <dd>The encoding of the file. Apache only recognizes
-      encodings that are defined by an <code class="directive"><a href="../mod/mod_mime.html#addencoding">AddEncoding</a></code> directive.
-      This normally includes the encodings <code>x-compress</code>
-      for compress'd files, and <code>x-gzip</code> for gzip'd
-      files. The <code>x-</code> prefix is ignored for encoding
-      comparisons.</dd>
-
-      <dt><code>Content-Language:</code></dt>
-      <dd>The language(s) of the variant, as an Internet standard
-      language tag (<a href="http://www.ietf.org/rfc/rfc1766.txt">RFC 1766</a>). An example is <code>en</code>,
-      meaning English. If the variant contains more than one
-      language, they are separated by a comma.</dd>
-
-      <dt><code>Content-Length:</code></dt>
-      <dd>The length of the file, in bytes. If this header is not
-      present, then the actual length of the file is used.</dd>
-
-      <dt><code>Content-Type:</code></dt>
-
-      <dd>
-        The <a class="glossarylink" href="../glossary.html#mime-type" title="see glossary">MIME media type</a> of
-        the document, with optional parameters. Parameters are
-        separated from the media type and from one another by a
-        semi-colon, with a syntax of <code>name=value</code>. Common
-        parameters include:
-
-        <dl>
-          <dt><code>level</code></dt>
-          <dd>an integer specifying the version of the media type.
-          For <code>text/html</code> this defaults to 2, otherwise
-          0.</dd>
-
-          <dt><code>qs</code></dt>
-          <dd>a floating-point number with a value in the range 0[.000]
-          to 1[.000], indicating the relative 'quality' of this variant
-          compared to the other available variants, independent of
-          the client's capabilities. For example, a jpeg file is
-          usually of higher source quality than an ascii file if it
-          is attempting to represent a photograph. However, if the
-          resource being represented is ascii art, then an ascii
-          file would have a higher source quality than a jpeg file.
-          All <code>qs</code> values are therefore specific to a given
-          resource.</dd>
-        </dl>
-
-        <div class="example"><h3>Example</h3><p><code>
-          Content-Type: image/jpeg; qs=0.8
-        </code></p></div>
-      </dd>
-
-      <dt><code>URI:</code></dt>
-      <dd>uri of the file containing the variant (of the given
-      media type, encoded with the given content encoding). These
-      are interpreted as URLs relative to the map file; they must
-      be on the same server (!), and they must refer to files to
-      which the client would be granted access if they were to be
-      requested directly.</dd>
-
-      <dt><code>Body:</code></dt>
-      <dd>New in Apache 2.0, the actual content of the resource may
-      be included in the type-map file using the Body header.  This
-      header must contain a string that designates a delimiter for
-      the body content. Then all following lines in the type map
-      file will be considered part of the resource body until the
-      delimiter string is found.
-
-      <div class="example"><h3>Example:</h3><p><code>
-        Body:----xyz----<br />
-        &lt;html&gt;<br />
-        &lt;body&gt;<br />
-        &lt;p&gt;Content of the page.&lt;/p&gt;<br />
-        &lt;/body&gt;<br />
-        &lt;/html&gt;<br />
-        ----xyz----
-      </code></p></div>
-      </dd>
-    </dl>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="multiviews" id="multiviews">MultiViews</a></h2>
-    <p>A MultiViews search is enabled by the <code>MultiViews</code>
-    <code class="directive"><a href="../mod/core.html#options">Options</a></code>. If the server receives a
-    request for <code>/some/dir/foo</code> and
-    <code>/some/dir/foo</code> does <em>not</em> exist, then the
-    server reads the directory looking for all files named
-    <code>foo.*</code>, and effectively fakes up a type map which
-    names all those files, assigning them the same media types and
-    content-encodings it would have if the client had asked for one
-    of them by name. It then chooses the best match to the client's
-    requirements, and returns that document.</p>
-
-    <p>The <code class="directive"><a href="../mod/mod_mime.html#multiviewsmatch">MultiViewsMatch</a></code>
-    directive configures whether Apache will consider files
-    that do not have content negotiation meta-information assigned
-    to them when choosing files.</p>
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CacheNegotiatedDocs" id="CacheNegotiatedDocs">CacheNegotiatedDocs</a> <a name="cachenegotiateddocs" id="cachenegotiateddocs">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Allows content-negotiated documents to be 
@@ -299,6 +187,118 @@ the client does not express a preference</td></tr>
 <ul>
 <li><code class="directive"><a href="../mod/mod_mime.html#addlanguage">AddLanguage</a></code></li>
 </ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="typemaps" id="typemaps">Type maps</a></h2>
+    <p>A type map has a format similar to RFC822 mail headers. It
+    contains document descriptions separated by blank lines, with
+    lines beginning with a hash character ('#') treated as
+    comments. A document description consists of several header
+    records; records may be continued on multiple lines if the
+    continuation lines start with spaces. The leading space will be
+    deleted and the lines concatenated. A header record consists of
+    a keyword name, which always ends in a colon, followed by a
+    value. Whitespace is allowed between the header name and value,
+    and between the tokens of value. The headers allowed are: </p>
+
+    <dl>
+      <dt><code>Content-Encoding:</code></dt>
+      <dd>The encoding of the file. Apache only recognizes
+      encodings that are defined by an <code class="directive"><a href="../mod/mod_mime.html#addencoding">AddEncoding</a></code> directive.
+      This normally includes the encodings <code>x-compress</code>
+      for compress'd files, and <code>x-gzip</code> for gzip'd
+      files. The <code>x-</code> prefix is ignored for encoding
+      comparisons.</dd>
+
+      <dt><code>Content-Language:</code></dt>
+      <dd>The language(s) of the variant, as an Internet standard
+      language tag (<a href="http://www.ietf.org/rfc/rfc1766.txt">RFC 1766</a>). An example is <code>en</code>,
+      meaning English. If the variant contains more than one
+      language, they are separated by a comma.</dd>
+
+      <dt><code>Content-Length:</code></dt>
+      <dd>The length of the file, in bytes. If this header is not
+      present, then the actual length of the file is used.</dd>
+
+      <dt><code>Content-Type:</code></dt>
+
+      <dd>
+        The <a class="glossarylink" href="../glossary.html#mime-type" title="see glossary">MIME media type</a> of
+        the document, with optional parameters. Parameters are
+        separated from the media type and from one another by a
+        semi-colon, with a syntax of <code>name=value</code>. Common
+        parameters include:
+
+        <dl>
+          <dt><code>level</code></dt>
+          <dd>an integer specifying the version of the media type.
+          For <code>text/html</code> this defaults to 2, otherwise
+          0.</dd>
+
+          <dt><code>qs</code></dt>
+          <dd>a floating-point number with a value in the range 0[.000]
+          to 1[.000], indicating the relative 'quality' of this variant
+          compared to the other available variants, independent of
+          the client's capabilities. For example, a jpeg file is
+          usually of higher source quality than an ascii file if it
+          is attempting to represent a photograph. However, if the
+          resource being represented is ascii art, then an ascii
+          file would have a higher source quality than a jpeg file.
+          All <code>qs</code> values are therefore specific to a given
+          resource.</dd>
+        </dl>
+
+        <div class="example"><h3>Example</h3><p><code>
+          Content-Type: image/jpeg; qs=0.8
+        </code></p></div>
+      </dd>
+
+      <dt><code>URI:</code></dt>
+      <dd>uri of the file containing the variant (of the given
+      media type, encoded with the given content encoding). These
+      are interpreted as URLs relative to the map file; they must
+      be on the same server (!), and they must refer to files to
+      which the client would be granted access if they were to be
+      requested directly.</dd>
+
+      <dt><code>Body:</code></dt>
+      <dd>New in Apache 2.0, the actual content of the resource may
+      be included in the type-map file using the Body header.  This
+      header must contain a string that designates a delimiter for
+      the body content. Then all following lines in the type map
+      file will be considered part of the resource body until the
+      delimiter string is found.
+
+      <div class="example"><h3>Example:</h3><p><code>
+        Body:----xyz----<br />
+        &lt;html&gt;<br />
+        &lt;body&gt;<br />
+        &lt;p&gt;Content of the page.&lt;/p&gt;<br />
+        &lt;/body&gt;<br />
+        &lt;/html&gt;<br />
+        ----xyz----
+      </code></p></div>
+      </dd>
+    </dl>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="multiviews" id="multiviews">MultiViews</a></h2>
+    <p>A MultiViews search is enabled by the <code>MultiViews</code>
+    <code class="directive"><a href="../mod/core.html#options">Options</a></code>. If the server receives a
+    request for <code>/some/dir/foo</code> and
+    <code>/some/dir/foo</code> does <em>not</em> exist, then the
+    server reads the directory looking for all files named
+    <code>foo.*</code>, and effectively fakes up a type map which
+    names all those files, assigning them the same media types and
+    content-encodings it would have if the client had asked for one
+    of them by name. It then chooses the best match to the client's
+    requirements, and returns that document.</p>
+
+    <p>The <code class="directive"><a href="../mod/mod_mime.html#multiviewsmatch">MultiViewsMatch</a></code>
+    directive configures whether Apache will consider files
+    that do not have content negotiation meta-information assigned
+    to them when choosing files.</p>
 </div>
 </div>
 <div class="bottomlang">

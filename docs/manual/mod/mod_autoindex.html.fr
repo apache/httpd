@@ -99,114 +99,6 @@ shell Win32 <code>dir</code></td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#query">Arguments de la requête d'autoindexation</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="query" id="query">Arguments de la requête d'autoindexation</a></h2>
-    
-
-    <p>Apache 2.0.23 a réorganisé les arguments de requête pour le tri
-    des colonnes, et intoduit un groupe complet de nouvelles options de
-    requête. Pour interdire effectivement au client tout contrôle sur
-    l'affichage, l'option <code><a href="#indexoptions.ignoreclient">IndexOptions
-    IgnoreClient</a></code> a été ajoutée.</p>
-
-    <p>Les en-têtes de tri des colonnes eux-mêmes sont des hyper-liens
-    auto-référant qui ajoutent les options de tri à la requête énumérées
-    ci-dessous qui peuvent être ajoutées à toute requête concernant la
-    ressource répertoire.</p>
-
-    <ul>
-      <li><code>C=N</code> trie l'affichage en fonction du nom de
-      fichier</li>
-
-      <li><code>C=M</code> trie l'affichage en fonction de la date de
-      dernière modification, puis du nom de fichier</li>
-
-      <li><code>C=S</code> trie l'affichage en fonction de la taille,
-      puis du nom de fichier</li>
-
-      <li class="separate"><code>C=D</code> trie l'affichage en fonction
-      de la description, puis du nom de fichier</li>
-
-      <li><code>O=A</code> trie l'affichage selon l'ordre croissant</li>
-
-      <li class="separate"><code>O=D</code> trie l'affichage selon
-      l'ordre décroissant</li>
-
-      <li><code>F=0</code> affiche le listing sous la forme d'une simple
-      liste (not FancyIndexed)</li>
-
-      <li><code>F=1</code> affiche le listing avec en-têtes de colonnes
-      sous forme de liens hyper-textes (FancyIndexed)</li>
-
-      <li class="separate"><code>F=2</code> affiche le listing sous
-      forme de table HTML avec en-têtes de colonnes contenant des liens
-      hyper-textes (FancyIndexed)</li>
-
-      <li><code>V=0</code> désactive le tri en fonction de la
-      version</li>
-
-      <li class="separate"><code>V=1</code> active le tri en fonction de
-      la version</li>
-
-      <li><code>P=<var>modèle</var></code> n'affiche que les fichiers
-      correspondant au <var>modèle</var> spécifié</li>
-    </ul>
-
-    <p>Notez que l'argument 'P' (pour Pattern) n'est testé
-    qu'<em>après</em> que les directives habituelles <code class="directive"><a href="#indexignore">IndexIgnore</a></code> n'aient été traitées,
-    et que tous les noms de fichiers sont encore assujettis aux mêmes
-    critères que pour tout autre listing auto-indexé. L'interpréteur
-    d'arguments de requête de <code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code> s'arrête
-    immédiatement s'il rencontre une option non reconnue. Les arguments
-    de requête doivent être bien formés, selon la table ci-dessus.</p>
-
-    <p>Les options de requêtes sont illustrées par l'exemple ci-dessous,
-    qui peut être copié et collé dans un fichier header.html. Notez que
-    l'argument inconnu "X", pour le bouton submit, est introduit en
-    dernier afin de s'assurer que tous les arguments aient été
-    interprétés avant que mod_autoindex ne rencontre l'entrée X=Go.</p>
-
-    <div class="example"><p><code>
-      &lt;form action="" method="get"&gt;<br />
-      <span class="indent">
-        Montre moi une &lt;select name="F"&gt;<br />
-        <span class="indent">
-          &lt;option value="0"&gt; simple liste&lt;/option&gt;<br />
-          &lt;option value="1" selected="selected"&gt; liste avec
-	  en-têtes&lt;/option&gt;<br />
-          &lt;option value="2"&gt; liste avec en-tête sous forme de
-	  table&lt;/option&gt;<br />
-        </span>
-        &lt;/select&gt;<br />
-        triée par &lt;select name="C"&gt;<br />
-        <span class="indent">
-          &lt;option value="N" selected="selected"&gt; nom&lt;/option&gt;<br />
-          &lt;option value="M"&gt; date de modification&lt;/option&gt;<br />
-          &lt;option value="S"&gt; taille&lt;/option&gt;<br />
-          &lt;option value="D"&gt; description&lt;/option&gt;<br />
-        </span>
-        &lt;/select&gt;<br />
-        &lt;select name="O"&gt;<br />
-        <span class="indent">
-          &lt;option value="A" selected="selected"&gt; croissant&lt;/option&gt;<br />
-          &lt;option value="D"&gt; décroissant&lt;/option&gt;<br />
-        </span>
-        &lt;/select&gt;<br />
-        &lt;select name="V"&gt;<br />
-        <span class="indent">
-          &lt;option value="0" selected="selected"&gt; dans l'ordre
-	  normal&lt;/option&gt;<br />
-          &lt;option value="1"&gt; en fonction de la version&lt;/option&gt;<br />
-        </span>
-        &lt;/select&gt;<br />
-        correspondant à &lt;input type="text" name="P" value="*" /&gt;<br />
-        &lt;input type="submit" name="X" value="Go" /&gt;<br />
-      </span>
-      &lt;/form&gt;
-    </code></p></div>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="addalt" id="addalt">Directive</a> <a name="AddAlt" id="AddAlt">AddAlt</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Texte optionnel à afficher à la place d'un icône pour un
@@ -1033,6 +925,114 @@ l'index</td></tr>
 
     <p>Voir aussi la directive <code class="directive"><a href="#headername">HeaderName</a></code>, où cette fonctionnalité est décrite plus en
     détails.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="query" id="query">Arguments de la requête d'autoindexation</a></h2>
+    
+
+    <p>Apache 2.0.23 a réorganisé les arguments de requête pour le tri
+    des colonnes, et intoduit un groupe complet de nouvelles options de
+    requête. Pour interdire effectivement au client tout contrôle sur
+    l'affichage, l'option <code><a href="#indexoptions.ignoreclient">IndexOptions
+    IgnoreClient</a></code> a été ajoutée.</p>
+
+    <p>Les en-têtes de tri des colonnes eux-mêmes sont des hyper-liens
+    auto-référant qui ajoutent les options de tri à la requête énumérées
+    ci-dessous qui peuvent être ajoutées à toute requête concernant la
+    ressource répertoire.</p>
+
+    <ul>
+      <li><code>C=N</code> trie l'affichage en fonction du nom de
+      fichier</li>
+
+      <li><code>C=M</code> trie l'affichage en fonction de la date de
+      dernière modification, puis du nom de fichier</li>
+
+      <li><code>C=S</code> trie l'affichage en fonction de la taille,
+      puis du nom de fichier</li>
+
+      <li class="separate"><code>C=D</code> trie l'affichage en fonction
+      de la description, puis du nom de fichier</li>
+
+      <li><code>O=A</code> trie l'affichage selon l'ordre croissant</li>
+
+      <li class="separate"><code>O=D</code> trie l'affichage selon
+      l'ordre décroissant</li>
+
+      <li><code>F=0</code> affiche le listing sous la forme d'une simple
+      liste (not FancyIndexed)</li>
+
+      <li><code>F=1</code> affiche le listing avec en-têtes de colonnes
+      sous forme de liens hyper-textes (FancyIndexed)</li>
+
+      <li class="separate"><code>F=2</code> affiche le listing sous
+      forme de table HTML avec en-têtes de colonnes contenant des liens
+      hyper-textes (FancyIndexed)</li>
+
+      <li><code>V=0</code> désactive le tri en fonction de la
+      version</li>
+
+      <li class="separate"><code>V=1</code> active le tri en fonction de
+      la version</li>
+
+      <li><code>P=<var>modèle</var></code> n'affiche que les fichiers
+      correspondant au <var>modèle</var> spécifié</li>
+    </ul>
+
+    <p>Notez que l'argument 'P' (pour Pattern) n'est testé
+    qu'<em>après</em> que les directives habituelles <code class="directive"><a href="#indexignore">IndexIgnore</a></code> n'aient été traitées,
+    et que tous les noms de fichiers sont encore assujettis aux mêmes
+    critères que pour tout autre listing auto-indexé. L'interpréteur
+    d'arguments de requête de <code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code> s'arrête
+    immédiatement s'il rencontre une option non reconnue. Les arguments
+    de requête doivent être bien formés, selon la table ci-dessus.</p>
+
+    <p>Les options de requêtes sont illustrées par l'exemple ci-dessous,
+    qui peut être copié et collé dans un fichier header.html. Notez que
+    l'argument inconnu "X", pour le bouton submit, est introduit en
+    dernier afin de s'assurer que tous les arguments aient été
+    interprétés avant que mod_autoindex ne rencontre l'entrée X=Go.</p>
+
+    <div class="example"><p><code>
+      &lt;form action="" method="get"&gt;<br />
+      <span class="indent">
+        Montre moi une &lt;select name="F"&gt;<br />
+        <span class="indent">
+          &lt;option value="0"&gt; simple liste&lt;/option&gt;<br />
+          &lt;option value="1" selected="selected"&gt; liste avec
+	  en-têtes&lt;/option&gt;<br />
+          &lt;option value="2"&gt; liste avec en-tête sous forme de
+	  table&lt;/option&gt;<br />
+        </span>
+        &lt;/select&gt;<br />
+        triée par &lt;select name="C"&gt;<br />
+        <span class="indent">
+          &lt;option value="N" selected="selected"&gt; nom&lt;/option&gt;<br />
+          &lt;option value="M"&gt; date de modification&lt;/option&gt;<br />
+          &lt;option value="S"&gt; taille&lt;/option&gt;<br />
+          &lt;option value="D"&gt; description&lt;/option&gt;<br />
+        </span>
+        &lt;/select&gt;<br />
+        &lt;select name="O"&gt;<br />
+        <span class="indent">
+          &lt;option value="A" selected="selected"&gt; croissant&lt;/option&gt;<br />
+          &lt;option value="D"&gt; décroissant&lt;/option&gt;<br />
+        </span>
+        &lt;/select&gt;<br />
+        &lt;select name="V"&gt;<br />
+        <span class="indent">
+          &lt;option value="0" selected="selected"&gt; dans l'ordre
+	  normal&lt;/option&gt;<br />
+          &lt;option value="1"&gt; en fonction de la version&lt;/option&gt;<br />
+        </span>
+        &lt;/select&gt;<br />
+        correspondant à &lt;input type="text" name="P" value="*" /&gt;<br />
+        &lt;input type="submit" name="X" value="Go" /&gt;<br />
+      </span>
+      &lt;/form&gt;
+    </code></p></div>
 
 </div>
 </div>

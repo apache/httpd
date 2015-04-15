@@ -65,68 +65,6 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#AltSyn">다른 내부 문법</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="AltSyn" id="AltSyn">다른 내부 문법</a></h2>
-    <p><code class="directive"><a href="#expiresdefault">ExpiresDefault</a></code>와
-    <code class="directive"><a href="#expiresbytype">ExpiresByType</a></code>
-    지시어를 더 읽기 좋은 형식으로 기술할 수 있다:</p>
-
-    <div class="example"><p><code>
-      ExpiresDefault "&lt;base&gt; [plus] {&lt;num&gt;
-      &lt;type&gt;}*"<br />
-      ExpiresByType type/encoding "&lt;base&gt; [plus]
-      {&lt;num&gt; &lt;type&gt;}*"
-    </code></p></div>
-
-    <p>&lt;base&gt;는 다음중 하나이다:</p>
-
-    <ul>
-      <li><code>access</code></li>
-
-      <li><code>now</code> ('<code>access</code>'와 같음)</li>
-
-      <li><code>modification</code></li>
-    </ul>
-
-    <p><code>plus</code> 키워드는 없어도 된다. &lt;num&gt;은
-    [<code>atoi()</code>에 사용할 수 있는] 정수값이다.
-    &lt;type&gt;은 다음중 하나이다:</p>
-
-    <ul>
-      <li><code>years</code></li>
-      <li><code>months</code></li>
-      <li><code>weeks</code></li>
-      <li><code>days</code></li>
-      <li><code>hours</code></li>
-      <li><code>minutes</code></li>
-      <li><code>seconds</code></li>
-    </ul>
-
-    <p>예를 들어, 다음 모두는 문서가 기본적으로 접속된지 1달후에
-    만기된다고 설정한다:</p>
-
-    <div class="example"><p><code>
-      ExpiresDefault "access plus 1 month"<br />
-      ExpiresDefault "access plus 4 weeks"<br />
-      ExpiresDefault "access plus 30 days"
-    </code></p></div>
-
-    <p>'&lt;num&gt; &lt;type&gt;' 구문을 반복해서 사용하여
-    만기시간을 자세히 설정할 수 있다:</p>
-
-    <div class="example"><p><code>
-      ExpiresByType text/html "access plus 1 month 15
-      days 2 hours"<br />
-      ExpiresByType image/gif "modification plus 5 hours 3
-      minutes"
-    </code></p></div>
-
-    <p>만약 수정시간(modification)을 기준으로 만기시간을 설정하는
-    경우 내용을 디스크에 있는 파일에서 가져오지 않는다면 Expires
-    헤더를 붙이지 <strong>않는다</strong>. 이 경우 내용에 수정시간이
-    없기 때문이다.</p>
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ExpiresActive" id="ExpiresActive">ExpiresActive</a> <a name="expiresactive" id="expiresactive">지시어</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td><code>Expires</code> 헤더를 생성한다</td></tr>
@@ -218,6 +156,68 @@
     자세한 설명은 그 지시어와 <a href="#AltSyn">다른 문법</a>을
     참고하라.</p>
 
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="AltSyn" id="AltSyn">다른 내부 문법</a></h2>
+    <p><code class="directive"><a href="#expiresdefault">ExpiresDefault</a></code>와
+    <code class="directive"><a href="#expiresbytype">ExpiresByType</a></code>
+    지시어를 더 읽기 좋은 형식으로 기술할 수 있다:</p>
+
+    <div class="example"><p><code>
+      ExpiresDefault "&lt;base&gt; [plus] {&lt;num&gt;
+      &lt;type&gt;}*"<br />
+      ExpiresByType type/encoding "&lt;base&gt; [plus]
+      {&lt;num&gt; &lt;type&gt;}*"
+    </code></p></div>
+
+    <p>&lt;base&gt;는 다음중 하나이다:</p>
+
+    <ul>
+      <li><code>access</code></li>
+
+      <li><code>now</code> ('<code>access</code>'와 같음)</li>
+
+      <li><code>modification</code></li>
+    </ul>
+
+    <p><code>plus</code> 키워드는 없어도 된다. &lt;num&gt;은
+    [<code>atoi()</code>에 사용할 수 있는] 정수값이다.
+    &lt;type&gt;은 다음중 하나이다:</p>
+
+    <ul>
+      <li><code>years</code></li>
+      <li><code>months</code></li>
+      <li><code>weeks</code></li>
+      <li><code>days</code></li>
+      <li><code>hours</code></li>
+      <li><code>minutes</code></li>
+      <li><code>seconds</code></li>
+    </ul>
+
+    <p>예를 들어, 다음 모두는 문서가 기본적으로 접속된지 1달후에
+    만기된다고 설정한다:</p>
+
+    <div class="example"><p><code>
+      ExpiresDefault "access plus 1 month"<br />
+      ExpiresDefault "access plus 4 weeks"<br />
+      ExpiresDefault "access plus 30 days"
+    </code></p></div>
+
+    <p>'&lt;num&gt; &lt;type&gt;' 구문을 반복해서 사용하여
+    만기시간을 자세히 설정할 수 있다:</p>
+
+    <div class="example"><p><code>
+      ExpiresByType text/html "access plus 1 month 15
+      days 2 hours"<br />
+      ExpiresByType image/gif "modification plus 5 hours 3
+      minutes"
+    </code></p></div>
+
+    <p>만약 수정시간(modification)을 기준으로 만기시간을 설정하는
+    경우 내용을 디스크에 있는 파일에서 가져오지 않는다면 Expires
+    헤더를 붙이지 <strong>않는다</strong>. 이 경우 내용에 수정시간이
+    없기 때문이다.</p>
 </div>
 </div>
 <div class="bottomlang">

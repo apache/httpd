@@ -64,7 +64,6 @@
 <ul class="seealso">
 <li><a href="../env.html">Apache’de Ortam Değişkenleri</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Yorum</a></li></ul></div>
-
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="BrowserMatch" id="BrowserMatch">BrowserMatch</a> <a name="browsermatch" id="browsermatch">Yönergesi</a></h2>
 <table class="directive">
@@ -266,6 +265,7 @@ bağlı olmaksızın yapılmış tanımlara göre atar.</td></tr>
       "<code>apache</code>" değeri atanmaktadır.</p>
 
 </div>
+
 </div>
 <div class="bottomlang">
 <p><span>Mevcut Diller: </span><a href="../en/mod/mod_setenvif.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
