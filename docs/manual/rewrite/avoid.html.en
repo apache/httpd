@@ -83,7 +83,7 @@ and <code>/one/three/four.html</code>.</p>
 <p>To redirect URLs under <code>/one</code> to
 <code>http://one.example.com</code>, do the following:</p>
 
-<pre class="prettyprint lang-config">Redirect /one/ http://one.example.com/</pre>
+<pre class="prettyprint lang-config">Redirect "/one/" "http://one.example.com/"</pre>
 
 
 <p>To redirect <code>http</code> URLs to <code>https</code>, do the
@@ -91,7 +91,7 @@ following:</p>
 
 <pre class="prettyprint lang-config">&lt;VirtualHost *:80&gt;
     ServerName www.example.com
-    Redirect / https://www.example.com/
+    Redirect "/" "https://www.example.com/"
 &lt;/VirtualHost &gt;
 
 &lt;VirtualHost *:443&gt;
@@ -122,7 +122,7 @@ is possible to perform this mapping with <code>mod_rewrite</code>,
 <code>Alias</code> is the preferred method, for reasons of simplicity
 and performance.</p>
 
-<div class="example"><h3>Using Alias</h3><pre class="prettyprint lang-config">Alias /cats /var/www/virtualhosts/felines/htdocs</pre>
+<div class="example"><h3>Using Alias</h3><pre class="prettyprint lang-config">Alias "/cats" "/var/www/virtualhosts/felines/htdocs"</pre>
 </div>
 
 <p>
@@ -163,21 +163,21 @@ seems like the right approach.</p>
 <p><code>RewriteRule</code> provides the <a href="flags.html#flag_p">[P]</a> flag to pass rewritten URIs through
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>.</p>
 
-<pre class="prettyprint lang-config">RewriteRule ^/?images(.*) http://imageserver.local/images$1 [P]</pre>
+<pre class="prettyprint lang-config">RewriteRule "^/?images(.*)" "http://imageserver.local/images$1" [P]</pre>
 
 
 <p>However, in many cases, when there is no actual pattern matching
 needed, as in the example shown above, the <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> directive is a better choice.
 The example here could be rendered as:</p>
 
-<pre class="prettyprint lang-config">ProxyPass /images/ http://imageserver.local/images/</pre>
+<pre class="prettyprint lang-config">ProxyPass "/images/" "http://imageserver.local/images/"</pre>
 
 
 <p>Note that whether you use <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> or <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code>, you'll still need to use the
 <code class="directive"><a href="../mod/mod_proxy.html#proxypassreverse">ProxyPassReverse</a></code> directive to
 catch redirects issued from the back-end server:</p>
 
-<pre class="prettyprint lang-config">ProxyPassReverse /images/ http://imageserver.local/images/</pre>
+<pre class="prettyprint lang-config">ProxyPassReverse "/images/" "http://imageserver.local/images/"</pre>
 
 
 <p>You may need to use <code>RewriteRule</code> instead when there are
@@ -201,7 +201,7 @@ hostname, such as <code>www.example.com</code> instead of
 <code>example.com</code>. This can be done using the <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code> directive, as shown here:</p>
 
 <pre class="prettyprint lang-config">&lt;If "req('Host') != 'www.example.com'"&gt;
-    Redirect / http://www.example.com/
+    Redirect "/" "http://www.example.com/"
 &lt;/If&gt;</pre>
 
 
