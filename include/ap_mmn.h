@@ -439,6 +439,8 @@
  * 20120211.41 (2.4.11-dev) Add ap_proxy_de_socketfy to mod_proxy.h
  * 20120211.42 (2.4.13-dev) Add response_code_exprs to http_core.h
  * 20120211.43 (2.4.13-dev) Add keep_alive_timeout_set to server_rec
+ * 20120211.44 (2.4.13-dev) Add cgi_pass_auth and AP_CGI_PASS_AUTH_* to 
+ *                          core_dir_config
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
@@ -446,7 +448,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20120211
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 43                   /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 44                   /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
