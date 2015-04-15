@@ -136,18 +136,18 @@ Virtual Hosts</a> to help you decide.  </p>
     <highlight language="config">
 &lt;VirtualHost 172.20.30.40:80&gt;
     ServerAdmin webmaster@www1.example.com
-    DocumentRoot /www/vhosts/www1
+    DocumentRoot "/www/vhosts/www1"
     ServerName www1.example.com
-    ErrorLog /www/logs/www1/error_log
-    CustomLog /www/logs/www1/access_log combined
+    ErrorLog "/www/logs/www1/error_log"
+    CustomLog "/www/logs/www1/access_log" combined
 &lt;/VirtualHost&gt;
 
 &lt;VirtualHost 172.20.30.50:80&gt;
-    ServerAdmin webmaster@www2.example.org
-    DocumentRoot /www/vhosts/www2
+    ServerAdmin "webmaster@www2.example.org"
+    DocumentRoot "/www/vhosts/www2"
     ServerName www2.example.org
-    ErrorLog /www/logs/www2/error_log
-    CustomLog /www/logs/www2/access_log combined
+    ErrorLog "/www/logs/www2/error_log"
+    CustomLog "/www/logs/www2/access_log" combined
 &lt;/VirtualHost&gt;
     </highlight>
 
