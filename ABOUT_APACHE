@@ -147,13 +147,13 @@ rest of the core members agree. The core group focus is more on
 than on mainstream code development. The term "The Apache Group"
 technically refers to this core of project contributors.
 
-The Apache project is a meritocracy -- the more work you have done, the more
+The Apache project is a meritocracy--the more work you have done, the more
 you are allowed to do. The group founders set the original rules, but
 they can be changed by vote of the active members. There is a group
 of people who have logins on our server (apache.org) and access to the
 svn repository.  Everyone has access to the svn snapshots.  Changes to
 the code are proposed on the mailing list and usually voted on by active
-members -- three +1 (yes votes) and no -1 (no votes, or vetoes) are needed
+members--three +1 (yes votes) and no -1 (no votes, or vetoes) are needed
 to commit a code change during a release cycle; docs are usually committed
 first and then changed as needed, with conflicts resolved by majority vote.
 
@@ -225,15 +225,15 @@ by using it often contribute back to it by providing feature enhancements,
 bug fixes, and support for others in public newsgroups. The amount of
 effort expended by any particular individual is usually fairly light, but
 the resulting product is made very strong. This kind of community can
-only happen with freeware -- when someone pays for software, they usually
+only happen with freeware--when someone pays for software, they usually
 aren't willing to fix its bugs. One can argue, then, that Apache's
 strength comes from the fact that it's free, and if it were made "not
 free" it would suffer tremendously, even if that money were spent on a
 real development team.
 
-We want to see Apache httpd used very widely -- by large companies, small
+We want to see Apache httpd used very widely--by large companies, small
 companies, research institutions, schools, individuals, in the intranet
-environment, everywhere -- even though this may mean that companies who
+environment, everywhere--even though this may mean that companies who
 could afford commercial software, and would pay for it without blinking,
 might get a "free ride" by using Apache httpd. We would even be happy if 
 some commercial software companies completely dropped their own HTTP server
