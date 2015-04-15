@@ -65,8 +65,8 @@
 
     <example><title>Single application instance</title>
     <highlight language="config">
-      ProxyPass /myapp/ fcgi://localhost:4000/
-      </highlight>
+      ProxyPass "/myapp/" "fcgi://localhost:4000/"
+    </highlight>
     </example>
 
     <p> <module>mod_proxy_fcgi</module> disables connection reuse by
@@ -78,7 +78,7 @@
 
     <example><title>Single application instance, connection reuse</title>
     <highlight language="config">
-      ProxyPass /myapp/ fcgi://localhost:4000/ enablereuse=on
+      ProxyPass "/myapp/" "fcgi://localhost:4000/" enablereuse=on
       </highlight>
     </example>
 
@@ -88,7 +88,7 @@
     PHP-FPM is listening.  Connection pooling is enabled.</p>
     <example><title>PHP-FPM</title>
     <highlight language="config">
-      ProxyPassMatch ^/myapp/.*\.php(/.*)?$ fcgi://localhost:9000/var/www/ enablereuse=on
+      ProxyPassMatch "^/myapp/.*\.php(/.*)?$" "fcgi://localhost:9000/var/www/" enablereuse=on
     </highlight>
     </example>
 
@@ -99,7 +99,7 @@
     <example><title>PHP-FPM with UDS</title>
     <highlight language="config">
       # UDS does not currently support connection reuse
-      ProxyPassMatch ^/(.*\.php(/.*)?)$ "unix:/var/run/php5-fpm.sock|fcgi://localhost/var/www/" 
+      ProxyPassMatch "^/(.*\.php(/.*)?)$" "unix:/var/run/php5-fpm.sock|fcgi://localhost/var/www/" 
     </highlight>
     </example>
 
@@ -111,7 +111,7 @@
 
     <example><title>Balanced gateway to multiple application instances</title>
     <highlight language="config">
-ProxyPass /myapp/ balancer://myappcluster/
+ProxyPass "/myapp/" "balancer://myappcluster/"
 &lt;Proxy balancer://myappcluster/&gt;
     BalancerMember fcgi://localhost:4000
     BalancerMember fcgi://localhost:4001

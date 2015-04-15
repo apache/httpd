@@ -112,8 +112,8 @@
     BalancerMember http://192.168.1.50:80
     BalancerMember http://192.168.1.51:80
 &lt;/Proxy&gt;
-ProxyPass /test balancer://mycluster
-ProxyPassReverse /test balancer://mycluster</pre>
+ProxyPass        "/test" "balancer://mycluster"
+ProxyPassReverse "/test" "balancer://mycluster"</pre>
 
 
     <p>Another example of how to provide load balancing with stickyness
@@ -127,8 +127,8 @@ ProxyPassReverse /test balancer://mycluster</pre>
     BalancerMember http://192.168.1.51:80 route=2
     ProxySet stickysession=ROUTEID
 &lt;/Proxy&gt;
-ProxyPass /test balancer://mycluster
-ProxyPassReverse /test balancer://mycluster</pre>
+ProxyPass        "/test" "balancer://mycluster"
+ProxyPassReverse "/test" "balancer://mycluster"</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -262,7 +262,7 @@ ProxyPassReverse /test balancer://mycluster</pre>
     <p>Finally you can support cookies and URL encoding at the same time, by
     configuring the name of the cookie and the name of the URL parameter
     separated by a vertical bar (<code>|</code>) as in the following example:</p>
-    <pre class="prettyprint lang-config">ProxyPass /test balancer://mycluster stickysession=JSESSIONID|jsessionid scolonpathdelim=On
+    <pre class="prettyprint lang-config">ProxyPass "/test" "balancer://mycluster" stickysession=JSESSIONID|jsessionid scolonpathdelim=On
 &lt;Proxy balancer://mycluster&gt;
     BalancerMember http://192.168.1.50:80 route=node1
     BalancerMember http://192.168.1.51:80 route=node2

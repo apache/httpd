@@ -95,8 +95,8 @@
     BalancerMember http://192.168.1.50:80
     BalancerMember http://192.168.1.51:80
 &lt;/Proxy&gt;
-ProxyPass /test balancer://mycluster
-ProxyPassReverse /test balancer://mycluster
+ProxyPass        "/test" "balancer://mycluster"
+ProxyPassReverse "/test" "balancer://mycluster"
     </highlight>
 
     <p>Another example of how to provide load balancing with stickyness
@@ -111,8 +111,8 @@ Header add Set-Cookie "ROUTEID=.%{BALANCER_WORKER_ROUTE}e; path=/" env=BALANCER_
     BalancerMember http://192.168.1.51:80 route=2
     ProxySet stickysession=ROUTEID
 &lt;/Proxy&gt;
-ProxyPass /test balancer://mycluster
-ProxyPassReverse /test balancer://mycluster
+ProxyPass        "/test" "balancer://mycluster"
+ProxyPassReverse "/test" "balancer://mycluster"
     </highlight>
 </section>
 
@@ -248,7 +248,7 @@ ProxyPassReverse /test balancer://mycluster
     configuring the name of the cookie and the name of the URL parameter
     separated by a vertical bar (<code>|</code>) as in the following example:</p>
     <highlight language="config">
-ProxyPass /test balancer://mycluster stickysession=JSESSIONID|jsessionid scolonpathdelim=On
+ProxyPass "/test" "balancer://mycluster" stickysession=JSESSIONID|jsessionid scolonpathdelim=On
 &lt;Proxy balancer://mycluster&gt;
     BalancerMember http://192.168.1.50:80 route=node1
     BalancerMember http://192.168.1.51:80 route=node2

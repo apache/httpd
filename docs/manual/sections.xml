@@ -251,8 +251,8 @@ Alias "/foo"     "/srv/www/common/foo"
 <p>The same is true for the <directive module="mod_proxy">ProxyPass</directive>
 directives:</p>
 <highlight language="config">
-ProxyPass /special-area http://special.example.com smax=5 max=10
-ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover=On
+ProxyPass "/special-area" "http://special.example.com" smax=5 max=10
+ProxyPass "/" "balancer://mycluster/" stickysession=JSESSIONID|jsessionid nofailover=On
 </highlight>
 </section>
 

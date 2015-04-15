@@ -154,8 +154,8 @@
 
     <example><title>Reverse Proxy</title>
     <highlight language="config">
-ProxyPass /foo http://foo.example.com/bar
-ProxyPassReverse /foo http://foo.example.com/bar
+ProxyPass        "/foo" "http://foo.example.com/bar"
+ProxyPassReverse "/foo" "http://foo.example.com/bar"
     </highlight>
     </example>
 
@@ -211,7 +211,7 @@ ProxyVia On
       for a reverse proxy:</p>
 
       <highlight language="config">
-          ProxyPass /example http://backend.example.com connectiontimeout=5 timeout=30
+ProxyPass "/example" "http://backend.example.com" connectiontimeout=5 timeout=30
       </highlight>
 
       <p>This will create a worker associated with the origin server URL
@@ -247,8 +247,8 @@ ProxyVia On
       origin server including any path components given:</p>
 
      <highlight language="config">
-ProxyPass /examples http://backend.example.com/examples
-ProxyPass /docs http://backend.example.com/docs
+ProxyPass "/examples" "http://backend.example.com/examples"
+ProxyPass "/docs"     "http://backend.example.com/docs"
       </highlight>
 
       <p>This example defines two different workers, each using a separate
@@ -260,8 +260,8 @@ ProxyPass /docs http://backend.example.com/docs
         worker defined later in the configuration file. In the following example</p>
 
         <highlight language="config">
-ProxyPass /apps http://backend.example.com/ timeout=60
-ProxyPass /examples http://backend.example.com/examples timeout=10
+ProxyPass "/apps"     "http://backend.example.com/" timeout=60
+ProxyPass "/examples" "http://backend.example.com/examples" timeout=10
         </highlight>
 
         <p>the second worker isn't actually created. Instead the first
@@ -379,7 +379,7 @@ ProxyPass /examples http://backend.example.com/examples timeout=10
 
       <highlight language="config">
 &lt;Location "/buggyappserver/"&gt;
-  ProxyPass http://buggyappserver:7001/foo/
+  ProxyPass "http://buggyappserver:7001/foo/"
   SetEnv force-proxy-request-1.0 1
   SetEnv proxy-nokeepalive 1
 &lt;/Location&gt;
@@ -887,7 +887,7 @@ expressions</description>
 
     <highlight language="config">
 &lt;Location "/mirror/foo/"&gt;
-    ProxyPass http://backend.example.com/
+    ProxyPass "http://backend.example.com/"
 &lt;/Location&gt;
     </highlight>
 
@@ -901,7 +901,7 @@ expressions</description>
     <a href="mod_proxy_balancer.html#balancer_manager">Balancer Manager</a> interface:</p>
 
     <highlight language="config">
-        ProxyPass /mirror/foo/ http://backend.example.com/
+        ProxyPass "/mirror/foo/" "http://backend.example.com/"
     </highlight>
 
     <note type="warning">
@@ -917,16 +917,16 @@ expressions</description>
 
     <highlight language="config">
 &lt;Location "/mirror/foo/"&gt;
-    ProxyPass http://backend.example.com/
+    ProxyPass "http://backend.example.com/"
 &lt;/Location&gt;
 &lt;Location "/mirror/foo/i"&gt;
-    ProxyPass !
+    ProxyPass "!"
 &lt;/Location&gt;
     </highlight>
 
     <highlight language="config">
-ProxyPass /mirror/foo/i !
-ProxyPass /mirror/foo http://backend.example.com
+ProxyPass "/mirror/foo/i" "!"
+ProxyPass "/mirror/foo"   "http://backend.example.com"
     </highlight>
 
     <p>will proxy all requests to <code>/mirror/foo</code> to
@@ -975,7 +975,7 @@ ProxyPass /mirror/foo http://backend.example.com
 
     <example><title>Example</title>
         <highlight language="config">
-        ProxyPass /example http://backend.example.com max=20 ttl=120 retry=300
+ProxyPass "/example" "http://backend.example.com" max=20 ttl=120 retry=300
         </highlight>
     </example>
 
@@ -1265,8 +1265,8 @@ ProxyPass /mirror/foo http://backend.example.com
     </table>
     <p>A sample balancer setup</p>
     <highlight language="config">
-ProxyPass /special-area http://special.example.com smax=5 max=10
-ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover=On
+ProxyPass "/special-area" "http://special.example.com" smax=5 max=10
+ProxyPass "/"             "balancer://mycluster/" stickysession=JSESSIONID|jsessionid nofailover=On
 &lt;Proxy balancer://mycluster&gt;
     BalancerMember ajp://1.2.3.4:8009
     BalancerMember ajp://1.2.3.5:8009 loadfactor=20
@@ -1278,7 +1278,7 @@ ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover
     <p>Setting up a hot-standby, that will only be used if no other
      members are available</p>
     <highlight language="config">
-ProxyPass / balancer://hotcluster/
+ProxyPass "/" "balancer://hotcluster/"
 &lt;Proxy balancer://hotcluster&gt;
     BalancerMember ajp://1.2.3.4:8009 loadfactor=1
     BalancerMember ajp://1.2.3.5:8009 loadfactor=2
@@ -1337,8 +1337,8 @@ RewriteCond %{HTTPS} =on
 RewriteRule . - [E=protocol:https]
 
 RewriteRule ^/mirror/foo/(.*) %{ENV:protocol}://backend.example.com/$1 [P]
-ProxyPassReverse  /mirror/foo/ http://backend.example.com/
-ProxyPassReverse  /mirror/foo/ https://backend.example.com/
+ProxyPassReverse  "/mirror/foo/" "http://backend.example.com/"
+ProxyPassReverse  "/mirror/foo/" "https://backend.example.com/"
     </highlight>
 </usage>
 </directivesynopsis>
@@ -1366,7 +1366,7 @@ ProxyPassReverse  /mirror/foo/ https://backend.example.com/
     then</p>
 
     <highlight language="config">
-      ProxyPassMatch ^/(.*\.gif)$ http://backend.example.com/$1
+ProxyPassMatch "^/(.*\.gif)$" "http://backend.example.com/$1"
     </highlight>
 
     <p>will cause a local request for
@@ -1377,13 +1377,13 @@ ProxyPassReverse  /mirror/foo/ https://backend.example.com/
       substitutions (as well as after).  This limits the matches you can use.
       For instance, if we had used</p>
       <highlight language="config">
-        ProxyPassMatch ^(/.*\.gif)$ http://backend.example.com:8000$1
+ProxyPassMatch "^(/.*\.gif)$" "http://backend.example.com:8000$1"
       </highlight>
       <p>in our previous example, it would fail with a syntax error
       at server startup.  This is a bug (PR 46665 in the ASF bugzilla),
       and the workaround is to reformulate the match:</p>
       <highlight language="config">
-        ProxyPassMatch ^/(.*\.gif)$ http://backend.example.com:8000/$1
+ProxyPassMatch "^/(.*\.gif)$" "http://backend.example.com:8000/$1"
       </highlight>
     </note>
     <p>The <code>!</code> directive is useful in situations where you don't want
@@ -1450,10 +1450,10 @@ proxied server</description>
     <code>http://example.com/</code>; then</p>
 
     <highlight language="config">
-ProxyPass         /mirror/foo/ http://backend.example.com/
-ProxyPassReverse  /mirror/foo/ http://backend.example.com/
+ProxyPass         "/mirror/foo/" "http://backend.example.com/"
+ProxyPassReverse  "/mirror/foo/" "http://backend.example.com/"
 ProxyPassReverseCookieDomain  backend.example.com  public.example.com
-ProxyPassReverseCookiePath  /  /mirror/foo/
+ProxyPassReverseCookiePath  "/"  "/mirror/foo/"
     </highlight>
 
     <p>will not only cause a local request for the
@@ -1537,7 +1537,7 @@ In the example given with
 <directive module="mod_proxy">ProxyPassReverse</directive>, the directive:
 </p>
     <highlight language="config">
-      ProxyPassReverseCookiePath  /  /mirror/foo/
+ProxyPassReverseCookiePath  "/"  "/mirror/foo/"
     </highlight>
 <p>
 will rewrite a cookie with backend path <code>/</code> (or

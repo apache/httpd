@@ -44,8 +44,8 @@ Connection: Upgrade
 
     <example><title>Proxying requests to websockets server</title>
     <highlight language="config">
-ProxyPass /ws2/  ws://echo.websocket.org/
-ProxyPass /wss2/ wss://echo.websocket.org/
+ProxyPass "/ws2/"  "ws://echo.websocket.org/"
+ProxyPass "/wss2/" "wss://echo.websocket.org/"
     </highlight>
     </example>
 

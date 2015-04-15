@@ -69,7 +69,7 @@ A number of recipes are provided that describe common scenarios.</p>
 RewriteEngine  on
 RewriteBase    /products/
 RewriteRule    ^widget/(.*)$  http://product.example.com/widget/$1  [P]
-ProxyPassReverse /products/widget/ http://product.example.com/widget/
+ProxyPassReverse "/products/widget/" "http://product.example.com/widget/"
 </highlight>
 
    <p>In the second example, we proxy the request only if we can't find
@@ -81,7 +81,7 @@ ProxyPassReverse /products/widget/ http://product.example.com/widget/
 RewriteCond %{REQUEST_FILENAME}       !-f
 RewriteCond %{REQUEST_FILENAME}       !-d
 RewriteRule ^/(.*) http://old.example.com/$1 [P]
-ProxyPassReverse / http://old.example.com/
+ProxyPassReverse "/" "http://old.example.com/"
 </highlight>
     </dd>
 
