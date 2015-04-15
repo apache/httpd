@@ -33,6 +33,7 @@
 #include "http_config.h"
 #include "http_connection.h"
 #include "http_protocol.h"
+#include "http_request.h"
 
 module AP_MODULE_DECLARE_DATA logio_module;
 
@@ -46,7 +47,14 @@ typedef struct logio_config_t {
     apr_off_t bytes_in;
     apr_off_t bytes_out;
     apr_off_t bytes_last_request;
+    apr_time_t ttfb;
+    request_rec *r;         /* Use for TTFB only */
+    unsigned int first_byte_seen:1;
 } logio_config_t;
+
+typedef struct logio_dirconf_t {
+    unsigned int track_ttfb:1;
+} logio_dirconf_t;
 
 /*
  * Optional function for the core to add to bytes_out
@@ -55,8 +63,20 @@ typedef struct logio_config_t {
 static void ap_logio_add_bytes_out(conn_rec *c, apr_off_t bytes)
 {
     logio_config_t *cf = ap_get_module_config(c->conn_config, &logio_module);
-
     cf->bytes_out += bytes;
+
+    if (!cf->first_byte_seen) {
+        /* cleared during log_transaction, after mod_log_config */ 
+        cf->first_byte_seen = 1; 
+
+        if (cf->r) { 
+            logio_dirconf_t *conf = (logio_dirconf_t*) 
+                ap_get_module_config(cf->r->per_dir_config, &logio_module);
+            if (conf && conf->track_ttfb) { 
+                cf->ttfb = apr_time_now() - cf->r->request_time;
+            }
+        }
+    }
 }
 
 /*
@@ -110,6 +130,17 @@ static const char *log_bytes_combined(request_rec *r, char *a)
     return apr_off_t_toa(r->pool, cf->bytes_out + cf->bytes_in);
 }
 
+static const char *log_ttfb(request_rec *r, char *a)
+{
+    logio_config_t *cf = ap_get_module_config(r->connection->conn_config,
+                                              &logio_module);
+
+    if (!cf->first_byte_seen || !cf->ttfb) { 
+        return "-";
+    }
+
+    return apr_psprintf(r->pool, "%" APR_TIME_T_FMT, cf->ttfb);
+}
 /*
  * Reset counters after logging...
  */
@@ -123,6 +154,20 @@ static int logio_transaction(request_rec *r)
     cf->bytes_last_request = cf->bytes_in + cf->bytes_out;
     cf->bytes_in = cf->bytes_out = 0;
 
+    cf->r = NULL;
+    cf->ttfb = 0;
+    cf->first_byte_seen = 0;
+
+    return OK;
+}
+
+static int logio_post_read_request(request_rec *r)
+{
+    logio_config_t *cf = ap_get_module_config(r->connection->conn_config,
+                                              &logio_module);
+    if (cf) { 
+        cf->r = r;
+    }
     return OK;
 }
 
@@ -175,10 +220,33 @@ static int logio_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
         log_pfn_register(p, "I", log_bytes_in, 0);
         log_pfn_register(p, "O", log_bytes_out, 0);
         log_pfn_register(p, "S", log_bytes_combined, 0);
+        log_pfn_register(p, "^FB", log_ttfb, 0);
     }
 
     return OK;
 }
+
+static const char *logio_track_ttfb(cmd_parms *cmd, void *in_dir_config, int arg)
+{
+    logio_dirconf_t *dir_config = in_dir_config;
+    dir_config->track_ttfb = arg;
+    return NULL;
+}
+
+static void *create_logio_dirconf (apr_pool_t *p, char *dummy)
+{
+    logio_dirconf_t *new =
+        (logio_dirconf_t *) apr_pcalloc(p, sizeof(logio_dirconf_t));
+    return (void *) new;
+}
+
+
+static const command_rec logio_cmds[] = {
+    AP_INIT_FLAG ("LogIOTrackTTFB", logio_track_ttfb, NULL, OR_ALL,
+                  "Set to 'ON' to enable tracking time to first byte"),
+    {NULL}
+};
+
 
 static void register_hooks(apr_pool_t *p)
 {
@@ -186,6 +254,7 @@ static void register_hooks(apr_pool_t *p)
 
     ap_hook_pre_connection(logio_pre_conn, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_pre_config(logio_pre_config, NULL, NULL, APR_HOOK_REALLY_FIRST);
+    ap_hook_post_read_request(logio_post_read_request, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_log_transaction(logio_transaction, pre, NULL, APR_HOOK_MIDDLE);
 
     ap_register_input_filter(logio_filter_name, logio_in_filter, NULL,
@@ -199,10 +268,10 @@ static void register_hooks(apr_pool_t *p)
 AP_DECLARE_MODULE(logio) =
 {
     STANDARD20_MODULE_STUFF,
-    NULL,                       /* create per-dir config */
+    create_logio_dirconf,       /* create per-dir config */ 
     NULL,                       /* merge per-dir config */
     NULL,                       /* server config */
     NULL,                       /* merge server config */
-    NULL,                       /* command apr_table_t */
+    logio_cmds,                 /* command apr_table_t */
     register_hooks              /* register hooks */
 };
