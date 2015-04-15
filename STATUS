@@ -200,6 +200,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: jkaluza
      +1: covener w/ doc or code to fix syntax (providername:providerarg not supported like syslog or socacheproviders, 
                  needs 2 args which is not valid in ErrorLog manual)
+     trawick: nit: fix "writing" in "/* NULL if we are writting to syslog */"
+              (sorry, haven't finished reviewing completely)
 
    * mod_journald: Add new module mod_journald to log error logs into journald.
                    This patch needs changes done in mod_systemd patch (already
