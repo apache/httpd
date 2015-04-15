@@ -86,13 +86,13 @@
     AuthType Basic
     AuthBasicProvider file anon
     AuthUserFile "/path/to/your/.htpasswd"
-    
+
     Anonymous_NoUserID off
     Anonymous_MustGiveEmail on
     Anonymous_VerifyEmail on
     Anonymous_LogEmail on
     Anonymous anonymous guest www test welcome
-    
+
     Require valid-user
 &lt;/Directory&gt;
       </highlight>

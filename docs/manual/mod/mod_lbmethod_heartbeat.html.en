@@ -37,8 +37,8 @@
 heartbeat info via the <code class="module"><a href="../mod/mod_heartbeat.html">mod_heartbeat</a></code> module.</p>
 
 <p> This modules load balancing algorithm favors servers with more ready (idle)
-capacity over time, but does not select the server with the most ready capacity 
-every time.  Servers that have 0 active clients are penalized, with the 
+capacity over time, but does not select the server with the most ready capacity
+every time.  Servers that have 0 active clients are penalized, with the
 assumption that they are not fully initialized.</p>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>

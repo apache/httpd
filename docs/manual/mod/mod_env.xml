@@ -80,7 +80,7 @@ SSI pages</description>
       SetEnv SPECIAL_PATH /foo/bin
       </highlight>
     </example>
- 
+
     <p> If you omit the <var>value</var> argument, the variable is set to
     an empty string.</p>
 
@@ -119,4 +119,3 @@ SSI pages</description>
 </directivesynopsis>
 
 </modulesynopsis>
-

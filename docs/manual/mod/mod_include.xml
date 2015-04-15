@@ -155,7 +155,7 @@ AddOutputFilter INCLUDES .shtml
       client if an error occurs while parsing the
       document. This overrides any <directive
       module="mod_include">SSIErrorMsg</directive> directives.</p>
-     
+
       <example>
        &lt;!--#config errmsg="[Oops, something broke.]" --&gt;
       </example>
@@ -167,22 +167,22 @@ AddOutputFilter INCLUDES .shtml
       for a count in bytes, or <code>abbrev</code> for a count
       in Kb or Mb as appropriate, for example a size of 1024 bytes
       will be printed as "1K".</p>
-      
+
       <example>
       &lt;!--#config sizefmt="abbrev" --&gt;
       </example>
-      
+
       </dd>
 
       <dt><code>timefmt</code></dt>
       <dd><p>The value is a string to be used by the
       <code>strftime(3)</code> library routine when printing
       dates.</p>
-      
+
       <example>
       &lt;!--#config timefmt=""%R, %B %d, %Y"" --&gt;
       </example>
-      
+
       </dd>
       </dl>
     </section> <!-- /config -->
@@ -339,7 +339,7 @@ AddOutputFilter INCLUDES .shtml
     </example>
 
     The value of <code>file</code> cannot start with a slash
-    (<code>/</code>), nor can it contain <code>../</code> so as to 
+    (<code>/</code>), nor can it contain <code>../</code> so as to
     refer to a file above the current directory or outside of the
     document root. Attempting to so will result in the error message:
     <code>The given path was above the root path</code>.
@@ -1072,4 +1072,3 @@ set</description>
 </directivesynopsis>
 
 </modulesynopsis>
-

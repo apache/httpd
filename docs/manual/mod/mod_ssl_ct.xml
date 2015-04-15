@@ -31,7 +31,7 @@
 
 <summary>
 
-<p>This module provides an implementation of Certificate Transparency, in 
+<p>This module provides an implementation of Certificate Transparency, in
 conjunction with <module>mod_ssl</module> and command-line tools from the
 <a href="https://code.google.com/p/certificate-transparency/">certificate-transparency</a>
 open source project.  The goal of Certificate Transparency is to expose the
@@ -60,11 +60,11 @@ this documentation:</p>
 servers and proxies:</p>
 
 <ul>
-  <li>Signed Certificate Timestamps (SCTs) can be obtained from logs 
+  <li>Signed Certificate Timestamps (SCTs) can be obtained from logs
   automatically and, in conjunction with any statically configured SCTs, sent
   to aware clients in the ServerHello (during the handshake).</li>
   <li>SCTs can be received by the proxy from origin servers in the ServerHello,
-  in a certificate extension, and/or within stapled OCSP responses; any SCTs 
+  in a certificate extension, and/or within stapled OCSP responses; any SCTs
   received can be partially validated on-line and optionally queued for off-line
   audit.</li>
   <li>The proxy can be configured to disallow communication with an origin
@@ -136,7 +136,7 @@ testing.</p>
   </ul>
 
   <p>If verification fails for at least one SCT and verification was not
-  successful for at least one SCT, the connection is aborted if 
+  successful for at least one SCT, the connection is aborted if
   <directive module="mod_ssl_ct">CTProxyAwareness</directive> is set to
   <em>require</em>.</p>
 
@@ -199,7 +199,7 @@ testing.</p>
     <dt>log URL</dt>
     <dd>The URL of the log (for its API) is required by a server in order to
     submit server certificates to the log.  The server will submit
-    each server certificate in order to obtain an SCT for each log with a 
+    each server certificate in order to obtain an SCT for each log with a
     configured URL, except when the log is also marked as distrusted or the
     current time is not within any configured valid timestamp range.
     <br />
@@ -208,8 +208,8 @@ testing.</p>
   </dl>
 
   <p>Generally, only a small subset of this information is configured for a
-  particular log.  Refer to the documentation for the <directive 
-  module="mod_ssl_ct">CTStaticLogConfig</directive> directive and the 
+  particular log.  Refer to the documentation for the <directive
+  module="mod_ssl_ct">CTStaticLogConfig</directive> directive and the
   <program>ctlogconfig</program> command for more specific information.</p>
 
 </section>
@@ -223,7 +223,7 @@ testing.</p>
 
   <p>Sample code in the form of a Python script to build an SCT in the correct
   format from data received from a log can be found in
-  <a href="https://github.com/tomrittervg/ct-tools">Tom Ritter's ct-tools 
+  <a href="https://github.com/tomrittervg/ct-tools">Tom Ritter's ct-tools
   repository</a>.  Refer to <code>write-sct.py</code></p>
 </section>
 
@@ -290,7 +290,7 @@ testing.</p>
 
   <p>The directory will contain files named <code><em>PID</em>.tmp</code> for
   active child processes and files named <code><em>PID</em>.out</code> for exited
-  child processes.  These <code>.out</code> files are ready for off-line audit. 
+  child processes.  These <code>.out</code> files are ready for off-line audit.
   The experimental command <code>ctauditscts</code> (in the httpd source tree, not
   currently installed) interfaces with <em>certificate-transparency</em> tools to
   perform the audit.</p>
@@ -406,7 +406,7 @@ refreshed</description>
   to that certificate; the name of the subdirectory is the SHA-256 hash of the
   certificate.</p>
 
-  <p>The certificate-specific directory contains SCTs retrieved from configured 
+  <p>The certificate-specific directory contains SCTs retrieved from configured
   logs, SCT lists prepared from statically configured SCTs and retrieved SCTs,
   and other information used for managing SCTs.</p>
 </usage>
@@ -447,7 +447,7 @@ ServerHello</description>
 <usage>
   <p>This directive is used to configure information about a particular log.
   This directive is appropriate when configuration information changes rarely.
-  If dynamic configuration updates must be supported, refer to the 
+  If dynamic configuration updates must be supported, refer to the
   <directive module="mod_ssl_ct">CTLogConfigDB</directive> directive.</p>
 
   <p>Each of the six fields must be specified, but usually only a small
@@ -483,7 +483,7 @@ ServerHello</description>
     Timestamps.  This must be provided as a decimal number.
     <br />
     Specify <strong><code>-</code></strong> for one of the timestamps if it is unknown.
-    For example, when configuring the minimum valid timestamp for a log which remains 
+    For example, when configuring the minimum valid timestamp for a log which remains
     valid, specify <strong><code>-</code></strong> for <em>max-timestamp</em>.
     <br />
     SCTs received from this log by the proxy are invalid if the timestamp
@@ -522,7 +522,7 @@ about the fields which can be configured with this directive.</seealso>
 
   <p><em>sct-directory</em> should contain one or more files with extension
   <code>.sct</code>, representing one or more SCTs corresponding to the
-  server certificate.  If <em>sct-directory</em> is not absolute, then it is 
+  server certificate.  If <em>sct-directory</em> is not absolute, then it is
   assumed to be relative to <directive module="core">ServerRoot</directive>.</p>
 
   <p>If <em>sct-directory</em> is empty, no error will be raised.</p>

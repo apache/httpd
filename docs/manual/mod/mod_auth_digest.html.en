@@ -87,7 +87,7 @@
     AuthType Digest
     AuthName "private area"
     AuthDigestDomain "/private/" "http://mirror.my.dom/private2/"
-    
+
     AuthDigestProvider file
     AuthUserFile "/web/auth/.digest_pw"
     Require valid-user

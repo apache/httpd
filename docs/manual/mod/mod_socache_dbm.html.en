@@ -36,7 +36,7 @@
     which provides for creation and access to a cache backed by a
     DBM database.
     </p>
-    
+
     <div class="example"><p><code>
     dbm:/path/to/datafile
     </code></p></div>

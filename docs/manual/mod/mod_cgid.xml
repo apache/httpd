@@ -90,7 +90,7 @@ the cgi daemon</description>
     write in the directory where the socket is located.</p>
 
     <p>If <var>file-path</var> is not an absolute path, the location specified
-    will be relative to the value of 
+    will be relative to the value of
     <directive module="core">DefaultRuntimeDir</directive>.</p>
 
     <example><title>Example</title>
@@ -107,7 +107,7 @@ the cgi daemon</description>
 <description>The length of time to wait for more output from the
 CGI program</description>
 <syntax>CGIDScriptTimeout <var>time</var>[s|ms]</syntax>
-<default>value of <directive module="core">Timeout</directive> directive when 
+<default>value of <directive module="core">Timeout</directive> directive when
 unset</default>
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
@@ -117,7 +117,7 @@ unset</default>
 
 <usage>
     <p>This directive limits the length of time to wait for more output from
-    the CGI program.  If the time is exceeded, the request and CGI are 
+    the CGI program.  If the time is exceeded, the request and CGI are
     terminated.</p>
 
     <example><title>Example</title>
@@ -130,4 +130,3 @@ unset</default>
 </directivesynopsis>
 
 </modulesynopsis>
-

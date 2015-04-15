@@ -81,7 +81,7 @@
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The length of time to wait for more output from the
 CGI program</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CGIDScriptTimeout <var>time</var>[s|ms]</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>value of <code class="directive"><a href="../mod/core.html#timeout">Timeout</a></code> directive when 
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>value of <code class="directive"><a href="../mod/core.html#timeout">Timeout</a></code> directive when
 unset</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
@@ -90,7 +90,7 @@ unset</code></td></tr>
 </td></tr>
 </table>
     <p>This directive limits the length of time to wait for more output from
-    the CGI program.  If the time is exceeded, the request and CGI are 
+    the CGI program.  If the time is exceeded, the request and CGI are
     terminated.</p>
 
     <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">CGIDScriptTimeout 20</pre>
@@ -118,7 +118,7 @@ the cgi daemon</td></tr>
     write in the directory where the socket is located.</p>
 
     <p>If <var>file-path</var> is not an absolute path, the location specified
-    will be relative to the value of 
+    will be relative to the value of
     <code class="directive"><a href="../mod/core.html#defaultruntimedir">DefaultRuntimeDir</a></code>.</p>
 
     <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">ScriptSock /var/run/cgid.sock</pre>

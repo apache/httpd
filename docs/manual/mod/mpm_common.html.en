@@ -519,7 +519,7 @@ the child processes</td></tr>
     Apache httpd to always create the file on the disk.</p>
 
     <p>If <var>file-path</var> is not an absolute path, the location specified
-    will be relative to the value of 
+    will be relative to the value of
     <code class="directive"><a href="../mod/core.html#defaultruntimedir">DefaultRuntimeDir</a></code>.</p>
 
     <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">ScoreBoardFile /var/run/apache_runtime_status</pre>

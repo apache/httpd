@@ -177,7 +177,7 @@
         # template from httpd<br />
         cp /etc/sysconfig/httpd /etc/sysconfig/httpd-additional
       </example>
-      
+
       <example>
         # blank template<br />
         touch /etc/sysconfig/httpd-additional
@@ -212,4 +212,3 @@
   </section>
 
 </manualpage>
-

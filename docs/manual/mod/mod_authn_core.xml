@@ -61,13 +61,13 @@
 &lt;/AuthnProviderAlias&gt;
 
 # Then check here
-&lt;AuthnProviderAlias file file2&gt;   
+&lt;AuthnProviderAlias file file2&gt;
     AuthUserFile "/www/conf/passwords2"
 &lt;/AuthnProviderAlias&gt;
 
 &lt;Directory "/var/web/pages/secure"&gt;
     AuthBasicProvider file1 file2
-    
+
     AuthType Basic
     AuthName "Protected Area"
     Require valid-user
@@ -97,13 +97,13 @@ Alias "/secure" "/webpages/secure"
 &lt;Directory "/webpages/secure"&gt;
     Order deny,allow
     Allow from all
-    
+
     AuthBasicProvider ldap-other-alias  ldap-alias1
-    
+
     AuthType Basic
     AuthName "LDAP Protected Place"
     Require valid-user
-    # Note that Require ldap-* would not work here, since the 
+    # Note that Require ldap-* would not work here, since the
     # AuthnProviderAlias does not provide the config to authorization providers
     # that are implemented in the same module as the authentication provider.
 &lt;/Directory&gt;

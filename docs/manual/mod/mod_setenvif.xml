@@ -49,12 +49,12 @@ BrowserMatch ^Mozilla netscape
 BrowserMatch MSIE !netscape
 </highlight>
 
-   <p>When the server looks up a path via an internal 
-   <glossary ref="subrequest">subrequest</glossary> such as looking 
-   for a <directive module="mod_dir" >DirectoryIndex</directive> 
+   <p>When the server looks up a path via an internal
+   <glossary ref="subrequest">subrequest</glossary> such as looking
+   for a <directive module="mod_dir" >DirectoryIndex</directive>
    or generating a directory listing with <module>mod_autoindex</module>,
-   per-request environment variables are <em>not</em> inherited in the 
-   subrequest. Additionally, 
+   per-request environment variables are <em>not</em> inherited in the
+   subrequest. Additionally,
    <directive module="mod_setenvif">SetEnvIf</directive> directives
    are not separately evaluated in the subrequest due to the API phases
    <module>mod_setenvif</module> takes action in.</p>
@@ -226,11 +226,11 @@ of</p>
 SetEnvIf Request_URI "\.gif$" object_is_image=gif
 SetEnvIf Request_URI "\.jpg$" object_is_image=jpg
 SetEnvIf Request_URI "\.xbm$" object_is_image=xbm
-    
+
 SetEnvIf Referer www\.mydomain\.example\.com intra_site_referral
-    
+
 SetEnvIf object_is_image xbm XBIT_PROCESSING=1
-    
+
 SetEnvIf ^TS  ^[a-z]  HAVE_TS
 </highlight>
 

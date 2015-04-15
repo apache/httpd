@@ -110,15 +110,15 @@
     which the authorization directives are applied.</p>
 
     <p>Directives that control how authorization modules respond when they don't match
-    the authenticated user have been removed: This includes 
-    AuthzLDAPAuthoritative, AuthzDBDAuthoritative, AuthzDBMAuthoritative, 
+    the authenticated user have been removed: This includes
+    AuthzLDAPAuthoritative, AuthzDBDAuthoritative, AuthzDBMAuthoritative,
     AuthzGroupFileAuthoritative, AuthzUserAuthoritative,
     and AuthzOwnerAuthoritative.   These directives have been replaced by the
-    more expressive <code class="directive"><a href="./mod/mod_authz_core.html#requireany">RequireAny</a></code>, 
+    more expressive <code class="directive"><a href="./mod/mod_authz_core.html#requireany">RequireAny</a></code>,
     <code class="directive"><a href="./mod/mod_authz_core.html#requirenone">RequireNone</a></code>, and
     <code class="directive"><a href="./mod/mod_authz_core.html#requireall">RequireAll</a></code>.</p>
 
-    <p>If you use <code class="module"><a href="./mod/mod_authz_dbm.html">mod_authz_dbm</a></code>, you must port your 
+    <p>If you use <code class="module"><a href="./mod/mod_authz_dbm.html">mod_authz_dbm</a></code>, you must port your
     configuration to use <code>Require dbm-group ...</code> in place
     of <code>Require group ...</code>.</p>
 
@@ -227,7 +227,7 @@ Allow from example.org</pre>
         <code>jsessionid</code>.
         </li>
 
-        <li><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code>: The second parameter to 
+        <li><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code>: The second parameter to
         <code class="directive"><a href="./mod/mod_cache.html#cacheenable">CacheEnable</a></code> only
         matches forward proxy content if it begins with the correct
         protocol. In 2.2 and earlier, a parameter of '/' matched all
@@ -301,7 +301,7 @@ Allow from example.org</pre>
       no longer supported. <code class="directive"><a href="./mod/mod_ssl.html#sslproxycheckpeercn">SSLProxyCheckPeerCN
 	  </a></code> and <code class="directive"><a href="./mod/mod_ssl.html#sslproxycheckpeerexpire">SSLProxyCheckPeerExpire
 	  </a></code> now default to On, causing proxy requests to HTTPS hosts
-	  with bad or outdated certificates to fail with a 502 status code (Bad 
+	  with bad or outdated certificates to fail with a 502 status code (Bad
 	  gateway)</li>
 
       <li><code class="program"><a href="./programs/htpasswd.html">htpasswd</a></code> now uses MD5 hash by default on
@@ -327,7 +327,7 @@ Allow from example.org</pre>
 
       <li>The functionality provided by <code>mod_authn_alias</code>
       in previous versions (i.e., the <code class="directive"><a href="./mod/mod_authn_core.html#authnprovideralias">AuthnProviderAlias</a></code> directive)
-      has been moved into <code class="module"><a href="./mod/mod_authn_core.html">mod_authn_core</a></code>.  
+      has been moved into <code class="module"><a href="./mod/mod_authn_core.html">mod_authn_core</a></code>.
       </li>
 
       <li><code class="module"><a href="./mod/mod_cgid.html">mod_cgid</a></code> uses the servers <code class="directive"><a href="./mod/core.html#timeout">Timeout</a></code> to limit the length of time to wait for CGI output.
@@ -359,9 +359,9 @@ Allow from example.org</pre>
  - load module <code class="module"><a href="./mod/mod_access_compat.html">mod_access_compat</a></code>, or update configuration to 2.4 authorization directives.</li>
       <li><code>Ignoring deprecated use of DefaultType in line NN of /path/to/httpd.conf</code> - remove <code class="directive"><a href="./mod/core.html#defaulttype">DefaultType</a></code>
       and replace with other configuration settings.</li>
-      <li><code>Invalid command 'AddOutputFilterByType', perhaps misspelled 
+      <li><code>Invalid command 'AddOutputFilterByType', perhaps misspelled
       or defined by a module not included in the server configuration
-      </code> - <code class="directive"><a href="./mod/mod_filter.html#addoutputfilterbytype">AddOutputFilterByType</a></code> 
+      </code> - <code class="directive"><a href="./mod/mod_filter.html#addoutputfilterbytype">AddOutputFilterByType</a></code>
       has moved from the core to mod_filter, which must be loaded.</li>
     </ul></li>
     <li>Errors serving requests:

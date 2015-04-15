@@ -107,15 +107,15 @@
     which the authorization directives are applied.</p>
 
     <p>Directives that control how authorization modules respond when they don't match
-    the authenticated user have been removed: This includes 
-    AuthzLDAPAuthoritative, AuthzDBDAuthoritative, AuthzDBMAuthoritative, 
+    the authenticated user have been removed: This includes
+    AuthzLDAPAuthoritative, AuthzDBDAuthoritative, AuthzDBMAuthoritative,
     AuthzGroupFileAuthoritative, AuthzUserAuthoritative,
     and AuthzOwnerAuthoritative.   These directives have been replaced by the
-    more expressive <directive module="mod_authz_core">RequireAny</directive>, 
+    more expressive <directive module="mod_authz_core">RequireAny</directive>,
     <directive module="mod_authz_core">RequireNone</directive>, and
     <directive module="mod_authz_core">RequireAll</directive>.</p>
 
-    <p>If you use <module>mod_authz_dbm</module>, you must port your 
+    <p>If you use <module>mod_authz_dbm</module>, you must port your
     configuration to use <code>Require dbm-group ...</code> in place
     of <code>Require group ...</code>.</p>
 
@@ -256,7 +256,7 @@ Allow from example.org
         <code>jsessionid</code>.
         </li>
 
-        <li><module>mod_cache</module>: The second parameter to 
+        <li><module>mod_cache</module>: The second parameter to
         <directive module="mod_cache">CacheEnable</directive> only
         matches forward proxy content if it begins with the correct
         protocol. In 2.2 and earlier, a parameter of '/' matched all
@@ -339,7 +339,7 @@ Allow from example.org
       no longer supported. <directive module="mod_ssl">SSLProxyCheckPeerCN
 	  </directive> and <directive module="mod_ssl">SSLProxyCheckPeerExpire
 	  </directive> now default to On, causing proxy requests to HTTPS hosts
-	  with bad or outdated certificates to fail with a 502 status code (Bad 
+	  with bad or outdated certificates to fail with a 502 status code (Bad
 	  gateway)</li>
 
       <li><program>htpasswd</program> now uses MD5 hash by default on
@@ -364,9 +364,9 @@ Allow from example.org
       </li>
 
       <li>The functionality provided by <code>mod_authn_alias</code>
-      in previous versions (i.e., the <directive 
+      in previous versions (i.e., the <directive
       module="mod_authn_core">AuthnProviderAlias</directive> directive)
-      has been moved into <module>mod_authn_core</module>.  
+      has been moved into <module>mod_authn_core</module>.
       </li>
 
       <li><module>mod_cgid</module> uses the servers <directive module="core"
@@ -399,9 +399,9 @@ Allow from example.org
  - load module <module>mod_access_compat</module>, or update configuration to 2.4 authorization directives.</li>
       <li><code>Ignoring deprecated use of DefaultType in line NN of /path/to/httpd.conf</code> - remove <directive module="core">DefaultType</directive>
       and replace with other configuration settings.</li>
-      <li><code>Invalid command 'AddOutputFilterByType', perhaps misspelled 
+      <li><code>Invalid command 'AddOutputFilterByType', perhaps misspelled
       or defined by a module not included in the server configuration
-      </code> - <directive module="mod_filter">AddOutputFilterByType</directive> 
+      </code> - <directive module="mod_filter">AddOutputFilterByType</directive>
       has moved from the core to mod_filter, which must be loaded.</li>
     </ul></li>
     <li>Errors serving requests:

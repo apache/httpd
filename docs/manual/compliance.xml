@@ -199,12 +199,12 @@
 
     <p>This policy will be rejected if the server response does not contain
     an explicit <code>Content-Length</code> header.</p>
-    
+
     <p>There are a number of ways of determining the length of a response
     body, described in full in
     <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.4">
     RFC2616 section 4.4 Message Length</a>.</p>
-    
+
     <p>When the <code>Content-Length</code> header is present, the size of
     the body is declared at the start of the response. If this information
     is missing, an HTTP cache might choose to ignore the response, as it
@@ -258,9 +258,9 @@
     header, and the format of the header is described in full in
     <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.7">
     RFC2616 section 3.7 Media Types</a>.</p>
-    
+
     <p>A syntactically valid content type might look as follows:</p>
-    
+
     <example>
       Content-Type: text/html; charset=iso-8859-1
     </example>
@@ -271,7 +271,7 @@
       # invalid<br />
       Content-Type: foo<br />
       # blank<br />
-      Content-Type: 
+      Content-Type:
     </example>
 
     <p>The server administrator has the option to restrict the policy to one
@@ -297,12 +297,12 @@
     <p>This policy will be rejected if the server response does not contain
     an explicit <code>Content-Length</code> header, or a
     <code>Transfer-Encoding</code> of chunked.</p>
-    
+
     <p>There are a number of ways of determining the length of a response
     body, described in full in
     <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.4">
     RFC2616 section 4.4 Message Length</a>.</p>
-    
+
     <p>When the <code>Content-Length</code> header is present, the size of
     the body is declared at the start of the response. HTTP/1.1 defines the
     <code>Transfer-Encoding</code> header as an alternative to
@@ -315,33 +315,33 @@
     </p>
 
     <p>Most specifically, we follow these rules:</p>
-    
+
     <dl>
     <dt>IF</dt>
     <dd>we have not marked this connection as errored;</dd>
-    
+
     <dt>and</dt>
     <dd>the client isn't expecting 100-continue</dd>
-    
+
     <dt>and</dt>
     <dd>the response status does not require a close;</dd>
-    
+
     <dt>and</dt>
     <dd>the response body has a defined length due to the status code
     being 304 or 204, the request method being HEAD, already having defined
     Content-Length or Transfer-Encoding: chunked, or the request version
     being HTTP/1.1 and thus capable of being set as chunked</dd>
-    
+
     <dt>THEN</dt>
     <dd>we support keepalive.</dd>
     </dl>
-   
+
     <note type="warning">The server may choose to turn off keepalive for
     various reasons, such as an imminent shutdown, or a Connection: close from
     the client, or an HTTP/1.0 client request with a response with no
     <code>Content-Length</code>, but for our purposes we only care that
     keepalive was possible from the application, not that keepalive actually
-    took place.</note> 
+    took place.</note>
 
     <p>It should also be noted that the Apache httpd server includes a filter
     that adds chunked encoding to responses without an explicit content
@@ -350,7 +350,7 @@
 
     <p>This policy is implemented by the <strong>POLICY_KEEPALIVE</strong>
     filter.</p>
-    
+
   </section>
 
   <section id="policymaxage">
@@ -392,7 +392,7 @@
     filter.</p>
 
   </section>
-  
+
   <section id="policynocache">
     <title>No Cache Policy</title>
     <related>
@@ -434,7 +434,7 @@
     filter.</p>
 
   </section>
-  
+
   <section id="policyvalidation">
     <title>Validation Policy</title>
     <related>
@@ -469,7 +469,7 @@
     filter.</p>
 
   </section>
-  
+
   <section id="policyvary">
     <title>Vary Header Policy</title>
     <related>
@@ -480,7 +480,7 @@
         <directive module="mod_policy">PolicyVary</directive>
       </directivelist>
     </related>
-    
+
     <p>This policy will be rejected if the server response contains a
     <code>Vary</code> header, and that header in turn contains a header
     blacklisted by the administrator.</p>
@@ -488,7 +488,7 @@
     <p>The <code>Vary</code> header is described in full in
     <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.44">
     RFC2616 section 14.44 Vary</a>.</p>
-    
+
     <p>Some client provided headers, such as <code>User-Agent</code>,
     can contain thousands or millions of combinations of values over a period
     of time, and if the response is declared cacheable, a cache might attempt
@@ -500,7 +500,7 @@
     filter.</p>
 
   </section>
-  
+
   <section id="policyversion">
     <title>Protocol Version Policy</title>
     <related>

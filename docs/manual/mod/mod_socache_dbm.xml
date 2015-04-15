@@ -33,7 +33,7 @@
     which provides for creation and access to a cache backed by a
     DBM database.
     </p>
-    
+
     <example>
     dbm:/path/to/datafile
     </example>

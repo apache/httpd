@@ -505,7 +505,7 @@ the child processes</description>
     Apache httpd to always create the file on the disk.</p>
 
     <p>If <var>file-path</var> is not an absolute path, the location specified
-    will be relative to the value of 
+    will be relative to the value of
     <directive module="core">DefaultRuntimeDir</directive>.</p>
 
     <example><title>Example</title>

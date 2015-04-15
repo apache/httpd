@@ -135,12 +135,12 @@
     with <code>KnockKnock/2.0</code> will be allowed access, and all
     others will be denied.</p>
 
-    <p>When the server looks up a path via an internal 
-    <a class="glossarylink" href="../glossary.html#subrequest" title="see glossary">subrequest</a> such as looking 
-    for a <code class="directive"><a href="../mod/mod_dir.html#directoryindex">DirectoryIndex</a></code> 
+    <p>When the server looks up a path via an internal
+    <a class="glossarylink" href="../glossary.html#subrequest" title="see glossary">subrequest</a> such as looking
+    for a <code class="directive"><a href="../mod/mod_dir.html#directoryindex">DirectoryIndex</a></code>
     or generating a directory listing with <code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code>,
-    per-request environment variables are <em>not</em> inherited in the 
-    subrequest. Additionally, 
+    per-request environment variables are <em>not</em> inherited in the
+    subrequest. Additionally,
     <code class="directive"><a href="../mod/mod_setenvif.html#setenvif">SetEnvIf</a></code> directives
     are not separately evaluated in the subrequest due to the API phases
     <code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code> takes action in.</p>
@@ -198,7 +198,7 @@
 
     <pre class="prettyprint lang-config">&lt;RequireAll&gt;
     Require expr "!(%{QUERY_STRING} =~ /secret/)"
-    Require expr "%{REQUEST_URI} in { '/example.cgi', '/other.cgi' }" 
+    Require expr "%{REQUEST_URI} in { '/example.cgi', '/other.cgi' }"
 &lt;/RequireAll&gt;</pre>
 
 

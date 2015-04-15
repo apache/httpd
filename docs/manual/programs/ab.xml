@@ -131,7 +131,7 @@
     requests within one HTTP session. Default is no KeepAlive.</dd>
 
     <dt><code>-l</code></dt>
-    <dd>Do not report errors if the length of the responses is not constant. This 
+    <dd>Do not report errors if the length of the responses is not constant. This
     can be usefull for dynamic pages.<br />
     Available in 2.4.7 and later.
     </dd>

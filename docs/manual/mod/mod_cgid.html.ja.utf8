@@ -80,7 +80,7 @@
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>The length of time to wait for more output from the
 CGI program</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>CGIDScriptTimeout <var>time</var>[s|ms]</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>value of <code class="directive"><a href="../mod/core.html#timeout">Timeout</a></code> directive when 
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>value of <code class="directive"><a href="../mod/core.html#timeout">Timeout</a></code> directive when
 unset</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>

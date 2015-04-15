@@ -38,7 +38,7 @@
 
     <p>The first major change is to the subrequest and redirect
     mechanisms. There were a number of different code paths in
-    the Apache HTTP Server 1.3 to attempt to optimize subrequest 
+    the Apache HTTP Server 1.3 to attempt to optimize subrequest
     or redirect behavior. As patches were introduced to 2.0, these
     optimizations (and the server behavior) were quickly broken due
     to this duplication of code. All duplicate code has been folded
@@ -216,4 +216,3 @@ if ((access_status = ap_run_auth_checker(r)) != 0) {
     </section>
 </section>
 </manualpage>
-

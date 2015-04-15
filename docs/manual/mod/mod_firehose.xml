@@ -57,7 +57,7 @@
     <p>To enable the module, it should be compiled and loaded
     in to your running Apache configuration, and the directives below
     used to record the data you are interested in.</p>
-    
+
     <p>It is possible to record both incoming and outgoing data to
     the same filename if desired, as the direction of flow is recorded
     within each fragment.</p>
@@ -87,7 +87,7 @@
     <p>The server typically serves multiple connections simultaneously,
     and as a result requests and responses need to be multiplexed before
     being written to the firehose.</p>
-    
+
     <p>The fragment format is designed as clear text, so that a firehose
     can be opened with and inspected by a normal text editor.
     Alternatively, the <program>firehose</program> tool can be used to

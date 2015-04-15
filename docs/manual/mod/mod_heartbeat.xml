@@ -30,14 +30,14 @@
 <compatibility>Available in Apache 2.3 and later</compatibility>
 
 <summary>
-<p> <module>mod_heartbeat</module> sends multicast messages to a <module>mod_heartmonitor</module> listener 
+<p> <module>mod_heartbeat</module> sends multicast messages to a <module>mod_heartmonitor</module> listener
 that advertises the servers current connection count.  Usually, <module>mod_heartmonitor</module>
 will be running on a proxy server with <module>mod_lbmethod_heartbeat</module> loaded, which allows
 <directive module="mod_proxy">ProxyPass</directive> to use the "heartbeat" <em>lbmethod</em> inside
 of <directive module="mod_proxy">ProxyPass</directive>.</p>
 <p>
-    <module>mod_heartbeat</module> itself is loaded on the origin server(s) that serve requests 
-    through the proxy server(s).  
+    <module>mod_heartbeat</module> itself is loaded on the origin server(s) that serve requests
+    through the proxy server(s).
 </p>
 
     <note type="warning">
@@ -57,7 +57,7 @@ of <directive module="mod_proxy">ProxyPass</directive>.</p>
       packet is a simple ASCII format, similar to GET query parameters
       in HTTP.
   </p>
-  
+
 <example><title>An Example Packet</title>
 v=1&amp;ready=75&amp;busy=0
 </example>
@@ -84,7 +84,7 @@ status information. This address will usually correspond to a configured
 frontend proxy system.</p>
 <highlight language="config">
 HeartbeatAddress 239.0.0.1:27999
-</highlight>    
+</highlight>
 </usage>
 </directivesynopsis>
 
