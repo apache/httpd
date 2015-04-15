@@ -314,9 +314,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
   *) mod_logio: Log time-to-first-byte via %^FB
      trunk patch: http://svn.apache.org/r1671918
+                  http://svn.apache.org/r1673113
      2.4.x patch: trunk works (modulo CHANGES)
-     +1: covener
-     ylavic: +1 with http://svn.apache.org/r1673113
+     +1: covener, ylavic
 
   *) mod_proxy_wstunnel: Avoid an empty response by failing with 502 (Bad
      Gateway) when no response is ever received from the backend.
