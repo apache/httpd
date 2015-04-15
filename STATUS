@@ -126,6 +126,18 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch:  trunk works (modulo CHANGES)
      +1: covener, trawick, ylavic
 
+  *) mod_proxy_wstunnel: Avoid an empty response by failing with 502 (Bad
+     Gateway) when no response is ever received from the backend.
+     trunk patch: http://svn.apache.org/r1669299
+     2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-wstunel-noreply.diff 
+     +1 covener, ylavic, trawick
+
+  *) mod_ssl: Fix possible crash when loading server certificate constraints.
+     PR 57694.
+     trunk patch: http://svn.apache.org/r1666297
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: ylavic, rjung, trawick
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -270,12 +282,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic
 
-  *) mod_ssl: Fix possible crash when loading server certificate constraints.
-     PR 57694.
-     trunk patch: http://svn.apache.org/r1666297
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, rjung
-
   *) core: Add CGIPassAuth directive to control whether HTTP authorization
      headers are passed to scripts as CGI variables.  PR: 56855
      trunk patch: http://svn.apache.org/r1642847, http://svn.apache.org/r1673155
@@ -311,18 +317,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1672989 (CHANGES)
      2.4.x patch: trunk works (modulo CHANGES)
      +1: jailletc36, ylavic
+     trawick: Could we add r1673769 too?
 
   *) mod_logio: Log time-to-first-byte via %^FB
      trunk patch: http://svn.apache.org/r1671918
                   http://svn.apache.org/r1673113
      2.4.x patch: trunk works (modulo CHANGES)
      +1: covener, ylavic
-
-  *) mod_proxy_wstunnel: Avoid an empty response by failing with 502 (Bad
-     Gateway) when no response is ever received from the backend.
-     trunk patch: http://svn.apache.org/r1669299
-     2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-wstunel-noreply.diff 
-     +1 covener, ylavic
 
 OTHER PROPOSALS
 
