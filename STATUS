@@ -309,6 +309,23 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (modulo CHANGES)
      +1: jailletc36
 
+  *) mod_logio: Log time-to-first-byte via %^FB
+     trunk patch: http://svn.apache.org/r1671918
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: covener
+
+  *) mod_ssl: Protect ENGINE_CTRL_CHIL_SET_FORKCHECK macro with a 
+     featue check for libressl. 
+     trunk patch: http://svn.apache.org/r1673455
+     2.4.x patch:  trunk works (modulo CHANGES)
+     +1: covener
+
+  *) mod_proxy_wstunnel: Avoid an empty response by failing with 502 (Bad
+     Gateway) when no response is ever received from the backend.
+     trunk patch: http://svn.apache.org/r1669299
+     2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-wstunel-noreply.diff 
+     +1 covener
+
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
