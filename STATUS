@@ -101,16 +101,6 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
-  *) mod_proxy_http: Use the "Connection: close" header for requests to
-     backends not recycling connections (disablereuse), including the default
-     reverse and forward proxies.
-     trunk patch: http://svn.apache.org/r1526189
-                  http://svn.apache.org/r1658765
-     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-ap_proxy_connection_reusable.patch
-     +1: ylavic, rjung, covener
-     ylavic: updated with ap_proxy_connection_reusable(), missing in 2.4.x.
-
-
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
@@ -123,6 +113,15 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      +1: ylavic, covener, rjung
      ylavic: http://people.apache.org/~ylavic/httpd-r1632742-x-w.diff is the
              same patch without space changes (may be easier to review).
+
+  *) mod_proxy_http: Use the "Connection: close" header for requests to
+     backends not recycling connections (disablereuse), including the default
+     reverse and forward proxies.
+     trunk patch: http://svn.apache.org/r1526189
+                  http://svn.apache.org/r1658765
+     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-ap_proxy_connection_reusable.patch
+     +1: ylavic, rjung, covener
+     ylavic: updated with ap_proxy_connection_reusable(), missing in 2.4.x.
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
