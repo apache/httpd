@@ -405,10 +405,10 @@
         one connection at a time.  Worker generally is a good
         choice for high-traffic servers because it has a smaller
         memory footprint than the prefork MPM.</li>
-        
-        <li>The <code class="module"><a href="../mod/event.html">event</a></code> MPM is threaded like the 
-        Worker MPM, but is designed to allow more requests to be 
-        served simultaneously by passing off some processing work 
+
+        <li>The <code class="module"><a href="../mod/event.html">event</a></code> MPM is threaded like the
+        Worker MPM, but is designed to allow more requests to be
+        served simultaneously by passing off some processing work
         to supporting threads, freeing up the main threads to work
         on new requests.</li>
 
@@ -612,7 +612,7 @@
           <strong>accept_mutex_on ();</strong>
           for (;;) {
             fd_set accept_fds;
-            
+
             FD_ZERO (&amp;accept_fds);
             for (i = first_socket; i &lt;= last_socket; ++i) {
               FD_SET (i, &amp;accept_fds);
@@ -742,7 +742,7 @@
       <pre class="prettyprint lang-c">        void lingering_close (int s)
         {
           char junk_buffer[2048];
-          
+
           /* shutdown the sending side */
           shutdown (s, 1);
 
@@ -759,7 +759,7 @@
               /* just toss away whatever is here */
             }
           }
-          
+
           close (s);
         }</pre>
 

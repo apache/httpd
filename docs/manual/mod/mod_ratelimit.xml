@@ -41,7 +41,7 @@ variable <code>rate-limit</code>.</p>
 <highlight language="config">
 &lt;Location "/downloads"&gt;
     SetOutputFilter RATE_LIMIT
-    SetEnv rate-limit 400 
+    SetEnv rate-limit 400
 &lt;/Location&gt;
 </highlight>
 </example>
@@ -49,4 +49,3 @@ variable <code>rate-limit</code>.</p>
 </summary>
 
 </modulesynopsis>
-

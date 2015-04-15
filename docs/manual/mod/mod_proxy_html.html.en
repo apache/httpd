@@ -240,7 +240,7 @@ for earlier 2.x versions</td></tr>
 </ul>
 <p>Take care when using these.  The fixes will correct certain authoring
 mistakes, but risk also erroneously fixing links that were correct to start with.
-Only use them if you know you have a broken backend server.</p> 
+Only use them if you know you have a broken backend server.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

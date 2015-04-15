@@ -568,7 +568,7 @@ Group webgroup
     option as indicated above, or to syslog if <code>--with-suexec-syslog</code>
     is used. If you feel you have configured and
     installed the wrapper properly, have a look at the log and the
-    error_log for the server to see where you may have gone astray. 
+    error_log for the server to see where you may have gone astray.
     The output of <code>"suexec -V"</code> will show the options
     used to compile suexec, if using a binary distribution.</p>
 

@@ -89,7 +89,7 @@
     <p>If a directory is requested (i.e. a path ending with
     <code>/</code>), the file served from that directory is defined by
     the <directive module="mod_dir">DirectoryIndex</directive> directive.
-    For example, if <code>DocumentRoot</code> were set as above, and 
+    For example, if <code>DocumentRoot</code> were set as above, and
     you were to set:</p>
 
     <example>DirectoryIndex index.html index.php</example>
@@ -296,7 +296,7 @@ content) in a page as it is being served to the client using
 Substitute s/internal\.example\.com/www.example.com/i
 </highlight>
 
-<p>For more sophisticated rewriting of links in HTML and XHTML, the 
+<p>For more sophisticated rewriting of links in HTML and XHTML, the
 <module>mod_proxy_html</module> module is also available. It allows you
 to create maps of URLs that need to be rewritten, so that complex
 proxying scenarios can be handled.</p>

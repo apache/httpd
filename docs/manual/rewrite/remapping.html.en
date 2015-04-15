@@ -75,7 +75,7 @@ configuration.</div>
       following rule:</p>
 
 <pre class="prettyprint lang-config">RewriteEngine  on
-RewriteRule    ^<strong>/foo</strong>\.html$  <strong>/bar</strong>.html [PT]</pre>
+RewriteRule    "^<strong>/foo</strong>\.html$"  "<strong>/bar</strong>.html" [PT]</pre>
 
     </dd>
   </dl>
@@ -105,7 +105,7 @@ RewriteRule    ^<strong>/foo</strong>\.html$  <strong>/bar</strong>.html [PT]</p
       change of the browsers and thus the users view:</p>
 
 <pre class="prettyprint lang-config">RewriteEngine  on
-RewriteRule    ^<strong>/foo</strong>\.html$  <strong>bar</strong>.html  [<strong>R</strong>]</pre>
+RewriteRule    "^<strong>/foo</strong>\.html$"  "<strong>bar</strong>.html"  [<strong>R</strong>]</pre>
 
 </dd>
 
@@ -146,7 +146,7 @@ RewriteRule    ^<strong>/foo</strong>\.html$  <strong>bar</strong>.html  [<stron
 
 <pre class="prettyprint lang-config">#With mod_rewrite
 RewriteEngine on
-RewriteRule   ^/docs/(.+)  http://new.example.com/docs/$1  [R,L]</pre>
+RewriteRule   "^/docs/(.+)"  "http://new.example.com/docs/$1"  [R,L]</pre>
 
 
 <pre class="prettyprint lang-config">#With RedirectMatch
@@ -186,8 +186,8 @@ Redirect "/docs/" "http://new.example.com/docs/"</pre>
       <code>/~quux/foo.cgi</code>.</p>
 
 <pre class="prettyprint lang-config">RewriteEngine  on
-RewriteBase    /~quux/
-RewriteRule    ^foo\.html$  foo.cgi   [H=<strong>cgi-script</strong>]</pre>
+RewriteBase    "/~quux/"
+RewriteRule    "^foo\.html$"  "foo.cgi"  [H=<strong>cgi-script</strong>]</pre>
 
     </dd>
   </dl>
@@ -220,11 +220,11 @@ RewriteRule    ^foo\.html$  foo.cgi   [H=<strong>cgi-script</strong>]</pre>
 #   when and only when document.php exists
 &lt;Directory "/var/www/htdocs"&gt;
     RewriteEngine on
-    RewriteBase /var/www/htdocs
+    RewriteBase   "/var/www/htdocs"
 
-    RewriteCond $1.php -f
-    RewriteCond $1.html !-f
-    RewriteRule ^(.*).html$ $1.php
+    RewriteCond   "$1.php"           -f
+    RewriteCond   "$1.html"          !-f
+    RewriteRule   "^(.*).html$"      "$1.php"
 &lt;/Directory&gt;</pre>
 
     </dd>
@@ -307,16 +307,16 @@ might do the following:</p>
 you might use one of the recipes below.</p>
 
 <p>For sites running on a port other than 80:</p>
-<pre class="prettyprint lang-config">RewriteCond %{HTTP_HOST}   !^www\.example\.com [NC]
-RewriteCond %{HTTP_HOST}   !^$
-RewriteCond %{SERVER_PORT} !^80$
-RewriteRule ^/?(.*)         http://www.example.com:%{SERVER_PORT}/$1 [L,R,NE]</pre>
+<pre class="prettyprint lang-config">RewriteCond "%{HTTP_HOST}"   "!^www\.example\.com" [NC]
+RewriteCond "%{HTTP_HOST}"   "!^$"
+RewriteCond "%{SERVER_PORT}" "!^80$"
+RewriteRule "^/?(.*)"        "http://www.example.com:%{SERVER_PORT}/$1" [L,R,NE]</pre>
 
 
 <p>And for a site running on port 80</p>
-<pre class="prettyprint lang-config">RewriteCond %{HTTP_HOST}   !^www\.example\.com [NC]
-RewriteCond %{HTTP_HOST}   !^$
-RewriteRule ^/?(.*)         http://www.example.com/$1 [L,R,NE]</pre>
+<pre class="prettyprint lang-config">RewriteCond "%{HTTP_HOST}"   "!^www\.example\.com"       [NC]
+RewriteCond "%{HTTP_HOST}"   "!^$"
+RewriteRule "^/?(.*)"        "http://www.example.com/$1" [L,R,NE]</pre>
 
 
         <p>
@@ -326,9 +326,9 @@ RewriteRule ^/?(.*)         http://www.example.com/$1 [L,R,NE]</pre>
         <strong>example.com</strong>, you could use the following
         recipe:</p>
 
-<pre class="prettyprint lang-config">RewriteCond %{HTTP_HOST} !^www\. [NC]
-RewriteCond %{HTTP_HOST} !^$
-RewriteRule ^/?(.*) http://www.%{HTTP_HOST}/$1 [L,R,NE]</pre>
+<pre class="prettyprint lang-config">RewriteCond "%{HTTP_HOST}" "!^www\."                    [NC]
+RewriteCond "%{HTTP_HOST}" "!^$"
+RewriteRule "^/?(.*)"      "http://www.%{HTTP_HOST}/$1" [L,R,NE]</pre>
 
 
     <p>These rulesets will work either in your main server configuration
@@ -363,17 +363,17 @@ RewriteRule ^/?(.*) http://www.%{HTTP_HOST}/$1 [L,R,NE]</pre>
 
 #   first try to find it in dir1/...
 #   ...and if found stop and be happy:
-RewriteCond         %{DOCUMENT_ROOT}/<strong>dir1</strong>/%{REQUEST_URI}  -f
-RewriteRule  ^(.+)  %{DOCUMENT_ROOT}/<strong>dir1</strong>/$1  [L]
+RewriteCond         "%{DOCUMENT_ROOT}/<strong>dir1</strong>/%{REQUEST_URI}"  -f
+RewriteRule "^(.+)" "%{DOCUMENT_ROOT}/<strong>dir1</strong>/$1"  [L]
 
 #   second try to find it in dir2/...
 #   ...and if found stop and be happy:
-RewriteCond         %{DOCUMENT_ROOT}/<strong>dir2</strong>/%{REQUEST_URI}  -f
-RewriteRule  ^(.+)  %{DOCUMENT_ROOT}/<strong>dir2</strong>/$1  [L]
+RewriteCond         "%{DOCUMENT_ROOT}/<strong>dir2</strong>/%{REQUEST_URI}"  -f
+RewriteRule "^(.+)" "%{DOCUMENT_ROOT}/<strong>dir2</strong>/$1"  [L]
 
 #   else go on for other Alias or ScriptAlias directives,
 #   etc.
-RewriteRule   ^  -  [PT]</pre>
+RewriteRule "^"     "-"                                          [PT]</pre>
 
     </dd>
   </dl>
@@ -404,9 +404,9 @@ RewriteRule   ^  -  [PT]</pre>
 
 <pre class="prettyprint lang-config">HostnameLookups on
 RewriteEngine on
-RewriteMap    multiplex         txt:/path/to/map.mirrors
-RewriteCond  %{REMOTE_HOST}     ([a-z]+)$ [NC]
-RewriteRule   ^/(.*)$  ${multiplex:<strong>%1</strong>|http://www.example.com/}$1  [R,L]</pre>
+RewriteMap    multiplex         "txt:/path/to/map.mirrors"
+RewriteCond  "%{REMOTE_HOST}"   "([a-z]+)$"                [NC]
+RewriteRule  "^/(.*)$"          "${multiplex:<strong>%1</strong>|http://www.example.com/}$1"  [R,L]</pre>
 
 
 <div class="example"><p><code>
@@ -461,7 +461,7 @@ com       http://www.example.com/<br />
        we replace <code>/puppies</code> and <code>/canines</code>
        by the canonical <code>/dogs</code>.</p>
 
-<pre class="prettyprint lang-config">RewriteRule   ^/(puppies|canines)/(.*)    /dogs/$2  [R]</pre>
+<pre class="prettyprint lang-config">RewriteRule   "^/(puppies|canines)/(.*)"    "/dogs/$2"  [R]</pre>
 
         </dd>
 
@@ -501,7 +501,7 @@ using the following ruleset:</p>
       </p>
 
 <pre class="prettyprint lang-config">RewriteEngine on
-RewriteRule   ^/$  /about/  [<strong>R</strong>]</pre>
+RewriteRule   "^/$"  "/about/"  [<strong>R</strong>]</pre>
 
 
 <p>Note that this can also be handled using the <code class="directive"><a href="../mod/mod_alias.html#redirectmatch">RedirectMatch</a></code> directive:</p>
@@ -545,18 +545,18 @@ complicated than this, you can use a variation of the following rewrite
 set to accomplish the same thing:</p>
 
 <pre class="prettyprint lang-config">&lt;Directory "/var/www/my_blog"&gt;
-  RewriteBase /my_blog
+  RewriteBase "/my_blog"
 
-  RewriteCond /var/www/my_blog/%{REQUEST_FILENAME} !-f
-  RewriteCond /var/www/my_blog/%{REQUEST_FILENAME} !-d
-  RewriteRule ^ index.php [PT]
+  RewriteCond "/var/www/my_blog/%{REQUEST_FILENAME}" !-f
+  RewriteCond "/var/www/my_blog/%{REQUEST_FILENAME}" !-d
+  RewriteRule "^"                                    "index.php" [PT]
 &lt;/Directory&gt;</pre>
 
 
 <p>If, on the other hand, you wish to pass the requested URI as a query
 string argument to index.php, you can replace that RewriteRule with:</p>
 
-<pre class="prettyprint lang-config">RewriteRule (.*) index.php?$1 [PT,QSA]</pre>
+<pre class="prettyprint lang-config">RewriteRule "(.*)" "index.php?$1" [PT,QSA]</pre>
 
 
 <p>Note that these rulesets can be used in a <code>.htaccess</code>
@@ -582,14 +582,14 @@ of the URL.</dd>
 <p> Many of the solutions in this section will all use the same condition,
 which leaves the matched value in the %2 backreference.  %1 is the beginining
 of the query string (up to the key of intererest), and %3 is the remainder. This
-condition is a bit complex for flexibility and to avoid double '&amp;&amp;' in the 
+condition is a bit complex for flexibility and to avoid double '&amp;&amp;' in the
 substitutions.</p>
 <ul>
   <li>This solution removes the matching key and value:
 
 <pre class="prettyprint lang-config"># Remove mykey=???
-RewriteCond %{QUERY_STRING} (.*(?:^|&amp;))mykey=([^&amp;]*)&amp;?(.*)&amp;?$
-RewriteRule (.*) $1?%1%3</pre>
+RewriteCond "%{QUERY_STRING}" "(.*(?:^|&amp;))mykey=([^&amp;]*)&amp;?(.*)&amp;?$"
+RewriteRule "(.*)"            "$1?%1%3"</pre>
 
   </li>
 
@@ -597,25 +597,25 @@ RewriteRule (.*) $1?%1%3</pre>
   discarding the rest of the original query by appending a '?':
 
 <pre class="prettyprint lang-config"># Copy from query string to PATH_INFO
-RewriteCond %{QUERY_STRING} (.*(?:^|&amp;))mykey=([^&amp;]*)&amp;?(.*)&amp;?$
-RewriteRule (.*) $1/products/%2/? [PT]</pre>
+RewriteCond "%{QUERY_STRING}" "(.*(?:^|&amp;))mykey=([^&amp;]*)&amp;?(.*)&amp;?$"
+RewriteRule "(.*)"            "$1/products/%2/?" [PT]</pre>
 
   </li>
 
   <li>This solution checks the captured value in a subsequent condition:
 
 <pre class="prettyprint lang-config"># Capture the value of mykey in the query string
-RewriteCond %{QUERY_STRING} (.*(?:^|&amp;))mykey=([^&amp;]*)&amp;?(.*)&amp;?$
-RewriteCond %2 !=not-so-secret-value 
-RewriteRule (.*) - [F]</pre>
+RewriteCond "%{QUERY_STRING}" "(.*(?:^|&amp;))mykey=([^&amp;]*)&amp;?(.*)&amp;?$"
+RewriteCond "%2"              !=not-so-secret-value
+RewriteRule "(.*)"            "-" [F]</pre>
 
   </li>
 
   <li>This solution shows the reverse of the previous ones, copying
       path components (perhaps PATH_INFO) from the URL into the query string.
-<pre class="prettyprint lang-config"># The desired URL might be /products/kitchen-sink, and the script expects 
+<pre class="prettyprint lang-config"># The desired URL might be /products/kitchen-sink, and the script expects
 # /path?products=kitchen-sink.
-RewriteRule ^/?path/([^/]+)/([^/]+) /path?$1=$2 [PT]</pre>
+RewriteRule "^/?path/([^/]+)/([^/]+)" "/path?$1=$2" [PT]</pre>
 
   </li>
 </ul>

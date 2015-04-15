@@ -47,8 +47,8 @@ Stuff about what <code class="module"><a href="../mod/mod_lua.html">mod_lua</a><
 
 <h3><a name="contents" id="contents">What we will be discussing in this document</a></h3>
 <p>
-This document will discuss several cases where <code class="module"><a href="../mod/mod_lua.html">mod_lua</a></code> can be used 
-to either ease up a phase of the request processing or create more transparency in 
+This document will discuss several cases where <code class="module"><a href="../mod/mod_lua.html">mod_lua</a></code> can be used
+to either ease up a phase of the request processing or create more transparency in
 the logic behind a decision made in a phase.
 </p>
 
@@ -56,12 +56,12 @@ the logic behind a decision made in a phase.
 
 <h3><a name="prerequisites" id="prerequisites">Prerequisites</a></h3>
 <p>
-First and foremost, you are expected to have a basic knowledge of how the Lua 
-programming language works. In most cases, we will try to be as pedagogical 
-as possible and link to documents describing the functions used in the 
-examples, but there are also many cases where it is necessary to either 
-just assume that "it works" or do some digging yourself into what the hows 
-and whys of various function calls. 
+First and foremost, you are expected to have a basic knowledge of how the Lua
+programming language works. In most cases, we will try to be as pedagogical
+as possible and link to documents describing the functions used in the
+examples, but there are also many cases where it is necessary to either
+just assume that "it works" or do some digging yourself into what the hows
+and whys of various function calls.
 </p>
 
 
@@ -72,20 +72,20 @@ and whys of various function calls.
 
 <h3>Setting a scope for Lua states</h3>
 <p>
-Setting the right <code class="directive"><a href="../mod/mod_lua.html#luascope">LuaScope</a></code> setting 
-for your Lua scripts can be essential to your server's 
-performance. By default, the scope is set to <code>once</code>, which means 
-that every call to a Lua script will spawn a new Lua state that handles that 
-script and is destroyed immediately after. This option keeps the memory 
-footprint of mod_lua low, but also affects the processing speed of a request. 
-If you have the memory to spare, you can set the scope to <code>thread</code>, 
-which will make mod_lua spawn a Lua state that lasts the entirity of a thread's 
-lifetime, speeding up request processing by 2-3 times. Since mod_lua will create 
-a state for each script, this may be an expensive move, memory-wise, so to 
-compromise between speed and memory usage, you can choose the <code>server</code> 
-option to create a pool of Lua states to be used. Each request for a Lua script or 
-a hook function will then acquire a state from the pool and release it back when it's 
-done using it, allowing you to still gain a significant performance increase, while 
+Setting the right <code class="directive"><a href="../mod/mod_lua.html#luascope">LuaScope</a></code> setting
+for your Lua scripts can be essential to your server's
+performance. By default, the scope is set to <code>once</code>, which means
+that every call to a Lua script will spawn a new Lua state that handles that
+script and is destroyed immediately after. This option keeps the memory
+footprint of mod_lua low, but also affects the processing speed of a request.
+If you have the memory to spare, you can set the scope to <code>thread</code>,
+which will make mod_lua spawn a Lua state that lasts the entirity of a thread's
+lifetime, speeding up request processing by 2-3 times. Since mod_lua will create
+a state for each script, this may be an expensive move, memory-wise, so to
+compromise between speed and memory usage, you can choose the <code>server</code>
+option to create a pool of Lua states to be used. Each request for a Lua script or
+a hook function will then acquire a state from the pool and release it back when it's
+done using it, allowing you to still gain a significant performance increase, while
 keeping your memory footprint low. Some examples of possible settings are:
 </p>
 <pre class="prettyprint lang-config">LuaScope once
@@ -93,36 +93,36 @@ LuaScope thread
 LuaScope server 5 40</pre>
 
 <p>
-As a general rule of thumb: If your server has none to low usage, use <code>once</code> 
-or <code>request</code>, if your server has low to medium usage, use the <code>server</code> 
-pool, and if it has high usage, use the <code>thread</code> setting. As your server's 
-load increases, so will the number of states being actively used, and having your scope 
+As a general rule of thumb: If your server has none to low usage, use <code>once</code>
+or <code>request</code>, if your server has low to medium usage, use the <code>server</code>
+pool, and if it has high usage, use the <code>thread</code> setting. As your server's
+load increases, so will the number of states being actively used, and having your scope
 set to <code>once/request/conn</code> will stop being beneficial to your memory footprint.
 </p>
 <p>
-<strong>Note:</strong> The <code>min</code> and <code>max</code> settings for the 
-<code>server</code> scope denotes the minimum and maximum states to keep in a pool per 
+<strong>Note:</strong> The <code>min</code> and <code>max</code> settings for the
+<code>server</code> scope denotes the minimum and maximum states to keep in a pool per
 server <em>process</em>, so keep this below your <code>ThreadsPerChild</code> limit.
 </p>
 
 
 <h3>Using code caching</h3>
 <p>
-By default, <code class="module"><a href="../mod/mod_lua.html">mod_lua</a></code> stats each Lua script to determine whether a reload 
-(and thus, a re-interpretation and re-compilation) of a script is required. This is managed 
-through the <code class="directive"><a href="../mod/mod_lua.html#luacodecache">LuaCodeCache</a></code> directive. If you are running 
-your scripts on a production server, and you do not need to update them regularly, it may be 
-advantageous to set this directive to the <code>forever</code> value, which will cause mod_lua 
-to skip the stat process and always reuse the compiled byte-code from the first access to the 
-script, thus speeding up the processing. For Lua hooks, this can prove to increase peformance, 
-while for scripts handled by the <code>lua-script</code> handler, the increase in performance 
+By default, <code class="module"><a href="../mod/mod_lua.html">mod_lua</a></code> stats each Lua script to determine whether a reload
+(and thus, a re-interpretation and re-compilation) of a script is required. This is managed
+through the <code class="directive"><a href="../mod/mod_lua.html#luacodecache">LuaCodeCache</a></code> directive. If you are running
+your scripts on a production server, and you do not need to update them regularly, it may be
+advantageous to set this directive to the <code>forever</code> value, which will cause mod_lua
+to skip the stat process and always reuse the compiled byte-code from the first access to the
+script, thus speeding up the processing. For Lua hooks, this can prove to increase peformance,
+while for scripts handled by the <code>lua-script</code> handler, the increase in performance
 may be negligible, as files httpd will stat the files regardless.
 </p>
 
 
 <h3>Keeping the scope clean</h3>
 <p>
-For maximum performance, it is generally recommended that any initialization of libraries, 
+For maximum performance, it is generally recommended that any initialization of libraries,
 constants and master tables be kept outside the handle's scope:
 </p>
 <pre class="prettyprint lang-lua">--[[ This is good practice ]]--
@@ -151,10 +151,10 @@ end</pre>
 <div class="section">
 <h2><a name="basic_remap" id="basic_remap">Example 1: A basic remapping module</a></h2>
 <p>
-    These first examples show how mod_lua can be used to rewrite URIs in the same 
-    way that one could do using <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code> or 
-    <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>, but with more clarity 
-    on how the decision-making takes place, as well as allowing for more complex 
+    These first examples show how mod_lua can be used to rewrite URIs in the same
+    way that one could do using <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code> or
+    <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>, but with more clarity
+    on how the decision-making takes place, as well as allowing for more complex
     decisions than would otherwise be allowed with said directives.
 </p>
 
@@ -184,9 +184,9 @@ end</pre>
 
 <pre class="prettyprint lang-lua">--[[
     Advanced remap example.
-    This example will evaluate some conditions, and based on that, 
+    This example will evaluate some conditions, and based on that,
     remap a file to one of two destinations, using a rewrite map.
-    This is similar to mixing AliasMatch and ProxyPass, but 
+    This is similar to mixing AliasMatch and ProxyPass, but
     without them clashing in any way. Assuming we are on example.com, then:
 
     http://example.com/photos/test.png will be rewritten as /uploads/www/test.png
@@ -195,8 +195,8 @@ end</pre>
 ]]--
 
 local map = {
-      photos = {   
-                   source = [[^/photos/(.+)\.png$]], 
+      photos = {
+                   source = [[^/photos/(.+)\.png$]],
                    destination = [[/uploads/www/$1.png]],
                    proxy = false
                 },
@@ -210,7 +210,7 @@ local map = {
 function interpolateString(s,v)
     return s:gsub("%$(%d+)", function(a) return v[tonumber(a)] end)
 end
-        
+
 function remap(r)
     -- browse through the rewrite map
     for key, entry in pairs(map) do
@@ -239,11 +239,11 @@ bla bla
 <div class="section">
 <h2><a name="mass_vhost" id="mass_vhost">Example 2: Mass virtual hosting</a></h2>
 <p>
-    As with simple and advanced rewriting, you can use mod_lua for dynamically 
-    assigning a hostname to a specific document root, much like 
-    <code class="module"><a href="../mod/mod_vhost_alias.html">mod_vhost_alias</a></code> does, but with more control over what goes 
-    where. This could be as simple as a table holding the information about which 
-    host goes into which folder, or more advanced, using a database holding the 
+    As with simple and advanced rewriting, you can use mod_lua for dynamically
+    assigning a hostname to a specific document root, much like
+    <code class="module"><a href="../mod/mod_vhost_alias.html">mod_vhost_alias</a></code> does, but with more control over what goes
+    where. This could be as simple as a table holding the information about which
+    host goes into which folder, or more advanced, using a database holding the
     document roots of each hostname.
 </p>
 
@@ -254,7 +254,7 @@ bla bla
 
 <pre class="prettyprint lang-lua">--[[
     Simple mass vhost script
-    This example will check a map for a virtual host and rewrite filename and 
+    This example will check a map for a virtual host and rewrite filename and
     document root accordingly.
 ]]--
 
@@ -307,13 +307,13 @@ function query_vhosts(r)
         end
         db:close()
     end
-    if cached_vhosts[host] then 
+    if cached_vhosts[host] then
         return cached_vhosts[host].destination
     else
         return nil
     end
 end
-        
+
 function mass_vhost(r)
     -- Check whether the hostname is in our database
     local destination = query_vhosts(r)
@@ -336,15 +336,15 @@ end</pre>
 <div class="section">
 <h2><a name="basic_auth" id="basic_auth">Example 3: A basic authorization hook</a></h2>
 <p>
-    With the authorization hooks, you can add custom auth phases to your request 
-    processing, allowing you to either add new requirements that were not previously 
-    supported by httpd, or tweaking existing ones to accommodate your needs. 
+    With the authorization hooks, you can add custom auth phases to your request
+    processing, allowing you to either add new requirements that were not previously
+    supported by httpd, or tweaking existing ones to accommodate your needs.
 </p>
 <pre class="prettyprint lang-config">LuaHookAuthChecker /path/too/foo.lua check_auth</pre>
 
 
 
-<pre class="prettyprint lang-lua">--[[ 
+<pre class="prettyprint lang-lua">--[[
      A simple authentication hook that checks a table containing usernames and
      passwords of two accounts.
 ]]--
@@ -385,7 +385,7 @@ end</pre>
 
 
 
-<pre class="prettyprint lang-lua">--[[ 
+<pre class="prettyprint lang-lua">--[[
      An advanced authentication checker with a database backend,
      caching account entries for 1 minute
 ]]--
@@ -416,13 +416,13 @@ function fetch_password(user)
         end
         db:close()
     end
-    if accounts[user] then 
+    if accounts[user] then
         return accounts[user].password
     else
         return nil
     end
 end
-    
+
 -- The authentication hook
 function check_auth(r)
     local user, pass = parse_auth(r.headers_in['Authorization'])
@@ -450,9 +450,9 @@ end</pre>
 <div class="section">
 <h2><a name="authz" id="authz">Example 4: Authorization using LuaAuthzProvider</a></h2>
 <p>
-    If you require even more advanced control over your authorization phases, 
-    you can add custom authz providers to help you manage your server. The 
-    example below shows you how you can split a single htpasswd file into 
+    If you require even more advanced control over your authorization phases,
+    you can add custom authz providers to help you manage your server. The
+    example below shows you how you can split a single htpasswd file into
     groups with different permissions:
 </p>
 <pre class="prettyprint lang-config">LuaAuthzProvider rights /path/to/lua/script.lua rights_handler
@@ -464,8 +464,8 @@ end</pre>
 &lt;/Directory&gt;</pre>
 
 
-<pre class="prettyprint lang-lua">--[[ 
-     This script has two user groups; members and admins, and whichever 
+<pre class="prettyprint lang-lua">--[[
+     This script has two user groups; members and admins, and whichever
      is refered to by the "Require rights" directive is checked to see
      if the authenticated user belongs to this group.
 ]]--
@@ -497,16 +497,16 @@ end</pre>
 <div class="section">
 <h2><a name="loadbalancing" id="loadbalancing">Example 5: A rudimentary load balancer</a></h2>
 <p>
-    This is an example of how you can create a load balancing mechanism. 
-    In this example, we will be setting/getting the number of requests served 
-    by each backend using IVM variables, and preferring the backend with least 
+    This is an example of how you can create a load balancing mechanism.
+    In this example, we will be setting/getting the number of requests served
+    by each backend using IVM variables, and preferring the backend with least
     requests served in total:
 </p>
 <pre class="prettyprint lang-config">LuaHookTranslateName /path/to/script.lua proxy_handler</pre>
 
 
-<pre class="prettyprint lang-lua">--[[ 
-     This script uses a basic IVM table to determine where to 
+<pre class="prettyprint lang-lua">--[[
+     This script uses a basic IVM table to determine where to
      send the request.
 ]]--
 

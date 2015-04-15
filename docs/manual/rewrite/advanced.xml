@@ -101,8 +101,8 @@ http://physical_host_of_user1/u/user/anypath
 
 <highlight language="config">
 RewriteEngine on
-RewriteMap      users-to-hosts   txt:/path/to/map.users-to-hosts
-RewriteRule   ^/u/([^/]+)/?(.*)   http://${users-to-hosts:$1|server0}/u/$1/$2
+RewriteMap    users-to-hosts      "txt:/path/to/map.users-to-hosts"
+RewriteRule   "^/u/([^/]+)/?(.*)" "http://${users-to-hosts:$1|server0}/u/$1/$2"
 </highlight>
     </dd>
   </dl>
@@ -134,8 +134,8 @@ RewriteRule   ^/u/([^/]+)/?(.*)   http://${users-to-hosts:$1|server0}/u/$1/$2
 
 <highlight language="config">
 # This example is valid in per-directory context only
-RewriteCond %{REQUEST_URI}   !-U
-RewriteRule ^(.+)\.html$          /regenerate_page.cgi   [PT,L]
+RewriteCond "%{REQUEST_URI}"   !-U
+RewriteRule "^(.+)\.html$"     "/regenerate_page.cgi"   [PT,L]
 </highlight>
 
     <p>The <code>-U</code> operator determines whether the test string
@@ -176,8 +176,8 @@ RewriteRule ^(.+)\.html$          /regenerate_page.cgi   [PT,L]
 
 <highlight language="config">
 RewriteEngine on
-RewriteMap lb rnd:/path/to/serverlist.txt
-RewriteRule ^/(.*) http://${lb:servers}/$1 [P,L]
+RewriteMap  lb       "rnd:/path/to/serverlist.txt"
+RewriteRule "^/(.*)" "http://${lb:servers}/$1"     [P,L]
 </highlight>
 
 <p><code>serverlist.txt</code> will contain a list of the servers:</p>
@@ -228,7 +228,7 @@ featureful than anything you can cobble together using mod_rewrite.</p>
 
 <highlight language="config">
 RewriteEngine on
-RewriteRule   ^/~(<strong>([a-z])</strong>[a-z0-9]+)(.*)  /home/<strong>$2</strong>/$1/public_html$3
+RewriteRule   "^/~(<strong>([a-z])</strong>[a-z0-9]+)(.*)"  "/home/<strong>$2</strong>/$1/public_html$3"
 </highlight>
     </dd>
   </dl>
@@ -287,10 +287,10 @@ RewriteRule   ^/~(<strong>([a-z])</strong>[a-z0-9]+)(.*)  /home/<strong>$2</stro
 
 <highlight language="config">
 RewriteEngine on
-RewriteCond   %{TIME_HOUR}%{TIME_MIN} &gt;0700
-RewriteCond   %{TIME_HOUR}%{TIME_MIN} &lt;1900
-RewriteRule   ^foo\.html$             foo.day.html [L]
-RewriteRule   ^foo\.html$             foo.night.html
+RewriteCond   "%{TIME_HOUR}%{TIME_MIN}" &gt;0700
+RewriteCond   "%{TIME_HOUR}%{TIME_MIN}" &lt;1900
+RewriteRule   "^foo\.html$"             "foo.day.html" [L]
+RewriteRule   "^foo\.html$"             "foo.night.html"
 </highlight>
 
       <p>This provides the content of <code>foo.day.html</code>
@@ -332,14 +332,14 @@ RewriteRule   ^foo\.html$             foo.night.html
 
 <highlight language="config">
 RewriteEngine on
-RewriteRule   ^/horse/(.*)   /pony/$1 [E=<strong>rewritten:1</strong>]
+RewriteRule   "^/horse/(.*)"   "/pony/$1" [E=<strong>rewritten:1</strong>]
 </highlight>
 
     <p>Later in your ruleset you might check for this environment
     variable using a RewriteCond:</p>
 
 <highlight language="config">
-RewriteCond %{ENV:rewritten} =1
+RewriteCond "%{ENV:rewritten}"  =1
 </highlight>
 
     <p>Note that environment variables do not survive an external

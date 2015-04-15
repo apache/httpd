@@ -421,11 +421,11 @@ LDAPTrustedGlobalCert CA_BASE64 /certs/cacert2.pem
 <contextlist><context>server config</context></contextlist>
 
 <usage>
-    <p>Specifies the path of the shared memory cache file. If not set, 
+    <p>Specifies the path of the shared memory cache file. If not set,
     anonymous shared memory will be used if the platform supports it.</p>
 
     <p>If <var>file-path</var> is not an absolute path, the location specified
-    will be relative to the value of 
+    will be relative to the value of
     <directive module="core">DefaultRuntimeDir</directive>.</p>
 </usage>
 </directivesynopsis>
@@ -757,7 +757,7 @@ connection client certificates.</description>
     connection pool.  The default value of -1, and any other negative value,
     allows connections of any age to be reused.</p>
 
-    <p>For performance reasons, the reference time used by this directive is 
+    <p>For performance reasons, the reference time used by this directive is
     based on when the LDAP connection is returned to the pool, not the time
     of the last successful I/O with the LDAP server.  </p>
 
@@ -766,7 +766,7 @@ connection client certificates.</description>
     time is not updated if no backend LDAP conncetions were needed. Second,
     the reference time uses the time the HTTP request was received instead
     of the time the request is completed.</p>
-    
+
     <note><p>This timeout defaults to units of seconds, but accepts
     suffixes for milliseconds (ms), minutes (min), and hours (h).
     </p></note>

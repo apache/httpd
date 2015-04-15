@@ -193,36 +193,36 @@ SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip</pre>
 <h2><a name="precompressed" id="precompressed">Serving pre-compressed
 content</a></h2>
 
-    <p>Since <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> re-compresses content each 
+    <p>Since <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> re-compresses content each
     time a request is made, some performance benefit can be derived by
     pre-compressing the content and telling mod_deflate to serve them
     without re-compressing them. This may be accomplished using a
     configuration like the following:</p>
 
     <pre class="prettyprint lang-config">&lt;IfModule mod_headers.c&gt;
-    # Serve gzip compressed CSS files if they exist 
+    # Serve gzip compressed CSS files if they exist
     # and the client accepts gzip.
-    RewriteCond %{HTTP:Accept-encoding} gzip
-    RewriteCond %{REQUEST_FILENAME}\.gz -s
-    RewriteRule ^(.*)\.css $1\.css\.gz [QSA]
+    RewriteCond "%{HTTP:Accept-encoding}" "gzip"
+    RewriteCond "%{REQUEST_FILENAME}\.gz" "-s"
+    RewriteRule "^(.*)\.css"              "$1\.css\.gz" [QSA]
 
-    # Serve gzip compressed JS files if they exist 
+    # Serve gzip compressed JS files if they exist
     # and the client accepts gzip.
-    RewriteCond %{HTTP:Accept-encoding} gzip
-    RewriteCond %{REQUEST_FILENAME}\.gz -s
-    RewriteRule ^(.*)\.js $1\.js\.gz [QSA]
+    RewriteCond "%{HTTP:Accept-encoding}" "gzip"
+    RewriteCond "%{REQUEST_FILENAME}\.gz" "-s"
+    RewriteRule "^(.*)\.js"               "$1\.js\.gz" [QSA]
 
 
     # Serve correct content types, and prevent mod_deflate double gzip.
-    RewriteRule \.css\.gz$ - [T=text/css,E=no-gzip:1]
-    RewriteRule \.js\.gz$ - [T=text/javascript,E=no-gzip:1]
+    RewriteRule "\.css\.gz$" "-" [T=text/css,E=no-gzip:1]
+    RewriteRule "\.js\.gz$"  "-" [T=text/javascript,E=no-gzip:1]
 
 
     &lt;FilesMatch "(\.js\.gz|\.css\.gz)$"&gt;
       # Serve correct encoding type.
       Header append Content-Encoding gzip
 
-      # Force proxies to cache gzipped &amp; 
+      # Force proxies to cache gzipped &amp;
       # non-gzipped css/js files separately.
       Header append Vary Accept-Encoding
     &lt;/FilesMatch&gt;
@@ -244,18 +244,18 @@ content</a></h2>
     how the ETag hader should be altered when a response is compressed.</p>
     <dl>
     <dt>AddSuffix</dt>
-    <dd><p>Append the compression method onto the end of the ETag, causing 
-        compressed and uncompressed representations to have unique ETags.  
-        This has been the default since 2.4.0, but prevents serving 
-        "HTTP Not Modified" (304) responses to conditional requests for 
+    <dd><p>Append the compression method onto the end of the ETag, causing
+        compressed and uncompressed representations to have unique ETags.
+        This has been the default since 2.4.0, but prevents serving
+        "HTTP Not Modified" (304) responses to conditional requests for
         compressed content.</p></dd>
     <dt>NoChange</dt>
     <dd><p>Don't change the ETag on a compressed response. This was the default
         prior to 2.4.0, but does not satisfy the HTTP/1.1 property that all
         representations of the same resource have unique ETags. </p></dd>
     <dt>Remove</dt>
-    <dd><p>Remove the ETag header from compressed responses. This prevents 
-        some conditional requests from being possible, but avoids the 
+    <dd><p>Remove the ETag header from compressed responses. This prevents
+        some conditional requests from being possible, but avoids the
         shortcomings of the preceding options.  </p></dd>
     </dl>
 
@@ -308,7 +308,7 @@ content</a></h2>
     adding the value to your <a href="../logs.html#accesslog">access log</a>.</p>
 
     <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">      DeflateFilterNote ratio
-    
+
       LogFormat '"%r" %b (%{ratio}n) "%{User-agent}i"' deflate
       CustomLog logs/deflate_log deflate</pre>
 </div>
@@ -356,7 +356,7 @@ CustomLog logs/deflate_log deflate</pre>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_deflate</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>2.4.10 and later</td></tr>
 </table>
-    <p>The <code class="directive">DeflateInflateLimitRequestBody</code> directive 
+    <p>The <code class="directive">DeflateInflateLimitRequestBody</code> directive
         specifies the maximum size of an inflated request body. If it is unset,
         <code class="directive"><a href="../mod/core.html#limitrequestbody">LimitRequestBody</a></code> is applied to the
         inflated body.</p>
@@ -365,7 +365,7 @@ CustomLog logs/deflate_log deflate</pre>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="DeflateInflateRatioBurst" id="DeflateInflateRatioBurst">DeflateInflateRatioBurst</a> <a name="deflateinflateratioburst" id="deflateinflateratioburst">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum number of times the inflation ratio for request bodies 
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum number of times the inflation ratio for request bodies
              can be crossed</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DeflateInflateRatioBurst <var>value</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>3</code></td></tr>
@@ -374,9 +374,9 @@ CustomLog logs/deflate_log deflate</pre>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_deflate</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>2.4.10 and later</td></tr>
 </table>
-    <p>The <code class="directive">DeflateInflateRatioBurst</code> directive 
-       specifies the maximum number of times the 
-       <code class="directive">DeflateInflateRatioLimit</code> can be crossed before 
+    <p>The <code class="directive">DeflateInflateRatioBurst</code> directive
+       specifies the maximum number of times the
+       <code class="directive">DeflateInflateRatioLimit</code> can be crossed before
        terminating the request.</p>
 
 </div>
@@ -391,10 +391,10 @@ CustomLog logs/deflate_log deflate</pre>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_deflate</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>2.4.10 and later</td></tr>
 </table>
-    <p>The <code class="directive">DeflateInflateRatioLimit</code> directive 
-        specifies the maximum ratio of deflated to inflated size of an 
+    <p>The <code class="directive">DeflateInflateRatioLimit</code> directive
+        specifies the maximum ratio of deflated to inflated size of an
         inflated request body. This ratio is checked as the body is
-        streamed in, and if crossed more than 
+        streamed in, and if crossed more than
         <code class="directive">DeflateInflateRatioBurst</code> times, the request
         will be terminated.</p>
 

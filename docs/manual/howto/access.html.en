@@ -86,7 +86,7 @@ Require ip ip.address</pre>
     syntax.</p>
 
     <p>You can insert <code>not</code> to negate a particular requirement.
-    Note, that since a <code>not</code> is a negation of a value, it cannot 
+    Note, that since a <code>not</code> is a negation of a value, it cannot
     be used by itself to allow or deny a request, as <em>not true</em>
     does not constitute <em>false</em>. Thus, to deny a visit using a negation,
     the block must have one element that evaluates as true or false.
@@ -101,11 +101,12 @@ Require ip ip.address</pre>
 
 
     <p>Visitors coming from that address (<code>10.252.46.165</code>)
-    will not be able to see the content covered by this directive. If, 
-    instead, you have a machine name, rather than an IP address, you 
+    will not be able to see the content covered by this directive. If,
+    instead, you have a machine name, rather than an IP address, you
     can use that.</p>
 
-    <pre class="prettyprint lang-config">Require not host <var>host.example.com</var></pre>
+    <pre class="prettyprint lang-config">Require not host <var>host.example.com</var>
+    </pre>
 
 
     <p>And, if you'd like to block access from an entire domain,
@@ -163,9 +164,9 @@ Require not host gov</pre>
     and 6am, you can do this using <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>.</p>
 
     <pre class="prettyprint lang-config">RewriteEngine On
-RewriteCond %{TIME_HOUR} &gt;=20 [OR]
-RewriteCond %{TIME_HOUR} &lt;07
-RewriteRule ^/fridge - [F]</pre>
+RewriteCond "%{TIME_HOUR}" "&gt;=20" [OR]
+RewriteCond "%{TIME_HOUR}" "&lt;07"
+RewriteRule "^/fridge"     "-"       [F]</pre>
 
 
     <p>This will return a 403 Forbidden response for any request after 8pm

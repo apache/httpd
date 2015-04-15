@@ -174,8 +174,8 @@ relative hyperlinks?</a></li>
     manipulate relative hyperlinks, to achieve the same effect.</p>
     <highlight language="config">
 RewriteEngine on
-RewriteRule   ^/(.*)_SSL$   https://%{SERVER_NAME}/$1 [R,L]
-RewriteRule   ^/(.*)_NOSSL$ http://%{SERVER_NAME}/$1  [R,L]
+RewriteRule   "^/(.*)_SSL$"   "https://%{SERVER_NAME}/$1" [R,L]
+RewriteRule   "^/(.*)_NOSSL$" "http://%{SERVER_NAME}/$1"  [R,L]
     </highlight>
 
     <p>This rewrite ruleset lets you use hyperlinks of the form
@@ -608,7 +608,7 @@ error when connecting to my newly installed server?</title>
     handshake is finished, but the information is needed in order to
     complete the SSL handshake phase. See the next question for how to
     circumvent this issue.</p>
-    
+
     <p>Note that if you have a wildcard SSL certificate, or a
     certificate that has multiple hostnames on it using subjectAltName
     fields, you can use SSL on name-based virtual hosts without further

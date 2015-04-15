@@ -308,9 +308,9 @@
 
       <div class="note">
       <p>Note: The '^' character at the start of three-character formats
-      has no significance, but it must be the first character of any newly 
-      added three-character format to avoid potential conflicts with log 
-      formats that use literals adjacent to a format specifier, such as 
+      has no significance, but it must be the first character of any newly
+      added three-character format to avoid potential conflicts with log
+      formats that use literals adjacent to a format specifier, such as
       "%Dus".</p>
       </div>
 
@@ -510,7 +510,7 @@ CustomLog referer.log referer env=!localreferer</pre>
 
     <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">LogFormat "%v %h %l %u %t \"%r\" %&gt;s %b" vhost_common</pre>
 </div>
-    
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

@@ -71,7 +71,7 @@
     same header repeatedly toggles between ascending and descending
     order. These column header links are suppressed with the
     <code class="directive"><a href="#indexoptions">IndexOptions</a></code> directive's
-    <code><a href="#indexoptions.suppresscolumnsorting">SuppressColumnSorting</a></code> 
+    <code><a href="#indexoptions.suppresscolumnsorting">SuppressColumnSorting</a></code>
     option.</p>
 
     <p>Note that when the display is sorted by "Size", it's the
@@ -328,7 +328,7 @@ AddDescription "My friend Marshall" friends/mars.gif</pre>
     <div class="note"><h3>Arguments with path information</h3>
       <p>Absolute paths are not currently supported and do not match
       anything at runtime. Arguments with relative path information,
-      which would normally only be used in htaccess context, are implicitly 
+      which would normally only be used in htaccess context, are implicitly
       prefixed with '*/' to avoid matching partial directory names.</p>
     </div>
 
@@ -658,7 +658,7 @@ indexing</td></tr>
       <code>FoldersFirst</code> is enabled, subdirectory
       <code>Zed</code> will be listed before subdirectory
       <code>Beta</code>, which will be listed before normal files
-      <code>Gamma</code> and <code>Alpha</code>. 
+      <code>Gamma</code> and <code>Alpha</code>.
       <strong>This option only has an effect if <a href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a>
       is also enabled.</strong>
       </dd>
@@ -685,7 +685,7 @@ indexing</td></tr>
       to wait until all the images have been loaded. If no value is given for
       the option, it defaults to the standard height of the icons supplied
       with the Apache httpd software.
-     
+
       <strong>This option
       only has an effect if <a href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a> is also enabled.</strong>
 
@@ -763,7 +763,7 @@ indexing</td></tr>
       space to use for something else. See <code class="directive"><a href="#adddescription">AddDescription</a></code> for information about setting the file
       description. See also the <code><a href="#indexoptions.descriptionwidth">DescriptionWidth</a></code>
       index option to limit the size of the description column.
-      
+
       <strong>This option
       only has an effect if <a href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a> is also enabled.</strong>
       </dd>
@@ -797,7 +797,7 @@ indexing</td></tr>
 
       <dd>This will suppress the display of the last modification date,
       in fancy indexing listings.
-      
+
       <strong>This option
       only has an effect if <a href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a> is also enabled.</strong>
       </dd>
@@ -811,7 +811,7 @@ indexing</td></tr>
       by the final specification prohibits <code>img</code> and
       <code>hr</code> elements from the <code>pre</code> block (used to
       format FancyIndexed listings.)
-      
+
       <strong>This option
       only has an effect if <a href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a> is also enabled.</strong>
 
@@ -820,7 +820,7 @@ indexing</td></tr>
       <dt><a name="indexoptions.suppresssize" id="indexoptions.suppresssize">SuppressSize</a></dt>
 
       <dd>This will suppress the file size in fancy indexing listings.
-      
+
       <strong>This option
       only has an effect if <a href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a> is also enabled.</strong>
       </dd>

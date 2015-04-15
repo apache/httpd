@@ -56,7 +56,7 @@
     syslog(1).  The facility is effectively global, and if it is changed
     in individual virtual hosts, the final facility specified affects the
     entire server.</p>
-    
+
     <pre class="prettyprint lang-config">ErrorLog syslog:user</pre>
 
 

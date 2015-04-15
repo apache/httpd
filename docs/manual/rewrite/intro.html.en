@@ -141,21 +141,21 @@ the expression.</p>
       <em>CondPattern</em>, back-references are internally created
       which can be used with the strings <code>$N</code> and
       <code>%N</code> (see below). These are available for creating
-      the <em>Substitution</em> parameter of a 
+      the <em>Substitution</em> parameter of a
       <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> or
-      the <em>TestString</em> parameter of a 
+      the <em>TestString</em> parameter of a
       <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code>.</p>
-      <p>  Captures in the <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> patterns are (counterintuitively) available to 
-       all preceding 
+      <p>  Captures in the <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> patterns are (counterintuitively) available to
+       all preceding
       <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code> directives,
       because the <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
       expression is evaluated before the individual conditions.</p>
 
-      <p>Figure 1 shows to which 
-      locations the back-references are transferred for expansion as 
-      well as illustrating the flow of the RewriteRule, RewriteCond 
-      matching. In the next chapters, we will be exploring how to use 
-      these back-references, so do not fret if it seems a bit alien 
+      <p>Figure 1 shows to which
+      locations the back-references are transferred for expansion as
+      well as illustrating the flow of the RewriteRule, RewriteCond
+      matching. In the next chapters, we will be exploring how to use
+      these back-references, so do not fret if it seems a bit alien
       to you at first.
       </p>
 
@@ -177,12 +177,12 @@ of three arguments separated by spaces. The arguments are</p>
 <li><var>[flags]</var>: options affecting the rewritten request.</li>
 </ol>
 
-<p>The <var>Pattern</var> is a <a href="#regex">regular expression</a>. 
-It is initially (for the first rewrite rule or until a substitution occurs) 
-matched against the URL-path of the incoming request (the part after the 
-hostname but before any question mark indicating the beginning of a query 
-string) or, in per-directory context, against the request's path relative 
-to the directory for which the rule is defined. Once a substitution has 
+<p>The <var>Pattern</var> is a <a href="#regex">regular expression</a>.
+It is initially (for the first rewrite rule or until a substitution occurs)
+matched against the URL-path of the incoming request (the part after the
+hostname but before any question mark indicating the beginning of a query
+string) or, in per-directory context, against the request's path relative
+to the directory for which the rule is defined. Once a substitution has
 occurred, the rules that follow are matched against the substituted
 value.
 </p>
@@ -198,7 +198,7 @@ value.
 <dl>
 <dt>A full filesystem path to a resource</dt>
 <dd>
-<pre class="prettyprint lang-config">RewriteRule ^/games /usr/local/games/web</pre>
+<pre class="prettyprint lang-config">RewriteRule "^/games" "/usr/local/games/web"</pre>
 
 <p>This maps a request to an arbitrary location on your filesystem, much
 like the <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code> directive.</p>
@@ -206,7 +206,7 @@ like the <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a>
 
 <dt>A web-path to a resource</dt>
 <dd>
-<pre class="prettyprint lang-config">RewriteRule ^/foo$ /bar</pre>
+<pre class="prettyprint lang-config">RewriteRule "^/foo$" "/bar"</pre>
 
 <p>If <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> is set
 to <code>/usr/local/apache2/htdocs</code>, then this directive would
@@ -216,7 +216,7 @@ path <code>/usr/local/apache2/htdocs/bar</code>.</p>
 
 <dt>An absolute URL</dt>
 <dd>
-<pre class="prettyprint lang-config">RewriteRule ^/product/view$ http://site2.example.com/seeproduct.html [R]</pre>
+<pre class="prettyprint lang-config">RewriteRule "^/product/view$" "http://site2.example.com/seeproduct.html" [R]</pre>
 
 <p>This tells the client to make a new request for the specified URL.</p>
 </dd>
@@ -225,7 +225,7 @@ path <code>/usr/local/apache2/htdocs/bar</code>.</p>
 <p>The <var>Substitution</var> can also
 contain <em>back-references</em> to parts of the incoming URL-path
 matched by the <var>Pattern</var>. Consider the following:</p>
-<pre class="prettyprint lang-config">RewriteRule ^/product/(.*)/view$ /var/web/productdb/$1</pre>
+<pre class="prettyprint lang-config">RewriteRule "^/product/(.*)/view$" "/var/web/productdb/$1"</pre>
 
 <p>The variable <code>$1</code> will be replaced with whatever text
 was matched by the expression inside the parenthesis in
@@ -247,7 +247,7 @@ application of one or more flags to the end of the rule. For example, the
 matching behavior of a rule can be made case-insensitive by the
 application of the <code>[NC]</code> flag:
 </p>
-<pre class="prettyprint lang-config">RewriteRule ^puppy.html smalldog.html [NC]</pre>
+<pre class="prettyprint lang-config">RewriteRule "^puppy.html" "smalldog.html" [NC]</pre>
 
 
 <p>For more details on the available flags, their meanings, and
@@ -272,8 +272,8 @@ argument is a list of flags that modify how the match is evaluated.</p>
 
 <p>For example, to send all requests from a particular IP range to a
 different server, you could use:</p>
-<pre class="prettyprint lang-config">RewriteCond %{REMOTE_ADDR} ^10\.2\.
-RewriteRule (.*) http://intranet.example.com$1</pre>
+<pre class="prettyprint lang-config">RewriteCond "%{REMOTE_ADDR}" "^10\.2\."
+RewriteRule "(.*)"           "http://intranet.example.com$1"</pre>
 
 
 <p>When more than
@@ -283,9 +283,9 @@ the <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">Rewrit
 applied. For example, to deny requests that contain the word "hack" in
 their query string, unless they also contain a cookie containing
 the word "go", you could use:</p>
-<pre class="prettyprint lang-config">RewriteCond %{QUERY_STRING} hack
-RewriteCond %{HTTP_COOKIE} !go
-RewriteRule . - [F]</pre>
+<pre class="prettyprint lang-config">RewriteCond "%{QUERY_STRING}" "hack"
+RewriteCond "%{HTTP_COOKIE}"  !go
+RewriteRule "."               "-"   [F]</pre>
 
 <p>Notice that the exclamation mark specifies a negative match, so the rule is only applied if the cookie does not contain "go".</p>
 
@@ -296,8 +296,8 @@ the <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">Rewrit
 variables <code>%1</code>, <code>%2</code>, etc. For example, this
 will direct the request to a different directory depending on the
 hostname used to access the site:</p>
-<pre class="prettyprint lang-config">RewriteCond %{HTTP_HOST} (.*)
-RewriteRule ^/(.*) /sites/%1/$1</pre>
+<pre class="prettyprint lang-config">RewriteCond "%{HTTP_HOST}" "(.*)"
+RewriteRule "^/(.*)"       "/sites/%1/$1"</pre>
 
 <p>If the request was for <code>http://example.com/foo/bar</code>,
 then <code>%1</code> would contain <code>example.com</code>

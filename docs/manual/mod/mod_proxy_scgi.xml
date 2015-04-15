@@ -132,7 +132,7 @@ header</description>
     <highlight language="config">
 # Use the default header (X-Sendfile)
 ProxySCGISendfile On
-    
+
 # Use a different header
 ProxySCGISendfile X-Send-Static
     </highlight>

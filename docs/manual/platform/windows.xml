@@ -54,8 +54,8 @@
   <section id="down">
     <title>Downloading Apache for Windows</title>
 
-    <p>The Apache HTTP Server Project itself does not provide binary releases of 
-    software, only source code. Individual committers <em>may</em> provide 
+    <p>The Apache HTTP Server Project itself does not provide binary releases of
+    software, only source code. Individual committers <em>may</em> provide
     binary packages as a convenience, but it is not a release deliverable.</p>
     <p>If you cannot compile the Apache HTTP Server
     yourself, you can obtain a binary package from numerous binary distributions
@@ -72,7 +72,7 @@
     </ul>
   </section>
 
-  
+
   <section id="cust">
     <title>Customizing Apache for Windows</title>
 
@@ -137,9 +137,9 @@
 
       <highlight language="config">
 RewriteEngine On
-RewriteMap lowercase int:tolower
-RewriteCond %{REQUEST_URI} [A-Z]
-RewriteRule (.*) ${lowercase:$1} [R,L]
+RewriteMap lowercase "int:tolower"
+RewriteCond "%{REQUEST_URI}" "[A-Z]"
+RewriteRule "(.*)"           "${lowercase:$1}" [R,L]
       </highlight></li>
 
       <li><p>When running, Apache needs write access only to the logs
@@ -432,8 +432,8 @@ RewriteRule (.*) ${lowercase:$1} [R,L]
     Programs. Change to the folder to which you installed Apache, type
     the command <code>httpd.exe</code>, and read the error message. Then
     change to the logs folder, and review the <code>error.log</code>
-    file for configuration mistakes. Assuming httpd was installed into 
-    <code>C:\Program Files\Apache Software Foundation\Apache2.&httpd.minor;\</code>, 
+    file for configuration mistakes. Assuming httpd was installed into
+    <code>C:\Program Files\Apache Software Foundation\Apache2.&httpd.minor;\</code>,
     you can do the following:</p>
 
     <example>
@@ -631,7 +631,7 @@ Alias "/images/" "//imagehost/www/images/"
   <section id="tuning">
     <title>Windows Tuning</title>
     <ul>
-      <li><p>If more than a few dozen piped loggers are used on an operating system 
+      <li><p>If more than a few dozen piped loggers are used on an operating system
       instance, scaling up the "desktop heap" is often necessary. For
       more detailed information, refer to the <a href="../logs.html#piped"
       >piped logging</a> documentation.</p></li>

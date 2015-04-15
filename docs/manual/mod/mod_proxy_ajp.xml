@@ -79,7 +79,7 @@ ProxyPass "/app" "balancer://cluster/app"
     header given to the proxy, and the application server can be expected
     to generate self-referential headers relative to this host, so no
     rewriting is necessary.</p>
-    
+
     <p>The main exception is when the URL path on the proxy differs from that
     on the
     backend. In this case, a redirect header can be rewritten relative to the

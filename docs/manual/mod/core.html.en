@@ -3192,8 +3192,8 @@ resource </td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>2.4.10 and later</td></tr>
 </table>
     <p>This directive controls whether HTTP trailers are copied into the
-    internal representation of HTTP headers. This mergeing occurs when the 
-    request body has been completely consumed, long after most header 
+    internal representation of HTTP headers. This mergeing occurs when the
+    request body has been completely consumed, long after most header
     processing would have a chance to examine or modify request headers.</p>
     <p>This option is provided for compatibility with releases prior to 2.4.10,
     where trailers were always merged.</p>
@@ -3920,7 +3920,7 @@ to name-virtual hosts</td></tr>
     (nor for ServerName vs. ServerAlias).  </p>
 
     <p>The complete list of names in the <code class="directive">VirtualHost</code>
-    directive are treated just like a (non wildcard) 
+    directive are treated just like a (non wildcard)
     <code class="directive">ServerAlias</code>.</p>
 
 
@@ -3966,7 +3966,7 @@ itself</td></tr>
     <p>If no <code class="directive">ServerName</code> is specified, then the
     server attempts to deduce the client visible hostname by performing a
     reverse lookup on an IP address of the systems hostname.</p>
-    
+
     <p>If no port is specified in the
     <code class="directive">ServerName</code>, then the server will use the
     port from the incoming request. For optimal reliability and
@@ -4317,7 +4317,7 @@ certain events before failing a request</td></tr>
       for an acknowledgement of a packet if the send buffer is
       full.</li>
 
-      <li>In <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code> and <code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code>, 
+      <li>In <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code> and <code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code>,
       the length of time to wait for output from a CGI script.</li>
 
       <li>In <code class="module"><a href="../mod/mod_ext_filter.html">mod_ext_filter</a></code>, the length of time to

@@ -397,8 +397,8 @@ SSLCACertificateFile "conf/ssl.crt/company-ca.crt"
     #   Force clients from the Internet to use HTTPS
     RewriteEngine        on
     RewriteCond          "%{REMOTE_ADDR}" "!^192\.168\.1\.[0-9]+$"
-    RewriteCond          "%{HTTPS}" "!=on"
-    RewriteRule          "." "-" [F]
+    RewriteCond          "%{HTTPS}"       "!=on"
+    RewriteRule          "."              "-"                      [F]
 
     #   Allow Network Access and/or Basic Auth
     Satisfy              any

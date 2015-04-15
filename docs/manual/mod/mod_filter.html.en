@@ -388,10 +388,10 @@ being moved to <code class="module"><a href="../mod/mod_filter.html">mod_filter<
     With two arguments it applies to a <var>filter-name</var> whenever the
     filter runs <em>any</em> provider.</p>
 
-    <p>Flags specified with this directive are merged with the flags 
-    that underlying providers may have registerd with 
+    <p>Flags specified with this directive are merged with the flags
+    that underlying providers may have registerd with
     <code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code>. For example, a filter may internally specify
-    the equivalent of <code>change=yes</code>, but a particular 
+    the equivalent of <code>change=yes</code>, but a particular
     configuration of the module can override with <code>change=no</code>.
     </p>
 
@@ -399,7 +399,7 @@ being moved to <code class="module"><a href="../mod/mod_filter.html">mod_filter<
 
     <dl>
     <dt><code>change=yes|no</code></dt>
-    <dd>Specifies whether the filter changes the content, including possibly 
+    <dd>Specifies whether the filter changes the content, including possibly
     the content length.  The "no" argument is supported in 2.4.7 and later.</dd>
 
     <dt><code>change=1:1</code></dt>

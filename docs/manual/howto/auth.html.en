@@ -506,13 +506,15 @@ Require group GroupName</pre>
         that will be called during the authorization stage of the request
         processing. For example:</p>
 
-        <pre class="prettyprint lang-config">Require ip <var>address</var></pre>
+        <pre class="prettyprint lang-config">Require ip <var>address</var>
+        </pre>
 
 
         <p>where <var>address</var> is an IP address (or a partial IP
         address) or:</p>
 
-        <pre class="prettyprint lang-config">Require host <var>domain_name</var></pre>
+        <pre class="prettyprint lang-config">Require host <var>domain_name</var>
+        </pre>
 
 
         <p>where <var>domain_name</var> is a fully qualified domain name

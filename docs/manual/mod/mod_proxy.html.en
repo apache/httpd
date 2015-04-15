@@ -473,7 +473,7 @@ ProxyPass "/examples" "http://backend.example.com/examples" timeout=10</pre>
     other request headers.</p>
 
     <p>Note:  If you need to specify custom request headers to be
-    added to the forwarded request, use the 
+    added to the forwarded request, use the
     <code class="directive"><a href="../mod/mod_headers.html#requestheader">RequestHeader</a></code>
     directive.</p>
 
@@ -726,13 +726,13 @@ NoProxy         .example.com 192.168.112.0/21</pre>
 
 
     <div class="note"><h3>Differences from the Location configuration section</h3>
-      <p>A backend URL matches the configuration section if it begins with the 
+      <p>A backend URL matches the configuration section if it begins with the
       the <var>wildcard-url</var> string, even if the last path segment in the
-      directive only matches a prefix of the backend URL.  For example, 
-      &lt;Proxy http://example.com/foo&gt; matches all of 
-      http://example.com/foo, http://example.com/foo/bar, and 
+      directive only matches a prefix of the backend URL.  For example,
+      &lt;Proxy http://example.com/foo&gt; matches all of
+      http://example.com/foo, http://example.com/foo/bar, and
       http://example.com/foobar.  The matching of the final URL differs
-      from the behavior of the <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> section, which for purposes of this note 
+      from the behavior of the <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> section, which for purposes of this note
       treats the final path component as if it ended in a slash.</p>
       <p>For more control over the matching, see <code class="directive">&lt;ProxyMatch&gt;</code>.</p>
     </div>
@@ -998,7 +998,7 @@ through</td></tr>
     a local virtual path; <var>url</var> is a partial URL for the
     remote server and cannot include a query string.</p>
 
-    <div class="note"><strong>Note: </strong>This directive cannot be used within a 
+    <div class="note"><strong>Note: </strong>This directive cannot be used within a
     <code>&lt;Directory&gt;</code> context.</div>
 
     <div class="warning">The <code class="directive"><a href="#proxyrequests">ProxyRequests</a></code> directive should
@@ -1335,7 +1335,7 @@ ProxyPass "/mirror/foo"   "http://backend.example.com"</pre>
     <tr><td>stickysessionsep</td>
         <td>"."</td>
         <td>Sets the separation symbol in the session cookie. Some backend application servers
-        do not use the '.' as the symbol. For example the Oracle Weblogic server uses 
+        do not use the '.' as the symbol. For example the Oracle Weblogic server uses
         '!'. The correct symbol can be set using this option. The setting of 'Off'
         signifies that no symbol is used.
     </td></tr>
@@ -1529,9 +1529,9 @@ ProxyPassReverse  "/mirror/foo/" "https://backend.example.com/"</pre>
        matches, the server will substitute any parenthesized matches into the given
        string and use it as a new <var>url</var>.</p>
 
-    <div class="note"><strong>Note: </strong>This directive cannot be used within a 
+    <div class="note"><strong>Note: </strong>This directive cannot be used within a
     <code>&lt;Directory&gt;</code> context.</div>
-    
+
     <p>Suppose the local server has address <code>http://example.com/</code>;
     then</p>
 
@@ -1687,7 +1687,7 @@ reverse proxy. This directive rewrites the <code>path</code> string in
 <var>internal-path</var>, the cookie path will be replaced with
 <var>public-path</var>.
 </p><p>
-In the example given with 
+In the example given with
 <code class="directive"><a href="#proxypassreverse">ProxyPassReverse</a></code>, the directive:
 </p>
     <pre class="prettyprint lang-config">ProxyPassReverseCookiePath  "/"  "/mirror/foo/"</pre>
