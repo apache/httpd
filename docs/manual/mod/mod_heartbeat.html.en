@@ -51,14 +51,14 @@ of <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</
     </div>
 
 </div>
-<div id="quickview"><h3 class="directives">Directives</h3>
+<div id="quickview"><h3>Topics</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#consuming">Consuming mod_heartbeat Output</a></li>
+</ul><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#heartbeataddress">HeartbeatAddress</a></li>
 </ul>
-<h3>Topics</h3>
-<ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#consuming">Consuming mod_heartbeat Output</a></li>
-</ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
+<ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="HeartbeatAddress" id="HeartbeatAddress">HeartbeatAddress</a> <a name="heartbeataddress" id="heartbeataddress">Directive</a></h2>
 <table class="directive">

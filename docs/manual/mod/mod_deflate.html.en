@@ -41,7 +41,14 @@ client</td></tr>
     your server to be compressed before being sent to the client over
     the network.</p>
 </div>
-<div id="quickview"><h3 class="directives">Directives</h3>
+<div id="quickview"><h3>Topics</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#recommended">Sample Configurations</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#enable">Enabling Compression</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#proxies">Dealing with proxy servers</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#precompressed">Serving pre-compressed
+content</a></li>
+</ul><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#deflatealteretag">DeflateAlterETag</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#deflatebuffersize">DeflateBufferSize</a></li>
@@ -53,14 +60,7 @@ client</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#deflatememlevel">DeflateMemLevel</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#deflatewindowsize">DeflateWindowSize</a></li>
 </ul>
-<h3>Topics</h3>
-<ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#recommended">Sample Configurations</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#enable">Enabling Compression</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#proxies">Dealing with proxy servers</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#precompressed">Serving pre-compressed
-content</a></li>
-</ul><h3>See also</h3>
+<h3>See also</h3>
 <ul class="seealso">
 <li><a href="../filter.html">Filters</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>

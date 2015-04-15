@@ -58,7 +58,19 @@ trust, as it can be abused to change the internal workings of httpd.</p>
 </div>
 
 </div>
-<div id="quickview"><h3 class="directives">Directives</h3>
+<div id="quickview"><h3>Topics</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#basicconf">Basic Configuration</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#writinghandlers">Writing Handlers</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#writingauthzproviders">Writing Authorization Providers</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#writinghooks">Writing Hooks</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#datastructures">Data Structures</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#functions">Built in functions</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#logging">Logging Functions</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#apache2">apache2 Package</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#modifying_buckets">Modifying contents with Lua filters</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#databases">Database connectivity</a></li>
+</ul><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#luaauthzprovider">LuaAuthzProvider</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#luacodecache">LuaCodeCache</a></li>
@@ -81,19 +93,7 @@ trust, as it can be abused to change the internal workings of httpd.</p>
 <li><img alt="" src="../images/down.gif" /> <a href="#luaroot">LuaRoot</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#luascope">LuaScope</a></li>
 </ul>
-<h3>Topics</h3>
-<ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#basicconf">Basic Configuration</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#writinghandlers">Writing Handlers</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#writingauthzproviders">Writing Authorization Providers</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#writinghooks">Writing Hooks</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#datastructures">Data Structures</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#functions">Built in functions</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#logging">Logging Functions</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#apache2">apache2 Package</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#modifying_buckets">Modifying contents with Lua filters</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#databases">Database connectivity</a></li>
-</ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
+<ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LuaAuthzProvider" id="LuaAuthzProvider">LuaAuthzProvider</a> <a name="luaauthzprovider" id="luaauthzprovider">Directive</a></h2>
 <table class="directive">

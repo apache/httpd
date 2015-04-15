@@ -60,7 +60,13 @@
     the <code class="module"><a href="../mod/mod_session.html">mod_session</a></code> module.</p>
 
 </div>
-<div id="quickview"><h3 class="directives">Directives</h3>
+<div id="quickview"><h3>Topics</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#dbdconfig">DBD Configuration</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#anonymous">Anonymous Sessions</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#peruser">Per User Sessions</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#housekeeping">Database Housekeeping</a></li>
+</ul><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#sessiondbdcookiename">SessionDBDCookieName</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sessiondbdcookiename2">SessionDBDCookieName2</a></li>
@@ -71,13 +77,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#sessiondbdselectlabel">SessionDBDSelectLabel</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sessiondbdupdatelabel">SessionDBDUpdateLabel</a></li>
 </ul>
-<h3>Topics</h3>
-<ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#dbdconfig">DBD Configuration</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#anonymous">Anonymous Sessions</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#peruser">Per User Sessions</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#housekeeping">Database Housekeeping</a></li>
-</ul><h3>See also</h3>
+<h3>See also</h3>
 <ul class="seealso">
 <li><code class="module"><a href="../mod/mod_session.html">mod_session</a></code></li>
 <li><code class="module"><a href="../mod/mod_session_crypto.html">mod_session_crypto</a></code></li>

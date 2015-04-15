@@ -54,7 +54,10 @@
     via the <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code>
     directive with the <code>anon</code> value.</p>
 </div>
-<div id="quickview"><h3 class="directives">Directives</h3>
+<div id="quickview"><h3>Topics</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#example">Example</a></li>
+</ul><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#anonymous">Anonymous</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#anonymous_logemail">Anonymous_LogEmail</a></li>
@@ -62,10 +65,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#anonymous_nouserid">Anonymous_NoUserID</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#anonymous_verifyemail">Anonymous_VerifyEmail</a></li>
 </ul>
-<h3>Topics</h3>
-<ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#example">Example</a></li>
-</ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
+<ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="Anonymous" id="Anonymous">Anonymous</a> <a name="anonymous" id="anonymous">Directive</a></h2>
 <table class="directive">

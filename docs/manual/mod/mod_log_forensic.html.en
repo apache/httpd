@@ -52,15 +52,15 @@
     distribution's support directory, may be helpful in evaluating the
     forensic log output.</p>
 </div>
-<div id="quickview"><h3 class="directives">Directives</h3>
-<ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#forensiclog">ForensicLog</a></li>
-</ul>
-<h3>Topics</h3>
+<div id="quickview"><h3>Topics</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#formats">Forensic Log Format</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#security">Security Considerations</a></li>
-</ul><h3>See also</h3>
+</ul><h3 class="directives">Directives</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#forensiclog">ForensicLog</a></li>
+</ul>
+<h3>See also</h3>
 <ul class="seealso">
 <li><a href="../logs.html">Apache Log Files</a></li>
 <li><code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code></li>

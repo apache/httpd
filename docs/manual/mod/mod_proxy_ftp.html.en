@@ -47,13 +47,7 @@
       large.</p>
     </div>
 </div>
-<div id="quickview"><h3 class="directives">Directives</h3>
-<ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#proxyftpdircharset">ProxyFtpDirCharset</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#proxyftpescapewildcards">ProxyFtpEscapeWildcards</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#proxyftplistonwildcard">ProxyFtpListOnWildcard</a></li>
-</ul>
-<h3>Topics</h3>
+<div id="quickview"><h3>Topics</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#mimetypes">Why doesn't file type <var>xxx</var>
     download via FTP?</a></li>
@@ -66,7 +60,13 @@
     in my browser's URL line?</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#wildcard">Why do I get a file listing when I expected
         a file to be downloaded?</a></li>
-</ul><h3>See also</h3>
+</ul><h3 class="directives">Directives</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#proxyftpdircharset">ProxyFtpDirCharset</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#proxyftpescapewildcards">ProxyFtpEscapeWildcards</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#proxyftplistonwildcard">ProxyFtpListOnWildcard</a></li>
+</ul>
+<h3>See also</h3>
 <ul class="seealso">
 <li><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>

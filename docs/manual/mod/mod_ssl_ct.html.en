@@ -93,7 +93,15 @@ other characteristics are subject to change based on further feedback and
 testing.</p>
 </div>
 </div>
-<div id="quickview"><h3 class="directives">Directives</h3>
+<div id="quickview"><h3>Topics</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#server">Server processing overview</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#proxy">Proxy processing overview</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#logconf">Log configuration</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#static">Storing SCTs in a form consumable by mod_ssl_ct</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#logging">Logging CT status in the access log</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#audit">Off-line audit for proxy</a></li>
+</ul><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#ctauditstorage">CTAuditStorage</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ctlogclient">CTLogClient</a></li>
@@ -105,15 +113,7 @@ testing.</p>
 <li><img alt="" src="../images/down.gif" /> <a href="#ctstaticlogconfig">CTStaticLogConfig</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ctstaticscts">CTStaticSCTs</a></li>
 </ul>
-<h3>Topics</h3>
-<ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#server">Server processing overview</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#proxy">Proxy processing overview</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#logconf">Log configuration</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#static">Storing SCTs in a form consumable by mod_ssl_ct</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#logging">Logging CT status in the access log</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#audit">Off-line audit for proxy</a></li>
-</ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
+<ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CTAuditStorage" id="CTAuditStorage">CTAuditStorage</a> <a name="ctauditstorage" id="ctauditstorage">Directive</a></h2>
 <table class="directive">

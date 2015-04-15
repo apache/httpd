@@ -43,7 +43,13 @@
     by its original developer.
 </p>
 </div>
-<div id="quickview"><h3 class="directives">Directives</h3>
+<div id="quickview"><h3>Topics</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#pooling">Connection Pooling</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#API">Apache DBD API</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#prepared">SQL Prepared Statements</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#security">SECURITY WARNING</a></li>
+</ul><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#dbdexptime">DBDExptime</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#dbdinitsql">DBDInitSQL</a></li>
@@ -55,13 +61,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#dbdpreparesql">DBDPrepareSQL</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#dbdriver">DBDriver</a></li>
 </ul>
-<h3>Topics</h3>
-<ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#pooling">Connection Pooling</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#API">Apache DBD API</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#prepared">SQL Prepared Statements</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#security">SECURITY WARNING</a></li>
-</ul><h3>See also</h3>
+<h3>See also</h3>
 <ul class="seealso">
 <li><a href="../misc/password_encryptions.html">Password Formats</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>

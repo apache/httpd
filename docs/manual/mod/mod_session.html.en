@@ -60,16 +60,7 @@
     environment variables and HTTP headers, as appropriate.</p>
 
 </div>
-<div id="quickview"><h3 class="directives">Directives</h3>
-<ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#session">Session</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sessionenv">SessionEnv</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sessionexclude">SessionExclude</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sessionheader">SessionHeader</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sessioninclude">SessionInclude</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sessionmaxage">SessionMaxAge</a></li>
-</ul>
-<h3>Topics</h3>
+<div id="quickview"><h3>Topics</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#whatisasession">What is a session?</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#whocanuseasession">Who can use a session?</a></li>
@@ -80,7 +71,16 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#cookieprivacy">Cookie Privacy</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authentication">Session Support for Authentication</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#integration">Integrating Sessions with External Applications</a></li>
-</ul><h3>See also</h3>
+</ul><h3 class="directives">Directives</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#session">Session</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#sessionenv">SessionEnv</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#sessionexclude">SessionExclude</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#sessionheader">SessionHeader</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#sessioninclude">SessionInclude</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#sessionmaxage">SessionMaxAge</a></li>
+</ul>
+<h3>See also</h3>
 <ul class="seealso">
 <li><code class="module"><a href="../mod/mod_session_cookie.html">mod_session_cookie</a></code></li>
 <li><code class="module"><a href="../mod/mod_session_crypto.html">mod_session_crypto</a></code></li>

@@ -48,7 +48,11 @@ of consuming threads only for connections with active processing</td></tr>
       script's arguments when building the <code class="program"><a href="../programs/httpd.html">httpd</a></code>.</p>
 
 </div>
-<div id="quickview"><h3 class="directives">Directives</h3>
+<div id="quickview"><h3>Topics</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#how-it-works">How it Works</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#requirements">Requirements</a></li>
+</ul><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#asyncrequestworkerfactor">AsyncRequestWorkerFactor</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#coredumpdirectory">CoreDumpDirectory</a></li>
@@ -71,11 +75,7 @@ of consuming threads only for connections with active processing</td></tr>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#threadstacksize">ThreadStackSize</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mod_unixd.html#user">User</a></li>
 </ul>
-<h3>Topics</h3>
-<ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#how-it-works">How it Works</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#requirements">Requirements</a></li>
-</ul><h3>See also</h3>
+<h3>See also</h3>
 <ul class="seealso">
 <li><a href="worker.html">The worker MPM</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>

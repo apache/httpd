@@ -57,16 +57,16 @@
     the <code class="module"><a href="../mod/mod_session.html">mod_session</a></code> module.</p>
 
 </div>
-<div id="quickview"><h3 class="directives">Directives</h3>
+<div id="quickview"><h3>Topics</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#basicexamples">Basic Examples</a></li>
+</ul><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#sessioncookiename">SessionCookieName</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sessioncookiename2">SessionCookieName2</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sessioncookieremove">SessionCookieRemove</a></li>
 </ul>
-<h3>Topics</h3>
-<ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#basicexamples">Basic Examples</a></li>
-</ul><h3>See also</h3>
+<h3>See also</h3>
 <ul class="seealso">
 <li><code class="module"><a href="../mod/mod_session.html">mod_session</a></code></li>
 <li><code class="module"><a href="../mod/mod_session_crypto.html">mod_session_crypto</a></code></li>

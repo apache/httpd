@@ -61,7 +61,15 @@
     </p>
 
 </div>
-<div id="quickview"><h3 class="directives">Directives</h3>
+<div id="quickview"><h3>Topics</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#basicconfig">Basic Configuration</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#standalone">Standalone Login</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#inline">Inline Login</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#inlinepreservebody">Inline Login with Body Preservation</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#loggingout">Logging Out</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#urlencoding">Usernames and Passwords</a></li>
+</ul><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#authformauthoritative">AuthFormAuthoritative</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authformbody">AuthFormBody</a></li>
@@ -79,15 +87,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#authformsize">AuthFormSize</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authformusername">AuthFormUsername</a></li>
 </ul>
-<h3>Topics</h3>
-<ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#basicconfig">Basic Configuration</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#standalone">Standalone Login</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#inline">Inline Login</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#inlinepreservebody">Inline Login with Body Preservation</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#loggingout">Logging Out</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#urlencoding">Usernames and Passwords</a></li>
-</ul><h3>See also</h3>
+<h3>See also</h3>
 <ul class="seealso">
 <li><code class="module"><a href="../mod/mod_session.html">mod_session</a></code></li>
 <li><code class="directive"><a href="../mod/mod_authn_core.html#authname">AuthName</a></code></li>

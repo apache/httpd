@@ -43,20 +43,20 @@ for 2.2.x versions</td></tr></table>
     after markup processing, and will ensure the correct <var>charset</var>
     value is set in the HTTP <var>Content-Type</var> header.</p>
 </div>
-<div id="quickview"><h3 class="directives">Directives</h3>
-<ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#xml2encalias">xml2EncAlias</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#xml2encdefault">xml2EncDefault</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#xml2startparse">xml2StartParse</a></li>
-</ul>
-<h3>Topics</h3>
+<div id="quickview"><h3>Topics</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#usage">Usage</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#api">Programming API</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sniffing">Detecting an Encoding</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#output">Output Encoding</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#alias">Unsupported Encodings</a></li>
-</ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
+</ul><h3 class="directives">Directives</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#xml2encalias">xml2EncAlias</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#xml2encdefault">xml2EncDefault</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#xml2startparse">xml2StartParse</a></li>
+</ul>
+<ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="xml2EncAlias" id="xml2EncAlias">xml2EncAlias</a> <a name="xml2encalias" id="xml2encalias">Directive</a></h2>
 <table class="directive">
