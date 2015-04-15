@@ -12,6 +12,9 @@ Changes with Apache 2.4.13
      calls r:wsupgrade() can cause a child process crash. 
      [Edward Lu <Chaosed0 gmail.com>]
 
+  *) build: Don't load mod_cgi and mod_cgid in the default configuration
+     if they're both built.  [olli hauer <ohauer gmx.de>]
+
   *) mod_logio: Add LogIOTrackTTFB and %^FB logformat to log the time 
      taken to start writing response headers. [Eric Covener]
 

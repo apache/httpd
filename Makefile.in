@@ -58,6 +58,16 @@ install-conf:
 	    				-e 's#@@SSLPort@@#$(SSLPORT)#g' \
 	    				-e 'p' \
 	    				< $$i; \
+	    			if echo " $(DSO_MODULES) "|$(EGREP) " cgi " > /dev/null ; then \
+	    				have_cgi="1"; \
+	    			else \
+	    				have_cgi="0"; \
+	    			fi; \
+	    			if echo " $(DSO_MODULES) "|$(EGREP) " cgid " > /dev/null ; then \
+	    				have_cgid="1"; \
+	    			else \
+	    				have_cgid="0"; \
+	    			fi; \
 	    			for j in $(DSO_MODULES) "^EOL^"; do \
 	    				if test $$j != "^EOL^"; then \
 	    					if echo ",$(ENABLED_DSO_MODULES),"|$(EGREP) ",$$j," > /dev/null ; then \
@@ -68,8 +78,18 @@ install-conf:
 	    					if test "$(LOAD_ALL_MODULES)" = "yes"; then \
 	    						loading_disabled=""; \
 	    					fi; \
-    						echo "$${loading_disabled}LoadModule $${j}_module $(rel_libexecdir)/mod_$${j}.so"; \
-	    				fi; \
+							if test $$j = "cgid" -a "$$have_cgi" = "1"; then \
+								echo "<IfModule !mpm_prefork_module>"; \
+								echo "	$${loading_disabled}LoadModule $${j}_module $(rel_libexecdir)/mod_$${j}.so"; \
+								echo "</IfModule>"; \
+							elif test $$j = "cgi" -a "$$have_cgid" = "1"; then \
+								echo "<IfModule mpm_prefork_module>"; \
+								echo "	$${loading_disabled}LoadModule $${j}_module $(rel_libexecdir)/mod_$${j}.so"; \
+								echo "</IfModule>"; \
+							else \
+								echo "$${loading_disabled}LoadModule $${j}_module $(rel_libexecdir)/mod_$${j}.so"; \
+							fi; \
+						fi; \
 	    			done; \
 	    			sed -e '1,/@@LoadModule@@/d' \
 	    				-e '/@@LoadModule@@/d' \
