@@ -64,7 +64,6 @@
 <ul class="seealso">
 <li><a href="../env.html">아파치의 환경변수</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
-
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="BrowserMatch" id="BrowserMatch">BrowserMatch</a> <a name="browsermatch" id="browsermatch">지시어</a></h2>
 <table class="directive">
@@ -261,6 +260,7 @@
     <code>site</code> 환경변수를 "<code>apache</code>"로 설정한다.</p>
 
 </div>
+
 </div>
 <div class="bottomlang">
 <p><span>가능한 언어: </span><a href="../en/mod/mod_setenvif.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |

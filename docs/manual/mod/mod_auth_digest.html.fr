@@ -72,48 +72,6 @@ condensés</a></li>
 l'authentification</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="using" id="using">Utilisation de l'authentification à base de
-condensés</a></h2>
-
-    <p>Pour utiliser l'authentification à base de condensés MD5, vous
-    devez simplement remplacer <code>AuthType Basic</code> et <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code> respectivement
-    par <code>AuthType Digest</code> et <code class="directive"><a href="#authdigestprovider">AuthDigestProvider</a></code> lorsque vous
-    configurez l'authentification, puis ajouter une directive <code class="directive"><a href="#authdigestdomain">AuthDigestDomain</a></code> contenant au
-    moins la(les) URI(s) racine(s) de la zone à protéger.</p>
-
-    <p>On peut créer les fichiers utilisateur appropriés (au format
-    texte) à l'aide de l'outil <code class="program"><a href="../programs/htdigest.html">htdigest</a></code>.</p>
-
-    <div class="example"><h3>Exemple :</h3><pre class="prettyprint lang-config">&lt;Location /private/&gt;
-    AuthType Digest
-    AuthName "private area"
-    AuthDigestDomain /private/ http://mirror.my.dom/private2/
-    
-    AuthDigestProvider file
-    AuthUserFile /web/auth/.digest_pw
-    Require valid-user
-&lt;/Location&gt;</pre>
-</div>
-
-    <div class="note"><h3>Note</h3>
-    <p>L'authentification à base de condensé a été conçue pour améliorer
-    la sécurité par rapport à l'authentification basique, mais il
-    s'avère que ce but n'a pas été atteint. Un attaquant de type
-    "man-in-the-middle" peut facilement forcer le navigateur à revenir à
-    une authentification basique. Même une oreille indiscrète passive
-    peut retrouver le mot de passe par force brute avec les moyens
-    modernes, car l'algorithme de hashage utilisé par l'authentification
-    à base de condensé est trop rapide. Autre problème, le stockage des
-    mots de passe sur le serveur n'est pas sûr. Le contenu d'un fichier
-    htdigest volé peut être utilisé directement pour l'authentification
-    à base de condensé. Il est donc fortement recommandé d'utiliser
-    <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> pour chiffrer la connexion.</p>
-    <p><code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code> ne fonctionne correctement que
-    sur les plates-formes où APR supporte la mémoire partagée.</p>
-    </div>
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="authdigestalgorithm" id="authdigestalgorithm">Directive</a> <a name="AuthDigestAlgorithm" id="AuthDigestAlgorithm">AuthDigestAlgorithm</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sélectionne l'algorithme utilisé pour calculer les
@@ -283,6 +241,48 @@ AuthDigestShmemSize 1024K
 AuthDigestShmemSize 1M</pre>
 
 
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="using" id="using">Utilisation de l'authentification à base de
+condensés</a></h2>
+
+    <p>Pour utiliser l'authentification à base de condensés MD5, vous
+    devez simplement remplacer <code>AuthType Basic</code> et <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code> respectivement
+    par <code>AuthType Digest</code> et <code class="directive"><a href="#authdigestprovider">AuthDigestProvider</a></code> lorsque vous
+    configurez l'authentification, puis ajouter une directive <code class="directive"><a href="#authdigestdomain">AuthDigestDomain</a></code> contenant au
+    moins la(les) URI(s) racine(s) de la zone à protéger.</p>
+
+    <p>On peut créer les fichiers utilisateur appropriés (au format
+    texte) à l'aide de l'outil <code class="program"><a href="../programs/htdigest.html">htdigest</a></code>.</p>
+
+    <div class="example"><h3>Exemple :</h3><pre class="prettyprint lang-config">&lt;Location /private/&gt;
+    AuthType Digest
+    AuthName "private area"
+    AuthDigestDomain /private/ http://mirror.my.dom/private2/
+    
+    AuthDigestProvider file
+    AuthUserFile /web/auth/.digest_pw
+    Require valid-user
+&lt;/Location&gt;</pre>
+</div>
+
+    <div class="note"><h3>Note</h3>
+    <p>L'authentification à base de condensé a été conçue pour améliorer
+    la sécurité par rapport à l'authentification basique, mais il
+    s'avère que ce but n'a pas été atteint. Un attaquant de type
+    "man-in-the-middle" peut facilement forcer le navigateur à revenir à
+    une authentification basique. Même une oreille indiscrète passive
+    peut retrouver le mot de passe par force brute avec les moyens
+    modernes, car l'algorithme de hashage utilisé par l'authentification
+    à base de condensé est trop rapide. Autre problème, le stockage des
+    mots de passe sur le serveur n'est pas sûr. Le contenu d'un fichier
+    htdigest volé peut être utilisé directement pour l'authentification
+    à base de condensé. Il est donc fortement recommandé d'utiliser
+    <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> pour chiffrer la connexion.</p>
+    <p><code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code> ne fonctionne correctement que
+    sur les plates-formes où APR supporte la mémoire partagée.</p>
+    </div>
 </div>
 </div>
 <div class="bottomlang">

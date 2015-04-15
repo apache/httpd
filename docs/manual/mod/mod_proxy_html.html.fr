@@ -77,7 +77,6 @@ détaillée pourra s'avérer utile aux utilisateurs.</p>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxyhtmlurlmap">ProxyHTMLURLMap</a></li>
 </ul>
 <ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
-
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="proxyhtmlbufsize" id="proxyhtmlbufsize">Directive</a> <a name="ProxyHTMLBufSize" id="ProxyHTMLBufSize">ProxyHTMLBufSize</a></h2>
 <table class="directive">
@@ -495,6 +494,7 @@ conditions dans mod_proxy_html 3.x pour HTTPD 2.0 et 2.2 est aussi
 supportée.</p>
 
 </div>
+
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_proxy_html.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |

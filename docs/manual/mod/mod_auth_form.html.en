@@ -96,253 +96,6 @@
 <li><a href="../howto/auth.html">Authentication howto</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="basicconfig" id="basicconfig">Basic Configuration</a></h2>
-
-      <p>To protect a particular URL with <code class="module"><a href="../mod/mod_auth_form.html">mod_auth_form</a></code>, you need to
-      decide where you will store your <var>session</var>, and you will need to
-      decide what method you will use to authenticate. In this simple example, the
-      login details will be stored in a session based on
-      <code class="module"><a href="../mod/mod_session_cookie.html">mod_session_cookie</a></code>, and authentication will be attempted against
-      a file using <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code>. If authentication is unsuccessful,
-      the user will be redirected to the form login page.</p>
-
-      <div class="example"><h3>Basic example</h3><pre class="prettyprint lang-config">AuthFormProvider file
-AuthUserFile "conf/passwd"
-AuthType form
-AuthName realm
-AuthFormLoginRequiredLocation "http://example.com/login.html"
-Session On
-SessionCookieName session path=/
-SessionCryptoPassphrase secret</pre>
-</div>
-
-      <p>The directive <code class="directive"><a href="../mod/mod_authn_core.html#authtype">AuthType</a></code> will enable
-      the <code class="module"><a href="../mod/mod_auth_form.html">mod_auth_form</a></code> authentication when set to the value <var>form</var>.
-      The directives <code class="directive"><a href="#authformprovider">AuthFormProvider</a></code> and
-      <code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code> specify that usernames
-      and passwords should be checked against the chosen file.</p>
-
-      <p>The directives <code class="directive"><a href="../mod/mod_session.html#session">Session</a></code>,
-      <code class="directive"><a href="../mod/mod_session_cookie.html#sessioncookiename">SessionCookieName</a></code> and
-      <code class="directive"><a href="../mod/mod_session_crypto.html#sessioncryptopassphrase">SessionCryptoPassphrase</a></code> create an
-      encrypted session stored within an HTTP cookie on the browser. For more information
-      on the different options for configuring a session, read the documentation for
-      <code class="module"><a href="../mod/mod_session.html">mod_session</a></code>.</p>
-
-      <p>In the simple example above, a URL has been protected by
-      <code class="module"><a href="../mod/mod_auth_form.html">mod_auth_form</a></code>, but the user has yet to be given an opportunity to
-      enter their username and password. Options for doing so include providing a
-      dedicated standalone login page for this purpose, or for providing the login
-      page inline.</p>
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="standalone" id="standalone">Standalone Login</a></h2>
-
-      <p>The login form can be hosted as a standalone page, or can be provided inline on
-      the same page.</p>
-
-      <p>When configuring the login as a standalone page, unsuccessful authentication
-      attempts should be redirected to a login form created by the website for this purpose,
-      using the <code class="directive"><a href="#authformloginrequiredlocation">AuthFormLoginRequiredLocation</a></code>
-      directive. Typically this login page will contain an HTML form, asking the user to
-      provide their usename and password.</p>
-
-      <div class="example"><h3>Example login form</h3><pre class="prettyprint lang-html">&lt;form method="POST" action="/dologin.html"&gt;
-  Username: &lt;input type="text" name="httpd_username" value="" /&gt;
-  Password: &lt;input type="password" name="httpd_password" value="" /&gt;
-  &lt;input type="submit" name="login" value="Login" /&gt;
-&lt;/form&gt;</pre>
-</div>
-
-      <p>The part that does the actual login is handled by the <var>form-login-handler</var>.
-      The action of the form should point at this handler, which is configured within
-      Apache httpd as follows:</p>
-
-      <div class="example"><h3>Form login handler example</h3><pre class="prettyprint lang-config">&lt;Location "/dologin.html"&gt;
-    SetHandler form-login-handler
-    AuthFormLoginRequiredLocation "http://example.com/login.html"
-    AuthFormLoginSuccessLocation "http://example.com/success.html"
-    AuthFormProvider file
-    AuthUserFile "conf/passwd"
-    AuthType form
-    AuthName realm
-    Session On
-    SessionCookieName session path=/
-    SessionCryptoPassphrase secret
-&lt;/Location&gt;</pre>
-</div>
-
-      <p>The URLs specified by the
-      <code class="directive"><a href="#authformloginrequiredlocation">AuthFormLoginRequiredLocation</a></code> directive will typically
-      point to a page explaining to the user that their login attempt was unsuccessful, and they
-      should try again.  The <code class="directive"><a href="#authformloginsuccesslocation">AuthFormLoginSuccessLocation</a></code>
-      directive specifies the URL the user should be redirected to upon successful login.</p>
-
-      <p>Alternatively, the URL to redirect the user to on success can be embedded within the login
-      form, as in the example below. As a result, the same <var>form-login-handler</var> can be
-      reused for different areas of a website.</p>
-
-      <div class="example"><h3>Example login form with location</h3><pre class="prettyprint lang-html">&lt;form method="POST" action="/dologin.html"&gt;
-  Username: &lt;input type="text" name="httpd_username" value="" /&gt;
-  Password: &lt;input type="password" name="httpd_password" value="" /&gt;
-  &lt;input type="submit" name="login" value="Login" /&gt;
-  &lt;input type="hidden" name="httpd_location" value="http://example.com/success.html" /&gt;
-&lt;/form&gt;</pre>
-</div>
-
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="inline" id="inline">Inline Login</a></h2>
-
-      <div class="warning"><h3>Warning</h3>
-        <p>A risk exists that under certain circumstances, the login form configured
-        using inline login may be submitted more than once, revealing login credentials to
-        the application running underneath. The administrator must ensure that the underlying
-        application is properly secured to prevent abuse. If in doubt, use the
-        standalone login configuration.</p>
-      </div>
-
-      <p>As an alternative to having a dedicated login page for a website, it is possible to
-      configure <code class="module"><a href="../mod/mod_auth_form.html">mod_auth_form</a></code> to authenticate users inline, without being
-      redirected to another page. This allows the state of the current page to be preserved
-      during the login attempt. This can be useful in a situation where a time limited
-      session is in force, and the session times out in the middle of the user request. The
-      user can be re-authenticated in place, and they can continue where they left off.</p>
-
-      <p>If a non-authenticated user attempts to access a page protected by
-      <code class="module"><a href="../mod/mod_auth_form.html">mod_auth_form</a></code> that isn't configured with a
-      <code class="directive"><a href="#authformloginrequiredlocation">AuthFormLoginRequiredLocation</a></code> directive,
-      a <var>HTTP_UNAUTHORIZED</var> status code is returned to the browser indicating to the user
-      that they are not authorized to view the page.</p>
-
-      <p>To configure inline authentication, the administrator overrides the error document
-      returned by the <var>HTTP_UNAUTHORIZED</var> status code with a custom error document
-      containing the login form, as follows:</p>
-
-      <div class="example"><h3>Basic inline example</h3><pre class="prettyprint lang-config">AuthFormProvider file
-ErrorDocument 401 "/login.shtml"
-AuthUserFile "conf/passwd"
-AuthType form
-AuthName realm
-AuthFormLoginRequiredLocation "http://example.com/login.html"
-Session On
-SessionCookieName session path=/
-SessionCryptoPassphrase secret</pre>
-</div>
-
-      <p>The error document page should contain a login form with an empty action property,
-      as per the example below.  This has the effect of submitting the form to
-      the original protected URL, without the page having to know what that
-      URL is.</p>
-
-      <div class="example"><h3>Example inline login form</h3><pre class="prettyprint lang-html">&lt;form method="POST" <strong>action=""</strong>&gt;
-  Username: &lt;input type="text" name="httpd_username" value="" /&gt;
-  Password: &lt;input type="password" name="httpd_password" value="" /&gt;
-  &lt;input type="submit" name="login" value="Login" /&gt;
-&lt;/form&gt;</pre>
-</div>
-
-      <p>When the end user has filled in their login details, the form will make
-      an HTTP POST request to the original password protected URL.
-      <code class="module"><a href="../mod/mod_auth_form.html">mod_auth_form</a></code> will intercept this POST request, and if
-      HTML fields are found present for the username and password, the user
-      will be logged in, and the original password protected URL will be returned
-      to the user as a GET request.</p>
-
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="inlinepreservebody" id="inlinepreservebody">Inline Login with Body Preservation</a></h2>
-
-      <p>A limitation of the inline login technique described above is that should an
-      HTML form POST have resulted in the request to authenticate or
-      reauthenticate, the
-      contents of the original form posted by the browser will be lost. Depending on
-      the function of the website, this could present significant inconvenience for the
-      end user.</p>
-
-      <p><code class="module"><a href="../mod/mod_auth_form.html">mod_auth_form</a></code> addresses this by allowing the method and body
-      of the original request to be embedded in the login form. If authentication
-      is successful, the original method and body will be retried by Apache httpd, preserving
-      the state of the original request.</p>
-
-      <p>To enable body preservation, add three additional fields to the login form as
-      per the example below.</p>
-
-      <div class="example"><h3>Example with body preservation</h3><pre class="prettyprint lang-html">&lt;form method="POST" action=""&gt;
-  Username: &lt;input type="text" name="httpd_username" value="" /&gt;
-  Password: &lt;input type="password" name="httpd_password" value="" /&gt;
-  &lt;input type="submit" name="login" value="Login" /&gt;
-  <br />  <strong>&lt;input type="hidden" name="httpd_method" value="POST" /&gt;
-  &lt;input type="hidden" name="httpd_mimetype" value="application/x-www-form-urlencoded" /&gt;
-  &lt;input type="hidden" name="httpd_body" value="name1=value1&amp;name2=value2" /&gt;</strong><br />
-&lt;/form&gt;</pre>
-</div>
-
-      <p>How the method, mimetype and body of the original request are embedded within the
-      login form will depend on the platform and technology being used within the website.
-      </p>
-
-      <p>One option is to use the <code class="module"><a href="../mod/mod_include.html">mod_include</a></code> module along with the
-      <code class="directive"><a href="../mod/mod_request.html#keptbodysize">KeptBodySize</a></code> directive, along with a suitable
-      CGI script to embed the variables in the form.</p>
-
-      <p>Another option is to render the login form using a CGI script or other dynamic
-      technology.</p>
-
-      <div class="example"><h3>CGI example</h3><pre class="prettyprint lang-config">        AuthFormProvider file
-        ErrorDocument 401 "/cgi-bin/login.cgi"
-        ...</pre>
-</div>
-
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="loggingout" id="loggingout">Logging Out</a></h2>
-
-      <p>To enable a user to log out of a particular session, configure a page to
-      be handled by the <var>form-logout-handler</var>. Any attempt to access this
-      URL will cause the username and password to be removed from the current
-      session, effectively logging the user out.</p>
-
-      <p>By setting the
-      <code class="directive"><a href="#authformlogoutlocation">AuthFormLogoutLocation</a></code> directive,
-      a URL can be specified that the browser will be redirected to on successful
-      logout. This URL might explain to the user that they have been logged out, and
-      give the user the option to log in again.</p>
-
-      <div class="example"><h3>Basic logout example</h3><pre class="prettyprint lang-config">SetHandler form-logout-handler
-AuthName realm
-AuthFormLogoutLocation "http://example.com/loggedout.html"
-Session On
-SessionCookieName session path=/
-SessionCryptoPassphrase secret</pre>
-</div>
-
-      <p>Note that logging a user out does not delete the session; it merely removes
-      the username and password from the session. If this results in an empty session,
-      the net effect will be the removal of that session, but this is not
-      guaranteed. If you want to guarantee the removal of a session, set the
-      <code class="directive"><a href="../mod/mod_session.html#sessionmaxage">SessionMaxAge</a></code> directive to a small
-      value, like 1 (setting the directive to zero would mean no session age limit).
-      </p>
-
-      <div class="example"><h3>Basic session expiry example</h3><pre class="prettyprint lang-config">SetHandler form-logout-handler
-AuthFormLogoutLocation "http://example.com/loggedout.html"
-Session On
-SessionMaxAge 1
-SessionCookieName session path=/
-SessionCryptoPassphrase secret</pre>
-</div>
-
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="urlencoding" id="urlencoding">Usernames and Passwords</a></h2>
-    <p>Note that form submission involves URLEncoding the form data:
-    in this case the username and password.  You should therefore
-    pick usernames and passwords that avoid characters that are
-    URLencoded in form submission, or you may get unexpected results.</p>
-    </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AuthFormAuthoritative" id="AuthFormAuthoritative">AuthFormAuthoritative</a> <a name="authformauthoritative" id="authformauthoritative">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets whether authorization and authentication are passed to
@@ -698,6 +451,253 @@ parser has been added in 2.4.4.</td></tr>
     in.</p>
 
 </div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="basicconfig" id="basicconfig">Basic Configuration</a></h2>
+
+      <p>To protect a particular URL with <code class="module"><a href="../mod/mod_auth_form.html">mod_auth_form</a></code>, you need to
+      decide where you will store your <var>session</var>, and you will need to
+      decide what method you will use to authenticate. In this simple example, the
+      login details will be stored in a session based on
+      <code class="module"><a href="../mod/mod_session_cookie.html">mod_session_cookie</a></code>, and authentication will be attempted against
+      a file using <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code>. If authentication is unsuccessful,
+      the user will be redirected to the form login page.</p>
+
+      <div class="example"><h3>Basic example</h3><pre class="prettyprint lang-config">AuthFormProvider file
+AuthUserFile "conf/passwd"
+AuthType form
+AuthName realm
+AuthFormLoginRequiredLocation "http://example.com/login.html"
+Session On
+SessionCookieName session path=/
+SessionCryptoPassphrase secret</pre>
+</div>
+
+      <p>The directive <code class="directive"><a href="../mod/mod_authn_core.html#authtype">AuthType</a></code> will enable
+      the <code class="module"><a href="../mod/mod_auth_form.html">mod_auth_form</a></code> authentication when set to the value <var>form</var>.
+      The directives <code class="directive"><a href="#authformprovider">AuthFormProvider</a></code> and
+      <code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code> specify that usernames
+      and passwords should be checked against the chosen file.</p>
+
+      <p>The directives <code class="directive"><a href="../mod/mod_session.html#session">Session</a></code>,
+      <code class="directive"><a href="../mod/mod_session_cookie.html#sessioncookiename">SessionCookieName</a></code> and
+      <code class="directive"><a href="../mod/mod_session_crypto.html#sessioncryptopassphrase">SessionCryptoPassphrase</a></code> create an
+      encrypted session stored within an HTTP cookie on the browser. For more information
+      on the different options for configuring a session, read the documentation for
+      <code class="module"><a href="../mod/mod_session.html">mod_session</a></code>.</p>
+
+      <p>In the simple example above, a URL has been protected by
+      <code class="module"><a href="../mod/mod_auth_form.html">mod_auth_form</a></code>, but the user has yet to be given an opportunity to
+      enter their username and password. Options for doing so include providing a
+      dedicated standalone login page for this purpose, or for providing the login
+      page inline.</p>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="standalone" id="standalone">Standalone Login</a></h2>
+
+      <p>The login form can be hosted as a standalone page, or can be provided inline on
+      the same page.</p>
+
+      <p>When configuring the login as a standalone page, unsuccessful authentication
+      attempts should be redirected to a login form created by the website for this purpose,
+      using the <code class="directive"><a href="#authformloginrequiredlocation">AuthFormLoginRequiredLocation</a></code>
+      directive. Typically this login page will contain an HTML form, asking the user to
+      provide their usename and password.</p>
+
+      <div class="example"><h3>Example login form</h3><pre class="prettyprint lang-html">&lt;form method="POST" action="/dologin.html"&gt;
+  Username: &lt;input type="text" name="httpd_username" value="" /&gt;
+  Password: &lt;input type="password" name="httpd_password" value="" /&gt;
+  &lt;input type="submit" name="login" value="Login" /&gt;
+&lt;/form&gt;</pre>
+</div>
+
+      <p>The part that does the actual login is handled by the <var>form-login-handler</var>.
+      The action of the form should point at this handler, which is configured within
+      Apache httpd as follows:</p>
+
+      <div class="example"><h3>Form login handler example</h3><pre class="prettyprint lang-config">&lt;Location "/dologin.html"&gt;
+    SetHandler form-login-handler
+    AuthFormLoginRequiredLocation "http://example.com/login.html"
+    AuthFormLoginSuccessLocation "http://example.com/success.html"
+    AuthFormProvider file
+    AuthUserFile "conf/passwd"
+    AuthType form
+    AuthName realm
+    Session On
+    SessionCookieName session path=/
+    SessionCryptoPassphrase secret
+&lt;/Location&gt;</pre>
+</div>
+
+      <p>The URLs specified by the
+      <code class="directive"><a href="#authformloginrequiredlocation">AuthFormLoginRequiredLocation</a></code> directive will typically
+      point to a page explaining to the user that their login attempt was unsuccessful, and they
+      should try again.  The <code class="directive"><a href="#authformloginsuccesslocation">AuthFormLoginSuccessLocation</a></code>
+      directive specifies the URL the user should be redirected to upon successful login.</p>
+
+      <p>Alternatively, the URL to redirect the user to on success can be embedded within the login
+      form, as in the example below. As a result, the same <var>form-login-handler</var> can be
+      reused for different areas of a website.</p>
+
+      <div class="example"><h3>Example login form with location</h3><pre class="prettyprint lang-html">&lt;form method="POST" action="/dologin.html"&gt;
+  Username: &lt;input type="text" name="httpd_username" value="" /&gt;
+  Password: &lt;input type="password" name="httpd_password" value="" /&gt;
+  &lt;input type="submit" name="login" value="Login" /&gt;
+  &lt;input type="hidden" name="httpd_location" value="http://example.com/success.html" /&gt;
+&lt;/form&gt;</pre>
+</div>
+
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="inline" id="inline">Inline Login</a></h2>
+
+      <div class="warning"><h3>Warning</h3>
+        <p>A risk exists that under certain circumstances, the login form configured
+        using inline login may be submitted more than once, revealing login credentials to
+        the application running underneath. The administrator must ensure that the underlying
+        application is properly secured to prevent abuse. If in doubt, use the
+        standalone login configuration.</p>
+      </div>
+
+      <p>As an alternative to having a dedicated login page for a website, it is possible to
+      configure <code class="module"><a href="../mod/mod_auth_form.html">mod_auth_form</a></code> to authenticate users inline, without being
+      redirected to another page. This allows the state of the current page to be preserved
+      during the login attempt. This can be useful in a situation where a time limited
+      session is in force, and the session times out in the middle of the user request. The
+      user can be re-authenticated in place, and they can continue where they left off.</p>
+
+      <p>If a non-authenticated user attempts to access a page protected by
+      <code class="module"><a href="../mod/mod_auth_form.html">mod_auth_form</a></code> that isn't configured with a
+      <code class="directive"><a href="#authformloginrequiredlocation">AuthFormLoginRequiredLocation</a></code> directive,
+      a <var>HTTP_UNAUTHORIZED</var> status code is returned to the browser indicating to the user
+      that they are not authorized to view the page.</p>
+
+      <p>To configure inline authentication, the administrator overrides the error document
+      returned by the <var>HTTP_UNAUTHORIZED</var> status code with a custom error document
+      containing the login form, as follows:</p>
+
+      <div class="example"><h3>Basic inline example</h3><pre class="prettyprint lang-config">AuthFormProvider file
+ErrorDocument 401 "/login.shtml"
+AuthUserFile "conf/passwd"
+AuthType form
+AuthName realm
+AuthFormLoginRequiredLocation "http://example.com/login.html"
+Session On
+SessionCookieName session path=/
+SessionCryptoPassphrase secret</pre>
+</div>
+
+      <p>The error document page should contain a login form with an empty action property,
+      as per the example below.  This has the effect of submitting the form to
+      the original protected URL, without the page having to know what that
+      URL is.</p>
+
+      <div class="example"><h3>Example inline login form</h3><pre class="prettyprint lang-html">&lt;form method="POST" <strong>action=""</strong>&gt;
+  Username: &lt;input type="text" name="httpd_username" value="" /&gt;
+  Password: &lt;input type="password" name="httpd_password" value="" /&gt;
+  &lt;input type="submit" name="login" value="Login" /&gt;
+&lt;/form&gt;</pre>
+</div>
+
+      <p>When the end user has filled in their login details, the form will make
+      an HTTP POST request to the original password protected URL.
+      <code class="module"><a href="../mod/mod_auth_form.html">mod_auth_form</a></code> will intercept this POST request, and if
+      HTML fields are found present for the username and password, the user
+      will be logged in, and the original password protected URL will be returned
+      to the user as a GET request.</p>
+
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="inlinepreservebody" id="inlinepreservebody">Inline Login with Body Preservation</a></h2>
+
+      <p>A limitation of the inline login technique described above is that should an
+      HTML form POST have resulted in the request to authenticate or
+      reauthenticate, the
+      contents of the original form posted by the browser will be lost. Depending on
+      the function of the website, this could present significant inconvenience for the
+      end user.</p>
+
+      <p><code class="module"><a href="../mod/mod_auth_form.html">mod_auth_form</a></code> addresses this by allowing the method and body
+      of the original request to be embedded in the login form. If authentication
+      is successful, the original method and body will be retried by Apache httpd, preserving
+      the state of the original request.</p>
+
+      <p>To enable body preservation, add three additional fields to the login form as
+      per the example below.</p>
+
+      <div class="example"><h3>Example with body preservation</h3><pre class="prettyprint lang-html">&lt;form method="POST" action=""&gt;
+  Username: &lt;input type="text" name="httpd_username" value="" /&gt;
+  Password: &lt;input type="password" name="httpd_password" value="" /&gt;
+  &lt;input type="submit" name="login" value="Login" /&gt;
+  <br />  <strong>&lt;input type="hidden" name="httpd_method" value="POST" /&gt;
+  &lt;input type="hidden" name="httpd_mimetype" value="application/x-www-form-urlencoded" /&gt;
+  &lt;input type="hidden" name="httpd_body" value="name1=value1&amp;name2=value2" /&gt;</strong><br />
+&lt;/form&gt;</pre>
+</div>
+
+      <p>How the method, mimetype and body of the original request are embedded within the
+      login form will depend on the platform and technology being used within the website.
+      </p>
+
+      <p>One option is to use the <code class="module"><a href="../mod/mod_include.html">mod_include</a></code> module along with the
+      <code class="directive"><a href="../mod/mod_request.html#keptbodysize">KeptBodySize</a></code> directive, along with a suitable
+      CGI script to embed the variables in the form.</p>
+
+      <p>Another option is to render the login form using a CGI script or other dynamic
+      technology.</p>
+
+      <div class="example"><h3>CGI example</h3><pre class="prettyprint lang-config">        AuthFormProvider file
+        ErrorDocument 401 "/cgi-bin/login.cgi"
+        ...</pre>
+</div>
+
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="loggingout" id="loggingout">Logging Out</a></h2>
+
+      <p>To enable a user to log out of a particular session, configure a page to
+      be handled by the <var>form-logout-handler</var>. Any attempt to access this
+      URL will cause the username and password to be removed from the current
+      session, effectively logging the user out.</p>
+
+      <p>By setting the
+      <code class="directive"><a href="#authformlogoutlocation">AuthFormLogoutLocation</a></code> directive,
+      a URL can be specified that the browser will be redirected to on successful
+      logout. This URL might explain to the user that they have been logged out, and
+      give the user the option to log in again.</p>
+
+      <div class="example"><h3>Basic logout example</h3><pre class="prettyprint lang-config">SetHandler form-logout-handler
+AuthName realm
+AuthFormLogoutLocation "http://example.com/loggedout.html"
+Session On
+SessionCookieName session path=/
+SessionCryptoPassphrase secret</pre>
+</div>
+
+      <p>Note that logging a user out does not delete the session; it merely removes
+      the username and password from the session. If this results in an empty session,
+      the net effect will be the removal of that session, but this is not
+      guaranteed. If you want to guarantee the removal of a session, set the
+      <code class="directive"><a href="../mod/mod_session.html#sessionmaxage">SessionMaxAge</a></code> directive to a small
+      value, like 1 (setting the directive to zero would mean no session age limit).
+      </p>
+
+      <div class="example"><h3>Basic session expiry example</h3><pre class="prettyprint lang-config">SetHandler form-logout-handler
+AuthFormLogoutLocation "http://example.com/loggedout.html"
+Session On
+SessionMaxAge 1
+SessionCookieName session path=/
+SessionCryptoPassphrase secret</pre>
+</div>
+
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="urlencoding" id="urlencoding">Usernames and Passwords</a></h2>
+    <p>Note that form submission involves URLEncoding the form data:
+    in this case the username and password.  You should therefore
+    pick usernames and passwords that avoid characters that are
+    URLencoded in form submission, or you may get unexpected results.</p>
+    </div>
 </div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_auth_form.html" title="English">&nbsp;en&nbsp;</a> |

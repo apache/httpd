@@ -114,139 +114,6 @@
 <li><code class="directive"><a href="../mod/core.html#setoutputfilter">SetOutputFilter</a></code></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="multipleext" id="multipleext">Files with Multiple Extensions</a></h2>
-    <p>Files can have more than one extension; the order of the
-    extensions is <em>normally</em> irrelevant. For example, if the
-    file <code>welcome.html.fr</code> maps onto content type
-    <code>text/html</code> and language French then the file
-    <code>welcome.fr.html</code> will map onto exactly the same
-    information.  If more than one extension is given that maps onto
-    the same type of metadata, then the one to the right will
-    be used, except for languages and content encodings. For example,
-    if <code>.gif</code> maps to the <a class="glossarylink" href="../glossary.html#media-type" title="see glossary">media-type</a>
-    <code>image/gif</code> and <code>.html</code> maps to the
-    media-type <code>text/html</code>, then the file
-    <code>welcome.gif.html</code> will be associated with the
-    media-type <code>text/html</code>.</p>
-
-    <p><a href="#charset-lang">Languages</a> and <a href="#contentencoding">content encodings</a> are treated accumulative, because one can assign
-    more than one language or encoding to a particular resource. For example,
-    the file <code>welcome.html.en.de</code> will be delivered with
-    <code>Content-Language: en, de</code> and <code>Content-Type:
-    text/html</code>.</p>
-
-    <p>Care should be taken when a file with multiple extensions
-    gets associated with both a <a class="glossarylink" href="../glossary.html#media-type" title="see glossary">media-type</a>
-    and a handler. This will
-    usually result in the request being handled by the module associated
-    with the handler. For example, if the <code>.imap</code>
-    extension is mapped to the handler <code>imap-file</code> (from
-    <code class="module"><a href="../mod/mod_imagemap.html">mod_imagemap</a></code>) and the <code>.html</code> extension is
-    mapped to the media-type <code>text/html</code>, then the file
-    <code>world.imap.html</code> will be associated with both the
-    <code>imap-file</code> handler and <code>text/html</code> media-type.
-    When it is processed, the <code>imap-file</code> handler will be used,
-    and so it will be treated as a <code class="module"><a href="../mod/mod_imagemap.html">mod_imagemap</a></code> imagemap
-    file.</p>
-
-    <p>If you would prefer only the last dot-separated part of the
-    filename to be mapped to a particular piece of meta-data, then do
-    not use the <code>Add*</code> directives. For example, if you wish
-    to have the file <code>foo.html.cgi</code> processed as a CGI
-    script, but not the file <code>bar.cgi.html</code>, then instead
-    of using <code>AddHandler cgi-script .cgi</code>, use</p>
-
-    <div class="example"><h3>Configure handler based on final extension only</h3><pre class="prettyprint lang-config">&lt;FilesMatch "\.cgi$"&gt;
-  SetHandler cgi-script
-&lt;/FilesMatch&gt;</pre>
-</div>
-
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="contentencoding" id="contentencoding">Content encoding</a></h2>
-    <p>A file of a particular <a class="glossarylink" href="../glossary.html#media-type" title="see glossary">media-type</a> can additionally be encoded a
-    particular way to simplify transmission over the Internet.
-    While this usually will refer to compression, such as
-    <code>gzip</code>, it can also refer to encryption, such a
-    <code>pgp</code> or to an encoding such as UUencoding, which is
-    designed for transmitting a binary file in an ASCII (text)
-    format.</p>
-
-    <p>The <a href="http://www.ietf.org/rfc/rfc2616.txt">HTTP/1.1
-    RFC</a>, section 14.11 puts it this way:</p>
-
-    <blockquote cite="http://www.ietf.org/rfc/rfc2616.txt">
-      <p>The Content-Encoding entity-header field is used as a modifier to
-      the media-type. When present, its value indicates what additional
-      content codings have been applied to the entity-body, and thus what
-      decoding mechanisms must be applied in order to obtain the media-type
-      referenced by the Content-Type header field. Content-Encoding is
-      primarily used to allow a document to be compressed without losing
-      the identity of its underlying media type.</p>
-    </blockquote>
-
-    <p>By using more than one file extension (see <a href="#multipleext">section above about multiple file
-    extensions</a>), you can indicate that a file is of a
-    particular <em>type</em>, and also has a particular
-    <em>encoding</em>. </p>
-
-    <p>For example, you may have a file which is a Microsoft Word
-    document, which is pkzipped to reduce its size. If the
-    <code>.doc</code> extension is associated with the Microsoft
-    Word file type, and the <code>.zip</code> extension is
-    associated with the pkzip file encoding, then the file
-    <code>Resume.doc.zip</code> would be known to be a pkzip'ed Word
-    document.</p>
-
-    <p>Apache sends a <code>Content-encoding</code> header with the
-    resource, in order to tell the client browser about the
-    encoding method.</p>
-
-    <pre class="prettyprint lang-config">Content-encoding: pkzip</pre>
-
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="charset-lang" id="charset-lang">Character sets and languages</a></h2>
-    <p>In addition to file type and the file encoding,
-    another important piece of information is what language a
-    particular document is in, and in what character set the file
-    should be displayed. For example, the document might be written
-    in the Vietnamese alphabet, or in Cyrillic, and should be
-    displayed as such. This information, also, is transmitted in
-    HTTP headers.</p>
-
-    <p>The character set, language, encoding and mime type are all
-    used in the process of content negotiation (See
-    <code class="module"><a href="../mod/mod_negotiation.html">mod_negotiation</a></code>) to determine
-    which document to give to the client, when there are
-    alternative documents in more than one character set, language,
-    encoding or mime type. All filename extensions associations
-    created with <code class="directive"><a href="#addcharset">AddCharset</a></code>,
-    <code class="directive"><a href="#addencoding">AddEncoding</a></code>, <code class="directive"><a href="#addlanguage">AddLanguage</a></code> and <code class="directive"><a href="#addtype">AddType</a></code> directives
-    (and extensions listed in the <code class="directive"><a href="../mod/mod_mime_magic.html#mimemagicfile">MimeMagicFile</a></code>) participate in this select process.
-    Filename extensions that are only associated using the <code class="directive"><a href="#addhandler">AddHandler</a></code>, <code class="directive"><a href="#addinputfilter">AddInputFilter</a></code> or <code class="directive"><a href="#addoutputfilter">AddOutputFilter</a></code> directives may be included or excluded
-    from matching by using the <code class="directive"><a href="#multiviewsmatch">MultiviewsMatch</a></code> directive.</p>
-
-    <h3><a name="charset" id="charset">Charset</a></h3>
-      <p>To convey this further information, Apache optionally sends
-      a <code>Content-Language</code> header, to specify the language
-      that the document is in, and can append additional information
-      onto the <code>Content-Type</code> header to indicate the
-      particular character set that should be used to correctly
-      render the information.</p>
-
-      <div class="example"><p><code>
-Content-Language: en, fr
-Content-Type: text/plain; charset=ISO-8859-1
-      </code></p></div>
-
-      <p>The language specification is the two-letter abbreviation
-      for the language. The <code>charset</code> is the name of the
-      particular character set which should be used.</p>
-    
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AddCharset" id="AddCharset">AddCharset</a> <a name="addcharset" id="addcharset">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maps the given filename extensions to the specified content
@@ -1002,6 +869,139 @@ extensions</td></tr>
 <ul>
 <li><code class="module"><a href="../mod/mod_mime_magic.html">mod_mime_magic</a></code></li>
 </ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="multipleext" id="multipleext">Files with Multiple Extensions</a></h2>
+    <p>Files can have more than one extension; the order of the
+    extensions is <em>normally</em> irrelevant. For example, if the
+    file <code>welcome.html.fr</code> maps onto content type
+    <code>text/html</code> and language French then the file
+    <code>welcome.fr.html</code> will map onto exactly the same
+    information.  If more than one extension is given that maps onto
+    the same type of metadata, then the one to the right will
+    be used, except for languages and content encodings. For example,
+    if <code>.gif</code> maps to the <a class="glossarylink" href="../glossary.html#media-type" title="see glossary">media-type</a>
+    <code>image/gif</code> and <code>.html</code> maps to the
+    media-type <code>text/html</code>, then the file
+    <code>welcome.gif.html</code> will be associated with the
+    media-type <code>text/html</code>.</p>
+
+    <p><a href="#charset-lang">Languages</a> and <a href="#contentencoding">content encodings</a> are treated accumulative, because one can assign
+    more than one language or encoding to a particular resource. For example,
+    the file <code>welcome.html.en.de</code> will be delivered with
+    <code>Content-Language: en, de</code> and <code>Content-Type:
+    text/html</code>.</p>
+
+    <p>Care should be taken when a file with multiple extensions
+    gets associated with both a <a class="glossarylink" href="../glossary.html#media-type" title="see glossary">media-type</a>
+    and a handler. This will
+    usually result in the request being handled by the module associated
+    with the handler. For example, if the <code>.imap</code>
+    extension is mapped to the handler <code>imap-file</code> (from
+    <code class="module"><a href="../mod/mod_imagemap.html">mod_imagemap</a></code>) and the <code>.html</code> extension is
+    mapped to the media-type <code>text/html</code>, then the file
+    <code>world.imap.html</code> will be associated with both the
+    <code>imap-file</code> handler and <code>text/html</code> media-type.
+    When it is processed, the <code>imap-file</code> handler will be used,
+    and so it will be treated as a <code class="module"><a href="../mod/mod_imagemap.html">mod_imagemap</a></code> imagemap
+    file.</p>
+
+    <p>If you would prefer only the last dot-separated part of the
+    filename to be mapped to a particular piece of meta-data, then do
+    not use the <code>Add*</code> directives. For example, if you wish
+    to have the file <code>foo.html.cgi</code> processed as a CGI
+    script, but not the file <code>bar.cgi.html</code>, then instead
+    of using <code>AddHandler cgi-script .cgi</code>, use</p>
+
+    <div class="example"><h3>Configure handler based on final extension only</h3><pre class="prettyprint lang-config">&lt;FilesMatch "\.cgi$"&gt;
+  SetHandler cgi-script
+&lt;/FilesMatch&gt;</pre>
+</div>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="contentencoding" id="contentencoding">Content encoding</a></h2>
+    <p>A file of a particular <a class="glossarylink" href="../glossary.html#media-type" title="see glossary">media-type</a> can additionally be encoded a
+    particular way to simplify transmission over the Internet.
+    While this usually will refer to compression, such as
+    <code>gzip</code>, it can also refer to encryption, such a
+    <code>pgp</code> or to an encoding such as UUencoding, which is
+    designed for transmitting a binary file in an ASCII (text)
+    format.</p>
+
+    <p>The <a href="http://www.ietf.org/rfc/rfc2616.txt">HTTP/1.1
+    RFC</a>, section 14.11 puts it this way:</p>
+
+    <blockquote cite="http://www.ietf.org/rfc/rfc2616.txt">
+      <p>The Content-Encoding entity-header field is used as a modifier to
+      the media-type. When present, its value indicates what additional
+      content codings have been applied to the entity-body, and thus what
+      decoding mechanisms must be applied in order to obtain the media-type
+      referenced by the Content-Type header field. Content-Encoding is
+      primarily used to allow a document to be compressed without losing
+      the identity of its underlying media type.</p>
+    </blockquote>
+
+    <p>By using more than one file extension (see <a href="#multipleext">section above about multiple file
+    extensions</a>), you can indicate that a file is of a
+    particular <em>type</em>, and also has a particular
+    <em>encoding</em>. </p>
+
+    <p>For example, you may have a file which is a Microsoft Word
+    document, which is pkzipped to reduce its size. If the
+    <code>.doc</code> extension is associated with the Microsoft
+    Word file type, and the <code>.zip</code> extension is
+    associated with the pkzip file encoding, then the file
+    <code>Resume.doc.zip</code> would be known to be a pkzip'ed Word
+    document.</p>
+
+    <p>Apache sends a <code>Content-encoding</code> header with the
+    resource, in order to tell the client browser about the
+    encoding method.</p>
+
+    <pre class="prettyprint lang-config">Content-encoding: pkzip</pre>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="charset-lang" id="charset-lang">Character sets and languages</a></h2>
+    <p>In addition to file type and the file encoding,
+    another important piece of information is what language a
+    particular document is in, and in what character set the file
+    should be displayed. For example, the document might be written
+    in the Vietnamese alphabet, or in Cyrillic, and should be
+    displayed as such. This information, also, is transmitted in
+    HTTP headers.</p>
+
+    <p>The character set, language, encoding and mime type are all
+    used in the process of content negotiation (See
+    <code class="module"><a href="../mod/mod_negotiation.html">mod_negotiation</a></code>) to determine
+    which document to give to the client, when there are
+    alternative documents in more than one character set, language,
+    encoding or mime type. All filename extensions associations
+    created with <code class="directive"><a href="#addcharset">AddCharset</a></code>,
+    <code class="directive"><a href="#addencoding">AddEncoding</a></code>, <code class="directive"><a href="#addlanguage">AddLanguage</a></code> and <code class="directive"><a href="#addtype">AddType</a></code> directives
+    (and extensions listed in the <code class="directive"><a href="../mod/mod_mime_magic.html#mimemagicfile">MimeMagicFile</a></code>) participate in this select process.
+    Filename extensions that are only associated using the <code class="directive"><a href="#addhandler">AddHandler</a></code>, <code class="directive"><a href="#addinputfilter">AddInputFilter</a></code> or <code class="directive"><a href="#addoutputfilter">AddOutputFilter</a></code> directives may be included or excluded
+    from matching by using the <code class="directive"><a href="#multiviewsmatch">MultiviewsMatch</a></code> directive.</p>
+
+    <h3><a name="charset" id="charset">Charset</a></h3>
+      <p>To convey this further information, Apache optionally sends
+      a <code>Content-Language</code> header, to specify the language
+      that the document is in, and can append additional information
+      onto the <code>Content-Type</code> header to indicate the
+      particular character set that should be used to correctly
+      render the information.</p>
+
+      <div class="example"><p><code>
+Content-Language: en, fr
+Content-Type: text/plain; charset=ISO-8859-1
+      </code></p></div>
+
+      <p>The language specification is the two-letter abbreviation
+      for the language. The <code>charset</code> is the name of the
+      particular character set which should be used.</p>
+    
 </div>
 </div>
 <div class="bottomlang">

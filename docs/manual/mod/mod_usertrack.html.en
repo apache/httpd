@@ -51,19 +51,6 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#logging">Logging</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="logging" id="logging">Logging</a></h2>
-
-
-    <p><code class="module"><a href="../mod/mod_usertrack.html">mod_usertrack</a></code> sets a cookie which can be logged
-    via <code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code> configurable logging formats:</p>
-
-    <pre class="prettyprint lang-config">LogFormat "%{Apache}n %r %t" usertrack
-CustomLog logs/clickstream.log usertrack</pre>
-
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CookieDomain" id="CookieDomain">CookieDomain</a> <a name="cookiedomain" id="cookiedomain">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The domain to which the tracking cookie applies</td></tr>
@@ -205,6 +192,19 @@ CustomLog logs/clickstream.log usertrack</pre>
 
     <pre class="prettyprint lang-config">CookieTracking on</pre>
 
+
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="logging" id="logging">Logging</a></h2>
+
+
+    <p><code class="module"><a href="../mod/mod_usertrack.html">mod_usertrack</a></code> sets a cookie which can be logged
+    via <code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code> configurable logging formats:</p>
+
+    <pre class="prettyprint lang-config">LogFormat "%{Apache}n %r %t" usertrack
+CustomLog logs/clickstream.log usertrack</pre>
 
 
 </div>

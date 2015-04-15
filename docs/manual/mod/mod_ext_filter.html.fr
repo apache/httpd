@@ -77,140 +77,6 @@ externe avant de l'envoyer au client</td></tr>
 <li><a href="../filter.html">Filtres</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="examples" id="examples">Exemples</a></h2>
-
-    <h3>Générer du HTML à partir d'un autre type de
-    contenu</h3>
-
-      <pre class="prettyprint lang-config"># la directive de mod_ext_filter définissant un filtre
-# permettant de mettre des fichiers text/c au format HTML en
-# utilisant le programme externe /usr/bin/enscript, le type du
-# fichier résultant étant défini à text/html
-ExtFilterDefine c-to-html mode=output \
-    intype=text/c outtype=text/html \
-    cmd="/usr/bin/enscript --color -W html -Ec -o - -"
-
-&lt;Directory "/export/home/trawick/apacheinst/htdocs/c"&gt;
-    # directive de base permettant de traiter la sortie avec le
-    # nouveau filtre
-    SetOutputFilter c-to-html
-
-    # directive de mod_mime définissant le type des fichiers dont
-    # le nom possède l'extension .c à text/c
-    AddType text/c .c
-&lt;/Directory&gt;</pre>
-
-    
-
-    <h3>Implémentation d'un filtre de codage de
-    contenu</h3>
-      <p>Note : cet exemple avec gzip n'est fourni qu'à titre
-      d'illustration. Veuillez vous reporter à la documentation de
-      <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> pour un exemple d'implémentation plus
-      pratique.</p>
-
-      <pre class="prettyprint lang-config"># la directive de mod_ext_filter qui définit le filtre externe
-ExtFilterDefine gzip mode=output cmd=/bin/gzip
-
-&lt;Location /gzipped&gt;
-
-    # directive de base permettant de traiter la sortie avec le
-  # filtre gzip
-    SetOutputFilter gzip
-
-    # la directive de mod_headers permettant d'ajouter le champ
-  # d'en-tête "Content-Encoding: gzip"
-    Header set Content-Encoding gzip
-&lt;/Location&gt;</pre>
-
-
-    
-
-    <h3>Ralentissement du serveur</h3>
-      <pre class="prettyprint lang-config"># directive de mod_ext_filter définissant un filtre qui fait
-# passer tous les flux en sortie par la commande cat ; cat ne
-# modifie rien ; elle ne fait que compliquer le cheminement des
-# flux et consommer des ressources supplémentaires
-       ExtFilterDefine slowdown mode=output cmd=/bin/cat \
-ExtFilterDefine slowdown mode=output cmd=/bin/cat \
-    preservescontentlength
-
-&lt;Location /&gt;
-    # directive de base permettant de traiter plusieurs fois la
-    # sortie avec le filtre slowdown
-    #
-    SetOutputFilter slowdown;slowdown;slowdown
-&lt;/Location&gt;</pre>
-
-    
-
-    <h3>Utilisation de sed pour remplacer du texte dans la
-    réponse</h3>
-
-      <pre class="prettyprint lang-config"># directive de mod_ext_filter définissant un filtre qui
-# remplace du texte dans la réponse
-#
-ExtFilterDefine fixtext mode=output intype=text/html \
-    cmd="/bin/sed s/verdana/arial/g"
-
-&lt;Location /&gt;
-    # directive de base permettant de traiter la sortie avec le
-    # filtre fixtext
-    SetOutputFilter fixtext
-&lt;/Location&gt;</pre>
-
-
-<div class="note">
-<p>Vous pouvez aussi utiliser <code class="module"><a href="../mod/mod_substitute.html">mod_substitute</a></code> pour
-effectuer le même traitement sans avoir à invoquer un programme
-externe.</p>
-</div>      
-
-    
-
-    <h3>Tracer un autre filtre</h3>
-      <pre class="prettyprint lang-config"># Trace les données lues et écrites par mod_deflate pour un
-# client particulier (IP 192.168.1.31) qui a des problèmes de
-# compression.
-# Ce premier filtre va tracer ce qui entre dans mod_deflate.
-ExtFilterDefine tracebefore \
-    cmd="/bin/tracefilter.pl /tmp/tracebefore" \
-    EnableEnv=trace_this_client
-
-# Ce second filtre va tracer ce qui sort de mod_deflate.
-# Notez que sans le paramètre ftype, le type de filtre par
-# défaut AP_FTYPE_RESOURCE placerait le filtre *avant*
-# mod_deflate dans la chaîne de filtrage. Le fait d'affecter
-# à ce paramètre une valeur numérique sensiblement supérieure à
-# AP_FTYPE_CONTENT_SET permet de s'assurer que le filtre sera
-# placé après mod_deflate.
-ExtFilterDefine traceafter \
-    cmd="/bin/tracefilter.pl /tmp/traceafter" \
-    EnableEnv=trace_this_client ftype=21
-
-&lt;Directory /usr/local/docs&gt;
-    SetEnvIf Remote_Addr 192.168.1.31 trace_this_client
-    SetOutputFilter tracebefore;deflate;traceafter
-&lt;/Directory&gt;</pre>
-
-
-      <div class="example"><h3>Voici le filtre qui trace les données :</h3><pre class="prettyprint lang-perl">#!/usr/local/bin/perl -w
-use strict;
-
-open(SAVE, "&gt;$ARGV[0]")
-    or die "can't open $ARGV[0]: $?";
-
-while (&lt;STDIN&gt;) {
-    print SAVE $_;
-    print $_;
-}
-
-close(SAVE);</pre>
-</div>
-    
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="extfilterdefine" id="extfilterdefine">Directive</a> <a name="ExtFilterDefine" id="ExtFilterDefine">ExtFilterDefine</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit un filtre externe</td></tr>
@@ -349,6 +215,140 @@ close(SAVE);</pre>
     <p>Les messages envoyés vers la sortie d'erreurs standard du filtre
     seront enregistrés dans le journal des erreurs d'Apache.</p>
 
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="examples" id="examples">Exemples</a></h2>
+
+    <h3>Générer du HTML à partir d'un autre type de
+    contenu</h3>
+
+      <pre class="prettyprint lang-config"># la directive de mod_ext_filter définissant un filtre
+# permettant de mettre des fichiers text/c au format HTML en
+# utilisant le programme externe /usr/bin/enscript, le type du
+# fichier résultant étant défini à text/html
+ExtFilterDefine c-to-html mode=output \
+    intype=text/c outtype=text/html \
+    cmd="/usr/bin/enscript --color -W html -Ec -o - -"
+
+&lt;Directory "/export/home/trawick/apacheinst/htdocs/c"&gt;
+    # directive de base permettant de traiter la sortie avec le
+    # nouveau filtre
+    SetOutputFilter c-to-html
+
+    # directive de mod_mime définissant le type des fichiers dont
+    # le nom possède l'extension .c à text/c
+    AddType text/c .c
+&lt;/Directory&gt;</pre>
+
+    
+
+    <h3>Implémentation d'un filtre de codage de
+    contenu</h3>
+      <p>Note : cet exemple avec gzip n'est fourni qu'à titre
+      d'illustration. Veuillez vous reporter à la documentation de
+      <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> pour un exemple d'implémentation plus
+      pratique.</p>
+
+      <pre class="prettyprint lang-config"># la directive de mod_ext_filter qui définit le filtre externe
+ExtFilterDefine gzip mode=output cmd=/bin/gzip
+
+&lt;Location /gzipped&gt;
+
+    # directive de base permettant de traiter la sortie avec le
+  # filtre gzip
+    SetOutputFilter gzip
+
+    # la directive de mod_headers permettant d'ajouter le champ
+  # d'en-tête "Content-Encoding: gzip"
+    Header set Content-Encoding gzip
+&lt;/Location&gt;</pre>
+
+
+    
+
+    <h3>Ralentissement du serveur</h3>
+      <pre class="prettyprint lang-config"># directive de mod_ext_filter définissant un filtre qui fait
+# passer tous les flux en sortie par la commande cat ; cat ne
+# modifie rien ; elle ne fait que compliquer le cheminement des
+# flux et consommer des ressources supplémentaires
+       ExtFilterDefine slowdown mode=output cmd=/bin/cat \
+ExtFilterDefine slowdown mode=output cmd=/bin/cat \
+    preservescontentlength
+
+&lt;Location /&gt;
+    # directive de base permettant de traiter plusieurs fois la
+    # sortie avec le filtre slowdown
+    #
+    SetOutputFilter slowdown;slowdown;slowdown
+&lt;/Location&gt;</pre>
+
+    
+
+    <h3>Utilisation de sed pour remplacer du texte dans la
+    réponse</h3>
+
+      <pre class="prettyprint lang-config"># directive de mod_ext_filter définissant un filtre qui
+# remplace du texte dans la réponse
+#
+ExtFilterDefine fixtext mode=output intype=text/html \
+    cmd="/bin/sed s/verdana/arial/g"
+
+&lt;Location /&gt;
+    # directive de base permettant de traiter la sortie avec le
+    # filtre fixtext
+    SetOutputFilter fixtext
+&lt;/Location&gt;</pre>
+
+
+<div class="note">
+<p>Vous pouvez aussi utiliser <code class="module"><a href="../mod/mod_substitute.html">mod_substitute</a></code> pour
+effectuer le même traitement sans avoir à invoquer un programme
+externe.</p>
+</div>      
+
+    
+
+    <h3>Tracer un autre filtre</h3>
+      <pre class="prettyprint lang-config"># Trace les données lues et écrites par mod_deflate pour un
+# client particulier (IP 192.168.1.31) qui a des problèmes de
+# compression.
+# Ce premier filtre va tracer ce qui entre dans mod_deflate.
+ExtFilterDefine tracebefore \
+    cmd="/bin/tracefilter.pl /tmp/tracebefore" \
+    EnableEnv=trace_this_client
+
+# Ce second filtre va tracer ce qui sort de mod_deflate.
+# Notez que sans le paramètre ftype, le type de filtre par
+# défaut AP_FTYPE_RESOURCE placerait le filtre *avant*
+# mod_deflate dans la chaîne de filtrage. Le fait d'affecter
+# à ce paramètre une valeur numérique sensiblement supérieure à
+# AP_FTYPE_CONTENT_SET permet de s'assurer que le filtre sera
+# placé après mod_deflate.
+ExtFilterDefine traceafter \
+    cmd="/bin/tracefilter.pl /tmp/traceafter" \
+    EnableEnv=trace_this_client ftype=21
+
+&lt;Directory /usr/local/docs&gt;
+    SetEnvIf Remote_Addr 192.168.1.31 trace_this_client
+    SetOutputFilter tracebefore;deflate;traceafter
+&lt;/Directory&gt;</pre>
+
+
+      <div class="example"><h3>Voici le filtre qui trace les données :</h3><pre class="prettyprint lang-perl">#!/usr/local/bin/perl -w
+use strict;
+
+open(SAVE, "&gt;$ARGV[0]")
+    or die "can't open $ARGV[0]: $?";
+
+while (&lt;STDIN&gt;) {
+    print SAVE $_;
+    print $_;
+}
+
+close(SAVE);</pre>
+</div>
+    
 </div>
 </div>
 <div class="bottomlang">

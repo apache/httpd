@@ -59,7 +59,6 @@ CGI スクリプトを実行する機能を提供</td></tr>
 <li><a href="../howto/cgi.html">CGI による動的コンテンツ</a></li>
 <li><a href="../handler.html">Apache のハンドラの使用</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">コメント</a></li></ul></div>
-
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="Action" id="Action">Action</a> <a name="action" id="action">ディレクティブ</a></h2>
 <table class="directive">
@@ -169,6 +168,7 @@ Apache 2.1 で導入されました</td></tr>
     </code></p></div>
 
 </div>
+
 </div>
 <div class="bottomlang">
 <p><span>翻訳済み言語: </span><a href="../de/mod/mod_actions.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
