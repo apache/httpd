@@ -105,13 +105,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_buffer: Forward flushed input data immediately and avoid (unlikely)
-                 access to freed memory.
-     trunk patch: http://svn.apache.org/r1632742
-                  http://svn.apache.org/r1634836 (CHANGES entry)
-     2.4.x patches: trunk works (modulo CHANGES).
-     +1: ylavic, covener, rjung
-
   *) mod_proxy_http: Use the "Connection: close" header for requests to
      backends not recycling connections (disablereuse), including the default
      reverse and forward proxies.
