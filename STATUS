@@ -133,13 +133,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trawick: Eric and I were working through this and I (at least) ran into this
               particular roadblock: output_failed sometimes means that we couldn't
               write to the client and sometimes means that we couldn't read from
-              the client; laster, output_fails triggers setting the status to 400.
+              the client; later, output_fails triggers setting the status to 400.
               HTTP status shouldn't be 400 for a problem writing to the client.
               (Maybe I missed some guarantee that 400 is only for an error reading
               enough request body??)  I think it would be good to separate output_failed
               from input_failed so that the code is more clear and we can more
               easily tell that the status code is appropriate.  (And unfortunately
-              I don't volunteer to test it :( )
+              I don't volunteer to make the simple changes and test them :( )
 
    * core: Add ap_errorlog_provider to make ErrorLog logging modular. This
            backport keeps syslog logging as part of httpd core and only adds
