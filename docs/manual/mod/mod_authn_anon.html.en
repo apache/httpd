@@ -55,7 +55,10 @@
     via the <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code>
     directive with the <code>anon</code> value.</p>
 </div>
-<div id="quickview"><h3 class="directives">Directives</h3>
+<div id="quickview"><h3>Topics</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#example">Example</a></li>
+</ul><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#anonymous">Anonymous</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#anonymous_logemail">Anonymous_LogEmail</a></li>
@@ -63,10 +66,50 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#anonymous_nouserid">Anonymous_NoUserID</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#anonymous_verifyemail">Anonymous_VerifyEmail</a></li>
 </ul>
-<h3>Topics</h3>
-<ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#example">Example</a></li>
-</ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
+<ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="example" id="example">Example</a></h2>
+    <p>The example below is combined with "normal" htpasswd-file based
+    authentication and allows users in additionally as 'guests' with the
+    following properties:</p>
+
+    <ul>
+      <li>It insists that the user enters a userID.
+      (<code class="directive"><a href="#anonymous_nouserid">Anonymous_NoUserID</a></code>)</li>
+
+      <li>It insists that the user enters a password.
+      (<code class="directive"><a href="#anonymous_mustgiveemail">Anonymous_MustGiveEmail</a></code>)</li>
+
+      <li>The password entered must be a valid email address, <em>i.e.</em>
+      contain at least one '@' and a '.'.
+      (<code class="directive"><a href="#anonymous_verifyemail">Anonymous_VerifyEmail</a></code>)</li>
+
+      <li>The userID must be one of <code>anonymous guest www test
+      welcome</code> and comparison is <strong>not</strong> case
+      sensitive. (<code class="directive"><a href="#anonymous">Anonymous</a></code>)</li>
+
+      <li>And the Email addresses entered in the passwd field are
+      logged to the error log file.
+      (<code class="directive"><a href="#anonymous_logemail">Anonymous_LogEmail</a></code>)</li>
+    </ul>
+
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">&lt;Directory "/var/www/html/private"&gt;
+    AuthName "Use 'anonymous' &amp; Email address for guest entry"
+    AuthType Basic
+    AuthBasicProvider file anon
+    AuthUserFile "/path/to/your/.htpasswd"
+    
+    Anonymous_NoUserID off
+    Anonymous_MustGiveEmail on
+    Anonymous_VerifyEmail on
+    Anonymous_LogEmail on
+    Anonymous anonymous guest www test welcome
+    
+    Require valid-user
+&lt;/Directory&gt;</pre>
+</div>
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="Anonymous" id="Anonymous">Anonymous</a> <a name="anonymous" id="anonymous">Directive</a></h2>
 <table class="directive">
@@ -166,49 +209,6 @@ formatted email address</td></tr>
     at least one '@' and a '.' to encourage users to enter valid email
     addresses (see the above <code class="directive"><a href="#anonymous_logemail">Anonymous_LogEmail</a></code>).</p>
 
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="example" id="example">Example</a></h2>
-    <p>The example below is combined with "normal" htpasswd-file based
-    authentication and allows users in additionally as 'guests' with the
-    following properties:</p>
-
-    <ul>
-      <li>It insists that the user enters a userID.
-      (<code class="directive"><a href="#anonymous_nouserid">Anonymous_NoUserID</a></code>)</li>
-
-      <li>It insists that the user enters a password.
-      (<code class="directive"><a href="#anonymous_mustgiveemail">Anonymous_MustGiveEmail</a></code>)</li>
-
-      <li>The password entered must be a valid email address, <em>i.e.</em>
-      contain at least one '@' and a '.'.
-      (<code class="directive"><a href="#anonymous_verifyemail">Anonymous_VerifyEmail</a></code>)</li>
-
-      <li>The userID must be one of <code>anonymous guest www test
-      welcome</code> and comparison is <strong>not</strong> case
-      sensitive. (<code class="directive"><a href="#anonymous">Anonymous</a></code>)</li>
-
-      <li>And the Email addresses entered in the passwd field are
-      logged to the error log file.
-      (<code class="directive"><a href="#anonymous_logemail">Anonymous_LogEmail</a></code>)</li>
-    </ul>
-
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">&lt;Directory "/var/www/html/private"&gt;
-    AuthName "Use 'anonymous' &amp; Email address for guest entry"
-    AuthType Basic
-    AuthBasicProvider file anon
-    AuthUserFile "/path/to/your/.htpasswd"
-    
-    Anonymous_NoUserID off
-    Anonymous_MustGiveEmail on
-    Anonymous_VerifyEmail on
-    Anonymous_LogEmail on
-    Anonymous anonymous guest www test welcome
-    
-    Require valid-user
-&lt;/Directory&gt;</pre>
-</div>
 </div>
 </div>
 <div class="bottomlang">

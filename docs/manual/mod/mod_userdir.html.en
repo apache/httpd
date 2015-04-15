@@ -50,6 +50,7 @@ Filesystem</a></li>
 <li><a href="../howto/public_html.html">public_html
 tutorial</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
+
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="UserDir" id="UserDir">UserDir</a> <a name="userdir" id="userdir">Directive</a></h2>
 <table class="directive">
@@ -178,7 +179,6 @@ UserDir enabled user1 user2 user3</pre>
 </li>
 </ul>
 </div>
-
 </div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_userdir.html" title="English">&nbsp;en&nbsp;</a> |

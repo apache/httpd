@@ -52,13 +52,13 @@
     with the request that triggered the renegotiation.</div>
 
 </div>
-<div id="quickview"><h3 class="directives">Directives</h3>
-<p>This module provides no
-            directives.</p>
-<h3>Topics</h3>
+<div id="quickview"><h3>Topics</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#formats">Custom Log Formats</a></li>
-</ul><h3>See also</h3>
+</ul><h3 class="directives">Directives</h3>
+<p>This module provides no
+            directives.</p>
+<h3>See also</h3>
 <ul class="seealso">
 <li><code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code></li>
 <li><a href="../logs.html">Apache Log Files</a></li>

@@ -46,38 +46,16 @@
     what the contents are. This module is active only if the magic
     file is specified by the <code class="directive"><a href="#mimemagicfile">MimeMagicFile</a></code> directive.</p>
 </div>
-<div id="quickview"><h3 class="directives">Directives</h3>
-<ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#mimemagicfile">MimeMagicFile</a></li>
-</ul>
-<h3>Topics</h3>
+<div id="quickview"><h3>Topics</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#format">Format of the Magic File</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#performance">Performance Issues</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#notes">Notes</a></li>
-</ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MimeMagicFile" id="MimeMagicFile">MimeMagicFile</a> <a name="mimemagicfile" id="mimemagicfile">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable MIME-type determination based on file contents
-using the specified magic file</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MimeMagicFile <var>file-path</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_mime_magic</td></tr>
-</table>
-    <p>The <code class="directive">MimeMagicFile</code> directive can be used to
-    enable this module, the default file is distributed at
-    <code>conf/magic</code>. Non-rooted paths are relative to the
-    <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>. Virtual hosts will use
-    the same file as the main server unless a more specific setting is
-    used, in which case the more specific setting overrides the main
-    server's file.</p>
-
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">MimeMagicFile conf/magic</pre>
-</div>
-
-</div>
+</ul><h3 class="directives">Directives</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#mimemagicfile">MimeMagicFile</a></li>
+</ul>
+<ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="format" id="format">Format of the Magic File</a></h2>
@@ -268,6 +246,28 @@ using the specified magic file</td></tr>
         used here.</li>
       </ul>
     </div>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="MimeMagicFile" id="MimeMagicFile">MimeMagicFile</a> <a name="mimemagicfile" id="mimemagicfile">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable MIME-type determination based on file contents
+using the specified magic file</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MimeMagicFile <var>file-path</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_mime_magic</td></tr>
+</table>
+    <p>The <code class="directive">MimeMagicFile</code> directive can be used to
+    enable this module, the default file is distributed at
+    <code>conf/magic</code>. Non-rooted paths are relative to the
+    <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>. Virtual hosts will use
+    the same file as the main server unless a more specific setting is
+    used, in which case the more specific setting overrides the main
+    server's file.</p>
+
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">MimeMagicFile conf/magic</pre>
+</div>
+
 </div>
 </div>
 <div class="bottomlang">
