@@ -43,12 +43,12 @@
     <code>Require valid-user</code> pour accorder l'accès à tous les
     utilisateurs qui ont été authentifiés avec succès.</p>
 </div>
-<div id="quickview"><h3 class="directives">Directives</h3>
-<p>Ce module ne fournit aucune directive.</p>
-<h3>Sujets</h3>
+<div id="quickview"><h3>Sujets</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#requiredirectives">The Require Directives</a></li>
-</ul><h3>Voir aussi</h3>
+</ul><h3 class="directives">Directives</h3>
+<p>Ce module ne fournit aucune directive.</p>
+<h3>Voir aussi</h3>
 <ul class="seealso">
 <li><code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>

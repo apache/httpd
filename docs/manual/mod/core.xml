@@ -204,7 +204,7 @@ AcceptFilter https data
     for directives, unless they have been disabled with</p>
 
     <highlight language="config">
-&lt;Directory /&gt;
+&lt;Directory "/"&gt;
     AllowOverride None
 &lt;/Directory&gt;
     </highlight>
@@ -472,7 +472,7 @@ NoDecode option available in 2.3.12 and later.</compatibility>
 
     <note><p>For security and performance reasons, do not set
     <code>AllowOverride</code> to anything other than <code>None</code>
-    in your <code>&lt;Directory /&gt;</code> block. Instead, find (or
+    in your <code>&lt;Directory "/"&gt;</code> block. Instead, find (or
     create) the <code>&lt;Directory&gt;</code> block that refers to the
     directory where you're actually planning to place a
     <code>.htaccess</code> file.</p>
@@ -774,9 +774,9 @@ named file-system directory, sub-directories, and their contents.</description>
     any single character, and <code>*</code> matches any sequences of
     characters. You may also use <code>[]</code> character ranges. None
     of the wildcards match a `/' character, so <code>&lt;Directory
-    /*/public_html&gt;</code> will not match
+    "/*/public_html"&gt;</code> will not match
     <code>/home/user/public_html</code>, but <code>&lt;Directory
-    /home/*/public_html&gt;</code> will match. Example:</p>
+    "/home/*/public_html"&gt;</code> will match. Example:</p>
 
     <highlight language="config">
 &lt;Directory "/usr/local/httpd/htdocs"&gt;
@@ -819,7 +819,7 @@ named file-system directory, sub-directories, and their contents.</description>
     with</p>
 
     <highlight language="config">
-&lt;Directory /&gt;
+&lt;Directory "/"&gt;
   AllowOverride None
 &lt;/Directory&gt;
 
@@ -862,13 +862,13 @@ named file-system directory, sub-directories, and their contents.</description>
     be applied.</p>
 
    <p><strong>Note that the default access for
-    <code>&lt;Directory /&gt;</code> is to permit all access.
+    <code>&lt;Directory "/"&gt;</code> is to permit all access.
     This means that Apache httpd will serve any file mapped from an URL. It is
     recommended that you change this with a block such
     as</strong></p>
 
     <highlight language="config">
-&lt;Directory /&gt;
+&lt;Directory "/"&gt;
   Require all denied
 &lt;/Directory&gt;
     </highlight>
@@ -938,7 +938,7 @@ the contents of file-system directories matching a regular expression.</descript
     (unnamed) backreferences are ignored. Use named groups instead.</p>
 
 <highlight language="config">
-&lt;DirectoryMatch ^/var/www/combined/(?&lt;sitename&gt;[^/]+)&gt;
+&lt;DirectoryMatch "^/var/www/combined/(?&lt;sitename&gt;[^/]+)"&gt;
     Require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
 &lt;/DirectoryMatch&gt;
 </highlight>
@@ -1286,7 +1286,7 @@ ErrorDocument 403 /cgi-bin/forbidden.pl?referrer=%{escape:%{HTTP_REFERER}}
     <highlight language="config">
 ErrorDocument 404 /cgi-bin/bad_urls.pl
 
-&lt;Directory /web/docs&gt;
+&lt;Directory "/web/docs"&gt;
   ErrorDocument 404 default
 &lt;/Directory&gt;
     </highlight>
@@ -1810,7 +1810,7 @@ filenames</description>
     (unnamed) backreferences are ignored. Use named groups instead.</p>
 
 <highlight language="config">
-&lt;FilesMatch ^(?&lt;sitename&gt;[^/]+)&gt;
+&lt;FilesMatch "^(?&lt;sitename&gt;[^/]+)"&gt;
     require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
 &lt;/FilesMatch&gt;
 </highlight>
@@ -1853,12 +1853,12 @@ media type in the HTTP Content-Type header field</description>
 
     <highlight language="config">
 # force all files to be image/gif:
-&lt;Location /images&gt;
+&lt;Location "/images"&gt;
   ForceType image/gif
 &lt;/Location&gt;
 
 # but normal mime-type associations here:
-&lt;Location /images/mixed&gt;
+&lt;Location "/images/mixed"&gt;
   ForceType None
 &lt;/Location&gt;
     </highlight>
@@ -2651,7 +2651,7 @@ URLs</description>
     directives applied, but /private1other would not.
     </p>
     <highlight language="config">
-&lt;Location /private1&gt;
+&lt;Location "/private1"&gt;
     #  ...
 &lt;/Location&gt;
     </highlight>
@@ -2661,7 +2661,7 @@ URLs</description>
     directives applied, but /private2 and /private2other would not.
     </p>
     <highlight language="config">
-&lt;Location /private2<em>/</em>&gt;
+&lt;Location "/private2<em>/</em>"&gt;
     # ...
 &lt;/Location&gt;
     </highlight>
@@ -2674,7 +2674,7 @@ URLs</description>
     content that lives in the filesystem, use <directive
     type="section" module="core">Directory</directive> and <directive
     type="section" module="core">Files</directive>.  An exception is
-    <code>&lt;Location /&gt;</code>, which is an easy way to
+    <code>&lt;Location "/"&gt;</code>, which is an easy way to
     apply a configuration to the entire server.</p>
     </note>
 
@@ -2714,7 +2714,7 @@ URLs</description>
     only from browsers at <code>example.com</code>, you might use:</p>
 
     <highlight language="config">
-&lt;Location /status&gt;
+&lt;Location "/status"&gt;
   SetHandler server-status
   Require host example.com
 &lt;/Location&gt;
@@ -2731,14 +2731,14 @@ URLs</description>
       >Location</directive> require you to explicitly specify multiple
       slashes if that is your intention.</p>
 
-      <p>For example, <code>&lt;LocationMatch ^/abc&gt;</code> would match
+      <p>For example, <code>&lt;LocationMatch "^/abc"&gt;</code> would match
       the request URL <code>/abc</code> but not the request URL <code>
       //abc</code>. The (non-regex) <directive type="section"
       >Location</directive> directive behaves similarly when used for
       proxy requests. But when (non-regex) <directive type="section"
       >Location</directive> is used for non-proxy requests it will
       implicitly match multiple slashes with a single slash. For example,
-      if you specify <code>&lt;Location /abc/def&gt;</code> and the
+      if you specify <code>&lt;Location "/abc/def"&gt;</code> and the
       request is to <code>/abc//def</code> then it will match.</p>
     </note>
 </usage>
@@ -2791,7 +2791,7 @@ matching URLs</description>
     (unnamed) backreferences are ignored. Use named groups instead.</p>
 
 <highlight language="config">
-&lt;LocationMatch ^/combined/(?&lt;sitename&gt;[^/]+)&gt;
+&lt;LocationMatch "^/combined/(?&lt;sitename&gt;[^/]+)"&gt;
     require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
 &lt;/LocationMatch&gt;
 </highlight>
@@ -4177,7 +4177,7 @@ handler</description>
     handler for files with a particular file extension. For example:</p>
 
     <highlight language="config">
-&lt;FilesMatch \.php$&gt;
+&lt;FilesMatch "\.php$"&gt;
     SetHandler application/x-httpd-php
 &lt;/FilesMatch&gt;
     </highlight>

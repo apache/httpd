@@ -202,7 +202,7 @@ ProxyPassReverse /test balancer://mycluster</pre>
     <p>To enable load balancer management for browsers from the example.com
     domain add this code to your <code>httpd.conf</code>
     configuration file</p>
-<pre class="prettyprint lang-config">&lt;Location /balancer-manager&gt;
+<pre class="prettyprint lang-config">&lt;Location "/balancer-manager"&gt;
     SetHandler balancer-manager
     Require host example.com
 &lt;/Location&gt;</pre>

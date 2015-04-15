@@ -86,6 +86,47 @@
 <li><a href="../urlmapping.html">Mapping URLs to the filesystem</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="order" id="order">Order of Processing</a></h2>
+
+    <p>Aliases and Redirects occurring in different contexts are processed
+    like other directives according to standard <a href="../sections.html#mergin">merging rules</a>.  But when multiple
+    Aliases or Redirects occur in the same context (for example, in the
+    same <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
+    section) they are processed in a particular order.</p>
+
+    <p>First, all Redirects are processed before Aliases are processed,
+    and therefore a request that matches a <code class="directive"><a href="#redirect">Redirect</a></code> or <code class="directive"><a href="#redirectmatch">RedirectMatch</a></code> will never have Aliases
+    applied.  Second, the Aliases and Redirects are processed in the order
+    they appear in the configuration files, with the first match taking
+    precedence.</p>
+
+    <p>For this reason, when two or more of these directives apply to the
+    same sub-path, you must list the most specific path first in order for
+    all the directives to have an effect.  For example, the following
+    configuration will work as expected:</p>
+
+    <pre class="prettyprint lang-config">Alias /foo/bar /baz
+Alias /foo /gaq</pre>
+
+
+    <p>But if the above two directives were reversed in order, the
+    <code>/foo</code> <code class="directive"><a href="#alias">Alias</a></code>
+    would always match before the <code>/foo/bar</code> <code class="directive"><a href="#alias">Alias</a></code>, so the latter directive would be
+    ignored.</p>
+
+    <p>When the <code class="directive"><a href="#alias">Alias</a></code>,
+    <code class="directive"><a href="#scriptalias">ScriptAlias</a></code> and 
+    <code class="directive"><a href="#redirect">Redirect</a></code> directives are used
+    within a <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>
+    or <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code>
+    section, these directives will take precedence over any globally
+    defined <code class="directive"><a href="#alias">Alias</a></code>,
+    <code class="directive"><a href="#scriptalias">ScriptAlias</a></code> and 
+    <code class="directive"><a href="#redirect">Redirect</a></code> directives.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="Alias" id="Alias">Alias</a> <a name="alias" id="alias">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maps URLs to filesystem locations</td></tr>
@@ -138,7 +179,7 @@
     permit access to the target directory.</p>
 
     <pre class="prettyprint lang-config">Alias /image /ftp/pub/image
-&lt;Directory /ftp/pub/image&gt;
+&lt;Directory "/ftp/pub/image"&gt;
     Require all granted
 &lt;/Directory&gt;</pre>
 
@@ -152,10 +193,10 @@
     section the URL-path is omitted, and the file-path is interpreted
     using <a href="../expr.html">expression syntax</a>.</p>
 
-    <pre class="prettyprint lang-config">&lt;Location /image&gt;
+    <pre class="prettyprint lang-config">&lt;Location "/image"&gt;
     Alias /ftp/pub/image
 &lt;/Location&gt;
-&lt;LocationMatch /error/(?&lt;NUMBER&gt;[0-9]+)&gt;
+&lt;LocationMatch "/error/(?&lt;NUMBER&gt;[0-9]+)"&gt;
     Alias /usr/local/apache/errors/%{env:MATCH_NUMBER}.html
 &lt;/LocationMatch&gt;</pre>
 
@@ -349,13 +390,13 @@ Redirect 303 /three http://example.com/other</pre>
     section with the URL-path omitted, then the URL parameter will be
     interpreted using <a href="../expr.html">expression syntax</a>.</p>
 
-    <pre class="prettyprint lang-config">&lt;Location /one&gt;
+    <pre class="prettyprint lang-config">&lt;Location "/one"&gt;
     Redirect permanent http://example.com/two
 &lt;/Location&gt;<br />
-&lt;Location /three&gt;
+&lt;Location "/three"&gt;
     Redirect 303 http://example.com/other
 &lt;/Location&gt;<br />
-&lt;LocationMatch /error/(?&lt;NUMBER&gt;[0-9]+)&gt;
+&lt;LocationMatch "/error/(?&lt;NUMBER&gt;[0-9]+)"&gt;
     Redirect permanent http://example.com/errors/%{env:MATCH_NUMBER}.html
 &lt;/LocationMatch&gt;<br />
     </pre>
@@ -457,7 +498,7 @@ target as a CGI script</td></tr>
     server to run the script <code>/web/cgi-bin/foo</code>.  This configuration
     is essentially equivalent to:</p>
     <pre class="prettyprint lang-config">Alias /cgi-bin/ /web/cgi-bin/
-&lt;Location /cgi-bin &gt;
+&lt;Location "/cgi-bin" &gt;
     SetHandler cgi-script
     Options +ExecCGI
 &lt;/Location&gt;</pre>
@@ -483,7 +524,7 @@ target as a CGI script</td></tr>
     choose to place your CGI scripts in a directory already
     accessible from the web, do not use
     <code class="directive">ScriptAlias</code>.  Instead, use <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>, <code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code>, and <code class="directive"><a href="../mod/core.html#options">Options</a></code> as in:
-    <pre class="prettyprint lang-config">&lt;Directory /usr/local/apache2/htdocs/cgi-bin &gt;
+    <pre class="prettyprint lang-config">&lt;Directory "/usr/local/apache2/htdocs/cgi-bin"&gt;
     SetHandler cgi-script
     Options ExecCGI
 &lt;/Directory&gt;</pre>
@@ -500,10 +541,10 @@ target as a CGI script</td></tr>
     section with the URL-path omitted, then the URL parameter will be
     interpreted using <a href="../expr.html">expression syntax</a>.</p>
 
-    <pre class="prettyprint lang-config">&lt;Location /cgi-bin &gt;
+    <pre class="prettyprint lang-config">&lt;Location "/cgi-bin"&gt;
     ScriptAlias /web/cgi-bin/
 &lt;/Location&gt;
-&lt;LocationMatch /cgi-bin/errors/(?&lt;NUMBER&gt;[0-9]+)&gt;
+&lt;LocationMatch "/cgi-bin/errors/(?&lt;NUMBER&gt;[0-9]+)"&gt;
     ScriptAlias /web/cgi-bin/errors/%{env:MATCH_NUMBER}.cgi
 &lt;/LocationMatch&gt;<br />
     </pre>
@@ -555,47 +596,6 @@ and designates the target as a CGI script</td></tr>
     See <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> for
     details.</p>
 
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="order" id="order">Order of Processing</a></h2>
-
-    <p>Aliases and Redirects occurring in different contexts are processed
-    like other directives according to standard <a href="../sections.html#mergin">merging rules</a>.  But when multiple
-    Aliases or Redirects occur in the same context (for example, in the
-    same <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
-    section) they are processed in a particular order.</p>
-
-    <p>First, all Redirects are processed before Aliases are processed,
-    and therefore a request that matches a <code class="directive"><a href="#redirect">Redirect</a></code> or <code class="directive"><a href="#redirectmatch">RedirectMatch</a></code> will never have Aliases
-    applied.  Second, the Aliases and Redirects are processed in the order
-    they appear in the configuration files, with the first match taking
-    precedence.</p>
-
-    <p>For this reason, when two or more of these directives apply to the
-    same sub-path, you must list the most specific path first in order for
-    all the directives to have an effect.  For example, the following
-    configuration will work as expected:</p>
-
-    <pre class="prettyprint lang-config">Alias /foo/bar /baz
-Alias /foo /gaq</pre>
-
-
-    <p>But if the above two directives were reversed in order, the
-    <code>/foo</code> <code class="directive"><a href="#alias">Alias</a></code>
-    would always match before the <code>/foo/bar</code> <code class="directive"><a href="#alias">Alias</a></code>, so the latter directive would be
-    ignored.</p>
-
-    <p>When the <code class="directive"><a href="#alias">Alias</a></code>,
-    <code class="directive"><a href="#scriptalias">ScriptAlias</a></code> and 
-    <code class="directive"><a href="#redirect">Redirect</a></code> directives are used
-    within a <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>
-    or <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code>
-    section, these directives will take precedence over any globally
-    defined <code class="directive"><a href="#alias">Alias</a></code>,
-    <code class="directive"><a href="#scriptalias">ScriptAlias</a></code> and 
-    <code class="directive"><a href="#redirect">Redirect</a></code> directives.</p>
 
 </div>
 </div>

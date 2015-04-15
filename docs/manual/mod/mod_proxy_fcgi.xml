@@ -133,7 +133,7 @@ ProxyPass /myapp/ balancer://myappcluster/
       </p>
     <example><title>Proxy via Handler</title>
       <highlight language="config">
-&lt;FilesMatch \.php$&gt;
+&lt;FilesMatch "\.php$"&gt;
     # Note: The only part that varies is /path/to/app.sock
     SetHandler  "proxy:unix:/path/to/app.sock|fcgi://localhost/"
 &lt;/FilesMatch&gt;

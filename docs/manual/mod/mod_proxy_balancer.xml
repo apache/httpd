@@ -187,7 +187,7 @@ ProxyPassReverse /test balancer://mycluster
     domain add this code to your <code>httpd.conf</code>
     configuration file</p>
 <highlight language="config">
-&lt;Location /balancer-manager&gt;
+&lt;Location "/balancer-manager"&gt;
     SetHandler balancer-manager
     Require host example.com
 &lt;/Location&gt;

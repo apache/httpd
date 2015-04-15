@@ -121,6 +121,7 @@ available</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#warning">Warning</a></li>
 </ul>
 <ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
+
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AcceptFilter" id="AcceptFilter">AcceptFilter</a> <a name="acceptfilter" id="acceptfilter">Directive</a></h2>
 <table class="directive">
@@ -294,7 +295,7 @@ AcceptFilter https data</pre>
     <code>/usr/local/.acl</code> and <code>/usr/local/web/.acl</code>
     for directives, unless they have been disabled with</p>
 
-    <pre class="prettyprint lang-config">&lt;Directory /&gt;
+    <pre class="prettyprint lang-config">&lt;Directory "/"&gt;
     AllowOverride None
 &lt;/Directory&gt;</pre>
 
@@ -533,7 +534,7 @@ NoDecode option available in 2.3.12 and later.</td></tr>
 
     <div class="note"><p>For security and performance reasons, do not set
     <code>AllowOverride</code> to anything other than <code>None</code>
-    in your <code>&lt;Directory /&gt;</code> block. Instead, find (or
+    in your <code>&lt;Directory "/"&gt;</code> block. Instead, find (or
     create) the <code>&lt;Directory&gt;</code> block that refers to the
     directory where you're actually planning to place a
     <code>.htaccess</code> file.</p>
@@ -836,9 +837,9 @@ named file-system directory, sub-directories, and their contents.</td></tr>
     any single character, and <code>*</code> matches any sequences of
     characters. You may also use <code>[]</code> character ranges. None
     of the wildcards match a `/' character, so <code>&lt;Directory
-    /*/public_html&gt;</code> will not match
+    "/*/public_html"&gt;</code> will not match
     <code>/home/user/public_html</code>, but <code>&lt;Directory
-    /home/*/public_html&gt;</code> will match. Example:</p>
+    "/home/*/public_html"&gt;</code> will match. Example:</p>
 
     <pre class="prettyprint lang-config">&lt;Directory "/usr/local/httpd/htdocs"&gt;
   Options Indexes FollowSymLinks
@@ -876,7 +877,7 @@ named file-system directory, sub-directories, and their contents.</td></tr>
     first, interspersed with the directives from the <a href="#accessfilename">.htaccess</a> files. For example,
     with</p>
 
-    <pre class="prettyprint lang-config">&lt;Directory /&gt;
+    <pre class="prettyprint lang-config">&lt;Directory "/"&gt;
   AllowOverride None
 &lt;/Directory&gt;
 
@@ -918,12 +919,12 @@ named file-system directory, sub-directories, and their contents.</td></tr>
     be applied.</p>
 
    <p><strong>Note that the default access for
-    <code>&lt;Directory /&gt;</code> is to permit all access.
+    <code>&lt;Directory "/"&gt;</code> is to permit all access.
     This means that Apache httpd will serve any file mapped from an URL. It is
     recommended that you change this with a block such
     as</strong></p>
 
-    <pre class="prettyprint lang-config">&lt;Directory /&gt;
+    <pre class="prettyprint lang-config">&lt;Directory "/"&gt;
   Require all denied
 &lt;/Directory&gt;</pre>
 
@@ -991,7 +992,7 @@ the contents of file-system directories matching a regular expression.</td></tr>
     <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>. In order to prevent confusion, numbered
     (unnamed) backreferences are ignored. Use named groups instead.</p>
 
-<pre class="prettyprint lang-config">&lt;DirectoryMatch ^/var/www/combined/(?&lt;sitename&gt;[^/]+)&gt;
+<pre class="prettyprint lang-config">&lt;DirectoryMatch "^/var/www/combined/(?&lt;sitename&gt;[^/]+)"&gt;
     Require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
 &lt;/DirectoryMatch&gt;</pre>
 
@@ -1335,7 +1336,7 @@ ErrorDocument 403 /cgi-bin/forbidden.pl?referrer=%{escape:%{HTTP_REFERER}}</pre>
 
     <pre class="prettyprint lang-config">ErrorDocument 404 /cgi-bin/bad_urls.pl
 
-&lt;Directory /web/docs&gt;
+&lt;Directory "/web/docs"&gt;
   ErrorDocument 404 default
 &lt;/Directory&gt;</pre>
 
@@ -1817,7 +1818,7 @@ filenames</td></tr>
     <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>. In order to prevent confusion, numbered
     (unnamed) backreferences are ignored. Use named groups instead.</p>
 
-<pre class="prettyprint lang-config">&lt;FilesMatch ^(?&lt;sitename&gt;[^/]+)&gt;
+<pre class="prettyprint lang-config">&lt;FilesMatch "^(?&lt;sitename&gt;[^/]+)"&gt;
     require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
 &lt;/FilesMatch&gt;</pre>
 
@@ -1862,12 +1863,12 @@ media type in the HTTP Content-Type header field</td></tr>
     by using the value of <code>None</code>:</p>
 
     <pre class="prettyprint lang-config"># force all files to be image/gif:
-&lt;Location /images&gt;
+&lt;Location "/images"&gt;
   ForceType image/gif
 &lt;/Location&gt;
 
 # but normal mime-type associations here:
-&lt;Location /images/mixed&gt;
+&lt;Location "/images/mixed"&gt;
   ForceType None
 &lt;/Location&gt;</pre>
 
@@ -2649,7 +2650,7 @@ URLs</td></tr>
     /private1, /private1/ and /private1/file.txt will have the enclosed
     directives applied, but /private1other would not.
     </p>
-    <pre class="prettyprint lang-config">&lt;Location /private1&gt;
+    <pre class="prettyprint lang-config">&lt;Location "/private1"&gt;
     #  ...
 &lt;/Location&gt;</pre>
 
@@ -2658,7 +2659,7 @@ URLs</td></tr>
     /private2/ and /private2/file.txt will have the enclosed
     directives applied, but /private2 and /private2other would not.
     </p>
-    <pre class="prettyprint lang-config">&lt;Location /private2<em>/</em>&gt;
+    <pre class="prettyprint lang-config">&lt;Location "/private2<em>/</em>"&gt;
     # ...
 &lt;/Location&gt;</pre>
 
@@ -2668,7 +2669,7 @@ URLs</td></tr>
     <p>Use <code class="directive">&lt;Location&gt;</code> to apply
     directives to content that lives outside the filesystem.  For
     content that lives in the filesystem, use <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code> and <code class="directive"><a href="#files">&lt;Files&gt;</a></code>.  An exception is
-    <code>&lt;Location /&gt;</code>, which is an easy way to
+    <code>&lt;Location "/"&gt;</code>, which is an easy way to
     apply a configuration to the entire server.</p>
     </div>
 
@@ -2704,7 +2705,7 @@ URLs</td></tr>
     directive. For example, to enable status requests, but allow them
     only from browsers at <code>example.com</code>, you might use:</p>
 
-    <pre class="prettyprint lang-config">&lt;Location /status&gt;
+    <pre class="prettyprint lang-config">&lt;Location "/status"&gt;
   SetHandler server-status
   Require host example.com
 &lt;/Location&gt;</pre>
@@ -2720,12 +2721,12 @@ URLs</td></tr>
       directive and the regex version of <code class="directive">&lt;Location&gt;</code> require you to explicitly specify multiple
       slashes if that is your intention.</p>
 
-      <p>For example, <code>&lt;LocationMatch ^/abc&gt;</code> would match
+      <p>For example, <code>&lt;LocationMatch "^/abc"&gt;</code> would match
       the request URL <code>/abc</code> but not the request URL <code>
       //abc</code>. The (non-regex) <code class="directive">&lt;Location&gt;</code> directive behaves similarly when used for
       proxy requests. But when (non-regex) <code class="directive">&lt;Location&gt;</code> is used for non-proxy requests it will
       implicitly match multiple slashes with a single slash. For example,
-      if you specify <code>&lt;Location /abc/def&gt;</code> and the
+      if you specify <code>&lt;Location "/abc/def"&gt;</code> and the
       request is to <code>/abc//def</code> then it will match.</p>
     </div>
 
@@ -2778,7 +2779,7 @@ matching URLs</td></tr>
     <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>. In order to prevent confusion, numbered
     (unnamed) backreferences are ignored. Use named groups instead.</p>
 
-<pre class="prettyprint lang-config">&lt;LocationMatch ^/combined/(?&lt;sitename&gt;[^/]+)&gt;
+<pre class="prettyprint lang-config">&lt;LocationMatch "^/combined/(?&lt;sitename&gt;[^/]+)"&gt;
     require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
 &lt;/LocationMatch&gt;</pre>
 
@@ -4212,7 +4213,7 @@ handler</td></tr>
     <p>You could also use this directive to configure a particular
     handler for files with a particular file extension. For example:</p>
 
-    <pre class="prettyprint lang-config">&lt;FilesMatch \.php$&gt;
+    <pre class="prettyprint lang-config">&lt;FilesMatch "\.php$"&gt;
     SetHandler application/x-httpd-php
 &lt;/FilesMatch&gt;</pre>
 
@@ -4639,7 +4640,6 @@ hostname or IP address</td></tr>
 
 
 </div>
-
 </div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../de/mod/core.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |

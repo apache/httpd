@@ -113,7 +113,7 @@ RewriteRule \.(gif|jpg|png)$ http://other.example.com/image.gif   [R,NC]</pre>
         accomplished without the use of mod_rewrite:</p>
 
         <pre class="prettyprint lang-config">SetEnvIf Referer example\.com localreferer
-&lt;FilesMatch \.(jpg|png|gif)$&gt;
+&lt;FilesMatch "\.(jpg|png|gif)$"&gt;
     Require env localreferer
 &lt;/FilesMatch&gt;</pre>
 
@@ -173,7 +173,7 @@ RewriteRule ^/secret/files/   -   [F]</pre>
         same end using alternate means, as illustrated here:
       </p>
       <pre class="prettyprint lang-config">SetEnvIfNoCase User-Agent ^NameOfBadRobot goaway
-&lt;Location /secret/files&gt;
+&lt;Location "/secret/files"&gt;
     &lt;RequireAll&gt;
         Require all granted
         Require not env goaway

@@ -140,7 +140,7 @@ DBDKeep 8
 DBDMax  20
 DBDExptime 300
 
-&lt;Directory /usr/www/my.site/team-private/&gt;
+&lt;Directory "/usr/www/my.site/team-private/"&gt;
   # mod_authn_core and mod_auth_basic configuration
   # for mod_authn_dbd
   AuthType Basic
@@ -162,7 +162,7 @@ DBDExptime 300
   # to /team-private/login.html
   ErrorDocument 401 /login-info.html
 
-  &lt;Files login.html&gt;
+  &lt;Files "login.html"&gt;
     # don't require user to already be logged in!
     AuthDBDUserPWQuery "SELECT password FROM authn WHERE user = %s"
 
@@ -175,7 +175,7 @@ DBDExptime 300
     AuthzDBDLoginToReferer On
   &lt;/Files&gt;
 
-  &lt;Files logout.html&gt;
+  &lt;Files "logout.html"&gt;
     # dbd-logout action executes a statement to log user out
     Require dbd-logout
     AuthzDBDQuery "UPDATE authn SET login = 'false' WHERE user = %s"

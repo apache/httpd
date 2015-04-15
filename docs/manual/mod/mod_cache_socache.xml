@@ -46,14 +46,14 @@ HTTP caching filter.</description>
 # Turn on caching
 CacheSocache shmcb
 CacheSocacheMaxSize 102400
-&lt;Location /foo&gt;
+&lt;Location "/foo"&gt;
     CacheEnable socache
 &lt;/Location&gt;
 
 # Fall back to the disk cache
 CacheSocache shmcb
 CacheSocacheMaxSize 102400
-&lt;Location /foo&gt;
+&lt;Location "/foo"&gt;
     CacheEnable socache
     CacheEnable disk
 &lt;/Location&gt;

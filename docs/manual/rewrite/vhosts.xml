@@ -137,7 +137,7 @@ UseCanonicalName Off
 LogFormat "%{Host}i %h %l %u %t \"%r\" %s %b" vcommon
 CustomLog logs/access_log vcommon
 
-&lt;Directory /www/hosts&gt;
+&lt;Directory "/www/hosts"&gt;
     # ExecCGI is needed here because we can't force
     # CGI execution in the way that ScriptAlias does
     Options FollowSymLinks ExecCGI

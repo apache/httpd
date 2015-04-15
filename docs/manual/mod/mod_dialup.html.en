@@ -37,7 +37,7 @@
 by the various old modem standards. So, you can browse your site with a 56k
 V.92 modem, by adding something like this:</p>
 
-<pre class="prettyprint lang-config">&lt;Location /mysite&gt;
+<pre class="prettyprint lang-config">&lt;Location "/mysite"&gt;
     ModemStandard V.92
 &lt;/Location&gt;</pre>
 
@@ -53,6 +53,7 @@ once the timer hits.  From there the handler can continue to send data to the cl
 <li><img alt="" src="../images/down.gif" /> <a href="#modemstandard">ModemStandard</a></li>
 </ul>
 <ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
+
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ModemStandard" id="ModemStandard">ModemStandard</a> <a name="modemstandard" id="modemstandard">Directive</a></h2>
 <table class="directive">
@@ -64,14 +65,13 @@ once the timer hits.  From there the handler can continue to send data to the cl
 </table>
 <p>Specify what modem standard you wish to simulate.</p>
 
-<pre class="prettyprint lang-config">&lt;Location /mysite&gt;
+<pre class="prettyprint lang-config">&lt;Location "/mysite"&gt;
     ModemStandard V.26bis
 &lt;/Location&gt;</pre>
 
 
 
 </div>
-
 </div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_dialup.html" title="English">&nbsp;en&nbsp;</a> |

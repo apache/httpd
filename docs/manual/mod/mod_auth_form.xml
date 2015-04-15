@@ -358,7 +358,7 @@ SessionCryptoPassphrase secret
 
     <example><title>Example</title>
     <highlight language="config">
-&lt;Location /secure&gt;
+&lt;Location "/secure"&gt;
     AuthType form
     AuthName "private area"
     AuthFormProvider  dbm
@@ -634,7 +634,7 @@ parser has been added in 2.4.4.</compatibility>
 
     <example><title>Example</title>
     <highlight language="config">
-&lt;Location /logout&gt;
+&lt;Location "/logout"&gt;
     SetHandler form-logout-handler
     AuthFormLogoutLocation "http://example.com/loggedout.html"
     Session on

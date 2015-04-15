@@ -51,16 +51,57 @@ traductions ou les réencodages</td></tr>
     par Apache version russe, ainsi que son module
     <code>mod_charset</code> associé.</p>
 </div>
-<div id="quickview"><h3 class="directives">Directives</h3>
+<div id="quickview"><h3>Sujets</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#problems">Problèmes courants</a></li>
+</ul><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#charsetdefault">CharsetDefault</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#charsetoptions">CharsetOptions</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#charsetsourceenc">CharsetSourceEnc</a></li>
 </ul>
-<h3>Sujets</h3>
-<ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#problems">Problèmes courants</a></li>
-</ul><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
+<ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="problems" id="problems">Problèmes courants</a></h2>
+
+    <h3>Noms de jeux de caractères non valides</h3>
+
+      <p>Les noms des jeux de caractères passés en paramètres aux
+      directives  <code class="directive"><a href="#charsetsourceenc">CharsetSourceEnc</a></code> et
+      <code class="directive"><a href="#charsetdefault">CharsetDefault</a></code>
+      doivent être reconnus par le mécanisme de traduction utilisé par
+      <a class="glossarylink" href="../glossary.html#apr" title="voir glossaire">APR</a> sur le système où
+      <code class="module"><a href="../mod/mod_charset_lite.html">mod_charset_lite</a></code> est utilisé. Ces noms de jeux de
+      caractères ne sont pas standardisés, et sont en général différents
+      des valeurs qui leur correspondent dans les en-têtes HTTP.
+      Actuellement, APR ne peut utiliser que iconv(3) ; vous pouvez donc
+      tester facilement vos noms de jeux de caractères en utilisant le
+      programme iconv(1), de la manière suivante :</p>
+
+      <div class="example"><p><code>
+        iconv -f valeur-charsetsourceenc -t valeur-charsetdefault
+      </code></p></div>
+    
+
+    <h3>Incompatibilité entre le jeu de caractères du
+    contenu et les règles de traduction</h3>
+
+      <p>Si les règles de traduction ne peuvent s'appliquer au contenu,
+      la traduction peut échouer avec des conséquences diverses, comme
+      :</p>
+
+      <ul>
+      <li>Le mécanisme de traduction peut renvoyer un mauvais code de
+      retour, et la connexion sera interrompue.</li>
+
+      <li>Le mécanisme de traduction peut insérer silencieusement des
+      caractères spéciaux (par exemple des points d'interrogation) dans
+      le tampon de sortie lorsqu'il n'est pas en mesure de traduire le
+      tampon d'entrée.</li>
+      </ul>
+    
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="charsetdefault" id="charsetdefault">Directive</a> <a name="CharsetDefault" id="CharsetDefault">CharsetDefault</a></h2>
 <table class="directive">
@@ -174,47 +215,6 @@ caractères</td></tr>
      valide du point de vue du système.
      </div>
 
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="problems" id="problems">Problèmes courants</a></h2>
-
-    <h3>Noms de jeux de caractères non valides</h3>
-
-      <p>Les noms des jeux de caractères passés en paramètres aux
-      directives  <code class="directive"><a href="#charsetsourceenc">CharsetSourceEnc</a></code> et
-      <code class="directive"><a href="#charsetdefault">CharsetDefault</a></code>
-      doivent être reconnus par le mécanisme de traduction utilisé par
-      <a class="glossarylink" href="../glossary.html#apr" title="voir glossaire">APR</a> sur le système où
-      <code class="module"><a href="../mod/mod_charset_lite.html">mod_charset_lite</a></code> est utilisé. Ces noms de jeux de
-      caractères ne sont pas standardisés, et sont en général différents
-      des valeurs qui leur correspondent dans les en-têtes HTTP.
-      Actuellement, APR ne peut utiliser que iconv(3) ; vous pouvez donc
-      tester facilement vos noms de jeux de caractères en utilisant le
-      programme iconv(1), de la manière suivante :</p>
-
-      <div class="example"><p><code>
-        iconv -f valeur-charsetsourceenc -t valeur-charsetdefault
-      </code></p></div>
-    
-
-    <h3>Incompatibilité entre le jeu de caractères du
-    contenu et les règles de traduction</h3>
-
-      <p>Si les règles de traduction ne peuvent s'appliquer au contenu,
-      la traduction peut échouer avec des conséquences diverses, comme
-      :</p>
-
-      <ul>
-      <li>Le mécanisme de traduction peut renvoyer un mauvais code de
-      retour, et la connexion sera interrompue.</li>
-
-      <li>Le mécanisme de traduction peut insérer silencieusement des
-      caractères spéciaux (par exemple des points d'interrogation) dans
-      le tampon de sortie lorsqu'il n'est pas en mesure de traduire le
-      tampon d'entrée.</li>
-      </ul>
-    
 </div>
 </div>
 <div class="bottomlang">

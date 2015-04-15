@@ -84,6 +84,7 @@ CacheSocacheMaxSize 102400
 <li><code class="module"><a href="../mod/mod_cache_disk.html">mod_cache_disk</a></code></li>
 <li><a href="../caching.html">Guide de la mise en cache</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
+
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="cachesocache" id="cachesocache">Directive</a> <a name="CacheSocache" id="CacheSocache">CacheSocache</a></h2>
 <table class="directive">
@@ -245,7 +246,6 @@ Apache</td></tr>
 
 
 </div>
-
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_cache_socache.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |

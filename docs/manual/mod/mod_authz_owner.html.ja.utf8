@@ -79,12 +79,12 @@
       決して承認しません。</p>
     </div>
 </div>
-<div id="quickview"><h3 class="directives">ディレクティブ</h3>
-<p>このモジュールにディレクティブはありません。</p>
-<h3>トピック</h3>
+<div id="quickview"><h3>トピック</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#examples">設定例</a></li>
-</ul><h3>参照</h3>
+</ul><h3 class="directives">ディレクティブ</h3>
+<p>このモジュールにディレクティブはありません。</p>
+<h3>参照</h3>
 <ul class="seealso">
 <li><code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code></li>
 </ul><ul class="seealso"><li><a href="#comments_section">コメント</a></li></ul></div>

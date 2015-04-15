@@ -194,7 +194,7 @@
     might be as follows:</p>
 
     <highlight language="config">
-&lt;Location /&gt;
+&lt;Location "/"&gt;
   SetOutputFilter POLICY_TYPE;POLICY_LENGTH;POLICY_KEEPALIVE;POLICY_VARY;POLICY_VALIDATION; \
     POLICY_CONDITIONAL;POLICY_NOCACHE;POLICY_MAXAGE;POLICY_VERSION
   
@@ -227,7 +227,7 @@
 &lt;/Location&gt;
 
 # suppress policy protection for server-status
-&lt;Location /server-status&gt;
+&lt;Location "/server-status"&gt;
   PolicyFilter off
 &lt;/Location&gt;
     </highlight>
@@ -251,12 +251,12 @@ later.</compatibility>
     <example><title>Example</title>
     <highlight language="config">
 # enabled by default
-&lt;Location /&gt;
+&lt;Location "/"&gt;
   PolicyFilter on
 &lt;/Location&gt;
 
 # suppress policy protection for server-status
-&lt;Location /server-status&gt;
+&lt;Location "/server-status"&gt;
   PolicyFilter off
 &lt;/Location&gt;
 </highlight>

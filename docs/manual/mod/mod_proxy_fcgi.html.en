@@ -127,7 +127,7 @@
        configured this way, the server can calculate the most accurate
        PATH_INFO.
       </p>
-    <div class="example"><h3>Proxy via Handler</h3><pre class="prettyprint lang-config">&lt;FilesMatch \.php$&gt;
+    <div class="example"><h3>Proxy via Handler</h3><pre class="prettyprint lang-config">&lt;FilesMatch "\.php$"&gt;
     # Note: The only part that varies is /path/to/app.sock
     SetHandler  "proxy:unix:/path/to/app.sock|fcgi://localhost/"
 &lt;/FilesMatch&gt;

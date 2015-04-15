@@ -218,7 +218,7 @@ RewriteRule    ^foo\.html$  foo.cgi   [H=<strong>cgi-script</strong>]</pre>
 <pre class="prettyprint lang-config">#   backward compatibility ruleset for
 #   rewriting document.html to document.php
 #   when and only when document.php exists
-&lt;Directory /var/www/htdocs&gt;
+&lt;Directory "/var/www/htdocs"&gt;
     RewriteEngine on
     RewriteBase /var/www/htdocs
 
@@ -535,7 +535,7 @@ that should go to an existing resource such as an image, or a css file.</dd>
 <dd>
 <p>As of version 2.2.16, you should use the <code class="directive"><a href="../mod/mod_dir.html#fallbackresource">FallbackResource</a></code> directive for this:</p>
 
-<pre class="prettyprint lang-config">&lt;Directory /var/www/my_blog&gt;
+<pre class="prettyprint lang-config">&lt;Directory "/var/www/my_blog"&gt;
   FallbackResource index.php
 &lt;/Directory&gt;</pre>
 
@@ -544,7 +544,7 @@ that should go to an existing resource such as an image, or a css file.</dd>
 complicated than this, you can use a variation of the following rewrite
 set to accomplish the same thing:</p>
 
-<pre class="prettyprint lang-config">&lt;Directory /var/www/my_blog&gt;
+<pre class="prettyprint lang-config">&lt;Directory "/var/www/my_blog"&gt;
   RewriteBase /my_blog
 
   RewriteCond /var/www/my_blog/%{REQUEST_FILENAME} !-f

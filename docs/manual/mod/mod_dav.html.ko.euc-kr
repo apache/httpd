@@ -45,102 +45,23 @@
     같은 개념이다)</span> 만들고, 옮기고, 복사하고, 지울
     수 있도록 HTTP 프로토콜을 확장한 것이다.</p>
 </div>
-<div id="quickview"><h3 class="directives">지시어들</h3>
+<div id="quickview"><h3>주제</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#example">WebDAV 사용하기</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#security">보안 문제</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#complex">복잡한 설정</a></li>
+</ul><h3 class="directives">지시어들</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#dav">Dav</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#davdepthinfinity">DavDepthInfinity</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#davmintimeout">DavMinTimeout</a></li>
 </ul>
-<h3>주제</h3>
-<ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#example">WebDAV 사용하기</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#security">보안 문제</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#complex">복잡한 설정</a></li>
-</ul><h3>참고</h3>
+<h3>참고</h3>
 <ul class="seealso">
 <li><code class="directive"><a href="../mod/mod_dav_fs.html#davlockdb">DavLockDB</a></code></li>
 <li><code class="directive"><a href="../mod/core.html#limitxmlrequestbody">LimitXMLRequestBody</a></code></li>
 <li><a href="http://www.webdav.org">WebDAV 정보</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Dav" id="Dav">Dav</a> <a name="dav" id="dav">지시어</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">설명:</a></th><td>WebDAV HTTP 메써드를 시작한다</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>Dav On|Off|<var>provider-name</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">기본값:</a></th><td><code>Dav Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>directory</td></tr>
-<tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_dav</td></tr>
-</table>
-    <p>지정한 위치에서 WebDAV HTTP 메써드를 사용하려면
-    <code class="directive">Dav</code> 지시어를 사용한다:</p>
-
-    <div class="example"><p><code>
-      &lt;Location /foo&gt;<br />
-      <span class="indent">
-        Dav On<br />
-      </span>
-      &lt;/Location&gt;
-    </code></p></div>
-
-    <p><code>On</code> 값은 실제로 <code class="module"><a href="../mod/mod_dav_fs.html">mod_dav_fs</a></code>
-    모듈이 제공하는 기본 제공자인 <code>filesystem</code>의
-    별칭이다. 어떤 위치에서 DAV를 시작하면 하위공간에서 DAV를
-    사용안하도록 설정할 수 <em>없음을</em> 주의하라. 완전한
-    설정예는 <a href="#example">위의 절</a>을 참고하라.</p>
-
-    <div class="warning">
-      서버를 안전하게 구성할때까지 WebDAV을 사용하지 마라. 그렇지
-      않으면 누구라도 서버를 통해 파일을 분배할 수 있게 된다.
-    </div>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DavDepthInfinity" id="DavDepthInfinity">DavDepthInfinity</a> <a name="davdepthinfinity" id="davdepthinfinity">지시어</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">설명:</a></th><td>PROPFIND의 Depth: Infinity 요청을 허가한다</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>DavDepthInfinity on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">기본값:</a></th><td><code>DavDepthInfinity off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트, directory</td></tr>
-<tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_dav</td></tr>
-</table>
-    <p><code class="directive">DavDepthInfinity</code> 지시어를 사용하면
-    'Depth: Infinity' 헤더를 가진 <code>PROPFIND</code> 요청을
-    허가한다. 이런 요청을 사용하여 서비스거부 공격이 가능하기
-    때문에 기본적으로 허용하지 않는다.</p>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DavMinTimeout" id="DavMinTimeout">DavMinTimeout</a> <a name="davmintimeout" id="davmintimeout">지시어</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">설명:</a></th><td>서버가 DAV 자원에 대해 유지할 잠금의 최소시간</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>DavMinTimeout <var>seconds</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">기본값:</a></th><td><code>DavMinTimeout 0</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트, directory</td></tr>
-<tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_dav</td></tr>
-</table>
-    <p>클라이언트가 DAV 자원에 잠금(lock)을 요청할때 서버가
-    알아서 잠금을 제거할 수 있는 시간을 같이 알려줄 수 있다. 이 값은
-    단지 요청일뿐이며, 서버는 클라이언트가 요청한 값을 무시하고
-    클라이언트에게 임의의 시간을 알려줄 수 있다.</p>
-
-    <p><code class="directive">DavMinTimeout</code> 지시어는 클라이언트에게
-    보낼 최소 잠금 시간을 (초단위) 지정한다. Microsoft Web Folders는
-    기본값으로 120 초를 사용한다. <code class="directive">DavMinTimeout</code>에
-    (600 초와 같이) 더 높은 값을 사용하면 클라이언트가 네트웍
-    지연때문에 잠금을 잃게되는 경우를 줄일 수 있다.</p>
-
-    <div class="example"><h3>예제</h3><p><code>
-      &lt;Location /MSWord&gt;<br />
-      <span class="indent">
-        DavMinTimeout 600<br />
-      </span>
-      &lt;/Location&gt;
-    </code></p></div>
-
-</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="example" id="example">WebDAV 사용하기</a></h2>
@@ -254,6 +175,85 @@ Alias /php-source /home/gstein/php_files<br />
     PHP 스크립트의 결과를 보여주고,
     <code>http://example.com/php-source</code>로는 DAV 클라이언트에서
     스크립트를 수정할 수 있다.</p>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="Dav" id="Dav">Dav</a> <a name="dav" id="dav">지시어</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">설명:</a></th><td>WebDAV HTTP 메써드를 시작한다</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>Dav On|Off|<var>provider-name</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">기본값:</a></th><td><code>Dav Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>directory</td></tr>
+<tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_dav</td></tr>
+</table>
+    <p>지정한 위치에서 WebDAV HTTP 메써드를 사용하려면
+    <code class="directive">Dav</code> 지시어를 사용한다:</p>
+
+    <div class="example"><p><code>
+      &lt;Location /foo&gt;<br />
+      <span class="indent">
+        Dav On<br />
+      </span>
+      &lt;/Location&gt;
+    </code></p></div>
+
+    <p><code>On</code> 값은 실제로 <code class="module"><a href="../mod/mod_dav_fs.html">mod_dav_fs</a></code>
+    모듈이 제공하는 기본 제공자인 <code>filesystem</code>의
+    별칭이다. 어떤 위치에서 DAV를 시작하면 하위공간에서 DAV를
+    사용안하도록 설정할 수 <em>없음을</em> 주의하라. 완전한
+    설정예는 <a href="#example">위의 절</a>을 참고하라.</p>
+
+    <div class="warning">
+      서버를 안전하게 구성할때까지 WebDAV을 사용하지 마라. 그렇지
+      않으면 누구라도 서버를 통해 파일을 분배할 수 있게 된다.
+    </div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="DavDepthInfinity" id="DavDepthInfinity">DavDepthInfinity</a> <a name="davdepthinfinity" id="davdepthinfinity">지시어</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">설명:</a></th><td>PROPFIND의 Depth: Infinity 요청을 허가한다</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>DavDepthInfinity on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">기본값:</a></th><td><code>DavDepthInfinity off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트, directory</td></tr>
+<tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_dav</td></tr>
+</table>
+    <p><code class="directive">DavDepthInfinity</code> 지시어를 사용하면
+    'Depth: Infinity' 헤더를 가진 <code>PROPFIND</code> 요청을
+    허가한다. 이런 요청을 사용하여 서비스거부 공격이 가능하기
+    때문에 기본적으로 허용하지 않는다.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="DavMinTimeout" id="DavMinTimeout">DavMinTimeout</a> <a name="davmintimeout" id="davmintimeout">지시어</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">설명:</a></th><td>서버가 DAV 자원에 대해 유지할 잠금의 최소시간</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>DavMinTimeout <var>seconds</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">기본값:</a></th><td><code>DavMinTimeout 0</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트, directory</td></tr>
+<tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_dav</td></tr>
+</table>
+    <p>클라이언트가 DAV 자원에 잠금(lock)을 요청할때 서버가
+    알아서 잠금을 제거할 수 있는 시간을 같이 알려줄 수 있다. 이 값은
+    단지 요청일뿐이며, 서버는 클라이언트가 요청한 값을 무시하고
+    클라이언트에게 임의의 시간을 알려줄 수 있다.</p>
+
+    <p><code class="directive">DavMinTimeout</code> 지시어는 클라이언트에게
+    보낼 최소 잠금 시간을 (초단위) 지정한다. Microsoft Web Folders는
+    기본값으로 120 초를 사용한다. <code class="directive">DavMinTimeout</code>에
+    (600 초와 같이) 더 높은 값을 사용하면 클라이언트가 네트웍
+    지연때문에 잠금을 잃게되는 경우를 줄일 수 있다.</p>
+
+    <div class="example"><h3>예제</h3><p><code>
+      &lt;Location /MSWord&gt;<br />
+      <span class="indent">
+        DavMinTimeout 600<br />
+      </span>
+      &lt;/Location&gt;
+    </code></p></div>
+
 </div>
 </div>
 <div class="bottomlang">

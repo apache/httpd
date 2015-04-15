@@ -71,7 +71,7 @@ module="core">SetHandler</directive> or
 <directive module="mod_mime">AddHandler</directive> directive:</p>
 
 <highlight language="config">
-&lt;Files *.lua&gt;
+&lt;Files "*.lua"&gt;
     SetHandler lua-script
 &lt;/Files&gt;
 </highlight>
@@ -194,7 +194,7 @@ end
 <code>foo</code> and configures it for URL <code>/</code>:</p>
 <highlight language="config">
 LuaAuthzProvider foo authz_provider.lua authz_check_foo
-&lt;Location /&gt;
+&lt;Location "/"&gt;
   Require foo 10.1.2.3 john_doe
 &lt;/Location&gt;
 </highlight>
@@ -1822,7 +1822,7 @@ with the <directive module="mod_authz_core">Require</directive> directive:</p>
 <highlight language="config">
 LuaRoot /usr/local/apache2/lua
 LuaAuthzProvider foo authz.lua authz_check_foo
-&lt;Location /&gt;
+&lt;Location "/"&gt;
   Require foo johndoe
 &lt;/Location&gt;
 </highlight>
@@ -1858,7 +1858,7 @@ onto the Lua script:
 
 <highlight language="config">
 LuaInputFilter myInputFilter /www/filter.lua input_filter
-&lt;Files *.lua&gt;
+&lt;Files "*.lua"&gt;
   SetInputFilter myInputFilter
 &lt;/Files&gt;
 </highlight>
@@ -1915,7 +1915,7 @@ onto the Lua script:
 
 <highlight language="config">
 LuaOutputFilter myOutputFilter /www/filter.lua output_filter
-&lt;Files *.lua&gt;
+&lt;Files "*.lua"&gt;
   SetOutputFilter myOutputFilter
 &lt;/Files&gt;
 </highlight>

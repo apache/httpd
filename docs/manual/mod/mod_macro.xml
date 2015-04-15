@@ -140,12 +140,12 @@ dynamically-generated virtual hosts.</p>
     DocumentRoot $dir
 
     # Public document root
-    &lt;Directory $dir&gt;
+    &lt;Directory "$dir"&gt;
         Require all granted
     &lt;/Directory&gt;
 
     # limit access to intranet subdir.
-    &lt;Directory $dir/intranet&gt;
+    &lt;Directory "$dir/intranet"&gt;
       Require ip 10.0.0.0/8
     &lt;/Directory&gt;
   &lt;/VirtualHost&gt;
@@ -168,7 +168,7 @@ conflicts in variable names.</p>
 
 <highlight language="config">
 &lt;Macro DirGroup $dir $group&gt;
-  &lt;Directory $dir&gt;
+  &lt;Directory "$dir"&gt;
     Require group $group
   &lt;/Directory&gt;
 &lt;/Macro&gt;

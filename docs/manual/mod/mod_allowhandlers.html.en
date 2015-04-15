@@ -35,7 +35,7 @@
 <p>This module makes it easy to restrict which handlers may be used for a
 request. A possible configuration would be:</p>
 
-<pre class="prettyprint lang-config">&lt;Location /&gt;
+<pre class="prettyprint lang-config">&lt;Location "/"&gt;
   AllowHandlers not server-info server-status balancer-manager ldap-status
 &lt;/Location&gt;</pre>
 
@@ -54,6 +54,7 @@ returns 403 FORBIDDEN to the client. This can be used with directives like
 <li><code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code></li>
 <li><code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
+
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AllowHandlers" id="AllowHandlers">AllowHandlers</a> <a name="allowhandlers" id="allowhandlers">Directive</a></h2>
 <table class="directive">
@@ -72,7 +73,7 @@ set. The special vallue <code>all</code> can be used to allow all
 handlers again in a later config section, even if some headers were denied
 earlier in the configuration merge order:</p>
 
-<pre class="prettyprint lang-config">&lt;Location /server-status&gt;
+<pre class="prettyprint lang-config">&lt;Location "/server-status"&gt;
   AllowHandlers all
   SetHandler server-status
 &lt;/Location&gt;</pre>
@@ -80,7 +81,6 @@ earlier in the configuration merge order:</p>
 
 
 </div>
-
 </div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_allowhandlers.html" title="English">&nbsp;en&nbsp;</a></p>

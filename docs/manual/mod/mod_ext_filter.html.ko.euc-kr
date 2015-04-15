@@ -60,148 +60,18 @@
     수 있다.</p>
 
 </div>
-<div id="quickview"><h3 class="directives">지시어들</h3>
+<div id="quickview"><h3>주제</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#examples">예제</a></li>
+</ul><h3 class="directives">지시어들</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#extfilterdefine">ExtFilterDefine</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#extfilteroptions">ExtFilterOptions</a></li>
 </ul>
-<h3>주제</h3>
-<ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#examples">예제</a></li>
-</ul><h3>참고</h3>
+<h3>참고</h3>
 <ul class="seealso">
 <li><a href="../filter.html">필터</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ExtFilterDefine" id="ExtFilterDefine">ExtFilterDefine</a> <a name="extfilterdefine" id="extfilterdefine">지시어</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">설명:</a></th><td>외부 필터를 정의한다</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>ExtFilterDefine <var>filtername</var> <var>parameters</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정</td></tr>
-<tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_ext_filter</td></tr>
-</table>
-    <p><code class="directive">ExtFilterDefine</code> 지시어는 외부
-    필터의 성질과 실행할 프로그램, 아규먼트를 정의한다.</p>
-
-    <p><var>filtername</var>은 정의할 필터 이름을 지정한다.
-    이 이름을 SetOutputFilter 지시어에서 사용한다. 등록한 모든
-    필터들간에 이름이 겹치면 안된다. <em>현재 필터등록 API는
-    오류를 보고하지 않는다. 그래서 사용자는 이름이 겹치는 문제를
-    알지 못한다.</em></p>
-
-    <p>실행할 외부 명령어와 다른 성질을 정의하는 나머지 아규먼트는
-    어떤 순서로 나와도 가능하다. 단, <code>cmd=</code> 파라미터는
-    반드시 필요하다. 사용할 수 있는 파라미터는 다음과 같다:</p>
-
-    <dl>
-      <dt><code>cmd=<var>cmdline</var></code></dt>
-
-      <dd><code>cmd=</code> 키워드는 실행할 외부 명령어를 지정한다.
-      프로그램명 뒤에 아규먼트가 있다면 명령행을 쌍따옴표로
-      묶어야 한다 (<em>예를 들어</em>,
-      <code>cmd="<var>/bin/mypgm</var> <var>arg1</var>
-      <var>arg2</var>"</code>). 쉘을 거치지않고 직접 프로그램을
-      실행하기때문에 일반적인 쉘 따옴표는 필요없다. 프로그램
-      아규먼트들은 공백으로 구분한다. 프로그램 아규먼트에 공백이
-      있다면 공백 앞에 백슬래쉬로 사용해야 한다. 백슬래쉬가
-      아규먼트의 일부라면 백슬래쉬를 두번 사용해야 한다. 프로그램을
-      실행할때 표준 CGI 환경변수와 추가로 DOCUMENT_URI,
-      DOCUMENT_PATH_INFO, QUERY_STRING_UNESCAPED 변수를 설정한다.</dd>
-
-      <dt><code>mode=<var>mode</var></code></dt>
-
-      <dd>응답을 처리하는 필터는 (기본값인) <code>mode=output</code>을
-      사용한다. 요청을 처리하는 필터는 <code>mode=input</code>을
-      사용한다. <code>mode=input</code>은 아파치 2.1에 추가되었다.</dd>
-
-      <dt><code>intype=<var>imt</var></code></dt>
-
-      <dd>이 파라미터는 필터로 처리할 문서의 인터넷 media
-      type(<em>즉</em>, MIME type)을 지정한다. 기본적으로 모든
-      문서를 필터로 처리한다. <code>intype=</code>을 지정하면
-      다른 type의 문서는 필터로 처리하지 않는다.</dd>
-
-      <dt><code>outtype=<var>imt</var></code></dt>
-
-      <dd>이 파라미터는 필터로 처리한 문서의 인터넷 media
-      type(<em>즉</em>, MIME type)을 지정한다. 필터처리 작업중에
-      인터넷 media type을 변경할때 유용하다. 기본적으로, 인터넷
-      media type은 변하지 않는다.</dd>
-
-      <dt><code>PreservesContentLength</code></dt>
-
-      <dd><code>PreservesContentLength</code> 키워드는 필터가
-      content length를 유지하도록 한다. 대부분의 필터가 content
-      length를 변경하므로 이 키워드는 기본값이 아니다. 필터가
-      길이를 유지할때만 이 키워드를 사용해야 한다.</dd>
-
-      <dt><code>ftype=<var>filtertype</var></code></dt>
-
-      <dd>이 파라미터는 필터 종류에 대한 숫자값을 지정한다.
-      대부분의 경우 기본값인 AP_FTYPE_RESOURCE가 적당하다.
-      필터를 실행하는 순서가 자원필터와 달라야하는 경우 이
-      파라미터가 필요하다. 적당한 값을 알려면 util_filter.h에
-      있는 AP_FTYPE_* 정의를 참고하라.</dd>
-
-      <dt><code>disableenv=<var>env</var></code></dt>
-
-      <dd>이 파라미터로 설정한 환경변수가 정의되었다면 필터를
-      사용하지 않는다.</dd>
-
-      <dt><code>enableenv=<var>env</var></code></dt>
-
-      <dd>이 파라미터로 설정한 환경변수가 정의된 경우 필터를
-      사용한다.</dd>
-    </dl>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ExtFilterOptions" id="ExtFilterOptions">ExtFilterOptions</a> <a name="extfilteroptions" id="extfilteroptions">지시어</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">설명:</a></th><td><code class="module"><a href="../mod/mod_ext_filter.html">mod_ext_filter</a></code> 옵션을 설정한다</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>ExtFilterOptions <var>option</var> [<var>option</var>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">기본값:</a></th><td><code>ExtFilterOptions DebugLevel=0 NoLogStderr</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>directory</td></tr>
-<tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_ext_filter</td></tr>
-</table>
-    <p><code class="directive">ExtFilterOptions</code> 지시어는
-    <code class="module"><a href="../mod/mod_ext_filter.html">mod_ext_filter</a></code>의 특별한 처리옵션을 지정한다.
-    <var>Option</var>은 다음중 하나다.</p>
-
-    <dl>
-      <dt><code>DebugLevel=<var>n</var></code></dt>
-
-      <dd>
-        <code>DebugLevel</code> 키워드는
-        <code class="module"><a href="../mod/mod_ext_filter.html">mod_ext_filter</a></code>가 기록하는 디버그 문구
-        수준을 정한다. 기본값은 디버그문을 기록하지 않는다.
-        이는 <code>DebugLevel=0</code>과 같다. 높은 숫자를
-        사용할수록, 더 많은 디버그문이 기록되고 서버 성능이
-        떨어진다. 숫자값의 실제 의미는 <code>mod_ext_filter.c</code>
-        앞부분에 있는 DBGLVL_ 상수 정의에 설명되있다.
-
-        <p>주의: 필터 로그를 기록하려면 core 지시어 <code class="directive"><a href="../mod/core.html#loglevel">LogLevel</a></code>을 사용하여 디버그문을
-        아파치 오류로그에 기록해야 한다.</p>
-      </dd>
-
-      <dt><code>LogStderr | NoLogStderr</code></dt>
-
-      <dd><code>LogStderr</code> 키워드는 외부 필터 프로그램이
-      표준오류로 출력하는 문구를 아파치 오류로그에 기록한다.
-      <code>NoLogStderr</code>는 이 기능을 하지 않는다.</dd>
-    </dl>
-
-    <div class="example"><h3>예제</h3><p><code>
-      ExtFilterOptions LogStderr DebugLevel=0
-    </code></p></div>
-
-    <p>위의 설정을 사용하면 필터가 표준오류로 출력하는 문구를
-    아파치 오류로그에 기록하고, <code class="module"><a href="../mod/mod_ext_filter.html">mod_ext_filter</a></code>는
-    자체 디버그문을 기록하지 않는다. </p>
-
-</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="examples" id="examples">예제</a></h2>
@@ -346,6 +216,136 @@
         close(SAVE);
       </code></p></div>
     
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ExtFilterDefine" id="ExtFilterDefine">ExtFilterDefine</a> <a name="extfilterdefine" id="extfilterdefine">지시어</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">설명:</a></th><td>외부 필터를 정의한다</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>ExtFilterDefine <var>filtername</var> <var>parameters</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정</td></tr>
+<tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_ext_filter</td></tr>
+</table>
+    <p><code class="directive">ExtFilterDefine</code> 지시어는 외부
+    필터의 성질과 실행할 프로그램, 아규먼트를 정의한다.</p>
+
+    <p><var>filtername</var>은 정의할 필터 이름을 지정한다.
+    이 이름을 SetOutputFilter 지시어에서 사용한다. 등록한 모든
+    필터들간에 이름이 겹치면 안된다. <em>현재 필터등록 API는
+    오류를 보고하지 않는다. 그래서 사용자는 이름이 겹치는 문제를
+    알지 못한다.</em></p>
+
+    <p>실행할 외부 명령어와 다른 성질을 정의하는 나머지 아규먼트는
+    어떤 순서로 나와도 가능하다. 단, <code>cmd=</code> 파라미터는
+    반드시 필요하다. 사용할 수 있는 파라미터는 다음과 같다:</p>
+
+    <dl>
+      <dt><code>cmd=<var>cmdline</var></code></dt>
+
+      <dd><code>cmd=</code> 키워드는 실행할 외부 명령어를 지정한다.
+      프로그램명 뒤에 아규먼트가 있다면 명령행을 쌍따옴표로
+      묶어야 한다 (<em>예를 들어</em>,
+      <code>cmd="<var>/bin/mypgm</var> <var>arg1</var>
+      <var>arg2</var>"</code>). 쉘을 거치지않고 직접 프로그램을
+      실행하기때문에 일반적인 쉘 따옴표는 필요없다. 프로그램
+      아규먼트들은 공백으로 구분한다. 프로그램 아규먼트에 공백이
+      있다면 공백 앞에 백슬래쉬로 사용해야 한다. 백슬래쉬가
+      아규먼트의 일부라면 백슬래쉬를 두번 사용해야 한다. 프로그램을
+      실행할때 표준 CGI 환경변수와 추가로 DOCUMENT_URI,
+      DOCUMENT_PATH_INFO, QUERY_STRING_UNESCAPED 변수를 설정한다.</dd>
+
+      <dt><code>mode=<var>mode</var></code></dt>
+
+      <dd>응답을 처리하는 필터는 (기본값인) <code>mode=output</code>을
+      사용한다. 요청을 처리하는 필터는 <code>mode=input</code>을
+      사용한다. <code>mode=input</code>은 아파치 2.1에 추가되었다.</dd>
+
+      <dt><code>intype=<var>imt</var></code></dt>
+
+      <dd>이 파라미터는 필터로 처리할 문서의 인터넷 media
+      type(<em>즉</em>, MIME type)을 지정한다. 기본적으로 모든
+      문서를 필터로 처리한다. <code>intype=</code>을 지정하면
+      다른 type의 문서는 필터로 처리하지 않는다.</dd>
+
+      <dt><code>outtype=<var>imt</var></code></dt>
+
+      <dd>이 파라미터는 필터로 처리한 문서의 인터넷 media
+      type(<em>즉</em>, MIME type)을 지정한다. 필터처리 작업중에
+      인터넷 media type을 변경할때 유용하다. 기본적으로, 인터넷
+      media type은 변하지 않는다.</dd>
+
+      <dt><code>PreservesContentLength</code></dt>
+
+      <dd><code>PreservesContentLength</code> 키워드는 필터가
+      content length를 유지하도록 한다. 대부분의 필터가 content
+      length를 변경하므로 이 키워드는 기본값이 아니다. 필터가
+      길이를 유지할때만 이 키워드를 사용해야 한다.</dd>
+
+      <dt><code>ftype=<var>filtertype</var></code></dt>
+
+      <dd>이 파라미터는 필터 종류에 대한 숫자값을 지정한다.
+      대부분의 경우 기본값인 AP_FTYPE_RESOURCE가 적당하다.
+      필터를 실행하는 순서가 자원필터와 달라야하는 경우 이
+      파라미터가 필요하다. 적당한 값을 알려면 util_filter.h에
+      있는 AP_FTYPE_* 정의를 참고하라.</dd>
+
+      <dt><code>disableenv=<var>env</var></code></dt>
+
+      <dd>이 파라미터로 설정한 환경변수가 정의되었다면 필터를
+      사용하지 않는다.</dd>
+
+      <dt><code>enableenv=<var>env</var></code></dt>
+
+      <dd>이 파라미터로 설정한 환경변수가 정의된 경우 필터를
+      사용한다.</dd>
+    </dl>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ExtFilterOptions" id="ExtFilterOptions">ExtFilterOptions</a> <a name="extfilteroptions" id="extfilteroptions">지시어</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">설명:</a></th><td><code class="module"><a href="../mod/mod_ext_filter.html">mod_ext_filter</a></code> 옵션을 설정한다</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>ExtFilterOptions <var>option</var> [<var>option</var>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">기본값:</a></th><td><code>ExtFilterOptions DebugLevel=0 NoLogStderr</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>directory</td></tr>
+<tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_ext_filter</td></tr>
+</table>
+    <p><code class="directive">ExtFilterOptions</code> 지시어는
+    <code class="module"><a href="../mod/mod_ext_filter.html">mod_ext_filter</a></code>의 특별한 처리옵션을 지정한다.
+    <var>Option</var>은 다음중 하나다.</p>
+
+    <dl>
+      <dt><code>DebugLevel=<var>n</var></code></dt>
+
+      <dd>
+        <code>DebugLevel</code> 키워드는
+        <code class="module"><a href="../mod/mod_ext_filter.html">mod_ext_filter</a></code>가 기록하는 디버그 문구
+        수준을 정한다. 기본값은 디버그문을 기록하지 않는다.
+        이는 <code>DebugLevel=0</code>과 같다. 높은 숫자를
+        사용할수록, 더 많은 디버그문이 기록되고 서버 성능이
+        떨어진다. 숫자값의 실제 의미는 <code>mod_ext_filter.c</code>
+        앞부분에 있는 DBGLVL_ 상수 정의에 설명되있다.
+
+        <p>주의: 필터 로그를 기록하려면 core 지시어 <code class="directive"><a href="../mod/core.html#loglevel">LogLevel</a></code>을 사용하여 디버그문을
+        아파치 오류로그에 기록해야 한다.</p>
+      </dd>
+
+      <dt><code>LogStderr | NoLogStderr</code></dt>
+
+      <dd><code>LogStderr</code> 키워드는 외부 필터 프로그램이
+      표준오류로 출력하는 문구를 아파치 오류로그에 기록한다.
+      <code>NoLogStderr</code>는 이 기능을 하지 않는다.</dd>
+    </dl>
+
+    <div class="example"><h3>예제</h3><p><code>
+      ExtFilterOptions LogStderr DebugLevel=0
+    </code></p></div>
+
+    <p>위의 설정을 사용하면 필터가 표준오류로 출력하는 문구를
+    아파치 오류로그에 기록하고, <code class="module"><a href="../mod/mod_ext_filter.html">mod_ext_filter</a></code>는
+    자체 디버그문을 기록하지 않는다. </p>
+
 </div>
 </div>
 <div class="bottomlang">

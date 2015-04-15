@@ -104,6 +104,108 @@
 </ul>
 <ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="query" id="query">Autoindex Request Query Arguments</a></h2>
+    
+
+    <p>Various query string arguments are available to give the client
+    some control over the ordering of the directory listing, as well as
+    what files are listed. If you do not wish to give the client this
+    control, the <code><a href="#indexoptions.ignoreclient">IndexOptions
+    IgnoreClient</a></code> option disables that functionality.</p>
+
+    <p>The column sorting headers themselves are self-referencing
+    hyperlinks that add the sort query options shown below. Any
+    option below may be added to any request for the directory
+    resource.</p>
+
+    <ul>
+      <li><code>C=N</code> sorts the directory by file name</li>
+
+      <li><code>C=M</code> sorts the directory by last-modified
+      date, then file name</li>
+
+      <li><code>C=S</code> sorts the directory by size, then file
+      name</li>
+
+      <li class="separate"><code>C=D</code> sorts the directory by description, then
+      file name</li>
+
+      <li><code>O=A</code> sorts the listing in Ascending
+      Order</li>
+
+      <li class="separate"><code>O=D</code> sorts the listing in Descending
+      Order</li>
+
+      <li><code>F=0</code> formats the listing as a simple list
+      (not FancyIndexed)</li>
+
+      <li><code>F=1</code> formats the listing as a FancyIndexed
+      list</li>
+
+      <li class="separate"><code>F=2</code> formats the listing as an
+      HTMLTable FancyIndexed list</li>
+
+      <li><code>V=0</code> disables version sorting</li>
+
+      <li class="separate"><code>V=1</code> enables version sorting</li>
+
+      <li><code>P=<var>pattern</var></code> lists only files matching
+      the given <var>pattern</var></li>
+    </ul>
+
+    <p>Note that the 'P'attern query argument is tested
+    <em>after</em> the usual <code class="directive"><a href="#indexignore">IndexIgnore</a></code> directives are processed,
+    and all file names are still subjected to the same criteria as
+    any other autoindex listing. The Query Arguments parser in
+    <code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code> will stop abruptly when an unrecognized
+    option is encountered. The Query Arguments must be well formed,
+    according to the table above.</p>
+
+    <p>The simple example below, which can be clipped and saved in
+    a header.html file, illustrates these query options. Note that
+    the unknown "X" argument, for the submit button, is listed last
+    to assure the arguments are all parsed before mod_autoindex
+    encounters the X=Go input.</p>
+
+    <div class="example"><p><code>
+      &lt;form action="" method="get"&gt;<br />
+      <span class="indent">
+        Show me a &lt;select name="F"&gt;<br />
+        <span class="indent">
+          &lt;option value="0"&gt; Plain list&lt;/option&gt;<br />
+          &lt;option value="1" selected="selected"&gt; Fancy list&lt;/option&gt;<br />
+          &lt;option value="2"&gt; Table list&lt;/option&gt;<br />
+        </span>
+        &lt;/select&gt;<br />
+        Sorted by &lt;select name="C"&gt;<br />
+        <span class="indent">
+          &lt;option value="N" selected="selected"&gt; Name&lt;/option&gt;<br />
+          &lt;option value="M"&gt; Date Modified&lt;/option&gt;<br />
+          &lt;option value="S"&gt; Size&lt;/option&gt;<br />
+          &lt;option value="D"&gt; Description&lt;/option&gt;<br />
+        </span>
+        &lt;/select&gt;<br />
+        &lt;select name="O"&gt;<br />
+        <span class="indent">
+          &lt;option value="A" selected="selected"&gt; Ascending&lt;/option&gt;<br />
+          &lt;option value="D"&gt; Descending&lt;/option&gt;<br />
+        </span>
+        &lt;/select&gt;<br />
+        &lt;select name="V"&gt;<br />
+        <span class="indent">
+          &lt;option value="0" selected="selected"&gt; in Normal order&lt;/option&gt;<br />
+          &lt;option value="1"&gt; in Version order&lt;/option&gt;<br />
+        </span>
+        &lt;/select&gt;<br />
+        Matching &lt;input type="text" name="P" value="*" /&gt;<br />
+        &lt;input type="submit" name="X" value="Go" /&gt;<br />
+      </span>
+      &lt;/form&gt;
+    </code></p></div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AddAlt" id="AddAlt">AddAlt</a> <a name="addalt" id="addalt">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Alternate text to display for a file, instead of an
@@ -463,10 +565,10 @@ a directory</td></tr>
     any files ignored by <code class="directive">IndexIgnore</code> otherwise
     inherited from other configuration sections. </p>
 
-    <pre class="prettyprint lang-config">&lt;Directory /var/www&gt;
+    <pre class="prettyprint lang-config">&lt;Directory "/var/www"&gt;
     IndexIgnore *.bak .??* *~ *# HEADER* README* RCS CVS *,v *,t
 &lt;/Directory&gt;
-&lt;Directory /var/www/backups&gt;
+&lt;Directory "/var/www/backups"&gt;
     IndexIgnoreReset ON
     IndexIgnore .??* *# HEADER* README* RCS CVS *,v *,t
 &lt;/Directory&gt;</pre>
@@ -800,7 +902,7 @@ indexing</td></tr>
      <li>Multiple <code class="directive">IndexOptions</code> directives for a
      single directory are now merged together. The result of:
 
-     <pre class="prettyprint lang-config">&lt;Directory /foo&gt;
+     <pre class="prettyprint lang-config">&lt;Directory "/foo"&gt;
     IndexOptions HTMLTable
     IndexOptions SuppressColumnsorting
 &lt;/Directory&gt;</pre>
@@ -937,108 +1039,6 @@ ReadmeName /include/FOOTER.html</pre>
 
     <p>See also <code class="directive"><a href="#headername">HeaderName</a></code>, where this behavior is described in greater
     detail.</p>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="query" id="query">Autoindex Request Query Arguments</a></h2>
-    
-
-    <p>Various query string arguments are available to give the client
-    some control over the ordering of the directory listing, as well as
-    what files are listed. If you do not wish to give the client this
-    control, the <code><a href="#indexoptions.ignoreclient">IndexOptions
-    IgnoreClient</a></code> option disables that functionality.</p>
-
-    <p>The column sorting headers themselves are self-referencing
-    hyperlinks that add the sort query options shown below. Any
-    option below may be added to any request for the directory
-    resource.</p>
-
-    <ul>
-      <li><code>C=N</code> sorts the directory by file name</li>
-
-      <li><code>C=M</code> sorts the directory by last-modified
-      date, then file name</li>
-
-      <li><code>C=S</code> sorts the directory by size, then file
-      name</li>
-
-      <li class="separate"><code>C=D</code> sorts the directory by description, then
-      file name</li>
-
-      <li><code>O=A</code> sorts the listing in Ascending
-      Order</li>
-
-      <li class="separate"><code>O=D</code> sorts the listing in Descending
-      Order</li>
-
-      <li><code>F=0</code> formats the listing as a simple list
-      (not FancyIndexed)</li>
-
-      <li><code>F=1</code> formats the listing as a FancyIndexed
-      list</li>
-
-      <li class="separate"><code>F=2</code> formats the listing as an
-      HTMLTable FancyIndexed list</li>
-
-      <li><code>V=0</code> disables version sorting</li>
-
-      <li class="separate"><code>V=1</code> enables version sorting</li>
-
-      <li><code>P=<var>pattern</var></code> lists only files matching
-      the given <var>pattern</var></li>
-    </ul>
-
-    <p>Note that the 'P'attern query argument is tested
-    <em>after</em> the usual <code class="directive"><a href="#indexignore">IndexIgnore</a></code> directives are processed,
-    and all file names are still subjected to the same criteria as
-    any other autoindex listing. The Query Arguments parser in
-    <code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code> will stop abruptly when an unrecognized
-    option is encountered. The Query Arguments must be well formed,
-    according to the table above.</p>
-
-    <p>The simple example below, which can be clipped and saved in
-    a header.html file, illustrates these query options. Note that
-    the unknown "X" argument, for the submit button, is listed last
-    to assure the arguments are all parsed before mod_autoindex
-    encounters the X=Go input.</p>
-
-    <div class="example"><p><code>
-      &lt;form action="" method="get"&gt;<br />
-      <span class="indent">
-        Show me a &lt;select name="F"&gt;<br />
-        <span class="indent">
-          &lt;option value="0"&gt; Plain list&lt;/option&gt;<br />
-          &lt;option value="1" selected="selected"&gt; Fancy list&lt;/option&gt;<br />
-          &lt;option value="2"&gt; Table list&lt;/option&gt;<br />
-        </span>
-        &lt;/select&gt;<br />
-        Sorted by &lt;select name="C"&gt;<br />
-        <span class="indent">
-          &lt;option value="N" selected="selected"&gt; Name&lt;/option&gt;<br />
-          &lt;option value="M"&gt; Date Modified&lt;/option&gt;<br />
-          &lt;option value="S"&gt; Size&lt;/option&gt;<br />
-          &lt;option value="D"&gt; Description&lt;/option&gt;<br />
-        </span>
-        &lt;/select&gt;<br />
-        &lt;select name="O"&gt;<br />
-        <span class="indent">
-          &lt;option value="A" selected="selected"&gt; Ascending&lt;/option&gt;<br />
-          &lt;option value="D"&gt; Descending&lt;/option&gt;<br />
-        </span>
-        &lt;/select&gt;<br />
-        &lt;select name="V"&gt;<br />
-        <span class="indent">
-          &lt;option value="0" selected="selected"&gt; in Normal order&lt;/option&gt;<br />
-          &lt;option value="1"&gt; in Version order&lt;/option&gt;<br />
-        </span>
-        &lt;/select&gt;<br />
-        Matching &lt;input type="text" name="P" value="*" /&gt;<br />
-        &lt;input type="submit" name="X" value="Go" /&gt;<br />
-      </span>
-      &lt;/form&gt;
-    </code></p></div>
 
 </div>
 </div>

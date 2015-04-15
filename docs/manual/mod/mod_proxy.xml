@@ -181,7 +181,7 @@ ProxyVia On
 
       <example><title>Reverse Proxy PHP scripts</title>
       <highlight language="config">
-&lt;FilesMatch \.php$&gt;
+&lt;FilesMatch "\.php$"&gt;
     SetHandler  "proxy:unix:/path/to/app.sock|fcgi://localhost/"
 &lt;/FilesMatch&gt;
       </highlight>
@@ -378,7 +378,7 @@ ProxyPass /examples http://backend.example.com/examples timeout=10
       <code>proxy-nokeepalive</code> notes.</p>
 
       <highlight language="config">
-&lt;Location /buggyappserver/&gt;
+&lt;Location "/buggyappserver/"&gt;
   ProxyPass http://buggyappserver:7001/foo/
   SetEnv force-proxy-request-1.0 1
   SetEnv proxy-nokeepalive 1
@@ -886,7 +886,7 @@ expressions</description>
     then</p>
 
     <highlight language="config">
-&lt;Location /mirror/foo/&gt;
+&lt;Location "/mirror/foo/"&gt;
     ProxyPass http://backend.example.com/
 &lt;/Location&gt;
     </highlight>
@@ -916,10 +916,10 @@ expressions</description>
     to reverse-proxy a subdirectory, <em>e.g.</em></p>
 
     <highlight language="config">
-&lt;Location /mirror/foo/&gt;
+&lt;Location "/mirror/foo/"&gt;
     ProxyPass http://backend.example.com/
 &lt;/Location&gt;
-&lt;Location /mirror/foo/i&gt;
+&lt;Location "/mirror/foo/i"&gt;
     ProxyPass !
 &lt;/Location&gt;
     </highlight>

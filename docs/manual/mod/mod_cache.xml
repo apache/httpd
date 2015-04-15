@@ -380,13 +380,13 @@ manager</description>
     <highlight language="config">
 # Cache content (normal handler only)
 CacheQuickHandler off
-&lt;Location /foo&gt;
+&lt;Location "/foo"&gt;
     CacheEnable disk
 &lt;/Location&gt;
 
 # Cache regex (normal handler only)
 CacheQuickHandler off
-&lt;LocationMatch foo$&gt;
+&lt;LocationMatch "foo$"&gt;
     CacheEnable disk
 &lt;/LocationMatch&gt;
 
@@ -444,7 +444,7 @@ CacheEnable  disk  http://.example.org/
 
     <example><title>Example</title>
     <highlight language="config">
-&lt;Location /foo&gt;
+&lt;Location "/foo"&gt;
     CacheDisable on
 &lt;/Location&gt;
       </highlight>
