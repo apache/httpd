@@ -528,17 +528,17 @@ indexing</td></tr>
       specify the width of the description column in
       characters.</dd>
 
-      <dd><code>-DescriptionWidth</code> (or unset) allows
-      <code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code> to calculate the best width.</dd>
+      <dt><code>-DescriptionWidth</code> (or unset) allows
+      <code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code> to calculate the best width.</dt>
 
       <dd><code>DescriptionWidth=<var>n</var></code> fixes the column width to
       <var>n</var> bytes wide.</dd>
 
       <dd><code>DescriptionWidth=*</code> grows the column to the
       width necessary to accommodate the longest description
-      string.</dd>
+      string.
 
-      <dd><strong>See the section on <code class="directive"><a href="#adddescription">AddDescription</a></code> for dangers
+      <strong>See the section on <code class="directive"><a href="#adddescription">AddDescription</a></code> for dangers
       inherent in truncating descriptions.</strong></dd>
 
       <dt><a name="indexoptions.fancyindexing" id="indexoptions.fancyindexing">FancyIndexing</a></dt>
@@ -556,8 +556,10 @@ indexing</td></tr>
       <code>FoldersFirst</code> is enabled, subdirectory
       <code>Zed</code> will be listed before subdirectory
       <code>Beta</code>, which will be listed before normal files
-      <code>Gamma</code> and <code>Alpha</code>. <strong>This option
-      only has an effect if <a href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a> is also enabled.</strong></dd>
+      <code>Gamma</code> and <code>Alpha</code>. 
+      <strong>This option only has an effect if <a href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a>
+      is also enabled.</strong>
+      </dd>
 
       <dt><a name="indexoptions.htmltable" id="indexoptions.htmltable">HTMLTable</a></dt>
 
@@ -580,7 +582,12 @@ indexing</td></tr>
       icon. This allows browser to precalculate the page layout without having
       to wait until all the images have been loaded. If no value is given for
       the option, it defaults to the standard height of the icons supplied
-      with the Apache httpd software.</dd>
+      with the Apache httpd software.
+     
+      <strong>This option
+      only has an effect if <a href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a> is also enabled.</strong>
+
+      </dd>
 
       <dt><a name="indexoptions.iconwidth" id="indexoptions.iconwidth">IconWidth[=<var>pixels</var>]</a></dt>
 
@@ -653,7 +660,11 @@ indexing</td></tr>
       so the use of this option will regain 23 characters of screen
       space to use for something else. See <code class="directive"><a href="#adddescription">AddDescription</a></code> for information about setting the file
       description. See also the <code><a href="#indexoptions.descriptionwidth">DescriptionWidth</a></code>
-      index option to limit the size of the description column.</dd>
+      index option to limit the size of the description column.
+      
+      <strong>This option
+      only has an effect if <a href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a> is also enabled.</strong>
+      </dd>
 
       <dt><a name="indexoptions.suppresshtmlpreamble" id="indexoptions.suppresshtmlpreamble">SuppressHTMLPreamble</a></dt>
 
@@ -683,7 +694,11 @@ indexing</td></tr>
       <dt><a name="indexoptions.suppresslastmodified" id="indexoptions.suppresslastmodified">SuppressLastModified</a></dt>
 
       <dd>This will suppress the display of the last modification date,
-      in fancy indexing listings.</dd>
+      in fancy indexing listings.
+      
+      <strong>This option
+      only has an effect if <a href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a> is also enabled.</strong>
+      </dd>
 
       <dt><a name="indexoptions.suppressrules" id="indexoptions.suppressrules">SuppressRules</a>
       </dt>
@@ -693,11 +708,20 @@ indexing</td></tr>
       <code>SuppressRules</code> yields proper HTML 3.2 output, which
       by the final specification prohibits <code>img</code> and
       <code>hr</code> elements from the <code>pre</code> block (used to
-      format FancyIndexed listings.)</dd>
+      format FancyIndexed listings.)
+      
+      <strong>This option
+      only has an effect if <a href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a> is also enabled.</strong>
+
+      </dd>
 
       <dt><a name="indexoptions.suppresssize" id="indexoptions.suppresssize">SuppressSize</a></dt>
 
-      <dd>This will suppress the file size in fancy indexing listings.</dd>
+      <dd>This will suppress the file size in fancy indexing listings.
+      
+      <strong>This option
+      only has an effect if <a href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a> is also enabled.</strong>
+      </dd>
 
       <dt><a name="indexoptions.trackmodified" id="indexoptions.trackmodified">TrackModified</a></dt>
 
@@ -758,9 +782,13 @@ indexing</td></tr>
       (<em>Apache HTTP Server 2.0.49 and later</em>)</dt>
 
       <dd>The <code>XHTML</code> keyword forces <code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code>
-      to emit XHTML 1.0 code instead of HTML 3.2.</dd>
+      to emit XHTML 1.0 code instead of HTML 3.2.
+      <strong>This option
+      only has an effect if <a href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a> is also enabled.</strong>
+      </dd>
 
     </dl>
+
 
    
    <dl><dt>Incremental IndexOptions</dt>
