@@ -60,7 +60,9 @@ configuration.</note>
    <p>The syntax of the <code>RewriteMap</code> directive is as
    follows:</p>
 
-<highlight language="config">RewriteMap <em>MapName</em> <em>MapType</em>:<em>MapSource</em></highlight>
+<highlight language="config">
+RewriteMap <em>MapName</em> <em>MapType</em>:<em>MapSource</em>
+</highlight>
 
     <p>The <a id="mapfunc" name="mapfunc"><em>MapName</em></a> is an
     arbitray name that you assign to the map, and which you will use in
@@ -84,15 +86,21 @@ configuration.</note>
 
     <p>For example, you can define a
       <directive>RewriteMap</directive> as:</p>
-    <highlight language="config">RewriteMap examplemap txt:/path/to/file/map.txt</highlight>
+    <highlight language="config">
+RewriteMap examplemap txt:/path/to/file/map.txt
+    </highlight>
     <p>You would then be able to use this map in a
       <directive>RewriteRule</directive> as follows:</p>
-<highlight language="config">RewriteRule ^/ex/(.*) ${examplemap:$1}</highlight>
+      <highlight language="config">
+RewriteRule ^/ex/(.*) ${examplemap:$1}
+      </highlight>
 
 <p>A default value can be specified in the event that nothing is found
 in the map:</p>
 
-<highlight language="config">RewriteRule ^/ex/(.*) ${examplemap:$1|/not_found.html}</highlight>
+<highlight language="config">
+RewriteRule ^/ex/(.*) ${examplemap:$1|/not_found.html}
+</highlight>
 
 <note><title>Per-directory and .htaccess context</title>
 <p>
@@ -139,7 +147,6 @@ may be used, and give examples of each.</p>
 
    <p> <strong>Redirect a URI to an all-lowercase version of itself</strong></p>
     <highlight language="config">
-
 RewriteMap lc int:tolower
 RewriteRule (.*?[A-Z]+.*) ${lc:$1} [R]
     </highlight>
@@ -211,7 +218,9 @@ telephone  328
     scope. If you're planning to use this in a <code>.htaccess</code>
     file, you'll need to remove the leading slash from the rewrite
     pattern in order for it to match anything:
-    <highlight language="config">RewriteRule ^product/(.*) /prods.php?id=${product2id:$1|NOTFOUND} [PT]</highlight>
+    <highlight language="config">
+RewriteRule ^product/(.*) /prods.php?id=${product2id:$1|NOTFOUND} [PT]
+    </highlight>
     </note>
 
     <note><title>Cached lookups</title>
@@ -362,10 +371,9 @@ by many requests.
 
     <p>A simple example is shown here which will replace all dashes with
     underscores in a request URI.</p>
-    
+
 <p><strong>Rewrite configuration</strong></p>
     <highlight language="config">
-
 RewriteMap d2u prg:/www/bin/dash2under.pl apache:apache<br />
 RewriteRule - ${d2u:%{REQUEST_URI}}
     </highlight>

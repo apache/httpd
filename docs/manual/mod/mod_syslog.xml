@@ -46,7 +46,9 @@
     in individual virtual hosts, the final facility specified affects the
     entire server.</p>
     
-    <highlight language="config">ErrorLog syslog:user</highlight>
+    <highlight language="config">
+ErrorLog syslog:user
+    </highlight>
 
 </section>
 

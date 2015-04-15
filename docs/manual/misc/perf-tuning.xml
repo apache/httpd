@@ -248,11 +248,15 @@ DocumentRoot "/www/htdocs"
       penalties. There's one case where you can speed up the server.
       Instead of using a wildcard such as:</p>
 
-      <highlight language="config">DirectoryIndex index</highlight>
+      <highlight language="config">
+DirectoryIndex index
+      </highlight>
 
       <p>Use a complete list of options:</p>
 
-      <highlight language="config">DirectoryIndex index.cgi index.pl index.shtml index.html</highlight>
+      <highlight language="config">
+DirectoryIndex index.cgi index.pl index.shtml index.html
+      </highlight>
 
       <p>where you list the most common choice first.</p>
 
@@ -431,10 +435,10 @@ DocumentRoot "/www/htdocs"
         one connection at a time.  Worker generally is a good
         choice for high-traffic servers because it has a smaller
         memory footprint than the prefork MPM.</li>
-        
-        <li>The <module>event</module> MPM is threaded like the 
-        Worker MPM, but is designed to allow more requests to be 
-        served simultaneously by passing off some processing work 
+
+        <li>The <module>event</module> MPM is threaded like the
+        Worker MPM, but is designed to allow more requests to be
+        served simultaneously by passing off some processing work
         to supporting threads, freeing up the main threads to work
         on new requests.</li>
 
@@ -644,7 +648,7 @@ DocumentRoot "/www/htdocs"
           <strong>accept_mutex_on ();</strong>
           for (;;) {
             fd_set accept_fds;
-            
+
             FD_ZERO (&amp;accept_fds);
             for (i = first_socket; i &lt;= last_socket; ++i) {
               FD_SET (i, &amp;accept_fds);
@@ -776,7 +780,7 @@ DocumentRoot "/www/htdocs"
         void lingering_close (int s)
         {
           char junk_buffer[2048];
-          
+
           /* shutdown the sending side */
           shutdown (s, 1);
 
@@ -793,7 +797,7 @@ DocumentRoot "/www/htdocs"
               /* just toss away whatever is here */
             }
           }
-          
+
           close (s);
         }
       </highlight>
@@ -1013,4 +1017,3 @@ DocumentRoot "/www/htdocs"
   </section>
 
 </manualpage>
-

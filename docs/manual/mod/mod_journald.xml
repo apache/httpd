@@ -75,7 +75,9 @@
     if the system supports it.
     </p>
     
-    <highlight language="config">ErrorLog journald</highlight>
+    <highlight language="config">
+ErrorLog journald
+    </highlight>
 
 </section>
 
