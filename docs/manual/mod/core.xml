@@ -738,6 +738,10 @@ named file-system directory, sub-directories, and their contents.</description>
 &lt;/Directory&gt;
     </highlight>
 
+    <p>Directory paths <em>may</em> be quoted, if you like, however, it
+    <em>must</em> be quoted if the path contains spaces. This is because a
+    space would otherwise indicate the end of an argument.</p>
+
     <note>
       <p>Be careful with the <var>directory-path</var> arguments:
       They have to literally match the filesystem path which Apache httpd uses
