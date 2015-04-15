@@ -121,6 +121,19 @@ Body:----------nl--
 <!--#include virtual="include/bottom.html" -->
 ----------nl--
 
+Content-language: nb
+Content-type: text/html; charset=UTF-8
+Body:----------nb--
+<!--#set var="CONTENT_LANGUAGE" value="nb"
+--><!--#set var="TITLE" value="Nødvendig forutsetning ikke oppfyllt!"
+--><!--#include virtual="include/top.html" -->
+
+    Den nødvendige forutsetningen for forespørselen passerte ikke
+    vurderingen med positivt resultat.
+
+<!--#include virtual="include/bottom.html" -->
+----------nb--
+
 Content-language: pl
 Content-type: text/html; charset=UTF-8
 Body:----------pl--

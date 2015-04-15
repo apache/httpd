@@ -256,6 +256,32 @@ Body:----------nl--
 <!--#include virtual="include/bottom.html" -->
 ----------nl--
 
+Content-language: nb
+Content-type: text/html; charset=UTF-8
+Body:----------nb--
+<!--#set var="CONTENT_LANGUAGE" value="nb"
+--><!--#set var="TITLE" value="Ressursen er ikke lenger tilgjengelig!"
+--><!--#include virtual="include/top.html" -->
+
+    Den ønskede adressen er ikke lenger tilgjengelig hos denne
+    serveren og det finnes ingen adresse for videresending.
+
+  <!--#if expr="-n v('HTTP_REFERER')" -->
+
+    Venligst informer forfatteren bak 
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">den
+    aktuelle siden</a> om at lenken er utdatert.
+ 
+  <!--#else -->
+
+    Om du fulgte en lenke fra en ekstern side, venligst kontakt
+    forfatteren bak den siden.
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------nb--
+
 Content-language: pl
 Content-type: text/html; charset=UTF-8
 Body:----------pl--
