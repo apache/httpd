@@ -176,7 +176,7 @@ HostnameLookups off
       filename component. For example, if you had:</p>
 
       <highlight language="config">
-DocumentRoot /www/htdocs
+DocumentRoot "/www/htdocs"
 &lt;Directory "/"&gt;
   Options SymLinksIfOwnerMatch
 &lt;/Directory&gt;
@@ -191,7 +191,7 @@ DocumentRoot /www/htdocs
       security checking you can do something like this:</p>
 
       <highlight language="config">
-DocumentRoot /www/htdocs
+DocumentRoot "/www/htdocs"
 &lt;Directory "/"&gt;
   Options FollowSymLinks
 &lt;/Directory&gt;
@@ -222,7 +222,7 @@ DocumentRoot /www/htdocs
       example,</p>
 
       <highlight language="config">
-DocumentRoot /www/htdocs
+DocumentRoot "/www/htdocs"
 &lt;Directory "/"&gt;
   AllowOverride all
 &lt;/Directory&gt;
