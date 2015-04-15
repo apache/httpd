@@ -111,19 +111,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic, rjung, trawick
 
-  *) mod_cgi, mod_cgid: If both modules get installed,
-     use IfModule for MPM to LoadModule mod_cgi for prefork
-     and mod_cgid for all other MPMs. PR 57379.
-     Previously when combined with --enable-load-all-modules
-     both modules were loaded and it was undefined
-     which one actually handled cgi requests.
-     Based on a patch by olli hauer <ohauer gmx.de>.
-     trunk patch: http://svn.apache.org/r1652955
-                  http://svn.apache.org/r1652985
-                  http://svn.apache.org/r1652989
-     2.4.x patch: trunk works
-     +1: rjung, ylavic, covener
-
   *) mod_proxy: Use the correct server name for SNI in case the backend
      SSL connection itself is established via a proxy server.  PR 57139
      trunk patch: http://svn.apache.org/r1634120
