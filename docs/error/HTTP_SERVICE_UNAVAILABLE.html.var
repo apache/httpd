@@ -141,6 +141,19 @@ Body:----------nl--
 <!--#include virtual="include/bottom.html" -->
 ----------nl--
 
+Content-language: nb
+Content-type: text/html; charset=UTF-8
+Body:----------nb--
+<!--#set var="CONTENT_LANGUAGE" value="nb"
+--><!--#set var="TITLE" value="Tjenesten er ikke tilgjengelig!"
+--><!--#include virtual="include/top.html" -->
+
+    Serveren er midlertidig ikke i stand til å utføre din
+    forespørsel. Vennligst prøv igjen senere.
+
+<!--#include virtual="include/bottom.html" -->
+----------nb--
+
 Content-language: pl
 Content-type: text/html; charset=ISO-8859-2
 Body:----------pl--
