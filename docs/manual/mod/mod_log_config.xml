@@ -344,9 +344,9 @@
 
       <note>
       <p>Note: The '^' character at the start of three-character formats
-      has no significance, but it must be the first character of any newly 
-      added three-character format to avoid potential conflicts with log 
-      formats that use literals adjacent to a format specifier, such as 
+      has no significance, but it must be the first character of any newly
+      added three-character format to avoid potential conflicts with log
+      formats that use literals adjacent to a format specifier, such as
       "%Dus".</p>
       </note>
 
@@ -554,7 +554,7 @@ CustomLog referer.log referer env=!localreferer
       LogFormat "%v %h %l %u %t \"%r\" %&gt;s %b" vhost_common
       </highlight>
     </example>
-    
+
 </usage>
 </directivesynopsis>
 

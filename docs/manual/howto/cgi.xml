@@ -577,4 +577,3 @@ foreach my $key (keys %ENV) {
     have found a problem in the Apache source code.</p>
   </section>
 </manualpage>
-

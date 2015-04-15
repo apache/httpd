@@ -39,7 +39,7 @@
     sites on a single IP address.</title>
 
     <p>Your server has multiple hostnames that resolve to a single address,
-    and you want to respond differently for <code>www.example.com</code> 
+    and you want to respond differently for <code>www.example.com</code>
     and <code>www.example.org</code>.</p>
 
     <note><title>Note</title><p>Creating virtual
@@ -58,7 +58,7 @@ Listen 80
 &lt;VirtualHost *:80&gt;
     DocumentRoot "/www/example1"
     ServerName www.example.com
-  
+
     # Other directives here
 &lt;/VirtualHost&gt;
 
@@ -88,8 +88,8 @@ Listen 80
             <title>Note</title>
 
            <p>You may replace <code>*</code> with a specific IP address
-           on the system.  Such virtual hosts will only be used for 
-           HTTP requests received on connection to the specified IP 
+           on the system.  Such virtual hosts will only be used for
+           HTTP requests received on connection to the specified IP
            address.</p>
 
            <p>However, it is additionally useful to use <code>*</code>
@@ -125,14 +125,14 @@ DocumentRoot "/www/mainserver"
 &lt;VirtualHost 172.20.30.50&gt;
     DocumentRoot "/www/example1"
     ServerName www.example.com
-    
+
     # Other directives here ...
 &lt;/VirtualHost&gt;
 
 &lt;VirtualHost 172.20.30.50&gt;
     DocumentRoot "/www/example2"
     ServerName www.example.org
-    
+
     # Other directives here ...
 &lt;/VirtualHost&gt;
     </highlight>
@@ -480,7 +480,7 @@ DocumentRoot "/www/example1"
     # primary vhost
     DocumentRoot "/www/subdomain"
     RewriteEngine On
-    RewriteRule . /www/subdomain/index.html
+    RewriteRule "." "/www/subdomain/index.html"
     # ...
 &lt;/VirtualHost&gt;
 
@@ -489,7 +489,7 @@ DocumentRoot "/www/example1"
     ServerName www.sub1.domain.tld
     ServerPath /sub1/
     RewriteEngine On
-    RewriteRule ^(/sub1/.*) /www/subdomain$1
+    RewriteRule "^(/sub1/.*)" "/www/subdomain$1"
     # ...
 &lt;/VirtualHost&gt;
 
@@ -498,7 +498,7 @@ DocumentRoot "/www/example1"
     ServerName www.sub2.domain.tld
     ServerPath /sub2/
     RewriteEngine On
-    RewriteRule ^(/sub2/.*) /www/subdomain$1
+    RewriteRule "^(/sub2/.*)" "/www/subdomain$1"
     # ...
 &lt;/VirtualHost&gt;
     </highlight>

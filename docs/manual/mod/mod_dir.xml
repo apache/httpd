@@ -287,18 +287,18 @@ later</compatibility>
 <compatibility>Available in 2.4.8 and later.  Releases prior to 2.4 implicitly
 act as if "DirectoryCheckHandler ON" was specified.</compatibility>
 <usage>
-    <p>The <directive>DirectoryCheckHandler</directive> directive determines 
+    <p>The <directive>DirectoryCheckHandler</directive> directive determines
     whether <module>mod_dir</module> should check for directory indexes or
     add trailing slashes when some other handler has been configured for
-    the current URL.  Handlers can be set by directives such as 
-    <directive module="core">SetHandler</directive> or by other modules at 
+    the current URL.  Handlers can be set by directives such as
+    <directive module="core">SetHandler</directive> or by other modules at
     runtime. </p>
 
     <p> In releases prior to 2.4, this module did not take any action if any
-    other handler was configured for a URL. This allows directory indexes to 
-    be served even when a <directive>SetHandler</directive> directive is 
+    other handler was configured for a URL. This allows directory indexes to
+    be served even when a <directive>SetHandler</directive> directive is
     specified for an entire directory, but it can also result in some conflicts
-    with other modules.</p> 
+    with other modules.</p>
 </usage>
 </directivesynopsis>
 

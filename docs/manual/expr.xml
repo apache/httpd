@@ -566,7 +566,7 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
 </section>
 
 <section id="examples">
-    
+
 	<title>Example expressions</title>
     <p>The following examples show how expressions might be used to
     evaluate requests:</p>
@@ -586,7 +586,7 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
 # Only allow access to this content during business hours
 &lt;Directory "/foo/bar/business"&gt;
     Require expr %{TIME_HOUR} -gt 9 &amp;&amp; %{TIME_HOUR} -lt 17
-&lt;/Directory&gt;	
+&lt;/Directory&gt;
 
 # Check a HTTP header for a list of values
 &lt;If "%{HTTP:X-example-header} in { 'foo', 'bar', 'baz' }"&gt;

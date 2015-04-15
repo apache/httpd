@@ -373,7 +373,7 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="DeflateInflateRatioBurst" id="DeflateInflateRatioBurst">DeflateInflateRatioBurst</a> <a name="deflateinflateratioburst" id="deflateinflateratioburst">ディレクティブ</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Maximum number of times the inflation ratio for request bodies 
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Maximum number of times the inflation ratio for request bodies
              can be crossed</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>DeflateInflateRatioBurst <var>value</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>3</code></td></tr>

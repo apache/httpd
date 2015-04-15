@@ -137,7 +137,7 @@
     <dd>Content types that are syntactically invalid or blank can be detected
 	and the request rejected. Types can be restricted to a specific list
 	containing optional wildcards ? and *.</dd>
-    
+
     <dt><strong><a href="../compliance.html#policylength">POLICY_LENGTH</a>
     </strong>: Enforce the presence of a Content-Length</dt>
     <dd>The length of responses can be specified in one of three ways, by
@@ -231,31 +231,31 @@
     <pre class="prettyprint lang-config">&lt;Location "/"&gt;
   SetOutputFilter POLICY_TYPE;POLICY_LENGTH;POLICY_KEEPALIVE;POLICY_VARY;POLICY_VALIDATION; \
     POLICY_CONDITIONAL;POLICY_NOCACHE;POLICY_MAXAGE;POLICY_VERSION
-  
+
   # content type must be present and valid, but can be anything
   PolicyType enforce */*
-  
+
   # reject if no explicitly declared content length
   PolicyLength enforce
-  
+
   # covered by the policy length filter
   PolicyKeepalive ignore
-  
+
   # reject if User-Agent appears within Vary headers
   PolicyVary enforce User-Agent
-  
+
   # we want to enforce validation
   PolicyValidation enforce
-  
+
   # non-functional conditional responses should be rejected
   PolicyConditional enforce
-  
+
   # no-cache responses should be rejected
   PolicyNocache enforce
-  
+
   # maxage must be at least a day
   PolicyMaxage enforce 86400
-  
+
   # request version can be anything
   PolicyVersion ignore HTTP/1.1
 &lt;/Location&gt;

@@ -52,7 +52,7 @@
     a new location.</p>
 
     <p>When the <code class="directive"><a href="#alias">Alias</a></code>,
-    <code class="directive"><a href="#scriptalias">ScriptAlias</a></code> and 
+    <code class="directive"><a href="#scriptalias">ScriptAlias</a></code> and
     <code class="directive"><a href="#redirect">Redirect</a></code> directives are used
     within a <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>
     or <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code>
@@ -116,13 +116,13 @@ Alias "/foo"     "/gaq"</pre>
     ignored.</p>
 
     <p>When the <code class="directive"><a href="#alias">Alias</a></code>,
-    <code class="directive"><a href="#scriptalias">ScriptAlias</a></code> and 
+    <code class="directive"><a href="#scriptalias">ScriptAlias</a></code> and
     <code class="directive"><a href="#redirect">Redirect</a></code> directives are used
     within a <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>
     or <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code>
     section, these directives will take precedence over any globally
     defined <code class="directive"><a href="#alias">Alias</a></code>,
-    <code class="directive"><a href="#scriptalias">ScriptAlias</a></code> and 
+    <code class="directive"><a href="#scriptalias">ScriptAlias</a></code> and
     <code class="directive"><a href="#redirect">Redirect</a></code> directives.</p>
 
 </div>
@@ -184,7 +184,7 @@ Alias "/foo"     "/gaq"</pre>
 &lt;/Directory&gt;</pre>
 
 
-    <p>Any number slashes in the <var>URL-path</var> parameter 
+    <p>Any number slashes in the <var>URL-path</var> parameter
     matches any number of slashes in the requested URL-path.</p>
 
     <p>If the <code class="directive">Alias</code> directive is used within a

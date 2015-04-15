@@ -61,9 +61,9 @@
     <p>These variables can be for example used to show only log messages
     for particular URI using <code>journalctl</code>:
     </p>
-    
+
     <highlight>journalctl REQUEST_URI=/index.html -a</highlight>
-    
+
     <p>For more examples, see systemd-journalctl documentation.</p>
 </section>
 
@@ -74,7 +74,7 @@
     instead of a filename enables logging via systemd-journald(8)
     if the system supports it.
     </p>
-    
+
     <highlight language="config">
 ErrorLog journald
     </highlight>

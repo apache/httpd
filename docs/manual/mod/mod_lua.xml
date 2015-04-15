@@ -48,9 +48,9 @@ at any time, even between stable releases of the 2.4.x series.
 Be sure to check the CHANGES file before upgrading.</note>
 
 <note type="warning"><title>Warning</title>
-<p>This module holds a great deal of power over httpd, which is both a 
-strength and a potential security risk. It is <strong>not</strong> recommended 
-that you use this module on a server that is shared with users you do not 
+<p>This module holds a great deal of power over httpd, which is both a
+strength and a potential security risk. It is <strong>not</strong> recommended
+that you use this module on a server that is shared with users you do not
 trust, as it can be abused to change the internal workings of httpd.</p>
 </note>
 
@@ -217,26 +217,26 @@ performing access control, or setting mime types:</p>
     <tr>
         <td>Quick handler</td>
         <td><directive module="mod_lua">LuaQuickHandler</directive></td>
-        <td>This is the first hook that will be called after a request has 
+        <td>This is the first hook that will be called after a request has
             been mapped to a host or virtual host</td>
     </tr>
     <tr>
         <td>Translate name</td>
         <td><directive module="mod_lua">LuaHookTranslateName</directive></td>
-        <td>This phase translates the requested URI into a filename on the 
+        <td>This phase translates the requested URI into a filename on the
             system. Modules such as <module>mod_alias</module> and
             <module>mod_rewrite</module> operate in this phase.</td>
     </tr>
     <tr>
         <td>Map to storage</td>
         <td><directive module="mod_lua">LuaHookMapToStorage</directive></td>
-        <td>This phase maps files to their physical, cached or external/proxied storage. 
+        <td>This phase maps files to their physical, cached or external/proxied storage.
             It can be used by proxy or caching modules</td>
     </tr>
     <tr>
         <td>Check Access</td>
         <td><directive module="mod_lua">LuaHookAccessChecker</directive></td>
-        <td>This phase checks whether a client has access to a resource. This 
+        <td>This phase checks whether a client has access to a resource. This
             phase is run before the user is authenticated, so beware.
         </td>
     </tr>
@@ -247,42 +247,42 @@ performing access control, or setting mime types:</p>
     </tr>
     <tr>
         <td>Check Authorization</td>
-        <td><directive module="mod_lua">LuaHookAuthChecker</directive> or 
+        <td><directive module="mod_lua">LuaHookAuthChecker</directive> or
             <directive module="mod_lua">LuaAuthzProvider</directive></td>
-        <td>This phase authorizes a user based on the negotiated credentials, such as 
+        <td>This phase authorizes a user based on the negotiated credentials, such as
             user ID, client certificate etc.
         </td>
     </tr>
     <tr>
         <td>Check Type</td>
         <td><directive module="mod_lua">LuaHookTypeChecker</directive></td>
-        <td>This phase checks the requested file and assigns a content type and 
+        <td>This phase checks the requested file and assigns a content type and
             a handler to it</td>
     </tr>
     <tr>
         <td>Fixups</td>
         <td><directive module="mod_lua">LuaHookFixups</directive></td>
-        <td>This is the final "fix anything" phase before the content handlers 
+        <td>This is the final "fix anything" phase before the content handlers
             are run. Any last-minute changes to the request should be made here.</td>
     </tr>
     <tr>
         <td>Content handler</td>
         <td>fx. <code>.lua</code> files or through <directive module="mod_lua">LuaMapHandler</directive></td>
-        <td>This is where the content is handled. Files are read, parsed, some are run, 
+        <td>This is where the content is handled. Files are read, parsed, some are run,
             and the result is sent to the client</td>
     </tr>
     <tr>
         <td>Logging</td>
         <td><directive module="mod_lua">LuaHookLog</directive></td>
-        <td>Once a request has been handled, it enters several logging phases, 
+        <td>Once a request has been handled, it enters several logging phases,
             which logs the request in either the error or access log. Mod_lua
             is able to hook into the start of this and control logging output.</td>
     </tr>
 
 </table>
 
-<p>Hook functions are passed the request object as their only argument 
-(except for LuaAuthzProvider, which also gets passed the arguments from 
+<p>Hook functions are passed the request object as their only argument
+(except for LuaAuthzProvider, which also gets passed the arguments from
 the Require directive).
 They can return any value, depending on the hook, but most commonly
 they'll return OK, DONE, or DECLINED, which you can write in Lua as
@@ -359,21 +359,21 @@ end
           <td><code>ap_auth_type</code></td>
           <td>string</td>
           <td>no</td>
-          <td>If an authentication check was made, this is set to the type 
+          <td>If an authentication check was made, this is set to the type
           of authentication (f.x. <code>basic</code>)</td>
         </tr>
         <tr>
           <td><code>args</code></td>
           <td>string</td>
           <td>yes</td>
-          <td>The query string arguments extracted from the request 
+          <td>The query string arguments extracted from the request
             (f.x. <code>foo=bar&amp;name=johnsmith</code>)</td>
         </tr>
         <tr>
           <td><code>assbackwards</code></td>
           <td>boolean</td>
           <td>no</td>
-          <td>Set to true if this is an HTTP/0.9 style request 
+          <td>Set to true if this is an HTTP/0.9 style request
             (e.g. <code>GET /foo</code> (with no headers) )</td>
         </tr>
         <tr>
@@ -410,7 +410,7 @@ end
           <td><code>content_type</code></td>
           <td>string</td>
           <td>yes</td>
-          <td>The content type of the current request, as determined in the 
+          <td>The content type of the current request, as determined in the
             type_check phase (f.x. <code>image/gif</code> or <code>text/html</code>)</td>
         </tr>
         <tr>
@@ -443,18 +443,18 @@ end
           <td><code>filename</code></td>
           <td>string</td>
           <td>yes</td>
-          <td>The file name that the request maps to, f.x. /www/example.com/foo.txt. This can be 
-            changed in the translate-name or map-to-storage phases of a request to allow the 
+          <td>The file name that the request maps to, f.x. /www/example.com/foo.txt. This can be
+            changed in the translate-name or map-to-storage phases of a request to allow the
             default handler (or script handlers) to serve a different file than what was requested.</td>
         </tr>
         <tr>
           <td><code>handler</code></td>
           <td>string</td>
           <td>yes</td>
-          <td>The name of the <a href="../handler.html">handler</a> that should serve this request, f.x. 
-            <code>lua-script</code> if it is to be served by mod_lua. This is typically set by the 
-            <directive module="mod_mime">AddHandler</directive> or <directive module="core">SetHandler</directive> 
-            directives, but could also be set via mod_lua to allow another handler to serve up a specific request 
+          <td>The name of the <a href="../handler.html">handler</a> that should serve this request, f.x.
+            <code>lua-script</code> if it is to be served by mod_lua. This is typically set by the
+            <directive module="mod_mime">AddHandler</directive> or <directive module="core">SetHandler</directive>
+            directives, but could also be set via mod_lua to allow another handler to serve up a specific request
             that would otherwise not be served by it.
             </td>
         </tr>
@@ -463,7 +463,7 @@ end
           <td><code>headers_in</code></td>
           <td>table</td>
           <td>yes</td>
-          <td>MIME header environment from the request. This contains headers such as <code>Host, 
+          <td>MIME header environment from the request. This contains headers such as <code>Host,
             User-Agent, Referer</code> and so on.</td>
         </tr>
         <tr>
@@ -542,7 +542,7 @@ end
           <td><code>proxyreq</code></td>
           <td>string</td>
           <td>yes</td>
-          <td>Denotes whether this is a proxy request or not. This value is generally set in 
+          <td>Denotes whether this is a proxy request or not. This value is generally set in
             the post_read_request/translate_name phase of a request.</td>
         </tr>
         <tr>
@@ -657,7 +657,7 @@ end
 </highlight>
 
 <highlight language="lua">
-r:parseargs() -- returns two tables; one standard key/value table for regular GET data, 
+r:parseargs() -- returns two tables; one standard key/value table for regular GET data,
               -- and one for multi-value data (fx. foo=1&amp;foo=2&amp;foo=3):
 
 local GET, GETMULTI = r:parseargs()
@@ -667,9 +667,9 @@ r:puts("Your name is: " .. GET['name'] or "Unknown")
 <highlight language="lua">
 r:parsebody([sizeLimit]) -- parse the request body as a POST and return two lua tables,
                          -- just like r:parseargs().
-                         -- An optional number may be passed to specify the maximum number 
+                         -- An optional number may be passed to specify the maximum number
                          -- of bytes to parse. Default is 8192 bytes:
-                 
+
 local POST, POSTMULTI = r:parsebody(1024*1024)
 r:puts("Your name is: " .. POST['name'] or "Unknown")
 </highlight>
@@ -727,7 +727,7 @@ local unescaped = r:unescape(url) -- returns 'http://foo.bar/1 2 3 &amp; 4 + 5'
 <highlight language="lua">
 r:construct_url(string) -- Constructs an URL from an URI
 
-local url = r:construct_url(r.uri) 
+local url = r:construct_url(r.uri)
 </highlight>
 
 <highlight language="lua">
@@ -770,7 +770,7 @@ r:clock() -- Returns the current time with microsecond precision
 r:requestbody(filename) -- Reads and returns the request body of a request.
                 -- If 'filename' is specified, it instead saves the
                 -- contents to that file:
-                
+
 local input = r:requestbody()
 r:puts("You sent the following request body to me:\n")
 r:puts(input)
@@ -800,12 +800,12 @@ end
 </highlight>
 
 <highlight language="lua">
-r:runtime_dir_relative(filename) -- Compute the name of a run-time file (e.g., shared memory "file") 
-                         -- relative to the appropriate run-time directory. 
+r:runtime_dir_relative(filename) -- Compute the name of a run-time file (e.g., shared memory "file")
+                         -- relative to the appropriate run-time directory.
 </highlight>
 
 <highlight language="lua">
-r:server_info() -- Returns a table containing server information, such as 
+r:server_info() -- Returns a table containing server information, such as
                 -- the name of the httpd executable file, mpm used etc.
 </highlight>
 
@@ -834,9 +834,9 @@ r:escape_logitem(string) -- Escapes a string for logging
 <highlight language="lua">
 r.strcmp_match(string, pattern) -- Checks if 'string' matches 'pattern' using strcmp_match (globs).
                         -- fx. whether 'www.example.com' matches '*.example.com':
-                        
+
 local match = r.strcmp_match("foobar.com", "foo*.com")
-if match then 
+if match then
     r:puts("foobar.com matches foo*.com")
 end
 </highlight>
@@ -857,7 +857,7 @@ r:send_interim_response(clear) -- Sends an interim (1xx) response to the client.
 <highlight language="lua">
 r:custom_response(status_code, string) -- Construct and set a custom response for a given status code.
                                -- This works much like the ErrorDocument directive:
-                               
+
 r:custom_response(404, "Baleted!")
 </highlight>
 
@@ -911,12 +911,12 @@ r:dbacquire(dbType[, dbParams]) -- Acquires a connection to a database and retur
 r:ivm_set("key", value) -- Set an Inter-VM variable to hold a specific value.
                         -- These values persist even though the VM is gone or not being used,
                         -- and so should only be used if MaxConnectionsPerChild is > 0
-                        -- Values can be numbers, strings and booleans, and are stored on a 
+                        -- Values can be numbers, strings and booleans, and are stored on a
                         -- per process basis (so they won't do much good with a prefork mpm)
-                        
+
 r:ivm_get("key")        -- Fetches a variable set by ivm_set. Returns the contents of the variable
                         -- if it exists or nil if no such variable exists.
-                        
+
 -- An example getter/setter that saves a global variable outside the VM:
 function handle(r)
     -- First VM to call this will get no value, and will have to create it
@@ -1095,10 +1095,10 @@ r:activeconfig() -- Get a walkable tree of the active (virtualhost-specific) htt
 <section id="modifying_buckets">
     <title>Modifying contents with Lua filters</title>
     <p>
-    Filter functions implemented via <directive module="mod_lua">LuaInputFilter</directive> 
-    or <directive module="mod_lua">LuaOutputFilter</directive> are designed as 
-    three-stage non-blocking functions using coroutines to suspend and resume a 
-    function as buckets are sent down the filter chain. The core structure of 
+    Filter functions implemented via <directive module="mod_lua">LuaInputFilter</directive>
+    or <directive module="mod_lua">LuaOutputFilter</directive> are designed as
+    three-stage non-blocking functions using coroutines to suspend and resume a
+    function as buckets are sent down the filter chain. The core structure of
     such a function is:
     </p>
     <highlight language="lua">
@@ -1110,11 +1110,11 @@ function filter(r)
         return -- This would skip this filter.
     end
     -- Regardless of whether we have data to prepend, a yield MUST be called here.
-    -- Note that only output filters can prepend data. Input filters must use the 
+    -- Note that only output filters can prepend data. Input filters must use the
     -- final stage to append data to the content.
     coroutine.yield([optional header to be prepended to the content])
-    
-    -- After we have yielded, buckets will be sent to us, one by one, and we can 
+
+    -- After we have yielded, buckets will be sent to us, one by one, and we can
     -- do whatever we want with them and then pass on the result.
     -- Buckets are stored in the global variable 'bucket', so we create a loop
     -- that checks if 'bucket' is not nil:
@@ -1123,9 +1123,9 @@ function filter(r)
         coroutine.yield(output) -- Return our new content to the filter chain
     end
 
-    -- Once the buckets are gone, 'bucket' is set to nil, which will exit the 
+    -- Once the buckets are gone, 'bucket' is set to nil, which will exit the
     -- loop and land us here. Anything extra we want to append to the content
-    -- can be done by doing a final yield here. Both input and output filters 
+    -- can be done by doing a final yield here. Both input and output filters
     -- can append data to the content in this phase.
     coroutine.yield([optional footer to be appended to the content])
 end
@@ -1208,7 +1208,7 @@ local connected = database:active()
     </section>
     <section id="result_sets">
     <title>Working with result sets</title>
-    <p>The result set returned by <code>db:select</code> or by the prepared statement functions 
+    <p>The result set returned by <code>db:select</code> or by the prepared statement functions
     created through <code>db:prepare</code> can be used to
     fetch rows synchronously or asynchronously, depending on the row number specified:<br/>
     <code>result(0)</code> fetches all rows in a synchronous manner, returning a table of rows.<br/>
@@ -1224,7 +1224,7 @@ local row = result(-1) -- Fetch the next available row, asynchronously
 local row = result(1234) -- Fetch row number 1234, asynchronously
 local row = result(-1, true) -- Fetch the next available row, using row names as key indexes.
     </highlight>
-    <p>One can construct a function that returns an iterative function to iterate over all rows 
+    <p>One can construct a function that returns an iterative function to iterate over all rows
     in a synchronous or asynchronous way, depending on the async argument:
     </p>
     <highlight language="lua">
@@ -1266,8 +1266,8 @@ end
         <title>Closing a database connection</title>
 
     <p>Database handles should be closed using <code>database:close()</code> when they are no longer
-    needed. If you do not close them manually, they will eventually be garbage collected and 
-    closed by mod_lua, but you may end up having too many unused connections to the database 
+    needed. If you do not close them manually, they will eventually be garbage collected and
+    closed by mod_lua, but you may end up having too many unused connections to the database
     if you leave the closing up to mod_lua. Essentially, the following two measures are
     the same:
     </p>
@@ -1284,11 +1284,11 @@ collectgarbage() -- close the handle via GC
     </section>
     <section id="database_caveat">
     <title>Precautions when working with databases</title>
-    <p>Although the standard <code>query</code> and <code>run</code> functions are freely 
-    available, it is recommended that you use prepared statements whenever possible, to 
-    both optimize performance (if your db handle lives on for a long time) and to minimize 
+    <p>Although the standard <code>query</code> and <code>run</code> functions are freely
+    available, it is recommended that you use prepared statements whenever possible, to
+    both optimize performance (if your db handle lives on for a long time) and to minimize
     the risk of SQL injection attacks. <code>run</code> and <code>query</code> should only
-    be used when there are no variables inserted into a statement (a static statement). 
+    be used when there are no variables inserted into a statement (a static statement).
     When using dynamic statements, use <code>db:prepare</code> or <code>db:prepared</code>.
     </p>
     </section>
@@ -1335,27 +1335,27 @@ collectgarbage() -- close the handle via GC
 
     <dt>conn:</dt> <dd>Same as request but attached to the connection_rec</dd>
 
-    <dt>thread:</dt> <dd>Use the interpreter for the lifetime of the thread 
+    <dt>thread:</dt> <dd>Use the interpreter for the lifetime of the thread
             handling the request (only available with threaded MPMs).</dd>
 
     <dt>server:</dt>  <dd>This one is different than others because the
             server scope is quite long lived, and multiple threads
             will have the same server_rec. To accommodate this,
             server scoped Lua states are stored in an apr
-            resource list. The <code>min</code> and <code>max</code> arguments 
-            specify the minimum and maximum number of Lua states to keep in the 
+            resource list. The <code>min</code> and <code>max</code> arguments
+            specify the minimum and maximum number of Lua states to keep in the
             pool.</dd>
    </dl>
     <p>
-    Generally speaking, the <code>thread</code> and <code>server</code> scopes 
-    execute roughly 2-3 times faster than the rest, because they don't have to 
-    spawn new Lua states on every request (especially with the event MPM, as 
-    even keepalive requests will use a new thread for each request). If you are 
-    satisfied that your scripts will not have problems reusing a state, then 
-    the <code>thread</code> or <code>server</code> scopes should be used for 
-    maximum performance. While the <code>thread</code> scope will provide the 
-    fastest responses, the <code>server</code> scope will use less memory, as 
-    states are pooled, allowing f.x. 1000 threads to share only 100 Lua states, 
+    Generally speaking, the <code>thread</code> and <code>server</code> scopes
+    execute roughly 2-3 times faster than the rest, because they don't have to
+    spawn new Lua states on every request (especially with the event MPM, as
+    even keepalive requests will use a new thread for each request). If you are
+    satisfied that your scripts will not have problems reusing a state, then
+    the <code>thread</code> or <code>server</code> scopes should be used for
+    maximum performance. While the <code>thread</code> scope will provide the
+    fastest responses, the <code>server</code> scope will use less memory, as
+    states are pooled, allowing f.x. 1000 threads to share only 100 Lua states,
     thus using only 10% of the memory required by the <code>thread</code> scope.
     </p>
 </usage>
@@ -1373,7 +1373,7 @@ collectgarbage() -- close the handle via GC
     <p>This directive matches a uri pattern to invoke a specific
     handler function in a specific file. It uses PCRE regular
     expressions to match the uri, and supports interpolating
-    match groups into both the file path and the function name. 
+    match groups into both the file path and the function name.
     Be careful writing your regular expressions to avoid security
     issues.</p>
    <example><title>Examples:</title>
@@ -1515,7 +1515,7 @@ end
    type="section" module="core">Files</directive>, or htaccess
    context.</p></note>
 
-   <note><title>Ordering</title><p>The optional arguments "early" or "late" 
+   <note><title>Ordering</title><p>The optional arguments "early" or "late"
    control when this script runs relative to other modules.</p></note>
 
 </usage>
@@ -1548,11 +1548,11 @@ processing</description>
 <override>All</override>
 <usage>
 <p>
-    This simple logging hook allows you to run a function when httpd enters the 
-    logging phase of a request. With it, you can append data to your own logs, 
-    manipulate data before the regular log is written, or prevent a log entry 
+    This simple logging hook allows you to run a function when httpd enters the
+    logging phase of a request. With it, you can append data to your own logs,
+    manipulate data before the regular log is written, or prevent a log entry
     from being created. To prevent the usual logging from happening, simply return
-    <code>apache2.DONE</code> in your logging handler, otherwise return 
+    <code>apache2.DONE</code> in your logging handler, otherwise return
     <code>apache2.OK</code> to tell httpd to log as normal.
 </p>
 <p>Example:</p>
@@ -1565,7 +1565,7 @@ function logger(r)
     -- flip a coin:
     -- If 1, then we write to our own Lua log and tell httpd not to log
     -- in the main log.
-    -- If 2, then we just sanitize the output a bit and tell httpd to 
+    -- If 2, then we just sanitize the output a bit and tell httpd to
     -- log the sanitized bits.
 
     if math.random(1,2) == 1 then
@@ -1595,7 +1595,7 @@ end
 </contextlist>
 <override>All</override>
     <usage>
-    <p>Like <directive>LuaHookTranslateName</directive> but executed at the 
+    <p>Like <directive>LuaHookTranslateName</directive> but executed at the
     map-to-storage phase of a request. Modules like mod_cache run at this phase,
     which makes for an interesting example on what to do here:</p>
     <highlight language="config">
@@ -1605,7 +1605,7 @@ end
 require"apache2"
 cached_files = {}
 
-function read_file(filename) 
+function read_file(filename)
     local input = io.open(filename, "r")
     if input then
         local data = input:read("*a")
@@ -1647,7 +1647,7 @@ end
 <!-- Third argument does not work at the moment!
 <compatibility>The optional third argument is supported in 2.3.15 and later</compatibility>
 <usage><p>...</p>
-   <note><title>Ordering</title><p>The optional arguments "early" or "late" 
+   <note><title>Ordering</title><p>The optional arguments "early" or "late"
    control when this script runs relative to other modules.</p></note>
 </usage>
 -->
@@ -1662,8 +1662,8 @@ end
 </contextlist>
 <override>All</override>
     <usage><p>
-    This directive provides a hook for the type_checker phase of the request processing. 
-    This phase is where requests are assigned a content type and a handler, and thus can 
+    This directive provides a hook for the type_checker phase of the request processing.
+    This phase is where requests are assigned a content type and a handler, and thus can
     be used to modify the type and handler based on input:
     </p>
     <highlight language="config">
@@ -1730,7 +1730,7 @@ function authcheck_hook(r)
    return apache2.OK
 end
 </highlight>
-   <note><title>Ordering</title><p>The optional arguments "early" or "late" 
+   <note><title>Ordering</title><p>The optional arguments "early" or "late"
    control when this script runs relative to other modules.</p></note>
 </usage>
 </directivesynopsis>
@@ -1747,7 +1747,7 @@ end
 <usage>
 <p>Add your hook to the access_checker phase.  An access checker
 hook function usually returns OK, DECLINED, or HTTP_FORBIDDEN.</p>
-   <note><title>Ordering</title><p>The optional arguments "early" or "late" 
+   <note><title>Ordering</title><p>The optional arguments "early" or "late"
    control when this script runs relative to other modules.</p></note>
 </usage>
 </directivesynopsis>
@@ -1778,7 +1778,7 @@ hook function usually returns OK, DECLINED, or HTTP_FORBIDDEN.</p>
     more specific section are run <em>after</em> those defined in the more
     generic section (LuaInherit parent-first).  You can reverse this order, or
     make the parent context not apply at all.</p>
-    
+
     <p> In previous 2.3.x releases, the default was effectively to ignore LuaHook*
     directives from parent configuration sections.</p></usage>
 </directivesynopsis>
@@ -1792,12 +1792,12 @@ hook function usually returns OK, DECLINED, or HTTP_FORBIDDEN.</p>
 <override>All</override>
 <usage>
     <p>
-    This phase is run immediately after the request has been mapped to a virtal host, 
-    and can be used to either do some request processing before the other phases kick 
-    in, or to serve a request without the need to translate, map to storage et cetera. 
+    This phase is run immediately after the request has been mapped to a virtal host,
+    and can be used to either do some request processing before the other phases kick
+    in, or to serve a request without the need to translate, map to storage et cetera.
     As this phase is run before anything else, directives such as <directive
    type="section" module="core">Location</directive> or <directive
-   type="section" module="core">Directory</directive> are void in this phase, just as 
+   type="section" module="core">Directory</directive> are void in this phase, just as
     URIs have not been properly parsed yet.
     </p>
    <note><title>Context</title><p>This directive is not valid in <directive
@@ -1847,12 +1847,12 @@ end
 <compatibility>2.4.5 and later</compatibility>
 
 <usage>
-<p>Provides a means of adding a Lua function as an input filter. 
-As with output filters, input filters work as coroutines, 
-first yielding before buffers are sent, then yielding whenever 
-a bucket needs to be passed down the chain, and finally (optionally) 
-yielding anything that needs to be appended to the input data. The 
-global variable <code>bucket</code> holds the buckets as they are passed 
+<p>Provides a means of adding a Lua function as an input filter.
+As with output filters, input filters work as coroutines,
+first yielding before buffers are sent, then yielding whenever
+a bucket needs to be passed down the chain, and finally (optionally)
+yielding anything that needs to be appended to the input data. The
+global variable <code>bucket</code> holds the buckets as they are passed
 onto the Lua script:
 </p>
 
@@ -1890,7 +1890,7 @@ function input_filter(r)
 end
 </highlight>
 <p>
-See "<a href="#modifying_buckets">Modifying contents with Lua 
+See "<a href="#modifying_buckets">Modifying contents with Lua
 filters</a>" for more information.
 </p>
 </usage>
@@ -1904,12 +1904,12 @@ filters</a>" for more information.
 <compatibility>2.4.5 and later</compatibility>
 
 <usage>
-<p>Provides a means of adding a Lua function as an output filter. 
-As with input filters, output filters work as coroutines, 
-first yielding before buffers are sent, then yielding whenever 
-a bucket needs to be passed down the chain, and finally (optionally) 
-yielding anything that needs to be appended to the input data. The 
-global variable <code>bucket</code> holds the buckets as they are passed 
+<p>Provides a means of adding a Lua function as an output filter.
+As with input filters, output filters work as coroutines,
+first yielding before buffers are sent, then yielding whenever
+a bucket needs to be passed down the chain, and finally (optionally)
+yielding anything that needs to be appended to the input data. The
+global variable <code>bucket</code> holds the buckets as they are passed
 onto the Lua script:
 </p>
 
@@ -1934,7 +1934,7 @@ function output_filter(r)
 end
 </highlight>
 <p>
-As with the input filter, the output filter supports denying/skipping a filter 
+As with the input filter, the output filter supports denying/skipping a filter
 if it is deemed unwanted:
 </p>
 <highlight language="lua">
@@ -1947,13 +1947,13 @@ function output_filter(r)
 end
 </highlight>
 <note><title>Lua filters with <module>mod_filter</module></title>
-<p> When a Lua filter is used as the underlying provider via the 
-<directive module="mod_filter">FilterProvider</directive> directive, filtering 
+<p> When a Lua filter is used as the underlying provider via the
+<directive module="mod_filter">FilterProvider</directive> directive, filtering
 will only work when the <var>filter-name</var> is identical to the <var>provider-name</var>.
 </p> </note>
 
 <p>
-See "<a href="#modifying_buckets">Modifying contents with Lua filters</a>" for more 
+See "<a href="#modifying_buckets">Modifying contents with Lua filters</a>" for more
 information.
 </p>
 

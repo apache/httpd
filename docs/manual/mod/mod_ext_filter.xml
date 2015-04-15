@@ -73,7 +73,7 @@ ExtFilterDefine c-to-html mode=output \
     # core directive to cause the new filter to
     # be run on output
     SetOutputFilter c-to-html
-    
+
     # mod_mime directive to set the type of .c
     # files to text/c
     AddType text/c .c
@@ -91,11 +91,11 @@ ExtFilterDefine c-to-html mode=output \
 ExtFilterDefine gzip mode=output cmd=/bin/gzip
 
 &lt;Location "/gzipped"&gt;
-    
+
     # core directive to cause the gzip filter to be
     # run on output
     SetOutputFilter gzip
-    
+
     # mod_headers directive to add
     # "Content-Encoding: gzip" header field
     Header set Content-Encoding gzip

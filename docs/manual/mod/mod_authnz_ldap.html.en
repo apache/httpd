@@ -1160,8 +1160,8 @@ evaluated before the user search is discontinued.</td></tr>
    <div class="note"><h3>Nested groups performance</h3>
    <p> When <code class="directive">AuthLDAPSubGroupAttribute</code> overlaps with
    <code class="directive">AuthLDAPGroupAttribute</code> (as it does by default and
-   as required by common LDAP schemas), uncached searching for subgroups in 
-   large groups can be very slow. If you use large, non-nested groups, keep 
+   as required by common LDAP schemas), uncached searching for subgroups in
+   large groups can be very slow. If you use large, non-nested groups, keep
    <code class="directive">AuthLDAPMaxSubGroupDepth</code> set to zero.</p>
    </div>
 
@@ -1188,7 +1188,7 @@ query to set the REMOTE_USER environment variable</td></tr>
     directive is useful should you want people to log into a website
     using an email address, but a backend application expects the
     username as a userid.</p>
-    <p> This directive only has effect when this module is used for 
+    <p> This directive only has effect when this module is used for
     authentication.</p>
 
 </div>

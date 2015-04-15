@@ -72,7 +72,7 @@ have been deprecated by the new authz refactoring.  Please see
     in a <code class="directive"><a href="../mod/core.html#limit">&lt;Limit&gt;</a></code> section.</p>
 
     <div class="note"> <h3>Merging of configuration sections</h3>
-      <p>When any directive provided by this module is used in a new 
+      <p>When any directive provided by this module is used in a new
       configuration section, no directives provided by this module are
       inherited from previous configuration sections.</p>
     </div>
@@ -211,7 +211,7 @@ Allow from 2001:db8::a00:20ff:fea7:ccea/10</pre>
     others will be denied.</p>
 
     <div class="note"> <h3>Merging of configuration sections</h3>
-      <p>When any directive provided by this module is used in a new 
+      <p>When any directive provided by this module is used in a new
       configuration section, no directives provided by this module are
       inherited from previous configuration sections.</p>
     </div>
@@ -381,7 +381,7 @@ Deny from foo.example.org</pre>
     work</a>.</p>
 
     <div class="note"> <h3>Merging of configuration sections</h3>
-      <p>When any directive provided by this module is used in a new 
+      <p>When any directive provided by this module is used in a new
       configuration section, no directives provided by this module are
       inherited from previous configuration sections.</p>
     </div>
@@ -445,7 +445,7 @@ Satisfy Any</pre>
     be restricted to particular methods by <code class="directive"><a href="../mod/core.html#limit">&lt;Limit&gt;</a></code> and <code class="directive"><a href="../mod/core.html#limitexcept">&lt;LimitExcept&gt;</a></code> sections.</p>
 
     <div class="note"> <h3>Merging of configuration sections</h3>
-      <p>When any directive provided by this module is used in a new 
+      <p>When any directive provided by this module is used in a new
       configuration section, no directives provided by this module are
       inherited from previous configuration sections.</p>
     </div>

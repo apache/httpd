@@ -69,7 +69,7 @@
     <p>If a directory is requested (i.e. a path ending with
     <code>/</code>), the file served from that directory is defined by
     the <code class="directive"><a href="./mod/mod_dir.html#directoryindex">DirectoryIndex</a></code> directive.
-    For example, if <code>DocumentRoot</code> were set as above, and 
+    For example, if <code>DocumentRoot</code> were set as above, and
     you were to set:</p>
 
     <div class="example"><p><code>DirectoryIndex index.html index.php</code></p></div>
@@ -259,7 +259,7 @@ content) in a page as it is being served to the client using
 <pre class="prettyprint lang-config">Substitute s/internal\.example\.com/www.example.com/i</pre>
 
 
-<p>For more sophisticated rewriting of links in HTML and XHTML, the 
+<p>For more sophisticated rewriting of links in HTML and XHTML, the
 <code class="module"><a href="./mod/mod_proxy_html.html">mod_proxy_html</a></code> module is also available. It allows you
 to create maps of URLs that need to be rewritten, so that complex
 proxying scenarios can be handled.</p>

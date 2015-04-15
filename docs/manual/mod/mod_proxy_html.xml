@@ -277,7 +277,7 @@ for earlier 2.x versions</compatibility>
 </ul>
 <p>Take care when using these.  The fixes will correct certain authoring
 mistakes, but risk also erroneously fixing links that were correct to start with.
-Only use them if you know you have a broken backend server.</p> 
+Only use them if you know you have a broken backend server.</p>
 </usage>
 </directivesynopsis>
 
@@ -421,4 +421,3 @@ will generate output using the same encoding as the input.</p>
 
 
 </modulesynopsis>
-

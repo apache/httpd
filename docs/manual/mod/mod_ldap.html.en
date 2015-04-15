@@ -473,7 +473,7 @@ LDAPTrustedGlobalCert CA_BASE64 /certs/cacert2.pem
     connection pool.  The default value of -1, and any other negative value,
     allows connections of any age to be reused.</p>
 
-    <p>For performance reasons, the reference time used by this directive is 
+    <p>For performance reasons, the reference time used by this directive is
     based on when the LDAP connection is returned to the pool, not the time
     of the last successful I/O with the LDAP server.  </p>
 
@@ -482,7 +482,7 @@ LDAPTrustedGlobalCert CA_BASE64 /certs/cacert2.pem
     time is not updated if no backend LDAP conncetions were needed. Second,
     the reference time uses the time the HTTP request was received instead
     of the time the request is completed.</p>
-    
+
     <div class="note"><p>This timeout defaults to units of seconds, but accepts
     suffixes for milliseconds (ms), minutes (min), and hours (h).
     </p></div>
@@ -680,11 +680,11 @@ valid</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
 </table>
-    <p>Specifies the path of the shared memory cache file. If not set, 
+    <p>Specifies the path of the shared memory cache file. If not set,
     anonymous shared memory will be used if the platform supports it.</p>
 
     <p>If <var>file-path</var> is not an absolute path, the location specified
-    will be relative to the value of 
+    will be relative to the value of
     <code class="directive"><a href="../mod/core.html#defaultruntimedir">DefaultRuntimeDir</a></code>.</p>
 
 </div>

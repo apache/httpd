@@ -63,8 +63,8 @@
 <h2><a name="down" id="down">Downloading Apache for Windows</a></h2>
     
 
-    <p>The Apache HTTP Server Project itself does not provide binary releases of 
-    software, only source code. Individual committers <em>may</em> provide 
+    <p>The Apache HTTP Server Project itself does not provide binary releases of
+    software, only source code. Individual committers <em>may</em> provide
     binary packages as a convenience, but it is not a release deliverable.</p>
     <p>If you cannot compile the Apache HTTP Server
     yourself, you can obtain a binary package from numerous binary distributions
@@ -142,9 +142,9 @@
       is used in URLs, you can use something like:</p>
 
       <pre class="prettyprint lang-config">RewriteEngine On
-RewriteMap lowercase int:tolower
-RewriteCond %{REQUEST_URI} [A-Z]
-RewriteRule (.*) ${lowercase:$1} [R,L]</pre>
+RewriteMap lowercase "int:tolower"
+RewriteCond "%{REQUEST_URI}" "[A-Z]"
+RewriteRule "(.*)"           "${lowercase:$1}" [R,L]</pre>
 </li>
 
       <li><p>When running, Apache needs write access only to the logs
@@ -436,8 +436,8 @@ RewriteRule (.*) ${lowercase:$1} [R,L]</pre>
     Programs. Change to the folder to which you installed Apache, type
     the command <code>httpd.exe</code>, and read the error message. Then
     change to the logs folder, and review the <code>error.log</code>
-    file for configuration mistakes. Assuming httpd was installed into 
-    <code>C:\Program Files\Apache Software Foundation\Apache2.5\</code>, 
+    file for configuration mistakes. Assuming httpd was installed into
+    <code>C:\Program Files\Apache Software Foundation\Apache2.5\</code>,
     you can do the following:</p>
 
     <div class="example"><p><code>
@@ -625,7 +625,7 @@ RewriteRule (.*) ${lowercase:$1} [R,L]</pre>
 <h2><a name="tuning" id="tuning">Windows Tuning</a></h2>
     
     <ul>
-      <li><p>If more than a few dozen piped loggers are used on an operating system 
+      <li><p>If more than a few dozen piped loggers are used on an operating system
       instance, scaling up the "desktop heap" is often necessary. For
       more detailed information, refer to the <a href="../logs.html#piped">piped logging</a> documentation.</p></li>
     </ul>

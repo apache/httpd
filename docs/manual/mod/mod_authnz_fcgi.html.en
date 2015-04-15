@@ -41,7 +41,7 @@ httpd authentication and authorization</td></tr>
     authenticators and authorizors which participate in one or both
     phases.</p>
 
-    <p>FastCGI authorizers can authenticate using user id and password, 
+    <p>FastCGI authorizers can authenticate using user id and password,
     such as for Basic authentication, or can authenticate using arbitrary
     mechanisms.</p>
 </div>
@@ -68,7 +68,7 @@ and Access Control</a></li>
 <div class="section">
 <h2><a name="invocations" id="invocations">Invocation modes</a></h2>
 
-    <p>The invocation modes for FastCGI authorizers supported by this 
+    <p>The invocation modes for FastCGI authorizers supported by this
     module are distinguished by two characteristics, <em>type</em> and
     auth <em>mechanism</em>.</p>
 
@@ -89,7 +89,7 @@ and Access Control</a></li>
       <dt><em>Type</em> <code>authn</code>, <em>mechanism</em>
       <code>AuthBasicProvider</code></dt>
 
-      <dd>In this mode, 
+      <dd>In this mode,
       <code>FCGI_ROLE</code> is set to <code>AUTHORIZER</code> and
       <code>FCGI_APACHE_ROLE</code> is set to <code>AUTHENTICATOR</code>.
       The application must be defined as provider type <em>authn</em>
@@ -140,7 +140,7 @@ while (FCGI::accept &gt;= 0) {
       AUTHORIZER</code> and <code>FCGI_APACHE_ROLE</code> is set to
       <code>AUTHORIZER</code>.  The application must be defined as
       provider type <em>authz</em> using <code class="directive"><a href="#authnzfcgidefineprovider">
-      AuthnzFcgiDefineProvider</a></code>.  When invoked, the application 
+      AuthnzFcgiDefineProvider</a></code>.  When invoked, the application
       is expected to authorize the client using the provided user id and other
       request data.  Example application:
 <pre class="prettyprint lang-perl">#!/usr/bin/perl
@@ -185,8 +185,8 @@ while (FCGI::accept &gt;= 0) {
       using <code class="directive"><a href="#authnzfcgidefineprovider">
       AuthnzFcgiDefineProvider</a></code>.  The application is expected to
       handle both authentication and authorization in the same invocation
-      using the user id, password, and other request data.  The invocation 
-      occurs during the Apache httpd API authentication phase.  If the 
+      using the user id, password, and other request data.  The invocation
+      occurs during the Apache httpd API authentication phase.  If the
       application returns 200 and the same provider is invoked during the
       authorization phase (via <code class="directive">Require</code>), mod_authnz_fcgi
       will return success for the authorization phase without invoking the
@@ -241,7 +241,7 @@ while (FCGI::accept &gt;= 0) {
     die if $ENV{'FCGI_APACHE_ROLE'} ne "AUTHENTICATOR";
     die if $ENV{'FCGI_ROLE'} ne "AUTHORIZER";
 
-    # This authorizer assumes that the RequireBasicAuth option of 
+    # This authorizer assumes that the RequireBasicAuth option of
     # AuthnzFcgiCheckAuthnProvider is On:
     die if !$ENV{'REMOTE_PASSWD'};
     die if !$ENV{'REMOTE_USER'};
@@ -278,14 +278,14 @@ while (FCGI::accept &gt;= 0) {
       </dd>
 
     </dl>
-    
+
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="examples" id="examples">Additional examples</a></h2>
 
   <ol>
     <li>If your application supports the separate authentication and
-    authorization roles (<code>AUTHENTICATOR</code> and <code>AUTHORIZER</code>), define 
+    authorization roles (<code>AUTHENTICATOR</code> and <code>AUTHORIZER</code>), define
     separate providers as follows, even if they map to the same
     application:
 
@@ -293,7 +293,7 @@ while (FCGI::accept &gt;= 0) {
 AuthnzFcgiDefineProvider authz  FooAuthz  fcgi://localhost:10102/</pre>
 
 
-    Specify the authn provider on 
+    Specify the authn provider on
     <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code>
     and the authz provider on
     <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code>:
@@ -305,7 +305,7 @@ Require FooAuthz</pre>
 
     </li>
 
-    <li>If your application supports the generic <code>AUTHORIZER</code> role 
+    <li>If your application supports the generic <code>AUTHORIZER</code> role
     (authentication and authorizer in one invocation), define a
     single provider as follows:
 
@@ -333,7 +333,7 @@ Require FooAuthnz</pre>
       <dt>Apache httpd access checker</dt>
       <dd>The Apache httpd API <em>access check</em> phase is a separate
       phase from authentication and authorization.  Some other FastCGI
-      implementations implement this phase, which is denoted by the 
+      implementations implement this phase, which is denoted by the
       setting of <code>FCGI_APACHE_ROLE</code> to <code>ACCESS_CHECKER</code>.</dd>
 
       <dt>Local (Unix) sockets or pipes</dt>
@@ -355,7 +355,7 @@ Require FooAuthnz</pre>
       start them.</dd>
 
       <dt>AP_AUTH_INTERNAL_PER_URI</dt>
-      <dd>All providers are currently registered as 
+      <dd>All providers are currently registered as
       AP_AUTH_INTERNAL_PER_CONF, which means that checks are not
       performed again for internal subrequests with the same
       access control configuration as the initial request.</dd>
@@ -389,9 +389,9 @@ Require FooAuthnz</pre>
         <li>General messages for debugging are logged at log level
         <code>debug</code>.</li>
         <li>Environment variables passed to the application are
-        logged at log level <code>trace2</code>. The value of the 
+        logged at log level <code>trace2</code>. The value of the
         <code>REMOTE_PASSWD</code> variable will be obscured,
-        but <strong>any other sensitive data will be visible in the 
+        but <strong>any other sensitive data will be visible in the
         log</strong>.</li>
         <li>All I/O between the module and the FastCGI application,
         including all environment variables, will be logged in printable
@@ -452,7 +452,7 @@ authentication hook.</td></tr>
 
       <dt><em>option</em></dt>
       <dd>The following options are supported:
-      
+
       <dl>
          <dt>Authoritative On|Off (default On)</dt>
          <dd>This controls whether or not other modules are allowed
@@ -479,7 +479,7 @@ authentication hook.</td></tr>
          evaluated after calling the authorizer, determines the
          user.  The expression follows <a href="../expr.html">
          ap_expr syntax</a> and must resolve to a string.  A typical
-         use is to reference a <code>Variable-<em>XXX</em></code> 
+         use is to reference a <code>Variable-<em>XXX</em></code>
          setting returned by the authorizer using an option like
          <code>UserExpr "%{reqenv:<em>XXX</em>}"</code>.  If
          this option is specified and the user id can't be retrieved
@@ -515,9 +515,9 @@ authentication and/or authorization</td></tr>
 
       <dt><em>provider-name</em></dt>
       <dd>This is used to assign a name to the provider which is
-      used in other directives such as 
+      used in other directives such as
       <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code>
-      and 
+      and
       <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code>.</dd>
 
       <dt><em>backend-address</em></dt>

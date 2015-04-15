@@ -164,7 +164,7 @@ header</td></tr>
 
     <div class="example"><h3>Example</h3><pre class="prettyprint lang-config"># Use the default header (X-Sendfile)
 ProxySCGISendfile On
-    
+
 # Use a different header
 ProxySCGISendfile X-Send-Static</pre>
 </div>

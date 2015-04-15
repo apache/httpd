@@ -74,10 +74,10 @@
     <p>These variables can be for example used to show only log messages
     for particular URI using <code>journalctl</code>:
     </p>
-    
+
     <pre class="prettyprint lang-">journalctl REQUEST_URI=/index.html -a</pre>
 
-    
+
     <p>For more examples, see systemd-journalctl documentation.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -88,7 +88,7 @@
     instead of a filename enables logging via systemd-journald(8)
     if the system supports it.
     </p>
-    
+
     <pre class="prettyprint lang-config">ErrorLog journald</pre>
 
 

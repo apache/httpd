@@ -181,7 +181,7 @@ LoadModule cache_module modules/mod_cache.so
         CacheDirLevels 5
         CacheDirLength 3
     &lt;/IfModule&gt;
-    
+
     # When acting as a proxy, don't cache the list of security updates
     CacheDisable http://security.update.server/update-list/
 &lt;/IfModule&gt;</pre>
@@ -473,7 +473,7 @@ manager</td></tr>
     <code class="directive">&lt;LocationMatch&gt;</code> sections are processed
     before globally defined <code class="directive">CacheEnable</code> directives.</p>
 
-    <p>When acting as a forward proxy server, <var>url-string</var> must 
+    <p>When acting as a forward proxy server, <var>url-string</var> must
     minimally begin with a protocol for which caching should be enabled.</p>
 
     <pre class="prettyprint lang-config"># Cache content (normal handler only)
@@ -570,7 +570,7 @@ CacheHeader on</pre>
     <code class="directive">CacheIgnoreCacheControl</code> directive allows this
     behavior to be overridden.  <code class="directive">CacheIgnoreCacheControl On</code>
     tells the server to attempt to serve the resource from the cache even
-    if the request contains no-cache header values.</p>  
+    if the request contains no-cache header values.</p>
 
     <pre class="prettyprint lang-config">CacheIgnoreCacheControl On</pre>
 
@@ -842,7 +842,7 @@ CacheLock on</pre>
 </table>
   <p>The <code class="directive">CacheLockPath</code> directive allows you to specify the
   directory in which the locks are created.  If <var>directory</var> is not an absolute
-  path, the location specified will be relative to the value of 
+  path, the location specified will be relative to the value of
   <code class="directive"><a href="../mod/core.html#defaultruntimedir">DefaultRuntimeDir</a></code>.</p>
 
 </div>

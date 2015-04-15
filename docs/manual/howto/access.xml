@@ -172,9 +172,9 @@ Require expr %{HTTP_USER_AGENT} != 'BadBot'
 
     <highlight language="config">
 RewriteEngine On
-RewriteCond %{TIME_HOUR} &gt;=20 [OR]
-RewriteCond %{TIME_HOUR} &lt;07
-RewriteRule ^/fridge - [F]
+RewriteCond "%{TIME_HOUR}" "&gt;=20" [OR]
+RewriteCond "%{TIME_HOUR}" "&lt;07"
+RewriteRule "^/fridge"     "-"       [F]
     </highlight>
 
     <p>This will return a 403 Forbidden response for any request after 8pm

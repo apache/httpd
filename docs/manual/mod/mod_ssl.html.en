@@ -1963,9 +1963,9 @@ function ::= funcname "<strong>(</strong>" funcargs "<strong>)</strong>"</pre>
 the <a href="../expr.html#functions">ap_expr documentation</a>.</p>
 
 <p>The <em>expression</em> is parsed into an internal machine
-representation when the configuration is loaded, and then evaluated 
-during request processing.  In .htaccess context, the <em>expression</em> is 
-both parsed and executed each time the .htaccess file is encountered during 
+representation when the configuration is loaded, and then evaluated
+during request processing.  In .htaccess context, the <em>expression</em> is
+both parsed and executed each time the .htaccess file is encountered during
 request processing.</p>
 
 <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLRequire (    %{SSL_CIPHER} !~ m/^(EXP|NULL)-/                   \

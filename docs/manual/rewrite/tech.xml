@@ -76,7 +76,7 @@ and URL matching.</p>
     <p>In per-directory context (i.e., within <code>.htaccess</code> files
     and <code>Directory</code> blocks), these rules are being applied
     after a URL has already been translated to a filename. Because of
-    this, the URL-path that mod_rewrite initially compares <directive 
+    this, the URL-path that mod_rewrite initially compares <directive
     module="mod_rewrite">RewriteRule</directive> directives against
     is the full filesystem path to the translated filename with the current
     directories path (including a trailing slash) removed from the front.</p>
@@ -85,12 +85,12 @@ and URL matching.</p>
     for /foo/bar/baz is being processed, an expression like ^bar/baz$ would
     match.</p>
 
-    <p> If a substitution is made in per-directory context, a new internal 
-    subrequest is issued with the new URL, which restarts processing of the 
-    request phases. If the substitution is a relative path, the <directive 
-    module="mod_rewrite">RewriteBase</directive> directive 
+    <p> If a substitution is made in per-directory context, a new internal
+    subrequest is issued with the new URL, which restarts processing of the
+    request phases. If the substitution is a relative path, the <directive
+    module="mod_rewrite">RewriteBase</directive> directive
     determines the URL-path prefix prepended to the substitution.
-    In per-directory context, care must be taken to 
+    In per-directory context, care must be taken to
     create rules which will eventually (in some future "round" of per-directory
     rewrite processing) not perform a substitution to avoid looping.
     (See <a href="http://wiki.apache.org/httpd/RewriteLooping">RewriteLooping</a>
@@ -112,24 +112,24 @@ and URL matching.</p>
 
         <tr>
             <td>VirtualHost section</td>
-            <td>RewriteRule ^/images/(.+)\.jpg /images/$1.gif</td>
+            <td>RewriteRule "^/images/(.+)\.jpg" "/images/$1.gif"</td>
         </tr>
 
         <tr>
             <td>.htaccess file in document root</td>
-            <td>RewriteRule ^images/(.+)\.jpg images/$1.gif</td>
+            <td>RewriteRule "^images/(.+)\.jpg" "images/$1.gif"</td>
         </tr>
 
         <tr>
             <td>.htaccess file in images directory</td>
-            <td>RewriteRule ^(.+)\.jpg $1.gif</td>
+            <td>RewriteRule "^(.+)\.jpg" "$1.gif"</td>
         </tr>
 
     </table>
 
     <p>For even more insight into how mod_rewrite manipulates URLs in
     different contexts, you should consult the <a
-    href="../mod/mod_rewrite.html#logging">log entries</a> made during 
+    href="../mod/mod_rewrite.html#logging">log entries</a> made during
     rewriting.</p>
 
 </section>
@@ -188,4 +188,3 @@ and URL matching.</p>
 
 
 </manualpage>
-
