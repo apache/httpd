@@ -1775,7 +1775,7 @@ static const char *
         else if ((use_regex != 0) ^ (worker->s->is_name_matchable != 0)) {
             return apr_pstrcat(cmd->temp_pool, "ProxyPass/<Proxy> and "
                                "ProxyPassMatch/<ProxyMatch> can't be used "
-                               "altogether with the same worker name ",
+                               "together with the same worker name ",
                                "(", worker->s->name, ")", NULL);
         }
         else {
