@@ -141,6 +141,9 @@ Changes with Apache 2.4.11
      request headers earlier.  Adds "MergeTrailers" directive to restore
      legacy behavior.  [Edward Lu, Yann Ylavic, Joe Orton, Eric Covener]
 
+  *) mod_buffer: Forward flushed input data immediately and avoid (unlikely)
+     access to freed memory. [Yann Ylavic, Christophe Jaillet]
+
   *) core: Add CGIPassAuth directive to control whether HTTP authorization
      headers are passed to scripts as CGI variables.  PR 56855.  [Jeff 
      Trawick]
