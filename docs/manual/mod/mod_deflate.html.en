@@ -40,7 +40,12 @@ client</td></tr>
     your server to be compressed before being sent to the client over
     the network.</p>
 </div>
-<div id="quickview"><h3 class="directives">Directives</h3>
+<div id="quickview"><h3>Topics</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#recommended">Sample Configurations</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#enable">Enabling Compression</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#proxies">Dealing with proxy servers</a></li>
+</ul><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#deflatebuffersize">DeflateBufferSize</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#deflatecompressionlevel">DeflateCompressionLevel</a></li>
@@ -51,15 +56,176 @@ client</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#deflatememlevel">DeflateMemLevel</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#deflatewindowsize">DeflateWindowSize</a></li>
 </ul>
-<h3>Topics</h3>
-<ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#recommended">Sample Configurations</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#enable">Enabling Compression</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#proxies">Dealing with proxy servers</a></li>
-</ul><h3>See also</h3>
+<h3>See also</h3>
 <ul class="seealso">
 <li><a href="../filter.html">Filters</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="recommended" id="recommended">Sample Configurations</a></h2>
+    <div class="warning"><h3>Compression and TLS</h3>
+        <p>Some web applications are vulnerable to an information disclosure
+        attack when a TLS connection carries deflate compressed data. For more
+        information, review the details of the "BREACH" family of attacks.</p>
+    </div>
+    <p>This is a simple configuration that compresses common text-based content types.</p>
+
+    <div class="example"><h3>Compress only a few types</h3><pre class="prettyprint lang-config">AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript</pre>
+</div>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="enable" id="enable">Enabling Compression</a></h2>
+
+    <h3><a name="output" id="output">Output Compression</a></h3>
+      <p>Compression is implemented by the <code>DEFLATE</code>
+      <a href="../filter.html">filter</a>. The following directive
+      will enable compression for documents in the container where it
+      is placed:</p>
+
+      <div class="example"><p><code>
+        SetOutputFilter DEFLATE
+      </code></p></div>
+
+      <p>Some popular browsers cannot handle compression of all content
+      so you may want to set the <code>gzip-only-text/html</code> note to
+      <code>1</code> to only allow html files to be compressed (see
+      below). If you set this to <em>anything but <code>1</code></em> it
+      will be ignored.</p>
+      
+      <p>If you want to restrict the compression to particular MIME types
+      in general, you may use the <code class="directive"><a href="../mod/core.html#addoutputfilterbytype">AddOutputFilterByType</a></code> directive. Here is an example of
+      enabling compression only for the html files of the Apache
+      documentation:</p>
+
+      <div class="example"><p><code>
+        &lt;Directory "/your-server-root/manual"&gt;<br />
+        <span class="indent">
+          AddOutputFilterByType DEFLATE text/html<br />
+        </span>
+        &lt;/Directory&gt;
+      </code></p></div>
+
+      <p>For browsers that have problems even with compression of all file
+      types, use the <code class="directive"><a href="../mod/mod_setenvif.html#browsermatch">BrowserMatch</a></code> directive to set the <code>no-gzip</code>
+      note for that particular browser so that no compression will be
+      performed. You may combine <code>no-gzip</code> with <code>gzip-only-text/html</code> to get the best results. In that case
+      the former overrides the latter. Take a look at the following
+      excerpt from the <a href="#recommended">configuration example</a>
+      defined in the section above:</p>
+
+      <div class="example"><p><code>
+        BrowserMatch ^Mozilla/4         gzip-only-text/html<br />
+        BrowserMatch ^Mozilla/4\.0[678] no-gzip<br />
+        BrowserMatch \bMSIE             !no-gzip !gzip-only-text/html
+      </code></p></div>
+
+      <p>At first we probe for a <code>User-Agent</code> string that
+      indicates a Netscape Navigator version of 4.x. These versions
+      cannot handle compression of types other than
+      <code>text/html</code>. The versions 4.06, 4.07 and 4.08 also
+      have problems with decompressing html files. Thus, we completely
+      turn off the deflate filter for them.</p>
+
+      <p>The third <code class="directive"><a href="../mod/mod_setenvif.html#browsermatch">BrowserMatch</a></code>
+      directive fixes the guessed identity of the user agent, because
+      the Microsoft Internet Explorer identifies itself also as "Mozilla/4"
+      but is actually able to handle requested compression. Therefore we
+      match against the additional string "MSIE" (<code>\b</code> means
+      "word boundary") in the <code>User-Agent</code> Header and turn off
+      the restrictions defined before.</p>
+
+      <div class="note"><h3>Note</h3>
+        The <code>DEFLATE</code> filter is always inserted after RESOURCE
+        filters like PHP or SSI. It never touches internal subrequests.
+      </div>
+      <div class="note"><h3>Note</h3>
+        There is an environment variable <code>force-gzip</code>,
+        set via <code class="directive"><a href="../mod/mod_env.html#setenv">SetEnv</a></code>, which
+        will ignore the accept-encoding setting of your browser and will
+        send compressed output.
+      </div>
+
+    
+    <h3><a name="inflate" id="inflate">Output Decompression</a></h3>
+      <p>The <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> module also provides a filter for
+      inflating/uncompressing a gzip compressed response body. In order to activate
+      this feature you have to insert the <code>INFLATE</code> filter into
+      the output filter chain using <code class="directive"><a href="../mod/core.html#setoutputfilter">SetOutputFilter</a></code> or <code class="directive"><a href="../mod/mod_mime.html#addoutputfilter">AddOutputFilter</a></code>, for example:</p>
+
+      <div class="example"><p><code>
+        &lt;Location /dav-area&gt;<br />
+        <span class="indent">
+          ProxyPass http://example.com/<br />
+          SetOutputFilter INFLATE<br />
+        </span>
+        &lt;/Location&gt;
+      </code></p></div>
+
+      <p>This Example will uncompress gzip'ed output from example.com, so other
+      filters can do further processing with it.
+      </p>
+      
+    
+    <h3><a name="input" id="input">Input Decompression</a></h3>
+      <p>The <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> module also provides a filter for
+      decompressing a gzip compressed request body . In order to activate
+      this feature you have to insert the <code>DEFLATE</code> filter into
+      the input filter chain using <code class="directive"><a href="../mod/core.html#setinputfilter">SetInputFilter</a></code> or <code class="directive"><a href="../mod/mod_mime.html#addinputfilter">AddInputFilter</a></code>, for example:</p>
+
+      <div class="example"><p><code>
+        &lt;Location /dav-area&gt;<br />
+        <span class="indent">
+          SetInputFilter DEFLATE<br />
+        </span>
+        &lt;/Location&gt;
+      </code></p></div>
+      
+      <p>Now if a request contains a <code>Content-Encoding:
+      gzip</code> header, the body will be automatically decompressed.
+      Few browsers have the ability to gzip request bodies. However,
+      some special applications actually do support request
+      compression, for instance some <a href="http://www.webdav.org">WebDAV</a> clients.</p>
+
+      <div class="warning"><h3>Note on Content-Length</h3>
+        <p>If you evaluate the request body yourself, <em>don't trust
+        the <code>Content-Length</code> header!</em>
+        The Content-Length header reflects the length of the
+        incoming data from the client and <em>not</em> the byte count of
+        the decompressed data stream.</p>
+      </div>
+    
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="proxies" id="proxies">Dealing with proxy servers</a></h2>
+
+    <p>The <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> module sends a <code>Vary:
+    Accept-Encoding</code> HTTP response header to alert proxies that
+    a cached response should be sent only to clients that send the
+    appropriate <code>Accept-Encoding</code> request header.  This
+    prevents compressed content from being sent to a client that will
+    not understand it.</p>
+
+    <p>If you use some special exclusions dependent
+    on, for example, the <code>User-Agent</code> header, you must 
+    manually configure an addition to the <code>Vary</code> header
+    to alert proxies of the additional restrictions.  For example,
+    in a typical configuration where the addition of the <code>DEFLATE</code>
+    filter depends on the <code>User-Agent</code>, you should add:</p>
+
+    <div class="example"><p><code>
+      Header append Vary User-Agent
+    </code></p></div>
+    
+    <p>If your decision about compression depends on other information
+    than request headers (<em>e.g.</em> HTTP version), you have to set the
+    <code>Vary</code> header to the value <code>*</code>. This prevents
+    compliant proxies from caching entirely.</p>
+
+    <div class="example"><h3>Example</h3><p><code>
+      Header set Vary *
+    </code></p></div>
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="DeflateBufferSize" id="DeflateBufferSize">DeflateBufferSize</a> <a name="deflatebuffersize" id="deflatebuffersize">Directive</a></h2>
 <table class="directive">
@@ -232,172 +398,6 @@ client</td></tr>
     zlib compression window size (a value between 1 and 15). Generally, the
     higher the window size, the higher can the compression ratio be expected.</p>
 
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="recommended" id="recommended">Sample Configurations</a></h2>
-    <div class="warning"><h3>Compression and TLS</h3>
-        <p>Some web applications are vulnerable to an information disclosure
-        attack when a TLS connection carries deflate compressed data. For more
-        information, review the details of the "BREACH" family of attacks.</p>
-    </div>
-    <p>This is a simple configuration that compresses common text-based content types.</p>
-
-    <div class="example"><h3>Compress only a few types</h3><pre class="prettyprint lang-config">AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript</pre>
-</div>
-
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="enable" id="enable">Enabling Compression</a></h2>
-
-    <h3><a name="output" id="output">Output Compression</a></h3>
-      <p>Compression is implemented by the <code>DEFLATE</code>
-      <a href="../filter.html">filter</a>. The following directive
-      will enable compression for documents in the container where it
-      is placed:</p>
-
-      <div class="example"><p><code>
-        SetOutputFilter DEFLATE
-      </code></p></div>
-
-      <p>Some popular browsers cannot handle compression of all content
-      so you may want to set the <code>gzip-only-text/html</code> note to
-      <code>1</code> to only allow html files to be compressed (see
-      below). If you set this to <em>anything but <code>1</code></em> it
-      will be ignored.</p>
-      
-      <p>If you want to restrict the compression to particular MIME types
-      in general, you may use the <code class="directive"><a href="../mod/core.html#addoutputfilterbytype">AddOutputFilterByType</a></code> directive. Here is an example of
-      enabling compression only for the html files of the Apache
-      documentation:</p>
-
-      <div class="example"><p><code>
-        &lt;Directory "/your-server-root/manual"&gt;<br />
-        <span class="indent">
-          AddOutputFilterByType DEFLATE text/html<br />
-        </span>
-        &lt;/Directory&gt;
-      </code></p></div>
-
-      <p>For browsers that have problems even with compression of all file
-      types, use the <code class="directive"><a href="../mod/mod_setenvif.html#browsermatch">BrowserMatch</a></code> directive to set the <code>no-gzip</code>
-      note for that particular browser so that no compression will be
-      performed. You may combine <code>no-gzip</code> with <code>gzip-only-text/html</code> to get the best results. In that case
-      the former overrides the latter. Take a look at the following
-      excerpt from the <a href="#recommended">configuration example</a>
-      defined in the section above:</p>
-
-      <div class="example"><p><code>
-        BrowserMatch ^Mozilla/4         gzip-only-text/html<br />
-        BrowserMatch ^Mozilla/4\.0[678] no-gzip<br />
-        BrowserMatch \bMSIE             !no-gzip !gzip-only-text/html
-      </code></p></div>
-
-      <p>At first we probe for a <code>User-Agent</code> string that
-      indicates a Netscape Navigator version of 4.x. These versions
-      cannot handle compression of types other than
-      <code>text/html</code>. The versions 4.06, 4.07 and 4.08 also
-      have problems with decompressing html files. Thus, we completely
-      turn off the deflate filter for them.</p>
-
-      <p>The third <code class="directive"><a href="../mod/mod_setenvif.html#browsermatch">BrowserMatch</a></code>
-      directive fixes the guessed identity of the user agent, because
-      the Microsoft Internet Explorer identifies itself also as "Mozilla/4"
-      but is actually able to handle requested compression. Therefore we
-      match against the additional string "MSIE" (<code>\b</code> means
-      "word boundary") in the <code>User-Agent</code> Header and turn off
-      the restrictions defined before.</p>
-
-      <div class="note"><h3>Note</h3>
-        The <code>DEFLATE</code> filter is always inserted after RESOURCE
-        filters like PHP or SSI. It never touches internal subrequests.
-      </div>
-      <div class="note"><h3>Note</h3>
-        There is an environment variable <code>force-gzip</code>,
-        set via <code class="directive"><a href="../mod/mod_env.html#setenv">SetEnv</a></code>, which
-        will ignore the accept-encoding setting of your browser and will
-        send compressed output.
-      </div>
-
-    
-    <h3><a name="inflate" id="inflate">Output Decompression</a></h3>
-      <p>The <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> module also provides a filter for
-      inflating/uncompressing a gzip compressed response body. In order to activate
-      this feature you have to insert the <code>INFLATE</code> filter into
-      the output filter chain using <code class="directive"><a href="../mod/core.html#setoutputfilter">SetOutputFilter</a></code> or <code class="directive"><a href="../mod/mod_mime.html#addoutputfilter">AddOutputFilter</a></code>, for example:</p>
-
-      <div class="example"><p><code>
-        &lt;Location /dav-area&gt;<br />
-        <span class="indent">
-          ProxyPass http://example.com/<br />
-          SetOutputFilter INFLATE<br />
-        </span>
-        &lt;/Location&gt;
-      </code></p></div>
-
-      <p>This Example will uncompress gzip'ed output from example.com, so other
-      filters can do further processing with it.
-      </p>
-      
-    
-    <h3><a name="input" id="input">Input Decompression</a></h3>
-      <p>The <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> module also provides a filter for
-      decompressing a gzip compressed request body . In order to activate
-      this feature you have to insert the <code>DEFLATE</code> filter into
-      the input filter chain using <code class="directive"><a href="../mod/core.html#setinputfilter">SetInputFilter</a></code> or <code class="directive"><a href="../mod/mod_mime.html#addinputfilter">AddInputFilter</a></code>, for example:</p>
-
-      <div class="example"><p><code>
-        &lt;Location /dav-area&gt;<br />
-        <span class="indent">
-          SetInputFilter DEFLATE<br />
-        </span>
-        &lt;/Location&gt;
-      </code></p></div>
-      
-      <p>Now if a request contains a <code>Content-Encoding:
-      gzip</code> header, the body will be automatically decompressed.
-      Few browsers have the ability to gzip request bodies. However,
-      some special applications actually do support request
-      compression, for instance some <a href="http://www.webdav.org">WebDAV</a> clients.</p>
-
-      <div class="warning"><h3>Note on Content-Length</h3>
-        <p>If you evaluate the request body yourself, <em>don't trust
-        the <code>Content-Length</code> header!</em>
-        The Content-Length header reflects the length of the
-        incoming data from the client and <em>not</em> the byte count of
-        the decompressed data stream.</p>
-      </div>
-    
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="proxies" id="proxies">Dealing with proxy servers</a></h2>
-
-    <p>The <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> module sends a <code>Vary:
-    Accept-Encoding</code> HTTP response header to alert proxies that
-    a cached response should be sent only to clients that send the
-    appropriate <code>Accept-Encoding</code> request header.  This
-    prevents compressed content from being sent to a client that will
-    not understand it.</p>
-
-    <p>If you use some special exclusions dependent
-    on, for example, the <code>User-Agent</code> header, you must 
-    manually configure an addition to the <code>Vary</code> header
-    to alert proxies of the additional restrictions.  For example,
-    in a typical configuration where the addition of the <code>DEFLATE</code>
-    filter depends on the <code>User-Agent</code>, you should add:</p>
-
-    <div class="example"><p><code>
-      Header append Vary User-Agent
-    </code></p></div>
-    
-    <p>If your decision about compression depends on other information
-    than request headers (<em>e.g.</em> HTTP version), you have to set the
-    <code>Vary</code> header to the value <code>*</code>. This prevents
-    compliant proxies from caching entirely.</p>
-
-    <div class="example"><h3>Example</h3><p><code>
-      Header set Vary *
-    </code></p></div>
 </div>
 </div>
 <div class="bottomlang">

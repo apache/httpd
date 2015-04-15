@@ -50,6 +50,7 @@
 <li><code class="directive"><a href="../mod/core.html#require">Require</a></code></li>
 <li><code class="directive"><a href="../mod/core.html#satisfy">Satisfy</a></code></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
+
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AuthDBMGroupFile" id="AuthDBMGroupFile">AuthDBMGroupFile</a> <a name="authdbmgroupfile" id="authdbmgroupfile">Directive</a></h2>
 <table class="directive">
@@ -177,7 +178,6 @@ store list of user groups</td></tr>
     files is configured to use the same type of database.</p>
 
 </div>
-
 </div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_authz_dbm.html" title="English">&nbsp;en&nbsp;</a> |
