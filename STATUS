@@ -161,6 +161,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              Also added missing r1609688 to the patchset.
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-ap_proxy_define_match_worker.patch
      +1: ylavic
+     -0: covener tried to review this one in Austin with Jeff.  Does the added match function 
+         really cover a very narrow set of parameters with the way it skips over backreferences?
+         Also, why a new API vs. just setting the field inline?
 
    * mod_proxy_ajp: Fix client connection errors handling and logged status
                     when it occurs.  PR 56823.
