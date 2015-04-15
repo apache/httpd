@@ -44,72 +44,20 @@ for 2.2.x versions</td></tr></table>
     after markup processing, and will ensure the correct <var>charset</var>
     value is set in the HTTP <var>Content-Type</var> header.</p>
 </div>
-<div id="quickview"><h3 class="directives">Directives</h3>
-<ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#xml2encalias">xml2EncAlias</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#xml2encdefault">xml2EncDefault</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#xml2startparse">xml2StartParse</a></li>
-</ul>
-<h3>Topics</h3>
+<div id="quickview"><h3>Topics</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#usage">Usage</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#api">Programming API</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sniffing">Detecting an Encoding</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#output">Output Encoding</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#alias">Unsupported Encodings</a></li>
-</ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="xml2EncAlias" id="xml2EncAlias">xml2EncAlias</a> <a name="xml2encalias" id="xml2encalias">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Recognise Aliases for encoding values</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>xml2EncAlias <var>charset alias [alias ...]</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_xml2enc</td></tr>
-</table>
-    <p>This server-wide directive aliases one or more encoding to another
-    encoding.  This enables encodings not recognised by libxml2 to be handled
-    internally by libxml2's encoding support using the translation table for
-    a recognised encoding.  This serves two purposes: to support character sets
-    (or names) not recognised either by libxml2 or iconv, and to skip
-    conversion for an encoding where it is known to be unnecessary.</p>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="xml2EncDefault" id="xml2EncDefault">xml2EncDefault</a> <a name="xml2encdefault" id="xml2encdefault">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets a default encoding to assume when absolutely no information
-can be <a href="#sniffing">automatically detected</a></td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>xml2EncDefault <var>name</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_xml2enc</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Version 2.4.0 and later; available as a third-party
-module for earlier versions.</td></tr>
-</table>
-    <p>If you are processing data with known encoding but no encoding
-    information, you can set this default to help mod_xml2enc process
-    the data correctly.  For example, to work with the default value
-    of Latin1 (<var>iso-8859-1</var> specified in HTTP/1.0, use</p>
-    <pre class="prettyprint lang-config">xml2EncDefault iso-8859-1</pre>
-
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="xml2StartParse" id="xml2StartParse">xml2StartParse</a> <a name="xml2startparse" id="xml2startparse">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Advise the parser to skip leading junk.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>xml2StartParse <var>element [element ...]</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_xml2enc</td></tr>
-</table>
-    <p>Specify that the markup parser should start at the first instance
-    of any of the elements specified.  This can be used as a workaround
-    where a broken backend inserts leading junk that messes up the parser (<a href="http://bahumbug.wordpress.com/2006/10/12/mod_proxy_html-revisited/">example here</a>).</p>
-    <p>It should never be used for XML, nor well-formed HTML.</p>
-
-</div>
+</ul><h3 class="directives">Directives</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#xml2encalias">xml2EncAlias</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#xml2encdefault">xml2EncDefault</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#xml2startparse">xml2StartParse</a></li>
+</ul>
+<ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="usage" id="usage">Usage</a></h2>
@@ -185,6 +133,58 @@ the server of an unnecessary conversion.</p>
 <p>If you are working with encodings that are not supported by any of
 the conversion methods available on your platform, you can still alias
 them to a supported encoding using <code class="directive">xml2EncAlias</code>.</p>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="xml2EncAlias" id="xml2EncAlias">xml2EncAlias</a> <a name="xml2encalias" id="xml2encalias">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Recognise Aliases for encoding values</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>xml2EncAlias <var>charset alias [alias ...]</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_xml2enc</td></tr>
+</table>
+    <p>This server-wide directive aliases one or more encoding to another
+    encoding.  This enables encodings not recognised by libxml2 to be handled
+    internally by libxml2's encoding support using the translation table for
+    a recognised encoding.  This serves two purposes: to support character sets
+    (or names) not recognised either by libxml2 or iconv, and to skip
+    conversion for an encoding where it is known to be unnecessary.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="xml2EncDefault" id="xml2EncDefault">xml2EncDefault</a> <a name="xml2encdefault" id="xml2encdefault">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets a default encoding to assume when absolutely no information
+can be <a href="#sniffing">automatically detected</a></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>xml2EncDefault <var>name</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_xml2enc</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Version 2.4.0 and later; available as a third-party
+module for earlier versions.</td></tr>
+</table>
+    <p>If you are processing data with known encoding but no encoding
+    information, you can set this default to help mod_xml2enc process
+    the data correctly.  For example, to work with the default value
+    of Latin1 (<var>iso-8859-1</var> specified in HTTP/1.0, use</p>
+    <pre class="prettyprint lang-config">xml2EncDefault iso-8859-1</pre>
+
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="xml2StartParse" id="xml2StartParse">xml2StartParse</a> <a name="xml2startparse" id="xml2startparse">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Advise the parser to skip leading junk.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>xml2StartParse <var>element [element ...]</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_xml2enc</td></tr>
+</table>
+    <p>Specify that the markup parser should start at the first instance
+    of any of the elements specified.  This can be used as a workaround
+    where a broken backend inserts leading junk that messes up the parser (<a href="http://bahumbug.wordpress.com/2006/10/12/mod_proxy_html-revisited/">example here</a>).</p>
+    <p>It should never be used for XML, nor well-formed HTML.</p>
+
 </div>
 </div>
 <div class="bottomlang">

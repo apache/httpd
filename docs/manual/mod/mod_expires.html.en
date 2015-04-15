@@ -60,16 +60,73 @@ criteria</td></tr>
     proxied from an origin server, this module does not change or add
     an <code>Expires</code> or <code>Cache-Control</code> header.</p>
 </div>
-<div id="quickview"><h3 class="directives">Directives</h3>
+<div id="quickview"><h3>Topics</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#AltSyn">Alternate Interval Syntax</a></li>
+</ul><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#expiresactive">ExpiresActive</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#expiresbytype">ExpiresByType</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#expiresdefault">ExpiresDefault</a></li>
 </ul>
-<h3>Topics</h3>
-<ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#AltSyn">Alternate Interval Syntax</a></li>
-</ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
+<ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="AltSyn" id="AltSyn">Alternate Interval Syntax</a></h2>
+    <p>The <code class="directive"><a href="#expiresdefault">ExpiresDefault</a></code> and
+    <code class="directive"><a href="#expiresbytype">ExpiresByType</a></code> directives
+    can also be defined in a more readable syntax of the form:</p>
+
+    <pre class="prettyprint lang-config">ExpiresDefault "<var>base</var>  [plus <var>num</var> <var>type</var>] [<var>num</var> <var>type</var>] ..."
+ExpiresByType type/encoding "<var>base</var>  [plus <var>num</var> <var>type</var>] [<var>num</var> <var>type</var>] ..."</pre>
+
+
+    <p>where <var>base</var> is one of:</p>
+
+    <ul>
+      <li><code>access</code></li>
+
+      <li><code>now</code> (equivalent to
+      '<code>access</code>')</li>
+
+      <li><code>modification</code></li>
+    </ul>
+
+    <p>The <code>plus</code> keyword is optional. <var>num</var>
+    should be an integer value [acceptable to <code>atoi()</code>],
+    and <var>type</var> is one of:</p>
+
+    <ul>
+      <li><code>years</code></li>
+      <li><code>months</code></li>
+      <li><code>weeks</code></li>
+      <li><code>days</code></li>
+      <li><code>hours</code></li>
+      <li><code>minutes</code></li>
+      <li><code>seconds</code></li>
+    </ul>
+
+    <p>For example, any of the following directives can be used to
+    make documents expire 1 month after being accessed, by
+    default:</p>
+
+    <pre class="prettyprint lang-config">ExpiresDefault "access plus 1 month"
+ExpiresDefault "access plus 4 weeks"
+ExpiresDefault "access plus 30 days"</pre>
+
+
+    <p>The expiry time can be fine-tuned by adding several
+    '<var>num</var> <var>type</var>' clauses:</p>
+
+    <pre class="prettyprint lang-config">ExpiresByType text/html "access plus 1 month 15 days 2 hours"
+ExpiresByType image/gif "modification plus 5 hours 3 minutes"</pre>
+
+
+    <p>Note that if you use a modification date based setting, the
+    Expires header will <strong>not</strong> be added to content
+    that does not come from a file on disk. This is due to the fact
+    that there is no modification time for such content.</p>
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ExpiresActive" id="ExpiresActive">ExpiresActive</a> <a name="expiresactive" id="expiresactive">Directive</a></h2>
 <table class="directive">
@@ -179,63 +236,6 @@ ExpiresByType text/html M604800</pre>
     argument, and the <a href="#AltSyn">alternate syntax</a>
     description as well.</p>
 
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="AltSyn" id="AltSyn">Alternate Interval Syntax</a></h2>
-    <p>The <code class="directive"><a href="#expiresdefault">ExpiresDefault</a></code> and
-    <code class="directive"><a href="#expiresbytype">ExpiresByType</a></code> directives
-    can also be defined in a more readable syntax of the form:</p>
-
-    <pre class="prettyprint lang-config">ExpiresDefault "<var>base</var>  [plus <var>num</var> <var>type</var>] [<var>num</var> <var>type</var>] ..."
-ExpiresByType type/encoding "<var>base</var>  [plus <var>num</var> <var>type</var>] [<var>num</var> <var>type</var>] ..."</pre>
-
-
-    <p>where <var>base</var> is one of:</p>
-
-    <ul>
-      <li><code>access</code></li>
-
-      <li><code>now</code> (equivalent to
-      '<code>access</code>')</li>
-
-      <li><code>modification</code></li>
-    </ul>
-
-    <p>The <code>plus</code> keyword is optional. <var>num</var>
-    should be an integer value [acceptable to <code>atoi()</code>],
-    and <var>type</var> is one of:</p>
-
-    <ul>
-      <li><code>years</code></li>
-      <li><code>months</code></li>
-      <li><code>weeks</code></li>
-      <li><code>days</code></li>
-      <li><code>hours</code></li>
-      <li><code>minutes</code></li>
-      <li><code>seconds</code></li>
-    </ul>
-
-    <p>For example, any of the following directives can be used to
-    make documents expire 1 month after being accessed, by
-    default:</p>
-
-    <pre class="prettyprint lang-config">ExpiresDefault "access plus 1 month"
-ExpiresDefault "access plus 4 weeks"
-ExpiresDefault "access plus 30 days"</pre>
-
-
-    <p>The expiry time can be fine-tuned by adding several
-    '<var>num</var> <var>type</var>' clauses:</p>
-
-    <pre class="prettyprint lang-config">ExpiresByType text/html "access plus 1 month 15 days 2 hours"
-ExpiresByType image/gif "modification plus 5 hours 3 minutes"</pre>
-
-
-    <p>Note that if you use a modification date based setting, the
-    Expires header will <strong>not</strong> be added to content
-    that does not come from a file on disk. This is due to the fact
-    that there is no modification time for such content.</p>
 </div>
 </div>
 <div class="bottomlang">

@@ -56,14 +56,14 @@
       large.</p>
     </div>
 </div>
-<div id="quickview"><h3 class="directives">Directives</h3>
-<p>This module provides no
-            directives.</p>
-<h3>Topics</h3>
+<div id="quickview"><h3>Topics</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#examples">Examples</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#env">Environment Variables</a></li>
-</ul><h3>See also</h3>
+</ul><h3 class="directives">Directives</h3>
+<p>This module provides no
+            directives.</p>
+<h3>See also</h3>
 <ul class="seealso">
 <li><code class="program"><a href="../programs/fcgistarter.html">fcgistarter</a></code></li>
 <li><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></li>
