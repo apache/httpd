@@ -142,7 +142,7 @@ URLs on the fly</td></tr>
     misconfiguration would normally cause the server to look for an "opt"
     directory under the document root.</p>
 <pre class="prettyprint lang-config">DocumentRoot /var/www/example.com
-AliasMatch ^/myapp /opt/myapp-1.2.3
+AliasMatch "^/myapp" "/opt/myapp-1.2.3"
 &lt;Directory "/opt/myapp-1.2.3"&gt;
     RewriteEngine On
     RewriteBase /myapp/

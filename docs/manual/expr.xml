@@ -575,7 +575,7 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
 	<highlight language="config">
 # Compare the host name to example.com and redirect to www.example.com if it matches
 &lt;If "%{HTTP_HOST} == 'example.com'"&gt;
-    Redirect permanent / http://www.example.com/
+    Redirect permanent "/" "http://www.example.com/"
 &lt;/If&gt;
 
 # Force text/plain if requesting a file with the query string contains 'forcetext'
@@ -616,7 +616,6 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
 
 # Function example in string context
 Header set foo-checksum "expr=%{md5:foo}"
-
 	</highlight>
 </section>
 

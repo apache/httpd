@@ -547,7 +547,7 @@ use the [PT] flag to ensure that the
 </p>
 
 <highlight language="config">
-Alias /icons /usr/local/apache/icons
+Alias "/icons" "/usr/local/apache/icons"
 RewriteRule /pics/(.+)\.jpg$ /icons/$1.gif [PT]
 </highlight>
 

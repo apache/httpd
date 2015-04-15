@@ -77,7 +77,7 @@ to another site only if the server is started using
 
 <highlight language="config">
 &lt;IfDefine ClosedForNow&gt;
-    Redirect / http://otherserver.example.com/
+    Redirect "/" "http://otherserver.example.com/"
 &lt;/IfDefine&gt;
 </highlight>
 
@@ -245,8 +245,8 @@ certain sections or directives are evaluated. For
 <p><directive type="section" module="mod_alias">Alias</directive>es on the other hand,
 are mapped vice-versa:</p>
 <highlight language="config">
-Alias /foo/bar /srv/www/uncommon/bar
-Alias /foo /srv/www/common/foo
+Alias "/foo/bar" "/srv/www/uncommon/bar"
+Alias "/foo"     "/srv/www/common/foo"
 </highlight>
 <p>The same is true for the <directive module="mod_proxy">ProxyPass</directive>
 directives:</p>

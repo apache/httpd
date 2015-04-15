@@ -547,7 +547,7 @@ use the [PT] flag to ensure that the
 <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code> is evaluated.
 </p>
 
-<pre class="prettyprint lang-config">Alias /icons /usr/local/apache/icons
+<pre class="prettyprint lang-config">Alias "/icons" "/usr/local/apache/icons"
 RewriteRule /pics/(.+)\.jpg$ /icons/$1.gif [PT]</pre>
 
 
