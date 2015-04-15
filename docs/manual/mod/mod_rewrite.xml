@@ -410,7 +410,7 @@ URLs on the fly</description>
     directory under the document root.</p>
 <highlight language="config">
 DocumentRoot /var/www/example.com
-AliasMatch ^/myapp /opt/myapp-1.2.3
+AliasMatch "^/myapp" "/opt/myapp-1.2.3"
 &lt;Directory "/opt/myapp-1.2.3"&gt;
     RewriteEngine On
     RewriteBase /myapp/

@@ -63,7 +63,7 @@ to another site only if the server is started using
 <code>httpd -DClosedForNow</code>:</p>
 
 <pre class="prettyprint lang-config">&lt;IfDefine ClosedForNow&gt;
-    Redirect / http://otherserver.example.com/
+    Redirect "/" "http://otherserver.example.com/"
 &lt;/IfDefine&gt;</pre>
 
 
@@ -215,8 +215,8 @@ certain sections or directives are evaluated. For
 
 <p><code class="directive"><a href="./mod/mod_alias.html#alias">&lt;Alias&gt;</a></code>es on the other hand,
 are mapped vice-versa:</p>
-<pre class="prettyprint lang-config">Alias /foo/bar /srv/www/uncommon/bar
-Alias /foo /srv/www/common/foo</pre>
+<pre class="prettyprint lang-config">Alias "/foo/bar" "/srv/www/uncommon/bar"
+Alias "/foo"     "/srv/www/common/foo"</pre>
 
 <p>The same is true for the <code class="directive"><a href="./mod/mod_proxy.html#proxypass">ProxyPass</a></code>
 directives:</p>

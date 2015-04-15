@@ -116,7 +116,7 @@ RewriteRule    ^<strong>/foo</strong>\.html$  <strong>bar</strong>.html  [<stron
     use the Redirect directive. mod_rewrite was used in that earlier
     example in order to hide the redirect from the client:</p>
 
-    <pre class="prettyprint lang-config">Redirect /foo.html /bar.html</pre>
+    <pre class="prettyprint lang-config">Redirect "/foo.html" "/bar.html"</pre>
 
 
     </dd>
@@ -150,11 +150,11 @@ RewriteRule   ^/docs/(.+)  http://new.example.com/docs/$1  [R,L]</pre>
 
 
 <pre class="prettyprint lang-config">#With RedirectMatch
-RedirectMatch ^/docs/(.*) http://new.example.com/docs/$1</pre>
+RedirectMatch "^/docs/(.*)" "http://new.example.com/docs/$1"</pre>
 
 
 <pre class="prettyprint lang-config">#With Redirect
-Redirect /docs/ http://new.example.com/docs/</pre>
+Redirect "/docs/" "http://new.example.com/docs/"</pre>
 
     </dd>
   </dl>
@@ -277,7 +277,7 @@ hostname(s).</p>
   ServerName undesired.example.com
   ServerAlias example.com notthis.example.com
 
-  Redirect / http://www.example.com/
+  Redirect "/" "http://www.example.com/"
 &lt;/VirtualHost&gt;
 
 &lt;VirtualHost *:80&gt;
@@ -290,7 +290,7 @@ hostname(s).</p>
 directive:</p>
 
 <pre class="prettyprint lang-config">&lt;If "%{HTTP_HOST} != 'www.example.com'"&gt;
-	Redirect / http://www.example.com/
+    Redirect "/" "http://www.example.com/"
 &lt;/If&gt;</pre>
 
 
@@ -298,7 +298,7 @@ directive:</p>
 might do the following:</p>
 
 <pre class="prettyprint lang-config">&lt;If "%{SERVER_PROTOCOL} != 'HTTPS'"&gt;
-	Redirect /admin/ https://www.example.com/admin/
+    Redirect "/admin/" "https://www.example.com/admin/"
 &lt;/If&gt;</pre>
 
 
@@ -470,7 +470,7 @@ com       http://www.example.com/<br />
      This should really be accomplished with Redirect or RedirectMatch
      directives:
 
-     <pre class="prettyprint lang-config">RedirectMatch ^/(puppies|canines)/(.*) /dogs/$2</pre>
+     <pre class="prettyprint lang-config">RedirectMatch "^/(puppies|canines)/(.*)" "/dogs/$2"</pre>
 
      </dd>
       </dl>
@@ -506,7 +506,7 @@ RewriteRule   ^/$  /about/  [<strong>R</strong>]</pre>
 
 <p>Note that this can also be handled using the <code class="directive"><a href="../mod/mod_alias.html#redirectmatch">RedirectMatch</a></code> directive:</p>
 
-<pre class="prettyprint lang-config">RedirectMatch ^/$ http://example.com/about/</pre>
+<pre class="prettyprint lang-config">RedirectMatch "^/$" "http://example.com/about/"</pre>
 
 
 <p>Note also that the example rewrites only the root URL. That is, it
