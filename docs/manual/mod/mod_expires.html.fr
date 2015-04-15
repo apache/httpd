@@ -74,63 +74,6 @@ l'utilisateur</td></tr>
 l'intervalle</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="AltSyn" id="AltSyn">Autre syntaxe de définition de
-l'intervalle</a></h2>
-    <p>Pour une syntaxe plus lisible, on peut aussi utiliser les
-    directives <code class="directive"><a href="#expiresdefault">ExpiresDefault</a></code> et <code class="directive"><a href="#expiresbytype">ExpiresByType</a></code> comme suit :</p>
-
-    <pre class="prettyprint lang-config">ExpiresDefault "<var>base</var>  [plus <var>num</var> <var>type</var>] [<var>num</var> <var>type</var>] ..."
-ExpiresByType type/encoding "<var>base</var>  [plus <var>num</var> <var>type</var>] [<var>num</var> <var>type</var>] ..."</pre>
-
-
-    <p>où <var>base</var> peut être :</p>
-
-    <ul>
-      <li><code>access</code></li>
-
-      <li><code>now</code> (équivalent à
-      '<code>access</code>')</li>
-
-      <li><code>modification</code></li>
-    </ul>
-
-    <p>Le mot-clé <code>plus</code> est optionnel. <var>num</var> doit
-    correspondre à une valeur entière [compatible avec
-    <code>atoi()</code>], et <var>type</var> peut être choisi parmi :</p>
-
-    <ul>
-      <li><code>years</code></li>
-      <li><code>months</code></li>
-      <li><code>weeks</code></li>
-      <li><code>days</code></li>
-      <li><code>hours</code></li>
-      <li><code>minutes</code></li>
-      <li><code>seconds</code></li>
-    </ul>
-
-    <p>Par exemple, pour faire expirer par défaut les documents 1 mois
-    après leur accès, on peut utiliser une des directives suivantes :</p>
-    <pre class="prettyprint lang-config">ExpiresDefault "access plus 1 month"
-ExpiresDefault "access plus 4 weeks"
-ExpiresDefault "access plus 30 days"</pre>
-
-
-
-    <p>La date d'expiration peut être définie plus précisément en
-    ajoutant plusieurs clauses '<var>num</var> <var>type</var>' :</p>
-
-    <pre class="prettyprint lang-config">ExpiresByType text/html "access plus 1 month 15 days 2 hours"
-ExpiresByType image/gif "modification plus 5 hours 3 minutes"</pre>
-
-
-    <p>Notez que si vous utilisez une configuration basée sur la date de
-    modification, l'en-tête Expires ne sera pas ajouté à un contenu qui
-    ne provient pas directement d'un fichier sur disque ; et ceci tout
-    simplement parce que ce type de contenu ne possède pas de date de
-    modification.</p>
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="expiresactive" id="expiresactive">Directive</a> <a name="ExpiresActive" id="ExpiresActive">ExpiresActive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active la génération d'en-têtes
@@ -242,6 +185,63 @@ d'expiration</td></tr>
     de cette dernière directive pour plus de détails à propos de la
     syntaxe de l'argument, ainsi que la description de la <a href="#AltSyn">syntaxe alternative</a>.</p>
 
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="AltSyn" id="AltSyn">Autre syntaxe de définition de
+l'intervalle</a></h2>
+    <p>Pour une syntaxe plus lisible, on peut aussi utiliser les
+    directives <code class="directive"><a href="#expiresdefault">ExpiresDefault</a></code> et <code class="directive"><a href="#expiresbytype">ExpiresByType</a></code> comme suit :</p>
+
+    <pre class="prettyprint lang-config">ExpiresDefault "<var>base</var>  [plus <var>num</var> <var>type</var>] [<var>num</var> <var>type</var>] ..."
+ExpiresByType type/encoding "<var>base</var>  [plus <var>num</var> <var>type</var>] [<var>num</var> <var>type</var>] ..."</pre>
+
+
+    <p>où <var>base</var> peut être :</p>
+
+    <ul>
+      <li><code>access</code></li>
+
+      <li><code>now</code> (équivalent à
+      '<code>access</code>')</li>
+
+      <li><code>modification</code></li>
+    </ul>
+
+    <p>Le mot-clé <code>plus</code> est optionnel. <var>num</var> doit
+    correspondre à une valeur entière [compatible avec
+    <code>atoi()</code>], et <var>type</var> peut être choisi parmi :</p>
+
+    <ul>
+      <li><code>years</code></li>
+      <li><code>months</code></li>
+      <li><code>weeks</code></li>
+      <li><code>days</code></li>
+      <li><code>hours</code></li>
+      <li><code>minutes</code></li>
+      <li><code>seconds</code></li>
+    </ul>
+
+    <p>Par exemple, pour faire expirer par défaut les documents 1 mois
+    après leur accès, on peut utiliser une des directives suivantes :</p>
+    <pre class="prettyprint lang-config">ExpiresDefault "access plus 1 month"
+ExpiresDefault "access plus 4 weeks"
+ExpiresDefault "access plus 30 days"</pre>
+
+
+
+    <p>La date d'expiration peut être définie plus précisément en
+    ajoutant plusieurs clauses '<var>num</var> <var>type</var>' :</p>
+
+    <pre class="prettyprint lang-config">ExpiresByType text/html "access plus 1 month 15 days 2 hours"
+ExpiresByType image/gif "modification plus 5 hours 3 minutes"</pre>
+
+
+    <p>Notez que si vous utilisez une configuration basée sur la date de
+    modification, l'en-tête Expires ne sera pas ajouté à un contenu qui
+    ne provient pas directement d'un fichier sur disque ; et ceci tout
+    simplement parce que ce type de contenu ne possède pas de date de
+    modification.</p>
 </div>
 </div>
 <div class="bottomlang">

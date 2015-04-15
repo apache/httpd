@@ -57,7 +57,6 @@ pages SSI</td></tr>
 <li><a href="../env.html">Variables d'environnement</a></li>
 <li><code class="directive"><a href="../mod/mod_setenvif.html#setenvif">SetEnvIf</a></code></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
-
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="passenv" id="passenv">Directive</a> <a name="PassEnv" id="PassEnv">PassEnv</a></h2>
 <table class="directive">
@@ -136,6 +135,7 @@ shell</td></tr>
 </div>
 
 </div>
+
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_env.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |

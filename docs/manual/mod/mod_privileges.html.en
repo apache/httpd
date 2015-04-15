@@ -76,65 +76,6 @@ separation is an issue.</p>
 <li><img alt="" src="../images/down.gif" /> <a href="#security">Security Considerations</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="security" id="security">Security Considerations</a></h2>
-
-<p><code class="module"><a href="../mod/mod_privileges.html">mod_privileges</a></code> introduces new security concerns
-in situations where <strong>untrusted code</strong> may be run
-<strong>within the webserver process</strong>.  This applies to
-untrusted modules, and scripts running under modules such as
-mod_php or mod_perl.  Scripts running externally (e.g. as CGI
-or in an appserver behind mod_proxy or mod_jk) are NOT affected.</p>
-
-<p>The basic security concerns with mod_privileges are:</p>
-<ul><li>Running as a system user introduces the same security issues
-    as mod_suexec, and near-equivalents such as cgiwrap and suphp.</li>
-<li>A privileges-aware malicious user extension (module or script)
-    could escalate its privileges to anything available to the
-    httpd process in any virtual host.  This introduces new risks
-    if (and only if) mod_privileges is compiled with the
-    <var>BIG_SECURITY_HOLE</var> option.</li>
-<li>A privileges-aware malicious user extension (module or script)
-    could escalate privileges to set its user ID to another system
-    user (and/or group).</li>
-</ul>
-
-<p>The <code class="directive">PrivilegesMode</code> directive allows you to
-select either <var>FAST</var> or <var>SECURE</var> mode.  You can
-mix modes, using <var>FAST</var> mode for trusted users and
-fully-audited code paths, while imposing SECURE mode where an
-untrusted user has scope to introduce code.</p>
-<p>Before describing the modes, we should also introduce the target
-use cases: Benign vs Hostile.  In a benign situation, you want to
-separate users for their convenience, and protect them and the server
-against the risks posed by honest mistakes, but you trust your users
-are not deliberately subverting system security.  In a hostile
-situation - e.g. commercial hosting - you may have users deliberately
-attacking the system or each other.</p>
-<dl>
-<dt>FAST mode</dt>
-<dd>In <var>FAST</var> mode, requests are run in-process with the
-selected uid/gid and privileges, so the overhead is negligible.
-This is suitable for benign situations, but is not secure against an
-attacker escalating privileges with an in-process module or script.</dd>
-<dt>SECURE mode</dt>
-<dd>A request in <var>SECURE</var> mode forks a subprocess, which
-then drops privileges.  This is a very similar case to running CGI
-with suexec, but for the entire request cycle, and with the benefit
-of fine-grained control of privileges.</dd>
-</dl>
-<p>You can select different <code class="directive">PrivilegesMode</code>s for
-each virtual host, and even in a directory context within a virtual
-host.  <var>FAST</var> mode is appropriate where the user(s) are
-trusted and/or have no privilege to load in-process code.
-<var>SECURE</var> mode is appropriate to cases where untrusted code
-might be run in-process.  However, even in <var>SECURE</var> mode,
-there is no protection against a malicious user who is able to
-introduce privileges-aware code running <em>before the start of the
-request-processing cycle.</em></p>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="DTracePrivileges" id="DTracePrivileges">DTracePrivileges</a> <a name="dtraceprivileges" id="dtraceprivileges">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Determines whether the privileges required by dtrace are enabled.</td></tr>
@@ -390,6 +331,65 @@ non-threaded MPMs (<code class="module"><a href="../mod/prefork.html">prefork</a
 <li><code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code></li>
 <li><code class="directive"><a href="../mod/mod_suexec.html#suexecusergroup">SuexecUserGroup</a></code></li>
 </ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="security" id="security">Security Considerations</a></h2>
+
+<p><code class="module"><a href="../mod/mod_privileges.html">mod_privileges</a></code> introduces new security concerns
+in situations where <strong>untrusted code</strong> may be run
+<strong>within the webserver process</strong>.  This applies to
+untrusted modules, and scripts running under modules such as
+mod_php or mod_perl.  Scripts running externally (e.g. as CGI
+or in an appserver behind mod_proxy or mod_jk) are NOT affected.</p>
+
+<p>The basic security concerns with mod_privileges are:</p>
+<ul><li>Running as a system user introduces the same security issues
+    as mod_suexec, and near-equivalents such as cgiwrap and suphp.</li>
+<li>A privileges-aware malicious user extension (module or script)
+    could escalate its privileges to anything available to the
+    httpd process in any virtual host.  This introduces new risks
+    if (and only if) mod_privileges is compiled with the
+    <var>BIG_SECURITY_HOLE</var> option.</li>
+<li>A privileges-aware malicious user extension (module or script)
+    could escalate privileges to set its user ID to another system
+    user (and/or group).</li>
+</ul>
+
+<p>The <code class="directive">PrivilegesMode</code> directive allows you to
+select either <var>FAST</var> or <var>SECURE</var> mode.  You can
+mix modes, using <var>FAST</var> mode for trusted users and
+fully-audited code paths, while imposing SECURE mode where an
+untrusted user has scope to introduce code.</p>
+<p>Before describing the modes, we should also introduce the target
+use cases: Benign vs Hostile.  In a benign situation, you want to
+separate users for their convenience, and protect them and the server
+against the risks posed by honest mistakes, but you trust your users
+are not deliberately subverting system security.  In a hostile
+situation - e.g. commercial hosting - you may have users deliberately
+attacking the system or each other.</p>
+<dl>
+<dt>FAST mode</dt>
+<dd>In <var>FAST</var> mode, requests are run in-process with the
+selected uid/gid and privileges, so the overhead is negligible.
+This is suitable for benign situations, but is not secure against an
+attacker escalating privileges with an in-process module or script.</dd>
+<dt>SECURE mode</dt>
+<dd>A request in <var>SECURE</var> mode forks a subprocess, which
+then drops privileges.  This is a very similar case to running CGI
+with suexec, but for the entire request cycle, and with the benefit
+of fine-grained control of privileges.</dd>
+</dl>
+<p>You can select different <code class="directive">PrivilegesMode</code>s for
+each virtual host, and even in a directory context within a virtual
+host.  <var>FAST</var> mode is appropriate where the user(s) are
+trusted and/or have no privilege to load in-process code.
+<var>SECURE</var> mode is appropriate to cases where untrusted code
+might be run in-process.  However, even in <var>SECURE</var> mode,
+there is no protection against a malicious user who is able to
+introduce privileges-aware code running <em>before the start of the
+request-processing cycle.</em></p>
+
 </div>
 </div>
 <div class="bottomlang">

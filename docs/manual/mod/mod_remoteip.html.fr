@@ -83,53 +83,6 @@ répartiteur de charge via les en-têtes de la requête.
 <li><code class="module"><a href="../mod/mod_ident.html">mod_ident</a></code></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="processing" id="processing">Traitement des adresses distantes</a></h2>
-
-    <p>Apache identifie le client par la valeur remote_ip de la
-    connexion, et de cette valeur découlent les valeurs remote_host et
-    remote_logname de la connexion. Ces champs jouent un rôle
-    dans l'authentification, l'autorisation et la connexion, ainsi que
-    dans d'autres traitements effectués par d'autres modules
-    chargeables.</p>
-
-    <p>mod_remoteip remplace la véritable remote_ip par la remote_ip
-    indiquée par exemple par un mandataire chaque fois que le serveur
-    effectue une évaluation du client, et réinitialise les valeurs de
-    remote_host et remote_logname afin de déclencher une nouvelle
-    requête dns ou ident sur l'adresse IP distante.</p>
-
-    <p>Lorsque la valeur de l'en-tête comporte plusieurs adresses IP
-    distantes séparées par des virgules, celles-ci sont traitées de la
-    droite vers la gauche. Le traitement s'arrête lorsque l'adresse IP
-    distante courante n'est pas digne de confiance pour présenter
-    l'adresse IP précédente. Le champ d'en-tête est alors mis à jour de
-    façon à ne contenir que cette liste d'adresses non confirmées, ou
-    bien, si toutes les adresses IP sont dignes de confiance, cet
-    en-tête est tout bonnement supprimé de la requête.</p>
-
-    <p>Lors du remplacement de l'adresse IP distante, le module stocke
-    la liste des hôtes intermédiaires dans un mémo
-    remoteip-proxy-ip-list, que l'on peut faire enregistrer par
-    <code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code> en utilisant le symbole de format
-    <code>%{remoteip-proxy-ip-list}n</code>. Si l'administrateur doit
-    stocker ceci dans un en-tête additionnel, la même valeur peut aussi
-    être enregistrée sous la forme d'un en-tête en utilisant la
-    directive <code class="directive"><a href="#remoteipproxiesheader">RemoteIPProxiesHeader</a></code>.</p>
-
-    <div class="note"><h3>Adresses IPv4 converties au format IPv6</h3>
-    Avec httpd, d'une manière générale, toute adresse IPv4 convertie au
-    format IPv6 est enregistrée sous sa forme IPv4.</div>
-
-    <div class="note"><h3>Adresses internes (privées)</h3>
-    Tous les blocs d'adresses internes 10/8, 172.16/12, 192.168/16,
-    169.254/16 and 127/8 (ainsi que les adresses IPv6 en dehors du bloc
-    public 2000::/3 block) ne sont évaluées par mod_remoteip que lorsque
-    des mandataires internes (intranet)
-    <code class="directive"><a href="#remoteipinternalproxy">RemoteIPInternalProxy</a></code> sont enregistrés.</div>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="remoteipheader" id="remoteipheader">Directive</a> <a name="RemoteIPHeader" id="RemoteIPHeader">RemoteIPHeader</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le champ d'en-tête qui contiendra les adresses IP
@@ -304,6 +257,53 @@ RemoteIPTrustedProxyList conf/trusted-proxies.lst</pre>
        192.0.2.16/28         #groupe wap phone de mandataires<br />
        proxy.isp.example.com #un FAI bien connu
     </code></p></div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="processing" id="processing">Traitement des adresses distantes</a></h2>
+
+    <p>Apache identifie le client par la valeur remote_ip de la
+    connexion, et de cette valeur découlent les valeurs remote_host et
+    remote_logname de la connexion. Ces champs jouent un rôle
+    dans l'authentification, l'autorisation et la connexion, ainsi que
+    dans d'autres traitements effectués par d'autres modules
+    chargeables.</p>
+
+    <p>mod_remoteip remplace la véritable remote_ip par la remote_ip
+    indiquée par exemple par un mandataire chaque fois que le serveur
+    effectue une évaluation du client, et réinitialise les valeurs de
+    remote_host et remote_logname afin de déclencher une nouvelle
+    requête dns ou ident sur l'adresse IP distante.</p>
+
+    <p>Lorsque la valeur de l'en-tête comporte plusieurs adresses IP
+    distantes séparées par des virgules, celles-ci sont traitées de la
+    droite vers la gauche. Le traitement s'arrête lorsque l'adresse IP
+    distante courante n'est pas digne de confiance pour présenter
+    l'adresse IP précédente. Le champ d'en-tête est alors mis à jour de
+    façon à ne contenir que cette liste d'adresses non confirmées, ou
+    bien, si toutes les adresses IP sont dignes de confiance, cet
+    en-tête est tout bonnement supprimé de la requête.</p>
+
+    <p>Lors du remplacement de l'adresse IP distante, le module stocke
+    la liste des hôtes intermédiaires dans un mémo
+    remoteip-proxy-ip-list, que l'on peut faire enregistrer par
+    <code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code> en utilisant le symbole de format
+    <code>%{remoteip-proxy-ip-list}n</code>. Si l'administrateur doit
+    stocker ceci dans un en-tête additionnel, la même valeur peut aussi
+    être enregistrée sous la forme d'un en-tête en utilisant la
+    directive <code class="directive"><a href="#remoteipproxiesheader">RemoteIPProxiesHeader</a></code>.</p>
+
+    <div class="note"><h3>Adresses IPv4 converties au format IPv6</h3>
+    Avec httpd, d'une manière générale, toute adresse IPv4 convertie au
+    format IPv6 est enregistrée sous sa forme IPv4.</div>
+
+    <div class="note"><h3>Adresses internes (privées)</h3>
+    Tous les blocs d'adresses internes 10/8, 172.16/12, 192.168/16,
+    169.254/16 and 127/8 (ainsi que les adresses IPv6 en dehors du bloc
+    public 2000::/3 block) ne sont évaluées par mod_remoteip que lorsque
+    des mandataires internes (intranet)
+    <code class="directive"><a href="#remoteipinternalproxy">RemoteIPInternalProxy</a></code> sont enregistrés.</div>
 
 </div>
 </div>

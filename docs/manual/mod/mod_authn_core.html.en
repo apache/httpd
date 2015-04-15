@@ -50,78 +50,6 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#authnalias">Creating Authentication Provider Aliases</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="authnalias" id="authnalias">Creating Authentication Provider Aliases</a></h2>
-
-    <p>Extended authentication providers can be created
-    within the configuration file and assigned an alias name.  The alias
-    providers can then be referenced through the directives
-    <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code> or
-    <code class="directive"><a href="../mod/mod_auth_digest.html#authdigestprovider">AuthDigestProvider</a></code> in
-    the same way as a base authentication provider.  Besides the ability
-    to create and alias an extended provider, it also allows the same
-    extended authentication provider to be reference by multiple
-    locations.</p>
-
-    <h3><a name="example" id="example">Examples</a></h3>
-
-        <p>This example checks for passwords in two different text
-        files.</p>
-
-        <div class="example"><h3>Checking multiple text password files</h3><pre class="prettyprint lang-config"># Check here first
-&lt;AuthnProviderAlias file file1&gt;
-    AuthUserFile "/www/conf/passwords1"
-&lt;/AuthnProviderAlias&gt;
-
-# Then check here
-&lt;AuthnProviderAlias file file2&gt;   
-    AuthUserFile "/www/conf/passwords2"
-&lt;/AuthnProviderAlias&gt;
-
-&lt;Directory "/var/web/pages/secure"&gt;
-    AuthBasicProvider file1 file2
-    
-    AuthType Basic
-    AuthName "Protected Area"
-    Require valid-user
-&lt;/Directory&gt;</pre>
-</div>
-
-        <p>The example below creates two different ldap authentication
-        provider aliases based on the ldap provider.  This allows
-        a single authenticated location to be serviced by multiple ldap
-        hosts:</p>
-
-        <div class="example"><h3>Checking multiple LDAP servers</h3><pre class="prettyprint lang-config">&lt;AuthnProviderAlias ldap ldap-alias1&gt;
-    AuthLDAPBindDN "cn=youruser,o=ctx"
-    AuthLDAPBindPassword yourpassword
-    AuthLDAPURL "ldap://ldap.host/o=ctx"
-&lt;/AuthnProviderAlias&gt;
-&lt;AuthnProviderAlias ldap ldap-other-alias&gt;
-    AuthLDAPBindDN "cn=yourotheruser,o=dev"
-    AuthLDAPBindPassword yourotherpassword
-    AuthLDAPURL "ldap://other.ldap.host/o=dev?cn"
-&lt;/AuthnProviderAlias&gt;
-
-Alias "/secure" "/webpages/secure"
-&lt;Directory "/webpages/secure"&gt;
-    Order deny,allow
-    Allow from all
-    
-    AuthBasicProvider ldap-other-alias  ldap-alias1
-    
-    AuthType Basic
-    AuthName "LDAP Protected Place"
-    Require valid-user
-    # Note that Require ldap-* would not work here, since the 
-    # AuthnProviderAlias does not provide the config to authorization providers
-    # that are implemented in the same module as the authentication provider.
-&lt;/Directory&gt;</pre>
-</div>
-    
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AuthName" id="AuthName">AuthName</a> <a name="authname" id="authname">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Authorization realm for use in HTTP
@@ -248,6 +176,78 @@ the specified alias</td></tr>
 <li><a href="../howto/auth.html">Authentication, Authorization,
     and Access Control</a></li>
 </ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="authnalias" id="authnalias">Creating Authentication Provider Aliases</a></h2>
+
+    <p>Extended authentication providers can be created
+    within the configuration file and assigned an alias name.  The alias
+    providers can then be referenced through the directives
+    <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code> or
+    <code class="directive"><a href="../mod/mod_auth_digest.html#authdigestprovider">AuthDigestProvider</a></code> in
+    the same way as a base authentication provider.  Besides the ability
+    to create and alias an extended provider, it also allows the same
+    extended authentication provider to be reference by multiple
+    locations.</p>
+
+    <h3><a name="example" id="example">Examples</a></h3>
+
+        <p>This example checks for passwords in two different text
+        files.</p>
+
+        <div class="example"><h3>Checking multiple text password files</h3><pre class="prettyprint lang-config"># Check here first
+&lt;AuthnProviderAlias file file1&gt;
+    AuthUserFile "/www/conf/passwords1"
+&lt;/AuthnProviderAlias&gt;
+
+# Then check here
+&lt;AuthnProviderAlias file file2&gt;   
+    AuthUserFile "/www/conf/passwords2"
+&lt;/AuthnProviderAlias&gt;
+
+&lt;Directory "/var/web/pages/secure"&gt;
+    AuthBasicProvider file1 file2
+    
+    AuthType Basic
+    AuthName "Protected Area"
+    Require valid-user
+&lt;/Directory&gt;</pre>
+</div>
+
+        <p>The example below creates two different ldap authentication
+        provider aliases based on the ldap provider.  This allows
+        a single authenticated location to be serviced by multiple ldap
+        hosts:</p>
+
+        <div class="example"><h3>Checking multiple LDAP servers</h3><pre class="prettyprint lang-config">&lt;AuthnProviderAlias ldap ldap-alias1&gt;
+    AuthLDAPBindDN "cn=youruser,o=ctx"
+    AuthLDAPBindPassword yourpassword
+    AuthLDAPURL "ldap://ldap.host/o=ctx"
+&lt;/AuthnProviderAlias&gt;
+&lt;AuthnProviderAlias ldap ldap-other-alias&gt;
+    AuthLDAPBindDN "cn=yourotheruser,o=dev"
+    AuthLDAPBindPassword yourotherpassword
+    AuthLDAPURL "ldap://other.ldap.host/o=dev?cn"
+&lt;/AuthnProviderAlias&gt;
+
+Alias "/secure" "/webpages/secure"
+&lt;Directory "/webpages/secure"&gt;
+    Order deny,allow
+    Allow from all
+    
+    AuthBasicProvider ldap-other-alias  ldap-alias1
+    
+    AuthType Basic
+    AuthName "LDAP Protected Place"
+    Require valid-user
+    # Note that Require ldap-* would not work here, since the 
+    # AuthnProviderAlias does not provide the config to authorization providers
+    # that are implemented in the same module as the authentication provider.
+&lt;/Directory&gt;</pre>
+</div>
+    
+
 </div>
 </div>
 <div class="bottomlang">

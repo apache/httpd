@@ -44,7 +44,6 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#idleshutdown">IdleShutdown</a></li>
 </ul>
 <ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
-
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="IdleShutdown" id="IdleShutdown">IdleShutdown</a> <a name="idleshutdown" id="idleshutdown">Directive</a></h2>
 <table class="directive">
@@ -75,6 +74,7 @@
     </p></div>
 
 </div>
+
 </div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_systemd.html" title="English">&nbsp;en&nbsp;</a></p>

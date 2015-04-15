@@ -68,42 +68,6 @@ URLs on the fly</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#logging">Logging</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="logging" id="logging">Logging</a></h2>
-
-    <p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> offers detailed logging of its actions
-    at the <code>trace1</code> to <code>trace8</code> log levels. The
-    log level can be set specifically for <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
-    using the <code class="directive"><a href="../mod/core.html#loglevel">LogLevel</a></code> directive: Up to
-    level <code>debug</code>, no actions are logged, while <code>trace8</code>
-    means that practically all actions are logged.</p>
-
-    <div class="note">
-      Using a high trace log level for <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
-      will slow down your Apache HTTP Server dramatically! Use a log
-      level higher than <code>trace2</code> only for debugging!
-    </div>
-
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">LogLevel alert rewrite:trace3</pre>
-</div>
-
-    <div class="note"><h3>RewriteLog</h3>
-      <p>Those familiar with earlier versions of
-      <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> will no doubt be looking for the
-      <code>RewriteLog</code> and <code>RewriteLogLevel</code>
-      directives. This functionality has been completely replaced by the
-      new per-module logging configuration mentioned above.
-      </p>
-
-      <p>To get just the <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>-specific log
-      messages, pipe the log file through grep:</p>
-    <div class="example"><p><code>
-    tail -f error_log|fgrep '[rewrite:'
-    </code></p></div>
-    </div>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="RewriteBase" id="RewriteBase">RewriteBase</a> <a name="rewritebase" id="rewritebase">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets the base URL for per-directory rewrites</td></tr>
@@ -1464,6 +1428,42 @@ redirection</td>
 </table>
 
   
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="logging" id="logging">Logging</a></h2>
+
+    <p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> offers detailed logging of its actions
+    at the <code>trace1</code> to <code>trace8</code> log levels. The
+    log level can be set specifically for <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
+    using the <code class="directive"><a href="../mod/core.html#loglevel">LogLevel</a></code> directive: Up to
+    level <code>debug</code>, no actions are logged, while <code>trace8</code>
+    means that practically all actions are logged.</p>
+
+    <div class="note">
+      Using a high trace log level for <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
+      will slow down your Apache HTTP Server dramatically! Use a log
+      level higher than <code>trace2</code> only for debugging!
+    </div>
+
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">LogLevel alert rewrite:trace3</pre>
+</div>
+
+    <div class="note"><h3>RewriteLog</h3>
+      <p>Those familiar with earlier versions of
+      <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> will no doubt be looking for the
+      <code>RewriteLog</code> and <code>RewriteLogLevel</code>
+      directives. This functionality has been completely replaced by the
+      new per-module logging configuration mentioned above.
+      </p>
+
+      <p>To get just the <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>-specific log
+      messages, pipe the log file through grep:</p>
+    <div class="example"><p><code>
+    tail -f error_log|fgrep '[rewrite:'
+    </code></p></div>
+    </div>
+
 </div>
 </div>
 <div class="bottomlang">

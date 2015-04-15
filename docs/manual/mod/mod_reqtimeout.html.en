@@ -41,51 +41,6 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#examples">Examples</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="examples" id="examples">Examples</a></h2>
-
-    <ol>
-      <li>
-        Allow 10 seconds to receive the request including the headers and
-        30 seconds for receiving the request body:
-
-        <pre class="prettyprint lang-config">RequestReadTimeout header=10 body=30</pre>
-
-      </li>
-
-      <li>
-        Allow at least 10 seconds to receive the request body.
-        If the client sends data, increase the timeout by 1 second for every
-        1000 bytes received, with no upper limit for the timeout (except for
-        the limit given indirectly by
-        <code class="directive"><a href="../mod/core.html#limitrequestbody">LimitRequestBody</a></code>):
-
-        <pre class="prettyprint lang-config">RequestReadTimeout body=10,MinRate=1000</pre>
-
-      </li>
-
-      <li>
-        Allow at least 10 seconds to receive the request including the headers.
-        If the client sends data, increase the timeout by 1 second for every
-        500 bytes received. But do not allow more than 30 seconds for the
-        request including the headers:
-
-        <pre class="prettyprint lang-config">RequestReadTimeout header=10-30,MinRate=500</pre>
-
-      </li>
-
-      <li>
-        Usually, a server should have both header and body timeouts configured.
-        If a common configuration is used for http and https virtual hosts, the
-        timeouts should not be set too low:
-
-        <pre class="prettyprint lang-config">RequestReadTimeout header=20-40,MinRate=500 body=20,MinRate=500</pre>
-
-      </li>
-
-    </ol>
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="RequestReadTimeout" id="RequestReadTimeout">RequestReadTimeout</a> <a name="requestreadtimeout" id="requestreadtimeout">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Set timeout values for receiving request headers and body from client.
@@ -167,6 +122,51 @@ version 2.3.14 and earlier.</td></tr>
     </ul>
 
 
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="examples" id="examples">Examples</a></h2>
+
+    <ol>
+      <li>
+        Allow 10 seconds to receive the request including the headers and
+        30 seconds for receiving the request body:
+
+        <pre class="prettyprint lang-config">RequestReadTimeout header=10 body=30</pre>
+
+      </li>
+
+      <li>
+        Allow at least 10 seconds to receive the request body.
+        If the client sends data, increase the timeout by 1 second for every
+        1000 bytes received, with no upper limit for the timeout (except for
+        the limit given indirectly by
+        <code class="directive"><a href="../mod/core.html#limitrequestbody">LimitRequestBody</a></code>):
+
+        <pre class="prettyprint lang-config">RequestReadTimeout body=10,MinRate=1000</pre>
+
+      </li>
+
+      <li>
+        Allow at least 10 seconds to receive the request including the headers.
+        If the client sends data, increase the timeout by 1 second for every
+        500 bytes received. But do not allow more than 30 seconds for the
+        request including the headers:
+
+        <pre class="prettyprint lang-config">RequestReadTimeout header=10-30,MinRate=500</pre>
+
+      </li>
+
+      <li>
+        Usually, a server should have both header and body timeouts configured.
+        If a common configuration is used for http and https virtual hosts, the
+        timeouts should not be set too low:
+
+        <pre class="prettyprint lang-config">RequestReadTimeout header=20-40,MinRate=500 body=20,MinRate=500</pre>
+
+      </li>
+
+    </ol>
 </div>
 </div>
 <div class="bottomlang">

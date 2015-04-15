@@ -121,195 +121,6 @@
 <li><code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code></li>
 </ul><ul class="seealso"><li><a href="#comments_section">コメント</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="forwardreverse" id="forwardreverse">フォワードプロキシとリバースプロキシ</a></h2>
-      <p>Apache は<dfn>フォワード</dfn>プロキシとしても、
-      <dfn>リバース</dfn>プロキシとしても設定することができます。</p>
-
-      <p>通常の<dfn>フォワードプロキシ</dfn>はクライアントと
-      <em>オリジンサーバ</em> <span class="transnote">(<em>訳注:</em> コンテンツ生成元のサーバ)</span>
-      の間に位置する中間サーバです。
-      オリジンサーバからコンテンツを取得する過程では、クライアントは
-      行き先としてオリジンサーバを指定しつつプロキシにリクエストを送り、
-      プロキシはオリジンサーバからコンテンツ取得のリクエストを送り、
-      コンテンツが取得できればそれをクライアントに返します。
-      クライアントが他のサイトにフォワードプロクシ経由でアクセスするには、
-      特別にそれ用の設定をしなければなりません。</p>
-
-      <p>フォワードプロキシの一般的な使用方法は、ファイアウォールによって
-      制限されている内部のクライアントにインターネットへのアクセスを
-      提供するものです。フォワードプロキシはネットワークの使用量を
-      減らすために (<code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> で提供されている) 
-      キャッシュ機能を用いることもできます。</p>
-
-      <p>フォワードプロキシは <code class="directive"><a href="#proxyrequests">ProxyRequests</a></code> ディレクティブで
-      有効になります。フォワードプロキシでは、クライアントは本当の身元を
-      隠して任意のサイトにアクセスできるようになるため、フォワードプロキシを
-      有効にする前に、承認されたクライアントのみがプロキシにアクセスできるように
-      <a href="#access">サーバを安全にする</a>ことが重要です。</p>
-
-      <p>一方<dfn>リバースプロキシ</dfn>は、クライアントには普通の
-      ウェブサーバのように見えます。クライアント側に特別な設定は必要ありません。
-      クライアントはリバースプロキシの名前空間に対して通常のコンテンツへの
-      リクエストを行ないます。プロキシはリクエストをどこに送れば良いかを判定し、
-      あたかも自分自身がオリジンサーバであったかのようにクライアントに
-      コンテンツを返します。</p>
-
-      <p>リバースプロキシのよくある利用方法は、インターネットユーザに
-      ファイアウォールの中にあるサーバにアクセスを与えるというものです。
-      リバースプロキシは複数のバックエンドサーバへ負荷分散をするために
-      使ったり、遅いバックエンドエンドサーバのためにキャッシュ機能を提供したり
-      するために使えます。また、リバースプロキシは複数のサーバを
-      同じ URL 空間にまとめるために使うこともできます。</p>
-
-      <p>リバースプロキシは <code class="directive"><a href="#proxypass">ProxyPass</a></code> ディレクティブや
-      <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> ディレクティブの
-      <code>[P]</code> フラグを使うことで有効になります。リバースプロキシの
-      設定のために <code class="directive"><a href="#proxyrequests">ProxyRequests</a></code> を設定する必要は
-      <em>ありません</em>。</p>
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="examples" id="examples">基本の例</a></h2>
-
-    <p>以下の例は手始めの簡単な例です。個々のディレクティブの意味は
-    それぞれの説明をお読みください。</p>
-
-    <p>またキャッシュ機能を有効にしたい場合は、<code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> 
-    の説明を読んでください。</p>
-
-    <div class="example"><h3>フォワードプロキシ</h3><p><code>
-    ProxyRequests On<br />
-    ProxyVia On<br />
-    <br />
-    &lt;Proxy *&gt;<br />
-    <span class="indent">
-      Order deny,allow<br />
-      Deny from all<br />
-      Allow from internal.example.com<br />
-    </span>
-    &lt;/Proxy&gt;
-    </code></p></div>
-
-    <div class="example"><h3>リバースプロキシ</h3><p><code>
-    ProxyRequests Off<br />
-    <br />
-    &lt;Proxy *&gt;<br />
-    <span class="indent">
-      Order deny,allow<br />
-      Allow from all<br />
-    </span>
-    &lt;/Proxy&gt;<br />
-    <br />
-    ProxyPass /foo http://foo.example.com/bar<br />
-    ProxyPassReverse /foo http://foo.example.com/bar
-    </code></p></div>
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="access" id="access">プロキシへのアクセス制御</a></h2>
-      <p>プロキシのアクセスは以下のように <code class="directive"><a href="#proxy">&lt;Proxy&gt;</a></code> コンテナの中に
-      ディレクティブを書くことで制御できます:</p>
-
-      <div class="example"><p><code>
-        &lt;Proxy *&gt;<br />
-        <span class="indent">
-          Order Deny,Allow<br />
-          Deny from all<br />
-          Allow from 192.168.0<br />
-        </span>
-        &lt;/Proxy&gt;
-      </code></p></div>
-
-      <p>アクセス制御のためのディレクティブのより詳しい情報は
-      <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code> をお読みください。</p>
-
-      <p>(<code class="directive"><a href="#proxyrequests">ProxyRequests</a></code> ディレクティブを
-      使って) フォワードプロキシを設定している場合は、厳しくアクセス
-      制限を行なうことが非常に大切です。そうしないと、任意のクライアントが
-      身元を明かすことなく任意のホストにアクセスするためにサーバを使うことが
-      できてしまいます。これはあなた自身のネットワークにとっても、インターネット
-      全体にとっても危険なことです。(<code>ProxyRequests Off</code> にして
-      <code class="directive"><a href="#proxypass">ProxyPass</a></code> ディレクティブを使って)
-      リバースプロキシを使っている場合には、クライアントはあなたが明示的に
-      設定したホストにしかアクセスできないため、フォワードプロキシのとき
-      ほどアクセス制御に力を注がなくても大丈夫です。</p>
-
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="startup" id="startup">遅い起動</a></h2>
-      <p><code class="directive"><a href="#proxyblock">ProxyBlock</a></code> ディレクティブを使っている場合、
-      後のテストのために起動時にホストの
-      IP アドレスが調べられてキャッシュされます。ホスト名のルックアップの
-      速さによっては、数秒 (かそれ以上) かかるかもしれません。</p>
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="intranet" id="intranet">イントラネットプロキシ</a></h2>
-      <p>イントラネットにある Apache プロキシサーバは外部へのリクエストを
-      会社のファイアウォールを通して送らなければなりません。(このためには
-      個々の <var>scheme</var> についてそれぞれ、ファイアウォールの
-      プロキシにフォワードされるように
-      <code class="directive"><a href="#proxyremote">ProxyRemote</a></code> ディレクティブを
-      設定してください)。しかしイントラネット内のリソースにアクセスするときは、
-      ファイアウォールを通さないでもアクセスできます。
-      どのホストがイントラネットに属し、直接アクセスすべきかを指定するには、
-      <code class="directive"><a href="#noproxy">NoProxy</a></code> ディレクティブが
-      役に立ちます。</p>
-
-      <p>イントラネット内のユーザは WWW のリクエストでローカルドメインを
-      省略することがよくあります。<code>http://somehost.example.com/</code> 
-      というリクエストの代わりに "http://somehost/" をリクエストしたりします。
-      このようなリクエストを受け付け、サーバに設定されているローカルドメインが
-      暗黙のうちに使われていると解釈して、単純にリクエストを処理するものも
-      商用プロキシサーバの中にはあります。
-      サーバが <a href="#proxyrequests">プロキシのサービス用に設定されていて</a>
-      <code class="directive"><a href="#proxydomain">ProxyDomain</a></code> ディレクティブが
-      使用された場合には、Apache はクライアントにリダイレクト応答を送って、
-      正しい、完全な (<span class="transnote">(<em>訳注:</em> fully qualified)</span>) 
-      サーバのアドレスに送ることができます。このように
-      リダイレクトすると、ユーザのブックマークが正しい完全なホスト名を含む
-      ことにもなるため、より好ましい方法と言えるでしょう。</p>
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="envsettings" id="envsettings">プロトコルの調整</a></h2>
-      <p>Keepalive や HTTP/1.1 を適切に実装していないアプリケーションサーバに対して
-      <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> がリクエストを送信する場合、
-      HTTP/1.0 を使って keepalive を無しにしてリクエストを送るようにする
-      環境変数が二つあります。これらは <code class="directive"><a href="../mod/mod_env.html#setenv">SetEnv</a></code> ディレクティブで設定します。</p>
-
-      <p><code>force-proxy-request-1.0</code> と <code>proxy-nokeepalive</code>
-      がその環境変数です。</p>
-
-      <div class="example"><p><code>
-        &lt;Location /buggyappserver/&gt;<br />
-        <span class="indent">
-          ProxyPass http://buggyappserver:7001/foo/<br />
-          SetEnv force-proxy-request-1.0 1<br />
-          SetEnv proxy-nokeepalive 1<br />
-        </span>
-        &lt;/Location&gt;
-      </code></p></div>
-
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="request-bodies" id="request-bodies">リクエストボディ</a></h2>
-
-    <p>POST メソッドなどのリクエストには、リクエストボディがあります。
-    HTTP プロトコル仕様によると、ボディのあるリクエストは chunked 
-    転送を使うか、<code>Content-Length</code>
-    ヘッダを送信しなければなりません。
-    このようなリクエストをオリジンサーバに送信する場合、
-    <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code> は常に <code>Content-Length</code>
-    を送ろうと試みます。しかし。ボディが大きく、オリジナルのリクエストで
-    chunked 転送が使われている場合、上流へのリクエストに
-    chunked 転送も使われます。
-    この挙動は <a href="../env.html">環境変数</a>で制御できます。
-    <code>proxy-sendcl</code> を設定すると、可能な限り常に 
-    <code>Content-Length</code> を付与して、
-    上流サーバに送信するようになります。
-    逆に <code>proxy-sendchunked</code> を設定すると、リソース消費を抑え、
-    chnked エンコードを使って送信するようになります。</p>
-
-    </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="BalancerGrowth" id="BalancerGrowth">BalancerGrowth</a> <a name="balancergrowth" id="balancergrowth">ディレクティブ</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Number of additional Balancers that can be added Post-configuration</td></tr>
@@ -1240,6 +1051,195 @@ URL を調整する</td></tr>
     </ul>
 
 </div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="forwardreverse" id="forwardreverse">フォワードプロキシとリバースプロキシ</a></h2>
+      <p>Apache は<dfn>フォワード</dfn>プロキシとしても、
+      <dfn>リバース</dfn>プロキシとしても設定することができます。</p>
+
+      <p>通常の<dfn>フォワードプロキシ</dfn>はクライアントと
+      <em>オリジンサーバ</em> <span class="transnote">(<em>訳注:</em> コンテンツ生成元のサーバ)</span>
+      の間に位置する中間サーバです。
+      オリジンサーバからコンテンツを取得する過程では、クライアントは
+      行き先としてオリジンサーバを指定しつつプロキシにリクエストを送り、
+      プロキシはオリジンサーバからコンテンツ取得のリクエストを送り、
+      コンテンツが取得できればそれをクライアントに返します。
+      クライアントが他のサイトにフォワードプロクシ経由でアクセスするには、
+      特別にそれ用の設定をしなければなりません。</p>
+
+      <p>フォワードプロキシの一般的な使用方法は、ファイアウォールによって
+      制限されている内部のクライアントにインターネットへのアクセスを
+      提供するものです。フォワードプロキシはネットワークの使用量を
+      減らすために (<code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> で提供されている) 
+      キャッシュ機能を用いることもできます。</p>
+
+      <p>フォワードプロキシは <code class="directive"><a href="#proxyrequests">ProxyRequests</a></code> ディレクティブで
+      有効になります。フォワードプロキシでは、クライアントは本当の身元を
+      隠して任意のサイトにアクセスできるようになるため、フォワードプロキシを
+      有効にする前に、承認されたクライアントのみがプロキシにアクセスできるように
+      <a href="#access">サーバを安全にする</a>ことが重要です。</p>
+
+      <p>一方<dfn>リバースプロキシ</dfn>は、クライアントには普通の
+      ウェブサーバのように見えます。クライアント側に特別な設定は必要ありません。
+      クライアントはリバースプロキシの名前空間に対して通常のコンテンツへの
+      リクエストを行ないます。プロキシはリクエストをどこに送れば良いかを判定し、
+      あたかも自分自身がオリジンサーバであったかのようにクライアントに
+      コンテンツを返します。</p>
+
+      <p>リバースプロキシのよくある利用方法は、インターネットユーザに
+      ファイアウォールの中にあるサーバにアクセスを与えるというものです。
+      リバースプロキシは複数のバックエンドサーバへ負荷分散をするために
+      使ったり、遅いバックエンドエンドサーバのためにキャッシュ機能を提供したり
+      するために使えます。また、リバースプロキシは複数のサーバを
+      同じ URL 空間にまとめるために使うこともできます。</p>
+
+      <p>リバースプロキシは <code class="directive"><a href="#proxypass">ProxyPass</a></code> ディレクティブや
+      <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> ディレクティブの
+      <code>[P]</code> フラグを使うことで有効になります。リバースプロキシの
+      設定のために <code class="directive"><a href="#proxyrequests">ProxyRequests</a></code> を設定する必要は
+      <em>ありません</em>。</p>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="examples" id="examples">基本の例</a></h2>
+
+    <p>以下の例は手始めの簡単な例です。個々のディレクティブの意味は
+    それぞれの説明をお読みください。</p>
+
+    <p>またキャッシュ機能を有効にしたい場合は、<code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> 
+    の説明を読んでください。</p>
+
+    <div class="example"><h3>フォワードプロキシ</h3><p><code>
+    ProxyRequests On<br />
+    ProxyVia On<br />
+    <br />
+    &lt;Proxy *&gt;<br />
+    <span class="indent">
+      Order deny,allow<br />
+      Deny from all<br />
+      Allow from internal.example.com<br />
+    </span>
+    &lt;/Proxy&gt;
+    </code></p></div>
+
+    <div class="example"><h3>リバースプロキシ</h3><p><code>
+    ProxyRequests Off<br />
+    <br />
+    &lt;Proxy *&gt;<br />
+    <span class="indent">
+      Order deny,allow<br />
+      Allow from all<br />
+    </span>
+    &lt;/Proxy&gt;<br />
+    <br />
+    ProxyPass /foo http://foo.example.com/bar<br />
+    ProxyPassReverse /foo http://foo.example.com/bar
+    </code></p></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="access" id="access">プロキシへのアクセス制御</a></h2>
+      <p>プロキシのアクセスは以下のように <code class="directive"><a href="#proxy">&lt;Proxy&gt;</a></code> コンテナの中に
+      ディレクティブを書くことで制御できます:</p>
+
+      <div class="example"><p><code>
+        &lt;Proxy *&gt;<br />
+        <span class="indent">
+          Order Deny,Allow<br />
+          Deny from all<br />
+          Allow from 192.168.0<br />
+        </span>
+        &lt;/Proxy&gt;
+      </code></p></div>
+
+      <p>アクセス制御のためのディレクティブのより詳しい情報は
+      <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code> をお読みください。</p>
+
+      <p>(<code class="directive"><a href="#proxyrequests">ProxyRequests</a></code> ディレクティブを
+      使って) フォワードプロキシを設定している場合は、厳しくアクセス
+      制限を行なうことが非常に大切です。そうしないと、任意のクライアントが
+      身元を明かすことなく任意のホストにアクセスするためにサーバを使うことが
+      できてしまいます。これはあなた自身のネットワークにとっても、インターネット
+      全体にとっても危険なことです。(<code>ProxyRequests Off</code> にして
+      <code class="directive"><a href="#proxypass">ProxyPass</a></code> ディレクティブを使って)
+      リバースプロキシを使っている場合には、クライアントはあなたが明示的に
+      設定したホストにしかアクセスできないため、フォワードプロキシのとき
+      ほどアクセス制御に力を注がなくても大丈夫です。</p>
+
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="startup" id="startup">遅い起動</a></h2>
+      <p><code class="directive"><a href="#proxyblock">ProxyBlock</a></code> ディレクティブを使っている場合、
+      後のテストのために起動時にホストの
+      IP アドレスが調べられてキャッシュされます。ホスト名のルックアップの
+      速さによっては、数秒 (かそれ以上) かかるかもしれません。</p>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="intranet" id="intranet">イントラネットプロキシ</a></h2>
+      <p>イントラネットにある Apache プロキシサーバは外部へのリクエストを
+      会社のファイアウォールを通して送らなければなりません。(このためには
+      個々の <var>scheme</var> についてそれぞれ、ファイアウォールの
+      プロキシにフォワードされるように
+      <code class="directive"><a href="#proxyremote">ProxyRemote</a></code> ディレクティブを
+      設定してください)。しかしイントラネット内のリソースにアクセスするときは、
+      ファイアウォールを通さないでもアクセスできます。
+      どのホストがイントラネットに属し、直接アクセスすべきかを指定するには、
+      <code class="directive"><a href="#noproxy">NoProxy</a></code> ディレクティブが
+      役に立ちます。</p>
+
+      <p>イントラネット内のユーザは WWW のリクエストでローカルドメインを
+      省略することがよくあります。<code>http://somehost.example.com/</code> 
+      というリクエストの代わりに "http://somehost/" をリクエストしたりします。
+      このようなリクエストを受け付け、サーバに設定されているローカルドメインが
+      暗黙のうちに使われていると解釈して、単純にリクエストを処理するものも
+      商用プロキシサーバの中にはあります。
+      サーバが <a href="#proxyrequests">プロキシのサービス用に設定されていて</a>
+      <code class="directive"><a href="#proxydomain">ProxyDomain</a></code> ディレクティブが
+      使用された場合には、Apache はクライアントにリダイレクト応答を送って、
+      正しい、完全な (<span class="transnote">(<em>訳注:</em> fully qualified)</span>) 
+      サーバのアドレスに送ることができます。このように
+      リダイレクトすると、ユーザのブックマークが正しい完全なホスト名を含む
+      ことにもなるため、より好ましい方法と言えるでしょう。</p>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="envsettings" id="envsettings">プロトコルの調整</a></h2>
+      <p>Keepalive や HTTP/1.1 を適切に実装していないアプリケーションサーバに対して
+      <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> がリクエストを送信する場合、
+      HTTP/1.0 を使って keepalive を無しにしてリクエストを送るようにする
+      環境変数が二つあります。これらは <code class="directive"><a href="../mod/mod_env.html#setenv">SetEnv</a></code> ディレクティブで設定します。</p>
+
+      <p><code>force-proxy-request-1.0</code> と <code>proxy-nokeepalive</code>
+      がその環境変数です。</p>
+
+      <div class="example"><p><code>
+        &lt;Location /buggyappserver/&gt;<br />
+        <span class="indent">
+          ProxyPass http://buggyappserver:7001/foo/<br />
+          SetEnv force-proxy-request-1.0 1<br />
+          SetEnv proxy-nokeepalive 1<br />
+        </span>
+        &lt;/Location&gt;
+      </code></p></div>
+
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="request-bodies" id="request-bodies">リクエストボディ</a></h2>
+
+    <p>POST メソッドなどのリクエストには、リクエストボディがあります。
+    HTTP プロトコル仕様によると、ボディのあるリクエストは chunked 
+    転送を使うか、<code>Content-Length</code>
+    ヘッダを送信しなければなりません。
+    このようなリクエストをオリジンサーバに送信する場合、
+    <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code> は常に <code>Content-Length</code>
+    を送ろうと試みます。しかし。ボディが大きく、オリジナルのリクエストで
+    chunked 転送が使われている場合、上流へのリクエストに
+    chunked 転送も使われます。
+    この挙動は <a href="../env.html">環境変数</a>で制御できます。
+    <code>proxy-sendcl</code> を設定すると、可能な限り常に 
+    <code>Content-Length</code> を付与して、
+    上流サーバに送信するようになります。
+    逆に <code>proxy-sendchunked</code> を設定すると、リソース消費を抑え、
+    chnked エンコードを使って送信するようになります。</p>
+
+    </div>
 </div>
 <div class="bottomlang">
 <p><span>翻訳済み言語: </span><a href="../en/mod/mod_proxy.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |

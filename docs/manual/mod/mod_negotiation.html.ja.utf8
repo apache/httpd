@@ -71,114 +71,6 @@
 <li><a href="../env.html">環境変数</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">コメント</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="typemaps" id="typemaps">タイプマップ</a></h2>
-    <p>タイプマップは RFC 822 のメールヘッダに類似した書式です。
-    ドキュメントの記述が空行で分離されて書かれていて、ハッシュ文字
-    ('#') で始まる行はコメントとして扱われます。
-    ドキュメントの説明は複数のヘッダレコードから構成されます。
-    レコードは、続きの行が空白で始まっていると複数の行にまたがります。
-    最初の空白が消去されて、前の行とつなげて 1 行として扱われます。
-    ヘッダレコードはキーワード名の後に値が続くという形式で、
-    キーワード名は常にコロンで終わります。空白はヘッダ名と値の間、
-    値のトークンの間に入れることができます。
-    使用可能なヘッダは以下のとおりです:</p>
-
-    <dl>
-      <dt><code>Content-Encoding:</code></dt>
-      <dd>ファイルのエンコーディング。Apache は <code class="directive"><a href="../mod/mod_mime.html#addencoding">AddEncoding</a></code> ディレクティブ
-      で定義されたエンコーディングだけを認識します。通常 compress
-      されたファイルのための <code>x-compress</code> と gzip
-      されたファイルのための <code>x-gzip</code> を含みます。
-      エンコーディングの比較をするときは、接頭辞 <code>x-</code>
-      は無視されます。</dd>
-
-      <dt><code>Content-Language:</code></dt>
-      <dd>インターネット標準の言語タグ 
-      (<a href="http://www.ietf.org/rfc/rfc1766.txt">RFC 1766</a>)
-      で定義されている言語の種類。例えば、<code>en</code>
-      は英語を表します。
-      複数の言語が格納される場合はコンマで区切られます。</dd>
-
-      <dt><code>Content-Length:</code></dt>
-      <dd>ファイルの長さ (バイト数)。
-      このヘッダがない場合、ファイルの実際の長さが使用されます。</dd>
-
-      <dt><code>Content-Type:</code></dt>
-      <dd>ドキュメントの <a class="glossarylink" href="../glossary.html#mime-type" title="用語集を参照">MIME
-      メディアタイプ</a>、オプショナルなパラメータ付き。パラメータの構文は
-      <code>name=value</code>
-      で、メディアタイプや他のパラメータとはセミコロンで分離されます。
-      共通のパラメータは以下のとおり:
-
-        <dl>
-          <dt><code>level</code></dt>
-          <dd>メディアタイプのバージョンを示す整数。
-          <code>text/html</code> では 2 がデフォルトで、その他の場合は
-          0 がデフォルトです。</dd>
-
-          <dt><code>qs</code></dt>
-          <dd>クライアントの能力に関係なく、variant
-          を他と比較したときの相対的な「品質」で、0.0 から 1.0
-          の範囲の浮動点小数。
-          例えば、写真を表現しようとしているときは普通は JPEG
-          ファイルの方が ASCII ファイルよりも高い品質になります。
-          しかし、リソースが ASCII アートで表現されているときは、ASCII
-          ファイルの方が JPEG
-          ファイルよりも高い品質になります。このように、<code>qs</code>
-          はリソース毎に特有の値を取ります。
-          </dd>
-        </dl>
-
-        <div class="example"><h3>例</h3><p><code>
-          Content-Type: image/jpeg; qs=0.8
-        </code></p></div>
-      </dd>
-
-      <dt><code>URI:</code></dt>
-      <dd>(指定のメディアタイプ、コンテントエンコーディングの) variant の
-      ファイルの uri.  これは、マップファイルからの相対 URL として
-      解釈されます。同じサーバに存在しなければならず、クライアントが
-      直接リクエストしたときにアクセスを許可されるものでなければなりません。</dd>
-
-      <dt><code>Body:</code></dt>
-      <dd>Apache 2.0 で新設されたこの Body ヘッダを使って、
-      リソースの実際の内容をタイプマップファイルに書くことができます。
-      このヘッダは本文の内容の区切りとなる文字列で始まる必要があります。
-      タイプマップファイルの続く行は、区切り文字列が見つかるまで、
-      リソースの本文になります。
-
-      <div class="example"><h3>Example:</h3><p><code>
-        Body:----xyz----<br />
-        &lt;html&gt;<br />
-        &lt;body&gt;<br />
-        &lt;p&gt;Content of the page.&lt;/p&gt;<br />
-        &lt;/body&gt;<br />
-        &lt;/html&gt;<br />
-        ----xyz----
-      </code></p></div>
-      </dd>
-    </dl>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="multiviews" id="multiviews">MultiViews</a></h2>
-    <p>MultiViews 探索は、<code>Multiviews</code> <code class="directive"><a href="../mod/core.html#options">Options</a></code> ディレクティブにより有効になります。
-    サーバが <code>/some/dir/foo</code>
-    へのリクエストを受け取り、<code>/some/dir/foo</code> が存在
-    <em>しない</em>場合、サーバはディレクトリを読んで、
-    <code>foo.*</code> にあてはまる全てのファイルを探し、
-    事実上それらのファイルをマップするタイプマップを作ります。
-    そのとき、メディアタイプとコンテントエンコーディングは、
-    そのファイル名を直接指定したときと同じものが割り当てられます。
-    それからクライアントの要求に一番合うものを選び、
-    そのドキュメントを返します。</p>
-
-    <p>ファイルを選択する際に、関連するコンテントネゴシエーションの
-    メタ情報を持たないファイルについて、判定を行うかどうかを
-    <code class="directive"><a href="../mod/mod_mime.html#multiviewsmatch">MultiViewsMatch</a></code>
-    ディレクティブで設定します。</p>
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CacheNegotiatedDocs" id="CacheNegotiatedDocs">CacheNegotiatedDocs</a> <a name="cachenegotiateddocs" id="cachenegotiateddocs">ディレクティブ</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>コンテントネゴシエーションされたドキュメントをプロキシサーバが
@@ -297,6 +189,114 @@
 <ul>
 <li><code class="directive"><a href="../mod/mod_mime.html#addlanguage">AddLanguage</a></code></li>
 </ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="typemaps" id="typemaps">タイプマップ</a></h2>
+    <p>タイプマップは RFC 822 のメールヘッダに類似した書式です。
+    ドキュメントの記述が空行で分離されて書かれていて、ハッシュ文字
+    ('#') で始まる行はコメントとして扱われます。
+    ドキュメントの説明は複数のヘッダレコードから構成されます。
+    レコードは、続きの行が空白で始まっていると複数の行にまたがります。
+    最初の空白が消去されて、前の行とつなげて 1 行として扱われます。
+    ヘッダレコードはキーワード名の後に値が続くという形式で、
+    キーワード名は常にコロンで終わります。空白はヘッダ名と値の間、
+    値のトークンの間に入れることができます。
+    使用可能なヘッダは以下のとおりです:</p>
+
+    <dl>
+      <dt><code>Content-Encoding:</code></dt>
+      <dd>ファイルのエンコーディング。Apache は <code class="directive"><a href="../mod/mod_mime.html#addencoding">AddEncoding</a></code> ディレクティブ
+      で定義されたエンコーディングだけを認識します。通常 compress
+      されたファイルのための <code>x-compress</code> と gzip
+      されたファイルのための <code>x-gzip</code> を含みます。
+      エンコーディングの比較をするときは、接頭辞 <code>x-</code>
+      は無視されます。</dd>
+
+      <dt><code>Content-Language:</code></dt>
+      <dd>インターネット標準の言語タグ 
+      (<a href="http://www.ietf.org/rfc/rfc1766.txt">RFC 1766</a>)
+      で定義されている言語の種類。例えば、<code>en</code>
+      は英語を表します。
+      複数の言語が格納される場合はコンマで区切られます。</dd>
+
+      <dt><code>Content-Length:</code></dt>
+      <dd>ファイルの長さ (バイト数)。
+      このヘッダがない場合、ファイルの実際の長さが使用されます。</dd>
+
+      <dt><code>Content-Type:</code></dt>
+      <dd>ドキュメントの <a class="glossarylink" href="../glossary.html#mime-type" title="用語集を参照">MIME
+      メディアタイプ</a>、オプショナルなパラメータ付き。パラメータの構文は
+      <code>name=value</code>
+      で、メディアタイプや他のパラメータとはセミコロンで分離されます。
+      共通のパラメータは以下のとおり:
+
+        <dl>
+          <dt><code>level</code></dt>
+          <dd>メディアタイプのバージョンを示す整数。
+          <code>text/html</code> では 2 がデフォルトで、その他の場合は
+          0 がデフォルトです。</dd>
+
+          <dt><code>qs</code></dt>
+          <dd>クライアントの能力に関係なく、variant
+          を他と比較したときの相対的な「品質」で、0.0 から 1.0
+          の範囲の浮動点小数。
+          例えば、写真を表現しようとしているときは普通は JPEG
+          ファイルの方が ASCII ファイルよりも高い品質になります。
+          しかし、リソースが ASCII アートで表現されているときは、ASCII
+          ファイルの方が JPEG
+          ファイルよりも高い品質になります。このように、<code>qs</code>
+          はリソース毎に特有の値を取ります。
+          </dd>
+        </dl>
+
+        <div class="example"><h3>例</h3><p><code>
+          Content-Type: image/jpeg; qs=0.8
+        </code></p></div>
+      </dd>
+
+      <dt><code>URI:</code></dt>
+      <dd>(指定のメディアタイプ、コンテントエンコーディングの) variant の
+      ファイルの uri.  これは、マップファイルからの相対 URL として
+      解釈されます。同じサーバに存在しなければならず、クライアントが
+      直接リクエストしたときにアクセスを許可されるものでなければなりません。</dd>
+
+      <dt><code>Body:</code></dt>
+      <dd>Apache 2.0 で新設されたこの Body ヘッダを使って、
+      リソースの実際の内容をタイプマップファイルに書くことができます。
+      このヘッダは本文の内容の区切りとなる文字列で始まる必要があります。
+      タイプマップファイルの続く行は、区切り文字列が見つかるまで、
+      リソースの本文になります。
+
+      <div class="example"><h3>Example:</h3><p><code>
+        Body:----xyz----<br />
+        &lt;html&gt;<br />
+        &lt;body&gt;<br />
+        &lt;p&gt;Content of the page.&lt;/p&gt;<br />
+        &lt;/body&gt;<br />
+        &lt;/html&gt;<br />
+        ----xyz----
+      </code></p></div>
+      </dd>
+    </dl>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="multiviews" id="multiviews">MultiViews</a></h2>
+    <p>MultiViews 探索は、<code>Multiviews</code> <code class="directive"><a href="../mod/core.html#options">Options</a></code> ディレクティブにより有効になります。
+    サーバが <code>/some/dir/foo</code>
+    へのリクエストを受け取り、<code>/some/dir/foo</code> が存在
+    <em>しない</em>場合、サーバはディレクトリを読んで、
+    <code>foo.*</code> にあてはまる全てのファイルを探し、
+    事実上それらのファイルをマップするタイプマップを作ります。
+    そのとき、メディアタイプとコンテントエンコーディングは、
+    そのファイル名を直接指定したときと同じものが割り当てられます。
+    それからクライアントの要求に一番合うものを選び、
+    そのドキュメントを返します。</p>
+
+    <p>ファイルを選択する際に、関連するコンテントネゴシエーションの
+    メタ情報を持たないファイルについて、判定を行うかどうかを
+    <code class="directive"><a href="../mod/mod_mime.html#multiviewsmatch">MultiViewsMatch</a></code>
+    ディレクティブで設定します。</p>
 </div>
 </div>
 <div class="bottomlang">

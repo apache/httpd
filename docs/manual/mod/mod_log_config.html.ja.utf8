@@ -71,6 +71,185 @@
 <li><a href="../logs.html">Apache ログファイル</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">コメント</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="BufferedLogs" id="BufferedLogs">BufferedLogs</a> <a name="bufferedlogs" id="bufferedlogs">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ディスクに書き出す前にメモリにログエントリをバッファする</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>BufferedLogs On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>BufferedLogs Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_log_config</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>2.0.41 以降</td></tr>
+</table>
+    <p><code class="directive">BufferedLogs</code> ディレクティブを使うと
+    <code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code> の挙動が変化して、
+    複数のログを書き出す際に、それぞれのリクエスト処理後毎に
+    書き出すのではなく、いったんメモリに蓄えてから、
+    まとめてディスクに書き出すようになります。
+    この結果ディスクアクセスがより効率的になり、
+    高いパフォーマンスの得られるシステムもあるでしょう。
+    このディレクティブはサーバ全体で一度だけ設定できます; 
+    バーチャルホストごとに設定することはできません。</p>
+
+    <div class="note">このディレクティブは実験的なものですので、
+    使用する際は注意してください。</div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="CustomLog" id="CustomLog">CustomLog</a> <a name="customlog" id="customlog">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ログファイルの名前と書式を設定する</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>CustomLog  <var>file</var>|<var>pipe</var>
+<var>format</var>|<var>nickname</var>
+[env=[!]<var>environment-variable</var>]</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_log_config</td></tr>
+</table>
+    <p><code class="directive">CustomLog</code> ディレクティブはサーバへのリクエストを
+    ログ収集するために使われます。ログの書式が指定され、
+    環境変数を使ってロギングが条件に応じて行なわれるようにすることもできます。</p>
+
+    <p>ログが書かれる場所を指定する最初の引数は以下の二つの形式の値を
+    とることができます:</p>
+
+    <dl>
+      <dt><var>file</var></dt>
+      <dd><code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>
+      からの相対パスで表されるファイル名。</dd>
+
+      <dt><var>pipe</var></dt>
+      <dd>パイプ文字 "<code>|</code>" と、その後に標準入力からログの
+      情報を受けとるプログラムへのパスが続いたもの。
+
+      <div class="warning"><h3>セキュリティ</h3>
+      <p>もしプログラムが使用された場合、
+      <code class="program"><a href="../programs/httpd.html">httpd</a></code> が起動されたユーザとして実行されます。これはサーバが
+      root によって起動された場合は root になります。プログラムが
+      安全であるように留意してください。</p>
+      </div>
+      <div class="warning"><h3>注</h3>
+        <p>Unix でないプラットフォームでファイルのパスを入力しているときは、
+        使用しているプラットフォームがバックスラッシュの使用を許可していた
+        として、通常のスラッシュだけを使うように気をつけてください。
+        一般的に、設定ファイル中では常に普通のスラッシュのみを使うようにする
+        方が良いです。</p>
+      </div></dd>
+    </dl>
+
+    <p>二つめの引数はログファイルに何が書かれるかを指定します。
+    前にある <code class="directive"><a href="#logformat">LogFormat</a></code> ディレクティブにより
+    定義された <var>nickname</var> か、<a href="#formats">ログの書式</a>
+    のところで説明されている、明示的な <var>format</var> 文字列の
+    どちらかを指定することができます。</p>
+
+    <p>例えば、以下の二つのディレクティブ群は全く同じ効果をもたらします:</p>
+
+    <div class="example"><p><code>
+      # CustomLog with format nickname<br />
+      LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common<br />
+      CustomLog logs/access_log common<br />
+      <br />
+      # CustomLog with explicit format string<br />
+      CustomLog logs/access_log "%h %l %u %t \"%r\" %&gt;s %b"
+    </code></p></div>
+
+    <p>三つ目の引数は省略可能で、サーバの環境にある変数があるかないかに
+    応じてリクエストをログ収集するかどうかを制御するために使うことができます。
+    指定された<a href="../env.html">環境変数</a>がリクエストに対して
+    設定されていた場合 ('<code>env=!<var>name</var></code>' 文が使われたときは
+    設定されていない場合)、リクエストがログ収集されます。</p>
+
+    <p>環境変数は <code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code> モジュールと
+    <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> モジュールの両方もしくは
+    片方を用いてリクエストごとに設定することができます。
+    例えば、サーバにあるすべての GIF 画像へのリクエストを別のログファイル
+    には記録したいけれど、メインログには記録したくない、というときは
+    以下のものを使うことができます:</p>
+    
+    <div class="example"><p><code>
+      SetEnvIf Request_URI \.gif$ gif-image<br />
+      CustomLog gif-requests.log common env=gif-image<br />
+      CustomLog nongif-requests.log common env=!gif-image
+    </code></p></div>
+
+    <p>古い RefererIgnore ディレクティブと同じ挙動をさせたい場合は、
+    次のようにします:</p>
+
+    <div class="example"><p><code>
+    SetEnvIf Referer example\.com localreferer<br />
+    CustomLog referer.log referer env=!localreferer
+    </code></p></div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="LogFormat" id="LogFormat">LogFormat</a> <a name="logformat" id="logformat">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ログファイルで使用する書式を設定する</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>LogFormat <var>format</var>|<var>nickname</var>
+[<var>nickname</var>]</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>LogFormat "%h %l %u %t \"%r\" %&gt;s %b"</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_log_config</td></tr>
+</table>
+    <p>このディレクティブはアクセスログファイルの書式を指定します。</p>
+
+    <p><code class="directive">LogFormat</code> ディレクティブは二つの形式のどちらかを
+    とることができます。最初の形式では一つの引数のみが指定され、
+    続く <code class="directive">TransferLog</code>
+    で指定されたログで使われるログの書式を設定します。この単独の引数では
+    上の<a href="#formats">カスタムログ書式</a>で説明されているように
+    <var>format</var> を明示的に指定することができます。
+    もしくは、下で説明されているように前に <code class="directive">LogFormat</code>
+    ディレクティブで定義されたログの書式を <var>nickname</var>を使って
+    参照することもできます。</p>
+
+    <p><code class="directive">LogFormat</code> ディレクティブの二つめの形式は
+    <var>format</var> に <var>nickname</var> を与えます。
+    フォーマット文字列全体を再び書くかわりに、
+    この <var>nickname</var> を続きの <code class="directive">LogFormat</code> ディレクティブや
+    <code class="directive">CustomLog</code> ディレクティブで使うことができます。
+    Nickname を定義する <code class="directive">LogFormat</code> ディレクティブは
+    <strong>他には何もしません</strong> -- すなわち、ニックネームを定義
+    する<em>だけ</em>で、実際に書式を適用してデフォルトにするということは行ないません。
+    ですから、これは続く <code class="directive"><a href="#transferlog">TransferLog</a></code>
+    ディレクティブには影響を与えません。
+    さらに、<code class="directive">LogFormat</code> ディレクティブは既存の nickname を
+    使って別の nickname を定義することはできません。Nickname には
+    パーセント記号 (<code>%</code>) が含まれていてはいけないことにも注意
+    してください。</p>
+
+    <div class="example"><h3>例</h3><p><code>
+      LogFormat "%v %h %l %u %t \"%r\" %&gt;s %b" vhost_common
+    </code></p></div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="TransferLog" id="TransferLog">TransferLog</a> <a name="transferlog" id="transferlog">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ログファイルの位置を指定</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>TransferLog <var>file</var>|<var>pipe</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_log_config</td></tr>
+</table>
+    <p>このディレクティブは、ログ書式を直接指定できないことと、
+    条件付きロギングが無いことを除くと、<code class="directive"><a href="#customlog">CustomLog</a></code> と全く同じ引数と効果があります。
+    直接ログ書式を指定する代わりに、ログの書式はそこまでで一番最後に指定された
+    ニックネームを定義しない
+    <code class="directive"><a href="#logformat">LogFormat</a></code> ディレクティブ
+	で定義されたものを使います。
+    もし他の書式が全く指定されていないときは Common Log Format
+    が使われます。</p>
+
+    <div class="example"><h3>例</h3><p><code>
+      LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\""<br />
+      TransferLog logs/access_log
+    </code></p></div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="formats" id="formats">カスタムログ書式</a></h2>
 
@@ -277,185 +456,6 @@
     <p>ログファイルが保存されているディレクトリがサーバを起動した以外のユーザで
     書き込み可能なときにセキュリティの問題が発生する理由の詳細は<a href="../misc/security_tips.html#serverroot">セキュリティのこつ</a>
     を参照してください。</p>
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="BufferedLogs" id="BufferedLogs">BufferedLogs</a> <a name="bufferedlogs" id="bufferedlogs">ディレクティブ</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ディスクに書き出す前にメモリにログエントリをバッファする</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>BufferedLogs On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>BufferedLogs Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_log_config</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>2.0.41 以降</td></tr>
-</table>
-    <p><code class="directive">BufferedLogs</code> ディレクティブを使うと
-    <code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code> の挙動が変化して、
-    複数のログを書き出す際に、それぞれのリクエスト処理後毎に
-    書き出すのではなく、いったんメモリに蓄えてから、
-    まとめてディスクに書き出すようになります。
-    この結果ディスクアクセスがより効率的になり、
-    高いパフォーマンスの得られるシステムもあるでしょう。
-    このディレクティブはサーバ全体で一度だけ設定できます; 
-    バーチャルホストごとに設定することはできません。</p>
-
-    <div class="note">このディレクティブは実験的なものですので、
-    使用する際は注意してください。</div>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CustomLog" id="CustomLog">CustomLog</a> <a name="customlog" id="customlog">ディレクティブ</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ログファイルの名前と書式を設定する</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>CustomLog  <var>file</var>|<var>pipe</var>
-<var>format</var>|<var>nickname</var>
-[env=[!]<var>environment-variable</var>]</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_log_config</td></tr>
-</table>
-    <p><code class="directive">CustomLog</code> ディレクティブはサーバへのリクエストを
-    ログ収集するために使われます。ログの書式が指定され、
-    環境変数を使ってロギングが条件に応じて行なわれるようにすることもできます。</p>
-
-    <p>ログが書かれる場所を指定する最初の引数は以下の二つの形式の値を
-    とることができます:</p>
-
-    <dl>
-      <dt><var>file</var></dt>
-      <dd><code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>
-      からの相対パスで表されるファイル名。</dd>
-
-      <dt><var>pipe</var></dt>
-      <dd>パイプ文字 "<code>|</code>" と、その後に標準入力からログの
-      情報を受けとるプログラムへのパスが続いたもの。
-
-      <div class="warning"><h3>セキュリティ</h3>
-      <p>もしプログラムが使用された場合、
-      <code class="program"><a href="../programs/httpd.html">httpd</a></code> が起動されたユーザとして実行されます。これはサーバが
-      root によって起動された場合は root になります。プログラムが
-      安全であるように留意してください。</p>
-      </div>
-      <div class="warning"><h3>注</h3>
-        <p>Unix でないプラットフォームでファイルのパスを入力しているときは、
-        使用しているプラットフォームがバックスラッシュの使用を許可していた
-        として、通常のスラッシュだけを使うように気をつけてください。
-        一般的に、設定ファイル中では常に普通のスラッシュのみを使うようにする
-        方が良いです。</p>
-      </div></dd>
-    </dl>
-
-    <p>二つめの引数はログファイルに何が書かれるかを指定します。
-    前にある <code class="directive"><a href="#logformat">LogFormat</a></code> ディレクティブにより
-    定義された <var>nickname</var> か、<a href="#formats">ログの書式</a>
-    のところで説明されている、明示的な <var>format</var> 文字列の
-    どちらかを指定することができます。</p>
-
-    <p>例えば、以下の二つのディレクティブ群は全く同じ効果をもたらします:</p>
-
-    <div class="example"><p><code>
-      # CustomLog with format nickname<br />
-      LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common<br />
-      CustomLog logs/access_log common<br />
-      <br />
-      # CustomLog with explicit format string<br />
-      CustomLog logs/access_log "%h %l %u %t \"%r\" %&gt;s %b"
-    </code></p></div>
-
-    <p>三つ目の引数は省略可能で、サーバの環境にある変数があるかないかに
-    応じてリクエストをログ収集するかどうかを制御するために使うことができます。
-    指定された<a href="../env.html">環境変数</a>がリクエストに対して
-    設定されていた場合 ('<code>env=!<var>name</var></code>' 文が使われたときは
-    設定されていない場合)、リクエストがログ収集されます。</p>
-
-    <p>環境変数は <code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code> モジュールと
-    <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> モジュールの両方もしくは
-    片方を用いてリクエストごとに設定することができます。
-    例えば、サーバにあるすべての GIF 画像へのリクエストを別のログファイル
-    には記録したいけれど、メインログには記録したくない、というときは
-    以下のものを使うことができます:</p>
-    
-    <div class="example"><p><code>
-      SetEnvIf Request_URI \.gif$ gif-image<br />
-      CustomLog gif-requests.log common env=gif-image<br />
-      CustomLog nongif-requests.log common env=!gif-image
-    </code></p></div>
-
-    <p>古い RefererIgnore ディレクティブと同じ挙動をさせたい場合は、
-    次のようにします:</p>
-
-    <div class="example"><p><code>
-    SetEnvIf Referer example\.com localreferer<br />
-    CustomLog referer.log referer env=!localreferer
-    </code></p></div>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LogFormat" id="LogFormat">LogFormat</a> <a name="logformat" id="logformat">ディレクティブ</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ログファイルで使用する書式を設定する</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>LogFormat <var>format</var>|<var>nickname</var>
-[<var>nickname</var>]</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>LogFormat "%h %l %u %t \"%r\" %&gt;s %b"</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_log_config</td></tr>
-</table>
-    <p>このディレクティブはアクセスログファイルの書式を指定します。</p>
-
-    <p><code class="directive">LogFormat</code> ディレクティブは二つの形式のどちらかを
-    とることができます。最初の形式では一つの引数のみが指定され、
-    続く <code class="directive">TransferLog</code>
-    で指定されたログで使われるログの書式を設定します。この単独の引数では
-    上の<a href="#formats">カスタムログ書式</a>で説明されているように
-    <var>format</var> を明示的に指定することができます。
-    もしくは、下で説明されているように前に <code class="directive">LogFormat</code>
-    ディレクティブで定義されたログの書式を <var>nickname</var>を使って
-    参照することもできます。</p>
-
-    <p><code class="directive">LogFormat</code> ディレクティブの二つめの形式は
-    <var>format</var> に <var>nickname</var> を与えます。
-    フォーマット文字列全体を再び書くかわりに、
-    この <var>nickname</var> を続きの <code class="directive">LogFormat</code> ディレクティブや
-    <code class="directive">CustomLog</code> ディレクティブで使うことができます。
-    Nickname を定義する <code class="directive">LogFormat</code> ディレクティブは
-    <strong>他には何もしません</strong> -- すなわち、ニックネームを定義
-    する<em>だけ</em>で、実際に書式を適用してデフォルトにするということは行ないません。
-    ですから、これは続く <code class="directive"><a href="#transferlog">TransferLog</a></code>
-    ディレクティブには影響を与えません。
-    さらに、<code class="directive">LogFormat</code> ディレクティブは既存の nickname を
-    使って別の nickname を定義することはできません。Nickname には
-    パーセント記号 (<code>%</code>) が含まれていてはいけないことにも注意
-    してください。</p>
-
-    <div class="example"><h3>例</h3><p><code>
-      LogFormat "%v %h %l %u %t \"%r\" %&gt;s %b" vhost_common
-    </code></p></div>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="TransferLog" id="TransferLog">TransferLog</a> <a name="transferlog" id="transferlog">ディレクティブ</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ログファイルの位置を指定</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>TransferLog <var>file</var>|<var>pipe</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_log_config</td></tr>
-</table>
-    <p>このディレクティブは、ログ書式を直接指定できないことと、
-    条件付きロギングが無いことを除くと、<code class="directive"><a href="#customlog">CustomLog</a></code> と全く同じ引数と効果があります。
-    直接ログ書式を指定する代わりに、ログの書式はそこまでで一番最後に指定された
-    ニックネームを定義しない
-    <code class="directive"><a href="#logformat">LogFormat</a></code> ディレクティブ
-	で定義されたものを使います。
-    もし他の書式が全く指定されていないときは Common Log Format
-    が使われます。</p>
-
-    <div class="example"><h3>例</h3><p><code>
-      LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\""<br />
-      TransferLog logs/access_log
-    </code></p></div>
-
 </div>
 </div>
 <div class="bottomlang">

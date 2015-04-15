@@ -66,50 +66,6 @@
 <li><code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Yorum</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="formats" id="formats">Adli Günlük Biçemi</a></h2>
-    <p>Her istek günlüğe iki defa kaydedilir. İlki, işlemin başlangıcında
-      (yani, başlıklar alındıktan hemen sonra), ikincisi ise istek işlem
-      gördükten sonra normal günlüklemenin yapıldığı sırada yapılır.</p>
-
-    <p>Her isteği betimlemek için eşsiz bir istek kimliği atanır. Bu adli
-      kimliğin normal günlüğe de yazılması istenirse bu
-      <code>%{forensic-id}n</code> biçem dizgesi ile yapılabilir.
-      <code class="module"><a href="../mod/mod_unique_id.html">mod_unique_id</a></code> kullanılıyorsa, onun ürettiği kimlik
-      kullanılır.</p>
-
-    <p>İlk satır günlüğe, adli kimliği, istek satırını ve alınan tüm
-      başlıkları boru karakterleri (<code>|</code>) ile ayrılmış olarak
-      kaydeder. Aşağıda bir örneğe yer verilmiştir (hepsi bir satırdadır):</p>
-
-    <div class="example"><p><code>
-        +yQtJf8CoAB4AAFNXBIEAAAAA|GET /manual/de/images/down.gif
-        HTTP/1.1|Host:localhost%3a8080|User-Agent:Mozilla/5.0 (X11;
-        U; Linux i686; en-US; rv%3a1.6) Gecko/20040216
-        Firefox/0.8|Accept:image/png, <var>etc...</var>
-    </code></p></div>
-
-    <p>Başlangıçtaki artı imi bu günlük satırının istekle ilgili ilk günlük
-      kaydı olduğunu belirtir. İkinci satırda bunun yerini bir eksi imi
-      alır:</p>
-
-    <div class="example"><p><code>
-      -yQtJf8CoAB4AAFNXBIEAAAAA
-    </code></p></div>
-
-    <p><code>check_forensic</code> betiği komut satırı argümanı olarak günlük
-      dosyasının ismini alır. Bu <code>+</code>/<code>-</code> kimlik
-      çiftlerine bakarak tamamlanmamış istekler varsa bunlar hakkında
-      uyarır.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="security" id="security">Güvenlik Kaygıları</a></h2>
-    <p>Günlük dosyarının kaydedildiği dizine sunucuyu başlatan kullanıcı
-      dışında diğer kullanıcılar tarafından yazılabiliyor olması halinde
-      güvenliğinizden nasıl feragat etmiş olacağınız <a href="../misc/security_tips.html#serverroot">güvenlik ipuçları</a>
-      belgesinde açıklanmıştır.</p>
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ForensicLog" id="ForensicLog">ForensicLog</a> <a name="forensiclog" id="forensiclog">Yönergesi</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Adli günlük için dosya ismini belirler.</td></tr>
@@ -155,6 +111,50 @@
       </div></dd>
     </dl>
 
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="formats" id="formats">Adli Günlük Biçemi</a></h2>
+    <p>Her istek günlüğe iki defa kaydedilir. İlki, işlemin başlangıcında
+      (yani, başlıklar alındıktan hemen sonra), ikincisi ise istek işlem
+      gördükten sonra normal günlüklemenin yapıldığı sırada yapılır.</p>
+
+    <p>Her isteği betimlemek için eşsiz bir istek kimliği atanır. Bu adli
+      kimliğin normal günlüğe de yazılması istenirse bu
+      <code>%{forensic-id}n</code> biçem dizgesi ile yapılabilir.
+      <code class="module"><a href="../mod/mod_unique_id.html">mod_unique_id</a></code> kullanılıyorsa, onun ürettiği kimlik
+      kullanılır.</p>
+
+    <p>İlk satır günlüğe, adli kimliği, istek satırını ve alınan tüm
+      başlıkları boru karakterleri (<code>|</code>) ile ayrılmış olarak
+      kaydeder. Aşağıda bir örneğe yer verilmiştir (hepsi bir satırdadır):</p>
+
+    <div class="example"><p><code>
+        +yQtJf8CoAB4AAFNXBIEAAAAA|GET /manual/de/images/down.gif
+        HTTP/1.1|Host:localhost%3a8080|User-Agent:Mozilla/5.0 (X11;
+        U; Linux i686; en-US; rv%3a1.6) Gecko/20040216
+        Firefox/0.8|Accept:image/png, <var>etc...</var>
+    </code></p></div>
+
+    <p>Başlangıçtaki artı imi bu günlük satırının istekle ilgili ilk günlük
+      kaydı olduğunu belirtir. İkinci satırda bunun yerini bir eksi imi
+      alır:</p>
+
+    <div class="example"><p><code>
+      -yQtJf8CoAB4AAFNXBIEAAAAA
+    </code></p></div>
+
+    <p><code>check_forensic</code> betiği komut satırı argümanı olarak günlük
+      dosyasının ismini alır. Bu <code>+</code>/<code>-</code> kimlik
+      çiftlerine bakarak tamamlanmamış istekler varsa bunlar hakkında
+      uyarır.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="security" id="security">Güvenlik Kaygıları</a></h2>
+    <p>Günlük dosyarının kaydedildiği dizine sunucuyu başlatan kullanıcı
+      dışında diğer kullanıcılar tarafından yazılabiliyor olması halinde
+      güvenliğinizden nasıl feragat etmiş olacağınız <a href="../misc/security_tips.html#serverroot">güvenlik ipuçları</a>
+      belgesinde açıklanmıştır.</p>
 </div>
 </div>
 <div class="bottomlang">

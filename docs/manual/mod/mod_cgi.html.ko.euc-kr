@@ -78,6 +78,75 @@
 <li><a href="http://hoohoo.ncsa.uiuc.edu/cgi/">CGI 표준</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ScriptLog" id="ScriptLog">ScriptLog</a> <a name="scriptlog" id="scriptlog">지시어</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">설명:</a></th><td>CGI 스크립트 오류로그파일의 위치</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>ScriptLog <var>file-path</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트</td></tr>
+<tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">모듈:</a></th><td><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>, <code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code></td></tr>
+</table>
+    <p><code class="directive">ScriptLog</code> 지시어는 CGI 스크립트
+    오류로그파일을 지정한다. <code class="directive">ScriptLog</code>를
+    사용하지않으면 오류로그를 만들지 않는다. 사용하면 아규먼트로
+    지정한 파일에 CGI 오류를 기록한다. 상대경로를 지정하면
+    <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>에 상대경로로
+    받아들인다.
+    </p>
+
+    <div class="example"><h3>예제</h3><p><code>
+      ScriptLog logs/cgi_log
+    </code></p></div>
+
+    <p>자식 프로세스를 실행하는 사용자, <em>즉</em> <code class="directive"><a href="../mod/mpm_common.html#user">User</a></code> 지시어로 지정한 사용자
+    권한으로 로그를 연다. 그래서 그 사용자가 스크립트 로그가
+    있는 디렉토리에 쓰기권한이 있던지, 직접 미리 파일을 만들어서
+    그 사용자에게 쓰기권한을 줘야 한다. 스크립트 로그를 주 로그
+    디렉토리에 둔다면 자식 프로세스를 실행하는 사용자에게 쓰기권한을
+    주기위해 디렉토리 권한을 변경하지 <strong>마라</strong>.</p>
+
+    <p>스크립트 로그는 CGI 스크립트를 작성할때 디버깅을 위한
+    용도이지 서버를 실행하는 동안 계속 사용하기위함이 아님을
+    주의하라. 속도와 효율성면에서 최적화가 안되있고, 설계한
+    목적이외의 방법으로 사용하면 보안상 문제가 될 수 있다.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ScriptLogBuffer" id="ScriptLogBuffer">ScriptLogBuffer</a> <a name="scriptlogbuffer" id="scriptlogbuffer">지시어</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">설명:</a></th><td>스크립트 로그에 기록할 PUT 혹은 POST 요청의 최대량</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>ScriptLogBuffer <var>bytes</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">기본값:</a></th><td><code>ScriptLogBuffer 1024</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트</td></tr>
+<tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">모듈:</a></th><td><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>, <code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code></td></tr>
+</table>
+    <p>큰 내용을 받아서 로그파일이 너무 빨리 커지는 현상을 막기위해
+    파일에 기록할 PUT 혹은 POST 내용의 크기를 제한한다. 기본적으로
+    1024 바이트까지 로그에 기록하지만, 이 지시어를 사용하여
+    수정할 수 있다.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ScriptLogLength" id="ScriptLogLength">ScriptLogLength</a> <a name="scriptloglength" id="scriptloglength">지시어</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">설명:</a></th><td>CGI 스크립트 로그파일의 크기 제한</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>ScriptLogLength <var>bytes</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">기본값:</a></th><td><code>ScriptLogLength 10385760</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트</td></tr>
+<tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">모듈:</a></th><td><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>, <code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code></td></tr>
+</table>
+    <p><code class="directive">ScriptLogLength</code>는 CGI 스크립트
+    로그파일의 크기를 제한한다. CGI 오류가 발생할때마다 (모든
+    요청 헤더, 모든 스크립트 출력 등) 많은 정보가 로그에
+    기록되기때문에 파일이 매우 커질 수 있다. 파일이 무한히 커지는
+    문제를 막기위해 이 지시어를 사용하여 CGI 로그파일의 최대
+    파일크기를 설정한다. 파일의 크기가 설정한 값을 넘으면 더
+    이상 정보를 기록하지않는다.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="env" id="env">CGI 환경변수</a></h2>
     <p>서버는 다음과 같은 방법으로 <a href="http://hoohoo.ncsa.uiuc.edu/cgi/">CGI 표준</a>이 설명하는
@@ -157,75 +226,6 @@
       <p>(스크립트가 표준출력이나 표준오류에 아무 내용도 출력하지
       않았다면 %stdout과 %stderr 부분은 생략될 수 있다).</p>
     
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ScriptLog" id="ScriptLog">ScriptLog</a> <a name="scriptlog" id="scriptlog">지시어</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">설명:</a></th><td>CGI 스크립트 오류로그파일의 위치</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>ScriptLog <var>file-path</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트</td></tr>
-<tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">모듈:</a></th><td><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>, <code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code></td></tr>
-</table>
-    <p><code class="directive">ScriptLog</code> 지시어는 CGI 스크립트
-    오류로그파일을 지정한다. <code class="directive">ScriptLog</code>를
-    사용하지않으면 오류로그를 만들지 않는다. 사용하면 아규먼트로
-    지정한 파일에 CGI 오류를 기록한다. 상대경로를 지정하면
-    <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>에 상대경로로
-    받아들인다.
-    </p>
-
-    <div class="example"><h3>예제</h3><p><code>
-      ScriptLog logs/cgi_log
-    </code></p></div>
-
-    <p>자식 프로세스를 실행하는 사용자, <em>즉</em> <code class="directive"><a href="../mod/mpm_common.html#user">User</a></code> 지시어로 지정한 사용자
-    권한으로 로그를 연다. 그래서 그 사용자가 스크립트 로그가
-    있는 디렉토리에 쓰기권한이 있던지, 직접 미리 파일을 만들어서
-    그 사용자에게 쓰기권한을 줘야 한다. 스크립트 로그를 주 로그
-    디렉토리에 둔다면 자식 프로세스를 실행하는 사용자에게 쓰기권한을
-    주기위해 디렉토리 권한을 변경하지 <strong>마라</strong>.</p>
-
-    <p>스크립트 로그는 CGI 스크립트를 작성할때 디버깅을 위한
-    용도이지 서버를 실행하는 동안 계속 사용하기위함이 아님을
-    주의하라. 속도와 효율성면에서 최적화가 안되있고, 설계한
-    목적이외의 방법으로 사용하면 보안상 문제가 될 수 있다.</p>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ScriptLogBuffer" id="ScriptLogBuffer">ScriptLogBuffer</a> <a name="scriptlogbuffer" id="scriptlogbuffer">지시어</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">설명:</a></th><td>스크립트 로그에 기록할 PUT 혹은 POST 요청의 최대량</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>ScriptLogBuffer <var>bytes</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">기본값:</a></th><td><code>ScriptLogBuffer 1024</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트</td></tr>
-<tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">모듈:</a></th><td><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>, <code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code></td></tr>
-</table>
-    <p>큰 내용을 받아서 로그파일이 너무 빨리 커지는 현상을 막기위해
-    파일에 기록할 PUT 혹은 POST 내용의 크기를 제한한다. 기본적으로
-    1024 바이트까지 로그에 기록하지만, 이 지시어를 사용하여
-    수정할 수 있다.</p>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ScriptLogLength" id="ScriptLogLength">ScriptLogLength</a> <a name="scriptloglength" id="scriptloglength">지시어</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">설명:</a></th><td>CGI 스크립트 로그파일의 크기 제한</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>ScriptLogLength <var>bytes</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">기본값:</a></th><td><code>ScriptLogLength 10385760</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트</td></tr>
-<tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">모듈:</a></th><td><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>, <code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code></td></tr>
-</table>
-    <p><code class="directive">ScriptLogLength</code>는 CGI 스크립트
-    로그파일의 크기를 제한한다. CGI 오류가 발생할때마다 (모든
-    요청 헤더, 모든 스크립트 출력 등) 많은 정보가 로그에
-    기록되기때문에 파일이 매우 커질 수 있다. 파일이 무한히 커지는
-    문제를 막기위해 이 지시어를 사용하여 CGI 로그파일의 최대
-    파일크기를 설정한다. 파일의 크기가 설정한 값을 넘으면 더
-    이상 정보를 기록하지않는다.</p>
-
 </div>
 </div>
 <div class="bottomlang">

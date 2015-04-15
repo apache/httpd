@@ -54,84 +54,6 @@
 d'authentification</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="authnalias" id="authnalias">Création d'alias de fournisseurs
-d'authentification</a></h2>
-
-    <p>Il est possible de créer des fournisseurs d'authentification
-    étendus dans le fichier de configuration et de leur assigner un
-    alias. Le fournisseur ainsi nommé peut alors être référencé à l'aide
-    des directives <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code> ou <code class="directive"><a href="../mod/mod_auth_digest.html#authdigestprovider">AuthDigestProvider</a></code> tout comme
-    un fournisseur d'authentification de base. Outre la possibilité de
-    créer et attribuer un alias à un fournisseur étendu, le même
-    fournisseur d'authentification peut aussi être référencé par
-    plusieurs sections relatives à une zone du site web.</p>
-
-    <h3><a name="example" id="example">Exemples</a></h3>
-
-	<p>Cet exemple vérifie les mots de passe dans deux fichiers
-	textes différents.</p>
-
-	<div class="example"><h3>Vérification dans plusieurs fichiers de mots de
-	passe au format texte</h3><pre class="prettyprint lang-config"># Première vérification
-&lt;AuthnProviderAlias file file1&gt;
-    AuthUserFile /www/conf/passwords1
-&lt;/AuthnProviderAlias&gt;
-
-# Vérification suivante
-&lt;AuthnProviderAlias file file2&gt;   
-    AuthUserFile /www/conf/passwords2
-&lt;/AuthnProviderAlias&gt;
-
-&lt;Directory /var/web/pages/secure&gt;
-    AuthBasicProvider file1 file2
-    
-    AuthType Basic
-    AuthName "Protected Area"
-    Require valid-user
-&lt;/Directory&gt;</pre>
-</div>
-
-
-
-        <p>Dans l'exemple ci-dessous, deux fournisseurs
-	d'authentification ldap sont créés à partir du fournisseur ldap
-	de base, et se voient attribuer un alias. L'authentification
-	d'une même zone peut alors être traitée par plusieurs serveurs
-	ldap :</p>
-
-        <div class="example"><h3>Vérification auprès de plusieurs serveurs
-	LDAP</h3><pre class="prettyprint lang-config">&lt;AuthnProviderAlias ldap ldap-alias1&gt;
-    AuthLDAPBindDN cn=youruser,o=ctx
-    AuthLDAPBindPassword yourpassword
-    AuthLDAPURL ldap://ldap.host/o=ctx
-    &lt;/AuthnProviderAlias&gt;
-    &lt;AuthnProviderAlias ldap ldap-other-alias&gt;
-    AuthLDAPBindDN cn=yourotheruser,o=dev
-    AuthLDAPBindPassword yourotherpassword
-    AuthLDAPURL ldap://other.ldap.host/o=dev?cn
-&lt;/AuthnProviderAlias&gt;
-
-Alias /secure /webpages/secure
-&lt;Directory /webpages/secure&gt;
-    Order deny,allow
-    Allow from all
-    
-    AuthBasicProvider ldap-other-alias  ldap-alias1
-    
-    AuthType Basic
-    AuthName LDAP_Protected Place
-    Require valid-user
-    # Notez que Require ldap-* ne fonctionnerait pas ici, car
-    # AuthnProviderAlias ne fournit pas de configuration pour les
-    # fournisseurs d'autorisation implémentés dans le même module que le
-    # fournisseur d'authentification.
-&lt;/Directory&gt;</pre>
-</div>
-    
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="authname" id="authname">Directive</a> <a name="AuthName" id="AuthName">AuthName</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>L'identifiant de l'autorisation à utiliser avec
@@ -264,6 +186,84 @@ l'alias spécifié</td></tr>
 <li><a href="../howto/auth.html">Authentification, autorisation et contrôle
     d'accès</a></li>
 </ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="authnalias" id="authnalias">Création d'alias de fournisseurs
+d'authentification</a></h2>
+
+    <p>Il est possible de créer des fournisseurs d'authentification
+    étendus dans le fichier de configuration et de leur assigner un
+    alias. Le fournisseur ainsi nommé peut alors être référencé à l'aide
+    des directives <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code> ou <code class="directive"><a href="../mod/mod_auth_digest.html#authdigestprovider">AuthDigestProvider</a></code> tout comme
+    un fournisseur d'authentification de base. Outre la possibilité de
+    créer et attribuer un alias à un fournisseur étendu, le même
+    fournisseur d'authentification peut aussi être référencé par
+    plusieurs sections relatives à une zone du site web.</p>
+
+    <h3><a name="example" id="example">Exemples</a></h3>
+
+	<p>Cet exemple vérifie les mots de passe dans deux fichiers
+	textes différents.</p>
+
+	<div class="example"><h3>Vérification dans plusieurs fichiers de mots de
+	passe au format texte</h3><pre class="prettyprint lang-config"># Première vérification
+&lt;AuthnProviderAlias file file1&gt;
+    AuthUserFile /www/conf/passwords1
+&lt;/AuthnProviderAlias&gt;
+
+# Vérification suivante
+&lt;AuthnProviderAlias file file2&gt;   
+    AuthUserFile /www/conf/passwords2
+&lt;/AuthnProviderAlias&gt;
+
+&lt;Directory /var/web/pages/secure&gt;
+    AuthBasicProvider file1 file2
+    
+    AuthType Basic
+    AuthName "Protected Area"
+    Require valid-user
+&lt;/Directory&gt;</pre>
+</div>
+
+
+
+        <p>Dans l'exemple ci-dessous, deux fournisseurs
+	d'authentification ldap sont créés à partir du fournisseur ldap
+	de base, et se voient attribuer un alias. L'authentification
+	d'une même zone peut alors être traitée par plusieurs serveurs
+	ldap :</p>
+
+        <div class="example"><h3>Vérification auprès de plusieurs serveurs
+	LDAP</h3><pre class="prettyprint lang-config">&lt;AuthnProviderAlias ldap ldap-alias1&gt;
+    AuthLDAPBindDN cn=youruser,o=ctx
+    AuthLDAPBindPassword yourpassword
+    AuthLDAPURL ldap://ldap.host/o=ctx
+    &lt;/AuthnProviderAlias&gt;
+    &lt;AuthnProviderAlias ldap ldap-other-alias&gt;
+    AuthLDAPBindDN cn=yourotheruser,o=dev
+    AuthLDAPBindPassword yourotherpassword
+    AuthLDAPURL ldap://other.ldap.host/o=dev?cn
+&lt;/AuthnProviderAlias&gt;
+
+Alias /secure /webpages/secure
+&lt;Directory /webpages/secure&gt;
+    Order deny,allow
+    Allow from all
+    
+    AuthBasicProvider ldap-other-alias  ldap-alias1
+    
+    AuthType Basic
+    AuthName LDAP_Protected Place
+    Require valid-user
+    # Notez que Require ldap-* ne fonctionnerait pas ici, car
+    # AuthnProviderAlias ne fournit pas de configuration pour les
+    # fournisseurs d'autorisation implémentés dans le même module que le
+    # fournisseur d'authentification.
+&lt;/Directory&gt;</pre>
+</div>
+    
+
 </div>
 </div>
 <div class="bottomlang">

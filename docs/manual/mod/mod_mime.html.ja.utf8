@@ -122,135 +122,6 @@
 <li><code class="directive"><a href="../mod/core.html#setoutputfilter">SetOutputFilter</a></code></li>
 </ul><ul class="seealso"><li><a href="#comments_section">コメント</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="multipleext" id="multipleext">複数の拡張子のあるファイル</a></h2>
-    <p>ファイルは複数の拡張子を持つことができ、拡張子の順番は<em>通常は</em>関係ありません。例えば、ファイル <code>welcome.html.fr</code>
-    がコンテントタイプは <code>text/html</code>
-    に、言語はフランス語にマップされる場合、<code>welcome.fr.html</code>
-    もまったく同じ情報にマップされます。
-    同じメタ情報にマップされる拡張子が複数あるときには、言語と
-    コンテントエンコーディングを除いて、
-    右側にあるものが使用されます。たとえば、<code>.gif</code> が <a class="glossarylink" href="../glossary.html#mime-type" title="用語集を参照">MIME タイプ</a> <code>image/gif</code> にマップされ、<code>.html</code>
-    が MIME タイプ <code>text/html</code>
-    にマップされる場合は、ファイル <code>welcome.gif.html</code> は
-    MIME タイプ <code>text/html</code> に関連付けられます。</p>
-
-    <p>リソースに複数の言語やエンコーディングを関連付けること
-    ができるため、
-    <a href="#charset-lang">言語</a>と<a href="#contentencoding">コンテントエンコーディング</a>は前のものに追加されていきます。
-    たとえば、ファイル <code>welcome.html.en.de</code> は
-    <code>Content-Language: en, de</code> と <code>Content-Type:
-    text/html</code> として送信されます。</p>
-
-    <p>複数の拡張子のあるファイルが <a class="glossarylink" href="../glossary.html#mime-type" title="用語集を参照">MIME
-    タイプ</a>とハンドラの両方に関連付けられているときは注意する必要があります。
-    その場合、普通はリクエストがハンドラに関連付けられた
-    モジュールによって扱われることになります。たとえば、拡張子
-    <code>.imap</code> が (<code class="module"><a href="../mod/mod_imagemap.html">mod_imagemap</a></code> の) <code>imap-file</code>
-    にマップされていて、<code>.html</code> が MIME タイプ <code>text/html</code>
-    にマップされているときは、ファイル <code>world.imap.html</code> は
-    <code>imap-file</code> ハンドラと <code>text/html</code> MIME
-    タイプに関連付けられます。ファイルが処理されるときは <code>imap-file</code>
-    ハンドラが使用されますので、そのファイルは <code class="module"><a href="../mod/mod_imagemap.html">mod_imagemap</a></code>
-    のイメージマップファイルとして扱われることになります。</p>
-
-    <p>ファイル名のドット区切りでの最後の部分を使って、
-    特定の部分のメタデータにマッピングしたい場合は、
-    <code>Add*</code> ディレクティブは使わないでください。
-    たとえば <code>foo.html.cgi</code> を CGI スクリプトとして処理したいけれども、
-    <code>bar.cgi.html</code> は CGI スクリプトとしては処理したくない場合、
-    <code>AddHandler cgi-script .cgi</code> とする代わりに
-    次のようにしてください</p>
-
-    <div class="example"><h3>Configure handler based on final extension only</h3><p><code>
-    &lt;FilesMatch \.cgi$&gt;
-    <span class="indent">
-      SetHandler cgi-script
-    </span>
-    &lt;/FilesMatch&gt;
-    </code></p></div>
-
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="contentencoding" id="contentencoding">コンテントエンコーディング</a></h2>
-    <p>特定の <a class="glossarylink" href="../glossary.html#mime-type" title="用語集を参照">MIME タイプ</a>
-    のファイルはインターネットでの転送を簡単にするために、
-    さらに符号化することができます。これは通常は <code>gzip</code> の
-    ような圧縮のことを指しますが、<code>pgp</code> のような暗号化や、
-    バイナリファイルを ASCII (テキスト) 形式で送るために考案された
-    UUencoding のことを指すこともあります。</p>
-
-    <p><a href="http://www.ietf.org/rfc/rfc2616.txt">HTTP/1.1 RFC</a> 
-    14.11 節では次のように記述されています。</p>
-
-    <blockquote cite="http://www.ietf.org/rfc/rfc2616.txt">
-      <p>Content-Encoding エンティティヘッダフィールドはメディアタイプの
-      修飾子として使われます。それが存在していれば、値はエンティティボディに
-      どの追加の符号化が適用されたかを示し、Content-Type ヘッダフィールドに
-      書かれているメディアタイプを得るためにどの復号機構を適用すべきか、も
-      示していることになります。Content-Encoding は主に、元のメディアタイプの
-      同一性を失うことなくドキュメントを圧縮することを可能にするために
-      使用されます。</p>
-    </blockquote>
-
-    <p>複数のファイル拡張子 (複数の拡張子については <a href="#multipleext">上の節</a> を参照) 使うことで、
-    ファイルの<em>タイプ</em>や<em>エンコーディング</em>を指定することが
-    できます。</p>
-
-    <p>たとえば、Microsoft Word のドキュメントがあり、サイズを小さくするために
-    pkzip されているとします。<code>.doc</code> 拡張子が Microsoft Word の
-    ファイルタイプと関連付けられていて、<code>.zip</code> 拡張子が
-    pkzip ファイルエンコーディングと関連付けられていると、ファイル
-    <code>Resume.doc.zip</code> は pkzip された Word ドキュメントである
-    ということがわかります。</p>
-
-    <p>クライアントのブラウザにエンコーディング方法を知らせるために、
-    Apache はリソースと共に <code>Content-Encoding</code> ヘッダを
-    送ります。</p>
-
-    <div class="example"><p><code>Content-encoding: pkzip</code></p></div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="charset-lang" id="charset-lang">文字セットと言語</a></h2>
-    <p>ファイルタイプとファイルエンコーディングの他に重要な情報は
-    ドキュメントの書かれている言語と、どの文字セットでファイルが表示
-    されるべきか、というものです。たとえば、ドキュメントはベトナムの
-    アルファベットやキリル文字で書かれていて、そのように表示される
-    必要があるかもしれません。この情報もまた、HTTP ヘッダで
-    送信されます。</p>
-
-    <p>文字セット、言語、エンコーディング、mime タイプはすべて
-    コンテントネゴシエーション (<code class="module"><a href="../mod/mod_negotiation.html">mod_negotiation</a></code> 参照)
-    の最中に、複数の文字セット、言語、エンコーディング、MIME タイプからなる
-    代替物があるときにどのドキュメントをクライアントに送るのかを
-    決定するときに使われます。<code class="directive"><a href="#addcharset">AddCharset</a></code>,
-    <code class="directive"><a href="#addencoding">AddEncoding</a></code>, <code class="directive"><a href="#addlanguage">AddLanguage</a></code>,
-    <code class="directive"><a href="#addtype">AddType</a></code> の各ディレクティブで作成された
-    拡張子の関連付け (と <code class="directive"><a href="../mod/mod_mime_magic.html#mimemagicfile">MimeMagicFile</a></code> でリストされている
-    拡張子) がこの選択に参加します。<code class="directive"><a href="#addhandler">AddHandler</a></code>,
-    <code class="directive"><a href="#addinputfilter">AddInputFilter</a></code>,
-    <code class="directive"><a href="#addoutputfilter">AddOutputFilter</a></code> の
-    各ディレクティブでのみ関連付けられている拡張子は
-    <code class="directive"><a href="#multiviewsmatch">MultiviewsMatch</a></code> ディレクティブを
-    使うことでマッチの
-    処理に含めることも外すこともできます。</p>
-
-    <h3><a name="charset" id="charset">Charset</a></h3>
-      <p>さらに情報を伝えるために、Apache は文書の言語を
-      <code>Content-Language</code> ヘッダで送ることもあります。
-      また、情報を正しく表示するために使用すべき文字セットを示すために
-      <code>Conten-Type</code> ヘッダに情報を追加することもあります。</p>
-
-      <div class="example"><p><code>
-        Content-Language: en, fr<br />
-        Content-Type: text/plain; charset=ISO-8859-1
-      </code></p></div>
-
-      <p>言語の指定は二文字の短縮形で行なわれます。<code>charset</code> が
-      使用すべき文字セットの名前です。</p>
-    
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AddCharset" id="AddCharset">AddCharset</a> <a name="addcharset" id="addcharset">ディレクティブ</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ファイル名の拡張子を指定された文字セットにマップする</td></tr>
@@ -975,6 +846,135 @@
 <ul>
 <li><code class="module"><a href="../mod/mod_mime_magic.html">mod_mime_magic</a></code></li>
 </ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="multipleext" id="multipleext">複数の拡張子のあるファイル</a></h2>
+    <p>ファイルは複数の拡張子を持つことができ、拡張子の順番は<em>通常は</em>関係ありません。例えば、ファイル <code>welcome.html.fr</code>
+    がコンテントタイプは <code>text/html</code>
+    に、言語はフランス語にマップされる場合、<code>welcome.fr.html</code>
+    もまったく同じ情報にマップされます。
+    同じメタ情報にマップされる拡張子が複数あるときには、言語と
+    コンテントエンコーディングを除いて、
+    右側にあるものが使用されます。たとえば、<code>.gif</code> が <a class="glossarylink" href="../glossary.html#mime-type" title="用語集を参照">MIME タイプ</a> <code>image/gif</code> にマップされ、<code>.html</code>
+    が MIME タイプ <code>text/html</code>
+    にマップされる場合は、ファイル <code>welcome.gif.html</code> は
+    MIME タイプ <code>text/html</code> に関連付けられます。</p>
+
+    <p>リソースに複数の言語やエンコーディングを関連付けること
+    ができるため、
+    <a href="#charset-lang">言語</a>と<a href="#contentencoding">コンテントエンコーディング</a>は前のものに追加されていきます。
+    たとえば、ファイル <code>welcome.html.en.de</code> は
+    <code>Content-Language: en, de</code> と <code>Content-Type:
+    text/html</code> として送信されます。</p>
+
+    <p>複数の拡張子のあるファイルが <a class="glossarylink" href="../glossary.html#mime-type" title="用語集を参照">MIME
+    タイプ</a>とハンドラの両方に関連付けられているときは注意する必要があります。
+    その場合、普通はリクエストがハンドラに関連付けられた
+    モジュールによって扱われることになります。たとえば、拡張子
+    <code>.imap</code> が (<code class="module"><a href="../mod/mod_imagemap.html">mod_imagemap</a></code> の) <code>imap-file</code>
+    にマップされていて、<code>.html</code> が MIME タイプ <code>text/html</code>
+    にマップされているときは、ファイル <code>world.imap.html</code> は
+    <code>imap-file</code> ハンドラと <code>text/html</code> MIME
+    タイプに関連付けられます。ファイルが処理されるときは <code>imap-file</code>
+    ハンドラが使用されますので、そのファイルは <code class="module"><a href="../mod/mod_imagemap.html">mod_imagemap</a></code>
+    のイメージマップファイルとして扱われることになります。</p>
+
+    <p>ファイル名のドット区切りでの最後の部分を使って、
+    特定の部分のメタデータにマッピングしたい場合は、
+    <code>Add*</code> ディレクティブは使わないでください。
+    たとえば <code>foo.html.cgi</code> を CGI スクリプトとして処理したいけれども、
+    <code>bar.cgi.html</code> は CGI スクリプトとしては処理したくない場合、
+    <code>AddHandler cgi-script .cgi</code> とする代わりに
+    次のようにしてください</p>
+
+    <div class="example"><h3>Configure handler based on final extension only</h3><p><code>
+    &lt;FilesMatch \.cgi$&gt;
+    <span class="indent">
+      SetHandler cgi-script
+    </span>
+    &lt;/FilesMatch&gt;
+    </code></p></div>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="contentencoding" id="contentencoding">コンテントエンコーディング</a></h2>
+    <p>特定の <a class="glossarylink" href="../glossary.html#mime-type" title="用語集を参照">MIME タイプ</a>
+    のファイルはインターネットでの転送を簡単にするために、
+    さらに符号化することができます。これは通常は <code>gzip</code> の
+    ような圧縮のことを指しますが、<code>pgp</code> のような暗号化や、
+    バイナリファイルを ASCII (テキスト) 形式で送るために考案された
+    UUencoding のことを指すこともあります。</p>
+
+    <p><a href="http://www.ietf.org/rfc/rfc2616.txt">HTTP/1.1 RFC</a> 
+    14.11 節では次のように記述されています。</p>
+
+    <blockquote cite="http://www.ietf.org/rfc/rfc2616.txt">
+      <p>Content-Encoding エンティティヘッダフィールドはメディアタイプの
+      修飾子として使われます。それが存在していれば、値はエンティティボディに
+      どの追加の符号化が適用されたかを示し、Content-Type ヘッダフィールドに
+      書かれているメディアタイプを得るためにどの復号機構を適用すべきか、も
+      示していることになります。Content-Encoding は主に、元のメディアタイプの
+      同一性を失うことなくドキュメントを圧縮することを可能にするために
+      使用されます。</p>
+    </blockquote>
+
+    <p>複数のファイル拡張子 (複数の拡張子については <a href="#multipleext">上の節</a> を参照) 使うことで、
+    ファイルの<em>タイプ</em>や<em>エンコーディング</em>を指定することが
+    できます。</p>
+
+    <p>たとえば、Microsoft Word のドキュメントがあり、サイズを小さくするために
+    pkzip されているとします。<code>.doc</code> 拡張子が Microsoft Word の
+    ファイルタイプと関連付けられていて、<code>.zip</code> 拡張子が
+    pkzip ファイルエンコーディングと関連付けられていると、ファイル
+    <code>Resume.doc.zip</code> は pkzip された Word ドキュメントである
+    ということがわかります。</p>
+
+    <p>クライアントのブラウザにエンコーディング方法を知らせるために、
+    Apache はリソースと共に <code>Content-Encoding</code> ヘッダを
+    送ります。</p>
+
+    <div class="example"><p><code>Content-encoding: pkzip</code></p></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="charset-lang" id="charset-lang">文字セットと言語</a></h2>
+    <p>ファイルタイプとファイルエンコーディングの他に重要な情報は
+    ドキュメントの書かれている言語と、どの文字セットでファイルが表示
+    されるべきか、というものです。たとえば、ドキュメントはベトナムの
+    アルファベットやキリル文字で書かれていて、そのように表示される
+    必要があるかもしれません。この情報もまた、HTTP ヘッダで
+    送信されます。</p>
+
+    <p>文字セット、言語、エンコーディング、mime タイプはすべて
+    コンテントネゴシエーション (<code class="module"><a href="../mod/mod_negotiation.html">mod_negotiation</a></code> 参照)
+    の最中に、複数の文字セット、言語、エンコーディング、MIME タイプからなる
+    代替物があるときにどのドキュメントをクライアントに送るのかを
+    決定するときに使われます。<code class="directive"><a href="#addcharset">AddCharset</a></code>,
+    <code class="directive"><a href="#addencoding">AddEncoding</a></code>, <code class="directive"><a href="#addlanguage">AddLanguage</a></code>,
+    <code class="directive"><a href="#addtype">AddType</a></code> の各ディレクティブで作成された
+    拡張子の関連付け (と <code class="directive"><a href="../mod/mod_mime_magic.html#mimemagicfile">MimeMagicFile</a></code> でリストされている
+    拡張子) がこの選択に参加します。<code class="directive"><a href="#addhandler">AddHandler</a></code>,
+    <code class="directive"><a href="#addinputfilter">AddInputFilter</a></code>,
+    <code class="directive"><a href="#addoutputfilter">AddOutputFilter</a></code> の
+    各ディレクティブでのみ関連付けられている拡張子は
+    <code class="directive"><a href="#multiviewsmatch">MultiviewsMatch</a></code> ディレクティブを
+    使うことでマッチの
+    処理に含めることも外すこともできます。</p>
+
+    <h3><a name="charset" id="charset">Charset</a></h3>
+      <p>さらに情報を伝えるために、Apache は文書の言語を
+      <code>Content-Language</code> ヘッダで送ることもあります。
+      また、情報を正しく表示するために使用すべき文字セットを示すために
+      <code>Conten-Type</code> ヘッダに情報を追加することもあります。</p>
+
+      <div class="example"><p><code>
+        Content-Language: en, fr<br />
+        Content-Type: text/plain; charset=ISO-8859-1
+      </code></p></div>
+
+      <p>言語の指定は二文字の短縮形で行なわれます。<code>charset</code> が
+      使用すべき文字セットの名前です。</p>
+    
 </div>
 </div>
 <div class="bottomlang">

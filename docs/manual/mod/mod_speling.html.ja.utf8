@@ -76,7 +76,6 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#checkspelling">CheckSpelling</a></li>
 </ul>
 <ul class="seealso"><li><a href="#comments_section">コメント</a></li></ul></div>
-
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CheckBasenameMatch" id="CheckBasenameMatch">CheckBasenameMatch</a> <a name="checkbasenamematch" id="checkbasenamematch">ディレクティブ</a></h2>
 <table class="directive">
@@ -157,6 +156,7 @@ This can be particulary useful in conjunction with
     期待とは違う挙動になるからです。</p>
 
 </div>
+
 </div>
 <div class="bottomlang">
 <p><span>翻訳済み言語: </span><a href="../en/mod/mod_speling.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |

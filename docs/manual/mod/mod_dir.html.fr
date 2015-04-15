@@ -69,7 +69,6 @@ de répertoire</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#fallbackresource">FallbackResource</a></li>
 </ul>
 <ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
-
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="directorycheckhandler" id="directorycheckhandler">Directive</a> <a name="DirectoryCheckHandler" id="DirectoryCheckHandler">DirectoryCheckHandler</a></h2>
 <table class="directive">
@@ -342,6 +341,7 @@ version 2.4.4 du serveur HTTP Apache</td></tr>
 
 
 </div>
+
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_dir.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
