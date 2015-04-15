@@ -61,48 +61,6 @@
 <li><code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="examples" id="examples">Examples</a></h2>
-    <p>Remember, in order to make the following examples work, you have to
-    enable <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> and <code class="module"><a href="../mod/mod_proxy_scgi.html">mod_proxy_scgi</a></code>.</p>
-
-    <div class="example"><h3>Simple gateway</h3><pre class="prettyprint lang-config">ProxyPass /scgi-bin/ scgi://localhost:4000/</pre>
-</div>
-
-    <p>The balanced gateway needs <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code> and
-    at least one load balancer algorithm module, such as
-    <code class="module"><a href="../mod/mod_lbmethod_byrequests.html">mod_lbmethod_byrequests</a></code>, in addition to the proxy
-    modules listed above.  <code class="module"><a href="../mod/mod_lbmethod_byrequests.html">mod_lbmethod_byrequests</a></code> is the
-    default, and will be used for this example configuration.</p>
-
-    <div class="example"><h3>Balanced gateway</h3><pre class="prettyprint lang-config">ProxyPass /scgi-bin/ balancer://somecluster/
-&lt;Proxy balancer://somecluster&gt;
-    BalancerMember scgi://localhost:4000
-    BalancerMember scgi://localhost:4001
-&lt;/Proxy&gt;</pre>
-</div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="env" id="env">Environment Variables</a></h2>
-    <p>In addition to the configuration directives that control the
-    behaviour of <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>, an <dfn>environment
-    variable</dfn> may also control the SCGI protocol
-    provider:</p>
-    <dl>
-        <dt>proxy-scgi-pathinfo</dt>
-        <dd>By default <code class="module"><a href="../mod/mod_proxy_scgi.html">mod_proxy_scgi</a></code> will neither create
-        nor export the <var>PATH_INFO</var> environment variable. This allows
-        the backend SCGI server to correctly determine <var>SCRIPT_NAME</var>
-        and <var>Script-URI</var> and be compliant with RFC 3875 section 3.3.
-        If instead you need <code class="module"><a href="../mod/mod_proxy_scgi.html">mod_proxy_scgi</a></code> to generate
-        a "best guess" for <var>PATH_INFO</var>, set this env-var.  The
-        variable must be set before <code class="directive"><a href="../mod/env.html#setenv">SetEnv</a></code>
-        is effective.  <code class="directive"><a href="../mod/setenv.html#setenvif">SetEnvIf</a></code> can be
-        used instead: <code>SetEnvIf Request_URI . proxy-scgi-pathinfo</code>
-        </dd>
-    </dl>
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ProxySCGIInternalRedirect" id="ProxySCGIInternalRedirect">ProxySCGIInternalRedirect</a> <a name="proxyscgiinternalredirect" id="proxyscgiinternalredirect">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable or disable internal redirect responses from the
@@ -169,6 +127,48 @@ ProxySCGISendfile On
 ProxySCGISendfile X-Send-Static</pre>
 </div>
 
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="examples" id="examples">Examples</a></h2>
+    <p>Remember, in order to make the following examples work, you have to
+    enable <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> and <code class="module"><a href="../mod/mod_proxy_scgi.html">mod_proxy_scgi</a></code>.</p>
+
+    <div class="example"><h3>Simple gateway</h3><pre class="prettyprint lang-config">ProxyPass /scgi-bin/ scgi://localhost:4000/</pre>
+</div>
+
+    <p>The balanced gateway needs <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code> and
+    at least one load balancer algorithm module, such as
+    <code class="module"><a href="../mod/mod_lbmethod_byrequests.html">mod_lbmethod_byrequests</a></code>, in addition to the proxy
+    modules listed above.  <code class="module"><a href="../mod/mod_lbmethod_byrequests.html">mod_lbmethod_byrequests</a></code> is the
+    default, and will be used for this example configuration.</p>
+
+    <div class="example"><h3>Balanced gateway</h3><pre class="prettyprint lang-config">ProxyPass /scgi-bin/ balancer://somecluster/
+&lt;Proxy balancer://somecluster&gt;
+    BalancerMember scgi://localhost:4000
+    BalancerMember scgi://localhost:4001
+&lt;/Proxy&gt;</pre>
+</div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="env" id="env">Environment Variables</a></h2>
+    <p>In addition to the configuration directives that control the
+    behaviour of <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>, an <dfn>environment
+    variable</dfn> may also control the SCGI protocol
+    provider:</p>
+    <dl>
+        <dt>proxy-scgi-pathinfo</dt>
+        <dd>By default <code class="module"><a href="../mod/mod_proxy_scgi.html">mod_proxy_scgi</a></code> will neither create
+        nor export the <var>PATH_INFO</var> environment variable. This allows
+        the backend SCGI server to correctly determine <var>SCRIPT_NAME</var>
+        and <var>Script-URI</var> and be compliant with RFC 3875 section 3.3.
+        If instead you need <code class="module"><a href="../mod/mod_proxy_scgi.html">mod_proxy_scgi</a></code> to generate
+        a "best guess" for <var>PATH_INFO</var>, set this env-var.  The
+        variable must be set before <code class="directive"><a href="../mod/env.html#setenv">SetEnv</a></code>
+        is effective.  <code class="directive"><a href="../mod/setenv.html#setenvif">SetEnvIf</a></code> can be
+        used instead: <code>SetEnvIf Request_URI . proxy-scgi-pathinfo</code>
+        </dd>
+    </dl>
 </div>
 </div>
 <div class="bottomlang">

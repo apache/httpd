@@ -77,48 +77,6 @@ via the request headers.
 <li><code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="processing" id="processing">Remote IP Processing</a></h2>
-
-    <p>Apache by default identifies the useragent with the connection's
-    client_ip value, and the connection remote_host and remote_logname are
-    derived from this value. These fields play a role in authentication,
-    authorization and logging and other purposes by other loadable
-    modules.</p>
-
-    <p>mod_remoteip overrides the client IP of the connection with the
-    advertised useragent IP as provided by a proxy or load balancer, for
-    the duration of the request. A load balancer might establish a long
-    lived keepalive connection with the server, and each request will
-    have the correct useragent IP, even though the underlying client IP
-    address of the load balancer remains unchanged.</p>
-
-    <p>When multiple, comma delimited useragent IP addresses are listed in the
-    header value, they are processed in Right-to-Left order.  Processing
-    halts when a given useragent IP address is not trusted to present the
-    preceding IP address.  The header field is updated to this remaining
-    list of unconfirmed IP addresses, or if all IP addresses were trusted,
-    this header is removed from the request altogether.</p>
-
-    <p>In overriding the client IP, the module stores the list of intermediate
-    hosts in a remoteip-proxy-ip-list note, which <code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code>
-    can record using the <code>%{remoteip-proxy-ip-list}n</code> format token.
-    If the administrator needs to store this as an additional header, this
-    same value can also be recording as a header using the directive
-    <code class="directive"><a href="#remoteipproxiesheader">RemoteIPProxiesHeader</a></code>.</p>
-
-    <div class="note"><h3>IPv4-over-IPv6 Mapped Addresses</h3>
-    As with httpd in general, any IPv4-over-IPv6 mapped addresses are recorded
-    in their IPv4 representation.</div>
-
-    <div class="note"><h3>Internal (Private) Addresses</h3>
-    All internal addresses 10/8, 172.16/12, 192.168/16, 169.254/16 and 127/8
-    blocks (and IPv6 addresses outside of the public 2000::/3 block) are only
-    evaluated by mod_remoteip when <code class="directive"><a href="#remoteipinternalproxy">RemoteIPInternalProxy</a></code>
-    internal (intranet) proxies are registered.</div>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="RemoteIPHeader" id="RemoteIPHeader">RemoteIPHeader</a> <a name="remoteipheader" id="remoteipheader">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Declare the header field which should be parsed for useragent IP addresses</td></tr>
@@ -263,6 +221,48 @@ RemoteIPTrustedProxyList conf/trusted-proxies.lst</pre>
        192.0.2.16/28         #wap phone group of proxies<br />
        proxy.isp.example.com #some well known ISP
     </code></p></div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="processing" id="processing">Remote IP Processing</a></h2>
+
+    <p>Apache by default identifies the useragent with the connection's
+    client_ip value, and the connection remote_host and remote_logname are
+    derived from this value. These fields play a role in authentication,
+    authorization and logging and other purposes by other loadable
+    modules.</p>
+
+    <p>mod_remoteip overrides the client IP of the connection with the
+    advertised useragent IP as provided by a proxy or load balancer, for
+    the duration of the request. A load balancer might establish a long
+    lived keepalive connection with the server, and each request will
+    have the correct useragent IP, even though the underlying client IP
+    address of the load balancer remains unchanged.</p>
+
+    <p>When multiple, comma delimited useragent IP addresses are listed in the
+    header value, they are processed in Right-to-Left order.  Processing
+    halts when a given useragent IP address is not trusted to present the
+    preceding IP address.  The header field is updated to this remaining
+    list of unconfirmed IP addresses, or if all IP addresses were trusted,
+    this header is removed from the request altogether.</p>
+
+    <p>In overriding the client IP, the module stores the list of intermediate
+    hosts in a remoteip-proxy-ip-list note, which <code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code>
+    can record using the <code>%{remoteip-proxy-ip-list}n</code> format token.
+    If the administrator needs to store this as an additional header, this
+    same value can also be recording as a header using the directive
+    <code class="directive"><a href="#remoteipproxiesheader">RemoteIPProxiesHeader</a></code>.</p>
+
+    <div class="note"><h3>IPv4-over-IPv6 Mapped Addresses</h3>
+    As with httpd in general, any IPv4-over-IPv6 mapped addresses are recorded
+    in their IPv4 representation.</div>
+
+    <div class="note"><h3>Internal (Private) Addresses</h3>
+    All internal addresses 10/8, 172.16/12, 192.168/16, 169.254/16 and 127/8
+    blocks (and IPv6 addresses outside of the public 2000::/3 block) are only
+    evaluated by mod_remoteip when <code class="directive"><a href="#remoteipinternalproxy">RemoteIPInternalProxy</a></code>
+    internal (intranet) proxies are registered.</div>
 
 </div>
 </div>

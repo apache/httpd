@@ -65,6 +65,127 @@ and Access Control</a></li>
 <li><code class="module"><a href="../mod/mod_proxy_fcgi.html">mod_proxy_fcgi</a></code></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AuthnzFcgiCheckAuthnProvider" id="AuthnzFcgiCheckAuthnProvider">AuthnzFcgiCheckAuthnProvider</a> <a name="authnzfcgicheckauthnprovider" id="authnzfcgicheckauthnprovider">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enables a FastCGI application to handle the check_authn
+authentication hook.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthnzFcgiCheckAuthnProvider <em>provider-name</em>|<code>None</code>
+<em>option</em> ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authnz_fcgi</td></tr>
+</table>
+    <p>This directive is used to enable a FastCGI authorizer to
+    handle a specific processing phase of authentication or
+    authorization.</p>
+
+    <p>Some capabilities of FastCGI authorizers require enablement
+    using this directive instead of
+    <code class="directive">AuthBasicProvider</code>:</p>
+
+    <ul>
+      <li>Non-Basic authentication; generally, determining the user
+      id of the client and returning it from the authorizer; see the
+      <code>UserExpr</code> option below</li>
+      <li>Selecting a custom response code; for a non-200 response
+      from the authorizer, the code from the authorizer will be the
+      status of the response</li>
+      <li>Setting the body of a non-200 response; if the authorizer
+      provides a response body with a non-200 response, that body
+      will be returned to the client; up to 8192 bytes of text are
+      supported</li>
+    </ul>
+
+    <dl>
+      <dt><em>provider-name</em></dt>
+      <dd>This is the name of a provider defined with <code class="directive">
+      AuthnzFcgiDefineProvider</code>.</dd>
+
+      <dt><code>None</code></dt>
+      <dd>Specify <code>None</code> to disable a provider enabled
+      with this directive in an outer scope, such as in a parent
+      directory.</dd>
+
+      <dt><em>option</em></dt>
+      <dd>The following options are supported:
+      
+      <dl>
+         <dt>Authoritative On|Off (default On)</dt>
+         <dd>This controls whether or not other modules are allowed
+         to run when this module has a FastCGI authorizer configured
+         and it fails the request.</dd>
+
+         <dt>DefaultUser <em>userid</em></dt>
+         <dd>When the authorizer returns success and <code>UserExpr</code>
+         is configured and evaluates to an empty string (e.g., authorizer
+         didn't return a variable), this value will be used as the user
+         id.  This is typically used when the authorizer has a concept of
+         guest, or unauthenticated, users and guest users are mapped to
+         some specific user id for logging and other purposes.</dd>
+
+         <dt>RequireBasicAuth On|Off (default Off)</dt>
+         <dd>This controls whether or not Basic auth is required
+         before passing the request to the authorizer.  If required,
+         the authorizer won't be invoked without a user id and
+         password; 401 will be returned for a request without that.</dd>
+
+         <dt>UserExpr <em>expr</em> (no default)</dt>
+         <dd>When Basic authentication isn't provided by the client
+         and the authorizer determines the user, this expression,
+         evaluated after calling the authorizer, determines the
+         user.  The expression follows <a href="../expr.html">
+         ap_expr syntax</a> and must resolve to a string.  A typical
+         use is to reference a <code>Variable-<em>XXX</em></code> 
+         setting returned by the authorizer using an option like
+         <code>UserExpr "%{reqenv:<em>XXX</em>}"</code>.  If
+         this option is specified and the user id can't be retrieved
+         using the expression after a successful authentication, the
+         request will be rejected with a 500 error.</dd>
+
+       </dl>
+      </dd>
+     </dl>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AuthnzFcgiDefineProvider" id="AuthnzFcgiDefineProvider">AuthnzFcgiDefineProvider</a> <a name="authnzfcgidefineprovider" id="authnzfcgidefineprovider">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Defines a FastCGI application as a provider for
+authentication and/or authorization</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthnzFcgiDefineProvider <em>type</em> <em>provider-name</em>
+<em>backend-address</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authnz_fcgi</td></tr>
+</table>
+    <p>This directive is used to define a FastCGI application as
+    a provider for a particular phase of authentication or
+    authorization.</p>
+
+    <dl>
+      <dt><em>type</em></dt>
+      <dd>This must be set to <em>authn</em> for authentication,
+      <em>authz</em> for authorization, or <em>authnz</em> for
+      a generic FastCGI authorizer which performs both checks.</dd>
+
+      <dt><em>provider-name</em></dt>
+      <dd>This is used to assign a name to the provider which is
+      used in other directives such as 
+      <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code>
+      and 
+      <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code>.</dd>
+
+      <dt><em>backend-address</em></dt>
+      <dd>This specifies the address of the application, in the form
+      <em>fcgi://hostname:port/</em>.  The application process(es)
+      must be managed independently, such as with
+      <code class="program"><a href="../programs/fcgistarter.html">fcgistarter</a></code>.</dd>
+    </dl>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="invocations" id="invocations">Invocation modes</a></h2>
 
@@ -405,127 +526,6 @@ Require FooAuthnz</pre>
 
 <pre class="prettyprint lang-config">LogLevel info authnz_fcgi:trace8</pre>
 
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthnzFcgiCheckAuthnProvider" id="AuthnzFcgiCheckAuthnProvider">AuthnzFcgiCheckAuthnProvider</a> <a name="authnzfcgicheckauthnprovider" id="authnzfcgicheckauthnprovider">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enables a FastCGI application to handle the check_authn
-authentication hook.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthnzFcgiCheckAuthnProvider <em>provider-name</em>|<code>None</code>
-<em>option</em> ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>none</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authnz_fcgi</td></tr>
-</table>
-    <p>This directive is used to enable a FastCGI authorizer to
-    handle a specific processing phase of authentication or
-    authorization.</p>
-
-    <p>Some capabilities of FastCGI authorizers require enablement
-    using this directive instead of
-    <code class="directive">AuthBasicProvider</code>:</p>
-
-    <ul>
-      <li>Non-Basic authentication; generally, determining the user
-      id of the client and returning it from the authorizer; see the
-      <code>UserExpr</code> option below</li>
-      <li>Selecting a custom response code; for a non-200 response
-      from the authorizer, the code from the authorizer will be the
-      status of the response</li>
-      <li>Setting the body of a non-200 response; if the authorizer
-      provides a response body with a non-200 response, that body
-      will be returned to the client; up to 8192 bytes of text are
-      supported</li>
-    </ul>
-
-    <dl>
-      <dt><em>provider-name</em></dt>
-      <dd>This is the name of a provider defined with <code class="directive">
-      AuthnzFcgiDefineProvider</code>.</dd>
-
-      <dt><code>None</code></dt>
-      <dd>Specify <code>None</code> to disable a provider enabled
-      with this directive in an outer scope, such as in a parent
-      directory.</dd>
-
-      <dt><em>option</em></dt>
-      <dd>The following options are supported:
-      
-      <dl>
-         <dt>Authoritative On|Off (default On)</dt>
-         <dd>This controls whether or not other modules are allowed
-         to run when this module has a FastCGI authorizer configured
-         and it fails the request.</dd>
-
-         <dt>DefaultUser <em>userid</em></dt>
-         <dd>When the authorizer returns success and <code>UserExpr</code>
-         is configured and evaluates to an empty string (e.g., authorizer
-         didn't return a variable), this value will be used as the user
-         id.  This is typically used when the authorizer has a concept of
-         guest, or unauthenticated, users and guest users are mapped to
-         some specific user id for logging and other purposes.</dd>
-
-         <dt>RequireBasicAuth On|Off (default Off)</dt>
-         <dd>This controls whether or not Basic auth is required
-         before passing the request to the authorizer.  If required,
-         the authorizer won't be invoked without a user id and
-         password; 401 will be returned for a request without that.</dd>
-
-         <dt>UserExpr <em>expr</em> (no default)</dt>
-         <dd>When Basic authentication isn't provided by the client
-         and the authorizer determines the user, this expression,
-         evaluated after calling the authorizer, determines the
-         user.  The expression follows <a href="../expr.html">
-         ap_expr syntax</a> and must resolve to a string.  A typical
-         use is to reference a <code>Variable-<em>XXX</em></code> 
-         setting returned by the authorizer using an option like
-         <code>UserExpr "%{reqenv:<em>XXX</em>}"</code>.  If
-         this option is specified and the user id can't be retrieved
-         using the expression after a successful authentication, the
-         request will be rejected with a 500 error.</dd>
-
-       </dl>
-      </dd>
-     </dl>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthnzFcgiDefineProvider" id="AuthnzFcgiDefineProvider">AuthnzFcgiDefineProvider</a> <a name="authnzfcgidefineprovider" id="authnzfcgidefineprovider">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Defines a FastCGI application as a provider for
-authentication and/or authorization</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthnzFcgiDefineProvider <em>type</em> <em>provider-name</em>
-<em>backend-address</em></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>none</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authnz_fcgi</td></tr>
-</table>
-    <p>This directive is used to define a FastCGI application as
-    a provider for a particular phase of authentication or
-    authorization.</p>
-
-    <dl>
-      <dt><em>type</em></dt>
-      <dd>This must be set to <em>authn</em> for authentication,
-      <em>authz</em> for authorization, or <em>authnz</em> for
-      a generic FastCGI authorizer which performs both checks.</dd>
-
-      <dt><em>provider-name</em></dt>
-      <dd>This is used to assign a name to the provider which is
-      used in other directives such as 
-      <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code>
-      and 
-      <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code>.</dd>
-
-      <dt><em>backend-address</em></dt>
-      <dd>This specifies the address of the application, in the form
-      <em>fcgi://hostname:port/</em>.  The application process(es)
-      must be managed independently, such as with
-      <code class="program"><a href="../programs/fcgistarter.html">fcgistarter</a></code>.</dd>
-    </dl>
 
 </div>
 </div>

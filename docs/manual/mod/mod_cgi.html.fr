@@ -78,6 +78,88 @@ utilisateurs différents</a></li>
 CGI</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="scriptlog" id="scriptlog">Directive</a> <a name="ScriptLog" id="ScriptLog">ScriptLog</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Chemin du fichier journal des erreurs du script
+CGI</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ScriptLog <var>chemin fichier</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>, <code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code></td></tr>
+</table>
+    <p>La directive <code class="directive">ScriptLog</code> définit
+    le chemin du fichier journal des erreurs du script CGI. Si cette
+    directive n'est pas définie, aucune journalisation des erreurs n'est
+    effectuée. Si elle est définie, toute erreur CGI sera enregistrée
+    dans le fichier dont le nom est fourni en argument. S'il s'agit d'un
+    chemin de fichier relatif, il est considéré par rapport au
+    répertoire défini par la directive <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>.
+    </p>
+
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">ScriptLog logs/cgi_log</pre>
+</div>
+
+    <p>Ce journal sera ouvert par l'utilisateur sous lequel les
+    processus enfants s'exécutent, c'est à dire l'utilisateur spécifié
+    par la directive du serveur <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code>. Ceci implique que soit le
+    répertoire dans lequel se trouve le journal doit être accessible en
+    écriture pour cet utilisateur, soit le fichier doit être créé
+    manuellement et accessible en écriture pour cet utilisateur. Si vous
+    placez le journal du script dans votre répertoire principal des
+    journaux, ne modifiez <strong>PAS</strong> les permissions de ce
+    dernier afin de le le rendre accessible en écriture par
+    l'utilisateur sous lequel les processus enfants s'exécutent.</p>
+
+    <p>Notez que l'on ne doit activer la journalisation des scripts
+    qu'à des fins de débogage lors de l'écriture de scripts CGI, et non
+    de manière permanente sur un serveur en production. Elle n'est pas
+    optimisée en ce qui concerne la vitesse et l'efficacité, et peut
+    présenter des problèmes de sécurité si on l'utilise dans un cadre
+    autre que celui pour lequel elle a été conçue.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="scriptlogbuffer" id="scriptlogbuffer">Directive</a> <a name="ScriptLogBuffer" id="ScriptLogBuffer">ScriptLogBuffer</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Taille maximale des requêtes PUT ou POST qui seront
+enregistrées dans le journal du script</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ScriptLogBuffer <var>octets</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ScriptLogBuffer 1024</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>, <code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code></td></tr>
+</table>
+    <p>Cette directive limite la taille du corps de toute
+    entité PUT ou POST qui sera enregistrée dans le journal, afin
+    de prévenir une croissance trop importante et trop rapide du fichier
+    journal due à la réception de corps de requête de grandes tailles.
+    Cette directive modifie cette taille maximale, dont la
+    valeur par défaut est de 1024 octets.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="scriptloglength" id="scriptloglength">Directive</a> <a name="ScriptLogLength" id="ScriptLogLength">ScriptLogLength</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Taille maximale du fichier journal des scripts
+CGI</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ScriptLogLength <var>octets</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ScriptLogLength 10385760</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>, <code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code></td></tr>
+</table>
+    <p>La directive <code class="directive">ScriptLogLength</code>
+    définit la taille maximale du fichier journal des scripts CGI. Comme
+    le fichier journal accumule une grande quantité d'informations par
+    erreur CGI (tous les en-têtes de la requête, toutes les sorties du
+    script), il peut vite atteindre une grande taille. En limitant la
+    taille du fichier, cette directive permet d'éviter les problèmes que
+    causerait sa croissance sans limites. Lorsque le fichier a atteint
+    cette taille maximale, plus aucune information n'y est
+    enregistrée.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="env" id="env">Les variables d'environnement CGI</a></h2>
     <p>Le serveur va définir les variables d'environnement CGI comme
@@ -170,88 +252,6 @@ CGI</a></li>
       n'a rien envoyé sur la sortie standard ou la sortie
       d'erreurs).</p>
     
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="scriptlog" id="scriptlog">Directive</a> <a name="ScriptLog" id="ScriptLog">ScriptLog</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Chemin du fichier journal des erreurs du script
-CGI</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ScriptLog <var>chemin fichier</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>, <code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code></td></tr>
-</table>
-    <p>La directive <code class="directive">ScriptLog</code> définit
-    le chemin du fichier journal des erreurs du script CGI. Si cette
-    directive n'est pas définie, aucune journalisation des erreurs n'est
-    effectuée. Si elle est définie, toute erreur CGI sera enregistrée
-    dans le fichier dont le nom est fourni en argument. S'il s'agit d'un
-    chemin de fichier relatif, il est considéré par rapport au
-    répertoire défini par la directive <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>.
-    </p>
-
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">ScriptLog logs/cgi_log</pre>
-</div>
-
-    <p>Ce journal sera ouvert par l'utilisateur sous lequel les
-    processus enfants s'exécutent, c'est à dire l'utilisateur spécifié
-    par la directive du serveur <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code>. Ceci implique que soit le
-    répertoire dans lequel se trouve le journal doit être accessible en
-    écriture pour cet utilisateur, soit le fichier doit être créé
-    manuellement et accessible en écriture pour cet utilisateur. Si vous
-    placez le journal du script dans votre répertoire principal des
-    journaux, ne modifiez <strong>PAS</strong> les permissions de ce
-    dernier afin de le le rendre accessible en écriture par
-    l'utilisateur sous lequel les processus enfants s'exécutent.</p>
-
-    <p>Notez que l'on ne doit activer la journalisation des scripts
-    qu'à des fins de débogage lors de l'écriture de scripts CGI, et non
-    de manière permanente sur un serveur en production. Elle n'est pas
-    optimisée en ce qui concerne la vitesse et l'efficacité, et peut
-    présenter des problèmes de sécurité si on l'utilise dans un cadre
-    autre que celui pour lequel elle a été conçue.</p>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="scriptlogbuffer" id="scriptlogbuffer">Directive</a> <a name="ScriptLogBuffer" id="ScriptLogBuffer">ScriptLogBuffer</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Taille maximale des requêtes PUT ou POST qui seront
-enregistrées dans le journal du script</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ScriptLogBuffer <var>octets</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ScriptLogBuffer 1024</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>, <code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code></td></tr>
-</table>
-    <p>Cette directive limite la taille du corps de toute
-    entité PUT ou POST qui sera enregistrée dans le journal, afin
-    de prévenir une croissance trop importante et trop rapide du fichier
-    journal due à la réception de corps de requête de grandes tailles.
-    Cette directive modifie cette taille maximale, dont la
-    valeur par défaut est de 1024 octets.</p>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="scriptloglength" id="scriptloglength">Directive</a> <a name="ScriptLogLength" id="ScriptLogLength">ScriptLogLength</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Taille maximale du fichier journal des scripts
-CGI</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ScriptLogLength <var>octets</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ScriptLogLength 10385760</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>, <code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code></td></tr>
-</table>
-    <p>La directive <code class="directive">ScriptLogLength</code>
-    définit la taille maximale du fichier journal des scripts CGI. Comme
-    le fichier journal accumule une grande quantité d'informations par
-    erreur CGI (tous les en-têtes de la requête, toutes les sorties du
-    script), il peut vite atteindre une grande taille. En limitant la
-    taille du fichier, cette directive permet d'éviter les problèmes que
-    causerait sa croissance sans limites. Lorsque le fichier a atteint
-    cette taille maximale, plus aucune information n'y est
-    enregistrée.</p>
-
 </div>
 </div>
 <div class="bottomlang">

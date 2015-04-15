@@ -68,133 +68,6 @@
 passe</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="pooling" id="pooling">Regroupement des connexions</a></h2>
-    <p>Ce module gère de manière optimisée en fonction de la plate-forme
-    les connexions aux bases de données. Sur les plates-formes non
-    threadées, il maintient une connexion persistente à la manière d'un
-    LAMP classique (Linux, Apache, Mysql, Perl/PHP/Python). Sur les
-    plates-formes threadées, il maintient un <em>groupe de
-    connexions</em> à la fois plus évolutif et plus efficace, comme
-    décrit dans <a href="http://www.apachetutor.org/dev/reslist">cet
-    article d'ApacheTutor</a>. Notez que <code class="module"><a href="../mod/mod_dbd.html">mod_dbd</a></code>
-    remplace les modules présentés dans cet article.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="API" id="API">API DBD d'Apache</a></h2>
-    <p><code class="module"><a href="../mod/mod_dbd.html">mod_dbd</a></code> exporte cinq fonctions que d'autres
-    modules pourront utiliser. L'API se présente comme suit :</p>
-
-    <pre class="prettyprint lang-c">typedef struct {
-    apr_dbd_t *handle;
-    apr_dbd_driver_t *driver;
-    apr_hash_t *prepared;
-} ap_dbd_t;
-
-/* Fonctions exportées pour accéder à la base de données */
-
-/* ouvre une connexion qui DEVRA être explicitement fermée.
- * Renvoie NULL en cas d'erreur
- */
-AP_DECLARE(ap_dbd_t*) ap_dbd_open(apr_pool_t*, server_rec*);
-
-/* ferme une connexion ouverte avec ap_dbd_open */
-AP_DECLARE(void) ap_dbd_close(server_rec*, ap_dbd_t*);
-
-/* acquiert une connexion qui aura la durée de vie de la requête et qui
- * NE DEVRA PAS être explicitement fermée. Renvoie NULL en cas
- * d'erreur. C'est la fonction recommandée pour la plupart des
- * applications.
- */
-AP_DECLARE(ap_dbd_t*) ap_dbd_acquire(request_rec*);
-
-/* acquiert une connexion qui aura la durée de vie d'une connexion et
- * qui NE DEVRA PAS être explicitement fermée. Renvoie NULL en cas
- * d'erreur.
- */
-AP_DECLARE(ap_dbd_t*) ap_dbd_cacquire(conn_rec*);
-
-/* Prépare une requête qu'un module client pourra utiliser */
-AP_DECLARE(void) ap_dbd_prepare(server_rec*, const char*, const char*);
-
-/* Exporte aussi ces fonctions à titre optionnel mour les modules qui
- * péfèreraient les utiliser */
-APR_DECLARE_OPTIONAL_FN(ap_dbd_t*, ap_dbd_open, (apr_pool_t*, server_rec*));
-APR_DECLARE_OPTIONAL_FN(void, ap_dbd_close, (server_rec*, ap_dbd_t*));
-APR_DECLARE_OPTIONAL_FN(ap_dbd_t*, ap_dbd_acquire, (request_rec*));
-APR_DECLARE_OPTIONAL_FN(ap_dbd_t*, ap_dbd_cacquire, (conn_rec*));
-APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const char*));</pre>
-
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="prepared" id="prepared">Requêtes SQL préparées</a></h2>
-    <p><code class="module"><a href="../mod/mod_dbd.html">mod_dbd</a></code> supporte les requêtes SQL préparées pour
-    le compte des modules qui pourraient les utiliser. Chaque requête
-    préparée doit posséder un nom (étiquette), et est stockée dans un
-    condensé (hash) : les condensés sont du type
-    <code>apr_dbd_prepared_t</code> et s'utilisent dans toute requête
-    SQL ou commande select préparée par apr_dbd.</p>
-
-    <p>Il est du ressort des modules utilisateurs de dbd d'utiliser les
-    requêtes préparées et de préciser quelles requêtes doivent être
-    spécifiées dans httpd.conf, ou de fournir leurs propres directives
-    et d'utiliser <code>ap_dbd_prepare</code>.</p>
-
-    <div class="warning"><h3>Avertissement</h3>
-	Lorsqu'on utilise des requêtes préparées avec des bases de
-	données MySQL, il est préférable de définir
-	<code>reconnect</code> à 0 dans la chaîne de connexion, afin
-	d'éviter des erreurs provoquées par un client MySQL qui se
-	reconnecterait sans réinitialiser correctement les requêtes
-	préparées. Si <code>reconnect</code> est défini à 1, toute
-	connexion défectueuse sera sensée être réparée, mais comme
-	mod_dbd n'en est pas informé, les requêtes préparées seront
-	invalidées.
-	</div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="security" id="security">AVERTISSEMENT DE SECURITE</a></h2>
-
-    <p>Toute application web impliquant une base de données doit se
-    protéger elle-même contre les attaques de type injection SQL. Dans
-    la plupart des cas Apache DBD est sûr, car les applications
-    utilisent des requêtes préparées, et les entrées non sûres ne seront
-    utilisées qu'à titre de données. Bien entendu, si vous l'utilisez
-    via un module tiers, vous devez être au fait des précautions à
-    prendre.</p>
-    <p>Cependant, le pilote <var>FreeTDS</var> est <strong>non
-    sûr</strong> de par sa nature même. Comme la bibliothèque
-    sous-jacente ne supporte pas les requêtes préparées, le pilote en
-    effectue une émulation, et les entrées non sûres sont fusionnées
-    avec la requête SQL.</p>
-    <p>Il peut être sécurisé en <em>décontaminant</em> toutes les
-    entrées : un processus inspiré de la recherche de contaminations de
-    Perl (NdT : <code>taint checking</code>). Chaque entrée est comparée
-    à une expression rationnelle, et
-    seules les entrées qui correspondent sont utilisées, en accord avec
-    le raccourci Perl :</p>
-    <div class="example"><pre><code>  $untrusted =~ /([a-z]+)/;
-  $trusted = $1;</code></pre></div>
-    <p>Pour utiliser ceci, les expressions rationnelles de
-    décontamination doivent être incluses dans les requêtes préparées.
-    L'expression rationnelle doit se situer immédiatement après le
-    caractère % dans la requête préparée, et doit être entourée
-    d'accolades {}. Par exemple, si votre application attend une entrée
-    alphanumérique, vous pouvez utiliser :</p>
-    <div class="example"><p><code>
-       <code>"SELECT foo FROM bar WHERE input = %s"</code>
-    </code></p></div>
-    <p>avec d'autres pilotes, et ne risquer au pire qu'une requête
-    en échec. Mais avec FreeTDS, vous devez utiliser :</p>
-    <div class="example"><p><code>
-       <code>"SELECT foo FROM bar WHERE input = %{([A-Za-z0-9]+)}s"</code>
-    </code></p></div>
-    <p>tout ce qui ne correspond pas à l'expression rationnelle est
-    alors rejeté, et la requête est ainsi désormais sûre.</p>
-    <p>Alternativement, vous pouvez utiliser le pilote ODBC tiers, qui
-    offre la sécurité des requêtes préparées authentiques.</p>
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="dbdexptime" id="dbdexptime">Directive</a> <a name="DBDExptime" id="DBDExptime">DBDExptime</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Durée de vie des connexions inactives</td></tr>
@@ -363,6 +236,133 @@ données</td></tr>
     exemple, <code>DBDriver mysql</code> va sélectionner le pilote MySQL
     dans la bibliothèque apr_dbd_mysql.so.</p>
 
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="pooling" id="pooling">Regroupement des connexions</a></h2>
+    <p>Ce module gère de manière optimisée en fonction de la plate-forme
+    les connexions aux bases de données. Sur les plates-formes non
+    threadées, il maintient une connexion persistente à la manière d'un
+    LAMP classique (Linux, Apache, Mysql, Perl/PHP/Python). Sur les
+    plates-formes threadées, il maintient un <em>groupe de
+    connexions</em> à la fois plus évolutif et plus efficace, comme
+    décrit dans <a href="http://www.apachetutor.org/dev/reslist">cet
+    article d'ApacheTutor</a>. Notez que <code class="module"><a href="../mod/mod_dbd.html">mod_dbd</a></code>
+    remplace les modules présentés dans cet article.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="API" id="API">API DBD d'Apache</a></h2>
+    <p><code class="module"><a href="../mod/mod_dbd.html">mod_dbd</a></code> exporte cinq fonctions que d'autres
+    modules pourront utiliser. L'API se présente comme suit :</p>
+
+    <pre class="prettyprint lang-c">typedef struct {
+    apr_dbd_t *handle;
+    apr_dbd_driver_t *driver;
+    apr_hash_t *prepared;
+} ap_dbd_t;
+
+/* Fonctions exportées pour accéder à la base de données */
+
+/* ouvre une connexion qui DEVRA être explicitement fermée.
+ * Renvoie NULL en cas d'erreur
+ */
+AP_DECLARE(ap_dbd_t*) ap_dbd_open(apr_pool_t*, server_rec*);
+
+/* ferme une connexion ouverte avec ap_dbd_open */
+AP_DECLARE(void) ap_dbd_close(server_rec*, ap_dbd_t*);
+
+/* acquiert une connexion qui aura la durée de vie de la requête et qui
+ * NE DEVRA PAS être explicitement fermée. Renvoie NULL en cas
+ * d'erreur. C'est la fonction recommandée pour la plupart des
+ * applications.
+ */
+AP_DECLARE(ap_dbd_t*) ap_dbd_acquire(request_rec*);
+
+/* acquiert une connexion qui aura la durée de vie d'une connexion et
+ * qui NE DEVRA PAS être explicitement fermée. Renvoie NULL en cas
+ * d'erreur.
+ */
+AP_DECLARE(ap_dbd_t*) ap_dbd_cacquire(conn_rec*);
+
+/* Prépare une requête qu'un module client pourra utiliser */
+AP_DECLARE(void) ap_dbd_prepare(server_rec*, const char*, const char*);
+
+/* Exporte aussi ces fonctions à titre optionnel mour les modules qui
+ * péfèreraient les utiliser */
+APR_DECLARE_OPTIONAL_FN(ap_dbd_t*, ap_dbd_open, (apr_pool_t*, server_rec*));
+APR_DECLARE_OPTIONAL_FN(void, ap_dbd_close, (server_rec*, ap_dbd_t*));
+APR_DECLARE_OPTIONAL_FN(ap_dbd_t*, ap_dbd_acquire, (request_rec*));
+APR_DECLARE_OPTIONAL_FN(ap_dbd_t*, ap_dbd_cacquire, (conn_rec*));
+APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const char*));</pre>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="prepared" id="prepared">Requêtes SQL préparées</a></h2>
+    <p><code class="module"><a href="../mod/mod_dbd.html">mod_dbd</a></code> supporte les requêtes SQL préparées pour
+    le compte des modules qui pourraient les utiliser. Chaque requête
+    préparée doit posséder un nom (étiquette), et est stockée dans un
+    condensé (hash) : les condensés sont du type
+    <code>apr_dbd_prepared_t</code> et s'utilisent dans toute requête
+    SQL ou commande select préparée par apr_dbd.</p>
+
+    <p>Il est du ressort des modules utilisateurs de dbd d'utiliser les
+    requêtes préparées et de préciser quelles requêtes doivent être
+    spécifiées dans httpd.conf, ou de fournir leurs propres directives
+    et d'utiliser <code>ap_dbd_prepare</code>.</p>
+
+    <div class="warning"><h3>Avertissement</h3>
+	Lorsqu'on utilise des requêtes préparées avec des bases de
+	données MySQL, il est préférable de définir
+	<code>reconnect</code> à 0 dans la chaîne de connexion, afin
+	d'éviter des erreurs provoquées par un client MySQL qui se
+	reconnecterait sans réinitialiser correctement les requêtes
+	préparées. Si <code>reconnect</code> est défini à 1, toute
+	connexion défectueuse sera sensée être réparée, mais comme
+	mod_dbd n'en est pas informé, les requêtes préparées seront
+	invalidées.
+	</div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="security" id="security">AVERTISSEMENT DE SECURITE</a></h2>
+
+    <p>Toute application web impliquant une base de données doit se
+    protéger elle-même contre les attaques de type injection SQL. Dans
+    la plupart des cas Apache DBD est sûr, car les applications
+    utilisent des requêtes préparées, et les entrées non sûres ne seront
+    utilisées qu'à titre de données. Bien entendu, si vous l'utilisez
+    via un module tiers, vous devez être au fait des précautions à
+    prendre.</p>
+    <p>Cependant, le pilote <var>FreeTDS</var> est <strong>non
+    sûr</strong> de par sa nature même. Comme la bibliothèque
+    sous-jacente ne supporte pas les requêtes préparées, le pilote en
+    effectue une émulation, et les entrées non sûres sont fusionnées
+    avec la requête SQL.</p>
+    <p>Il peut être sécurisé en <em>décontaminant</em> toutes les
+    entrées : un processus inspiré de la recherche de contaminations de
+    Perl (NdT : <code>taint checking</code>). Chaque entrée est comparée
+    à une expression rationnelle, et
+    seules les entrées qui correspondent sont utilisées, en accord avec
+    le raccourci Perl :</p>
+    <div class="example"><pre><code>  $untrusted =~ /([a-z]+)/;
+  $trusted = $1;</code></pre></div>
+    <p>Pour utiliser ceci, les expressions rationnelles de
+    décontamination doivent être incluses dans les requêtes préparées.
+    L'expression rationnelle doit se situer immédiatement après le
+    caractère % dans la requête préparée, et doit être entourée
+    d'accolades {}. Par exemple, si votre application attend une entrée
+    alphanumérique, vous pouvez utiliser :</p>
+    <div class="example"><p><code>
+       <code>"SELECT foo FROM bar WHERE input = %s"</code>
+    </code></p></div>
+    <p>avec d'autres pilotes, et ne risquer au pire qu'une requête
+    en échec. Mais avec FreeTDS, vous devez utiliser :</p>
+    <div class="example"><p><code>
+       <code>"SELECT foo FROM bar WHERE input = %{([A-Za-z0-9]+)}s"</code>
+    </code></p></div>
+    <p>tout ce qui ne correspond pas à l'expression rationnelle est
+    alors rejeté, et la requête est ainsi désormais sûre.</p>
+    <p>Alternativement, vous pouvez utiliser le pilote ODBC tiers, qui
+    offre la sécurité des requêtes préparées authentiques.</p>
 </div>
 </div>
 <div class="bottomlang">

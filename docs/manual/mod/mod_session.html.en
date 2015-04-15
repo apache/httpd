@@ -87,6 +87,144 @@
 <li><code class="module"><a href="../mod/mod_session_dbd.html">mod_session_dbd</a></code></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="Session" id="Session">Session</a> <a name="session" id="session">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enables a session for the current directory or location</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Session On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>Session Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session</td></tr>
+</table>
+    <p>The <code class="directive">Session</code> directive enables a session for the
+    directory or location container. Further directives control where the
+    session will be stored and how privacy is maintained.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SessionEnv" id="SessionEnv">SessionEnv</a> <a name="sessionenv" id="sessionenv">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Control whether the contents of the session are written to the
+<var>HTTP_SESSION</var> environment variable</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SessionEnv On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SessionEnv Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session</td></tr>
+</table>
+    <p>If set to <var>On</var>, the <code class="directive">SessionEnv</code> directive
+    causes the contents of the session to be written to a CGI environment
+    variable called <var>HTTP_SESSION</var>.</p>
+
+    <p>The string is written in the URL query format, for example:</p>
+
+    <div class="example"><p><code>
+      <code>key1=foo&amp;key3=bar</code>
+    </code></p></div>
+
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SessionExclude" id="SessionExclude">SessionExclude</a> <a name="sessionexclude" id="sessionexclude">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Define URL prefixes for which a session is ignored</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SessionExclude <var>path</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session</td></tr>
+</table>
+    <p>The <code class="directive">SessionExclude</code> directive allows sessions to
+    be disabled relative to URL prefixes only. This can be used to make a
+    website more efficient, by targeting a more precise URL space for which
+    a session should be maintained. By default, all URLs within the directory
+    or location are included in the session. The
+    <code class="directive"><a href="#sessionexclude">SessionExclude</a></code> directive takes
+    precedence over the
+    <code class="directive"><a href="#sessioninclude">SessionInclude</a></code> directive.</p>
+
+    <div class="warning"><h3>Warning</h3>
+    <p>This directive has a similar purpose to the <var>path</var> attribute
+    in HTTP cookies, but should not be confused with this attribute. This
+    directive does not set the <var>path</var> attribute, which must be
+    configured separately.</p></div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SessionHeader" id="SessionHeader">SessionHeader</a> <a name="sessionheader" id="sessionheader">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Import session updates from a given HTTP response header</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SessionHeader <var>header</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session</td></tr>
+</table>
+    <p>The <code class="directive">SessionHeader</code> directive defines the name of an
+    HTTP response header which, if present, will be parsed and written to the
+    current session.</p>
+
+    <p>The header value is expected to be in the URL query format, for example:</p>
+
+    <div class="example"><p><code>
+      <code>key1=foo&amp;key2=&amp;key3=bar</code>
+    </code></p></div>
+
+    <p>Where a key is set to the empty string, that key will be removed from the
+    session.</p>
+
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SessionInclude" id="SessionInclude">SessionInclude</a> <a name="sessioninclude" id="sessioninclude">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Define URL prefixes for which a session is valid</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SessionInclude <var>path</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>all URLs</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session</td></tr>
+</table>
+    <p>The <code class="directive">SessionInclude</code> directive allows sessions to
+    be made valid for specific URL prefixes only. This can be used to make a
+    website more efficient, by targeting a more precise URL space for which
+    a session should be maintained. By default, all URLs within the directory
+    or location are included in the session.</p>
+
+    <div class="warning"><h3>Warning</h3>
+    <p>This directive has a similar purpose to the <var>path</var> attribute
+    in HTTP cookies, but should not be confused with this attribute. This
+    directive does not set the <var>path</var> attribute, which must be
+    configured separately.</p></div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SessionMaxAge" id="SessionMaxAge">SessionMaxAge</a> <a name="sessionmaxage" id="sessionmaxage">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Define a maximum age in seconds for a session</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SessionMaxAge <var>maxage</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SessionMaxAge 0</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session</td></tr>
+</table>
+    <p>The <code class="directive">SessionMaxAge</code> directive defines a time limit
+    for which a session will remain valid. When a session is saved, this time
+    limit is reset and an existing session can be continued. If a session
+    becomes older than this limit without a request to the server to refresh
+    the session, the session will time out and be removed. Where a session is
+    used to stored user login details, this has the effect of logging the user
+    out automatically after the given time.</p>
+
+    <p>Setting the maxage to zero disables session expiry.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="whatisasession" id="whatisasession">What is a session?</a></h2>
       <p>At the core of the session interface is a table of key and value pairs
@@ -342,144 +480,6 @@ AuthName "realm"
       </dl>
 
     </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Session" id="Session">Session</a> <a name="session" id="session">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enables a session for the current directory or location</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Session On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>Session Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session</td></tr>
-</table>
-    <p>The <code class="directive">Session</code> directive enables a session for the
-    directory or location container. Further directives control where the
-    session will be stored and how privacy is maintained.</p>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SessionEnv" id="SessionEnv">SessionEnv</a> <a name="sessionenv" id="sessionenv">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Control whether the contents of the session are written to the
-<var>HTTP_SESSION</var> environment variable</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SessionEnv On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SessionEnv Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session</td></tr>
-</table>
-    <p>If set to <var>On</var>, the <code class="directive">SessionEnv</code> directive
-    causes the contents of the session to be written to a CGI environment
-    variable called <var>HTTP_SESSION</var>.</p>
-
-    <p>The string is written in the URL query format, for example:</p>
-
-    <div class="example"><p><code>
-      <code>key1=foo&amp;key3=bar</code>
-    </code></p></div>
-
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SessionExclude" id="SessionExclude">SessionExclude</a> <a name="sessionexclude" id="sessionexclude">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Define URL prefixes for which a session is ignored</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SessionExclude <var>path</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>none</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session</td></tr>
-</table>
-    <p>The <code class="directive">SessionExclude</code> directive allows sessions to
-    be disabled relative to URL prefixes only. This can be used to make a
-    website more efficient, by targeting a more precise URL space for which
-    a session should be maintained. By default, all URLs within the directory
-    or location are included in the session. The
-    <code class="directive"><a href="#sessionexclude">SessionExclude</a></code> directive takes
-    precedence over the
-    <code class="directive"><a href="#sessioninclude">SessionInclude</a></code> directive.</p>
-
-    <div class="warning"><h3>Warning</h3>
-    <p>This directive has a similar purpose to the <var>path</var> attribute
-    in HTTP cookies, but should not be confused with this attribute. This
-    directive does not set the <var>path</var> attribute, which must be
-    configured separately.</p></div>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SessionHeader" id="SessionHeader">SessionHeader</a> <a name="sessionheader" id="sessionheader">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Import session updates from a given HTTP response header</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SessionHeader <var>header</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>none</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session</td></tr>
-</table>
-    <p>The <code class="directive">SessionHeader</code> directive defines the name of an
-    HTTP response header which, if present, will be parsed and written to the
-    current session.</p>
-
-    <p>The header value is expected to be in the URL query format, for example:</p>
-
-    <div class="example"><p><code>
-      <code>key1=foo&amp;key2=&amp;key3=bar</code>
-    </code></p></div>
-
-    <p>Where a key is set to the empty string, that key will be removed from the
-    session.</p>
-
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SessionInclude" id="SessionInclude">SessionInclude</a> <a name="sessioninclude" id="sessioninclude">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Define URL prefixes for which a session is valid</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SessionInclude <var>path</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>all URLs</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session</td></tr>
-</table>
-    <p>The <code class="directive">SessionInclude</code> directive allows sessions to
-    be made valid for specific URL prefixes only. This can be used to make a
-    website more efficient, by targeting a more precise URL space for which
-    a session should be maintained. By default, all URLs within the directory
-    or location are included in the session.</p>
-
-    <div class="warning"><h3>Warning</h3>
-    <p>This directive has a similar purpose to the <var>path</var> attribute
-    in HTTP cookies, but should not be confused with this attribute. This
-    directive does not set the <var>path</var> attribute, which must be
-    configured separately.</p></div>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SessionMaxAge" id="SessionMaxAge">SessionMaxAge</a> <a name="sessionmaxage" id="sessionmaxage">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Define a maximum age in seconds for a session</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SessionMaxAge <var>maxage</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SessionMaxAge 0</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session</td></tr>
-</table>
-    <p>The <code class="directive">SessionMaxAge</code> directive defines a time limit
-    for which a session will remain valid. When a session is saved, this time
-    limit is reset and an existing session can be continued. If a session
-    becomes older than this limit without a request to the server to refresh
-    the session, the session will time out and be removed. Where a session is
-    used to stored user login details, this has the effect of logging the user
-    out automatically after the given time.</p>
-
-    <p>Setting the maxage to zero disables session expiry.</p>
-
-</div>
 </div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_session.html" title="English">&nbsp;en&nbsp;</a></p>

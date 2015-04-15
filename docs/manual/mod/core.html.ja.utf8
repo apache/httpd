@@ -124,7 +124,6 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#warning">Warning</a></li>
 </ul>
 <ul class="seealso"><li><a href="#comments_section">コメント</a></li></ul></div>
-
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AcceptFilter" id="AcceptFilter">AcceptFilter</a> <a name="acceptfilter" id="acceptfilter">ディレクティブ</a></h2>
 <table class="directive">
@@ -3576,6 +3575,7 @@ of a request or the last 63, assuming the request itself is greater than
 </table><p>このディレクティブの解説文書は
             まだ翻訳されていません。英語版をご覧ください。
             </p></div>
+
 </div>
 <div class="bottomlang">
 <p><span>翻訳済み言語: </span><a href="../de/mod/core.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |

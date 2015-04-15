@@ -86,188 +86,6 @@
 <li><a href="../compliance.html">HTTP Protocol Compliance</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="actions" id="actions">Actions</a></h2>
-    
-
-    <p>If a policy is violated, one of the following actions can be
-    taken:</p>
-
-    <dl>
-    <dt><strong>ignore</strong></dt>
-    <dd>The policy check will be ignored for the given URL space, even
-    if the filter is present.</dd>
-
-    <dt><strong>log</strong></dt>
-    <dd>The policy check will be executed, and if a violation is detected
-    a warning will be logged to the server error_log, and a
-    <code>Warning</code> header added to the response for the benefit of
-    the client.</dd>
-
-    <dt><strong>enforce</strong></dt>
-    <dd>The policy check will be executed, and if a violation is detected
-    an error will be logged to the server error_log, a
-    <code>Warning</code> header added to the response, and a <code>502
-    Bad Gateway</code> will be returned to the client. Optional links to
-    explanatory documentation can be added to each error message,
-    detailing the origin of each policy.</dd>
-
-    </dl>
-
-    <p>It is also possible to selectively disable all policies for a
-    given URL space, should the need arise, using the
-    <code class="directive"><a href="#policyfilter">PolicyFilter</a></code> directive.</p>
-
-    <p>Alternatively, the
-    <code class="directive"><a href="#policyenvironment">PolicyEnvironment</a></code>
-    directive can be used to specify an environment variable, which if
-    present, will cause the policies to be selectively downgraded or
-    bypassed.</p>
-
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="tests" id="tests">Policy Tests</a></h2>
-    
-
-    <p>The following policy filters are available:</p>
-
-    <dl>
-    <dt><strong><a href="../compliance.html#policytype">POLICY_TYPE</a>
-    </strong>: Enforce valid content types</dt>
-    <dd>Content types that are syntactically invalid or blank can be detected
-	and the request rejected. Types can be restricted to a specific list
-	containing optional wildcards ? and *.</dd>
-    
-    <dt><strong><a href="../compliance.html#policylength">POLICY_LENGTH</a>
-    </strong>: Enforce the presence of a Content-Length</dt>
-    <dd>The length of responses can be specified in one of three ways, by
-    specifying an explicit length in advance, using chunked encoding to set
-    the length, or by setting no length at all and terminating the request
-    when complete. The absence of a specific content length can affect the
-    cacheability of the response, and prevents the use of keepalive during
-    HTTP/1.0 requests. This policy enforces the presence of an explicit
-    content length on the response.</dd>
-
-    <dt><strong><a href="../compliance.html#policykeepalive">POLICY_KEEPALIVE
-    </a></strong>: Enforce the option to keepalive</dt>
-    <dd>Less restrictive than the POLICY_LENGTH test, this policy enforces the
-    possibility that the response can be kept alive. If the response doesn't
-    have a protocol defined zero length, and the response isn't already an
-    error, and the response has neither a Content-Length or is declared
-    HTTP/1.1 and lacks Content-Encoding: chunked, then this response will be
-    rejected.</dd>
-
-    <dt><strong><a href="../compliance.html#policyvary">POLICY_VARY</a>
-    </strong>: Enforce the absence of certain headers within Vary headers</dt>
-    <dd>If the Vary header contains any of the headers specified, this policy
-    will reject the request. The typical case is the presence of the User-Agent
-    within Vary, which is likely to cause a denial of service condition to a
-    cache.</dd>
-
-    <dt><strong><a href="../compliance.html#policyvalidation">
-    POLICY_VALIDATION</a></strong>: Enforce the presence of Etag and/or
-    Last-Modified</dt>
-    <dd>The ability for a cache to determine whether a cached entity can be
-    refreshed is dependent on whether a valid Etag and/or Last-Modified header
-    is present to revalidate against. The absence of both headers, or the
-    invalid syntax of a header will cause this policy to be rejected.</dd>
-
-    <dt><strong><a href="../compliance.html#policyconditional">
-    POLICY_CONDITIONAL</a></strong>: Enforce correct operation of conditional
-    requests</dt>
-    <dd>When conditional headers are present in the request, a server should
-    respond with a <code>304 Not Modified</code> or <code>412 Precondition
-    Failed</code> response where appropriate. A server may ignore conditional
-    headers, and this affects the efficiency of the HTTP caching mechanism.
-    This policy rejects requests where a conditional header is present, and
-    a 304 or 412 response code was expected, but a 2xx response was seen
-    instead.</dd>
-
-    <dt><strong><a href="../compliance.html#policynocache">POLICY_NOCACHE</a>
-    </strong>: Enforce cacheable responses</dt>
-    <dd>When a response is encountered that declares itself explicitly
-    uncacheable, the request is rejected. A response is considered
-    uncacheable if it specifies any of the following:
-    <ul><li><code>Cache-Control: no-cache</code></li>
-    <li><code>Pragma: no-cache</code></li>
-    <li><code>Cache-Control: no-store</code></li>
-    <li><code>Cache-Control: private</code></li>
-    </ul></dd>
-
-    <dt><strong><a href="../compliance.html#policymaxage">POLICY_MAXAGE</a>
-    </strong>: Enforce a minimum maxage</dt>
-    <dd>When a response is encountered where the freshness lifetime is less
-    than the given value, or the freshness lifetime is heuristic, the request
-    is rejected. A response is checked in the following order:
-    <ul><li>If <code>s-maxage</code> is present but too small; or</li>
-    <li>If <code>max-age</code> is present but too small; or</li>
-    <li>If <code>Expires</code> is present and invalid; or</li>
-    <li><code>Date</code> is present and invalid; or</li>
-    <li><code>Expires</code> minus Date is too small; or</li>
-    <li>No <code>s-maxage</code>, <code>maxage</code>, or
-    <code>Expires</code>/<code>Date</code> declared at all</li>
-    </ul></dd>
-
-    <dt><strong><a href="../compliance.html#policyversion">POLICY_VERSION</a>
-    </strong>: Enforce a minimum HTTP version within a request</dt>
-    <dd>When a request is encountered with an HTTP version number less than
-    the required minimum version, the request is rejected. The following
-    version numbers are recognised:
-    <ul><li><code>HTTP/1.1</code></li>
-    <li><code>HTTP/1.0</code></li>
-    <li><code>HTTP/0.9</code></li>
-    </ul></dd>
-
-    </dl>
-
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="example" id="example">Example Configuration</a></h2>
-    
-
-    <p>A typical configuration protecting a server serving static content
-    might be as follows:</p>
-
-    <pre class="prettyprint lang-config">&lt;Location /&gt;
-  SetOutputFilter POLICY_TYPE;POLICY_LENGTH;POLICY_KEEPALIVE;POLICY_VARY;POLICY_VALIDATION; \
-    POLICY_CONDITIONAL;POLICY_NOCACHE;POLICY_MAXAGE;POLICY_VERSION
-  
-  # content type must be present and valid, but can be anything
-  PolicyType enforce */*
-  
-  # reject if no explicitly declared content length
-  PolicyLength enforce
-  
-  # covered by the policy length filter
-  PolicyKeepalive ignore
-  
-  # reject if User-Agent appears within Vary headers
-  PolicyVary enforce User-Agent
-  
-  # we want to enforce validation
-  PolicyValidation enforce
-  
-  # non-functional conditional responses should be rejected
-  PolicyConditional enforce
-  
-  # no-cache responses should be rejected
-  PolicyNocache enforce
-  
-  # maxage must be at least a day
-  PolicyMaxage enforce 86400
-  
-  # request version can be anything
-  PolicyVersion ignore HTTP/1.1
-&lt;/Location&gt;
-
-# suppress policy protection for server-status
-&lt;Location /server-status&gt;
-  PolicyFilter off
-&lt;/Location&gt;</pre>
-
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="PolicyConditional" id="PolicyConditional">PolicyConditional</a> <a name="policyconditional" id="policyconditional">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable the conditional request policy.</td></tr>
@@ -655,6 +473,188 @@ later.</td></tr>
 </table>
     <p>Specify the URL of the documentation describing the minimum request
     HTTP version policy, to appear within error messages.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="actions" id="actions">Actions</a></h2>
+    
+
+    <p>If a policy is violated, one of the following actions can be
+    taken:</p>
+
+    <dl>
+    <dt><strong>ignore</strong></dt>
+    <dd>The policy check will be ignored for the given URL space, even
+    if the filter is present.</dd>
+
+    <dt><strong>log</strong></dt>
+    <dd>The policy check will be executed, and if a violation is detected
+    a warning will be logged to the server error_log, and a
+    <code>Warning</code> header added to the response for the benefit of
+    the client.</dd>
+
+    <dt><strong>enforce</strong></dt>
+    <dd>The policy check will be executed, and if a violation is detected
+    an error will be logged to the server error_log, a
+    <code>Warning</code> header added to the response, and a <code>502
+    Bad Gateway</code> will be returned to the client. Optional links to
+    explanatory documentation can be added to each error message,
+    detailing the origin of each policy.</dd>
+
+    </dl>
+
+    <p>It is also possible to selectively disable all policies for a
+    given URL space, should the need arise, using the
+    <code class="directive"><a href="#policyfilter">PolicyFilter</a></code> directive.</p>
+
+    <p>Alternatively, the
+    <code class="directive"><a href="#policyenvironment">PolicyEnvironment</a></code>
+    directive can be used to specify an environment variable, which if
+    present, will cause the policies to be selectively downgraded or
+    bypassed.</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="tests" id="tests">Policy Tests</a></h2>
+    
+
+    <p>The following policy filters are available:</p>
+
+    <dl>
+    <dt><strong><a href="../compliance.html#policytype">POLICY_TYPE</a>
+    </strong>: Enforce valid content types</dt>
+    <dd>Content types that are syntactically invalid or blank can be detected
+	and the request rejected. Types can be restricted to a specific list
+	containing optional wildcards ? and *.</dd>
+    
+    <dt><strong><a href="../compliance.html#policylength">POLICY_LENGTH</a>
+    </strong>: Enforce the presence of a Content-Length</dt>
+    <dd>The length of responses can be specified in one of three ways, by
+    specifying an explicit length in advance, using chunked encoding to set
+    the length, or by setting no length at all and terminating the request
+    when complete. The absence of a specific content length can affect the
+    cacheability of the response, and prevents the use of keepalive during
+    HTTP/1.0 requests. This policy enforces the presence of an explicit
+    content length on the response.</dd>
+
+    <dt><strong><a href="../compliance.html#policykeepalive">POLICY_KEEPALIVE
+    </a></strong>: Enforce the option to keepalive</dt>
+    <dd>Less restrictive than the POLICY_LENGTH test, this policy enforces the
+    possibility that the response can be kept alive. If the response doesn't
+    have a protocol defined zero length, and the response isn't already an
+    error, and the response has neither a Content-Length or is declared
+    HTTP/1.1 and lacks Content-Encoding: chunked, then this response will be
+    rejected.</dd>
+
+    <dt><strong><a href="../compliance.html#policyvary">POLICY_VARY</a>
+    </strong>: Enforce the absence of certain headers within Vary headers</dt>
+    <dd>If the Vary header contains any of the headers specified, this policy
+    will reject the request. The typical case is the presence of the User-Agent
+    within Vary, which is likely to cause a denial of service condition to a
+    cache.</dd>
+
+    <dt><strong><a href="../compliance.html#policyvalidation">
+    POLICY_VALIDATION</a></strong>: Enforce the presence of Etag and/or
+    Last-Modified</dt>
+    <dd>The ability for a cache to determine whether a cached entity can be
+    refreshed is dependent on whether a valid Etag and/or Last-Modified header
+    is present to revalidate against. The absence of both headers, or the
+    invalid syntax of a header will cause this policy to be rejected.</dd>
+
+    <dt><strong><a href="../compliance.html#policyconditional">
+    POLICY_CONDITIONAL</a></strong>: Enforce correct operation of conditional
+    requests</dt>
+    <dd>When conditional headers are present in the request, a server should
+    respond with a <code>304 Not Modified</code> or <code>412 Precondition
+    Failed</code> response where appropriate. A server may ignore conditional
+    headers, and this affects the efficiency of the HTTP caching mechanism.
+    This policy rejects requests where a conditional header is present, and
+    a 304 or 412 response code was expected, but a 2xx response was seen
+    instead.</dd>
+
+    <dt><strong><a href="../compliance.html#policynocache">POLICY_NOCACHE</a>
+    </strong>: Enforce cacheable responses</dt>
+    <dd>When a response is encountered that declares itself explicitly
+    uncacheable, the request is rejected. A response is considered
+    uncacheable if it specifies any of the following:
+    <ul><li><code>Cache-Control: no-cache</code></li>
+    <li><code>Pragma: no-cache</code></li>
+    <li><code>Cache-Control: no-store</code></li>
+    <li><code>Cache-Control: private</code></li>
+    </ul></dd>
+
+    <dt><strong><a href="../compliance.html#policymaxage">POLICY_MAXAGE</a>
+    </strong>: Enforce a minimum maxage</dt>
+    <dd>When a response is encountered where the freshness lifetime is less
+    than the given value, or the freshness lifetime is heuristic, the request
+    is rejected. A response is checked in the following order:
+    <ul><li>If <code>s-maxage</code> is present but too small; or</li>
+    <li>If <code>max-age</code> is present but too small; or</li>
+    <li>If <code>Expires</code> is present and invalid; or</li>
+    <li><code>Date</code> is present and invalid; or</li>
+    <li><code>Expires</code> minus Date is too small; or</li>
+    <li>No <code>s-maxage</code>, <code>maxage</code>, or
+    <code>Expires</code>/<code>Date</code> declared at all</li>
+    </ul></dd>
+
+    <dt><strong><a href="../compliance.html#policyversion">POLICY_VERSION</a>
+    </strong>: Enforce a minimum HTTP version within a request</dt>
+    <dd>When a request is encountered with an HTTP version number less than
+    the required minimum version, the request is rejected. The following
+    version numbers are recognised:
+    <ul><li><code>HTTP/1.1</code></li>
+    <li><code>HTTP/1.0</code></li>
+    <li><code>HTTP/0.9</code></li>
+    </ul></dd>
+
+    </dl>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="example" id="example">Example Configuration</a></h2>
+    
+
+    <p>A typical configuration protecting a server serving static content
+    might be as follows:</p>
+
+    <pre class="prettyprint lang-config">&lt;Location /&gt;
+  SetOutputFilter POLICY_TYPE;POLICY_LENGTH;POLICY_KEEPALIVE;POLICY_VARY;POLICY_VALIDATION; \
+    POLICY_CONDITIONAL;POLICY_NOCACHE;POLICY_MAXAGE;POLICY_VERSION
+  
+  # content type must be present and valid, but can be anything
+  PolicyType enforce */*
+  
+  # reject if no explicitly declared content length
+  PolicyLength enforce
+  
+  # covered by the policy length filter
+  PolicyKeepalive ignore
+  
+  # reject if User-Agent appears within Vary headers
+  PolicyVary enforce User-Agent
+  
+  # we want to enforce validation
+  PolicyValidation enforce
+  
+  # non-functional conditional responses should be rejected
+  PolicyConditional enforce
+  
+  # no-cache responses should be rejected
+  PolicyNocache enforce
+  
+  # maxage must be at least a day
+  PolicyMaxage enforce 86400
+  
+  # request version can be anything
+  PolicyVersion ignore HTTP/1.1
+&lt;/Location&gt;
+
+# suppress policy protection for server-status
+&lt;Location /server-status&gt;
+  PolicyFilter off
+&lt;/Location&gt;</pre>
+
 
 </div>
 </div>

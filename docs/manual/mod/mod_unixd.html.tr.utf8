@@ -42,7 +42,6 @@
 <ul class="seealso">
 <li><a href="../suexec.html">suEXEC desteği</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Yorum</a></li></ul></div>
-
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ChrootDir" id="ChrootDir">ChrootDir</a> <a name="chrootdir" id="chrootdir">Yönergesi</a></h2>
 <table class="directive">
@@ -184,6 +183,7 @@
 <li><code class="directive"><a href="../mod/mod_suexec.html#suexecusergroup">SuexecUserGroup</a></code></li>
 </ul>
 </div>
+
 </div>
 <div class="bottomlang">
 <p><span>Mevcut Diller: </span><a href="../en/mod/mod_unixd.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |

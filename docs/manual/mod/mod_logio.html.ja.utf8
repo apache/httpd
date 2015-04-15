@@ -64,6 +64,19 @@
 <li><a href="../logs.html">Apache ログファイル</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">コメント</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="LogIOTrackTTFB" id="LogIOTrackTTFB">LogIOTrackTTFB</a> <a name="logiotrackttfb" id="logiotrackttfb">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Enable tracking of time to first byte (TTFB)</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>LogIOTrackTTFB ON|OFF</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>LogIOTrackTTFB OFF</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>none</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_logio</td></tr>
+</table><p>このディレクティブの解説文書は
+            まだ翻訳されていません。英語版をご覧ください。
+            </p></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="formats" id="formats">カスタムログ書式</a></h2>
 
@@ -90,19 +103,6 @@
       \"%{User-agent}i\" %I %O"</code></dd>
     </dl>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LogIOTrackTTFB" id="LogIOTrackTTFB">LogIOTrackTTFB</a> <a name="logiotrackttfb" id="logiotrackttfb">ディレクティブ</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Enable tracking of time to first byte (TTFB)</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>LogIOTrackTTFB ON|OFF</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>LogIOTrackTTFB OFF</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>none</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_logio</td></tr>
-</table><p>このディレクティブの解説文書は
-            まだ翻訳されていません。英語版をご覧ください。
-            </p></div>
 </div>
 <div class="bottomlang">
 <p><span>翻訳済み言語: </span><a href="../en/mod/mod_logio.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |

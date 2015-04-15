@@ -75,6 +75,81 @@
 <li><a href="http://www.ietf.org/rfc/rfc3875">CGI 規格書</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">コメント</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ScriptLog" id="ScriptLog">ScriptLog</a> <a name="scriptlog" id="scriptlog">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>CGI スクリプトのエラーログファイルの場所</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ScriptLog <var>file-path</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>, <code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code></td></tr>
+</table>
+    <p><code class="directive">ScriptLog</code> ディレクティブは CGI スクリプトの
+    エラーログファイルを設定します。<code class="directive">ScriptLog</code> が
+    設定されていないときは、
+    エラーログは作成されません。設定されているときは、CGI
+    のエラーはすべて引数として与えられているファイル名にログされます。
+    相対パスで指定されているときは、
+    <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>からの相対パスとして
+    扱われます。</p>
+
+    <div class="example"><h3>例</h3><pre class="prettyprint lang-config">ScriptLog logs/cgi_log</pre>
+</div>
+
+    <p>このログは子プロセスが実行されているユーザとしてオープンされます。
+    <em>すなわち</em>、<code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code> ディレクティブで指定された
+    ユーザです。これは、スクリプトログが書かれるディレクトリがそのユーザで
+    書き込み可能か、スクリプトファイルが手動で作成され、そのユーザで
+    書き込み可能になっている必要があるということです。スクリプトログを
+    アクセスログなどのためのログディレクトリに書かれるようにしたときは、
+    そのディレクトリを子プロセスを実行しているユーザの権限で
+    書き込み可能には<strong>しない</strong>ようにしてください。</p>
+
+    <p>スクリプトのログ収集は CGI スクリプトを書くときの
+    デバッグ用の機能として意図されていて、通常のサーバで
+    常に使用されるようには意図されていないということに注意してください。
+    速度や効率は最適化されておらず、設計された以外の方法で使用されると
+    セキュリティの問題があるかもしれません。</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ScriptLogBuffer" id="ScriptLogBuffer">ScriptLogBuffer</a> <a name="scriptlogbuffer" id="scriptlogbuffer">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>スクリプトログに記録される PUT や POST リクエストの内容の上限</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ScriptLogBuffer <em>bytes</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>ScriptLogBuffer 1024</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>, <code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code></td></tr>
+</table>
+    <p>大きな本体を受け取ったときにログファイルがすぐに大きくなりすぎる
+    問題を避けるために、ファイルにログ収集される PUT と POST
+    の本体の大きさは制限されています。デフォルトでは、1024
+    バイトまでがログ収集されますが、
+    このディレクティブはそれを変更することができます。 
+    </p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ScriptLogLength" id="ScriptLogLength">ScriptLogLength</a> <a name="scriptloglength" id="scriptloglength">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>CGI スクリプトのログファイルの大きさの上限</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ScriptLogLength <var>bytes</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>ScriptLogLength 10385760</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>, <code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code></td></tr>
+</table>
+    <p><code class="directive">ScriptLogLength</code> は CGI スクリプトのログファイル
+    の大きさを制限するために使用することができます。ログファイルは
+    CGI のエラー毎に大量の情報 (リクエストのすべてのヘッダ、
+    すべての出力)をログしますので、すぐに大きなファイルになります。
+    この大きさの制限がないことによる問題を防ぐために、
+    このディレクティブを使って CGI のログファイルの
+    最大のファイルサイズを設定することができます。
+    ファイルがこの大きさを超えた場合は、それ以上は書き込まれません。</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="env" id="env">CGI 環境変数</a></h2>
     <p>サーバは <a href="http://www.ietf.org/rfc/rfc3875">CGI
@@ -163,81 +238,6 @@
 
     <p>(スクリプトが標準出力や標準エラーに何も出力しなかった場合は、
     %stdout や %stderr はありません)。</p>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ScriptLog" id="ScriptLog">ScriptLog</a> <a name="scriptlog" id="scriptlog">ディレクティブ</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>CGI スクリプトのエラーログファイルの場所</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ScriptLog <var>file-path</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>, <code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code></td></tr>
-</table>
-    <p><code class="directive">ScriptLog</code> ディレクティブは CGI スクリプトの
-    エラーログファイルを設定します。<code class="directive">ScriptLog</code> が
-    設定されていないときは、
-    エラーログは作成されません。設定されているときは、CGI
-    のエラーはすべて引数として与えられているファイル名にログされます。
-    相対パスで指定されているときは、
-    <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>からの相対パスとして
-    扱われます。</p>
-
-    <div class="example"><h3>例</h3><pre class="prettyprint lang-config">ScriptLog logs/cgi_log</pre>
-</div>
-
-    <p>このログは子プロセスが実行されているユーザとしてオープンされます。
-    <em>すなわち</em>、<code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code> ディレクティブで指定された
-    ユーザです。これは、スクリプトログが書かれるディレクトリがそのユーザで
-    書き込み可能か、スクリプトファイルが手動で作成され、そのユーザで
-    書き込み可能になっている必要があるということです。スクリプトログを
-    アクセスログなどのためのログディレクトリに書かれるようにしたときは、
-    そのディレクトリを子プロセスを実行しているユーザの権限で
-    書き込み可能には<strong>しない</strong>ようにしてください。</p>
-
-    <p>スクリプトのログ収集は CGI スクリプトを書くときの
-    デバッグ用の機能として意図されていて、通常のサーバで
-    常に使用されるようには意図されていないということに注意してください。
-    速度や効率は最適化されておらず、設計された以外の方法で使用されると
-    セキュリティの問題があるかもしれません。</p>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ScriptLogBuffer" id="ScriptLogBuffer">ScriptLogBuffer</a> <a name="scriptlogbuffer" id="scriptlogbuffer">ディレクティブ</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>スクリプトログに記録される PUT や POST リクエストの内容の上限</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ScriptLogBuffer <em>bytes</em></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>ScriptLogBuffer 1024</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>, <code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code></td></tr>
-</table>
-    <p>大きな本体を受け取ったときにログファイルがすぐに大きくなりすぎる
-    問題を避けるために、ファイルにログ収集される PUT と POST
-    の本体の大きさは制限されています。デフォルトでは、1024
-    バイトまでがログ収集されますが、
-    このディレクティブはそれを変更することができます。 
-    </p>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ScriptLogLength" id="ScriptLogLength">ScriptLogLength</a> <a name="scriptloglength" id="scriptloglength">ディレクティブ</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>CGI スクリプトのログファイルの大きさの上限</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ScriptLogLength <var>bytes</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>ScriptLogLength 10385760</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>, <code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code></td></tr>
-</table>
-    <p><code class="directive">ScriptLogLength</code> は CGI スクリプトのログファイル
-    の大きさを制限するために使用することができます。ログファイルは
-    CGI のエラー毎に大量の情報 (リクエストのすべてのヘッダ、
-    すべての出力)をログしますので、すぐに大きなファイルになります。
-    この大きさの制限がないことによる問題を防ぐために、
-    このディレクティブを使って CGI のログファイルの
-    最大のファイルサイズを設定することができます。
-    ファイルがこの大きさを超えた場合は、それ以上は書き込まれません。</p>
 
 </div>
 </div>
