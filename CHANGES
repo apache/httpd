@@ -12,6 +12,13 @@ Changes with Apache 2.4.13
      calls r:wsupgrade() can cause a child process crash. 
      [Edward Lu <Chaosed0 gmail.com>]
 
+  *) mod_proxy_http: Use the "Connection: close" header for requests to
+     backends not recycling connections (disablereuse), including the default
+     reverse and forward proxies.  [Yann Ylavic]
+
+  *) mod_proxy: Add ap_connection_reusable() for checking if a connection
+     is reusable as of this point in processing.  [Jeff Trawick]
+
   *) core_filters: restore/disable TCP_NOPUSH option after non-blocking
      sendfile.  [Yann Ylavic]
 

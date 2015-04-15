@@ -922,7 +922,7 @@ skip_body:
      * otherwise sent Connection: Keep-Alive.
      */
     if (!force10) {
-        if (p_conn->close) {
+        if (!ap_proxy_connection_reusable(p_conn)) {
             buf = apr_pstrdup(p, "Connection: close" CRLF);
         }
         else {
