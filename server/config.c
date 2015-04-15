@@ -2194,7 +2194,7 @@ AP_CORE_DECLARE(const char *) ap_init_virtual_host(apr_pool_t *p,
     s->keep_alive = -1;
     s->keep_alive_max = -1;
     s->error_log = main_server->error_log;
-    s->log.level = main_server->log.level;
+    s->log.level = APLOG_UNSET;
     s->log.module_levels = NULL;
     /* useful default, otherwise we get a port of 0 on redirects */
     s->port = main_server->port;
@@ -2286,7 +2286,6 @@ AP_DECLARE(void) ap_fixup_virtual_hosts(apr_pool_t *p, server_rec *main_server)
         if (virt->keep_alive_max == -1)
             virt->keep_alive_max = main_server->keep_alive_max;
 
-        virt->log.level = APLOG_UNSET;
         ap_merge_log_config(&main_server->log, &virt->log);
 
         dconf = ap_get_core_module_config(virt->lookup_defaults);
