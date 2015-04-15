@@ -342,6 +342,7 @@ PATCHES/ISSUES THAT ARE BEING WORKED
                   http://svn.apache.org/r1666618
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-event_timers_duplicates.patch
      +1: ylavic
+     covener: what's the background here? What's currently broken?
 
 
 PATCHES/ISSUES THAT ARE STALLED
