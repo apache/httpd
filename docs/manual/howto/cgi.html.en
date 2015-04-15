@@ -83,7 +83,7 @@
       <p>The <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code>
       directive looks like:</p>
 
-      <pre class="prettyprint lang-config">ScriptAlias /cgi-bin/ /usr/local/apache2/cgi-bin/</pre>
+      <pre class="prettyprint lang-config">ScriptAlias "/cgi-bin/" "/usr/local/apache2/cgi-bin/"</pre>
 
 
       <p>The example shown is from your default <code>httpd.conf</code>

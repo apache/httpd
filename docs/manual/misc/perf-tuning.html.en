@@ -159,7 +159,7 @@
       system calls to check up on symlinks. One extra call per
       filename component. For example, if you had:</p>
 
-      <pre class="prettyprint lang-config">DocumentRoot /www/htdocs
+      <pre class="prettyprint lang-config">DocumentRoot "/www/htdocs"
 &lt;Directory "/"&gt;
   Options SymLinksIfOwnerMatch
 &lt;/Directory&gt;</pre>
@@ -173,7 +173,7 @@
       every single request. If you really desire the symlinks
       security checking you can do something like this:</p>
 
-      <pre class="prettyprint lang-config">DocumentRoot /www/htdocs
+      <pre class="prettyprint lang-config">DocumentRoot "/www/htdocs"
 &lt;Directory "/"&gt;
   Options FollowSymLinks
 &lt;/Directory&gt;
@@ -203,7 +203,7 @@
       <code>.htaccess</code> for each filename component. For
       example,</p>
 
-      <pre class="prettyprint lang-config">DocumentRoot /www/htdocs
+      <pre class="prettyprint lang-config">DocumentRoot "/www/htdocs"
 &lt;Directory "/"&gt;
   AllowOverride all
 &lt;/Directory&gt;</pre>

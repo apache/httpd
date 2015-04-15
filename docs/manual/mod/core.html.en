@@ -804,7 +804,7 @@ which no other media type configuration could be found.
   Define SSL
 &lt;/IfDefine&gt;
 
-DocumentRoot /var/www/${servername}/htdocs</pre>
+DocumentRoot "/var/www/${servername}/htdocs"</pre>
 
 
     <p>Variable names may not contain colon ":" characters, to avoid clashes
@@ -4538,7 +4538,7 @@ hostname or IP address</td></tr>
 
     <pre class="prettyprint lang-config">&lt;VirtualHost 10.1.2.3:80&gt;
   ServerAdmin webmaster@host.example.com
-  DocumentRoot /www/docs/host.example.com
+  DocumentRoot "/www/docs/host.example.com"
   ServerName host.example.com
   ErrorLog logs/host.example.com-error_log
   TransferLog logs/host.example.com-access_log
@@ -4552,7 +4552,7 @@ hostname or IP address</td></tr>
 
     <pre class="prettyprint lang-config">&lt;VirtualHost [2001:db8::a00:20ff:fea7:ccea]:80&gt;
   ServerAdmin webmaster@host.example.com
-  DocumentRoot /www/docs/host.example.com
+  DocumentRoot "/www/docs/host.example.com"
   ServerName host.example.com
   ErrorLog logs/host.example.com-error_log
   TransferLog logs/host.example.com-access_log

@@ -84,7 +84,7 @@
       directive looks like:</p>
 
       <highlight language="config">
-        ScriptAlias /cgi-bin/ /usr/local/apache2/cgi-bin/
+ScriptAlias "/cgi-bin/" "/usr/local/apache2/cgi-bin/"
       </highlight>
 
       <p>The example shown is from your default <code>httpd.conf</code>

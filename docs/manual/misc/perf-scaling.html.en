@@ -1298,7 +1298,7 @@ Swap:       3903784      12540  3891244</pre></div>
       ErrorLog /home/sctemme/inst/blog/httpd/logs/error_log
       LogLevel debug
       CustomLog /home/sctemme/inst/blog/httpd/logs/access_log common
-      ScriptAlias /cgi-bin/ /home/sctemme/inst/blog/bin/
+      ScriptAlias "/cgi-bin/" "/home/sctemme/inst/blog/bin/"
       &lt;Directory "/home/sctemme/inst/blog/bin"&gt;
           Options +ExecCGI
           Require all granted

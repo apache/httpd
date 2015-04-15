@@ -151,12 +151,12 @@
     # This first-listed virtual host is also the default for *:80
     ServerName www.example.com
     ServerAlias example.com 
-    DocumentRoot /www/domain
+    DocumentRoot "/www/domain"
 &lt;/VirtualHost&gt;
 
 &lt;VirtualHost *:80&gt;
     ServerName other.example.com
-    DocumentRoot /www/otherdomain
+    DocumentRoot "/www/otherdomain"
 &lt;/VirtualHost&gt;
     </highlight>
 

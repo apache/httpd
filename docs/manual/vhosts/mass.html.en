@@ -58,20 +58,20 @@ mod_rewrite</a></li>
 
 <pre class="prettyprint lang-config">&lt;VirtualHost 111.22.33.44&gt;
     ServerName                 customer-1.example.com
-    DocumentRoot        /www/hosts/customer-1.example.com/docs
-    ScriptAlias  /cgi-bin/  /www/hosts/customer-1.example.com/cgi-bin
+    DocumentRoot        "/www/hosts/customer-1.example.com/docs"
+    ScriptAlias  "/cgi-bin/"  "/www/hosts/customer-1.example.com/cgi-bin"
 &lt;/VirtualHost&gt;
 
 &lt;VirtualHost 111.22.33.44&gt;
     ServerName                 customer-2.example.com
-    DocumentRoot        /www/hosts/customer-2.example.com/docs
-    ScriptAlias  /cgi-bin/  /www/hosts/customer-2.example.com/cgi-bin
+    DocumentRoot        "/www/hosts/customer-2.example.com/docs"
+    ScriptAlias  "/cgi-bin/"  "/www/hosts/customer-2.example.com/cgi-bin"
 &lt;/VirtualHost&gt;
 
 &lt;VirtualHost 111.22.33.44&gt;
     ServerName                 customer-N.example.com
-    DocumentRoot        /www/hosts/customer-N.example.com/docs
-    ScriptAlias  /cgi-bin/  /www/hosts/customer-N.example.com/cgi-bin
+    DocumentRoot        "/www/hosts/customer-N.example.com/docs"
+    ScriptAlias  "/cgi-bin/"  "/www/hosts/customer-N.example.com/cgi-bin"
 &lt;/VirtualHost&gt;</pre>
 
 
@@ -166,8 +166,8 @@ LogFormat "%V %h %l %u %t \"%r\" %s %b" vcommon
 CustomLog logs/access_log vcommon
 
 # include the server name in the filenames used to satisfy requests
-VirtualDocumentRoot /www/hosts/%0/docs
-VirtualScriptAlias  /www/hosts/%0/cgi-bin</pre>
+VirtualDocumentRoot "/www/hosts/%0/docs"
+VirtualScriptAlias  "/www/hosts/%0/cgi-bin"</pre>
 
 
     <p>This configuration can be changed into an IP-based virtual
@@ -199,10 +199,10 @@ LogFormat "%V %h %l %u %t \"%r\" %s %b" vcommon
 CustomLog logs/access_log vcommon
 
 # include part of the server name in the filenames
-VirtualDocumentRoot /home/%2/www
+VirtualDocumentRoot "/home/%2/www"
 
 # single cgi-bin directory
-ScriptAlias  /cgi-bin/  /www/std-cgi/</pre>
+ScriptAlias  "/cgi-bin/"  "/www/std-cgi/"</pre>
 
 
     <p>There are examples of more complicated
@@ -242,8 +242,8 @@ LogFormat "%V %h %l %u %t \"%r\" %s %b" vcommon
     
     CustomLog logs/access_log.commercial vcommon
     
-    VirtualDocumentRoot /www/commercial/%0/docs
-    VirtualScriptAlias  /www/commercial/%0/cgi-bin
+    VirtualDocumentRoot "/www/commercial/%0/docs"
+    VirtualScriptAlias  "/www/commercial/%0/cgi-bin"
 &lt;/VirtualHost&gt;
 
 &lt;VirtualHost 111.22.33.45&gt;
@@ -251,8 +251,8 @@ LogFormat "%V %h %l %u %t \"%r\" %s %b" vcommon
     
     CustomLog logs/access_log.homepages vcommon
     
-    VirtualDocumentRoot /www/homepages/%0/docs
-    ScriptAlias         /cgi-bin/ /www/std-cgi/
+    VirtualDocumentRoot "/www/homepages/%0/docs"
+    ScriptAlias         "/cgi-bin/" "/www/std-cgi/"
 &lt;/VirtualHost&gt;</pre>
 
 
@@ -287,8 +287,8 @@ LogFormat "%A %h %l %u %t \"%r\" %s %b" vcommon
 CustomLog logs/access_log vcommon
 
 # include the IP address in the filenames
-VirtualDocumentRootIP /www/hosts/%0/docs
-VirtualScriptAliasIP  /www/hosts/%0/cgi-bin</pre>
+VirtualDocumentRootIP "/www/hosts/%0/docs"
+VirtualScriptAliasIP  "/www/hosts/%0/cgi-bin"</pre>
 
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
