@@ -74,6 +74,13 @@ Indien u van oordeel bent dat deze server in fout is, gelieve
 de <a href="mailto:<!--#echo encoding="url" var="SERVER_ADMIN" -->">webmaster</a> te contacteren.
 ----------nl--
 
+Content-language: nb
+Content-type: text/html; charset=UTF-8
+Body:----------nb--
+Om du tror dette skyldes en serverfeil, venligst kontakt
+<a href="mailto:<!--#echo encoding="url" var="SERVER_ADMIN" -->">webansvarlig</a>.
+----------nb--
+
 Content-language: pl
 Content-type: text/html; charset=UTF-8
 Body:----------pl--

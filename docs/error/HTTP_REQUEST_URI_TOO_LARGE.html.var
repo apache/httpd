@@ -128,6 +128,20 @@ Body:----------nl--
 <!--#include virtual="include/bottom.html" -->
 ----------nl--
 
+Content-language: nb
+Content-type: text/html; charset=UTF-8
+Body:----------nb--
+<!--#set var="CONTENT_LANGUAGE" value="nb"
+--><!--#set var="TITLE" value="Forespurt URI for stor!"
+--><!--#include virtual="include/top.html" -->
+
+    Lengden på adressen som etterspurtes overskrider
+    kapasitetsgrensen for denne serveren. Forespørselen kan
+    ikke prosesseres.
+
+<!--#include virtual="include/bottom.html" -->
+----------nb--
+
 Content-language: pl
 Content-type: text/html; charset=UTF-8
 Body:----------pl--

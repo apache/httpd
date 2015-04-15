@@ -225,6 +225,30 @@ Body:----------nl--
 <!--#include virtual="include/bottom.html" -->
 ----------nl--
 
+Content-language: nb
+Content-type: text/html; charset=UTF-8
+Body:----------nb--
+<!--#set var="CONTENT_LANGUAGE" value="nb"
+--><!--#set var="TITLE" value="Adgang forbudt!"
+--><!--#include virtual="include/top.html" -->
+
+  <!--#if expr="v('REDIRECT_URL') =~ m:/$:" -->
+
+    Du har ikke tilstrekkelige rettigheter for å få tilgang til den
+    ønskede katalogen. Det eksisterer ikke et indeksdokument, eller
+    katalogen er lesebeskyttet.
+
+  <!--#else -->
+
+    Du har ikke tilstrekkelige rettigheter for å få adgang til det
+    ønskede dokumentet. Objektet er lesebeskyttet, eller ikke lesbart
+    for serveren.
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------nb--
+
 Content-language: pl
 Content-type: text/html; charset=UTF-8
 Body:----------pl--

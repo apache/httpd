@@ -276,6 +276,34 @@ Body:----------nl--
 <!--#include virtual="include/bottom.html" -->
 ----------nl--
 
+Content-language: nb
+Content-type: text/html; charset=UTF-8
+Body:----------nb--
+<!--#set var="CONTENT_LANGUAGE" value="nb"
+--><!--#set var="TITLE" value="Serverfeil!"
+--><!--#include virtual="include/top.html" -->
+
+  <!--#if expr="-n v('REDIRECT_ERROR_NOTES')" -->
+ 
+    Det inntraff en intern feil hos serveren, og det var ikke mulig å
+    gjennomføre din forespørsel.
+
+    <!--#include virtual="include/spacer.html" -->
+
+    Feilmelding:
+    <br /><!--#echo encoding="none" var="REDIRECT_ERROR_NOTES" -->
+
+  <!--#else -->
+
+    Det inntraff en intern feil hos serveren, og det var ikke mulig å
+    gjennomføre din forespørsel. Serveren er enten overbelastet, eller
+    CGI-skriptet inneholder feil.
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------nb--
+
 Content-language: pl
 Content-type: text/html; charset=UTF-8
 Body:----------pl--

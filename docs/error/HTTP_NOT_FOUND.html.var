@@ -267,6 +267,33 @@ Body:----------nl--
 <!--#include virtual="include/bottom.html" -->
 ----------nl--
 
+Content-language: nb
+Content-type: text/html; charset=UTF-8
+Body:----------nb--
+<!--#set var="CONTENT_LANGUAGE" value="nb"
+--><!--#set var="TITLE" value="Objektet ble ikke funnet!"
+--><!--#include virtual="include/top.html" -->
+
+    Den etterspurte adressen finnes ikke på denne serveren.
+
+  <!--#if expr="-n v('HTTP_REFERER')" -->
+
+    Lenken på den
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">forrige siden</a> 
+ser ut til å være feil eller utdatert. Venligst informer forfatteren av
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">siden</a>
+    om feilen.
+
+  <!--#else -->
+
+    Om du skrev inn adressen manuelt, vennligst kontroller stavingen og
+    forsøk igjen.
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------nb--
+
 Content-language: pl
 Content-type: text/html; charset=UTF-8
 Body:----------pl--
