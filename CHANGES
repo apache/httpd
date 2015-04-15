@@ -23,6 +23,10 @@ Changes with Apache 2.4.13
   *) mod_proxy: Add ap_connection_reusable() for checking if a connection
      is reusable as of this point in processing.  [Jeff Trawick]
 
+  *) mod_proxy_wstunnel: Avoid an empty response by failing with 502 (Bad
+     Gateway) when no response is ever received from the backend.
+     [Jan Kaluza]
+
   *) core_filters: restore/disable TCP_NOPUSH option after non-blocking
      sendfile.  [Yann Ylavic]
 

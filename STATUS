@@ -105,12 +105,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_proxy_wstunnel: Avoid an empty response by failing with 502 (Bad
-     Gateway) when no response is ever received from the backend.
-     trunk patch: http://svn.apache.org/r1669299
-     2.4.x patch: http://people.apache.org/~covener/patches/httpd-2.4.x-wstunel-noreply.diff 
-     +1 covener, ylavic, trawick
-
   *) mod_ssl: Fix possible crash when loading server certificate constraints.
      PR 57694.
      trunk patch: http://svn.apache.org/r1666297

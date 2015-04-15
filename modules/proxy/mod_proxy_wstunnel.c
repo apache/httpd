@@ -91,7 +91,7 @@ static int proxy_wstunnel_canon(request_rec *r, char *url)
 
 
 static apr_status_t proxy_wstunnel_transfer(request_rec *r, conn_rec *c_i, conn_rec *c_o,
-                                     apr_bucket_brigade *bb, char *name)
+                                     apr_bucket_brigade *bb, char *name, int *sent)
 {
     apr_status_t rv;
 #ifdef DEBUGGING
@@ -116,6 +116,9 @@ static apr_status_t proxy_wstunnel_transfer(request_rec *r, conn_rec *c_i, conn_
                           "read %" APR_OFF_T_FMT
                           " bytes from %s", len, name);
 #endif
+            if (sent) {
+                *sent = 1;
+            }
             rv = ap_pass_brigade(c_o->output_filters, bb);
             if (rv == APR_SUCCESS) {
                 ap_fflush(c_o->output_filters, bb);
@@ -167,7 +170,7 @@ static int proxy_wstunnel_request(apr_pool_t *p, request_rec *r,
     char *old_te_val = NULL;
     apr_bucket_brigade *bb = apr_brigade_create(p, c->bucket_alloc);
     apr_socket_t *client_socket = ap_get_conn_socket(c);
-    int done = 0;
+    int done = 0, replied = 0;
 
     header_brigade = apr_brigade_create(p, backconn->bucket_alloc);
 
@@ -246,7 +249,7 @@ static int proxy_wstunnel_request(apr_pool_t *p, request_rec *r,
                     ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, APLOGNO(02446)
                                   "sock was readable");
                     done |= proxy_wstunnel_transfer(r, backconn, c, bb,
-                                                    "sock") != APR_SUCCESS;
+                                                    "sock", NULL) != APR_SUCCESS;
                 }
                 else if (pollevent & APR_POLLERR) {
                     ap_log_rerror(APLOG_MARK, APLOG_NOTICE, 0, r, APLOGNO(02447)
@@ -266,7 +269,7 @@ static int proxy_wstunnel_request(apr_pool_t *p, request_rec *r,
                     ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, APLOGNO(02448)
                                   "client was readable");
                     done |= proxy_wstunnel_transfer(r, c, backconn, bb,
-                                                    "client") != APR_SUCCESS;
+                                                    "client", &replied) != APR_SUCCESS;
                 }
                 else if (pollevent & APR_POLLERR) {
                     ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, APLOGNO(02607)
@@ -291,6 +294,13 @@ static int proxy_wstunnel_request(apr_pool_t *p, request_rec *r,
 
     ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
                   "finished with poll() - cleaning up");
+
+    if (!replied) {
+        return HTTP_BAD_GATEWAY;
+    }
+    else {
+        return OK;
+    }
 
     return OK;
 }
