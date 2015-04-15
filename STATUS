@@ -105,12 +105,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_proxy: Use the correct server name for SNI in case the backend
-     SSL connection itself is established via a proxy server.  PR 57139
-     trunk patch: http://svn.apache.org/r1634120
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, rjung, covener
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
