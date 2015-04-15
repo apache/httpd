@@ -33,7 +33,7 @@
     which provides for creation and access to a cache backed by a
     high-performance cyclic buffer inside a shared memory segment.
     </p>
-    
+
     <example>
     shmcb:/path/to/datafile(512000)
     </example>

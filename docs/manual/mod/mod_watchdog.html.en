@@ -26,7 +26,7 @@
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_watchdog.html" title="English">&nbsp;en&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>provides infrastructure for other modules to periodically run 
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>provides infrastructure for other modules to periodically run
     tasks</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>watchdog_module</td></tr>
@@ -34,18 +34,18 @@
 <tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.3 and later</td></tr></table>
 <h3>Summary</h3>
 
-<p><code class="module"><a href="../mod/mod_watchdog.html">mod_watchdog</a></code> defines programmatic hooks for other modules to 
-periodically run tasks.  These modules can register handlers for 
-<code class="module"><a href="../mod/mod_watchdog.html">mod_watchdog</a></code> hooks.  Currently, the following modules in the 
-Apache distribution use this functionality:</p> 
+<p><code class="module"><a href="../mod/mod_watchdog.html">mod_watchdog</a></code> defines programmatic hooks for other modules to
+periodically run tasks.  These modules can register handlers for
+<code class="module"><a href="../mod/mod_watchdog.html">mod_watchdog</a></code> hooks.  Currently, the following modules in the
+Apache distribution use this functionality:</p>
 <ul>
 <li><code class="module"><a href="../mod/mod_heartbeat.html">mod_heartbeat</a></code></li>
 <li><code class="module"><a href="../mod/mod_heartmonitor.html">mod_heartmonitor</a></code></li>
 </ul>
 <div class="warning">
-To allow a module to use <code class="module"><a href="../mod/mod_watchdog.html">mod_watchdog</a></code> functionality, 
-<code class="module"><a href="../mod/mod_watchdog.html">mod_watchdog</a></code> itself must be statically linked to the server 
-core or, if a dynamic module, be loaded before the calling module. 
+To allow a module to use <code class="module"><a href="../mod/mod_watchdog.html">mod_watchdog</a></code> functionality,
+<code class="module"><a href="../mod/mod_watchdog.html">mod_watchdog</a></code> itself must be statically linked to the server
+core or, if a dynamic module, be loaded before the calling module.
 </div>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
@@ -64,7 +64,7 @@ core or, if a dynamic module, be loaded before the calling module.
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_watchdog</td></tr>
 </table>
-<p>Sets the interval at which the watchdog_step hook runs.  Default is to run every 
+<p>Sets the interval at which the watchdog_step hook runs.  Default is to run every
 second.</p>
 
 </div>

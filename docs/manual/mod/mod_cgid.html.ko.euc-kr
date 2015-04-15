@@ -78,7 +78,7 @@
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>The length of time to wait for more output from the
 CGI program</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>CGIDScriptTimeout <var>time</var>[s|ms]</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">기본값:</a></th><td><code>value of <code class="directive"><a href="../mod/core.html#timeout">Timeout</a></code> directive when 
+<tr><th><a href="directive-dict.html#Default">기본값:</a></th><td><code>value of <code class="directive"><a href="../mod/core.html#timeout">Timeout</a></code> directive when
 unset</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Base</td></tr>

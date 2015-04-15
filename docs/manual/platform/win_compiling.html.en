@@ -260,8 +260,8 @@
     
 
     <p>The policy of the Apache HTTP Server project is to only release Unix sources.
-    Windows source packages made available for download have been supplied by 
-    volunteers and may not be available for every release. You can still build 
+    Windows source packages made available for download have been supplied by
+    volunteers and may not be available for every release. You can still build
     the server on Windows from the Unix source tarball with just a few additional
     steps.</p>
 
@@ -277,9 +277,9 @@
       perl srclib\apr\build\lineends.pl
     </code></p></div>
 
-    <p>You can now build the server with the Visual Studio 6.0 development 
-    environment using the IDE. Command-Line builds of the server are not 
-    possible from Unix sources unless you export .mak files as explained 
+    <p>You can now build the server with the Visual Studio 6.0 development
+    environment using the IDE. Command-Line builds of the server are not
+    possible from Unix sources unless you export .mak files as explained
     below.
     </p>
 
@@ -452,7 +452,7 @@
 <h2><a name="cmake" id="cmake">Building httpd with cmake</a></h2>
   
 
-  <p>The primary documentation for this build mechanism is in the 
+  <p>The primary documentation for this build mechanism is in the
   <code>README.cmake</code> file in the source distribution.  Refer to that file
   for detailed instructions.</p>
 
@@ -465,7 +465,7 @@
   <ul>
     <li>No cmake build for the APR-iconv subproject is available, and the
       APR-util cmake build cannot consume an existing APR-iconv build.  Thus,
-      <code class="module"><a href="../mod/mod_charset_lite.html">mod_charset_lite</a></code> and possibly some third-party modules 
+      <code class="module"><a href="../mod/mod_charset_lite.html">mod_charset_lite</a></code> and possibly some third-party modules
       cannot be used.</li>
     <li>The cmake build for the APR-util subproject does not support most of the
       optional DBM and DBD libraries supported by the included Visual Studio

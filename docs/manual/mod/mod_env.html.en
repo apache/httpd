@@ -92,7 +92,7 @@ SSI pages</td></tr>
 
     <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SetEnv SPECIAL_PATH /foo/bin</pre>
 </div>
- 
+
     <p> If you omit the <var>value</var> argument, the variable is set to
     an empty string.</p>
 

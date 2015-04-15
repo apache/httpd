@@ -33,14 +33,14 @@
 <tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.3 and later</td></tr></table>
 <h3>Summary</h3>
 
-<p> <code class="module"><a href="../mod/mod_heartbeat.html">mod_heartbeat</a></code> sends multicast messages to a <code class="module"><a href="../mod/mod_heartmonitor.html">mod_heartmonitor</a></code> listener 
+<p> <code class="module"><a href="../mod/mod_heartbeat.html">mod_heartbeat</a></code> sends multicast messages to a <code class="module"><a href="../mod/mod_heartmonitor.html">mod_heartmonitor</a></code> listener
 that advertises the servers current connection count.  Usually, <code class="module"><a href="../mod/mod_heartmonitor.html">mod_heartmonitor</a></code>
 will be running on a proxy server with <code class="module"><a href="../mod/mod_lbmethod_heartbeat.html">mod_lbmethod_heartbeat</a></code> loaded, which allows
 <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> to use the "heartbeat" <em>lbmethod</em> inside
 of <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code>.</p>
 <p>
-    <code class="module"><a href="../mod/mod_heartbeat.html">mod_heartbeat</a></code> itself is loaded on the origin server(s) that serve requests 
-    through the proxy server(s).  
+    <code class="module"><a href="../mod/mod_heartbeat.html">mod_heartbeat</a></code> itself is loaded on the origin server(s) that serve requests
+    through the proxy server(s).
 </p>
 
     <div class="warning">
@@ -69,7 +69,7 @@ of <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</
       packet is a simple ASCII format, similar to GET query parameters
       in HTTP.
   </p>
-  
+
 <div class="example"><h3>An Example Packet</h3><p><code>
 v=1&amp;ready=75&amp;busy=0
 </code></p></div>
@@ -96,7 +96,7 @@ status information. This address will usually correspond to a configured
  <code class="directive"><a href="../mod/mod_heartmonitor.html#heartbeatlisten">HeartbeatListen</a></code> on a
 frontend proxy system.</p>
 <pre class="prettyprint lang-config">HeartbeatAddress 239.0.0.1:27999</pre>
-    
+
 
 </div>
 </div>

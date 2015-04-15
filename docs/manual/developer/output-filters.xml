@@ -320,10 +320,10 @@ apr_status_t dummy_filter(ap_filter_t *f, apr_bucket_brigade *bb)
 {
 
     struct dummy_state *state;
-    
+
     state = f->ctx;
     if (state == NULL) {
-    
+
        /* First invocation for this response: initialise state structure.
         */
        f->ctx = state = apr_palloc(f->r->pool, sizeof *state);

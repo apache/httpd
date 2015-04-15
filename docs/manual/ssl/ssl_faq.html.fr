@@ -24,6 +24,8 @@
 <p><span>Langues Disponibles: </span><a href="../en/ssl/ssl_faq.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/ssl/ssl_faq.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
+            anglaise pour les changements récents.</div>
 
 <blockquote>
 <p>Le sage n'apporte pas de bonnes réponses, il pose les bonnes questions</p>

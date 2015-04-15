@@ -177,7 +177,7 @@ AddOutputFilter INCLUDES .shtml</pre>
       <dd><p>The value is a message that is sent back to the
       client if an error occurs while parsing the
       document. This overrides any <code class="directive"><a href="#ssierrormsg">SSIErrorMsg</a></code> directives.</p>
-     
+
       <div class="example"><p><code>
        &lt;!--#config errmsg="[Oops, something broke.]" --&gt;
       </code></p></div>
@@ -189,22 +189,22 @@ AddOutputFilter INCLUDES .shtml</pre>
       for a count in bytes, or <code>abbrev</code> for a count
       in Kb or Mb as appropriate, for example a size of 1024 bytes
       will be printed as "1K".</p>
-      
+
       <div class="example"><p><code>
       &lt;!--#config sizefmt="abbrev" --&gt;
       </code></p></div>
-      
+
       </dd>
 
       <dt><code>timefmt</code></dt>
       <dd><p>The value is a string to be used by the
       <code>strftime(3)</code> library routine when printing
       dates.</p>
-      
+
       <div class="example"><p><code>
       &lt;!--#config timefmt=""%R, %B %d, %Y"" --&gt;
       </code></p></div>
-      
+
       </dd>
       </dl>
      
@@ -358,7 +358,7 @@ AddOutputFilter INCLUDES .shtml</pre>
     </code></p></div>
 
     The value of <code>file</code> cannot start with a slash
-    (<code>/</code>), nor can it contain <code>../</code> so as to 
+    (<code>/</code>), nor can it contain <code>../</code> so as to
     refer to a file above the current directory or outside of the
     document root. Attempting to so will result in the error message:
     <code>The given path was above the root path</code>.

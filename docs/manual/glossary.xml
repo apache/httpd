@@ -436,8 +436,8 @@
     <dt><a name="subrequest" id="subrequest">Subrequest</a></dt>
     <dd>Apache provides a subrequest API to modules that allows other
         filesystem or URL paths to be partially or fully evaluated by
-        the server. Example consumers of this API are 
-        <directive module="mod_dir">DirectoryIndex</directive>, 
+        the server. Example consumers of this API are
+        <directive module="mod_dir">DirectoryIndex</directive>,
         <module>mod_autoindex</module>, and <module>mod_include</module>.
     </dd>
 

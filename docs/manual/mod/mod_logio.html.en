@@ -86,7 +86,7 @@
         Available in Apache 2.4.7 and later</td></tr>
 <tr class="odd"><td><code>%^FB</code></td>
         <td>Delay in microseconds between when the request arrived and the
-        first byte of the response headers are written.  Only available if 
+        first byte of the response headers are written.  Only available if
         <code class="directive">LogIOTrackTTFB</code> is set to ON.
         </td></tr>
 </table>
@@ -112,7 +112,7 @@
 </table>
     <p>This directive configures whether this module tracks the delay
     between the request being read and the first byte of the response
-    headers being written.  The resulting value may be logged with the 
+    headers being written.  The resulting value may be logged with the
     <code>%^FB</code> format.</p>
 
 </div>

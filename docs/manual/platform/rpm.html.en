@@ -182,7 +182,7 @@
         # template from httpd<br />
         cp /etc/sysconfig/httpd /etc/sysconfig/httpd-additional
       </code></p></div>
-      
+
       <div class="example"><p><code>
         # blank template<br />
         touch /etc/sysconfig/httpd-additional

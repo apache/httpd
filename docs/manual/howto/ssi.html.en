@@ -436,7 +436,7 @@ modified?</a></h3>
     it is nonempty.) For a full list of the comparison operators
     available to you, see the <code class="module"><a href="../mod/mod_include.html">mod_include</a></code>
     documentation.</p>
-   
+
     <p>For example, if you wish to customize the text on your web page
     based on the time of day, you could use the following recipe, placed
     in the HTML page:</p>

@@ -54,12 +54,12 @@ on characteristics of the request</td></tr>
 BrowserMatch MSIE !netscape</pre>
 
 
-   <p>When the server looks up a path via an internal 
-   <a class="glossarylink" href="../glossary.html#subrequest" title="see glossary">subrequest</a> such as looking 
-   for a <code class="directive"><a href="../mod/mod_dir.html#directoryindex">DirectoryIndex</a></code> 
+   <p>When the server looks up a path via an internal
+   <a class="glossarylink" href="../glossary.html#subrequest" title="see glossary">subrequest</a> such as looking
+   for a <code class="directive"><a href="../mod/mod_dir.html#directoryindex">DirectoryIndex</a></code>
    or generating a directory listing with <code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code>,
-   per-request environment variables are <em>not</em> inherited in the 
-   subrequest. Additionally, 
+   per-request environment variables are <em>not</em> inherited in the
+   subrequest. Additionally,
    <code class="directive"><a href="#setenvif">SetEnvIf</a></code> directives
    are not separately evaluated in the subrequest due to the API phases
    <code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code> takes action in.</p>
@@ -230,11 +230,11 @@ of</p>
 <pre class="prettyprint lang-config">SetEnvIf Request_URI "\.gif$" object_is_image=gif
 SetEnvIf Request_URI "\.jpg$" object_is_image=jpg
 SetEnvIf Request_URI "\.xbm$" object_is_image=xbm
-    
+
 SetEnvIf Referer www\.mydomain\.example\.com intra_site_referral
-    
+
 SetEnvIf object_is_image xbm XBIT_PROCESSING=1
-    
+
 SetEnvIf ^TS  ^[a-z]  HAVE_TS</pre>
 
 

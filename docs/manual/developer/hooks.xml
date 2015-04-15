@@ -31,9 +31,9 @@
       date.</p>
     </note>
 
-    <p>In general, a hook function is one that the Apache HTTP Server 
-    will call at some point during the processing of a request. 
-    Modules can provide functions that are called, and specify when 
+    <p>In general, a hook function is one that the Apache HTTP Server
+    will call at some point during the processing of a request.
+    Modules can provide functions that are called, and specify when
     they get called in comparison to other modules.</p>
 </summary>
 
@@ -106,7 +106,7 @@ void ap_run_do_something(request_rec *r, int n)
 
         <p>The first hook that does <em>not</em> return <code>DECLINED</code>
         stops the loop and its return value is returned from the hook
-        caller. Note that <code>DECLINED</code> is the traditional 
+        caller. Note that <code>DECLINED</code> is the traditional
         hook return value meaning "I didn't do anything", but it can be
         whatever suits you.</p>
 
@@ -188,7 +188,7 @@ mode MODULE_VAR_EXPORT my_module =
       order relative to each other, but, of course, all modules using
       <code>APR_HOOK_FIRST</code> will be run before <code>APR_HOOK_MIDDLE</code>
       which are before <code>APR_HOOK_LAST</code>. Modules that don't care
-      when they are run should use <code>APR_HOOK_MIDDLE</code>. <em>These 
+      when they are run should use <code>APR_HOOK_MIDDLE</code>. <em>These
       values are spaced out, so that positions like <code>APR_HOOK_FIRST-2</code>
       are possible to hook slightly earlier than other functions.</em></p>
 
@@ -220,4 +220,3 @@ static void register_hooks()
     </section>
 </section>
 </manualpage>
-

@@ -57,7 +57,7 @@
     exist, or deleted and recreated if it does exist.</dd>
 
     <dt><code><var>realm</var></code></dt>
-    <dd>The realm name to which the user name belongs. See 
+    <dd>The realm name to which the user name belongs. See
     <a href="http://tools.ietf.org/html/rfc2617#section-3.2.1">
     http://tools.ietf.org/html/rfc2617#section-3.2.1</a> for more details.
     </dd>
