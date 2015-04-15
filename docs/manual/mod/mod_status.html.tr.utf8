@@ -81,60 +81,6 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#machinereadable">Makine Tarafından Okunabilen Durum Dosyası</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Yorum</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="enable" id="enable">Durum Bilgisi Desteğinin Etkinleştirilmesi</a></h2>
-    
-
-    <p>Durum raporları, sadece mesela.dom alanından ve sadece tarayıcılar için
-      etkin kılınmak istenirse <code>httpd.conf</code> dosyasına şu satırlar
-      eklenebilir:</p>
-
-    <div class="example"><p><code>
-      &lt;Location /server-status&gt;<br />
-      <span class="indent">
-        SetHandler server-status<br />
-        <br />
-        Order Deny,Allow<br />
-        Deny from all<br />
-        Allow from .mesela.dom<br />
-      </span>
-      &lt;/Location&gt;
-    </code></p></div>
-
-    <p>Sunucu istatistiklerine tarayıcınızla erişmek isterseniz,
-      <code>http://sunucunuzun.ismi.buraya/server-status</code>
-      şeklinde bir istek yapabilirsiniz.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="autoupdate" id="autoupdate">Sayfanın Tazelenmesi</a></h2>
-
-    
-    <p>Tarayıcınız “tazeleme” yeteneğine sahipse durum sayfası düzenli
-      aralıklarla güncellenecektir. Sayfanın N saniyede bir güncellenmesini
-      isterseniz isteği şöyle yapabilirsiniz:<br />
-      <code>http://sunucunuzun.ismi.buraya/server-status?refresh=N</code></p>
-
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="machinereadable" id="machinereadable">Makine Tarafından Okunabilen Durum Dosyası</a></h2>
-
-    
-    <p>Durum dosyasının makine tarafından okunabilen sürümüne
-      <code>http://sunucunuzun.ismi.buraya/server-status?auto</code>
-      şeklinde bir istek yaparak erişebilirsiniz. Bu, kendiliğinden çalıştığı
-      takdirde yararlıdır; Apache dağıtımının <code>/support</code> dizininde
-      bulunan <code>log_server_status</code> isimli perl betiğine bakınız.</p>
-
-    <div class="note"><h3>Güvenlik</h3>
-      <code class="module"><a href="../mod/mod_status.html">mod_status</a></code> sunucu içinde derlendiği takdirde
-       istatistikleri raporlama yeteneği dizin içi yapılandırma dosyaları
-       (<code>.htaccess</code> gibi) dahil <em>tüm</em> yapılandırma dosyaları
-       için kullanılabilir olacaktır. Bu durum güvenlik ile ilgili olarak
-       siteniz için içinden çıkılması güç durumlara yol açabilir (çapanoğlu
-       durumu).</div>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ExtendedStatus" id="ExtendedStatus">ExtendedStatus</a> <a name="extendedstatus" id="extendedstatus">Yönergesi</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Her istekte ek durum bilgisinin toplanmasını sağlar.
@@ -186,6 +132,60 @@ karakterinin mi yoksa son 63 karakterinin mi gösterileceğini belirler.
       </tr>
     </table>
 
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="enable" id="enable">Durum Bilgisi Desteğinin Etkinleştirilmesi</a></h2>
+    
+
+    <p>Durum raporları, sadece mesela.dom alanından ve sadece tarayıcılar için
+      etkin kılınmak istenirse <code>httpd.conf</code> dosyasına şu satırlar
+      eklenebilir:</p>
+
+    <div class="example"><p><code>
+      &lt;Location /server-status&gt;<br />
+      <span class="indent">
+        SetHandler server-status<br />
+        <br />
+        Order Deny,Allow<br />
+        Deny from all<br />
+        Allow from .mesela.dom<br />
+      </span>
+      &lt;/Location&gt;
+    </code></p></div>
+
+    <p>Sunucu istatistiklerine tarayıcınızla erişmek isterseniz,
+      <code>http://sunucunuzun.ismi.buraya/server-status</code>
+      şeklinde bir istek yapabilirsiniz.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="autoupdate" id="autoupdate">Sayfanın Tazelenmesi</a></h2>
+
+    
+    <p>Tarayıcınız “tazeleme” yeteneğine sahipse durum sayfası düzenli
+      aralıklarla güncellenecektir. Sayfanın N saniyede bir güncellenmesini
+      isterseniz isteği şöyle yapabilirsiniz:<br />
+      <code>http://sunucunuzun.ismi.buraya/server-status?refresh=N</code></p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="machinereadable" id="machinereadable">Makine Tarafından Okunabilen Durum Dosyası</a></h2>
+
+    
+    <p>Durum dosyasının makine tarafından okunabilen sürümüne
+      <code>http://sunucunuzun.ismi.buraya/server-status?auto</code>
+      şeklinde bir istek yaparak erişebilirsiniz. Bu, kendiliğinden çalıştığı
+      takdirde yararlıdır; Apache dağıtımının <code>/support</code> dizininde
+      bulunan <code>log_server_status</code> isimli perl betiğine bakınız.</p>
+
+    <div class="note"><h3>Güvenlik</h3>
+      <code class="module"><a href="../mod/mod_status.html">mod_status</a></code> sunucu içinde derlendiği takdirde
+       istatistikleri raporlama yeteneği dizin içi yapılandırma dosyaları
+       (<code>.htaccess</code> gibi) dahil <em>tüm</em> yapılandırma dosyaları
+       için kullanılabilir olacaktır. Bu durum güvenlik ile ilgili olarak
+       siteniz için içinden çıkılması güç durumlara yol açabilir (çapanoğlu
+       durumu).</div>
 
 </div>
 </div>

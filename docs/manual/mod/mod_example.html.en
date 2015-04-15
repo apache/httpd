@@ -59,6 +59,26 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#using">Using the <code>mod_example</code> Module</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="Example" id="Example">Example</a> <a name="example" id="example">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Demonstration directive to illustrate the Apache module
+API</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Example</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_example</td></tr>
+</table>
+    <p>The <code class="directive">Example</code> directive just sets a demonstration
+    flag which the example module's content handler displays. It
+    takes no arguments. If you browse to an URL to which the
+    example content-handler applies, you will get a display of the
+    routines within the module and how and in what order they were
+    called to service the document request. The effect of this
+    directive one can observe under the point "<code>Example
+    directive declared here: YES/NO</code>".</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="compiling" id="compiling">Compiling the example module</a></h2>
 
@@ -128,26 +148,6 @@
     <p>After reloading/restarting your server, you should be able
     to browse to this location and see the brief display mentioned
     earlier.</p>
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Example" id="Example">Example</a> <a name="example" id="example">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Demonstration directive to illustrate the Apache module
-API</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Example</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_example</td></tr>
-</table>
-    <p>The <code class="directive">Example</code> directive just sets a demonstration
-    flag which the example module's content handler displays. It
-    takes no arguments. If you browse to an URL to which the
-    example content-handler applies, you will get a display of the
-    routines within the module and how and in what order they were
-    called to service the document request. The effect of this
-    directive one can observe under the point "<code>Example
-    directive declared here: YES/NO</code>".</p>
-
 </div>
 </div>
 <div class="bottomlang">

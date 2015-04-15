@@ -84,6 +84,41 @@
 <li><code class="directive"><a href="../mod/core.html#satisfy">Satisfy</a></code></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AuthzOwnerAuthoritative" id="AuthzOwnerAuthoritative">AuthzOwnerAuthoritative</a> <a name="authzownerauthoritative" id="authzownerauthoritative">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets whether authorization will be passed on to lower level
+modules</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthzOwnerAuthoritative On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthzOwnerAuthoritative On</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authz_owner</td></tr>
+</table>
+    <p>Setting the <code class="directive">AuthzOwnerAuthoritative</code>
+    directive explicitly to <code>Off</code> allows for
+    user authorization to be passed on to lower level modules (as defined
+    in the <code>modules.c</code> files) if:</p>
+
+    <ul>
+    <li>in the case of <code>file-owner</code> the file-system owner does not
+    match the supplied web-username or could not be determined, or</li>
+
+    <li>in the case of <code>file-group</code> the file-system group does not
+    contain the supplied web-username or could not be determined.</li>
+    </ul>
+
+    <p>Note that setting the value to <code>Off</code> also allows the
+    combination of <code>file-owner</code> and <code>file-group</code>, so
+    access will be allowed if either one or the other (or both) match.</p>
+
+    <p>By default, control is not passed on and an authorization failure
+    will result in an "Authentication Required" reply. Not
+    setting it to <code>Off</code> thus keeps the system secure and forces
+    an NCSA compliant behaviour.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="examples" id="examples">Configuration Examples</a></h2>
 
@@ -141,41 +176,6 @@
         &lt;/Directory&gt;
       </code></p></div>
     
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthzOwnerAuthoritative" id="AuthzOwnerAuthoritative">AuthzOwnerAuthoritative</a> <a name="authzownerauthoritative" id="authzownerauthoritative">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets whether authorization will be passed on to lower level
-modules</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthzOwnerAuthoritative On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthzOwnerAuthoritative On</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authz_owner</td></tr>
-</table>
-    <p>Setting the <code class="directive">AuthzOwnerAuthoritative</code>
-    directive explicitly to <code>Off</code> allows for
-    user authorization to be passed on to lower level modules (as defined
-    in the <code>modules.c</code> files) if:</p>
-
-    <ul>
-    <li>in the case of <code>file-owner</code> the file-system owner does not
-    match the supplied web-username or could not be determined, or</li>
-
-    <li>in the case of <code>file-group</code> the file-system group does not
-    contain the supplied web-username or could not be determined.</li>
-    </ul>
-
-    <p>Note that setting the value to <code>Off</code> also allows the
-    combination of <code>file-owner</code> and <code>file-group</code>, so
-    access will be allowed if either one or the other (or both) match.</p>
-
-    <p>By default, control is not passed on and an authorization failure
-    will result in an "Authentication Required" reply. Not
-    setting it to <code>Off</code> thus keeps the system secure and forces
-    an NCSA compliant behaviour.</p>
-
 </div>
 </div>
 <div class="bottomlang">

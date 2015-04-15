@@ -70,7 +70,6 @@
 <li><a href="../suexec.html">다른 사용자 ID로 CGI 프로그램
 실행하기</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
-
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CGIDScriptTimeout" id="CGIDScriptTimeout">CGIDScriptTimeout</a> <a name="cgidscripttimeout" id="cgidscripttimeout">지시어</a></h2>
 <table class="directive">
@@ -108,6 +107,7 @@ unset</code></td></tr>
 
 
 </div>
+
 </div>
 <div class="bottomlang">
 <p><span>가능한 언어: </span><a href="../en/mod/mod_cgid.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |

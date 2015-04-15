@@ -68,7 +68,6 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#cacheroot">CacheRoot</a></li>
 </ul>
 <ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
-
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CacheDirLength" id="CacheDirLength">CacheDirLength</a> <a name="cachedirlength" id="cachedirlength">Directive</a></h2>
 <table class="directive">
@@ -180,6 +179,7 @@ stored</td></tr>
     </code></p></div>
 
 </div>
+
 </div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_disk_cache.html" title="English">&nbsp;en&nbsp;</a> |

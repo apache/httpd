@@ -27,7 +27,7 @@
 <p><span>가능한 언어: </span><a href="../en/mod/mod_so.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/mod/mod_so.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_so.html" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/mod/mod_so.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/mod/mod_so.html" hreflang="tr" rel="alternate" title="T?rk?e">&nbsp;tr&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">설명:</a></th><td>시작할때 혹은 재시작할때 실행가능한 코드와 모듈을
 서버로 읽어들인다</td></tr>
@@ -61,6 +61,50 @@
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#windows">윈도우즈에서 읽어들일 모듈 만들기</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="LoadFile" id="LoadFile">LoadFile</a> <a name="loadfile" id="loadfile">지시어</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">설명:</a></th><td>지정한 목적파일이나 라이브러리를 읽어들인다</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>LoadFile <em>filename</em> [<em>filename</em>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정</td></tr>
+<tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_so</td></tr>
+</table>
+
+    <p>LoadFile 지시어는 서버가 시작하거나 재시작할때 지정한
+    목적파일이나 라이브러리를 읽어들인다(link in). 이 지시어는
+    어떤 모듈이 동작하기위해 필요한 코드를 추가로 읽어들일때
+    사용한다. <em>Filename</em>은 절대경로이거나 <a href="core.html#serverroot">ServerRoot</a>에 대한 상대경로이다.</p>
+
+    <p>예를 들어:</p>
+
+    <div class="example"><p><code>LoadFile libexec/libxmlparse.so</code></p></div>
+
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="LoadModule" id="LoadModule">LoadModule</a> <a name="loadmodule" id="loadmodule">지시어</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">설명:</a></th><td>목적파일이나 라이브러리를 읽어들이고, 사용가능한
+모듈 목록에 추가한다</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>LoadModule <em>module filename</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정</td></tr>
+<tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_so</td></tr>
+</table>
+    <p>LoadModule 지시어는 목적파일 혹은 라이브러리 <em>filename</em>을
+    읽어들이고, 사용가능한 모듈 목록에 <em>module</em>이라는
+    모듈 구조체를 추가한다. <em>Module</em>은 파일의
+    <code>module</code> 자료형 외부변수명이며, 모듈 문서의 <a href="module-dict.html#ModuleIdentifier">모듈명</a>에
+    나온다. 예를 들면:</p>
+
+    <div class="example"><p><code>
+      LoadModule status_module modules/mod_status.so
+    </code></p></div>
+
+    <p>ServerRoot의 modules 하위디렉토리에서 지정한 모듈을 읽어들인다.</p>
+
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="windows" id="windows">윈도우즈에서 읽어들일 모듈 만들기</a></h2>
@@ -123,56 +167,12 @@
     <code class="directive">LoadModule</code> 지시어를 사용하여 읽어들인다.</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LoadFile" id="LoadFile">LoadFile</a> <a name="loadfile" id="loadfile">지시어</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">설명:</a></th><td>지정한 목적파일이나 라이브러리를 읽어들인다</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>LoadFile <em>filename</em> [<em>filename</em>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정</td></tr>
-<tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_so</td></tr>
-</table>
-
-    <p>LoadFile 지시어는 서버가 시작하거나 재시작할때 지정한
-    목적파일이나 라이브러리를 읽어들인다(link in). 이 지시어는
-    어떤 모듈이 동작하기위해 필요한 코드를 추가로 읽어들일때
-    사용한다. <em>Filename</em>은 절대경로이거나 <a href="core.html#serverroot">ServerRoot</a>에 대한 상대경로이다.</p>
-
-    <p>예를 들어:</p>
-
-    <div class="example"><p><code>LoadFile libexec/libxmlparse.so</code></p></div>
-
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LoadModule" id="LoadModule">LoadModule</a> <a name="loadmodule" id="loadmodule">지시어</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">설명:</a></th><td>목적파일이나 라이브러리를 읽어들이고, 사용가능한
-모듈 목록에 추가한다</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>LoadModule <em>module filename</em></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정</td></tr>
-<tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_so</td></tr>
-</table>
-    <p>LoadModule 지시어는 목적파일 혹은 라이브러리 <em>filename</em>을
-    읽어들이고, 사용가능한 모듈 목록에 <em>module</em>이라는
-    모듈 구조체를 추가한다. <em>Module</em>은 파일의
-    <code>module</code> 자료형 외부변수명이며, 모듈 문서의 <a href="module-dict.html#ModuleIdentifier">모듈명</a>에
-    나온다. 예를 들면:</p>
-
-    <div class="example"><p><code>
-      LoadModule status_module modules/mod_status.so
-    </code></p></div>
-
-    <p>ServerRoot의 modules 하위디렉토리에서 지정한 모듈을 읽어들인다.</p>
-
-</div>
 </div>
 <div class="bottomlang">
 <p><span>가능한 언어: </span><a href="../en/mod/mod_so.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/mod/mod_so.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_so.html" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/mod/mod_so.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/mod/mod_so.html" hreflang="tr" rel="alternate" title="T?rk?e">&nbsp;tr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';

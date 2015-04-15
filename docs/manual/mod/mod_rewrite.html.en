@@ -80,63 +80,6 @@ URLs on the fly</td></tr>
 <li><a href="#rewriteflags">Rewrite Flags</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="quoting" id="quoting">Quoting Special Characters</a></h2>
-
-      <p>As of Apache 1.3.20, special characters in
-      <em>TestString</em> and <em>Substitution</em> strings can be
-      escaped (that is, treated as normal characters without their
-      usual special meaning) by prefixing them with a backslash ('\')
-      character. In other words, you can include an actual
-      dollar-sign character in a <em>Substitution</em> string by
-      using '<code>\$</code>'; this keeps mod_rewrite from trying
-      to treat it as a backreference.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="EnvVar" id="EnvVar">Environment Variables</a></h2>
-
-      <p>This module keeps track of two additional (non-standard)
-      CGI/SSI environment variables named <code>SCRIPT_URL</code>
-      and <code>SCRIPT_URI</code>. These contain the
-      <em>logical</em> Web-view to the current resource, while the
-      standard CGI/SSI variables <code>SCRIPT_NAME</code> and
-      <code>SCRIPT_FILENAME</code> contain the <em>physical</em>
-      System-view. </p>
-
-      <p>Notice: These variables hold the URI/URL <em>as they were
-      initially requested</em>, that is, <em>before</em> any
-      rewriting. This is important to note because the rewriting process is
-      primarily used to rewrite logical URLs to physical
-      pathnames.</p>
-
-<div class="example"><h3>Example</h3><pre>SCRIPT_NAME=/sw/lib/w3s/tree/global/u/rse/.www/index.html
-SCRIPT_FILENAME=/u/rse/.www/index.html
-SCRIPT_URL=/u/rse/
-SCRIPT_URI=http://en1.engelschall.com/u/rse/</pre></div>
-
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="vhosts" id="vhosts">Rewriting in Virtual Hosts</a></h2>
-
-     <p>By default, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> configuration
-     settings from the main server context are not inherited by
-     virtual hosts. To make the main server settings apply to virtual
-     hosts, you must place the following directives in each <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> section:</p>
-
-     <div class="example"><p><code>
-     RewriteEngine On<br />
-     RewriteOptions Inherit
-     </code></p></div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="Solutions" id="Solutions">Practical Solutions</a></h2>
-
-    <p>For numerous examples of common, and not-so-common, uses for
-    mod_rewrite, see the <a href="../rewrite/">extended rewrite
-    documentation.</a></p>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="RewriteBase" id="RewriteBase">RewriteBase</a> <a name="rewritebase" id="rewritebase">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets the base URL for per-directory rewrites</td></tr>
@@ -1500,6 +1443,63 @@ directive.</p>
 ^localpath(.*) http://otherhost/otherpath$1 [P] http://otherhost/otherpath/pathinfo
                                                 via internal proxy</pre></div>
   
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="quoting" id="quoting">Quoting Special Characters</a></h2>
+
+      <p>As of Apache 1.3.20, special characters in
+      <em>TestString</em> and <em>Substitution</em> strings can be
+      escaped (that is, treated as normal characters without their
+      usual special meaning) by prefixing them with a backslash ('\')
+      character. In other words, you can include an actual
+      dollar-sign character in a <em>Substitution</em> string by
+      using '<code>\$</code>'; this keeps mod_rewrite from trying
+      to treat it as a backreference.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="EnvVar" id="EnvVar">Environment Variables</a></h2>
+
+      <p>This module keeps track of two additional (non-standard)
+      CGI/SSI environment variables named <code>SCRIPT_URL</code>
+      and <code>SCRIPT_URI</code>. These contain the
+      <em>logical</em> Web-view to the current resource, while the
+      standard CGI/SSI variables <code>SCRIPT_NAME</code> and
+      <code>SCRIPT_FILENAME</code> contain the <em>physical</em>
+      System-view. </p>
+
+      <p>Notice: These variables hold the URI/URL <em>as they were
+      initially requested</em>, that is, <em>before</em> any
+      rewriting. This is important to note because the rewriting process is
+      primarily used to rewrite logical URLs to physical
+      pathnames.</p>
+
+<div class="example"><h3>Example</h3><pre>SCRIPT_NAME=/sw/lib/w3s/tree/global/u/rse/.www/index.html
+SCRIPT_FILENAME=/u/rse/.www/index.html
+SCRIPT_URL=/u/rse/
+SCRIPT_URI=http://en1.engelschall.com/u/rse/</pre></div>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="vhosts" id="vhosts">Rewriting in Virtual Hosts</a></h2>
+
+     <p>By default, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> configuration
+     settings from the main server context are not inherited by
+     virtual hosts. To make the main server settings apply to virtual
+     hosts, you must place the following directives in each <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> section:</p>
+
+     <div class="example"><p><code>
+     RewriteEngine On<br />
+     RewriteOptions Inherit
+     </code></p></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="Solutions" id="Solutions">Practical Solutions</a></h2>
+
+    <p>For numerous examples of common, and not-so-common, uses for
+    mod_rewrite, see the <a href="../rewrite/">extended rewrite
+    documentation.</a></p>
+
 </div>
 </div>
 <div class="bottomlang">
