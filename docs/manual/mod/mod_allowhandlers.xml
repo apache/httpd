@@ -33,7 +33,7 @@
 request. A possible configuration would be:</p>
 
 <highlight language="config">
-&lt;Location /&gt;
+&lt;Location "/"&gt;
   AllowHandlers not server-info server-status balancer-manager ldap-status
 &lt;/Location&gt;
 </highlight>
@@ -65,7 +65,7 @@ handlers again in a later config section, even if some headers were denied
 earlier in the configuration merge order:</p>
 
 <highlight language="config">
-&lt;Location /server-status&gt;
+&lt;Location "/server-status"&gt;
   AllowHandlers all
   SetHandler server-status
 &lt;/Location&gt;

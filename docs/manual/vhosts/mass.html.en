@@ -227,12 +227,12 @@ ScriptAlias  /cgi-bin/  /www/std-cgi/</pre>
 
 LogFormat "%V %h %l %u %t \"%r\" %s %b" vcommon
 
-&lt;Directory /www/commercial&gt;
+&lt;Directory "/www/commercial"&gt;
     Options FollowSymLinks
     AllowOverride All
 &lt;/Directory&gt;
 
-&lt;Directory /www/homepages&gt;
+&lt;Directory "/www/homepages"&gt;
     Options FollowSymLinks
     AllowOverride None
 &lt;/Directory&gt;

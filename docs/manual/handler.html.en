@@ -117,7 +117,7 @@ AddHandler add-footer .html</pre>
       the <code>send-as-is</code> handler, regardless of their
       filename extensions.</p>
 
-      <pre class="prettyprint lang-config">&lt;Directory /web/htdocs/asis&gt;
+      <pre class="prettyprint lang-config">&lt;Directory "/web/htdocs/asis"&gt;
     SetHandler send-as-is
 &lt;/Directory&gt;</pre>
 

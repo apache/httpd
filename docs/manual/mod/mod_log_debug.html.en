@@ -41,6 +41,53 @@
 </ul>
 <ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="examples" id="examples">Examples</a></h2>
+
+    <ol>
+      <li>
+        Log message after request to /foo/* is processed:
+
+        <pre class="prettyprint lang-config">&lt;Location "/foo/"&gt;
+  LogMessage "/foo/ has been requested"
+&lt;/Location&gt;</pre>
+
+      </li>
+
+      <li>
+        Log message if request to /foo/* is processed in a sub-request:
+        <pre class="prettyprint lang-config">&lt;Location "/foo/"&gt;
+  LogMessage "subrequest to /foo/" hook=type_checker expr=%{IS_SUBREQ}
+&lt;/Location&gt;</pre>
+
+
+        The default log_transaction hook is not executed for sub-requests,
+        therefore we have to use a different hook.
+      </li>
+
+
+      <li>
+        Log message if an IPv6 client causes a request timeout:
+        <pre class="prettyprint lang-config">LogMessage "IPv6 timeout from %{REMOTE_ADDR}" "expr=-T %{IPV6} &amp;&amp; %{REQUEST_STATUS} = 408"</pre>
+
+        Note the placing of the double quotes for the <code>expr=</code> argument.
+      </li>
+
+      <li>
+        Log the value of the "X-Foo" request environment variable in each
+        stage of the request:
+        <pre class="prettyprint lang-config">&lt;Location "/"&gt;
+  LogMessage "%{reqenv:X-Foo}" hook=all
+&lt;/Location&gt;</pre>
+
+        Together with microsecond time stamps in the error log,
+        <code>hook=all</code> also lets you determine the times spent
+        in the different parts of the request processing.
+      </li>
+
+    </ol>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LogMessage" id="LogMessage">LogMessage</a> <a name="logmessage" id="logmessage">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Log user-defined message to error log
@@ -87,53 +134,6 @@
     headers will not cause the header names to be added to the Vary header.</p>
 
 
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="examples" id="examples">Examples</a></h2>
-
-    <ol>
-      <li>
-        Log message after request to /foo/* is processed:
-
-        <pre class="prettyprint lang-config">&lt;Location /foo/&gt;
-  LogMessage "/foo/ has been requested"
-&lt;/Location&gt;</pre>
-
-      </li>
-
-      <li>
-        Log message if request to /foo/* is processed in a sub-request:
-        <pre class="prettyprint lang-config">&lt;Location /foo/&gt;
-  LogMessage "subrequest to /foo/" hook=type_checker expr=%{IS_SUBREQ}
-&lt;/Location&gt;</pre>
-
-
-        The default log_transaction hook is not executed for sub-requests,
-        therefore we have to use a different hook.
-      </li>
-
-
-      <li>
-        Log message if an IPv6 client causes a request timeout:
-        <pre class="prettyprint lang-config">LogMessage "IPv6 timeout from %{REMOTE_ADDR}" "expr=-T %{IPV6} &amp;&amp; %{REQUEST_STATUS} = 408"</pre>
-
-        Note the placing of the double quotes for the <code>expr=</code> argument.
-      </li>
-
-      <li>
-        Log the value of the "X-Foo" request environment variable in each
-        stage of the request:
-        <pre class="prettyprint lang-config">&lt;Location /&gt;
-  LogMessage "%{reqenv:X-Foo}" hook=all
-&lt;/Location&gt;</pre>
-
-        Together with microsecond time stamps in the error log,
-        <code>hook=all</code> also lets you determine the times spent
-        in the different parts of the request processing.
-      </li>
-
-    </ol>
 </div>
 </div>
 <div class="bottomlang">

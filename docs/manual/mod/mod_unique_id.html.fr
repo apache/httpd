@@ -46,12 +46,12 @@ identifiant unique pour chaque requête</td></tr>
     raisons dont la nature se situe au delà de la portée de ce
     document.</p>
 </div>
-<div id="quickview"><h3 class="directives">Directives</h3>
-<p>Ce module ne fournit aucune directive.</p>
-<h3>Sujets</h3>
+<div id="quickview"><h3>Sujets</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#theory">Théorie</a></li>
-</ul><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
+</ul><h3 class="directives">Directives</h3>
+<p>Ce module ne fournit aucune directive.</p>
+<ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="theory" id="theory">Théorie</a></h2>

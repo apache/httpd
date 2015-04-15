@@ -72,7 +72,7 @@ the load on backends</description>
     <highlight language="config">
 #AuthnCacheSOCache is optional.  If specified, it is server-wide
 AuthnCacheSOCache dbm
-&lt;Directory /usr/www/myhost/private&gt;
+&lt;Directory "/usr/www/myhost/private"&gt;
     AuthType Basic
     AuthName "Cached Authentication Example"
     AuthBasicProvider socache dbd

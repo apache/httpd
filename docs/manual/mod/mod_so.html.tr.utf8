@@ -55,66 +55,15 @@ yeniden başlatılması sırasında yüklenmesini sağlar.</td></tr>
       yeni sürüme göre değişiklik yapılması gerekir.</p>
     </div>
 </div>
-<div id="quickview"><h3 class="directives">Yönergeler</h3>
+<div id="quickview"><h3>Konular</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#windows">Yüklenebilir Modüllerin Windows için Oluşturulması</a></li>
+</ul><h3 class="directives">Yönergeler</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#loadfile">LoadFile</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#loadmodule">LoadModule</a></li>
 </ul>
-<h3>Konular</h3>
-<ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#windows">Yüklenebilir Modüllerin Windows için Oluşturulması</a></li>
-</ul><ul class="seealso"><li><a href="#comments_section">Yorum</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LoadFile" id="LoadFile">LoadFile</a> <a name="loadfile" id="loadfile">Yönergesi</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Belirtilen nesne dosyasını veya kütüphaneyi sunucu ile ilintiler.
-</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>LoadFile <em>dosya-ismi</em> [<em>dosya-ismi</em>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli</td></tr>
-<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Eklenti</td></tr>
-<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_so</td></tr>
-</table>
-
-    <p><code class="directive">LoadFile</code> yönergesi ismi belirtilen kütüphaneleri
-      veya nesne dosyalarını sunucu başlatılırken veya yeniden başlatılırken
-      sunucu ile ilintiler. Yönerge, bazı modüllerin çalışması sırasında
-      gereken ek kodların yüklenmesi için kullanılır.
-      <code><em>dosya-ismi</em></code> olarak mutlak bir dosya yolu
-      belirtilebileceği gibi <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>’a
-      göreli bir dosya yolu da  belirtilebilir.</p>
-
-    <p>Örnek:</p>
-
-    <div class="example"><p><code>LoadFile libexec/libxmlparse.so</code></p></div>
-
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LoadModule" id="LoadModule">LoadModule</a> <a name="loadmodule" id="loadmodule">Yönergesi</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Belirtilen nesne dosyasını veya kütüphaneyi sunucu ile ilintiler
-ve etkin modül listesine ekler.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>LoadModule <em>modül dosya-ismi</em></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli</td></tr>
-<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Eklenti</td></tr>
-<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_so</td></tr>
-</table>
-    <p><code class="directive">LoadModule</code> yönergesi
-      <code><em>dosya-ismi</em></code> ile belirtilen nesne dosyasını veya
-      kütüphaneyi sunucu ile ilintiler ve etkin modül listesine belirtilen
-      <code><em>modül</em></code> ismiyle ekler. <code><em>modül</em></code>,
-      modülün kaynak dosyasında <code>module</code> türündeki tek harici
-      değişkenin ismi olup modül belgelerinde <a href="module-dict.html#ModuleIdentifier">Modül Betimleyici</a> olarak
-      geçer. Örneğin,</p>
-
-    <div class="example"><p><code>
-      LoadModule status_module modules/mod_status.so
-    </code></p></div>
-
-    <p>satırı ile ismi belirtilen dosya <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code> dizini altındaki
-      <code>modules</code> alt dizininden yüklenir.</p>
-
-</div>
+<ul class="seealso"><li><a href="#comments_section">Yorum</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="windows" id="windows">Yüklenebilir Modüllerin Windows için Oluşturulması</a></h2>
@@ -189,6 +138,57 @@ ve etkin modül listesine ekler.</td></tr>
       dizininin altında bulunan <code>modules</code> dizinine yerleştirdikten
       sonra <code class="directive">LoadModule</code> yönergesi ile sunucunuza
       yükleyebilirsiniz.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="LoadFile" id="LoadFile">LoadFile</a> <a name="loadfile" id="loadfile">Yönergesi</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Belirtilen nesne dosyasını veya kütüphaneyi sunucu ile ilintiler.
+</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>LoadFile <em>dosya-ismi</em> [<em>dosya-ismi</em>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli</td></tr>
+<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Eklenti</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_so</td></tr>
+</table>
+
+    <p><code class="directive">LoadFile</code> yönergesi ismi belirtilen kütüphaneleri
+      veya nesne dosyalarını sunucu başlatılırken veya yeniden başlatılırken
+      sunucu ile ilintiler. Yönerge, bazı modüllerin çalışması sırasında
+      gereken ek kodların yüklenmesi için kullanılır.
+      <code><em>dosya-ismi</em></code> olarak mutlak bir dosya yolu
+      belirtilebileceği gibi <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>’a
+      göreli bir dosya yolu da  belirtilebilir.</p>
+
+    <p>Örnek:</p>
+
+    <div class="example"><p><code>LoadFile libexec/libxmlparse.so</code></p></div>
+
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="LoadModule" id="LoadModule">LoadModule</a> <a name="loadmodule" id="loadmodule">Yönergesi</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Belirtilen nesne dosyasını veya kütüphaneyi sunucu ile ilintiler
+ve etkin modül listesine ekler.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>LoadModule <em>modül dosya-ismi</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli</td></tr>
+<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Eklenti</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_so</td></tr>
+</table>
+    <p><code class="directive">LoadModule</code> yönergesi
+      <code><em>dosya-ismi</em></code> ile belirtilen nesne dosyasını veya
+      kütüphaneyi sunucu ile ilintiler ve etkin modül listesine belirtilen
+      <code><em>modül</em></code> ismiyle ekler. <code><em>modül</em></code>,
+      modülün kaynak dosyasında <code>module</code> türündeki tek harici
+      değişkenin ismi olup modül belgelerinde <a href="module-dict.html#ModuleIdentifier">Modül Betimleyici</a> olarak
+      geçer. Örneğin,</p>
+
+    <div class="example"><p><code>
+      LoadModule status_module modules/mod_status.so
+    </code></p></div>
+
+    <p>satırı ile ismi belirtilen dosya <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code> dizini altındaki
+      <code>modules</code> alt dizininden yüklenir.</p>
 
 </div>
 </div>

@@ -411,7 +411,7 @@ URLs on the fly</description>
 <highlight language="config">
 DocumentRoot /var/www/example.com
 AliasMatch ^/myapp /opt/myapp-1.2.3
-&lt;Directory /opt/myapp-1.2.3&gt;
+&lt;Directory "/opt/myapp-1.2.3"&gt;
     RewriteEngine On
     RewriteBase /myapp/
     RewriteRule ^index\.html$  welcome.html 

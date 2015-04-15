@@ -1284,8 +1284,7 @@ Listen *:8001
       ServerName blog.sandla.org:8001
       ServerAdmin sander@temme.net
       DocumentRoot "/home/sctemme/inst/blog/httpd/htdocs"
-      &lt;Directory
-      "/home/sctemme/inst/blog/httpd/htdocs"&gt;
+      &lt;Directory "/home/sctemme/inst/blog/httpd/htdocs"&gt;
           Options +Indexes
           Require all granted
           RewriteEngine on
@@ -1420,7 +1419,7 @@ CacheMaxExpire 21600
                     these headers. 
                 </p>
 <highlight language="config">
-&lt;FilesMatch \.(jpe?g|png|gif|js|css|x?html|xml)&gt;
+&lt;FilesMatch "\.(jpe?g|png|gif|js|css|x?html|xml)"&gt;
     FileETag None
 &lt;/FilesMatch&gt;
 </highlight>

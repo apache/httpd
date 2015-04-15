@@ -42,6 +42,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#substitutemaxlinelength">SubstituteMaxLineLength</a></li>
 </ul>
 <ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
+
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="Substitute" id="Substitute">Substitute</a> <a name="substitute" id="substitute">Directive</a></h2>
 <table class="directive">
@@ -78,7 +79,7 @@
         or regex of a subsequent one.</dd>
     </dl>
 
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">&lt;Location /&gt;
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">&lt;Location "/"&gt;
     AddOutputFilterByType SUBSTITUTE text/html
     Substitute s/foo/bar/ni
 &lt;/Location&gt;</pre>
@@ -87,7 +88,7 @@
     <p>If either the pattern or the substitution contain a slash
     character then an alternative delimiter should be used:</p>
 
-    <div class="example"><h3>Example of using an alternate delimiter</h3><pre class="prettyprint lang-config">&lt;Location /&gt;
+    <div class="example"><h3>Example of using an alternate delimiter</h3><pre class="prettyprint lang-config">&lt;Location "/"&gt;
     AddOutputFilterByType SUBSTITUTE text/html
     Substitute "s|&lt;BR */?&gt;|&lt;br /&gt;|i"
 &lt;/Location&gt;</pre>
@@ -95,7 +96,7 @@
 
     <p>Backreferences can be used in the comparison and in the substitution,
     when regular expressions are used, as illustrated in the following example: </p>
-    <div class="example"><h3>Example of using backreferences and captures</h3><pre class="prettyprint lang-config">&lt;Location /&gt;
+    <div class="example"><h3>Example of using backreferences and captures</h3><pre class="prettyprint lang-config">&lt;Location "/"&gt;
     AddOutputFilterByType SUBSTITUTE text/html
     # "foo=k,bar=k" -&gt; "foo/bar=k" 
     Substitute "s|foo=(\w+),bar=\1|foo/bar=$1"
@@ -146,7 +147,7 @@ Substitute "s|http://internal.blog.example.com/|http://www.example.com/blog/|i"<
     <code>G</code> to provide the size in bytes, kilobytes, megabytes
     or gigabytes respectively.</p>
 
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">&lt;Location /&gt;
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">&lt;Location "/"&gt;
     AddOutputFilterByType SUBSTITUTE text/html
     SubstituteMaxLineLength 10m
     Substitute s/foo/bar/ni
@@ -155,7 +156,6 @@ Substitute "s|http://internal.blog.example.com/|http://www.example.com/blog/|i"<
 
 
 </div>
-
 </div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_substitute.html" title="English">&nbsp;en&nbsp;</a></p>

@@ -57,7 +57,10 @@
     <code class="directive"><a href="../mod/mpm_common.html#maxclients">MaxClients</a></code> は
     起動されるスレッドの総数の最大値を制限します。</p>
 </div>
-<div id="quickview"><h3 class="directives">ディレクティブ</h3>
+<div id="quickview"><h3>トピック</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#how-it-works">動作方法</a></li>
+</ul><h3 class="directives">ディレクティブ</h3>
 <ul id="toc">
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#coredumpdirectory">CoreDumpDirectory</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#enableexceptionhook">EnableExceptionHook</a></li>
@@ -80,10 +83,7 @@
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#threadstacksize">ThreadStackSize</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mod_unixd.html#user">User</a></li>
 </ul>
-<h3>トピック</h3>
-<ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#how-it-works">動作方法</a></li>
-</ul><h3>参照</h3>
+<h3>参照</h3>
 <ul class="seealso">
 <li><a href="../bind.html">Apache 
 の使用するアドレスとポートの設定</a></li>

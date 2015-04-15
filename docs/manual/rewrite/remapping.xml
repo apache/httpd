@@ -116,7 +116,9 @@ RewriteRule    ^<strong>/foo</strong>\.html$  <strong>bar</strong>.html  [<stron
     use the Redirect directive. mod_rewrite was used in that earlier
     example in order to hide the redirect from the client:</p>
 
-    <highlight language="config">Redirect /foo.html /bar.html</highlight>
+    <highlight language="config">
+Redirect /foo.html /bar.html
+    </highlight>
 
     </dd>
   </dl>
@@ -143,16 +145,19 @@ RewriteRule    ^<strong>/foo</strong>\.html$  <strong>bar</strong>.html  [<stron
       to the new server, but you might also consider using the Redirect
       or RedirectMatch directive.</p>
 
-<highlight language="config">#With mod_rewrite
+<highlight language="config">
+#With mod_rewrite
 RewriteEngine on
 RewriteRule   ^/docs/(.+)  http://new.example.com/docs/$1  [R,L]
 </highlight>
 
-<highlight language="config">#With RedirectMatch
+<highlight language="config">
+#With RedirectMatch
 RedirectMatch ^/docs/(.*) http://new.example.com/docs/$1
 </highlight>
 
-<highlight language="config">#With Redirect
+<highlight language="config">
+#With Redirect
 Redirect /docs/ http://new.example.com/docs/
 </highlight>
     </dd>
@@ -219,7 +224,7 @@ RewriteRule    ^foo\.html$  foo.cgi &nbsp; [H=<strong>cgi-script</strong>]
 #   backward compatibility ruleset for
 #   rewriting document.html to document.php
 #   when and only when document.php exists
-&lt;Directory /var/www/htdocs&gt;
+&lt;Directory "/var/www/htdocs"&gt;
     RewriteEngine on
     RewriteBase /var/www/htdocs
 
@@ -547,7 +552,7 @@ that should go to an existing resource such as an image, or a css file.</dd>
 module="mod_dir">FallbackResource</directive> directive for this:</p>
 
 <highlight language="config">
-&lt;Directory /var/www/my_blog&gt;
+&lt;Directory "/var/www/my_blog"&gt;
   FallbackResource index.php
 &lt;/Directory&gt;
 </highlight>
@@ -557,7 +562,7 @@ complicated than this, you can use a variation of the following rewrite
 set to accomplish the same thing:</p>
 
 <highlight language="config">
-&lt;Directory /var/www/my_blog&gt;
+&lt;Directory "/var/www/my_blog"&gt;
   RewriteBase /my_blog
 
   RewriteCond /var/www/my_blog/%{REQUEST_FILENAME} !-f
@@ -569,7 +574,9 @@ set to accomplish the same thing:</p>
 <p>If, on the other hand, you wish to pass the requested URI as a query
 string argument to index.php, you can replace that RewriteRule with:</p>
 
-<highlight language="config">RewriteRule (.*) index.php?$1 [PT,QSA]</highlight>
+<highlight language="config">
+RewriteRule (.*) index.php?$1 [PT,QSA]
+</highlight>
 
 <p>Note that these rulesets can be used in a <code>.htaccess</code>
 file, as well as in a &lt;Directory&gt; block.</p>

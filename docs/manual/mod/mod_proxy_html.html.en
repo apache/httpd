@@ -70,6 +70,7 @@ extensive <a href="http://apache.webthing.com/mod_proxy_html/">documentation</a>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxyhtmlurlmap">ProxyHTMLURLMap</a></li>
 </ul>
 <ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
+
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ProxyHTMLBufSize" id="ProxyHTMLBufSize">ProxyHTMLBufSize</a> <a name="proxyhtmlbufsize" id="proxyhtmlbufsize">Directive</a></h2>
 <table class="directive">
@@ -427,7 +428,6 @@ If TRUE, or if no condition is defined, the map is applied.</p>
 in mod_proxy_html 3.x for HTTPD 2.0 and 2.2 is also supported.</p>
 
 </div>
-
 </div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_proxy_html.html" title="English">&nbsp;en&nbsp;</a></p>

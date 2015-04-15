@@ -121,6 +121,205 @@ to provide the cryptography engine.</p>
 </ul>
 <ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="envvars" id="envvars">Environment Variables</a></h2>
+
+<p>This module can be configured to provide several items of SSL information
+as additional environment variables to the SSI and CGI namespace. This
+information is not provided by default for performance reasons. (See
+<code class="directive">SSLOptions</code> StdEnvVars, below.) The generated variables
+are listed in the table below. For backward compatibility the information can
+be made available under different names, too. Look in the <a href="../ssl/ssl_compat.html">Compatibility</a> chapter for details on the
+compatibility variables.</p>
+
+<table class="bordered">
+
+<tr>
+ <th><a name="table3">Variable Name:</a></th>
+ <th>Value Type:</th>
+ <th>Description:</th>
+</tr>
+<tr><td><code>HTTPS</code></td>                         <td>flag</td>      <td>HTTPS is being used.</td></tr>
+<tr><td><code>SSL_PROTOCOL</code></td>                  <td>string</td>    <td>The SSL protocol version (SSLv3, TLSv1, TLSv1.1, TLSv1.2)</td></tr>
+<tr><td><code>SSL_SESSION_ID</code></td>                <td>string</td>    <td>The hex-encoded SSL session id</td></tr>
+<tr><td><code>SSL_SESSION_RESUMED</code></td>           <td>string</td>    <td>Initial or Resumed SSL Session.  Note: multiple requests may be served over the same (Initial or Resumed) SSL session if HTTP KeepAlive is in use</td></tr>
+<tr><td><code>SSL_SECURE_RENEG</code></td>              <td>string</td>    <td><code>true</code> if secure renegotiation is supported, else <code>false</code></td></tr>
+<tr><td><code>SSL_CIPHER</code></td>                    <td>string</td>    <td>The cipher specification name</td></tr>
+<tr><td><code>SSL_CIPHER_EXPORT</code></td>             <td>string</td>    <td><code>true</code> if cipher is an export cipher</td></tr>
+<tr><td><code>SSL_CIPHER_USEKEYSIZE</code></td>         <td>number</td>    <td>Number of cipher bits (actually used)</td></tr>
+<tr><td><code>SSL_CIPHER_ALGKEYSIZE</code></td>         <td>number</td>    <td>Number of cipher bits (possible)</td></tr>
+<tr><td><code>SSL_COMPRESS_METHOD</code></td>           <td>string</td>    <td>SSL compression method negotiated</td></tr>
+<tr><td><code>SSL_VERSION_INTERFACE</code></td>         <td>string</td>    <td>The mod_ssl program version</td></tr>
+<tr><td><code>SSL_VERSION_LIBRARY</code></td>           <td>string</td>    <td>The OpenSSL program version</td></tr>
+<tr><td><code>SSL_CLIENT_M_VERSION</code></td>          <td>string</td>    <td>The version of the client certificate</td></tr>
+<tr><td><code>SSL_CLIENT_M_SERIAL</code></td>           <td>string</td>    <td>The serial of the client certificate</td></tr>
+<tr><td><code>SSL_CLIENT_S_DN</code></td>               <td>string</td>    <td>Subject DN in client's certificate</td></tr>
+<tr><td><code>SSL_CLIENT_S_DN_</code><em>x509</em></td> <td>string</td>    <td>Component of client's Subject DN</td></tr>
+<tr><td><code>SSL_CLIENT_SAN_Email_</code><em>n</em></td> <td>string</td>  <td>Client certificate's subjectAltName extension entries of type rfc822Name</td></tr>
+<tr><td><code>SSL_CLIENT_SAN_DNS_</code><em>n</em></td> <td>string</td>    <td>Client certificate's subjectAltName extension entries of type dNSName</td></tr>
+<tr><td><code>SSL_CLIENT_I_DN</code></td>               <td>string</td>    <td>Issuer DN of client's certificate</td></tr>
+<tr><td><code>SSL_CLIENT_I_DN_</code><em>x509</em></td> <td>string</td>    <td>Component of client's Issuer DN</td></tr>
+<tr><td><code>SSL_CLIENT_V_START</code></td>            <td>string</td>    <td>Validity of client's certificate (start time)</td></tr>
+<tr><td><code>SSL_CLIENT_V_END</code></td>              <td>string</td>    <td>Validity of client's certificate (end time)</td></tr>
+<tr><td><code>SSL_CLIENT_V_REMAIN</code></td>           <td>string</td>    <td>Number of days until client's certificate expires</td></tr>
+<tr><td><code>SSL_CLIENT_A_SIG</code></td>              <td>string</td>    <td>Algorithm used for the signature of client's certificate</td></tr>
+<tr><td><code>SSL_CLIENT_A_KEY</code></td>              <td>string</td>    <td>Algorithm used for the public key of client's certificate</td></tr>
+<tr><td><code>SSL_CLIENT_CERT</code></td>               <td>string</td>    <td>PEM-encoded client certificate</td></tr>
+<tr><td><code>SSL_CLIENT_CERT_CHAIN_</code><em>n</em></td> <td>string</td>    <td>PEM-encoded certificates in client certificate chain</td></tr>
+<tr><td><code>SSL_CLIENT_CERT_RFC4523_CEA</code></td>   <td>string</td>    <td>Serial number and issuer of the certificate. The format matches that of the CertificateExactAssertion in RFC4523</td></tr>
+<tr><td><code>SSL_CLIENT_VERIFY</code></td>             <td>string</td>    <td><code>NONE</code>, <code>SUCCESS</code>, <code>GENEROUS</code> or <code>FAILED:</code><em>reason</em></td></tr>
+<tr><td><code>SSL_SERVER_M_VERSION</code></td>          <td>string</td>    <td>The version of the server certificate</td></tr>
+<tr><td><code>SSL_SERVER_M_SERIAL</code></td>           <td>string</td>    <td>The serial of the server certificate</td></tr>
+<tr><td><code>SSL_SERVER_S_DN</code></td>               <td>string</td>    <td>Subject DN in server's certificate</td></tr>
+<tr><td><code>SSL_SERVER_SAN_Email_</code><em>n</em></td> <td>string</td>  <td>Server certificate's subjectAltName extension entries of type rfc822Name</td></tr>
+<tr><td><code>SSL_SERVER_SAN_DNS_</code><em>n</em></td> <td>string</td>    <td>Server certificate's subjectAltName extension entries of type dNSName</td></tr>
+<tr><td><code>SSL_SERVER_S_DN_</code><em>x509</em></td> <td>string</td>    <td>Component of server's Subject DN</td></tr>
+<tr><td><code>SSL_SERVER_I_DN</code></td>               <td>string</td>    <td>Issuer DN of server's certificate</td></tr>
+<tr><td><code>SSL_SERVER_I_DN_</code><em>x509</em></td> <td>string</td>    <td>Component of server's Issuer DN</td></tr>
+<tr><td><code>SSL_SERVER_V_START</code></td>            <td>string</td>    <td>Validity of server's certificate (start time)</td></tr>
+<tr><td><code>SSL_SERVER_V_END</code></td>              <td>string</td>    <td>Validity of server's certificate (end time)</td></tr>
+<tr><td><code>SSL_SERVER_A_SIG</code></td>              <td>string</td>    <td>Algorithm used for the signature of server's certificate</td></tr>
+<tr><td><code>SSL_SERVER_A_KEY</code></td>              <td>string</td>    <td>Algorithm used for the public key of server's certificate</td></tr>
+<tr><td><code>SSL_SERVER_CERT</code></td>               <td>string</td>    <td>PEM-encoded server certificate</td></tr>
+<tr><td><code>SSL_SRP_USER</code></td>                  <td>string</td>    <td>SRP username</td></tr>
+<tr><td><code>SSL_SRP_USERINFO</code></td>              <td>string</td>    <td>SRP user info</td></tr>
+<tr><td><code>SSL_TLS_SNI</code></td>                   <td>string</td>    <td>Contents of the SNI TLS extension (if supplied with ClientHello)</td></tr>
+</table>
+
+<p><em>x509</em> specifies a component of an X.509 DN; one of
+<code>C,ST,L,O,OU,CN,T,I,G,S,D,UID,Email</code>.  In Apache 2.1 and
+later, <em>x509</em> may also include a numeric <code>_n</code>
+suffix.  If the DN in question contains multiple attributes of the
+same name, this suffix is used as a zero-based index to select a
+particular attribute.  For example, where the server certificate
+subject DN included two OU attributes, <code>SSL_SERVER_S_DN_OU_0</code>
+and
+<code>SSL_SERVER_S_DN_OU_1</code> could be used to reference each.  A
+variable name without a <code>_n</code> suffix is equivalent to that
+name with a <code>_0</code> suffix; the first (or only) attribute.
+When the environment table is populated using
+the <code>StdEnvVars</code> option of
+the <code class="directive"><a href="#ssloptions">SSLOptions</a></code> directive, the
+first (or only) attribute of any DN is added only under a non-suffixed
+name; i.e. no <code>_0</code> suffixed entries are added.</p>
+
+<p>The format of the <em>*_DN</em> variables has changed in Apache HTTPD
+2.3.11. See the <code>LegacyDNStringFormat</code> option for
+<code class="directive"><a href="#ssloptions">SSLOptions</a></code> for details.</p>
+
+<p><code>SSL_CLIENT_V_REMAIN</code> is only available in version 2.1
+and later.</p>
+
+<p>A number of additional environment variables can also be used
+in <code class="directive">SSLRequire</code> expressions, or in custom log
+formats:</p>
+
+<div class="note"><pre>HTTP_USER_AGENT        PATH_INFO             AUTH_TYPE
+HTTP_REFERER           QUERY_STRING          SERVER_SOFTWARE
+HTTP_COOKIE            REMOTE_HOST           API_VERSION
+HTTP_FORWARDED         REMOTE_IDENT          TIME_YEAR
+HTTP_HOST              IS_SUBREQ             TIME_MON
+HTTP_PROXY_CONNECTION  DOCUMENT_ROOT         TIME_DAY
+HTTP_ACCEPT            SERVER_ADMIN          TIME_HOUR
+THE_REQUEST            SERVER_NAME           TIME_MIN
+REQUEST_FILENAME       SERVER_PORT           TIME_SEC
+REQUEST_METHOD         SERVER_PROTOCOL       TIME_WDAY
+REQUEST_SCHEME         REMOTE_ADDR           TIME
+REQUEST_URI            REMOTE_USER</pre></div>
+
+<p>In these contexts, two special formats can also be used:</p>
+
+<dl>
+  <dt><code>ENV:<em>variablename</em></code></dt>
+  <dd>This will expand to the standard environment
+  variable <em>variablename</em>.</dd>
+
+  <dt><code>HTTP:<em>headername</em></code></dt>
+  <dd>This will expand to the value of the request header with name
+  <em>headername</em>.</dd>
+</dl>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="logformats" id="logformats">Custom Log Formats</a></h2>
+
+<p>When <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> is built into Apache or at least
+loaded (under DSO situation) additional functions exist for the <a href="mod_log_config.html#formats">Custom Log Format</a> of
+<code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code>. First there is an
+additional ``<code>%{</code><em>varname</em><code>}x</code>''
+eXtension format function which can be used to expand any variables
+provided by any module, especially those provided by mod_ssl which can
+you find in the above table.</p>
+<p>
+For backward compatibility there is additionally a special
+``<code>%{</code><em>name</em><code>}c</code>'' cryptography format function
+provided. Information about this function is provided in the <a href="../ssl/ssl_compat.html">Compatibility</a> chapter.</p>
+<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">CustomLog logs/ssl_request_log "%t %h %{SSL_PROTOCOL}x %{SSL_CIPHER}x \"%r\" %b"</pre>
+</div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="notes" id="notes">Request Notes</a></h2>
+
+<p><code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> sets "notes" for the request which can be
+used in logging with the <code>%{<em>name</em>}n</code> format
+string in <code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code>.</p>
+
+<p>The notes supported are as follows:</p>
+
+<dl>
+  <dt><code>ssl-access-forbidden</code></dt>
+  <dd>This note is set to the value <code>1</code> if access was
+  denied due to an <code class="directive">SSLRequire</code>
+  or <code class="directive">SSLRequireSSL</code> directive.</dd>
+
+  <dt><code>ssl-secure-reneg</code></dt>
+  <dd>If <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> is built against a version of
+  OpenSSL which supports the secure renegotiation extension, this note
+  is set to the value <code>1</code> if SSL is in used for the current
+  connection, and the client also supports the secure renegotiation
+  extension.  If the client does not support the secure renegotiation
+  extension, the note is set to the value <code>0</code>.
+  If <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> is not built against a version of
+  OpenSSL which supports secure renegotiation, or if SSL is not in use
+  for the current connection, the note is not set.</dd>
+</dl>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="authzproviders" id="authzproviders">Authorization providers for use with Require</a></h2>
+
+  <p><code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> provides a few authentication providers for use
+  with <code class="module"><a href="../mod/mod_authz_core.html">mod_authz_core</a></code>'s
+  <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> directive.</p>
+
+  <h3><a name="reqssl" id="reqssl">Require ssl</a></h3>
+
+    <p>The <code>ssl</code> provider denies access if a connection is not
+       encrypted with SSL. This is similar to the
+       <code class="directive">SSLRequireSSL</code> directive.</p>
+
+    <pre class="prettyprint lang-config">Require ssl</pre>
+
+
+  
+
+  <h3><a name="reqverifyclient" id="reqverifyclient">Require ssl-verify-client</a></h3>
+
+    <p>The <code>ssl</code> provider allows access if the user is
+       authenticated with a valid client certificate. This is only
+       useful if <code>SSLVerifyClient optional</code> is in effect.</p>
+
+    <p>The following example grants access if the user is authenticated
+       either with a client certificate or by username and password.</p>
+
+    <pre class="prettyprint lang-config">      Require ssl-verify-client<br />
+      Require valid-user</pre>
+
+
+  
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SSLCACertificateFile" id="SSLCACertificateFile">SSLCACertificateFile</a> <a name="sslcacertificatefile" id="sslcacertificatefile">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>File of concatenated PEM-encoded CA Certificates
@@ -2359,205 +2558,6 @@ known to the server (i.e. the CA's certificate is under
 <code class="directive"><a href="#sslcacertificatepath">SSLCACertificatePath</a></code>), etc.</p>
 <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLVerifyDepth 10</pre>
 </div>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="envvars" id="envvars">Environment Variables</a></h2>
-
-<p>This module can be configured to provide several items of SSL information
-as additional environment variables to the SSI and CGI namespace. This
-information is not provided by default for performance reasons. (See
-<code class="directive">SSLOptions</code> StdEnvVars, below.) The generated variables
-are listed in the table below. For backward compatibility the information can
-be made available under different names, too. Look in the <a href="../ssl/ssl_compat.html">Compatibility</a> chapter for details on the
-compatibility variables.</p>
-
-<table class="bordered">
-
-<tr>
- <th><a name="table3">Variable Name:</a></th>
- <th>Value Type:</th>
- <th>Description:</th>
-</tr>
-<tr><td><code>HTTPS</code></td>                         <td>flag</td>      <td>HTTPS is being used.</td></tr>
-<tr><td><code>SSL_PROTOCOL</code></td>                  <td>string</td>    <td>The SSL protocol version (SSLv3, TLSv1, TLSv1.1, TLSv1.2)</td></tr>
-<tr><td><code>SSL_SESSION_ID</code></td>                <td>string</td>    <td>The hex-encoded SSL session id</td></tr>
-<tr><td><code>SSL_SESSION_RESUMED</code></td>           <td>string</td>    <td>Initial or Resumed SSL Session.  Note: multiple requests may be served over the same (Initial or Resumed) SSL session if HTTP KeepAlive is in use</td></tr>
-<tr><td><code>SSL_SECURE_RENEG</code></td>              <td>string</td>    <td><code>true</code> if secure renegotiation is supported, else <code>false</code></td></tr>
-<tr><td><code>SSL_CIPHER</code></td>                    <td>string</td>    <td>The cipher specification name</td></tr>
-<tr><td><code>SSL_CIPHER_EXPORT</code></td>             <td>string</td>    <td><code>true</code> if cipher is an export cipher</td></tr>
-<tr><td><code>SSL_CIPHER_USEKEYSIZE</code></td>         <td>number</td>    <td>Number of cipher bits (actually used)</td></tr>
-<tr><td><code>SSL_CIPHER_ALGKEYSIZE</code></td>         <td>number</td>    <td>Number of cipher bits (possible)</td></tr>
-<tr><td><code>SSL_COMPRESS_METHOD</code></td>           <td>string</td>    <td>SSL compression method negotiated</td></tr>
-<tr><td><code>SSL_VERSION_INTERFACE</code></td>         <td>string</td>    <td>The mod_ssl program version</td></tr>
-<tr><td><code>SSL_VERSION_LIBRARY</code></td>           <td>string</td>    <td>The OpenSSL program version</td></tr>
-<tr><td><code>SSL_CLIENT_M_VERSION</code></td>          <td>string</td>    <td>The version of the client certificate</td></tr>
-<tr><td><code>SSL_CLIENT_M_SERIAL</code></td>           <td>string</td>    <td>The serial of the client certificate</td></tr>
-<tr><td><code>SSL_CLIENT_S_DN</code></td>               <td>string</td>    <td>Subject DN in client's certificate</td></tr>
-<tr><td><code>SSL_CLIENT_S_DN_</code><em>x509</em></td> <td>string</td>    <td>Component of client's Subject DN</td></tr>
-<tr><td><code>SSL_CLIENT_SAN_Email_</code><em>n</em></td> <td>string</td>  <td>Client certificate's subjectAltName extension entries of type rfc822Name</td></tr>
-<tr><td><code>SSL_CLIENT_SAN_DNS_</code><em>n</em></td> <td>string</td>    <td>Client certificate's subjectAltName extension entries of type dNSName</td></tr>
-<tr><td><code>SSL_CLIENT_I_DN</code></td>               <td>string</td>    <td>Issuer DN of client's certificate</td></tr>
-<tr><td><code>SSL_CLIENT_I_DN_</code><em>x509</em></td> <td>string</td>    <td>Component of client's Issuer DN</td></tr>
-<tr><td><code>SSL_CLIENT_V_START</code></td>            <td>string</td>    <td>Validity of client's certificate (start time)</td></tr>
-<tr><td><code>SSL_CLIENT_V_END</code></td>              <td>string</td>    <td>Validity of client's certificate (end time)</td></tr>
-<tr><td><code>SSL_CLIENT_V_REMAIN</code></td>           <td>string</td>    <td>Number of days until client's certificate expires</td></tr>
-<tr><td><code>SSL_CLIENT_A_SIG</code></td>              <td>string</td>    <td>Algorithm used for the signature of client's certificate</td></tr>
-<tr><td><code>SSL_CLIENT_A_KEY</code></td>              <td>string</td>    <td>Algorithm used for the public key of client's certificate</td></tr>
-<tr><td><code>SSL_CLIENT_CERT</code></td>               <td>string</td>    <td>PEM-encoded client certificate</td></tr>
-<tr><td><code>SSL_CLIENT_CERT_CHAIN_</code><em>n</em></td> <td>string</td>    <td>PEM-encoded certificates in client certificate chain</td></tr>
-<tr><td><code>SSL_CLIENT_CERT_RFC4523_CEA</code></td>   <td>string</td>    <td>Serial number and issuer of the certificate. The format matches that of the CertificateExactAssertion in RFC4523</td></tr>
-<tr><td><code>SSL_CLIENT_VERIFY</code></td>             <td>string</td>    <td><code>NONE</code>, <code>SUCCESS</code>, <code>GENEROUS</code> or <code>FAILED:</code><em>reason</em></td></tr>
-<tr><td><code>SSL_SERVER_M_VERSION</code></td>          <td>string</td>    <td>The version of the server certificate</td></tr>
-<tr><td><code>SSL_SERVER_M_SERIAL</code></td>           <td>string</td>    <td>The serial of the server certificate</td></tr>
-<tr><td><code>SSL_SERVER_S_DN</code></td>               <td>string</td>    <td>Subject DN in server's certificate</td></tr>
-<tr><td><code>SSL_SERVER_SAN_Email_</code><em>n</em></td> <td>string</td>  <td>Server certificate's subjectAltName extension entries of type rfc822Name</td></tr>
-<tr><td><code>SSL_SERVER_SAN_DNS_</code><em>n</em></td> <td>string</td>    <td>Server certificate's subjectAltName extension entries of type dNSName</td></tr>
-<tr><td><code>SSL_SERVER_S_DN_</code><em>x509</em></td> <td>string</td>    <td>Component of server's Subject DN</td></tr>
-<tr><td><code>SSL_SERVER_I_DN</code></td>               <td>string</td>    <td>Issuer DN of server's certificate</td></tr>
-<tr><td><code>SSL_SERVER_I_DN_</code><em>x509</em></td> <td>string</td>    <td>Component of server's Issuer DN</td></tr>
-<tr><td><code>SSL_SERVER_V_START</code></td>            <td>string</td>    <td>Validity of server's certificate (start time)</td></tr>
-<tr><td><code>SSL_SERVER_V_END</code></td>              <td>string</td>    <td>Validity of server's certificate (end time)</td></tr>
-<tr><td><code>SSL_SERVER_A_SIG</code></td>              <td>string</td>    <td>Algorithm used for the signature of server's certificate</td></tr>
-<tr><td><code>SSL_SERVER_A_KEY</code></td>              <td>string</td>    <td>Algorithm used for the public key of server's certificate</td></tr>
-<tr><td><code>SSL_SERVER_CERT</code></td>               <td>string</td>    <td>PEM-encoded server certificate</td></tr>
-<tr><td><code>SSL_SRP_USER</code></td>                  <td>string</td>    <td>SRP username</td></tr>
-<tr><td><code>SSL_SRP_USERINFO</code></td>              <td>string</td>    <td>SRP user info</td></tr>
-<tr><td><code>SSL_TLS_SNI</code></td>                   <td>string</td>    <td>Contents of the SNI TLS extension (if supplied with ClientHello)</td></tr>
-</table>
-
-<p><em>x509</em> specifies a component of an X.509 DN; one of
-<code>C,ST,L,O,OU,CN,T,I,G,S,D,UID,Email</code>.  In Apache 2.1 and
-later, <em>x509</em> may also include a numeric <code>_n</code>
-suffix.  If the DN in question contains multiple attributes of the
-same name, this suffix is used as a zero-based index to select a
-particular attribute.  For example, where the server certificate
-subject DN included two OU attributes, <code>SSL_SERVER_S_DN_OU_0</code>
-and
-<code>SSL_SERVER_S_DN_OU_1</code> could be used to reference each.  A
-variable name without a <code>_n</code> suffix is equivalent to that
-name with a <code>_0</code> suffix; the first (or only) attribute.
-When the environment table is populated using
-the <code>StdEnvVars</code> option of
-the <code class="directive"><a href="#ssloptions">SSLOptions</a></code> directive, the
-first (or only) attribute of any DN is added only under a non-suffixed
-name; i.e. no <code>_0</code> suffixed entries are added.</p>
-
-<p>The format of the <em>*_DN</em> variables has changed in Apache HTTPD
-2.3.11. See the <code>LegacyDNStringFormat</code> option for
-<code class="directive"><a href="#ssloptions">SSLOptions</a></code> for details.</p>
-
-<p><code>SSL_CLIENT_V_REMAIN</code> is only available in version 2.1
-and later.</p>
-
-<p>A number of additional environment variables can also be used
-in <code class="directive">SSLRequire</code> expressions, or in custom log
-formats:</p>
-
-<div class="note"><pre>HTTP_USER_AGENT        PATH_INFO             AUTH_TYPE
-HTTP_REFERER           QUERY_STRING          SERVER_SOFTWARE
-HTTP_COOKIE            REMOTE_HOST           API_VERSION
-HTTP_FORWARDED         REMOTE_IDENT          TIME_YEAR
-HTTP_HOST              IS_SUBREQ             TIME_MON
-HTTP_PROXY_CONNECTION  DOCUMENT_ROOT         TIME_DAY
-HTTP_ACCEPT            SERVER_ADMIN          TIME_HOUR
-THE_REQUEST            SERVER_NAME           TIME_MIN
-REQUEST_FILENAME       SERVER_PORT           TIME_SEC
-REQUEST_METHOD         SERVER_PROTOCOL       TIME_WDAY
-REQUEST_SCHEME         REMOTE_ADDR           TIME
-REQUEST_URI            REMOTE_USER</pre></div>
-
-<p>In these contexts, two special formats can also be used:</p>
-
-<dl>
-  <dt><code>ENV:<em>variablename</em></code></dt>
-  <dd>This will expand to the standard environment
-  variable <em>variablename</em>.</dd>
-
-  <dt><code>HTTP:<em>headername</em></code></dt>
-  <dd>This will expand to the value of the request header with name
-  <em>headername</em>.</dd>
-</dl>
-
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="logformats" id="logformats">Custom Log Formats</a></h2>
-
-<p>When <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> is built into Apache or at least
-loaded (under DSO situation) additional functions exist for the <a href="mod_log_config.html#formats">Custom Log Format</a> of
-<code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code>. First there is an
-additional ``<code>%{</code><em>varname</em><code>}x</code>''
-eXtension format function which can be used to expand any variables
-provided by any module, especially those provided by mod_ssl which can
-you find in the above table.</p>
-<p>
-For backward compatibility there is additionally a special
-``<code>%{</code><em>name</em><code>}c</code>'' cryptography format function
-provided. Information about this function is provided in the <a href="../ssl/ssl_compat.html">Compatibility</a> chapter.</p>
-<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">CustomLog logs/ssl_request_log "%t %h %{SSL_PROTOCOL}x %{SSL_CIPHER}x \"%r\" %b"</pre>
-</div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="notes" id="notes">Request Notes</a></h2>
-
-<p><code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> sets "notes" for the request which can be
-used in logging with the <code>%{<em>name</em>}n</code> format
-string in <code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code>.</p>
-
-<p>The notes supported are as follows:</p>
-
-<dl>
-  <dt><code>ssl-access-forbidden</code></dt>
-  <dd>This note is set to the value <code>1</code> if access was
-  denied due to an <code class="directive">SSLRequire</code>
-  or <code class="directive">SSLRequireSSL</code> directive.</dd>
-
-  <dt><code>ssl-secure-reneg</code></dt>
-  <dd>If <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> is built against a version of
-  OpenSSL which supports the secure renegotiation extension, this note
-  is set to the value <code>1</code> if SSL is in used for the current
-  connection, and the client also supports the secure renegotiation
-  extension.  If the client does not support the secure renegotiation
-  extension, the note is set to the value <code>0</code>.
-  If <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> is not built against a version of
-  OpenSSL which supports secure renegotiation, or if SSL is not in use
-  for the current connection, the note is not set.</dd>
-</dl>
-
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="authzproviders" id="authzproviders">Authorization providers for use with Require</a></h2>
-
-  <p><code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> provides a few authentication providers for use
-  with <code class="module"><a href="../mod/mod_authz_core.html">mod_authz_core</a></code>'s
-  <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> directive.</p>
-
-  <h3><a name="reqssl" id="reqssl">Require ssl</a></h3>
-
-    <p>The <code>ssl</code> provider denies access if a connection is not
-       encrypted with SSL. This is similar to the
-       <code class="directive">SSLRequireSSL</code> directive.</p>
-
-    <pre class="prettyprint lang-config">Require ssl</pre>
-
-
-  
-
-  <h3><a name="reqverifyclient" id="reqverifyclient">Require ssl-verify-client</a></h3>
-
-    <p>The <code>ssl</code> provider allows access if the user is
-       authenticated with a valid client certificate. This is only
-       useful if <code>SSLVerifyClient optional</code> is in effect.</p>
-
-    <p>The following example grants access if the user is authenticated
-       either with a client certificate or by username and password.</p>
-
-    <pre class="prettyprint lang-config">      Require ssl-verify-client<br />
-      Require valid-user</pre>
-
-
-  
 
 </div>
 </div>

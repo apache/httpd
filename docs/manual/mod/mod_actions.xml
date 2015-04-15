@@ -99,7 +99,7 @@ Action my-file-type /cgi-bin/program.cgi
     virtual locations.</p>
 
     <highlight language="config">
-&lt;Location /news&gt;
+&lt;Location "/news"&gt;
     SetHandler news-handler
     Action news-handler /cgi-bin/news.cgi virtual
 &lt;/Location&gt;

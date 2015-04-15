@@ -52,6 +52,158 @@ headers</td></tr>
 </ul>
 <ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="order" id="order">Order of Processing</a></h2>
+
+    <p>The directives provided by <code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code> can
+    occur almost anywhere within the server configuration, and can be
+    limited in scope by enclosing them in <a href="../sections.html">configuration sections</a>.</p>
+
+    <p>Order of processing is important and is affected both by the
+    order in the configuration file and by placement in <a href="../sections.html#mergin">configuration sections</a>. These
+    two directives have a different effect if reversed:</p>
+
+    <pre class="prettyprint lang-config">RequestHeader append MirrorID "mirror 12"
+RequestHeader unset MirrorID</pre>
+
+
+    <p>This way round, the <code>MirrorID</code> header is not set. If
+    reversed, the MirrorID header is set to "mirror 12".</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="early" id="early">Early and Late Processing</a></h2>
+    <p><code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code> can be applied either early or late
+    in the request.  The normal mode is late, when <em>Request</em> Headers are
+    set immediately before running the content generator and <em>Response</em>
+    Headers just as the response is sent down the wire.  Always use
+    Late mode in an operational server.</p>
+
+    <p>Early mode is designed as a test/debugging aid for developers.
+    Directives defined using the <code>early</code> keyword are set
+    right at the beginning of processing the request.  This means
+    they can be used to simulate different requests and set up test
+    cases, but it also means that headers may be changed at any time
+    by other modules before generating a Response.</p>
+
+    <p>Because early directives are processed before the request path's
+    configuration is traversed, early headers can only be set in a
+    main server or virtual host context.  Early directives cannot depend
+    on a request path, so they will fail in contexts such as
+    <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> or
+    <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="examples" id="examples">Examples</a></h2>
+
+    <ol>
+      <li>
+        Copy all request headers that begin with "TS" to the
+        response headers:
+
+        <pre class="prettyprint lang-config">Header echo ^TS</pre>
+
+      </li>
+
+      <li>
+        Add a header, <code>MyHeader</code>, to the response including a
+        timestamp for when the request was received and how long it
+        took to begin serving the request. This header can be used by
+        the client to intuit load on the server or in isolating
+        bottlenecks between the client and the server.
+
+        <pre class="prettyprint lang-config">Header set MyHeader "%D %t"</pre>
+
+
+        <p>results in this header being added to the response:</p>
+
+        <div class="example"><p><code>
+          MyHeader: D=3775428 t=991424704447256
+        </code></p></div>
+      </li>
+
+      <li>
+        Say hello to Joe
+
+        <pre class="prettyprint lang-config">Header set MyHeader "Hello Joe. It took %D microseconds for Apache to serve this request."</pre>
+
+
+        <p>results in this header being added to the response:</p>
+
+        <div class="example"><p><code>
+          MyHeader: Hello Joe. It took D=3775428 microseconds for Apache
+          to serve this request.
+        </code></p></div>
+      </li>
+
+      <li>
+        Conditionally send <code>MyHeader</code> on the response if and
+        only if header <code>MyRequestHeader</code> is present on the request.
+        This is useful for constructing headers in response to some client
+        stimulus. Note that this example requires the services of the
+        <code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code> module.
+
+        <pre class="prettyprint lang-config">SetEnvIf MyRequestHeader myvalue HAVE_MyRequestHeader
+Header set MyHeader "%D %t mytext" env=HAVE_MyRequestHeader</pre>
+
+
+        <p>If the header <code>MyRequestHeader: myvalue</code> is present on
+        the HTTP request, the response will contain the following header:</p>
+
+        <div class="example"><p><code>
+          MyHeader: D=3775428 t=991424704447256 mytext
+        </code></p></div>
+      </li>
+
+      <li>
+        Enable DAV to work with Apache running HTTP through SSL hardware
+        (<a href="http://svn.haxx.se/users/archive-2006-03/0549.shtml">problem
+        description</a>) by replacing <var>https:</var> with
+        <var>http:</var> in the <var>Destination</var> header:
+
+        <pre class="prettyprint lang-config">RequestHeader edit Destination ^https: http: early</pre>
+
+      </li>
+
+      <li>
+        Set the same header value under multiple nonexclusive conditions,
+        but do not duplicate the value in the final header.
+        If all of the following conditions applied to a request (i.e.,
+        if the <code>CGI</code>, <code>NO_CACHE</code> and
+        <code>NO_STORE</code> environment variables all existed for the
+        request):
+
+        <pre class="prettyprint lang-config">Header merge Cache-Control no-cache env=CGI
+Header merge Cache-Control no-cache env=NO_CACHE
+Header merge Cache-Control no-store env=NO_STORE</pre>
+
+
+        <p>then the response would contain the following header:</p>
+
+        <div class="example"><p><code>
+          Cache-Control: no-cache, no-store
+        </code></p></div>
+
+        <p>If <code>append</code> was used instead of <code>merge</code>,
+        then the response would contain the following header:</p>
+
+        <div class="example"><p><code>
+          Cache-Control: no-cache, no-cache, no-store
+        </code></p></div>
+      </li>
+      <li>
+        Set a test cookie if and only if the client didn't send us a cookie
+        <pre class="prettyprint lang-config">Header set Set-Cookie testcookie "expr=-z %{req:Cookie}"</pre>
+
+      </li>
+      <li>
+        Append a Caching header for responses with a HTTP status code of 200
+        <pre class="prettyprint lang-config">Header append Cache-Control s-maxage=600 "expr=%{REQUEST_STATUS} == 200"</pre>
+
+      </li>
+
+    </ol>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="Header" id="Header">Header</a> <a name="header" id="header">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure HTTP response headers</td></tr>
@@ -391,158 +543,6 @@ available in 2.4.10 and later</td></tr>
     This should allow headers generated by the browser, or by Apache
     input filters to be overridden or modified.</p>
 
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="order" id="order">Order of Processing</a></h2>
-
-    <p>The directives provided by <code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code> can
-    occur almost anywhere within the server configuration, and can be
-    limited in scope by enclosing them in <a href="../sections.html">configuration sections</a>.</p>
-
-    <p>Order of processing is important and is affected both by the
-    order in the configuration file and by placement in <a href="../sections.html#mergin">configuration sections</a>. These
-    two directives have a different effect if reversed:</p>
-
-    <pre class="prettyprint lang-config">RequestHeader append MirrorID "mirror 12"
-RequestHeader unset MirrorID</pre>
-
-
-    <p>This way round, the <code>MirrorID</code> header is not set. If
-    reversed, the MirrorID header is set to "mirror 12".</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="early" id="early">Early and Late Processing</a></h2>
-    <p><code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code> can be applied either early or late
-    in the request.  The normal mode is late, when <em>Request</em> Headers are
-    set immediately before running the content generator and <em>Response</em>
-    Headers just as the response is sent down the wire.  Always use
-    Late mode in an operational server.</p>
-
-    <p>Early mode is designed as a test/debugging aid for developers.
-    Directives defined using the <code>early</code> keyword are set
-    right at the beginning of processing the request.  This means
-    they can be used to simulate different requests and set up test
-    cases, but it also means that headers may be changed at any time
-    by other modules before generating a Response.</p>
-
-    <p>Because early directives are processed before the request path's
-    configuration is traversed, early headers can only be set in a
-    main server or virtual host context.  Early directives cannot depend
-    on a request path, so they will fail in contexts such as
-    <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> or
-    <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="examples" id="examples">Examples</a></h2>
-
-    <ol>
-      <li>
-        Copy all request headers that begin with "TS" to the
-        response headers:
-
-        <pre class="prettyprint lang-config">Header echo ^TS</pre>
-
-      </li>
-
-      <li>
-        Add a header, <code>MyHeader</code>, to the response including a
-        timestamp for when the request was received and how long it
-        took to begin serving the request. This header can be used by
-        the client to intuit load on the server or in isolating
-        bottlenecks between the client and the server.
-
-        <pre class="prettyprint lang-config">Header set MyHeader "%D %t"</pre>
-
-
-        <p>results in this header being added to the response:</p>
-
-        <div class="example"><p><code>
-          MyHeader: D=3775428 t=991424704447256
-        </code></p></div>
-      </li>
-
-      <li>
-        Say hello to Joe
-
-        <pre class="prettyprint lang-config">Header set MyHeader "Hello Joe. It took %D microseconds for Apache to serve this request."</pre>
-
-
-        <p>results in this header being added to the response:</p>
-
-        <div class="example"><p><code>
-          MyHeader: Hello Joe. It took D=3775428 microseconds for Apache
-          to serve this request.
-        </code></p></div>
-      </li>
-
-      <li>
-        Conditionally send <code>MyHeader</code> on the response if and
-        only if header <code>MyRequestHeader</code> is present on the request.
-        This is useful for constructing headers in response to some client
-        stimulus. Note that this example requires the services of the
-        <code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code> module.
-
-        <pre class="prettyprint lang-config">SetEnvIf MyRequestHeader myvalue HAVE_MyRequestHeader
-Header set MyHeader "%D %t mytext" env=HAVE_MyRequestHeader</pre>
-
-
-        <p>If the header <code>MyRequestHeader: myvalue</code> is present on
-        the HTTP request, the response will contain the following header:</p>
-
-        <div class="example"><p><code>
-          MyHeader: D=3775428 t=991424704447256 mytext
-        </code></p></div>
-      </li>
-
-      <li>
-        Enable DAV to work with Apache running HTTP through SSL hardware
-        (<a href="http://svn.haxx.se/users/archive-2006-03/0549.shtml">problem
-        description</a>) by replacing <var>https:</var> with
-        <var>http:</var> in the <var>Destination</var> header:
-
-        <pre class="prettyprint lang-config">RequestHeader edit Destination ^https: http: early</pre>
-
-      </li>
-
-      <li>
-        Set the same header value under multiple nonexclusive conditions,
-        but do not duplicate the value in the final header.
-        If all of the following conditions applied to a request (i.e.,
-        if the <code>CGI</code>, <code>NO_CACHE</code> and
-        <code>NO_STORE</code> environment variables all existed for the
-        request):
-
-        <pre class="prettyprint lang-config">Header merge Cache-Control no-cache env=CGI
-Header merge Cache-Control no-cache env=NO_CACHE
-Header merge Cache-Control no-store env=NO_STORE</pre>
-
-
-        <p>then the response would contain the following header:</p>
-
-        <div class="example"><p><code>
-          Cache-Control: no-cache, no-store
-        </code></p></div>
-
-        <p>If <code>append</code> was used instead of <code>merge</code>,
-        then the response would contain the following header:</p>
-
-        <div class="example"><p><code>
-          Cache-Control: no-cache, no-cache, no-store
-        </code></p></div>
-      </li>
-      <li>
-        Set a test cookie if and only if the client didn't send us a cookie
-        <pre class="prettyprint lang-config">Header set Set-Cookie testcookie "expr=-z %{req:Cookie}"</pre>
-
-      </li>
-      <li>
-        Append a Caching header for responses with a HTTP status code of 200
-        <pre class="prettyprint lang-config">Header append Cache-Control s-maxage=600 "expr=%{REQUEST_STATUS} == 200"</pre>
-
-      </li>
-
-    </ol>
 </div>
 </div>
 <div class="bottomlang">

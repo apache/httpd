@@ -456,10 +456,10 @@ end</pre>
     groups with different permissions:
 </p>
 <pre class="prettyprint lang-config">LuaAuthzProvider rights /path/to/lua/script.lua rights_handler
-&lt;Directory /www/private&gt;
+&lt;Directory "/www/private"&gt;
     Require rights member
 &lt;/Directory&gt;
-&lt;Directory /www/admin&gt;
+&lt;Directory "/www/admin"&gt;
     Require rights admin
 &lt;/Directory&gt;</pre>
 

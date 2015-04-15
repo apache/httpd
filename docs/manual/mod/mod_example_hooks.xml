@@ -100,7 +100,7 @@
     <p>To activate the example_hooks module, include a block similar to
     the following in your <code>httpd.conf</code> file:</p>
 <highlight language="config">
-&lt;Location /example-hooks-info&gt;
+&lt;Location "/example-hooks-info"&gt;
    SetHandler example-hooks-handler
 &lt;/Location&gt;
 </highlight>

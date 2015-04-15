@@ -44,7 +44,7 @@
     body. This request requires a Content-Encoding request header containing
     "gzip" for the filter to return compressed data.
     <highlight language="config">
-&lt;Location /compress&gt;
+&lt;Location "/compress"&gt;
     SetHandler reflector
     SetOutputFilter DEFLATE
 &lt;/Location&gt;
@@ -55,7 +55,7 @@
     <dd>Pass the request body through an image downsampling filter, and reflect
     the results to the caller.
     <highlight language="config">
-&lt;Location /downsample&gt;
+&lt;Location "/downsample"&gt;
     SetHandler reflector
     SetOutputFilter DOWNSAMPLE
 &lt;/Location&gt;

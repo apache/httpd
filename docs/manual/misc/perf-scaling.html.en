@@ -1285,8 +1285,7 @@ Swap:       3903784      12540  3891244</pre></div>
       ServerName blog.sandla.org:8001
       ServerAdmin sander@temme.net
       DocumentRoot "/home/sctemme/inst/blog/httpd/htdocs"
-      &lt;Directory
-      "/home/sctemme/inst/blog/httpd/htdocs"&gt;
+      &lt;Directory "/home/sctemme/inst/blog/httpd/htdocs"&gt;
           Options +Indexes
           Require all granted
           RewriteEngine on
@@ -1418,7 +1417,7 @@ CacheMaxExpire 21600</pre>
                     Unfortunately there does currently not exist a way to cache
                     these headers. 
                 </p>
-<pre class="prettyprint lang-config">&lt;FilesMatch \.(jpe?g|png|gif|js|css|x?html|xml)&gt;
+<pre class="prettyprint lang-config">&lt;FilesMatch "\.(jpe?g|png|gif|js|css|x?html|xml)"&gt;
     FileETag None
 &lt;/FilesMatch&gt;</pre>
 

@@ -82,7 +82,7 @@ DBDKeep 8
 DBDMax  20
 DBDExptime 300
 
-&lt;Directory /usr/www/myhost/private&gt;
+&lt;Directory "/usr/www/myhost/private"&gt;
   # mod_authn_core and mod_auth_basic configuration
   # for mod_authn_dbd
   AuthType Basic

@@ -122,7 +122,7 @@ RewriteRule \.(gif|jpg|png)$ http://other.example.com/image.gif   [R,NC]
 
         <highlight language="config">
 SetEnvIf Referer example\.com localreferer
-&lt;FilesMatch \.(jpg|png|gif)$&gt;
+&lt;FilesMatch "\.(jpg|png|gif)$"&gt;
     Require env localreferer
 &lt;/FilesMatch&gt;
         </highlight>
@@ -184,7 +184,7 @@ RewriteRule ^/secret/files/   -   [F]
       </p>
       <highlight language="config">
 SetEnvIfNoCase User-Agent ^NameOfBadRobot goaway
-&lt;Location /secret/files&gt;
+&lt;Location "/secret/files"&gt;
     &lt;RequireAll&gt;
         Require all granted
         Require not env goaway

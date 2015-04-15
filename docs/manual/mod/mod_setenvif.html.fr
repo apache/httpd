@@ -79,6 +79,7 @@ BrowserMatch MSIE !netscape</pre>
 <li><a href="../env.html">Les variables d'environnement et le
 serveur HTTP Apache</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
+
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="browsermatch" id="browsermatch">Directive</a> <a name="BrowserMatch" id="BrowserMatch">BrowserMatch</a></h2>
 <table class="directive">
@@ -334,7 +335,6 @@ attributs de la requête sans tenir compte de la casse</td></tr>
     combinaison des mêmes caractères, sans tenir compte de la casse.</p>
 
 </div>
-
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_setenvif.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |

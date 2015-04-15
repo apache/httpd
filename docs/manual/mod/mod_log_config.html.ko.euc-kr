@@ -49,168 +49,21 @@
     <code class="directive">CustomLog</code> 지시어를 여러번 사용하면
     요청을 여러 파일에 기록할 수 있다.</p>
 </div>
-<div id="quickview"><h3 class="directives">지시어들</h3>
+<div id="quickview"><h3>주제</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#formats">로그 형식 지정하기</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#security">보안상 고려할 점</a></li>
+</ul><h3 class="directives">지시어들</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#bufferedlogs">BufferedLogs</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#customlog">CustomLog</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#logformat">LogFormat</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#transferlog">TransferLog</a></li>
 </ul>
-<h3>주제</h3>
-<ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#formats">로그 형식 지정하기</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#security">보안상 고려할 점</a></li>
-</ul><h3>참고</h3>
+<h3>참고</h3>
 <ul class="seealso">
 <li><a href="../logs.html">아파치 로그파일</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="BufferedLogs" id="BufferedLogs">BufferedLogs</a> <a name="bufferedlogs" id="bufferedlogs">지시어</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">설명:</a></th><td>Buffer log entries in memory before writing to disk</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code /></td></tr>
-<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정</td></tr>
-<tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_log_config</td></tr>
-</table><p>Documentation not yet translated. Please see English version of document.</p>
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CustomLog" id="CustomLog">CustomLog</a> <a name="customlog" id="customlog">지시어</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">설명:</a></th><td>로그파일 이름과 형식을 지정한다</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>CustomLog  <var>file</var>|<var>pipe</var>
-<var>format</var>|<var>nickname</var>
-[env=[!]<var>environment-variable</var>]</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트</td></tr>
-<tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_log_config</td></tr>
-</table>
-    <p>서버가 요청을 로그에 남길때 <code class="directive">CustomLog</code>
-    지시어를 사용한다. 로그 형식을 지정하고, 환경변수를 사용하여
-    요청의 특징에 따라 선택적으로 로그를 남길 수도 있다.</p>
-
-    <p>로그를 기록할 장소를 지정하는 첫번째 아규먼트에는 다음
-    둘중 하나를 사용한다.</p>
-
-    <dl>
-      <dt><var>file</var></dt>
-      <dd><code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>에
-      상대적인 파일명.</dd>
-
-      <dt><var>pipe</var></dt>
-      <dd>파이프문자 "<code>|</code>"뒤에 로그 정보를 표준입력으로
-      받을 프로그램 경로를 적는다.
-
-      <div class="warning"><h3>보안:</h3>
-      <p>프로그램을 사용한다면 프로그램은 웹서버를 시작한 사용자
-      권한으로 실행된다. 서버를 root로 시작한다면 프로그램도
-      root로 실행하므로 프로그램이 안전한지 확인하라.</p>
-      </div>
-      <div class="warning"><h3>주의</h3>
-        <p>유닉스가 아닌 플래폼에서 파일경로를 입력할때 플래폼이
-        백슬래쉬를 사용하더라도 반드시 슬래쉬를 사용해야 한다.
-        일반적으로 설정파일에서는 항상 슬래쉬를 사용하는 것이
-        좋다.</p>
-      </div></dd>
-    </dl>
-
-    <p>두번째 아규먼트는 로그파일에 기록할 내용을 지정한다.
-    전에 <code class="directive"><a href="#logformat">LogFormat</a></code>으로
-    정의한 <var>nickname</var>을 사용하거나 직접 <a href="#formats">로그 형식</a> 절에서 설명한 <var>format</var>
-    문자열을 사용할 수 있다.</p>
-
-    <p>예를 들어, 다음 두 지시어는 똑같은 일을 한다.</p>
-
-    <div class="example"><p><code>
-      # 형식 별칭을 사용한 CustomLog<br />
-      LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common<br />
-      CustomLog logs/access_log common<br />
-      <br />
-      # 직접 형식 문자열을 사용한 CustomLog<br />
-      CustomLog logs/access_log "%h %l %u %t \"%r\" %&gt;s %b"
-    </code></p></div>
-
-    <p>세번째 아규먼트는 없어도 되며, 특정 서버 환경변수 유무에
-    따라 요청을 로그에 기록할지 여부를 결정한다. 요청에 지정한
-    <a href="../env.html">환경변수</a>가 정의되있다면 (혹은
-    '<code>env=!<var>name</var></code>'를 사용한 경우 없다면)
-    요청을 로그에 기록한다.</p>
-
-    <p><code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code>나 <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
-    모듈을 사용하여 요청별로 환경변수를 설정할 수 있다. 예를
-    들어, 서버가 GIF 그림에 대한 모든 요청을 주서버 로그가 아닌
-    다른 로그파일에 기록하려면,</p>
-    
-    <div class="example"><p><code>
-      SetEnvIf Request_URI \.gif$ gif-image<br />
-      CustomLog gif-requests.log common env=gif-image<br />
-      CustomLog nongif-requests.log common env=!gif-image
-    </code></p></div>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LogFormat" id="LogFormat">LogFormat</a> <a name="logformat" id="logformat">지시어</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">설명:</a></th><td>로그파일에 사용할 형식을 기술한다</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>LogFormat <var>format</var>|<var>nickname</var>
-[<var>nickname</var>]</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">기본값:</a></th><td><code>LogFormat "%h %l %u %t \"%r\" %&gt;s %b"</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트</td></tr>
-<tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_log_config</td></tr>
-</table>
-    <p>이 지시어는 접근 로그파일의 형식을 지정한다.</p>
-
-    <p><code class="directive">LogFormat</code> 지시어는 두가지 형식으로
-    사용한다. 첫번째 형식은 아규먼트를 한개만 사용하여 다음
-    <code class="directive">TransferLog</code> 지시어들이 사용할 로그
-    형식을 지정한다. 이 아규먼트에 위의 <a href="#formats">로그
-    형식 지정하기</a> 절에서 설명한 <var>format</var>을 직접
-    사용하거나, 다음에 설명할 <code class="directive">LogFormat</code>
-    지시어로 미리 정의한 (로그 형식을 지칭하는) <var>nickname</var>을
-    사용할 수 있다.</p>
-
-    <p><code class="directive">LogFormat</code> 지시어의 두번째 형식은
-    <var>format</var>과 <var>nickname</var>을 연결한다. 그러면
-    뒤에서 사용하는 <code class="directive">LogFormat</code>이나 <code class="directive"><a href="#customlog">CustomLog</a></code> 지시어에 반복해서
-    형식 문자열을 모두 입력하는 대신 <var>nickname</var>을 사용할
-    수 있다. 별칭을 정의하는 <code class="directive">LogFormat</code>
-    지시어는 <strong>이 외에는 아무 기능을 하지 않는다</strong>.
-    즉, 별칭<em>만</em>을 정의하며, 실제로 형식을 적용하거나
-    형식을 기본값으로 만들지 않는다. 그러므로 다음에 나오는
-    <code class="directive"><a href="#transferlog">TransferLog</a></code>
-    지시어에 영향을 주지 않는다. 또,
-    <code class="directive">LogFormat</code>은 별칭으로 다른 별칭을
-    정의할 수 있다. 별칭 이름에는 퍼센트 기호(<code>%</code>)를
-    사용할 수 없음을 주의하라.</p>
-
-    <div class="example"><h3>예제</h3><p><code>
-      LogFormat "%v %h %l %u %t \"%r\" %&gt;s %b" vhost_common
-    </code></p></div>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="TransferLog" id="TransferLog">TransferLog</a> <a name="transferlog" id="transferlog">지시어</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">설명:</a></th><td>로그파일 위치를 설정한다</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>TransferLog <var>file</var>|<var>pipe</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트</td></tr>
-<tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_log_config</td></tr>
-</table>
-    <p>이 지시어는 <code class="directive"><a href="#customlog">CustomLog</a></code> 지시어와 아규먼트와
-    기능이 비슷하지만, 로그 형식을 직접 지정하거나 요청을 조건에
-    따라 로그에 남길 수 없다. 대신 가장 최근 사용한 (별칭을
-    정의하지 않은) <code class="directive"><a href="#logformat">LogFormat</a></code> 지시어가 지정한
-    로그 형식을 사용한다. 미리 형식을 지정하지 않았다면 Common
-    Log Format을 사용한다.</p>
-
-    <div class="example"><h3>예제</h3><p><code>
-      LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\""<br />
-      TransferLog logs/access_log
-    </code></p></div>
-
-</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="formats" id="formats">로그 형식 지정하기</a></h2>
@@ -387,6 +240,153 @@
     디렉토리에 쓰기 권한을 가질때 왜 보안에 문제가 생기는지
     <a href="../misc/security_tips.html#serverroot">보안 팁</a>
     문서를 참고하라.</p>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="BufferedLogs" id="BufferedLogs">BufferedLogs</a> <a name="bufferedlogs" id="bufferedlogs">지시어</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">설명:</a></th><td>Buffer log entries in memory before writing to disk</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code /></td></tr>
+<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정</td></tr>
+<tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_log_config</td></tr>
+</table><p>Documentation not yet translated. Please see English version of document.</p>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="CustomLog" id="CustomLog">CustomLog</a> <a name="customlog" id="customlog">지시어</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">설명:</a></th><td>로그파일 이름과 형식을 지정한다</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>CustomLog  <var>file</var>|<var>pipe</var>
+<var>format</var>|<var>nickname</var>
+[env=[!]<var>environment-variable</var>]</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트</td></tr>
+<tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_log_config</td></tr>
+</table>
+    <p>서버가 요청을 로그에 남길때 <code class="directive">CustomLog</code>
+    지시어를 사용한다. 로그 형식을 지정하고, 환경변수를 사용하여
+    요청의 특징에 따라 선택적으로 로그를 남길 수도 있다.</p>
+
+    <p>로그를 기록할 장소를 지정하는 첫번째 아규먼트에는 다음
+    둘중 하나를 사용한다.</p>
+
+    <dl>
+      <dt><var>file</var></dt>
+      <dd><code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>에
+      상대적인 파일명.</dd>
+
+      <dt><var>pipe</var></dt>
+      <dd>파이프문자 "<code>|</code>"뒤에 로그 정보를 표준입력으로
+      받을 프로그램 경로를 적는다.
+
+      <div class="warning"><h3>보안:</h3>
+      <p>프로그램을 사용한다면 프로그램은 웹서버를 시작한 사용자
+      권한으로 실행된다. 서버를 root로 시작한다면 프로그램도
+      root로 실행하므로 프로그램이 안전한지 확인하라.</p>
+      </div>
+      <div class="warning"><h3>주의</h3>
+        <p>유닉스가 아닌 플래폼에서 파일경로를 입력할때 플래폼이
+        백슬래쉬를 사용하더라도 반드시 슬래쉬를 사용해야 한다.
+        일반적으로 설정파일에서는 항상 슬래쉬를 사용하는 것이
+        좋다.</p>
+      </div></dd>
+    </dl>
+
+    <p>두번째 아규먼트는 로그파일에 기록할 내용을 지정한다.
+    전에 <code class="directive"><a href="#logformat">LogFormat</a></code>으로
+    정의한 <var>nickname</var>을 사용하거나 직접 <a href="#formats">로그 형식</a> 절에서 설명한 <var>format</var>
+    문자열을 사용할 수 있다.</p>
+
+    <p>예를 들어, 다음 두 지시어는 똑같은 일을 한다.</p>
+
+    <div class="example"><p><code>
+      # 형식 별칭을 사용한 CustomLog<br />
+      LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common<br />
+      CustomLog logs/access_log common<br />
+      <br />
+      # 직접 형식 문자열을 사용한 CustomLog<br />
+      CustomLog logs/access_log "%h %l %u %t \"%r\" %&gt;s %b"
+    </code></p></div>
+
+    <p>세번째 아규먼트는 없어도 되며, 특정 서버 환경변수 유무에
+    따라 요청을 로그에 기록할지 여부를 결정한다. 요청에 지정한
+    <a href="../env.html">환경변수</a>가 정의되있다면 (혹은
+    '<code>env=!<var>name</var></code>'를 사용한 경우 없다면)
+    요청을 로그에 기록한다.</p>
+
+    <p><code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code>나 <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
+    모듈을 사용하여 요청별로 환경변수를 설정할 수 있다. 예를
+    들어, 서버가 GIF 그림에 대한 모든 요청을 주서버 로그가 아닌
+    다른 로그파일에 기록하려면,</p>
+    
+    <div class="example"><p><code>
+      SetEnvIf Request_URI \.gif$ gif-image<br />
+      CustomLog gif-requests.log common env=gif-image<br />
+      CustomLog nongif-requests.log common env=!gif-image
+    </code></p></div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="LogFormat" id="LogFormat">LogFormat</a> <a name="logformat" id="logformat">지시어</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">설명:</a></th><td>로그파일에 사용할 형식을 기술한다</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>LogFormat <var>format</var>|<var>nickname</var>
+[<var>nickname</var>]</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">기본값:</a></th><td><code>LogFormat "%h %l %u %t \"%r\" %&gt;s %b"</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트</td></tr>
+<tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_log_config</td></tr>
+</table>
+    <p>이 지시어는 접근 로그파일의 형식을 지정한다.</p>
+
+    <p><code class="directive">LogFormat</code> 지시어는 두가지 형식으로
+    사용한다. 첫번째 형식은 아규먼트를 한개만 사용하여 다음
+    <code class="directive">TransferLog</code> 지시어들이 사용할 로그
+    형식을 지정한다. 이 아규먼트에 위의 <a href="#formats">로그
+    형식 지정하기</a> 절에서 설명한 <var>format</var>을 직접
+    사용하거나, 다음에 설명할 <code class="directive">LogFormat</code>
+    지시어로 미리 정의한 (로그 형식을 지칭하는) <var>nickname</var>을
+    사용할 수 있다.</p>
+
+    <p><code class="directive">LogFormat</code> 지시어의 두번째 형식은
+    <var>format</var>과 <var>nickname</var>을 연결한다. 그러면
+    뒤에서 사용하는 <code class="directive">LogFormat</code>이나 <code class="directive"><a href="#customlog">CustomLog</a></code> 지시어에 반복해서
+    형식 문자열을 모두 입력하는 대신 <var>nickname</var>을 사용할
+    수 있다. 별칭을 정의하는 <code class="directive">LogFormat</code>
+    지시어는 <strong>이 외에는 아무 기능을 하지 않는다</strong>.
+    즉, 별칭<em>만</em>을 정의하며, 실제로 형식을 적용하거나
+    형식을 기본값으로 만들지 않는다. 그러므로 다음에 나오는
+    <code class="directive"><a href="#transferlog">TransferLog</a></code>
+    지시어에 영향을 주지 않는다. 또,
+    <code class="directive">LogFormat</code>은 별칭으로 다른 별칭을
+    정의할 수 있다. 별칭 이름에는 퍼센트 기호(<code>%</code>)를
+    사용할 수 없음을 주의하라.</p>
+
+    <div class="example"><h3>예제</h3><p><code>
+      LogFormat "%v %h %l %u %t \"%r\" %&gt;s %b" vhost_common
+    </code></p></div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="TransferLog" id="TransferLog">TransferLog</a> <a name="transferlog" id="transferlog">지시어</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">설명:</a></th><td>로그파일 위치를 설정한다</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>TransferLog <var>file</var>|<var>pipe</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트</td></tr>
+<tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_log_config</td></tr>
+</table>
+    <p>이 지시어는 <code class="directive"><a href="#customlog">CustomLog</a></code> 지시어와 아규먼트와
+    기능이 비슷하지만, 로그 형식을 직접 지정하거나 요청을 조건에
+    따라 로그에 남길 수 없다. 대신 가장 최근 사용한 (별칭을
+    정의하지 않은) <code class="directive"><a href="#logformat">LogFormat</a></code> 지시어가 지정한
+    로그 형식을 사용한다. 미리 형식을 지정하지 않았다면 Common
+    Log Format을 사용한다.</p>
+
+    <div class="example"><h3>예제</h3><p><code>
+      LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\""<br />
+      TransferLog logs/access_log
+    </code></p></div>
+
 </div>
 </div>
 <div class="bottomlang">

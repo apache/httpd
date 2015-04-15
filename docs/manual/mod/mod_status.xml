@@ -78,7 +78,7 @@ performance</description>
     domain add this code to your <code>httpd.conf</code>
     configuration file</p>
 <highlight language="config">
-&lt;Location /server-status&gt;
+&lt;Location "/server-status"&gt;
     SetHandler server-status
     Require host example.com
 &lt;/Location&gt;

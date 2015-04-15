@@ -563,10 +563,10 @@ a directory</description>
     inherited from other configuration sections. </p>
 
     <highlight language="config">
-&lt;Directory /var/www&gt;
+&lt;Directory "/var/www"&gt;
     IndexIgnore *.bak .??* *~ *# HEADER* README* RCS CVS *,v *,t
 &lt;/Directory&gt;
-&lt;Directory /var/www/backups&gt;
+&lt;Directory "/var/www/backups"&gt;
     IndexIgnoreReset ON
     IndexIgnore .??* *# HEADER* README* RCS CVS *,v *,t
 &lt;/Directory&gt;
@@ -955,7 +955,7 @@ indexing</description>
      single directory are now merged together. The result of:
 
      <highlight language="config">
-&lt;Directory /foo&gt;
+&lt;Directory "/foo"&gt;
     IndexOptions HTMLTable
     IndexOptions SuppressColumnsorting
 &lt;/Directory&gt;

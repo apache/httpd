@@ -170,7 +170,7 @@ Alias /foo /gaq
 
     <highlight language="config">
 Alias /image /ftp/pub/image
-&lt;Directory /ftp/pub/image&gt;
+&lt;Directory "/ftp/pub/image"&gt;
     Require all granted
 &lt;/Directory&gt;
     </highlight>
@@ -185,10 +185,10 @@ Alias /image /ftp/pub/image
     using <a href="../expr.html">expression syntax</a>.</p>
 
     <highlight language="config">
-&lt;Location /image&gt;
+&lt;Location "/image"&gt;
     Alias /ftp/pub/image
 &lt;/Location&gt;
-&lt;LocationMatch /error/(?&lt;NUMBER&gt;[0-9]+)&gt;
+&lt;LocationMatch "/error/(?&lt;NUMBER&gt;[0-9]+)"&gt;
     Alias /usr/local/apache/errors/%{env:MATCH_NUMBER}.html
 &lt;/LocationMatch&gt;
     </highlight>
@@ -393,13 +393,13 @@ Redirect 303 /three http://example.com/other
     interpreted using <a href="../expr.html">expression syntax</a>.</p>
 
     <highlight language="config">
-&lt;Location /one&gt;
+&lt;Location "/one"&gt;
     Redirect permanent http://example.com/two
 &lt;/Location&gt;<br />
-&lt;Location /three&gt;
+&lt;Location "/three"&gt;
     Redirect 303 http://example.com/other
 &lt;/Location&gt;<br />
-&lt;LocationMatch /error/(?&lt;NUMBER&gt;[0-9]+)&gt;
+&lt;LocationMatch "/error/(?&lt;NUMBER&gt;[0-9]+)"&gt;
     Redirect permanent http://example.com/errors/%{env:MATCH_NUMBER}.html
 &lt;/LocationMatch&gt;<br />
     </highlight>
@@ -506,7 +506,7 @@ target as a CGI script</description>
     is essentially equivalent to:</p>
     <highlight language="config">
 Alias /cgi-bin/ /web/cgi-bin/
-&lt;Location /cgi-bin &gt;
+&lt;Location "/cgi-bin" &gt;
     SetHandler cgi-script
     Options +ExecCGI
 &lt;/Location&gt;
@@ -537,7 +537,7 @@ Alias /cgi-bin/ /web/cgi-bin/
     module="core">SetHandler</directive>, and <directive
     module="core">Options</directive> as in:
     <highlight language="config">
-&lt;Directory /usr/local/apache2/htdocs/cgi-bin &gt;
+&lt;Directory "/usr/local/apache2/htdocs/cgi-bin"&gt;
     SetHandler cgi-script
     Options ExecCGI
 &lt;/Directory&gt;
@@ -555,10 +555,10 @@ Alias /cgi-bin/ /web/cgi-bin/
     interpreted using <a href="../expr.html">expression syntax</a>.</p>
 
     <highlight language="config">
-&lt;Location /cgi-bin &gt;
+&lt;Location "/cgi-bin"&gt;
     ScriptAlias /web/cgi-bin/
 &lt;/Location&gt;
-&lt;LocationMatch /cgi-bin/errors/(?&lt;NUMBER&gt;[0-9]+)&gt;
+&lt;LocationMatch "/cgi-bin/errors/(?&lt;NUMBER&gt;[0-9]+)"&gt;
     ScriptAlias /web/cgi-bin/errors/%{env:MATCH_NUMBER}.cgi
 &lt;/LocationMatch&gt;<br />
     </highlight>

@@ -61,72 +61,15 @@
     <p>이 모듈은 아파치 1.3에 있는 <code>mod_mmap_static</code>
     모듈의 기능을 확장한 결과다.</p>
 </div>
-<div id="quickview"><h3 class="directives">지시어들</h3>
+<div id="quickview"><h3>주제</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#using">mod_file_cache 사용하기</a></li>
+</ul><h3 class="directives">지시어들</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#cachefile">CacheFile</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mmapfile">MMapFile</a></li>
 </ul>
-<h3>주제</h3>
-<ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#using">mod_file_cache 사용하기</a></li>
-</ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CacheFile" id="CacheFile">CacheFile</a> <a name="cachefile" id="cachefile">지시어</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">설명:</a></th><td>시작시 여러 파일 핸들을 캐쉬한다</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>CacheFile <var>file-path</var> [<var>file-path</var>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정</td></tr>
-<tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Experimental</td></tr>
-<tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_file_cache</td></tr>
-</table>
-    <p><code class="directive">CacheFile</code> 지시어는 서버가 시작할때
-    여러 파일을 열고(open) 파일들의 핸들을 캐쉬에 저장한다.
-    서버 종료시 자동으로 캐쉬한 파일의 핸들을 닫는다(close).
-    파일시스템에서 파일이 변경되면 파일을 다시 캐쉬하기위해
-    서버를 재시작해야 한다.</p>
-
-    <p><var>file-path</var> 아규먼트를 조심해라. 아규먼트는
-    아파치의 URL-파일명 변환 핸들러가 만든 파일시스템 경로와
-    정확히 일치해야 한다. 한번 더 불필요한 <code>stat()</code>
-    시스템호출이 필요하기때문에 inode나 심볼링크 <em>등</em>을
-    경로를 지정할 수 없다. 이 모듈은 <code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code>나
-    <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>로 재작성한 파일명을 다룰 수
-    있기도 없기도 하다.</p>
-
-    <div class="example"><h3>예제</h3><p><code>
-      CacheFile /usr/local/apache/htdocs/index.html
-    </code></p></div>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MMapFile" id="MMapFile">MMapFile</a> <a name="mmapfile" id="mmapfile">지시어</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">설명:</a></th><td>시작시 여러 파일을 메모리에 대응한다</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>MMapFile <var>file-path</var> [<var>file-path</var>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정</td></tr>
-<tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Experimental</td></tr>
-<tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_file_cache</td></tr>
-</table>
-    <p><code class="directive">MMapFile</code> 지시어는 서버가 시작할때
-    (공백으로 구분한 아규먼트로 지정한) 여러 파일을 메모리에
-    대응한다(map). 서버 종료시 자동으로 대응을 푼다(unmap).
-    파일시스템에서 파일이 변경되면 파일들을 다시
-    <code>mmap()</code>하기위해 최소한 서버에 <code>HUP</code>이나
-    <code>USR1</code> 시그널을 보내야 한다.</p>
-
-    <p><var>file-path</var> 아규먼트를 조심해라. 아규먼트는
-    아파치의 URL-파일명 변환 핸들러가 만든 파일시스템 경로와
-    정확히 일치해야 한다. 한번 더 불필요한 <code>stat()</code>
-    시스템호출이 필요하기때문에 inode나 심볼링크 <em>등</em>을
-    경로를 지정할 수 없다. 이 모듈은 <code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code>나
-    <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>로 재작성한 파일명을 다룰 수
-    있기도 없기도 하다.</p>
-
-    <div class="example"><h3>예제</h3><p><code>
-      MMapFile /usr/local/apache/htdocs/index.html
-    </code></p></div>
-
-</div>
+<ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="using" id="using">mod_file_cache 사용하기</a></h2>
@@ -195,6 +138,63 @@
         | sed -e 's/.*/mmapfile &amp;/' &gt; /www/conf/mmap.conf
       </code></p></div>
     </div>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="CacheFile" id="CacheFile">CacheFile</a> <a name="cachefile" id="cachefile">지시어</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">설명:</a></th><td>시작시 여러 파일 핸들을 캐쉬한다</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>CacheFile <var>file-path</var> [<var>file-path</var>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정</td></tr>
+<tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_file_cache</td></tr>
+</table>
+    <p><code class="directive">CacheFile</code> 지시어는 서버가 시작할때
+    여러 파일을 열고(open) 파일들의 핸들을 캐쉬에 저장한다.
+    서버 종료시 자동으로 캐쉬한 파일의 핸들을 닫는다(close).
+    파일시스템에서 파일이 변경되면 파일을 다시 캐쉬하기위해
+    서버를 재시작해야 한다.</p>
+
+    <p><var>file-path</var> 아규먼트를 조심해라. 아규먼트는
+    아파치의 URL-파일명 변환 핸들러가 만든 파일시스템 경로와
+    정확히 일치해야 한다. 한번 더 불필요한 <code>stat()</code>
+    시스템호출이 필요하기때문에 inode나 심볼링크 <em>등</em>을
+    경로를 지정할 수 없다. 이 모듈은 <code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code>나
+    <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>로 재작성한 파일명을 다룰 수
+    있기도 없기도 하다.</p>
+
+    <div class="example"><h3>예제</h3><p><code>
+      CacheFile /usr/local/apache/htdocs/index.html
+    </code></p></div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="MMapFile" id="MMapFile">MMapFile</a> <a name="mmapfile" id="mmapfile">지시어</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">설명:</a></th><td>시작시 여러 파일을 메모리에 대응한다</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>MMapFile <var>file-path</var> [<var>file-path</var>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정</td></tr>
+<tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_file_cache</td></tr>
+</table>
+    <p><code class="directive">MMapFile</code> 지시어는 서버가 시작할때
+    (공백으로 구분한 아규먼트로 지정한) 여러 파일을 메모리에
+    대응한다(map). 서버 종료시 자동으로 대응을 푼다(unmap).
+    파일시스템에서 파일이 변경되면 파일들을 다시
+    <code>mmap()</code>하기위해 최소한 서버에 <code>HUP</code>이나
+    <code>USR1</code> 시그널을 보내야 한다.</p>
+
+    <p><var>file-path</var> 아규먼트를 조심해라. 아규먼트는
+    아파치의 URL-파일명 변환 핸들러가 만든 파일시스템 경로와
+    정확히 일치해야 한다. 한번 더 불필요한 <code>stat()</code>
+    시스템호출이 필요하기때문에 inode나 심볼링크 <em>등</em>을
+    경로를 지정할 수 없다. 이 모듈은 <code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code>나
+    <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>로 재작성한 파일명을 다룰 수
+    있기도 없기도 하다.</p>
+
+    <div class="example"><h3>예제</h3><p><code>
+      MMapFile /usr/local/apache/htdocs/index.html
+    </code></p></div>
+
 </div>
 </div>
 <div class="bottomlang">

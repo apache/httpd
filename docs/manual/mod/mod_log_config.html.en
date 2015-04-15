@@ -65,186 +65,6 @@
 <li><a href="../logs.html">Apache Log Files</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="BufferedLogs" id="BufferedLogs">BufferedLogs</a> <a name="bufferedlogs" id="bufferedlogs">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Buffer log entries in memory before writing to disk</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>BufferedLogs On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>BufferedLogs Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_log_config</td></tr>
-</table>
-    <p>The <code class="directive">BufferedLogs</code> directive causes
-    <code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code> to store several log entries in
-    memory and write them together to disk, rather than writing them
-    after each request.  On some systems, this may result in more
-    efficient disk access and hence higher performance.  It may be
-    set only once for the entire server; it cannot be configured
-    per virtual-host.</p>
-
-    <div class="note">This directive should be used with caution as a crash might
-    cause loss of logging data.</div>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CustomLog" id="CustomLog">CustomLog</a> <a name="customlog" id="customlog">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets filename and format of log file</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CustomLog  <var>file</var>|<var>pipe</var>
-<var>format</var>|<var>nickname</var>
-[env=[!]<var>environment-variable</var>|
-expr=<var>expression</var>]</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_log_config</td></tr>
-</table>
-    <p>The <code class="directive">CustomLog</code> directive is used to
-    log requests to the server. A log format is specified, and the
-    logging can optionally be made conditional on request
-    characteristics using environment variables.</p>
-
-    <p>The first argument, which specifies the location to which
-    the logs will be written, can take one of the following two
-    types of values:</p>
-
-    <dl>
-      <dt><var>file</var></dt>
-      <dd>A filename, relative to the <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>.</dd>
-
-      <dt><var>pipe</var></dt>
-      <dd>The pipe character "<code>|</code>", followed by the path
-      to a program to receive the log information on its standard
-      input. See the notes on <a href="../logs.html#piped">piped logs</a>
-      for more information.
-
-      <div class="warning"><h3>Security:</h3>
-      <p>If a program is used, then it will be run as the user who
-      started <code class="program"><a href="../programs/httpd.html">httpd</a></code>. This will be root if the server was
-      started by root; be sure that the program is secure.</p>
-      </div>
-      <div class="warning"><h3>Note</h3>
-        <p>When entering a file path on non-Unix platforms, care should be taken
-        to make sure that only forward slashed are used even though the platform
-        may allow the use of back slashes. In general it is a good idea to always
-        use forward slashes throughout the configuration files.</p>
-      </div></dd>
-    </dl>
-
-    <p>The second argument specifies what will be written to the
-    log file. It can specify either a <var>nickname</var> defined by
-    a previous <code class="directive"><a href="#logformat">LogFormat</a></code>
-    directive, or it can be an explicit <var>format</var> string as
-    described in the <a href="#formats">log formats</a> section.</p>
-
-    <p>For example, the following two sets of directives have
-    exactly the same effect:</p>
-
-    <pre class="prettyprint lang-config"># CustomLog with format nickname
-LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common
-CustomLog logs/access_log common
-
-# CustomLog with explicit format string
-CustomLog logs/access_log "%h %l %u %t \"%r\" %&gt;s %b"</pre>
-
-
-    <p>The third argument is optional and controls whether or
-    not to log a particular request. The condition can be the
-    presence or absence (in the case of a '<code>env=!<var>name</var></code>'
-    clause) of a particular variable in the server
-    <a href="../env.html">environment</a>. Alternatively, the condition
-    can be expressed as arbitrary boolean <a href="../expr.html">expression</a>. If the condition is not satisfied, the request
-    will not be logged. References to HTTP headers  in the expression
-    will not cause the header names to be added to the Vary header.</p>
-
-    <p>Environment variables can be set on a per-request
-    basis using the <code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code>
-    and/or <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> modules. For
-    example, if you want to record requests for all GIF
-    images on your server in a separate logfile but not in your main
-    log, you can use:</p>
-
-    <pre class="prettyprint lang-config">SetEnvIf Request_URI \.gif$ gif-image
-CustomLog gif-requests.log common env=gif-image
-CustomLog nongif-requests.log common env=!gif-image</pre>
-
-
-    <p>Or, to reproduce the behavior of the old RefererIgnore
-    directive, you might use the following:</p>
-
-    <pre class="prettyprint lang-config">SetEnvIf Referer example\.com localreferer
-CustomLog referer.log referer env=!localreferer</pre>
-
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LogFormat" id="LogFormat">LogFormat</a> <a name="logformat" id="logformat">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Describes a format for use in a log file</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LogFormat <var>format</var>|<var>nickname</var>
-[<var>nickname</var>]</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>LogFormat "%h %l %u %t \"%r\" %&gt;s %b"</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_log_config</td></tr>
-</table>
-    <p>This directive specifies the format of the access log
-    file.</p>
-
-    <p>The <code class="directive">LogFormat</code> directive can take one of two
-    forms. In the first form, where only one argument is specified,
-    this directive sets the log format which will be used by logs
-    specified in subsequent <code class="directive">TransferLog</code>
-    directives. The single argument can specify an explicit
-    <var>format</var> as discussed in the <a href="#formats">custom log
-    formats</a> section above. Alternatively, it can use a
-    <var>nickname</var> to refer to a log format defined in a
-    previous <code class="directive">LogFormat</code> directive as described
-    below.</p>
-
-    <p>The second form of the <code class="directive">LogFormat</code>
-    directive associates an explicit <var>format</var> with a
-    <var>nickname</var>. This <var>nickname</var> can then be used in
-    subsequent <code class="directive">LogFormat</code> or
-    <code class="directive"><a href="#customlog">CustomLog</a></code> directives
-    rather than repeating the entire format string. A
-    <code class="directive">LogFormat</code> directive that defines a nickname
-    <strong>does nothing else</strong> -- that is, it <em>only</em>
-    defines the nickname, it doesn't actually apply the format and make
-    it the default. Therefore, it will not affect subsequent
-    <code class="directive"><a href="#transferlog">TransferLog</a></code> directives.
-    In addition, <code class="directive">LogFormat</code> cannot use one nickname
-    to define another nickname. Note that the nickname should not contain
-    percent signs (<code>%</code>).</p>
-
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">LogFormat "%v %h %l %u %t \"%r\" %&gt;s %b" vhost_common</pre>
-</div>
-    
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="TransferLog" id="TransferLog">TransferLog</a> <a name="transferlog" id="transferlog">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specify location of a log file</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>TransferLog <var>file</var>|<var>pipe</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_log_config</td></tr>
-</table>
-    <p>This directive has exactly the same arguments and effect as
-    the <code class="directive"><a href="#customlog">CustomLog</a></code>
-    directive, with the exception that it does not allow the log format
-    to be specified explicitly or for conditional logging of requests.
-    Instead, the log format is determined by the most recently specified
-    <code class="directive"><a href="#logformat">LogFormat</a></code> directive
-    which does not define a nickname. Common Log Format is used if no
-    other format has been specified.</p>
-
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\""
-TransferLog logs/access_log</pre>
-</div>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="formats" id="formats">Custom Log Formats</a></h2>
 
@@ -535,6 +355,186 @@ TransferLog logs/access_log</pre>
     document for details on why your security could be compromised
     if the directory where logfiles are stored is writable by
     anyone other than the user that starts the server.</p>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="BufferedLogs" id="BufferedLogs">BufferedLogs</a> <a name="bufferedlogs" id="bufferedlogs">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Buffer log entries in memory before writing to disk</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>BufferedLogs On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>BufferedLogs Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_log_config</td></tr>
+</table>
+    <p>The <code class="directive">BufferedLogs</code> directive causes
+    <code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code> to store several log entries in
+    memory and write them together to disk, rather than writing them
+    after each request.  On some systems, this may result in more
+    efficient disk access and hence higher performance.  It may be
+    set only once for the entire server; it cannot be configured
+    per virtual-host.</p>
+
+    <div class="note">This directive should be used with caution as a crash might
+    cause loss of logging data.</div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="CustomLog" id="CustomLog">CustomLog</a> <a name="customlog" id="customlog">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets filename and format of log file</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CustomLog  <var>file</var>|<var>pipe</var>
+<var>format</var>|<var>nickname</var>
+[env=[!]<var>environment-variable</var>|
+expr=<var>expression</var>]</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_log_config</td></tr>
+</table>
+    <p>The <code class="directive">CustomLog</code> directive is used to
+    log requests to the server. A log format is specified, and the
+    logging can optionally be made conditional on request
+    characteristics using environment variables.</p>
+
+    <p>The first argument, which specifies the location to which
+    the logs will be written, can take one of the following two
+    types of values:</p>
+
+    <dl>
+      <dt><var>file</var></dt>
+      <dd>A filename, relative to the <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>.</dd>
+
+      <dt><var>pipe</var></dt>
+      <dd>The pipe character "<code>|</code>", followed by the path
+      to a program to receive the log information on its standard
+      input. See the notes on <a href="../logs.html#piped">piped logs</a>
+      for more information.
+
+      <div class="warning"><h3>Security:</h3>
+      <p>If a program is used, then it will be run as the user who
+      started <code class="program"><a href="../programs/httpd.html">httpd</a></code>. This will be root if the server was
+      started by root; be sure that the program is secure.</p>
+      </div>
+      <div class="warning"><h3>Note</h3>
+        <p>When entering a file path on non-Unix platforms, care should be taken
+        to make sure that only forward slashed are used even though the platform
+        may allow the use of back slashes. In general it is a good idea to always
+        use forward slashes throughout the configuration files.</p>
+      </div></dd>
+    </dl>
+
+    <p>The second argument specifies what will be written to the
+    log file. It can specify either a <var>nickname</var> defined by
+    a previous <code class="directive"><a href="#logformat">LogFormat</a></code>
+    directive, or it can be an explicit <var>format</var> string as
+    described in the <a href="#formats">log formats</a> section.</p>
+
+    <p>For example, the following two sets of directives have
+    exactly the same effect:</p>
+
+    <pre class="prettyprint lang-config"># CustomLog with format nickname
+LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common
+CustomLog logs/access_log common
+
+# CustomLog with explicit format string
+CustomLog logs/access_log "%h %l %u %t \"%r\" %&gt;s %b"</pre>
+
+
+    <p>The third argument is optional and controls whether or
+    not to log a particular request. The condition can be the
+    presence or absence (in the case of a '<code>env=!<var>name</var></code>'
+    clause) of a particular variable in the server
+    <a href="../env.html">environment</a>. Alternatively, the condition
+    can be expressed as arbitrary boolean <a href="../expr.html">expression</a>. If the condition is not satisfied, the request
+    will not be logged. References to HTTP headers  in the expression
+    will not cause the header names to be added to the Vary header.</p>
+
+    <p>Environment variables can be set on a per-request
+    basis using the <code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code>
+    and/or <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> modules. For
+    example, if you want to record requests for all GIF
+    images on your server in a separate logfile but not in your main
+    log, you can use:</p>
+
+    <pre class="prettyprint lang-config">SetEnvIf Request_URI \.gif$ gif-image
+CustomLog gif-requests.log common env=gif-image
+CustomLog nongif-requests.log common env=!gif-image</pre>
+
+
+    <p>Or, to reproduce the behavior of the old RefererIgnore
+    directive, you might use the following:</p>
+
+    <pre class="prettyprint lang-config">SetEnvIf Referer example\.com localreferer
+CustomLog referer.log referer env=!localreferer</pre>
+
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="LogFormat" id="LogFormat">LogFormat</a> <a name="logformat" id="logformat">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Describes a format for use in a log file</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LogFormat <var>format</var>|<var>nickname</var>
+[<var>nickname</var>]</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>LogFormat "%h %l %u %t \"%r\" %&gt;s %b"</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_log_config</td></tr>
+</table>
+    <p>This directive specifies the format of the access log
+    file.</p>
+
+    <p>The <code class="directive">LogFormat</code> directive can take one of two
+    forms. In the first form, where only one argument is specified,
+    this directive sets the log format which will be used by logs
+    specified in subsequent <code class="directive">TransferLog</code>
+    directives. The single argument can specify an explicit
+    <var>format</var> as discussed in the <a href="#formats">custom log
+    formats</a> section above. Alternatively, it can use a
+    <var>nickname</var> to refer to a log format defined in a
+    previous <code class="directive">LogFormat</code> directive as described
+    below.</p>
+
+    <p>The second form of the <code class="directive">LogFormat</code>
+    directive associates an explicit <var>format</var> with a
+    <var>nickname</var>. This <var>nickname</var> can then be used in
+    subsequent <code class="directive">LogFormat</code> or
+    <code class="directive"><a href="#customlog">CustomLog</a></code> directives
+    rather than repeating the entire format string. A
+    <code class="directive">LogFormat</code> directive that defines a nickname
+    <strong>does nothing else</strong> -- that is, it <em>only</em>
+    defines the nickname, it doesn't actually apply the format and make
+    it the default. Therefore, it will not affect subsequent
+    <code class="directive"><a href="#transferlog">TransferLog</a></code> directives.
+    In addition, <code class="directive">LogFormat</code> cannot use one nickname
+    to define another nickname. Note that the nickname should not contain
+    percent signs (<code>%</code>).</p>
+
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">LogFormat "%v %h %l %u %t \"%r\" %&gt;s %b" vhost_common</pre>
+</div>
+    
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="TransferLog" id="TransferLog">TransferLog</a> <a name="transferlog" id="transferlog">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specify location of a log file</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>TransferLog <var>file</var>|<var>pipe</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_log_config</td></tr>
+</table>
+    <p>This directive has exactly the same arguments and effect as
+    the <code class="directive"><a href="#customlog">CustomLog</a></code>
+    directive, with the exception that it does not allow the log format
+    to be specified explicitly or for conditional logging of requests.
+    Instead, the log format is determined by the most recently specified
+    <code class="directive"><a href="#logformat">LogFormat</a></code> directive
+    which does not define a nickname. Common Log Format is used if no
+    other format has been specified.</p>
+
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\""
+TransferLog logs/access_log</pre>
+</div>
+
 </div>
 </div>
 <div class="bottomlang">

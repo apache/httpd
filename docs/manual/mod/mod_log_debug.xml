@@ -36,7 +36,7 @@
         Log message after request to /foo/* is processed:
 
         <highlight language="config">
-&lt;Location /foo/&gt;
+&lt;Location "/foo/"&gt;
 &nbsp;&nbsp;LogMessage "/foo/ has been requested"
 &lt;/Location&gt;
         </highlight>
@@ -45,7 +45,7 @@
       <li>
         Log message if request to /foo/* is processed in a sub-request:
         <highlight language="config">
-&lt;Location /foo/&gt;
+&lt;Location "/foo/"&gt;
 &nbsp;&nbsp;LogMessage "subrequest to /foo/" hook=type_checker expr=%{IS_SUBREQ}
 &lt;/Location&gt;
         </highlight>
@@ -67,7 +67,7 @@
         Log the value of the "X-Foo" request environment variable in each
         stage of the request:
         <highlight language="config">
-&lt;Location /&gt;
+&lt;Location "/"&gt;
 &nbsp;&nbsp;LogMessage "%{reqenv:X-Foo}" hook=all
 &lt;/Location&gt;
         </highlight>
