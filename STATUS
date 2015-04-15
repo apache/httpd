@@ -316,8 +316,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1672985
                   http://svn.apache.org/r1672989 (CHANGES)
      2.4.x patch: trunk works (modulo CHANGES)
-     +1: jailletc36, ylavic
+     +1: jailletc36
      trawick: Could we add r1673769 too?
+     ylavic: +1 with r1673769.
 
   *) mod_logio: Log time-to-first-byte via %^FB
      trunk patch: http://svn.apache.org/r1671918
