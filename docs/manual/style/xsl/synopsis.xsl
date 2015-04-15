@@ -268,9 +268,6 @@
                 </div> <!-- /#quickview -->
             </xsl:if>&lf; <!-- have sidebar -->
 
-            <!-- Sections of documentation about the module as a whole -->
-            <xsl:apply-templates select="section" />&lf;
-
             <xsl:variable name="this" select="directivesynopsis" />
 
             <!-- Directive documentation -->
@@ -288,6 +285,9 @@
                 </xsl:otherwise>
                 </xsl:choose>
             </xsl:for-each>
+
+            <!-- Sections of documentation about the module as a whole -->
+            <xsl:apply-templates select="section" />&lf;
         </div>&lf; <!-- /#page-content -->
 
         <xsl:call-template name="bottom" />&lf;
