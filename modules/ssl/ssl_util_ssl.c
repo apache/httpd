@@ -173,12 +173,17 @@ BOOL SSL_X509_getBC(X509 *cert, int *ca, int *pathlen)
     *ca = bc->ca;
     *pathlen = -1 /* unlimited */;
     if (bc->pathlen != NULL) {
-        if ((bn = ASN1_INTEGER_to_BN(bc->pathlen, NULL)) == NULL)
+        if ((bn = ASN1_INTEGER_to_BN(bc->pathlen, NULL)) == NULL) {
+            BASIC_CONSTRAINTS_free(bc);
             return FALSE;
-        if ((cp = BN_bn2dec(bn)) == NULL)
+        }
+        if ((cp = BN_bn2dec(bn)) == NULL) {
+            BN_free(bn);
+            BASIC_CONSTRAINTS_free(bc);
             return FALSE;
+        }
         *pathlen = atoi(cp);
-        free(cp);
+        OPENSSL_free(cp);
         BN_free(bn);
     }
     BASIC_CONSTRAINTS_free(bc);
