@@ -19,10 +19,6 @@ Changes with Apache 2.4.13
   *) mod_ssl: Fix possible crash when loading server certificate constraints.
      PR 57694. [Paul Spangler <paul.spangler ni com>, Yann Ylavic]
 
-  *) core, modules: Avoid error response/document handling by the core if some
-     handler or input filter already did it while reading the request (causing
-     a double response body).  [Yann Ylavic]
-
   *) build: Don't load mod_cgi and mod_cgid in the default configuration
      if they're both built.  [olli hauer <ohauer gmx.de>]
 
