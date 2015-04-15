@@ -621,6 +621,15 @@ typedef struct {
      */
     apr_hash_t *response_code_exprs;
 
+#define AP_CGI_PASS_AUTH_OFF     (0)
+#define AP_CGI_PASS_AUTH_ON      (1)
+#define AP_CGI_PASS_AUTH_UNSET   (2)
+    /** CGIPassAuth: Whether HTTP authorization headers will be passed to
+     * scripts as CGI variables; affects all modules calling
+     * ap_add_common_vars(), as well as any others using this field as 
+     * advice
+     */
+    unsigned int cgi_pass_auth : 2;
 } core_dir_config;
 
 /* macro to implement off by default behaviour */
