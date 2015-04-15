@@ -12,6 +12,10 @@ Changes with Apache 2.4.13
      calls r:wsupgrade() can cause a child process crash. 
      [Edward Lu <Chaosed0 gmail.com>]
 
+  *) mod_ssl: Avoid compilation errors with LibreSSL related to
+     the use of ENGINE_CTRL_CHIL_SET_FORKCHECK. 
+     [Stuart Henderson <sthen openbsd.org>]
+
   *) mod_proxy_http: Use the "Connection: close" header for requests to
      backends not recycling connections (disablereuse), including the default
      reverse and forward proxies.  [Yann Ylavic]
