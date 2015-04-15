@@ -85,7 +85,7 @@ Require ip ip.address
     syntax.</p>
 
     <p>You can insert <code>not</code> to negate a particular requirement.
-    Note, that since a <code>not</code> is a negation of a value, it cannot 
+    Note, that since a <code>not</code> is a negation of a value, it cannot
     be used by itself to allow or deny a request, as <em>not true</em>
     does not constitute <em>false</em>. Thus, to deny a visit using a negation,
     the block must have one element that evaluates as true or false.
@@ -101,11 +101,13 @@ Require ip ip.address
 </highlight>
 
     <p>Visitors coming from that address (<code>10.252.46.165</code>)
-    will not be able to see the content covered by this directive. If, 
-    instead, you have a machine name, rather than an IP address, you 
+    will not be able to see the content covered by this directive. If,
+    instead, you have a machine name, rather than an IP address, you
     can use that.</p>
 
-    <highlight language="config">Require not host <var>host.example.com</var></highlight>
+    <highlight language="config">
+Require not host <var>host.example.com</var>
+    </highlight>
 
     <p>And, if you'd like to block access from an entire domain,
     you can specify just part of an address or domain name:</p>
@@ -203,4 +205,3 @@ RewriteRule ^/fridge - [F]
 </section>
 
 </manualpage>
-

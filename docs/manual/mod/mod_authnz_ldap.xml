@@ -566,7 +566,8 @@ Require valid-user
         The next example is the same as above; but with the fields
         that have useful defaults omitted. Also, note the use of a
         redundant LDAP server.
-<highlight language="config">AuthLDAPURL "ldap://ldap1.example.com ldap2.example.com/ou=People, o=Example"
+<highlight language="config">
+AuthLDAPURL "ldap://ldap1.example.com ldap2.example.com/ou=People, o=Example"
 Require valid-user
 </highlight>
       </li>
@@ -926,8 +927,12 @@ to perform a DN lookup</description>
         <directive module="mod_authnz_ldap">AuthLDAPBindDN</directive>.
     </p>
 
-    <highlight language="config"> AuthLDAPInitialBindPattern (.+) $1@example.com </highlight>
-    <highlight language="config"> AuthLDAPInitialBindPattern (.+) cn=$1,dc=example,dc=com</highlight>
+    <highlight language="config">
+AuthLDAPInitialBindPattern (.+) $1@example.com
+    </highlight>
+    <highlight language="config">
+AuthLDAPInitialBindPattern (.+) cn=$1,dc=example,dc=com
+    </highlight>
 
     <note><title>Not available with authorization-only</title>
         This directive can only be used if this module authenticates the user, and
@@ -1157,8 +1162,8 @@ evaluated before the user search is discontinued.</description>
    <note><title>Nested groups performance</title>
    <p> When <directive>AuthLDAPSubGroupAttribute</directive> overlaps with
    <directive>AuthLDAPGroupAttribute</directive> (as it does by default and
-   as required by common LDAP schemas), uncached searching for subgroups in 
-   large groups can be very slow. If you use large, non-nested groups, keep 
+   as required by common LDAP schemas), uncached searching for subgroups in
+   large groups can be very slow. If you use large, non-nested groups, keep
    <directive>AuthLDAPMaxSubGroupDepth</directive> set to zero.</p>
    </note>
 
@@ -1186,7 +1191,7 @@ query to set the REMOTE_USER environment variable</description>
     directive is useful should you want people to log into a website
     using an email address, but a backend application expects the
     username as a userid.</p>
-    <p> This directive only has effect when this module is used for 
+    <p> This directive only has effect when this module is used for
     authentication.</p>
 </usage>
 </directivesynopsis>
@@ -1307,7 +1312,9 @@ objects that are groups during sub-group processing.</description>
     to use. The syntax of the URL is</p>
 <example>ldap://host:port/basedn?attribute?scope?filter</example>
     <p>If you want to specify more than one LDAP URL that Apache should try in turn, the syntax is:</p>
-<highlight language="config">AuthLDAPUrl "ldap://ldap1.example.com ldap2.example.com/dc=..."</highlight>
+<highlight language="config">
+AuthLDAPUrl "ldap://ldap1.example.com ldap2.example.com/dc=..."
+</highlight>
 <p><em><strong>Caveat: </strong>If you specify multiple servers, you need to enclose the entire URL string in quotes;
 otherwise you will get an error: "AuthLDAPURL takes one argument, URL to define LDAP connection.." </em>
 You can of course use search parameters on each of these.</p>

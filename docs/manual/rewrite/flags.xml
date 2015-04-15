@@ -46,10 +46,12 @@ providing detailed explanations and examples.</p>
 its behavior modified by one or more flags. Flags are included in
 square brackets at the end of the rule, and multiple flags are separated
 by commas.</p>
-<highlight language="config">RewriteRule pattern target [Flag1,Flag2,Flag3]</highlight>
+<highlight language="config">
+RewriteRule pattern target [Flag1,Flag2,Flag3]
+</highlight>
 
 <p>Each flag (with a few exceptions) has a short form, such as
-<code>CO</code>, as well as a longer form, such as <code>cookie</code>. 
+<code>CO</code>, as well as a longer form, such as <code>cookie</code>.
 While it is most common to use
 the short form, it is recommended that you familiarize yourself with the
 long form, so that you remember what each flag is supposed to do.
@@ -68,9 +70,9 @@ of how you might use them.</p>
 <p>The [B] flag instructs <directive
 module="mod_rewrite">RewriteRule</directive> to escape non-alphanumeric
 characters before applying the transformation.</p>
-<p>In 2.4.10 and later, you can limit the escaping to specific characters 
-in backreferences by listing them: <code>[B=#?;]</code>. Note: The space 
-character can be used in the list of characters to escape, but it cannot be 
+<p>In 2.4.10 and later, you can limit the escaping to specific characters
+in backreferences by listing them: <code>[B=#?;]</code>. Note: The space
+character can be used in the list of characters to escape, but it cannot be
 the last character in the list.</p>
 
 <p><code>mod_rewrite</code> has to unescape URLs before mapping them,
@@ -78,7 +80,9 @@ so backreferences are unescaped at the time they are applied.
 Using the B flag, non-alphanumeric characters in backreferences
 will be escaped. For example, consider the rule:</p>
 
-<highlight language="config">RewriteRule ^search/(.*)$ /search.php?term=$1</highlight>
+<highlight language="config">
+RewriteRule ^search/(.*)$ /search.php?term=$1
+</highlight>
 
 <p>Given a search term of 'x &amp; y/z', a browser will encode it as
 'x%20%26%20y%2Fz', making the request 'search/x%20%26%20y%2Fz'. Without the B
@@ -106,7 +110,7 @@ strings in the encoded form.</p>
 <section id="flag_bnp"><title>BNP|backrefnoplus (don't escape space to +)</title>
 <p>The [BNP] flag instructs <directive
 module="mod_rewrite">RewriteRule</directive> to escape the space character
-in a backreference to %20 rather than '+'. Useful when the backreference 
+in a backreference to %20 rather than '+'. Useful when the backreference
 will be used in the path component rather than the query string.</p>
 </section>
 
@@ -272,7 +276,7 @@ module="mod_setenvif">SetEnvIf</directive>. This technique is offered as
 an example, not as a recommendation.</p>
 </section>
 
-<section id="flag_end"><title>END</title> 
+<section id="flag_end"><title>END</title>
 <p>Using the [END] flag terminates not only the current round of rewrite
 processing (like [L]) but also prevents any subsequent rewrite
 processing from occurring in per-directory (htaccess) context.</p>
@@ -290,7 +294,9 @@ allows more flexibility in assigning a Forbidden status.</p>
 <p>The following rule will forbid <code>.exe</code> files from being
 downloaded from your server.</p>
 
-<highlight language="config">RewriteRule \.exe - [F]</highlight>
+<highlight language="config">
+RewriteRule \.exe - [F]
+</highlight>
 
 <p>This example uses the "-" syntax for the rewrite target, which means
 that the requested URI is not modified. There's no reason to rewrite to
@@ -309,7 +315,9 @@ longer available.</p>
 <p>As with the [F] flag, you will typically use the "-" syntax for the
 rewrite target when using the [G] flag:</p>
 
-<highlight language="config">RewriteRule oldproduct - [G,NC]</highlight>
+<highlight language="config">
+RewriteRule oldproduct - [G,NC]
+</highlight>
 
 <p>When using [G], an [L] is implied - that is, the response is returned
 immediately, and no further rules are evaluated.</p>
@@ -321,7 +329,9 @@ immediately, and no further rules are evaluated.</p>
 handler. For example, one might use this to force all files without a
 file extension to be parsed by the php handler:</p>
 
-<highlight language="config">RewriteRule !\. - [H=application/x-httpd-php]</highlight>
+<highlight language="config">
+RewriteRule !\. - [H=application/x-httpd-php]
+</highlight>
 
 <p>
 The regular expression above - <code>!\.</code> - will match any request
@@ -405,14 +415,16 @@ certain string or letter repeatedly in a request. The example shown here
 will replace A with B everywhere in a request, and will continue doing
 so until there are no more As to be replaced.
 </p>
-<highlight language="config">RewriteRule (.*)A(.*) $1B$2 [N]</highlight>
+<highlight language="config">
+RewriteRule (.*)A(.*) $1B$2 [N]
+</highlight>
 <p>You can think of this as a <code>while</code> loop: While this
 pattern still matches (i.e., while the URI still contains an
 <code>A</code>), perform this substitution (i.e., replace the
 <code>A</code> with a <code>B</code>).</p>
 
 <p>In 2.5.0 and later, this module returns an error after 10,000 iterations to
-protect against unintended looping.  An alternative maximum number of 
+protect against unintended looping.  An alternative maximum number of
 iterations can be specified by adding to the N flag.  </p>
 <highlight language="config">
 # Be willing to replace 1 character in each pass of the loop
@@ -434,7 +446,9 @@ to your dedicated image server. The match is case-insensitive, so that
 <code>.jpg</code> and <code>.JPG</code> files are both acceptable, for
 example.</p>
 
-<highlight language="config">RewriteRule (.*\.(jpg|gif|png))$ http://images.example.com$1 [P,NC]</highlight>
+<highlight language="config">
+RewriteRule (.*\.(jpg|gif|png))$ http://images.example.com$1 [P,NC]
+</highlight>
 </section>
 
 <section id="flag_ne"><title>NE|noescape</title>
@@ -443,7 +457,9 @@ example.</p>
 equivalent. Using the [NE] flag prevents that from happening.
 </p>
 
-<highlight language="config">RewriteRule ^/anchor/(.+) /bigpage.html#$1 [NE,R]</highlight>
+<highlight language="config">
+RewriteRule ^/anchor/(.+) /bigpage.html#$1 [NE,R]
+</highlight>
 
 <p>
 The above example will redirect <code>/anchor/xyz</code> to
@@ -484,7 +500,9 @@ requests.
 example, if you wanted all image requests to be handled by a back-end
 image server, you might do something like the following:</p>
 
-<highlight language="config">RewriteRule /(.*)\.(jpg|gif|png)$ http://images.example.com/$1.$2 [P]</highlight>
+<highlight language="config">
+RewriteRule /(.*)\.(jpg|gif|png)$ http://images.example.com/$1.$2 [P]
+</highlight>
 
 <p>Use of the [P] flag implies [L] - that is, the request is immediately
 pushed through the proxy, and any following rules will not be
@@ -578,7 +596,9 @@ Using the [QSA] flag causes the query strings to be combined.
 
 <p>Consider the following rule:</p>
 
-<highlight language="config">RewriteRule /pages/(.+) /page.php?page=$1 [QSA]</highlight>
+<highlight language="config">
+RewriteRule /pages/(.+) /page.php?page=$1 [QSA]
+</highlight>
 
 <p>With the [QSA] flag, a request for <code>/pages/123?one=two</code> will be
 mapped to <code>/page.php?page=123&amp;one=two</code>. Without the [QSA]
@@ -625,7 +645,7 @@ will be used to generate the URL sent with the redirect.
 <em>Any</em> valid HTTP response  status code may be specified,
 using the syntax [R=305], with a 302 status code being used by
 default if none is specified. The status code specified need not
-necessarily be a redirect (3xx) status code. However, 
+necessarily be a redirect (3xx) status code. However,
 if a status code is outside the redirect range (300-399) then the
 substitution string is dropped entirely, and rewriting is stopped as if
 the <code>L</code> were used.</p>
@@ -645,14 +665,14 @@ URI in request' warnings.
 </section>
 
 <section id="flag_s"><title>S|skip</title>
-<p>The [S] flag is used to skip rules that you don't want to run. The 
-syntax of the skip flag is [S=<em>N</em>], where <em>N</em> signifies 
+<p>The [S] flag is used to skip rules that you don't want to run. The
+syntax of the skip flag is [S=<em>N</em>], where <em>N</em> signifies
 the number of rules to skip (provided the <directive module="mod_rewrite">
 RewriteRule</directive> and any preceding <directive module="mod_rewrite">
-RewriteCond</directive> directives match). This can be thought of as a 
-<code>goto</code> statement in your rewrite ruleset. In the following 
+RewriteCond</directive> directives match). This can be thought of as a
+<code>goto</code> statement in your rewrite ruleset. In the following
 example, we only want to run the <directive module="mod_rewrite">
-RewriteRule</directive> if the requested URI doesn't correspond with an 
+RewriteRule</directive> if the requested URI doesn't correspond with an
 actual file.</p>
 
 <highlight language="config">
@@ -738,4 +758,3 @@ The <code>L</code> flag can be useful in this context to end the
 </section>
 
 </manualpage>
-
