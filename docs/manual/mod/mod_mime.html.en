@@ -77,7 +77,12 @@
     their last modified date) to ensure that all visitors are
     receive the corrected content headers.</p>
 </div>
-<div id="quickview"><h3 class="directives">Directives</h3>
+<div id="quickview"><h3>Topics</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#multipleext">Files with Multiple Extensions</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#contentencoding">Content encoding</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#charset-lang">Character sets and languages</a></li>
+</ul><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#addcharset">AddCharset</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#addencoding">AddEncoding</a></li>
@@ -98,12 +103,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#removetype">RemoveType</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#typesconfig">TypesConfig</a></li>
 </ul>
-<h3>Topics</h3>
-<ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#multipleext">Files with Multiple Extensions</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#contentencoding">Content encoding</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#charset-lang">Character sets and languages</a></li>
-</ul><h3>See also</h3>
+<h3>See also</h3>
 <ul class="seealso">
 <li><code class="directive"><a href="../mod/mod_mime_magic.html#mimemagicfile">MimeMagicFile</a></code></li>
 <li><code class="directive"><a href="../mod/core.html#adddefaultcharset">AddDefaultCharset</a></code></li>

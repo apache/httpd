@@ -44,7 +44,12 @@
     also allows for advanced logic to be applied to the
     authorization processing.</p>
 </div>
-<div id="quickview"><h3 class="directives">Directives</h3>
+<div id="quickview"><h3>Topics</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#logic">Authorization Containers</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#requiredirectives">The Require Directives</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#authzalias">Creating Authorization Provider Aliases</a></li>
+</ul><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#authmerging">AuthMerging</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authzprovideralias">&lt;AuthzProviderAlias&gt;</a></li>
@@ -54,12 +59,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#requireany">&lt;RequireAny&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#requirenone">&lt;RequireNone&gt;</a></li>
 </ul>
-<h3>Topics</h3>
-<ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#logic">Authorization Containers</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#requiredirectives">The Require Directives</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#authzalias">Creating Authorization Provider Aliases</a></li>
-</ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
+<ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AuthMerging" id="AuthMerging">AuthMerging</a> <a name="authmerging" id="authmerging">Directive</a></h2>
 <table class="directive">

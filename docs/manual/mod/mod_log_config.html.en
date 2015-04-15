@@ -49,18 +49,18 @@
     step. The <code class="directive">TransferLog</code> and <code class="directive">CustomLog</code> directives can be used multiple times in each
     server to cause each request to be logged to multiple files.</p>
 </div>
-<div id="quickview"><h3 class="directives">Directives</h3>
+<div id="quickview"><h3>Topics</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#formats">Custom Log Formats</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#security">Security Considerations</a></li>
+</ul><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#bufferedlogs">BufferedLogs</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#customlog">CustomLog</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#logformat">LogFormat</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#transferlog">TransferLog</a></li>
 </ul>
-<h3>Topics</h3>
-<ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#formats">Custom Log Formats</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#security">Security Considerations</a></li>
-</ul><h3>See also</h3>
+<h3>See also</h3>
 <ul class="seealso">
 <li><a href="../logs.html">Apache Log Files</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>

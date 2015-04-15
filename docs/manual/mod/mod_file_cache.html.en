@@ -60,15 +60,15 @@
     <p>This module is an extension of and borrows heavily from the
     <code>mod_mmap_static</code> module in Apache 1.3.</p>
 </div>
-<div id="quickview"><h3 class="directives">Directives</h3>
+<div id="quickview"><h3>Topics</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#using">Using mod_file_cache</a></li>
+</ul><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#cachefile">CacheFile</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mmapfile">MMapFile</a></li>
 </ul>
-<h3>Topics</h3>
-<ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#using">Using mod_file_cache</a></li>
-</ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
+<ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CacheFile" id="CacheFile">CacheFile</a> <a name="cachefile" id="cachefile">Directive</a></h2>
 <table class="directive">

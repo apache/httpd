@@ -48,20 +48,20 @@
        the backend database driver and connection parameters, and
        manage the database connections.</p>
 </div>
-<div id="quickview"><h3 class="directives">Directives</h3>
-<ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#authzdbdlogintoreferer">AuthzDBDLoginToReferer</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#authzdbdquery">AuthzDBDQuery</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#authzdbdredirectquery">AuthzDBDRedirectQuery</a></li>
-</ul>
-<h3>Topics</h3>
+<div id="quickview"><h3>Topics</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#requiredirectives">The Require Directives</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#login">Database Login</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#client">Client Login integration</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#example">Configuration example</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#security">Preventing SQL injections</a></li>
-</ul><h3>See also</h3>
+</ul><h3 class="directives">Directives</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#authzdbdlogintoreferer">AuthzDBDLoginToReferer</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#authzdbdquery">AuthzDBDQuery</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#authzdbdredirectquery">AuthzDBDRedirectQuery</a></li>
+</ul>
+<h3>See also</h3>
 <ul class="seealso">
 <li><code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code></li>
 <li>

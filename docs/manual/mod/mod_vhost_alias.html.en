@@ -53,18 +53,18 @@ VirtualScriptAlias /never/found/%0/cgi-bin/</pre>
 
     </div>
 </div>
-<div id="quickview"><h3 class="directives">Directives</h3>
+<div id="quickview"><h3>Topics</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#interpol">Directory Name Interpolation</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#examples">Examples</a></li>
+</ul><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#virtualdocumentroot">VirtualDocumentRoot</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#virtualdocumentrootip">VirtualDocumentRootIP</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#virtualscriptalias">VirtualScriptAlias</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#virtualscriptaliasip">VirtualScriptAliasIP</a></li>
 </ul>
-<h3>Topics</h3>
-<ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#interpol">Directory Name Interpolation</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#examples">Examples</a></li>
-</ul><h3>See also</h3>
+<h3>See also</h3>
 <ul class="seealso">
 <li><code class="directive"><a href="../mod/core.html#usecanonicalname">UseCanonicalName</a></code></li>
 <li><a href="../vhosts/mass.html">Dynamically configured mass

@@ -61,15 +61,15 @@ delivery to the client</td></tr>
     a prototype environment for filters.</p>
 
 </div>
-<div id="quickview"><h3 class="directives">Directives</h3>
+<div id="quickview"><h3>Topics</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#examples">Examples</a></li>
+</ul><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#extfilterdefine">ExtFilterDefine</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#extfilteroptions">ExtFilterOptions</a></li>
 </ul>
-<h3>Topics</h3>
-<ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#examples">Examples</a></li>
-</ul><h3>See also</h3>
+<h3>See also</h3>
 <ul class="seealso">
 <li><a href="../filter.html">Filters</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>

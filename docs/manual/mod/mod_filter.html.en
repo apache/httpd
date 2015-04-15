@@ -44,16 +44,7 @@
     to <code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code>; no change to existing filter modules is
     required (although it may be possible to simplify them).</p>
 </div>
-<div id="quickview"><h3 class="directives">Directives</h3>
-<ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#addoutputfilterbytype">AddOutputFilterByType</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#filterchain">FilterChain</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#filterdeclare">FilterDeclare</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#filterprotocol">FilterProtocol</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#filterprovider">FilterProvider</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#filtertrace">FilterTrace</a></li>
-</ul>
-<h3>Topics</h3>
+<div id="quickview"><h3>Topics</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#smart">Smart Filtering</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#terms">Filter Declarations, Providers and Chains</a></li>
@@ -62,7 +53,16 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#upgrade">Upgrading from Apache HTTP Server 2.2 Configuration</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#examples">Examples</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#protocol">Protocol Handling</a></li>
-</ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
+</ul><h3 class="directives">Directives</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#addoutputfilterbytype">AddOutputFilterByType</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#filterchain">FilterChain</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#filterdeclare">FilterDeclare</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#filterprotocol">FilterProtocol</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#filterprovider">FilterProvider</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#filtertrace">FilterTrace</a></li>
+</ul>
+<ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AddOutputFilterByType" id="AddOutputFilterByType">AddOutputFilterByType</a> <a name="addoutputfilterbytype" id="addoutputfilterbytype">Directive</a></h2>
 <table class="directive">

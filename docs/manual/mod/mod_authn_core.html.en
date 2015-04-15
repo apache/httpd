@@ -39,16 +39,16 @@
     <code class="module"><a href="../mod/mod_authn_core.html">mod_authn_core</a></code> provides directives that are
     common to all authentication providers.</p>
 </div>
-<div id="quickview"><h3 class="directives">Directives</h3>
+<div id="quickview"><h3>Topics</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#authnalias">Creating Authentication Provider Aliases</a></li>
+</ul><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#authname">AuthName</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authnprovideralias">&lt;AuthnProviderAlias&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authtype">AuthType</a></li>
 </ul>
-<h3>Topics</h3>
-<ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#authnalias">Creating Authentication Provider Aliases</a></li>
-</ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
+<ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AuthName" id="AuthName">AuthName</a> <a name="authname" id="authname">Directive</a></h2>
 <table class="directive">

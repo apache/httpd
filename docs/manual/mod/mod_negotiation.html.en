@@ -50,17 +50,17 @@
       results.</li>
     </ul>
 </div>
-<div id="quickview"><h3 class="directives">Directives</h3>
+<div id="quickview"><h3>Topics</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#typemaps">Type maps</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#multiviews">Multiviews</a></li>
+</ul><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#cachenegotiateddocs">CacheNegotiatedDocs</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#forcelanguagepriority">ForceLanguagePriority</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#languagepriority">LanguagePriority</a></li>
 </ul>
-<h3>Topics</h3>
-<ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#typemaps">Type maps</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#multiviews">Multiviews</a></li>
-</ul><h3>See also</h3>
+<h3>See also</h3>
 <ul class="seealso">
 <li><code class="directive"><a href="../mod/core.html#options">Options</a></code></li>
 <li><code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code></li>

@@ -126,7 +126,14 @@
     <p>Further details, discussion, and examples, are provided in the
     <a href="../caching.html">Caching Guide</a>.</p>
 </div>
-<div id="quickview"><h3 class="directives">Directives</h3>
+<div id="quickview"><h3>Topics</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#related">Related Modules and Directives</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#sampleconf">Sample Configuration</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#thunderingherd">Avoiding the Thundering Herd</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#finecontrol">Fine Control with the CACHE Filter</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#status">Cache Status and Logging</a></li>
+</ul><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#cachedefaultexpire">CacheDefaultExpire</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cachedetailheader">CacheDetailHeader</a></li>
@@ -151,14 +158,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#cachestorenostore">CacheStoreNoStore</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cachestoreprivate">CacheStorePrivate</a></li>
 </ul>
-<h3>Topics</h3>
-<ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#related">Related Modules and Directives</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sampleconf">Sample Configuration</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#thunderingherd">Avoiding the Thundering Herd</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#finecontrol">Fine Control with the CACHE Filter</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#status">Cache Status and Logging</a></li>
-</ul><h3>See also</h3>
+<h3>See also</h3>
 <ul class="seealso">
 <li><a href="../caching.html">Caching Guide</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>

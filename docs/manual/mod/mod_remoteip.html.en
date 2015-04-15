@@ -58,7 +58,10 @@ via the request headers.
     it is trivial for the remote useragent to impersonate another
     useragent.</div>
 </div>
-<div id="quickview"><h3 class="directives">Directives</h3>
+<div id="quickview"><h3>Topics</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#processing">Remote IP Processing</a></li>
+</ul><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#remoteipheader">RemoteIPHeader</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#remoteipinternalproxy">RemoteIPInternalProxy</a></li>
@@ -67,10 +70,7 @@ via the request headers.
 <li><img alt="" src="../images/down.gif" /> <a href="#remoteiptrustedproxy">RemoteIPTrustedProxy</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#remoteiptrustedproxylist">RemoteIPTrustedProxyList</a></li>
 </ul>
-<h3>Topics</h3>
-<ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#processing">Remote IP Processing</a></li>
-</ul><h3>See also</h3>
+<h3>See also</h3>
 <ul class="seealso">
 <li><code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code></li>
 <li><code class="module"><a href="../mod/mod_status.html">mod_status</a></code></li>

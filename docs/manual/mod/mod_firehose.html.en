@@ -52,7 +52,11 @@
     </div>
 
 </div>
-<div id="quickview"><h3 class="directives">Directives</h3>
+<div id="quickview"><h3>Topics</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#enable">Enabling a Firehose</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#format">Stream Format</a></li>
+</ul><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#firehoseconnectioninput">FirehoseConnectionInput</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#firehoseconnectionoutput">FirehoseConnectionOutput</a></li>
@@ -61,11 +65,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#firehoserequestinput">FirehoseRequestInput</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#firehoserequestoutput">FirehoseRequestOutput</a></li>
 </ul>
-<h3>Topics</h3>
-<ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#enable">Enabling a Firehose</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#format">Stream Format</a></li>
-</ul><h3>See also</h3>
+<h3>See also</h3>
 <ul class="seealso">
 <li><code class="program"><a href="../programs/firehose.html">firehose</a></code></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>

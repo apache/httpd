@@ -52,7 +52,12 @@
     detect configuration mistakes within the server itself.</p>
 
 </div>
-<div id="quickview"><h3 class="directives">Directives</h3>
+<div id="quickview"><h3>Topics</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#actions">Actions</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#tests">Policy Tests</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#example">Example Configuration</a></li>
+</ul><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#policyconditional">PolicyConditional</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#policyconditionalurl">PolicyConditionalURL</a></li>
@@ -75,12 +80,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#policyversion">PolicyVersion</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#policyversionurl">PolicyVersionURL</a></li>
 </ul>
-<h3>Topics</h3>
-<ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#actions">Actions</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#tests">Policy Tests</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#example">Example Configuration</a></li>
-</ul><h3>See also</h3>
+<h3>See also</h3>
 <ul class="seealso">
 <li><a href="../filter.html">Filters</a></li>
 <li><a href="../compliance.html">HTTP Protocol Compliance</a></li>

@@ -84,7 +84,20 @@
     <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>.  These additional modules will need
     to be loaded and configured to take advantage of these features.</p>
 </div>
-<div id="quickview"><h3 class="directives">Directives</h3>
+<div id="quickview"><h3>Topics</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#forwardreverse">Forward Proxies and Reverse
+       Proxies/Gateways</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#examples">Basic Examples</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#handler">Access via Handler</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#workers">Workers</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#access">Controlling access to your proxy</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#startup">Slow Startup</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#intranet">Intranet Proxy</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#envsettings">Protocol Adjustments</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#request-bodies">Request Bodies</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#x-headers">Reverse Proxy Request Headers</a></li>
+</ul><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#balancergrowth">BalancerGrowth</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#balancerinherit">BalancerInherit</a></li>
@@ -118,20 +131,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#proxytimeout">ProxyTimeout</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxyvia">ProxyVia</a></li>
 </ul>
-<h3>Topics</h3>
-<ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#forwardreverse">Forward Proxies and Reverse
-       Proxies/Gateways</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#examples">Basic Examples</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#handler">Access via Handler</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#workers">Workers</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#access">Controlling access to your proxy</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#startup">Slow Startup</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#intranet">Intranet Proxy</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#envsettings">Protocol Adjustments</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#request-bodies">Request Bodies</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#x-headers">Reverse Proxy Request Headers</a></li>
-</ul><h3>See also</h3>
+<h3>See also</h3>
 <ul class="seealso">
 <li><code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code></li>
 <li><code class="module"><a href="../mod/mod_proxy_ajp.html">mod_proxy_ajp</a></code></li>

@@ -46,7 +46,12 @@
     extension. <strong>Please <em>do not</em> post such problems to
     Apache's lists or bug reporting pages.</strong></p>
 </div>
-<div id="quickview"><h3 class="directives">Directives</h3>
+<div id="quickview"><h3>Topics</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#usage">Usage</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#notes">Additional Notes</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#journal">Programmer's Journal</a></li>
+</ul><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#isapiappendlogtoerrors">ISAPIAppendLogToErrors</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#isapiappendlogtoquery">ISAPIAppendLogToQuery</a></li>
@@ -55,12 +60,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#isapilognotsupported">ISAPILogNotSupported</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#isapireadaheadbuffer">ISAPIReadAheadBuffer</a></li>
 </ul>
-<h3>Topics</h3>
-<ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#usage">Usage</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#notes">Additional Notes</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#journal">Programmer's Journal</a></li>
-</ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
+<ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ISAPIAppendLogToErrors" id="ISAPIAppendLogToErrors">ISAPIAppendLogToErrors</a> <a name="isapiappendlogtoerrors" id="isapiappendlogtoerrors">Directive</a></h2>
 <table class="directive">

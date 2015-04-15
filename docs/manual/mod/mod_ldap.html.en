@@ -55,7 +55,14 @@ by other LDAP modules</td></tr>
     website for details.</p>
 
 </div>
-<div id="quickview"><h3 class="directives">Directives</h3>
+<div id="quickview"><h3>Topics</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#exampleconfig">Example Configuration</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#pool">LDAP Connection Pool</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#cache">LDAP Cache</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#usingssltls">Using SSL/TLS</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#settingcerts">SSL/TLS Certificates</a></li>
+</ul><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#ldapcacheentries">LDAPCacheEntries</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ldapcachettl">LDAPCacheTTL</a></li>
@@ -76,14 +83,7 @@ by other LDAP modules</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#ldaptrustedmode">LDAPTrustedMode</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ldapverifyservercert">LDAPVerifyServerCert</a></li>
 </ul>
-<h3>Topics</h3>
-<ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#exampleconfig">Example Configuration</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#pool">LDAP Connection Pool</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#cache">LDAP Cache</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#usingssltls">Using SSL/TLS</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#settingcerts">SSL/TLS Certificates</a></li>
-</ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
+<ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LDAPCacheEntries" id="LDAPCacheEntries">LDAPCacheEntries</a> <a name="ldapcacheentries" id="ldapcacheentries">Directive</a></h2>
 <table class="directive">

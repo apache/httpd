@@ -58,17 +58,17 @@ configuration</td></tr>
     <p>Once configured, the server information is obtained by
     accessing <code>http://your.host.example.com/server-info</code></p>
 </div>
-<div id="quickview"><h3 class="directives">Directives</h3>
-<ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#addmoduleinfo">AddModuleInfo</a></li>
-</ul>
-<h3>Topics</h3>
+<div id="quickview"><h3>Topics</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#security">Security Issues</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#queries">Selecting the information shown</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#startup">Dumping the configuration on startup</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#limitations">Known Limitations</a></li>
-</ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
+</ul><h3 class="directives">Directives</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#addmoduleinfo">AddModuleInfo</a></li>
+</ul>
+<ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AddModuleInfo" id="AddModuleInfo">AddModuleInfo</a> <a name="addmoduleinfo" id="addmoduleinfo">Directive</a></h2>
 <table class="directive">

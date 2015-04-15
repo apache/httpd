@@ -42,18 +42,18 @@
     copying, and deleting resources and collections on a remote web
     server.</p>
 </div>
-<div id="quickview"><h3 class="directives">Directives</h3>
+<div id="quickview"><h3>Topics</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#example">Enabling WebDAV</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#security">Security Issues</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#complex">Complex Configurations</a></li>
+</ul><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#dav">Dav</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#davdepthinfinity">DavDepthInfinity</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#davmintimeout">DavMinTimeout</a></li>
 </ul>
-<h3>Topics</h3>
-<ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#example">Enabling WebDAV</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#security">Security Issues</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#complex">Complex Configurations</a></li>
-</ul><h3>See also</h3>
+<h3>See also</h3>
 <ul class="seealso">
 <li><code class="directive"><a href="../mod/mod_dav_fs.html#davlockdb">DavLockDB</a></code></li>
 <li><code class="directive"><a href="../mod/core.html#limitxmlrequestbody">LimitXMLRequestBody</a></code></li>

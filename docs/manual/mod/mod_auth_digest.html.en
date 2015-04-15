@@ -46,7 +46,10 @@
     whole connection using <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> is a much better
     alternative.</p>
 </div>
-<div id="quickview"><h3 class="directives">Directives</h3>
+<div id="quickview"><h3>Topics</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#using">Using Digest Authentication</a></li>
+</ul><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#authdigestalgorithm">AuthDigestAlgorithm</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authdigestdomain">AuthDigestDomain</a></li>
@@ -57,10 +60,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#authdigestqop">AuthDigestQop</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authdigestshmemsize">AuthDigestShmemSize</a></li>
 </ul>
-<h3>Topics</h3>
-<ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#using">Using Digest Authentication</a></li>
-</ul><h3>See also</h3>
+<h3>See also</h3>
 <ul class="seealso">
 <li><code class="directive"><a href="../mod/mod_authn_core.html#authname">AuthName</a></code></li>
 <li><code class="directive"><a href="../mod/mod_authn_core.html#authtype">AuthType</a></code></li>
