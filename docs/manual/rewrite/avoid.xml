@@ -90,7 +90,9 @@ and <code>/one/three/four.html</code>.</p>
 <p>To redirect URLs under <code>/one</code> to
 <code>http://one.example.com</code>, do the following:</p>
 
-<highlight language="config">Redirect /one/ http://one.example.com/</highlight>
+<highlight language="config">
+Redirect "/one/" "http://one.example.com/"
+</highlight>
 
 <p>To redirect <code>http</code> URLs to <code>https</code>, do the
 following:</p>
@@ -98,7 +100,7 @@ following:</p>
 <highlight language="config">
 &lt;VirtualHost *:80&gt;
     ServerName www.example.com
-    Redirect / https://www.example.com/
+    Redirect "/" "https://www.example.com/"
 &lt;/VirtualHost &gt;
 
 &lt;VirtualHost *:443&gt;
@@ -130,7 +132,9 @@ is possible to perform this mapping with <code>mod_rewrite</code>,
 and performance.</p>
 
 <example><title>Using Alias</title>
-<highlight language="config">Alias /cats /var/www/virtualhosts/felines/htdocs</highlight>
+<highlight language="config">
+Alias "/cats" "/var/www/virtualhosts/felines/htdocs"
+</highlight>
 </example>
 
 <p>
@@ -173,7 +177,7 @@ href="flags.html#flag_p">[P]</a> flag to pass rewritten URIs through
 <module>mod_proxy</module>.</p>
 
 <highlight language="config">
-RewriteRule ^/?images(.*) http://imageserver.local/images$1 [P]
+RewriteRule "^/?images(.*)" "http://imageserver.local/images$1" [P]
 </highlight>
 
 <p>However, in many cases, when there is no actual pattern matching
@@ -182,7 +186,7 @@ module="mod_proxy">ProxyPass</directive> directive is a better choice.
 The example here could be rendered as:</p>
 
 <highlight language="config">
-ProxyPass /images/ http://imageserver.local/images/
+ProxyPass "/images/" "http://imageserver.local/images/"
 </highlight>
 
 <p>Note that whether you use <directive
@@ -192,7 +196,7 @@ module="mod_proxy">ProxyPass</directive>, you'll still need to use the
 catch redirects issued from the back-end server:</p>
 
 <highlight language="config">
-ProxyPassReverse /images/ http://imageserver.local/images/
+ProxyPassReverse "/images/" "http://imageserver.local/images/"
 </highlight>
 
 <p>You may need to use <code>RewriteRule</code> instead when there are
@@ -218,7 +222,7 @@ module="core" type="section">If</directive> directive, as shown here:</p>
 
 <highlight language="config">
 &lt;If "req('Host') != 'www.example.com'"&gt;
-    Redirect / http://www.example.com/
+    Redirect "/" "http://www.example.com/"
 &lt;/If&gt;
 </highlight>
 
