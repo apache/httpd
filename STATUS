@@ -138,6 +138,14 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic, rjung, trawick
 
+  *) core: Add CGIPassAuth directive to control whether HTTP authorization
+     headers are passed to scripts as CGI variables.  PR: 56855
+     trunk patch: http://svn.apache.org/r1642847, http://svn.apache.org/r1673155
+     2.4.x patch: http://people.apache.org/~trawick/r1642847-r1673155-to-2.4.x.txt
+                  (trunk works if you do the normal CHANGES/ap_mmn/core_dir_config
+                   merge conflict resolution ;) )
+     +1: trawick, rjung, ylavic
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -281,14 +289,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1666998
      2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic
-
-  *) core: Add CGIPassAuth directive to control whether HTTP authorization
-     headers are passed to scripts as CGI variables.  PR: 56855
-     trunk patch: http://svn.apache.org/r1642847, http://svn.apache.org/r1673155
-     2.4.x patch: http://people.apache.org/~trawick/r1642847-r1673155-to-2.4.x.txt
-                  (trunk works if you do the normal CHANGES/ap_mmn/core_dir_config
-                   merge conflict resolution ;) )
-     +1: trawick, rjung
 
   *) mod_status: Improve server-status output when called with "?auto"
      (machine readable form).
