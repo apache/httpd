@@ -146,6 +146,12 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
                    merge conflict resolution ;) )
      +1: trawick, rjung, ylavic
 
+  *) mod_logio: Log time-to-first-byte via %^FB
+     trunk patch: http://svn.apache.org/r1671918
+                  http://svn.apache.org/r1673113
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: covener, ylavic, trawick
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -336,12 +342,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: jailletc36
      trawick: Could we add r1673769 too?
      ylavic: +1 with r1673769.
-
-  *) mod_logio: Log time-to-first-byte via %^FB
-     trunk patch: http://svn.apache.org/r1671918
-                  http://svn.apache.org/r1673113
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: covener, ylavic
 
 OTHER PROPOSALS
 
