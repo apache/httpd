@@ -176,6 +176,24 @@ Body:----------nl--
 <!--#include virtual="include/bottom.html" -->
 ----------nl--
 
+Content-language: nb
+Content-type: text/html; charset=UTF-8
+Body:----------nb--
+<!--#set var="CONTENT_LANGUAGE" value="nb"
+--><!--#set var="TITLE" value="Ugyldig Gateway!"
+--><!--#include virtual="include/top.html" -->
+
+    Proxyserveren mottok et ugyldig svar fra
+    en oppstrøms server.
+
+  <!--#if expr="-n v('REDIRECT_ERROR_NOTES')" -->
+    <!--#include virtual="include/spacer.html" -->
+    <!--#echo encoding="none" var="REDIRECT_ERROR_NOTES" -->
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->   
+----------nb--
+
 Content-language: pl
 Content-type: text/html; charset=UTF-8
 Body:----------pl--

@@ -133,6 +133,19 @@ Body:----------nl--
 <!--#include virtual="include/bottom.html" -->
 ----------nl--
 
+Content-language: nb
+Content-type: text/html; charset=UTF-8
+Body:----------nb--
+<!--#set var="CONTENT_LANGUAGE" value="nb"
+--><!--#set var="TITLE" value="Variant varierer også!"
+--><!--#include virtual="include/top.html" -->
+
+    En variant av den forespurte enheten er i seg selv en forhandelbar
+    ressurs. Tilgang ikke mulig.
+
+<!--#include virtual="include/bottom.html" -->
+----------nb--
+
 Content-language: pl
 Content-type: text/html; charset=UTF-8
 Body:----------pl--

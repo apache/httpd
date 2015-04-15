@@ -209,6 +209,27 @@ Body:----------nl--
 <!--#include virtual="include/bottom.html" -->
 ----------nl--
 
+Content-language: nb
+Content-type: text/html; charset=UTF-8
+Body:----------nb--
+<!--#set var="CONTENT_LANGUAGE" value="nb"
+--><!--#set var="TITLE" value="Autentisering kreves!"
+--><!--#include virtual="include/top.html" -->
+
+    Serveren kunne ikke verifisere at du har tillatelse til å besøke
+    adressen "<!--#echo encoding="url" var="REDIRECT_URL" -->".  Enten
+    oppga du feil opplysninger (f.eks. feil passord) eller så støtter
+    ikke din nettleser dette autentiseringsystemet.
+
+  <!--#include virtual="include/spacer.html" -->
+
+    Om du har tillatelse til å besøke siden, vennligst kontroler ditt
+    brukernavn og passord og forsøk igjen.
+
+<!--#include virtual="include/bottom.html" -->
+----------nb--
+
+
 Content-language: pl
 Content-type: text/html; charset=UTF-8
 Body:----------pl--
