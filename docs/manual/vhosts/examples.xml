@@ -337,8 +337,8 @@ Listen 80
     <highlight language="config">
 &lt;VirtualHost *:*&gt;
     ProxyPreserveHost On
-    ProxyPass / http://192.168.111.2/
-    ProxyPassReverse / http://192.168.111.2/
+    ProxyPass        "/" "http://192.168.111.2/"
+    ProxyPassReverse "/" "http://192.168.111.2/"
     ServerName hostname.example.com
 &lt;/VirtualHost&gt;
     </highlight>

@@ -55,7 +55,7 @@
 
     <example><title>Simple gateway</title>
     <highlight language="config">
-      ProxyPass /scgi-bin/ scgi://localhost:4000/
+ProxyPass "/scgi-bin/" "scgi://localhost:4000/"
       </highlight>
     </example>
 
@@ -67,7 +67,7 @@
 
     <example><title>Balanced gateway</title>
     <highlight language="config">
-ProxyPass /scgi-bin/ balancer://somecluster/
+ProxyPass "/scgi-bin/" "balancer://somecluster/"
 &lt;Proxy balancer://somecluster&gt;
     BalancerMember scgi://localhost:4000
     BalancerMember scgi://localhost:4001

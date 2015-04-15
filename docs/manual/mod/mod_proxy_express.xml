@@ -64,8 +64,8 @@
       <highlight language="config">
 &lt;VirtualHost *:80&gt;
    ServerName front.end.server
-   ProxyPass / back.end.server:port
-   ProxyPassReverse / back.end.server:port
+   ProxyPass        "/" "back.end.server:port"
+   ProxyPassReverse "/" "back.end.server:port"
 &lt;/VirtualHost&gt;
       </highlight>
       That is, the entire URL is appended to the mapped backend

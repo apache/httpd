@@ -269,10 +269,10 @@ and returns them to the client as if they were from the local
 server.</p>
 
 <highlight language="config">
-ProxyPass /foo/ http://internal.example.com/bar/<br />
-ProxyPassReverse /foo/ http://internal.example.com/bar/<br />
+ProxyPass        "/foo/" "http://internal.example.com/bar/"<br />
+ProxyPassReverse "/foo/" "http://internal.example.com/bar/"<br />
 ProxyPassReverseCookieDomain internal.example.com public.example.com<br />
-ProxyPassReverseCookiePath /foo/ /bar/
+ProxyPassReverseCookiePath "/foo/" "/bar/"
 </highlight>
 
 <p>The <directive module="mod_proxy">ProxyPass</directive> configures

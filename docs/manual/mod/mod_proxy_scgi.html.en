@@ -66,7 +66,7 @@
     <p>Remember, in order to make the following examples work, you have to
     enable <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> and <code class="module"><a href="../mod/mod_proxy_scgi.html">mod_proxy_scgi</a></code>.</p>
 
-    <div class="example"><h3>Simple gateway</h3><pre class="prettyprint lang-config">ProxyPass /scgi-bin/ scgi://localhost:4000/</pre>
+    <div class="example"><h3>Simple gateway</h3><pre class="prettyprint lang-config">ProxyPass "/scgi-bin/" "scgi://localhost:4000/"</pre>
 </div>
 
     <p>The balanced gateway needs <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code> and
@@ -75,7 +75,7 @@
     modules listed above.  <code class="module"><a href="../mod/mod_lbmethod_byrequests.html">mod_lbmethod_byrequests</a></code> is the
     default, and will be used for this example configuration.</p>
 
-    <div class="example"><h3>Balanced gateway</h3><pre class="prettyprint lang-config">ProxyPass /scgi-bin/ balancer://somecluster/
+    <div class="example"><h3>Balanced gateway</h3><pre class="prettyprint lang-config">ProxyPass "/scgi-bin/" "balancer://somecluster/"
 &lt;Proxy balancer://somecluster&gt;
     BalancerMember scgi://localhost:4000
     BalancerMember scgi://localhost:4001

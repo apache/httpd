@@ -43,8 +43,8 @@ Connection: Upgrade</pre>
 
 
 
-    <div class="example"><h3>Proxying requests to websockets server</h3><pre class="prettyprint lang-config">ProxyPass /ws2/  ws://echo.websocket.org/
-ProxyPass /wss2/ wss://echo.websocket.org/</pre>
+    <div class="example"><h3>Proxying requests to websockets server</h3><pre class="prettyprint lang-config">ProxyPass "/ws2/"  "ws://echo.websocket.org/"
+ProxyPass "/wss2/" "wss://echo.websocket.org/"</pre>
 </div>
 
 </div>

@@ -112,8 +112,8 @@
     <p>In this case, <code>mod_substutite</code> can be used to rewrite
     those URLs into something that will work from the front end:</p>
 
-    <div class="example"><h3>Rewriting URLs embedded in proxied content</h3><pre class="prettyprint lang-config">ProxyPass /blog/ http://internal.blog.example.com
-ProxyPassReverse /blog/ http://internal.blog.example.com/
+    <div class="example"><h3>Rewriting URLs embedded in proxied content</h3><pre class="prettyprint lang-config">ProxyPass        "/blog/" "http://internal.blog.example.com"
+ProxyPassReverse "/blog/" "http://internal.blog.example.com/"
 
 Substitute "s|http://internal.blog.example.com/|http://www.example.com/blog/|i"</pre>
 </div>
