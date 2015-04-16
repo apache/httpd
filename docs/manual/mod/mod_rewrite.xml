@@ -1294,7 +1294,7 @@ cannot use <code>$N</code> in the substitution string!
       <code>RewriteMap</code> directive and are explained there.
       These three types of variables are expanded in the order above.</p>
 
-      <p>Rewrite rules are a applied to the results of previous rewrite
+      <p>Rewrite rules are applied to the results of previous rewrite
       rules, in the order in which they are defined in the config file.
       The URL is  <strong>completely
       replaced</strong> by the <em>Substitution</em> and the
