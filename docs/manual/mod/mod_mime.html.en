@@ -156,7 +156,7 @@
     script, but not the file <code>bar.cgi.html</code>, then instead
     of using <code>AddHandler cgi-script .cgi</code>, use</p>
 
-    <div class="example"><h3>Configure handler based on final extension only</h3><pre class="prettyprint lang-config">&lt;FilesMatch "\.cgi$"&gt;
+    <div class="example"><h3>Configure handler based on final extension only</h3><pre class="prettyprint lang-config">&lt;FilesMatch ".+\.cgi$"&gt;
   SetHandler cgi-script
 &lt;/FilesMatch&gt;</pre>
 </div>
