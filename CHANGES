@@ -40,7 +40,7 @@ Changes with Apache 2.4.13
      Gateway) when no response is ever received from the backend.
      [Jan Kaluza]
 
-  *) core_filters: restore/disable TCP_NOPUSH option after non-blocking
+  *) core_filters: Restore/disable TCP_NOPUSH option after non-blocking
      sendfile.  [Yann Ylavic]
 
   *) core: Initialize scoreboard's used optional functions on graceful restarts
@@ -59,7 +59,7 @@ Changes with Apache 2.4.13
      be logged without an actual retry. PR57685. 
      [Edward Lu <Chaosed0 gmail.com>]
      
-  *) mod_proxy: use the original (non absolute) form of the request-line's URI
+  *) mod_proxy: Use the original (non absolute) form of the request-line's URI
      for requests embedded in CONNECT payloads used to connect SSL backends via
      a ProxyRemote forward-proxy.  PR 55892.  [Hendrik Harms <hendrik.harms
      gmail com>, William Rowe, Yann Ylavic]
