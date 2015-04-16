@@ -1,10 +1,6 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
-  *) mod_ssl: Avoid compilation errors with LibreSSL related to
-     the use of ENGINE_CTRL_CHIL_SET_FORKCHECK. 
-     [Stuart Henderson <sthen openbsd.org>]
-
   *) ssl: Add a warning if protocol given in SSLProtocol or SSLProxyProtocol
      will override other parameters given in the same directive. This could be
      a missing + or - prefix.  PR 52820 [Christophe Jaillet]
@@ -14,17 +10,10 @@ Changes with Apache 2.5.0
 
   *) http: Add support for RFC2324/RFC7168. [Graham Leggett]
 
-  *) mod_proxy_wstunnel: Avoid an empty response by failing with 502 (Bad
-     Gateway) when no response is ever received from the backend.
-     [Jan Kaluza]
-
   *) core: Cleanup the request soon/even if some output filter fails to
      handle the EOR bucket.  [Yann Ylavic]
 
   *) mpm_event: Allow for timer events duplicates. [Jim Jagielski, Yann Ylavic]
-
-  *) mod_ssl: Fix possible crash when loading server certificate constraints.
-     PR 57694. [Paul Spangler <paul.spangler ni com>, Yann Ylavic]
 
   *) core, modules: Avoid error response/document handling by the core if some
      handler or input filter already did it while reading the request (causing
@@ -43,10 +32,6 @@ Changes with Apache 2.5.0
   *) suexec: Filter out the HTTP_PROXY environment variable because it is
      treated as alias for http_proxy by some programs. [Stefan Fritsch]
 
-  *) mod_proxy_http: Use the "Connection: close" header for requests to
-     backends not recycling connections (disablereuse), including the default
-     reverse and forward proxies.  [Yann Ylavic]
-
   *) mod_proxy_http: Don't expect the backend to ack the "Connection: close" to
      finally close those not meant to be kept alive by SetEnv proxy-nokeepalive
      or force-proxy-request-1.0, and respond with 502 instead of 400 if its
@@ -54,10 +39,6 @@ Changes with Apache 2.5.0
 
   *) http: Make ap_die() robust against any HTTP error code and not modify
      response status (finally logged) when nothing is to be done. [Yann Ylavic]
-
-  *) mod_proxy_connect/wstunnel: If both client and backend sides get readable
-     at the same time, don't lose errors occuring while forwarding on the first
-     side when none occurs next on the other side, and abort.  [Yann Ylavic]
 
   *) mod_proxy_http: Don't establish or reuse a backend connection before pre-
      fetching the request body, so to minimize the delay between it is supposed
@@ -74,9 +55,6 @@ Changes with Apache 2.5.0
   *) config: For directives that do not expect any arguments, enforce
      that none are specified in the configuration file. 
      [Joachim Zobel <jzobel heute-morgen.de>, Eric Covener]
-
-  *) mod_alias: Introduce expression parser support for Alias, ScriptAlias
-     and Redirect. [Graham Leggett]
 
   *) mod_rewrite: Improve 'bad flag delimeters' startup error by showing
      how the input was tokenized.  PR 56528. [Edward Lu <Chaosed0 gmail.com>]
@@ -110,10 +88,6 @@ Changes with Apache 2.5.0
  
   *) mod_buffer: Forward flushed input data immediatly and avoid (unlikely)
      access to freed memory. [Yann Ylavic, Christophe Jaillet]
-
-  *) mod_proxy: Use the correct server name for SNI in case the backend
-     SSL connection itself is established via a proxy server.
-     PR 57139 [Szabolcs Gyurko <szabolcs gyurko.org>]
 
   *) core: Ensure that httpd exits with an error status when the MPM fails
      to run.  [Yann Ylavic]
@@ -259,9 +233,6 @@ Changes with Apache 2.5.0
 
   *) ldap: Support ldaps when using the Microsoft LDAP SDK.
      PR 54626. [Jean-Frederic Clere]
-
-  *) mod_proxy: Add ap_connection_reusable() for checking if a connection
-     is reusable as of this point in processing.  [Jeff Trawick]
 
   *) mod_authnz_ldap: Change default value of AuthLDAPMaxSubGroupDepth to 0
      to avoid performance problems when subgroups aren't in use. [Eric Covener]
