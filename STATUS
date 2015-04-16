@@ -128,8 +128,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                     when it occurs.  PR 56823.
      trunk patch: http://svn.apache.org/r1643537
                   http://svn.apache.org/r1643543
-     2.4.x patch: trunk works (module CHANGES)
-     +1: ylavic, jim
+                  http://svn.apache.org/r1674056
+     2.4.x patch: trunk works (module CHANGES, docs/log-message-tags)
+                  http://people.apache.org/~ylavic/httpd-2.4.x-mod_proxy_ajp-client_failed.patch
+                  (for convenience/readability)
+     +1: ylavic
      trawick: Eric and I were working through this and I (at least) ran into this
               particular roadblock: output_failed sometimes means that we couldn't
               write to the client and sometimes means that we couldn't read from
@@ -140,6 +143,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
               from input_failed so that the code is more clear and we can more
               easily tell that the status code is appropriate.  (And unfortunately
               I don't volunteer to make the simple changes and test them :( )
+     ylavic: I think the confusion comes from the (original) name output_failed itself,
+             since it really means client_failed (i.e. "dialog with [client] %pI failed"),
+             as opposed to backend_failed (i.e. "dialog with backend %pI failed").
+             When an error occurs on any side (connection), the first flag used regarding
+             4xx/5xx vs DONE is data_sent (i.e. to the client), otherwise {4xx,5xx} are
+             returned according to {output,backend}_failed. So the clarification is
+             possibly as simple as renaming output_failed => client_failed (r1674056 added
+             above), WDYT?
+             (Note that ap_map_http_request_error-v2.patch proposed below, which collides as
+             explained in the comment there, shows the full/expected result wrt mod_proxy_ajp
+             returned status/error/AP_FILTER_ERROR, and is maybe a more general (though bigger)
+             backport that could include this one).
 
    * core: Add ap_errorlog_provider to make ErrorLog logging modular. This
            backport keeps syslog logging as part of httpd core and only adds
@@ -227,11 +242,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1657897
                   http://svn.apache.org/r1665625
                   http://svn.apache.org/r1665721
-     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-ap_map_http_request_error.patch
+                  http://svn.apache.org/r1674056
+     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-ap_map_http_request_error-v2.patch
      +1: ylavic
-     ylavic: depends on r1657881 above, and also r1643537+r1643543 already
+     ylavic: depends on r1657881 above, and also r1643537+r1643543+r1674056 already
              proposed separately (if the latter proposal is accepted before
-             this one, I'll take it easily into account with a v2 of the
+             this one, I'll take it easily into account with a v3 of the
              2.4.x patch, but currently the code from r1657897+r1665625
              collides, this patch shows the final result on mod_proxy_ajp
              though)
