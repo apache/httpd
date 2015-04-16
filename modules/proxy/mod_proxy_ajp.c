@@ -177,7 +177,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
     apr_byte_t conn_reuse = 0;
     const char *tenc;
     int havebody = 1;
-    int output_failed = 0;
+    int client_failed = 0;
     int backend_failed = 0;
     apr_off_t bb_len;
     int data_sent = 0;
@@ -397,7 +397,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                             else if (status == AP_FILTER_ERROR) {
                                 rv = AP_FILTER_ERROR;
                             }
-                            output_failed = 1;
+                            client_failed = 1;
                             break;
                         }
                         bufsiz = maxsize;
@@ -408,7 +408,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, status, r, APLOGNO(00881)
                                          "apr_brigade_flatten failed");
                             rv = HTTP_INTERNAL_SERVER_ERROR;
-                            output_failed = 1;
+                            client_failed = 1;
                             break;
                         }
                     }
@@ -522,7 +522,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                                               "error processing body.%s",
                                               r->connection->aborted ?
                                               " Client aborted connection." : "");
-                                output_failed = 1;
+                                client_failed = 1;
                             }
                             data_sent = 1;
                             apr_brigade_cleanup(output_brigade);
@@ -549,7 +549,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                                         output_brigade) != APR_SUCCESS) {
                         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00888)
                                       "error processing end");
-                        output_failed = 1;
+                        client_failed = 1;
                     }
                     /* XXX: what about flush here? See mod_jk */
                     data_sent = 1;
@@ -572,8 +572,8 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
             if (!headers_sent) {
                 r->status = HTTP_BAD_REQUEST;
             }
+            client_failed = 1;
             /* return DONE */
-            output_failed = 1;
             data_sent = 1;
             break;
         }
@@ -582,8 +582,8 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
          * We either have finished successfully or we failed.
          * So bail out
          */
-        if ((result == CMD_AJP13_END_RESPONSE) || backend_failed
-            || output_failed)
+        if ((result == CMD_AJP13_END_RESPONSE)
+                || backend_failed || client_failed)
             break;
 
         /* read the response */
@@ -605,10 +605,10 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
      */
     apr_brigade_cleanup(output_brigade);
 
-    if (backend_failed || output_failed) {
+    if (backend_failed || client_failed) {
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00890)
-                      "Processing of request failed backend: %i, "
-                      "output: %i", backend_failed, output_failed);
+                      "Processing of request failed backend: %i, client: %i",
+                      backend_failed, client_failed);
         /* We had a failure: Close connection to backend */
         conn->close = 1;
         if (data_sent) {
@@ -685,7 +685,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
             }
         }
     }
-    else if (output_failed) {
+    else if (client_failed) {
         int level = (r->connection->aborted) ? APLOG_DEBUG : APLOG_ERR;
         ap_log_rerror(APLOG_MARK, level, status, r, APLOGNO(02822)
                       "dialog with client %pI failed",
