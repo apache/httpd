@@ -347,7 +347,7 @@ SSLCertificateKeyFile "/path/to/this/server.key"</pre>
     <p>The short answer is to use the <code>CA.sh</code> or <code>CA.pl</code>
     script provided by OpenSSL. Unless you have a good reason not to,
     you should use these for preference. If you cannot, you can create a
-    self-signed Certificate as follows:</p>
+    self-signed certificate as follows:</p>
 
     <ol>
     <li>Create a RSA private key for your server
@@ -368,11 +368,11 @@ SSLCertificateKeyFile "/path/to/this/server.key"</pre>
        <code><strong>$ openssl rsa -in server.key -out server.key.unsecure</strong></code><br />
        <br />
     </li>
-    <li>Create a self-signed Certificate (X509 structure)
+    <li>Create a self-signed certificate (X509 structure)
        with the RSA key you just created (output will be PEM formatted):<br />
        <br />
        <code><strong>$ openssl req -new -x509 -nodes -sha1 -days 365
-                       -key server.key -out server.crt</strong></code><br />
+                       -key server.key -out server.crt -extensions usr_cert</strong></code><br />
        <br />
        This signs the server CSR and results in a <code>server.crt</code> file.<br />
        You can see the details of this Certificate using:<br />
