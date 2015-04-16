@@ -272,10 +272,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1520445
                   http://svn.apache.org/r1672985
                   http://svn.apache.org/r1672989 (CHANGES)
+                  http://svn.apache.org/r1673769
      2.4.x patch: trunk works (modulo CHANGES)
-     +1: jailletc36
+     +1: jailletc36, ylavic
      trawick: Could we add r1673769 too?
-     ylavic: +1 with r1673769.
+     jailletc36: Sure
 
   *) mpm_event: Allow for timer events duplicates.
      trunk patch: http://svn.apache.org/r1666468
