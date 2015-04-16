@@ -52,20 +52,66 @@
       votre réseau, mais aussi pour l'Internet au sens large.</p>
     </div>
 </div>
-<div id="quickview"><h3 class="directives">Directives</h3>
+<div id="quickview"><h3>Sujets</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#examples">Exemples</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#env">Variables d'environnement</a></li>
+</ul><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#proxyscgiinternalredirect">ProxySCGIInternalRedirect</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxyscgisendfile">ProxySCGISendfile</a></li>
 </ul>
-<h3>Sujets</h3>
-<ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#examples">Exemples</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#env">Variables d'environnement</a></li>
-</ul><h3>Voir aussi</h3>
+<h3>Voir aussi</h3>
 <ul class="seealso">
 <li><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></li>
 <li><code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="examples" id="examples">Exemples</a></h2>
+    <p>Rappelez-vous, pour que les exemples suivants puissent
+    fonctionner, vous devez activer <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> et
+    <code class="module"><a href="../mod/mod_proxy_scgi.html">mod_proxy_scgi</a></code>.</p>
+
+    <div class="example"><h3>Passerelle simple</h3><pre class="prettyprint lang-config">ProxyPass /scgi-bin/ scgi://localhost:4000/</pre>
+</div>
+
+    <p>La passerelle à répartition de charge nécessite le chargement du
+    module <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code> et d'au moins un module
+    fournissant un algorithme de répartition de charge, comme
+    <code class="module"><a href="../mod/mod_lbmethod_byrequests.html">mod_lbmethod_byrequests</a></code> en plus des modules
+    déjà cités. <code class="module"><a href="../mod/mod_lbmethod_byrequests.html">mod_lbmethod_byrequests</a></code> est le module
+    par défaut et sera utilisé dans cet exemple de configuration.</p>
+
+    <div class="example"><h3>Passerelle à répartition de charge</h3><pre class="prettyprint lang-config">ProxyPass /scgi-bin/ balancer://somecluster/
+&lt;Proxy balancer://somecluster&gt;
+    BalancerMember scgi://localhost:4000
+    BalancerMember scgi://localhost:4001
+&lt;/Proxy&gt;</pre>
+</div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="env" id="env">Variables d'environnement</a></h2>
+    <p>En plus des directives de configuration qui permettent de
+    contrôler le comportement de <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>, une
+    <dfn>variable d'environnement</dfn> peut aussi
+    contrôler le fournisseur de protocole SCGI :</p>
+    <dl>
+        <dt>proxy-scgi-pathinfo</dt>
+        <dd>Par défaut, <code class="module"><a href="../mod/mod_proxy_scgi.html">mod_proxy_scgi</a></code> ne créera ni
+	exportera jamais la variable d'environnement
+	<var>PATH_INFO</var>. Ceci permet au serveur SCGI d'arrière-plan
+	de déterminer correctement <var>SCRIPT_NAME</var> et
+	<var>Script-URI</var>, et de rester en conformité avec la section
+	3.3 de la RFC 3875. Si au contraire vous souhaitez que
+	<code class="module"><a href="../mod/mod_proxy_scgi.html">mod_proxy_scgi</a></code> génère une estimation la plus
+	précise possible de <var>PATH_INFO</var>, définissez cette
+	variable d'environnement. La variable doit être définie avant
+	que la directive <code class="directive"><a href="../mod/env.html#setenv">SetEnv</a></code> ne soit effective. Il est possible
+	d'utiliser à la	place la directive <code class="directive"><a href="../mod/setenv.html#setenvif">SetEnvIf</a></code> : <code>SetEnvIf Request_URI . proxy-scgi-pathinfo</code>
+	</dd>
+    </dl>
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="proxyscgiinternalredirect" id="proxyscgiinternalredirect">Directive</a> <a name="ProxySCGIInternalRedirect" id="ProxySCGIInternalRedirect">ProxySCGIInternalRedirect</a></h2>
 <table class="directive">
@@ -142,52 +188,6 @@ provenance du serveur cible.</td></tr>
     ProxySCGISendfile X-Send-Static</pre>
 </div>
 
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="examples" id="examples">Exemples</a></h2>
-    <p>Rappelez-vous, pour que les exemples suivants puissent
-    fonctionner, vous devez activer <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> et
-    <code class="module"><a href="../mod/mod_proxy_scgi.html">mod_proxy_scgi</a></code>.</p>
-
-    <div class="example"><h3>Passerelle simple</h3><pre class="prettyprint lang-config">ProxyPass /scgi-bin/ scgi://localhost:4000/</pre>
-</div>
-
-    <p>La passerelle à répartition de charge nécessite le chargement du
-    module <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code> et d'au moins un module
-    fournissant un algorithme de répartition de charge, comme
-    <code class="module"><a href="../mod/mod_lbmethod_byrequests.html">mod_lbmethod_byrequests</a></code> en plus des modules
-    déjà cités. <code class="module"><a href="../mod/mod_lbmethod_byrequests.html">mod_lbmethod_byrequests</a></code> est le module
-    par défaut et sera utilisé dans cet exemple de configuration.</p>
-
-    <div class="example"><h3>Passerelle à répartition de charge</h3><pre class="prettyprint lang-config">ProxyPass /scgi-bin/ balancer://somecluster/
-&lt;Proxy balancer://somecluster&gt;
-    BalancerMember scgi://localhost:4000
-    BalancerMember scgi://localhost:4001
-&lt;/Proxy&gt;</pre>
-</div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="env" id="env">Variables d'environnement</a></h2>
-    <p>En plus des directives de configuration qui permettent de
-    contrôler le comportement de <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>, une
-    <dfn>variable d'environnement</dfn> peut aussi
-    contrôler le fournisseur de protocole SCGI :</p>
-    <dl>
-        <dt>proxy-scgi-pathinfo</dt>
-        <dd>Par défaut, <code class="module"><a href="../mod/mod_proxy_scgi.html">mod_proxy_scgi</a></code> ne créera ni
-	exportera jamais la variable d'environnement
-	<var>PATH_INFO</var>. Ceci permet au serveur SCGI d'arrière-plan
-	de déterminer correctement <var>SCRIPT_NAME</var> et
-	<var>Script-URI</var>, et de rester en conformité avec la section
-	3.3 de la RFC 3875. Si au contraire vous souhaitez que
-	<code class="module"><a href="../mod/mod_proxy_scgi.html">mod_proxy_scgi</a></code> génère une estimation la plus
-	précise possible de <var>PATH_INFO</var>, définissez cette
-	variable d'environnement. La variable doit être définie avant
-	que la directive <code class="directive"><a href="../mod/env.html#setenv">SetEnv</a></code> ne soit effective. Il est possible
-	d'utiliser à la	place la directive <code class="directive"><a href="../mod/setenv.html#setenvif">SetEnvIf</a></code> : <code>SetEnvIf Request_URI . proxy-scgi-pathinfo</code>
-	</dd>
-    </dl>
 </div>
 </div>
 <div class="bottomlang">

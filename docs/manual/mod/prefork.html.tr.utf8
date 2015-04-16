@@ -51,7 +51,10 @@
       süreçlerin ihtiyaçlarını karşılamasına yetecek kadar da küçük olması
       gerekir.</p>
 </div>
-<div id="quickview"><h3 class="directives">Yönergeler</h3>
+<div id="quickview"><h3>Konular</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#how-it-works">Nasıl çalışır?</a></li>
+</ul><h3 class="directives">Yönergeler</h3>
 <ul id="toc">
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#coredumpdirectory">CoreDumpDirectory</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#enableexceptionhook">EnableExceptionHook</a></li>
@@ -71,14 +74,52 @@
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#startservers">StartServers</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mod_unixd.html#user">User</a></li>
 </ul>
-<h3>Konular</h3>
-<ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#how-it-works">Nasıl çalışır?</a></li>
-</ul><h3>Ayrıca bakınız:</h3>
+<h3>Ayrıca bakınız:</h3>
 <ul class="seealso">
 <li><a href="../bind.html">Apache HTTP Sunucusunun kullandığı adres ve
     portların ayarlanması</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Yorum</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="how-it-works" id="how-it-works">Nasıl çalışır?</a></h2>
+    <p>Bağlantıları dinleyip gerektiğinde onlara hizmet sunan çocuk süreçleri
+      devreye almak tek bir denetim sürecinin sorumluluğundadır. Apache httpd
+      daima, gelen isteklere hizmet vermeye hazır bekleyen en fazla sayıda
+      sunucu sürecini <dfn>yedekte tutmaya</dfn> veya boşta bekletmeye
+      çalışır. Bu suretle, istemcilere isteklerinin sunulması için yeni çocuk
+      süreçlerin çatallanmasını beklemek gerekmez.</p>
+
+    <p>Ana sürecin istekleri sunacak çocuk süreçleri oluşturma işlemini nasıl
+      gerçekleştireceği <code class="directive"><a href="../mod/mpm_common.html#startservers">StartServers</a></code>, <code class="directive"><a href="#minspareservers">MinSpareServers</a></code>, <code class="directive"><a href="#maxspareservers">MaxSpareServers</a></code> ve <code class="directive"><a href="../mod/mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></code> yönergeleri ile düzenlenir. Apache httpd
+      kendiliğinden her duruma çok iyi uyum sağladığından, genelde, çoğu
+      sitenin bu yönergelerin öntanımlı değerlerini değiştirmesi gerekmez.
+      Aynı anda 256’dan fazla isteğe hizmet sunacak sitelerin <code class="directive"><a href="../mod/mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></code> değerini arttırmaları
+      gerekebilir. Ancak, fiziksel belleği yeterli olmayan sitelerin de
+      sunucunun belleği diske takaslamasını önlemek için bu değeri
+      azaltmaları gerekebilir. Süreç oluşturmanın ayarlanması ile ilgili daha
+      fazla bilgi edinmek için <a href="../misc/perf-tuning.html">başarım
+      arttırma ipuçları</a> belgesine bakınız.</p>
+
+    <p>Unix altında 80. portu dinleyebilmek için ana sürecin
+      <code>root</code> tarafından çalıştırılmış olması gerekirse de çocuk
+      süreçler Apache httpd tarafından daha az yetkili bir kullanıcının
+      aidiyetinde çalıştırılırlar. Apache httpd’nin çocuk süreçlerinin
+      kullanıcı ve gruplarını ayarlamak için <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code> ve <code class="directive"><a href="../mod/mod_unixd.html#group">Group</a></code>
+      yönergeleri kullanılır. Çocuk süreçlerin sunacakları içeriği okumaya
+      yetkili olmaları gerekir, fakat bu yetkinin mümkün olduğunca kısıtlı
+      tutulmasına çalışılmalıdır.</p>
+
+    <p><code class="directive"><a href="../mod/mpm_common.html#maxconnectionsperchild">MaxConnectionsPerChild</a></code>
+      yönergesi ana sunucunun eski süreçleri öldürüp yenilerini oluşturmayı
+      ne kadar sıklıkla yapacağını denetler.</p>
+
+    <p>Bu MPM, gürleyen sürü sorunu ortaya çıktığında (genelde çok sayıda
+      dinlenen soket varlığında) gelen bağlantılara erişimi dizgileştirmek için
+      <code>mpm-accept</code> muteksini kullanır. Bu muteksin gerçeklenimle
+      ilgili hususları <code class="directive"><a href="../mod/core.html#mutex">Mutex</a></code> yönergesi ile
+      yapılandırılabilir. Bu muteks hakkında ek bilgi  için <a href="../misc/perf-tuning.html">başarımın arttırılması</a>
+      belgesine bakınız.</p>
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="MaxSpareServers" id="MaxSpareServers">MaxSpareServers</a> <a name="maxspareservers" id="maxspareservers">Yönergesi</a></h2>
 <table class="directive">
@@ -139,47 +180,6 @@
 <li><code class="directive"><a href="../mod/mpm_common.html#startservers">StartServers</a></code></li>
 <li><code class="directive"><a href="../mod/mpm_common.html#minsparethreads">MinSpareThreads</a></code></li>
 </ul>
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="how-it-works" id="how-it-works">Nasıl çalışır?</a></h2>
-    <p>Bağlantıları dinleyip gerektiğinde onlara hizmet sunan çocuk süreçleri
-      devreye almak tek bir denetim sürecinin sorumluluğundadır. Apache httpd
-      daima, gelen isteklere hizmet vermeye hazır bekleyen en fazla sayıda
-      sunucu sürecini <dfn>yedekte tutmaya</dfn> veya boşta bekletmeye
-      çalışır. Bu suretle, istemcilere isteklerinin sunulması için yeni çocuk
-      süreçlerin çatallanmasını beklemek gerekmez.</p>
-
-    <p>Ana sürecin istekleri sunacak çocuk süreçleri oluşturma işlemini nasıl
-      gerçekleştireceği <code class="directive"><a href="../mod/mpm_common.html#startservers">StartServers</a></code>, <code class="directive"><a href="#minspareservers">MinSpareServers</a></code>, <code class="directive"><a href="#maxspareservers">MaxSpareServers</a></code> ve <code class="directive"><a href="../mod/mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></code> yönergeleri ile düzenlenir. Apache httpd
-      kendiliğinden her duruma çok iyi uyum sağladığından, genelde, çoğu
-      sitenin bu yönergelerin öntanımlı değerlerini değiştirmesi gerekmez.
-      Aynı anda 256’dan fazla isteğe hizmet sunacak sitelerin <code class="directive"><a href="../mod/mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></code> değerini arttırmaları
-      gerekebilir. Ancak, fiziksel belleği yeterli olmayan sitelerin de
-      sunucunun belleği diske takaslamasını önlemek için bu değeri
-      azaltmaları gerekebilir. Süreç oluşturmanın ayarlanması ile ilgili daha
-      fazla bilgi edinmek için <a href="../misc/perf-tuning.html">başarım
-      arttırma ipuçları</a> belgesine bakınız.</p>
-
-    <p>Unix altında 80. portu dinleyebilmek için ana sürecin
-      <code>root</code> tarafından çalıştırılmış olması gerekirse de çocuk
-      süreçler Apache httpd tarafından daha az yetkili bir kullanıcının
-      aidiyetinde çalıştırılırlar. Apache httpd’nin çocuk süreçlerinin
-      kullanıcı ve gruplarını ayarlamak için <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code> ve <code class="directive"><a href="../mod/mod_unixd.html#group">Group</a></code>
-      yönergeleri kullanılır. Çocuk süreçlerin sunacakları içeriği okumaya
-      yetkili olmaları gerekir, fakat bu yetkinin mümkün olduğunca kısıtlı
-      tutulmasına çalışılmalıdır.</p>
-
-    <p><code class="directive"><a href="../mod/mpm_common.html#maxconnectionsperchild">MaxConnectionsPerChild</a></code>
-      yönergesi ana sunucunun eski süreçleri öldürüp yenilerini oluşturmayı
-      ne kadar sıklıkla yapacağını denetler.</p>
-
-    <p>Bu MPM, gürleyen sürü sorunu ortaya çıktığında (genelde çok sayıda
-      dinlenen soket varlığında) gelen bağlantılara erişimi dizgileştirmek için
-      <code>mpm-accept</code> muteksini kullanır. Bu muteksin gerçeklenimle
-      ilgili hususları <code class="directive"><a href="../mod/core.html#mutex">Mutex</a></code> yönergesi ile
-      yapılandırılabilir. Bu muteks hakkında ek bilgi  için <a href="../misc/perf-tuning.html">başarımın arttırılması</a>
-      belgesine bakınız.</p>
 </div>
 </div>
 <div class="bottomlang">

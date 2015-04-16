@@ -73,12 +73,12 @@
       "MultiViews"</a> 자원을 권한부여하지 않는다.</p>
     </div>
 </div>
-<div id="quickview"><h3 class="directives">지시어들</h3>
-<p>이 모듈에는 지시어가 없습니다.</p>
-<h3>주제</h3>
+<div id="quickview"><h3>주제</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#examples">설정 예제</a></li>
-</ul><h3>참고</h3>
+</ul><h3 class="directives">지시어들</h3>
+<p>이 모듈에는 지시어가 없습니다.</p>
+<h3>참고</h3>
 <ul class="seealso">
 <li><code class="directive"><a href="../mod/core.html#require">Require</a></code></li>
 <li><code class="directive"><a href="../mod/core.html#satisfy">Satisfy</a></code></li>

@@ -53,7 +53,10 @@
     <p><code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code>을 사용할때 <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code>의
     값으로 <code>anon</code>을 설정하면 이 모듈을 사용한다.</p>
 </div>
-<div id="quickview"><h3 class="directives">지시어들</h3>
+<div id="quickview"><h3>주제</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#example">예제</a></li>
+</ul><h3 class="directives">지시어들</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#anonymous">Anonymous</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#anonymous_logemail">Anonymous_LogEmail</a></li>
@@ -61,10 +64,52 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#anonymous_nouserid">Anonymous_NoUserID</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#anonymous_verifyemail">Anonymous_VerifyEmail</a></li>
 </ul>
-<h3>주제</h3>
-<ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#example">예제</a></li>
-</ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
+<ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="example" id="example">예제</a></h2>
+    <p>다음 예는 "일반적인" htpasswd-파일기반 인증에 추가로
+    사용자가 다음 조건을 만족한다면 '손님(guest)'으로 접근할
+    수 있도록 한다:</p>
+
+    <ul>
+      <li>사용자는 사용자 아이디를 입력해야 한다. (<code class="directive"><a href="#anonymous_nouserid">Anonymous_NoUserID</a></code>)</li>
+
+      <li>사용자는 암호를 입력해야 한다. (<code class="directive"><a href="#anonymous_mustgiveemail">Anonymous_MustGiveEmail</a></code>)</li>
+
+      <li>암호로 유효한 전자우편 주소를 입력해야 한다. <em>예를
+      들어</em> 최소한 '@'와 '.' 한개를 포함해야 한다. (<code class="directive"><a href="#anonymous_verifyemail">Anonymous_VerifyEmail</a></code>)</li>
+
+      <li>사용자 아이디는 <code>anonymous guest www test
+      welcome</code> 중 하나이며, 대소문자를 구별하지
+      <strong>않는다</strong>. (<code class="directive"><a href="#anonymous">Anonymous</a></code>)</li>
+
+      <li>그리고 암호로 입력한 전자우편 주소를 오류로그파일에
+      기록한다. (<code class="directive"><a href="#anonymous_logemail">Anonymous_LogEmail</a></code>)</li>
+    </ul>
+
+    <div class="example"><h3>예제</h3><p><code>
+      &lt;Directory /foo&gt;
+      <span class="indent">
+        AuthName "손님으로 방문하려면 'anonymous'와 전자우편 주소를 사용하라"<br />
+        AuthType Basic<br />
+        AuthBasicProvider file anon<br />
+        AuthUserFile /path/to/your/.htpasswd<br />
+        <br />
+        Anonymous_NoUserID off<br />
+        Anonymous_MustGiveEmail on<br />
+        Anonymous_VerifyEmail on<br />
+        Anonymous_LogEmail on<br />
+        Anonymous anonymous guest www test welcome<br />
+        <br />
+        Order Deny,Allow<br />
+        Allow from all<br />
+        <br />
+        Require valid-user<br />
+      </span>
+      &lt;/Directory&gt;
+    </code></p></div>
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="Anonymous" id="Anonymous">Anonymous</a> <a name="anonymous" id="anonymous">지시어</a></h2>
 <table class="directive">
@@ -160,51 +205,6 @@
     주소를 입력하도록 입력한 '암호'가 최소한 '@'와 '.'를 한개씩
     포함하는지 검사한다 (위의 <code class="directive"><a href="#anonymous_logemail">Anonymous_LogEmail</a></code> 참고).</p>
 
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="example" id="example">예제</a></h2>
-    <p>다음 예는 "일반적인" htpasswd-파일기반 인증에 추가로
-    사용자가 다음 조건을 만족한다면 '손님(guest)'으로 접근할
-    수 있도록 한다:</p>
-
-    <ul>
-      <li>사용자는 사용자 아이디를 입력해야 한다. (<code class="directive"><a href="#anonymous_nouserid">Anonymous_NoUserID</a></code>)</li>
-
-      <li>사용자는 암호를 입력해야 한다. (<code class="directive"><a href="#anonymous_mustgiveemail">Anonymous_MustGiveEmail</a></code>)</li>
-
-      <li>암호로 유효한 전자우편 주소를 입력해야 한다. <em>예를
-      들어</em> 최소한 '@'와 '.' 한개를 포함해야 한다. (<code class="directive"><a href="#anonymous_verifyemail">Anonymous_VerifyEmail</a></code>)</li>
-
-      <li>사용자 아이디는 <code>anonymous guest www test
-      welcome</code> 중 하나이며, 대소문자를 구별하지
-      <strong>않는다</strong>. (<code class="directive"><a href="#anonymous">Anonymous</a></code>)</li>
-
-      <li>그리고 암호로 입력한 전자우편 주소를 오류로그파일에
-      기록한다. (<code class="directive"><a href="#anonymous_logemail">Anonymous_LogEmail</a></code>)</li>
-    </ul>
-
-    <div class="example"><h3>예제</h3><p><code>
-      &lt;Directory /foo&gt;
-      <span class="indent">
-        AuthName "손님으로 방문하려면 'anonymous'와 전자우편 주소를 사용하라"<br />
-        AuthType Basic<br />
-        AuthBasicProvider file anon<br />
-        AuthUserFile /path/to/your/.htpasswd<br />
-        <br />
-        Anonymous_NoUserID off<br />
-        Anonymous_MustGiveEmail on<br />
-        Anonymous_VerifyEmail on<br />
-        Anonymous_LogEmail on<br />
-        Anonymous anonymous guest www test welcome<br />
-        <br />
-        Order Deny,Allow<br />
-        Allow from all<br />
-        <br />
-        Require valid-user<br />
-      </span>
-      &lt;/Directory&gt;
-    </code></p></div>
 </div>
 </div>
 <div class="bottomlang">

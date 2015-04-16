@@ -53,19 +53,19 @@ d'Apache</td></tr></table>
     pilote de la base de données sous-jacente et les paramètres de
     connexion, et gérer les connexions à la base de données.</p>
 </div>
-<div id="quickview"><h3 class="directives">Directives</h3>
-<ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#authzdbdlogintoreferer">AuthzDBDLoginToReferer</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#authzdbdquery">AuthzDBDQuery</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#authzdbdredirectquery">AuthzDBDRedirectQuery</a></li>
-</ul>
-<h3>Sujets</h3>
+<div id="quickview"><h3>Sujets</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#requiredirectives">Les directives Require</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#login">Reconnaissance d'identité s'appuyant sur une base de données</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#client">Reconnaissance d'identité côté client</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#example">Exemple de configuration</a></li>
-</ul><h3>Voir aussi</h3>
+</ul><h3 class="directives">Directives</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#authzdbdlogintoreferer">AuthzDBDLoginToReferer</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#authzdbdquery">AuthzDBDQuery</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#authzdbdredirectquery">AuthzDBDRedirectQuery</a></li>
+</ul>
+<h3>Voir aussi</h3>
 <ul class="seealso">
 <li><code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code></li>
 <li>
@@ -74,99 +74,6 @@ d'Apache</td></tr></table>
 <li><code class="directive"><a href="../mod/mod_dbd.html#dbdriver">DBDriver</a></code></li>
 <li><code class="directive"><a href="../mod/mod_dbd.html#dbdparams">DBDParams</a></code></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="authzdbdlogintoreferer" id="authzdbdlogintoreferer">Directive</a> <a name="AuthzDBDLoginToReferer" id="AuthzDBDLoginToReferer">AuthzDBDLoginToReferer</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit si le client doit être redirigé vers la page
-d'origine en cas de connexion ou de déconnexion réussie si un en-tête
-de requête <code>Referer</code> est présent</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthzDBDLoginToReferer On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AuthzDBDLoginToReferer Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authz_dbd</td></tr>
-</table>
-    <p>Utilisée en conjonction avec <code>Require dbd-login</code> ou
-    <code>Require dbd-logout</code>, cette directive permet de rediriger
-    le client vers la page d'origine (l'URL contenue dans l'en-tête
-    de requête HTTP <code>Referer</code>, s'il est présent). En
-    l'absence d'en-tête <code>Referer</code>, la définition
-    <code>AuthzDBDLoginToReferer On</code> sera ignorée.</p>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="authzdbdquery" id="authzdbdquery">Directive</a> <a name="AuthzDBDQuery" id="AuthzDBDQuery">AuthzDBDQuery</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit la requête SQL pour l'opération
-requise</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthzDBDQuery <var>requête</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authz_dbd</td></tr>
-</table>
-    <p>La directive <code class="directive">AuthzDBDQuery</code> permet de
-    spécifier une requête SQL à exécuter. Le but de cette requête dépend
-    de la directive <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> en cours de
-    traitement.</p>
-    <ul>
-    <li>Avec la directive <code>Require dbd-group</code>, elle spécifie
-    une requête permettant de rechercher les groupes d'appartenance de
-    l'utilisateur courant. Ceci correspond à la fonctionnalité standard
-    d'autres modules d'autorisation comme
-    <code class="module"><a href="../mod/mod_authz_groupfile.html">mod_authz_groupfile</a></code> et
-    <code class="module"><a href="../mod/mod_authz_dbm.html">mod_authz_dbm</a></code>.
-    La première colonne de chaque enregistrement renvoyé par la requête
-    doit contenir une chaîne de caractères correspondant à un nom de
-    groupe. La requête peut renvoyer zéro, un ou plusieurs
-    enregistrements.
-    <pre class="prettyprint lang-config">Require dbd-group
-AuthzDBDQuery "SELECT group FROM groups WHERE user = %s"</pre>
-
-    </li>
-    <li>Avec la directive <code>Require dbd-login</code> ou
-    <code>Require dbd-logout</code>, elle ne refusera jamais l'accès,
-    mais au contraire exécutera une requête SQL permettant d'enregistrer
-    la connexion ou la déconnexion de l'utilisateur. Ce dernier doit
-    être déjà authentifié avec <code class="module"><a href="../mod/mod_authn_dbd.html">mod_authn_dbd</a></code>.
-    <pre class="prettyprint lang-config">Require dbd-login
-AuthzDBDQuery "UPDATE authn SET login = 'true' WHERE user = %s"</pre>
-
-    </li>
-    </ul>
-    <p>Dans tous les cas, l'identifiant utilisateur sera transmis comme
-    paramètre sous la forme d'une simple chaîne lorsque la requête SQL
-    sera exécutée. Il y sera fait référence dans la requête en utilisant
-    le spécificateur de format <code>%s</code>.</p>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="authzdbdredirectquery" id="authzdbdredirectquery">Directive</a> <a name="AuthzDBDRedirectQuery" id="AuthzDBDRedirectQuery">AuthzDBDRedirectQuery</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit une requête pour rechercher une page vers laquelle
-rediriger l'utilisateur après une connexion réussie</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthzDBDRedirectQuery <var>requête</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authz_dbd</td></tr>
-</table>
-    <p>Spécifie une requête SQL optionnelle à utiliser après une
-    connexion (ou une déconnexion) réussie pour rediriger l'utilisateur
-    vers une URL, qui peut être spécifique à l'utilisateur.
-    L'identifiant utilisateur sera transmis comme paramètre sous la
-    forme d'une simple chaîne lorsque la requête SQL sera exécutée. Il y
-    sera fait référence dans la requête en utilisant le spécificateur de
-    format <code>%s</code>.</p>
-    <pre class="prettyprint lang-config">AuthzDBDRedirectQuery "SELECT userpage FROM userpages WHERE user = %s"</pre>
-
-    <p>La première colonne du premier enregistrement renvoyé par la
-    requête doit contenir une chaîne de caractères correspondant à une
-    URL vers laquelle rediriger le client. Les enregistrements suivants
-    sont ignorés. Si aucun enregistrement n'est renvoyé, le client ne
-    sera pas redirigé.</p>
-    <p>Notez que <code class="directive">AuthzDBDLoginToReferer</code> l'emporte
-    sur cette directive si les deux sont définies.</p>
-
-</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="requiredirectives" id="requiredirectives">Les directives Require</a></h2>
@@ -302,6 +209,99 @@ DBDExptime 300
     AuthzDBDQuery "UPDATE authn SET login = 'false' WHERE user = %s"
   &lt;/Files&gt;
 &lt;/Directory&gt;</pre>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="authzdbdlogintoreferer" id="authzdbdlogintoreferer">Directive</a> <a name="AuthzDBDLoginToReferer" id="AuthzDBDLoginToReferer">AuthzDBDLoginToReferer</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit si le client doit être redirigé vers la page
+d'origine en cas de connexion ou de déconnexion réussie si un en-tête
+de requête <code>Referer</code> est présent</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthzDBDLoginToReferer On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AuthzDBDLoginToReferer Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authz_dbd</td></tr>
+</table>
+    <p>Utilisée en conjonction avec <code>Require dbd-login</code> ou
+    <code>Require dbd-logout</code>, cette directive permet de rediriger
+    le client vers la page d'origine (l'URL contenue dans l'en-tête
+    de requête HTTP <code>Referer</code>, s'il est présent). En
+    l'absence d'en-tête <code>Referer</code>, la définition
+    <code>AuthzDBDLoginToReferer On</code> sera ignorée.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="authzdbdquery" id="authzdbdquery">Directive</a> <a name="AuthzDBDQuery" id="AuthzDBDQuery">AuthzDBDQuery</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit la requête SQL pour l'opération
+requise</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthzDBDQuery <var>requête</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authz_dbd</td></tr>
+</table>
+    <p>La directive <code class="directive">AuthzDBDQuery</code> permet de
+    spécifier une requête SQL à exécuter. Le but de cette requête dépend
+    de la directive <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> en cours de
+    traitement.</p>
+    <ul>
+    <li>Avec la directive <code>Require dbd-group</code>, elle spécifie
+    une requête permettant de rechercher les groupes d'appartenance de
+    l'utilisateur courant. Ceci correspond à la fonctionnalité standard
+    d'autres modules d'autorisation comme
+    <code class="module"><a href="../mod/mod_authz_groupfile.html">mod_authz_groupfile</a></code> et
+    <code class="module"><a href="../mod/mod_authz_dbm.html">mod_authz_dbm</a></code>.
+    La première colonne de chaque enregistrement renvoyé par la requête
+    doit contenir une chaîne de caractères correspondant à un nom de
+    groupe. La requête peut renvoyer zéro, un ou plusieurs
+    enregistrements.
+    <pre class="prettyprint lang-config">Require dbd-group
+AuthzDBDQuery "SELECT group FROM groups WHERE user = %s"</pre>
+
+    </li>
+    <li>Avec la directive <code>Require dbd-login</code> ou
+    <code>Require dbd-logout</code>, elle ne refusera jamais l'accès,
+    mais au contraire exécutera une requête SQL permettant d'enregistrer
+    la connexion ou la déconnexion de l'utilisateur. Ce dernier doit
+    être déjà authentifié avec <code class="module"><a href="../mod/mod_authn_dbd.html">mod_authn_dbd</a></code>.
+    <pre class="prettyprint lang-config">Require dbd-login
+AuthzDBDQuery "UPDATE authn SET login = 'true' WHERE user = %s"</pre>
+
+    </li>
+    </ul>
+    <p>Dans tous les cas, l'identifiant utilisateur sera transmis comme
+    paramètre sous la forme d'une simple chaîne lorsque la requête SQL
+    sera exécutée. Il y sera fait référence dans la requête en utilisant
+    le spécificateur de format <code>%s</code>.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="authzdbdredirectquery" id="authzdbdredirectquery">Directive</a> <a name="AuthzDBDRedirectQuery" id="AuthzDBDRedirectQuery">AuthzDBDRedirectQuery</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit une requête pour rechercher une page vers laquelle
+rediriger l'utilisateur après une connexion réussie</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthzDBDRedirectQuery <var>requête</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authz_dbd</td></tr>
+</table>
+    <p>Spécifie une requête SQL optionnelle à utiliser après une
+    connexion (ou une déconnexion) réussie pour rediriger l'utilisateur
+    vers une URL, qui peut être spécifique à l'utilisateur.
+    L'identifiant utilisateur sera transmis comme paramètre sous la
+    forme d'une simple chaîne lorsque la requête SQL sera exécutée. Il y
+    sera fait référence dans la requête en utilisant le spécificateur de
+    format <code>%s</code>.</p>
+    <pre class="prettyprint lang-config">AuthzDBDRedirectQuery "SELECT userpage FROM userpages WHERE user = %s"</pre>
+
+    <p>La première colonne du premier enregistrement renvoyé par la
+    requête doit contenir une chaîne de caractères correspondant à une
+    URL vers laquelle rediriger le client. Les enregistrements suivants
+    sont ignorés. Si aucun enregistrement n'est renvoyé, le client ne
+    sera pas redirigé.</p>
+    <p>Notez que <code class="directive">AuthzDBDLoginToReferer</code> l'emporte
+    sur cette directive si les deux sont définies.</p>
 
 </div>
 </div>
