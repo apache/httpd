@@ -53,6 +53,7 @@
   <a href="../howto/public_html.html">public_html eğitmeni</a>
 </li>
 </ul><ul class="seealso"><li><a href="#comments_section">Yorum</a></li></ul></div>
+
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="UserDir" id="UserDir">UserDir</a> <a name="userdir" id="userdir">Yönergesi</a></h2>
 <table class="directive">
@@ -175,7 +176,6 @@ UserDir enabled birey1 birey2 birey3</pre>
 </li>
 </ul>
 </div>
-
 </div>
 <div class="bottomlang">
 <p><span>Mevcut Diller: </span><a href="../en/mod/mod_userdir.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |

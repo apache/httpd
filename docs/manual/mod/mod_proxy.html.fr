@@ -93,7 +93,23 @@
     additionnels devront être chargés et configurés pour pouvoir
     disposer de ces fonctionnalités.</p>
 </div>
-<div id="quickview"><h3 class="directives">Directives</h3>
+<div id="quickview"><h3>Sujets</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#forwardreverse">Mandataires directs et
+    mandataires/passerelles inverses</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#examples">Exemples simples</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#handler">Accès via un gestionnaire</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#workers">Workers</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#access">Contrôler l'accès à votre
+    mandataire</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#startup">Ralentissement au démarrage</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#intranet">Mandataire en Intranet</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#envsettings">Ajustements relatifs au
+    protocole</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#request-bodies">Corps de requêtes</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#x-headers">En-têtes de requête du mandataire
+    inverse</a></li>
+</ul><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#balancergrowth">BalancerGrowth</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#balancerinherit">BalancerInherit</a></li>
@@ -127,23 +143,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#proxytimeout">ProxyTimeout</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxyvia">ProxyVia</a></li>
 </ul>
-<h3>Sujets</h3>
-<ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#forwardreverse">Mandataires directs et
-    mandataires/passerelles inverses</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#examples">Exemples simples</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#handler">Accès via un gestionnaire</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#workers">Workers</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#access">Contrôler l'accès à votre
-    mandataire</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#startup">Ralentissement au démarrage</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#intranet">Mandataire en Intranet</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#envsettings">Ajustements relatifs au
-    protocole</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#request-bodies">Corps de requêtes</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#x-headers">En-têtes de requête du mandataire
-    inverse</a></li>
-</ul><h3>Voir aussi</h3>
+<h3>Voir aussi</h3>
 <ul class="seealso">
 <li><code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code></li>
 <li><code class="module"><a href="../mod/mod_proxy_ajp.html">mod_proxy_ajp</a></code></li>
@@ -156,6 +156,385 @@
 <li><code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code></li>
 <li><code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="forwardreverse" id="forwardreverse">Mandataires directs et
+    mandataires/passerelles inverses</a></h2>
+      <p>Le serveur HTTP Apache peut être configuré dans les deux modes mandataire
+      <dfn>direct</dfn> et mandataire <dfn>inverse</dfn> (aussi nommé
+      mode <dfn>passerelle</dfn>).</p>
+
+      <p>Un <dfn>mandataire direct</dfn> standard est un serveur
+      intermédiaire qui s'intercale entre le client et le <em>serveur
+      demandé</em>. Pour obtenir un contenu hébergé par
+      le serveur demandé, le client envoie une requête au
+      mandataire en nommant le serveur demandé comme
+      cible, puis le mandataire extrait le contenu depuis le
+      serveur demandé et le renvoie enfin au client. Le client doit être
+      configuré de manière appropriée pour pouvoir utiliser le mandataire
+      direct afin d'accéder à d'autres sites.</p>
+
+      <p>L'accès à Internet depuis des clients situés derrière un
+      pare-feu est une utilisation typique du mandataire direct. Le
+      mandataire direct peut aussi utiliser la mise en cache (fournie
+      par <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code>) pour réduire la charge du
+      réseau.</p>
+
+      <p>La fonctionnalité de mandataire direct est activée via la
+      directive <code class="directive"><a href="#proxyrequests">ProxyRequests</a></code>.
+      Comme les mandataires directs permettent aux clients d'accéder à
+      des sites quelconques via votre serveur et de dissimuler leur
+      véritable origine, il est indispensable de <a href="#access">sécuriser votre serveur</a> de façon à ce que seuls
+      les clients autorisés puissent accéder à votre serveur avant
+      d'activer la fonctionnalité de mandataire direct.</p>
+
+      <p>Un <dfn>mandataire inverse</dfn> (ou <dfn>passerelle</dfn>),
+      quant à lui, apparaît au client comme un serveur web standard.
+      Aucune configuration particulière du client n'est nécessaire. Le
+      client adresse ses demandes de contenus ordinaires dans l'espace
+      de nommage du mandataire inverse. Ce dernier décide alors où
+      envoyer ces requêtes, et renvoie le contenu au client comme s'il
+      l'hébergeait lui-même.</p>
+
+      <p>L'accès d'utilisateurs depuis Internet vers un serveur situé
+      derrière un pare-feu est une utilisation typique du mandataire
+      inverse. On peut aussi utiliser les mandataires inverses pour
+      mettre en oeuvre une répartition de charge entre plusieurs
+      serveurs en arrière-plan, ou fournir un cache pour un serveur
+      d'arrière-plan plus lent. Les mandataires inverses peuvent aussi
+      tout simplement servir à rassembler plusieurs serveurs dans le
+      même espace de nommage d'URLs.</p>
+
+      <p>La fonctionnalité de mandataire inverse est activée via la
+      directive <code class="directive"><a href="#proxypass">ProxyPass</a></code> ou
+      le drapeau <code>[P]</code> de la directive <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>. Il n'est
+      <strong>pas</strong> nécessaire de définir <code class="directive"><a href="#proxyrequests">ProxyRequests</a></code> pour configurer
+      un mandataire inverse.</p>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="examples" id="examples">Exemples simples</a></h2>
+
+    <p>Les exemples ci-dessous illustrent de manière très basique la
+    mise en oeuvre de la fonctionnalité de mandataire et ne sont là que
+    pour vous aider à démarrer. Reportez-vous à la documentation de
+    chaque directive.</p>
+
+    <p>Si en outre, vous désirez activer la mise en cache, consultez la
+    documentation de <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code>.</p>
+
+    <div class="example"><h3>Mandataire inverse</h3><pre class="prettyprint lang-config">ProxyPass /foo http://foo.example.com/bar
+ProxyPassReverse /foo http://foo.example.com/bar</pre>
+</div>
+
+    <div class="example"><h3>Mandataire direct</h3><pre class="prettyprint lang-config">ProxyRequests On
+ProxyVia On
+
+&lt;Proxy *&gt;
+  Require host internal.example.com
+&lt;/Proxy&gt;</pre>
+</div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="handler" id="handler">Accès via un gestionnaire</a></h2>
+
+    <p>Vous pouvez aussi forcer le traitement d'une requête en tant que
+    requête de mandataire inverse en créant un gestionnaire de transfert
+    approprié. Dans l'exemple suivant, toutes les requêtes pour
+    des scripts PHP seront transmises au serveur FastCGI
+    spécifié via un mandat inverse :
+    </p>
+
+    <div class="example"><h3>Scripts PHP et mandataire inverse</h3><pre class="prettyprint lang-config">&lt;FilesMatch \.php$&gt;
+    # Les sockets Unix nécessitent une version 2.4.7 ou supérieure du
+    # serveur HTTP Apache
+    SetHandler  "proxy:unix:/path/to/app.sock|fcgi://localhost/"
+&lt;/FilesMatch&gt;</pre>
+</div>
+
+      <p>Cette fonctionnalité est disponible à partir de la version
+      2.4.10 du serveur HTTP Apache.</p>
+
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="workers" id="workers">Workers</a></h2>
+      <p>Le mandataire gère la configuration et les paramètres de
+      communication des serveurs originaux au sein d'objets nommés
+      <dfn>workers</dfn>. Deux types de worker sont fournis : le worker
+      par défaut du mandataire direct et le worker par défaut du
+      mandataire inverse. Il est aussi possible de définir explicitement
+      des workers supplémentaires.</p>
+
+      <p>Les deux workers par défaut possèdent une configuration figée
+      et seront utilisés si aucun autre worker ne correspond à la
+      requête. Ils n'utilisent ni les jeux de connexions (connection
+      pooling), ni les
+      connexions HTTP persistantes (Keep-Alive). En effet, les
+      connexions TCP vers le serveur original sont fermées et ouvertes
+      pour chaque requête.</p>
+
+      <p>Les workers définis explicitement sont identifiés par leur URL.
+      Ils sont en général définis via les directives <code class="directive"><a href="#proxypass">ProxyPass</a></code> ou <code class="directive"><a href="#proxypassmatch">ProxyPassMatch</a></code> lorsqu'on les
+      utilise dans le cadre d'un mandataire inverse :</p>
+
+      <div class="example"><pre class="prettyprint lang-config">ProxyPass /example http://backend.example.com connectiontimeout=5 timeout=30</pre>
+</div>
+      
+
+      <p>Cette directive va créer un worker associé à l'URL du serveur
+      original <code>http://backend.example.com</code>, et utilisant les
+      valeurs de timeout données. Lorsqu'ils sont utilisés dans le cadre
+      d'un mandataire direct, les workers sont en général définis via la
+      directive <code class="directive"><a href="#proxyset">ProxySet</a></code>,</p>
+
+      <div class="example"><pre class="prettyprint lang-config">ProxySet http://backend.example.com connectiontimeout=5 timeout=30</pre>
+</div>
+      
+
+      <p>ou encore via les directives <code class="directive"><a href="#proxy">Proxy</a></code> et <code class="directive"><a href="#proxyset">ProxySet</a></code> :</p>
+
+      <pre class="prettyprint lang-config">&lt;Proxy http://backend.example.com&gt;
+  ProxySet connectiontimeout=5 timeout=30
+&lt;/Proxy&gt;</pre>
+
+
+      <p>L'utilisation de workers définis explicitement dans le mode
+      mandataire direct n'est pas très courante, car les mandataires
+      directs communiquent en général avec de nombreux serveurs
+      originaux. La création explicite de workers pour certains serveurs
+      originaux peut cependant s'avérer utile si ces serveurs sont
+      très souvent sollicités. A leur niveau, les workers explicitement
+      définis ne possèdent aucune notion de mandataire direct ou
+      inverse. Ils encapsulent un concept de communication commun avec
+      les serveurs originaux. Un worker créé via la directive <code class="directive"><a href="#proxypass">ProxyPass</a></code> pour être utilisé dans le
+      cadre d'un mandataire inverse sera aussi utilisé dans le cadre
+      d'un mandataire directe chaque fois que l'URL vers le serveur
+      original correspondra à l'URL du worker, et vice versa.</p>
+
+      <p>L'URL qui identifie un worker correspond à l'URL de son serveur
+      original, y compris un éventuel chemin donné :</p>
+
+      <pre class="prettyprint lang-config">ProxyPass /examples http://backend.example.com/examples
+ProxyPass /docs http://backend.example.com/docs</pre>
+
+
+      <p>Dans cet exemple, deux workers différents sont définis, chacun
+      d'eux utilisant des configurations et jeux de connexions
+      séparés.</p>
+
+      <div class="warning"><h3>Partage de workers</h3>
+        <p>Le partage de workers intervient lorsque les URLs des workers
+	s'entrecoupent, ce qui arrive lorsque l'URL d'un worker
+	correspond au début de l'URL d'un autre worker défini plus loin
+	dans le fichier de configuration. Dans l'exemple suivant,</p>
+
+        <pre class="prettyprint lang-config">ProxyPass /apps http://backend.example.com/ timeout=60
+ProxyPass /examples http://backend.example.com/examples timeout=10</pre>
+
+
+        <p>le second worker n'est pas vraiment créé. C'est le premier
+	worker qui est en fait utilisé. L'avantage de ceci réside dans
+	le fait qu'il n'existe qu'un seul jeu de connexions, ces
+	dernières étant donc réutilisées plus souvent. Notez que tous
+	les attributs de configuration définis explicitement pour le
+	deuxième worker seront ignorés, ce qui sera journalisé en tant
+	qu'avertissement. Ainsi, dans l'exemple ci-dessus, la valeur de
+	timeout retenue pour l'URL <code>/exemples</code> sera
+	<code>60</code>, et non <code>10</code> !</p>
+
+        <p>Si vous voulez empêcher le partage de workers, classez vos
+	définitions de workers selon la longueur des URLs, de la plus
+	longue à la plus courte. Si au contraire vous voulez favoriser
+	ce partage, utilisez l'ordre de classement inverse. Voir aussi
+	l'avertissement à propos de l'ordre de classement des directives
+	<code class="directive"><a href="#proxypass">ProxyPass</a></code>.</p>
+
+      </div> 
+
+      <p>Les workers définis explicitement sont de deux sortes :
+      <dfn>workers directs</dfn> et <dfn>workers de répartition (de
+      charge)</dfn>. Ils supportent de nombreux attributs de
+      configuration importants décrits dans la directive <code class="directive"><a href="#proxypass">ProxyPass</a></code>. Ces mêmes attributs
+      peuvent aussi être définis via la directive <code class="directive"><a href="#proxyset">ProxySet</a></code>.</p>
+
+      <p>Le jeu d'options disponibles pour un worker direct dépend du
+      protocole spécifié dans l'URL du serveur original. Les protocoles
+      disponibles comprennent <code>ajp</code>, <code>fcgi</code>,
+      <code>ftp</code>, <code>http</code> et <code>scgi</code>.</p>
+
+      <p>Les workers de répartition sont des workers virtuels qui
+      utilisent les workers directs, connus comme faisant partie de leurs
+      membres, pour le traitement effectif des requêtes. Chaque
+      répartiteur peut comporter plusieurs membres. Lorsqu'il traite une
+      requête, il choisit un de ses membres en fonction de l'algorithme
+      de répartition de charge défini.</p>
+
+      <p>Un worker de répartition est créé si son URL de worker comporte
+      <code>balancer</code> comme indicateur de protocole. L'URL du
+      répartiteur permet d'identifier de manière unique le worker de
+      répartition. La directive <code class="directive"><a href="#balancermember">BalancerMember</a></code> permet d'ajouter des
+      membres au répartiteur.</p>
+
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="access" id="access">Contrôler l'accès à votre
+    mandataire</a></h2>
+      <p>Vous pouvez restreindre l'accès à votre mandataire via le bloc
+      de contrôle <code class="directive"><a href="#proxy">&lt;Proxy&gt;</a></code> comme dans
+      l'exemple suivant :</p>
+
+      <pre class="prettyprint lang-config">&lt;Proxy *&gt;
+  Require ip 192.168.0
+&lt;/Proxy&gt;</pre>
+
+
+      <p>Pour plus de détails sur les directives de contrôle d'accès,
+      voir la documentation du module
+      <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code>.</p>
+
+      <p>Restreindre l'accès de manière stricte est essentiel si vous
+      mettez en oeuvre un mandataire direct (en définissant la directive
+      <code class="directive"><a href="#proxyrequests">ProxyRequests</a></code> à "on").
+      Dans le cas contraire, votre serveur pourrait être utilisé par
+      n'importe quel client pour accéder à des serveurs quelconques,
+      tout en masquant sa véritable identité. Ceci représente un danger
+      non seulement pour votre réseau, mais aussi pour l'Internet au
+      sens large. Dans le cas de la mise en oeuvre d'un mandataire
+      inverse (en utilisant la directive <code class="directive"><a href="#proxypass">ProxyPass</a></code> avec <code>ProxyRequests Off</code>), le contrôle
+      d'accès est moins critique car les clients ne peuvent contacter
+      que les serveurs que vous avez spécifiés.</p>
+
+      <p><strong>Voir aussi</strong> la variable d'environnement <a href="mod_proxy_http.html#env">Proxy-Chain-Auth</a>.</p>
+
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="startup" id="startup">Ralentissement au démarrage</a></h2>
+      <p>Si vous utilisez la directive <code class="directive"><a href="#proxyblock">ProxyBlock</a></code>, les noms d'hôtes sont résolus en adresses
+      IP puis ces dernières mises en cache au cours du démarrage
+      à des fins de tests de comparaisons ultérieurs. Ce processus peut
+      durer plusieurs secondes (ou d'avantage) en fonction de la vitesse
+      à laquelle s'effectue la résolution des noms d'hôtes.</p>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="intranet" id="intranet">Mandataire en Intranet</a></h2>
+      <p>Un serveur mandataire Apache httpd situé à l'intérieur d'un Intranet
+      doit faire suivre les requêtes destinées à un serveur externe à
+      travers le pare-feu de l'entreprise (pour ce faire, définissez la
+      directive <code class="directive"><a href="#proxyremote">ProxyRemote</a></code> de
+      façon à ce qu'elle fasse suivre le <var>protocole</var> concerné
+      vers le mandataire du pare-feu). Cependant, lorsqu'il doit accéder
+      à des ressources situées dans l'Intranet, il peut se passer du
+      pare-feu pour accéder aux serveurs. A cet effet, la directive
+      <code class="directive"><a href="#noproxy">NoProxy</a></code> permet de
+      spécifier quels hôtes appartiennent à l'Intranet et peuvent donc
+      être accédés directement.</p>
+
+      <p>Les utilisateurs d'un Intranet ont tendance à oublier le nom du
+      domaine local dans leurs requêtes WWW, et demandent par exemple
+      "http://un-serveur/" au lieu de
+      <code>http://un-serveur.example.com/</code>. Certains serveurs
+      mandataires commerciaux acceptent ce genre de requête et les
+      traitent simplement en utilisant un nom de domaine local
+      implicite. Lorsque la directive <code class="directive"><a href="#proxydomain">ProxyDomain</a></code> est utilisée et si le
+      serveur est <a href="#proxyrequests">configuré comme
+      mandataire</a>, Apache httpd peut renvoyer une réponse de redirection et
+      ainsi fournir au client l'adresse de serveur correcte,
+      entièrement qualifiée. C'est la méthode à privilégier car le
+      fichier des marque-pages de l'utilisateur contiendra alors des
+      noms de serveurs entièrement qualifiés.</p>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="envsettings" id="envsettings">Ajustements relatifs au
+    protocole</a></h2>
+      <p>Pour les cas où <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> envoie des requêtes
+      vers un serveur qui n'implémente pas correctement les connexions
+      persistantes ou le protocole HTTP/1.1, il existe deux variables
+      d'environnement qui permettent de forcer les requêtes à utiliser
+      le protocole HTTP/1.0 avec connexions non persistantes. Elles
+      peuvent être définies via la directive <code class="directive"><a href="../mod/mod_env.html#setenv">SetEnv</a></code>.</p>
+
+      <p>Il s'agit des variables <code>force-proxy-request-1.0</code> et
+      <code>proxy-nokeepalive</code>.</p>
+
+      <pre class="prettyprint lang-config">&lt;Location /buggyappserver/&gt;
+  ProxyPass http://buggyappserver:7001/foo/
+  SetEnv force-proxy-request-1.0 1
+  SetEnv proxy-nokeepalive 1
+&lt;/Location&gt;</pre>
+
+
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="request-bodies" id="request-bodies">Corps de requêtes</a></h2>
+
+    <p>Certaines méthodes de requêtes comme POST comportent un corps de
+    requête. Le protocole HTTP stipule que les requêtes qui comportent
+    un corps doivent soit utiliser un codage de transmission
+    fractionnée (chunked transfer encoding), soit envoyer un en-tête de requête
+    <code>Content-Length</code>. Lorsqu'il fait suivre ce genre de
+    requête vers le serveur demandé, <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code>
+    s'efforce toujours d'envoyer l'en-tête <code>Content-Length</code>.
+    Par contre, si la taille du corps est importante, et si la requête
+    originale utilise un codage à fractionnement, ce dernier peut aussi
+    être utilisé dans la requête montante. Ce comportement peut être
+    contrôlé à l'aide de <a href="../env.html">variables
+    d'environnement</a>. Ainsi, si elle est définie, la variable
+    <code>proxy-sendcl</code> assure une compatibilité maximale avec les
+    serveurs demandés en imposant l'envoi de l'en-tête
+    <code>Content-Length</code>, alors que
+    <code>proxy-sendchunked</code> diminue la consommation de ressources
+    en imposant l'utilisation d'un codage à fractionnement.</p>
+
+    <p>Dans certaines circonstances, le serveur doit mettre en file
+    d'attente sur disque les corps de requêtes afin de satisfaire le
+    traitement demandé des corps de requêtes. Par exemple, cette mise en
+    file d'attente se produira si le corps original a été envoyé selon un
+    codage morcelé (et possède une taille importante), alors que
+    l'administrateur a demandé que les requêtes du serveur
+    d'arrière-plan soient envoyées avec l'en-tête Content-Length ou en
+    HTTP/1.0. Cette mise en file d'attente se produira aussi si le corps
+    de la requête contient déjà un en-tête Content-Length, alors que le
+    serveur est configuré pour filtrer les corps des requêtes entrantes.</p>
+
+    <p>La directive <code class="directive"><a href="../mod/core.html#limitrequestbody">LimitRequestBody</a></code> ne s'applique qu'aux
+    corps de requêtes que le serveur met en file d'attente sur disque.</p>
+
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="x-headers" id="x-headers">En-têtes de requête du mandataire
+    inverse</a></h2>
+
+    <p>Lorsqu'il est configuré en mode mandataire inverse (en utilisant
+    par exemple la directive <code class="directive"><a href="#proxypass">ProxyPass</a></code>),
+    <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code> ajoute plusieurs en-têtes de requête
+    afin de transmettre des informations au serveur demandé. Ces
+    en-têtes sont les suivants :</p>
+
+    <dl>
+      <dt><code>X-Forwarded-For</code></dt>
+      <dd>L'adresse IP du client.</dd>
+      <dt><code>X-Forwarded-Host</code></dt>
+      <dd>L'hôte d'origine demandé par le client dans l'en-tête de
+      requête HTTP <code>Host</code>.</dd>
+      <dt><code>X-Forwarded-Server</code></dt>
+      <dd>Le nom d'hôte du serveur mandataire.</dd>
+    </dl>
+
+    <p>Ces en-têtes doivent être utilisés avec précautions sur le
+    serveur demandé, car ils contiendront plus d'une valeur (séparées
+    par des virgules) si la requête originale contenait déjà un de ces
+    en-têtes. Par exemple, vous pouvez utiliser
+    <code>%{X-Forwarded-For}i</code> dans la chaîne de format du journal
+    du serveur demandé pour enregistrer les adresses IP des clients
+    originaux, mais il est possible que vous obteniez plusieurs adresses
+    si la requête passe à travers plusieurs mandataires.</p>
+
+    <p>Voir aussi les directives <code class="directive"><a href="#proxypreservehost">ProxyPreserveHost</a></code> et <code class="directive"><a href="#proxyvia">ProxyVia</a></code> directives, qui permettent
+    de contrôler d'autres en-têtes de requête.</p>
+
+    <p>Note : Si vous devez ajouter des en-têtes particuliers à la
+    requête mandatée, utilisez la directive  <code class="directive"><a href="../mod/mod_headers.html#requestheader">RequestHeader</a></code>.</p>
+
+   </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="balancergrowth" id="balancergrowth">Directive</a> <a name="BalancerGrowth" id="BalancerGrowth">BalancerGrowth</a></h2>
 <table class="directive">
@@ -1809,385 +2188,6 @@ mandatées</td></tr>
     </ul>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="forwardreverse" id="forwardreverse">Mandataires directs et
-    mandataires/passerelles inverses</a></h2>
-      <p>Le serveur HTTP Apache peut être configuré dans les deux modes mandataire
-      <dfn>direct</dfn> et mandataire <dfn>inverse</dfn> (aussi nommé
-      mode <dfn>passerelle</dfn>).</p>
-
-      <p>Un <dfn>mandataire direct</dfn> standard est un serveur
-      intermédiaire qui s'intercale entre le client et le <em>serveur
-      demandé</em>. Pour obtenir un contenu hébergé par
-      le serveur demandé, le client envoie une requête au
-      mandataire en nommant le serveur demandé comme
-      cible, puis le mandataire extrait le contenu depuis le
-      serveur demandé et le renvoie enfin au client. Le client doit être
-      configuré de manière appropriée pour pouvoir utiliser le mandataire
-      direct afin d'accéder à d'autres sites.</p>
-
-      <p>L'accès à Internet depuis des clients situés derrière un
-      pare-feu est une utilisation typique du mandataire direct. Le
-      mandataire direct peut aussi utiliser la mise en cache (fournie
-      par <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code>) pour réduire la charge du
-      réseau.</p>
-
-      <p>La fonctionnalité de mandataire direct est activée via la
-      directive <code class="directive"><a href="#proxyrequests">ProxyRequests</a></code>.
-      Comme les mandataires directs permettent aux clients d'accéder à
-      des sites quelconques via votre serveur et de dissimuler leur
-      véritable origine, il est indispensable de <a href="#access">sécuriser votre serveur</a> de façon à ce que seuls
-      les clients autorisés puissent accéder à votre serveur avant
-      d'activer la fonctionnalité de mandataire direct.</p>
-
-      <p>Un <dfn>mandataire inverse</dfn> (ou <dfn>passerelle</dfn>),
-      quant à lui, apparaît au client comme un serveur web standard.
-      Aucune configuration particulière du client n'est nécessaire. Le
-      client adresse ses demandes de contenus ordinaires dans l'espace
-      de nommage du mandataire inverse. Ce dernier décide alors où
-      envoyer ces requêtes, et renvoie le contenu au client comme s'il
-      l'hébergeait lui-même.</p>
-
-      <p>L'accès d'utilisateurs depuis Internet vers un serveur situé
-      derrière un pare-feu est une utilisation typique du mandataire
-      inverse. On peut aussi utiliser les mandataires inverses pour
-      mettre en oeuvre une répartition de charge entre plusieurs
-      serveurs en arrière-plan, ou fournir un cache pour un serveur
-      d'arrière-plan plus lent. Les mandataires inverses peuvent aussi
-      tout simplement servir à rassembler plusieurs serveurs dans le
-      même espace de nommage d'URLs.</p>
-
-      <p>La fonctionnalité de mandataire inverse est activée via la
-      directive <code class="directive"><a href="#proxypass">ProxyPass</a></code> ou
-      le drapeau <code>[P]</code> de la directive <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>. Il n'est
-      <strong>pas</strong> nécessaire de définir <code class="directive"><a href="#proxyrequests">ProxyRequests</a></code> pour configurer
-      un mandataire inverse.</p>
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="examples" id="examples">Exemples simples</a></h2>
-
-    <p>Les exemples ci-dessous illustrent de manière très basique la
-    mise en oeuvre de la fonctionnalité de mandataire et ne sont là que
-    pour vous aider à démarrer. Reportez-vous à la documentation de
-    chaque directive.</p>
-
-    <p>Si en outre, vous désirez activer la mise en cache, consultez la
-    documentation de <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code>.</p>
-
-    <div class="example"><h3>Mandataire inverse</h3><pre class="prettyprint lang-config">ProxyPass /foo http://foo.example.com/bar
-ProxyPassReverse /foo http://foo.example.com/bar</pre>
-</div>
-
-    <div class="example"><h3>Mandataire direct</h3><pre class="prettyprint lang-config">ProxyRequests On
-ProxyVia On
-
-&lt;Proxy *&gt;
-  Require host internal.example.com
-&lt;/Proxy&gt;</pre>
-</div>
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="handler" id="handler">Accès via un gestionnaire</a></h2>
-
-    <p>Vous pouvez aussi forcer le traitement d'une requête en tant que
-    requête de mandataire inverse en créant un gestionnaire de transfert
-    approprié. Dans l'exemple suivant, toutes les requêtes pour
-    des scripts PHP seront transmises au serveur FastCGI
-    spécifié via un mandat inverse :
-    </p>
-
-    <div class="example"><h3>Scripts PHP et mandataire inverse</h3><pre class="prettyprint lang-config">&lt;FilesMatch \.php$&gt;
-    # Les sockets Unix nécessitent une version 2.4.7 ou supérieure du
-    # serveur HTTP Apache
-    SetHandler  "proxy:unix:/path/to/app.sock|fcgi://localhost/"
-&lt;/FilesMatch&gt;</pre>
-</div>
-
-      <p>Cette fonctionnalité est disponible à partir de la version
-      2.4.10 du serveur HTTP Apache.</p>
-
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="workers" id="workers">Workers</a></h2>
-      <p>Le mandataire gère la configuration et les paramètres de
-      communication des serveurs originaux au sein d'objets nommés
-      <dfn>workers</dfn>. Deux types de worker sont fournis : le worker
-      par défaut du mandataire direct et le worker par défaut du
-      mandataire inverse. Il est aussi possible de définir explicitement
-      des workers supplémentaires.</p>
-
-      <p>Les deux workers par défaut possèdent une configuration figée
-      et seront utilisés si aucun autre worker ne correspond à la
-      requête. Ils n'utilisent ni les jeux de connexions (connection
-      pooling), ni les
-      connexions HTTP persistantes (Keep-Alive). En effet, les
-      connexions TCP vers le serveur original sont fermées et ouvertes
-      pour chaque requête.</p>
-
-      <p>Les workers définis explicitement sont identifiés par leur URL.
-      Ils sont en général définis via les directives <code class="directive"><a href="#proxypass">ProxyPass</a></code> ou <code class="directive"><a href="#proxypassmatch">ProxyPassMatch</a></code> lorsqu'on les
-      utilise dans le cadre d'un mandataire inverse :</p>
-
-      <div class="example"><pre class="prettyprint lang-config">ProxyPass /example http://backend.example.com connectiontimeout=5 timeout=30</pre>
-</div>
-      
-
-      <p>Cette directive va créer un worker associé à l'URL du serveur
-      original <code>http://backend.example.com</code>, et utilisant les
-      valeurs de timeout données. Lorsqu'ils sont utilisés dans le cadre
-      d'un mandataire direct, les workers sont en général définis via la
-      directive <code class="directive"><a href="#proxyset">ProxySet</a></code>,</p>
-
-      <div class="example"><pre class="prettyprint lang-config">ProxySet http://backend.example.com connectiontimeout=5 timeout=30</pre>
-</div>
-      
-
-      <p>ou encore via les directives <code class="directive"><a href="#proxy">Proxy</a></code> et <code class="directive"><a href="#proxyset">ProxySet</a></code> :</p>
-
-      <pre class="prettyprint lang-config">&lt;Proxy http://backend.example.com&gt;
-  ProxySet connectiontimeout=5 timeout=30
-&lt;/Proxy&gt;</pre>
-
-
-      <p>L'utilisation de workers définis explicitement dans le mode
-      mandataire direct n'est pas très courante, car les mandataires
-      directs communiquent en général avec de nombreux serveurs
-      originaux. La création explicite de workers pour certains serveurs
-      originaux peut cependant s'avérer utile si ces serveurs sont
-      très souvent sollicités. A leur niveau, les workers explicitement
-      définis ne possèdent aucune notion de mandataire direct ou
-      inverse. Ils encapsulent un concept de communication commun avec
-      les serveurs originaux. Un worker créé via la directive <code class="directive"><a href="#proxypass">ProxyPass</a></code> pour être utilisé dans le
-      cadre d'un mandataire inverse sera aussi utilisé dans le cadre
-      d'un mandataire directe chaque fois que l'URL vers le serveur
-      original correspondra à l'URL du worker, et vice versa.</p>
-
-      <p>L'URL qui identifie un worker correspond à l'URL de son serveur
-      original, y compris un éventuel chemin donné :</p>
-
-      <pre class="prettyprint lang-config">ProxyPass /examples http://backend.example.com/examples
-ProxyPass /docs http://backend.example.com/docs</pre>
-
-
-      <p>Dans cet exemple, deux workers différents sont définis, chacun
-      d'eux utilisant des configurations et jeux de connexions
-      séparés.</p>
-
-      <div class="warning"><h3>Partage de workers</h3>
-        <p>Le partage de workers intervient lorsque les URLs des workers
-	s'entrecoupent, ce qui arrive lorsque l'URL d'un worker
-	correspond au début de l'URL d'un autre worker défini plus loin
-	dans le fichier de configuration. Dans l'exemple suivant,</p>
-
-        <pre class="prettyprint lang-config">ProxyPass /apps http://backend.example.com/ timeout=60
-ProxyPass /examples http://backend.example.com/examples timeout=10</pre>
-
-
-        <p>le second worker n'est pas vraiment créé. C'est le premier
-	worker qui est en fait utilisé. L'avantage de ceci réside dans
-	le fait qu'il n'existe qu'un seul jeu de connexions, ces
-	dernières étant donc réutilisées plus souvent. Notez que tous
-	les attributs de configuration définis explicitement pour le
-	deuxième worker seront ignorés, ce qui sera journalisé en tant
-	qu'avertissement. Ainsi, dans l'exemple ci-dessus, la valeur de
-	timeout retenue pour l'URL <code>/exemples</code> sera
-	<code>60</code>, et non <code>10</code> !</p>
-
-        <p>Si vous voulez empêcher le partage de workers, classez vos
-	définitions de workers selon la longueur des URLs, de la plus
-	longue à la plus courte. Si au contraire vous voulez favoriser
-	ce partage, utilisez l'ordre de classement inverse. Voir aussi
-	l'avertissement à propos de l'ordre de classement des directives
-	<code class="directive"><a href="#proxypass">ProxyPass</a></code>.</p>
-
-      </div> 
-
-      <p>Les workers définis explicitement sont de deux sortes :
-      <dfn>workers directs</dfn> et <dfn>workers de répartition (de
-      charge)</dfn>. Ils supportent de nombreux attributs de
-      configuration importants décrits dans la directive <code class="directive"><a href="#proxypass">ProxyPass</a></code>. Ces mêmes attributs
-      peuvent aussi être définis via la directive <code class="directive"><a href="#proxyset">ProxySet</a></code>.</p>
-
-      <p>Le jeu d'options disponibles pour un worker direct dépend du
-      protocole spécifié dans l'URL du serveur original. Les protocoles
-      disponibles comprennent <code>ajp</code>, <code>fcgi</code>,
-      <code>ftp</code>, <code>http</code> et <code>scgi</code>.</p>
-
-      <p>Les workers de répartition sont des workers virtuels qui
-      utilisent les workers directs, connus comme faisant partie de leurs
-      membres, pour le traitement effectif des requêtes. Chaque
-      répartiteur peut comporter plusieurs membres. Lorsqu'il traite une
-      requête, il choisit un de ses membres en fonction de l'algorithme
-      de répartition de charge défini.</p>
-
-      <p>Un worker de répartition est créé si son URL de worker comporte
-      <code>balancer</code> comme indicateur de protocole. L'URL du
-      répartiteur permet d'identifier de manière unique le worker de
-      répartition. La directive <code class="directive"><a href="#balancermember">BalancerMember</a></code> permet d'ajouter des
-      membres au répartiteur.</p>
-
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="access" id="access">Contrôler l'accès à votre
-    mandataire</a></h2>
-      <p>Vous pouvez restreindre l'accès à votre mandataire via le bloc
-      de contrôle <code class="directive"><a href="#proxy">&lt;Proxy&gt;</a></code> comme dans
-      l'exemple suivant :</p>
-
-      <pre class="prettyprint lang-config">&lt;Proxy *&gt;
-  Require ip 192.168.0
-&lt;/Proxy&gt;</pre>
-
-
-      <p>Pour plus de détails sur les directives de contrôle d'accès,
-      voir la documentation du module
-      <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code>.</p>
-
-      <p>Restreindre l'accès de manière stricte est essentiel si vous
-      mettez en oeuvre un mandataire direct (en définissant la directive
-      <code class="directive"><a href="#proxyrequests">ProxyRequests</a></code> à "on").
-      Dans le cas contraire, votre serveur pourrait être utilisé par
-      n'importe quel client pour accéder à des serveurs quelconques,
-      tout en masquant sa véritable identité. Ceci représente un danger
-      non seulement pour votre réseau, mais aussi pour l'Internet au
-      sens large. Dans le cas de la mise en oeuvre d'un mandataire
-      inverse (en utilisant la directive <code class="directive"><a href="#proxypass">ProxyPass</a></code> avec <code>ProxyRequests Off</code>), le contrôle
-      d'accès est moins critique car les clients ne peuvent contacter
-      que les serveurs que vous avez spécifiés.</p>
-
-      <p><strong>Voir aussi</strong> la variable d'environnement <a href="mod_proxy_http.html#env">Proxy-Chain-Auth</a>.</p>
-
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="startup" id="startup">Ralentissement au démarrage</a></h2>
-      <p>Si vous utilisez la directive <code class="directive"><a href="#proxyblock">ProxyBlock</a></code>, les noms d'hôtes sont résolus en adresses
-      IP puis ces dernières mises en cache au cours du démarrage
-      à des fins de tests de comparaisons ultérieurs. Ce processus peut
-      durer plusieurs secondes (ou d'avantage) en fonction de la vitesse
-      à laquelle s'effectue la résolution des noms d'hôtes.</p>
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="intranet" id="intranet">Mandataire en Intranet</a></h2>
-      <p>Un serveur mandataire Apache httpd situé à l'intérieur d'un Intranet
-      doit faire suivre les requêtes destinées à un serveur externe à
-      travers le pare-feu de l'entreprise (pour ce faire, définissez la
-      directive <code class="directive"><a href="#proxyremote">ProxyRemote</a></code> de
-      façon à ce qu'elle fasse suivre le <var>protocole</var> concerné
-      vers le mandataire du pare-feu). Cependant, lorsqu'il doit accéder
-      à des ressources situées dans l'Intranet, il peut se passer du
-      pare-feu pour accéder aux serveurs. A cet effet, la directive
-      <code class="directive"><a href="#noproxy">NoProxy</a></code> permet de
-      spécifier quels hôtes appartiennent à l'Intranet et peuvent donc
-      être accédés directement.</p>
-
-      <p>Les utilisateurs d'un Intranet ont tendance à oublier le nom du
-      domaine local dans leurs requêtes WWW, et demandent par exemple
-      "http://un-serveur/" au lieu de
-      <code>http://un-serveur.example.com/</code>. Certains serveurs
-      mandataires commerciaux acceptent ce genre de requête et les
-      traitent simplement en utilisant un nom de domaine local
-      implicite. Lorsque la directive <code class="directive"><a href="#proxydomain">ProxyDomain</a></code> est utilisée et si le
-      serveur est <a href="#proxyrequests">configuré comme
-      mandataire</a>, Apache httpd peut renvoyer une réponse de redirection et
-      ainsi fournir au client l'adresse de serveur correcte,
-      entièrement qualifiée. C'est la méthode à privilégier car le
-      fichier des marque-pages de l'utilisateur contiendra alors des
-      noms de serveurs entièrement qualifiés.</p>
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="envsettings" id="envsettings">Ajustements relatifs au
-    protocole</a></h2>
-      <p>Pour les cas où <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> envoie des requêtes
-      vers un serveur qui n'implémente pas correctement les connexions
-      persistantes ou le protocole HTTP/1.1, il existe deux variables
-      d'environnement qui permettent de forcer les requêtes à utiliser
-      le protocole HTTP/1.0 avec connexions non persistantes. Elles
-      peuvent être définies via la directive <code class="directive"><a href="../mod/mod_env.html#setenv">SetEnv</a></code>.</p>
-
-      <p>Il s'agit des variables <code>force-proxy-request-1.0</code> et
-      <code>proxy-nokeepalive</code>.</p>
-
-      <pre class="prettyprint lang-config">&lt;Location /buggyappserver/&gt;
-  ProxyPass http://buggyappserver:7001/foo/
-  SetEnv force-proxy-request-1.0 1
-  SetEnv proxy-nokeepalive 1
-&lt;/Location&gt;</pre>
-
-
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="request-bodies" id="request-bodies">Corps de requêtes</a></h2>
-
-    <p>Certaines méthodes de requêtes comme POST comportent un corps de
-    requête. Le protocole HTTP stipule que les requêtes qui comportent
-    un corps doivent soit utiliser un codage de transmission
-    fractionnée (chunked transfer encoding), soit envoyer un en-tête de requête
-    <code>Content-Length</code>. Lorsqu'il fait suivre ce genre de
-    requête vers le serveur demandé, <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code>
-    s'efforce toujours d'envoyer l'en-tête <code>Content-Length</code>.
-    Par contre, si la taille du corps est importante, et si la requête
-    originale utilise un codage à fractionnement, ce dernier peut aussi
-    être utilisé dans la requête montante. Ce comportement peut être
-    contrôlé à l'aide de <a href="../env.html">variables
-    d'environnement</a>. Ainsi, si elle est définie, la variable
-    <code>proxy-sendcl</code> assure une compatibilité maximale avec les
-    serveurs demandés en imposant l'envoi de l'en-tête
-    <code>Content-Length</code>, alors que
-    <code>proxy-sendchunked</code> diminue la consommation de ressources
-    en imposant l'utilisation d'un codage à fractionnement.</p>
-
-    <p>Dans certaines circonstances, le serveur doit mettre en file
-    d'attente sur disque les corps de requêtes afin de satisfaire le
-    traitement demandé des corps de requêtes. Par exemple, cette mise en
-    file d'attente se produira si le corps original a été envoyé selon un
-    codage morcelé (et possède une taille importante), alors que
-    l'administrateur a demandé que les requêtes du serveur
-    d'arrière-plan soient envoyées avec l'en-tête Content-Length ou en
-    HTTP/1.0. Cette mise en file d'attente se produira aussi si le corps
-    de la requête contient déjà un en-tête Content-Length, alors que le
-    serveur est configuré pour filtrer les corps des requêtes entrantes.</p>
-
-    <p>La directive <code class="directive"><a href="../mod/core.html#limitrequestbody">LimitRequestBody</a></code> ne s'applique qu'aux
-    corps de requêtes que le serveur met en file d'attente sur disque.</p>
-
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="x-headers" id="x-headers">En-têtes de requête du mandataire
-    inverse</a></h2>
-
-    <p>Lorsqu'il est configuré en mode mandataire inverse (en utilisant
-    par exemple la directive <code class="directive"><a href="#proxypass">ProxyPass</a></code>),
-    <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code> ajoute plusieurs en-têtes de requête
-    afin de transmettre des informations au serveur demandé. Ces
-    en-têtes sont les suivants :</p>
-
-    <dl>
-      <dt><code>X-Forwarded-For</code></dt>
-      <dd>L'adresse IP du client.</dd>
-      <dt><code>X-Forwarded-Host</code></dt>
-      <dd>L'hôte d'origine demandé par le client dans l'en-tête de
-      requête HTTP <code>Host</code>.</dd>
-      <dt><code>X-Forwarded-Server</code></dt>
-      <dd>Le nom d'hôte du serveur mandataire.</dd>
-    </dl>
-
-    <p>Ces en-têtes doivent être utilisés avec précautions sur le
-    serveur demandé, car ils contiendront plus d'une valeur (séparées
-    par des virgules) si la requête originale contenait déjà un de ces
-    en-têtes. Par exemple, vous pouvez utiliser
-    <code>%{X-Forwarded-For}i</code> dans la chaîne de format du journal
-    du serveur demandé pour enregistrer les adresses IP des clients
-    originaux, mais il est possible que vous obteniez plusieurs adresses
-    si la requête passe à travers plusieurs mandataires.</p>
-
-    <p>Voir aussi les directives <code class="directive"><a href="#proxypreservehost">ProxyPreserveHost</a></code> et <code class="directive"><a href="#proxyvia">ProxyVia</a></code> directives, qui permettent
-    de contrôler d'autres en-têtes de requête.</p>
-
-    <p>Note : Si vous devez ajouter des en-têtes particuliers à la
-    requête mandatée, utilisez la directive  <code class="directive"><a href="../mod/mod_headers.html#requestheader">RequestHeader</a></code>.</p>
-
-   </div>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_proxy.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |

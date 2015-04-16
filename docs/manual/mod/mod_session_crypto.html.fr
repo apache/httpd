@@ -57,22 +57,49 @@
     la documentation du module <code class="module"><a href="../mod/mod_session.html">mod_session</a></code>.</p>
 
 </div>
-<div id="quickview"><h3 class="directives">Directives</h3>
+<div id="quickview"><h3>Sujets</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#basicusage">Utilisation de base</a></li>
+</ul><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#sessioncryptocipher">SessionCryptoCipher</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sessioncryptodriver">SessionCryptoDriver</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sessioncryptopassphrase">SessionCryptoPassphrase</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sessioncryptopassphrasefile">SessionCryptoPassphraseFile</a></li>
 </ul>
-<h3>Sujets</h3>
-<ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#basicusage">Utilisation de base</a></li>
-</ul><h3>Voir aussi</h3>
+<h3>Voir aussi</h3>
 <ul class="seealso">
 <li><code class="module"><a href="../mod/mod_session.html">mod_session</a></code></li>
 <li><code class="module"><a href="../mod/mod_session_cookie.html">mod_session_cookie</a></code></li>
 <li><code class="module"><a href="../mod/mod_session_dbd.html">mod_session_dbd</a></code></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="basicusage" id="basicusage">Utilisation de base</a></h2>
+
+      <p>Pour créer une session chiffrée et la stocker dans un cookie
+      nommé <var>session</var>, configurez la comme suit :</p>
+
+      <div class="example"><h3>Session chiffrée stockée au niveau du
+      serveur</h3><pre class="prettyprint lang-config">Session On
+SessionCookieName session path=/
+SessionCryptoPassphrase secret</pre>
+</div>
+
+      <p>La session sera chiffrée avec la clé spécifiée. Il est possible
+      de configurer plusieurs serveurs pour qu'ils puissent partager des
+      sessions, en s'assurant que la même clé de chiffrement est
+      utilisée sur chaque serveur.</p>
+
+      <p>Si la clé de chiffrement est modifiée, les sessions seront
+      automatiquement invalidées.</p>
+
+      <p>Pour des détails sur la manière dont une session peut être
+      utilisée pour stocker des informations de type nom
+      d'utilisateur/mot de passe, voir la documentation du module
+      <code class="module"><a href="../mod/mod_auth_form.html">mod_auth_form</a></code>.</p>
+
+    </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="sessioncryptocipher" id="sessioncryptocipher">Directive</a> <a name="SessionCryptoCipher" id="SessionCryptoCipher">SessionCryptoCipher</a></h2>
 <table class="directive">
@@ -231,33 +258,6 @@ session</td></tr>
 
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="basicusage" id="basicusage">Utilisation de base</a></h2>
-
-      <p>Pour créer une session chiffrée et la stocker dans un cookie
-      nommé <var>session</var>, configurez la comme suit :</p>
-
-      <div class="example"><h3>Session chiffrée stockée au niveau du
-      serveur</h3><pre class="prettyprint lang-config">Session On
-SessionCookieName session path=/
-SessionCryptoPassphrase secret</pre>
-</div>
-
-      <p>La session sera chiffrée avec la clé spécifiée. Il est possible
-      de configurer plusieurs serveurs pour qu'ils puissent partager des
-      sessions, en s'assurant que la même clé de chiffrement est
-      utilisée sur chaque serveur.</p>
-
-      <p>Si la clé de chiffrement est modifiée, les sessions seront
-      automatiquement invalidées.</p>
-
-      <p>Pour des détails sur la manière dont une session peut être
-      utilisée pour stocker des informations de type nom
-      d'utilisateur/mot de passe, voir la documentation du module
-      <code class="module"><a href="../mod/mod_auth_form.html">mod_auth_form</a></code>.</p>
-
-    </div>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_session_crypto.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |

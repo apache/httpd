@@ -53,15 +53,15 @@
       インターネット全体にとっても危険です。</p>
     </div>
 </div>
-<div id="quickview"><h3 class="directives">ディレクティブ</h3>
-<p>このモジュールにディレクティブはありません。</p>
-<h3>トピック</h3>
+<div id="quickview"><h3>トピック</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#scheduler">ロードバランサのスケジューラのアルゴリズム</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#requests">Request Counting アルゴリズム</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#traffic">Weighted Traffic Counting アルゴリズム</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#enable">バランサマネージャのサポートを有効にする</a></li>
-</ul><h3>参照</h3>
+</ul><h3 class="directives">ディレクティブ</h3>
+<p>このモジュールにディレクティブはありません。</p>
+<h3>参照</h3>
 <ul class="seealso">
 <li><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></li>
 </ul><ul class="seealso"><li><a href="#comments_section">コメント</a></li></ul></div>

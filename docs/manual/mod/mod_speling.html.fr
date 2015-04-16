@@ -73,6 +73,7 @@ fautes de frappe mineures.</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#checkspelling">CheckSpelling</a></li>
 </ul>
 <ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
+
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="checkcaseonly" id="checkcaseonly">Directive</a> <a name="CheckCaseOnly" id="CheckCaseOnly">CheckCaseOnly</a></h2>
 <table class="directive">
@@ -135,7 +136,6 @@ majuscules</td></tr>
     </p>
 
 </div>
-
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_speling.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |

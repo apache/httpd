@@ -47,7 +47,13 @@ d'Apache HTTPD</td></tr></table>
     permet aussi l'application d'une logique élaborée au déroulement du
     processus d'autorisation.</p>
 </div>
-<div id="quickview"><h3 class="directives">Directives</h3>
+<div id="quickview"><h3>Sujets</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#authzalias">Création des alias du fournisseur
+d'autorisation</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#logic">Conteneurs d'autorisation</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#requiredirectives">Les directives Require</a></li>
+</ul><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#authmerging">AuthMerging</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authzprovideralias">&lt;AuthzProviderAlias&gt;</a></li>
@@ -57,13 +63,209 @@ d'Apache HTTPD</td></tr></table>
 <li><img alt="" src="../images/down.gif" /> <a href="#requireany">&lt;RequireAny&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#requirenone">&lt;RequireNone&gt;</a></li>
 </ul>
-<h3>Sujets</h3>
-<ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#authzalias">Création des alias du fournisseur
-d'autorisation</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#logic">Conteneurs d'autorisation</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#requiredirectives">Les directives Require</a></li>
-</ul><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
+<ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="authzalias" id="authzalias">Création des alias du fournisseur
+d'autorisation</a></h2>
+
+    <p>Il est possible de créer des fournisseurs d'autorisation étendus
+    dans le fichier de configuration et de leur assigner un nom d'alias.
+    On peut ensuite utiliser ces fournisseurs aliasés dans une
+    directive <code class="directive"><a href="#require">Require</a></code> de
+    la même manière qu'on le ferait pour des fournisseurs d'autorisation
+    de base. En plus de la possibilité de créer et d'aliaser un
+    fournisseur étendu, le même fournisseur d'autorisation étendu peut
+    être référencé par plusieurs localisations.
+    </p>
+
+    <h3><a name="example" id="example">Exemple</a></h3>
+        <p>Dans l'exemple suivant, on crée deux alias de fournisseur
+	d'autorisation ldap différents basés sur le fournisseur
+	d'autorisation ldap-group. Il est ainsi possible pour un seul
+	répertoire de vérifier l'appartenance à un groupe dans plusieurs
+	serveurs ldap :
+        </p>
+
+        <pre class="prettyprint lang-config">&lt;AuthzProviderAlias ldap-group ldap-group-alias1 cn=my-group,o=ctx&gt;
+    AuthLDAPBindDN cn=youruser,o=ctx
+    AuthLDAPBindPassword yourpassword
+    AuthLDAPURL ldap://ldap.host/o=ctx
+&lt;/AuthzProviderAlias&gt;
+
+&lt;AuthzProviderAlias ldap-group ldap-group-alias2 cn=my-other-group,o=dev&gt;
+    AuthLDAPBindDN cn=yourotheruser,o=dev
+    AuthLDAPBindPassword yourotherpassword
+    AuthLDAPURL ldap://other.ldap.host/o=dev?cn
+&lt;/AuthzProviderAlias&gt;
+
+Alias /secure /webpages/secure
+&lt;Directory /webpages/secure&gt;
+    Require all granted
+    
+    AuthBasicProvider file
+    
+    AuthType Basic
+    AuthName LDAP_Protected_Place
+    
+    #implied OR operation
+    Require ldap-group-alias1
+    Require ldap-group-alias2
+&lt;/Directory&gt;</pre>
+
+    
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="logic" id="logic">Conteneurs d'autorisation</a></h2>
+
+    <p>Les directives de conteneur d'autorisation <code class="directive"><a href="#requireall">&lt;RequireAll&gt;</a></code>,
+    <code class="directive"><a href="#requireany">&lt;RequireAny&gt;</a></code> et <code class="directive"><a href="#requirenone">&lt;RequireNone&gt;</a></code>
+    peuvent être combinées entre elles et avec la directive <code class="directive"><a href="#require">Require</a></code> pour confectionner une
+    logique d'autorisation complexe.</p>
+
+    <p>L'exemple ci-dessous illustre la logique d'autorisation suivante.
+    Pour pouvoir accéder à la ressource, l'utilisateur doit être
+    l'utilisateur <code>superadmin</code>, ou appartenir aux deux
+    groupes LDAP <code>admins</code> et <code>Administrateurs</code> et
+    soit appartenir au groupe <code>ventes</code> ou avoir
+    <code>ventes</code> comme valeur de l'attribut LDAP
+    <code>dept</code>. De plus, pour pouvoir accéder à la ressource,
+    l'utilisateur ne doit appartenir ni au groupe <code>temps</code>, ni
+    au groupe LDAP <code>Employés temporaires</code>.</p>
+
+    <pre class="prettyprint lang-config">&lt;Directory /www/mydocs&gt;
+    &lt;RequireAll&gt;
+        &lt;RequireAny&gt;
+            Require user superadmin
+            &lt;RequireAll&gt;
+            Require group admins
+            Require ldap-group cn=Administrators,o=Airius
+                &lt;RequireAny&gt;
+                Require group sales
+                Require ldap-attribute dept="sales"
+                &lt;/RequireAny&gt;
+            &lt;/RequireAll&gt;
+        &lt;/RequireAny&gt;
+        &lt;RequireNone&gt;
+            Require group temps
+            Require ldap-group cn=Temporary Employees,o=Airius
+        &lt;/RequireNone&gt;
+    &lt;/RequireAll&gt;
+&lt;/Directory&gt;</pre>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="requiredirectives" id="requiredirectives">Les directives Require</a></h2>
+
+  <p>Le module <code class="module"><a href="../mod/mod_authz_core.html">mod_authz_core</a></code> met à disposition des
+  fournisseurs d'autorisation génériques utilisables avec la directive
+  <code class="directive"><a href="#require">Require</a></code>.</p>
+
+  <h3><a name="reqenv" id="reqenv">Require env</a></h3>
+
+    <p>Le fournisseur <code>env</code> permet de contrôler l'accès au
+    serveur en fonction de l'existence d'une <a href="../env.html">variable d'environnement</a>. Lorsque <code>Require
+    env <var>env-variable</var></code> est spécifié, la requête se voit
+    autoriser l'accès si la variable d'environnement
+    <var>env-variable</var> existe. Le serveur permet de définir
+    facilement des variables d'environnement en fonction des
+    caractéristiques de la requête du client via les directives fournies
+    par le module <code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code>. Cette directive Require
+    env permet donc de contrôler l'accès en fonction des
+    valeurs des en-têtes de la requête HTTP tels que
+    <code>User-Agent</code> (type de navigateur), <code>Referer</code>,
+    entre autres.</p>
+
+    <pre class="prettyprint lang-config">SetEnvIf User-Agent ^KnockKnock/2\.0 let_me_in
+&lt;Directory /docroot&gt;
+    Require env let_me_in
+&lt;/Directory&gt;</pre>
+
+
+    <p>Avec cet exemple, les navigateurs dont la chaîne user-agent
+    commence par <code>KnockKnock/2.0</code> se verront autoriser
+    l'accès, alors que tous les autres seront rejetés.</p>
+
+    <p>Lorsque le serveur cherche un chemin via une <a class="glossarylink" href="../glossary.html#subrequest" title="voir glossaire">sous-requête</a> interne (par exemple la
+   recherche d'un <code class="directive"><a href="../mod/mod_dir.html#directoryindex">DirectoryIndex</a></code>), ou lorsqu'il génère un
+   listing du contenu d'un répertoire via le module
+   <code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code>, la sous-requête n'hérite pas des
+   variables d'environnement spécifiques à la requête. En outre, à cause
+   des phases de l'API auxquelles <code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code> prend
+   part, les directives <code class="directive"><a href="../mod/mod_setenvif.html#setenvif">SetEnvIf</a></code> ne sont pas évaluées
+   séparément dans la sous-requête.</p>
+
+  
+
+  <h3><a name="reqall" id="reqall">Require all</a></h3>
+
+    <p>Le fournisseur <code>all</code> reproduit la fonctionnalité
+    précédemment fournie par les directives 'Allow from all' et 'Deny
+    from all'. Il accepte un argument dont les deux valeurs possibles
+    sont : 'granted' ou 'denied'. Les exemples suivants autorisent ou
+    interdisent l'accès à toutes les requêtes.</p>
+
+    <pre class="prettyprint lang-config">Require all granted</pre>
+
+
+    <pre class="prettyprint lang-config">Require all denied</pre>
+
+
+  
+
+  <h3><a name="reqmethod" id="reqmethod">Require method</a></h3>
+
+    <p>Le fournisseur <code>method</code> permet d'utiliser la méthode
+    HTTP dans le processus d'autorisation. Les méthodes GET et HEAD sont
+    ici considérées comme équivalentes. La méthode TRACE n'est pas
+    supportée par ce fournisseur ; utilisez à la place la directive
+    <code class="directive"><a href="../mod/core.html#traceenable">TraceEnable</a></code>.</p>
+
+    <p>Dans l'exemple suivant, seules les méthodes GET, HEAD, POST, et
+    OPTIONS sont autorisées :</p>
+
+    <pre class="prettyprint lang-config">Require method GET POST OPTIONS</pre>
+
+
+    <p>Dans l'exemple suivant, les méthodes GET, HEAD, POST, et OPTIONS
+    sont autorisées sans authentification, alors que toutes les autres
+    méthodes nécessitent un utilisateur valide :</p>
+
+    <pre class="prettyprint lang-config">&lt;RequireAny&gt;
+     Require method GET POST OPTIONS
+     Require valid-user
+&lt;/RequireAny&gt;</pre>
+
+
+  
+  <h3><a name="reqexpr" id="reqexpr">Require expr</a></h3>
+
+  <p>Le fournisseur <code>expr</code> permet d'accorder l'autorisation
+  d'accès de base en fonction d'expressions arbitraires.</p>
+
+    <pre class="prettyprint lang-config">Require expr "%{TIME_HOUR} -ge 9 &amp;&amp; %{TIME_HOUR} -le 17"</pre>
+
+
+    <pre class="prettyprint lang-config">&lt;RequireAll&gt;
+    Require expr "!(%{QUERY_STRING} =~ /secret/)"
+    Require expr "%{REQUEST_URI} in { '/example.cgi', '/other.cgi' }" 
+&lt;/RequireAll&gt;</pre>
+
+
+    <pre class="prettyprint lang-config">Require expr "!(%{QUERY_STRING} =~ /secret/) &amp;&amp; %{REQUEST_URI} in { '/example.cgi', '/other.cgi' }"</pre>
+
+
+    <p>La syntaxe de l'expression est décrite dans la documentation de <a href="../expr.html">ap_expr</a>.</p>
+
+    <p>Normalement, l'expression est évaluée avant l'authentification.
+    Cependant, si l'expression renvoie false et se réfère à la variable
+    <code>%{REMOTE_USER}</code>, le processus d'authentification sera
+    engagé et l'expression réévaluée.</p>
+
+  
+
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="authmerging" id="authmerging">Directive</a> <a name="AuthMerging" id="AuthMerging">AuthMerging</a></h2>
 <table class="directive">
@@ -438,208 +640,6 @@ pas.</td></tr>
 <li><a href="../howto/auth.html">Authentification, autorisation et
 contrôle d'accès</a></li>
 </ul>
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="authzalias" id="authzalias">Création des alias du fournisseur
-d'autorisation</a></h2>
-
-    <p>Il est possible de créer des fournisseurs d'autorisation étendus
-    dans le fichier de configuration et de leur assigner un nom d'alias.
-    On peut ensuite utiliser ces fournisseurs aliasés dans une
-    directive <code class="directive"><a href="#require">Require</a></code> de
-    la même manière qu'on le ferait pour des fournisseurs d'autorisation
-    de base. En plus de la possibilité de créer et d'aliaser un
-    fournisseur étendu, le même fournisseur d'autorisation étendu peut
-    être référencé par plusieurs localisations.
-    </p>
-
-    <h3><a name="example" id="example">Exemple</a></h3>
-        <p>Dans l'exemple suivant, on crée deux alias de fournisseur
-	d'autorisation ldap différents basés sur le fournisseur
-	d'autorisation ldap-group. Il est ainsi possible pour un seul
-	répertoire de vérifier l'appartenance à un groupe dans plusieurs
-	serveurs ldap :
-        </p>
-
-        <pre class="prettyprint lang-config">&lt;AuthzProviderAlias ldap-group ldap-group-alias1 cn=my-group,o=ctx&gt;
-    AuthLDAPBindDN cn=youruser,o=ctx
-    AuthLDAPBindPassword yourpassword
-    AuthLDAPURL ldap://ldap.host/o=ctx
-&lt;/AuthzProviderAlias&gt;
-
-&lt;AuthzProviderAlias ldap-group ldap-group-alias2 cn=my-other-group,o=dev&gt;
-    AuthLDAPBindDN cn=yourotheruser,o=dev
-    AuthLDAPBindPassword yourotherpassword
-    AuthLDAPURL ldap://other.ldap.host/o=dev?cn
-&lt;/AuthzProviderAlias&gt;
-
-Alias /secure /webpages/secure
-&lt;Directory /webpages/secure&gt;
-    Require all granted
-    
-    AuthBasicProvider file
-    
-    AuthType Basic
-    AuthName LDAP_Protected_Place
-    
-    #implied OR operation
-    Require ldap-group-alias1
-    Require ldap-group-alias2
-&lt;/Directory&gt;</pre>
-
-    
-
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="logic" id="logic">Conteneurs d'autorisation</a></h2>
-
-    <p>Les directives de conteneur d'autorisation <code class="directive"><a href="#requireall">&lt;RequireAll&gt;</a></code>,
-    <code class="directive"><a href="#requireany">&lt;RequireAny&gt;</a></code> et <code class="directive"><a href="#requirenone">&lt;RequireNone&gt;</a></code>
-    peuvent être combinées entre elles et avec la directive <code class="directive"><a href="#require">Require</a></code> pour confectionner une
-    logique d'autorisation complexe.</p>
-
-    <p>L'exemple ci-dessous illustre la logique d'autorisation suivante.
-    Pour pouvoir accéder à la ressource, l'utilisateur doit être
-    l'utilisateur <code>superadmin</code>, ou appartenir aux deux
-    groupes LDAP <code>admins</code> et <code>Administrateurs</code> et
-    soit appartenir au groupe <code>ventes</code> ou avoir
-    <code>ventes</code> comme valeur de l'attribut LDAP
-    <code>dept</code>. De plus, pour pouvoir accéder à la ressource,
-    l'utilisateur ne doit appartenir ni au groupe <code>temps</code>, ni
-    au groupe LDAP <code>Employés temporaires</code>.</p>
-
-    <pre class="prettyprint lang-config">&lt;Directory /www/mydocs&gt;
-    &lt;RequireAll&gt;
-        &lt;RequireAny&gt;
-            Require user superadmin
-            &lt;RequireAll&gt;
-            Require group admins
-            Require ldap-group cn=Administrators,o=Airius
-                &lt;RequireAny&gt;
-                Require group sales
-                Require ldap-attribute dept="sales"
-                &lt;/RequireAny&gt;
-            &lt;/RequireAll&gt;
-        &lt;/RequireAny&gt;
-        &lt;RequireNone&gt;
-            Require group temps
-            Require ldap-group cn=Temporary Employees,o=Airius
-        &lt;/RequireNone&gt;
-    &lt;/RequireAll&gt;
-&lt;/Directory&gt;</pre>
-
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="requiredirectives" id="requiredirectives">Les directives Require</a></h2>
-
-  <p>Le module <code class="module"><a href="../mod/mod_authz_core.html">mod_authz_core</a></code> met à disposition des
-  fournisseurs d'autorisation génériques utilisables avec la directive
-  <code class="directive"><a href="#require">Require</a></code>.</p>
-
-  <h3><a name="reqenv" id="reqenv">Require env</a></h3>
-
-    <p>Le fournisseur <code>env</code> permet de contrôler l'accès au
-    serveur en fonction de l'existence d'une <a href="../env.html">variable d'environnement</a>. Lorsque <code>Require
-    env <var>env-variable</var></code> est spécifié, la requête se voit
-    autoriser l'accès si la variable d'environnement
-    <var>env-variable</var> existe. Le serveur permet de définir
-    facilement des variables d'environnement en fonction des
-    caractéristiques de la requête du client via les directives fournies
-    par le module <code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code>. Cette directive Require
-    env permet donc de contrôler l'accès en fonction des
-    valeurs des en-têtes de la requête HTTP tels que
-    <code>User-Agent</code> (type de navigateur), <code>Referer</code>,
-    entre autres.</p>
-
-    <pre class="prettyprint lang-config">SetEnvIf User-Agent ^KnockKnock/2\.0 let_me_in
-&lt;Directory /docroot&gt;
-    Require env let_me_in
-&lt;/Directory&gt;</pre>
-
-
-    <p>Avec cet exemple, les navigateurs dont la chaîne user-agent
-    commence par <code>KnockKnock/2.0</code> se verront autoriser
-    l'accès, alors que tous les autres seront rejetés.</p>
-
-    <p>Lorsque le serveur cherche un chemin via une <a class="glossarylink" href="../glossary.html#subrequest" title="voir glossaire">sous-requête</a> interne (par exemple la
-   recherche d'un <code class="directive"><a href="../mod/mod_dir.html#directoryindex">DirectoryIndex</a></code>), ou lorsqu'il génère un
-   listing du contenu d'un répertoire via le module
-   <code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code>, la sous-requête n'hérite pas des
-   variables d'environnement spécifiques à la requête. En outre, à cause
-   des phases de l'API auxquelles <code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code> prend
-   part, les directives <code class="directive"><a href="../mod/mod_setenvif.html#setenvif">SetEnvIf</a></code> ne sont pas évaluées
-   séparément dans la sous-requête.</p>
-
-  
-
-  <h3><a name="reqall" id="reqall">Require all</a></h3>
-
-    <p>Le fournisseur <code>all</code> reproduit la fonctionnalité
-    précédemment fournie par les directives 'Allow from all' et 'Deny
-    from all'. Il accepte un argument dont les deux valeurs possibles
-    sont : 'granted' ou 'denied'. Les exemples suivants autorisent ou
-    interdisent l'accès à toutes les requêtes.</p>
-
-    <pre class="prettyprint lang-config">Require all granted</pre>
-
-
-    <pre class="prettyprint lang-config">Require all denied</pre>
-
-
-  
-
-  <h3><a name="reqmethod" id="reqmethod">Require method</a></h3>
-
-    <p>Le fournisseur <code>method</code> permet d'utiliser la méthode
-    HTTP dans le processus d'autorisation. Les méthodes GET et HEAD sont
-    ici considérées comme équivalentes. La méthode TRACE n'est pas
-    supportée par ce fournisseur ; utilisez à la place la directive
-    <code class="directive"><a href="../mod/core.html#traceenable">TraceEnable</a></code>.</p>
-
-    <p>Dans l'exemple suivant, seules les méthodes GET, HEAD, POST, et
-    OPTIONS sont autorisées :</p>
-
-    <pre class="prettyprint lang-config">Require method GET POST OPTIONS</pre>
-
-
-    <p>Dans l'exemple suivant, les méthodes GET, HEAD, POST, et OPTIONS
-    sont autorisées sans authentification, alors que toutes les autres
-    méthodes nécessitent un utilisateur valide :</p>
-
-    <pre class="prettyprint lang-config">&lt;RequireAny&gt;
-     Require method GET POST OPTIONS
-     Require valid-user
-&lt;/RequireAny&gt;</pre>
-
-
-  
-  <h3><a name="reqexpr" id="reqexpr">Require expr</a></h3>
-
-  <p>Le fournisseur <code>expr</code> permet d'accorder l'autorisation
-  d'accès de base en fonction d'expressions arbitraires.</p>
-
-    <pre class="prettyprint lang-config">Require expr "%{TIME_HOUR} -ge 9 &amp;&amp; %{TIME_HOUR} -le 17"</pre>
-
-
-    <pre class="prettyprint lang-config">&lt;RequireAll&gt;
-    Require expr "!(%{QUERY_STRING} =~ /secret/)"
-    Require expr "%{REQUEST_URI} in { '/example.cgi', '/other.cgi' }" 
-&lt;/RequireAll&gt;</pre>
-
-
-    <pre class="prettyprint lang-config">Require expr "!(%{QUERY_STRING} =~ /secret/) &amp;&amp; %{REQUEST_URI} in { '/example.cgi', '/other.cgi' }"</pre>
-
-
-    <p>La syntaxe de l'expression est décrite dans la documentation de <a href="../expr.html">ap_expr</a>.</p>
-
-    <p>Normalement, l'expression est évaluée avant l'authentification.
-    Cependant, si l'expression renvoie false et se réfère à la variable
-    <code>%{REMOTE_USER}</code>, le processus d'authentification sera
-    engagé et l'expression réévaluée.</p>
-
-  
-
 </div>
 </div>
 <div class="bottomlang">

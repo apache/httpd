@@ -52,9 +52,7 @@
       votre réseau, mais aussi pour l'Internet au sens large. </p>
     </div>
 </div>
-<div id="quickview"><h3 class="directives">Directives</h3>
-<p>Ce module ne fournit aucune directive.</p>
-<h3>Sujets</h3>
+<div id="quickview"><h3>Sujets</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#usage">Utilisation</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#env">Variables d'environnement</a></li>
@@ -64,7 +62,9 @@
 requête</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#resppacketstruct">Structure du paquet de la
 réponse</a></li>
-</ul><h3>Voir aussi</h3>
+</ul><h3 class="directives">Directives</h3>
+<p>Ce module ne fournit aucune directive.</p>
+<h3>Voir aussi</h3>
 <ul class="seealso">
 <li><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></li>
 <li><a href="../env.html">Documentation sur les variables

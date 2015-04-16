@@ -30,6 +30,7 @@
 <a href="../ko/mod/mod_logio.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_logio.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
+<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Her isteğin girdi ve çıktı uzunluklarının günlüklenmesi.
 </td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Eklenti</td></tr>
@@ -53,12 +54,14 @@
       yeniden uzlaşımı tetikleyen istekle ilişkilendirilir.</div>
 
 </div>
-<div id="quickview"><h3 class="directives">Yönergeler</h3>
-<p>Bu modül yönerge içermez.</p>
-<h3>Konular</h3>
+<div id="quickview"><h3>Konular</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#formats">Özel Günlük Biçemleri</a></li>
-</ul><h3>Ayrıca bakınız:</h3>
+</ul><h3 class="directives">Yönergeler</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#logiotrackttfb">LogIOTrackTTFB</a></li>
+</ul>
+<h3>Ayrıca bakınız:</h3>
 <ul class="seealso">
 <li><code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code></li>
 <li><a href="../logs.html">Apache Günlük Dosyaları</a></li>
@@ -93,6 +96,19 @@
       \"%{User-agent}i\" %I %O"</code></dd>
     </dl>
 </div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="LogIOTrackTTFB" id="LogIOTrackTTFB">LogIOTrackTTFB</a> <a name="logiotrackttfb" id="logiotrackttfb">Yönergesi</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Enable tracking of time to first byte (TTFB)</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>LogIOTrackTTFB ON|OFF</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>LogIOTrackTTFB OFF</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>none</td></tr>
+<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Eklenti</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_logio</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>Apache HTTP Server 2.4.13 and later</td></tr>
+</table><p>Bu yönergenin belgesi henüz Türkçeye çevrilmedi.
+            Lütfen İngilizce sürümüne bakınız.</p></div>
 </div>
 <div class="bottomlang">
 <p><span>Mevcut Diller: </span><a href="../en/mod/mod_logio.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |

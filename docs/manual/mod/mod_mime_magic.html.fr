@@ -47,39 +47,16 @@ octets de son contenu</td></tr>
     déterminer le type de contenu. Ce module n'est activé que si le
     fichier magique est spécifié par la directive <code class="directive"><a href="#mimemagicfile">MimeMagicFile</a></code>.</p>
 </div>
-<div id="quickview"><h3 class="directives">Directives</h3>
-<ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#mimemagicfile">MimeMagicFile</a></li>
-</ul>
-<h3>Sujets</h3>
+<div id="quickview"><h3>Sujets</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#format">Format du fichier magique</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#performance">Problèmes liés aux performances</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#notes">Notes</a></li>
-</ul><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="mimemagicfile" id="mimemagicfile">Directive</a> <a name="MimeMagicFile" id="MimeMagicFile">MimeMagicFile</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active la détermination du type MIME en se basant sur le
-contenu du fichier et en utilisant le fichier magique
-spécifié</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MimeMagicFile <var>chemin-fichier</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_mime_magic</td></tr>
-</table>
-    <p>La directive <code class="directive">MimeMagicFile</code> permet
-    d'activer ce module, le fichier par défaut fourni étant
-    <code>conf/magic</code>. Les chemins sans slash '/' de début sont
-    relatifs au répertoire défini par la directive <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>. Les serveurs virtuels
-    utilisent le même fichier que le serveur principal sauf si un
-    fichier spécifique a été défini pour ce serveur virtuel, auquel cas
-    c'est ce dernier fichier qui sera utilisé.</p>
-
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">MimeMagicFile conf/magic</pre>
-</div>
-
-</div>
+</ul><h3 class="directives">Directives</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#mimemagicfile">MimeMagicFile</a></li>
+</ul>
+<ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="format" id="format">Format du fichier magique</a></h2>
@@ -276,6 +253,29 @@ spécifié</td></tr>
         used here.</li>
       </ul>
     </div>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="mimemagicfile" id="mimemagicfile">Directive</a> <a name="MimeMagicFile" id="MimeMagicFile">MimeMagicFile</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active la détermination du type MIME en se basant sur le
+contenu du fichier et en utilisant le fichier magique
+spécifié</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MimeMagicFile <var>chemin-fichier</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_mime_magic</td></tr>
+</table>
+    <p>La directive <code class="directive">MimeMagicFile</code> permet
+    d'activer ce module, le fichier par défaut fourni étant
+    <code>conf/magic</code>. Les chemins sans slash '/' de début sont
+    relatifs au répertoire défini par la directive <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>. Les serveurs virtuels
+    utilisent le même fichier que le serveur principal sauf si un
+    fichier spécifique a été défini pour ce serveur virtuel, auquel cas
+    c'est ce dernier fichier qui sera utilisé.</p>
+
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">MimeMagicFile conf/magic</pre>
+</div>
+
 </div>
 </div>
 <div class="bottomlang">

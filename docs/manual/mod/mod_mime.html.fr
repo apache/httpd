@@ -86,7 +86,13 @@ jeu de caractère et codage)</td></tr>
     de dernière modification), pour être sûr que tous les visiteurs
     recevront le documents avec les en-têtes corrects. </p>
 </div>
-<div id="quickview"><h3 class="directives">Directives</h3>
+<div id="quickview"><h3>Sujets</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#multipleext">Fichiers avec extensions
+multiples</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#contentencoding">Codage du contenu</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#charset-lang">Jeux de caractères et langues</a></li>
+</ul><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#addcharset">AddCharset</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#addencoding">AddEncoding</a></li>
@@ -107,13 +113,7 @@ jeu de caractère et codage)</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#removetype">RemoveType</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#typesconfig">TypesConfig</a></li>
 </ul>
-<h3>Sujets</h3>
-<ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#multipleext">Fichiers avec extensions
-multiples</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#contentencoding">Codage du contenu</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#charset-lang">Jeux de caractères et langues</a></li>
-</ul><h3>Voir aussi</h3>
+<h3>Voir aussi</h3>
 <ul class="seealso">
 <li><code class="directive"><a href="../mod/mod_mime_magic.html#mimemagicfile">MimeMagicFile</a></code></li>
 <li><code class="directive"><a href="../mod/core.html#adddefaultcharset">AddDefaultCharset</a></code></li>
@@ -122,6 +122,148 @@ multiples</a></li>
 <li><code class="directive"><a href="../mod/core.html#setinputfilter">SetInputFilter</a></code></li>
 <li><code class="directive"><a href="../mod/core.html#setoutputfilter">SetOutputFilter</a></code></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="multipleext" id="multipleext">Fichiers avec extensions
+multiples</a></h2>
+    <p>Les fichiers peuvent posséder plusieurs extensions dont l'ordre
+    est <em>normalement</em> sans importance. Par exemple, si
+    le fichier <code>welcome.html.fr</code> est associé au type de
+    contenu <code>text/html</code> et à la langue française, le fichier
+    <code>welcome.fr.html</code> possèdera exactement les même
+    métadonnées. Si le fichier possède plusieurs extensions associées
+    au même type de métadonnée, c'est celle de ces extensions la plus à
+    droite qui sera utilisée, excepté pour ce qui concerne les langues
+    et les codages de contenu. Par exemple, si <code>.gif</code> est
+    associé au <a class="glossarylink" href="../glossary.html#type de médium" title="voir glossaire">type de médium</a>
+    <code>image/gif</code>, et <code>.html</code> au type de médium
+    <code>text/html</code>, le fichier <code>welcome.gif.html</code>
+    sera associé au type de médium <code>text/html</code>.</p>
+
+    <p>Les <a href="#charset-lang">Languages</a> et les <a href="#contentencoding">codages de contenu</a> sont traités de
+    manière cumulative, car il est possible d'assigner plusieurs
+    langues ou codages à une ressource particulière. Par exemple, le
+    fichier <code>welcome.html.en.de</code> sera servi avec les en-têtes
+    <code>Content-Language: en, de</code> et <code>Content-Type:
+    text/html</code>.</p>
+
+    <p>Des précautions doivent être prises lorsqu'un fichier avec
+    extensions multiples est associé à la fois à un <a class="glossarylink" href="../glossary.html#type de&#10;    médium" title="voir glossaire">type de
+    médium</a> et à un gestionnaire. En général, cela impliquera
+    la gestion de la requête par le module associé au gestionnaire. Par
+    exemple, si l'extension <code>.imap</code> est associée au
+    gestionnaire <code>imap-file</code> (du module
+    <code class="module"><a href="../mod/mod_imagemap.html">mod_imagemap</a></code>), et si l'extension <code>.html</code>
+    est associée au type de médium <code>text/html</code>, le fichier
+    <code>world.imap.html</code> sera à la fois associé au gestionnaire
+    <code>imap-file</code> et au type de médium <code>text/html</code>.
+    Pour son traitement, c'est le gestionnaire <code>imap-file</code>
+    qui sera utilisé, et il sera donc traité en tant que fichier
+    imagemap.</p>
+
+    <p>Si vous préférez que seule la dernière partie d'un nom de fichier
+    séparée du reste du nom par un point soit associée à une métadonnée
+    particulière, n'utilisez pas les directives <code>Add*</code>. Par
+    exemple, si vous souhaitez que le fichier <code>foo.html.cgi</code>
+    soit traité en tant que script CGI, mais pas le fichier
+    <code>bar.cgi.html</code>, alors, au lieu d'utiliser
+    <code>AddHandler cgi-script .cgi</code>, utilisez plutôt :</p>
+
+    <div class="example"><h3>Configuration du gestionnaire en se basant seulement
+    sur la dernière extension</h3><pre class="prettyprint lang-config">&lt;FilesMatch \.cgi$&gt;
+  SetHandler cgi-script
+&lt;/FilesMatch&gt;</pre>
+</div>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="contentencoding" id="contentencoding">Codage du contenu</a></h2>
+    <p>Un fichier d'un <a class="glossarylink" href="../glossary.html#type de médium" title="voir glossaire">type de médium</a> particulier
+    peut être également codé d'une certaine manière pour simplifier sa
+    transmission sur Internet. Alors que cela concerne en général la
+    compression, comme <code>gzip</code>, il peut aussi s'agir de
+    chiffrement, comme <code>pgp</code> ou d'un codage comme UUencoding,
+    qui est conçu pour transmettre un fichier binaire sous un format
+    ASCII (texte).</p>
+
+    <p>La <a href="http://www.ietf.org/rfc/rfc2616.txt">RFC
+    HTTP/1.1</a>, section 14.11 stipule à ce titre :</p>
+
+    <blockquote cite="http://www.ietf.org/rfc/rfc2616.txt">
+      <p>Le champ d'en-tête Content-Encoding de l'entité est utilisé en
+      tant que modificateur du type de médium. Lorsqu'il est présent, sa
+      valeur indique quels codages de contenu additionnels ont été
+      appliqués au corps de l'entité, et ainsi quels mécanismes de
+      décodage doivent être appliqués afin de retrouver le type de
+      médium référencé par le champ d'en-tête Content-Type. Le codage de
+      contenu est principalement utilisé pour permettre la compression
+      d'un document sans perdre l'information concernant le type de
+      médium sous-jacent.</p>
+    </blockquote>
+
+    <p>En utilisant plusieurs extensions (voir la <a href="#multipleext">section ci-dessus à propos des extensions de
+    fichiers multiples</a>), vous pouvez indiquer qu'un fichier est d'un
+    <em>type</em>, particulier, et possède aussi un <em>codage</em>
+    particulier.</p>
+
+    <p>Considérons par exemple un fichier contenant un document
+    Microsoft Word et compressé par pkzip pour réduire sa taille. Si
+    l'extension <code>.doc</code> est associée au type de fichier
+    Microsoft Word, et si l'extension <code>.zip</code> est associée au
+    codage de fichier pkzip, alors le fichier
+    <code>Resume.doc.zip</code> sera identifié comme document Word
+    compressé par pkzip.</p>
+
+    <p>Apache joint un en-tête <code>Content-encoding</code> à la
+    ressource afin d'informer le navigateur client à propos de la
+    méthode de codage.</p>
+
+    <pre class="prettyprint lang-config">Content-encoding: pkzip</pre>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="charset-lang" id="charset-lang">Jeux de caractères et langues</a></h2>
+    <p>En plus du type de fichier et du codage, un autre élément
+    important d'information est la langue dans laquelle le document est
+    écrit, et avec quel jeu de caractères le contenu du fichier doit
+    être affiché. Par exemple, un document peut être écrit en alphabet
+    vietnamien ou cyrillique, et doit être affiché en conséquence. Cette
+    information est également transmise via des en-têtes HTTP.</p>
+
+    <p>Les jeu de caractères, langue, codage et type MIME sont tous
+    utilisés au cours du processus de négociation de contenu (voir
+    <code class="module"><a href="../mod/mod_negotiation.html">mod_negotiation</a></code>) afin de déterminer quel document
+    servir au client, lorsque plusieurs choix sont possibles en fonction
+    du jeu de caractères, de la langue, du codage ou du type MIME. Toutes
+    les associations d'extensions de noms de fichiers créées via les
+    directives <code class="directive"><a href="#addcharset">AddCharset</a></code>,
+    <code class="directive"><a href="#addencoding">AddEncoding</a></code>, <code class="directive"><a href="#addlanguage">AddLanguage</a></code> et <code class="directive"><a href="#addtype">AddType</a></code> (ainsi que les associations
+    d'extensions listées dans le fichier défini par la directive
+    <code class="directive"><a href="../mod/mod_mime_magic.html#mimemagicfile">MimeMagicFile</a></code>),
+    participent à ce processus de sélection. Les extensions de noms de
+    fichiers qui n'ont été associés que par des directives <code class="directive"><a href="#addhandler">AddHandler</a></code>, <code class="directive"><a href="#addinputfilter">AddInputFilter</a></code> ou <code class="directive"><a href="#addoutputfilter">AddOutputFilter</a></code>, peuvent être incluses
+    ou exclues du processus de sélection en utilisant la directive
+    <code class="directive"><a href="#multiviewsmatch">MultiviewsMatch</a></code>.</p>
+
+    <h3><a name="charset" id="charset">Jeu de caractères</a></h3>
+      <p>Pour transmettre cette information supplémentaire, Apache peut
+      ajouter un en-tête <code>Content-Language</code>, afin de
+      spécifier la langue dans laquelle le document est écrit, et peut
+      ajouter des informations additionnelles à l'en-tête
+      <code>Content-Type</code> pour indiquer le jeu de caractères
+      particulier qui doit être utilisé pour restituer correctement le
+      document.</p>
+
+      <div class="example"><p><code>
+        Content-Language: en, fr
+Content-Type: text/plain; charset=ISO-8859-1
+      </code></p></div>
+
+      <p>La langue est spécifiée via son abréviation en deux lettres. Le
+      <code>jeu de caractères</code> est le nom du jeu de caractères
+      particulier qui doit être utilisé.</p>
+    
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="addcharset" id="addcharset">Directive</a> <a name="AddCharset" id="AddCharset">AddCharset</a></h2>
 <table class="directive">
@@ -933,148 +1075,6 @@ d'extensions de noms de fichiers</td></tr>
 <ul>
 <li><code class="module"><a href="../mod/mod_mime_magic.html">mod_mime_magic</a></code></li>
 </ul>
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="multipleext" id="multipleext">Fichiers avec extensions
-multiples</a></h2>
-    <p>Les fichiers peuvent posséder plusieurs extensions dont l'ordre
-    est <em>normalement</em> sans importance. Par exemple, si
-    le fichier <code>welcome.html.fr</code> est associé au type de
-    contenu <code>text/html</code> et à la langue française, le fichier
-    <code>welcome.fr.html</code> possèdera exactement les même
-    métadonnées. Si le fichier possède plusieurs extensions associées
-    au même type de métadonnée, c'est celle de ces extensions la plus à
-    droite qui sera utilisée, excepté pour ce qui concerne les langues
-    et les codages de contenu. Par exemple, si <code>.gif</code> est
-    associé au <a class="glossarylink" href="../glossary.html#type de médium" title="voir glossaire">type de médium</a>
-    <code>image/gif</code>, et <code>.html</code> au type de médium
-    <code>text/html</code>, le fichier <code>welcome.gif.html</code>
-    sera associé au type de médium <code>text/html</code>.</p>
-
-    <p>Les <a href="#charset-lang">Languages</a> et les <a href="#contentencoding">codages de contenu</a> sont traités de
-    manière cumulative, car il est possible d'assigner plusieurs
-    langues ou codages à une ressource particulière. Par exemple, le
-    fichier <code>welcome.html.en.de</code> sera servi avec les en-têtes
-    <code>Content-Language: en, de</code> et <code>Content-Type:
-    text/html</code>.</p>
-
-    <p>Des précautions doivent être prises lorsqu'un fichier avec
-    extensions multiples est associé à la fois à un <a class="glossarylink" href="../glossary.html#type de&#10;    médium" title="voir glossaire">type de
-    médium</a> et à un gestionnaire. En général, cela impliquera
-    la gestion de la requête par le module associé au gestionnaire. Par
-    exemple, si l'extension <code>.imap</code> est associée au
-    gestionnaire <code>imap-file</code> (du module
-    <code class="module"><a href="../mod/mod_imagemap.html">mod_imagemap</a></code>), et si l'extension <code>.html</code>
-    est associée au type de médium <code>text/html</code>, le fichier
-    <code>world.imap.html</code> sera à la fois associé au gestionnaire
-    <code>imap-file</code> et au type de médium <code>text/html</code>.
-    Pour son traitement, c'est le gestionnaire <code>imap-file</code>
-    qui sera utilisé, et il sera donc traité en tant que fichier
-    imagemap.</p>
-
-    <p>Si vous préférez que seule la dernière partie d'un nom de fichier
-    séparée du reste du nom par un point soit associée à une métadonnée
-    particulière, n'utilisez pas les directives <code>Add*</code>. Par
-    exemple, si vous souhaitez que le fichier <code>foo.html.cgi</code>
-    soit traité en tant que script CGI, mais pas le fichier
-    <code>bar.cgi.html</code>, alors, au lieu d'utiliser
-    <code>AddHandler cgi-script .cgi</code>, utilisez plutôt :</p>
-
-    <div class="example"><h3>Configuration du gestionnaire en se basant seulement
-    sur la dernière extension</h3><pre class="prettyprint lang-config">&lt;FilesMatch \.cgi$&gt;
-  SetHandler cgi-script
-&lt;/FilesMatch&gt;</pre>
-</div>
-
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="contentencoding" id="contentencoding">Codage du contenu</a></h2>
-    <p>Un fichier d'un <a class="glossarylink" href="../glossary.html#type de médium" title="voir glossaire">type de médium</a> particulier
-    peut être également codé d'une certaine manière pour simplifier sa
-    transmission sur Internet. Alors que cela concerne en général la
-    compression, comme <code>gzip</code>, il peut aussi s'agir de
-    chiffrement, comme <code>pgp</code> ou d'un codage comme UUencoding,
-    qui est conçu pour transmettre un fichier binaire sous un format
-    ASCII (texte).</p>
-
-    <p>La <a href="http://www.ietf.org/rfc/rfc2616.txt">RFC
-    HTTP/1.1</a>, section 14.11 stipule à ce titre :</p>
-
-    <blockquote cite="http://www.ietf.org/rfc/rfc2616.txt">
-      <p>Le champ d'en-tête Content-Encoding de l'entité est utilisé en
-      tant que modificateur du type de médium. Lorsqu'il est présent, sa
-      valeur indique quels codages de contenu additionnels ont été
-      appliqués au corps de l'entité, et ainsi quels mécanismes de
-      décodage doivent être appliqués afin de retrouver le type de
-      médium référencé par le champ d'en-tête Content-Type. Le codage de
-      contenu est principalement utilisé pour permettre la compression
-      d'un document sans perdre l'information concernant le type de
-      médium sous-jacent.</p>
-    </blockquote>
-
-    <p>En utilisant plusieurs extensions (voir la <a href="#multipleext">section ci-dessus à propos des extensions de
-    fichiers multiples</a>), vous pouvez indiquer qu'un fichier est d'un
-    <em>type</em>, particulier, et possède aussi un <em>codage</em>
-    particulier.</p>
-
-    <p>Considérons par exemple un fichier contenant un document
-    Microsoft Word et compressé par pkzip pour réduire sa taille. Si
-    l'extension <code>.doc</code> est associée au type de fichier
-    Microsoft Word, et si l'extension <code>.zip</code> est associée au
-    codage de fichier pkzip, alors le fichier
-    <code>Resume.doc.zip</code> sera identifié comme document Word
-    compressé par pkzip.</p>
-
-    <p>Apache joint un en-tête <code>Content-encoding</code> à la
-    ressource afin d'informer le navigateur client à propos de la
-    méthode de codage.</p>
-
-    <pre class="prettyprint lang-config">Content-encoding: pkzip</pre>
-
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="charset-lang" id="charset-lang">Jeux de caractères et langues</a></h2>
-    <p>En plus du type de fichier et du codage, un autre élément
-    important d'information est la langue dans laquelle le document est
-    écrit, et avec quel jeu de caractères le contenu du fichier doit
-    être affiché. Par exemple, un document peut être écrit en alphabet
-    vietnamien ou cyrillique, et doit être affiché en conséquence. Cette
-    information est également transmise via des en-têtes HTTP.</p>
-
-    <p>Les jeu de caractères, langue, codage et type MIME sont tous
-    utilisés au cours du processus de négociation de contenu (voir
-    <code class="module"><a href="../mod/mod_negotiation.html">mod_negotiation</a></code>) afin de déterminer quel document
-    servir au client, lorsque plusieurs choix sont possibles en fonction
-    du jeu de caractères, de la langue, du codage ou du type MIME. Toutes
-    les associations d'extensions de noms de fichiers créées via les
-    directives <code class="directive"><a href="#addcharset">AddCharset</a></code>,
-    <code class="directive"><a href="#addencoding">AddEncoding</a></code>, <code class="directive"><a href="#addlanguage">AddLanguage</a></code> et <code class="directive"><a href="#addtype">AddType</a></code> (ainsi que les associations
-    d'extensions listées dans le fichier défini par la directive
-    <code class="directive"><a href="../mod/mod_mime_magic.html#mimemagicfile">MimeMagicFile</a></code>),
-    participent à ce processus de sélection. Les extensions de noms de
-    fichiers qui n'ont été associés que par des directives <code class="directive"><a href="#addhandler">AddHandler</a></code>, <code class="directive"><a href="#addinputfilter">AddInputFilter</a></code> ou <code class="directive"><a href="#addoutputfilter">AddOutputFilter</a></code>, peuvent être incluses
-    ou exclues du processus de sélection en utilisant la directive
-    <code class="directive"><a href="#multiviewsmatch">MultiviewsMatch</a></code>.</p>
-
-    <h3><a name="charset" id="charset">Jeu de caractères</a></h3>
-      <p>Pour transmettre cette information supplémentaire, Apache peut
-      ajouter un en-tête <code>Content-Language</code>, afin de
-      spécifier la langue dans laquelle le document est écrit, et peut
-      ajouter des informations additionnelles à l'en-tête
-      <code>Content-Type</code> pour indiquer le jeu de caractères
-      particulier qui doit être utilisé pour restituer correctement le
-      document.</p>
-
-      <div class="example"><p><code>
-        Content-Language: en, fr
-Content-Type: text/plain; charset=ISO-8859-1
-      </code></p></div>
-
-      <p>La langue est spécifiée via son abréviation en deux lettres. Le
-      <code>jeu de caractères</code> est le nom du jeu de caractères
-      particulier qui doit être utilisé.</p>
-    
 </div>
 </div>
 <div class="bottomlang">
