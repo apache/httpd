@@ -144,7 +144,7 @@ module="mod_mime_magic">MimeMagicFile</directive></seealso>
 
     <example><title>Configure handler based on final extension only</title>
     <highlight language="config">
-&lt;FilesMatch ".+\.cgi$"&gt;
+&lt;FilesMatch "[^.]+\.cgi$"&gt;
   SetHandler cgi-script
 &lt;/FilesMatch&gt;
     </highlight>
