@@ -26,12 +26,14 @@ BEGIN {
     A["runtimedir"] = "logs"
     A["errordir"] = "error"
     A["proxycachedir"] = "proxy"
+    A["davlockdb"] = "davlockdb"
 
     B["htdocsdir"] = A["ServerRoot"]"/"A["htdocsdir"]
     B["iconsdir"] = A["ServerRoot"]"/"A["iconsdir"]
     B["manualdir"] = A["ServerRoot"]"/"A["manualdir"]
     B["errordir"] = A["ServerRoot"]"/"A["errordir"]
     B["proxycachedir"] = A["ServerRoot"]"/"A["proxycachedir"]
+    B["davlockdb"] = A["ServerRoot"]"/"A["davlockdb"]
     B["cgidir"] = A["ServerRoot"]"/"A["cgidir"]
     B["logfiledir"] = A["logfiledir"]
     B["sysconfdir"] = A["sysconfdir"]
