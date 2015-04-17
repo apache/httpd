@@ -382,7 +382,7 @@
 <div class="directive-section"><h2><a name="CustomLog" id="CustomLog">CustomLog</a> <a name="customlog" id="customlog">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets filename and format of log file</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CustomLog  <var>file</var>|<var>pipe</var>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CustomLog  <var>file</var>|<var>pipe</var>|<var>provider</var>
 <var>format</var>|<var>nickname</var>
 [env=[!]<var>environment-variable</var>|
 expr=<var>expression</var>]</code></td></tr>
@@ -420,6 +420,19 @@ expr=<var>expression</var>]</code></td></tr>
         may allow the use of back slashes. In general it is a good idea to always
         use forward slashes throughout the configuration files.</p>
       </div></dd>
+      <dt><var>provider</var></dt>
+      <dd>Modules implementing ErrorLog providers can also be used as a target
+      for CustomLog messages. To use ErrorLog provider as a target,
+      "provider:argument" syntax must be used. You can for example use
+      <code class="module"><a href="../mod/mod_journald.html">mod_journald</a></code> or <code class="module"><a href="../mod/mod_syslog.html">mod_syslog</a></code>
+      as a provider:
+    <pre class="prettyprint lang-config"># CustomLog logging to journald
+CustomLog "journald" "%h %l %u %t \"%r\" %&gt;s %b"
+
+# CustomLog logging to syslog with "user" facility
+CustomLog "syslog:user" "%h %l %u %t \"%r\" %&gt;s %b"</pre>
+
+      </dd>
     </dl>
 
     <p>The second argument specifies what will be written to the

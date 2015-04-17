@@ -376,7 +376,7 @@ ServerHello</td></tr>
 <em>log-URL|-</em></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Static configuration of information about a log</td></tr>
 <tr><td><a href="mod_ssl_ct.html#ctstaticscts">CTStaticSCTs <em>certificate-pem-file</em> <em>sct-directory</em></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Static configuration of one or more SCTs for a server certificate
 </td></tr>
-<tr class="odd"><td><a href="mod_log_config.html#customlog">CustomLog  <var>file</var>|<var>pipe</var>
+<tr class="odd"><td><a href="mod_log_config.html#customlog">CustomLog  <var>file</var>|<var>pipe</var>|<var>provider</var>
 <var>format</var>|<var>nickname</var>
 [env=[!]<var>environment-variable</var>|
 expr=<var>expression</var>]</a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Sets filename and format of log file</td></tr>

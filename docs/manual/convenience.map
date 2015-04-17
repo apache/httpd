@@ -332,6 +332,7 @@ loadmodule	mod/mod_so.html#loadmodule
 location	mod/core.html#location
 locationmatch	mod/core.html#locationmatch
 logformat	mod/mod_log_config.html#logformat
+logiotrackttfb	mod/mod_logio.html#logiotrackttfb
 loglevel	mod/core.html#loglevel
 logleveloverride	mod/core.html#logleveloverride
 logmessage	mod/mod_log_debug.html#logmessage
