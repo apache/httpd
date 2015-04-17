@@ -337,10 +337,10 @@ AddOutputFilterByType INCLUDES;CACHE;DEFLATE text/html</pre>
   <p>This makes it possible to support conditional logging of cached requests
   as per the following example:</p>
 
-  <pre class="prettyprint lang-config">CustomLog cached-requests.log common env=cache-hit
-CustomLog uncached-requests.log common env=cache-miss
-CustomLog revalidated-requests.log common env=cache-revalidate
-CustomLog invalidated-requests.log common env=cache-invalidate</pre>
+  <pre class="prettyprint lang-config">CustomLog "cached-requests.log" common env=cache-hit
+CustomLog "uncached-requests.log" common env=cache-miss
+CustomLog "revalidated-requests.log" common env=cache-revalidate
+CustomLog "invalidated-requests.log" common env=cache-invalidate</pre>
 
 
   <p>For module authors, a hook called <var>cache_status</var> is available,

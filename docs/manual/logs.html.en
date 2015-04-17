@@ -218,7 +218,7 @@
       follows.</p>
 
       <pre class="prettyprint lang-config">LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common
-CustomLog logs/access_log common</pre>
+CustomLog "logs/access_log" common</pre>
 
 
       <p>This defines the <em>nickname</em> <code>common</code> and
@@ -359,7 +359,7 @@ CustomLog logs/access_log common</pre>
       Log Format. It can be used as follows.</p>
 
       <pre class="prettyprint lang-config">LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\"" combined
-CustomLog log/access_log combined</pre>
+CustomLog "log/access_log" combined</pre>
 
 
       <p>This format is exactly the same as the Common Log Format,
@@ -409,9 +409,9 @@ CustomLog log/access_log combined</pre>
       to mimic the effects of the <code>ReferLog</code> and <code>AgentLog</code> directives.</p>
 
       <pre class="prettyprint lang-config">LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common
-CustomLog logs/access_log common
-CustomLog logs/referer_log "%{Referer}i -&gt; %U"
-CustomLog logs/agent_log "%{User-agent}i"</pre>
+CustomLog "logs/access_log" common
+CustomLog "logs/referer_log" "%{Referer}i -&gt; %U"
+CustomLog "logs/agent_log" "%{User-agent}i"</pre>
 
 
       <p>This example also shows that it is not necessary to define a
@@ -437,16 +437,16 @@ SetEnvIf Remote_Addr "127\.0\.0\.1" dontlog
 # Mark requests for the robots.txt file
 SetEnvIf Request_URI "^/robots\.txt$" dontlog
 # Log what remains
-CustomLog logs/access_log common env=!dontlog</pre>
+CustomLog "logs/access_log" common env=!dontlog</pre>
 
 
       <p>As another example, consider logging requests from
       english-speakers to one log file, and non-english speakers to a
       different log file.</p>
 
-      <pre class="prettyprint lang-config">        SetEnvIf Accept-Language "en" english<br />
-        CustomLog logs/english_log common env=english<br />
-        CustomLog logs/non_english_log common env=!english</pre>
+      <pre class="prettyprint lang-config">SetEnvIf Accept-Language "en" english<br />
+CustomLog "logs/english_log" common env=english<br />
+CustomLog "logs/non_english_log" common env=!english</pre>
 
 
       <p>In a caching scenario one would want to know about
@@ -455,7 +455,7 @@ CustomLog logs/access_log common env=!dontlog</pre>
 
       <pre class="prettyprint lang-config">SetEnv CACHE_MISS 1
 LogFormat "%h %l %u %t "%r " %&gt;s %b %{CACHE_MISS}e" common-cache
-CustomLog logs/access_log common-cache</pre>
+CustomLog "logs/access_log" common-cache</pre>
 
 
       <p><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> will run before
@@ -621,7 +621,7 @@ CustomLog "|$/usr/local/apache/bin/rotatelogs   /var/log/access_log 86400" commo
     consider the following directives.</p>
 
     <pre class="prettyprint lang-config">LogFormat "%v %l %u %t \"%r\" %&gt;s %b" comonvhost
-CustomLog logs/access_log comonvhost</pre>
+CustomLog "logs/access_log" comonvhost</pre>
 
 
     <p>The <code>%v</code> is used to log the name of the virtual

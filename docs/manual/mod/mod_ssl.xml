@@ -178,7 +178,7 @@ provided. Information about this function is provided in the <a
 href="../ssl/ssl_compat.html">Compatibility</a> chapter.</p>
 <example><title>Example</title>
 <highlight language="config">
-CustomLog logs/ssl_request_log "%t %h %{SSL_PROTOCOL}x %{SSL_CIPHER}x \"%r\" %b"
+CustomLog "logs/ssl_request_log" "%t %h %{SSL_PROTOCOL}x %{SSL_CIPHER}x \"%r\" %b"
 </highlight>
 </example>
 </section>

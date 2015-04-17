@@ -240,7 +240,7 @@ content</title>
       DeflateFilterNote ratio
 
       LogFormat '"%r" %b (%{ratio}n) "%{User-agent}i"' deflate
-      CustomLog logs/deflate_log deflate
+      CustomLog "logs/deflate_log" deflate
       </highlight>
     </example>
 
@@ -270,7 +270,7 @@ DeflateFilterNote Output outstream
 DeflateFilterNote Ratio ratio
 
 LogFormat '"%r" %{outstream}n/%{instream}n (%{ratio}n%%)' deflate
-CustomLog logs/deflate_log deflate
+CustomLog "logs/deflate_log" deflate
 </highlight>
     </example>
 </usage>
