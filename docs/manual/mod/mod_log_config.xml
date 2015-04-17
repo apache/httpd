@@ -418,7 +418,7 @@
 <directivesynopsis>
 <name>CustomLog</name>
 <description>Sets filename and format of log file</description>
-<syntax>CustomLog  <var>file</var>|<var>pipe</var>
+<syntax>CustomLog  <var>file</var>|<var>pipe</var>|<var>provider</var>
 <var>format</var>|<var>nickname</var>
 [env=[!]<var>environment-variable</var>|
 expr=<var>expression</var>]</syntax>
@@ -457,6 +457,20 @@ expr=<var>expression</var>]</syntax>
         may allow the use of back slashes. In general it is a good idea to always
         use forward slashes throughout the configuration files.</p>
       </note></dd>
+      <dt><var>provider</var></dt>
+      <dd>Modules implementing ErrorLog providers can also be used as a target
+      for CustomLog messages. To use ErrorLog provider as a target,
+      "provider:argument" syntax must be used. You can for example use
+      <module>mod_journald</module> or <module>mod_syslog</module>
+      as a provider:
+    <highlight language="config">
+# CustomLog logging to journald
+CustomLog "journald" "%h %l %u %t \"%r\" %&gt;s %b"
+
+# CustomLog logging to syslog with "user" facility
+CustomLog "syslog:user" "%h %l %u %t \"%r\" %&gt;s %b"
+    </highlight>
+      </dd>
     </dl>
 
     <p>The second argument specifies what will be written to the
