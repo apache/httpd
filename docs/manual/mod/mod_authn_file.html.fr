@@ -63,6 +63,7 @@ d'Apache</td></tr></table>
 <li><code class="program"><a href="../programs/htpasswd.html">htpasswd</a></code></li>
 <li><code class="program"><a href="../programs/htdigest.html">htdigest</a></code></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
+
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="authuserfile" id="authuserfile">Directive</a> <a name="AuthUserFile" id="AuthUserFile">AuthUserFile</a></h2>
 <table class="directive">
@@ -129,7 +130,6 @@ passe</td></tr>
     </div>
 
 </div>
-
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_authn_file.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |

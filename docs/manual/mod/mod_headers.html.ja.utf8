@@ -42,17 +42,120 @@
     変更するためのディレクティブを提供します。ヘッダを追加したり、
     置き換えたり、削除したりすることができます。</p>
 </div>
-<div id="quickview"><h3 class="directives">ディレクティブ</h3>
-<ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#header">Header</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#requestheader">RequestHeader</a></li>
-</ul>
-<h3>トピック</h3>
+<div id="quickview"><h3>トピック</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#order">処理の順番</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#early">早期処理、後期処理</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#examples">例</a></li>
-</ul><ul class="seealso"><li><a href="#comments_section">コメント</a></li></ul></div>
+</ul><h3 class="directives">ディレクティブ</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#header">Header</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#requestheader">RequestHeader</a></li>
+</ul>
+<ul class="seealso"><li><a href="#comments_section">コメント</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="order" id="order">処理の順番</a></h2>
+
+    <p><code class="module"><a href="../mod/mod_header.html">mod_header</a></code> のディレクティブはサーバ設定のほぼどこにでも
+    書くことができ、影響する範囲を<a href="../sections.html">設定用セクション</a>で囲むことで限定する
+    ことができます。</p>
+
+    <p>処理の順番は重要で、設定ファイル中の順番と、<a href="../sections.html">設定用セクション</a>内の位置との両方に
+    影響されます。以下の二つのヘッダは順番が逆になると
+    違う結果になります:</p>
+
+    <div class="example"><p><code>
+      RequestHeader append MirrorID "mirror 12"<br />
+      RequestHeader unset MirrorID
+    </code></p></div>
+
+    <p>この順番の場合は、<code>MirrorID</code> ヘッダは設定されません。
+    逆になっていると、MirrorID ヘッダは "mirror 12" に設定されます。</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="early" id="early">早期処理、後期処理</a></h2>
+    <p><code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code> では、リクエストの早期か後期かの
+    どちらで適用するかを選べます。通常は後期モードで、
+    コンテンツ生成が実行される直前にリクエストヘッダがセットされ、
+    レスポンスとして送出される直前にレスポンスヘッダがセットされます。
+    運用中のサーバでは必ず後期モードを使ってください。</p>
+
+    <p>早期モードは開発者向けのテスト/デバッグ用に設計されています。
+    <code>early</code> キーワード指定されたディレクティブによって、
+    リクエスト処理の開始地点になります。
+    つまり、異なるリクエストを試したりテストケースをセットアップするのに
+    活用できる一方で、レスポンスを生成する前に他のモジュールによって
+    ヘッダが書き換えられてしまうかもしれないということを意味します。</p>
+
+    <p>early ディレクティブではリクエストパスの設定が解決される前に
+    処理されるので、メインサーバかバーチャルホストコンテキストでのみ、
+    早期ヘッダをセットできます。early ディレクティブはリクエストパスに
+    依存することはできませんので、<code>&lt;Directory&gt;</code> や
+    <code>&lt;Location&gt;</code> といったコンテキスト内では使用
+    できません。</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="examples" id="examples">例</a></h2>
+
+    <ol>
+      <li>リクエストヘッダ中の "TS" で始まるフィールドをすべて応答ヘッダに
+        コピーします:
+        <div class="example"><p><code>
+          Header echo ^TS
+        </code></p></div>
+      </li>
+
+      <li>
+        リクエストを受け付けた時刻とリクエストを処理した時間を入れたヘッダ、
+        <code>MyHeader</code> を応答に追加します。このヘッダはクライアントが
+        サーバの負荷を直観的に知るためや、クライアント-サーバ間の
+        ボトルネックを調べるために使うことができます。
+
+        <div class="example"><p><code>
+           Header add MyHeader "%D %t"
+        </code></p></div>
+
+        <p>上記の設定では、以下のようなヘッダが応答に追加されることになります:</p>
+
+        <div class="example"><p><code>
+           MyHeader: D=3775428 t=991424704447256
+        </code></p></div>
+      </li>
+
+      <li>
+        Joe にあいさつをします:
+
+        <div class="example"><p><code>
+           Header add MyHeader "Hello Joe. It took %D microseconds for Apache to serve this request."
+        </code></p></div>
+
+        <p>以下のようなヘッダが応答に追加されることになります</p>
+
+        <div class="example"><p><code>
+           MyHeader: Hello Joe. It took D=3775428 microseconds for Apache to serve this request.
+        </code></p></div>
+      </li>
+
+      <li>リクエストに "MyRequestHeader" があるときに限り <code>MyHeader</code> を応答に
+      付けます。これは、クライアントの要求に応えてヘッダを作成するときに
+      役に立ちます。この例では <code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code> モジュールが必要なことに
+      注意してください。
+
+        <div class="example"><p><code>
+           SetEnvIf MyRequestHeader value HAVE_MyRequestHeader<br />
+           Header add MyHeader "%D %t mytext" env=HAVE_MyRequestHeader
+        </code></p></div>
+
+        <p>もし HTTP リクエストに <code>MyRequestHeader: value</code> ヘッダが
+        あると、応答には以下のようなヘッダが付加されます。</p>
+
+        <div class="example"><p><code>
+           MyHeader: D=3775428 t=991424704447256 mytext
+        </code></p></div>
+      </li>
+    </ol>
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="Header" id="Header">Header</a> <a name="header" id="header">ディレクティブ</a></h2>
 <table class="directive">
@@ -237,109 +340,6 @@
     処理されます。これにより、ブラウザや Apache の入力フィルタにより
     生成されたヘッダを上書きしたり修正したりできるようになっています。</p>
 
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="order" id="order">処理の順番</a></h2>
-
-    <p><code class="module"><a href="../mod/mod_header.html">mod_header</a></code> のディレクティブはサーバ設定のほぼどこにでも
-    書くことができ、影響する範囲を<a href="../sections.html">設定用セクション</a>で囲むことで限定する
-    ことができます。</p>
-
-    <p>処理の順番は重要で、設定ファイル中の順番と、<a href="../sections.html">設定用セクション</a>内の位置との両方に
-    影響されます。以下の二つのヘッダは順番が逆になると
-    違う結果になります:</p>
-
-    <div class="example"><p><code>
-      RequestHeader append MirrorID "mirror 12"<br />
-      RequestHeader unset MirrorID
-    </code></p></div>
-
-    <p>この順番の場合は、<code>MirrorID</code> ヘッダは設定されません。
-    逆になっていると、MirrorID ヘッダは "mirror 12" に設定されます。</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="early" id="early">早期処理、後期処理</a></h2>
-    <p><code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code> では、リクエストの早期か後期かの
-    どちらで適用するかを選べます。通常は後期モードで、
-    コンテンツ生成が実行される直前にリクエストヘッダがセットされ、
-    レスポンスとして送出される直前にレスポンスヘッダがセットされます。
-    運用中のサーバでは必ず後期モードを使ってください。</p>
-
-    <p>早期モードは開発者向けのテスト/デバッグ用に設計されています。
-    <code>early</code> キーワード指定されたディレクティブによって、
-    リクエスト処理の開始地点になります。
-    つまり、異なるリクエストを試したりテストケースをセットアップするのに
-    活用できる一方で、レスポンスを生成する前に他のモジュールによって
-    ヘッダが書き換えられてしまうかもしれないということを意味します。</p>
-
-    <p>early ディレクティブではリクエストパスの設定が解決される前に
-    処理されるので、メインサーバかバーチャルホストコンテキストでのみ、
-    早期ヘッダをセットできます。early ディレクティブはリクエストパスに
-    依存することはできませんので、<code>&lt;Directory&gt;</code> や
-    <code>&lt;Location&gt;</code> といったコンテキスト内では使用
-    できません。</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="examples" id="examples">例</a></h2>
-
-    <ol>
-      <li>リクエストヘッダ中の "TS" で始まるフィールドをすべて応答ヘッダに
-        コピーします:
-        <div class="example"><p><code>
-          Header echo ^TS
-        </code></p></div>
-      </li>
-
-      <li>
-        リクエストを受け付けた時刻とリクエストを処理した時間を入れたヘッダ、
-        <code>MyHeader</code> を応答に追加します。このヘッダはクライアントが
-        サーバの負荷を直観的に知るためや、クライアント-サーバ間の
-        ボトルネックを調べるために使うことができます。
-
-        <div class="example"><p><code>
-           Header add MyHeader "%D %t"
-        </code></p></div>
-
-        <p>上記の設定では、以下のようなヘッダが応答に追加されることになります:</p>
-
-        <div class="example"><p><code>
-           MyHeader: D=3775428 t=991424704447256
-        </code></p></div>
-      </li>
-
-      <li>
-        Joe にあいさつをします:
-
-        <div class="example"><p><code>
-           Header add MyHeader "Hello Joe. It took %D microseconds for Apache to serve this request."
-        </code></p></div>
-
-        <p>以下のようなヘッダが応答に追加されることになります</p>
-
-        <div class="example"><p><code>
-           MyHeader: Hello Joe. It took D=3775428 microseconds for Apache to serve this request.
-        </code></p></div>
-      </li>
-
-      <li>リクエストに "MyRequestHeader" があるときに限り <code>MyHeader</code> を応答に
-      付けます。これは、クライアントの要求に応えてヘッダを作成するときに
-      役に立ちます。この例では <code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code> モジュールが必要なことに
-      注意してください。
-
-        <div class="example"><p><code>
-           SetEnvIf MyRequestHeader value HAVE_MyRequestHeader<br />
-           Header add MyHeader "%D %t mytext" env=HAVE_MyRequestHeader
-        </code></p></div>
-
-        <p>もし HTTP リクエストに <code>MyRequestHeader: value</code> ヘッダが
-        あると、応答には以下のようなヘッダが付加されます。</p>
-
-        <div class="example"><p><code>
-           MyHeader: D=3775428 t=991424704447256 mytext
-        </code></p></div>
-      </li>
-    </ol>
 </div>
 </div>
 <div class="bottomlang">

@@ -110,6 +110,7 @@ Servers</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#virtualhost">&lt;VirtualHost&gt;</a></li>
 </ul>
 <ul class="seealso"><li><a href="#comments_section">Kommentare</a></li></ul></div>
+
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AcceptFilter" id="AcceptFilter">AcceptFilter</a>-<a name="acceptfilter" id="acceptfilter">Direktive</a></h2>
 <table class="directive">
@@ -3483,7 +3484,6 @@ IP-Adressen angewendet werden</td></tr>
     kombiniert werden, wenn eine Anfrage empfangen wird</li>
 </ul>
 </div>
-
 </div>
 <div class="bottomlang">
 <p><span>Verfügbare Sprachen: </span><a href="../de/mod/core.html" title="Deutsch">&nbsp;de&nbsp;</a> |

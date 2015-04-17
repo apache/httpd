@@ -27,7 +27,7 @@
 <p><span>가능한 언어: </span><a href="../en/mod/mod_status.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/mod/mod_status.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_status.html" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/mod/mod_status.html" hreflang="tr" rel="alternate" title="T?rk?e">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/mod/mod_status.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div>
 <div class="outofdate">이 문서는 최신판 번역이 아닙니다.
             최근에 변경된 내용은 영어 문서를 참고하세요.</div>
@@ -68,47 +68,17 @@
     <p>표준 아파치에는 "(*)"로 표시한 통계를 얻을 수 없다.
     이 정보를 보려면 컴파일시 옵션을 사용해야 한다.</p>
 </div>
-<div id="quickview"><h3 class="directives">지시어들</h3>
-<ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#extendedstatus">ExtendedStatus</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#seerequesttail">SeeRequestTail</a></li>
-</ul>
-<h3>주제</h3>
+<div id="quickview"><h3>주제</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#enable">Status 사용하기</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#autoupdate">자동 갱신</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#machinereadable">컴퓨터가 읽을 수 있는 Status 파일</a></li>
-</ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ExtendedStatus" id="ExtendedStatus">ExtendedStatus</a> <a name="extendedstatus" id="extendedstatus">지시어</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">설명:</a></th><td>각 요청에 대한 자세한 상태 정보를 기록한다</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>ExtendedStatus On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">기본값:</a></th><td><code>ExtendedStatus Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정</td></tr>
-<tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_status</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">지원:</a></th><td>ExtendedStatus는 아파치 1.3.2 이후에만 있다.</td></tr>
-</table>
-    <p>이 설정은 서버 전체에 적용되며, 가상호스트별로 키고 끌
-    수 없다. 자세한 상태 정보를 모으면 서버가 느려질 수 있다.</p>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SeeRequestTail" id="SeeRequestTail">SeeRequestTail</a> <a name="seerequesttail" id="seerequesttail">지시어</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">설명:</a></th><td>Determine if mod_status displays the first 63 characters
-of a request or the last 63, assuming the request itself is greater than
-63 chars.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>SeeRequestTail On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">기본값:</a></th><td><code>SeeRequestTail Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정</td></tr>
-<tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_status</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">지원:</a></th><td>Available in Apache 2.2.7 and later.</td></tr>
-</table><p>The documentation for this directive has
-            not been translated yet. Please have a look at the English
-            version.</p></div>
+</ul><h3 class="directives">지시어들</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#extendedstatus">ExtendedStatus</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#seerequesttail">SeeRequestTail</a></li>
+</ul>
+<ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="enable" id="enable">Status 사용하기</a></h2>
@@ -159,12 +129,42 @@ of a request or the last 63, assuming the request itself is greater than
     </div>
 
 </div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ExtendedStatus" id="ExtendedStatus">ExtendedStatus</a> <a name="extendedstatus" id="extendedstatus">지시어</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">설명:</a></th><td>각 요청에 대한 자세한 상태 정보를 기록한다</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>ExtendedStatus On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">기본값:</a></th><td><code>ExtendedStatus Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정</td></tr>
+<tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_status</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">지원:</a></th><td>ExtendedStatus는 아파치 1.3.2 이후에만 있다.</td></tr>
+</table>
+    <p>이 설정은 서버 전체에 적용되며, 가상호스트별로 키고 끌
+    수 없다. 자세한 상태 정보를 모으면 서버가 느려질 수 있다.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SeeRequestTail" id="SeeRequestTail">SeeRequestTail</a> <a name="seerequesttail" id="seerequesttail">지시어</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">설명:</a></th><td>Determine if mod_status displays the first 63 characters
+of a request or the last 63, assuming the request itself is greater than
+63 chars.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>SeeRequestTail On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">기본값:</a></th><td><code>SeeRequestTail Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정</td></tr>
+<tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_status</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">지원:</a></th><td>Available in Apache 2.2.7 and later.</td></tr>
+</table><p>The documentation for this directive has
+            not been translated yet. Please have a look at the English
+            version.</p></div>
 </div>
 <div class="bottomlang">
 <p><span>가능한 언어: </span><a href="../en/mod/mod_status.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/mod/mod_status.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_status.html" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/mod/mod_status.html" hreflang="tr" rel="alternate" title="T?rk?e">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/mod/mod_status.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';

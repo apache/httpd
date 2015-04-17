@@ -79,6 +79,7 @@
 <li><code class="directive"><a href="../mod/core.html#satisfy">Satisfy</a></code></li>
 <li><code class="directive"><a href="../mod/core.html#require">Require</a></code></li>
 </ul><ul class="seealso"><li><a href="#comments_section">コメント</a></li></ul></div>
+
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="Allow" id="Allow">Allow</a> <a name="allow" id="allow">ディレクティブ</a></h2>
 <table class="directive">
@@ -343,7 +344,6 @@
     セクションの動作方法</a> を参照してください。</p>
 
 </div>
-
 </div>
 <div class="bottomlang">
 <p><span>翻訳済み言語: </span><a href="../en/mod/mod_authz_host.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |

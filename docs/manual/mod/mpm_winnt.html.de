@@ -60,6 +60,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#win32disableacceptex">Win32DisableAcceptEx</a></li>
 </ul>
 <ul class="seealso"><li><a href="#comments_section">Kommentare</a></li></ul></div>
+
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="Win32DisableAcceptEx" id="Win32DisableAcceptEx">Win32DisableAcceptEx</a>-<a name="win32disableacceptex" id="win32disableacceptex">Direktive</a></h2>
 <table class="directive">
@@ -88,7 +89,6 @@ Direktive, um den Gebrauch von AcceptEx() zu deaktivieren.</code></td></tr>
     <code>AcceptEx()</code> zu unterbinden.</p>
 
 </div>
-
 </div>
 <div class="bottomlang">
 <p><span>Verfügbare Sprachen: </span><a href="../de/mod/mpm_winnt.html" title="Deutsch">&nbsp;de&nbsp;</a> |

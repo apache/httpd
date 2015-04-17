@@ -25,10 +25,10 @@
 <div id="preamble"><h1>아파치 모듈 mod_autoindex</h1>
 <div class="toplang">
 <p><span>가능한 언어: </span><a href="../en/mod/mod_autoindex.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_autoindex.html" hreflang="fr" rel="alternate" title="Fran?ais">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_autoindex.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_autoindex.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_autoindex.html" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/mod/mod_autoindex.html" hreflang="tr" rel="alternate" title="T?rk?e">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/mod/mod_autoindex.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div>
 <div class="outofdate">이 문서는 최신판 번역이 아닙니다.
             최근에 변경된 내용은 영어 문서를 참고하세요.</div>
@@ -73,7 +73,10 @@
     바이트 파일은 둘다 "1K"로 보이더라도 항상 1010 바이트 파일이
     앞에 나온다.</p>
 </div>
-<div id="quickview"><h3 class="directives">지시어들</h3>
+<div id="quickview"><h3>주제</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#query">Autoindex 요청 아규먼트</a></li>
+</ul><h3 class="directives">지시어들</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#addalt">AddAlt</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#addaltbyencoding">AddAltByEncoding</a></li>
@@ -91,10 +94,98 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#indexstylesheet">IndexStyleSheet</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#readmename">ReadmeName</a></li>
 </ul>
-<h3>주제</h3>
-<ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#query">Autoindex 요청 아규먼트</a></li>
-</ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
+<ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="query" id="query">Autoindex 요청 아규먼트</a></h2>
+    
+
+    <p>아파치 2.0.23는 열순서에 대한 요청 아규먼트를 정리하고,
+    새로운 옵션들을 추가했다. 출력을 클라이언트가 조절할 수
+    없도록 만드는 <code><a href="#indexoptions.ignoreclient">IndexOptions
+    IgnoreClient</a></code> 옵션이 추가되었다.</p>
+
+    <p>열순서 이름은 아래 나온 순서 요청 옵션을 더한 자기참조
+    링크다. 아래 옵션은 디렉토리 자원에 대한 어떤 요청에도
+    사용할 수 있다.</p>
+
+    <ul>
+      <li><code>C=N</code>은 파일명 순이다</li>
+
+      <li><code>C=M</code>은 최근 수정일 순, 그리고 파일명 순이다</li>
+
+      <li><code>C=S</code>는 크기 순, 그리고 파일명 순이다</li>
+
+      <li class="separate"><code>C=D</code>는 설명 순, 그리고 파일명
+      순이다</li>
+
+      <li><code>O=A</code>는 오름차순으로 목록을 정렬한다</li>
+
+      <li class="separate"><code>O=D</code>는 내림차순으로 목록을 정렬한다</li>
+
+      <li><code>F=0</code>은 (FancyIndexed가 아닌) 간단한 목록 형식이다</li>
+
+      <li><code>F=1</code>은 FancyIndexed 목록 형식이다</li>
+
+      <li class="separate"><code>F=2</code>는 HTMLTable FancyIndexed 목록
+      형식이다</li>
+
+      <li><code>V=0</code>은 버전 순으로 정렬하지 않는다</li>
+
+      <li class="separate"><code>V=1</code>은 버전 순으로 정렬한다</li>
+
+      <li><code>P=<var>pattern</var></code>은 주어진 <var>pattern</var>에
+      해당하는 파일만을 목록으로 만든다</li>
+    </ul>
+
+    <p>'P'attern 아규먼트는 일반적인 <code class="directive"><a href="#indexignore">IndexIgnore</a></code> 지시어를 처리한 <em>후에</em>
+    검사하기때문에, 목록은 다른 autoindex 조건을 따름을 주의하라.
+    <code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code>의 요청 아규먼트를 읽어들일때
+    알 수 없는 옵션을 발견하면 더 이상 읽지않는다. 요청 아규먼트는
+    위의 표에 따라 만들어야 한다.</p>
+
+    <p>header.html 파일에 사용할 수 있는 아래 간단한 예제는
+    이 옵션들을 설명한다. submit 버턴의 알 수 없는 "X" 아규먼트는
+    mod_autoindex가 X=Go 전까지 모든 아규먼트를 읽어들임을
+    확인하기위해 마지막에 사용했다.</p>
+
+    <div class="example"><p><code>
+      &lt;form action="" method="get"&gt;<br />
+      <span class="indent">
+        Show me a &lt;select name="F"&gt;<br />
+        <span class="indent">
+          &lt;option value="0"&gt; Plain list&lt;/option&gt;<br />
+          &lt;option value="1" selected="selected"&gt; Fancy list&lt;/option&gt;<br />
+          &lt;option value="2"&gt; Table list&lt;/option&gt;<br />
+        </span>
+        &lt;/select&gt;<br />
+        Sorted by &lt;select name="C"&gt;<br />
+        <span class="indent">
+          &lt;option value="N" selected="selected"&gt; Name&lt;/option&gt;<br />
+          &lt;option value="M"&gt; Date Modified&lt;/option&gt;<br />
+          &lt;option value="S"&gt; Size&lt;/option&gt;<br />
+          &lt;option value="D"&gt; Description&lt;/option&gt;<br />
+        </span>
+        &lt;/select&gt;<br />
+        &lt;select name="O"&gt;<br />
+        <span class="indent">
+          &lt;option value="A" selected="selected"&gt; Ascending&lt;/option&gt;<br />
+          &lt;option value="D"&gt; Descending&lt;/option&gt;<br />
+        </span>
+        &lt;/select&gt;<br />
+        &lt;select name="V"&gt;<br />
+        <span class="indent">
+          &lt;option value="0" selected="selected"&gt; in Normal order&lt;/option&gt;<br />
+          &lt;option value="1"&gt; in Version order&lt;/option&gt;<br />
+        </span>
+        &lt;/select&gt;<br />
+        Matching &lt;input type="text" name="P" value="*" /&gt;<br />
+        &lt;input type="submit" name="X" value="Go" /&gt;<br />
+      </span>
+      &lt;/form&gt;
+    </code></p></div>
+
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AddAlt" id="AddAlt">AddAlt</a> <a name="addalt" id="addalt">지시어</a></h2>
 <table class="directive">
@@ -752,104 +843,13 @@ Name|Date|Size|Description</code></td></tr>
     <p>이 동작을 자세히 설명한 <code class="directive"><a href="#headername">HeaderName</a></code>도 참고하라.</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="query" id="query">Autoindex 요청 아규먼트</a></h2>
-    
-
-    <p>아파치 2.0.23는 열순서에 대한 요청 아규먼트를 정리하고,
-    새로운 옵션들을 추가했다. 출력을 클라이언트가 조절할 수
-    없도록 만드는 <code><a href="#indexoptions.ignoreclient">IndexOptions
-    IgnoreClient</a></code> 옵션이 추가되었다.</p>
-
-    <p>열순서 이름은 아래 나온 순서 요청 옵션을 더한 자기참조
-    링크다. 아래 옵션은 디렉토리 자원에 대한 어떤 요청에도
-    사용할 수 있다.</p>
-
-    <ul>
-      <li><code>C=N</code>은 파일명 순이다</li>
-
-      <li><code>C=M</code>은 최근 수정일 순, 그리고 파일명 순이다</li>
-
-      <li><code>C=S</code>는 크기 순, 그리고 파일명 순이다</li>
-
-      <li class="separate"><code>C=D</code>는 설명 순, 그리고 파일명
-      순이다</li>
-
-      <li><code>O=A</code>는 오름차순으로 목록을 정렬한다</li>
-
-      <li class="separate"><code>O=D</code>는 내림차순으로 목록을 정렬한다</li>
-
-      <li><code>F=0</code>은 (FancyIndexed가 아닌) 간단한 목록 형식이다</li>
-
-      <li><code>F=1</code>은 FancyIndexed 목록 형식이다</li>
-
-      <li class="separate"><code>F=2</code>는 HTMLTable FancyIndexed 목록
-      형식이다</li>
-
-      <li><code>V=0</code>은 버전 순으로 정렬하지 않는다</li>
-
-      <li class="separate"><code>V=1</code>은 버전 순으로 정렬한다</li>
-
-      <li><code>P=<var>pattern</var></code>은 주어진 <var>pattern</var>에
-      해당하는 파일만을 목록으로 만든다</li>
-    </ul>
-
-    <p>'P'attern 아규먼트는 일반적인 <code class="directive"><a href="#indexignore">IndexIgnore</a></code> 지시어를 처리한 <em>후에</em>
-    검사하기때문에, 목록은 다른 autoindex 조건을 따름을 주의하라.
-    <code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code>의 요청 아규먼트를 읽어들일때
-    알 수 없는 옵션을 발견하면 더 이상 읽지않는다. 요청 아규먼트는
-    위의 표에 따라 만들어야 한다.</p>
-
-    <p>header.html 파일에 사용할 수 있는 아래 간단한 예제는
-    이 옵션들을 설명한다. submit 버턴의 알 수 없는 "X" 아규먼트는
-    mod_autoindex가 X=Go 전까지 모든 아규먼트를 읽어들임을
-    확인하기위해 마지막에 사용했다.</p>
-
-    <div class="example"><p><code>
-      &lt;form action="" method="get"&gt;<br />
-      <span class="indent">
-        Show me a &lt;select name="F"&gt;<br />
-        <span class="indent">
-          &lt;option value="0"&gt; Plain list&lt;/option&gt;<br />
-          &lt;option value="1" selected="selected"&gt; Fancy list&lt;/option&gt;<br />
-          &lt;option value="2"&gt; Table list&lt;/option&gt;<br />
-        </span>
-        &lt;/select&gt;<br />
-        Sorted by &lt;select name="C"&gt;<br />
-        <span class="indent">
-          &lt;option value="N" selected="selected"&gt; Name&lt;/option&gt;<br />
-          &lt;option value="M"&gt; Date Modified&lt;/option&gt;<br />
-          &lt;option value="S"&gt; Size&lt;/option&gt;<br />
-          &lt;option value="D"&gt; Description&lt;/option&gt;<br />
-        </span>
-        &lt;/select&gt;<br />
-        &lt;select name="O"&gt;<br />
-        <span class="indent">
-          &lt;option value="A" selected="selected"&gt; Ascending&lt;/option&gt;<br />
-          &lt;option value="D"&gt; Descending&lt;/option&gt;<br />
-        </span>
-        &lt;/select&gt;<br />
-        &lt;select name="V"&gt;<br />
-        <span class="indent">
-          &lt;option value="0" selected="selected"&gt; in Normal order&lt;/option&gt;<br />
-          &lt;option value="1"&gt; in Version order&lt;/option&gt;<br />
-        </span>
-        &lt;/select&gt;<br />
-        Matching &lt;input type="text" name="P" value="*" /&gt;<br />
-        &lt;input type="submit" name="X" value="Go" /&gt;<br />
-      </span>
-      &lt;/form&gt;
-    </code></p></div>
-
-</div>
 </div>
 <div class="bottomlang">
 <p><span>가능한 언어: </span><a href="../en/mod/mod_autoindex.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_autoindex.html" hreflang="fr" rel="alternate" title="Fran?ais">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_autoindex.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_autoindex.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_autoindex.html" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/mod/mod_autoindex.html" hreflang="tr" rel="alternate" title="T?rk?e">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/mod/mod_autoindex.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';

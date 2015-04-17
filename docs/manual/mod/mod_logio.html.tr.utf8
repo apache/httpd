@@ -52,12 +52,12 @@
       yeniden uzlaşımı tetikleyen istekle ilişkilendirilir.</div>
 
 </div>
-<div id="quickview"><h3 class="directives">Yönergeler</h3>
-<p>Bu modül yönerge içermez.</p>
-<h3>Konular</h3>
+<div id="quickview"><h3>Konular</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#formats">Özel Günlük Biçemleri</a></li>
-</ul><h3>Ayrıca bakınız:</h3>
+</ul><h3 class="directives">Yönergeler</h3>
+<p>Bu modül yönerge içermez.</p>
+<h3>Ayrıca bakınız:</h3>
 <ul class="seealso">
 <li><code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code></li>
 <li><a href="../logs.html">Apache Günlük Dosyaları</a></li>

@@ -56,16 +56,79 @@
     2616 section 14.9</a> 参照) の <code>Cache-Control</code> のディレクティブを
     操作するには <code class="directive"><a href="../mod/mod_headers.html#header">Header</a></code> ディレクティブを
     使うことができます。</p></div>
-<div id="quickview"><h3 class="directives">ディレクティブ</h3>
+<div id="quickview"><h3>トピック</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#AltSyn">代替期間指定構文</a></li>
+</ul><h3 class="directives">ディレクティブ</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#expiresactive">ExpiresActive</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#expiresbytype">ExpiresByType</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#expiresdefault">ExpiresDefault</a></li>
 </ul>
-<h3>トピック</h3>
-<ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#AltSyn">代替期間指定構文</a></li>
-</ul><ul class="seealso"><li><a href="#comments_section">コメント</a></li></ul></div>
+<ul class="seealso"><li><a href="#comments_section">コメント</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="AltSyn" id="AltSyn">代替期間指定構文</a></h2>
+   
+    <p><code class="directive"><a href="#expiresdefault">ExpiresDefault</a></code> ディレクティブと
+    <code class="directive"><a href="#expiresbytype">ExpiresByType</a></code> ディレクティブは
+    以下のより読み易い構文を使って定義することができます:</p>
+
+    <div class="example"><p><code>
+      ExpiresDefault "&lt;base&gt; [plus] {&lt;num&gt;
+      &lt;type&gt;}*"<br />
+      ExpiresByType type/encoding "&lt;base&gt; [plus]
+      {&lt;num&gt; &lt;type&gt;}*"
+    </code></p></div>
+
+    <p>&lt;base&gt; は以下のどれかです:</p>
+
+    <ul>
+      <li><code>access</code></li>
+
+      <li><code>now</code> ('<code>access</code>' と等価)</li>
+
+      <li><code>modification</code></li>
+    </ul>
+
+    <p><code>plus</code> キーワードは省略可能です。&lt;num&gt;
+    は (<code>atoi()</code> が受け付ける) 整数値、
+    &lt;type&gt; は以下のどれかです:</p>
+
+    <ul>
+      <li><code>years</code></li>
+      <li><code>months</code></li>
+      <li><code>weeks</code></li>
+      <li><code>days</code></li>
+      <li><code>hours</code></li>
+      <li><code>minutes</code></li>
+      <li><code>seconds</code></li>
+    </ul>
+
+    <p>例えば、以下のディレクティブはどれもデフォルトで文書がアクセスの 1 ヶ月後に
+    期限が切れるようにするために使えます:</p>
+
+    <div class="example"><p><code>
+      ExpiresDefault "access plus 1 month"<br />
+      ExpiresDefault "access plus 4 weeks"<br />
+      ExpiresDefault "access plus 30 days"
+    </code></p></div>
+
+    <p>期限切れ時刻はいくつか
+    '&lt;num&gt; &lt;type&gt;' 節を追加することでより細かく
+    制御することができます:</p>
+
+    <div class="example"><p><code>
+      ExpiresByType text/html "access plus 1 month 15
+      days 2 hours"<br />
+      ExpiresByType image/gif "modification plus 5 hours 3
+      minutes"
+    </code></p></div>
+
+    <p>修正時刻に基づいた設定を使用している場合、Expires ヘッダは
+    ディスクのファイル以外のコンテンツには<strong>追加されない</strong>ことに注意
+    してください。そのようなコンテンツには修正時刻は存在しないからです。</p>
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ExpiresActive" id="ExpiresActive">ExpiresActive</a> <a name="expiresactive" id="expiresactive">ディレクティブ</a></h2>
 <table class="directive">
@@ -165,69 +228,6 @@
     説明を参照してください。また、<a href="#AltSyn">代替構文</a>も
     参照してください。</p>
 
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="AltSyn" id="AltSyn">代替期間指定構文</a></h2>
-   
-    <p><code class="directive"><a href="#expiresdefault">ExpiresDefault</a></code> ディレクティブと
-    <code class="directive"><a href="#expiresbytype">ExpiresByType</a></code> ディレクティブは
-    以下のより読み易い構文を使って定義することができます:</p>
-
-    <div class="example"><p><code>
-      ExpiresDefault "&lt;base&gt; [plus] {&lt;num&gt;
-      &lt;type&gt;}*"<br />
-      ExpiresByType type/encoding "&lt;base&gt; [plus]
-      {&lt;num&gt; &lt;type&gt;}*"
-    </code></p></div>
-
-    <p>&lt;base&gt; は以下のどれかです:</p>
-
-    <ul>
-      <li><code>access</code></li>
-
-      <li><code>now</code> ('<code>access</code>' と等価)</li>
-
-      <li><code>modification</code></li>
-    </ul>
-
-    <p><code>plus</code> キーワードは省略可能です。&lt;num&gt;
-    は (<code>atoi()</code> が受け付ける) 整数値、
-    &lt;type&gt; は以下のどれかです:</p>
-
-    <ul>
-      <li><code>years</code></li>
-      <li><code>months</code></li>
-      <li><code>weeks</code></li>
-      <li><code>days</code></li>
-      <li><code>hours</code></li>
-      <li><code>minutes</code></li>
-      <li><code>seconds</code></li>
-    </ul>
-
-    <p>例えば、以下のディレクティブはどれもデフォルトで文書がアクセスの 1 ヶ月後に
-    期限が切れるようにするために使えます:</p>
-
-    <div class="example"><p><code>
-      ExpiresDefault "access plus 1 month"<br />
-      ExpiresDefault "access plus 4 weeks"<br />
-      ExpiresDefault "access plus 30 days"
-    </code></p></div>
-
-    <p>期限切れ時刻はいくつか
-    '&lt;num&gt; &lt;type&gt;' 節を追加することでより細かく
-    制御することができます:</p>
-
-    <div class="example"><p><code>
-      ExpiresByType text/html "access plus 1 month 15
-      days 2 hours"<br />
-      ExpiresByType image/gif "modification plus 5 hours 3
-      minutes"
-    </code></p></div>
-
-    <p>修正時刻に基づいた設定を使用している場合、Expires ヘッダは
-    ディスクのファイル以外のコンテンツには<strong>追加されない</strong>ことに注意
-    してください。そのようなコンテンツには修正時刻は存在しないからです。</p>
 </div>
 </div>
 <div class="bottomlang">

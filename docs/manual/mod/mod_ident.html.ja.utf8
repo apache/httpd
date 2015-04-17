@@ -47,6 +47,7 @@
 <ul class="seealso">
 <li><code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code></li>
 </ul><ul class="seealso"><li><a href="#comments_section">コメント</a></li></ul></div>
+
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="IdentityCheck" id="IdentityCheck">IdentityCheck</a> <a name="identitycheck" id="identitycheck">ディレクティブ</a></h2>
 <table class="directive">
@@ -94,7 +95,6 @@
     合わせてタイムアウト値を調節するのがよいでしょう。</p>
 
 </div>
-
 </div>
 <div class="bottomlang">
 <p><span>翻訳済み言語: </span><a href="../en/mod/mod_ident.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
