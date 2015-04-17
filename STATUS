@@ -308,6 +308,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              IMO the right fix to not lose timers registered in the same micro-
              second (in MPM event).
 
+  *) mod_authz_core: Allow "Require expr" to work when the expression is quoted,
+     as in an example in the doc.  PR 56235
+     trunk patch: http://svn.apache.org/r1585609
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: 
+  
+  
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
