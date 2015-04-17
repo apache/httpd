@@ -68,7 +68,18 @@
     提供されています。これらの機能を利用するためには、該当するモジュールを
     組み込んで設定しなければなりません。</p>
 </div>
-<div id="quickview"><h3 class="directives">ディレクティブ</h3>
+<div id="quickview"><h3>トピック</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#forwardreverse">フォワードプロキシとリバースプロキシ/ゲートウェイ</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#examples">基本の例</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#workers">ワーカー</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#access">プロキシへのアクセス制御</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#startup">遅い起動</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#intranet">イントラネットプロキシ</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#envsettings">プロトコルの調整</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#request-bodies">リクエストボディ</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#x-headers">リバースプロキシのリクエストヘッダ</a></li>
+</ul><h3 class="directives">ディレクティブ</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#allowconnect">AllowCONNECT</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#balancermember">BalancerMember</a></li>
@@ -98,18 +109,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#proxytimeout">ProxyTimeout</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxyvia">ProxyVia</a></li>
 </ul>
-<h3>トピック</h3>
-<ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#forwardreverse">フォワードプロキシとリバースプロキシ/ゲートウェイ</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#examples">基本の例</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#workers">ワーカー</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#access">プロキシへのアクセス制御</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#startup">遅い起動</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#intranet">イントラネットプロキシ</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#envsettings">プロトコルの調整</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#request-bodies">リクエストボディ</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#x-headers">リバースプロキシのリクエストヘッダ</a></li>
-</ul><h3>参照</h3>
+<h3>参照</h3>
 <ul class="seealso">
 <li><code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code></li>
 <li><code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code></li>
@@ -118,6 +118,332 @@
 <li><code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code></li>
 <li><code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code></li>
 </ul><ul class="seealso"><li><a href="#comments_section">コメント</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="forwardreverse" id="forwardreverse">フォワードプロキシとリバースプロキシ/ゲートウェイ</a></h2>
+      <p>Apache は <dfn>フォワード</dfn> プロキシとしても、
+      <dfn>リバース</dfn> プロキシ (別名 <dfn>ゲートウェイ</dfn>) としても設定できます。</p>
+
+      <p>通常の <dfn>フォワードプロキシ</dfn> はクライアントと
+      <em>オリジンサーバ</em> <span class="transnote">(<em>訳注:</em> コンテンツ生成元のサーバ)</span>
+      の間に位置する中間サーバです。
+      オリジンサーバからコンテンツを取得するために、クライアントは
+      行き先をオリジンサーバに指定したリクエストをプロキシに送ります。
+      プロキシはオリジンサーバからコンテンツを受け取り、
+      取得したコンテンツをクライアントに返します。
+      クライアントがフォワードプロキシ経由で他のサイトにアクセスするには、
+      特別にそのための設定をしなければなりません。</p>
+
+      <p>フォワードプロキシの一般的な使用方法は、ファイアウォールによって
+      制限されている内部のクライアントに、インターネットへのアクセスを
+      提供するものです。フォワードプロキシはネットワークの使用量を
+      減らすために (<code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> で提供されている)
+      キャッシュ機能を用いることもできます。</p>
+
+      <p>フォワードプロキシは <code class="directive"><a href="#proxyrequests">ProxyRequests</a></code> ディレクティブで
+      有効になります。フォワードプロキシを使うと、クライアントは本当の身元を
+      隠して任意のサイトにアクセスできるようになります。このため、フォワードプロキシを
+      有効にする前に、承認されたクライアントのみがプロキシにアクセスできるように
+      <a href="#access">サーバを安全にする</a>ことが重要です。</p>
+
+      <p>一方 <dfn>リバースプロキシ</dfn> (<dfn>ゲートウェイ</dfn>) は、
+      クライアントから普通のウェブサーバのように見えます。
+      クライアント側に特別な設定は必要ありません。
+      クライアントはリバースプロキシの名前空間内のコンテンツに対して通常どおりの
+      リクエストを行ないます。リバースプロキシはリクエストをどこに送れば良いかを判定し、
+      あたかも自分自身がオリジンサーバであったかのようにクライアントに
+      コンテンツを返します。</p>
+
+      <p>リバースプロキシのよくある利用方法は、インターネットユーザに
+      ファイアウォールの中にあるサーバにアクセスさせる場合です。
+      リバースプロキシは複数のバックエンドサーバへ負荷分散をするために
+      使ったり、遅いバックエンドエンドサーバのためにキャッシュ機能を提供したり
+      するためにも使えます。また、リバースプロキシは複数のサーバを
+      同じ URL 空間にまとめるために使うこともできます。</p>
+
+      <p>リバースプロキシは <code class="directive"><a href="#proxypass">ProxyPass</a></code> ディレクティブや
+      <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> ディレクティブの
+      <code>[P]</code> フラグを使うことで有効になります。リバースプロキシの
+      設定のために <code class="directive"><a href="#proxyrequests">ProxyRequests</a></code> を設定する必要は
+      <em>ありません</em>。</p>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="examples" id="examples">基本の例</a></h2>
+
+    <p>以下の例は手始めの簡単な例です。個々のディレクティブの意味は
+    それぞれの説明をお読みください。</p>
+
+    <p>またキャッシュ機能を有効にしたい場合は、<code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code>
+    の説明を読んでください。</p>
+
+    <div class="example"><h3>リバースプロキシ</h3><p><code>
+    ProxyPass /foo http://foo.example.com/bar<br />
+    ProxyPassReverse /foo http://foo.example.com/bar
+    </code></p></div>
+
+    <div class="example"><h3>フォワードプロキシ</h3><p><code>
+    ProxyRequests On<br />
+    ProxyVia On<br />
+    <br />
+    &lt;Proxy *&gt;<br />
+    <span class="indent">
+      Order deny,allow<br />
+      Deny from all<br />
+      Allow from internal.example.com<br />
+    </span>
+    &lt;/Proxy&gt;
+    </code></p></div>
+
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="workers" id="workers">ワーカー</a></h2>
+      <p>プロキシは <dfn>ワーカー</dfn> と呼ばれるオブジェクトで
+      オリジンサーバとの通信パラメータの設定を管理します。
+      ふたつの組み込みワーカーが存在します。デフォルトのフォワードプロキシワーカーと
+      デフォルトのリバースプロキシワーカーです。
+      追加のワーカーを明示的に設定可能です。</p>
+
+      <p>ふたつのデフォルトワーカーは固定の設定を持ちます。
+      リクエストが他のワーカーにマッチしない場合に使われます。
+      これらは HTTP のキープアライブもコネクションプーリングも使いません。
+      オリジンサーバへの TCP 接続はリクエストのたびに接続と切断をします。</p>
+
+      <p>明示的に設定するワーカーは、URL で識別されます。
+      通常、<code class="directive"><a href="#proxypass">ProxyPass</a></code>
+      または <code class="directive"><a href="#proxypassmatch">ProxyPassMatch</a></code>
+      をリバースプロキシ設定に使うことで、これらのワーカーを生成および設定します:</p>
+
+      <div class="example"><p><code>
+          ProxyPass /example http://backend.example.com connectiontimeout=5 timeout=30
+      </code></p></div>
+
+      <p>上記はオリジンサーバの <code>http://backend.example.com</code>
+      の URL に関連するワーカーを生成します。ワーカーは指定したタイムアウト値を持ちます。
+      フォワードプロキシで使われる時、ワーカーは一般に
+      <code class="directive"><a href="#proxyset">ProxySet</a></code> ディレクティブで
+      定義します:</p>
+
+      <div class="example"><p><code>
+          ProxySet http://backend.example.com connectiontimeout=5 timeout=30
+      </code></p></div>
+
+      <p>または、別の方法として <code class="directive"><a href="#proxy">Proxy</a></code>
+      と <code class="directive"><a href="#proxyset">ProxySet</a></code>でも定義できます:</p>
+
+      <div class="example"><p><code>
+        &lt;Proxy http://backend.example.com&gt;<br />
+        <span class="indent">
+          ProxySet connectiontimeout=5 timeout=30
+        </span>
+        &lt;/Proxy&gt;
+      </code></p></div>
+
+      <p>フォワードモードで明示的に設定したワーカーを使うのは、あまり一般的ではありません。
+      なぜなら、通常フォワードプロキシは多くの異なるオリジンサーバと通信するからです。
+      もし一部のオリジンサーバを頻繁に利用するなら、それらに対して
+      明示的にワーカーを生成するのは有用です。明示的に設定したワーカーは、
+      それ自体はフォワードプロキシかリバースプロキシかのコンセプトを持ちません。
+      それらはオリジンサーバと通信する共通のコンセプトを抱えています。
+      リバースプロキシで使うために <code class="directive"><a href="#proxypass">ProxyPass</a></code>
+      で生成したワーカーは、オリジンサーバへの URL がワーカーの URL にマッチすれば
+      いつでもフォワードプロキシとして使えます。これは、逆も成り立ちます。</p>
+
+      <p>ワーカーを識別する URL はそのオリジンサーバの URL です。
+      URL は指定したパス部分も含みます:</p>
+
+      <div class="example"><p><code>
+          ProxyPass /examples http://backend.example.com/examples<br />
+          ProxyPass /docs http://backend.example.com/docs
+      </code></p></div>
+
+      <p>この例はふたつの異なるワーカーを定義しています。
+      それぞれ別のコネクションプールと設定を使います。</p>
+
+      <div class="warning"><h3>ワーカーの共有</h3>
+        <p>もしワーカーの URL に重なりがあれば、ワーカーの共有が起きます。
+        重なりとは、ワーカーの URL が、設定ファイル内で後から定義した
+        別のワーカーの URL の先頭文字列と部分一致することです。
+        次の例で</p>
+
+        <div class="example"><p><code>
+            ProxyPass /apps http://backend.example.com/ timeout=60<br />
+            ProxyPass /examples http://backend.example.com/examples timeout=10
+        </code></p></div>
+
+        <p>ふたつめのワーカーは実際には生成されません。
+        その代わり、ひとつめのワーカーを使います。この利点は、ただひとつの
+        コネクションプールで済む点です。このため、コネクションをより頻繁に再利用できます。
+        後ろのワーカーに明示的に書いた設定のすべてのパラメータと一部の設定のデフォルト値は、
+        最初のワーカーに書いた設定を上書きするのを注意してください。
+        これは警告としてログに残ります。上記の例で言えば、<code>/apps</code>
+        の URL に対するタイムアウト値は、結果として <code>60</code> ではなく
+        <code>10</code>になるのです。</p>
+
+        <p>もしワーカーの共有を避けたければ、ワーカーの定義を URL の長さでソートしてください。
+        そして、長い URL から並べてください。もしワーカーの共有を最大限にしたいなら、
+        逆順に並べます。<code class="directive"><a href="#proxypass">ProxyPass</a></code>
+        ディレクティブの並びについて、関連する警告も見てください。</p>
+
+      </div> 
+
+      <p>明示的に設定するワーカーにはふたつの種類があります:
+      <dfn>直接のワーカー</dfn> と <dfn>バランサー (負荷分散) ワーカー</dfn> です。
+      これらは後ほど <code class="directive"><a href="#proxypass">ProxyPass</a></code>
+      ディレクティブの中で説明する重要な設定パラメータを数多くサポートします。
+      同じパラメータは <code class="directive"><a href="#proxyset">ProxySet</a></code>
+      を使っても設定可能です。</p>
+
+      <p>直接のワーカーで利用できるパラメータはプロトコルに依存します。
+      プロトコルはオリジンサーバの URL で指定されます。
+      利用可能なプロトコルは <code>ajp</code>,
+      <code>ftp</code>, <code>http</code>, <code>scgi</code> です。</p>
+
+      <p>バランサーワーカーは仮想ワーカーです。直接のワーカーを
+      リクエストを実際に処理するメンバーとして使います。
+      それぞれのバランサーは複数のメンバーを持ちえます。
+      リクエストを処理する時、設定した負荷分散のアルゴリズムにもとづき
+      メンバーのひとつを選択します。</p>
+
+      <p>ワーカーの URL のプロトコルスキームに <code>balancer</code>
+      を使うと、バランサワーカーが生成されます。
+      バランサーの URL が、バランサワーカーを一意に識別します。
+      <code class="directive"><a href="#balancermember">BalancerMember</a></code>
+      を使って、バランサーにメンバーを追加します。</p>
+
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="access" id="access">プロキシへのアクセス制御</a></h2>
+      <p>プロキシへのアクセスは以下のように <code class="directive"><a href="#proxy">&lt;Proxy&gt;</a></code> コンテナの中に
+      ディレクティブを書くことで制御できます:</p>
+
+      <div class="example"><p><code>
+        &lt;Proxy *&gt;<br />
+        <span class="indent">
+          Order Deny,Allow<br />
+          Deny from all<br />
+          Allow from 192.168.0<br />
+        </span>
+        &lt;/Proxy&gt;
+      </code></p></div>
+
+      <p>アクセス制御のためのディレクティブのより詳しい情報は
+      <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code> をお読みください。</p>
+
+      <p>(<code class="directive"><a href="#proxyrequests">ProxyRequests</a></code> ディレクティブを
+      使って) フォワードプロキシを設定している場合は、厳しくアクセス
+      制限を行なうことが非常に大切です。そうしないと、任意のクライアントが
+      身元を明かすことなく任意のホストにアクセスするためにプロキシサーバを使うことが
+      できてしまいます。これはあなた自身のネットワークにとっても、インターネット
+      全体にとっても危険なことです。(<code>ProxyRequests Off</code> にして
+      <code class="directive"><a href="#proxypass">ProxyPass</a></code> ディレクティブを使って)
+      リバースプロキシを使っている場合には、クライアントはあなたが明示的に
+      設定したホストにしかアクセスできないため、フォワードプロキシのとき
+      ほどアクセス制御に力を注がなくても大丈夫です。</p>
+
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="startup" id="startup">遅い起動</a></h2>
+      <p><code class="directive"><a href="#proxyblock">ProxyBlock</a></code> ディレクティブを使っている場合、
+      後に行うマッチ判定のため、起動時にホストの名前解決をして
+      IP アドレスをキャッシュします。ホスト名の名前解決の
+      速さによっては、数秒 (かそれ以上) かかるかもしれません。</p>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="intranet" id="intranet">イントラネットプロキシ</a></h2>
+      <p>イントラネットにある Apache プロキシサーバは外部へのリクエストを
+      会社のファイアウォールを通して送らなければなりません。(このためには
+      個々の <var>scheme</var> についてそれぞれ、ファイアウォールの
+      プロキシにフォワードされるように
+      <code class="directive"><a href="#proxyremote">ProxyRemote</a></code> ディレクティブを
+      設定してください)。しかしイントラネット内のリソースにアクセスするときは、
+      ファイアウォールを通さないでもアクセスできます。
+      どのホストがイントラネットに属し、直接アクセスすべきかを指定するには、
+      <code class="directive"><a href="#noproxy">NoProxy</a></code> ディレクティブが
+      役に立ちます。</p>
+
+      <p>イントラネット内のユーザは WWW のリクエストでローカルドメインを
+      省略することがよくあります。<code>http://somehost.example.com/</code>
+      というリクエストの代わりに "http://somehost/" をリクエストしたりします。
+      このようなリクエストを受け付け、サーバに設定されているローカルドメインが
+      暗黙のうちに使われていると解釈して、単純にリクエストを処理するものも
+      商用プロキシサーバの中にはあります。
+      サーバが <a href="#proxyrequests">プロキシのサービス用に設定されていて</a>
+      <code class="directive"><a href="#proxydomain">ProxyDomain</a></code> ディレクティブが
+      使用された場合には、Apache はクライアントにリダイレクト応答を送って、
+      正しい、完全な <span class="transnote">(<em>訳注:</em> fully qualified)</span>
+      サーバのアドレスに送ることができます。このように
+      リダイレクトすると、ユーザのブックマークが正しい完全なホスト名を含む
+      ことにもなるため、より好ましい方法と言えるでしょう。</p>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="envsettings" id="envsettings">プロトコルの調整</a></h2>
+      <p>Keepalive や HTTP/1.1 を適切に実装していないオリジンサーバに対して
+      <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> がリクエストを送信する場合、
+      HTTP/1.0 を使って keepalive を無しにしてリクエストを送るようにする <a href="../env.html">環境変数</a>が二つあります。これらは <code class="directive"><a href="../mod/mod_env.html#setenv">SetEnv</a></code> ディレクティブで設定します。</p>
+
+      <p><code>force-proxy-request-1.0</code> と <code>proxy-nokeepalive</code>
+      がその環境変数です。</p>
+
+      <div class="example"><p><code>
+        &lt;Location /buggyappserver/&gt;<br />
+        <span class="indent">
+          ProxyPass http://buggyappserver:7001/foo/<br />
+          SetEnv force-proxy-request-1.0 1<br />
+          SetEnv proxy-nokeepalive 1<br />
+        </span>
+        &lt;/Location&gt;
+      </code></p></div>
+
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="request-bodies" id="request-bodies">リクエストボディ</a></h2>
+
+    <p>POST メソッドなどのリクエストには、リクエストボディがあります。
+    HTTP プロトコル仕様によると、ボディのあるリクエストは chunked
+    転送を使うか、<code>Content-Length</code>
+    ヘッダを送信しなければなりません。
+    このようなリクエストをオリジンサーバに送信する場合、
+    <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code> は常に <code>Content-Length</code>
+    を送ろうと試みます。しかし、ボディが大きく、オリジナルのリクエストで
+    chunked 転送が使われている場合、上流へのリクエストに
+    chunked 転送も使われます。
+    この挙動は <a href="../env.html">環境変数</a>で制御できます。
+    <code>proxy-sendcl</code> を設定すると、
+    常に <code>Content-Length</code> を送り、最大限の互換性を確保します。
+    逆に <code>proxy-sendchunked</code> を設定すると、
+    chunked エンコードを使ってリソース消費を抑えます。</p>
+
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="x-headers" id="x-headers">リバースプロキシのリクエストヘッダ</a></h2>
+
+    <p>リバースプロキシとして振る舞う時 (例えば、<code class="directive"><a href="#proxypass">ProxyPass</a></code> ディレクティブを使う時) 、
+    <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code> は、オリジンサーバに情報を渡すために
+    いくつかのリクエストヘッダを追加します。これらのヘッダは以下になります。</p>
+
+    <dl>
+      <dt><code>X-Forwarded-For</code></dt>
+      <dd>クライアントの IP アドレス。</dd>
+      <dt><code>X-Forwarded-Host</code></dt>
+      <dd>オリジナルのホスト名。クライアントが <code>Host</code>
+      リクエストヘッダで渡す。</dd>
+      <dt><code>X-Forwarded-Server</code></dt>
+      <dd>プロキシサーバのホスト名。</dd>
+    </dl>
+
+    <p>オリジンサーバ上でこれらのヘッダを扱う時は注意してください。
+    と言うのも、オリジナルのリクエストが既に同じヘッダを持っていると、
+    ヘッダが一つ以上の値 (コンマで区切られます) を持つ可能性があるからです。
+    例えば、 オリジンサーバ上でオリジナルのクライアントのIPアドレスをログに
+    記録するため、ログフォーマットに <code>%{X-Forwarded-For}i</code> を
+    指定したとします。この時、リクエストが複数のプロキシを経由していると、
+    複数のアドレスがログに載る可能性があります。</p>
+
+    <p><code class="directive"><a href="#proxypreservehost">ProxyPreserveHost</a></code> と
+    <code class="directive"><a href="#proxyvia">ProxyVia</a></code> ディレクティブ
+    も参照してください。これらは他のリクエストヘッダに影響を与えます。</p>
+
+   </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AllowCONNECT" id="AllowCONNECT">AllowCONNECT</a> <a name="allowconnect" id="allowconnect">ディレクティブ</a></h2>
 <table class="directive">
@@ -1349,332 +1675,6 @@ URL を調整する</td></tr>
     </ul>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="forwardreverse" id="forwardreverse">フォワードプロキシとリバースプロキシ/ゲートウェイ</a></h2>
-      <p>Apache は <dfn>フォワード</dfn> プロキシとしても、
-      <dfn>リバース</dfn> プロキシ (別名 <dfn>ゲートウェイ</dfn>) としても設定できます。</p>
-
-      <p>通常の <dfn>フォワードプロキシ</dfn> はクライアントと
-      <em>オリジンサーバ</em> <span class="transnote">(<em>訳注:</em> コンテンツ生成元のサーバ)</span>
-      の間に位置する中間サーバです。
-      オリジンサーバからコンテンツを取得するために、クライアントは
-      行き先をオリジンサーバに指定したリクエストをプロキシに送ります。
-      プロキシはオリジンサーバからコンテンツを受け取り、
-      取得したコンテンツをクライアントに返します。
-      クライアントがフォワードプロキシ経由で他のサイトにアクセスするには、
-      特別にそのための設定をしなければなりません。</p>
-
-      <p>フォワードプロキシの一般的な使用方法は、ファイアウォールによって
-      制限されている内部のクライアントに、インターネットへのアクセスを
-      提供するものです。フォワードプロキシはネットワークの使用量を
-      減らすために (<code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> で提供されている)
-      キャッシュ機能を用いることもできます。</p>
-
-      <p>フォワードプロキシは <code class="directive"><a href="#proxyrequests">ProxyRequests</a></code> ディレクティブで
-      有効になります。フォワードプロキシを使うと、クライアントは本当の身元を
-      隠して任意のサイトにアクセスできるようになります。このため、フォワードプロキシを
-      有効にする前に、承認されたクライアントのみがプロキシにアクセスできるように
-      <a href="#access">サーバを安全にする</a>ことが重要です。</p>
-
-      <p>一方 <dfn>リバースプロキシ</dfn> (<dfn>ゲートウェイ</dfn>) は、
-      クライアントから普通のウェブサーバのように見えます。
-      クライアント側に特別な設定は必要ありません。
-      クライアントはリバースプロキシの名前空間内のコンテンツに対して通常どおりの
-      リクエストを行ないます。リバースプロキシはリクエストをどこに送れば良いかを判定し、
-      あたかも自分自身がオリジンサーバであったかのようにクライアントに
-      コンテンツを返します。</p>
-
-      <p>リバースプロキシのよくある利用方法は、インターネットユーザに
-      ファイアウォールの中にあるサーバにアクセスさせる場合です。
-      リバースプロキシは複数のバックエンドサーバへ負荷分散をするために
-      使ったり、遅いバックエンドエンドサーバのためにキャッシュ機能を提供したり
-      するためにも使えます。また、リバースプロキシは複数のサーバを
-      同じ URL 空間にまとめるために使うこともできます。</p>
-
-      <p>リバースプロキシは <code class="directive"><a href="#proxypass">ProxyPass</a></code> ディレクティブや
-      <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> ディレクティブの
-      <code>[P]</code> フラグを使うことで有効になります。リバースプロキシの
-      設定のために <code class="directive"><a href="#proxyrequests">ProxyRequests</a></code> を設定する必要は
-      <em>ありません</em>。</p>
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="examples" id="examples">基本の例</a></h2>
-
-    <p>以下の例は手始めの簡単な例です。個々のディレクティブの意味は
-    それぞれの説明をお読みください。</p>
-
-    <p>またキャッシュ機能を有効にしたい場合は、<code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code>
-    の説明を読んでください。</p>
-
-    <div class="example"><h3>リバースプロキシ</h3><p><code>
-    ProxyPass /foo http://foo.example.com/bar<br />
-    ProxyPassReverse /foo http://foo.example.com/bar
-    </code></p></div>
-
-    <div class="example"><h3>フォワードプロキシ</h3><p><code>
-    ProxyRequests On<br />
-    ProxyVia On<br />
-    <br />
-    &lt;Proxy *&gt;<br />
-    <span class="indent">
-      Order deny,allow<br />
-      Deny from all<br />
-      Allow from internal.example.com<br />
-    </span>
-    &lt;/Proxy&gt;
-    </code></p></div>
-
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="workers" id="workers">ワーカー</a></h2>
-      <p>プロキシは <dfn>ワーカー</dfn> と呼ばれるオブジェクトで
-      オリジンサーバとの通信パラメータの設定を管理します。
-      ふたつの組み込みワーカーが存在します。デフォルトのフォワードプロキシワーカーと
-      デフォルトのリバースプロキシワーカーです。
-      追加のワーカーを明示的に設定可能です。</p>
-
-      <p>ふたつのデフォルトワーカーは固定の設定を持ちます。
-      リクエストが他のワーカーにマッチしない場合に使われます。
-      これらは HTTP のキープアライブもコネクションプーリングも使いません。
-      オリジンサーバへの TCP 接続はリクエストのたびに接続と切断をします。</p>
-
-      <p>明示的に設定するワーカーは、URL で識別されます。
-      通常、<code class="directive"><a href="#proxypass">ProxyPass</a></code>
-      または <code class="directive"><a href="#proxypassmatch">ProxyPassMatch</a></code>
-      をリバースプロキシ設定に使うことで、これらのワーカーを生成および設定します:</p>
-
-      <div class="example"><p><code>
-          ProxyPass /example http://backend.example.com connectiontimeout=5 timeout=30
-      </code></p></div>
-
-      <p>上記はオリジンサーバの <code>http://backend.example.com</code>
-      の URL に関連するワーカーを生成します。ワーカーは指定したタイムアウト値を持ちます。
-      フォワードプロキシで使われる時、ワーカーは一般に
-      <code class="directive"><a href="#proxyset">ProxySet</a></code> ディレクティブで
-      定義します:</p>
-
-      <div class="example"><p><code>
-          ProxySet http://backend.example.com connectiontimeout=5 timeout=30
-      </code></p></div>
-
-      <p>または、別の方法として <code class="directive"><a href="#proxy">Proxy</a></code>
-      と <code class="directive"><a href="#proxyset">ProxySet</a></code>でも定義できます:</p>
-
-      <div class="example"><p><code>
-        &lt;Proxy http://backend.example.com&gt;<br />
-        <span class="indent">
-          ProxySet connectiontimeout=5 timeout=30
-        </span>
-        &lt;/Proxy&gt;
-      </code></p></div>
-
-      <p>フォワードモードで明示的に設定したワーカーを使うのは、あまり一般的ではありません。
-      なぜなら、通常フォワードプロキシは多くの異なるオリジンサーバと通信するからです。
-      もし一部のオリジンサーバを頻繁に利用するなら、それらに対して
-      明示的にワーカーを生成するのは有用です。明示的に設定したワーカーは、
-      それ自体はフォワードプロキシかリバースプロキシかのコンセプトを持ちません。
-      それらはオリジンサーバと通信する共通のコンセプトを抱えています。
-      リバースプロキシで使うために <code class="directive"><a href="#proxypass">ProxyPass</a></code>
-      で生成したワーカーは、オリジンサーバへの URL がワーカーの URL にマッチすれば
-      いつでもフォワードプロキシとして使えます。これは、逆も成り立ちます。</p>
-
-      <p>ワーカーを識別する URL はそのオリジンサーバの URL です。
-      URL は指定したパス部分も含みます:</p>
-
-      <div class="example"><p><code>
-          ProxyPass /examples http://backend.example.com/examples<br />
-          ProxyPass /docs http://backend.example.com/docs
-      </code></p></div>
-
-      <p>この例はふたつの異なるワーカーを定義しています。
-      それぞれ別のコネクションプールと設定を使います。</p>
-
-      <div class="warning"><h3>ワーカーの共有</h3>
-        <p>もしワーカーの URL に重なりがあれば、ワーカーの共有が起きます。
-        重なりとは、ワーカーの URL が、設定ファイル内で後から定義した
-        別のワーカーの URL の先頭文字列と部分一致することです。
-        次の例で</p>
-
-        <div class="example"><p><code>
-            ProxyPass /apps http://backend.example.com/ timeout=60<br />
-            ProxyPass /examples http://backend.example.com/examples timeout=10
-        </code></p></div>
-
-        <p>ふたつめのワーカーは実際には生成されません。
-        その代わり、ひとつめのワーカーを使います。この利点は、ただひとつの
-        コネクションプールで済む点です。このため、コネクションをより頻繁に再利用できます。
-        後ろのワーカーに明示的に書いた設定のすべてのパラメータと一部の設定のデフォルト値は、
-        最初のワーカーに書いた設定を上書きするのを注意してください。
-        これは警告としてログに残ります。上記の例で言えば、<code>/apps</code>
-        の URL に対するタイムアウト値は、結果として <code>60</code> ではなく
-        <code>10</code>になるのです。</p>
-
-        <p>もしワーカーの共有を避けたければ、ワーカーの定義を URL の長さでソートしてください。
-        そして、長い URL から並べてください。もしワーカーの共有を最大限にしたいなら、
-        逆順に並べます。<code class="directive"><a href="#proxypass">ProxyPass</a></code>
-        ディレクティブの並びについて、関連する警告も見てください。</p>
-
-      </div> 
-
-      <p>明示的に設定するワーカーにはふたつの種類があります:
-      <dfn>直接のワーカー</dfn> と <dfn>バランサー (負荷分散) ワーカー</dfn> です。
-      これらは後ほど <code class="directive"><a href="#proxypass">ProxyPass</a></code>
-      ディレクティブの中で説明する重要な設定パラメータを数多くサポートします。
-      同じパラメータは <code class="directive"><a href="#proxyset">ProxySet</a></code>
-      を使っても設定可能です。</p>
-
-      <p>直接のワーカーで利用できるパラメータはプロトコルに依存します。
-      プロトコルはオリジンサーバの URL で指定されます。
-      利用可能なプロトコルは <code>ajp</code>,
-      <code>ftp</code>, <code>http</code>, <code>scgi</code> です。</p>
-
-      <p>バランサーワーカーは仮想ワーカーです。直接のワーカーを
-      リクエストを実際に処理するメンバーとして使います。
-      それぞれのバランサーは複数のメンバーを持ちえます。
-      リクエストを処理する時、設定した負荷分散のアルゴリズムにもとづき
-      メンバーのひとつを選択します。</p>
-
-      <p>ワーカーの URL のプロトコルスキームに <code>balancer</code>
-      を使うと、バランサワーカーが生成されます。
-      バランサーの URL が、バランサワーカーを一意に識別します。
-      <code class="directive"><a href="#balancermember">BalancerMember</a></code>
-      を使って、バランサーにメンバーを追加します。</p>
-
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="access" id="access">プロキシへのアクセス制御</a></h2>
-      <p>プロキシへのアクセスは以下のように <code class="directive"><a href="#proxy">&lt;Proxy&gt;</a></code> コンテナの中に
-      ディレクティブを書くことで制御できます:</p>
-
-      <div class="example"><p><code>
-        &lt;Proxy *&gt;<br />
-        <span class="indent">
-          Order Deny,Allow<br />
-          Deny from all<br />
-          Allow from 192.168.0<br />
-        </span>
-        &lt;/Proxy&gt;
-      </code></p></div>
-
-      <p>アクセス制御のためのディレクティブのより詳しい情報は
-      <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code> をお読みください。</p>
-
-      <p>(<code class="directive"><a href="#proxyrequests">ProxyRequests</a></code> ディレクティブを
-      使って) フォワードプロキシを設定している場合は、厳しくアクセス
-      制限を行なうことが非常に大切です。そうしないと、任意のクライアントが
-      身元を明かすことなく任意のホストにアクセスするためにプロキシサーバを使うことが
-      できてしまいます。これはあなた自身のネットワークにとっても、インターネット
-      全体にとっても危険なことです。(<code>ProxyRequests Off</code> にして
-      <code class="directive"><a href="#proxypass">ProxyPass</a></code> ディレクティブを使って)
-      リバースプロキシを使っている場合には、クライアントはあなたが明示的に
-      設定したホストにしかアクセスできないため、フォワードプロキシのとき
-      ほどアクセス制御に力を注がなくても大丈夫です。</p>
-
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="startup" id="startup">遅い起動</a></h2>
-      <p><code class="directive"><a href="#proxyblock">ProxyBlock</a></code> ディレクティブを使っている場合、
-      後に行うマッチ判定のため、起動時にホストの名前解決をして
-      IP アドレスをキャッシュします。ホスト名の名前解決の
-      速さによっては、数秒 (かそれ以上) かかるかもしれません。</p>
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="intranet" id="intranet">イントラネットプロキシ</a></h2>
-      <p>イントラネットにある Apache プロキシサーバは外部へのリクエストを
-      会社のファイアウォールを通して送らなければなりません。(このためには
-      個々の <var>scheme</var> についてそれぞれ、ファイアウォールの
-      プロキシにフォワードされるように
-      <code class="directive"><a href="#proxyremote">ProxyRemote</a></code> ディレクティブを
-      設定してください)。しかしイントラネット内のリソースにアクセスするときは、
-      ファイアウォールを通さないでもアクセスできます。
-      どのホストがイントラネットに属し、直接アクセスすべきかを指定するには、
-      <code class="directive"><a href="#noproxy">NoProxy</a></code> ディレクティブが
-      役に立ちます。</p>
-
-      <p>イントラネット内のユーザは WWW のリクエストでローカルドメインを
-      省略することがよくあります。<code>http://somehost.example.com/</code>
-      というリクエストの代わりに "http://somehost/" をリクエストしたりします。
-      このようなリクエストを受け付け、サーバに設定されているローカルドメインが
-      暗黙のうちに使われていると解釈して、単純にリクエストを処理するものも
-      商用プロキシサーバの中にはあります。
-      サーバが <a href="#proxyrequests">プロキシのサービス用に設定されていて</a>
-      <code class="directive"><a href="#proxydomain">ProxyDomain</a></code> ディレクティブが
-      使用された場合には、Apache はクライアントにリダイレクト応答を送って、
-      正しい、完全な <span class="transnote">(<em>訳注:</em> fully qualified)</span>
-      サーバのアドレスに送ることができます。このように
-      リダイレクトすると、ユーザのブックマークが正しい完全なホスト名を含む
-      ことにもなるため、より好ましい方法と言えるでしょう。</p>
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="envsettings" id="envsettings">プロトコルの調整</a></h2>
-      <p>Keepalive や HTTP/1.1 を適切に実装していないオリジンサーバに対して
-      <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> がリクエストを送信する場合、
-      HTTP/1.0 を使って keepalive を無しにしてリクエストを送るようにする <a href="../env.html">環境変数</a>が二つあります。これらは <code class="directive"><a href="../mod/mod_env.html#setenv">SetEnv</a></code> ディレクティブで設定します。</p>
-
-      <p><code>force-proxy-request-1.0</code> と <code>proxy-nokeepalive</code>
-      がその環境変数です。</p>
-
-      <div class="example"><p><code>
-        &lt;Location /buggyappserver/&gt;<br />
-        <span class="indent">
-          ProxyPass http://buggyappserver:7001/foo/<br />
-          SetEnv force-proxy-request-1.0 1<br />
-          SetEnv proxy-nokeepalive 1<br />
-        </span>
-        &lt;/Location&gt;
-      </code></p></div>
-
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="request-bodies" id="request-bodies">リクエストボディ</a></h2>
-
-    <p>POST メソッドなどのリクエストには、リクエストボディがあります。
-    HTTP プロトコル仕様によると、ボディのあるリクエストは chunked
-    転送を使うか、<code>Content-Length</code>
-    ヘッダを送信しなければなりません。
-    このようなリクエストをオリジンサーバに送信する場合、
-    <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code> は常に <code>Content-Length</code>
-    を送ろうと試みます。しかし、ボディが大きく、オリジナルのリクエストで
-    chunked 転送が使われている場合、上流へのリクエストに
-    chunked 転送も使われます。
-    この挙動は <a href="../env.html">環境変数</a>で制御できます。
-    <code>proxy-sendcl</code> を設定すると、
-    常に <code>Content-Length</code> を送り、最大限の互換性を確保します。
-    逆に <code>proxy-sendchunked</code> を設定すると、
-    chunked エンコードを使ってリソース消費を抑えます。</p>
-
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="x-headers" id="x-headers">リバースプロキシのリクエストヘッダ</a></h2>
-
-    <p>リバースプロキシとして振る舞う時 (例えば、<code class="directive"><a href="#proxypass">ProxyPass</a></code> ディレクティブを使う時) 、
-    <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code> は、オリジンサーバに情報を渡すために
-    いくつかのリクエストヘッダを追加します。これらのヘッダは以下になります。</p>
-
-    <dl>
-      <dt><code>X-Forwarded-For</code></dt>
-      <dd>クライアントの IP アドレス。</dd>
-      <dt><code>X-Forwarded-Host</code></dt>
-      <dd>オリジナルのホスト名。クライアントが <code>Host</code>
-      リクエストヘッダで渡す。</dd>
-      <dt><code>X-Forwarded-Server</code></dt>
-      <dd>プロキシサーバのホスト名。</dd>
-    </dl>
-
-    <p>オリジンサーバ上でこれらのヘッダを扱う時は注意してください。
-    と言うのも、オリジナルのリクエストが既に同じヘッダを持っていると、
-    ヘッダが一つ以上の値 (コンマで区切られます) を持つ可能性があるからです。
-    例えば、 オリジンサーバ上でオリジナルのクライアントのIPアドレスをログに
-    記録するため、ログフォーマットに <code>%{X-Forwarded-For}i</code> を
-    指定したとします。この時、リクエストが複数のプロキシを経由していると、
-    複数のアドレスがログに載る可能性があります。</p>
-
-    <p><code class="directive"><a href="#proxypreservehost">ProxyPreserveHost</a></code> と
-    <code class="directive"><a href="#proxyvia">ProxyVia</a></code> ディレクティブ
-    も参照してください。これらは他のリクエストヘッダに影響を与えます。</p>
-
-   </div>
 </div>
 <div class="bottomlang">
 <p><span>翻訳済み言語: </span><a href="../en/mod/mod_proxy.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |

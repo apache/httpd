@@ -55,7 +55,10 @@
     <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code> に
     <code>anon</code> という値を設定することで起動されます。</p>
 </div>
-<div id="quickview"><h3 class="directives">ディレクティブ</h3>
+<div id="quickview"><h3>トピック</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#example">例</a></li>
+</ul><h3 class="directives">ディレクティブ</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#anonymous">Anonymous</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#anonymous_logemail">Anonymous_LogEmail</a></li>
@@ -63,10 +66,56 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#anonymous_nouserid">Anonymous_NoUserID</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#anonymous_verifyemail">Anonymous_VerifyEmail</a></li>
 </ul>
-<h3>トピック</h3>
-<ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#example">例</a></li>
-</ul><ul class="seealso"><li><a href="#comments_section">コメント</a></li></ul></div>
+<ul class="seealso"><li><a href="#comments_section">コメント</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="example" id="example">例</a></h2>
+    <p>以下の例は「普通」の htpasswd ファイルに基づいた認証と組み合わされて
+    おり、以下の要件を見たすユーザを「ゲスト」として許可します:</p>
+
+    <ul>
+      <li>ユーザは userID を入力しなければなりません。
+      (<code class="directive"><a href="#anonymous_nouserid">Anonymous_NoUserID</a></code>)</li>
+
+      <li>ユーザはパスワードを入力しなければなりません。
+      (<code class="directive"><a href="#anonymous_mustgiveemail">Anonymous_MustGiveEmail</a></code>)</li>
+
+      <li>入力されたパスワードは有効な電子メールアドレスでなければ
+      なりません。<em>すなわち</em>、少くとも一つの '@' と '.' が
+      含まれている必要があります。
+      (<code class="directive"><a href="#anonymous_verifyemail">Anonymous_VerifyEmail</a></code>)</li>
+
+      <li>userID は <code>anonymous guest www test
+      welcome</code> のどれかでなければなりません。
+      ユーザ名の比較は大文字小文字を区別<strong>しません。</strong></li>
+
+      <li>パスワード欄に入力された電子メールアドレスはエラーログファイルに
+      ロギングされます。
+      (<code class="directive"><a href="#anonymous_logemail">Anonymous_LogEmail</a></code>)</li>
+    </ul>
+
+    <div class="example"><h3>例</h3><p><code>
+      &lt;Directory /foo&gt;
+      <span class="indent">
+        AuthName "Use 'anonymous' &amp; Email address for guest entry"<br />
+        AuthType Basic<br />
+        AuthBasicProvider file anon<br />
+        AuthUserFile /path/to/your/.htpasswd<br />
+        <br />
+        Anonymous_NoUserID off<br />
+        Anonymous_MustGiveEmail on<br />
+        Anonymous_VerifyEmail on<br />
+        Anonymous_LogEmail on<br />
+        Anonymous anonymous guest www test welcome<br />
+        <br />
+        Order Deny,Allow<br />
+        Allow from all<br />
+        <br />
+        Require valid-user<br />
+      </span>
+      &lt;/Directory&gt;
+    </code></p></div>
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="Anonymous" id="Anonymous">Anonymous</a> <a name="anonymous" id="anonymous">ディレクティブ</a></h2>
 <table class="directive">
@@ -166,55 +215,6 @@
     少なくとも一つの '@' と '.' を含んでいるかどうかを調べます
     (上の <code class="directive"><a href="#anonymous_logemail">Anonymous_LogEmail</a></code> 参照)。</p>
 
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="example" id="example">例</a></h2>
-    <p>以下の例は「普通」の htpasswd ファイルに基づいた認証と組み合わされて
-    おり、以下の要件を見たすユーザを「ゲスト」として許可します:</p>
-
-    <ul>
-      <li>ユーザは userID を入力しなければなりません。
-      (<code class="directive"><a href="#anonymous_nouserid">Anonymous_NoUserID</a></code>)</li>
-
-      <li>ユーザはパスワードを入力しなければなりません。
-      (<code class="directive"><a href="#anonymous_mustgiveemail">Anonymous_MustGiveEmail</a></code>)</li>
-
-      <li>入力されたパスワードは有効な電子メールアドレスでなければ
-      なりません。<em>すなわち</em>、少くとも一つの '@' と '.' が
-      含まれている必要があります。
-      (<code class="directive"><a href="#anonymous_verifyemail">Anonymous_VerifyEmail</a></code>)</li>
-
-      <li>userID は <code>anonymous guest www test
-      welcome</code> のどれかでなければなりません。
-      ユーザ名の比較は大文字小文字を区別<strong>しません。</strong></li>
-
-      <li>パスワード欄に入力された電子メールアドレスはエラーログファイルに
-      ロギングされます。
-      (<code class="directive"><a href="#anonymous_logemail">Anonymous_LogEmail</a></code>)</li>
-    </ul>
-
-    <div class="example"><h3>例</h3><p><code>
-      &lt;Directory /foo&gt;
-      <span class="indent">
-        AuthName "Use 'anonymous' &amp; Email address for guest entry"<br />
-        AuthType Basic<br />
-        AuthBasicProvider file anon<br />
-        AuthUserFile /path/to/your/.htpasswd<br />
-        <br />
-        Anonymous_NoUserID off<br />
-        Anonymous_MustGiveEmail on<br />
-        Anonymous_VerifyEmail on<br />
-        Anonymous_LogEmail on<br />
-        Anonymous anonymous guest www test welcome<br />
-        <br />
-        Order Deny,Allow<br />
-        Allow from all<br />
-        <br />
-        Require valid-user<br />
-      </span>
-      &lt;/Directory&gt;
-    </code></p></div>
 </div>
 </div>
 <div class="bottomlang">

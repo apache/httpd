@@ -53,7 +53,10 @@
     maximale Gesamtzahl an Threads regelt, die gestartet werden
     können.</p>
 </div>
-<div id="quickview"><h3 class="directives">Direktiven</h3>
+<div id="quickview"><h3>Themen</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#how-it-works">Arbeitsweise</a></li>
+</ul><h3 class="directives">Direktiven</h3>
 <ul id="toc">
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#acceptmutex">AcceptMutex</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#coredumpdirectory">CoreDumpDirectory</a></li>
@@ -78,10 +81,7 @@
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#threadstacksize">ThreadStackSize</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#user">User</a></li>
 </ul>
-<h3>Themen</h3>
-<ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#how-it-works">Arbeitsweise</a></li>
-</ul><h3>Siehe auch</h3>
+<h3>Siehe auch</h3>
 <ul class="seealso">
 <li><a href="../bind.html">Bestimmen der vom Apache verwendeten Adressen
   und Ports</a></li>

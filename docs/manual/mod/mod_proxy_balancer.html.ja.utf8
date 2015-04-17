@@ -53,9 +53,7 @@
       インターネット全体にとっても危険です。</p>
     </div>
 </div>
-<div id="quickview"><h3 class="directives">ディレクティブ</h3>
-<p>このモジュールにディレクティブはありません。</p>
-<h3>トピック</h3>
+<div id="quickview"><h3>トピック</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#scheduler">ロードバランサのスケジューラのアルゴリズム</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#stickyness">ロードバランサのスティッキネス</a></li>
@@ -67,7 +65,9 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#balancer_manager">バランサマネージャのサポートを有効にする</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#stickyness_implementation">ロードバランサのスティッキネスの詳細</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#stickyness_troubleshooting">ロードバランサのスティッキネスのトラブルシューティング</a></li>
-</ul><h3>参照</h3>
+</ul><h3 class="directives">ディレクティブ</h3>
+<p>このモジュールにディレクティブはありません。</p>
+<h3>参照</h3>
 <ul class="seealso">
 <li><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></li>
 </ul><ul class="seealso"><li><a href="#comments_section">コメント</a></li></ul></div>

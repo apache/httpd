@@ -68,6 +68,7 @@ optimizado para BeOS.</td></tr>
 <li><a href="../bind.html">Configurar las direcciones y los
 puertos que usa Apache</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Comentarios</a></li></ul></div>
+
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="MaxRequestsPerThread" id="MaxRequestsPerThread">MaxRequestsPerThread</a> <a name="maxrequestsperthread" id="maxrequestsperthread">Directiva</a></h2>
 <table class="directive">
@@ -106,7 +107,6 @@ atender durante su vida</td></tr>
     </div>
 
 </div>
-
 </div>
 <div class="bottomlang">
 <p><span>Idiomas disponibles: </span><a href="../de/mod/beos.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |

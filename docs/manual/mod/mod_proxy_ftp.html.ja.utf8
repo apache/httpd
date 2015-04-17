@@ -52,9 +52,7 @@
       インターネット全体にとっても危険です。</p>
     </div>
 </div>
-<div id="quickview"><h3 class="directives">ディレクティブ</h3>
-<p>このモジュールにディレクティブはありません。</p>
-<h3>トピック</h3>
+<div id="quickview"><h3>トピック</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#mimetypes">なぜファイルタイプ <var>xxx</var>
     は FTP ダウンロードできないのでしょう?</a></li>
@@ -65,7 +63,9 @@
     アクセスするにはどうすればよいでしょうか?</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ftppass">ブラウザの URL 欄に FTP のパスワードがそのまま
     載らないようにするにはどうすればよいでしょうか?</a></li>
-</ul><h3>参照</h3>
+</ul><h3 class="directives">ディレクティブ</h3>
+<p>このモジュールにディレクティブはありません。</p>
+<h3>参照</h3>
 <ul class="seealso">
 <li><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></li>
 </ul><ul class="seealso"><li><a href="#comments_section">コメント</a></li></ul></div>

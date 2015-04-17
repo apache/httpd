@@ -66,6 +66,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#user">User</a></li>
 </ul>
 <ul class="seealso"><li><a href="#comments_section">コメント</a></li></ul></div>
+
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AcceptMutex" id="AcceptMutex">AcceptMutex</a> <a name="acceptmutex" id="acceptmutex">ディレクティブ</a></h2>
 <table class="directive">
@@ -1002,7 +1003,6 @@ accept しようとしているときに、Apache がそれらの子プロセス
     </div>
 
 </div>
-
 </div>
 <div class="bottomlang">
 <p><span>翻訳済み言語: </span><a href="../de/mod/mpm_common.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
