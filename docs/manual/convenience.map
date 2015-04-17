@@ -156,6 +156,7 @@ cachestorenostore	mod/mod_cache.html#cachestorenostore
 cachestoreprivate	mod/mod_cache.html#cachestoreprivate
 cgidscripttimeout	mod/mod_cgid.html#cgidscripttimeout
 cgimapextension	mod/core.html#cgimapextension
+cgipassauth	mod/core.html#cgipassauth
 charsetdefault	mod/mod_charset_lite.html#charsetdefault
 charsetoptions	mod/mod_charset_lite.html#charsetoptions
 charsetsourceenc	mod/mod_charset_lite.html#charsetsourceenc
@@ -308,6 +309,7 @@ loadmodule	mod/mod_so.html#loadmodule
 location	mod/core.html#location
 locationmatch	mod/core.html#locationmatch
 logformat	mod/mod_log_config.html#logformat
+logiotrackttfb	mod/mod_logio.html#logiotrackttfb
 loglevel	mod/core.html#loglevel
 logmessage	mod/mod_log_debug.html#logmessage
 luaauthzprovider	mod/mod_lua.html#luaauthzprovider
