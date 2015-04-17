@@ -471,10 +471,10 @@ expr=<var>expression</var>]</syntax>
     <highlight language="config">
 # CustomLog with format nickname
 LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common
-CustomLog logs/access_log common
+CustomLog "logs/access_log" common
 
 # CustomLog with explicit format string
-CustomLog logs/access_log "%h %l %u %t \"%r\" %&gt;s %b"
+CustomLog "logs/access_log" "%h %l %u %t \"%r\" %&gt;s %b"
     </highlight>
 
     <p>The third argument is optional and controls whether or
@@ -496,8 +496,8 @@ CustomLog logs/access_log "%h %l %u %t \"%r\" %&gt;s %b"
 
     <highlight language="config">
 SetEnvIf Request_URI \.gif$ gif-image
-CustomLog gif-requests.log common env=gif-image
-CustomLog nongif-requests.log common env=!gif-image
+CustomLog "gif-requests.log" common env=gif-image
+CustomLog "nongif-requests.log" common env=!gif-image
     </highlight>
 
     <p>Or, to reproduce the behavior of the old RefererIgnore
@@ -505,7 +505,7 @@ CustomLog nongif-requests.log common env=!gif-image
 
     <highlight language="config">
 SetEnvIf Referer example\.com localreferer
-CustomLog referer.log referer env=!localreferer
+CustomLog "referer.log" referer env=!localreferer
     </highlight>
 </usage>
 </directivesynopsis>
@@ -578,7 +578,7 @@ CustomLog referer.log referer env=!localreferer
     <example><title>Example</title>
     <highlight language="config">
 LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\""
-TransferLog logs/access_log
+TransferLog "logs/access_log"
       </highlight>
     </example>
 </usage>

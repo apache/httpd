@@ -58,7 +58,7 @@
     via <code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code> configurable logging formats:</p>
 
     <pre class="prettyprint lang-config">LogFormat "%{Apache}n %r %t" usertrack
-CustomLog logs/clickstream.log usertrack</pre>
+CustomLog "logs/clickstream.log" usertrack</pre>
 
 
 </div>

@@ -619,8 +619,8 @@ Swap:       3903784      12540  3891244
                     a pipe character (<code>|</code>). For instance:
                 </p>
 
-                <example>CustomLog "|/usr/local/apache2/bin/rotatelogs
-                    /var/log/access_log 86400" common
+                <example>
+CustomLog "|/usr/local/apache2/bin/rotatelogs /var/log/access_log 86400" common
                 </example>
 
                 <p>The program on the other end of the pipe will receive the
@@ -1294,9 +1294,9 @@ Listen *:8001
       &lt;/Directory&gt;
       RewriteLog "/home/sctemme/inst/blog/httpd/logs/rewrite_log"
       RewriteLogLevel 9
-      ErrorLog /home/sctemme/inst/blog/httpd/logs/error_log
+      ErrorLog "/home/sctemme/inst/blog/httpd/logs/error_log"
       LogLevel debug
-      CustomLog /home/sctemme/inst/blog/httpd/logs/access_log common
+      CustomLog "/home/sctemme/inst/blog/httpd/logs/access_log" common
       ScriptAlias "/cgi-bin/" "/home/sctemme/inst/blog/bin/"
       &lt;Directory "/home/sctemme/inst/blog/bin"&gt;
           Options +ExecCGI

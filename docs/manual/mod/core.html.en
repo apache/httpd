@@ -4540,8 +4540,8 @@ hostname or IP address</td></tr>
   ServerAdmin webmaster@host.example.com
   DocumentRoot "/www/docs/host.example.com"
   ServerName host.example.com
-  ErrorLog logs/host.example.com-error_log
-  TransferLog logs/host.example.com-access_log
+  ErrorLog "logs/host.example.com-error_log"
+  TransferLog "logs/host.example.com-access_log"
 &lt;/VirtualHost&gt;</pre>
 
 
@@ -4554,8 +4554,8 @@ hostname or IP address</td></tr>
   ServerAdmin webmaster@host.example.com
   DocumentRoot "/www/docs/host.example.com"
   ServerName host.example.com
-  ErrorLog logs/host.example.com-error_log
-  TransferLog logs/host.example.com-access_log
+  ErrorLog "logs/host.example.com-error_log"
+  TransferLog "logs/host.example.com-access_log"
 &lt;/VirtualHost&gt;</pre>
 
 

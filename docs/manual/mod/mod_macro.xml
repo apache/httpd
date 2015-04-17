@@ -56,8 +56,8 @@ multiple similar virtual hosts:</p>
     ServerAlias www.$domain
 
     DocumentRoot "/var/www/vhosts/$name"
-    ErrorLog /var/log/httpd/$name.error_log
-    CustomLog /var/log/httpd/$name.access_log combined
+    ErrorLog "/var/log/httpd/$name.error_log"
+    CustomLog "/var/log/httpd/$name.access_log" combined
 &lt;/VirtualHost&gt;
 &lt;/Macro&gt;
 </highlight>

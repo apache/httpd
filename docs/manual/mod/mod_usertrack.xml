@@ -43,7 +43,7 @@
 
     <highlight language="config">
 LogFormat "%{Apache}n %r %t" usertrack
-CustomLog logs/clickstream.log usertrack
+CustomLog "logs/clickstream.log" usertrack
     </highlight>
 
 </section>

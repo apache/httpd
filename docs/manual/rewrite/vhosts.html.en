@@ -126,7 +126,7 @@ UseCanonicalName Off
 
 # splittable logs
 LogFormat "%{Host}i %h %l %u %t \"%r\" %s %b" vcommon
-CustomLog logs/access_log vcommon
+CustomLog "logs/access_log" vcommon
 
 &lt;Directory "/www/hosts"&gt;
     # ExecCGI is needed here because we can't force

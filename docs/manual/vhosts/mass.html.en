@@ -163,7 +163,7 @@ UseCanonicalName Off
 # this log format can be split per-virtual-host based on the first field
 # using the split-logfile utility.
 LogFormat "%V %h %l %u %t \"%r\" %s %b" vcommon
-CustomLog logs/access_log vcommon
+CustomLog "logs/access_log" vcommon
 
 # include the server name in the filenames used to satisfy requests
 VirtualDocumentRoot "/www/hosts/%0/docs"
@@ -196,7 +196,7 @@ examples.</p>
 <pre class="prettyprint lang-config">UseCanonicalName Off
 
 LogFormat "%V %h %l %u %t \"%r\" %s %b" vcommon
-CustomLog logs/access_log vcommon
+CustomLog "logs/access_log" vcommon
 
 # include part of the server name in the filenames
 VirtualDocumentRoot "/home/%2/www"
@@ -240,7 +240,7 @@ LogFormat "%V %h %l %u %t \"%r\" %s %b" vcommon
 &lt;VirtualHost 111.22.33.44&gt;
     ServerName www.commercial.example.com
 
-    CustomLog logs/access_log.commercial vcommon
+    CustomLog "logs/access_log.commercial" vcommon
 
     VirtualDocumentRoot "/www/commercial/%0/docs"
     VirtualScriptAlias  "/www/commercial/%0/cgi-bin"
@@ -249,7 +249,7 @@ LogFormat "%V %h %l %u %t \"%r\" %s %b" vcommon
 &lt;VirtualHost 111.22.33.45&gt;
     ServerName www.homepages.example.com
 
-    CustomLog logs/access_log.homepages vcommon
+    CustomLog "logs/access_log.homepages" vcommon
 
     VirtualDocumentRoot "/www/homepages/%0/docs"
     ScriptAlias         "/cgi-bin/" "/www/std-cgi/"
@@ -284,7 +284,7 @@ UseCanonicalName DNS
 
 # include the IP address in the logs so they may be split
 LogFormat "%A %h %l %u %t \"%r\" %s %b" vcommon
-CustomLog logs/access_log vcommon
+CustomLog "logs/access_log" vcommon
 
 # include the IP address in the filenames
 VirtualDocumentRootIP "/www/hosts/%0/docs"

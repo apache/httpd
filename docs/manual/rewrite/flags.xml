@@ -268,7 +268,7 @@ log.</p>
 
 <highlight language="config">
 RewriteRule "\.(png|gif|jpg)$"   "-" [E=image:1]
-CustomLog   logs/access_log      combined env=!image
+CustomLog   "logs/access_log"    combined env=!image
 </highlight>
 
 <p>Note that this same effect can be obtained using <directive
