@@ -100,13 +100,10 @@
 <!-- ==================================================================== -->
 <xsl:template name="head">
 <head>
-    <!-- the meta element is necessary for offline handling like CHM -->
-    <xsl:choose>
-    <xsl:when test="$is-chm or $is-zip">
-        <meta http-equiv="Content-Type"
-                 content="text/html; charset={$output-encoding}" />
-    </xsl:when>
-    <xsl:otherwise>
+    &lf;
+    <meta http-equiv="Content-Type"
+          content="text/html; charset={$output-encoding}" />&lf;
+    <xsl:if test="not($is-chm or $is-zip)">
         <xsl:comment>
             &lf;
             <xsl:text>        </xsl:text>
@@ -122,9 +119,8 @@
             <xsl:text>XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX</xsl:text>
             &lf;
             <xsl:text>      </xsl:text>
-        </xsl:comment>
-    </xsl:otherwise>
-    </xsl:choose>&lf;
+        </xsl:comment>&lf;
+    </xsl:if>
 
     <title>
         <xsl:choose>
