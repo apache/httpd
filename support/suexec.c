@@ -256,9 +256,9 @@ static void clean_env(void)
         if (strncmp(*ep, "HTTP_", 5) == 0) {
             if (strncmp(*ep + 5, "PROXY=", 6) == 0) {
                 /*
-		 * HTTP_PROXY is treated as alias for http_proxy by some
-		 * programs.
-		 */
+                 * HTTP_PROXY is treated as alias for http_proxy by some
+                 * programs.
+                 */
             }
             else {
                 /* Other HTTP_* are safe */
