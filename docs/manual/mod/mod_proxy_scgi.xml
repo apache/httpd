@@ -144,8 +144,10 @@ ProxySCGISendfile X-Send-Static
 <name>ProxySCGIInternalRedirect</name>
 <description>Enable or disable internal redirect responses from the
 backend</description>
-<syntax>ProxySCGIInternalRedirect On|Off</syntax>
+<syntax>ProxySCGIInternalRedirect On|Off|<var>Headername</var></syntax>
 <default>ProxySCGIInternalRedirect On</default>
+<compatibility>The <var>Headername</var> feature is available in Apache
+httpd 2.5.0 and later.</compatibility>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context></contextlist>
 
@@ -154,17 +156,23 @@ backend</description>
     to internally redirect the gateway to a different URL. This feature
     originates in <module>mod_cgi</module>, which internally redirects the
     response if the response status is <code>OK</code> (<code>200</code>) and
-    the response contains a <code>Location</code> header and its value starts
-    with a slash (<code>/</code>). This value is interpreted as a new local
-    URL that Apache httpd internally redirects to.</p>
+    the response contains a <code>Location</code> (or configured alternate
+    header) and its value starts with a slash (<code>/</code>). This value is 
+    interpreted as a new local URL that Apache httpd internally redirects to.</p>
 
     <p><module>mod_proxy_scgi</module> does the same as
     <module>mod_cgi</module> in this regard, except that you can turn off the
-    feature.</p>
+    feature or specify the use of a header other than <code>Location</code>.</p>
 
     <example><title>Example</title>
     <highlight language="config">
     ProxySCGIInternalRedirect Off
+
+# Django and some other frameworks will fully qualify "local URLs"
+# set by the application, so an alternate header must be used.
+&lt;Location /django-app/&gt;
+    ProxySCGIInternalRedirect X-Location
+&lt;/Location&gt;
     </highlight>
     </example>
 </usage>
