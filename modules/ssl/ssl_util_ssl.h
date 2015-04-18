@@ -38,20 +38,20 @@
  * SSL library version number
  */
 
-#define SSL_LIBRARY_VERSION OPENSSL_VERSION_NUMBER
-#define SSL_LIBRARY_NAME    "OpenSSL"
-#define SSL_LIBRARY_TEXT    OPENSSL_VERSION_TEXT
-#define SSL_LIBRARY_DYNTEXT SSLeay_version(SSLEAY_VERSION)
+#define MODSSL_LIBRARY_VERSION OPENSSL_VERSION_NUMBER
+#define MODSSL_LIBRARY_NAME    "OpenSSL"
+#define MODSSL_LIBRARY_TEXT    OPENSSL_VERSION_TEXT
+#define MODSSL_LIBRARY_DYNTEXT SSLeay_version(SSLEAY_VERSION)
 
 /**
  *  Maximum length of a DER encoded session.
  *  FIXME: There is no define in OpenSSL, but OpenSSL uses 1024*10,
  *         so this value should be ok. Although we have no warm feeling.
  */
-#define SSL_SESSION_MAX_DER 1024*10
+#define MODSSL_SESSION_MAX_DER 1024*10
 
-/** max length for SSL_SESSION_id2sz */
-#define SSL_SESSION_ID_STRING_LEN \
+/** max length for MODSSL_SESSION_id2sz */
+#define MODSSL_SESSION_ID_STRING_LEN \
     ((SSL_MAX_SSL_SESSION_ID_LENGTH + 1) * 2)
 
 /**
