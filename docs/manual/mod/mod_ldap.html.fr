@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_ldap.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_ldap.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Conservation des connexions LDAP et services de mise en
 cache du résultat à destination des autres modules LDAP</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -107,7 +105,7 @@ LDAPCacheTTL 600
 LDAPOpCacheEntries 1024
 LDAPOpCacheTTL 600
 
-&lt;Location /ldap-status&gt;
+&lt;Location "/ldap-status"&gt;
     SetHandler ldap-status
     
     Require host yourdomain.example.com
@@ -222,7 +220,7 @@ LDAPOpCacheTTL 600
       suivantes pour accéder aux informations du cache de
       <code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code> :</p>
 
-      <pre class="prettyprint lang-config">&lt;Location /server/cache-info&gt;
+      <pre class="prettyprint lang-config">&lt;Location "/server/cache-info"&gt;
     SetHandler ldap-status
 &lt;/Location&gt;</pre>
 
@@ -257,7 +255,7 @@ LDAPOpCacheTTL 600
 
 LDAPTrustedGlobalCert CA_DER /certs/certfile.der
 
-&lt;Location /ldap-status&gt;
+&lt;Location "/ldap-status"&gt;
     SetHandler ldap-status
     
     Require host yourdomain.example.com
@@ -278,7 +276,7 @@ LDAPTrustedGlobalCert CA_DER /certs/certfile.der
 
 LDAPTrustedGlobalCert CA_DER /certs/certfile.der
 
-&lt;Location /ldap-status&gt;
+&lt;Location "/ldap-status"&gt;
     SetHandler ldap-status
     
     Require host yourdomain.example.com
@@ -333,7 +331,7 @@ LDAPTrustedGlobalCert CA_CERT7_DB /certs/cert7.db
 LDAPTrustedGlobalCert CERT_KEY3_DB /certs/key3.db
 # Spécifie le fichier secmod si nécessaire
 LDAPTrustedGlobalCert CA_SECMOD /certs/secmod
-&lt;Location /ldap-status&gt;
+&lt;Location "/ldap-status"&gt;
     SetHandler ldap-status
 
     Require host yourdomain.example.com
@@ -405,7 +403,7 @@ LDAPTrustedGlobalCert KEY_BASE64 /certs/key1.pem [password]
         <pre class="prettyprint lang-config"># Spécifie deux fichiers contenant des certificats de CA
 LDAPTrustedGlobalCert CA_DER /certs/cacert1.der
 LDAPTrustedGlobalCert CA_BASE64 /certs/cacert2.pem
-&lt;Location /ldap-status&gt;
+&lt;Location "/ldap-status"&gt;
     SetHandler ldap-status
     
     Require host yourdomain.example.com

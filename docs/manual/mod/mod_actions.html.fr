@@ -32,8 +32,6 @@
 <a href="../ja/mod/mod_actions.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_actions.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Exécution des scripts CGI en fonction du
 type de média ou de la méthode de requête.</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
@@ -108,7 +106,7 @@ Action my-file-type /cgi-bin/program.cgi</pre>
     directive <code class="directive">Action</code> pour des localisations
     virtuelles.</p>
 
-    <pre class="prettyprint lang-config">&lt;Location /news&gt;
+    <pre class="prettyprint lang-config">&lt;Location "/news"&gt;
     SetHandler news-handler
     Action news-handler /cgi-bin/news.cgi virtual
 &lt;/Location&gt;</pre>

@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_authz_dbd.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_authz_dbd.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Autorisation par groupe ou par identifiant via SQL</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>authz_dbd_module</td></tr>
@@ -166,7 +164,7 @@ DBDKeep 8
 DBDMax  20
 DBDExptime 300
 
-&lt;Directory /usr/www/mon.site/team-private/&gt;
+&lt;Directory "/usr/www/mon.site/team-private/"&gt;
   # configuration de mod_authn_core et mod_auth_basic
   # pour mod_authn_dbd
   AuthType Basic
@@ -189,7 +187,7 @@ DBDExptime 300
   # contenir un lien vers /team-private/login.html
   ErrorDocument 401 /login-info.html
 
-  &lt;Files login.html&gt;
+  &lt;Files "login.html"&gt;
     # il n'est pas nécessaire que l'utilisateur soit déjà connecté !
     AuthDBDUserPWQuery "SELECT password FROM authn WHERE user = %s"
 
@@ -203,7 +201,7 @@ DBDExptime 300
     AuthzDBDLoginToReferer On
   &lt;/Files&gt;
 
-  &lt;Files logout.html&gt;
+  &lt;Files "logout.html"&gt;
     # le processus de déconnexion dbd exécute une requête pour
     # enregistrer la déconnexion de l'utilisateur
     Require dbd-logout
