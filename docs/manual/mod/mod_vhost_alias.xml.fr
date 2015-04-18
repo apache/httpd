@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1349158:1673563 (outdated) -->
+<!-- English Revision : 1673563 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -49,8 +49,8 @@ masse</description>
       /usr/local/apache2/cgi-bin/script.pl</code> dans tous les cas :</p>
 
       <highlight language="config">
-ScriptAlias /cgi-bin/ /usr/local/apache2/cgi-bin/
-VirtualScriptAlias /never/found/%0/cgi-bin/
+ScriptAlias "/cgi-bin/" "/usr/local/apache2/cgi-bin/"
+VirtualScriptAlias "/never/found/%0/cgi-bin/"
       </highlight>
     </note>
 </summary>
@@ -136,7 +136,7 @@ l'h&eacute;bergement virtuel de masse</a></seealso>
 
     <highlight language="config">
 UseCanonicalName    Off
-VirtualDocumentRoot /usr/local/apache/vhosts/%0
+VirtualDocumentRoot "/usr/local/apache/vhosts/%0"
     </highlight>
 
     <p>Une requ&ecirc;te pour
@@ -152,7 +152,7 @@ VirtualDocumentRoot /usr/local/apache/vhosts/%0
 
     <highlight language="config">
 UseCanonicalName    Off
-VirtualDocumentRoot /usr/local/apache/vhosts/%3+/%2.1/%2.2/%2.3/%2
+VirtualDocumentRoot "/usr/local/apache/vhosts/%3+/%2.1/%2.2/%2.3/%2"
     </highlight>
 
     <p>Une requ&ecirc;te pour
@@ -165,7 +165,7 @@ VirtualDocumentRoot /usr/local/apache/vhosts/%3+/%2.1/%2.2/%2.3/%2
     suivant :</p>
 
 <highlight language="config">
-    VirtualDocumentRoot /usr/local/apache/vhosts/%3+/%2.-1/%2.-2/%2.-3/%2
+    VirtualDocumentRoot "/usr/local/apache/vhosts/%3+/%2.-1/%2.-2/%2.-3/%2"
 </highlight>
 
     <p>La requ&ecirc;te pr&eacute;c&eacute;dente concernerait alors
@@ -174,7 +174,7 @@ VirtualDocumentRoot /usr/local/apache/vhosts/%3+/%2.1/%2.2/%2.3/%2
     <p>Vous pouvez &eacute;galement utiliser : </p>
 
 <highlight language="config">
-    VirtualDocumentRoot /usr/local/apache/vhosts/%3+/%2.1/%2.2/%2.3/%2.4+
+    VirtualDocumentRoot "/usr/local/apache/vhosts/%3+/%2.1/%2.2/%2.3/%2.4+"
 </highlight>
 
     <p>La requ&ecirc;te pr&eacute;c&eacute;dente concernerait alors
@@ -215,8 +215,8 @@ correspondront tous au r&eacute;pertoire
 
     <highlight language="config">
 UseCanonicalName DNS
-VirtualDocumentRootIP /usr/local/apache/vhosts/%1/%2/%3/%4/docs
-VirtualScriptAliasIP  /usr/local/apache/vhosts/%1/%2/%3/%4/cgi-bin
+VirtualDocumentRootIP "/usr/local/apache/vhosts/%1/%2/%3/%4/docs"
+VirtualScriptAliasIP  "/usr/local/apache/vhosts/%1/%2/%3/%4/cgi-bin"
     </highlight>
 
     <p>Si l'adresse IP de <code>www.domaine.example.com</code> est
@@ -235,7 +235,7 @@ VirtualScriptAliasIP  /usr/local/apache/vhosts/%1/%2/%3/%4/cgi-bin
     le probl&egrave;me de la mani&egrave;re suivante :</p>
 
 <highlight language="config">
-    VirtualDocumentRoot /usr/local/apache/vhosts/%2.0.%3.0
+    VirtualDocumentRoot "/usr/local/apache/vhosts/%2.0.%3.0"
 </highlight>
 
     <p>Une requ&ecirc;te pour

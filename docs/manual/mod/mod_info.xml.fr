@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1562488:1673563 (outdated) -->
+<!-- English Revision : 1673563 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -36,7 +36,7 @@ serveur</description>
     suivantes &agrave; votre fichier <code>httpd.conf</code>.</p>
 
     <highlight language="config">
-&lt;Location /server-info&gt;
+&lt;Location "/server-info"&gt;
     SetHandler server-info
 &lt;/Location&gt;
     </highlight>
@@ -47,7 +47,7 @@ serveur</description>
     informations de configuration de votre serveur :</p>
 
     <highlight language="config">
-&lt;Location /server-info&gt;
+&lt;Location "/server-info"&gt;
     SetHandler server-info
     Require host example.com
 &lt;/Location&gt;
@@ -79,7 +79,7 @@ serveur</description>
 
     <example><title>Contr&ocirc;le d'acc&egrave;s</title>
       <highlight language="config">
-&lt;Location /server-info&gt;
+&lt;Location "/server-info"&gt;
     SetHandler server-info
     Order allow,deny
     # Autorisation d'acc&egrave;s depuis le serveur lui-m&ecirc;me

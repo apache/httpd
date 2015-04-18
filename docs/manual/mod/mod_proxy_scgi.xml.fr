@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1672894:1673563 (outdated) -->
+<!-- English Revision: 1673563 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -73,10 +73,10 @@
 
     <example><title>Passerelle &agrave; r&eacute;partition de charge</title>
     <highlight language="config">
-ProxyPass /scgi-bin/ balancer://somecluster/
-&lt;Proxy balancer://somecluster&gt;
-    BalancerMember scgi://localhost:4000
-    BalancerMember scgi://localhost:4001
+ProxyPass "/scgi-bin/" "balancer://somecluster/"
+&lt;Proxy "balancer://somecluster"&gt;
+    BalancerMember "scgi://localhost:4000"
+    BalancerMember "scgi://localhost:4001"
 &lt;/Proxy&gt;
     </highlight>
     </example>
