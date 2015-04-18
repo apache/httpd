@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1587032:1673892 (outdated) -->
+<!-- English Revision : 1673892 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -150,7 +150,7 @@ DBDKeep 8
 DBDMax  20
 DBDExptime 300
 
-&lt;Directory /usr/www/mon.site/team-private/&gt;
+&lt;Directory "/usr/www/mon.site/team-private/"&gt;
   # configuration de mod_authn_core et mod_auth_basic
   # pour mod_authn_dbd
   AuthType Basic
@@ -173,7 +173,7 @@ DBDExptime 300
   # contenir un lien vers /team-private/login.html
   ErrorDocument 401 /login-info.html
 
-  &lt;Files login.html&gt;
+  &lt;Files "login.html"&gt;
     # il n'est pas n&eacute;cessaire que l'utilisateur soit d&eacute;j&agrave; connect&eacute; !
     AuthDBDUserPWQuery "SELECT password FROM authn WHERE user = %s"
 
@@ -187,7 +187,7 @@ DBDExptime 300
     AuthzDBDLoginToReferer On
   &lt;/Files&gt;
 
-  &lt;Files logout.html&gt;
+  &lt;Files "logout.html"&gt;
     # le processus de d&eacute;connexion dbd ex&eacute;cute une requ&ecirc;te pour
     # enregistrer la d&eacute;connexion de l'utilisateur
     Require dbd-logout

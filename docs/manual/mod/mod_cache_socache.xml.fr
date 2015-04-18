@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1659902:1673892 (outdated) -->
+<!-- English Revision: 1673892 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -50,14 +50,14 @@
 # Activation de la mise en cache
 CacheSocache shmcb
 CacheSocacheMaxSize 102400
-&lt;Location /foo&gt;
+&lt;Location "/foo"&gt;
     CacheEnable socache
 &lt;/Location&gt;
 
 # Possibilit&eacute; de se rabattre sur le cache disque
 CacheSocache shmcb
 CacheSocacheMaxSize 102400
-&lt;Location /foo&gt;
+&lt;Location "/foo"&gt;
     CacheEnable socache
     CacheEnable disk
 &lt;/Location&gt;

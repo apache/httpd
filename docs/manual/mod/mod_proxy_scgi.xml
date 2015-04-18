@@ -146,10 +146,10 @@ ProxySCGISendfile X-Send-Static
 backend</description>
 <syntax>ProxySCGIInternalRedirect On|Off|<var>Headername</var></syntax>
 <default>ProxySCGIInternalRedirect On</default>
-<compatibility>The <var>Headername</var> feature is available in Apache
-httpd 2.5.0 and later.</compatibility>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context></contextlist>
+<compatibility>The <var>Headername</var> feature is available in Apache
+httpd 2.5.0 and later.</compatibility>
 
 <usage>
     <p>The <directive>ProxySCGIInternalRedirect</directive> enables the backend
