@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1587031:1673563 (outdated) -->
+<!-- English Revision : 1673563 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -116,7 +116,7 @@ sessions utilisateur c&ocirc;t&eacute; serveur gr&acirc;ce &agrave; sa fonctionn
 en s'appuyant sur une base de donn&eacute;es. En particulier, il peut mettre &agrave;
 jour le statut de session de l'utilisateur dans la base de donn&eacute;es
 chaque fois que celui-ci visite certaines URLs (sous r&eacute;serve bien
-entendu que l'utilisateur fournisse les informations de connexion
+entendu que l'utilisateur fournissent les informations de connexion
 n&eacute;cessaires).</p>
 <p>Pour cela, il faut definir deux directives <directive
 module="mod_authz_core">Require</directive> sp&eacute;ciales : <code>Require
@@ -152,7 +152,7 @@ DBDKeep 8
 DBDMax  20
 DBDExptime 300
 
-&lt;Directory /usr/www/mon.site/team-private/&gt;
+&lt;Directory "/usr/www/mon.site/team-private/"&gt;
   # configuration de mod_authn_core et mod_auth_basic
   # pour mod_authn_dbd
   AuthType Basic
@@ -173,9 +173,9 @@ DBDExptime 300
   # lorsqu'un utilisateur &eacute;choue dans sa tentative d'authentification ou
   # d'autorisation, on l'invite &agrave; se connecter ; cette page doit
   # contenir un lien vers /team-private/login.html
-  ErrorDocument 401 /login-info.html
+  ErrorDocument 401 "/login-info.html"
 
-  &lt;Files login.html&gt;
+  &lt;Files "login.html"&gt;
     # il n'est pas n&eacute;cessaire que l'utilisateur soit d&eacute;j&agrave; connect&eacute; !
     AuthDBDUserPWQuery "SELECT password FROM authn WHERE user = %s"
 
@@ -189,7 +189,7 @@ DBDExptime 300
     AuthzDBDLoginToReferer On
   &lt;/Files&gt;
 
-  &lt;Files logout.html&gt;
+  &lt;Files "logout.html"&gt;
     # le processus de d&eacute;connexion dbd ex&eacute;cute une requ&ecirc;te pour
     # enregistrer la d&eacute;connexion de l'utilisateur
     Require dbd-logout
@@ -201,8 +201,7 @@ DBDExptime 300
 
 <directivesynopsis>
 <name>AuthzDBDQuery</name>
-<description>D&eacute;finit la requ&ecirc;te SQL pour l'op&eacute;ration
-requise</description>
+<description>D&eacute;finit la requ&ecirc;te SQL pour l'op&eacute;ration requise</description>
 <syntax>AuthzDBDQuery <var>requ&ecirc;te</var></syntax>
 <contextlist><context>directory</context></contextlist>
 
