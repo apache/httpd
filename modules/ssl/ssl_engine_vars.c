@@ -131,7 +131,7 @@ static apr_status_t ssl_get_tls_cb(apr_pool_t *p, conn_rec *c, const char *type,
 }
 
 static const char var_interface[] = "mod_ssl/" AP_SERVER_BASEREVISION;
-static char var_library_interface[] = SSL_LIBRARY_TEXT;
+static char var_library_interface[] = MODSSL_LIBRARY_TEXT;
 static char *var_library = NULL;
 
 static apr_array_header_t *expr_peer_ext_list_fn(ap_expr_eval_ctx_t *ctx,
@@ -185,7 +185,7 @@ void ssl_var_register(apr_pool_t *p)
     APR_REGISTER_OPTIONAL_FN(ssl_ext_list);
 
     /* Perform once-per-process library version determination: */
-    var_library = apr_pstrdup(p, SSL_LIBRARY_DYNTEXT);
+    var_library = apr_pstrdup(p, MODSSL_LIBRARY_DYNTEXT);
 
     if ((cp = strchr(var_library, ' ')) != NULL) {
         *cp = '/';
@@ -406,7 +406,7 @@ static char *ssl_var_lookup_ssl(apr_pool_t *p, conn_rec *c, request_rec *r,
         result = (char *)SSL_get_version(ssl);
     }
     else if (ssl != NULL && strcEQ(var, "SESSION_ID")) {
-        char buf[SSL_SESSION_ID_STRING_LEN];
+        char buf[MODSSL_SESSION_ID_STRING_LEN];
         SSL_SESSION *pSession = SSL_get_session(ssl);
         if (pSession) {
             unsigned char *id;
