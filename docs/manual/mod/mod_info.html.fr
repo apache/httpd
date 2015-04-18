@@ -31,8 +31,6 @@
 <a href="../ja/mod/mod_info.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_info.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Affiche une présentation complète de la configuration du
 serveur</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -43,7 +41,7 @@ serveur</td></tr>
     <p>Pour activer <code class="module"><a href="../mod/mod_info.html">mod_info</a></code>, ajoutez les lignes
     suivantes à votre fichier <code>httpd.conf</code>.</p>
 
-    <pre class="prettyprint lang-config">&lt;Location /server-info&gt;
+    <pre class="prettyprint lang-config">&lt;Location "/server-info"&gt;
     SetHandler server-info
 &lt;/Location&gt;</pre>
 
@@ -52,7 +50,7 @@ serveur</td></tr>
     l'intérieur de la section <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> afin de restreindre l'accès aux
     informations de configuration de votre serveur :</p>
 
-    <pre class="prettyprint lang-config">&lt;Location /server-info&gt;
+    <pre class="prettyprint lang-config">&lt;Location "/server-info"&gt;
     SetHandler server-info
     Require host example.com
 &lt;/Location&gt;</pre>
@@ -94,7 +92,7 @@ serveur</td></tr>
     restreindre l'accès aux informations de configuration de votre
     serveur.</p>
 
-    <div class="example"><h3>Contrôle d'accès</h3><pre class="prettyprint lang-config">&lt;Location /server-info&gt;
+    <div class="example"><h3>Contrôle d'accès</h3><pre class="prettyprint lang-config">&lt;Location "/server-info"&gt;
     SetHandler server-info
     Order allow,deny
     # Autorisation d'accès depuis le serveur lui-même

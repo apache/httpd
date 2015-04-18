@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_authz_dbd.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_authz_dbd.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Autorisation en groupe et reconnaissance d'identité avec base
 SQL</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -133,7 +131,7 @@ sessions utilisateur côté serveur grâce à sa fonctionnalité de connexion utilisa
 en s'appuyant sur une base de données. En particulier, il peut mettre à
 jour le statut de session de l'utilisateur dans la base de données
 chaque fois que celui-ci visite certaines URLs (sous réserve bien
-entendu que l'utilisateur fournisse les informations de connexion
+entendu que l'utilisateur fournissent les informations de connexion
 nécessaires).</p>
 <p>Pour cela, il faut definir deux directives <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> spéciales : <code>Require
 dbd-login</code> et <code>Require dbd-logout</code>. Pour les détails de
@@ -167,7 +165,7 @@ DBDKeep 8
 DBDMax  20
 DBDExptime 300
 
-&lt;Directory /usr/www/mon.site/team-private/&gt;
+&lt;Directory "/usr/www/mon.site/team-private/"&gt;
   # configuration de mod_authn_core et mod_auth_basic
   # pour mod_authn_dbd
   AuthType Basic
@@ -188,9 +186,9 @@ DBDExptime 300
   # lorsqu'un utilisateur échoue dans sa tentative d'authentification ou
   # d'autorisation, on l'invite à se connecter ; cette page doit
   # contenir un lien vers /team-private/login.html
-  ErrorDocument 401 /login-info.html
+  ErrorDocument 401 "/login-info.html"
 
-  &lt;Files login.html&gt;
+  &lt;Files "login.html"&gt;
     # il n'est pas nécessaire que l'utilisateur soit déjà connecté !
     AuthDBDUserPWQuery "SELECT password FROM authn WHERE user = %s"
 
@@ -204,7 +202,7 @@ DBDExptime 300
     AuthzDBDLoginToReferer On
   &lt;/Files&gt;
 
-  &lt;Files logout.html&gt;
+  &lt;Files "logout.html"&gt;
     # le processus de déconnexion dbd exécute une requête pour
     # enregistrer la déconnexion de l'utilisateur
     Require dbd-logout
@@ -236,8 +234,7 @@ de requête <code>Referer</code> est présent</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="authzdbdquery" id="authzdbdquery">Directive</a> <a name="AuthzDBDQuery" id="AuthzDBDQuery">AuthzDBDQuery</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit la requête SQL pour l'opération
-requise</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit la requête SQL pour l'opération requise</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthzDBDQuery <var>requête</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>

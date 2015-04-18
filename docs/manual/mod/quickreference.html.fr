@@ -308,8 +308,7 @@ passe</td></tr>
 <tr class="odd"><td><a href="mod_authz_dbd.html#authzdbdlogintoreferer">AuthzDBDLoginToReferer On|Off</a></td><td> Off </td><td>d</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Définit si le client doit être redirigé vers la page
 d'origine en cas de connexion ou de déconnexion réussie si un en-tête
 de requête <code>Referer</code> est présent</td></tr>
-<tr><td><a href="mod_authz_dbd.html#authzdbdquery">AuthzDBDQuery <var>requête</var></a></td><td></td><td>d</td><td>E</td></tr><tr><td class="descr" colspan="4">Définit la requête SQL pour l'opération
-requise</td></tr>
+<tr><td><a href="mod_authz_dbd.html#authzdbdquery">AuthzDBDQuery <var>requête</var></a></td><td></td><td>d</td><td>E</td></tr><tr><td class="descr" colspan="4">Définit la requête SQL pour l'opération requise</td></tr>
 <tr class="odd"><td><a href="mod_authz_dbd.html#authzdbdredirectquery">AuthzDBDRedirectQuery <var>requête</var></a></td><td></td><td>d</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Définit une requête pour rechercher une page vers laquelle
 rediriger l'utilisateur après une connexion réussie</td></tr>
 <tr><td><a href="mod_authz_dbm.html#authzdbmtype">AuthzDBMType default|SDBM|GDBM|NDBM|DB</a></td><td> default </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Définit le type de fichier de base de données contenant
