@@ -105,6 +105,17 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) ssl: Add a warning if protocol given in SSLProtocol or SSLProxyProtocol
+     will override other parameters given in the same directive. This could be
+     a missing + or - prefix.  PR 52820 [Christophe Jaillet]
+     trunk patch: http://svn.apache.org/r1520445
+                  http://svn.apache.org/r1672985
+                  http://svn.apache.org/r1672989 (CHANGES)
+                  http://svn.apache.org/r1673769
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: jailletc36, ylavic, covener
+
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -270,7 +281,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1672453
      2.4.x patch: http://people.apache.org/~rjung/patches/enhance-server-status-auto.patch
                   (same as trunk but combined into one)
-     +1: rjung
+     +1: rjung, covener
 
   *) mod_ssl, mod_proxy, mod_cache_socache, mod_socache_*: Add plain text
      output to status hook (server-status) when called with "?auto"
@@ -280,25 +291,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1672564
      2.4.x patch: http://people.apache.org/~rjung/patches/enhance-socache-status-auto.patch
                   (same as trunk but combined into one)
-     +1: rjung
-
-  *) ssl: Add a warning if protocol given in SSLProtocol or SSLProxyProtocol
-     will override other parameters given in the same directive. This could be
-     a missing + or - prefix.  PR 52820 [Christophe Jaillet]
-     trunk patch: http://svn.apache.org/r1520445
-                  http://svn.apache.org/r1672985
-                  http://svn.apache.org/r1672989 (CHANGES)
-                  http://svn.apache.org/r1673769
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: jailletc36, ylavic
-     trawick: Could we add r1673769 too?
-     jailletc36: Sure
+     +1: rjung, covener
 
   *) mpm_event: Allow for timer events duplicates.
      trunk patch: http://svn.apache.org/r1666468
                   http://svn.apache.org/r1666618
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-event_timers_duplicates.patch
-     +1: ylavic
+     +1: ylavic, covener
      covener: what's the background here? What's currently broken?
      ylavic: I expected to find a common compare function for both MPMs event
              and motorz, but I now think that won't be the case (not the same
