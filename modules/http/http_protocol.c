@@ -316,8 +316,8 @@ AP_DECLARE(ap_condition_e) ap_condition_if_match(request_rec *r,
      */
     if ((if_match = apr_table_get(r->headers_in, "If-Match")) != NULL) {
         if (if_match[0] == '*'
-                || ((etag = apr_table_get(headers, "ETag")) == NULL
-                        && !ap_find_etag_strong(r->pool, if_match, etag))) {
+                || ((etag = apr_table_get(headers, "ETag")) != NULL
+                        && ap_find_etag_strong(r->pool, if_match, etag))) {
             return AP_CONDITION_STRONG;
         }
         else {
@@ -552,9 +552,6 @@ AP_DECLARE(int) ap_meets_conditions(request_rec *r)
      */
     cond = ap_condition_if_match(r, r->headers_out);
     if (AP_CONDITION_NOMATCH == cond) {
-        not_modified = 0;
-    }
-    else if (cond >= AP_CONDITION_WEAK) {
         return HTTP_PRECONDITION_FAILED;
     }
 

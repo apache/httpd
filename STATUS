@@ -105,11 +105,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_http: Fix incorrect If-Match handling. PR 57358.
-     trunk patch: http://svn.apache.org/r1646282
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, covener, jim
-
   *) mod_status: Improve server-status output when called with "?auto"
      (machine readable form).
      trunk patch: http://svn.apache.org/r1671396
