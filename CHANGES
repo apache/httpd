@@ -12,6 +12,13 @@ Changes with Apache 2.4.13
      calls r:wsupgrade() can cause a child process crash. 
      [Edward Lu <Chaosed0 gmail.com>]
 
+  *) mod_proxy, mod_ssl, mod_cache_socache, mod_socache_*: Support machine
+     readable server-status produced when using the "?auto" query string.
+     [Rainer Jung]
+
+  *) mod_status: Add more data to machine readable server-status produced
+     when using the "?auto" query string.  [Rainer Jung]
+
   *) mod_proxy_wstunnel: Bypass the handler while the connection is not
      upgraded to WebSocket, so that other modules can possibly take over
      the leading HTTP requests.  [Yann Ylavic]
