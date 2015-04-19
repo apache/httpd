@@ -272,6 +272,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              details). Hence I'm moving this backport back to proposals, it is
              IMO the right fix to not lose timers registered in the same micro-
              second (in MPM event).
+     jim:    As I see it, the current code in Event does work as expected. The
+             above simply adds some checks, does it not? As far as the logic
+             is concerned, what exists and what is proposed does the exact
+             same thing, doesn't it?
 
   *) mod_authz_core: Allow "Require expr" to work when the expression is quoted,
      as in an example in the doc.  PR 56235
