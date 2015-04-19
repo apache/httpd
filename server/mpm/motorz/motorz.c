@@ -126,7 +126,7 @@ static void motorz_io_timeout_cb(motorz_core_t * sc, void *baton)
     cs = NULL;
 #endif
 
-    ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ap_server_conf, APLOGNO(00247)
+    ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ap_server_conf, APLOGNO(02842)
                  "io timeout hit (?)");
 }
 
@@ -164,7 +164,7 @@ static void *motorz_io_setup_conn(apr_thread_t * thread, void *baton)
 
     status = ap_run_pre_connection(scon->c, scon->sock);
     if (status != OK && status != DONE) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO()
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(02843)
                      "motorz_io_setup_conn: connection aborted");
         scon->c->aborted = 1;
     }
@@ -175,7 +175,7 @@ static void *motorz_io_setup_conn(apr_thread_t * thread, void *baton)
     status = motorz_io_process(scon);
 
     if (status) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, status, ap_server_conf, APLOGNO()
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, status, ap_server_conf, APLOGNO(02844)
                      "motorz_io_setup_conn: motorz_io_process failed (?)");
     }
     return NULL;
@@ -200,7 +200,7 @@ static apr_status_t motorz_io_accept(motorz_core_t *mz, motorz_sb_t *sb)
 
     rv = lr->accept_func((void *)&socket, lr, ptrans);
     if (rv) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL, APLOGNO()
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL, APLOGNO(02845)
                      "motorz_io_accept failed");
         clean_child_exit(APEXIT_CHILDSICK);
     }
@@ -255,7 +255,7 @@ static void *motorz_io_invoke(apr_thread_t * thread, void *baton)
     rv = motorz_io_process(scon);
 
     if (rv) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, ap_server_conf, APLOGNO()
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, ap_server_conf, APLOGNO(02846)
                      "motorz_io_invoke: motorz_io_process failed (?)");
     }
     return NULL;
@@ -343,7 +343,7 @@ static apr_status_t motorz_io_process(motorz_conn_t *scon)
              */
             rv = apr_pollset_remove(mz->pollset, &scon->pfd);
             if (rv != APR_SUCCESS && !APR_STATUS_IS_NOTFOUND(rv)) {
-                ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf, APLOGNO()
+                ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf, APLOGNO(02847)
                              "motorz_io_process: apr_pollset_remove failure");
                 /*AP_DEBUG_ASSERT(rv == APR_SUCCESS);*/
             }
@@ -374,7 +374,7 @@ static apr_status_t motorz_io_process(motorz_conn_t *scon)
                                                            NULL);
 
             if (rv != APR_SUCCESS) {
-                ap_log_error(APLOG_MARK, APLOG_WARNING, rv, ap_server_conf, APLOGNO()
+                ap_log_error(APLOG_MARK, APLOG_WARNING, rv, ap_server_conf, APLOGNO(02848)
                              "network write failure in core output filter");
                 scon->cs.state = CONN_STATE_LINGER;
             }
@@ -397,7 +397,7 @@ static apr_status_t motorz_io_process(motorz_conn_t *scon)
 
                 if (rv != APR_SUCCESS) {
                     ap_log_error(APLOG_MARK, APLOG_WARNING, rv,
-                                 ap_server_conf, APLOGNO()
+                                 ap_server_conf, APLOGNO(02849)
                                  "apr_pollset_add: failed in write completion");
                 }
                 return APR_SUCCESS;
@@ -432,7 +432,7 @@ static apr_status_t motorz_io_process(motorz_conn_t *scon)
             rv = apr_pollset_add(mz->pollset, &scon->pfd);
 
             if (rv != APR_SUCCESS) {
-                ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf, APLOGNO()
+                ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf, APLOGNO(02850)
                              "process_socket: apr_pollset_add failure in read request line");
             }
 
@@ -480,7 +480,7 @@ static apr_status_t motorz_setup_workers(motorz_core_t *mz)
                                 threads_per_child, mz->pool);
 
     if (rv) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL, APLOGNO()
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL, APLOGNO(02851)
                      "motorz_setup_workers: apr_thread_pool_create with %d threads failed",
                      threads_per_child);
         return rv;
@@ -503,14 +503,14 @@ static int motorz_setup_pollset(motorz_core_t *mz)
                                   APR_POLLSET_THREADSAFE | APR_POLLSET_NOCOPY | APR_POLLSET_NODEFAULT,
                                   good_methods[i]);
         if (rv == APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, ap_server_conf, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, ap_server_conf, APLOGNO(02852)
                          "motorz_setup_pollset: apr_pollset_create_ex using %s", methods[i]);
 
             break;
         }
     }
     if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_INFO, rv, ap_server_conf, APLOGNO()
+        ap_log_error(APLOG_MARK, APLOG_INFO, rv, ap_server_conf, APLOGNO(02853)
                      "motorz_setup_pollset: apr_pollset_create_ex failed for all possible backends!");
         rv = apr_pollset_create(&mz->pollset,
                                     512,
@@ -518,7 +518,7 @@ static int motorz_setup_pollset(motorz_core_t *mz)
                                     APR_POLLSET_THREADSAFE | APR_POLLSET_NOCOPY);
     }
     if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf, APLOGNO()
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf, APLOGNO(02854)
                      "motorz_setup_pollset: apr_pollset_create failed for all possible backends!");
     }
     return rv;
@@ -573,11 +573,11 @@ static apr_status_t accept_mutex_on(void)
 
         if (mz->my_generation !=
             ap_scoreboard_image->global->running_generation) {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, ap_server_conf, APLOGNO() "%s", msg);
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, ap_server_conf, APLOGNO(02855) "%s", msg);
             clean_child_exit(0);
         }
         else {
-            ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ap_server_conf, APLOGNO() "%s", msg);
+            ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ap_server_conf, APLOGNO(02856) "%s", msg);
             exit(APEXIT_CHILDFATAL);
         }
     }
@@ -593,14 +593,14 @@ static apr_status_t accept_mutex_off(void)
 
         if (mz->my_generation !=
             ap_scoreboard_image->global->running_generation) {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, ap_server_conf, APLOGNO() "%s", msg);
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, ap_server_conf, APLOGNO(02857) "%s", msg);
             /* don't exit here... we have a connection to
              * process, after which point we'll see that the
              * generation changed and we'll exit cleanly
              */
         }
         else {
-            ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ap_server_conf, APLOGNO() "%s", msg);
+            ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ap_server_conf, APLOGNO(02858) "%s", msg);
             exit(APEXIT_CHILDFATAL);
         }
     }
@@ -750,20 +750,20 @@ static void set_signals(void)
 
     sa.sa_handler = sig_term;
     if (sigaction(SIGTERM, &sa, NULL) < 0)
-        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, APLOGNO() "sigaction(SIGTERM)");
+        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, APLOGNO(02859) "sigaction(SIGTERM)");
 #ifdef AP_SIG_GRACEFUL_STOP
     if (sigaction(AP_SIG_GRACEFUL_STOP, &sa, NULL) < 0)
-        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, APLOGNO()
+        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, APLOGNO(02860)
                      "sigaction(" AP_SIG_GRACEFUL_STOP_STRING ")");
 #endif
 #ifdef SIGINT
     if (sigaction(SIGINT, &sa, NULL) < 0)
-        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, APLOGNO() "sigaction(SIGINT)");
+        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, APLOGNO(02861) "sigaction(SIGINT)");
 #endif
 #ifdef SIGXCPU
     sa.sa_handler = SIG_DFL;
     if (sigaction(SIGXCPU, &sa, NULL) < 0)
-        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, APLOGNO() "sigaction(SIGXCPU)");
+        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, APLOGNO(02862) "sigaction(SIGXCPU)");
 #endif
 #ifdef SIGXFSZ
     /* For systems following the LFS standard, ignoring SIGXFSZ allows
@@ -771,12 +771,12 @@ static void set_signals(void)
      * rather than terminate the process. */
     sa.sa_handler = SIG_IGN;
     if (sigaction(SIGXFSZ, &sa, NULL) < 0)
-        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, APLOGNO() "sigaction(SIGXFSZ)");
+        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, APLOGNO(02863) "sigaction(SIGXFSZ)");
 #endif
 #ifdef SIGPIPE
     sa.sa_handler = SIG_IGN;
     if (sigaction(SIGPIPE, &sa, NULL) < 0)
-        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, APLOGNO() "sigaction(SIGPIPE)");
+        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, APLOGNO(02864) "sigaction(SIGPIPE)");
 #endif
 
     /* we want to ignore HUPs and AP_SIG_GRACEFUL while we're busy
@@ -786,9 +786,9 @@ static void set_signals(void)
     sigaddset(&sa.sa_mask, AP_SIG_GRACEFUL);
     sa.sa_handler = restart;
     if (sigaction(SIGHUP, &sa, NULL) < 0)
-        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, APLOGNO() "sigaction(SIGHUP)");
+        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, APLOGNO(02865) "sigaction(SIGHUP)");
     if (sigaction(AP_SIG_GRACEFUL, &sa, NULL) < 0)
-        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, APLOGNO() "sigaction(" AP_SIG_GRACEFUL_STRING ")");
+        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, APLOGNO(02866) "sigaction(" AP_SIG_GRACEFUL_STRING ")");
 #else
     if (!one_process) {
 #ifdef SIGXCPU
@@ -882,7 +882,7 @@ static void child_main(motorz_core_t *mz, int child_num_arg, int child_bucket)
                                     pchild));
     if (status != APR_SUCCESS) {
         lockfile = apr_proc_mutex_lockfile(my_bucket->mutex);
-        ap_log_error(APLOG_MARK, APLOG_EMERG, status, ap_server_conf, APLOGNO()
+        ap_log_error(APLOG_MARK, APLOG_EMERG, status, ap_server_conf, APLOGNO(02867)
                      "Couldn't initialize cross-process lock in child "
                      "(%s) (%s)",
                      lockfile ? lockfile : "none",
@@ -906,14 +906,14 @@ static void child_main(motorz_core_t *mz, int child_num_arg, int child_bucket)
 #endif
     status = motorz_setup_workers(mz);
     if (status != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, status, ap_server_conf, APLOGNO()
+        ap_log_error(APLOG_MARK, APLOG_CRIT, status, ap_server_conf, APLOGNO(02868)
                      "child_main: motorz_setup_workers failed");
         clean_child_exit(APEXIT_CHILDSICK);
     }
 
     status = motorz_setup_pollset(mz);
     if (status != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_EMERG, status, ap_server_conf, APLOGNO()
+        ap_log_error(APLOG_MARK, APLOG_EMERG, status, ap_server_conf, APLOGNO(02869)
                      "Couldn't setup pollset in child; check system or user limits");
         clean_child_exit(APEXIT_CHILDSICK); /* assume temporary resource issue */
     }
@@ -933,7 +933,7 @@ static void child_main(motorz_core_t *mz, int child_num_arg, int child_bucket)
 
         status = apr_socket_opt_set(pfd->desc.s, APR_SO_NONBLOCK, 1);
         if (status != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_CRIT, status, NULL, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_CRIT, status, NULL, APLOGNO(02870)
                          "apr_socket_opt_set(APR_SO_NONBLOCK = 1) failed on %pI",
                          lr->bind_addr);
             clean_child_exit(0);
@@ -946,7 +946,7 @@ static void child_main(motorz_core_t *mz, int child_num_arg, int child_bucket)
              * since the listener fd was already closed; so don't
              * pollute the logs in that case. */
             if (!die_now) {
-                ap_log_error(APLOG_MARK, APLOG_EMERG, status, ap_server_conf, APLOGNO()
+                ap_log_error(APLOG_MARK, APLOG_EMERG, status, ap_server_conf, APLOGNO(02871)
                              "Couldn't add listener to pollset; check system or user limits");
                 clean_child_exit(APEXIT_CHILDSICK);
             }
@@ -1064,7 +1064,7 @@ static int make_child(motorz_core_t *mz, server_rec *s, int slot, int bucket)
                                                (request_rec *) NULL);
 
     if ((pid = fork()) == -1) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, errno, s, APLOGNO() "fork: Unable to fork new process");
+        ap_log_error(APLOG_MARK, APLOG_ERR, errno, s, APLOGNO(02872) "fork: Unable to fork new process");
 
         /* fork didn't succeed. Fix the scoreboard or else
          * it will say SERVER_STARTING forever and ever
@@ -1092,7 +1092,7 @@ static int make_child(motorz_core_t *mz, server_rec *s, int slot, int bucket)
                                    PROCESSOR_CLASS_ANY);
         if (status != OK) {
             ap_log_error(APLOG_MARK, APLOG_DEBUG, errno,
-                         ap_server_conf, APLOGNO() "processor unbind failed");
+                         ap_server_conf, APLOGNO(02873) "processor unbind failed");
         }
 #endif
         RAISE_SIGSTOP(MAKE_CHILD);
@@ -1244,14 +1244,14 @@ static int motorz_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
         remaining_children_to_start = 0;
     }
 
-    ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf, APLOGNO()
+    ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf, APLOGNO(02874)
                 "%s configured -- resuming normal operations",
                 ap_get_server_description());
-    ap_log_error(APLOG_MARK, APLOG_INFO, 0, ap_server_conf, APLOGNO()
+    ap_log_error(APLOG_MARK, APLOG_INFO, 0, ap_server_conf, APLOGNO(02875)
                 "Server built: %s", ap_get_server_built());
     ap_log_command_line(plog, s);
     ap_log_common(s);
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO()
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(02876)
                 "Accept mutex: %s (default: %s)",
                 (all_buckets[0].mutex)
                     ? apr_proc_mutex_name(all_buckets[0].mutex)
@@ -1289,7 +1289,7 @@ static int motorz_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
                     return !OK;
                 }
                 else {
-                    ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ap_server_conf, APLOGNO()
+                    ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ap_server_conf, APLOGNO(02877)
                                  "Ignoring fatal error in child of previous "
                                  "generation (pid %ld).",
                                  (long)pid.pid);
@@ -1322,7 +1322,7 @@ static int motorz_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
                  * child.
                  */
                 ap_log_error(APLOG_MARK, APLOG_WARNING,
-                            0, ap_server_conf, APLOGNO()
+                            0, ap_server_conf, APLOGNO(02878)
                             "long lost child came home! (pid %ld)", (long)pid.pid);
             }
             /* Don't perform idle maintenance when a child dies,
@@ -1356,14 +1356,14 @@ static int motorz_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
          * Kill child processes, tell them to call child_exit, etc...
          */
         if (ap_unixd_killpg(getpgrp(), SIGTERM) < 0) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, APLOGNO() "killpg SIGTERM");
+            ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, APLOGNO(02879) "killpg SIGTERM");
         }
         ap_reclaim_child_processes(1, /* Start with SIGTERM */
                                    motorz_note_child_killed);
 
         /* cleanup pid file on normal shutdown */
         ap_remove_pid(pconf, ap_pid_fname);
-        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf, APLOGNO()
+        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf, APLOGNO(02880)
                     "caught SIGTERM, shutting down");
 
         return DONE;
@@ -1399,7 +1399,7 @@ static int motorz_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 
         /* cleanup pid file */
         ap_remove_pid(pconf, ap_pid_fname);
-        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf, APLOGNO()
+        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf, APLOGNO(02881)
            "caught " AP_SIG_GRACEFUL_STOP_STRING ", shutting down gracefully");
 
         if (ap_graceful_shutdown_timeout) {
@@ -1452,7 +1452,7 @@ static int motorz_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     ap_scoreboard_image->global->running_generation = mz->my_generation;
 
     if (mz->is_graceful) {
-        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf, APLOGNO()
+        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf, APLOGNO(02882)
                     "Graceful restart requested, doing restart");
 
         /* kill off the idle ones */
@@ -1482,11 +1482,11 @@ static int motorz_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     else {
         /* Kill 'em off */
         if (ap_unixd_killpg(getpgrp(), SIGHUP) < 0) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, APLOGNO() "killpg SIGHUP");
+            ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, APLOGNO(02883) "killpg SIGHUP");
         }
         ap_reclaim_child_processes(0, /* Not when just starting up */
                                    motorz_note_child_killed);
-        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf, APLOGNO()
+        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf, APLOGNO(02884)
                     "SIGHUP received.  Attempting to restart");
     }
 
@@ -1601,7 +1601,7 @@ static int motorz_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
             rv = apr_proc_detach(no_detach ? APR_PROC_DETACH_FOREGROUND
                                            : APR_PROC_DETACH_DAEMONIZE);
             if (rv != APR_SUCCESS) {
-                ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL, APLOGNO()
+                ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL, APLOGNO(02885)
                              "apr_proc_detach failed");
                 return HTTP_INTERNAL_SERVER_ERROR;
             }
@@ -1639,14 +1639,14 @@ static int motorz_check_config(apr_pool_t *p, apr_pool_t *plog,
 
     if (server_limit > MAX_SERVER_LIMIT) {
         if (startup) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(02886)
                          "WARNING: ServerLimit of %d exceeds compile-time "
                          "limit of", server_limit);
             ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
                          " %d servers, decreasing to %d.",
                          MAX_SERVER_LIMIT, MAX_SERVER_LIMIT);
         } else {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(02887)
                          "ServerLimit of %d exceeds compile-time limit "
                          "of %d, decreasing to match",
                          server_limit, MAX_SERVER_LIMIT);
@@ -1655,11 +1655,11 @@ static int motorz_check_config(apr_pool_t *p, apr_pool_t *plog,
     }
     else if (server_limit < 1) {
         if (startup) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(02888)
                          "WARNING: ServerLimit of %d not allowed, "
                          "increasing to 1.", server_limit);
         } else {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(02889)
                          "ServerLimit of %d not allowed, increasing to 1",
                          server_limit);
         }
@@ -1674,7 +1674,7 @@ static int motorz_check_config(apr_pool_t *p, apr_pool_t *plog,
     }
     else if (server_limit != mz->first_server_limit) {
         /* don't need a startup console version here */
-        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO()
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(02890)
                      "changing ServerLimit to %d from original value of %d "
                      "not allowed during restart",
                      server_limit, mz->first_server_limit);
@@ -1683,7 +1683,7 @@ static int motorz_check_config(apr_pool_t *p, apr_pool_t *plog,
 
     if (ap_daemons_limit > server_limit) {
         if (startup) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(02891)
                          "WARNING: MaxRequestWorkers of %d exceeds ServerLimit "
                          "value of", ap_daemons_limit);
             ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
@@ -1693,7 +1693,7 @@ static int motorz_check_config(apr_pool_t *p, apr_pool_t *plog,
                          " To increase, please see the ServerLimit "
                          "directive.");
         } else {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(02892)
                          "MaxRequestWorkers of %d exceeds ServerLimit value "
                          "of %d, decreasing to match",
                          ap_daemons_limit, server_limit);
@@ -1702,11 +1702,11 @@ static int motorz_check_config(apr_pool_t *p, apr_pool_t *plog,
     }
     else if (ap_daemons_limit < 1) {
         if (startup) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(02893)
                          "WARNING: MaxRequestWorkers of %d not allowed, "
                          "increasing to 1.", ap_daemons_limit);
         } else {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(02894)
                          "MaxRequestWorkers of %d not allowed, increasing to 1",
                          ap_daemons_limit);
         }
@@ -1716,11 +1716,11 @@ static int motorz_check_config(apr_pool_t *p, apr_pool_t *plog,
     /* ap_num_kids > ap_daemons_limit checked in motorz_run() */
     if (ap_num_kids < 1) {
         if (startup) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(02895)
                          "WARNING: StartServers of %d not allowed, "
                          "increasing to 1.", ap_num_kids);
         } else {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(02896)
                          "StartServers of %d not allowed, increasing to 1",
                          ap_num_kids);
         }
@@ -1729,7 +1729,7 @@ static int motorz_check_config(apr_pool_t *p, apr_pool_t *plog,
 
     if (ap_daemons_min_free < 1) {
         if (startup) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(02897)
                          "WARNING: MinSpareServers of %d not allowed, "
                          "increasing to 1", ap_daemons_min_free);
             ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
@@ -1737,7 +1737,7 @@ static int motorz_check_config(apr_pool_t *p, apr_pool_t *plog,
             ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
                          " Please read the documentation.");
         } else {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(02898)
                          "MinSpareServers of %d not allowed, increasing to 1",
                          ap_daemons_min_free);
         }
@@ -1787,7 +1787,7 @@ static const char *set_max_clients (cmd_parms *cmd, void *dummy, const char *arg
         return err;
     }
     if (!strcasecmp(cmd->cmd->name, "MaxClients")) {
-        ap_log_error(APLOG_MARK, APLOG_INFO, 0, NULL, APLOGNO()
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, NULL, APLOGNO(02899)
                      "MaxClients is deprecated, use MaxRequestWorkers "
                      "instead.");
     }
