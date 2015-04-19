@@ -282,6 +282,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              above simply adds some checks, does it not? As far as the logic
              is concerned, what exists and what is proposed does the exact
              same thing, doesn't it?
+     covener: IIUC, currently event cannot insert two timer_event_t's that would fire at the
+              same apr_time_t because the compare function would return 0 and insert_compare
+              wouldn't let the duplicate in. post-patch, only two timer_event_t's with the same
+              address are equals.
 
   *) mod_authz_core: Allow "Require expr" to work when the expression is quoted,
      as in an example in the doc.  PR 56235
