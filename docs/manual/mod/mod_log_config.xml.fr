@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1619884:1673834 (outdated) -->
+<!-- English Revision : 1673834 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -279,8 +279,9 @@ d'Apache</a></seealso>
 	<module>mod_logio</module>.</td></tr>
 
     <tr><td><code>%O</code></td>
-        <td>Nombre d'octets envoy&eacute;s, y compris les en-t&ecirc;tes, ne peut
-	&ecirc;tre nul. N&eacute;cessite l'activation de
+        <td>Nombre d'octets envoy&eacute;s, y compris les en-t&ecirc;tes. Peut &ecirc;tre
+	nul dans les rares cas o&ugrave; une requ&ecirc;te est avort&eacute;e avant que la
+	r&eacute;ponse ne soit envoy&eacute;e. N&eacute;cessite l'activation de
 	<module>mod_logio</module>.</td></tr>
 
     <tr><td><code>%S</code></td>
@@ -512,10 +513,10 @@ expr=<var>expression</var>]</syntax>
     <highlight language="config">
 # Journal personnalis&eacute; avec alias de format
 LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common
-CustomLog logs/access_log common
+CustomLog "logs/access_log" common
 
 # Journal personnalis&eacute; avec cha&icirc;ne de format explicite
-CustomLog logs/access_log "%h %l %u %t \"%r\" %&gt;s %b"
+CustomLog "logs/access_log" "%h %l %u %t \"%r\" %&gt;s %b"
     </highlight>
 
     <p>Le troisi&egrave;me argument est optionnel et permet de contr&ocirc;ler si une
@@ -539,8 +540,8 @@ CustomLog logs/access_log "%h %l %u %t \"%r\" %&gt;s %b"
 
     <highlight language="config">
 SetEnvIf Request_URI \.gif$ gif-image
-CustomLog gif-requests.log common env=gif-image
-CustomLog nongif-requests.log common env=!gif-image
+CustomLog "gif-requests.log" common env=gif-image
+CustomLog "nongif-requests.log" common env=!gif-image
     </highlight>
 
     <p>Ou, pour reproduire le comportement de l'ancienne directive
@@ -548,7 +549,7 @@ CustomLog nongif-requests.log common env=!gif-image
 
     <highlight language="config">
 SetEnvIf Referer example\.com localreferer
-CustomLog referer.log referer env=!localreferer
+CustomLog "referer.log" referer env=!localreferer
     </highlight>
 </usage>
 </directivesynopsis>
