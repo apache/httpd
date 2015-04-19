@@ -1454,18 +1454,25 @@ static APR_RING_HEAD(timer_free_ring_t, timer_event_t) timer_free_ring;
 
 static apr_skiplist *timer_skiplist;
 
+/* The following compare function is used by apr_skiplist_insert() to keep the
+ * elements (timers) sorted and provide O(log n) complexity (this is also true
+ * for apr_skiplist_{find,remove}(), but those are not used in MPM event where
+ * inserted timers are not searched nor removed, but with apr_skiplist_pop()
+ * which does use any compare function).  It is meant to return 0 when a == b,
+ * <0 when a < b, and >0 when a > b.  However apr_skiplist_insert() will not
+ * add duplicates (i.e. a == b), and apr_skiplist_add() is only available in
+ * APR 1.6, yet multiple timers could possibly be created in the same micro-
+ * second (duplicates with regard to apr_time_t); therefore we implement the
+ * compare function to return +1 instead of 0 when compared timers are equal,
+ * thus duplicates are still added after each other (in order of insertion).
+ */
 static int timer_comp(void *a, void *b)
 {
-    if (a != b) {
-        apr_time_t t1 = (apr_time_t) (((timer_event_t *) a)->when);
-        apr_time_t t2 = (apr_time_t) (((timer_event_t *) b)->when);
-        AP_DEBUG_ASSERT(t1);
-        AP_DEBUG_ASSERT(t2);
-        return ((t1 < t2) ? -1 : 1);
-    }
-    else {
-        return 0;
-    }
+    apr_time_t t1 = (apr_time_t) ((timer_event_t *)a)->when;
+    apr_time_t t2 = (apr_time_t) ((timer_event_t *)b)->when;
+    AP_DEBUG_ASSERT(t1);
+    AP_DEBUG_ASSERT(t2);
+    return ((t1 < t2) ? -1 : 1);
 }
 
 static apr_thread_mutex_t *g_timer_skiplist_mtx;
@@ -1498,11 +1505,7 @@ static timer_event_t * event_get_timer_event(apr_time_t t,
 
     if (insert) { 
         /* Okay, add sorted by when.. */
-#ifdef AP_DEBUG
-        ap_assert(apr_skiplist_insert(timer_skiplist, te));
-#else
         apr_skiplist_insert(timer_skiplist, te);
-#endif
     }
     apr_thread_mutex_unlock(g_timer_skiplist_mtx);
 
