@@ -105,15 +105,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_status: Improve server-status output when called with "?auto"
-     (machine readable form).
-     trunk patch: http://svn.apache.org/r1671396
-                  http://svn.apache.org/r1672289
-                  http://svn.apache.org/r1672453
-     2.4.x patch: http://people.apache.org/~rjung/patches/enhance-server-status-auto.patch
-                  (same as trunk but combined into one)
-     +1: rjung, covener, jim
-
   *) mod_ssl, mod_proxy, mod_cache_socache, mod_socache_*: Add plain text
      output to status hook (server-status) when called with "?auto"
      (machine readable form).
