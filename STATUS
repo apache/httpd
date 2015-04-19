@@ -257,7 +257,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mod_http: Fix incorrect If-Match handling. PR 57358.
      trunk patch: http://svn.apache.org/r1646282
      2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, covener
+     +1: ylavic, covener, jim
 
   *) core: Cleanup the request soon/even if some output filter fails to
      handle the EOR bucket.
@@ -272,7 +272,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1672453
      2.4.x patch: http://people.apache.org/~rjung/patches/enhance-server-status-auto.patch
                   (same as trunk but combined into one)
-     +1: rjung, covener
+     +1: rjung, covener, jim
 
   *) mod_ssl, mod_proxy, mod_cache_socache, mod_socache_*: Add plain text
      output to status hook (server-status) when called with "?auto"
@@ -282,7 +282,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1672564
      2.4.x patch: http://people.apache.org/~rjung/patches/enhance-socache-status-auto.patch
                   (same as trunk but combined into one)
-     +1: rjung, covener
+     +1: rjung, covener, jim
 
   *) mpm_event: Allow for timer events duplicates.
      trunk patch: http://svn.apache.org/r1666468
@@ -309,7 +309,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      the leading HTTP requests.
      trunk patch: http://svn.apache.org/r1674632
      2.4.x patch: trunk works (modulo CHANGES, docs/log-message-tags)
-     +1: ylavic, covener
+     +1: ylavic, covener, jim
 
   
 OTHER PROPOSALS
