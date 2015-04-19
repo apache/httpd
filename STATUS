@@ -318,13 +318,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      the leading HTTP requests.
      trunk patch: http://svn.apache.org/r1674632
      2.4.x patch: trunk works (modulo CHANGES, docs/log-message-tags)
-     +1: ylavic
+     +1: ylavic, covener
 
   *) Fix duplicated APLOGNOs from r1661067 and r1661448 (backported to 2.4.12
      resp. as r1662076 and r1670320).
      trunk patch: http://svn.apache.org/r1674606
      2.4.x patch: trunk works
-     +1: ylavic
+     +1: ylavic, covener
 
   
 OTHER PROPOSALS
