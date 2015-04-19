@@ -224,6 +224,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1656359 (CHANGES entry)
      2.4.x patch: trunk works (modulo CHANGES, docs/log-message-tags)
      +1: ylavic
+     -0: jim:  This seems to be a hit to normal performance, to handle an
+               error and/or non-normal condition. The pre-fetch is
+               expensive, and is always done, even before we know that
+               the backend is available to rec' it. I understand the
+               error described, but is the fix actually worth it (plus
+               it seems to allow for a DDoS vector).
 
   *) http: Make ap_die() robust against any HTTP error code and not modify
      response status (finally logged) when nothing is to be done. PR 56035.
