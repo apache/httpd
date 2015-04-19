@@ -95,9 +95,6 @@
 
 Alias "/secure" "/webpages/secure"
 &lt;Directory "/webpages/secure"&gt;
-    Order deny,allow
-    Allow from all
-
     AuthBasicProvider ldap-other-alias  ldap-alias1
 
     AuthType Basic
