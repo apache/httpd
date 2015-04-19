@@ -105,15 +105,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) ssl: Add a warning if protocol given in SSLProtocol or SSLProxyProtocol
-     will override other parameters given in the same directive. This could be
-     a missing + or - prefix.  PR 52820 [Christophe Jaillet]
-     trunk patch: http://svn.apache.org/r1520445
-                  http://svn.apache.org/r1672985
-                  http://svn.apache.org/r1672989 (CHANGES)
-                  http://svn.apache.org/r1673769
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: jailletc36, ylavic, covener
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:

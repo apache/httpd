@@ -12,6 +12,10 @@ Changes with Apache 2.4.13
      calls r:wsupgrade() can cause a child process crash. 
      [Edward Lu <Chaosed0 gmail.com>]
 
+  *) ssl: Add a warning if protocol given in SSLProtocol or SSLProxyProtocol
+     will override other parameters given in the same directive. This could be
+     a missing + or - prefix.  PR 52820 [Christophe Jaillet]
+
   *) mod_proxy: Use the correct server name for SNI in case the backend
      SSL connection itself is established via a proxy server.
      PR 57139 [Szabolcs Gyurko <szabolcs gyurko.org>]
