@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1642590:1673947 (outdated) -->
+<!-- English Revision : 1673947 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -66,13 +66,13 @@ d'Apache HTTPD</compatibility>
     au groupe LDAP <code>Employ&eacute;s temporaires</code>.</p>
 
     <highlight language="config">
-&lt;Directory /www/mydocs&gt;
+&lt;Directory "/www/mydocs"&gt;
     &lt;RequireAll&gt;
         &lt;RequireAny&gt;
             Require user superadmin
             &lt;RequireAll&gt;
             Require group admins
-            Require ldap-group cn=Administrateurs,o=Airius
+            Require ldap-group "cn=Administrateurs,o=Airius"
                 &lt;RequireAny&gt;
                 Require group ventes
                 Require ldap-attribute dept="ventes"
@@ -81,7 +81,7 @@ d'Apache HTTPD</compatibility>
         &lt;/RequireAny&gt;
         &lt;RequireNone&gt;
             Require group temps
-            Require ldap-group cn=Employ&eacute;s temporaires,o=Airius
+            Require ldap-group "cn=Employ&eacute;s temporaires,o=Airius"
         &lt;/RequireNone&gt;
     &lt;/RequireAll&gt;
 &lt;/Directory&gt;
@@ -111,8 +111,8 @@ d'Apache HTTPD</compatibility>
     entre autres.</p>
 
     <highlight language="config">
-SetEnvIf User-Agent ^KnockKnock/2\.0 let_me_in
-&lt;Directory /docroot&gt;
+SetEnvIf User-Agent "^KnockKnock/2\.0" let_me_in
+&lt;Directory "/docroot"&gt;
     Require env let_me_in
 &lt;/Directory&gt;
     </highlight>
@@ -234,20 +234,20 @@ d'autorisation</title>
         </p>
 
         <highlight language="config">
-&lt;AuthzProviderAlias ldap-group ldap-group-alias1 cn=my-group,o=ctx&gt;
+&lt;AuthzProviderAlias ldap-group ldap-group-alias1 "cn=my-group,o=ctx"&gt;
     AuthLDAPBindDN cn=youruser,o=ctx
     AuthLDAPBindPassword yourpassword
-    AuthLDAPURL ldap://ldap.host/o=ctx
+    AuthLDAPURL "ldap://ldap.host/o=ctx"
 &lt;/AuthzProviderAlias&gt;
 
-&lt;AuthzProviderAlias ldap-group ldap-group-alias2 cn=my-other-group,o=dev&gt;
-    AuthLDAPBindDN cn=yourotheruser,o=dev
+&lt;AuthzProviderAlias ldap-group ldap-group-alias2 "cn=my-other-group,o=dev"&gt;
+    AuthLDAPBindDN "cn=yourotheruser,o=dev"
     AuthLDAPBindPassword yourotherpassword
-    AuthLDAPURL ldap://other.ldap.host/o=dev?cn
+    AuthLDAPURL "ldap://other.ldap.host/o=dev?cn"
 &lt;/AuthzProviderAlias&gt;
 
-Alias /secure /webpages/secure
-&lt;Directory /webpages/secure&gt;
+Alias "/secure" "/webpages/secure"
+&lt;Directory "/webpages/secure"&gt;
     Require all granted
 
     AuthBasicProvider file
@@ -352,8 +352,8 @@ d'autorisation.</description>
 AuthType Basic
 AuthName "Restricted Resource"
 AuthBasicProvider file
-AuthUserFile /web/users
-AuthGroupFile /web/groups
+AuthUserFile "/web/users"
+AuthGroupFile "/web/groups"
 Require group admin
     </highlight>
 
@@ -379,7 +379,7 @@ Require group admin
     <code>reject</code>.</p>
 
     <highlight language="config">
-&lt;Directory /www/docs&gt;
+&lt;Directory "/www/docs"&gt;
     &lt;RequireAll&gt;
         Require group alpha beta
         Require not group reject
@@ -596,20 +596,20 @@ configuration pr&eacute;c&eacute;dentes.</description>
     <code>/www/docs/ab/gamma</code>.</note>
 
     <highlight language="config">
-&lt;Directory /www/docs&gt;
+&lt;Directory "/www/docs"&gt;
     AuthType Basic
     AuthName Documents
     AuthBasicProvider file
-    AuthUserFile /usr/local/apache/passwd/passwords
+    AuthUserFile "/usr/local/apache/passwd/passwords"
     Require group alpha
 &lt;/Directory&gt;
 
-&lt;Directory /www/docs/ab&gt;
+&lt;Directory "/www/docs/ab"&gt;
     AuthMerging Or
     Require group beta
 &lt;/Directory&gt;
 
-&lt;Directory /www/docs/ab/gamma&gt;
+&lt;Directory "/www/docs/ab/gamma"&gt;
     Require group gamma
 &lt;/Directory&gt;
     </highlight>
