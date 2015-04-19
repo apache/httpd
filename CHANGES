@@ -19,7 +19,7 @@ Changes with Apache 2.4.13
   *) mod_http: Fix incorrect If-Match handling. PR 57358
      [Kunihiko Sakamoto <ksakamoto google.com>]
 
-  *) ssl: Add a warning if protocol given in SSLProtocol or SSLProxyProtocol
+  *) mod_ssl: Add a warning if protocol given in SSLProtocol or SSLProxyProtocol
      will override other parameters given in the same directive. This could be
      a missing + or - prefix.  PR 52820 [Christophe Jaillet]
 
@@ -53,6 +53,13 @@ Changes with Apache 2.4.13
 
   *) core_filters: Restore/disable TCP_NOPUSH option after non-blocking
      sendfile.  [Yann Ylavic]
+
+  *) mod_buffer: Forward flushed input data immediately and avoid (unlikely)
+     access to freed memory. [Yann Ylavic, Christophe Jaillet]
+
+  *) core: Add CGIPassAuth directive to control whether HTTP authorization
+     headers are passed to scripts as CGI variables.  PR 56855.  [Jeff 
+     Trawick]
 
   *) core: Initialize scoreboard's used optional functions on graceful restarts
      to avoid a crash when relocation occurs.  PR 57177.  [Yann Ylavic]
@@ -179,13 +186,6 @@ Changes with Apache 2.4.11
      otherwise confusing modules that examined or modified
      request headers earlier.  Adds "MergeTrailers" directive to restore
      legacy behavior.  [Edward Lu, Yann Ylavic, Joe Orton, Eric Covener]
-
-  *) mod_buffer: Forward flushed input data immediately and avoid (unlikely)
-     access to freed memory. [Yann Ylavic, Christophe Jaillet]
-
-  *) core: Add CGIPassAuth directive to control whether HTTP authorization
-     headers are passed to scripts as CGI variables.  PR 56855.  [Jeff 
-     Trawick]
 
   *) mod_ssl: New directive SSLSessionTickets (On|Off).
      The directive controls the use of TLS session tickets (RFC 5077),
