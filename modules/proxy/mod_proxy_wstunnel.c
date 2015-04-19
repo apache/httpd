@@ -466,6 +466,7 @@ static int proxy_wstunnel_handler(request_rec *r, proxy_worker *worker,
     int status;
     char server_portstr[32];
     proxy_conn_rec *backend = NULL;
+    const char *upgrade;
     char *scheme;
     int retry;
     conn_rec *c = r->connection;
@@ -482,6 +483,13 @@ static int proxy_wstunnel_handler(request_rec *r, proxy_worker *worker,
     }
     else {
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02450) "declining URL %s", url);
+        return DECLINED;
+    }
+
+    upgrade = apr_table_get(r->headers_in, "Upgrade");
+    if (!upgrade || strcasecmp(upgrade, "WebSocket") != 0) {
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02900)
+                      "declining URL %s  (not WebSocket)", url);
         return DECLINED;
     }
 
