@@ -105,7 +105,36 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_http: Fix incorrect If-Match handling. PR 57358.
+     trunk patch: http://svn.apache.org/r1646282
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: ylavic, covener, jim
 
+  *) mod_status: Improve server-status output when called with "?auto"
+     (machine readable form).
+     trunk patch: http://svn.apache.org/r1671396
+                  http://svn.apache.org/r1672289
+                  http://svn.apache.org/r1672453
+     2.4.x patch: http://people.apache.org/~rjung/patches/enhance-server-status-auto.patch
+                  (same as trunk but combined into one)
+     +1: rjung, covener, jim
+
+  *) mod_ssl, mod_proxy, mod_cache_socache, mod_socache_*: Add plain text
+     output to status hook (server-status) when called with "?auto"
+     (machine readable form).
+     trunk patch: http://svn.apache.org/r1671397
+                  http://svn.apache.org/r1672466
+                  http://svn.apache.org/r1672564
+     2.4.x patch: http://people.apache.org/~rjung/patches/enhance-socache-status-auto.patch
+                  (same as trunk but combined into one)
+     +1: rjung, covener, jim
+
+  *) mod_proxy_wstunnel: Bypass the handler while the connection is not
+     upgraded to WebSocket, so that other modules can possibly take over
+     the leading HTTP requests.
+     trunk patch: http://svn.apache.org/r1674632
+     2.4.x patch: trunk works (modulo CHANGES, docs/log-message-tags)
+     +1: ylavic, covener, jim
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -254,35 +283,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              collides, this patch shows the final result on mod_proxy_ajp
              though)
 
-  *) mod_http: Fix incorrect If-Match handling. PR 57358.
-     trunk patch: http://svn.apache.org/r1646282
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, covener, jim
-
   *) core: Cleanup the request soon/even if some output filter fails to
      handle the EOR bucket.
      trunk patch: http://svn.apache.org/r1666998
      2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic
-
-  *) mod_status: Improve server-status output when called with "?auto"
-     (machine readable form).
-     trunk patch: http://svn.apache.org/r1671396
-                  http://svn.apache.org/r1672289
-                  http://svn.apache.org/r1672453
-     2.4.x patch: http://people.apache.org/~rjung/patches/enhance-server-status-auto.patch
-                  (same as trunk but combined into one)
-     +1: rjung, covener, jim
-
-  *) mod_ssl, mod_proxy, mod_cache_socache, mod_socache_*: Add plain text
-     output to status hook (server-status) when called with "?auto"
-     (machine readable form).
-     trunk patch: http://svn.apache.org/r1671397
-                  http://svn.apache.org/r1672466
-                  http://svn.apache.org/r1672564
-     2.4.x patch: http://people.apache.org/~rjung/patches/enhance-socache-status-auto.patch
-                  (same as trunk but combined into one)
-     +1: rjung, covener, jim
 
   *) mpm_event: Allow for timer events duplicates.
      trunk patch: http://svn.apache.org/r1666468
@@ -304,13 +309,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (modulo CHANGES)
      +1: 
   
-  *) mod_proxy_wstunnel: Bypass the handler while the connection is not
-     upgraded to WebSocket, so that other modules can possibly take over
-     the leading HTTP requests.
-     trunk patch: http://svn.apache.org/r1674632
-     2.4.x patch: trunk works (modulo CHANGES, docs/log-message-tags)
-     +1: ylavic, covener, jim
-
   
 OTHER PROPOSALS
 
