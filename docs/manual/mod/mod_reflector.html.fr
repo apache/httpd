@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_reflector.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_reflector.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Réfléchit un corps de requête comme réponse via la pile de
 filtres en sortie.</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
@@ -62,7 +60,7 @@ filtres en sortie.</td></tr>
     compresser. Cette requête nécessite un en-tête Content-Encoding
     contenant la valeur "gzip" pour que le filtre renvoie les données
     compressées.
-    <pre class="prettyprint lang-config">&lt;Location /compress&gt;
+    <pre class="prettyprint lang-config">&lt;Location "/compress"&gt;
     SetHandler reflector
     SetOutputFilter DEFLATE
 &lt;/Location&gt;</pre>
@@ -72,7 +70,7 @@ filtres en sortie.</td></tr>
     <dt>Service d'abaissement de l'échantillonnage d'image</dt>
     <dd>Fait passer le corps de la requête par un filtre d'abaissement
     de l'échantillonnage d'image, et renvoie le résultat au client.
-    <pre class="prettyprint lang-config">&lt;Location /downsample&gt;
+    <pre class="prettyprint lang-config">&lt;Location "/downsample"&gt;
     SetHandler reflector
     SetOutputFilter DOWNSAMPLE
 &lt;/Location&gt;</pre>
