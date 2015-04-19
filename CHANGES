@@ -12,6 +12,10 @@ Changes with Apache 2.4.13
      calls r:wsupgrade() can cause a child process crash. 
      [Edward Lu <Chaosed0 gmail.com>]
 
+  *) mod_proxy_wstunnel: Bypass the handler while the connection is not
+     upgraded to WebSocket, so that other modules can possibly take over
+     the leading HTTP requests.  [Yann Ylavic]
+
   *) mod_http: Fix incorrect If-Match handling. PR 57358
      [Kunihiko Sakamoto <ksakamoto google.com>]
 

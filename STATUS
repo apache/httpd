@@ -105,12 +105,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_proxy_wstunnel: Bypass the handler while the connection is not
-     upgraded to WebSocket, so that other modules can possibly take over
-     the leading HTTP requests.
-     trunk patch: http://svn.apache.org/r1674632
-     2.4.x patch: trunk works (modulo CHANGES, docs/log-message-tags)
-     +1: ylavic, covener, jim
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
