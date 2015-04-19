@@ -855,7 +855,7 @@ char *ap_response_code_string(request_rec *r, int error_index)
     response = ap_expr_str_exec(r, expr, &err);
     if (err) {
         ap_log_rerror(
-                APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02830) "core: ErrorDocument: can't "
+                APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02841) "core: ErrorDocument: can't "
                 "evaluate require expression: %s", err);
         return NULL;
     }
