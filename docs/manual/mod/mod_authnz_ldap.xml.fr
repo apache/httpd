@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1643416:1673932 (outdated) -->
+<!-- English Revision : 1673932 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -514,7 +514,8 @@ AuthLDAPMaxSubGroupDepth 1
     <p>La directive suivante accorderait l'autorisation d'acc&egrave;s &agrave; tout
     utilisateur dont l'attribut employeeType a pour valeur "actif" :</p>
 
-    <highlight language="config">Require ldap-attribute employeeType=active</highlight>
+    <highlight language="config">Require ldap-attribute
+    "employeeType=active"</highlight>
 
     <p>Plusieurs paires attribut/valeur peuvent &ecirc;tre sp&eacute;cifi&eacute;es par une
     m&ecirc;me directive en les s&eacute;parant par des espaces, ou en d&eacute;finissant
@@ -530,7 +531,8 @@ AuthLDAPMaxSubGroupDepth 1
     utilisateur dont l'attribut city aurait pour valeur "San Jose", ou
     donc l'attribut status aurait pour valeur "actif" :</p>
 
-    <highlight language="config">Require ldap-attribute city="San Jose" status=active</highlight>
+    <highlight language="config">Require ldap-attribute city="San Jose"
+    "status=active"</highlight>
 
 </section>
 
@@ -546,7 +548,8 @@ AuthLDAPMaxSubGroupDepth 1
     utilisateur poss&eacute;dant un t&eacute;l&eacute;phone cellulaire et faisant partie du
     d&eacute;partement "marketing" :</p>
 
-    <highlight language="config">Require ldap-filter &amp;(cell=*)(department=marketing)</highlight>
+    <highlight language="config">Require ldap-filter
+    "&amp;(cell=*)(department=marketing)"</highlight>
 
     <p>Alors que la directive <code>Require ldap-attribute</code> se
     contente d'une simple comparaison d'attributs, la directive
@@ -565,8 +568,9 @@ AuthLDAPMaxSubGroupDepth 1
     fonction ldap.</p>
 
 <highlight language="config">
-&lt;LocationMatch ^/dav/(?&lt;SITENAME&gt;[^/]+)/&gt;
-  Require ldap-filter (memberOf=cn=%{ldap:%{unescape:%{env:MATCH_SITENAME}},ou=Websites,o=Example)
+&lt;LocationMatch "^/dav/(?&lt;SITENAME&gt;[^/]+)/"&gt;
+  Require ldap-filter
+  "(memberOf=cn=%{ldap:%{unescape:%{env:MATCH_SITENAME}},ou=Websites,o=Example)"
 &lt;/LocationMatch&gt;
 </highlight>
 
@@ -585,8 +589,9 @@ AuthLDAPMaxSubGroupDepth 1
     aux objets sp&eacute;cifi&eacute;s dans le serveur LDAP :</p>
 
 <highlight language="config">
-&lt;LocationMatch ^/dav/(?&lt;SITENAME&gt;[^/]+)/&gt;
-Require ldap-search (cn=%{ldap:%{unescape:%{env:MATCH_SITENAME}} Website)
+&lt;LocationMatch "^/dav/(?&lt;SITENAME&gt;[^/]+)/"&gt;
+Require ldap-search "(cn=%{ldap:%{unescape:%{env:MATCH_SITENAME}}
+Website)"
 &lt;/LocationMatch&gt;
 </highlight>
 

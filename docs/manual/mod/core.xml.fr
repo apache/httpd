@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1664071:1674195 (outdated) -->
+<!-- English Revision : 1674195 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -224,7 +224,7 @@ host</context>
     d&eacute;sactiv&eacute;es avec</p>
 
     <highlight language="config">
-&lt;Directory /&gt;
+&lt;Directory "/"&gt;
     AllowOverride None
 &lt;/Directory&gt;
     </highlight>
@@ -525,7 +525,7 @@ All pour les versions ant&eacute;rieures</default>
 
     <note><p>Pour des raisons de s&eacute;curit&eacute; et de performance, ne
     d&eacute;finissez pas <code>AllowOverride</code> &agrave; autre chose que
-    <code>None</code> dans votre bloc <code>&lt;Directory /&gt;</code>.
+    <code>None</code> dans votre bloc <code>&lt;Directory "/"&gt;</code>.
     Recherchez plut&ocirc;t (ou cr&eacute;ez) le bloc <code>&lt;Directory&gt;</code>
     qui se r&eacute;f&egrave;re au r&eacute;pertoire o&ugrave; vous allez pr&eacute;cis&eacute;ment placer un
     fichier <code>.htaccess</code>.</p>
@@ -626,7 +626,7 @@ tant que variables CGI</description>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
-<compatibility>Disponible &agrave; partir de la version 2.5.0 du serveur HTTP
+<compatibility>Disponible &agrave; partir de la version 2.4.13 du serveur HTTP
 Apache</compatibility>
 
 <usage>
@@ -812,7 +812,7 @@ DESACTIV&Eacute;S &agrave; partir de la version 2.3.0.</compatibility>
   Define SSL
 &lt;/IfDefine&gt;
 
-    DocumentRoot /var/www/${servername}/htdocs
+    DocumentRoot "/var/www/${servername}/htdocs"
     </highlight>
 
     <p>Le caract&egrave;re ":" est interdit dans les noms de variables afin
@@ -851,15 +851,19 @@ host</context>
     caract&egrave;res. Les intervalles de caract&egrave;res <code>[]</code> sont aussi
     autoris&eacute;s. Aucun caract&egrave;re g&eacute;n&eacute;rique ne peut remplacer le caract&egrave;re
     `/', si bien que l'expression <code>&lt;Directory
-    /*/public_html&gt;</code> ne conviendra pas pour le chemin
+    "/*/public_html"&gt;</code> ne conviendra pas pour le chemin
      * <code>/home/user/public_html</code>, alors que <code>&lt;Directory
-    /home/*/public_html&gt;</code> conviendra. Exemple :</p>
+    "/home/*/public_html"&gt;</code> conviendra. Exemple :</p>
 
     <highlight language="config">
 &lt;Directory "/usr/local/httpd/htdocs"&gt;
   Options Indexes FollowSymLinks
 &lt;/Directory&gt;
     </highlight>
+
+    <p>Les chemins de r&eacute;pertoires contenant des espaces <em>doivent</em> &ecirc;tre
+    entour&eacute;s de guillemets afin d'emp&ecirc;cher l'interpr&eacute;tation de ces
+    espaces comme fins d'arguments.</p>
 
     <note>
       <p>Soyez prudent avec l'argument <var>chemin r&eacute;pertoire</var> : il
@@ -894,7 +898,7 @@ host</context>
     exemple, avec</p>
 
     <highlight language="config">
-&lt;Directory /&gt;
+&lt;Directory "/"&gt;
   AllowOverride None
 &lt;/Directory&gt;
 
@@ -941,13 +945,13 @@ host</context>
     correspondante s'appliquera.</p>
 
    <p><strong>Notez que la politique d'acc&egrave;s par d&eacute;faut
-   dans les sections <code>&lt;Directory /&gt;</code> consiste &agrave;
+   dans les sections <code>&lt;Directory "/"&gt;</code> consiste &agrave;
    autoriser tout acc&egrave;s sans restriction. Ceci signifie qu'Apache httpd va servir tout fichier
    correspondant &agrave; une URL. Il est recommand&eacute; de modifier cette
    situation &agrave; l'aide d'un bloc du style</strong></p>
 
     <highlight language="config">
-&lt;Directory /&gt;
+&lt;Directory "/"&gt;
   Require all denied
 &lt;/Directory&gt;
     </highlight>
@@ -990,12 +994,12 @@ du syst&egrave;me de fichiers correspondant &agrave; une expression rationnelle<
     ref="regex">expression rationnelle</glossary>. Par exemple :</p>
 
     <highlight language="config">
-&lt;DirectoryMatch "^/www/(.+/)?[0-9]{3}"&gt;
+&lt;DirectoryMatch "^/www/(.+/)?[0-9]{3}/"&gt;
     # ...
 &lt;/DirectoryMatch&gt;
 </highlight>
 
-    <p>conviendrait pour les sous-r&eacute;pertoires de <code>/www/</code> dont
+    <p>convient pour les sous-r&eacute;pertoires de <code>/www/</code> dont
     le nom se compose de trois chiffres.</p>
 
     <note><title>Compatibilit&eacute;</title>
@@ -1025,8 +1029,8 @@ du syst&egrave;me de fichiers correspondant &agrave; une expression rationnelle<
     nomm&eacute;s.</p>
 
 <highlight language="config">
-&lt;DirectoryMatch ^/var/www/combined/(?&lt;sitename&gt;[^/]+)&gt;
-    require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
+&lt;DirectoryMatch "^/var/www/combined/(?&lt;sitename&gt;[^/]+)"&gt;
+    Require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
 &lt;/DirectoryMatch&gt;
 </highlight>    
 </usage>
@@ -1404,7 +1408,7 @@ ErrorDocument 403 /cgi-bin/forbidden.pl?referrer=%{escape:%{HTTP_REFERER}}
     <highlight language="config">
 ErrorDocument 404 /cgi-bin/bad_urls.pl
 
-&lt;Directory /web/docs&gt;
+&lt;Directory "/web/docs"&gt;
   ErrorDocument 404 default
 &lt;/Directory&gt;
     </highlight>
@@ -1971,13 +1975,18 @@ host</context>
     exemple :</p>
 
     <highlight language="config">
-&lt;FilesMatch "\.(gif|jpe?g|png)$"&gt;
+&lt;FilesMatch ".+\.(gif|jpe?g|png)$"&gt;
     # ...
 &lt;/FilesMatch&gt;
 </highlight>
 
     <p>correspondrait &agrave; la plupart des formats graphiques de
     l'Internet.</p>
+
+    <note>Les caract&egrave;res <code>.+</code> au d&eacute;but de l'expression
+    rationnelle permettent de s'assurer que les fichiers de nom
+    <code>.png</code>, ou <code>.gif</code>, par exemple, ne seront pas
+    pris en compte.</note>
 
     <p>A partir de la version 2.4.8, les groupes nomm&eacute;s et les
     r&eacute;f&eacute;rences arri&egrave;res sont extraits et enregistr&eacute;s dans
@@ -1990,7 +1999,7 @@ host</context>
     nomm&eacute;s.</p>
 
 <highlight language="config">
-&lt;FilesMatch ^(?&lt;sitename&gt;[^/]+)&gt;
+&lt;FilesMatch "^(?&lt;sitename&gt;[^/]+)"&gt;
     require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
 &lt;/FilesMatch&gt;
 </highlight>    
@@ -2035,13 +2044,13 @@ HTTP Content-Type pour les fichiers correspondants</description>
 
     <highlight language="config">
 # force le type MIME de tous les fichiers &agrave; image/gif:
-&lt;Location /images&gt;
+&lt;Location "/images"&gt;
   ForceType image/gif
 &lt;/Location&gt;
 
 # mais utilise les m&eacute;thodes classiques d'attribution du type MIME
 # dans le sous-r&eacute;pertoire suivant :
-&lt;Location /images/mixed&gt;
+&lt;Location "/images/mixed"&gt;
   ForceType None
 &lt;/Location&gt;
     </highlight>
@@ -2169,6 +2178,12 @@ host</context>
     <p>Cette section de configuration ne peut contenir que des
     directives qui supportent le <a
     href="directive-dict.html#Context">contexte de r&eacute;pertoire</a>.</p>
+
+    <note type="warning">
+    Certaines variables comme <code>CONTENT_TYPE</code> ainsi que
+    d'autres en-t&ecirc;tes de r&eacute;ponse ne seront pas disponibles dans ce bloc,
+    car elle sont d&eacute;finies apr&egrave;s l'&eacute;valuation des conditions &lt;If&gt;.
+    </note>
 
 </usage>
 
@@ -2901,7 +2916,7 @@ host</context>
     /private1/ et /private1/file.txt, mais pas &agrave; /private1other. 
     </p>
     <highlight language="config">
-&lt;Location /private1&gt;
+&lt;Location "/private1"&gt;
     #  ...
 &lt;/Location&gt;
     </highlight>
@@ -2911,7 +2926,7 @@ host</context>
     &agrave; /private2/file.txt, mais pas &agrave; /private2other.
     </p>
     <highlight language="config">
-&lt;Location /private2<em>/</em>&gt;
+&lt;Location "/private2<em>/</em>"&gt;
     # ...
 &lt;/Location&gt;
     </highlight>
@@ -2926,7 +2941,7 @@ host</context>
     plut&ocirc;t les sections <directive
     type="section" module="core">Directory</directive> et <directive
     type="section" module="core">Files</directive>. <code>&lt;Location
-    /&gt;</code> constitue une exception et permet d'appliquer ais&eacute;ment
+    "/"&gt;</code> constitue une exception et permet d'appliquer ais&eacute;ment
     une configuration &agrave; l'ensemble du serveur.</p>
     </note>
 
@@ -2972,7 +2987,7 @@ host</context>
     utiliser :</p>
 
     <highlight language="config">
-&lt;Location /status&gt;
+&lt;Location "/status"&gt;
   SetHandler server-status
   Require host example.com
 &lt;/Location&gt;
@@ -2992,7 +3007,7 @@ host</context>
       explicitement les slashes multiples si telle est votre
       intention.</p>
 
-      <p>Par exemple, <code>&lt;LocationMatch ^/abc&gt;</code> va
+      <p>Par exemple, <code>&lt;LocationMatch "^/abc"&gt;</code> va
       correspondre &agrave; l'URL <code>/abc</code> mais pas &agrave; l'URL <code>
       //abc</code>. La directive <directive type="section"
       >Location</directive> sans expression rationnelle se comporte de
@@ -3002,7 +3017,7 @@ host</context>
       est utilis&eacute;e pour des requ&ecirc;tes non mandat&eacute;es, elle fera
       correspondre implicitement les slashes multiples &agrave; des slashes
       uniques. Par exemple, si vous sp&eacute;cifiez <code>&lt;Location
-      /abc/def&gt;</code>, une requ&ecirc;te de la forme
+      "/abc/def"&gt;</code>, une requ&ecirc;te de la forme
       <code>/abc//def</code> correspondra.</p>
     </note>
 </usage>
@@ -3040,6 +3055,15 @@ host</context>
     <p>correspondrait &agrave; toute URL contenant les sous-cha&icirc;nes
     <code>/extra/data</code> ou <code>/special/data</code>.</p>
 
+    <note><p>Si vous recherchez une URL <strong>commen&ccedil;ant par</strong>
+    plut&ocirc;t que seulement contenant <code>/extra/data</code>, pr&eacute;fixez
+    l'expression rationnelle avec un <code>^</code>.</p>
+
+    <highlight language="config">
+    &lt;LocationMatch "^/(extra|special)/data"&gt;
+    </highlight>
+    </note>
+
     <p>A partir de la version 2.4.8, les groupes nomm&eacute;s et les
     r&eacute;f&eacute;rences arri&egrave;res sont extraits et enregistr&eacute;s dans
     l'environnement avec leur nom en majuscules et pr&eacute;fix&eacute;
@@ -3051,7 +3075,7 @@ host</context>
     nomm&eacute;s.</p>
 
 <highlight language="config">
-&lt;LocationMatch ^/combined/(?&lt;sitename&gt;[^/]+)&gt;
+&lt;LocationMatch "^/combined/(?&lt;sitename&gt;[^/]+)"&gt;
     require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
 &lt;/LocationMatch&gt;
 </highlight>    
@@ -4562,7 +4586,7 @@ host</context>
     fichier particuli&egrave;re. Par exemple :</p>
 
     <highlight language="config">
-&lt;FilesMatch \.php$&gt;
+&lt;FilesMatch "\.php$"&gt;
     SetHandler application/x-httpd-php
 &lt;/FilesMatch&gt;
     </highlight>
@@ -4907,10 +4931,10 @@ d'h&ocirc;te sp&eacute;cifique ou &agrave; une adresse IP</description>
     <highlight language="config">
 &lt;VirtualHost 10.1.2.3:80&gt;
   ServerAdmin webmaster@host.example.com
-  DocumentRoot /www/docs/host.example.com
+  DocumentRoot "/www/docs/host.example.com"
   ServerName host.example.com
-  ErrorLog logs/host.example.com-error_log
-  TransferLog logs/host.example.com-access_log
+  ErrorLog "logs/host.example.com-error_log"
+  TransferLog "logs/host.example.com-access_log"
 &lt;/VirtualHost&gt;
     </highlight>
 
@@ -4923,10 +4947,10 @@ d'h&ocirc;te sp&eacute;cifique ou &agrave; une adresse IP</description>
     <highlight language="config">
 &lt;VirtualHost [2001:db8::a00:20ff:fea7:ccea]:80&gt;
   ServerAdmin webmaster@host.example.com
-  DocumentRoot /www/docs/host.example.com
+  DocumentRoot "/www/docs/host.example.com"
   ServerName host.example.com
-  ErrorLog logs/host.example.com-error_log
-  TransferLog logs/host.example.com-access_log
+  ErrorLog "logs/host.example.com-error_log"
+  TransferLog "logs/host.example.com-access_log"
 &lt;/VirtualHost&gt;
     </highlight>
 
