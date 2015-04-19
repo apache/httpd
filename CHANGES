@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_proxy_wstunnel: Bypass the handler while the connection is not
+     upgraded to WebSocket, so that other modules can possibly take over
+     the leading HTTP requests.  [Yann Ylavic]
+
   *) mod_proxy_scgi: ProxySCGIInternalRedirect now allows an alternate
      response header to be used by the application, for when the application
      or framework is unable to return Location in the internal-redirect
