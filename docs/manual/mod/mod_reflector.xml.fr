@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- English Revision: 1334024:1673563 (outdated) -->
+<!-- English Revision : 1673563 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -48,7 +48,7 @@ filtres en sortie.</description>
     contenant la valeur "gzip" pour que le filtre renvoie les donn&eacute;es
     compress&eacute;es.
     <highlight language="config">
-&lt;Location /compress&gt;
+&lt;Location "/compress"&gt;
     SetHandler reflector
     SetOutputFilter DEFLATE
 &lt;/Location&gt;
@@ -59,7 +59,7 @@ filtres en sortie.</description>
     <dd>Fait passer le corps de la requ&ecirc;te par un filtre d'abaissement
     de l'&eacute;chantillonnage d'image, et renvoie le r&eacute;sultat au client.
     <highlight language="config">
-&lt;Location /downsample&gt;
+&lt;Location "/downsample"&gt;
     SetHandler reflector
     SetOutputFilter DOWNSAMPLE
 &lt;/Location&gt;

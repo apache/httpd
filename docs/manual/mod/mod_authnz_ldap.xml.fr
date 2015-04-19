@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1643418:1673563 (outdated) -->
+<!-- English Revision: 1673563 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -783,8 +783,8 @@ AuthLDAPURL ldap://10.0.0.1:3268/?userPrincipalName?sub
     le site web :</p>
 <highlight language="config">
 AuthLDAPURL       "the url"
-AuthGroupFile     mygroupfile
-Require group     mygroupfile
+AuthGroupFile     "mygroupfile"
+Require group     "mygroupfile"
 </highlight>
 
 <section id="howitworks"><title>Comment &ccedil;a marche</title>
