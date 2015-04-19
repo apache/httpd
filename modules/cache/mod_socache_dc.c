@@ -19,6 +19,7 @@
 #include "http_request.h"
 #include "http_config.h"
 #include "http_protocol.h"
+#include "mod_status.h"
 
 #include "apr_strings.h"
 #include "apr_time.h"
@@ -151,8 +152,14 @@ static void socache_dc_status(ap_socache_instance_t *ctx, request_rec *r, int fl
 {
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00747)
                   "distributed scache 'socache_dc_status'");
-    ap_rprintf(r, "cache type: <b>DC (Distributed Cache)</b>, "
-               " target: <b>%s</b><br>", ctx->target);
+    if (!(flags & AP_STATUS_SHORT)) {
+        ap_rprintf(r, "cache type: <b>DC (Distributed Cache)</b>, "
+                   " target: <b>%s</b><br>", ctx->target);
+    }
+    else {
+        ap_rputs("CacheType: DC\n", r);
+        ap_rvputs(r, "CacheTarget: ", ctx->target, "\n", NULL);
+    }
 }
 
 static apr_status_t socache_dc_iterate(ap_socache_instance_t *instance,

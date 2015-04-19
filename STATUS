@@ -105,16 +105,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_ssl, mod_proxy, mod_cache_socache, mod_socache_*: Add plain text
-     output to status hook (server-status) when called with "?auto"
-     (machine readable form).
-     trunk patch: http://svn.apache.org/r1671397
-                  http://svn.apache.org/r1672466
-                  http://svn.apache.org/r1672564
-     2.4.x patch: http://people.apache.org/~rjung/patches/enhance-socache-status-auto.patch
-                  (same as trunk but combined into one)
-     +1: rjung, covener, jim
-
   *) mod_proxy_wstunnel: Bypass the handler while the connection is not
      upgraded to WebSocket, so that other modules can possibly take over
      the leading HTTP requests.
