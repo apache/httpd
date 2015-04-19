@@ -33,8 +33,6 @@
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Fonctionnalités de base du serveur HTTP Apache toujours
 disponibles</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Core</td></tr></table>
@@ -301,7 +299,7 @@ nom de chemin en fin de requête.</td></tr>
     pour y lire d'éventuelles directives, à moins quelles n'aient été
     désactivées avec</p>
 
-    <pre class="prettyprint lang-config">&lt;Directory /&gt;
+    <pre class="prettyprint lang-config">&lt;Directory "/"&gt;
     AllowOverride None
 &lt;/Directory&gt;</pre>
 
@@ -558,7 +556,7 @@ All pour les versions antérieures</code></td></tr>
 
     <div class="note"><p>Pour des raisons de sécurité et de performance, ne
     définissez pas <code>AllowOverride</code> à autre chose que
-    <code>None</code> dans votre bloc <code>&lt;Directory /&gt;</code>.
+    <code>None</code> dans votre bloc <code>&lt;Directory "/"&gt;</code>.
     Recherchez plutôt (ou créez) le bloc <code>&lt;Directory&gt;</code>
     qui se réfère au répertoire où vous allez précisément placer un
     fichier <code>.htaccess</code>.</p>
@@ -651,18 +649,44 @@ scripts CGI</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="cgipassauth" id="cgipassauth">Directive</a> <a name="CGIPassAuth" id="CGIPassAuth">CGIPassAuth</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enables passing HTTP authorization headers to scripts as CGI
-variables</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active la transmission d'en-têtes d'autorisation HTTP aux scripts en
+tant que variables CGI</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CGIPassAuth On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>CGIPassAuth Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Available in Apache HTTP Server 2.4.13 and later</td></tr>
-</table><p>La documentation de cette directive
-	n'a pas encore t traduite. Veuillez vous reporter  la version
-	en langue anglaise.</p></div>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.13 du serveur HTTP
+Apache</td></tr>
+</table>
+    <p>La directive <code class="directive">CGIPassAuth</code> permet aux
+    scripts d'accéder aux en-têtes d'autorisation HTTP tels que
+    <code>Authorization</code>, en-tête nécessaire aux scripts qui
+    implémente une authentification HTTP de base. Normalement, ces
+    en-têtes HTTP sont invisibles pour les scripts car ils leurs
+    permettraient de voir les identifiants et mots de passe
+    utilisés pour accéder au serveur lorsque l'authentification HTTP de
+    base est activée au niveau du serveur web. Cette directive doit être
+    définie à "On" lorsque des scripts sont autorisés à implémenter une
+    authentification HTTP de base.</p>
+
+    <p>Cette directive constitue une alternative à l'option de
+    compilation <code>SECURITY_HOLE_PASS_AUTHORIZATION</code> qui était
+    déjà disponible dans les versions précédentes du serveur HTTP
+    Apache.</p>
+
+    <p>Cette option est prise en compte par tout module qui utilise
+    <code>ap_add_common_vars()</code>, comme <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>,
+    <code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code>, <code class="module"><a href="../mod/mod_proxy_fcgi.html">mod_proxy_fcgi</a></code>,
+    <code class="module"><a href="../mod/mod_proxy_scgi.html">mod_proxy_scgi</a></code>, etc... En particulier, elle affecte
+    les modules qui ne traitent pas à proprement parler les requêtes,
+    mais utilisent quand-même cette API, comme
+    <code class="module"><a href="../mod/mod_include.html">mod_include</a></code> ou <code class="module"><a href="../mod/mod_ext_filter.html">mod_ext_filter</a></code>. Les
+    modules tiers qui n'utilisent pas <code>ap_add_common_vars()</code>
+    peuvent aussi choisir de prendre en compte cette option.</p>
+
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="contentdigest" id="contentdigest">Directive</a> <a name="ContentDigest" id="ContentDigest">ContentDigest</a></h2>
 <table class="directive">
@@ -814,7 +838,7 @@ DESACTIVÉS à partir des version 2.3.x.</td></tr>
   Define SSL
 &lt;/IfDefine&gt;
 
-DocumentRoot /var/www/${servername}/htdocs</pre>
+DocumentRoot "/var/www/${servername}/htdocs"</pre>
 
 
     <p>Le caractère ":" est interdit dans les noms de variables afin
@@ -827,7 +851,7 @@ DocumentRoot /var/www/${servername}/htdocs</pre>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Regroupe un ensemble de directives qui ne s'appliquent
 qu'au répertoire concerné du système de fichiers, à ses
 sous-répertoires, et à leur contenu.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>&lt;Directory <var>chemin répertoire</var>&gt;
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>&lt;Directory "<var>chemin répertoire</var>"&gt;
 ... &lt;/Directory&gt;</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
@@ -847,14 +871,18 @@ sous-répertoires, et à leur contenu.</td></tr>
     caractères. Les intervalles de caractères <code>[]</code> sont aussi
     autorisés. Aucun caractère générique ne peut remplacer le caractère
     `/', si bien que l'expression <code>&lt;Directory
-    /*/public_html&gt;</code> ne conviendra pas pour le chemin
+    "/*/public_html"&gt;</code> ne conviendra pas pour le chemin
      * <code>/home/user/public_html</code>, alors que <code>&lt;Directory
-    /home/*/public_html&gt;</code> conviendra. Exemple :</p>
+    "/home/*/public_html"&gt;</code> conviendra. Exemple :</p>
 
     <pre class="prettyprint lang-config">&lt;Directory "/usr/local/httpd/htdocs"&gt;
   Options Indexes FollowSymLinks
 &lt;/Directory&gt;</pre>
 
+
+    <p>Les chemins de répertoires contenant des espaces <em>doivent</em> être
+    entourés de guillemets afin d'empêcher l'interprétation de ces
+    espaces comme fins d'arguments.</p>
 
     <div class="note">
       <p>Soyez prudent avec l'argument <var>chemin répertoire</var> : il
@@ -885,7 +913,7 @@ sous-répertoires, et à leur contenu.</td></tr>
     directives des fichiers <a href="#accessfilename">.htaccess</a>. Par
     exemple, avec</p>
 
-    <pre class="prettyprint lang-config">&lt;Directory /&gt;
+    <pre class="prettyprint lang-config">&lt;Directory "/"&gt;
   AllowOverride None
 &lt;/Directory&gt;
 
@@ -930,12 +958,12 @@ sous-répertoires, et à leur contenu.</td></tr>
     correspondante s'appliquera.</p>
 
    <p><strong>Notez que la politique d'accès par défaut
-   dans les sections <code>&lt;Directory /&gt;</code> consiste à
+   dans les sections <code>&lt;Directory "/"&gt;</code> consiste à
    autoriser tout accès sans restriction. Ceci signifie qu'Apache httpd va servir tout fichier
    correspondant à une URL. Il est recommandé de modifier cette
    situation à l'aide d'un bloc du style</strong></p>
 
-    <pre class="prettyprint lang-config">&lt;Directory /&gt;
+    <pre class="prettyprint lang-config">&lt;Directory "/"&gt;
   Require all denied
 &lt;/Directory&gt;</pre>
 
@@ -973,12 +1001,12 @@ du système de fichiers correspondant à une expression rationnelle</td></tr>
     précisé (et aux fichiers qu'il contient), comme pour la section <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code>. Cependant, le
     répertoire est précisé sous la forme d'une <a class="glossarylink" href="../glossary.html#regex" title="voir glossaire">expression rationnelle</a>. Par exemple :</p>
 
-    <pre class="prettyprint lang-config">&lt;DirectoryMatch "^/www/(.+/)?[0-9]{3}"&gt;
+    <pre class="prettyprint lang-config">&lt;DirectoryMatch "^/www/(.+/)?[0-9]{3}/"&gt;
     # ...
 &lt;/DirectoryMatch&gt;</pre>
 
 
-    <p>conviendrait pour les sous-répertoires de <code>/www/</code> dont
+    <p>convient pour les sous-répertoires de <code>/www/</code> dont
     le nom se compose de trois chiffres.</p>
 
     <div class="note"><h3>Compatibilité</h3>
@@ -1006,8 +1034,8 @@ du système de fichiers correspondant à une expression rationnelle</td></tr>
     nommées) sont ignorées. Vous devez utiliser à la place des groupes
     nommés.</p>
 
-<pre class="prettyprint lang-config">&lt;DirectoryMatch ^/var/www/combined/(?&lt;sitename&gt;[^/]+)&gt;
-    require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
+<pre class="prettyprint lang-config">&lt;DirectoryMatch "^/var/www/combined/(?&lt;sitename&gt;[^/]+)"&gt;
+    Require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
 &lt;/DirectoryMatch&gt;</pre>
     
 
@@ -1029,7 +1057,7 @@ combinent entre elles à la réception d'une requête</li>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Racine principale de l'arborescence des documents visible
 depuis Internet</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DocumentRoot <var>chemin répertoire</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>DocumentRoot /usr/local/apache/htdocs</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>DocumentRoot "/usr/local/apache/htdocs"</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
@@ -1370,7 +1398,7 @@ ErrorDocument 403 /cgi-bin/forbidden.pl?referrer=%{escape:%{HTTP_REFERER}}</pre>
 
     <pre class="prettyprint lang-config">ErrorDocument 404 /cgi-bin/bad_urls.pl
 
-&lt;Directory /web/docs&gt;
+&lt;Directory "/web/docs"&gt;
   ErrorDocument 404 default
 &lt;/Directory&gt;</pre>
 
@@ -1802,7 +1830,7 @@ dans les versions 2.3.14 et antérieures.</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Contient des directives qui s'appliquent aux fichiers
 précisés</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>&lt;Files <var>nom fichier</var>&gt; ... &lt;/Files&gt;</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>&lt;Files "<var>nom fichier</var>"&gt; ... &lt;/Files&gt;</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
@@ -1880,13 +1908,18 @@ spécifiés sous la forme d'expressions rationnelles</td></tr>
     <a class="glossarylink" href="../glossary.html#regex" title="voir glossaire">expressions rationnelles</a>. Par
     exemple :</p>
 
-    <pre class="prettyprint lang-config">&lt;FilesMatch "\.(gif|jpe?g|png)$"&gt;
+    <pre class="prettyprint lang-config">&lt;FilesMatch ".+\.(gif|jpe?g|png)$"&gt;
     # ...
 &lt;/FilesMatch&gt;</pre>
 
 
     <p>correspondrait à la plupart des formats graphiques de
     l'Internet.</p>
+
+    <div class="note">Les caractères <code>.+</code> au début de l'expression
+    rationnelle permettent de s'assurer que les fichiers de nom
+    <code>.png</code>, ou <code>.gif</code>, par exemple, ne seront pas
+    pris en compte.</div>
 
     <p>A partir de la version 2.4.8, les groupes nommés et les
     références arrières sont extraits et enregistrés dans
@@ -1898,7 +1931,7 @@ spécifiés sous la forme d'expressions rationnelles</td></tr>
     nommées) sont ignorées. Vous devez utiliser à la place des groupes
     nommés.</p>
 
-<pre class="prettyprint lang-config">&lt;FilesMatch ^(?&lt;sitename&gt;[^/]+)&gt;
+<pre class="prettyprint lang-config">&lt;FilesMatch "^(?&lt;sitename&gt;[^/]+)"&gt;
     require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
 &lt;/FilesMatch&gt;</pre>
 
@@ -1943,13 +1976,13 @@ HTTP Content-Type pour les fichiers correspondants</td></tr>
     <code>None</code> à l'argument <var>type médium</var> :</p>
 
     <pre class="prettyprint lang-config"># force le type MIME de tous les fichiers à image/gif:
-&lt;Location /images&gt;
+&lt;Location "/images"&gt;
   ForceType image/gif
 &lt;/Location&gt;
 
 # mais utilise les méthodes classiques d'attribution du type MIME
 # dans le sous-répertoire suivant :
-&lt;Location /images/mixed&gt;
+&lt;Location "/images/mixed"&gt;
   ForceType None
 &lt;/Location&gt;</pre>
 
@@ -2074,6 +2107,13 @@ requête</td></tr>
 
     <p>Cette section de configuration ne peut contenir que des
     directives qui supportent le <a href="directive-dict.html#Context">contexte de répertoire</a>.</p>
+
+    <div class="warning">
+    Certain variables, such as <code>CONTENT_TYPE</code> and other
+    response headers, are set after &lt;If&gt; conditions have already
+    been evaluated, and so will not be available to use in this
+    directive.
+    </div>
 
 
 <h3>Voir aussi</h3>
@@ -2739,7 +2779,7 @@ XML</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>N'applique les directives contenues qu'aux URLs
 spécifiées</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>&lt;Location
-    <var>chemin URL</var>|<var>URL</var>&gt; ... &lt;/Location&gt;</code></td></tr>
+    "<var>chemin URL</var>|<var>URL</var>"&gt; ... &lt;/Location&gt;</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
@@ -2783,7 +2823,7 @@ spécifiées</td></tr>
     directives contenues dans la section s'appliqueront à /private1,
     /private1/ et /private1/file.txt, mais pas à /private1other. 
     </p>
-    <pre class="prettyprint lang-config">&lt;Location /private1&gt;
+    <pre class="prettyprint lang-config">&lt;Location "/private1"&gt;
     #  ...
 &lt;/Location&gt;</pre>
 
@@ -2792,7 +2832,7 @@ spécifiées</td></tr>
     directives contenues dans la section s'appliqueront à /private2/ et
     à /private2/file.txt, mais pas à /private2other.
     </p>
-    <pre class="prettyprint lang-config">&lt;Location /private2<em>/</em>&gt;
+    <pre class="prettyprint lang-config">&lt;Location "/private2<em>/</em>"&gt;
     # ...
 &lt;/Location&gt;</pre>
 
@@ -2803,7 +2843,7 @@ spécifiées</td></tr>
     des contenus situés en dehors du système de fichiers. Pour les
     contenus situés à l'intérieur du système de fichiers, utilisez
     plutôt les sections <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code> et <code class="directive"><a href="#files">&lt;Files&gt;</a></code>. <code>&lt;Location
-    /&gt;</code> constitue une exception et permet d'appliquer aisément
+    "/"&gt;</code> constitue une exception et permet d'appliquer aisément
     une configuration à l'ensemble du serveur.</p>
     </div>
 
@@ -2845,7 +2885,7 @@ spécifiées</td></tr>
     appartenant au domaine <code>example.com</code>, vous pouvez
     utiliser :</p>
 
-    <pre class="prettyprint lang-config">&lt;Location /status&gt;
+    <pre class="prettyprint lang-config">&lt;Location "/status"&gt;
   SetHandler server-status
   Require host example.com
 &lt;/Location&gt;</pre>
@@ -2863,7 +2903,7 @@ spécifiées</td></tr>
       explicitement les slashes multiples si telle est votre
       intention.</p>
 
-      <p>Par exemple, <code>&lt;LocationMatch ^/abc&gt;</code> va
+      <p>Par exemple, <code>&lt;LocationMatch "^/abc"&gt;</code> va
       correspondre à l'URL <code>/abc</code> mais pas à l'URL <code>
       //abc</code>. La directive <code class="directive">&lt;Location&gt;</code> sans expression rationnelle se comporte de
       la même manière lorsqu'elle est utilisée pour des requêtes
@@ -2871,7 +2911,7 @@ spécifiées</td></tr>
       est utilisée pour des requêtes non mandatées, elle fera
       correspondre implicitement les slashes multiples à des slashes
       uniques. Par exemple, si vous spécifiez <code>&lt;Location
-      /abc/def&gt;</code>, une requête de la forme
+      "/abc/def"&gt;</code>, une requête de la forme
       <code>/abc//def</code> correspondra.</p>
     </div>
 
@@ -2908,6 +2948,14 @@ correspondant à une expression rationnelle</td></tr>
     <p>correspondrait à toute URL contenant les sous-chaînes
     <code>/extra/data</code> ou <code>/special/data</code>.</p>
 
+    <div class="note"><p>Si vous recherchez une URL <strong>commençant par</strong>
+    plutôt que seulement contenant <code>/extra/data</code>, préfixez
+    l'expression rationnelle avec un <code>^</code>.</p>
+
+    <pre class="prettyprint lang-config">&lt;LocationMatch "^/(extra|special)/data"&gt;</pre>
+
+    </div>
+
     <p>A partir de la version 2.4.8, les groupes nommés et les
     références arrières sont extraits et enregistrés dans
     l'environnement avec leur nom en majuscules et préfixé
@@ -2918,7 +2966,7 @@ correspondant à une expression rationnelle</td></tr>
     nommées) sont ignorées. Vous devez utiliser à la place des groupes
     nommés.</p>
 
-<pre class="prettyprint lang-config">&lt;LocationMatch ^/combined/(?&lt;sitename&gt;[^/]+)&gt;
+<pre class="prettyprint lang-config">&lt;LocationMatch "^/combined/(?&lt;sitename&gt;[^/]+)"&gt;
     require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
 &lt;/LocationMatch&gt;</pre>
 
@@ -4393,7 +4441,7 @@ gestionnaire particulier</td></tr>
     gestionnaire à des fichiers possèdant une extension de nom de
     fichier particulière. Par exemple :</p>
 
-    <pre class="prettyprint lang-config">&lt;FilesMatch \.php$&gt;
+    <pre class="prettyprint lang-config">&lt;FilesMatch "\.php$"&gt;
     SetHandler application/x-httpd-php
 &lt;/FilesMatch&gt;</pre>
 
@@ -4736,10 +4784,10 @@ d'hôte spécifique ou à une adresse IP</td></tr>
 
     <pre class="prettyprint lang-config">&lt;VirtualHost 10.1.2.3:80&gt;
   ServerAdmin webmaster@host.example.com
-  DocumentRoot /www/docs/host.example.com
+  DocumentRoot "/www/docs/host.example.com"
   ServerName host.example.com
-  ErrorLog logs/host.example.com-error_log
-  TransferLog logs/host.example.com-access_log
+  ErrorLog "logs/host.example.com-error_log"
+  TransferLog "logs/host.example.com-access_log"
 &lt;/VirtualHost&gt;</pre>
 
 
@@ -4751,10 +4799,10 @@ d'hôte spécifique ou à une adresse IP</td></tr>
 
     <pre class="prettyprint lang-config">&lt;VirtualHost [2001:db8::a00:20ff:fea7:ccea]:80&gt;
   ServerAdmin webmaster@host.example.com
-  DocumentRoot /www/docs/host.example.com
+  DocumentRoot "/www/docs/host.example.com"
   ServerName host.example.com
-  ErrorLog logs/host.example.com-error_log
-  TransferLog logs/host.example.com-access_log
+  ErrorLog "logs/host.example.com-error_log"
+  TransferLog "logs/host.example.com-access_log"
 &lt;/VirtualHost&gt;</pre>
 
 
