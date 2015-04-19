@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_authz_core.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_authz_core.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Socle d'autorisation</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>authz_core_module</td></tr>
@@ -85,13 +83,13 @@ d'autorisation</a></li>
     l'utilisateur ne doit appartenir ni au groupe <code>temps</code>, ni
     au groupe LDAP <code>Employés temporaires</code>.</p>
 
-    <pre class="prettyprint lang-config">&lt;Directory /www/mydocs&gt;
+    <pre class="prettyprint lang-config">&lt;Directory "/www/mydocs"&gt;
     &lt;RequireAll&gt;
         &lt;RequireAny&gt;
             Require user superadmin
             &lt;RequireAll&gt;
             Require group admins
-            Require ldap-group cn=Administrateurs,o=Airius
+            Require ldap-group "cn=Administrateurs,o=Airius"
                 &lt;RequireAny&gt;
                 Require group ventes
                 Require ldap-attribute dept="ventes"
@@ -100,7 +98,7 @@ d'autorisation</a></li>
         &lt;/RequireAny&gt;
         &lt;RequireNone&gt;
             Require group temps
-            Require ldap-group cn=Employés temporaires,o=Airius
+            Require ldap-group "cn=Employés temporaires,o=Airius"
         &lt;/RequireNone&gt;
     &lt;/RequireAll&gt;
 &lt;/Directory&gt;</pre>
@@ -128,8 +126,8 @@ d'autorisation</a></li>
     <code>User-Agent</code> (type de navigateur), <code>Referer</code>,
     entre autres.</p>
 
-    <pre class="prettyprint lang-config">SetEnvIf User-Agent ^KnockKnock/2\.0 let_me_in
-&lt;Directory /docroot&gt;
+    <pre class="prettyprint lang-config">SetEnvIf User-Agent "^KnockKnock/2\.0" let_me_in
+&lt;Directory "/docroot"&gt;
     Require env let_me_in
 &lt;/Directory&gt;</pre>
 
@@ -239,20 +237,20 @@ d'autorisation</a></h2>
 	serveurs ldap :
         </p>
 
-        <pre class="prettyprint lang-config">&lt;AuthzProviderAlias ldap-group ldap-group-alias1 cn=my-group,o=ctx&gt;
+        <pre class="prettyprint lang-config">&lt;AuthzProviderAlias ldap-group ldap-group-alias1 "cn=my-group,o=ctx"&gt;
     AuthLDAPBindDN cn=youruser,o=ctx
     AuthLDAPBindPassword yourpassword
-    AuthLDAPURL ldap://ldap.host/o=ctx
+    AuthLDAPURL "ldap://ldap.host/o=ctx"
 &lt;/AuthzProviderAlias&gt;
 
-&lt;AuthzProviderAlias ldap-group ldap-group-alias2 cn=my-other-group,o=dev&gt;
-    AuthLDAPBindDN cn=yourotheruser,o=dev
+&lt;AuthzProviderAlias ldap-group ldap-group-alias2 "cn=my-other-group,o=dev"&gt;
+    AuthLDAPBindDN "cn=yourotheruser,o=dev"
     AuthLDAPBindPassword yourotherpassword
-    AuthLDAPURL ldap://other.ldap.host/o=dev?cn
+    AuthLDAPURL "ldap://other.ldap.host/o=dev?cn"
 &lt;/AuthzProviderAlias&gt;
 
-Alias /secure /webpages/secure
-&lt;Directory /webpages/secure&gt;
+Alias "/secure" "/webpages/secure"
+&lt;Directory "/webpages/secure"&gt;
     Require all granted
 
     AuthBasicProvider file
@@ -318,20 +316,20 @@ configuration précédentes.</td></tr>
     appartenant au groupe <code>gamma</code> sont autorisés à accéder à
     <code>/www/docs/ab/gamma</code>.</div>
 
-    <pre class="prettyprint lang-config">&lt;Directory /www/docs&gt;
+    <pre class="prettyprint lang-config">&lt;Directory "/www/docs"&gt;
     AuthType Basic
     AuthName Documents
     AuthBasicProvider file
-    AuthUserFile /usr/local/apache/passwd/passwords
+    AuthUserFile "/usr/local/apache/passwd/passwords"
     Require group alpha
 &lt;/Directory&gt;
 
-&lt;Directory /www/docs/ab&gt;
+&lt;Directory "/www/docs/ab"&gt;
     AuthMerging Or
     Require group beta
 &lt;/Directory&gt;
 
-&lt;Directory /www/docs/ab/gamma&gt;
+&lt;Directory "/www/docs/ab/gamma"&gt;
     Require group gamma
 &lt;/Directory&gt;</pre>
 
@@ -467,8 +465,8 @@ d'autorisation.</td></tr>
     <pre class="prettyprint lang-config">AuthType Basic
 AuthName "Restricted Resource"
 AuthBasicProvider file
-AuthUserFile /web/users
-AuthGroupFile /web/groups
+AuthUserFile "/web/users"
+AuthGroupFile "/web/groups"
 Require group admin</pre>
 
 
@@ -491,7 +489,7 @@ Require group admin</pre>
     d'accès, à l'exception de ceux appartenant au groupe
     <code>reject</code>.</p>
 
-    <pre class="prettyprint lang-config">&lt;Directory /www/docs&gt;
+    <pre class="prettyprint lang-config">&lt;Directory "/www/docs"&gt;
     &lt;RequireAll&gt;
         Require group alpha beta
         Require not group reject
