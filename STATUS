@@ -240,6 +240,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              the proxy loop is retried (ping), so I need to rework this.
              Do you think we'd better remove the prefetch, or maybe just
              make it nonblocking (by default)?
+        jim: Non-blocking seems the best way to handle...
 
   *) http: Make ap_die() robust against any HTTP error code and not modify
      response status (finally logged) when nothing is to be done. PR 56035.
