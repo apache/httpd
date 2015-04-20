@@ -300,6 +300,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              and add a comment about the compare function. As Eric explained above, the real
              point is to return +1 instead of 0 there, so that duplicates are added after
              each other (by order of insertion).
+        jim: OK, perfect. Since 2.4 uses apr-1.5, we need to use the same
+             logic-flow as the comp() function in testskiplist to ensure
+             that (1) dups are allowed and (2) inserted in the correct place.
 
   *) mod_authz_core: Allow "Require expr" to work when the expression is quoted,
      as in an example in the doc.  PR 56235
