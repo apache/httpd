@@ -12,6 +12,8 @@ Changes with Apache 2.4.13
      calls r:wsupgrade() can cause a child process crash. 
      [Edward Lu <Chaosed0 gmail.com>]
 
+  *) mpm_event: Allow for timer events duplicates. [Jim Jagielski, Yann Ylavic]
+
   *) mod_proxy, mod_ssl, mod_cache_socache, mod_socache_*: Support machine
      readable server-status produced when using the "?auto" query string.
      [Rainer Jung]
