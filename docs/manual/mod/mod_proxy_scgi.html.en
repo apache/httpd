@@ -109,25 +109,33 @@
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable or disable internal redirect responses from the
 backend</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxySCGIInternalRedirect On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxySCGIInternalRedirect On|Off|<var>Headername</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ProxySCGIInternalRedirect On</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_scgi</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>The <var>Headername</var> feature is available in Apache
+httpd 2.5.0 and later.</td></tr>
 </table>
     <p>The <code class="directive">ProxySCGIInternalRedirect</code> enables the backend
     to internally redirect the gateway to a different URL. This feature
     originates in <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>, which internally redirects the
     response if the response status is <code>OK</code> (<code>200</code>) and
-    the response contains a <code>Location</code> header and its value starts
-    with a slash (<code>/</code>). This value is interpreted as a new local
-    URL that Apache httpd internally redirects to.</p>
+    the response contains a <code>Location</code> (or configured alternate
+    header) and its value starts with a slash (<code>/</code>). This value is 
+    interpreted as a new local URL that Apache httpd internally redirects to.</p>
 
     <p><code class="module"><a href="../mod/mod_proxy_scgi.html">mod_proxy_scgi</a></code> does the same as
     <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code> in this regard, except that you can turn off the
-    feature.</p>
+    feature or specify the use of a header other than <code>Location</code>.</p>
 
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">ProxySCGIInternalRedirect Off</pre>
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">    ProxySCGIInternalRedirect Off
+
+# Django and some other frameworks will fully qualify "local URLs"
+# set by the application, so an alternate header must be used.
+&lt;Location /django-app/&gt;
+    ProxySCGIInternalRedirect X-Location
+&lt;/Location&gt;</pre>
 </div>
 
 </div>
