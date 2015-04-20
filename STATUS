@@ -279,7 +279,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1666618
                   http://svn.apache.org/r1674697
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-event_timers_duplicates-v2.patch
-     +1: ylavic, covener
+     +1: ylavic, covener, jim
      covener: what's the background here? What's currently broken?
      ylavic: I expected to find a common compare function for both MPMs event
              and motorz, but I now think that won't be the case (not the same
