@@ -64,8 +64,8 @@
     as swapping increases the latency of each request beyond a point
     that users consider "fast enough". This causes users to hit
     stop and reload, further increasing the load. You can, and
-    should, control the <code class="directive"><a href="../mod/mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></code> setting so that your server
-    does not spawn so many children it starts swapping. This procedure
+    should, control the <code class="directive"><a href="../mod/mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></code> setting, so that your server
+    does not spawn so many children that it starts swapping. The procedure
     for doing this is simple: determine the size of your average Apache
     process, by looking at your process list via a tool such as
     <code>top</code>, and divide this into your total available memory,
@@ -82,7 +82,7 @@
 
     <ul>
       <li>
-        <p>Run the latest stable release and patchlevel of the
+        <p>Run the latest stable release and patch level of the
         operating system that you choose. Many OS suppliers have
         introduced significant performance improvements to their
         TCP stacks and thread libraries in recent years.</p>
@@ -157,9 +157,9 @@
 
       <p>Wherever in your URL-space you do not have an <code>Options
       FollowSymLinks</code>, or you do have an <code>Options
-      SymLinksIfOwnerMatch</code> Apache will have to issue extra
-      system calls to check up on symlinks. One extra call per
-      filename component. For example, if you had:</p>
+      SymLinksIfOwnerMatch</code>, Apache will need to issue extra
+      system calls to check up on symlinks. (One extra call per
+      filename component.) For example, if you had:</p>
 
       <pre class="prettyprint lang-config">DocumentRoot "/www/htdocs"
 &lt;Directory "/"&gt;
@@ -173,7 +173,7 @@
       <code>/www/htdocs/index.html</code>. The results of these
       <code>lstats</code> are never cached, so they will occur on
       every single request. If you really desire the symlinks
-      security checking you can do something like this:</p>
+      security checking, you can do something like this:</p>
 
       <pre class="prettyprint lang-config">DocumentRoot "/www/htdocs"
 &lt;Directory "/"&gt;
@@ -187,7 +187,7 @@
 
       <p>This at least avoids the extra checks for the
       <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> path.
-      Note that you'll need to add similar sections if you
+      Note that you'll need to add similar sections, if you
       have any <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code> or
       <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> paths
       outside of your document root. For highest performance,
@@ -201,7 +201,7 @@
       
 
       <p>Wherever in your URL-space you allow overrides (typically
-      <code>.htaccess</code> files) Apache will attempt to open
+      <code>.htaccess</code> files), Apache will attempt to open
       <code>.htaccess</code> for each filename component. For
       example,</p>
 
@@ -225,7 +225,7 @@
 
       
 
-      <p>If at all possible, avoid content-negotiation if you're
+      <p>If at all possible, avoid content negotiation, if you're
       really interested in every last ounce of performance. In
       practice the benefits of negotiation outweigh the performance
       penalties. There's one case where you can speed up the server.
@@ -247,7 +247,7 @@
       determined by reading this single file, rather than having to
       scan the directory for files.</p>
 
-    <p>If your site needs content negotiation consider using
+    <p>If your site needs content negotiation, consider using
     <code>type-map</code> files, rather than the <code>Options
     MultiViews</code> directive to accomplish the negotiation. See the
     <a href="../content-negotiation.html">Content Negotiation</a>
@@ -262,7 +262,7 @@
 
       <p>In situations where Apache 2.x needs to look at the contents
       of a file being delivered--for example, when doing server-side-include
-      processing--it normally memory-maps the file if the OS supports
+      processing--it normally memory-maps the file, if the OS supports
       some form of <code>mmap(2)</code>.</p>
 
       <p>On some platforms, this memory-mapping improves performance.
@@ -298,7 +298,7 @@
 
       <p>In situations where Apache 2.x can ignore the contents of the file
       to be delivered -- for example, when serving static file content --
-      it normally uses the kernel sendfile support the file if the OS
+      it normally uses the kernel sendfile support for the file, if the OS
       supports the <code>sendfile(2)</code> operation.</p>
 
       <p>On most platforms, using sendfile improves performance by eliminating
@@ -337,14 +337,14 @@
       <code class="directive"><a href="../mod/prefork.html#minspareservers">MinSpareServers</a></code>
       setting. So a server being accessed by 100 simultaneous
       clients, using the default <code class="directive"><a href="../mod/mpm_common.html#startservers">StartServers</a></code> of <code>5</code> would take on
-      the order 95 seconds to spawn enough children to handle
+      the order of 95 seconds to spawn enough children to handle
       the load. This works fine in practice on real-life servers,
-      because they aren't restarted frequently. But does really
+      because they aren't restarted frequently. But it does really
       poorly on benchmarks which might only run for ten minutes.</p>
 
       <p>The one-per-second rule was implemented in an effort to
       avoid swamping the machine with the startup of new children. If
-      the machine is busy spawning children it can't service
+      the machine is busy spawning children, it can't service
       requests. But it has such a drastic effect on the perceived
       performance of Apache that it had to be replaced. As of Apache
       1.3, the code will relax the one-per-second rule. It will spawn
@@ -358,7 +358,7 @@
       unnecessary to twiddle the <code class="directive"><a href="../mod/prefork.html#minspareservers">MinSpareServers</a></code>, <code class="directive"><a href="../mod/prefork.html#maxspareservers">MaxSpareServers</a></code> and <code class="directive"><a href="../mod/mpm_common.html#startservers">StartServers</a></code> knobs. When more than 4 children are
       spawned per second, a message will be emitted to the
       <code class="directive"><a href="../mod/core.html#errorlog">ErrorLog</a></code>. If you
-      see a lot of these errors then consider tuning these settings.
+      see a lot of these errors, then consider tuning these settings.
       Use the <code class="module"><a href="../mod/mod_status.html">mod_status</a></code> output as a guide.</p>
 
     <p>Related to process creation is process death induced by the
@@ -528,7 +528,7 @@
 
     
 
-    <h3>accept Serialization - multiple sockets</h3>
+    <h3>accept Serialization - Multiple Sockets</h3>
 
       
 
@@ -542,7 +542,7 @@
       <p>This discusses a shortcoming in the Unix socket API. Suppose
       your web server uses multiple <code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code> statements to listen on either multiple
       ports or multiple addresses. In order to test each socket
-      to see if a connection is ready Apache uses
+      to see if a connection is ready, Apache uses
       <code>select(2)</code>. <code>select(2)</code> indicates that a
       socket has <em>zero</em> or <em>at least one</em> connection
       waiting on it. Apache's model includes multiple children, and
@@ -579,12 +579,12 @@
       time, and so multiple children will block at
       <code>select</code> when they are in between requests. All
       those blocked children will awaken and return from
-      <code>select</code> when a single request appears on any socket
-      (the number of children which awaken varies depending on the
-      operating system and timing issues). They will all then fall
+      <code>select</code> when a single request appears on any socket.
+      (The number of children which awaken varies depending on the
+      operating system and timing issues.) They will all then fall
       down into the loop and try to <code>accept</code> the
       connection. But only one will succeed (assuming there's still
-      only one connection ready), the rest will be <em>blocked</em>
+      only one connection ready). The rest will be <em>blocked</em>
       in <code>accept</code>. This effectively locks those children
       into serving requests from that one socket and no other
       sockets, and they'll be stuck there until enough new requests
@@ -602,9 +602,9 @@
       accomplishing nothing. Meanwhile none of those children are
       servicing requests that occurred on other sockets until they
       get back up to the <code>select</code> again. Overall this
-      solution does not seem very fruitful unless you have as many
-      idle CPUs (in a multiprocessor box) as you have idle children,
-      not a very likely situation.</p>
+      solution does not seem very fruitful, unless you have as many
+      idle CPUs (in a multiprocessor box) as you have idle children
+      (not a very likely situation).</p>
 
       <p>Another solution, the one used by Apache, is to serialize
       entry into the inner loop. The loop looks like this
@@ -656,7 +656,7 @@
       <p>Another solution that has been considered but never
       implemented is to partially serialize the loop -- that is, let
       in a certain number of processes. This would only be of
-      interest on multiprocessor boxes where it's possible multiple
+      interest on multiprocessor boxes where it's possible that multiple
       children could run simultaneously, and the serialization
       actually doesn't take advantage of the full bandwidth. This is
       a possible area of future investigation, but priority remains
@@ -669,16 +669,16 @@
 
     
 
-    <h3>accept Serialization - single socket</h3>
+    <h3>accept Serialization - Single Socket</h3>
 
       
 
       <p>The above is fine and dandy for multiple socket servers, but
       what about single socket servers? In theory they shouldn't
-      experience any of these same problems because all children can
+      experience any of these same problems, because all children can
       just block in <code>accept(2)</code> until a connection
       arrives, and no starvation results. In practice this hides
-      almost the same "spinning" behaviour discussed above in the
+      almost the same "spinning" behavior discussed above in the
       non-blocking solution. The way that most TCP stacks are
       implemented, the kernel actually wakes up all processes blocked
       in <code>accept</code> when a single connection arrives. One of
@@ -686,7 +686,7 @@
       the rest spin in the kernel and go back to sleep when they
       discover there's no connection for them. This spinning is
       hidden from the user-land code, but it's there nonetheless.
-      This can result in the same load-spiking wasteful behaviour
+      This can result in the same load-spiking wasteful behavior
       that a non-blocking solution to the multiple sockets case
       can.</p>
 
@@ -700,8 +700,8 @@
       single-socket showed an extra 100ms latency on each request.
       This latency is probably a wash on long haul lines, and only an
       issue on LANs. If you want to override the single socket
-      serialization you can define
-      <code>SINGLE_LISTEN_UNSERIALIZED_ACCEPT</code> and then
+      serialization, you can define
+      <code>SINGLE_LISTEN_UNSERIALIZED_ACCEPT</code>, and then
       single-socket servers will not serialize at all.</p>
 
     
@@ -713,27 +713,27 @@
       <p>As discussed in <a href="http://www.ics.uci.edu/pub/ietf/http/draft-ietf-http-connection-00.txt">
       draft-ietf-http-connection-00.txt</a> section 8, in order for
       an HTTP server to <strong>reliably</strong> implement the
-      protocol it needs to shutdown each direction of the
-      communication independently (recall that a TCP connection is
-      bi-directional, each half is independent of the other).</p>
+      protocol, it needs to shut down each direction of the
+      communication independently. (Recall that a TCP connection is
+      bi-directional, each half is independent of the other.)</p>
 
-      <p>When this feature was added to Apache it caused a flurry of
-      problems on various versions of Unix because of a
-      shortsightedness. The TCP specification does not state that the
-      <code>FIN_WAIT_2</code> state has a timeout, but it doesn't prohibit it.
+      <p>When this feature was added to Apache, it caused a flurry of
+      problems on various versions of Unix because of shortsightedness.
+      The TCP specification does not state that the <code>FIN_WAIT_2</code>
+      state has a timeout, but it doesn't prohibit it.
       On systems without the timeout, Apache 1.2 induces many sockets
       stuck forever in the <code>FIN_WAIT_2</code> state. In many cases this
       can be avoided by simply upgrading to the latest TCP/IP patches
       supplied by the vendor. In cases where the vendor has never
       released patches (<em>i.e.</em>, SunOS4 -- although folks with
-      a source license can patch it themselves) we have decided to
+      a source license can patch it themselves), we have decided to
       disable this feature.</p>
 
-      <p>There are two ways of accomplishing this. One is the socket
+      <p>There are two ways to accomplish this. One is the socket
       option <code>SO_LINGER</code>. But as fate would have it, this
       has never been implemented properly in most TCP/IP stacks. Even
       on those stacks with a proper implementation (<em>i.e.</em>,
-      Linux 2.0.31) this method proves to be more expensive (cputime)
+      Linux 2.0.31), this method proves to be more expensive (cputime)
       than the next solution.</p>
 
       <p>For the most part, Apache implements this in a function
@@ -770,10 +770,10 @@
       but it is required for a reliable implementation. As HTTP/1.1
       becomes more prevalent, and all connections are persistent,
       this expense will be amortized over more requests. If you want
-      to play with fire and disable this feature you can define
+      to play with fire and disable this feature, you can define
       <code>NO_LINGCLOSE</code>, but this is not recommended at all.
       In particular, as HTTP/1.1 pipelined persistent connections
-      come into use <code>lingering_close</code> is an absolute
+      come into use, <code>lingering_close</code> is an absolute
       necessity (and <a href="http://www.w3.org/Protocols/HTTP/Performance/Pipeline.html">
       pipelined connections are faster</a>, so you want to support
       them).</p>
@@ -791,7 +791,7 @@
       for, it typically is implemented using shared memory. The rest
       default to using an on-disk file. The on-disk file is not only
       slow, but it is unreliable (and less featured). Peruse the
-      <code>src/main/conf.h</code> file for your architecture and
+      <code>src/main/conf.h</code> file for your architecture, and
       look for either <code>USE_MMAP_SCOREBOARD</code> or
       <code>USE_SHMGET_SCOREBOARD</code>. Defining one of those two
       (as well as their companions <code>HAVE_MMAP</code> and
@@ -799,11 +799,11 @@
       shared memory code. If your system has another type of shared
       memory, edit the file <code>src/main/http_main.c</code> and add
       the hooks necessary to use it in Apache. (Send us back a patch
-      too please.)</p>
+      too, please.)</p>
 
       <div class="note">Historical note: The Linux port of Apache didn't start to
       use shared memory until version 1.2 of Apache. This oversight
-      resulted in really poor and unreliable behaviour of earlier
+      resulted in really poor and unreliable behavior of earlier
       versions of Apache on Linux.</div>
 
     
@@ -814,7 +814,7 @@
 
       <p>If you have no intention of using dynamically loaded modules
       (you probably don't if you're reading this and tuning your
-      server for every last ounce of performance) then you should add
+      server for every last ounce of performance), then you should add
       <code>-DDYNAMIC_MODULE_LIMIT=0</code> when building your
       server. This will save RAM that's allocated only for supporting
       dynamically loaded modules.</p>
@@ -854,7 +854,7 @@
 
     <div class="note">Note the lack of <code>accept(2)</code> serialization. On this
     particular platform, the worker MPM uses an unserialized accept by
-    default unless it is listening on multiple ports.</div>
+    default, unless it is listening on multiple ports.</div>
 
     <div class="example"><pre>/65:    lwp_park(0x00000000, 0)                         = 0
 /67:    lwp_unpark(65, 1)                               = 0</pre></div>
