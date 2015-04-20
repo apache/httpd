@@ -105,6 +105,36 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mpm_event: Allow for timer events duplicates.
+     trunk patch: http://svn.apache.org/r1666468
+                  http://svn.apache.org/r1666618
+                  http://svn.apache.org/r1674697
+     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-event_timers_duplicates-v2.patch
+     +1: ylavic, covener, jim
+     covener: what's the background here? What's currently broken?
+     ylavic: I expected to find a common compare function for both MPMs event
+             and motorz, but I now think that won't be the case (not the same
+             constraints for both since event does not apr_skiplist_remove(),
+             see http://marc.info/?l=apache-httpd-dev&m=142714857911558&w=2 for
+             details). Hence I'm moving this backport back to proposals, it is
+             IMO the right fix to not lose timers registered in the same micro-
+             second (in MPM event).
+     jim:    As I see it, the current code in Event does work as expected. The
+             above simply adds some checks, does it not? As far as the logic
+             is concerned, what exists and what is proposed does the exact
+             same thing, doesn't it?
+     covener: IIUC, currently event cannot insert two timer_event_t's that would fire at the
+              same apr_time_t because the compare function would return 0 and insert_compare
+              wouldn't let the duplicate in. post-patch, only two timer_event_t's with the same
+              address are equals.
+     ylavic: r1674697 (and v2) removes the debugging checks (not necessary in 2.4.x IMHO),
+             and add a comment about the compare function. As Eric explained above, the real
+             point is to return +1 instead of 0 there, so that duplicates are added after
+             each other (by order of insertion).
+        jim: OK, perfect. Since 2.4 uses apr-1.5, we need to use the same
+             logic-flow as the comp() function in testskiplist to ensure
+             that (1) dups are allowed and (2) inserted in the correct place.
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -273,36 +303,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1666998
      2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic
-
-  *) mpm_event: Allow for timer events duplicates.
-     trunk patch: http://svn.apache.org/r1666468
-                  http://svn.apache.org/r1666618
-                  http://svn.apache.org/r1674697
-     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-event_timers_duplicates-v2.patch
-     +1: ylavic, covener, jim
-     covener: what's the background here? What's currently broken?
-     ylavic: I expected to find a common compare function for both MPMs event
-             and motorz, but I now think that won't be the case (not the same
-             constraints for both since event does not apr_skiplist_remove(),
-             see http://marc.info/?l=apache-httpd-dev&m=142714857911558&w=2 for
-             details). Hence I'm moving this backport back to proposals, it is
-             IMO the right fix to not lose timers registered in the same micro-
-             second (in MPM event).
-     jim:    As I see it, the current code in Event does work as expected. The
-             above simply adds some checks, does it not? As far as the logic
-             is concerned, what exists and what is proposed does the exact
-             same thing, doesn't it?
-     covener: IIUC, currently event cannot insert two timer_event_t's that would fire at the
-              same apr_time_t because the compare function would return 0 and insert_compare
-              wouldn't let the duplicate in. post-patch, only two timer_event_t's with the same
-              address are equals.
-     ylavic: r1674697 (and v2) removes the debugging checks (not necessary in 2.4.x IMHO),
-             and add a comment about the compare function. As Eric explained above, the real
-             point is to return +1 instead of 0 there, so that duplicates are added after
-             each other (by order of insertion).
-        jim: OK, perfect. Since 2.4 uses apr-1.5, we need to use the same
-             logic-flow as the comp() function in testskiplist to ensure
-             that (1) dups are allowed and (2) inserted in the correct place.
 
   *) mod_authz_core: Allow "Require expr" to work when the expression is quoted,
      as in an example in the doc.  PR 56235
