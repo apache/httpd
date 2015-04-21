@@ -281,7 +281,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1585609
      2.4.x patch: trunk works (modulo CHANGES)
      +1: 
-  
+
+  *) mod_dir: Use FallBackResource when DirectoryIndex is not available. PR56067
+     trunk patch: 1675103
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1 covener
   
 OTHER PROPOSALS
 
