@@ -44,7 +44,7 @@ Body:----------es--
 <!--#include virtual="include/top.html" -->
 
     El servidor ha cerrado la conexi&oacute;n de red
-    debido a que el navegador no termin&oacute; la solicitud
+    debido a que el navegador no ha finalizado la solicitud
     dentro del tiempo permitido.
 
 <!--#include virtual="include/bottom.html" -->

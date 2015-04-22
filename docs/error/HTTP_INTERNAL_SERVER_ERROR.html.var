@@ -88,8 +88,8 @@ Body:----------es--
 <!--#set var="TITLE" value="&iexcl;Error del servidor!" -->
 <!--#include virtual="include/top.html" -->
 
-    Se ha producido un error interno en el servidor y le
-   ha sido imposible completar su solicitud.
+    Se ha producido un error interno en el servidor y no
+    se ha podido completar su solicitud.
 
    <!--#if expr="-n v('REDIRECT_ERROR_NOTES')" -->
 
@@ -99,8 +99,8 @@ Body:----------es--
 
    <!--#else -->
 
-    Se ha producido un error interno en el servidor y no
-    ha podido completar su solicitud. El servidor est&aacute;
+    Se ha producido un error interno en el servidor y no se
+    ha podido completar su solicitud. O el servidor est&aacute;
     sobrecargado o ha habido un fallo en la ejecuci&oacute;n de 
     un programa CGI.
 

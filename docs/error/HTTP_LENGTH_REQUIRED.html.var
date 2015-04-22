@@ -44,9 +44,9 @@ Body:----------es--
 <!--#set var="TITLE" value="&iexcl;Error en la longitud del contenido!" -->
 <!--#include virtual="include/top.html" -->
 
-    Una petici&oacute;n con el m&eacute;todo <!--#echo encoding="none"
-    var="REDIRECT_REQUEST_METHOD"-->  requiere que el contenido de la 
-    variable de los encabezados <code>Content-Length</code> sea v&aacute;lida.
+    Una petici&oacute;n con el m&eacute;todo <!--#echo
+    var="REDIRECT_REQUEST_METHOD" -->  requiere que el encabezado 
+    <code>Content-Length</code> sea v&aacute;lido.
 
 <!--#include virtual="include/bottom.html" -->
 ----------es--
