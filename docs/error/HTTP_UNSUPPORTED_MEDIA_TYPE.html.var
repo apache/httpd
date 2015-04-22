@@ -37,10 +37,10 @@ Body:----------en--
 Content-language: es
 Content-type: text/html
 Body:----------es--
-<!--#set var="TITLE" value="El tipo de medio no est&aacute; implementado!" -->
+<!--#set var="TITLE" value="&iexcl;El tipo de medio no est&aacute; soportado!" -->
 <!--#include virtual="include/top.html" -->
 
-   El servidor no tiene implementado el tipo
+   El servidor no soporta el tipo
    de medio transmitido en la solicitud.
 
 <!--#include virtual="include/bottom.html" -->

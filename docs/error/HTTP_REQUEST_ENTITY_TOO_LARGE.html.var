@@ -42,10 +42,10 @@ Body:----------en--
 Content-language: es
 Content-type: text/html
 Body:----------es--
-<!--#set var="TITLE" value="La entidad solicitada es demasiado grande!" -->
+<!--#set var="TITLE" value="&iexcl;La entidad solicitada es demasiado grande!" -->
 <!--#include virtual="include/top.html" -->
 
-   El m&eacute;todo <!--#echo encoding="none" var="REDIRECT_REQUEST_METHOD"-->
+   El m&eacute;todo <!--#echo var="REDIRECT_REQUEST_METHOD"-->
    no permite transmitir la informaci&oacute;n, o el
    volumen de la informaci&oacute;n excede los l&iacute;mites
    de capacidad del mismo.
