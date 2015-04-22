@@ -608,6 +608,21 @@ AddType application/rss+xml;qs=0.8 .xml
     static files, where the generator of the response typically specifies
     a Content-Type, this directive has no effect.</p>
 
+
+    <note><title>Note</title>
+    <p>When explicit directives such as 
+    <directive module="core" >SetHandler</directive> or 
+    <directive module="mod_mime">AddHandler</directive> do not apply 
+    to the current request, the internal handler name normally set by those
+    diretives is set to match the content type specified by this directive.  
+    This is a historical behavior that some third-party modules 
+    (such as mod_php) may use "magic" content types used only to signal the 
+    module to take responsibility for the matching request.  Configurations
+    that rely on such "magic" types should be avoided by the user of 
+    <directive module="core" >SetHandler</directive> or 
+    <directive module="mod_mime">AddHandler</directive>. </p>
+    </note>
+
 </usage>
 <seealso><directive module="core">ForceType</directive></seealso>
 <seealso><module>mod_negotiation</module></seealso>
