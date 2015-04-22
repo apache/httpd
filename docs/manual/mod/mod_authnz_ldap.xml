@@ -111,11 +111,11 @@ for HTTP Basic authentication.</description>
 
 <section id="gcaveats"><title>General caveats</title>
 <p> This module caches authentication and authorization results based
-on the configuration of <module name="mod_ldap">mod_ldap</module>. Changes
+on the configuration of <module>mod_ldap</module>. Changes
 made to the backing LDAP server will not be immediately reflected on the
 HTTP Server, including but not limited to user lockouts/revocations, 
 password changes, or changes to group memberships.  Consult the directives 
-in <module name="mod_ldap">mod_ldap</module> for details of the cache tunables.
+in <module>mod_ldap</module> for details of the cache tunables.
 </p>
 </section>
 
