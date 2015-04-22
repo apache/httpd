@@ -68,8 +68,8 @@ for HTTP Basic authentication.</description>
 <section id="contents"><title>Contents</title>
 
     <ul>
-      <li>
-        <a href="#operation">Operation</a>
+      <li> <a href="#gcaveats">General caveats</a> </li>
+      <li> <a href="#operation">Operation</a>
 
         <ul>
           <li><a href="#authenphase">The Authentication
@@ -107,6 +107,16 @@ for HTTP Basic authentication.</description>
         </ul>
       </li>
     </ul>
+</section>
+
+<section id="gcaveats"><title>General caveats</title>
+<p> This module caches authentication and authorization results based
+on the configuration of <module name="mod_ldap">mod_ldap</module>. Changes
+made to the backing LDAP server will not be immediately reflected on the
+HTTP Server, including but not limited to user lockouts/revocations, 
+password changes, or changes to group memberships.  Consult the directives 
+in <module name="mod_ldap">mod_ldap</module> for details of the cache tunables.
+</p>
 </section>
 
 <section id="operation"><title>Operation</title>
