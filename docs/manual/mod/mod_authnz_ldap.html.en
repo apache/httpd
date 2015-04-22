@@ -64,6 +64,7 @@ for HTTP Basic authentication.</td></tr>
 <div id="quickview"><h3>Topics</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#contents">Contents</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#gcaveats">General caveats</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#operation">Operation</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#requiredirectives">The Require Directives</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#examples">Examples</a></li>
@@ -107,8 +108,8 @@ for HTTP Basic authentication.</td></tr>
 <h2><a name="contents" id="contents">Contents</a></h2>
 
     <ul>
-      <li>
-        <a href="#operation">Operation</a>
+      <li> <a href="#gcaveats">General caveats</a> </li>
+      <li> <a href="#operation">Operation</a>
 
         <ul>
           <li><a href="#authenphase">The Authentication
@@ -147,6 +148,16 @@ for HTTP Basic authentication.</td></tr>
         </ul>
       </li>
     </ul>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="gcaveats" id="gcaveats">General caveats</a></h2>
+<p> This module caches authentication and authorization results based
+on the configuration of <code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code>. Changes
+made to the backing LDAP server will not be immediately reflected on the
+HTTP Server, including but not limited to user lockouts/revocations, 
+password changes, or changes to group memberships.  Consult the directives 
+in <code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code> for details of the cache tunables.
+</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="operation" id="operation">Operation</a></h2>
