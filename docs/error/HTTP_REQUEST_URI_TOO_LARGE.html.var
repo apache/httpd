@@ -40,11 +40,11 @@ Body:----------en--
 Content-language: es
 Content-type: text/html
 Body:----------es--
-<!--#set var="TITLE" value="El URI enviado es demasiado largo!" -->
+<!--#set var="TITLE" value="&iexcl;El URI enviado es demasiado largo!" -->
 <!--#include virtual="include/top.html" -->
 
-   La longitud del URL solicitado excede el l&iacute;mite de
-   capacidad para este servidor. La solicitud no puede ser procesada.
+   La longitud de la URL solicitada excede el l&iacute;mite de
+   capacidad para este servidor. No se puede procesar la solicitud.
 
 <!--#include virtual="include/bottom.html" -->
 ----------es--
