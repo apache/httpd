@@ -1880,6 +1880,20 @@ media type in the HTTP Content-Type header field</td></tr>
     static files, where the generator of the response typically specifies
     a Content-Type, this directive has no effect.</p>
 
+    <div class="note"><h3>Note</h3>
+    <p>When explicit directives such as
+    <code class="directive"><a href="#sethandler">SetHandler</a></code> or
+    <code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code> do not apply
+    to the current request, the internal handler name normally set by those
+    directives is set to match the content type specified by this directive.
+    This is a historical behavior that some third-party modules
+    (such as mod_php) may use "magic" content types used only to signal the
+    module to take responsibility for the matching request.  Configurations
+    that rely on such "magic" types should be avoided by the use of
+    <code class="directive"><a href="#sethandler">SetHandler</a></code> or
+    <code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code>. </p>
+    </div>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
