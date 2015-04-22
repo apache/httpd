@@ -176,11 +176,6 @@
 #endif
 #endif
 
-/* Next Protocol Negotiation */
-#if !defined(OPENSSL_NO_NEXTPROTONEG) && defined(OPENSSL_NPN_NEGOTIATED)
-#define HAVE_TLS_NPN
-#endif
-
 /* ALPN Protocol Negotiation */
 #if OPENSSL_VERSION_NUMBER >= 0x10002000L && !defined(OPENSSL_NO_TLSEXT)
 #define HAVE_TLS_ALPN
