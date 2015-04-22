@@ -46,10 +46,9 @@ Body:----------es--
 <!--#set var="TITLE" value="&iexcl;Servicio no disponible!" -->
 <!--#include virtual="include/top.html" -->
 
-   Por el momento el servidor no puede atender su solicitud
-   debido a que est&aacute; en mantenimiento o a que tiene
-   problemas de capacidad. Por favor, int&eacute;ntelo de nuevo
-   m&aacute;s tarde.
+    El servidor no puede procesar su solicitud en este momento
+    debido a tareas de mantenimiento o a problemas de capacidad.
+    Por favor, int&eacute;ntelo de nuevo m&aacute;s tarde.
 
 <!--#include virtual="include/bottom.html" -->
 ----------es--

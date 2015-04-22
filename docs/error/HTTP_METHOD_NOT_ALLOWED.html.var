@@ -42,7 +42,8 @@ Body:----------es--
 <!--#set var="TITLE" value="&iexcl;M&eacute;todo no permitido!" -->
 <!--#include virtual="include/top.html" -->
 
-    No se permite el m&eacute;todo <!--#echo encoding="none" var="REDIRECT_REQUEST_METHOD"-->  para la URL solicitadia.
+    No se permite el m&eacute;todo <!--#echo var="REDIRECT_REQUEST_METHOD" -->  
+    para la URL solicitada.
 
 <!--#include virtual="include/bottom.html" -->
 ----------es--
