@@ -1902,6 +1902,7 @@ ForceType image/gif
     <directive module="mod_mime">AddHandler</directive> do not apply
     to the current request, the internal handler name normally set by those
     directives is instead set to the content type specified by this directive.
+    </p>
     <p>
     This is a historical behavior that some third-party modules
     (such as mod_php) may look for a "synthetic" content type used only to 
