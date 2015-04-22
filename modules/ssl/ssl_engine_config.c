@@ -574,8 +574,15 @@ const char *ssl_cmd_SSLRandomSeed(cmd_parms *cmd,
         seed->cpPath = ap_server_root_relative(mc->pPool, arg2+5);
     }
     else if ((arg2len > 4) && strEQn(arg2, "egd:", 4)) {
+#ifdef HAVE_RAND_EGD
         seed->nSrc   = SSL_RSSRC_EGD;
         seed->cpPath = ap_server_root_relative(mc->pPool, arg2+4);
+#else
+        return apr_pstrcat(cmd->pool, "Invalid SSLRandomSeed entropy source `",
+                           arg2, "': This version of " MODSSL_LIBRARY_NAME
+                           " does not support the Entropy Gathering Daemon "
+                           "(EGD).", NULL);
+#endif
     }
     else if (strcEQ(arg2, "builtin")) {
         seed->nSrc   = SSL_RSSRC_BUILTIN;
