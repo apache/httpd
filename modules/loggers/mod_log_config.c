@@ -1668,8 +1668,8 @@ static apr_status_t ap_default_log_writer( request_rec *r,
         info.using_provider = 1;
         info.startup       = 0;
         info.format        = "";
-        data->provider->writer(&info, data->handle,
-                                str, len);
+        rv = data->provider->writer(&info, data->handle,
+                                    str, len);
     }
 
     return rv;
