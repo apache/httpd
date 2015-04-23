@@ -56,7 +56,7 @@
     that users consider "fast enough". This causes users to hit
     stop and reload, further increasing the load. You can, and
     should, control the <directive module="mpm_common"
-    >MaxRequestWorkers</directive> setting, so that your server
+    >MaxRequestWorkers</directive> setting so that your server
     does not spawn so many children that it starts swapping. The procedure
     for doing this is simple: determine the size of your average Apache
     process, by looking at your process list via a tool such as
@@ -182,8 +182,8 @@ DocumentRoot "/www/htdocs"
 &lt;/Directory&gt;
       </highlight>
 
-      <p>and a request is made for the URI <code>/index.html</code>.
-      Then Apache will perform <code>lstat(2)</code> on
+      <p>and a request is made for the URI <code>/index.html</code>,
+      then Apache will perform <code>lstat(2)</code> on
       <code>/www</code>, <code>/www/htdocs</code>, and
       <code>/www/htdocs/index.html</code>. The results of these
       <code>lstats</code> are never cached, so they will occur on
@@ -203,7 +203,7 @@ DocumentRoot "/www/htdocs"
 
       <p>This at least avoids the extra checks for the
       <directive module="core">DocumentRoot</directive> path.
-      Note that you'll need to add similar sections, if you
+      Note that you'll need to add similar sections if you
       have any <directive module="mod_alias">Alias</directive> or
       <directive module="mod_rewrite">RewriteRule</directive> paths
       outside of your document root. For highest performance,
@@ -242,7 +242,7 @@ DocumentRoot "/www/htdocs"
 
       <title>Negotiation</title>
 
-      <p>If at all possible, avoid content negotiation, if you're
+      <p>If at all possible, avoid content negotiation if you're
       really interested in every last ounce of performance. In
       practice the benefits of negotiation outweigh the performance
       penalties. There's one case where you can speed up the server.
@@ -277,7 +277,7 @@ DocumentRoot "/www/htdocs"
 
       <p>In situations where Apache 2.x needs to look at the contents
       of a file being delivered--for example, when doing server-side-include
-      processing--it normally memory-maps the file, if the OS supports
+      processing--it normally memory-maps the file if the OS supports
       some form of <code>mmap(2)</code>.</p>
 
       <p>On some platforms, this memory-mapping improves performance.
@@ -313,7 +313,7 @@ DocumentRoot "/www/htdocs"
 
       <p>In situations where Apache 2.x can ignore the contents of the file
       to be delivered -- for example, when serving static file content --
-      it normally uses the kernel sendfile support for the file, if the OS
+      it normally uses the kernel sendfile support for the file if the OS
       supports the <code>sendfile(2)</code> operation.</p>
 
       <p>On most platforms, using sendfile improves performance by eliminating
@@ -357,7 +357,7 @@ DocumentRoot "/www/htdocs"
       clients, using the default <directive module="mpm_common"
       >StartServers</directive> of <code>5</code> would take on
       the order of 95 seconds to spawn enough children to handle
-      the load. This works fine in practice on real-life servers,
+      the load. This works fine in practice on real-life servers
       because they aren't restarted frequently. But it does really
       poorly on benchmarks which might only run for ten minutes.</p>
 
@@ -464,7 +464,7 @@ DocumentRoot "/www/htdocs"
         href="../dso.html">DSOs</a>, eliminating modules is a simple
         matter of commenting out the associated <directive
         module="mod_so">LoadModule</directive> directive for that module.
-        This allows you to experiment with removing modules, and seeing
+        This allows you to experiment with removing modules and seeing
         if your site still functions in their absence.</p>
 
         <p>If, on the other hand, you have modules statically linked
@@ -631,7 +631,7 @@ DocumentRoot "/www/htdocs"
       accomplishing nothing. Meanwhile none of those children are
       servicing requests that occurred on other sockets until they
       get back up to the <code>select</code> again. Overall this
-      solution does not seem very fruitful, unless you have as many
+      solution does not seem very fruitful unless you have as many
       idle CPUs (in a multiprocessor box) as you have idle children
       (not a very likely situation).</p>
 
@@ -705,15 +705,15 @@ DocumentRoot "/www/htdocs"
 
       <p>The above is fine and dandy for multiple socket servers, but
       what about single socket servers? In theory they shouldn't
-      experience any of these same problems, because all children can
-      just block in <code>accept(2)</code> until a connection
+      experience any of these same problems because all the children
+      can just block in <code>accept(2)</code> until a connection
       arrives, and no starvation results. In practice this hides
       almost the same "spinning" behavior discussed above in the
       non-blocking solution. The way that most TCP stacks are
       implemented, the kernel actually wakes up all processes blocked
       in <code>accept</code> when a single connection arrives. One of
-      those processes gets the connection and returns to user-space,
-      the rest spin in the kernel and go back to sleep when they
+      those processes gets the connection and returns to user-space.
+      The rest spin in the kernel and go back to sleep when they
       discover there's no connection for them. This spinning is
       hidden from the user-land code, but it's there nonetheless.
       This can result in the same load-spiking wasteful behavior
@@ -746,7 +746,7 @@ DocumentRoot "/www/htdocs"
       an HTTP server to <strong>reliably</strong> implement the
       protocol, it needs to shut down each direction of the
       communication independently. (Recall that a TCP connection is
-      bi-directional, each half is independent of the other.)</p>
+      bi-directional. Each half is independent of the other.)</p>
 
       <p>When this feature was added to Apache, it caused a flurry of
       problems on various versions of Unix because of shortsightedness.
@@ -889,7 +889,7 @@ DocumentRoot "/www/htdocs"
 
     <note>Note the lack of <code>accept(2)</code> serialization. On this
     particular platform, the worker MPM uses an unserialized accept by
-    default, unless it is listening on multiple ports.</note>
+    default unless it is listening on multiple ports.</note>
 
     <example>
 <pre>/65:    lwp_park(0x00000000, 0)                         = 0
