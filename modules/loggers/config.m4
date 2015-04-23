@@ -5,16 +5,23 @@ dnl APACHE_MODULE(name, helptext[, objects[, structname[, default[, config]]]])
 APACHE_MODPATH_INIT(loggers)
 
 APACHE_MODULE(journald, Journald support, , , all, [
-  AC_CHECK_LIB(systemd-journal, sd_journal_sendv, JOURNALD_LIBS="-lsystemd-journal")
-  AC_CHECK_LIB(systemd-id128, sd_id128_to_string, ID128_LIBS="-lsystemd-id128")
+  new_systemd_found="yes"
+  AC_CHECK_LIB(systemd, sd_journal_sendv, JOURNALD_LIBS="-lsystemd")
+  if test -z "${JOURNALD_LIBS}"; then
+    new_systemd_found="no"
+    AC_CHECK_LIB(systemd-journal, sd_journal_sendv, JOURNALD_LIBS="-lsystemd-journal")
+    AC_CHECK_LIB(systemd-id128, sd_id128_to_string, ID128_LIBS="-lsystemd-id128")
+  fi
   AC_CHECK_HEADERS(systemd/sd-journal.h, [ap_HAVE_SD_JOURNAL_H="yes"], [ap_HAVE_SD_JOURNAL_H="no"])
   AC_CHECK_HEADERS(systemd/sd-id128.h, [ap_HAVE_SD_ID128_H="yes"], [ap_HAVE_SD_ID128_H="no"])
-  if test $ap_HAVE_SD_JOURNAL_H = "no" || test $ap_HAVE_SD_ID128_H = "no" || test -z "${JOURNALD_LIBS}" || test -z "${ID128_LIBS}"; then
+  if test $ap_HAVE_SD_JOURNAL_H = "no" || test $ap_HAVE_SD_ID128_H = "no" || test -z "${JOURNALD_LIBS}" || (test $new_systemd_found = "no" && test -z "${ID128_LIBS}"); then
     AC_MSG_WARN([Your system does not support Journald.])
     enable_journald="no"
   else
     APR_ADDTO(MOD_JOURNALD_LDADD, [$JOURNALD_LIBS])
-    APR_ADDTO(MOD_JOURNALD_LDADD, [$ID128_LIBS])
+    if test $new_systemd_found = "no"; then
+      APR_ADDTO(MOD_JOURNALD_LDADD, [$ID128_LIBS])
+    fi
     enable_journald="yes"
   fi
 ])
