@@ -40,8 +40,6 @@
 
 #define MAX_ENTRIES 15
 
-static int handle_custom_log = 0;
-
 static int journald_info_get_priority(int level)
 {
     switch(level) {
@@ -176,64 +174,6 @@ static const char *journald_error_log_parse(cmd_parms *cmd, const char *arg)
     return NULL;
 }
 
-static apr_status_t journald_log_writer(request_rec *r,
-                           void *handle,
-                           const char **strs,
-                           int *strl,
-                           int nelts,
-                           apr_size_t len)
-
-{
-    char *str;
-    char *s;
-    int i;
-    apr_status_t rv = APR_SUCCESS;
-
-    str = apr_palloc(r->pool, len + 1);
-
-    /* Last string is always \n, so skipt it */
-    for (i = 0, s = str; i < nelts - 1; ++i) {
-        memcpy(s, strs[i], strl[i]);
-        s += strl[i];
-    }
-
-    journald_log(r->pool, (char *) handle, str, len,
-                 LOG_INFO, r->server, r);
-
-    return rv;
-}
-
-static void *journald_log_writer_init(apr_pool_t *p, server_rec *s,
-                                        const char* name)
-{
-    char *log_name = apr_pstrdup(p, name);
-    return log_name;
-}
-
-static int journald_open_logs(apr_pool_t *p, apr_pool_t *plog,
-                               apr_pool_t *ptemp, server_rec *s)
-{
-    APR_OPTIONAL_FN_TYPE(ap_log_set_writer_init) *log_set_writer_init;
-    APR_OPTIONAL_FN_TYPE(ap_log_set_writer) *log_set_writer;
-
-    if (!handle_custom_log) {
-        return OK;
-    }
-
-    log_set_writer_init = APR_RETRIEVE_OPTIONAL_FN(ap_log_set_writer_init);
-    log_set_writer = APR_RETRIEVE_OPTIONAL_FN(ap_log_set_writer);
-
-    if (log_set_writer_init) {
-        log_set_writer_init(&journald_log_writer_init);
-    }
-
-    if (log_set_writer) {
-        log_set_writer(&journald_log_writer);
-    }
-
-    return OK;
-}
-
 static void journald_register_hooks(apr_pool_t *p)
 {
     static const ap_errorlog_provider journald_provider = {
@@ -246,22 +186,7 @@ static void journald_register_hooks(apr_pool_t *p)
     ap_register_provider(p, AP_ERRORLOG_PROVIDER_GROUP, "journald",
                          AP_ERRORLOG_PROVIDER_VERSION,
                          &journald_provider);
-
-    ap_hook_open_logs(journald_open_logs, NULL, NULL, APR_HOOK_FIRST);
 }
-
-static const char *set_custom_log_on(cmd_parms *parms, void *dummy, int flag)
-{
-    handle_custom_log = flag;
-    return NULL;
-}
-
-static const command_rec journald_cmds[] =
-{
-AP_INIT_FLAG("JournaldCustomLog", set_custom_log_on, NULL, RSRC_CONF,
-     "Enable logging of CustomLog/TransferLog to journald"),
-    {NULL}
-};
 
 AP_DECLARE_MODULE(journald) =
 {
@@ -270,6 +195,6 @@ AP_DECLARE_MODULE(journald) =
     NULL,
     NULL,
     NULL,
-    journald_cmds,
+    NULL,
     journald_register_hooks,
 };

@@ -79,29 +79,21 @@
 ErrorLog journald
     </highlight>
 
-</section>
-
-
-<directivesynopsis>
-<name>JournaldCustomLog</name>
-<description>Enable logging of CustomLog/TransferLog to systemd-journald</description>
-<syntax>JournaldCustomLog on|off</syntax>
-<default>JournaldCustomLog off</default>
-<contextlist><context>server config</context></contextlist>
-
-<usage>
-
-    <p>The <directive>JournaldCustomLog</directive> directive enables logging
-    of CustomLog and TransferLog messages to systemd-journald.
+    <p>Using <code>journald</code> as an error log provider in CustomLog
+    directive (see <module>mod_log_config</module>) enables
+    logging via systemd-journald(8) if the system supports it.
     </p>
+
+    <highlight language="config">
+CustomLog "journald" "%h %l %u %t \"%r\" %>s %b"
+    </highlight>
 
     <note type="warning"><title>Performance warning</title><p>
     Currently, systemd-journald is not designed for high-throughput logging
     and logging access_log to systemd-journald could decrease the performance
     a lot.
     </p></note>
-</usage>
-</directivesynopsis>
 
+</section>
 
 </modulesynopsis>
