@@ -941,6 +941,8 @@ else
       # Check whether they've installed GNU make
       if make --version > /dev/null 2>&1; then
           BSD_MAKEFILE=no
+      elif gmake --version > /dev/null 2>&1; then
+          BSD_MAKEFILE=no
       else
           BSD_MAKEFILE=yes
       fi
