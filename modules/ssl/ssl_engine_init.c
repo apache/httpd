@@ -651,11 +651,6 @@ static void ssl_init_ctx_callbacks(server_rec *s,
     SSL_CTX_set_alpn_select_cb(
        ctx, ssl_callback_alpn_select, NULL);
 #endif
-
-#ifdef HAVE_TLS_NPN
-    SSL_CTX_set_next_protos_advertised_cb(
-        ctx, ssl_callback_AdvertiseNextProtos, NULL);
-#endif
 }
 
 static apr_status_t ssl_init_ctx_verify(server_rec *s,

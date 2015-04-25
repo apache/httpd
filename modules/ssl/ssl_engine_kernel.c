@@ -2226,6 +2226,7 @@ int ssl_callback_alpn_select(SSL *ssl,
     apr_array_header_t *client_protos;
     apr_array_header_t *proposed_protos;
     int i;
+    size_t len;
 
     /* If the connection object is not available,
      * then there's nothing for us to do. */
@@ -2236,7 +2237,7 @@ int ssl_callback_alpn_select(SSL *ssl,
     if (inlen == 0) {
         // someone tries to trick us?
         ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO(02837)
-                      "alpn client protocol list empty");
+                      "ALPN client protocol list empty");
         return SSL_TLSEXT_ERR_ALERT_FATAL;
     }
     
@@ -2246,7 +2247,7 @@ int ssl_callback_alpn_select(SSL *ssl,
         if (plen + i > inlen) {
             // someone tries to trick us?
             ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO(02838)
-                          "alpn protocol identier too long");
+                          "ALPN protocol identier too long");
             return SSL_TLSEXT_ERR_ALERT_FATAL;
         }
         APR_ARRAY_PUSH(client_protos, char*) =
@@ -2278,7 +2279,7 @@ int ssl_callback_alpn_select(SSL *ssl,
          * supported by us. Choose it if none other matches. */
         if (ssl_array_index(client_protos, alpn_http1) < 0) {
             ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO(02839)
-                          "none of the client alpn protocols are supported");
+                          "none of the client ALPN protocols are supported");
             return SSL_TLSEXT_ERR_ALERT_FATAL;
         }
         *out = (const unsigned char*)alpn_http1;
@@ -2296,10 +2297,10 @@ int ssl_callback_alpn_select(SSL *ssl,
         }
     }
     
-    size_t len = strlen((const char*)*out);
+    len = strlen((const char*)*out);
     if (len > 255) {
         ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO(02840)
-                      "alpn negotiated protocol name too long");
+                      "ALPN negotiated protocol name too long");
         return SSL_TLSEXT_ERR_ALERT_FATAL;
     }
     *outlen = (unsigned char)len;
@@ -2307,96 +2308,6 @@ int ssl_callback_alpn_select(SSL *ssl,
     return SSL_TLSEXT_ERR_OK;
 }
 #endif
-#if defined(HAVE_TLS_NPN)
-/*
- * This callback function is executed when SSL needs to decide what protocols
- * to advertise during Next Protocol Negotiation (NPN).  It must produce a
- * string in wire format -- a sequence of length-prefixed strings -- indicating
- * the advertised protocols.  Refer to SSL_CTX_set_next_protos_advertised_cb
- * in OpenSSL for reference.
- */
-int ssl_callback_AdvertiseNextProtos(SSL *ssl, const unsigned char **data_out,
-                                     unsigned int *size_out, void *arg)
-{
-    conn_rec *c = (conn_rec*)SSL_get_app_data(ssl);
-    SSLConnRec *sslconn = myConnConfig(c);
-    apr_array_header_t *protos;
-    int num_protos;
-    unsigned int size;
-    int i;
-    unsigned char *data;
-    unsigned char *start;
-
-    *data_out = NULL;
-    *size_out = 0;
-
-    /* If the connection object is not available, or there are no NPN
-     * hooks registered, then there's nothing for us to do. */
-    if (c == NULL || sslconn->npn_advertfns == NULL) {
-        return SSL_TLSEXT_ERR_OK;
-    }
-
-    /* Invoke our npn_advertise_protos hook, giving other modules a chance to
-     * add alternate protocol names to advertise. */
-    protos = apr_array_make(c->pool, 0, sizeof(char *));
-    for (i = 0; i < sslconn->npn_advertfns->nelts; i++) {
-        ssl_npn_advertise_protos fn = 
-            APR_ARRAY_IDX(sslconn->npn_advertfns, i, ssl_npn_advertise_protos);
-        
-        if (fn(c, protos) == DONE)
-            break;
-    }
-    num_protos = protos->nelts;
-
-    /* We now have a list of null-terminated strings; we need to concatenate
-     * them together into a single string, where each protocol name is prefixed
-     * by its length.  First, calculate how long that string will be. */
-    size = 0;
-    for (i = 0; i < num_protos; ++i) {
-        const char *string = APR_ARRAY_IDX(protos, i, const char*);
-        unsigned int length = strlen(string);
-        /* If the protocol name is too long (the length must fit in one byte),
-         * then log an error and skip it. */
-        if (length > 255) {
-            ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO(02307)
-                          "SSL NPN protocol name too long (length=%u): %s",
-                          length, string);
-            continue;
-        }
-        /* Leave room for the length prefix (one byte) plus the protocol name
-         * itself. */
-        size += 1 + length;
-    }
-
-    /* If there is nothing to advertise (either because no modules added
-     * anything to the protos array, or because all strings added to the array
-     * were skipped), then we're done. */
-    if (size == 0) {
-        return SSL_TLSEXT_ERR_OK;
-    }
-
-    /* Now we can build the string.  Copy each protocol name string into the
-     * larger string, prefixed by its length. */
-    data = apr_palloc(c->pool, size * sizeof(unsigned char));
-    start = data;
-    for (i = 0; i < num_protos; ++i) {
-        const char *string = APR_ARRAY_IDX(protos, i, const char*);
-        apr_size_t length = strlen(string);
-        if (length > 255)
-            continue;
-        *start = (unsigned char)length;
-        ++start;
-        memcpy(start, string, length * sizeof(unsigned char));
-        start += length;
-    }
-
-    /* Success. */
-    *data_out = data;
-    *size_out = size;
-    return SSL_TLSEXT_ERR_OK;
-}
-
-#endif /* HAVE_TLS_NPN */
 
 #ifdef HAVE_SRP
 
