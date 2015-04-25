@@ -213,7 +213,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      variables. (also covers PR57207)
      trunk patch: https://svn.apache.org/r1650047
      2.4.x patch: trunk patch works (modulo CHANGES)
-     +1: kbrand, ylavic
+     +1: kbrand, ylavic, druggeri
 
    * mod_proxy_http: Don't establish or reuse a backend connection before pre-
      fetching the request body, so to minimize the delay between it is supposed
@@ -280,12 +280,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      as in an example in the doc.  PR 56235
      trunk patch: http://svn.apache.org/r1585609
      2.4.x patch: trunk works (modulo CHANGES)
-     +1: 
+     +1: druggeri
+     druggeri: committed by breser, but no +1 vote?
 
   *) mod_dir: Use FallBackResource when DirectoryIndex is not available. PR56067
      trunk patch: 1675103
      2.4.x patch: trunk works (modulo CHANGES)
-     +1: covener
+     +1: covener, druggeri
 
   *) mod_proxy_scgi: ProxySCGIInternalRedirect with alternate response header
      trunk patch: 1674510
@@ -299,7 +300,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   * mod_log_config: Add new format flag for requestion duration in milliseconds
     trunk patch: http://svn.apache.org/r1675533
     2.4.x patch: trunk works (modulo CHANGES)
-    +1: breser
+    +1: breser, druggeri
 
 OTHER PROPOSALS
 
