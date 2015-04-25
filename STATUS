@@ -191,7 +191,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   * mod_log_config: Add new format flag for requestion duration in milliseconds
     trunk patch: http://svn.apache.org/r1675533
     2.2.x patch: https://people.apache.org/~breser/httpd/2.2.x/patches/httpd-2.2.x-req_duration_milliseconds.patch (modulo CHANGES)
-    +1: breser
+    +1: breser, druggeri
 
 PATCHES/ISSUES THAT ARE STALLED
 
