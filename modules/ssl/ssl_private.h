@@ -176,20 +176,15 @@
 #endif
 #endif
 
-/* ALPN Protocol Negotiation */
-#if OPENSSL_VERSION_NUMBER >= 0x10002000L
-#define HAVE_TLS_ALPN
-#endif
-
-/* Next Protocol Negotiation */
-#if !defined(OPENSSL_NO_NEXTPROTONEG) && defined(OPENSSL_NPN_NEGOTIATED)
-#define HAVE_TLS_NPN
-#endif
-
 /* Secure Remote Password */
 #if !defined(OPENSSL_NO_SRP) && defined(SSL_CTRL_SET_TLS_EXT_SRP_USERNAME_CB)
 #define HAVE_SRP
 #include <openssl/srp.h>
+#endif
+
+/* ALPN Protocol Negotiation */
+#if defined(TLSEXT_TYPE_application_layer_protocol_negotiation)
+#define HAVE_TLS_ALPN
 #endif
 
 #endif /* !defined(OPENSSL_NO_TLSEXT) && defined(SSL_set_tlsext_host_name) */
@@ -443,12 +438,6 @@ typedef struct {
                      * connection */
     } reneg_state;
 
-#ifdef HAVE_TLS_NPN
-    /* Poor man's inter-module optional hooks for NPN. */
-    apr_array_header_t *npn_advertfns; /* list of ssl_npn_advertise_protos callbacks */
-    apr_array_header_t *npn_negofns; /* list of ssl_npn_proto_negotiated callbacks. */
-#endif
-
 #ifdef HAVE_TLS_ALPN
     /* Poor man's inter-module optional hooks for ALPN. */
     apr_array_header_t *alpn_proposefns; /* list of ssl_alpn_propose_protos callbacks */
@@ -636,7 +625,7 @@ typedef struct {
     apr_array_header_t *ssl_ctx_param; /* parameters to pass to SSL_CTX */
 #endif
   
-#if defined(HAVE_TLS_ALPN) || defined(HAVE_TLS_NPN)
+#ifdef HAVE_TLS_ALPN
   apr_array_header_t *ssl_alpn_pref; /* protocol names in order of preference */
 #endif
 } modssl_ctx_t;
@@ -765,8 +754,8 @@ const char *ssl_cmd_SSLOCSPEnable(cmd_parms *cmd, void *dcfg, int flag);
 const char *ssl_cmd_SSLOpenSSLConfCmd(cmd_parms *cmd, void *dcfg, const char *arg1, const char *arg2);
 #endif
 
-#if defined(HAVE_TLS_ALPN) || defined(HAVE_TLS_NPN)
-const char *ssl_cmd_SSLAlpnPreference(cmd_parms *cmd, void *dcfg, const char *protocol);
+#ifdef HAVE_TLS_ALPN
+const char *ssl_cmd_SSLALPNPreference(cmd_parms *cmd, void *dcfg, const char *protocol);
 #endif
 
 #ifdef HAVE_SRP
@@ -821,9 +810,6 @@ int         ssl_callback_SessionTicket(SSL *, unsigned char *, unsigned char *,
 int ssl_callback_alpn_select(SSL *ssl, const unsigned char **out,
                              unsigned char *outlen, const unsigned char *in,
                              unsigned int inlen, void *arg);
-#endif
-#ifdef HAVE_TLS_NPN
-int ssl_callback_AdvertiseNextProtos(SSL *ssl, const unsigned char **data, unsigned int *len, void *arg);
 #endif
 
 /**  Session Cache Support  */

@@ -2650,4 +2650,32 @@ SSLOpenSSLConfCmd SignatureAlgorithms RSA+SHA384:ECDSA+SHA256
 </usage>
 </directivesynopsis>
 
+<directivesynopsis>
+<name>SSLALPNPreference</name>
+<description>Configure protocol preference for Application-Layer Protocol Negotiation (RFC 7301)</description>
+<syntax>SSLALPNPreference <em>protocol-id</em> ...</syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+<compatibility>Available if using OpenSSL 1.0.2 or later</compatibility>
+
+<usage>
+<p>This directive overrides preferences by implementations of application-layer
+protocols during negotiation. Protocol IDs must be specified in terms of the
+"Identification Sequence" from IANA's Application-Layer Protocol
+Negotiation (ALPN) Protocol IDs registry. The protocol specified first gets
+precedence over later or unspecified protocols. This list is evaluated
+against client capabilities.</p>
+
+<example><title>Examples</title>
+<highlight language="config">
+SSLALPNPreference h2 spdy/3
+</highlight>
+<p>For clients which support both protocols, <code>h2</code> will be selected. For
+clients which only support <code>spdy/3</code>, that one will be chosen. If a client
+supports only protocol X and there is support for X in httpd, the
+negotiation will select X.</p>
+</example>
+</usage>
+</directivesynopsis>
+
 </modulesynopsis>

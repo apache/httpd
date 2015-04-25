@@ -160,7 +160,7 @@ static void modssl_ctx_init(modssl_ctx_t *mctx, apr_pool_t *p)
     SSL_CONF_CTX_set_flags(mctx->ssl_ctx_config, SSL_CONF_FLAG_CERTIFICATE);
     mctx->ssl_ctx_param = apr_array_make(p, 5, sizeof(ssl_ctx_param_t));
 #endif
-#if defined(HAVE_TLS_ALPN) || defined(HAVE_TLS_NPN)
+#ifdef HAVE_TLS_ALPN
     mctx->ssl_alpn_pref = apr_array_make(p, 5, sizeof(const char *));
 #endif
 }
@@ -307,7 +307,7 @@ static void modssl_ctx_cfg_merge(apr_pool_t *p,
 #ifdef HAVE_SSL_CONF_CMD
     cfgMergeArray(ssl_ctx_param);
 #endif
-#if defined(HAVE_TLS_ALPN) || defined(HAVE_TLS_NPN)
+#ifdef HAVE_TLS_ALPN
     cfgMergeArray(ssl_alpn_pref);
 #endif
 }
@@ -1868,8 +1868,8 @@ const char *ssl_cmd_SSLOpenSSLConfCmd(cmd_parms *cmd, void *dcfg,
 }
 #endif
 
-#if defined(HAVE_TLS_ALPN) || defined(HAVE_TLS_NPN)
-const char *ssl_cmd_SSLAlpnPreference(cmd_parms *cmd, void *dcfg,
+#ifdef HAVE_TLS_ALPN
+const char *ssl_cmd_SSLALPNPreference(cmd_parms *cmd, void *dcfg,
                                       const char *protocol)
 {
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
