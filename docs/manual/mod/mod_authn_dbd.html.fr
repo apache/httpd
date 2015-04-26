@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_authn_dbd.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_authn_dbd.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Authentification utilisateur à l'aide d'une base de données
 SQL</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -45,7 +43,7 @@ SQL</td></tr>
     une fonctionnalité similaire.</p>
     <p>Ce module s'appuie sur <code class="module"><a href="../mod/mod_dbd.html">mod_dbd</a></code> pour spécifier le
     pilote de la base de données sous-jacente et les paramètres de
-    connexion, mais aussi pour gérer les connexions à la base de
+    connexion, mais aussi  pour gérer les connexions à la base de
     données.</p>
 
     <p>Si l'on utilise <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code> ou
@@ -106,7 +104,7 @@ DBDKeep 8
 DBDMax  20
 DBDExptime 300
 
-&lt;Directory /usr/www/mon-serveur/private&gt;
+&lt;Directory "/usr/www/mon-serveur/private"&gt;
   # configuration de mod_authn_core et mod_auth_basic
   # pour mod_authn_dbd
   AuthType Basic
