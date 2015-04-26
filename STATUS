@@ -105,12 +105,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_ssl: Add support for extracting subjectAltName entries of type
-     rfc822Name and dNSName into SSL_{CLIENT,SERVER}_SAN_{Email,DNS}_n
-     variables. (also covers PR57207)
-     trunk patch: https://svn.apache.org/r1650047
-     2.4.x patch: trunk patch works (modulo CHANGES)
-     +1: kbrand, ylavic, druggeri
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
