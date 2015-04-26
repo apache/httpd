@@ -358,16 +358,6 @@ PATCHES/ISSUES THAT ARE STALLED
     2.4 patch: http://people.apache.org/~fuankg/diffs/httpd-2.4.x-cross_compile.diff
     fuankg: on hold until we agree for a better and more simple solution ...
 
-   * mod_ssl: Add support for Next Protocol Negotiation.
-     Trunk patch:
-       http://svn.apache.org/viewvc?view=revision&revision=1332643
-     2.4.x patch:
-       Trunk patch works.
-     +1: ben
-     sf says: Needs r1345599, too.
-              And wrowe's comment about the 2.2 patch is also valid for 2.4:
-              http://svn.apache.org/viewvc?view=revision&revision=1354823
-
    * Makefile.win: Added copying of .vbs / .wsf CGIs to Windows install target.
                    Moved fixing of shebang to separate target so that it is
                    no longer executed by default and all CGIs remain inactive.
