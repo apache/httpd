@@ -33,8 +33,6 @@
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Fonctionnalités de base du serveur HTTP Apache toujours
 disponibles</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Core</td></tr></table>
@@ -1994,6 +1992,22 @@ HTTP Content-Type pour les fichiers correspondants</td></tr>
     les ressources autres que les fichiers statiques pour lesquels le
     générateur de réponse spécifie en général un type de contenu, cette
     directive est ignorée.</p>
+
+    <div class="note"><h3>Note</h3>
+    <p>Lorsque des directives explicites comme <code class="directive"><a href="#sethandler">SetHandler</a></code> ou
+    <code class="directive">module="mod_mime"&gt;AddHandler</code> ne s'appliquent
+    pas à la requête courante, le nom du gestionnaire interne
+    normalement défini par ces directives correspondra alors au type de
+    contenu spécifié par cette directive. Il s'agit d'un
+    comportement historique que certains modules
+    tiers, comme mod_php, peuvent interpréter comme un type de contenu
+    artificiel ne servant qu'à indiquer le module qui doit prendre en
+    compte la requête considérée. Dans la mesure du
+    possible, il est conseillé d'éviter les
+    configurations qui comportent de tels types artificiels en utilisant
+    les directives <code class="directive"><a href="#sethandler">SetHandler</a></code> ou
+    <code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code>.</p>
+    </div>
 
 
 </div>
