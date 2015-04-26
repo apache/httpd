@@ -32,8 +32,6 @@
 <a href="../ko/mod/mod_autoindex.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_autoindex.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Génère automatiquement des index de répertoires d'une
 manière similaire à la commande Unix <code>ls</code>, ou à la commande
 shell Win32 <code>dir</code></td></tr>
@@ -605,10 +603,10 @@ contenu d'un répertoire</td></tr>
     <code class="directive">IndexIgnore</code> et héritée par ailleurs d'autres
     sections de configuration.</p>
 
-    <pre class="prettyprint lang-config">&lt;Directory /var/www&gt;
+    <pre class="prettyprint lang-config">&lt;Directory "/var/www"&gt;
     IndexIgnore *.bak .??* *~ *# HEADER* README* RCS CVS *,v *,t
 &lt;/Directory&gt;
-&lt;Directory /var/www/backups&gt;
+&lt;Directory "/var/www/backups"&gt;
     IndexIgnoreReset ON
     IndexIgnore .??* *# HEADER* README* RCS CVS *,v *,t
 &lt;/Directory&gt;</pre>
@@ -672,17 +670,17 @@ répertoire</td></tr>
       <dd>Le mot-clé <code>DescriptionWidth</code> vous permet de
       spécifier la taille en caractères de la colonne description.</dd>
 
-      <dd>Avec <code>-DescriptionWidth</code> (ou si l'option n'est pas
+      <dt>Avec <code>-DescriptionWidth</code> (ou si l'option n'est pas
       définie), <code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code> calcule la meilleure
-      taille.</dd>
+      taille.</dt>
 
       <dd><code>DescriptionWidth=<var>n</var></code> fixe la taille de
       la colonne à <var>n</var> octets.</dd>
 
       <dd><code>DescriptionWidth=*</code> ajuste la taille de la colonne
-      à la plus longue chaîne de description.</dd>
+      à la plus longue chaîne de description.
 
-      <dd><strong>Voir la section concernant <code class="directive"><a href="#adddescription">AddDescription</a></code> pour les dangers
+      <strong>Voir la section concernant <code class="directive"><a href="#adddescription">AddDescription</a></code> pour les dangers
       inhérants à la troncature des descriptions.</strong></dd>
 
       <dt><a name="indexoptions.fancyindexing" id="indexoptions.fancyindexing">FancyIndexing</a></dt>
@@ -704,7 +702,8 @@ répertoire</td></tr>
       sous-répertoire <code>Beta</code>, qui sera lui-même affiché avant
       les fichiers normaux <code>Gamma</code> et <code>Alpha</code>.
       <strong>Cette option n'a d'effet que si <a href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a>
-      est aussi activé.</strong></dd>
+      est aussi activé.</strong>
+      </dd>
 
       <dt><a name="indexoptions.htmltable" id="indexoptions.htmltable">HTMLTable</a></dt>
 
@@ -730,7 +729,12 @@ répertoire</td></tr>
       permettre au navigateur de prévoir les caractéristiques de la page
       sans devoir attendre que toutes les images aient été chargées. En
       l'absence de cette option, c'est la hauteur standard définie par
-      le logiciel Apache httpd qui est choisie comme valeur par défaut.</dd>
+      le logiciel Apache httpd qui est choisie comme valeur par défaut.
+      
+      <strong>Cette option n'a d'effet que si <a href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a>
+      est aussi activé.</strong>
+
+      </dd>
 
       <dt><a name="indexoptions.iconwidth" id="indexoptions.iconwidth">IconWidth[=<var>pixels</var>]</a></dt>
 
@@ -813,7 +817,11 @@ répertoire</td></tr>
       Voir la directive <code class="directive"><a href="#adddescription">AddDescription</a></code> pour plus d'informations à propos de
       la définition des descriptions de fichiers. Voir aussi l'option
       d'index <code><a href="#indexoptions.descriptionwidth">DescriptionWidth</a></code>
-      pour limiter la taille de la colonne description.</dd>
+      pour limiter la taille de la colonne description.
+
+      <strong>Cette option n'a d'effet que si <a href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a>
+      est aussi activé.</strong>
+      </dd>
 
       <dt><a name="indexoptions.suppresshtmlpreamble" id="indexoptions.suppresshtmlpreamble">SuppressHTMLPreamble</a></dt>
 
@@ -847,7 +855,11 @@ répertoire</td></tr>
       <dt><a name="indexoptions.suppresslastmodified" id="indexoptions.suppresslastmodified">SuppressLastModified</a></dt>
 
       <dd>L'activation de cette option supprime l'affichage de la date
-      de dernière modification dans le cas d'un affichage "amélioré".</dd>
+      de dernière modification dans le cas d'un affichage "amélioré".
+
+       <strong>Cette option n'a d'effet que si <a href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a>
+      est aussi activé.</strong>
+      </dd>
 
       <dt><a name="indexoptions.suppressrules" id="indexoptions.suppressrules">SuppressRules</a>
       </dt>
@@ -859,12 +871,20 @@ répertoire</td></tr>
       générer une sortie au format HTML 3.2 qui, selon les dernières
       spécifications, interdit les éléments <code>img</code> et
       <code>hr</code> dans les blocs <code>pre</code> (utilisés pour
-      formater les affichages "améliorés").</dd>
+      formater les affichages "améliorés").
+
+       <strong>Cette option n'a d'effet que si <a href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a>
+      est aussi activé.</strong>
+      </dd>
 
       <dt><a name="indexoptions.suppresssize" id="indexoptions.suppresssize">SuppressSize</a></dt>
 
       <dd>L'activation de cette option supprime l'affichage de la taille
-      du fichier dans le cas d'un affichage "amélioré".</dd>
+      du fichier dans le cas d'un affichage "amélioré".
+
+       <strong>Cette option n'a d'effet que si <a href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a>
+      est aussi activé.</strong>
+      </dd>
 
       <dt><a name="indexoptions.trackmodified" id="indexoptions.trackmodified">TrackModified</a></dt>
 
@@ -933,8 +953,12 @@ répertoire</td></tr>
 
       <dd>Le mot-clé <code>XHTML</code> enjoint
       <code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code> de générer du code XHTML 1.0 au
-      lieu de HTML 3.2.</dd>
+      lieu de HTML 3.2.
+       <strong>Cette option n'a d'effet que si <a href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a>
+      est aussi activé.</strong>
+      </dd>
     </dl>
+
 
    
    <dl><dt>Options d'index incrémentales</dt>
@@ -947,7 +971,7 @@ répertoire</td></tr>
      apparaissant dans la même section directory sont maintenant
      fusionnées. Le résultat de :
 
-     <pre class="prettyprint lang-config">&lt;Directory /foo&gt;
+     <pre class="prettyprint lang-config">&lt;Directory "/foo"&gt;
     IndexOptions HTMLTable
     IndexOptions SuppressColumnsorting
 &lt;/Directory&gt;</pre>
