@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_ssl: make sure to consistently output SSLCertificateChainFile
+     deprecation warnings, when encountered in a VirtualHost block.
+     [Falco Schwarz <hiding falco.me>]
+
   *) Allow FallbackResource to work when a directory is requested and
      there is no autoindex nor DirectoryIndex. PR56067.
      [Jack <tjerk.meesters gmail.com>, Eric Covener]
