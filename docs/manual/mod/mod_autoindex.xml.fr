@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1598137:1673945 (outdated) -->
+<!-- English Revision : 1673945 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -603,10 +603,10 @@ contenu d'un r&eacute;pertoire</description>
     sections de configuration.</p>
 
     <highlight language="config">
-&lt;Directory /var/www&gt;
+&lt;Directory "/var/www"&gt;
     IndexIgnore *.bak .??* *~ *# HEADER* README* RCS CVS *,v *,t
 &lt;/Directory&gt;
-&lt;Directory /var/www/backups&gt;
+&lt;Directory "/var/www/backups"&gt;
     IndexIgnoreReset ON
     IndexIgnore .??* *# HEADER* README* RCS CVS *,v *,t
 &lt;/Directory&gt;
@@ -677,17 +677,17 @@ r&eacute;pertoire</description>
       <dd>Le mot-cl&eacute; <code>DescriptionWidth</code> vous permet de
       sp&eacute;cifier la taille en caract&egrave;res de la colonne description.</dd>
 
-      <dd>Avec <code>-DescriptionWidth</code> (ou si l'option n'est pas
+      <dt>Avec <code>-DescriptionWidth</code> (ou si l'option n'est pas
       d&eacute;finie), <module>mod_autoindex</module> calcule la meilleure
-      taille.</dd>
+      taille.</dt>
 
       <dd><code>DescriptionWidth=<var>n</var></code> fixe la taille de
       la colonne &agrave; <var>n</var> octets.</dd>
 
       <dd><code>DescriptionWidth=*</code> ajuste la taille de la colonne
-      &agrave; la plus longue cha&icirc;ne de description.</dd>
+      &agrave; la plus longue cha&icirc;ne de description.
 
-      <dd><strong>Voir la section concernant <directive
+      <strong>Voir la section concernant <directive
       module="mod_autoindex">AddDescription</directive> pour les dangers
       inh&eacute;rants &agrave; la troncature des descriptions.</strong></dd>
 
@@ -713,7 +713,8 @@ r&eacute;pertoire</description>
       les fichiers normaux <code>Gamma</code> et <code>Alpha</code>.
       <strong>Cette option n'a d'effet que si <a
       href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a>
-      est aussi activ&eacute;.</strong></dd>
+      est aussi activ&eacute;.</strong>
+      </dd>
 
       <dt><a name="indexoptions.htmltable"
                id="indexoptions.htmltable">HTMLTable</a></dt>
@@ -743,7 +744,13 @@ r&eacute;pertoire</description>
       permettre au navigateur de pr&eacute;voir les caract&eacute;ristiques de la page
       sans devoir attendre que toutes les images aient &eacute;t&eacute; charg&eacute;es. En
       l'absence de cette option, c'est la hauteur standard d&eacute;finie par
-      le logiciel Apache httpd qui est choisie comme valeur par d&eacute;faut.</dd>
+      le logiciel Apache httpd qui est choisie comme valeur par d&eacute;faut.
+      
+      <strong>Cette option n'a d'effet que si <a
+      href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a>
+      est aussi activ&eacute;.</strong>
+
+      </dd>
 
       <dt><a name="indexoptions.iconwidth"
                id="indexoptions.iconwidth">IconWidth[=<var
@@ -843,7 +850,12 @@ r&eacute;pertoire</description>
       la d&eacute;finition des descriptions de fichiers. Voir aussi l'option
       d'index <code><a
       href="#indexoptions.descriptionwidth">DescriptionWidth</a></code>
-      pour limiter la taille de la colonne description.</dd>
+      pour limiter la taille de la colonne description.
+
+      <strong>Cette option n'a d'effet que si <a
+      href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a>
+      est aussi activ&eacute;.</strong>
+      </dd>
 
       <dt><a name="indexoptions.suppresshtmlpreamble"
                id="indexoptions.suppresshtmlpreamble"
@@ -884,7 +896,12 @@ r&eacute;pertoire</description>
                >SuppressLastModified</a></dt>
 
       <dd>L'activation de cette option supprime l'affichage de la date
-      de derni&egrave;re modification dans le cas d'un affichage "am&eacute;lior&eacute;".</dd>
+      de derni&egrave;re modification dans le cas d'un affichage "am&eacute;lior&eacute;".
+
+       <strong>Cette option n'a d'effet que si <a
+      href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a>
+      est aussi activ&eacute;.</strong>
+      </dd>
 
       <dt><a name="indexoptions.suppressrules"
                id="indexoptions.suppressrules">SuppressRules</a>
@@ -897,13 +914,23 @@ r&eacute;pertoire</description>
       g&eacute;n&eacute;rer une sortie au format HTML 3.2 qui, selon les derni&egrave;res
       sp&eacute;cifications, interdit les &eacute;l&eacute;ments <code>img</code> et
       <code>hr</code> dans les blocs <code>pre</code> (utilis&eacute;s pour
-      formater les affichages "am&eacute;lior&eacute;s").</dd>
+      formater les affichages "am&eacute;lior&eacute;s").
+
+       <strong>Cette option n'a d'effet que si <a
+      href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a>
+      est aussi activ&eacute;.</strong>
+      </dd>
 
       <dt><a name="indexoptions.suppresssize"
                id="indexoptions.suppresssize">SuppressSize</a></dt>
 
       <dd>L'activation de cette option supprime l'affichage de la taille
-      du fichier dans le cas d'un affichage "am&eacute;lior&eacute;".</dd>
+      du fichier dans le cas d'un affichage "am&eacute;lior&eacute;".
+
+       <strong>Cette option n'a d'effet que si <a
+      href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a>
+      est aussi activ&eacute;.</strong>
+      </dd>
 
       <dt><a name="indexoptions.trackmodified"
                id="indexoptions.trackmodified">TrackModified</a></dt>
@@ -978,8 +1005,13 @@ r&eacute;pertoire</description>
 
       <dd>Le mot-cl&eacute; <code>XHTML</code> enjoint
       <module>mod_autoindex</module> de g&eacute;n&eacute;rer du code XHTML 1.0 au
-      lieu de HTML 3.2.</dd>
+      lieu de HTML 3.2.
+       <strong>Cette option n'a d'effet que si <a
+      href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a>
+      est aussi activ&eacute;.</strong>
+      </dd>
     </dl>
+
 
    <!--
      XXX: we should consider to allow sections inside <usage>
@@ -996,7 +1028,7 @@ r&eacute;pertoire</description>
      fusionn&eacute;es. Le r&eacute;sultat de :
 
      <highlight language="config">
-&lt;Directory /foo&gt;
+&lt;Directory "/foo"&gt;
     IndexOptions HTMLTable
     IndexOptions SuppressColumnsorting
 &lt;/Directory&gt;

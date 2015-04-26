@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1429560:1673892 (outdated) -->
+<!-- English Revision : 1673892 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -39,7 +39,7 @@ SQL</description>
     une fonctionnalit&eacute; similaire.</p>
     <p>Ce module s'appuie sur <module>mod_dbd</module> pour sp&eacute;cifier le
     pilote de la base de donn&eacute;es sous-jacente et les param&egrave;tres de
-    connexion, mais aussi pour g&eacute;rer les connexions &agrave; la base de
+    connexion, mais aussi  pour g&eacute;rer les connexions &agrave; la base de
     donn&eacute;es.</p>
 
     <p>Si l'on utilise <module>mod_auth_basic</module> ou
@@ -89,7 +89,7 @@ DBDKeep 8
 DBDMax  20
 DBDExptime 300
 
-&lt;Directory /usr/www/mon-serveur/private&gt;
+&lt;Directory "/usr/www/mon-serveur/private"&gt;
   # configuration de mod_authn_core et mod_auth_basic
   # pour mod_authn_dbd
   AuthType Basic

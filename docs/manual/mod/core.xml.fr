@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1674195:1675491 (outdated) -->
+<!-- English Revision : 1675491 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -2061,8 +2061,35 @@ HTTP Content-Type pour les fichiers correspondants</description>
     g&eacute;n&eacute;rateur de r&eacute;ponse sp&eacute;cifie en g&eacute;n&eacute;ral un type de contenu, cette
     directive est ignor&eacute;e.</p>
 
+    <note><title>Note</title>
+    <p>Si aucun gestionnaire n'est explicitement d&eacute;fini pour une
+    requ&ecirc;te, le type de contenu sp&eacute;cifi&eacute; sera aussi utilis&eacute; comme nom de
+    gestionnaire.</p>
+   
+    <p>Lorsque des directives explicites comme <directive
+    module="core">SetHandler</directive> ou
+    <directive>module="mod_mime">AddHandler</directive> ne s'appliquent
+    pas &agrave; la requ&ecirc;te courante, le nom du gestionnaire interne
+    normalement d&eacute;fini par ces directives correspondra alors au type de
+    contenu sp&eacute;cifi&eacute; par cette directive.
+    </p>
+    <p>Il s'agit d'un comportement historique que certains modules
+    tiers, comme mod_php, peuvent interpr&eacute;ter comme un type de contenu
+    artificiel ne servant qu'&agrave; indiquer le module qui doit prendre en
+    compte la requ&ecirc;te consid&eacute;r&eacute;e. 
+    </p>
+
+    <p>Dans la mesure du possible, il est conseill&eacute; d'&eacute;viter les
+    configurations qui comportent de tels types artificiels. En outre,
+    les configurations qui restreignent l'acc&egrave;s aux directives
+    <directive module="core" >SetHandler</directive> ou <directive
+    module="mod_mime">AddHandler</directive> doivent aussi restreindre
+    l'acc&egrave;s &agrave; cette directive.</p>
+    </note>
+
 </usage>
 </directivesynopsis>
+
 <directivesynopsis>
 <name>GprofDir</name>
 <description>R&eacute;pertoire dans lequel &eacute;crire les donn&eacute;es de profiling
