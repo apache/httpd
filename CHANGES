@@ -12,6 +12,10 @@ Changes with Apache 2.4.13
      calls r:wsupgrade() can cause a child process crash. 
      [Edward Lu <Chaosed0 gmail.com>]
 
+  *) mod_ssl: Add support for extracting subjectAltName entries of type
+     rfc822Name and dNSName into SSL_{CLIENT,SERVER}_SAN_{Email,DNS}_n
+     environment variables. Also addresses PR 57207. [Kaspar Brand]
+
   *) mpm_event: Allow for timer events duplicates. [Jim Jagielski, Yann Ylavic]
 
   *) mod_proxy, mod_ssl, mod_cache_socache, mod_socache_*: Support machine
