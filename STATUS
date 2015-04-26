@@ -214,27 +214,6 @@ PATCHES/ISSUES THAT ARE STALLED
              choice to return OK vs. 500?
     rpluem: Agreed with trawick. They should behave the same.
 
-   * mod_ssl: Add support for Next Protocol Negotiation.
-     Trunk patch:
-       http://svn.apache.org/viewvc?view=revision&revision=1332643
-     2.2.x patch:
-       http://www.links.org/files/npn-patch-2.2.patch
-     +1: benl
-     sf notes: needs the buffer overflow fix from r1345599, too
-     wrowe notes: also needs correction to
-       ssl_engine_kernel.c: In function 'ssl_callback_AdvertiseNextProtos':
-       ssl_engine_kernel.c:2140:5: warning: implicit declaration of function
-                                   'modssl_run_npn_advertise_protos_hook'
-                  Including mod_ssl.h after ssl_private.h seems to suffice.
-                  The change introduces hard linkages from modules into
-                  mod_ssl.so (distinct from httpd), AP is the incorrect
-                  namespace, see mod_dav main hooks as an example.
-                  Prior to this patch all calls to mod_ssl were by way of
-                  registered functions through apr bindings.  Seems there
-                  aught to be a way to add an npn cooperating module when
-                  mod_ssl is not loaded, but right now it would fail.
-                  An mmn minor bump would also be required for API addition.
-
    * modules/ldap/util_ldap.c: Correct erroneous messages
      PR: 53402
      trunk and 2.4.x: Erroneous message about LDAPSharedCacheSize
@@ -322,20 +301,6 @@ PATCHES/ISSUES THAT ARE STALLED
      2.2.x version of patch:
        http://people.apache.org/~chrisd/patches/mod_dbd_pools_groups/mpm_child_init-beos-2.2.x.patch
      +0: chrisd (abstaining; unable to test)
-
-    * PKCS#7: backport PCKS#7 patches from trunk.
-      +1 ben
-      jerenkrantz: What's the revision number to backport?
-      wrowe asks: ditto jerenkrantz
-      sctemme: svn blame suggests r424707
-      rpluem: Digging through the history suggests that
-              r424735
-              r424821
-              r424823
-              need to be added to this. See also
-              http://mail-archives.apache.org/mod_mbox/httpd-dev/200607.mbox/%3c20060723093125.GA19423@redhat.com%3e
-              and follow ups for more details.
-      needs r930063 to avoid a memory leak, +1 with r930063.
 
  * prefork MPM: simple patch to enable mod_privileges.
    trunk: N/A (this patch substitutes for the availability of
