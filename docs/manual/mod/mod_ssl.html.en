@@ -1128,7 +1128,7 @@ features are added to OpenSSL.</p>
 depends on the OpenSSL version being used for <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>
 (at least version 1.0.2 is required). For a list of supported command
 names, see the section <em>Supported configuration file commands</em> in the
-<a href="http://www.openssl.org/docs/ssl/SSL_CONF_cmd.html#supported_configuration_file_commands">SSL_CONF_cmd(3)</a> manual page for OpenSSL.</p>
+<a href="http://www.openssl.org/docs/ssl/SSL_CONF_cmd.html#SUPPORTED-CONFIGURATION-FILE-COMMANDS">SSL_CONF_cmd(3)</a> manual page for OpenSSL.</p>
 
 <p>Some of the <code class="directive">SSLOpenSSLConfCmd</code> commands can be used
 as an alternative to existing directives (such as
