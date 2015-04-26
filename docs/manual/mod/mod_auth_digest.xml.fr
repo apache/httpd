@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1562488:1673563 (outdated) -->
+<!-- English Revision : 1673563 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -70,13 +70,13 @@ condens&eacute;s</title>
 
     <example><title>Exemple :</title>
       <highlight language="config">
-&lt;Location /private/&gt;
+&lt;Location "/private/"&gt;
     AuthType Digest
     AuthName "private area"
-    AuthDigestDomain /private/ http://mirror.my.dom/private2/
+    AuthDigestDomain "/private/" "http://mirror.my.dom/private2/"
     
     AuthDigestProvider file
-    AuthUserFile /web/auth/.digest_pw
+    AuthUserFile "/web/auth/.digest_pw"
     Require valid-user
 &lt;/Location&gt;
       </highlight>
