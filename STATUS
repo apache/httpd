@@ -105,6 +105,12 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * mod_ssl: Add support for extracting subjectAltName entries of type
+     rfc822Name and dNSName into SSL_{CLIENT,SERVER}_SAN_{Email,DNS}_n
+     variables. (also covers PR57207)
+     trunk patch: https://svn.apache.org/r1650047
+     2.4.x patch: trunk patch works (modulo CHANGES)
+     +1: kbrand, ylavic, druggeri
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -208,13 +214,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-ap_listeners_buckets.patch
      +1: ylavic
 
-   * mod_ssl: Add support for extracting subjectAltName entries of type
-     rfc822Name and dNSName into SSL_{CLIENT,SERVER}_SAN_{Email,DNS}_n
-     variables. (also covers PR57207)
-     trunk patch: https://svn.apache.org/r1650047
-     2.4.x patch: trunk patch works (modulo CHANGES)
-     +1: kbrand, ylavic, druggeri
-
    * mod_proxy_http: Don't establish or reuse a backend connection before pre-
      fetching the request body, so to minimize the delay between it is supposed
      to be alive and the first bytes sent: this is a best effort to prevent the
@@ -297,10 +296,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Pre-edited: http://people.apache.org/~trawick/r1674510-to-2.4.x.txt
      +1: trawick
 
-  * mod_log_config: Add new format flag for requestion duration in milliseconds
-    trunk patch: http://svn.apache.org/r1675533
-    2.4.x patch: trunk works (modulo CHANGES)
-    +1: breser, druggeri
+  *) mod_log_config: Add new format flag for requestion duration in milliseconds
+     trunk patch: http://svn.apache.org/r1675533
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: breser, druggeri
+
+   * mod_ssl: consistently output SSLCertificateChainFile deprecation warnings
+     trunk patch: https://svn.apache.org/r1676085
+     2.4.x patch: trunk patch works (modulo CHANGES)
+     +1: kbrand
 
 OTHER PROPOSALS
 
