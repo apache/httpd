@@ -331,7 +331,7 @@ static int uldap_connection_init(request_rec *r,
         rc = apr_ldap_rebind_add(ldc->rebind_pool, ldc->ldap, ldc->binddn, ldc->bindpw);
         if (rc != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, rc, r->server, APLOGNO(01277)
-                    "LDAP: Unable to add rebind cross reference entry. Out of memory?");
+                    "LDAP: Unable to add rebind cross reference entry. Out of memory? Try 'LDAPReferrals OFF'");
             uldap_connection_unbind(ldc);
             ldc->reason = "LDAP: Unable to add rebind cross reference entry.";
             return(rc);
