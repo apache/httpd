@@ -454,25 +454,25 @@ static int modssl_register_alpn(conn_rec *c,
 {
 #ifdef HAVE_TLS_ALPN
     SSLConnRec *sslconn = myConnConfig(c);
-    
+
     if (!sslconn) {
         return DECLINED;
     }
-    
+
     if (!sslconn->alpn_proposefns) {
         sslconn->alpn_proposefns =
-        apr_array_make(c->pool, 5, sizeof(ssl_alpn_propose_protos));
+            apr_array_make(c->pool, 5, sizeof(ssl_alpn_propose_protos));
         sslconn->alpn_negofns =
-        apr_array_make(c->pool, 5, sizeof(ssl_alpn_proto_negotiated));
+            apr_array_make(c->pool, 5, sizeof(ssl_alpn_proto_negotiated));
     }
-    
+
     if (advertisefn)
         APR_ARRAY_PUSH(sslconn->alpn_proposefns, ssl_alpn_propose_protos) =
             advertisefn;
     if (negotiatedfn)
         APR_ARRAY_PUSH(sslconn->alpn_negofns, ssl_alpn_proto_negotiated) =
             negotiatedfn;
-    
+
     return OK;
 #else
     return DECLINED;

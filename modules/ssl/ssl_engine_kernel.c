@@ -2163,12 +2163,11 @@ int ssl_callback_SessionTicket(SSL *ssl,
 #endif /* HAVE_TLS_SESSION_TICKETS */
 
 #ifdef HAVE_TLS_ALPN
-static int ssl_array_index(apr_array_header_t *array,
-                           const char *s)
+static int ssl_array_index(apr_array_header_t *array, const char *s)
 {
     int i;
     for (i = 0; i < array->nelts; i++) {
-        const char *p = APR_ARRAY_IDX(array, i, const char*);
+        const char *p = APR_ARRAY_IDX(array, i, const char *);
         if (!strcmp(p, s)) {
             return i;
         }
@@ -2178,21 +2177,20 @@ static int ssl_array_index(apr_array_header_t *array,
 
 /*
  * Compare two ALPN protocol proposal. Result is similar to strcmp():
- * 0 gives same precedence, >0 means proto1 is prefered.
+ * 0 gives same precedence, >0 means proto1 is preferred.
  */
 static int ssl_cmp_alpn_protos(modssl_ctx_t *ctx,
                                const char *proto1,
                                const char *proto2)
 {
-    /* TODO: we should have a mod_ssl configuration parameter. */
     if (ctx && ctx->ssl_alpn_pref) {
         int index1 = ssl_array_index(ctx->ssl_alpn_pref, proto1);
         int index2 = ssl_array_index(ctx->ssl_alpn_pref, proto2);
         if (index2 > index1) {
-            return (index1 >= 0)? 1 : -1;
+            return (index1 >= 0) ? 1 : -1;
         }
         else if (index1 > index2) {
-            return (index2 >= 0)? -1 : 1;
+            return (index2 >= 0) ? -1 : 1;
         }
     }
     /* both have the same index (mabye -1 or no pref configured) and we compare
@@ -2202,26 +2200,27 @@ static int ssl_cmp_alpn_protos(modssl_ctx_t *ctx,
 }
 
 /*
- * This callback function is executed when the TLS Application Layer
- * Protocol Negotiate Extension (ALPN, RFC 7301) is triggered by the client 
- * hello, giving a list of desired protocol names (in descending preference) 
+ * This callback function is executed when the TLS Application-Layer
+ * Protocol Negotiation Extension (ALPN, RFC 7301) is triggered by the Client
+ * Hello, giving a list of desired protocol names (in descending preference) 
  * to the server.
  * The callback has to select a protocol name or return an error if none of
- * the clients preferences is supported. 
+ * the clients preferences is supported.
  * The selected protocol does not have to be on the client list, according
  * to RFC 7301, so no checks are performed.
- * The client protocol list is serialized as length byte followed by ascii
+ * The client protocol list is serialized as length byte followed by ASCII
  * characters (not null-terminated), followed by the next protocol name.
  */
 int ssl_callback_alpn_select(SSL *ssl,
                              const unsigned char **out, unsigned char *outlen,
-                             const unsigned char *in, unsigned int inlen, void *arg)
+                             const unsigned char *in, unsigned int inlen,
+                             void *arg)
 {
     conn_rec *c = (conn_rec*)SSL_get_app_data(ssl);
     SSLConnRec *sslconn = myConnConfig(c);
-    server_rec *s       = mySrvFromConn(c);
+    server_rec *s = mySrvFromConn(c);
     SSLSrvConfigRec *sc = mySrvConfig(s);
-    modssl_ctx_t *mctx  = myCtxConfig(sslconn, sc);
+    modssl_ctx_t *mctx = myCtxConfig(sslconn, sc);
     const char *alpn_http1 = "http/1.1";
     apr_array_header_t *client_protos;
     apr_array_header_t *proposed_protos;
@@ -2233,42 +2232,42 @@ int ssl_callback_alpn_select(SSL *ssl,
     if (c == NULL) {
         return SSL_TLSEXT_ERR_OK;
     }
-    
+
     if (inlen == 0) {
         // someone tries to trick us?
         ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO(02837)
                       "ALPN client protocol list empty");
         return SSL_TLSEXT_ERR_ALERT_FATAL;
     }
-    
+
     client_protos = apr_array_make(c->pool, 0, sizeof(char *));
     for (i = 0; i < inlen; /**/) {
         unsigned int plen = in[i++];
         if (plen + i > inlen) {
             // someone tries to trick us?
             ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO(02838)
-                          "ALPN protocol identier too long");
+                          "ALPN protocol identifier too long");
             return SSL_TLSEXT_ERR_ALERT_FATAL;
         }
-        APR_ARRAY_PUSH(client_protos, char*) =
+        APR_ARRAY_PUSH(client_protos, char *) =
             apr_pstrndup(c->pool, (const char *)in+i, plen);
         i += plen;
     }
-    
+
     proposed_protos = apr_array_make(c->pool, client_protos->nelts+1,
                                      sizeof(char *));
-    
+
     if (sslconn->alpn_proposefns != NULL) {
-        /* Invoke our alpn_propos_proto hooks, giving other modules a chance to
+        /* Invoke our alpn_propose functions, giving other modules a chance to
          * propose protocol names for selection. We might have several such
-         * hooks installed and if two make a proposal, we need to give 
+         * functions installed and if two make a proposal, we need to give
          * preference to one.
          */
         for (i = 0; i < sslconn->alpn_proposefns->nelts; i++) {
             ssl_alpn_propose_protos fn =
                 APR_ARRAY_IDX(sslconn->alpn_proposefns, i,
                               ssl_alpn_propose_protos);
-            
+
             if (fn(c, client_protos, proposed_protos) == DONE)
                 break;
         }
@@ -2286,17 +2285,17 @@ int ssl_callback_alpn_select(SSL *ssl,
         *outlen = (unsigned char)strlen(alpn_http1);
         return SSL_TLSEXT_ERR_OK;
     }
-    
+
     /* Now select the most preferred protocol from the proposals. */
     *out = APR_ARRAY_IDX(proposed_protos, 0, const unsigned char *);
     for (i = 1; i < proposed_protos->nelts; ++i) {
-        const char *proto = APR_ARRAY_IDX(proposed_protos, i, const char*);
+        const char *proto = APR_ARRAY_IDX(proposed_protos, i, const char *);
         /* Do we prefer it over existing candidate? */
         if (ssl_cmp_alpn_protos(mctx, (const char *)*out, proto) < 0) {
-            *out = (const unsigned char*)proto;
+            *out = (const unsigned char *)proto;
         }
     }
-    
+
     len = strlen((const char*)*out);
     if (len > 255) {
         ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO(02840)
