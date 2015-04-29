@@ -99,7 +99,7 @@ BSC32_FLAGS=/nologo /o"$(OUTDIR)\abs.bsc"
 BSC32_SBRS= \
 	
 LINK32=link.exe
-LINK32_FLAGS=kernel32.lib advapi32.lib wsock32.lib ws2_32.lib shell32.lib ssleay32.lib libeay32.lib /nologo /subsystem:console /incremental:no /pdb:"$(OUTDIR)\abs.pdb" /debug /out:"$(OUTDIR)\abs.exe" /libpath:"../srclib/openssl/out32dll" /opt:ref 
+LINK32_FLAGS=kernel32.lib advapi32.lib wsock32.lib ws2_32.lib rpcrt4.lib shell32.lib ssleay32.lib libeay32.lib /nologo /subsystem:console /incremental:no /pdb:"$(OUTDIR)\abs.pdb" /debug /out:"$(OUTDIR)\abs.exe" /libpath:"../srclib/openssl/out32dll" /opt:ref 
 LINK32_OBJS= \
 	"$(INTDIR)\abs.obj" \
 	"$(INTDIR)\ab.res" \
@@ -198,7 +198,7 @@ BSC32_FLAGS=/nologo /o"$(OUTDIR)\abs.bsc"
 BSC32_SBRS= \
 	
 LINK32=link.exe
-LINK32_FLAGS=kernel32.lib advapi32.lib wsock32.lib ws2_32.lib shell32.lib ssleay32.lib libeay32.lib /nologo /subsystem:console /incremental:no /pdb:"$(OUTDIR)\abs.pdb" /debug /out:"$(OUTDIR)\abs.exe" /libpath:"../srclib/openssl/out32dll" 
+LINK32_FLAGS=kernel32.lib advapi32.lib wsock32.lib ws2_32.lib rpcrt4.lib shell32.lib ssleay32.lib libeay32.lib /nologo /subsystem:console /incremental:no /pdb:"$(OUTDIR)\abs.pdb" /debug /out:"$(OUTDIR)\abs.exe" /libpath:"../srclib/openssl/out32dll" 
 LINK32_OBJS= \
 	"$(INTDIR)\abs.obj" \
 	"$(INTDIR)\ab.res" \

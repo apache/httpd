@@ -99,7 +99,7 @@ BSC32_FLAGS=/nologo /o"$(OUTDIR)\httxt2dbm.bsc"
 BSC32_SBRS= \
 	
 LINK32=link.exe
-LINK32_FLAGS=kernel32.lib advapi32.lib wsock32.lib ws2_32.lib shell32.lib /nologo /subsystem:console /incremental:no /pdb:"$(OUTDIR)\httxt2dbm.pdb" /debug /out:"$(OUTDIR)\httxt2dbm.exe" /opt:ref 
+LINK32_FLAGS=kernel32.lib advapi32.lib wsock32.lib ws2_32.lib rpcrt4.lib shell32.lib /nologo /subsystem:console /incremental:no /pdb:"$(OUTDIR)\httxt2dbm.pdb" /debug /out:"$(OUTDIR)\httxt2dbm.exe" /opt:ref 
 LINK32_OBJS= \
 	"$(INTDIR)\httxt2dbm.obj" \
 	"$(INTDIR)\httxt2dbm.res" \
@@ -198,7 +198,7 @@ BSC32_FLAGS=/nologo /o"$(OUTDIR)\httxt2dbm.bsc"
 BSC32_SBRS= \
 	
 LINK32=link.exe
-LINK32_FLAGS=kernel32.lib advapi32.lib wsock32.lib ws2_32.lib shell32.lib /nologo /subsystem:console /incremental:no /pdb:"$(OUTDIR)\httxt2dbm.pdb" /debug /out:"$(OUTDIR)\httxt2dbm.exe" 
+LINK32_FLAGS=kernel32.lib advapi32.lib wsock32.lib ws2_32.lib rpcrt4.lib shell32.lib /nologo /subsystem:console /incremental:no /pdb:"$(OUTDIR)\httxt2dbm.pdb" /debug /out:"$(OUTDIR)\httxt2dbm.exe" 
 LINK32_OBJS= \
 	"$(INTDIR)\httxt2dbm.obj" \
 	"$(INTDIR)\httxt2dbm.res" \
