@@ -99,7 +99,7 @@ BSC32_FLAGS=/nologo /o"$(OUTDIR)\htcacheclean.bsc"
 BSC32_SBRS= \
 	
 LINK32=link.exe
-LINK32_FLAGS=kernel32.lib advapi32.lib wsock32.lib ws2_32.lib shell32.lib /nologo /subsystem:console /incremental:no /pdb:"$(OUTDIR)\htcacheclean.pdb" /debug /out:"$(OUTDIR)\htcacheclean.exe" /opt:ref 
+LINK32_FLAGS=kernel32.lib advapi32.lib wsock32.lib ws2_32.lib rpcrt4.lib shell32.lib /nologo /subsystem:console /incremental:no /pdb:"$(OUTDIR)\htcacheclean.pdb" /debug /out:"$(OUTDIR)\htcacheclean.exe" /opt:ref 
 LINK32_OBJS= \
 	"$(INTDIR)\htcacheclean.obj" \
 	"$(INTDIR)\htcacheclean.res" \
@@ -198,7 +198,7 @@ BSC32_FLAGS=/nologo /o"$(OUTDIR)\htcacheclean.bsc"
 BSC32_SBRS= \
 	
 LINK32=link.exe
-LINK32_FLAGS=kernel32.lib advapi32.lib wsock32.lib ws2_32.lib shell32.lib /nologo /subsystem:console /incremental:no /pdb:"$(OUTDIR)\htcacheclean.pdb" /debug /out:"$(OUTDIR)\htcacheclean.exe" 
+LINK32_FLAGS=kernel32.lib advapi32.lib wsock32.lib ws2_32.lib rpcrt4.lib shell32.lib /nologo /subsystem:console /incremental:no /pdb:"$(OUTDIR)\htcacheclean.pdb" /debug /out:"$(OUTDIR)\htcacheclean.exe" 
 LINK32_OBJS= \
 	"$(INTDIR)\htcacheclean.obj" \
 	"$(INTDIR)\htcacheclean.res" \
