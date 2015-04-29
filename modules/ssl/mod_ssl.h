@@ -107,8 +107,8 @@ APR_DECLARE_OPTIONAL_FN(int, ssl_engine_disable, (conn_rec *));
  * callbacks, return DONE.
  */
 typedef int (*ssl_alpn_propose_protos)(conn_rec *connection,
-                                    apr_array_header_t *client_protos,
-                                    apr_array_header_t *proposed_protos);
+                                       apr_array_header_t *client_protos,
+                                       apr_array_header_t *proposed_protos);
 
 /** The alpn_proto_negotiated callback allows other modules to discover
  * the name of the protocol that was chosen during the Application-Layer
@@ -119,8 +119,8 @@ typedef int (*ssl_alpn_propose_protos)(conn_rec *connection,
  * (i.e. insert or remove filters) and return OK. To prevent further
  * processing of (other modules') callbacks, return DONE. */
 typedef int (*ssl_alpn_proto_negotiated)(conn_rec *connection,
-                                        const char *proto_name,
-                                        apr_size_t proto_name_len);
+                                         const char *proto_name,
+                                         apr_size_t proto_name_len);
 
 /* An optional function which can be used to register a pair of callbacks 
  * for ALPN handling.

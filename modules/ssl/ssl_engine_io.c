@@ -1496,20 +1496,23 @@ static apr_status_t ssl_io_filter_input(ap_filter_t *f,
         const unsigned char *next_proto = NULL;
         unsigned next_proto_len = 0;
         int n;
-        
+
         if (sslconn->alpn_negofns) {
             SSL_get0_alpn_selected(inctx->ssl, &next_proto, &next_proto_len);
             ap_log_cerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, f->c,
-                          APLOGNO(02836) "SSL negotiated protocol: '%s'",
-                          (next_proto && next_proto_len)?
-                         apr_pstrmemdup(f->c->pool, (const char *)next_proto,
-                              next_proto_len) : "(null)");
+                          APLOGNO(02836) "ALPN selected protocol: '%s'",
+                          (next_proto && next_proto_len) ?
+                              apr_pstrmemdup(f->c->pool,
+                                             (const char *)next_proto,
+                                             next_proto_len) :
+                              "(null)");
             for (n = 0; n < sslconn->alpn_negofns->nelts; n++) {
                 ssl_alpn_proto_negotiated fn =
-                APR_ARRAY_IDX(sslconn->alpn_negofns, n, ssl_alpn_proto_negotiated);
-                
+                    APR_ARRAY_IDX(sslconn->alpn_negofns, n,
+                                  ssl_alpn_proto_negotiated);
+
                 if (fn(f->c, (const char *)next_proto, next_proto_len) == DONE)
-                break;
+                    break;
             }
         }
         inctx->alpn_finished = 1;

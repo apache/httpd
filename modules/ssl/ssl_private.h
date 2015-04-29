@@ -440,8 +440,8 @@ typedef struct {
 
 #ifdef HAVE_TLS_ALPN
     /* Poor man's inter-module optional hooks for ALPN. */
-    apr_array_header_t *alpn_proposefns; /* list of ssl_alpn_propose_protos callbacks */
-    apr_array_header_t *alpn_negofns; /* list of ssl_alpn_proto_negotiated callbacks. */
+    apr_array_header_t *alpn_proposefns; /* list of ALPN propose callbacks */
+    apr_array_header_t *alpn_negofns; /* list of ALPN negotiation callbacks. */
 #endif
 
     server_rec *server;
@@ -626,7 +626,7 @@ typedef struct {
 #endif
   
 #ifdef HAVE_TLS_ALPN
-  apr_array_header_t *ssl_alpn_pref; /* protocol names in order of preference */
+  apr_array_header_t *ssl_alpn_pref; /* list of ALPN protocol IDs */
 #endif
 } modssl_ctx_t;
 
