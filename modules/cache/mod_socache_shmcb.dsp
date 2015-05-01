@@ -43,7 +43,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MD /W3 /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "mod_socache_shmcb_EXPORTS" /FD /c
-# ADD CPP /nologo /MD /W3 /O2 /Oy- /Zi /I "../../srclib/apr-util/include" /I "../../srclib/apr/include" /I "../../include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /Fd"Release\mod_socache_shmcb_src" /FD /c
+# ADD CPP /nologo /MD /W3 /O2 /Oy- /Zi /I "../../srclib/apr-util/include" /I "../../srclib/apr/include" /I "../../include" /I "../generators" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /Fd"Release\mod_socache_shmcb_src" /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
@@ -75,7 +75,7 @@ PostBuild_Cmds=if exist $(TargetPath).manifest mt.exe -manifest $(TargetPath).ma
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MDd /W3 /EHsc /Zi /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /FD /c
-# ADD CPP /nologo /MDd /W3 /EHsc /Zi /Od /I "../../srclib/apr-util/include" /I "../../srclib/apr/include" /I "../../include" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /Fd"Debug\mod_socache_shmcb_src" /FD /c
+# ADD CPP /nologo /MDd /W3 /EHsc /Zi /Od /I "../../srclib/apr-util/include" /I "../../srclib/apr/include" /I "../../include" /I "../generators" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /Fd"Debug\mod_socache_shmcb_src" /FD /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
