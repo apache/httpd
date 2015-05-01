@@ -313,7 +313,7 @@ BOOL modssl_X509_getSAN(apr_pool_t *p, X509 *x509, int type, int idx,
 }
 
 /* return an array of (RFC 6125 coined) DNS-IDs and CN-IDs in a certificate */
-BOOL SSL_X509_getIDs(apr_pool_t *p, X509 *x509, apr_array_header_t **ids)
+static BOOL getIDs(apr_pool_t *p, X509 *x509, apr_array_header_t **ids)
 {
     X509_NAME *subj;
     int i = -1;
@@ -356,7 +356,7 @@ BOOL SSL_X509_match_name(apr_pool_t *p, X509 *x509, const char *name,
      *    is found).
      */
 
-    if (SSL_X509_getIDs(p, x509, &ids)) {
+    if (getIDs(p, x509, &ids)) {
         const char *cp;
         int i;
         char **id = (char **)ids->elts;
