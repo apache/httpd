@@ -121,7 +121,7 @@ EVP_PKEY *modssl_read_privatekey(const char* filename, EVP_PKEY **key, pem_passw
 **  _________________________________________________________________
 */
 
-int SSL_smart_shutdown(SSL *ssl)
+int modssl_smart_shutdown(SSL *ssl)
 {
     int i;
     int rc;
