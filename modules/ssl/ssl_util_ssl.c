@@ -213,7 +213,7 @@ static char *convert_asn1_to_utf8(apr_pool_t *p, ASN1_STRING *asn1str)
 }
 
 /* convert a NAME_ENTRY to UTF8 string */
-char *SSL_X509_NAME_ENTRY_to_string(apr_pool_t *p, X509_NAME_ENTRY *xsne)
+char *modssl_X509_NAME_ENTRY_to_string(apr_pool_t *p, X509_NAME_ENTRY *xsne)
 {
     char *result = convert_asn1_to_utf8(p, X509_NAME_ENTRY_get_data(xsne));
     ap_xlate_proto_from_ascii(result, len);
@@ -329,7 +329,7 @@ BOOL SSL_X509_getIDs(apr_pool_t *p, X509 *x509, apr_array_header_t **ids)
     subj = X509_get_subject_name(x509);
     while ((i = X509_NAME_get_index_by_NID(subj, NID_commonName, i)) != -1) {
         APR_ARRAY_PUSH(*ids, const char *) = 
-            SSL_X509_NAME_ENTRY_to_string(p, X509_NAME_get_entry(subj, i));
+            modssl_X509_NAME_ENTRY_to_string(p, X509_NAME_get_entry(subj, i));
     }
 
     return apr_is_empty_array(*ids) ? FALSE : TRUE;
