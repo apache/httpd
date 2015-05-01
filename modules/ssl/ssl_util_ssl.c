@@ -161,7 +161,7 @@ int modssl_smart_shutdown(SSL *ssl)
 */
 
 /* retrieve basic constraints ingredients */
-BOOL SSL_X509_getBC(X509 *cert, int *ca, int *pathlen)
+BOOL modssl_X509_getBC(X509 *cert, int *ca, int *pathlen)
 {
     BASIC_CONSTRAINTS *bc;
     BIGNUM *bn = NULL;
