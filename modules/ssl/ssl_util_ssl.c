@@ -74,7 +74,7 @@ void modssl_set_app_data2(SSL *ssl, void *arg)
 **  _________________________________________________________________
 */
 
-EVP_PKEY *SSL_read_PrivateKey(const char* filename, EVP_PKEY **key, pem_password_cb *cb, void *s)
+EVP_PKEY *modssl_read_privatekey(const char* filename, EVP_PKEY **key, pem_password_cb *cb, void *s)
 {
     EVP_PKEY *rc;
     BIO *bioS;
