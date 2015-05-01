@@ -10,32 +10,15 @@ Changes with Apache 2.5.0
      deprecation warnings, when encountered in a VirtualHost block.
      [Falco Schwarz <hiding falco.me>]
 
-  *) Allow FallbackResource to work when a directory is requested and
-     there is no autoindex nor DirectoryIndex. PR56067.
-     [Jack <tjerk.meesters gmail.com>, Eric Covener]
-
-  *) mod_proxy_wstunnel: Bypass the handler while the connection is not
-     upgraded to WebSocket, so that other modules can possibly take over
-     the leading HTTP requests.  [Yann Ylavic]
-
   *) mod_proxy_scgi: ProxySCGIInternalRedirect now allows an alternate
      response header to be used by the application, for when the application
      or framework is unable to return Location in the internal-redirect
      form.  [Jeff Trawick]
 
-  *) ssl: Add a warning if protocol given in SSLProtocol or SSLProxyProtocol
-     will override other parameters given in the same directive. This could be
-     a missing + or - prefix.  PR 52820 [Christophe Jaillet]
-
-  *) mod_logio: Add LogIOTrackTTFB and %^FB logformat to log the time 
-     taken to start writing response headers. [Eric Covener]
-
   *) http: Add support for RFC2324/RFC7168. [Graham Leggett]
 
   *) core: Cleanup the request soon/even if some output filter fails to
      handle the EOR bucket.  [Yann Ylavic]
-
-  *) mpm_event: Allow for timer events duplicates. [Jim Jagielski, Yann Ylavic]
 
   *) core, modules: Avoid error response/document handling by the core if some
      handler or input filter already did it while reading the request (causing
@@ -97,10 +80,6 @@ Changes with Apache 2.5.0
   *) ap_expr: Add filemod function for checking file modification dates
      [Daniel Gruno]
      
-  *) core: Add CGIPassAuth directive to control whether HTTP authorization
-     headers are passed to scripts as CGI variables.  PR 56855.  [Jeff 
-     Trawick]
-
   *) mod_authnz_ldap: Resolve crashes with LDAP authz and non-LDAP authn since 
      r1608202. [Eric Covener]
  
