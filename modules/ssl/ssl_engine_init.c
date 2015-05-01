@@ -1634,7 +1634,7 @@ static void ssl_init_PushCAList(STACK_OF(X509_NAME) *ca_list,
 
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(02209)
                      "CA certificate: %s",
-                     SSL_X509_NAME_to_string(ptemp, name, 0));
+                     modssl_X509_NAME_to_string(ptemp, name, 0));
 
         /*
          * note that SSL_load_client_CA_file() checks for duplicates,
