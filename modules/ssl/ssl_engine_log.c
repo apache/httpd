@@ -141,8 +141,8 @@ static void ssl_log_cert_error(const char *file, int line, int level,
             int maxdnlen = (HUGE_STRING_LEN - msglen - 300) / 2;
 
             BIO_puts(bio, " [subject: ");
-            name = SSL_X509_NAME_to_string(p, X509_get_subject_name(cert),
-                                           maxdnlen);
+            name = modssl_X509_NAME_to_string(p, X509_get_subject_name(cert),
+                                              maxdnlen);
             if (!strIsEmpty(name)) {
                 BIO_puts(bio, name);
             } else {
@@ -150,8 +150,8 @@ static void ssl_log_cert_error(const char *file, int line, int level,
             }
 
             BIO_puts(bio, " / issuer: ");
-            name = SSL_X509_NAME_to_string(p, X509_get_issuer_name(cert),
-                                           maxdnlen);
+            name = modssl_X509_NAME_to_string(p, X509_get_issuer_name(cert),
+                                              maxdnlen);
             if (!strIsEmpty(name)) {
                 BIO_puts(bio, name);
             } else {

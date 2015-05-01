@@ -807,7 +807,7 @@ static char *ssl_var_lookup_ssl_cert_rfc4523_cea(apr_pool_t *p, SSL *ssl)
             char *decimal = BN_bn2dec(bn);
             result = apr_pstrcat(p, "{ serialNumber ", decimal,
                     ", issuer rdnSequence:\"",
-                    SSL_X509_NAME_to_string(p, issuer, 0), "\" }", NULL);
+                    modssl_X509_NAME_to_string(p, issuer, 0), "\" }", NULL);
             OPENSSL_free(decimal);
             BN_free(bn);
         }
