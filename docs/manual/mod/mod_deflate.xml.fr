@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1655907:1673563 (outdated) -->
+<!-- English Revision: 1673563 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -73,7 +73,7 @@ client</description>
 
       <highlight language="config">
 SetOutputFilter DEFLATE
-SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip        
+SetEnvIfNoCase Request_URI "\.(?:gif|jpe?g|png)$" no-gzip        
 	</highlight>
 
       <p>Si vous voulez limiter la compression &agrave; certains types MIME
@@ -112,8 +112,8 @@ SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip
       dans l'exemple suivant :</p>
 
       <highlight language="config">
-&lt;Location /dav-area&gt;
-    ProxyPass http://example.com/
+&lt;Location "/dav-area"&gt;
+    ProxyPass "http://example.com/"
     SetOutputFilter INFLATE
 &lt;/Location&gt;
       </highlight>
@@ -134,7 +134,7 @@ SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip
       dans l'exemple suivant :</p>
 
       <highlight language="config">
-&lt;Location /dav-area&gt;
+&lt;Location "/dav-area"&gt;
     SetInputFilter DEFLATE
 &lt;/Location&gt;
       </highlight>
@@ -194,6 +194,48 @@ SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip
     </example>
 </section>
 
+<section id="precompressed"><title>Servir du contenu pr&eacute;compress&eacute;</title>
+
+    <p>Comme <module>mod_deflate</module> recompresse le contenu demand&eacute; &agrave;
+    chaque requ&ecirc;te, il est possible de gagner en performances en
+    pr&eacute;compressant ce contenu, et en for&ccedil;ant mod_deflate &agrave; servir ce
+    contenu pr&eacute;compress&eacute; sans avoir &agrave; le recompresser &agrave; chaque requ&ecirc;te.
+    Pour ce faire, utilisez une configuration du style :</p>
+
+    <highlight language="config">
+&lt;IfModule mod_headers.c&gt;
+    # Servir des fichiers CSS compress&eacute;s avec gzip, s'ils existent, et
+    # si le client accepte gzip.
+    RewriteCond "%{HTTP:Accept-encoding}" "gzip"
+    RewriteCond "%{REQUEST_FILENAME}\.gz" "-s"
+    RewriteRule "^(.*)\.css"              "$1\.css\.gz" [QSA]
+
+    # Servir des fichiers JS compress&eacute;s avec gzip, s'ils existent, et
+    # si le client accepte gzip.
+    RewriteCond "%{HTTP:Accept-encoding}" "gzip"
+    RewriteCond "%{REQUEST_FILENAME}\.gz" "-s"
+    RewriteRule "^(.*)\.js"               "$1\.js\.gz" [QSA]
+
+
+    # Servir des types de contenus corrects, et emp&ecirc;cher mod_deflate
+    # d'effectuer un double gzip.
+    RewriteRule "\.css\.gz$" "-" [T=text/css,E=no-gzip:1]
+    RewriteRule "\.js\.gz$"  "-" [T=text/javascript,E=no-gzip:1]
+
+
+    &lt;FilesMatch "(\.js\.gz|\.css\.gz)$"&gt;
+      # Servir le type de codage correct.
+      Header append Content-Encoding gzip
+
+      # Force les mandataires &agrave; mettre en cache s&eacute;par&eacute;ment les fichiers
+      # css/js gzipp&eacute;s &amp; non gzipp&eacute;s.
+      Header append Vary Accept-Encoding
+    &lt;/FilesMatch&gt;
+&lt;/IfModule&gt;
+    </highlight>
+
+</section>
+
 <directivesynopsis>
 <name>DeflateFilterNote</name>
 <description>Enregistre le taux de compression sous la forme d'une note
@@ -215,7 +257,7 @@ SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip
       DeflateFilterNote ratio
     
       LogFormat '"%r" %b (%{ratio}n) "%{User-agent}i"' deflate
-      CustomLog logs/deflate_log deflate
+      CustomLog "logs/deflate_log" deflate
       </highlight>
     </example>
 
@@ -249,7 +291,7 @@ DeflateFilterNote Output outstream
 DeflateFilterNote Ratio ratio
 
 LogFormat '"%r" %{outstream}n/%{instream}n (%{ratio}n%%)' deflate
-CustomLog logs/deflate_log deflate
+CustomLog "logs/deflate_log" deflate
 </highlight>
     </example>
 </usage>

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1334024:1673563 (outdated) -->
+<!-- English Revision: 1673563 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -42,7 +42,7 @@ connexion &agrave; simuler.</p>
 
 <example><title>Exemple de configuration</title>
 <highlight language="config">
-&lt;Location /downloads&gt;
+&lt;Location "/downloads"&gt;
     SetOutputFilter RATE_LIMIT
     SetEnv rate-limit 400
 &lt;/Location&gt;

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1334008:1673563 (outdated) -->
+<!-- English Revision: 1673563 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -47,7 +47,7 @@ pouvant &ecirc;tre utilis&eacute;es sur le serveur. La configuration la plus cou
 est du style :</p>
 
 <highlight language="config">
-&lt;Location /&gt;
+&lt;Location "/"&gt;
    AllowMethods GET POST OPTIONS
 &lt;/Location&gt;
 </highlight>
@@ -73,7 +73,7 @@ HEAD sont consid&eacute;r&eacute;es comme &eacute;quivalentes. Le mot-cl&eacute;
 d'imbrication :</p>
 
 <highlight language="config">
-&lt;Location /svn&gt;
+&lt;Location "/svn"&gt;
    AllowMethods reset
 &lt;/Location&gt;
 </highlight>
