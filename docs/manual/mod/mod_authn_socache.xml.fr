@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1659902:1673945 (outdated) -->
+<!-- English Revision: 1673945 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -82,7 +82,7 @@ la charge des serveurs d'arri&egrave;re-plan</description>
     #AuthnCacheSOCache est optionnel. S'il est d&eacute;fini, il l'est pour
     #l'ensemble du serveur
 AuthnCacheSOCache dbm
-&lt;Directory /usr/www/myhost/private&gt;
+&lt;Directory "/usr/www/myhost/private"&gt;
     AuthType Basic
     AuthName "Cached Authentication Example"
     AuthBasicProvider socache dbd

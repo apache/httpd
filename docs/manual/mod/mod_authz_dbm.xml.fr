@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1587032:1673582 (outdated) -->
+<!-- English Revision: 1673582 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -86,8 +86,8 @@ maintenant <code>dbm-group</code> :</em>
   AuthType Basic
   AuthName "Secure Area"
   AuthBasicProvider dbm
-  AuthDBMUserFile site/data/users
-  AuthDBMGroupFile site/data/users
+  AuthDBMUserFile "site/data/users"
+  AuthDBMGroupFile "site/data/users"
   Require dbm-group admin
 &lt;/Directory&gt;
 </highlight>
@@ -132,8 +132,8 @@ protection suppl&eacute;mentaire.</p>
     DBM aux fichiers de groupes et de mots de passe :</p>
 
     <highlight language="config">
-AuthDBMGroupFile /www/userbase
-AuthDBMUserFile /www/userbase
+AuthDBMGroupFile "/www/userbase"
+AuthDBMUserFile "/www/userbase"
     </highlight>
 
     <p>La cl&eacute; du fichier DBM unique est le nom d'utilisateur. La

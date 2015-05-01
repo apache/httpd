@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1590566:1674195 (outdated) -->
+<!-- English Revision: 1674195 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -371,10 +371,10 @@ AddOutputFilterByType INCLUDES;CACHE;DEFLATE text/html
   suivant :</p>
 
   <highlight language="config">
-CustomLog cached-requests.log common env=cache-hit
-CustomLog uncached-requests.log common env=cache-miss
-CustomLog revalidated-requests.log common env=cache-revalidate
-CustomLog invalidated-requests.log common env=cache-invalidate
+CustomLog "cached-requests.log" common env=cache-hit
+CustomLog "uncached-requests.log" common env=cache-miss
+CustomLog "revalidated-requests.log" common env=cache-revalidate
+CustomLog "invalidated-requests.log" common env=cache-invalidate
   </highlight>
 
   <p>Pour les concepteurs de modules, une accroche (hook) nomm&eacute;e
@@ -435,13 +435,13 @@ en mandat direct dans les versions 2.2 et ant&eacute;rieures.</compatibility>
     <highlight language="config">
 # Mise en cache de contenu (gestionnaire normal seulement)
 CacheQuickHandler off
-&lt;Location /foo&gt;
+&lt;Location "/foo"&gt;
     CacheEnable disk
 &lt;/Location&gt;
 
 # Mise en cache via une expression rationnelle (gestionnaire normal seulement)
 CacheQuickHandler off
-&lt;LocationMatch foo$&gt;
+&lt;LocationMatch "foo$"&gt;
     CacheEnable disk
 &lt;/LocationMatch&gt;
 
@@ -507,7 +507,7 @@ sp&eacute;cifi&eacute;es</description>
 
     <example><title>Exemple</title>
       <highlight language="config">
-&lt;Location /foo&gt;
+&lt;Location "/foo"&gt;
     CacheDisable on
 &lt;/Location&gt;
       </highlight>
