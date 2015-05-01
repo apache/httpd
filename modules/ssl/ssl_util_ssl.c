@@ -340,8 +340,8 @@ static BOOL getIDs(apr_pool_t *p, X509 *x509, apr_array_header_t **ids)
  * DNS-IDs and CN-IDs (RFC 6125), optionally with basic wildcard matching.
  * If server_rec is non-NULL, some (debug/trace) logging is enabled.
  */
-BOOL SSL_X509_match_name(apr_pool_t *p, X509 *x509, const char *name,
-                         BOOL allow_wildcard, server_rec *s)
+BOOL modssl_X509_match_name(apr_pool_t *p, X509 *x509, const char *name,
+                            BOOL allow_wildcard, server_rec *s)
 {
     BOOL matched = FALSE;
     apr_array_header_t *ids;
@@ -387,7 +387,7 @@ BOOL SSL_X509_match_name(apr_pool_t *p, X509 *x509, const char *name,
 
             if (s) {
                 ap_log_error(APLOG_MARK, APLOG_TRACE3, 0, s,
-                             "[%s] SSL_X509_match_name: expecting name '%s', "
+                             "[%s] modssl_X509_match_name: expecting name '%s', "
                              "%smatched by ID '%s'",
                              (mySrvConfig(s))->vhost_id, name,
                              matched == TRUE ? "" : "NOT ", id[i]);
