@@ -259,8 +259,8 @@ char *modssl_X509_NAME_to_string(apr_pool_t *p, X509_NAME *dn, int maxlen)
  * GEN_EMAIL (rfc822Name)
  * GEN_DNS (dNSName)
  */
-BOOL SSL_X509_getSAN(apr_pool_t *p, X509 *x509, int type, int idx,
-                     apr_array_header_t **entries)
+BOOL modssl_X509_getSAN(apr_pool_t *p, X509 *x509, int type, int idx,
+                        apr_array_header_t **entries)
 {
     STACK_OF(GENERAL_NAME) *names;
 
@@ -320,7 +320,7 @@ BOOL SSL_X509_getIDs(apr_pool_t *p, X509 *x509, apr_array_header_t **ids)
 
     /* First, the DNS-IDs (dNSName entries in the subjectAltName extension) */
     if (!x509 ||
-        (SSL_X509_getSAN(p, x509, GEN_DNS, -1, ids) == FALSE && !*ids)) {
+        (modssl_X509_getSAN(p, x509, GEN_DNS, -1, ids) == FALSE && !*ids)) {
         *ids = NULL;
         return FALSE;
     }
