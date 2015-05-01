@@ -105,6 +105,16 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_dir: Use FallBackResource when DirectoryIndex is not available. PR56067
+     trunk patch: 1675103
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: covener, druggeri, jim
+
+  *) mod_log_config: Add new format flag for requestion duration in milliseconds
+     trunk patch: http://svn.apache.org/r1675533
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: breser, druggeri, jim
+
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -249,11 +259,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: druggeri
      druggeri: committed by breser, but no +1 vote?
 
-  *) mod_dir: Use FallBackResource when DirectoryIndex is not available. PR56067
-     trunk patch: 1675103
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: covener, druggeri, jim
-
   *) mod_proxy_scgi: ProxySCGIInternalRedirect with alternate response header
      trunk patch: 1674510
      2.4.x patch: trunk works (modulo CHANGES)
@@ -262,11 +267,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        and the version edited :)
      Pre-edited: http://people.apache.org/~trawick/r1674510-to-2.4.x.txt
      +1: trawick, jim
-
-  *) mod_log_config: Add new format flag for requestion duration in milliseconds
-     trunk patch: http://svn.apache.org/r1675533
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: breser, druggeri, jim
 
    * mod_ssl: consistently output SSLCertificateChainFile deprecation warnings
      trunk patch: https://svn.apache.org/r1676085
