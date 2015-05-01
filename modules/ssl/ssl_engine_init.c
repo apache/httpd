@@ -1243,7 +1243,7 @@ static apr_status_t ssl_init_proxy_certs(server_rec *s,
     sk = sk_X509_INFO_new_null();
 
     if (pkp->cert_file) {
-        SSL_X509_INFO_load_file(ptemp, sk, pkp->cert_file);
+        modssl_X509_INFO_load_file(ptemp, sk, pkp->cert_file);
     }
 
     if (pkp->cert_path) {
