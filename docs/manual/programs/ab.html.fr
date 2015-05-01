@@ -30,6 +30,8 @@ Apache</h1>
 <a href="../ko/programs/ab.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/programs/ab.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
+            anglaise pour les changements récents.</div>
 
     <p><code>ab</code> est un utilitaire qui vous permet de tester les
     performances de votre serveur HTTP Apache. Il a été conçu pour vous

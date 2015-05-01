@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_proxy_fcgi.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_proxy_fcgi.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Module fournissant le support de FastCGI à
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -78,7 +76,7 @@
     d'activer <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> et
     <code class="module"><a href="../mod/mod_proxy_fcgi.html">mod_proxy_fcgi</a></code>.</p>
 
-    <div class="example"><h3>Instance d'application unique</h3><pre class="prettyprint lang-config">ProxyPass /mon_appli/ fcgi://localhost:4000/</pre>
+    <div class="example"><h3>Instance d'application unique</h3><pre class="prettyprint lang-config">ProxyPass "/mon_appli/" "fcgi://localhost:4000/"</pre>
 </div>
 
     
@@ -90,7 +88,7 @@
     pour la réutilisation des connexions comme dans l'exemple suivant :</p>
 
     <div class="example"><h3>Instance d'application unique, réutilisation
-    des connexions (versions 2.4.11 et supérieures)</h3><pre class="prettyprint lang-config">ProxyPass /myapp/ fcgi://localhost:4000/ enablereuse=on</pre>
+    des connexions (versions 2.4.11 et supérieures)</h3><pre class="prettyprint lang-config">ProxyPass "/myapp/" "fcgi://localhost:4000/" enablereuse=on</pre>
 </div>
 
     <p>Dans l'exemple suivant, l'URI de la requête est transmis en tant
@@ -98,7 +96,7 @@
     L'URL de la requête est implicitement ajoutée au second paramètre.
     PHP-FPM est à l'écoute de l'hôte et du port qui
     suivent fcgi://. La conservation des connexions est activée.</p>
-    <div class="example"><h3>PHP-FPM</h3><pre class="prettyprint lang-config">ProxyPassMatch ^/myapp/.*\.php(/.*)?$ fcgi://localhost:9000/var/www/ enablereuse=on</pre>
+    <div class="example"><h3>PHP-FPM</h3><pre class="prettyprint lang-config">ProxyPassMatch "^/myapp/.*\.php(/.*)?$" "fcgi://localhost:9000/var/www/" enablereuse=on</pre>
 </div>
 
     <p>Dans l'exemple suivant, l'URI de la requête est transmis en tant
@@ -108,7 +106,7 @@
     version 2.4.9. Avec cette syntaxe, si un nom d'hôte et un port sont
     ajoutés après fcgi://, ils seront ignorés.</p>
     <div class="example"><h3>PHP-FPM with UDS</h3><pre class="prettyprint lang-config">      # A ce jour, UDS ne supporte pas la réutilisation des connexions
-      ProxyPassMatch ^/(.*\.php(/.*)?)$ "unix:/var/run/php5-fpm.sock|fcgi://localhost/var/www/"</pre>
+      ProxyPassMatch "^/(.*\.php(/.*)?)$" "unix:/var/run/php5-fpm.sock|fcgi://localhost/var/www/"</pre>
 </div>
 
     <p>La passerelle à répartition de charge nécessite le chargement du
@@ -119,10 +117,10 @@
     par défaut et sera utilisé dans cet exemple de configuration.</p>
 
     <div class="example"><h3>Passerelle à répartition de charge vers plusieurs
-    instances de l'application</h3><pre class="prettyprint lang-config">ProxyPass /myapp/ balancer://myappcluster/
-&lt;Proxy balancer://myappcluster/&gt;
-    BalancerMember fcgi://localhost:4000
-    BalancerMember fcgi://localhost:4001
+    instances de l'application</h3><pre class="prettyprint lang-config">ProxyPass "/myapp/" "balancer://myappcluster/"
+&lt;Proxy "balancer://myappcluster/"&gt;
+    BalancerMember "fcgi://localhost:4000"
+    BalancerMember "fcgi://localhost:4001"
 &lt;/Proxy&gt;</pre>
 </div>
 
@@ -140,7 +138,7 @@
     d'arrière-plan. Lorsque FastCGI est configuré ainsi, le serveur est
     en mesure de calculer le PATH_INFO le plus approprié.
       </p>
-	<div class="example"><h3>Mandataire via un gestionnaire</h3><pre class="prettyprint lang-config">&lt;FilesMatch \.php$&gt;
+	<div class="example"><h3>Mandataire via un gestionnaire</h3><pre class="prettyprint lang-config">&lt;FilesMatch "\.php$"&gt;
     # Note : la seule partie variable est /path/to/app.sock
     SetHandler  "proxy:unix:/path/to/app.sock|fcgi://localhost/"
 &lt;/FilesMatch&gt;
@@ -149,7 +147,7 @@
    # SetHandler est la partie qui suit le "pipe". Si vous devez faire
    # une distinction, "localhost" peut être changé en un nom de serveur
    # unique.
-   &lt;Proxy fcgi://localhost/ enablereuse=on max=10&gt;
+   &lt;Proxy "fcgi://localhost/" enablereuse=on max=10&gt;
    &lt;/Proxy&gt;
 
 &lt;FilesMatch ...&gt;
