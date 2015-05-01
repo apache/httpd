@@ -105,11 +105,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_dir: Use FallBackResource when DirectoryIndex is not available. PR56067
-     trunk patch: 1675103
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: covener, druggeri, jim
-
   *) mod_log_config: Add new format flag for requestion duration in milliseconds
      trunk patch: http://svn.apache.org/r1675533
      2.4.x patch: trunk works (modulo CHANGES)

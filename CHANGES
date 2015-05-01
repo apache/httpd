@@ -25,6 +25,10 @@ Changes with Apache 2.4.13
   *) mod_status: Add more data to machine readable server-status produced
      when using the "?auto" query string.  [Rainer Jung]
 
+  *) Allow FallbackResource to work when a directory is requested and
+     there is no autoindex nor DirectoryIndex. 
+     [Jack <tjerk.meesters gmail.com>, Eric Covener]
+
   *) mod_proxy_wstunnel: Bypass the handler while the connection is not
      upgraded to WebSocket, so that other modules can possibly take over
      the leading HTTP requests.  [Yann Ylavic]
