@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_allowmethods.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_allowmethods.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Limitation simple des méthodes HTTP acceptées par e serveur</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>allowmethods_module</td></tr>
@@ -41,7 +39,7 @@
 acceptées par le serveur. La configuration la plus courante
 est du style :</p>
 
-<pre class="prettyprint lang-config">&lt;Location /&gt;
+<pre class="prettyprint lang-config">&lt;Location "/"&gt;
    AllowMethods GET POST OPTIONS
 &lt;/Location&gt;</pre>
 
@@ -72,7 +70,7 @@ HEAD sont traitées de la même manière. Le mot-clé
 <code class="module"><a href="../mod/mod_allowmethods.html">mod_allowmethods</a></code> dans les niveaux inférieurs
 d'imbrication :</p>
 
-<pre class="prettyprint lang-config">&lt;Location /svn&gt;
+<pre class="prettyprint lang-config">&lt;Location "/svn"&gt;
    AllowMethods reset
 &lt;/Location&gt;</pre>
 

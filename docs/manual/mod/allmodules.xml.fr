@@ -69,7 +69,7 @@
   <modulefile>mod_ldap.xml.fr</modulefile>
   <modulefile>mod_log_config.xml</modulefile>
   <modulefile>mod_log_debug.xml</modulefile>
-  <modulefile>mod_log_forensic.xml</modulefile>
+  <modulefile>mod_log_forensic.xml.fr</modulefile>
   <modulefile>mod_logio.xml</modulefile>
   <modulefile>mod_lua.xml.fr</modulefile>
   <modulefile>mod_macro.xml.fr</modulefile>
