@@ -105,11 +105,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_log_config: Add new format flag for requestion duration in milliseconds
-     trunk patch: http://svn.apache.org/r1675533
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: breser, druggeri, jim
-
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
