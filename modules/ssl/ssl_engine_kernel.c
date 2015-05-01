@@ -229,7 +229,7 @@ int ssl_hook_ReadReq(request_rec *r)
         }
     }
 #endif
-    SSL_set_app_data2(ssl, r);
+    modssl_set_app_data2(ssl, r);
 
     /*
      * Log information about incoming HTTPS requests
@@ -1385,7 +1385,7 @@ int ssl_callback_SSLVerify(int ok, X509_STORE_CTX *ctx)
     SSL *ssl = X509_STORE_CTX_get_ex_data(ctx,
                                           SSL_get_ex_data_X509_STORE_CTX_idx());
     conn_rec *conn      = (conn_rec *)SSL_get_app_data(ssl);
-    request_rec *r      = (request_rec *)SSL_get_app_data2(ssl);
+    request_rec *r      = (request_rec *)modssl_get_app_data2(ssl);
     server_rec *s       = r ? r->server : mySrvFromConn(conn);
 
     SSLSrvConfigRec *sc = mySrvConfig(s);

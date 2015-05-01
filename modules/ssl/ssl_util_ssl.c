@@ -38,33 +38,33 @@
  * also note that OpenSSL increments at static variable when
  * SSL_get_ex_new_index() is called, so we _must_ do this at startup.
  */
-static int SSL_app_data2_idx = -1;
+static int app_data2_idx = -1;
 
-void SSL_init_app_data2_idx(void)
+void modssl_init_app_data2_idx(void)
 {
     int i;
 
-    if (SSL_app_data2_idx > -1) {
+    if (app_data2_idx > -1) {
         return;
     }
 
     /* we _do_ need to call this twice */
-    for (i=0; i<=1; i++) {
-        SSL_app_data2_idx =
+    for (i = 0; i <= 1; i++) {
+        app_data2_idx =
             SSL_get_ex_new_index(0,
                                  "Second Application Data for SSL",
                                  NULL, NULL, NULL);
     }
 }
 
-void *SSL_get_app_data2(SSL *ssl)
+void *modssl_get_app_data2(SSL *ssl)
 {
-    return (void *)SSL_get_ex_data(ssl, SSL_app_data2_idx);
+    return (void *)SSL_get_ex_data(ssl, app_data2_idx);
 }
 
-void SSL_set_app_data2(SSL *ssl, void *arg)
+void modssl_set_app_data2(SSL *ssl, void *arg)
 {
-    SSL_set_ex_data(ssl, SSL_app_data2_idx, (char *)arg);
+    SSL_set_ex_data(ssl, app_data2_idx, (char *)arg);
     return;
 }
 

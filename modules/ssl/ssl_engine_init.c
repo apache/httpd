@@ -348,7 +348,7 @@ apr_status_t ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
      */
     ssl_add_version_components(p, base_server);
 
-    SSL_init_app_data2_idx(); /* for SSL_get_app_data2() at request time */
+    modssl_init_app_data2_idx(); /* for modssl_get_app_data2() at request time */
 
     init_dh_params();
 

@@ -57,9 +57,9 @@
 /**
  *  Additional Functions
  */
-void        SSL_init_app_data2_idx(void);
-void       *SSL_get_app_data2(SSL *);
-void        SSL_set_app_data2(SSL *, void *);
+void        modssl_init_app_data2_idx(void);
+void       *modssl_get_app_data2(SSL *);
+void        modssl_set_app_data2(SSL *, void *);
 EVP_PKEY   *SSL_read_PrivateKey(const char *, EVP_PKEY **, pem_password_cb *, void *);
 int         SSL_smart_shutdown(SSL *ssl);
 BOOL        SSL_X509_getBC(X509 *, int *, int *);

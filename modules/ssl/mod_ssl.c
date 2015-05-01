@@ -539,7 +539,7 @@ int ssl_init_ssl_connection(conn_rec *c, request_rec *r)
     }
 
     SSL_set_app_data(ssl, c);
-    SSL_set_app_data2(ssl, NULL); /* will be request_rec */
+    modssl_set_app_data2(ssl, NULL); /* will be request_rec */
 
     sslconn->ssl = ssl;
 
