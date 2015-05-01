@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1655800:1673563 (outdated) -->
+<!-- English Revision: 1673563 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -69,7 +69,7 @@
 
     <example><title>Instance d'application unique</title>
     <highlight language="config">
-      ProxyPass /mon_appli/ fcgi://localhost:4000/
+      ProxyPass "/mon_appli/" "fcgi://localhost:4000/"
       </highlight>
     </example>
 
@@ -84,7 +84,7 @@
     <example><title>Instance d'application unique, r&eacute;utilisation
     des connexions (versions 2.4.11 et sup&eacute;rieures)</title>
     <highlight language="config">
-      ProxyPass /myapp/ fcgi://localhost:4000/ enablereuse=on
+      ProxyPass "/myapp/" "fcgi://localhost:4000/" enablereuse=on
       </highlight>
     </example>
 
@@ -95,7 +95,7 @@
     suivent fcgi://. La conservation des connexions est activ&eacute;e.</p>
     <example><title>PHP-FPM</title>
     <highlight language="config">
-      ProxyPassMatch ^/myapp/.*\.php(/.*)?$ fcgi://localhost:9000/var/www/ enablereuse=on
+      ProxyPassMatch "^/myapp/.*\.php(/.*)?$" "fcgi://localhost:9000/var/www/" enablereuse=on
     </highlight>
     </example>
 
@@ -108,7 +108,7 @@
     <example><title>PHP-FPM with UDS</title>
     <highlight language="config">
       # A ce jour, UDS ne supporte pas la r&eacute;utilisation des connexions
-      ProxyPassMatch ^/(.*\.php(/.*)?)$ "unix:/var/run/php5-fpm.sock|fcgi://localhost/var/www/"
+      ProxyPassMatch "^/(.*\.php(/.*)?)$" "unix:/var/run/php5-fpm.sock|fcgi://localhost/var/www/"
     </highlight>
     </example>
 
@@ -122,10 +122,10 @@
     <example><title>Passerelle &agrave; r&eacute;partition de charge vers plusieurs
     instances de l'application</title>
     <highlight language="config">
-ProxyPass /myapp/ balancer://myappcluster/
-&lt;Proxy balancer://myappcluster/&gt;
-    BalancerMember fcgi://localhost:4000
-    BalancerMember fcgi://localhost:4001
+ProxyPass "/myapp/" "balancer://myappcluster/"
+&lt;Proxy "balancer://myappcluster/"&gt;
+    BalancerMember "fcgi://localhost:4000"
+    BalancerMember "fcgi://localhost:4001"
 &lt;/Proxy&gt;
     </highlight>
     </example>
@@ -147,7 +147,7 @@ ProxyPass /myapp/ balancer://myappcluster/
       </p>
 	<example><title>Mandataire via un gestionnaire</title>
       <highlight language="config">
-&lt;FilesMatch \.php$&gt;
+&lt;FilesMatch "\.php$"&gt;
     # Note : la seule partie variable est /path/to/app.sock
     SetHandler  "proxy:unix:/path/to/app.sock|fcgi://localhost/"
 &lt;/FilesMatch&gt;
@@ -156,7 +156,7 @@ ProxyPass /myapp/ balancer://myappcluster/
    # SetHandler est la partie qui suit le "pipe". Si vous devez faire
    # une distinction, "localhost" peut &ecirc;tre chang&eacute; en un nom de serveur
    # unique.
-   &lt;Proxy fcgi://localhost/ enablereuse=on max=10&gt;
+   &lt;Proxy "fcgi://localhost/" enablereuse=on max=10&gt;
    &lt;/Proxy&gt;
 
 &lt;FilesMatch ...&gt;
