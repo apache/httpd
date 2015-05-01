@@ -651,7 +651,7 @@ static char *ssl_var_lookup_ssl_cert_dn(apr_pool_t *p, X509_NAME *xsname, char *
                 n =OBJ_obj2nid((ASN1_OBJECT *)X509_NAME_ENTRY_get_object(xsne));
 
                 if (n == ssl_var_lookup_ssl_cert_dn_rec[i].nid && idx-- == 0) {
-                    result = SSL_X509_NAME_ENTRY_to_string(p, xsne);
+                    result = modssl_X509_NAME_ENTRY_to_string(p, xsne);
                     break;
                 }
             }
@@ -972,7 +972,7 @@ static void extract_dn(apr_table_t *t, apr_hash_t *nids, const char *pfx,
                  apr_hash_set(count, &nid, sizeof nid, dup);
                  key = apr_pstrcat(p, pfx, tag, NULL);
              }
-             value = SSL_X509_NAME_ENTRY_to_string(p, xsne);
+             value = modssl_X509_NAME_ENTRY_to_string(p, xsne);
              apr_table_setn(t, key, value);
          }
     }

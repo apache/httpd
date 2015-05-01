@@ -63,7 +63,7 @@ void        modssl_set_app_data2(SSL *, void *);
 EVP_PKEY   *modssl_read_privatekey(const char *, EVP_PKEY **, pem_password_cb *, void *);
 int         modssl_smart_shutdown(SSL *ssl);
 BOOL        modssl_X509_getBC(X509 *, int *, int *);
-char       *SSL_X509_NAME_ENTRY_to_string(apr_pool_t *p, X509_NAME_ENTRY *xsne);
+char       *modssl_X509_NAME_ENTRY_to_string(apr_pool_t *p, X509_NAME_ENTRY *xsne);
 char       *SSL_X509_NAME_to_string(apr_pool_t *, X509_NAME *, int);
 BOOL        SSL_X509_getSAN(apr_pool_t *, X509 *, int, int, apr_array_header_t **);
 BOOL        SSL_X509_getIDs(apr_pool_t *, X509 *, apr_array_header_t **);
