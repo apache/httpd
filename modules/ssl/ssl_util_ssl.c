@@ -417,9 +417,9 @@ BOOL modssl_X509_match_name(apr_pool_t *p, X509 *x509, const char *name,
 **  _________________________________________________________________
 */
 
-BOOL SSL_X509_INFO_load_file(apr_pool_t *ptemp,
-                             STACK_OF(X509_INFO) *sk,
-                             const char *filename)
+BOOL modssl_X509_INFO_load_file(apr_pool_t *ptemp,
+                                STACK_OF(X509_INFO) *sk,
+                                const char *filename)
 {
     BIO *in;
 
@@ -468,7 +468,7 @@ BOOL SSL_X509_INFO_load_path(apr_pool_t *ptemp,
                                pathname, "/", dirent.name,
                                NULL);
 
-        if (SSL_X509_INFO_load_file(ptemp, sk, fullname)) {
+        if (modssl_X509_INFO_load_file(ptemp, sk, fullname)) {
             ok = TRUE;
         }
     }
