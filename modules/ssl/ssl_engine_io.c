@@ -1052,7 +1052,7 @@ static void ssl_filter_io_shutdown(ssl_filter_ctx_t *filter_ctx,
     }
 
     SSL_set_shutdown(ssl, shutdown_type);
-    SSL_smart_shutdown(ssl);
+    modssl_smart_shutdown(ssl);
 
     /* and finally log the fact that we've closed the connection */
     if (APLOG_CS_IS_LEVEL(c, mySrvFromConn(c), loglevel)) {
