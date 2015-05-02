@@ -31,8 +31,6 @@
 <a href="../ja/mod/mod_ext_filter.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_ext_filter.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Fait traiter le corps de la réponse par un programme
 externe avant de l'envoyer au client</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -115,7 +113,7 @@ ExtFilterDefine c-to-html mode=output \
       <pre class="prettyprint lang-config"># la directive de mod_ext_filter qui définit le filtre externe
 ExtFilterDefine gzip mode=output cmd=/bin/gzip
 
-&lt;Location /gzipped&gt;
+&lt;Location "/gzipped"&gt;
 
     # directive de base permettant de traiter la sortie avec le
   # filtre gzip
@@ -138,7 +136,7 @@ ExtFilterDefine gzip mode=output cmd=/bin/gzip
 ExtFilterDefine slowdown mode=output cmd=/bin/cat \
     preservescontentlength
 
-&lt;Location /&gt;
+&lt;Location "/"&gt;
     # directive de base permettant de traiter plusieurs fois la
     # sortie avec le filtre slowdown
     #
@@ -156,7 +154,7 @@ ExtFilterDefine slowdown mode=output cmd=/bin/cat \
 ExtFilterDefine fixtext mode=output intype=text/html \
     cmd="/bin/sed s/verdana/arial/g"
 
-&lt;Location /&gt;
+&lt;Location "/"&gt;
     # directive de base permettant de traiter la sortie avec le
     # filtre fixtext
     SetOutputFilter fixtext
@@ -191,7 +189,7 @@ ExtFilterDefine traceafter \
     cmd="/bin/tracefilter.pl /tmp/traceafter" \
     EnableEnv=trace_this_client ftype=21
 
-&lt;Directory /usr/local/docs&gt;
+&lt;Directory "/usr/local/docs"&gt;
     SetEnvIf Remote_Addr 192.168.1.31 trace_this_client
     SetOutputFilter tracebefore;deflate;traceafter
 &lt;/Directory&gt;</pre>
