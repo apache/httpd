@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1330980:1673945 (outdated) -->
+<!-- English Revision: 1673945 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -41,8 +41,8 @@ modems. Ainsi, il est possible de naviguer sur votre site avec un modem
 56k V.92 en positionnant une configuration de ce type :</p>
 
 <highlight language="config">
-&lt;Location /mysite&gt;
-    ModemStandard V.92
+&lt;Location "/mysite"&gt;
+    ModemStandard "V.92"
 &lt;/Location&gt;
 </highlight>
 
@@ -67,8 +67,8 @@ client.</p>
 souhaitez simuler.</p>
 
 <highlight language="config">
-&lt;Location /mysite&gt;
-    ModemStandard V.26bis
+&lt;Location "/mysite"&gt;
+    ModemStandard "V.26bis"
 &lt;/Location&gt;
 </highlight>
 

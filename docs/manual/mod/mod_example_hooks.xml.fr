@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1629244:1673892 (outdated) -->
+<!-- English Revision: 1673892 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -110,7 +110,7 @@
     <p>Pour activer le module example_hooks, ajoutez &agrave; votre fichier
     <code>httpd.conf</code> un bloc du style :</p>
 <highlight language="config">
-&lt;Location /example-hooks-info&gt;
+&lt;Location "/example-hooks-info"&gt;
    SetHandler example-hooks-handler
 &lt;/Location&gt;
 </highlight>
