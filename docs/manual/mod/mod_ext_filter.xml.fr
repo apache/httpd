@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1669205:1673563 (outdated) -->
+<!-- English Revision: 1673563 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -98,7 +98,7 @@ ExtFilterDefine c-to-html mode=output \
 # la directive de mod_ext_filter qui d&eacute;finit le filtre externe
 ExtFilterDefine gzip mode=output cmd=/bin/gzip
 
-&lt;Location /gzipped&gt;
+&lt;Location "/gzipped"&gt;
 
     # directive de base permettant de traiter la sortie avec le
   # filtre gzip
@@ -122,7 +122,7 @@ ExtFilterDefine gzip mode=output cmd=/bin/gzip
 ExtFilterDefine slowdown mode=output cmd=/bin/cat \
     preservescontentlength
 
-&lt;Location /&gt;
+&lt;Location "/"&gt;
     # directive de base permettant de traiter plusieurs fois la
     # sortie avec le filtre slowdown
     #
@@ -141,7 +141,7 @@ ExtFilterDefine slowdown mode=output cmd=/bin/cat \
 ExtFilterDefine fixtext mode=output intype=text/html \
     cmd="/bin/sed s/verdana/arial/g"
 
-&lt;Location /&gt;
+&lt;Location "/"&gt;
     # directive de base permettant de traiter la sortie avec le
     # filtre fixtext
     SetOutputFilter fixtext
@@ -177,7 +177,7 @@ ExtFilterDefine traceafter \
     cmd="/bin/tracefilter.pl /tmp/traceafter" \
     EnableEnv=trace_this_client ftype=21
 
-&lt;Directory /usr/local/docs&gt;
+&lt;Directory "/usr/local/docs"&gt;
     SetEnvIf Remote_Addr 192.168.1.31 trace_this_client
     SetOutputFilter tracebefore;deflate;traceafter
 &lt;/Directory&gt;

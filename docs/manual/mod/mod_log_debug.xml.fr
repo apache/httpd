@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1533256:1673563 (outdated) -->
+<!-- English Revision: 1673563 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -39,7 +39,7 @@
 	/foo/* :
 
         <highlight language="config">
-&lt;Location /foo/&gt;
+&lt;Location "/foo/"&gt;
 &nbsp;&nbsp;LogMessage "/foo/ has been requested"
 &lt;/Location&gt;
         </highlight>
@@ -49,7 +49,7 @@
         Enregistre un message si une requ&ecirc;te pour /foo/* est trait&eacute;e
 	dans une sous-requ&ecirc;te :
         <highlight language="config">
-&lt;Location /foo/&gt;
+&lt;Location "/foo/"&gt;
 &nbsp;&nbsp;LogMessage "subrequest to /foo/" hook=type_checker expr=%{IS_SUBREQ}
 &lt;/Location&gt;
         </highlight>
@@ -74,7 +74,7 @@
         Enregistre la valeur de la variable d'environnement de requ&ecirc;te
 	"X-Foo" &agrave; chaque &eacute;tape du traitement :
         <highlight language="config">
-&lt;Location /&gt;
+&lt;Location "/"&gt;
 &nbsp;&nbsp;LogMessage "%{reqenv:X-Foo}" hook=all
 &lt;/Location&gt;
         </highlight>
