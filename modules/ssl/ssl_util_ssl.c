@@ -191,7 +191,7 @@ BOOL modssl_X509_getBC(X509 *cert, int *ca, int *pathlen)
 }
 
 /* convert an ASN.1 string to a UTF-8 string (escaping control characters) */
-static char *convert_asn1_to_utf8(apr_pool_t *p, ASN1_STRING *asn1str)
+static char *asn1_string_to_utf8(apr_pool_t *p, ASN1_STRING *asn1str)
 {
     char *result = NULL;
     BIO *bio;
@@ -215,7 +215,7 @@ static char *convert_asn1_to_utf8(apr_pool_t *p, ASN1_STRING *asn1str)
 /* convert a NAME_ENTRY to UTF8 string */
 char *modssl_X509_NAME_ENTRY_to_string(apr_pool_t *p, X509_NAME_ENTRY *xsne)
 {
-    char *result = convert_asn1_to_utf8(p, X509_NAME_ENTRY_get_data(xsne));
+    char *result = asn1_string_to_utf8(p, X509_NAME_ENTRY_get_data(xsne));
     ap_xlate_proto_from_ascii(result, len);
     return result;
 }
@@ -282,7 +282,7 @@ BOOL modssl_X509_getSAN(apr_pool_t *p, X509 *x509, int type, int idx,
                     switch (type) {
                     case GEN_EMAIL:
                     case GEN_DNS:
-                        utf8str = convert_asn1_to_utf8(p, name->d.ia5);
+                        utf8str = asn1_string_to_utf8(p, name->d.ia5);
                         if (utf8str) {
                             APR_ARRAY_PUSH(*entries, const char *) = utf8str;
                         }
