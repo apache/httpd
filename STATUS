@@ -271,6 +271,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic
 
+   * mod_dav: Avoid some work that is unnecessary and often very time consuming.
+     This helps mitigate Subversion issue #4531:
+     http://subversion.tigris.org/issues/show_bug.cgi?id=4531
+     SVN has their own workaround for this going out that helps more but is a bit
+     of a hack.  This is as far as we can go without violating DAV in httpd.
+     trunk patch: http://svn.apache.org/r1677462
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: breser
+
+
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
