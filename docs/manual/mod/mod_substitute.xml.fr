@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1634793:1673563 (outdated) -->
+<!-- English Revision: 1673563 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -85,9 +85,9 @@ r&eacute;ponse</description>
 
     <example><title>Exemple</title>
         <highlight language="config">
-&lt;Location /&gt;
+&lt;Location "/&gt;
     AddOutputFilterByType SUBSTITUTE text/html
-    Substitute s/foo/bar/ni
+    Substitute "s/foo/bar/ni"
 &lt;/Location&gt;
         </highlight>
     </example>
@@ -98,7 +98,7 @@ r&eacute;ponse</description>
     <example><title>Exemple d'utilisation d'un d&eacute;limiteur
     alternatif</title>
         <highlight language="config">
-&lt;Location /&gt;
+&lt;Location "/"&gt;
     AddOutputFilterByType SUBSTITUTE text/html
     Substitute "s|&lt;BR */?&gt;|&lt;br /&gt;|i"
 &lt;/Location&gt;
@@ -110,7 +110,7 @@ r&eacute;ponse</description>
     substitution, comme illustr&eacute; dans l'exemple suivant :</p>
     <example><title>Exemple d'utilisation de r&eacute;f&eacute;rences arri&egrave;res et de captures</title>
         <highlight language="config">
-&lt;Location /&gt;
+&lt;Location "/"&gt;
     AddOutputFilterByType SUBSTITUTE text/html
     # "foo=k,bar=k" -> "foo/bar=k"
     Substitute "s|foo=(\w+),bar=\1|foo/bar=$1"
@@ -131,8 +131,8 @@ r&eacute;ponse</description>
 
     <example><title>R&eacute;&eacute;criture des URLs int&eacute;gr&eacute;es &agrave; un contenu mandat&eacute;</title>
     <highlight language="config">
-ProxyPass /blog/ http://internal.blog.example.com
-ProxyPassReverse /blog/ http://internal.blog.example.com/
+ProxyPass "/blog/" "http://internal.blog.example.com"
+ProxyPassReverse "/blog/" "http://internal.blog.example.com/"
 
 Substitute "s|http://internal.blog.example.com/|http://www.example.com/blog/|i"
     </highlight>
@@ -172,10 +172,10 @@ Apache</compatibility>
 
     <example><title>Example</title>
     <highlight language="config">
-&lt;Location /&gt;
+&lt;Location "/"&gt;
     AddOutputFilterByType SUBSTITUTE text/html
     SubstituteMaxLineLength 10m
-    Substitute s/foo/bar/ni
+    Substitute "s/foo/bar/ni"
 &lt;/Location&gt;
         </highlight>
     </example>

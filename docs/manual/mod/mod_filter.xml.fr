@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1523325:1673563 (outdated) -->
+<!-- English Revision: 1673563 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -230,7 +230,7 @@ FilterProtocol downsample "change=yes"
 FilterProvider repack jpeg_pack "%{CONTENT_TYPE} = 'image/jpeg'"
 FilterProvider repack gif_pack "%{CONTENT_TYPE} = 'image/gif'"
 FilterProvider repack png_pack "%{CONTENT_TYPE} = 'image/png'"
-&lt;Location /image-filter&gt;
+&lt;Location "/image-filter"&gt;
     FilterChain unpack downsample repack
 &lt;/Location&gt;
     </highlight>
@@ -327,7 +327,7 @@ particulier</description>
     <code>DEFLATE</code>.</p>
 
     <highlight language="config">
-&lt;Location /cgi-bin/&gt;
+&lt;Location "/cgi-bin/"&gt;
     Options Includes
     AddOutputFilterByType INCLUDES;DEFLATE text/html
 &lt;/Location&gt;

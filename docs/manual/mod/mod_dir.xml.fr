@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1586470:1673563 (outdated) -->
+<!-- English Revision: 1673563 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -115,19 +115,19 @@ client envoie une requ&ecirc;te pour un r&eacute;pertoire</description>
     </p>
     <highlight language="config">
 # Exemple A: Positionner index.html en page d'index, puis ajouter index.php.
-&lt;Directory /foo&gt;
+&lt;Directory "/foo"&gt;
     DirectoryIndex index.html
     DirectoryIndex index.php
 &lt;/Directory&gt;
 
 # Exemple B: La m&ecirc;me chose que l'exemple A, mais r&eacute;alis&eacute; au moyen d'une seule directive.
-&lt;Directory /foo&gt;
+&lt;Directory "/foo"&gt;
     DirectoryIndex index.html index.php
 &lt;/Directory&gt;
 
 # Exemple C: Pour remplacer la liste des ressources, il faut d'abord la vider :
 # Ici, seul index.php restera r&eacute;f&eacute;renc&eacute; comme ressource d'index.
-&lt;Directory /foo&gt;
+&lt;Directory "/foo"&gt;
     DirectoryIndex index.html
     DirectoryIndex disabled
     DirectoryIndex index.php
@@ -227,7 +227,7 @@ host</context>
 
     <highlight language="config">
 # voir l'avertissement de s&eacute;curit&eacute; ci-dessous !
-&lt;Location /some/path&gt;
+&lt;Location "/some/path"&gt;
     DirectorySlash Off
     SetHandler some-handler
 &lt;/Location&gt;
@@ -296,10 +296,10 @@ de la version 2.4.4 du serveur HTTP Apache.</compatibility>
     <em>http://example.com/blog/</em>, cet URI interm&eacute;diaire doit &ecirc;tre
     sp&eacute;cifi&eacute; en tant que <var>url-locale</var> :</p>
     <highlight language="config">
-&lt;Directory /web/example.com/htdocs/blog&gt;
+&lt;Directory "/web/example.com/htdocs/blog"&gt;
     FallbackResource /blog/index.php
 &lt;/Directory&gt;
-&lt;Directory /web/example.com/htdocs/blog/images&gt;
+&lt;Directory "/web/example.com/htdocs/blog/images"&gt;
     FallbackResource disabled
 &lt;/Directory&gt;
     </highlight>

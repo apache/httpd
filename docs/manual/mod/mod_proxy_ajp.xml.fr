@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1649003:1673563 (outdated) -->
+<!-- English Revision: 1673563 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -62,7 +62,7 @@ d'environnement</a></seealso>
 
     <example><title>Mandataire inverse simple</title>
     <highlight language="config">
-    ProxyPass /app ajp://backend.example.com:8009/app
+    ProxyPass "/app ajp://backend.example.com:8009/app"
     </highlight>
     </example>
 
@@ -70,11 +70,11 @@ d'environnement</a></seealso>
     <example><title>Mandataire inverse avec r&eacute;partiteur de charge</title>
       <highlight language="config">
 &lt;Proxy balancer://cluster&gt;
-    BalancerMember ajp://app1.example.com:8009 loadfactor=1
-    BalancerMember ajp://app2.example.com:8009 loadfactor=2
+    BalancerMember "ajp://app1.example.com:8009" loadfactor=1
+    BalancerMember "ajp://app2.example.com:8009" loadfactor=2
     ProxySet lbmethod=bytraffic
 &lt;/Proxy&gt;
-ProxyPass /app balancer://cluster/app
+ProxyPass "/app" "balancer://cluster/app"
       </highlight>
     </example>
 
@@ -94,8 +94,8 @@ ProxyPass /app balancer://cluster/app
     ; par exemple :</p>
     <example><title>R&eacute;&eacute;criture d'un chemin mandat&eacute;</title>
       <highlight language="config">
-ProxyPass /apps/foo ajp://backend.example.com:8009/foo
-ProxyPassReverse /apps/foo http://www.example.com/foo
+ProxyPass "/apps/foo" "ajp://backend.example.com:8009/foo"
+ProxyPassReverse "/apps/foo" "http://www.example.com/foo"
     </highlight>
     </example>
     <p>Il est cependant pr&eacute;f&eacute;rable en g&eacute;n&eacute;ral de d&eacute;ployer l'application
