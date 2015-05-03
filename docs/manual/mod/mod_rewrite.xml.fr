@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1668874:1673563 (outdated) -->
+<!-- English Revision: 1673563 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -365,14 +365,14 @@ recherche de mots-cl&eacute;s</description>
       <directive>RewriteMap</directive> comme suit </p>
 
       <highlight language="config">
-      RewriteMap map-exemple txt:/chemin/vers/fichier/map.txt
+      RewriteMap "map-exemple" "txt:/chemin/vers/fichier/map.txt"
       </highlight>
 
       <p>Vous pourrez ensuite utiliser cette table dans une
       directive <directive>RewriteRule</directive> comme suit :</p>
 
       <highlight language="config">
-      RewriteRule ^/ex/(.*) ${map-exemple:$1}
+      RewriteRule "^/ex/(.*)" "${map-exemple:$1}"
       </highlight>
 
       <p>Les combinaisons suivantes pour <em>type de correspondance</em>
@@ -463,12 +463,12 @@ de configuration aurait conduit le serveur &agrave; rechercher un r&eacute;perto
 "opt" &agrave; la racine des documents.</p>
 
 <highlight language="config">
-DocumentRoot /var/www/example.com
-AliasMatch ^/myapp /opt/myapp-1.2.3
-&lt;Directory /opt/myapp-1.2.3&gt;
+DocumentRoot "/var/www/example.com"
+AliasMatch "^/myapp" "/opt/myapp-1.2.3"
+&lt;Directory "/opt/myapp-1.2.3"&gt;
  RewriteEngine On
     RewriteBase /myapp/
-    RewriteRule ^index\.html$  welcome.html
+    RewriteRule "^index\.html$"  "welcome.html"
 &lt;/Directory&gt;
 </highlight>
 
@@ -1007,7 +1007,7 @@ la r&eacute;&eacute;criture soit effectu&eacute;e
 
            <highlight language="config">
            RewriteCond expr "! %{HTTP_REFERER} -strmatch '*://%{HTTP_HOST}/*'"<br />
-           RewriteRule ^/images - [F]
+           RewriteRule "^/images" "-" [F]
            </highlight>
         </li>
 
@@ -1037,9 +1037,9 @@ la r&eacute;&eacute;criture soit effectu&eacute;e
 	  lieu du AND implicite. Exemple typique :
 
 <highlight language="config">
-RewriteCond %{REMOTE_HOST}  ^host1  [OR]
-RewriteCond %{REMOTE_HOST}  ^host2  [OR]
-RewriteCond %{REMOTE_HOST}  ^host3
+RewriteCond "%{REMOTE_HOST}"  "^host1"  [OR]
+RewriteCond "%{REMOTE_HOST}"  "^host2"  [OR]
+RewriteCond "%{REMOTE_HOST}"  "^host3"
 RewriteRule ...r&egrave;gles concernant tous ces h&ocirc;tes...
 </highlight>
 
@@ -1068,10 +1068,10 @@ RewriteRule ...r&egrave;gles concernant tous ces h&ocirc;tes...
        pouvez utiliser ce qui suit : </p>
 
 <highlight language="config">
-RewriteCond  %{HTTP_USER_AGENT}  (iPhone|Blackberry|Android)
-RewriteRule  ^/$                 /homepage.mobile.html  [L]
+RewriteCond  "%{HTTP_USER_AGENT}"  "(iPhone|Blackberry|Android)"
+RewriteRule  "^/$"                 "/homepage.mobile.html"  [L]
 
-RewriteRule  ^/$                 /homepage.std.html  [L]
+RewriteRule  "^/$"                "/homepage.std.html"  [L]
 </highlight>
 
         <p>Explications : si vous utilisez un navigateur
@@ -1107,10 +1107,11 @@ RewriteRule  ^/$                 /homepage.std.html  [L]
       <a id="regexp" name="regexp">expression rationnelle</a>
       compatible perl. Dans la premi&egrave;re r&egrave;gle de r&eacute;&eacute;criture,
       l'expression est compar&eacute;e au (%-decoded)
-      <a href="./directive-dict.html#Syntax">chemin de l'URL</a> (ou au
-      <a href="./directive-dict.html#Syntax">chemin fichier</a>, en
-      fonction du contexte) de la
-      requ&ecirc;te. Les expressions suivantes sont compar&eacute;es &agrave; la sortie de
+      <a href="./directive-dict.html#Syntax">chemin de l'URL</a> de la
+      requ&ecirc;te, ou, dans un contexte de répertoire (voir
+      ci-dessous), au chemin de l'URL relativement à ce contexte de
+      répertoire. 
+      Les expressions suivantes sont compar&eacute;es &agrave; la sortie de
       la derni&egrave;re r&egrave;gle de r&eacute;&eacute;criture qui
       correspondait.</p>
 
