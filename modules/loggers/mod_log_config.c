@@ -1680,7 +1680,7 @@ static void *ap_default_log_writer_init(apr_pool_t *p, server_rec *s,
     default_log_writer *log_writer;
     const char *provider_name = name;
     ap_errorlog_provider *provider = NULL;
-    char *sep;
+    const char *sep;
 
     /* We support *Log "errorlog_provider:arg" syntax now, so get the provider
      * name from the name. */
