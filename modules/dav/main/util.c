@@ -1595,8 +1595,10 @@ DAV_DECLARE(dav_error *) dav_validate_request(request_rec *r,
         }
     }
 
-    /* (1) Validate the specified resource, at the specified depth */
-    if (resource->exists && depth > 0) {
+    /* (1) Validate the specified resource, at the specified depth.
+     * Avoid the walk there is no if_header and we aren't planning
+     * to modify this resource. */
+    if (resource->exists && depth > 0 && !(!if_header && flags & DAV_VALIDATE_NO_MODIFY)) {
         dav_walker_ctx ctx = { { 0 } };
         dav_response *multi_status;
 
