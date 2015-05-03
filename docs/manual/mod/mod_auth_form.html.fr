@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_auth_form.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_auth_form.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Authentification à l'aide d'un formulaire</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>auth_form_module</td></tr>
@@ -122,10 +120,10 @@ l'authentification</a></li>
       connexion.</p>
 
       <div class="example"><h3>Exemple simple</h3><pre class="prettyprint lang-config">AuthFormProvider file
-AuthUserFile conf/passwd
+AuthUserFile "conf/passwd"
 AuthType form
 AuthName realm
-AuthFormLoginRequiredLocation http://example.com/login.html
+AuthFormLoginRequiredLocation "http://example.com/login.html"
 Session On
 SessionCookieName session path=/
 SessionCryptoPassphrase secret</pre>
@@ -179,12 +177,12 @@ SessionCryptoPassphrase secret</pre>
       que l'on configure dans Apache httpd comme suit :</p>
 
       <div class="example"><h3>Exemple de configuration du gestionnaire de
-      formulaire de connexion</h3><pre class="prettyprint lang-config">&lt;Location /dologin.html&gt;
+      formulaire de connexion</h3><pre class="prettyprint lang-config">&lt;Location "/dologin.html"&gt;
     SetHandler form-login-handler
-    AuthFormLoginRequiredLocation http://example.com/login.html
-    AuthFormLoginSuccessLocation http://example.com/success.html
+    AuthFormLoginRequiredLocation "http://example.com/login.html"
+    AuthFormLoginSuccessLocation "http://example.com/success.html"
     AuthFormProvider file
-    AuthUserFile conf/passwd
+    AuthUserFile "conf/passwd"
     AuthType form
     AuthName realm
     Session On
@@ -253,11 +251,11 @@ SessionCryptoPassphrase secret</pre>
       contenant le formulaire de connexion comme suit :</p>
 
       <div class="example"><h3>Exemple simple d'authentification à la volée</h3><pre class="prettyprint lang-config">AuthFormProvider file
-ErrorDocument 401 /login.shtml
-AuthUserFile conf/passwd
+ErrorDocument 401 "/login.shtml"
+AuthUserFile "conf/passwd"
 AuthType form
 AuthName realm
-AuthFormLoginRequiredLocation http://example.com/login.html
+AuthFormLoginRequiredLocation "http://example.com/login.html"
 Session On
 SessionCookieName session path=/
 SessionCryptoPassphrase secret</pre>
@@ -335,7 +333,7 @@ SessionCryptoPassphrase secret</pre>
       dynamique.</p>
 
       <div class="example"><h3>Exemple avec script CGI</h3><pre class="prettyprint lang-config">        AuthFormProvider file
-        ErrorDocument 401 /cgi-bin/login.cgi
+        ErrorDocument 401 "/cgi-bin/login.cgi"
         ...</pre>
 </div>
 
@@ -359,7 +357,7 @@ SessionCryptoPassphrase secret</pre>
       <div class="example"><h3>Exemple simple de configuration de la
       déconnexion</h3><pre class="prettyprint lang-config">SetHandler form-logout-handler
 AuthName realm
-AuthFormLogoutLocation http://example.com/loggedout.html
+AuthFormLogoutLocation "http://example.com/loggedout.html"
 Session On
 SessionCookieName session path=/
 SessionCryptoPassphrase secret</pre>
@@ -377,7 +375,7 @@ SessionCryptoPassphrase secret</pre>
 
       <div class="example"><h3>Exemple simple avec durée de validité de session
       limitée</h3><pre class="prettyprint lang-config">SetHandler form-logout-handler
-AuthFormLogoutLocation http://example.com/loggedout.html
+AuthFormLogoutLocation "http://example.com/loggedout.html"
 Session On
 SessionMaxAge 1
 SessionCookieName session path=/
@@ -590,9 +588,9 @@ depuis la version 2.4.4.</td></tr>
     <code>form-logout-handler</code>, la page spécifiée par cette
     directive sera présentée à l'utilisateur final. Par exemple :</p>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">&lt;Location /logout&gt;
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">&lt;Location "/logout"&gt;
     SetHandler form-logout-handler
-    AuthFormLogoutLocation http://example.com/loggedout.html
+    AuthFormLogoutLocation "http://example.com/loggedout.html"
     Session on
     #...
 &lt;/Location&gt;</pre>
@@ -688,12 +686,12 @@ zone concernée</td></tr>
     <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code>. Assurez-vous que le fournisseur
     choisi soit bien présent dans le serveur.</p>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">&lt;Location /secure&gt;
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">&lt;Location "/secure"&gt;
     AuthType form
     AuthName "private area"
     AuthFormProvider  dbm
     AuthDBMType        SDBM
-    AuthDBMUserFile    /www/etc/dbmpasswd
+    AuthDBMUserFile    "/www/etc/dbmpasswd"
     Require            valid-user
     #...
 &lt;/Location&gt;</pre>
