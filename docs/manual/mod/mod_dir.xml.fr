@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1586471:1673945 (outdated) -->
+<!-- English Revision: 1673945 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -117,20 +117,20 @@ client envoie une requ&ecirc;te pour un r&eacute;pertoire</description>
     </p>
     <highlight language="config">
 # Exemple A: d&eacute;finit index.html comme page d'index, ainsi qu'index.php.
-&lt;Directory /foo&gt;
+&lt;Directory "/foo"&gt;
     DirectoryIndex index.html
     DirectoryIndex index.php
 &lt;/Directory&gt;
 
 # Exemple B: identique &agrave; l'exemple A, mais avec une seule directive.
-&lt;Directory /foo&gt;
+&lt;Directory "/foo"&gt;
     DirectoryIndex index.html index.php
 &lt;/Directory&gt;
 
 # Exemple C: pour remplacer la liste des pages d'index par une autre,
 # vous devez tout d'abord supprimer la premi&egrave;re liste : dans l'exemple
 # suivant, il ne restera qu'index.php comme page d'index.
-&lt;Directory /foo&gt;
+&lt;Directory "/foo"&gt;
     DirectoryIndex index.html
     DirectoryIndex disabled
     DirectoryIndex index.php
@@ -230,7 +230,7 @@ host</context>
 
     <highlight language="config">
 # voir l'avertissement de s&eacute;curit&eacute; ci-dessous !
-&lt;Location /some/path&gt;
+&lt;Location "/some/path"&gt;
     DirectorySlash Off
     SetHandler some-handler
 &lt;/Location&gt;
@@ -299,10 +299,10 @@ version 2.4.4 du serveur HTTP Apache</compatibility>
     <em>http://example.com/blog/</em>, cet URI interm&eacute;diaire doit &ecirc;tre
     sp&eacute;cifi&eacute; en tant que <var>url-locale</var> :</p>
     <highlight language="config">
-&lt;Directory /web/example.com/htdocs/blog&gt;
+&lt;Directory "/web/example.com/htdocs/blog"&gt;
     FallbackResource /blog/index.php
 &lt;/Directory&gt;
-&lt;Directory /web/example.com/htdocs/blog/images&gt;
+&lt;Directory "/web/example.com/htdocs/blog/images"&gt;
     FallbackResource disabled
 &lt;/Directory&gt;
     </highlight>
