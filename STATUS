@@ -246,8 +246,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      as in an example in the doc.  PR 56235
      trunk patch: http://svn.apache.org/r1585609
      2.4.x patch: trunk works (modulo CHANGES)
-     +1: druggeri
-     druggeri: committed by breser, but no +1 vote?
+     +1: druggeri, breser
 
   *) mod_proxy_scgi: ProxySCGIInternalRedirect with alternate response header
      trunk patch: 1674510
