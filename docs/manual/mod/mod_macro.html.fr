@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_macro.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_macro.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Ce module permet d'utiliser des macros dans les fichiers
 de configuration Apache.</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
@@ -75,9 +73,9 @@ définir de nombreux serveurs virtuels similaires :</p>
     ServerName $domain
     ServerAlias www.$domain
 
-    DocumentRoot /var/www/vhosts/$name
-    ErrorLog /var/log/httpd/$name.error_log
-    CustomLog /var/log/httpd/$name.access_log combined
+    DocumentRoot "/var/www/vhosts/$name"
+    ErrorLog "/var/log/httpd/$name.error_log"
+    CustomLog "/var/log/httpd/$name.access_log" combined
 &lt;/VirtualHost&gt;
 &lt;/Macro&gt;</pre>
 
@@ -136,7 +134,7 @@ paramètre le plus long possible qui sera utilisé.</p>
 de l'entourer d'accolades afin d'éviter toute confusion :</p>
 
 <pre class="prettyprint lang-config">&lt;Macro DocRoot ${docroot}&gt;
-    DocumentRoot /var/www/${docroot}/htdocs
+    DocumentRoot "/var/www/${docroot}/htdocs"
 &lt;/Macro&gt;</pre>
 
 
@@ -158,15 +156,15 @@ création dynamique de serveurs virtuels.</p>
   &lt;VirtualHost *:$port&gt;
 
     ServerName $host
-    DocumentRoot $dir
+    DocumentRoot "$dir"
 
     # Racine des documents publique
-    &lt;Directory $dir&gt;
+    &lt;Directory "$dir"&gt;
       Require all granted
     &lt;/Directory&gt;
 
     # restriction d'accès au sous-répertoire intranet.
-    &lt;Directory $dir/intranet&gt;
+    &lt;Directory "$dir/intranet"&gt;
       Require ip 10.0.0.0/8
     &lt;/Directory&gt;
   &lt;/VirtualHost&gt;
@@ -189,7 +187,7 @@ fichier de configuration complexe où des conflits entre noms de
 variables peuvent survenir.</p>
 
 <pre class="prettyprint lang-config">&lt;Macro DirGroup $dir $group&gt;
-  &lt;Directory $dir&gt;
+  &lt;Directory "$dir"&gt;
     Require group $group
   &lt;/Directory&gt;
 &lt;/Macro&gt;
