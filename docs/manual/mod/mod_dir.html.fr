@@ -32,8 +32,6 @@
 <a href="../ko/mod/mod_dir.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_dir.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Permet la redirection des adresses se terminant par un
 répertoire sans slash de fin et la mise à disposition des fichiers index
 de répertoire</td></tr>
@@ -162,19 +160,19 @@ client envoie une requête pour un répertoire</td></tr>
     au coeur du <a href="../sections.html"><em>même context</em></a> complète la liste des ressources et ne l'écrase pas :
     </p>
     <pre class="prettyprint lang-config"># Exemple A: Positionner index.html en page d'index, puis ajouter index.php.
-&lt;Directory /foo&gt;
+&lt;Directory "/foo"&gt;
     DirectoryIndex index.html
     DirectoryIndex index.php
 &lt;/Directory&gt;
 
 # Exemple B: La même chose que l'exemple A, mais réalisé au moyen d'une seule directive.
-&lt;Directory /foo&gt;
+&lt;Directory "/foo"&gt;
     DirectoryIndex index.html index.php
 &lt;/Directory&gt;
 
 # Exemple C: Pour remplacer la liste des ressources, il faut d'abord la vider :
 # Ici, seul index.php restera référencé comme ressource d'index.
-&lt;Directory /foo&gt;
+&lt;Directory "/foo"&gt;
     DirectoryIndex index.html
     DirectoryIndex disabled
     DirectoryIndex index.php
@@ -268,7 +266,7 @@ fin"</td></tr>
     matière de sécurité.</p>
 
     <pre class="prettyprint lang-config"># voir l'avertissement de sécurité ci-dessous !
-&lt;Location /some/path&gt;
+&lt;Location "/some/path"&gt;
     DirectorySlash Off
     SetHandler some-handler
 &lt;/Location&gt;</pre>
@@ -335,10 +333,10 @@ de la version 2.4.4 du serveur HTTP Apache.</td></tr>
     <p>Pour un URI intermédiaire tel que
     <em>http://example.com/blog/</em>, cet URI intermédiaire doit être
     spécifié en tant que <var>url-locale</var> :</p>
-    <pre class="prettyprint lang-config">&lt;Directory /web/example.com/htdocs/blog&gt;
+    <pre class="prettyprint lang-config">&lt;Directory "/web/example.com/htdocs/blog"&gt;
     FallbackResource /blog/index.php
 &lt;/Directory&gt;
-&lt;Directory /web/example.com/htdocs/blog/images&gt;
+&lt;Directory "/web/example.com/htdocs/blog/images"&gt;
     FallbackResource disabled
 &lt;/Directory&gt;</pre>
 

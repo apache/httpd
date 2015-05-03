@@ -30,8 +30,6 @@
 <a href="../fr/mod/mod_proxy_ajp.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_proxy_ajp.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Module de support AJP pour
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -80,16 +78,16 @@ d'environnement</a></li>
     Son utilisation est similaire à celle d'un mandataire inverse HTTP,
     mais s'appuie sur le prefixe <code>ajp://</code> :</p>
 
-    <div class="example"><h3>Mandataire inverse simple</h3><pre class="prettyprint lang-config">ProxyPass /app ajp://backend.example.com:8009/app</pre>
+    <div class="example"><h3>Mandataire inverse simple</h3><pre class="prettyprint lang-config">ProxyPass "/app ajp://backend.example.com:8009/app"</pre>
 </div>
 
     <p>On peut aussi configurer un répartiteur de charge :</p>
     <div class="example"><h3>Mandataire inverse avec répartiteur de charge</h3><pre class="prettyprint lang-config">&lt;Proxy balancer://cluster&gt;
-    BalancerMember ajp://app1.example.com:8009 loadfactor=1
-    BalancerMember ajp://app2.example.com:8009 loadfactor=2
+    BalancerMember "ajp://app1.example.com:8009" loadfactor=1
+    BalancerMember "ajp://app2.example.com:8009" loadfactor=2
     ProxySet lbmethod=bytraffic
 &lt;/Proxy&gt;
-ProxyPass /app balancer://cluster/app</pre>
+ProxyPass "/app" "balancer://cluster/app"</pre>
 </div>
 
     <p>Notez qu'en général, la directive <code class="directive"><a href="../mod/mod_proxy.html#proxypassreverse">ProxyPassReverse</a></code> n'est pas
@@ -104,8 +102,8 @@ ProxyPass /app balancer://cluster/app</pre>
     en-tête redirect peut être réécrit relativement à l'URL de l'hôte
     original (et non du serveur d'arrière-plan <code>ajp://</code> URL)
     ; par exemple :</p>
-    <div class="example"><h3>Réécriture d'un chemin mandaté</h3><pre class="prettyprint lang-config">ProxyPass /apps/foo ajp://backend.example.com:8009/foo
-ProxyPassReverse /apps/foo http://www.example.com/foo</pre>
+    <div class="example"><h3>Réécriture d'un chemin mandaté</h3><pre class="prettyprint lang-config">ProxyPass "/apps/foo" "ajp://backend.example.com:8009/foo"
+ProxyPassReverse "/apps/foo" "http://www.example.com/foo"</pre>
 </div>
     <p>Il est cependant préférable en général de déployer l'application
     sur le serveur d'arrière-plan avec le même chemin que sur le
