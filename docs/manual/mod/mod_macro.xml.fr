@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1533274:1674195 (outdated) -->
+<!-- English Revision: 1674195 -->
 <!-- French translation: Fabien Coelho -->
 <!-- Updated by Lucien Gentis -->
 
@@ -58,9 +58,9 @@ d&eacute;finir de nombreux serveurs virtuels similaires :</p>
     ServerName $domain
     ServerAlias www.$domain
 
-    DocumentRoot /var/www/vhosts/$name
-    ErrorLog /var/log/httpd/$name.error_log
-    CustomLog /var/log/httpd/$name.access_log combined
+    DocumentRoot "/var/www/vhosts/$name"
+    ErrorLog "/var/log/httpd/$name.error_log"
+    CustomLog "/var/log/httpd/$name.access_log" combined
 &lt;/VirtualHost&gt;
 &lt;/Macro&gt;
 </highlight>
@@ -121,7 +121,7 @@ de l'entourer d'accolades afin d'&eacute;viter toute confusion :</p>
 
 <highlight language="config">
 &lt;Macro DocRoot ${docroot}&gt;
-    DocumentRoot /var/www/${docroot}/htdocs
+    DocumentRoot "/var/www/${docroot}/htdocs"
 &lt;/Macro&gt;
 </highlight>
 
@@ -144,15 +144,15 @@ cr&eacute;ation dynamique de serveurs virtuels.</p>
   &lt;VirtualHost *:$port&gt;
 
     ServerName $host
-    DocumentRoot $dir
+    DocumentRoot "$dir"
 
     # Racine des documents publique
-    &lt;Directory $dir&gt;
+    &lt;Directory "$dir"&gt;
       Require all granted
     &lt;/Directory&gt;
 
     # restriction d'acc&egrave;s au sous-r&eacute;pertoire intranet.
-    &lt;Directory $dir/intranet&gt;
+    &lt;Directory "$dir/intranet"&gt;
       Require ip 10.0.0.0/8
     &lt;/Directory&gt;
   &lt;/VirtualHost&gt;
@@ -176,7 +176,7 @@ variables peuvent survenir.</p>
 
 <highlight language="config">
 &lt;Macro DirGroup $dir $group&gt;
-  &lt;Directory $dir&gt;
+  &lt;Directory "$dir"&gt;
     Require group $group
   &lt;/Directory&gt;
 &lt;/Macro&gt;
