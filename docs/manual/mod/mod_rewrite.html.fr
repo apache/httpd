@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_rewrite.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_rewrite.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Ce module fournit un moteur de réécriture à base de
 règles permettant de réécrire les URLs des requêtes
 à la volée</td></tr>
@@ -163,12 +161,12 @@ ressource n'était pas relative à la racine des documents. Cette erreur
 de configuration aurait conduit le serveur à rechercher un répertoire
 "opt" à la racine des documents.</p>
 
-<pre class="prettyprint lang-config">DocumentRoot /var/www/example.com
-AliasMatch ^/myapp /opt/myapp-1.2.3
-&lt;Directory /opt/myapp-1.2.3&gt;
+<pre class="prettyprint lang-config">DocumentRoot "/var/www/example.com"
+AliasMatch "^/myapp" "/opt/myapp-1.2.3"
+&lt;Directory "/opt/myapp-1.2.3"&gt;
  RewriteEngine On
-    RewriteBase /myapp/
-    RewriteRule ^index\.html$  welcome.html
+    RewriteBase "/myapp/"
+    RewriteRule "^index\.html$"  "welcome.html"
 &lt;/Directory&gt;</pre>
 
 
@@ -699,7 +697,7 @@ la réécriture soit effectuée
            </p>
 
            <pre class="prettyprint lang-config">           RewriteCond expr "! %{HTTP_REFERER} -strmatch '*://%{HTTP_HOST}/*'"<br />
-           RewriteRule ^/images - [F]</pre>
+           RewriteRule "^/images" "-" [F]</pre>
 
         </li>
 
@@ -728,9 +726,9 @@ la réécriture soit effectuée
 	  Permet de chaîner les conditions de règles avec un OU au
 	  lieu du AND implicite. Exemple typique :
 
-<pre class="prettyprint lang-config">RewriteCond %{REMOTE_HOST}  ^host1  [OR]
-RewriteCond %{REMOTE_HOST}  ^host2  [OR]
-RewriteCond %{REMOTE_HOST}  ^host3
+<pre class="prettyprint lang-config">RewriteCond "%{REMOTE_HOST}"  "^host1"  [OR]
+RewriteCond "%{REMOTE_HOST}"  "^host2"  [OR]
+RewriteCond "%{REMOTE_HOST}"  "^host3"
 RewriteRule ...règles concernant tous ces hôtes...</pre>
 
 
@@ -758,10 +756,10 @@ RewriteRule ...règles concernant tous ces hôtes...</pre>
        l'en-tête ``<code>User-Agent:</code>'' de la requête, vous
        pouvez utiliser ce qui suit : </p>
 
-<pre class="prettyprint lang-config">RewriteCond  %{HTTP_USER_AGENT}  (iPhone|Blackberry|Android)
-RewriteRule  ^/$                 /homepage.mobile.html  [L]
+<pre class="prettyprint lang-config">RewriteCond  "%{HTTP_USER_AGENT}"  "(iPhone|Blackberry|Android)"
+RewriteRule  "^/$"               "/homepage.mobile.html"  [L]
 
-RewriteRule  ^/$                 /homepage.std.html  [L]</pre>
+RewriteRule  "^/$"                 "/homepage.std.html"  [L]</pre>
 
 
         <p>Explications : si vous utilisez un navigateur
@@ -857,13 +855,13 @@ recherche de mots-clés</td></tr>
       <p>Par exemple, vous pouvez définir une directive
       <code class="directive">RewriteMap</code> comme suit </p>
 
-      <pre class="prettyprint lang-config">RewriteMap map-exemple txt:/chemin/vers/fichier/map.txt</pre>
+      <pre class="prettyprint lang-config">RewriteMap map-exemple "txt:/chemin/vers/fichier/map.txt"</pre>
 
 
       <p>Vous pourrez ensuite utiliser cette table dans une
       directive <code class="directive">RewriteRule</code> comme suit :</p>
 
-      <pre class="prettyprint lang-config">RewriteRule ^/ex/(.*) ${map-exemple:$1}</pre>
+      <pre class="prettyprint lang-config">RewriteRule "^/ex/(.*)" "${map-exemple:$1}"</pre>
 
 
       <p>La signification de l'argument <em>MapTypeOptions</em> dépend du <em>MapType</em>
@@ -1091,10 +1089,10 @@ pour le moteur de réécriture</td></tr>
       <a id="regexp" name="regexp">expression rationnelle</a>
       compatible perl. Dans la première règle de réécriture,
       l'expression est comparée au (%-decoded)
-      <a href="directive-dict.html#Syntax">chemin de l'URL</a> (ou au
-      <a href="directive-dict.html#Syntax">chemin fichier</a>, en
-      fonction du contexte) de la
-      requête. Les expressions suivantes sont comparées à la sortie de
+      <a href="directive-dict.html#Syntax">chemin de l'URL</a> de la
+      requête, ou, dans un contexte de répertoire (voir
+      ci-dessous), au chemin de l'URL relativement à ce contexte de
+      répertoire. Les expressions suivantes sont comparées à la sortie de
       la dernière règle de réécriture qui
       correspondait.</p>
 
@@ -1524,7 +1522,7 @@ redondant)</td>
       <p><strong>Dans une configuration de niveau répertoire pour
       <code>/chemin</code><br />
        (<code>/chemin/physique/vers/chemin/.htacccess</code>, avec
-      <code>RewriteBase /chemin</code>)<br />
+      <code>RewriteBase "/chemin"</code>)<br />
        pour la requête ``<code>GET
       /chemin/chemin-local/infochemin</code>'':</strong><br />
      </p>
