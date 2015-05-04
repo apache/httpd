@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) core/util_script: make REDIRECT_URL a full URL.  PR 57785. [Nick Kew]
+
   *) mod_ssl: Check for the Entropy Gathering Daemon (EGD) availability at
      configure time (RAND_egd), and complain if SSLRandomSeed requires using
      it otherwise.  [Bernard Spil <pil.oss gmail com>, Stefan Sperling,
