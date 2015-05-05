@@ -413,36 +413,6 @@ BOOL modssl_X509_match_name(apr_pool_t *p, X509 *x509, const char *name,
 
 /*  _________________________________________________________________
 **
-**  Low-Level CA Certificate Loading
-**  _________________________________________________________________
-*/
-
-BOOL modssl_X509_INFO_load_file(apr_pool_t *ptemp,
-                                STACK_OF(X509_INFO) *sk,
-                                const char *filename)
-{
-    BIO *in;
-
-    if (!(in = BIO_new(BIO_s_file()))) {
-        return FALSE;
-    }
-
-    if (BIO_read_filename(in, filename) <= 0) {
-        BIO_free(in);
-        return FALSE;
-    }
-
-    ERR_clear_error();
-
-    PEM_X509_INFO_read_bio(in, sk, NULL, NULL);
-
-    BIO_free(in);
-
-    return TRUE;
-}
-
-/*  _________________________________________________________________
-**
 **  Custom (EC)DH parameter support
 **  _________________________________________________________________
 */
