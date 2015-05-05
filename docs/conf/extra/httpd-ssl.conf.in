@@ -67,6 +67,11 @@ SSLCipherSuite HIGH:MEDIUM:!aNULL:!MD5
 #SSLCipherSuite RC4-SHA:AES128-SHA:HIGH:MEDIUM:!aNULL:!MD5
 #SSLHonorCipherOrder on 
  
+#   SSL Protocol support:
+#   List the protocol versions which clients are allowed to
+#   connect with. Disable SSLv2 by default (cf. RFC 6176).
+SSLProtocol all -SSLv2
+
 #   Pass Phrase Dialog:
 #   Configure the pass phrase gathering process.
 #   The filtering dialog program (`builtin' is a internal
@@ -101,11 +106,6 @@ TransferLog "@exp_logfiledir@/access_log"
 #   SSL Engine Switch:
 #   Enable/Disable SSL for this virtual host.
 SSLEngine on
-
-#   SSL Protocol support:
-#   List the protocol versions which clients are allowed to
-#   connect with. Disable SSLv2 by default (cf. RFC 6176).
-SSLProtocol all -SSLv2
 
 #   Server Certificate:
 #   Point SSLCertificateFile at a PEM encoded certificate.  If
