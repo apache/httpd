@@ -419,8 +419,8 @@ static char *ssl_var_lookup_ssl(apr_pool_t *p, conn_rec *c, request_rec *r,
             idlen = pSession->session_id_length;
 #endif
 
-            result = apr_pstrdup(p, SSL_SESSION_id2sz(id, idlen,
-                                                      buf, sizeof(buf)));
+            result = apr_pstrdup(p, modssl_SSL_SESSION_id2sz(id, idlen,
+                                                             buf, sizeof(buf)));
         }
     }
     else if(ssl != NULL && strcEQ(var, "SESSION_RESUMED")) {
