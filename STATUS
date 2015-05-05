@@ -139,6 +139,11 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      rjung: Adjust compatibility note in docs.
      ylavic: Done, thanks.
 
+  * mod_log_config: Add new format flag for requestion duration in milliseconds
+    trunk patch: http://svn.apache.org/r1675533
+    2.2.x patch: https://people.apache.org/~breser/httpd/2.2.x/patches/httpd-2.2.x-req_duration_milliseconds.patch (modulo CHANGES)
+    +1: breser, druggeri, ylavic
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -187,11 +192,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1665218 (CHANGES entry)
      2.2.x patch: trunk works (modulo CHANGES)
      +1: ylavic, wrowe
-
-  * mod_log_config: Add new format flag for requestion duration in milliseconds
-    trunk patch: http://svn.apache.org/r1675533
-    2.2.x patch: https://people.apache.org/~breser/httpd/2.2.x/patches/httpd-2.2.x-req_duration_milliseconds.patch (modulo CHANGES)
-    +1: breser, druggeri
 
    * mod_dav: Avoid some work that is unnecessary and often very time consuming.
      This helps mitigate Subversion issue #4531:
