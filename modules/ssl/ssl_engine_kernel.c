@@ -1670,7 +1670,7 @@ static void ssl_session_log(server_rec *s,
                  "Inter-Process Session Cache: "
                  "request=%s status=%s id=%s %s(session %s)",
                  request, status,
-                 SSL_SESSION_id2sz(id, idlen, buf, sizeof(buf)),
+                 modssl_SSL_SESSION_id2sz(id, idlen, buf, sizeof(buf)),
                  timeout_str, result);
 }
 
