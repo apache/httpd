@@ -830,6 +830,65 @@ static apr_status_t ssl_init_ctx_crl(server_rec *s,
     return APR_SUCCESS;
 }
 
+/*
+ * Read a file that optionally contains the server certificate in PEM
+ * format, possibly followed by a sequence of CA certificates that
+ * should be sent to the peer in the SSL Certificate message.
+ */
+static int use_certificate_chain(
+    SSL_CTX *ctx, char *file, int skipfirst, pem_password_cb *cb)
+{
+    BIO *bio;
+    X509 *x509;
+    unsigned long err;
+    int n;
+
+    if ((bio = BIO_new(BIO_s_file_internal())) == NULL)
+        return -1;
+    if (BIO_read_filename(bio, file) <= 0) {
+        BIO_free(bio);
+        return -1;
+    }
+    /* optionally skip a leading server certificate */
+    if (skipfirst) {
+        if ((x509 = PEM_read_bio_X509(bio, NULL, cb, NULL)) == NULL) {
+            BIO_free(bio);
+            return -1;
+        }
+        X509_free(x509);
+    }
+    /* free a perhaps already configured extra chain */
+#ifdef OPENSSL_NO_SSL_INTERN
+    SSL_CTX_clear_extra_chain_certs(ctx);
+#else
+    if (ctx->extra_certs != NULL) {
+        sk_X509_pop_free((STACK_OF(X509) *)ctx->extra_certs, X509_free);
+        ctx->extra_certs = NULL;
+    }
+#endif
+    /* create new extra chain by loading the certs */
+    n = 0;
+    while ((x509 = PEM_read_bio_X509(bio, NULL, cb, NULL)) != NULL) {
+        if (!SSL_CTX_add_extra_chain_cert(ctx, x509)) {
+            X509_free(x509);
+            BIO_free(bio);
+            return -1;
+        }
+        n++;
+    }
+    /* Make sure that only the error is just an EOF */
+    if ((err = ERR_peek_error()) > 0) {
+        if (!(   ERR_GET_LIB(err) == ERR_LIB_PEM
+              && ERR_GET_REASON(err) == PEM_R_NO_START_LINE)) {
+            BIO_free(bio);
+            return -1;
+        }
+        while (ERR_get_error() > 0) ;
+    }
+    BIO_free(bio);
+    return n;
+}
+
 static apr_status_t ssl_init_ctx_cert_chain(server_rec *s,
                                             apr_pool_t *p,
                                             apr_pool_t *ptemp,
@@ -865,9 +924,7 @@ static apr_status_t ssl_init_ctx_cert_chain(server_rec *s,
         }
     }
 
-    n = SSL_CTX_use_certificate_chain(mctx->ssl_ctx,
-                                      (char *)chain,
-                                      skip_first, NULL);
+    n = use_certificate_chain(mctx->ssl_ctx, (char *)chain, skip_first, NULL);
     if (n < 0) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(01903)
                 "Failed to configure CA certificate chain!");
