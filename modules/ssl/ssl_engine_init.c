@@ -1221,6 +1221,30 @@ static apr_status_t ssl_init_ticket_key(server_rec *s,
 }
 #endif
 
+static BOOL load_x509_info(apr_pool_t *ptemp,
+                           STACK_OF(X509_INFO) *sk,
+                           const char *filename)
+{
+    BIO *in;
+
+    if (!(in = BIO_new(BIO_s_file()))) {
+        return FALSE;
+    }
+
+    if (BIO_read_filename(in, filename) <= 0) {
+        BIO_free(in);
+        return FALSE;
+    }
+
+    ERR_clear_error();
+
+    PEM_X509_INFO_read_bio(in, sk, NULL, NULL);
+
+    BIO_free(in);
+
+    return TRUE;
+}
+
 static apr_status_t ssl_init_proxy_certs(server_rec *s,
                                          apr_pool_t *p,
                                          apr_pool_t *ptemp,
@@ -1243,7 +1267,7 @@ static apr_status_t ssl_init_proxy_certs(server_rec *s,
     sk = sk_X509_INFO_new_null();
 
     if (pkp->cert_file) {
-        modssl_X509_INFO_load_file(ptemp, sk, pkp->cert_file);
+        load_x509_info(ptemp, sk, pkp->cert_file);
     }
 
     if (pkp->cert_path) {
@@ -1262,7 +1286,7 @@ static apr_status_t ssl_init_proxy_certs(server_rec *s,
                 fullname = apr_pstrcat(ptemp,
                                        pkp->cert_path, "/", dirent.name,
                                        NULL);
-                modssl_X509_INFO_load_file(ptemp, sk, fullname);
+                load_x509_info(ptemp, sk, fullname);
             }
 
             apr_dir_close(dir);
