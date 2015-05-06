@@ -185,7 +185,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-SSLSessionTicketKeyFile.patch
      +1: ylavic
 
-  *) mod_proxy: use the original (non absolute) form of the request-line's URI
+   * mod_proxy: use the original (non absolute) form of the request-line's URI
      for requests embedded in CONNECT payloads used to connect SSL backends via
      a ProxyRemote forward-proxy. PR 55892.
      trunk patch: http://svn.apache.org/r1665215
@@ -201,6 +201,25 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1677462
      2.4.x patch: trunk works (modulo CHANGES)
      +1: breser
+
+   * mod_ssl: Improve handling of ephemeral DH and ECDH keys by
+     allowing custom parameters to be configured via SSLCertificateFile,
+     and by adding standardized DH parameters for 1024/2048/3072/4096 bits.
+     Unless custom parameters are configured, the standardized parameters
+     are applied based on the certificate's RSA/DSA key size.  Also drop
+     support for export-grade ciphers with ephemeral RSA keys, and
+     unconditionally disable aNULL, eNULL and EXP ciphers
+     (not overridable via SSLCipherSuite).
+     trunk patch: http://svn.apache.org/r1526168
+                  http://svn.apache.org/r1527291
+                  http://svn.apache.org/r1527295
+                  http://svn.apache.org/r1563420
+                  http://svn.apache.org/r1588851
+                  http://svn.apache.org/r1666363
+     2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-mod_ssl-improved_EDH.patch
+     +1: ylavic
+     ylavic: tested with openssl 0.9.7a, 0.9.8o, 1.0.1m and 1.0.2a with 1024
+             and 2048 bits certificates (modulus), using EDH and ECDH ciphers.
 
 PATCHES/ISSUES THAT ARE STALLED
 
