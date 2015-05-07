@@ -105,15 +105,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_proxy_scgi: ProxySCGIInternalRedirect with alternate response header
-     trunk patch: 1674510
-     2.4.x patch: trunk works (modulo CHANGES)
-       This also needs <compatibility> in the doc moved down like in 
-           http://svn.apache.org/viewvc/httpd/httpd/trunk/docs/manual/mod/mod_proxy_scgi.xml?r1=1674510&r2=1674530&diff_format=h
-       and the version edited :)
-     Pre-edited: http://people.apache.org/~trawick/r1674510-to-2.4.x.txt
-     +1: trawick, jim, ylavic
-
    * mod_dav: Avoid some work that is unnecessary and often very time consuming.
      This helps mitigate Subversion issue #4531:
      http://subversion.tigris.org/issues/show_bug.cgi?id=4531

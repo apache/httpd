@@ -16,6 +16,11 @@ Changes with Apache 2.4.13
      rfc822Name and dNSName into SSL_{CLIENT,SERVER}_SAN_{Email,DNS}_n
      environment variables. Also addresses PR 57207. [Kaspar Brand]
 
+  *) mod_proxy_scgi: ProxySCGIInternalRedirect now allows an alternate
+     response header to be used by the application, for when the application
+     or framework is unable to return Location in the internal-redirect
+     form.  [Jeff Trawick]
+
   *) mpm_event: Allow for timer events duplicates. [Jim Jagielski, Yann Ylavic]
 
   *) mod_proxy, mod_ssl, mod_cache_socache, mod_socache_*: Support machine
