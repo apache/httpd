@@ -280,6 +280,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (modulo CHANGES)
      +1: breser
 
+   * Easy patches - synch with trunk
+        - mod_proxy_balancer: Fix typo in error message
+        - mpm_event(opt): zero is immutable.
+        - mpm_netware: Fix printf format spotted by cppcheck.
+     trunk patch:
+        http://svn.apache.org/r1664133
+        http://svn.apache.org/r1643284       (minor the part for eventopt)
+        http://svn.apache.org/r1621417
+     2.4.x patch: trunk works
+     +1: jailletc36
+
 
 OTHER PROPOSALS
 
