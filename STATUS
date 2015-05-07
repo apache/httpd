@@ -105,11 +105,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_ssl: consistently output SSLCertificateChainFile deprecation warnings
-     trunk patch: https://svn.apache.org/r1676085
-     2.4.x patch: trunk patch works (modulo CHANGES)
-     +1: kbrand, trawick, ylavic
-
   *) mod_proxy_scgi: ProxySCGIInternalRedirect with alternate response header
      trunk patch: 1674510
      2.4.x patch: trunk works (modulo CHANGES)
