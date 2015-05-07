@@ -25,6 +25,10 @@ Changes with Apache 2.4.13
   *) mod_status: Add more data to machine readable server-status produced
      when using the "?auto" query string.  [Rainer Jung]
 
+  *) mod_ssl: make sure to consistently output SSLCertificateChainFile
+     deprecation warnings, when encountered in a VirtualHost block.
+     [Falco Schwarz <hiding falco.me>]
+
   *) Allow FallbackResource to work when a directory is requested and
      there is no autoindex nor DirectoryIndex. 
      [Jack <tjerk.meesters gmail.com>, Eric Covener]
