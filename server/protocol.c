@@ -1533,10 +1533,35 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(
      * We can only set a C-L in the response header if we haven't already
      * sent any buckets on to the next output filter for this request.
      */
-    if (ctx->data_sent == 0 && eos &&
+    if (ctx->data_sent == 0 && eos) {
+        core_server_config *conf =
+            ap_get_core_module_config(r->server->module_config);
+
+        /* This is a hack, but I can't find anyway around it.  The idea is that
+         * we don't want to send out 0 Content-Lengths if it is a HEAD request.
+         * [Unless the corresponding body (for a GET) would really be empty!]
+         * This happens when modules try to outsmart the server, and return
+         * if they see a HEAD request.  Apache 1.3 handlers were supposed to
+         * just return in that situation, and the core handled the HEAD.  From
+         * 2.0, if a handler returns, then the core sends an EOS bucket down
+         * the filter stack, and this content-length filter computes a length
+         * of zero and we would end up sending a zero C-L to the client.
+         * We can't just remove the this C-L filter, because well behaved 2.0+
+         * handlers will send their data down the stack, and we will compute
+         * a real C-L for the head request. RBB
+         *
+         * Allow modification of this behavior through the
+         * HttpContentLengthHeadZero directive.
+         *
+         * The default (unset) behavior is to squelch the C-L in this case.
+         */
+
         /* don't whack the C-L if it has already been set for a HEAD
          * by something like proxy.  the brigade only has an EOS bucket
-         * in this case, making r->bytes_sent zero.
+         * in this case, making r->bytes_sent zero, and either there is
+         * an existing C-L we want to preserve, or r->sent_bodyct is not
+         * zero (the empty body is being sent) thus we don't want to add
+         * a C-L of zero (the backend did not provide it, neither do we).
          *
          * if r->bytes_sent > 0 we have a (temporary) body whose length may
          * have been changed by a filter.  the C-L header might not have been
@@ -1544,9 +1569,13 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(
          * such filters update or remove the C-L header, and just use it
          * if present.
          */
-        !(r->header_only && r->bytes_sent == 0 &&
-            apr_table_get(r->headers_out, "Content-Length"))) {
-        ap_set_content_length(r, r->bytes_sent);
+        if (!(r->header_only
+              && !r->bytes_sent
+              && (r->sent_bodyct
+                  || conf->http_cl_head_zero != AP_HTTP_CL_HEAD_ZERO_ENABLE
+                  || apr_table_get(r->headers_out, "Content-Length")))) {
+            ap_set_content_length(r, r->bytes_sent);
+        }
     }
 
     ctx->data_sent = 1;
