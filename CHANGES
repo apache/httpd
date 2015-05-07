@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) http: Don't remove the Content-Length of zero from a HEAD response if
+     it comes from an origin server, module or script.  [Yann Ylavic]
+
   *) core/util_script: make REDIRECT_URL a full URL.  PR 57785. [Nick Kew]
 
   *) mod_ssl: Check for the Entropy Gathering Daemon (EGD) availability at

@@ -1127,7 +1127,6 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
 {
     request_rec *r = f->r;
     conn_rec *c = r->connection;
-    const char *clheader;
     const char *protocol = NULL;
     apr_bucket *e;
     apr_bucket_brigade *b2;
@@ -1272,30 +1271,6 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
         char *date = apr_palloc(r->pool, APR_RFC822_DATE_LEN);
         ap_recent_rfc822_date(date, r->request_time);
         apr_table_addn(r->headers_out, "Expires", date);
-    }
-
-    /* This is a hack, but I can't find anyway around it.  The idea is that
-     * we don't want to send out 0 Content-Lengths if it is a head request.
-     * This happens when modules try to outsmart the server, and return
-     * if they see a HEAD request.  Apache 1.3 handlers were supposed to
-     * just return in that situation, and the core handled the HEAD.  In
-     * 2.0, if a handler returns, then the core sends an EOS bucket down
-     * the filter stack, and the content-length filter computes a C-L of
-     * zero and that gets put in the headers, and we end up sending a
-     * zero C-L to the client.  We can't just remove the C-L filter,
-     * because well behaved 2.0 handlers will send their data down the stack,
-     * and we will compute a real C-L for the head request. RBB
-     *
-     * Allow modification of this behavior through the
-     * HttpContentLengthHeadZero directive.
-     *
-     * The default (unset) behavior is to squelch the C-L in this case.
-     */
-    if (r->header_only
-        && (clheader = apr_table_get(r->headers_out, "Content-Length"))
-        && !strcmp(clheader, "0")
-        && conf->http_cl_head_zero != AP_HTTP_CL_HEAD_ZERO_ENABLE) {
-        apr_table_unset(r->headers_out, "Content-Length");
     }
 
     b2 = apr_brigade_create(r->pool, c->bucket_alloc);
