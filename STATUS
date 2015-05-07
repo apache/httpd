@@ -290,6 +290,19 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic, trawick
 
+  *) http: Don't remove the Content-Length of zero from a HEAD response if
+     it comes from an origin server, module or script. Allow the previous
+     behaviour (for legacy/buggy modules only, not origin) by also backporting
+     the HttpContentLengthHeadZero directive (and also HttpExpectStrict which
+     comes for free with the same commit).
+     trunk patch: http://svn.apache.org/r1554303
+                  http://svn.apache.org/r1678215
+     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-preserve_head_cl_zero.patch
+     +1: ylavic
+     ylavic: r1554303 issued a major MMN bump, but since the ABI change is two
+             ints added at the end of core_server_config, the proposed merge
+             does a minor bump only.
+
 
 OTHER PROPOSALS
 
