@@ -105,11 +105,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_authz_core: Allow "Require expr" to work when the expression is quoted,
-     as in an example in the doc.  PR 56235
-     trunk patch: http://svn.apache.org/r1585609
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: druggeri, breser, ylavic
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
