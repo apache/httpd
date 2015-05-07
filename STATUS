@@ -289,7 +289,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/r1643284       (minor the part for eventopt)
         http://svn.apache.org/r1621417
      2.4.x patch: trunk works
-     +1: jailletc36
+     +1: jailletc36, jim
 
 
 OTHER PROPOSALS
