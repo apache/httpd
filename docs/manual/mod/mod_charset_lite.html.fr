@@ -30,8 +30,6 @@
 <a href="../fr/mod/mod_charset_lite.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ko/mod/mod_charset_lite.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Spécifie dans quel jeu de caractère doivent s'effectuer les
 traductions ou les réencodages</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -126,7 +124,7 @@ s'effectuer</td></tr>
     jeux de caractères dans <a class="glossarylink" href="../glossary.html#apr" title="voir glossaire">APR</a>. En général, cela
     implique qu'elle doit être reconnue par iconv.</p>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">&lt;Directory /export/home/trawick/apacheinst/htdocs/convert&gt;
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">&lt;Directory "/export/home/trawick/apacheinst/htdocs/convert"&gt;
     CharsetSourceEnc  UTF-16BE
     CharsetDefault    ISO-8859-1
 &lt;/Directory&gt;</pre>
@@ -201,7 +199,7 @@ caractères</td></tr>
     jeux de caractères dans <a class="glossarylink" href="../glossary.html#apr" title="voir glossaire">APR</a>. En général, cela
     implique qu'elle doit être reconnue par iconv.</p>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">&lt;Directory /export/home/trawick/apacheinst/htdocs/convert&gt;
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">&lt;Directory "/export/home/trawick/apacheinst/htdocs/convert"&gt;
     CharsetSourceEnc  UTF-16BE
     CharsetDefault    ISO-8859-1
 &lt;/Directory&gt;</pre>
