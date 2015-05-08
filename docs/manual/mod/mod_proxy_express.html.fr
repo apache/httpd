@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_proxy_express.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_proxy_express.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Extension à <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> pour le mandatement
 dynamique inverse de masse</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -73,8 +71,8 @@ dynamique inverse de masse</td></tr>
     <li>Il émule :
       <pre class="prettyprint lang-config">&lt;VirtualHost *:80&gt;
    ServerName front.end.server
-   ProxyPass / back.end.server:port
-   ProxyPassReverse / back.end.server:port
+   ProxyPass "/" "back.end.server:port"
+   ProxyPassReverse "/" "back.end.server:port"
 &lt;/VirtualHost&gt;</pre>
 
       En d'autres termes, l'URL dans son ensemble est ajoutée à l'URL

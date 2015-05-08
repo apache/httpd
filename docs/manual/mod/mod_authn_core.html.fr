@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_authn_core.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_authn_core.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Le noyau de l'authentification</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>authn_core_module</td></tr>
@@ -77,15 +75,15 @@ d'authentification</a></h2>
 	<div class="example"><h3>Vérification dans plusieurs fichiers de mots de
 	passe au format texte</h3><pre class="prettyprint lang-config"># Première vérification
 &lt;AuthnProviderAlias file file1&gt;
-    AuthUserFile /www/conf/passwords1
+    AuthUserFile "/www/conf/passwords1"
 &lt;/AuthnProviderAlias&gt;
 
 # Vérification suivante
 &lt;AuthnProviderAlias file file2&gt;   
-    AuthUserFile /www/conf/passwords2
+    AuthUserFile "/www/conf/passwords2"
 &lt;/AuthnProviderAlias&gt;
 
-&lt;Directory /var/web/pages/secure&gt;
+&lt;Directory "/var/web/pages/secure"&gt;
     AuthBasicProvider file1 file2
     
     AuthType Basic
@@ -114,10 +112,8 @@ d'authentification</a></h2>
     AuthLDAPURL ldap://other.ldap.host/o=dev?cn
 &lt;/AuthnProviderAlias&gt;
 
-Alias /secure /webpages/secure
-&lt;Directory /webpages/secure&gt;
-    Order deny,allow
-    Allow from all
+Alias "/secure" "/webpages/secure"
+&lt;Directory "/webpages/secure"&gt;
     
     AuthBasicProvider ldap-other-alias  ldap-alias1
     
@@ -226,15 +222,15 @@ l'alias spécifié</td></tr>
     l'exemple suivant, les clients peuvent accéder au répertoire
     <code>/www/docs/public</code> sans devoir s'authentifier :</p>
 
-    <pre class="prettyprint lang-config">&lt;Directory /www/docs&gt;
+    <pre class="prettyprint lang-config">&lt;Directory "/www/docs"&gt;
     AuthType Basic
     AuthName Documents
     AuthBasicProvider file
-    AuthUserFile /usr/local/apache/passwd/passwords
+    AuthUserFile "/usr/local/apache/passwd/passwords"
     Require valid-user
 &lt;/Directory&gt;
 
-&lt;Directory /www/docs/public&gt;
+&lt;Directory "/www/docs/public"&gt;
     AuthType None
     Require all granted
 &lt;/Directory&gt;</pre>
