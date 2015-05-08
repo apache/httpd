@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1334011:1673563 (outdated) -->
+<!-- English Revision: 1673563 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -61,7 +61,7 @@
 
     <example><title>Configuration du filtre</title>
         <highlight language="config">
-&lt;Location /data/images&gt;
+&lt;Location "/data/images"&gt;
     SetOutputFilter DATA
 &lt;/Location&gt;
         </highlight>
