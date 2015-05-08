@@ -32,8 +32,6 @@
 <a href="../ko/mod/mod_so.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_so.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Chargement de modules ou de code exécutable au cours du
 démarrage ou du redémarrage du serveur</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -177,7 +175,7 @@ spécifié</td></tr>
 
     <p>Par exemple:</p>
 
-    <pre class="prettyprint lang-config">LoadFile libexec/libxmlparse.so</pre>
+    <pre class="prettyprint lang-config">LoadFile "libexec/libxmlparse.so"</pre>
 
 
 
@@ -200,7 +198,7 @@ actifs</td></tr>
     <code>module</code> dans le fichier, et est référencé comme <a href="module-dict.html#ModuleIdentifier">Identificateur de
     module</a> dans la documentation des modules. Exemple :</p>
 
-    <pre class="prettyprint lang-config">LoadModule status_module modules/mod_status.so</pre>
+    <pre class="prettyprint lang-config">LoadModule "status_module modules/mod_status.so"</pre>
 
 
     <p>charge le module spécifié depuis le sous-répertoire des modules
