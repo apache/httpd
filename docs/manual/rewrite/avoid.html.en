@@ -88,6 +88,11 @@ and <code>/one/three/four.html</code>.</p>
 <pre class="prettyprint lang-config">Redirect "/one/" "http://one.example.com/"</pre>
 
 
+<p>To redirect one hostname to another, for example
+<code>example.com</code> to <code>www.example.com</code>, see the
+<a href="remapping.html#canonicalhost">Canonical Hostnames</a>
+recipe.</p>
+
 <p>To redirect <code>http</code> URLs to <code>https</code>, do the
 following:</p>
 
