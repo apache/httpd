@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1421892:1675432 (outdated) -->
+<!-- English Revision: 1675432 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -154,7 +154,7 @@ multiples</title>
     <example><title>Configuration du gestionnaire en se basant seulement
     sur la derni&egrave;re extension</title>
     <highlight language="config">
-&lt;FilesMatch \.cgi$&gt;
+&lt;FilesMatch "[^.]+\.cgi$"&gt;
   SetHandler cgi-script
 &lt;/FilesMatch&gt;
     </highlight>
@@ -549,19 +549,19 @@ serveur</description>
     <highlight language="config">
 # Filtre sp&eacute;cifi&eacute; "DEFLATE"
 AddOutputFilter DEFLATE shtml
-&lt;Location /foo&gt;
+&lt;Location "/foo"&gt;
   # Filtre sp&eacute;cifi&eacute; "INCLUDES", remplace "DEFLATE"
   AddOutputFilter INCLUDES shtml
 &lt;/Location&gt;
-&lt;Location /bar&gt;
+&lt;Location "/bar"&gt;
   # Filtre sp&eacute;cifi&eacute; "INCLUDES;DEFLATE", remplace "DEFLATE"
   AddOutputFilter INCLUDES;DEFLATE shtml
 &lt;/Location&gt;
-&lt;Location /bar/baz&gt;
+&lt;Location "/bar/baz"&gt;
   # Filtre sp&eacute;cifi&eacute; "BUFFER", remplace "INCLUDES;DEFLATE"
   AddOutputFilter BUFFER shtml
 &lt;/Location&gt;
-&lt;Location /bar/baz/buz&gt;
+&lt;Location "/bar/baz/buz"&gt;
   # Pas de filtre sp&eacute;cifi&eacute;, suppression de "BUFFER"
   RemoveOutputFilter shtml
 &lt;/Location&gt;
@@ -640,6 +640,22 @@ contenu sp&eacute;cifi&eacute;</description>
     Dans le cas des ressources autres que les fichiers statiques pour
     lesquelles le g&eacute;n&eacute;rateur de la r&eacute;ponse sp&eacute;cifie en g&eacute;n&eacute;ral un
     Content-Type, cette directive n'a aucun effet.</p>
+
+    <note><title>Note</title>
+    <p>Lorsqu'aucune directive comme <directive
+    module="core">SetHandler</directive> ou
+    <directive>module="mod_mime">AddHandler</directive> ne s'applique &agrave;
+    une requ&ecirc;te, le nom de gestionnaire interne qui aurait du &ecirc;tre
+    d&eacute;fini par une de ces directives correspond alors au type de contenu
+    sp&eacute;cifi&eacute; par la directive AddType.
+    Pour des raisons historiques, certains modules tiers comme mod_php
+    peuvent rechercher un type de contenu "synth&eacute;tique" ne servant qu'&agrave;
+    forcer le module &agrave; prendre en compte la requ&ecirc;te concern&eacute;e.
+    Il est conseill&eacute; d'&eacute;viter les configurations qui reposent sur de
+    tels types "synth&eacute;tiques" en utilisant les directives <directive
+    module="core">SetHandler</directive> ou <directive
+    module="mod_mime">AddHandler</directive>.</p>
+    </note>
 
 </usage>
 <seealso><directive module="core">ForceType</directive></seealso>
@@ -845,7 +861,7 @@ ensemble d'extensions de noms de fichiers</description>
       <highlight language="config">
 AddEncoding x-gzip .gz
 AddType text/plain .asc
-&lt;Files *.gz.asc&gt;
+&lt;Files "*.gz.asc"&gt;
     RemoveEncoding .gz
 &lt;/Files&gt;
       </highlight>
