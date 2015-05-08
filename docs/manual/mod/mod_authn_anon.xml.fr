@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1421821:1673947 (outdated) -->
+<!-- English Revision: 1673947 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -89,11 +89,11 @@ authentifi&eacute;es</description>
 
     <example><title>Exemple</title>
       <highlight language="config">
-&lt;Directory /var/www/html/private&gt;
+&lt;Directory "/var/www/html/private"&gt;
     AuthName "Use 'anonymous' &amp; Email address for guest entry"
     AuthType Basic
     AuthBasicProvider file anon
-    AuthUserFile /path/to/your/.htpasswd
+    AuthUserFile "/path/to/your/.htpasswd"
 
     Anonymous_NoUserID off
     Anonymous_MustGiveEmail on

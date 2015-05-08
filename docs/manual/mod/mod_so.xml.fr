@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1433861:1673932 (outdated) -->
+<!-- English Revision: 1673932 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -161,7 +161,7 @@ sp&eacute;cifi&eacute;</description>
 
     <p>Par exemple:</p>
 
-    <highlight language="config">LoadFile libexec/libxmlparse.so</highlight>
+    <highlight language="config">LoadFile "libexec/libxmlparse.so"</highlight>
 
 </usage>
 </directivesynopsis>
@@ -187,7 +187,7 @@ actifs</description>
     module</a> dans la documentation des modules. Exemple :</p>
 
     <highlight language="config">
-      LoadModule status_module modules/mod_status.so
+      LoadModule "status_module modules/mod_status.so"
     </highlight>
 
     <p>charge le module sp&eacute;cifi&eacute; depuis le sous-r&eacute;pertoire des modules
