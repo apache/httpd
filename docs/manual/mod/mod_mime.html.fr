@@ -30,8 +30,6 @@
 <a href="../fr/mod/mod_mime.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_mime.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Associe les extensions des fichiers demandés avec l'action
 déclenchée par ces fichiers et avec leur contenu (type MIME, langue,
 jeu de caractère et codage)</td></tr>
@@ -172,7 +170,7 @@ multiples</a></h2>
     <code>AddHandler cgi-script .cgi</code>, utilisez plutôt :</p>
 
     <div class="example"><h3>Configuration du gestionnaire en se basant seulement
-    sur la dernière extension</h3><pre class="prettyprint lang-config">&lt;FilesMatch \.cgi$&gt;
+    sur la dernière extension</h3><pre class="prettyprint lang-config">&lt;FilesMatch "[^.]+\.cgi$"&gt;
   SetHandler cgi-script
 &lt;/FilesMatch&gt;</pre>
 </div>
@@ -551,19 +549,19 @@ serveur</td></tr>
 
     <pre class="prettyprint lang-config"># Filtre spécifié "DEFLATE"
 AddOutputFilter DEFLATE shtml
-&lt;Location /foo&gt;
+&lt;Location "/foo"&gt;
   # Filtre spécifié "INCLUDES", remplace "DEFLATE"
   AddOutputFilter INCLUDES shtml
 &lt;/Location&gt;
-&lt;Location /bar&gt;
+&lt;Location "/bar"&gt;
   # Filtre spécifié "INCLUDES;DEFLATE", remplace "DEFLATE"
   AddOutputFilter INCLUDES;DEFLATE shtml
 &lt;/Location&gt;
-&lt;Location /bar/baz&gt;
+&lt;Location "/bar/baz"&gt;
   # Filtre spécifié "BUFFER", remplace "INCLUDES;DEFLATE"
   AddOutputFilter BUFFER shtml
 &lt;/Location&gt;
-&lt;Location /bar/baz/buz&gt;
+&lt;Location "/bar/baz/buz"&gt;
   # Pas de filtre spécifié, suppression de "BUFFER"
   RemoveOutputFilter shtml
 &lt;/Location&gt;</pre>
@@ -634,6 +632,19 @@ contenu spécifié</td></tr>
     Dans le cas des ressources autres que les fichiers statiques pour
     lesquelles le générateur de la réponse spécifie en général un
     Content-Type, cette directive n'a aucun effet.</p>
+
+    <div class="note"><h3>Note</h3>
+    <p>Lorsqu'aucune directive comme <code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code> ou
+    <code class="directive">module="mod_mime"&gt;AddHandler</code> ne s'applique à
+    une requête, le nom de gestionnaire interne qui aurait du être
+    défini par une de ces directives correspond alors au type de contenu
+    spécifié par la directive AddType.
+    Pour des raisons historiques, certains modules tiers comme mod_php
+    peuvent rechercher un type de contenu "synthétique" ne servant qu'à
+    forcer le module à prendre en compte la requête concernée.
+    Il est conseillé d'éviter les configurations qui reposent sur de
+    tels types "synthétiques" en utilisant les directives <code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code> ou <code class="directive"><a href="#addhandler">AddHandler</a></code>.</p>
+    </div>
 
 
 <h3>Voir aussi</h3>
@@ -837,7 +848,7 @@ ensemble d'extensions de noms de fichiers</td></tr>
 
     <div class="example"><h3>/foo/.htaccess:</h3><pre class="prettyprint lang-config">AddEncoding x-gzip .gz
 AddType text/plain .asc
-&lt;Files *.gz.asc&gt;
+&lt;Files "*.gz.asc"&gt;
     RemoveEncoding .gz
 &lt;/Files&gt;</pre>
 </div>
