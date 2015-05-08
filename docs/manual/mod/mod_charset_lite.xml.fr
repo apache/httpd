@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1330964:1673892 (outdated) -->
+<!-- English Revision: 1673892 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -112,7 +112,7 @@ traductions ou les r&eacute;encodages</description>
 
     <example><title>Exemple</title>
       <highlight language="config">
-&lt;Directory /export/home/trawick/apacheinst/htdocs/convert&gt;
+&lt;Directory "/export/home/trawick/apacheinst/htdocs/convert"&gt;
     CharsetSourceEnc  UTF-16BE
     CharsetDefault    ISO-8859-1
 &lt;/Directory&gt;
@@ -156,7 +156,7 @@ s'effectuer</description>
 
     <example><title>Exemple</title>
       <highlight language="config">
-&lt;Directory /export/home/trawick/apacheinst/htdocs/convert&gt;
+&lt;Directory "/export/home/trawick/apacheinst/htdocs/convert"&gt;
     CharsetSourceEnc  UTF-16BE
     CharsetDefault    ISO-8859-1
 &lt;/Directory&gt;

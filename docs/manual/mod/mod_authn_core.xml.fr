@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1663123:1674608 (outdated) -->
+<!-- English Revision: 1674608 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -64,15 +64,15 @@ d'authentification</title>
         <highlight language="config">
 # Premi&egrave;re v&eacute;rification
 &lt;AuthnProviderAlias file file1&gt;
-    AuthUserFile /www/conf/passwords1
+    AuthUserFile "/www/conf/passwords1"
 &lt;/AuthnProviderAlias&gt;
 
 # V&eacute;rification suivante
 &lt;AuthnProviderAlias file file2&gt;   
-    AuthUserFile /www/conf/passwords2
+    AuthUserFile "/www/conf/passwords2"
 &lt;/AuthnProviderAlias&gt;
 
-&lt;Directory /var/web/pages/secure&gt;
+&lt;Directory "/var/web/pages/secure"&gt;
     AuthBasicProvider file1 file2
     
     AuthType Basic
@@ -94,20 +94,18 @@ d'authentification</title>
 	LDAP</title>
           <highlight language="config">
 &lt;AuthnProviderAlias ldap ldap-alias1&gt;
-    AuthLDAPBindDN cn=youruser,o=ctx
+    AuthLDAPBindDN "cn=youruser,o=ctx"
     AuthLDAPBindPassword yourpassword
-    AuthLDAPURL ldap://ldap.host/o=ctx
+    AuthLDAPURL "ldap://ldap.host/o=ctx"
     &lt;/AuthnProviderAlias&gt;
     &lt;AuthnProviderAlias ldap ldap-other-alias&gt;
-    AuthLDAPBindDN cn=yourotheruser,o=dev
+    AuthLDAPBindDN "cn=yourotheruser,o=dev"
     AuthLDAPBindPassword yourotherpassword
-    AuthLDAPURL ldap://other.ldap.host/o=dev?cn
+    AuthLDAPURL "ldap://other.ldap.host/o=dev?cn"
 &lt;/AuthnProviderAlias&gt;
 
-Alias /secure /webpages/secure
-&lt;Directory /webpages/secure&gt;
-    Order deny,allow
-    Allow from all
+Alias "/secure" "/webpages/secure"
+&lt;Directory "/webpages/secure"&gt;
     
     AuthBasicProvider ldap-other-alias  ldap-alias1
     
@@ -214,15 +212,15 @@ l'authentification HTTP</description>
     <code>/www/docs/public</code> sans devoir s'authentifier :</p>
 
     <highlight language="config">
-&lt;Directory /www/docs&gt;
+&lt;Directory "/www/docs"&gt;
     AuthType Basic
     AuthName Documents
     AuthBasicProvider file
-    AuthUserFile /usr/local/apache/passwd/passwords
+    AuthUserFile "/usr/local/apache/passwd/passwords"
     Require valid-user
 &lt;/Directory&gt;
 
-&lt;Directory /www/docs/public&gt;
+&lt;Directory "/www/docs/public"&gt;
     AuthType None
     Require all granted
 &lt;/Directory&gt;
