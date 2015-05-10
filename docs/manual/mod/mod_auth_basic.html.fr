@@ -31,8 +31,6 @@
 <a href="../ja/mod/mod_auth_basic.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_auth_basic.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Authentification HTTP de base</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>auth_basic_module</td></tr>
@@ -123,7 +121,7 @@ Apache</td></tr>
     prédéfinis sont transmis à un serveur d'arrière-plan :</p>
 
     <div class="example"><h3>Exemple de transmission d'un nom d'utilisateur et
-    d'un mot de passe prédéfinis</h3><pre class="prettyprint lang-config">&lt;Location /demo&gt;
+    d'un mot de passe prédéfinis</h3><pre class="prettyprint lang-config">&lt;Location "/demo"&gt;
     AuthBasicFake demo demopass
 &lt;/Location&gt;</pre>
 </div>
@@ -134,8 +132,8 @@ Apache</td></tr>
     FakeBasicAuth, le mot de passe se voit attribué le contenu fixe de
     la chaîne "password".</p>
 
-    <div class="example"><h3>Exemple d'utilisation avec un certificat</h3><pre class="prettyprint lang-config">&lt;Location /secure&gt;
-    AuthBasicFake %{SSL_CLIENT_S_DN_Email}
+    <div class="example"><h3>Exemple d'utilisation avec un certificat</h3><pre class="prettyprint lang-config">&lt;Location "/secure"&gt;
+    AuthBasicFake "%{SSL_CLIENT_S_DN_Email}"
 &lt;/Location&gt;</pre>
 </div>
 
@@ -147,12 +145,12 @@ Apache</td></tr>
     certificats clients.</p>
 
     <div class="example"><h3>Exemple de génération de mot de passe par hashage de
-    l'adresse email</h3><pre class="prettyprint lang-config">&lt;Location /secure&gt;
-    AuthBasicFake %{SSL_CLIENT_S_DN_Email} %{sha1:passphrase-%{SSL_CLIENT_S_DN_Email}}
+    l'adresse email</h3><pre class="prettyprint lang-config">&lt;Location "/secure"&gt;
+    AuthBasicFake "%{SSL_CLIENT_S_DN_Email}" "%{sha1:passphrase-%{SSL_CLIENT_S_DN_Email}}"
 &lt;/Location&gt;</pre>
 </div>
 
-    <div class="example"><h3>Désactivation de l'authentification simulée</h3><pre class="prettyprint lang-config">&lt;Location /public&gt;
+    <div class="example"><h3>Désactivation de l'authentification simulée</h3><pre class="prettyprint lang-config">&lt;Location "/public"&gt;
     AuthBasicFake off
 &lt;/Location&gt;</pre>
 </div>
@@ -180,12 +178,12 @@ cette zone du site web</td></tr>
     implémentant le fournisseur choisi soit bien présent dans le
     serveur.</p>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">&lt;Location /secure&gt;
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">&lt;Location "/secure"&gt;
     AuthType basic
     AuthName "private area"
     AuthBasicProvider  dbm
     AuthDBMType        SDBM
-    AuthDBMUserFile    /www/etc/dbmpasswd
+    AuthDBMUserFile    "/www/etc/dbmpasswd"
     Require            valid-user
 &lt;/Location&gt;</pre>
 </div>
