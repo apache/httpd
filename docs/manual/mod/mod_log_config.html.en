@@ -144,7 +144,8 @@
 <tr><td><code>%m</code></td>
         <td>The request method.</td></tr>
 <tr class="odd"><td><code>%M</code></td>
-        <td>The time taken to serve the request, in milliseconds.</td></tr>
+        <td>The time taken to serve the request, in milliseconds.
+        (available in 2.4.13 and later)</td></tr>
 <tr><td><code>%{<var>VARNAME</var>}n</code></td>
         <td>The contents of note <var>VARNAME</var> from another
         module.</td></tr>
