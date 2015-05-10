@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1528957:1673563 (outdated) -->
+<!-- English Revision: 1673563 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -69,12 +69,12 @@ cette zone du site web</description>
 
     <example><title>Exemple</title>
       <highlight language="config">
-&lt;Location /secure&gt;
+&lt;Location "/secure"&gt;
     AuthType basic
     AuthName "private area"
     AuthBasicProvider  dbm
     AuthDBMType        SDBM
-    AuthDBMUserFile    /www/etc/dbmpasswd
+    AuthDBMUserFile    "/www/etc/dbmpasswd"
     Require            valid-user
 &lt;/Location&gt;
     </highlight>
@@ -154,7 +154,7 @@ Apache</compatibility>
     <example><title>Exemple de transmission d'un nom d'utilisateur et
     d'un mot de passe pr&eacute;d&eacute;finis</title>
     <highlight language="config">
-&lt;Location /demo&gt;
+&lt;Location "/demo"&gt;
     AuthBasicFake demo demopass
 &lt;/Location&gt;
     </highlight>
@@ -169,8 +169,8 @@ Apache</compatibility>
 
     <example><title>Exemple d'utilisation avec un certificat</title>
     <highlight language="config">
-&lt;Location /secure&gt;
-    AuthBasicFake %{SSL_CLIENT_S_DN_Email}
+&lt;Location "/secure"&gt;
+    AuthBasicFake "%{SSL_CLIENT_S_DN_Email}"
 &lt;/Location&gt;
     </highlight>
     </example>
@@ -185,15 +185,15 @@ Apache</compatibility>
     <example><title>Exemple de g&eacute;n&eacute;ration de mot de passe par hashage de
     l'adresse email</title>
     <highlight language="config">
-&lt;Location /secure&gt;
-    AuthBasicFake %{SSL_CLIENT_S_DN_Email} %{sha1:passphrase-%{SSL_CLIENT_S_DN_Email}}
+&lt;Location "/secure"&gt;
+    AuthBasicFake "%{SSL_CLIENT_S_DN_Email}" "%{sha1:passphrase-%{SSL_CLIENT_S_DN_Email}}"
 &lt;/Location&gt;
     </highlight>
     </example>
 
     <example><title>D&eacute;sactivation de l'authentification simul&eacute;e</title>
     <highlight language="config">
-&lt;Location /public&gt;
+&lt;Location "/public"&gt;
     AuthBasicFake off
 &lt;/Location&gt;
     </highlight>
