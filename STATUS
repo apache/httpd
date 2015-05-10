@@ -230,6 +230,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~jailletc36/PR52831.patch
      +1: jailletc36, ylavic
 
+   * core: Avoid potential use of uninitialized (NULL) request data in
+     request line error path.
+     trunk patch: http://svn.apache.org/r1664205
+     2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-read_request_line.patch
+     2.2.x patch: trunk works (module CHANGES)
+     +1: ylavic
+     ylavic: this is CVE-2015-0253 wrt 2.4.13, although 2.2.x is not
+             vulnerable per se (no ErrorDocument handling from early
+             request line parser), better be safe than sorry.
+
 PATCHES/ISSUES THAT ARE STALLED
 
    * mod_proxy_balancer: Always initialize the shared parameters of a load
