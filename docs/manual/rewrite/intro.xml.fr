@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1654831:1673945 (outdated) -->
+<!-- English Revision: 1673945 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -242,7 +242,7 @@ trois types :</p>
 <dt>Un chemin complet du syst&egrave;me de fichiers vers une ressource</dt>
 <dd>
 <highlight language="config">
-RewriteRule ^/jeux /usr/local/jeux/web
+RewriteRule "^/jeux" "/usr/local/jeux/web"
 </highlight>
 <p>Ceci peut faire correspondre une requ&ecirc;te &agrave; toute localisation voulue de
 votre syst&egrave;me de fichiers, un peu comme la directive <directive
@@ -252,7 +252,7 @@ module="mod_alias">Alias</directive>.</p>
 <dt>Un chemin web vers une ressource</dt>
 <dd>
 <highlight language="config">
-RewriteRule ^/foo$ /bar
+RewriteRule "^/foo$" "/bar"
 </highlight>
 <p>Si la directive <directive module="core">DocumentRoot</directive> a
 pour valeur <code>/usr/local/apache2/htdocs</code>, cette r&egrave;gle va faire
@@ -263,7 +263,7 @@ chemin <code>/usr/local/apache2/htdocs/bar</code>.</p>
 <dt>Une URL absolue</dt>
 <dd>
 <highlight language="config">
-RewriteRule ^/produits/vues$ http://site2.example.com/voirproduits.html [R]
+RewriteRule "^/produits/vues$" "http://site2.example.com/voirproduits.html" [R]
 </highlight>
 <p>Ceci informe le client qu'il doit effectuer une nouvelle requ&ecirc;te vers
 l'URL sp&eacute;cifi&eacute;e.</p>
@@ -274,7 +274,7 @@ l'URL sp&eacute;cifi&eacute;e.</p>
 <em>r&eacute;f&eacute;rences arri&egrave;res</em> vers des parties du chemin d'URL entrant
 correspondant au <var>Mod&egrave;le</var>. Consid&eacute;rons ce qui suit :</p>
 <highlight language="config">
-RewriteRule ^/produits/(.*)/view$ /var/web/produitsdb/$1
+RewriteRule "^/produits/(.*)/view$" "/var/web/produitsdb/$1"
 </highlight>
 <p>La variable <code>$1</code> sera remplac&eacute;e par tout texte
 correspondant &agrave; l'expression situ&eacute;e entre les parenth&egrave;ses dans le
@@ -297,7 +297,7 @@ conditions de correspondance d'une r&egrave;gle peuvent &ecirc;tre rendues
 insensibles &agrave; la casse par la pr&eacute;sence du drapeau <code>[NC]</code> :
 </p>
 <highlight language="config">
-RewriteRule ^puppy.html petitchien.html [NC]
+RewriteRule "^puppy.html" "petitchien.html" [NC]
 </highlight>
 
 <p>Pour une liste des drapeaux disponibles, leurs significations, et des
@@ -329,8 +329,8 @@ correspondance est &eacute;valu&eacute;e.</p>
 certaine tranche d'adresses IP vers un autre serveur, vous pouvez
 utiliser :</p>
 <highlight language="config">
-RewriteCond %{REMOTE_ADDR} ^10\.2\.
-RewriteRule (.*) http://intranet.example.com$1
+RewriteCond "%{REMOTE_ADDR}" "^10\.2\."
+RewriteRule "(.*)" "http://intranet.example.com$1"
 </highlight>
 
 <p>Si vous sp&eacute;cifiez plus d'une directive <directive
@@ -341,9 +341,9 @@ pour interdire les requ&ecirc;tes qui contiennent le mot "hack" dans la cha&icir
 de requ&ecirc;te, sauf si elles contiennent aussi un cookie contenant le mot
 "go", vous pouvez utiliser :</p>
 <highlight language="config">
-RewriteCond %{QUERY_STRING} hack
-RewriteCond %{HTTP_COOKIE} !go
-RewriteRule . - [F]
+RewriteCond "%{QUERY_STRING}" "hack"
+RewriteCond "%{HTTP_COOKIE}" "!go"
+RewriteRule "." "-" [F]
 </highlight>
 <p>Notez que le point d'exclamation indique une correspondance n&eacute;gative
 ; ainsi, la r&egrave;gle n'est appliqu&eacute;e que si le cookie ne contient pas "go"</p>
@@ -356,8 +356,8 @@ les variables <code>%1</code>, <code>%2</code>, etc... Par
 exemple, ce qui suit va diriger la requ&ecirc;te vers un r&eacute;pertoire diff&eacute;rent
 en fonction du nom d'h&ocirc;te utilis&eacute; pour acc&eacute;der au site :</p>
 <highlight language="config">
-RewriteCond %{HTTP_HOST} (.*)
-RewriteRule ^/(.*) /sites/%1/$1
+RewriteCond "%{HTTP_HOST}" "(.*)"
+RewriteRule "^/(.*)" "/sites/%1/$1"
 </highlight>
 <p>Si la requ&ecirc;te concernait <code>http://example.com/foo/bar</code>,
 alors <code>%1</code> contiendrait <code>example.com</code> et

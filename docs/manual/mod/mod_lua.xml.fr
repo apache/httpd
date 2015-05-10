@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1641661:1673945 (outdated) -->
+<!-- English Revision: 1673945 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -78,7 +78,7 @@ fonctionnement interne de httpd.</p>
 module="mod_mime">AddHandler</directive> :</p>
 
 <highlight language="config">
-&lt;Files *.lua&gt;
+&lt;Files "*.lua"&gt;
     SetHandler lua-script
 &lt;/Files&gt;
 </highlight>
@@ -203,7 +203,7 @@ end
 fournisseur <code>foo</code>, et la configure por l'URL <code>/</code> :</p>
 <highlight language="config">
 LuaAuthzProvider foo authz_provider.lua authz_check_foo
-&lt;Location /&gt;
+&lt;Location "/"&gt;
   Require foo 10.1.2.3 john_doe
 &lt;/Location&gt;
 </highlight>
@@ -1786,7 +1786,29 @@ traitement de la requ&ecirc;te</description>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>All</override>
-    <usage><p>...</p></usage>
+    <usage><p>
+    Cette directive fournit un point d'entr&eacute;e pour la phase
+    type_checker du traitement de la requ&ecirc;te. Cette phase
+    correspond au moment o&ugrave; la requ&ecirc;te se voit assigner un type et un
+    gestionnaire de contenu, et peut donc &ecirc;tre utilis&eacute;e pour modifier le
+    type et le gestionnaire en fonction de l'entr&eacute;e :
+    </p>
+    <highlight language="config">
+    LuaHookTypeChecker "/path/to/lua/script.lua" type_checker
+    </highlight>
+    <highlight language="lua">
+    function type_checker(r)
+        if r.uri:match("%.to_gif$") then -- foo.png.to_gif convient
+            r.content_type = "image/gif" -- affectation du type image/gif
+            r.handler = "gifWizard"      -- force le traitement de la requ&ecirc;te par le module gifWizard
+            r.filename = r.uri:gsub("%.to_gif$", "") -- corrige le nom du fichier demand&eacute;
+            return apache2.OK
+        end
+
+        return apache2.DECLINED
+    end
+    </highlight>
+    </usage>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -1947,7 +1969,7 @@ module="mod_authz_core">Require</directive> :</p>
 <highlight language="config">
 LuaRoot /usr/local/apache2/lua
 LuaAuthzProvider foo authz.lua authz_check_foo
-&lt;Location /&gt;
+&lt;Location "/"&gt;
   Require foo johndoe
 &lt;/Location&gt;
 </highlight>
@@ -1983,7 +2005,7 @@ sont transmis au script Lua :
 
 <highlight language="config">
 LuaInputFilter myInputFilter /www/filter.lua input_filter
-&lt;Files *.lua&gt;
+&lt;Files "*.lua"&gt;
   SetInputFilter myInputFilter
 &lt;/Files&gt;
 </highlight>
@@ -2045,7 +2067,7 @@ sont transmis au script Lua :
 
 <highlight language="config">
 LuaOutputFilter myOutputFilter /www/filter.lua output_filter
-&lt;Files *.lua&gt;
+&lt;Files "*.lua"&gt;
   SetOutputFilter myOutputFilter
 &lt;/Files&gt;
 </highlight>
