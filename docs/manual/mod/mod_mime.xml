@@ -620,9 +620,8 @@ AddType application/rss+xml;qs=0.8 .xml
     directives is instead set to the content type specified by this directive. 
     </p> 
     <p>
-    This is a historical behavior that some third-party modules 
-    (such as mod_php) may look for a "synthetic" content type used only to 
-    signal the module to take responsibility for the matching request. 
+    This is a historical behavior that may be used by some third-party modules 
+    (such as mod_php) for taking responsibility for the matching request.
     </p>
 
     <p>Configurations that rely on such "synthetic" types should be avoided. 
