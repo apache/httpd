@@ -139,10 +139,35 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      rjung: Adjust compatibility note in docs.
      ylavic: Done, thanks.
 
-  * mod_log_config: Add new format flag for requestion duration in milliseconds
-    trunk patch: http://svn.apache.org/r1675533
-    2.2.x patch: https://people.apache.org/~breser/httpd/2.2.x/patches/httpd-2.2.x-req_duration_milliseconds.patch (modulo CHANGES)
-    +1: breser, druggeri, ylavic
+   * mod_log_config: Add new format flag for requestion duration in milliseconds
+     trunk patch: http://svn.apache.org/r1675533
+     2.2.x patch: https://people.apache.org/~breser/httpd/2.2.x/patches/httpd-2.2.x-req_duration_milliseconds.patch (modulo CHANGES)
+     +1: breser, druggeri, ylavic
+
+   * mod_unique_id: Update docs and comment: the unique id is now 24 characters, not 19
+     See explanation in:
+        http://httpd.apache.org/docs/2.2/mod/mod_unique_id.html#comment_3564
+     trunk patch: http://svn.apache.org/r981084
+     2.2.x patch: trunks works
+     +1 jailletc36, ylavic, rjung
+
+   * mod_dav: Avoid some work that is unnecessary and often very time consuming.
+     This helps mitigate Subversion issue #4531:
+     http://subversion.tigris.org/issues/show_bug.cgi?id=4531
+     SVN has their own workaround for this going out that helps more but is a bit
+     of a hack.  This is as far as we can go without violating DAV in httpd.
+     trunk patch: http://svn.apache.org/r1677462
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: breser, ylavic, rjung
+
+   * mod_rewrite: Turn static function get_server_name_for_url() into public
+     ap_get_server_name_for_url() and use it where appropriate. This
+     fixes mod_rewrite generating invalid URLs for redirects to IPv6
+     literal addresses.
+     Fixed in 2.3.5 five years ago but repported later in 2.2.x (PR 52831)
+     trunk patch: http://svn.apache.org/r900022
+     2.4.x patch: http://people.apache.org/~jailletc36/PR52831.patch
+     +1: jailletc36, ylavic, rjung
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -168,13 +193,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x patch: trunks works (plus CHANGES)
      +1 rjung, ylavic
 
-   * mod_unique_id: Update docs and comment: the unique id is now 24 characters, not 19
-     See explanation in:
-        http://httpd.apache.org/docs/2.2/mod/mod_unique_id.html#comment_3564
-     trunk patch: http://svn.apache.org/r981084
-     2.2.x patch: trunks works
-     +1 jailletc36, ylavic
-
    * mod_ssl: Add support for configuring persistent TLS session ticket
      encryption/decryption keys (useful for clustered environments).
      [Paul Querna, Kaspar Brand]
@@ -192,15 +210,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1665218 (CHANGES entry)
      2.2.x patch: trunk works (modulo CHANGES)
      +1: ylavic, wrowe
-
-   * mod_dav: Avoid some work that is unnecessary and often very time consuming.
-     This helps mitigate Subversion issue #4531:
-     http://subversion.tigris.org/issues/show_bug.cgi?id=4531
-     SVN has their own workaround for this going out that helps more but is a bit
-     of a hack.  This is as far as we can go without violating DAV in httpd.
-     trunk patch: http://svn.apache.org/r1677462
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: breser, ylavic
 
    * mod_ssl: Improve handling of ephemeral DH and ECDH keys by
      allowing custom parameters to be configured via SSLCertificateFile,
@@ -220,15 +229,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: ylavic
      ylavic: tested with openssl 0.9.7a, 0.9.8o, 1.0.1m and 1.0.2a with 1024
              and 2048 bits certificates (modulus), using EDH and ECDH ciphers.
-
-   * mod_rewrite: Turn static function get_server_name_for_url() into public
-     ap_get_server_name_for_url() and use it where appropriate. This
-     fixes mod_rewrite generating invalid URLs for redirects to IPv6
-     literal addresses.
-     Fixed in 2.3.5 five years ago but repported later in 2.2.x (PR 52831)
-     trunk patch: http://svn.apache.org/r900022
-     2.4.x patch: http://people.apache.org/~jailletc36/PR52831.patch
-     +1: jailletc36, ylavic
 
    * core: Avoid potential use of uninitialized (NULL) request data in
      request line error path.
