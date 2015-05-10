@@ -105,6 +105,15 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_ssl: Check for the Entropy Gathering Daemon (EGD) availability at
+     configure time (RAND_egd), and complain if SSLRandomSeed requires using
+     it otherwise.
+     trunk patch: http://svn.apache.org/r1674542
+                  http://svn.apache.org/r1675410
+                  http://svn.apache.org/r1676842
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: ylavic, trawick, rjung
+
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -242,15 +251,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1666998
      2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic
-
-  *) mod_ssl: Check for the Entropy Gathering Daemon (EGD) availability at
-     configure time (RAND_egd), and complain if SSLRandomSeed requires using
-     it otherwise.
-     trunk patch: http://svn.apache.org/r1674542
-                  http://svn.apache.org/r1675410
-                  http://svn.apache.org/r1676842
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, trawick
 
   *) http: Don't remove the Content-Length of zero from a HEAD response if
      it comes from an origin server, module or script. Allow the previous
