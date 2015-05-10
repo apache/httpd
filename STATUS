@@ -200,7 +200,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      of a hack.  This is as far as we can go without violating DAV in httpd.
      trunk patch: http://svn.apache.org/r1677462
      2.4.x patch: trunk works (modulo CHANGES)
-     +1: breser
+     +1: breser, ylavic
 
    * mod_ssl: Improve handling of ephemeral DH and ECDH keys by
      allowing custom parameters to be configured via SSLCertificateFile,
@@ -228,7 +228,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Fixed in 2.3.5 five years ago but repported later in 2.2.x (PR 52831)
      trunk patch: http://svn.apache.org/r900022
      2.4.x patch: http://people.apache.org/~jailletc36/PR52831.patch
-     +1: jailletc36
+     +1: jailletc36, ylavic
 
 PATCHES/ISSUES THAT ARE STALLED
 
