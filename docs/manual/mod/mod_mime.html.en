@@ -597,17 +597,25 @@ type</td></tr>
 
 
     <div class="note"><h3>Note</h3>
-    <p>When explicit directives such as 
-    <code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code> or 
-    <code class="directive"><a href="#addhandler">AddHandler</a></code> do not apply 
+    <p>If no handler is explicitly set for a request, the specified content
+    type will also be used as the handler name. </p>
+
+    <p>When explicit directives such as
+    <code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code> or
+    <code class="directive"><a href="#addhandler">AddHandler</a></code> do not apply
     to the current request, the internal handler name normally set by those
-    directives is set to match the content type specified by this directive.  
-    This is a historical behavior that some third-party modules 
-    (such as mod_php) may use "magic" content types used only to signal the 
-    module to take responsibility for the matching request.  Configurations
-    that rely on such "magic" types should be avoided by the use of 
-    <code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code> or 
-    <code class="directive"><a href="#addhandler">AddHandler</a></code>. </p>
+    directives is instead set to the content type specified by this directive.
+    </p>
+    <p>
+    This is a historical behavior that may be used by some third-party modules
+    (such as mod_php) for taking responsibility for the matching request.
+    </p>
+
+    <p>Configurations that rely on such "synthetic" types should be avoided.
+    Additionally, configurations that restrict access to
+    <code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code> or
+    <code class="directive"><a href="#addhandler">AddHandler</a></code> should
+    restrict access to this directive as well.</p>
     </div>
 
 
