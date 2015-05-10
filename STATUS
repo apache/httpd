@@ -234,7 +234,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      request line error path.
      trunk patch: http://svn.apache.org/r1664205
      2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-read_request_line.patch
-     2.2.x patch: trunk works (module CHANGES)
+                  (trunk works but CHANGES entry does not need to refer to CVE-2015-0253)
      +1: ylavic
      ylavic: this is CVE-2015-0253 wrt 2.4.13, although 2.2.x is not
              vulnerable per se (no ErrorDocument handling from early
