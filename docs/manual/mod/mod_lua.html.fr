@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_lua.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_lua.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Fournit des points d'entrée Lua dans différentes parties du
 traitement des requêtes httpd</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
@@ -118,7 +116,7 @@ fonctionnement interne de httpd.</p>
 <code>lua-script</code> qui peut être utilisé avec une directive
 <code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code> ou <code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code> :</p>
 
-<pre class="prettyprint lang-config">&lt;Files *.lua&gt;
+<pre class="prettyprint lang-config">&lt;Files "*.lua"&gt;
     SetHandler lua-script
 &lt;/Files&gt;</pre>
 
@@ -241,7 +239,7 @@ end</pre>
 <p>La configuration suivante enregistre cette fonction en tant que
 fournisseur <code>foo</code>, et la configure por l'URL <code>/</code> :</p>
 <pre class="prettyprint lang-config">LuaAuthzProvider foo authz_provider.lua authz_check_foo
-&lt;Location /&gt;
+&lt;Location "/"&gt;
   Require foo 10.1.2.3 john_doe
 &lt;/Location&gt;</pre>
 
@@ -1346,9 +1344,9 @@ le cas des requêtes dynamiques, utilisez <code>db:prepare</code> ou
 d'autorisation, elle peut être appelée via la directive <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> :</p>
 
 
-<pre class="prettyprint lang-config">LuaRoot /usr/local/apache2/lua
+<pre class="prettyprint lang-config">LuaRoot "/usr/local/apache2/lua"
 LuaAuthzProvider foo authz.lua authz_check_foo
-&lt;Location /&gt;
+&lt;Location "/"&gt;
   Require foo johndoe
 &lt;/Location&gt;</pre>
 
@@ -1540,7 +1538,7 @@ traitement d'une requête</td></tr>
     normale.
 </p>
 <p>Exemple :</p>
-<pre class="prettyprint lang-config">LuaHookLog /path/to/script.lua logger</pre>
+<pre class="prettyprint lang-config">LuaHookLog "/path/to/script.lua" logger</pre>
 
 <pre class="prettyprint lang-lua">-- /path/to/script.lua --
 function logger(r)
@@ -1584,7 +1582,7 @@ traitement de la requête</td></tr>
     phase map-to-storage du traitement de la requête. Les modules comme
     mod_cache agissent pendant cette phase, ce qui permet de présenter
     un exemple intéressant de ce que l'on peut faire ici :</p>
-    <pre class="prettyprint lang-config">LuaHookMapToStorage /path/to/lua/script.lua check_cache</pre>
+    <pre class="prettyprint lang-config">LuaHookMapToStorage "/path/to/lua/script.lua" check_cache</pre>
 
     <pre class="prettyprint lang-lua">require"apache2"
 cached_files = {}
@@ -1649,7 +1647,7 @@ version 2.3.15 du serveur HTTP Apache.</td></tr>
     <p>Exemple :</p>
 
 <pre class="prettyprint lang-config"># httpd.conf
-LuaHookTranslateName /scripts/conf/hooks.lua silly_mapper</pre>
+LuaHookTranslateName "/scripts/conf/hooks.lua" silly_mapper</pre>
 
 
 <pre class="prettyprint lang-lua">-- /scripts/conf/hooks.lua --
@@ -1682,7 +1680,27 @@ traitement de la requête</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
-</table><p>...</p>
+</table><p>
+    Cette directive fournit un point d'entrée pour la phase
+    type_checker du traitement de la requête. Cette phase
+    correspond au moment où la requête se voit assigner un type et un
+    gestionnaire de contenu, et peut donc être utilisée pour modifier le
+    type et le gestionnaire en fonction de l'entrée :
+    </p>
+    <pre class="prettyprint lang-config">LuaHookTypeChecker "/path/to/lua/script.lua" type_checker</pre>
+
+    <pre class="prettyprint lang-lua">    function type_checker(r)
+        if r.uri:match("%.to_gif$") then -- foo.png.to_gif convient
+            r.content_type = "image/gif" -- affectation du type image/gif
+            r.handler = "gifWizard"      -- force le traitement de la requête par le module gifWizard
+            r.filename = r.uri:gsub("%.to_gif$", "") -- corrige le nom du fichier demandé
+            return apache2.OK
+        end
+
+        return apache2.DECLINED
+    end</pre>
+
+    
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="luainherit" id="luainherit">Directive</a> <a name="LuaInherit" id="LuaInherit">LuaInherit</a></h2>
@@ -1729,8 +1747,8 @@ globale <code>bucket</code> contient les paquets de données tels qu'ils
 sont transmis au script Lua :
 </p>
 
-<pre class="prettyprint lang-config">LuaInputFilter myInputFilter /www/filter.lua input_filter
-&lt;Files *.lua&gt;
+<pre class="prettyprint lang-config">LuaInputFilter myInputFilter "/www/filter.lua" input_filter
+&lt;Files "*.lua"&gt;
   SetInputFilter myInputFilter
 &lt;/Files&gt;</pre>
 
@@ -1785,14 +1803,14 @@ filtres Lua</a>" pour plus de détails.
     d'interpolation dans le chemin du fichier et le nom de la fonction.
     Prenez garde aux problèmes de sécurité en écrivant vos expressions
     rationnelles.</p>
-   <div class="example"><h3>Exemples :</h3><pre class="prettyprint lang-config">LuaMapHandler /(\w+)/(\w+) /scripts/$1.lua handle_$2</pre>
+   <div class="example"><h3>Exemples :</h3><pre class="prettyprint lang-config">LuaMapHandler "/(\w+)/(\w+)" "/scripts/$1.lua" "handle_$2"</pre>
 </div>
         <p>Cette directive va faire correspondre des uri comme
 	/photos/show?id=9 au fichier /scripts/photos.lua, et invoquera la
 	fonction de gestionnaire handle_show au niveau de la vm lua
 	après chargement de ce fichier.</p>
 
-<pre class="prettyprint lang-config">LuaMapHandler /bingo /scripts/wombat.lua</pre>
+<pre class="prettyprint lang-config">LuaMapHandler "/bingo" "/scripts/wombat.lua"</pre>
 
         <p>Cette directive invoquera la fonction "handle" qui est la
 	valeur par défaut si aucun nom de fonction spécifique n'est
@@ -1821,8 +1839,8 @@ globale <code>bucket</code> contient les paquets de données tels qu'ils
 sont transmis au script Lua :
 </p>
 
-<pre class="prettyprint lang-config">LuaOutputFilter myOutputFilter /www/filter.lua output_filter
-&lt;Files *.lua&gt;
+<pre class="prettyprint lang-config">LuaOutputFilter myOutputFilter "/www/filter.lua" output_filter
+&lt;Files "*.lua"&gt;
   SetOutputFilter myOutputFilter
 &lt;/Files&gt;</pre>
 
@@ -1895,8 +1913,8 @@ filtres Lua</a>" pour plus de détails.
     chemins de recherche du module lua. Elle suit les mêmes conventions
     que lua. Ceci modifie le package.path dans les vms lua.</p>
 
-    <div class="example"><h3>Exemples :</h3><pre class="prettyprint lang-config">LuaPackagePath /scripts/lib/?.lua
-LuaPackagePath /scripts/lib/?/init.lua</pre>
+    <div class="example"><h3>Exemples :</h3><pre class="prettyprint lang-config">LuaPackagePath "/scripts/lib/?.lua"
+LuaPackagePath "/scripts/lib/?/init.lua"</pre>
 </div>
 
 </div>
