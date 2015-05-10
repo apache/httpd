@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1628084:1673582 (outdated) -->
+<!-- English Revision: 1673582 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -63,7 +63,7 @@ href="http://www.webdav.org/">WebDAV</a>)</description>
     votre fichier <code>httpd.conf</code> :</p>
 
     <highlight language="config">
-      DavLockDB /usr/local/apache2/var/DavLock
+      DavLockDB "/usr/local/apache2/var/DavLock"
     </highlight>
 
     <p>Le r&eacute;pertoire contenant le fichier de la base de donn&eacute;es des
@@ -84,15 +84,15 @@ href="http://www.webdav.org/">WebDAV</a>)</description>
 
     <example><title>Exemple complet</title>
       <highlight language="config">
-DavLockDB /usr/local/apache2/var/DavLock
+DavLockDB "/usr/local/apache2/var/DavLock"
 
-&lt;Directory /usr/local/apache2/htdocs/foo&gt;
+&lt;Directory "/usr/local/apache2/htdocs/foo"&gt;
     Require all granted
     Dav On
 
     AuthType Basic
-    AuthName DAV
-    AuthUserFile user.passwd
+    AuthName "DAV"
+    AuthUserFile "user.passwd"
 
     &lt;LimitExcept GET POST OPTIONS&gt;
         Require user admin
@@ -163,9 +163,9 @@ DavLockDB /usr/local/apache2/var/DavLock
     le manipuler avec DAV.</p>
 
 <highlight language="config">
-Alias /phparea /home/gstein/php_files
-Alias /php-source /home/gstein/php_files
-&lt;Location /php-source&gt;
+Alias "/phparea" "/home/gstein/php_files"
+Alias "/php-source" "/home/gstein/php_files"
+&lt;Location "/php-source"&gt;
 Dav On
 ForceType text/plain
 &lt;/Location&gt;
@@ -190,7 +190,7 @@ ForceType text/plain
     m&eacute;thodes HTTP WebDAV pour le conteneur condid&eacute;r&eacute; :</p>
 
     <highlight language="config">
-&lt;Location /foo&gt;
+&lt;Location "/foo"&gt;
     Dav On
 &lt;/Location&gt;
     </highlight>
@@ -237,7 +237,7 @@ verrou sur une ressource DAV</description>
 
     <example><title>Exemple</title>
       <highlight language="config">
-&lt;Location /MSWord&gt;
+&lt;Location "/MSWord"&gt;
     DavMinTimeout 600
 &lt;/Location&gt;
     </highlight>

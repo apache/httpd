@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1533275:1673945 (outdated) -->
+<!-- English Revision: 1673945 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -125,17 +125,17 @@ correspondance</a></seealso>
 
         <tr>
             <td>Section VirtualHost</td>
-            <td>RewriteRule ^/images/(.+)\.jpg /images/$1.gif</td>
+            <td>RewriteRule "^/images/(.+)\.jpg" "/images/$1.gif"</td>
         </tr>
 
         <tr>
             <td>Fichier .htaccess &agrave; la racine des documents</td>
-            <td>RewriteRule ^images/(.+)\.jpg images/$1.gif</td>
+            <td>RewriteRule "^images/(.+)\.jpg" "images/$1.gif"</td>
         </tr>
 
         <tr>
             <td>Fichier .htaccess dans le r&eacute;pertoire images</td>
-            <td>RewriteRule ^(.+)\.jpg $1.gif</td>
+            <td>RewriteRule "^(.+)\.jpg" "$1.gif"</td>
         </tr>
 
     </table>
