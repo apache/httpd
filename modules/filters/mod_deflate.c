@@ -47,6 +47,10 @@
 #define APR_WANT_STRFUNC
 #include "apr_want.h"
 
+#ifndef APR_INT32_MAX
+#define APR_INT32_MAX 0x7fffffff
+#endif
+
 #include "zlib.h"
 
 static const char deflateFilterName[] = "DEFLATE";

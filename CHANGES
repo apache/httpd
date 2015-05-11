@@ -1,7 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.30
 
-
+  *) mod_deflate: Define APR_INT32_MAX when it is missing so to be able to
+     compile against APR-1.2.x (minimum required version). [Yann Ylavic]
 
 Changes with Apache 2.2.29
 
