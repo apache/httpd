@@ -576,7 +576,6 @@ static int ap_proxy_http_prefetch(proxy_http_req_t *req,
     apr_off_t bytes;
     int force10, rv;
     apr_read_type_e block;
-    conn_rec *origin = p_conn->connection;
 
     if (apr_table_get(r->subprocess_env, "force-proxy-request-1.0")) {
         if (r->expecting_100) {
@@ -636,7 +635,6 @@ static int ap_proxy_http_prefetch(proxy_http_req_t *req,
                       "chunked body with Content-Length (C-L ignored)",
                       c->client_ip, c->remote_host ? c->remote_host: "");
         req->old_cl_val = NULL;
-        origin->keepalive = AP_CONN_CLOSE;
         p_conn->close = 1;
     }
 
