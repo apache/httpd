@@ -1313,6 +1313,14 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_balancer(proxy_balancer *balance
  * CONNECTION related...
  */
 
+static void socket_cleanup(proxy_conn_rec *conn)
+{
+    conn->sock = NULL;
+    conn->connection = NULL;
+    conn->ssl_hostname = NULL;
+    apr_pool_clear(conn->scpool);
+}
+
 static apr_status_t conn_pool_cleanup(void *theworker)
 {
     proxy_worker *worker = (proxy_worker *)theworker;
@@ -1379,7 +1387,7 @@ static apr_status_t connection_cleanup(void *theconn)
     }
 
     /* determine if the connection need to be closed */
-    if (!ap_proxy_connection_reusable(conn)) {
+    if (!worker->s->is_address_reusable || worker->s->disablereuse) {
         apr_pool_t *p = conn->pool;
         apr_pool_clear(p);
         conn = apr_pcalloc(p, sizeof(proxy_conn_rec));
@@ -1387,6 +1395,10 @@ static apr_status_t connection_cleanup(void *theconn)
         conn->worker = worker;
         apr_pool_create(&(conn->scpool), p);
         apr_pool_tag(conn->scpool, "proxy_conn_scpool");
+    }
+    else if (conn->close) {
+        socket_cleanup(conn);
+        conn->close = 0;
     }
 
     if (worker->s->hmax && worker->cp->res) {
@@ -1400,14 +1412,6 @@ static apr_status_t connection_cleanup(void *theconn)
 
     /* Always return the SUCCESS */
     return APR_SUCCESS;
-}
-
-static void socket_cleanup(proxy_conn_rec *conn)
-{
-    conn->sock = NULL;
-    conn->connection = NULL;
-    conn->ssl_hostname = NULL;
-    apr_pool_clear(conn->scpool);
 }
 
 PROXY_DECLARE(apr_status_t) ap_proxy_ssl_connection_cleanup(proxy_conn_rec *conn,
@@ -2817,9 +2821,9 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
                          proxy_function, backend_addr->family, worker->s->hostname);
 
             if (conf->source_address_set) {
-                local_addr = apr_pmemdup(conn->pool, conf->source_address,
+                local_addr = apr_pmemdup(conn->scpool, conf->source_address,
                                          sizeof(apr_sockaddr_t));
-                local_addr->pool = conn->pool;
+                local_addr->pool = conn->scpool;
                 rv = apr_socket_bind(newsock, local_addr);
                 if (rv != APR_SUCCESS) {
                     ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(00956)
