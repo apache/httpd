@@ -101,13 +101,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_reqtimeout: PR56729: mod_reqtimeout gets confused when it sees a read 
-     via check_pipeline() just before a slow HTTP response completes.
-     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=r1621453
-     2.2.x patch: http://people.apache.org/~covener/patches/httpd-2.2.2-reqtimeout-slow-post.diff
-                  (minor merge conflict)
-     +1 covener, trawick, ylavic
-
    * mod_deflate: Define APR_INT32_MAX when it is missing so to be able to
                   compile against APR-1.2.x (minimum required version).
      trunk/2.4.x patch: not concerned (require APR-1.5.x)
