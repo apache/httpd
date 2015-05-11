@@ -69,8 +69,9 @@ SSLCipherSuite HIGH:MEDIUM:!aNULL:!MD5
  
 #   SSL Protocol support:
 #   List the protocol versions which clients are allowed to
-#   connect with. Disable SSLv2 by default (cf. RFC 6176).
-SSLProtocol all -SSLv2
+#   connect with. Disable SSLv2 (cf. RFC 6176) and SSLv3
+#   (cf. RFC 7525 and CVE 2014-3566).
+SSLProtocol all -SSLv2 -SSLv3
 
 #   Pass Phrase Dialog:
 #   Configure the pass phrase gathering process.
