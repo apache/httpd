@@ -101,15 +101,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_rewrite: Turn static function get_server_name_for_url() into public
-     ap_get_server_name_for_url() and use it where appropriate. This
-     fixes mod_rewrite generating invalid URLs for redirects to IPv6
-     literal addresses.
-     Fixed in 2.3.5 five years ago but repported later in 2.2.x (PR 52831)
-     trunk patch: http://svn.apache.org/r900022
-     2.4.x patch: http://people.apache.org/~jailletc36/PR52831.patch
-     +1: jailletc36, ylavic, rjung
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
