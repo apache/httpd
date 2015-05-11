@@ -104,6 +104,7 @@
  * %...{format}t:  The time, in the form given by format, which should
  *                 be in strftime(3) format.
  * %...T:  the time taken to serve the request, in seconds.
+ * %...M:  the time taken to serve the request, in milliseconds
  * %...D:  the time taken to serve the request, in micro seconds.
  * %...u:  remote user (from auth; may be bogus if return status (%s) is 401)
  * %...U:  the URL path requested.
@@ -667,6 +668,13 @@ static const char *log_request_duration(request_rec *r, char *a)
     apr_time_t duration = apr_time_now() - r->request_time;
     return apr_psprintf(r->pool, "%" APR_TIME_T_FMT, apr_time_sec(duration));
 }
+
+static const char *log_request_duration_milliseconds(request_rec *r, char *a)
+{
+    apr_time_t duration = get_request_end_time(r) - r->request_time;
+    return apr_psprintf(r->pool, "%" APR_TIME_T_FMT, apr_time_as_msec(duration));
+}
+
 
 static const char *log_request_duration_microseconds(request_rec *r, char *a)
 {
@@ -1574,6 +1582,7 @@ static int log_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
         log_pfn_register(p, "k", log_requests_on_connection, 0);
         log_pfn_register(p, "r", log_request_line, 1);
         log_pfn_register(p, "D", log_request_duration_microseconds, 1);
+        log_pfn_register(p, "M", log_request_duration_milliseconds, 1);
         log_pfn_register(p, "T", log_request_duration, 1);
         log_pfn_register(p, "U", log_request_uri, 1);
         log_pfn_register(p, "s", log_status, 1);
