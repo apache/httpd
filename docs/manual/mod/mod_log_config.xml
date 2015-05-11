@@ -131,6 +131,9 @@
     <tr><td><code>%m</code></td>
         <td>The request method</td></tr>
 
+    <tr><td><code>%M</code></td>
+        <td>The time taken to serve the request, in milliseconds.</td></tr>
+
     <tr><td><code>%{<var>Foobar</var>}n</code></td>
         <td>The contents of note <var>Foobar</var> from another
         module.</td></tr>
