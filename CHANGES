@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.30
 
+  *) dav_validate_request: avoid validating locks and ETags when there are
+     no If headers providing them on a resource we aren't modifying.
+     [Ben Reser]
+
   *) mod_log_config: Add %M format to output request duration in
      milliseconds.  [Ben Reser]
 
