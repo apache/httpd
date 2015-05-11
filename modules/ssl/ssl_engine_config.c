@@ -183,6 +183,7 @@ static SSLSrvConfigRec *ssl_config_server_new(apr_pool_t *p)
 #ifndef OPENSSL_NO_COMP
     sc->compression            = UNSET;
 #endif
+    sc->session_tickets        = UNSET;
 
     modssl_ctx_init_proxy(sc, p);
 
@@ -284,6 +285,7 @@ void *ssl_config_server_merge(apr_pool_t *p, void *basev, void *addv)
 #ifndef OPENSSL_NO_COMP
     cfgMergeBool(compression);
 #endif
+    cfgMergeBool(session_tickets);
 
     modssl_ctx_cfg_merge_proxy(base->proxy, add->proxy, mrg->proxy);
 
@@ -743,6 +745,17 @@ const char *ssl_cmd_SSLHonorCipherOrder(cmd_parms *cmd, void *dcfg, int flag)
 #else
     return "SSLHonorCiperOrder unsupported; not implemented by the SSL library";
 #endif
+}
+
+const char *ssl_cmd_SSLSessionTickets(cmd_parms *cmd, void *dcfg, int flag)
+{
+    SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
+#ifndef SSL_OP_NO_TICKET
+    return "This version of OpenSSL does not support using "
+           "SSLSessionTickets.";
+#endif
+    sc->session_tickets = flag ? TRUE : FALSE;
+    return NULL;
 }
 
 const char *ssl_cmd_SSLInsecureRenegotiation(cmd_parms *cmd, void *dcfg, int flag)
