@@ -101,12 +101,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_deflate: Define APR_INT32_MAX when it is missing so to be able to
-                  compile against APR-1.2.x (minimum required version).
-     trunk/2.4.x patch: not concerned (require APR-1.5.x)
-     2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-mod_deflate_APR_INT32_MAX.patch
-     +1: ylavic, trawick, gsmith
-
    * default conf: Disable SSLv3, like SSLv2, in the default configuration.
      trunk patch: n/a -- Only 2.2.x has SSLProtocol in httpd-ssl.conf.in
      2.2.x patch: https://issues.apache.org/bugzilla/attachment.cgi?id=32131     
