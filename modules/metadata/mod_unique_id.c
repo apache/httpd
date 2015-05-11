@@ -79,8 +79,8 @@ typedef struct {
  * saving cpu cycles.  The counter is never reset, and is used to permit up to
  * 64k requests in a single second by a single child.
  *
- * The 112-bits of unique_id_rec are encoded using the alphabet
- * [A-Za-z0-9@-], resulting in 19 bytes of printable characters.  That is then
+ * The 144-bits of unique_id_rec are encoded using the alphabet
+ * [A-Za-z0-9@-], resulting in 24 bytes of printable characters.  That is then
  * stuffed into the environment variable UNIQUE_ID so that it is available to
  * other modules.  The alphabet choice differs from normal base64 encoding
  * [A-Za-z0-9+/] because + and / are special characters in URLs and we want to
