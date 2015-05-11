@@ -101,12 +101,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * core: remove misleading/outdated httpd.h comment about LimitRequestLine
-     compile-time limits.
-     trunk patch: http://svn.apache.org/r819480
-     2.2.x patch: trunk works
-     +1 covener, ylavic, trawick
-
    * mod_reqtimeout: PR56729: mod_reqtimeout gets confused when it sees a read 
      via check_pipeline() just before a slow HTTP response completes.
      trunk patch: http://svn.apache.org/viewvc?view=revision&revision=r1621453
