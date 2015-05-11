@@ -16,6 +16,10 @@ Changes with Apache 2.4.13
      rfc822Name and dNSName into SSL_{CLIENT,SERVER}_SAN_{Email,DNS}_n
      environment variables. Also addresses PR 57207. [Kaspar Brand]
 
+  *) dav_validate_request: avoid validating locks and ETags when there are
+     no If headers providing them on a resource we aren't modifying.
+     [Ben Reser]
+
   *) mod_proxy_scgi: ProxySCGIInternalRedirect now allows an alternate
      response header to be used by the application, for when the application
      or framework is unable to return Location in the internal-redirect
@@ -33,6 +37,9 @@ Changes with Apache 2.4.13
   *) mod_ssl: make sure to consistently output SSLCertificateChainFile
      deprecation warnings, when encountered in a VirtualHost block.
      [Falco Schwarz <hiding falco.me>]
+
+  *) mod_log_config: Add %M format to output request duration in
+     milliseconds.  [Ben Reser]
 
   *) Allow FallbackResource to work when a directory is requested and
      there is no autoindex nor DirectoryIndex. 
