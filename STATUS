@@ -101,11 +101,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * default conf: Disable SSLv3, like SSLv2, in the default configuration.
-     trunk patch: n/a -- Only 2.2.x has SSLProtocol in httpd-ssl.conf.in
-     2.2.x patch: https://issues.apache.org/bugzilla/attachment.cgi?id=32131     
-     +1: covener, ylavic, gsmith
-
    * mod_ssl: Add SSLSessionTickets (on|off). [Rainer Jung]
      It controls the use of TLS session tickets (RFC 5077).
      Default is unchanged (on).
