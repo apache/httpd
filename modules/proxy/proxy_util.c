@@ -1368,7 +1368,7 @@ static apr_status_t connection_cleanup(void *theconn)
      * If the connection pool is NULL the worker
      * cleanup has been run. Just return.
      */
-    if (!worker->cp) {
+    if (!worker->cp->pool) {
         return APR_SUCCESS;
     }
 
