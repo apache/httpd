@@ -505,7 +505,8 @@ typedef struct {
 #ifdef HAVE_OCSP_STAPLING
     const ap_socache_provider_t *stapling_cache;
     ap_socache_instance_t *stapling_cache_context;
-    apr_global_mutex_t   *stapling_mutex;
+    apr_global_mutex_t   *stapling_cache_mutex;
+    apr_global_mutex_t   *stapling_refresh_mutex;
 #endif
 } SSLModConfigRec;
 
@@ -896,7 +897,8 @@ int          ssl_stapling_mutex_reinit(server_rec *, apr_pool_t *);
 
 /* mutex type names for Mutex directive */
 #define SSL_CACHE_MUTEX_TYPE    "ssl-cache"
-#define SSL_STAPLING_MUTEX_TYPE "ssl-stapling"
+#define SSL_STAPLING_CACHE_MUTEX_TYPE "ssl-stapling"
+#define SSL_STAPLING_REFRESH_MUTEX_TYPE "ssl-stapling-refresh"
 
 apr_status_t ssl_die(server_rec *);
 
