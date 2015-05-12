@@ -2371,6 +2371,14 @@ stated goal of "saving roundtrips and resources" - see also
 <a href="http://www.ietf.org/rfc/rfc6961.txt">RFC 6961</a>
 (TLS Multiple Certificate Status Extension).
 </p>
+
+<p>When OCSP stapling is enabled, the <code>ssl-stapling</code> mutex is used
+to control access to the OCSP stapling cache in order to prevent corruption,
+and the <code>sss-stapling-refresh</code> mutex is used to control refreshes
+of OCSP responses.  These mutexes can be configured using the
+<directive module="core">Mutex</directive> directive.
+</p>
+
 </usage>
 </directivesynopsis>
 
@@ -2388,10 +2396,6 @@ is enabled. Configuration of a cache is mandatory for OCSP stapling.
 With the exception of <code>none</code> and <code>nonenotnull</code>,
 the same storage types are supported as with
 <directive module="mod_ssl">SSLSessionCache</directive>.</p>
-
-<p>The <code>ssl-stapling</code> mutex is used to serialize access to the
-OCSP stapling cache to prevent corruption.  This mutex can be configured
-using the <directive module="core">Mutex</directive> directive.</p>
 </usage>
 </directivesynopsis>
 
