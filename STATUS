@@ -177,6 +177,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x patch: trunk works (modulo CHANGES)
      +1: ylavic
 
+   * mod_authn_dbd: Fix lifetime of DB lookup entries independently of the
+     selected DB engine.  PR 46421.
+     trunk patch: http://svn.apache.org/r1663647
+                  http://svn.apache.org/r1679182
+     2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-apr_dbd_get_entry_lifetime.patch
+                  (trunk works but the patch includes a CHANGES entry relative to 2.2.x only)
+     +1: ylavic
+
 
 PATCHES/ISSUES THAT ARE STALLED
 
