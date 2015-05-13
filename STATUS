@@ -172,6 +172,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              vulnerable per se (no ErrorDocument handling from early
              request line parser), better be safe than sorry.
 
+   * mod_ssl: 'SSLProtocol ALL' was being ignored in virtual host context. PR 57100.
+     trunk patch: http://svn.apache.org/r1653997
+     2.2.x patch: trunk works (modulo CHANGES)
+     +1: ylavic
+
+
 PATCHES/ISSUES THAT ARE STALLED
 
    * mod_proxy_balancer: Always initialize the shared parameters of a load
