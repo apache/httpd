@@ -652,13 +652,14 @@ static int stapling_refresh_mutex_off(server_rec *s)
 }
 
 static int get_and_check_cached_response(server_rec *s, modssl_ctx_t *mctx,
-                                         OCSP_RESPONSE **rsp, BOOL *ok,
-                                         certinfo *cinf, apr_pool_t *p)
+                                         OCSP_RESPONSE **rsp, certinfo *cinf, 
+                                         apr_pool_t *p)
 {
+    BOOL ok;
     int rv;
 
     /* Check to see if we already have a response for this certificate */
-    rv = stapling_get_cached_response(s, rsp, ok, cinf, p);
+    rv = stapling_get_cached_response(s, rsp, &ok, cinf, p);
     if (rv == FALSE) {
         return SSL_TLSEXT_ERR_ALERT_FATAL;
     }
@@ -711,7 +712,6 @@ static int stapling_cb(SSL *ssl, void *arg)
     certinfo *cinf = NULL;
     OCSP_RESPONSE *rsp = NULL;
     int rv;
-    BOOL ok;
 
     if (sc->server->stapling_enabled != TRUE) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01950)
@@ -730,7 +730,7 @@ static int stapling_cb(SSL *ssl, void *arg)
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01952)
                  "stapling_cb: retrieved cached certificate data");
 
-    rv = get_and_check_cached_response(s, mctx, &rsp, &ok, cinf, conn->pool);
+    rv = get_and_check_cached_response(s, mctx, &rsp, cinf, conn->pool);
     if (rv != 0) {
         return rv;
     }
@@ -742,8 +742,7 @@ static int stapling_cb(SSL *ssl, void *arg)
         /* Maybe another request refreshed the OCSP response while this
          * thread waited for the mutex.  Check again.
          */
-        rv = get_and_check_cached_response(s, mctx, &rsp, &ok, cinf,
-                                           conn->pool);
+        rv = get_and_check_cached_response(s, mctx, &rsp, cinf, conn->pool);
         if (rv != 0) {
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                          "stapling_cb: error checking for cached response "
