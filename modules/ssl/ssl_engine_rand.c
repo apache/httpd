@@ -81,6 +81,7 @@ int ssl_rand_seed(server_rec *s, apr_pool_t *p, ssl_rsctx_t nCtx, char *prefix)
                 nDone += ssl_rand_feedfp(p, fp, pRandSeed->nBytes);
                 ssl_util_ppclose(s, p, fp);
             }
+#ifdef HAVE_RAND_EGD
             else if (pRandSeed->nSrc == SSL_RSSRC_EGD) {
                 /*
                  * seed in contents provided by the external
@@ -90,6 +91,7 @@ int ssl_rand_seed(server_rec *s, apr_pool_t *p, ssl_rsctx_t nCtx, char *prefix)
                     continue;
                 nDone += n;
             }
+#endif
             else if (pRandSeed->nSrc == SSL_RSSRC_BUILTIN) {
                 struct {
                     time_t t;

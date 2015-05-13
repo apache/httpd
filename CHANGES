@@ -34,6 +34,11 @@ Changes with Apache 2.4.13
   *) mod_status: Add more data to machine readable server-status produced
      when using the "?auto" query string.  [Rainer Jung]
 
+  *) mod_ssl: Check for the Entropy Gathering Daemon (EGD) availability at
+     configure time (RAND_egd), and complain if SSLRandomSeed requires using
+     it otherwise.  [Bernard Spil <pil.oss gmail com>, Stefan Sperling,
+     Kaspar Brand]
+
   *) mod_ssl: make sure to consistently output SSLCertificateChainFile
      deprecation warnings, when encountered in a VirtualHost block.
      [Falco Schwarz <hiding falco.me>]
