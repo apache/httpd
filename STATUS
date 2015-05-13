@@ -186,6 +186,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
    * mod_ssl: 'SSLProtocol ALL' was being ignored in virtual host context. PR 57100.
      trunk patch: http://svn.apache.org/r1653997
+     2.4.x patch: merged in http://svn.apache.org/r1663258
      2.2.x patch: trunk works (modulo CHANGES)
      +1: ylavic
 
@@ -195,6 +196,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1679182
      2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-apr_dbd_get_entry_lifetime.patch
                   (trunk works but the patch includes a CHANGES entry relative to 2.2.x only)
+     +1: ylavic
+
+   * mod_proxy_http: Use the "Connection: close" header for requests to
+     backends not recycling connections (disablereuse), including the default
+     reverse and forward proxies.
+     trunk patch: http://svn.apache.org/r1526189
+                  http://svn.apache.org/r1658765
+     2.4.x patch: merged in http://svn.apache.org/r1673896
+     2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-ap_proxy_connection_reusable.patch
      +1: ylavic
 
 
