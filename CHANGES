@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_authn_dbd, mod_authz_dbd, mod_session_dbd, mod_rewrite: Fix lifetime
+     of DB lookup entries independently of the selected DB engine.  PR 46421.
+     [Steven whitson <steven.whitson gmail com>, Jan Kaluza, Yann Ylavic].
+
   *) mod_ssl OCSP Stapling: Don't block initial handshakes while refreshing
      the OCSP response for a different certificate.  mod_ssl has an additional
      global mutex, "ssl-stapling-refresh".
