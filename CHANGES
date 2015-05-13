@@ -10,9 +10,6 @@ Changes with Apache 2.2.30
      no If headers providing them on a resource we aren't modifying.
      [Ben Reser]
 
-  *) mod_log_config: Add %M format to output request duration in
-     milliseconds.  [Ben Reser]
-
   *) mod_ssl: New directive SSLSessionTickets (On|Off).
      The directive controls the use of TLS session tickets (RFC 5077),
      default value is "On" (unchanged behavior).
