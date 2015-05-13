@@ -174,7 +174,9 @@ static int authz_dbd_login(request_rec *r, authz_dbd_cfg *cfg,
                           action, r->user, message?message:noerror);
                 }
                 else if (newuri == NULL) {
-                    newuri = apr_dbd_get_entry(dbd->driver, row, 0);
+                    newuri =
+                        apr_pstrdup(r->pool,
+                                    apr_dbd_get_entry(dbd->driver, row, 0));
                 }
                 /* we can't break out here or row won't get cleaned up */
             }
@@ -204,7 +206,6 @@ static int authz_dbd_group_query(request_rec *r, authz_dbd_cfg *cfg,
     apr_dbd_prepared_t *query;
     apr_dbd_results_t *res = NULL;
     apr_dbd_row_t *row = NULL;
-    const char **group;
 
     if (cfg->query == NULL) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01649)
@@ -224,8 +225,9 @@ static int authz_dbd_group_query(request_rec *r, authz_dbd_cfg *cfg,
              rv != -1;
              rv = apr_dbd_get_row(dbd->driver, r->pool, res, &row, -1)) {
             if (rv == 0) {
-                group = apr_array_push(groups);
-                *group = apr_dbd_get_entry(dbd->driver, row, 0);
+                APR_ARRAY_PUSH(groups, const char *) =
+                    apr_pstrdup(r->pool,
+                                apr_dbd_get_entry(dbd->driver, row, 0));
             }
             else {
                 message = apr_dbd_error(dbd->driver, dbd->handle, rv);
