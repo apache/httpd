@@ -138,7 +138,8 @@ static apr_status_t dbd_load(request_rec * r, const char *key, const char **val)
             return APR_EGENERAL;
         }
         if (*val == NULL) {
-            *val = apr_dbd_get_entry(dbd->driver, row, 0);
+            *val = apr_pstrdup(r->pool,
+                               apr_dbd_get_entry(dbd->driver, row, 0));
         }
         /* we can't break out here or row won't get cleaned up */
     }
