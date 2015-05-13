@@ -105,15 +105,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_ssl: Check for the Entropy Gathering Daemon (EGD) availability at
-     configure time (RAND_egd), and complain if SSLRandomSeed requires using
-     it otherwise.
-     trunk patch: http://svn.apache.org/r1674542
-                  http://svn.apache.org/r1675410
-                  http://svn.apache.org/r1676842
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, trawick, rjung
-
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
