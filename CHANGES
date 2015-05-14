@@ -1,6 +1,14 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) In alignment with RFC 7525, the default recommended SSLCipherSuite
+     and SSLProxyCipherSuite now exclude RC4 as well as MD5.  Existing
+     configurations must be adjusted by the administrator. [William Rowe]
+
+  *) In alignment with RFC 7525, the default recommended SSLProtocol and
+     SSLProxyProtocol directives now excludes SSLv3.  Existing configurations
+     must be adjusted by the administrator. [William Rowe]
+
   *) mod_authn_dbd, mod_authz_dbd, mod_session_dbd, mod_rewrite: Fix lifetime
      of DB lookup entries independently of the selected DB engine.  PR 46421.
      [Steven whitson <steven.whitson gmail com>, Jan Kaluza, Yann Ylavic].
