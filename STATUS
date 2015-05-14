@@ -207,6 +207,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1656368
      2.4.x patch: http://people.apache.org/~jim/patches/httpd-2.4.x-ap_listeners_buckets-v2.patch
      +1: ylavic, jim
+     wrowe: the statics are not explicitly initialized for clarity
+            ap_log_common is horribly named, perhaps ap_log_mpm_common()?
 
   *) http: Make ap_die() robust against any HTTP error code and not modify
      response status (finally logged) when nothing is to be done. PR 56035.
