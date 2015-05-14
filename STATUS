@@ -128,14 +128,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      changes. PR 44736.  [Jan Kaluza]
      2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-graceful_share_full-v7.patch
      ylavic: trunk/2.4.x not concerned, 2.2.x only.
-     +1: ylavic, jkaluza
+     +1: ylavic, jkaluza, wrowe
 
    * mod_proxy_ajp: Fix get_content_length().
      clength in request_rec is for response sizes, not request body size.
      It is initialized to 0, so the "if" branch was never taken.
      trunk patch: http://svn.apache.org/r1649043
      2.2.x patch: trunks works (plus CHANGES)
-     +1 rjung, ylavic
+     +1 rjung, ylavic, wrowe
 
    * mod_ssl: Add support for configuring persistent TLS session ticket
      encryption/decryption keys (useful for clustered environments).
@@ -145,7 +145,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1200374
                   http://svn.apache.org/r1213380
      2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-SSLSessionTicketKeyFile.patch
-     +1: ylavic
+     +1: ylavic, wrowe
 
    * mod_proxy: use the original (non absolute) form of the request-line's URI
      for requests embedded in CONNECT payloads used to connect SSL backends via
@@ -170,7 +170,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1588851
                   http://svn.apache.org/r1666363
      2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-mod_ssl-improved_EDH.patch
-     +1: ylavic
+     +1: ylavic, wrowe
      ylavic: tested with openssl 0.9.7a, 0.9.8o, 1.0.1m and 1.0.2a with 1024
              and 2048 bits certificates (modulus), using EDH and ECDH ciphers.
 
@@ -179,7 +179,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1664205
      2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-read_request_line.patch
                   (trunk works but CHANGES entry does not need to refer to CVE-2015-0253)
-     +1: ylavic
+     +1: ylavic, wrowe
      ylavic: this is CVE-2015-0253 wrt 2.4.13, although 2.2.x is not
              vulnerable per se (no ErrorDocument handling from early
              request line parser), better be safe than sorry.
@@ -188,7 +188,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1653997
      2.4.x patch: merged in http://svn.apache.org/r1663258
      2.2.x patch: trunk works (modulo CHANGES)
-     +1: ylavic
+     +1: ylavic, wrowe
+     wrowe: good to fix inheritence. Unsure why ALL is the default on all
+            branches, I was sure it wasn't, but if we subvert ALL later, we
+            have done something odd. No impact on the validity of this patch.
 
    * mod_authn_dbd: Fix lifetime of DB lookup entries independently of the
      selected DB engine.  PR 46421.
@@ -205,7 +208,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1658765
      2.4.x patch: merged in http://svn.apache.org/r1673896
      2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-ap_proxy_connection_reusable.patch
-     +1: ylavic
+     +1: ylavic, wrowe
+
+   * Propose a more modern Cipher and Protocol list, honor server cipher
+     priority and add explanations relative to RFC 7525 guidance.
+                  http://svn.apache.org/r1679428
+                  http://svn.apache.org/r1679432 [CHANGES]
+     2.2.x patch: http://people.apache.org/~wrowe/httpd-2.2-default-httpd-ssl.conf.in.patch
+     +1: wrowe
 
 
 PATCHES/ISSUES THAT ARE STALLED
