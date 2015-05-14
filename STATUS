@@ -265,6 +265,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic
 
+  *) Propose a more modern Cipher and Protocol list, honor server cipher
+     priority and add explanations relative to RFC 7525 guidance.
+                  http://svn.apache.org/r1679428
+                  http://svn.apache.org/r1679432 [CHANGES]
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: wrowe
 
 OTHER PROPOSALS
 
