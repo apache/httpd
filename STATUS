@@ -270,7 +270,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1679428
                   http://svn.apache.org/r1679432 [CHANGES]
      2.4.x patch: trunk works (modulo CHANGES)
-     +1: wrowe
+     +1: wrowe, ylavic
+
+  *) Always prepend "!aNULL:!eNULL:" to SSL_DEFAULT_CIPHER_LIST (default for
+     SSL[Proxy]CipherSuite) since we support OpenSSL versions where this was
+     not yet included by default (follow up to merge r1542327 in 2.4.7).
+     trunk patch: http://svn.apache.org/r1679470
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: ylavic
 
 OTHER PROPOSALS
 
