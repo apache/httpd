@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.30
 
+  *) SSLProtocol and SSLCipherSuite recommendations in the example/default
+     conf/extra/httpd-ssl.conf file are now global in scope, affecting all
+     VirtualHosts (matching 2.4 default configuration). [William Rowe]
+
   *) Turn static function get_server_name_for_url() into public
      ap_get_server_name_for_url() and use it where appropriate. This
      fixes mod_rewrite generating invalid URLs for redirects to IPv6
