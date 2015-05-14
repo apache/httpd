@@ -43,22 +43,39 @@ Listen @@SSLPort@@
 ##
 
 #   SSL Cipher Suite:
-#   List the ciphers that the client is permitted to negotiate.
-#   See the mod_ssl documentation for a complete list.
-SSLCipherSuite HIGH:MEDIUM:!aNULL:!MD5
+#   List the ciphers that the client is permitted to negotiate,
+#   and that httpd will negotiate as the client of a proxied server.
+#   See the OpenSSL documentation for a complete list of ciphers, and
+#   ensure these follow appropriate best practices for this deployment.
+SSLCipherSuite HIGH:MEDIUM:!MD5:!RC4
+SSLProxyCipherSuite HIGH:MEDIUM:!MD5:!RC4
 
-#   Speed-optimized SSL Cipher configuration:
-#   If speed is your main concern (on busy HTTPS servers e.g.),
-#   you might want to force clients to specific, performance
-#   optimized ciphers. In this case, prepend those ciphers
-#   to the SSLCipherSuite list, and enable SSLHonorCipherOrder.
-#   Caveat: by giving precedence to RC4-SHA and AES128-SHA
-#   (as in the example below), most connections will no longer
-#   have perfect forward secrecy - if the server's key is
-#   compromised, captures of past or future traffic must be
-#   considered compromised, too.
-#SSLCipherSuite RC4-SHA:AES128-SHA:HIGH:MEDIUM:!aNULL:!MD5
-#SSLHonorCipherOrder on 
+#  By the end of 2016, only TLSv1.2 ciphers should remain in use.
+#  Older ciphers should be disallowed as soon as possible, while the
+#  kRSA ciphers do not offer forward secrecy.  These changes inhibit
+#  older clients (such as IE6 SP2 or IE8 on Windows XP, or other legacy
+#  non-browser tooling) from successfully connecting.  
+#
+#  To restrict mod_ssl to use only TLSv1.2 ciphers, and disable
+#  those protocols which do not support forward secrecy, replace
+#  the SSLCipherSuite and SSLProxyCipherSuite directives above with
+#  the following two directives, as soon as practical.
+# SSLCipherSuite HIGH:MEDIUM:!SSLv3:!kRSA
+# SSLProxyCipherSuite HIGH:MEDIUM:!SSLv3:!kRSA
+
+#   User agents such as web browsers are not configured for the user's
+#   own preference of either security or performance, therefore this
+#   must be the prerogative of the web server administrator who manages
+#   cpu load versus confidentiality, so enforce the server's cipher order.
+SSLHonorCipherOrder on 
+
+#   SSL Protocol support:
+#   List the protocol versions which clients are allowed to connect with.
+#   Disable SSLv3 by default (cf. RFC 7525 3.1.1).  TLSv1 (1.0) should be
+#   disabled as quickly as practical.  By the end of 2016, only the TLSv1.2
+#   protocol or later should remain in use.
+SSLProtocol all -SSLv3
+SSLProxyProtocol all -SSLv3
 
 #   Pass Phrase Dialog:
 #   Configure the pass phrase gathering process.
