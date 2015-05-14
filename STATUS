@@ -101,6 +101,20 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * mod_proxy: Reuse proxy workers' parameters and scores across graceful
+     restarts, even if new workers added, old ones removed, or the order
+     changes. PR 44736.  [Jan Kaluza]
+     2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-graceful_share_full-v7.patch
+     ylavic: trunk/2.4.x not concerned, 2.2.x only.
+     +1: ylavic, jkaluza, wrowe
+
+   * mod_proxy_ajp: Fix get_content_length().
+     clength in request_rec is for response sizes, not request body size.
+     It is initialized to 0, so the "if" branch was never taken.
+     trunk patch: http://svn.apache.org/r1649043
+     2.2.x patch: trunks works (plus CHANGES)
+     +1 rjung, ylavic, wrowe
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -122,20 +136,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                     http://svn.apache.org/r1611169
      2.2.x patch: http://people.apache.org/~wrowe/httpd-2.2-utf8-servicename.patch
      +1: wrowe, gsmith
-
-   * mod_proxy: Reuse proxy workers' parameters and scores across graceful
-     restarts, even if new workers added, old ones removed, or the order
-     changes. PR 44736.  [Jan Kaluza]
-     2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-graceful_share_full-v7.patch
-     ylavic: trunk/2.4.x not concerned, 2.2.x only.
-     +1: ylavic, jkaluza, wrowe
-
-   * mod_proxy_ajp: Fix get_content_length().
-     clength in request_rec is for response sizes, not request body size.
-     It is initialized to 0, so the "if" branch was never taken.
-     trunk patch: http://svn.apache.org/r1649043
-     2.2.x patch: trunks works (plus CHANGES)
-     +1 rjung, ylavic, wrowe
 
    * mod_ssl: Add support for configuring persistent TLS session ticket
      encryption/decryption keys (useful for clustered environments).
