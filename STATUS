@@ -169,10 +169,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1563420
                   http://svn.apache.org/r1588851
                   http://svn.apache.org/r1666363
-     2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-mod_ssl-improved_EDH.patch
-     +1: ylavic, wrowe
+                  http://svn.apache.org/r1679470
+     2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-mod_ssl-improved_EDH-v2.patch
+     +1: ylavic
      ylavic: tested with openssl 0.9.7a, 0.9.8o, 1.0.1m and 1.0.2a with 1024
              and 2048 bits certificates (modulus), using EDH and ECDH ciphers.
+             v2 to include r1679470 (wrowe vote discarded)
 
    * core: Avoid potential use of uninitialized (NULL) request data in
      request line error path.
@@ -215,7 +217,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1679428
                   http://svn.apache.org/r1679432 [CHANGES]
      2.2.x patch: http://people.apache.org/~wrowe/httpd-2.2-default-httpd-ssl.conf.in.patch
-     +1: wrowe
+     +1: wrowe, ylavic
 
 
 PATCHES/ISSUES THAT ARE STALLED
