@@ -284,7 +284,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      later.
      trunk patch: http://svn.apache.org/r1679620
      2.4.x patch: trunk works
-     +1 covener
+     +1 covener, gsmith
 
 OTHER PROPOSALS
 
