@@ -387,15 +387,8 @@ static int fixup_dir(request_rec *r)
 static int dir_fixups(request_rec *r)
 {
     if (r->finfo.filetype == APR_DIR) {
-        if (fixup_dir(r) == OK) {
-            return OK;
-        }
-        /* we're running between mod_rewrites fixup and its internal redirect handler, step aside */
-        if (!strcmp(r->handler, REWRITE_REDIRECT_HANDLER_NAME)) {
-            return DECLINED;
-        }
-
-        return fixup_dflt(r);
+        /* serve up a directory */
+        return fixup_dir(r);
     }
     else if ((r->finfo.filetype == APR_NOFILE) && (r->handler == NULL)) {
         /* No handler and nothing in the filesystem - use fallback */
