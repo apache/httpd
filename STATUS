@@ -277,7 +277,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      not yet included by default (follow up to merge r1542327 in 2.4.7).
      trunk patch: http://svn.apache.org/r1679470
      2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic
+     +1: ylavic, wrowe
 
 OTHER PROPOSALS
 
