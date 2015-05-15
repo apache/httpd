@@ -279,6 +279,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic, wrowe
 
+  *) mod_dir: backport r1679620 which reverts r1675103. This change makes 
+     FallBackResource hijack requests that mod_autoindex might want to handle
+     later.
+     +1 covener
+
 OTHER PROPOSALS
 
    * A list of further possible backports can be found at: 
