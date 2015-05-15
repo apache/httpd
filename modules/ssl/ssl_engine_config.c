@@ -611,7 +611,7 @@ const char *ssl_cmd_SSLRandomSeed(cmd_parms *cmd,
         seed->cpPath = ap_server_root_relative(mc->pPool, arg2+4);
 #else
         return apr_pstrcat(cmd->pool, "Invalid SSLRandomSeed entropy source `",
-                           arg2, "': This version of " MODSSL_LIBRARY_NAME
+                           arg2, "': This version of " SSL_LIBRARY_NAME
                            " does not support the Entropy Gathering Daemon "
                            "(EGD).", NULL);
 #endif
