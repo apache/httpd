@@ -121,15 +121,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
    * mod_log_config: Add new format flag for requestion duration in milliseconds
      trunk patch: http://svn.apache.org/r1675533
-     2.2.x patch: https://people.apache.org/~breser/httpd/2.2.x/patches/httpd-2.2.x-req_duration_milliseconds.patch (modulo CHANGES)
-     +1: breser, druggeri
-     -1: ylavic: Does not compile in 2.2.x... get_request_end_time() is missing.
-                 We could either backport r979120 + r1467765 first (quite big), or
-                 the get_request_end_time() part only.
-     ylavic: +1 with the below patch (simply adding get_request_end_time() and related):
-             https://people.apache.org/~ylavic/httpd-2.2.x-req_duration_milliseconds-v4.patch
-             Or with this simpler patch using apr_time_now() instead (as other duration functions):
-             https://people.apache.org/~ylavic/httpd-2.2.x-req_duration_milliseconds-v1.patch
+     2.2.x patch: https://people.apache.org/~ylavic/httpd-2.2.x-req_duration_milliseconds-v1.patch
+                  (modulo CHANGES)
+     +1: ylavic
+     ylavic: first accepted merge reverted in r1679205, due to missing get_request_end_time() in 2.2.x.
+             v1 now s/get_request_end_time(r)/apr_time_now()/
+             breser and druggeri votes discarded.
 
    * mpm_winnt service.c: Accept utf-8 service names/descriptions for i18n.
      trunk patches: http://svn.apache.org/r1611165
