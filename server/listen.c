@@ -45,7 +45,7 @@
 AP_DECLARE_DATA ap_listen_rec *ap_listeners = NULL;
 
 /* Let ap_num_listen_buckets be global so that it can
- * be printed by ap_log_common(), but keep the listeners
+ * be printed by ap_log_mpm_common(), but keep the listeners
  * buckets static since it is used only here to close them
  * all (including duplicated) with ap_close_listeners().
  */

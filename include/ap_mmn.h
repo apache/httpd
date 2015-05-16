@@ -452,7 +452,7 @@
  * 20140207.4 (2.5.0-dev)  add ap_mpm_register_socket_callback_timeout
  * 20140207.5 (2.5.0-dev)  Add ap_mpm_resume_suspended(), AP_MPMQ_CAN_SUSPEND to
  *                         ap_mpm_query(), and suspended_baton to conn_rec
- * 20140207.6 (2.5.0-dev)  Added ap_log_common().
+ * 20140207.6 (2.5.0-dev)  Added ap_log_mpm_common().
  * 20140207.7 (2.5.0-dev)  Added ap_force_set_tz().
  * 20140207.8 (2.5.0-dev)  Added ap_shutdown_conn().
  * 20140611.0 (2.5.0-dev)  Add ap_mpm_socket_callback_fn_t.
