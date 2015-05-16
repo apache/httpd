@@ -1489,7 +1489,7 @@ AP_DECLARE(void) ap_log_command_line(apr_pool_t *plog, server_rec *s)
 }
 
 /* grab bag function to log commonly logged and shared info */
-AP_DECLARE(void) ap_log_common(server_rec *s)
+AP_DECLARE(void) ap_log_mpm_common(server_rec *s)
 {
     ap_log_error(APLOG_MARK, APLOG_DEBUG , 0, s, APLOGNO(02639)
                  "Using SO_REUSEPORT: %s (%d)",

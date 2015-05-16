@@ -1250,7 +1250,7 @@ static int motorz_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     ap_log_error(APLOG_MARK, APLOG_INFO, 0, ap_server_conf, APLOGNO(02875)
                 "Server built: %s", ap_get_server_built());
     ap_log_command_line(plog, s);
-    ap_log_common(s);
+    ap_log_mpm_common(s);
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(02876)
                 "Accept mutex: %s (default: %s)",
                 (all_buckets[0].mutex)

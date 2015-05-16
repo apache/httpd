@@ -741,11 +741,11 @@ AP_DECLARE(void) ap_error_log2stderr(server_rec *s);
 AP_DECLARE(void) ap_log_command_line(apr_pool_t *p, server_rec *s);
 
 /**
- * Log common shared data
- * @param s The server_rec whose process's command line we want to log.
+ * Log common (various) MPM shared data at startup.
+ * @param s The server_rec of the error log we want to log to.
  * Misc commonly logged data is logged to that server's error log.
  */
-AP_DECLARE(void) ap_log_common(server_rec *s);
+AP_DECLARE(void) ap_log_mpm_common(server_rec *s);
 
 /**
  * Log the current pid of the parent process
