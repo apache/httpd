@@ -26,8 +26,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/rewrite/remapping.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/rewrite/remapping.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 
 <p>Ce document est un complément à la <a href="../mod/mod_rewrite.html">Documentation de référence</a> de
@@ -83,7 +81,7 @@ copier/coller dans vos fichiers de configuration.</div>
 	  la règle suivante :</p>
 
 <pre class="prettyprint lang-config">RewriteEngine  on
-RewriteRule    ^<strong>/foo</strong>\.html$  <strong>/bar</strong>.html [PT]</pre>
+RewriteRule    "^<strong>/foo</strong>\.html$" "<strong>/bar</strong>.html" [PT]</pre>
 
     </dd>
   </dl>
@@ -115,7 +113,7 @@ RewriteRule    ^<strong>/foo</strong>\.html$  <strong>/bar</strong>.html [PT]</p
 	  que voit l'utilisateur :</p>
 
 <pre class="prettyprint lang-config">RewriteEngine  on
-RewriteRule    ^<strong>foo</strong>\.html$  <strong>bar</strong>.html  [<strong>R</strong>]</pre>
+RewriteRule    "^<strong>foo</strong>\.html$"  "<strong>bar</strong>.html"  [<strong>R</strong>]</pre>
 
 </dd>
 
@@ -126,7 +124,7 @@ RewriteRule    ^<strong>foo</strong>\.html$  <strong>bar</strong>.html  [<strong
     de dissimuler la redirection au client. Dans cet exemple, en
     revanche, on aurait pu se contenter d'une directive Redirect :</p>
 
-    <pre class="prettyprint lang-config">Redirect /foo.html /bar.html</pre>
+    <pre class="prettyprint lang-config">Redirect "/foo.html" "/bar.html"</pre>
 
 
     </dd>
@@ -157,15 +155,15 @@ RewriteRule    ^<strong>foo</strong>\.html$  <strong>bar</strong>.html  [<strong
 
 <pre class="prettyprint lang-config">#Avec mod_rewrite
 RewriteEngine on
-RewriteRule   ^/docs/(.+)  http://nouveau.example.com/docs/$1  [R,L]</pre>
+RewriteRule   "^/docs/(.+)"  "http://nouveau.example.com/docs/$1"  [R,L]</pre>
 
 
 <pre class="prettyprint lang-config">#Avec RedirectMatch
-RedirectMatch ^/docs/(.*) http://nouveau.example.com/docs/$1</pre>
+RedirectMatch "^/docs/(.*)" "http://nouveau.example.com/docs/$1"</pre>
 
 
 <pre class="prettyprint lang-config">#Avec Redirect
-Redirect /docs/ http://nouveau.example.com/docs/</pre>
+Redirect "/docs/" "http://nouveau.example.com/docs/"</pre>
 
     </dd>
   </dl>
@@ -197,8 +195,8 @@ Redirect /docs/ http://nouveau.example.com/docs/</pre>
 	  <code>/~quux/foo.cgi</code>.</p>
 
 <pre class="prettyprint lang-config">RewriteEngine  on
-RewriteBase    /~quux/
-RewriteRule    ^foo\.html$  foo.cgi   [H=<strong>cgi-script</strong>]</pre>
+RewriteBase    "/~quux/"
+RewriteRule    "^foo\.html$"  "foo.cgi"   [H=<strong>cgi-script</strong>]</pre>
 
         </dd>
       </dl>
@@ -234,13 +232,13 @@ RewriteRule    ^foo\.html$  foo.cgi   [H=<strong>cgi-script</strong>]</pre>
 <pre class="prettyprint lang-config">#   jeu de règles assurant une compatibilité ascendante en réécrivant<br />
 #   document.html en document.php si et seulement si document.php<br />
 #   existe
-&lt;Directory /var/www/htdocs&gt;
+&lt;Directory "/var/www/htdocs"&gt;
     RewriteEngine on
-    RewriteBase /var/www/htdocs
+    RewriteBase "/var/www/htdocs"
 
-    RewriteCond $1.php -f
-    RewriteCond $1.html !-f
-    RewriteRule ^(.*).html$ $1.php
+    RewriteCond "$1.php" -f
+    RewriteCond "$1.html" !-f
+    RewriteRule "^(.*).html$" "$1.php"
 &lt;/Directory&gt;</pre>
 
     </dd>
@@ -293,7 +291,7 @@ une section de serveur virtuel pour le/les noms d'hôte non canoniques.</p>
   ServerName undesired.example.com
   ServerAlias example.com notthis.example.com
 
-  Redirect / http://www.example.com/
+  Redirect "/" "http://www.example.com/"
 &lt;/VirtualHost&gt;
 
 &lt;VirtualHost *:80&gt;
@@ -304,7 +302,7 @@ une section de serveur virtuel pour le/les noms d'hôte non canoniques.</p>
 <p>Vous pouvez aussi utiliser la directive <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code> :</p>
 
 <pre class="prettyprint lang-config">&lt;If "%{HTTP_HOST} != 'www.example.com'"&gt;
-	Redirect / http://www.example.com/
+	Redirect "/" "http://www.example.com/"
 &lt;/If&gt;</pre>
 
 
@@ -312,7 +310,7 @@ une section de serveur virtuel pour le/les noms d'hôte non canoniques.</p>
 :</p>
 
 <pre class="prettyprint lang-config">&lt;If "%{SERVER_PROTOCOL} != 'HTTPS'"&gt;
-	Redirect /admin/ https://www.example.com/admin/
+	Redirect "/admin/" "https://www.example.com/admin/"
 &lt;/If&gt;</pre>
 
 
@@ -322,16 +320,16 @@ d'un jeu plus important de règles de réécritures - vous pouvez utiliser
 la recette suivante :</p>
 
 <p>Pour les sites écoutant sur un port autre que 80:</p>
-<pre class="prettyprint lang-config">RewriteCond %{HTTP_HOST}   !^www\.example\.com [NC]
-RewriteCond %{HTTP_HOST}   !^$
-RewriteCond %{SERVER_PORT} !^80$
-RewriteRule ^/?(.*)         http://www.example.com:%{SERVER_PORT}/$1 [L,R,NE]</pre>
+<pre class="prettyprint lang-config">RewriteCond "%{HTTP_HOST}"   "!^www\.example\.com" [NC]
+RewriteCond "%{HTTP_HOST}"   "!^$"
+RewriteCond "%{SERVER_PORT}" "!^80$"
+RewriteRule "^/?(.*)"         "http://www.example.com:%{SERVER_PORT}/$1" [L,R,NE]</pre>
 
 
 <p>Et pour un site écoutant sur le port 80</p>
-<pre class="prettyprint lang-config">RewriteCond %{HTTP_HOST}   !^www\.example\.com [NC]
-RewriteCond %{HTTP_HOST}   !^$
-RewriteRule ^/?(.*)         http://www.example.com/$1 [L,R,NE]</pre>
+<pre class="prettyprint lang-config">RewriteCond "%{HTTP_HOST}"   "!^www\.example\.com" [NC]
+RewriteCond "%{HTTP_HOST}"   "!^$"
+RewriteRule "^/?(.*)"         "http://www.example.com/$1" [L,R,NE]</pre>
 
 	<p>
 	Si vous souhaitez que cette règle s'applique à tous les noms de
@@ -341,9 +339,9 @@ RewriteRule ^/?(.*)         http://www.example.com/$1 [L,R,NE]</pre>
 	possibles de <strong>example.com</strong>, vous pouvez utiliser
 	le jeu de règles suivants :</p>
 
-<pre class="prettyprint lang-config">RewriteCond %{HTTP_HOST} !^www\. [NC]
-RewriteCond %{HTTP_HOST} !^$
-RewriteRule ^/?(.*) http://www.%{HTTP_HOST}/$1 [L,R,NE]</pre>
+<pre class="prettyprint lang-config">RewriteCond "%{HTTP_HOST}" "!^www\." [NC]
+RewriteCond "%{HTTP_HOST}" "!^$"
+RewriteRule "^/?(.*)" "http://www.%{HTTP_HOST}/$1" [L,R,NE]</pre>
 
 	<p>
 	Vous pouvez utiliser ce jeu de règles aussi bien dans le fichier
@@ -382,17 +380,17 @@ RewriteRule ^/?(.*) http://www.%{HTTP_HOST}/$1 [L,R,NE]</pre>
 
 #   on cherche tout d'abord dans dir1/...
 #   ... et si on trouve, on est content et on arrête :
-RewriteCond         %{DOCUMENT_ROOT}/<strong>dir1</strong>/%{REQUEST_URI}  -f
-RewriteRule  ^(.+)  %{DOCUMENT_ROOT}/<strong>dir1</strong>/$1  [L]
+RewriteCond         "%{DOCUMENT_ROOT}/<strong>dir1</strong>/%{REQUEST_URI}"  -f
+RewriteRule  "^(.+)"  "%{DOCUMENT_ROOT}/<strong>dir1</strong>/$1"  [L]
 
 #   on cherche ensuite dans dir2/...
 #   ... et si on trouve, on est content et on arrête :
-RewriteCond         %{DOCUMENT_ROOT}/<strong>dir2</strong>/%{REQUEST_URI}  -f
-RewriteRule  ^(.+)  %{DOCUMENT_ROOT}/<strong>dir2</strong>/$1  [L]
+RewriteCond         "%{DOCUMENT_ROOT}/<strong>dir2</strong>/%{REQUEST_URI}"  -f
+RewriteRule  "^(.+)"  "%{DOCUMENT_ROOT}/<strong>dir2</strong>/$1"  [L]
 
 #   sinon, on continue la recherche avec d'autres directives Alias
 #   ou ScriptAlias, etc...
-RewriteRule   ^  -  [PT]</pre>
+RewriteRule   "^"  "-"  [PT]</pre>
 
         </dd>
       </dl>
@@ -424,9 +422,9 @@ RewriteRule   ^  -  [PT]</pre>
 
 <pre class="prettyprint lang-config">HostnameLookups on
 RewriteEngine on
-RewriteMap    multiplex         txt:/path/to/map.mirrors
-RewriteCond  %{REMOTE_HOST}     ([a-z]+)$ [NC]
-RewriteRule   ^/(.*)$  ${multiplex:<strong>%1</strong>|http://www.example.com/}$1  [R,L]</pre>
+RewriteMap    multiplex         "txt:/path/to/map.mirrors"
+RewriteCond  "%{REMOTE_HOST}"     "([a-z]+)$ [NC]"
+RewriteRule   "^/(.*)$"  "${multiplex:<strong>%1</strong>|http://www.example.com/}$1"  [R,L]</pre>
 
 
 <div class="example"><p><code>
@@ -479,14 +477,14 @@ com       http://www.example.com/<br />
 	  <code>foo.20.html</code>. Tous les autres navigateurs
 	  reçoivent la page <code>foo.32.html</code>. Tout ceci est
 	  effectué par le jeu de règles suivant :</p>
-<pre class="prettyprint lang-config">RewriteCond %{HTTP_USER_AGENT}  ^<strong>Mozilla/3</strong>.*
-RewriteRule ^foo\.html$         foo.<strong>NS</strong>.html          [<strong>L</strong>]
+<pre class="prettyprint lang-config">RewriteCond "%{HTTP_USER_AGENT}"  "^<strong>Mozilla/3</strong>.*"
+RewriteRule "^foo\.html$"         "foo.<strong>NS</strong>.html"          [<strong>L</strong>]
 
-RewriteCond %{HTTP_USER_AGENT}  ^Lynx/ [OR]
-RewriteCond %{HTTP_USER_AGENT}  ^Mozilla/[12]
-RewriteRule ^foo\.html$         foo.<strong>20</strong>.html          [<strong>L</strong>]
+RewriteCond "%{HTTP_USER_AGENT}"  "^Lynx/" [OR]
+RewriteCond "%{HTTP_USER_AGENT}"  "^Mozilla/[12]"
+RewriteRule "^foo\.html$"         "foo.<strong>20</strong>.html"          [<strong>L</strong>]
 
-RewriteRule ^foo\.html$         foo.<strong>32</strong>.html          [<strong>L</strong>]</pre>
+RewriteRule "^foo\.html$"         "foo.<strong>32</strong>.html"          [<strong>L</strong>]</pre>
 
         </dd>
       </dl>
@@ -518,7 +516,7 @@ RewriteRule ^foo\.html$         foo.<strong>32</strong>.html          [<strong>L
        jeu de règles suivant, nous remplaçons <code>/matous</code> et
        <code>/minettes</code> par le canonique <code>/chats</code>.</p>
 
-	<pre class="prettyprint lang-config">RewriteRule   ^/(matous|minettes)/(.*)    /chats/$2  [R]</pre>
+	<pre class="prettyprint lang-config">RewriteRule   "^/(matous|minettes)/(.*)"    "/chats/$2"  [R]</pre>
 
         </dd>
 
@@ -526,7 +524,7 @@ RewriteRule ^foo\.html$         foo.<strong>32</strong>.html          [<strong>L
      <dd>On serait mieux inspiré d'utiliser ici les directives Redirect ou
      RedirectMatch :
 
-     <pre class="prettyprint lang-config">RedirectMatch ^/(matous|minettes)/(.*) /chats/$2</pre>
+     <pre class="prettyprint lang-config">RedirectMatch "^/(matous|minettes)/(.*)" "/chats/$2"</pre>
 
      </dd>
       </dl>
@@ -558,14 +556,13 @@ suivant :</p>
       </p>
 
 <pre class="prettyprint lang-config">RewriteEngine on
-RewriteRule   ^/$  /a-propos-de/  [<strong>R</strong>]</pre>
+RewriteRule   "^/$"  "/a-propos-de/"  [<strong>R</strong>]</pre>
 
 
 <p>Notez que l'on peut aussi y parvenir en utilisant la directive
 <code class="directive"><a href="../mod/mod_alias.html#redirectmatch">RedirectMatch</a></code> :</p>
 
-<pre class="prettyprint lang-config">RedirectMatch ^/$
-http://example.com/a-propos-de/</pre>
+<pre class="prettyprint lang-config">RedirectMatch "^/$" "http://example.com/a-propos-de/"</pre>
 
 
 <p>Notez aussi que cet exemple ne réécrit que l'URL racine. En d'autres
@@ -597,8 +594,8 @@ existant effectivement comme une image, ou un fichier css.</dd>
 <p>Depuis la version 2.2.16, vous pouvez y parvenir via la directive
 <code class="directive"><a href="../mod/mod_dir.html#fallbackresource">FallbackResource</a></code> :</p>
 
-<pre class="prettyprint lang-config">&lt;Directory /var/www/my_blog&gt;
-  FallbackResource index.php
+<pre class="prettyprint lang-config">&lt;Directory "/var/www/my_blog"&gt;
+  FallbackResource "index.php"
 &lt;/Directory&gt;</pre>
 
 
@@ -606,12 +603,12 @@ existant effectivement comme une image, ou un fichier css.</dd>
 les versions plus anciennes d'Apache, utiliser un jeu de règles du style
 :</p>
 
-<pre class="prettyprint lang-config">&lt;Directory /var/www/my_blog&gt;
-  RewriteBase /my_blog
+<pre class="prettyprint lang-config">&lt;Directory "/var/www/my_blog"&gt;
+  RewriteBase "/my_blog"
 
-  RewriteCond /var/www/my_blog/%{REQUEST_FILENAME} !-f
-  RewriteCond /var/www/my_blog/%{REQUEST_FILENAME} !-d
-  RewriteRule ^ index.php [PT]
+  RewriteCond "/var/www/my_blog/%{REQUEST_FILENAME}" !-f
+  RewriteCond "/var/www/my_blog/%{REQUEST_FILENAME}" !-d
+  RewriteRule "^" "index.php" [PT]
 &lt;/Directory&gt;</pre>
 
 
@@ -619,7 +616,7 @@ les versions plus anciennes d'Apache, utiliser un jeu de règles du style
 que chaîne de paramètres à index.php, vous pouvez remplacer cette règle
 de réécriture par :</p>
 
-<pre class="prettyprint lang-config">RewriteRule (.*) index.php?$1 [PT,QSA]</pre>
+<pre class="prettyprint lang-config">RewriteRule "(.*)" "index.php?$1" [PT,QSA]</pre>
 
 
 <p>Notez que l'on peut utiliser ces jeux de règles aussi bien dans un
@@ -652,8 +649,8 @@ doubles perluettes '&amp;&amp;' dans les substitutions.</p>
   <li>Cette solution supprime le couple clé/valeur recherché :
 
 <pre class="prettyprint lang-config"># Remove mykey=???
-RewriteCond %{QUERY_STRING} (.*(?:^|&amp;))mykey=([^&amp;]*)&amp;?(.*)&amp;?$
-RewriteRule (.*) $1?%1%3</pre>
+RewriteCond "%{QUERY_STRING}" "(.*(?:^|&amp;))mykey=([^&amp;]*)&amp;?(.*)&amp;?$"
+RewriteRule "(.*)" "$1?%1%3"</pre>
 
   </li>
 
@@ -661,8 +658,8 @@ RewriteRule (.*) $1?%1%3</pre>
   recherchée par un '?' :
 
 <pre class="prettyprint lang-config"># Copy from query string to PATH_INFO
-RewriteCond %{QUERY_STRING} (.*(?:^|&amp;))mykey=([^&amp;]*)&amp;?(.*)&amp;?$
-RewriteRule (.*) $1/products/%2/? [PT]</pre>
+RewriteCond "%{QUERY_STRING}" "(.*(?:^|&amp;))mykey=([^&amp;]*)&amp;?(.*)&amp;?$"
+RewriteRule "(.*)" "$1/products/%2/?" [PT]</pre>
 
   </li>
 
@@ -670,9 +667,9 @@ RewriteRule (.*) $1/products/%2/? [PT]</pre>
   condition ::
 
 <pre class="prettyprint lang-config"># Capture the value of mykey in the query string
-RewriteCond %{QUERY_STRING} (.*(?:^|&amp;))mykey=([^&amp;]*)&amp;?(.*)&amp;?$
-RewriteCond %2 !=not-so-secret-value 
-RewriteRule (.*) - [F]</pre>
+RewriteCond "%{QUERY_STRING}" "(.*(?:^|&amp;))mykey=([^&amp;]*)&amp;?(.*)&amp;?$""
+RewriteCond "%2" !=not-so-secret-value 
+RewriteRule "(.*)" - [F]</pre>
 
   </li>
 
@@ -681,7 +678,7 @@ RewriteRule (.*) - [F]</pre>
   vers sa chaîne de paramètres :
 <pre class="prettyprint lang-config"># The desired URL might be /products/kitchen-sink, and the script expects 
 # /path?products=kitchen-sink.
-RewriteRule ^/?path/([^/]+)/([^/]+) /path?$1=$2 [PT]</pre>
+RewriteRule "^/?path/([^/]+)/([^/]+)" "/path?$1=$2" [PT]</pre>
 
   </li>
 </ul>

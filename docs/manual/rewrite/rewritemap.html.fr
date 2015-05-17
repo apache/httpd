@@ -26,8 +26,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/rewrite/rewritemap.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/rewrite/rewritemap.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 
     <p>Ce document est un complément à la <a href="../mod/mod_rewrite.html">documentation de référence</a> du
@@ -102,17 +100,17 @@
 
     <p>Par exemple, vous pouvez définir une directive
     <code class="directive">RewriteMap</code> comme suit :</p>
-    <pre class="prettyprint lang-config">RewriteMap examplemap txt:/path/to/file/map.txt</pre>
+    <pre class="prettyprint lang-config">RewriteMap examplemap "txt:/path/to/file/map.txt"</pre>
 
     <p>Vous pourrez par la suite utiliser cette table de correspondances
     dans une directive <code class="directive">RewriteRule</code> comme suit :</p>
-<pre class="prettyprint lang-config">RewriteRule ^/ex/(.*) ${examplemap:$1}</pre>
+<pre class="prettyprint lang-config">RewriteRule "^/ex/(.*)" "${examplemap:$1}"</pre>
 
 
 <p>Il est possible de spécifier une valeur par défaut qui sera utilisée
 si la recherche dans la table de correspondances est infructueuse :</p>
 
-<pre class="prettyprint lang-config">RewriteRule ^/ex/(.*) ${examplemap:$1|/not_found.html}</pre>
+<pre class="prettyprint lang-config">RewriteRule "^/ex/(.*)" "${examplemap:$1|/not_found.html}"</pre>
 
 
 <div class="note"><h3>Contexte de répertoire et fichiers.htaccess</h3>
@@ -162,8 +160,8 @@ exemples pour chacun d'entre eux.</p>
     utilisant la recette suivante :</p>
 
     <p><strong>Product to ID configuration</strong></p>
-    <pre class="prettyprint lang-config">RewriteMap product2id txt:/etc/apache2/productmap.txt
-RewriteRule ^/product/(.*) /prods.php?id=${product2id:$1|NOTFOUND} [PT]</pre>
+    <pre class="prettyprint lang-config">RewriteMap product2id "txt:/etc/apache2/productmap.txt"
+RewriteRule "^/product/(.*)" "/prods.php?id=${product2id:$1|NOTFOUND}" [PT]</pre>
 
 
     <p>Nous supposons ici que le script <code>prods.php</code> sait quoi
@@ -196,7 +194,7 @@ TELEPHONE  328
     dans un fichier <code>.htaccess</code>, vous devrez supprimer le
     slash de début dans le modèle de réécriture afin que ce dernier
     puisse correspondre à toute URL :
-    <pre class="prettyprint lang-config">RewriteRule ^product/(.*) /prods.php?id=${product2id:$1|NOTFOUND} [PT]</pre>
+    <pre class="prettyprint lang-config">RewriteRule "^product/(.*)" "/prods.php?id=${product2id:$1|NOTFOUND}" [PT]</pre>
 
     </div>
 
@@ -239,10 +237,10 @@ statique   www1|www2|www3|www4<br />
 dynamique  www5|www6
     </code></p></div>
 <p><strong>Directives de configuration</strong></p>
-    <pre class="prettyprint lang-config">RewriteMap servers rnd:/path/to/file/map.txt
+    <pre class="prettyprint lang-config">RewriteMap servers "rnd:/path/to/file/map.txt"
 
-RewriteRule ^/(.*\.(png|gif|jpg)) http://${servers:static}/$1 [NC,P,L]
-RewriteRule ^/(.*) http://${servers:dynamic}/$1 [P,L]</pre>
+RewriteRule "^/(.*\.(png|gif|jpg))" "http://${servers:static}/$1" [NC,P,L]
+RewriteRule "^/(.*)" "http://${servers:dynamic}/$1" [P,L]</pre>
 
 
 
@@ -277,7 +275,7 @@ statique   www1|www1|www2|www3|www4
 
     <p>Vous pouvez éventuellement spécifier un type dbm particulier :</p>
 
- <pre class="prettyprint lang-config">RewriteMap examplemap dbm=sdbm:/etc/apache/mapfile.dbm</pre>
+ <pre class="prettyprint lang-config">RewriteMap examplemap "dbm=sdbm:/etc/apache/mapfile.dbm"</pre>
 
 
     <p>Ce type peut être choisi parmi sdbm, gdbm, ndbm ou db. Il est
@@ -295,7 +293,7 @@ $ httxt2dbm -i fichier-map.txt -o fichier-map.map
 
 <p>Vous pouvez alors faire référence au fichier obtenu dans votre
 directive <code>RewriteMap</code> :</p>
-<pre class="prettyprint lang-config">RewriteMap mapname dbm:/etc/apache/mapfile.map</pre>
+<pre class="prettyprint lang-config">RewriteMap mapname "dbm:/etc/apache/mapfile.map"</pre>
 
 
 <div class="note">
@@ -350,7 +348,7 @@ directive <code>RewriteMap</code>.</p>
 
     <p> <strong>Redirige un URI vers son équivalent en minuscules</strong></p>
     <pre class="prettyprint lang-config">RewriteMap lc int:tolower
-RewriteRule (.*?[A-Z]+.*) ${lc:$1} [R]</pre>
+RewriteRule "(.*?[A-Z]+.*)" "${lc:$1}" [R]</pre>
 
 
     <div class="note">
@@ -394,8 +392,8 @@ RewriteRule (.*?[A-Z]+.*) ${lc:$1} [R]</pre>
     caractères de soulignement dans l'URI de la requête.</p>
 
     <p><strong>Configuration de la réécriture</strong></p>
-    <pre class="prettyprint lang-config">RewriteMap d2u prg:/www/bin/dash2under.pl<br />
-RewriteRule - ${d2u:%{REQUEST_URI}}</pre>
+    <pre class="prettyprint lang-config">RewriteMap d2u "prg:/www/bin/dash2under.pl"<br />
+RewriteRule "-" "${d2u:%{REQUEST_URI}}"</pre>
 
 
     <p><strong>dash2under.pl</strong></p>
