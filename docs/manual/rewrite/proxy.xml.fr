@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1335963:1673563 (outdated) -->
+<!-- English Revision: 1673563 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -72,9 +72,9 @@ correspondance</a></seealso>
 
 <highlight language="config">
 RewriteEngine  on
-RewriteBase    /produits/
-RewriteRule    ^widget/(.*)$  http://produits.example.com/widget/$1  [P]
-ProxyPassReverse /produits/objet/ http://produits.example.com/objet/
+RewriteBase    "/produits/"
+RewriteRule    "^widget/(.*)$"  "http://produits.example.com/widget/$1"  [P]
+ProxyPassReverse "/produits/objet/" "http://produits.example.com/objet/"
 </highlight>
 
    <p>Dans le deuxi&egrave;me exemple, nous ne mandatons la requ&ecirc;te que si nous
@@ -84,10 +84,10 @@ ProxyPassReverse /produits/objet/ http://produits.example.com/objet/
    migr&eacute;.</p>
 
 <highlight language="config">
-RewriteCond %{REQUEST_FILENAME}       !-f
-RewriteCond %{REQUEST_FILENAME}       !-d
-RewriteRule ^/(.*) http://ancien.exemple.com/$1 [P]
-ProxyPassReverse / http://ancien.exemple.com/
+RewriteCond "%{REQUEST_FILENAME}"       !-f
+RewriteCond "%{REQUEST_FILENAME}"       !-d
+RewriteRule "^/(.*)" "http://ancien.exemple.com/$1" [P]
+ProxyPassReverse "/" "http://ancien.exemple.com/"
 </highlight>
     </dd>
 

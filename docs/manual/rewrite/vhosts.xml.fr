@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1338141:1673563 (outdated) -->
+<!-- English Revision: 1673563 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -83,8 +83,8 @@ RewriteEngine on
 
 RewriteMap    lowercase int:tolower
 
-RewriteCond   ${lowercase:%{<strong>HTTP_HOST</strong>}}   ^www\.<strong>([^.]+)</strong>\.example\.com$
-RewriteRule   ^(.*) /home/<strong>%1</strong>/www$1
+RewriteCond   "${lowercase:%{<strong>HTTP_HOST</strong>}}" "^www\.<strong>([^.]+)</strong>\.example\.com$"
+RewriteRule   "^(.*)" "/home/<strong>%1</strong>/www$1"
 </highlight></dd>
 
 <dt>Discussion</dt>
@@ -147,9 +147,9 @@ UseCanonicalName Off
 
 # journaux dissociables
 LogFormat "%{Host}i %h %l %u %t \"%r\" %s %b" vcommon
-CustomLog logs/access_log vcommon
+CustomLog "logs/access_log" vcommon
 
-&lt;Directory /www/hosts&gt;
+&lt;Directory "/www/hosts"&gt;
     # ExecCGI est n&eacute;cessaire ici car on ne peut pas forcer l'ex&eacute;cution
     # des CGI &agrave; la mani&egrave;re de ScriptAlias
     Options FollowSymLinks ExecCGI
@@ -161,17 +161,17 @@ RewriteEngine On
 # quelle casse
 
 ## on s'occupe tout d'abord des documents normaux :<br />
-# permet &agrave; "Alias /icons/" de fonctionner - r&eacute;p&eacute;ter pour les autres
-RewriteCond  %{REQUEST_URI}  !^/icons/
+# permet &agrave; Alias "/icons/" de fonctionner - r&eacute;p&eacute;ter pour les autres
+RewriteCond  "%{REQUEST_URI}"  "!^/icons/"
 # permet aux CGIs de fonctionner
-RewriteCond  %{REQUEST_URI}  !^/cgi-bin/
+RewriteCond  "%{REQUEST_URI}"  "!^/cgi-bin/"
 # le coeur du traitement
-RewriteRule  ^/(.*)$  /www/hosts/${lowercase:%{SERVER_NAME}}/docs/$1
+RewriteRule  "^/(.*)$"  "/www/hosts/${lowercase:%{SERVER_NAME}}/docs/$1"
 
 ## on s'occupe maintenant des CGIs - on doit forcer l'utilisation d'un
 # gestionnaire
-RewriteCond  %{REQUEST_URI}  ^/cgi-bin/
-RewriteRule  ^/(.*)$  /www/hosts/${lowercase:%{SERVER_NAME}}/cgi-bin/$1  [H=cgi-script]
+RewriteCond  "%{REQUEST_URI}"  "^/cgi-bin/"
+RewriteRule  "^/(.*)$" "/www/hosts/${lowercase:%{SERVER_NAME}}/cgi-bin/$1"  [H=cgi-script]
 </highlight>
 
 </section>
@@ -202,20 +202,20 @@ RewriteEngine on
 RewriteMap   lowercase  int:tolower
 
 # d&eacute;finit le fichier de correspondances
-RewriteMap   vhost      txt:/www/conf/vhost.map
+RewriteMap   vhost      "txt:/www/conf/vhost.map"
 
 # on s'occupe des alias comme ci-dessus
-RewriteCond  %{REQUEST_URI}               !^/icons/
-RewriteCond  %{REQUEST_URI}               !^/cgi-bin/
-RewriteCond  ${lowercase:%{SERVER_NAME}}  ^(.+)$
+RewriteCond  "%{REQUEST_URI}"               "!^/icons/"
+RewriteCond  "%{REQUEST_URI}"               "!^/cgi-bin/"
+RewriteCond  "${lowercase:%{SERVER_NAME}}"  "^(.+)$"
 # on effectue ici la remise en correspondance &agrave; base de fichier
-RewriteCond  ${vhost:%1}                  ^(/.*)$
-RewriteRule  ^/(.*)$                      %1/docs/$1
+RewriteCond  "${vhost:%1}"                  "^(/.*)$"
+RewriteRule  "^/(.*)$"                      "%1/docs/$1"
 
-RewriteCond  %{REQUEST_URI}               ^/cgi-bin/
-RewriteCond  ${lowercase:%{SERVER_NAME}}  ^(.+)$
-RewriteCond  ${vhost:%1}                  ^(/.*)$
-RewriteRule  ^/(.*)$                      %1/cgi-bin/$1 [H=cgi-script]
+RewriteCond  "%{REQUEST_URI}"               "^/cgi-bin/"
+RewriteCond  "${lowercase:%{SERVER_NAME}}"  "^(.+)$"
+RewriteCond  "${vhost:%1}"                  "^(/.*)$"
+RewriteRule  "^/(.*)$"                      "%1/cgi-bin/$1" [H=cgi-script]
 </highlight>
 
 </section>

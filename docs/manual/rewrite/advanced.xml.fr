@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1670326:1674921 (outdated) -->
+<!-- English Revision: 1674921 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -104,8 +104,8 @@ http://serveur_physique_utilisateur1/u/utilisateur/chemin
 
 <highlight language="config">
 RewriteEngine on
-RewriteMap      users-to-hosts   txt:/path/to/map.users-to-hosts
-RewriteRule   ^/u/([^/]+)/?(.*)   http://${users-to-hosts:$1|server0}/u/$1/$2
+RewriteMap      users-to-hosts   "txt:/path/to/map.users-to-hosts"
+RewriteRule   "^/u/([^/]+)/?(.*)"   "http://${users-to-hosts:$1|server0}/u/$1/$2"
 </highlight>
     </dd>
   </dl>
@@ -139,8 +139,8 @@ RewriteRule   ^/u/([^/]+)/?(.*)   http://${users-to-hosts:$1|server0}/u/$1/$2
 
 <highlight language="config">
 # Cet exemple n'est valable que dans un contexte de r&eacute;pertoire
-RewriteCond %{REQUEST_URI}   !-U
-RewriteRule ^(.+)\.html$          /regenerate_page.cgi   [PT,L]
+RewriteCond "%{REQUEST_URI}"   "!-U"
+RewriteRule "^(.+)\.html$"          "/regenerate_page.cgi"   [PT,L]
 </highlight>
 
       <p>L'op&eacute;rateur <code>-U</code> permet de d&eacute;terminer si la cha&icirc;ne
@@ -184,8 +184,8 @@ RewriteRule ^(.+)\.html$          /regenerate_page.cgi   [PT,L]
 
 <highlight language="config">
 RewriteEngine on
-RewriteMap lb rnd:/path/to/serverlist.txt
-RewriteRule ^/(.*) http://${lb:serveurs}/$1 [P,L]
+RewriteMap lb "rnd:/path/to/serverlist.txt"
+RewriteRule "^/(.*)" "http://${lb:serveurs}/$1" [P,L]
 </highlight>
 
 <p><code>liste-serveurs.txt</code> contiendra la liste des serveurs :</p>
@@ -238,7 +238,7 @@ plus de fonctionnalit&eacute;s dans ce domaine que mod_rewrite.</p>
 
 <highlight language="config">
 RewriteEngine on
-RewriteRule   ^/~(<strong>([a-z])</strong>[a-z0-9]+)(.*)  /home/<strong>$2</strong>/$1/public_html$3
+RewriteRule   "^/~(<strong>([a-z])</strong>[a-z0-9]+)(.*)"  "/home/<strong>$2</strong>/$1/public_html$3"
 </highlight>
     </dd>
   </dl>
@@ -299,10 +299,11 @@ RewriteRule   ^/~(<strong>([a-z])</strong>[a-z0-9]+)(.*)  /home/<strong>$2</stro
 	  l'heure :</p>
 
 <highlight language="config">
-+RewriteEngine on
-+RewriteCond   %{TIME_HOUR}%{TIME_MIN} &gt;0700
-+RewriteCond   %{TIME_HOUR}%{TIME_MIN} &lt;1900
-+RewriteRule   ^foo\.html$             foo.day.html [L]
+RewriteEngine on
+RewriteCond   "%{TIME_HOUR}%{TIME_MIN}" "&gt;0700"
+RewriteCond   "%{TIME_HOUR}%{TIME_MIN}" "&lt;1900"
+RewriteRule   "^foo\.html$"             "foo.day.html" [L]
+RewriteRule   "^foo\.html$"             "foo.night.html"
 </highlight>
 
       <p>Avec cet exemple, l'URL <code>foo.html</code> renvoie
@@ -346,7 +347,7 @@ RewriteRule   ^/~(<strong>([a-z])</strong>[a-z0-9]+)(.*)  /home/<strong>$2</stro
 
 <highlight language="config">
 RewriteEngine on
-RewriteRule   ^/cheval/(.*)   /poney/$1 [E=<strong>rewritten:1</strong>]
+RewriteRule   "^/cheval/(.*)"   "/poney/$1" [E=<strong>rewritten:1</strong>]
 </highlight>
 
     <p>Plus loin dans votre jeu de r&egrave;gles, vous pouvez v&eacute;rifier le
@@ -354,7 +355,7 @@ RewriteRule   ^/cheval/(.*)   /poney/$1 [E=<strong>rewritten:1</strong>]
     RewriteCond :</p>
 
 <highlight language="config">
-RewriteCond %{ENV:rewritten} =1
+RewriteCond "%{ENV:rewritten}" =1
 </highlight>
 
     </dd>
