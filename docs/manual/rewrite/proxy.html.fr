@@ -26,8 +26,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/rewrite/proxy.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/rewrite/proxy.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 
 <p>Ce document est un complément de la <a href="../mod/mod_rewrite.html">documentation de référence</a> du module
@@ -64,9 +62,9 @@ correspondance</a></li><li><a href="access.html">Contrôle d'accès</a></li><li><a
       [P] comme suit :</p>
 
 <pre class="prettyprint lang-config">RewriteEngine  on
-RewriteBase    /produits/
-RewriteRule    ^widget/(.*)$  http://produits.example.com/widget/$1  [P]
-ProxyPassReverse /produits/objet/ http://produits.example.com/objet/</pre>
+RewriteBase    "/produits/"
+RewriteRule    "^widget/(.*)$"  "http://produits.example.com/widget/$1"  [P]
+ProxyPassReverse "/produits/objet/" "http://produits.example.com/objet/"</pre>
 
 
    <p>Dans le deuxième exemple, nous ne mandatons la requête que si nous
@@ -75,10 +73,10 @@ ProxyPassReverse /produits/objet/ http://produits.example.com/objet/</pre>
    autre, et que vous n'êtes pas certain que tout le contenu a déjà été
    migré.</p>
 
-<pre class="prettyprint lang-config">RewriteCond %{REQUEST_FILENAME}       !-f
-RewriteCond %{REQUEST_FILENAME}       !-d
-RewriteRule ^/(.*) http://ancien.exemple.com/$1 [P]
-ProxyPassReverse / http://ancien.exemple.com/</pre>
+<pre class="prettyprint lang-config">RewriteCond "%{REQUEST_FILENAME}"       !-f
+RewriteCond "%{REQUEST_FILENAME}"       !-d
+RewriteRule "^/(.*)" "http://ancien.exemple.com/$1" [P]
+ProxyPassReverse "/" "http://ancien.exemple.com/"</pre>
 
     </dd>
 
