@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1338147:1673563 (outdated) -->
+<!-- English Revision: 1673563 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : VIncent Deffontaines -->
 <!--
@@ -94,15 +94,15 @@
 
     <p>Par exemple, vous pouvez d&eacute;finir une directive
     <directive>RewriteMap</directive> comme suit :</p>
-    <highlight language="config">RewriteMap examplemap txt:/path/to/file/map.txt</highlight>
+    <highlight language="config">RewriteMap examplemap "txt:/path/to/file/map.txt"</highlight>
     <p>Vous pourrez par la suite utiliser cette table de correspondances
     dans une directive <directive>RewriteRule</directive> comme suit :</p>
-<highlight language="config">RewriteRule ^/ex/(.*) ${examplemap:$1}</highlight>
+<highlight language="config">RewriteRule "^/ex/(.*)" "${examplemap:$1}"</highlight>
 
 <p>Il est possible de sp&eacute;cifier une valeur par d&eacute;faut qui sera utilis&eacute;e
 si la recherche dans la table de correspondances est infructueuse :</p>
 
-<highlight language="config">RewriteRule ^/ex/(.*) ${examplemap:$1|/not_found.html}</highlight>
+<highlight language="config">RewriteRule "^/ex/(.*)" "${examplemap:$1|/not_found.html}"</highlight>
 
 <note><title>Contexte de r&eacute;pertoire et fichiers.htaccess</title>
 <p>
@@ -152,8 +152,8 @@ exemples pour chacun d'entre eux.</p>
 
     <p><strong>Product to ID configuration</strong></p>
     <highlight language="config">
-RewriteMap product2id txt:/etc/apache2/productmap.txt
-RewriteRule ^/product/(.*) /prods.php?id=${product2id:$1|NOTFOUND} [PT]
+RewriteMap product2id "txt:/etc/apache2/productmap.txt"
+RewriteRule "^/product/(.*)" "/prods.php?id=${product2id:$1|NOTFOUND}" [PT]
     </highlight>
 
     <p>Nous supposons ici que le script <code>prods.php</code> sait quoi
@@ -186,7 +186,7 @@ TELEPHONE  328
     dans un fichier <code>.htaccess</code>, vous devrez supprimer le
     slash de d&eacute;but dans le mod&egrave;le de r&eacute;&eacute;criture afin que ce dernier
     puisse correspondre &agrave; toute URL :
-    <highlight language="config">RewriteRule ^product/(.*) /prods.php?id=${product2id:$1|NOTFOUND} [PT]</highlight>
+    <highlight language="config">RewriteRule "^product/(.*)" "/prods.php?id=${product2id:$1|NOTFOUND}" [PT]</highlight>
     </note>
 
     <note><title>Recherches mises en cache</title>
@@ -228,10 +228,10 @@ dynamique  www5|www6
     </example>
 <p><strong>Directives de configuration</strong></p>
     <highlight language="config">
-RewriteMap servers rnd:/path/to/file/map.txt
+RewriteMap servers "rnd:/path/to/file/map.txt"
 
-RewriteRule ^/(.*\.(png|gif|jpg)) http://${servers:static}/$1 [NC,P,L]
-RewriteRule ^/(.*) http://${servers:dynamic}/$1 [P,L]
+RewriteRule "^/(.*\.(png|gif|jpg))" "http://${servers:static}/$1" [NC,P,L]
+RewriteRule "^/(.*)" "http://${servers:dynamic}/$1" [P,L]
     </highlight>
 
 
@@ -267,7 +267,7 @@ statique   www1|www1|www2|www3|www4
     <p>Vous pouvez &eacute;ventuellement sp&eacute;cifier un type dbm particulier :</p>
 
  <highlight language="config">
-RewriteMap examplemap dbm=sdbm:/etc/apache/mapfile.dbm
+RewriteMap examplemap "dbm=sdbm:/etc/apache/mapfile.dbm"
  </highlight>
 
     <p>Ce type peut &ecirc;tre choisi parmi sdbm, gdbm, ndbm ou db. Il est
@@ -288,7 +288,7 @@ $ httxt2dbm -i fichier-map.txt -o fichier-map.map
 <p>Vous pouvez alors faire r&eacute;f&eacute;rence au fichier obtenu dans votre
 directive <code>RewriteMap</code> :</p>
 <highlight language="config">
-RewriteMap mapname dbm:/etc/apache/mapfile.map
+RewriteMap mapname "dbm:/etc/apache/mapfile.map"
 </highlight>
 
 <note>
@@ -345,7 +345,7 @@ directive <code>RewriteMap</code>.</p>
     <highlight language="config">
 
 RewriteMap lc int:tolower
-RewriteRule (.*?[A-Z]+.*) ${lc:$1} [R]
+RewriteRule "(.*?[A-Z]+.*)" "${lc:$1}" [R]
     </highlight>
 
     <note>
@@ -392,8 +392,8 @@ RewriteRule (.*?[A-Z]+.*) ${lc:$1} [R]
     <p><strong>Configuration de la r&eacute;&eacute;criture</strong></p>
     <highlight language="config">
 
-RewriteMap d2u prg:/www/bin/dash2under.pl<br />
-RewriteRule - ${d2u:%{REQUEST_URI}}
+RewriteMap d2u "prg:/www/bin/dash2under.pl"<br />
+RewriteRule "-" "${d2u:%{REQUEST_URI}}"
     </highlight>
 
     <p><strong>dash2under.pl</strong></p>
