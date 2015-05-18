@@ -244,6 +244,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              2.4.x patch, but currently the code from r1657897+r1665625
              collides, this patch shows the final result on mod_proxy_ajp
              though)
+     minfrin: Should the PR 56823 fix proposed at the top come before or after this fix?
 
   *) core: Cleanup the request soon/even if some output filter fails to
      handle the EOR bucket.
