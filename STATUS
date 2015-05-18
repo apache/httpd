@@ -237,14 +237,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1665721
                   http://svn.apache.org/r1674056
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-ap_map_http_request_error-v2.patch
-     +1: ylavic
+     +1: ylavic, minfrin
      ylavic: depends on r1657881 above, and also r1643537+r1643543+r1674056 already
              proposed separately (if the latter proposal is accepted before
              this one, I'll take it easily into account with a v3 of the
              2.4.x patch, but currently the code from r1657897+r1665625
              collides, this patch shows the final result on mod_proxy_ajp
              though)
-     minfrin: Should the PR 56823 fix proposed at the top come before or after this fix?
 
   *) core: Cleanup the request soon/even if some output filter fails to
      handle the EOR bucket.
