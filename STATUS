@@ -222,7 +222,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1657881
                   http://svn.apache.org/r1665643
      2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic
+     +1: ylavic, minfrin
 
   *) core, modules: Avoid error response/document handling by the core if some
      handler or input filter already did it while reading the request (causing
