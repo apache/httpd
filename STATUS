@@ -105,6 +105,26 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) Propose a more modern Cipher and Protocol list, honor server cipher
+     priority and add explanations relative to RFC 7525 guidance.
+                  http://svn.apache.org/r1679428
+                  http://svn.apache.org/r1679432 [CHANGES]
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: wrowe, ylavic, jim
+
+  *) Always prepend "!aNULL:!eNULL:" to SSL_DEFAULT_CIPHER_LIST (default for
+     SSL[Proxy]CipherSuite) since we support OpenSSL versions where this was
+     not yet included by default (follow up to merge r1542327 in 2.4.7).
+     trunk patch: http://svn.apache.org/r1679470
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: ylavic, wrowe, jim
+
+  *) mod_dir: backport r1679620 which reverts r1675103. This change makes 
+     FallBackResource hijack requests that mod_autoindex might want to handle
+     later.
+     trunk patch: http://svn.apache.org/r1679620
+     2.4.x patch: trunk works
+     +1 covener, gsmith, jim
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -271,27 +291,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1679182
      2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic
-
-  *) Propose a more modern Cipher and Protocol list, honor server cipher
-     priority and add explanations relative to RFC 7525 guidance.
-                  http://svn.apache.org/r1679428
-                  http://svn.apache.org/r1679432 [CHANGES]
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: wrowe, ylavic, jim
-
-  *) Always prepend "!aNULL:!eNULL:" to SSL_DEFAULT_CIPHER_LIST (default for
-     SSL[Proxy]CipherSuite) since we support OpenSSL versions where this was
-     not yet included by default (follow up to merge r1542327 in 2.4.7).
-     trunk patch: http://svn.apache.org/r1679470
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, wrowe, jim
-
-  *) mod_dir: backport r1679620 which reverts r1675103. This change makes 
-     FallBackResource hijack requests that mod_autoindex might want to handle
-     later.
-     trunk patch: http://svn.apache.org/r1679620
-     2.4.x patch: trunk works
-     +1 covener, gsmith, jim
 
 OTHER PROPOSALS
 
