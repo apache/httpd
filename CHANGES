@@ -12,6 +12,12 @@ Changes with Apache 2.4.13
      calls r:wsupgrade() can cause a child process crash. 
      [Edward Lu <Chaosed0 gmail.com>]
 
+  *) In alignment with RFC 7525, the default recommended SSLCipherSuite
+     and SSLProxyCipherSuite now exclude RC4 as well as MD5. Also, the
+     default recommended SSLProtocol and SSLProxyProtocol directives now
+     excludes SSLv3. Existing configurations must be adjusted by the
+     administrator. [William Rowe]
+
   *) mod_ssl: Add support for extracting subjectAltName entries of type
      rfc822Name and dNSName into SSL_{CLIENT,SERVER}_SAN_{Email,DNS}_n
      environment variables. Also addresses PR 57207. [Kaspar Brand]
