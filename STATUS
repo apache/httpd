@@ -105,12 +105,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_dir: backport r1679620 which reverts r1675103. This change makes 
-     FallBackResource hijack requests that mod_autoindex might want to handle
-     later.
-     trunk patch: http://svn.apache.org/r1679620
-     2.4.x patch: trunk works
-     +1 covener, gsmith, jim
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
