@@ -271,7 +271,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1679181
                   http://svn.apache.org/r1679182
      2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic
+     +1: ylavic, minfrin
 
 OTHER PROPOSALS
 
