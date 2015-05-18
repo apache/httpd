@@ -249,7 +249,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      handle the EOR bucket.
      trunk patch: http://svn.apache.org/r1666998
      2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic
+     +1: ylavic, minfrin
 
   *) http: Don't remove the Content-Length of zero from a HEAD response if
      it comes from an origin server, module or script. Allow the previous
