@@ -105,13 +105,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) Always prepend "!aNULL:!eNULL:" to SSL_DEFAULT_CIPHER_LIST (default for
-     SSL[Proxy]CipherSuite) since we support OpenSSL versions where this was
-     not yet included by default (follow up to merge r1542327 in 2.4.7).
-     trunk patch: http://svn.apache.org/r1679470
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, wrowe, jim
-
   *) mod_dir: backport r1679620 which reverts r1675103. This change makes 
      FallBackResource hijack requests that mod_autoindex might want to handle
      later.
