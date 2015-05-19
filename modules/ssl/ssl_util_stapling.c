@@ -266,7 +266,7 @@ static BOOL stapling_cache_response(server_rec *s, modssl_ctx_t *mctx,
     return TRUE;
 }
 
-static BOOL stapling_get_cached_response(server_rec *s, OCSP_RESPONSE **prsp,
+static void stapling_get_cached_response(server_rec *s, OCSP_RESPONSE **prsp,
                                          BOOL *pok, certinfo *cinf,
                                          apr_pool_t *pool)
 {
@@ -287,34 +287,33 @@ static BOOL stapling_get_cached_response(server_rec *s, OCSP_RESPONSE **prsp,
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01930)
                      "stapling_get_cached_response: cache miss");
-        return TRUE;
+        return;
     }
     if (resp_derlen <= 1) {
+        /* should-not-occur; must have at least valid-when-stored flag +
+         * OCSPResponseStatus
+         */
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(01931)
                      "stapling_get_cached_response: response length invalid??");
-        return TRUE;
+        return;
     }
     p = resp_der;
-    if (pok) {
-        if (*p)
-            *pok = TRUE;
-        else
-            *pok = FALSE;
-    }
+    if (*p) /* valid when stored */
+        *pok = TRUE;
+    else
+        *pok = FALSE;
     p++;
     resp_derlen--;
     rsp = d2i_OCSP_RESPONSE(NULL, &p, resp_derlen);
     if (!rsp) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(01932)
                      "stapling_get_cached_response: response parse error??");
-        return TRUE;
+        return;
     }
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01933)
                  "stapling_get_cached_response: cache hit");
 
     *prsp = rsp;
-
-    return TRUE;
 }
 
 static int stapling_set_response(SSL *ssl, OCSP_RESPONSE *rsp)
@@ -658,11 +657,10 @@ static int get_and_check_cached_response(server_rec *s, modssl_ctx_t *mctx,
     BOOL ok;
     int rv;
 
+    AP_DEBUG_ASSERT(*rsp == NULL);
+
     /* Check to see if we already have a response for this certificate */
-    rv = stapling_get_cached_response(s, rsp, &ok, cinf, p);
-    if (rv == FALSE) {
-        return SSL_TLSEXT_ERR_ALERT_FATAL;
-    }
+    stapling_get_cached_response(s, rsp, &ok, cinf, p);
 
     if (*rsp) {
         /* see if response is acceptable */
@@ -671,6 +669,7 @@ static int get_and_check_cached_response(server_rec *s, modssl_ctx_t *mctx,
         rv = stapling_check_response(s, mctx, cinf, *rsp, NULL);
         if (rv == SSL_TLSEXT_ERR_ALERT_FATAL) {
             OCSP_RESPONSE_free(*rsp);
+            *rsp = NULL;
             return SSL_TLSEXT_ERR_ALERT_FATAL;
         }
         else if (rv == SSL_TLSEXT_ERR_NOACK) {
@@ -688,6 +687,7 @@ static int get_and_check_cached_response(server_rec *s, modssl_ctx_t *mctx,
             }
             else if (!mctx->stapling_return_errors) {
                 OCSP_RESPONSE_free(*rsp);
+                *rsp = NULL;
                 return SSL_TLSEXT_ERR_NOACK;
             }
         }
