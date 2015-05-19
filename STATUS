@@ -105,6 +105,13 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_authn_dbd, mod_authz_dbd, mod_session_dbd, mod_rewrite: Fix lifetime
+     of DB lookup entries independently of the selected DB engine.  PR 46421.
+     trunk patch: http://svn.apache.org/r1663647
+                  http://svn.apache.org/r1679181
+                  http://svn.apache.org/r1679182
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: ylavic, minfrin, jkaluza
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -247,13 +254,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              ints added at the end of core_server_config, the proposed merge
              does a minor bump only.
 
-  *) mod_authn_dbd, mod_authz_dbd, mod_session_dbd, mod_rewrite: Fix lifetime
-     of DB lookup entries independently of the selected DB engine.  PR 46421.
-     trunk patch: http://svn.apache.org/r1663647
-                  http://svn.apache.org/r1679181
-                  http://svn.apache.org/r1679182
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, minfrin
+  *) mod_authz_dbm, mod_authz_owner: Retrieve the optional
+     authz_owner_get_file_group function in a hook. This fixes crash when
+     mod_authz_dbm is loaded before mod_authz_owner and
+     "Require dbm-file-group" is used.
+     trunk patch: http://svn.apache.org/r1420184
+     2.4.x patch: trunk works
+     +1: jkaluza
 
 OTHER PROPOSALS
 
