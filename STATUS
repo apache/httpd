@@ -123,10 +123,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1675533
      2.2.x patch: https://people.apache.org/~ylavic/httpd-2.2.x-req_duration_milliseconds-v1.patch
                   (modulo CHANGES)
-     +1: ylavic
+     +1: ylavic, breser
      ylavic: first accepted merge reverted in r1679205, due to missing get_request_end_time() in 2.2.x.
              v1 now s/get_request_end_time(r)/apr_time_now()/
-             breser and druggeri votes discarded.
+             druggeri vote discarded.
 
    * mpm_winnt service.c: Accept utf-8 service names/descriptions for i18n.
      trunk patches: http://svn.apache.org/r1611165
