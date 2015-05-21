@@ -142,7 +142,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1200374
                   http://svn.apache.org/r1213380
      2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-SSLSessionTicketKeyFile.patch
-     +1: ylavic, wrowe
+     +1: ylavic, wrowe, rjung
+     rjung: Minor nits you can IMHO apply as CTR:
+            - in mod_ssl.c the info string for SessionTicketKeyFile contains
+              '/path/to/file', whereas existing directives use `/path/to/file'.
+              The first quotation mark is of different style.
+            - enhance docs note about frequent key file rotation by info that one also needs
+              to restart the web server in order for the changed file to take effect
+              (either gracefully or not). Would be useful for 2.4/trunk as well
+            - mention RFC 5077 in CHANGES
 
    * mod_proxy: use the original (non absolute) form of the request-line's URI
      for requests embedded in CONNECT payloads used to connect SSL backends via
@@ -168,7 +176,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1666363
                   http://svn.apache.org/r1679470
      2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-mod_ssl-improved_EDH-v2.patch
-     +1: ylavic, wrowe
+     +1: ylavic, wrowe, rjung
      ylavic: tested with openssl 0.9.7a, 0.9.8o, 1.0.1m and 1.0.2a with 1024
              and 2048 bits certificates (modulus), using EDH and ECDH ciphers.
              v2 to include r1679470
@@ -187,7 +195,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1653997
      2.4.x patch: merged in http://svn.apache.org/r1663258
      2.2.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, wrowe
+     +1: ylavic, wrowe, rjung
      wrowe: good to fix inheritence. Unsure why ALL is the default on all
             branches, I was sure it wasn't, but if we subvert ALL later, we
             have done something odd. No impact on the validity of this patch.
@@ -209,12 +217,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-ap_proxy_connection_reusable.patch
      +1: ylavic, wrowe
 
-   * Propose a more modern Cipher and Protocol list, honor server cipher
+   * mod_ssl: Propose a more modern Cipher and Protocol list, honor server cipher
      priority and add explanations relative to RFC 7525 guidance.
                   http://svn.apache.org/r1679428
                   http://svn.apache.org/r1679432 [CHANGES]
      2.2.x patch: http://people.apache.org/~wrowe/httpd-2.2-default-httpd-ssl.conf.in.patch
-     +1: wrowe, ylavic
+     +1: wrowe, ylavic, rjung
 
 
 PATCHES/ISSUES THAT ARE STALLED
