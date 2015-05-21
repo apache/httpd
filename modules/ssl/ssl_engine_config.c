@@ -113,6 +113,7 @@ static void modssl_ctx_init(modssl_ctx_t *mctx)
 #endif
 
     mctx->protocol            = SSL_PROTOCOL_ALL;
+    mctx->protocol_set        = 0;
 
     mctx->pphrase_dialog_type = SSL_PPTYPE_UNSET;
     mctx->pphrase_dialog_path = NULL;
@@ -220,7 +221,12 @@ static void modssl_ctx_cfg_merge(modssl_ctx_t *base,
                                  modssl_ctx_t *add,
                                  modssl_ctx_t *mrg)
 {
-    cfgMerge(protocol, SSL_PROTOCOL_ALL);
+    if (add->protocol_set) {
+        mrg->protocol = add->protocol;
+    }
+    else {
+        mrg->protocol = base->protocol;
+    }
 
     cfgMerge(pphrase_dialog_type, SSL_PPTYPE_UNSET);
     cfgMergeString(pphrase_dialog_path);
@@ -1399,6 +1405,7 @@ const char *ssl_cmd_SSLProtocol(cmd_parms *cmd,
 {
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
 
+    sc->server->protocol_set = 1;
     return ssl_cmd_protocol_parse(cmd, arg, &sc->server->protocol);
 }
 
@@ -1417,6 +1424,7 @@ const char *ssl_cmd_SSLProxyProtocol(cmd_parms *cmd,
 {
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
 
+    sc->proxy->protocol_set = 1;
     return ssl_cmd_protocol_parse(cmd, arg, &sc->proxy->protocol);
 }
 
