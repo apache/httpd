@@ -103,7 +103,6 @@
         without any format, using <code>s</code> gives teh same result
         as <code>%T</code>. Combining <code>%D</code> with a unit is
         available in 2.4.13 and later.</td></tr>
-        </td></tr>
 
     <tr><td><code>%{<var>VARNAME</var>}e</code></td>
         <td>The contents of the environment variable
