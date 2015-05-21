@@ -76,8 +76,6 @@ SSLModConfigRec *ssl_config_global_create(server_rec *s)
     mc->szCryptoDevice         = NULL;
 #endif
 
-    memset(mc->pTmpKeys, 0, sizeof(mc->pTmpKeys));
-
     apr_pool_userdata_set(mc, SSL_MOD_CONFIG_KEY,
                           apr_pool_cleanup_null,
                           pool);
@@ -693,6 +691,9 @@ const char *ssl_cmd_SSLCipherSuite(cmd_parms *cmd,
 {
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
     SSLDirConfigRec *dc = (SSLDirConfigRec *)dcfg;
+
+    /* always disable null and export ciphers */
+    arg = apr_pstrcat(cmd->pool, "!aNULL:!eNULL:!EXP:", arg, NULL);
 
     if (cmd->path) {
         dc->szCipherSuite = arg;
@@ -1424,6 +1425,9 @@ const char *ssl_cmd_SSLProxyCipherSuite(cmd_parms *cmd,
                                         const char *arg)
 {
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
+
+    /* always disable null and export ciphers */
+    arg = apr_pstrcat(cmd->pool, "!aNULL:!eNULL:!EXP:", arg, NULL);
 
     sc->proxy->auth.cipher_suite = arg;
 

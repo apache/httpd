@@ -221,22 +221,6 @@ typedef int ssl_algo_t;
 #define SSL_AIDX_MAX     (2)
 #endif
 
-
-/**
- * Define IDs for the temporary RSA keys and DH params
- */
-
-#define SSL_TMP_KEY_RSA_512  (0)
-#define SSL_TMP_KEY_RSA_1024 (1)
-#define SSL_TMP_KEY_DH_512   (2)
-#define SSL_TMP_KEY_DH_1024  (3)
-#ifndef OPENSSL_NO_EC
-#define SSL_TMP_KEY_EC_256   (4)
-#define SSL_TMP_KEY_MAX      (5)
-#else
-#define SSL_TMP_KEY_MAX      (4)
-#endif
-
 /**
  * Define the SSL options
  */
@@ -445,7 +429,6 @@ typedef struct {
     apr_global_mutex_t   *pMutex;
     apr_array_header_t   *aRandSeed;
     apr_hash_t     *tVHostKeys;
-    void           *pTmpKeys[SSL_TMP_KEY_MAX];
     apr_hash_t     *tPublicCert;
     apr_hash_t     *tPrivateKey;
 #if defined(HAVE_OPENSSL_ENGINE_H) && defined(HAVE_ENGINE_INIT)
@@ -670,11 +653,7 @@ int          ssl_hook_Upgrade(request_rec *);
 void         ssl_hook_ConfigTest(apr_pool_t *pconf, server_rec *s);
 
 /**  OpenSSL callbacks */
-RSA         *ssl_callback_TmpRSA(SSL *, int, int);
 DH          *ssl_callback_TmpDH(SSL *, int, int);
-#ifndef OPENSSL_NO_EC
-EC_KEY      *ssl_callback_TmpECDH(SSL *, int, int);
-#endif
 int          ssl_callback_SSLVerify(int, X509_STORE_CTX *);
 int          ssl_callback_SSLVerify_CRL(int, X509_STORE_CTX *, conn_rec *);
 int          ssl_callback_proxy_cert(SSL *ssl, MODSSL_CLIENT_CERT_CB_ARG_TYPE **x509, EVP_PKEY **pkey);
@@ -753,8 +732,13 @@ int          ssl_init_ssl_connection(conn_rec *c);
 void         ssl_pphrase_Handle(server_rec *, apr_pool_t *);
 
 /**  Diffie-Hellman Parameter Support  */
-DH           *ssl_dh_GetTmpParam(int);
-DH           *ssl_dh_GetParamFromFile(char *);
+DH          *ssl_dh_GetTmpParam(int);
+DH          *ssl_dh_GetParamFromFile(const char *);
+#ifndef OPENSSL_NO_EC
+EC_GROUP    *ssl_ec_GetParamFromFile(const char *);
+#endif
+int          ssl_dh_InitParams(server_rec *);
+void         ssl_dh_FreeParams(void);
 
 unsigned char *ssl_asn1_table_set(apr_hash_t *table,
                                   const char *key,

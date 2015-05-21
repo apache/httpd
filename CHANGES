@@ -1,6 +1,16 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.30
 
+  *) mod_ssl: Improve handling of ephemeral DH and ECDH keys by
+     allowing custom parameters to be configured via SSLCertificateFile,
+     and by adding standardized DH parameters for 1024/2048/3072/4096 bits.
+     Unless custom parameters are configured, the standardized parameters
+     are applied based on the certificate's RSA/DSA key size. [Kaspar Brand]
+ 
+  *) mod_ssl: drop support for export-grade ciphers with ephemeral RSA
+     keys, and unconditionally disable aNULL, eNULL and EXP ciphers
+     (not overridable via SSLCipherSuite). [Kaspar Brand]
+
   *) mod_ssl: Add support for configuring persistent TLS session ticket
      encryption/decryption keys (useful for clustered environments).
      [Paul Querna, Kaspar Brand]

@@ -95,8 +95,8 @@ char       *SSL_SESSION_id2sz(unsigned char *, int, char *, int);
 /** util functions for OpenSSL+sslc compat */
 int modssl_session_get_time(SSL_SESSION *session);
 
-DH *modssl_dh_configure(unsigned char *p, int plen,
-                        unsigned char *g, int glen);
+DH *modssl_dh_configure(const unsigned char *p, int plen,
+                        const unsigned char *g, int glen);
 
 #endif /* __SSL_UTIL_SSL_H__ */
 /** @} */
