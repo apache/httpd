@@ -1,6 +1,13 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.30
 
+  *) mod_proxy_http: Use the "Connection: close" header for requests to
+     backends not recycling connections (disablereuse), including the default
+     reverse and forward proxies.  [Yann Ylavic]
+
+  *) mod_proxy: Add ap_connection_reusable() for checking if a connection
+     is reusable as of this point in processing.  [Jeff Trawick]
+
   *) mod_proxy: Reuse proxy/balancer workers' parameters and scores across
      graceful restarts, even if new workers are added, old ones removed, or
      the order changes.  [Jan Kaluza, Yann Ylavic]
