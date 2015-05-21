@@ -155,6 +155,7 @@
  * 20051115.35 (2.2.28) Add SSL reusable SNI to mod_proxy.h's proxy_conn_rec
  * 20051115.36 (2.2.28) Add r->trailers_{in,out}
  * 20051115.37 (2.2.30) Add ap_get_server_name_for_url()
+ * 20051115.38 (2.2.30) Add ap_proxy_set_scoreboard_lb() in mod_proxy.h
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503232UL /* "AP22" */
@@ -162,7 +163,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20051115
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 37                    /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 38                    /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

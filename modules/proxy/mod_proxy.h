@@ -293,6 +293,13 @@ PROXY_WORKER_DISABLED | PROXY_WORKER_STOPPED | PROXY_WORKER_IN_ERROR )
 #define PROXY_WORKER_DEFAULT_RETRY  60
 #define PROXY_WORKER_MAX_ROUTE_SIZ  63
 
+/* Scoreboard */
+#if MODULE_MAGIC_NUMBER_MAJOR > 20020903
+#define PROXY_HAS_SCOREBOARD 1
+#else
+#define PROXY_HAS_SCOREBOARD 0
+#endif
+
 /* Runtime worker status informations. Shared in scoreboard */
 typedef struct {
     int             status;
@@ -308,6 +315,9 @@ typedef struct {
     void            *context;   /* general purpose storage */
     apr_size_t      busy;       /* busyness factor */
     int             lbset;      /* load balancer cluster set */
+#if PROXY_HAS_SCOREBOARD
+    unsigned char   digest[APR_MD5_DIGESTSIZE]; /* hash of the worker->name */
+#endif
 } proxy_worker_stat;
 
 /* Worker configuration */
@@ -742,13 +752,6 @@ PROXY_DECLARE(int) ap_proxy_connection_create(const char *proxy_function,
 PROXY_DECLARE(void) ap_proxy_backend_broke(request_rec *r,
                                            apr_bucket_brigade *brigade);
 
-/* Scoreboard */
-#if MODULE_MAGIC_NUMBER_MAJOR > 20020903
-#define PROXY_HAS_SCOREBOARD 1
-#else
-#define PROXY_HAS_SCOREBOARD 0
-#endif
-
 /**
  * Transform buckets from one bucket allocator to another one by creating a
  * transient bucket for each data bucket and let it use the data read from
@@ -771,6 +774,12 @@ PROXY_DECLARE(void) ap_proxy_backend_broke(request_rec *r,
 PROXY_DECLARE(apr_status_t)
 ap_proxy_buckets_lifetime_transform(request_rec *r, apr_bucket_brigade *from,
                                         apr_bucket_brigade *to);
+
+#if PROXY_HAS_SCOREBOARD
+void *ap_proxy_set_scoreboard_lb(proxy_worker *worker,
+                                 proxy_balancer *balancer,
+                                 server_rec *server);
+#endif
 
 #define PROXY_LBMETHOD "proxylbmethod"
 

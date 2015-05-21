@@ -83,25 +83,23 @@ static int init_balancer_members(proxy_server_conf *conf, server_rec *s,
     int i;
     proxy_worker *workers;
     int worker_is_initialized;
-    proxy_worker_stat *slot;
 
     workers = (proxy_worker *)balancer->workers->elts;
 
     for (i = 0; i < balancer->workers->nelts; i++) {
         worker_is_initialized = PROXY_WORKER_IS_INITIALIZED(workers);
+#if PROXY_HAS_SCOREBOARD
+        /*
+         * If the worker is not initialized but has a scoreboard
+         * slot, check whether it was already initialized in a
+         * previous generation to avoid resetting the shared lb
+         * parameters below.
+         */
         if (!worker_is_initialized) {
-            /*
-             * If the worker is not initialized check whether its scoreboard
-             * slot is already initialized.
-             */
-            slot = (proxy_worker_stat *) ap_get_scoreboard_lb(workers->id);
-            if (slot) {
-                worker_is_initialized = slot->status & PROXY_WORKER_INITIALIZED;
-            }
-            else {
-                worker_is_initialized = 0;
-            }
+            ap_proxy_set_scoreboard_lb(workers, balancer, s);
+            worker_is_initialized = PROXY_WORKER_IS_INITIALIZED(workers);
         }
+#endif
         ap_proxy_initialize_worker_share(conf, workers, s);
         ap_proxy_initialize_worker(workers, s);
         if (!worker_is_initialized) {
