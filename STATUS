@@ -278,6 +278,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Format pattern characters are rare, so we should only use a new one
      if an existing one isn't a good fit.
      trunk patch: http://svn.apache.org/r1680895
+                  http://svn.apache.org/r1680900
      2.4.x patch: http://people.apache.org/~rjung/patches/httpd-2.4.x-mod_log_config-duration_units.patch
                   (trunk works plus CHANGES)
      +1: rjung
