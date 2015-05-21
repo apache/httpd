@@ -129,7 +129,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trawick: +1 to rjung's idea; excellent plan
      ylavic: +1 too, but maybe use %{fmt}T instead?  We already either "loose" %T or %D
              since %{s} = %T and %{us} = %D, T for Time (taken) is maybe more meaningful?
-     rjung: I already went with %D (*d*uration) ... See the proposed backport further down.
+     rjung: It seems most prefer the %{...}T variant. I'll switch to that.
      ylavic: OK, not a strong opinion either... Added a comment below too :)
 
    * mpm_winnt service.c: Accept utf-8 service names/descriptions for i18n.
@@ -169,6 +169,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x patch: http://people.apache.org/~rjung/patches/httpd-2.2.x-mod_log_config-duration_units.patch
      +1: rjung
      ylavic: Can't we backport the whole r979120+r1467765 while at it?
+     rjung: Sure that would be useful. In light of logjam I would hope to not defer the
+            next release to much, so we should IMHO propose that bigger change independently
+            and on top of this small and easy to review one.
 
 
 PATCHES/ISSUES THAT ARE STALLED
