@@ -101,10 +101,10 @@
  * %...{format}t:  The time, in the form given by format, which should
  *                 be in strftime(3) format.
  * %...T:  the time taken to serve the request, in seconds.
+ * %...{s}T:  the time taken to serve the request, in seconds, same as %T.
+ * %...{us}T:  the time taken to serve the request, in micro seconds, same as %D.
+ * %...{ms}T:  the time taken to serve the request, in milliseconds.
  * %...D:  the time taken to serve the request, in micro seconds.
- * %...{s}D:  the time taken to serve the request, in seconds, same as %T.
- * %...{us}D:  the time taken to serve the request, in micro seconds, same as %D.
- * %...{ms}D:  the time taken to serve the request, in milliseconds.
  * %...u:  remote user (from auth; may be bogus if return status (%s) is 401)
  * %...U:  the URL path requested.
  * %...v:  the configured name of the server (i.e. which virtual host?)
@@ -799,22 +799,22 @@ static const char *log_request_time(request_rec *r, char *a)
     }
 }
 
-static const char *log_request_duration(request_rec *r, char *a)
-{
-    apr_time_t duration = get_request_end_time(r) - r->request_time;
-    return apr_psprintf(r->pool, "%" APR_TIME_T_FMT, apr_time_sec(duration));
+static const char *log_request_duration_microseconds(request_rec *r, char *a)
+{    
+    return apr_psprintf(r->pool, "%" APR_TIME_T_FMT,
+                        (get_request_end_time(r) - r->request_time));
 }
 
 static const char *log_request_duration_scaled(request_rec *r, char *a)
 {
     apr_time_t duration = get_request_end_time(r) - r->request_time;
-    if (*a == '\0' || !strcasecmp(a, "us")) {
+    if (*a == '\0' || !strcasecmp(a, "s")) {
+        duration = apr_time_sec(duration);
     }
     else if (!strcasecmp(a, "ms")) {
         duration = apr_time_as_msec(duration);
     }
-    else if (!strcasecmp(a, "s")) {
-        duration = apr_time_sec(duration);
+    else if (!strcasecmp(a, "us")) {
     }
     else {
         /* bogus format */
@@ -1851,8 +1851,8 @@ static int log_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
         log_pfn_register(p, "C", log_cookie, 0);
         log_pfn_register(p, "k", log_requests_on_connection, 0);
         log_pfn_register(p, "r", log_request_line, 1);
-        log_pfn_register(p, "D", log_request_duration_scaled, 1);
-        log_pfn_register(p, "T", log_request_duration, 1);
+        log_pfn_register(p, "D", log_request_duration_microseconds, 1);
+        log_pfn_register(p, "T", log_request_duration_scaled, 1);
         log_pfn_register(p, "U", log_request_uri, 1);
         log_pfn_register(p, "s", log_status, 1);
         log_pfn_register(p, "R", log_handler, 1);
