@@ -1647,6 +1647,14 @@ PROXY_DECLARE(int) ap_proxy_connect_to_backend(apr_socket_t **newsock,
     return connected ? 0 : 1;
 }
 
+PROXY_DECLARE(int) ap_proxy_connection_reusable(proxy_conn_rec *conn)
+{
+    proxy_worker *worker = conn->worker;
+
+    return ! (conn->close || conn->close_on_recycle
+              || !worker->is_address_reusable || worker->disablereuse);
+}
+
 static apr_status_t connection_cleanup(void *theconn)
 {
     proxy_conn_rec *conn = (proxy_conn_rec *)theconn;
@@ -1672,8 +1680,7 @@ static apr_status_t connection_cleanup(void *theconn)
 #endif
 
     /* determine if the connection need to be closed */
-    if (conn->close_on_recycle || conn->close || worker->disablereuse ||
-        !worker->is_address_reusable) {
+    if (!ap_proxy_connection_reusable(conn)) {
         apr_pool_t *p = conn->pool;
         apr_pool_clear(p);
         conn = apr_pcalloc(p, sizeof(proxy_conn_rec));
