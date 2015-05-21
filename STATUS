@@ -282,7 +282,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1680942
      2.4.x patch: http://people.apache.org/~trawick/mod_log_config-r1680895-r1680900-r1680942-to-2.4.x.txt
                   (trunk works plus CHANGES)
-     +1: trawick
+     +1: trawick, ylavic
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
