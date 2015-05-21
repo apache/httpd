@@ -170,6 +170,25 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.2.x patch: http://people.apache.org/~wrowe/httpd-2.2-default-httpd-ssl.conf.in.patch
      +1: wrowe, ylavic, rjung
 
+   * core: Avoid potential use of uninitialized (NULL) request data in
+     request line error path.
+     trunk patch: http://svn.apache.org/r1664205
+     2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-read_request_line.patch
+                  (trunk works but CHANGES entry does not need to refer to CVE-2015-0253)
+     +1: ylavic, wrowe, rjung
+     ylavic: this is CVE-2015-0253 wrt 2.4.13, although 2.2.x is not
+             vulnerable per se (no ErrorDocument handling from early
+             request line parser), better be safe than sorry.
+
+   * mod_proxy_http: Use the "Connection: close" header for requests to
+     backends not recycling connections (disablereuse), including the default
+     reverse and forward proxies.
+     trunk patch: http://svn.apache.org/r1526189
+                  http://svn.apache.org/r1658765
+     2.4.x patch: merged in http://svn.apache.org/r1673896
+     2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-ap_proxy_connection_reusable.patch
+     +1: ylavic, wrowe, rjung
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -182,6 +201,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      ylavic: first accepted merge reverted in r1679205, due to missing get_request_end_time() in 2.2.x.
              v1 now s/get_request_end_time(r)/apr_time_now()/
              druggeri vote discarded.
+     rjung: I know this was already committed to 2.4 although not yet released,
+            but: wouldn't it be better to overload the existing %D with %{ms}D
+            to save the precious "M". We slowly run out of chars for access log
+            patterns. I'd be willing to provide a patch for trunk/2.4/2.2 with the
+            %D (unchanged) and %{s}D, %{ms}D and %{us}D (seconds, milliseconds, microseconds)
+            syntax if there is some interest in it.
 
    * mpm_winnt service.c: Accept utf-8 service names/descriptions for i18n.
      trunk patches: http://svn.apache.org/r1611165
@@ -197,32 +222,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x patch: trunk works (modulo CHANGES)
      +1: ylavic, wrowe
 
-   * core: Avoid potential use of uninitialized (NULL) request data in
-     request line error path.
-     trunk patch: http://svn.apache.org/r1664205
-     2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-read_request_line.patch
-                  (trunk works but CHANGES entry does not need to refer to CVE-2015-0253)
-     +1: ylavic, wrowe
-     ylavic: this is CVE-2015-0253 wrt 2.4.13, although 2.2.x is not
-             vulnerable per se (no ErrorDocument handling from early
-             request line parser), better be safe than sorry.
-
    * mod_authn_dbd: Fix lifetime of DB lookup entries independently of the
      selected DB engine.  PR 46421.
      trunk patch: http://svn.apache.org/r1663647
                   http://svn.apache.org/r1679182
      2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-apr_dbd_get_entry_lifetime.patch
                   (trunk works but the patch includes a CHANGES entry relative to 2.2.x only)
-     +1: ylavic
-
-   * mod_proxy_http: Use the "Connection: close" header for requests to
-     backends not recycling connections (disablereuse), including the default
-     reverse and forward proxies.
-     trunk patch: http://svn.apache.org/r1526189
-                  http://svn.apache.org/r1658765
-     2.4.x patch: merged in http://svn.apache.org/r1673896
-     2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-ap_proxy_connection_reusable.patch
-     +1: ylavic, wrowe
+     +1: ylavic, rjung
 
 
 PATCHES/ISSUES THAT ARE STALLED
