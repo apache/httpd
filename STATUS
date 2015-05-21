@@ -108,15 +108,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      ylavic: trunk/2.4.x not concerned, 2.2.x only.
      +1: ylavic, jkaluza, wrowe
 
-   * mod_ssl: 'SSLProtocol ALL' was being ignored in virtual host context. PR 57100.
-     trunk patch: http://svn.apache.org/r1653997
-     2.4.x patch: merged in http://svn.apache.org/r1663258
-     2.2.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, wrowe, rjung
-     wrowe: good to fix inheritence. Unsure why ALL is the default on all
-            branches, I was sure it wasn't, but if we subvert ALL later, we
-            have done something odd. No impact on the validity of this patch.
-
    * mod_ssl: Propose a more modern Cipher and Protocol list, honor server cipher
      priority and add explanations relative to RFC 7525 guidance.
                   http://svn.apache.org/r1679428

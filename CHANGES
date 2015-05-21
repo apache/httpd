@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.30
 
+  *) mod_ssl: 'SSLProtocol ALL' was being ignored in virtual host context. 
+     PR 57100.  [Michael Kaufmann <apache-bugzilla michael-kaufmann.ch>,
+     Yann Ylavic]
+
   *) mod_ssl: Improve handling of ephemeral DH and ECDH keys by
      allowing custom parameters to be configured via SSLCertificateFile,
      and by adding standardized DH parameters for 1024/2048/3072/4096 bits.
