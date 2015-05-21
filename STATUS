@@ -108,13 +108,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      ylavic: trunk/2.4.x not concerned, 2.2.x only.
      +1: ylavic, jkaluza, wrowe
 
-   * mod_proxy_ajp: Fix get_content_length().
-     clength in request_rec is for response sizes, not request body size.
-     It is initialized to 0, so the "if" branch was never taken.
-     trunk patch: http://svn.apache.org/r1649043
-     2.2.x patch: trunks works (plus CHANGES)
-     +1 rjung, ylavic, wrowe
-
    * mod_ssl: Add support for configuring persistent TLS session ticket
      encryption/decryption keys (useful for clustered environments).
      [Paul Querna, Kaspar Brand]
