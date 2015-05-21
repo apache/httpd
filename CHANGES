@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.30
 
+  *) mod_ssl: Add support for configuring persistent TLS session ticket
+     encryption/decryption keys (useful for clustered environments).
+     [Paul Querna, Kaspar Brand]
+
   *) SSLProtocol and SSLCipherSuite recommendations in the example/default
      conf/extra/httpd-ssl.conf file are now global in scope, affecting all
      VirtualHosts (matching 2.4 default configuration). [William Rowe]
