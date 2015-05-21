@@ -101,13 +101,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_proxy: Reuse proxy workers' parameters and scores across graceful
-     restarts, even if new workers added, old ones removed, or the order
-     changes. PR 44736.  [Jan Kaluza]
-     2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-graceful_share_full-v7.patch
-     ylavic: trunk/2.4.x not concerned, 2.2.x only.
-     +1: ylavic, jkaluza, wrowe
-
    * mod_ssl: Propose a more modern Cipher and Protocol list, honor server cipher
      priority and add explanations relative to RFC 7525 guidance.
                   http://svn.apache.org/r1679428

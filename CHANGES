@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.30
 
+  *) mod_proxy: Reuse proxy/balancer workers' parameters and scores across
+     graceful restarts, even if new workers are added, old ones removed, or
+     the order changes.  [Jan Kaluza, Yann Ylavic]
+
   *) mod_ssl: 'SSLProtocol ALL' was being ignored in virtual host context. 
      PR 57100.  [Michael Kaufmann <apache-bugzilla michael-kaufmann.ch>,
      Yann Ylavic]
