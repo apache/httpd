@@ -269,6 +269,19 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      http://people.apache.org/~trawick/OCSP-stapling-1679032-1679192-1680276.txt
      +1: trawick
 
+  *) mod_log_config: instead of using the dedicated pattern format "%M" for
+     duration milliseconds, overload the existing "%D" to choose the time
+     precision ("%{s}D" for seconds, "%{ms}D" for milliseconds and
+     "%{us}D" for microseconds). The existing %T and %D without precision
+     are kept for compatibility. The previously introduced "%M" is removed,
+     it has not yet been released.
+     Format pattern characters are rare, so we should only use a new one
+     if an existing one isn't a good fit.
+     trunk patch: http://svn.apache.org/r1680895
+     2.4.x patch: http://people.apache.org/~rjung/patches/httpd-2.4.x-mod_log_config-duration_units.patch
+                  (trunk works plus CHANGES)
+     +1: rjung
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
