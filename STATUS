@@ -201,8 +201,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
             %D (unchanged) and %{s}D, %{ms}D and %{us}D (seconds, milliseconds, microseconds)
             syntax if there is some interest in it.
      trawick: +1 to rjung's idea; excellent plan
-     ylavic: +1 too, but maybe use %{fmt}T instead?  We either "loose" %T or %D
-             since %{s} = %T and %{ms} = %D, T for Time (taken) is maybe more meaningful?
+     ylavic: +1 too, but maybe use %{fmt}T instead?  We already either "loose" %T or %D
+             since %{s} = %T and %{us} = %D, T for Time (taken) is maybe more meaningful?
 
    * mpm_winnt service.c: Accept utf-8 service names/descriptions for i18n.
      trunk patches: http://svn.apache.org/r1611165
