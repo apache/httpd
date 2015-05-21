@@ -110,6 +110,10 @@ static void modssl_ctx_init(modssl_ctx_t *mctx)
     mctx->pks                 = NULL;
     mctx->pkp                 = NULL;
 
+#ifdef HAVE_TLS_SESSION_TICKETS
+    mctx->ticket_key          = NULL;
+#endif
+
     mctx->protocol            = SSL_PROTOCOL_ALL;
 
     mctx->pphrase_dialog_type = SSL_PPTYPE_UNSET;
@@ -158,6 +162,10 @@ static void modssl_ctx_init_server(SSLSrvConfigRec *sc,
     mctx->pks = apr_pcalloc(p, sizeof(*mctx->pks));
 
     /* mctx->pks->... certs/keys are set during module init */
+
+#ifdef HAVE_TLS_SESSION_TICKETS
+    mctx->ticket_key = apr_pcalloc(p, sizeof(*mctx->ticket_key));
+#endif
 }
 
 static SSLSrvConfigRec *ssl_config_server_new(apr_pool_t *p)
@@ -257,6 +265,10 @@ static void modssl_ctx_cfg_merge_server(modssl_ctx_t *base,
 
     cfgMergeString(pks->ca_name_path);
     cfgMergeString(pks->ca_name_file);
+
+#ifdef HAVE_TLS_SESSION_TICKETS
+    cfgMergeString(ticket_key->file_path);
+#endif
 }
 
 /*
@@ -873,6 +885,24 @@ const char *ssl_cmd_SSLCertificateChainFile(cmd_parms *cmd,
 
     return NULL;
 }
+
+#ifdef HAVE_TLS_SESSION_TICKETS
+const char *ssl_cmd_SSLSessionTicketKeyFile(cmd_parms *cmd,
+                                            void *dcfg,
+                                            const char *arg)
+{
+    SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
+    const char *err;
+
+    if ((err = ssl_cmd_check_file(cmd, &arg))) {
+        return err;
+    }
+
+    sc->server->ticket_key->file_path = arg;
+
+    return NULL;
+}
+#endif
 
 #define NO_PER_DIR_SSL_CA \
     "Your ssl library does not have support for per-directory CA"

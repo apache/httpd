@@ -108,24 +108,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      ylavic: trunk/2.4.x not concerned, 2.2.x only.
      +1: ylavic, jkaluza, wrowe
 
-   * mod_ssl: Add support for configuring persistent TLS session ticket
-     encryption/decryption keys (useful for clustered environments).
-     [Paul Querna, Kaspar Brand]
-     trunk patch: http://svn.apache.org/r1200040
-                  http://svn.apache.org/r1200372
-                  http://svn.apache.org/r1200374
-                  http://svn.apache.org/r1213380
-     2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-SSLSessionTicketKeyFile.patch
-     +1: ylavic, wrowe, rjung
-     rjung: Minor nits you can IMHO apply as CTR:
-            - in mod_ssl.c the info string for SessionTicketKeyFile contains
-              '/path/to/file', whereas existing directives use `/path/to/file'.
-              The first quotation mark is of different style.
-            - enhance docs note about frequent key file rotation by info that one also needs
-              to restart the web server in order for the changed file to take effect
-              (either gracefully or not). Would be useful for 2.4/trunk as well
-            - mention RFC 5077 in CHANGES
-
    * mod_ssl: Improve handling of ephemeral DH and ECDH keys by
      allowing custom parameters to be configured via SSLCertificateFile,
      and by adding standardized DH parameters for 1024/2048/3072/4096 bits.

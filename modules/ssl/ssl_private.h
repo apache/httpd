@@ -69,6 +69,20 @@
 #define OPENSSL_NO_COMP
 #endif
 
+#ifndef OPENSSL_NO_TLSEXT
+#ifdef SSL_CTX_set_tlsext_ticket_key_cb
+#define HAVE_TLS_SESSION_TICKETS
+#define TLSEXT_TICKET_KEY_LEN 48
+#ifndef tlsext_tick_md
+#ifdef OPENSSL_NO_SHA256
+#define tlsext_tick_md EVP_sha1
+#else
+#define tlsext_tick_md EVP_sha256
+#endif
+#endif
+#endif
+#endif
+
 #include "ssl_util_ssl.h"
 
 /** The #ifdef macros are only defined AFTER including the above
@@ -483,6 +497,15 @@ typedef struct {
     ssl_verify_t verify_mode;
 } modssl_auth_ctx_t;
 
+#ifdef HAVE_TLS_SESSION_TICKETS
+typedef struct {
+    const char *file_path;
+    unsigned char key_name[16];
+    unsigned char hmac_secret[16];
+    unsigned char aes_key[16];
+} modssl_ticket_key_t;
+#endif
+
 typedef struct SSLSrvConfigRec SSLSrvConfigRec;
 
 typedef struct {
@@ -492,6 +515,10 @@ typedef struct {
     /** we are one or the other */
     modssl_pk_server_t *pks;
     modssl_pk_proxy_t  *pkp;
+
+#ifdef HAVE_TLS_SESSION_TICKETS
+    modssl_ticket_key_t *ticket_key;
+#endif
 
     ssl_proto_t  protocol;
 
@@ -615,6 +642,9 @@ const char  *ssl_cmd_SSLProxyCARevocationFile(cmd_parms *, void *, const char *)
 const char  *ssl_cmd_SSLProxyMachineCertificatePath(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLProxyMachineCertificateFile(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLProxyMachineCertificateChainFile(cmd_parms *, void *, const char *);
+#ifdef HAVE_TLS_SESSION_TICKETS
+const char  *ssl_cmd_SSLSessionTicketKeyFile(cmd_parms *cmd, void *dcfg, const char *arg);
+#endif
 const char  *ssl_cmd_SSLProxyCheckPeerExpire(cmd_parms *cmd, void *dcfg, int flag);
 const char  *ssl_cmd_SSLProxyCheckPeerCN(cmd_parms *cmd, void *dcfg, int flag);
 
@@ -654,6 +684,10 @@ void         ssl_callback_DelSessionCacheEntry(SSL_CTX *, SSL_SESSION *);
 void         ssl_callback_Info(MODSSL_INFO_CB_ARG_TYPE, int, int);
 #ifndef OPENSSL_NO_TLSEXT
 int          ssl_callback_ServerNameIndication(SSL *, int *, modssl_ctx_t *);
+#endif
+#ifdef HAVE_TLS_SESSION_TICKETS
+int          ssl_callback_SessionTicket(SSL *, unsigned char *, unsigned char *,
+                                        EVP_CIPHER_CTX *, HMAC_CTX *, int);
 #endif
 
 /**  Session Cache Support  */

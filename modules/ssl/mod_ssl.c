@@ -114,6 +114,11 @@ static const command_rec ssl_config_cmds[] = {
     SSL_CMD_SRV(CertificateChainFile, TAKE1,
                 "SSL Server CA Certificate Chain file "
                 "(`/path/to/file' - PEM encoded)")
+#ifdef HAVE_TLS_SESSION_TICKETS
+    SSL_CMD_SRV(SessionTicketKeyFile, TAKE1,
+                "TLS session ticket encryption/decryption key file (RFC 5077) "
+                "('/path/to/file' - file with 48 bytes of random data)")
+#endif
     SSL_CMD_ALL(CACertificatePath, TAKE1,
                 "SSL CA Certificate path "
                 "(`/path/to/dir' - contains PEM encoded files)")
