@@ -115,25 +115,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.2.x patch: trunks works (plus CHANGES)
      +1 rjung, ylavic, wrowe
 
-
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
-
-   * mod_log_config: Add new format flag for requestion duration in milliseconds
-     trunk patch: http://svn.apache.org/r1675533
-     2.2.x patch: https://people.apache.org/~ylavic/httpd-2.2.x-req_duration_milliseconds-v1.patch
-                  (modulo CHANGES)
-     +1: ylavic, breser
-     ylavic: first accepted merge reverted in r1679205, due to missing get_request_end_time() in 2.2.x.
-             v1 now s/get_request_end_time(r)/apr_time_now()/
-             druggeri vote discarded.
-
-   * mpm_winnt service.c: Accept utf-8 service names/descriptions for i18n.
-     trunk patches: http://svn.apache.org/r1611165
-                    http://svn.apache.org/r1611169
-     2.2.x patch: http://people.apache.org/~wrowe/httpd-2.2-utf8-servicename.patch
-     +1: wrowe, gsmith
-
    * mod_ssl: Add support for configuring persistent TLS session ticket
      encryption/decryption keys (useful for clustered environments).
      [Paul Querna, Kaspar Brand]
@@ -151,14 +132,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
               to restart the web server in order for the changed file to take effect
               (either gracefully or not). Would be useful for 2.4/trunk as well
             - mention RFC 5077 in CHANGES
-
-   * mod_proxy: use the original (non absolute) form of the request-line's URI
-     for requests embedded in CONNECT payloads used to connect SSL backends via
-     a ProxyRemote forward-proxy. PR 55892.
-     trunk patch: http://svn.apache.org/r1665215
-                  http://svn.apache.org/r1665218 (CHANGES entry)
-     2.2.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, wrowe
 
    * mod_ssl: Improve handling of ephemeral DH and ECDH keys by
      allowing custom parameters to be configured via SSLCertificateFile,
@@ -181,6 +154,49 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              and 2048 bits certificates (modulus), using EDH and ECDH ciphers.
              v2 to include r1679470
 
+   * mod_ssl: 'SSLProtocol ALL' was being ignored in virtual host context. PR 57100.
+     trunk patch: http://svn.apache.org/r1653997
+     2.4.x patch: merged in http://svn.apache.org/r1663258
+     2.2.x patch: trunk works (modulo CHANGES)
+     +1: ylavic, wrowe, rjung
+     wrowe: good to fix inheritence. Unsure why ALL is the default on all
+            branches, I was sure it wasn't, but if we subvert ALL later, we
+            have done something odd. No impact on the validity of this patch.
+
+   * mod_ssl: Propose a more modern Cipher and Protocol list, honor server cipher
+     priority and add explanations relative to RFC 7525 guidance.
+                  http://svn.apache.org/r1679428
+                  http://svn.apache.org/r1679432 [CHANGES]
+     2.2.x patch: http://people.apache.org/~wrowe/httpd-2.2-default-httpd-ssl.conf.in.patch
+     +1: wrowe, ylavic, rjung
+
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
+
+   * mod_log_config: Add new format flag for requestion duration in milliseconds
+     trunk patch: http://svn.apache.org/r1675533
+     2.2.x patch: https://people.apache.org/~ylavic/httpd-2.2.x-req_duration_milliseconds-v1.patch
+                  (modulo CHANGES)
+     +1: ylavic, breser
+     ylavic: first accepted merge reverted in r1679205, due to missing get_request_end_time() in 2.2.x.
+             v1 now s/get_request_end_time(r)/apr_time_now()/
+             druggeri vote discarded.
+
+   * mpm_winnt service.c: Accept utf-8 service names/descriptions for i18n.
+     trunk patches: http://svn.apache.org/r1611165
+                    http://svn.apache.org/r1611169
+     2.2.x patch: http://people.apache.org/~wrowe/httpd-2.2-utf8-servicename.patch
+     +1: wrowe, gsmith
+
+   * mod_proxy: use the original (non absolute) form of the request-line's URI
+     for requests embedded in CONNECT payloads used to connect SSL backends via
+     a ProxyRemote forward-proxy. PR 55892.
+     trunk patch: http://svn.apache.org/r1665215
+                  http://svn.apache.org/r1665218 (CHANGES entry)
+     2.2.x patch: trunk works (modulo CHANGES)
+     +1: ylavic, wrowe
+
    * core: Avoid potential use of uninitialized (NULL) request data in
      request line error path.
      trunk patch: http://svn.apache.org/r1664205
@@ -190,15 +206,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      ylavic: this is CVE-2015-0253 wrt 2.4.13, although 2.2.x is not
              vulnerable per se (no ErrorDocument handling from early
              request line parser), better be safe than sorry.
-
-   * mod_ssl: 'SSLProtocol ALL' was being ignored in virtual host context. PR 57100.
-     trunk patch: http://svn.apache.org/r1653997
-     2.4.x patch: merged in http://svn.apache.org/r1663258
-     2.2.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, wrowe, rjung
-     wrowe: good to fix inheritence. Unsure why ALL is the default on all
-            branches, I was sure it wasn't, but if we subvert ALL later, we
-            have done something odd. No impact on the validity of this patch.
 
    * mod_authn_dbd: Fix lifetime of DB lookup entries independently of the
      selected DB engine.  PR 46421.
@@ -216,13 +223,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: merged in http://svn.apache.org/r1673896
      2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-ap_proxy_connection_reusable.patch
      +1: ylavic, wrowe
-
-   * mod_ssl: Propose a more modern Cipher and Protocol list, honor server cipher
-     priority and add explanations relative to RFC 7525 guidance.
-                  http://svn.apache.org/r1679428
-                  http://svn.apache.org/r1679432 [CHANGES]
-     2.2.x patch: http://people.apache.org/~wrowe/httpd-2.2-default-httpd-ssl.conf.in.patch
-     +1: wrowe, ylavic, rjung
 
 
 PATCHES/ISSUES THAT ARE STALLED
