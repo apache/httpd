@@ -185,6 +185,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trawick: +1 to rjung's idea; excellent plan
      ylavic: +1 too, but maybe use %{fmt}T instead?  We already either "loose" %T or %D
              since %{s} = %T and %{us} = %D, T for Time (taken) is maybe more meaningful?
+     rjung: I already went with %D (*d*uration) ... See the proposed backport further down.
 
    * mpm_winnt service.c: Accept utf-8 service names/descriptions for i18n.
      trunk patches: http://svn.apache.org/r1611165
@@ -207,6 +208,21 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-apr_dbd_get_entry_lifetime.patch
                   (trunk works but the patch includes a CHANGES entry relative to 2.2.x only)
      +1: ylavic, rjung
+
+  *) mod_log_config: instead of using the dedicated pattern format "%M" for
+     duration milliseconds, overload the existing "%D" to choose the time
+     precision ("%{s}D" for seconds, "%{ms}D" for milliseconds and
+     "%{us}D" for microseconds). The existing %T and %D without precision
+     are kept for compatibility. The previously introduced "%M" is removed,
+     it has not yet been released.
+     Format pattern characters are rare, so we should only use a new one
+     if an existing one isn't a good fit.
+     trunk patch: http://svn.apache.org/r1680895
+                  http://svn.apache.org/r1680900
+     2.4.x patch: http://people.apache.org/~rjung/patches/httpd-2.4.x-mod_log_config-duration_units.patch
+                  (trunk works plus CHANGES)
+     2.2.x patch: http://people.apache.org/~rjung/patches/httpd-2.2.x-mod_log_config-duration_units.patch
+     +1: rjung
 
 
 PATCHES/ISSUES THAT ARE STALLED
