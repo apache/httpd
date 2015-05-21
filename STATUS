@@ -108,16 +108,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.2.x patch: http://people.apache.org/~wrowe/httpd-2.2-default-httpd-ssl.conf.in.patch
      +1: wrowe, ylavic, rjung
 
-   * core: Avoid potential use of uninitialized (NULL) request data in
-     request line error path.
-     trunk patch: http://svn.apache.org/r1664205
-     2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-read_request_line.patch
-                  (trunk works but CHANGES entry does not need to refer to CVE-2015-0253)
-     +1: ylavic, wrowe, rjung
-     ylavic: this is CVE-2015-0253 wrt 2.4.13, although 2.2.x is not
-             vulnerable per se (no ErrorDocument handling from early
-             request line parser), better be safe than sorry.
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]

@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.30
 
+  *) core: Avoid potential use of uninitialized (NULL) request data in
+     request line error path. [Yann Ylavic]
+ 
   *) mod_proxy_http: Use the "Connection: close" header for requests to
      backends not recycling connections (disablereuse), including the default
      reverse and forward proxies.  [Yann Ylavic]
