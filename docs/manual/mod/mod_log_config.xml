@@ -95,6 +95,16 @@
     <tr><td><code>%D</code></td>
         <td>The time taken to serve the request, in microseconds.</td></tr>
 
+    <tr><td><code>%{<var>UNIT</var>}D</code></td>
+        <td>The time taken to serve the request, in a time unit given by
+        <code>UNIT</code>. Valid units are <code>ms</code> for milliseconds,
+        <code>us</code> for microseconds and <code>s</code> for seconds.
+        Using <code>us</code> gives the same result as <code>%D</code>
+        without any format, using <code>s</code> gives teh same result
+        as <code>%T</code>. Combining <code>%D</code> with a unit is
+        available in 2.4.13 and later.</td></tr>
+        </td></tr>
+
     <tr><td><code>%{<var>VARNAME</var>}e</code></td>
         <td>The contents of the environment variable
         <var>VARNAME</var>.</td></tr>
@@ -145,10 +155,6 @@
 
     <tr><td><code>%m</code></td>
         <td>The request method.</td></tr>
-
-    <tr><td><code>%M</code></td>
-        <td>The time taken to serve the request, in milliseconds.
-        (available in 2.4.13 and later)</td></tr>
 
     <tr><td><code>%{<var>VARNAME</var>}n</code></td>
         <td>The contents of note <var>VARNAME</var> from another
