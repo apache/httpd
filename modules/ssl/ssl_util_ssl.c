@@ -582,8 +582,8 @@ int modssl_session_get_time(SSL_SESSION *session)
 #define SSLC_VERSION_NUMBER 0x0000
 #endif
 
-DH *modssl_dh_configure(unsigned char *p, int plen,
-                        unsigned char *g, int glen)
+DH *modssl_dh_configure(const unsigned char *p, int plen,
+                        const unsigned char *g, int glen)
 {
     DH *dh;
 
