@@ -269,12 +269,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      http://people.apache.org/~trawick/OCSP-stapling-1679032-1679192-1680276.txt
      +1: trawick
 
-OTHER PROPOSALS
-
-   * A list of further possible backports can be found at: 
-     http://people.apache.org/~rjung/patches/possible-backports-httpd-trunk-2_4.txt
-     If you want to propose one of those, please add them above.
-
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
