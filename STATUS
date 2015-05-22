@@ -214,6 +214,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              returned according to {output,backend}_failed. So the clarification is
              possibly as simple as renaming output_failed => client_failed (r1674056 added
              above), WDYT?
+     trawick: It still looks to me that an error with ap_pass_brigade (towards
+              client) can turn into a 400 error, which is what I was concerned
+              about originally.
 
   *) http: Don't remove the Content-Length of zero from a HEAD response if
      it comes from an origin server, module or script. Allow the previous
