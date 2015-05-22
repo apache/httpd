@@ -134,6 +134,9 @@ Changes with Apache 2.4.13
      a ProxyRemote forward-proxy.  PR 55892.  [Hendrik Harms <hendrik.harms
      gmail com>, William Rowe, Yann Ylavic]
 
+  *) http: Make ap_die() robust against any HTTP error code and not modify
+     response status (finally logged) when nothing is to be done. [Yann Ylavic]
+
   *) mod_proxy_connect/wstunnel: If both client and backend sides get readable
      at the same time, don't lose errors occuring while forwarding on the first
      side when none occurs next on the other side, and abort.  [Yann Ylavic]
