@@ -123,7 +123,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1675533
      2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-mod_log_config-time_taken_fmt.patch
                   (modulo CHANGES)
-     +1: ylavic
+     +1: ylavic, wrowe
      rjung: I know this was already committed to 2.4 although not yet released,
             but: wouldn't it be better to overload the existing %D with %{ms}D
             to save the precious "M". We slowly run out of chars for access log
