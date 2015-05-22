@@ -49,8 +49,9 @@ Changes with Apache 2.4.13
      deprecation warnings, when encountered in a VirtualHost block.
      [Falco Schwarz <hiding falco.me>]
 
-  *) mod_log_config: Add %M format to output request duration in
-     milliseconds.  [Ben Reser]
+  *) mod_log_config: Add "%{UNIT}T" format to output request duration in
+     seconds, milliseconds or microseconds depending on UNIT ("s", "ms", "us").
+     [Ben Reser, Rainer Jung]
 
   *) Allow FallbackResource to work when a directory is requested and
      there is no autoindex nor DirectoryIndex. 
