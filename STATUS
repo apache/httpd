@@ -101,12 +101,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_ssl: Propose a more modern Cipher and Protocol list, honor server cipher
-     priority and add explanations relative to RFC 7525 guidance.
-                  http://svn.apache.org/r1679428
-                  http://svn.apache.org/r1679432 [CHANGES]
-     2.2.x patch: http://people.apache.org/~wrowe/httpd-2.2-default-httpd-ssl.conf.in.patch
-     +1: wrowe, ylavic, rjung
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
