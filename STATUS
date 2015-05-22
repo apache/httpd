@@ -112,13 +112,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic, minfrin, jim
 
-  *) core: Cleanup the request soon/even if some output filter fails to
-     handle the EOR bucket.
-     trunk patch: http://svn.apache.org/r1666998
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, minfrin, jim
-
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]

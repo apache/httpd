@@ -35,6 +35,9 @@ Changes with Apache 2.4.13
      or framework is unable to return Location in the internal-redirect
      form.  [Jeff Trawick]
 
+  *) core: Cleanup the request soon/even if some output filter fails to
+     handle the EOR bucket.  [Yann Ylavic]
+
   *) mpm_event: Allow for timer events duplicates. [Jim Jagielski, Yann Ylavic]
 
   *) mod_proxy, mod_ssl, mod_cache_socache, mod_socache_*: Support machine
