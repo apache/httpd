@@ -169,7 +169,7 @@ static int xlate_name(request_rec *r)
      * for this host... If so, don't do it again.
      */
     /*
-     * NOTE: dconf is process specific so this wil only
+     * NOTE: dconf is process specific so this will only
      *       work as long as we maintain that this process
      *       or thread is handling the backend
      */
