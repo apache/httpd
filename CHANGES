@@ -12,6 +12,10 @@ Changes with Apache 2.4.13
      calls r:wsupgrade() can cause a child process crash. 
      [Edward Lu <Chaosed0 gmail.com>]
 
+  *) mod_authn_dbd, mod_authz_dbd, mod_session_dbd, mod_rewrite: Fix lifetime
+     of DB lookup entries independently of the selected DB engine.  PR 46421.
+     [Steven whitson <steven.whitson gmail com>, Jan Kaluza, Yann Ylavic].
+
   *) In alignment with RFC 7525, the default recommended SSLCipherSuite
      and SSLProxyCipherSuite now exclude RC4 as well as MD5. Also, the
      default recommended SSLProtocol and SSLProxyProtocol directives now
