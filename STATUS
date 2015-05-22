@@ -128,7 +128,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://svn.apache.org/r979120 (partial)
                   http://svn.apache.org/r1467981
      2.2.x patch: http://people.apache.org/~rjung/patches/httpd-2.2.x-mod_log_config-get_request_end_time.patch
-     +1: rjung
+     +1: rjung, trawick
 
    * mod_log_config: Allow to choose request start or end time
      as time stamp in log (httpd traditionally uses start, many
