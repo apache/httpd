@@ -235,6 +235,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1420184
      2.4.x patch: trunk works
      +1: jkaluza
+     -1: never register to a hook/retrieve an optional function in register
+         hooks - it's strictly an advertising phase.
 
   *) OCSP stapling: Don't block initial handshakes while refreshing the OCSP 
      response for a different certificate plus additional minor changes
