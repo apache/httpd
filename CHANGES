@@ -1,6 +1,14 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.30
 
+  *) In alignment with RFC 7525, the default recommended SSLCipherSuite
+     and SSLProxyCipherSuite now exclude RC4 as well as MD5.  Existing
+     configurations must be adjusted by the administrator. [William Rowe]
+
+  *) In alignment with RFC 7525, the default recommended SSLProtocol and
+     SSLProxyProtocol directives now excludes SSLv3.  Existing configurations 
+     must be adjusted by the administrator. [William Rowe]
+
   *) core: Avoid potential use of uninitialized (NULL) request data in
      request line error path. [Yann Ylavic]
  
