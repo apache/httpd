@@ -127,14 +127,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      rjung: I know this was already committed to 2.4 although not yet released,
             but: wouldn't it be better to overload the existing %D with %{ms}D
             to save the precious "M". We slowly run out of chars for access log
-            patterns. I'd be willing to provide a patch for trunk/2.4/2.2 with the
-            %D (unchanged) and %{s}D, %{ms}D and %{us}D (seconds, milliseconds, microseconds)
-            syntax if there is some interest in it.
+            patterns. I'd be willing to provide a patch for trunk/2.4/2.2 with
+            the %D (unchanged) and %{s}D, %{ms}D and %{us}D (seconds,
+            milliseconds, microseconds) syntax if there is some interest in it.
      trawick: +1 to rjung's idea; excellent plan
-     ylavic: +1 too, but maybe use %{fmt}T instead?  We already either "loose" %T or %D
-             since %{s} = %T and %{us} = %D, T for Time (taken) is maybe more meaningful?
+     ylavic: +1 too, but maybe use %{fmt}T instead?  We already either "lose"
+             %T or %D since %{s} = %T and %{us} = %D, T for Time (taken) is
+             maybe more meaningful?
      rjung: It seems most prefer the %{...}T variant. I'll switch to that.
-     ylavic: OK, I merged the below proposal with this one. breser vote discared.
+     ylavic: OK, merged the below proposal with this one. breser vote discared.
 
    * mod_proxy: use the original (non absolute) form of the request-line's URI
      for requests embedded in CONNECT payloads used to connect SSL backends via
