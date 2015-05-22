@@ -105,12 +105,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) http: Make ap_die() robust against any HTTP error code and not modify
-     response status (finally logged) when nothing is to be done. PR 56035.
-     trunk patch: http://svn.apache.org/r1657881
-                  http://svn.apache.org/r1665643
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, minfrin, jim
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
