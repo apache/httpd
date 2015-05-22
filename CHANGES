@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.30
 
+  *) mod_log_config: Add "%{UNIT}T" format to output request duration in
+     seconds, milliseconds or microseconds depending on UNIT ("s", "ms", "us").
+     [Ben Reser, Rainer Jung]
+
   *) In alignment with RFC 7525, the default recommended SSLCipherSuite
      and SSLProxyCipherSuite now exclude RC4 as well as MD5. Also, the
      default recommended SSLProtocol and SSLProxyProtocol directives now
