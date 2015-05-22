@@ -105,6 +105,19 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) http: Make ap_die() robust against any HTTP error code and not modify
+     response status (finally logged) when nothing is to be done. PR 56035.
+     trunk patch: http://svn.apache.org/r1657881
+                  http://svn.apache.org/r1665643
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: ylavic, minfrin, jim
+
+  *) core: Cleanup the request soon/even if some output filter fails to
+     handle the EOR bucket.
+     trunk patch: http://svn.apache.org/r1666998
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: ylavic, minfrin, jim
+
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -179,13 +192,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-ap_listeners_buckets-v3.patch
      +1: ylavic, jim
 
-  *) http: Make ap_die() robust against any HTTP error code and not modify
-     response status (finally logged) when nothing is to be done. PR 56035.
-     trunk patch: http://svn.apache.org/r1657881
-                  http://svn.apache.org/r1665643
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, minfrin, jim
-
   *) core, modules: Avoid error response/document handling by the core if some
      handler or input filter already did it while reading the request (causing
      a double response body).
@@ -221,12 +227,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              returned according to {output,backend}_failed. So the clarification is
              possibly as simple as renaming output_failed => client_failed (r1674056 added
              above), WDYT?
-
-  *) core: Cleanup the request soon/even if some output filter fails to
-     handle the EOR bucket.
-     trunk patch: http://svn.apache.org/r1666998
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, minfrin, jim
 
   *) http: Don't remove the Content-Length of zero from a HEAD response if
      it comes from an origin server, module or script. Allow the previous
