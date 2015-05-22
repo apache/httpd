@@ -43,6 +43,9 @@ Changes with Apache 2.2.30
      conf/extra/httpd-ssl.conf file are now global in scope, affecting all
      VirtualHosts (matching 2.4 default configuration). [William Rowe]
 
+  *) mod_authn_dbd: Fix lifetime of DB lookup entries independently of the
+     selected DB engine.  PR 46421.  [Jan Kaluza].
+
   *) Turn static function get_server_name_for_url() into public
      ap_get_server_name_for_url() and use it where appropriate. This
      fixes mod_rewrite generating invalid URLs for redirects to IPv6
