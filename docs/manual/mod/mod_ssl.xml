@@ -2563,7 +2563,9 @@ dd if=/dev/random of=/path/to/file.tkey bs=1 count=48
 
 <p>Ticket keys should be rotated (replaced) on a frequent basis,
 as this is the only way to invalidate an existing session ticket -
-OpenSSL currently doesn't allow to specify a limit for ticket lifetimes.</p>
+OpenSSL currently doesn't allow to specify a limit for ticket lifetimes.
+A new ticket key only gets used after restarting the web server.
+All existing session tickets become invalid after a restart.</p>
 
 <note type="warning">
 <p>The ticket key file contains sensitive keying material and should
