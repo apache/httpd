@@ -105,13 +105,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_authn_dbd, mod_authz_dbd, mod_session_dbd, mod_rewrite: Fix lifetime
-     of DB lookup entries independently of the selected DB engine.  PR 46421.
-     trunk patch: http://svn.apache.org/r1663647
-                  http://svn.apache.org/r1679181
-                  http://svn.apache.org/r1679182
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, minfrin, jkaluza, wrowe
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:

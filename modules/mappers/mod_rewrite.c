@@ -1352,12 +1352,14 @@ static char *lookup_map_dbd(request_rec *r, char *key, const char *label)
     while ((rv = apr_dbd_get_row(db->driver, r->pool, res, &row, -1)) == 0) {
         ++n;
         if (ret == NULL) {
-            ret = apr_dbd_get_entry(db->driver, row, 0);
+            ret = apr_pstrdup(r->pool,
+                              apr_dbd_get_entry(db->driver, row, 0));
         }
         else {
             /* randomise crudely amongst multiple results */
             if ((double)rand() < (double)RAND_MAX/(double)n) {
-                ret = apr_dbd_get_entry(db->driver, row, 0);
+                ret = apr_pstrdup(r->pool,
+                                  apr_dbd_get_entry(db->driver, row, 0));
             }
         }
     }
@@ -1370,11 +1372,11 @@ static char *lookup_map_dbd(request_rec *r, char *key, const char *label)
     case 0:
         return NULL;
     case 1:
-        return apr_pstrdup(r->pool, ret);
+        return ret;
     default:
         /* what's a fair rewritelog level for this? */
         rewritelog((r, 3, NULL, "Multiple values found for %s", key));
-        return apr_pstrdup(r->pool, ret);
+        return ret;
     }
 }
 

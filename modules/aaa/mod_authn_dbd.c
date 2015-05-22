@@ -174,7 +174,8 @@ static authn_status authn_dbd_password(request_rec *r, const char *user,
                 i++;
             }
 #endif
-            dbd_password = apr_dbd_get_entry(dbd->driver, row, 0);
+            dbd_password = apr_pstrdup(r->pool,
+                                       apr_dbd_get_entry(dbd->driver, row, 0));
         }
         /* we can't break out here or row won't get cleaned up */
     }
@@ -269,7 +270,8 @@ static authn_status authn_dbd_realm(request_rec *r, const char *user,
                 i++;
             }
 #endif
-            dbd_hash = apr_dbd_get_entry(dbd->driver, row, 0);
+            dbd_hash = apr_pstrdup(r->pool,
+                                   apr_dbd_get_entry(dbd->driver, row, 0));
         }
         /* we can't break out here or row won't get cleaned up */
     }
