@@ -19,7 +19,7 @@ Changes with Apache 2.4.13
   *) In alignment with RFC 7525, the default recommended SSLCipherSuite
      and SSLProxyCipherSuite now exclude RC4 as well as MD5. Also, the
      default recommended SSLProtocol and SSLProxyProtocol directives now
-     excludes SSLv3. Existing configurations must be adjusted by the
+     exclude SSLv3. Existing configurations must be adjusted by the
      administrator. [William Rowe]
 
   *) mod_ssl: Add support for extracting subjectAltName entries of type
@@ -82,7 +82,7 @@ Changes with Apache 2.4.13
   *) mod_ssl: Fix possible crash when loading server certificate constraints.
      PR 57694. [Paul Spangler <paul.spangler ni com>, Yann Ylavic]
 
-  *) build: Don't load mod_cgi and mod_cgid in the default configuration
+  *) build: Don't load both mod_cgi and mod_cgid in the default configuration
      if they're both built.  [olli hauer <ohauer gmx.de>]
 
   *) mod_logio: Add LogIOTrackTTFB and %^FB logformat to log the time 
