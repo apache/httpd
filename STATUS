@@ -101,6 +101,22 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * mod_proxy: use the original (non absolute) form of the request-line's URI
+     for requests embedded in CONNECT payloads used to connect SSL backends via
+     a ProxyRemote forward-proxy. PR 55892.
+     trunk patch: http://svn.apache.org/r1665215
+                  http://svn.apache.org/r1665218 (CHANGES entry)
+     2.2.x patch: trunk works (modulo CHANGES)
+     +1: ylavic, wrowe
+
+   * mod_authn_dbd: Fix lifetime of DB lookup entries independently of the
+     selected DB engine.  PR 46421.
+     trunk patch: http://svn.apache.org/r1663647
+                  http://svn.apache.org/r1679182
+     2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-apr_dbd_get_entry_lifetime.patch
+                  (trunk works but the patch includes a CHANGES entry relative to 2.2.x only)
+     +1: ylavic, rjung, wrowe
+
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -131,22 +147,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                     http://svn.apache.org/r1611169
      2.2.x patch: http://people.apache.org/~wrowe/httpd-2.2-utf8-servicename.patch
      +1: wrowe, gsmith
-
-   * mod_proxy: use the original (non absolute) form of the request-line's URI
-     for requests embedded in CONNECT payloads used to connect SSL backends via
-     a ProxyRemote forward-proxy. PR 55892.
-     trunk patch: http://svn.apache.org/r1665215
-                  http://svn.apache.org/r1665218 (CHANGES entry)
-     2.2.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, wrowe
-
-   * mod_authn_dbd: Fix lifetime of DB lookup entries independently of the
-     selected DB engine.  PR 46421.
-     trunk patch: http://svn.apache.org/r1663647
-                  http://svn.apache.org/r1679182
-     2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-apr_dbd_get_entry_lifetime.patch
-                  (trunk works but the patch includes a CHANGES entry relative to 2.2.x only)
-     +1: ylavic, rjung
 
   *) mod_log_config: instead of using the dedicated pattern format "%M" for
      duration milliseconds, overload the existing "%D" to choose the time
