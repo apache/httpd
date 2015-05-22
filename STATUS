@@ -113,6 +113,21 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic, minfrin, jkaluza, wrowe
 
+  *) mod_log_config: instead of using the dedicated pattern format "%M" for
+     duration milliseconds, overload the existing "%T" to choose the time
+     precision ("%{s}T" for seconds, "%{ms}T" for milliseconds and
+     "%{us}T" for microseconds). The existing %T and %D without precision
+     are kept for compatibility. The previously introduced "%M" is removed,
+     it has not yet been released.
+     Format pattern characters are rare, so we should only use a new one
+     if an existing one isn't a good fit.
+     trunk patch: http://svn.apache.org/r1680895
+                  http://svn.apache.org/r1680900
+                  http://svn.apache.org/r1680942
+     2.4.x patch: http://people.apache.org/~trawick/mod_log_config-r1680895-r1680900-r1680942-to-2.4.x.txt
+                  (trunk works plus CHANGES)
+     +1: trawick, ylavic, wrowe
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -262,21 +277,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works with the usual CHANGES manipulation, or grab
      http://people.apache.org/~trawick/OCSP-stapling-1679032-1679192-1680276.txt
      +1: trawick
-
-  *) mod_log_config: instead of using the dedicated pattern format "%M" for
-     duration milliseconds, overload the existing "%T" to choose the time
-     precision ("%{s}T" for seconds, "%{ms}T" for milliseconds and
-     "%{us}T" for microseconds). The existing %T and %D without precision
-     are kept for compatibility. The previously introduced "%M" is removed,
-     it has not yet been released.
-     Format pattern characters are rare, so we should only use a new one
-     if an existing one isn't a good fit.
-     trunk patch: http://svn.apache.org/r1680895
-                  http://svn.apache.org/r1680900
-                  http://svn.apache.org/r1680942
-     2.4.x patch: http://people.apache.org/~trawick/mod_log_config-r1680895-r1680900-r1680942-to-2.4.x.txt
-                  (trunk works plus CHANGES)
-     +1: trawick, ylavic
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
