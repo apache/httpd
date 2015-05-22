@@ -120,6 +120,7 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-mod_log_config-time_taken_fmt.patch
                   (modulo CHANGES)
      +1: ylavic, wrowe, rjung
+     rjung: Please adjust version number in compatibility hint.
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
