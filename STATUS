@@ -184,7 +184,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1657881
                   http://svn.apache.org/r1665643
      2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, minfrin
+     +1: ylavic, minfrin, jim
 
   *) core, modules: Avoid error response/document handling by the core if some
      handler or input filter already did it while reading the request (causing
@@ -226,7 +226,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      handle the EOR bucket.
      trunk patch: http://svn.apache.org/r1666998
      2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, minfrin
+     +1: ylavic, minfrin, jim
 
   *) http: Don't remove the Content-Length of zero from a HEAD response if
      it comes from an origin server, module or script. Allow the previous
@@ -254,7 +254,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: r1679032 + r1679192 + r1680276
      2.4.x patch: trunk works with the usual CHANGES manipulation, or grab
      http://people.apache.org/~trawick/OCSP-stapling-1679032-1679192-1680276.txt
-     +1: trawick
+     +1: trawick, jim
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
