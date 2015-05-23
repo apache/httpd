@@ -230,6 +230,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              ints added at the end of core_server_config, the proposed merge
              does a minor bump only.
 
+  *) fix new warnings in mod_rewrite once r1679181 was merged:
+     trunk patch: http://svn.apache.org/r1679712
+     2.4.x patch: trunk patch works
+     +1: trawick
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
