@@ -105,6 +105,11 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) fix new warnings in mod_rewrite once r1679181 was merged:
+     trunk patch: http://svn.apache.org/r1679712
+     2.4.x patch: trunk patch works
+     +1: trawick, ylavic, rjung
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -229,11 +234,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      ylavic: r1554303 issued a major MMN bump, but since the ABI change is two
              ints added at the end of core_server_config, the proposed merge
              does a minor bump only.
-
-  *) fix new warnings in mod_rewrite once r1679181 was merged:
-     trunk patch: http://svn.apache.org/r1679712
-     2.4.x patch: trunk patch works
-     +1: trawick, ylavic
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
