@@ -9,6 +9,9 @@ Changes with Apache 2.2.30
   *) mpm_winnt: Accept utf-8 (Unicode) service names and descriptions for
      internationalization.  [William Rowe]
 
+  *) mod_log_config: Implement logging for sub second timestamps and
+     request end time.  [Rainer Jung]
+
   *) mod_log_config: Ensure that time data is consistent if multiple
      duration patterns are used in combination, e.g. %D and %{ms}T.
      [Rainer Jung]
