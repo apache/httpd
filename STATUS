@@ -119,8 +119,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Needed get_request_end_time() was already ported back.
      trunk patch: http://svn.apache.org/r979120 (remaining parts)
      2.4.x patch: http://svn.apache.org/r979120 (remaining parts)
-     2.2.x patch: http://people.apache.org/~rjung/patches/httpd-2.2.x-mod_log_config-more_time_formats.patch
+     2.2.x patch: http://people.apache.org/~rjung/patches/httpd-2.2.x-mod_log_config-more_time_formats-v2.patch
      +1: rjung, wrowe
+     rjung: I had forgotten the docs part. Added in v2 patch. OK to keep Bill's vote?
 
 
 PATCHES/ISSUES THAT ARE STALLED
