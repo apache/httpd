@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='ISO-8859-1' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- English Revision: 1334000:1673563 (outdated) -->
+<!-- English Revision: 1673563 -->
 <!-- French translation by alain B, review by Vincent Deffontaines -->
 <!-- Updated by Lucien Gentis -->
 
@@ -131,18 +131,18 @@ résident pour des serveurs virtuels</title>
     <highlight language="config">
 &lt;VirtualHost 172.20.30.40:80&gt;
     ServerAdmin webmaster@www1.example.com
-    DocumentRoot /www/vhosts/www1
+    DocumentRoot "/www/vhosts/www1"
     ServerName www1.example.com
-    ErrorLog /www/logs/www1/error_log
-    CustomLog /www/logs/www1/access_log combined
+    ErrorLog "/www/logs/www1/error_log"
+    CustomLog "/www/logs/www1/access_log" combined
 &lt;/VirtualHost&gt;
 
 &lt;VirtualHost 172.20.30.50:80&gt;
     ServerAdmin webmaster@www2.example.org
-    DocumentRoot /www/vhosts/www2
+    DocumentRoot "/www/vhosts/www2"
     ServerName www2.example.org
-    ErrorLog /www/logs/www2/error_log
-    CustomLog /www/logs/www2/access_log combined
+    ErrorLog "/www/logs/www2/error_log"
+    CustomLog "/www/logs/www2/access_log" combined
 &lt;/VirtualHost&gt;
     </highlight>
 

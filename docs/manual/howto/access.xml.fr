@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- English Revision: 1666026:1673563 (outdated) -->
+<!-- English Revision: 1673563 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -187,9 +187,9 @@ d'acc&egrave;s</title>
 
     <highlight language="config">
 RewriteEngine On
-RewriteCond %{TIME_HOUR} &gt;=20 [OR]
-RewriteCond %{TIME_HOUR} &lt;07
-RewriteRule ^/fridge - [F]
+RewriteCond "%{TIME_HOUR}" "&gt;=20" [OR]
+RewriteCond "%{TIME_HOUR}" "&lt;07"
+RewriteRule "^/fridge" "-" [F]
     </highlight>
 
     <p>Toute requ&ecirc;te arrivant apr&egrave;s 20h ou avant 7h du matin provoquera
