@@ -28,8 +28,7 @@
 #include "http_request.h"
 
 #include "mod_auth.h"
-
-APR_DECLARE_OPTIONAL_FN(char*, authz_owner_get_file_group, (request_rec *r));
+#include "mod_authz_owner.h"
 
 static const command_rec authz_owner_cmds[] =
 {
