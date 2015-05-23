@@ -12,6 +12,10 @@ Changes with Apache 2.4.13
      calls r:wsupgrade() can cause a child process crash. 
      [Edward Lu <Chaosed0 gmail.com>]
 
+  *) mod_ssl OCSP Stapling: Don't block initial handshakes while refreshing
+     the OCSP response for a different certificate.  mod_ssl has an additional
+     global mutex, "ssl-stapling-refresh".  [Jeff Trawick]
+
   *) mod_authz_dbm: Fix crashes when "dbm-file-group" is used and
      authz modules were loaded in the "wrong" order.  [Joe Orton]
 

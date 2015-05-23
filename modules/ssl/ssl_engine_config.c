@@ -71,7 +71,8 @@ SSLModConfigRec *ssl_config_global_create(server_rec *s)
 #endif
 #ifdef HAVE_OCSP_STAPLING
     mc->stapling_cache         = NULL;
-    mc->stapling_mutex         = NULL;
+    mc->stapling_cache_mutex   = NULL;
+    mc->stapling_refresh_mutex = NULL;
 #endif
 
     apr_pool_userdata_set(mc, SSL_MOD_CONFIG_KEY,
