@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.30
 
+  *) mod_proxy: use the original (non absolute) form of the request-line's URI
+     for requests embedded in CONNECT payloads used to connect SSL backends via
+     a ProxyRemote forward-proxy.  PR 55892.  [Hendrik Harms <hendrik.harms
+     gmail com>, William Rowe, Yann Ylavic]
+
   *) mpm_winnt: Accept utf-8 (Unicode) service names and descriptions for
      internationalization.  [William Rowe]
 
