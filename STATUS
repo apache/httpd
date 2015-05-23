@@ -101,14 +101,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_proxy: use the original (non absolute) form of the request-line's URI
-     for requests embedded in CONNECT payloads used to connect SSL backends via
-     a ProxyRemote forward-proxy. PR 55892.
-     trunk patch: http://svn.apache.org/r1665215
-                  http://svn.apache.org/r1665218 (CHANGES entry)
-     2.2.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, wrowe, rjung
-
    * mod_log_config: Allow to choose request start or end time
      as time stamp in log (httpd traditionally uses start, many
      other components, e.g. Tomcat use end time, so they are kind
