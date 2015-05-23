@@ -105,15 +105,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-
-  *) mod_authz_dbm, mod_authz_owner: Retrieve the optional
-     authz_owner_get_file_group function in a hook. This fixes crash when
-     mod_authz_dbm is loaded before mod_authz_owner and
-     "Require dbm-file-group" is used.
-     trunk patch: http://svn.apache.org/r1420184
-     2.4.x patch: trunk works
-     +1: jkaluza, wrowe, jorton
-
   *) OCSP stapling: Don't block initial handshakes while refreshing the OCSP 
      response for a different certificate plus additional minor changes
      trunk patch: r1679032 + r1679192 + r1680276
