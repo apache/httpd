@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='ISO-8859-1' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1647229:1673945 (outdated) -->
+<!-- English Revision: 1673945 -->
 <!-- French translation by alain B, review by Vincent Deffontaines
 	updated by Lucien GENTIS -->
 
@@ -183,12 +183,12 @@ virtuel basé sur le nom approprié</title>
     # serveur par défaut pour *:80
     ServerName www.example.com
     ServerAlias example.com
-    DocumentRoot /www/domain
+    DocumentRoot "/www/domain"
 &lt;/VirtualHost&gt;
 
 &lt;VirtualHost *:80&gt;
     ServerName other.example.com
-    DocumentRoot /www/otherdomain
+    DocumentRoot "/www/otherdomain"
 &lt;/VirtualHost&gt;
     </highlight>
 

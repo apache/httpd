@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='ISO-8859-1' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1561569:1674195 (outdated) -->
+<!-- English Revision: 1674195 -->
 <!-- French translation by Vincent Deffontaines, review by alain B -->
 <!-- Updated by Lucien Gentis -->
 
@@ -109,7 +109,7 @@ de définition du format de journalisations&nbsp;:</p>
 
 <highlight language="config">
 LogFormat "%v %h %l %u %t \"%r\" %&gt;s %b" vhost
-CustomLog logs/multiple_vhost_log vhost
+CustomLog "logs/multiple_vhost_log" vhost
 </highlight>
 
 <p>Cette configuration va provoquer la création d'un fichier de
