@@ -29,13 +29,12 @@
 #include "http_request.h"   /* for ap_hook_(check_user_id | auth_checker)*/
 
 #include "mod_auth.h"
+#include "mod_authz_owner.h"
 
 typedef struct {
     const char *grpfile;
     const char *dbmtype;
 } authz_dbm_config_rec;
-
-APR_DECLARE_OPTIONAL_FN(char*, authz_owner_get_file_group, (request_rec *r));
 
 
 /* This should go into APR; perhaps with some nice
@@ -212,7 +211,7 @@ static authz_status dbmgroup_check_authorization(request_rec *r,
     return AUTHZ_DENIED;
 }
 
-APR_OPTIONAL_FN_TYPE(authz_owner_get_file_group) *authz_owner_get_file_group;
+static APR_OPTIONAL_FN_TYPE(authz_owner_get_file_group) *authz_owner_get_file_group;
 
 static authz_status dbmfilegroup_check_authorization(request_rec *r,
                                                      const char *require_args,
@@ -307,11 +306,13 @@ static const authz_provider authz_dbmfilegroup_provider =
     NULL,
 };
 
+static void authz_dbm_getfns(void)
+{
+    authz_owner_get_file_group = APR_RETRIEVE_OPTIONAL_FN(authz_owner_get_file_group);
+}
 
 static void register_hooks(apr_pool_t *p)
 {
-    authz_owner_get_file_group = APR_RETRIEVE_OPTIONAL_FN(authz_owner_get_file_group);
-
     ap_register_auth_provider(p, AUTHZ_PROVIDER_GROUP, "dbm-group",
                               AUTHZ_PROVIDER_VERSION,
                               &authz_dbmgroup_provider,
@@ -320,6 +321,7 @@ static void register_hooks(apr_pool_t *p)
                               AUTHZ_PROVIDER_VERSION,
                               &authz_dbmfilegroup_provider,
                               AP_AUTH_INTERNAL_PER_CONF);
+    ap_hook_optional_fn_retrieve(authz_dbm_getfns, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
 AP_DECLARE_MODULE(authz_dbm) =
