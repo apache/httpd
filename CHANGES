@@ -14,7 +14,8 @@ Changes with Apache 2.4.13
 
   *) mod_ssl OCSP Stapling: Don't block initial handshakes while refreshing
      the OCSP response for a different certificate.  mod_ssl has an additional
-     global mutex, "ssl-stapling-refresh".  [Jeff Trawick]
+     global mutex, "ssl-stapling-refresh".  PR 57131 (partial fix).
+     [Jeff Trawick]
 
   *) mod_authz_dbm: Fix crashes when "dbm-file-group" is used and
      authz modules were loaded in the "wrong" order.  [Joe Orton]
