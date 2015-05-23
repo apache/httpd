@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1599844:1673563 (outdated) -->
+<!-- English Revision: 1673563 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviwed by : Vincent Deffontaines -->
 
@@ -209,14 +209,14 @@ module de chaque groupe.</p>
     utiliser les directives suivantes, soit dans le fichier
     <code>/usr/local/apache/htdocs/secret/.htaccess</code>, soit dans le
     fichier <code>httpd.conf</code> &agrave; l'int&eacute;rieur d'une section &lt;Directory
-    /usr/local/apache/htdocs/secret&gt; :</p>
+    "/usr/local/apache/htdocs/secret"&gt; :</p>
 
     <highlight language="config">
 AuthType Basic
 AuthName "Restricted Files"
 # (Following line optional)
 AuthBasicProvider file
-AuthUserFile /usr/local/apache/passwd/passwords
+AuthUserFile "/usr/local/apache/passwd/passwords"
 Require user rbowen
     </highlight>
 
@@ -331,8 +331,8 @@ AuthType Basic
 AuthName "By Invitation Only"
 # Optional line:
 AuthBasicProvider file
-AuthUserFile /usr/local/apache/passwd/passwords
-AuthGroupFile /usr/local/apache/passwd/groups
+AuthUserFile "/usr/local/apache/passwd/passwords"
+AuthGroupFile "/usr/local/apache/passwd/groups"
 Require group GroupName
     </highlight>
 
@@ -392,12 +392,12 @@ passe</title>
     fichier texte :</p>
 
     <highlight language="config">
-&lt;Directory /www/docs/private&gt;
+&lt;Directory "/www/docs/private"&gt;
 
     AuthName "Private"
     AuthType Basic
     AuthBasicProvider dbm
-    AuthDBMUserFile /www/passwords/passwd.dbm
+    AuthDBMUserFile "/www/passwords/passwd.dbm"
     Require valid-user
 
 &lt;/Directory&gt;
@@ -420,12 +420,12 @@ d'authentification</title>
     file et LDAP :</p>
 
     <highlight language="config">
-&lt;Directory /www/docs/private&gt;
+&lt;Directory "/www/docs/private"&gt;
 
     AuthName "Private"
     AuthType Basic
     AuthBasicProvider file ldap
-    AuthUserFile /usr/local/apache/passwd/passwords
+    AuthUserFile "/usr/local/apache/passwd/passwords"
     AuthLDAPURL ldap://ldaphost/o=yourorg
     Require valid-user
 
@@ -449,14 +449,14 @@ d'authentification</title>
     de groupes LDAP.</p>
 
     <highlight language="config">
-&lt;Directory /www/docs/private&gt;
+&lt;Directory "/www/docs/private"&gt;
 
     AuthName "Private"
     AuthType Basic
     AuthBasicProvider file
-    AuthUserFile /usr/local/apache/passwd/passwords
+    AuthUserFile "/usr/local/apache/passwd/passwords"
     AuthLDAPURL ldap://ldaphost/o=yourorg
-    AuthGroupFile /usr/local/apache/passwd/groups
+    AuthGroupFile "/usr/local/apache/passwd/groups"
     Require group GroupName
     Require ldap-group cn=mygroup,o=yourorg
 
