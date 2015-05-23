@@ -233,7 +233,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) fix new warnings in mod_rewrite once r1679181 was merged:
      trunk patch: http://svn.apache.org/r1679712
      2.4.x patch: trunk patch works
-     +1: trawick
+     +1: trawick, ylavic
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
