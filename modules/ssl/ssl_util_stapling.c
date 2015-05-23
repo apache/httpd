@@ -34,6 +34,9 @@
 
 #ifdef HAVE_OCSP_STAPLING
 
+static int stapling_cache_mutex_on(server_rec *s);
+static int stapling_cache_mutex_off(server_rec *s);
+
 /**
  * Maxiumum OCSP stapling response size. This should be the response for a
  * single certificate and will typically include the responder certificate chain
@@ -247,9 +250,13 @@ static BOOL stapling_cache_response(server_rec *s, modssl_ctx_t *mctx,
 
     i2d_OCSP_RESPONSE(rsp, &p);
 
+    if (mc->stapling_cache->flags & AP_SOCACHE_FLAG_NOTMPSAFE)
+        stapling_cache_mutex_on(s);
     rv = mc->stapling_cache->store(mc->stapling_cache_context, s,
                                    cinf->idx, sizeof(cinf->idx),
                                    expiry, resp_der, stored_len, pool);
+    if (mc->stapling_cache->flags & AP_SOCACHE_FLAG_NOTMPSAFE)
+        stapling_cache_mutex_off(s);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(01929)
                      "stapling_cache_response: OCSP response session store error!");
@@ -259,7 +266,7 @@ static BOOL stapling_cache_response(server_rec *s, modssl_ctx_t *mctx,
     return TRUE;
 }
 
-static BOOL stapling_get_cached_response(server_rec *s, OCSP_RESPONSE **prsp,
+static void stapling_get_cached_response(server_rec *s, OCSP_RESPONSE **prsp,
                                          BOOL *pok, certinfo *cinf,
                                          apr_pool_t *pool)
 {
@@ -270,40 +277,43 @@ static BOOL stapling_get_cached_response(server_rec *s, OCSP_RESPONSE **prsp,
     const unsigned char *p;
     unsigned int resp_derlen = MAX_STAPLING_DER;
 
+    if (mc->stapling_cache->flags & AP_SOCACHE_FLAG_NOTMPSAFE)
+        stapling_cache_mutex_on(s);
     rv = mc->stapling_cache->retrieve(mc->stapling_cache_context, s,
                                       cinf->idx, sizeof(cinf->idx),
                                       resp_der, &resp_derlen, pool);
+    if (mc->stapling_cache->flags & AP_SOCACHE_FLAG_NOTMPSAFE)
+        stapling_cache_mutex_off(s);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01930)
                      "stapling_get_cached_response: cache miss");
-        return TRUE;
+        return;
     }
     if (resp_derlen <= 1) {
+        /* should-not-occur; must have at least valid-when-stored flag +
+         * OCSPResponseStatus
+         */
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(01931)
                      "stapling_get_cached_response: response length invalid??");
-        return TRUE;
+        return;
     }
     p = resp_der;
-    if (pok) {
-        if (*p)
-            *pok = TRUE;
-        else
-            *pok = FALSE;
-    }
+    if (*p) /* valid when stored */
+        *pok = TRUE;
+    else
+        *pok = FALSE;
     p++;
     resp_derlen--;
     rsp = d2i_OCSP_RESPONSE(NULL, &p, resp_derlen);
     if (!rsp) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(01932)
                      "stapling_get_cached_response: response parse error??");
-        return TRUE;
+        return;
     }
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01933)
                  "stapling_get_cached_response: cache hit");
 
     *prsp = rsp;
-
-    return TRUE;
 }
 
 static int stapling_set_response(SSL *ssl, OCSP_RESPONSE *rsp)
@@ -506,7 +516,7 @@ err:
 }
 
 /*
- * SSLStaplingMutex operations. Similar to SSL mutex except a mutex is
+ * SSL stapling mutex operations. Similar to SSL mutex except mutexes are
  * mandatory if stapling is enabled.
  */
 static int ssl_stapling_mutex_init(server_rec *s, apr_pool_t *p)
@@ -515,12 +525,23 @@ static int ssl_stapling_mutex_init(server_rec *s, apr_pool_t *p)
     SSLSrvConfigRec *sc = mySrvConfig(s);
     apr_status_t rv;
 
-    if (mc->stapling_mutex || sc->server->stapling_enabled != TRUE) {
+    /* already init or stapling not enabled? */
+    if (mc->stapling_refresh_mutex || sc->server->stapling_enabled != TRUE) {
         return TRUE;
     }
 
-    if ((rv = ap_global_mutex_create(&mc->stapling_mutex, NULL,
-                                     SSL_STAPLING_MUTEX_TYPE, NULL, s,
+    /* need a cache mutex? */
+    if (mc->stapling_cache->flags & AP_SOCACHE_FLAG_NOTMPSAFE) {
+        if ((rv = ap_global_mutex_create(&mc->stapling_cache_mutex, NULL,
+                                         SSL_STAPLING_CACHE_MUTEX_TYPE, NULL, s,
+                                         s->process->pool, 0)) != APR_SUCCESS) {
+            return FALSE;
+        }
+    }
+
+    /* always need stapling_refresh_mutex */
+    if ((rv = ap_global_mutex_create(&mc->stapling_refresh_mutex, NULL,
+                                     SSL_STAPLING_REFRESH_MUTEX_TYPE, NULL, s,
                                      s->process->pool, 0)) != APR_SUCCESS) {
         return FALSE;
     }
@@ -528,65 +549,159 @@ static int ssl_stapling_mutex_init(server_rec *s, apr_pool_t *p)
     return TRUE;
 }
 
-int ssl_stapling_mutex_reinit(server_rec *s, apr_pool_t *p)
+static int stapling_mutex_reinit_helper(server_rec *s, apr_pool_t *p, 
+                                        apr_global_mutex_t **mutex,
+                                        const char *type)
 {
-    SSLModConfigRec *mc = myModConfig(s);
     apr_status_t rv;
     const char *lockfile;
 
-    if (mc->stapling_mutex == NULL) {
-        return TRUE;
-    }
-
-    lockfile = apr_global_mutex_lockfile(mc->stapling_mutex);
-    if ((rv = apr_global_mutex_child_init(&mc->stapling_mutex,
+    lockfile = apr_global_mutex_lockfile(*mutex);
+    if ((rv = apr_global_mutex_child_init(mutex,
                                           lockfile, p)) != APR_SUCCESS) {
         if (lockfile) {
             ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(01946)
                          "Cannot reinit %s mutex with file `%s'",
-                         SSL_STAPLING_MUTEX_TYPE, lockfile);
+                         type, lockfile);
         }
         else {
             ap_log_error(APLOG_MARK, APLOG_WARNING, rv, s, APLOGNO(01947)
-                         "Cannot reinit %s mutex", SSL_STAPLING_MUTEX_TYPE);
+                         "Cannot reinit %s mutex", type);
         }
         return FALSE;
     }
     return TRUE;
 }
 
-static int stapling_mutex_on(server_rec *s)
+int ssl_stapling_mutex_reinit(server_rec *s, apr_pool_t *p)
 {
     SSLModConfigRec *mc = myModConfig(s);
+
+    if (mc->stapling_cache_mutex != NULL
+        && stapling_mutex_reinit_helper(s, p, &mc->stapling_cache_mutex,
+                                        SSL_STAPLING_CACHE_MUTEX_TYPE) == FALSE) {
+        return FALSE;
+    }
+
+    if (mc->stapling_refresh_mutex != NULL
+        && stapling_mutex_reinit_helper(s, p, &mc->stapling_refresh_mutex,
+                                        SSL_STAPLING_REFRESH_MUTEX_TYPE) == FALSE) {
+        return FALSE;
+    }
+
+    return TRUE;
+}
+
+static int stapling_mutex_on(server_rec *s, apr_global_mutex_t *mutex,
+                             const char *name)
+{
     apr_status_t rv;
 
-    if ((rv = apr_global_mutex_lock(mc->stapling_mutex)) != APR_SUCCESS) {
+    if ((rv = apr_global_mutex_lock(mutex)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_WARNING, rv, s, APLOGNO(01948)
-                     "Failed to acquire OCSP stapling lock");
+                     "Failed to acquire OCSP %s lock", name);
         return FALSE;
     }
     return TRUE;
 }
 
-static int stapling_mutex_off(server_rec *s)
+static int stapling_mutex_off(server_rec *s, apr_global_mutex_t *mutex,
+                              const char *name)
 {
-    SSLModConfigRec *mc = myModConfig(s);
     apr_status_t rv;
 
-    if ((rv = apr_global_mutex_unlock(mc->stapling_mutex)) != APR_SUCCESS) {
+    if ((rv = apr_global_mutex_unlock(mutex)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_WARNING, rv, s, APLOGNO(01949)
-                     "Failed to release OCSP stapling lock");
+                     "Failed to release OCSP %s lock", name);
         return FALSE;
     }
     return TRUE;
+}
+
+static int stapling_cache_mutex_on(server_rec *s)
+{
+    SSLModConfigRec *mc = myModConfig(s);
+
+    return stapling_mutex_on(s, mc->stapling_cache_mutex,
+                             SSL_STAPLING_CACHE_MUTEX_TYPE);
+}
+
+static int stapling_cache_mutex_off(server_rec *s)
+{
+    SSLModConfigRec *mc = myModConfig(s);
+
+    return stapling_mutex_off(s, mc->stapling_cache_mutex,
+                              SSL_STAPLING_CACHE_MUTEX_TYPE);
+}
+
+static int stapling_refresh_mutex_on(server_rec *s)
+{
+    SSLModConfigRec *mc = myModConfig(s);
+
+    return stapling_mutex_on(s, mc->stapling_refresh_mutex,
+                             SSL_STAPLING_REFRESH_MUTEX_TYPE);
+}
+
+static int stapling_refresh_mutex_off(server_rec *s)
+{
+    SSLModConfigRec *mc = myModConfig(s);
+
+    return stapling_mutex_off(s, mc->stapling_refresh_mutex,
+                              SSL_STAPLING_REFRESH_MUTEX_TYPE);
+}
+
+static int get_and_check_cached_response(server_rec *s, modssl_ctx_t *mctx,
+                                         OCSP_RESPONSE **rsp, certinfo *cinf, 
+                                         apr_pool_t *p)
+{
+    BOOL ok;
+    int rv;
+
+    AP_DEBUG_ASSERT(*rsp == NULL);
+
+    /* Check to see if we already have a response for this certificate */
+    stapling_get_cached_response(s, rsp, &ok, cinf, p);
+
+    if (*rsp) {
+        /* see if response is acceptable */
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01953)
+                     "stapling_cb: retrieved cached response");
+        rv = stapling_check_response(s, mctx, cinf, *rsp, NULL);
+        if (rv == SSL_TLSEXT_ERR_ALERT_FATAL) {
+            OCSP_RESPONSE_free(*rsp);
+            *rsp = NULL;
+            return SSL_TLSEXT_ERR_ALERT_FATAL;
+        }
+        else if (rv == SSL_TLSEXT_ERR_NOACK) {
+            /* Error in response. If this error was not present when it was
+             * stored (i.e. response no longer valid) then it can be
+             * renewed straight away.
+             *
+             * If the error *was* present at the time it was stored then we
+             * don't renew the response straight away; we just wait for the
+             * cached response to expire.
+             */
+            if (ok) {
+                OCSP_RESPONSE_free(*rsp);
+                *rsp = NULL;
+            }
+            else if (!mctx->stapling_return_errors) {
+                OCSP_RESPONSE_free(*rsp);
+                *rsp = NULL;
+                return SSL_TLSEXT_ERR_NOACK;
+            }
+        }
+    }
+    return 0;
 }
 
 /* Certificate Status callback. This is called when a client includes a
  * certificate status request extension.
  *
  * Check for cached responses in session cache. If valid send back to
- * client.  If absent or no longer valid query responder and update
- * cache. */
+ * client.  If absent or no longer valid, query responder and update
+ * cache.
+ */
 static int stapling_cb(SSL *ssl, void *arg)
 {
     conn_rec *conn      = (conn_rec *)SSL_get_app_data(ssl);
@@ -597,7 +712,6 @@ static int stapling_cb(SSL *ssl, void *arg)
     certinfo *cinf = NULL;
     OCSP_RESPONSE *rsp = NULL;
     int rv;
-    BOOL ok;
 
     if (sc->server->stapling_enabled != TRUE) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01950)
@@ -616,59 +730,50 @@ static int stapling_cb(SSL *ssl, void *arg)
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01952)
                  "stapling_cb: retrieved cached certificate data");
 
-    /* Check to see if we already have a response for this certificate */
-    stapling_mutex_on(s);
-
-    rv = stapling_get_cached_response(s, &rsp, &ok, cinf, conn->pool);
-    if (rv == FALSE) {
-        stapling_mutex_off(s);
-        return SSL_TLSEXT_ERR_ALERT_FATAL;
-    }
-
-    if (rsp) {
-        /* see if response is acceptable */
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01953)
-                     "stapling_cb: retrieved cached response");
-        rv = stapling_check_response(s, mctx, cinf, rsp, NULL);
-        if (rv == SSL_TLSEXT_ERR_ALERT_FATAL) {
-            OCSP_RESPONSE_free(rsp);
-            stapling_mutex_off(s);
-            return SSL_TLSEXT_ERR_ALERT_FATAL;
-        }
-        else if (rv == SSL_TLSEXT_ERR_NOACK) {
-            /* Error in response. If this error was not present when it was
-             * stored (i.e. response no longer valid) then it can be
-             * renewed straight away.
-             *
-             * If the error *was* present at the time it was stored then we
-             * don't renew the response straight away we just wait for the
-             * cached response to expire.
-             */
-            if (ok) {
-                OCSP_RESPONSE_free(rsp);
-                rsp = NULL;
-            }
-            else if (!mctx->stapling_return_errors) {
-                OCSP_RESPONSE_free(rsp);
-                stapling_mutex_off(s);
-                return SSL_TLSEXT_ERR_NOACK;
-            }
-        }
+    rv = get_and_check_cached_response(s, mctx, &rsp, cinf, conn->pool);
+    if (rv != 0) {
+        return rv;
     }
 
     if (rsp == NULL) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01954)
                      "stapling_cb: renewing cached response");
-        rv = stapling_renew_response(s, mctx, ssl, cinf, &rsp, conn->pool);
+        stapling_refresh_mutex_on(s);
+        /* Maybe another request refreshed the OCSP response while this
+         * thread waited for the mutex.  Check again.
+         */
+        rv = get_and_check_cached_response(s, mctx, &rsp, cinf, conn->pool);
+        if (rv != 0) {
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+                         "stapling_cb: error checking for cached response "
+                         "after obtaining refresh mutex");
+            stapling_refresh_mutex_off(s);
+            return rv;
+        }
+        else if (rsp) {
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+                         "stapling_cb: don't need to refresh cached response "
+                         "after obtaining refresh mutex");
+            stapling_refresh_mutex_off(s);
+        }
+        else {
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+                         "stapling_cb: still must refresh cached response "
+                         "after obtaining refresh mutex");
+            rv = stapling_renew_response(s, mctx, ssl, cinf, &rsp, conn->pool);
+            stapling_refresh_mutex_off(s);
 
-        if (rv == FALSE) {
-            stapling_mutex_off(s);
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(01955)
-                         "stapling_cb: fatal error");
-            return SSL_TLSEXT_ERR_ALERT_FATAL;
+            if (rv == TRUE) {
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+                             "stapling_cb: success renewing response");
+            }
+            else {
+                ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(01955)
+                             "stapling_cb: fatal error renewing response");
+                return SSL_TLSEXT_ERR_ALERT_FATAL;
+            }
         }
     }
-    stapling_mutex_off(s);
 
     if (rsp) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01956)

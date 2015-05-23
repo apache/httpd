@@ -105,12 +105,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) OCSP stapling: Don't block initial handshakes while refreshing the OCSP 
-     response for a different certificate plus additional minor changes
-     trunk patch: r1679032 + r1679192 + r1680276
-     2.4.x patch: trunk works with the usual CHANGES manipulation, or grab
-     http://people.apache.org/~trawick/OCSP-stapling-1679032-1679192-1680276.txt
-     +1: trawick, jim, jorton
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
