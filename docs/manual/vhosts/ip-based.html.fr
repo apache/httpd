@@ -29,8 +29,6 @@
 <a href="../ko/vhosts/ip-based.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/vhosts/ip-based.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#requirements">Système requis</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#howto">Comment configurer Apache</a></li>
@@ -141,18 +139,18 @@ résident pour des serveurs virtuels</a></h2>
 
     <pre class="prettyprint lang-config">&lt;VirtualHost 172.20.30.40:80&gt;
     ServerAdmin webmaster@www1.example.com
-    DocumentRoot /www/vhosts/www1
+    DocumentRoot "/www/vhosts/www1"
     ServerName www1.example.com
-    ErrorLog /www/logs/www1/error_log
-    CustomLog /www/logs/www1/access_log combined
+    ErrorLog "/www/logs/www1/error_log"
+    CustomLog "/www/logs/www1/access_log" combined
 &lt;/VirtualHost&gt;
 
 &lt;VirtualHost 172.20.30.50:80&gt;
     ServerAdmin webmaster@www2.example.org
-    DocumentRoot /www/vhosts/www2
+    DocumentRoot "/www/vhosts/www2"
     ServerName www2.example.org
-    ErrorLog /www/logs/www2/error_log
-    CustomLog /www/logs/www2/access_log combined
+    ErrorLog "/www/logs/www2/error_log"
+    CustomLog "/www/logs/www2/access_log" combined
 &lt;/VirtualHost&gt;</pre>
 
 
