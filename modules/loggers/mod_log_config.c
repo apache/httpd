@@ -269,6 +269,14 @@ typedef struct {
 } config_log_state;
 
 /*
+ * log_request_state holds request specific log data that is not
+ * part of the request_rec.
+ */
+typedef struct {
+    apr_time_t request_end_time;
+} log_request_state;
+
+/*
  * Format items...
  * Note that many of these could have ap_sprintfs replaced with static buffers.
  */
@@ -591,6 +599,21 @@ typedef struct {
 #define TIME_CACHE_MASK 3
 static cached_request_time request_time_cache[TIME_CACHE_SIZE];
 
+static apr_time_t get_request_end_time(request_rec *r)
+{
+    log_request_state *state = (log_request_state *)ap_get_module_config(r->request_config,
+                                                                         &log_config_module);
+    if (!state) {
+        state = apr_pcalloc(r->pool, sizeof(log_request_state));
+        ap_set_module_config(r->request_config, &log_config_module, state);
+    }
+    if (state->request_end_time == 0) {
+        state->request_end_time = apr_time_now();
+    }
+    return state->request_end_time;
+}
+
+
 static const char *log_request_time(request_rec *r, char *a)
 {
     apr_time_exp_t xt;
@@ -613,7 +636,7 @@ static const char *log_request_time(request_rec *r, char *a)
          * log_request_time_custom is not inlined right here.)
          */
 #ifdef I_INSIST_ON_EXTRA_CYCLES_FOR_CLF_COMPLIANCE
-        ap_explode_recent_localtime(&xt, apr_time_now());
+        ap_explode_recent_localtime(&xt, get_request_end_time(r));
 #else
         ap_explode_recent_localtime(&xt, r->request_time);
 #endif
@@ -627,7 +650,7 @@ static const char *log_request_time(request_rec *r, char *a)
         cached_request_time* cached_time = apr_palloc(r->pool,
                                                       sizeof(*cached_time));
 #ifdef I_INSIST_ON_EXTRA_CYCLES_FOR_CLF_COMPLIANCE
-        apr_time_t request_time = apr_time_now();
+        apr_time_t request_time = get_request_end_time(r);
 #else
         apr_time_t request_time = r->request_time;
 #endif
@@ -668,12 +691,12 @@ static const char *log_request_time(request_rec *r, char *a)
 static const char *log_request_duration_microseconds(request_rec *r, char *a)
 {
     return apr_psprintf(r->pool, "%" APR_TIME_T_FMT,
-                        (apr_time_now() - r->request_time));
+                        (get_request_end_time(r) - r->request_time));
 }
 
 static const char *log_request_duration_scaled(request_rec *r, char *a)
 {
-    apr_time_t duration = apr_time_now() - r->request_time;
+    apr_time_t duration = get_request_end_time(r) - r->request_time;
     if (*a == '\0' || !strcasecmp(a, "s")) {
         duration = apr_time_sec(duration);
     }
@@ -1073,6 +1096,12 @@ static int multi_log_transaction(request_rec *r)
                                                 &log_config_module);
     config_log_state *clsarray;
     int i;
+
+    /*
+     * Initialize per request state
+     */
+    log_request_state *state = apr_pcalloc(r->pool, sizeof(log_request_state));
+    ap_set_module_config(r->request_config, &log_config_module, state);
 
     /*
      * Log this transaction..
