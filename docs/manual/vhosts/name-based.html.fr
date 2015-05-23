@@ -30,8 +30,6 @@
 <a href="../ko/vhosts/name-based.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/vhosts/name-based.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p>Ce document décrit quand et comment utiliser des serveurs
     virtuels par nom.</p>
@@ -170,12 +168,12 @@ virtuel basé sur le nom approprié</a></h2>
     # serveur par défaut pour *:80
     ServerName www.example.com
     ServerAlias example.com
-    DocumentRoot /www/domain
+    DocumentRoot "/www/domain"
 &lt;/VirtualHost&gt;
 
 &lt;VirtualHost *:80&gt;
     ServerName other.example.com
-    DocumentRoot /www/otherdomain
+    DocumentRoot "/www/otherdomain"
 &lt;/VirtualHost&gt;</pre>
 
 

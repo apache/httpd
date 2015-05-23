@@ -29,8 +29,6 @@
 <a href="../ko/howto/auth.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/howto/auth.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p>L'authentification est un processus qui vous permet de vérifier
     qu'une personne est bien celle qu'elle prétend être. L'autorisation
@@ -223,13 +221,13 @@ module de chaque groupe.</p>
     utiliser les directives suivantes, soit dans le fichier
     <code>/usr/local/apache/htdocs/secret/.htaccess</code>, soit dans le
     fichier <code>httpd.conf</code> à l'intérieur d'une section &lt;Directory
-    /usr/local/apache/htdocs/secret&gt; :</p>
+    "/usr/local/apache/htdocs/secret"&gt; :</p>
 
     <pre class="prettyprint lang-config">AuthType Basic
 AuthName "Restricted Files"
 # (Following line optional)
 AuthBasicProvider file
-AuthUserFile /usr/local/apache/passwd/passwords
+AuthUserFile "/usr/local/apache/passwd/passwords"
 Require user rbowen</pre>
 
 
@@ -332,8 +330,8 @@ plusieurs personnes</a></h2>
 AuthName "By Invitation Only"
 # Optional line:
 AuthBasicProvider file
-AuthUserFile /usr/local/apache/passwd/passwords
-AuthGroupFile /usr/local/apache/passwd/groups
+AuthUserFile "/usr/local/apache/passwd/passwords"
+AuthGroupFile "/usr/local/apache/passwd/groups"
 Require group GroupName</pre>
 
 
@@ -393,12 +391,12 @@ passe</a></h2>
     <p>Par exemple, pour sélectionner un fichier dbm à la place d'un
     fichier texte :</p>
 
-    <pre class="prettyprint lang-config">&lt;Directory /www/docs/private&gt;
+    <pre class="prettyprint lang-config">&lt;Directory "/www/docs/private"&gt;
 
     AuthName "Private"
     AuthType Basic
     AuthBasicProvider dbm
-    AuthDBMUserFile /www/passwords/passwd.dbm
+    AuthDBMUserFile "/www/passwords/passwd.dbm"
     Require valid-user
 
 &lt;/Directory&gt;</pre>
@@ -420,12 +418,12 @@ d'authentification</a></h2>
     conjointement les fournisseurs d'authentification
     file et LDAP :</p>
 
-    <pre class="prettyprint lang-config">&lt;Directory /www/docs/private&gt;
+    <pre class="prettyprint lang-config">&lt;Directory "/www/docs/private"&gt;
 
     AuthName "Private"
     AuthType Basic
     AuthBasicProvider file ldap
-    AuthUserFile /usr/local/apache/passwd/passwords
+    AuthUserFile "/usr/local/apache/passwd/passwords"
     AuthLDAPURL ldap://ldaphost/o=yourorg
     Require valid-user
 
@@ -448,14 +446,14 @@ d'authentification</a></h2>
     autorisation à base de fichier de groupes et une autorisation à base
     de groupes LDAP.</p>
 
-    <pre class="prettyprint lang-config">&lt;Directory /www/docs/private&gt;
+    <pre class="prettyprint lang-config">&lt;Directory "/www/docs/private"&gt;
 
     AuthName "Private"
     AuthType Basic
     AuthBasicProvider file
-    AuthUserFile /usr/local/apache/passwd/passwords
+    AuthUserFile "/usr/local/apache/passwd/passwords"
     AuthLDAPURL ldap://ldaphost/o=yourorg
-    AuthGroupFile /usr/local/apache/passwd/groups
+    AuthGroupFile "/usr/local/apache/passwd/groups"
     Require group GroupName
     Require ldap-group cn=mygroup,o=yourorg
 
