@@ -109,10 +109,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.2.x patch: trunk works (modulo CHANGES)
      +1: ylavic, wrowe, rjung
 
-
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
-
    * mod_log_config: Allow to choose request start or end time
      as time stamp in log (httpd traditionally uses start, many
      other components, e.g. Tomcat use end time, so they are kind
@@ -121,8 +117,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r979120 (remaining parts)
      2.4.x patch: http://svn.apache.org/r979120 (remaining parts)
      2.2.x patch: http://people.apache.org/~rjung/patches/httpd-2.2.x-mod_log_config-more_time_formats-v2.patch
-     +1: rjung, wrowe
+     +1: rjung, wrowe, ylavic
      rjung: I had forgotten the docs part. Added in v2 patch. OK to keep Bill's vote?
+
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
 
 
 PATCHES/ISSUES THAT ARE STALLED
