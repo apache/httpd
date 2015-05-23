@@ -29,8 +29,6 @@
 <a href="../ko/vhosts/fd-limits.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/vhosts/fd-limits.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 
     <p>Quand de nombreux serveurs virtuels sont créés, Apache peut
@@ -108,7 +106,7 @@ variable <code>%v</code>. Ajoutez cette variable au début de la chaîne
 de définition du format de journalisations&nbsp;:</p>
 
 <pre class="prettyprint lang-config">LogFormat "%v %h %l %u %t \"%r\" %&gt;s %b" vhost
-CustomLog logs/multiple_vhost_log vhost</pre>
+CustomLog "logs/multiple_vhost_log" vhost</pre>
 
 
 <p>Cette configuration va provoquer la création d'un fichier de
