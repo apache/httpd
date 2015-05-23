@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.30
 
+  *) mpm_winnt: Accept utf-8 (Unicode) service names and descriptions for
+     internationalization.  [William Rowe]
+
   *) mod_log_config: Add "%{UNIT}T" format to output request duration in
      seconds, milliseconds or microseconds depending on UNIT ("s", "ms", "us").
      [Ben Reser, Rainer Jung]
