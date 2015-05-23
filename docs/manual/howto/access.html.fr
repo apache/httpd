@@ -26,8 +26,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/howto/access.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/howto/access.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p>Le contrôle d'accès fait référence à tout concept de contrôle
     d'accès à une ressource quelconque. Il est distinct du processus d'<a href="auth.html">authentification et d'autorisation</a>.</p>
@@ -179,9 +177,9 @@ d'accès</a></h2>
     6h du matin, vous pouvez utiliser <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> :</p>
 
     <pre class="prettyprint lang-config">RewriteEngine On
-RewriteCond %{TIME_HOUR} &gt;=20 [OR]
-RewriteCond %{TIME_HOUR} &lt;07
-RewriteRule ^/fridge - [F]</pre>
+RewriteCond "%{TIME_HOUR}" "&gt;=20" [OR]
+RewriteCond "%{TIME_HOUR}" "&lt;07"
+RewriteRule "^/fridge" "-" [F]</pre>
 
 
     <p>Toute requête arrivant après 20h ou avant 7h du matin provoquera
