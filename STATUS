@@ -107,6 +107,17 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.2.x patch: http://people.apache.org/~wrowe/httpd-2.2-utf8-servicename.patch
      +1: wrowe, gsmith
 
+   * mod_log_config: Backport get_request_end_time().
+     This makes data consistent if a log format uses multiple %{...}T
+     and/or %D. The end time of a request is only taken once and the
+     same time is used for each log field.
+     trunk patch: http://svn.apache.org/r979120 (partial)
+                  http://svn.apache.org/r1467765
+     2.4.x patch: http://svn.apache.org/r979120 (partial)
+                  http://svn.apache.org/r1467981
+     2.2.x patch: http://people.apache.org/~rjung/patches/httpd-2.2.x-mod_log_config-get_request_end_time.patch
+     +1: rjung, trawick, wrowe
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -119,17 +130,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x patch: trunk works (modulo CHANGES)
      +1: ylavic, wrowe
 
-   * mod_log_config: Backport get_request_end_time().
-     This makes data consistent if a log format uses multiple %{...}T
-     and/or %D. The end time of a request is only taken once and the
-     same time is used for each log field.
-     trunk patch: http://svn.apache.org/r979120 (partial)
-                  http://svn.apache.org/r1467765
-     2.4.x patch: http://svn.apache.org/r979120 (partial)
-                  http://svn.apache.org/r1467981
-     2.2.x patch: http://people.apache.org/~rjung/patches/httpd-2.2.x-mod_log_config-get_request_end_time.patch
-     +1: rjung, trawick
-
    * mod_log_config: Allow to choose request start or end time
      as time stamp in log (httpd traditionally uses start, many
      other components, e.g. Tomcat use end time, so they are kind
@@ -138,7 +138,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r979120 (remaining parts)
      2.4.x patch: http://svn.apache.org/r979120 (remaining parts)
      2.2.x patch: http://people.apache.org/~rjung/patches/httpd-2.2.x-mod_log_config-more_time_formats.patch
-     +1: rjung
+     +1: rjung, wrowe
 
 
 PATCHES/ISSUES THAT ARE STALLED
