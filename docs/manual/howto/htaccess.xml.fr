@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1666026:1673563 (outdated) -->
+<!-- English Revision: 1673563 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -87,7 +87,7 @@ modifier la configuration du serveur au niveau de chaque r&eacute;pertoire.</p>
       configuration de votre serveur :</p>
 
       <highlight language="config">
-        AccessFileName .config
+        AccessFileName ".config"
       </highlight>
     </note>
 
@@ -230,7 +230,7 @@ modifier la configuration du serveur au niveau de chaque r&eacute;pertoire.</p>
     <p>Notez que mettre un fichier <code>.htaccess</code> contenant une
     directive dans un r&eacute;pertoire <code>/www/htdocs/exemple</code>
     revient exactement au m&ecirc;me que mettre la m&ecirc;me directive dans une
-    section Directory <code>&lt;Directory /www/htdocs/exemple&gt;</code>
+    section Directory <code>&lt;Directory "/www/htdocs/exemple"&gt;</code>
     du fichier de configuration de votre serveur principal :</p>
 
     <p>Fichier <code>.htaccess</code> dans
@@ -238,13 +238,13 @@ modifier la configuration du serveur au niveau de chaque r&eacute;pertoire.</p>
 
     <example><title>Contenu du fichier .htaccess dans
     <code>/www/htdocs/exemple</code></title>
-    	<highlight language="config">AddType text/example .exm</highlight>
+    	<highlight language="config">AddType text/example ".exm"</highlight>
     </example>
 
     <example><title>Section de votre fichier
     <code>httpd.conf</code></title>
       <highlight language="config">
-&lt;Directory /www/htdocs/example&gt;
+&lt;Directory "/www/htdocs/example"&gt;
     AddType text/example .exm
 &lt;/Directory&gt;
     </highlight>
@@ -322,11 +322,11 @@ modifier la configuration du serveur au niveau de chaque r&eacute;pertoire.</p>
     <code>.htaccess</code>, vous pouvez utiliser :</p>
 
     <highlight language="config">
-&lt;Directory /www/htdocs&gt;
+&lt;Directory "/www/htdocs"&gt;
     AllowOverride All
 &lt;/Directory&gt;
 
-&lt;Location /&gt;
+&lt;Location "/"&gt;
     Options +IncludesNoExec -ExecCGI<br />
 &lt;/Location&gt;
     </highlight>
@@ -363,8 +363,8 @@ modifier la configuration du serveur au niveau de chaque r&eacute;pertoire.</p>
     <highlight language="config">
 AuthType Basic
 AuthName "Password Required"
-AuthUserFile /www/passwords/password.file
-AuthGroupFile /www/passwords/group.file
+AuthUserFile "/www/passwords/password.file"
+AuthGroupFile "/www/passwords/group.file"
 Require group admins
     </highlight>
 
@@ -409,14 +409,14 @@ les exemples suivants :</p>
 
 <highlight language="config">
 # Dans httpd.conf
-RewriteRule ^/images/(.+)\.jpg /images/$1.png
+RewriteRule "^/images/(.+)\.jpg" "/images/$1.png"
 
 # Dans un fichier .htaccess situ&eacute; dans le r&eacute;pertoire racine de vos
 # documents
-RewriteRule ^images/(.+)\.jpg images/$1.png
+RewriteRule "^images/(.+)\.jpg" "images/$1.png"
 
 # Dans un fichier .htaccess situ&eacute; dans le r&eacute;pertoire images/
-RewriteRule ^(.+)\.jpg $1.png
+RewriteRule "^(.+)\.jpg" "$1.png"
 </highlight>
 
 <p>On voit que si le fichier <code>.htaccess</code> se situe &agrave; la racine
