@@ -29,8 +29,6 @@
 <a href="../ko/howto/htaccess.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../pt-br/howto/htaccess.html" hreflang="pt-br" rel="alternate" title="Português (Brasil)">&nbsp;pt-br&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 <p>Les fichiers <code>.htaccess</code> fournissent une méthode pour
 modifier la configuration du serveur au niveau de chaque répertoire.</p>
@@ -79,7 +77,7 @@ Includes - SSI)</a></li>
       <code>.config</code>, vous pouvez mettre ceci dans le fichier de
       configuration de votre serveur :</p>
 
-      <pre class="prettyprint lang-config">AccessFileName .config</pre>
+      <pre class="prettyprint lang-config">AccessFileName ".config"</pre>
 
     </div>
 
@@ -214,18 +212,18 @@ Includes - SSI)</a></li>
     <p>Notez que mettre un fichier <code>.htaccess</code> contenant une
     directive dans un répertoire <code>/www/htdocs/exemple</code>
     revient exactement au même que mettre la même directive dans une
-    section Directory <code>&lt;Directory /www/htdocs/exemple&gt;</code>
+    section Directory <code>&lt;Directory "/www/htdocs/exemple"&gt;</code>
     du fichier de configuration de votre serveur principal :</p>
 
     <p>Fichier <code>.htaccess</code> dans
     <code>/www/htdocs/exemple</code> :</p>
 
     <div class="example"><h3>Contenu du fichier .htaccess dans
-    <code>/www/htdocs/exemple</code></h3><pre class="prettyprint lang-config">AddType text/example .exm</pre>
+    <code>/www/htdocs/exemple</code></h3><pre class="prettyprint lang-config">AddType text/example ".exm"</pre>
 </div>
 
     <div class="example"><h3>Section de votre fichier
-    <code>httpd.conf</code></h3><pre class="prettyprint lang-config">&lt;Directory /www/htdocs/example&gt;
+    <code>httpd.conf</code></h3><pre class="prettyprint lang-config">&lt;Directory "/www/htdocs/example"&gt;
     AddType text/example .exm
 &lt;/Directory&gt;</pre>
 </div>
@@ -301,11 +299,11 @@ Includes - SSI)</a></li>
     définition de toute autre option dans les fichiers
     <code>.htaccess</code>, vous pouvez utiliser :</p>
 
-    <pre class="prettyprint lang-config">&lt;Directory /www/htdocs&gt;
+    <pre class="prettyprint lang-config">&lt;Directory "/www/htdocs"&gt;
     AllowOverride All
 &lt;/Directory&gt;
 
-&lt;Location /&gt;
+&lt;Location "/"&gt;
     Options +IncludesNoExec -ExecCGI<br />
 &lt;/Location&gt;</pre>
 
@@ -339,8 +337,8 @@ Includes - SSI)</a></li>
 
     <pre class="prettyprint lang-config">AuthType Basic
 AuthName "Password Required"
-AuthUserFile /www/passwords/password.file
-AuthGroupFile /www/passwords/group.file
+AuthUserFile "/www/passwords/password.file"
+AuthGroupFile "/www/passwords/group.file"
 Require group admins</pre>
 
 
@@ -382,14 +380,14 @@ sont relatives au répertoire courant, et non à l'URI original. Considérez
 les exemples suivants :</p>
 
 <pre class="prettyprint lang-config"># Dans httpd.conf
-RewriteRule ^/images/(.+)\.jpg /images/$1.png
+RewriteRule "^/images/(.+)\.jpg" "/images/$1.png"
 
 # Dans un fichier .htaccess situé dans le répertoire racine de vos
 # documents
-RewriteRule ^images/(.+)\.jpg images/$1.png
+RewriteRule "^images/(.+)\.jpg" "images/$1.png"
 
 # Dans un fichier .htaccess situé dans le répertoire images/
-RewriteRule ^(.+)\.jpg $1.png</pre>
+RewriteRule "^(.+)\.jpg" "$1.png"</pre>
 
 
 <p>On voit que si le fichier <code>.htaccess</code> se situe à la racine

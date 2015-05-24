@@ -28,8 +28,6 @@
 <a href="../ja/howto/cgi.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/howto/cgi.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#intro">Introduction</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#configuring">Configurer Apache pour autoriser CGI</a></li>
@@ -84,7 +82,7 @@
       <p>La directive <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code> se présente comme suit
       :</p>
 
-      <pre class="prettyprint lang-config">ScriptAlias /cgi-bin/ /usr/local/apache2/cgi-bin/</pre>
+      <pre class="prettyprint lang-config">ScriptAlias "/cgi-bin/" "/usr/local/apache2/cgi-bin/"</pre>
 
 
       <p>Cet exemple est tiré de votre fichier de configuration
@@ -149,7 +147,7 @@
       l'exécution des programmes CGI est permise depuis un répertoire
       particulier :</p>
 
-      <pre class="prettyprint lang-config">&lt;Directory /usr/local/apache2/htdocs/somedir&gt;
+      <pre class="prettyprint lang-config">&lt;Directory "/usr/local/apache2/htdocs/somedir"&gt;
     Options +ExecCGI
 &lt;/Directory&gt;</pre>
 
@@ -182,7 +180,7 @@
       répertoire utilisateur, vous pouvez utiliser la configuration
       suivante :</p>
 
-      <pre class="prettyprint lang-config">&lt;Directory /home/*/public_html&gt;
+      <pre class="prettyprint lang-config">&lt;Directory "/home/*/public_html"&gt;
     Options +ExecCGI
     AddHandler cgi-script .cgi
 &lt;/Directory&gt;</pre>
@@ -192,7 +190,7 @@
       répertoire utilisateur où tout fichier sera traité en tant que
       programme CGI, vous pouvez utiliser ceci :</p>
 
-      <pre class="prettyprint lang-config">&lt;Directory /home/*/public_html/cgi-bin&gt;
+      <pre class="prettyprint lang-config">&lt;Directory "/home/*/public_html/cgi-bin"&gt;
     Options ExecCGI
     SetHandler cgi-script
 &lt;/Directory&gt;</pre>
