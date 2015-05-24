@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1561569:1673945 (outdated) -->
+<!-- English Revision: 1673945 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -146,7 +146,7 @@ l'arborescence DocumentRoot</title>
     module="mod_alias">Alias</directive> pour rattacher toute portion
     du syst&egrave;me de fichiers &agrave; l'arborescence du site web. Par exemple, avec</p>
 
-<highlight language="config">Alias /docs /var/web</highlight>
+<highlight language="config">Alias "/docs" "/var/web"</highlight>
 
     <p>l'URL <code>http://www.example.com/docs/dir/file.html</code>
     correspondra au fichier <code>/var/web/dir/file.html</code>. La
@@ -164,7 +164,7 @@ l'arborescence DocumentRoot</title>
     Par exemple,</p>
 
 <highlight language="config">
-    ScriptAliasMatch ^/~([a-zA-Z0-9]+)/cgi-bin/(.+)   /home/$1/cgi-bin/$2
+    ScriptAliasMatch "^/~([a-zA-Z0-9]+)/cgi-bin/(.+)" "/home/$1/cgi-bin/$2"
     </highlight>
 
     <p>fera correspondre une requ&ecirc;te du style
@@ -214,7 +214,7 @@ l'arborescence DocumentRoot</title>
     <code>AliasMatch</code> suivante :</p>
 
 <highlight language="config">
-    AliasMatch ^/upages/([a-zA-Z0-9]+)(/(.*))?$   /home/$1/public_html/$3
+    AliasMatch "^/upages/([a-zA-Z0-9]+)(/(.*))?$" "/home/$1/public_html/$3"
     </highlight>
 </section>
 
@@ -235,7 +235,7 @@ l'arborescence DocumentRoot</title>
     de le requ&eacute;rir &agrave; sa nouvelle localisation comme suit :</p>
 
 <highlight language="config">
-    Redirect permanent /foo/   http://www.example.com/bar/
+    Redirect permanent "/foo/"   "http://www.example.com/bar/"
     </highlight>
 
     <p>Ceci aura pour effet de rediriger tout chemin d'URL commen&ccedil;ant par
@@ -252,14 +252,14 @@ l'arborescence DocumentRoot</title>
     configuration suivante :</p>
 
 <highlight language="config">
-   RedirectMatch permanent ^/$    http://www.example.com/startpage.html
+   RedirectMatch permanent "^/$" "http://www.example.com/startpage.html"
     </highlight>
 
     <p>De m&ecirc;me, pour rediriger temporairement toutes les pages d'un site
     vers une page particuli&egrave;re d'un autre site, utilisez ce qui suit :</p>
 
 <highlight language="config">
-    RedirectMatch temp .*  http://othersite.example.com/startpage.html
+    RedirectMatch temp ".*" "http://othersite.example.com/startpage.html"
     </highlight>
 </section>
 
@@ -280,10 +280,10 @@ dans le r&eacute;pertoire
 et les renvoie au client comme s'ils appartenaient au serveur local.</p>
 
 <highlight language="config">
-ProxyPass /foo/ http://internal.example.com/bar/<br />
-ProxyPassReverse /foo/ http://internal.example.com/bar/<br />
+ProxyPass "/foo/" "http://internal.example.com/bar/"<br />
+ProxyPassReverse "/foo/" "http://internal.example.com/bar/"<br />
 ProxyPassReverseCookieDomain internal.example.com public.example.com<br />
-ProxyPassReverseCookiePath /foo/ /bar/
+ProxyPassReverseCookiePath "/foo/" "/bar/"
 </highlight>
 
 <p>La directive <directive module="mod_proxy">ProxyPass</directive> configure

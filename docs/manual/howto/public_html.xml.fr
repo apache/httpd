@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1649338:1673932 (outdated) -->
+<!-- English Revision: 1673932 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -166,7 +166,7 @@ avec le syst&egrave;me de fichiers</a></seealso>
    sous-r&eacute;pertoire particulier d'un r&eacute;pertoire home utilisateur.</p>
 
     <highlight language="config">
-&lt;Directory /home/*/public_html/cgi-bin/&gt;
+&lt;Directory "/home/*/public_html/cgi-bin/"&gt;
     Options ExecCGI
     SetHandler cgi-script
 &lt;/Directory&gt;

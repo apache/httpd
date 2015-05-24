@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1336196:1673945 (outdated) -->
+<!-- English Revision: 1673945 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -86,7 +86,7 @@
       :</p>
 
       <highlight language="config">
-        ScriptAlias /cgi-bin/ /usr/local/apache2/cgi-bin/
+        ScriptAlias "/cgi-bin/" "/usr/local/apache2/cgi-bin/"
       </highlight>
 
       <p>Cet exemple est tir&eacute; de votre fichier de configuration
@@ -159,7 +159,7 @@
       particulier :</p>
 
       <highlight language="config">
-&lt;Directory /usr/local/apache2/htdocs/somedir&gt;
+&lt;Directory "/usr/local/apache2/htdocs/somedir"&gt;
     Options +ExecCGI
 &lt;/Directory&gt;
       </highlight>
@@ -195,7 +195,7 @@
       suivante :</p>
 
       <highlight language="config">
-&lt;Directory /home/*/public_html&gt;
+&lt;Directory "/home/*/public_html"&gt;
     Options +ExecCGI
     AddHandler cgi-script .cgi
 &lt;/Directory&gt;
@@ -206,7 +206,7 @@
       programme CGI, vous pouvez utiliser ceci :</p>
 
       <highlight language="config">
-&lt;Directory /home/*/public_html/cgi-bin&gt;
+&lt;Directory "/home/*/public_html/cgi-bin"&gt;
     Options ExecCGI
     SetHandler cgi-script
 &lt;/Directory&gt;
