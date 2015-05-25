@@ -198,29 +198,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-ap_map_http_request_error-v2.patch
      +1: ylavic, minfrin
      ylavic: Depends on r1657881 above.
-             Comment from trawick below is about r1643537+r1643543+r1674056 which
-             was first proposed separately (and now included in this proposal).
-     trawick: Eric and I were working through this and I (at least) ran into this
-              particular roadblock: output_failed sometimes means that we couldn't
-              write to the client and sometimes means that we couldn't read from
-              the client; later, output_fails triggers setting the status to 400.
-              HTTP status shouldn't be 400 for a problem writing to the client.
-              (Maybe I missed some guarantee that 400 is only for an error reading
-              enough request body??)  I think it would be good to separate output_failed
-              from input_failed so that the code is more clear and we can more
-              easily tell that the status code is appropriate.  (And unfortunately
-              I don't volunteer to make the simple changes and test them :( )
-     ylavic: I think the confusion comes from the (original) name output_failed itself,
-             since it really means client_failed (i.e. "dialog with [client] %pI failed"),
-             as opposed to backend_failed (i.e. "dialog with backend %pI failed").
-             When an error occurs on any side (connection), the first flag used regarding
-             4xx/5xx vs DONE is data_sent (i.e. to the client), otherwise {4xx,5xx} are
-             returned according to {output,backend}_failed. So the clarification is
-             possibly as simple as renaming output_failed => client_failed (r1674056 added
-             above), WDYT?
-     trawick: It still looks to me that an error with ap_pass_brigade (towards
-              client) can turn into a 400 error, which is what I was concerned
-              about originally.
 
   *) http: Don't remove the Content-Length of zero from a HEAD response if
      it comes from an origin server, module or script. Allow the previous
