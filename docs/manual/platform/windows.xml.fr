@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1659838:1673563 (outdated) -->
+<!-- English Revision: 1673563 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -158,8 +158,8 @@
       <highlight language="config">
 RewriteEngine On
 RewriteMap lowercase int:tolower
-RewriteCond %{REQUEST_URI} [A-Z]
-RewriteRule (.*) ${lowercase:$1} [R,L]
+RewriteCond "%{REQUEST_URI}" "[A-Z]"
+RewriteRule "(.*)" "${lowercase:$1}" [R,L]
       </highlight></li>
 
       <li><p>Lors de son ex&eacute;cution, Apache n'a besoin d'un acc&egrave;s en
@@ -645,10 +645,10 @@ RewriteRule (.*) ${lowercase:$1} [R,L]
 
   <dl>
     <dt>Association de lettres de lecteur</dt>
-    <dd>Par exemple, <code>Alias /images/ Z:/</code></dd>
+    <dd>Par exemple, <code>Alias "/images/" "Z:/"</code></dd>
 
     <dt>chemins UNC</dt>
-    <dd>Par exemple, <code>Alias /images/ //imagehost/www/images/</code></dd>
+    <dd>Par exemple, <code>Alias "/images/" "//imagehost/www/images/"</code></dd>
   </dl>
 
   <p>L'association de lettres de lecteur permet &agrave; l'administrateur de
@@ -667,22 +667,22 @@ RewriteRule (.*) ${lowercase:$1} [R,L]
 
   <example><title>Exemple de DocumentRoot avec chemin UNC</title>
   <highlight language="config">
-  DocumentRoot //dochost/www/html/
+  DocumentRoot "//dochost/www/html/"
   </highlight>
   </example>
 
   <example><title>Exemple de DocumentRoot avec adresse IP dans le chemin UNC</title>
   <highlight language="config">
-  DocumentRoot //192.168.1.50/docs/
+  DocumentRoot "//192.168.1.50/docs/"
   </highlight>
   </example>
 
   <example><title>Exemple d'Alias et r&eacute;pertoire correspondant avec
   chemin UNC</title>
   <highlight language="config">
-Alias /images/ //imagehost/www/images/
+Alias "/images/" "//imagehost/www/images/"
 
-&lt;Directory //imagehost/www/images/&gt;
+&lt;Directory "//imagehost/www/images/"&gt;
 #...
 &lt;Directory&gt;
   </highlight>

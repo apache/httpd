@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1591194:1674127 (outdated) -->
+<!-- English Revision: 1674127 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -187,8 +187,8 @@ Cependant, &agrave; l'aide du module <module>mod_rewrite</module>, vous pouvez
 manipuler des hyperliens relatifs, pour obtenir le m&ecirc;me effet.</p>
     <highlight language="config">
 RewriteEngine on
-RewriteRule   ^/(.*)_SSL$   https://%{SERVER_NAME}/$1 [R,L]
-RewriteRule   ^/(.*)_NOSSL$ http://%{SERVER_NAME}/$1  [R,L]
+RewriteRule   "^/(.*)_SSL$"   "https://%{SERVER_NAME}/$1" [R,L]
+RewriteRule   "^/(.*)_NOSSL$" "http://%{SERVER_NAME}/$1"  [R,L]
     </highlight>
 
     <p>Ce jeu de r&egrave;gles rewrite vous permet d'utiliser des hyperliens de la
@@ -270,8 +270,8 @@ fins de test ?</title>
 	Ces fichiers seront utilis&eacute;s comme suit dans votre
 	<code>httpd.conf</code> :
         <highlight language="config">
-SSLCertificateFile    /path/to/this/server.crt
-SSLCertificateKeyFile /path/to/this/server.key
+SSLCertificateFile    "/path/to/this/server.crt"
+SSLCertificateKeyFile "/path/to/this/server.key"
         </highlight>
     </li>
     <li>Il est important de savoir que le fichier <code>server.key</code> n'a
@@ -353,8 +353,8 @@ SSLCertificateKeyFile /path/to/this/server.key
     <code>server.key</code> et <code>server.crt</code>. Ils sont pr&eacute;cis&eacute;s dans
     votre fichier <code>httpd.conf</code> comme suit :
        <highlight language="config">
-SSLCertificateFile    /path/to/this/server.crt
-SSLCertificateKeyFile /path/to/this/server.key
+SSLCertificateFile    "/path/to/this/server.crt"
+SSLCertificateKeyFile "/path/to/this/server.key"
        </highlight>
        Le fichier <code>server.csr</code> n'est plus n&eacute;cessaire.
     </li>
@@ -393,7 +393,7 @@ certification (CA) ?</title>
     que vous venez de g&eacute;n&eacute;rer (la sortie sera au format PEM) :<br />
        <br />
        <code><strong>$ openssl req -new -x509 -nodes -sha1 -days 365
-		       -key server.key -out server.crt</strong></code><br />
+		       -key server.key -out server.crt -extensions usr_cert</strong></code><br />
        <br />
        Cette commande signe le certificat du serveur et produit un fichier
        <code>server.crt</code>. Vous pouvez afficher les d&eacute;tails de ce
