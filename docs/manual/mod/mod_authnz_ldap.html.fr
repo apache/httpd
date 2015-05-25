@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_authnz_ldap.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_authnz_ldap.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Permet d'utiliser un annuaire LDAP pour l'authentification
 HTTP de base.</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -70,6 +68,7 @@ d'Apache</td></tr></table>
 <div id="quickview"><h3>Sujets</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#contents">Sommaire</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#gcaveats">Mises en garde à caractère général</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#operation">Mode opératoire</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#requiredirectives">Les directives requises</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#examples">Exemples</a></li>
@@ -115,8 +114,8 @@ Directory</a></li>
 <h2><a name="contents" id="contents">Sommaire</a></h2>
 
     <ul>
-      <li>
-        <a href="#operation">Mode opératoire</a>
+    <li> <a href="#gcaveats">Mises en garde à caractère général</a> </li>
+      <li> <a href="#operation">Mode opératoire</a>
 
         <ul>
           <li><a href="#authenphase">La phase
@@ -154,6 +153,20 @@ Directory</a></li>
         </ul>
       </li>
     </ul>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="gcaveats" id="gcaveats">Mises en garde à caractère général</a></h2>
+<p>Ce module effectue une mise en cache des résultats du processus
+d'authentification et d'autorisation en fonction de la configuration du
+module <code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code>. Les modifications effectuées au niveau
+du serveur LDAP d'arrière-plan comme les
+verrouillages ou révocations d'utilisateurs, les changements de mot de
+passe, ou les changements d'appartenance à un groupe (et cette liste
+n'est pas exhaustive), ne seront pas immédiatement propagées jusqu'au
+serveur HTTP. Consultez les directives du module
+<code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code> pour plus de détails à propos de la
+configuration de la mise en cache.
+</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="operation" id="operation">Mode opératoire</a></h2>

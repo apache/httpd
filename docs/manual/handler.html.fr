@@ -31,8 +31,6 @@
 <a href="./tr/handler.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="./zh-cn/handler.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p>Ce document décrit l'utilisation des gestionnaires d'Apache (handlers).</p>
   </div>
@@ -123,7 +121,7 @@ AddHandler add-footer .html</pre>
       <code>send-as-is</code>, sans tenir compte de l'extension
       de leur nom de fichier.</p>
 
-      <pre class="prettyprint lang-config">&lt;Directory /web/htdocs/asis&gt;
+      <pre class="prettyprint lang-config">&lt;Directory "/web/htdocs/asis"&gt;
     SetHandler send-as-is
 &lt;/Directory&gt;</pre>
 
