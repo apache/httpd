@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1379929:1675524 (outdated) -->
+<!-- English Revision: 1675524 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -159,7 +159,7 @@
 
       <p>Notez qu'il est possible de modifier la port&eacute;e des directives, en les
       pla&ccedil;ant par exemple &agrave; l'int&eacute;rieur d'une section
-      <code>&lt;Location /server-status&gt;</code>. Les recherches DNS ne
+      <code>&lt;Location "/server-status"&gt;</code>. Les recherches DNS ne
       seront alors effectu&eacute;es que pour les requ&ecirc;tes qui satisfont aux crit&egrave;res.
       Voici un exemple qui d&eacute;sactive les recherches DNS sauf pour les fichiers
       <code>.html</code> et <code>.cgi</code> :</p>
@@ -189,8 +189,8 @@ HostnameLookups off
       Par exemple, si vous avez :</p>
 
       <highlight language="config">
-DocumentRoot /www/htdocs
-&lt;Directory /&gt;
+DocumentRoot "/www/htdocs"
+&lt;Directory "/"&gt;
   Options SymLinksIfOwnerMatch
 &lt;/Directory&gt;
       </highlight>
@@ -205,12 +205,12 @@ DocumentRoot /www/htdocs
       configuration du style :</p>
 
       <highlight language="config">
-DocumentRoot /www/htdocs
-&lt;Directory /&gt;
+DocumentRoot "/www/htdocs"
+&lt;Directory "/"&gt;
   Options FollowSymLinks
 &lt;/Directory&gt;
 
-&lt;Directory /www/htdocs&gt;
+&lt;Directory "/www/htdocs"&gt;
   Options -FollowSymLinks +SymLinksIfOwnerMatch
 &lt;/Directory&gt;
       </highlight>
@@ -239,8 +239,8 @@ DocumentRoot /www/htdocs
       avez : </p>
 
       <highlight language="config">
-DocumentRoot /www/htdocs
-&lt;Directory /&gt;
+DocumentRoot "/www/htdocs"
+&lt;Directory "/"&gt;
   AllowOverride all
 &lt;/Directory&gt;
       </highlight>

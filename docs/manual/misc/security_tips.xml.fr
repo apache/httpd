@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1657689:1673563 (outdated) -->
+<!-- English Revision: 1673563 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -337,7 +337,7 @@
     <p>Ajoutez dans le fichier de configuration du serveur</p>
 
     <highlight language="config">
-&lt;Directory /&gt;
+&lt;Directory "/"&gt;
     AllowOverride None
 &lt;/Directory&gt;
     </highlight>
@@ -372,7 +372,7 @@
     de votre serveur :</p>
 
     <highlight language="config">
-&lt;Directory /&gt;
+&lt;Directory "/"&gt;
     Require all denied
 &lt;/Directory&gt;
     </highlight>
@@ -383,10 +383,10 @@
     aux r&eacute;pertoires auxquels vous voulez autorisez l'acc&egrave;s. Par exemple,</p>
 
     <highlight language="config">
-&lt;Directory /usr/users/*/public_html&gt;
+&lt;Directory "/usr/users/*/public_html"&gt;
     Require all granted
 &lt;/Directory&gt;
-&lt;Directory /usr/local/httpd&gt;
+&lt;Directory "/usr/local/httpd"&gt;
     Require all granted
 &lt;/Directory&gt;
     </highlight>
@@ -394,8 +394,8 @@
     <p>Portez une attention particuli&egrave;re aux interactions entre les directives
     <directive module="core">Location</directive> et
     <directive module="core">Directory</directive> ; par exemple, si une
-    directive <code>&lt;Directory /&gt;</code> interdit un acc&egrave;s, une
-    directive <code>&lt;Location /&gt;</code> pourra passer outre.</p>
+    directive <code>&lt;Directory ""/&gt;</code> interdit un acc&egrave;s, une
+    directive <code>&lt;Location "/"&gt;</code> pourra passer outre.</p>
 
     <p>De m&ecirc;me, soyez m&eacute;fiant en jouant avec la directive
     <directive module="mod_userdir">UserDir</directive> ; la positionner &agrave;

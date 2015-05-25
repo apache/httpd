@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1636196:1673563 (outdated) -->
+<!-- English Revision: 1673563 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -82,7 +82,7 @@ un autre site si le serveur est d&eacute;marr&eacute; en utilisant la ligne de c
 
 <highlight language="config">
 &lt;IfDefine ClosedForNow&gt;
-    Redirect / http://otherserver.example.com/
+    Redirect "/" "http://otherserver.example.com/"
 &lt;/IfDefine&gt;
 </highlight>
 
@@ -105,7 +105,7 @@ module <module>mod_mime_magic</module> est disponible.</p>
 
 <highlight language="config">
 &lt;IfModule mod_mime_magic.c&gt;
-    MimeMagicFile conf/magic
+    MimeMagicFile "conf/magic"
 &lt;/IfModule&gt;
 </highlight>
 
@@ -176,7 +176,7 @@ configuration suivante, l'indexation sera activ&eacute;e pour le r&eacute;pertoi
 <code>/var/web/dir1</code> et tous ses sous-r&eacute;pertoires.</p>
 
 <highlight language="config">
-&lt;Directory /var/web/dir1&gt;
+&lt;Directory "/var/web/dir1"&gt;
     Options +Indexes
 &lt;/Directory&gt;
 </highlight>
@@ -190,7 +190,7 @@ l'acc&egrave;s &agrave; tout fichier nomm&eacute; <code>private.html</code> quel
 l'endroit o&ugrave; il se trouve.</p>
 
 <highlight language="config">
-&lt;Files private.html&gt;
+&lt;Files "private.html"&gt;
     Require all denied
 &lt;/Files&gt;
 </highlight>
@@ -207,8 +207,8 @@ l'acc&egrave;s &agrave; <code>/var/web/dir1/private.html</code>,
 <code>/var/web/dir1/</code>.</p>
 
 <highlight language="config">
-&lt;Directory /var/web/dir1&gt;
-    &lt;Files private.html&gt;
+&lt;Directory "/var/web/dir1"&gt;
+    &lt;Files "private.html"&gt;
         Require all denied
     &lt;/Files&gt;
 &lt;/Directory&gt;
@@ -230,7 +230,7 @@ En particulier, l'interdiction s'appliquera aux requ&ecirc;tes pour :
 toute requ&ecirc;te commen&ccedil;ant par la cha&icirc;ne de caract&egrave;res <code>/private</code>.</p>
 
 <highlight language="config">
-&lt;LocationMatch ^/private&gt;
+&lt;LocationMatch "^/private"&gt;
     Require all denied
 &lt;/LocationMatch&gt;
 </highlight>
@@ -244,7 +244,7 @@ Il n'est pas n&eacute;cessaire de trouver un fichier nomm&eacute; <code>server-s
 dans le syst&egrave;me de fichiers.</p>
 
 <highlight language="config">
-&lt;Location /server-status&gt;
+&lt;Location "/server-status"&gt;
     SetHandler server-status
 &lt;/Location&gt;
 </highlight>
@@ -256,22 +256,22 @@ dans lequel certaines sections ou directives sont &eacute;valu&eacute;es. Pour
 <directive type="section" module="core">Location</directive>, on doit
 avoir :</p>
 <highlight language="config">
-&lt;Location /foo&gt;
+&lt;Location "/foo"&gt;
 &lt;/Location&gt;
-&lt;Location /foo/bar&gt;
+&lt;Location "/foo/bar"&gt;
 &lt;/Location>
 </highlight>
 <p>Les directives <directive type="section"
 module="mod_alias">Alias</directive>, quant &agrave; elles, sont &eacute;valu&eacute;es vice-versa :</p>
 <highlight language="config">
-Alias /foo/bar /srv/www/uncommon/bar
-Alias /foo /srv/www/common/foo
+Alias "/foo/bar" "/srv/www/uncommon/bar"
+Alias "/foo" "/srv/www/common/foo"
 </highlight>
 <p>Ceci est aussi vrai pour les directives <directive
 module="mod_proxy">ProxyPass</directive> :</p>
 <highlight language="config">
-ProxyPass /special-area http://special.example.com smax=5 max=10
-ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover=On
+ProxyPass "/special-area" "http://special.example.com" smax=5 max=10
+ProxyPass "/" "balancer://mycluster/" stickysession=JSESSIONID|jsessionid nofailover=On
 </highlight>
 </section>
 
@@ -311,7 +311,7 @@ mais sans utiliser
 les expressions rationnelles pourrait ressembler &agrave; ceci :</p>
 
 <highlight language="config">
-&lt;Directory /home/*/public_html&gt;
+&lt;Directory "/home/*/public_html"&gt;
     Options Indexes
 &lt;/Directory&gt;
 </highlight>
@@ -320,7 +320,7 @@ les expressions rationnelles pourrait ressembler &agrave; ceci :</p>
 on peut interdire l'acc&egrave;s &agrave; de nombreux types de fichiers d'images
 simultan&eacute;ment :</p>
 <highlight language="config">
-+&lt;FilesMatch \.(?i:gif|jpe?g|png)$&gt;
++&lt;FilesMatch "\.(?i:gif|jpe?g|png)$"&gt;
     Require all denied
 &lt;/FilesMatch&gt;
 </highlight>
@@ -333,8 +333,8 @@ href="expr.html">expression</a> et au sein de modules comme
 <module>mod_rewrite</module>.</p>
 
 <highlight language="config">
-&lt;DirectoryMatch ^/var/www/combined/(?&lt;SITENAME&gt;[^/]+)&gt;
-    require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
+&lt;DirectoryMatch "^/var/www/combined/(?&lt;SITENAME&gt;[^/]+)"&gt;
+    require ldap-group "cn=%{env:MATCH_SITENAME},ou=combined,o=Example"
 &lt;/DirectoryMatch&gt;
 </highlight>
 
@@ -374,7 +374,7 @@ du syst&egrave;me de fichier, ce qui peut permettre de contourner vos restrictio
 Par exemple, imaginez la configuration suivante :</p>
 
 <highlight language="config">
-&lt;Location /dir/&gt;
+&lt;Location "/dir/"&gt;
     Require all denied
 &lt;/Location&gt;
 </highlight>
@@ -405,7 +405,7 @@ localisation du syst&egrave;me de fichiers.  C'est pourquoi vous devez autant qu
 possible toujours utiliser les conteneurs de syst&egrave;me de fichiers.
 Il y a cependant une exception &agrave; cette r&egrave;gle.  Placer des restrictions de
 configuration dans un conteneur <code>&lt;Location
-/&gt;</code> est tout &agrave; fait sans rique car ce conteneur va s'appliquer &agrave;
+"/"&gt;</code> est tout &agrave; fait sans rique car ce conteneur va s'appliquer &agrave;
 toutes les requ&ecirc;tes sans tenir compte de l'URL sp&eacute;cifique.</p>
 </section>
 
@@ -454,7 +454,7 @@ va interdire l'utilisation du serveur proxy pour acc&eacute;der au site
 <code>www.example.com</code>.</p>
 
 <highlight language="config">
-&lt;Proxy http://www.example.com/*&gt;
+&lt;Proxy "http://www.example.com/*"&gt;
     Require all granted
 &lt;/Proxy&gt;
 </highlight>
@@ -515,7 +515,7 @@ sont interpr&eacute;t&eacute;es.</p>
 
       <li>Les sections
       <directive type="section" module="core">DirectoryMatch</directive>
-      (et <code>&lt;Directory ~&gt;</code>)</li>
+      (et <code>&lt;Directory "~"&gt;</code>)</li>
 
       <li>Les sections <directive type="section"
       module="core">Files</directive> et <directive
@@ -538,9 +538,9 @@ sont interpr&eacute;t&eacute;es.</p>
     Les sections <directive
     type="section" module="core">Directory</directive> (groupe 1 ci-dessus)
     sont trait&eacute;es dans l'ordre du r&eacute;pertoire le plus court vers le plus long.
-    Par exemple, <code>&lt;Directory /var/web/dir&gt;</code> sera
+    Par exemple, <code>&lt;Directory "/var/web/dir"&gt;</code> sera
     trait&eacute; avant <code>&lt;Directory
-    /var/web/dir/subdir&gt;</code>.  Si plusieurs sections <directive
+    "/var/web/dir/subdir"&gt;</code>.  Si plusieurs sections <directive
     type="section" module="core">Directory</directive> s'appliquent au m&ecirc;me
     r&eacute;pertoire, elles sont trait&eacute;es selon l'ordre dans lequel elles
     apparaissent dans le fichier de configuration.
@@ -589,16 +589,16 @@ cet exemple seront appliqu&eacute;es dans l'ordre suivant : A &gt; B &gt; C &gt;
 E.</p>
 
 <highlight language="config">
-&lt;Location /&gt;
+&lt;Location "/"&gt;
     E
 &lt;/Location&gt;
 
-&lt;Files f.html&gt;
+&lt;Files "f.html"&gt;
     D
 &lt;/Files&gt;
 
 &lt;VirtualHost *&gt;
-&lt;Directory /a/b&gt;
+&lt;Directory "/a/b"&gt;
     B
 &lt;/Directory&gt;
 &lt;/VirtualHost&gt;
@@ -607,7 +607,7 @@ E.</p>
     C
 &lt;/DirectoryMatch&gt;
 
-&lt;Directory /a/b&gt;
+&lt;Directory "/a/b"&gt;
     A
 &lt;/Directory&gt;
 
@@ -622,12 +622,12 @@ En d'autres termes, l'ordre de la combinaison des sections est important,
 soyez donc prudent !</p>
 
 <highlight language="config">
-&lt;Location /&gt;
+&lt;Location "/"&gt;
     Require all granted
 &lt;/Location&gt;
 
 # Arrghs!  Cette section &lt;Directory&gt; n'aura aucun effet
-&lt;Directory /&gt;
+&lt;Directory "/"&gt;
     &lt;RequireAll&gt;
         Require all granted
         Require not host badguy.example.com
