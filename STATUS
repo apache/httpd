@@ -112,7 +112,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: http://svn.apache.org/r1570322
                  http://svn.apache.org/r1653962
     2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-freesbd_v4mapped.patch
-    +1: ylavic
+    +1: ylavic, trawick
 
 
 PATCHES/ISSUES THAT ARE STALLED
