@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.30
 
+  *) FreeBSD: Disable IPv4-mapped listening sockets by default for versions
+     5+ instead of just for FreeBSD 5. PR 53824.  [Jeff Trawick,
+     Olli Hauer <ohauer gmx de>]
+
   *) mod_proxy: use the original (non absolute) form of the request-line's URI
      for requests embedded in CONNECT payloads used to connect SSL backends via
      a ProxyRemote forward-proxy.  PR 55892.  [Hendrik Harms <hendrik.harms
