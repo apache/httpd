@@ -1335,7 +1335,7 @@ static char *lookup_map_dbd(request_rec *r, char *key, const char *label)
     const char *errmsg;
     apr_dbd_results_t *res = NULL;
     apr_dbd_row_t *row = NULL;
-    const char *ret = NULL;
+    char *ret = NULL;
     int n = 0;
     ap_dbd_t *db = dbd_acquire(r);
 

@@ -105,10 +105,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) fix new warnings in mod_rewrite once r1679181 was merged:
-     trunk patch: http://svn.apache.org/r1679712
-     2.4.x patch: trunk patch works
-     +1: trawick, ylavic, rjung
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
