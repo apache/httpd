@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1591196:1674126 (outdated) -->
+<!-- English Revision: 1674126 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -187,8 +187,8 @@ Cependant, &agrave; l'aide du module <module>mod_rewrite</module>, vous pouvez
 manipuler des hyperliens relatifs, pour obtenir le m&ecirc;me effet.</p>
     <highlight language="config">
 RewriteEngine on
-RewriteRule   ^/(.*)_SSL$   https://%{SERVER_NAME}/$1 [R,L]
-RewriteRule   ^/(.*)_NOSSL$ http://%{SERVER_NAME}/$1  [R,L]
+RewriteRule   "^/(.*)_SSL$"   "https://%{SERVER_NAME}/$1" [R,L]
+RewriteRule   "^/(.*)_NOSSL$" "http://%{SERVER_NAME}/$1"  [R,L]
     </highlight>
 
     <p>Ce jeu de r&egrave;gles rewrite vous permet d'utiliser des hyperliens de la
@@ -393,7 +393,7 @@ certification (CA) ?</title>
     que vous venez de g&eacute;n&eacute;rer (la sortie sera au format PEM) :<br />
        <br />
        <code><strong>$ openssl req -new -x509 -nodes -sha1 -days 365
-		       -key server.key -out server.crt</strong></code><br />
+		       -key server.key -out server.crt -extensions usr_cert</strong></code><br />
        <br />
        Cette commande signe le certificat du serveur et produit un fichier
        <code>server.crt</code>. Vous pouvez afficher les d&eacute;tails de ce

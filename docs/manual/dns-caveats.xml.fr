@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision: 1332626:1673652 (outdated) -->
+<!-- English Revision: 1673652 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -46,7 +46,7 @@
 # de configuration
 &lt;VirtualHost www.example.dom&gt;
   ServerAdmin webgirl@example.dom
-  DocumentRoot /www/example
+  DocumentRoot "/www/example"
 &lt;/VirtualHost&gt;
     </highlight>
 
@@ -71,7 +71,7 @@
 # de configuration
 &lt;VirtualHost 192.0.2.1&gt;
   ServerAdmin webgirl@example.dom
-  DocumentRoot /www/example
+  DocumentRoot "/www/example"
 &lt;/VirtualHost&gt;
     </highlight>
 
@@ -92,7 +92,7 @@
 &lt;VirtualHost 192.0.2.1&gt;
   ServerName www.example.dom
   ServerAdmin webgirl@example.dom
-  DocumentRoot /www/example
+  DocumentRoot "/www/example"
 &lt;/VirtualHost&gt;
     </highlight>
   </section>
@@ -105,11 +105,11 @@
     <highlight language="config">
 &lt;VirtualHost www.example1.dom&gt;
   ServerAdmin webgirl@example1.dom
-  DocumentRoot /www/example1
+  DocumentRoot "/www/example1"
 &lt;/VirtualHost&gt;
 &lt;VirtualHost www.example2.dom&gt;
   ServerAdmin webguy@example2.dom
-  DocumentRoot /www/example2
+  DocumentRoot "/www/example2"
 &lt;/VirtualHost&gt;
     </highlight>
 

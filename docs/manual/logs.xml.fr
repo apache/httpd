@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1657854:1674195 (outdated) -->
+<!-- English Revision: 1674195 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -251,7 +251,7 @@
 
       <highlight language="config">
 LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common
-CustomLog logs/access_log common
+CustomLog "logs/access_log" common
       </highlight>
 
       <p>Ici est d&eacute;finie l'<em>identit&eacute;</em> <code>common</code> qui est
@@ -404,7 +404,7 @@ CustomLog logs/access_log common
 
       <highlight language="config">
 LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\"" combined
-CustomLog log/access_log combined
+CustomLog "log/access_log" combined
       </highlight>
 
       <p>Ce format est identique au Common Log Format, avec deux champs
@@ -456,9 +456,9 @@ CustomLog log/access_log combined
 
       <highlight language="config">
 LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common
-CustomLog logs/access_log common
-CustomLog logs/referer_log "%{Referer}i -&gt; %U"
-CustomLog logs/agent_log "%{User-agent}i"
+CustomLog "logs/access_log" common
+CustomLog "logs/referer_log" "%{Referer}i -&gt; %U"
+CustomLog "logs/agent_log" "%{User-agent}i"
       </highlight>
 
       <p>Cet exemple montre aussi qu'il n'est pas obligatoire d'associer
@@ -490,7 +490,7 @@ SetEnvIf Remote_Addr "127\.0\.0\.1" dontlog
 # Marque les requ&ecirc;tes pour le fichier robots.txt
 SetEnvIf Request_URI "^/robots\.txt$" dontlog
 # Journalise toutes les autres requ&ecirc;tes
-CustomLog logs/access_log common env=!dontlog
+CustomLog "logs/access_log" common env=!dontlog
       </highlight>
 
       <p>Autre exemple, imaginons l'enregistrement des requ&ecirc;tes en provenance
@@ -499,8 +499,8 @@ CustomLog logs/access_log common env=!dontlog
 
       <highlight language="config">
         SetEnvIf Accept-Language "en" english<br />
-        CustomLog logs/english_log common env=english<br />
-        CustomLog logs/non_english_log common env=!english
+        CustomLog "logs/english_log" common env=english<br />
+        CustomLog "logs/non_english_log" common env=!english
       </highlight>
 
 	<p>Dans le contexte d'une mise en cache, il peut &ecirc;tre
@@ -510,7 +510,7 @@ CustomLog logs/access_log common env=!dontlog
       <highlight language="config">
 SetEnv CACHE_MISS 1
 LogFormat "%h %l %u %t "%r " %>s %b %{CACHE_MISS}e" common-cache
-CustomLog logs/access_log common-cache
+CustomLog "logs/access_log" common-cache
       </highlight>
 
       <p><module>mod_cache</module> va s'ex&eacute;cuter avant
@@ -704,7 +704,7 @@ CustomLog "|$/usr/local/apache/bin/rotatelogs   /var/log/access_log 86400" commo
 
     <highlight language="config">
 LogFormat "%v %l %u %t \"%r\" %&gt;s %b" comonvhost
-CustomLog logs/access_log comonvhost
+CustomLog "logs/access_log" comonvhost
     </highlight>
 
     <p>Le champ <code>%v</code> sert &agrave; enregistrer le nom de l'h&ocirc;te virtuel qui

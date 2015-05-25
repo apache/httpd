@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1673932:1675455 (outdated) -->
+<!-- English Revision: 1675455 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -70,8 +70,8 @@ HTTP de base.</description>
 <section id="contents"><title>Sommaire</title>
 
     <ul>
-      <li>
-        <a href="#operation">Mode op&eacute;ratoire</a>
+      <li> <a href="#gcaveats">Mises en garde &agrave; caract&egrave;re g&eacute;n&eacute;ral</a> </li>
+      <li> <a href="#operation">Mode op&eacute;ratoire</a>
 
         <ul>
           <li><a href="#authenphase">La phase
@@ -110,6 +110,20 @@ HTTP de base.</description>
         </ul>
       </li>
     </ul>
+</section>
+
+<section id="gcaveats"><title>Mises en garde &agrave; caract&egrave;re g&eacute;n&eacute;ral</title>
+<p>Ce module effectue une mise en cache des r&eacute;sultats du processus
+d'authentification et d'autorisation en fonction de la configuration du
+module <module>mod_ldap</module>. Les modifications effectu&eacute;es au niveau
+du serveur LDAP d'arri&egrave;re-plan comme les
+verrouillages ou r&eacute;vocations d'utilisateurs, les changements de mot de
+passe, ou les changements d'appartenance &agrave; un groupe (et cette liste
+n'est pas exhaustive), ne seront pas imm&eacute;diatement propag&eacute;es jusqu'au
+serveur HTTP. Consultez les directives du module
+<module>mod_ldap</module> pour plus de d&eacute;tails &agrave; propos de la
+configuration de la mise en cache.
+</p>
 </section>
 
 <section id="operation"><title>Mode op&eacute;ratoire</title>
