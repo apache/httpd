@@ -101,15 +101,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * FreeBSD: Disable IPv4-mapped listening sockets by default for versions
-    5+ instead of just for FreeBSD 5.
-    trunk patch: http://svn.apache.org/r1551685
-                 http://svn.apache.org/r1652929
-    2.4.x patch: http://svn.apache.org/r1570322
-                 http://svn.apache.org/r1653962
-    2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-freesbd_v4mapped.patch
-    +1: ylavic, trawick, rjung
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
