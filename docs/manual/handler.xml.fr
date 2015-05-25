@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1330883:1673945 (outdated) -->
+<!-- English Revision: 1673945 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -130,7 +130,7 @@ AddHandler add-footer .html
       de leur nom de fichier.</p>
 
       <highlight language="config">
-&lt;Directory /web/htdocs/asis&gt;
+&lt;Directory "/web/htdocs/asis"&gt;
     SetHandler send-as-is
 &lt;/Directory&gt;
       </highlight>
