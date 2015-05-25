@@ -29,8 +29,6 @@
 <a href="./ko/logs.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/logs.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p>Pour véritablement gérer un serveur web,
     il est nécessaire de disposer d'un
@@ -237,7 +235,7 @@
       <p>Voici une configuration typique pour le journal des accès :</p>
 
       <pre class="prettyprint lang-config">LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common
-CustomLog logs/access_log common</pre>
+CustomLog "logs/access_log" common</pre>
 
 
       <p>Ici est définie l'<em>identité</em> <code>common</code> qui est
@@ -387,7 +385,7 @@ CustomLog logs/access_log common</pre>
       comme suit :</p>
 
       <pre class="prettyprint lang-config">LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\"" combined
-CustomLog log/access_log combined</pre>
+CustomLog "log/access_log" combined</pre>
 
 
       <p>Ce format est identique au Common Log Format, avec deux champs
@@ -438,9 +436,9 @@ CustomLog log/access_log combined</pre>
       <code>AgentLog</code>.</p>
 
       <pre class="prettyprint lang-config">LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common
-CustomLog logs/access_log common
-CustomLog logs/referer_log "%{Referer}i -&gt; %U"
-CustomLog logs/agent_log "%{User-agent}i"</pre>
+CustomLog "logs/access_log" common
+CustomLog "logs/referer_log" "%{Referer}i -&gt; %U"
+CustomLog "logs/agent_log" "%{User-agent}i"</pre>
 
 
       <p>Cet exemple montre aussi qu'il n'est pas obligatoire d'associer
@@ -471,7 +469,7 @@ SetEnvIf Remote_Addr "127\.0\.0\.1" dontlog
 # Marque les requêtes pour le fichier robots.txt
 SetEnvIf Request_URI "^/robots\.txt$" dontlog
 # Journalise toutes les autres requêtes
-CustomLog logs/access_log common env=!dontlog</pre>
+CustomLog "logs/access_log" common env=!dontlog</pre>
 
 
       <p>Autre exemple, imaginons l'enregistrement des requêtes en provenance
@@ -479,8 +477,8 @@ CustomLog logs/access_log common env=!dontlog</pre>
       utilisateurs dans un autre journal.</p>
 
       <pre class="prettyprint lang-config">        SetEnvIf Accept-Language "en" english<br />
-        CustomLog logs/english_log common env=english<br />
-        CustomLog logs/non_english_log common env=!english</pre>
+        CustomLog "logs/english_log" common env=english<br />
+        CustomLog "logs/non_english_log" common env=!english</pre>
 
 
 	<p>Dans le contexte d'une mise en cache, il peut être
@@ -489,7 +487,7 @@ CustomLog logs/access_log common env=!dontlog</pre>
 
       <pre class="prettyprint lang-config">SetEnv CACHE_MISS 1
 LogFormat "%h %l %u %t "%r " %&gt;s %b %{CACHE_MISS}e" common-cache
-CustomLog logs/access_log common-cache</pre>
+CustomLog "logs/access_log" common-cache</pre>
 
 
       <p><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> va s'exécuter avant
@@ -675,7 +673,7 @@ CustomLog "|$/usr/local/apache/bin/rotatelogs   /var/log/access_log 86400" commo
     individuels. Considérons par exemple les directives suivantes :</p>
 
     <pre class="prettyprint lang-config">LogFormat "%v %l %u %t \"%r\" %&gt;s %b" comonvhost
-CustomLog logs/access_log comonvhost</pre>
+CustomLog "logs/access_log" comonvhost</pre>
 
 
     <p>Le champ <code>%v</code> sert à enregistrer le nom de l'hôte virtuel qui
