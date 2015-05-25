@@ -28,8 +28,6 @@
 <a href="../ko/misc/perf-tuning.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/misc/perf-tuning.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 
     <p>Apache 2.x est un serveur web à usage général, conçu dans un but
@@ -150,7 +148,7 @@
 
       <p>Notez qu'il est possible de modifier la portée des directives, en les
       plaçant par exemple à l'intérieur d'une section
-      <code>&lt;Location /server-status&gt;</code>. Les recherches DNS ne
+      <code>&lt;Location "/server-status"&gt;</code>. Les recherches DNS ne
       seront alors effectuées que pour les requêtes qui satisfont aux critères.
       Voici un exemple qui désactive les recherches DNS sauf pour les fichiers
       <code>.html</code> et <code>.cgi</code> :</p>
@@ -178,8 +176,8 @@
       symboliques. Un appel supplémentaire par élément du chemin du fichier.
       Par exemple, si vous avez :</p>
 
-      <pre class="prettyprint lang-config">DocumentRoot /www/htdocs
-&lt;Directory /&gt;
+      <pre class="prettyprint lang-config">DocumentRoot "/www/htdocs"
+&lt;Directory "/"&gt;
   Options SymLinksIfOwnerMatch
 &lt;/Directory&gt;</pre>
 
@@ -193,12 +191,12 @@
       vérifier la sécurité des liens symboliques, vous pouvez utiliser une
       configuration du style :</p>
 
-      <pre class="prettyprint lang-config">DocumentRoot /www/htdocs
-&lt;Directory /&gt;
+      <pre class="prettyprint lang-config">DocumentRoot "/www/htdocs"
+&lt;Directory "/"&gt;
   Options FollowSymLinks
 &lt;/Directory&gt;
 
-&lt;Directory /www/htdocs&gt;
+&lt;Directory "/www/htdocs"&gt;
   Options -FollowSymLinks +SymLinksIfOwnerMatch
 &lt;/Directory&gt;</pre>
 
@@ -226,8 +224,8 @@
       pour chaque élément du chemin du fichier demandé. Par exemple, si vous
       avez : </p>
 
-      <pre class="prettyprint lang-config">DocumentRoot /www/htdocs
-&lt;Directory /&gt;
+      <pre class="prettyprint lang-config">DocumentRoot "/www/htdocs"
+&lt;Directory "/"&gt;
   AllowOverride all
 &lt;/Directory&gt;</pre>
 

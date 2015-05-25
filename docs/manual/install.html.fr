@@ -31,8 +31,6 @@
 <a href="./ko/install.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/install.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 
     <p>Ce document couvre l'installation et la compilation du serveur
@@ -196,11 +194,7 @@
       <dd>L'interpréteur Perl 5 (les versions 5.003 ou supérieures conviennent)
       est nécessaire pour l'exécution de certains scripts comme
       <code class="program"><a href="./programs/apxs.html">apxs</a></code> ou <code class="program"><a href="./programs/dbmmanage.html">dbmmanage</a></code>
-      (qui sont écrits en Perl). Si vous disposez de plusieurs interpréteurs
-      Perl (par exemple, une installation globale Perl 4, et
-      votre installation personnelle de Perl 5), il vous faut utiliser l'option
-      <code>--with-perl</code> (voir ci-dessous) afin de vous assurer que le
-      bon interpréteur sera utilisé par <code class="program"><a href="./programs/configure.html">configure</a></code>.
+      (qui sont écrits en Perl).
       Si le script <code class="program"><a href="./programs/configure.html">configure</a></code> ne trouve pas d'interpréteur
       Perl 5, vous ne pourrez pas utiliser les scripts qui en ont besoin.
       Bien entendu, vous pourrez tout de même construire et utiliser

@@ -26,8 +26,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/ssl/ssl_howto.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/ssl/ssl_howto.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 
 <p>Ce document doit vous permettre de démarrer et de faire fonctionner
@@ -57,8 +55,8 @@ Listen 443
 &lt;VirtualHost *:443&gt;
     ServerName www.example.com
     SSLEngine on
-    SSLCertificateFile /path/to/www.example.com.cert
-    SSLCertificateKeyFile /path/to/www.example.com.key
+    SSLCertificateFile "/path/to/www.example.com.cert"
+    SSLCertificateKeyFile "/path/to/www.example.com.key"
 &lt;/VirtualHost&gt;</pre>
 
 
@@ -109,7 +107,7 @@ accéder à une URL particulière ?</a></h3>
     <pre class="prettyprint lang-config"># soyons très tolérant a priori
 SSLCipherSuite ALL:!aNULL:RC4+RSA:+HIGH:+MEDIUM:+LOW:+EXP:+eNULL
 
-&lt;Location /strong/area&gt;
+&lt;Location "/strong/area"&gt;
 # sauf pour https://hostname/strong/area/ et ses sous-répertoires
 # qui exigent des chiffrements forts
 SSLCipherSuite HIGH:!aNULL:!MD5
@@ -301,7 +299,7 @@ provenance de l'Internet ?</a></li>
 # contenu dans ca.crt
 SSLVerifyClient require
 SSLVerifyDepth 1
-SSLCACertificateFile conf/ssl.crt/ca.crt</pre>
+SSLCACertificateFile "conf/ssl.crt/ca.crt"</pre>
 
 
 
@@ -316,9 +314,9 @@ URL particulière, vous pouvez utiliser les fonctionnalités de reconfiguration
 de <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> en fonction du répertoire :</p>
 
     <pre class="prettyprint lang-config">SSLVerifyClient none
-SSLCACertificateFile conf/ssl.crt/ca.crt
+SSLCACertificateFile "conf/ssl.crt/ca.crt"
 
-&lt;Location /secure/area&gt;
+&lt;Location "/secure/area"&gt;
 SSLVerifyClient require
 SSLVerifyDepth 1
 &lt;/Location&gt;</pre>
@@ -345,10 +343,10 @@ l'accès au reste du serveur à tous les clients ?</a></h3>
     autorisés, comme suit :</p>
 
     <pre class="prettyprint lang-config">SSLVerifyClient      none
-SSLCACertificateFile conf/ssl.crt/ca.crt
-SSLCACertificatePath conf/ssl.crt
+SSLCACertificateFile "conf/ssl.crt/ca.crt"
+SSLCACertificatePath "conf/ssl.crt"
 
-&lt;Directory /usr/local/apache2/htdocs/secure/area&gt;
+&lt;Directory "/usr/local/apache2/htdocs/secure/area"&gt;
 SSLVerifyClient      require
     SSLVerifyDepth       5
     SSLOptions           +FakeBasicAuth
@@ -356,7 +354,7 @@ SSLVerifyClient      require
     AuthName             "Snake Oil Authentication"
     AuthType             Basic
     AuthBasicProvider    file
-    AuthUserFile         /usr/local/apache2/conf/httpd.passwd
+    AuthUserFile         "/usr/local/apache2/conf/httpd.passwd"
     Require              valid-user
 &lt;/Directory&gt;</pre>
 
@@ -377,10 +375,10 @@ SSLVerifyClient      require
 
 
     <pre class="prettyprint lang-config">SSLVerifyClient      none
-SSLCACertificateFile conf/ssl.crt/ca.crt
-SSLCACertificatePath conf/ssl.crt
+SSLCACertificateFile "conf/ssl.crt/ca.crt"
+SSLCACertificatePath "conf/ssl.crt"
 
-&lt;Directory /usr/local/apache2/htdocs/secure/area&gt;
+&lt;Directory "/usr/local/apache2/htdocs/secure/area"&gt;
   SSLVerifyClient      require
   SSLVerifyDepth       5
   SSLOptions           +FakeBasicAuth
@@ -405,15 +403,15 @@ aux clients de l'intranet.</a></h3>
    doivent se trouver en dehors de votre hôte virtuel HTTPS, afin qu'elles
    s'appliquent à la fois à HTTP et HTTPS.</p>
 
-    <pre class="prettyprint lang-config">SSLCACertificateFile conf/ssl.crt/company-ca.crt
+    <pre class="prettyprint lang-config">SSLCACertificateFile "conf/ssl.crt/company-ca.crt"
 
-&lt;Directory /usr/local/apache2/htdocs&gt;
+&lt;Directory "/usr/local/apache2/htdocs"&gt;
 #   En dehors de subarea, seul l'accès depuis l'intranet est
 #   autorisé
     Require              ip 192.168.1.0/24
 &lt;/Directory&gt;
 
-&lt;Directory /usr/local/apache2/htdocs/subarea&gt;
+&lt;Directory "/usr/local/apache2/htdocs/subarea"&gt;
 #   Dans subarea, tout accès depuis l'intranet est autorisé
 #   mais depuis l'Internet, seul l'accès par HTTPS + chiffrement fort + Mot de passe
 #   ou HTTPS + chiffrement fort + certificat client n'est autorisé.
@@ -428,9 +426,9 @@ aux clients de l'intranet.</a></h3>
     
     #   ON oblige les clients venant d'Internet à utiliser HTTPS
     RewriteEngine        on
-    RewriteCond          %{REMOTE_ADDR} !^192\.168\.1\.[0-9]+$
-    RewriteCond          %{HTTPS} !=on
-    RewriteRule          . - [F]
+    RewriteCond          "%{REMOTE_ADDR}" "!^192\.168\.1\.[0-9]+$"
+    RewriteCond          "%{HTTPS}" "!=on"
+    RewriteRule          "." "-" [F]
     
     #   On permet l'accès soit sur les critères réseaux, soit par authentification Basique
     Satisfy              any
@@ -442,7 +440,7 @@ aux clients de l'intranet.</a></h3>
     AuthType             basic
     AuthName             "Protected Intranet Area"
     AuthBasicProvider    file
-    AuthUserFile         conf/protected.passwd
+    AuthUserFile         "conf/protected.passwd"
     Require              valid-user
 &lt;/Directory&gt;</pre>
 

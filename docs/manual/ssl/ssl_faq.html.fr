@@ -26,8 +26,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/ssl/ssl_faq.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/ssl/ssl_faq.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 <blockquote>
 <p>Le sage n'apporte pas de bonnes réponses, il pose les bonnes questions</p>
@@ -192,8 +190,8 @@ hyperliens pleinement qualifiés (car vous devez modifier le schéma de l'URL).
 Cependant, à l'aide du module <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>, vous pouvez
 manipuler des hyperliens relatifs, pour obtenir le même effet.</p>
     <pre class="prettyprint lang-config">RewriteEngine on
-RewriteRule   ^/(.*)_SSL$   https://%{SERVER_NAME}/$1 [R,L]
-RewriteRule   ^/(.*)_NOSSL$ http://%{SERVER_NAME}/$1  [R,L]</pre>
+RewriteRule   "^/(.*)_SSL$"   "https://%{SERVER_NAME}/$1" [R,L]
+RewriteRule   "^/(.*)_NOSSL$" "http://%{SERVER_NAME}/$1"  [R,L]</pre>
 
 
     <p>Ce jeu de règles rewrite vous permet d'utiliser des hyperliens de la
@@ -273,8 +271,8 @@ fins de test ?</a></h3>
 			-keyout server.key</strong></code><br />
 	Ces fichiers seront utilisés comme suit dans votre
 	<code>httpd.conf</code> :
-        <pre class="prettyprint lang-config">SSLCertificateFile    /path/to/this/server.crt
-SSLCertificateKeyFile /path/to/this/server.key</pre>
+        <pre class="prettyprint lang-config">SSLCertificateFile    "/path/to/this/server.crt"
+SSLCertificateKeyFile "/path/to/this/server.key"</pre>
 
     </li>
     <li>Il est important de savoir que le fichier <code>server.key</code> n'a
@@ -355,8 +353,8 @@ SSLCertificateKeyFile /path/to/this/server.key</pre>
     <li>Vous devez maintenant disposer de deux fichiers :
     <code>server.key</code> et <code>server.crt</code>. Ils sont précisés dans
     votre fichier <code>httpd.conf</code> comme suit :
-       <pre class="prettyprint lang-config">SSLCertificateFile    /path/to/this/server.crt
-SSLCertificateKeyFile /path/to/this/server.key</pre>
+       <pre class="prettyprint lang-config">SSLCertificateFile    "/path/to/this/server.crt"
+SSLCertificateKeyFile "/path/to/this/server.key"</pre>
 
        Le fichier <code>server.csr</code> n'est plus nécessaire.
     </li>
@@ -395,7 +393,7 @@ certification (CA) ?</a></h3>
     que vous venez de générer (la sortie sera au format PEM) :<br />
        <br />
        <code><strong>$ openssl req -new -x509 -nodes -sha1 -days 365
-		       -key server.key -out server.crt</strong></code><br />
+		       -key server.key -out server.crt -extensions usr_cert</strong></code><br />
        <br />
        Cette commande signe le certificat du serveur et produit un fichier
        <code>server.crt</code>. Vous pouvez afficher les détails de ce
