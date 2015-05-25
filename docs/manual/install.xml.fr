@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision: 1563423:1675443 (outdated) -->
+<!-- English Revision: 1675443 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -152,11 +152,7 @@
       <dd>L'interpr&eacute;teur Perl 5 (les versions 5.003 ou sup&eacute;rieures conviennent)
       est n&eacute;cessaire pour l'ex&eacute;cution de certains scripts comme
       <program>apxs</program> ou <program>dbmmanage</program>
-      (qui sont &eacute;crits en Perl). Si vous disposez de plusieurs interpr&eacute;teurs
-      Perl (par exemple, une installation globale Perl 4, et
-      votre installation personnelle de Perl 5), il vous faut utiliser l'option
-      <code>--with-perl</code> (voir ci-dessous) afin de vous assurer que le
-      bon interpr&eacute;teur sera utilis&eacute; par <program>configure</program>.
+      (qui sont &eacute;crits en Perl).
       Si le script <program>configure</program> ne trouve pas d'interpr&eacute;teur
       Perl 5, vous ne pourrez pas utiliser les scripts qui en ont besoin.
       Bien entendu, vous pourrez tout de m&ecirc;me construire et utiliser
