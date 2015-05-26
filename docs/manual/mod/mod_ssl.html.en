@@ -52,6 +52,7 @@ to provide the cryptography engine.</p>
 <li><img alt="" src="../images/down.gif" /> <a href="#authzproviders">Authorization providers for use with Require</a></li>
 </ul><h3 class="directives">Directives</h3>
 <ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#sslalpnpreference">SSLALPNPreference</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslcacertificatefile">SSLCACertificateFile</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslcacertificatepath">SSLCACertificatePath</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslcadnrequestfile">SSLCADNRequestFile</a></li>
@@ -319,6 +320,30 @@ string in <code class="module"><a href="../mod/mod_log_config.html">mod_log_conf
 
 
   
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SSLALPNPreference" id="SSLALPNPreference">SSLALPNPreference</a> <a name="sslalpnpreference" id="sslalpnpreference">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure protocol preference for Application-Layer Protocol Negotiation (RFC 7301)</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLALPNPreference <em>protocol-id</em> ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available if using OpenSSL 1.0.2 or later</td></tr>
+</table>
+<p>This directive overrides preferences by implementations of application-layer
+protocols during negotiation. Protocol IDs must be specified in terms of the
+"Identification Sequence" from IANA's Application-Layer Protocol
+Negotiation (ALPN) Protocol IDs registry. The protocol specified first gets
+precedence over later or unspecified protocols. This list is evaluated
+against client capabilities.</p>
+
+<div class="example"><h3>Examples</h3><pre class="prettyprint lang-config">SSLALPNPreference h2 spdy/3</pre>
+<p>For clients which support both protocols, <code>h2</code> will be selected. For
+clients which only support <code>spdy/3</code>, that one will be chosen. If a client
+supports only protocol X and there is support for X in httpd, the
+negotiation will select X.</p></div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -2164,7 +2189,9 @@ dd if=/dev/random of=/path/to/file.tkey bs=1 count=48
 
 <p>Ticket keys should be rotated (replaced) on a frequent basis,
 as this is the only way to invalidate an existing session ticket -
-OpenSSL currently doesn't allow to specify a limit for ticket lifetimes.</p>
+OpenSSL currently doesn't allow to specify a limit for ticket lifetimes.
+A new ticket key only gets used after restarting the web server.
+All existing session tickets become invalid after a restart.</p>
 
 <div class="warning">
 <p>The ticket key file contains sensitive keying material and should
@@ -2261,10 +2288,6 @@ is enabled. Configuration of a cache is mandatory for OCSP stapling.
 With the exception of <code>none</code> and <code>nonenotnull</code>,
 the same storage types are supported as with
 <code class="directive"><a href="#sslsessioncache">SSLSessionCache</a></code>.</p>
-
-<p>The <code>ssl-stapling</code> mutex is used to serialize access to the
-OCSP stapling cache to prevent corruption.  This mutex can be configured
-using the <code class="directive"><a href="../mod/core.html#mutex">Mutex</a></code> directive.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -2487,6 +2510,14 @@ stated goal of "saving roundtrips and resources" - see also
 <a href="http://www.ietf.org/rfc/rfc6961.txt">RFC 6961</a>
 (TLS Multiple Certificate Status Extension).
 </p>
+
+<p>When OCSP stapling is enabled, the <code>ssl-stapling</code> mutex is used
+to control access to the OCSP stapling cache in order to prevent corruption,
+and the <code>sss-stapling-refresh</code> mutex is used to control refreshes
+of OCSP responses.  These mutexes can be configured using the
+<code class="directive"><a href="../mod/core.html#mutex">Mutex</a></code> directive.
+</p>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

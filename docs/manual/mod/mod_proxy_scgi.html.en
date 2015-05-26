@@ -115,7 +115,7 @@ backend</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_scgi</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>The <var>Headername</var> feature is available in Apache
-httpd 2.5.0 and later.</td></tr>
+httpd 2.4.13 and later.</td></tr>
 </table>
     <p>The <code class="directive">ProxySCGIInternalRedirect</code> enables the backend
     to internally redirect the gateway to a different URL. This feature
