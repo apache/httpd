@@ -229,8 +229,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      SSL_CTX_set_tmp_ecdh increases reference count, so we have to call
      EC_KEY_free, otherwise eckey will not be freed.
      trunk patch: http://svn.apache.org/r1666363
-     2.4.x patch: http://people.apache.org/~rjung/httpd-2.4.x-free-eckey.patch
-     +1: rjung
+     2.4.x patch: http://people.apache.org/~rjung/patches/httpd-2.4.x-free-eckey.patch
+     +1: rjung, ylavic
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
