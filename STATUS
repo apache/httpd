@@ -232,6 +232,24 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~rjung/patches/httpd-2.4.x-free-eckey.patch
      +1: rjung, ylavic
 
+  *) mod_ssl: add ALPN support by allowing other modules to register callbacks
+              for negotiation of the application layer protocol.  PR 52210.
+     trunk patch: http://svn.apache.org/r1332643
+                  http://svn.apache.org/r1487772
+                  http://svn.apache.org/r1670397
+                  http://svn.apache.org/r1670434
+                  http://svn.apache.org/r1670436
+                  http://svn.apache.org/r1670578
+                  http://svn.apache.org/r1675459
+                  http://svn.apache.org/r1676004
+                  http://svn.apache.org/r1676709
+                  http://svn.apache.org/r1681741
+                  http://svn.apache.org/r1681746
+     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-alpn-v2.patch
+     +1:
+     ylavic: we'd better comment on @dev for this one for Stefan Eissing (who
+             proposed the merge) to be able to follow (and comment too).
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
