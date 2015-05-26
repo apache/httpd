@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_proxy: Don't put the worker in error state for 500 or 503 errors
+     returned by the backend unless failonstatus is configured to.  PR 56925.
+     [Yann Ylavic]
+
   *) http: Don't remove the Content-Length of zero from a HEAD response if
      it comes from an origin server, module or script.  [Yann Ylavic]
 
