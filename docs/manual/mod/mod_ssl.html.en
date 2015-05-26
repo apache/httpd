@@ -52,7 +52,6 @@ to provide the cryptography engine.</p>
 <li><img alt="" src="../images/down.gif" /> <a href="#authzproviders">Authorization providers for use with Require</a></li>
 </ul><h3 class="directives">Directives</h3>
 <ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#sslalpnpreference">SSLALPNPreference</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslcacertificatefile">SSLCACertificateFile</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslcacertificatepath">SSLCACertificatePath</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslcadnrequestfile">SSLCADNRequestFile</a></li>
@@ -320,30 +319,6 @@ string in <code class="module"><a href="../mod/mod_log_config.html">mod_log_conf
 
 
   
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLALPNPreference" id="SSLALPNPreference">SSLALPNPreference</a> <a name="sslalpnpreference" id="sslalpnpreference">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure protocol preference for Application-Layer Protocol Negotiation (RFC 7301)</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLALPNPreference <em>protocol-id</em> ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available if using OpenSSL 1.0.2 or later</td></tr>
-</table>
-<p>This directive overrides preferences by implementations of application-layer
-protocols during negotiation. Protocol IDs must be specified in terms of the
-"Identification Sequence" from IANA's Application-Layer Protocol
-Negotiation (ALPN) Protocol IDs registry. The protocol specified first gets
-precedence over later or unspecified protocols. This list is evaluated
-against client capabilities.</p>
-
-<div class="example"><h3>Examples</h3><pre class="prettyprint lang-config">SSLALPNPreference h2 spdy/3</pre>
-<p>For clients which support both protocols, <code>h2</code> will be selected. For
-clients which only support <code>spdy/3</code>, that one will be chosen. If a client
-supports only protocol X and there is support for X in httpd, the
-negotiation will select X.</p></div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
