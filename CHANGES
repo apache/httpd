@@ -1,6 +1,12 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_ssl: add ALPN support by allowing other modules to register callbacks
+     for negotiation of the application layer protocol.  PR 52210.
+     [Matthew Steele <mdsteele google com>, Joe Orton, Jim Jagielski,
+      Stefan Eissing <stefan eissing org>, Rainer Jung, Ruediger Pluem,
+      Kaspar Brand]
+
   *) mod_proxy: Don't put the worker in error state for 500 or 503 errors
      returned by the backend unless failonstatus is configured to.  PR 56925.
      [Yann Ylavic]
