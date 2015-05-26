@@ -1169,7 +1169,8 @@ static int proxy_handler(request_rec *r)
         AP_PROXY_RUN(r, worker, conf, url, attempts);
         access_status = proxy_run_scheme_handler(r, worker, conf,
                                                  url, NULL, 0);
-        if (access_status == OK)
+        if (access_status == OK
+                || apr_table_get(r->notes, "proxy-error-override"))
             break;
         else if (access_status == HTTP_INTERNAL_SERVER_ERROR) {
             /* Unrecoverable server error.
