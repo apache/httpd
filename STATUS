@@ -246,7 +246,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1681741
                   http://svn.apache.org/r1681746
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-alpn-v3.patch
-     +1:
+     +1: ylavic
      ylavic: we'd better comment on @dev for this one for Stefan Eissing (who
              proposed the merge) to be able to follow (and comment too).
 
