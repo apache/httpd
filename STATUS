@@ -224,7 +224,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/r1681685
      2.4.x patch: trunk patch works
      +1: jailletc36
-     
+
+  *) mod_ssl: fix small memory leak in ssl_init_server_certs when ECDH is used.
+     SSL_CTX_set_tmp_ecdh increases reference count, so we have to call
+     EC_KEY_free, otherwise eckey will not be freed.
+     trunk patch: http://svn.apache.org/r1666363
+     2.4.x patch: http://people.apache.org/~rjung/httpd-2.4.x-free-eckey.patch
+     +1: rjung
+
+
 PATCHES/ISSUES THAT ARE BEING WORKED
 
    * mod_proxy_http: Don't establish or reuse a backend connection before pre-
