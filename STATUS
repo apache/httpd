@@ -240,12 +240,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1670434
                   http://svn.apache.org/r1670436
                   http://svn.apache.org/r1670578
+                  http://svn.apache.org/r1670738
                   http://svn.apache.org/r1675459
                   http://svn.apache.org/r1676004
                   http://svn.apache.org/r1676709
                   http://svn.apache.org/r1681741
                   http://svn.apache.org/r1681746
-     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-alpn-v3.patch
+     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-alpn-v4.patch
      +1: ylavic
      ylavic: we'd better comment on @dev for this one for Stefan Eissing (who
              proposed the merge) to be able to follow (and comment too).
