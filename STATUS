@@ -251,6 +251,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      ylavic: we'd better comment on @dev for this one for Stefan Eissing (who
              proposed the merge) to be able to follow (and comment too).
 
+  *) mod_proxy: Don't put the worker in error state for 500 or 503 errors
+     returned by the backend unless failonstatus is configured to.  PR 56925.
+     trunk patch: http://svn.apache.org/r1681694
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: ylavic
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
