@@ -105,6 +105,12 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_ssl: fix small memory leak in ssl_init_server_certs when ECDH is used.
+     SSL_CTX_set_tmp_ecdh increases reference count, so we have to call
+     EC_KEY_free, otherwise eckey will not be freed.
+     trunk patch: http://svn.apache.org/r1666363
+     2.4.x patch: http://people.apache.org/~rjung/patches/httpd-2.4.x-free-eckey.patch
+     +1: rjung, ylavic, wrowe
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -224,13 +230,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/r1681685
      2.4.x patch: trunk patch works
      +1: jailletc36
-
-  *) mod_ssl: fix small memory leak in ssl_init_server_certs when ECDH is used.
-     SSL_CTX_set_tmp_ecdh increases reference count, so we have to call
-     EC_KEY_free, otherwise eckey will not be freed.
-     trunk patch: http://svn.apache.org/r1666363
-     2.4.x patch: http://people.apache.org/~rjung/patches/httpd-2.4.x-free-eckey.patch
-     +1: rjung, ylavic
 
   *) mod_ssl: add ALPN support by allowing other modules to register callbacks
               for negotiation of the application layer protocol.  PR 52210.
