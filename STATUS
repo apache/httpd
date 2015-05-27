@@ -105,13 +105,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_ssl: fix small memory leak in ssl_init_server_certs when ECDH is used.
-     SSL_CTX_set_tmp_ecdh increases reference count, so we have to call
-     EC_KEY_free, otherwise eckey will not be freed.
-     trunk patch: http://svn.apache.org/r1666363
-     2.4.x patch: http://people.apache.org/~rjung/patches/httpd-2.4.x-free-eckey.patch
-     +1: rjung, ylavic, wrowe
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
