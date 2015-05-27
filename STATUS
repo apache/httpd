@@ -192,7 +192,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1674056
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-ap_map_http_request_error-v2.patch
      +1: ylavic, minfrin
-     ylavic: Depends on r1657881 above.
 
   *) http: Don't remove the Content-Length of zero from a HEAD response if
      it comes from an origin server, module or script. Allow the previous
