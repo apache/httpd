@@ -960,7 +960,7 @@ static apr_status_t ssl_init_server_certs(server_rec *s,
 #ifdef HAVE_ECC
     EC_GROUP *ecparams;
     int nid;
-    EC_KEY *eckey;
+    EC_KEY *eckey = NULL;
 #endif
 #ifndef HAVE_SSL_CONF_CMD
     SSL *ssl;
@@ -1133,6 +1133,7 @@ static apr_status_t ssl_init_server_certs(server_rec *s,
                              EC_KEY_new_by_curve_name(NID_X9_62_prime256v1));
 #endif
     }
+    EC_KEY_free(eckey);
 #endif
 
     return APR_SUCCESS;
