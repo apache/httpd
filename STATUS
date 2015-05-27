@@ -105,6 +105,31 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
+  *) http: Make ap_die() robust against any HTTP error code and not modify
+     response status (finally logged) when nothing is to be done. PR 56035.
+     trunk patch: http://svn.apache.org/r1657881
+                  http://svn.apache.org/r1665643
+     2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-ap_die.patch
+                  (modulo CHANGES)
+     +1: ylavic
+
+  *) core, modules: Avoid error response/document handling by the core if some
+     handler or input filter already did it while reading the request (causing
+     a double response body).
+     trunk patch: http://svn.apache.org/r1482522 (partial, ap_map_http_request_error() things only!)
+                  http://svn.apache.org/r1529988
+                  http://svn.apache.org/r1529991
+                  http://svn.apache.org/r1643537
+                  http://svn.apache.org/r1643543
+                  http://svn.apache.org/r1657897
+                  http://svn.apache.org/r1665625
+                  http://svn.apache.org/r1665721
+                  http://svn.apache.org/r1674056
+     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-ap_map_http_request_error-v2.patch
+     2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-ap_map_http_request_error-v2.patch
+     +1: ylavic
+     ylavic: Depends on httpd-2.2.x-ap_die.patch above.
+
 
 PATCHES/ISSUES THAT ARE STALLED
 
