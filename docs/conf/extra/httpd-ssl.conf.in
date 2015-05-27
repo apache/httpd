@@ -47,6 +47,8 @@ Listen @@SSLPort@@
 #   and that httpd will negotiate as the client of a proxied server.
 #   See the OpenSSL documentation for a complete list of ciphers, and
 #   ensure these follow appropriate best practices for this deployment.
+#   httpd 2.2.30, 2.4.13 and later force-disable aNULL, eNULL and EXP ciphers,
+#   while OpenSSL disabled these by default in 0.9.8zf/1.0.0r/1.0.1m/1.0.2a.
 SSLCipherSuite HIGH:MEDIUM:!MD5:!RC4
 SSLProxyCipherSuite HIGH:MEDIUM:!MD5:!RC4
 
