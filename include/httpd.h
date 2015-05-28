@@ -1187,6 +1187,9 @@ struct conn_rec {
 
     /** Context under which this connection was suspended */
     void *suspended_baton;
+
+    /** Array of requests being handled under this connection. */
+    apr_array_header_t *requests;
 };
 
 struct conn_slave_rec {

@@ -4909,6 +4909,7 @@ static conn_rec *core_create_conn(apr_pool_t *ptrans, server_rec *s,
     c->conn_config = ap_create_conn_config(c->pool);
     c->notes = apr_table_make(c->pool, 5);
     c->slaves = apr_array_make(c->pool, 20, sizeof(conn_slave_rec *));
+    c->requests = apr_array_make(c->pool, 20, sizeof(request_rec *));
 
 
     if ((rv = apr_socket_addr_get(&c->local_addr, APR_LOCAL, csd))
