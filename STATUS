@@ -249,6 +249,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: ylavic
 
 
+  *) core: Don't lowercase the argument to SetHandler if it begins
+     with proxy:unix. PR 57968.
+     trunk patch: http://svn.apache.org/r1682482
+     2.4.x patch: trunk works
+     +1: covener
+
 PATCHES/ISSUES THAT ARE BEING WORKED
 
    * mod_proxy_http: Don't establish or reuse a backend connection before pre-
