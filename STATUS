@@ -111,7 +111,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1665643
      2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-ap_die.patch
                   (modulo CHANGES)
-     +1: ylavic
+     +1: ylavic, wrowe
 
   *) core, modules: Avoid error response/document handling by the core if some
      handler or input filter already did it while reading the request (causing
@@ -127,7 +127,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1674056
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-ap_map_http_request_error-v2.patch
      2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-ap_map_http_request_error-v2.patch
-     +1: ylavic
+     +1: ylavic, wrowe
      ylavic: Depends on httpd-2.2.x-ap_die.patch above.
 
 
