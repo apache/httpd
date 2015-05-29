@@ -59,6 +59,7 @@ AP_DECLARE(int) ap_xml_parse_input(request_rec * r, apr_xml_doc **pdoc)
                                 READ_BLOCKSIZE);
 
         if (status != APR_SUCCESS) {
+            result = ap_map_http_request_error(status, HTTP_BAD_REQUEST);
             goto read_error;
         }
 

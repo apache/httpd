@@ -83,6 +83,13 @@ Changes with Apache 2.4.13
      will override other parameters given in the same directive. This could be
      a missing + or - prefix.  PR 52820 [Christophe Jaillet]
 
+  *) core, modules: Avoid error response/document handling by the core if some
+     handler or input filter already did it while reading the request (causing
+     a double response body).  [Yann Ylavic]
+
+  *) mod_proxy_ajp: Fix client connection errors handling and logged status
+     when it occurs.  PR 56823.  [Yann Ylavic]
+
   *) mod_proxy: Use the correct server name for SNI in case the backend
      SSL connection itself is established via a proxy server.
      PR 57139 [Szabolcs Gyurko <szabolcs gyurko.org>]

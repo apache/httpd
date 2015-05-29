@@ -1705,7 +1705,7 @@ int ssl_io_buffer_fill(request_rec *r, apr_size_t maxlen)
         if (rv) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(02015)
                           "could not read request body for SSL buffer");
-            return HTTP_INTERNAL_SERVER_ERROR;
+            return ap_map_http_request_error(rv, HTTP_INTERNAL_SERVER_ERROR);
         }
 
         /* Iterate through the returned brigade: setaside each bucket
