@@ -214,7 +214,7 @@ Changes with Apache 2.4.13
   *) mod_authz_groupfile: Reduce the severity of AH01667 from ERROR to DEBUG,
      because it may be evaluated inside <RequireAny>. PR55523. [Eric Covener] 
 
-  *) mod_ssl: Fix small memory leak uring initialization when ECDH is used.
+  *) mod_ssl: Fix small memory leak during initialization when ECDH is used.
      [Jan Kaluza]
 
 Changes with Apache 2.4.12
