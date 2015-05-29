@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) core: Don't lowercase the argument to SetHandler if it begins with
+     "proxy:unix". PR 57968. [Eric Covener]
+
   *) mod_ssl: add ALPN support by allowing other modules to register callbacks
      for negotiation of the application layer protocol.  PR 52210.
      [Matthew Steele <mdsteele google com>, Joe Orton, Jim Jagielski,
