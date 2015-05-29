@@ -502,6 +502,23 @@ AP_DECLARE(int) ap_should_client_block(request_rec *r);
  */
 AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer, apr_size_t bufsiz);
 
+/*
+ * Map specific APR codes returned by the filter stack to HTTP error
+ * codes, or the default status code provided. Use it as follows:
+ *
+ * return ap_map_http_request_error(rv, HTTP_BAD_REQUEST);
+ *
+ * If the filter has already handled the error, AP_FILTER_ERROR will
+ * be returned, which is cleanly passed through.
+ *
+ * These mappings imply that the filter stack is reading from the
+ * downstream client, the proxy will map these codes differently.
+ * @param rv APR status code
+ * @param status Default HTTP code should the APR code not be recognised
+ * @return Mapped HTTP status code
+ */
+AP_DECLARE(int) ap_map_http_request_error(apr_status_t rv, int status);
+
 /**
  * In HTTP/1.1, any method can have a body.  However, most GET handlers
  * wouldn't know what to do with a request body if they received one.

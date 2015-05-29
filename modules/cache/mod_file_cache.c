@@ -283,7 +283,7 @@ static int mmap_handler(request_rec *r, a_file *file)
     APR_BRIGADE_INSERT_TAIL(bb, b);
 
     if (ap_pass_brigade(r->output_filters, bb) != APR_SUCCESS)
-        return HTTP_INTERNAL_SERVER_ERROR;
+        return AP_FILTER_ERROR;
 #endif
     return OK;
 }
@@ -301,7 +301,7 @@ static int sendfile_handler(request_rec *r, a_file *file)
     APR_BRIGADE_INSERT_TAIL(bb, b);
 
     if (ap_pass_brigade(r->output_filters, bb) != APR_SUCCESS)
-        return HTTP_INTERNAL_SERVER_ERROR;
+        return AP_FILTER_ERROR;
 #endif
     return OK;
 }

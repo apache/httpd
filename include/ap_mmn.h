@@ -442,6 +442,7 @@
  * 20120211.44 (2.4.13-dev) Add cgi_pass_auth and AP_CGI_PASS_AUTH_* to 
  *                          core_dir_config
  * 20120211.45 (2.4.13-dev) Add ap_proxy_connection_reusable()
+ * 20120211.46 (2.4.13-dev) Add ap_map_http_request_error()
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
@@ -449,7 +450,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20120211
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 45                   /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 46                   /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
