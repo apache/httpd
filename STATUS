@@ -105,6 +105,21 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) core, modules: Avoid error response/document handling by the core if some
+     handler or input filter already did it while reading the request (causing
+     a double response body).
+     trunk patch: http://svn.apache.org/r1482522 (partial, ap_map_http_request_error() things only!)
+                  http://svn.apache.org/r1529988
+                  http://svn.apache.org/r1529991
+                  http://svn.apache.org/r1643537
+                  http://svn.apache.org/r1643543
+                  http://svn.apache.org/r1657897
+                  http://svn.apache.org/r1665625
+                  http://svn.apache.org/r1665721
+                  http://svn.apache.org/r1674056
+     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-ap_map_http_request_error-v2.patch
+     +1: ylavic, minfrin, wrowe
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -154,7 +169,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~jkaluza/patches/httpd-2.4.x-mod_journald.patch
      +1: jkaluza, wrowe
      wrowe: approves as experimental, 'with-modules=all' restriction
-            satisfies an concern I'd otherwise have.
+            satisfies the concern I'd otherwise have.
 
    * MPMs: Support SO_REUSEPORT to create multiple duplicated listener
            records for scalability (full log in 2.4.x patch).
@@ -177,21 +192,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1679714
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-ap_listeners_buckets-v3.patch
      +1: ylavic, jim
-
-  *) core, modules: Avoid error response/document handling by the core if some
-     handler or input filter already did it while reading the request (causing
-     a double response body).
-     trunk patch: http://svn.apache.org/r1482522 (partial, ap_map_http_request_error() things only!)
-                  http://svn.apache.org/r1529988
-                  http://svn.apache.org/r1529991
-                  http://svn.apache.org/r1643537
-                  http://svn.apache.org/r1643543
-                  http://svn.apache.org/r1657897
-                  http://svn.apache.org/r1665625
-                  http://svn.apache.org/r1665721
-                  http://svn.apache.org/r1674056
-     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-ap_map_http_request_error-v2.patch
-     +1: ylavic, minfrin
 
   *) http: Don't remove the Content-Length of zero from a HEAD response if
      it comes from an origin server, module or script. Allow the previous
