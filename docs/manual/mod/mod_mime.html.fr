@@ -30,8 +30,6 @@
 <a href="../fr/mod/mod_mime.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_mime.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Associe les extensions des fichiers demandés avec l'action
 déclenchée par ces fichiers et avec leur contenu (type MIME, langue,
 jeu de caractère et codage)</td></tr>
@@ -636,16 +634,24 @@ contenu spécifié</td></tr>
     Content-Type, cette directive n'a aucun effet.</p>
 
     <div class="note"><h3>Note</h3>
+    <p>Si aucun gestionnaire n'est explicitement défini pour une
+    requête, le type de contenu spécifié sera aussi utilisé comme nom du
+    gestionnaire.</p>
+
     <p>Lorsqu'aucune directive comme <code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code> ou
     <code class="directive">module="mod_mime"&gt;AddHandler</code> ne s'applique à
-    une requête, le nom de gestionnaire interne qui aurait du être
-    défini par une de ces directives correspond alors au type de contenu
-    spécifié par la directive AddType.
+    une requête, le nom de gestionnaire interne normalement défini
+    par une de ces directives est en fait défini par le type de contenu
+    spécifié par la présente directive.</p>
+    <p>
     Pour des raisons historiques, certains modules tiers comme mod_php
-    peuvent rechercher un type de contenu "synthétique" ne servant qu'à
-    forcer le module à prendre en compte la requête concernée.
-    Il est conseillé d'éviter les configurations qui reposent sur de
-    tels types "synthétiques" en utilisant les directives <code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code> ou <code class="directive"><a href="#addhandler">AddHandler</a></code>.</p>
+    peuvent adopter ce type de comportement pour prendre en compte la
+    requête concernée.
+    </p>
+    <p>Il est conseillé d'éviter les configurations qui reposent sur de
+    tels types "synthétiques". En outre, les configurations qui
+    limitent l'accès aux directives <code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code> ou <code class="directive"><a href="#addhandler">AddHandler</a></code> doivent aussi limiter
+    l'accès à la directive AddType.</p>
     </div>
 
 

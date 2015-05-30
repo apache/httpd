@@ -31,8 +31,6 @@
 <a href="../ja/mod/mod_speling.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_speling.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Tente de corriger les erreurs de casse dans les URLs ou les
 fautes de frappe mineures.</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -124,7 +122,7 @@ majuscules</td></tr>
 
       <li>les corrections s'appliquent strictement aux fichiers
       existants, si bien qu'une requête pour <code>&lt;Location
-      /status&gt;</code> pour être traitée de manière incorrecte comme
+      "/status"&gt;</code> pour être traitée de manière incorrecte comme
       une requête pour le fichier négocié "<code>/stats.html</code>".</li>
     </ul>
 
