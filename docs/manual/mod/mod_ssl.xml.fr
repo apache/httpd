@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1676088:1681320 (outdated) -->
+<!-- English Revision: 1681320 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -100,10 +100,10 @@ export&eacute;</td></tr>
 <td>Le DN sujet du certificat client</td></tr>
 <tr><td><code>SSL_CLIENT_S_DN_</code><em>x509</em></td> <td>cha&icirc;ne</td>
 <td>El&eacute;ment du DN sujet du client</td></tr>
-<tr><td><code>SSL_CLIENT_SAN_Email_</code><em>n</em></td> <td>chaîne</td>
-<td>Les entrées d'extension subjectAltName du certificat client de type rfc822Name</td></tr>
-<tr><td><code>SSL_CLIENT_SAN_DNS_</code><em>n</em></td> <td>chaîne</td>
-<td>Les entrées d'extension subjectAltName du certificat client de type dNSName</td></tr>
+<tr><td><code>SSL_CLIENT_SAN_Email_</code><em>n</em></td> <td>cha&icirc;ne</td>
+<td>Les entr&eacute;es d'extension subjectAltName du certificat client de type rfc822Name</td></tr>
+<tr><td><code>SSL_CLIENT_SAN_DNS_</code><em>n</em></td> <td>cha&icirc;ne</td>
+<td>Les entr&eacute;es d'extension subjectAltName du certificat client de type dNSName</td></tr>
 <tr><td><code>SSL_CLIENT_I_DN</code></td>               <td>cha&icirc;ne</td>
 <td>DN de l'&eacute;metteur du certificat du client</td></tr>
 <tr><td><code>SSL_CLIENT_I_DN_</code><em>x509</em></td> <td>cha&icirc;ne</td>
@@ -139,10 +139,10 @@ The serial of the server certificate</td></tr>
 <tr><td><code>SSL_SERVER_S_DN_</code><em>x509</em></td> <td>cha&icirc;ne</td>
 <td>El&eacute;ment du DN sujet du certificat du serveur</td></tr>
 <tr><td><code>SSL_SERVER_SAN_Email_</code><em>n</em></td>
-<td>chaîne</td>  <td>Les entrées d'extension subjectAltName du
+<td>cha&icirc;ne</td>  <td>Les entr&eacute;es d'extension subjectAltName du
 certificat de serveur de type rfc822Name</td></tr>
-<tr><td><code>SSL_SERVER_SAN_DNS_</code><em>n</em></td> <td>chaîne</td>
-<td>Les entrées d'extension subjectAltName du
+<tr><td><code>SSL_SERVER_SAN_DNS_</code><em>n</em></td> <td>cha&icirc;ne</td>
+<td>Les entr&eacute;es d'extension subjectAltName du
 certificat de serveur de type dNSName</td></tr>
 <tr><td><code>SSL_SERVER_I_DN</code></td>               <td>cha&icirc;ne</td>
 <td>DN de l'&eacute;metteur du certificat du serveur</td></tr>
@@ -2660,6 +2660,14 @@ actuelle de l'agrafage OCSP n'atteint que partiellement l'objectif d'
 voir la <a href="http://www.ietf.org/rfc/rfc6961.txt">RFC 6961</a> (TLS
 Multiple Certificate Status Extension).
 </p>
+
+<p>Lorsque l'agrafage OCSP est activ&eacute;, le mutex
+<code>ssl-stapling</code> contr&ocirc;le l'acc&egrave;s au cache de l'agrafage OCSP
+afin de pr&eacute;venir toute corruption, et le mutex
+<code>sss-stapling-refresh</code> contr&ocirc;le le raffra&icirc;chissement des
+r&eacute;ponses OCSP. Ces mutex peuvent &ecirc;tre configur&eacute;s via la directive
+<directive module="core">Mutex</directive>.
+</p>
 </usage>
 </directivesynopsis>
 
@@ -2679,10 +2687,6 @@ l'exception de <code>none</code> et <code>nonenotnull</code>, cette
 directive supporte les m&ecirc;mes types de stockage que la directive
 <directive module="mod_ssl">SSLSessionCache</directive>.</p>
 
-<p>Le mutex <code>ssl-stapling</code> permet de s&eacute;rialiser l'acc&egrave;s au
-cache d'agrafage OCSP afin d'en pr&eacute;venir la corruption. Ce mutex peut
-&ecirc;tre configur&eacute; via la directive <directive
-module="core">Mutex</directive>.</p>
 </usage>
 </directivesynopsis>
 
@@ -2869,7 +2873,10 @@ dd if=/dev/random of=/chemin/vers/fichier.tkey bs=1 count=48
 
 <p>Ces cl&eacute;s doivent &ecirc;tre renouvel&eacute;es fr&eacute;quemment, car il s'agit du seul
 moyen d'invalider un ticket de session existant - OpenSSL ne permet pas
-actuellement de sp&eacute;cifier une limite &agrave; la dur&eacute;e de vie des tickets.</p>
+actuellement de sp&eacute;cifier une limite &agrave; la dur&eacute;e de
+vie des tickets. Une nouvelle cl&eacute; ne peut &ecirc;tre utilis&eacute;e qu'apr&egrave;s avoir
+red&eacute;marr&eacute; le serveur. Tous les tickets de session existants deviennent
+invalides apr&egrave;s le red&eacute;marrage du serveur.</p>
 
 <note type="warning">
 <p>Ce fichier contient des donn&eacute;es sensibles et doit donc &ecirc;tre prot&eacute;g&eacute;

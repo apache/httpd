@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1673834:1681106 (outdated) -->
+<!-- English Revision: 1681106 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -236,6 +236,17 @@ d'Apache</a></seealso>
 
     <tr><td><code>%T</code></td>
         <td>Le temps mis pour servir la requ&ecirc;te, en secondes.</td></tr>
+
+    <tr><td><code>%{<var>UNIT</var>}T</code></td>
+        <td>Le temps mis pour traiter la requ&ecirc;te dans une unit&eacute; d&eacute;finie
+	par <code>UNIT</code>. Les valeurs d'unit&eacute; valides sont
+	<code>ms</code> pour millisecondes, <code>us</code> pour
+	microsecondes et <code>s</code> pour secondes. Si
+	<code>UNIT</code> est omis, la valeur de l'unit&eacute; par d&eacute;faut est
+	la seconde ; sp&eacute;cifier la valeur d'unit&eacute; <code>us</code> revient
+	&agrave; utiliser le format <code>%D</code>. La possibilit&eacute; de
+	sp&eacute;cifier une valeur d'unit&eacute; avec le format <code>%T</code> est
+	disponible depuis la version 2.4.13 du serveur HTTP Apache.</td></tr>	
 
     <tr><td><code>%u</code></td>
         <td>L'utilisateur distant (en provenance d'auth ; peut &ecirc;tre faux

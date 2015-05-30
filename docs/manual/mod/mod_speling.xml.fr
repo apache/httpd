@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1174747:1673563 (outdated) -->
+<!-- English Revision: 1673563 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -98,7 +98,7 @@ fautes de frappe mineures.</description>
 
       <li>les corrections s'appliquent strictement aux fichiers
       existants, si bien qu'une requ&ecirc;te pour <code>&lt;Location
-      /status&gt;</code> pour &ecirc;tre trait&eacute;e de mani&egrave;re incorrecte comme
+      "/status"&gt;</code> pour &ecirc;tre trait&eacute;e de mani&egrave;re incorrecte comme
       une requ&ecirc;te pour le fichier n&eacute;goci&eacute; "<code>/stats.html</code>".</li>
     </ul>
 
