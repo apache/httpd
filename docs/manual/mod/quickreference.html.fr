@@ -935,7 +935,7 @@ requêtes</td></tr>
 correspondant à une expression rationnelle</td></tr>
 <tr class="odd"><td><a href="mod_proxy.html#proxyrequests">ProxyRequests On|Off</a></td><td> Off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Active la fonctionnalité (standard) de mandataire
 direct</td></tr>
-<tr><td><a href="mod_proxy_scgi.html#proxyscgiinternalredirect">ProxySCGIInternalRedirect On|Off</a></td><td> On </td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Active ou désactive les réponses de redirection interne en
+<tr><td><a href="mod_proxy_scgi.html#proxyscgiinternalredirect">ProxySCGIInternalRedirect On|Off|<var>Headername</var></a></td><td> On </td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Active ou désactive les réponses de redirection interne en
 provenance du serveur cible.</td></tr>
 <tr class="odd"><td><a href="mod_proxy_scgi.html#proxyscgisendfile">ProxySCGISendfile On|Off|<var>nom-en-tête</var></a></td><td> Off </td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Active l'évaluation du pseudo en-tête de réponse
 <var>X-Sendfile</var></td></tr>

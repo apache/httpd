@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_ssl.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_ssl.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Chiffrement de haut niveau basé sur les protocoles Secure
 Sockets Layer (SSL) et Transport Layer Security (TLS)</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -2429,7 +2427,10 @@ dd if=/dev/random of=/chemin/vers/fichier.tkey bs=1 count=48
 
 <p>Ces clés doivent être renouvelées fréquemment, car il s'agit du seul
 moyen d'invalider un ticket de session existant - OpenSSL ne permet pas
-actuellement de spécifier une limite à la durée de vie des tickets.</p>
+actuellement de spécifier une limite à la durée de
+vie des tickets. Une nouvelle clé ne peut être utilisée qu'après avoir
+redémarré le serveur. Tous les tickets de session existants deviennent
+invalides après le redémarrage du serveur.</p>
 
 <div class="warning">
 <p>Ce fichier contient des données sensibles et doit donc être protégé
@@ -2533,9 +2534,6 @@ l'exception de <code>none</code> et <code>nonenotnull</code>, cette
 directive supporte les mêmes types de stockage que la directive
 <code class="directive"><a href="#sslsessioncache">SSLSessionCache</a></code>.</p>
 
-<p>Le mutex <code>ssl-stapling</code> permet de sérialiser l'accès au
-cache d'agrafage OCSP afin d'en prévenir la corruption. Ce mutex peut
-être configuré via la directive <code class="directive"><a href="../mod/core.html#mutex">Mutex</a></code>.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -2774,6 +2772,14 @@ actuelle de l'agrafage OCSP n'atteint que partiellement l'objectif d'
 "économie en questions/réponse et en ressources". Pour plus de détails,
 voir la <a href="http://www.ietf.org/rfc/rfc6961.txt">RFC 6961</a> (TLS
 Multiple Certificate Status Extension).
+</p>
+
+<p>Lorsque l'agrafage OCSP est activé, le mutex
+<code>ssl-stapling</code> contrôle l'accès au cache de l'agrafage OCSP
+afin de prévenir toute corruption, et le mutex
+<code>sss-stapling-refresh</code> contrôle le raffraîchissement des
+réponses OCSP. Ces mutex peuvent être configurés via la directive
+<code class="directive"><a href="../mod/core.html#mutex">Mutex</a></code>.
 </p>
 
 </div>

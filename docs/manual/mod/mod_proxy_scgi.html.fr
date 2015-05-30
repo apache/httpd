@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_proxy_scgi.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_proxy_scgi.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Module fournissant le support de la passerelle SCGI à
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -119,27 +117,37 @@
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active ou désactive les réponses de redirection interne en
 provenance du serveur cible.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxySCGIInternalRedirect On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxySCGIInternalRedirect On|Off|<var>Headername</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ProxySCGIInternalRedirect On</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_scgi</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Le paramètre <var>Headername</var> est disponible depuis
+la version 2.4.13 du serveur HTTP Apache.</td></tr>
 </table>
     <p>La directive <code class="directive">ProxySCGIInternalRedirect</code>
     permet au serveur cible de rediriger en interne la passerelle vers
     une URL différente. Cette fonctionnalité trouve son origine dans
     <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code> qui redirige la réponse en interne si
     l'état de la réponse est <code>OK</code> (<code>200</code>), et si
-    la réponse contient un en-tête <code>Location</code> dont la valeur
+    la réponse contient un en-tête <code>Location</code>
+    (ou un autre en-tête défini) dont la valeur
     débute par un slash (<code>/</code>). Cette valeur est interprétée
     comme une nouvelle URL locale vers laquelle Apache httpd effectue sa
     redirection.</p>
 
     <p>De ce point de vue, <code class="module"><a href="../mod/mod_proxy_scgi.html">mod_proxy_scgi</a></code> fait la même
     chose que <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>, mais vous pouvez en plus
-    désactiver la fonctionnalité.</p>
+    désactiver la fonctionnalité ou spécifier
+    l'utilisation d'un en-tête autre que <code>Location</code>.</p>
 
-    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">ProxySCGIInternalRedirect Off</pre>
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">    ProxySCGIInternalRedirect Off
+# Django et certains autres frameworks qualifient pleinement les "URLs
+# locales" définies par l'application ; il faut donc utiliser un autre
+# en-tête.
+&lt;Location /django-app/&gt;
+    ProxySCGIInternalRedirect X-Location
+&lt;/Location&gt;</pre>
 </div>
 
 </div>
