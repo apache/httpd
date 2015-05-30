@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1675432:1678567 (outdated) -->
+<!-- English Revision: 1678567 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -642,19 +642,27 @@ contenu sp&eacute;cifi&eacute;</description>
     Content-Type, cette directive n'a aucun effet.</p>
 
     <note><title>Note</title>
+    <p>Si aucun gestionnaire n'est explicitement d&eacute;fini pour une
+    requ&ecirc;te, le type de contenu sp&eacute;cifi&eacute; sera aussi utilis&eacute; comme nom du
+    gestionnaire.</p>
+
     <p>Lorsqu'aucune directive comme <directive
     module="core">SetHandler</directive> ou
     <directive>module="mod_mime">AddHandler</directive> ne s'applique &agrave;
-    une requ&ecirc;te, le nom de gestionnaire interne qui aurait du &ecirc;tre
-    d&eacute;fini par une de ces directives correspond alors au type de contenu
-    sp&eacute;cifi&eacute; par la directive AddType.
+    une requ&ecirc;te, le nom de gestionnaire interne normalement d&eacute;fini
+    par une de ces directives est en fait d&eacute;fini par le type de contenu
+    sp&eacute;cifi&eacute; par la pr&eacute;sente directive.</p>
+    <p>
     Pour des raisons historiques, certains modules tiers comme mod_php
-    peuvent rechercher un type de contenu "synth&eacute;tique" ne servant qu'&agrave;
-    forcer le module &agrave; prendre en compte la requ&ecirc;te concern&eacute;e.
-    Il est conseill&eacute; d'&eacute;viter les configurations qui reposent sur de
-    tels types "synth&eacute;tiques" en utilisant les directives <directive
+    peuvent adopter ce type de comportement pour prendre en compte la
+    requ&ecirc;te concern&eacute;e.
+    </p>
+    <p>Il est conseill&eacute; d'&eacute;viter les configurations qui reposent sur de
+    tels types "synth&eacute;tiques". En outre, les configurations qui
+    limitent l'acc&egrave;s aux directives <directive
     module="core">SetHandler</directive> ou <directive
-    module="mod_mime">AddHandler</directive>.</p>
+    module="mod_mime">AddHandler</directive> doivent aussi limiter
+    l'acc&egrave;s &agrave; la directive AddType.</p>
     </note>
 
 </usage>

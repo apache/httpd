@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1437838:1673563 (outdated) -->
+<!-- English Revision: 1673563 -->
 <!-- French translation : Lucien GENTIS -->
-<!-- $LastChangedRevision: 2013012601 $ -->
+<!-- $LastChangedRevision: 2015053001 $ -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -75,7 +75,7 @@ host</context>
 
     <example><title>Exemple</title>
     <highlight language="config">
-      DavLockDB var/DavLock
+      DavLockDB "var/DavLock"
       </highlight>
     </example>
 
