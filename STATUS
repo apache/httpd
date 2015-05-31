@@ -238,7 +238,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      with proxy:unix. PR 57968.
      trunk patch: http://svn.apache.org/r1682482
      2.4.x patch: trunk works
-     +1: covener
+     +1: covener, ylavic
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
