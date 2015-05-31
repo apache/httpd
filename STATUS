@@ -206,7 +206,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/r1681440
         http://svn.apache.org/r1681685
      2.4.x patch: trunk patch works
-     +1: jailletc36
+     +1: jailletc36, ylavic
 
   *) mod_ssl: add ALPN support by allowing other modules to register callbacks
               for negotiation of the application layer protocol.  PR 52210.
