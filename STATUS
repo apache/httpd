@@ -214,14 +214,22 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mod_proxy: Don't put the worker in error state for 500 or 503 errors
      returned by the backend unless failonstatus is configured to.  PR 56925.
      trunk patch: http://svn.apache.org/r1681694
+     trunk patch: http://svn.apache.org/r1682907
      2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic
      rjung: Would it makes sense to handle 500/503 for the other proxy
             protocols similar? I see error_override at least also in the
             AJP and FCGI case.
+     ylavic: Done in r1682907 for AJP, FCGI calls ap_die() by itself and
+             thus always returns OK (hence the note is not needed).
      rjung: What about setting the note proxy-error-override in general
             if an error override happens so it might get more uses in
             the future. Would that make sense?
+     ylavic: The note is always set by each (concerned) proxy module whenever
+             a backend error is returned to the handler (for any error status),
+             but we can't set it for "internal" errors (500/503) when
+             ProxyErrorOverride is configured because we want the handler to
+             take care of the balancer members (un)recovery state in this case.
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
