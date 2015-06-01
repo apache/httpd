@@ -1152,7 +1152,7 @@ PROXY_DECLARE(char *) ap_proxy_define_balancer(apr_pool_t *p,
 
     c = strchr(uri, ':');
     if (c == NULL || c[1] != '/' || c[2] != '/' || c[3] == '\0')
-        return "Bad syntax for a balancer name";
+        return apr_psprintf(p, "Bad syntax for a balancer name (%s)", uri);
     /* remove path from uri */
     if ((q = strchr(c + 3, '/')))
         *q = '\0';
