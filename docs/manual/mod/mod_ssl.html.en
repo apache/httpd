@@ -91,6 +91,8 @@ to provide the cryptography engine.</p>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslrequiressl">SSLRequireSSL</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslsessioncache">SSLSessionCache</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslsessioncachetimeout">SSLSessionCacheTimeout</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#sslsessionticketkeyfile">SSLSessionTicketKeyFile</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#sslsessiontickets">SSLSessionTickets</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslstrictsnivhostcheck">SSLStrictSNIVHostCheck</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslusername">SSLUserName</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslverifyclient">SSLVerifyClient</a></li>
@@ -393,12 +395,48 @@ SSLCertificateChainFile /usr/local/apache2/conf/ssl.crt/ca.crt
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>ECC support is available in Apache 2.2.26 and later</td></tr>
 </table>
 <p>
-This directive points to the PEM-encoded Certificate file for the server and
-optionally also to the corresponding RSA or DSA Private Key file for it
-(contained in the same file). If the contained Private Key is encrypted the
-Pass Phrase dialog is forced at startup time. This directive can be used up to
-three times (referencing different filenames) when both a RSA, a DSA, and an
-ECC based server certificate is used in parallel.</p>
+This directive points to a file with certificate data in PEM format.
+At a minimum, the file must include an end-entity (leaf) certificate.
+The directive can be used up to three times (referencing different filenames)
+when an RSA, a DSA, and an ECC based server certificate is used in parallel.
+</p>
+
+<p>
+Custom DH parameters and an EC curve name for ephemeral keys,
+can be added to end of the first file configured using
+<code class="directive"><a href="#sslcertificatefile">SSLCertificateFile</a></code>.
+This is supported in version 2.2.30 or later.
+Such parameters can be generated using the commands
+<code>openssl dhparam</code> and <code>openssl ecparam</code>.
+The parameters can be added as-is to the end of the first
+certificate file. Only the first file can be used for custom
+parameters, as they are applied independently of the authentication
+algorithm type.
+</p>
+
+<p>
+Finally the the end-entity certificate's private key can also be
+added to the certificate file instead of using a separate
+<code class="directive"><a href="#sslcertificatekeyfile">SSLCertificateKeyFile</a></code>
+directive. This practice is highly discouraged. If the private
+key is encrypted, the pass phrase dialog is forced at startup time.
+</p>
+
+<div class="note">
+<h3>DH parameter interoperability with primes &gt; 1024 bit</h3>
+<p>
+Beginning with version 2.2.30, mod_ssl makes use of
+standardized DH parameters with prime lengths of 2048, 3072, 4096, 6144 and
+8192 bits (from <a href="http://www.ietf.org/rfc/rfc3526.txt">RFC 3526</a>),
+and hands them out to clients based on the length of the certificate's RSA/DSA
+key.
+With Java-based clients in particular (Java 7 or earlier), this may lead
+to handshake failures - see this
+<a href="../ssl/ssl_faq.html#javadh">FAQ answer</a> for working around
+such issues.
+</p>
+</div>
+
 <div class="example"><h3>Example</h3><p><code>
 SSLCertificateFile /usr/local/apache2/conf/ssl.crt/server.crt
 </code></p></div>
@@ -415,18 +453,22 @@ SSLCertificateFile /usr/local/apache2/conf/ssl.crt/server.crt
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>ECC support is available in Apache 2.2.26 and later</td></tr>
 </table>
 <p>
-This directive points to the PEM-encoded Private Key file for the
-server. If the Private Key is not combined with the Certificate in the
-<code class="directive">SSLCertificateFile</code>, use this additional directive to
-point to the file with the stand-alone Private Key. When
-<code class="directive">SSLCertificateFile</code> is used and the file
-contains both the Certificate and the Private Key this directive need
-not be used. But we strongly discourage this practice.  Instead we
-recommend you to separate the Certificate and the Private Key. If the
-contained Private Key is encrypted, the Pass Phrase dialog is forced
-at startup time. This directive can be used up to three times
-(referencing different filenames) when both a RSA, a DSA, and an ECC based
-private key is used in parallel.</p>
+This directive points to the PEM-encoded private key file for the
+server. If the contained private key is encrypted, the pass phrase
+dialog is forced at startup time.</p>
+
+<p>
+The directive can be used up to three times (referencing different filenames)
+when an RSA, a DSA, and an ECC based private key is used in parallel. For each
+<code class="directive"><a href="#sslcertificatekeyfile">SSLCertificateKeyFile</a></code>
+directive, there must be a matching <code class="directive">SSLCertificateFile</code>
+directive.</p>
+
+<p>
+The private key may also be combined with the certificate in the file given by
+<code class="directive"><a href="#sslcertificatefile">SSLCertificateFile</a></code>, but this practice
+is highly discouraged.</p>
+
 <div class="example"><h3>Example</h3><p><code>
 SSLCertificateKeyFile /usr/local/apache2/conf/ssl.key/server.key
 </code></p></div>
@@ -530,6 +572,15 @@ prefixes are:</p>
 <li><code>-</code>: remove cipher from list (can be added later again)</li>
 <li><code>!</code>: kill cipher from list completely (can <strong>not</strong> be added later again)</li>
 </ul>
+
+<div class="note">
+<h3><code>aNULL</code>, <code>eNULL</code> and <code>EXP</code>
+ciphers are always disabled</h3>
+<p>Beginning with version 2.2.30, null and export-grade
+ciphers are always disabled, as mod_ssl unconditionally prepends any supplied
+cipher suite string with <code>!aNULL:!eNULL:!EXP:</code> at initialization.</p>
+</div>
+
 <p>A simpler way to look at all of this is to use the ``<code>openssl ciphers
 -v</code>'' command which provides a nice way to successively create the
 correct <em>cipher-spec</em> string. The default <em>cipher-spec</em> string
@@ -1811,6 +1862,65 @@ values like 300 in real life.</p>
 <div class="example"><h3>Example</h3><p><code>
 SSLSessionCacheTimeout 600
 </code></p></div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SSLSessionTicketKeyFile" id="SSLSessionTicketKeyFile">SSLSessionTicketKeyFile</a> <a name="sslsessionticketkeyfile" id="sslsessionticketkeyfile">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Persistent encryption/decryption key for TLS session tickets</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLSessionTicketKeyFile <em>file-path</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.2.30 and later, if using OpenSSL 0.9.8h or later</td></tr>
+</table>
+<p>Optionally configures a secret key for encrypting and decrypting
+TLS session tickets, as defined in
+<a href="http://www.ietf.org/rfc/rfc5077.txt">RFC 5077</a>.
+Primarily suitable for clustered environments where TLS sessions information
+should be shared between multiple nodes. For single-instance httpd setups,
+it is recommended to <em>not</em> configure a ticket key file, but to
+rely on (random) keys generated by mod_ssl at startup, instead.</p>
+<p>The ticket key file must contain 48 bytes of random data,
+preferrably created from a high-entropy source. On a Unix-based system,
+a ticket key file can be created as follows:</p>
+
+<div class="example"><p><code>
+dd if=/dev/random of=/path/to/file.tkey bs=1 count=48
+</code></p></div>
+
+<p>Ticket keys should be rotated (replaced) on a frequent basis,
+as this is the only way to invalidate an existing session ticket -
+OpenSSL currently doesn't allow to specify a limit for ticket lifetimes.
+A new ticket key only gets used after restarting the web server.
+All existing session tickets become invalid after a restart.</p>
+
+<div class="warning">
+<p>The ticket key file contains sensitive keying material and should
+be protected with file permissions similar to those used for
+<code class="directive"><a href="#sslcertificatekeyfile">SSLCertificateKeyFile</a></code>.</p>
+</div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SSLSessionTickets" id="SSLSessionTickets">SSLSessionTickets</a> <a name="sslsessiontickets" id="sslsessiontickets">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable or disable use of TLS session tickets</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLSessionTickets on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLSessionTickets on</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.2.30 and later, if using OpenSSL 0.9.8f
+or later.</td></tr>
+</table>
+<p>This directive allows to enable or disable the use of TLS session tickets
+(RFC 5077).</p>
+<div class="warning">
+<p>TLS session tickets are enabled by default. Using them without restarting
+the web server with an appropriate frequency (e.g. daily) compromises perfect
+forward secrecy.</p>
+</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
