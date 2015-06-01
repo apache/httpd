@@ -1719,6 +1719,10 @@ int ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                 ap_discard_request_body(backend->r);
             }
             proxy_run_detach_backend(r, backend);
+            /*
+             * prevent proxy_handler() from treating this as an
+             * internal error.
+             */
             apr_table_setn(r->notes, "proxy-error-override", "1");
             return proxy_status;
         }

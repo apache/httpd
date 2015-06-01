@@ -644,6 +644,11 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
              */
             rv = r->status;
             r->status = HTTP_OK;
+            /*
+             * prevent proxy_handler() from treating this as an
+             * internal error.
+             */
+            apr_table_setn(r->notes, "proxy-error-override", "1");
         }
         else {
             rv = OK;
