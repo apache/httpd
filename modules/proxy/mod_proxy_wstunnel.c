@@ -363,7 +363,7 @@ static int proxy_wstunnel_request(apr_pool_t *p, request_rec *r,
         return rv;
     }
 
-    buf = apr_pstrcat(p, "Upgrade: WebSocket", CRLF, "Connection: Upgrade", CRLF, CRLF, NULL);
+    buf = apr_pstrdup(p, "Upgrade: WebSocket" CRLF "Connection: Upgrade" CRLF CRLF);
     ap_xlate_proto_to_ascii(buf, strlen(buf));
     e = apr_bucket_pool_create(buf, strlen(buf), p, c->bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(header_brigade, e);
