@@ -1863,6 +1863,24 @@ static const char *set_default_type(cmd_parms *cmd, void *d_,
     return NULL;
 }
 
+static const char *set_sethandler(cmd_parms *cmd,
+                                     void *d_,
+                                     const char *arg_)
+{
+    core_dir_config *dirconf = d_;
+
+    if (arg_ == ap_strstr_c(arg_, "proxy:unix")) { 
+        dirconf->handler = arg_;
+    }
+    else { 
+        char *arg = apr_pstrdup(cmd->pool,arg_);
+        ap_str_tolower(arg);
+        dirconf->handler = arg;
+    }
+
+    return NULL;
+}
+
 /*
  * Note what data should be used when forming file ETag values.
  * It would be nicer to do this as an ITERATE, but then we couldn't
@@ -4140,8 +4158,7 @@ AP_INIT_FLAG("CGIPassAuth", set_cgi_pass_auth, NULL, OR_AUTHCFG,
 AP_INIT_TAKE1("ForceType", ap_set_string_slot_lower,
        (void *)APR_OFFSETOF(core_dir_config, mime_type), OR_FILEINFO,
      "a mime type that overrides other configured type"),
-AP_INIT_TAKE1("SetHandler", ap_set_string_slot_lower,
-       (void *)APR_OFFSETOF(core_dir_config, handler), OR_FILEINFO,
+AP_INIT_TAKE1("SetHandler", set_sethandler, NULL, OR_FILEINFO,
    "a handler name that overrides any other configured handler"),
 AP_INIT_TAKE1("SetOutputFilter", ap_set_string_slot,
        (void *)APR_OFFSETOF(core_dir_config, output_filters), OR_FILEINFO,
