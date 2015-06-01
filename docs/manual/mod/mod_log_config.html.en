@@ -143,45 +143,42 @@
             matching error log line to see what request caused what error.</td></tr>
 <tr><td><code>%m</code></td>
         <td>The request method.</td></tr>
-<tr class="odd"><td><code>%M</code></td>
-        <td>The time taken to serve the request, in milliseconds.
-        (available in 2.4.13 and later)</td></tr>
-<tr><td><code>%{<var>VARNAME</var>}n</code></td>
+<tr class="odd"><td><code>%{<var>VARNAME</var>}n</code></td>
         <td>The contents of note <var>VARNAME</var> from another
         module.</td></tr>
-<tr class="odd"><td><code>%{<var>VARNAME</var>}o</code></td>
+<tr><td><code>%{<var>VARNAME</var>}o</code></td>
         <td>The contents of <code><var>VARNAME</var>:</code> header line(s)
         in the reply.</td></tr>
-<tr><td><code>%p</code></td>
+<tr class="odd"><td><code>%p</code></td>
         <td>The canonical port of the server serving the request.</td></tr>
-<tr class="odd"><td><code>%{<var>format</var>}p</code></td>
+<tr><td><code>%{<var>format</var>}p</code></td>
         <td>The canonical port of the server serving the request, or the
         server's actual port, or the client's actual port. Valid formats
         are <code>canonical</code>, <code>local</code>, or <code>remote</code>.
         </td></tr>
-<tr><td><code>%P</code></td>
+<tr class="odd"><td><code>%P</code></td>
         <td>The process ID of the child that serviced the request.</td></tr>
-<tr class="odd"><td><code>%{<var>format</var>}P</code></td>
+<tr><td><code>%{<var>format</var>}P</code></td>
         <td>The process ID or thread ID of the child that serviced the
         request.  Valid formats are <code>pid</code>, <code>tid</code>,
         and <code>hextid</code>.  <code>hextid</code> requires APR 1.2.0 or
         higher.
         </td></tr>
-<tr><td><code>%q</code></td>
+<tr class="odd"><td><code>%q</code></td>
         <td>The query string (prepended with a <code>?</code> if a query
         string exists, otherwise an empty string).</td></tr>
-<tr class="odd"><td><code>%r</code></td>
+<tr><td><code>%r</code></td>
         <td>First line of request.</td></tr>
-<tr><td><code>%R</code></td>
+<tr class="odd"><td><code>%R</code></td>
         <td>The handler generating the response (if any).</td></tr>
-<tr class="odd"><td><code>%s</code></td>
+<tr><td><code>%s</code></td>
         <td>Status. For requests that have been internally redirected, this is
         the status of the <em>original</em> request. Use <code>%&gt;s</code>
         for the final status.</td></tr>
-<tr><td><code>%t</code></td>
+<tr class="odd"><td><code>%t</code></td>
         <td>Time the request was received, in the format <code>[18/Sep/2011:19:18:28 -0400]</code>.
         The last number indicates the timezone offset from GMT</td></tr>
-<tr class="odd"><td><code>%{<var>format</var>}t</code></td>
+<tr><td><code>%{<var>format</var>}t</code></td>
         <td>The time, in the form given by format, which should be in
         an extended <code>strftime(3)</code> format (potentially localized).
         If the format starts with <code>begin:</code> (default) the time is taken
@@ -201,8 +198,16 @@
         formatting in the same format string. You can use multiple
         <code>%{<var>format</var>}t</code> tokens instead.
         </td></tr>
-<tr><td><code>%T</code></td>
+<tr class="odd"><td><code>%T</code></td>
         <td>The time taken to serve the request, in seconds.</td></tr>
+<tr><td><code>%{<var>UNIT</var>}T</code></td>
+        <td>The time taken to serve the request, in a time unit given by
+        <code>UNIT</code>. Valid units are <code>ms</code> for milliseconds,
+        <code>us</code> for microseconds, and <code>s</code> for seconds.
+        Using <code>s</code> gives the same result as <code>%T</code>
+        without any format; using <code>us</code> gives the same result
+        as <code>%D</code>. Combining <code>%T</code> with a unit is
+        available in 2.4.13 and later.</td></tr>
 <tr class="odd"><td><code>%u</code></td>
         <td>Remote user if the request was authenticated. May be bogus if return status
         (<code>%s</code>) is 401 (unauthorized).</td></tr>

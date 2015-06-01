@@ -756,20 +756,22 @@ Explorer (MSIE)?</a></h3>
     or higher), you can either rearrange mod_ssl's cipher list with
     <code class="directive"><a href="../mod/mod_ssl.html#sslciphersuite">SSLCipherSuite</a></code>
     (possibly in conjunction with <code class="directive"><a href="../mod/mod_ssl.html#sslhonorcipherorder">SSLHonorCipherOrder</a></code>),
-    or you can use the <code class="directive"><a href="../mod/mod_ssl.html#sslcertificatefile">SSLCertificateFile</a></code>
-    directive to configure custom DH parameters with a 1024-bit prime, which
+    or you can use custom DH parameters with a 1024-bit prime, which
     will always have precedence over any of the built-in DH parameters.</p>
 
-    <p>To generate custom DH parameters, use the <code>openssl dhparam</code>
-    command. Alternatively, you can append the following standard 1024-bit DH
+    <p>To generate custom DH parameters, use the <code>openssl dhparam 1024</code>
+    command. Alternatively, you can use the following standard 1024-bit DH
     parameters from <a href="http://www.ietf.org/rfc/rfc2409.txt">RFC 2409</a>,
-    section 6.2 to the respective
-    <code class="directive"><a href="../mod/mod_ssl.html#sslcertificatefile">SSLCertificateFile</a></code> file:</p>
+    section 6.2:</p>
     <div class="example"><pre>-----BEGIN DH PARAMETERS-----
 MIGHAoGBAP//////////yQ/aoiFowjTExmKLgNwc0SkCTgiKZ8x0Agu+pjsTmyJR
 Sgh5jjQE3e+VGbPNOkMbMCsKbfJfFDdP4TVtbVHCReSFtXZiXn7G9ExC6aY37WsL
 /1y29Aa37e44a/taiZ+lrp8kEXxLH+ZJKGZR7OZTgf//////////AgEC
 -----END DH PARAMETERS-----</pre></div>
+    <p>Add the custom parameters including the "BEGIN DH PARAMETERS" and
+    "END DH PARAMETERS" lines to the end of the first certificate file
+    you have configured using the
+    <code class="directive"><a href="../mod/mod_ssl.html#sslcertificatefile">SSLCertificateFile</a></code> directive.</p>
 
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
