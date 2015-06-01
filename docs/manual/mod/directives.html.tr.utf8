@@ -438,6 +438,8 @@
 <li><a href="mod_ssl.html#sslrequiressl">SSLRequireSSL</a></li>
 <li><a href="mod_ssl.html#sslsessioncache">SSLSessionCache</a></li>
 <li><a href="mod_ssl.html#sslsessioncachetimeout">SSLSessionCacheTimeout</a></li>
+<li><a href="mod_ssl.html#sslsessionticketkeyfile">SSLSessionTicketKeyFile</a></li>
+<li><a href="mod_ssl.html#sslsessiontickets">SSLSessionTickets</a></li>
 <li><a href="mod_ssl.html#sslstrictsnivhostcheck">SSLStrictSNIVHostCheck</a></li>
 <li><a href="mod_ssl.html#sslusername">SSLUserName</a></li>
 <li><a href="mod_ssl.html#sslverifyclient">SSLVerifyClient</a></li>
