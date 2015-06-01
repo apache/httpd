@@ -195,7 +195,7 @@ static const char *set_use_digest_algorithm(cmd_parms *cmd, void *config,
                            "AuthBasicUseDigestAlgorithm: ", alg, NULL);
     }
 
-    conf->use_digest_algorithm = apr_pstrdup(cmd->pool, alg);
+    conf->use_digest_algorithm = alg;
     conf->use_digest_algorithm_set = 1;
 
     return NULL;
