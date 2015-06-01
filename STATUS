@@ -105,22 +105,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) Easy proposals:
-        mod_allowmethods: Style (mostly indent)
-        mod_allowmethods: More style
-        mod_proxy_express: Constify + save a few bytes in conf pool
-                           (+ some minor space adjustments)
-        mod_authn_dbm: Save a few bytes in conf pool and axe a function
-                       that duplicates 'ap_set_string_slot'
-        mod_auth_basic: Save a few bytes in conf pool
-     trunk patch:
-        http://svn.apache.org/r1629440
-        http://svn.apache.org/r1629441
-        http://svn.apache.org/r1681424
-        http://svn.apache.org/r1681440
-        http://svn.apache.org/r1681685
-     2.4.x patch: trunk patch works
-     +1: jailletc36, ylavic, rjung
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:

@@ -22,8 +22,8 @@ module AP_MODULE_DECLARE_DATA proxy_express_module;
 static int proxy_available = 0;
 
 typedef struct {
-    char *dbmfile;
-    char *dbmtype;
+    const char *dbmfile;
+    const char *dbmtype;
     int enabled;
 } express_server_conf;
 
@@ -48,13 +48,14 @@ static const char *set_dbmtype(cmd_parms *cmd,
     express_server_conf *sconf;
     sconf = ap_get_module_config(cmd->server->module_config, &proxy_express_module);
 
-    sconf->dbmtype = apr_pstrdup(cmd->pool, arg);
+    sconf->dbmtype = arg;
+
     return NULL;
 }
 
 static const char *set_enabled(cmd_parms *cmd,
-                              void *dconf,
-                              int flag)
+                               void *dconf,
+                               int flag)
 {
     express_server_conf *sconf;
     sconf = ap_get_module_config(cmd->server->module_config, &proxy_express_module);
@@ -220,4 +221,3 @@ AP_DECLARE_MODULE(proxy_express) =
     command_table,  /* table of config file commands */
     register_hooks  /* register hooks */
 };
-

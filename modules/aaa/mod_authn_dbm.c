@@ -59,23 +59,13 @@ static void *create_authn_dbm_dir_config(apr_pool_t *p, char *d)
     return conf;
 }
 
-static const char *set_dbm_type(cmd_parms *cmd,
-                                void *dir_config,
-                                const char *arg)
-{
-    authn_dbm_config_rec *conf = dir_config;
-
-    conf->dbmtype = apr_pstrdup(cmd->pool, arg);
-    return NULL;
-}
-
 static const command_rec authn_dbm_cmds[] =
 {
     AP_INIT_TAKE1("AuthDBMUserFile", ap_set_file_slot,
      (void *)APR_OFFSETOF(authn_dbm_config_rec, pwfile),
      OR_AUTHCFG, "dbm database file containing user IDs and passwords"),
-    AP_INIT_TAKE1("AuthDBMType", set_dbm_type,
-     NULL,
+    AP_INIT_TAKE1("AuthDBMType", ap_set_string_slot,
+     (void *)APR_OFFSETOF(authn_dbm_config_rec, dbmtype),
      OR_AUTHCFG, "what type of DBM file the user file is"),
     {NULL}
 };
