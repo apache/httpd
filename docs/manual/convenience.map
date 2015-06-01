@@ -552,6 +552,7 @@ ssilegacyexprparser	mod/mod_include.html#ssilegacyexprparser
 ssistarttag	mod/mod_include.html#ssistarttag
 ssitimeformat	mod/mod_include.html#ssitimeformat
 ssiundefinedecho	mod/mod_include.html#ssiundefinedecho
+sslalpnpreference	mod/mod_ssl.html#sslalpnpreference
 sslcacertificatefile	mod/mod_ssl.html#sslcacertificatefile
 sslcacertificatepath	mod/mod_ssl.html#sslcacertificatepath
 sslcadnrequestfile	mod/mod_ssl.html#sslcadnrequestfile
