@@ -105,6 +105,29 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) core: Don't lowercase the argument to SetHandler if it begins
+     with proxy:unix. PR 57968.
+     trunk patch: http://svn.apache.org/r1682482
+     2.4.x patch: trunk works
+     +1: covener, ylavic, rjung
+
+  *) Easy proposals:
+        mod_allowmethods: Style (mostly indent)
+        mod_allowmethods: More style
+        mod_proxy_express: Constify + save a few bytes in conf pool
+                           (+ some minor space adjustments)
+        mod_authn_dbm: Save a few bytes in conf pool and axe a function
+                       that duplicates 'ap_set_string_slot'
+        mod_auth_basic: Save a few bytes in conf pool
+     trunk patch:
+        http://svn.apache.org/r1629440
+        http://svn.apache.org/r1629441
+        http://svn.apache.org/r1681424
+        http://svn.apache.org/r1681440
+        http://svn.apache.org/r1681685
+     2.4.x patch: trunk patch works
+     +1: jailletc36, ylavic, rjung
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -191,23 +214,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              ints added at the end of core_server_config, the proposed merge
              does a minor bump only.
 
-  *) Easy proposals:
-        mod_allowmethods: Style (mostly indent)
-        mod_allowmethods: More style
-        mod_proxy_express: Constify + save a few bytes in conf pool
-                           (+ some minor space adjustments)
-        mod_authn_dbm: Save a few bytes in conf pool and axe a function
-                       that duplicates 'ap_set_string_slot'
-        mod_auth_basic: Save a few bytes in conf pool
-     trunk patch:
-        http://svn.apache.org/r1629440
-        http://svn.apache.org/r1629441
-        http://svn.apache.org/r1681424
-        http://svn.apache.org/r1681440
-        http://svn.apache.org/r1681685
-     2.4.x patch: trunk patch works
-     +1: jailletc36, ylavic
-
   *) mod_ssl: add ALPN support by allowing other modules to register callbacks
               for negotiation of the application layer protocol.  PR 52210.
      trunk patch: http://svn.apache.org/r1332643
@@ -232,13 +238,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1681694
      2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic
+     rjung: Would it makes sense to handle 500/503 for the other proxy
+            protocols similar? I see error_override at least also in the
+            AJP and FCGI case.
+     rjung: What about setting the note proxy-error-override in general
+            if an error override happens so it might get more uses in
+            the future. Would that make sense?
 
-
-  *) core: Don't lowercase the argument to SetHandler if it begins
-     with proxy:unix. PR 57968.
-     trunk patch: http://svn.apache.org/r1682482
-     2.4.x patch: trunk works
-     +1: covener, ylavic
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
