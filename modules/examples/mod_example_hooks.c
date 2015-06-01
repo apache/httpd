@@ -329,7 +329,8 @@ static void example_log_each(apr_pool_t *p, server_rec *s, const char *note)
 {
     if (s != NULL) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, "mod_example_hooks: %s", note);
-    } else {
+    }
+    else {
         apr_file_t *out = NULL;
         apr_file_open_stderr(&out, p);
         apr_file_printf(out, "mod_example_hooks traced in non-loggable "
@@ -741,7 +742,6 @@ static int x_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
      * Log the call and exit.
      */
     trace_startup(ptemp, NULL, NULL, "x_pre_config()");
-
     return OK;
 }
 
@@ -1049,7 +1049,8 @@ static int x_handler(request_rec *r)
                                     r->connection->pool);
     if ((status == APR_SUCCESS) && conn_data) {
         ap_rprintf(r, "  <OL>\n%s  </OL>\n", (char *) conn_data);
-    } else {
+    }
+    else {
         ap_rputs("  <P>No connection-specific callback information was "
                  "retrieved.</P>\n", r);
     }
@@ -1135,7 +1136,6 @@ static int x_pre_connection(conn_rec *c, void *csd)
 static int x_process_connection(conn_rec *c)
 {
     trace_connection(c, "x_process_connection()");
-
     return DECLINED;
 }
 
@@ -1181,7 +1181,6 @@ static int x_post_read_request(request_rec *r)
  */
 static int x_translate_name(request_rec *r)
 {
-
     /*
      * We don't actually *do* anything here, except note the fact that we were
      * called.

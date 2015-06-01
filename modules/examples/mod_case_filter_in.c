@@ -53,12 +53,12 @@ static void *CaseFilterInCreateServerConfig(apr_pool_t *p, server_rec *s)
 
 static void CaseFilterInInsertFilter(request_rec *r)
 {
-    CaseFilterInConfig *pConfig=ap_get_module_config(r->server->module_config,
-                                                     &case_filter_in_module);
-    if(!pConfig->bEnabled)
+    CaseFilterInConfig *pConfig = ap_get_module_config(r->server->module_config,
+                                                       &case_filter_in_module);
+    if (!pConfig->bEnabled)
         return;
 
-    ap_add_input_filter(s_szCaseFilterName,NULL,r,r->connection);
+    ap_add_input_filter(s_szCaseFilterName, NULL, r, r->connection);
 }
 
 static apr_status_t CaseFilterInFilter(ap_filter_t *f,
@@ -84,7 +84,7 @@ static apr_status_t CaseFilterInFilter(ap_filter_t *f,
             return ret;
     }
 
-    while(!APR_BRIGADE_EMPTY(pCtx->pbbTmp)) {
+    while (!APR_BRIGADE_EMPTY(pCtx->pbbTmp)) {
         apr_bucket *pbktIn = APR_BRIGADE_FIRST(pCtx->pbbTmp);
         apr_bucket *pbktOut;
         const char *data;
@@ -106,12 +106,13 @@ static apr_status_t CaseFilterInFilter(ap_filter_t *f,
         }
 
         ret=apr_bucket_read(pbktIn, &data, &len, eBlock);
-        if(ret != APR_SUCCESS)
+        if (ret != APR_SUCCESS)
             return ret;
 
         buf = ap_malloc(len);
-        for(n=0 ; n < len ; ++n)
+        for (n=0 ; n < len ; ++n) {
             buf[n] = apr_toupper(data[n]);
+        }
 
         pbktOut = apr_bucket_heap_create(buf, len, 0, c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(pbbOut, pbktOut);
@@ -120,7 +121,6 @@ static apr_status_t CaseFilterInFilter(ap_filter_t *f,
 
     return APR_SUCCESS;
 }
-
 
 static const char *CaseFilterInEnable(cmd_parms *cmd, void *dummy, int arg)
 {
