@@ -836,7 +836,7 @@ to configure the intermediate CA chain on a per-certificate basis.
 <p>
 Custom DH parameters and an EC curve name for ephemeral keys,
 can also be added to end of the first file configured using
-<directive module="mod_ssl">SSLCertificateChainFile</directive>.
+<directive module="mod_ssl">SSLCertificateFile</directive>.
 This is supported in version 2.4.7 or later.
 Such parameters can be generated using the commands
 <code>openssl dhparam</code> and <code>openssl ecparam</code>.
