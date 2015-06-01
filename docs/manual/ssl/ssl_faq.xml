@@ -758,20 +758,22 @@ SetEnvIf User-Agent "MSIE [2-5]" \
     or higher), you can either rearrange mod_ssl's cipher list with
     <directive module="mod_ssl">SSLCipherSuite</directive>
     (possibly in conjunction with <directive module="mod_ssl">SSLHonorCipherOrder</directive>),
-    or you can use the <directive module="mod_ssl">SSLCertificateFile</directive>
-    directive to configure custom DH parameters with a 1024-bit prime, which
+    or you can use custom DH parameters with a 1024-bit prime, which
     will always have precedence over any of the built-in DH parameters.</p>
 
-    <p>To generate custom DH parameters, use the <code>openssl dhparam</code>
-    command. Alternatively, you can append the following standard 1024-bit DH
+    <p>To generate custom DH parameters, use the <code>openssl dhparam 1024</code>
+    command. Alternatively, you can use the following standard 1024-bit DH
     parameters from <a href="http://www.ietf.org/rfc/rfc2409.txt">RFC 2409</a>,
-    section 6.2 to the respective
-    <directive module="mod_ssl">SSLCertificateFile</directive> file:</p>
+    section 6.2:</p>
     <example><pre>-----BEGIN DH PARAMETERS-----
 MIGHAoGBAP//////////yQ/aoiFowjTExmKLgNwc0SkCTgiKZ8x0Agu+pjsTmyJR
 Sgh5jjQE3e+VGbPNOkMbMCsKbfJfFDdP4TVtbVHCReSFtXZiXn7G9ExC6aY37WsL
 /1y29Aa37e44a/taiZ+lrp8kEXxLH+ZJKGZR7OZTgf//////////AgEC
 -----END DH PARAMETERS-----</pre></example>
+    <p>Add the custom parameters including the "BEGIN DH PARAMETERS" and
+    "END DH PARAMETERS" lines to the end of the first certificate file
+    you have configured using the
+    <directive module="mod_ssl">SSLCertificateFile</directive> directive.</p>
 </section>
 
 </section>
