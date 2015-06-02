@@ -216,7 +216,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1681694
      trunk patch: http://svn.apache.org/r1682907
      2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, rjung
+     +1: ylavic, rjung, jim
 
    *) Easy patches - synch with trunk
         - mod_rewrite: Initialize args to not print garbage mem during a RewriteCond parse error
@@ -231,7 +231,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/r1682819
         http://svn.apache.org/r1682816
      2.4.x patch: trunk patchs work
-     +1: jailletc36, ylavic
+     +1: jailletc36, ylavic, jim
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
