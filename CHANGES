@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) core: Avoid a possible truncation of the faulty header included in the
+     HTML response when LimitRequestFieldSize is reached.  [Yann Ylavic]
+
   *) core: Don't lowercase the argument to SetHandler if it begins with
      "proxy:unix". PR 57968. [Eric Covener]
 
