@@ -4,18 +4,11 @@ Changes with Apache 2.5.0
   *) core: Avoid a possible truncation of the faulty header included in the
      HTML response when LimitRequestFieldSize is reached.  [Yann Ylavic]
 
-  *) core: Don't lowercase the argument to SetHandler if it begins with
-     "proxy:unix". PR 57968. [Eric Covener]
-
   *) mod_ssl: add ALPN support by allowing other modules to register callbacks
      for negotiation of the application layer protocol.  PR 52210.
      [Matthew Steele <mdsteele google com>, Joe Orton, Jim Jagielski,
       Stefan Eissing <stefan eissing org>, Rainer Jung, Ruediger Pluem,
       Kaspar Brand]
-
-  *) mod_proxy: Don't put the worker in error state for 500 or 503 errors
-     returned by the backend unless failonstatus is configured to.  PR 56925.
-     [Yann Ylavic]
 
   *) http: Don't remove the Content-Length of zero from a HEAD response if
      it comes from an origin server, module or script.  [Yann Ylavic]
@@ -23,10 +16,6 @@ Changes with Apache 2.5.0
   *) core/util_script: make REDIRECT_URL a full URL.  PR 57785. [Nick Kew]
 
   *) http: Add support for RFC2324/RFC7168. [Graham Leggett]
-
-  *) core, modules: Avoid error response/document handling by the core if some
-     handler or input filter already did it while reading the request (causing
-     a double response body).  [Yann Ylavic]
 
   *) mod_proxy: Fix a race condition that caused a failed worker to be retried
      before the retry period is over. [Ruediger Pluem]
@@ -40,11 +29,6 @@ Changes with Apache 2.5.0
 
   *) suexec: Filter out the HTTP_PROXY environment variable because it is
      treated as alias for http_proxy by some programs. [Stefan Fritsch]
-
-  *) mod_proxy_http: Don't expect the backend to ack the "Connection: close" to
-     finally close those not meant to be kept alive by SetEnv proxy-nokeepalive
-     or force-proxy-request-1.0, and respond with 502 instead of 400 if its
-     Connection header is invalid.  [Yann Ylavic]
 
   *) mod_proxy_http: Don't establish or reuse a backend connection before pre-
      fetching the request body, so to minimize the delay between it is supposed
@@ -72,18 +56,12 @@ Changes with Apache 2.5.0
   *) mod_socache_memcache: Pass expiration time through to memcached. PR 55445.
      [Faidon Liambotis <paravoid debian.org>, Joe Orton]
 
-  *) mod_proxy_ajp: Fix client connection errors handling and logged status
-     when it occurs.  PR 56823.  [Yann Ylavic]
-
   *) ap_expr: Add filemod function for checking file modification dates
      [Daniel Gruno]
      
   *) mod_authnz_ldap: Resolve crashes with LDAP authz and non-LDAP authn since 
      r1608202. [Eric Covener]
  
-  *) mod_buffer: Forward flushed input data immediatly and avoid (unlikely)
-     access to freed memory. [Yann Ylavic, Christophe Jaillet]
-
   *) core: Ensure that httpd exits with an error status when the MPM fails
      to run.  [Yann Ylavic]
 
