@@ -3238,9 +3238,7 @@ static const char *cmd_rewritecond(cmd_parms *cmd, void *in_dconf,
     rewrite_server_conf *sconf;
     rewritecond_entry *newcond;
     ap_regex_t *regexp;
-    char *a1;
-    char *a2;
-    char *a3;
+    char *a1 = NULL, *a2 = NULL, *a3 = NULL;
     const char *err;
 
     sconf = ap_get_module_config(cmd->server->module_config, &rewrite_module);
@@ -3657,9 +3655,7 @@ static const char *cmd_rewriterule(cmd_parms *cmd, void *in_dconf,
     rewrite_server_conf *sconf;
     rewriterule_entry *newrule;
     ap_regex_t *regexp;
-    char *a1;
-    char *a2;
-    char *a3;
+    char *a1 = NULL, *a2 = NULL, *a3 = NULL;
     const char *err;
 
     sconf = ap_get_module_config(cmd->server->module_config, &rewrite_module);
