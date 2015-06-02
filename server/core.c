@@ -1263,8 +1263,8 @@ AP_DECLARE(const char *) ap_resolve_env(apr_pool_t *p, const char * word)
         }
 
         if (*s == '$') {
-            if (s[1] == '{' && (e = ap_strchr_c(s, '}'))) {
-                char *name = apr_pstrndup(p, s+2, e-s-2);
+            if (s[1] == '{' && (e = ap_strchr_c(s+2, '}'))) {
+                char *name = apr_pstrmemdup(p, s+2, e-s-2);
                 word = NULL;
                 if (server_config_defined_vars)
                     word = apr_table_get(server_config_defined_vars, name);
@@ -2147,7 +2147,7 @@ AP_CORE_DECLARE_NONSTD(const char *) ap_limit_section(cmd_parms *cmd,
         return unclosed_directive(cmd);
     }
 
-    limited_methods = apr_pstrndup(cmd->temp_pool, arg, endp - arg);
+    limited_methods = apr_pstrmemdup(cmd->temp_pool, arg, endp - arg);
 
     if (!limited_methods[0]) {
         return missing_container_arg(cmd);
@@ -2164,7 +2164,7 @@ AP_CORE_DECLARE_NONSTD(const char *) ap_limit_section(cmd_parms *cmd,
             return "TRACE cannot be controlled by <Limit>, see TraceEnable";
         }
         else if (methnum == M_INVALID) {
-            /* method has not been registered yet, but resorce restriction
+            /* method has not been registered yet, but resource restriction
              * is always checked before method handling, so register it.
              */
             methnum = ap_method_register(cmd->pool,
