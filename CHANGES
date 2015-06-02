@@ -12,6 +12,10 @@ Changes with Apache 2.4.13
      calls r:wsupgrade() can cause a child process crash. 
      [Edward Lu <Chaosed0 gmail.com>]
 
+  *) mod_proxy: Don't put the worker in error state for 500 or 503 errors
+     returned by the backend unless failonstatus is configured to.  PR 56925.
+     [Yann Ylavic]
+
   *) core: Don't lowercase the argument to SetHandler if it begins with
      "proxy:unix". PR 57968. [Eric Covener]
 

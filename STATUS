@@ -105,13 +105,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_proxy: Don't put the worker in error state for 500 or 503 errors
-     returned by the backend unless failonstatus is configured to.  PR 56925.
-     trunk patch: http://svn.apache.org/r1681694
-     trunk patch: http://svn.apache.org/r1682907
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, rjung, jim
-
    *) Easy patches - synch with trunk
         - mod_rewrite: Initialize args to not print garbage mem during a RewriteCond parse error
         - mod_rewrite: Initialize args to not print garbage mem during a RewriteRule parse error
