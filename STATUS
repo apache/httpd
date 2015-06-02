@@ -105,6 +105,28 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_proxy: Don't put the worker in error state for 500 or 503 errors
+     returned by the backend unless failonstatus is configured to.  PR 56925.
+     trunk patch: http://svn.apache.org/r1681694
+     trunk patch: http://svn.apache.org/r1682907
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: ylavic, rjung, jim
+
+   *) Easy patches - synch with trunk
+        - mod_rewrite: Initialize args to not print garbage mem during a RewriteCond parse error
+        - mod_rewrite: Initialize args to not print garbage mem during a RewriteRule parse error
+        - examples/mod_*: Improve style in examples.
+        - proxy_util: Improve error message
+        - mod_proxy_wstunnel: Concat string at compile time in orser to save a few cycles.
+     trunk patch:
+        http://svn.apache.org/r1681795
+        http://svn.apache.org/r1682988
+        http://svn.apache.org/r1682979
+        http://svn.apache.org/r1682819
+        http://svn.apache.org/r1682816
+     2.4.x patch: trunk patchs work
+     +1: jailletc36, ylavic, jim
+
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -210,28 +232,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: ylavic
      ylavic: we'd better comment on @dev for this one for Stefan Eissing (who
              proposed the merge) to be able to follow (and comment too).
-
-  *) mod_proxy: Don't put the worker in error state for 500 or 503 errors
-     returned by the backend unless failonstatus is configured to.  PR 56925.
-     trunk patch: http://svn.apache.org/r1681694
-     trunk patch: http://svn.apache.org/r1682907
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, rjung, jim
-
-   *) Easy patches - synch with trunk
-        - mod_rewrite: Initialize args to not print garbage mem during a RewriteCond parse error
-        - mod_rewrite: Initialize args to not print garbage mem during a RewriteRule parse error
-        - examples/mod_*: Improve style in examples.
-        - proxy_util: Improve error message
-        - mod_proxy_wstunnel: Concat string at compile time in orser to save a few cycles.
-     trunk patch:
-        http://svn.apache.org/r1681795
-        http://svn.apache.org/r1682988
-        http://svn.apache.org/r1682979
-        http://svn.apache.org/r1682819
-        http://svn.apache.org/r1682816
-     2.4.x patch: trunk patchs work
-     +1: jailletc36, ylavic, jim
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
