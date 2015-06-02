@@ -231,7 +231,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/r1682819
         http://svn.apache.org/r1682816
      2.4.x patch: trunk patchs work
-     +1: jailletc36
+     +1: jailletc36, ylavic
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
