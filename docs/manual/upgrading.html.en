@@ -263,6 +263,13 @@ Allow from example.org</pre>
         option has been removed in favour of per-module <code class="directive"><a href="./mod/core.html#loglevel">LogLevel</a></code> configuration.
         </li>
 
+        <li><code class="module"><a href="./mod/mod_proxy_scgi.html">mod_proxy_scgi</a></code>: The default setting for
+        <code>PATH_INFO</code> has changed from httpd 2.2, and
+        some web applications will no longer operate properly with
+        the new <code>PATH_INFO</code> setting.  The previous setting
+        can be restored by configuring the <code>proxy-scgi-pathinfo</code>
+        variable.</li>
+
         <li><code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code>: CRL based revocation checking
         now needs to be explicitly configured through <code class="directive"><a href="./mod/mod_ssl.html#sslcarevocationcheck">SSLCARevocationCheck</a></code>.
         </li>
