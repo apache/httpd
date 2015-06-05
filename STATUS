@@ -215,7 +215,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mod_deflate: Add missing APLOGNO.
      trunk patch: http://svn.apache.org/r1619453
      2.4.x patch: trunk works (minus next-number)
-     +1: jailletc36
+     +1: jailletc36, gsmith
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
