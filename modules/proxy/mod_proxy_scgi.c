@@ -421,8 +421,9 @@ static int pass_response(request_rec *r, proxy_conn_rec *conn)
         }
     }
 
-    /* XXX: What could we do with that return code? */
-    (void)ap_pass_brigade(r->output_filters, bb);
+    if (ap_pass_brigade(r->output_filters, bb)) {
+        return AP_FILTER_ERROR;
+    }
 
     return OK;
 }

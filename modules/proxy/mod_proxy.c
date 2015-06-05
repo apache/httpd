@@ -850,19 +850,15 @@ static int proxy_handler(request_rec *r)
             case M_TRACE: {
                 int access_status;
                 r->proxyreq = PROXYREQ_NONE;
-                if ((access_status = ap_send_http_trace(r)))
-                    ap_die(access_status, r);
-                else
-                    ap_finalize_request_protocol(r);
+                access_status = ap_send_http_trace(r);
+                ap_die(access_status, r);
                 return OK;
             }
             case M_OPTIONS: {
                 int access_status;
                 r->proxyreq = PROXYREQ_NONE;
-                if ((access_status = ap_send_http_options(r)))
-                    ap_die(access_status, r);
-                else
-                    ap_finalize_request_protocol(r);
+                access_status = ap_send_http_options(r);
+                ap_die(access_status, r);
                 return OK;
             }
             default: {
