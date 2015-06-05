@@ -118,7 +118,7 @@ static int asis_handler(request_rec *r)
         if (rv != APR_SUCCESS) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
                           "mod_asis: ap_pass_brigade failed for file %s", r->filename);
-            return HTTP_INTERNAL_SERVER_ERROR;
+            return AP_FILTER_ERROR;
         }
     }
     else {

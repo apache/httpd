@@ -418,7 +418,10 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                 e = apr_bucket_flush_create(f->c->bucket_alloc);
                 APR_BRIGADE_INSERT_TAIL(bb, e);
 
-                ap_pass_brigade(f->c->output_filters, bb);
+                rv = ap_pass_brigade(f->c->output_filters, bb);
+                if (rv != APR_SUCCESS) {
+                    return AP_FILTER_ERROR;
+                }
             }
         }
 
@@ -1398,6 +1401,39 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
     return ap_pass_brigade(f->next, b);
 }
 
+/*
+ * Map specific APR codes returned by the filter stack to HTTP error
+ * codes, or the default status code provided. Use it as follows:
+ *
+ * return ap_map_http_request_error(rv, HTTP_BAD_REQUEST);
+ *
+ * If the filter has already handled the error, AP_FILTER_ERROR will
+ * be returned, which is cleanly passed through.
+ *
+ * These mappings imply that the filter stack is reading from the
+ * downstream client, the proxy will map these codes differently.
+ */
+AP_DECLARE(int) ap_map_http_request_error(apr_status_t rv, int status)
+{
+    switch (rv) {
+    case AP_FILTER_ERROR: {
+        return AP_FILTER_ERROR;
+    }
+    case APR_ENOSPC: {
+        return HTTP_REQUEST_ENTITY_TOO_LARGE;
+    }
+    case APR_ENOTIMPL: {
+        return HTTP_NOT_IMPLEMENTED;
+    }
+    case APR_ETIMEDOUT: {
+        return HTTP_REQUEST_TIME_OUT;
+    }
+    default: {
+        return status;
+    }
+    }
+}
+
 /* In HTTP/1.1, any method can have a body.  However, most GET handlers
  * wouldn't know what to do with a request body if they received one.
  * This helper routine tests for and reads any message body in the request,
@@ -1415,7 +1451,8 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
 AP_DECLARE(int) ap_discard_request_body(request_rec *r)
 {
     apr_bucket_brigade *bb;
-    int rv, seen_eos;
+    int seen_eos;
+    apr_status_t rv;
 
     /* Sometimes we'll get in a state where the input handling has
      * detected an error where we want to drop the connection, so if
@@ -1438,21 +1475,8 @@ AP_DECLARE(int) ap_discard_request_body(request_rec *r)
                             APR_BLOCK_READ, HUGE_STRING_LEN);
 
         if (rv != APR_SUCCESS) {
-            /* FIXME: If we ever have a mapping from filters (apr_status_t)
-             * to HTTP error codes, this would be a good place for them.
-             *
-             * If we received the special case AP_FILTER_ERROR, it means
-             * that the filters have already handled this error.
-             * Otherwise, we should assume we have a bad request.
-             */
-            if (rv == AP_FILTER_ERROR) {
-                apr_brigade_destroy(bb);
-                return rv;
-            }
-            else {
-                apr_brigade_destroy(bb);
-                return HTTP_BAD_REQUEST;
-            }
+            apr_brigade_destroy(bb);
+            return ap_map_http_request_error(rv, HTTP_BAD_REQUEST);
         }
 
         for (bucket = APR_BRIGADE_FIRST(bb);
@@ -1622,6 +1646,13 @@ AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer,
     /* We lose the failure code here.  This is why ap_get_client_block should
      * not be used.
      */
+    if (rv == AP_FILTER_ERROR) {
+        /* AP_FILTER_ERROR means a filter has responded already,
+         * we are DONE.
+         */
+        apr_brigade_destroy(bb);
+        return -1;
+    }
     if (rv != APR_SUCCESS) {
         /* if we actually fail here, we want to just return and
          * stop trying to read data from the client.

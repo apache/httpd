@@ -3839,7 +3839,7 @@ static int default_handler(request_rec *r)
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, status, r,
                           "default_handler: ap_pass_brigade returned %i",
                           status);
-            return HTTP_INTERNAL_SERVER_ERROR;
+            return AP_FILTER_ERROR;
         }
     }
     else {              /* unusual method (not GET or POST) */
