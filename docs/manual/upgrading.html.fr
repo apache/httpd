@@ -26,8 +26,6 @@
 <p><span>Langues Disponibles: </span><a href="./en/upgrading.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./fr/upgrading.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
   <p>Afin d'assister les utilisateurs lors de leurs opérations de mise à
   jour, nous maintenons un document
@@ -281,6 +279,13 @@ Allow from example.org</pre>
 	<code>DebugLevel</code> a été supprimée en faveur d'une
 	configuration de la directive <code class="directive"><a href="./mod/core.html#loglevel">LogLevel</a></code> au niveau répertoire.
         </li>
+
+	<li><code class="module"><a href="./mod/mod_proxy_scgi.html">mod_proxy_scgi</a></code>: certaines applications web
+	ne fonctionneront plus correctement avec la nouvelle
+	configuration de <code>PATH_INFO</code> qui est diffÃ©rente de
+	celle de la version 2.2. La configuration prÃ©cÃ©dente peut Ãªtre
+	restaurÃ©e en dÃ©finissant la variable
+	<code>proxy-scgi-pathinfo</code>.</li>
 
 	<li><code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code>: le contrôle de révocation des
 	certificats basé sur les CRL doit être maintenant explicitement

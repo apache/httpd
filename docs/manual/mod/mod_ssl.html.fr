@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_ssl.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_ssl.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Chiffrement de haut niveau basé sur les protocoles Secure
 Sockets Layer (SSL) et Transport Layer Security (TLS)</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -657,36 +655,44 @@ PEM</td></tr>
 <p>Cette directive permet de définir le fichier de données contenant
 les informations de certificat
 X.509 du serveur codées au format PEM. Ce fichier doit contenir
-au minimum un certificat d'entité finale (feuille). Depuis la version
-2.4.8, il peut aussi contenir des certificats de CA
-intermédiaires triés des feuilles à la racine, ainsi que des
-<code class="directive"><a href="#sslcertificatechainfile">SSLCertificateChainFile</a></code>
-(obsolètes).
+au minimum un certificat d'entité finale (feuille). 
+La directive peut être utilisée plusieurs fois (elle référence des
+fichiers différents) pour accepter plusieurs algorithmes
+d'authentification au niveau du serveur - souvent RSA, DSA et ECC. Le
+nombre d'algorithmes supportés dépend de la version d'OpenSSL utilisée
+avec mod_ssl : à partir de la version 1.0.0, la commande <code>openssl
+list-public-key-algorithms</code> affiche la liste des algorithmes
+supportés.
 </p>
 
-<p>Des éléments additionnels peuvent être présents, comme des paramètres
-DH et/ou le nom EC curve pour les clés ephémères, respectivement générés
-par <code>openssl dhparam</code> et <code>openssl ecparam</code>
-(supporté à partir de la version 2.4.7), et
-enfin la clé privée du certificat d'entité finale. Si la clé privée est
-chiffrée, une boîte de dialogue demandant le mot de passe s'ouvre au
-démarrage.</p>
+<p>Les fichiers peuvent aussi contenir des certificats de CA
+intermédiaires triés depuis la feuille vers la racine. Cette
+fonctionnalité est disponible depuis la version 2.4.8 du serveur HTTP
+Apache, et rend obsolète la directive <code class="directive"><a href="#sslcertificatechainfile">SSLCertificateChainFile</a></code>. A partir de la
+version 1.0.2 d'OpenSSL, il est alors possible de configurer la chaîne
+de certification en fonction du certificat.</p>
 
-<p>
-Cette directive peut être utilisée plusieurs fois pour référencer
-différents noms de fichiers, afin de supporter plusieurs algorithmes
-pour l'authentification du serveur - en général RSA, DSA et ECC. Le
-nombre d'algorithmes supportés dépend de la version d'OpenSSL utilisée
-pour mod_ssl : à partir de la version 1.0.0, la commande <code>openssl
-list-public-key-algorithms</code> renvoie la liste de ces algorithmes.</p>
+<p>Depuis la version 2.4.7 du serveur HTTP Apache, on peut aussi ajouter
+des paramètres DH personnalisés et un nom EC
+curve pour les clés éphémères à la fin du premier fichier défini par la
+directive <code class="directive"><a href="#sslcertificatefile">SSLCertificateFile</a></code>.
+Ces paramètres peuvent être générés avec les commandes <code>openssl
+dhparam</code> et <code>openssl ecparam</code>, et ils peuvent être
+ajoutés tel quel à la fin du premier fichier de certificat. En effet,
+seul le premier fichier de certificat défini peut être utilisé pour
+enregistrer des paramètres personnalisés, car ces derniers s'appliquent
+indépendamment de l'algorithme d'authentification utilisé.
+</p>
 
-<p>
-A partir de la version 1.0.2 d'OpenSSL, cette directive permet de
-configurer la chaîne de certification en fonction du certificat, ce qui
-supprime une limitation de la directive obsolète <code class="directive"><a href="#sslcertificatechainfile">SSLCertificateChainFile</a></code>. Cependant, les
-paramètres DH et ECDH ne sont lus que depuis la première directive
-<code class="directive">SSLCertificateFile</code> car ils s'appliquent
-indépendamment du type d'algorithme d'authentification.</p>
+<p>Enfin, il est aussi possible d'ajouter la clé privée du certificat de
+l'entité finale au fichier de certificat, ce qui permet de se passer
+d'une directive <code class="directive"><a href="#sslcertificatekeyfile">SSLCertificateKeyFile</a></code> séparée. Cette
+pratique est cependant fortement déconseillée. En effet, les fichiers de
+certificats qui contiennent de tels clés embarquées doivent être définis
+avant les certificats en utilisant un fichier de clé séparé. En outre,
+si la clé est chiffrée, une boîte de dialogue pour entrer le mot de
+passe de la clé s'ouvre au démarrage du serveur.
+</p>
 
 <div class="note">
 <h3>Interopérabilité des paramètres DH avec les nombres premiers de
@@ -719,10 +725,7 @@ PEM</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
 </table>
 <p>Cette directive permet de définir le fichier contenant la clé privée du
-serveur codée en PEM (la clé privée peut être associée au certificat
-dans le fichier défini par la directive
-<code class="directive">SSLCertificateFile</code>, mais cette pratique est
-déconseillée). Si la clé privée est
+serveur codée en PEM. Si la clé privée est
 chiffrée, une boîte de dialogue demandant le mot de passe s'ouvre au
 démarrage.</p>
 
@@ -732,6 +735,14 @@ différents noms de fichiers, afin de supporter plusieurs algorithmes
 pour l'authentification du serveur. A chaque directive <code class="directive"><a href="#sslcertificatekeyfile">SSLCertificateKeyFile</a></code> doit être associée
 une directive <code class="directive">SSLCertificateFile</code> correspondante.
 </p>
+
+<p>
+La clé privé peut aussi être ajoutée au fichier défini par la directive
+<code class="directive"><a href="#sslcertificatefile">SSLCertificateFile</a></code>, mais cette
+pratique est fortement déconseillée. En effet, les fichiers de
+certificats qui comportent une telle clé doivent être définis après les
+certificats en utilisant un fichier de clé séparé.</p>
+
 <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">SSLCertificateKeyFile "/usr/local/apache2/conf/ssl.key/server.key"</pre>
 </div>
 
