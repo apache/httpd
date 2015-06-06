@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1674127:1682929 (outdated) -->
+<!-- English Revision: 1682929 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -834,23 +834,25 @@ de 1024 bits ?</title>
     liste d'algorithmes de mod_ssl via la directive <directive
     module="mod_ssl">SSLCipherSuite</directive> (&eacute;ventuellement en
     conjonction avec la directive <directive
-    module="mod_ssl">SSLHonorCipherOrder</directive>), soit utiliser la
-    directive <directive module="mod_ssl">SSLCertificateFile</directive>
-    pour configurer des param&egrave;tres DH personnalis&eacute;s avec un nombre
+    module="mod_ssl">SSLHonorCipherOrder</directive>), soit utiliser des
+    param&egrave;tres DH personnalis&eacute;s avec un nombre
     premier de 1024 bits, param&egrave;tres qui seront toujours prioritaires
     par rapport &agrave; tout autre param&egrave;tre DH par d&eacute;faut.</p>
 
     <p>Pour g&eacute;n&eacute;rer des param&egrave;tres DH personnalis&eacute;s, utilisez la
-    commande <code>openssl dhparam</code>. Vous pouvez aussi ajouter les
+    commande <code>openssl dhparam 1024</code>. Vous pouvez aussi
+    utiliser les
     param&egrave;tres DH standards issus de la <a
-    href="http://www.ietf.org/rfc/rfc2409.txt">RFC 2409</a>, section 6.2
-    au fichier <directive module="mod_ssl">SSLCertificateFile</directive>
-    consid&eacute;r&eacute; :</p>
+    href="http://www.ietf.org/rfc/rfc2409.txt">RFC 2409</a>, section 6.2 :</p>
     <example><pre>-----BEGIN DH PARAMETERS-----
 MIGHAoGBAP//////////yQ/aoiFowjTExmKLgNwc0SkCTgiKZ8x0Agu+pjsTmyJR
 Sgh5jjQE3e+VGbPNOkMbMCsKbfJfFDdP4TVtbVHCReSFtXZiXn7G9ExC6aY37WsL
 /1y29Aa37e44a/taiZ+lrp8kEXxLH+ZJKGZR7OZTgf//////////AgEC
 -----END DH PARAMETERS-----</pre></example>
+    <p>Ajoute les paramètres personnalisés incluant les lignes "BEGIN DH
+    PARAMETERS" et "END DH PARAMETERS" à la fin du premier fichier de
+    certificat défini via la directive <directive
+    module="mod_ssl">SSLCertificateFile</directive>.</p>
 </section>
 
 </section>
