@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1543909:1683199 (outdated) -->
+<!-- English Revision: 1683199 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -320,6 +320,13 @@ Allow from example.org
 	configuration de la directive <directive
 	module="core">LogLevel</directive> au niveau r&eacute;pertoire.
         </li>
+
+	<li><module>mod_proxy_scgi</module>: certaines applications web
+	ne fonctionneront plus correctement avec la nouvelle
+	configuration de <code>PATH_INFO</code> qui est différente de
+	celle de la version 2.2. La configuration précédente peut être
+	restaurée en définissant la variable
+	<code>proxy-scgi-pathinfo</code>.</li>
 
 	<li><module>mod_ssl</module>: le contr&ocirc;le de r&eacute;vocation des
 	certificats bas&eacute; sur les CRL doit &ecirc;tre maintenant explicitement
