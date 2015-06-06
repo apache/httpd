@@ -877,7 +877,7 @@ to perform a DN lookup</description>
 <usage>
     <p>If <directive module="mod_authnz_ldap">AuthLDAPInitialBindAsUser</directive> is set to
        <em>ON</em>, the basic authentication username will be transformed according to the
-       regular expression and substituion arguments.</p>
+       regular expression and substitution arguments.</p>
 
     <p> The regular expression argument is compared against the current basic authentication username.
         The substitution argument may contain backreferences, but has no other variable interpolation.</p>
