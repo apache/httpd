@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_ssl: When SSLVerify is disabled (NONE), don't force a renegotiation if
+     the SSLVerifyDepth applied with the default/handshaken vhost differs from
+     the one applicable with the finally selected vhost.  [Yann Ylavic]
+     
   *) core: Avoid a possible truncation of the faulty header included in the
      HTML response when LimitRequestFieldSize is reached.  [Yann Ylavic]
 
