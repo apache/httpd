@@ -215,6 +215,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      ylavic: we'd better comment on @dev for this one for Stefan Eissing (who
              proposed the merge) to be able to follow (and comment too).
 
+  *) mod_cgid: Fix APLOGNO
+     trunk patch: http://svn.apache.org/r1667386
+     2.4.x patch: trunk works (minus next-number)
+     +1: jailletc36
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
