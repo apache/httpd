@@ -109,12 +109,12 @@ RELEASE SHOWSTOPPERS:
   Reported by: Régis Leroy
 
   trunk
-    https://svn.apache.org/r1484852
-    https://svn.apache.org/r1684513
+    http://svn.apache.org/r1484852
+    http://svn.apache.org/r1684513
   2.4.x branch
-    https://svn.apache.org/r1684515
+    http://svn.apache.org/r1684515
   2.2.x branch
-    https://svn.apache.org/repos/private/pmc/httpd/SECURITY/http_filter_chunked/httpd-2.2.x-ap_http_filter-chunked-v5.patch
+    http://people.apache.org/~wrowe/httpd-2.2.x-ap_http_filter-chunked-v6.patch
   +1: ylavic, wrowe
   jim notes: test framework errors due to 413->400 error change [test adjusted]
 
