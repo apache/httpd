@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.30
 
+  *) mod_ssl: bring SNI behavior into better conformance with RFC 6066:
+     no longer send warning-level unrecognized_name(112) alerts. PR 56241.
+     [Kaspar Brand]
+
   *) http: Make ap_die() robust against any HTTP error code and not modify
      response status (finally logged) when nothing is to be done. [Yann Ylavic]
 
