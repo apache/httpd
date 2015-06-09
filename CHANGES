@@ -2,6 +2,12 @@
 
 Changes with Apache 2.4.14
 
+  *) SECURITY: CVE-2015-3183 (cve.mitre.org)
+     core: Fix chunk header parsing defect.
+     Remove apr_brigade_flatten(), buffering and duplicated code from
+     the HTTP_IN filter, parse chunks in a single pass with zero copy.
+     Limit accepted chunk-size to 2^63-1 and be strict about chunk-ext
+     authorized characters.  [Graham Leggett, Yann Ylavic]
 
 Changes with Apache 2.4.13
 
