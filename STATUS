@@ -101,18 +101,18 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
+
    * mod_ssl: bring SNI behavior into better conformance with RFC 6066
      (also addresses PR 56241)
      trunk patch: https://svn.apache.org/r1585090
                   (partial, w/o startup warnings changes)
-     2.4.x patch: https://svn.apache.org/r1588424
+     2.4.x patch: https://svn.apache.org/1588424
                   (backported to 2.4.10)
      2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-no_sni_warning.patch
-     +1: ylavic, jorton, wrowe
-
-
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
+     +1: ylavic, jorton
 
 
 PATCHES/ISSUES THAT ARE STALLED
