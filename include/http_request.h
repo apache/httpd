@@ -185,6 +185,8 @@ AP_DECLARE(void) ap_internal_fast_redirect(request_rec *sub_req, request_rec *r)
  * is required for the current request
  * @param r The current request
  * @return 1 if authentication is required, 0 otherwise
+ * @bug Behavior changed in 2.4.x refactoring, API no longer usable
+ * @deprecated @see ap_some_authn_required()
  */
 AP_DECLARE(int) ap_some_auth_required(request_rec *r);
 
@@ -539,6 +541,16 @@ AP_DECLARE_HOOK(void,insert_filter,(request_rec *r))
 AP_DECLARE_HOOK(int,post_perdir_config,(request_rec *r))
 
 /**
+ * This hook allows a module to force authn to be required when
+ * processing a request.
+ * This hook should be registered with ap_hook_force_authn().
+ * @param r The current request
+ * @return OK (force authn), DECLINED (let later modules decide)
+ * @ingroup hooks
+ */
+AP_DECLARE_HOOK(int,force_authn,(request_rec *r))
+
+/**
  * This hook allows modules to handle/emulate the apr_stat() calls
  * needed for directory walk.
  * @param finfo where to put the stat data
@@ -583,6 +595,17 @@ AP_DECLARE(apr_bucket *) ap_bucket_eor_make(apr_bucket *b, request_rec *r);
  */
 AP_DECLARE(apr_bucket *) ap_bucket_eor_create(apr_bucket_alloc_t *list,
                                               request_rec *r);
+
+/**
+ * Can be used within any handler to determine if any authentication
+ * is required for the current request.  Note that if used with an
+ * access_checker hook, an access_checker_ex hook or an authz provider; the
+ * caller should take steps to avoid a loop since this function is
+ * implemented by calling these hooks.
+ * @param r The current request
+ * @return TRUE if authentication is required, FALSE otherwise
+ */
+AP_DECLARE(int) ap_some_authn_required(request_rec *r);
 
 #ifdef __cplusplus
 }
