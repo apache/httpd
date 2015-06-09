@@ -112,7 +112,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://svn.apache.org/1588424
                   (backported to 2.4.10)
      2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-no_sni_warning.patch
-     +1: ylavic
+     +1: ylavic, jorton
 
 
 PATCHES/ISSUES THAT ARE STALLED
