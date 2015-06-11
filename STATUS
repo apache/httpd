@@ -214,7 +214,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mod_cgid: Fix APLOGNO
      trunk patch: http://svn.apache.org/r1667386
      2.4.x patch: trunk works (minus next-number)
-     +1: jailletc36
+     +1: jailletc36, jim
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
