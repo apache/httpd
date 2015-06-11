@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1657689:1673563 (outdated) -->
+<!-- English Revision: 1673563 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -330,7 +330,7 @@
     <p>Sunucu yapılandırma dosyanıza şunu yerleştirin:</p>
 
     <highlight language="config">
-&lt;Directory /&gt;
+&lt;Directory "/"&gt;
     AllowOverride None
 &lt;/Directory&gt;
     </highlight>
@@ -363,7 +363,7 @@
       dosyanıza şunları yazın:</p>
 
     <highlight language="config">
-&lt;Directory /&gt;
+&lt;Directory "/"&gt;
     Require all denied
 &lt;/Directory&gt;
     </highlight>
@@ -374,18 +374,18 @@
       olacaktır. Örnek:</p>
 
     <highlight language="config">
-&lt;Directory /usr/users/*/public_html&gt;
+&lt;Directory "/usr/users/*/public_html"&gt;
     Require all granted
 &lt;/Directory&gt;
-&lt;Directory /usr/local/httpd&gt;
+&lt;Directory "/usr/local/httpd"&gt;
     Require all granted
 &lt;/Directory&gt;
     </highlight>
 
     <p><directive module="core">Location</directive> ve <directive
       module="core">Directory</directive> yönergelerinin etkileşimine de
-      özellikle önem vermelisiniz; örneğin <code>&lt;Directory /&gt;</code>
-      erişimi yasaklarken bir <code>&lt;Location /&gt;</code> yönergesi bunu
+      özellikle önem vermelisiniz; örneğin <code>&lt;Directory "/"&gt;</code>
+      erişimi yasaklarken bir <code>&lt;Location "/"&gt;</code> yönergesi bunu
       ortadan kaldırabilir.</p>
 
     <p><directive module="mod_userdir">UserDir</directive> yönergesi de size

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 1334033:1673563 (outdated) -->
+<!-- English Revision: 1673563 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -128,7 +128,7 @@ AddHandler add-footer .html
         eylemcisi tarafından işleme sokulacaktır.</p>
 
       <highlight language="config">
-&lt;Directory /web/htdocs/asis&gt;
+&lt;Directory "/web/htdocs/asis"&gt;
     SetHandler send-as-is
 &lt;/Directory&gt;
       </highlight>

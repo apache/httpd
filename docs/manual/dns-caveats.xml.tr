@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 1334033:1673563 (outdated) -->
+<!-- English Revision: 1673563 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -45,7 +45,7 @@
 # Bu yetersiz bir yapılandırma örneğidir, sunucunuzda kullanmayın.
 &lt;VirtualHost falan.fesmekan.dom&gt;
   ServerAdmin filanca@fesmekan.dom
-  DocumentRoot /siteler/fesmekan
+  DocumentRoot "/siteler/fesmekan"
 &lt;/VirtualHost&gt;
     </highlight>
 
@@ -66,7 +66,7 @@
 # Bu yetersiz bir yapılandırma örneğidir, sunucunuzda kullanmayın.
 &lt;VirtualHost 192.168.2.1&gt;
   ServerAdmin filanca@fesmekan.dom
-  DocumentRoot /siteler/fesmekan
+  DocumentRoot "/siteler/fesmekan"
 &lt;/VirtualHost&gt;
     </highlight>
 
@@ -85,7 +85,7 @@
 &lt;VirtualHost 192.168.2.1&gt;
   ServerName falan.fesmekan.dom
   ServerAdmin filanca@fesmekan.dom
-  DocumentRoot /siteler/fesmekan
+  DocumentRoot "/siteler/fesmekan"
 &lt;/VirtualHost&gt;
     </highlight>
   </section>
@@ -98,12 +98,12 @@
     <highlight language="config">
 &lt;VirtualHost falan.fesmekan.dom&gt;
   ServerAdmin filanca@fesmekan.dom
-  DocumentRoot /siteler/fesmekan
+  DocumentRoot "/siteler/fesmekan"
 &lt;/VirtualHost&gt;
 
 &lt;VirtualHost misal.mesela.dom&gt;
   ServerAdmin falanca@mesela.dom
-  DocumentRoot /siteler/mesela
+  DocumentRoot "/siteler/mesela"
 &lt;/VirtualHost&gt;
     </highlight>
 
