@@ -28,7 +28,6 @@
 <a href="../ko/misc/perf-tuning.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/misc/perf-tuning.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
 
     <p>Apache 2.x, esneklik, taşınabilirlik ve başarım arasında bir denge
@@ -138,7 +137,7 @@
         kullanınız.</p>
 
       <p><code class="directive"><a href="../mod/core.html#hostnamelookups">HostnameLookups</a></code>
-        yönergelerinin <code>&lt;Location /server-status&gt;</code> gibi
+        yönergelerinin <code>&lt;Location "/server-status"&gt;</code> gibi
         bölüm yönergelerinin içinde de yer alabileceğini unutmayın. Bu gibi
         durumlarda DNS sorguları sadece istek kuralla eşleştiği takdirde
         yapılacaktır. Aşağıdaki örnekte <code>.html</code> ve
@@ -168,7 +167,7 @@
         bağın üzerinde bazı sınamalar yapmak için ek bir sistem çağrısından
         başka istenen her dosya için de ayrı bir çağrı yapacaktır.</p>
 
-      <pre class="prettyprint lang-config">DocumentRoot /siteler/htdocs
+      <pre class="prettyprint lang-config">DocumentRoot "/siteler/htdocs"
 &lt;Directory /&gt;
   Options SymLinksIfOwnerMatch
 &lt;/Directory&gt;</pre>
@@ -182,12 +181,12 @@
         yinelenecektir. Amacınız gerçekten sembolik bağları güvenlik
         açısından sınamaksa bunu şöyle yapabilirsiniz:</p>
 
-      <pre class="prettyprint lang-config">DocumentRoot /siteler/htdocs
-&lt;Directory /&gt;
+      <pre class="prettyprint lang-config">DocumentRoot "/siteler/htdocs"
+&lt;Directory "/"&gt;
   Options FollowSymLinks
 &lt;/Directory&gt;
 
-&lt;Directory /siteler/htdocs&gt;
+&lt;Directory "/siteler/htdocs"&gt;
   Options -FollowSymLinks +SymLinksIfOwnerMatch
 &lt;/Directory&gt;</pre>
 
@@ -213,8 +212,8 @@
         her dosya bileşeni için bu <code>.htaccess</code> dosyalarını açmaya
         çalışacaktır.</p>
 
-      <pre class="prettyprint lang-config">DocumentRoot /siteler/htdocs
-&lt;Directory /&gt;
+      <pre class="prettyprint lang-config">DocumentRoot "/siteler/htdocs"
+&lt;Directory "/"&gt;
   AllowOverride all
 &lt;/Directory&gt;</pre>
 
@@ -599,13 +598,13 @@
       çağrılır ve istekler arasında kalan çoğu çocuk da <code>select</code>
       ile engellenir. Engellenen tüm bu çocuklar soketlerden herhangi biri
       üzerinde tek bir istek göründüğünde <code>select</code> tarafından
-      uyandırılıp işleme sokulmak üzere döndürülürler (uyandırılan çocuk
+      uyandırılıp işleme sokulmak üzere döndürülürler. (Uyandırılan çocuk
       sayısı işletim sistemine ve zamanlama ayarlarına göre değişiklik
-      gösterir). Bunların hepsi döngüye katılıp bağlantı kabul etmeye
+      gösterir,) Bunların hepsi döngüye katılıp bağlantı kabul etmeye
       (<code>accept</code>) çalışırlar. Fakat içlerinden yalnız biri
       (sadece bir bağlantı isteğinin mevcut olduğu varsayımıyla) bunu
       başarabilir. Kalanının bağlantı kabul etmesi (<code>accept</code>)
-      engellenir. Bu durum, bu çocukları istekleri başka başka soketlerden
+      <em>engellenir</em>. Bu durum, bu çocukları istekleri başka başka soketlerden
       değil mecburen tek bir soketten kabul etmeye kilitler ve bu soket
       üzerinde yeni bir istek belirip uyandırılana kadar bu durumda
       kalırlar. Bu açlık sorunu ilk olarak <a href="http://bugs.apache.org/index/full/467">PR#467</a> sayılı raporla

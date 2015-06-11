@@ -29,7 +29,6 @@
 <a href="../ko/howto/auth.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/howto/auth.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p>Kimlik Doğrulama istediğiniz kişileri teyid etme işlemidir.
       Yetkilendirme ise kişilerin nereye gireceklerine ve hangi bilgiye
@@ -213,13 +212,13 @@
     amaçlıyorsanız, şu yönergeleri kullanabilirsiniz. Bu yönergeleri
     <code>/usr/local/apache/htdocs/secret/.htaccess</code> dosyası içine
     veya <code>httpd.conf</code> içindeki &lt;Directory
-    /usr/local/apache/htdocs/secret&gt; bölümüne koyabilirsiniz.</p>
+    "/usr/local/apache/htdocs/secret"&gt; bölümüne koyabilirsiniz.</p>
 
     <pre class="prettyprint lang-config">AuthType Basic
 AuthName "Gizli Dosyalar"
 # (Aşağıdaki satırın kullanımı isteğe bağlıdır)
 AuthBasicProvider file
-AuthUserFile /usr/local/apache/passwd/passwords
+AuthUserFile "/usr/local/apache/passwd/passwords"
 Require user umut</pre>
 
 
@@ -324,8 +323,8 @@ Require user umut</pre>
 AuthName "Davete Binaen"
 # Satır isteğe bağlıdır:
 AuthBasicProvider file
-AuthUserFile /usr/local/apache/passwd/passwords
-AuthGroupFile /usr/local/apache/passwd/groups
+AuthUserFile "/usr/local/apache/passwd/passwords"
+AuthGroupFile "/usr/local/apache/passwd/groups"
 Require group Grupismi</pre>
 
 
@@ -379,11 +378,11 @@ Require group Grupismi</pre>
 
     <p>Bir metin dosyası yerine bir dbm dosyası kullanım örneği:</p>
 
-    <pre class="prettyprint lang-config">&lt;Directory /www/docs/private&gt;
+    <pre class="prettyprint lang-config">&lt;Directory "/www/docs/private"&gt;
     AuthName "Private"
     AuthType Basic
     AuthBasicProvider dbm
-    AuthDBMUserFile /www/passwords/passwd.dbm
+    AuthDBMUserFile "/www/passwords/passwd.dbm"
     Require valid-user
 &lt;/Directory&gt;</pre>
 
@@ -402,11 +401,11 @@ Require group Grupismi</pre>
     örnekte dosya ve LDAP tabanlı kimlik doğrulama tedarikçileri bir
     arada kullanılmıştır.</p>
 
-    <pre class="prettyprint lang-config">&lt;Directory /www/docs/private&gt;
+    <pre class="prettyprint lang-config">&lt;Directory "/www/docs/private"&gt;
     AuthName "Private"
     AuthType Basic
     AuthBasicProvider file ldap
-    AuthUserFile /usr/local/apache/passwd/passwords
+    AuthUserFile "/usr/local/apache/passwd/passwords"
     AuthLDAPURL ldap://ldaphost/o=yourorg
     Require valid-user
 &lt;/Directory&gt;</pre>
@@ -425,13 +424,13 @@ Require group Grupismi</pre>
     dosya için hem dosyalı hem de LDAP grup kimlik doğrulaması
     kullanılmıştır.</p>
 
-    <pre class="prettyprint lang-config">&lt;Directory /www/docs/private&gt;
+    <pre class="prettyprint lang-config">&lt;Directory "/www/docs/private"&gt;
     AuthName "Private"
     AuthType Basic
     AuthBasicProvider file
-    AuthUserFile /usr/local/apache/passwd/passwords
+    AuthUserFile "/usr/local/apache/passwd/passwords"
     AuthLDAPURL ldap://ldaphost/o=yourorg
-    AuthGroupFile /usr/local/apache/passwd/groups
+    AuthGroupFile "/usr/local/apache/passwd/groups"
     Require group GroupName
     Require ldap-group cn=mygroup,o=yourorg
 &lt;/Directory&gt;</pre>
