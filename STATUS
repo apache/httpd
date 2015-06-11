@@ -103,10 +103,10 @@ RELEASE SHOWSTOPPERS:
      the HTTP_IN filter, parse chunks in a single pass with zero copy.
      Limit accepted chunk-size to 2^63-1 and be strict about chunk-ext
      authorized characters.  [Graham Leggett, Yann Ylavic]
-  Submitted by: graham, ylavic
-  Reviewed by: ylavic, wrowe, jim
+  Submitted by: minfrin, ylavic
+  Reviewed by: ylavic, wrowe,
   Backports: 1484852, 1684513
-  Reported by: Régis Leroy
+  Reported by: regilero <regis.leroy makina-corpus.com>
 
   trunk
     http://svn.apache.org/r1484852
