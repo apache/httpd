@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 1642311:1675442 (outdated) -->
+<!-- English Revision: 1675442 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -176,12 +176,8 @@
       <dd>Perl ile yazılmış <program>apxs</program> veya
         <program>dbmmanage</program> gibi bazı betikleri desteklemek için
         Perl 5 yorumlayıcısı gerekir (5.003 veya daha yeni sürümleri
-        yeterlidir). Eğer sisteminizde birden fazla Perl yorumlayıcı
-        kuruluysa (örneğin, sistem geneli için Perl 4, kendi kullanımızı için
-        Perl 5 kurulu olabilir), doğru sürümün kullanılacağından emin olmak
-        bunu <program>configure</program> betiğine <code>--with-perl</code>
-        seçeneğini kullanarak belirtmeniz önerilir. Eğer
-        <program>configure</program> betiği sisteminizde Perl 5 yorumlayıcısı
+        yeterlidir). Eğer <program>configure</program> betiği sisteminizde
+        Perl 5 yorumlayıcısı
         bulamazsa bu betikleri kullanamazsınız. Ancak, bu durum Apache
         HTTPd’nin derlenip kurulmasına engel değildir.</dd>
     </dl>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 1636196:1673563 (outdated) -->
+<!-- English Revision: 1673563 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -84,7 +84,7 @@
 
     <highlight language="config">
 &lt;IfDefine ClosedForNow&gt;
-  Redirect / http://otherserver.example.com/
+  Redirect "/" "http://otherserver.example.com/"
 &lt;/IfDefine&gt;
     </highlight>
 
@@ -106,7 +106,7 @@
 
     <highlight language="config">
 &lt;IfModule mod_mime_magic.c&gt;
-  MimeMagicFile conf/magic
+  MimeMagicFile "conf/magic"
 &lt;/IfModule&gt;
     </highlight>
 
@@ -169,7 +169,7 @@
       dizin içeriğinin listelenmesi etkin kılınmaktadır.</p>
 
     <highlight language="config">
-&lt;Directory /var/web/dir1&gt;
+&lt;Directory "/var/web/dir1"&gt;
   Options +Indexes
 &lt;/Directory&gt;
     </highlight>
@@ -182,7 +182,7 @@
       erişime izin vermeyecektir.</p>
 
     <highlight language="config">
-&lt;Files gizli.html&gt;
+&lt;Files "gizli.html"&gt;
   Require all denied
 &lt;/Files&gt;
     </highlight>
@@ -198,8 +198,8 @@
       <code>gizli.html</code> dosyalarına erişimi yasaklar.</p>
 
     <highlight language="config">
-&lt;Directory /var/web/dir1&gt;<br />
-  &lt;Files gizli.html&gt;<br />
+&lt;Directory "/var/web/dir1"&gt;<br />
+  &lt;Files "gizli.html"&gt;<br />
     Require all denied
   &lt;/Files&gt;<br />
 &lt;/Directory&gt;
@@ -219,7 +219,7 @@
       uygulanır.</p>
 
     <highlight language="config">
-&lt;LocationMatch ^/gizli&gt;
+&lt;LocationMatch "^/gizli"&gt;
     Require all denied
 &lt;/LocationMatch&gt;
     </highlight>
@@ -233,7 +233,7 @@
       veya dizin bulunması gerekli değildir.</p>
 
     <highlight language="config">
-&lt;Location /server-status&gt;
+&lt;Location "/server-status"&gt;
     SetHandler server-status
 &lt;/Location&gt;
     </highlight>
@@ -245,9 +245,9 @@
     >Location</directive> yönergesi için bu şöyle olurdu:</p>
 
     <highlight language="config">
-&lt;Location /foo&gt;
+&lt;Location "/foo"&gt;
 &lt;/Location&gt;
-&lt;Location /foo/bar&gt;
+&lt;Location "/foo/bar"&gt;
 &lt;/Location>
     </highlight>
 
@@ -255,16 +255,16 @@
       adlar</directive> tam tersi eşlenir:</p>
 
     <highlight language="config">
-Alias /foo/bar /srv/www/uncommon/bar
-Alias /foo /srv/www/common/foo
+Alias "/foo/bar" "/srv/www/uncommon/bar"
+Alias "/foo" "/srv/www/common/foo"
     </highlight>
 
     <p>Aynısı <directive module="mod_proxy">ProxyPass</directive>
       yönergeleri için de geçerlidir:</p>
 
     <highlight language="config">
-ProxyPass /special-area http://special.example.com smax=5 max=10
-ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover=On
+ProxyPass "/special-area" "http://special.example.com" smax=5 max=10
+ProxyPass "/" "balancer://mycluster/" stickysession=JSESSIONID|jsessionid nofailover=On
     </highlight>
   </section>
 
@@ -296,7 +296,7 @@ ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover
       ismi kalıpları şöyle kullanılabilirdi:</p>
 
     <highlight language="config">
-&lt;Directory /home/*/public_html&gt;
+&lt;Directory "/home/*/public_html"&gt;
     Options Indexes
 &lt;/Directory&gt;
     </highlight>
@@ -305,7 +305,7 @@ ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover
       erişimi bir defada yasaklayabiliriz:</p>
 
     <highlight language="config">
-&lt;FilesMatch \.(?i:gif|jpe?g|png)$&gt;
+&lt;FilesMatch "\.(?i:gif|jpe?g|png)$"&gt;
     Require all denied
 &lt;/FilesMatch&gt;
     </highlight>
@@ -317,8 +317,8 @@ ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover
       mümkün olur.</p>
 
 <highlight language="config">
-&lt;DirectoryMatch ^/var/www/combined/(?&lt;SITENAME&gt;[^/]+)&gt;
-    require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
+&lt;DirectoryMatch "^/var/www/combined/(?&lt;SITENAME&gt;[^/]+)"&gt;
+    require ldap-group "cn=%{env:MATCH_SITENAME},ou=combined,o=Example"
 &lt;/DirectoryMatch&gt;
 </highlight>
   </section>
@@ -355,7 +355,7 @@ ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover
       Örneğin, aşağıdaki yapılandırmayı ele alalım:</p>
 
     <highlight language="config">
-&lt;Location /dir/&gt;
+&lt;Location "/dir/"&gt;
     Require all denied
 &lt;/Location&gt;
     </highlight>
@@ -381,7 +381,7 @@ ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover
       eşleyecek daha bir sürü yol bulunduğunu unutmayınız. Bu bakımdan dosya
       sisteminde yapacağınız kısıtlamalarda daima dosya sistemi taşıyıcılarını
       kullanmalısınız. Bununla birlikte bu kuralın da bir istisnası vardır.
-      Yapılandırma kısıtlamalarının bir <code>&lt;Location/&gt;</code> bölümü
+      Yapılandırma kısıtlamalarının bir <code>&lt;Location "/"&gt;</code> bölümü
       içine koyulması, bu bölüme konan yönergelerin etki alanının belli bir URL
       ile sınırlı olmaması nedeniyle mükemmelen güvenlidir.</p>
   </section>
@@ -422,7 +422,7 @@ ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover
       kullanılmasını engelleyecektir.</p>
 
     <highlight language="config">
-&lt;Proxy http://www.example.com/*&gt;
+&lt;Proxy "http://www.example.com/*"&gt;
     Require all granted
 &lt;/Proxy&gt;
     </highlight>
@@ -479,7 +479,7 @@ ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover
       yönergeler geçersiz kılınabileceği için).</li>
 
       <li><directive type="section" module="core">DirectoryMatch</directive>
-      (ve <code>&lt;Directory ~&gt;</code>).</li>
+      (ve <code>&lt;Directory "~"&gt;</code>).</li>
 
       <li><directive type="section" module="core">Files</directive> ve
       <directive type="section" module="core">FilesMatch</directive> aynı anda
@@ -498,8 +498,8 @@ ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover
       sıraya göre işleme sokulurlar. Yukarıda 1. grup olan <directive
       type="section" module="core">Directory</directive> bölümü en kısa dizin
       elemanından en uzun dizin elemanına doğru işleme sokulur. Yani, örneğin,
-      <code>&lt;Directory /var/web/dir&gt;</code> bölümü <code>&lt;Directory
-      /var/web/dir/subdir&gt;</code> bölümünden önce işleme sokulacaktır. Eğer
+      <code>&lt;Directory "/var/web/dir"&gt;</code> bölümü <code>&lt;Directory
+      "/var/web/dir/subdir"&gt;</code> bölümünden önce işleme sokulacaktır. Eğer
       aynı uzunlukta çok sayıda dizin varsa <directive type="section"
       module="core">Directory</directive> bölümleri yapılandırma dosyasında
       bulundukları sıraya göre işleme sokulurlar. <directive
@@ -539,16 +539,16 @@ ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover
       &gt; D &gt; E sırasıyla uygulanacaktır.</p>
 
     <highlight language="config">
-&lt;Location /&gt;
+&lt;Location "/"&gt;
     E
 &lt;/Location&gt;
 
-&lt;Files f.html&gt;
+&lt;Files "f.html"&gt;
     D
 &lt;/Files&gt;
 
 &lt;VirtualHost *&gt;
-&lt;Directory /a/b&gt;
+&lt;Directory "/a/b"&gt;
     B
 &lt;/Directory&gt;
 &lt;/VirtualHost&gt;
@@ -557,7 +557,7 @@ ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover
     C
 &lt;/DirectoryMatch&gt;
 
-&lt;Directory /a/b&gt;
+&lt;Directory "/a/b"&gt;
     A
 &lt;/Directory&gt;
     </highlight>
@@ -571,12 +571,12 @@ ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover
       olmalısınız!</p>
 
     <highlight language="config">
-&lt;Location /&gt;
+&lt;Location "/"&gt;
     Require all granted
 &lt;/Location&gt;
 
 # Alooo!  Bu &lt;Directory&gt; bölümünün hiçbir hükmü yok.
-&lt;Directory /&gt;
+&lt;Directory "/"&gt;
     &lt;RequireAll&gt;
         Require all granted
         Require not host kkadam.example.com

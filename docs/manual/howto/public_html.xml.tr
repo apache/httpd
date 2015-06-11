@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1649334:1673563 (outdated) -->
+<!-- English Revision: 1673563 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -166,7 +166,7 @@
     getirebilirsiniz.</p>
 
     <highlight language="config">
-&lt;Directory /home/*/public_html/cgi-bin/&gt;
+&lt;Directory "/home/*/public_html/cgi-bin/"&gt;
     Options ExecCGI
     SetHandler cgi-script
 &lt;/Directory&gt;

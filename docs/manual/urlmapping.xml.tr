@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 1562488:1673563 (outdated) -->
+<!-- English Revision: 1673563 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -137,7 +137,7 @@
       altında göstermek için <directive module="mod_alias">Alias</directive>
       yönergesi de kullanılabilir. Örneğin,</p>
 
-    <highlight language="config">Alias /belgeler /var/http</highlight>
+    <highlight language="config">Alias "/belgeler" "/var/http"</highlight>
 
     <p>yapılandırması ile
       <code>http://example.com/belgeler/dizin/dosya.html</code> URL’si için
@@ -154,7 +154,7 @@
       yararlanılabilir. Örneğin,</p>
 
     <highlight language="config">
-ScriptAliasMatch ^/~([a-zA-Z0-9]+)/cgi-bin/(.+) /home/$1/cgi-bin/$2
+ScriptAliasMatch "^/~([a-zA-Z0-9]+)/cgi-bin/(.+)" "/home/$1/cgi-bin/$2"
     </highlight>
 
     <p>satırı sayesinde <code>http://example.com/~user/cgi-bin/betik.cgi</code>
@@ -199,7 +199,7 @@ ScriptAliasMatch ^/~([a-zA-Z0-9]+)/cgi-bin/(.+) /home/$1/cgi-bin/$2
       kullanılabilirdi:</p>
 
     <highlight language="config">
-AliasMatch ^/sayfalar/([a-zA-Z0-9]+)(/(.*))?$ /home/$1/public_html/$3
+AliasMatch "^/sayfalar/([a-zA-Z0-9]+)(/(.*))?$" "/home/$1/public_html/$3"
     </highlight>
 </section>
 
@@ -217,7 +217,7 @@ AliasMatch ^/sayfalar/([a-zA-Z0-9]+)(/(.*))?$ /home/$1/public_html/$3
       bildirilmesi şöyle sağlanabilirdi:</p>
 
     <highlight language="config">
-Redirect permanent /foo/ http://example.com/bar/
+Redirect permanent "/foo/" "http://example.com/bar/"
     </highlight>
 
     <p>Bu atama sayesinde <code>/foo/</code> ile başlayan URL yolları
@@ -233,14 +233,14 @@ Redirect permanent /foo/ http://example.com/bar/
       kullanabilirsiniz:</p>
 
     <highlight language="config">
-RedirectMatch permanent ^/$ http://example.com/ilksayfa.html
+RedirectMatch permanent "^/$" "http://example.com/ilksayfa.html"
     </highlight>
 
     <p>Bundan başka, bir sitedeki tüm sayfalara yapılan istekleri başka bir
       siteye geçici olarak yönlendirmek için şöyle bir şey yapabilirsiniz:</p>
 
     <highlight language="config">
-RedirectMatch temp .* http://mesela.example.com/ilksayfa.html
+RedirectMatch temp ".*" "http://mesela.example.com/ilksayfa.html"
     </highlight>
 </section>
 
@@ -260,10 +260,10 @@ RedirectMatch temp .* http://mesela.example.com/ilksayfa.html
       geliyormuş gibi sunmaktadır:</p>
 
     <highlight language="config">
-ProxyPass /foo/ http://dahili.example.com/bar/
-ProxyPassReverse /foo/ http://dahili.example.com/bar/
+ProxyPass "/foo/" "http://dahili.example.com/bar/"
+ProxyPassReverse "/foo/" "http://dahili.example.com/bar/"
 ProxyPassReverseCookieDomain dahili.example.com harici.example.com
-ProxyPassReverseCookiePath /foo/ /bar/
+ProxyPassReverseCookiePath "/foo/" "/bar/"
     </highlight>
 
     <p><directive module="mod_proxy">ProxyPass</directive> sunucuyu uygun
@@ -284,7 +284,7 @@ ProxyPassReverseCookiePath /foo/ /bar/
       kullanılarak istemciye sunuluyormuşçasına değiştirebilirsiniz.</p>
 
     <highlight language="config">
-Substitute s/dahili\.example\.com/harici.example.com/i
+Substitute "s/dahili\.example\.com/harici.example.com/i"
     </highlight>
 
      <p>HTML ve XHTML’de hiperbağları daha bilgece yeniden yazabilen

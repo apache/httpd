@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1379929:1675524 (outdated) -->
+<!-- English Revision: 1675524 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -152,7 +152,7 @@
         kullanınız.</p>
 
       <p><directive module="core" >HostnameLookups</directive>
-        yönergelerinin <code>&lt;Location /server-status&gt;</code> gibi
+        yönergelerinin <code>&lt;Location "/server-status"&gt;</code> gibi
         bölüm yönergelerinin içinde de yer alabileceğini unutmayın. Bu gibi
         durumlarda DNS sorguları sadece istek kuralla eşleştiği takdirde
         yapılacaktır. Aşağıdaki örnekte <code>.html</code> ve
@@ -184,7 +184,7 @@ HostnameLookups off
         başka istenen her dosya için de ayrı bir çağrı yapacaktır.</p>
 
       <highlight language="config">
-DocumentRoot /siteler/htdocs
+DocumentRoot "/siteler/htdocs"
 &lt;Directory /&gt;
   Options SymLinksIfOwnerMatch
 &lt;/Directory&gt;
@@ -199,12 +199,12 @@ DocumentRoot /siteler/htdocs
         açısından sınamaksa bunu şöyle yapabilirsiniz:</p>
 
       <highlight language="config">
-DocumentRoot /siteler/htdocs
-&lt;Directory /&gt;
+DocumentRoot "/siteler/htdocs"
+&lt;Directory "/"&gt;
   Options FollowSymLinks
 &lt;/Directory&gt;
 
-&lt;Directory /siteler/htdocs&gt;
+&lt;Directory "/siteler/htdocs"&gt;
   Options -FollowSymLinks +SymLinksIfOwnerMatch
 &lt;/Directory&gt;
       </highlight>
@@ -233,8 +233,8 @@ DocumentRoot /siteler/htdocs
         çalışacaktır.</p>
 
       <highlight language="config">
-DocumentRoot /siteler/htdocs
-&lt;Directory /&gt;
+DocumentRoot "/siteler/htdocs"
+&lt;Directory "/"&gt;
   AllowOverride all
 &lt;/Directory&gt;
       </highlight>
@@ -631,13 +631,13 @@ DirectoryIndex index.cgi index.pl index.shtml index.html
       çağrılır ve istekler arasında kalan çoğu çocuk da <code>select</code>
       ile engellenir. Engellenen tüm bu çocuklar soketlerden herhangi biri
       üzerinde tek bir istek göründüğünde <code>select</code> tarafından
-      uyandırılıp işleme sokulmak üzere döndürülürler (uyandırılan çocuk
+      uyandırılıp işleme sokulmak üzere döndürülürler. (Uyandırılan çocuk
       sayısı işletim sistemine ve zamanlama ayarlarına göre değişiklik
-      gösterir). Bunların hepsi döngüye katılıp bağlantı kabul etmeye
+      gösterir,) Bunların hepsi döngüye katılıp bağlantı kabul etmeye
       (<code>accept</code>) çalışırlar. Fakat içlerinden yalnız biri
       (sadece bir bağlantı isteğinin mevcut olduğu varsayımıyla) bunu
       başarabilir. Kalanının bağlantı kabul etmesi (<code>accept</code>)
-      engellenir. Bu durum, bu çocukları istekleri başka başka soketlerden
+      <em>engellenir</em>. Bu durum, bu çocukları istekleri başka başka soketlerden
       değil mecburen tek bir soketten kabul etmeye kilitler ve bu soket
       üzerinde yeni bir istek belirip uyandırılana kadar bu durumda
       kalırlar. Bu açlık sorunu ilk olarak <a
