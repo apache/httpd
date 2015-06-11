@@ -33,7 +33,6 @@
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Apache HTTP Sunucusunda daima mevcut olan çekirdek
  özellikler</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr></table>
@@ -287,7 +286,7 @@ AcceptFilter https data</pre>
     <p>Sunucu, <code>/usr/local/web/index.html</code> belgesini döndürmeden
       önce,</p>
 
-    <pre class="prettyprint lang-config">&lt;Directory /&gt;
+    <pre class="prettyprint lang-config">&lt;Directory "/"&gt;
     AllowOverride None
 &lt;/Directory&gt;</pre>
 
@@ -565,7 +564,7 @@ AcceptFilter https data</pre>
     <p>Bu örnekte <code>AuthConfig</code> ve <code>Indexes</code> grubundaki
       yönergeler bir dahili sunucu hatasına yol açmayacaktır.</p>
 
-    <div class="note"><p>Güvenlik ve başarımı arttırmak için <code>&lt;Directory /&gt;</code>
+    <div class="note"><p>Güvenlik ve başarımı arttırmak için <code>&lt;Directory "/"&gt;</code>
       bloğu içinde <code>AllowOverride</code> yönergesine <code>None</code>
       dışında bir değer atamayın. Böyle yapmak yerine bir <code>.htaccess</code>
       dosyası yerleştirmeyi düşündüğünüz dizine ait bir
@@ -658,17 +657,39 @@ AllowOverrideList CookieTracking CookieName</pre>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CGIPassAuth" id="CGIPassAuth">CGIPassAuth</a> <a name="cgipassauth" id="cgipassauth">Yönergesi</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Enables passing HTTP authorization headers to scripts as CGI
-variables</td></tr>
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>HTTP yetkilendirme başlıklarının betiklere CGI değişkenleri
+olarak aktarılmasını etkin kılar</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>CGIPassAuth On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>CGIPassAuth Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>dizin, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>Available in Apache HTTP Server 2.4.13 and later</td></tr>
-</table><p>Bu yönergenin belgesi henüz Türkçeye çevrilmedi.
-            Lütfen İngilizce sürümüne bakınız.</p></div>
+<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td> Apache HTTP Sunucusunun 2.4.13 ve sonraki sürümlerinde kullanılabilmektedir</td></tr>
+</table>
+    <p><code class="directive">CGIPassAuth</code> yönergesi, HTTP Temel kimlik
+      doğrulamasını gerçekleştiren betikler için gereken
+      <code>Authorization</code> gibi HTTP yetkilendirme başlıklarına
+      betiklerin erişebilmesini sağlar. Normalde bu HTTP başlıkları
+      betiklerden gizli olup sunucuda HTTP Temel kimlik kanıtlaması etkin
+      kılındığında sunucuya erişmekte kullanılan kullanıcı kimliklerinin ve
+      parolalarının betikler tarafından görülmesini mümkün kılar. Bu yönerge,
+      HTTP Temel kimlik kanıtlamasını betiklerin gerçekleştirmesini sağlamak
+      için kullanılmalıdır.</p>
+
+    <p>Apache HTTP Sunucusunun önceki sürümlerinde derleme sırasında
+      kullanılabilen <code>SECURITY_HOLE_PASS_AUTHORIZATION</code> sabitinin
+      yerine bu yönerge kullanılabilir.</p>
+
+    <p>Bu ayarlama <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>, <code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code>,
+      <code class="module"><a href="../mod/mod_proxy_fcgi.html">mod_proxy_fcgi</a></code>, <code class="module"><a href="../mod/mod_proxy_scgi.html">mod_proxy_scgi</a></code> ve
+      benzerleri gibi <code>ap_add_common_vars()</code> kullanan modüller
+      tarafından kabul görür. Özellikle, isteği alışılmış tarzda işleme
+      sokmayıp bu arayüzü kullanan modülleri etkiler. Ayrıca,
+      <code>ap_add_common_vars()</code> kullanmayan üçüncü parti modüller de
+      bu ayarlamayı kullanmayı tercih edebilir.</p>
+
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ContentDigest" id="ContentDigest">ContentDigest</a> <a name="contentdigest" id="contentdigest">Yönergesi</a></h2>
 <table class="directive">
@@ -807,7 +828,7 @@ için iptal edilmiştir.</td></tr>
   Define servername www.example.com
   Define SSL
 &lt;/IfDefine&gt;
-DocumentRoot /var/www/${servername}/htdocs</pre>
+DocumentRoot "/var/www/${servername}/htdocs"</pre>
 
 
     <p><code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> sözdizimi ile
@@ -821,7 +842,7 @@ DocumentRoot /var/www/${servername}/htdocs</pre>
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Sadece ismi belirtilen dosya sistemi dizininde ve bunun
   altdizinlerinde ve bunların içeriğinde uygulanacak bir yönerge grubunu
   sarmalar.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>&lt;Directory <var>dizin-yolu</var>&gt;
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>&lt;Directory "<var>dizin-yolu</var>"&gt;
 ... &lt;/Directory&gt;</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
@@ -838,14 +859,18 @@ DocumentRoot /var/www/${servername}/htdocs</pre>
       <code>*</code> herhangi bir karakter dizisiyle eşleşir. Ayrıca
       <code>[]</code> karakter aralıkları da kullanılabilir. ‘/’ karakteri
       ile hiçbir kalıp karakteri eşleşmez, bu bakımdan <code>&lt;Directory
-      /*/public_html&gt;</code> ile <code>/home/user/public_html</code>
-      değil, ama <code>&lt;Directory /home/*/public_html&gt;</code>
+      "/*/public_html"&gt;</code> ile <code>/home/user/public_html</code>
+      değil, ama <code>&lt;Directory "/home/*/public_html"&gt;</code>
       eşleşecektir. Örnek:</p>
 
     <pre class="prettyprint lang-config">&lt;Directory "/usr/local/httpd/htdocs"&gt;
   Options Indexes FollowSymLinks
 &lt;/Directory&gt;</pre>
 
+
+    <p>Dizin yollarında isterseniz önceleme kullanabilirsiniz, ancak eğer yol
+      bazı boşluklar içeriyorsa mutlaka kullanmanız gerekir. Bir boşluk aksi
+      belirtilmedikçe bir ifadenin sonunu belirlediğinden bu gereklidir.</p>
 
     <div class="note">
       <p><var>dizin-yolu</var> argümanlarını belirtirken dikkatli
@@ -872,7 +897,7 @@ DocumentRoot /var/www/${servername}/htdocs</pre>
       eşleşmedeki yönergelerden başlayarak <a href="#accessfilename">.htaccess</a> dosyalarındaki yönergelere kadar
       genişletilir. Örneğin,</p>
 
-    <pre class="prettyprint lang-config">&lt;Directory /&gt;
+    <pre class="prettyprint lang-config">&lt;Directory "/"&gt;
   AllowOverride None
 &lt;/Directory&gt;
 
@@ -913,11 +938,11 @@ DocumentRoot /var/www/${servername}/htdocs</pre>
       ve buna ilişkin <code class="directive">&lt;Directory&gt;</code>
       uygulanacaktır.</p>
 
-   <p><strong><code>&lt;Directory /&gt;</code> için öntanımlı erişimin   tüm
+   <p><strong><code>&lt;Directory "/"&gt;</code> için öntanımlı erişimin tüm
      erişime izin vermek oluşuna dikkat ediniz. Bunu şöyle bir blokla
      değiştirmeniz,</strong></p>
 
-    <pre class="prettyprint lang-config">&lt;Directory /&gt;
+    <pre class="prettyprint lang-config">&lt;Directory "/"&gt;
   Require all denied
 &lt;/Directory&gt;</pre>
 
@@ -954,13 +979,13 @@ DocumentRoot /var/www/${servername}/htdocs</pre>
       bir yönerge grubunu sarmalamakta kullanılır. Tek farkla argüman olarak
       bir <a class="glossarylink" href="../glossary.html#regex" title="sözlüğe bakınız">düzenli ifade</a> alır. Örnek:</p>
 
-    <pre class="prettyprint lang-config">&lt;DirectoryMatch "^/www/(.+/)?[0-9]{3}"&gt;
+    <pre class="prettyprint lang-config">&lt;DirectoryMatch "^/www/(.+/)?[0-9]{3}/"&gt;
     # ...
 &lt;/DirectoryMatch&gt;</pre>
 
 
-    <p>yönergesi <code>/www/</code> içindeki üç rakamdan oluşan dizinlerle
-      eşleşecektir.</p>
+    <p>yönergesi <code>/www/</code> içindeki (veya alt dizinlerindeki) üç
+      rakamdan oluşan dizinlerle eşleşecektir.</p>
 
    <div class="note"><h3>Uyumluluk</h3>
       2.3.9 öncesinde, bu yönerge örtük olarak (<code class="directive"><a href="#directory">&lt;Directory&gt;</a></code> gibi) alt dizinlere de uygulanırdı
@@ -982,7 +1007,7 @@ DocumentRoot /var/www/${servername}/htdocs</pre>
       başvurular yoksayılmaktadır. Bunların yerine isimli geriye başvurular
       kullanılmalıdır.</p>
 
-<pre class="prettyprint lang-config">&lt;DirectoryMatch ^/var/www/combined/(?&lt;sitename&gt;[^/]+)&gt;
+<pre class="prettyprint lang-config">&lt;DirectoryMatch "^/var/www/combined/(?&lt;sitename&gt;[^/]+)"&gt;
     require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
 &lt;/DirectoryMatch&gt;</pre>
 
@@ -1003,7 +1028,7 @@ DocumentRoot /var/www/${servername}/htdocs</pre>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>İstemciye görünür olan ana belge ağacının kök dizinini belirler.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>DocumentRoot <var>dizin-yolu</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>DocumentRoot /usr/local/apache/htdocs</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>DocumentRoot "/usr/local/apache/htdocs"</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
@@ -1299,6 +1324,9 @@ DocumentRoot /var/www/${servername}/htdocs</pre>
       kodundan sonra bir URL veya hata iletisi) ile belirtilir. Apache httpd
       bazı durumlarda sorun/hata ile ilgili ek bilgi verecektir.</p>
 
+    <p>2.4.13 itibariyle, özdevinimli dizgeler ve URLler üretmek için yönerge
+      içinde <a href="../expr.html">ifade sözdizimi</a> kullanılabilir.</p>
+
     <p>URL’ler yerel yollarda (<code class="directive"><a href="#documentroot">DocumentRoot</a></code>’a göre) bir bölü çizgisi (/) ile
       başlatılabileceği gibi istemci tarafından çözümlenecek tam bir URL
       şeklinde de belirtilebilir. Bunlar yerine, tarayıcıda gösterilmek üzere
@@ -1307,7 +1335,8 @@ DocumentRoot /var/www/${servername}/htdocs</pre>
     <pre class="prettyprint lang-config">ErrorDocument 500 http://foo.example.com/cgi-bin/tester
 ErrorDocument 404 /cgi-bin/bad_urls.pl
 ErrorDocument 401 /subscription_info.html
-ErrorDocument 403 "Kusura bakmayın, bugün hizmet veremiyoruz."</pre>
+ErrorDocument 403 "Kusura bakmayın, bugün hizmet veremiyoruz."
+ErrorDocument 403 /cgi-bin/forbidden.pl?referrer=%{escape:%{HTTP_REFERER}}</pre>
 
 
     <p>Bunlardan başka, Apache httpd’nin kendi hata iletilerinin kullanılacağı
@@ -1320,7 +1349,7 @@ ErrorDocument 403 "Kusura bakmayın, bugün hizmet veremiyoruz."</pre>
 
     <pre class="prettyprint lang-config">ErrorDocument 404 /cgi-bin/bad_urls.pl
 
-&lt;Directory /web/docs&gt;
+&lt;Directory "/web/docs"&gt;
   ErrorDocument 404 default
 &lt;/Directory&gt;</pre>
 
@@ -1709,7 +1738,7 @@ ErrorLogFormat connection "[%{uc}t] [C:%{c}L] local\ %a remote\ %A"</pre>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Dosya isimleriyle eşleşme halinde uygulanacak yönergeleri
   içerir.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>&lt;Files <var>dosya-adı</var>&gt; ... &lt;/Files&gt;</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>&lt;Files "<var>dosya-adı</var>"&gt; ... &lt;/Files&gt;</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
@@ -1792,6 +1821,10 @@ ErrorLogFormat connection "[%{uc}t] [C:%{c}L] local\ %a remote\ %A"</pre>
 
     <p>satırı en bilinen resim dosyası biçimleriyle eşleşecektir.</p>
 
+    <div class="note">Düzenli ifadenin başlangıcındaki bir <code>.+</code>
+      <code>.png</code>veya <code>.gif</code> dosyalarının, örnek olarak,
+      eşleşmemesini garanti eder.</div>
+
     <p>2.4.8 itibariyle, isimli gruplar ve geriye başvurular elde edilmekte
       olup ilgili isim büyük harfe çevrildikren sonra "MATCH_" ile
       öncelendikten sonra ortama yazılmaktadır. Böylece yol elemanlarına
@@ -1800,7 +1833,7 @@ ErrorLogFormat connection "[%{uc}t] [C:%{c}L] local\ %a remote\ %A"</pre>
       başvurular yoksayılmaktadır. Bunların yerine isimli geriye başvurular
       kullanılmalıdır.</p>
 
-<pre class="prettyprint lang-config">&lt;FilesMatch ^(?&lt;sitename&gt;[^/]+)&gt;
+<pre class="prettyprint lang-config">&lt;FilesMatch "^(?&lt;sitename&gt;[^/]+)"&gt;
     require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
 &lt;/FilesMatch&gt;</pre>
 
@@ -1846,12 +1879,12 @@ ErrorLogFormat connection "[%{uc}t] [C:%{c}L] local\ %a remote\ %A"</pre>
       <code>None</code> değeriyle geçersiz kılabilirsiniz:</p>
 
     <pre class="prettyprint lang-config"># tüm dosyaların image/gif olarak sunulması için:
-&lt;Location /images&gt;
+&lt;Location "/images"&gt;
   ForceType image/gif
 &lt;/Location&gt;
 
 # normal MIME-türüne geri dönmek için:
-&lt;Location /images/mixed&gt;
+&lt;Location "/images/mixed"&gt;
   ForceType None
 &lt;/Location&gt;</pre>
 
@@ -1860,6 +1893,22 @@ ErrorLogFormat connection "[%{uc}t] [C:%{c}L] local\ %a remote\ %A"</pre>
       üretilen içerik türlerini geçersiz kılar. Duruk dosyaların haricindeki
       özkaynaklar için yanıt üretecinin genelde bir <code>Content-Type</code>
       belirttiği durumda bu yönerge etkisizdir.</p>
+
+    <div class="note"><h3>Ek Bilgi</h3>
+    <p><code class="directive"><a href="#sethandler">SetHandler</a></code> veya
+      <code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code> gibi örtük yönergeler
+      geçerli isteğe uygulanmadığı takdirde, normalde bu yönergeler tarafından
+      belirlenen dahili eylemcinin ismi <code class="directive">ForceType</code>
+      yönergesi tarafından belirtilen içerik türü ile eşleşecek şekilde
+      belirlenir. Bu, bazı üçüncü parti modüller (mod_php gibi) tarafından
+      kullanılan tarihi bir uygulama olup, bu modüller istekle eşleşecek
+      modüllerin sorumluluğu almasını sağlamak için "sihirli" içerik türleri
+      kullanabilir. Bu tür "sihirli" içerik türlerini kullanan
+      yapılandırmalarda <code class="directive"><a href="#sethandler">SetHandler</a></code> veya
+      <code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code> kullanımından
+      kaçınılmalıdır. </p>
+    </div>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1964,6 +2013,12 @@ takdirde uygulanacak yönergeleri barındırır.</td></tr>
     <p>Bu yapılandırma bölümünün içinde sadece
       <a href="directive-dict.html#Context">dizin bağlamını</a> destekleyen
       yönergeler kullanılabilir.</p>
+
+    <div class="warning">
+    &lt;If&gt; sonrasında atanan <code>CONTENT_TYPE</code> gibi belli
+    değişkenler ve diğer yanıt başlıkları zaten yorumlanmış olacaklarından bu
+    yönerge için kullanılabilir olmayacaktır.
+    </div>
 
 <h3>Ayrıca bakınız:</h3>
 <ul>
@@ -2242,8 +2297,9 @@ Include conf/vhosts/*.conf</pre>
       zaman aşımı, boştaki istemcilerin bulunduğu bağlantıları bekleyen daha
       fazla sunucu sürecini meşgul edecektir.</p>
 
-    <p>İsme dayalı sanal konak bağlamında, yerel IP adresi ve portu ile en iyi
-      eşleşen ilk sanal konağın değeri kullanılır.</p>
+    <p>İsme dayalı sanal konak için <code class="directive">KeepAliveTimeout</code>
+      atanmamışsa, yerel IP adresi ve portu ile en iyi eşleşen ilk sanal
+      konağın değeri kullanılır.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -2581,7 +2637,7 @@ sınırlar.</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>İçerdiği yönergeler sadece eşleşen URL’lere uygulanır.
 </td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>&lt;Location <var>URL-yolu</var>|<var>URL</var>&gt; ...
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>&lt;Location "<var>URL-yolu</var>|<var>URL</var>"&gt; ...
 &lt;/Location&gt;</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
@@ -2625,7 +2681,7 @@ sınırlar.</td></tr>
       uygulanacaktır, fakat <code>/private1other</code> isteğine
       uygulanmayacaktır.</p>
 
-    <pre class="prettyprint lang-config">&lt;Location /private1&gt;
+    <pre class="prettyprint lang-config">&lt;Location "/private1"&gt;
     #  ...
 &lt;/Location&gt;</pre>
 
@@ -2635,7 +2691,7 @@ sınırlar.</td></tr>
       için sarmalanan yönergeler uygulanacaktır, fakat <code>/private2</code>
       ve <code>/private2other</code> isteklerine uygulanmayacaktır.</p>
 
-    <pre class="prettyprint lang-config">&lt;Location /private2<em>/</em>&gt;
+    <pre class="prettyprint lang-config">&lt;Location "/private2<em>/</em>"&gt;
     # ...
 &lt;/Location&gt;</pre>
 
@@ -2647,7 +2703,7 @@ sınırlar.</td></tr>
       dışındaki içeriğe çeşitli yönergeler uygulamak için kullanın. Dosya
       sisteminde bulunan içerik için <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code> ve <code class="directive"><a href="#files">&lt;Files&gt;</a></code> bölümlerini kullanın. Bunun istisnası,
       sunucunun tamamına bir yapılandırma uygulamak için kolay bir yol olan
-      <code>&lt;Location /&gt;</code>  kullanımıdır.</p>
+      <code>&lt;Location "/"&gt;</code>  kullanımıdır.</p>
     </div>
 
     <p>Kaynağa yapılan (vekil olmayan) tüm istekler için eşleşecek URL,
@@ -2682,7 +2738,7 @@ sınırlar.</td></tr>
       <code>example.com</code>’dan gelen isteklere izin vermek için şöyle bir
       uygulama yapabilirsiniz:</p>
 
-    <pre class="prettyprint lang-config">&lt;Location /status&gt;
+    <pre class="prettyprint lang-config">&lt;Location "/status"&gt;
   SetHandler server-status
   Require host example.com
 &lt;/Location&gt;</pre>
@@ -2697,14 +2753,14 @@ sınırlar.</td></tr>
         çizgisini yanyana belirtmeniz gerekiyorsa <code class="directive"><a href="#locationmatch">&lt;LocationMatch&gt;</a></code> yönergesinde ve  <code class="directive">&lt;Location&gt;</code> yönergesinin düzenli ifadeli
         kullanımında bunu açıkça belirtmeniz gerekir.</p>
 
-      <p>Örneğin, <code>&lt;LocationMatch ^/abc&gt;</code> yönergesi
+      <p>Örneğin, <code>&lt;LocationMatch "^/abc"&gt;</code> yönergesi
         <code>/abc</code> ile eşleşecek ama <code>//abc</code> ile
         eşleşmeyecektir. <code class="directive">&lt;Location&gt;</code>
         yönergesinin düzenli ifade içermeyen kullanımındaki davranış vekil
         isteklerinde kullanılana benzer ve doğrudan kaynağa yapılan (vekil
         olmayan) isteklerde çok sayıda bölü çizgisi dolaylı olarak tek bir bölü
         çizgisiyle eşleşecektir. Örneğin, <code>&lt;Location
-        /abc/def&gt;</code> belirtirseniz ve istek <code>/abc//def</code>
+        "/abc/def"&gt;</code> belirtirseniz ve istek <code>/abc//def</code>
         şeklinde olursa bu ikisi eşleşir.</p>
     </div>
 
@@ -2739,6 +2795,14 @@ uygulanır.</td></tr>
     <p>yönergesi <code>/ek/veri</code> ve <code>/hususi/veri</code> alt
       dizgeleriyle eşleşecektir.</p>
 
+    <div class="note"><p>Eğer hedef, <code>/ek/veri</code> içeren değil de
+        <code>/ek/veri</code> ile başlayan bir URL ise düzenli ifadenin önüne
+        <code>^</code> getirmek gerekir.</p>
+
+    <pre class="prettyprint lang-config">&lt;LocationMatch "^/(ek|hususi)/veri"&gt;</pre>
+
+    </div>
+
     <p>2.4.8 itibariyle, isimli gruplar ve geriye başvurular elde edilmekte
       olup ilgili isim büyük harfe çevrildikren sonra "MATCH_" ile
       öncelendikten sonra ortama yazılmaktadır. Böylece yol elemanlarına
@@ -2747,9 +2811,9 @@ uygulanır.</td></tr>
       başvurular yoksayılmaktadır. Bunların yerine isimli geriye başvurular
       kullanılmalıdır.</p>
 
-<pre class="prettyprint lang-config">&lt;DirectoryMatch ^/var/www/combined/(?&lt;sitename&gt;[^/]+)&gt;
+<pre class="prettyprint lang-config">&lt;LocationMatch "^/combined/(?&lt;sitename&gt;[^/]+)"&gt;
     require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
-&lt;/DirectoryMatch&gt;</pre>
+&lt;/LocationMatch&gt;</pre>
 
 
 <h3>Ayrıca bakınız:</h3>
@@ -4047,7 +4111,7 @@ sebep olur.</td></tr>
     <p>Bu yönergeyi ayrıca, belli bir dosya uzantısına sahip dosyalara uygun
       bir eylemci atamak için de kullanabilirsiniz. örnek:</p>
 
-    <pre class="prettyprint lang-config">&lt;FilesMatch \.php$&gt;
+    <pre class="prettyprint lang-config">&lt;FilesMatch "\.php$"&gt;
     SetHandler application/x-httpd-php
 &lt;/FilesMatch&gt;</pre>
 
@@ -4365,10 +4429,10 @@ gerçekleşmesi için sunucunun geçmesini bekleyeceği süre.</td></tr>
 
     <pre class="prettyprint lang-config">&lt;VirtualHost 10.1.2.3:80&gt;
   ServerAdmin webmaster@host.example.com
-  DocumentRoot /www/docs/host.example.com
+  DocumentRoot "/www/docs/host.example.com"
   ServerName host.example.com
-  ErrorLog logs/host.example.com-error_log
-  TransferLog logs/host.example.com-access_log
+  ErrorLog "logs/host.example.com-error_log"
+  TransferLog "logs/host.example.com-access_log"
 &lt;/VirtualHost&gt;</pre>
 
 
@@ -4379,10 +4443,10 @@ gerçekleşmesi için sunucunun geçmesini bekleyeceği süre.</td></tr>
 
     <pre class="prettyprint lang-config">&lt;VirtualHost [2001:db8::a00:20ff:fea7:ccea]:80&gt;
   ServerAdmin webmaster@host.example.com
-  DocumentRoot /www/docs/host.example.com
+  DocumentRoot "/www/docs/host.example.com"
   ServerName host.example.com
-  ErrorLog logs/host.example.com-error_log
-  TransferLog logs/host.example.com-access_log
+  ErrorLog "logs/host.example.com-error_log"
+  TransferLog "logs/host.example.com-access_log"
 &lt;/VirtualHost&gt;</pre>
 
 

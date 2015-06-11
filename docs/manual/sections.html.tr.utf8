@@ -29,7 +29,6 @@
 <a href="./ko/sections.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/sections.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p><a href="configuring.html">Yapılandırma dosyaları</a>ndaki
        yönergeler sunucunun tamamına uygulanacağı gibi sadece belli dizinler,
@@ -71,7 +70,7 @@
       takdirde mümkün olur:</p>
 
     <pre class="prettyprint lang-config">&lt;IfDefine ClosedForNow&gt;
-  Redirect / http://otherserver.example.com/
+  Redirect "/" "http://otherserver.example.com/"
 &lt;/IfDefine&gt;</pre>
 
 
@@ -90,7 +89,7 @@
       <code class="module"><a href="./mod/mod_mime_magic.html">mod_mime_magic</a></code> modülü mevcutsa uygulanacaktır.</p>
 
     <pre class="prettyprint lang-config">&lt;IfModule mod_mime_magic.c&gt;
-  MimeMagicFile conf/magic
+  MimeMagicFile "conf/magic"
 &lt;/IfModule&gt;</pre>
 
 
@@ -149,7 +148,7 @@
       yapılandırmada, <code>/var/web/dir1</code> dizini ve alt dizinlerinde
       dizin içeriğinin listelenmesi etkin kılınmaktadır.</p>
 
-    <pre class="prettyprint lang-config">&lt;Directory /var/web/dir1&gt;
+    <pre class="prettyprint lang-config">&lt;Directory "/var/web/dir1"&gt;
   Options +Indexes
 &lt;/Directory&gt;</pre>
 
@@ -161,7 +160,7 @@
       <code>gizli.html</code> isimli dosyalara nerede bulunursa bulunsun
       erişime izin vermeyecektir.</p>
 
-    <pre class="prettyprint lang-config">&lt;Files gizli.html&gt;
+    <pre class="prettyprint lang-config">&lt;Files "gizli.html"&gt;
   Require all denied
 &lt;/Files&gt;</pre>
 
@@ -176,8 +175,8 @@
       <code>/var/web/dir1/</code> altında bulunabilecek diğer tüm
       <code>gizli.html</code> dosyalarına erişimi yasaklar.</p>
 
-    <pre class="prettyprint lang-config">&lt;Directory /var/web/dir1&gt;<br />
-  &lt;Files gizli.html&gt;<br />
+    <pre class="prettyprint lang-config">&lt;Directory "/var/web/dir1"&gt;<br />
+  &lt;Files "gizli.html"&gt;<br />
     Require all denied
   &lt;/Files&gt;<br />
 &lt;/Directory&gt;</pre>
@@ -196,7 +195,7 @@
       istekleri yanında <code>/gizli</code> ile başlayan diğer isteklere de
       uygulanır.</p>
 
-    <pre class="prettyprint lang-config">&lt;LocationMatch ^/gizli&gt;
+    <pre class="prettyprint lang-config">&lt;LocationMatch "^/gizli"&gt;
     Require all denied
 &lt;/LocationMatch&gt;</pre>
 
@@ -209,7 +208,7 @@
       için dosya sisteminde <code>server-status</code> adında bir dosya
       veya dizin bulunması gerekli değildir.</p>
 
-    <pre class="prettyprint lang-config">&lt;Location /server-status&gt;
+    <pre class="prettyprint lang-config">&lt;Location "/server-status"&gt;
     SetHandler server-status
 &lt;/Location&gt;</pre>
 
@@ -219,24 +218,24 @@
     <p>Belli bölümler ve yönergeler değerlendirilirken çakışan iki URL bir URL
     olarak dikkate alınır. <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code> yönergesi için bu şöyle olurdu:</p>
 
-    <pre class="prettyprint lang-config">&lt;Location /foo&gt;
+    <pre class="prettyprint lang-config">&lt;Location "/foo"&gt;
 &lt;/Location&gt;
-&lt;Location /foo/bar&gt;
+&lt;Location "/foo/bar"&gt;
 &lt;/Location&gt;</pre>
 
 
     <p>Diğer yandan <code class="directive"><a href="./mod/mod_alias.html#takma adlar">&lt;Takma
       adlar&gt;</a></code> tam tersi eşlenir:</p>
 
-    <pre class="prettyprint lang-config">Alias /foo/bar /srv/www/uncommon/bar
-Alias /foo /srv/www/common/foo</pre>
+    <pre class="prettyprint lang-config">Alias "/foo/bar" "/srv/www/uncommon/bar"
+Alias "/foo" "/srv/www/common/foo"</pre>
 
 
     <p>Aynısı <code class="directive"><a href="./mod/mod_proxy.html#proxypass">ProxyPass</a></code>
       yönergeleri için de geçerlidir:</p>
 
-    <pre class="prettyprint lang-config">ProxyPass /special-area http://special.example.com smax=5 max=10
-ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover=On</pre>
+    <pre class="prettyprint lang-config">ProxyPass "/special-area" "http://special.example.com" smax=5 max=10
+ProxyPass "/" "balancer://mycluster/" stickysession=JSESSIONID|jsessionid nofailover=On</pre>
 
   
 
@@ -264,7 +263,7 @@ ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover
     <p>Tüm kullanıcı dizinlerine ilişkin yapılandırmayı değiştirmek için dosya
       ismi kalıpları şöyle kullanılabilirdi:</p>
 
-    <pre class="prettyprint lang-config">&lt;Directory /home/*/public_html&gt;
+    <pre class="prettyprint lang-config">&lt;Directory "/home/*/public_html"&gt;
     Options Indexes
 &lt;/Directory&gt;</pre>
 
@@ -272,7 +271,7 @@ ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover
     <p>Düzenli ifade bölümleri kullanarak çeşitli türlerdeki resim dosyalarına
       erişimi bir defada yasaklayabiliriz:</p>
 
-    <pre class="prettyprint lang-config">&lt;FilesMatch \.(?i:gif|jpe?g|png)$&gt;
+    <pre class="prettyprint lang-config">&lt;FilesMatch "\.(?i:gif|jpe?g|png)$"&gt;
     Require all denied
 &lt;/FilesMatch&gt;</pre>
 
@@ -283,8 +282,8 @@ ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover
       içinden</a> ve <code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code> gibi modüllerden başvurmak
       mümkün olur.</p>
 
-<pre class="prettyprint lang-config">&lt;DirectoryMatch ^/var/www/combined/(?&lt;SITENAME&gt;[^/]+)&gt;
-    require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
+<pre class="prettyprint lang-config">&lt;DirectoryMatch "^/var/www/combined/(?&lt;SITENAME&gt;[^/]+)"&gt;
+    require ldap-group "cn=%{env:MATCH_SITENAME},ou=combined,o=Example"
 &lt;/DirectoryMatch&gt;</pre>
 
   
@@ -316,7 +315,7 @@ ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover
       kısıtlamalarınızın etrafından dolaşılabilmesine izin vermesidir.
       Örneğin, aşağıdaki yapılandırmayı ele alalım:</p>
 
-    <pre class="prettyprint lang-config">&lt;Location /dir/&gt;
+    <pre class="prettyprint lang-config">&lt;Location "/dir/"&gt;
     Require all denied
 &lt;/Location&gt;</pre>
 
@@ -340,7 +339,7 @@ ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover
       eşleyecek daha bir sürü yol bulunduğunu unutmayınız. Bu bakımdan dosya
       sisteminde yapacağınız kısıtlamalarda daima dosya sistemi taşıyıcılarını
       kullanmalısınız. Bununla birlikte bu kuralın da bir istisnası vardır.
-      Yapılandırma kısıtlamalarının bir <code>&lt;Location/&gt;</code> bölümü
+      Yapılandırma kısıtlamalarının bir <code>&lt;Location "/"&gt;</code> bölümü
       içine koyulması, bu bölüme konan yönergelerin etki alanının belli bir URL
       ile sınırlı olmaması nedeniyle mükemmelen güvenlidir.</p>
   
@@ -376,7 +375,7 @@ ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover
       <code>example.com</code> sitesine erişim için vekil sunucunun
       kullanılmasını engelleyecektir.</p>
 
-    <pre class="prettyprint lang-config">&lt;Proxy http://www.example.com/*&gt;
+    <pre class="prettyprint lang-config">&lt;Proxy "http://www.example.com/*"&gt;
     Require all granted
 &lt;/Proxy&gt;</pre>
 
@@ -428,7 +427,7 @@ ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover
       yönergeler geçersiz kılınabileceği için).</li>
 
       <li><code class="directive"><a href="./mod/core.html#directorymatch">&lt;DirectoryMatch&gt;</a></code>
-      (ve <code>&lt;Directory ~&gt;</code>).</li>
+      (ve <code>&lt;Directory "~"&gt;</code>).</li>
 
       <li><code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code> ve
       <code class="directive"><a href="./mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code> aynı anda
@@ -446,8 +445,8 @@ ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover
       bölümündekiler hariç, her grup, yapılandırma dosyasında bulundukları
       sıraya göre işleme sokulurlar. Yukarıda 1. grup olan <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> bölümü en kısa dizin
       elemanından en uzun dizin elemanına doğru işleme sokulur. Yani, örneğin,
-      <code>&lt;Directory /var/web/dir&gt;</code> bölümü <code>&lt;Directory
-      /var/web/dir/subdir&gt;</code> bölümünden önce işleme sokulacaktır. Eğer
+      <code>&lt;Directory "/var/web/dir"&gt;</code> bölümü <code>&lt;Directory
+      "/var/web/dir/subdir"&gt;</code> bölümünden önce işleme sokulacaktır. Eğer
       aynı uzunlukta çok sayıda dizin varsa <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> bölümleri yapılandırma dosyasında
       bulundukları sıraya göre işleme sokulurlar. <code class="directive"><a href="./mod/core.html#include">Include</a></code> yönergeleri ile yapılandırmaya dahil
       edilen dosyaların içerikleri <code class="directive"><a href="./mod/core.html#include">Include</a></code>
@@ -483,16 +482,16 @@ ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover
       isteğe uygulandığı varsayımıyla, bu örnekteki yönergeler A &gt; B &gt; C
       &gt; D &gt; E sırasıyla uygulanacaktır.</p>
 
-    <pre class="prettyprint lang-config">&lt;Location /&gt;
+    <pre class="prettyprint lang-config">&lt;Location "/"&gt;
     E
 &lt;/Location&gt;
 
-&lt;Files f.html&gt;
+&lt;Files "f.html"&gt;
     D
 &lt;/Files&gt;
 
 &lt;VirtualHost *&gt;
-&lt;Directory /a/b&gt;
+&lt;Directory "/a/b"&gt;
     B
 &lt;/Directory&gt;
 &lt;/VirtualHost&gt;
@@ -501,7 +500,7 @@ ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover
     C
 &lt;/DirectoryMatch&gt;
 
-&lt;Directory /a/b&gt;
+&lt;Directory "/a/b"&gt;
     A
 &lt;/Directory&gt;</pre>
 
@@ -513,12 +512,12 @@ ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover
       Başka bir deyişle, katıştırma sırası önemlidir, bu nedenle dikkatli
       olmalısınız!</p>
 
-    <pre class="prettyprint lang-config">&lt;Location /&gt;
+    <pre class="prettyprint lang-config">&lt;Location "/"&gt;
     Require all granted
 &lt;/Location&gt;
 
 # Alooo!  Bu &lt;Directory&gt; bölümünün hiçbir hükmü yok.
-&lt;Directory /&gt;
+&lt;Directory "/"&gt;
     &lt;RequireAll&gt;
         Require all granted
         Require not host kkadam.example.com

@@ -119,8 +119,8 @@ responses from the server</td></tr>
 type</td></tr>
 <tr class="odd"><td><a href="mod_alias.html#alias">Alias [<var>URL-yolu</var>] <var>dosya-yolu</var> |
 <var>dizin-yolu</var></a></td><td></td><td>skd</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">URL’leri dosya sistemi konumlarıyla eşler.</td></tr>
-<tr><td><a href="mod_alias.html#aliasmatch">AliasMatch <var>düzenli-ifade</var>
-<var>dosya-yolu</var>|<var>dizin-yolu</var></a></td><td></td><td>sk</td><td>T</td></tr><tr><td class="descr" colspan="4">URL’leri dosya sistemi konumlarıyla düzenli ifadeleri kullanarak
+<tr><td><a href="mod_alias.html#aliasmatch">AliasMatch "<var>düzenli-ifade</var>"
+"<var>dosya-yolu</var>|<var>dizin-yolu</var>"</a></td><td></td><td>sk</td><td>T</td></tr><tr><td class="descr" colspan="4">URL’leri dosya sistemi konumlarıyla düzenli ifadeleri kullanarak
 eşler.</td></tr>
 <tr class="odd"><td><a href="mod_access_compat.html#allow"> Allow from all|<var>host</var>|env=[!]<var>env-variable</var>
 [<var>host</var>|env=[!]<var>env-variable</var>] ...</a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Controls which hosts can access an area of the
@@ -333,8 +333,8 @@ cache</td></tr>
 CGI program</td></tr>
 <tr class="odd"><td><a href="core.html#cgimapextension">CGIMapExtension <var>cgi-yolu</var> <var>.uzantı</var></a></td><td></td><td>dh</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">CGI betik yorumlayıcısını saptama tekniğini belirler.
 </td></tr>
-<tr><td><a href="core.html#cgipassauth">CGIPassAuth On|Off</a></td><td> Off </td><td>dh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Enables passing HTTP authorization headers to scripts as CGI
-variables</td></tr>
+<tr><td><a href="core.html#cgipassauth">CGIPassAuth On|Off</a></td><td> Off </td><td>dh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">HTTP yetkilendirme başlıklarının betiklere CGI değişkenleri
+olarak aktarılmasını etkin kılar</td></tr>
 <tr class="odd"><td><a href="mod_charset_lite.html#charsetdefault">CharsetDefault <var>charset</var></a></td><td></td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Charset to translate into</td></tr>
 <tr><td><a href="mod_charset_lite.html#charsetoptions">CharsetOptions <var>option</var> [<var>option</var>] ...</a></td><td> ImplicitAdd </td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Configures charset translation behavior</td></tr>
 <tr class="odd"><td><a href="mod_charset_lite.html#charsetsourceenc">CharsetSourceEnc <var>charset</var></a></td><td></td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Source charset of files</td></tr>
@@ -396,7 +396,7 @@ türünü belirlerdi.</td></tr>
 <tr><td><a href="mod_access_compat.html#deny"> Deny from all|<var>host</var>|env=[!]<var>env-variable</var>
 [<var>host</var>|env=[!]<var>env-variable</var>] ...</a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Controls which hosts are denied access to the
 server</td></tr>
-<tr class="odd"><td><a href="core.html#directory">&lt;Directory <var>dizin-yolu</var>&gt;
+<tr class="odd"><td><a href="core.html#directory">&lt;Directory "<var>dizin-yolu</var>"&gt;
 ... &lt;/Directory&gt;</a></td><td></td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Sadece ismi belirtilen dosya sistemi dizininde ve bunun
   altdizinlerinde ve bunların içeriğinde uygulanacak bir yönerge grubunu
   sarmalar.</td></tr>
@@ -412,7 +412,7 @@ server</td></tr>
 <tr class="odd"><td><a href="core.html#directorymatch">&lt;DirectoryMatch <var>düzifd</var>&gt;
 ... &lt;/DirectoryMatch&gt;</a></td><td></td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Bir düzenli ifade ile eşleşen dosya sistemi dizinlerinin içeriklerine uygulanacak bir yönerge grubunu sarmalar.</td></tr>
 <tr><td><a href="mod_dir.html#directoryslash">DirectorySlash On|Off</a></td><td> On </td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">Bölü çizgisi ile biten yönlendirmeleri açar/kapar.</td></tr>
-<tr class="odd"><td><a href="core.html#documentroot">DocumentRoot <var>dizin-yolu</var></a></td><td> /usr/local/apache/h +</td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">İstemciye görünür olan ana belge ağacının kök dizinini belirler.</td></tr>
+<tr class="odd"><td><a href="core.html#documentroot">DocumentRoot <var>dizin-yolu</var></a></td><td> "/usr/local/apache/ +</td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">İstemciye görünür olan ana belge ağacının kök dizinini belirler.</td></tr>
 <tr><td><a href="mod_privileges.html#dtraceprivileges">DTracePrivileges On|Off</a></td><td> Off </td><td>s</td><td>D</td></tr><tr><td class="descr" colspan="4">Determines whether the privileges required by dtrace are enabled.</td></tr>
 <tr class="odd"><td><a href="mod_dumpio.html#dumpioinput">DumpIOInput On|Off</a></td><td> Off </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Dump all input data to the error log</td></tr>
 <tr><td><a href="mod_dumpio.html#dumpiooutput">DumpIOOutput On|Off</a></td><td> Off </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Dump all output data to the error log</td></tr>
@@ -444,7 +444,7 @@ by MIME type</td></tr>
 <tr class="odd"><td><a href="mod_dir.html#fallbackresource" id="F" name="F">FallbackResource disabled | <var>yerel-url</var></a></td><td></td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Bir dosya ile eşleşmeyen istekler için öntanımlı URL tanımlar
 </td></tr>
 <tr><td><a href="core.html#fileetag">FileETag <var>bileşen</var> ...</a></td><td> MTime Size </td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Duruk dosyalar için <code>ETag</code> HTTP yanıt başlığını oluşturmakta kullanılacak dosya özniteliklerini belirler.</td></tr>
-<tr class="odd"><td><a href="core.html#files">&lt;Files <var>dosya-adı</var>&gt; ... &lt;/Files&gt;</a></td><td></td><td>skdh</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Dosya isimleriyle eşleşme halinde uygulanacak yönergeleri
+<tr class="odd"><td><a href="core.html#files">&lt;Files "<var>dosya-adı</var>"&gt; ... &lt;/Files&gt;</a></td><td></td><td>skdh</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Dosya isimleriyle eşleşme halinde uygulanacak yönergeleri
   içerir.</td></tr>
 <tr><td><a href="core.html#filesmatch">&lt;FilesMatch <var>düzifd</var>&gt; ... &lt;/FilesMatch&gt;</a></td><td></td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Düzenli ifadelerin dosya isimleriyle eşleşmesi halinde
   uygulanacak yönergeleri içerir.</td></tr>
@@ -581,7 +581,7 @@ sınırlar.</td></tr>
 </td></tr>
 <tr class="odd"><td><a href="mod_so.html#loadmodule">LoadModule <em>modül dosya-ismi</em></a></td><td></td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Belirtilen nesne dosyasını veya kütüphaneyi sunucu ile ilintiler
 ve etkin modül listesine ekler.</td></tr>
-<tr><td><a href="core.html#location">&lt;Location <var>URL-yolu</var>|<var>URL</var>&gt; ...
+<tr><td><a href="core.html#location">&lt;Location "<var>URL-yolu</var>|<var>URL</var>"&gt; ...
 &lt;/Location&gt;</a></td><td></td><td>sk</td><td>Ç</td></tr><tr><td class="descr" colspan="4">İçerdiği yönergeler sadece eşleşen URL’lere uygulanır.
 </td></tr>
 <tr class="odd"><td><a href="core.html#locationmatch">&lt;LocationMatch
