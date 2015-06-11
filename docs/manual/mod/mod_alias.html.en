@@ -60,7 +60,7 @@
     or <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code>
     section, <a href="../expr.html">expression syntax</a> can be used
     to manipulate the destination path or URL.
-	</p>
+    </p>
 
     <p><code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code> is designed to handle simple URL
     manipulation tasks.  For more complicated tasks such as
@@ -193,7 +193,8 @@ Alias "/foo" "/gaq"</pre>
     <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>
     or <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code>
     section the URL-path is omitted, and the file-path is interpreted
-    using <a href="../expr.html">expression syntax</a>.</p>
+    using <a href="../expr.html">expression syntax</a>.<br />
+    This syntax is available in Apache 2.4.13 and later.</p>
 
     <pre class="prettyprint lang-config">&lt;Location "/image"&gt;
     Alias "/ftp/pub/image"
@@ -278,8 +279,8 @@ expressions</td></tr>
     you do more complicated things.  For example, you could
     serve different kinds of files from different directories:</p>
 
-    <pre class="prettyprint lang-config">      AliasMatch "^/image/(.*)\.jpg$" "/files/jpg.images/$1.jpg"<br />
-      AliasMatch "^/image/(.*)\.gif$" "/files/gif.images/$1.gif"</pre>
+    <pre class="prettyprint lang-config">AliasMatch "^/image/(.*)\.jpg$" "/files/jpg.images/$1.jpg"
+AliasMatch "^/image/(.*)\.gif$" "/files/gif.images/$1.gif"</pre>
 
 
     <p>Multiple leading slashes in the requested URL are discarded
@@ -327,12 +328,12 @@ Redirect "/one" "/two"</pre>
     <p>If the client requests <code>http://example.com/service/foo.txt</code>,
     it will be told to access
     <code>http://foo2.example.com/service/foo.txt</code>
-	instead. This includes requests with <code>GET</code> parameters, such as
+    instead. This includes requests with <code>GET</code> parameters, such as
     <code>http://example.com/service/foo.pl?q=23&amp;a=42</code>,
     it will be redirected to
     <code>http://foo2.example.com/service/foo.pl?q=23&amp;a=42</code>.
-	Note that <code>POST</code>s will be discarded.<br />
-	Only complete path segments are matched, so the above
+    Note that <code>POST</code>s will be discarded.<br />
+    Only complete path segments are matched, so the above
     example would not match a request for
     <code>http://example.com/servicefoo.txt</code>. For more complex matching
     using the <a href="../expr.html">expression syntax</a>, omit the URL-path
@@ -390,18 +391,18 @@ Redirect 303 "/three" "http://example.com/other"</pre>
     <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>
     or <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code>
     section with the URL-path omitted, then the URL parameter will be
-    interpreted using <a href="../expr.html">expression syntax</a>.</p>
+    interpreted using <a href="../expr.html">expression syntax</a>.<br />
+    This syntax is available in Apache 2.4.13 and later.</p>
 
     <pre class="prettyprint lang-config">&lt;Location "/one"&gt;
     Redirect permanent "http://example.com/two"
-&lt;/Location&gt;<br />
+&lt;/Location&gt;
 &lt;Location "/three"&gt;
     Redirect 303 "http://example.com/other"
-&lt;/Location&gt;<br />
+&lt;/Location&gt;
 &lt;LocationMatch "/error/(?&lt;NUMBER&gt;[0-9]+)"&gt;
     Redirect permanent "http://example.com/errors/%{env:MATCH_NUMBER}.html"
-&lt;/LocationMatch&gt;<br />
-    </pre>
+&lt;/LocationMatch&gt;</pre>
 
 
 
@@ -506,10 +507,10 @@ target as a CGI script</td></tr>
 &lt;/Location&gt;</pre>
 
 
-	<p><code class="directive">ScriptAlias</code> can also be used in conjunction with
-	a script or handler you have. For example:</p>
+    <p><code class="directive">ScriptAlias</code> can also be used in conjunction with
+    a script or handler you have. For example:</p>
 
-	<pre class="prettyprint lang-config">ScriptAlias "/cgi-bin/" "/web/cgi-handler.pl"</pre>
+    <pre class="prettyprint lang-config">ScriptAlias "/cgi-bin/" "/web/cgi-handler.pl"</pre>
 
 
     <p>In this scenario all files requested in <code>/cgi-bin/</code> will be
@@ -541,15 +542,15 @@ target as a CGI script</td></tr>
     a <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>
     or <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code>
     section with the URL-path omitted, then the URL parameter will be
-    interpreted using <a href="../expr.html">expression syntax</a>.</p>
+    interpreted using <a href="../expr.html">expression syntax</a>.<br />
+    This syntax is available in Apache 2.4.13 and later.</p>
 
     <pre class="prettyprint lang-config">&lt;Location "/cgi-bin"&gt;
     ScriptAlias "/web/cgi-bin/"
 &lt;/Location&gt;
 &lt;LocationMatch "/cgi-bin/errors/(?&lt;NUMBER&gt;[0-9]+)"&gt;
     ScriptAlias "/web/cgi-bin/errors/%{env:MATCH_NUMBER}.cgi"
-&lt;/LocationMatch&gt;<br />
-    </pre>
+&lt;/LocationMatch&gt;</pre>
 
 
 
