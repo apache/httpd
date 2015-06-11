@@ -106,10 +106,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_cgid: Fix APLOGNO
-     trunk patch: http://svn.apache.org/r1667386
-     2.4.x patch: trunk works (minus next-number)
-     +1: jailletc36, jim, ylavic
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:

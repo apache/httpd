@@ -1255,7 +1255,7 @@ static int connect_to_daemon(int *sdptr, request_rec *r,
             apr_time_sec(apr_time_now() - ap_scoreboard_image->global->restart_time) > 
                 DEFAULT_CONNECT_STARTUP_DELAY) {
             return log_scripterror(r, conf, HTTP_SERVICE_UNAVAILABLE, connect_errno, 
-                                   apr_pstrcat(r->pool, APLOGNO(02831) "ScriptSock ", sockname, " does not exist", NULL));
+                                   apr_pstrcat(r->pool, APLOGNO(02833) "ScriptSock ", sockname, " does not exist", NULL));
         }
 
         /* gotta try again, but make sure the cgid daemon is still around */
