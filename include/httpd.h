@@ -519,6 +519,7 @@ AP_DECLARE(const char *) ap_get_server_built(void);
 #define HTTP_RANGE_NOT_SATISFIABLE           416
 #define HTTP_EXPECTATION_FAILED              417
 #define HTTP_IM_A_TEAPOT                     418
+#define HTTP_MISDIRECTED_REQUEST             421
 #define HTTP_UNPROCESSABLE_ENTITY            422
 #define HTTP_LOCKED                          423
 #define HTTP_FAILED_DEPENDENCY               424
