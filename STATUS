@@ -222,6 +222,7 @@ PATCHES/ISSUES THAT ARE BEING WORKED
                   http://svn.apache.org/r1676709
                   http://svn.apache.org/r1681741
                   http://svn.apache.org/r1681746
+                  http://svn.apache.org/r1685069
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-alpn-v4.patch
      +1:
      ylavic: Needs work wrt activation with a new Protocols directive:
