@@ -202,7 +202,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mod_ssl: Warn about deprecated SSLCertificateChainFile once at startup,
               on first usage only.
      trunk patch: http://svn.apache.org/r1685052
-     2.4.x patch: trunk works (modulo CHANGES)
+                  http://svn.apache.org/r1685078
+                  http://svn.apache.org/r1685097
+     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-deprecated_SSLCertificateChainFile_once.patch
+                  trunk works (modulo CHANGES, above is a review patch only)
      +1: ylavic
 
 
