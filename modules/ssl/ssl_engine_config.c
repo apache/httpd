@@ -845,7 +845,7 @@ const char *ssl_cmd_SSLCertificateChainFile(cmd_parms *cmd,
     if (!ap_retained_data_get(once_key)) {
         ap_retained_data_create(once_key, sizeof(char));
 
-        ap_log_error(APLOG_MARK, APLOG_WARNING|APLOG_STARTUP, 0, NULL,
+        ap_log_error(APLOG_MARK, APLOG_INFO|APLOG_STARTUP, 0, NULL,
                      APLOGNO(02559)
                      "The SSLCertificateChainFile directive (%s:%d) is "
                      "deprecated, SSLCertificateFile should be used instead",
