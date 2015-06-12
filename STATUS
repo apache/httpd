@@ -194,6 +194,20 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              ints added at the end of core_server_config, the proposed merge
              does a minor bump only.
 
+  *) mod_substitute: Fix configuraton merge order. PR 57641
+     trunk patch: http://svn.apache.org/r1684900
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: ylavic
+
+  *) mod_ssl: Warn about deprecated SSLCertificateChainFile once at startup,
+              on first usage only.
+     trunk patch: http://svn.apache.org/r1685052
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: ylavic
+
+
+PATCHES/ISSUES THAT ARE BEING WORKED
+
   *) mod_ssl: add ALPN support by allowing other modules to register callbacks
               for negotiation of the application layer protocol.  PR 52210.
      trunk patch: http://svn.apache.org/r1332643
@@ -209,12 +223,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1681741
                   http://svn.apache.org/r1681746
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-alpn-v4.patch
-     +1: ylavic
-     ylavic: we'd better comment on @dev for this one for Stefan Eissing (who
-             proposed the merge) to be able to follow (and comment too).
-
-
-PATCHES/ISSUES THAT ARE BEING WORKED
+     +1:
+     ylavic: Needs work wrt activation with a new Protocols directive:
+             http://www.mail-archive.com/dev@httpd.apache.org/msg62163.html
+             and also about SNI checks and status 421:
+             http://www.mail-archive.com/dev@httpd.apache.org/msg62230.html
+             Let's comment on @dev for Stefan Eissing (mod_h2) to be able to
+             participate.
 
    * mod_proxy_http: Don't establish or reuse a backend connection before pre-
      fetching the request body, so to minimize the delay between it is supposed
