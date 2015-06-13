@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1674532:1684312 (outdated) -->
+<!-- English Revision: 1684312 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -82,6 +82,14 @@ d'Apache</a></seealso>
 	compris corps et en-t&ecirc;tes de requ&ecirc;te. Ce nombre ne peut pas &ecirc;tre
 	nul, et il correspond &agrave; la combinaison des formats %I et %O.<br />
 	Disponible depuis la version 2.4.7 du serveur HTTP Apache.</td></tr>
+
+    <tr><td><code>%^FB</code></td>
+        <td>Délai en microsecondes entre l'arrivée de la requête et
+	l'écriture du premier octet des en-têtes de la réponse.
+	Disponible uniquement si la directive
+	<directive>LogIOTrackTTFB</directive> a été définie à ON.<br />
+	Disponible à partir de la version 2.4.13 du serveur HTTP Apache
+        </td></tr>	
     </table>
 
     <p>En g&eacute;n&eacute;ral, cette fonctionnalit&eacute; s'utilise comme suit :</p>
