@@ -407,7 +407,6 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                 APR_BRIGADE_INSERT_TAIL(bb, e);
 
                 rv = ap_pass_brigade(f->c->output_filters, bb);
-                apr_brigade_cleanup(bb);
                 if (rv != APR_SUCCESS) {
                     return AP_FILTER_ERROR;
                 }
@@ -466,7 +465,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                     }
                     if (rv != APR_SUCCESS) {
                         ap_log_rerror(APLOG_MARK, APLOG_INFO, rv, f->r, APLOGNO(01590)
-                                      "Error reading chunk %s ",
+                                      "Error reading/parsing chunk %s ",
                                       (APR_ENOSPC == rv) ? "(overflow)" : "");
                         return rv;
                     }
@@ -583,7 +582,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
         }
         default: {
             /* Should not happen */
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, f->r, APLOGNO(02901)
+            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, f->r, APLOGNO(02901)
                           "Unexpected body state (%i)", (int)ctx->state);
             return APR_EGENERAL;
         }
