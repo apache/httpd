@@ -32,8 +32,6 @@
 <a href="../ko/mod/mod_alias.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_alias.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Permet d'atteindre différentes parties du système de
 fichiers depuis l'arborescence des documents du site web, ainsi que la
 redirection d'URL</td></tr>
@@ -170,10 +168,11 @@ de fichiers</td></tr>
     <pre class="prettyprint lang-config">Alias "/icons/" "/usr/local/apache/icons/"</pre>
 
 
-    <p>l'alias précédent ne s'appliquera pas à l'url
-    <code>/icons</code> à cause de l'absence du slash final. Ainsi, si
-    le slash final est absent du <var>chemin de l'URL</var>, il doit
-    aussi l'être du <var>chemin du fichier</var>.</p>
+    <p>l'alias précédent ne s'appliquera pas à
+    l'URL <code>/icons</code> à cause de l'absence du slash
+    final. Ainsi, si le slash final est absent du <var>chemin de
+    l'URL</var>, il doit aussi l'être du <var>chemin du
+    fichier</var>.</p>
 
     <p>Notez qu'il pourra s'avérer nécessaire de définir des sections
     <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>
@@ -200,7 +199,9 @@ de fichiers</td></tr>
 
     <p>Si la directive <code class="directive">Alias</code> est définie au sein
     d'une section <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> ou <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code>, <var>chemin URL</var> est
-    omis et <var>chemin fichier</var> est interprété en utilisant la <a href="../expr.html">syntaxe des expressions</a>.</p>
+    omis et <var>chemin fichier</var> est interprété en utilisant la <a href="../expr.html">syntaxe des expressions</a>.<br />
+    Cette syntaxe est disponible à partir de la version 2.4.13 du
+    serveur HTTP Apache.</p>
 
     <pre class="prettyprint lang-config">&lt;Location "/image"&gt;
     Alias "/ftp/pub/image"
@@ -281,7 +282,7 @@ en faisant intervenir les expressions rationnelles</td></tr>
     servir différentes sortes de fichiers à partir de répertoires
     différents :</p>
 
-    <pre class="prettyprint lang-config">      AliasMatch "^/image/(.*)\.jpg$" "/fichiers/jpg.images/$1.jpg"<br />
+    <pre class="prettyprint lang-config">      AliasMatch "^/image/(.*)\.jpg$" "/fichiers/jpg.images/$1.jpg"
       AliasMatch "^/image/(.*)\.gif$" "/fichiers/gif.images/$1.gif"</pre>
 
 
@@ -402,18 +403,19 @@ Redirect 303 "/three" "http://example.com/other"</pre>
     <p>Si une directive <code class="directive">Redirect</code> est définie au
     sein d'une section <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> ou <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code> et si l'argument <var>chemin
     URL</var> est omis, l'argument <var>URL</var> sera interprété en
-    utilisant la <a href="../expr.html">syntaxe des expressions</a>.</p>
+    utilisant la <a href="../expr.html">syntaxe des expressions</a>.<br />
+    Cette syntaxe est disponible à partir de la version 2.4.13 du
+    serveur HTTP Apache.</p>
 
     <pre class="prettyprint lang-config">&lt;Location "/one"&gt;
     Redirect permanent "http://example.com/two"
-&lt;/Location&gt;<br />
+&lt;/Location&gt;
 &lt;Location "/three"&gt;
     Redirect 303 "http://example.com/other"
-&lt;/Location&gt;<br />
+&lt;/Location&gt;
 &lt;LocationMatch "/error/(?&lt;NUMBER&gt;[0-9]+)"&gt;
     Redirect permanent "http://example.com/errors/%{env:MATCH_NUMBER}.html"
-&lt;/LocationMatch&gt;<br />
-    </pre>
+&lt;/LocationMatch&gt;</pre>
 
 
 
@@ -514,7 +516,7 @@ et désigne la cible comme script CGI</td></tr>
     <code>/web/cgi-bin/foo</code>. Cette configuration est sensiblement
     équivalente à :</p>
     <pre class="prettyprint lang-config">Alias "/cgi-bin/" "/web/cgi-bin/"
-&lt;Location "/cgi-bin"&gt;
+&lt;Location "/cgi-bin" &gt;
     SetHandler cgi-script
     Options +ExecCGI
 &lt;/Location&gt;</pre>
@@ -555,15 +557,16 @@ et désigne la cible comme script CGI</td></tr>
     <p>Si la directive <code class="directive">ScriptAlias</code> est définie au
     sein d'une section <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> ou <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code> et si l'argument <var>chemin
     URL</var> est omis, l'argument <var>URL</var> sera interprété en
-    utilisant la <a href="../expr.html">syntaxe des expressions</a>.</p>
+    utilisant la <a href="../expr.html">syntaxe des expressions</a>.<br />
+    Cette syntaxe est disponible à partir de la version 2.4.13 du
+    serveur HTTP Apache.</p>
 
     <pre class="prettyprint lang-config">&lt;Location "/cgi-bin"&gt;
     ScriptAlias "/web/cgi-bin/"
 &lt;/Location&gt;
 &lt;LocationMatch "/cgi-bin/errors/(?&lt;NUMBER&gt;[0-9]+)"&gt;
     ScriptAlias "/web/cgi-bin/errors/%{env:MATCH_NUMBER}.cgi"
-&lt;/LocationMatch&gt;<br />
-    </pre>
+&lt;/LocationMatch&gt;</pre>
 
 
 
