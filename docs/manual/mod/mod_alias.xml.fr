@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1673945 -->
+<!-- English Revision : 1684313 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -197,7 +197,9 @@ Alias "/image" "/ftp/pub/image"
     module="core">Location</directive> ou <directive type="section"
     module="core">LocationMatch</directive>, <var>chemin URL</var> est
     omis et <var>chemin fichier</var> est interpr&eacute;t&eacute; en utilisant la <a
-    href="../expr.html">syntaxe des expressions</a>.</p>
+    href="../expr.html">syntaxe des expressions</a>.<br />
+    Cette syntaxe est disponible à partir de la version 2.4.13 du
+    serveur HTTP Apache.</p>
 
     <highlight language="config">
 &lt;Location "/image"&gt;
@@ -295,7 +297,7 @@ en faisant intervenir les expressions rationnelles</description>
     diff&eacute;rents :</p>
 
     <highlight language="config">
-      AliasMatch "^/image/(.*)\.jpg$" "/fichiers/jpg.images/$1.jpg"<br/>
+      AliasMatch "^/image/(.*)\.jpg$" "/fichiers/jpg.images/$1.jpg"
       AliasMatch "^/image/(.*)\.gif$" "/fichiers/gif.images/$1.gif"
     </highlight>
 
@@ -422,18 +424,20 @@ Redirect 303 "/three" "http://example.com/other"
     module="core">Location</directive> ou <directive type="section"
     module="core">LocationMatch</directive> et si l'argument <var>chemin
     URL</var> est omis, l'argument <var>URL</var> sera interpr&eacute;t&eacute; en
-    utilisant la <a href="../expr.html">syntaxe des expressions</a>.</p>
+    utilisant la <a href="../expr.html">syntaxe des expressions</a>.<br />
+    Cette syntaxe est disponible à partir de la version 2.4.13 du
+    serveur HTTP Apache.</p>
 
     <highlight language="config">
 &lt;Location "/one"&gt;
     Redirect permanent "http://example.com/two"
-&lt;/Location&gt;<br />
+&lt;/Location&gt;
 &lt;Location "/three"&gt;
     Redirect 303 "http://example.com/other"
-&lt;/Location&gt;<br />
+&lt;/Location&gt;
 &lt;LocationMatch "/error/(?&lt;NUMBER&gt;[0-9]+)"&gt;
     Redirect permanent "http://example.com/errors/%{env:MATCH_NUMBER}.html"
-&lt;/LocationMatch&gt;<br />
+&lt;/LocationMatch&gt;
     </highlight>
 
 </usage>
@@ -593,7 +597,9 @@ Alias "/cgi-bin/" "/web/cgi-bin/"
     module="core">Location</directive> ou <directive type="section"
     module="core">LocationMatch</directive> et si l'argument <var>chemin
     URL</var> est omis, l'argument <var>URL</var> sera interpr&eacute;t&eacute; en
-    utilisant la <a href="../expr.html">syntaxe des expressions</a>.</p>
+    utilisant la <a href="../expr.html">syntaxe des expressions</a>.<br />
+    Cette syntaxe est disponible à partir de la version 2.4.13 du
+    serveur HTTP Apache.</p>
 
     <highlight language="config">
 &lt;Location "/cgi-bin"&gt;
@@ -601,7 +607,7 @@ Alias "/cgi-bin/" "/web/cgi-bin/"
 &lt;/Location&gt;
 &lt;LocationMatch "/cgi-bin/errors/(?&lt;NUMBER&gt;[0-9]+)"&gt;
     ScriptAlias "/web/cgi-bin/errors/%{env:MATCH_NUMBER}.cgi"
-&lt;/LocationMatch&gt;<br />
+&lt;/LocationMatch&gt;
     </highlight>
 
 </usage>
