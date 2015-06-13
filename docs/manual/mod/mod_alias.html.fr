@@ -198,7 +198,9 @@ de fichiers</td></tr>
 
     <p>Si la directive <code class="directive">Alias</code> est définie au sein
     d'une section <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> ou <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code>, <var>chemin URL</var> est
-    omis et <var>chemin fichier</var> est interprété en utilisant la <a href="../expr.html">syntaxe des expressions</a>.</p>
+    omis et <var>chemin fichier</var> est interprété en utilisant la <a href="../expr.html">syntaxe des expressions</a>.<br />
+    Cette syntaxe est disponible à partir de la version 2.4.13 du
+    serveur HTTP Apache.</p>
 
     <pre class="prettyprint lang-config">&lt;Location "/image"&gt;
     Alias "/ftp/pub/image"
@@ -279,7 +281,7 @@ en faisant intervenir les expressions rationnelles</td></tr>
     servir différentes sortes de fichiers à partir de répertoires
     différents :</p>
 
-    <pre class="prettyprint lang-config">      AliasMatch "^/image/(.*)\.jpg$" "/fichiers/jpg.images/$1.jpg"<br />
+    <pre class="prettyprint lang-config">      AliasMatch "^/image/(.*)\.jpg$" "/fichiers/jpg.images/$1.jpg"
       AliasMatch "^/image/(.*)\.gif$" "/fichiers/gif.images/$1.gif"</pre>
 
 
@@ -400,18 +402,19 @@ Redirect 303 "/three" "http://example.com/other"</pre>
     <p>Si une directive <code class="directive">Redirect</code> est définie au
     sein d'une section <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> ou <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code> et si l'argument <var>chemin
     URL</var> est omis, l'argument <var>URL</var> sera interprété en
-    utilisant la <a href="../expr.html">syntaxe des expressions</a>.</p>
+    utilisant la <a href="../expr.html">syntaxe des expressions</a>.<br />
+    Cette syntaxe est disponible à partir de la version 2.4.13 du
+    serveur HTTP Apache.</p>
 
     <pre class="prettyprint lang-config">&lt;Location "/one"&gt;
     Redirect permanent "http://example.com/two"
-&lt;/Location&gt;<br />
+&lt;/Location&gt;
 &lt;Location "/three"&gt;
     Redirect 303 "http://example.com/other"
-&lt;/Location&gt;<br />
+&lt;/Location&gt;
 &lt;LocationMatch "/error/(?&lt;NUMBER&gt;[0-9]+)"&gt;
     Redirect permanent "http://example.com/errors/%{env:MATCH_NUMBER}.html"
-&lt;/LocationMatch&gt;<br />
-    </pre>
+&lt;/LocationMatch&gt;</pre>
 
 
 
@@ -553,15 +556,16 @@ et désigne la cible comme script CGI</td></tr>
     <p>Si la directive <code class="directive">ScriptAlias</code> est définie au
     sein d'une section <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> ou <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code> et si l'argument <var>chemin
     URL</var> est omis, l'argument <var>URL</var> sera interprété en
-    utilisant la <a href="../expr.html">syntaxe des expressions</a>.</p>
+    utilisant la <a href="../expr.html">syntaxe des expressions</a>.<br />
+    Cette syntaxe est disponible à partir de la version 2.4.13 du
+    serveur HTTP Apache.</p>
 
     <pre class="prettyprint lang-config">&lt;Location "/cgi-bin"&gt;
     ScriptAlias "/web/cgi-bin/"
 &lt;/Location&gt;
 &lt;LocationMatch "/cgi-bin/errors/(?&lt;NUMBER&gt;[0-9]+)"&gt;
     ScriptAlias "/web/cgi-bin/errors/%{env:MATCH_NUMBER}.cgi"
-&lt;/LocationMatch&gt;<br />
-    </pre>
+&lt;/LocationMatch&gt;</pre>
 
 
 
