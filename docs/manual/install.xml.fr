@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1675442:1685413 (outdated) -->
+<!-- English Revision: 1685413 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -128,10 +128,10 @@
       versions fournies par le syst&egrave;me, t&eacute;l&eacute;chargez les derni&egrave;res
       versions d'APR et APR-Util depuis <a
       href="http://apr.apache.org/">Apache APR</a>, d&eacute;compressez-les
-      respectivement dans <code>./srclib/apr</code> et
-      <code>./srclib/apr-util</code> (les noms des r&eacute;pertoires ne
+      respectivement dans <code>/racine_sources_httpd/srclib/apr</code> et
+      <code>/racine_sources_httpd/srclib/apr-util</code> (les noms des r&eacute;pertoires ne
       doivent pas comporter de num&eacute;ros de versions ; par exemple, la
-      distribution d'APR doit se trouver dans ./srclib/apr/), et
+      distribution d'APR doit se trouver dans /racine_sources_httpd/srclib/apr/), et
       utilisez l'option <code>--with-included-apr</code> du script
       <code>./configure</code>. Sur certaines plateformes, vous devrez
       peut-&ecirc;tre installer les paquets <code>-dev</code> correspondants
@@ -140,7 +140,7 @@
 
       <dt>Biblioth&egrave;que d'expressions rationnelles compatibles Perl
       (PCRE)</dt>
-      <dd>Cette librairie est n&eacute;cessaire mais n'est plus fournie avec la
+      <dd>Cette biblioth&egrave;que est n&eacute;cessaire mais n'est plus fournie avec la
       distribution de httpd. T&eacute;l&eacute;chargez le code source depuis <a
       href="http://www.pcre.org/">http://www.pcre.org</a> ou installez
       un portage du paquet. Si votre suite de compilation ne trouve pas
