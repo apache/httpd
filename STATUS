@@ -207,6 +207,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-deprecated_SSLCertificateChainFile_once.patch
                   trunk works (modulo CHANGES, above is a review patch only)
      +1: ylavic, trawick
+     -1: gsmith, Tested, don't work! APLOG_INFO|APLOG_STARTUP will not work
+                 together. Similar APLOG_* caveat as APLOG_TOCLIENT. 
 
   *) core: Allow spaces after chunk-size for compatibility with implementations
      using a pre-filled buffer, and log parsing failures at level INFO.
