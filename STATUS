@@ -118,8 +118,22 @@ RELEASE SHOWSTOPPERS:
   +1: ylavic, wrowe
   jim notes: test framework errors due to 413->400 error change [test adjusted]
 
+  *) core: Allow spaces after chunk-size for compatibility with implementations
+     using a pre-filled buffer, and log parsing failures at level INFO.
+     trunk patch: http://svn.apache.org/r1685345
+                  http://svn.apache.org/r1685347
+                  http://svn.apache.org/r1685349
+                  http://svn.apache.org/r1685350
+     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-ap_http_filter_chunked.patch
+     2.2.x patch: trunk works (modulo CHANGES)
+     +1: ylavic
+     ylavic: Depends on CVE-2015-3183 above, trunk works afterward.
+             r1685339 included in the 2.4.x patch is not needed here.
+
+
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
+
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
