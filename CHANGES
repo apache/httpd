@@ -3,7 +3,7 @@ Changes with Apache 2.5.0
 
   *) core: Allow spaces after chunk-size for compatibility with implementations
      using a pre-filled buffer, and log parsing failures at level INFO.
-	 [Yann Ylavic, Jeff Trawick]
+     [Yann Ylavic, Jeff Trawick]
 
   *) mod_ssl: Warn about deprecated SSLCertificateChainFile once at startup,
      on first usage only.  [Yann Ylavic]
