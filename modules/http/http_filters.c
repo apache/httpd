@@ -120,10 +120,6 @@ static apr_status_t parse_chunk_size(http_ctx_t *ctx, const char *buffer,
 
         /* handle start of the chunk */
         if (ctx->state == BODY_CHUNK) {
-            if (c == ' ' || c == '\t') {
-                i++;
-                continue;
-            }
             if (!apr_isxdigit(c)) {
                 /*
                  * Detect invalid character at beginning. This also works for
