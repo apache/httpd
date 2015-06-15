@@ -103,19 +103,34 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
+  *) core: Allow spaces after chunk-size for compatibility with implementations
+     using a pre-filled buffer, and log parsing failures at level INFO.
+     trunk patch: http://svn.apache.org/r1685339
+                  http://svn.apache.org/r1685345
+                  http://svn.apache.org/r1685347
+                  http://svn.apache.org/r1685349
+                  http://svn.apache.org/r1685350
+     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-ap_http_filter_chunked.patch
+     +1: ylavic
+
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_ssl: Warn about deprecated SSLCertificateChainFile once at startup,
-              on first usage only.
+  *) mod_ssl: Reduce to informative the log message about deprecated
+     SSLCertificateChainFile, once at startup, for the first usage only,
+     and when "-e info" is used in the command line.
      trunk patch: http://svn.apache.org/r1685052
                   http://svn.apache.org/r1685078
                   http://svn.apache.org/r1685097
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-deprecated_SSLCertificateChainFile_once.patch
                   trunk works (modulo CHANGES, above is a review patch only)
      +1: ylavic, trawick, gsmith
-
+     ylavic: ++1 with the below (from gsmith, not committed in trunk yet),
+             since the warning (once) seems to be acceptable:
+             http://people.apache.org/~ylavic/httpd-SSLCertificateChainFile_warn_once.patch
+             Otherwise, the CHANGES entry needs to updated to something like
+             this proposal's (new) description...
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -208,15 +223,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic
 
-  *) core: Allow spaces after chunk-size for compatibility with implementations
-     using a pre-filled buffer, and log parsing failures at level INFO.
-     trunk patch: http://svn.apache.org/r1685339
-                  http://svn.apache.org/r1685345
-                  http://svn.apache.org/r1685347
-                  http://svn.apache.org/r1685349
-                  http://svn.apache.org/r1685350
-     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-ap_http_filter_chunked.patch
-     +1: ylavic
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
