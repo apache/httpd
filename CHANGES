@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_ldap: Stop leaking LDAP connections when 'LDAPConnectionPoolTTL 0' 
+     is configured.  PR 58037.  [Ted Phelps <phelps gnusto.com>]
+
   *) core: Allow spaces after chunk-size for compatibility with implementations
      using a pre-filled buffer, and log parsing failures at level INFO.
      [Yann Ylavic, Jeff Trawick]
