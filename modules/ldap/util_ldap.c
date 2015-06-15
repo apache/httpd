@@ -163,10 +163,11 @@ static void uldap_connection_close(util_ldap_connection_t *ldc)
          /* mark our connection as available for reuse */
          ldc->freed = apr_time_now();
          ldc->r = NULL;
-#if APR_HAS_THREADS
-         apr_thread_mutex_unlock(ldc->lock);
-#endif
      }
+
+#if APR_HAS_THREADS
+     apr_thread_mutex_unlock(ldc->lock);
+#endif
 }
 
 
