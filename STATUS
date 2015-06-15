@@ -228,6 +228,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      +1: covener
 
+  *) mod_ldap: Fix typo in directive name in error message
+     trunk patch: http://svn.apache.org/r1685659
+     2.4.x patch: trunk works
+     +1: jailletc36
+
 PATCHES/ISSUES THAT ARE BEING WORKED
 
   *) mod_ssl: add ALPN support by allowing other modules to register callbacks
