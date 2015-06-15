@@ -107,6 +107,15 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_ssl: Warn about deprecated SSLCertificateChainFile once at startup,
+              on first usage only.
+     trunk patch: http://svn.apache.org/r1685052
+                  http://svn.apache.org/r1685078
+                  http://svn.apache.org/r1685097
+     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-deprecated_SSLCertificateChainFile_once.patch
+                  trunk works (modulo CHANGES, above is a review patch only)
+     +1: ylavic, trawick, gsmith
+
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -198,15 +207,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1684900
      2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic
-
-  *) mod_ssl: Warn about deprecated SSLCertificateChainFile once at startup,
-              on first usage only.
-     trunk patch: http://svn.apache.org/r1685052
-                  http://svn.apache.org/r1685078
-                  http://svn.apache.org/r1685097
-     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-deprecated_SSLCertificateChainFile_once.patch
-                  trunk works (modulo CHANGES, above is a review patch only)
-     +1: ylavic, trawick
 
   *) core: Allow spaces after chunk-size for compatibility with implementations
      using a pre-filled buffer, and log parsing failures at level INFO.
