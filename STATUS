@@ -116,7 +116,7 @@ RELEASE SHOWSTOPPERS:
   *) mod_ssl: Remove deprecated SSLCertificateChainFile warning.
      trunk patch: http://svn.apache.org/r1685779
      2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic
+     +1: ylavic, covener
 
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
@@ -221,7 +221,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mod_ldap: Fix typo in directive name in error message
      trunk patch: http://svn.apache.org/r1685659
      2.4.x patch: trunk works
-     +1: jailletc36
+     +1: jailletc36, covener
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
