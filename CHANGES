@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_ssl: Remove deprecated SSLCertificateChainFile warning.
+     [Yann Ylavic]
+
   *) mod_ldap: Stop leaking LDAP connections when 'LDAPConnectionPoolTTL 0' 
      is configured.  PR 58037.  [Ted Phelps <phelps gnusto.com>]
 
