@@ -8,9 +8,6 @@ Changes with Apache 2.5.0
      using a pre-filled buffer, and log parsing failures at level INFO.
      [Yann Ylavic, Jeff Trawick]
 
-  *) mod_ssl: Warn about deprecated SSLCertificateChainFile once at startup,
-     on first usage only.  [Yann Ylavic]
-
   *) mod_substitute: Fix configuraton merge order.
      PR 57641 [<Marc.Stern approach.be>]
 
