@@ -112,6 +112,8 @@ RELEASE SHOWSTOPPERS:
                   http://svn.apache.org/r1685350
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-ap_http_filter_chunked.patch
      +1: ylavic
+     -1: wrowe; 'parsing' variable is not present in trunk, is unnecessary
+                1685339 was previously approved, so simply apply it already.
 
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
