@@ -113,11 +113,6 @@ RELEASE SHOWSTOPPERS:
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-ap_http_filter_chunked.patch
      +1: ylavic
 
-  *) mod_ssl: Remove deprecated SSLCertificateChainFile warning.
-     trunk patch: http://svn.apache.org/r1685779
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, covener
-
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
@@ -126,6 +121,11 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1685659
      2.4.x patch: trunk works
      +1: jailletc36, covener, ylavic
+
+  *) mod_ssl: Remove deprecated SSLCertificateChainFile warning.
+     trunk patch: http://svn.apache.org/r1685779
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: ylavic, covener, wrowe
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
