@@ -2,6 +2,8 @@
 
 Changes with Apache 2.4.15
 
+  *) mod_ssl: Remove deprecated SSLCertificateChainFile warning.
+     [Yann Ylavic]
 
 Changes with Apache 2.4.14
 
