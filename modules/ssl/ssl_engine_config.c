@@ -862,12 +862,6 @@ const char *ssl_cmd_SSLCertificateChainFile(cmd_parms *cmd,
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
     const char *err;
 
-    ap_log_error(APLOG_MARK, APLOG_WARNING|APLOG_STARTUP, 0, NULL,
-                 APLOGNO(02559)
-                 "The SSLCertificateChainFile directive (%s:%d) is deprecated, "
-                 "SSLCertificateFile should be used instead",
-                 cmd->directive->filename, cmd->directive->line_num);
-
     if ((err = ssl_cmd_check_file(cmd, &arg))) {
         return err;
     }
