@@ -139,6 +139,11 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
+  *) mod_substitute: Fix configuraton merge order. PR 57641
+     trunk patch: http://svn.apache.org/r1684900
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: ylavic
+
 
 PATCHES/ISSUES THAT ARE STALLED
 
