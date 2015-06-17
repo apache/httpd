@@ -984,6 +984,11 @@ static apr_status_t xlate_in_filter(ap_filter_t *f, apr_bucket_brigade *bb,
     apr_size_t buffer_size;
     int hit_eos;
 
+    /* just get out of the way of things we don't want. */
+    if (mode != AP_MODE_READBYTES) {
+        return ap_get_brigade(f->next, bb, mode, block, readbytes);
+    }
+
     if (!ctx) {
         /* this is SetInputFilter path; grab the preallocated context,
          * if any; note that if we decided not to do anything in an earlier
