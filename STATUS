@@ -223,7 +223,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      data during read of chunked request bodies. PR 58049.
      trunk patch: http://svn.apache.org/r1686085
      2.4.x patch: trunk works
-     +1 covener
+     +1 covener, trawick
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
