@@ -191,7 +191,7 @@ static apr_status_t session_dbd_load(request_rec * r, session_rec ** z)
     }
 
     /* first look in the notes */
-    note = apr_pstrcat(r->pool, MOD_SESSION_DBD, name, NULL);
+    note = apr_pstrcat(m->pool, MOD_SESSION_DBD, name, NULL);
     zz = (session_rec *)apr_table_get(m->notes, note);
     if (zz) {
         *z = zz;
@@ -228,8 +228,8 @@ static apr_status_t session_dbd_load(request_rec * r, session_rec ** z)
     }
 
     /* create a new session and return it */
-    zz = (session_rec *) apr_pcalloc(r->pool, sizeof(session_rec));
-    zz->pool = r->pool;
+    zz = (session_rec *) apr_pcalloc(m->pool, sizeof(session_rec));
+    zz->pool = m->pool;
     zz->entries = apr_table_make(zz->pool, 10);
     if (key && val) {
         apr_uuid_t *uuid = apr_pcalloc(zz->pool, sizeof(apr_uuid_t));
