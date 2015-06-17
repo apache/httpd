@@ -6,7 +6,8 @@ Changes with Apache 2.2.30
      [Kaspar Brand]
 
   *) http: Make ap_die() robust against any HTTP error code and not modify
-     response status (finally logged) when nothing is to be done. [Yann Ylavic]
+     response status (finally logged) when nothing is to be done. PR 56035.
+     [Yann Ylavic]
 
   *) core, modules: Avoid error response/document handling by the core if some
      handler or input filter already did it while reading the request (causing
