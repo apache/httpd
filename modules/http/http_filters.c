@@ -502,21 +502,26 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                 apr_size_t len;
 
                 if (!APR_BUCKET_IS_METADATA(e)) {
+                    int parsing = 0;
+
                     rv = apr_bucket_read(e, &buffer, &len, APR_BLOCK_READ);
+
+                    if (rv == APR_SUCCESS) {
+                        parsing = 1;
+                        rv = parse_chunk_size(ctx, buffer, len,
+                                f->r->server->limit_req_fieldsize);
+                    }
                     if (rv != APR_SUCCESS) {
                         ap_log_rerror(APLOG_MARK, APLOG_INFO, rv, f->r, APLOGNO(01590)
                                       "Error reading/parsing chunk %s ",
                                       (APR_ENOSPC == rv) ? "(overflow)" : "");
-                        return rv;
-                    }
-
-                    rv = parse_chunk_size(ctx, buffer, len,
-                                          f->r->server->limit_req_fieldsize);
-                    if (rv != APR_SUCCESS) {
-                        if (rv != APR_ENOSPC) {
-                            http_error = HTTP_BAD_REQUEST;
+                        if (parsing) {
+                            if (rv != APR_ENOSPC) {
+                                http_error = HTTP_BAD_REQUEST;
+                            }
+                            return bail_out_on_error(ctx, f, http_error);
                         }
-                        return bail_out_on_error(ctx, f, http_error);
+                        return rv;
                     }
                 }
 
