@@ -175,7 +175,8 @@ Changes with Apache 2.4.13
      gmail com>, William Rowe, Yann Ylavic]
 
   *) http: Make ap_die() robust against any HTTP error code and not modify
-     response status (finally logged) when nothing is to be done. [Yann Ylavic]
+     response status (finally logged) when nothing is to be done. PR 56035.
+     [Yann Ylavic]
 
   *) mod_proxy_connect/wstunnel: If both client and backend sides get readable
      at the same time, don't lose errors occuring while forwarding on the first
