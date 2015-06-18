@@ -2,6 +2,10 @@
 
 Changes with Apache 2.4.15
 
+  *) mod_ext_filter, mod_charset_lite: Avoid inadvertent filtering of protocol
+     data during read of chunked request bodies. PR 58049. 
+     [Edward Lu <Chaosed0 gmail.com>]
+
   *) core: Allow spaces after chunk-size for compatibility with implementations
      using a pre-filled buffer.  [Yann Ylavic, Jeff Trawick]
 
