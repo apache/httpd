@@ -110,7 +110,7 @@ RELEASE SHOWSTOPPERS:
                   http://svn.apache.org/r1685349
                   http://svn.apache.org/r1685350
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-ap_http_filter_chunked-v3.patch
-     +1: ylavic, trawick (v3), +1 (v3)
+     +1: ylavic, trawick (v3), wrowe (v3)
 
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
