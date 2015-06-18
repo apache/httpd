@@ -202,7 +202,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mod_ldap: Fix "LDAPConnectionPoolTTL 0" LDAP connection leak.
      trunk patch: http://svn.apache.org/r1685650
      2.4.x patch: trunk works
-     +1: covener, ylavic
+     +1: covener, ylavic, jim
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
