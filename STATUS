@@ -107,11 +107,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_charset_lite, mod_ext_filter:  Avoid inadvertent filtering of protocol
-     data during read of chunked request bodies. PR 58049.
-     trunk patch: http://svn.apache.org/r1686085
-     2.4.x patch: trunk works
-     +1 covener, trawick, ylavic
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
