@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.15
 
+  *) core: Allow spaces after chunk-size for compatibility with implementations
+     using a pre-filled buffer.  [Yann Ylavic, Jeff Trawick]
+
   *) mod_ssl: Remove deprecated SSLCertificateChainFile warning.
      [Yann Ylavic]
 
