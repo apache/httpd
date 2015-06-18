@@ -103,6 +103,10 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
+
+PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
+  [ start all new proposals below, under PATCHES PROPOSED. ]
+
   *) core: Allow spaces after chunk-size for compatibility with implementations
      using a pre-filled buffer, and log parsing failures at level INFO.
      trunk patch: http://svn.apache.org/r1685345
@@ -111,10 +115,6 @@ RELEASE SHOWSTOPPERS:
                   http://svn.apache.org/r1685350
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-ap_http_filter_chunked-v3.patch
      +1: ylavic, trawick (v3), wrowe (v3)
-
-
-PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
-  [ start all new proposals below, under PATCHES PROPOSED. ]
 
   *) mod_charset_lite, mod_ext_filter:  Avoid inadvertent filtering of protocol
      data during read of chunked request bodies. PR 58049.
