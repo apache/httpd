@@ -199,6 +199,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic
 
+  *) event: quiet compiler warning (spurious, "'last' may be used
+            uninitialized", though actually it won't).
+     trunk patch: http://svn.apache.org/r1684057
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: ylavic
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
