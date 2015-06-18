@@ -117,6 +117,7 @@ RELEASE SHOWSTOPPERS:
     http://people.apache.org/~wrowe/httpd-2.2.x-ap_http_filter-chunked-v6.patch
   +1: ylavic, wrowe
   jim notes: test framework errors due to 413->400 error change [test adjusted]
+  wrowe notes: r1684513 was not neglected in this patch, already included
 
   *) core: Allow spaces after chunk-size for compatibility with implementations
      using a pre-filled buffer.
@@ -128,8 +129,9 @@ RELEASE SHOWSTOPPERS:
                      (trunk works but CHANGES entry in the above patch is
                       better since the APLOG_INFO part is already included
                       in the CVE-2015-3183 patch)
-     +1: ylavic
-     ylavic: CVE-2015-3183 patch above must be applied first.
+     +1: ylavic, wrowe
+     ylavic: CVE-2015-3183 patch httpd-2.2.x-ap_http_filter-chunked-v6.patch
+             above must be applied first.
 
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
