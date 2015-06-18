@@ -107,10 +107,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_ldap: Fix "LDAPConnectionPoolTTL 0" LDAP connection leak.
-     trunk patch: http://svn.apache.org/r1685650
-     2.4.x patch: trunk works
-     +1: covener, ylavic, jim
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:

@@ -6,6 +6,9 @@ Changes with Apache 2.4.15
      data during read of chunked request bodies. PR 58049. 
      [Edward Lu <Chaosed0 gmail.com>]
 
+  *) mod_ldap: Stop leaking LDAP connections when 'LDAPConnectionPoolTTL 0' 
+     is configured.  PR 58037.  [Ted Phelps <phelps gnusto.com>]
+
   *) core: Allow spaces after chunk-size for compatibility with implementations
      using a pre-filled buffer.  [Yann Ylavic, Jeff Trawick]
 
