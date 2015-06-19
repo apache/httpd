@@ -203,7 +203,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
             uninitialized", though actually it won't).
      trunk patch: http://svn.apache.org/r1684057
      2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic
+     +1: ylavic, jailletc36
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
