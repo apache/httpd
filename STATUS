@@ -107,7 +107,11 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-
+  *) event: quiet compiler warning (spurious, "'last' may be used
+            uninitialized", though actually it won't).
+     trunk patch: http://svn.apache.org/r1684057
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: ylavic, jailletc36, ocovener
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -198,12 +202,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1684900
      2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic
-
-  *) event: quiet compiler warning (spurious, "'last' may be used
-            uninitialized", though actually it won't).
-     trunk patch: http://svn.apache.org/r1684057
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, jailletc36
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
