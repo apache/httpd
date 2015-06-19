@@ -1447,7 +1447,7 @@ static void process_timeout_queue(struct timeout_queue *q,
     APR_RING_INIT(&trash, event_conn_state_t, timeout_list);
     for (qp = q; qp; qp = qp->next) {
         count = 0;
-        cs = first = APR_RING_FIRST(&qp->head);
+        cs = first = last = APR_RING_FIRST(&qp->head);
         while (cs != APR_RING_SENTINEL(&qp->head, event_conn_state_t,
                                        timeout_list)
                /* Trash the entry if:
