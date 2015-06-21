@@ -83,7 +83,7 @@
 
       <li>configure: By default, only a basic set of modules is loaded. The
       other <code class="directive">LoadModule</code> directives are commented
-      out.</li>
+      out in the configuration file.</li>
 
       <li>configure: the "most" module set gets built by default</li>
 
