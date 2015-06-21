@@ -39,8 +39,8 @@
   l'API</a>.</p>
 
   <p>Ce document présente les changements de comportement du serveur qui
-  peuvent nécessiter une modification de la configuration, et la manière
-  d'utiliser la version 2.4 du serveur en parallèle avec la
+  peuvent nécessiter une modification de la configuration, et une
+  mÃ©thode pour utiliser la version 2.4 du serveur en parallèle avec la
   version 2.2. Pour tirer parti des nouvelles fonctionnalités de la
   version 2.4, reportez-vous au document "Nouvelles fonctionnalités".</p>
 
@@ -90,7 +90,7 @@ fonctionnalités du serveur HTTP Apache 2.4</a></li></ul><ul class="seealso"><li>
 
       <li>configure: par défaut, seul un jeu de modules de base est
       chargé. Les autres directives <code class="directive">LoadModule</code>
-      sont mises en commentaires.</li>
+      sont mises en commentaires dans le fichier de configuration.</li>
 
       <li>configure: le jeu de modules "most" est compilé par défaut</li>
 
@@ -114,7 +114,7 @@ nécessiter une mise à jour des fichiers de configuration de la version
       probablement être mis à jour.</p>
 
     <p>Vous devez vous reporter au document <a href="howto/auth.html">Authentification, autorisation et contrôle
-    d'accès</a>, et plus particulièrement à la section <a href="howto/auth.html#beyond">Plus loin qu'une simple
+    d'accès</a>, et plus particulièrement à la section <a href="howto/auth.html#beyond">Pour aller plus loin qu'une simple
     autorisation</a> qui explique les nouveaux mécanismes permettant de
     contrôler l'ordre dans lequel les directives d'autorisation sont
     appliquées.</p>
@@ -140,7 +140,7 @@ nécessiter une mise à jour des fichiers de configuration de la version
       requête était assuré via les directives <code class="directive"><a href="./mod/mod_access_compat.html#order">Order</a></code>, <code class="directive"><a href="./mod/mod_access_compat.html#allow">Allow</a></code>, <code class="directive"><a href="./mod/mod_access_compat.html#deny">Deny</a></code>, et <code class="directive"><a href="./mod/mod_access_compat.html#satisfy">Satisfy</a></code>.</p>
 
       <p>Dans la version 2.4, ce contrôle d'accès est assuré, comme tout
-      contrôle d'autorisation, via le nouveau module
+      contrôle d'autorisation, par le nouveau module
       <code class="module"><a href="./mod/mod_authz_host.html">mod_authz_host</a></code>. Bien que le module
       <code class="module"><a href="./mod/mod_access_compat.html">mod_access_compat</a></code> soit fourni à des fins de
       compatibilité avec les anciennes configurations, les anciennes
@@ -184,7 +184,7 @@ Allow from example.org</pre>
       certaines configurations particulières, comme décrit ci-dessous.</p>
 
       <ul>
-        <li><code class="directive">MaxRequestsPerChild</code> a été renommée en
+        <li>La directive <code class="directive">MaxRequestsPerChild</code> a été renommée en
 	<code class="directive"><a href="./mod/mpm_common.html#maxconnectionsperchild">MaxConnectionsPerChild</a></code>;
 	ce nouveau nom reflète mieux l'usage de cette directive.
 	L'ancien nom est encore supporté.</li>
@@ -282,9 +282,10 @@ Allow from example.org</pre>
 
 	<li><code class="module"><a href="./mod/mod_proxy_scgi.html">mod_proxy_scgi</a></code>: certaines applications web
 	ne fonctionneront plus correctement avec la nouvelle
-	configuration de <code>PATH_INFO</code> qui est diffÃ©rente de
-	celle de la version 2.2. La configuration prÃ©cÃ©dente peut Ãªtre
-	restaurÃ©e en dÃ©finissant la variable
+	configuration de <code>PATH_INFO</code> qui est différente de
+	celle de la version 2.2. La configuration
+	précédente peut être
+	restaurée en définissant la variable
 	<code>proxy-scgi-pathinfo</code>.</li>
 
 	<li><code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code>: le contrôle de révocation des
@@ -381,7 +382,7 @@ Allow from example.org</pre>
 
     <p>De nombreux modules tiers conçus pour la version 2.2
     fonctionneront sans changement avec le serveur HTTP Apache
-    version 2.4. Certains nécessiterons cependant des modifications ; se
+    version 2.4. Certains nécessiteront cependant des modifications ; se
     reporter à la vue d'ensemble <a href="developer/new_api_2_4.html">Mise à jour de l'API</a>.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
