@@ -40,8 +40,8 @@
   l'API</a>.</p>
 
   <p>Ce document pr&eacute;sente les changements de comportement du serveur qui
-  peuvent n&eacute;cessiter une modification de la configuration, et la mani&egrave;re
-  d'utiliser la version 2.4 du serveur en parall&egrave;le avec la
+  peuvent n&eacute;cessiter une modification de la configuration, et une
+  méthode pour utiliser la version 2.4 du serveur en parall&egrave;le avec la
   version 2.2. Pour tirer parti des nouvelles fonctionnalit&eacute;s de la
   version 2.4, reportez-vous au document "Nouvelles fonctionnalit&eacute;s".</p>
 
@@ -85,7 +85,7 @@ fonctionnalit&eacute;s du serveur HTTP Apache 2.4</a></seealso>
 
       <li>configure: par d&eacute;faut, seul un jeu de modules de base est
       charg&eacute;. Les autres directives <directive>LoadModule</directive>
-      sont mises en commentaires.</li>
+      sont mises en commentaires dans le fichier de configuration.</li>
 
       <li>configure: le jeu de modules "most" est compil&eacute; par d&eacute;faut</li>
 
@@ -111,7 +111,7 @@ n&eacute;cessiter une mise &agrave; jour des fichiers de configuration de la ver
     <p>Vous devez vous reporter au document <a
     href="howto/auth.html">Authentification, autorisation et contr&ocirc;le
     d'acc&egrave;s</a>, et plus particuli&egrave;rement &agrave; la section <a
-    href="howto/auth.html#beyond">Plus loin qu'une simple
+    href="howto/auth.html#beyond">Pour aller plus loin qu'une simple
     autorisation</a> qui explique les nouveaux m&eacute;canismes permettant de
     contr&ocirc;ler l'ordre dans lequel les directives d'autorisation sont
     appliqu&eacute;es.</p>
@@ -144,7 +144,7 @@ n&eacute;cessiter une mise &agrave; jour des fichiers de configuration de la ver
       module="mod_access_compat">Satisfy</directive>.</p>
 
       <p>Dans la version 2.4, ce contr&ocirc;le d'acc&egrave;s est assur&eacute;, comme tout
-      contr&ocirc;le d'autorisation, via le nouveau module
+      contr&ocirc;le d'autorisation, par le nouveau module
       <module>mod_authz_host</module>. Bien que le module
       <module>mod_access_compat</module> soit fourni &agrave; des fins de
       compatibilit&eacute; avec les anciennes configurations, les anciennes
@@ -212,7 +212,7 @@ Allow from example.org
       certaines configurations particuli&egrave;res, comme d&eacute;crit ci-dessous.</p>
 
       <ul>
-        <li><directive>MaxRequestsPerChild</directive> a &eacute;t&eacute; renomm&eacute;e en
+        <li>La directive <directive>MaxRequestsPerChild</directive> a &eacute;t&eacute; renomm&eacute;e en
 	<directive module="mpm_common">MaxConnectionsPerChild</directive>;
 	ce nouveau nom refl&egrave;te mieux l'usage de cette directive.
 	L'ancien nom est encore support&eacute;.</li>
@@ -323,9 +323,10 @@ Allow from example.org
 
 	<li><module>mod_proxy_scgi</module>: certaines applications web
 	ne fonctionneront plus correctement avec la nouvelle
-	configuration de <code>PATH_INFO</code> qui est différente de
-	celle de la version 2.2. La configuration précédente peut être
-	restaurée en définissant la variable
+	configuration de <code>PATH_INFO</code> qui est diff&eacute;rente de
+	celle de la version 2.2. La configuration
+	pr&eacute;c&eacute;dente peut &ecirc;tre
+	restaur&eacute;e en d&eacute;finissant la variable
 	<code>proxy-scgi-pathinfo</code>.</li>
 
 	<li><module>mod_ssl</module>: le contr&ocirc;le de r&eacute;vocation des
@@ -430,7 +431,7 @@ Allow from example.org
 
     <p>De nombreux modules tiers con&ccedil;us pour la version 2.2
     fonctionneront sans changement avec le serveur HTTP Apache
-    version 2.4. Certains n&eacute;cessiterons cependant des modifications ; se
+    version 2.4. Certains n&eacute;cessiteront cependant des modifications ; se
     reporter &agrave; la vue d'ensemble <a
     href="developer/new_api_2_4.html">Mise &agrave; jour de l'API</a>.</p>
   </section>
