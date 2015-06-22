@@ -252,25 +252,37 @@ static const char *add_redirect_internal(cmd_parms *cmd,
         status = HTTP_MOVED_TEMPORARILY;
     else if (!strcasecmp(arg1, "seeother"))
         status = HTTP_SEE_OTHER;
-    else if (!strcasecmp(arg1, "gone"))
+    else if (!strcasecmp(arg1, "gone")) {
         status = HTTP_GONE;
-    else if (apr_isdigit(*arg1))
+        grokarg1 = -1;
+    }
+    else if (apr_isdigit(*arg1)) {
         status = atoi(arg1);
-    else
+        if (!ap_is_HTTP_REDIRECT(status)) {
+            grokarg1 = -1;
+        }
+    }
+    else {
         grokarg1 = 0;
+    }
 
     if (arg3 && !grokarg1)
         return "Redirect: invalid first argument (of three)";
 
     /*
-     * if we have the 2nd arg and we understand the 1st one, or if we have the
+     * if we have the 2nd arg and we understand the 1st one as a redirect
+     * status (3xx, but not things like 404 /robots.txt), or if we have the
      * 1st arg but don't understand it, we use the expression syntax assuming
      * a path from the location.
      *
      * if we understand the first arg but have no second arg, we are dealing
-     * with a status like "GONE".
+     * with a status like "GONE" or a non-redirect status (e.g. 404, 503).
      */
-    if (grokarg1 && arg2 && !arg3 && HTTP_GONE != status) {
+    if (!cmd->path) {
+        /* <Location> context only for now */
+        ;
+    }
+    else if (grokarg1 > 0 && arg2 && !arg3) {
         const char *expr_err = NULL;
 
         dirconf->redirect =
@@ -288,7 +300,7 @@ static const char *add_redirect_internal(cmd_parms *cmd,
         return NULL;
 
     }
-    else if (grokarg1 && !arg2 && HTTP_GONE == status) {
+    else if (grokarg1 < 0 && !arg2) {
 
         dirconf->redirect_status = status;
         dirconf->redirect_set = 1;
