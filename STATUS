@@ -104,6 +104,13 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
+  *) mod_alias: Limit Redirect expressions to directory (Location) context
+     and redirect statuses (implicit or explicit).
+     trunk patch: http://svn.apache.org/r1686853
+                  http://svn.apache.org/r1686856
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: ylavic
+
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
