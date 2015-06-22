@@ -282,15 +282,16 @@ static const char *add_redirect_internal(cmd_parms *cmd,
         /* <Location> context only for now */
         ;
     }
-    else if (grokarg1 > 0 && arg2 && !arg3) {
+    else if ((grokarg1 > 0 && arg2 && !arg3) || (!grokarg1 && !arg2)) {
         const char *expr_err = NULL;
 
+        url = grokarg1 ? arg2 : arg1;
         dirconf->redirect =
-                ap_expr_parse_cmd(cmd, arg2, AP_EXPR_FLAG_STRING_RESULT,
+                ap_expr_parse_cmd(cmd, url, AP_EXPR_FLAG_STRING_RESULT,
                         &expr_err, NULL);
         if (expr_err) {
             return apr_pstrcat(cmd->temp_pool,
-                    "Cannot parse redirect expression '", arg2, "': ", expr_err,
+                    "Cannot parse redirect expression '", url, "': ", expr_err,
                     NULL);
         }
 
@@ -301,24 +302,6 @@ static const char *add_redirect_internal(cmd_parms *cmd,
 
     }
     else if (grokarg1 < 0 && !arg2) {
-
-        dirconf->redirect_status = status;
-        dirconf->redirect_set = 1;
-
-        return NULL;
-
-    }
-    else if (!grokarg1 && !arg2) {
-        const char *expr_err = NULL;
-
-        dirconf->redirect =
-                ap_expr_parse_cmd(cmd, arg1, AP_EXPR_FLAG_STRING_RESULT,
-                        &expr_err, NULL);
-        if (expr_err) {
-            return apr_pstrcat(cmd->temp_pool,
-                    "Cannot parse redirect expression '", arg1, "': ", expr_err,
-                    NULL);
-        }
 
         dirconf->redirect_status = status;
         dirconf->redirect_set = 1;
