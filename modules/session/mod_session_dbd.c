@@ -97,8 +97,8 @@ static apr_status_t dbd_init(request_rec *r, const char *query, ap_dbd_t **dbdp,
  *
  * The session value is allocated using the passed apr_pool_t.
  */
-static apr_status_t dbd_load(request_rec * r, apr_pool_t *pool,
-							 const char *key, const char **val)
+static apr_status_t dbd_load(apr_pool_t *p, request_rec * r,
+                             const char *key, const char **val)
 {
 
     apr_status_t rv;
@@ -141,8 +141,7 @@ static apr_status_t dbd_load(request_rec * r, apr_pool_t *pool,
             return APR_EGENERAL;
         }
         if (*val == NULL) {
-            *val = apr_pstrdup(pool,
-                               apr_dbd_get_entry(dbd->driver, row, 0));
+            *val = apr_pstrdup(p, apr_dbd_get_entry(dbd->driver, row, 0));
         }
         /* we can't break out here or row won't get cleaned up */
     }
@@ -207,7 +206,7 @@ static apr_status_t session_dbd_load(request_rec * r, session_rec ** z)
         /* load an RFC2109 or RFC2965 compliant cookie */
         ap_cookie_read(r, name, &key, conf->remove);
         if (key) {
-            ret = dbd_load(r, m->pool, key, &val);
+            ret = dbd_load(m->pool, r, key, &val);
             if (ret != APR_SUCCESS) {
                 return ret;
             }
@@ -218,7 +217,7 @@ static apr_status_t session_dbd_load(request_rec * r, session_rec ** z)
     /* load named session */
     else if (conf->peruser) {
         if (r->user) {
-            ret = dbd_load(r, m->pool, r->user, &val);
+            ret = dbd_load(m->pool, r, r->user, &val);
             if (ret != APR_SUCCESS) {
                 return ret;
             }
