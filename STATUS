@@ -109,11 +109,12 @@ RELEASE SHOWSTOPPERS:
      trunk patch: http://svn.apache.org/r1686853
                   http://svn.apache.org/r1686856
      2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic
+     +1: ylavic, jim
 
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
