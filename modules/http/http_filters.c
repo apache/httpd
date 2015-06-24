@@ -70,10 +70,11 @@ typedef struct http_filter_ctx
         BODY_CHUNK, /* chunk expected */
         BODY_CHUNK_PART, /* chunk digits */
         BODY_CHUNK_EXT, /* chunk extension */
-        BODY_CHUNK_LF, /* got CR, expect LF after digits/extension */
+        BODY_CHUNK_CR, /* got space(s) after digits, expect [CR]LF or ext */
+        BODY_CHUNK_LF, /* got CR after digits or ext, expect LF */
         BODY_CHUNK_DATA, /* data constrained by chunked encoding */
         BODY_CHUNK_END, /* chunked data terminating CRLF */
-        BODY_CHUNK_END_LF, /* got CR, expect LF after data */
+        BODY_CHUNK_END_LF, /* got CR after data, expect LF */
         BODY_CHUNK_TRAILER /* trailers */
     } state;
     unsigned int eos_sent :1;
@@ -202,6 +203,15 @@ static apr_status_t parse_chunk_size(http_ctx_t *ctx, const char *buffer,
             if (c != '\t' && apr_iscntrl(c)) {
                 return APR_EINVAL;
             }
+        }
+        else if (c == ' ' || c == '\t') {
+            ctx->state = BODY_CHUNK_CR;
+        }
+        else if (ctx->state == BODY_CHUNK_CR) {
+            /*
+             * ';', CR or LF expected.
+             */
+            return APR_EINVAL;
         }
         else if (ctx->state == BODY_CHUNK_PART) {
             int xvalue;
