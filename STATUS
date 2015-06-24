@@ -204,7 +204,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mod_substitute: Fix configuraton merge order. PR 57641
      trunk patch: http://svn.apache.org/r1684900
      2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic
+     +1: ylavic, minfrin
 
   *) core: Avoid a possible truncation of the faulty header included in the
      HTML response when LimitRequestFieldSize is reached.
