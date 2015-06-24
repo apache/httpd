@@ -97,6 +97,10 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
+
+PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
+  [ start all new proposals below, under PATCHES PROPOSED. ]
+
   *) SECURITY: CVE-2015-3183 (cve.mitre.org)
      core: Fix chunk header parsing defect.
      Remove apr_brigade_flatten(), buffering and duplicated code from
@@ -115,7 +119,7 @@ RELEASE SHOWSTOPPERS:
     http://svn.apache.org/r1684515
   2.2.x branch
     http://people.apache.org/~wrowe/httpd-2.2.x-ap_http_filter-chunked-v6.patch
-  +1: ylavic, wrowe
+  +1: ylavic, wrowe, minfrin
   jim notes: test framework errors due to 413->400 error change [test adjusted]
   wrowe notes: r1684513 was not neglected in this patch, already included
 
@@ -129,14 +133,9 @@ RELEASE SHOWSTOPPERS:
                      (trunk works but CHANGES entry in the above patch is
                       better since the APLOG_INFO part is already included
                       in the CVE-2015-3183 patch)
-     +1: ylavic, wrowe
+     +1: ylavic, wrowe, minfrin
      ylavic: CVE-2015-3183 patch httpd-2.2.x-ap_http_filter-chunked-v6.patch
              above must be applied first.
-
-
-PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
-  [ start all new proposals below, under PATCHES PROPOSED. ]
-
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
