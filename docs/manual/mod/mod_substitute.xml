@@ -170,7 +170,7 @@ Substitute "s|http://internal.blog.example.com/|http://www.example.com/blog/|i"
 <contextlist><context>directory</context>
 <context>.htaccess</context></contextlist>
 <override>FileInfo</override>
-<compatibility>Available in httpd 2.4.17 and later</compatibility>
+<compatibility>Available in httpd 2.5 and later</compatibility>
 
 <usage>
     <p>Whether to apply the inherited <directive>Substitute</directive>
