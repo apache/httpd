@@ -109,7 +109,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1684900
      2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic, minfrin
-
+     -1: wrowe [not without user control, we don't break working 2.2 configs]
 
 PATCHES/ISSUES THAT ARE STALLED
 
