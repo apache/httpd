@@ -57,6 +57,8 @@ typedef struct {
     apr_array_header_t *patterns;
     apr_size_t max_line_length;
     int max_line_length_set;
+    int inherit_before_set,
+        inherit_before;
 } subst_dir_conf;
 
 typedef struct {
@@ -84,8 +86,17 @@ static void *merge_substitute_dcfg(apr_pool_t *p, void *basev, void *overv)
     subst_dir_conf *base = (subst_dir_conf *) basev;
     subst_dir_conf *over = (subst_dir_conf *) overv;
 
-    a->patterns = apr_array_append(p, base->patterns,
-                                                  over->patterns);
+    if (!over->inherit_before_set) {
+        over->inherit_before = base->inherit_before;
+    }
+    if (over->inherit_before) {
+        a->patterns = apr_array_append(p, base->patterns,
+                                          over->patterns);
+    }
+    else {
+        a->patterns = apr_array_append(p, over->patterns,
+                                          base->patterns);
+    }
     a->max_line_length = over->max_line_length_set ?
                          over->max_line_length : base->max_line_length;
     a->max_line_length_set = over->max_line_length_set ?
@@ -683,6 +694,16 @@ static const char *set_max_line_length(cmd_parms *cmd, void *cfg, const char *ar
     return NULL;
 }
 
+static const char *set_inherit_before(cmd_parms *cmd, void *cfg, int flag)
+{
+    subst_dir_conf *dcfg = (subst_dir_conf *)cfg;
+
+    dcfg->inherit_before = (flag != 0);
+    dcfg->inherit_before_set = 1;
+
+    return NULL;
+}
+
 #define PROTO_FLAGS AP_FILTER_PROTO_CHANGE|AP_FILTER_PROTO_CHANGE_LENGTH
 static void register_hooks(apr_pool_t *pool)
 {
@@ -695,6 +716,8 @@ static const command_rec substitute_cmds[] = {
                   "Pattern to filter the response content (s/foo/bar/[inf])"),
     AP_INIT_TAKE1("SubstituteMaxLineLength", set_max_line_length, NULL, OR_FILEINFO,
                   "Maximum line length"),
+    AP_INIT_FLAG("SubstituteInheritBefore", set_inherit_before, NULL, OR_FILEINFO,
+                 "Apply inherited patterns before those of the current context"),
     {NULL}
 };
 
