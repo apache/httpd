@@ -162,4 +162,28 @@ Substitute "s|http://internal.blog.example.com/|http://www.example.com/blog/|i"
 </usage>
 </directivesynopsis>
 
+<directivesynopsis>
+<name>SubstituteInheritBefore</name>
+<description>Change the merge order of inherited patterns</description>
+<syntax>SubstituteInheritBefore on|off</syntax>
+<default>SubstituteInheritBefore off</default>
+<contextlist><context>directory</context>
+<context>.htaccess</context></contextlist>
+<override>FileInfo</override>
+<compatibility>Available in httpd 2.4.17 and later</compatibility>
+
+<usage>
+    <p>Whether to apply the inherited <directive>Substitute</directive>
+    patterns first (<code>on</code>), or after the ones of the current
+    context (<code>off</code>).
+    The former was the default in versions 2.4 and earlier, but changed
+    starting with 2.5, hence <directive>SubstituteInheritBefore</directive>
+    set to <code>on</code> allows to restore the legacy behaviour.
+    <directive>SubstituteInheritBefore</directive> is itself inherited,
+    hence contexts that inherit it (those that don't specify their own
+    <directive>SubstituteInheritBefore</directive> value) will apply the
+    closest defined merge order.
+</usage>
+</directivesynopsis>
+
 </modulesynopsis>
