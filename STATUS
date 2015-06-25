@@ -201,10 +201,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              ints added at the end of core_server_config, the proposed merge
              does a minor bump only.
 
-  *) mod_substitute: Fix configuraton merge order. PR 57641
+  *) mod_substitute: Configure patterns merge order. PR 57641
      trunk patch: http://svn.apache.org/r1684900
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, minfrin
+                  http://svn.apache.org/r1687539 
+     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-SubstituteInheritBefore.patch
+     +1: ylavic
+     ylavic: added r1687539 and discarded minfrin's vote (we must preserve
+             the current behaviour).  SubstituteInheritBefore allows to
+             configure the merge order; the default is Off in trunk (2.5+),
+             but still On in 2.4.x thanks to the changes in the backport patch
+             only (dcfg->inherit_before = 1 by default, and the doc is updated
+             accordingly).
 
   *) core: Avoid a possible truncation of the faulty header included in the
      HTML response when LimitRequestFieldSize is reached.
