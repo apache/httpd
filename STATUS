@@ -111,10 +111,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1687680
      2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-SubstituteInheritBefore-v2.patch
      +1: ylavic
-     ylavic: SubstituteInheritBefore allows to configure the merge order;
-             the default is Off in trunk (2.5+), but still On in 2.4.x thanks to
-             the changes in the backport patch only
-             => over->inherit_before = (base->inherit_before != 0) instead
+     ylavic: added r1687539 and r1687680 discarding minfrin's vote (we must
+             preserve the current behaviour). SubstituteInheritBefore allows to
+             configure the merge order; the default is Off in trunk (2.5+),
+             but still On in 2.2.x thanks to the changes in the backport patch
+             only => over->inherit_before = (base->inherit_before != 0) instead
              of (base->inherit_before > 0), plus the doc updated accordingly.
 
 PATCHES/ISSUES THAT ARE STALLED
