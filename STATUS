@@ -105,11 +105,17 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
-  *) mod_substitute: Fix configuraton merge order. PR 57641
+  *) mod_substitute: Configure patterns merge order. PR 57641
      trunk patch: http://svn.apache.org/r1684900
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, minfrin
-     -1: wrowe [not without user control, we don't break working 2.2 configs]
+                  http://svn.apache.org/r1687539 
+                  http://svn.apache.org/r1687680
+     2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-SubstituteInheritBefore-v2.patch
+     +1: ylavic
+     ylavic: SubstituteInheritBefore allows to configure the merge order;
+             the default is Off in trunk (2.5+), but still On in 2.4.x thanks to
+             the changes in the backport patch only
+             => over->inherit_before = (base->inherit_before != 0) instead
+             of (base->inherit_before > 0), plus the doc updated accordingly.
 
 PATCHES/ISSUES THAT ARE STALLED
 
