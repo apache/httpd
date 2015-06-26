@@ -1489,10 +1489,11 @@ static apr_status_t connection_constructor(void **resource, void *params,
 static apr_status_t connection_destructor(void *resource, void *params,
                                           apr_pool_t *pool)
 {
-    proxy_conn_rec *conn = (proxy_conn_rec *)resource;
+    proxy_worker *worker = params;
 
     /* Destroy the pool only if not called from reslist_destroy */
-    if (conn->worker->cp->pool) {
+    if (worker->cp->pool) {
+        proxy_conn_rec *conn = resource;
         apr_pool_destroy(conn->pool);
     }
 
