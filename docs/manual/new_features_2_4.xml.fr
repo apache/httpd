@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1673947:1688006 (outdated) -->
+<!-- English Revision: 1673947 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -42,10 +42,11 @@ serveur HTTP Apache</title>
       <dd>Plusieurs MPMs peuvent maintenant &ecirc;tre <a
       href="mpm.html#dynamic">compil&eacute;s en tant que modules
       chargeables</a>. Le choix du MPM &agrave; utiliser s'effectue
-      &agrave; l'ex&eacute;cution.</dd>
+      &agrave; l'ex&eacute;cution via la directive <directive
+      module="mod_so">LoadModule</directive>.</dd>
 
       <dt>MPM Event</dt>
-      <dd>Le <a href="mod/event.html">MPM Event</a> n'est plus au stade exp&eacute;rimental et est
+      <dd>Le <a href="mod/event.html">MPM Event</a> n'en est plus au stade exp&eacute;rimental et est
       maintenant pleinement support&eacute;.</dd>
 
       <dt>Support du mode asynchrone</dt>
@@ -59,7 +60,7 @@ serveur HTTP Apache</title>
       nouveaux niveaux <code>trace1</code> &agrave; <code>trace8</code> ont &eacute;t&eacute;
       ajout&eacute;s au dessus du niveau de journalisation <code>debug</code>.</dd>
 
-      <dt>Sections de configuration au niveau de la requ&ecirc;te</dt>
+      <dt>Sections de configuration au niveau requ&ecirc;te</dt>
       <dd>Les sections <directive module="core">If</directive>,
       <directive module="core" type="section">ElseIf</directive> et
       <directive module="core" type="section">Else</directive>
