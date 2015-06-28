@@ -1104,6 +1104,8 @@ static int uldap_cache_compare(request_rec *r, util_ldap_connection_t *ldc,
                 result = compare_nodep->result;
                 /* and unlock this read lock */
                 LDAP_CACHE_UNLOCK();
+
+                ap_log_rerror(APLOG_MARK, APLOG_TRACE5, 0, r, "ldap_compare_s(%pp, %s, %s, %s) = %s (cached)", ldc->ldap, dn, attrib, value, ldap_err2string(result));
                 return result;
             }
         }
@@ -1187,19 +1189,22 @@ start_over:
             }
             LDAP_CACHE_UNLOCK();
         }
+
         if (LDAP_COMPARE_TRUE == result) {
             ldc->reason = "Comparison true (adding to cache)";
-            return LDAP_COMPARE_TRUE;
         }
         else if (LDAP_COMPARE_FALSE == result) {
             ldc->reason = "Comparison false (adding to cache)";
-            return LDAP_COMPARE_FALSE;
+        }
+        else if (LDAP_NO_SUCH_ATTRIBUTE == result) {
+            ldc->reason = "Comparison no such attribute (adding to cache)";
         }
         else {
-            ldc->reason = "Comparison no such attribute (adding to cache)";
-            return LDAP_NO_SUCH_ATTRIBUTE;
+            ldc->reason = "Comparison undefined (adding to cache)";
         }
     }
+
+    ap_log_rerror(APLOG_MARK, APLOG_TRACE5, 0, r, "ldap_compare_s(%pp, %s, %s, %s) = %s", ldc->ldap, dn, attrib, value, ldap_err2string(result));
     return result;
 }
 

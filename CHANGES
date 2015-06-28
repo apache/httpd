@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_ldap: In some case, LDAP_NO_SUCH_ATTRIBUTE could be returned instead of
+     an error during a compare operation. [Eric Covener]
+
   *) mod_alias: Limit Redirect expressions to directory (Location) context
      and redirect statuses (implicit or explicit).
      [Yann Ylavic, Ruediger Pluem]
