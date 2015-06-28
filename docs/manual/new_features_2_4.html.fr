@@ -51,10 +51,10 @@ serveur HTTP Apache</h1>
       <dt>Modules multiprocessus (MPMs) chargeables à l'exécution</dt>
       <dd>Plusieurs MPMs peuvent maintenant être <a href="mpm.html#dynamic">compilés en tant que modules
       chargeables</a>. Le choix du MPM à utiliser s'effectue
-      à l'exécution.</dd>
+      à l'exécution via la directive <code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code>.</dd>
 
       <dt>MPM Event</dt>
-      <dd>Le <a href="mod/event.html">MPM Event</a> n'est plus au stade expérimental et est
+      <dd>Le <a href="mod/event.html">MPM Event</a> n'en est plus au stade expérimental et est
       maintenant pleinement supporté.</dd>
 
       <dt>Support du mode asynchrone</dt>
@@ -68,7 +68,7 @@ serveur HTTP Apache</h1>
       nouveaux niveaux <code>trace1</code> à <code>trace8</code> ont été
       ajoutés au dessus du niveau de journalisation <code>debug</code>.</dd>
 
-      <dt>Sections de configuration au niveau de la requête</dt>
+      <dt>Sections de configuration au niveau requête</dt>
       <dd>Les sections <code class="directive"><a href="./mod/core.html#if">If</a></code>,
       <code class="directive"><a href="./mod/core.html#elseif">&lt;ElseIf&gt;</a></code> et
       <code class="directive"><a href="./mod/core.html#else">&lt;Else&gt;</a></code>
