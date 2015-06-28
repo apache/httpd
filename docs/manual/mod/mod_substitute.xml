@@ -182,7 +182,7 @@ Substitute "s|http://internal.blog.example.com/|http://www.example.com/blog/|i"
     <directive>SubstituteInheritBefore</directive> is itself inherited,
     hence contexts that inherit it (those that don't specify their own
     <directive>SubstituteInheritBefore</directive> value) will apply the
-    closest defined merge order.
+    closest defined merge order.</p>
 </usage>
 </directivesynopsis>
 
