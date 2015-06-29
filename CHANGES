@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) http: Fix LimitRequestBody checks when there is no more bytes to read.
+     [Michael Kaufmann <mail michael-kaufmann.ch>]
+
   *) mod_ldap: In some case, LDAP_NO_SUCH_ATTRIBUTE could be returned instead of
      an error during a compare operation. [Eric Covener]
 

@@ -279,7 +279,6 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
     apr_bucket *e;
     http_ctx_t *ctx = f->ctx;
     apr_status_t rv;
-    apr_off_t totalread;
     int again;
 
     conf = (core_server_config *)
@@ -503,6 +502,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                 readbytes = ctx->remaining;
             }
             if (readbytes > 0) {
+                apr_off_t totalread;
 
                 rv = ap_get_brigade(f->next, b, mode, block, readbytes);
 
@@ -545,6 +545,23 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                     }
                 }
 
+                /* We have a limit in effect. */
+                if (ctx->limit) {
+                    /* FIXME: Note that we might get slightly confused on
+                     * chunked inputs as we'd need to compensate for the chunk
+                     * lengths which may not really count.  This seems to be up
+                     * for interpretation.
+                     */
+                    ctx->limit_used += totalread;
+                    if (ctx->limit < ctx->limit_used) {
+                        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, f->r,
+                                      APLOGNO(01591) "Read content length of "
+                                      "%" APR_OFF_T_FMT " is larger than the "
+                                      "configured limit of %" APR_OFF_T_FMT,
+                                      ctx->limit_used, ctx->limit);
+                        return APR_ENOSPC;
+                    }
+                }
             }
 
             /* If we have no more bytes remaining on a C-L request,
@@ -554,21 +571,6 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                 e = apr_bucket_eos_create(f->c->bucket_alloc);
                 APR_BRIGADE_INSERT_TAIL(b, e);
                 ctx->eos_sent = 1;
-            }
-
-            /* We have a limit in effect. */
-            if (ctx->limit) {
-                /* FIXME: Note that we might get slightly confused on chunked inputs
-                 * as we'd need to compensate for the chunk lengths which may not
-                 * really count.  This seems to be up for interpretation.  */
-                ctx->limit_used += totalread;
-                if (ctx->limit < ctx->limit_used) {
-                    ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, f->r, APLOGNO(01591)
-                                  "Read content-length of %" APR_OFF_T_FMT
-                                  " is larger than the configured limit"
-                                  " of %" APR_OFF_T_FMT, ctx->limit_used, ctx->limit);
-                    return APR_ENOSPC;
-                }
             }
 
             break;
