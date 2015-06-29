@@ -86,10 +86,9 @@ static void *merge_substitute_dcfg(apr_pool_t *p, void *basev, void *overv)
     subst_dir_conf *base = (subst_dir_conf *) basev;
     subst_dir_conf *over = (subst_dir_conf *) overv;
 
-    if (over->inherit_before < 0) {
-        over->inherit_before = (base->inherit_before > 0);
-    }
-    if (over->inherit_before) {
+    a->inherit_before = (over->inherit_before > 0 || (over->inherit_before < 0 &&
+                                                      base->inherit_before > 0));
+    if (a->inherit_before) {
         a->patterns = apr_array_append(p, base->patterns,
                                           over->patterns);
     }
