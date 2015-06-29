@@ -214,6 +214,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1687680
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-SubstituteInheritBefore-v2.patch
      +1: ylavic
+     -1: wrowe - dir merge corrupts RHS config, must be const, a-> is result
      ylavic: added r1687539 and discarded minfrin's vote (we must preserve
              the current behaviour).  SubstituteInheritBefore allows to
              configure the merge order; the default is Off in trunk (2.5+),
