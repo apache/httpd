@@ -111,6 +111,13 @@ RELEASE SHOWSTOPPERS:
      2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic, jim
 
+  *) Revert insufficiently thought-out mod_alias Limit expression patch
+        http://svn.apache.org/viewvc?view=revision&revision=1663259
+     +1: wrowe
+     [Mutually exclusive to multiple RedirectMatch patches proposed above,
+     but entirely possible to vote for both or vote against either.  An RM's
+     race to 3 +1's]
+
   *) http: Fix LimitRequestBody checks when there is no more bytes to read.
      [Michael Kaufmann <mail michael-kaufmann.ch>]
      trunk patch: http://svn.apache.org/r1688274
