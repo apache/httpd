@@ -221,7 +221,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1687539 
                   http://svn.apache.org/r1687680
                   http://svn.apache.org/r1688331
-     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-SubstituteInheritBefore-v3.patch
+                  http://svn.apache.org/r1688339
+                  http://svn.apache.org/r1688340
+                  http://svn.apache.org/r1688343
+     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-SubstituteInheritBefore-v4.patch
      +1: ylavic
      ylavic: Added r1687539 and discarded minfrin's vote (we must preserve
              the current behaviour).  SubstituteInheritBefore allows to
@@ -229,8 +232,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              but still On in 2.4.x thanks to the changes in the backport patch
              only => over->inherit_before = (base->inherit_before != 0) instead
              of (base->inherit_before > 0), plus the doc updated accordingly.
-             Added r1688331 to fix 'over'-write while merging (addresses -1
-             from wrowe).
+             Added r1688331 and following wrowe's commits to address the -1.
 
   *) core: Avoid a possible truncation of the faulty header included in the
      HTML response when LimitRequestFieldSize is reached.
