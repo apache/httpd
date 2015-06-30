@@ -86,9 +86,16 @@ static void *merge_substitute_dcfg(apr_pool_t *p, void *basev, void *overv)
     subst_dir_conf *base = (subst_dir_conf *) basev;
     subst_dir_conf *over = (subst_dir_conf *) overv;
 
-    a->inherit_before = (over->inherit_before > 0 || (over->inherit_before < 0 &&
-                                                      base->inherit_before > 0));
-    if (a->inherit_before) {
+    a->inherit_before = (over->inherit_before != -1)
+                            ? over->inherit_before
+                            : base->inherit_before;
+    /* SubstituteInheritBefore was the default behavior until 2.5.x,
+     * and may be re-enabled as desired; this original default behavior
+     * was to apply inherited subst patterns before locally scoped patterns.
+     * In later 2.2 and 2.4 versions, SubstituteInheritBefore may be toggled
+     * 'off' to follow the corrected/expected behavior, without violating POLS.
+     */
+    if (a->inherit_before == 1) {
         a->patterns = apr_array_append(p, base->patterns,
                                           over->patterns);
     }
