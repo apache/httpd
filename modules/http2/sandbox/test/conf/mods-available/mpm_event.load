@@ -1,0 +1,1 @@
+LoadModule mpm_event_module modules/mod_mpm_event.so

@@ -1,0 +1,64 @@
+diff -ur openssl-1.0.2c.orig/ssl/t1_lib.c openssl-1.0.2c/ssl/t1_lib.c
+--- openssl-1.0.2c.orig/ssl/t1_lib.c	2015-06-12 16:51:27.000000000 +0200
++++ openssl-1.0.2c/ssl/t1_lib.c	2015-06-23 09:29:51.000000000 +0200
+@@ -1974,6 +1974,8 @@
+ }
+ 
+ static int ssl_scan_clienthello_tlsext(SSL *s, unsigned char **p,
++                                       const unsigned char **palpn,
++                                       unsigned short *palpn_len,
+                                        unsigned char *d, int n, int *al)
+ {
+     unsigned short type;
+@@ -2360,7 +2362,7 @@
+ # ifndef OPENSSL_NO_NEXTPROTONEG
+         else if (type == TLSEXT_TYPE_next_proto_neg &&
+                  s->s3->tmp.finish_md_len == 0 &&
+-                 s->s3->alpn_selected == NULL) {
++                 *palpn == NULL) {
+             /*-
+              * We shouldn't accept this extension on a
+              * renegotiation.
+@@ -2384,8 +2386,9 @@
+ 
+         else if (type == TLSEXT_TYPE_application_layer_protocol_negotiation &&
+                  s->ctx->alpn_select_cb && s->s3->tmp.finish_md_len == 0) {
+-            if (tls1_alpn_handle_client_hello(s, data, size, al) != 0)
+-                return 0;
++            /* Store extension location for later processing */
++            *palpn = data;
++            *palpn_len = size;
+ # ifndef OPENSSL_NO_NEXTPROTONEG
+             /* ALPN takes precedence over NPN. */
+             s->s3->next_proto_neg_seen = 0;
+@@ -2469,6 +2472,8 @@
+                                  int n)
+ {
+     int al = -1;
++    const unsigned char *alpn = NULL;
++    unsigned short alpn_len = 0;
+     unsigned char *ptmp = *p;
+     /*
+      * Internally supported extensions are parsed first so SNI can be handled
+@@ -2476,7 +2481,7 @@
+      * switch the parent context using SSL_set_SSL_CTX and custom extensions
+      * need to be handled by the new SSL_CTX structure.
+      */
+-    if (ssl_scan_clienthello_tlsext(s, p, d, n, &al) <= 0) {
++    if (ssl_scan_clienthello_tlsext(s, p, &alpn, &alpn_len, d, n, &al) <= 0) {
+         ssl3_send_alert(s, SSL3_AL_FATAL, al);
+         return 0;
+     }
+@@ -2492,6 +2497,12 @@
+         return 0;
+     }
+ 
++    if (alpn != NULL) {
++        if (tls1_alpn_handle_client_hello(s, alpn, alpn_len, &al) != 0) {
++            ssl3_send_alert(s, SSL3_AL_FATAL, al);
++            return 0;
++        }
++    }
+     return 1;
+ }
+ 

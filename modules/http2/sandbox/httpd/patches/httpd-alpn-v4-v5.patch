@@ -1,0 +1,148 @@
+diff -ru modules/ssl/ssl_engine_kernel.c modules/ssl/ssl_engine_kernel.c
+--- modules/ssl/ssl_engine_kernel.c	2015-06-17 16:55:27.000000000 +0200
++++ modules/ssl/ssl_engine_kernel.c	2015-06-17 16:55:46.000000000 +0200
+@@ -1890,55 +1890,69 @@
+ }
+ 
+ #ifdef HAVE_TLSEXT
++apr_status_t ssl_select_vhost(conn_rec *c)
++{
++    SSLConnRec *sslconn = myConnConfig(c);
++    const char *servername;
++    
++    if (sslconn == NULL || sslconn->ssl == NULL) {
++        return APR_EINVAL;
++    }
++    else if (sslconn->vhost_selected) {
++        return APR_SUCCESS;
++    }
++    
++    servername = SSL_get_servername(sslconn->ssl, TLSEXT_NAMETYPE_host_name);
++    if (servername) {
++        if (ap_vhost_iterate_given_conn(c, ssl_find_vhost,
++                                        (void *)servername)) {
++            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(02043)
++                          "SSL virtual host for servername %s found",
++                          servername);
++            sslconn->vhost_selected = 1;
++            return APR_SUCCESS;
++        }
++        else {
++            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(02044)
++                          "No matching SSL virtual host for servername "
++                          "%s found (using default/first virtual host)",
++                          servername);
++            /*
++             * RFC 6066 section 3 says "It is NOT RECOMMENDED to send
++             * a warning-level unrecognized_name(112) alert, because
++             * the client's behavior in response to warning-level alerts
++             * is unpredictable."
++             *
++             * To maintain backwards compatibility in mod_ssl, we
++             * no longer send any alert (neither warning- nor fatal-level),
++             * i.e. we take the second action suggested in RFC 6066:
++             * "If the server understood the ClientHello extension but
++             * does not recognize the server name, the server SHOULD take
++             * one of two actions: either abort the handshake by sending
++             * a fatal-level unrecognized_name(112) alert or continue
++             * the handshake."
++             */
++        }
++    }
++    else {
++        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(02645)
++                      "Server name not provided via TLS extension "
++                      "(using default/first virtual host)");
++    }
++    
++    return APR_NOTFOUND;
++}
+ /*
+  * This callback function is executed when OpenSSL encounters an extended
+  * client hello with a server name indication extension ("SNI", cf. RFC 6066).
+  */
+ int ssl_callback_ServerNameIndication(SSL *ssl, int *al, modssl_ctx_t *mctx)
+ {
+-    const char *servername =
+-                SSL_get_servername(ssl, TLSEXT_NAMETYPE_host_name);
+     conn_rec *c = (conn_rec *)SSL_get_app_data(ssl);
+-
+-    if (c) {
+-        if (servername) {
+-            if (ap_vhost_iterate_given_conn(c, ssl_find_vhost,
+-                                            (void *)servername)) {
+-                ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(02043)
+-                              "SSL virtual host for servername %s found",
+-                              servername);
+-                return SSL_TLSEXT_ERR_OK;
+-            }
+-            else {
+-                ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(02044)
+-                              "No matching SSL virtual host for servername "
+-                              "%s found (using default/first virtual host)",
+-                              servername);
+-                /*
+-                 * RFC 6066 section 3 says "It is NOT RECOMMENDED to send
+-                 * a warning-level unrecognized_name(112) alert, because
+-                 * the client's behavior in response to warning-level alerts
+-                 * is unpredictable."
+-                 *
+-                 * To maintain backwards compatibility in mod_ssl, we
+-                 * no longer send any alert (neither warning- nor fatal-level),
+-                 * i.e. we take the second action suggested in RFC 6066:
+-                 * "If the server understood the ClientHello extension but
+-                 * does not recognize the server name, the server SHOULD take
+-                 * one of two actions: either abort the handshake by sending
+-                 * a fatal-level unrecognized_name(112) alert or continue
+-                 * the handshake."
+-                 */
+-            }
+-        }
+-        else {
+-            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(02645)
+-                          "Server name not provided via TLS extension "
+-                          "(using default/first virtual host)");
+-        }
+-    }
+-
+-    return SSL_TLSEXT_ERR_NOACK;
++    apr_status_t status;
++    
++    status = ssl_select_vhost(c);
++    return (status == APR_SUCCESS)? SSL_TLSEXT_ERR_OK : SSL_TLSEXT_ERR_NOACK;
+ }
+ 
+ /*
+@@ -2209,6 +2223,12 @@
+         return SSL_TLSEXT_ERR_OK;
+     }
+     
++    /* Make sure that we set the correct vhost based on SNI servername
++     * information. This is supposed to be done by the SNI callback, but
++     * currently the ssl libs call the ALPN callback *before* the SNI one.
++     */
++    ssl_select_vhost(c);
++    
+     if (inlen == 0) {
+         // someone tries to trick us?
+         ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO(02837)
+diff -ru modules/ssl/ssl_private.h modules/ssl/ssl_private.h
+--- modules/ssl/ssl_private.h	2015-06-17 16:55:27.000000000 +0200
++++ modules/ssl/ssl_private.h	2015-06-17 16:55:46.000000000 +0200
+@@ -453,7 +453,7 @@
+     apr_array_header_t *alpn_proposefns; /* list of ssl_alpn_propose_protos callbacks */
+     apr_array_header_t *alpn_negofns; /* list of ssl_alpn_proto_negotiated callbacks. */
+ #endif
+-
++    int vhost_selected;
+     server_rec *server;
+ } SSLConnRec;
+ 
+@@ -808,6 +808,7 @@
+ void         ssl_callback_DelSessionCacheEntry(SSL_CTX *, SSL_SESSION *);
+ void         ssl_callback_Info(const SSL *, int, int);
+ #ifdef HAVE_TLSEXT
++apr_status_t ssl_select_vhost(conn_rec *c);
+ int          ssl_callback_ServerNameIndication(SSL *, int *, modssl_ctx_t *);
+ #endif
+ #ifdef HAVE_TLS_SESSION_TICKETS
