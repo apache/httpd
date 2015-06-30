@@ -106,10 +106,6 @@ apr_status_t h2_conn_child_init(apr_pool_t *pool, server_rec *s)
         else if (!strcmp("prefork.c", m->name)) {
             mpm_type = H2_MPM_PREFORK;
             mpm_module = m;
-            /* prefork reports 1 thread per child, also as max */
-            if (maxw == 1) {
-                maxw = 8; /* number of cores maybe? */
-            }
         }
         else if (!strcmp("mod_ssl.c", m->name)) {
             ssl_module = m;

@@ -73,6 +73,7 @@ struct h2_mplx {
     apr_pool_t *spare_pool;           /* spare pool, ready for next stream */
     struct h2_stream_set *closed;     /* streams closed, but task ongoing */
     struct h2_workers *workers;
+    int file_handles_allowed;
 };
 
 /*******************************************************************************
@@ -214,9 +215,6 @@ struct h2_stream *h2_mplx_next_submit(h2_mplx *m,
  * Reads output data from the given stream. Will never block, but
  * return APR_EAGAIN until data arrives or the stream is closed.
  */
-apr_status_t h2_mplx_out_read(h2_mplx *mplx, int stream_id, 
-                              char *buffer, apr_size_t *plen, int *peos);
-
 apr_status_t h2_mplx_out_readx(h2_mplx *mplx, int stream_id, 
                                h2_io_data_cb *cb, void *ctx, 
                                apr_size_t *plen, int *peos);

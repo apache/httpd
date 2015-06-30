@@ -40,6 +40,7 @@ struct h2_io {
     struct apr_thread_cond_t *output_drained; /* block on writing */
     
     struct h2_response *response;/* submittable response created */
+    int files_handles_owned;
 };
 
 /*******************************************************************************
@@ -101,15 +102,12 @@ apr_status_t h2_io_in_close(h2_io *io);
  * @param plen the requested max len, set to amount of data on return
  * @param peos != 0 iff the end of stream has been reached
  */
-apr_status_t h2_io_out_read(h2_io *io, char *buffer, 
-                            apr_size_t *plen, int *peos);
-
 apr_status_t h2_io_out_readx(h2_io *io,  
                              h2_io_data_cb *cb, void *ctx, 
                              apr_size_t *plen, int *peos);
 
 apr_status_t h2_io_out_write(h2_io *io, apr_bucket_brigade *bb, 
-                             apr_size_t maxlen);
+                             apr_size_t maxlen, int *pfile_buckets_allowed);
 
 /**
  * Closes the input. After existing data has been read, APR_EOF will

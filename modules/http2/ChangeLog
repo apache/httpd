@@ -1,3 +1,21 @@
+v0.8.0
+-------------------------------------------------------------------------------- 
+ * when serving static files, these are kept open longer (and buffer copied
+   less). Use config "H2SessionExtraFiles" to change the value. The more you
+   can give per connection, the better. But you may run out of open file 
+   handles, if not careful. Default value is 5, which seems to work on my
+   config with mpms worker, event and prefork. Basically, eaach httpd process
+   needs at least #connections + #workers + (#conn * #extrafiles) available.
+ * main connection buffering, buffer sizes and write sizes are configurable,
+   see README.md for the list of options. buffer sizes and write sizes influence
+   the TLS performance. Defaults seem reasonably, but ymmv.
+ * general performance improved due to better handling of stream close and
+   resource cleanup
+ * prefork mpm confirmed working. Unless configured otherwise, each session
+   will only have 1 worker thread. Raise this with "H2MaxWorkers"
+ * changed sandbox cipher config to mozilla recommendation (thanks Lucas)
+ * sandbox update to nghttp2 1.0.5
+
 v0.7.3
 --------------------------------------------------------------------------------
  * sandbox update to nghttp2 1.0.4

@@ -412,32 +412,28 @@ static apr_status_t send_data(h2_session *session, const char *data,
     return h2_conn_io_write(&session->io, data, length);
 }
 
-#if NGHTTP2_HAS_DATA_CB
-
 static apr_status_t pass_data(void *ctx, 
                               const char *data, apr_size_t length)
 {
     return send_data((h2_session*)ctx, data, length);
 }
 
-int on_send_data_cb(nghttp2_session *ngh2, 
-                    nghttp2_frame *frame, 
-                    const uint8_t *framehd, 
-                    size_t length, 
-                    nghttp2_data_source *source, 
-                    void *userp)
+static int on_send_data_cb(nghttp2_session *ngh2, 
+                           nghttp2_frame *frame, 
+                           const uint8_t *framehd, 
+                           size_t length, 
+                           nghttp2_data_source *source, 
+                           void *userp)
 {
     apr_status_t status = APR_SUCCESS;
     h2_session *session = (h2_session *)userp;
     int stream_id = (int)frame->hd.stream_id;
     const unsigned char padlen = frame->data.padlen;
-    apr_size_t frame_len = 9 + (padlen? 1 : 0) + length + padlen;
-    apr_size_t data_len = length;
-    apr_size_t avail, chunk_len;
-    int rv = 0;
     int eos;
     h2_stream *stream;
     
+    (void)ngh2;
+    (void)source;
     if (session->aborted) {
         return NGHTTP2_ERR_CALLBACK_FAILURE;
     }
@@ -458,7 +454,6 @@ int on_send_data_cb(nghttp2_session *ngh2,
 
         if (status == APR_SUCCESS) {
             apr_size_t len = length;
-            int eos = 0;
             status = h2_stream_readx(stream, pass_data, session, 
                                      &len, &eos);
             if (status == APR_SUCCESS && len != length) {
@@ -488,8 +483,6 @@ int on_send_data_cb(nghttp2_session *ngh2,
     return h2_session_status_from_apr_status(status);
 }
 
-#endif
-
 
 #define NGH2_SET_CALLBACK(callbacks, name, fn)\
 nghttp2_session_callbacks_set_##name##_callback(callbacks, fn)
@@ -514,9 +507,7 @@ static apr_status_t init_callbacks(conn_rec *c, nghttp2_session_callbacks **pcb)
     NGH2_SET_CALLBACK(*pcb, on_stream_close, on_stream_close_cb);
     NGH2_SET_CALLBACK(*pcb, on_begin_headers, on_begin_headers_cb);
     NGH2_SET_CALLBACK(*pcb, on_header, on_header_cb);
-#if NGHTTP2_HAS_DATA_CB
     NGH2_SET_CALLBACK(*pcb, send_data, on_send_data_cb);
-#endif
     
     return APR_SUCCESS;
 }
@@ -990,7 +981,7 @@ static ssize_t stream_data_cb(nghttp2_session *ng2s,
 {
     h2_session *session = (h2_session *)puser;
     AP_DEBUG_ASSERT(session);
-    (void)ng2s;(void)source;
+    (void)ng2s;(void)source;(void)buf;
     
     h2_stream *stream = h2_stream_set_get(session->streams, stream_id);
     if (!stream) {
@@ -1004,17 +995,10 @@ static ssize_t stream_data_cb(nghttp2_session *ng2s,
     apr_size_t nread = length;
     int eos = 0;
     
-#if NGHTTP2_HAS_DATA_CB
     apr_status_t status = h2_stream_prep_read(stream, &nread, &eos);
     if (nread) {
         *data_flags |=  NGHTTP2_DATA_FLAG_NO_COPY;
     }
-#else
-    /* Try to pop data buckets from our queue for this stream
-     * until we see EOS or the buffer is full.
-     */
-    apr_status_t status = h2_stream_read(stream, (char*)buf, &nread, &eos);
-#endif
     
     switch (status) {
         case APR_SUCCESS:

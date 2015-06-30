@@ -130,11 +130,11 @@ h2_mplx *h2_mplx_create(conn_rec *c, apr_pool_t *parent, h2_workers *workers)
         m->closed = h2_stream_set_create(m->pool);
         m->stream_max_mem = h2_config_geti(conf, H2_CONF_STREAM_MAX_MEM);
         m->workers = workers;
+        
+        m->file_handles_allowed = h2_config_geti(conf, H2_CONF_SESSION_FILES);
     }
     return m;
 }
-
-#define REF_COUNT_ATOMIC    1
 
 static void reference(h2_mplx *m)
 {
@@ -152,29 +152,11 @@ static void release(h2_mplx *m)
 
 void h2_mplx_reference(h2_mplx *m)
 {
-    if (REF_COUNT_ATOMIC) {
-        reference(m);
-    }
-    else {
-        apr_status_t status = apr_thread_mutex_lock(m->lock);
-        if (APR_SUCCESS == status) {
-            reference(m);
-            apr_thread_mutex_unlock(m->lock);
-        }
-    }
+    reference(m);
 }
 void h2_mplx_release(h2_mplx *m)
 {
-    if (REF_COUNT_ATOMIC) {
-        release(m);
-    }
-    else {
-        apr_status_t status = apr_thread_mutex_lock(m->lock);
-        if (APR_SUCCESS == status) {
-            release(m);
-            apr_thread_mutex_unlock(m->lock);
-        }
-    }
+    release(m);
 }
 
 static void workers_register(h2_mplx *m) {
@@ -287,6 +269,10 @@ static void stream_destroy(h2_mplx *m, h2_stream *stream, h2_io *io)
     }
     h2_stream_destroy(stream);
     if (io) {
+        /* The pool is cleared/destroyed which also closes all
+         * allocated file handles. Give this count back to our
+         * file handle pool. */
+        m->file_handles_allowed += io->files_handles_owned;
         h2_io_set_remove(m->stream_ios, io);
         h2_io_destroy(io);
     }
@@ -450,30 +436,6 @@ apr_status_t h2_mplx_in_update_windows(h2_mplx *m,
     return status;
 }
 
-apr_status_t h2_mplx_out_read(h2_mplx *m, int stream_id, 
-                              char *buffer, apr_size_t *plen, int *peos)
-{
-    AP_DEBUG_ASSERT(m);
-    if (m->aborted) {
-        return APR_ECONNABORTED;
-    }
-    apr_status_t status = apr_thread_mutex_lock(m->lock);
-    if (APR_SUCCESS == status) {
-        h2_io *io = h2_io_set_get(m->stream_ios, stream_id);
-        if (io) {
-            status = h2_io_out_read(io, buffer, plen, peos);
-            if (status == APR_SUCCESS && io->output_drained) {
-                apr_thread_cond_signal(io->output_drained);
-            }
-        }
-        else {
-            status = APR_ECONNABORTED;
-        }
-        apr_thread_mutex_unlock(m->lock);
-    }
-    return status;
-}
-
 apr_status_t h2_mplx_out_readx(h2_mplx *m, int stream_id, 
                                h2_io_data_cb *cb, void *ctx, 
                                apr_size_t *plen, int *peos)
@@ -545,7 +507,8 @@ static apr_status_t out_write(h2_mplx *m, h2_io *io,
            && (status == APR_SUCCESS)
            && !is_aborted(m, &status)) {
         
-        status = h2_io_out_write(io, bb, m->stream_max_mem);
+        status = h2_io_out_write(io, bb, m->stream_max_mem, 
+                                 &m->file_handles_allowed);
         
         /* Wait for data to drain until there is room again */
         while (!APR_BRIGADE_EMPTY(bb) 

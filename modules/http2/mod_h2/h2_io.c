@@ -81,7 +81,7 @@ apr_status_t h2_io_in_read(h2_io *io, apr_bucket_brigade *bb,
     apr_brigade_length(bb, 1, &start_len);
     apr_bucket *last = APR_BRIGADE_LAST(bb);
     apr_status_t status = h2_util_move(bb, io->bbin, maxlen, 0, 
-                                       NULL, "h2_io_in_read");
+                                       "h2_io_in_read");
     if (status == APR_SUCCESS) {
         apr_bucket *nlast = APR_BRIGADE_LAST(bb);
         apr_off_t end_len = 0;
@@ -105,7 +105,7 @@ apr_status_t h2_io_in_write(h2_io *io, apr_bucket_brigade *bb)
             io->bbin = apr_brigade_create(io->bbout->p, 
                                           io->bbout->bucket_alloc);
         }
-        return h2_util_move(io->bbin, bb, 0, 0, NULL, "h2_io_in_write");
+        return h2_util_move(io->bbin, bb, 0, 0, "h2_io_in_write");
     }
     return APR_SUCCESS;
 }
@@ -120,17 +120,6 @@ apr_status_t h2_io_in_close(h2_io *io)
     return APR_SUCCESS;
 }
 
-apr_status_t h2_io_out_read(h2_io *io, char *buffer, 
-                            apr_size_t *plen, int *peos)
-{
-    if (buffer == NULL) {
-        /* just checking length available */
-        return h2_util_bb_avail(io->bbout, plen, peos);
-    }
-    
-    return h2_util_bb_read(io->bbout, buffer, plen, peos);
-}
-
 apr_status_t h2_io_out_readx(h2_io *io,  
                              h2_io_data_cb *cb, void *ctx, 
                              apr_size_t *plen, int *peos)
@@ -143,9 +132,27 @@ apr_status_t h2_io_out_readx(h2_io *io,
 }
 
 apr_status_t h2_io_out_write(h2_io *io, apr_bucket_brigade *bb, 
-                             apr_size_t maxlen)
+                             apr_size_t maxlen, int *pfile_handles_allowed)
 {
-    return h2_util_move(io->bbout, bb, maxlen, 0, NULL, "h2_io_out_write");
+    /* Let's move the buckets from the request processing in here, so
+     * that the main thread can read them when it has time/capacity.
+     *
+     * Move at most "maxlen" memory bytes. If buckets remain, it is
+     * the caller's responsibility to take care of this.
+     *
+     * We allow passing of file buckets as long as we do not have too
+     * many open files already buffered. Otherwise we will run out of
+     * file handles.
+     */
+    int start_allowed = *pfile_handles_allowed;
+    apr_status_t status;
+    status = h2_util_move(io->bbout, bb, maxlen, pfile_handles_allowed, 
+                          "h2_io_out_write");
+    /* track # file buckets moved into our pool */
+    if (start_allowed != *pfile_handles_allowed) {
+        io->files_handles_owned += (start_allowed - *pfile_handles_allowed);
+    }
+    return status;
 }
 
 
