@@ -212,15 +212,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1684900
                   http://svn.apache.org/r1687539 
                   http://svn.apache.org/r1687680
-     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-SubstituteInheritBefore-v2.patch
+                  http://svn.apache.org/r1688331
+     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-SubstituteInheritBefore-v3.patch
      +1: ylavic
-     -1: wrowe - dir merge corrupts RHS config, must be const, a-> is result
-     ylavic: added r1687539 and discarded minfrin's vote (we must preserve
+     ylavic: Added r1687539 and discarded minfrin's vote (we must preserve
              the current behaviour).  SubstituteInheritBefore allows to
              configure the merge order; the default is Off in trunk (2.5+),
              but still On in 2.4.x thanks to the changes in the backport patch
              only => over->inherit_before = (base->inherit_before != 0) instead
              of (base->inherit_before > 0), plus the doc updated accordingly.
+             Added r1688331 to fix 'over'-write while merging (addresses -1
+             from wrowe).
 
   *) core: Avoid a possible truncation of the faulty header included in the
      HTML response when LimitRequestFieldSize is reached.
