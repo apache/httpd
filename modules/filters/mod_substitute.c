@@ -75,6 +75,7 @@ static void *create_substitute_dcfg(apr_pool_t *p, char *d)
 
     dcfg->patterns = apr_array_make(p, 10, sizeof(subst_pattern_t));
     dcfg->max_line_length = AP_SUBST_MAX_LINE_LENGTH;
+    dcfg->max_line_length_set = 0;
     dcfg->inherit_before = -1;
     return dcfg;
 }
@@ -104,9 +105,9 @@ static void *merge_substitute_dcfg(apr_pool_t *p, void *basev, void *overv)
                                           base->patterns);
     }
     a->max_line_length = over->max_line_length_set ?
-                         over->max_line_length : base->max_line_length;
-    a->max_line_length_set = over->max_line_length_set ?
-                             over->max_line_length_set : base->max_line_length_set;
+                             over->max_line_length : base->max_line_length;
+    a->max_line_length_set = over->max_line_length_set
+                           | base->max_line_length_set;
     return a;
 }
 
