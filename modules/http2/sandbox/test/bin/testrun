@@ -1,0 +1,79 @@
+#!/bin/bash
+#
+#
+#
+
+
+SCHEME=https
+HOST=test.example.org
+PORT=12346
+
+URL=$SCHEME://$HOST:$PORT
+
+WRK=../wrk/wrk
+H2LOAD=${H2LOAD:-sandbox/install/bin/h2load}
+
+run_wrk() {
+    path=$1
+    $WRK -c100 -t${THREADS:-8} -d30s $URL$path >/tmp/$$.out 2>&1
+
+    stat=$( fgrep 'Requests/sec: ' /tmp/$$.out )
+    reqs=${stat##Requests/sec: }
+}
+
+run_load() {
+    path=$1
+    $H2LOAD -c 100 -t ${THREADS:-8} -m ${MAX_STREAMS:-1} -n 500000 $URL$path > /tmp/$$.out 2>&1
+
+    fin=$( fgrep 'finished in ' /tmp/$$.out )
+    stat=$( fgrep 'requests: ' /tmp/$$.out )
+
+    case "$stat" in
+        *", 0 failed,"*)
+            # ok
+            reqs=${fin#*, }
+            reqs=${reqs%% req/s,*}
+            mbs=${fin##*, }
+            ;;
+        *)
+            reqs="NaN ($stat)"
+            mbs="NaN ($stat)"
+            ;;
+    esac
+
+}
+
+run_m() {
+    path=$1
+    iterations="$2"
+    for m in $iterations; do
+        MAX_STREAMS=$m
+        run_load $path
+        echo -n ", $reqs"
+    done
+}
+
+run_iter() {
+    path=$1
+    max=$2
+    iterations=$3
+    echo -n "m, wrk"
+    for i in $iterations; do
+        echo -n ", $i"
+    done
+    echo ""
+    i=1
+    while [ $i -le $max ]; do
+        echo -n "$i"
+        run_wrk $path
+        echo -n ", $reqs"
+        run_m $path "$iterations"
+        echo ""
+        i=$[ i + 1 ]
+    done
+}
+
+URL_PATH=$1
+
+echo "$URL_PATH, 500k requests, req/s"
+run_iter $URL_PATH 10 "1 2 3 4 5 6 7 8 9 10 15 20 40 100"

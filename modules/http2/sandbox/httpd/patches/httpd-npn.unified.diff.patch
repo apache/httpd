@@ -1,0 +1,366 @@
+diff -ru modules/ssl/mod_ssl.c modules/ssl/mod_ssl.c
+--- modules/ssl/mod_ssl.c	2015-04-27 17:41:19.000000000 +0200
++++ modules/ssl/mod_ssl.c	2015-04-27 17:45:56.000000000 +0200
+@@ -273,7 +273,7 @@
+ 		"OpenSSL configuration command")
+ #endif
+ 
+-#ifdef HAVE_TLS_ALPN
++#if defined(HAVE_TLS_ALPN) || defined(HAVE_TLS_NPN)
+     SSL_CMD_SRV(ALPNPreference, ITERATE,
+                 "Preference in Application-Layer Protocol Negotiation (ALPN), "
+                 "protocols are chosen in the specified order")
+@@ -429,6 +429,37 @@
+     return 1;
+ }
+ 
++static int modssl_register_npn(conn_rec *c, 
++                               ssl_npn_advertise_protos advertisefn,
++                               ssl_npn_proto_negotiated negotiatedfn)
++{
++#if defined(HAVE_TLS_ALPN) || defined(HAVE_TLS_NPN)
++    SSLConnRec *sslconn = myConnConfig(c);
++
++    if (!sslconn) {
++        return DECLINED;
++    }
++
++    if (!sslconn->npn_advertfns) {
++        sslconn->npn_advertfns = 
++            apr_array_make(c->pool, 5, sizeof(ssl_npn_advertise_protos));
++        sslconn->npn_negofns = 
++            apr_array_make(c->pool, 5, sizeof(ssl_npn_proto_negotiated));
++    }
++
++    if (advertisefn)
++        APR_ARRAY_PUSH(sslconn->npn_advertfns, ssl_npn_advertise_protos) =
++            advertisefn;
++    if (negotiatedfn)
++        APR_ARRAY_PUSH(sslconn->npn_negofns, ssl_npn_proto_negotiated) =
++            negotiatedfn;
++
++    return OK;
++#else
++    return DECLINED;
++#endif
++}
++
+ static int modssl_register_alpn(conn_rec *c,
+                                ssl_alpn_propose_protos advertisefn,
+                                ssl_alpn_proto_negotiated negotiatedfn)
+@@ -623,6 +653,7 @@
+ 
+     APR_REGISTER_OPTIONAL_FN(ssl_proxy_enable);
+     APR_REGISTER_OPTIONAL_FN(ssl_engine_disable);
++    APR_REGISTER_OPTIONAL_FN(modssl_register_npn);
+     APR_REGISTER_OPTIONAL_FN(modssl_register_alpn);
+ 
+     ap_register_auth_provider(p, AUTHZ_PROVIDER_GROUP, "ssl",
+diff -ru modules/ssl/mod_ssl.h modules/ssl/mod_ssl.h
+--- modules/ssl/mod_ssl.h	2015-04-27 17:41:19.000000000 +0200
++++ modules/ssl/mod_ssl.h	2015-04-27 17:45:56.000000000 +0200
+@@ -63,6 +63,41 @@
+ 
+ APR_DECLARE_OPTIONAL_FN(int, ssl_engine_disable, (conn_rec *));
+ 
++/** The npn_advertise_protos callback allows another modules to add
++ * entries to the list of protocol names advertised by the server
++ * during the Next Protocol Negotiation (NPN) portion of the SSL
++ * handshake.  The callback is given the connection and an APR array;
++ * it should push one or more char*'s pointing to NUL-terminated
++ * strings (such as "http/1.1" or "spdy/2") onto the array and return
++ * OK.  To prevent further processing of (other modules') callbacks,
++ * return DONE. */
++typedef int (*ssl_npn_advertise_protos)(conn_rec *connection, 
++                                        apr_array_header_t *protos);
++
++/** The npn_proto_negotiated callback allows other modules to discover
++ * the name of the protocol that was chosen during the Next Protocol
++ * Negotiation (NPN) portion of the SSL handshake.  Note that this may
++ * be the empty string (in which case modules should probably assume
++ * HTTP), or it may be a protocol that was never even advertised by
++ * the server.  The callback is given the connection, a
++ * non-NUL-terminated string containing the protocol name, and the
++ * length of the string; it should do something appropriate
++ * (i.e. insert or remove filters) and return OK.  To prevent further
++ * processing of (other modules') callbacks, return DONE. */
++typedef int (*ssl_npn_proto_negotiated)(conn_rec *connection, 
++                                        const char *proto_name,
++                                        apr_size_t proto_name_len);
++
++/* An optional function which can be used to register a pair of
++ * callbacks for NPN handling.  This optional function should be
++ * invoked from a pre_connection hook which runs *after* mod_ssl.c's
++ * pre_connection hook.  The function returns OK if the callbacks are
++ * register, or DECLINED otherwise (for example if mod_ssl does not
++ * support NPN).  */
++APR_DECLARE_OPTIONAL_FN(int, modssl_register_npn, (conn_rec *conn, 
++                                                   ssl_npn_advertise_protos advertisefn,
++                                                   ssl_npn_proto_negotiated negotiatedfn));
++
+ /** The alpn_propose_proto callback allows other modules to propose
+  * the name of the protocol that will be chosen during the
+  * Application-Layer Protocol Negotiation (ALPN) portion of the SSL handshake.
+diff -ru modules/ssl/ssl_engine_config.c modules/ssl/ssl_engine_config.c
+--- modules/ssl/ssl_engine_config.c	2015-04-27 17:41:19.000000000 +0200
++++ modules/ssl/ssl_engine_config.c	2015-04-27 17:45:56.000000000 +0200
+@@ -159,7 +159,7 @@
+     SSL_CONF_CTX_set_flags(mctx->ssl_ctx_config, SSL_CONF_FLAG_CERTIFICATE);
+     mctx->ssl_ctx_param = apr_array_make(p, 5, sizeof(ssl_ctx_param_t));
+ #endif
+-#ifdef HAVE_TLS_ALPN
++#if defined(HAVE_TLS_ALPN) || defined(HAVE_TLS_NPN)
+     mctx->ssl_alpn_pref = apr_array_make(p, 5, sizeof(const char *));
+ #endif
+ }
+@@ -301,7 +301,7 @@
+ #ifdef HAVE_SSL_CONF_CMD
+     cfgMergeArray(ssl_ctx_param);
+ #endif
+-#ifdef HAVE_TLS_ALPN
++#if defined(HAVE_TLS_ALPN) || defined(HAVE_TLS_NPN)
+     cfgMergeArray(ssl_alpn_pref);
+ #endif
+ }
+@@ -1875,7 +1875,7 @@
+ }
+ #endif
+ 
+-#ifdef HAVE_TLS_ALPN
++#if defined(HAVE_TLS_ALPN) || defined(HAVE_TLS_NPN)
+ const char *ssl_cmd_SSLALPNPreference(cmd_parms *cmd, void *dcfg,
+                                       const char *protocol)
+ {
+diff -ru modules/ssl/ssl_engine_init.c modules/ssl/ssl_engine_init.c
+--- modules/ssl/ssl_engine_init.c	2015-04-27 17:41:19.000000000 +0200
++++ modules/ssl/ssl_engine_init.c	2015-04-27 17:45:56.000000000 +0200
+@@ -628,6 +629,11 @@
+     SSL_CTX_set_alpn_select_cb(
+        ctx, ssl_callback_alpn_select, NULL);
+ #endif
++
++#ifdef HAVE_TLS_NPN
++    SSL_CTX_set_next_protos_advertised_cb(
++        ctx, ssl_callback_AdvertiseNextProtos, NULL);
++#endif
+ }
+ 
+ static apr_status_t ssl_init_ctx_verify(server_rec *s,
+diff -ru modules/ssl/ssl_engine_io.c modules/ssl/ssl_engine_io.c
+--- modules/ssl/ssl_engine_io.c	2015-04-27 17:41:19.000000000 +0200
++++ modules/ssl/ssl_engine_io.c	2015-04-27 17:45:56.000000000 +0200
+@@ -298,7 +298,8 @@
+     apr_pool_t *pool;
+     char buffer[AP_IOBUFSIZE];
+     ssl_filter_ctx_t *filter_ctx;
+-#ifdef HAVE_TLS_ALPN
++#if defined(HAVE_TLS_ALPN) || defined(HAVE_TLS_NPN)
++    int npn_finished;  /* 1 if NPN has finished, 0 otherwise */
+     int alpn_finished;  /* 1 if ALPN has finished, 0 otherwise */
+ #endif
+ } bio_filter_in_ctx_t;
+@@ -1447,6 +1446,37 @@
+     }
+ #endif
+ 
++#ifdef HAVE_TLS_NPN
++    /* By this point, Next Protocol Negotiation (NPN) should be completed (if
++     * our version of OpenSSL supports it).  If we haven't already, find out
++     * which protocol was decided upon and inform other modules by calling
++     * npn_proto_negotiated_hook. */
++    if (!inctx->npn_finished) {
++        SSLConnRec *sslconn = myConnConfig(f->c);
++        const unsigned char *next_proto = NULL;
++        unsigned next_proto_len = 0;
++        int n;
++
++        if (sslconn->npn_negofns) {
++            SSL_get0_next_proto_negotiated(
++                inctx->ssl, &next_proto, &next_proto_len);
++            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, f->c,
++                          APLOGNO(02306) "SSL NPN negotiated protocol: '%*s'",
++                          next_proto_len, (const char*)next_proto);
++            
++            for (n = 0; n < sslconn->npn_negofns->nelts; n++) {
++                ssl_npn_proto_negotiated fn = 
++                    APR_ARRAY_IDX(sslconn->npn_negofns, n, ssl_npn_proto_negotiated);
++                
++                if (fn(f->c, (const char *)next_proto, next_proto_len) == DONE)
++                    break;
++            }
++        }
++            
++        inctx->npn_finished = 1;
++    }
++#endif
++
+     return APR_SUCCESS;
+ }
+ 
+@@ -1928,9 +1958,8 @@
+     inctx->block = APR_BLOCK_READ;
+     inctx->pool = c->pool;
+     inctx->filter_ctx = filter_ctx;
+-#ifdef HAVE_TLS_ALPN
++    inctx->npn_finished = 0;
+     inctx->alpn_finished = 0;
+-#endif
+ }
+ 
+ /* The request_rec pointer is passed in here only to ensure that the
+diff -ru modules/ssl/ssl_engine_kernel.c modules/ssl/ssl_engine_kernel.c
+--- modules/ssl/ssl_engine_kernel.c	2015-04-27 17:41:19.000000000 +0200
++++ modules/ssl/ssl_engine_kernel.c	2015-04-27 17:45:56.000000000 +0200
+@@ -2283,6 +2282,96 @@
+     return SSL_TLSEXT_ERR_OK;
+ }
+ #endif
++#if defined(HAVE_TLS_NPN)
++/*
++ * This callback function is executed when SSL needs to decide what protocols
++ * to advertise during Next Protocol Negotiation (NPN).  It must produce a
++ * string in wire format -- a sequence of length-prefixed strings -- indicating
++ * the advertised protocols.  Refer to SSL_CTX_set_next_protos_advertised_cb
++ * in OpenSSL for reference.
++ */
++int ssl_callback_AdvertiseNextProtos(SSL *ssl, const unsigned char **data_out,
++                                     unsigned int *size_out, void *arg)
++{
++    conn_rec *c = (conn_rec*)SSL_get_app_data(ssl);
++    SSLConnRec *sslconn = myConnConfig(c);
++    apr_array_header_t *protos;
++    int num_protos;
++    unsigned int size;
++    int i;
++    unsigned char *data;
++    unsigned char *start;
++
++    *data_out = NULL;
++    *size_out = 0;
++
++    /* If the connection object is not available, or there are no NPN
++     * hooks registered, then there's nothing for us to do. */
++    if (c == NULL || sslconn->npn_advertfns == NULL) {
++        return SSL_TLSEXT_ERR_OK;
++    }
++
++    /* Invoke our npn_advertise_protos hook, giving other modules a chance to
++     * add alternate protocol names to advertise. */
++    protos = apr_array_make(c->pool, 0, sizeof(char *));
++    for (i = 0; i < sslconn->npn_advertfns->nelts; i++) {
++        ssl_npn_advertise_protos fn = 
++            APR_ARRAY_IDX(sslconn->npn_advertfns, i, ssl_npn_advertise_protos);
++        
++        if (fn(c, protos) == DONE)
++            break;
++    }
++    num_protos = protos->nelts;
++
++    /* We now have a list of null-terminated strings; we need to concatenate
++     * them together into a single string, where each protocol name is prefixed
++     * by its length.  First, calculate how long that string will be. */
++    size = 0;
++    for (i = 0; i < num_protos; ++i) {
++        const char *string = APR_ARRAY_IDX(protos, i, const char*);
++        unsigned int length = strlen(string);
++        /* If the protocol name is too long (the length must fit in one byte),
++         * then log an error and skip it. */
++        if (length > 255) {
++            ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO(02307)
++                          "SSL NPN protocol name too long (length=%u): %s",
++                          length, string);
++            continue;
++        }
++        /* Leave room for the length prefix (one byte) plus the protocol name
++         * itself. */
++        size += 1 + length;
++    }
++
++    /* If there is nothing to advertise (either because no modules added
++     * anything to the protos array, or because all strings added to the array
++     * were skipped), then we're done. */
++    if (size == 0) {
++        return SSL_TLSEXT_ERR_OK;
++    }
++
++    /* Now we can build the string.  Copy each protocol name string into the
++     * larger string, prefixed by its length. */
++    data = apr_palloc(c->pool, size * sizeof(unsigned char));
++    start = data;
++    for (i = 0; i < num_protos; ++i) {
++        const char *string = APR_ARRAY_IDX(protos, i, const char*);
++        apr_size_t length = strlen(string);
++        if (length > 255)
++            continue;
++        *start = (unsigned char)length;
++        ++start;
++        memcpy(start, string, length * sizeof(unsigned char));
++        start += length;
++    }
++
++    /* Success. */
++    *data_out = data;
++    *size_out = size;
++    return SSL_TLSEXT_ERR_OK;
++}
++
++#endif /* HAVE_TLS_NPN */
+ 
+ #ifdef HAVE_SRP
+ 
+diff -ru modules/ssl/ssl_private.h modules/ssl/ssl_private.h
+--- modules/ssl/ssl_private.h	2015-04-27 17:41:19.000000000 +0200
++++ modules/ssl/ssl_private.h	2015-04-27 17:45:56.000000000 +0200
+@@ -176,6 +176,11 @@
+ #endif
+ #endif
+ 
++/* Next Protocol Negotiation */
++#if !defined(OPENSSL_NO_NEXTPROTONEG) && defined(OPENSSL_NPN_NEGOTIATED)
++#define HAVE_TLS_NPN
++#endif
++
+ /* Secure Remote Password */
+ #if !defined(OPENSSL_NO_SRP) && defined(SSL_CTRL_SET_TLS_EXT_SRP_USERNAME_CB)
+ #define HAVE_SRP
+@@ -448,6 +453,12 @@
+                      * connection */
+     } reneg_state;
+ 
++#ifdef HAVE_TLS_NPN
++    /* Poor man's inter-module optional hooks for NPN. */
++    apr_array_header_t *npn_advertfns; /* list of ssl_npn_advertise_protos callbacks */
++    apr_array_header_t *npn_negofns; /* list of ssl_npn_proto_negotiated callbacks. */
++#endif
++
+ #ifdef HAVE_TLS_ALPN
+     /* Poor man's inter-module optional hooks for ALPN. */
+     apr_array_header_t *alpn_proposefns; /* list of ssl_alpn_propose_protos callbacks */
+@@ -634,7 +645,7 @@
+     apr_array_header_t *ssl_ctx_param; /* parameters to pass to SSL_CTX */
+ #endif
+   
+-#ifdef HAVE_TLS_ALPN
++#if defined(HAVE_TLS_ALPN) || defined(HAVE_TLS_NPN)
+   apr_array_header_t *ssl_alpn_pref; /* protocol names in order of preference */
+ #endif
+ } modssl_ctx_t;
+@@ -763,7 +774,7 @@
+ const char *ssl_cmd_SSLOpenSSLConfCmd(cmd_parms *cmd, void *dcfg, const char *arg1, const char *arg2);
+ #endif
+ 
+-#ifdef HAVE_TLS_ALPN
++#if defined(HAVE_TLS_ALPN) || defined(HAVE_TLS_NPN)
+ const char *ssl_cmd_SSLALPNPreference(cmd_parms *cmd, void *dcfg, const char *protocol);
+ #endif
+ 
+@@ -820,6 +831,9 @@
+                              unsigned char *outlen, const unsigned char *in,
+                              unsigned int inlen, void *arg);
+ #endif
++#ifdef HAVE_TLS_NPN
++int ssl_callback_AdvertiseNextProtos(SSL *ssl, const unsigned char **data, unsigned int *len, void *arg);
++#endif
+ 
+ /**  Session Cache Support  */
+ apr_status_t ssl_scache_init(server_rec *, apr_pool_t *);

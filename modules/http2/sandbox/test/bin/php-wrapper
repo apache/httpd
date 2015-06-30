@@ -1,0 +1,11 @@
+#!/bin/sh
+# Set desired PHP_FCGI_* environment variables.
+# Example:
+# PHP FastCGI processes exit after 500 requests by default.
+PHP_FCGI_MAX_REQUESTS=10000
+export PHP_FCGI_MAX_REQUESTS
+
+# set via Makefile
+PHP_CGI=SUBST_PHP_CGI_SUBST
+
+exec ${PHP_CGI:-php-cgi}

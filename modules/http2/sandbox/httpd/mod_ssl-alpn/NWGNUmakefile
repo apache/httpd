@@ -1,0 +1,327 @@
+#
+# This Makefile requires the environment var OSSLSDK
+# pointing to the base directory of your OpenSSL SDK.
+# If you want to use the Novell NTLS SDK instead then
+# define NTLSSDK pointing to the base directory of the
+# SDK, and also set USE_NTLS=1
+#
+
+#
+# Declare the sub-directories to be built here
+#
+
+SUBDIRS = \
+	$(EOLIST)
+
+#
+# Get the 'head' of the build environment.  This includes default targets and
+# paths to tools
+#
+
+include $(AP_WORK)/build/NWGNUhead.inc
+
+#
+# build this level's files
+#
+# Make sure all needed macro's are defined
+#
+
+ifeq "$(USE_NTLS)" "1"
+SSL_INC = $(NTLSSDK)/inc
+SSL_LIB = $(NTLSSDK)/imp
+SSL_BIN = $(NTLSSDK)/bin
+SSL_APP = $(NTLSSDK)/apps
+ifneq "$(wildcard $(SSL_INC)/openssl/opensslv.h)" "$(SSL_INC)/openssl/opensslv.h"
+$(error '$(NTLSSDK)' does NOT point to a valid NTLS SDK!)
+endif
+else
+SSL_INC = $(OSSLSDK)/outinc_nw_libc
+SSL_LIB = $(OSSLSDK)/out_nw_libc
+SSL_BIN = $(OSSLSDK)/out_nw_libc
+SSL_APP = $(OSSLSDK)/apps
+ifneq "$(wildcard $(SSL_INC)/openssl/opensslv.h)" "$(SSL_INC)/openssl/opensslv.h"
+$(error '$(OSSLSDK)' does NOT point to a valid OpenSSL SDK!)
+endif
+endif
+
+#
+# These directories will be at the beginning of the include list, followed by
+# INCDIRS
+#
+XINCDIRS	+= \
+			$(SSL_INC) \
+			$(APR)/include \
+			$(APRUTIL)/include \
+			$(AP_WORK)/include \
+			$(AP_WORK)/modules/cache \
+			$(AP_WORK)/modules/generators \
+			$(AP_WORK)/server/mpm/NetWare \
+			$(NWOS) \
+			$(EOLIST)
+
+#
+# These flags will come after CFLAGS
+#
+XCFLAGS		+= \
+			$(EOLIST)
+
+#
+# These defines will come after DEFINES
+#
+XDEFINES	+= \
+			-DHAVE_OPENSSL \
+			$(EOLIST)
+
+#
+# These flags will be added to the link.opt file
+#
+XLFLAGS		+= \
+			-l $(SSL_LIB) \
+			$(EOLIST)
+
+#
+# These values will be appended to the correct variables based on the value of
+# RELEASE
+#
+ifeq "$(RELEASE)" "debug"
+XINCDIRS	+= \
+			$(EOLIST)
+
+XCFLAGS		+= \
+			$(EOLIST)
+
+XDEFINES	+= \
+			$(EOLIST)
+
+XLFLAGS		+= \
+			$(EOLIST)
+endif
+
+ifeq "$(RELEASE)" "noopt"
+XINCDIRS	+= \
+			$(EOLIST)
+
+XCFLAGS		+= \
+			$(EOLIST)
+
+XDEFINES	+= \
+			$(EOLIST)
+
+XLFLAGS		+= \
+			$(EOLIST)
+endif
+
+ifeq "$(RELEASE)" "release"
+XINCDIRS	+= \
+			$(EOLIST)
+
+XCFLAGS		+= \
+			$(EOLIST)
+
+XDEFINES	+= \
+			$(EOLIST)
+
+XLFLAGS		+= \
+			$(EOLIST)
+endif
+
+#
+# These are used by the link target if an NLM is being generated
+# This is used by the link 'name' directive to name the nlm.  If left blank
+# TARGET_nlm (see below) will be used.
+#
+NLM_NAME	= mod_ssl
+
+#
+# This is used by the link '-desc ' directive.
+# If left blank, NLM_NAME will be used.
+#
+ifeq "$(USE_NTLS)" "1"
+NLM_DESCRIPTION	= Apache $(VERSION_STR) SSL module (NTLS)
+else
+NLM_DESCRIPTION	= Apache $(VERSION_STR) SSL module (OpenSSL)
+endif
+
+#
+# This is used by the '-threadname' directive.  If left blank,
+# NLM_NAME Thread will be used.
+#
+NLM_THREAD_NAME	= $(NLM_NAME)
+
+#
+# If this is specified, it will override VERSION value in
+# $(AP_WORK)/build/NWGNUenvironment.inc
+#
+NLM_VERSION	=
+
+#
+# If this is specified, it will override the default of 64K
+#
+NLM_STACK_SIZE	= 8192
+
+
+#
+# If this is specified it will be used by the link '-entry' directive
+#
+NLM_ENTRY_SYM	=
+
+#
+# If this is specified it will be used by the link '-exit' directive
+#
+NLM_EXIT_SYM	=
+
+#
+# If this is specified it will be used by the link '-check' directive
+#
+NLM_CHECK_SYM	=
+
+#
+# If this is specified it will be used by the link '-flags' directive
+#
+NLM_FLAGS	=
+
+#
+# If this is specified it will be linked in with the XDCData option in the def
+# file instead of the default of $(NWOS)/apache.xdc.  XDCData can be disabled
+# by setting APACHE_UNIPROC in the environment
+#
+XDCDATA		=
+
+#
+# Declare all target files (you must add your files here)
+#
+
+#
+# If there is an NLM target, put it here
+#
+TARGET_nlm = \
+	$(OBJDIR)/$(NLM_NAME).nlm \
+	$(EOLIST)
+
+#
+# If there is an LIB target, put it here
+#
+TARGET_lib = \
+	$(EOLIST)
+
+#
+# These are the OBJ files needed to create the NLM target above.
+# Paths must all use the '/' character
+#
+FILES_nlm_objs := $(patsubst %.c,$(OBJDIR)/%.o,$(wildcard *.c))
+
+
+#
+# These are the LIB files needed to create the NLM target above.
+# These will be added as a library command in the link.opt file.
+#
+FILES_nlm_libs = \
+	$(PRELUDE) \
+	$(EOLIST)
+
+ifneq "$(USE_NTLS)" "1"
+FILES_nlm_libs += \
+	$(SSL_LIB)/crypto.lib \
+	$(SSL_LIB)/ssl.lib \
+	$(EOLIST)
+endif
+
+#
+# These are the modules that the above NLM target depends on to load.
+# These will be added as a module command in the link.opt file.
+#
+FILES_nlm_modules = \
+	Apache2 \
+	Libc \
+	$(EOLIST)
+
+ifeq "$(USE_NTLS)" "1"
+FILES_nlm_modules += ntls \
+	$(EOLIST)
+endif
+
+#
+# If the nlm has a msg file, put it's path here
+#
+FILE_nlm_msg =
+
+#
+# If the nlm has a hlp file put it's path here
+#
+FILE_nlm_hlp =
+
+#
+# If this is specified, it will override $(NWOS)\copyright.txt.
+#
+FILE_nlm_copyright =
+
+#
+# Any additional imports go here
+#
+FILES_nlm_Ximports = \
+	@libc.imp \
+	@aprlib.imp \
+	@httpd.imp \
+	$(EOLIST)
+
+# Don't link with Winsock if standard sockets are being used
+ifneq "$(USE_STDSOCKETS)" "1"
+FILES_nlm_Ximports += @ws2nlm.imp \
+	$(EOLIST)
+endif
+
+ifeq "$(USE_NTLS)" "1"
+FILES_nlm_Ximports += @ntls.imp \
+	$(EOLIST)
+else
+FILES_nlm_Ximports += \
+	GetProcessSwitchCount \
+	RunningProcess \
+	GetSuperHighResolutionTimer \
+	$(EOLIST)
+endif
+
+#
+# Any symbols exported to here
+#
+FILES_nlm_exports = \
+	ssl_module \
+	$(EOLIST)
+
+#
+# These are the OBJ files needed to create the LIB target above.
+# Paths must all use the '/' character
+#
+FILES_lib_objs = \
+	$(EOLIST)
+
+#
+# implement targets and dependancies (leave this section alone)
+#
+
+libs :: $(OBJDIR) $(TARGET_lib)
+
+nlms :: libs $(TARGET_nlm)
+
+#
+# Updated this target to create necessary directories and copy files to the
+# correct place.  (See $(AP_WORK)/build/NWGNUhead.inc for examples)
+#
+install :: nlms FORCE
+	$(call COPY,$(OBJDIR)/*.nlm,        $(INSTALLBASE)/modules/)
+	$(call COPY,$(SSL_BIN)/openssl.nlm, $(INSTALLBASE)/bin/)
+	$(call COPY,$(SSL_APP)/openssl.cnf, $(INSTALLBASE)/bin/)
+
+#
+# Any specialized rules here
+#
+vpath %.c $(AP_WORK)/modules/arch/netware
+
+#
+# Include the 'tail' makefile that has targets that depend on variables defined
+# in this makefile
+#
+
+include $(APBUILD)/NWGNUtail.inc
+
+
