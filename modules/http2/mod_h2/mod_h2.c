@@ -90,12 +90,7 @@ static int h2_post_config(apr_pool_t *p, apr_pool_t *plog,
             /* all fine, we know these ones */
             break;
         case H2_MPM_PREFORK:
-            ap_log_error( APLOG_MARK, APLOG_WARNING, 0, s,
-                         "This httpd uses mpm_prefork for multiprocessing. "
-                         "Please take notice that mod_h2 always with run "
-                         "requests in a multi-threaded environment. If you "
-                         "use prefork for single-thread connection handling, "
-                         " mod_h2 might pose problems.");
+            /* ok, we now know how to handle that one */
             break;
         case H2_MPM_UNKNOWN:
             /* ??? */

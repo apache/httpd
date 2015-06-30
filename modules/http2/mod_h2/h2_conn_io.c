@@ -23,28 +23,35 @@
 #include <http_connection.h>
 
 #include "h2_private.h"
+#include "h2_config.h"
 #include "h2_conn_io.h"
 #include "h2_h2.h"
 #include "h2_util.h"
 
-/* If we write directly to our brigade or use a char buffer to collect
- * out data.
- */
-
-#define H2_CONN_IO_BUF_SIZE        (64 * 1024)
-#define H2_CONN_IO_SSL_WRITE_SIZE  (16 * 1024)
-
-
 apr_status_t h2_conn_io_init(h2_conn_io *io, conn_rec *c)
 {
+    h2_config *cfg = h2_config_get(c);
+    
     io->connection = c;
     io->input = apr_brigade_create(c->pool, c->bucket_alloc);
     io->output = apr_brigade_create(c->pool, c->bucket_alloc);
-    io->buffer_output = h2_h2_is_tls(c);
     io->buflen = 0;
+    io->max_write_size = h2_config_geti(cfg, H2_CONF_WRITE_MAX);
+    io->buffer_output = h2_config_geti(cfg, H2_CONF_BUFFER_OUTPUT);
     
+    if (io->buffer_output < 0) {
+        io->buffer_output = h2_h2_is_tls(c);
+    }
+
+    /* Currently we buffer only for TLS output. The reason this gives
+     * improved performance is that buckets send to the mod_ssl network
+     * filter will be encrypted in chunks. There is a special filter
+     * that tries to aggregate data, but that does not work well when
+     * bucket sizes alternate between tiny frame headers and large data
+     * chunks.
+     */
     if (io->buffer_output) {
-        io->bufsize = H2_CONN_IO_BUF_SIZE;
+        io->bufsize = h2_config_geti(cfg, H2_CONF_BUFFER_SIZE);
         io->buffer = apr_pcalloc(c->pool, io->bufsize);
     }
     else {
@@ -178,15 +185,15 @@ static apr_status_t flush_out(apr_bucket_brigade *bb, void *ctx)
 static apr_status_t bucketeer_buffer(h2_conn_io *io) {
     const char *data = io->buffer;
     apr_size_t remaining = io->buflen;
-    int bcount = (int)(remaining / H2_CONN_IO_SSL_WRITE_SIZE);
+    int bcount = (int)(remaining / io->max_write_size);
     apr_bucket *b;
     
     for (int i = 0; i < bcount; ++i) {
-        b = apr_bucket_transient_create(data, H2_CONN_IO_SSL_WRITE_SIZE, 
+        b = apr_bucket_transient_create(data, io->max_write_size, 
                                         io->output->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(io->output, b);
-        data += H2_CONN_IO_SSL_WRITE_SIZE;
-        remaining -= H2_CONN_IO_SSL_WRITE_SIZE;
+        data += io->max_write_size;
+        remaining -= io->max_write_size;
     }
     
     if (remaining > 0) {

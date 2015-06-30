@@ -14,7 +14,7 @@
 #
 
 AC_PREREQ([2.69])
-AC_INIT([mod_h2], [0.7.3], [stefan.eissing@greenbytes.de])
+AC_INIT([mod_h2], [0.8.0], [stefan.eissing@greenbytes.de])
 
 LT_PREREQ([2.2.6])
 LT_INIT()
@@ -123,9 +123,6 @@ if test x"$build_mode" = "xsandbox"; then
     # In sandbox build, we just define it therefore, as a quick workaround
     CPPFLAGS="$CPPFLAGS -DPATH_MAX=4096"
 
-    # we use a new nghttp2 in the sandbox which has these features
-    NGHTTP2_HAS_DATA_CB=1
-
 else
     # production, we need to find where the apxs is. which then
     # can tell us the various directories we need.
@@ -153,9 +150,6 @@ else
     AC_CHECK_LIB([nghttp2], [nghttp2_session_server_new2], ,
     [AC_MSG_ERROR("library nghttp2 not found")])
 
-    AC_CHECK_LIB([nghttp2], [nghttp2_session_callbacks_set_send_data_callback], 
-        [NGHTTP2_HAS_DATA_CB=1], [NGHTTP2_HAS_DATA_CB=0])
-
 fi
 
 # Checks for header files.
@@ -180,7 +174,6 @@ AC_CHECK_PROG([A2ENMOD],[a2enmod])
 AC_SUBST(BUILD_SUBDIRS)
 AC_SUBST(SYSCONF_DIR)
 AC_SUBST(LIBEXEC_DIR)
-AC_SUBST(NGHTTP2_HAS_DATA_CB)
 
 AC_CONFIG_FILES([
     Makefile

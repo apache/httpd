@@ -27,6 +27,7 @@ typedef struct {
     apr_bucket_brigade *input;
     apr_bucket_brigade *output;
     int buffer_output;
+    int max_write_size;
     
     char *buffer;
     apr_size_t buflen;

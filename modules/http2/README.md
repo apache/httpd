@@ -57,6 +57,10 @@ such as:
 * H2SerializeHeaders (on/off), "off"   serialize/parse request+response headers for streams, as if they arrived in HTTP/1 format. When off, certain parts of httpd core filters are disabled/replaced to allow for a more efficient handling. 
 * H2HackMpmEvent (on/off), "on"        performs a hack on internal connection in order to make mpm_event working, has no effect on other mpm modules
 * H2Direct (on/off), "on"    to enable h2c direct mode on a non-TLS host, default: off
+* H2BufferOutput (on/off),   if output data shall be buffered. "on" for TLS connections, "off" otherwise
+* H2BufferSize n             size of output buffer (if enabled), defaults to 64k
+* H2BufferWriteMax n         max. number of bytes in a single write when buffering output, defaults to 16k
+* H2SessionExtraFiles n      number of extra file handles a session might keep open to improve performance, depends on mpm module used and ulimit of processes, defaults to 5
 
 All these configuration parameters can be set on servers/virtual hosts and
 are not available on directory level. Note that Worker configuration is

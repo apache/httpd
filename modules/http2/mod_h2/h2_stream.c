@@ -113,7 +113,7 @@ apr_status_t h2_stream_set_response(h2_stream *stream, h2_response *response,
             stream->bbout = apr_brigade_create(stream->pool, 
                                                stream->m->c->bucket_alloc);
         }
-        return h2_util_move(stream->bbout, bb, 16 * 1024, 1, NULL, 
+        return h2_util_move(stream->bbout, bb, 16 * 1024, NULL,  
                             "h2_stream_set_response");
     }
     return APR_SUCCESS;
@@ -262,26 +262,6 @@ apr_status_t h2_stream_readx(h2_stream *stream,
                              cb, ctx, plen, peos);
 }
 
-
-apr_status_t h2_stream_read(h2_stream *stream, char *buffer, 
-                            apr_size_t *plen, int *peos)
-{
-    apr_status_t status = APR_SUCCESS;
-    const char *src;
-    if (stream->bbout && !APR_BRIGADE_EMPTY(stream->bbout)) {
-        src = "stream";
-        status = h2_util_bb_read(stream->bbout, buffer, plen, peos);
-    }
-    else {
-        src = "mplx";
-        status = h2_mplx_out_read(stream->m, stream->id, buffer, plen, peos);
-    }
-    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, stream->m->c,
-                  "h2_stream(%ld-%d): read %s, len=%ld eos=%d",
-                  stream->m->id, stream->id, 
-                  src, (long)*plen, *peos);
-    return status;
-}
 
 void h2_stream_set_suspended(h2_stream *stream, int suspended)
 {
