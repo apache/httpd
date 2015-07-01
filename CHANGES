@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_authz_dbd: Avoid a crash when lacking correct DB access permissions.
+     PR 57868. [Jose Kahan <jose w3.org>, Yann Ylavic]
+
   *) http: Fix LimitRequestBody checks when there is no more bytes to read.
      [Michael Kaufmann <mail michael-kaufmann.ch>]
 
