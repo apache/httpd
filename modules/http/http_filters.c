@@ -439,6 +439,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
         case BODY_CHUNK:
         case BODY_CHUNK_PART:
         case BODY_CHUNK_EXT:
+        case BODY_CHUNK_CR:
         case BODY_CHUNK_LF:
         case BODY_CHUNK_END:
         case BODY_CHUNK_END_LF: {
