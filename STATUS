@@ -237,7 +237,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Handle reentrance of state BODY_CHUNK_CR to avoid AH02901 when we eat
      BWS from multiple reads, and limit number of chunk-BWS to 10.
      trunk patch: http://svn.apache.org/r1688536
-     trunk patch: http://svn.apache.org/r1688538
+                  http://svn.apache.org/r1688538
      2.4.x patch: trunk works
      +1: ylavic
 
