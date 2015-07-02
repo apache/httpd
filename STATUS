@@ -103,7 +103,7 @@ RELEASE SHOWSTOPPERS:
      2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-fix_LimitRequestBody.patch
                   (modulo CHANGES, patch needed because of bail_out_on_error
                    and APLOGNO)
-     +1: ylavic, mrumph
+     +1: ylavic, mrumph, wrowe
 
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
