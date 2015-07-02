@@ -54,7 +54,7 @@ available</description>
        sends it to the server. See the
        <a href="http://www.freebsd.org/cgi/man.cgi?query=accf_http&amp;sektion=9">
        accf_http(9)</a> man page for more details.  Since HTTPS requests are
-       encrypted only the <a href="http://www.freebsd.org/cgi/man.cgi?query=accf_data&amp;sektion=9">
+       encrypted, only the <a href="http://www.freebsd.org/cgi/man.cgi?query=accf_data&amp;sektion=9">
        accf_data(9)</a> filter is used.</p>
 
     <p>The default values on Linux are:</p>
@@ -161,7 +161,7 @@ available</description>
 </contextlist>
 
 <usage>
-    <p>While processing a request the server looks for
+    <p>While processing a request, the server looks for
     the first existing configuration file from this list of names in
     every directory of the path to the document, if distributed
     configuration files are <a href="#allowoverride">enabled for that
@@ -171,11 +171,11 @@ available</description>
       AccessFileName .acl
     </example>
 
-    <p>before returning the document
+    <p>Before returning the document
     <code>/usr/local/web/index.html</code>, the server will read
     <code>/.acl</code>, <code>/usr/.acl</code>,
     <code>/usr/local/.acl</code> and <code>/usr/local/web/.acl</code>
-    for directives, unless they have been disabled with</p>
+    for directives unless they have been disabled with:</p>
 
     <example>
       &lt;Directory /&gt;<br />
@@ -317,7 +317,7 @@ NoDecode option available in 2.2.18 and later.</compatibility>
 <usage>
     <p>The <directive>AllowEncodedSlashes</directive> directive allows URLs
     which contain encoded path separators (<code>%2F</code> for <code>/</code>
-    and additionally <code>%5C</code> for <code>\</code> on according systems)
+    and additionally <code>%5C</code> for <code>\</code> on accordant systems)
     to be used in the path info.</p>
 
     <p>With the default value, <code>Off</code>, such URLs are refused
@@ -352,7 +352,7 @@ NoDecode option available in 2.2.18 and later.</compatibility>
 
 <usage>
     <p>When the server finds an <code>.htaccess</code> file (as
-    specified by <directive module="core">AccessFileName</directive>)
+    specified by <directive module="core">AccessFileName</directive>),
     it needs to know which directives declared in that file can override
     earlier configuration directives.</p>
 
@@ -463,8 +463,8 @@ NoDecode option available in 2.2.18 and later.</compatibility>
       Allow use of the directives controlling specific directory
       features (<directive module="core">Options</directive> and
       <directive module="mod_include">XBitHack</directive>).
-      An equal sign may be given followed by a comma (but no spaces)
-      separated lists of options that may be set using the <directive
+      An equal sign may be given followed by a comma-separated list,
+      without spaces, of options that may be set using the <directive
       module="core">Options</directive> command.
 
       <note><title>Implicit disabling of Options</title>
@@ -484,7 +484,7 @@ NoDecode option available in 2.2.18 and later.</compatibility>
       AllowOverride AuthConfig Indexes
     </example>
 
-    <p>In the example above all directives that are neither in the group
+    <p>In the example above, all directives that are neither in the group
     <code>AuthConfig</code> nor <code>Indexes</code> cause an internal
     server error.</p>
 
@@ -1078,7 +1078,7 @@ in case of an error</description>
     URL in an <code>ErrorDocument 401</code>, the client will not
     know to prompt the user for a password since it will not
     receive the 401 status code. Therefore, <strong>if you use an
-    <code>ErrorDocument 401</code> directive then it must refer to a local
+    <code>ErrorDocument 401</code> directive, then it must refer to a local
     document.</strong></p>
 
     <p>Microsoft Internet Explorer (MSIE) will by default ignore
@@ -1228,7 +1228,7 @@ HTTP response header for static files</description>
     changed via <directive>FileETag</directive>.
     </note>
     <note><title>Server Side Includes</title>
-    An ETag is not generated for responses parsed by <module>mod_include</module>,
+    An ETag is not generated for responses parsed by <module>mod_include</module>
     since the response entity can change without a change of the INode, MTime, or Size
     of the static file with embedded SSI directives.
     </note>
@@ -1642,7 +1642,7 @@ the server configuration files</description>
     encoding will be used in order to send content of unknown
     length over persistent connections.</p>
 
-    <p>When a client uses a Keep-Alive connection it will be counted
+    <p>When a client uses a Keep-Alive connection, it will be counted
     as a single "request" for the MaxRequestsPerChild directive, regardless
     of how many requests are sent using the connection.</p>
 </usage>
@@ -1718,7 +1718,7 @@ methods</description>
     <code>PATCH</code>, <code>PROPFIND</code>, <code>PROPPATCH</code>,
     <code>MKCOL</code>, <code>COPY</code>, <code>MOVE</code>,
     <code>LOCK</code>, and <code>UNLOCK</code>. <strong>The method name is
-    case-sensitive.</strong> If <code>GET</code> is used it will also
+    case-sensitive.</strong> If <code>GET</code> is used, it will also
     restrict <code>HEAD</code> requests. The <code>TRACE</code> method
     cannot be limited.</p>
 
@@ -1793,8 +1793,8 @@ subrequests</description>
 
     <p>The directive stores two different limits, which are evaluated on
     per-request basis. The first <var>number</var> is the maximum number of
-    internal redirects, that may follow each other. The second <var>number</var>
-    determines, how deep subrequests may be nested. If you specify only one
+    internal redirects that may follow each other. The second <var>number</var>
+    determines how deeply subrequests may be nested. If you specify only one
     <var>number</var>, it will be assigned to both limits.</p>
 
     <example><title>Example</title>
@@ -1838,7 +1838,7 @@ from the client</description>
     attacks.</p>
 
     <p>If, for example, you are permitting file upload to a particular
-    location, and wish to limit the size of the uploaded file to 100K,
+    location and wish to limit the size of the uploaded file to 100K,
     you might use the following directive:</p>
 
     <example>
@@ -2101,7 +2101,7 @@ URLs</description>
     <p>The <directive type="section">Location</directive>
     functionality is especially useful when combined with the
     <directive module="core">SetHandler</directive>
-    directive. For example, to enable status requests, but allow them
+    directive. For example, to enable status requests but allow them
     only from browsers at <code>example.com</code>, you might use:</p>
 
     <example>
@@ -2281,7 +2281,7 @@ matching URLs</description>
     </example>
 
     <note><title>Note</title>
-      <p>When logging to a regular file messages of the level
+      <p>When logging to a regular file, messages of the level
       <code>notice</code> cannot be suppressed and thus are always
       logged. However, this doesn't apply when logging is done
       using <code>syslog</code>.</p>
@@ -2504,7 +2504,7 @@ directory</description>
       <dt><code>Indexes</code></dt>
 
       <dd>
-      If a URL which maps to a directory is requested, and there
+      If a URL which maps to a directory is requested and there
       is no <directive module="mod_dir">DirectoryIndex</directive>
       (<em>e.g.</em>, <code>index.html</code>) in that directory, then
       <module>mod_autoindex</module> will return a formatted listing
@@ -2550,7 +2550,7 @@ directory</description>
 
     <note type="warning"><title>Warning</title>
     <p>Mixing <directive>Options</directive> with a <code>+</code> or
-    <code>-</code> with those without is not valid syntax, and is likely
+    <code>-</code> with those without is not valid syntax and is likely
     to cause unexpected results.</p>
     </note>
 
@@ -2714,15 +2714,17 @@ a resource</description>
 <syntax>Protocol <var>protocol</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context></contextlist>
 <compatibility>Available in Apache 2.1.5 and later.
-On Windows from Apache 2.3.3 and later.</compatibility>
+On Windows, from Apache 2.3.3 and later.</compatibility>
 
 <usage>
     <p>This directive specifies the protocol used for a specific listening socket.
-       The protocol is used to determine which module should handle a request, and
+       The protocol is used to determine which module should handle a request and
        to apply protocol specific optimizations with the <directive>AcceptFilter</directive>
        directive.</p>
 
-    <p>You only need to set the protocol if you are running on non-standard ports, otherwise <code>http</code> is assumed for port 80 and <code>https</code> for port 443.</p>
+    <p>You only need to set the protocol if you are running on non-standard ports;
+       otherwise, <code>http</code> is assumed for port 80 and <code>https</code>
+       for port 443.</p>
 
     <p>For example, if you are running <code>https</code> on a non-standard port, specify the protocol explicitly:</p>
 
@@ -2754,13 +2756,13 @@ by Apache children</description>
     or <code>max</code> to indicate to the server that the limit should
     be set to the maximum allowed by the operating system
     configuration. Raising the maximum resource limit requires that
-    the server is running as <code>root</code>, or in the initial startup
+    the server is running as <code>root</code> or in the initial startup
     phase.</p>
 
-    <p>This applies to processes forked off from Apache children
+    <p>This applies to processes forked from Apache children
     servicing requests, not the Apache children themselves. This
     includes CGI scripts and SSI exec commands, but not any
-    processes forked off from the Apache parent such as piped
+    processes forked from the Apache parent, such as piped
     logs.</p>
 
     <p>CPU resource limits are expressed in seconds per
@@ -2787,13 +2789,13 @@ by Apache children</description>
     or <code>max</code> to indicate to the server that the limit should
     be set to the maximum allowed by the operating system
     configuration. Raising the maximum resource limit requires that
-    the server is running as <code>root</code>, or in the initial startup
+    the server is running as <code>root</code> or in the initial startup
     phase.</p>
 
-    <p>This applies to processes forked off from Apache children
+    <p>This applies to processes forked from Apache children
     servicing requests, not the Apache children themselves. This
     includes CGI scripts and SSI exec commands, but not any
-    processes forked off from the Apache parent such as piped
+    processes forked from the Apache parent, such as piped
     logs.</p>
 
     <p>Memory resource limits are expressed in bytes per
@@ -2815,18 +2817,18 @@ processes launched by Apache children</description>
 
 <usage>
     <p>Takes 1 or 2 parameters. The first parameter sets the soft
-    resource limit for all processes and the second parameter sets
+    resource limit for all processes, and the second parameter sets
     the maximum resource limit. Either parameter can be a number,
     or <code>max</code> to indicate to the server that the limit
     should be set to the maximum allowed by the operating system
     configuration. Raising the maximum resource limit requires that
-    the server is running as <code>root</code>, or in the initial startup
+    the server is running as <code>root</code> or in the initial startup
     phase.</p>
 
-    <p>This applies to processes forked off from Apache children
+    <p>This applies to processes forked from Apache children
     servicing requests, not the Apache children themselves. This
     includes CGI scripts and SSI exec commands, but not any
-    processes forked off from the Apache parent such as piped
+    processes forked from the Apache parent, such as piped
     logs.</p>
 
     <p>Process limits control the number of processes per user.</p>
@@ -3234,7 +3236,7 @@ header</description>
       (Unix) PHP/4.2.2 MyMod/1.2</code></dd>
     </dl>
 
-    <p>This setting applies to the entire server, and cannot be
+    <p>This setting applies to the entire server and cannot be
     enabled or disabled on a virtualhost-by-virtualhost basis.</p>
 
     <p>After version 2.0.44, this directive also controls the
@@ -3464,9 +3466,9 @@ port</description>
     <p>An example where this may be useful is on an intranet server
     where you have users connecting to the machine using short
     names such as <code>www</code>. You'll notice that if the users
-    type a shortname, and a URL which is a directory, such as
+    type a shortname and a URL which is a directory, such as
     <code>http://www/splat</code>, <em>without the trailing
-    slash</em> then Apache will redirect them to
+    slash</em>, then Apache will redirect them to
     <code>http://www.domain.com/splat/</code>. If you have
     authentication enabled, this will cause the user to have to
     authenticate twice (once for <code>www</code> and once again
@@ -3479,15 +3481,15 @@ port</description>
     <p>There is a third option, <code>UseCanonicalName DNS</code>,
     which is intended for use with mass IP-based virtual hosting to
     support ancient clients that do not provide a
-    <code>Host:</code> header. With this option Apache does a
+    <code>Host:</code> header. With this option, Apache does a
     reverse DNS lookup on the server IP address that the client
     connected to in order to work out self-referential URLs.</p>
 
     <note type="warning"><title>Warning</title>
-    <p>If CGIs make assumptions about the values of <code>SERVER_NAME</code>
+    <p>If CGIs make assumptions about the values of <code>SERVER_NAME</code>,
     they may be broken by this option. The client is essentially free
     to give whatever value they want as a hostname. But if the CGI is
-    only using <code>SERVER_NAME</code> to construct self-referential URLs
+    only using <code>SERVER_NAME</code> to construct self-referential URLs,
     then it should be just fine.</p>
     </note>
 </usage>
@@ -3508,11 +3510,11 @@ port</description>
 <usage>
     <p>In many situations Apache must construct a <em>self-referential</em>
     URL -- that is, a URL that refers back to the same server. With
-    <code>UseCanonicalPhysicalPort On</code> Apache will, when
+    <code>UseCanonicalPhysicalPort On</code>, Apache will, when
     constructing the canonical port for the server to honor
     the <directive module="core">UseCanonicalName</directive> directive,
     provide the actual physical port number being used by this request
-    as a potential port. With <code>UseCanonicalPhysicalPort Off</code>
+    as a potential port. With <code>UseCanonicalPhysicalPort Off</code>,
     Apache will not ever use the actual physical port number, instead
     relying on all configured information to construct a valid port number.</p>
 
@@ -3604,7 +3606,7 @@ hostname or IP address</description>
     </example>
 
     <p>Each Virtual Host must correspond to a different IP address,
-    different port number or a different host name for the server,
+    different port number, or a different host name for the server,
     in the former case the server machine must be configured to
     accept IP packets for multiple addresses. (If the machine does
     not have multiple network interfaces, then this can be
@@ -3663,18 +3665,18 @@ hostname or IP address</description>
 
 <directivesynopsis>
 <name>MergeTrailers</name>
-<description>Determins whether trailers are merged into headers</description>
+<description>Determines whether trailers are merged into headers</description>
 <syntax>MergeTrailers [on|off]</syntax>
 <default>MergeTrailers off</default>
 <contextlist><context>server config</context><context>virtual host</context></contextlist>
-<compatibility>2.2.29 and later</compatibility>
+<compatibility>2.2.28 and later</compatibility>
 
 <usage>
     <p>This directive controls whether HTTP trailers are copied into the
-    internal representation of HTTP headers. This mergeing occurs when the
+    internal representation of HTTP headers. This merging occurs when the
     request body has been completely consumed, long after most header
     processing would have a chance to examine or modify request headers.</p>
-    <p>This option is provided for compatibility with releases prior to 2.4.10,
+    <p>This option is provided for compatibility with releases prior to 2.2.28,
     where trailers were always merged.</p>
 </usage>
 </directivesynopsis>
