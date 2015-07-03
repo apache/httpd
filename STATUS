@@ -119,13 +119,6 @@ RELEASE SHOWSTOPPERS:
      race to 3 +1's]
      [docs/manual .xml's require 'build all' regeneration]
 
-  *) http: Fix LimitRequestBody checks when there is no more bytes to read.
-     [Michael Kaufmann <mail michael-kaufmann.ch>]
-     trunk patch: http://svn.apache.org/r1688274
-     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-fix_LimitRequestBody.patch
-                  (modulo CHANGES, patch needed because of bail_out_on_error)
-     +1: ylavic, mrumph, wrowe
-
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
