@@ -1496,6 +1496,10 @@ personnalisation des réponses</a></li>
     <pre class="prettyprint lang-config">ErrorLog syslog:user</pre>
 
 
+    <p>Des modules supplémentaires peuvent fournir leurs propres
+    fournisseurs ErrorLog. La syntaxe est similaire à celle de
+    l'exemple <code>syslog</code> ci-dessus.</p>
+
     <p>SECURITE : Voir le document <a href="../misc/security_tips.html#serverroot">conseils à propos de
     sécurité</a> pour des détails sur les raisons pour lesquelles votre
     sécurité peut être compromise si le répertoire contenant les
@@ -1722,7 +1726,7 @@ requête</td></tr>
 
 	<p>Cette option permet d'extraire des données supplémentaires
 	concernant la requête en cours de traitement pour un processus
-	donné, ainsi qu'un résumé d'utilisation ; vous pouvez accéder à
+	donné, et crée un résumé d'utilisation ; vous pouvez accéder à
 	ces variables pendant l'exécution en configurant
 	<code class="module"><a href="../mod/mod_status.html">mod_status</a></code>. Notez que d'autres modules sont
 	susceptibles de s'appuyer sur ce tableau de bord.</p>
@@ -3357,7 +3361,7 @@ fusionnées avec les en-têtes</td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.10 du serveur HTTP
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.11 du serveur HTTP
 Apache</td></tr>
 </table>
     <p>Cette directive permet de contrôler la fusion des données HTTP
@@ -3367,7 +3371,7 @@ Apache</td></tr>
     traitement des en-têtes ait une chance de pouvoir examiner ou
     modifier les en-têtes de la requête.</p>
     <p>Cette option a été introduite dans un souci de compatibilité avec
-    les versions antérieures à 2.4.10, où les données supplémentaires
+    les versions antérieures à 2.4.11, où les données supplémentaires
     étaient systématiquement fusionnées avec les en-têtes de la requête.</p>
 
 </div>
@@ -3386,9 +3390,9 @@ verrou pour tous les mutex ou seulement les mutex spécifiés</td></tr>
     <p>La directive <code class="directive">Mutex</code> permet de définir le
     mécanisme de mutex, et éventuellement le répertoire du fichier
     verrou que les modules et httpd utilisent pour sérialiser l'accès aux
-    ressources. Spécifiez <code>default</code> comme premier argument
+    ressources. Spécifiez <code>default</code> comme second argument
     pour modifier la configuration de tous les mutex ; spécifiez un nom
-    de mutex (voir la table ci-dessous) comme premier argument pour
+    de mutex (voir la table ci-dessous) comme second argument pour
     ne modifier que la configuration de ce mutex.</p>
 
     <p>La directive <code class="directive">Mutex</code> est typiquement
@@ -4630,6 +4634,9 @@ du serveur</td></tr>
     section <code class="directive"><a href="#ifdefine">&lt;IfDefine&gt;</a></code>
     sans avoir à modifier les arguments <code>-D</code> dans les scripts
     de démarrage.</p>
+    <p>Si cette directive est définie au sein d'un bloc VirtualHost, les
+    changements qu'elle induit sont visibles de toute directive
+    ultérieure, au delà de tout bloc VirtualHost.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
