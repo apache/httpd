@@ -113,10 +113,9 @@ RELEASE SHOWSTOPPERS:
 
   *) Revert insufficiently thought-out mod_alias new expression feature
         http://svn.apache.org/viewvc?view=revision&revision=1663259
-     +1: wrowe
+     +1: wrowe, jim
      [Mutually exclusive to multiple RedirectMatch patches proposed above,
-     but entirely possible to vote for both or vote against either.  An RM's
-     race to 3 +1's]
+     but entirely possible to vote for both or vote against either.
      [docs/manual .xml's require 'build all' regeneration]
 
   *) http: follow up to r1686271 (trunk) => r1686271 (2.4.x)
@@ -125,7 +124,7 @@ RELEASE SHOWSTOPPERS:
      trunk patch: http://svn.apache.org/r1688536
                   http://svn.apache.org/r1688538
      2.4.x patch: trunk works
-     +1: ylavic
+     +1: ylavic, jim
 
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
