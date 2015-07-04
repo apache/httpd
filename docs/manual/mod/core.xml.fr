@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1675432:1688755 (outdated) -->
+<!-- English Revision: 1688755 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1496,6 +1496,10 @@ host</context>
 
     <highlight language="config">ErrorLog syslog:user</highlight>
 
+    <p>Des modules supplémentaires peuvent fournir leurs propres
+    fournisseurs ErrorLog. La syntaxe est similaire à celle de
+    l'exemple <code>syslog</code> ci-dessus.</p>
+
     <p>SECURITE : Voir le document <a
     href="../misc/security_tips.html#serverroot">conseils &agrave; propos de
     s&eacute;curit&eacute;</a> pour des d&eacute;tails sur les raisons pour lesquelles votre
@@ -1758,7 +1762,7 @@ requ&ecirc;te</description>
 
 	<p>Cette option permet d'extraire des donn&eacute;es suppl&eacute;mentaires
 	concernant la requ&ecirc;te en cours de traitement pour un processus
-	donn&eacute;, ainsi qu'un r&eacute;sum&eacute; d'utilisation ; vous pouvez acc&eacute;der &agrave;
+	donn&eacute;, et crée un r&eacute;sum&eacute; d'utilisation ; vous pouvez acc&eacute;der &agrave;
 	ces variables pendant l'ex&eacute;cution en configurant
 	<module>mod_status</module>. Notez que d'autres modules sont
 	susceptibles de s'appuyer sur ce tableau de bord.</p>
@@ -3460,9 +3464,9 @@ verrou pour tous les mutex ou seulement les mutex sp&eacute;cifi&eacute;s</descr
     <p>La directive <directive>Mutex</directive> permet de d&eacute;finir le
     m&eacute;canisme de mutex, et &eacute;ventuellement le r&eacute;pertoire du fichier
     verrou que les modules et httpd utilisent pour s&eacute;rialiser l'acc&egrave;s aux
-    ressources. Sp&eacute;cifiez <code>default</code> comme premier argument
+    ressources. Sp&eacute;cifiez <code>default</code> comme second argument
     pour modifier la configuration de tous les mutex ; sp&eacute;cifiez un nom
-    de mutex (voir la table ci-dessous) comme premier argument pour
+    de mutex (voir la table ci-dessous) comme second argument pour
     ne modifier que la configuration de ce mutex.</p>
 
     <p>La directive <directive>Mutex</directive> est typiquement
@@ -4708,6 +4712,9 @@ host</context></contextlist>
     section <directive module="core" type="section">IfDefine</directive>
     sans avoir &agrave; modifier les arguments <code>-D</code> dans les scripts
     de d&eacute;marrage.</p>
+    <p>Si cette directive est d&eacute;finie au sein d'un bloc VirtualHost, les
+    changements qu'elle induit sont visibles de toute directive
+    ult&eacute;rieure, au del&agrave; de tout bloc VirtualHost.</p>
 </usage>
 </directivesynopsis>
 
@@ -4968,7 +4975,7 @@ fusionn&eacute;es avec les en-t&ecirc;tes</description>
 <syntax>MergeTrailers [on|off]</syntax>
 <default>MergeTrailers off</default>
 <contextlist><context>server config</context><context>virtual host</context></contextlist>
-<compatibility>Disponible &agrave; partir de la version 2.4.10 du serveur HTTP
+<compatibility>Disponible &agrave; partir de la version 2.4.11 du serveur HTTP
 Apache</compatibility>
 
 <usage>
@@ -4979,7 +4986,7 @@ Apache</compatibility>
     traitement des en-t&ecirc;tes ait une chance de pouvoir examiner ou
     modifier les en-t&ecirc;tes de la requ&ecirc;te.</p>
     <p>Cette option a &eacute;t&eacute; introduite dans un souci de compatibilit&eacute; avec
-    les versions ant&eacute;rieures &agrave; 2.4.10, o&ugrave; les donn&eacute;es suppl&eacute;mentaires
+    les versions ant&eacute;rieures &agrave; 2.4.11, o&ugrave; les donn&eacute;es suppl&eacute;mentaires
     &eacute;taient syst&eacute;matiquement fusionn&eacute;es avec les en-t&ecirc;tes de la requ&ecirc;te.</p>
 </usage>
 </directivesynopsis>
