@@ -3274,7 +3274,7 @@ Apache.</td></tr>
 
 
     <div class="note">
-        La directive <code class="directive"><a href="#logleveloverride">LogLevelOverride</a></code> n'affecte que les
+        La directive <code class="directive">LogLevelOverride</code> n'affecte que les
 	messages associés à la requête ou à la connexion. Les messages
 	associés au serveur ne sont pas affectés.
     </div>
@@ -3431,7 +3431,7 @@ fusionnées avec les en-têtes</td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.10 du serveur HTTP
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.11 du serveur HTTP
 Apache</td></tr>
 </table>
     <p>Cette directive permet de contrôler la fusion des données HTTP
@@ -3441,7 +3441,7 @@ Apache</td></tr>
     traitement des en-têtes ait une chance de pouvoir examiner ou
     modifier les en-têtes de la requête.</p>
     <p>Cette option a été introduite dans un souci de compatibilité avec
-    les versions antérieures à 2.4.10, où les données supplémentaires
+    les versions antérieures à 2.4.11, où les données supplémentaires
     étaient systématiquement fusionnées avec les en-têtes de la requête.</p>
 
 </div>
@@ -3460,7 +3460,7 @@ verrou pour tous les mutex ou seulement les mutex spécifiés</td></tr>
     <p>La directive <code class="directive">Mutex</code> permet de définir le
     mécanisme de mutex, et éventuellement le répertoire du fichier
     verrou que les modules et httpd utilisent pour sérialiser l'accès aux
-    ressources. Spécifiez <code>default</code> comme premier argument
+    ressources. Spécifiez <code>default</code> comme second argument
     pour modifier la configuration de tous les mutex ; spécifiez un nom
     de mutex (voir la table ci-dessous) comme premier argument pour
     ne modifier que la configuration de ce mutex.</p>
