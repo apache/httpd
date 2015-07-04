@@ -2567,7 +2567,7 @@ fusionnées avec les en-têtes</td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.2.29 du serveur HTTP
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.2.28 du serveur HTTP
 Apache</td></tr>
 </table>
     <p>Cette directive permet de contrôler la fusion des données HTTP
@@ -2577,7 +2577,7 @@ Apache</td></tr>
     traitement des en-têtes ait une chance de pouvoir examiner ou
     modifier les en-têtes de la requête.</p>
     <p>Cette option a été introduite dans un souci de compatibilité avec
-    les versions antérieures à 2.4.10, où les données supplémentaires
+    les versions antérieures à 2.2.28, où les données supplémentaires
     étaient systématiquement fusionnées avec les en-têtes de la requête.</p>
 
 </div>
