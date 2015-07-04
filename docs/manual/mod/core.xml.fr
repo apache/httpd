@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1675491:1688698 (outdated) -->
+<!-- English Revision: 1688698 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -3376,8 +3376,7 @@ Apache.</compatibility>
     </highlight>
 
     <note>
-        La directive <directive
-	module="core">LogLevelOverride</directive> n'affecte que les
+        La directive <directive>LogLevelOverride</directive> n'affecte que les
 	messages associ&eacute;s &agrave; la requ&ecirc;te ou &agrave; la connexion. Les messages
 	associ&eacute;s au serveur ne sont pas affect&eacute;s.
     </note>
@@ -3538,7 +3537,7 @@ verrou pour tous les mutex ou seulement les mutex sp&eacute;cifi&eacute;s</descr
     <p>La directive <directive>Mutex</directive> permet de d&eacute;finir le
     m&eacute;canisme de mutex, et &eacute;ventuellement le r&eacute;pertoire du fichier
     verrou que les modules et httpd utilisent pour s&eacute;rialiser l'acc&egrave;s aux
-    ressources. Sp&eacute;cifiez <code>default</code> comme premier argument
+    ressources. Sp&eacute;cifiez <code>default</code> comme second argument
     pour modifier la configuration de tous les mutex ; sp&eacute;cifiez un nom
     de mutex (voir la table ci-dessous) comme premier argument pour
     ne modifier que la configuration de ce mutex.</p>
@@ -5102,7 +5101,7 @@ fusionn&eacute;es avec les en-t&ecirc;tes</description>
 <syntax>MergeTrailers [on|off]</syntax>
 <default>MergeTrailers off</default>
 <contextlist><context>server config</context><context>virtual host</context></contextlist>
-<compatibility>Disponible &agrave; partir de la version 2.4.10 du serveur HTTP
+<compatibility>Disponible &agrave; partir de la version 2.4.11 du serveur HTTP
 Apache</compatibility>
 
 <usage>
@@ -5113,7 +5112,7 @@ Apache</compatibility>
     traitement des en-t&ecirc;tes ait une chance de pouvoir examiner ou
     modifier les en-t&ecirc;tes de la requ&ecirc;te.</p>
     <p>Cette option a &eacute;t&eacute; introduite dans un souci de compatibilit&eacute; avec
-    les versions ant&eacute;rieures &agrave; 2.4.10, o&ugrave; les donn&eacute;es suppl&eacute;mentaires
+    les versions ant&eacute;rieures &agrave; 2.4.11, o&ugrave; les donn&eacute;es suppl&eacute;mentaires
     &eacute;taient syst&eacute;matiquement fusionn&eacute;es avec les en-t&ecirc;tes de la requ&ecirc;te.</p>
 </usage>
 </directivesynopsis>
