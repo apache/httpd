@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1631518:1688765 (outdated) -->
+<!-- English Revision: 1688765 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -4002,7 +4002,7 @@ fusionn&eacute;es avec les en-t&ecirc;tes</description>
 <syntax>MergeTrailers [on|off]</syntax>
 <default>MergeTrailers off</default>
 <contextlist><context>server config</context><context>virtual host</context></contextlist>
-<compatibility>Disponible &agrave; partir de la version 2.2.29 du serveur HTTP
+<compatibility>Disponible &agrave; partir de la version 2.2.28 du serveur HTTP
 Apache</compatibility>
 
 <usage>
@@ -4013,7 +4013,7 @@ Apache</compatibility>
     traitement des en-t&ecirc;tes ait une chance de pouvoir examiner ou
     modifier les en-t&ecirc;tes de la requ&ecirc;te.</p>
     <p>Cette option a &eacute;t&eacute; introduite dans un souci de compatibilit&eacute; avec
-    les versions ant&eacute;rieures &agrave; 2.4.10, o&ugrave; les donn&eacute;es suppl&eacute;mentaires
+    les versions ant&eacute;rieures &agrave; 2.2.28, o&ugrave; les donn&eacute;es suppl&eacute;mentaires
     &eacute;taient syst&eacute;matiquement fusionn&eacute;es avec les en-t&ecirc;tes de la requ&ecirc;te.</p>
 </usage>
 </directivesynopsis>
