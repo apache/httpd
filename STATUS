@@ -124,7 +124,7 @@ RELEASE SHOWSTOPPERS:
      trunk patch: http://svn.apache.org/r1688536
                   http://svn.apache.org/r1688538
      2.4.x patch: trunk works
-     +1: ylavic, jim
+     +1: ylavic, jim, wrowe
 
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
