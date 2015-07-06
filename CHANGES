@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_reqtimeout: Don't let pipelining checks and keep-alive times interfere
+     with the timeouts computed for subsequent requests.  PR 56729.
+     [Eric Covener, Yann Ylavic]
+
   *) mod_authz_dbd: Avoid a crash when lacking correct DB access permissions.
      PR 57868. [Jose Kahan <jose w3.org>, Yann Ylavic]
 
