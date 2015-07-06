@@ -62,6 +62,7 @@ typedef struct http_filter_ctx
     apr_off_t limit;
     apr_off_t limit_used;
     apr_int32_t chunk_used;
+    apr_int32_t chunk_bws;
     apr_int32_t chunkbits;
     enum
     {
@@ -174,6 +175,7 @@ static apr_status_t parse_chunk_size(http_ctx_t *ctx, const char *buffer,
             ctx->remaining = 0;
             ctx->chunkbits = sizeof(apr_off_t) * 8;
             ctx->chunk_used = 0;
+            ctx->chunk_bws = 0;
         }
 
         if (c == LF) {
@@ -205,7 +207,12 @@ static apr_status_t parse_chunk_size(http_ctx_t *ctx, const char *buffer,
             }
         }
         else if (c == ' ' || c == '\t') {
+            /* Be lenient up to 10 BWS (term from rfc7230 - 3.2.3).
+             */
             ctx->state = BODY_CHUNK_CR;
+            if (++ctx->chunk_bws > 10) {
+                return APR_EINVAL;
+            }
         }
         else if (ctx->state == BODY_CHUNK_CR) {
             /*
@@ -483,6 +490,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
         case BODY_CHUNK:
         case BODY_CHUNK_PART:
         case BODY_CHUNK_EXT:
+        case BODY_CHUNK_CR:
         case BODY_CHUNK_LF:
         case BODY_CHUNK_END:
         case BODY_CHUNK_END_LF: {
