@@ -1321,8 +1321,8 @@ ProxyPass "/mirror/foo"   "http://backend.example.com"</pre>
     <tr><td>nofailover</td>
         <td>Off</td>
         <td>If set to <code>On</code> the session will break if the worker is in
-        error state or disabled. Set this value to On if backend servers do not
-        support session replication.
+        error state or disabled. Set this value to <code>On</code> if backend
+        servers do not support session replication.
     </td></tr>
     <tr><td>stickysession</td>
         <td>-</td>
