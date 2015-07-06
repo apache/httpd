@@ -233,6 +233,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (modulo CHANGES)
      +1: jailletc36, ylavic
 
+  *) mod_reqtimeout: Don't let pipelining checks and keep-alive times interfere
+     with the timeouts computed for subsequent requests.  PR 56729.
+     trunk patch: http://svn.apache.org/r1621453
+                  http://svn.apache.org/r1641376
+                  http://svn.apache.org/r1689325
+     2.4.x patch: trunk works (modulo CHANGES)
+                  (http://people.apache.org/~ylavic/httpd-2.4.x-reqtimeout_pre_read_request.patch
+                   for global review)
+     +1: ylavic
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
