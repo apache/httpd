@@ -1207,7 +1207,6 @@ start_over:
             ldc->reason = apr_psprintf(r->pool, 
                                        "Comparison undefined: (%d): %s (adding to cache)", 
                                         result, ldap_err2string(result));
-            ldc->reason = "Comparison undefined (adding to cache)";
         }
     }
 
