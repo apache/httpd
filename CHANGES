@@ -8,6 +8,10 @@ Changes with Apache 2.4.16
   *) mod_alias: Revert expression parser support for Alias, ScriptAlias
      and Redirect due to a regression (introduced in 2.4.13, not released).
 
+  *) mod_reqtimeout: Don't let pipelining checks and keep-alive times interfere
+     with the timeouts computed for subsequent requests.  PR 56729.
+     [Eric Covener, Yann Ylavic]
+
 Changes with Apache 2.4.15
 
   *) mod_ext_filter, mod_charset_lite: Avoid inadvertent filtering of protocol
