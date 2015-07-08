@@ -6,8 +6,7 @@ Changes with Apache 2.4.16
      [Michael Kaufmann <mail michael-kaufmann.ch>]
 
   *) mod_alias: Revert expression parser support for Alias, ScriptAlias
-     and Redirect (introduced in unreleased 2.4.13).
-     [William Rowe, Jim Jagielski, Yann Ylavic]
+     and Redirect due to a regression (introduced in 2.4.13, not released).
 
 Changes with Apache 2.4.15
 
