@@ -219,7 +219,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (modulo CHANGES)
                   (http://people.apache.org/~ylavic/httpd-2.4.x-reqtimeout_pre_read_request.patch
                    for global review)
-     +1: ylavic
+     +1: ylavic, wrowe
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
