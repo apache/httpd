@@ -155,9 +155,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1610339
                   http://svn.apache.org/r1621806
      2.4.x patch: http://people.apache.org/~jkaluza/patches/httpd-2.4.x-mod_journald.patch
-     +1: jkaluza, wrowe
-     wrowe: approves as experimental, 'with-modules=all' restriction
-            satisfies the concern I'd otherwise have.
+     +1: jkaluza
 
    * MPMs: Support SO_REUSEPORT to create multiple duplicated listener
            records for scalability (full log in 2.4.x patch).
@@ -212,7 +210,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                    http://svn.apache.org/r1689694
                    http://svn.apache.org/r1689698
       2.4.x patch:  http://people.apache.org/~covener/patches/httpd-2.4.x-ldap-retcode.diff
-     +1: covener
+     +1: covener, wrowe
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
