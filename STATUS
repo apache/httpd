@@ -108,14 +108,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) http: follow up to r1686271 (trunk) => r1686271 (2.4.x)
-     Handle reentrance of state BODY_CHUNK_CR to avoid AH02901 when we eat
-     BWS from multiple reads, and limit number of chunk-BWS to 10.
-     trunk patch: http://svn.apache.org/r1688536
-                  http://svn.apache.org/r1688538
-     2.4.x patch: trunk works
-     +1: ylavic, jim, wrowe
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
