@@ -108,6 +108,22 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) core: Avoid a possible truncation of the faulty header included in the
+     HTML response when LimitRequestFieldSize is reached.
+     trunk patch: http://svn.apache.org/r1683123
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: jailletc36, ylavic, covener
+
+  *) mod_reqtimeout: Don't let pipelining checks and keep-alive times interfere
+     with the timeouts computed for subsequent requests.  PR 56729.
+     trunk patch: http://svn.apache.org/r1621453
+                  http://svn.apache.org/r1641376
+                  http://svn.apache.org/r1689325
+     2.4.x patch: trunk works (modulo CHANGES)
+                  (http://people.apache.org/~ylavic/httpd-2.4.x-reqtimeout_pre_read_request.patch
+                   for global review)
+     +1: ylavic, wrowe, covener
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -204,22 +220,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1688343
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-SubstituteInheritBefore-v4.patch
      +1: ylavic
-
-  *) core: Avoid a possible truncation of the faulty header included in the
-     HTML response when LimitRequestFieldSize is reached.
-     trunk patch: http://svn.apache.org/r1683123
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: jailletc36, ylavic
-
-  *) mod_reqtimeout: Don't let pipelining checks and keep-alive times interfere
-     with the timeouts computed for subsequent requests.  PR 56729.
-     trunk patch: http://svn.apache.org/r1621453
-                  http://svn.apache.org/r1641376
-                  http://svn.apache.org/r1689325
-     2.4.x patch: trunk works (modulo CHANGES)
-                  (http://people.apache.org/~ylavic/httpd-2.4.x-reqtimeout_pre_read_request.patch
-                   for global review)
-     +1: ylavic, wrowe
 
    *) mod_ldap: Fix unexpected return codes from LDAP lib being coerced
       into LDAP_NO_SUCH_ATTRIBUTE + some new tracing.
