@@ -108,19 +108,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) Revert insufficiently thought-out mod_alias new expression feature
-        http://svn.apache.org/viewvc?view=revision&revision=1663259
-     +1: wrowe, jim, ylavic
-     [Mutually exclusive to multiple RedirectMatch patches proposed above,
-     but entirely possible to vote for both or vote against either.
-     [docs/manual .xml's require 'build all' regeneration]
-     ylavic: We should also apply:
-             http://people.apache.org/~ylavic/alias_expressions_trunk_only.patch
-             to the tests framework, because r1686886 changed this feature's
-             availability from 2.5.0 to 2.4.15.  The patch does not fully
-             revert r1686886 since we probably still want to detect possible
-             regressions in this area with future (re)works.
-
   *) http: follow up to r1686271 (trunk) => r1686271 (2.4.x)
      Handle reentrance of state BODY_CHUNK_CR to avoid AH02901 when we eat
      BWS from multiple reads, and limit number of chunk-BWS to 10.
