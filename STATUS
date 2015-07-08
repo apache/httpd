@@ -104,20 +104,17 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
-  *) mod_alias: Limit Redirect expressions to directory (Location) context
-     and redirect statuses (implicit or explicit).
-     trunk patch: http://svn.apache.org/r1686853
-                  http://svn.apache.org/r1686856
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, jim
+
+PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
+  [ start all new proposals below, under PATCHES PROPOSED. ]
 
   *) Revert insufficiently thought-out mod_alias new expression feature
         http://svn.apache.org/viewvc?view=revision&revision=1663259
-     +1: wrowe, jim
+     +1: wrowe, jim, ylavic
      [Mutually exclusive to multiple RedirectMatch patches proposed above,
      but entirely possible to vote for both or vote against either.
      [docs/manual .xml's require 'build all' regeneration]
-     ylavic: If we were to revert the feature, we should also apply:
+     ylavic: We should also apply:
              http://people.apache.org/~ylavic/alias_expressions_trunk_only.patch
              to the tests framework, because r1686886 changed this feature's
              availability from 2.5.0 to 2.4.15.  The patch does not fully
@@ -131,10 +128,6 @@ RELEASE SHOWSTOPPERS:
                   http://svn.apache.org/r1688538
      2.4.x patch: trunk works
      +1: ylavic, jim, wrowe
-
-
-PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
-  [ start all new proposals below, under PATCHES PROPOSED. ]
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
