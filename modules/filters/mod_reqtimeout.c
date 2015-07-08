@@ -177,10 +177,27 @@ static apr_status_t reqtimeout_filter(ap_filter_t *f,
     apr_interval_time_t saved_sock_timeout = UNSET;
     reqtimeout_con_cfg *ccfg = f->ctx;
 
-    if (ccfg->in_keep_alive) {
-        /* For this read, the normal keep-alive timeout must be used */
-        ccfg->in_keep_alive = 0;
+    if (block == APR_NONBLOCK_READ && mode == AP_MODE_SPECULATIVE) { 
+        /*  The source of these above us in the core is check_pipeline(), which
+         *  is between requests but before this filter knows to reset timeouts 
+         *  during pre_read_request().  If they appear elsewhere, just don't 
+         *  check or extend the time since they won't block and we'll see the
+         *  bytes again later
+         */
         return ap_get_brigade(f->next, bb, mode, block, readbytes);
+    }
+
+    if (ccfg->in_keep_alive) {
+        /* For this read[_request line()], wait for the first byte using the
+         * normal keep-alive timeout (hence don't take this expected idle time
+         * into account to setup the connection expiry below).
+         */
+        ccfg->in_keep_alive = 0;
+        rv = ap_get_brigade(f->next, bb, AP_MODE_SPECULATIVE, block, 1);
+        if (rv != APR_SUCCESS || APR_BRIGADE_EMPTY(bb)) {
+            return rv;
+        }
+        apr_brigade_cleanup(bb);
     }
 
     if (ccfg->new_timeout > 0) {
@@ -301,7 +318,12 @@ static apr_status_t reqtimeout_filter(ap_filter_t *f,
     else {
         /* mode != AP_MODE_GETLINE */
         rv = ap_get_brigade(f->next, bb, mode, block, readbytes);
-        if (ccfg->min_rate > 0 && rv == APR_SUCCESS) {
+        /* Don't extend the timeout in speculative mode, wait for
+         * the real (relevant) bytes to be asked later, within the
+         * currently alloted time.
+         */
+        if (ccfg->min_rate > 0 && rv == APR_SUCCESS
+                && mode != AP_MODE_SPECULATIVE) {
             extend_timeout(ccfg, bb);
         }
     }
@@ -349,11 +371,32 @@ static int reqtimeout_init(conn_rec *c)
         ap_set_module_config(c->conn_config, &reqtimeout_module, ccfg);
         ap_add_input_filter(reqtimeout_filter_name, ccfg, NULL, c);
     }
-    else {
-        /* subsequent request under event-like MPM */
-        memset(ccfg, 0, sizeof(reqtimeout_con_cfg));
+
+    /* we are not handling the connection, we just do initialization */
+    return DECLINED;
+}
+
+static void reqtimeout_before_header(request_rec *r, conn_rec *c)
+{
+    reqtimeout_srv_cfg *cfg;
+    reqtimeout_con_cfg *ccfg =
+        ap_get_module_config(c->conn_config, &reqtimeout_module);
+
+    if (ccfg == NULL) {
+        /* not configured for this connection */
+        return;
     }
 
+    cfg = ap_get_module_config(c->base_server->module_config,
+                               &reqtimeout_module);
+    AP_DEBUG_ASSERT(cfg != NULL);
+
+    /* (Re)set the state for this new request, but ccfg->socket and
+     * ccfg->tmpbb which have the lifetime of the connection.
+     */
+    ccfg->timeout_at = 0;
+    ccfg->max_timeout_at = 0;
+    ccfg->in_keep_alive = (c->keepalives > 0);
     ccfg->type = "header";
     if (cfg->header_timeout != UNSET) {
         ccfg->new_timeout     = cfg->header_timeout;
@@ -367,12 +410,9 @@ static int reqtimeout_init(conn_rec *c)
         ccfg->min_rate        = MRT_DEFAULT_HEADER_MIN_RATE;
         ccfg->rate_factor     = default_header_rate_factor;
     }
-
-    /* we are not handling the connection, we just do initialization */
-    return DECLINED;
 }
 
-static int reqtimeout_after_headers(request_rec *r)
+static int reqtimeout_before_body(request_rec *r)
 {
     reqtimeout_srv_cfg *cfg;
     reqtimeout_con_cfg *ccfg =
@@ -401,41 +441,6 @@ static int reqtimeout_after_headers(request_rec *r)
         ccfg->min_rate        = MRT_DEFAULT_BODY_MIN_RATE;
         ccfg->rate_factor     = default_body_rate_factor;
     }
-    return OK;
-}
-
-static int reqtimeout_after_body(request_rec *r)
-{
-    reqtimeout_srv_cfg *cfg;
-    reqtimeout_con_cfg *ccfg =
-        ap_get_module_config(r->connection->conn_config, &reqtimeout_module);
-
-    if (ccfg == NULL) {
-        /* not configured for this connection */
-        return OK;
-    }
-
-    cfg = ap_get_module_config(r->connection->base_server->module_config,
-                               &reqtimeout_module);
-    AP_DEBUG_ASSERT(cfg != NULL);
-
-    ccfg->timeout_at = 0;
-    ccfg->max_timeout_at = 0;
-    ccfg->in_keep_alive = 1;
-    ccfg->type = "header";
-    if (ccfg->new_timeout != UNSET) {
-        ccfg->new_timeout     = cfg->header_timeout;
-        ccfg->new_max_timeout = cfg->header_max_timeout;
-        ccfg->min_rate        = cfg->header_min_rate;
-        ccfg->rate_factor     = cfg->header_rate_factor;
-    }
-    else {
-        ccfg->new_timeout     = MRT_DEFAULT_HEADER_TIMEOUT;
-        ccfg->new_max_timeout = MRT_DEFAULT_HEADER_MAX_TIMEOUT;
-        ccfg->min_rate        = MRT_DEFAULT_HEADER_MIN_RATE;
-        ccfg->rate_factor     = default_header_rate_factor;
-    }
-
     return OK;
 }
 
@@ -609,10 +614,10 @@ static void reqtimeout_hooks(apr_pool_t *pool)
      */
     ap_hook_process_connection(reqtimeout_init, NULL, NULL, APR_HOOK_LAST);
 
-    ap_hook_post_read_request(reqtimeout_after_headers, NULL, NULL,
+    ap_hook_pre_read_request(reqtimeout_before_header, NULL, NULL,
+                             APR_HOOK_MIDDLE);
+    ap_hook_post_read_request(reqtimeout_before_body, NULL, NULL,
                               APR_HOOK_MIDDLE);
-    ap_hook_log_transaction(reqtimeout_after_body, NULL, NULL,
-                            APR_HOOK_MIDDLE);
 
 #if MRT_DEFAULT_HEADER_MIN_RATE > 0
     default_header_rate_factor = apr_time_from_sec(1) / MRT_DEFAULT_HEADER_MIN_RATE;
