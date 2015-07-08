@@ -115,6 +115,9 @@ Changes with Apache 2.2.30
   *) mod_deflate: Define APR_INT32_MAX when it is missing so to be able to
      compile against APR-1.2.x (minimum required version). [Yann Ylavic]
 
+  *) mod_reqtimeout: Don't let pipelining checks interfere with the timeouts
+     computed for subsequent requests.  PR 56729.  [Eric Covener]
+
 Changes with Apache 2.2.29
 
   *) Corrected docs/manual pages for new MergeTrailers directive and other
