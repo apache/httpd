@@ -5,6 +5,10 @@ Changes with Apache 2.4.16
   *) http: Fix LimitRequestBody checks when there is no more bytes to read.
      [Michael Kaufmann <mail michael-kaufmann.ch>]
 
+  *) mod_alias: Revert expression parser support for Alias, ScriptAlias
+     and Redirect (introduced in unreleased 2.4.13).
+     [William Rowe, Jim Jagielski, Yann Ylavic]
+
 Changes with Apache 2.4.15
 
   *) mod_ext_filter, mod_charset_lite: Avoid inadvertent filtering of protocol
