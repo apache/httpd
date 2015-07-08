@@ -120,8 +120,8 @@ responses from the server</td></tr>
 <tr><td><a href="mod_mime.html#addtype">AddType <var>media-type</var> <var>extension</var>
 [<var>extension</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Maps the given filename extensions onto the specified content
 type</td></tr>
-<tr class="odd"><td><a href="mod_alias.html#alias">Alias [<var>URL-path</var>]
-<var>file-path</var>|<var>directory-path</var></a></td><td></td><td>svd</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Maps URLs to filesystem locations</td></tr>
+<tr class="odd"><td><a href="mod_alias.html#alias">Alias <var>URL-path</var>
+<var>file-path</var>|<var>directory-path</var></a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Maps URLs to filesystem locations</td></tr>
 <tr><td><a href="mod_alias.html#aliasmatch">AliasMatch <var>regex</var>
 <var>file-path</var>|<var>directory-path</var></a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Maps URLs to filesystem locations using regular
 expressions</td></tr>
@@ -646,7 +646,7 @@ simultaneously</td></tr>
 <tr><td><a href="prefork.html#maxspareservers">MaxSpareServers <var>number</var></a></td><td> 10 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Maximum number of idle child server processes</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#maxsparethreads">MaxSpareThreads <var>number</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum number of idle threads</td></tr>
 <tr><td><a href="mpm_netware.html#maxthreads">MaxThreads <var>number</var></a></td><td> 2048 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Set the maximum number of worker threads</td></tr>
-<tr class="odd"><td><a href="core.html#mergetrailers">MergeTrailers [on|off]</a></td><td> off </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Determins whether trailers are merged into headers</td></tr>
+<tr class="odd"><td><a href="core.html#mergetrailers">MergeTrailers [on|off]</a></td><td> off </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Determines whether trailers are merged into headers</td></tr>
 <tr><td><a href="mod_cern_meta.html#metadir">MetaDir <var>directory</var></a></td><td> .web </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Name of the directory to find CERN-style meta information
 files</td></tr>
 <tr class="odd"><td><a href="mod_cern_meta.html#metafiles">MetaFiles on|off</a></td><td> off </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Activates CERN meta-file processing</td></tr>
@@ -760,7 +760,7 @@ header for proxied requests</td></tr>
 <tr class="odd"><td><a href="mod_autoindex.html#readmename" id="R" name="R">ReadmeName <var>filename</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Name of the file that will be inserted at the end
 of the index listing</td></tr>
 <tr><td><a href="mpm_common.html#receivebuffersize">ReceiveBufferSize <var>bytes</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">TCP receive buffer size</td></tr>
-<tr class="odd"><td><a href="mod_alias.html#redirect">Redirect [<var>status</var>] [<var>URL-path</var>]
+<tr class="odd"><td><a href="mod_alias.html#redirect">Redirect [<var>status</var>] <var>URL-path</var>
 <var>URL</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Sends an external redirect asking the client to fetch
 a different URL</td></tr>
 <tr><td><a href="mod_alias.html#redirectmatch">RedirectMatch [<var>status</var>] <var>regex</var>
@@ -839,8 +839,8 @@ user authentication</td></tr>
 the child processes</td></tr>
 <tr><td><a href="mod_actions.html#script">Script <var>method</var> <var>cgi-script</var></a></td><td></td><td>svd</td><td>B</td></tr><tr><td class="descr" colspan="4">Activates a CGI script for a particular request
 method.</td></tr>
-<tr class="odd"><td><a href="mod_alias.html#scriptalias">ScriptAlias [<var>URL-path</var>]
-<var>file-path</var>|<var>directory-path</var></a></td><td></td><td>svd</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Maps a URL to a filesystem location and designates the
+<tr class="odd"><td><a href="mod_alias.html#scriptalias">ScriptAlias <var>URL-path</var>
+<var>file-path</var>|<var>directory-path</var></a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Maps a URL to a filesystem location and designates the
 target as a CGI script</td></tr>
 <tr><td><a href="mod_alias.html#scriptaliasmatch">ScriptAliasMatch <var>regex</var>
 <var>file-path</var>|<var>directory-path</var></a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Maps a URL to a filesystem location using a regular expression
