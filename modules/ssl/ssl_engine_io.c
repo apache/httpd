@@ -338,7 +338,7 @@ static int char_buffer_read(char_buffer_t *buffer, char *in, int inl)
     }
 
     if (buffer->length > inl) {
-        /* we have have enough to fill the caller's buffer */
+        /* we have enough to fill the caller's buffer */
         memmove(in, buffer->value, inl);
         buffer->value += inl;
         buffer->length -= inl;

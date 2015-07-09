@@ -1850,7 +1850,7 @@ AP_DECLARE(char *) ap_make_full_path(apr_pool_t *a, const char *dir, const char 
                    AP_FN_ATTR_NONNULL_ALL;
 
 /**
- * Test if the given path has an an absolute path.
+ * Test if the given path has an absolute path.
  * @param p The pool to allocate from
  * @param dir The directory name
  * @note The converse is not necessarily true, some OS's (Win32/OS2/Netware) have
