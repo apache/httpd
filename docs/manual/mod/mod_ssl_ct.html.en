@@ -426,7 +426,7 @@ refreshed</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl_ct</td></tr>
 </table>
   <p>The <code class="directive">CTSCTStorage</code> directive sets the name of a
-  directory where SCTs and SCT lists will will be stored.  If <em>directory</em>
+  directory where SCTs and SCT lists will be stored.  If <em>directory</em>
   is not absolute then it is assumed to be relative to <code class="directive"><a href="../mod/core.html#defaultruntimedir">
   DefaultRuntimeDir</a></code>.</p>
 

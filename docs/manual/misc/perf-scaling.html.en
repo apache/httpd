@@ -464,7 +464,7 @@ Swap:       3903784      12540  3891244</pre></div>
                     be done offline so the web server machine is not burdened
                     by processing the log files. Most log analysis packages
                     understand the Common Log Format. The fields in the log
-                    lines are explained in in the following:
+                    lines are explained in the following:
                 </p>
 
 
