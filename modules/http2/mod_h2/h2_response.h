@@ -16,7 +16,7 @@
 #ifndef __mod_h2__h2_response__
 #define __mod_h2__h2_response__
 
-/* h2_response is just the data belonging the the head of a HTTP response,
+/* h2_response is just the data belonging to the head of a HTTP response,
  * suitable prepared to be fed to nghttp2 for response submit. 
  */
 typedef struct h2_headers {

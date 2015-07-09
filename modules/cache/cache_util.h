@@ -264,7 +264,7 @@ int cache_check_freshness(cache_handle_t *h, cache_request_rec *cache,
  * Try obtain a cache wide lock on the given cache key.
  *
  * If we return APR_SUCCESS, we obtained the lock, and we are clear to
- * proceed to the backend. If we return APR_EEXISTS, the the lock is
+ * proceed to the backend. If we return APR_EEXISTS, then the lock is
  * already locked, someone else has gone to refresh the backend data
  * already, so we must return stale data with a warning in the mean
  * time. If we return anything else, then something has gone pear
