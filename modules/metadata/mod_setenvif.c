@@ -41,7 +41,7 @@
  * done. If the value matches the string or regular expression, the
  * environment variables listed as var ... are set. Each var can
  * be in one of three formats: var, which sets the named variable
- * (the value value "1"); var=value, which sets the variable to
+ * (the value "1"); var=value, which sets the variable to
  * the given value; or !var, which unsets the variable is it has
  * been previously set.
  *

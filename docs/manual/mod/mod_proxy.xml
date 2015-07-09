@@ -1198,7 +1198,7 @@ ProxyPass "/example" "http://backend.example.com" max=20 ttl=120 retry=300
         like <code>JSESSIONID</code> or <code>PHPSESSIONID</code>,
         and it depends on the backend application server that support sessions.
         If the backend application server uses different name for cookies
-        and url encoded id (like servlet containers) use | to to separate them.
+        and url encoded id (like servlet containers) use | to separate them.
         The first part is for the cookie the second for the path.<br />
         Available in Apache HTTP Server 2.4.4 and later.
     </td></tr>
