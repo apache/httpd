@@ -620,7 +620,7 @@ algorithm type.
 </p>
 
 <p>
-Finally the the end-entity certificate's private key can also be
+Finally the end-entity certificate's private key can also be
 added to the certificate file instead of using a separate
 <code class="directive"><a href="#sslcertificatekeyfile">SSLCertificateKeyFile</a></code>
 directive. This practice is highly discouraged. If it is used,
