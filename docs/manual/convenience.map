@@ -624,6 +624,7 @@ sslverifydepth	mod/mod_ssl.html#sslverifydepth
 startservers	mod/mpm_common.html#startservers
 startthreads	mod/mpm_common.html#startthreads
 substitute	mod/mod_substitute.html#substitute
+substituteinheritbefore	mod/mod_substitute.html#substituteinheritbefore
 substitutemaxlinelength	mod/mod_substitute.html#substitutemaxlinelength
 suexec	mod/mod_unixd.html#suexec
 suexecusergroup	mod/mod_suexec.html#suexecusergroup

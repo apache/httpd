@@ -100,7 +100,7 @@
     time with your delimiter which it then remembers and on each subsequent
     call it returns the next token.  Obviously if multiple threads are
     calling it you will have a problem.  Most systems have a reentrant version
-    of of the function called <code>strtok_r()</code> where you pass in an
+    of the function called <code>strtok_r()</code> where you pass in an
     extra argument which contains an allocated <code>char *</code> which the
     function will use instead of its own static storage for maintaining
     the tokenizing state. If you are using <a href="http://apr.apache.org/">APR</a> you can use <code>apr_strtok()</code>.</p>

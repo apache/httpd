@@ -566,7 +566,7 @@ parser has been added in 2.4.4.</td></tr>
 </table>
     <p>The <code class="directive"><a href="#authformmethod">AuthFormMethod</a></code> directive specifies
     the name of an HTML field which, if present, will contain the
-    mimetype of the request to to submit should login be successful.</p>
+    mimetype of the request to submit should login be successful.</p>
 
     <p>By populating the form with fields described by
     <code class="directive"><a href="#authformmethod">AuthFormMethod</a></code>,
