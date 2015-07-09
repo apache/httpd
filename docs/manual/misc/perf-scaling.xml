@@ -1086,7 +1086,7 @@ CustomLog "|/usr/local/apache2/bin/rotatelogs /var/log/access_log 86400" common
                     </code>
                     the equivalent is <code>limit
                     </code>
-                    and works analogous the the Bourne-like <code>ulimit
+                    and works analogous to the Bourne-like <code>ulimit
                     </code>
                     :
                 </p>

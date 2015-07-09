@@ -1130,7 +1130,7 @@ AP_DECLARE(apr_off_t) ap_get_limit_req_body(const request_rec *r)
 /*****************************************************************
  *
  * Commands... this module handles almost all of the NCSA httpd.conf
- * commands, but most of the old srm.conf is in the the modules.
+ * commands, but most of the old srm.conf is in the modules.
  */
 
 
