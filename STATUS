@@ -108,6 +108,14 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_ldap: Fix unexpected return codes from LDAP lib being coerced
+     into LDAP_NO_SUCH_ATTRIBUTE + some new tracing.
+
+     trunk patch: http://svn.apache.org/r1687980
+                  http://svn.apache.org/r1689694
+                  http://svn.apache.org/r1689698
+     2.4.x patch:  http://people.apache.org/~covener/patches/httpd-2.4.x-ldap-retcode.diff
+     +1: covener, wrowe, ylavic
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -203,14 +211,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-SubstituteInheritBefore-v4.patch
      +1: ylavic
 
-   *) mod_ldap: Fix unexpected return codes from LDAP lib being coerced
-      into LDAP_NO_SUCH_ATTRIBUTE + some new tracing.
-
-      trunk patch: http://svn.apache.org/r1687980
-                   http://svn.apache.org/r1689694
-                   http://svn.apache.org/r1689698
-      2.4.x patch:  http://people.apache.org/~covener/patches/httpd-2.4.x-ldap-retcode.diff
-     +1: covener, wrowe
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
