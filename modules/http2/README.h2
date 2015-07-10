@@ -1,0 +1,57 @@
+The h2 module adds support for the HTTP/2 protocol to the server.
+
+Specifically, it supports the protocols "h2" (HTTP2 over TLS) and "h2c" 
+(HTTP2 over plain HTTP connections via Upgrade). Additionally it offers
+the "direct" mode for both encrypted and unencrypted connections.
+
+You may enable it for the whole server or specific virtual hosts only. 
+
+
+BUILD
+
+If you have libnghttp2 (https://nghttp2.org) installed on your system, simply
+add 
+
+    --enable-h2
+
+to your httpd ./configure invocation. Should libnghttp2 reside in a unusual
+location, add
+
+    --with-nghttp2=<path>
+
+to ./configure. <path> is expected to be the installation prefix, so there
+should be a <path>/lib/libnghttp2.*. If your system support pkg-config,
+<path>/lib/pkgconfig/libnghttp2.pc will be inspected.
+
+If you want to link nghttp2 statically into the mod_h2 module, you may
+similarly to mod_ssl add
+
+    --enable-nghttp2-staticlib-deps
+
+For this, the lib directory should only contain the libnghttp2.a, not its
+shared cousins.
+
+
+CONFIGURATION
+
+The most important configuration options is
+
+    H2Engine On|Off
+
+which can be set on the base server or a virtual host. By default, the
+engine is 'Off'. Please see the documentation of mod_h2 for a complete
+list and explanation of other options.
+
+
+TLS CONFIGURATION
+
+If you want to use HTTP/2 with a browser, most modern browsers will support
+it without further configuration. However, browsers so far only support
+HTTP/2 over TLS and are expecially picky about the certificate and
+encryption ciphers used.
+
+Server admins may look for up-to-date information about "modern" TLS
+compatibility under: 
+
+  https://wiki.mozilla.org/Security/Server_Side_TLS#Modern_compatibility
+
