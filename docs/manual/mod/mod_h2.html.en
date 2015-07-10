@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
+<!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>mod_h2 - Apache HTTP Server Version 2.5</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
+<script src="../style/scripts/prettify.min.js" type="text/javascript">
+</script>
+
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.5</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Apache Module mod_h2</h1>
+<div class="toplang">
+<p><span>Available Languages: </span><a href="../en/mod/mod_h2.html" title="English">&nbsp;en&nbsp;</a></p>
+</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Support for the HTTP/2 transport layer</td></tr>
+<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>h2_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_h2.c</td></tr></table>
+<h3>Summary</h3>
+
+        <p>This module provides HTTP/2 (RFC 7540) support for the Apache
+            HTTP Server.</p>
+        
+        <p>This module relies on <a href="http://nghttp2.org/">libnghttp2</a>
+            to provide the core http/2 engine.</p>
+        
+    </div>
+<div id="quickview"><h3 class="directives">Directives</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#h2bufferoutput">H2BufferOutput</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#h2buffersize">H2BufferSize</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#h2bufferwritemax">H2BufferWriteMax</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#h2direct">H2Direct</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#h2engine">H2Engine</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#h2maxheaderlistsize">H2MaxHeaderListSize</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#h2maxsessionstreams">H2MaxSessionStreams</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#h2maxworkeridleseconds">H2MaxWorkerIdleSeconds</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#h2maxworkers">H2MaxWorkers</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#h2minworkers">H2MinWorkers</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#h2serializeheaders">H2SerializeHeaders</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#h2sessionextrafiles">H2SessionExtraFiles</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#h2streammaxmemsize">H2StreamMaxMemSize</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#h2windowsize">H2WindowSize</a></li>
+</ul>
+<ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
+
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="H2BufferOutput" id="H2BufferOutput">H2BufferOutput</a> <a name="h2bufferoutput" id="h2bufferoutput">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Output Buffering Switch</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2BufferOutput on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_h2</td></tr>
+</table>
+            <p>
+                This directive toggles if buffering of HTTP/2 output shall be used
+                or if data is written immediately when it arrives. Unless specified
+                otherwise, this directive is <code>on</code> for TLS connections and
+                <code>off</code> for plain connections.
+            </p>
+            <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">H2BufferOutput on</pre>
+</div>
+        
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="H2BufferSize" id="H2BufferSize">H2BufferSize</a> <a name="h2buffersize" id="h2buffersize">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Buffer size for outgoing data per HTTP/2 connection.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2BufferSize <em>bytes</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>H2BufferSize 65536</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_h2</td></tr>
+</table>
+            <p>
+                This directive sets the size of the buffer used to hold outgoing
+                HTTP/2 raw data, should <code>H2BufferOutput</code> be switched on.
+                This data is allocated per HTTP/2 connection, not stream and is
+                counted against the raw protocol data.
+            </p>
+            <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">H2BufferSize 128000</pre>
+</div>
+        
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="H2BufferWriteMax" id="H2BufferWriteMax">H2BufferWriteMax</a> <a name="h2bufferwritemax" id="h2bufferwritemax">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum size of write on a HTTP/2 connection.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2BufferWriteMax <em>bytes</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>H2BufferWriteMax 16384</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_h2</td></tr>
+</table>
+            <p>
+                This directive sets maximum amount of data sent out in a single 
+                write on a http/2 connection. It only takes effect when 
+                <code>H2BufferOutput</code> is switched on.
+            </p><p>
+                This directive affects performance of underlying TLS transports. TLS
+                transforms each write into an encrypted record. Clients need
+                to receive all of the record in order to decrypt it. Larger sizes
+                result in better server performance, shorter sizes can affect web
+                page paint timings.
+            </p><p>
+                <code>BufferSize</code> should be a multiple of <code>H2BufferWriteMax</code>.
+                <code>H2BufferWriteMax</code>, if larger than 16k, should be a multiple of 16k,
+                since this is the TLS max record size. Be aware that there are TLS 
+                extensions to limit the record size to powers of 2 less than 16k.
+            </p>
+            <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">H2BufferWriteMax 8000</pre>
+</div>
+        
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="H2Direct" id="H2Direct">H2Direct</a> <a name="h2direct" id="h2direct">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>H2 Direct Protocol Switch</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2Direct on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>H2Direct on</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_h2</td></tr>
+</table>
+            <p>
+                This directive toggles the usage of the HTTP/2 Direct Mode. This
+                should be used inside a 
+                <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> 
+                section to enable direct HTTP/2 communication for that virtual host. 
+                Direct communication means that if the first bytes received by the 
+                server on a connection match the HTTP/2 preamble, the HTTP/2
+                protocol is switched to immediately without further negotiation.
+                This mode falls outside the RFC 7540 but has become widely implemented
+                as it is very convenient for development and testing. 
+                By default the direct HTTP/2 mode is enabled.
+            </p>
+            <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">H2Direct on</pre>
+</div>
+        
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="H2Engine" id="H2Engine">H2Engine</a> <a name="h2engine" id="h2engine">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>H2 Engine Operation Switch</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2Engine on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>H2Engine off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_h2</td></tr>
+</table>
+            <p>
+                This directive toggles the usage of the HTTP/2 Protocol Engine. This
+                should be used inside a 
+                <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> 
+                section to enable HTTP/2 for that virtual host. By default the 
+                HTTP/2 Protocol Engine is disabled for both the main server and all 
+                configured virtual hosts.
+            </p>
+            <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">&lt;VirtualHost _default_:443&gt;
+    H2Engine on
+    #...
+&lt;/VirtualHost&gt;</pre>
+</div>
+            <p>
+                The HTTP/2 engine is usable in TLS and plain scenarios, supporting
+                the 'h2' and 'h2c' variants of the protocol. 
+            </p>
+        
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="H2MaxHeaderListSize" id="H2MaxHeaderListSize">H2MaxHeaderListSize</a> <a name="h2maxheaderlistsize" id="h2maxheaderlistsize">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum size of acceptable stream headers.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2MaxHeaderListSize <em>bytes</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>H2MaxHeaderListSize 16384</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_h2</td></tr>
+</table>
+            <p>
+                This directive sets the maximum amount of stream header bytes that
+                the server is willing to accept. It is announced to the client during
+                the initial HTTP/2 handshake.
+            </p>
+            <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">H2MaxHeaderListSize 10000</pre>
+</div>
+        
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="H2MaxSessionStreams" id="H2MaxSessionStreams">H2MaxSessionStreams</a> <a name="h2maxsessionstreams" id="h2maxsessionstreams">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum number of active streams per HTTP/2 session.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2MaxSessionStreams <em>n</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>H2MaxSessionStreams 100</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_h2</td></tr>
+</table>
+            <p>
+                This directive sets the maximum number of active streams per HTTP/2 session (e.g. connection)
+                that the server allows. A stream is active if it is not <code>idle</code> or 
+                <code>closed</code> according to RFC 7540.
+            </p>
+            <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">H2MaxSessionStreams 20</pre>
+</div>
+        
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="H2MaxWorkerIdleSeconds" id="H2MaxWorkerIdleSeconds">H2MaxWorkerIdleSeconds</a> <a name="h2maxworkeridleseconds" id="h2maxworkeridleseconds">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum number of seconds h2 workers remain idle until shut down.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2MaxWorkerIdleSeconds <em>n</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>H2MaxWorkerIdleSeconds 600</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_h2</td></tr>
+</table>
+            <p>
+                This directive sets the maximum number of seconds a h2 worker may 
+                idle until it shuts itself down. This only happens while the number of
+                h2 workers exceeds <code>H2MinWorkers</code>.
+            </p>
+            <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">H2MaxWorkerIdleSeconds 20</pre>
+</div>
+        
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="H2MaxWorkers" id="H2MaxWorkers">H2MaxWorkers</a> <a name="h2maxworkers" id="h2maxworkers">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum number of worker threads to use per child process.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2MaxWorkers <em>n</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_h2</td></tr>
+</table>
+            <p>
+                This directive sets the maximum number of worker threads to spawn
+                per child process for HTTP/2 processing. If this directive is not used,
+                <code>mod_h2</code> will chose a value suitable for the <code>mpm</code>
+                module loaded.
+            </p>
+            <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">H2MaxWorkers 20</pre>
+</div>
+        
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="H2MinWorkers" id="H2MinWorkers">H2MinWorkers</a> <a name="h2minworkers" id="h2minworkers">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Minimal number of worker threads to use per child process.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2MinWorkers <em>n</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_h2</td></tr>
+</table>
+            <p>
+                This directive sets the minimum number of worker threads to spawn
+                per child process for HTTP/2 processing. If this directive is not used,
+                <code>mod_h2</code> will chose a value suitable for the <code>mpm</code>
+                module loaded.
+            </p>
+            <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">H2MinWorkers 10</pre>
+</div>
+        
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="H2SerializeHeaders" id="H2SerializeHeaders">H2SerializeHeaders</a> <a name="h2serializeheaders" id="h2serializeheaders">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Serialize Request/Resoonse Processing Switch</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2SerializeHeaders on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>H2SerializeHeaders off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_h2</td></tr>
+</table>
+            <p>
+                This directive toggles if HTTP/2 requests shall be serialized in
+                HTTP/1.1 format for processing by <code>httpd</code> core or if
+                received binary data shall be passed into the <code>request_rec</code>s
+                directly.
+            </p>
+            <p>
+                Serialization will lower performance, but gives more backward
+                compatibility in case custom filters/hooks need it.
+            </p>
+            <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">H2SerializeHeaders on</pre>
+</div>
+        
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="H2SessionExtraFiles" id="H2SessionExtraFiles">H2SessionExtraFiles</a> <a name="h2sessionextrafiles" id="h2sessionextrafiles">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Number of Extra File Handles</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2SessionExtraFiles <em>n</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>H2SessionExtraFiles 5</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_h2</td></tr>
+</table>
+            <p>
+                This directive sets maximum number of <em>extra</em> file handles
+                a HTTP/2 session is allowed to use. A file handle is counted as
+                <em>extra</em> when it is transfered from a h2 worker thread to
+                the main HTTP/2 connection handling. This commonly happens when
+                serving static files.
+            </p><p>
+                Depending on the processing model configured on the server, the
+                number of connections times number of active streams may exceed
+                the number of file handles for the process. On the other hand,
+                converting every file into memory bytes early results in too 
+                many buffer writes. This option helps to mitigate that.
+            </p><p>
+                The number of file handles used by a server process is then in
+                the order of:
+            </p>
+            <pre>(h2_connections * extra_files) + (h2_max_worker)</pre>
+            <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">H2SessionExtraFiles 10</pre>
+</div>
+        
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="H2StreamMaxMemSize" id="H2StreamMaxMemSize">H2StreamMaxMemSize</a> <a name="h2streammaxmemsize" id="h2streammaxmemsize">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum amount of output data buffered per stream.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2StreamMaxMemSize <em>bytes</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>H2StreamMaxMemSize 65536</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_h2</td></tr>
+</table>
+            <p>
+                This directive sets the maximum number of outgoing data bytes buffered in memory
+                for an active streams. This memory is not allocated per stream as such. Allocations
+                are counted against this limit when they are about to be done. Stream processing
+                freezes when the limit has been reached and will only continue when buffered data
+                has been sent out to the client.
+            </p>
+            <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">H2StreamMaxMemSize 128000</pre>
+</div>
+        
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="H2WindowSize" id="H2WindowSize">H2WindowSize</a> <a name="h2windowsize" id="h2windowsize">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Size of Stream Window for upstream data.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2WindowSize <em>bytes</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>H2WindowSize 65536</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_h2</td></tr>
+</table>
+            <p>
+                This directive sets the size of the window that is used for flow control
+                from client to server and limits the amount of data the server has to buffer.
+                The client will stop sending on a stream once the limit has been reached until
+                the server announces more available space (as it has processed some of the data).
+            </p><p>
+                This limit affects only request bodies, not its meta data such as headers. Also,
+                it has no effect on response bodies as the window size for those are managed
+                by the clients.
+            </p>
+            <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">H2WindowSize 128000</pre>
+</div>
+        
+</div>
+</div>
+<div class="bottomlang">
+<p><span>Available Languages: </span><a href="../en/mod/mod_h2.html" title="English">&nbsp;en&nbsp;</a></p>
+</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+var comments_shortname = 'httpd';
+var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_h2.html';
+(function(w, d) {
+    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
+        d.write('<div id="comments_thread"><\/div>');
+        var s = d.createElement('script');
+        s.type = 'text/javascript';
+        s.async = true;
+        s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
+        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
+    }
+    else {
+        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
+    }
+})(window, document);
+//--><!]]></script></div><div id="footer">
+<p class="apache">Copyright 2015 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+if (typeof(prettyPrint) !== 'undefined') {
+    prettyPrint();
+}
+//--><!]]></script>
+</body></html>

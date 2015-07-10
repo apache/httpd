@@ -41,6 +41,9 @@ generators/
 http/
   This directory houses modules that basic HTTP protocol implementation.
 
+http2/
+  This directory houses modules that provide HTTP/2 protocol implementation.
+
 loggers/
   This directory houses modules that handle logging functions.
 

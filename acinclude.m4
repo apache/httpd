@@ -679,6 +679,127 @@ esac
 ])
 
 dnl
+dnl APACHE_CHECK_NGHTTP2
+dnl
+dnl Configure for nghttp2, giving preference to
+dnl "--with-nghttp2=<path>" if it was specified.
+dnl
+AC_DEFUN(APACHE_CHECK_NGHTTP2,[
+  AC_CACHE_CHECK([for nghttp2], [ac_cv_nghttp2], [
+    dnl initialise the variables we use
+    ac_cv_nghttp2=no
+    ap_nghttp2_found=""
+    ap_nghttp2_base=""
+    ap_nghttp2_libs=""
+
+    dnl Determine the nghttp2 base directory, if any
+    AC_MSG_CHECKING([for user-provided nghttp2 base directory])
+    AC_ARG_WITH(nghttp2, APACHE_HELP_STRING(--with-nghttp2=PATH, nghttp2 installation directory), [
+      dnl If --with-nghttp2 specifies a directory, we use that directory
+      if test "x$withval" != "xyes" -a "x$withval" != "x"; then
+        dnl This ensures $withval is actually a directory and that it is absolute
+        ap_nghttp2_base="`cd $withval ; pwd`"
+      fi
+    ])
+    if test "x$ap_nghttp2_base" = "x"; then
+      AC_MSG_RESULT(none)
+    else
+      AC_MSG_RESULT($ap_nghttp2_base)
+    fi
+
+    dnl Run header and version checks
+    saved_CPPFLAGS="$CPPFLAGS"
+    saved_LIBS="$LIBS"
+    saved_LDFLAGS="$LDFLAGS"
+
+    dnl Before doing anything else, load in pkg-config variables
+    if test -n "$PKGCONFIG"; then
+      saved_PKG_CONFIG_PATH="$PKG_CONFIG_PATH"
+      AC_MSG_CHECKING([for pkg-config along $PKG_CONFIG_PATH])
+      if test "x$ap_nghttp2_base" != "x" -a \
+              -f "${ap_nghttp2_base}/lib/pkgconfig/libnghttp2.pc"; then
+        dnl Ensure that the given path is used by pkg-config too, otherwise
+        dnl the system libnghttp2.pc might be picked up instead.
+        PKG_CONFIG_PATH="${ap_nghttp2_base}/lib/pkgconfig${PKG_CONFIG_PATH+:}${PKG_CONFIG_PATH}"
+        export PKG_CONFIG_PATH
+      fi
+      AC_ARG_ENABLE(nghttp2-staticlib-deps,APACHE_HELP_STRING(--enable-nghttp2-staticlib-deps,[link mod_h2 with dependencies of libnghttp2's static libraries (as indicated by "pkg-config --static"). Must be specified in addition to --enable-h2.]), [
+        if test "$enableval" = "yes"; then
+          PKGCONFIG_LIBOPTS="--static"
+        fi
+      ])
+      ap_nghttp2_libs="`$PKGCONFIG $PKGCONFIG_LIBOPTS --libs-only-l --silence-errors libnghttp2`"
+      if test $? -eq 0; then
+        ap_nghttp2_found="yes"
+        pkglookup="`$PKGCONFIG --cflags-only-I libnghttp2`"
+        APR_ADDTO(CPPFLAGS, [$pkglookup])
+        APR_ADDTO(MOD_CFLAGS, [$pkglookup])
+        APR_ADDTO(ab_CFLAGS, [$pkglookup])
+        pkglookup="`$PKGCONFIG $PKGCONFIG_LIBOPTS --libs-only-L libnghttp2`"
+        APR_ADDTO(LDFLAGS, [$pkglookup])
+        APR_ADDTO(MOD_LDFLAGS, [$pkglookup])
+        pkglookup="`$PKGCONFIG $PKGCONFIG_LIBOPTS --libs-only-other libnghttp2`"
+        APR_ADDTO(LDFLAGS, [$pkglookup])
+        APR_ADDTO(MOD_LDFLAGS, [$pkglookup])
+      fi
+      PKG_CONFIG_PATH="$saved_PKG_CONFIG_PATH"
+    fi
+
+    dnl fall back to the user-supplied directory if not found via pkg-config
+    if test "x$ap_nghttp2_base" != "x" -a "x$ap_nghttp2_found" = "x"; then
+      APR_ADDTO(CPPFLAGS, [-I$ap_nghttp2_base/include])
+      APR_ADDTO(MOD_CFLAGS, [-I$ap_nghttp2_base/include])
+      APR_ADDTO(ab_CFLAGS, [-I$ap_nghttp2_base/include])
+      APR_ADDTO(LDFLAGS, [-L$ap_nghttp2_base/lib])
+      APR_ADDTO(MOD_LDFLAGS, [-L$ap_nghttp2_base/lib])
+      if test "x$ap_platform_runtime_link_flag" != "x"; then
+        APR_ADDTO(LDFLAGS, [$ap_platform_runtime_link_flag$ap_nghttp2_base/lib])
+        APR_ADDTO(MOD_LDFLAGS, [$ap_platform_runtime_link_flag$ap_nghttp2_base/lib])
+      fi
+    fi
+
+    AC_MSG_CHECKING([for nghttp2 version >= 1.0.0])
+    AC_TRY_COMPILE([#include <nghttp2/nghttp2ver.h>],[
+#if !defined(NGHTTP2_VERSION_NUM)
+#error "Missing nghttp2 version"
+#endif
+#if NGHTTP2_VERSION_NUM < 0x010000
+#error "Unsupported nghttp2 version " NGHTTP2_VERSION_TEXT
+#endif],
+      [AC_MSG_RESULT(OK)
+       ac_cv_nghttp2=yes],
+      [AC_MSG_RESULT(FAILED)])
+
+    if test "x$ac_cv_nghttp2" = "xyes"; then
+      ap_nghttp2_libs="${ap_nghttp2_libs:--lnghttp2} `$apr_config --libs`"
+      APR_ADDTO(MOD_LDFLAGS, [$ap_nghttp2_libs])
+      APR_ADDTO(LIBS, [$ap_nghttp2_libs])
+      APR_SETVAR(ab_LDFLAGS, [$MOD_LDFLAGS])
+      APACHE_SUBST(ab_CFLAGS)
+      APACHE_SUBST(ab_LDFLAGS)
+
+      dnl Run library and function checks
+      liberrors=""
+      AC_CHECK_HEADERS([nghttp2/nghttp2.h])
+      AC_CHECK_FUNCS([nghttp2_session_server_new2], [], [liberrors="yes"])
+      if test "x$liberrors" != "x"; then
+        AC_MSG_WARN([nghttp2 library is unusable])
+      fi
+    else
+      AC_MSG_WARN([nghttp2 version is too old])
+    fi
+
+    dnl restore
+    CPPFLAGS="$saved_CPPFLAGS"
+    LIBS="$saved_LIBS"
+    LDFLAGS="$saved_LDFLAGS"
+  ])
+  if test "x$ac_cv_nghttp2" = "xyes"; then
+    AC_DEFINE(HAVE_NGHTTP2, 1, [Define if nghttp2 is available])
+  fi
+])
+
+dnl
 dnl APACHE_EXPORT_ARGUMENTS
 dnl Export (via APACHE_SUBST) the various path-related variables that
 dnl apache will use while generating scripts like autoconf and apxs and
