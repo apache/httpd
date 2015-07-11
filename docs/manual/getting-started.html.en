@@ -193,7 +193,7 @@ problem without the error log is like driving with your eyes closed.</p>
 <p>The location of the error log is defined by the <code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code> directive, which may be set globally,
 or per virtual host. Entries in the error log tell you what went wrong,
 and when. They often also tell you how to fix it. Each error log message
-contains a error code, which you can search for online for even more
+contains an error code, which you can search for online for even more
 detailed descriptions of how to address the problem. You can also
 configure your error log to contain a log ID which you can then
 correlate to an access log entry, so that you can determine what request
