@@ -30,8 +30,6 @@
 <a href="../fr/mod/mod_proxy.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_proxy.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Serveur mandataire/passerelle multi-protocole</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>proxy_module</td></tr>
@@ -1456,7 +1454,7 @@ ProxyPass "/mirror/foo" "http://backend.example.com"</pre>
         <td>Off</td>
         <td>Si ce paramètre est défini à <code>On</code>, la session va
 	s'interrompre si le serveur cible est dans un état d'erreur ou
-	désactivé. Définissez ce paramètre à On si le serveur
+	désactivé. Définissez ce paramètre à <code>On</code> si le serveur
 	d'arrière-plan ne supporte pas la réplication de session.
     </td></tr>
     <tr><td>stickysession</td>
