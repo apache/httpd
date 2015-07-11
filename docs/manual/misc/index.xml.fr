@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 636430:1690352 (outdated) -->
+<!-- English Revision: 1690352 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -51,6 +51,13 @@
 	expliquant pourquoi Apache accomplit certaines choses et
 	n'en accomplit pas certaines autres (les premi&egrave;res l'acc&eacute;l&eacute;rant
 	et les deuxi&egrave;mes le ralentissant).</p>
+      </dd>
+
+      <dt><a href="perf-scaling.html">Amélioration des performances</a></dt>
+
+      <dd>
+        <p>Quelques options de personnalisation de la configuration
+	facilement accessibles pour Apache httpd 2.2 et 2.4, et quelques outils de monitoring.</p>
       </dd>
 
       <dt><a href="security_tips.html">Conseils concernant la
