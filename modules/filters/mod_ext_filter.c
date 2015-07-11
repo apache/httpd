@@ -635,7 +635,7 @@ static apr_status_t init_filter_instance(ap_filter_t *f)
 /* drain_available_output():
  *
  * if any data is available from the filter, read it and append it
- * to the the bucket brigade
+ * to the bucket brigade
  */
 static apr_status_t drain_available_output(ap_filter_t *f,
                                            apr_bucket_brigade *bb)

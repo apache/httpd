@@ -1749,7 +1749,7 @@ SSL_SESSION *ssl_callback_GetSessionCacheEntry(SSL *ssl,
 
 /*
  *  This callback function is executed by OpenSSL whenever a
- *  SSL_SESSION is removed from the the internal OpenSSL cache.
+ *  SSL_SESSION is removed from the internal OpenSSL cache.
  *  We use this to remove the SSL_SESSION in the inter-process
  *  disk-cache, too.
  */

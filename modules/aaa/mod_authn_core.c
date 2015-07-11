@@ -108,7 +108,7 @@ static authn_status authn_alias_check_password(request_rec *r, const char *user,
                                               const char *password)
 {
     /* Look up the provider alias in the alias list */
-    /* Get the the dir_config and call ap_Merge_per_dir_configs() */
+    /* Get the dir_config and call ap_Merge_per_dir_configs() */
     /* Call the real provider->check_password() function */
     /* return the result of the above function call */
 
@@ -140,7 +140,7 @@ static authn_status authn_alias_get_realm_hash(request_rec *r, const char *user,
                                                const char *realm, char **rethash)
 {
     /* Look up the provider alias in the alias list */
-    /* Get the the dir_config and call ap_Merge_per_dir_configs() */
+    /* Get the dir_config and call ap_Merge_per_dir_configs() */
     /* Call the real provider->get_realm_hash() function */
     /* return the result of the above function call */
 

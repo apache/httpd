@@ -1202,7 +1202,7 @@ static int CommandLineInterpreter(scr_t screenID, const char *commandLine)
         ActivateScreen (getscreenhandle());
 
         /* If an instance id was not given but the nlm is loaded in
-            protected space, then the the command belongs to the
+            protected space, then the command belongs to the
             OS address space instance to pass it on. */
         pID = strstr (szcommandLine, "-p");
         if ((pID == NULL) && nlmisloadedprotected())
