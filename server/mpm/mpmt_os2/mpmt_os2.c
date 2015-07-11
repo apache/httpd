@@ -24,7 +24,7 @@
  * spawning children as required to ensure there are always ap_daemons_to_start
  * processes accepting connections.
  *
- * Each child process consists of a a pool of worker threads and a
+ * Each child process consists of a pool of worker threads and a
  * main thread that accepts connections & passes them to the workers via
  * a work queue. The worker thread pool is dynamic, managed by a maintanence
  * thread so that the number of idle threads is kept between
