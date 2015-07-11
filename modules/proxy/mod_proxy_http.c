@@ -759,7 +759,7 @@ int ap_proxy_http_request(apr_pool_t *p, request_rec *r,
 
     /* WE only understand chunked.  Other modules might inject
      * (and therefore, decode) other flavors but we don't know
-     * that the can and have done so unless they they remove
+     * that the can and have done so unless they remove
      * their decoding from the headers_in T-E list.
      * XXX: Make this extensible, but in doing so, presume the
      * encoding has been done by the extensions' handler, and
