@@ -48,6 +48,14 @@
         make it slower/faster).</p>
       </dd>
 
+      <dt><a href="perf-scaling.html">Performance Scaling</a></dt>
+
+      <dd>
+        <p>Some easily accessible configuration and tuning
+        options for Apache httpd 2.2 and 2.4 as well as monitoring
+        tools.</p>
+      </dd>
+
       <dt><a href="security_tips.html">Security Tips</a></dt>
 
       <dd>
