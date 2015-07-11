@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1673932:1690137 (outdated) -->
+<!-- English Revision: 1690137 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1357,7 +1357,7 @@ ProxyPass "/mirror/foo" "http://backend.example.com"
         <td>Off</td>
         <td>Si ce param&egrave;tre est d&eacute;fini &agrave; <code>On</code>, la session va
 	s'interrompre si le serveur cible est dans un &eacute;tat d'erreur ou
-	d&eacute;sactiv&eacute;. D&eacute;finissez ce param&egrave;tre &agrave; On si le serveur
+	d&eacute;sactiv&eacute;. D&eacute;finissez ce param&egrave;tre &agrave; <code>On</code> si le serveur
 	d'arri&egrave;re-plan ne supporte pas la r&eacute;plication de session.
     </td></tr>
     <tr><td>stickysession</td>
