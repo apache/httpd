@@ -1981,7 +1981,7 @@ static int dsortf(struct ent **e1, struct ent **e2)
         }
     }
 
-    /* The names may be identical in respects other other than
+    /* The names may be identical in respects other than
      * filename case when strnatcmp is used above, so fall back
      * to strcmp on conflicts so that fn1.01.zzz and fn1.1.zzz
      * are also sorted in a deterministic order.

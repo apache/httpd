@@ -2890,7 +2890,7 @@ static int do_negotiation(request_rec *r, negotiation_state *neg,
 
             /* Some HTTP/1.0 clients are known to choke when they get
              * a 300 (multiple choices) response without a Location
-             * header.  However the 300 code response we are are about
+             * header.  However the 300 code response we are about
              * to generate will only reach 1.0 clients which support
              * transparent negotiation, and they should be OK. The
              * response should never reach older 1.0 clients, even if

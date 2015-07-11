@@ -298,7 +298,7 @@ static const command_rec ident_cmds[] =
 module AP_MODULE_DECLARE_DATA ident_module;
 
 /*
- * Optional function for the core to to the actual ident request
+ * Optional function for the core to the actual ident request
  */
 static const char *ap_ident_lookup(request_rec *r)
 {
