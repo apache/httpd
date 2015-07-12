@@ -49,8 +49,8 @@
     de 80 (ou tout autre port inf&eacute;rieur &agrave; 1024), il est n&eacute;cessaire de
     poss&eacute;der les privil&egrave;ges root pour pouvoir d&eacute;marrer apache, et lui
     permettre d'&ecirc;tre associ&eacute; &agrave; ce port privil&eacute;gi&eacute;. Lorsque le serveur est
-    d&eacute;marr&eacute;, apr&egrave;s avoir effectu&eacute; quelques op&eacute;rations pr&eacute;liminaires
-    comme ouvrir ses fichiers de log, il lance plusieurs processus
+    d&eacute;marr&eacute;, il effectue quelques op&eacute;rations pr&eacute;liminaires
+    comme ouvrir ses fichiers de log, puis il lance plusieurs processus
     <em>enfants</em> qui ont pour r&ocirc;le d'&eacute;couter et de r&eacute;pondre aux
     requ&ecirc;tes des clients. Le processus <code>httpd</code> principal
     continue &agrave; s'ex&eacute;cuter sous l'utilisateur root, tandis que les processus
@@ -60,8 +60,7 @@
 
     <p>Il est recommand&eacute; d'utiliser le script de contr&ocirc;le
     <program>apachectl</program> pour invoquer l'ex&eacute;cutable
-    <program>httpd</program>. Avant d'invoquer le binaire
-    <program>httpd</program>, ce script d&eacute;finit certaines variables
+    <program>httpd</program>. A cet effet, ce script d&eacute;finit certaines variables
     d'environnement n&eacute;cessaires pour permettre &agrave;
     <program>httpd</program> de fonctionner correctement sous certains syst&egrave;mes
     d'exploitation.
@@ -117,13 +116,14 @@
 
 <section id="boot"><title>Lancement au d&eacute;marrage du syst&egrave;me</title>
 
-    <p>Si vous souhaitez que votre serveur fonctionne apr&egrave;s
+    <p>Si vous souhaitez que votre serveur soit automatiquement
+    disponible apr&egrave;s
     un red&eacute;marrage du syst&egrave;me, vous devez ajouter un appel &agrave;
     <program>apachectl</program> &agrave; vos
     fichiers de d&eacute;marrage syst&egrave;me (en g&eacute;n&eacute;ral <code>rc.local</code> ou un
     fichier dans un r&eacute;pertoire <code>rc.N</code>), ce qui d&eacute;marrera Apache sous
     l'utilisateur root. Avant de faire ceci, assurez-vous que votre serveur
-    est correctement configur&eacute; en ce qui concerne la s&eacute;curit&eacute; et les
+    soit correctement configur&eacute; en ce qui concerne la s&eacute;curit&eacute; et les
     restrictions d'acc&egrave;s.</p>
 
     <p>Le script <program>apachectl</program> est con&ccedil;u pour fonctionner
