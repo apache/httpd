@@ -55,8 +55,8 @@
     de 80 (ou tout autre port inférieur à 1024), il est nécessaire de
     posséder les privilèges root pour pouvoir démarrer apache, et lui
     permettre d'être associé à ce port privilégié. Lorsque le serveur est
-    démarré, après avoir effectué quelques opérations préliminaires
-    comme ouvrir ses fichiers de log, il lance plusieurs processus
+    démarré, il effectue quelques opérations préliminaires
+    comme ouvrir ses fichiers de log, puis il lance plusieurs processus
     <em>enfants</em> qui ont pour rôle d'écouter et de répondre aux
     requêtes des clients. Le processus <code>httpd</code> principal
     continue à s'exécuter sous l'utilisateur root, tandis que les processus
@@ -66,8 +66,7 @@
 
     <p>Il est recommandé d'utiliser le script de contrôle
     <code class="program"><a href="./programs/apachectl.html">apachectl</a></code> pour invoquer l'exécutable
-    <code class="program"><a href="./programs/httpd.html">httpd</a></code>. Avant d'invoquer le binaire
-    <code class="program"><a href="./programs/httpd.html">httpd</a></code>, ce script définit certaines variables
+    <code class="program"><a href="./programs/httpd.html">httpd</a></code>. A cet effet, ce script définit certaines variables
     d'environnement nécessaires pour permettre à
     <code class="program"><a href="./programs/httpd.html">httpd</a></code> de fonctionner correctement sous certains systèmes
     d'exploitation.
@@ -122,13 +121,14 @@
 <div class="section">
 <h2><a name="boot" id="boot">Lancement au démarrage du système</a></h2>
 
-    <p>Si vous souhaitez que votre serveur web fonctionne après
+    <p>Si vous souhaitez que votre serveur web soit automatiquement
+    disponible après
     un redémarrage du système, vous devez ajouter un appel à
     <code class="program"><a href="./programs/apachectl.html">apachectl</a></code> à vos
     fichiers de démarrage système (en général <code>rc.local</code> ou un
     fichier dans un répertoire <code>rc.N</code>), ce qui démarrera Apache sous
     l'utilisateur root. Avant de faire ceci, assurez-vous que votre serveur
-    est correctement configuré en ce qui concerne la sécurité et les
+    soit correctement configuré en ce qui concerne la sécurité et les
     restrictions d'accès.</p>
 
     <p>Le script <code class="program"><a href="./programs/apachectl.html">apachectl</a></code> est conçu pour fonctionner
