@@ -53,7 +53,8 @@
 
     <p>Afin d'arrêter ou redémarrer Apache, vous devez envoyer un signal aux
     processus <code class="program"><a href="./programs/httpd.html">httpd</a></code> en cours d'exécution.  Les signaux
-    peuvent être envoyés de deux manières.  Tout d'abord, vous pouvez
+    peuvent être envoyés de deux manières. La
+    première méthode consiste à
     utiliser la commande unix <code>kill</code>
     pour envoyer directement des signaux aux processus. Vous pouvez remarquer
     que plusieurs processus <code class="program"><a href="./programs/httpd.html">httpd</a></code> s'exécutent sur votre
@@ -67,7 +68,7 @@
     <code><a href="#graceful">USR1</a></code>,
     <code><a href="#hup">HUP</a></code>, et
     <code><a href="#gracefulstop">WINCH</a></code>, qui
-    sera décrit plus loin.</p>
+    seront décrit plus loin.</p>
 
     <p>Pour envoyer un signal au processus parent, vous devez entrer une commande
     du style :</p>
@@ -150,7 +151,7 @@
     enfants au cours des différentes générations.</p>
 
     <p>Dans son état des processus,
-    le module status utilise aussi un <code>G</code> afin d'indiquer
+    le module status utilise aussi un caractère <code>G</code> afin d'indiquer
     quels processus enfants ont encore des traitements de requêtes en cours
     débutés avant que l'ordre graceful restart ne soit donné.</p>
 
@@ -221,8 +222,9 @@ pour éviter ce problème.</div>
 <dd><code>apachectl -k graceful-stop</code></dd>
 </dl>
 
-    <p>L'envoi du signal <code>WINCH</code> ou <code>graceful-stop</code>
-    au processus parent lui fait <em>aviser</em> les processus enfants
+    <p>A la réception du signal <code>WINCH</code> ou
+    <code>graceful-stop</code>, le
+    processus parent <em>ordonne</em> à ses processus enfants
     de s'arrêter après le traitement de leur requête en cours
     (ou de s'arrêter immédiatement s'ils n'ont plus de requête à traiter).
     Le processus parent va alors supprimer son fichier
