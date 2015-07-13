@@ -117,6 +117,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-SubstituteInheritBefore-v4.patch
      +1: ylavic
 
+  *) Fix MOD_OPTIONAL_HOOK_EXPORT_H include guard spelling (silliest compile
+     warning in 2.2 codebase?)
+     trunk patch: r1514215
+     2.4.x: grabbed from trunk in r1523248
+     2.2.x patch: trunk patch works
+     +1: trawick
 
 PATCHES/ISSUES THAT ARE STALLED
 
