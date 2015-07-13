@@ -122,7 +122,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: r1514215
      2.4.x: grabbed from trunk in r1523248
      2.2.x patch: trunk patch works
-     +1: trawick
+     +1: trawick, ylavic
 
 PATCHES/ISSUES THAT ARE STALLED
 
