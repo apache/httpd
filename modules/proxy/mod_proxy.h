@@ -787,9 +787,9 @@ ap_proxy_buckets_lifetime_transform(request_rec *r, apr_bucket_brigade *from,
                                         apr_bucket_brigade *to);
 
 #if PROXY_HAS_SCOREBOARD
-void *ap_proxy_set_scoreboard_lb(proxy_worker *worker,
-                                 proxy_balancer *balancer,
-                                 server_rec *server);
+PROXY_DECLARE(void*) ap_proxy_set_scoreboard_lb(proxy_worker *worker,
+                                                proxy_balancer *balancer,
+                                                server_rec *server);
 #endif
 
 #define PROXY_LBMETHOD "proxylbmethod"
