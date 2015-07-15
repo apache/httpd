@@ -15,7 +15,7 @@
  */
 
 #ifndef MOD_OPTIONAL_HOOK_EXPORT_H
-#define MOD_OPTOPNAL_HOOK_EXPORT_H
+#define MOD_OPTIONAL_HOOK_EXPORT_H
 
 #include "ap_config.h"
 
