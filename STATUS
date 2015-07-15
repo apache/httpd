@@ -23,8 +23,8 @@ Patches considered for backport are noted in their branches' STATUS:
 Release history:
     [NOTE that x.{odd}.z versions are strictly Alpha/Beta releases,
           while x.{even}.z versions are Stable/GA releases.]
-    2.2.31  : In maintenance
-    2.2.30  : Tagged July 10, 2014
+    2.2.31  : Tagged July 15, 2015
+    2.2.30  : Tagged July 10, 2015. Not released.
     2.2.29  : Released September 3, 2014
     2.2.28  : Tagged August 22, 2014. Not released.
     2.2.27  : Released March 26, 2014
@@ -97,11 +97,6 @@ CURRENT RELEASE NOTES:
 
 
 RELEASE SHOWSTOPPERS:
-
-  *) mod_proxy: PROXY_DECLARE ap_proxy_set_scoreboard_lb (2.2.x only) to fix
-                the build (linking) on Windows.
-     2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-PROXY_DECLARE_set_scoreboard_lb.patch
-     +1: ylavic, trawick
 
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:

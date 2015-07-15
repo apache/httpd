@@ -1802,9 +1802,9 @@ static apr_status_t connection_destructor(void *resource, void *params,
 #endif
 
 #if PROXY_HAS_SCOREBOARD
-void *ap_proxy_set_scoreboard_lb(proxy_worker *worker,
-                                 proxy_balancer *balancer,
-                                 server_rec *server)
+PROXY_DECLARE(void*) ap_proxy_set_scoreboard_lb(proxy_worker *worker,
+                                                proxy_balancer *balancer,
+                                                server_rec *server)
 {
     if (ap_scoreboard_image && !worker->s) {
         int i = 0;
