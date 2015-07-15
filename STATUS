@@ -101,7 +101,7 @@ RELEASE SHOWSTOPPERS:
   *) mod_proxy: PROXY_DECLARE ap_proxy_set_scoreboard_lb (2.2.x only) to fix
                 the build (linking) on Windows.
      2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-PROXY_DECLARE_set_scoreboard_lb.patch
-     +1: ylavic
+     +1: ylavic, trawick
 
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
