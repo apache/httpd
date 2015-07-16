@@ -53,7 +53,7 @@ static apr_status_t h2_filter_stream_input(ap_filter_t* filter,
                                            apr_read_type_e block,
                                            apr_off_t readbytes) {
     h2_task_env *env = filter->ctx;
-    AP_DEBUG_ASSERT(task);
+    AP_DEBUG_ASSERT(env);
     if (!env->input) {
         return APR_ECONNABORTED;
     }
@@ -64,7 +64,7 @@ static apr_status_t h2_filter_stream_input(ap_filter_t* filter,
 static apr_status_t h2_filter_stream_output(ap_filter_t* filter,
                                             apr_bucket_brigade* brigade) {
     h2_task_env *env = filter->ctx;
-    AP_DEBUG_ASSERT(task);
+    AP_DEBUG_ASSERT(env);
     if (!env->output) {
         return APR_ECONNABORTED;
     }
@@ -74,7 +74,7 @@ static apr_status_t h2_filter_stream_output(ap_filter_t* filter,
 static apr_status_t h2_filter_read_response(ap_filter_t* f,
                                             apr_bucket_brigade* bb) {
     h2_task_env *env = f->ctx;
-    AP_DEBUG_ASSERT(task);
+    AP_DEBUG_ASSERT(env);
     if (!env->output || !env->output->from_h1) {
         return APR_ECONNABORTED;
     }
