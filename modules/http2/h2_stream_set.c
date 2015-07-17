@@ -65,10 +65,11 @@ h2_stream *h2_stream_set_get(h2_stream_set *sp, int stream_id)
      * by bsearch.
      */
     h2_stream key;
+    h2_stream *pkey, **ps;
     memset(&key, 0, sizeof(key));
     key.id = stream_id;
-    h2_stream *pkey = &key;
-    h2_stream **ps = bsearch(&pkey, sp->list->elts, sp->list->nelts, 
+    pkey = &key;
+    ps = bsearch(&pkey, sp->list->elts, sp->list->nelts, 
                              sp->list->elt_size, h2_stream_id_cmp);
     return ps? *ps : NULL;
 }
@@ -83,13 +84,14 @@ apr_status_t h2_stream_set_add(h2_stream_set *sp, h2_stream *stream)
 {
     h2_stream *existing = h2_stream_set_get(sp, stream->id);
     if (!existing) {
+        int last;
         APR_ARRAY_PUSH(sp->list, h2_stream*) = stream;
         /* Normally, streams get added in ascending order if id. We
          * keep the array sorted, so we just need to check of the newly
          * appended stream has a lower id than the last one. if not,
          * sorting is not necessary.
          */
-        int last = sp->list->nelts - 1;
+        last = sp->list->nelts - 1;
         if (last > 0 
             && (H2_STREAM_IDX(sp->list, last)->id 
                 < H2_STREAM_IDX(sp->list, last-1)->id)) {
@@ -104,8 +106,9 @@ h2_stream *h2_stream_set_remove(h2_stream_set *sp, h2_stream *stream)
     for (int i = 0; i < sp->list->nelts; ++i) {
         h2_stream *s = H2_STREAM_IDX(sp->list, i);
         if (s == stream) {
+            int n;
             --sp->list->nelts;
-            int n = sp->list->nelts - i;
+            n = sp->list->nelts - i;
             if (n > 0) {
                 /* Close the hole in the array by moving the upper
                  * parts down one step.

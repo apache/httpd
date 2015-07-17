@@ -174,10 +174,11 @@ apr_status_t h2_conn_io_read(h2_conn_io *io,
 static apr_status_t flush_out(apr_bucket_brigade *bb, void *ctx) 
 {
     h2_conn_io *io = (h2_conn_io*)ctx;
+    apr_status_t status;
     
     ap_update_child_status(io->connection->sbh, SERVER_BUSY_WRITE, NULL);
     
-    apr_status_t status = ap_pass_brigade(io->connection->output_filters, bb);
+    status = ap_pass_brigade(io->connection->output_filters, bb);
     apr_brigade_cleanup(bb);
     return status;
 }
@@ -257,10 +258,12 @@ apr_status_t h2_conn_io_write(h2_conn_io *io,
 apr_status_t h2_conn_io_flush(h2_conn_io *io)
 {
     if (io->unflushed) {
+        apr_status_t status; 
         if (io->buflen > 0) {
+            apr_bucket *b;
             ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, io->connection,
                           "h2_conn_io: flush, flushing %ld bytes", (long)io->buflen);
-            apr_bucket *b = apr_bucket_transient_create(io->buffer, io->buflen, 
+            b = apr_bucket_transient_create(io->buffer, io->buflen, 
                                                         io->output->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(io->output, b);
             io->buflen = 0;
@@ -271,7 +274,7 @@ apr_status_t h2_conn_io_flush(h2_conn_io *io)
                                 apr_bucket_flush_create(io->output->bucket_alloc));
         
         /* Send it out through installed filters (TLS) to the client */
-        apr_status_t status = flush_out(io->output, io);
+        status = flush_out(io->output, io);
         
         if (status == APR_SUCCESS
             || APR_STATUS_IS_ECONNABORTED(status)

@@ -79,6 +79,7 @@ h2_worker *h2_worker_create(int id,
 {
     apr_allocator_t *allocator = NULL;
     apr_pool_t *pool = NULL;
+    h2_worker *w;
     
     apr_status_t status = apr_allocator_create(&allocator);
     if (status != APR_SUCCESS) {
@@ -91,7 +92,7 @@ h2_worker *h2_worker_create(int id,
     }
     apr_allocator_owner_set(allocator, pool);
 
-    h2_worker *w = apr_pcalloc(pool, sizeof(h2_worker));
+    w = apr_pcalloc(pool, sizeof(h2_worker));
     if (w) {
         APR_RING_ELEM_INIT(w, link);
         

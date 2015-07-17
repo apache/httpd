@@ -54,6 +54,7 @@ static apr_status_t insert_request_line(h2_request *req, h2_mplx *m);
 
 apr_status_t h2_request_rwrite(h2_request *req, request_rec *r, h2_mplx *m)
 {
+    apr_status_t status;
     req->method = r->method;
     req->path = r->uri;
     req->authority = r->hostname;
@@ -64,7 +65,7 @@ apr_status_t h2_request_rwrite(h2_request *req, request_rec *r, h2_mplx *m)
     req->scheme = NULL;
     
     
-    apr_status_t status = insert_request_line(req, m);
+    status = insert_request_line(req, m);
     if (status == APR_SUCCESS) {
         status = h2_to_h1_add_headers(req->to_h1, r->headers_in);
     }

@@ -72,12 +72,13 @@ h2_alt_svc *h2_alt_svc_parse(const char *s, apr_pool_t *pool) {
 static int h2_alt_svc_request_handler(request_rec *r)
 {
     h2_ctx *ctx = h2_ctx_rget(r);
+    h2_config *cfg;
     
     if (h2_ctx_is_active(ctx) || h2_ctx_is_task(ctx)) {
         return DECLINED;
     }
     
-    h2_config *cfg = h2_config_rget(r);
+    cfg = h2_config_rget(r);
     if (r->hostname && cfg && cfg->alt_svcs && cfg->alt_svcs->nelts > 0) {
         const char *alt_svc_used = apr_table_get(r->headers_in, "Alt-Svc-Used");
         if (!alt_svc_used /*|| (alt_svc_used[0] == '0')*/) {

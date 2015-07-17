@@ -485,6 +485,7 @@ h2_config *h2_config_get(conn_rec *c)
          * the vhost matching stuff.
          */
         apr_uri_t uri;
+        request_rec r;
         memset(&uri, 0, sizeof(uri));
         uri.scheme = (char*)"https";
         uri.hostinfo = (char*)ctx->hostname;
@@ -493,7 +494,6 @@ h2_config *h2_config_get(conn_rec *c)
         uri.port = c->local_addr->port;
         uri.path = (char*)"/";
         
-        request_rec r;
         memset(&r, 0, sizeof(r));
         r.uri = (char*)"/";
         r.connection = c;

@@ -85,6 +85,7 @@ static int h2_upgrade_request_handler(request_rec *r)
         /* Check for the start of an h2c Upgrade dance. */
         const char *proto = h2_get_upgrade_proto(r);
         if (proto) {
+            const char *clen;
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                           "seeing %s upgrade invitation", proto);
             /* We do not handle upgradeable requests with a body.
@@ -94,7 +95,7 @@ static int h2_upgrade_request_handler(request_rec *r)
              * This seems to be consensus among server implemntations and
              * clients are advised to use an "OPTIONS *" before a POST.
              */
-            const char *clen = apr_table_get(r->headers_in, "Content-Length");
+            clen = apr_table_get(r->headers_in, "Content-Length");
             if (clen && strcmp(clen, "0")) {
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                               "upgrade with content-length: %s, declined", clen);
@@ -152,6 +153,7 @@ static int h2_upgrade_to(request_rec *r, const char *proto)
 {
     conn_rec *c = r->connection;
     h2_ctx *ctx = h2_ctx_rget(r);
+    apr_status_t status;
     
     h2_ctx_pnego_set_done(ctx, proto);
     
@@ -179,7 +181,7 @@ static int h2_upgrade_to(request_rec *r, const char *proto)
     ap_remove_input_filter_byhandle(r->input_filters, "reqtimeout");
 
     /* Ok, start an h2_conn on this one. */
-    apr_status_t status = h2_conn_rprocess(r);
+    status = h2_conn_rprocess(r);
     if (status != DONE) {
         /* Nothing really to do about this. */
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, status, r,
