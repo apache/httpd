@@ -36,6 +36,7 @@ h2_to_h1 *h2_to_h1_create(int stream_id, apr_pool_t *pool,
                           const char *method, const char *path,
                           const char *authority, struct h2_mplx *m)
 {
+    h2_to_h1 *to_h1;
     if (!method) {
         ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, m->c,
                       "h2_to_h1: header start but :method missing");
@@ -47,7 +48,7 @@ h2_to_h1 *h2_to_h1_create(int stream_id, apr_pool_t *pool,
         return NULL;
     }
     
-    h2_to_h1 *to_h1 = apr_pcalloc(pool, sizeof(h2_to_h1));
+    to_h1 = apr_pcalloc(pool, sizeof(h2_to_h1));
     if (to_h1) {
         to_h1->stream_id = stream_id;
         to_h1->pool = pool;
@@ -72,6 +73,7 @@ apr_status_t h2_to_h1_add_header(h2_to_h1 *to_h1,
                                  const char *name, size_t nlen,
                                  const char *value, size_t vlen)
 {
+    char *hname, *hvalue;
     if (H2_HD_MATCH_LIT("transfer-encoding", name, nlen)) {
         if (!apr_strnatcasecmp("chunked", value)) {
             /* This should never arrive here in a HTTP/2 request */
@@ -123,8 +125,8 @@ apr_status_t h2_to_h1_add_header(h2_to_h1 *to_h1,
         to_h1->seen_host = 1;
     }
     
-    char *hname = apr_pstrndup(to_h1->pool, name, nlen);
-    char *hvalue = apr_pstrndup(to_h1->pool, value, vlen);
+    hname = apr_pstrndup(to_h1->pool, name, nlen);
+    hvalue = apr_pstrndup(to_h1->pool, value, vlen);
     h2_util_camel_case_header(hname, nlen);
     apr_table_mergen(to_h1->headers, hname, hvalue);
     

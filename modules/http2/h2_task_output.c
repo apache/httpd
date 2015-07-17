@@ -36,7 +36,6 @@
 h2_task_output *h2_task_output_create(h2_task_env *env, apr_pool_t *pool,
                                       apr_bucket_alloc_t *bucket_alloc)
 {
-    (void)bucket_alloc;
     h2_task_output *output = apr_pcalloc(pool, sizeof(h2_task_output));
     if (output) {
         output->env = env;
@@ -61,8 +60,9 @@ static apr_status_t open_if_needed(h2_task_output *output, ap_filter_t *f,
                                    apr_bucket_brigade *bb)
 {
     if (output->state == H2_TASK_OUT_INIT) {
+        h2_response *response;
         output->state = H2_TASK_OUT_STARTED;
-        h2_response *response = h2_from_h1_get_response(output->from_h1);
+        response = h2_from_h1_get_response(output->from_h1);
         if (!response) {
             if (f) {
                 /* This happens currently when ap_die(status, r) is invoked
@@ -108,13 +108,14 @@ int h2_task_output_has_started(h2_task_output *output)
 apr_status_t h2_task_output_write(h2_task_output *output,
                                   ap_filter_t* f, apr_bucket_brigade* bb)
 {
+    apr_status_t status;
     if (APR_BRIGADE_EMPTY(bb)) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, f->c,
                       "h2_task_output(%s): empty write", output->env->id);
         return APR_SUCCESS;
     }
     
-    apr_status_t status = open_if_needed(output, f, bb);
+    status = open_if_needed(output, f, bb);
     if (status != APR_EOF) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, f->c,
                       "h2_task_output(%s): opened and passed brigade", 

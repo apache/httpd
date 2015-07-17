@@ -79,8 +79,10 @@ apr_status_t h2_conn_child_init(apr_pool_t *pool, server_rec *s)
     int maxw = h2_config_geti(config, H2_CONF_MAX_WORKERS);
     
     int max_threads_per_child = 0;
-    ap_mpm_query(AP_MPMQ_MAX_THREADS, &max_threads_per_child);
     int threads_limit = 0;
+    int idle_secs = 0;
+
+    ap_mpm_query(AP_MPMQ_MAX_THREADS, &max_threads_per_child);
     ap_mpm_query(AP_MPMQ_HARD_LIMIT_THREADS, &threads_limit);
     
     if (minw <= 0) {
@@ -117,7 +119,7 @@ apr_status_t h2_conn_child_init(apr_pool_t *pool, server_rec *s)
                  minw, maxw, max_threads_per_child, threads_limit);
     
     workers = h2_workers_create(s, pool, minw, maxw);
-    int idle_secs = h2_config_geti(config, H2_CONF_MAX_WORKER_IDLE_SECS);
+    idle_secs = h2_config_geti(config, H2_CONF_MAX_WORKER_IDLE_SECS);
     h2_workers_set_max_idle_secs(workers, idle_secs);
     
     return status;
@@ -136,6 +138,7 @@ module *h2_conn_mpm_module(void) {
 apr_status_t h2_conn_rprocess(request_rec *r)
 {
     h2_config *config = h2_config_rget(r);
+    h2_session *session;
     
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, "h2_conn_process start");
     if (!workers) {
@@ -143,7 +146,7 @@ apr_status_t h2_conn_rprocess(request_rec *r)
         return APR_EGENERAL;
     }
     
-    h2_session *session = h2_session_rcreate(r, config, workers);
+    session = h2_session_rcreate(r, config, workers);
     if (!session) {
         return APR_EGENERAL;
     }
@@ -154,6 +157,7 @@ apr_status_t h2_conn_rprocess(request_rec *r)
 apr_status_t h2_conn_main(conn_rec *c)
 {
     h2_config *config = h2_config_get(c);
+    h2_session *session;
     
     ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, "h2_conn_main start");
     if (!workers) {
@@ -161,7 +165,7 @@ apr_status_t h2_conn_main(conn_rec *c)
         return APR_EGENERAL;
     }
     
-    h2_session *session = h2_session_create(c, config, workers);
+    session = h2_session_create(c, config, workers);
     if (!session) {
         return APR_EGENERAL;
     }
@@ -173,6 +177,8 @@ apr_status_t h2_session_process(h2_session *session)
 {
     apr_status_t status = APR_SUCCESS;
     int rv = 0;
+    apr_interval_time_t wait_micros = 0;
+    static const int MAX_WAIT_MICROS = 200 * 1000;
     
     /* Start talking to the client. Apart from protocol meta data,
      * we mainly will see new http/2 streams opened by the client, which
@@ -224,12 +230,10 @@ apr_status_t h2_session_process(h2_session *session)
         return status;
     }
     
-    apr_interval_time_t wait_micros = 0;
-    static const int MAX_WAIT_MICROS = 200 * 1000;
-    
     while (!h2_session_is_done(session)) {
         int have_written = 0;
         int have_read = 0;
+        int got_streams;
         
         status = h2_session_write(session, wait_micros);
         if (status == APR_SUCCESS) {
@@ -263,7 +267,7 @@ apr_status_t h2_session_process(h2_session *session)
          *   * h2c will count the header settings as one frame and we
          *     submit our settings and need the ACK.
          */
-        int got_streams = !h2_stream_set_is_empty(session->streams);
+        got_streams = !h2_stream_set_is_empty(session->streams);
         status = h2_session_read(session, 
                                  (!got_streams 
                                   || session->frames_received <= 1)?
@@ -323,6 +327,7 @@ static void fix_event_conn(conn_rec *c, conn_rec *master);
 conn_rec *h2_conn_create(conn_rec *master, apr_pool_t *pool)
 {
     apr_socket_t *socket;
+    conn_rec *c;
     
     AP_DEBUG_ASSERT(master);
     
@@ -340,7 +345,7 @@ conn_rec *h2_conn_create(conn_rec *master, apr_pool_t *pool)
      * TODO
      */
     socket = ap_get_module_config(master->conn_config, &core_module);
-    conn_rec *c = ap_run_create_connection(pool, master->base_server,
+    c = ap_run_create_connection(pool, master->base_server,
                                            socket,
                                            master->id^((long)pool), 
                                            master->sbh,

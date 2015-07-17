@@ -112,17 +112,19 @@ apr_size_t h2_util_base64url_decode(unsigned char **decoded, const char *encoded
 {
     const unsigned char *e = (const unsigned char *)encoded;
     const unsigned char *p = e;
+    unsigned char *d;
     int n;
+    apr_size_t len, mlen, remain, i;
     
     while (*p && BASE64URL_TABLE[ *p ] == -1) {
         ++p;
     }
-    apr_size_t len = p - e;
-    apr_size_t mlen = (len/4)*4;
+    len = p - e;
+    mlen = (len/4)*4;
     *decoded = apr_pcalloc(pool, len+1);
     
-    apr_size_t i = 0;
-    unsigned char *d = *decoded;
+    i = 0;
+    d = *decoded;
     for (; i < mlen; i += 4) {
         n = ((BASE64URL_TABLE[ e[i+0] ] << 18) +
              (BASE64URL_TABLE[ e[i+1] ] << 12) +
@@ -132,7 +134,7 @@ apr_size_t h2_util_base64url_decode(unsigned char **decoded, const char *encoded
         *d++ = n >> 8 & 0xffu;
         *d++ = n & 0xffu;
     }
-    apr_size_t remain = len - mlen;
+    remain = len - mlen;
     switch (remain) {
         case 2:
             n = ((BASE64URL_TABLE[ e[mlen+0] ] << 18) +
@@ -271,10 +273,11 @@ apr_status_t h2_util_move(apr_bucket_brigade *to, apr_bucket_brigade *from,
                           const char *msg)
 {
     apr_status_t status = APR_SUCCESS;
+    int same_alloc;
     
     AP_DEBUG_ASSERT(to);
     AP_DEBUG_ASSERT(from);
-    int same_alloc = (to->bucket_alloc == from->bucket_alloc);
+    same_alloc = (to->bucket_alloc == from->bucket_alloc);
 
     if (!FILE_MOVE) {
         pfile_handles_allowed = NULL;
@@ -400,11 +403,11 @@ apr_status_t h2_util_copy(apr_bucket_brigade *to, apr_bucket_brigade *from,
                           apr_size_t maxlen, const char *msg)
 {
     apr_status_t status = APR_SUCCESS;
-    (void)msg;
+    int same_alloc;
     
     AP_DEBUG_ASSERT(to);
     AP_DEBUG_ASSERT(from);
-    int same_alloc = (to->bucket_alloc == from->bucket_alloc);
+    same_alloc = (to->bucket_alloc == from->bucket_alloc);
 
     if (!APR_BRIGADE_EMPTY(from)) {
         apr_bucket *b, *end, *cpy;

@@ -210,14 +210,17 @@ static int add_header(void *ctx, const char *key, const char *value)
 static void convert_header(h2_response *response, apr_table_t *headers,
                            const char *status, request_rec *r)
 {
+    size_t n;
+    h2_headers *h;
     nvctx_t ctx = { NULL, 1, strlen(status) + 1, 0, NULL, 
         response, r? APLOGrdebug(r) : 0, r };
     
     apr_table_do(count_headers, &ctx, headers, NULL);
     
-    size_t n =  (sizeof(h2_headers)
+    n =  (sizeof(h2_headers)
                  + (ctx.nvlen * sizeof(nghttp2_nv)) + ctx.nvstrlen); 
-    h2_headers *h = calloc(1, n);
+    /* XXX: Why calloc, Why not on the pool of the request? */
+    h = calloc(1, n);
     if (h) {
         ctx.nv = (nghttp2_nv*)(h + 1);
         ctx.strbuf = (char*)&ctx.nv[ctx.nvlen];

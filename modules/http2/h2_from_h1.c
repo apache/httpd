@@ -107,12 +107,13 @@ static apr_status_t parse_header(h2_from_h1 *from_h1, ap_filter_t* f,
     (void)f;
     
     if (line[0] == ' ' || line[0] == '\t') {
+        char **plast;
         /* continuation line from the header before this */
         while (line[0] == ' ' || line[0] == '\t') {
             ++line;
         }
         
-        char **plast = apr_array_pop(from_h1->hlines);
+        plast = apr_array_pop(from_h1->hlines);
         if (plast == NULL) {
             /* not well formed */
             return APR_EINVAL;
@@ -129,13 +130,14 @@ static apr_status_t parse_header(h2_from_h1 *from_h1, ap_filter_t* f,
 static apr_status_t get_line(h2_from_h1 *from_h1, apr_bucket_brigade *bb,
                              ap_filter_t* f, char *line, apr_size_t len)
 {
+    apr_status_t status;
     if (!from_h1->bb) {
         from_h1->bb = apr_brigade_create(from_h1->pool, f->c->bucket_alloc);
     }
     else {
         apr_brigade_cleanup(from_h1->bb);                
     }
-    apr_status_t status = apr_brigade_split_line(from_h1->bb, bb, 
+    status = apr_brigade_split_line(from_h1->bb, bb, 
                                                  APR_BLOCK_READ, 
                                                  HUGE_STRING_LEN);
     if (status == APR_SUCCESS) {
@@ -444,6 +446,7 @@ static h2_response *create_response(h2_from_h1 *from_h1, request_rec *r)
     apr_status_t status = APR_SUCCESS;
     const char *clheader;
     const char *ctype;
+    apr_table_t *headers;
     /*
      * Now that we are ready to send a response, we need to combine the two
      * header field tables into a single table.  If we don't do this, our
@@ -541,7 +544,7 @@ static h2_response *create_response(h2_from_h1 *from_h1, request_rec *r)
         apr_table_unset(r->headers_out, "Content-Length");
     }
     
-    apr_table_t *headers = apr_table_make(r->pool, 10);
+    headers = apr_table_make(r->pool, 10);
     
     set_basic_http_header(r, headers);
     if (r->status == HTTP_NOT_MODIFIED) {

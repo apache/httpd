@@ -257,11 +257,11 @@ static int h2_alpn_negotiated(conn_rec *c,
 
 int h2_alpn_pre_conn(conn_rec* c, void *arg)
 {
-    (void)arg;
+    h2_ctx *ctx = h2_ctx_get(c);
+
     ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c,
                   "h2_h2, pre_connection, start");
     
-    h2_ctx *ctx = h2_ctx_get(c);
     if (h2_ctx_is_task(ctx)) {
         /* our stream pseudo connection */
         return DECLINED;
