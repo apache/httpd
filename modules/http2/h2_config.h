@@ -59,7 +59,7 @@ typedef struct h2_config {
                                      processing, better compatibility */
     int hack_mpm_event;           /* If mpm_event is detected, perform a hack
                                      on stream connections to make it work */
-    int h2_direct;                /* if mod_h2 is active on non-TLS directly */
+    int h2_direct;                /* if mod_h2 is active directly */
     int buffer_output;            /* if output buffering shall be used */  
     int buffer_size;              /* size of buffer for outgoing data */  
     int write_max;                /* max number of bytes for a write op */  

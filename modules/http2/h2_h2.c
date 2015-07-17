@@ -160,7 +160,7 @@ int h2_h2_process_conn(conn_rec* c)
     if (h2_ctx_pnego_is_ongoing(ctx)) {
         temp = apr_brigade_create(c->pool, c->bucket_alloc);
         ap_get_brigade(c->input_filters, temp,
-                       AP_MODE_SPECULATIVE, APR_BLOCK_READ, 1);
+                       AP_MODE_SPECULATIVE, APR_BLOCK_READ, 24);
         apr_brigade_destroy(temp);
     }
 
@@ -172,14 +172,21 @@ int h2_h2_process_conn(conn_rec* c)
         apr_status_t status;
         temp = apr_brigade_create(c->pool, c->bucket_alloc);
         status = ap_get_brigade(c->input_filters, temp,
-                                AP_MODE_SPECULATIVE, APR_BLOCK_READ, 24);
+                                /*h2_h2_is_tls(c)? AP_MODE_READBYTES :*/ AP_MODE_SPECULATIVE, APR_BLOCK_READ, 24);
         if (status == APR_SUCCESS) {
             char *s = NULL;
             apr_size_t slen;
             
             apr_brigade_pflatten(temp, &s, &slen, c->pool);
-            if ((slen == 24) && !memcmp(H2_MAGIC_TOKEN, s, 24)) {
+            if ((slen >= 24) && !memcmp(H2_MAGIC_TOKEN, s, 24)) {
+                ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
+                              "h2_h2, direct mode detected");
                 h2_ctx_pnego_set_done(ctx, "h2");
+            }
+            else {
+                ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
+                              "h2_h2, not detected, seeing %d bytes: %s", 
+                              (int)slen, s);
             }
         }
         apr_brigade_destroy(temp);
