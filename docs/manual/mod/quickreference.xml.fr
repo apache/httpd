@@ -37,8 +37,8 @@
     Si la valeur par d&eacute;faut est trop grande pour pouvoir &ecirc;tre affich&eacute;e,
     elle sera tronqu&eacute;e et suivie d'un "+".</p>
 
-    <p>Les troisi&egrave;me et quatri&egrave;me colonnes &eacute;num&egrave;rent les contextes dans
-    lesquels la directive est applicable ainsi que son statut en accord avec le
+    <p>La troisi&egrave;me colonne &eacute;num&egrave;re les contextes dans
+    lesquels la directive est applicable, et la quatri&egrave;me indique son statut en accord avec le
     tableau des l&eacute;gendes ci-dessous.</p>
   </summary>
 </quickreference>
