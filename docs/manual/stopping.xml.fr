@@ -55,7 +55,7 @@
     dont le PID est enregistr&eacute; dans le fichier pr&eacute;cis&eacute; par la directive
     <directive module="mpm_common">PidFile</directive>. Autrement dit, vous
     n'aurez jamais besoin d'envoyer des signaux &agrave; aucun des
-    processus enfants, mais seulement au processus parent. Trois types
+    processus enfants, mais seulement au processus parent. Quatre types
     de signaux peuvent &ecirc;tre envoy&eacute;s au processus parent :
     <code><a href="#term">TERM</a></code>,
     <code><a href="#graceful">USR1</a></code>,
@@ -70,10 +70,10 @@
 
     <p>La seconde m&eacute;thode permettant d'envoyer des signaux aux processus
     <program>httpd</program>
-    consiste &agrave; utiliser les options de ligne de commande <code>-k</code> :
-    <code>stop</code>,
-    <code>restart</code>, <code>graceful</code> et <code>graceful-stop</code>,
-    comme d&eacute;crit ci-dessous.  Ce sont des arguments du binaire
+    consiste &agrave; utiliser les options <code>stop</code>,
+    <code>restart</code>, <code>graceful</code> et
+    <code>graceful-stop</code> du commutateur <code>-k</code> de la ligne
+    de commande comme d&eacute;crit ci-dessous.  Ce sont des arguments du binaire
     <program> httpd</program>, mais il est recommand&eacute; de les utiliser
     avec le script de contr&ocirc;le <program>apachectl</program>, qui se
     chargera de les passer &agrave; <program>httpd</program>.</p>
@@ -131,7 +131,7 @@
     enfants n'ont pas &eacute;t&eacute; cr&eacute;&eacute;s, un nombre suffisant de processus
     suppl&eacute;mentaires est cr&eacute;&eacute; pour combler le manque. Ainsi le code
     tente de maintenir &agrave; la fois le nombre appropri&eacute; de processus enfants
-    en fonction de la charge du serveur, et vos souhaits d&eacute;finis par la
+    en fonction de la charge du serveur, et le nombre de processus d&eacute;fini par la
     directive <directive module="mpm_common">StartServers</directive>.</p>
 
     <p>Les utilisateurs du module <module>mod_status</module>
@@ -176,7 +176,7 @@
     correctement. Pour v&eacute;rifier la s&eacute;mantique des fichiers de configuration
     en plus de leur syntaxe, vous pouvez essayer de d&eacute;marrer
     <program>httpd</program> sous un utilisateur non root.
-    S'il n'y a pas d'erreurs, il tentera d'ouvrir ses sockets et ses fichiers
+    S'il n'y a pas d'erreur, il tentera d'ouvrir ses sockets et ses fichiers
     de log et &eacute;chouera car il n'a pas les privil&egrave;ges root (ou parce que
     l'instance actuelle de
     <program>httpd</program> est d&eacute;j&agrave; associ&eacute;e &agrave; ces ports). S'il &eacute;choue
