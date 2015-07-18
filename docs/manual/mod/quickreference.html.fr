@@ -46,8 +46,8 @@
     Si la valeur par défaut est trop grande pour pouvoir être affichée,
     elle sera tronquée et suivie d'un "+".</p>
 
-    <p>Les troisième et quatrième colonnes énumèrent les contextes dans
-    lesquels la directive est applicable ainsi que son statut en accord avec le
+    <p>La troisième colonne énumère les contextes dans
+    lesquels la directive est applicable, et la quatrième indique son statut en accord avec le
     tableau des légendes ci-dessous.</p>
   </div>
 <div id="directive-ref"><table id="legend">
