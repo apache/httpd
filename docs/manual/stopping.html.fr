@@ -62,7 +62,7 @@
     dont le PID est enregistré dans le fichier précisé par la directive
     <code class="directive"><a href="./mod/mpm_common.html#pidfile">PidFile</a></code>. C'est à dire que vous
     n'aurez jamais besoin d'envoyer des signaux à aucun de ces processus,
-    sauf au processus parent. Trois types de signaux peuvent être envoyés
+    sauf au processus parent. Quatre types de signaux peuvent être envoyés
     au processus parent :
     <code><a href="#term">TERM</a></code>,
     <code><a href="#graceful">USR1</a></code>,
@@ -77,10 +77,10 @@
 
     <p>La seconde méthode permettant d'envoyer des signaux aux processus
     <code class="program"><a href="./programs/httpd.html">httpd</a></code>
-    consiste à utiliser les options de ligne de commande <code>-k</code> :
-    <code>stop</code>,
-    <code>restart</code>, <code>graceful</code> et <code>graceful-stop</code>,
-    comme décrit ci-dessous.  Ce sont des arguments du binaire
+    consiste à utiliser les options <code>stop</code>,
+    <code>restart</code>, <code>graceful</code> et
+    <code>graceful-stop</code> du commutateur <code>-k</code> de la ligne
+    de commande comme décrit ci-dessous.  Ce sont des arguments du binaire
     <code class="program"><a href="./programs/httpd.html">httpd</a></code>, mais il est recommandé de les utiliser
     avec le script de contrôle <code class="program"><a href="./programs/apachectl.html">apachectl</a></code>, qui se
     chargera de les passer à <code class="program"><a href="./programs/httpd.html">httpd</a></code>.</p>
@@ -136,7 +136,7 @@
     enfants n'ont pas été créés, un nombre suffisant de processus
     supplémentaires est créé pour combler le manque. Ainsi le code
     tente de maintenir à la fois le nombre approprié de processus enfants
-    en fonction de la charge du serveur, et vos souhaits définis par la
+    en fonction de la charge du serveur, et le nombre de processus défini par la
     directive <code class="directive"><a href="./mod/mpm_common.html#startservers">StartServers</a></code>.</p>
 
     <p>Les utilisateurs du module <code class="module"><a href="./mod/mod_status.html">mod_status</a></code>
@@ -184,7 +184,7 @@
     correctement. Pour vérifier la sémantique des fichiers de configuration
     en plus de leur syntaxe, vous pouvez essayer de démarrer
     <code class="program"><a href="./programs/httpd.html">httpd</a></code> sous un utilisateur non root.
-    S'il n'y a pas d'erreurs, il tentera d'ouvrir ses sockets et ses fichiers
+    S'il n'y a pas d'erreur, il tentera d'ouvrir ses sockets et ses fichiers
     de log et échouera car il n'a pas les privilèges root (ou parce que
     l'instance actuelle de
     <code class="program"><a href="./programs/httpd.html">httpd</a></code> est déjà associée à ces ports). S'il échoue
