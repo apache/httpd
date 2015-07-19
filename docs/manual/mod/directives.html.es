@@ -305,7 +305,21 @@
 <li><a href="core.html#gprofdir" id="G" name="G">GprofDir</a></li>
 <li><a href="mpm_common.html#gracefulshutdowntimeout">GracefulShutdownTimeout</a></li>
 <li><a href="mod_unixd.html#group">Group</a></li>
-<li><a href="mod_headers.html#header" id="H" name="H">Header</a></li>
+<li><a href="mod_h2.html#h2bufferoutput" id="H" name="H">H2BufferOutput</a></li>
+<li><a href="mod_h2.html#h2buffersize">H2BufferSize</a></li>
+<li><a href="mod_h2.html#h2bufferwritemax">H2BufferWriteMax</a></li>
+<li><a href="mod_h2.html#h2direct">H2Direct</a></li>
+<li><a href="mod_h2.html#h2engine">H2Engine</a></li>
+<li><a href="mod_h2.html#h2maxheaderlistsize">H2MaxHeaderListSize</a></li>
+<li><a href="mod_h2.html#h2maxsessionstreams">H2MaxSessionStreams</a></li>
+<li><a href="mod_h2.html#h2maxworkeridleseconds">H2MaxWorkerIdleSeconds</a></li>
+<li><a href="mod_h2.html#h2maxworkers">H2MaxWorkers</a></li>
+<li><a href="mod_h2.html#h2minworkers">H2MinWorkers</a></li>
+<li><a href="mod_h2.html#h2serializeheaders">H2SerializeHeaders</a></li>
+<li><a href="mod_h2.html#h2sessionextrafiles">H2SessionExtraFiles</a></li>
+<li><a href="mod_h2.html#h2streammaxmemsize">H2StreamMaxMemSize</a></li>
+<li><a href="mod_h2.html#h2windowsize">H2WindowSize</a></li>
+<li><a href="mod_headers.html#header">Header</a></li>
 <li><a href="mod_autoindex.html#headername">HeaderName</a></li>
 <li><a href="mod_heartbeat.html#heartbeataddress">HeartbeatAddress</a></li>
 <li><a href="mod_heartmonitor.html#heartbeatlisten">HeartbeatListen</a></li>

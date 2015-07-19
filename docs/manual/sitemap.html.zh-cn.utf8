@@ -219,6 +219,7 @@
 <li><a href="mod/mod_file_cache.html">Apache 模块 mod_file_cache</a></li>
 <li><a href="mod/mod_filter.html">Apache 模块 mod_filter</a></li>
 <li><a href="mod/mod_firehose.html">Apache 模块 mod_firehose</a></li>
+<li><a href="mod/mod_h2.html">Apache 模块 mod_h2</a></li>
 <li><a href="mod/mod_headers.html">Apache 模块 mod_headers</a></li>
 <li><a href="mod/mod_heartbeat.html">Apache 模块 mod_heartbeat</a></li>
 <li><a href="mod/mod_heartmonitor.html">Apache 模块 mod_heartmonitor</a></li>
