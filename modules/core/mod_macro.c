@@ -14,10 +14,6 @@
  * limitations under the License.
  */
 
-/*
-  $Id$
-*/
-
 #include "httpd.h"
 #include "http_config.h"
 #include "http_log.h"
