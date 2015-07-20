@@ -1,6 +1,4 @@
 #
-# $Id$
-#
 # mod_macro non regression tests
 
 # where is apache
