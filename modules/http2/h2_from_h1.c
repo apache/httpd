@@ -648,9 +648,3 @@ apr_status_t h2_response_output_filter(ap_filter_t *f, apr_bucket_brigade *bb)
     }
     return ap_pass_brigade(f->next, bb);
 }
-
-void h2_from_h1_die(h2_from_h1 *from_h1, int status, request_rec *r)
-{
-    r->status = status;
-    from_h1->response = create_response(from_h1, r);
-}

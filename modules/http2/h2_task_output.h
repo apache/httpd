@@ -53,6 +53,4 @@ void h2_task_output_close(h2_task_output *output);
 
 int h2_task_output_has_started(h2_task_output *output);
 
-void h2_task_output_die(h2_task_output *output, int status, request_rec *r);
-
 #endif /* defined(__mod_h2__h2_task_output__) */
