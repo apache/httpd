@@ -128,7 +128,3 @@ apr_status_t h2_task_output_write(h2_task_output *output,
                              f, bb, output->env->io);
 }
 
-void h2_task_output_die(h2_task_output *output, int status, request_rec *r)
-{
-    h2_from_h1_die(output->from_h1, status, r);
-}

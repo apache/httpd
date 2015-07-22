@@ -75,8 +75,6 @@ apr_status_t h2_from_h1_read_response(h2_from_h1 *from_h1,
 
 struct h2_response *h2_from_h1_get_response(h2_from_h1 *from_h1);
 
-void h2_from_h1_die(h2_from_h1 *from_h1, int status, request_rec *r);
-
 h2_from_h1_state_t h2_from_h1_get_state(h2_from_h1 *from_h1);
 
 apr_status_t h2_response_output_filter(ap_filter_t *f, apr_bucket_brigade *bb);

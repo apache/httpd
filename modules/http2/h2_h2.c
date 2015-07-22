@@ -117,6 +117,12 @@ void h2_h2_register_hooks(void)
                                mod_reqtimeout, NULL, APR_HOOK_LAST);
     
     ap_hook_post_read_request(h2_h2_post_read_req, NULL, NULL, APR_HOOK_MIDDLE);
+    /* With "H2SerializeHeaders On", we install the filter in this hook
+     * that parses the response. This needs to happen before any other post
+     * read function terminates the request with an error. Otherwise we will
+     * never see the response.
+     */
+    ap_hook_post_read_request(h2_h2_post_read_req, NULL, NULL, APR_HOOK_REALLY_FIRST);
 }
 
 int h2_h2_remove_timeout(conn_rec* c)
@@ -214,12 +220,14 @@ static int h2_h2_post_read_req(request_rec *r)
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                       "adding h1_to_h2_resp output filter");
         if (env->serialize_headers) {
+            ap_remove_output_filter_byhandle(r->output_filters, "H1_TO_H2_RESP");
             ap_add_output_filter("H1_TO_H2_RESP", env, r, r->connection);
         }
         else {
             /* replace the core http filter that formats response headers
              * in HTTP/1 with our own that collects status and headers */
             ap_remove_output_filter_byhandle(r->output_filters, "HTTP_HEADER");
+            ap_remove_output_filter_byhandle(r->output_filters, "H2_RESPONSE");
             ap_add_output_filter("H2_RESPONSE", env, r, r->connection);
         }
     }
