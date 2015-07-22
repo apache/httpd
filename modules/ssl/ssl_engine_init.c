@@ -471,6 +471,28 @@ static apr_status_t ssl_init_ctx_tls_extensions(server_rec *s,
 }
 #endif
 
+/*
+ * Enable/disable SSLProtocol. If the mod_ssl enables protocol
+ * which is disabled by default by OpenSSL, show a warning.
+ * "option" is for example SSL_OP_NO_SSLv3.
+ */
+static void ssl_set_ctx_protocol_option(server_rec *s,
+                                        SSL_CTX *ctx,
+                                        long option,
+                                        int enabled,
+                                        const char *name)
+{
+    if (!enabled) {
+        SSL_CTX_set_options(ctx, option);
+    }
+    else if (SSL_CTX_get_options(ctx) & option) {
+        SSL_CTX_clear_options(ctx, option);
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(02904)
+                     "Allowing SSLProtocol %s even though it is disabled "
+                     "by OpenSSL by default on this system", name);
+    }
+}
+
 static apr_status_t ssl_init_ctx_protocol(server_rec *s,
                                           apr_pool_t *p,
                                           apr_pool_t *ptemp,
@@ -540,22 +562,17 @@ static apr_status_t ssl_init_ctx_protocol(server_rec *s,
     /* always disable SSLv2, as per RFC 6176 */
     SSL_CTX_set_options(ctx, SSL_OP_NO_SSLv2);
 
-    if (!(protocol & SSL_PROTOCOL_SSLV3)) {
-        SSL_CTX_set_options(ctx, SSL_OP_NO_SSLv3);
-    }
-
-    if (!(protocol & SSL_PROTOCOL_TLSV1)) {
-        SSL_CTX_set_options(ctx, SSL_OP_NO_TLSv1);
-    }
+    ssl_set_ctx_protocol_option(s, ctx, SSL_OP_NO_SSLv3,
+                                protocol & SSL_PROTOCOL_SSLV3, "SSLv3");
+    ssl_set_ctx_protocol_option(s, ctx, SSL_OP_NO_TLSv1,
+                                protocol & SSL_PROTOCOL_TLSV1, "TLSv1");
 
 #ifdef HAVE_TLSV1_X
-    if (!(protocol & SSL_PROTOCOL_TLSV1_1)) {
-        SSL_CTX_set_options(ctx, SSL_OP_NO_TLSv1_1);
-    }
+    ssl_set_ctx_protocol_option(s, ctx, SSL_OP_NO_TLSv1_1,
+                                protocol & SSL_PROTOCOL_TLSV1_1, "TLSv1.1");
 
-    if (!(protocol & SSL_PROTOCOL_TLSV1_2)) {
-        SSL_CTX_set_options(ctx, SSL_OP_NO_TLSv1_2);
-    }
+    ssl_set_ctx_protocol_option(s, ctx, SSL_OP_NO_TLSv1_2,
+                                protocol & SSL_PROTOCOL_TLSV1_2, "TLSv1.2");
 #endif
 
 #ifdef SSL_OP_CIPHER_SERVER_PREFERENCE
