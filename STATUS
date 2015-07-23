@@ -118,6 +118,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-SubstituteInheritBefore-v4.patch
      +1: ylavic
 
+  *) mod_proxy: Fix a race condition that caused a failed worker to be retried
+     before the retry period is over
+      Trunk version of patch:
+         http://svn.apache.org/r1664709
+      Backport version for 2.2.x of patch:
+         http://people.apache.org/~rpluem/patches/proxy_race_retry_2.2.x.diff
+      +1: rpluem,
 
 PATCHES/ISSUES THAT ARE STALLED
 
