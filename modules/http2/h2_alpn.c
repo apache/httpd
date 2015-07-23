@@ -143,7 +143,8 @@ void h2_alpn_register_hooks(void)
 
 static int h2_util_array_index(apr_array_header_t *array, const char *s)
 {
-    for (int i = 0; i < array->nelts; i++) {
+    int i;
+    for (i = 0; i < array->nelts; i++) {
         const char *p = APR_ARRAY_IDX(array, i, const char*);
         if (!strcmp(p, s)) {
             return i;
@@ -155,6 +156,7 @@ static int h2_util_array_index(apr_array_header_t *array, const char *s)
 static int h2_npn_advertise(conn_rec *c, apr_array_header_t *protos)
 {
     h2_config *cfg;
+    apr_size_t i;
     
     check_sni_host(c);
     cfg = h2_config_get(c);
@@ -162,7 +164,7 @@ static int h2_npn_advertise(conn_rec *c, apr_array_header_t *protos)
         return DECLINED;
     }
     
-    for (apr_size_t i = 0; i < h2_alpn_protos_len; ++i) {
+    for (i = 0; i < h2_alpn_protos_len; ++i) {
         const char *proto = h2_alpn_protos[i];
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
                       "NPN proposing %s from client selection", proto);
@@ -176,6 +178,7 @@ static int h2_negotiated(conn_rec *c, const char *via,
                          apr_size_t proto_name_len)
 {
     h2_ctx *ctx = h2_ctx_get(c);
+    apr_size_t i;
 
     if (h2_ctx_is_task(ctx) ) {
         return DECLINED;
@@ -197,7 +200,7 @@ static int h2_negotiated(conn_rec *c, const char *via,
                       apr_pstrndup(c->pool, proto_name, proto_name_len));
     }
     
-    for (apr_size_t i = 0; i < h2_alpn_protos_len; ++i) {
+    for (i = 0; i < h2_alpn_protos_len; ++i) {
         const char *proto = h2_alpn_protos[i];
         if (proto_name_len == strlen(proto)
             && strncmp(proto, proto_name, proto_name_len) == 0) {
@@ -222,6 +225,7 @@ static int h2_alpn_propose(conn_rec *c,
                            apr_array_header_t *protos)
 {
     h2_config *cfg;
+    apr_size_t i;
     
     check_sni_host(c);
     cfg = h2_config_get(c);
@@ -234,7 +238,7 @@ static int h2_alpn_propose(conn_rec *c,
     ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c,
                   "ALPN propose for config %s", cfg->name);
     /* */
-    for (apr_size_t i = 0; i < h2_alpn_protos_len; ++i) {
+    for (i = 0; i < h2_alpn_protos_len; ++i) {
         const char *proto = h2_alpn_protos[i];
         if (h2_util_array_index(client_protos, proto) >= 0) {
             ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,

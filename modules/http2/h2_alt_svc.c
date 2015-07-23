@@ -73,6 +73,7 @@ static int h2_alt_svc_request_handler(request_rec *r)
 {
     h2_ctx *ctx = h2_ctx_rget(r);
     h2_config *cfg;
+    int i;
     
     if (h2_ctx_is_active(ctx) || h2_ctx_is_task(ctx)) {
         return DECLINED;
@@ -98,7 +99,7 @@ static int h2_alt_svc_request_handler(request_rec *r)
                           "h2_alt_svc: announce %s for %s:%d", 
                           (secure? "secure" : "insecure"), 
                           r->hostname, (int)r->server->port);
-            for (int i = 0; i < cfg->alt_svcs->nelts; ++i) {
+            for (i = 0; i < cfg->alt_svcs->nelts; ++i) {
                 h2_alt_svc *as = h2_alt_svc_IDX(cfg->alt_svcs, i);
                 const char *ahost = as->host;
                 if (ahost && !apr_strnatcasecmp(ahost, r->hostname)) {

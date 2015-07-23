@@ -103,7 +103,8 @@ apr_status_t h2_stream_set_add(h2_stream_set *sp, h2_stream *stream)
 
 h2_stream *h2_stream_set_remove(h2_stream_set *sp, h2_stream *stream)
 {
-    for (int i = 0; i < sp->list->nelts; ++i) {
+    int i;
+    for (i = 0; i < sp->list->nelts; ++i) {
         h2_stream *s = H2_STREAM_IDX(sp->list, i);
         if (s == stream) {
             int n;
@@ -137,7 +138,8 @@ h2_stream *h2_stream_set_find(h2_stream_set *sp,
                               h2_stream_set_match_fn match, void *ctx)
 {
     h2_stream *s = NULL;
-    for (int i = 0; !s && i < sp->list->nelts; ++i) {
+    int i;
+    for (i = 0; !s && i < sp->list->nelts; ++i) {
         s = match(ctx, H2_STREAM_IDX(sp->list, i));
     }
     return s;
@@ -146,7 +148,8 @@ h2_stream *h2_stream_set_find(h2_stream_set *sp,
 void h2_stream_set_iter(h2_stream_set *sp,
                         h2_stream_set_iter_fn *iter, void *ctx)
 {
-    for (int i = 0; i < sp->list->nelts; ++i) {
+    int i;
+    for (i = 0; i < sp->list->nelts; ++i) {
         h2_stream *s = H2_STREAM_IDX(sp->list, i);
         if (!iter(ctx, s)) {
             break;

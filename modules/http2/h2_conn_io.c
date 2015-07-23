@@ -188,8 +188,9 @@ static apr_status_t bucketeer_buffer(h2_conn_io *io) {
     apr_size_t remaining = io->buflen;
     int bcount = (int)(remaining / io->max_write_size);
     apr_bucket *b;
+    int i;
     
-    for (int i = 0; i < bcount; ++i) {
+    for (i = 0; i < bcount; ++i) {
         b = apr_bucket_transient_create(data, io->max_write_size, 
                                         io->output->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(io->output, b);

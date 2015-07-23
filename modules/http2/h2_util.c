@@ -64,7 +64,8 @@ size_t h2_util_header_print(char *buffer, size_t maxlen,
 
 char *h2_strlwr(char *s)
 {
-    for (char *p = s; *p; ++p) {
+    char *p;
+    for (p = s; *p; ++p) {
         if (*p >= 'A' && *p <= 'Z') {
             *p += 'a' - 'A';
         }
@@ -75,7 +76,8 @@ char *h2_strlwr(char *s)
 void h2_util_camel_case_header(char *s, size_t len)
 {
     size_t start = 1;
-    for (size_t i = 0; i < len; ++i) {
+    size_t i;
+    for (i = 0; i < len; ++i) {
         if (start) {
             if (s[i] >= 'a' && s[i] <= 'z') {
                 s[i] -= 'a' - 'A';
@@ -156,12 +158,13 @@ apr_size_t h2_util_base64url_decode(unsigned char **decoded, const char *encoded
 
 int h2_util_contains_token(apr_pool_t *pool, const char *s, const char *token)
 {
+    char *c;
     if (s) {
         if (!apr_strnatcasecmp(s, token)) {   /* the simple life */
             return 1;
         }
         
-        for (char *c = ap_get_token(pool, &s, 0); c && *c;
+        for (c = ap_get_token(pool, &s, 0); c && *c;
              c = *s? ap_get_token(pool, &s, 0) : NULL) {
             if (!apr_strnatcasecmp(c, token)) { /* seeing the token? */
                 return 1;
@@ -180,10 +183,12 @@ int h2_util_contains_token(apr_pool_t *pool, const char *s, const char *token)
 const char *h2_util_first_token_match(apr_pool_t *pool, const char *s, 
                                       const char *tokens[], apr_size_t len)
 {
+    char *c;
+    apr_size_t i;
     if (s && *s) {
-        for (char *c = ap_get_token(pool, &s, 0); c && *c;
+        for (c = ap_get_token(pool, &s, 0); c && *c;
              c = *s? ap_get_token(pool, &s, 0) : NULL) {
-            for (apr_size_t i = 0; i < len; ++i) {
+            for (i = 0; i < len; ++i) {
                 if (!apr_strnatcasecmp(c, tokens[i])) {
                     return tokens[i];
                 }
