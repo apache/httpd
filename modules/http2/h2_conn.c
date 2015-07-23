@@ -48,8 +48,9 @@ static int checked;
 
 static void check_modules() 
 {
+    int i;
     if (!checked) {
-        for (int i = 0; ap_loaded_modules[i]; ++i) {
+        for (i = 0; ap_loaded_modules[i]; ++i) {
             module *m = ap_loaded_modules[i];
             if (!strcmp("event.c", m->name)) {
                 mpm_type = H2_MPM_EVENT;
@@ -81,6 +82,7 @@ apr_status_t h2_conn_child_init(apr_pool_t *pool, server_rec *s)
     int max_threads_per_child = 0;
     int threads_limit = 0;
     int idle_secs = 0;
+    int i;
 
     ap_mpm_query(AP_MPMQ_MAX_THREADS, &max_threads_per_child);
     ap_mpm_query(AP_MPMQ_HARD_LIMIT_THREADS, &threads_limit);
@@ -95,7 +97,7 @@ apr_status_t h2_conn_child_init(apr_pool_t *pool, server_rec *s)
         }
     }
     
-    for (int i = 0; ap_loaded_modules[i]; ++i) {
+    for (i = 0; ap_loaded_modules[i]; ++i) {
         module *m = ap_loaded_modules[i];
         if (!strcmp("event.c", m->name)) {
             mpm_type = H2_MPM_EVENT;

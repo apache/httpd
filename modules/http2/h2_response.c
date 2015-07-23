@@ -46,6 +46,7 @@ h2_response *h2_response_create(int stream_id,
 {
     apr_table_t *header;
     h2_response *response = apr_pcalloc(pool, sizeof(h2_response));
+    int i;
     if (response == NULL) {
         return NULL;
     }
@@ -55,7 +56,7 @@ h2_response *h2_response_create(int stream_id,
     
     if (hlines) {
         header = apr_table_make(pool, hlines->nelts);        
-        for (int i = 0; i < hlines->nelts; ++i) {
+        for (i = 0; i < hlines->nelts; ++i) {
             char *hline = ((char **)hlines->elts)[i];
             char *sep = strchr(hline, ':');
             if (!sep) {
