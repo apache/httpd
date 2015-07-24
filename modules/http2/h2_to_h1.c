@@ -39,11 +39,13 @@ h2_to_h1 *h2_to_h1_create(int stream_id, apr_pool_t *pool,
     h2_to_h1 *to_h1;
     if (!method) {
         ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, m->c,
+                      APLOGNO(02943) 
                       "h2_to_h1: header start but :method missing");
         return NULL;
     }
     if (!path) {
         ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, m->c,
+                      APLOGNO(02944) 
                       "h2_to_h1: header start but :path missing");
         return NULL;
     }
@@ -78,6 +80,7 @@ apr_status_t h2_to_h1_add_header(h2_to_h1 *to_h1,
         if (!apr_strnatcasecmp("chunked", value)) {
             /* This should never arrive here in a HTTP/2 request */
             ap_log_cerror(APLOG_MARK, APLOG_ERR, APR_BADARG, to_h1->m->c,
+                          APLOGNO(02945) 
                           "h2_to_h1: 'transfer-encoding: chunked' received");
             return APR_BADARG;
         }
@@ -87,6 +90,7 @@ apr_status_t h2_to_h1_add_header(h2_to_h1 *to_h1,
         to_h1->content_len = apr_strtoi64(value, &end, 10);
         if (value == end) {
             ap_log_cerror(APLOG_MARK, APLOG_WARNING, APR_EINVAL, to_h1->m->c,
+                          APLOGNO(02959) 
                           "h2_request(%d): content-length value not parsed: %s",
                           to_h1->stream_id, value);
             return APR_EINVAL;
@@ -187,6 +191,7 @@ apr_status_t h2_to_h1_end_headers(h2_to_h1 *to_h1, h2_task *task, int eos)
         apr_status_t status = h2_to_h1_close(to_h1);
         if (status != APR_SUCCESS) {
             ap_log_cerror(APLOG_MARK, APLOG_WARNING, status, to_h1->m->c,
+                          APLOGNO(02960) 
                           "h2_to_h1(%ld-%d): end headers, eos=%d", 
                           to_h1->m->id, to_h1->stream_id, eos);
         }
@@ -243,6 +248,7 @@ apr_status_t h2_to_h1_add_data(h2_to_h1 *to_h1,
         to_h1->remain_len -= len;
         if (to_h1->remain_len < 0) {
             ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, to_h1->m->c,
+                          APLOGNO(02961) 
                           "h2_to_h1(%ld-%d): got %ld more content bytes than announced "
                           "in content-length header: %ld", 
                           to_h1->m->id, to_h1->stream_id, 
@@ -263,7 +269,7 @@ apr_status_t h2_to_h1_flush(h2_to_h1 *to_h1)
         status = h2_mplx_in_write(to_h1->m, to_h1->stream_id, to_h1->bb);
         if (status != APR_SUCCESS) {
             ap_log_cerror(APLOG_MARK, APLOG_ERR, status, to_h1->m->c,
-                          "h2_request(%d): pushing request data",
+                          APLOGNO(02946) "h2_request(%d): pushing request data",
                           to_h1->stream_id);
         }
     }

@@ -1495,24 +1495,26 @@ static apr_status_t ssl_io_filter_input(ap_filter_t *f,
         SSLConnRec *sslconn = myConnConfig(f->c);
         const unsigned char *next_proto = NULL;
         unsigned next_proto_len = 0;
+        const char *protocol;
         int n;
 
-        if (sslconn->alpn_negofns) {
-            SSL_get0_alpn_selected(inctx->ssl, &next_proto, &next_proto_len);
+        SSL_get0_alpn_selected(inctx->ssl, &next_proto, &next_proto_len);
+        if (next_proto && next_proto_len) {
+            protocol = apr_pstrmemdup(f->c->pool, (const char *)next_proto,
+                                       next_proto_len);
             ap_log_cerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, f->c,
                           APLOGNO(02836) "ALPN selected protocol: '%s'",
-                          (next_proto && next_proto_len) ?
-                              apr_pstrmemdup(f->c->pool,
-                                             (const char *)next_proto,
-                                             next_proto_len) :
-                              "(null)");
-            for (n = 0; n < sslconn->alpn_negofns->nelts; n++) {
-                ssl_alpn_proto_negotiated fn =
-                    APR_ARRAY_IDX(sslconn->alpn_negofns, n,
-                                  ssl_alpn_proto_negotiated);
-
-                if (fn(f->c, (const char *)next_proto, next_proto_len) == DONE)
-                    break;
+                          protocol);
+            
+            if (strcmp(protocol, ap_run_protocol_get(f->c))) {
+                status = ap_switch_protocol(f->c, NULL, sslconn->server,
+                                            protocol);
+                if (status != APR_SUCCESS) {
+                    ap_log_cerror(APLOG_MARK, APLOG_ERR, status, f->c,
+                                  APLOGNO(02908) "protocol switch to '%s' failed",
+                                  protocol);
+                    return status;
+                }
             }
         }
         inctx->alpn_finished = 1;

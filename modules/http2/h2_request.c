@@ -92,6 +92,7 @@ apr_status_t h2_request_write_header(h2_request *req,
         /* pseudo header, see ch. 8.1.2.3, always should come first */
         if (req->to_h1) {
             ap_log_perror(APLOG_MARK, APLOG_ERR, 0, req->pool,
+                          APLOGNO(02917) 
                           "h2_request(%d): pseudo header after request start",
                           req->id);
             return APR_EGENERAL;
@@ -118,6 +119,7 @@ apr_status_t h2_request_write_header(h2_request *req,
             memset(buffer, 0, 32);
             strncpy(buffer, name, (nlen > 31)? 31 : nlen);
             ap_log_perror(APLOG_MARK, APLOG_WARNING, 0, req->pool,
+                          APLOGNO(02954) 
                           "h2_request(%d): ignoring unknown pseudo header %s",
                           req->id, buffer);
         }

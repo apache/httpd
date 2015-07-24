@@ -67,6 +67,9 @@ APR_HOOK_STRUCT(
     APR_HOOK_LINK(http_scheme)
     APR_HOOK_LINK(default_port)
     APR_HOOK_LINK(note_auth_failure)
+    APR_HOOK_LINK(protocol_propose)
+    APR_HOOK_LINK(protocol_switch)
+    APR_HOOK_LINK(protocol_get)
 )
 
 AP_DECLARE_DATA ap_filter_rec_t *ap_old_write_func = NULL;
@@ -1944,6 +1947,125 @@ AP_DECLARE(void) ap_send_interim_response(request_rec *r, int send_headers)
     apr_brigade_destroy(x.bb);
 }
 
+/* Something like this must be in APR, only I do not find it... */
+static int array_index(apr_array_header_t *array, const char *s)
+{
+    int i;
+    for (i = 0; i < array->nelts; i++) {
+        const char *p = APR_ARRAY_IDX(array, i, const char *);
+        if (!strcmp(p, s)) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+/*
+ * Compare two protocol identifier. Result is similar to strcmp():
+ * 0 gives same precedence, >0 means proto1 is preferred.
+ */
+static int protocol_cmp(apr_array_header_t *preferences,
+                        const char *proto1,
+                        const char *proto2)
+{
+    if (preferences && preferences->nelts > 0) {
+        int index1 = array_index(preferences, proto1);
+        int index2 = array_index(preferences, proto2);
+        if (index2 > index1) {
+            return (index1 >= 0) ? 1 : -1;
+        }
+        else if (index1 > index2) {
+            return (index2 >= 0) ? -1 : 1;
+        }
+    }
+    /* both have the same index (mabye -1 or no pref configured) and we compare
+     * the names so that spdy3 gets precedence over spdy2. That makes
+     * the outcome at least deterministic. */
+    return strcmp(proto1, proto2);
+}
+
+AP_DECLARE(const char *) ap_select_protocol(conn_rec *c, request_rec *r, 
+                                            server_rec *s,
+                                            apr_array_header_t *choices)
+{
+    apr_pool_t *pool = r? r->pool : c->pool;
+    apr_array_header_t *proposals;
+    const char *protocol = NULL;
+    core_server_config *conf = ap_get_core_module_config(s->module_config);
+
+    if (APLOGcdebug(c)) {
+        const char *p = apr_array_pstrcat(pool, conf->protocols, ',');
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, 
+                      "select protocol from %s, choices=%s for server %s", 
+                      p, apr_array_pstrcat(pool, choices, ','),
+                      s->server_hostname);
+    }
+    
+    proposals = apr_array_make(pool, choices->nelts+1, sizeof(char *));
+    ap_run_protocol_propose(c, r, s, choices, proposals);
+    
+    if (proposals->nelts > 0) {
+        int i;
+        /* Select the most preferred protocol */
+        if (APLOGcdebug(c)) {
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, 
+                          "select protocol, proposals=%s", 
+                          apr_array_pstrcat(pool, proposals, ','));
+        }
+        for (i = 0; i < proposals->nelts; ++i) {
+            const char *p = APR_ARRAY_IDX(proposals, i, const char *);
+            if (conf->protocols->nelts > 0 
+                && array_index(conf->protocols, p) < 0) {
+                /* not a permitted protocol here */
+                continue;
+            }
+            else if (!protocol 
+                     || (protocol_cmp(conf->protocols, protocol, p) < 0)) {
+                /* none selected yet or this on has preference */
+                protocol = p;
+            }
+        }
+    }
+    if (APLOGcdebug(c)) {
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, "selected protocol=%s", 
+                      protocol? protocol : "(none)");
+    }
+
+    return protocol? protocol : ap_run_protocol_get(c);
+}
+
+AP_DECLARE(apr_status_t) ap_switch_protocol(conn_rec *c, request_rec *r, 
+                                            server_rec *s,
+                                            const char *protocol)
+{
+    const char *current = ap_run_protocol_get(c);
+    int rc;
+    
+    if (!strcmp(current, protocol)) {
+        ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, c, APLOGNO(02906)
+                      "already at it, protocol_switch to %s", 
+                      protocol);
+        return APR_SUCCESS;
+    }
+    
+    rc = ap_run_protocol_switch(c, r, s, protocol);
+    switch (rc) {
+        case DECLINED:
+            ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO(02907)
+                          "no implementation for protocol_switch to %s", 
+                          protocol);
+            return APR_ENOTIMPL;
+        case OK:
+        case DONE:
+            return APR_SUCCESS;
+        default:
+            ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO(02905)
+                          "unexpected return code %d from protocol_switch to %s"
+                          , rc, protocol);
+            return APR_EOF;
+    }    
+}
+
 
 AP_IMPLEMENT_HOOK_VOID(pre_read_request,
                        (request_rec *r, conn_rec *c),
@@ -1959,3 +2081,14 @@ AP_IMPLEMENT_HOOK_RUN_FIRST(unsigned short,default_port,
 AP_IMPLEMENT_HOOK_RUN_FIRST(int, note_auth_failure,
                             (request_rec *r, const char *auth_type),
                             (r, auth_type), DECLINED)
+AP_IMPLEMENT_HOOK_RUN_ALL(int,protocol_propose,
+                          (conn_rec *c, request_rec *r, server_rec *s,
+                           const apr_array_header_t *offers,
+                           apr_array_header_t *proposals), 
+                          (c, r, s, offers, proposals), OK, DECLINED)
+AP_IMPLEMENT_HOOK_RUN_FIRST(int,protocol_switch,
+                            (conn_rec *c, request_rec *r, server_rec *s,
+                             const char *protocol), 
+                            (c, r, s, protocol), DECLINED)
+AP_IMPLEMENT_HOOK_RUN_FIRST(const char *,protocol_get,
+                            (const conn_rec *c), (c), NULL)

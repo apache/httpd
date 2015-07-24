@@ -17,18 +17,16 @@
 #define __mod_h2__h2_h2__
 
 /**
- * List of ALPN protocol identifiers that we support in ALPN/NPN 
- * negotiations.
+ * List of ALPN protocol identifiers that we suport in cleartext
+ * negotiations. NULL terminated.
  */
-extern const char *h2_alpn_protos[];
-extern apr_size_t h2_alpn_protos_len;
+extern const char *h2_clear_protos[];
 
 /**
- * List of ALPN protocol identifiers that we suport in HTTP/1 Upgrade:
- * negotiations.
+ * List of ALPN protocol identifiers that we support in TLS encrypted 
+ * negotiations. NULL terminated.
  */
-extern const char *h2_upgrade_protos[];
-extern apr_size_t h2_upgrade_protos_len;
+extern const char *h2_tls_protos[];
 
 /**
  * The magic PRIamble of RFC 7540 that is always sent when starting

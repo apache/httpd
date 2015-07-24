@@ -109,7 +109,7 @@ static const int BASE64URL_TABLE[] = {
     -1, -1, -1, -1
 };
 
-apr_size_t h2_util_base64url_decode(unsigned char **decoded, const char *encoded, 
+apr_size_t h2_util_base64url_decode(const char **decoded, const char *encoded, 
                                     apr_pool_t *pool)
 {
     const unsigned char *e = (const unsigned char *)encoded;
@@ -126,7 +126,7 @@ apr_size_t h2_util_base64url_decode(unsigned char **decoded, const char *encoded
     *decoded = apr_pcalloc(pool, len+1);
     
     i = 0;
-    d = *decoded;
+    d = (unsigned char*)*decoded;
     for (; i < mlen; i += 4) {
         n = ((BASE64URL_TABLE[ e[i+0] ] << 18) +
              (BASE64URL_TABLE[ e[i+1] ] << 12) +
@@ -359,7 +359,8 @@ apr_status_t h2_util_move(apr_bucket_brigade *to, apr_bucket_brigade *from,
                         status = apr_file_setaside(&fd, fd, to->p);
                         if (status != APR_SUCCESS) {
                             ap_log_perror(APLOG_MARK, APLOG_ERR, status, to->p,
-                                          "h2_util: %s, setaside FILE", msg);
+                                          APLOGNO(02947) "h2_util: %s, setaside FILE", 
+                                          msg);
                             return status;
                         }
                     }

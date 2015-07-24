@@ -83,6 +83,7 @@ static apr_status_t make_h2_headers(h2_from_h1 *from_h1, request_rec *r)
                                        from_h1->pool);
     if (from_h1->response == NULL) {
         ap_log_cerror(APLOG_MARK, APLOG_ERR, APR_EINVAL, r->connection,
+                      APLOGNO(02915) 
                       "h2_from_h1(%d): unable to create resp_head",
                       from_h1->stream_id);
         return APR_EINVAL;

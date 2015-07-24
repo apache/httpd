@@ -13,17 +13,17 @@
  * limitations under the License.
  */
 
-#ifndef __mod_h2__h2_alpn__
-#define __mod_h2__h2_alpn__
+#ifndef __mod_h2__h2_switch__
+#define __mod_h2__h2_switch__
 
 /*
  * One time, post config intialization.
  */
-apr_status_t h2_alpn_init(apr_pool_t *pool, server_rec *s);
+apr_status_t h2_switch_init(apr_pool_t *pool, server_rec *s);
 
-/* Register apache hooks for ALPN protocol
+/* Register apache hooks for protocol switching
  */
-void h2_alpn_register_hooks(void);
+void h2_switch_register_hooks(void);
 
 
-#endif /* defined(__mod_h2__h2_h2__) */
+#endif /* defined(__mod_h2__h2_switch__) */

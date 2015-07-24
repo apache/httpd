@@ -1923,23 +1923,29 @@ void ssl_callback_Info(const SSL *ssl, int where, int rc)
 
 #ifdef HAVE_TLSEXT
 /*
- * This callback function is executed when OpenSSL encounters an extended
+ * This function sets the virtual host from an extended
  * client hello with a server name indication extension ("SNI", cf. RFC 6066).
  */
-int ssl_callback_ServerNameIndication(SSL *ssl, int *al, modssl_ctx_t *mctx)
+static apr_status_t init_vhost(conn_rec *c, SSL *ssl)
 {
-    const char *servername =
-                SSL_get_servername(ssl, TLSEXT_NAMETYPE_host_name);
-    conn_rec *c = (conn_rec *)SSL_get_app_data(ssl);
-
+    const char *servername;
+    
     if (c) {
+        SSLConnRec *sslcon = myConnConfig(c);
+        
+        if (sslcon->server != c->base_server) {
+            /* already found the vhost */
+            return APR_SUCCESS;
+        }
+        
+        servername = SSL_get_servername(ssl, TLSEXT_NAMETYPE_host_name);
         if (servername) {
             if (ap_vhost_iterate_given_conn(c, ssl_find_vhost,
                                             (void *)servername)) {
                 ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(02043)
                               "SSL virtual host for servername %s found",
                               servername);
-                return SSL_TLSEXT_ERR_OK;
+                return APR_SUCCESS;
             }
             else {
                 ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(02044)
@@ -1969,8 +1975,20 @@ int ssl_callback_ServerNameIndication(SSL *ssl, int *al, modssl_ctx_t *mctx)
                           "(using default/first virtual host)");
         }
     }
+    
+    return APR_NOTFOUND;
+}
 
-    return SSL_TLSEXT_ERR_NOACK;
+/*
+ * This callback function is executed when OpenSSL encounters an extended
+ * client hello with a server name indication extension ("SNI", cf. RFC 6066).
+ */
+int ssl_callback_ServerNameIndication(SSL *ssl, int *al, modssl_ctx_t *mctx)
+{
+    conn_rec *c = (conn_rec *)SSL_get_app_data(ssl);
+    apr_status_t status = init_vhost(c, ssl);
+    
+    return (status == APR_SUCCESS)? SSL_TLSEXT_ERR_OK : SSL_TLSEXT_ERR_NOACK;
 }
 
 /*
@@ -2170,41 +2188,6 @@ int ssl_callback_SessionTicket(SSL *ssl,
 #endif /* HAVE_TLS_SESSION_TICKETS */
 
 #ifdef HAVE_TLS_ALPN
-static int ssl_array_index(apr_array_header_t *array, const char *s)
-{
-    int i;
-    for (i = 0; i < array->nelts; i++) {
-        const char *p = APR_ARRAY_IDX(array, i, const char *);
-        if (!strcmp(p, s)) {
-            return i;
-        }
-    }
-    return -1;
-}
-
-/*
- * Compare two ALPN protocol proposal. Result is similar to strcmp():
- * 0 gives same precedence, >0 means proto1 is preferred.
- */
-static int ssl_cmp_alpn_protos(modssl_ctx_t *ctx,
-                               const char *proto1,
-                               const char *proto2)
-{
-    if (ctx && ctx->ssl_alpn_pref) {
-        int index1 = ssl_array_index(ctx->ssl_alpn_pref, proto1);
-        int index2 = ssl_array_index(ctx->ssl_alpn_pref, proto2);
-        if (index2 > index1) {
-            return (index1 >= 0) ? 1 : -1;
-        }
-        else if (index1 > index2) {
-            return (index2 >= 0) ? -1 : 1;
-        }
-    }
-    /* both have the same index (mabye -1 or no pref configured) and we compare
-     * the names so that spdy3 gets precedence over spdy2. That makes
-     * the outcome at least deterministic. */
-    return strcmp((const char *)proto1, (const char *)proto2);
-}
 
 /*
  * This callback function is executed when the TLS Application-Layer
@@ -2225,14 +2208,9 @@ int ssl_callback_alpn_select(SSL *ssl,
 {
     conn_rec *c = (conn_rec*)SSL_get_app_data(ssl);
     SSLConnRec *sslconn = myConnConfig(c);
-    server_rec *s = mySrvFromConn(c);
-    SSLSrvConfigRec *sc = mySrvConfig(s);
-    modssl_ctx_t *mctx = myCtxConfig(sslconn, sc);
-    const char *alpn_http1 = "http/1.1";
     apr_array_header_t *client_protos;
-    apr_array_header_t *proposed_protos;
-    int i;
     size_t len;
+    int i;
 
     /* If the connection object is not available,
      * then there's nothing for us to do. */
@@ -2261,48 +2239,15 @@ int ssl_callback_alpn_select(SSL *ssl,
         i += plen;
     }
 
-    proposed_protos = apr_array_make(c->pool, client_protos->nelts+1,
-                                     sizeof(char *));
-
-    if (sslconn->alpn_proposefns != NULL) {
-        /* Invoke our alpn_propose functions, giving other modules a chance to
-         * propose protocol names for selection. We might have several such
-         * functions installed and if two make a proposal, we need to give
-         * preference to one.
-         */
-        for (i = 0; i < sslconn->alpn_proposefns->nelts; i++) {
-            ssl_alpn_propose_protos fn =
-                APR_ARRAY_IDX(sslconn->alpn_proposefns, i,
-                              ssl_alpn_propose_protos);
-
-            if (fn(c, client_protos, proposed_protos) == DONE)
-                break;
-        }
-    }
-
-    if (proposed_protos->nelts <= 0) {
-        /* Regardless of installed hooks, the http/1.1 protocol is always
-         * supported by us. Choose it if none other matches. */
-        if (ssl_array_index(client_protos, alpn_http1) < 0) {
-            ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO(02839)
-                          "none of the client ALPN protocols are supported");
-            return SSL_TLSEXT_ERR_ALERT_FATAL;
-        }
-        *out = (const unsigned char*)alpn_http1;
-        *outlen = (unsigned char)strlen(alpn_http1);
-        return SSL_TLSEXT_ERR_OK;
-    }
-
-    /* Now select the most preferred protocol from the proposals. */
-    *out = APR_ARRAY_IDX(proposed_protos, 0, const unsigned char *);
-    for (i = 1; i < proposed_protos->nelts; ++i) {
-        const char *proto = APR_ARRAY_IDX(proposed_protos, i, const char *);
-        /* Do we prefer it over existing candidate? */
-        if (ssl_cmp_alpn_protos(mctx, (const char *)*out, proto) < 0) {
-            *out = (const unsigned char *)proto;
-        }
-    }
-
+    /* The order the callbacks are invoked from TLS extensions is, unfortunately
+     * not defined and older openssl versions do call ALPN selection before
+     * they callback the SNI. We need to make sure that we know which vhost
+     * we are dealing with so we respect the correct protocols.
+     */
+    init_vhost(c, ssl);
+    
+    *out = (const unsigned char *)ap_select_protocol(c, NULL, sslconn->server, 
+                                                     client_protos);
     len = strlen((const char*)*out);
     if (len > 255) {
         ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO(02840)

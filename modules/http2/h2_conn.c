@@ -144,7 +144,8 @@ apr_status_t h2_conn_rprocess(request_rec *r)
     
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, "h2_conn_process start");
     if (!workers) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, "workers not initialized");
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02911) 
+                      "workers not initialized");
         return APR_EGENERAL;
     }
     
@@ -163,7 +164,8 @@ apr_status_t h2_conn_main(conn_rec *c)
     
     ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, "h2_conn_main start");
     if (!workers) {
-        ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, "workers not initialized");
+        ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO(02912) 
+                      "workers not initialized");
         return APR_EGENERAL;
     }
     
@@ -293,6 +295,7 @@ apr_status_t h2_session_process(h2_session *session)
                 break;
             default:
                 ap_log_cerror( APLOG_MARK, APLOG_WARNING, status, session->c,
+                              APLOGNO(02950) 
                               "h2_session(%ld): error reading, terminating",
                               session->id);
                 h2_session_abort(session, status, 0);
@@ -353,8 +356,8 @@ conn_rec *h2_conn_create(conn_rec *master, apr_pool_t *pool)
                                            master->sbh,
                                            master->bucket_alloc);
     if (c == NULL) {
-        ap_log_perror(APLOG_MARK, APLOG_ERR, APR_ENOMEM, pool,
-                      "h2_task: creating conn");
+        ap_log_perror(APLOG_MARK, APLOG_ERR, APR_ENOMEM, pool, 
+                      APLOGNO(02913) "h2_task: creating conn");
         return NULL;
     }
     /* TODO: we simulate that we had already a request on this connection.
@@ -440,7 +443,7 @@ apr_status_t h2_conn_init(struct h2_task_env *env, struct h2_worker *worker)
                                            master->bucket_alloc);
     if (c == NULL) {
         ap_log_perror(APLOG_MARK, APLOG_ERR, APR_ENOMEM, env->pool,
-                      "h2_task: creating conn");
+                      APLOGNO(02914) "h2_task: creating conn");
         return APR_ENOMEM;
     }
     

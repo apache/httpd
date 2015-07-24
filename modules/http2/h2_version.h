@@ -20,7 +20,7 @@
  * @macro
  * Version number of the h2 module as c string
  */
-#define MOD_H2_VERSION "0.8.1"
+#define MOD_H2_VERSION "1.0.0"
 
 /**
  * @macro
@@ -28,7 +28,7 @@
  * release. This is a 24 bit number with 8 bits for major number, 8 bits
  * for minor and 8 bits for patch. Version 1.2.3 becomes 0x010203.
  */
-#define MOD_H2_VERSION_NUM 0x000801
+#define MOD_H2_VERSION_NUM 0x010000
 
 
 #endif /* mod_h2_h2_version_h */

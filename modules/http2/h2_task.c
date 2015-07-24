@@ -162,7 +162,7 @@ h2_task *h2_task_create(long session_id,
     h2_task *task = apr_pcalloc(stream_pool, sizeof(h2_task));
     if (task == NULL) {
         ap_log_perror(APLOG_MARK, APLOG_ERR, APR_ENOMEM, stream_pool,
-                      "h2_task(%ld-%d): create stream task", 
+                      APLOGNO(02941) "h2_task(%ld-%d): create stream task", 
                       session_id, stream_id);
         h2_mplx_out_close(mplx, stream_id);
         return NULL;
@@ -256,7 +256,8 @@ apr_status_t h2_task_do(h2_task *task, h2_worker *worker)
     }
     else {
         ap_log_cerror(APLOG_MARK, APLOG_WARNING, status, &env.c,
-                      "h2_task(%s): error setting up h2_task_env", env.id);
+                      APLOGNO(02957) "h2_task(%s): error setting up h2_task_env", 
+                      env.id);
     }
     
     if (env.input) {

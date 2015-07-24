@@ -707,6 +707,9 @@ typedef struct {
 #define AP_HTTP_EXPECT_STRICT_ENABLE   1
 #define AP_HTTP_EXPECT_STRICT_DISABLE  2
     int http_expect_strict;
+
+
+    apr_array_header_t *protocols;
 } core_server_config;
 
 /* for AddOutputFiltersByType in core.c */
