@@ -3827,9 +3827,6 @@ static const char *set_http_protocol(cmd_parms *cmd, void *dummy,
     core_server_config *conf =
         ap_get_core_module_config(cmd->server->module_config);
 
-    if (!conf->protocols) {
-        
-    }
     if (strncmp(arg, "min=", 4) == 0) {
         arg += 4;
         if (strcmp(arg, "0.9") == 0)
