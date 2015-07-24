@@ -73,6 +73,7 @@ static int stream_open(h2_session *session, int stream_id)
     }
     
     ap_log_cerror(APLOG_MARK, APLOG_ERR, APR_ENOMEM, session->c,
+                  APLOGNO(02918) 
                   "h2_session: stream(%ld-%d): unable to create",
                   session->id, stream_id);
     return NGHTTP2_ERR_INVALID_STREAM_ID;
@@ -145,6 +146,7 @@ static int on_data_chunk_recv_cb(nghttp2_session *ngh2, uint8_t flags,
     stream = h2_stream_set_get(session->streams, stream_id);
     if (!stream) {
         ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, session->c,
+                      APLOGNO(02919) 
                       "h2_session:  stream(%ld-%d): on_data_chunk for unknown stream",
                       session->id, (int)stream_id);
         rv = nghttp2_submit_rst_stream(ngh2, NGHTTP2_FLAG_NONE, stream_id,
@@ -279,6 +281,7 @@ static int on_header_cb(nghttp2_session *ngh2, const nghttp2_frame *frame,
                                            frame->hd.stream_id);
     if (!stream) {
         ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, session->c,
+                      APLOGNO(02920) 
                       "h2_session:  stream(%ld-%d): on_header for unknown stream",
                       session->id, (int)frame->hd.stream_id);
         return NGHTTP2_ERR_TEMPORAL_CALLBACK_FAILURE;
@@ -320,6 +323,7 @@ static int on_frame_recv_cb(nghttp2_session *ng2s,
                                                    frame->hd.stream_id);
             if (stream == NULL) {
                 ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, session->c,
+                              APLOGNO(02921) 
                               "h2_session:  stream(%ld-%d): HEADERS frame "
                               "for unknown stream", session->id,
                               (int)frame->hd.stream_id);
@@ -342,6 +346,7 @@ static int on_frame_recv_cb(nghttp2_session *ng2s,
                                                    frame->hd.stream_id);
             if (stream == NULL) {
                 ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, session->c,
+                              APLOGNO(02922) 
                               "h2_session:  stream(%ld-%d): DATA frame "
                               "for unknown stream", session->id,
                               (int)frame->hd.stream_id);
@@ -394,6 +399,7 @@ static int on_frame_recv_cb(nghttp2_session *ng2s,
     
     if (status != APR_SUCCESS) {
         ap_log_cerror(APLOG_MARK, APLOG_ERR, status, session->c,
+                      APLOGNO(02923) 
                       "h2_session: stream(%ld-%d): error handling frame",
                       session->id, (int)frame->hd.stream_id);
         rv = nghttp2_submit_rst_stream(ng2s, NGHTTP2_FLAG_NONE,
@@ -443,6 +449,7 @@ static int on_send_data_cb(nghttp2_session *ngh2,
     stream = h2_stream_set_get(session->streams, stream_id);
     if (!stream) {
         ap_log_cerror(APLOG_MARK, APLOG_ERR, APR_NOTFOUND, session->c,
+                      APLOGNO(02924) 
                       "h2_stream(%ld-%d): send_data",
                       session->id, (int)stream_id);
         return NGHTTP2_ERR_CALLBACK_FAILURE;
@@ -477,6 +484,7 @@ static int on_send_data_cb(nghttp2_session *ngh2,
     }
     else if (status != APR_EOF) {
         ap_log_cerror(APLOG_MARK, APLOG_ERR, status, session->c,
+                      APLOGNO(02925) 
                       "h2_stream(%ld-%d): failed send_data_cb",
                       session->id, (int)stream_id);
         return NGHTTP2_ERR_CALLBACK_FAILURE;
@@ -494,7 +502,7 @@ static apr_status_t init_callbacks(conn_rec *c, nghttp2_session_callbacks **pcb)
     int rv = nghttp2_session_callbacks_new(pcb);
     if (rv != 0) {
         ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c,
-                      "nghttp2_session_callbacks_new: %s",
+                      APLOGNO(02926) "nghttp2_session_callbacks_new: %s",
                       nghttp2_strerror(rv));
         return APR_EGENERAL;
     }
@@ -556,7 +564,7 @@ static h2_session *h2_session_create_int(conn_rec *c,
         
         status = init_callbacks(c, &callbacks);
         if (status != APR_SUCCESS) {
-            ap_log_cerror(APLOG_MARK, APLOG_ERR, status, c,
+            ap_log_cerror(APLOG_MARK, APLOG_ERR, status, c, APLOGNO(02927) 
                           "nghttp2: error in init_callbacks");
             h2_session_destroy(session);
             return NULL;
@@ -565,7 +573,8 @@ static h2_session *h2_session_create_int(conn_rec *c,
         rv = nghttp2_option_new(&options);
         if (rv != 0) {
             ap_log_cerror(APLOG_MARK, APLOG_ERR, APR_EGENERAL, c,
-                          "nghttp2_option_new: %s", nghttp2_strerror(rv));
+                          APLOGNO(02928) "nghttp2_option_new: %s", 
+                          nghttp2_strerror(rv));
             h2_session_destroy(session);
             return NULL;
         }
@@ -584,7 +593,7 @@ static h2_session *h2_session_create_int(conn_rec *c,
         
         if (rv != 0) {
             ap_log_cerror(APLOG_MARK, APLOG_ERR, APR_EGENERAL, c,
-                          "nghttp2_session_server_new: %s",
+                          APLOGNO(02929) "nghttp2_session_server_new: %s",
                           nghttp2_strerror(rv));
             h2_session_destroy(session);
             return NULL;
@@ -660,7 +669,7 @@ apr_status_t h2_session_goaway(h2_session *session, apr_status_t reason)
     if (rv != 0) {
         status = APR_EGENERAL;
         ap_log_cerror(APLOG_MARK, APLOG_ERR, status, session->c,
-                      "session(%ld): submit goaway: %s",
+                    APLOGNO(02930) "session(%ld): submit goaway: %s",
                       session->id, nghttp2_strerror(rv));
     }
     return status;
@@ -733,6 +742,7 @@ apr_status_t h2_session_start(h2_session *session, int *rv)
         s = apr_table_get(session->r->headers_in, "HTTP2-Settings");
         if (!s) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, APR_EINVAL, session->r,
+                          APLOGNO(02931) 
                           "HTTP2-Settings header missing in request");
             return APR_EINVAL;
         }
@@ -751,7 +761,8 @@ apr_status_t h2_session_start(h2_session *session, int *rv)
         if (*rv != 0) {
             status = APR_EINVAL;
             ap_log_rerror(APLOG_MARK, APLOG_ERR, status, session->r,
-                          "nghttp2_session_upgrade: %s", nghttp2_strerror(*rv));
+                          APLOGNO(02932) "nghttp2_session_upgrade: %s", 
+                          nghttp2_strerror(*rv));
             return status;
         }
         
@@ -760,7 +771,8 @@ apr_status_t h2_session_start(h2_session *session, int *rv)
         if (*rv != 0) {
             status = APR_EGENERAL;
             ap_log_rerror(APLOG_MARK, APLOG_ERR, status, session->r,
-                          "open stream 1: %s", nghttp2_strerror(*rv));
+                          APLOGNO(02933) "open stream 1: %s", 
+                          nghttp2_strerror(*rv));
             return status;
         }
         
@@ -768,7 +780,7 @@ apr_status_t h2_session_start(h2_session *session, int *rv)
         if (stream == NULL) {
             status = APR_EGENERAL;
             ap_log_rerror(APLOG_MARK, APLOG_ERR, status, session->r,
-                          "lookup of stream 1");
+                          APLOGNO(02934) "lookup of stream 1");
             return status;
         }
         
@@ -795,7 +807,8 @@ apr_status_t h2_session_start(h2_session *session, int *rv)
     if (*rv != 0) {
         status = APR_EGENERAL;
         ap_log_cerror(APLOG_MARK, APLOG_ERR, status, session->c,
-                      "nghttp2_submit_settings: %s", nghttp2_strerror(*rv));
+                      APLOGNO(02935) "nghttp2_submit_settings: %s", 
+                      nghttp2_strerror(*rv));
     }
     
     return status;
@@ -826,6 +839,7 @@ static int resume_on_data(void *ctx, h2_stream *stream) {
             rv = nghttp2_session_resume_data(session->ngh2, stream->id);
             ap_log_cerror(APLOG_MARK, nghttp2_is_fatal(rv)?
                           APLOG_ERR : APLOG_DEBUG, 0, session->c,
+                          APLOGNO(02936) 
                           "h2_stream(%ld-%d): resuming stream %s",
                           session->id, stream->id, nghttp2_strerror(rv));
         }
@@ -1002,6 +1016,7 @@ static ssize_t stream_data_cb(nghttp2_session *ng2s,
     stream = h2_stream_set_get(session->streams, stream_id);
     if (!stream) {
         ap_log_cerror(APLOG_MARK, APLOG_ERR, APR_NOTFOUND, session->c,
+                      APLOGNO(02937) 
                       "h2_stream(%ld-%d): data requested but stream not found",
                       session->id, (int)stream_id);
         return NGHTTP2_ERR_CALLBACK_FAILURE;
@@ -1038,7 +1053,7 @@ static ssize_t stream_data_cb(nghttp2_session *ng2s,
         default:
             nread = 0;
             ap_log_cerror(APLOG_MARK, APLOG_ERR, status, session->c,
-                          "h2_stream(%ld-%d): reading data",
+                          APLOGNO(02938) "h2_stream(%ld-%d): reading data",
                           session->id, (int)stream_id);
             return NGHTTP2_ERR_CALLBACK_FAILURE;
     }
@@ -1074,7 +1089,7 @@ static int submit_response(h2_session *session, h2_response *response)
     
     if (rv != 0) {
         ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, session->c,
-                      "h2_stream(%ld-%d): submit_response: %s",
+                      APLOGNO(02939) "h2_stream(%ld-%d): submit_response: %s",
                       session->id, response->stream_id, nghttp2_strerror(rv));
     }
     else {
@@ -1110,7 +1125,8 @@ apr_status_t h2_session_handle_response(h2_session *session, h2_stream *stream)
         status = APR_EGENERAL;
         h2_session_abort_int(session, rv);
         ap_log_cerror(APLOG_MARK, APLOG_ERR, status, session->c,
-                      "submit_response: %s", nghttp2_strerror(rv));
+                      APLOGNO(02940) "submit_response: %s", 
+                      nghttp2_strerror(rv));
     }
     return status;
 }

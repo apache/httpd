@@ -43,18 +43,16 @@ typedef struct h2_ctx {
     struct h2_config *config;     /* effective config in this context */
 } h2_ctx;
 
-h2_ctx *h2_ctx_get(conn_rec *c);
-h2_ctx *h2_ctx_rget(request_rec *r);
-h2_ctx *h2_ctx_create_for(conn_rec *c, struct h2_task_env *env);
+h2_ctx *h2_ctx_get(const conn_rec *c);
+h2_ctx *h2_ctx_rget(const request_rec *r);
+h2_ctx *h2_ctx_create_for(const conn_rec *c, struct h2_task_env *env);
 
 
-void h2_ctx_pnego_set_started(h2_ctx *ctx);
-h2_ctx *h2_ctx_pnego_set_done(h2_ctx *ctx, const char *proto);
-/**
- * Returns != 0 iff protocol negitiation did happen, not matter
- * what the outcome was.
+/* Set the h2 protocol established on this connection context or
+ * NULL when other protocols are in place.
  */
-int h2_ctx_pnego_is_done(h2_ctx *ctx);
+h2_ctx *h2_ctx_protocol_set(h2_ctx *ctx, const char *proto);
+
 /**
  * Returns != 0 iff protocol negotiation has started but is not
  * done yet.
@@ -64,7 +62,7 @@ int h2_ctx_pnego_is_ongoing(h2_ctx *ctx);
 /**
  * Get the h2 protocol negotiated for this connection, or NULL.
  */
-const char *h2_ctx_pnego_get(h2_ctx *ctx);
+const char *h2_ctx_protocol_get(const conn_rec *c);
 
 int h2_ctx_is_task(h2_ctx *ctx);
 int h2_ctx_is_active(h2_ctx *ctx);

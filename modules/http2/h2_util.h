@@ -42,7 +42,7 @@ const char *h2_util_first_token_match(apr_pool_t *pool, const char *s,
  * I always wanted to write my own base64url decoder...not. See 
  * https://tools.ietf.org/html/rfc4648#section-5 for description.
  */
-apr_size_t h2_util_base64url_decode(unsigned char **decoded, 
+apr_size_t h2_util_base64url_decode(const char **decoded, 
                                     const char *encoded, 
                                     apr_pool_t *pool);
 

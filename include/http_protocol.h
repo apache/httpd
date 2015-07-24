@@ -700,6 +700,109 @@ AP_DECLARE_HOOK(const char *,http_scheme,(const request_rec *r))
  */
 AP_DECLARE_HOOK(apr_port_t,default_port,(const request_rec *r))
 
+
+#define AP_PROTOCOL_HTTP1		"http/1.1"
+
+/**
+ * Negotiate a possible protocol switch on the connection. The negotiation
+ * may start without any request sent, in which case the request is NULL. Or
+ * it may be triggered by the request received, e.g. through the "Upgrade"
+ * header.
+ * 
+ * The identifiers for protocols are taken from the TLS extension type ALPN:
+ * https://www.iana.org/assignments/tls-extensiontype-values/tls-extensiontype-values.xml
+ *
+ * If no protocols are added to the proposals, the server will always fallback
+ * to "http/1.1" which is the default protocol for connections that Apache
+ * handles. If the protocol selected from the proposals is the protocol
+ * already in place, no "protocol_switch" will be invoked.
+ *
+ * All hooks are run, unless one returns an error. Proposals may contain
+ * duplicates. The order in which proposals are added is usually ignored.
+ * 
+ * @param c The current connection
+ * @param r The current request or NULL
+ * @param s The server/virtual host selected
+ * @param offers a list of protocol identifiers offered by the client
+ * @param proposals the list of protocol identifiers proposed by the hooks
+ * @return OK or DECLINED
+ */
+AP_DECLARE_HOOK(int,protocol_propose,(conn_rec *c, request_rec *r,
+                                      server_rec *s,
+                                      const apr_array_header_t *offers,
+                                      apr_array_header_t *proposals))
+
+/**
+ * Perform a protocol switch on the connection. The exact requirements for
+ * that depend on the protocol in place and the one switched to. The first 
+ * protocol module to handle the switch is the last module run.
+ * 
+ * For a connection level switch (r == NULL), the handler must on return
+ * leave the conn_rec in a state suitable for processing the switched
+ * protocol, e.g. correct filters in place.
+ *
+ * For a request triggered switch (r != NULL), the protocol switch is done
+ * before the response is sent out. When switching from "http/1.1" via Upgrade
+ * header, the 101 intermediate response will have been sent. The
+ * hook needs then to process the connection until it can be closed. Which
+ * the server will enforce on hook return.
+ * Any error the hook might encounter must already be sent by the hook itself
+ * to the client in whatever form the new protocol requires.
+ *
+ * @param c The current connection
+ * @param r The current request or NULL
+ * @param s The server/virtual host selected
+ * @param choices a list of protocol identifiers, normally the clients whishes
+ * @param proposals the list of protocol identifiers proposed by the hooks
+ * @return OK or DECLINED
+ */
+AP_DECLARE_HOOK(int,protocol_switch,(conn_rec *c, request_rec *r,
+                                     server_rec *s,
+                                     const char *protocol))
+
+/**
+ * Return the protocol used on the connection. Modules implementing
+ * protocol switching must register here and return the correct protocol
+ * identifier for connections they switched.
+ *
+ * @param c The current connection
+ * @return The identifier of the protocol in place
+ */
+AP_DECLARE_HOOK(const char *,protocol_get,(const conn_rec *c))
+    
+/**
+ * Select a protocol for the given connection and optional request. Will return
+ * the protocol identifier selected which may be the protocol already in place
+ * on the connection. The server may ignore the choices given.
+ *
+ * @param c The current connection
+ * @param r The current request or NULL
+ * @param s The server/virtual host selected
+ * @param choices a list of protocol identifiers, normally the clients whishes
+ * @return the selected protocol
+ */
+AP_DECLARE(const char *) ap_select_protocol(conn_rec *c, request_rec *r, 
+                                            server_rec *s,
+                                            apr_array_header_t *choices);
+
+/**
+ * Perform the actual protocol switch. The protocol given must have been
+ * selected before on the very same connection and request pair.
+ *
+ * @param c The current connection
+ * @param r The current request or NULL
+ * @param s The server/virtual host selected
+ * @param protocol the protocol to switch to
+ * @return APR_SUCCESS, if caller may continue processing as usual
+ *         APR_EOF,     if caller needs to stop processing the connection
+ *         APR_EINVAL,  if the protocol is already in place
+ *         APR_NOTIMPL, if no module performed the switch
+ *         Other errors where appropriate
+ */
+AP_DECLARE(apr_status_t) ap_switch_protocol(conn_rec *c, request_rec *r, 
+                                            server_rec *s,
+                                            const char *protocol);
+
 /** @see ap_bucket_type_error */
 typedef struct ap_bucket_error ap_bucket_error;
 

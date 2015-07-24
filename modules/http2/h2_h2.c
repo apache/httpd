@@ -33,20 +33,15 @@
 #include "h2_config.h"
 #include "h2_ctx.h"
 #include "h2_conn.h"
-#include "h2_alpn.h"
 #include "h2_h2.h"
 
-const char *h2_alpn_protos[] = {
-    "h2",
+const char *h2_tls_protos[] = {
+    "h2", NULL
 };
-apr_size_t h2_alpn_protos_len = (sizeof(h2_alpn_protos)
-                                 / sizeof(h2_alpn_protos[0]));
 
-const char *h2_upgrade_protos[] = {
-    "h2c",
+const char *h2_clear_protos[] = {
+    "h2c", NULL
 };
-apr_size_t h2_upgrade_protos_len = (sizeof(h2_upgrade_protos)
-                                    / sizeof(h2_upgrade_protos[0]));
 
 const char *H2_MAGIC_TOKEN = "PRI * HTTP/2.0\r\n\r\nSM\r\n\r\n";
 
@@ -80,7 +75,7 @@ apr_status_t h2_h2_init(apr_pool_t *pool, server_rec *s)
     
     if (!opt_ssl_is_https) {
         ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s,
-                     "mod_ssl does not seem to be enabled");
+                     APLOGNO(02951) "mod_ssl does not seem to be enabled");
     }
     
     return APR_SUCCESS;
@@ -107,7 +102,7 @@ static const char *const mod_reqtimeout[] = { "reqtimeout.c", NULL};
 void h2_h2_register_hooks(void)
 {
     /* When the connection processing actually starts, we might to
-     * take over, if h2* was selected by ALPN on a TLS connection.
+     * take over, if h2* was selected as protocol.
      */
     ap_hook_process_connection(h2_h2_process_conn, 
                                NULL, NULL, APR_HOOK_FIRST);
@@ -156,7 +151,7 @@ int h2_h2_process_conn(conn_rec* c)
     apr_bucket_brigade* temp;
 
     if (h2_ctx_is_task(ctx)) {
-        /* out stream pseudo connection */
+        /* our stream pseudo connection */
         return DECLINED;
     }
 
@@ -170,15 +165,19 @@ int h2_h2_process_conn(conn_rec* c)
         apr_brigade_destroy(temp);
     }
 
-    /* If we still do not know the protocol and H2Direct is enabled, check
-     * if we receive the magic PRIamble. A client sending this on connection
-     * start should know what it is doing.
+    /* If we have not already switched to a h2* protocol 
+     * and the connection is on "http/1.1"
+     * and H2Direct is enabled, 
+     * -> sniff for the magic PRIamble. A client sending this on connection
+     *    start should know what it is doing.
      */
-    if (!h2_ctx_pnego_is_done(ctx) && h2_config_geti(cfg, H2_CONF_DIRECT)) {
+    if (!h2_ctx_protocol_get(c) 
+        && !strcmp(AP_PROTOCOL_HTTP1, ap_run_protocol_get(c))
+        && h2_config_geti(cfg, H2_CONF_DIRECT)) {
         apr_status_t status;
         temp = apr_brigade_create(c->pool, c->bucket_alloc);
         status = ap_get_brigade(c->input_filters, temp,
-                                /*h2_h2_is_tls(c)? AP_MODE_READBYTES :*/ AP_MODE_SPECULATIVE, APR_BLOCK_READ, 24);
+                                AP_MODE_SPECULATIVE, APR_BLOCK_READ, 24);
         if (status == APR_SUCCESS) {
             char *s = NULL;
             apr_size_t slen;
@@ -187,7 +186,7 @@ int h2_h2_process_conn(conn_rec* c)
             if ((slen >= 24) && !memcmp(H2_MAGIC_TOKEN, s, 24)) {
                 ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
                               "h2_h2, direct mode detected");
-                h2_ctx_pnego_set_done(ctx, "h2");
+                h2_ctx_protocol_set(ctx, "h2");
             }
             else {
                 ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,

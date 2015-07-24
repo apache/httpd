@@ -438,12 +438,6 @@ typedef struct {
                      * connection */
     } reneg_state;
 
-#ifdef HAVE_TLS_ALPN
-    /* Poor man's inter-module optional hooks for ALPN. */
-    apr_array_header_t *alpn_proposefns; /* list of ALPN propose callbacks */
-    apr_array_header_t *alpn_negofns; /* list of ALPN negotiation callbacks. */
-#endif
-
     server_rec *server;
 } SSLConnRec;
 
@@ -625,10 +619,6 @@ typedef struct {
     SSL_CONF_CTX *ssl_ctx_config; /* Configuration context */
     apr_array_header_t *ssl_ctx_param; /* parameters to pass to SSL_CTX */
 #endif
-  
-#ifdef HAVE_TLS_ALPN
-  apr_array_header_t *ssl_alpn_pref; /* list of ALPN protocol IDs */
-#endif
 } modssl_ctx_t;
 
 struct SSLSrvConfigRec {
@@ -753,10 +743,6 @@ const char *ssl_cmd_SSLOCSPEnable(cmd_parms *cmd, void *dcfg, int flag);
 
 #ifdef HAVE_SSL_CONF_CMD
 const char *ssl_cmd_SSLOpenSSLConfCmd(cmd_parms *cmd, void *dcfg, const char *arg1, const char *arg2);
-#endif
-
-#ifdef HAVE_TLS_ALPN
-const char *ssl_cmd_SSLALPNPreference(cmd_parms *cmd, void *dcfg, const char *protocol);
 #endif
 
 #ifdef HAVE_SRP

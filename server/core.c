@@ -478,6 +478,8 @@ static void *create_core_server_config(apr_pool_t *a, server_rec *s)
 
     conf->trace_enable = AP_TRACE_UNSET;
 
+    conf->protocols = apr_array_make(a, 5, sizeof(const char *));
+    
     return (void *)conf;
 }
 
@@ -550,6 +552,8 @@ static void *merge_core_server_configs(apr_pool_t *p, void *basev, void *virtv)
     conf->merge_trailers = (virt->merge_trailers != AP_MERGE_TRAILERS_UNSET)
                            ? virt->merge_trailers
                            : base->merge_trailers;
+
+    conf->protocols = apr_array_append(p, base->protocols, virt->protocols);
 
     return conf;
 }
@@ -3799,12 +3803,33 @@ static const char *set_trace_enable(cmd_parms *cmd, void *dummy,
     return NULL;
 }
 
+static const char *set_protocols(cmd_parms *cmd, void *dummy,
+                                 const char *arg)
+{
+    core_server_config *conf =
+    ap_get_core_module_config(cmd->server->module_config);
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE);
+
+    if (err) {
+        return err;
+    }
+    
+    /* Should we check for some ALPN valid char sequence here? */
+    const char **np = (const char **)apr_array_push(conf->protocols);
+    *np = arg;
+
+    return NULL;
+}
+
 static const char *set_http_protocol(cmd_parms *cmd, void *dummy,
                                      const char *arg)
 {
     core_server_config *conf =
         ap_get_core_module_config(cmd->server->module_config);
 
+    if (!conf->protocols) {
+        
+    }
     if (strncmp(arg, "min=", 4) == 0) {
         arg += 4;
         if (strcmp(arg, "0.9") == 0)
@@ -4445,6 +4470,8 @@ AP_INIT_FLAG("HttpContentLengthHeadZero", set_cl_head_zero, NULL, OR_OPTIONS,
   "whether to permit Content-Length of 0 responses to HEAD requests"),
 AP_INIT_FLAG("HttpExpectStrict", set_expect_strict, NULL, OR_OPTIONS,
   "whether to return a 417 if a client doesn't send 100-Continue"),
+AP_INIT_ITERATE("Protocols", set_protocols, NULL, RSRC_CONF,
+                "Controls which protocols are allowed, sorted by preference"),
 { NULL }
 };
 
@@ -5226,6 +5253,73 @@ static void core_dump_config(apr_pool_t *p, server_rec *s)
     }
 }
 
+static const char *core_protocol_get(const conn_rec *c) 
+{
+    return AP_PROTOCOL_HTTP1;
+}
+
+static int core_upgrade_handler(request_rec *r)
+{
+    conn_rec *c = r->connection;
+    const char *upgrade = apr_table_get(r->headers_in, "Upgrade");
+
+    if (upgrade && *upgrade) {
+        const char *conn = apr_table_get(r->headers_in, "Connection");
+        if (ap_find_token(r->pool, conn, "upgrade")) {
+            apr_array_header_t *offers = NULL;
+            const char *err;
+            
+            err = ap_parse_token_list_strict(r->pool, upgrade, &offers, 0);
+            if (err) {
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02910)
+                              "parsing Upgrade header: %s", err);
+                return DECLINED;
+            }
+            
+            if (offers && offers->nelts > 0) {
+                const char *protocol = ap_select_protocol(c, r, r->server,
+                                                          offers);
+                if (strcmp(protocol, ap_run_protocol_get(c))) {
+                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02909)
+                                  "Upgrade selects '%s'", protocol);
+                    /* Let the client know what we are upgrading to. */
+                    apr_table_clear(r->headers_out);
+                    apr_table_setn(r->headers_out, "Upgrade", protocol);
+                    apr_table_setn(r->headers_out, "Connection", "Upgrade");
+                    
+                    r->status = HTTP_SWITCHING_PROTOCOLS;
+                    r->status_line = ap_get_status_line(r->status);
+                    ap_send_interim_response(r, 1);
+
+                    ap_switch_protocol(c, r, r->server, protocol);
+
+                    /* make sure httpd closes the connection after this */
+                    c->keepalive = AP_CONN_CLOSE;
+                    ap_lingering_close(c);
+                    
+                    if (c->sbh) {
+                        ap_update_child_status_from_conn(c->sbh, 
+                                                         SERVER_CLOSING, c);
+                    }
+                    
+                    return DONE;
+                }
+            }
+        }
+    }
+    
+    return DECLINED;
+}
+
+static int core_upgrade_storage(request_rec *r)
+{
+    if ((r->method_number == M_OPTIONS) && r->uri && (r->uri[0] == '*') &&
+        (r->uri[1] == '\0')) {
+        return core_upgrade_handler(r);
+    }
+    return DECLINED;
+}
+
 static void register_hooks(apr_pool_t *p)
 {
     errorlog_hash = apr_hash_make(p);
@@ -5248,10 +5342,12 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_check_config(core_check_config,NULL,NULL,APR_HOOK_FIRST);
     ap_hook_test_config(core_dump_config,NULL,NULL,APR_HOOK_FIRST);
     ap_hook_translate_name(ap_core_translate,NULL,NULL,APR_HOOK_REALLY_LAST);
+    ap_hook_map_to_storage(core_upgrade_storage,NULL,NULL,APR_HOOK_REALLY_FIRST);
     ap_hook_map_to_storage(core_map_to_storage,NULL,NULL,APR_HOOK_REALLY_LAST);
     ap_hook_open_logs(ap_open_logs,NULL,NULL,APR_HOOK_REALLY_FIRST);
     ap_hook_child_init(core_child_init,NULL,NULL,APR_HOOK_REALLY_FIRST);
     ap_hook_child_init(ap_logs_child_init,NULL,NULL,APR_HOOK_MIDDLE);
+    ap_hook_handler(core_upgrade_handler,NULL,NULL,APR_HOOK_REALLY_FIRST);
     ap_hook_handler(default_handler,NULL,NULL,APR_HOOK_REALLY_LAST);
     /* FIXME: I suspect we can eliminate the need for these do_nothings - Ben */
     ap_hook_type_checker(do_nothing,NULL,NULL,APR_HOOK_REALLY_LAST);
@@ -5267,6 +5363,7 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_open_htaccess(ap_open_htaccess, NULL, NULL, APR_HOOK_REALLY_LAST);
     ap_hook_optional_fn_retrieve(core_optional_fn_retrieve, NULL, NULL,
                                  APR_HOOK_MIDDLE);
+    ap_hook_protocol_get(core_protocol_get, NULL, NULL, APR_HOOK_REALLY_LAST);
     
     /* register the core's insert_filter hook and register core-provided
      * filters

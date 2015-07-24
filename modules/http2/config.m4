@@ -19,7 +19,6 @@ APACHE_MODPATH_INIT(http2)
 dnl #  list of module object files
 h2_objs="dnl
 mod_h2.lo dnl
-h2_alpn.lo dnl
 h2_alt_svc.lo dnl
 h2_config.lo dnl
 h2_conn.lo dnl
@@ -35,12 +34,12 @@ h2_response.lo dnl
 h2_session.lo dnl
 h2_stream.lo dnl
 h2_stream_set.lo dnl
+h2_switch.lo dnl
 h2_task.lo dnl
 h2_task_input.lo dnl
 h2_task_output.lo dnl
 h2_task_queue.lo dnl
 h2_to_h1.lo dnl
-h2_upgrade.lo dnl
 h2_util.lo dnl
 h2_worker.lo dnl
 h2_workers.lo dnl

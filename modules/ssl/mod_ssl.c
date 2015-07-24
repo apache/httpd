@@ -283,12 +283,6 @@ static const command_rec ssl_config_cmds[] = {
                 "OpenSSL configuration command")
 #endif
 
-#ifdef HAVE_TLS_ALPN
-    SSL_CMD_SRV(ALPNPreference, ITERATE,
-                "Preference in Application-Layer Protocol Negotiation (ALPN), "
-                "protocols are chosen in the specified order")
-#endif
-
     /* Deprecated directives. */
     AP_INIT_RAW_ARGS("SSLLog", ap_set_deprecated, NULL, OR_ALL,
       "SSLLog directive is no longer supported - use ErrorLog."),
@@ -449,37 +443,6 @@ static int ssl_engine_disable(conn_rec *c)
     sslconn->disabled = 1;
 
     return 1;
-}
-
-static int modssl_register_alpn(conn_rec *c,
-                               ssl_alpn_propose_protos advertisefn,
-                               ssl_alpn_proto_negotiated negotiatedfn)
-{
-#ifdef HAVE_TLS_ALPN
-    SSLConnRec *sslconn = myConnConfig(c);
-
-    if (!sslconn) {
-        return DECLINED;
-    }
-
-    if (!sslconn->alpn_proposefns) {
-        sslconn->alpn_proposefns =
-            apr_array_make(c->pool, 5, sizeof(ssl_alpn_propose_protos));
-        sslconn->alpn_negofns =
-            apr_array_make(c->pool, 5, sizeof(ssl_alpn_proto_negotiated));
-    }
-
-    if (advertisefn)
-        APR_ARRAY_PUSH(sslconn->alpn_proposefns, ssl_alpn_propose_protos) =
-            advertisefn;
-    if (negotiatedfn)
-        APR_ARRAY_PUSH(sslconn->alpn_negofns, ssl_alpn_proto_negotiated) =
-            negotiatedfn;
-
-    return OK;
-#else
-    return DECLINED;
-#endif
 }
 
 int ssl_init_ssl_connection(conn_rec *c, request_rec *r)
@@ -650,7 +613,6 @@ static void ssl_register_hooks(apr_pool_t *p)
 
     APR_REGISTER_OPTIONAL_FN(ssl_proxy_enable);
     APR_REGISTER_OPTIONAL_FN(ssl_engine_disable);
-    APR_REGISTER_OPTIONAL_FN(modssl_register_alpn);
 
     ap_register_auth_provider(p, AUTHZ_PROVIDER_GROUP, "ssl",
                               AUTHZ_PROVIDER_VERSION,

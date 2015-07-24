@@ -199,6 +199,7 @@ apr_status_t h2_mplx_release_and_join(h2_mplx *m, apr_thread_cond_t *wait)
             apr_thread_cond_timedwait(wait, m->lock, apr_time_from_sec(10));
             if (++attempts >= 6) {
                 ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, m->c,
+                              APLOGNO(02952) 
                               "h2_mplx(%ld): join attempts exhausted, refs=%d", 
                               m->id, m->refs);
                 break;
@@ -497,7 +498,7 @@ h2_stream *h2_mplx_next_submit(h2_mplx *m, h2_stream_set *streams)
             }
             else {
                 ap_log_cerror(APLOG_MARK, APLOG_WARNING, APR_NOTFOUND, m->c,
-                              "h2_mplx(%ld): stream for response %d",
+                              APLOGNO(02953) "h2_mplx(%ld): stream for response %d",
                               m->id, response->stream_id);
             }
         }
@@ -785,7 +786,7 @@ apr_status_t h2_mplx_create_task(h2_mplx *m, struct h2_stream *stream)
         conn_rec *c = h2_conn_create(m->c, stream->pool);
         if (c == NULL) {
             ap_log_cerror(APLOG_MARK, APLOG_ERR, APR_ENOMEM, m->c,
-                          "h2_mplx(%ld-%d): start stream",
+                          APLOGNO(02916) "h2_mplx(%ld-%d): start stream",
                           m->id, stream->id);
             return APR_ENOMEM;
         }

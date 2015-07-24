@@ -61,7 +61,7 @@ h2_response *h2_response_create(int stream_id,
             char *sep = strchr(hline, ':');
             if (!sep) {
                 ap_log_perror(APLOG_MARK, APLOG_WARNING, APR_EINVAL, pool,
-                              "h2_response(%d): invalid header[%d] '%s'",
+                              APLOGNO(02955) "h2_response(%d): invalid header[%d] '%s'",
                               response->stream_id, i, (char*)hline);
                 /* not valid format, abort */
                 return NULL;
@@ -80,7 +80,8 @@ h2_response *h2_response_create(int stream_id,
                     response->content_length = apr_strtoi64(sep, &end, 10);
                     if (sep == end) {
                         ap_log_perror(APLOG_MARK, APLOG_WARNING, APR_EINVAL, 
-                                      pool, "h2_response(%d): content-length"
+                                      pool, APLOGNO(02956) 
+                                      "h2_response(%d): content-length"
                                       " value not parsed: %s", 
                                       response->stream_id, sep);
                         response->content_length = -1;
@@ -199,7 +200,7 @@ static int add_header(void *ctx, const char *key, const char *value)
     if (!ignore_header(key)) {
         nvctx_t *nvctx = (nvctx_t*)ctx;
         if (nvctx->debug) {
-            ap_log_rerror(APLOG_MARK, APLOG_WARNING, APR_EINVAL, 
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, APR_EINVAL, 
                           nvctx->r, "h2_response(%d) header -> %s: %s",
                           nvctx->response->stream_id, key, value);
         }

@@ -117,7 +117,7 @@ apr_status_t h2_task_input_read(h2_task_input *input,
         status = apr_brigade_length(input->bb, 1, &bblen);
         if (status != APR_SUCCESS) {
             ap_log_cerror(APLOG_MARK, APLOG_WARNING, status, f->c,
-                          "h2_task_input(%s): brigade length fail", 
+                          APLOGNO(02958) "h2_task_input(%s): brigade length fail", 
                           input->env->id);
             return status;
         }
@@ -201,8 +201,8 @@ apr_status_t h2_task_input_read(h2_task_input *input,
             /* Hmm, well. There is mode AP_MODE_EATCRLF, but we chose not
              * to support it. Seems to work. */
             ap_log_cerror(APLOG_MARK, APLOG_ERR, APR_ENOTIMPL, f->c,
-                          "h2_task_input, unsupported READ mode %d",
-                          mode);
+                          APLOGNO(02942) 
+                          "h2_task_input, unsupported READ mode %d", mode);
             return APR_ENOTIMPL;
         }
     }

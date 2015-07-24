@@ -31,8 +31,7 @@
 #include "h2_config.h"
 #include "h2_ctx.h"
 #include "h2_h2.h"
-#include "h2_alpn.h"
-#include "h2_upgrade.h"
+#include "h2_switch.h"
 #include "h2_version.h"
 
 
@@ -94,14 +93,14 @@ static int h2_post_config(apr_pool_t *p, apr_pool_t *plog,
             break;
         case H2_MPM_UNKNOWN:
             /* ??? */
-            ap_log_error( APLOG_MARK, APLOG_ERR, 0, s,
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                          "post_config: mpm type unknown");
             break;
     }
     
     status = h2_h2_init(p, s);
     if (status == APR_SUCCESS) {
-        status = h2_alpn_init(p, s);
+        status = h2_switch_init(p, s);
     }
     
     return status;
@@ -116,13 +115,8 @@ static void h2_child_init(apr_pool_t *pool, server_rec *s)
     apr_status_t status = h2_conn_child_init(pool, s);
     if (status != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, status, s,
-                      "initializing connection handling");
+                     APLOGNO(02949) "initializing connection handling");
     }
-}
-
-const char *h2_get_protocol(conn_rec *c)
-{
-    return h2_ctx_pnego_get(h2_ctx_get(c));
 }
 
 /* Install this module into the apache2 infrastructure.
@@ -142,16 +136,11 @@ static void h2_hooks(apr_pool_t *pool)
     ap_hook_child_init(h2_child_init, NULL, NULL, APR_HOOK_MIDDLE);
 
     h2_h2_register_hooks();
-    h2_alpn_register_hooks();
-    h2_upgrade_register_hooks();
+    h2_switch_register_hooks();
     h2_task_register_hooks();
 
     h2_alt_svc_register_hooks();
     
-    /* We offer a function to other modules that lets them retrieve
-     * the h2 protocol used on a connection (if any).
-     */
-    APR_REGISTER_OPTIONAL_FN(h2_get_protocol);
 }
 
 

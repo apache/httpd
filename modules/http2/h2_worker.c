@@ -41,7 +41,8 @@ static void *execute(apr_thread_t *thread, void *wctx)
                                APR_PROTO_TCP, worker->pool);
     if (status != APR_SUCCESS) {
         ap_log_perror(APLOG_MARK, APLOG_ERR, status, worker->pool,
-                      "h2_worker(%d): alloc socket", worker->id);
+                      APLOGNO(02948) "h2_worker(%d): alloc socket", 
+                      worker->id);
         worker->worker_done(worker, worker->ctx);
         return NULL;
     }

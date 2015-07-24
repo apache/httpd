@@ -16,13 +16,4 @@
 #ifndef mod_h2_mod_h2_h
 #define mod_h2_mod_h2_h
 
-const char *h2_get_protocol(conn_rec *c);
-
-
-/** 
- * An optional function which returns the h2 protocol used on the given
- * connection and NULL if no h2* protocol is active on it.
- */
-APR_DECLARE_OPTIONAL_FN(const char *, h2_get_protocol, (conn_rec*));
-
 #endif
