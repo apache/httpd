@@ -21,7 +21,7 @@ Changes with Apache 2.4.16
   *) mod_ldap: In some case, LDAP_NO_SUCH_ATTRIBUTE could be returned instead
      of an error during a compare operation. [Eric Covener]
 
-Changes with Apache 2.4.15
+Changes with Apache 2.4.15 (not released)
 
   *) mod_ext_filter, mod_charset_lite: Avoid inadvertent filtering of protocol
      data during read of chunked request bodies. PR 58049. 
@@ -36,7 +36,7 @@ Changes with Apache 2.4.15
   *) mod_ssl: Remove deprecated SSLCertificateChainFile warning.
      [Yann Ylavic]
 
-Changes with Apache 2.4.14
+Changes with Apache 2.4.14 (not released)
 
   *) SECURITY: CVE-2015-3183 (cve.mitre.org)
      core: Fix chunk header parsing defect.
@@ -49,7 +49,7 @@ Changes with Apache 2.4.14
      Replacement of ap_some_auth_required (unusable in Apache httpd 2.4)
      with new ap_some_authn_required and ap_force_authn hook.  [Ben Reser]
 
-Changes with Apache 2.4.13
+Changes with Apache 2.4.13 (not released)
 
   *) SECURITY: CVE-2015-0253 (cve.mitre.org)
      core: Fix a crash with ErrorDocument 400 pointing to a local URL-path 
@@ -295,7 +295,7 @@ Changes with Apache 2.4.12
   *) Reverted <DirectoryMatch > behavior regression introduced in 2.4.11
      (not released).
 
-Changes with Apache 2.4.11
+Changes with Apache 2.4.11 (not released)
   
   *) SECURITY: CVE-2014-3583 (cve.mitre.org)
      mod_proxy_fcgi: Fix a potential crash due to buffer over-read, with 
@@ -759,7 +759,7 @@ Changes with Apache 2.4.9
      LuaMapHandler directive in certain cases by changing the URI before the map 
      handler code executes [Daniel Gruno, Daniel Ferradal <dferradal gmail com>].
 
-Changes with Apache 2.4.8
+Changes with Apache 2.4.8 (not released)
 
   *) SECURITY: CVE-2014-0098 (cve.mitre.org)
      Clean up cookie logging with fewer redundant string parsing passes.
