@@ -4,33 +4,12 @@ Changes with Apache 2.5.0
   *) mod_h2: added donated http/2 implementation to build system. Similar
      configuration options to mod_ssl. [Stefan Eissing]
 
-  *) mod_reqtimeout: Don't let pipelining checks and keep-alive times interfere
-     with the timeouts computed for subsequent requests.  PR 56729.
-     [Eric Covener, Yann Ylavic]
-
   *) mod_authz_dbd: Avoid a crash when lacking correct DB access permissions.
      PR 57868. [Jose Kahan <jose w3.org>, Yann Ylavic]
-
-  *) http: Fix LimitRequestBody checks when there is no more bytes to read.
-     [Michael Kaufmann <mail michael-kaufmann.ch>]
-
-  *) mod_ldap: In some case, LDAP_NO_SUCH_ATTRIBUTE could be returned instead of
-     an error during a compare operation. [Eric Covener]
 
   *) mod_alias: Limit Redirect expressions to directory (Location) context
      and redirect statuses (implicit or explicit).
      [Yann Ylavic, Ruediger Pluem]
-
-  *) mod_ext_filter, mod_charset_lite: Avoid inadvertent filtering of protocol
-     data during read of chunked request bodies. PR 58049. 
-     [Edward Lu <Chaosed0 gmail.com>]
-
-  *) mod_ldap: Stop leaking LDAP connections when 'LDAPConnectionPoolTTL 0' 
-     is configured.  PR 58037.  [Ted Phelps <phelps gnusto.com>]
-
-  *) core: Allow spaces after chunk-size for compatibility with implementations
-     using a pre-filled buffer, and log parsing failures at level INFO.
-     [Yann Ylavic, Jeff Trawick]
 
   *) mod_substitute: Fix configuraton merge order.
      PR 57641 [<Marc.Stern approach.be>]
@@ -39,9 +18,6 @@ Changes with Apache 2.5.0
      the SSLVerifyDepth applied with the default/handshaken vhost differs from
      the one applicable with the finally selected vhost.  [Yann Ylavic]
      
-  *) core: Avoid a possible truncation of the faulty header included in the
-     HTML response when LimitRequestFieldSize is reached.  [Yann Ylavic]
-
   *) mod_ssl: add ALPN support by allowing other modules to register callbacks
      for negotiation of the application layer protocol.  PR 52210.
      [Matthew Steele <mdsteele google com>, Joe Orton, Jim Jagielski,
