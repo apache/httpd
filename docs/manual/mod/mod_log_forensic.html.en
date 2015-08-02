@@ -37,8 +37,15 @@
 <tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_log_forensic.c</td></tr></table>
 <h3>Summary</h3>
 
-    <p>This module provides for forensic logging of client
-    requests. Logging is done before and after processing a request, so the
+    <p>This module provides for forensic logging of client requests.</p>
+
+    <p>Create the log file using the <code class="directive">ForensicLog</code>
+    directive:</p>
+
+    <pre class="prettyprint lang-config">ForensicLog logs/forensic_log</pre>
+
+    
+    <p>Logging is done before and after processing a request, so the
     forensic log contains two log lines for each request.
     The forensic logger is very strict, which means:</p>
 
@@ -52,8 +59,8 @@
     </ul>
 
     <p>The <code>check_forensic</code> script, which can be found in the
-    distribution's support directory, may be helpful in evaluating the
-    forensic log output.</p>
+    distribution's support directory, processes the resulting log file
+    to identify the requests that didn't complete.</p>
 </div>
 <div id="quickview"><h3>Topics</h3>
 <ul id="topics">
