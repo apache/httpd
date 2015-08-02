@@ -54,6 +54,10 @@
     <p>The <code>check_forensic</code> script, which can be found in the
     distribution's support directory, processes the resulting log file
     to identify the requests that didn't complete.</p>
+
+    <example>
+    check-forensic forensic_log
+    </example>
 </summary>
 <seealso><a href="../logs.html">Apache Log Files</a></seealso>
 <seealso><module>mod_log_config</module></seealso>
