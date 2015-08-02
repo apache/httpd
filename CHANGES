@@ -1,6 +1,12 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_ssl: Add support for extracting the msUPN and dnsSRV forms
+     of subjectAltName entries of type "otherName" into
+     SSL_{CLIENT,SERVER}_SAN_OTHER_{msUPN,dnsSRV}_n environment
+     variables. Addresses PR 58020. [Jan Pazdziora <jpazdziora redhat.com>,
+     Kaspar Brand]
+
   *) mod_h2: added donated http/2 implementation to build system. Similar
      configuration options to mod_ssl. [Stefan Eissing]
 
