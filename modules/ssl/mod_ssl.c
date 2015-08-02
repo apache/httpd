@@ -359,6 +359,11 @@ static int ssl_hook_pre_config(apr_pool_t *pconf,
     OpenSSL_add_all_algorithms();
     OPENSSL_load_builtin_modules();
 
+    if (OBJ_txt2nid("id-on-dnsSRV") == NID_undef) {
+        (void)OBJ_create("1.3.6.1.5.5.7.8.7", "id-on-dnsSRV",
+                         "SRVName otherName form");
+    }
+
     /*
      * Let us cleanup the ssl library when the module is unloaded
      */
