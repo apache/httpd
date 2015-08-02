@@ -61,6 +61,10 @@
     <p>The <code>check_forensic</code> script, which can be found in the
     distribution's support directory, processes the resulting log file
     to identify the requests that didn't complete.</p>
+
+    <div class="example"><p><code>
+    check-forensic forensic_log
+    </code></p></div>
 </div>
 <div id="quickview"><h3>Topics</h3>
 <ul id="topics">
