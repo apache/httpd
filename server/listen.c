@@ -185,6 +185,14 @@ static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server, int do_bind_
             return stat;
         }
 
+#ifdef TCP_FASTOPEN
+    {
+        int thesock;
+        apr_os_sock_get(&thesock, s);
+        (void)setsockopt(thesock, SOL_TCP, TCP_FASTOPEN, &ap_listenbacklog, sizeof(ap_listenbacklog));
+    }
+#endif
+
         if ((stat = apr_socket_listen(s, ap_listenbacklog)) != APR_SUCCESS) {
             ap_log_perror(APLOG_MARK, APLOG_STARTUP|APLOG_ERR, stat, p, APLOGNO(00073)
                           "make_sock: unable to listen for connections "
