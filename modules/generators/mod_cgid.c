@@ -606,6 +606,7 @@ static int cgid_server(void *data)
     server_rec *main_server = data;
     apr_hash_t *script_hash = apr_hash_make(pcgi);
     apr_status_t rv;
+    int tcp_fastopen_qlen = DEFAULT_CGID_LISTENBACKLOG;
 
     apr_pool_create(&ptrans, pcgi);
 
@@ -644,6 +645,10 @@ static int cgid_server(void *data)
                      sockname);
         return rv;
     }
+    
+#ifdef TCP_FASTOPEN
+    (void)setsockopt(sd, SOL_TCP, TCP_FASTOPEN, &tcp_fastopen_qlen, sizeof(tcp_fastopen_qlen));
+#endif
 
     if (listen(sd, DEFAULT_CGID_LISTENBACKLOG) < 0) {
         ap_log_error(APLOG_MARK, APLOG_ERR, errno, main_server, APLOGNO(01245)
