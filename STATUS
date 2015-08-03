@@ -211,6 +211,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Backport version for 2.4.x of patch:
          Trunk version of patch works modulo CHANGES
       +1: rpluem,
+ 
+  *) apxs: add HTTPD_MMN and HTTPD_VERSION to apxs -q
+
+     trunk: http://svn.apache.org/r1693919
+     2.4.x: trunk works modulo CHANGES
+     +1: covener
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
