@@ -17,7 +17,7 @@
 #include "httpd.h"
 #include "http_config.h"
 #include "apr_strings.h"
-#if (!defined(WIN32) && !defined(NETWARE))
+#if !defined(_MSC_VER) && !defined(NETWARE)
 #include "ap_config_auto.h"
 #endif
 
