@@ -17,7 +17,9 @@
 #include "httpd.h"
 #include "http_config.h"
 #include "apr_strings.h"
+#if (!defined(WIN32) && !defined(NETWARE)) || defined(__MINGW32__)
 #include "ap_config_auto.h"
+#endif
 
 #include "mod_dav.h"
 #include "repos.h"
