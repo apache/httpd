@@ -282,6 +282,7 @@ $(OBJDIR)/mod_proxy.imp: NWGNUproxy
 	@echo $(DL) ap_proxy_connect_backend,$(DL)>> $@
 	@echo $(DL) ap_proxy_connect_to_backend,$(DL)>> $@
 	@echo $(DL) ap_proxy_connection_create,$(DL)>> $@
+	@echo $(DL) ap_proxy_connection_reusable,$(DL)>> $@
 	@echo $(DL) ap_proxy_cookie_reverse_map,$(DL)>> $@
 	@echo $(DL) ap_proxy_create_hdrbrgd,$(DL)>> $@
 	@echo $(DL) ap_proxy_define_balancer,$(DL)>> $@
