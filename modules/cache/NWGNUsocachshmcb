@@ -28,6 +28,7 @@ XINCDIRS	+= \
 			$(SRC)/include \
 			$(SERVER)/mpm/netware \
 			$(NWOS) \
+			$(STDMOD)/generators \ 
 			$(EOLIST)
 
 #
