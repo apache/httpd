@@ -1370,6 +1370,13 @@ static char *lookup_map_dbd(request_rec *r, char *key, const char *label)
     char *ret = NULL;
     int n = 0;
     ap_dbd_t *db = dbd_acquire(r);
+    
+    if (db == NULL) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02963)
+                      "rewritemap: No db handle available! "
+                      "Check your database access");
+        return NULL;
+   }
 
     stmt = apr_hash_get(db->prepared, label, APR_HASH_KEY_STRING);
 
