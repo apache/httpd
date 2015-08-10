@@ -162,6 +162,7 @@ static int h2_protocol_switch(conn_rec *c, request_rec *r, server_rec *s,
         h2_ctx_protocol_set(ctx, protocol);
         
         if (r != NULL) {
+            apr_status_t status;
             /* Switching in the middle of a request means that
              * we have to send out the response to this one in h2
              * format. So we need to take over the connection
@@ -171,7 +172,7 @@ static int h2_protocol_switch(conn_rec *c, request_rec *r, server_rec *s,
             ap_remove_input_filter_byhandle(r->input_filters, "reqtimeout");
             
             /* Ok, start an h2_conn on this one. */
-            apr_status_t status = h2_conn_rprocess(r);
+            status = h2_conn_rprocess(r);
             if (status != DONE) {
                 /* Nothing really to do about this. */
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, status, r,
