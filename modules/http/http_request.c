@@ -363,7 +363,7 @@ void ap_process_async_request(request_rec *r)
     ap_process_request_after_handler(r);
 }
 
-void ap_process_request(request_rec *r)
+AP_DECLARE(void) ap_process_request(request_rec *r)
 {
     apr_bucket_brigade *bb;
     apr_bucket *b;
