@@ -223,6 +223,23 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x: trunk works modulo CHANGES
      +1: covener
 
+  *) mod_authz_dbd: Avoid a crash when lacking correct DB access permissions.
+     PR 57868.
+     trunk: http://svn.apache.org/r1688660
+     2.4.x: trunk works modulo CHANGES and next-number
+     +1: jailletc36
+     jailletc36: I'm just wondering why the log message speak about "dbd-query"
+                while other messages around are about "dbd-group"?
+
+  *) mod_rewrite: Avoid a crash when lacking correct DB access permissions
+     when using RewriteMap with MapType dbd or fastdbd.
+     PR 57868.
+     trunk: http://svn.apache.org/r1695170
+     2.4.x: trunk works modulo (missing) CHANGES and next-number
+     +1: jailletc36
+     jailletc36: A CHANGE entry should be added. I forgot it :(
+
+
 PATCHES/ISSUES THAT ARE BEING WORKED
 
   *) mod_ssl: add ALPN support by allowing other modules to register callbacks
