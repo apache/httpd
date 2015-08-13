@@ -2006,6 +2006,9 @@ AP_DECLARE(const char *) ap_select_protocol(conn_rec *c, request_rec *r,
     
     if (proposals->nelts > 0) {
         int i;
+        apr_array_header_t *prefs = ((conf->protocols_honor_order > 0
+                                      && conf->protocols->nelts > 0)? 
+                                     conf->protocols : choices);
         /* Select the most preferred protocol */
         if (APLOGcdebug(c)) {
             ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, 
@@ -2020,7 +2023,7 @@ AP_DECLARE(const char *) ap_select_protocol(conn_rec *c, request_rec *r,
                 continue;
             }
             else if (!protocol 
-                     || (protocol_cmp(conf->protocols, protocol, p) < 0)) {
+                     || (protocol_cmp(prefs, protocol, p) < 0)) {
                 /* none selected yet or this on has preference */
                 protocol = p;
             }

@@ -3711,6 +3711,71 @@ Protocol https
 
 
 <directivesynopsis>
+    <name>Protocols</name>
+    <description>Protocols available for a server/virtual host</description>
+    <syntax>Protocols <var>protocol</var> ...</syntax>
+    <contextlist><context>server config</context><context>virtual host</context></contextlist>
+    <compatibility>Only available from Apache 2.4.17 and later.</compatibility>
+    
+    <usage>
+        <p>This directive specifies the list of protocols supported for a
+            server/virtual host. The list determines the allowed protocols
+            a client may negotiate for this server/host.</p>
+        
+        <p>You only need to set protocols if you want to limit the available
+            protocols for a server/host. By default, all supported protocols
+            are available to a client.</p>
+        
+        <p>For example, if you want to support only HTTP/1.1 for a server, even
+            though HTTP/2 is available, just specify this protocol only:</p>
+        
+        <highlight language="config">
+            Protocols http/1.1
+        </highlight>
+
+        <p>Valid protocols are <code>http/1.1</code> for http and https connections,
+            <code>h2</code> on https connections and <code>h2c</code> for http
+            connections. Modules may enable more protocols.</p>
+        
+        <p>It is safe to specify protocols that are unavailable/disabled. Such
+        protocol names will simply be ignored.</p>
+        
+        <p>Protocols specified in base servers and virtual hosts are concatenated
+            by appending the base ones, if there are configured protocols,
+            to the virtual host ones. Since protocols such as HTTP/2 allow
+            connection reuse under certain conditions, restricting protocols for
+            individual virtual hosts might not work as you expect it to.</p>
+
+    </usage>
+    <seealso><directive module="core">ProtocolsHonorOrder</directive></seealso>
+</directivesynopsis>
+
+
+<directivesynopsis>
+    <name>ProtocolsHonorOrder</name>
+    <description>Protocols available for a server/virtual host</description>
+    <syntax>ProtocolsHonorOrder On|Off</syntax>
+    <default>ProtocolsHonorOrder Off</default>
+    <contextlist><context>server config</context><context>virtual host</context></contextlist>
+    <compatibility>Only available from Apache 2.4.17 and later.</compatibility>
+    
+    <usage>
+        <p>This directive specifies if the server should honor the order in which
+        the <directive>Protocols</directive> directive lists protocols.</p>
+        
+        <p>By default, a client supplies a list of supported protocols and the server
+            selects an available one from that list in the given order.</p>
+        
+        <p>With <directive>ProtocolsHonorOrder</directive> set to <code>on</code>, the
+            client ordering does not matter and only the ordering in the server
+        settings influences the outcome of the protocol negotiation.</p>
+        
+    </usage>
+    <seealso><directive module="core">Protocols</directive></seealso>
+</directivesynopsis>
+
+
+<directivesynopsis>
 <name>RLimitCPU</name>
 <description>Limits the CPU consumption of processes launched
 by Apache httpd children</description>
