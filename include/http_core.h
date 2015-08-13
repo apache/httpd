@@ -710,6 +710,7 @@ typedef struct {
 
 
     apr_array_header_t *protocols;
+    int protocols_honor_order;
 } core_server_config;
 
 /* for AddOutputFiltersByType in core.c */

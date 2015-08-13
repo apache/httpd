@@ -479,6 +479,7 @@ static void *create_core_server_config(apr_pool_t *a, server_rec *s)
     conf->trace_enable = AP_TRACE_UNSET;
 
     conf->protocols = apr_array_make(a, 5, sizeof(const char *));
+    conf->protocols_honor_order = -1;
     
     return (void *)conf;
 }
@@ -553,8 +554,11 @@ static void *merge_core_server_configs(apr_pool_t *p, void *basev, void *virtv)
                            ? virt->merge_trailers
                            : base->merge_trailers;
 
-    conf->protocols = apr_array_append(p, base->protocols, virt->protocols);
-
+    conf->protocols = apr_array_append(p, virt->protocols, base->protocols);
+    conf->protocols_honor_order = ((virt->protocols_honor_order < 0)?
+                                       base->protocols_honor_order :
+                                       virt->protocols_honor_order);
+    
     return conf;
 }
 
@@ -3815,10 +3819,33 @@ static const char *set_protocols(cmd_parms *cmd, void *dummy,
         return err;
     }
     
-    /* Should we check for some ALPN valid char sequence here? */
     np = (const char **)apr_array_push(conf->protocols);
     *np = arg;
 
+    return NULL;
+}
+
+static const char *set_protocols_honor_order(cmd_parms *cmd, void *dummy,
+                                             const char *arg)
+{
+    core_server_config *conf =
+    ap_get_core_module_config(cmd->server->module_config);
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE);
+    
+    if (err) {
+        return err;
+    }
+    
+    if (strcasecmp(arg, "on") == 0) {
+        conf->protocols_honor_order = 1;
+    }
+    else if (strcasecmp(arg, "off") == 0) {
+        conf->protocols_honor_order = 0;
+    }
+    else {
+        return "ProtocolsHonorOrder must be 'on' or 'off'";
+    }
+    
     return NULL;
 }
 
@@ -4469,7 +4496,10 @@ AP_INIT_FLAG("HttpContentLengthHeadZero", set_cl_head_zero, NULL, OR_OPTIONS,
 AP_INIT_FLAG("HttpExpectStrict", set_expect_strict, NULL, OR_OPTIONS,
   "whether to return a 417 if a client doesn't send 100-Continue"),
 AP_INIT_ITERATE("Protocols", set_protocols, NULL, RSRC_CONF,
-                "Controls which protocols are allowed, sorted by preference"),
+                "Controls which protocols are allowed"),
+AP_INIT_TAKE1("ProtocolsHonorOrder", set_protocols_honor_order, NULL, RSRC_CONF,
+              "'off' (default) or 'on' to respect given order of protocols, "
+              "by default the client specified order determines selection"),
 { NULL }
 };
 
