@@ -467,6 +467,8 @@
 <li><a href="mod_privileges.html#privilegesmode">PrivilegesMode</a></li>
 <li><a href="core.html#protocol">Protocol</a></li>
 <li><a href="mod_echo.html#protocolecho">ProtocolEcho</a></li>
+<li><a href="core.html#protocols">Protocols</a></li>
+<li><a href="core.html#protocolshonororder">ProtocolsHonorOrder</a></li>
 <li><a href="mod_proxy.html#proxy">&lt;Proxy&gt;</a></li>
 <li><a href="mod_proxy.html#proxyaddheaders">ProxyAddHeaders</a></li>
 <li><a href="mod_proxy.html#proxybadheader">ProxyBadHeader</a></li>
