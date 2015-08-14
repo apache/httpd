@@ -1990,7 +1990,7 @@ AP_DECLARE(const char *) ap_select_protocol(conn_rec *c, request_rec *r,
 {
     apr_pool_t *pool = r? r->pool : c->pool;
     apr_array_header_t *proposals;
-    const char *protocol = NULL;
+    const char *protocol = NULL, *existing = ap_run_protocol_get(c);
     core_server_config *conf = ap_get_core_module_config(s->module_config);
 
     if (APLOGcdebug(c)) {
@@ -2009,11 +2009,21 @@ AP_DECLARE(const char *) ap_select_protocol(conn_rec *c, request_rec *r,
         apr_array_header_t *prefs = ((conf->protocols_honor_order > 0
                                       && conf->protocols->nelts > 0)? 
                                      conf->protocols : choices);
+
+        /* If the existing protocol has not been proposed, but is a choice,
+         * add it to the proposals implicitly.
+         */
+        if (array_index(proposals, existing) < 0 
+            && array_index(choices, existing) >= 0) {
+            APR_ARRAY_PUSH(proposals, const char*) = existing;
+        }
+        
         /* Select the most preferred protocol */
         if (APLOGcdebug(c)) {
             ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, 
-                          "select protocol, proposals=%s", 
-                          apr_array_pstrcat(pool, proposals, ','));
+                          "select protocol, proposals=%s preferences=%s", 
+                          apr_array_pstrcat(pool, proposals, ','),
+                          apr_array_pstrcat(pool, prefs, ','));
         }
         for (i = 0; i < proposals->nelts; ++i) {
             const char *p = APR_ARRAY_IDX(proposals, i, const char *);
@@ -2034,7 +2044,7 @@ AP_DECLARE(const char *) ap_select_protocol(conn_rec *c, request_rec *r,
                       protocol? protocol : "(none)");
     }
 
-    return protocol? protocol : ap_run_protocol_get(c);
+    return protocol? protocol : existing;
 }
 
 AP_DECLARE(apr_status_t) ap_switch_protocol(conn_rec *c, request_rec *r, 
