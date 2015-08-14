@@ -307,7 +307,6 @@
 <li><a href="mod_h2.html#h2buffersize">H2BufferSize</a></li>
 <li><a href="mod_h2.html#h2bufferwritemax">H2BufferWriteMax</a></li>
 <li><a href="mod_h2.html#h2direct">H2Direct</a></li>
-<li><a href="mod_h2.html#h2engine">H2Engine</a></li>
 <li><a href="mod_h2.html#h2maxheaderlistsize">H2MaxHeaderListSize</a></li>
 <li><a href="mod_h2.html#h2maxsessionstreams">H2MaxSessionStreams</a></li>
 <li><a href="mod_h2.html#h2maxworkeridleseconds">H2MaxWorkerIdleSeconds</a></li>

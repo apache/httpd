@@ -47,7 +47,6 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#h2buffersize">H2BufferSize</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2bufferwritemax">H2BufferWriteMax</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2direct">H2Direct</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#h2engine">H2Engine</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2maxheaderlistsize">H2MaxHeaderListSize</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2maxsessionstreams">H2MaxSessionStreams</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2maxworkeridleseconds">H2MaxWorkerIdleSeconds</a></li>
@@ -153,35 +152,6 @@
             </p>
             <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">H2Direct on</pre>
 </div>
-        
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="H2Engine" id="H2Engine">H2Engine</a> <a name="h2engine" id="h2engine">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>H2 Engine Operation Switch</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2Engine on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>H2Engine off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_h2</td></tr>
-</table>
-            <p>
-                This directive toggles the usage of the HTTP/2 Protocol Engine. This
-                should be used inside a 
-                <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> 
-                section to enable HTTP/2 for that virtual host. By default the 
-                HTTP/2 Protocol Engine is disabled for both the main server and all 
-                configured virtual hosts.
-            </p>
-            <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">&lt;VirtualHost _default_:443&gt;
-    H2Engine on
-    #...
-&lt;/VirtualHost&gt;</pre>
-</div>
-            <p>
-                The HTTP/2 engine is usable in TLS and plain scenarios, supporting
-                the 'h2' and 'h2c' variants of the protocol. 
-            </p>
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
