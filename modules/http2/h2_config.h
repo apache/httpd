@@ -33,11 +33,9 @@ typedef enum {
     H2_CONF_ALT_SVCS,
     H2_CONF_ALT_SVC_MAX_AGE,
     H2_CONF_SER_HEADERS,
-    H2_CONF_HACK_MPM_EVENT,
     H2_CONF_DIRECT,
     H2_CONF_BUFFER_OUTPUT,
     H2_CONF_BUFFER_SIZE,
-    H2_CONF_WRITE_MAX,
     H2_CONF_SESSION_FILES,
 } h2_config_var_t;
 
@@ -55,12 +53,9 @@ typedef struct h2_config {
     int alt_svc_max_age;          /* seconds clients can rely on alt-svc info*/
     int serialize_headers;        /* Use serialized HTTP/1.1 headers for 
                                      processing, better compatibility */
-    int hack_mpm_event;           /* If mpm_event is detected, perform a hack
-                                     on stream connections to make it work */
     int h2_direct;                /* if mod_h2 is active directly */
     int buffer_output;            /* if output buffering shall be used */  
     int buffer_size;              /* size of buffer for outgoing data */  
-    int write_max;                /* max number of bytes for a write op */  
     int session_extra_files;      /* # of extra files a session may keep open */  
 } h2_config;
 

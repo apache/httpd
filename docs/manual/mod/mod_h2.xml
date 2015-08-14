@@ -281,40 +281,6 @@
     </directivesynopsis>
 
     <directivesynopsis>
-        <name>H2BufferWriteMax</name>
-        <description>Maximum size of write on a HTTP/2 connection.</description>
-        <syntax>H2BufferWriteMax <em>bytes</em></syntax>
-        <default>H2BufferWriteMax 16384</default>
-        <contextlist>
-            <context>server config</context>
-            <context>virtual host</context>
-        </contextlist>
-        <usage>
-            <p>
-                This directive sets maximum amount of data sent out in a single 
-                write on a http/2 connection. It only takes effect when 
-                <code>H2BufferOutput</code> is switched on.
-            </p><p>
-                This directive affects performance of underlying TLS transports. TLS
-                transforms each write into an encrypted record. Clients need
-                to receive all of the record in order to decrypt it. Larger sizes
-                result in better server performance, shorter sizes can affect web
-                page paint timings.
-            </p><p>
-                <code>BufferSize</code> should be a multiple of <code>H2BufferWriteMax</code>.
-                <code>H2BufferWriteMax</code>, if larger than 16k, should be a multiple of 16k,
-                since this is the TLS max record size. Be aware that there are TLS 
-                extensions to limit the record size to powers of 2 less than 16k.
-            </p>
-            <example><title>Example</title>
-                <highlight language="config">
-                    H2BufferWriteMax 8000
-                </highlight>
-            </example>
-        </usage>
-    </directivesynopsis>
-
-    <directivesynopsis>
         <name>H2SessionExtraFiles</name>
         <description>Number of Extra File Handles</description>
         <syntax>H2SessionExtraFiles <em>n</em></syntax>
