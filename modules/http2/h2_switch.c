@@ -91,12 +91,6 @@ static int h2_protocol_propose(conn_rec *c, request_rec *r,
     
     cfg = h2_config_sget(s);
     
-    if (!h2_config_geti(cfg, H2_CONF_ENABLED)) {
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c,
-                      "protocol propose, h2 disabled for config %s", cfg->name);
-        return DECLINED;
-    }
-    
     if (r) {
         const char *p;
         /* So far, this indicates an HTTP/1 Upgrade header initiated

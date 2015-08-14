@@ -36,7 +36,6 @@
 
 static h2_config defconf = {
     "default",
-    0,                /* enabled */
     100,              /* max_streams */
     16 * 1024,        /* max_hl_size */
     64 * 1024,        /* window_size */
@@ -68,7 +67,6 @@ static void *h2_config_create(apr_pool_t *pool,
     strcat(name, "]");
     
     conf->name                 = name;
-    conf->h2_enabled           = DEF_VAL;
     conf->h2_max_streams       = DEF_VAL;
     conf->h2_max_hl_size       = DEF_VAL;
     conf->h2_window_size       = DEF_VAL;
@@ -113,7 +111,6 @@ void *h2_config_merge(apr_pool_t *pool, void *basev, void *addv)
     strcat(name, "]");
     n->name = name;
 
-    n->h2_enabled     = H2_CONFIG_GET(add, base, h2_enabled);
     n->h2_max_streams = H2_CONFIG_GET(add, base, h2_max_streams);
     n->h2_max_hl_size = H2_CONFIG_GET(add, base, h2_max_hl_size);
     n->h2_window_size = H2_CONFIG_GET(add, base, h2_window_size);
@@ -137,8 +134,6 @@ void *h2_config_merge(apr_pool_t *pool, void *basev, void *addv)
 int h2_config_geti(h2_config *conf, h2_config_var_t var)
 {
     switch(var) {
-        case H2_CONF_ENABLED:
-            return H2_CONFIG_GET(conf, &defconf, h2_enabled);
         case H2_CONF_MAX_STREAMS:
             return H2_CONFIG_GET(conf, &defconf, h2_max_streams);
         case H2_CONF_MAX_HL_SIZE:
@@ -182,23 +177,6 @@ h2_config *h2_config_sget(server_rec *s)
     return cfg;
 }
 
-
-static const char *h2_conf_set_engine(cmd_parms *parms,
-                                      void *arg, const char *value)
-{
-    h2_config *cfg = h2_config_sget(parms->server);
-    if (!strcasecmp(value, "On")) {
-        cfg->h2_enabled = 1;
-        return NULL;
-    }
-    else if (!strcasecmp(value, "Off")) {
-        cfg->h2_enabled = 0;
-        return NULL;
-    }
-    
-    (void)arg;
-    return "value must be On or Off";
-}
 
 static const char *h2_conf_set_max_streams(cmd_parms *parms,
                                            void *arg, const char *value)
@@ -425,8 +403,6 @@ static const char *h2_conf_set_buffer_output(cmd_parms *parms,
 
 #pragma GCC diagnostic ignored "-Wmissing-braces"
 const command_rec h2_cmds[] = {
-    AP_INIT_TAKE1("H2Engine", h2_conf_set_engine, NULL,
-                  RSRC_CONF, "on to enable HTTP/2 protocol handling"),
     AP_INIT_TAKE1("H2MaxSessionStreams", h2_conf_set_max_streams, NULL,
                   RSRC_CONF, "maximum number of open streams per session"),
     AP_INIT_TAKE1("H2WindowSize", h2_conf_set_window_size, NULL,
