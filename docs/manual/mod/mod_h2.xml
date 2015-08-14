@@ -38,40 +38,6 @@
     </summary>
     
     <directivesynopsis>
-        <name>H2Engine</name>
-        <description>H2 Engine Operation Switch</description>
-        <syntax>H2Engine on|off</syntax>
-        <default>H2Engine off</default>
-        <contextlist>
-            <context>server config</context>
-            <context>virtual host</context>
-        </contextlist>
-        
-        <usage>
-            <p>
-                This directive toggles the usage of the HTTP/2 Protocol Engine. This
-                should be used inside a 
-                <directive module="core" type="section">VirtualHost</directive> 
-                section to enable HTTP/2 for that virtual host. By default the 
-                HTTP/2 Protocol Engine is disabled for both the main server and all 
-                configured virtual hosts.
-            </p>
-            <example><title>Example</title>
-                <highlight language="config">
-&lt;VirtualHost _default_:443&gt;
-    H2Engine on
-    #...
-&lt;/VirtualHost&gt;
-                </highlight>
-            </example>
-            <p>
-                The HTTP/2 engine is usable in TLS and plain scenarios, supporting
-                the 'h2' and 'h2c' variants of the protocol. 
-            </p>
-        </usage>
-    </directivesynopsis>
-    
-    <directivesynopsis>
         <name>H2Direct</name>
         <description>H2 Direct Protocol Switch</description>
         <syntax>H2Direct on|off</syntax>

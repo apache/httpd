@@ -23,7 +23,6 @@
 #undef PACKAGE_BUGREPORT
 
 typedef enum {
-    H2_CONF_ENABLED,
     H2_CONF_MAX_STREAMS,
     H2_CONF_MAX_HL_SIZE,
     H2_CONF_WIN_SIZE,
@@ -45,7 +44,6 @@ typedef enum {
 /* Apache httpd module configuration for h2. */
 typedef struct h2_config {
     const char *name;
-    int h2_enabled;               /* if mod_h2 is active at all here */
     int h2_max_streams;           /* max concurrent # streams (http2) */
     int h2_max_hl_size;           /* max header list size (http2) */
     int h2_window_size;           /* stream window size (http2) */
