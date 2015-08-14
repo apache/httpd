@@ -46,11 +46,9 @@ static h2_config defconf = {
     NULL,             /* no alt-svcs */
     -1,               /* alt-svc max age */
     0,                /* serialize headers */
-    1,                /* hack mpm event */
     1,                /* h2 direct mode */
     -1,               /* buffer output, by default only for TLS */
     64*1024,          /* buffer size */
-    16*1024,          /* out write max */
     5,                /* # session extra files */
 };
 
@@ -76,12 +74,9 @@ static void *h2_config_create(apr_pool_t *pool,
     conf->stream_max_mem_size  = DEF_VAL;
     conf->alt_svc_max_age      = DEF_VAL;
     conf->serialize_headers    = DEF_VAL;
-    conf->hack_mpm_event       = DEF_VAL;
     conf->h2_direct            = DEF_VAL;
     conf->buffer_output        = DEF_VAL;
-    conf->buffer_output        = DEF_VAL;
     conf->buffer_size          = DEF_VAL;
-    conf->write_max            = DEF_VAL;
     conf->session_extra_files  = DEF_VAL;
     return conf;
 }
@@ -121,11 +116,9 @@ void *h2_config_merge(apr_pool_t *pool, void *basev, void *addv)
     n->alt_svcs = add->alt_svcs? add->alt_svcs : base->alt_svcs;
     n->alt_svc_max_age = H2_CONFIG_GET(add, base, alt_svc_max_age);
     n->serialize_headers = H2_CONFIG_GET(add, base, serialize_headers);
-    n->hack_mpm_event = H2_CONFIG_GET(add, base, hack_mpm_event);
     n->h2_direct      = H2_CONFIG_GET(add, base, h2_direct);
     n->buffer_output  = H2_CONFIG_GET(add, base, buffer_output);
     n->buffer_size    = H2_CONFIG_GET(add, base, buffer_size);
-    n->write_max      = H2_CONFIG_GET(add, base, write_max);
     n->session_extra_files = H2_CONFIG_GET(add, base, session_extra_files);
     
     return n;
@@ -152,16 +145,12 @@ int h2_config_geti(h2_config *conf, h2_config_var_t var)
             return H2_CONFIG_GET(conf, &defconf, alt_svc_max_age);
         case H2_CONF_SER_HEADERS:
             return H2_CONFIG_GET(conf, &defconf, serialize_headers);
-        case H2_CONF_HACK_MPM_EVENT:
-            return H2_CONFIG_GET(conf, &defconf, hack_mpm_event);
         case H2_CONF_DIRECT:
             return H2_CONFIG_GET(conf, &defconf, h2_direct);
         case H2_CONF_BUFFER_OUTPUT:
             return H2_CONFIG_GET(conf, &defconf, buffer_output);
         case H2_CONF_BUFFER_SIZE:
             return H2_CONFIG_GET(conf, &defconf, buffer_size);
-        case H2_CONF_WRITE_MAX:
-            return H2_CONFIG_GET(conf, &defconf, write_max);
         case H2_CONF_SESSION_FILES:
             return H2_CONFIG_GET(conf, &defconf, session_extra_files);
         default:
@@ -304,22 +293,6 @@ static const char *h2_conf_set_buffer_size(cmd_parms *parms,
     return NULL;
 }
 
-static const char *h2_conf_set_write_max(cmd_parms *parms,
-                                             void *arg, const char *value)
-{
-    h2_config *cfg = h2_config_sget(parms->server);
-    apr_int64_t max = (int)apr_atoi64(value);
-    if (max <= 0) {
-        return "value must be a positive number";
-    }
-    else if (max > cfg->buffer_size) {
-        return "value must be less than H2BufferSize";
-    }
-    cfg->write_max = (int)max;
-    (void)arg;
-    return NULL;
-}
-
 static const char *h2_conf_set_session_extra_files(cmd_parms *parms,
                                                    void *arg, const char *value)
 {
@@ -343,23 +316,6 @@ static const char *h2_conf_set_serialize_headers(cmd_parms *parms,
     }
     else if (!strcasecmp(value, "Off")) {
         cfg->serialize_headers = 0;
-        return NULL;
-    }
-    
-    (void)arg;
-    return "value must be On or Off";
-}
-
-static const char *h2_conf_set_hack_mpm_event(cmd_parms *parms,
-                                              void *arg, const char *value)
-{
-    h2_config *cfg = h2_config_sget(parms->server);
-    if (!strcasecmp(value, "On")) {
-        cfg->hack_mpm_event = 1;
-        return NULL;
-    }
-    else if (!strcasecmp(value, "Off")) {
-        cfg->hack_mpm_event = 0;
         return NULL;
     }
     
@@ -423,16 +379,12 @@ const command_rec h2_cmds[] = {
                   RSRC_CONF, "set the maximum age (in seconds) that client can rely on alt-svc information"),
     AP_INIT_TAKE1("H2SerializeHeaders", h2_conf_set_serialize_headers, NULL,
                   RSRC_CONF, "on to enable header serialization for compatibility"),
-    AP_INIT_TAKE1("H2HackMpmEvent", h2_conf_set_hack_mpm_event, NULL,
-                  RSRC_CONF, "on to enable a hack that makes mpm_event working with mod_h2"),
     AP_INIT_TAKE1("H2Direct", h2_conf_set_direct, NULL,
                   RSRC_CONF, "on to enable direct HTTP/2 mode"),
     AP_INIT_TAKE1("H2BufferOutput", h2_conf_set_buffer_output, NULL,
                   RSRC_CONF, "on to enable output buffering, default for TLS"),
     AP_INIT_TAKE1("H2BufferSize", h2_conf_set_buffer_size, NULL,
                   RSRC_CONF, "size of outgoing buffer in bytes"),
-    AP_INIT_TAKE1("H2BufferWriteMax", h2_conf_set_write_max, NULL,
-                  RSRC_CONF, "maximum number of bytes in a outgoing write"),
     AP_INIT_TAKE1("H2SessionExtraFiles", h2_conf_set_session_extra_files, NULL,
                   RSRC_CONF, "number of extra file a session might keep open"),
     { NULL, NULL, NULL, 0, 0, NULL }

@@ -412,9 +412,7 @@ apr_status_t h2_conn_prep(h2_task_env *env, conn_rec *master, h2_worker *worker)
             /* all fine */
             break;
         case H2_MPM_EVENT: 
-            if (h2_config_geti(cfg, H2_CONF_HACK_MPM_EVENT)) {
-                fix_event_conn(&env->c, master);
-            }
+            fix_event_conn(&env->c, master);
             break;
         default:
             /* fingers crossed */
@@ -471,9 +469,7 @@ apr_status_t h2_conn_init(struct h2_task_env *env, struct h2_worker *worker)
             /* all fine */
             break;
         case H2_MPM_EVENT: 
-            if (h2_config_geti(cfg, H2_CONF_HACK_MPM_EVENT)) {
-                fix_event_conn(&env->c, master);
-            }
+            fix_event_conn(&env->c, master);
             break;
         default:
             /* fingers crossed */
