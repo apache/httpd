@@ -1044,7 +1044,7 @@ through</td></tr>
 
     <div class="warning">
     <p>If the first argument ends with a trailing <strong>/</strong>, the second
-       argument should also end with a trailing <strong>/</strong> and vice
+       argument should also end with a trailing <strong>/</strong>, and vice
        versa. Otherwise, the resulting requests to the backend may miss some
        needed slashes and do not deliver the expected results.
     </p>
@@ -1635,7 +1635,7 @@ ProxyPassReverseCookiePath  "/"  "/mirror/foo/"</pre>
     constructing the URL is chosen in respect to the setting of the <code class="directive"><a href="../mod/core.html#usecanonicalname">UseCanonicalName</a></code> directive.</p>
 
     <p>Note that this <code class="directive">ProxyPassReverse</code> directive can
-    also be used in conjunction with the proxy pass-through feature
+    also be used in conjunction with the proxy feature
     (<code>RewriteRule ...  [P]</code>) from <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
     because it doesn't depend on a corresponding <code class="directive"><a href="#proxypass">ProxyPass</a></code> directive.</p>
 
