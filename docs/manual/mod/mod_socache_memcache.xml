@@ -52,4 +52,25 @@
 
 </summary>
 
+<directivesynopsis>
+<name>MemcacheConnTTL</name>
+<description>Keepalive time for idle connections</description>
+<syntax>MemcacheConnTTL <em>seconds</em></syntax>
+<default>MemcacheConnTTL 15</default>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+</contextlist>
+
+<usage>
+
+    <p>Set the time, in seconds, to keep idle connections with the memcache
+    server(s) alive (threaded platforms only).</p>
+    
+    <p>Valid values for <directive>MemcacheConnTTL</directive> are integers
+    from 1 to 1800. That is to say, up to half an hour.</p>
+
+</usage>
+</directivesynopsis>
+
 </modulesynopsis>
