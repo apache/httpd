@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_socache_memcache: Add the 'MemcacheConnTTL' directive to control how 
+     long to keep idle connections with the memcache server(s).
+     Change default value from 600 usec (!) to 15 sec. PR 58091
+     [Christophe Jaillet]
+
   *) mod_dir: Prevent the internal identifier "httpd/unix-directory" from
      appearing as a Content-Type response header when requests for a directory
      are rewritten by mod_rewrite. [Eric Covener]

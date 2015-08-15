@@ -51,8 +51,14 @@
 #endif
 
 #ifndef MC_DEFAULT_SERVER_TTL
-#define MC_DEFAULT_SERVER_TTL 600
+#define MC_DEFAULT_SERVER_TTL (15*1000*1000)        /* 15 seconds */
 #endif
+
+module AP_MODULE_DECLARE_DATA socache_memcache_module;
+
+typedef struct {
+    unsigned int ttl;
+} socache_mc_svr_cfg;
 
 struct ap_socache_instance_t {
     const char *servers;
@@ -89,6 +95,9 @@ static apr_status_t socache_mc_init(ap_socache_instance_t *ctx,
     char *cache_config;
     char *split;
     char *tok;
+
+    socache_mc_svr_cfg *sconf = ap_get_module_config(s->module_config,
+                                                     &socache_memcache_module);
 
     ap_mpm_query(AP_MPMQ_HARD_LIMIT_THREADS, &thread_limit);
 
@@ -140,7 +149,7 @@ static apr_status_t socache_mc_init(ap_socache_instance_t *ctx,
                                         MC_DEFAULT_SERVER_MIN,
                                         MC_DEFAULT_SERVER_SMAX,
                                         thread_limit,
-                                        MC_DEFAULT_SERVER_TTL,
+                                        sconf->ttl,
                                         &st);
         if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s, APLOGNO(00788)
@@ -310,6 +319,35 @@ static const ap_socache_provider_t socache_mc = {
 
 #endif /* HAVE_APU_MEMCACHE */
 
+static void *create_server_config(apr_pool_t *p, server_rec *s)
+{
+    socache_mc_svr_cfg *sconf = apr_pcalloc(p, sizeof(socache_mc_svr_cfg));
+    
+    sconf->ttl = MC_DEFAULT_SERVER_TTL;
+
+    return sconf;
+}
+
+static const char *socache_mc_set_ttl(cmd_parms *cmd, void *dummy,
+                                      const char *arg)
+{
+    socache_mc_svr_cfg *sconf = ap_get_module_config(cmd->server->module_config,
+                                                     &socache_memcache_module);
+    int i;
+
+    i = atoi(arg);
+
+    if ((i < 1) || (i > 1800)) {
+        return apr_pstrcat(cmd->pool, cmd->cmd->name,
+                           " must be a number between 1 and 1800.", NULL);
+    }
+
+    /* apr_memcache_server_create needs a ttl in usec. */
+    sconf->ttl = i * 1000 * 1000;
+
+    return NULL;
+}
+
 static void register_hooks(apr_pool_t *p)
 {
 #ifdef HAVE_APU_MEMCACHE
@@ -319,8 +357,18 @@ static void register_hooks(apr_pool_t *p)
 #endif
 }
 
+static const command_rec socache_memcache_cmds[] = {
+    AP_INIT_TAKE1("MemcacheConnTTL", socache_mc_set_ttl, NULL, RSRC_CONF,
+                  "TTL used for the connection with the memcache server(s), in seconds"),
+    { NULL }
+};
+
 AP_DECLARE_MODULE(socache_memcache) = {
     STANDARD20_MODULE_STUFF,
-    NULL, NULL, NULL, NULL, NULL,
-    register_hooks
+    NULL,                     /* create per-dir    config structures */
+    NULL,                     /* merge  per-dir    config structures */
+    create_server_config,     /* create per-server config structures */
+    NULL,                     /* merge  per-server config structures */
+    socache_memcache_cmds,    /* table of config file commands       */
+    register_hooks            /* register hooks                      */
 };
