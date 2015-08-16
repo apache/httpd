@@ -98,6 +98,8 @@ disponibles</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#namevirtualhost">NameVirtualHost</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#options">Options</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#protocol">Protocol</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#protocols">Protocols</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#protocolshonororder">ProtocolsHonorOrder</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#registerhttpmethod">RegisterHttpMethod</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#rlimitcpu">RLimitCPU</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#rlimitmem">RLimitMEM</a></li>
@@ -3923,6 +3925,86 @@ serveur HTTP Apache.</td></tr>
 <ul>
 <li><code class="directive"><a href="#acceptfilter">AcceptFilter</a></code></li>
 <li><code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code></li>
+</ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="protocols" id="protocols">Directive</a> <a name="Protocols" id="Protocols">Protocols</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Protocoles disponibles pour un serveur virtuel ou non</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Protocols <var>protocole</var> ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.17 du serveur
+    HTTP Apache.</td></tr>
+</table>
+        <p>Cette directive permet de spécifier la liste des protocoles
+	supportés par un serveur virtuel ou non. Cette liste énumère les
+	protocoles qu'un client sera autorisé à négocier avec ce
+	serveur.</p>
+        
+        <p>Vous ne devez fournir cette liste que si vous voulez limiter
+	les protocoles disponibles pour le serveur. Par défaut, tous les
+	protocoles sont disponibles.</p>
+        
+        <p>Par exemple, si vous ne voulez autoriser que le protocole
+	HTTP/1.1, même si le protocole HTTP/2 est disponible, utilisez
+	cette directive comme suit :</p>
+        
+        <pre class="prettyprint lang-config">Protocols http/1.1</pre>
+
+
+        <p>Les protocoles valides sont <code>http/1.1</code> pour les
+	connexions http et https, <code>h2</code> pour les connections
+	https et <code>h2c</code> pour les connexions http. D'autres
+	modules peuvent fournir d'autres protocoles.</p>
+        
+        <p>Spécifier des protocoles non disponibles ou désactivés n'aura
+	aucun effet, et ceux-ci seront simplement ignorés.</p>
+        
+        <p>Si des protocoles sont spécifiés au niveau du serveur
+	principal, il seront concaténés à ceux éventuellement définis
+	au niveau des serveurs virtuels. Comme certains protocoles comme
+	HTTP/2 permettent la réutilisation des connexions sous certaines
+	conditions, la restriction de l'utilisation des protocoles pour
+	des serveurs virtuels individuels pourra ne pas fonctionner de
+	la manière dont vous vous attendez.</p>
+
+    
+<h3>Voir aussi</h3>
+<ul>
+<li><code class="directive"><a href="#protocolshonororder">ProtocolsHonorOrder</a></code></li>
+</ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="protocolshonororder" id="protocolshonororder">Directive</a> <a name="ProtocolsHonorOrder" id="ProtocolsHonorOrder">ProtocolsHonorOrder</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Protocoles disponibles pour un serveur virtuel ou non</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProtocolsHonorOrder On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ProtocolsHonorOrder Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.17 du serveur
+    HTTP Apache.</td></tr>
+</table>
+        <p>Cette directive permet de définir si le serveur doit tenir
+	compte de l'ordre des protocoles définis par la directive
+	<code class="directive">Protocols</code>.</p>
+        
+        <p>Par défaut, un client fournit une liste de protocoles
+	supportés et le serveur sélectionne le premier disponible.</p>
+        
+        <p>Si la directive <code class="directive">ProtocolsHonorOrder</code>
+	est définie à <code>on</code>, il n'est pas tenu compte de l'ordre de la liste des
+	protocoles fournie par le client, et seul l'ordre de la liste des
+	protocles définie au niveau du serveur influera la négociation
+	du protocole.</p>
+        
+    
+<h3>Voir aussi</h3>
+<ul>
+<li><code class="directive"><a href="#protocols">Protocols</a></code></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

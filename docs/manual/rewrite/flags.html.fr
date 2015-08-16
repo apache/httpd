@@ -166,6 +166,15 @@ suivante :</p>
 [CO=NAME:VALUE:DOMAIN:lifetime:path:secure:httponly]
 </code></p></div>
 
+<p>Si un caractère littéral ':' doit être insérer dans un des champs du
+cookie, une autre syntaxe est disponible. Pour utiliser cette syntaxe
+alternative, le contenu du champ "Name" doit être précédé du caractère
+';', et les sépateurs de champs deviendront des ';'.</p>
+
+<div class="example"><p><code>
+[CO=;NAME;VALUE:MOREVALUE;DOMAIN;lifetime;path;secure;httponly]
+</code></p></div>
+
 <p>Vous devez déclarer un nom, une valeur et un domaine pour que
 le cookie puisse être défini.</p>
 

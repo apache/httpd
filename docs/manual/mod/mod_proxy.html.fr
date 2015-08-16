@@ -279,7 +279,7 @@ ProxyVia On
       
 
       <p>Cette directive va créer un worker associé à l'URL du serveur
-      original <code>http://backend.example.com</code>, et utilisant les
+      original <code>http://backend.example.com</code>, qui utilisera les
       valeurs de timeout données. Lorsqu'ils sont utilisés dans le cadre
       d'un mandataire direct, les workers sont en général définis via la
       directive <code class="directive"><a href="#proxyset">ProxySet</a></code>,</p>
@@ -1612,7 +1612,7 @@ ProxyPass "/" "balancer://mycluster/" stickysession=JSESSIONID|jsessionid nofail
     utilisent <var>PATH_INFO</var>. Le mot-clé optionnel
     <var>nocanon</var> modifie ce comportement et permet de transmettre
     le chemin d'URL sous sa forme brute au serveur d'arrière-plan. Notez
-    que ceci peut affecter la sécurité de votre serveur d'arrière-plan,
+    que ce mot-clé peut affecter la sécurité de votre serveur d'arrière-plan,
     car la protection limitée contre les attaques à base d'URL que
     fournit le mandataire est alors supprimée.</p>
 
@@ -1714,8 +1714,8 @@ les configurations de mandataires inverses</td></tr>
     <code class="directive">ProxyPassReverseCookiePath</code>, en leur indiquant
     de remplacer la chaîne <code>${nom_var}</code> dans les directives
     de configuration par la valeur de la variable d'environnement
-    <code>nom_var</code> (si l'option <var>interpolate</var> est
-    spécifiée).</p>
+    <code>nom_var</code> si l'option <var>interpolate</var> est
+    spécifiée.</p>
     <p>Conservez cette directive à off (pour les performances du
     serveur), sauf si vous en avez réellement besoin.</p>
 
@@ -1829,8 +1829,8 @@ par un serveur mandaté en inverse</td></tr>
     </p>
 
     <p><var>chemin</var> est le nom d'un chemin virtuel local.
-    <var>url</var> est une URL partielle pour le serveur distant - ils
-    sont utilisés de la même façon qu'avec la directive <code class="directive"><a href="#proxypass">ProxyPass</a></code>.</p>
+    <var>url</var> est une URL partielle pour le serveur distant. Ces
+    paramètres sont utilisés de la même façon qu'avec la directive <code class="directive"><a href="#proxypass">ProxyPass</a></code>.</p>
 
     <p>Supposons par exemple que le serveur local a pour adresse
     <code>http://example.com/</code> ; alors</p>
@@ -1846,7 +1846,7 @@ ProxyPassReverseCookiePath  "/"  "/mirror/foo/"</pre>
     requête mandatée pour <code>http://backend.example.com/bar</code>
     (la fonctionnalité fournie par <code>ProxyPass</code>). Il va
     aussi s'occuper des redirections que le serveur
-    <code>backend.example.com</code> envoie : lorsque
+    <code>backend.example.com</code> envoie lorsque
     <code>http://backend.example.com/bar</code> est redirigé par
     celui-ci vers <code>http://backend.example.com/quux</code>, Apache
     httpd corrige ceci en <code>http://example.com/miroir/foo/quux</code>
@@ -1855,8 +1855,9 @@ ProxyPassReverseCookiePath  "/"  "/mirror/foo/"</pre>
     définition de la directive <code class="directive"><a href="../mod/core.html#usecanonicalname">UseCanonicalName</a></code>.</p>
 
     <p>Notez que la directive <code class="directive">ProxyPassReverse</code>
-    peut aussi être utilisée en conjonction avec la fonctionnalité
-    pass-through (<code>RewriteRule ...  [P]</code>) du module
+    peut aussi être utilisée en conjonction avec la
+    fonctionnalité de mandataire
+    (<code>RewriteRule ...  [P]</code>) du module
     <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>, car elle ne dépend pas d'une directive
     <code class="directive"><a href="#proxypass">ProxyPass</a></code>
     correspondante.</p>
@@ -1948,7 +1949,7 @@ dans un contexte de répertoire depuis la version 2.3.3.</td></tr>
 </table>
     <p>Lorsqu'elle est activée, cette directive va transmettre l'en-tête
     Host: de la requête entrante vers le serveur mandaté, au lieu du nom
-    d'hôte spécifié par la directive <code class="directive">ProxyPass</code>.</p>
+    d'hôte spécifié par la directive <code class="directive"><a href="#proxypass">ProxyPass</a></code>.</p>
 
     <p>Cette directive est habituellement définie à <code>Off</code>.
     Elle est principalement utile dans les configurations particulières
@@ -2018,7 +2019,7 @@ ProxyRemote ftp http://ftpproxy.mydomain:8080</pre>
     HTTP, vers un autre mandataire capable de les traiter.</p>
 
     <p>Cette directive supporte aussi les configurations de mandataire
-    inverse - un serveur web d'arrière-plan peut être intégré dans
+    inverse ; un serveur web d'arrière-plan peut être intégré dans
     l'espace d'URL d'un serveur virtuel, même si ce serveur est caché
     par un autre mandataire direct.</p>
 
