@@ -31,8 +31,6 @@
 <a href="../ja/mod/mod_log_forensic.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/mod_log_forensic.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Journalisation légale des requêtes envoyées au
 serveur</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -40,8 +38,15 @@ serveur</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_log_forensic.c</td></tr></table>
 <h3>Sommaire</h3>
 
-    <p>Ce module permet la journalisation légale des requêtes client. La
-    journalisation s'effectuant avant et après le traitement de la
+    <p>Ce module permet la journalisation légale des requêtes client.</p>
+
+    <p>La création du fichier journal correspondant s'effectue via la
+    directive <code class="directive">ForensicLog</code> comme suit :</p>
+
+    <pre class="prettyprint lang-config">ForensicLog logs/forensic_log</pre>
+    
+    
+    <p>La journalisation s'effectuant avant et après le traitement de la
     requête, le journal légal contient deux lignes pour chaque requête.
     Le processus de journalisation légale est très strict, à savoir
     :</p>
@@ -54,9 +59,16 @@ serveur</td></tr>
     mémoire (selon la définition de la directive <code class="directive"><a href="../mod/mpm_common.html#coredumpdirectory">CoreDumpDirectory</a></code>).</li>
     </ul>
 
-    <p>Pour interpréter les données du journal légal, vous pouvez vous
+    <p>Pour interpréter les données du journal
+    légal afin d'identifier les requêtes dont le traitement n'a
+    pas été mené à bien, vous pouvez vous
     aider du script <code>check_forensic</code> qui se trouve dans le
     répertoire support de la distribution.</p>
+
+    <div class="example"><p><code>
+    check-forensic forensic_log
+    </code></p></div>
+
     <div class="note">Note de traduction : le terme "légal" utilisé dans le présent document ne suggère aucunement que
     ce module apporte une valeur juridique aux journaux. Il est à comprendre dans le contexte
     similaire à ce que l'on trouve en analyse medico-légale. En d'autres termes, la finalité de ce module
