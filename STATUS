@@ -246,6 +246,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x: trunk works
      +1: covener
 
+  *) mod_socache_memcache: Add the 'MemcacheConnTTL' directive to control how 
+     long to keep idle connections with the memcache server(s).
+     Change default value from 600 usec (!) to 15 sec.  PR 58091
+     Measurements available in the svn commit message.
+     trunk: http://svn.apache.org/r1696105
+     2.4.x: trunk works modulo CHANGES
+     +1: jailletc36
+
 PATCHES/ISSUES THAT ARE BEING WORKED
 
   *) mod_ssl: add ALPN support by allowing other modules to register callbacks
