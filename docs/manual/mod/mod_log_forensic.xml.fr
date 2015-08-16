@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1673947:1693828 (outdated) -->
+<!-- English Revision: 1693828 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -32,8 +32,16 @@ serveur</description>
 <identifier>log_forensic_module</identifier>
 
 <summary>
-    <p>Ce module permet la journalisation l&eacute;gale des requ&ecirc;tes client. La
-    journalisation s'effectuant avant et apr&egrave;s le traitement de la
+    <p>Ce module permet la journalisation l&eacute;gale des requ&ecirc;tes client.</p>
+
+    <p>La cr&eacute;ation du fichier journal correspondant s'effectue via la
+    directive <directive>ForensicLog</directive> comme suit :</p>
+
+    <highlight language="config">
+    ForensicLog logs/forensic_log
+    </highlight>    
+    
+    <p>La journalisation s'effectuant avant et apr&egrave;s le traitement de la
     requ&ecirc;te, le journal l&eacute;gal contient deux lignes pour chaque requ&ecirc;te.
     Le processus de journalisation l&eacute;gale est tr&egrave;s strict, &agrave; savoir
     :</p>
@@ -47,9 +55,16 @@ serveur</description>
     module="mpm_common">CoreDumpDirectory</directive>).</li>
     </ul>
 
-    <p>Pour interpr&eacute;ter les donn&eacute;es du journal l&eacute;gal, vous pouvez vous
+    <p>Pour interpr&eacute;ter les donn&eacute;es du journal
+    l&eacute;gal afin d'identifier les requ&ecirc;tes dont le traitement n'a
+    pas &eacute;t&eacute; men&eacute; &agrave; bien, vous pouvez vous
     aider du script <code>check_forensic</code> qui se trouve dans le
     r&eacute;pertoire support de la distribution.</p>
+
+    <example>
+    check-forensic forensic_log
+    </example>
+
     <note>Note de traduction : le terme "l&eacute;gal" utilis&eacute; dans le pr&eacute;sent document ne sugg&egrave;re aucunement que
     ce module apporte une valeur juridique aux journaux. Il est &agrave; comprendre dans le contexte
     similaire &agrave; ce que l'on trouve en analyse medico-l&eacute;gale. En d'autres termes, la finalit&eacute; de ce module

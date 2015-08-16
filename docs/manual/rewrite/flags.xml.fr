@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1674195:1693963 (outdated) -->
+<!-- English Revision: 1693963 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -151,6 +151,15 @@ suivante :</p>
 
 <example>
 [CO=NAME:VALUE:DOMAIN:lifetime:path:secure:httponly]
+</example>
+
+<p>Si un caract&egrave;re litt&eacute;ral ':' doit &ecirc;tre ins&eacute;rer dans un des champs du
+cookie, une autre syntaxe est disponible. Pour utiliser cette syntaxe
+alternative, le contenu du champ "Name" doit &ecirc;tre pr&eacute;c&eacute;d&eacute; du caract&egrave;re
+';', et les s&eacute;pateurs de champs deviendront des ';'.</p>
+
+<example>
+[CO=;NAME;VALUE:MOREVALUE;DOMAIN;lifetime;path;secure;httponly]
 </example>
 
 <p>Vous devez d&eacute;clarer un nom, une valeur et un domaine pour que
