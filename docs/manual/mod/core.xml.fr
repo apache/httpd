@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1688698:1695727 (outdated) -->
+<!-- English Revision: 1695727 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -4011,6 +4011,79 @@ serveur HTTP Apache.</compatibility>
 <seealso><directive module="mpm_common">Listen</directive></seealso>
 </directivesynopsis>
 
+<directivesynopsis>
+    <name>Protocols</name>
+    <description>Protocoles disponibles pour un serveur virtuel ou non</description>
+    <syntax>Protocols <var>protocole</var> ...</syntax>
+    <contextlist><context>server config</context><context>virtual host</context></contextlist>
+    <compatibility>Disponible &agrave; partir de la version 2.4.17 du serveur
+    HTTP Apache.</compatibility>
+    
+    <usage>
+        <p>Cette directive permet de sp&eacute;cifier la liste des protocoles
+	support&eacute;s par un serveur virtuel ou non. Cette liste &eacute;num&egrave;re les
+	protocoles qu'un client sera autoris&eacute; &agrave; n&eacute;gocier avec ce
+	serveur.</p>
+        
+        <p>Vous ne devez fournir cette liste que si vous voulez limiter
+	les protocoles disponibles pour le serveur. Par d&eacute;faut, tous les
+	protocoles sont disponibles.</p>
+        
+        <p>Par exemple, si vous ne voulez autoriser que le protocole
+	HTTP/1.1, m&ecirc;me si le protocole HTTP/2 est disponible, utilisez
+	cette directive comme suit :</p>
+        
+        <highlight language="config">
+            Protocols http/1.1
+        </highlight>
+
+        <p>Les protocoles valides sont <code>http/1.1</code> pour les
+	connexions http et https, <code>h2</code> pour les connections
+	https et <code>h2c</code> pour les connexions http. D'autres
+	modules peuvent fournir d'autres protocoles.</p>
+        
+        <p>Sp&eacute;cifier des protocoles non disponibles ou d&eacute;sactiv&eacute;s n'aura
+	aucun effet, et ceux-ci seront simplement ignor&eacute;s.</p>
+        
+        <p>Si des protocoles sont sp&eacute;cifi&eacute;s au niveau du serveur
+	principal, il seront concat&eacute;n&eacute;s &agrave; ceux &eacute;ventuellement d&eacute;finis
+	au niveau des serveurs virtuels. Comme certains protocoles comme
+	HTTP/2 permettent la r&eacute;utilisation des connexions sous certaines
+	conditions, la restriction de l'utilisation des protocoles pour
+	des serveurs virtuels individuels pourra ne pas fonctionner de
+	la mani&egrave;re dont vous vous attendez.</p>
+
+    </usage>
+    <seealso><directive module="core">ProtocolsHonorOrder</directive></seealso>
+</directivesynopsis>
+
+
+<directivesynopsis>
+    <name>ProtocolsHonorOrder</name>
+    <description>Protocoles disponibles pour un serveur virtuel ou non</description>
+    <syntax>ProtocolsHonorOrder On|Off</syntax>
+    <default>ProtocolsHonorOrder Off</default>
+    <contextlist><context>server config</context><context>virtual host</context></contextlist>
+    <compatibility>Disponible &agrave; partir de la version 2.4.17 du serveur
+    HTTP Apache.</compatibility>
+    
+    <usage>
+        <p>Cette directive permet de d&eacute;finir si le serveur doit tenir
+	compte de l'ordre des protocoles d&eacute;finis par la directive
+	<directive>Protocols</directive>.</p>
+        
+        <p>Par d&eacute;faut, un client fournit une liste de protocoles
+	support&eacute;s et le serveur s&eacute;lectionne le premier disponible.</p>
+        
+        <p>Si la directive <directive>ProtocolsHonorOrder</directive>
+	est d&eacute;finie &agrave; <code>on</code>, il n'est pas tenu compte de l'ordre de la liste des
+	protocoles fournie par le client, et seul l'ordre de la liste des
+	protocles d&eacute;finie au niveau du serveur influera la n&eacute;gociation
+	du protocole.</p>
+        
+    </usage>
+    <seealso><directive module="core">Protocols</directive></seealso>
+</directivesynopsis>
 
 <directivesynopsis>
 <name>RLimitCPU</name>
