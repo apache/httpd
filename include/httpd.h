@@ -2402,6 +2402,14 @@ AP_DECLARE(char *) ap_get_exec_line(apr_pool_t *p,
 
 #define AP_NORESTART APR_OS_START_USEERR + 1
 
+/**
+ * Get the index of the string in the array or -1 if not found.
+ * @param array the array the check
+ * @param s the string to find
+ * @return index of string in array or -1
+ */
+AP_DECLARE(int) ap_array_index(apr_array_header_t *array, const char *s);
+
 #ifdef __cplusplus
 }
 #endif
