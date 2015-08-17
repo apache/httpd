@@ -60,18 +60,6 @@ apr_status_t h2_switch_init(apr_pool_t *pool, server_rec *s)
 static const char *const mod_ssl[]        = { "mod_ssl.c", NULL};
 static const char *const mod_core[]       = { "core.c", NULL};
 
-static int h2_util_array_index(const apr_array_header_t *array, const char *s)
-{
-    int i;
-    for (i = 0; i < array->nelts; i++) {
-        const char *p = APR_ARRAY_IDX(array, i, const char*);
-        if (!strcmp(p, s)) {
-            return i;
-        }
-    }
-    return -1;
-}
-
 static int h2_protocol_propose(conn_rec *c, request_rec *r,
                                server_rec *s,
                                const apr_array_header_t *offers,
@@ -125,7 +113,7 @@ static int h2_protocol_propose(conn_rec *c, request_rec *r,
         /* Add all protocols we know (tls or clear) and that
          * were offered as options for the switch. 
          */
-        if (h2_util_array_index(offers, *protos) >= 0) {
+        if (ap_array_index(offers, *protos) >= 0) {
             ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
                           "proposing protocol '%s'", *protos);
             APR_ARRAY_PUSH(proposals, const char*) = *protos;
