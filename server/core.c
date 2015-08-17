@@ -5323,13 +5323,6 @@ static int core_upgrade_handler(request_rec *r)
 
                     /* make sure httpd closes the connection after this */
                     c->keepalive = AP_CONN_CLOSE;
-                    ap_lingering_close(c);
-                    
-                    if (c->sbh) {
-                        ap_update_child_status_from_conn(c->sbh, 
-                                                         SERVER_CLOSING, c);
-                    }
-                    
                     return DONE;
                 }
             }
