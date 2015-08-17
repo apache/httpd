@@ -53,7 +53,7 @@
       capabilities</li>
 
       <li><module>mod_proxy_balancer</module> and one or more
-      balancer modules, if load balancing is required.  (See
+      balancer modules if load balancing is required.  (See
       <module>mod_proxy_balancer</module> for more information.)</li>
 
       <li>one or more proxy scheme, or protocol, modules:
@@ -101,7 +101,7 @@
       server that sits between the client and the <em>origin
       server</em>.  In order to get content from the origin server,
       the client sends a request to the proxy naming the origin server
-      as the target and the proxy then requests the content from the
+      as the target. The proxy then requests the content from the
       origin server and returns it to the client.  The client must be
       specially configured to use the forward proxy to access other
       sites.</p>
@@ -122,15 +122,15 @@
       <p>A <dfn>reverse proxy</dfn> (or <dfn>gateway</dfn>), by
       contrast, appears to the client just like an ordinary web
       server.  No special configuration on the client is necessary.
-      The client makes ordinary requests for content in the name-space
+      The client makes ordinary requests for content in the namespace
       of the reverse proxy.  The reverse proxy then decides where to
-      send those requests, and returns the content as if it was itself
+      send those requests and returns the content as if it were itself
       the origin.</p>
 
       <p>A typical usage of a reverse proxy is to provide Internet
       users access to a server that is behind a firewall.  Reverse
       proxies can also be used to balance load among several back-end
-      servers, or to provide caching for a slower back-end server.
+      servers or to provide caching for a slower back-end server.
       In addition, reverse proxies can be used simply to bring
       several servers into the same URL space.</p>
 
@@ -195,7 +195,7 @@ ProxyVia On
     <section id="workers"><title>Workers</title>
       <p>The proxy manages the configuration of origin servers and their
       communication parameters in objects called <dfn>workers</dfn>.
-      There are two built-in workers, the default forward proxy worker and the
+      There are two built-in workers: the default forward proxy worker and the
       default reverse proxy worker. Additional workers can be configured
       explicitly.</p>
 
@@ -216,7 +216,7 @@ ProxyVia On
       </highlight>
 
       <p>This will create a worker associated with the origin server URL
-      <code>http://backend.example.com</code> and using the given timeout
+      <code>http://backend.example.com</code> that will use the given timeout
       values. When used in a forward proxy, workers are usually defined
       via the <directive module="mod_proxy">ProxySet</directive> directive:</p>
 
@@ -236,13 +236,13 @@ ProxyVia On
       <p>Using explicitly configured workers in the forward mode is
       not very common, because forward proxies usually communicate with many
       different origin servers. Creating explicit workers for some of the
-      origin servers can still be useful, if they are used very often.
+      origin servers can still be useful if they are used very often.
       Explicitly configured workers have no concept of forward or reverse
       proxying by themselves. They encapsulate a common concept of
       communication with origin servers. A worker created by
       <directive module="mod_proxy">ProxyPass</directive> for use in a
-      reverse proxy will be also used for forward proxy requests whenever
-      the URL to the origin server matches the worker URL and vice versa.</p>
+      reverse proxy will also be used for forward proxy requests whenever
+      the URL to the origin server matches the worker URL, and vice versa.</p>
 
       <p>The URL identifying a direct worker is the URL of its
       origin server including any path components given:</p>
@@ -269,13 +269,13 @@ ProxyPass "/examples" "http://backend.example.com/examples" timeout=10
         worker is used. The benefit is, that there is only one connection pool,
         so connections are more often reused. Note that all configuration attributes
         given explicitly for the later worker will be ignored. This will be logged
-        as a warning. In the above example the resulting timeout value
+        as a warning. In the above example, the resulting timeout value
         for the URL <code>/examples</code> will be <code>60</code> instead
         of <code>10</code>!</p>
 
         <p>If you want to avoid worker sharing, sort your worker definitions
         by URL length, starting with the longest worker URLs. If you want to maximize
-        worker sharing use the reverse sort order. See also the related warning about
+        worker sharing, use the reverse sort order. See also the related warning about
         ordering <directive module="mod_proxy">ProxyPass</directive> directives.</p>
 
       </note> <!-- /worker_sharing -->
@@ -288,7 +288,7 @@ ProxyPass "/examples" "http://backend.example.com/examples" timeout=10
       <directive module="mod_proxy">ProxySet</directive>.</p>
 
       <p>The set of options available for a direct worker
-      depends on the protocol, which is specified in the origin server URL.
+      depends on the protocol which is specified in the origin server URL.
       Available protocols include <code>ajp</code>, <code>fcgi</code>,
       <code>ftp</code>, <code>http</code> and <code>scgi</code>.</p>
 
@@ -305,7 +305,7 @@ ProxyPass "/examples" "http://backend.example.com/examples" timeout=10
 
     </section> <!-- /workers -->
 
-    <section id="access"><title>Controlling access to your proxy</title>
+    <section id="access"><title>Controlling Access to Your Proxy</title>
       <p>You can control who can access your proxy via the <directive
       module="mod_proxy" type="section">Proxy</directive> control block as in
       the following example:</p>
@@ -520,14 +520,14 @@ response</description>
 
 <usage>
     <p>The <directive>ProxyBadHeader</directive> directive determines the
-    behaviour of <module>mod_proxy</module> if it receives syntactically invalid
+    behavior of <module>mod_proxy</module> if it receives syntactically invalid
     response header lines (<em>i.e.</em> containing no colon) from the origin
     server. The following arguments are possible:</p>
 
     <dl>
     <dt><code>IsError</code></dt>
     <dd>Abort the request and end up with a 502 (Bad Gateway) response. This is
-    the default behaviour.</dd>
+    the default behavior.</dd>
 
     <dt><code>Ignore</code></dt>
     <dd>Treat bad header lines as if they weren't sent.</dd>
@@ -551,7 +551,7 @@ proxied resources</description>
 <usage>
     <p>The <directive type="section">ProxyMatch</directive> directive is
     identical to the <directive module="mod_proxy"
-    type="section">Proxy</directive> directive, except it matches URLs
+    type="section">Proxy</directive> directive, except that it matches URLs
     using <glossary ref="regex">regular expressions</glossary>.</p>
 
     <p>From 2.4.8 onwards, named groups and backreferences are captured and
@@ -584,8 +584,8 @@ context in 2.3.3 and later.</compatibility>
 
 <usage>
     <p>When enabled, this option will pass the Host: line from the incoming
-    request to the proxied host, instead of the hostname specified in the
-    <directive>ProxyPass</directive> line.</p>
+    request to the proxied host instead of the hostname specified in the
+    <directive module="mod_proxy">ProxyPass</directive> line.</p>
 
     <p>This option should normally be turned <code>Off</code>. It is mostly
     useful in special configurations like proxied mass name-based virtual
@@ -664,7 +664,7 @@ ProxyRemote "ftp" "http://ftpproxy.mydomain:8080"
     as yet another HTTP proxy request, to another proxy which can handle
     them.</p>
 
-    <p>This option also supports reverse proxy configuration - a backend
+    <p>This option also supports reverse proxy configuration; a backend
     webserver can be embedded within a virtualhost URL space even if that
     server is hidden by another forward proxy.</p>
 </usage>
@@ -680,7 +680,7 @@ expressions</description>
 
 <usage>
     <p>The <directive>ProxyRemoteMatch</directive> is identical to the
-    <directive module="mod_proxy">ProxyRemote</directive> directive, except the
+    <directive module="mod_proxy">ProxyRemote</directive> directive, except that the
     first argument is a <glossary ref="regex">regular expression</glossary>
     match against the requested URL.</p>
 </usage>
@@ -698,7 +698,7 @@ expressions</description>
     <p>This directive allows for growth potential in the number of
     Balancers available for a virtualhost in addition to the
     number pre-configured. It only takes effect if there is at
-    least 1 pre-configured Balancer.</p>
+    least one pre-configured Balancer.</p>
 </usage>
 </directivesynopsis>
 
@@ -724,7 +724,7 @@ expressions</description>
     <default>ProxyPassInherit On</default>
     <contextlist><context>server config</context><context>virtual host</context></contextlist>
     <compatibility>ProxyPassInherit is only available in Apache HTTP Server 2.4.5 and later.
-        and later.</compatibility>
+        </compatibility>
     <usage>
         <p>This directive will cause the current server/vhost to "inherit"
             <directive module="mod_proxy">ProxyPass</directive>
@@ -762,15 +762,15 @@ expressions</description>
     <compatibility>BalancerMember is only available in Apache HTTP Server 2.2
         and later.</compatibility>
     <usage>
-        <p>This directive adds a member to a load balancing group. It could be used
+        <p>This directive adds a member to a load balancing group. It can be used
             within a <code>&lt;Proxy <var>balancer://</var>...&gt;</code> container
-            directive, and can take any of the key value pair parameters available to
+            directive and can take any of the key value pair parameters available to
             <directive module="mod_proxy">ProxyPass</directive> directives.</p>
         <p>One additional parameter is available only to <directive>BalancerMember</directive> directives:
             <var>loadfactor</var>. This is the member load factor - a number between 1
             (default) and 100, which defines the weighted load to be applied to the
             member in question.</p>
-        <p>The <var>balancerurl</var> is only needed when not in
+        <p>The <var>balancerurl</var> is only needed when not within a
             <code>&lt;Proxy <var>balancer://</var>...&gt;</code>
             container directive. It corresponds to the url of a balancer defined in
             <directive module="mod_proxy">ProxyPass</directive> directive.</p>
@@ -827,7 +827,7 @@ expressions</description>
 
    <note type="warning"><title>Warning</title>
       <p>Keep in mind that the same parameter key can have a different meaning
-      depending whether it is applied to a balancer or a worker as shown by the two
+      depending whether it is applied to a balancer or a worker, as shown by the two
       examples above regarding timeout.</p>
    </note>
 
@@ -846,8 +846,8 @@ expressions</description>
 
 <usage>
     <p>This directive allows remote servers to be mapped into the
-    space of the local server; the local server does not act as a
-    proxy in the conventional sense, but appears to be a mirror of the
+    space of the local server. The local server does not act as a
+    proxy in the conventional sense but appears to be a mirror of the
     remote server. The local server is often called a <dfn>reverse
     proxy</dfn> or <dfn>gateway</dfn>. The <var>path</var> is the name of
     a local virtual path; <var>url</var> is a partial URL for the
@@ -863,7 +863,7 @@ expressions</description>
 
     <p>In 2.4.7 and later, support for using a Unix Domain Socket is available by using a target
     which prepends <code>unix:/path/lis.sock|</code>. For example, to proxy
-    HTTP and target the UDS at /home/www/socket you would use
+    HTTP and target the UDS at /home/www/socket, you would use
     <code>unix:/home/www.socket|http://localhost/whatever/</code>.</p>
 
     <note><strong>Note:</strong> The path associated with the <code>unix:</code>
@@ -882,7 +882,7 @@ expressions</description>
     <code>http://example.com/mirror/foo/bar</code> to be internally converted
     into a proxy request to <code>http://backend.example.com/bar</code>.</p>
 
-    <p>The following alternative syntax is possible, however it can carry a
+    <p>The following alternative syntax is possible; however, it can carry a
     performance penalty when present in very large numbers. The advantage of
     the below syntax is that it allows for dynamic control via the
     <a href="mod_proxy_balancer.html#balancer_manager">Balancer Manager</a> interface:</p>
@@ -893,8 +893,8 @@ expressions</description>
 
     <note type="warning">
     <p>If the first argument ends with a trailing <strong>/</strong>, the second
-       argument should also end with a trailing <strong>/</strong> and vice
-       versa. Otherwise the resulting requests to the backend may miss some
+       argument should also end with a trailing <strong>/</strong>, and vice
+       versa. Otherwise, the resulting requests to the backend may miss some
        needed slashes and do not deliver the expected results.
     </p>
     </note>
@@ -926,14 +926,14 @@ ProxyPass "/mirror/foo" "http://backend.example.com"
       rules are checked in the order of configuration. The first rule that
       matches wins. So usually you should sort conflicting
       <directive module="mod_proxy">ProxyPass</directive> rules starting with the
-      longest URLs first. Otherwise later rules for longer URLS will be hidden
+      longest URLs first. Otherwise, later rules for longer URLS will be hidden
       by any earlier rule which uses a leading substring of the URL. Note that
       there is some relation with worker sharing. In contrast, only one
       <directive module="mod_proxy">ProxyPass</directive> directive can be placed
       in a <directive module="core">Location</directive> block, and the most
       specific location will take precedence.</p>
 
-      <p>For the same reasons exclusions must come <em>before</em> the
+      <p>For the same reasons, exclusions must come <em>before</em> the
       general <directive>ProxyPass</directive> directives.</p>
 
     </note> <!-- /ordering_proxypass -->
@@ -943,7 +943,7 @@ ProxyPass "/mirror/foo" "http://backend.example.com"
     can be retained in a pool for future use.  Limits on the pool size
     and other settings can be coded on
     the <directive>ProxyPass</directive> directive
-    using  <code>key=value</code> parameters, described in the table
+    using  <code>key=value</code> parameters, described in the tables
     below.</p>
 
     <p>By default, mod_proxy will allow and retain the maximum number of
@@ -982,7 +982,7 @@ ProxyPass "/mirror/foo" "http://backend.example.com"
         <td>Maximum number of connections that will be allowed to the
     backend server. The default for this limit is the number of threads
     per process in the active MPM. In the Prefork MPM, this is always 1,
-    while with other MPMs it is controlled by the
+    while with other MPMs, it is controlled by the
     <directive>ThreadsPerChild</directive> directive.</td></tr>
     <tr><td>smax</td>
         <td>max</td>
@@ -996,16 +996,16 @@ ProxyPass "/mirror/foo" "http://backend.example.com"
     closed more aggressively.</td></tr>
     <tr><td>acquire</td>
         <td>-</td>
-        <td>If set this will be the maximum time to wait for a free
+        <td>If set, this will be the maximum time to wait for a free
     connection in the connection pool, in milliseconds. If there are no free
-    connections in the pool the Apache httpd will return <code>SERVER_BUSY</code>
+    connections in the pool, the Apache httpd will return <code>SERVER_BUSY</code>
     status to the client.
     </td></tr>
     <tr><td>connectiontimeout</td>
         <td>timeout</td>
         <td>Connect timeout in seconds.
         The number of seconds Apache httpd waits for the creation of a connection to
-        the backend to complete. By adding a postfix of ms the timeout can be
+        the backend to complete. By adding a postfix of ms, the timeout can be
         also set in milliseconds.
     </td></tr>
     <tr><td>disablereuse</td>
@@ -1030,10 +1030,10 @@ ProxyPass "/mirror/foo" "http://backend.example.com"
         <td>off</td>
         <td>Determines whether the proxy module will auto-flush the output
         brigade after each "chunk" of data. 'off' means that it will flush
-        only when needed, 'on' means after each chunk is sent and
+        only when needed; 'on' means after each chunk is sent; and
         'auto' means poll/wait for a period of time and flush if
         no input has been received for 'flushwait' milliseconds.
-        Currently this is in effect only for AJP.
+        Currently, this is in effect only for AJP.
     </td></tr>
     <tr><td>flushwait</td>
         <td>10</td>
@@ -1049,10 +1049,11 @@ ProxyPass "/mirror/foo" "http://backend.example.com"
     <tr><td>keepalive</td>
         <td>Off</td>
         <td><p>This parameter should be used when you have a firewall between your
-    Apache httpd and the backend server, who tend to drop inactive connections.
+    Apache httpd and the backend server, which tend to drop inactive connections.
     This flag will tell the Operating System to send <code>KEEP_ALIVE</code>
-    messages on inactive connections  and thus prevent the firewall to drop the connection.
-    To enable keepalive set this property value to <code>On</code>. </p>
+    messages on inactive connections and thus prevent the firewall from dropping
+    the connection.
+    To enable keepalive, set this property value to <code>On</code>. </p>
     <p>The frequency of initial and subsequent TCP keepalive probes
     depends on global OS settings, and may be as high as 2 hours. To be useful,
     the frequency configured in the OS must be smaller than the threshold used
@@ -1068,19 +1069,19 @@ ProxyPass "/mirror/foo" "http://backend.example.com"
         <td>0</td>
         <td>Ping property tells the webserver to "test" the connection to
         the backend before forwarding the request. For AJP, it causes
-        <module>mod_proxy_ajp</module>to send a <code>CPING</code>
+        <module>mod_proxy_ajp</module> to send a <code>CPING</code>
         request on the ajp13 connection (implemented on Tomcat 3.3.2+, 4.1.28+
         and 5.0.13+). For HTTP, it causes <module>mod_proxy_http</module>
         to send a <code>100-Continue</code> to the backend (only valid for
         HTTP/1.1 - for non HTTP/1.1 backends, this property has no
-        effect). In both cases the parameter is the delay in seconds to wait
+        effect). In both cases, the parameter is the delay in seconds to wait
         for the reply.
         This feature has been added to avoid problems with hung and
         busy backends.
         This will increase the network traffic during the normal operation
         which could be an issue, but it will lower the
         traffic in case some of the cluster nodes are down or busy.
-        By adding a postfix of ms the delay can be also set in
+        By adding a postfix of ms, the delay can be also set in
         milliseconds.
     </td></tr>
     <tr><td>receivebuffersize</td>
@@ -1094,16 +1095,16 @@ ProxyPass "/mirror/foo" "http://backend.example.com"
         <td>-</td>
         <td>Redirection Route of the worker. This value is usually
         set dynamically to enable safe removal of the node from
-        the cluster. If set all requests without session id will be
+        the cluster. If set, all requests without session id will be
         redirected to the BalancerMember that has route parameter
-        equal as this value.
+        equal to this value.
     </td></tr>
     <tr><td>retry</td>
         <td>60</td>
         <td>Connection pool worker retry timeout in seconds.
     If the connection pool worker to the backend server is in the error state,
     Apache httpd will not forward any requests to that server until the timeout
-    expires. This enables to shut down the backend server for maintenance,
+    expires. This enables to shut down the backend server for maintenance
     and bring it back online later. A value of 0 means always retry workers
     in an error state with no timeout.
     </td></tr>
@@ -1119,11 +1120,11 @@ ProxyPass "/mirror/foo" "http://backend.example.com"
         <table>
          <tr><td>D: Worker is disabled and will not accept any requests.</td></tr>
          <tr><td>S: Worker is administratively stopped.</td></tr>
-         <tr><td>I: Worker is in ignore-errors mode, and will always be considered available.</td></tr>
+         <tr><td>I: Worker is in ignore-errors mode and will always be considered available.</td></tr>
          <tr><td>H: Worker is in hot-standby mode and will only be used if no other
                     viable workers are available.</td></tr>
          <tr><td>E: Worker is in an error state.</td></tr>
-         <tr><td>N: Worker is in drain mode, and will only accept existing sticky sessions
+         <tr><td>N: Worker is in drain mode and will only accept existing sticky sessions
                     destined for itself and ignore all other requests.</td></tr>
         </table>Status
         can be set (which is the default) by prepending with '+' or
@@ -1148,11 +1149,12 @@ ProxyPass "/mirror/foo" "http://backend.example.com"
 
     <p>If the Proxy directive scheme starts with the
     <code>balancer://</code> (eg: <code>balancer://cluster</code>,
-    any path information is ignored)  then a virtual worker that does not really
-    communicate with the backend server will be created. Instead it is responsible
-    for the management of several "real" workers. In that case the special set of
-    parameters can be add to this virtual worker. See <module>mod_proxy_balancer</module>
-    for more information about how the balancer works.
+    any path information is ignored), then a virtual worker that does not really
+    communicate with the backend server will be created. Instead, it is responsible
+    for the management of several "real" workers. In that case, the special set of
+    parameters can be added to this virtual worker. 
+    See <module>mod_proxy_balancer</module> for more information about how 
+    the balancer works.
     </p>
     <table border="2"><tr><th>Balancer parameters</th></tr></table>
     <table>
@@ -1163,9 +1165,9 @@ ProxyPass "/mirror/foo" "http://backend.example.com"
         <td>byrequests</td>
         <td>Balancer load-balance method. Select the load-balancing scheduler
         method to use. Either <code>byrequests</code>, to perform weighted
-        request counting, <code>bytraffic</code>, to perform weighted
-        traffic byte count balancing, or <code>bybusyness</code>, to perform
-        pending request balancing. Default is <code>byrequests</code>.
+        request counting; <code>bytraffic</code>, to perform weighted
+        traffic byte count balancing; or <code>bybusyness</code>, to perform
+        pending request balancing. The default is <code>byrequests</code>.
     </td></tr>
     <tr><td>maxattempts</td>
         <td>One less than the number of workers, or 1 with a single worker.</td>
@@ -1173,7 +1175,7 @@ ProxyPass "/mirror/foo" "http://backend.example.com"
     </td></tr>
     <tr><td>nofailover</td>
         <td>Off</td>
-        <td>If set to <code>On</code> the session will break if the worker is in
+        <td>If set to <code>On</code>, the session will break if the worker is in
         error state or disabled. Set this value to <code>On</code> if backend
         servers do not support session replication.
     </td></tr>
@@ -1182,33 +1184,33 @@ ProxyPass "/mirror/foo" "http://backend.example.com"
         <td>Balancer sticky session name. The value is usually set to something
         like <code>JSESSIONID</code> or <code>PHPSESSIONID</code>,
         and it depends on the backend application server that support sessions.
-        If the backend application server uses different name for cookies
-        and url encoded id (like servlet containers) use | to separate them.
-        The first part is for the cookie the second for the path.<br />
+        If the backend application server uses different names for cookies
+        and url encoded id (like servlet containers), use | to separate them.
+        The first part is for the cookie; the second for the path.<br />
         Available in Apache HTTP Server 2.4.4 and later.
     </td></tr>
     <tr><td>stickysessionsep</td>
         <td>"."</td>
         <td>Sets the separation symbol in the session cookie. Some backend application servers
-        do not use the '.' as the symbol. For example the Oracle Weblogic server uses 
+        do not use the '.' as the symbol. For example, the Oracle Weblogic server uses 
         '!'. The correct symbol can be set using this option. The setting of 'Off'
         signifies that no symbol is used.
     </td></tr>
     <tr><td>scolonpathdelim</td>
         <td>Off</td>
-        <td>If set to <code>On</code> the semi-colon character ';' will be
+        <td>If set to <code>On</code>, the semi-colon character ';' will be
         used as an additional sticky session path delimiter/separator. This
         is mainly used to emulate mod_jk's behavior when dealing with paths such
         as <code>JSESSIONID=6736bcf34;foo=aabfa</code>
     </td></tr>
     <tr><td>timeout</td>
         <td>0</td>
-        <td>Balancer timeout in seconds. If set this will be the maximum time
-        to wait for a free worker. Default is not to wait.
+        <td>Balancer timeout in seconds. If set, this will be the maximum time
+        to wait for a free worker. The default is to not wait.
     </td></tr>
     <tr><td>failonstatus</td>
         <td>-</td>
-        <td>A single or comma-separated list of HTTP status codes. If set this will
+        <td>A single or comma-separated list of HTTP status codes. If set, this will
         force the worker into error state when the backend returns any status code
         in the list. Worker recovery behaves the same as other worker errors.
     </td></tr>
@@ -1242,13 +1244,13 @@ ProxyPass "/mirror/foo" "http://backend.example.com"
         retry parameter of the workers if all workers of a balancer are
         in error state. There might be cases where an already overloaded backend
         can get into deeper trouble if the recovery of all workers is enforced
-        without considering the retry parameter of each worker. In this case
+        without considering the retry parameter of each worker. In this case,
         set to <code>Off</code>.<br />
         Available in Apache HTTP Server 2.4.2 and later.
     </td></tr>
 
     </table>
-    <p>A sample balancer setup</p>
+    <p>A sample balancer setup:</p>
     <highlight language="config">
 ProxyPass "/special-area" "http://special.example.com" smax=5 max=10
 ProxyPass "/" "balancer://mycluster/" stickysession=JSESSIONID|jsessionid nofailover=On
@@ -1260,8 +1262,8 @@ ProxyPass "/" "balancer://mycluster/" stickysession=JSESSIONID|jsessionid nofail
 &lt;/Proxy&gt;
     </highlight>
 
-    <p>Setting up a hot-standby, that will only be used if no other
-     members are available</p>
+    <p>Setting up a hot-standby that will only be used if no other
+     members are available:</p>
     <highlight language="config">
 ProxyPass "/" "balancer://hotcluster/"
 &lt;Proxy "balancer://hotcluster"&gt;
@@ -1276,9 +1278,9 @@ ProxyPass "/" "balancer://hotcluster/"
     <p>Normally, mod_proxy will canonicalise ProxyPassed URLs.
     But this may be incompatible with some backends, particularly those
     that make use of <var>PATH_INFO</var>.  The optional <var>nocanon</var>
-    keyword suppresses this, and passes the URL path "raw" to the
-    backend.  Note that may affect the security of your backend, as it
-    removes the normal limited protection against URL-based attacks
+    keyword suppresses this and passes the URL path "raw" to the
+    backend.  Note that this keyword may affect the security of your backend, 
+	as it removes the normal limited protection against URL-based attacks
     provided by the proxy.</p>
 
     <p>Normally, mod_proxy will include the query string when
@@ -1290,8 +1292,8 @@ ProxyPass "/" "balancer://hotcluster/"
     >Location</directive> section, the first argument is omitted and the local
     directory is obtained from the <directive type="section" module="core"
     >Location</directive>. The same will occur inside a
-    <directive type="section" module="core">LocationMatch</directive> section,
-    however ProxyPass does not interpret the regexp as such, so it is necessary
+    <directive type="section" module="core">LocationMatch</directive> section;
+    however, ProxyPass does not interpret the regexp as such, so it is necessary
     to use <directive>ProxyPassMatch</directive> in this situation instead.</p>
 
     <p>This directive is not supported in <directive type="section" module="core"
@@ -1303,7 +1305,7 @@ ProxyPass "/" "balancer://hotcluster/"
     <code>[P]</code> flag.</p>
 
     <p>The optional <var>interpolate</var> keyword, in combination with
-    <directive>ProxyPassInterpolateEnv</directive> causes the ProxyPass
+    <directive>ProxyPassInterpolateEnv</directive>, causes the ProxyPass
     to interpolate environment variables, using the syntax
     <var>${VARNAME}</var>.  Note that many of the standard CGI-derived
     environment variables will not exist when this interpolation happens,
@@ -1338,8 +1340,8 @@ ProxyPassReverse  "/mirror/foo/" "https://backend.example.com/"
 </contextlist>
 
 <usage>
-    <p>This directive is equivalent to <directive module="mod_proxy">ProxyPass</directive>,
-       but makes use of regular expressions, instead of simple prefix matching. The
+    <p>This directive is equivalent to <directive module="mod_proxy">ProxyPass</directive>
+       but makes use of regular expressions instead of simple prefix matching. The
        supplied regular expression is matched against the <var>url</var>, and if it
        matches, the server will substitute any parenthesized matches into the given
        string and use it as a new <var>url</var>.</p>
@@ -1395,7 +1397,7 @@ ProxyPassReverse  "/mirror/foo/" "https://backend.example.com/"
       <p>Take care when constructing the target URL of the rule, considering
         the security impact from allowing the client influence over the set of
         URLs to which your server will act as a proxy.  Ensure that the scheme
-        and hostname part of the URL is either fixed, or does not allow the
+        and hostname part of the URL is either fixed or does not allow the
         client undue influence.</p>
     </note>
 </usage>
@@ -1415,7 +1417,7 @@ proxied server</description>
     <p>This directive lets Apache httpd adjust the URL in the <code>Location</code>,
     <code>Content-Location</code> and <code>URI</code> headers on HTTP
     redirect responses. This is essential when Apache httpd is used as a
-    reverse proxy (or gateway) to avoid by-passing the reverse proxy
+    reverse proxy (or gateway) to avoid bypassing the reverse proxy
     because of HTTP redirects on the backend servers which stay behind
     the reverse proxy.</p>
 
@@ -1423,12 +1425,13 @@ proxied server</description>
     will be rewritten. Apache httpd will not rewrite other response
     headers, nor will it by default rewrite URL references inside HTML pages.
     This means that if the proxied content contains absolute URL
-    references, they will by-pass the proxy. To rewrite HTML content to
+    references, they will bypass the proxy. To rewrite HTML content to
     match the proxy, you must load and enable <module>mod_proxy_html</module>.
     </p>
 
-    <p><var>path</var> is the name of a local virtual path. <var>url</var> is a
-    partial URL for the remote server - the same way they are used for the
+    <p><var>path</var> is the name of a local virtual path; <var>url</var> is a
+    partial URL for the remote server. 
+    These parameters are used the same way as for the
     <directive module="mod_proxy">ProxyPass</directive> directive.</p>
 
     <p>For example, suppose the local server has address
@@ -1444,17 +1447,17 @@ ProxyPassReverseCookiePath  "/"  "/mirror/foo/"
     <p>will not only cause a local request for the
     <code>http://example.com/mirror/foo/bar</code> to be internally converted
     into a proxy request to <code>http://backend.example.com/bar</code>
-    (the functionality <code>ProxyPass</code> provides here). It also takes care
-    of redirects the server <code>backend.example.com</code> sends: when
-    <code>http://backend.example.com/bar</code> is redirected by him to
-    <code>http://backend.example.com/quux</code> Apache httpd adjusts this to
+    (the functionality which <code>ProxyPass</code> provides here). 
+    It also takes care of redirects which the server <code>backend.example.com</code>
+    sends when redirecting <code>http://backend.example.com/bar</code> to
+    <code>http://backend.example.com/quux</code> . Apache httpd adjusts this to
     <code>http://example.com/mirror/foo/quux</code> before forwarding the HTTP
     redirect response to the client. Note that the hostname used for
     constructing the URL is chosen in respect to the setting of the <directive
     module="core">UseCanonicalName</directive> directive.</p>
 
     <p>Note that this <directive>ProxyPassReverse</directive> directive can
-    also be used in conjunction with the proxy pass-through feature
+    also be used in conjunction with the proxy feature
     (<code>RewriteRule ...  [P]</code>) from <module>mod_rewrite</module>
     because it doesn't depend on a corresponding <directive module="mod_proxy"
     >ProxyPass</directive> directive.</p>
@@ -1472,7 +1475,7 @@ ProxyPassReverseCookiePath  "/"  "/mirror/foo/"
     module="core">LocationMatch</directive> section, but will probably not work as
     intended, as ProxyPassReverse will interpret the regexp literally as a
     path; if needed in this situation, specify the ProxyPassReverse outside
-    the section, or in a separate <directive type="section" module="core"
+    the section or in a separate <directive type="section" module="core"
     >Location</directive> section.</p>
 
     <p>This directive is not supported in <directive type="section" module="core"
@@ -1604,12 +1607,12 @@ connections</description>
 
 <usage>
     <p>The <directive>ProxyIOBufferSize</directive> directive adjusts the size
-    of the internal buffer, which is used as a scratchpad for the data between
+    of the internal buffer which is used as a scratchpad for the data between
     input and output. The size must be at least <code>512</code>.</p>
 
-    <p>In almost every case there's no reason to change that value.</p>
+    <p>In almost every case, there's no reason to change that value.</p>
 
-    <p>If used with AJP this directive sets the maximum AJP packet size in
+    <p>If used with AJP, this directive sets the maximum AJP packet size in
     bytes. Values larger than 65536 are set to 65536. If you change it from
     the default, you must also change the <code>packetSize</code> attribute of
     your AJP connector on the Tomcat side! The attribute
@@ -1635,9 +1638,9 @@ through</description>
 
 <usage>
     <p>The <directive>ProxyMaxForwards</directive> directive specifies the
-    maximum number of proxies through which a request may pass, if there's no
+    maximum number of proxies through which a request may pass if there's no
     <code>Max-Forwards</code> header supplied with the request. This may
-    be set to prevent infinite proxy loops, or a DoS attack.</p>
+    be set to prevent infinite proxy loops or a DoS attack.</p>
 
     <example><title>Example</title>
     <highlight language="config">
@@ -1650,7 +1653,7 @@ through</description>
     setting <code>Max-Forwards</code> if the Client didn't set it.
     Earlier Apache httpd versions would always set it.  A negative
     <directive>ProxyMaxForwards</directive> value, including the
-    default -1, gives you protocol-compliant behaviour, but may
+    default -1, gives you protocol-compliant behavior but may
     leave you open to loops.</p>
 </usage>
 </directivesynopsis>
@@ -1702,7 +1705,7 @@ NoProxy         ".example.com" "192.168.112.0/21"
     <note><title>Note</title>
       <p>Domain name comparisons are done without regard to the case, and
       <var>Domain</var>s are always assumed to be anchored in the root of the
-      DNS tree, therefore two domains <code>.ExAmple.com</code> and
+      DNS tree; therefore, the two domains <code>.ExAmple.com</code> and
       <code>.example.com.</code> (note the trailing period) are considered
       equal. Since a domain comparison does not involve a DNS lookup, it is much
       more efficient than subnet comparison.</p>
@@ -1772,7 +1775,7 @@ NoProxy         ".example.com" "192.168.112.0/21"
       link.</p>
       <p><var>Hostname</var> comparisons are done without regard to the case,
       and <var>Hostname</var>s are always assumed to be anchored in the root
-      of the DNS tree, therefore two hosts <code>WWW.ExAmple.com</code>
+      of the DNS tree; therefore, the two hosts <code>WWW.ExAmple.com</code>
       and <code>www.example.com.</code> (note the trailing period) are
       considered equal.</p>
      </note></dd>
@@ -1867,13 +1870,13 @@ header for proxied requests</description>
 </contextlist>
 
 <usage>
-    <p>This directive is useful for reverse-proxy setups, where you want to
+    <p>This directive is useful for reverse-proxy setups where you want to
     have a common look and feel on the error pages seen by the end user.
     This also allows for included files (via
     <module>mod_include</module>'s SSI) to get
-    the error code and act accordingly (default behavior would display
-    the error page of the proxied server, turning this on shows the SSI
-    Error message).</p>
+    the error code and act accordingly. (Default behavior would display
+    the error page of the proxied server. Turning this on shows the SSI
+    Error message.)</p>
 
     <p>This directive does not affect the processing of informational (1xx),
     normal success (2xx), or redirect (3xx) responses.</p>
@@ -1894,18 +1897,18 @@ header for proxied requests</description>
 <usage>
     <p>This directive, together with the <var>interpolate</var> argument to
     <directive>ProxyPass</directive>, <directive>ProxyPassReverse</directive>,
-    <directive>ProxyPassReverseCookieDomain</directive> and
-    <directive>ProxyPassReverseCookiePath</directive>
+    <directive>ProxyPassReverseCookieDomain</directive>, and
+    <directive>ProxyPassReverseCookiePath</directive>,
     enables reverse proxies to be dynamically
-    configured using environment variables, which may be set by
+    configured using environment variables which may be set by
     another module such as <module>mod_rewrite</module>.
     It affects the <directive>ProxyPass</directive>,
     <directive>ProxyPassReverse</directive>,
     <directive>ProxyPassReverseCookieDomain</directive>, and
-    <directive>ProxyPassReverseCookiePath</directive> directives,
+    <directive>ProxyPassReverseCookiePath</directive> directives
     and causes them to substitute the value of an environment
     variable <code>varname</code> for the string <code>${varname}</code>
-    in configuration directives (if the <var>interpolate</var> option is set).</p>
+    in configuration directives if the <var>interpolate</var> option is set.</p>
     <p>Keep this turned off (for server performance) unless you need it!</p>
 </usage>
 </directivesynopsis>
