@@ -20,7 +20,7 @@
  * @macro
  * Version number of the h2 module as c string
  */
-#define MOD_H2_VERSION "1.0.0"
+#define MOD_H2_VERSION "0.9.1"
 
 /**
  * @macro

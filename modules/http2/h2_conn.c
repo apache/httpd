@@ -351,27 +351,21 @@ conn_rec *h2_conn_create(conn_rec *master, apr_pool_t *pool)
      */
     socket = ap_get_module_config(master->conn_config, &core_module);
     c = ap_run_create_connection(pool, master->base_server,
-                                           socket,
-                                           master->id^((long)pool), 
-                                           master->sbh,
-                                           master->bucket_alloc);
+                                 socket,
+                                 master->id^((long)pool), 
+                                 master->sbh,
+                                 master->bucket_alloc);
     if (c == NULL) {
         ap_log_perror(APLOG_MARK, APLOG_ERR, APR_ENOMEM, pool, 
                       APLOGNO(02913) "h2_task: creating conn");
         return NULL;
     }
-    /* TODO: we simulate that we had already a request on this connection.
-     * This keeps the mod_ssl SNI vs. Host name matcher from answering 
-     * 400 Bad Request
-     * when names do not match. We prefer a predictable 421 status.
-     */
-    c->keepalives = 1;
-
     return c;
 }
 
-apr_status_t h2_conn_prep(h2_task_env *env, conn_rec *master, h2_worker *worker)
+apr_status_t h2_conn_setup(h2_task_env *env, struct h2_worker *worker)
 {
+    conn_rec *master = env->mplx->c;
     h2_config *cfg = h2_config_get(master);
     
     ap_log_perror(APLOG_MARK, APLOG_TRACE3, 0, env->pool,
@@ -393,7 +387,10 @@ apr_status_t h2_conn_prep(h2_task_env *env, conn_rec *master, h2_worker *worker)
     ap_set_module_config(env->c.conn_config, &core_module, 
                          h2_worker_get_socket(worker));
     
-    if (ssl_module) {
+    /* If we serve http:// requests over a TLS connection, we do
+     * not want any mod_ssl vars to be visible.
+     */
+    if (ssl_module && (!env->scheme || strcmp("http", env->scheme))) {
         /* See #19, there is a range of SSL variables to be gotten from
          * the main connection that should be available in request handlers
          */
@@ -419,62 +416,12 @@ apr_status_t h2_conn_prep(h2_task_env *env, conn_rec *master, h2_worker *worker)
             break;
     }
     
-    return APR_SUCCESS;
-}
-
-apr_status_t h2_conn_setup(struct h2_task_env *env, struct h2_worker *worker)
-{
-    return h2_conn_prep(env, env->mplx->c, worker);
-}
-
-apr_status_t h2_conn_init(struct h2_task_env *env, struct h2_worker *worker)
-{
-    conn_rec *master = env->mplx->c;
-    h2_config *cfg = h2_config_get(master);
-    
-    apr_socket_t *socket = ap_get_module_config(master->conn_config, 
-                                                &core_module);
-    conn_rec *c = ap_run_create_connection(env->pool, master->base_server,
-                                           socket,
-                                           master->id^((long)env->pool), 
-                                           master->sbh,
-                                           master->bucket_alloc);
-    if (c == NULL) {
-        ap_log_perror(APLOG_MARK, APLOG_ERR, APR_ENOMEM, env->pool,
-                      APLOGNO(02914) "h2_task: creating conn");
-        return APR_ENOMEM;
-    }
-    
-    env->c = *c;
-    env->c.bucket_alloc = h2_worker_get_bucket_alloc(worker);
-    env->c.current_thread = h2_worker_get_thread(worker);
-    
-    ap_set_module_config(env->c.conn_config, &core_module, socket);
-    if (ssl_module) {
-        /* See #19, there is a range of SSL variables to be gotten from
-         * the main connection that should be available in request handlers
-         */
-        void *sslcfg = ap_get_module_config(master->conn_config, ssl_module);
-        if (sslcfg) {
-            ap_set_module_config(env->c.conn_config, ssl_module, sslcfg);
-        }
-    }
-    
-    /* This works for mpm_worker so far. Other mpm modules have 
-     * different needs, unfortunately. The most interesting one 
-     * being mpm_event...
+    /* TODO: we simulate that we had already a request on this connection.
+     * This keeps the mod_ssl SNI vs. Host name matcher from answering 
+     * 400 Bad Request
+     * when names do not match. We prefer a predictable 421 status.
      */
-    switch (h2_conn_mpm_type()) {
-        case H2_MPM_WORKER:
-            /* all fine */
-            break;
-        case H2_MPM_EVENT: 
-            fix_event_conn(&env->c, master);
-            break;
-        default:
-            /* fingers crossed */
-            break;
-    }
+    env->c.keepalives = 1;
     
     return APR_SUCCESS;
 }

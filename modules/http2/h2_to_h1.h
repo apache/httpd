@@ -26,8 +26,9 @@ struct h2_to_h1 {
     h2_mplx *m;
 
     const char *method;
-    const char *path;
+    const char *scheme;
     const char *authority;
+    const char *path;
     
     int chunked;
     int eoh;
@@ -47,8 +48,11 @@ struct h2_to_h1 {
  */
 h2_to_h1 *h2_to_h1_create(int stream_id, apr_pool_t *pool, 
                           apr_bucket_alloc_t *bucket_alloc, 
-                          const char *method, const char *path,
-                          const char *authority, struct h2_mplx *m);
+                          const char *method, 
+                          const char *scheme, 
+                          const char *authority, 
+                          const char *path,
+                          struct h2_mplx *m);
 
 /* Destroy the converter and free resources. */
 void h2_to_h1_destroy(h2_to_h1 *to_h1);

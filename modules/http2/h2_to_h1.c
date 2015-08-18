@@ -33,8 +33,11 @@
 
 h2_to_h1 *h2_to_h1_create(int stream_id, apr_pool_t *pool, 
                           apr_bucket_alloc_t *bucket_alloc, 
-                          const char *method, const char *path,
-                          const char *authority, struct h2_mplx *m)
+                          const char *method, 
+                          const char *scheme, 
+                          const char *authority, 
+                          const char *path,
+                          struct h2_mplx *m)
 {
     h2_to_h1 *to_h1;
     if (!method) {
@@ -55,8 +58,9 @@ h2_to_h1 *h2_to_h1_create(int stream_id, apr_pool_t *pool,
         to_h1->stream_id = stream_id;
         to_h1->pool = pool;
         to_h1->method = method;
-        to_h1->path = path;
+        to_h1->scheme = scheme;
         to_h1->authority = authority;
+        to_h1->path = path;
         to_h1->m = m;
         to_h1->headers = apr_table_make(to_h1->pool, 10);
         to_h1->bb = apr_brigade_create(pool, bucket_alloc);
@@ -183,8 +187,11 @@ apr_status_t h2_to_h1_end_headers(h2_to_h1 *to_h1, h2_task *task, int eos)
         apr_table_mergen(to_h1->headers, "Transfer-Encoding", "chunked");
     }
     
-    h2_task_set_request(task, to_h1->method, to_h1->path, 
-                        to_h1->authority, to_h1->headers, eos);
+    h2_task_set_request(task, to_h1->method, 
+                        to_h1->scheme, 
+                        to_h1->authority, 
+                        to_h1->path, 
+                        to_h1->headers, eos);
     to_h1->eoh = 1;
     
     if (eos) {

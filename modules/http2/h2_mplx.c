@@ -765,6 +765,10 @@ h2_task *h2_mplx_pop_task(h2_mplx *m, int *has_more)
     if (APR_SUCCESS == status) {
         task = h2_tq_pop_first(m->q);
         if (task) {
+            h2_io *io = h2_io_set_get(m->stream_ios, task->stream_id);
+            if (io) {
+                task->c = h2_conn_create(m->c, io->pool);
+            }
             h2_task_set_started(task);
         }
         *has_more = !h2_tq_empty(m->q);
@@ -782,16 +786,8 @@ apr_status_t h2_mplx_create_task(h2_mplx *m, struct h2_stream *stream)
     }
     status = apr_thread_mutex_lock(m->lock);
     if (APR_SUCCESS == status) {
-        
-        conn_rec *c = h2_conn_create(m->c, stream->pool);
-        if (c == NULL) {
-            ap_log_cerror(APLOG_MARK, APLOG_ERR, APR_ENOMEM, m->c,
-                          APLOGNO(02916) "h2_mplx(%ld-%d): start stream",
-                          m->id, stream->id);
-            return APR_ENOMEM;
-        }
         stream->task = h2_task_create(m->id, stream->id, 
-                                      stream->pool, m, c);
+                                      stream->pool, m, NULL);
         
         apr_thread_mutex_unlock(m->lock);
     }

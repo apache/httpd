@@ -37,9 +37,9 @@ struct h2_request {
     
     /* pseudo header values, see ch. 8.1.2.3 */
     const char *method;
-    const char *path;
-    const char *authority;
     const char *scheme;
+    const char *authority;
+    const char *path;
 };
 
 h2_request *h2_request_create(int id, apr_pool_t *pool, 

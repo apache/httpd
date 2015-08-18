@@ -56,8 +56,8 @@ apr_status_t h2_request_rwrite(h2_request *req, request_rec *r, h2_mplx *m)
 {
     apr_status_t status;
     req->method = r->method;
-    req->path = r->uri;
     req->authority = r->hostname;
+    req->path = r->uri;
     if (!strchr(req->authority, ':') && r->parsed_uri.port_str) {
         req->authority = apr_psprintf(req->pool, "%s:%s", req->authority,
                                       r->parsed_uri.port_str);
@@ -168,7 +168,10 @@ apr_status_t h2_request_close(h2_request *req)
 static apr_status_t insert_request_line(h2_request *req, h2_mplx *m)
 {
     req->to_h1 = h2_to_h1_create(req->id, req->pool, req->bucket_alloc, 
-                                 req->method, req->path, req->authority, m);
+                                 req->method, 
+                                 req->scheme, 
+                                 req->authority, 
+                                 req->path, m);
     return req->to_h1? APR_SUCCESS : APR_ENOMEM;
 }
 
