@@ -1161,7 +1161,7 @@ ProxyPass "/mirror/foo" "http://backend.example.com"</pre>
     <tr><td>keepalive</td>
         <td>Off</td>
         <td><p>This parameter should be used when you have a firewall between your
-    Apache httpd and the backend server, which tend to drop inactive connections.
+    Apache httpd and the backend server, which tends to drop inactive connections.
     This flag will tell the Operating System to send <code>KEEP_ALIVE</code>
     messages on inactive connections and thus prevent the firewall from dropping
     the connection.
@@ -1683,7 +1683,7 @@ request</td></tr>
 context in 2.3.3 and later.</td></tr>
 </table>
     <p>When enabled, this option will pass the Host: line from the incoming
-    request to the proxied host instead of the hostname specified in the
+    request to the proxied host, instead of the hostname specified in the
     <code class="directive"><a href="#proxypass">ProxyPass</a></code> line.</p>
 
     <p>This option should normally be turned <code>Off</code>. It is mostly
