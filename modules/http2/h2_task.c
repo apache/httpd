@@ -182,12 +182,16 @@ h2_task *h2_task_create(long session_id,
 }
 
 void h2_task_set_request(h2_task *task, 
-                         const char *method, const char *path, 
-                         const char *authority, apr_table_t *headers, int eos)
+                         const char *method, 
+                         const char *scheme, 
+                         const char *authority, 
+                         const char *path, 
+                         apr_table_t *headers, int eos)
 {
     task->method = method;
-    task->path = path;
+    task->scheme = scheme;
     task->authority = authority;
+    task->path = path;
     task->headers = headers;
     task->input_eos = eos;
 }
@@ -227,19 +231,15 @@ apr_status_t h2_task_do(h2_task *task, h2_worker *worker)
     
     /* Clone fields, so that lifetimes become (more) independent. */
     env.method    = apr_pstrdup(env.pool, task->method);
-    env.path      = apr_pstrdup(env.pool, task->path);
+    env.scheme    = apr_pstrdup(env.pool, task->scheme);
     env.authority = apr_pstrdup(env.pool, task->authority);
+    env.path      = apr_pstrdup(env.pool, task->path);
     env.headers   = apr_table_clone(env.pool, task->headers);
     
     /* Setup the pseudo connection to use our own pool and bucket_alloc */
-    if (task->c) {
-        env.c = *task->c;
-        task->c = NULL;
-        status = h2_conn_setup(&env, worker);
-    }
-    else {
-        status = h2_conn_init(&env, worker);
-    }
+    env.c = *task->c;
+    task->c = NULL;
+    status = h2_conn_setup(&env, worker);
     
     /* save in connection that this one is a pseudo connection, prevents
      * other hooks from messing with it. */

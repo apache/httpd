@@ -56,8 +56,9 @@ struct h2_task {
     volatile apr_uint32_t has_finished;
     
     const char *method;
-    const char *path;
+    const char *scheme;
     const char *authority;
+    const char *path;
     apr_table_t *headers;
     int input_eos;
 
@@ -75,8 +76,9 @@ struct h2_task_env {
     apr_bucket_alloc_t *bucket_alloc;
     
     const char *method;
-    const char *path;
+    const char *scheme;
     const char *authority;
+    const char *path;
     apr_table_t *headers;
     int input_eos;
     
@@ -163,8 +165,12 @@ h2_task *h2_task_create(long session_id, int stream_id,
 
 apr_status_t h2_task_destroy(h2_task *task);
 
-void h2_task_set_request(h2_task *task, const char *method, const char *path, 
-                         const char *authority, apr_table_t *headers, int eos);
+void h2_task_set_request(h2_task *task, 
+                         const char *method, 
+                         const char *scheme, 
+                         const char *authority, 
+                         const char *path, 
+                         apr_table_t *headers, int eos);
 
 
 apr_status_t h2_task_do(h2_task *task, struct h2_worker *worker);

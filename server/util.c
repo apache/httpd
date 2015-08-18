@@ -3149,7 +3149,7 @@ AP_DECLARE(char *) ap_get_exec_line(apr_pool_t *p,
     return apr_pstrndup(p, buf, k);
 }
 
-AP_DECLARE(int) ap_array_index(apr_array_header_t *array, const char *s)
+AP_DECLARE(int) ap_array_index(const apr_array_header_t *array, const char *s)
 {
     int i;
     for (i = 0; i < array->nelts; i++) {

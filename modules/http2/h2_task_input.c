@@ -74,6 +74,9 @@ h2_task_input *h2_task_input_create(h2_task_env *env, apr_pool_t *pool,
             if (input->bb) {
                 apr_brigade_flatten(input->bb, buffer, &len);
             }
+            else {
+                len = 0;
+            }
             buffer[len] = 0;
             ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, &env->c,
                           "h2_task_input(%s): request is: %s", 

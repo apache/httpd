@@ -2408,7 +2408,7 @@ AP_DECLARE(char *) ap_get_exec_line(apr_pool_t *p,
  * @param s the string to find
  * @return index of string in array or -1
  */
-AP_DECLARE(int) ap_array_index(apr_array_header_t *array, const char *s);
+AP_DECLARE(int) ap_array_index(const apr_array_header_t *array, const char *s);
 
 #ifdef __cplusplus
 }

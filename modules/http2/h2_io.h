@@ -29,6 +29,7 @@ typedef struct h2_io h2_io;
 
 struct h2_io {
     int id;                      /* stream identifier */
+    apr_pool_t *pool;            /* stream pool */
     apr_bucket_brigade *bbin;    /* input data for stream */
     int eos_in;
     int task_done;
