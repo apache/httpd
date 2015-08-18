@@ -126,6 +126,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://people.apache.org/~rpluem/patches/proxy_race_retry_2.2.x.diff
       +1: rpluem,
 
+  *) mod_ssl: Fix spurious errors when loading certificate chain
+     2.2.x uses a home grown version of SSL_CTX_use_certificate_chain_file
+     called SSL_CTX_use_certificate_chain() which also needs the
+     ERR_clear_error() call.
+     See https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=794383
+     trunk patch: N/A, but similar to https://svn.apache.org/r1588427
+     2.2.x patch: http://people.apache.org/~sf/SSL_CTX_use_certificate_clear_errors.diff
+
 PATCHES/ISSUES THAT ARE STALLED
 
    * mod_proxy_balancer: Always initialize the shared parameters of a load
