@@ -56,10 +56,30 @@
 
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
-<p>This module provides no
-            directives.</p>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#memcacheconnttl">MemcacheConnTTL</a></li>
+</ul>
 <ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="MemcacheConnTTL" id="MemcacheConnTTL">MemcacheConnTTL</a> <a name="memcacheconnttl" id="memcacheconnttl">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Keepalive time for idle connections</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MemcacheConnTTL <em>seconds</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>MemcacheConnTTL 15</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_socache_memcache</td></tr>
+</table>
+
+    <p>Set the time, in seconds, to keep idle connections with the memcache
+    server(s) alive (threaded platforms only).</p>
+    
+    <p>Valid values for <code class="directive">MemcacheConnTTL</code> are integers
+    from 1 to 1800. That is to say, up to half an hour.</p>
+
+
+</div>
 </div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_socache_memcache.html" title="English">&nbsp;en&nbsp;</a></p>
