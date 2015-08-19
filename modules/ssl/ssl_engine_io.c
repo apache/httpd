@@ -1496,7 +1496,6 @@ static apr_status_t ssl_io_filter_input(ap_filter_t *f,
         const unsigned char *next_proto = NULL;
         unsigned next_proto_len = 0;
         const char *protocol;
-        int n;
 
         SSL_get0_alpn_selected(inctx->ssl, &next_proto, &next_proto_len);
         if (next_proto && next_proto_len) {
