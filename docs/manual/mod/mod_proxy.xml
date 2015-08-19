@@ -883,6 +883,14 @@ expressions</description>
     the <code>[P,NE]</code> option to prevent the <code>'|'</code> character
     from being escaped.</note>
 
+    <p>When used inside a <directive type="section" module="core"
+    >Location</directive> section, the first argument is omitted and the local
+    directory is obtained from the <directive type="section" module="core"
+    >Location</directive>. The same will occur inside a
+    <directive type="section" module="core">LocationMatch</directive> section;
+    however, ProxyPass does not interpret the regexp as such, so it is necessary
+    to use <directive>ProxyPassMatch</directive> in this situation instead.</p>
+
     <p>Suppose the local server has address <code>http://example.com/</code>;
     then</p>
 
@@ -895,6 +903,14 @@ expressions</description>
     <p>will cause a local request for
     <code>http://example.com/mirror/foo/bar</code> to be internally converted
     into a proxy request to <code>http://backend.example.com/bar</code>.</p>
+
+    <p>The ProxyPass directive is not supported in <directive type="section" module="core"
+    >Directory</directive> or <directive type="section" module="core"
+    >Files</directive> sections.</p>
+
+    <p>If you require a more flexible reverse-proxy configuration, see the
+    <directive module="mod_rewrite">RewriteRule</directive> directive with the
+    <code>[P]</code> flag.</p>
 
     <p>The following alternative syntax is possible; however, it can carry a
     performance penalty when present in very large numbers. The advantage of
@@ -951,6 +967,8 @@ ProxyPass "/mirror/foo"   "http://backend.example.com"
       general <directive>ProxyPass</directive> directives.</p>
 
     </note> <!-- /ordering_proxypass -->
+
+    <p><strong>ProxyPass <code>key=value</code> Parameters</strong></p>
 
     <p>In Apache HTTP Server 2.1 and later, mod_proxy supports pooled
     connections to a backend server.  Connections created on demand
@@ -1278,7 +1296,7 @@ ProxyPass "/"             "balancer://mycluster/" stickysession=JSESSIONID|jsess
     </highlight>
 
     <p>Setting up a hot-standby that will only be used if no other
-     members are available</p>
+     members are available:</p>
     <highlight language="config">
 ProxyPass "/" "balancer://hotcluster/"
 &lt;Proxy balancer://hotcluster&gt;
@@ -1289,6 +1307,8 @@ ProxyPass "/" "balancer://hotcluster/"
     ProxySet lbmethod=bytraffic
 &lt;/Proxy&gt;
     </highlight>
+
+    <p><strong>Additional ProxyPass Keywords</strong></p>
 
     <p>Normally, mod_proxy will canonicalise ProxyPassed URLs.
     But this may be incompatible with some backends, particularly those
@@ -1302,22 +1322,6 @@ ProxyPass "/" "balancer://hotcluster/"
     generating the <var>SCRIPT_FILENAME</var> environment variable.
     The optional <var>noquery</var> keyword (available in
     httpd 2.4.1 and later) prevents this.</p>
-
-    <p>When used inside a <directive type="section" module="core"
-    >Location</directive> section, the first argument is omitted and the local
-    directory is obtained from the <directive type="section" module="core"
-    >Location</directive>. The same will occur inside a
-    <directive type="section" module="core">LocationMatch</directive> section;
-    however, ProxyPass does not interpret the regexp as such, so it is necessary
-    to use <directive>ProxyPassMatch</directive> in this situation instead.</p>
-
-    <p>This directive is not supported in <directive type="section" module="core"
-    >Directory</directive> or <directive type="section" module="core"
-    >Files</directive> sections.</p>
-
-    <p>If you require a more flexible reverse-proxy configuration, see the
-    <directive module="mod_rewrite">RewriteRule</directive> directive with the
-    <code>[P]</code> flag.</p>
 
     <p>The optional <var>interpolate</var> keyword, in combination with
     <directive>ProxyPassInterpolateEnv</directive>, causes the ProxyPass
