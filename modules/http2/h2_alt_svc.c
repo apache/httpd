@@ -42,13 +42,13 @@ void h2_alt_svc_register_hooks(void)
  * - do not use quotation marks
  */
 h2_alt_svc *h2_alt_svc_parse(const char *s, apr_pool_t *pool) {
-    const char *sep = strchr((char *)s, '=');
+    const char *sep = ap_strchr_c(s, '=');
     if (sep) {
         const char *alpn = apr_pstrndup(pool, s, sep - s);
         const char *host = NULL;
         int port = 0;
         s = sep + 1;
-        sep = strchr((char *)s, ':');  /* mandatory : */
+        sep = ap_strchr_c(s, ':');  /* mandatory : */
         if (sep) {
             if (sep != s) {    /* optional host */
                 host = apr_pstrndup(pool, s, sep - s);
