@@ -58,7 +58,7 @@ apr_status_t h2_request_rwrite(h2_request *req, request_rec *r, h2_mplx *m)
     req->method = r->method;
     req->authority = r->hostname;
     req->path = r->uri;
-    if (!strchr(req->authority, ':') && r->parsed_uri.port_str) {
+    if (!strchr((char *)req->authority, ':') && r->parsed_uri.port_str) {
         req->authority = apr_psprintf(req->pool, "%s:%s", req->authority,
                                       r->parsed_uri.port_str);
     }

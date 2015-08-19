@@ -132,7 +132,7 @@ h2_mpm_type_t h2_conn_mpm_type(void) {
     return mpm_type;
 }
 
-module *h2_conn_mpm_module(void) {
+static module *h2_conn_mpm_module(void) {
     check_modules();
     return mpm_module;
 }
@@ -366,7 +366,6 @@ conn_rec *h2_conn_create(conn_rec *master, apr_pool_t *pool)
 apr_status_t h2_conn_setup(h2_task_env *env, struct h2_worker *worker)
 {
     conn_rec *master = env->mplx->c;
-    h2_config *cfg = h2_config_get(master);
     
     ap_log_perror(APLOG_MARK, APLOG_TRACE3, 0, env->pool,
                   "h2_conn(%ld): created from master", master->id);
