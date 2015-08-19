@@ -58,7 +58,7 @@ h2_response *h2_response_create(int stream_id,
         header = apr_table_make(pool, hlines->nelts);        
         for (i = 0; i < hlines->nelts; ++i) {
             char *hline = ((char **)hlines->elts)[i];
-            char *sep = strchr(hline, ':');
+            char *sep = ap_strchr(hline, ':');
             if (!sep) {
                 ap_log_perror(APLOG_MARK, APLOG_WARNING, APR_EINVAL, pool,
                               APLOGNO(02955) "h2_response(%d): invalid header[%d] '%s'",

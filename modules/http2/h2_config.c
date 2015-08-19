@@ -58,7 +58,7 @@ static void *h2_config_create(apr_pool_t *pool,
     h2_config *conf = (h2_config *)apr_pcalloc(pool, sizeof(h2_config));
     
     const char *s = x? x : "unknown";
-    char *name = (char *)apr_pcalloc(pool, strlen(prefix) + strlen(s) + 20);
+    char *name = apr_pcalloc(pool, strlen(prefix) + strlen(s) + 20);
     strcpy(name, prefix);
     strcat(name, "[");
     strcat(name, s);
@@ -97,8 +97,7 @@ void *h2_config_merge(apr_pool_t *pool, void *basev, void *addv)
     h2_config *add = (h2_config *)addv;
     h2_config *n = (h2_config *)apr_pcalloc(pool, sizeof(h2_config));
 
-    char *name = (char *)apr_pcalloc(pool,
-        20 + strlen(add->name) + strlen(base->name));
+    char *name = apr_pcalloc(pool, 20 + strlen(add->name) + strlen(base->name));
     strcpy(name, "merged[");
     strcat(name, add->name);
     strcat(name, ", ");
