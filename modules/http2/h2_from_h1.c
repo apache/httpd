@@ -313,86 +313,6 @@ static void fix_vary(request_rec *r)
     }
 }
 
-/* Confirm that the status line is well-formed and matches r->status.
- * If they don't match, a filter may have negated the status line set by a
- * handler.
- * Zap r->status_line if bad.
- */
-static apr_status_t validate_status_line(request_rec *r)
-{
-    char *end;
-    
-    if (r->status_line) {
-        apr_size_t len = strlen(r->status_line);
-        if (len < 3
-            || apr_strtoi64(r->status_line, &end, 10) != r->status
-            || (end - 3) != r->status_line
-            || (len >= 4 && ! apr_isspace(r->status_line[3]))) {
-            r->status_line = NULL;
-            return APR_EGENERAL;
-        }
-        /* Since we passed the above check, we know that length three
-         * is equivalent to only a 3 digit numeric http status.
-         * RFC2616 mandates a trailing space, let's add it.
-         */
-        if (len == 3) {
-            r->status_line = apr_pstrcat(r->pool, r->status_line, " ", NULL);
-            return APR_EGENERAL;
-        }
-        return APR_SUCCESS;
-    }
-    return APR_EGENERAL;
-}
-
-/*
- * Determine the protocol to use for the response. Potentially downgrade
- * to HTTP/1.0 in some situations and/or turn off keepalives.
- *
- * also prepare r->status_line.
- */
-static void basic_http_header_check(request_rec *r,
-                                    const char **protocol)
-{
-    apr_status_t rv;
-    
-    if (r->assbackwards) {
-        /* no such thing as a response protocol */
-        return;
-    }
-    
-    rv = validate_status_line(r);
-    
-    if (!r->status_line) {
-        r->status_line = ap_get_status_line(r->status);
-    } else if (rv != APR_SUCCESS) {
-        /* Status line is OK but our own reason phrase
-         * would be preferred if defined
-         */
-        const char *tmp = ap_get_status_line(r->status);
-        if (!strncmp(tmp, r->status_line, 3)) {
-            r->status_line = tmp;
-        }
-    }
-    
-    /* Note that we must downgrade before checking for force responses. */
-    if (r->proto_num > HTTP_VERSION(1,0)
-        && apr_table_get(r->subprocess_env, "downgrade-1.0")) {
-        r->proto_num = HTTP_VERSION(1,0);
-    }
-    
-    /* kludge around broken browsers when indicated by force-response-1.0
-     */
-    if (r->proto_num == HTTP_VERSION(1,0)
-        && apr_table_get(r->subprocess_env, "force-response-1.0")) {
-        *protocol = "HTTP/1.0";
-        r->connection->keepalive = AP_CONN_CLOSE;
-    }
-    else {
-        *protocol = AP_SERVER_PROTOCOL;
-    }
-    
-}
-
 static void set_basic_http_header(request_rec *r, apr_table_t *headers)
 {
     char *date = NULL;
@@ -444,7 +364,6 @@ static int copy_header(void *ctx, const char *name, const char *value)
 
 static h2_response *create_response(h2_from_h1 *from_h1, request_rec *r)
 {
-    apr_status_t status = APR_SUCCESS;
     const char *clheader;
     const char *ctype;
     apr_table_t *headers;

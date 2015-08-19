@@ -57,9 +57,6 @@ apr_status_t h2_switch_init(apr_pool_t *pool, server_rec *s)
     return APR_SUCCESS;
 }
 
-static const char *const mod_ssl[]        = { "mod_ssl.c", NULL};
-static const char *const mod_core[]       = { "core.c", NULL};
-
 static int h2_protocol_propose(conn_rec *c, request_rec *r,
                                server_rec *s,
                                const apr_array_header_t *offers,
