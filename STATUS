@@ -254,6 +254,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x: trunk works modulo CHANGES
      +1: jailletc36
 
+  *) mod_session_dbd: fix lifetime of Request notes.
+     trunk: http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/session/mod_session_dbd.c?r1=1679181&r2=1687087&view=patch
+     2.4.x: trunk patch applies.
+     +1: niq
+
+  *) util_script: Make REDIRECT_URL a complete URL (where set).
+     PR 57785
+     trunk: http://svn.apache.org/viewvc?view=revision&revision=1677702
+     2.4.x: trunk patch applies.
+     +1: niq
+
 PATCHES/ISSUES THAT ARE BEING WORKED
 
   *) mod_ssl: add ALPN support by allowing other modules to register callbacks
