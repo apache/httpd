@@ -287,7 +287,7 @@ apr_status_t h2_session_process(h2_session *session)
             case APR_EBADF:
             case APR_EOF:
             case APR_ECONNABORTED:
-            case ECONNRESET:
+            case APR_ECONNRESET:
                 ap_log_cerror( APLOG_MARK, APLOG_DEBUG, status, session->c,
                               "h2_session(%ld): reading",
                               session->id);
