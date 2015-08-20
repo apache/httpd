@@ -112,7 +112,7 @@ static ssize_t send_cb(nghttp2_session *ngh2,
 
 static int on_invalid_frame_recv_cb(nghttp2_session *ngh2,
                                     const nghttp2_frame *frame,
-                                    nghttp2_error error, void *userp)
+                                    int error, void *userp)
 {
     h2_session *session = (h2_session *)userp;
     (void)ngh2;
@@ -126,7 +126,7 @@ static int on_invalid_frame_recv_cb(nghttp2_session *ngh2,
         frame_print(frame, buffer, sizeof(buffer)/sizeof(buffer[0]));
         ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, session->c,
                       "h2_session: callback on_invalid_frame_recv error=%d %s",
-                      (int)error, buffer);
+                      error, buffer);
     }
     return 0;
 }
