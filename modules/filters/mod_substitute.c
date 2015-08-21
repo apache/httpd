@@ -97,12 +97,12 @@ static void *merge_substitute_dcfg(apr_pool_t *p, void *basev, void *overv)
      * 'off' to follow the corrected/expected behavior, without violating POLS.
      */
     if (a->inherit_before == 1) {
-        a->patterns = apr_array_append(p, base->patterns,
-                                          over->patterns);
-    }
-    else {
         a->patterns = apr_array_append(p, over->patterns,
                                           base->patterns);
+    }
+    else {
+        a->patterns = apr_array_append(p, base->patterns,
+                                          over->patterns);
     }
     a->max_line_length = over->max_line_length_set ?
                              over->max_line_length : base->max_line_length;
