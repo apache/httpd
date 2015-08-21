@@ -911,6 +911,18 @@ through</td></tr>
     </p>
     </div>
 
+    <p>When used inside a <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> section, the first argument is omitted and the local
+    directory is obtained from the <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>. The same will occur inside a
+    <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code> section;
+    however, ProxyPass does not interpret the regexp as such, so it is necessary
+    to use <code class="directive">ProxyPassMatch</code> in this situation instead.</p>
+
+    <p>The ProxyPass directive is not supported in <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> or <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code> sections.</p>
+
+    <p>If you require a more flexible reverse-proxy configuration, see the
+    <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> directive with the
+    <code>[P]</code> flag.</p>
+
     <p>The <code>!</code> directive is useful in situations where you don't want
     to reverse-proxy a subdirectory, <em>e.g.</em></p>
 
@@ -937,6 +949,8 @@ through</td></tr>
       general <code class="directive">ProxyPass</code> directives.</p>
 
     </div> 
+
+    <p><strong>ProxyPass <code>key=value</code> Parameters</strong></p>
 
     <p>In Apache HTTP Server 2.1 and later, mod_proxy supports pooled
     connections to a backend server.  Connections created on demand
@@ -1226,6 +1240,8 @@ through</td></tr>
       &lt;/Proxy&gt;
     </code></p></div>
 
+    <p><strong>Additional ProxyPass Keywords</strong></p>
+
     <p>Normally, mod_proxy will canonicalise ProxyPassed URLs.
     But this may be incompatible with some backends, particularly those
     that make use of <var>PATH_INFO</var>.  The optional <var>nocanon</var>
@@ -1233,18 +1249,6 @@ through</td></tr>
     backend.  Note that this keyword may affect the security of your backend,
     as it removes the normal limited protection against URL-based attacks
     provided by the proxy.</p>
-
-    <p>When used inside a <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> section, the first argument is omitted and the local
-    directory is obtained from the <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>. The same will occur inside a
-    <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code> section;
-    however, ProxyPass does not interpret the regexp as such, so it is necessary
-    to use <code class="directive">ProxyPassMatch</code> in this situation instead.</p>
-  
-    <p>This directive is not supported in <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> or <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code> sections.</p>
-
-    <p>If you require a more flexible reverse-proxy configuration, see the
-    <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> directive with the
-    <code>[P]</code> flag.</p>
 
     <p>The optional <var>interpolate</var> keyword (available in
     httpd 2.2.9 and later), in combination with
