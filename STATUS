@@ -109,6 +109,28 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_authz_dbd: Avoid a crash when lacking correct DB access permissions.
+     PR 57868.
+     trunk: http://svn.apache.org/r1688660
+     2.4.x: trunk works modulo CHANGES and next-number
+     +1: jailletc36, ylavic, niq
+     jailletc36: I'm just wondering why the log message speak about "dbd-query"
+                while other messages around are about "dbd-group"?
+
+  *) mod_rewrite: Avoid a crash when lacking correct DB access permissions
+     when using RewriteMap with MapType dbd or fastdbd.
+     PR 57868.
+     trunk: http://svn.apache.org/r1695170
+     2.4.x: trunk works modulo (missing) CHANGES and next-number
+     +1: jailletc36, ylavic, niq
+     jailletc36: A CHANGE entry should be added. I forgot it :(
+
+   *) mod_dir: when we bail out of fixups, make sure Content-Type is not still
+               httpd/unix-directory.  This only happens when the generator sets
+               no content-type which is more common w/ no DefaultType in 2.4.
+      trunk: http://svn.apache.org/r1695583
+      2.4.x: trunk works
+     +1: covener, ylavic, niq
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -214,6 +236,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Backport version for 2.4.x of patch:
          Trunk version of patch works modulo CHANGES
       +1: rpluem, ylavic
+      niq: 1. the if(worker->s->retries) {} and comment at line 2917
+              don't seem to make any sense.
+           2. Re: error handline line 2930 - can PROXY_WORKER_IS_USABLE
+              not be tested BEFORE opening connection?
  
   *) apxs: add HTTPD_MMN and HTTPD_VERSION to apxs -q
      trunk: http://svn.apache.org/r1693919
@@ -224,29 +250,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      PR47241.
      trunk: http://svn.apache.org/r1693963
      2.4.x: trunk works modulo CHANGES
-     +1: covener, ylavic
-
-  *) mod_authz_dbd: Avoid a crash when lacking correct DB access permissions.
-     PR 57868.
-     trunk: http://svn.apache.org/r1688660
-     2.4.x: trunk works modulo CHANGES and next-number
-     +1: jailletc36, ylavic
-     jailletc36: I'm just wondering why the log message speak about "dbd-query"
-                while other messages around are about "dbd-group"?
-
-  *) mod_rewrite: Avoid a crash when lacking correct DB access permissions
-     when using RewriteMap with MapType dbd or fastdbd.
-     PR 57868.
-     trunk: http://svn.apache.org/r1695170
-     2.4.x: trunk works modulo (missing) CHANGES and next-number
-     +1: jailletc36, ylavic
-     jailletc36: A CHANGE entry should be added. I forgot it :(
-
-   *) mod_dir: when we bail out of fixups, make sure Content-Type is not still
-               httpd/unix-directory.  This only happens when the generator sets
-               no content-type which is more common w/ no DefaultType in 2.4.
-      trunk: http://svn.apache.org/r1695583
-      2.4.x: trunk works
      +1: covener, ylavic
 
   *) mod_socache_memcache: Add the 'MemcacheConnTTL' directive to control how 
