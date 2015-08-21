@@ -127,7 +127,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1697013
                   http://svn.apache.org/r1697015
      2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-SubstituteInheritBefore-v5.patch
-     +1: ylavic
+     +1: ylavic, rpluem
      rpluem: Doesn't that change the previous behaviour if SubstituteInheritBefore is not set?
      ylavic: yes thanks, updated to v5 including r1697013 and r1697015,
              the diff to v4 is:
