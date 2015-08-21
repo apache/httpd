@@ -192,7 +192,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      ylavic: r1554303 issued a major MMN bump, but since the ABI change is two
              ints added at the end of core_server_config, the proposed merge
              does a minor bump only.
-
   *) mod_substitute: Configure patterns merge order. PR 57641
      trunk patch: http://svn.apache.org/r1684900
                   http://svn.apache.org/r1687539 
@@ -201,8 +200,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1688339
                   http://svn.apache.org/r1688340
                   http://svn.apache.org/r1688343
-     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-SubstituteInheritBefore-v4.patch
+                  http://svn.apache.org/r1697013
+                  http://svn.apache.org/r1697015
+     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-SubstituteInheritBefore-v5.patch
      +1: ylavic
+     ylavic: updated to v5 including r1697013 and r1697015, the diff to v4 is:
+             http://people.apache.org/~ylavic/httpd-2.4.x-SubstituteInheritBefore-v4_vs_v5.diff
 
   *) mod_proxy: Fix a race condition that caused a failed worker to be retried
      before the retry period is over
