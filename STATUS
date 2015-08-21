@@ -265,6 +265,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x: trunk patch applies.
      +1: niq
 
+  *) mod_proxy_balancer: Fix balancers and balancer members reuse on
+     restart when new ones are added.  PR 58024.
+     trunk patch: http://svn.apache.org/r1696960
+     2.4.x: trunk works (modulo CHANGES and log-message-tags)
+     +1: ylavic
+
+
 PATCHES/ISSUES THAT ARE BEING WORKED
 
   *) mod_ssl: add ALPN support by allowing other modules to register callbacks
