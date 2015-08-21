@@ -49,6 +49,12 @@ ifneq "$(wildcard $(LDAPSDK)/inc/ldap.h)" "$(LDAPSDK)/inc/ldap.h"
 $(error LDAPSDK does not point to a valid Novell CLDAP SDK) 
 endif
 
+ifdef WITH_HTTP2
+ifneq "$(wildcard $(NGH2SRC)/lib/nghttp2_hd.h)" "$(NGH2SRC)/lib/nghttp2_hd.h"
+$(error NGH2SRC does not point to a valid NGHTTP2 source tree)
+endif
+endif
+
 ifndef PCRESRC
 PCRESRC = $(AP_WORK)/srclib/pcre
 endif
