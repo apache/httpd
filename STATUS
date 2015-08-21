@@ -133,7 +133,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      See https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=794383
      trunk patch: N/A, but similar to https://svn.apache.org/r1588427
      2.2.x patch: http://people.apache.org/~sf/SSL_CTX_use_certificate_clear_errors.diff
-     +1: sf
+     +1: sf, rpluem
 
   *) mod_proxy: save DNS lookups
       trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1462269
