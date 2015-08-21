@@ -126,6 +126,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1688343
      2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-SubstituteInheritBefore-v4.patch
      +1: ylavic
+     rpluem: Doesn't that change the previous behaviour if SubstituteInheritBefore is not set?
 
   *) mod_proxy: Fix a race condition that caused a failed worker to be retried
      before the retry period is over
