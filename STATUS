@@ -103,6 +103,15 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_ssl: Fix spurious errors when loading certificate chain
+     2.2.x uses a home grown version of SSL_CTX_use_certificate_chain_file
+     called SSL_CTX_use_certificate_chain() which also needs the
+     ERR_clear_error() call.
+     See https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=794383
+     trunk patch: N/A, but similar to https://svn.apache.org/r1588427
+     2.2.x patch: http://people.apache.org/~sf/SSL_CTX_use_certificate_clear_errors.diff
+     +1: sf, rpluem, ylavic
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -124,16 +133,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/r1664709
       Backport version for 2.2.x of patch:
          http://people.apache.org/~rpluem/patches/proxy_race_retry_2.2.x.diff
-      +1: rpluem,
-
-  *) mod_ssl: Fix spurious errors when loading certificate chain
-     2.2.x uses a home grown version of SSL_CTX_use_certificate_chain_file
-     called SSL_CTX_use_certificate_chain() which also needs the
-     ERR_clear_error() call.
-     See https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=794383
-     trunk patch: N/A, but similar to https://svn.apache.org/r1588427
-     2.2.x patch: http://people.apache.org/~sf/SSL_CTX_use_certificate_clear_errors.diff
-     +1: sf, rpluem
+      +1: rpluem, ylavic
 
   *) mod_proxy: save DNS lookups
       trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1462269
