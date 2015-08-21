@@ -988,6 +988,12 @@ through</td></tr>
     <div class="note"><strong>Note:</strong> The path associated with the <code>unix:</code>
     URL is <code class="directive">DefaultRuntimeDir</code> aware.</div>
 
+    <p>When used inside a <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> section, the first argument is omitted and the local
+    directory is obtained from the <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>. The same will occur inside a
+    <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code> section;
+    however, ProxyPass does not interpret the regexp as such, so it is necessary
+    to use <code class="directive">ProxyPassMatch</code> in this situation instead.</p>
+
     <p>Suppose the local server has address <code>http://example.com/</code>;
     then</p>
 
@@ -999,6 +1005,12 @@ through</td></tr>
     <p>will cause a local request for
     <code>http://example.com/mirror/foo/bar</code> to be internally converted
     into a proxy request to <code>http://backend.example.com/bar</code>.</p>
+
+    <p>The ProxyPass directive is not supported in <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> or <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code> sections.</p>
+
+    <p>If you require a more flexible reverse-proxy configuration, see the
+    <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> directive with the
+    <code>[P]</code> flag.</p>
 
     <p>The following alternative syntax is possible; however, it can carry a
     performance penalty when present in very large numbers. The advantage of
@@ -1052,6 +1064,8 @@ ProxyPass "/mirror/foo" "http://backend.example.com"</pre>
       general <code class="directive">ProxyPass</code> directives.</p>
 
     </div> 
+
+    <p><strong>ProxyPass <code>key=value</code> Parameters</strong></p>
 
     <p>In Apache HTTP Server 2.1 and later, mod_proxy supports pooled
     connections to a backend server.  Connections created on demand
@@ -1385,6 +1399,8 @@ ProxyPass "/" "balancer://mycluster/" stickysession=JSESSIONID|jsessionid nofail
 &lt;/Proxy&gt;</pre>
 
 
+    <p><strong>Additional ProxyPass Keywords</strong></p>
+
     <p>Normally, mod_proxy will canonicalise ProxyPassed URLs.
     But this may be incompatible with some backends, particularly those
     that make use of <var>PATH_INFO</var>.  The optional <var>nocanon</var>
@@ -1397,18 +1413,6 @@ ProxyPass "/" "balancer://mycluster/" stickysession=JSESSIONID|jsessionid nofail
     generating the <var>SCRIPT_FILENAME</var> environment variable.
     The optional <var>noquery</var> keyword (available in
     httpd 2.4.1 and later) prevents this.</p>
-
-    <p>When used inside a <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> section, the first argument is omitted and the local
-    directory is obtained from the <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>. The same will occur inside a
-    <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code> section;
-    however, ProxyPass does not interpret the regexp as such, so it is necessary
-    to use <code class="directive">ProxyPassMatch</code> in this situation instead.</p>
-
-    <p>This directive is not supported in <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> or <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code> sections.</p>
-
-    <p>If you require a more flexible reverse-proxy configuration, see the
-    <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> directive with the
-    <code>[P]</code> flag.</p>
 
     <p>The optional <var>interpolate</var> keyword, in combination with
     <code class="directive">ProxyPassInterpolateEnv</code>, causes the ProxyPass
