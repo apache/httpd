@@ -135,6 +135,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x patch: http://people.apache.org/~sf/SSL_CTX_use_certificate_clear_errors.diff
      +1: sf
 
+  *) mod_proxy: save DNS lookups
+      trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1462269
+                   https://svn.apache.org/viewvc?view=revision&revision=1463455
+      2.4.x patch: http://svn.apache.org/viewvc?view=revision&revision=1511313
+      2.2.x patch: http://people.apache.org/~rpluem/patches/proxy-dns-patch_2.2.x.diff
+      +1: rpluem
+
 PATCHES/ISSUES THAT ARE STALLED
 
    * mod_proxy_balancer: Always initialize the shared parameters of a load
