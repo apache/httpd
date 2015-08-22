@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1695913:1696622 (outdated) -->
+<!-- English Revision: 1696622 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -999,6 +999,17 @@ de la version 2.4.7 du serveur HTTP Apache</compatibility>
     caract&egrave;re <code>'|'</code>, la directive
     <directive>RewriteRule</directive> doit poss&eacute;der l'option
     <code>[P,NE]</code>.</note>
+
+    <p>Lorsque la directive ProxyPass est utilis&eacute;e &agrave; l'int&eacute;rieur d'une
+    section <directive type="section" module="core"
+    >Location</directive>, le premier argument est omis et le r&eacute;pertoire
+    local est obtenu &agrave; partir de la section <directive type="section"
+    module="core">Location</directive>. Il en sera de m&ecirc;me dans une
+    section <directive type="section"
+    module="core">LocationMatch</directive> ; cependant, ProxyPass
+    n'interpr&egrave;te pas les expressions rationnelles, et il sera ici
+    n&eacute;cessaire d'utiliser la directive
+    <directive>ProxyPassMatch</directive> &agrave; la place.</p>
     
     <p>Supposons que le serveur local a pour adresse
     <code>http://example.com/</code> ; alors la ligne</p>
@@ -1012,6 +1023,15 @@ de la version 2.4.7 du serveur HTTP Apache</compatibility>
     <p>va convertir en interne toute requ&ecirc;te pour
     <code>http://example.com/miroir/foo/bar</code> en une requ&ecirc;te
     mandat&eacute;e pour <code>http://backend.example.com/bar</code>.</p>
+
+    <p>La directive ProxyPass ne peut pas &ecirc;tre plac&eacute;e dans une section
+    <directive type="section" module="core">Directory</directive> ou
+    <directive type="section" module="core">Files</directive>.</p>
+
+    <p>Si vous avez besoin d'un configuration de mandataire inverse plus
+    souple, reportez-vous &agrave; la documentaion de la directive <directive
+    module="mod_rewrite">RewriteRule</directive> et son drapeau
+    <code>[P]</code>.</p>
 
     <p>La syntaxe alternative suivante est valide, bien qu'elle puisse
     induire une d&eacute;gradation des performances lorsqu'elle est
@@ -1075,6 +1095,8 @@ ProxyPass "/mirror/foo" "http://backend.example.com"
       g&eacute;n&eacute;rales.</p>
 
     </note> <!-- /ordering_proxypass -->
+
+    <p><strong>ProxyPass <code>cl&eacute;=valeur</code> Param&egrave;tres</strong></p>
 
     <p>Depuis la version 2.1 du serveur HTTP Apache, mod_proxy supporte
     les groupements de connexions vers un serveur d'arri&egrave;re-plan. Les
@@ -1462,7 +1484,7 @@ ProxyPass "/" "balancer://mycluster/" stickysession=JSESSIONID|jsessionid nofail
     </highlight>
 
     <p>Configuration d'un serveur cible de r&eacute;serve qui ne sera utilis&eacute; que si
-    aucun autre serveur cible n'est disponible</p>
+    aucun autre serveur cible n'est disponible :</p>
     <highlight language="config">
 ProxyPass "/" "balancer://hotcluster/ "
 &lt;Proxy balancer://hotcluster&gt;
@@ -1473,6 +1495,8 @@ ProxyPass "/" "balancer://hotcluster/ "
     ProxySet lbmethod=bytraffic
 &lt;/Proxy&gt;
     </highlight>
+
+    <p><strong>Mot-cl&eacute;s suppl&eacute;mentaires de ProxyPass</strong></p>
 
     <p>Normalement, mod_proxy va mettre sous leur forme canonique les
     URLs trait&eacute;es par ProxyPass. Mais ceci peut &ecirc;tre incompatible avec
@@ -1490,25 +1514,9 @@ ProxyPass "/" "balancer://hotcluster/ "
     (disponible &agrave; partir de la version 2.4.1) permet d'exclure cette
     cha&icirc;ne.</p>
 
-    <p>Lorsque la directive ProxyPass est utilis&eacute;e &agrave; l'int&eacute;rieur d'une
-    section <directive type="section" module="core"
-    >Location</directive>, le premier argument est omis et le r&eacute;pertoire
-    local est obtenu &agrave; partir de la section <directive type="section"
-    module="core">Location</directive>. Il en sera de m&ecirc;me dans une
-    section <directive type="section"
-    module="core">LocationMatch</directive> ; cependant, ProxyPass
-    n'interpr&egrave;te pas les expressions rationnelles, et il sera ici
-    n&eacute;cessaire d'utiliser la directive
-    <directive>ProxyPassMatch</directive> &agrave; la place.</p>
+    
 
-    <p>Cette directive ne peut pas &ecirc;tre plac&eacute;e dans une section
-    <directive type="section" module="core">Directory</directive> ou
-    <directive type="section" module="core">Files</directive>.</p>
-
-    <p>Si vous avez besoin d'un configuration de mandataire inverse plus
-    souple, reportez-vous &agrave; la documentaion de la directive <directive
-    module="mod_rewrite">RewriteRule</directive> et son drapeau
-    <code>[P]</code>.</p>
+    
 
     <p>Le mot-cl&eacute; optionnel <var>interpolate</var>, en combinaison avec la directive
     <directive>ProxyPassInterpolateEnv</directive>, permet &agrave; ProxyPass
@@ -1655,7 +1663,7 @@ par un serveur mandat&eacute; en inverse</description>
 
     <p><var>chemin</var> est le nom d'un chemin virtuel local.
     <var>url</var> est une URL partielle pour le serveur distant. Ces
-    param&egrave;tres sont utilis&eacute;s de la m&ecirc;me fa&ccedil;on qu'avec la directive <directive
+    param&egrave;tres s'utilisent de la m&ecirc;me fa&ccedil;on qu'avec la directive <directive
     module="mod_proxy">ProxyPass</directive>.</p>
 
     <p>Supposons par exemple que le serveur local a pour adresse
