@@ -234,7 +234,7 @@
       </code></p></div>
 
       <p>Cet exemple crée un worker associé à l'URL du serveur original
-      <code>http://backend.example.com</code>, et utilisant les délais
+      <code>http://backend.example.com</code>, qui utilisera les délais
       spécifiés. Dans le cas d'un mandataire direct, les workers sont
       généralement définis via la directive <code class="directive"><a href="#proxyset">ProxySet</a></code> directive :</p>
 
@@ -1006,8 +1006,25 @@ l'espace d'URLs du serveur local</td></tr>
     </p>
     </div>
 
+    <p>Lorsque cette directive est utilisée dans une section <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>, le premier
+    argument est omis et le répertoire local est obtenu à partir de
+    l'argument de la directive <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>. Il en est de même à l'intérieur
+    d'une section <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code>, mais le résultat ne sera
+    probablement pas celui attendu car ProxyPassReverse va interpréter
+    l'expression rationnelle littéralement comme un chemin ; si besoin
+    est dans ce cas, définissez la directive ProxyPassReverse en dehors
+    de la section, ou dans une section <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> séparée.</p>
+
+    <p>La directive ProxyPass ne peut pas être placée dans une section
+    <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> ou
+    <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code>.</p>
+
+    <p>Si vous avez besoin d'un configuration de mandataire inverse plus
+    souple, reportez-vous à la documentaion de la directive <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> et son drapeau
+    <code>[P]</code>.</p>
+
     <p>Le drapeau <code>!</code> permet de soustraire un sous-répertoire
-    du mandat inverse, comme dans l'exemple suivant :</p>
+    du mandat inverse, comme dans l'exemple suivant :</p>    
 
     <div class="example"><p><code>
       ProxyPass /miroir/foo/i !<br />
@@ -1037,13 +1054,16 @@ l'espace d'URLs du serveur local</td></tr>
 
     </div> 
 
+    <p><strong>ProxyPass <code>clé=valeur</code> Paramètres</strong></p>
+
     <p>Depuis la version 2.1 du serveur HTTP Apache, mod_proxy supporte
     les jeux de connexions vers un serveur d'arrière-plan. Ainsi, les
     connexions créées à la demande peuvent être conservées dans un
     jeu pour une utilisation ultérieure. Les limites de la taille
     du jeu de connexions et d'autres paramètres peuvent être définis au
     niveau de la directive <code class="directive">ProxyPass</code> via des
-    arguments <code>clé=valeur</code> décrits dans la table ci-dessous.</p>
+    arguments <code>clé=valeur</code> décrits dans les
+    tables ci-dessous.</p>
 
     <p>Par défaut, mod_proxy permettra de conserver le nombre maximum de
     connexions pouvant être utilisées simultanément par le processus
@@ -1367,6 +1387,8 @@ l'espace d'URLs du serveur local</td></tr>
       &lt;/Proxy&gt;
     </code></p></div>
 
+    <p><strong>Mots-clés additionnels de ProxyPass</strong></p>
+
     <p>Normalement, mod_proxy va mettre sous leur forme canonique les
     URLs traitées par ProxyPass. Mais ceci peut être incompatible avec
     certains serveurs d'arrière-plan, et en particulier avec ceux qui
@@ -1376,24 +1398,6 @@ l'espace d'URLs du serveur local</td></tr>
     que ceci peut affecter la sécurité de votre serveur d'arrière-plan,
     car la protection limitée contre les attaques à base d'URL que
     fournit le mandataire est alors supprimée.</p>
-
-    <p>Lorsque la directive ProxyPass est utilisée à l'intérieur d'une
-    section <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>, le premier argument est omis et le répertoire
-    local est obtenu à partir de la section <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>. Il en est de
-    même à l'intérieur
-    d'une section <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code> ; cependant, ProxyPass
-    n'interprète pas les expressions rationnelles, et dans ce cas, il
-    est nécessaire d'utiliser la directive
-    <code class="directive">ProxyPassMatch</code>.
-    </p>
-
-    <p>Cette directive ne peut pas être placée dans une section
-    <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> ou
-    <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code>.</p>
-
-    <p>Si vous avez besoin d'un configuration de mandataire inverse plus
-    souple, reportez-vous à la documentaion de la directive <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> et son drapeau
-    <code>[P]</code>.</p>
 
     <p>Le mot-clé optionnel <var>interpolate</var> (disponible depuis
     httpd 2.2.9), en combinaison avec la directive
@@ -1556,8 +1560,8 @@ par un serveur mandaté en inverse</td></tr>
     les références d'URL.</p>
 
     <p><var>chemin</var> est le nom d'un chemin virtuel local.
-    <var>url</var> est une URL partielle pour le serveur distant - ils
-    sont utilisés de la même façon qu'avec la directive <code class="directive"><a href="#proxypass">ProxyPass</a></code>.</p>
+    <var>url</var> est une URL partielle pour le serveur distant. Ces
+    paramètres s'utilisent de la même façon qu'avec la directive <code class="directive"><a href="#proxypass">ProxyPass</a></code>.</p>
 
     <p>Supposons par exemple que le serveur local a pour adresse
     <code>http://example.com/</code> ; alors</p>
@@ -1574,17 +1578,17 @@ par un serveur mandaté en inverse</td></tr>
     requête mandatée pour <code>http://backend.example.com/bar</code>
     (la fonctionnalité fournie par <code>ProxyPass</code>). Il va
     aussi s'occuper des redirections que le serveur
-    <code>backend.example.com</code> envoie : lorsque
-    <code>http://backend.example.com/bar</code> est redirigé par
-    celui-ci vers <code>http://backend.example.com/quux</code>, Apache
+    <code>backend.example.com</code> envoie lorsqu'il redirige
+    <code>http://backend.example.com/bar</code> vers
+    <code>http://backend.example.com/quux</code>. Apache
     corrige ceci en <code>http://example.com/miroir/foo/quux</code>
     avant de faire suivre la redirection HTTP au client. Notez que le
     nom d'hôte utilisé pour construire l'URL est choisi en respectant la
     définition de la directive <code class="directive"><a href="../mod/core.html#usecanonicalname">UseCanonicalName</a></code>.</p>
 
     <p>Notez que la directive <code class="directive">ProxyPassReverse</code>
-    peut aussi être utilisée en conjonction avec la fonctionnalité
-    pass-through (<code>RewriteRule ...  [P]</code>) du module
+    peut aussi être utilisée en conjonction avec la
+    fonctionnalité de mandataire (<code>RewriteRule ...  [P]</code>) du module
     <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>, car elle ne dépend pas d'une directive
     <code class="directive"><a href="#proxypass">ProxyPass</a></code>
     correspondante.</p>
@@ -1677,7 +1681,8 @@ du mandataire</td></tr>
 </table>
     <p>Lorsqu'elle est activée, cette directive va transmettre l'en-tête
     Host: de la requête entrante vers le serveur mandaté, au lieu du nom
-    d'hôte spécifié par la directive <code class="directive">ProxyPass</code>.</p>
+    d'hôte spécifié par la directive
+    <code class="directive">ProxyPass module="mod_proxy"</code>.</p>
 
     <p>Cette directive est habituellement définie à <code>Off</code>.
     Elle est principalement utile dans les configurations particulières
