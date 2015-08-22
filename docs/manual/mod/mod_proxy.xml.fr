@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1559613:1696886 (outdated) -->
+<!-- English Revision: 1696886 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -186,7 +186,7 @@
       </example>
 
       <p>Cet exemple cr&eacute;e un worker associ&eacute; &agrave; l'URL du serveur original
-      <code>http://backend.example.com</code>, et utilisant les d&eacute;lais
+      <code>http://backend.example.com</code>, qui utilisera les d&eacute;lais
       sp&eacute;cifi&eacute;s. Dans le cas d'un mandataire direct, les workers sont
       g&eacute;n&eacute;ralement d&eacute;finis via la directive <directive
       module="mod_proxy">ProxySet</directive> directive :</p>
@@ -594,7 +594,8 @@ du mandataire</description>
 <usage>
     <p>Lorsqu'elle est activ&eacute;e, cette directive va transmettre l'en-t&ecirc;te
     Host: de la requ&ecirc;te entrante vers le serveur mandat&eacute;, au lieu du nom
-    d'h&ocirc;te sp&eacute;cifi&eacute; par la directive <directive>ProxyPass</directive>.</p>
+    d'h&ocirc;te sp&eacute;cifi&eacute; par la directive
+    <directive>ProxyPass module="mod_proxy"</directive>.</p>
 
     <p>Cette directive est habituellement d&eacute;finie &agrave; <code>Off</code>.
     Elle est principalement utile dans les configurations particuli&egrave;res
@@ -833,8 +834,30 @@ l'espace d'URLs du serveur local</description>
     </p>
     </note>
 
+    <p>Lorsque cette directive est utilis&eacute;e dans une section <directive
+    type="section" module="core">Location</directive>, le premier
+    argument est omis et le r&eacute;pertoire local est obtenu &agrave; partir de
+    l'argument de la directive <directive type="section"
+    module="core">Location</directive>. Il en est de m&ecirc;me &agrave; l'int&eacute;rieur
+    d'une section <directive type="section"
+    module="core">LocationMatch</directive>, mais le r&eacute;sultat ne sera
+    probablement pas celui attendu car ProxyPassReverse va interpr&eacute;ter
+    l'expression rationnelle litt&eacute;ralement comme un chemin ; si besoin
+    est dans ce cas, d&eacute;finissez la directive ProxyPassReverse en dehors
+    de la section, ou dans une section <directive type="section"
+    module="core">Location</directive> s&eacute;par&eacute;e.</p>
+
+    <p>La directive ProxyPass ne peut pas &ecirc;tre plac&eacute;e dans une section
+    <directive type="section" module="core">Directory</directive> ou
+    <directive type="section" module="core">Files</directive>.</p>
+
+    <p>Si vous avez besoin d'un configuration de mandataire inverse plus
+    souple, reportez-vous &agrave; la documentaion de la directive <directive
+    module="mod_rewrite">RewriteRule</directive> et son drapeau
+    <code>[P]</code>.</p>
+
     <p>Le drapeau <code>!</code> permet de soustraire un sous-r&eacute;pertoire
-    du mandat inverse, comme dans l'exemple suivant :</p>
+    du mandat inverse, comme dans l'exemple suivant :</p>    
 
     <example>
       ProxyPass /miroir/foo/i !<br />
@@ -866,13 +889,16 @@ l'espace d'URLs du serveur local</description>
 
     </note> <!-- /ordering_proxypass -->
 
+    <p><strong>ProxyPass <code>cl&eacute;=valeur</code> Param&egrave;tres</strong></p>
+
     <p>Depuis la version 2.1 du serveur HTTP Apache, mod_proxy supporte
     les jeux de connexions vers un serveur d'arri&egrave;re-plan. Ainsi, les
     connexions cr&eacute;&eacute;es &agrave; la demande peuvent &ecirc;tre conserv&eacute;es dans un
     jeu pour une utilisation ult&eacute;rieure. Les limites de la taille
     du jeu de connexions et d'autres param&egrave;tres peuvent &ecirc;tre d&eacute;finis au
     niveau de la directive <directive>ProxyPass</directive> via des
-    arguments <code>cl&eacute;=valeur</code> d&eacute;crits dans la table ci-dessous.</p>
+    arguments <code>cl&eacute;=valeur</code> d&eacute;crits dans les
+    tables ci-dessous.</p>
 
     <p>Par d&eacute;faut, mod_proxy permettra de conserver le nombre maximum de
     connexions pouvant &ecirc;tre utilis&eacute;es simultan&eacute;ment par le processus
@@ -1196,6 +1222,8 @@ l'espace d'URLs du serveur local</description>
       &lt;/Proxy&gt;
     </example>
 
+    <p><strong>Mots-cl&eacute;s additionnels de ProxyPass</strong></p>
+
     <p>Normalement, mod_proxy va mettre sous leur forme canonique les
     URLs trait&eacute;es par ProxyPass. Mais ceci peut &ecirc;tre incompatible avec
     certains serveurs d'arri&egrave;re-plan, et en particulier avec ceux qui
@@ -1205,28 +1233,6 @@ l'espace d'URLs du serveur local</description>
     que ceci peut affecter la s&eacute;curit&eacute; de votre serveur d'arri&egrave;re-plan,
     car la protection limit&eacute;e contre les attaques &agrave; base d'URL que
     fournit le mandataire est alors supprim&eacute;e.</p>
-
-    <p>Lorsque la directive ProxyPass est utilis&eacute;e &agrave; l'int&eacute;rieur d'une
-    section <directive type="section" module="core"
-    >Location</directive>, le premier argument est omis et le r&eacute;pertoire
-    local est obtenu &agrave; partir de la section <directive
-    type="section" module="core">Location</directive>. Il en est de
-    m&ecirc;me &agrave; l'int&eacute;rieur
-    d'une section <directive type="section"
-    module="core">LocationMatch</directive> ; cependant, ProxyPass
-    n'interpr&egrave;te pas les expressions rationnelles, et dans ce cas, il
-    est n&eacute;cessaire d'utiliser la directive
-    <directive>ProxyPassMatch</directive>.
-    </p>
-
-    <p>Cette directive ne peut pas &ecirc;tre plac&eacute;e dans une section
-    <directive type="section" module="core">Directory</directive> ou
-    <directive type="section" module="core">Files</directive>.</p>
-
-    <p>Si vous avez besoin d'un configuration de mandataire inverse plus
-    souple, reportez-vous &agrave; la documentaion de la directive <directive
-    module="mod_rewrite">RewriteRule</directive> et son drapeau
-    <code>[P]</code>.</p>
 
     <p>Le mot-cl&eacute; optionnel <var>interpolate</var> (disponible depuis
     httpd 2.2.9), en combinaison avec la directive
@@ -1364,8 +1370,8 @@ par un serveur mandat&eacute; en inverse</description>
     les r&eacute;f&eacute;rences d'URL.</p>
 
     <p><var>chemin</var> est le nom d'un chemin virtuel local.
-    <var>url</var> est une URL partielle pour le serveur distant - ils
-    sont utilis&eacute;s de la m&ecirc;me fa&ccedil;on qu'avec la directive <directive
+    <var>url</var> est une URL partielle pour le serveur distant. Ces
+    param&egrave;tres s'utilisent de la m&ecirc;me fa&ccedil;on qu'avec la directive <directive
     module="mod_proxy">ProxyPass</directive>.</p>
 
     <p>Supposons par exemple que le serveur local a pour adresse
@@ -1383,9 +1389,9 @@ par un serveur mandat&eacute; en inverse</description>
     requ&ecirc;te mandat&eacute;e pour <code>http://backend.example.com/bar</code>
     (la fonctionnalit&eacute; fournie par <code>ProxyPass</code>). Il va
     aussi s'occuper des redirections que le serveur
-    <code>backend.example.com</code> envoie : lorsque
-    <code>http://backend.example.com/bar</code> est redirig&eacute; par
-    celui-ci vers <code>http://backend.example.com/quux</code>, Apache
+    <code>backend.example.com</code> envoie lorsqu'il redirige
+    <code>http://backend.example.com/bar</code> vers
+    <code>http://backend.example.com/quux</code>. Apache
     corrige ceci en <code>http://example.com/miroir/foo/quux</code>
     avant de faire suivre la redirection HTTP au client. Notez que le
     nom d'h&ocirc;te utilis&eacute; pour construire l'URL est choisi en respectant la
@@ -1393,8 +1399,8 @@ par un serveur mandat&eacute; en inverse</description>
     module="core">UseCanonicalName</directive>.</p>
 
     <p>Notez que la directive <directive>ProxyPassReverse</directive>
-    peut aussi &ecirc;tre utilis&eacute;e en conjonction avec la fonctionnalit&eacute;
-    pass-through (<code>RewriteRule ...  [P]</code>) du module
+    peut aussi &ecirc;tre utilis&eacute;e en conjonction avec la
+    fonctionnalit&eacute; de mandataire (<code>RewriteRule ...  [P]</code>) du module
     <module>mod_rewrite</module>, car elle ne d&eacute;pend pas d'une directive
     <directive module="mod_proxy">ProxyPass</directive>
     correspondante.</p>
