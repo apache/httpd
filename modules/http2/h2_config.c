@@ -37,7 +37,6 @@
 static h2_config defconf = {
     "default",
     100,              /* max_streams */
-    16 * 1024,        /* max_hl_size */
     64 * 1024,        /* window_size */
     -1,               /* min workers */
     -1,               /* max workers */
@@ -46,9 +45,7 @@ static h2_config defconf = {
     NULL,             /* no alt-svcs */
     -1,               /* alt-svc max age */
     0,                /* serialize headers */
-    1,                /* h2 direct mode */
-    -1,               /* buffer output, by default only for TLS */
-    64*1024,          /* buffer size */
+    -1,               /* h2 direct mode */
     5,                /* # session extra files */
 };
 
@@ -66,7 +63,6 @@ static void *h2_config_create(apr_pool_t *pool,
     
     conf->name                 = name;
     conf->h2_max_streams       = DEF_VAL;
-    conf->h2_max_hl_size       = DEF_VAL;
     conf->h2_window_size       = DEF_VAL;
     conf->min_workers          = DEF_VAL;
     conf->max_workers          = DEF_VAL;
@@ -75,8 +71,6 @@ static void *h2_config_create(apr_pool_t *pool,
     conf->alt_svc_max_age      = DEF_VAL;
     conf->serialize_headers    = DEF_VAL;
     conf->h2_direct            = DEF_VAL;
-    conf->buffer_output        = DEF_VAL;
-    conf->buffer_size          = DEF_VAL;
     conf->session_extra_files  = DEF_VAL;
     return conf;
 }
@@ -106,7 +100,6 @@ void *h2_config_merge(apr_pool_t *pool, void *basev, void *addv)
     n->name = name;
 
     n->h2_max_streams = H2_CONFIG_GET(add, base, h2_max_streams);
-    n->h2_max_hl_size = H2_CONFIG_GET(add, base, h2_max_hl_size);
     n->h2_window_size = H2_CONFIG_GET(add, base, h2_window_size);
     n->min_workers    = H2_CONFIG_GET(add, base, min_workers);
     n->max_workers    = H2_CONFIG_GET(add, base, max_workers);
@@ -116,8 +109,6 @@ void *h2_config_merge(apr_pool_t *pool, void *basev, void *addv)
     n->alt_svc_max_age = H2_CONFIG_GET(add, base, alt_svc_max_age);
     n->serialize_headers = H2_CONFIG_GET(add, base, serialize_headers);
     n->h2_direct      = H2_CONFIG_GET(add, base, h2_direct);
-    n->buffer_output  = H2_CONFIG_GET(add, base, buffer_output);
-    n->buffer_size    = H2_CONFIG_GET(add, base, buffer_size);
     n->session_extra_files = H2_CONFIG_GET(add, base, session_extra_files);
     
     return n;
@@ -128,8 +119,6 @@ int h2_config_geti(h2_config *conf, h2_config_var_t var)
     switch(var) {
         case H2_CONF_MAX_STREAMS:
             return H2_CONFIG_GET(conf, &defconf, h2_max_streams);
-        case H2_CONF_MAX_HL_SIZE:
-            return H2_CONFIG_GET(conf, &defconf, h2_max_hl_size);
         case H2_CONF_WIN_SIZE:
             return H2_CONFIG_GET(conf, &defconf, h2_window_size);
         case H2_CONF_MIN_WORKERS:
@@ -146,10 +135,6 @@ int h2_config_geti(h2_config *conf, h2_config_var_t var)
             return H2_CONFIG_GET(conf, &defconf, serialize_headers);
         case H2_CONF_DIRECT:
             return H2_CONFIG_GET(conf, &defconf, h2_direct);
-        case H2_CONF_BUFFER_OUTPUT:
-            return H2_CONFIG_GET(conf, &defconf, buffer_output);
-        case H2_CONF_BUFFER_SIZE:
-            return H2_CONFIG_GET(conf, &defconf, buffer_size);
         case H2_CONF_SESSION_FILES:
             return H2_CONFIG_GET(conf, &defconf, session_extra_files);
         default:
@@ -185,18 +170,6 @@ static const char *h2_conf_set_window_size(cmd_parms *parms,
     cfg->h2_window_size = (int)apr_atoi64(value);
     (void)arg;
     if (cfg->h2_window_size < 1024) {
-        return "value must be > 1k";
-    }
-    return NULL;
-}
-
-static const char *h2_conf_set_max_hl_size(cmd_parms *parms,
-                                           void *arg, const char *value)
-{
-    h2_config *cfg = h2_config_sget(parms->server);
-    cfg->h2_max_hl_size = (int)apr_atoi64(value);
-    (void)arg;
-    if (cfg->h2_max_hl_size < 1024) {
         return "value must be > 1k";
     }
     return NULL;
@@ -279,19 +252,6 @@ static const char *h2_conf_set_alt_svc_max_age(cmd_parms *parms,
     return NULL;
 }
 
-static const char *h2_conf_set_buffer_size(cmd_parms *parms,
-                                           void *arg, const char *value)
-{
-    h2_config *cfg = h2_config_sget(parms->server);
-    apr_int64_t len = (int)apr_atoi64(value);
-    if (len < (16*1024)) {
-        return "value must be a positive number, at least 16k";
-    }
-    cfg->buffer_size = (int)len;
-    (void)arg;
-    return NULL;
-}
-
 static const char *h2_conf_set_session_extra_files(cmd_parms *parms,
                                                    void *arg, const char *value)
 {
@@ -339,31 +299,12 @@ static const char *h2_conf_set_direct(cmd_parms *parms,
     return "value must be On or Off";
 }
 
-static const char *h2_conf_set_buffer_output(cmd_parms *parms,
-                                             void *arg, const char *value)
-{
-    h2_config *cfg = h2_config_sget(parms->server);
-    if (!strcasecmp(value, "On")) {
-        cfg->buffer_output = 1;
-        return NULL;
-    }
-    else if (!strcasecmp(value, "Off")) {
-        cfg->buffer_output = 0;
-        return NULL;
-    }
-    
-    (void)arg;
-    return "value must be On or Off";
-}
-
 #pragma GCC diagnostic ignored "-Wmissing-braces"
 const command_rec h2_cmds[] = {
     AP_INIT_TAKE1("H2MaxSessionStreams", h2_conf_set_max_streams, NULL,
                   RSRC_CONF, "maximum number of open streams per session"),
     AP_INIT_TAKE1("H2WindowSize", h2_conf_set_window_size, NULL,
                   RSRC_CONF, "window size on client DATA"),
-    AP_INIT_TAKE1("H2MaxHeaderListSize", h2_conf_set_max_hl_size, NULL, 
-                  RSRC_CONF, "maximum acceptable size of request headers"),
     AP_INIT_TAKE1("H2MinWorkers", h2_conf_set_min_workers, NULL,
                   RSRC_CONF, "minimum number of worker threads per child"),
     AP_INIT_TAKE1("H2MaxWorkers", h2_conf_set_max_workers, NULL,
@@ -380,10 +321,6 @@ const command_rec h2_cmds[] = {
                   RSRC_CONF, "on to enable header serialization for compatibility"),
     AP_INIT_TAKE1("H2Direct", h2_conf_set_direct, NULL,
                   RSRC_CONF, "on to enable direct HTTP/2 mode"),
-    AP_INIT_TAKE1("H2BufferOutput", h2_conf_set_buffer_output, NULL,
-                  RSRC_CONF, "on to enable output buffering, default for TLS"),
-    AP_INIT_TAKE1("H2BufferSize", h2_conf_set_buffer_size, NULL,
-                  RSRC_CONF, "size of outgoing buffer in bytes"),
     AP_INIT_TAKE1("H2SessionExtraFiles", h2_conf_set_session_extra_files, NULL,
                   RSRC_CONF, "number of extra file a session might keep open"),
     { NULL, NULL, NULL, 0, 0, NULL }

@@ -24,7 +24,6 @@
 
 typedef enum {
     H2_CONF_MAX_STREAMS,
-    H2_CONF_MAX_HL_SIZE,
     H2_CONF_WIN_SIZE,
     H2_CONF_MIN_WORKERS,
     H2_CONF_MAX_WORKERS,
@@ -34,8 +33,6 @@ typedef enum {
     H2_CONF_ALT_SVC_MAX_AGE,
     H2_CONF_SER_HEADERS,
     H2_CONF_DIRECT,
-    H2_CONF_BUFFER_OUTPUT,
-    H2_CONF_BUFFER_SIZE,
     H2_CONF_SESSION_FILES,
 } h2_config_var_t;
 
@@ -43,7 +40,6 @@ typedef enum {
 typedef struct h2_config {
     const char *name;
     int h2_max_streams;           /* max concurrent # streams (http2) */
-    int h2_max_hl_size;           /* max header list size (http2) */
     int h2_window_size;           /* stream window size (http2) */
     int min_workers;              /* min # of worker threads/child */
     int max_workers;              /* max # of worker threads/child */
@@ -54,8 +50,6 @@ typedef struct h2_config {
     int serialize_headers;        /* Use serialized HTTP/1.1 headers for 
                                      processing, better compatibility */
     int h2_direct;                /* if mod_h2 is active directly */
-    int buffer_output;            /* if output buffering shall be used */  
-    int buffer_size;              /* size of buffer for outgoing data */  
     int session_extra_files;      /* # of extra files a session may keep open */  
 } h2_config;
 

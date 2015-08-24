@@ -41,7 +41,7 @@
         <name>H2Direct</name>
         <description>H2 Direct Protocol Switch</description>
         <syntax>H2Direct on|off</syntax>
-        <default>H2Direct on</default>
+        <default>H2Direct on (for non TLS)</default>
         <contextlist>
             <context>server config</context>
             <context>virtual host</context>
@@ -145,29 +145,6 @@
     </directivesynopsis>
 
     <directivesynopsis>
-        <name>H2MaxHeaderListSize</name>
-        <description>Maximum size of acceptable stream headers.</description>
-        <syntax>H2MaxHeaderListSize <em>bytes</em></syntax>
-        <default>H2MaxHeaderListSize 16384</default>
-        <contextlist>
-            <context>server config</context>
-            <context>virtual host</context>
-        </contextlist>
-        <usage>
-            <p>
-                This directive sets the maximum amount of stream header bytes that
-                the server is willing to accept. It is announced to the client during
-                the initial HTTP/2 handshake.
-            </p>
-            <example><title>Example</title>
-                <highlight language="config">
-                    H2MaxHeaderListSize 10000
-                </highlight>
-            </example>
-        </usage>
-    </directivesynopsis>
-
-    <directivesynopsis>
         <name>H2MinWorkers</name>
         <description>Minimal number of worker threads to use per child process.</description>
         <syntax>H2MinWorkers <em>n</em></syntax>
@@ -228,53 +205,6 @@
             <example><title>Example</title>
                 <highlight language="config">
                     H2MaxWorkerIdleSeconds 20
-                </highlight>
-            </example>
-        </usage>
-    </directivesynopsis>
-
-    <directivesynopsis>
-        <name>H2BufferOutput</name>
-        <description>Output Buffering Switch</description>
-        <syntax>H2BufferOutput on|off</syntax>
-        <contextlist>
-            <context>server config</context>
-            <context>virtual host</context>
-        </contextlist>
-        <usage>
-            <p>
-                This directive toggles if buffering of HTTP/2 output shall be used
-                or if data is written immediately when it arrives. Unless specified
-                otherwise, this directive is <code>on</code> for TLS connections and
-                <code>off</code> for plain connections.
-            </p>
-            <example><title>Example</title>
-                <highlight language="config">
-                    H2BufferOutput on
-                </highlight>
-            </example>
-        </usage>
-    </directivesynopsis>
-
-    <directivesynopsis>
-        <name>H2BufferSize</name>
-        <description>Buffer size for outgoing data per HTTP/2 connection.</description>
-        <syntax>H2BufferSize <em>bytes</em></syntax>
-        <default>H2BufferSize 65536</default>
-        <contextlist>
-            <context>server config</context>
-            <context>virtual host</context>
-        </contextlist>
-        <usage>
-            <p>
-                This directive sets the size of the buffer used to hold outgoing
-                HTTP/2 raw data, should <code>H2BufferOutput</code> be switched on.
-                This data is allocated per HTTP/2 connection, not stream and is
-                counted against the raw protocol data.
-            </p>
-            <example><title>Example</title>
-                <highlight language="config">
-                    H2BufferSize 128000
                 </highlight>
             </example>
         </usage>
