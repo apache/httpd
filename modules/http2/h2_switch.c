@@ -135,6 +135,9 @@ static int h2_protocol_switch(conn_rec *c, request_rec *r, server_rec *s,
     
     if (found) {
         h2_ctx *ctx = h2_ctx_get(c);
+        
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
+                      "switching protocol to '%s'", protocol);
         h2_ctx_protocol_set(ctx, protocol);
         
         if (r != NULL) {
@@ -154,9 +157,6 @@ static int h2_protocol_switch(conn_rec *c, request_rec *r, server_rec *s,
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, status, r,
                               "session proessed, unexpected status");
             }
-        }
-        else {
-            
         }
         return DONE;
     }

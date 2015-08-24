@@ -28,7 +28,6 @@ static h2_ctx *h2_ctx_create(const conn_rec *c)
 {
     h2_ctx *ctx = apr_pcalloc(c->pool, sizeof(h2_ctx));
     AP_DEBUG_ASSERT(ctx);
-    ctx->pnego_state = H2_PNEGO_NONE;
     ap_set_module_config(c->conn_config, &h2_module, ctx);
     return ctx;
 }
@@ -65,7 +64,6 @@ const char *h2_ctx_protocol_get(const conn_rec *c)
 h2_ctx *h2_ctx_protocol_set(h2_ctx *ctx, const char *proto)
 {
     ctx->protocol = proto;
-    ctx->pnego_state = H2_PNEGO_DONE;
     ctx->is_h2 = (proto != NULL);
     return ctx;
 }
@@ -73,11 +71,6 @@ h2_ctx *h2_ctx_protocol_set(h2_ctx *ctx, const char *proto)
 int h2_ctx_is_task(h2_ctx *ctx)
 {
     return ctx && !!ctx->task_env;
-}
-
-int h2_ctx_pnego_is_ongoing(h2_ctx *ctx)
-{
-    return ctx && (ctx->pnego_state == H2_PNEGO_STARTED);
 }
 
 int h2_ctx_is_active(h2_ctx *ctx)

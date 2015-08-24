@@ -19,12 +19,6 @@
 struct h2_task_env;
 struct h2_config;
 
-typedef enum {
-    H2_PNEGO_NONE,
-    H2_PNEGO_STARTED,
-    H2_PNEGO_DONE,    
-} h2_pnego_state_t;
-
 /**
  * The h2 module context associated with a connection. 
  *
@@ -35,7 +29,6 @@ typedef enum {
  */
 typedef struct h2_ctx {
     int is_h2;                    /* h2 engine is used */
-    h2_pnego_state_t pnego_state; /* protocol negotiation state */
     const char *protocol;         /* the protocol negotiated */
     struct h2_task_env *task_env; /* the h2_task environment or NULL */
     const char *hostname;         /* hostname negotiated via SNI, optional */
@@ -52,12 +45,6 @@ h2_ctx *h2_ctx_create_for(const conn_rec *c, struct h2_task_env *env);
  * NULL when other protocols are in place.
  */
 h2_ctx *h2_ctx_protocol_set(h2_ctx *ctx, const char *proto);
-
-/**
- * Returns != 0 iff protocol negotiation has started but is not
- * done yet.
- */
-int h2_ctx_pnego_is_ongoing(h2_ctx *ctx);
 
 /**
  * Get the h2 protocol negotiated for this connection, or NULL.
