@@ -34,13 +34,26 @@ shared cousins.
 
 CONFIGURATION
 
-The most important configuration options is
+If mod_h2 is enabled for a site or not depends on the new "Protocols"
+directive. This directive list all protocols enabled for a server or
+virtual host.
 
-    H2Engine On|Off
+If you do not specify "Protocols" all available protocols are enabled. For
+sites using TLS, the protocol supported by mod_h2 is "h2". For cleartext
+http:, the offered protocol is "h2c".
 
-which can be set on the base server or a virtual host. By default, the
-engine is 'Off'. Please see the documentation of mod_h2 for a complete
-list and explanation of other options.
+The following is an example of a server that only supports http/1.1 in
+general and offers h2 for a specific virtual host.
+
+    ...
+    Protocols http/1.1
+    <virtualhost *:443>
+        Protocols h2 http/1.1
+        ...
+    </virtualhost>
+
+Please see the documentation of mod_h2 for a complete list and explanation 
+of all options.
 
 
 TLS CONFIGURATION

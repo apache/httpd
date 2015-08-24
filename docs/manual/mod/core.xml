@@ -3740,11 +3740,11 @@ Protocol https
         <p>It is safe to specify protocols that are unavailable/disabled. Such
         protocol names will simply be ignored.</p>
         
-        <p>Protocols specified in base servers and virtual hosts are concatenated
-            by appending the base ones, if there are configured protocols,
-            to the virtual host ones. Since protocols such as HTTP/2 allow
-            connection reuse under certain conditions, restricting protocols for
-            individual virtual hosts might not work as you expect it to.</p>
+        <p>Protocols specified in base servers are inherited for virtual hosts 
+            only if the virtual host has no own Protocols directive. Or, the other
+            way around, Protocols directives in virtual hosts replace any
+            such directive in the base server.
+        </p>
 
     </usage>
     <seealso><directive module="core">ProtocolsHonorOrder</directive></seealso>
