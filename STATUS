@@ -282,6 +282,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mod_proxy_balancer: Fix balancers and balancer members reuse on
      restart when new ones are added.  PR 58024.
      trunk patch: http://svn.apache.org/r1696960
+                  http://svn.apache.org/r1697352 (doc)
      2.4.x: trunk works (modulo CHANGES and log-message-tags)
      +1: ylavic
 
