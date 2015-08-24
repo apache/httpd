@@ -554,7 +554,8 @@ static void *merge_core_server_configs(apr_pool_t *p, void *basev, void *virtv)
                            ? virt->merge_trailers
                            : base->merge_trailers;
 
-    conf->protocols = apr_array_append(p, virt->protocols, base->protocols);
+    conf->protocols = ((virt->protocols->nelts > 0)? 
+                       virt->protocols : base->protocols);
     conf->protocols_honor_order = ((virt->protocols_honor_order < 0)?
                                        base->protocols_honor_order :
                                        virt->protocols_honor_order);
