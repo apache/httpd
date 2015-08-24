@@ -1081,11 +1081,11 @@ static int submit_response(h2_session *session, h2_response *response)
     
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, session->c,
                   "h2_stream(%ld-%d): submitting response %s",
-                  session->id, response->stream_id, response->headers->status);
+                  session->id, response->stream_id, response->status);
     
     rv = nghttp2_submit_response(session->ngh2, response->stream_id,
-                                     response->headers->nv, 
-                                     response->headers->nvlen, &provider);
+                                 response->ngheader->nv, 
+                                 response->ngheader->nvlen, &provider);
     
     if (rv != 0) {
         ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, session->c,
@@ -1096,7 +1096,7 @@ static int submit_response(h2_session *session, h2_response *response)
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c,
                       "h2_stream(%ld-%d): submitted response %s, rv=%d",
                       session->id, response->stream_id, 
-                      response->headers->status, rv);
+                      response->status, rv);
     }
     return rv;
 }
@@ -1113,7 +1113,7 @@ apr_status_t h2_session_handle_response(h2_session *session, h2_stream *stream)
     AP_DEBUG_ASSERT(stream);
     AP_DEBUG_ASSERT(stream->response);
     
-    if (stream->response->headers) {
+    if (stream->response->ngheader) {
         rv = submit_response(session, stream->response);
     }
     else {
