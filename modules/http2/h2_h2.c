@@ -111,7 +111,6 @@ void h2_h2_register_hooks(void)
     ap_hook_process_connection(h2_h2_remove_timeout, 
                                mod_reqtimeout, NULL, APR_HOOK_LAST);
     
-    ap_hook_post_read_request(h2_h2_post_read_req, NULL, NULL, APR_HOOK_MIDDLE);
     /* With "H2SerializeHeaders On", we install the filter in this hook
      * that parses the response. This needs to happen before any other post
      * read function terminates the request with an error. Otherwise we will

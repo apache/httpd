@@ -329,6 +329,28 @@ apr_status_t h2_session_process(h2_session *session)
 
 static void fix_event_conn(conn_rec *c, conn_rec *master);
 
+/*
+ * We would like to create the connection more lightweight like
+ * slave connections in 2.5-DEV. But we get 500 responses on long
+ * cgi tests in modules/h2.t as the script parsing seems to see an
+ * EOF from the cgi before anything is sent. 
+ *
+conn_rec *h2_conn_create(conn_rec *master, apr_pool_t *pool)
+{
+    conn_rec *c = (conn_rec *) apr_palloc(pool, sizeof(conn_rec));
+    
+    memcpy(c, master, sizeof(conn_rec));
+    c->id = (master->id & (long)pool);
+    c->slaves = NULL;
+    c->master = master;
+    c->input_filters = NULL;
+    c->output_filters = NULL;
+    c->pool = pool;
+    
+    return c;
+}
+*/
+
 conn_rec *h2_conn_create(conn_rec *master, apr_pool_t *pool)
 {
     apr_socket_t *socket;

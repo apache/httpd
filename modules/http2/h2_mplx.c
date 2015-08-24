@@ -555,10 +555,10 @@ static apr_status_t out_open(h2_mplx *m, int stream_id, h2_response *response,
         if (f) {
             ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, f->c,
                           "h2_mplx(%ld-%d): open response: %s",
-                          m->id, stream_id, response->headers->status);
+                          m->id, stream_id, response->status);
         }
         
-        h2_response_copy(io->response, response);
+        io->response = h2_response_copy(io->pool, response);
         h2_io_set_add(m->ready_ios, io);
         if (bb) {
             status = out_write(m, io, f, bb, iowait);
@@ -636,7 +636,7 @@ apr_status_t h2_mplx_out_close(h2_mplx *m, int stream_id)
         if (!m->aborted) {
             h2_io *io = h2_io_set_get(m->stream_ios, stream_id);
             if (io) {
-                if (!io->response->headers) {
+                if (!io->response->ngheader) {
                     /* In case a close comes before a response was created,
                      * insert an error one so that our streams can properly
                      * reset.

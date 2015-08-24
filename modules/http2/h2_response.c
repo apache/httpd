@@ -28,8 +28,9 @@
 #include "h2_util.h"
 #include "h2_response.h"
 
-static void convert_header(h2_response *response, apr_table_t *headers,
-                           const char *http_status, request_rec *r);
+static h2_ngheader *make_ngheader(apr_pool_t *pool, const char *status,
+                                  apr_table_t *header);
+
 static int ignore_header(const char *name) 
 {
     return (H2_HD_MATCH_LIT_CS("connection", name)
@@ -52,6 +53,7 @@ h2_response *h2_response_create(int stream_id,
     }
     
     response->stream_id = stream_id;
+    response->status = http_status;
     response->content_length = -1;
     
     if (hlines) {
@@ -93,9 +95,9 @@ h2_response *h2_response_create(int stream_id,
     else {
         header = apr_table_make(pool, 0);        
     }
-    
-    convert_header(response, header, http_status, NULL);
-    return response->headers? response : NULL;
+
+    response->rheader = header;
+    return response;
 }
 
 h2_response *h2_response_rcreate(int stream_id, request_rec *r,
@@ -107,34 +109,27 @@ h2_response *h2_response_rcreate(int stream_id, request_rec *r,
     }
     
     response->stream_id = stream_id;
+    response->status = apr_psprintf(pool, "%d", r->status);
     response->content_length = -1;
-    convert_header(response, header, apr_psprintf(pool, "%d", r->status), r);
+    response->rheader = header;
     
-    return response->headers? response : NULL;
-}
-
-void h2_response_cleanup(h2_response *response)
-{
-    if (response->headers) {
-        if (--response->headers->refs == 0) {
-            free(response->headers);
-        }
-        response->headers = NULL;
-    }
+    return response;
 }
 
 void h2_response_destroy(h2_response *response)
 {
-    h2_response_cleanup(response);
 }
 
-void h2_response_copy(h2_response *to, h2_response *from)
+h2_response *h2_response_copy(apr_pool_t *pool, h2_response *from)
 {
-    h2_response_cleanup(to);
-    *to = *from;
-    if (from->headers) {
-        ++from->headers->refs;
+    h2_response *to = apr_pcalloc(pool, sizeof(h2_response));
+    to->stream_id = from->stream_id;
+    to->status = apr_pstrdup(pool, from->status);
+    to->content_length = from->content_length;
+    if (from->rheader) {
+        to->ngheader = make_ngheader(pool, to->status, from->rheader);
     }
+    return to;
 }
 
 typedef struct {
@@ -143,12 +138,10 @@ typedef struct {
     size_t nvstrlen;
     size_t offset;
     char *strbuf;
-    h2_response *response;
-    int debug;
-    request_rec *r;
+    apr_pool_t *pool;
 } nvctx_t;
 
-static int count_headers(void *ctx, const char *key, const char *value)
+static int count_header(void *ctx, const char *key, const char *value)
 {
     if (!ignore_header(key)) {
         nvctx_t *nvctx = (nvctx_t*)ctx;
@@ -199,42 +192,33 @@ static int add_header(void *ctx, const char *key, const char *value)
 {
     if (!ignore_header(key)) {
         nvctx_t *nvctx = (nvctx_t*)ctx;
-        if (nvctx->debug) {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, APR_EINVAL, 
-                          nvctx->r, "h2_response(%d) header -> %s: %s",
-                          nvctx->response->stream_id, key, value);
-        }
-        NV_ADD_CS_CS(ctx, key, value);
+        NV_ADD_CS_CS(nvctx, key, value);
     }
     return 1;
 }
 
-static void convert_header(h2_response *response, apr_table_t *headers,
-                           const char *status, request_rec *r)
+static h2_ngheader *make_ngheader(apr_pool_t *pool, const char *status,
+                                  apr_table_t *header)
 {
     size_t n;
-    h2_headers *h;
-    nvctx_t ctx = { NULL, 1, strlen(status) + 1, 0, NULL, 
-        response, r? APLOGrdebug(r) : 0, r };
+    h2_ngheader *h;
+    nvctx_t ctx = { NULL, 1, strlen(status) + 1, 0, NULL, pool };
     
-    apr_table_do(count_headers, &ctx, headers, NULL);
+    apr_table_do(count_header, &ctx, header, NULL);
     
-    n =  (sizeof(h2_headers)
+    n =  (sizeof(h2_ngheader)
                  + (ctx.nvlen * sizeof(nghttp2_nv)) + ctx.nvstrlen); 
-    /* XXX: Why calloc, Why not on the pool of the request? */
-    h = calloc(1, n);
+    h = apr_pcalloc(pool, n);
     if (h) {
         ctx.nv = (nghttp2_nv*)(h + 1);
         ctx.strbuf = (char*)&ctx.nv[ctx.nvlen];
         
         NV_ADD_LIT_CS(&ctx, ":status", status);
-        apr_table_do(add_header, &ctx, headers, NULL);
+        apr_table_do(add_header, &ctx, header, NULL);
         
         h->nv = ctx.nv;
         h->nvlen = ctx.nvlen;
-        h->status = (const char *)ctx.nv[0].value;
-        h->refs = 1;
-        response->headers = h;
     }
+    return h;
 }
 
