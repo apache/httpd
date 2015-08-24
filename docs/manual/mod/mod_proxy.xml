@@ -710,6 +710,8 @@ expressions</description>
     Balancers available for a virtualhost in addition to the
     number pre-configured. It only takes effect if there is at
     least one pre-configured Balancer.</p>
+    <note type="warning">If/when the growth potential is reached, it is not
+    possible to configure a new balancer or the next restart would fail.</note>
 </usage>
 </directivesynopsis>
 
@@ -1270,6 +1272,10 @@ ProxyPass "/example" "http://backend.example.com" max=20 ttl=120 retry=300
         <td>0</td>
         <td>Number of additional BalancerMembers to allow to be added
         to this balancer in addition to those defined at configuration.
+    <note type="warning"><title>Note</title>
+        <p>If/when the growth potential is reached, it is not possible to
+        configure a new BalancerMember or the next restart would fail.</p>
+    </note>
     </td></tr>
     <tr><td>forcerecovery</td>
         <td>On</td>
