@@ -134,7 +134,7 @@ Substitute "s|http://internal.blog.example.com/|http://www.example.com/blog/|i"<
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Change the merge order of inherited patterns</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SubstituteInheritBefore on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SubstituteInheritBefore off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SubstituteInheritBefore on</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
@@ -144,9 +144,9 @@ Substitute "s|http://internal.blog.example.com/|http://www.example.com/blog/|i"<
     <p>Whether to apply the inherited <code class="directive">Substitute</code>
     patterns first (<code>on</code>), or after the ones of the current
     context (<code>off</code>).
-    The former was the default in versions 2.4 and earlier, but changed
+    The latter was the default in versions 2.4 and earlier, but changed
     starting with 2.5, hence <code class="directive">SubstituteInheritBefore</code>
-    set to <code>on</code> allows to restore the legacy behaviour.
+    set to <code>off</code> allows to restore the legacy behaviour.
     <code class="directive">SubstituteInheritBefore</code> is itself inherited,
     hence contexts that inherit it (those that don't specify their own
     <code class="directive">SubstituteInheritBefore</code> value) will apply the
