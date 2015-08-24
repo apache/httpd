@@ -238,8 +238,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       +1: rpluem, ylavic
       niq: 1. the if(worker->s->retries) {} and comment at line 2917
               don't seem to make any sense.
+      rpluem: This is just taken over from existing code. It is just indented
+              differently hence part of the path I think it should be marked
+              as TODO section. But this should be subject to another
+              patch.
            2. Re: error handline line 2930 - can PROXY_WORKER_IS_USABLE
               not be tested BEFORE opening connection?
+      rpluem: We could, but we can catch more race cases with the current code
+              as it also catches the case where a connection establishment
+              took long and the worker went into error meanwhile.
  
   *) apxs: add HTTPD_MMN and HTTPD_VERSION to apxs -q
      trunk: http://svn.apache.org/r1693919
