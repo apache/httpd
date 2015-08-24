@@ -2933,8 +2933,7 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
          * not continue with a connection via this worker even if we got one.
          */
         if (connected) {
-            apr_socket_close(conn->sock );
-            conn->sock = NULL;
+            socket_cleanup(conn);
         }
         return DECLINED;
     }
