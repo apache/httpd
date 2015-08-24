@@ -233,9 +233,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      before the retry period is over
       Trunk version of patch:
          http://svn.apache.org/r1664709
+         http://svn.apache.org/r1697323
       Backport version for 2.4.x of patch:
          Trunk version of patch works modulo CHANGES
-      +1: rpluem, ylavic
+      +1: rpluem,
       niq: 1. the if(worker->s->retries) {} and comment at line 2917
               don't seem to make any sense.
       rpluem: This is just taken over from existing code. It is just indented
