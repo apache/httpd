@@ -46,7 +46,7 @@ static module *mpm_module;
 static module *ssl_module;
 static int checked;
 
-static void check_modules() 
+static void check_modules(void) 
 {
     int i;
     if (!checked) {

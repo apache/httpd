@@ -62,7 +62,6 @@ static int h2_protocol_propose(conn_rec *c, request_rec *r,
                                const apr_array_header_t *offers,
                                apr_array_header_t *proposals)
 {
-    h2_config *cfg;
     int proposed = 0;
     const char **protos = h2_h2_is_tls(c)? h2_tls_protos : h2_clear_protos;
     
@@ -73,8 +72,6 @@ static int h2_protocol_propose(conn_rec *c, request_rec *r,
                       "protocol switch: current proto != http/1.1, declined");
         return DECLINED;
     }
-    
-    cfg = h2_config_sget(s);
     
     if (r) {
         const char *p;
