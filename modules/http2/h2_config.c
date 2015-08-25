@@ -299,7 +299,9 @@ static const char *h2_conf_set_direct(cmd_parms *parms,
     return "value must be On or Off";
 }
 
+#ifndef _MSC_VER
 #pragma GCC diagnostic ignored "-Wmissing-braces"
+#endif
 const command_rec h2_cmds[] = {
     AP_INIT_TAKE1("H2MaxSessionStreams", h2_conf_set_max_streams, NULL,
                   RSRC_CONF, "maximum number of open streams per session"),
