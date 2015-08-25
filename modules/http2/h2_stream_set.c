@@ -135,7 +135,7 @@ int h2_stream_set_is_empty(h2_stream_set *sp)
 }
 
 h2_stream *h2_stream_set_find(h2_stream_set *sp,
-                              h2_stream_set_match_fn match, void *ctx)
+                              h2_stream_set_match_fn *match, void *ctx)
 {
     h2_stream *s = NULL;
     int i;

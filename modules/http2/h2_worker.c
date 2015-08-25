@@ -26,7 +26,7 @@
 #include "h2_task.h"
 #include "h2_worker.h"
 
-static void *execute(apr_thread_t *thread, void *wctx)
+static void* APR_THREAD_FUNC execute(apr_thread_t *thread, void *wctx)
 {
     h2_worker *worker = (h2_worker *)wctx;
     apr_status_t status = APR_SUCCESS;
