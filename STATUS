@@ -159,6 +159,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://people.apache.org/~rpluem/patches/proxy_post_request_status_code.diff
      +1: rpluem,
 
+  *) mod_proxy: Fix a regression with 2.2.31 that caused inherited workers to
+     use a different scoreboard slot then the original one.
+     PR 58267
+     Trunk version of patch:
+        None, only 2.2.x specific
+     Backport version for 2.2.x of patch:
+        http://people.apache.org/~rpluem/patches/pr58267.diff
+     +1: rpluem,
+
 
 PATCHES/ISSUES THAT ARE STALLED
 
