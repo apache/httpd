@@ -299,9 +299,8 @@ static const char *h2_conf_set_direct(cmd_parms *parms,
     return "value must be On or Off";
 }
 
-#ifndef _MSC_VER
-#pragma GCC diagnostic ignored "-Wmissing-braces"
-#endif
+#define AP_END_CMD { NULL }
+
 const command_rec h2_cmds[] = {
     AP_INIT_TAKE1("H2MaxSessionStreams", h2_conf_set_max_streams, NULL,
                   RSRC_CONF, "maximum number of open streams per session"),
@@ -325,7 +324,7 @@ const command_rec h2_cmds[] = {
                   RSRC_CONF, "on to enable direct HTTP/2 mode"),
     AP_INIT_TAKE1("H2SessionExtraFiles", h2_conf_set_session_extra_files, NULL,
                   RSRC_CONF, "number of extra file a session might keep open"),
-    { NULL, NULL, NULL, 0, 0, NULL }
+    AP_END_CMD
 };
 
 
