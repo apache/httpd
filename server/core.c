@@ -5282,11 +5282,6 @@ static void core_dump_config(apr_pool_t *p, server_rec *s)
     }
 }
 
-static const char *core_protocol_get(const conn_rec *c) 
-{
-    return AP_PROTOCOL_HTTP1;
-}
-
 static int core_upgrade_handler(request_rec *r)
 {
     conn_rec *c = r->connection;
@@ -5308,7 +5303,7 @@ static int core_upgrade_handler(request_rec *r)
             if (offers && offers->nelts > 0) {
                 const char *protocol = ap_select_protocol(c, r, r->server,
                                                           offers);
-                if (strcmp(protocol, ap_run_protocol_get(c))) {
+                if (strcmp(protocol, ap_get_protocol(c))) {
                     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02909)
                                   "Upgrade selects '%s'", protocol);
                     /* Let the client know what we are upgrading to. */
@@ -5385,7 +5380,6 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_open_htaccess(ap_open_htaccess, NULL, NULL, APR_HOOK_REALLY_LAST);
     ap_hook_optional_fn_retrieve(core_optional_fn_retrieve, NULL, NULL,
                                  APR_HOOK_MIDDLE);
-    ap_hook_protocol_get(core_protocol_get, NULL, NULL, APR_HOOK_REALLY_LAST);
     
     /* register the core's insert_filter hook and register core-provided
      * filters

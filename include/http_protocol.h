@@ -723,8 +723,8 @@ AP_DECLARE_HOOK(apr_port_t,default_port,(const request_rec *r))
  * @param c The current connection
  * @param r The current request or NULL
  * @param s The server/virtual host selected
- * @param offers a list of protocol identifiers offered by the client
- * @param proposals the list of protocol identifiers proposed by the hooks
+ * @param offers A list of protocol identifiers offered by the client
+ * @param proposals The list of protocol identifiers proposed by the hooks
  * @return OK or DECLINED
  */
 AP_DECLARE_HOOK(int,protocol_propose,(conn_rec *c, request_rec *r,
@@ -752,7 +752,7 @@ AP_DECLARE_HOOK(int,protocol_propose,(conn_rec *c, request_rec *r,
  * @param c The current connection
  * @param r The current request or NULL
  * @param s The server/virtual host selected
- * @param choices a list of protocol identifiers, normally the clients whishes
+ * @param choices A list of protocol identifiers, normally the clients whishes
  * @param proposals the list of protocol identifiers proposed by the hooks
  * @return OK or DECLINED
  */
@@ -765,8 +765,11 @@ AP_DECLARE_HOOK(int,protocol_switch,(conn_rec *c, request_rec *r,
  * protocol switching must register here and return the correct protocol
  * identifier for connections they switched.
  *
+ * To find out the protocol for the current connection, better call
+ * @see ap_get_protocol which internally uses this hook.
+ *
  * @param c The current connection
- * @return The identifier of the protocol in place
+ * @return The identifier of the protocol in place or NULL
  */
 AP_DECLARE_HOOK(const char *,protocol_get,(const conn_rec *c))
     
@@ -778,8 +781,8 @@ AP_DECLARE_HOOK(const char *,protocol_get,(const conn_rec *c))
  * @param c The current connection
  * @param r The current request or NULL
  * @param s The server/virtual host selected
- * @param choices a list of protocol identifiers, normally the clients whishes
- * @return the selected protocol
+ * @param choices A list of protocol identifiers, normally the clients whishes
+ * @return The selected protocol
  */
 AP_DECLARE(const char *) ap_select_protocol(conn_rec *c, request_rec *r, 
                                             server_rec *s,
@@ -802,6 +805,19 @@ AP_DECLARE(const char *) ap_select_protocol(conn_rec *c, request_rec *r,
 AP_DECLARE(apr_status_t) ap_switch_protocol(conn_rec *c, request_rec *r, 
                                             server_rec *s,
                                             const char *protocol);
+
+/**
+ * Call the protocol_get hook to determine the protocol currently in use
+ * for the given connection.
+ *
+ * Unless another protocol has been switch to, will default to
+ * @see AP_PROTOCOL_HTTP1 and modules implementing a  new protocol must
+ * report a switched connection via the protocol_get hook.
+ *
+ * @param c The connection to determine the protocol for
+ * @return the protocol in use, never NULL
+ */
+AP_DECLARE(const char *) ap_get_protocol(conn_rec *c);
 
 /** @see ap_bucket_type_error */
 typedef struct ap_bucket_error ap_bucket_error;

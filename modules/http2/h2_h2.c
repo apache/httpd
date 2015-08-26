@@ -161,7 +161,7 @@ int h2_h2_process_conn(conn_rec* c)
      * -> sniff for the magic PRIamble. On TLS, this might trigger the ALPN.
      */
     if (!h2_ctx_protocol_get(c) 
-        && !strcmp(AP_PROTOCOL_HTTP1, ap_run_protocol_get(c))) {
+        && !strcmp(AP_PROTOCOL_HTTP1, ap_get_protocol(c))) {
         apr_status_t status;
         
         temp = apr_brigade_create(c->pool, c->bucket_alloc);
@@ -170,7 +170,7 @@ int h2_h2_process_conn(conn_rec* c)
 
         if (status == APR_SUCCESS) {
             if (h2_ctx_protocol_get(c) 
-                || strcmp(AP_PROTOCOL_HTTP1, ap_run_protocol_get(c))) {
+                || strcmp(AP_PROTOCOL_HTTP1, ap_get_protocol(c))) {
                 /* h2 or another protocol has been selected. */
             }
             else {

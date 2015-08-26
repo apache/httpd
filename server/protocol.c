@@ -1971,13 +1971,19 @@ static int protocol_cmp(apr_array_header_t *preferences,
     return strcmp(proto1, proto2);
 }
 
+AP_DECLARE(const char *) ap_get_protocol(conn_rec *c)
+{
+    const char *protocol = ap_run_protocol_get(c);
+    return protocol? protocol : AP_PROTOCOL_HTTP1;
+}
+
 AP_DECLARE(const char *) ap_select_protocol(conn_rec *c, request_rec *r, 
                                             server_rec *s,
                                             apr_array_header_t *choices)
 {
     apr_pool_t *pool = r? r->pool : c->pool;
     apr_array_header_t *proposals;
-    const char *protocol = NULL, *existing = ap_run_protocol_get(c);
+    const char *protocol = NULL, *existing = ap_get_protocol(c);
     core_server_config *conf = ap_get_core_module_config(s->module_config);
 
     if (APLOGcdebug(c)) {
@@ -2038,7 +2044,7 @@ AP_DECLARE(apr_status_t) ap_switch_protocol(conn_rec *c, request_rec *r,
                                             server_rec *s,
                                             const char *protocol)
 {
-    const char *current = ap_run_protocol_get(c);
+    const char *current = ap_get_protocol(c);
     int rc;
     
     if (!strcmp(current, protocol)) {
