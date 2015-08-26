@@ -1744,6 +1744,24 @@ Package=<4>
 
 ###############################################################################
 
+Project: "mod_h2"=.\modules\http2\mod_h2.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
 Project: "mod_headers"=.\modules\metadata\mod_headers.dsp - Package Owner=<4>
 
 Package=<5>
