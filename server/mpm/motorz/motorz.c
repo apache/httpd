@@ -59,7 +59,7 @@ static void clean_child_exit(int code) __attribute__ ((noreturn));
 static apr_pollset_t *motorz_pollset;
 static apr_skiplist *motorz_timer_ring;
 
-static motorz_core_t *motorz_core_get()
+static motorz_core_t *motorz_core_get(void)
 {
     return g_motorz_core;
 }
