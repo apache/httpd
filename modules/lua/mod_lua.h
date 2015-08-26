@@ -59,10 +59,6 @@
 #else
 #define lua_rawlen(L,i)   lua_objlen(L, (i))
 #endif
-#if LUA_VERSION_NUM > 502
-/* Load mode for lua_dump() */
-#define lua_dump(a,b,c)   lua_dump(a,b,c,0)
-#endif
 
 /* Create a set of AP_LUA_DECLARE(type), AP_LUA_DECLARE_NONSTD(type) and
  * AP_LUA_DECLARE_DATA with appropriate export and import tags for the platform
