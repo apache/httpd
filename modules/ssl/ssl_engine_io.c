@@ -1505,7 +1505,7 @@ static apr_status_t ssl_io_filter_input(ap_filter_t *f,
                           APLOGNO(02836) "ALPN selected protocol: '%s'",
                           protocol);
             
-            if (strcmp(protocol, ap_run_protocol_get(f->c))) {
+            if (strcmp(protocol, ap_get_protocol(f->c))) {
                 status = ap_switch_protocol(f->c, NULL, sslconn->server,
                                             protocol);
                 if (status != APR_SUCCESS) {
