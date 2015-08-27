@@ -1956,8 +1956,8 @@ static int protocol_cmp(apr_array_header_t *preferences,
                         const char *proto2)
 {
     if (preferences && preferences->nelts > 0) {
-        int index1 = ap_array_index(preferences, proto1);
-        int index2 = ap_array_index(preferences, proto2);
+        int index1 = ap_array_index(preferences, proto1, 0);
+        int index2 = ap_array_index(preferences, proto2, 0);
         if (index2 > index1) {
             return (index1 >= 0) ? 1 : -1;
         }
@@ -2006,8 +2006,8 @@ AP_DECLARE(const char *) ap_select_protocol(conn_rec *c, request_rec *r,
         /* If the existing protocol has not been proposed, but is a choice,
          * add it to the proposals implicitly.
          */
-        if (ap_array_index(proposals, existing) < 0 
-            && ap_array_index(choices, existing) >= 0) {
+        if (!ap_array_contains(proposals, existing) 
+            && ap_array_contains(choices, existing)) {
             APR_ARRAY_PUSH(proposals, const char*) = existing;
         }
         
@@ -2021,7 +2021,7 @@ AP_DECLARE(const char *) ap_select_protocol(conn_rec *c, request_rec *r,
         for (i = 0; i < proposals->nelts; ++i) {
             const char *p = APR_ARRAY_IDX(proposals, i, const char *);
             if (conf->protocols->nelts > 0 
-                && ap_array_index(conf->protocols, p) < 0) {
+                && !ap_array_contains(conf->protocols, p)) {
                 /* not a permitted protocol here */
                 continue;
             }
