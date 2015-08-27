@@ -107,7 +107,7 @@ static int h2_protocol_propose(conn_rec *c, request_rec *r,
         /* Add all protocols we know (tls or clear) and that
          * are part of the offerings (if there have been any). 
          */
-        if (!offers || ap_array_index(offers, *protos) >= 0) {
+        if (!offers || ap_array_contains(offers, *protos)) {
             ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
                           "proposing protocol '%s'", *protos);
             APR_ARRAY_PUSH(proposals, const char*) = *protos;

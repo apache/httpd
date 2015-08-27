@@ -2403,12 +2403,26 @@ AP_DECLARE(char *) ap_get_exec_line(apr_pool_t *p,
 #define AP_NORESTART APR_OS_START_USEERR + 1
 
 /**
- * Get the index of the string in the array or -1 if not found.
- * @param array the array the check
- * @param s the string to find
+ * Get the first index of the string in the array or -1 if not found. Start
+ * searching a start. 
+ * @param array The array the check
+ * @param s The string to find
+ * @param start Start index for search. If start is greater or 
+                equal to array length, -1 will be returned.
  * @return index of string in array or -1
  */
-AP_DECLARE(int) ap_array_index(const apr_array_header_t *array, const char *s);
+AP_DECLARE(int) ap_array_index(const apr_array_header_t *array, 
+                               const char *s,
+                               apr_size_t start);
+
+/**
+ * Check if the string is member of the given array by strcmp.
+ * @param array The array the check
+ * @param s The string to find
+ * @return !=0 iff string is member of array
+ */
+AP_DECLARE(int) ap_array_contains(const apr_array_header_t *array, 
+                                  const char *s);
 
 #ifdef __cplusplus
 }
