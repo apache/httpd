@@ -279,13 +279,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x: trunk patch applies.
      +1: niq
 
-  *) mod_proxy_balancer: Fix balancers and balancer members reuse on
-     restart when new ones are added.  PR 58024.
-     trunk patch: http://svn.apache.org/r1696960
-                  http://svn.apache.org/r1697352 (doc)
-     2.4.x: trunk works (modulo CHANGES and log-message-tags)
-     +1: ylavic
-
   *) mod_proxy: Give ap_proxy_post_request as chance to act correctly on the status code
      by setting r->status temporarily to access_status. r->status might be different than
      access_status e.g. r->status could be HTTP_OK if e.g. we override the error page on
