@@ -312,6 +312,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1610674 (partial)
                   http://svn.apache.org/r1685069
                   http://svn.apache.org/r1693918
+                  http://svn.apache.org/r1698116
     2.4.x patch: https://raw.githubusercontent.com/icing/mod_h2/master/sandbox/httpd/patches/core-protocols.patch
     +1: icing, 
  
