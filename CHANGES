@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_dir: Responses that go through "FallbackResource" might appear to
+     hang due to unterminated chunked encoding. PR58292. [Eric Covener]
+
   *) mod_socache_memcache: Add the 'MemcacheConnTTL' directive to control how 
      long to keep idle connections with the memcache server(s).
      Change default value from 600 usec (!) to 15 sec. PR 58091
