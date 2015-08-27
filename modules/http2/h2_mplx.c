@@ -436,7 +436,12 @@ apr_status_t h2_mplx_in_update_windows(h2_mplx *m,
     }
     status = apr_thread_mutex_lock(m->lock);
     if (APR_SUCCESS == status) {
-        update_ctx ctx = { cb, cb_ctx, 0 };
+        update_ctx ctx;
+        
+        ctx.cb              = cb;
+        ctx.cb_ctx          = cb_ctx;
+        ctx.streams_updated = 0;
+
         status = APR_EAGAIN;
         h2_io_set_iter(m->stream_ios, update_window, &ctx);
         

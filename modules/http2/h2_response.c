@@ -202,7 +202,14 @@ static h2_ngheader *make_ngheader(apr_pool_t *pool, const char *status,
 {
     size_t n;
     h2_ngheader *h;
-    nvctx_t ctx = { NULL, 1, strlen(status) + 1, 0, NULL, pool };
+    nvctx_t ctx;
+    
+    ctx.nv       = NULL;
+    ctx.nvlen    = 1;
+    ctx.nvstrlen = strlen(status) + 1;
+    ctx.offset   = 0;
+    ctx.strbuf   = NULL;
+    ctx.pool     = pool;
     
     apr_table_do(count_header, &ctx, header, NULL);
     
