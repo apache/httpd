@@ -297,6 +297,24 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         Trunk version of patch works
      +1: rpluem,
 
+  *) core/mod_ssl: add Protocols/ProtocolsHonorOrder directives and new 
+     protocols hooks to control Upgrade: and ALPN protocol switching.
+     HTTP_MISDIRECTED_REQUEST addition and handling in mod_ssl
+     trunk patch: http://svn.apache.org/r1697855
+                  http://svn.apache.org/r1697339
+                  http://svn.apache.org/r1696428
+                  http://svn.apache.org/r1696266
+                  http://svn.apache.org/r1696264
+                  http://svn.apache.org/r1695874
+                  http://svn.apache.org/r1695727
+                  http://svn.apache.org/r1692516
+                  http://svn.apache.org/r1692486
+                  http://svn.apache.org/r1610674 (partial)
+                  http://svn.apache.org/r1685069
+                  http://svn.apache.org/r1693918
+    2.4.x patch: https://raw.githubusercontent.com/icing/mod_h2/master/sandbox/httpd/patches/core-protocols.patch
+    +1: icing, 
+ 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
@@ -351,23 +369,6 @@ PATCHES/ISSUES THAT ARE BEING WORKED
              make it nonblocking (by default)?
         jim: Non-blocking seems the best way to handle...
 
-  *) core/mod_ssl: add Protocols/ProtocolsHonorOrder directives and new 
-     protocols hooks to control Upgrade: and ALPN protocol switching.
-     HTTP_MISDIRECTED_REQUEST addition and handling in mod_ssl
-     trunk patch: http://svn.apache.org/r1697855
-                  http://svn.apache.org/r1697339
-                  http://svn.apache.org/r1696428
-                  http://svn.apache.org/r1696266
-                  http://svn.apache.org/r1696264
-                  http://svn.apache.org/r1695874
-                  http://svn.apache.org/r1695727
-                  http://svn.apache.org/r1692516
-                  http://svn.apache.org/r1692486
-                  http://svn.apache.org/r1610674 (partial)
-                  http://svn.apache.org/r1685069
-    2.4.x patch: https://raw.githubusercontent.com/icing/mod_h2/master/sandbox/httpd/patches/core-protocols.patch
-    +1: icing, 
- 
 PATCHES/ISSUES THAT ARE STALLED
 
    * mod_systemd: New module, for integration with systemd on Linux.
