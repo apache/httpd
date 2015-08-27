@@ -704,18 +704,27 @@ AP_DECLARE_HOOK(apr_port_t,default_port,(const request_rec *r))
 #define AP_PROTOCOL_HTTP1		"http/1.1"
 
 /**
- * Negotiate a possible protocol switch on the connection. The negotiation
- * may start without any request sent, in which case the request is NULL. Or
- * it may be triggered by the request received, e.g. through the "Upgrade"
- * header.
+ * Determine the list of protocols available for a connection/request. This may
+ * be collected with or without any request sent, in which case the request is 
+ * NULL. Or it may be triggered by the request received, e.g. through the 
+ * "Upgrade" header.
+ *
+ * This hook will be run whenever protocols are being negotiated (ALPN as
+ * one example). It may also be invoked at other times, e.g. when the server
+ * wants to advertise protocols it is capable of switching to.
  * 
  * The identifiers for protocols are taken from the TLS extension type ALPN:
  * https://www.iana.org/assignments/tls-extensiontype-values/tls-extensiontype-values.xml
  *
- * If no protocols are added to the proposals, the server will always fallback
- * to "http/1.1" which is the default protocol for connections that Apache
- * handles. If the protocol selected from the proposals is the protocol
- * already in place, no "protocol_switch" will be invoked.
+ * If no protocols are added to the proposals, the server not perform any
+ * switch. If the protocol selected from the proposals is the protocol
+ * already in place, also no protocol switch will be invoked.
+ *
+ * The client may already have announced the protocols it is willing to
+ * accept. These will then be listed as offers. This parameter may also
+ * be NULL, indicating that offers from the client are not known and
+ * the hooks should propose all protocols that are valid for the
+ * current connection/request.
  *
  * All hooks are run, unless one returns an error. Proposals may contain
  * duplicates. The order in which proposals are added is usually ignored.
@@ -723,7 +732,8 @@ AP_DECLARE_HOOK(apr_port_t,default_port,(const request_rec *r))
  * @param c The current connection
  * @param r The current request or NULL
  * @param s The server/virtual host selected
- * @param offers A list of protocol identifiers offered by the client
+ * @param offers A list of protocol identifiers offered by the client or
+ *               NULL to indicated that the hooks are free to propose 
  * @param proposals The list of protocol identifiers proposed by the hooks
  * @return OK or DECLINED
  */

@@ -105,9 +105,9 @@ static int h2_protocol_propose(conn_rec *c, request_rec *r,
     
     while (*protos) {
         /* Add all protocols we know (tls or clear) and that
-         * were offered as options for the switch. 
+         * are part of the offerings (if there have been any). 
          */
-        if (ap_array_index(offers, *protos) >= 0) {
+        if (!offers || ap_array_index(offers, *protos) >= 0) {
             ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
                           "proposing protocol '%s'", *protos);
             APR_ARRAY_PUSH(proposals, const char*) = *protos;
