@@ -12,10 +12,6 @@ Changes with Apache 2.5.0
      Change default value from 600 usec (!) to 15 sec. PR 58091
      [Christophe Jaillet]
 
-  *) mod_dir: Prevent the internal identifier "httpd/unix-directory" from
-     appearing as a Content-Type response header when requests for a directory
-     are rewritten by mod_rewrite. [Eric Covener]
-
   *) mod_rewrite:  Allow cookies set by mod_rewrite to contain ':' by accepting
      ';' as an alternate separator.  PR47241. 
      [<bugzilla schermesser com>, Eric Covener]
