@@ -1,6 +1,7 @@
 -*- mode:org -*-
 * Requirements:
 ** lua 5.1, 5.2 ( http://www.lua.org/ ) or LuaJIT 2.x ( http://www.luajit.org/ )
+** Does NOT work with Lua 5.3 yet
 ** Apache HTTPD 2.4 ( http://httpd.apache.org/ ) or higher
 
 * Documentation
