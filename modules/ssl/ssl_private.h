@@ -853,6 +853,8 @@ BOOL         ssl_util_path_check(ssl_pathcheck_t, const char *, apr_pool_t *);
 void         ssl_util_thread_setup(apr_pool_t *);
 int          ssl_init_ssl_connection(conn_rec *c, request_rec *r);
 
+BOOL         ssl_util_vhost_matches(const char *servername, server_rec *s);
+
 /**  Pass Phrase Support  */
 apr_status_t ssl_load_encrypted_pkey(server_rec *, apr_pool_t *, int,
                                      const char *, apr_array_header_t **);
