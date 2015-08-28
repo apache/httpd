@@ -200,14 +200,18 @@ int ssl_hook_ReadReq(request_rec *r)
             if (rv != APR_SUCCESS || scope_id) {
                 return HTTP_BAD_REQUEST;
             }
-            if (strcasecmp(host, servername)) {
+            if (strcasecmp(host, servername) 
+                || !sslconn->server 
+                || !ssl_util_vhost_matches(host, sslconn->server)) {
+                /* 
+                 * We are really not in Kansas anymore...
+                 * The request hostname does not match the SNI and does not
+                 * select the virtual host that was selected by the SNI.
+                 */
                 ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server, APLOGNO(02032)
-                            "Hostname %s provided via SNI and hostname %s provided"
-                            " via HTTP are different", servername, host);
-                if (r->connection->keepalives > 0) {
-                    return HTTP_MISDIRECTED_REQUEST;
-                }
-                return HTTP_BAD_REQUEST;
+                             "Hostname %s provided via SNI and hostname %s provided"
+                             " via HTTP are different", servername, host);
+                return HTTP_MISDIRECTED_REQUEST;
             }
         }
         else if (((sc->strict_sni_vhost_check == SSL_ENABLED_TRUE)
@@ -2000,50 +2004,10 @@ static int ssl_find_vhost(void *servername, conn_rec *c, server_rec *s)
 {
     SSLSrvConfigRec *sc;
     SSL *ssl;
-    BOOL found = FALSE;
-    apr_array_header_t *names;
-    int i;
+    BOOL found;
     SSLConnRec *sslcon;
 
-    /* check ServerName */
-    if (!strcasecmp(servername, s->server_hostname)) {
-        found = TRUE;
-    }
-
-    /*
-     * if not matched yet, check ServerAlias entries
-     * (adapted from vhost.c:matches_aliases())
-     */
-    if (!found) {
-        names = s->names;
-        if (names) {
-            char **name = (char **)names->elts;
-            for (i = 0; i < names->nelts; ++i) {
-                if (!name[i])
-                    continue;
-                if (!strcasecmp(servername, name[i])) {
-                    found = TRUE;
-                    break;
-                }
-            }
-        }
-    }
-
-    /* if still no match, check ServerAlias entries with wildcards */
-    if (!found) {
-        names = s->wild_names;
-        if (names) {
-            char **name = (char **)names->elts;
-            for (i = 0; i < names->nelts; ++i) {
-                if (!name[i])
-                    continue;
-                if (!ap_strcasecmp_match(servername, name[i])) {
-                    found = TRUE;
-                    break;
-                }
-            }
-        }
-    }
+    found = ssl_util_vhost_matches(servername, s);
 
     /* set SSL_CTX (if matched) */
     sslcon = myConnConfig(c);
