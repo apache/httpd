@@ -276,10 +276,18 @@ static int fixup_dir(request_rec *r)
 
     /* we're running between mod_rewrites fixup and its internal redirect handler, step aside */
     if (!strcmp(r->handler, REWRITE_REDIRECT_HANDLER_NAME)) { 
+        /* Prevent DIR_MAGIC_TYPE from leaking out when someone has taken over */
+        if (!strcmp(r->content_type, DIR_MAGIC_TYPE)) { 
+            r->content_type = NULL;
+        }
         return DECLINED;
     }
 
     if (d->checkhandler == MODDIR_ON && strcmp(r->handler, DIR_MAGIC_TYPE)) {
+        /* Prevent DIR_MAGIC_TYPE from leaking out when someone has taken over */
+        if (!strcmp(r->content_type, DIR_MAGIC_TYPE)) { 
+            r->content_type = NULL;
+        }
         return DECLINED;
     }
 

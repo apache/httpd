@@ -125,13 +125,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      +1: jailletc36, ylavic, niq
      jailletc36: A CHANGE entry should be added. I forgot it :(
 
-   *) mod_dir: when we bail out of fixups, make sure Content-Type is not still
-               httpd/unix-directory.  This only happens when the generator sets
-               no content-type which is more common w/ no DefaultType in 2.4.
-      trunk: http://svn.apache.org/r1695583
-      2.4.x: trunk works
-     +1: covener, ylavic, niq
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
