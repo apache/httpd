@@ -312,12 +312,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     +1: icing, 
  
 
-  *) core/mod_dir: Avoid multiple subrequest filters which won't get properly removed
-     during internal redirects. PR 58292.
-     trunk: http://svn.apache.org/r1698239
-     2.4.x: trunk works
-     +1: covener
-
 PATCHES/ISSUES THAT ARE BEING WORKED
 
   *) mod_ssl: add ALPN support by allowing other modules to register callbacks
