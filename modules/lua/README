@@ -9,13 +9,6 @@
 * Building
   For now, see docs/building-from-subversion.txt
 
-* To Consider
-  Allow definition of lua_State instances associated with arbitrary
-  pool using the pool's user_data constuct. There would, here, be two
-  types, pooled and singleton. On the other hand, singleton would work
-  fine for almost all cases -- the exception being a process or server
-  pool, and then we could stay singleton anyway and lock around it.
-  
 
 * Task List
 ** TODO Use r->file to determine file, doing rewriting in translate_name   
