@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_charset_lite: On EBCDIC platforms, make sure mod_charset_lite runs
+     after other resource-level filters. [Eric Covener]
+
   *) mod_dir: Responses that go through "FallbackResource" might appear to
      hang due to unterminated chunked encoding. PR58292. [Eric Covener]
 
