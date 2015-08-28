@@ -259,7 +259,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Measurements available in the svn commit message.
      trunk: http://svn.apache.org/r1696105
      2.4.x: trunk works modulo CHANGES
-     +1: jailletc36
+     +1: jailletc36, covener
+     covener: please add compatibility tag to doc during backport
 
   *) mod_session_dbd: fix lifetime of Request notes.
      trunk: http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/session/mod_session_dbd.c?r1=1679181&r2=1687087&view=patch
