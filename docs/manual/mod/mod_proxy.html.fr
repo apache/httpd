@@ -546,10 +546,14 @@ après la configuration initiale</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>BalancerGrowth est disponible depuis la version 2.3.13 du
 serveur HTTP Apache</td></tr>
 </table>
-    <p>Cette directive permet de définir le nombre de membres pouvant
-    être ajoutés au groupe de répartition de charge préconfiguré d'un
-    serveur virtuel. Elle n'est active que si le groupe a été
-    préconfiguré avec un membre au minimum.</p>
+    <p>Cette directive permet de définir le nombre de
+    répartiteurs de charge pouvant
+    être ajoutés à ceux déjà configurés pour un
+    serveur virtuel. Elle n'est active que si au minimum un répartiteur
+    a été préconfiguré.</p>
+    <div class="warning">Si l'on configure un nouveau répartiteur de
+    charge alors que le nombre maximum a déjà
+    été atteint, le prochain redémarrage du serveur échouera.</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1587,6 +1591,9 @@ ProxyPass "/mirror/foo" "http://backend.example.com"</pre>
         <td>Nombre de membres supplémentaires que l'on peut ajouter à ce
 	répartiteur en plus de ceux définis au niveau de la
 	configuration.
+	<p>Si l'on configure un nouveau membre du groupe de répartition
+	de charge alors que le maximum a déjà été atteint, le prochain
+	redémarrage du serveur échouera.</p>
     </td></tr>
     <tr><td>forcerecovery</td>
         <td>On</td>
