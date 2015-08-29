@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1695727:1697339 (outdated) -->
+<!-- English Revision: 1697339 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -4045,13 +4045,12 @@ serveur HTTP Apache.</compatibility>
         <p>Sp&eacute;cifier des protocoles non disponibles ou d&eacute;sactiv&eacute;s n'aura
 	aucun effet, et ceux-ci seront simplement ignor&eacute;s.</p>
         
-        <p>Si des protocoles sont sp&eacute;cifi&eacute;s au niveau du serveur
-	principal, il seront concat&eacute;n&eacute;s &agrave; ceux &eacute;ventuellement d&eacute;finis
-	au niveau des serveurs virtuels. Comme certains protocoles comme
-	HTTP/2 permettent la r&eacute;utilisation des connexions sous certaines
-	conditions, la restriction de l'utilisation des protocoles pour
-	des serveurs virtuels individuels pourra ne pas fonctionner de
-	la mani&egrave;re dont vous vous attendez.</p>
+        <p>Si un serveur virtuel ne poss&egrave;de pas de directive Protocols
+	propre, il h&eacute;rite des protocoles sp&eacute;cifi&eacute;s pour le serveur
+	principal. Autrement dit, les directives Protocols d&eacute;finies au
+	niveau d'un serveur virtuel remplacent celles d&eacute;finies au niveau
+	du serveur principal.
+        </p>
 
     </usage>
     <seealso><directive module="core">ProtocolsHonorOrder</directive></seealso>
