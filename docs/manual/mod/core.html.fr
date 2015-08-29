@@ -3962,13 +3962,12 @@ serveur HTTP Apache.</td></tr>
         <p>Spécifier des protocoles non disponibles ou désactivés n'aura
 	aucun effet, et ceux-ci seront simplement ignorés.</p>
         
-        <p>Si des protocoles sont spécifiés au niveau du serveur
-	principal, il seront concaténés à ceux éventuellement définis
-	au niveau des serveurs virtuels. Comme certains protocoles comme
-	HTTP/2 permettent la réutilisation des connexions sous certaines
-	conditions, la restriction de l'utilisation des protocoles pour
-	des serveurs virtuels individuels pourra ne pas fonctionner de
-	la manière dont vous vous attendez.</p>
+        <p>Si un serveur virtuel ne possède pas de directive Protocols
+	propre, il hérite des protocoles spécifiés pour le serveur
+	principal. Autrement dit, les directives Protocols définies au
+	niveau d'un serveur virtuel remplacent celles définies au niveau
+	du serveur principal.
+        </p>
 
     
 <h3>Voir aussi</h3>
