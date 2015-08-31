@@ -99,9 +99,9 @@ static int generate_salt(char *s, size_t size, const char **errstr,
         size--;
         val >>= 6;
         bits -= 6;
-   }
-   *s = '\0';
-   return 0;
+    }
+    *s = '\0';
+    return 0;
 }
 
 void putline(apr_file_t *f, const char *l)
