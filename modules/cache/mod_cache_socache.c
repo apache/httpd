@@ -191,7 +191,6 @@ static apr_status_t read_table(cache_handle_t *handle, request_rec *r,
         apr_size_t *slider)
 {
     apr_size_t key = *slider, colon = 0, len = 0;
-    ;
 
     while (*slider < buffer_len) {
         if (buffer[*slider] == ':') {
