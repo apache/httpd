@@ -161,6 +161,7 @@ apr_status_t h2_conn_main(conn_rec *c)
 {
     h2_config *config = h2_config_get(c);
     h2_session *session;
+    apr_status_t status;
     
     ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, "h2_conn_main start");
     if (!workers) {
@@ -174,7 +175,12 @@ apr_status_t h2_conn_main(conn_rec *c)
         return APR_EGENERAL;
     }
     
-    return h2_session_process(session);
+    status = h2_session_process(session);
+
+    /* Make sure this connection gets cleaned up properly. */
+    c->cs->state = CONN_STATE_LINGER;
+
+    return status;
 }
 
 apr_status_t h2_session_process(h2_session *session)
