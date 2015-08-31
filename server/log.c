@@ -421,8 +421,8 @@ int ap_open_logs(apr_pool_t *pconf, apr_pool_t *p /* plog */,
              * as stdin. This in turn would prevent the piped logger from
              * exiting.
              */
-             apr_file_close(s_main->error_log);
-             s_main->error_log = stderr_log;
+            apr_file_close(s_main->error_log);
+            s_main->error_log = stderr_log;
         }
     }
     /* note that stderr may still need to be replaced with something
@@ -563,7 +563,7 @@ static int log_ctime(const ap_errorlog_info *info, const char *arg,
     int time_len = buflen;
     int option = AP_CTIME_OPTION_NONE;
 
-    while(arg && *arg) {
+    while (arg && *arg) {
         switch (*arg) {
             case 'u':   option |= AP_CTIME_OPTION_USEC;
                         break;
