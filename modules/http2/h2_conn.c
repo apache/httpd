@@ -177,8 +177,10 @@ apr_status_t h2_conn_main(conn_rec *c)
     
     status = h2_session_process(session);
 
-    /* Make sure this connection gets cleaned up properly. */
-    c->cs->state = CONN_STATE_LINGER;
+    if (c->cs) {
+        /* Make sure this connection gets cleaned up properly. */
+        c->cs->state = CONN_STATE_LINGER;
+    }
 
     return status;
 }
