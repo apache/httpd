@@ -1224,7 +1224,7 @@ static void start_connect(struct connection * c)
     apr_status_t rv;
 
     if (!(started < requests))
-    return;
+        return;
 
     c->read = 0;
     c->bread = 0;
