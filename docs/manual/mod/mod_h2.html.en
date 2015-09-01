@@ -43,10 +43,7 @@
     </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#h2bufferoutput">H2BufferOutput</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#h2buffersize">H2BufferSize</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2direct">H2Direct</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#h2maxheaderlistsize">H2MaxHeaderListSize</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2maxsessionstreams">H2MaxSessionStreams</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2maxworkeridleseconds">H2MaxWorkerIdleSeconds</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2maxworkers">H2MaxWorkers</a></li>
@@ -59,50 +56,11 @@
 <ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="H2BufferOutput" id="H2BufferOutput">H2BufferOutput</a> <a name="h2bufferoutput" id="h2bufferoutput">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Output Buffering Switch</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2BufferOutput on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_h2</td></tr>
-</table>
-            <p>
-                This directive toggles if buffering of HTTP/2 output shall be used
-                or if data is written immediately when it arrives. Unless specified
-                otherwise, this directive is <code>on</code> for TLS connections and
-                <code>off</code> for plain connections.
-            </p>
-            <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">H2BufferOutput on</pre>
-</div>
-        
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="H2BufferSize" id="H2BufferSize">H2BufferSize</a> <a name="h2buffersize" id="h2buffersize">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Buffer size for outgoing data per HTTP/2 connection.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2BufferSize <em>bytes</em></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>H2BufferSize 65536</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_h2</td></tr>
-</table>
-            <p>
-                This directive sets the size of the buffer used to hold outgoing
-                HTTP/2 raw data, should <code>H2BufferOutput</code> be switched on.
-                This data is allocated per HTTP/2 connection, not stream and is
-                counted against the raw protocol data.
-            </p>
-            <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">H2BufferSize 128000</pre>
-</div>
-        
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="H2Direct" id="H2Direct">H2Direct</a> <a name="h2direct" id="h2direct">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>H2 Direct Protocol Switch</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2Direct on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>H2Direct on</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>H2Direct on (for non TLS)</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_h2</td></tr>
@@ -120,25 +78,6 @@
                 By default the direct HTTP/2 mode is enabled.
             </p>
             <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">H2Direct on</pre>
-</div>
-        
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="H2MaxHeaderListSize" id="H2MaxHeaderListSize">H2MaxHeaderListSize</a> <a name="h2maxheaderlistsize" id="h2maxheaderlistsize">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum size of acceptable stream headers.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2MaxHeaderListSize <em>bytes</em></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>H2MaxHeaderListSize 16384</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_h2</td></tr>
-</table>
-            <p>
-                This directive sets the maximum amount of stream header bytes that
-                the server is willing to accept. It is announced to the client during
-                the initial HTTP/2 handshake.
-            </p>
-            <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">H2MaxHeaderListSize 10000</pre>
 </div>
         
 </div>
