@@ -84,18 +84,10 @@ apr_status_t h2_conn_child_init(apr_pool_t *pool, server_rec *s)
     int idle_secs = 0;
     int i;
 
+    h2_config_init(pool);
+    
     ap_mpm_query(AP_MPMQ_MAX_THREADS, &max_threads_per_child);
     ap_mpm_query(AP_MPMQ_HARD_LIMIT_THREADS, &threads_limit);
-    
-    if (minw <= 0) {
-        minw = max_threads_per_child;
-    }
-    if (maxw <= 0) {
-        maxw = threads_limit;
-        if (maxw < minw) {
-            maxw = minw;
-        }
-    }
     
     for (i = 0; ap_loaded_modules[i]; ++i) {
         module *m = ap_loaded_modules[i];
@@ -113,6 +105,16 @@ apr_status_t h2_conn_child_init(apr_pool_t *pool, server_rec *s)
         }
         else if (!strcmp("mod_ssl.c", m->name)) {
             ssl_module = m;
+        }
+    }
+    
+    if (minw <= 0) {
+        minw = max_threads_per_child;
+    }
+    if (maxw <= 0) {
+        maxw = threads_limit;
+        if (maxw < minw) {
+            maxw = minw;
         }
     }
     
@@ -177,9 +179,10 @@ apr_status_t h2_conn_main(conn_rec *c)
     
     status = h2_session_process(session);
 
+    /* Make sure this connection gets closed properly. */
+    c->keepalive = AP_CONN_CLOSE;
     if (c->cs) {
-        /* Make sure this connection gets cleaned up properly. */
-        c->cs->state = CONN_STATE_LINGER;
+        c->cs->state = CONN_STATE_WRITE_COMPLETION;
     }
 
     return status;
