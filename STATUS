@@ -273,7 +273,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/r1597352
      Backport version for 2.4.x of patch:
         Trunk version of patch works
-     +1: rpluem,
+     +1: rpluem, ylavic,
 
   *) core/mod_ssl: add Protocols/ProtocolsHonorOrder directives and new 
      protocols hooks to control Upgrade: and ALPN protocol switching.
