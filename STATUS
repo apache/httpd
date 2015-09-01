@@ -307,6 +307,31 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      covener: please add compatibility tag to doc during backport
      jailletc36: done in r1700418
 
+  *) mod_rewrite: Fix an harmless error spotted by sparse.
+     trunk: http://svn.apache.org/r1697735
+     2.4.x: trunk patch applies.
+     +1: jailletc36
+
+  *) Fix some spurious and/or inconsistant indent spotted by sparse
+     Fix some minor style issues.
+     trunk: http://svn.apache.org/r1700317
+            http://svn.apache.org/r1700318
+            http://svn.apache.org/r1700319
+            http://svn.apache.org/r1700320
+            http://svn.apache.org/r1700321
+            http://svn.apache.org/r1700322
+            http://svn.apache.org/r1700326
+            http://svn.apache.org/r1700328
+            http://svn.apache.org/r1700330
+            http://svn.apache.org/r1700331
+            http://svn.apache.org/r1700332
+            http://svn.apache.org/r1700334
+            http://svn.apache.org/r1700336
+            http://svn.apache.org/r1700338
+     2.4.x: http://people.apache.org/~jailletc36/sparse.diff
+     +1: jailletc36
+     jailletc36: To ease review http://people.apache.org/~jailletc36/sparse_nospace.diff
+                 is the same file as above but generated using svn diff -x --ignore-all-space
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
