@@ -151,6 +151,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://people.apache.org/~rpluem/patches/proxy_post_request_status_code.diff
      +1: rpluem,
 
+  *) mod_mem_cache: Don't cache incomplete responses when the client aborts the connection.
+     Not applicable to trunk, mod_mem_cache doesn't exist there.
+     2.2.x patch: http://people.apache.org/~elu/mem_cache_client_abort.diff
+     +1: elu,
 
 PATCHES/ISSUES THAT ARE STALLED
 
