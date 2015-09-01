@@ -763,15 +763,6 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r, apr_bucket_bri
                     return APR_EGENERAL;
                 }
             }
-            if (r->connection->aborted) {
-                ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
-                             "mem_cache: Discarding body for URL %s "
-                             "because connection was aborted.",
-                             obj->key);
-                /* No need to cleanup - obj->complete unset, so
-                 * decrement_refcount will discard the object */
-                return APR_EGENERAL;
-            }
             if (mobj->m_len > obj->count) {
                 /* Caching a streamed response. Reallocate a buffer of the
                  * correct size and copy the streamed response into that
