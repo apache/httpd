@@ -296,18 +296,19 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.4.x patch: https://raw.githubusercontent.com/icing/mod_h2/master/sandbox/httpd/patches/core-protocols.patch
     +1: icing, 
  
-
-PATCHES/ISSUES THAT ARE BEING WORKED
-
   *) mod_socache_memcache: Add the 'MemcacheConnTTL' directive to control how 
      long to keep idle connections with the memcache server(s).
      Change default value from 600 usec (!) to 15 sec.  PR 58091
      Measurements available in the svn commit message.
      trunk: http://svn.apache.org/r1696105
-     2.4.x: trunk works modulo CHANGES
+            http://svn.apache.org/r1700418
+     2.4.x: http://people.apache.org/~jailletc36/socache_memcache.diff
      +1: jailletc36
      covener: please add compatibility tag to doc during backport
-     jailletc36: I'll make some small modifications based on discussion with Yann on dev@
+     jailletc36: done in r1700418
+
+
+PATCHES/ISSUES THAT ARE BEING WORKED
 
   *) mod_ssl: add ALPN support by allowing other modules to register callbacks
               for negotiation of the application layer protocol.  PR 52210.
