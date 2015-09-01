@@ -103,15 +103,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_ssl: Fix spurious errors when loading certificate chain
-     2.2.x uses a home grown version of SSL_CTX_use_certificate_chain_file
-     called SSL_CTX_use_certificate_chain() which also needs the
-     ERR_clear_error() call.
-     See https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=794383
-     trunk patch: N/A, but similar to https://svn.apache.org/r1588427
-     2.2.x patch: http://people.apache.org/~sf/SSL_CTX_use_certificate_clear_errors.diff
-     +1: sf, rpluem, ylavic
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
