@@ -1129,6 +1129,7 @@ static void * create_proxy_config(apr_pool_t *p, server_rec *s)
     ps->badopt = bad_error;
     ps->badopt_set = 0;
     ps->pool = p;
+    ps->s = s;
 
     return ps;
 }
@@ -1172,6 +1173,7 @@ static void * merge_proxy_config(apr_pool_t *p, void *basev, void *overridesv)
     ps->proxy_status = (overrides->proxy_status_set == 0) ? base->proxy_status : overrides->proxy_status;
     ps->proxy_status_set = overrides->proxy_status_set || base->proxy_status_set;
     ps->pool = p;
+    ps->s = overrides->s;
     return ps;
 }
 

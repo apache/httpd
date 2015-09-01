@@ -193,6 +193,7 @@ typedef struct {
     } proxy_status;             /* Status display options */
     char proxy_status_set;
     apr_pool_t *pool;           /* Pool used for allocating this struct */
+    server_rec *s;              /* The server_rec where this configuration was created in */
 } proxy_server_conf;
 
 
@@ -369,6 +370,7 @@ struct proxy_worker {
     char            disablereuse_set;
     apr_interval_time_t conn_timeout;
     char            conn_timeout_set;
+    server_rec      *server;    /* The server_rec where this configuration was created in */
 };
 
 /*

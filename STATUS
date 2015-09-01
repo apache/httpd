@@ -112,15 +112,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.2.x patch: http://people.apache.org/~sf/SSL_CTX_use_certificate_clear_errors.diff
      +1: sf, rpluem, ylavic
 
-  *) mod_proxy: Fix a regression with 2.2.31 that caused inherited workers to
-     use a different scoreboard slot then the original one.
-     PR 58267
-     Trunk version of patch:
-        None, only 2.2.x specific
-     Backport version for 2.2.x of patch:
-        http://people.apache.org/~rpluem/patches/pr58267.diff
-     +1: rpluem, jkaluza, ylavic
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
