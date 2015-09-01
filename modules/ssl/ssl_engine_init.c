@@ -689,6 +689,7 @@ static void ssl_init_ctx_cert_chain(server_rec *s,
         }
     }
 
+    ERR_clear_error();
     n = SSL_CTX_use_certificate_chain(mctx->ssl_ctx,
                                       (char *)chain,
                                       skip_first, NULL);
