@@ -303,7 +303,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk: http://svn.apache.org/r1696105
             http://svn.apache.org/r1700418
      2.4.x: http://people.apache.org/~jailletc36/socache_memcache.diff
-     +1: jailletc36
+     +1: jailletc36, ylavic
      covener: please add compatibility tag to doc during backport
      jailletc36: done in r1700418
 
@@ -311,6 +311,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk: http://svn.apache.org/r1697735
      2.4.x: trunk patch applies.
      +1: jailletc36
+     ylavic: I'd prefer the unambiguous parentheses in the macros definitions,
+             as you suggested on dev@.
 
   *) Fix some spurious and/or inconsistant indent spotted by sparse
      Fix some minor style issues.
@@ -329,7 +331,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
             http://svn.apache.org/r1700336
             http://svn.apache.org/r1700338
      2.4.x: http://people.apache.org/~jailletc36/sparse.diff
-     +1: jailletc36
+     +1: jailletc36, ylavic
      jailletc36: To ease review http://people.apache.org/~jailletc36/sparse_nospace.diff
                  is the same file as above but generated using svn diff -x --ignore-all-space
 
