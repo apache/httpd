@@ -51,13 +51,13 @@
 #endif
 
 #ifndef MC_DEFAULT_SERVER_TTL
-#define MC_DEFAULT_SERVER_TTL (15*1000*1000)        /* 15 seconds */
+#define MC_DEFAULT_SERVER_TTL    apr_time_from_sec(15)
 #endif
 
 module AP_MODULE_DECLARE_DATA socache_memcache_module;
 
 typedef struct {
-    unsigned int ttl;
+    apr_uint32_t ttl;
 } socache_mc_svr_cfg;
 
 struct ap_socache_instance_t {
@@ -331,19 +331,22 @@ static void *create_server_config(apr_pool_t *p, server_rec *s)
 static const char *socache_mc_set_ttl(cmd_parms *cmd, void *dummy,
                                       const char *arg)
 {
+    apr_interval_time_t ttl;
     socache_mc_svr_cfg *sconf = ap_get_module_config(cmd->server->module_config,
                                                      &socache_memcache_module);
-    int i;
 
-    i = atoi(arg);
-
-    if ((i < 1) || (i > 1800)) {
+    if (ap_timeout_parameter_parse(arg, &ttl, "s") != APR_SUCCESS) {
         return apr_pstrcat(cmd->pool, cmd->cmd->name,
-                           " must be a number between 1 and 1800.", NULL);
+                           " has wrong format", NULL);
+    }
+
+    if ((ttl < apr_time_from_sec(0)) || (ttl > apr_time_from_sec(3600))) {
+        return apr_pstrcat(cmd->pool, cmd->cmd->name,
+                           " can only be 0 or up to one hour.", NULL);
     }
 
     /* apr_memcache_server_create needs a ttl in usec. */
-    sconf->ttl = i * 1000 * 1000;
+    sconf->ttl = ttl;
 
     return NULL;
 }
@@ -359,7 +362,7 @@ static void register_hooks(apr_pool_t *p)
 
 static const command_rec socache_memcache_cmds[] = {
     AP_INIT_TAKE1("MemcacheConnTTL", socache_mc_set_ttl, NULL, RSRC_CONF,
-                  "TTL used for the connection with the memcache server(s), in seconds"),
+                  "TTL used for the connection with the memcache server(s)"),
     { NULL }
 };
 
