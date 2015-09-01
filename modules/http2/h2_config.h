@@ -68,5 +68,7 @@ h2_config *h2_config_rget(request_rec *r);
 
 int h2_config_geti(h2_config *conf, h2_config_var_t var);
 
+void h2_config_init(apr_pool_t *pool);
+
 #endif /* __mod_h2__h2_config_h__ */
 
