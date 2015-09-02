@@ -120,11 +120,13 @@ apr_status_t h2_to_h1_add_header(h2_to_h1 *to_h1,
     else if (H2_HD_MATCH_LIT("cookie", name, nlen)) {
         const char *existing = apr_table_get(to_h1->headers, "cookie");
         if (existing) {
+            char *nval;
+            
             /* Cookie headers come separately in HTTP/2, but need
              * to be merged by "; " (instead of default ", ")
              */
-            char *hvalue = apr_pstrndup(to_h1->pool, value, vlen);
-            char *nval = apr_psprintf(to_h1->pool, "%s; %s", existing, hvalue);
+            hvalue = apr_pstrndup(to_h1->pool, value, vlen);
+            nval = apr_psprintf(to_h1->pool, "%s; %s", existing, hvalue);
             apr_table_setn(to_h1->headers, "Cookie", nval);
             return APR_SUCCESS;
         }
