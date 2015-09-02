@@ -293,7 +293,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1698116
                   http://svn.apache.org/r1698133
     All changes to files in modules/http2 need to be ignored.
-    2.4.x patch: https://raw.githubusercontent.com/icing/mod_h2/master/sandbox/httpd/patches/core-protocols.patch
+    v2: added r1698116, r1693918 to patch
+    v3: added changes to ap_array_index and ap_array_contains
+    2.4.x patch: https://raw.githubusercontent.com/icing/mod_h2/master/sandbox/httpd/patches/core-protocols-v3.patch
     +1: icing, 
  
   *) mod_socache_memcache: Add the 'MemcacheConnTTL' directive to control how 
