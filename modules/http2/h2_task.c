@@ -116,6 +116,8 @@ static int h2_task_pre_conn(conn_rec* c, void *arg)
 {
     
     h2_ctx *ctx = h2_ctx_get(c);
+    
+    (void)arg;
     if (h2_ctx_is_task(ctx)) {
         h2_task_env *env = h2_ctx_get_task(ctx);
         

@@ -410,7 +410,8 @@ apr_status_t h2_util_copy(apr_bucket_brigade *to, apr_bucket_brigade *from,
 {
     apr_status_t status = APR_SUCCESS;
     int same_alloc;
-    
+
+    (void)msg;
     AP_DEBUG_ASSERT(to);
     AP_DEBUG_ASSERT(from);
     same_alloc = (to->bucket_alloc == from->bucket_alloc);

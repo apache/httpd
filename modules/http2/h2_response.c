@@ -118,6 +118,7 @@ h2_response *h2_response_rcreate(int stream_id, request_rec *r,
 
 void h2_response_destroy(h2_response *response)
 {
+    (void)response;
 }
 
 h2_response *h2_response_copy(apr_pool_t *pool, h2_response *from)

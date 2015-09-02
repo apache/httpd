@@ -99,6 +99,8 @@ static ssize_t send_cb(nghttp2_session *ngh2,
     h2_session *session = (h2_session *)userp;
     apr_status_t status = send_data(session, (const char *)data, length);
     
+    (void)ngh2;
+    (void)flags;
     if (status == APR_SUCCESS) {
         return length;
     }
@@ -140,6 +142,7 @@ static int on_data_chunk_recv_cb(nghttp2_session *ngh2, uint8_t flags,
     h2_stream * stream;
     apr_status_t status;
     
+    (void)flags;
     if (session->aborted) {
         return NGHTTP2_ERR_CALLBACK_FAILURE;
     }
@@ -234,6 +237,7 @@ static int on_stream_close_cb(nghttp2_session *ngh2, int32_t stream_id,
     h2_session *session = (h2_session *)userp;
     h2_stream *stream;
     
+    (void)ngh2;
     if (session->aborted) {
         return NGHTTP2_ERR_CALLBACK_FAILURE;
     }
@@ -255,6 +259,7 @@ static int on_begin_headers_cb(nghttp2_session *ngh2,
                                const nghttp2_frame *frame, void *userp)
 {
     /* This starts a new stream. */
+    (void)ngh2;
     int rv = stream_open((h2_session *)userp, frame->hd.stream_id);
     if (rv != NGHTTP2_ERR_CALLBACK_FAILURE) {
       /* on_header_cb or on_frame_recv_cb will dectect that stream
@@ -274,6 +279,8 @@ static int on_header_cb(nghttp2_session *ngh2, const nghttp2_frame *frame,
     h2_stream * stream;
     apr_status_t status;
     
+    (void)ngh2;
+    (void)flags;
     if (session->aborted) {
         return NGHTTP2_ERR_CALLBACK_FAILURE;
     }
@@ -1018,6 +1025,9 @@ static ssize_t stream_data_cb(nghttp2_session *ng2s,
     h2_stream *stream;
     AP_DEBUG_ASSERT(session);
     
+    (void)ng2s;
+    (void)buf;
+    (void)source;
     stream = h2_stream_set_get(session->streams, stream_id);
     if (!stream) {
         ap_log_cerror(APLOG_MARK, APLOG_ERR, APR_NOTFOUND, session->c,
