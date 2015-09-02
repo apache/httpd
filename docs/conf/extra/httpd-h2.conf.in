@@ -7,6 +7,5 @@
 # Required modules: mod_h2
 
 <IfModule h2_module>
-    # This can also set to "off" and turned on only for specific virtual hosts
-    H2Engine on
+  # h2 is enabled by loading, for site specific control see 'Protocols'
 </IfModule>
