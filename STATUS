@@ -292,17 +292,66 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1693918
                   http://svn.apache.org/r1698116
                   http://svn.apache.org/r1698133
-    All changes to files in modules/http2 need to be ignored.
-    v2: added r1698116, r1693918 to patch
-    v3: added changes to ap_array_index and ap_array_contains
-    2.4.x patch: https://raw.githubusercontent.com/icing/mod_h2/master/sandbox/httpd/patches/core-protocols-v3.patch
-    +1: icing, 
- 
+     All changes to files in modules/http2 need to be ignored.
+     v2: added r1698116, r1693918 to patch
+     v3: added changes to ap_array_index and ap_array_contains
+     2.4.x patch: https://raw.githubusercontent.com/icing/mod_h2/master/sandbox/httpd/patches/core-protocols-v3.patch
+     +1: icing
+
+  *) mod_h2: add HTTP/2 support to httpd, depends on core/mod_ssl changes above
+     trunk patch: http://svn.apache.org/r1700783
+                  http://svn.apache.org/r1688474
+                  http://svn.apache.org/r1688475
+                  http://svn.apache.org/r1689605
+                  http://svn.apache.org/r1690120
+                  http://svn.apache.org/r1690137
+                  http://svn.apache.org/r1690248
+                  http://svn.apache.org/r1691374
+                  http://svn.apache.org/r1691582
+                  http://svn.apache.org/r1691592
+                  http://svn.apache.org/r1691819
+                  http://svn.apache.org/r1691908
+                  http://svn.apache.org/r1692285
+                  http://svn.apache.org/r1692432
+                  http://svn.apache.org/r1692486
+                  http://svn.apache.org/r1694951
+                  http://svn.apache.org/r1695885
+                  http://svn.apache.org/r1695920
+                  http://svn.apache.org/r1696264
+                  http://svn.apache.org/r1696279
+                  http://svn.apache.org/r1696428
+                  http://svn.apache.org/r1696442
+                  http://svn.apache.org/r1696565
+                  http://svn.apache.org/r1696592
+                  http://svn.apache.org/r1696607
+                  http://svn.apache.org/r1696755
+                  http://svn.apache.org/r1696881
+                  http://svn.apache.org/r1697051
+                  http://svn.apache.org/r1697339
+                  http://svn.apache.org/r1697370
+                  http://svn.apache.org/r1697389
+                  http://svn.apache.org/r1697446
+                  http://svn.apache.org/r1697543
+                  http://svn.apache.org/r1697634
+                  http://svn.apache.org/r1697855
+                  http://svn.apache.org/r1698023
+                  http://svn.apache.org/r1698103
+                  http://svn.apache.org/r1698107
+                  http://svn.apache.org/r1698116
+                  http://svn.apache.org/r1698133
+                  http://svn.apache.org/r1700271
+                  http://svn.apache.org/r1700275
+                  http://svn.apache.org/r1700514
+                  http://svn.apache.org/r1700777
+     2.4.x patch: https://raw.githubusercontent.com/icing/mod_h2/master/sandbox/httpd/patches/h2-only-v3.patch
+     +1: icing
+
+
   *) mod_socache_memcache: Add the 'MemcacheConnTTL' directive to control how 
      long to keep idle connections with the memcache server(s).
      Change default value from 600 usec (!) to 15 sec.  PR 58091
      Measurements available in the svn commit message.
-     trunk: http://svn.apache.org/r1696105
+q     trunk: http://svn.apache.org/r1696105
             http://svn.apache.org/r1700418
      2.4.x: http://people.apache.org/~jailletc36/socache_memcache.diff
      +1: jailletc36, ylavic
