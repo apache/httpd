@@ -3714,6 +3714,7 @@ Protocol https
     <name>Protocols</name>
     <description>Protocols available for a server/virtual host</description>
     <syntax>Protocols <var>protocol</var> ...</syntax>
+    <default>Protocols http/1.1</default>
     <contextlist><context>server config</context><context>virtual host</context></contextlist>
     <compatibility>Only available from Apache 2.4.17 and later.</compatibility>
     
@@ -3722,15 +3723,16 @@ Protocol https
             server/virtual host. The list determines the allowed protocols
             a client may negotiate for this server/host.</p>
         
-        <p>You only need to set protocols if you want to limit the available
-            protocols for a server/host. By default, all supported protocols
-            are available to a client.</p>
+        <p>You need to set protocols if you want to extend the available
+            protocols for a server/host. By default, only the http/1.1 protocol
+            (which includes the compatibility with 1.0 and 0.9 clients) is
+            allowed.</p>
         
-        <p>For example, if you want to support only HTTP/1.1 for a server, even
-            though HTTP/2 is available, just specify this protocol only:</p>
+        <p>For example, if you want to support HTTP/2 for a server with TLS, 
+            specify:</p>
         
         <highlight language="config">
-            Protocols http/1.1
+            Protocols h2 http/1.1
         </highlight>
 
         <p>Valid protocols are <code>http/1.1</code> for http and https connections,
@@ -3755,7 +3757,7 @@ Protocol https
     <name>ProtocolsHonorOrder</name>
     <description>Protocols available for a server/virtual host</description>
     <syntax>ProtocolsHonorOrder On|Off</syntax>
-    <default>ProtocolsHonorOrder Off</default>
+    <default>ProtocolsHonorOrder On</default>
     <contextlist><context>server config</context><context>virtual host</context></contextlist>
     <compatibility>Only available from Apache 2.4.17 and later.</compatibility>
     
@@ -3763,12 +3765,13 @@ Protocol https
         <p>This directive specifies if the server should honor the order in which
         the <directive>Protocols</directive> directive lists protocols.</p>
         
-        <p>By default, a client supplies a list of supported protocols and the server
-            selects an available one from that list in the given order.</p>
+        <p>If configured Off, the client supplied list order of protocols has 
+            precedence over the order in the server configuration.</p>
         
-        <p>With <directive>ProtocolsHonorOrder</directive> set to <code>on</code>, the
-            client ordering does not matter and only the ordering in the server
-        settings influences the outcome of the protocol negotiation.</p>
+        <p>With <directive>ProtocolsHonorOrder</directive> set to <code>on</code> 
+            (default), the client ordering does not matter and only the ordering 
+            in the server settings influences the outcome of the protocol 
+            negotiation.</p>
         
     </usage>
     <seealso><directive module="core">Protocols</directive></seealso>

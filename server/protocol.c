@@ -1982,53 +1982,77 @@ AP_DECLARE(const char *) ap_select_protocol(conn_rec *c, request_rec *r,
                                             apr_array_header_t *choices)
 {
     apr_pool_t *pool = r? r->pool : c->pool;
-    apr_array_header_t *proposals;
-    const char *protocol = NULL, *existing = ap_get_protocol(c);
     core_server_config *conf = ap_get_core_module_config(s->module_config);
+    const char *protocol = NULL, *existing = ap_get_protocol(c);;
+    apr_array_header_t *proposals;
 
     if (APLOGcdebug(c)) {
         const char *p = apr_array_pstrcat(pool, conf->protocols, ',');
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, 
                       "select protocol from %s, choices=%s for server %s", 
-                      p, apr_array_pstrcat(pool, choices, ','),
+                      p, choices?
+                      apr_array_pstrcat(pool, choices, ',') : "NULL",
                       s->server_hostname);
     }
     
-    proposals = apr_array_make(pool, choices->nelts+1, sizeof(char *));
+    proposals = apr_array_make(pool, choices? choices->nelts+1 : 5, 
+                               sizeof(char *));
     ap_run_protocol_propose(c, r, s, choices, proposals);
     
     if (proposals->nelts > 0) {
         int i;
-        apr_array_header_t *prefs = ((conf->protocols_honor_order > 0
-                                      && conf->protocols->nelts > 0)? 
-                                     conf->protocols : choices);
+        apr_array_header_t *prefs = NULL;
+        
+        /* Default for protocols_honor_order is 'on' or != 0 */
+        if (conf->protocols_honor_order == 0 && choices && choices->nelts > 0) {
+            prefs = choices;
+        }
+        else {
+            prefs = conf->protocols;
+        }
 
         /* If the existing protocol has not been proposed, but is a choice,
          * add it to the proposals implicitly.
          */
-        if (!ap_array_str_contains(proposals, existing) 
+        if (choices 
+            && !ap_array_str_contains(proposals, existing) 
             && ap_array_str_contains(choices, existing)) {
             APR_ARRAY_PUSH(proposals, const char*) = existing;
         }
-        
+
         /* Select the most preferred protocol */
         if (APLOGcdebug(c)) {
             ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, 
-                          "select protocol, proposals=%s preferences=%s", 
+                          "select protocol, proposals=%s preferences=%s configured=%s", 
                           apr_array_pstrcat(pool, proposals, ','),
-                          apr_array_pstrcat(pool, prefs, ','));
+                          apr_array_pstrcat(pool, prefs, ','),
+                          apr_array_pstrcat(pool, conf->protocols, ','));
         }
-        for (i = 0; i < proposals->nelts; ++i) {
-            const char *p = APR_ARRAY_IDX(proposals, i, const char *);
-            if (conf->protocols->nelts > 0 
-                && !ap_array_str_contains(conf->protocols, p)) {
-                /* not a permitted protocol here */
-                continue;
-            }
-            else if (!protocol 
-                     || (protocol_cmp(prefs, protocol, p) < 0)) {
-                /* none selected yet or this on has preference */
-                protocol = p;
+        if (conf->protocols->nelts <= 0) {
+            /* nothing configured, by default, we only allow http/1.1 here.
+             * For now...
+             */
+            return (ap_array_str_contains(proposals, AP_PROTOCOL_HTTP1)?
+                    AP_PROTOCOL_HTTP1 : NULL);
+        }
+        else {
+            for (i = 0; i < proposals->nelts; ++i) {
+                const char *p = APR_ARRAY_IDX(proposals, i, const char *);
+                if (conf->protocols->nelts <= 0 && !strcmp(AP_PROTOCOL_HTTP1, p)) {
+                    /* nothing configured, by default, we only allow http/1.1 here.
+                     * For now...
+                     */
+                    continue;
+                }
+                if (!ap_array_str_contains(conf->protocols, p)) {
+                    /* not a configured protocol here */
+                    continue;
+                }
+                else if (!protocol 
+                         || (protocol_cmp(prefs, protocol, p) < 0)) {
+                    /* none selected yet or this one has preference */
+                    protocol = p;
+                }
             }
         }
     }
@@ -2037,7 +2061,7 @@ AP_DECLARE(const char *) ap_select_protocol(conn_rec *c, request_rec *r,
                       protocol? protocol : "(none)");
     }
 
-    return protocol? protocol : existing;
+    return protocol;
 }
 
 AP_DECLARE(apr_status_t) ap_switch_protocol(conn_rec *c, request_rec *r, 

@@ -433,6 +433,7 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
 static void *create_core_server_config(apr_pool_t *a, server_rec *s)
 {
     core_server_config *conf;
+    const char **np;
     int is_virtual = s->is_virtual;
 
     conf = (core_server_config *)apr_pcalloc(a, sizeof(core_server_config));
@@ -5303,7 +5304,7 @@ static int core_upgrade_handler(request_rec *r)
             if (offers && offers->nelts > 0) {
                 const char *protocol = ap_select_protocol(c, r, r->server,
                                                           offers);
-                if (strcmp(protocol, ap_get_protocol(c))) {
+                if (protocol && strcmp(protocol, ap_get_protocol(c))) {
                     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02909)
                                   "Upgrade selects '%s'", protocol);
                     /* Let the client know what we are upgrading to. */
