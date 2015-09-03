@@ -2407,22 +2407,22 @@ AP_DECLARE(char *) ap_get_exec_line(apr_pool_t *p,
  * searching a start. 
  * @param array The array the check
  * @param s The string to find
- * @param start Start index for search. If start is greater or 
-                equal to array length, -1 will be returned.
+ * @param start Start index for search. If start is out of bounds (negative or  
+                equal to array length or greater), -1 will be returned.
  * @return index of string in array or -1
  */
-AP_DECLARE(int) ap_array_index(const apr_array_header_t *array, 
-                               const char *s,
-                               apr_size_t start);
+AP_DECLARE(int) ap_array_str_index(const apr_array_header_t *array, 
+                                   const char *s,
+                                   int start);
 
 /**
  * Check if the string is member of the given array by strcmp.
  * @param array The array the check
  * @param s The string to find
- * @return !=0 iff string is member of array
+ * @return !=0 iff string is member of array (via strcmp)
  */
-AP_DECLARE(int) ap_array_contains(const apr_array_header_t *array, 
-                                  const char *s);
+AP_DECLARE(int) ap_array_str_contains(const apr_array_header_t *array, 
+                                      const char *s);
 
 #ifdef __cplusplus
 }

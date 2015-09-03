@@ -3149,23 +3149,27 @@ AP_DECLARE(char *) ap_get_exec_line(apr_pool_t *p,
     return apr_pstrndup(p, buf, k);
 }
 
-AP_DECLARE(int) ap_array_index(const apr_array_header_t *array, 
-                               const char *s,
-                               apr_size_t start)
+AP_DECLARE(int) ap_array_str_index(const apr_array_header_t *array, 
+                                   const char *s,
+                                   int start)
 {
-    apr_size_t i;
-    for (i = start; i < array->nelts; i++) {
-        const char *p = APR_ARRAY_IDX(array, i, const char *);
-        if (!strcmp(p, s)) {
-            return (int)i;
+    if (start >= 0) {
+        int i;
+        
+        for (i = start; i < array->nelts; i++) {
+            const char *p = APR_ARRAY_IDX(array, i, const char *);
+            if (!strcmp(p, s)) {
+                return i;
+            }
         }
     }
+    
     return -1;
 }
 
-AP_DECLARE(int) ap_array_contains(const apr_array_header_t *array, 
-                                  const char *s)
+AP_DECLARE(int) ap_array_str_contains(const apr_array_header_t *array, 
+                                      const char *s)
 {
-    return (ap_array_index(array, s, 0) >= 0);
+    return (ap_array_str_index(array, s, 0) >= 0);
 }
 
