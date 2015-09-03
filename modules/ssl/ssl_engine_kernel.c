@@ -2173,6 +2173,7 @@ int ssl_callback_alpn_select(SSL *ssl,
     conn_rec *c = (conn_rec*)SSL_get_app_data(ssl);
     SSLConnRec *sslconn = myConnConfig(c);
     apr_array_header_t *client_protos;
+    const char *proposed;
     size_t len;
     int i;
 
@@ -2210,8 +2211,9 @@ int ssl_callback_alpn_select(SSL *ssl,
      */
     init_vhost(c, ssl);
     
-    *out = (const unsigned char *)ap_select_protocol(c, NULL, sslconn->server, 
-                                                     client_protos);
+    proposed = (const unsigned char *)ap_select_protocol(c, NULL, sslconn->server, 
+                                                         client_protos);
+    *out = proposed? proposed : ap_get_protocol(c);
     len = strlen((const char*)*out);
     if (len > 255) {
         ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO(02840)

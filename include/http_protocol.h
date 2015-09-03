@@ -786,13 +786,17 @@ AP_DECLARE_HOOK(const char *,protocol_get,(const conn_rec *c))
 /**
  * Select a protocol for the given connection and optional request. Will return
  * the protocol identifier selected which may be the protocol already in place
- * on the connection. The server may ignore the choices given.
+ * on the connection. The selected protocol will be NULL if non of the given
+ * choices could be agreed upon (e.g. no proposal as made).
+ *
+ * A special case is where the choices itself is NULL (instead of empty). In
+ * this case there are no restrictions imposed on protocol selection.
  *
  * @param c The current connection
  * @param r The current request or NULL
  * @param s The server/virtual host selected
  * @param choices A list of protocol identifiers, normally the clients whishes
- * @return The selected protocol
+ * @return The selected protocol or NULL if no protocol could be agreed upon
  */
 AP_DECLARE(const char *) ap_select_protocol(conn_rec *c, request_rec *r, 
                                             server_rec *s,
