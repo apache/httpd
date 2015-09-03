@@ -2211,9 +2211,8 @@ int ssl_callback_alpn_select(SSL *ssl,
      */
     init_vhost(c, ssl);
     
-    proposed = (const unsigned char *)ap_select_protocol(c, NULL, sslconn->server, 
-                                                         client_protos);
-    *out = proposed? proposed : ap_get_protocol(c);
+    proposed = ap_select_protocol(c, NULL, sslconn->server, client_protos);
+    *out = (const unsigned char *)(proposed? proposed : ap_get_protocol(c));
     len = strlen((const char*)*out);
     if (len > 255) {
         ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO(02840)
