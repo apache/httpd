@@ -1983,7 +1983,7 @@ AP_DECLARE(const char *) ap_select_protocol(conn_rec *c, request_rec *r,
 {
     apr_pool_t *pool = r? r->pool : c->pool;
     core_server_config *conf = ap_get_core_module_config(s->module_config);
-    const char *protocol = NULL, *existing = ap_get_protocol(c);;
+    const char *protocol = NULL, *existing = ap_get_protocol(c);
     apr_array_header_t *proposals;
 
     if (APLOGcdebug(c)) {
