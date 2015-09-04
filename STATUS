@@ -293,10 +293,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1698116
                   http://svn.apache.org/r1698133
                   http://svn.apache.org/r1694950
-                  http://svn.apache.org/1700968
-                  http://svn.apache.org/1701005
-                  http://svn.apache.org/1701145
-                  http://svn.apache.org/1701178
+                  http://svn.apache.org/r1700968
+                  http://svn.apache.org/r1701005
+                  http://svn.apache.org/r1701145
+                  http://svn.apache.org/r1701178
      All changes to files in modules/http2 need to be ignored.
      v2: added r1698116, r1693918 to patch
      v3: added changes to ap_array_index and ap_array_contains
@@ -348,9 +348,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1700275
                   http://svn.apache.org/r1700514
                   http://svn.apache.org/r1700777
-                  http://svn.apache.org/1700917
-                  http://svn.apache.org/1700925
-                  http://svn.apache.org/1701204
+                  http://svn.apache.org/r1700917
+                  http://svn.apache.org/r1700925
+                  http://svn.apache.org/r1701204
      2.4.x patch for this and core/mod_ssl: https://raw.githubusercontent.com/icing/mod_h2/master/sandbox/httpd/patches/core-h2-all-in-one-v4.patch
      +1: icing
 
