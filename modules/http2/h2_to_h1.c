@@ -114,7 +114,7 @@ apr_status_t h2_to_h1_add_header(h2_to_h1 *to_h1,
              || H2_HD_MATCH_LIT("proxy-connection", name, nlen)
              || H2_HD_MATCH_LIT("keep-alive", name, nlen)
              || H2_HD_MATCH_LIT("http2-settings", name, nlen)) {
-        // ignore these.
+        /* ignore these. */
         return APR_SUCCESS;
     }
     else if (H2_HD_MATCH_LIT("cookie", name, nlen)) {

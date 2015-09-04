@@ -123,19 +123,7 @@ int h2_h2_remove_timeout(conn_rec* c)
 {
     h2_ctx *ctx = h2_ctx_get(c);
     
-    if (h2_ctx_is_task(ctx)) {
-        /* cleanup on task connections */
-        /* we once removed the reqtimeout filter on task connections,
-         * but timeouts here might have been a side effect of other things.
-         * Ideally mod_reqtimeout would do its work on task connections
-         * as it basically is a HTTP/1.1 request/response and it's made
-         * for that.
-         * So, let the filter stay for now and see if we ever encounter
-         * unexpected timeouts on tasks again.
-         */
-        //ap_remove_input_filter_byhandle(c->input_filters, "reqtimeout");
-    }
-    else if (h2_ctx_is_active(ctx)) {
+    if (h2_ctx_is_active(ctx) && !h2_ctx_is_task(ctx)) {
         /* cleanup on master h2 connections */
         ap_remove_input_filter_byhandle(c->input_filters, "reqtimeout");
     }
