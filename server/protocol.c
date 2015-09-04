@@ -1951,7 +1951,7 @@ AP_DECLARE(void) ap_send_interim_response(request_rec *r, int send_headers)
  * Compare two protocol identifier. Result is similar to strcmp():
  * 0 gives same precedence, >0 means proto1 is preferred.
  */
-static int protocol_cmp(apr_array_header_t *preferences,
+static int protocol_cmp(const apr_array_header_t *preferences,
                         const char *proto1,
                         const char *proto2)
 {
@@ -1979,45 +1979,55 @@ AP_DECLARE(const char *) ap_get_protocol(conn_rec *c)
 
 AP_DECLARE(const char *) ap_select_protocol(conn_rec *c, request_rec *r, 
                                             server_rec *s,
-                                            apr_array_header_t *choices)
+                                            const apr_array_header_t *choices)
 {
     apr_pool_t *pool = r? r->pool : c->pool;
     core_server_config *conf = ap_get_core_module_config(s->module_config);
-    const char *protocol = NULL, *existing = ap_get_protocol(c);
+    const char *protocol = NULL, *existing;
     apr_array_header_t *proposals;
 
     if (APLOGcdebug(c)) {
         const char *p = apr_array_pstrcat(pool, conf->protocols, ',');
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, 
                       "select protocol from %s, choices=%s for server %s", 
-                      p, choices?
-                      apr_array_pstrcat(pool, choices, ',') : "NULL",
+                      p, apr_array_pstrcat(pool, choices, ','),
                       s->server_hostname);
     }
-    
-    proposals = apr_array_make(pool, choices? choices->nelts+1 : 5, 
-                               sizeof(char *));
+
+    if (conf->protocols->nelts <= 0) {
+        /* nothing configured, by default, we only allow http/1.1 here.
+         * For now...
+         */
+        if (ap_array_str_contains(choices, AP_PROTOCOL_HTTP1)) {
+            return AP_PROTOCOL_HTTP1;
+        }
+        else {
+            return NULL;
+        }
+    }
+
+    proposals = apr_array_make(pool, choices->nelts + 1, sizeof(char *));
     ap_run_protocol_propose(c, r, s, choices, proposals);
-    
+
+    /* If the existing protocol has not been proposed, but is a choice,
+     * add it to the proposals implicitly.
+     */
+    existing = ap_get_protocol(c);
+    if (!ap_array_str_contains(proposals, existing)
+        && ap_array_str_contains(choices, existing)) {
+        APR_ARRAY_PUSH(proposals, const char*) = existing;
+    }
+
     if (proposals->nelts > 0) {
         int i;
-        apr_array_header_t *prefs = NULL;
-        
+        const apr_array_header_t *prefs = NULL;
+
         /* Default for protocols_honor_order is 'on' or != 0 */
-        if (conf->protocols_honor_order == 0 && choices && choices->nelts > 0) {
+        if (conf->protocols_honor_order == 0 && choices->nelts > 0) {
             prefs = choices;
         }
         else {
             prefs = conf->protocols;
-        }
-
-        /* If the existing protocol has not been proposed, but is a choice,
-         * add it to the proposals implicitly.
-         */
-        if (choices 
-            && !ap_array_str_contains(proposals, existing) 
-            && ap_array_str_contains(choices, existing)) {
-            APR_ARRAY_PUSH(proposals, const char*) = existing;
         }
 
         /* Select the most preferred protocol */
@@ -2028,31 +2038,16 @@ AP_DECLARE(const char *) ap_select_protocol(conn_rec *c, request_rec *r,
                           apr_array_pstrcat(pool, prefs, ','),
                           apr_array_pstrcat(pool, conf->protocols, ','));
         }
-        if (conf->protocols->nelts <= 0) {
-            /* nothing configured, by default, we only allow http/1.1 here.
-             * For now...
-             */
-            return (ap_array_str_contains(proposals, AP_PROTOCOL_HTTP1)?
-                    AP_PROTOCOL_HTTP1 : NULL);
-        }
-        else {
-            for (i = 0; i < proposals->nelts; ++i) {
-                const char *p = APR_ARRAY_IDX(proposals, i, const char *);
-                if (conf->protocols->nelts <= 0 && !strcmp(AP_PROTOCOL_HTTP1, p)) {
-                    /* nothing configured, by default, we only allow http/1.1 here.
-                     * For now...
-                     */
-                    continue;
-                }
-                if (!ap_array_str_contains(conf->protocols, p)) {
-                    /* not a configured protocol here */
-                    continue;
-                }
-                else if (!protocol 
-                         || (protocol_cmp(prefs, protocol, p) < 0)) {
-                    /* none selected yet or this one has preference */
-                    protocol = p;
-                }
+        for (i = 0; i < proposals->nelts; ++i) {
+            const char *p = APR_ARRAY_IDX(proposals, i, const char *);
+            if (!ap_array_str_contains(conf->protocols, p)) {
+                /* not a configured protocol here */
+                continue;
+            }
+            else if (!protocol 
+                     || (protocol_cmp(prefs, protocol, p) < 0)) {
+                /* none selected yet or this one has preference */
+                protocol = p;
             }
         }
     }
