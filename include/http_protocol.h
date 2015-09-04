@@ -800,7 +800,7 @@ AP_DECLARE_HOOK(const char *,protocol_get,(const conn_rec *c))
  */
 AP_DECLARE(const char *) ap_select_protocol(conn_rec *c, request_rec *r, 
                                             server_rec *s,
-                                            apr_array_header_t *choices);
+                                            const apr_array_header_t *choices);
 
 /**
  * Perform the actual protocol switch. The protocol given must have been
