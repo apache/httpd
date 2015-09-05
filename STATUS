@@ -109,11 +109,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) apxs: add HTTPD_MMN and HTTPD_VERSION to apxs -q
-     trunk: http://svn.apache.org/r1693919
-     2.4.x: trunk works modulo CHANGES
-     +1: covener, ylavic, jim
-
   *) mod_rewrite: Allow cookies to include ':' by using an alternate separator.
      PR47241.
      trunk: http://svn.apache.org/r1693963

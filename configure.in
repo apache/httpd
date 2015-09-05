@@ -16,7 +16,7 @@ abs_builddir=`pwd`
 
 dnl Ensure that the httpd version is included
 HTTPD_VERSION=`$abs_srcdir/build/get-version.sh all $abs_srcdir/include/ap_release.h AP_SERVER`
-AC_SUBST(HTTPD_VERSION)
+HTTPD_MMN=`$abs_srcdir/build/get-version.sh mmn $abs_srcdir/include/ap_mmn.h MODULE_MAGIC_NUMBER`
 
 dnl #
 dnl # Include our own M4 macros along with those for APR and libtool
